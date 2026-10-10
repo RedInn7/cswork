@@ -12,6 +12,15 @@ export const starters: Record<Language, string> = {
   java: 'import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner in = new Scanner(System.in);\n        // 在这里实现你的解法\n    }\n}\n',
   cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    // 在这里实现你的解法\n    return 0;\n}\n',
 };
+/** Same programs as `starters`, with comments in English for the English statement view. */
+export const englishStarters: Record<Language, string> = {
+  python:
+    '# Read input from stdin and write the answer to stdout\nimport sys\n\ndef solve():\n    data = sys.stdin.read().split()\n    # Write your solution here\n\nif __name__ == "__main__":\n    solve()\n',
+  go: 'package main\n\nimport (\n    "bufio"\n    "fmt"\n    "os"\n)\n\nfunc main() {\n    in := bufio.NewReader(os.Stdin)\n    var n int\n    fmt.Fscan(in, &n)\n    // Write your solution here\n}\n',
+  java: 'import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner in = new Scanner(System.in);\n        // Write your solution here\n    }\n}\n',
+  cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    // Write your solution here\n    return 0;\n}\n',
+};
+export const starterTemplates = { zh: starters, en: englishStarters } as const;
 export type ProblemStatement = {
   title: string;
   description: string;

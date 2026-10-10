@@ -69,6 +69,7 @@ import {
 import {
   languages,
   starters,
+  starterTemplates,
   problemStatement,
   type ProblemLocale,
   type Language,
@@ -110,6 +111,12 @@ type ReplaceRequest = {
   title: string;
   codingMode: CodingMode;
 };
+/** An untouched ACM starter in either language can be swapped for the current one. */
+function isStarter(code: string, language: Language) {
+  return Object.values(starterTemplates).some((set) => set[language] === code);
+}
+const starterLocale = (): ProblemLocale =>
+  safeLayoutStorage.getItem('cswork:problem:locale') === 'en' ? 'en' : 'zh';
 const safeLayoutStorage = {
   getItem(key: string) {
     try {
@@ -404,7 +411,7 @@ function Workspace({
     const template = (lang: Language) =>
       initialMode === 'leetcode'
         ? loadedProblem.leetcodeTemplates?.[lang] || ''
-        : starters[lang];
+        : starterTemplates[starterLocale()][lang];
     try {
       const storedLanguage = localStorage.getItem(
         `cswork:editor:language:${userId}`,
@@ -418,6 +425,9 @@ function Workspace({
         initialMode,
         template(chosen),
       );
+      // A saved but untouched starter follows the current statement language.
+      if (initialMode === 'acm' && isStarter(stored.code, chosen))
+        stored.code = template(chosen);
       draft.current = {
         key: draftStorageKey(userId, initialProblem.id, chosen, initialMode),
         code: stored.code,
@@ -656,7 +666,7 @@ function Workspace({
   function templateFor(next: Language, mode: CodingMode) {
     return mode === 'leetcode'
       ? problem.leetcodeTemplates?.[next] || ''
-      : starters[next];
+      : starterTemplates[statementLocale][next];
   }
   function switchLanguage(
     next: Language,
@@ -673,6 +683,8 @@ function Workspace({
         mode,
         templateFor(next, mode),
       ).code;
+      if (mode === 'acm' && isStarter(nextCode, next))
+        nextCode = templateFor(next, mode);
       localStorage.setItem(`cswork:editor:language:${userId}`, next);
     } catch {
       setSaveError('浏览器存储不可用，请及时下载代码备份。');
@@ -998,6 +1010,12 @@ function Workspace({
                   const next = event.target.value as ProblemLocale;
                   setStatementLocale(next);
                   safeLayoutStorage.setItem('cswork:problem:locale', next);
+                  // Untouched starter comments follow the statement language; edited code never changes.
+                  if (
+                    codingMode === 'acm' &&
+                    isStarter(draft.current.code, language)
+                  )
+                    updateCode(starterTemplates[next][language]);
                   setHintCount(0);
                   setHintsOpen(false);
                 }}
