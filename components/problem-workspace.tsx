@@ -330,6 +330,8 @@ function Workspace({
   const accessible =
     !!boot.person &&
     (boot.person.role === 'teacher' ||
+      // Course content may be hidden (owner-only mode); judging rights still come through.
+      (!!problem.courseId && !!boot.courseAccess?.includes(problem.courseId)) ||
       boot.courses.some(
         (course) =>
           course.has_access &&
