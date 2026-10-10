@@ -96,8 +96,8 @@ export async function bootstrap(p: Person | null) {
   }
   return {
     person: p,
-    // Owner-only mode returns no course content to anyone else; OJ submission
-    // rights still come from course grants, so expose only those course ids.
+    // Owner-only mode returns no course content to anyone else; course grants are
+    // still listed so access to other course features stays explicit.
     courses: await annotateCommerceCourses(
       cs.filter((c) => canSeeCourse(p, c.id)),
       p,
@@ -421,7 +421,7 @@ export async function handle(request: Request) {
           code: z.string().min(1).max(60000),
         })
         .parse(data);
-      await requireCourse(p, 'gomall');
+      // createSubmission applies the judging access rule.
       return json(await submit(p, d.problemId, d.language, d.code), 201);
     }
     if (resource === 'reviews' && request.method === 'POST') {
