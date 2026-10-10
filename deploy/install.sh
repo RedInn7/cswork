@@ -80,6 +80,8 @@ if [[ ! -d "$target" ]]; then
   cp -a "$source_dir/dist/standalone" "$target"
   install -d -m 755 "$target/scripts"
   install -m 644 "$source_dir/scripts/backup.mjs" "$target/scripts/backup.mjs"
+  install -d -m 755 "$target/deploy"
+  install -m 644 "$source_dir/deploy/domain-cutover.sh" "$source_dir/deploy/configure-nginx.py" "$target/deploy/"
   printf '%s\n' "$release" > "$target/REVISION"
   chown -R root:root "$target"
   chmod -R a+rX "$target"
