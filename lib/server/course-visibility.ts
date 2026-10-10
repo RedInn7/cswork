@@ -8,8 +8,9 @@ import { INTERVIEW_COURSE_ID } from './seed-interview';
  *   COURSE_ACCESS=owner
  *   COURSE_OWNER_ID=<the owner's user id>
  * Removing COURSE_ACCESS restores the normal grant rules. Nothing is deleted.
- * Scope is course content only: OJ judging keeps its own grant checks, and the
- * algorithm knowledge module keeps its normal rules.
+ * Scope is course content, including course OJ exercises; OA and library problems
+ * judge free for verified accounts, and the algorithm knowledge module keeps its
+ * normal rules.
  */
 const OPEN_COURSES = [INTERVIEW_COURSE_ID];
 

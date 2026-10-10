@@ -581,6 +581,13 @@ void test('library problems judge free for verified accounts; course exercises k
     await assert.rejects(getJudgeProblem(student, courseId), status404);
     assert.equal((await getJudgeProblem(student, libraryId)).problemId, libraryId);
     assert.ok((await listPublishedProblems(teacher)).some((p) => p.id === courseId));
+    // Problem packages hold course exercises, so other admins lose the OJ admin too.
+    const otherAdmin: Person = { ...teacher, id: 'gate-other-admin' };
+    await assert.rejects(
+      handleOj(new Request('https://cswork.test/api/oj/admin/problems'), otherAdmin, ['admin', 'problems']),
+      status404,
+    );
+    assert.ok(await handleOj(new Request('https://cswork.test/api/oj/admin/problems'), teacher, ['admin', 'problems']));
   } finally {
     delete process.env.COURSE_ACCESS;
     delete process.env.COURSE_OWNER_ID;

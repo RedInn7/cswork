@@ -70,7 +70,7 @@ export type Notification = {
 export type Boot = {
   person: Person | null;
   courses: Course[];
-  /** Courses whose OJ problems this person may judge, even when course content is hidden. */
+  /** Courses this person holds a grant for, even when course content is hidden. */
   courseAccess?: string[];
   problems: Problem[];
   progress: Progress[];

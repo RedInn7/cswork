@@ -144,7 +144,7 @@ test('the algorithm knowledge module keeps its normal rules', async () => {
   ownerOnly(false);
 });
 
-test('OJ judging rights are unchanged while course content is hidden', async () => {
+test('course grants are unchanged while course content is hidden', async () => {
   ownerOnly(true);
   assert.equal(await allowed(member, 'gomall'), true);
   assert.equal(await allowed(student, 'gomall'), false);
