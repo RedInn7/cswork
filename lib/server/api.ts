@@ -165,7 +165,7 @@ export async function handle(request: Request) {
       if (response) return response;
     }
     if (resource === 'oj')
-      // handleOj requires sign-in for everything except public OA reads.
+      // handleOj requires sign-in except for public OA reads, the landing list and the judge feed.
       return await handleOj(request, p, path.slice(1));
     if (request.method === 'GET') {
       if (resource === 'bootstrap')

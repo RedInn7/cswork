@@ -7,6 +7,7 @@ import {
 } from './practice-rounds';
 import type { Person } from './auth';
 import { handleEditorIntelligence } from './editor-intelligence';
+import { judgeFeed } from './judge-feed';
 import { requestPrecompile } from './oj-precompile';
 import { handleOaLibrary } from './oa-library';
 import { oaEnglishStatement } from './oa-judge';
@@ -93,6 +94,11 @@ export async function handleOj(
     // The landing problem list is browsable signed out; statements still need an account.
     await limitReader(request, p, 'library-read', 120);
     return json(listStudyLibrary(url.searchParams, p?.id));
+  }
+  if (request.method === 'GET' && resource === 'feed' && !id) {
+    // Public judge status board: submission metadata only, rate limited per client.
+    await limitReader(request, p, 'judge-feed-read', 120);
+    return json(judgeFeed(p, url.searchParams));
   }
   requirePerson(p);
   if (resource === 'leetcode-sync')

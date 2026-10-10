@@ -1,0 +1,341 @@
+/* Judge status board: a dense, live table inside a redesign card. */
+.js-toolbar {
+  justify-content: space-between;
+  margin: 28px 0 14px;
+}
+.js-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.js-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--rd-line);
+  background: var(--rd-surface);
+  color: var(--rd-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.js-live[aria-pressed='true'] {
+  color: var(--rd-brand-ink);
+  border-color: color-mix(in oklab, var(--rd-brand) 35%, var(--rd-line));
+}
+.js-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--rd-subtle);
+}
+.js-live[aria-pressed='true'] .js-live-dot {
+  background: var(--rd-brand);
+  animation: js-pulse 1.6s ease-in-out infinite;
+}
+.js-card {
+  overflow-x: auto;
+  /* Size containment: the nowrap table scrolls inside the card instead of widening
+     the app shell, and secondary columns fold by the card's own width. */
+  container-type: inline-size;
+}
+.js-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.js-table th {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rd-line);
+  color: var(--rd-muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: left;
+  white-space: nowrap;
+}
+.js-table td {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--rd-line-soft);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.js-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.js-table tbody tr {
+  transition: background-color 120ms ease;
+}
+.js-table tbody tr:hover {
+  background: var(--rd-fill-soft);
+}
+.js-table tr.is-mine .js-col-run {
+  box-shadow: inset 3px 0 0 var(--rd-brand);
+}
+.js-table tr.is-new {
+  animation: js-flash 1.8s ease-out;
+}
+.js-table .is-num {
+  text-align: right;
+}
+.js-num {
+  font-family: var(--font-geist-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--rd-ink-2);
+}
+.js-run {
+  font-family: var(--font-geist-mono);
+  font-size: 12px;
+  color: var(--rd-subtle);
+}
+.js-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 160px;
+  font-weight: 600;
+  color: var(--rd-ink);
+}
+.js-user > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.js-user-filter {
+  font: inherit;
+  color: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.js-user-filter:hover {
+  color: var(--rd-brand-ink);
+}
+.js-problem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 380px;
+}
+.js-problem-logo {
+  flex: none;
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+}
+.js-problem-logo img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+.js-problem-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  color: var(--rd-ink);
+  text-align: left;
+}
+button.js-problem-title:hover {
+  color: var(--rd-brand-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.js-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.js-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: currentColor;
+}
+.js-abbr {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: color-mix(in oklab, currentColor 12%, transparent);
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+}
+.js-progress {
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--rd-subtle);
+}
+.js-verdict.is-ac {
+  color: var(--rd-brand);
+}
+.js-verdict.is-wa,
+.js-verdict.is-re {
+  color: var(--rd-red);
+}
+.js-verdict.is-tle,
+.js-verdict.is-mle,
+.js-verdict.is-ole {
+  color: var(--rd-amber);
+}
+.js-verdict.is-ce,
+.js-verdict.is-se {
+  color: var(--rd-muted);
+}
+.js-verdict.is-pending {
+  color: var(--rd-sky);
+}
+.js-verdict.is-pending .js-dot {
+  animation: js-pulse 1.2s ease-in-out infinite;
+}
+.js-time {
+  color: var(--rd-muted);
+}
+.js-foot {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  border-top: 1px solid var(--rd-line-soft);
+}
+.js-empty {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 56px 16px;
+  color: var(--rd-muted);
+  font-size: 14px;
+  text-align: center;
+}
+.js-empty strong {
+  color: var(--rd-ink);
+  font-size: 16px;
+}
+.js-error {
+  margin-bottom: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--rd-red) 8%, var(--rd-surface));
+  color: var(--rd-red);
+  font-size: 13px;
+}
+.js-skeleton td {
+  color: transparent;
+}
+.js-skeleton td::after {
+  content: '';
+  display: block;
+  height: 10px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--rd-fill), var(--rd-fill-soft), var(--rd-fill));
+  background-size: 200% 100%;
+  animation: js-shimmer 1.2s linear infinite;
+}
+@keyframes js-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.7);
+  }
+}
+@keyframes js-flash {
+  from {
+    background: var(--rd-brand-soft);
+  }
+  to {
+    background: transparent;
+  }
+}
+@keyframes js-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js-table tr.is-new,
+  .js-verdict.is-pending .js-dot,
+  .js-live[aria-pressed='true'] .js-live-dot,
+  .js-skeleton td::after {
+    animation: none;
+  }
+}
+/* Fold secondary columns by the card's own width (after the base rules). */
+@container (max-width: 960px) {
+  .js-col-run,
+  .js-col-length {
+    display: none;
+  }
+  .js-table tr.is-mine .js-cell-user {
+    box-shadow: inset 3px 0 0 var(--rd-brand);
+  }
+}
+@container (max-width: 720px) {
+  .js-col-memory,
+  .js-col-language {
+    display: none;
+  }
+  .js-table th,
+  .js-table td {
+    padding: 10px 12px;
+  }
+  .js-problem {
+    max-width: 170px;
+  }
+}
+/* Phones: each submission becomes a stacked block so the verdict is never off-screen. */
+@container (max-width: 520px) {
+  .js-table thead {
+    display: none;
+  }
+  .js-table tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'problem problem'
+      'verdict time'
+      'user runtime';
+    gap: 6px 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--rd-line-soft);
+  }
+  .js-table tbody tr:last-child {
+    border-bottom: 0;
+  }
+  .js-table td {
+    padding: 0;
+    border: 0;
+  }
+  .js-cell-problem {
+    grid-area: problem;
+  }
+  .js-cell-verdict {
+    grid-area: verdict;
+  }
+  .js-cell-time {
+    grid-area: time;
+    text-align: right;
+    font-size: 12px;
+  }
+  .js-cell-user {
+    grid-area: user;
+    font-size: 12px;
+  }
+  .js-cell-runtime {
+    grid-area: runtime;
+    font-size: 12px;
+  }
+  .js-problem {
+    max-width: none;
+  }
+  .js-table tr.is-mine .js-cell-user {
+    box-shadow: none;
+  }
+  .js-table tr.is-mine {
+    box-shadow: inset 3px 0 0 var(--rd-brand);
+  }
+}

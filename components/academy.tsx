@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react';
 import {
+  Activity,
   ArrowUpRight,
   BookOpen,
   Code2,
@@ -65,6 +66,7 @@ import {
   Heading,
   type Navigate,
 } from './learning';
+import { JudgeStatus } from './judge-status';
 import {
   TicketComposer,
   TicketView,
@@ -86,6 +88,7 @@ import {
 // Practice is the product's centre: the problem bank leads and is the landing view.
 const nav: [LucideIcon, string, string][] = [
   [Code2, '算法题库', 'problems'],
+  [Activity, '评测状态', 'status'],
   [LayoutDashboard, '学习概览', 'home'],
   [BookOpen, '我的课程', 'courses'],
   [BookOpen, '算法知识点', 'knowledge'],
@@ -256,7 +259,9 @@ export function Academy() {
       );
     if (
       !boot.person &&
-      !['home', 'courses', 'knowledge', 'problems', 'problem'].includes(view)
+      !['home', 'courses', 'knowledge', 'problems', 'problem', 'status'].includes(
+        view,
+      )
     )
       return (
         <Empty
@@ -319,6 +324,8 @@ export function Academy() {
             library={params.library}
           />
         );
+      case 'status':
+        return <JudgeStatus boot={boot} params={params} navigate={navigate} />;
       case 'problem':
         return selectedProblem ? (
           <ProblemWorkspace
