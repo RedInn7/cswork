@@ -48,5 +48,41 @@ server {
             module.with_media_location("server { location / { proxy_pass http://127.0.0.1:3000; } }")
 
 
+class FormalDomain(unittest.TestCase):
+    live = """server {
+    listen 80;
+    server_name cswork.192.18.137.70.sslip.io;
+    location / { return 301 https://$host$request_uri; }
+}
+server {
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/cswork/fullchain.pem;
+    server_name cswork.192.18.137.70.sslip.io;
+    location / {
+        proxy_pass http://127.0.0.1:4317;
+    }
+}
+"""
+    names = ["cswork.192.18.137.70.sslip.io", "cswork.org", "www.cswork.org"]
+
+    def test_names_are_added_to_both_servers_and_keep_the_temporary_domain(self):
+        result = module.with_server_names(self.live, self.names)
+        self.assertEqual(result.count("server_name cswork.192.18.137.70.sslip.io cswork.org www.cswork.org;"), 2)
+        self.assertEqual(module.with_server_names(result, self.names), result)
+        # The media include step still finds the one proxy location afterwards.
+        self.assertIn("cswork-media.conf", module.with_media_location(result))
+        with self.assertRaises(ValueError):
+            module.with_server_names("server { listen 80; }", self.names)
+
+    def test_canonical_redirect_is_https_only_idempotent_and_reversible(self):
+        named = module.with_server_names(self.live, self.names)
+        switched = module.with_canonical(named, "cswork.org")
+        self.assertEqual(switched.count("return 301 https://cswork.org$request_uri;"), 1)
+        self.assertGreater(switched.index("if ($host != cswork.org)"), switched.index("listen 443 ssl;"))
+        self.assertEqual(module.with_canonical(switched, "cswork.org"), switched)
+        self.assertEqual(module.with_canonical(switched, None), named)
+        self.assertIn("cswork-media.conf", module.with_media_location(switched))
+
+
 if __name__ == "__main__":
     unittest.main()
