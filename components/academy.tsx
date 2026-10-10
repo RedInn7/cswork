@@ -49,7 +49,13 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { api, mergeLiteBoot, type Boot, type Lesson } from '@/lib/types';
+import {
+  api,
+  bootIdentity,
+  mergeLiteBoot,
+  type Boot,
+  type Lesson,
+} from '@/lib/types';
 import {
   CourseList,
   LessonReader,
@@ -118,14 +124,16 @@ export function Academy() {
     setLoading(false);
     setError('');
   }, []);
-  const personId = boot.person?.id;
-  // The periodic refresh only needs personal data; the problem catalogue (~3MB)
-  // stays from the full load unless the signed-in person changed.
+  const personId = boot.person?.id,
+    identity = bootIdentity(boot);
+  // Periodic and post-submission refreshes only need personal data; the problem
+  // catalogue (~3MB) stays from the full load unless the identity changed.
   const refreshLite = useCallback(async () => {
     const next = await api<Boot>('bootstrap?lite=1');
-    if (next.person?.id !== personId) return refresh();
+    if (bootIdentity(next) !== identity) return refresh();
     setBoot((prev) => mergeLiteBoot(prev, next) ?? prev);
-  }, [personId, refresh]);
+    setError('');
+  }, [identity, refresh]);
   useEffect(() => {
     // oxlint-disable-next-line react/react-compiler -- Initial bootstrap and the history subscription synchronize this SPA with external browser state.
     refresh().catch((e) => {
@@ -148,9 +156,15 @@ export function Academy() {
   }, []);
   useEffect(() => {
     if (!personId) return;
+    // A full refresh every 10 minutes picks up newly published problems.
+    let lastFull = Date.now();
     const update = () => {
-      if (document.visibilityState === 'visible')
-        void refreshLite().catch(() => {});
+      if (document.visibilityState !== 'visible') return;
+      if (Date.now() - lastFull < 600000) void refreshLite().catch(() => {});
+      else {
+        lastFull = Date.now();
+        void refresh().catch(() => {});
+      }
     };
     const timer = setInterval(update, 45000);
     window.addEventListener('focus', update);
@@ -160,7 +174,7 @@ export function Academy() {
       window.removeEventListener('focus', update);
       document.removeEventListener('visibilitychange', update);
     };
-  }, [personId, refreshLite]);
+  }, [personId, refresh, refreshLite]);
   const navigate: Navigate = useCallback((next, extra = {}) => {
     setView(next);
     setParams({ view: next, ...extra });
@@ -313,7 +327,7 @@ export function Academy() {
             boot={boot}
             navigate={navigate}
             ask={ask}
-            refresh={refresh}
+            refresh={refreshLite}
           />
         ) : (
           <Empty

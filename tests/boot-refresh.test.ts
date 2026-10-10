@@ -17,7 +17,11 @@ void test('a lite refresh keeps the catalogue and takes everything else', () => 
   assert.deepEqual(merged.courses, [{ id: 'new' }]);
 });
 
-void test('a different person (sign-out, other account) needs a full bootstrap', () => {
+void test('a different identity needs a full bootstrap', () => {
   assert.equal(mergeLiteBoot(boot('u1', ['lc-1']), boot(null, [])), null);
   assert.equal(mergeLiteBoot(boot('u1', ['lc-1']), boot('u2', [])), null);
+  // Verifying an email can reveal owner-only course exercises.
+  const verified = boot('u1', []);
+  verified.person!.verified = true;
+  assert.equal(mergeLiteBoot(boot('u1', ['lc-1']), verified), null);
 });

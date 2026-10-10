@@ -74,7 +74,7 @@ export function TeacherView({
           <CourseAdmin boot={boot} refresh={refresh} />
         </TabsContent>
         <TabsContent value="problems">
-          <OjAdmin boot={boot} />
+          <OjAdmin boot={boot} refresh={refresh} />
         </TabsContent>
         <TabsContent value="commerce">
           <CommerceAdmin courses={boot.courses} refresh={refresh} />

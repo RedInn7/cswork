@@ -169,7 +169,7 @@ export async function handle(request: Request) {
       return await handleOj(request, p, path.slice(1));
     if (request.method === 'GET') {
       if (resource === 'bootstrap')
-        return json(await bootstrap(p, url.searchParams.has('lite')));
+        return json(await bootstrap(p, url.searchParams.get('lite') === '1'));
       requirePerson(p);
       if (resource === 'knowledge' && resourceId === 'progress') {
         return json(
