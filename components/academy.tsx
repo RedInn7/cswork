@@ -73,7 +73,10 @@ import { CheckoutFeedback } from './checkout-feedback';
 import { EnrollmentClaim } from './enrollment';
 import { NotificationsPane } from './lms-notifications';
 import '@/app/lms.css';
-import { isKnowledgeLesson } from '@/lib/interview-curriculum';
+import {
+  INTERVIEW_COURSE_ID,
+  isKnowledgeLesson,
+} from '@/lib/interview-curriculum';
 // Practice is the product's centre: the problem bank leads and is the landing view.
 const nav: [LucideIcon, string, string][] = [
   [Code2, '算法题库', 'problems'],
@@ -82,6 +85,8 @@ const nav: [LucideIcon, string, string][] = [
   [BookOpen, '算法知识点', 'knowledge'],
   [LifeBuoy, '我的工单', 'tickets'],
 ];
+/** Views that only show teaching courses (the knowledge module stays open). */
+const courseViews = ['courses'];
 const initial: Boot = {
   person: null,
   courses: [],
@@ -205,6 +210,9 @@ export function Academy() {
     unread =
       boot.unreadNotifications ??
       boot.notifications.filter((n) => !n.read_at).length;
+  // The server omits teaching courses hidden from this account (owner-only mode).
+  const coursesHidden =
+    !loading && !boot.courses.some((c) => c.id !== INTERVIEW_COURSE_ID);
   function content() {
     if (loading)
       // Only the overview can render before bootstrap; other views would flash the wrong page.
@@ -236,6 +244,24 @@ export function Academy() {
           action={
             <Button onClick={() => setLogin(true)}>
               登录 / 注册
+              <ArrowRight size={15} />
+            </Button>
+          }
+        />
+      );
+    // Course content is hidden for this account (owner-only mode): no dead course pages.
+    if (
+      coursesHidden &&
+      (courseViews.includes(view) ||
+        (view === 'lesson' && !isKnowledgeLesson(params.lesson)))
+    )
+      return (
+        <Empty
+          title="课程暂未开放"
+          description="课程正在整理中，可以先去算法题库刷题。"
+          action={
+            <Button onClick={() => navigate('problems')}>
+              进入算法题库
               <ArrowRight size={15} />
             </Button>
           }
@@ -354,7 +380,11 @@ export function Academy() {
           <SidebarGroup>
             <SidebarGroupLabel>学习空间</SidebarGroupLabel>
             <SidebarMenu>
-              {nav.map(([Icon, label, key]) => (
+              {nav
+                .filter(
+                  ([, , key]) => !coursesHidden || !courseViews.includes(key),
+                )
+                .map(([Icon, label, key]) => (
                 <SidebarMenuItem key={key}>
                   <SidebarMenuButton
                     isActive={
@@ -372,7 +402,7 @@ export function Academy() {
                     <span>{label}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
+                ))}
             </SidebarMenu>
           </SidebarGroup>
           {boot.person?.role === 'teacher' && (

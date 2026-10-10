@@ -6,6 +6,7 @@ import { Readable } from 'node:stream';
 import { randomUUID } from 'node:crypto';
 import { sqlite } from '@/db/sqlite';
 import type { Person } from './auth';
+import { requireCourseOwner, requireCourseVisible } from './course-visibility';
 import { setting } from './env';
 import {
   body,
@@ -116,6 +117,7 @@ async function lessonAccess(p: Person, id: string) {
     .get(id) as VideoLesson | undefined;
   if (!l || (p.role !== 'teacher' && (!l.published || !l.course_published)))
     throw new HttpError(404, '章节不存在');
+  requireCourseVisible(p, l.course_id);
   await requireCourse(p, l.course_id);
   return l;
 }
@@ -275,11 +277,12 @@ export async function handleMedia(
     if (p.role !== 'teacher' || url.searchParams.has('lesson')) {
       const l = await lessonAccess(p, url.searchParams.get('lesson') || '');
       if (!ids(l).includes(id)) throw new HttpError(404, '本章节没有此视频');
-    }
+    } else requireCourseOwner(p); // Unscoped teacher playback is course administration.
     return streamAsset(request, getAsset(id));
   }
   if (resource !== 'teacher' || id !== 'media') return null;
   requireTeacher(p);
+  requireCourseOwner(p);
   const db = sqlite();
   if (request.method === 'GET' && !action) {
     const q = (url.searchParams.get('q') || '').slice(0, 100),

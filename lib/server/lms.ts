@@ -34,6 +34,7 @@ import {
   dashboard,
 } from './lms-roster';
 import { deleteAttachment } from './files';
+import { requireCourseOwner } from './course-visibility';
 export async function handleLms(
   request: Request,
   p: Person | null,
@@ -43,6 +44,15 @@ export async function handleLms(
   requirePerson(p);
   const [, resource, id, action, version] = path,
     url = new URL(request.url);
+  // Course administration follows owner-only mode, even for teachers. Student-facing
+  // releases and reviews are filtered per course instead.
+  const studentVersionRead =
+    request.method === 'GET' && resource === 'lessons' && action === 'versions';
+  if (
+    ['courses', 'lessons', 'grants', 'students', 'dashboard'].includes(resource) &&
+    !studentVersionRead
+  )
+    requireCourseOwner(p);
   if (request.method === 'GET') {
     if (resource === 'courses')
       return json(id ? await courseDetail(p, id) : await courseList(p));
