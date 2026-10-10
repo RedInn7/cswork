@@ -8,18 +8,18 @@ import { resolve } from 'node:path';
 test('company logo manifest uses existing inert local SVGs with recorded sources', async () => {
   const { companyLogos, companyInitials } =
     await import('../lib/oa-company-brands.ts');
-  const attribution = readFileSync(
-    resolve('public/company-logos/README.md'),
-    'utf8',
-  );
+  const attribution = ['README.md', 'SOURCES.md']
+    .map((file) => readFileSync(resolve('public/company-logos', file), 'utf8'))
+    .join('\n');
   assert.ok(Object.keys(companyLogos).length >= 50);
   for (const [slug, asset] of Object.entries(companyLogos)) {
     assert.match(asset, /^\/company-logos\/[a-z0-9]+\.svg$/);
     const svg = readFileSync(resolve('public' + asset), 'utf8');
+    assert.ok(Buffer.byteLength(svg) <= 60 * 1024, asset);
     assert.match(svg, /^<svg\s/);
     assert.doesNotMatch(
       svg,
-      /<(?:script|foreignObject|image|use|style)\b|\bon\w+\s*=|(?:href|src)\s*=|<!ENTITY/i,
+      /<(?:script|foreignObject|image|use|style)\b|\bon\w+\s*=|(?:href|src)\s*=|<!ENTITY|https?:\/\/(?!www\.w3\.org\/)/i,
     );
     assert.match(svg, /viewBox="0 0 24 24"/);
     assert.ok(attribution.includes('| ' + slug + ' |'));
@@ -32,8 +32,6 @@ test('company logo manifest uses existing inert local SVGs with recorded sources
   );
   for (const required of ['google', 'meta', 'uber'])
     assert.ok(companyLogos[required]);
-  for (const removed of ['amazon', 'microsoft', 'ibm'])
-    assert.equal(companyLogos[removed], undefined);
   assert.equal(companyInitials('Amazon'), 'AM');
   assert.equal(companyInitials('IBM'), 'IBM');
   assert.equal(companyInitials('Jane Street'), 'JS');

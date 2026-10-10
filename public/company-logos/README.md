@@ -1,8 +1,10 @@
 # Company logo provenance
 
-These locally hosted, unmodified monochrome SVGs identify OA company categories; they do not imply affiliation or endorsement. Names always remain visible. Unmatched brands use text initials, never invented logos. No browser request is made to third-party logo/favicon services.
+These locally hosted SVGs identify OA company categories; they do not imply affiliation or endorsement. Names always remain visible. Unmatched brands use text initials, never invented logos. No browser request is made to third-party logo/favicon services.
 
-Source: [Simple Icons](https://github.com/simple-icons/simple-icons), official npm release **16.30.0**. Its CC0-1.0 license is included in LICENSE.simple-icons.md. Trademark rights remain with brand owners; see the [upstream disclaimer](https://github.com/simple-icons/simple-icons/blob/develop/DISCLAIMER.md). Historical assets removed upstream are deliberately not used, including Microsoft, Amazon and IBM. [Microsoft removal notice](https://github.com/simple-icons/simple-icons/issues/11236).
+Source of the assets in the table below: [Simple Icons](https://github.com/simple-icons/simple-icons), official npm release **16.30.0**, unmodified monochrome. Its CC0-1.0 license is included in LICENSE.simple-icons.md. Trademark rights remain with brand owners; see the [upstream disclaimer](https://github.com/simple-icons/simple-icons/blob/develop/DISCLAIMER.md). Historical Simple Icons assets removed upstream (including Microsoft, Amazon and IBM, see the [Microsoft removal notice](https://github.com/simple-icons/simple-icons/issues/11236)) are not used.
+
+Additional logos from [gilbarbara/logos](https://github.com/gilbarbara/logos) (CC0-1.0), Simple Icons 16.34.0 and public-domain Wikimedia Commons files are listed with their exact source URLs and licenses in [SOURCES.md](SOURCES.md).
 
 | Category | Local asset | Upstream brand source | Brand guidance |
 |---|---|---|---|
