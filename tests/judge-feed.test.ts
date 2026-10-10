@@ -9,7 +9,7 @@ const folder = mkdtempSync(join(tmpdir(), 'cswork-judge-feed-'));
 process.env.DATABASE_PATH = join(folder, 'test.sqlite');
 execFileSync(process.execPath, ['scripts/migrate.mjs'], { env: process.env });
 const { sqlite } = await import('../db/sqlite');
-const { judgeFeed } = await import('../lib/server/judge-feed');
+const { judgeFeed, maskName } = await import('../lib/server/judge-feed');
 const db = sqlite();
 
 const person = (id: string, role: 'student' | 'teacher' = 'student') => ({
@@ -76,10 +76,10 @@ void test('newest formal submissions first, metadata only', () => {
     ],
   );
   const text = JSON.stringify(feed);
-  for (const leak of ['SECRET-CODE', '@secret.test', '"alice"', 'user_id', 'sub-0001-xxxxxxxx'])
+  for (const leak of ['SECRET-CODE', '@secret.test', '"alice"', 'user_id', 'sub-0001-xxxxxxxx', '-nick'])
     assert.ok(!text.includes(leak), leak);
   const first = feed.items[3];
-  assert.equal(first.user, 'alice-nick');
+  assert.equal(first.user, 'al***');
   assert.equal(first.run, 'sub-0001');
   assert.equal(first.runtimeMs, 42);
   assert.equal(first.memoryKb, 9216);
@@ -95,8 +95,18 @@ void test('newest formal submissions first, metadata only', () => {
   assert.equal(feed.stats?.recentAccepted, 2);
 });
 
+void test('names are masked except your own', () => {
+  assert.equal(maskName('张同学'), '张**');
+  assert.equal(maskName('王五'), '王*');
+  assert.equal(maskName('Alex Chen'), 'Al***');
+  assert.equal(maskName('😀abc'), '😀a***');
+  assert.equal(maskName(null), '学员');
+  assert.equal(maskName('学员'), '学员');
+});
+
 void test('mine marks only the viewer, and requires sign-in to filter', () => {
   assert.ok(all(alice).items.every((i) => i.mine === (i.user === 'alice-nick')));
+  assert.ok(all(alice).items.filter((i) => !i.mine).every((i) => i.user === 'bo***'));
   assert.equal(all(alice, 'mine=1').items.length, 2);
   assert.throws(() => all(null, 'mine=1'), (e: unknown) => (e as { status: number }).status === 401);
 });
@@ -106,7 +116,13 @@ void test('filters: result, pending, language, problem, user; unknown values are
   assert.deepEqual(all(null, 'result=pending').items.map((i) => i.status), ['running']);
   assert.deepEqual(all(null, 'language=cpp').items.map((i) => i.problemId), ['oa-amazon-1']);
   assert.equal(all(null, 'problem=lc-1').items.length, 2);
-  assert.equal(all(null, 'user=bob-nick').items.length, 2);
+  // Someone's submissions are addressed by one of their rows, not by name or id.
+  const bobRow = all(null).items.find((i) => i.user === 'bo***')!;
+  const bobs = all(null, `userOf=${bobRow.seq}`);
+  assert.equal(bobs.items.length, 2);
+  assert.equal(bobs.userLabel, 'bo***');
+  assert.equal(all(bob, `userOf=${bobRow.seq}`).userLabel, 'bob-nick');
+  assert.throws(() => all(null, 'userOf=999999'), (e: unknown) => (e as { status: number }).status === 404);
   assert.throws(() => all(null, 'result=hacked'), status400);
   assert.throws(() => all(null, 'language=rust'), status400);
 });
@@ -135,10 +151,30 @@ void test('owner-only mode hides course exercises from everyone but the owner', 
       assert.equal(count(viewer, 'watch-intervals'), 0);
       assert.equal(count(viewer, 'oa-amazon-1'), 1);
       assert.ok(count(viewer, 'lc-1') > 0);
+      // A hidden row can't be used to address its author either.
+      assert.throws(() => all(viewer, 'userOf=4'), (e: unknown) => (e as { status: number }).status === 404);
+      // Header numbers only count what this viewer may see.
+      assert.equal(all(viewer).stats?.recent, (all(owner).stats?.recent ?? 0) - 1);
     }
     assert.equal(count(owner, 'watch-intervals'), 1);
   } finally {
     delete process.env.COURSE_ACCESS;
     delete process.env.COURSE_OWNER_ID;
   }
+});
+
+void test('unindexed filters scan a bounded window and hand back a cursor', () => {
+  db.transaction(() => {
+    for (let i = 0; i < 20050; i++) submit('bob', 'lc-1', 'wrong_answer');
+  })();
+  // The newest 20000 rows hold no accepted submission: empty page, cursor to go on.
+  const first = all(null, 'result=accepted');
+  assert.equal(first.items.length, 0);
+  assert.ok(first.next && first.next > 1);
+  const older = all(null, `result=accepted&cursor=${first.next}`);
+  assert.equal(older.items.length, 30);
+  assert.ok(older.items.every((i) => i.status === 'accepted'));
+  // Indexed filters are not windowed.
+  assert.equal(all(null, 'result=accepted&problem=oa-amazon-1').items.length, 0);
+  assert.equal(all(null, 'result=wrong_answer').items.length, 30);
 });
