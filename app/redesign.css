@@ -1,0 +1,266 @@
+/*
+ * CSWORK redesign v2, adopted page by page (first: judge status).
+ * PracHub-inspired: zinc neutrals, one emerald brand colour, 16px cards with a hairline
+ * border and a barely-there shadow, heavy tight headings, small uppercase badges.
+ * Pages opt in by wrapping their content in `.rd`; nothing here leaks into old pages.
+ */
+.rd {
+  --rd-ink: oklch(0.21 0.006 285.885);
+  --rd-ink-2: oklch(0.37 0.013 285.805);
+  --rd-muted: oklch(0.552 0.016 285.938);
+  --rd-subtle: oklch(0.705 0.015 286.067);
+  --rd-line: oklch(0.92 0.004 286.32);
+  --rd-line-soft: oklch(0.967 0.001 286.375);
+  --rd-fill: oklch(0.967 0.001 286.375);
+  --rd-fill-soft: oklch(0.985 0 0);
+  --rd-surface: #fff;
+  --rd-brand: oklch(0.596 0.145 163.225);
+  --rd-brand-ink: oklch(0.508 0.118 165.612);
+  --rd-brand-soft: oklch(0.979 0.021 166.113);
+  --rd-amber: oklch(0.681 0.162 75.834);
+  --rd-red: oklch(0.577 0.245 27.325);
+  --rd-sky: oklch(0.588 0.158 241.966);
+  --rd-radius: 16px;
+  --rd-shadow: 0 1px 3px rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.03);
+  color: var(--rd-ink);
+}
+.rd-page {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 36px 28px 72px;
+}
+.rd-head h1 {
+  margin: 0;
+  font-size: 36px;
+  line-height: 40px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--rd-ink);
+}
+.rd-head p {
+  margin: 10px 0 0;
+  font-size: 15px;
+  color: var(--rd-muted);
+}
+.rd-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 44px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rd-line);
+}
+.rd-stat-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--rd-muted);
+}
+.rd-stat-value {
+  margin-top: 2px;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: var(--rd-ink);
+}
+.rd-stat-value small {
+  margin-left: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--rd-muted);
+}
+.rd-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+/* Filter pill: wraps a native <select> so keyboard and screen readers keep working. */
+.rd-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px 0 12px;
+  border-radius: 999px;
+  background: var(--rd-fill);
+  color: var(--rd-ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.rd-chip:hover {
+  background: color-mix(in oklab, var(--rd-fill) 70%, var(--rd-line));
+}
+.rd-chip.is-set {
+  background: var(--rd-brand-soft);
+  color: var(--rd-brand-ink);
+}
+.rd-chip select {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  padding-right: 16px;
+  cursor: pointer;
+  outline: none;
+}
+.rd-chip:focus-within {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--rd-brand) 22%, transparent);
+}
+.rd-chip svg {
+  flex: none;
+}
+.rd-chip .rd-chip-caret {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+}
+.rd-chip button {
+  display: inline-flex;
+  color: inherit;
+  opacity: 0.7;
+}
+.rd-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  min-width: 210px;
+  padding: 0 12px;
+  border: 1px solid var(--rd-line);
+  border-radius: 12px;
+  background: var(--rd-surface);
+  color: var(--rd-subtle);
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.rd-search:focus-within {
+  border-color: var(--rd-brand);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--rd-brand) 15%, transparent);
+}
+.rd-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--rd-ink);
+  font-size: 13px;
+}
+.rd-search input::placeholder {
+  color: var(--rd-subtle);
+}
+.rd-segment {
+  display: inline-flex;
+  margin: 0;
+  min-width: 0;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--rd-line);
+  border-radius: 10px;
+  background: var(--rd-surface);
+}
+.rd-segment button {
+  height: 28px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--rd-muted);
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.rd-segment button:hover {
+  color: var(--rd-ink);
+}
+.rd-segment button[aria-pressed='true'] {
+  background: var(--rd-brand);
+  color: #fff;
+}
+.rd-card {
+  background: var(--rd-surface);
+  border: 1px solid var(--rd-line);
+  border-radius: var(--rd-radius);
+  box-shadow: var(--rd-shadow);
+}
+.rd-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--rd-fill);
+  color: var(--rd-muted);
+  font-size: 10px;
+  line-height: 14px;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.rd-badge.is-brand {
+  background: var(--rd-brand-soft);
+  color: var(--rd-brand-ink);
+}
+.rd-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--rd-brand);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  transition: filter 120ms ease;
+}
+.rd-button:hover {
+  filter: brightness(1.06);
+}
+.rd-button.is-quiet {
+  background: var(--rd-surface);
+  color: var(--rd-ink-2);
+  border: 1px solid var(--rd-line);
+}
+/* One orchestrated entrance per page: children rise in order via --i. */
+.rd-reveal {
+  animation: rd-rise 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+@keyframes rd-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rd-reveal {
+    animation: none;
+  }
+}
+@media (max-width: 760px) {
+  .rd-page {
+    padding: 24px 16px 56px;
+  }
+  .rd-head h1 {
+    font-size: 28px;
+    line-height: 34px;
+  }
+  .rd-stats {
+    gap: 14px 28px;
+  }
+  .rd-search {
+    flex: 1 1 100%;
+  }
+}
