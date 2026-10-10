@@ -6,7 +6,7 @@ import type { Language } from '@/lib/problems';
 import type { Person } from './auth';
 import { HttpError, limit } from './http';
 import { ensurePracticeRound, isSelectedProblem } from './practice-rounds';
-import { getJudgeProblem } from './oj-problems';
+import { getCompileProblem } from './oj-problems';
 import { leetcodeContract, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import type { CodingMode } from '@/lib/coding-mode';
 import { boundedFeedback, FEEDBACK_BYTES } from './oj-case-store';
@@ -72,8 +72,10 @@ export async function createSubmission(p: Person, value: unknown) {
     throw new HttpError(400, '内容不能包含空字符');
   if (d.mode === 'judge' && d.stdin !== undefined)
     throw new HttpError(400, '正式提交不能携带自定义输入');
-  const snapshot = await getJudgeProblem(p, d.problemId);
-  if (!snapshot.spec.languages.includes(d.language))
+  // Access, publication and OA readiness need only the spec. The worker loads and
+  // integrity-checks the test data itself, so this request never reads hidden cases.
+  const { versionId, spec } = await getCompileProblem(p, d.problemId);
+  if (!spec.languages.includes(d.language))
     throw new HttpError(400, '此题未开放该语言');
   if (d.codingMode === 'leetcode' && !leetcodeContract(d.problemId))
     throw new HttpError(400, '此题未开放 LeetCode 模式');
@@ -92,6 +94,15 @@ export async function createSubmission(p: Person, value: unknown) {
     )
     .digest('hex');
   const db = sqlite();
+  const caseCount = (hidden: boolean) =>
+    (
+      db
+        .prepare(
+          `SELECT COUNT(*) AS n FROM oj_test_cases WHERE version_id=?${hidden ? '' : ' AND hidden=0'}`,
+        )
+        .get(versionId) as { n: number }
+    ).n;
+  if (!caseCount(true)) throw new HttpError(503, '题目测试数据尚未就绪');
   const existing = () => {
     const row = db
       .prepare(
@@ -132,10 +143,10 @@ export async function createSubmission(p: Person, value: unknown) {
       now = Date.now();
     const total =
       d.mode === 'judge'
-        ? snapshot.cases.length
+        ? caseCount(true)
         : d.stdin !== undefined
           ? 1
-          : snapshot.cases.filter((c) => !c.hidden).length;
+          : caseCount(false);
     const practiceRoundId =
       d.mode === 'judge' && isSelectedProblem(d.problemId)
         ? ensurePracticeRound(p.id)
@@ -146,7 +157,7 @@ export async function createSubmission(p: Person, value: unknown) {
       id,
       p.id,
       d.problemId,
-      snapshot.versionId,
+      versionId,
       d.language,
       d.code,
       'queued',
