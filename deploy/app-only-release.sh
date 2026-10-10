@@ -45,7 +45,7 @@ wait_for_health() {
   for attempt in {1..40}; do
     if systemctl is-active --quiet cswork.service && systemctl is-active --quiet cswork-oj-worker.service &&
       curl -fsS --connect-timeout 2 --max-time 3 http://127.0.0.1:4317/api/bootstrap |
-        "$node" -e 'let text="";process.stdin.on("data",v=>text+=v);process.stdin.on("end",()=>{const r=JSON.parse(text);process.exit(Array.isArray(r.courses)&&r.courses.length>0&&r.services?.password ? 0 : 1)})' &&
+        "$node" -e 'let text="";process.stdin.on("data",v=>text+=v);process.stdin.on("end",()=>{const r=JSON.parse(text);process.exit(Array.isArray(r.courses)&&Array.isArray(r.problems)&&r.problems.length>0&&r.services?.password ? 0 : 1)})' &&
       STARTED="$started" "$node" --env-file=/etc/cswork/cswork.env --input-type=module -e '
         import {createRequire} from "node:module";
         const Database=createRequire("/srv/cswork/current/package.json")("better-sqlite3");

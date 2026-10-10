@@ -101,7 +101,7 @@ systemctl enable cswork.service
 ready=false
 if systemctl restart cswork.service; then
   for attempt in {1..20}; do
-    if curl -fsS --connect-timeout 2 --max-time 3 http://127.0.0.1:4317/api/bootstrap | python3 -c 'import json,sys; result=json.load(sys.stdin); assert result["courses"] and result["services"]["password"]'; then
+    if curl -fsS --connect-timeout 2 --max-time 3 http://127.0.0.1:4317/api/bootstrap | python3 -c 'import json,sys; result=json.load(sys.stdin); assert isinstance(result["courses"], list) and result["problems"] and result["services"]["password"]'; then
       ready=true
       break
     fi
