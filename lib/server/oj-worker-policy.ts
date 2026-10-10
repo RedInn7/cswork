@@ -5,13 +5,18 @@ import {
   OJ_LARGE_SNAPSHOT_BYTES,
 } from '../oj-data-budgets.mjs';
 
-/** Deliberately bounded for the shared four-core host; invalid overrides fail closed. */
+/**
+ * Bounded by the runner's four execution slots on the shared four-core host; invalid
+ * overrides fail closed. Four submissions keep those slots busy across each one's
+ * compile and per-case gaps: a 48-submission mixed burst went from 50.8s to 42.7s
+ * (2026-10-10). Concurrent sandbox processes stay capped by the runner's slots.
+ */
 export function workerConcurrency(
   value = process.env.OJ_WORKER_CONCURRENCY,
 ): number {
-  if (value === undefined || value === '2') return 2;
-  if (value === '1') return 1;
-  throw new Error('OJ_WORKER_CONCURRENCY must be 1 or 2');
+  if (value === undefined) return 4;
+  if (['1', '2', '3', '4'].includes(value)) return Number(value);
+  throw new Error('OJ_WORKER_CONCURRENCY must be 1, 2, 3 or 4');
 }
 export const OJ_WORKER_CONCURRENCY = workerConcurrency();
 
@@ -45,7 +50,7 @@ export class SubmissionAdmission {
     abort: () => void;
   }[] = [];
   constructor(private capacity: number) {
-    if (capacity !== 1 && capacity !== 2)
+    if (!Number.isInteger(capacity) || capacity < 1 || capacity > 4)
       throw new Error('Invalid judge admission capacity');
   }
   acquire(exclusive: boolean, signal: AbortSignal): Promise<() => void> {
