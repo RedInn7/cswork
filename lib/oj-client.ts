@@ -3,6 +3,7 @@ import type { CodingMode } from './coding-mode';
 
 export type OJProblem = Problem & {
   courseId?: string;
+  freeJudge?: boolean;
   version?: number;
   maxCodeBytes?: number;
   maxStdinBytes?: number;
