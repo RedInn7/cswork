@@ -11,6 +11,7 @@ import type {
 } from '@/lib/oj-types';
 import { createOjSeedPackages } from '../../scripts/seed-oj-data.mjs';
 import type { Person } from './auth';
+import { canSeeCourse, requireCourseVisible } from './course-visibility';
 import { database } from './env';
 import {
   oaJudgeRegistry,
@@ -64,6 +65,7 @@ type ProblemRow = {
   created_at: number;
   updated_at: number;
 };
+type GatedRow = ProblemRow & { free: number };
 type VersionRow = {
   id: string;
   problem_id: string;
@@ -174,16 +176,29 @@ const libraryJudgeGate = `NOT EXISTS (
       OR l.verified_hash IS NOT (l.content_hash || ':' || p.current_version_id))
 )`;
 
+/** OA and study-library problems judge free for any verified account. */
+const freeJudge = `(p.id LIKE 'oa-%' OR EXISTS(SELECT 1 FROM study_library s WHERE s.judge_problem_id=p.id))`;
+
+/** Course exercises keep the course grant (and owner-only mode); free problems need a verified account. */
+async function requireJudgeAccess(p: Person, problem: GatedRow) {
+  if (!problem.free) {
+    requireCourseVisible(p, problem.course_id);
+    return requireCourse(p, problem.course_id);
+  }
+  if (p.role !== 'teacher' && !p.verified)
+    throw new HttpError(403, '请先验证邮箱，再运行和提交代码');
+}
+
 /** Compilation needs an authorized version and interface, never hidden test data. */
 export async function getCompileProblem(p: Person, problemId: string) {
   await requireOaJudgeReady(problemId);
-  const problem = await one<ProblemRow>(
-    `SELECT p.* FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
+  const problem = await one<GatedRow>(
+    `SELECT p.*,${freeJudge} AS free FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
     problemId,
   );
   if (!problem?.current_version_id)
     throw new HttpError(404, '题目不存在或尚未发布');
-  await requireCourse(p, problem.course_id);
+  await requireJudgeAccess(p, problem);
   const version = await one<{ spec_json: string; checksum: string }>(
     'SELECT spec_json,checksum FROM oj_problem_versions WHERE id=?',
     problem.current_version_id,
@@ -196,16 +211,16 @@ export async function getCompileProblem(p: Person, problemId: string) {
   };
 }
 
-/** Submission creation checks the version's own course permission before snapshotting. */
+/** Submission creation checks the problem's own access rule before snapshotting. */
 export async function getJudgeProblem(p: Person, problemId: string) {
   await requireOaJudgeReady(problemId);
-  const problem = await one<ProblemRow>(
-    `SELECT p.* FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
+  const problem = await one<GatedRow>(
+    `SELECT p.*,${freeJudge} AS free FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
     problemId,
   );
   if (!problem?.current_version_id)
     throw new HttpError(404, '题目不存在或尚未发布');
-  await requireCourse(p, problem.course_id);
+  await requireJudgeAccess(p, problem);
   const snapshot = await loadJudgeSnapshot(problem.current_version_id);
   assertOaVersionReady(
     problemId,
@@ -243,11 +258,18 @@ async function publicProblem(version: VersionRow): Promise<OjPublicProblem> {
   };
 }
 
-/** Public catalogue: statements and declared samples are public, hidden cases never are. */
-export async function listPublishedProblems(): Promise<OjPublicProblem[]> {
-  const versions = await rows<VersionRow>(
-    `SELECT v.* FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id WHERE p.published=1 AND ${libraryJudgeGate} ORDER BY p.created_at,p.id`,
-  );
+/**
+ * Public catalogue: statements and declared samples are public, hidden cases never are.
+ * Course exercises follow course visibility, so owner-only mode hides them too.
+ */
+export async function listPublishedProblems(
+  p: Person | null = null,
+): Promise<OjPublicProblem[]> {
+  const versions = (
+    await rows<VersionRow & { course_id: string; free: number }>(
+      `SELECT v.*,p.course_id,${freeJudge} AS free FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id WHERE p.published=1 AND ${libraryJudgeGate} ORDER BY p.created_at,p.id`,
+    )
+  ).filter((v) => v.free || canSeeCourse(p, v.course_id));
   const trusted = oaJudgeRegistry();
   return Promise.all(
     versions
@@ -260,11 +282,11 @@ export async function listPublishedProblems(): Promise<OjPublicProblem[]> {
             spec_json: version.spec_json,
           }),
       )
-      .map(publicProblem),
+      .map(async (v) => ({ ...(await publicProblem(v)), freeJudge: !!v.free })),
   );
 }
 
-/** OA statements are public: anyone may read them; submitting still checks course access. */
+/** OA statements are public: anyone may read them; running and submitting need a verified account. */
 export async function getPublicOaProblem(problemId: string) {
   if (!problemId.startsWith('oa-')) throw new HttpError(404, '题目不存在或尚未发布');
   await requireOaJudgeReady(problemId);
@@ -279,24 +301,24 @@ export async function getPublicOaProblem(problemId: string) {
   );
   if (!v) throw new HttpError(404, '题目版本不存在');
   assertOaVersionReady(problemId, v.checksum, v.spec_json);
-  return publicProblem(v);
+  return { ...(await publicProblem(v)), freeJudge: true };
 }
 
 export async function getPublishedProblem(p: Person, problemId: string) {
   await requireOaJudgeReady(problemId);
-  const pr = await one<ProblemRow>(
-    `SELECT p.* FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
+  const pr = await one<GatedRow>(
+    `SELECT p.*,${freeJudge} AS free FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
     problemId,
   );
   if (!pr?.current_version_id) throw new HttpError(404, '题目不存在或尚未发布');
-  await requireCourse(p, pr.course_id);
+  await requireJudgeAccess(p, pr);
   const v = await one<VersionRow>(
     'SELECT * FROM oj_problem_versions WHERE id=?',
     pr.current_version_id,
   );
   if (!v) throw new HttpError(404, '题目版本不存在');
   assertOaVersionReady(problemId, v.checksum, v.spec_json);
-  return publicProblem(v);
+  return { ...(await publicProblem(v)), freeJudge: !!pr.free };
 }
 
 export async function listTeacherProblems(p: Person) {

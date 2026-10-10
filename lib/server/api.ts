@@ -103,7 +103,7 @@ export async function bootstrap(p: Person | null) {
       p,
     ),
     courseAccess: cs.filter((c) => c.has_access).map((c) => c.id),
-    problems: await listPublishedProblems(),
+    problems: await listPublishedProblems(p),
     progress: p
       ? await rows('SELECT * FROM progress WHERE user_id=?', p.id)
       : [],
