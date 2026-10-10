@@ -27,6 +27,13 @@ import { handleLms } from './lms';
 import { handleMedia } from './media';
 import { handleEnrollment } from './enrollment';
 import { handleCommerce, annotateCommerceCourses } from './commerce';
+import {
+  canSeeCourse,
+  courseNotificationFilter,
+  requireCourseOwner,
+  requireCourseVisible,
+  visibleCourseSql,
+} from './course-visibility';
 import { liveLesson, courseAccess } from './lms-common';
 import {
   ticketDetail,
@@ -76,7 +83,7 @@ function services() {
     ),
   };
 }
-async function bootstrap(p: Person | null) {
+export async function bootstrap(p: Person | null) {
   const cs = await rows<Course & { revision: number; position: number }>(
     `SELECT id,title,summary,version,published,revision,position FROM courses ${p?.role === 'teacher' ? '' : 'WHERE published=1'} ORDER BY position,id`,
   );
@@ -89,7 +96,13 @@ async function bootstrap(p: Person | null) {
   }
   return {
     person: p,
-    courses: await annotateCommerceCourses(cs, p),
+    // Owner-only mode returns no course content to anyone else; OJ submission
+    // rights still come from course grants, so expose only those course ids.
+    courses: await annotateCommerceCourses(
+      cs.filter((c) => canSeeCourse(p, c.id)),
+      p,
+    ),
+    courseAccess: cs.filter((c) => c.has_access).map((c) => c.id),
     problems: await listPublishedProblems(),
     progress: p
       ? await rows('SELECT * FROM progress WHERE user_id=?', p.id)
@@ -111,14 +124,14 @@ async function bootstrap(p: Person | null) {
       : [],
     notifications: p
       ? await rows(
-          'SELECT * FROM notifications WHERE user_id=? ORDER BY created_at DESC LIMIT 50',
+          `SELECT * FROM notifications WHERE user_id=?${courseNotificationFilter(p)} ORDER BY created_at DESC LIMIT 50`,
           p.id,
         )
       : [],
     unreadNotifications: p
       ? (
           await one<{ count: number }>(
-            'SELECT COUNT(*) AS count FROM notifications WHERE user_id=? AND read_at IS NULL',
+            `SELECT COUNT(*) AS count FROM notifications WHERE user_id=? AND read_at IS NULL${courseNotificationFilter(p)}`,
             p.id,
           )
         )?.count || 0
@@ -250,7 +263,7 @@ export async function handle(request: Request) {
       if (resource === 'reviews')
         return json(
           await rows(
-            'SELECT * FROM reviews WHERE user_id=? ORDER BY created_at DESC LIMIT 100',
+            `SELECT r.* FROM reviews r JOIN lessons l ON l.id=r.lesson_id WHERE r.user_id=?${visibleCourseSql(p, 'l.course_id')} ORDER BY r.created_at DESC LIMIT 100`,
             p.id,
           ),
         );
@@ -345,6 +358,7 @@ export async function handle(request: Request) {
           })
           .parse(data);
         await limit(p, 'ticket', 10, 3600);
+        if (d.courseId) requireCourseVisible(p, d.courseId);
         const ticketLesson = d.lessonId ? await lessonFor(p, d.lessonId) : null;
         if (
           d.videoAssetId &&
@@ -428,6 +442,7 @@ export async function handle(request: Request) {
         resourceId,
       );
       if (!r) throw new HttpError(404, '更新不存在');
+      requireCourseVisible(p, r.course_id);
       await requireCourse(p, r.course_id);
       db.prepare(
         'INSERT OR IGNORE INTO release_reads(user_id,release_id) VALUES(?,?)',
@@ -448,6 +463,7 @@ export async function handle(request: Request) {
       if (resourceId === 'revoke')
         return json(await revokeGrant(p, z.object({ id }).parse(data).id));
       if (resourceId === 'publish') {
+        requireCourseOwner(p);
         const d = z
           .object({
             lessonId: id,

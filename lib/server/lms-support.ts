@@ -1,3 +1,8 @@
+import {
+  courseNotificationFilter,
+  requireCourseVisible,
+  visibleCourseSql,
+} from './course-visibility';
 import { z } from 'zod';
 import type {
   TicketRow,
@@ -193,13 +198,17 @@ export async function changeTicket(
 }
 export async function reviewDetail(p: Person, id: string) {
   const r = await one<ReviewRow>(
-    'SELECT r.*,p.name,p.email,l.title AS lesson_title FROM reviews r LEFT JOIN profiles p ON p.id=r.user_id LEFT JOIN lessons l ON l.id=r.lesson_id WHERE r.id=?',
+    'SELECT r.*,p.name,p.email,l.title AS lesson_title,l.course_id AS lesson_course_id FROM reviews r LEFT JOIN profiles p ON p.id=r.user_id LEFT JOIN lessons l ON l.id=r.lesson_id WHERE r.id=?',
     id,
   );
   if (!r || (r.user_id !== p.id && p.role !== 'teacher'))
     throw new HttpError(404, '作业不存在');
+  const { lesson_course_id: courseId, ...review } = r as ReviewRow & {
+    lesson_course_id: string | null;
+  };
+  requireCourseVisible(p, courseId || '');
   return {
-    ...r,
+    ...review,
     events: await rows<ReviewEventRow>(
       "SELECT e.revision,e.kind,e.url,e.note,e.feedback,e.status,e.lesson_version AS lessonVersion,COALESCE(p.name,'老师') AS actorName,e.created_at AS createdAt FROM lms_review_events e LEFT JOIN profiles p ON p.id=e.actor_id WHERE e.review_id=? ORDER BY e.revision DESC",
       id,
@@ -213,6 +222,9 @@ export async function reviewPage(p: Person, url: URL) {
     where.push('r.user_id=?');
     args.push(p.id);
   }
+  // Owner-only mode: reviews of hidden courses are not listed.
+  const visible = visibleCourseSql(p, 'l.course_id');
+  if (visible) where.push(visible.replace(/^ AND /, ''));
   const status = url.searchParams.get('status');
   if (status && status !== 'all') {
     where.push('r.status=?');
@@ -428,11 +440,11 @@ export async function notificationPage(p: Person, url: URL) {
     args.push(cursor.time, cursor.time, cursor.id);
   }
   const found = await rows<NotificationRow>(
-    `SELECT * FROM notifications WHERE ${where.join(' AND ')} ORDER BY created_at DESC,id DESC LIMIT 31`,
+    `SELECT * FROM notifications WHERE ${where.join(' AND ')}${courseNotificationFilter(p)} ORDER BY created_at DESC,id DESC LIMIT 31`,
     ...args,
   );
   const counts = await one<{ total: number; unread: number }>(
-    'SELECT COUNT(*) AS total,COALESCE(SUM(read_at IS NULL),0) AS unread FROM notifications WHERE user_id=?',
+    `SELECT COUNT(*) AS total,COALESCE(SUM(read_at IS NULL),0) AS unread FROM notifications WHERE user_id=?${courseNotificationFilter(p)}`,
     p.id,
   );
   const items = found.slice(0, 30),
