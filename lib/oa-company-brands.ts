@@ -54,6 +54,20 @@ export const companyLogos: Readonly<Record<string, string>> = {
   accenture: '/company-logos/accenture.svg',
   infosys: '/company-logos/infosys.svg',
   hackerearth: '/company-logos/hackerearth.svg',
+  microsoft: '/company-logos/microsoft.svg',
+  ibm: '/company-logos/ibm.svg',
+  'ibm-frontend': '/company-logos/ibm.svg',
+  salesforce: '/company-logos/salesforce.svg',
+  'jpmorgan-chase': '/company-logos/jpmorganchase.svg',
+  oracle: '/company-logos/oracle.svg',
+  openai: '/company-logos/openai.svg',
+  linkedin: '/company-logos/linkedin.svg',
+  adobe: '/company-logos/adobe.svg',
+  twilio: '/company-logos/twilio.svg',
+  yahoo: '/company-logos/yahoo.svg',
+  braze: '/company-logos/braze.svg',
+  epifi: '/company-logos/epifi.svg',
+  codeium: '/company-logos/windsurf.svg',
 };
 
 export function companyInitials(name: string): string {
