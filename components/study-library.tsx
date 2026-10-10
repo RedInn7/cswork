@@ -463,8 +463,8 @@ export function StudyLibrary({
                           'Write and submit on cswork',
                         )
                       : t(
-                          '站内练习需先开通对应课程',
-                          'Course access is required to submit',
+                          '站内判题暂未开放',
+                          'On-site judging is not open yet',
                         )
                     : detail.caseStatus === 'missing'
                       ? t('测试数据待补充', 'Test cases pending')

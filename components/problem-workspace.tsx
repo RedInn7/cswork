@@ -330,7 +330,8 @@ function Workspace({
   const accessible =
     !!boot.person &&
     (boot.person.role === 'teacher' ||
-      // Course content may be hidden (owner-only mode); judging rights still come through.
+      // OA and library problems judge free for verified accounts.
+      (!!problem.freeJudge && boot.person.verified) ||
       (!!problem.courseId && !!boot.courseAccess?.includes(problem.courseId)) ||
       boot.courses.some(
         (course) =>
@@ -1766,13 +1767,19 @@ function Workspace({
       {!accessible && !(problemError && !boot.person) && (
         <div className="cs-workspace-notice">
           {english
-            ? boot.person
-              ? 'Enroll in the course to run and submit solutions. Your code is still saved as you edit.'
-              : 'Sign in and enroll in the course to run and submit solutions. Your code is still saved as you edit.'
+            ? `${
+                !boot.person
+                  ? 'Sign in to run and submit solutions for free.'
+                  : !boot.person.verified
+                    ? 'Verify your email to run and submit solutions.'
+                    : 'This is a course exercise; enroll in the course to run and submit.'
+              } Your code is still saved as you edit.`
             : `${
-                boot.person
-                  ? '请先开通相关课程，再运行和提交解答。'
-                  : '登录并开通课程后，即可运行和提交解答。'
+                !boot.person
+                  ? '登录后即可免费运行和提交解答。'
+                  : !boot.person.verified
+                    ? '请先验证邮箱，再运行和提交解答。'
+                    : '此题是课程练习，开通课程后可运行和提交。'
               } 当前代码可以继续编辑和保存。`}
         </div>
       )}

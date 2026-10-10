@@ -34,11 +34,13 @@ worker 每 200 毫秒投递新提交，另每 5 秒恢复未完成提交到 Bull
 
 ## API
 
+**访问规则**：OA 和题库（灵神/LeetCode）题对任何已验证邮箱的登录用户免费开放读题、运行、提交、预编译和编辑器辅助，不需要课程授权；匿名用户只能看 OA 题面和精选列表。课程配套练习仍按课程授权，并受课程「仅所有者可见」开关限制。限流、并发上限、沙箱和提交记录隔离对所有人一致。
+
 | 接口                                         | 用途                                                                      |
 | -------------------------------------------- | ------------------------------------------------------------------------- |
 | `GET /api/oj/status`                         | 已登录用户查看 worker 心跳、排队数和语言版本                              |
-| `GET /api/oj/problems/:id`                   | 检查课程授权后返回公开题面与样例                                          |
-| `POST /api/oj/intelligence`                  | 已授权题目的 completion/hover/signature/diagnostics；用户身份由服务端注入 |
+| `GET /api/oj/problems/:id`                   | 按访问规则返回公开题面与样例                                              |
+| `POST /api/oj/intelligence`                  | 可评测题目的 completion/hover/signature/diagnostics；用户身份由服务端注入 |
 | `POST /api/oj/intelligence/close`            | 释放当前编辑会话；页面退出与闲置超时也会回收                              |
 | `POST /api/oj/submissions`                   | `{problemId,language,code,mode,idempotencyKey,stdin?}`                    |
 | `GET /api/oj/submissions?problemId=&cursor=` | 当前用户历史，游标分页，每页20条                                          |

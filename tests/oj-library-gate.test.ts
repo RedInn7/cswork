@@ -18,6 +18,7 @@ process.env.GO_JUDGE_TOKEN = 'fixture';
 process.env.REDIS_URL = 'redis://127.0.0.1:6381';
 const { sqlite } = await import('../db/sqlite');
 const {
+  getCompileProblem,
   getJudgeProblem,
   getPublishedProblem,
   listPublishedProblems,
@@ -425,10 +426,17 @@ void test('workspace serves full bilingual statements separately without changin
       ['problems', courseId],
     );
     assert.equal((await courseResponse.json()).sourceStatement, null);
+    // Library problems judge free for any verified account, without a course grant.
+    const freeResponse = await handleOj(
+      new Request(`https://cswork.test/api/oj/problems/${libraryId}`),
+      { ...student, email: 'not-entitled@example.test' },
+      ['problems', libraryId],
+    );
+    assert.equal((await freeResponse.json()).freeJudge, true);
     await assert.rejects(
       handleOj(
         new Request(`https://cswork.test/api/oj/problems/${libraryId}`),
-        { ...student, email: 'not-entitled@example.test' },
+        { ...student, email: 'not-entitled@example.test', verified: false },
         ['problems', libraryId],
       ),
       (e: unknown) =>
@@ -543,5 +551,45 @@ void test('ordinary course problems remain usable while a library binding is inv
     await cancelSubmission(student, item.id);
   } finally {
     restore();
+  }
+});
+
+void test('library problems judge free for verified accounts; course exercises keep the course gate', async () => {
+  const status403 = (e: unknown) =>
+    Boolean(e && typeof e === 'object' && 'status' in e && e.status === 403);
+  // No grant at all: reading, precompiling, running and submitting still work.
+  const outsider: Person = { ...student, id: 'gate-outsider', email: 'outsider@example.test' };
+  assert.equal((await getPublishedProblem(outsider, libraryId)).freeJudge, true);
+  assert.ok((await getCompileProblem(outsider, libraryId)).versionId);
+  for (const mode of ['run', 'judge']) {
+    const item = await createSubmission(outsider, input(libraryId, mode));
+    assert.ok(item.id);
+    await cancelSubmission(outsider, item.id);
+  }
+  // Unverified accounts and course exercises stay closed.
+  const unverified = { ...outsider, verified: false };
+  await assert.rejects(getJudgeProblem(unverified, libraryId), status403);
+  await assert.rejects(getCompileProblem(unverified, libraryId), status403);
+  for (const read of [getPublishedProblem, getJudgeProblem, getCompileProblem])
+    await assert.rejects(read(outsider, courseId), status403);
+  // Owner-only mode hides course exercises from everyone else, catalogue included.
+  process.env.COURSE_ACCESS = 'owner';
+  process.env.COURSE_OWNER_ID = teacher.id;
+  try {
+    const ids = (await listPublishedProblems(student)).map((p) => p.id);
+    assert.ok(ids.includes(libraryId) && !ids.includes(courseId));
+    await assert.rejects(getJudgeProblem(student, courseId), status404);
+    assert.equal((await getJudgeProblem(student, libraryId)).problemId, libraryId);
+    assert.ok((await listPublishedProblems(teacher)).some((p) => p.id === courseId));
+    // Problem packages hold course exercises, so other admins lose the OJ admin too.
+    const otherAdmin: Person = { ...teacher, id: 'gate-other-admin' };
+    await assert.rejects(
+      handleOj(new Request('https://cswork.test/api/oj/admin/problems'), otherAdmin, ['admin', 'problems']),
+      status404,
+    );
+    assert.ok(await handleOj(new Request('https://cswork.test/api/oj/admin/problems'), teacher, ['admin', 'problems']));
+  } finally {
+    delete process.env.COURSE_ACCESS;
+    delete process.env.COURSE_OWNER_ID;
   }
 });

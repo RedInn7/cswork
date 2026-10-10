@@ -16,6 +16,7 @@ import {
   getStudySourceStatement,
   listStudyLibrary,
 } from './study-library';
+import { requireCourseOwner } from './course-visibility';
 import {
   boundedText,
   HttpError,
@@ -128,6 +129,7 @@ export async function handleOj(
     }
     if (resource === 'admin' && id === 'problems') {
       requireTeacher(p);
+      requireCourseOwner(p); // Problem packages include course exercises.
       return json(
         action
           ? await getTeacherProblem(p, action)
@@ -177,6 +179,7 @@ export async function handleOj(
   }
   if (resource === 'admin' && id === 'problems') {
     requireTeacher(p);
+    requireCourseOwner(p);
     let data: unknown;
     try {
       data = JSON.parse(

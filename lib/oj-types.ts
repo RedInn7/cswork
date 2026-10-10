@@ -124,6 +124,8 @@ export type OjPublicProblem = Problem & {
   samples: { name: string; input: string; expectedOutput: string }[];
   caseCount: number;
   totalWeight: number;
+  /** OA/library problems judge free for verified accounts; course exercises need the course. */
+  freeJudge?: boolean;
 };
 
 export type OjJudgeCase = OjImportedCase & { id: string; ordinal: number };
