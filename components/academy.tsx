@@ -49,7 +49,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { api, type Boot, type Lesson } from '@/lib/types';
+import { api, mergeLiteBoot, type Boot, type Lesson } from '@/lib/types';
 import {
   CourseList,
   LessonReader,
@@ -118,6 +118,14 @@ export function Academy() {
     setLoading(false);
     setError('');
   }, []);
+  const personId = boot.person?.id;
+  // The periodic refresh only needs personal data; the problem catalogue (~3MB)
+  // stays from the full load unless the signed-in person changed.
+  const refreshLite = useCallback(async () => {
+    const next = await api<Boot>('bootstrap?lite=1');
+    if (next.person?.id !== personId) return refresh();
+    setBoot((prev) => mergeLiteBoot(prev, next) ?? prev);
+  }, [personId, refresh]);
   useEffect(() => {
     // oxlint-disable-next-line react/react-compiler -- Initial bootstrap and the history subscription synchronize this SPA with external browser state.
     refresh().catch((e) => {
@@ -138,12 +146,11 @@ export function Academy() {
     window.addEventListener('cswork:auth-required', loginAgain);
     return () => window.removeEventListener('cswork:auth-required', loginAgain);
   }, []);
-  const personId = boot.person?.id;
   useEffect(() => {
     if (!personId) return;
     const update = () => {
       if (document.visibilityState === 'visible')
-        void refresh().catch(() => {});
+        void refreshLite().catch(() => {});
     };
     const timer = setInterval(update, 45000);
     window.addEventListener('focus', update);
@@ -153,7 +160,7 @@ export function Academy() {
       window.removeEventListener('focus', update);
       document.removeEventListener('visibilitychange', update);
     };
-  }, [personId, refresh]);
+  }, [personId, refreshLite]);
   const navigate: Navigate = useCallback((next, extra = {}) => {
     setView(next);
     setParams({ view: next, ...extra });
