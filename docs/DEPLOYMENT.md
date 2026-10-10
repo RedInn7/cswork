@@ -53,6 +53,20 @@ sudo /opt/cswork/runtime/node --env-file=/etc/cswork/cswork.env scripts/create-a
 
 隔离验收使用 `localhost:4318`、独立 staging SQLite、临时老师与学员、`cswork-oj-test-` 前缀队列。完整 [OJ E2E 脚本](../tests/oj-integration.mjs) 要求 `TEST_WORKER_ENTRY` 指向构建后的 worker，由脚本自行启动并清理；不得改用生产数据库或队列。实际测试证据见 [验收记录](VALIDATION.md)。
 
+## 切换到 cswork.org
+
+`enable-https.sh` 只支持一个域名，会挤掉临时域名，不用于这次切换。改用分阶段脚本（在服务器上以 root 运行，`/srv/cswork/current/deploy/domain-cutover.sh`）：
+
+| 阶段 | 前提 | 作用 |
+| --- | --- | --- |
+| `status` | 无 | DNS、证书域名、server_name、`APP_URL`、三个域名的 HTTPS 响应 |
+| `prepare` | 无 | nginx 同时接 `cswork.org`/`www.cswork.org`（含 ACME 路径），临时域名不变，不重启应用 |
+| `cert` | 两个域名的 A 记录只指向 `192.18.137.70` | 证书扩展为临时域名 + cswork.org + www（webroot 校验） |
+| `switch` | 证书已含两个域名；Google/GitHub OAuth 回调已登记 `https://cswork.org/api/auth/callback/{google,github}` | `APP_URL=https://cswork.org`，www 和临时域名 301 到 cswork.org |
+| `rollback` | 无 | `APP_URL` 改回临时域名并去掉跳转；新域名与证书保留 |
+
+`APP_URL` 同时决定登录回调地址和接口同源校验，所以同一时间只有一个域名能登录；每次改动前 nginx 配置和 env 都会留 `.before-<时间>` 备份，应用不健康会自动恢复。
+
 ## 运维与恢复
 
 ```sh
