@@ -21,10 +21,13 @@ services:
       GOMAXPROCS: '${OJ_RUNNER_GOMAXPROCS:-3}'
       GOMEMLIMIT: 512MiB
       OJ_RUNNER_PARALLELISM: '${OJ_RUNNER_PARALLELISM:-4}'
-    mem_limit: 4g
-    memswap_limit: 4g
-    # Four execution slots share three CPU cores; the web/worker retain headroom.
-    cpus: '${OJ_RUNNER_CPUS:-3}'
+    # Up to four concurrent compiles (1 GiB cap each) plus the file store and tmpfs.
+    mem_limit: 6g
+    memswap_limit: 6g
+    # Four execution slots may use all four cores, at a lower CPU weight than the
+    # web service (100): page requests win whenever both want the CPU.
+    cpus: '${OJ_RUNNER_CPUS:-4}'
+    cpu_shares: 512
     pids_limit: 512
     shm_size: 512m
     tmpfs: ['/tmp:rw,nosuid,nodev,size=768m']
