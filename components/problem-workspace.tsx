@@ -1872,19 +1872,12 @@ function Workspace({
             </button>
           </div>
         ) : (
-          // Signed out: retrying cannot succeed, so offer the one action that can.
+          // Signed out: retrying cannot succeed; the top bar's button is the way in.
           <div className="cs-workspace-notice" role="status">
             {t(
               '登录后即可查看完整题面并提交代码。',
               'Sign in to see the full statement and submit code.',
             )}
-            <button
-              onClick={() =>
-                window.dispatchEvent(new Event('cswork:auth-required'))
-              }
-            >
-              {t('登录 / 注册', 'Sign in / Sign up')}
-            </button>
           </div>
         ))}
       {!accessible && !(problemError && !boot.person) && (

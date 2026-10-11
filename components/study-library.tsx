@@ -601,6 +601,7 @@ export function StudyLibrary({
         // One compact bar so the problem list starts above the fold.
         <div className="study-dashboard" aria-busy={roundBusy}>
           {!member && (
+            // A hint only: the top bar's button is the single way to sign in.
             <div className="study-dashboard-signin">
               <span>
                 {t(
@@ -608,13 +609,6 @@ export function StudyLibrary({
                   'Sign in to track each round and submit code here.',
                 )}
               </span>
-              <Button
-                onClick={() =>
-                  window.dispatchEvent(new Event('cswork:auth-required'))
-                }
-              >
-                {t('登录 / 注册', 'Sign in')}
-              </Button>
             </div>
           )}
           {member &&
