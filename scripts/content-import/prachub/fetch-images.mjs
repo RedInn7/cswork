@@ -38,7 +38,11 @@ async function main() {
   for (const url of Object.keys(map)) if (!KEEP.test(absolute(url) || '')) delete map[url];
   const kept = new Set(Object.values(map).map((local) => local.split('/').pop()));
   let pruned = 0;
-  for (const name of readdirSync(ASSETS)) if (!kept.has(name)) (unlinkSync(join(ASSETS, name)), pruned++);
+  for (const name of readdirSync(ASSETS)) {
+    if (kept.has(name)) continue;
+    unlinkSync(join(ASSETS, name));
+    pruned++;
+  }
   if (pruned) console.log(`pruned ${pruned} files that are not published`);
   const wanted = new Set();
   for (const file of readdirSync(PARSED).filter((f) => f.endsWith('.jsonl'))) {
