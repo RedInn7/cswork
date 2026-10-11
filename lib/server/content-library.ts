@@ -178,7 +178,8 @@ function item(db: Database.Database, params: URLSearchParams) {
       };
       const target = Object.hasOwn(kinds, rel.kind)
         ? (db
-            .prepare(`SELECT type,slug,title,company_name,difficulty FROM items WHERE type IN (${kinds[rel.kind].map(() => '?').join(',')}) AND slug=? AND listed=1`)
+            // Unlisted duplicates still resolve: their page points at the kept copy.
+            .prepare(`SELECT type,slug,title,company_name,difficulty FROM items WHERE type IN (${kinds[rel.kind].map(() => '?').join(',')}) AND slug=?`)
             .get(...kinds[rel.kind], rel.slug) as Record<string, unknown> | undefined)
         : undefined;
       return target ? { kind: rel.kind, ...target } : null;

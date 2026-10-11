@@ -153,14 +153,23 @@ function openInApp(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
   scrollTo({ top: 0 });
 }
 
-export function OaMarkdown({ body }: { body: string }) {
+type MathPlugins = typeof import('./markdown-math');
+
+/** `math`: the source wrote TeX (`$x$`, `$$…$$`); rendered once KaTeX has loaded. */
+export function OaMarkdown({ body, math = false }: { body: string; math?: boolean }) {
   const t = useT();
+  const [mathPlugins, setMathPlugins] = useState<MathPlugins | null>(null);
+  useEffect(() => {
+    if (math) void import('./markdown-math').then(setMathPlugins);
+  }, [math]);
+  const withMath = math && mathPlugins;
   return (
     <div className="oa-markdown">
       {/* No skipHtml: statements use angle brackets as text (`<timestamp>`, `List<String>`), and
           react-markdown shows raw HTML as escaped text rather than dropping it. */}
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={withMath ? [remarkGfm, withMath.remarkMath] : [remarkGfm]}
+        rehypePlugins={withMath ? [withMath.rehypeKatex] : []}
         components={{
           a: ({ node, href, children }) =>
             href?.startsWith('/?view=') ? (

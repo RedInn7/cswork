@@ -8,7 +8,6 @@ import { createInterface } from 'node:readline';
 import { createReadStream } from 'node:fs';
 import { join } from 'node:path';
 import { DIR, PARSED } from './common.mjs';
-import { imageUrls } from './fetch-images.mjs';
 
 const out = process.argv[2] || join(DIR, 'content.sqlite');
 const tmp = `${out}.building`;
@@ -97,7 +96,22 @@ export function localize(text) {
     )
     .join('');
 }
+const flat = (s) => s.replace(/[^\p{L}\p{N}]+/gu, ' ').trim().toLowerCase();
+/**
+ * A summary that is just the body's opening cut at a fixed length ends cleanly with an
+ * ellipsis instead of half a word ("Expect to demons").
+ */
+export function excerpt(summary, body) {
+  const s = summary?.replace(/\s+/g, ' ').trim();
+  if (!s || /[.!?…:;)"'”’]$/.test(s)) return s || null;
+  const opening = flat(body.slice(0, s.length * 2 + 200));
+  const head = flat(s);
+  if (!opening.startsWith(head)) return s;
+  const cut = /[\p{L}\p{N}]/u.test(opening[head.length] || '') ? s.replace(/\s*\S+$/, '') : s;
+  return `${cut.replace(/[\s,;:-]+$/, '')}…`;
+}
 const localizeItem = (item) => {
+  item.summary = excerpt(item.summary, item.body);
   item.body = localize(item.body);
   if (item.extra?.bodyZh) item.extra.bodyZh = localize(item.extra.bodyZh);
   for (const f of item.extra?.faq || []) f.a = localize(f.a);

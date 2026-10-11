@@ -33,6 +33,10 @@ writeFileSync(join(parsed, 'experiences.jsonl'), lines([
 writeFileSync(join(parsed, 'courses.jsonl'), lines([
   item({ id: 'co-sd', type: 'course', slug: 'sd', title: 'System design basics', body: 'Course intro.' }),
 ]));
+writeFileSync(join(parsed, 'concepts.jsonl'), lines([
+  // The source's summary is the body's opening cut mid-word.
+  item({ id: 'cp-ab', type: 'concept', slug: 'ab', title: 'A/B testing', summary: 'Expect to demons', body: 'Expect to demonstrate depth in A/B testing: $p < 0.05$.', extra: { math: true } }),
+]));
 writeFileSync(join(parsed, 'algorithms-basics.jsonl'), lines([
   item({ id: 'al-binary-search', type: 'algorithm', slug: 'binary-search', title: 'Binary search', titleZh: '二分查找', summaryZh: '在有序区间里折半查找', body: 'Halve the range.', extra: { level: 'core', bodyZh: '每次把区间折半。' } }),
 ]));
@@ -113,6 +117,9 @@ void test('detail resolves relations and points duplicates at our own problem', 
   assert.equal(tutorial.extra.bodyZh, '每次把区间折半。');
   assert.equal((await get('list?type=algorithm')).items[0].summaryZh, '在有序区间里折半查找');
   assert.equal(tutorial.level, 'core');
+  const concept = await get('item?type=concept&slug=ab');
+  assert.equal(concept.summary, 'Expect to…');
+  assert.equal(concept.extra.math, true);
   // Chinese search matches Chinese titles and tutorial text by substring.
   assert.equal((await get(`list?type=algorithm&q=${encodeURIComponent('二分')}`)).items[0].slug, 'binary-search');
   assert.equal((await get(`list?type=algorithm&q=${encodeURIComponent('折半')}`)).total, 1);

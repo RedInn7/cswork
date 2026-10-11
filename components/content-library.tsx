@@ -40,6 +40,10 @@ export type ContentSummary = {
   summaryZh?: string | null;
   level?: 'core' | 'advanced' | null;
 };
+/** Experiences and concepts summarise with their opening lines; the page doesn't print them twice. */
+const flat = (s: string) => s.replace(/[^\p{L}\p{N}]+/gu, ' ').trim().toLowerCase();
+const opensWith = (body: string, summary: string) =>
+  flat(body.slice(0, 800)).startsWith(flat(summary.replace(/…$/, '')).slice(0, 80));
 /** Tutorials are bilingual: Chinese readers get the Chinese text when there is one. */
 const localized = (locale: string, en: string, zh?: string | null) =>
   locale === 'zh' && zh ? zh : en;
@@ -65,6 +69,8 @@ type Detail = ContentSummary & {
     constraints?: string[];
     /** Chinese body of a bilingual tutorial. */
     bodyZh?: string;
+    /** The body uses TeX math. */
+    math?: boolean;
     result?: string;
     faq?: { q: string; a: string }[];
   };
@@ -484,7 +490,7 @@ export function ContentDetail({
             <header className="ct-detail-head rd-reveal" style={{ '--i': 0 } as React.CSSProperties}>
               <ContentMeta item={item} />
               <h1>{localized(locale, item.title, item.titleZh)}</h1>
-              {item.summary && (
+              {item.summary && !opensWith(item.body, item.summary) && (
                 <p className="ct-lead">{localized(locale, item.summary, item.summaryZh)}</p>
               )}
             </header>
@@ -536,7 +542,7 @@ export function ContentDetail({
               </div>
             )}
             <article className="rd-card ct-body rd-reveal" style={{ '--i': 2 } as React.CSSProperties}>
-              <OaMarkdown body={localized(locale, item.body, item.extra.bodyZh)} />
+              <OaMarkdown body={localized(locale, item.body, item.extra.bodyZh)} math={!!item.extra.math} />
             </article>
             {!!item.extra.faq?.length && (
               <section className="ct-section">
