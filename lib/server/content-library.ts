@@ -123,38 +123,50 @@ function list(db: Database.Database, params: URLSearchParams) {
   }
   const text = (params.get('q') || '').trim().slice(0, 120);
   // The index does not segment Chinese, so Chinese searches match titles, summaries and the
-  // Chinese text of tutorials by substring instead.
+  // Chinese text of tutorials by substring instead; every word has to appear.
   const cjk = CJK.test(text);
   const q = cjk ? '' : ftsQuery(text);
-  const from = q
-    ? `items_fts f JOIN items i ON i.rowid=f.rowid`
-    : 'items i';
-  if (q) {
-    where.push('items_fts MATCH ?');
-    args.push(q);
-  } else if (cjk) {
-    const like = `%${text.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+  if (cjk) {
     const has = `LIKE ? ESCAPE '\\'`;
-    where.push(
-      `(i.title ${has} OR i.summary ${has} OR i.title_zh ${has} OR i.summary_zh ${has} OR (i.type = 'algorithm' AND i.extra ${has}))`,
-    );
-    args.push(like, like, like, like, like);
+    for (const word of text.split(/\s+/).slice(0, 6)) {
+      const like = `%${word.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+      where.push(
+        `(i.title ${has} OR i.summary ${has} OR i.title_zh ${has} OR i.summary_zh ${has} OR (i.type = 'algorithm' AND i.extra ${has}))`,
+      );
+      args.push(like, like, like, like, like);
+    }
   }
-  // Tutorials read as a syllabus (core first, in the order they were written); the rest newest first.
-  const order =
-    q && params.get('sort') !== 'new'
-      ? 'f.rank'
-      : types.includes('algorithm')
-        ? "i.level = 'advanced', i.rowid"
-        : 'i.published_at DESC, i.rowid DESC';
   const page = Math.min(2000, Math.max(1, Math.floor(Number(params.get('page'))) || 1));
-  const total = (db.prepare(`SELECT COUNT(*) AS n FROM ${from} WHERE ${where.join(' AND ')}`).get(...args) as { n: number }).n;
-  const items = db
-    .prepare(
-      `SELECT ${SUMMARY.split(',').map((c) => `i.${c}`).join(',')} FROM ${from}
-       WHERE ${where.join(' AND ')} ORDER BY ${order} LIMIT ${PAGE} OFFSET ${(page - 1) * PAGE}`,
-    )
-    .all(...args) as Record<string, unknown>[];
+  const offset = (page - 1) * PAGE;
+  const columns = SUMMARY.split(',').map((c) => `i.${c}`).join(',');
+  let total: number;
+  let items: Record<string, unknown>[];
+  if (q) {
+    // Rank inside the index and keep this list's rows only. `+rowid` stops SQLite from pushing the
+    // IN list into FTS (one MATCH per row), and joining after LIMIT reads 20 rows, not every hit:
+    // "interview" matches ~20k items and used to block the process for a second or more.
+    const hits = `FROM items_fts WHERE items_fts MATCH ? AND +rowid IN (SELECT i.rowid FROM items i WHERE ${where.join(' AND ')})`;
+    total = (db.prepare(`SELECT COUNT(*) AS n ${hits}`).get(q, ...args) as { n: number }).n;
+    items =
+      offset >= total
+        ? []
+        : (db
+            .prepare(
+              `SELECT ${columns} FROM (SELECT rowid AS id, rank AS r ${hits} ORDER BY rank LIMIT ${PAGE} OFFSET ${offset}) f
+               JOIN items i ON i.rowid=f.id ORDER BY f.r`,
+            )
+            .all(q, ...args) as Record<string, unknown>[]);
+  } else {
+    // Tutorials read as a syllabus (core first, in the order they were written); the rest newest first.
+    const order = types.includes('algorithm') ? "i.level = 'advanced', i.rowid" : 'i.published_at DESC, i.rowid DESC';
+    total = (db.prepare(`SELECT COUNT(*) AS n FROM items i WHERE ${where.join(' AND ')}`).get(...args) as { n: number }).n;
+    items =
+      offset >= total
+        ? []
+        : (db
+            .prepare(`SELECT ${columns} FROM items i WHERE ${where.join(' AND ')} ORDER BY ${order} LIMIT ${PAGE} OFFSET ${offset}`)
+            .all(...args) as Record<string, unknown>[]);
+  }
   return { items: items.map(row), total, page, pageSize: PAGE, facets: facets(db, types) };
 }
 

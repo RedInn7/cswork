@@ -135,6 +135,7 @@ void test('detail resolves relations and points duplicates at our own problem', 
   assert.equal((await get(`list?type=algorithm&q=${encodeURIComponent('二分')}`)).items[0].slug, 'binary-search');
   assert.equal((await get(`list?type=algorithm&q=${encodeURIComponent('折半')}`)).total, 1);
   assert.equal((await get(`list?type=algorithm&q=${encodeURIComponent('二%')}`)).total, 0); // % is literal
+  assert.equal((await get(`list?type=algorithm&q=${encodeURIComponent('二分 binary')}`)).total, 1); // every word, any field
   await assert.rejects(get('item?type=questions&slug=nope'), status(404));
   const stats = await get('stats');
   assert.equal(stats.counts.coding_question, 1);
