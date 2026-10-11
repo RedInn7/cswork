@@ -15,6 +15,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
+import { track } from '@/lib/analytics';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -388,14 +389,24 @@ export function LoginDialog({
                       await send();
                       return;
                     }
-                    check(
-                      (await authClient.signIn.emailOtp({ email, otp })).error,
-                    );
+                    const { data, error } = await authClient.signIn.emailOtp({
+                      email,
+                      otp,
+                    });
+                    check(error);
+                    // The code also registers new emails: an account made just now signed up.
+                    const age =
+                      Date.now() -
+                      new Date(data?.user.createdAt ?? 0).getTime();
+                    track(Math.abs(age) < 600_000 ? 'sign_up' : 'login', {
+                      method: 'email',
+                    });
                   } else {
                     check(
                       (await authClient.signIn.email({ email, password }))
                         .error,
                     );
+                    track('login', { method: 'email' });
                   }
                   setPassword('');
                   await onSuccess();

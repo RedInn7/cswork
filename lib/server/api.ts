@@ -21,6 +21,7 @@ import {
 import { seed } from './seed';
 import { ensureOjSeed, listPublishedProblems } from './oj-problems';
 import { handleContent } from './content-library';
+import { handleMetrics } from './metrics';
 import { handleOj } from './oj-api';
 import { judgeReady, submit, result } from './judge';
 import { playback } from './video';
@@ -151,6 +152,9 @@ export async function handle(request: Request) {
       return await webhook(request);
     }
     if (request.method !== 'GET') sameOrigin(request);
+    if (resource === 'metrics')
+      // Analytics beacons and the owner summary need only the session, not the seed checks below.
+      return await handleMetrics(request, await person(request), path.slice(1));
     await seed();
     await ensureOjSeed();
     const p = await person(request),

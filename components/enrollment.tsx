@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { api, type Person } from '@/lib/types';
+import { track } from '@/lib/analytics';
 import { useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { Button } from './ui/button';
@@ -138,6 +139,9 @@ export function EnrollmentClaim({
                   setError('');
                   try {
                     await api('enrollment/activate', { token, name, password });
+                    // Without an account, the invite creates one with this password.
+                    if (!data.requiresLogin)
+                      track('sign_up', { method: 'email' });
                     setPassword('');
                     history.replaceState(
                       null,

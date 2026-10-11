@@ -93,11 +93,15 @@ export function PrivacyDocument() {
             <section aria-labelledby="privacy-device">
               <h2 id="privacy-device">登录状态、浏览器存储与运行记录</h2>
               <p>
-                平台使用必要的 Cookie 保持登录和完成认证。登录会话可以记录 IP
+                平台使用必要的 Cookie
+                保持登录、完成认证，并记住你选择的界面语言。登录会话可以记录 IP
                 地址、设备或浏览器信息与有效期，用于账号安全和查看已登录设备；服务器也会产生访问、错误和管理操作记录，以排查故障和限制滥用。
               </p>
               <p>
                 浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。
+              </p>
+              <p>
+                平台自己的服务器会记录基本的使用事件（访问的页面、站内搜索词、判题耗时与出错情况），用于运营统计。这部分统计不经过 Google，也不受下方 Google Analytics 选项的影响：浏览器本地存储里会保存一个随机生成的匿名访客编号，用来统计访客数；登录时事件会关联到你的账号。我们不记录 IP 地址和设备标识，这些记录保留 120 天。
               </p>
             </section>
 
@@ -288,12 +292,13 @@ export function PrivacyDocument() {
                 Sign-in status, browser storage, and operational logs
               </h2>
               <p>
-                The platform uses necessary cookies to keep you signed in and to
-                complete authentication. Sign-in sessions may record your IP
-                address, device or browser information, and expiration time, for
-                account security and so you can see which devices are signed in;
-                the server also generates access, error, and administrative
-                action logs to troubleshoot problems and limit abuse.
+                The platform uses necessary cookies to keep you signed in, to
+                complete authentication, and to remember the site language you
+                choose. Sign-in sessions may record your IP address, device or
+                browser information, and expiration time, for account security
+                and so you can see which devices are signed in; the server also
+                generates access, error, and administrative action logs to
+                troubleshoot problems and limit abuse.
               </p>
               <p>
                 Browser local storage is used for things like restoring drafts
@@ -303,6 +308,16 @@ export function PrivacyDocument() {
                 local drafts. On a shared device, you can clear this site’s
                 stored data in your browser; this also clears local content that
                 has not been submitted yet.
+              </p>
+              <p>
+                The platform&apos;s own server records basic usage events (pages
+                viewed, site searches, judging time and errors) for operating
+                statistics. These do not go to Google and do not depend on the
+                Google Analytics choice below: your browser&apos;s local storage
+                keeps a randomly generated anonymous visitor ID so visitors can
+                be counted, and when you are signed in, events are linked to
+                your account. We do not record IP addresses or device
+                identifiers, and these records are kept for 120 days.
               </p>
             </section>
 

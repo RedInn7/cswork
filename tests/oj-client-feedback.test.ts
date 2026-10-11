@@ -88,7 +88,8 @@ test('legacy detail failure still publishes receipt for recovery without resubmi
       submitOJ({}, new AbortController().signal, (receipt) => {
         recoveredId = receipt.id;
       }),
-      /temporary failure/,
+      // `status` feeds the judge_error analytics event.
+      { message: /temporary failure/, status: 503 },
     );
     assert.equal(recoveredId, 's1');
     assert.equal(calls, 2);
