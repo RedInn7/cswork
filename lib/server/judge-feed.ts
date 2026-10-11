@@ -1,7 +1,7 @@
 import type { Person } from './auth';
 import { sqlite } from '@/db/sqlite';
 import { visibleCourseSql } from './course-visibility';
-import { setting } from './env';
+import { setting, shownOaSql } from './env';
 import { HttpError } from './http';
 import { oaLibrary } from './oa-library';
 
@@ -24,7 +24,7 @@ const libraryProblem = `s.problem_id IN (SELECT judge_problem_id FROM study_libr
 
 /** OA and library problems are public; course exercises follow course visibility. */
 const visible = (viewer: Person | null) =>
-  `(s.problem_id LIKE 'oa-%' OR ${libraryProblem} OR (1=1${visibleCourseSql(viewer, 'p.course_id')}))`;
+  `((s.problem_id LIKE 'oa-%' OR ${libraryProblem} OR (1=1${visibleCourseSql(viewer, 'p.course_id')}))${shownOaSql('s.problem_id')})`;
 
 /**
  * Accounts kept off the public board, e.g. the owner's test runs: FEED_HIDDEN_USERS is a

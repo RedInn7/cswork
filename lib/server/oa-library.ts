@@ -2,6 +2,7 @@ import { readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { z } from 'zod';
 import type { Person } from './auth';
+import { hiddenCompanies } from './env';
 import { HttpError, json, limitReader, requirePerson, rows } from './http';
 import {
   oaJudgeRegistry,
@@ -128,7 +129,7 @@ export function createOaLibrary(
       throw new Error('OA company count mismatch');
   function find(id: string) {
     const item = items.get(id);
-    if (!item) throw new HttpError(404, 'OA 题目不存在');
+    if (!item || hiddenCompanies().has(item.companySlug)) throw new HttpError(404, 'OA 题目不存在');
     return item;
   }
   return {
@@ -138,7 +139,8 @@ export function createOaLibrary(
         .slice(0, 180)
         .toLocaleLowerCase();
       const company = (params.get('company') || '').slice(0, 160);
-      if (company && !companies.has(company))
+      const hidden = hiddenCompanies();
+      if (company && (!companies.has(company) || hidden.has(company)))
         throw new HttpError(400, '未知公司');
       const value = params.get('page') || '1';
       const page = /^\d+$/.test(value)
@@ -146,6 +148,7 @@ export function createOaLibrary(
         : 1;
       const found = catalog.items.filter(
         (item) =>
+          !hidden.has(item.companySlug) &&
           (params.get('ready') !== '1' || ready.has(item.id)) &&
           (!company || item.companySlug === company) &&
           (!query ||
@@ -160,7 +163,7 @@ export function createOaLibrary(
         total: found.length,
         page,
         pageSize: 30,
-        companies: catalog.companies,
+        companies: catalog.companies.filter((c) => !hidden.has(c.slug)),
         source: {
           name: 'OA Master',
           url: catalog.source.origin,

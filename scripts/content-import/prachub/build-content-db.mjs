@@ -58,16 +58,23 @@ const readJson = (name, empty) =>
   existsSync(join(PARSED, name)) ? JSON.parse(readFileSync(join(PARSED, name), 'utf8')) : empty;
 const assets = readJson('assets-map.json', {});
 const valid = (it) => TYPES.has(it.type) && it.id && it.slug && it.title && it.body?.trim();
+// Taken down for now (owner's call, 2026-10-11): anything about Google, by company or title.
+// Such items are left out entirely, so links to them read as plain text. Empty the list to restore.
+const TAKEN_DOWN = [/google/i];
+const takenDown = (it) =>
+  TAKEN_DOWN.some((re) => re.test(`${it.company?.slug ?? ''} ${it.company?.name ?? ''} ${it.title ?? ''}`));
+const published = (it) => valid(it) && !takenDown(it);
 // First pass over everything we publish, so links only point at pages that exist.
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-const known = { pages: new Set(), companies: new Set(), roles: new Map(), categories: new Map() };
+const known = { ids: new Set(), pages: new Set(), companies: new Set(), roles: new Map(), categories: new Map() };
 for (const file of FILES) {
   const path = join(PARSED, `${file}.jsonl`);
   if (!existsSync(path)) continue;
   for await (const line of createInterface({ input: createReadStream(path), crlfDelay: Infinity })) {
     if (!line.trim()) continue;
     const it = JSON.parse(line);
-    if (!valid(it)) continue;
+    if (!published(it)) continue;
+    known.ids.add(it.id);
     known.pages.add(`${it.type}:${it.slug}`);
     if (it.company?.slug) known.companies.add(it.company.slug);
     if (it.role) known.roles.set(slugify(it.role), it.role);
@@ -184,14 +191,16 @@ for (const d of readJson('question-dupes-manual.json', [])) dupes.set(d.id, d.du
 for (const [id, dup] of dupes) {
   let end = dup;
   for (let hops = 0; end.kind === 'prachub' && dupes.has(end.id) && end.id !== id && hops < 10; hops++) end = dupes.get(end.id);
-  if (end.id === id) dupes.delete(id);
+  // A copy whose kept version is not published is listed itself instead of pointing nowhere.
+  if (end.id === id || (end.kind === 'prachub' && !known.ids.has(end.id))) dupes.delete(id);
   else dupes.set(id, end);
 }
 
 const insert = db.prepare(`INSERT OR REPLACE INTO items(id,type,slug,title,summary,title_zh,summary_zh,level,body,company_slug,company_name,role,category,difficulty,round,seniority,tags,published_at,updated_at,relations,extra,partial,dup_of,listed)
   VALUES(@id,@type,@slug,@title,@summary,@title_zh,@summary_zh,@level,@body,@company_slug,@company_name,@role,@category,@difficulty,@round,@seniority,@tags,@published_at,@updated_at,@relations,@extra,@partial,@dup_of,@listed)`);
 const counts = {};
-let rejected = 0;
+let rejected = 0,
+  hidden = 0;
 for (const file of FILES) {
   const path = join(PARSED, `${file}.jsonl`);
   if (!existsSync(path)) continue;
@@ -202,6 +211,10 @@ for (const file of FILES) {
     const parsed = JSON.parse(line);
     if (!valid(parsed)) {
       rejected++;
+      continue;
+    }
+    if (takenDown(parsed)) {
+      hidden++;
       continue;
     }
     const item = localizeItem(parsed);
@@ -237,4 +250,4 @@ db.prepare('INSERT INTO meta(key,value) VALUES(?,?)').run('counts', JSON.stringi
 db.exec('ANALYZE');
 db.close();
 renameSync(tmp, out);
-console.log(JSON.stringify({ out, counts: listed, rejected }, null, 1));
+console.log(JSON.stringify({ out, counts: listed, rejected, takenDown: hidden }, null, 1));

@@ -19,7 +19,7 @@ const item = (o: Record<string, unknown>) => ({
 });
 const lines = (rows: object[]) => rows.map((r) => JSON.stringify(r)).join('\n') + '\n';
 writeFileSync(join(parsed, 'coding-questions.jsonl'), lines([
-  item({ id: 'cq-lru', type: 'coding_question', slug: 'lru', title: 'Implement an LRU cache', body: 'Design a **cache** with eviction.', company: { slug: 'google', name: 'Google' }, difficulty: 'medium', role: 'Software Engineer', extra: { samples: [{ input: '2', output: '1' }] } }),
+  item({ id: 'cq-lru', type: 'coding_question', slug: 'lru', title: 'Implement an LRU cache', body: 'Design a **cache** with eviction.', company: { slug: 'airbnb', name: 'Airbnb' }, difficulty: 'medium', role: 'Software Engineer', extra: { samples: [{ input: '2', output: '1' }] } }),
   item({ id: 'cq-two-sum', type: 'coding_question', slug: 'two-sum', title: 'Two Sum', body: 'Find two numbers.', company: { slug: 'amazon', name: 'Amazon' }, difficulty: 'easy' }),
 ]));
 writeFileSync(join(parsed, 'interview-questions.jsonl'), lines([
@@ -29,15 +29,18 @@ writeFileSync(join(parsed, 'interview-questions.jsonl'), lines([
 
 ]));
 writeFileSync(join(parsed, 'experiences.jsonl'), lines([
-  item({ id: 'ex-amazon-oa', type: 'experience', slug: 'amazon-oa', title: 'Amazon SDE OA', body: 'Two questions: [LRU](https://prachub.com/coding-questions/lru), [plans](https://prachub.com/pricing). ![chart](https://ik.imagekit.io/x/a.png) ![gone](https://ik.imagekit.io/x/b.png) Code `arr[i](/x)` stays. [Guide](https://PracHub.com/interview-guide/google-swe "Google") https://prachub.com/companies/google/x ![v](https://ik.imagekit.io/x/a.png?tr=w-100) [same](/interview-questions/lru) [SWE](/positions/software-engineer) [all](https://prachub.com/questions)', company: { slug: 'amazon', name: 'Amazon' }, relations: [{ kind: 'question', slug: 'lru' }, { kind: 'question', slug: 'missing' }], extra: { result: 'Offer' } }),
+  item({ id: 'ex-amazon-oa', type: 'experience', slug: 'amazon-oa', title: 'Amazon SDE OA', body: 'Two questions: [LRU](https://prachub.com/coding-questions/lru), [plans](https://prachub.com/pricing). ![chart](https://ik.imagekit.io/x/a.png) ![gone](https://ik.imagekit.io/x/b.png) Code `arr[i](/x)` stays. [Guide](https://PracHub.com/interview-guide/google-swe "Google") https://prachub.com/companies/airbnb/x ![v](https://ik.imagekit.io/x/a.png?tr=w-100) [same](/interview-questions/lru) [SWE](/positions/software-engineer) [all](https://prachub.com/questions)', company: { slug: 'amazon', name: 'Amazon' }, relations: [{ kind: 'question', slug: 'lru' }, { kind: 'question', slug: 'missing' }], extra: { result: 'Offer' } }),
 ]));
 writeFileSync(join(parsed, 'courses.jsonl'), lines([
   item({ id: 'co-sd', type: 'course', slug: 'sd', title: 'System design basics', body: 'Course intro.' }),
 ]));
 writeFileSync(join(parsed, 'guides.jsonl'), lines([
   item({ id: 'gd-acme-swe', type: 'guide', slug: 'acme-swe', title: 'Acme Software Engineer Interview Guide', body: 'Template text about idempotency.' }),
+  item({ id: 'gd-google-swe', type: 'guide', slug: 'google-swe', title: 'Google Software Engineer Interview Guide', body: 'Taken down.', company: { slug: 'google', name: 'Google' } }),
 ]));
 writeFileSync(join(parsed, 'articles.jsonl'), lines([
+  item({ id: 'ar-googleyness', type: 'article', slug: 'googleyness', title: 'Googleyness questions', body: 'Taken down by title.' }),
+  item({ id: 'ar-copy', type: 'article', slug: 'copy', title: 'Behavioral questions', body: 'A copy of a taken-down article.' }),
   item({ id: 'ar-sum', type: 'article', slug: 'sum', title: 'Sum it', body: 'Compute $$\\sum_{i=1}^{n} i$$ and see [`lru` cache](/coding-questions/lru).' }),
   item({ id: 'ar-price', type: 'article', slug: 'price', title: 'Price it', body: 'Plans cost $100 and $200 a month.' }),
 ]));
@@ -57,6 +60,8 @@ writeFileSync(join(folder, 'prachub', 'parsed', 'question-dupes.json'), JSON.str
 writeFileSync(join(parsed, 'question-dupes-reject.json'), JSON.stringify(['cq-lru']));
 writeFileSync(join(parsed, 'question-dupes-manual.json'), JSON.stringify([
   { id: 'iq-lru-again', dupOf: { kind: 'oa', id: 'oa-lru', title: 'LRU', problem: 'oa-lru' }, score: 1, method: 'manual' },
+  // The kept copy is taken down, so this copy is listed itself.
+  { id: 'ar-copy', dupOf: { kind: 'prachub', id: 'ar-googleyness' }, score: 1, method: 'manual' },
   // A chain (topk -> lru-again -> OA) resolves to the end; a cycle keeps the item it returns to.
   { id: 'iq-topk-copy', dupOf: { kind: 'prachub', id: 'iq-lru-again' }, score: 1, method: 'manual' },
 ]));
@@ -89,9 +94,9 @@ void test('lists, filters, search and facets; duplicates stay out of lists', asy
   const all = await get('list?type=questions');
   assert.deepEqual(all.items.map((i: { slug: string }) => i.slug), ['topk', 'lru']); // newest first; two-sum is a duplicate
   assert.equal(all.total, 2);
-  assert.deepEqual(all.facets.companies.map((c: { value: string }) => c.value).sort(), ['google', 'uber']);
+  assert.deepEqual(all.facets.companies.map((c: { value: string }) => c.value).sort(), ['airbnb', 'uber']);
   assert.equal(all.facets.companyTotal, 2);
-  assert.equal((await get('list?type=questions&company=google')).items[0].slug, 'lru');
+  assert.equal((await get('list?type=questions&company=airbnb')).items[0].slug, 'lru');
   assert.equal((await get('list?type=questions&difficulty=hard')).items[0].slug, 'topk');
   assert.equal((await get('list?type=questions&kind=coding_question')).total, 1);
   assert.equal((await get('item?type=questions&slug=lru-again')).dupOf.problem, 'oa-lru');
@@ -102,6 +107,11 @@ void test('lists, filters, search and facets; duplicates stay out of lists', asy
   assert.match(sum.body, /\[`lru` cache\]\(\/\?view=content&type=coding_question&slug=lru\)/);
   assert.equal((await get('item?type=article&slug=price')).extra.math, undefined);
   assert.equal((await get('list?type=questions&q=eviction')).items[0].slug, 'lru');
+  // Google content is taken down: not listed, not reachable, not searchable; copies stand alone.
+  await assert.rejects(get('item?type=guide&slug=google-swe'), status(404));
+  await assert.rejects(get('item?type=article&slug=googleyness'), status(404));
+  assert.equal((await get('list?type=article&q=googleyness')).total, 0);
+  assert.equal((await get('item?type=article&slug=copy')).dupOf, null);
   // Guides match by title, not by their (shared, templated) body text.
   assert.equal((await get('list?type=guide&q=acme')).total, 1);
   assert.equal((await get('list?type=guide&q=idempotency')).total, 0);
@@ -123,7 +133,7 @@ void test('detail resolves relations and points duplicates at our own problem', 
     // Images without a published copy are left out (cover art, logos); links point only at pages
     // that exist, under their real type, and list pages map to filtered lists.
     'Two questions: [LRU](/?view=content&type=coding_question&slug=lru), [plans](#). ![chart](/content-assets/abc.png) ' +
-      ' Code `arr[i](/x)` stays. [Guide](#) [link](/?view=questions&company=google)  [same](/?view=content&type=coding_question&slug=lru)' +
+      ' Code `arr[i](/x)` stays. [Guide](#) [link](/?view=questions&company=airbnb)  [same](/?view=content&type=coding_question&slug=lru)' +
       ' [SWE](/?view=questions&role=Software%20Engineer) [all](/?view=questions)',
   );
   assert.deepEqual(exp.relations.map((r: { slug: string }) => r.slug), ['lru']); // the missing one is dropped
