@@ -196,12 +196,15 @@ function item(db: Database.Database, params: URLSearchParams) {
 }
 
 function stats(db: Database.Database) {
+  if (facetCache.has('stats')) return facetCache.get('stats');
   const counts = db
     .prepare('SELECT type, COUNT(*) AS n FROM items WHERE listed=1 GROUP BY type')
     .all() as { type: string; n: number }[];
   const companies = (db.prepare('SELECT COUNT(DISTINCT company_slug) AS n FROM items WHERE listed=1').get() as { n: number }).n;
   const built = (db.prepare("SELECT value FROM meta WHERE key='built_at'").get() as { value: string } | undefined)?.value;
-  return { counts: Object.fromEntries(counts.map((c) => [c.type, c.n])), companies, updatedAt: built ?? null };
+  const result = { counts: Object.fromEntries(counts.map((c) => [c.type, c.n])), companies, updatedAt: built ?? null };
+  facetCache.set('stats', result);
+  return result;
 }
 
 export async function handleContent(request: Request, p: Person | null, path: string[]) {

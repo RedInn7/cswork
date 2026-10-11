@@ -33,18 +33,21 @@ const db = new Database(tmp);
 db.pragma('journal_mode = OFF');
 db.pragma('synchronous = OFF');
 db.exec(`
+-- Large columns go last: SQLite reads a row's columns in order, so facets and lists that
+-- only need the small ones never walk a 40 KB body's overflow pages.
 CREATE TABLE items(
   id TEXT PRIMARY KEY, type TEXT NOT NULL, slug TEXT NOT NULL, title TEXT NOT NULL, summary TEXT,
-  title_zh TEXT, summary_zh TEXT, level TEXT,
-  body TEXT NOT NULL, company_slug TEXT, company_name TEXT, role TEXT, category TEXT,
+  title_zh TEXT, summary_zh TEXT, level TEXT, company_slug TEXT, company_name TEXT, role TEXT, category TEXT,
   difficulty TEXT, round TEXT, seniority TEXT, tags TEXT NOT NULL DEFAULT '[]',
-  published_at TEXT, updated_at TEXT, relations TEXT NOT NULL DEFAULT '[]',
-  extra TEXT NOT NULL DEFAULT '{}', partial INTEGER NOT NULL DEFAULT 0, dup_of TEXT,
-  listed INTEGER NOT NULL DEFAULT 1
+  published_at TEXT, updated_at TEXT, partial INTEGER NOT NULL DEFAULT 0, dup_of TEXT,
+  listed INTEGER NOT NULL DEFAULT 1, relations TEXT NOT NULL DEFAULT '[]',
+  extra TEXT NOT NULL DEFAULT '{}', body TEXT NOT NULL
 );
 CREATE UNIQUE INDEX items_type_slug ON items(type, slug);
 CREATE INDEX items_list ON items(type, listed, published_at);
 CREATE INDEX items_company ON items(type, company_slug);
+-- Covers every facet query, so counting roles over ~11k large guides never touches their rows.
+CREATE INDEX items_facets ON items(type, listed, company_slug, role, category, difficulty, round);
 -- Contentless: rows are inserted explicitly so guides can be indexed by title and summary only.
 CREATE VIRTUAL TABLE items_fts USING fts5(title, summary, body, content='', tokenize='unicode61');
 CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
