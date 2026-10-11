@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { z } from 'zod';
+import { shownOaSql } from './env';
 import { HttpError, one, rows } from './http';
 import { formatOaVerifiedStatement } from '../oa-verified-statement';
 
@@ -109,7 +110,7 @@ export async function oaReadyProblems() {
     difficulty: string | null;
     tags: string | null;
   }>(
-    `SELECT p.id,v.checksum,json_extract(v.spec_json,'$.id') AS spec_id,json_extract(v.spec_json,'$.difficulty') AS difficulty,json_extract(v.spec_json,'$.tags') AS tags FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id AND v.problem_id=p.id WHERE p.published=1 AND p.id LIKE 'oa-%'`,
+    `SELECT p.id,v.checksum,json_extract(v.spec_json,'$.id') AS spec_id,json_extract(v.spec_json,'$.difficulty') AS difficulty,json_extract(v.spec_json,'$.tags') AS tags FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id AND v.problem_id=p.id WHERE p.published=1 AND p.id LIKE 'oa-%'${shownOaSql('p.id')}`,
   );
   const trusted = oaJudgeRegistry();
   const ready = new Map<string, { difficulty?: string; tags: string[] }>();
@@ -125,7 +126,7 @@ export async function oaReadyProblems() {
 export async function requireOaJudgeReady(id: string) {
   if (!id.startsWith('oa-')) return;
   const versions = await rows<OaPublishedVersion>(
-    `SELECT p.id,v.checksum,v.spec_json FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id AND v.problem_id=p.id WHERE p.published=1 AND p.id=?`,
+    `SELECT p.id,v.checksum,v.spec_json FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id AND v.problem_id=p.id WHERE p.published=1 AND p.id=?${shownOaSql('p.id')}`,
     id,
   );
   if (!versions[0] || !oaJudgeRegistry().isReady(versions[0]))
@@ -135,7 +136,7 @@ export async function requireOaJudgeReady(id: string) {
 /** Reading and submitting must use the same corrected rules and visible samples. */
 export async function oaVerifiedStatement(id: string) {
   const version = await one<OaPublishedVersion & { version_id: string }>(
-    'SELECT p.id,v.id AS version_id,v.checksum,v.spec_json FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id AND v.problem_id=p.id WHERE p.published=1 AND p.id=?',
+    `SELECT p.id,v.id AS version_id,v.checksum,v.spec_json FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id AND v.problem_id=p.id WHERE p.published=1 AND p.id=?${shownOaSql('p.id')}`,
     id,
   );
   if (!version || !oaJudgeRegistry().isReady(version))

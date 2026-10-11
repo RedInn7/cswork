@@ -12,7 +12,7 @@ import type {
 import { createOjSeedPackages } from '../../scripts/seed-oj-data.mjs';
 import type { Person } from './auth';
 import { canSeeCourse, requireCourseVisible } from './course-visibility';
-import { database } from './env';
+import { database, shownOaSql } from './env';
 import {
   oaJudgeRegistry,
   requireOaJudgeReady,
@@ -186,7 +186,7 @@ const freeJudge = `(p.id LIKE 'oa-%' OR EXISTS(SELECT 1 FROM study_library s WHE
  * A binding blocks its problem when matched by id with any mismatch, or by
  * judge_problem_id with a stale verified hash: the two halves of the gate's OR.
  */
-const catalogueQuery = `WITH blocked AS (
+const catalogueQuery = () => `WITH blocked AS (
   SELECT p.id FROM study_library l JOIN oj_problems p ON p.id=l.id
   WHERE l.judge_problem_id IS NOT p.id
     OR l.verified_hash IS NOT (l.content_hash || ':' || p.current_version_id)
@@ -197,7 +197,7 @@ const catalogueQuery = `WITH blocked AS (
 SELECT v.*,p.course_id,
   (p.id LIKE 'oa-%' OR p.id IN (SELECT judge_problem_id FROM study_library WHERE judge_problem_id IS NOT NULL)) AS free
 FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id
-WHERE p.published=1 AND p.id NOT IN (SELECT id FROM blocked)
+WHERE p.published=1 AND p.id NOT IN (SELECT id FROM blocked)${shownOaSql('p.id')}
 ORDER BY p.created_at,p.id`;
 
 /** Course exercises keep the course grant (and owner-only mode); free problems need a verified account. */
@@ -214,7 +214,7 @@ async function requireJudgeAccess(p: Person, problem: GatedRow) {
 export async function getCompileProblem(p: Person, problemId: string) {
   await requireOaJudgeReady(problemId);
   const problem = await one<GatedRow>(
-    `SELECT p.*,${freeJudge} AS free FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
+    `SELECT p.*,${freeJudge} AS free FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}${shownOaSql('p.id')}`,
     problemId,
   );
   if (!problem?.current_version_id)
@@ -236,7 +236,7 @@ export async function getCompileProblem(p: Person, problemId: string) {
 export async function getJudgeProblem(p: Person, problemId: string) {
   await requireOaJudgeReady(problemId);
   const problem = await one<GatedRow>(
-    `SELECT p.*,${freeJudge} AS free FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
+    `SELECT p.*,${freeJudge} AS free FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}${shownOaSql('p.id')}`,
     problemId,
   );
   if (!problem?.current_version_id)
@@ -300,7 +300,7 @@ export async function listPublishedProblems(
   p: Person | null = null,
 ): Promise<OjPublicProblem[]> {
   const versions = (
-    await rows<VersionRow & { course_id: string; free: number }>(catalogueQuery)
+    await rows<VersionRow & { course_id: string; free: number }>(catalogueQuery())
   ).filter((v) => v.free || canSeeCourse(p, v.course_id));
   const trusted = oaJudgeRegistry();
   return Promise.all(
@@ -323,7 +323,7 @@ export async function getPublicOaProblem(problemId: string) {
   if (!problemId.startsWith('oa-')) throw new HttpError(404, '题目不存在或尚未发布');
   await requireOaJudgeReady(problemId);
   const pr = await one<ProblemRow>(
-    `SELECT p.* FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
+    `SELECT p.* FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}${shownOaSql('p.id')}`,
     problemId,
   );
   if (!pr?.current_version_id) throw new HttpError(404, '题目不存在或尚未发布');
@@ -339,7 +339,7 @@ export async function getPublicOaProblem(problemId: string) {
 export async function getPublishedProblem(p: Person, problemId: string) {
   await requireOaJudgeReady(problemId);
   const pr = await one<GatedRow>(
-    `SELECT p.*,${freeJudge} AS free FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
+    `SELECT p.*,${freeJudge} AS free FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}${shownOaSql('p.id')}`,
     problemId,
   );
   if (!pr?.current_version_id) throw new HttpError(404, '题目不存在或尚未发布');

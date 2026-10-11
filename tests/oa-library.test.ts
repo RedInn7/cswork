@@ -140,3 +140,18 @@ void test('Stripe stages link only to an available source-matched combined exerc
     );
   }
 });
+void test('companies in HIDDEN_COMPANIES leave the list, the company menu, details and solutions', () => {
+  const library = createOaLibrary(fixture());
+  process.env.HIDDEN_COMPANIES = 'meta, Not A Slug';
+  try {
+    const list = library.list(new URLSearchParams());
+    assert.equal(list.total, 0);
+    assert.deepEqual(list.companies, []);
+    assert.throws(() => library.list(new URLSearchParams('company=meta')), { status: 400 });
+    assert.throws(() => library.detail('oa-meta-1'), { status: 404 });
+    assert.throws(() => library.solution('oa-meta-1'), { status: 404 });
+  } finally {
+    delete process.env.HIDDEN_COMPANIES;
+  }
+  assert.equal(library.list(new URLSearchParams()).total, 35); // back once cleared
+});

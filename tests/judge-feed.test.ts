@@ -182,6 +182,19 @@ void test('hidden accounts stay off the public board but keep their own view', (
   assert.ok(all(null, 'userOf=1').items.length > 0);
 });
 
+void test('submissions to a hidden company\'s OA problems leave the board', () => {
+  const amazonRows = (viewer: Parameters<typeof judgeFeed>[0]) =>
+    all(viewer, 'problem=oa-amazon-1').items.length;
+  assert.ok(amazonRows(null) > 0);
+  process.env.HIDDEN_COMPANIES = 'amazon';
+  try {
+    assert.equal(amazonRows(null), 0);
+    assert.equal(amazonRows(bob), 0);
+  } finally {
+    delete process.env.HIDDEN_COMPANIES;
+  }
+});
+
 void test('unindexed filters scan a bounded window and hand back a cursor', () => {
   db.transaction(() => {
     for (let i = 0; i < 20050; i++) submit('bob', 'lc-1', 'wrong_answer');

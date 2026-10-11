@@ -266,6 +266,8 @@ function FacetSelect({
 }
 
 const FILTERS = ['type', 'kind', 'company', 'role', 'category', 'difficulty', 'round', 'q', 'page'] as const;
+/** Each list's last filters, search and page, so an item's back link returns to the same list. */
+const lastList: Record<string, Record<string, string>> = {};
 
 export function ContentList({
   section,
@@ -286,6 +288,9 @@ export function ContentList({
     return out;
   }, [params, type]);
   const query = new URLSearchParams(filters).toString();
+  useEffect(() => {
+    lastList[section] = filters;
+  }, [section, filters]);
   const [page, setPage] = useState<{ query: string; data: ListPage } | null>(null);
   const [error, setError] = useState('');
   const [text, setText] = useState(params.q || '');
@@ -472,7 +477,8 @@ export function ContentDetail({
   const dup = item?.dupOf;
   const judgeable = !!dup?.problem && problemIds.includes(dup.problem);
   const section = contentSection(params.type);
-  const back = () => navigate(section, section === 'resources' ? { type: params.type } : {});
+  const back = () =>
+    navigate(section, lastList[section] ?? (section === 'resources' ? { type: params.type } : {}));
 
   return (
     <div className="rd">
