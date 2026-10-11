@@ -147,7 +147,8 @@ const flat = (s) => s.replace(/[^\p{L}\p{N}]+/gu, ' ').trim().toLowerCase();
 export function excerpt(summary, body) {
   const s = summary?.replace(/\s+/g, ' ').trim();
   if (!s || /[.!?…:;)"'”’]$/.test(s)) return s || null;
-  const opening = flat(body.slice(0, s.length * 2 + 200));
+  // Headings ("## What's being tested") come before the text the summary was cut from.
+  const opening = flat(body.slice(0, s.length * 2 + 400).replace(/^#{1,6}\s.*$/gm, ''));
   const head = flat(s);
   if (!opening.startsWith(head)) return s;
   const cut = /[\p{L}\p{N}]/u.test(opening[head.length] || '') ? s.replace(/\s*\S+$/, '') : s;
