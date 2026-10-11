@@ -14,6 +14,7 @@ import '@/app/content-library.css';
 type Facet = { value: string; label: string; n: number };
 type Facets = {
   companies: Facet[];
+  companyTotal: number;
   roles: Facet[];
   categories: Facet[];
   difficulties: Facet[];
@@ -69,7 +70,8 @@ type Detail = ContentSummary & {
     faq?: { q: string; a: string }[];
   };
   relations: Relation[];
-  dupOf: { kind: 'oa' | 'library' | 'prachub'; id: string; title?: string } | null;
+  /** `problem` is the judge problem id when the bank has one for it. */
+  dupOf: { kind: 'oa' | 'library' | 'prachub'; id: string; title?: string; problem?: string } | null;
 };
 
 /**
@@ -126,6 +128,9 @@ const TYPE_NAMES: Record<string, [string, string]> = {
   cheatsheet: ['速查表', 'Cheatsheet'],
   algorithm: ['算法专题', 'Algorithm tutorial'],
 };
+/** The list view an item of this type belongs to. */
+export const contentSection = (type: string | undefined) =>
+  (type && Object.hasOwn(SECTION_OF, type) && SECTION_OF[type]) || 'resources';
 const SECTION_OF: Record<string, string> = {
   coding_question: 'questions',
   interview_question: 'questions',
@@ -307,12 +312,14 @@ export function ContentList({
             </div>
             <div className="rd-stat-value">{data?.facets ? data.facets.total.toLocaleString() : '—'}</div>
           </div>
-          <div>
-            <div className="rd-stat-label">
-              <Building2 size={13} /> {t('公司', 'Companies')}
+          {type !== 'algorithm' && (
+            <div>
+              <div className="rd-stat-label">
+                <Building2 size={13} /> {t('公司', 'Companies')}
+              </div>
+              <div className="rd-stat-value">{data?.facets ? data.facets.companyTotal.toLocaleString() : '—'}</div>
             </div>
-            <div className="rd-stat-value">{data?.facets ? data.facets.companies.length : '—'}</div>
-          </div>
+          )}
         </div>
 
         <div className="ct-toolbar rd-reveal" style={{ '--i': 2 } as React.CSSProperties}>
@@ -380,7 +387,11 @@ export function ContentList({
                 `共 ${data.total.toLocaleString()} 条`,
                 `${data.total.toLocaleString()} ${data.total === 1 ? 'result' : 'results'}`,
               )}
-              {filters.q ? t('，按相关度排序', ', sorted by relevance') : t('，最新的在前', ', newest first')}
+              {filters.q
+                ? t('，按相关度排序', ', sorted by relevance')
+                : type === 'algorithm'
+                  ? t('，核心专题在前', ', core topics first')
+                  : t('，最新的在前', ', newest first')}
             </div>
             <div className="ct-list">
               {data.items.map((item) => (
@@ -417,9 +428,12 @@ export function ContentList({
 export function ContentDetail({
   params,
   navigate,
+  problemIds,
 }: {
   params: Record<string, string>;
   navigate: Navigate;
+  /** Judge problems this visitor can open. */
+  problemIds: string[];
 }) {
   const t = useT();
   const locale = useLocale();
@@ -436,7 +450,9 @@ export function ContentDetail({
   }, [key, params.type, params.slug]);
   const current = state?.key === key ? state : null;
   const item = current?.item;
-  const section = SECTION_OF[params.type] || 'resources';
+  const dup = item?.dupOf;
+  const judgeable = !!dup?.problem && problemIds.includes(dup.problem);
+  const section = contentSection(params.type);
   const back = () => navigate(section, section === 'resources' ? { type: params.type } : {});
 
   return (
@@ -464,20 +480,30 @@ export function ContentDetail({
                 <p className="ct-lead">{localized(locale, item.summary, item.summaryZh)}</p>
               )}
             </header>
-            {item.dupOf && item.dupOf.kind !== 'prachub' && (
+            {dup && dup.kind !== 'prachub' && (
               <div className="ct-callout rd-reveal" style={{ '--i': 1 } as React.CSSProperties}>
                 <span>
-                  {t(
-                    '这道题已收录在算法题库，可以直接在线写代码、提交评测。',
-                    'This problem is in the Problem Bank, so you can write code and submit it online.',
-                  )}
+                  {judgeable
+                    ? t(
+                        '这道题已收录在算法题库，可以直接在线写代码、提交评测。',
+                        'This problem is in the Problem Bank, so you can write code and submit it online.',
+                      )
+                    : t(
+                        `算法题库里已有这道题：${dup.title || dup.id}`,
+                        `The Problem Bank already has this problem: ${dup.title || dup.id}`,
+                      )}
                 </span>
                 <button
                   type="button"
                   className="rd-button"
-                  onClick={() => navigate('problem', { problem: item.dupOf!.id })}
+                  onClick={() =>
+                    judgeable
+                      ? navigate('problem', { problem: dup.problem! })
+                      : navigate('problems', dup.kind === 'oa' ? { library: 'oa' } : {})
+                  }
                 >
-                  {t('去做题', 'Go to problem')} <ArrowRight size={14} />
+                  {judgeable ? t('去做题', 'Go to problem') : t('打开题库', 'Open Problem Bank')}{' '}
+                  <ArrowRight size={14} />
                 </button>
               </div>
             )}

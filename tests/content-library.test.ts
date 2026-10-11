@@ -68,6 +68,7 @@ void test('lists, filters, search and facets; duplicates stay out of lists', asy
   assert.deepEqual(all.items.map((i: { slug: string }) => i.slug), ['topk', 'lru']); // newest first; two-sum is a duplicate
   assert.equal(all.total, 2);
   assert.deepEqual(all.facets.companies.map((c: { value: string }) => c.value).sort(), ['google', 'uber']);
+  assert.equal(all.facets.companyTotal, 2);
   assert.equal((await get('list?type=questions&company=google')).items[0].slug, 'lru');
   assert.equal((await get('list?type=questions&difficulty=hard')).items[0].slug, 'topk');
   assert.equal((await get('list?type=questions&kind=coding_question')).total, 1);

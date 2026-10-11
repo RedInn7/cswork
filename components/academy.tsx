@@ -73,7 +73,7 @@ import {
 import { JudgeStatus } from './judge-status';
 import { setLocale, useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
-import { ContentDetail, ContentList } from './content-library';
+import { ContentDetail, ContentList, contentSection } from './content-library';
 import {
   TicketComposer,
   TicketView,
@@ -247,7 +247,9 @@ export function Academy() {
     setTicketContext(context);
   }
   const selectedProblem = boot.problems.find((p) => p.id === params.problem),
-    current = nav.find((n) => n[3] === view),
+    // An opened library item belongs to its list's menu entry.
+    navView = view === 'content' ? contentSection(params.type) : view,
+    current = nav.find((n) => n[3] === navView),
     unread =
       boot.unreadNotifications ??
       boot.notifications.filter((n) => !n.read_at).length;
@@ -355,7 +357,13 @@ export function Academy() {
       case 'resources':
         return <ContentList key={view} section={view} params={params} navigate={navigate} />;
       case 'content':
-        return <ContentDetail params={params} navigate={navigate} />;
+        return (
+          <ContentDetail
+            params={params}
+            navigate={navigate}
+            problemIds={boot.problems.map((p) => p.id)}
+          />
+        );
       case 'problem':
         return selectedProblem ? (
           <ProblemWorkspace
@@ -450,7 +458,7 @@ export function Academy() {
                 <SidebarMenuItem key={key}>
                   <SidebarMenuButton
                     isActive={
-                      view === key ||
+                      navView === key ||
                       (view === 'lesson' &&
                         key ===
                           (isKnowledgeLesson(params.lesson)

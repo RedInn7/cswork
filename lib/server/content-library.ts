@@ -92,6 +92,8 @@ function facets(db: Database.Database, types: readonly ItemType[]) {
       difficulties: group('difficulty'),
       rounds: group('round'),
       total: (db.prepare(`SELECT COUNT(*) AS n FROM items WHERE ${where}`).get(...types) as { n: number }).n,
+      // The company menu is capped; this is the real count.
+      companyTotal: (db.prepare(`SELECT COUNT(DISTINCT company_slug) AS n FROM items WHERE ${where}`).get(...types) as { n: number }).n,
     });
   }
   return facetCache.get(key);
@@ -123,7 +125,13 @@ function list(db: Database.Database, params: URLSearchParams) {
     where.push('items_fts MATCH ?');
     args.push(q);
   }
-  const order = q && params.get('sort') !== 'new' ? 'f.rank' : 'i.published_at DESC, i.rowid DESC';
+  // Tutorials read as a syllabus (core first, in the order they were written); the rest newest first.
+  const order =
+    q && params.get('sort') !== 'new'
+      ? 'f.rank'
+      : types.includes('algorithm')
+        ? "i.level = 'advanced', i.rowid"
+        : 'i.published_at DESC, i.rowid DESC';
   const page = Math.min(2000, Math.max(1, Number(params.get('page')) || 1));
   const total = (db.prepare(`SELECT COUNT(*) AS n FROM ${from} WHERE ${where.join(' AND ')}`).get(...args) as { n: number }).n;
   const items = db

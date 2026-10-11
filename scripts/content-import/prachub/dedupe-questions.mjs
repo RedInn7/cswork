@@ -2,7 +2,7 @@
 //   oa      -> content/oa-master/catalog.json        (OA problems by company; statement text)
 //   library -> $PRACHUB_DIR/ref/study_library.json    (LeetCode library; titles only)
 //   prachub -> another parsed PracHub question         (coding vs interview copy, or a re-post under another slug)
-// Output: parsed/question-dupes.json        [{id, dupOf:{kind,id,title}, score, method}]  confident: skip `id`
+// Output: parsed/question-dupes.json        [{id, dupOf:{kind,id,title,problem?}, score, method}]  problem = judge problem id  confident: skip `id`
 //         parsed/question-dupes-review.json [{id, title, candidate:{kind,id,title}, score, text, title, company, reason}]
 //   node dedupe-questions.mjs                                   write both files
 //   node dedupe-questions.mjs --check                           self-check of the matching helpers
@@ -123,7 +123,7 @@ if (process.argv.includes('--check')) {
 }
 
 // ---------- load ----------
-const lib = existsSync(LIBRARY) ? JSON.parse(readFileSync(LIBRARY, 'utf8')).map((l) => ({ kind: 'library', id: l.id, number: l.number, slug: l.slug, title: l.title_en.replace(/\s*🔒\s*$/, '') })) : [];
+const lib = existsSync(LIBRARY) ? JSON.parse(readFileSync(LIBRARY, 'utf8')).map((l) => ({ kind: 'library', id: l.id, number: l.number, slug: l.slug, title: l.title_en.replace(/\s*🔒\s*$/, ''), problem: l.judge_problem_id || null })) : [];
 const libByNum = new Map(lib.map((l) => [l.number, l]));
 const libBySlug = new Map(lib.map((l) => [l.slug, l]));
 function readJsonl(name) {
@@ -149,7 +149,7 @@ function readJsonl(name) {
 }
 const ph = [...readJsonl('coding-questions'), ...readJsonl('interview-questions')];
 const oa = JSON.parse(readFileSync(OA_CATALOG, 'utf8')).items.map((o) => ({
-  kind: 'oa', id: o.id, title: o.title, company: normCompany(o.companyName), companyName: o.companyName, text: `${o.title}\n${statementOf(o.statement || '')}`,
+  kind: 'oa', id: o.id, problem: o.id, title: o.title, company: normCompany(o.companyName), companyName: o.companyName, text: `${o.title}\n${statementOf(o.statement || '')}`,
 }));
 const docs = [...ph, ...oa];
 const P = ph.length;
@@ -210,7 +210,7 @@ if (process.argv.includes('--sample')) {
 
 // ---------- decide ----------
 const r3 = (x) => Math.round(x * 1000) / 1000;
-const ref = (d) => ({ kind: d.kind, id: d.id, title: d.title });
+const ref = (d) => ({ kind: d.kind, id: d.id, title: d.title, ...(d.problem ? { problem: d.problem } : {}) });
 const best = new Map(); // PracHub id -> confident match, priority oa > library > prachub
 const offer = (id, m) => {
   const cur = best.get(id);
