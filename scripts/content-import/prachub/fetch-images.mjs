@@ -35,7 +35,16 @@ export const texts = (item) => [item.body, item.extra?.bodyZh, ...(item.extra?.f
 async function main() {
   mkdirSync(ASSETS, { recursive: true });
   const map = existsSync(MAP) ? JSON.parse(readFileSync(MAP, 'utf8')) : {};
-  for (const url of Object.keys(map)) if (!KEEP.test(absolute(url) || '')) delete map[url];
+  // Images the current content uses (and we keep); anything else is dropped from the map and disk.
+  const used = new Set();
+  for (const file of readdirSync(PARSED).filter((f) => f.endsWith('.jsonl'))) {
+    for await (const line of createInterface({ input: createReadStream(join(PARSED, file)), crlfDelay: Infinity })) {
+      if (!line.trim()) continue;
+      for (const text of texts(JSON.parse(line)))
+        for (const url of imageUrls(text)) if (KEEP.test(absolute(url) || '')) used.add(url);
+    }
+  }
+  for (const url of Object.keys(map)) if (!used.has(url)) delete map[url];
   const kept = new Set(Object.values(map).map((local) => local.split('/').pop()));
   let pruned = 0;
   for (const name of readdirSync(ASSETS)) {
@@ -44,14 +53,8 @@ async function main() {
     pruned++;
   }
   if (pruned) console.log(`pruned ${pruned} files that are not published`);
-  const wanted = new Set();
-  for (const file of readdirSync(PARSED).filter((f) => f.endsWith('.jsonl'))) {
-    for await (const line of createInterface({ input: createReadStream(join(PARSED, file)), crlfDelay: Infinity })) {
-      if (!line.trim()) continue;
-      for (const text of texts(JSON.parse(line)))
-        for (const url of imageUrls(text)) if (KEEP.test(absolute(url) || '') && !map[url]) wanted.add(url);
-    }
-  }
+  writeFileSync(MAP, JSON.stringify(map, null, 1));
+  const wanted = new Set([...used].filter((url) => !map[url]));
   const todo = [...wanted];
   console.log(`images: ${Object.keys(map).length} already local, ${todo.length} to fetch`);
   let i = 0, ok = 0, failed = 0;
