@@ -200,6 +200,7 @@ export function Academy() {
           : ''),
     );
     window.scrollTo({ top: 0, behavior: 'instant' });
+    window.dispatchEvent(new Event('cswork:analytics-navigation'));
   }, []);
   useEffect(() => {
     if (!search || !query.trim()) {
