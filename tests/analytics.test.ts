@@ -1,122 +1,53 @@
-import test from 'node:test';
+import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { beacon, track } from '../lib/analytics';
-
-/** Installs browser globals for one test and restores Node's afterwards. */
-function browser(globals: Record<string, unknown>) {
-  const saved = Object.keys(globals).map(
-    (name) =>
-      [name, Object.getOwnPropertyDescriptor(globalThis, name)] as const,
+import {
+  analyticsPage,
+  analyticsReferrer,
+  measurementId,
+} from '../lib/analytics';
+test('default page matches the problem library and referrers expose only approved origins', () => {
+  assert.equal(
+    analyticsPage('https://cswork.org/')?.page_location,
+    'https://cswork.org/problems',
   );
-  for (const [name, value] of Object.entries(globals))
-    Object.defineProperty(globalThis, name, { configurable: true, value });
-  return () => {
-    for (const [name, descriptor] of saved)
-      if (descriptor) Object.defineProperty(globalThis, name, descriptor);
-      else delete (globalThis as Record<string, unknown>)[name];
-  };
-}
-
-void test('analytics does nothing on the server', async () => {
-  const original = globalThis.fetch;
-  let requests = 0;
-  globalThis.fetch = async () => {
-    requests++;
-    return new Response();
-  };
-  try {
-    track('judge_submit', { mode: 'run' });
-    beacon('page_view', { view: 'problems' });
-    assert.equal(requests, 0);
-  } finally {
-    globalThis.fetch = original;
-  }
+  assert.equal(
+    analyticsReferrer('https://www.google.com/search?q=private#token'),
+    'https://google.com/',
+  );
+  for (const value of [
+    'http://192.168.1.1/private',
+    'http://localhost/',
+    'https://staff.internal/',
+    'https://unknown.example/?email=a@b.com',
+    'javascript:alert(1)',
+  ])
+    assert.equal(analyticsReferrer(value), '');
 });
-
-void test('track sends clean params to gtag and the dashboard; page views skip gtag', () => {
-  const gtag: unknown[][] = [];
-  const beacons: { url: string; body: string }[] = [];
-  const store = new Map<string, string>();
-  const restore = browser({
-    window: { gtag: (...args: unknown[]) => gtag.push(args) },
-    navigator: {
-      sendBeacon: (url: string, body: string) =>
-        beacons.push({ url, body }) > 0,
-    },
-    localStorage: {
-      getItem: (key: string) => store.get(key) ?? null,
-      setItem: (key: string, value: string) => void store.set(key, value),
-    },
-  });
-  try {
-    track('judge_result', {
-      mode: 'submit',
-      language: 'cpp',
-      verdict: 'x'.repeat(200),
-      passed: 3,
-      duration_ms: 812,
-      queue_ms: null,
-      server_ms: Number.NaN,
-    });
-    beacon('page_view', { view: 'content', type: undefined });
-    const kept = {
-      mode: 'submit',
-      verdict: 'x'.repeat(120),
-      passed: 3,
-      duration_ms: 812,
-    };
-    // GA4 reads `language` as the visitor's UI language, so gtag gets code_language.
-    assert.deepEqual(gtag, [
-      ['event', 'judge_result', { ...kept, code_language: 'cpp' }],
-    ]);
-    assert.deepEqual(
-      beacons.map(({ url }) => url),
-      ['/api/metrics', '/api/metrics'],
-    );
-    const [result, page] = beacons.map(({ body }) => JSON.parse(body));
-    assert.deepEqual(result.events, [
-      { name: 'judge_result', params: { ...kept, language: 'cpp' } },
-    ]);
-    assert.deepEqual(page.events, [
-      { name: 'page_view', params: { view: 'content' } },
-    ]);
-    assert.match(result.vid, /^[0-9a-f-]{36}$/);
-    assert.equal(page.vid, result.vid);
-    assert.equal(store.get('cswork:vid'), result.vid);
-  } finally {
-    restore();
-  }
+test('configuration fails closed for missing and malformed IDs', () => {
+  for (const value of [undefined, '', 'G-1<script>', 'UA-123'])
+    assert.equal(measurementId(value), '');
+  assert.equal(measurementId('G-ABC1234567'), 'G-ABC1234567');
 });
-
-void test('blocked gtag, storage and beacon still reach the dashboard without throwing', async () => {
-  const original = globalThis.fetch;
-  const posts: RequestInit[] = [];
-  globalThis.fetch = async (_url, init) => {
-    posts.push(init!);
-    throw new TypeError('offline');
-  };
-  const restore = browser({
-    window: {},
-    navigator: { sendBeacon: () => false },
-    localStorage: {
-      getItem() {
-        throw new Error('blocked');
-      },
+test('only canonical production host and approved pages are tracked', () => {
+  for (const url of [
+    'http://cswork.org/',
+    'https://evil.test/',
+    'https://cswork.org/api/auth/callback/google?code=secret',
+    'https://cswork.org/?view=tickets',
+    'https://cswork.org/?view=teacher',
+    'https://cswork.org/?view=__proto__',
+  ])
+    assert.equal(analyticsPage(url), null);
+});
+test('private IDs, email, query and invite hash never enter analytics', () => {
+  assert.deepEqual(
+    analyticsPage(
+      'https://cswork.org/?view=problem&problem=private-id&email=a@test.com&q=secret#invite=token',
+    ),
+    {
+      page_location: 'https://cswork.org/problem',
+      page_title: 'CSWORK · Practice',
+      page_referrer: '',
     },
-  });
-  try {
-    track('login', { method: 'email' });
-    track('language_switch', { locale: 'zh' });
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    assert.equal(posts.length, 2);
-    assert.equal(posts[0].keepalive, true);
-    const [first, second] = posts.map(({ body }) => JSON.parse(body as string));
-    assert.deepEqual(first.events, [
-      { name: 'login', params: { method: 'email' } },
-    ]);
-    assert.equal(second.vid, first.vid, 'one in-memory id per page load');
-  } finally {
-    restore();
-    globalThis.fetch = original;
-  }
+  );
 });

@@ -101,22 +101,32 @@ export function PrivacyDocument() {
                 浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。
               </p>
               <p>
-                平台使用 Google Analytics
-                了解网站的使用情况，包括访问的页面、设备与浏览器类型、大致所在地区，以及判题耗时等产品使用事件。Google
-                Analytics 会在你的浏览器中设置 Cookie，收集的数据由 Google
-                处理。如不希望被统计，可以安装{' '}
-                <a href="https://tools.google.com/dlpage/gaoptout">
-                  Google Analytics 停用浏览器插件
-                </a>
-                。
-              </p>
-              <p>
-                同样的使用事件（访问的页面、站内搜索词、判题耗时与出错情况）也会发送到本平台自己的服务器，用于运营统计。浏览器本地存储里会保存一个随机生成的匿名访客编号，用来统计访客数；登录时事件会关联到你的账号。我们不记录 IP 地址和设备标识，这些记录保留 120 天。
+                平台自己的服务器会记录基本的使用事件（访问的页面、站内搜索词、判题耗时与出错情况），用于运营统计。这部分统计不经过 Google，也不受下方 Google Analytics 选项的影响：浏览器本地存储里会保存一个随机生成的匿名访客编号，用来统计访客数；登录时事件会关联到你的账号。我们不记录 IP 地址和设备标识，这些记录保留 120 天。
               </p>
             </section>
 
             <section aria-labelledby="privacy-storage">
-              <h2 id="privacy-storage">存储、访问与保留</h2>
+              <h2 id="privacy-storage">可选统计、存储与保留</h2>
+              <p>
+                只有你点击允许后，平台才加载 Google Analytics 并使用统计
+                Cookie，了解访问量、设备和页面类别。Google
+                会接收浏览器统计请求，并可能生成大致地区等汇总数据。拒绝不影响网站功能。
+              </p>
+              <p>
+                我们仅发送预先限定的页面类别，不发送邮箱、昵称、用户标识、代码、搜索词、工单内容、邀请令牌或原始网址参数；不启用广告个性化或
+                Google
+                signals。来源统计只保留白名单内搜索引擎和社交网站的域名，不含路径或搜索内容。统计
+                Cookie 有效期为 90 天。
+              </p>
+              <p>
+                可随时通过右下角“Privacy /
+                隐私设置”撤回同意，停止后续统计并清除本网站的 Google Analytics
+                Cookie。之前已收集的数据不会因此自动删除；选择只保存在当前浏览器。详见{' '}
+                <a href="https://policies.google.com/privacy" rel="noreferrer">
+                  Google 隐私政策
+                </a>
+                。
+              </p>
               <p>
                 cswork
                 使用独立的应用、数据库和文件目录保存课程业务数据、视频及附件。当前部署与
@@ -300,30 +310,46 @@ export function PrivacyDocument() {
                 has not been submitted yet.
               </p>
               <p>
-                The platform uses Google Analytics to understand how the site is
-                used, including the pages you view, your device and browser
-                type, your approximate location, and product events such as how
-                long judging takes. Google Analytics sets cookies in your
-                browser, and the data it collects is processed by Google. To opt
-                out, you can install the{' '}
-                <a href="https://tools.google.com/dlpage/gaoptout">
-                  Google Analytics opt-out browser add-on
-                </a>
-                .
-              </p>
-              <p>
-                The same usage events (pages viewed, site searches, judging time
-                and errors) are also sent to the platform&apos;s own server for
-                operating statistics. Your browser&apos;s local storage keeps a
-                randomly generated anonymous visitor ID so visitors can be
-                counted; when you are signed in, events are linked to your
-                account. We do not record IP addresses or device identifiers,
-                and these records are kept for 120 days.
+                The platform&apos;s own server records basic usage events (pages
+                viewed, site searches, judging time and errors) for operating
+                statistics. These do not go to Google and do not depend on the
+                Google Analytics choice below: your browser&apos;s local storage
+                keeps a randomly generated anonymous visitor ID so visitors can
+                be counted, and when you are signed in, events are linked to
+                your account. We do not record IP addresses or device
+                identifiers, and these records are kept for 120 days.
               </p>
             </section>
 
             <section aria-labelledby="privacy-storage">
-              <h2 id="privacy-storage">Storage, access, and retention</h2>
+              <h2 id="privacy-storage">
+                Optional analytics, storage, and retention
+              </h2>
+              <p>
+                Only after you allow it, we load Google Analytics and use
+                analytics cookies to measure visits, devices and page
+                categories. Google receives browser analytics requests and may
+                derive approximate location reports. Declining does not affect
+                site features.
+              </p>
+              <p>
+                We send predefined page categories and allowlisted search/social
+                source domains without paths or queries, not email, names, user
+                IDs, code, search terms, ticket content, invitation tokens or
+                raw URL parameters. Advertising personalization and Google
+                signals are disabled. Analytics cookies expire after 90 days.
+              </p>
+              <p>
+                You can withdraw consent through “Privacy / 隐私设置” at the
+                bottom right. This stops future analytics and clears this site's
+                Google Analytics cookies, but does not automatically delete
+                previously collected data. Your choice is stored in the current
+                browser only. See{' '}
+                <a href="https://policies.google.com/privacy" rel="noreferrer">
+                  Google's privacy policy
+                </a>
+                .
+              </p>
               <p>
                 cswork uses a separate application, database, and file directory
                 to store its course business data, videos, and attachments. The
