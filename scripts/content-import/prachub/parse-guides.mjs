@@ -2,8 +2,13 @@
 //   node scripts/content-import/prachub/parse-guides.mjs                  all raw/interview-guide pages
 //   node scripts/content-import/prachub/parse-guides.mjs --files a.html   dry run on local pages (.html/.html.gz)
 //   node scripts/content-import/prachub/parse-guides.mjs --self-test
-// Source: the page's initialGuide payload (stats, rounds, listed questions, FAQ, editorial Markdown);
-// the editorial Markdown is used only when the page renders all of it (else the rendered HTML).
+// Two page generations:
+// - structured (almost all): props.initial.guide (schema 1.3). The body is rebuilt from it in the page's section
+//   order: brief, overview, interview process, where candidates lose points, questions with approach / worked
+//   solution / follow-ups, practice checklist, behavioral prompts. Hero widgets, stat cards, CTAs, provenance notes,
+//   candidate-report excerpts and link lists stay out; the FAQ goes to extra.faq, related guides to relations.
+// - initialGuide: stats, rounds, listed questions, FAQ, editorial Markdown; the editorial Markdown is used only
+//   when the page renders all of it (else the rendered HTML).
 // Second pass: company, role and numbers are masked, each body is fingerprinted, and the share of its
 // text that also appears in many other guides (template text) decides extra.boilerplate.
 import assert from 'node:assert/strict';
@@ -11,10 +16,10 @@ import { createHash } from 'node:crypto';
 import { closeSync, mkdirSync, openSync, realpathSync, renameSync, writeSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PARSED, jsonLd, sourceUrl } from './common.mjs';
+import { PARSED, jsonLd, meta, sourceUrl } from './common.mjs';
 import {
   run, flight, flightOwner, flightEntity, parseHtml, findAll, attr, textOf, toMarkdown, publicBody, debrand, debrandText,
-  linkRelations, dedupeRelations, iso, slugify, squash, pageText, str,
+  linkRelations, dedupeRelations, iso, slugify, squash, pageText, str, sentences, tidy, embeddedHtml, fixLinks, dropSections, outsideCode,
 } from './parse-articles.mjs';
 
 // Funnel order of interview rounds (the payload lists them alphabetically); unknown rounds keep payload order.
@@ -30,9 +35,164 @@ const norm = (s) => squash(s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' '));
 /** True when the opening words of `part` already occur in `md`. */
 const contains = (md, part) => norm(md).includes(norm(part).split(' ').slice(0, 10).join(' '));
 
+// In guides "our platform" / "on this platform" is the hiring company speaking (reported questions, job copy), and the
+// old site only ever names itself: the shared self-reference rule is masked so only text naming the old site goes.
+const unbrand = (md) => debrand(md.replace(/\b([Oo])(?=ur\b)|\b([Tt])(?=his (?:site|platform)\b)/g, '$1$2\uE010')).md.replace(/\uE010/g, '');
+
+/** The first description that survives de-branding, preferring one not cut off, in at most two sentences. */
+function summaryOf(candidates) {
+  const whole = (s) => /[.!?)"”’]$/.test(s) && !/\.{3,}$/.test(s); // meta descriptions end mid-word or in "......" when cut
+  const ok = candidates.map((s) => squash(unbrand(squash(String(s || ''))))).filter((s) => /[\p{L}\p{N}]/u.test(s));
+  const best = ok.find(whole) || ok[0];
+  if (!best) return null;
+  const two = sentences(best).slice(0, 2);
+  const t = (two.join('').length > 300 ? two.slice(0, 1) : two).join('').trim(); // a card shows a sentence or two, not a paragraph
+  return whole(t) ? t : `${t.replace(/(?:\.{2,}|…)$/, '').replace(/\s+\S*$/, '').replace(/[\s,;:(-]+$/, '')}…`;
+}
+// "No. It is PracHub's own research …": the shared sentence splitter reads "No." as an abbreviation, so a leading
+// yes / no is split off first and survives when the sentence after it goes.
+const answer = (s) => unbrand(String(s || '').trim().replace(/^(Yes|No)\.[ \t]+/, '$1.\n')).replace(/^(Yes|No)\.\n/, '$1. ');
+const faqOf = (items) => (items || []).map((f) => ({ q: squash(debrandText(String(f?.question || ''))), a: answer(f?.answer) })).filter((f) => f.q && f.a);
+
+// ---------------------------------------------------------------- structured guides (schema 1.3)
+
+const CATEGORY_ORDER = ['coding', 'sql', 'design', 'debugging']; // the page's question filter order; others follow
+// The old site's company slug, which the guide slug starts with and experiences / questions use (é -> "-", & -> "and").
+const siteSlug = (s) => s.toLowerCase().replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const IMAGE_LINK = /\]\(https?:\/\/[^)\s]+\.(?:png|jpe?g|gif|webp|svg)\)/i;
+const fence = (code, lang) => {
+  const f = '`'.repeat(Math.max(3, ...(code.match(/`+/g) || []).map((x) => x.length + 1)));
+  return `${f}${lang || ''}\n${code.replace(/\n+$/, '')}\n${f}`;
+};
+
+/** Markdown body of a structured guide, in the page's section order; `changed` is set when old-site text went. */
+function structuredBody(g) {
+  let changed = false;
+  // Payload strings are one-line inline Markdown: without old-site sentences, and never read as a heading or list.
+  const p = (s) => {
+    const t = squash(String(s || ''));
+    let u = unbrand(t);
+    if (u !== t) changed = true;
+    // Links to teaching images, which are not published: the sentence pointing at them (and one leaning on it) goes.
+    let cut = false;
+    if (IMAGE_LINK.test(u)) u = sentences(u).filter((x) => !(cut = IMAGE_LINK.test(x) || (cut && /^\W*(?:these|this|they|it)\b/i.test(x)))).join('').trim();
+    return u.replace(/^(\d+)([.)])(?=\s)/, '$1\\$2').replace(/^([#>+*-])(?=\s)/, '\\$1');
+  };
+  const list = (xs, ordered) => (xs || []).map(p).filter(Boolean).map((x, i) => `${ordered ? `${i + 1}.` : '-'} ${x}`).join('\n');
+  const part = (label, md) => (md ? `**${label}**\n\n${md}` : '');
+  const sect = (head, ...parts) => (parts.some(Boolean) ? [head, ...parts] : []);
+  const out = [];
+
+  const s60 = g.summary60 || {};
+  const note = p(g.loop?.note);
+  const brief = [p(s60.companyProduct), p(s60.roleScope), p(s60.roundSummary)].filter((x, i) => x && (i < 2 || x !== note));
+  out.push(...sect('## The 60-second brief', ...brief, part('Focus areas', list(s60.focus?.length ? s60.focus : g.hero?.focus))));
+  const overview = (g.overview || []).map(p).filter((x) => x && !brief.some((b) => contains(b, x)));
+  out.push(...sect('## Overview', ...overview));
+
+  out.push(...sect(`## ${p(g.loop?.title) || 'The interview process'}`, note, ...(g.loop?.steps || []).flatMap((s) =>
+    sect(`### ${p(s.name || s.title)}`, p(s.description), part('What to demonstrate', list(s.evaluates)), part('How to prepare', list(s.prepare))))));
+  out.push(...sect('## Where candidates lose points', ...(g.losingPoints || []).flatMap((l) => (p(l.failure) ? sect(`### ${p(l.failure)}`, p(l.avoid)) : []))));
+
+  const exercises = new Map((g.workedExercises || []).map((e) => [e.questionId, e]));
+  const worked = (e, prompt) => {
+    const parts = [!contains(prompt || '', e.prompt || '') && p(e.prompt), list(e.steps, true), e.code ? fence(e.code, e.language) : '',
+      p(e.expectedResult) && `**Expected result:** ${p(e.expectedResult)}`, part('Verify it yourself', list(e.checks))].filter(Boolean);
+    return parts.length ? [`**Worked solution**${e.durationMinutes ? ` (${e.durationMinutes} min)` : ''}`, ...parts].join('\n\n') : '';
+  };
+  const card = (q) => {
+    const prompt = p(q.prompt);
+    const title = squash(debrandText(String(q.title || '')));
+    // Card titles are often the prompt cut at ~70 characters: a prompt that short is the heading instead.
+    const cut = !title || title === squash(String(q.prompt || '')) || (title.endsWith('…') && String(q.prompt || '').startsWith(title.slice(0, -1)));
+    const head = cut && prompt.length <= 200 ? prompt : title;
+    const tags = [q.difficulty && cap(q.difficulty), ...(q.topics || []).filter((t) => !/^other topics?$/i.test(t))].filter(Boolean);
+    const e = exercises.get(q.id);
+    exercises.delete(q.id);
+    return head ? sect(`### ${head}`, tags.length ? `*${tags.map(squash).join(' · ')}*` : '', head === prompt ? '' : prompt,
+      part('Approach', list(q.approach, true)), e ? worked(e, q.prompt) : '', part('Follow-up', list(q.followUp))) : [];
+  };
+  // A few pages also list their FAQ entries as question cards ("Q: How long …"): the FAQ shows them already.
+  const asked = new Set((g.faq || []).map((f) => norm(String(f?.question || ''))));
+  const open = (g.questions || []).filter((q) => !q.locked && !asked.has(norm(String(q.prompt || '').replace(/^Q:\s*/, ''))));
+  const rank = (q) => (CATEGORY_ORDER.includes(q.category) ? CATEGORY_ORDER.indexOf(q.category) : CATEGORY_ORDER.length);
+  const technical = open.filter((q) => q.category !== 'behavioral').sort((a, b) => rank(a) - rank(b)).flatMap(card);
+  const behavioral = open.filter((q) => q.category === 'behavioral');
+  const behavioralCards = behavioral.flatMap(card);
+  // A worked exercise whose question is not listed is a practice card of its own.
+  const orphans = [...exercises.values()].flatMap((e) => (p(e.title) ? sect(`### ${p(e.title)}`, worked(e, '')) : []));
+  out.push(...sect('## Questions & practice', ...technical, ...orphans));
+
+  const days = (g.plan?.days || []).flatMap((d) => {
+    const tasks = list(d.tasks);
+    const deliverable = p(d.deliverable);
+    return tasks || deliverable ? [`**Day ${d.day}${p(d.title) ? ` — ${p(d.title)}` : ''}**`, tasks, deliverable && `*Deliverable:* ${deliverable}`] : [];
+  });
+  out.push(...sect('## Suggested practice checklist', ...(days.length ? [p(g.plan.description), ...days] : [])));
+
+  // The page lists every behavioral prompt after the cards; the ones without a card are listed here once.
+  const carded = new Set(behavioral.map((q) => squash(String(q.prompt || ''))));
+  const prompts = list((g.behavioral?.prompts || []).filter((x) => !carded.has(squash(String(x)))), true);
+  out.push(...sect(`## ${p(g.behavioral?.title) || 'Behavioral questions'}`, p(g.behavioral?.intro), prompts, ...behavioralCards));
+  return { md: out.filter(Boolean).join('\n\n'), changed };
+}
+
+/** Item for a structured guide page (`props` holds initial.guide, related and sibling guides, candidate reports). */
+function structured(html, slug, props, count) {
+  const g = props.initial.guide;
+  const company = str(g.hero?.company);
+  const role = str(g.hero?.position);
+  const ld = jsonLd(html).find((x) => /Article/.test(String(x['@type']))) || {};
+  const b = structuredBody(g);
+  const body = tidy(b.md);
+  if (b.changed) count('debranded');
+  count('structured');
+  const questions = (g.questions || []).filter((q) => !q.locked);
+  const mix = { easy: 0, medium: 0, hard: 0, unknown: 0, total: questions.length };
+  for (const q of questions) mix[['easy', 'medium', 'hard'].includes(q.difficulty) ? q.difficulty : 'unknown']++;
+  const topics = {};
+  for (const q of questions) topics[q.category] = (topics[q.category] || 0) + 1;
+  return {
+    item: {
+      id: `gd-${slug}`, type: 'guide', slug, title: squash(debrandText(String(str(g.hero?.title) || str(ld.headline) || slug))),
+      // The meta description always describes the guide; the hero summary is often the job description's opening.
+      summary: summaryOf([meta(html, 'description'), g.discovery?.description, g.hero?.summary]), body,
+      company: company ? { slug: siteSlug(company) || slugify(company), name: company } : null,
+      role, category: null, difficulty: null, round: null, seniority: null, tags: [],
+      publishedAt: iso(ld.datePublished), updatedAt: iso(ld.dateModified) || iso(g.publication?.modifiedAt) || iso(g.updatedAt),
+      relations: dedupeRelations([
+        ...[...(props.siblingGuides || []), ...(props.relatedGuides || [])].map((x) => ({ kind: 'guide', slug: x?.slug, title: x?.title })),
+        // Candidate reports are linked, never quoted: their excerpts are personal accounts.
+        ...(props.experiences || []).map((x) => ({ kind: 'experience', slug: String(x?.href || '').split(/[?#]/)[0].split('/').filter(Boolean).pop(), title: x?.title })),
+        ...linkRelations(body),
+      ], { kind: 'guide', slug }),
+      extra: {
+        stats: {
+          questions: num(g.hero?.stats?.companyQuestionCount?.value),
+          rounds: (g.loop?.steps || []).map((s) => ({ name: squash(String(s.name || s.title || '')), questions: null })).filter((r) => r.name),
+          difficulty: mix.total ? mix : null,
+          topics: Object.entries(topics).map(([name, n]) => ({ name, questions: n })),
+          experiences: num(g.hero?.stats?.experienceCount?.value),
+          typicalPrep: null,
+          readingTime: num(g.summary60?.readingMinutes),
+        },
+        faq: faqOf(g.faq),
+      },
+      sourceUrl: sourceUrl('interview-guide', slug), partial: questions.length < (g.questions || []).length,
+    },
+  };
+}
+
+// ---------------------------------------------------------------- initialGuide pages
+
+const FAQ_HEAD = /^(?:\d+\.\s*)?(?:FAQs?|Frequently asked questions)$/i;
+
 function parse(html, slug, count) {
+  if (slug === '_index') return { skip: 'index' }; // the guide listing page
   const rows = flight(html);
-  const props = flightOwner(rows, 'initialGuide') || {};
+  const props = flightOwner(rows, 'initialGuide') || flightOwner(rows, 'relatedGuides') || {};
+  if (props.initial?.guide?.hero) return structured(html, slug, props, count);
   // Another guide variant may name the prop differently: the richest payload object with this slug.
   const g = props.initialGuide || flightEntity(rows, slug);
   if (!g) throw new Error('no guide payload');
@@ -50,6 +210,14 @@ function parse(html, slug, count) {
       if (md && !contains(editorial, md)) editorial += `\n\n${md}`;
     }
   if (!editorial && pub.partial) return { skip: 'locked' };
+  let faq = faqOf(g.faq_items);
+  // Embedded HTML (diagram SVGs, video iframes) shows as text: rewritten as Markdown. Page navigation ("12 · FAQ",
+  // "Back to all six questions ↑", "Open the full-size diagram" of a dropped image), the closing link list and a FAQ
+  // that repeats extra.faq (rendered pages keep only its answers) go; a FAQ entry the body already asks goes from extra.faq.
+  editorial = dropSections(outsideCode(fixLinks(embeddedHtml(tidy(editorial))), (t) => t
+    .replace(/^\d{1,2} · [A-Z][\w &/-]*$|^(?![-*+>|#\s])[^\n[\]]*[→↑↓]$|^\[[^\]\n]*\]\(https?:\/\/\S+\.(?:png|jpe?g|gif|webp|svg)\)$/gm, '')), /^keep practi[cs]ing$/i);
+  if (faq.some((f) => editorial.includes(f.q) || contains(editorial, f.a))) editorial = dropSections(editorial, FAQ_HEAD);
+  faq = faq.filter((f) => !editorial.includes(f.q));
 
   const sections = findAll(doc, (n) => n.tag === 'section');
   const section = (id) => sections.find((s) => attr(s, 'aria-labelledby') === id);
@@ -77,22 +245,26 @@ function parse(html, slug, count) {
 
   const company = str(g.company);
   const role = str(g.position);
-  const out = [`## ${heading('overview') || `Interviewing at ${company}`}`];
-  if (overviewMd && !contains(editorial, overviewMd)) out.push(debrand(overviewMd).md);
-  const facts = [['Practice bank', stats.questions && `${stats.questions}+ questions`], ['Rounds', stats.rounds.length],
-    ['Typical prep', stats.typicalPrep], ['Interview reports', stats.experiences]].filter(([, v]) => v);
-  if (facts.length) out.push(facts.map(([k, v]) => `- **${k}:** ${v}`).join('\n'));
-  if (stats.rounds.length) out.push('### Interview rounds', table(['Round', 'Questions'], stats.rounds.map((r) => [r.name, r.questions])));
+  const who = [company, role].filter(Boolean).join(' ');
+  const out = overviewMd && !contains(editorial, overviewMd) ? [unbrand(overviewMd)] : [];
+  // Without a company the page's heading reads "Interviewing at" with nothing after it: no company stats block then.
+  if (company) {
+    const facts = [['Practice bank', stats.questions && `${stats.questions}+ questions`], ['Rounds', stats.rounds.length],
+      ['Typical prep', stats.typicalPrep], ['Interview reports', stats.experiences]].filter(([, v]) => v);
+    if (facts.length) out.push(facts.map(([k, v]) => `- **${k}:** ${v}`).join('\n'));
+    if (stats.rounds.length) out.push('### Interview rounds', table(['Round', 'Questions'], stats.rounds.map((r) => [r.name, r.questions])));
+    if (out.length) out.unshift(`## ${heading('overview') || `Interviewing at ${company}`}`);
+  }
   if (stats.difficulty)
-    out.push(`## ${heading('difficulty') || `How hard is the ${company} ${role} interview?`}`,
+    out.push(`## ${heading('difficulty') || `How hard is the ${who ? `${who} ` : ''}interview?`}`,
       table(['Difficulty', 'Share', 'Questions'], ['Easy', 'Medium', 'Hard'].map((k) => [k, pct(stats.difficulty[k.toLowerCase()], stats.difficulty.total), stats.difficulty[k.toLowerCase()]])));
   if (stats.topics.length)
-    out.push(`## ${heading('topics') || `What ${company} actually tests for`}`,
+    out.push(`## ${heading('topics') || `What ${company || 'the interview'} actually tests for`}`,
       table(['Topic', 'Share', 'Questions'], stats.topics.map((t) => [t.name, pct(t.questions, stats.questions || stats.topics.reduce((a, x) => a + x.questions, 0)), t.questions])));
-  const d = debrand(editorial);
-  if (d.changed) count('debranded');
+  const d = unbrand(editorial);
+  if (squash(d) !== squash(editorial)) count('debranded');
   if (pub.source === 'html') count('htmlBody');
-  const body = [...out, d.md].filter(Boolean).join('\n\n');
+  const body = [...out, d].filter(Boolean).join('\n\n');
 
   const crumbs = jsonLd(html).find((x) => x['@type'] === 'BreadcrumbList')?.itemListElement || [];
   const companySlug = crumbs.map((x) => /\/companies\/([^/?#]+)/.exec(String(x?.item || ''))?.[1]).find(Boolean);
@@ -101,7 +273,7 @@ function parse(html, slug, count) {
   return {
     item: {
       id: `gd-${slug}`, type: 'guide', slug, title: squash(debrandText(String(g.title || slug))),
-      summary: squash(debrandText(String(g.meta_description || g.seo_summary || ''))) || null, body,
+      summary: summaryOf([g.meta_description, g.seo_summary, meta(html, 'description')]), body,
       company: company ? { slug: companySlug || slugify(company), name: company } : null,
       role, category: null, difficulty: ['easy', 'medium', 'hard'].includes(level) ? level : null, round: null, seniority: null,
       tags: [...new Set((g.tags || []).map((t) => squash(String(t))).filter((t) => t && !/prachub/i.test(t)))],
@@ -112,10 +284,7 @@ function parse(html, slug, count) {
         ...(g.experiences || []).map((x) => ({ kind: 'experience', slug: String(x?.href || '').split(/[?#]/)[0].split('/').filter(Boolean).pop(), title: x?.title })),
         ...linkRelations(body),
       ], { kind: 'guide', slug }),
-      extra: {
-        stats,
-        faq: (g.faq_items || []).map((f) => ({ q: squash(debrandText(String(f?.question || ''))), a: debrandText(String(f?.answer || '')).trim() })).filter((f) => f.q && f.a),
-      },
+      extra: { stats, faq },
       sourceUrl: sourceUrl('interview-guide', slug), partial: pub.partial,
     },
   };
@@ -226,6 +395,42 @@ function selfTest() {
   assert.equal(items[1].extra.fingerprint, items[2].extra.fingerprint); // identical apart from the company name
   assert.equal(stats.boilerplate.boilerplate, 59);
   assert.deepEqual(maskedWords("Stripe's SWE loop: 4 rounds", 'Stripe', 'Software Engineer'), ['\uE001', 's', '\uE001', 'loop', '0', 'rounds']);
+
+  const note = 'PracHub has no confirmed round sequence for Acme. Treat the sections below as preparation areas.';
+  const guide = {
+    summary60: { companyProduct: 'Acme builds ledgers.', roleScope: 'Expect SQL.', roundSummary: note, focus: ['Idempotent writes', 'Keyset paging'] },
+    overview: ['Acme builds ledgers.', '1. Engineers own services.'],
+    loop: { title: 'The Acme interview process', note, steps: [{ name: 'Screen', description: 'A call.', evaluates: ['Fit'], prepare: ["Drill PracHub's SQL set.", 'List constraints.'] }] },
+    losingPoints: [{ failure: 'Guessing', avoid: 'Measure first. Visuals: [trace](https://cdn.example/t.png). These are fictional.' }],
+    faq: [{ question: 'How long is the process?', answer: 'Weeks.' }],
+    questions: [
+      { id: 'q1', category: 'design', difficulty: 'hard', topics: ['other topics'], title: 'Design a feed for our pl…', prompt: 'Design a feed for our platform.', approach: ['Size it.'], followUp: ['Scale?'] },
+      { id: 'q2', category: 'coding', difficulty: 'easy', topics: ['heaps'], title: 'Top K', prompt: 'Return the k largest values.', approach: [], followUp: [] },
+      { id: 'q3', category: 'behavioral', difficulty: 'medium', topics: [], title: 'A conflict', prompt: 'Tell me about a conflict.', approach: ['Name it.'], followUp: [] },
+      { id: 'q5', category: 'debugging', difficulty: 'easy', title: 'Why is it slow? Walk through the first thing to measure and what each…', prompt: 'Why is it slow? Walk through the first thing to measure and what each result would tell you about the cause, then how you would confirm the fix under the same load before you close the incident and write it up for the team in a short note.', approach: [], followUp: [] },
+      { id: 'q4', category: 'coding', locked: true, title: 'Locked', prompt: 'Hidden.' },
+      { id: 'q6', category: 'design', title: 'Q: How long is the process?', prompt: 'Q: How long is the process?', approach: ['Clarify.'] },
+    ],
+    workedExercises: [{ questionId: 'q2', durationMinutes: 20, prompt: 'Return the k largest values.', steps: ['Use a min-heap of size k.'], code: 'heapq.nlargest(k, xs)', language: 'python', expectedResult: 'O(n log k).', checks: ['k = 0 returns [].'] }],
+    plan: { description: 'One week.', days: [{ day: 1, title: 'PracHub drills', tasks: ['Run the PracHub drill.', 'Write a heap.'], deliverable: 'A heap.' }] },
+    behavioral: { title: 'Behavioural preparation', intro: 'Bring stories.', prompts: ['Tell me about a conflict.', 'Why us?'] },
+  };
+  const md = structuredBody(guide);
+  assert.equal(md.changed, true);
+  assert.equal(md.md, ['## The 60-second brief', 'Acme builds ledgers.', 'Expect SQL.', '**Focus areas**', '- Idempotent writes\n- Keyset paging',
+    '## Overview', '1\\. Engineers own services.', '## The Acme interview process', 'Treat the sections below as preparation areas.',
+    '### Screen', 'A call.', '**What to demonstrate**', '- Fit', '**How to prepare**', '- List constraints.',
+    '## Where candidates lose points', '### Guessing', 'Measure first.',
+    '## Questions & practice', '### Top K', '*Easy · heaps*', 'Return the k largest values.', '**Worked solution** (20 min)', '1. Use a min-heap of size k.',
+    '```python\nheapq.nlargest(k, xs)\n```', '**Expected result:** O(n log k).', '**Verify it yourself**', '- k = 0 returns [].',
+    '### Design a feed for our platform.', '*Hard*', '**Approach**', '1. Size it.', '**Follow-up**', '- Scale?',
+    '### Why is it slow? Walk through the first thing to measure and what each…', '*Easy*', guide.questions[3].prompt,
+    '## Suggested practice checklist', 'One week.', '**Day 1**', '- Write a heap.', '*Deliverable:* A heap.',
+    '## Behavioural preparation', 'Bring stories.', '1. Why us?', '### A conflict', '*Medium*', 'Tell me about a conflict.', '**Approach**', '1. Name it.'].join('\n\n'));
+  assert.equal(summaryOf(['Prep for Acme: drills and a plan that stops mid', 'A guide to the Acme loop. It covers rounds. It ends with a plan.']), 'A guide to the Acme loop. It covers rounds.');
+  assert.equal(summaryOf(['Covers the flow (screen, onsite, and......']), 'Covers the flow (screen, onsite…');
+  assert.equal(answer("No. It is PracHub's own research for Acme. Rounds vary."), 'No. Rounds vary.');
+  assert.equal(siteSlug('Société Générale & Co.'), 'soci-t-g-n-rale-and-co');
   console.log('self-test ok');
 }
 
