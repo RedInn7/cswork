@@ -19,7 +19,7 @@ const GROUPS: Record<string, readonly ItemType[]> = {
   questions: ['coding_question', 'interview_question'],
 };
 const PAGE = 20;
-const SUMMARY = `type,slug,title,summary,title_zh,summary_zh,company_slug,company_name,role,category,difficulty,round,seniority,tags,published_at,partial`;
+const SUMMARY = `type,slug,title,summary,title_zh,summary_zh,level,company_slug,company_name,role,category,difficulty,round,seniority,tags,published_at,partial`;
 
 let handle: { db: Database.Database; mtime: number; checked: number } | null = null;
 function library() {
@@ -56,6 +56,7 @@ const row = (r: Record<string, unknown>) => ({
   // Bilingual tutorials carry Chinese too; the client picks by site language.
   titleZh: r.title_zh ?? null,
   summaryZh: r.summary_zh ?? null,
+  level: r.level ?? null,
   company: r.company_slug ? { slug: r.company_slug, name: r.company_name } : null,
   role: r.role,
   category: r.category,

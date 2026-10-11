@@ -5,6 +5,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Navigate } from './learning';
 import { companyInitials, companyLogos } from '@/lib/oa-company-brands';
+import { useT } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
 
 function companyHue(slug: string) {
@@ -72,8 +74,12 @@ const difficultyLevels: Record<string, string> = {
   中等: 'medium',
   困难: 'hard',
 };
+const difficultyNames: Record<string, string> = {
+  简单: 'Easy',
+  中等: 'Medium',
+  困难: 'Hard',
+};
 const codeLanguages = new Set(['python', 'java', 'cpp', 'go']);
-const progressLabels = { solved: '已通过', attempted: '尝试过' } as const;
 type Page = {
   items: Item[];
   total: number;
@@ -116,6 +122,16 @@ async function read<T>(path: string, signal: AbortSignal): Promise<T> {
   return response.json();
 }
 
+// read() errors stay Chinese in state; the English twin is picked at render.
+const readErrorsEn: Record<string, string> = {
+  '请登录后查看 OA 题目': 'Sign in to view OA problems',
+  本题题解与评测数据正在准备中:
+    'The solution and test data for this problem are still being prepared',
+  '加载失败，请重试': 'Failed to load. Please try again',
+};
+const readErrorEn = (message: string) =>
+  Object.hasOwn(readErrorsEn, message) ? readErrorsEn[message] : message;
+
 function safeLink(value: string | undefined) {
   if (!value) return undefined;
   try {
@@ -128,7 +144,17 @@ function safeLink(value: string | undefined) {
   }
 }
 
+/** Same-tab navigation to another view; the app follows history via popstate. */
+function openInApp(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
+  if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  e.preventDefault();
+  history.pushState(null, '', href);
+  dispatchEvent(new PopStateEvent('popstate'));
+  scrollTo({ top: 0 });
+}
+
 export function OaMarkdown({ body }: { body: string }) {
+  const t = useT();
   return (
     <div className="oa-markdown">
       <ReactMarkdown
@@ -136,7 +162,12 @@ export function OaMarkdown({ body }: { body: string }) {
         skipHtml
         components={{
           a: ({ href, children }) =>
-            safeLink(href) ? (
+            href?.startsWith('/?view=') ? (
+              // Links between library items stay inside the app.
+              <a href={href} onClick={(e) => openInApp(e, href)}>
+                {children}
+              </a>
+            ) : safeLink(href) ? (
               <a
                 href={safeLink(href)}
                 target="_blank"
@@ -147,7 +178,17 @@ export function OaMarkdown({ body }: { body: string }) {
             ) : (
               <span>{children}</span>
             ),
-          img: ({ alt }) => <span>{alt ? `[图片：${alt}]` : '[图片]'}</span>,
+          img: ({ src, alt }) =>
+            typeof src === 'string' && /^\/content-assets\/[\w.-]+$/.test(src) ? (
+              // oxlint-disable-next-line nextjs/no-img-element -- Images copied to this server, sized by the article.
+              <img src={src} alt={alt || ''} loading="lazy" decoding="async" />
+            ) : (
+            <span>
+              {alt
+                ? t(`[图片：${alt}]`, `[Image: ${alt}]`)
+                : t('[图片]', '[Image]')}
+            </span>
+            ),
         }}
       >
         {body}
@@ -157,6 +198,11 @@ export function OaMarkdown({ body }: { body: string }) {
 }
 
 export function OaLibrary({ navigate }: { navigate?: Navigate }) {
+  const t = useT();
+  const progressLabels = {
+    solved: t('已通过', 'Solved'),
+    attempted: t('尝试过', 'Attempted'),
+  };
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState('');
   const [company, setCompany] = useState('');
@@ -256,7 +302,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
   }, [solutionOpen, selected, retry]);
   const retryButton = (
     <button type="button" onClick={() => setRetry((n) => n + 1)}>
-      重试
+      {t('重试', 'Retry')}
     </button>
   );
   const codeBlocks =
@@ -264,36 +310,51 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
   const currentDetail = detail?.id === selected ? detail : null;
   if (selected)
     return (
-      <section className="study-library oa-library" aria-label="OA 题目详情">
+      <section
+        className="study-library oa-library"
+        aria-label={t('OA 题目详情', 'OA problem details')}
+      >
         <button
           className="oa-back"
           type="button"
           onClick={() => setSelected(null)}
         >
-          ← 返回 OA 题目
+          {t('← 返回 OA 题目', '← Back to OA problems')}
         </button>
         {detailError ? (
           <div role="alert">
-            {detailError} {retryButton}
+            {t(detailError, readErrorEn(detailError))} {retryButton}
           </div>
         ) : !currentDetail ? (
-          <p role="status">正在加载题目…</p>
+          <p role="status">{t('正在加载题目…', 'Loading problem…')}</p>
         ) : (
           <>
             <header className="study-library-heading">
               <div>
                 <span className="study-kicker">
-                  OA 题目 · {currentDetail.companyName} · OA MASTER
+                  {t('OA 题目', 'OA problem')} · {currentDetail.companyName} ·
+                  OA MASTER
                 </span>
                 <h2 ref={heading} tabIndex={-1}>
                   {currentDetail.title}
                 </h2>
                 <p>
                   {currentDetail.judgeStatus === 'ready'
-                    ? '运行样例、提交代码，查看评测结果。'
+                    ? t(
+                        '运行样例、提交代码，查看评测结果。',
+                        'Run the examples, submit your code, and see the results.',
+                      )
                     : currentDetail.relatedPractice
-                      ? currentDetail.relatedPractice.description
-                      : '评测准备中，暂可阅读原题。'}
+                      ? t(
+                          currentDetail.relatedPractice.description,
+                          englishMessage(
+                            currentDetail.relatedPractice.description,
+                          ),
+                        )
+                      : t(
+                          '评测准备中，暂可阅读原题。',
+                          "Judging isn't ready yet. You can read the original problem for now.",
+                        )}
                 </p>
                 {currentDetail.judgeStatus === 'ready' &&
                   currentDetail.judgeProblemId &&
@@ -306,7 +367,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                         })
                       }
                     >
-                      开始练习
+                      {t('开始练习', 'Start practicing')}
                     </button>
                   )}
                 {currentDetail.judgeStatus === 'reading_only' &&
@@ -320,20 +381,20 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                         })
                       }
                     >
-                      进入四阶段综合练习
+                      {t('进入四阶段综合练习', 'Practice all four stages')}
                     </button>
                   )}
               </div>
             </header>
             <div className="oa-source">
-              来源：OA Master{' '}
+              {t('来源：OA Master', 'Source: OA Master')}{' '}
               {safeLink(currentDetail.sourceUrl) && (
                 <a
                   href={safeLink(currentDetail.sourceUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  查看原题 ↗
+                  {t('查看原题 ↗', 'View original ↗')}
                 </a>
               )}
             </div>
@@ -341,42 +402,63 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
               <OaMarkdown body={currentDetail.statement} />
             ) : (
               <p className="oa-source">
-                原站未提供独立题面，可查看题解或原站。
+                {t(
+                  '原站未提供独立题面，可查看题解或原站。',
+                  'The original site has no standalone statement. See the solution or the original site.',
+                )}
               </p>
             )}
             {currentDetail.judgeStatus === 'ready' && (
-              <section className="oa-solution" aria-label="题解">
+              <section
+                className="oa-solution"
+                aria-label={t('题解', 'Solution')}
+              >
                 <button
                   type="button"
                   aria-expanded={solutionOpen}
                   aria-controls="oa-solution-body"
                   onClick={() => setSolutionOpen((value) => !value)}
                 >
-                  {solutionOpen ? '收起题解' : '查看题解'}
+                  {solutionOpen
+                    ? t('收起题解', 'Hide solution')
+                    : t('查看题解', 'View solution')}
                 </button>
                 {solutionOpen && (
                   <div id="oa-solution-body">
                     {solutionError ? (
                       <div role="alert">
-                        {solutionError} {retryButton}
+                        {t(solutionError, readErrorEn(solutionError))}{' '}
+                        {retryButton}
                       </div>
                     ) : !solution ? (
-                      <p role="status">正在加载题解…</p>
+                      <p role="status">
+                        {t('正在加载题解…', 'Loading solution…')}
+                      </p>
                     ) : (
                       <>
                         {solution.explanation.trim() ? (
                           <OaMarkdown body={solution.explanation} />
                         ) : (
-                          <p className="oa-source">题解正在准备中。</p>
+                          <p className="oa-source">
+                            {t(
+                              '题解正在准备中。',
+                              'The solution is being prepared.',
+                            )}
+                          </p>
                         )}
                         {solution.solutions.length === 0 && (
-                          <p className="oa-source">本题未提供参考代码。</p>
+                          <p className="oa-source">
+                            {t(
+                              '本题未提供参考代码。',
+                              'No reference code for this problem.',
+                            )}
+                          </p>
                         )}
                         {solution.solutions.length > 0 && (
                           <>
                             <div className="oa-code-toolbar">
                               <label>
-                                代码语言{' '}
+                                {t('代码语言', 'Language')}{' '}
                                 <select
                                   value={language}
                                   onChange={(event) => {
@@ -403,7 +485,12 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                             {codeBlocks.map((block, index) => (
                               <div key={`${language}-${index}`}>
                                 {codeBlocks.length > 1 && (
-                                  <h4>代码 {index + 1}</h4>
+                                  <h4>
+                                    {t(
+                                      `代码 ${index + 1}`,
+                                      `Code ${index + 1}`,
+                                    )}
+                                  </h4>
                                 )}
                                 <button
                                   type="button"
@@ -414,18 +501,24 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                                         block.code,
                                       );
                                       if (generation === copyGeneration.current)
-                                        setCopyMessage('已复制');
+                                        setCopyMessage(t('已复制', 'Copied'));
                                     } catch {
                                       if (generation === copyGeneration.current)
                                         setCopyMessage(
-                                          '复制失败，请手动选择代码复制',
+                                          t(
+                                            '复制失败，请手动选择代码复制',
+                                            'Copy failed. Select the code and copy it manually.',
+                                          ),
                                         );
                                     }
                                   }}
                                 >
                                   {codeBlocks.length > 1
-                                    ? `复制代码 ${index + 1}`
-                                    : '复制代码'}
+                                    ? t(
+                                        `复制代码 ${index + 1}`,
+                                        `Copy code ${index + 1}`,
+                                      )
+                                    : t('复制代码', 'Copy code')}
                                 </button>
                                 <pre className="oa-code">
                                   <code>{block.code}</code>
@@ -456,38 +549,54 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
       .includes(companySearch.trim().toLocaleLowerCase()),
   );
   return (
-    <section className="study-library oa-library" aria-label="OA 题目">
+    <section
+      className="study-library oa-library"
+      aria-label={t('OA 题目', 'OA problems')}
+    >
       <header className="study-library-heading">
         <div>
-          <h2>OA 题目</h2>
+          <h2>{t('OA 题目', 'OA problems')}</h2>
           <p>
-            按公司查找 OA
-            题，完成样例和提交。已验证的题目可直接练习，其余题目的评测数据正在准备中。
+            {t(
+              '按公司查找 OA 题，完成样例和提交。已验证的题目可直接练习，其余题目的评测数据正在准备中。',
+              'Find OA problems by company, run the examples and submit. Verified problems are ready to practice; test data for the rest is still being prepared.',
+            )}
           </p>
         </div>
       </header>
       <div className="oa-browser">
-        <aside className="oa-company-sidebar" aria-label="按公司筛选">
+        <aside
+          className="oa-company-sidebar"
+          aria-label={t('按公司筛选', 'Filter by company')}
+        >
           <div className="oa-company-heading">
-            <h3>公司</h3>
-            <span>{companies.length} 类</span>
+            <h3>{t('公司', 'Companies')}</h3>
+            <span>
+              {t(
+                `${companies.length} 类`,
+                `${companies.length} ${companies.length === 1 ? 'company' : 'companies'}`,
+              )}
+            </span>
           </div>
           <label className="oa-company-search">
-            搜索公司
+            {t('搜索公司', 'Search companies')}
             <input
               type="search"
               value={companySearch}
-              placeholder="输入公司名称"
+              placeholder={t('输入公司名称', 'Company name')}
               onChange={(event) => setCompanySearch(event.target.value)}
             />
           </label>
-          <nav className="oa-company-nav" aria-label="OA 公司">
+          <nav
+            className="oa-company-nav"
+            aria-label={t('OA 公司', 'OA companies')}
+          >
             <button
               type="button"
               aria-pressed={!company}
               onClick={() => chooseCompany('')}
             >
-              <span>全部公司</span>
+              <span>{t('全部公司', 'All companies')}</span>
               <span>{companyTotal}</span>
             </button>
             <div className="oa-company-options">
@@ -502,10 +611,16 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                   <span>{item.count}</span>
                 </button>
               ))}
-              {!visibleCompanies.length && <p role="status">没有匹配的公司</p>}
+              {!visibleCompanies.length && (
+                <p role="status">
+                  {t('没有匹配的公司', 'No matching companies')}
+                </p>
+              )}
             </div>
           </nav>
-          <p className="oa-company-caption">数量为收录题目总数</p>
+          <p className="oa-company-caption">
+            {t('数量为收录题目总数', 'Counts include every listed problem')}
+          </p>
         </aside>
         <div className="oa-browser-results">
           <div className="study-filters">
@@ -518,24 +633,24 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                   setPage(1);
                 }}
               />
-              只看可练习
+              {t('只看可练习', 'Practice-ready only')}
             </label>
             <label className="oa-search">
-              搜索题目
+              {t('搜索题目', 'Search problems')}
               <input
                 type="search"
                 value={query}
-                placeholder="输入题目名称"
+                placeholder={t('输入题目名称', 'Problem title')}
                 onChange={(event) => setQuery(event.target.value)}
               />
             </label>
             <label className="oa-company-mobile">
-              公司
+              {t('公司', 'Company')}
               <select
                 value={company}
                 onChange={(event) => chooseCompany(event.target.value)}
               >
-                <option value="">全部公司</option>
+                <option value="">{t('全部公司', 'All companies')}</option>
                 {companies.map((item) => (
                   <option key={item.slug} value={item.slug}>
                     {item.name} ({item.count})
@@ -546,30 +661,36 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
           </div>
           {loading ? (
             <p className="study-state" role="status">
-              正在加载 OA 题目…
+              {t('正在加载 OA 题目…', 'Loading OA problems…')}
             </p>
           ) : error ? (
             <div className="study-state" role="alert">
-              {error} {retryButton}
+              {t(error, readErrorEn(error))} {retryButton}
             </div>
           ) : (
             data && (
               <>
                 <p className="study-result-summary" role="status">
-                  共 {data.total} 道 OA 题目 · 来源 OA Master
+                  {t(
+                    `共 ${data.total} 道 OA 题目 · 来源 OA Master`,
+                    `${data.total} OA ${data.total === 1 ? 'problem' : 'problems'} · Source: OA Master`,
+                  )}
                 </p>
                 {data.items.length === 0 ? (
                   <p className="study-state">
-                    没有找到匹配题目，试试其他关键词或公司。
+                    {t(
+                      '没有找到匹配题目，试试其他关键词或公司。',
+                      'No matching problems. Try another keyword or company.',
+                    )}
                   </p>
                 ) : (
                   <div className="study-list oa-list">
                     <div className="oa-list-head" aria-hidden="true">
                       <span />
-                      <span>公司</span>
-                      <span>题号</span>
-                      <span>题目</span>
-                      <span>难度</span>
+                      <span>{t('公司', 'Company')}</span>
+                      <span>{t('题号', '#')}</span>
+                      <span>{t('题目', 'Title')}</span>
+                      <span>{t('难度', 'Difficulty')}</span>
                     </div>
                     {data.items.map((item) => (
                       <button
@@ -637,31 +758,43 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                           }
                         >
                           {item.judgeStatus === 'ready'
-                            ? item.difficulty || '—'
-                            : '仅题面'}
+                            ? item.difficulty
+                              ? t(
+                                  item.difficulty,
+                                  difficultyNames[item.difficulty] ||
+                                    item.difficulty,
+                                )
+                              : '—'
+                            : t('仅题面', 'Statement only')}
                         </span>
                       </button>
                     ))}
                   </div>
                 )}
                 {data.total > 0 && (
-                  <nav className="study-pagination" aria-label="OA 题目分页">
+                  <nav
+                    className="study-pagination"
+                    aria-label={t('OA 题目分页', 'OA problem pages')}
+                  >
                     <button
                       type="button"
                       disabled={page <= 1}
                       onClick={() => setPage((n) => n - 1)}
                     >
-                      上一页
+                      {t('上一页', 'Previous')}
                     </button>
                     <span>
-                      第 {data.page} / {pages} 页
+                      {t(
+                        `第 ${data.page} / ${pages} 页`,
+                        `Page ${data.page} of ${pages}`,
+                      )}
                     </span>
                     <button
                       type="button"
                       disabled={page >= pages}
                       onClick={() => setPage((n) => n + 1)}
                     >
-                      下一页
+                      {t('下一页', 'Next')}
                     </button>
                   </nav>
                 )}
@@ -682,6 +815,7 @@ export function OaCompanyBadge({
   problemId: string;
   english?: boolean;
 }) {
+  const t = useT();
   const [identity, setIdentity] = useState<{
     id: string;
     companyName: string;
@@ -706,7 +840,9 @@ export function OaCompanyBadge({
   }, [problemId]);
   return (
     <div className="oa-workspace-company">
-      <span className="oa-badge">{english ? 'OA problem' : 'OA 题目'}</span>
+      <span className="oa-badge">
+        {english ? 'OA problem' : t('OA 题目', 'OA problem')}
+      </span>
       {identity?.id === problemId && (
         <strong>
           <CompanyIdentity
@@ -721,6 +857,7 @@ export function OaCompanyBadge({
 
 /** Mounted only after the learner selects the editorial tab. */
 export function OaEditorial({ problemId }: { problemId: string }) {
+  const t = useT();
   const [data, setData] = useState<Solution | null>(null);
   const [error, setError] = useState('');
   const [attempt, setAttempt] = useState(0);
@@ -743,12 +880,16 @@ export function OaEditorial({ problemId }: { problemId: string }) {
   if (error)
     return (
       <div role="alert">
-        {error} <button onClick={() => setAttempt((n) => n + 1)}>重试</button>
+        {t(error, readErrorEn(error))}{' '}
+        <button onClick={() => setAttempt((n) => n + 1)}>
+          {t('重试', 'Retry')}
+        </button>
       </div>
     );
-  if (!data) return <p role="status">正在加载题解…</p>;
+  if (!data)
+    return <p role="status">{t('正在加载题解…', 'Loading solution…')}</p>;
   return (
-    <section aria-label="题解" className="oa-solution">
+    <section aria-label={t('题解', 'Solution')} className="oa-solution">
       <OaMarkdown body={data.explanation} />
       {data.solutions.map((solution, index) => (
         <div key={solution.language + index}>

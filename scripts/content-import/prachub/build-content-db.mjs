@@ -8,6 +8,7 @@ import { createInterface } from 'node:readline';
 import { createReadStream } from 'node:fs';
 import { join } from 'node:path';
 import { DIR, PARSED } from './common.mjs';
+import { imageUrls } from './fetch-images.mjs';
 
 const out = process.argv[2] || join(DIR, 'content.sqlite');
 const tmp = `${out}.building`;
@@ -29,7 +30,7 @@ db.pragma('synchronous = OFF');
 db.exec(`
 CREATE TABLE items(
   id TEXT PRIMARY KEY, type TEXT NOT NULL, slug TEXT NOT NULL, title TEXT NOT NULL, summary TEXT,
-  title_zh TEXT, summary_zh TEXT,
+  title_zh TEXT, summary_zh TEXT, level TEXT,
   body TEXT NOT NULL, company_slug TEXT, company_name TEXT, role TEXT, category TEXT,
   difficulty TEXT, round TEXT, seniority TEXT, tags TEXT NOT NULL DEFAULT '[]',
   published_at TEXT, updated_at TEXT, relations TEXT NOT NULL DEFAULT '[]',
@@ -43,13 +44,42 @@ CREATE VIRTUAL TABLE items_fts USING fts5(title, summary, body, content='items',
 CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
 `);
 
+// Our own copies of images (fetch-images.mjs) and CSWORK routes for PracHub links.
+const assets = existsSync(join(PARSED, 'assets-map.json'))
+  ? JSON.parse(readFileSync(join(PARSED, 'assets-map.json'), 'utf8'))
+  : {};
+const ROUTES = {
+  'coding-questions': 'coding_question', 'interview-questions': 'interview_question',
+  'interview-experiences': 'experience', concepts: 'concept', resources: 'article',
+  'interview-guide': 'guide', 'interview-prep': 'cheatsheet',
+};
+export function localize(text) {
+  if (!text) return text;
+  let out = text;
+  for (const url of imageUrls(out)) if (assets[url]) out = out.split(url).join(assets[url]);
+  return out.replace(/\]\(\s*<?(?:https?:\/\/(?:www\.)?prachub\.com)?(\/[^)\s>]*)>?\s*\)/g, (all, path) => {
+    const [, kind, slug] = /^\/([a-z-]+)\/?([^?#]*)/.exec(path) || [];
+    if (kind && ROUTES[kind] && slug) return `](/?view=content&type=${ROUTES[kind]}&slug=${encodeURIComponent(slug.replace(/\/$/, ''))})`;
+    if (kind === 'companies' && slug) return `](/?view=questions&company=${encodeURIComponent(slug.split('/')[0])})`;
+    if (path.startsWith('/content-assets/') || path.startsWith('/?view=')) return all;
+    // Pricing, sign-in and other site pages have no CSWORK counterpart: keep the text only.
+    return '](#)';
+  });
+}
+const localizeItem = (item) => {
+  item.body = localize(item.body);
+  if (item.extra?.bodyZh) item.extra.bodyZh = localize(item.extra.bodyZh);
+  for (const f of item.extra?.faq || []) f.a = localize(f.a);
+  return item;
+};
+
 const dupes = new Map();
 const dupFile = join(PARSED, 'question-dupes.json');
 if (existsSync(dupFile))
   for (const d of JSON.parse(readFileSync(dupFile, 'utf8'))) dupes.set(d.id, d.dupOf);
 
-const insert = db.prepare(`INSERT OR REPLACE INTO items(id,type,slug,title,summary,title_zh,summary_zh,body,company_slug,company_name,role,category,difficulty,round,seniority,tags,published_at,updated_at,relations,extra,partial,dup_of,listed)
-  VALUES(@id,@type,@slug,@title,@summary,@title_zh,@summary_zh,@body,@company_slug,@company_name,@role,@category,@difficulty,@round,@seniority,@tags,@published_at,@updated_at,@relations,@extra,@partial,@dup_of,@listed)`);
+const insert = db.prepare(`INSERT OR REPLACE INTO items(id,type,slug,title,summary,title_zh,summary_zh,level,body,company_slug,company_name,role,category,difficulty,round,seniority,tags,published_at,updated_at,relations,extra,partial,dup_of,listed)
+  VALUES(@id,@type,@slug,@title,@summary,@title_zh,@summary_zh,@level,@body,@company_slug,@company_name,@role,@category,@difficulty,@round,@seniority,@tags,@published_at,@updated_at,@relations,@extra,@partial,@dup_of,@listed)`);
 const counts = {};
 let rejected = 0;
 for (const file of FILES) {
@@ -59,7 +89,7 @@ for (const file of FILES) {
   const batch = [];
   for await (const line of lines) {
     if (!line.trim()) continue;
-    const item = JSON.parse(line);
+    const item = localizeItem(JSON.parse(line));
     if (!TYPES.has(item.type) || !item.id || !item.slug || !item.title || !item.body?.trim()) {
       rejected++;
       continue;
@@ -69,6 +99,8 @@ for (const file of FILES) {
       id: item.id, type: item.type, slug: item.slug, title: item.title,
       summary: item.summary ?? null, body: item.body,
       title_zh: item.titleZh ?? null, summary_zh: item.summaryZh ?? null,
+      // Tutorials only: core interview material vs. an extension topic.
+      level: ['core', 'advanced'].includes(item.extra?.level) ? item.extra.level : null,
       company_slug: item.company?.slug ?? null, company_name: item.company?.name ?? null,
       role: item.role ?? null, category: item.category ?? null,
       difficulty: ['easy', 'medium', 'hard'].includes(item.difficulty) ? item.difficulty : null,

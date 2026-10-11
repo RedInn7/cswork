@@ -26,7 +26,7 @@ writeFileSync(join(parsed, 'interview-questions.jsonl'), lines([
   item({ id: 'iq-topk', type: 'interview_question', slug: 'topk', title: 'Design a top-k ranking system', body: 'Ranking with heaps.', company: { slug: 'uber', name: 'Uber' }, difficulty: 'hard', round: 'Onsite', publishedAt: '2026-09-05' }),
 ]));
 writeFileSync(join(parsed, 'experiences.jsonl'), lines([
-  item({ id: 'ex-amazon-oa', type: 'experience', slug: 'amazon-oa', title: 'Amazon SDE OA', body: 'Two questions.', company: { slug: 'amazon', name: 'Amazon' }, relations: [{ kind: 'question', slug: 'lru' }, { kind: 'question', slug: 'missing' }], extra: { result: 'Offer' } }),
+  item({ id: 'ex-amazon-oa', type: 'experience', slug: 'amazon-oa', title: 'Amazon SDE OA', body: 'Two questions: [LRU](https://prachub.com/coding-questions/lru), [plans](https://prachub.com/pricing). ![chart](https://ik.imagekit.io/x/a.png) ![gone](https://ik.imagekit.io/x/b.png)', company: { slug: 'amazon', name: 'Amazon' }, relations: [{ kind: 'question', slug: 'lru' }, { kind: 'question', slug: 'missing' }], extra: { result: 'Offer' } }),
 ]));
 writeFileSync(join(parsed, 'courses.jsonl'), lines([
   item({ id: 'co-sd', type: 'course', slug: 'sd', title: 'System design basics', body: 'Course intro.' }),
@@ -34,6 +34,7 @@ writeFileSync(join(parsed, 'courses.jsonl'), lines([
 writeFileSync(join(parsed, 'algorithms-basics.jsonl'), lines([
   item({ id: 'al-binary-search', type: 'algorithm', slug: 'binary-search', title: 'Binary search', titleZh: '二分查找', summaryZh: '在有序区间里折半查找', body: 'Halve the range.', extra: { level: 'core', bodyZh: '每次把区间折半。' } }),
 ]));
+writeFileSync(join(parsed, 'assets-map.json'), JSON.stringify({ 'https://ik.imagekit.io/x/a.png': '/content-assets/abc.png' }));
 writeFileSync(join(folder, 'prachub', 'parsed', 'question-dupes.json'), JSON.stringify([
   { id: 'cq-two-sum', dupOf: { kind: 'library', id: 'lc-1', title: '两数之和' }, score: 0.97, method: 'title' },
 ]));
@@ -78,6 +79,8 @@ void test('lists, filters, search and facets; duplicates stay out of lists', asy
 void test('detail resolves relations and points duplicates at our own problem', async () => {
   const exp = await get('item?type=experience&slug=amazon-oa');
   assert.equal(exp.extra.result, 'Offer');
+  // Links point inside CSWORK, images at our own copies; unknown pages keep only their text.
+  assert.equal(exp.body, 'Two questions: [LRU](/?view=content&type=coding_question&slug=lru), [plans](#). ![chart](/content-assets/abc.png) ![gone](https://ik.imagekit.io/x/b.png)');
   assert.deepEqual(exp.relations.map((r: { slug: string }) => r.slug), ['lru']); // the missing one is dropped
   const dup = await get('item?type=questions&slug=two-sum');
   assert.deepEqual(dup.dupOf, { kind: 'library', id: 'lc-1', title: '两数之和' });
@@ -87,6 +90,7 @@ void test('detail resolves relations and points duplicates at our own problem', 
   assert.equal(tutorial.titleZh, '二分查找');
   assert.equal(tutorial.extra.bodyZh, '每次把区间折半。');
   assert.equal((await get('list?type=algorithm')).items[0].summaryZh, '在有序区间里折半查找');
+  assert.equal(tutorial.level, 'core');
   await assert.rejects(get('item?type=questions&slug=nope'), status(404));
   const stats = await get('stats');
   assert.equal(stats.counts.coding_question, 1);
