@@ -2,6 +2,9 @@
 //   node scripts/content-import/prachub/parse-articles.mjs                  all raw/resources pages
 //   node scripts/content-import/prachub/parse-articles.mjs --files a.html   dry run on local pages (.html/.html.gz)
 //   node scripts/content-import/prachub/parse-articles.mjs --self-test
+// Kept: English and Chinese articles. Skipped: the listing page, other languages, pieces written to sell the old
+// site, "-2" copies. Body: the payload Markdown with embedded HTML converted, sentences / items / sections that promote
+// the old site removed whole, TeX in remark-math syntax (extra.math).
 // This file also exports the page helpers shared with parse-guides.mjs and parse-concepts.mjs
 // (the task allows only the three parser files); the article run only starts when executed directly.
 import assert from 'node:assert/strict';
@@ -102,8 +105,9 @@ export function flightEntity(rows, slug) {
   return best && resolve(rows, best);
 }
 
-// Payload fields that hold a page body as Markdown (guide/resource: content, experience: content_md, question: content_enhanced).
-const BODY_FIELDS = ['content', 'content_md', 'content_enhanced', 'content_markdown', 'markdown', 'body'];
+// Payload fields that hold a page body as Markdown (guide/resource: content, experience: content_md, question:
+// content_enhanced, concept: explanation_md).
+const BODY_FIELDS = ['content', 'content_md', 'content_enhanced', 'content_markdown', 'markdown', 'body', 'explanation_md'];
 
 // ---------------------------------------------------------------- HTML -> Markdown
 
@@ -283,6 +287,67 @@ export function toMarkdown(root) {
   return { md, locked };
 }
 
+// ---------------------------------------------------------------- Markdown helpers
+
+const CODE = /^(`{3,}|~{3,})[^\n]*\n[\s\S]*?\n\1[ \t]*$|(`+)(?!`)[^\n]*?[^`\n]\2(?!`)/gm; // fences, inline spans
+
+/** fn(text) with code masked as \uE001n\uE002 tokens; code comes back through codeFn. */
+export function outsideCode(md, fn, codeFn = (c) => c) {
+  const code = [];
+  const t = md.replace(CODE, (m) => `\uE001${code.push(m) - 1}\uE002`);
+  return fn(t).replace(/\uE001(\d+)\uE002/g, (_, i) => codeFn(code[i]));
+}
+
+const KNOWN = new Set([...BLOCK, 'center', 'iframe', 'video', 'picture', 'source', 'svg', ...'a abbr b br cite code del em font i img ins kbd mark q s samp small span strong sub sup u'.split(' ')]);
+const START = /<\/?([a-zA-Z][\w-]*)(?=[\s/>])(?:[^>"']|"[^"]*"|'[^']*')*>/y;
+
+/** End of the element whose start (or end) tag is at i: after its matching end tag, else after the tag itself. */
+function elementEnd(s, i) {
+  START.lastIndex = i;
+  const m = START.exec(s);
+  const name = m[1].toLowerCase();
+  if (m[0][1] === '/' || VOID.has(name) || m[0].endsWith('/>')) return START.lastIndex;
+  const re = new RegExp(`<(/?)${name}(?=[\\s/>])(?:[^>"']|"[^"]*"|'[^']*')*>`, 'gi');
+  re.lastIndex = START.lastIndex;
+  let depth = 1;
+  for (let x; (x = re.exec(s)); ) if ((depth += x[1] ? -1 : x[0].endsWith('/>') ? 0 : 1) === 0) return re.lastIndex;
+  return START.lastIndex;
+}
+const isTag = (s, i) => { START.lastIndex = i; const m = START.exec(s); return !!m && KNOWN.has(m[1].toLowerCase()); };
+const VIDEO = /<iframe\b[^>]*?\bsrc="(?:https?:)?\/\/(?:www\.)?youtube(?:-nocookie)?\.com\/embed\/([\w-]+)[^"]*"[^>]*>(?:\s*<\/iframe>)?/gi;
+
+/** A YouTube embed as a link paragraph: "Video: <title>" (the title attribute may be double-escaped). */
+function videoLink(iframe, id) {
+  const title = unescapeHtml(unescapeHtml(/\btitle="([^"]*)"/.exec(iframe)?.[1] || '')).trim().replace(/^YouTube video player$/i, '');
+  return `<p><a href="https://www.youtube.com/watch?v=${id}">Video: ${(title || 'YouTube').replace(/&/g, '&amp;').replace(/</g, '&lt;')}</a></p>`;
+}
+
+/**
+ * Payload Markdown with its embedded HTML rewritten as Markdown (the site shows raw HTML as text):
+ * diagram figures and <svg> are dropped, YouTube embeds become a link line, the rest goes through toMarkdown.
+ */
+export function embeddedHtml(md) {
+  if (!/<[a-zA-Z]/.test(md)) return md;
+  return outsideCode(md, (t) => {
+    let out = '';
+    let last = 0;
+    for (let i = t.indexOf('<'); i >= 0; i = t.indexOf('<', Math.max(i + 1, last))) {
+      if (i < last || !isTag(t, i)) continue;
+      let end = elementEnd(t, i);
+      for (let j; (j = end + /^\s*/.exec(t.slice(end))[0].length) < t.length && isTag(t, j); ) end = elementEnd(t, j);
+      const html = t.slice(i, end)
+        .replace(/<figure\b[^>]*>(?:(?!<\/figure>)[\s\S])*?<svg\b[\s\S]*?<\/figure>/gi, '')
+        .replace(VIDEO, videoLink)
+        .replace(/\uE001(\d+)\uE002/g, '<code>\uE001$1\uE002</code>');
+      const md = toMarkdown(parseHtml(html)).md.replace(/`\uE001(\d+)\uE002`/g, '\uE001$1\uE002');
+      const block = /(?:^|\n)[ \t]*$/.test(t.slice(0, i)) && /^[ \t]*(?:\n|$)/.test(t.slice(end));
+      out += t.slice(last, i) + (block ? `\n\n${md}\n\n` : md);
+      last = end;
+    }
+    return last ? (out + t.slice(last)).replace(/\n{3,}/g, '\n\n') : t;
+  });
+}
+
 /**
  * Body root when no payload Markdown is usable: the biggest visible article (unless it is only a card
  * inside a much bigger main), else main, else the hidden crawler copy (data-seo-content), else body.
@@ -353,32 +418,197 @@ export function dropLeadIn(md, title) {
 // ---------------------------------------------------------------- branding, links, metadata
 
 const BRAND = /prachub/i;
+// The old site speaking of itself without its name ("our AI mock interview tool", "supplied by this platform").
+const SELF = /\b(?:by|on) (?:this|our) (?:platform|site)\b|\bour platform (?:connects|allows|pairs|offers|gives|lets|helps|provides|has)\b|\bthis site['’]s\b|\bour (?:AI[- ]?(?:mock|interview\w*|coach|tutor|grader|feedback)|mock interview(?:s|er| tool)?|(?:interview |coding )?question bank|(?:real )?interview questions|written solutions|premium|pro plan|subscription|community|discord|newsletter)\b/i;
 const CTA_LINK = /\]\((?:\/(?:pricing|login|register|signup|mcp|daily-quest)\b|https?:\/\/(?:discord\.gg|discord\.com\/invite)\/)/i;
-const CTA_WORDS = /\b(?:premium|sign(?:ing)? ?up|subscribe|upgrade|unlock|free trial|join)\b/i;
+const SITE_URL = /https?:\/\/(?:www\.)?prachub\.com(\/[^\s)\]"'<>]*)?/gi;
+const linkText = (s) => s.replace(/(?<!!)\[((?:[^\]\\]|\\.)*)\]\([^)]*\)/g, '$1');
+/** Names the old site (old-site link targets aside: the builder maps them), speaks as it, or links to its sign-up pages. */
+export const promotes = (s) => BRAND.test(s.replace(SITE_URL, '')) || SELF.test(linkText(s)) || CTA_LINK.test(s);
 
-/** Inline de-branding: PracHub URLs become site paths, brand words are dropped with minimal edits. */
+/** Word-level de-branding for short labels (titles, FAQ, table headers): URLs become site paths, brand words go. */
 export function debrandText(s) {
   if (!s || !BRAND.test(s)) return s;
   return s
-    .replace(/https?:\/\/(?:www\.)?prachub\.com(\/[^\s)\]"'<>]*)?/gi, (_, p) => p || '/')
+    .replace(SITE_URL, (_, p) => p || '/')
     .replace(/\s+by PracHub(?:\.com)?\b/gi, '')
+    .replace(/\bPracHub(?:\.com)?['’]s\b/gi, 'the')
     .replace(/\b(?:on|at|from|via|with|using|in) PracHub(?:\.com)?\b/gi, 'here')
-    .replace(/\bPracHub(?:\.com)?['’]s\b/gi, 'our')
     .replace(/(^|[ \t])PracHub(?:\.com)?\b(?:[ \t](?=\S))?/gim, '$1')
     .replace(/\bPracHub(?:\.com)?\b/gi, '');
 }
+const capital = (s) => s.replace(/^(\W*)(\p{Ll})/u, (m, a, c) => a + c.toUpperCase());
 
-/** Body de-branding: drop CTA blocks, de-brand the rest; fenced code is left untouched. */
-export function debrand(md) {
-  if (!BRAND.test(md) && !CTA_LINK.test(md)) return { md, changed: false };
-  let out = '';
+const ABBR = /\b(?:e\.g|i\.e|vs|etc|cf|approx|incl|Dr|Mr|Ms|Mrs|St|No|Fig|Inc|Ltd|Jr|Sr|\p{Lu})\.$/u;
+/** Sentences of a block, each with its trailing whitespace; a line break also ends one. */
+export function sentences(t) {
+  const out = [];
   let last = 0;
-  const prose = (t) => t.split(/\n{2,}/).filter((b) => !(CTA_LINK.test(b) || (BRAND.test(b) && CTA_WORDS.test(b)))).map(debrandText).join('\n\n');
-  for (const m of md.matchAll(/^(`{3,}|~{3,})[^\n]*\n[\s\S]*?\n\1[ \t]*$/gm)) {
-    out += prose(md.slice(last, m.index)) + m[0];
+  for (const m of t.matchAll(/[.!?]+["”’)\]*_]*[ \t]+|[。！？]+["”’」』)]*[ \t]*|[ \t]*\n/g)) {
+    if (m[0][0] === '.' && ABBR.test(t.slice(Math.max(0, m.index - 6), m.index + 1))) continue;
+    out.push(t.slice(last, m.index + m[0].length));
     last = m.index + m[0].length;
   }
-  out = (out + prose(md.slice(last))).replace(/\n{3,}/g, '\n\n').trim();
+  return last < t.length ? [...out, t.slice(last)] : out;
+}
+
+// A sentence that leans on the one before it ("They are practice records", "Use it to …"); "This guide …" does not.
+const LEANS = /^\W*(?:(?:\S+\s+){0,3}?(?:it|its|they|them|their|these|those)\b|(?:That|This(?! (?:guide|article|post|page|section|table|tutorial|walkthrough|series|list)\b))\b)/i;
+
+/** A promoting sentence without its brand-only parenthetical or tail (after a dash, semicolon or CJK comma); null if that is not enough. */
+function trimClause(x) {
+  const [, core, end] = /^([\s\S]*?)([.!?。！？]*["”’)\]*_」』]*\s*)$/.exec(x);
+  let t = core.replace(/\s*\([^()]*\)/g, (p) => (promotes(p) ? '' : p));
+  if (promotes(t)) {
+    const cut = [...t.matchAll(/\s+[—–]\s+|;\s+|[；，]/g)].findLast((m) => !promotes(t.slice(0, m.index)));
+    if (!cut) return null;
+    t = t.slice(0, cut.index);
+  }
+  return /[\p{L}\p{N}]/u.test(t) ? t + end : null;
+}
+
+/** A paragraph without the sentences that promote the old site (or lean on one); '' when only a label is left. */
+function cleanProse(t) {
+  if (!promotes(t)) return t;
+  // A paragraph set wholly in emphasis keeps its markers when its last sentence goes.
+  const wrap = /^(\*{1,2}|_{1,2})(?=\S)([\s\S]*\S)\1$/.exec(t);
+  if (wrap && !wrap[2].includes(wrap[1])) return (wrap[1] + cleanProse(wrap[2]) + wrap[1]).replace(/^(\*+|_+)\1$/, '');
+  const kept = [];
+  let cut = false;
+  for (const x of sentences(t)) {
+    const y = promotes(x) ? trimClause(x) : cut && LEANS.test(x) ? null : x;
+    cut = y === null;
+    if (y) kept.push(y);
+  }
+  let out = kept.join('').replace(/\s*\\$/, '').trim();
+  if ((out.match(/\*\*/g) || []).length % 2) out = out.replace(/\*\*(?![\s\S]*\*\*)/, ''); // a bold run cut in half
+  return /[\p{L}\p{N}]/u.test(out.replace(/^\W*\*\*[^*]*\*\*\W*$|^[^.!?\n]{0,60}:$/u, '')) ? out : '';
+}
+
+const ITEM = /^([ \t]*)([-*+]|\d+([.)]))[ \t]+/;
+/** A list without the items that promote the old site (with their nested items); ordered items are renumbered. */
+function cleanList(b) {
+  const items = [];
+  for (const l of b.split('\n')) {
+    const m = ITEM.exec(l);
+    if (m || !items.length) items.push({ m, lines: [m ? l.slice(m[0].length) : l] });
+    else items.at(-1).lines.push(l);
+  }
+  const out = [];
+  const next = new Map(); // indent -> next number of the ordered list at that depth
+  let skip = Infinity;
+  for (const { m, lines } of items) {
+    const depth = m ? m[1].length : 0;
+    for (const d of next.keys()) if (d > depth) next.delete(d);
+    if (m?.[3] && !next.has(depth)) next.set(depth, parseInt(m[2], 10));
+    if (depth > skip) continue;
+    skip = Infinity;
+    const text = cleanProse(lines.join('\n'));
+    if (!text) {
+      skip = depth;
+      continue;
+    }
+    if (!m) out.push(text);
+    else if (!m[3]) out.push(m[0] + text);
+    else {
+      out.push(`${m[1]}${next.get(depth)}${m[3]}${m[0].slice(m[1].length + m[2].length)}${text}`);
+      next.set(depth, next.get(depth) + 1);
+    }
+  }
+  return out.join('\n');
+}
+
+const cells = (row) => row.trim().replace(/^\|/, '').replace(/(?<!\\)\|$/, '').split(/(?<!\\)\|/);
+/** A table without columns headed by the old site and rows about it; a "PracHub question" label column keeps its rows. */
+function cleanTable(b) {
+  const [head, delim, ...body] = b.split('\n').map(cells);
+  const drop = head.map((c, i) => i > 0 && promotes(c));
+  if (drop.some(Boolean) && drop.filter((x) => !x).length < 2) return '';
+  if (promotes(head[0])) head[0] = ` ${capital(debrandText(head[0]).trim())} `;
+  const rows = [head, delim];
+  for (const r of body) {
+    if (promotes(r[0] || '')) continue;
+    const c = r.map((x, i) => (i && !drop[i] && promotes(x) ? ` ${cleanProse(x.trim())} ` : x));
+    if (!c.some((x, i) => x !== r[i] && !x.trim())) rows.push(c);
+  }
+  return rows.length > 2 ? rows.map((r) => `|${r.filter((_, i) => !drop[i]).join('|')}|`).join('\n') : '';
+}
+
+/** One block (paragraph, list, table, quote) without what promotes the old site. */
+function cleanBlock(b) {
+  if (!promotes(b)) return b;
+  if (/^[ \t]*>/.test(b)) {
+    const q = cleanBlocks(b.replace(/^[ \t]*> ?/gm, ''));
+    return q && q.replace(/^/gm, '> ').replace(/^> $/gm, '>');
+  }
+  if (/^[ \t]*\|/.test(b) && /^[ \t]*\|?[ \t]*:?-{3,}/.test(b.split('\n')[1] || '')) return cleanTable(b);
+  if (ITEM.test(b)) return cleanList(b);
+  const at = b.search(/\n(?=[ \t]*(?:[-*+]|\d+[.)])[ \t])/); // a paragraph running straight into a list
+  if (at < 0) return cleanProse(b);
+  const [intro, list] = [cleanProse(b.slice(0, at)), cleanList(b.slice(at + 1))];
+  return list ? [intro, list].filter(Boolean).join('\n') : intro.endsWith(':') ? '' : intro;
+}
+
+// A heading naming the old site over a practice list, a CTA or an FAQ entry about it: the section goes.
+const PRACTICE_HEAD = /\b(?:practi[cs]\w*|rehears\w*|drills?|exercises?|prompts?|related|verified|adjacent|next|extend\w*|follow-ups?|links?|resources?|reading|vs\.?|versus|alternatives?|replace|fits?|try|use|start)\b|\b(?:five|four|three|which|these|more)\s+(?:\w+\s+){0,2}PracHub\b|PracHub\s+(?:questions?|exercises?|prompts?)\b|\?\s*$/i;
+const unbrandHeading = (h) => h.replace(/\s+(?:from|in|on|at|via|with) (?:the )?PracHub(?:['’]s)?(?: (?:question )?bank)?\b/gi, '')
+  .replace(/\bPracHub(?:['’]s)? and |\s+and PracHub\b|\bPracHub(?:['’]s)?\s*/gi, '');
+/** Letters of prose a section keeps besides link lists and practice tables (rows that open with a link). */
+const substance = (md) => md.split('\n').filter((l) => !/^\s*(?:[-*+]|\d+[.)]|\|)\s*\[/.test(l)).join('\n')
+  .replace(/!?\[[^\]]*\]\([^)]*\)/g, '').replace(/[^\p{L}\p{N}]+/gu, '').length;
+
+/**
+ * Prose without the old site: sentences, list items and table rows/columns that promote it go; a section under a
+ * heading naming it goes unless it is real content (then only the heading loses the name); emptied headings go too.
+ */
+function cleanBlocks(t) {
+  const out = []; // [text, heading level or 0, lost something]
+  const lose = () => { const h = out.findLast((x) => x[1]); if (h) h[2] = true; };
+  let held = null; // [heading naming the old site, level, blocks]
+  const settle = () => {
+    if (!held) return;
+    const [head, level, blocks] = held;
+    held = null;
+    const body = cleanBlocks(blocks.join('\n\n'));
+    const title = unbrandHeading(head);
+    if (PRACTICE_HEAD.test(head) || promotes(title) || substance(body) < 500) return lose();
+    out.push([title, level, false]);
+    if (body) out.push([body, 0, false]);
+  };
+  for (const b of t.replace(SITE_URL, (_, p) => p || '/').replace(/^(#{1,6}[ \t].*)\n(?!\n)/gm, '$1\n\n').split(/\n{2,}/)) {
+    const h = /^(#{1,6})[ \t]/.exec(b);
+    if (h && held && h[1].length <= held[1]) settle();
+    if (held) held[2].push(b);
+    else if (h && promotes(b)) held = [b, h[1].length, []];
+    else if (h) out.push([b, h[1].length, false]);
+    else {
+      const c = cleanBlock(b);
+      if (c) out.push([c, 0, false]);
+      else {
+        lose();
+        if (/\S\s+\S[^\n]*:\s*$/.test(out.at(-1)?.[0] || '') && !out.at(-1)[1]) out.pop(); // its intro ("Practice these next:")
+      }
+    }
+  }
+  settle();
+  for (let i = out.length - 1; i >= 0; i--) if (out[i][1] && out[i][2] && !(out[i + 1] && (!out[i + 1][1] || out[i + 1][1] > out[i][1]))) out.splice(i, 1);
+  return out.map((x) => x[0]).join('\n\n');
+}
+
+/** Brand-free names in code: "Original PracHub exercise" -> "Original exercise", prachub-lab -> sample-lab. */
+const neutral = (c) => (!BRAND.test(c) ? c : c
+  .replace(/(?:www\.)?prachub\.com/gi, 'example.com')
+  .replace(/\bPracHub[ \t]+(?=\p{Ll})/gu, '')
+  .replace(/"prac"/g, '"sam"').replace(/"hub"/g, '"ple"') // the Java string-folding example spells the brand in parts
+  .replace(/prachub/gi, (m) => (m === 'PRACHUB' ? 'SAMPLE' : m[0] === 'P' ? 'Sample' : 'sample')));
+
+/**
+ * Body de-branding: what promotes the old site goes as a whole sentence, list item, table row/column or
+ * section, so the rest stays grammatical; old-site URLs become site paths; code gets neutral names.
+ */
+export function debrand(md) {
+  if (!BRAND.test(md) && !SELF.test(md) && !CTA_LINK.test(md)) return { md, changed: false };
+  const out = outsideCode(md, cleanBlocks, neutral).replace(/\n{3,}/g, '\n\n').trim();
   return { md: out, changed: out !== md.trim() };
 }
 
@@ -400,7 +630,9 @@ export function anchorRelations(doc, kinds) {
   for (const a of findAll(doc, (n) => ['a', 'header', 'footer'].includes(n.tag)).filter((n) => n.tag === 'a')) {
     const m = /^(?:https?:\/\/(?:www\.)?prachub\.com)?\/(coding-questions|interview-questions|interview-experiences|interview-guide|concepts)\/([^/?#]+)/.exec(attr(a, 'href') || '');
     const kind = m && LINK_KIND[m[1]];
-    if (kind && kinds.includes(kind)) out.push({ kind, slug: m[2], title: squash(textOf(a)) || undefined });
+    // A card link: its title is the first text block, not the metadata lines after it ("Airbnb · Data Scientist").
+    const head = findAll(a, (n) => n.tag === 'div' && !n.kids.some((k) => k.tag === 'div'))[0];
+    if (kind && kinds.includes(kind)) out.push({ kind, slug: m[2], title: squash(textOf(head || a)) || undefined });
   }
   return out;
 }
@@ -429,6 +661,13 @@ export const companyOf = (v) => {
   return name ? { slug: str(v?.slug) || slugify(name), name } : null;
 };
 
+/** A summary without old-site sentences; one cut off with "......" ends in an ellipsis after its last whole word. */
+function summaryText(s) {
+  const t = squash(cleanProse(squash(s)));
+  if (!/(?:\.{3,}|…)$/.test(t)) return t || null;
+  return `${t.replace(/[\s.…]+$/, '').replace(/(?:[\s,;:(]+(?:and|or|the|a|an|of|to|for|with|in|on|about|as|like|including))+$/i, '')}…`;
+}
+
 /** Title / summary / dates / tags from the payload entity, falling back to JSON-LD and meta tags. */
 export function pageBasics(html, e = {}) {
   const ld = jsonLd(html).find((x) => /Article|BlogPosting|LearningResource/.test(String(x['@type']))) || {};
@@ -436,7 +675,7 @@ export function pageBasics(html, e = {}) {
   const summary = [e.meta_description, meta(html, 'description'), e.summary, ld.description].find((x) => typeof x === 'string' && x.trim());
   return {
     title: squash(debrandText(cleanTitle(String(str(e.title) || str(e.name) || ld.headline || (h1 && pageText(h1[1])) || meta(html, 'og:title') || '')))),
-    summary: summary ? squash(debrandText(summary)) : null,
+    summary: summary ? summaryText(summary) : null,
     publishedAt: iso(e.first_published_at) || iso(e.published_at) || iso(e.created_at) || iso(ld.datePublished) || iso(meta(html, 'article:published_time')),
     updatedAt: iso(e.content_updated_at) || iso(e.updated_at) || iso(ld.dateModified) || iso(meta(html, 'article:modified_time')),
     tags: [...new Set((Array.isArray(e.tags) && e.tags.length ? e.tags : metaAll(html, 'article:tag')).map((t) => squash(String(t))).filter((t) => t && !BRAND.test(t)))],
@@ -449,6 +688,7 @@ const SCRIPTS = [['ko', /\p{Script=Hangul}/u], ['ja', /[\p{Script=Hiragana}\p{Sc
   ['hi', /\p{Script=Devanagari}/u], ['ta', /\p{Script=Tamil}/u], ['te', /\p{Script=Telugu}/u], ['kn', /\p{Script=Kannada}/u],
   ['ml', /\p{Script=Malayalam}/u], ['bn', /\p{Script=Bengali}/u], ['gu', /\p{Script=Gujarati}/u], ['th', /\p{Script=Thai}/u],
   ['ar', /\p{Script=Arabic}/u], ['he', /\p{Script=Hebrew}/u], ['ru', /\p{Script=Cyrillic}/u], ['el', /\p{Script=Greek}/u]];
+const SCRIPT_RUNS = SCRIPTS.map(([k, re]) => [k, new RegExp(`(?=\\p{L})${re.source}`, 'gu')]);
 const STOPWORDS = Object.entries({
   en: 'the and of to is in that for with you are this on it be your',
   fr: 'le la les des est et une pour dans vous avec sur du au qui ce',
@@ -467,11 +707,7 @@ export function detectLanguage(md) {
   const text = md.replace(/^(`{3,}|~{3,})[\s\S]*?^\1/gm, ' ').replace(/`[^`\n]*`/g, ' ').replace(/\]\([^)]*\)|https?:\/\/\S+/g, ' ');
   const letters = text.match(/\p{L}/gu) || [];
   if (!letters.length) return null;
-  const count = {};
-  for (const ch of letters) {
-    const hit = SCRIPTS.find(([, re]) => re.test(ch));
-    if (hit) count[hit[0]] = (count[hit[0]] || 0) + 1;
-  }
+  const count = Object.fromEntries(SCRIPT_RUNS.map(([k, re]) => [k, (text.match(re) || []).length]).filter(([, n]) => n));
   if (count.zh && (count.ja || 0) > 0.05 * count.zh) count.ja += count.zh; // kanji inside Japanese
   const [script, n] = Object.entries(count).sort((a, b) => b[1] - a[1])[0] || [];
   if (n >= 0.15 * letters.length) {
@@ -526,37 +762,199 @@ export function run({ rawType, name, parse, finish, write = writeJsonl }) {
   return items;
 }
 
+// ---------------------------------------------------------------- payload clean-up
+
+const CITE = /(?:\s+(?:from|by|via|of|in))?\s*\*\*:{0,2}contentReference\[oaicite:\d+\]\{index=\d+\}\*\*|\s*:{0,2}contentReference\[oaicite:\d+\]\{index=\d+\}/g;
+const CP1252 = Object.fromEntries('€\u0081‚ƒ„…†‡ˆ‰Š‹Œ\u008dŽ\u008f\u0090‘’“”•–—˜™š›œ\u009džŸ'.split('').map((c, i) => [c, 0x80 + i]));
+
+/** Payload fixes: ChatGPT citation markers, cp1252 mojibake ("â€œ"), control characters, an unclosed code fence. */
+export function tidy(md) {
+  return closeFence(md.replace(CITE, '')
+    .replace(/â[\u0080-\u00BF€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ]{2}/g, (m) => {
+      const c = Buffer.from([...m].map((x) => CP1252[x] ?? x.charCodeAt(0))).toString('utf8');
+      return c.includes('\uFFFD') ? m : c;
+    })
+    // oxlint-disable-next-line no-control-regex -- a mangled "\u0024" left U+0002 before the 4
+    .replace(/\u00024/g, '$')
+    // oxlint-disable-next-line no-control-regex -- control characters are the target
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\uFEFF]/g, ''));
+}
+
+/** A code fence left open is closed before the first blank line followed by a heading, a table or prose. */
+function closeFence(md) {
+  const lines = md.split('\n');
+  let open = -1;
+  lines.forEach((l, i) => {
+    const m = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(l);
+    const o = open >= 0 && /^ {0,3}(`{3,}|~{3,})/.exec(lines[open])[1];
+    if (m && open < 0) open = i;
+    else if (m && m[1][0] === o[0] && m[1].length >= o.length && !m[2].trim()) open = -1;
+  });
+  if (open < 0) return md;
+  const fence = /^ {0,3}(`{3,}|~{3,})/.exec(lines[open])[1];
+  const end = lines.findIndex((l, i) => i > open && !l.trim() && /^(?:#{1,6}\s|\||[A-Z][^=;{}()]*\s[a-z]+\s[a-z]+)/.test(lines[i + 1] || ''));
+  if (end < 0) return `${md}\n${fence}`;
+  lines.splice(end, 0, fence);
+  return closeFence(lines.join('\n'));
+}
+
+const untracked = (u) => {
+  const [, base, query, hash = ''] = /^([^?#]*)\?([^#]*)(#.*)?$/.exec(u) || [];
+  if (!query) return u;
+  const keep = query.split('&').filter((p) => !/^utm_/i.test(p));
+  return base + (keep.length ? `?${keep.join('&')}` : '') + hash;
+};
+/** Links: utm_* parameters dropped, "[t]([url](url))" repaired, relative targets (not site paths) reduced to their text. */
+export const fixLinks = (md) => outsideCode(md, (t) => t
+  .replace(/\]\(\[([^\]\s]+)\]\([^)\s]*\)\)/g, ']($1)')
+  .replace(/https?:\/\/[^\s)\]>"'<]+/g, (u) => (/[?&]utm_/i.test(u) ? untracked(u) : u))
+  .replace(/(?<!!)\[((?:[^\]\\]|\\.)*)\]\((?![a-z][a-z0-9+.-]*:|[/#])[^)\s]*\)/gi, '$1'));
+
+// ---------------------------------------------------------------- math
+
+const TEX = /\\(?:frac|dfrac|tfrac|sum|prod|int|sqrt|text|mathrm|mathbf|mathbb|mathcal|operatorname|mid|cap|cup|cdot|times|le|leq|ge|geq|neq|approx|sim|propto|infty|partial|nabla|log|ln|exp|alpha|beta|gamma|delta|epsilon|varepsilon|theta|lambda|mu|sigma|tau|phi|pi|rho|omega|Sigma|Delta|hat|bar|tilde|vec|left|right|quad|ldots|cdots|in|to|rightarrow|binom|top|Pr|Theta|Omega|ldots|lfloor|rfloor|lceil|rceil|ge|ne)(?![a-zA-Z])/;
+
+/** Formulas set in bare parentheses (their "\(" was lost), e.g. "(P(A\mid B)=P(A\cap B)/P(B))", become $…$. */
+function parenTex(t) {
+  let out = '';
+  let last = 0;
+  for (let i = t.indexOf('('); i >= 0; i = t.indexOf('(', i + 1)) {
+    if (i < last || (i && !/[\s:]/.test(t[i - 1]))) continue;
+    let depth = 0;
+    let j = i;
+    for (; j < t.length && t[j] !== '\n'; j++) if (t[j] === '(') depth++; else if (t[j] === ')' && --depth === 0) break;
+    const inner = t.slice(i + 1, j);
+    if (depth || !TEX.test(inner) || /\$|\]\(/.test(inner)) continue;
+    out += `${t.slice(last, i)}$${inner}$`;
+    last = j + 1;
+  }
+  return out + t.slice(last);
+}
+
+/** Dollar amounts escaped: remark-math pairs dollars like code spans, so "a $1 stake … $p$" would open a formula. */
+function currency(line) {
+  const ones = [...line.matchAll(/\\.|\$\$|\$/g)].filter((m) => m[0] === '$').map((m) => m.index);
+  const esc = new Set();
+  for (let k = 0; k < ones.length; k++) {
+    const inner = k + 1 < ones.length ? line.slice(ones[k] + 1, ones[k + 1]) : '';
+    const tex = inner.replace(/\\text\{[^}]*\}|\\[a-zA-Z]+/g, ' ').replace(/\{[^{}]*\}/g, ' ').replace(/\{[^{}]*\}/g, ' ');
+    // A formula has no run of prose words, bold markers or table-cell pipes, and is no "$5–" range start;
+    // "$ x $" padding is fine when it holds TeX.
+    const formula = inner && !/[a-zA-Z]{2,} [a-zA-Z]{2,} [a-zA-Z]{2,}/.test(tex) && !/\*\*|^\d[\d,.]*[–—-]$/.test(inner)
+      && !(/^\s*\|/.test(line) && /(?<!\\)\|/.test(inner)) && (/[\\^_{}]/.test(inner) || /^\S(?:.*\S)?$/.test(inner));
+    if (formula) k++;
+    else esc.add(ones[k]);
+  }
+  return esc.size ? line.replace(/\$/g, (m, i) => (esc.has(i) ? '\\$' : m)) : line;
+}
+
+/**
+ * TeX the way remark-math reads it ($…$, $$…$$), and whether there is any: \(…\) and \[…\] delimiters, formulas in
+ * bare parentheses and KaTeX output copied as text are rewritten; dollar amounts next to formulas are escaped.
+ * `katex`: the page rendered math, so plain "$T$" counts too.
+ */
+export function mathMarkdown(md, katex = false) {
+  let math = false;
+  const out = outsideCode(md, (t) => {
+    if (!katex && !TEX.test(t) && !/\$[^$\n]*[\\^_{][^$\n]*\$/.test(t)) return t;
+    const x = t.replace(/\\\\(?=[a-zA-Z]{2})/g, '\\') // "$L=\\lambda W$": a doubled command backslash
+      .replace(/\S*?(\\[a-zA-Z]+(?:\{(?:[^{}\n]|\{[^{}\n]*\})*\})+)\S*?\u200B/g, (m, y) => `$${y}$`) // KaTeX copied as text
+      .replace(/\\\[([\s\S]+?)\\\]/g, (m, y) => (TEX.test(y) || /[=^_]/.test(y) ? `$$${y}$$` : m))
+      .replace(/\\\((.+?)\\\)/g, (m, y) => `$${y.trim()}$`)
+      .split('\n').map(currency).join('\n')
+      // Formulas stay as they are apart from "#" (a KaTeX error); bare-parenthesis formulas only outside them.
+      .split(/(\$\$[\s\S]*?\$\$|(?<!\\)\$[^$\n]+?(?<!\\)\$)/)
+      .map((p, i) => (i % 2 ? p.replace(/(?<!\\)#/g, '\\#') : parenTex(p)))
+      .join('');
+    math = /(?<!\\)\$/.test(x); // a formula is left once dollar amounts are escaped
+    return math ? x : t;
+  });
+  return { md: out, math };
+}
+
 // ---------------------------------------------------------------- articles
 
 export const MIN_BODY = 200; // chars of body left after locked parts are removed; less is not worth importing
+const LANGS = new Set(['en', 'zh']); // the site's languages
+
+// Review and comparison titles ("X Review 2026", "Is X Worth It", "X vs Y"); a code review is an interview format.
+const REVIEW = /\b(?:reviews?|alternatives?|worth|enough|gone|dead|honest|better than)\b|够用|够面试|值得|评测|测评|替代|能过/i;
+const VERSUS = /\b(?:vs\.?|versus|which|best|ranked)\b|对比/i;
+const FORMAT_REVIEW = /\b(?:code|recruiter|holistic|human|architecture|diff|build|progress|take-home|live|system|peer|security|resume|design|incident|performance) reviews?\b/gi;
+// The old site as the product (compared, chosen, the subject of a claim), not one of its questions being cited.
+const PITCH = /\b(?:vs\.?|versus|or|than|and|use|using|try|choose|pick|start with|replace)\s+PracHub\b(?!['’]s?\s+(?:[\w-]+\s+){0,3}?(?:questions?|prompts?|exercises?|records?|examples?)\b)|\bPracHub(?:['’]s)?\s+(?:is|was|can|gives|offers|lets|helps|has|covers|supplies|fits|works|makes|provides|wins|adds|focuses|shows|does|vs\.?|free|premium|model|approach|advantage|strength|edge)\b|\|\s*\**PracHub(?:\.com)?\**\s*\|/gi;
+
+/** How often the visible text names the old site, and how often it pitches it as the product. */
+export function brandUse(md) {
+  const text = linkText(md.replace(CODE, ' ').replace(SITE_URL, ''));
+  return { mentions: (text.match(/prachub/gi) || []).length, pitches: (text.match(PITCH) || []).length };
+}
+
+/**
+ * Written to sell the old site: the slug or title names it, or a review / comparison of prep products names it
+ * 5+ times and pitches it (the pitch phrases are English; Chinese reviews go by the count).
+ */
+export function promotional(slug, title, md, language) {
+  if (BRAND.test(slug) || BRAND.test(title)) return true;
+  const { mentions, pitches } = brandUse(md);
+  const kind = title.replace(FORMAT_REVIEW, '');
+  const zh = language === 'zh';
+  return pitches >= 8 || (mentions >= 5 && ((REVIEW.test(kind) && (zh || pitches >= 1)) || (VERSUS.test(kind) && (zh || pitches >= 2))));
+}
+
+const roleName = (r) => (r && /^(?:[A-Z][a-z]+){2,}$/.test(r) ? r.replace(/([a-z])(?=[A-Z])/g, '$1 ') : r); // "SoftwareEngineer"
 
 function parse(html, slug, count) {
+  if (slug === '_index') return { skip: 'index' }; // the listing page (testimonials), not an article
   const e = flightEntity(flight(html), slug) || {};
   if (e.is_locked === true) return { skip: 'locked' };
-  // Articles about PracHub itself are marketing, not content.
-  if (BRAND.test(slug) || BRAND.test(cleanTitle(String(e.title || meta(html, 'og:title') || '')))) return { skip: 'promo' };
   const b = pageBasics(html, e);
-  const pub = publicBody(html, e);
-  const d = debrand(dropLeadIn(pub.md, b.title));
-  if (d.md.length < MIN_BODY) return { skip: pub.partial ? 'locked' : 'empty' };
+  // Articles are free (is_free): the payload Markdown is the body even where the page renders it differently.
+  const pub = e.is_free !== false && str(e.content) ? { md: e.content, partial: false, source: 'payload' } : publicBody(html, e);
+  const md = fixLinks(embeddedHtml(tidy(pub.md)));
+  const language = detectLanguage(md);
+  if (!LANGS.has(language)) return { skip: `language:${language}` };
+  if (promotional(slug, cleanTitle(String(e.title || meta(html, 'og:title') || '')), md, language)) return { skip: 'promo' };
+  const d = debrand(dropLeadIn(md, b.title));
+  const m = mathMarkdown(d.md);
+  if (m.md.length < MIN_BODY) return { skip: pub.partial ? 'locked' : 'empty' };
   if (d.changed) count('debranded');
+  if (m.math) count('math');
   if (pub.source === 'html') count('htmlBody');
-  const lang = String(e.language || e.lang || e.locale || '');
   return {
     item: {
-      id: `ar-${slug}`, type: 'article', slug, title: b.title || slug, summary: b.summary, body: d.md,
-      company: companyOf(e.company), role: str(e.position) || str(e.role), category: str(e.category), difficulty: null, round: null, seniority: null,
+      id: `ar-${slug}`, type: 'article', slug, title: b.title || slug, summary: b.summary, body: m.md,
+      company: companyOf(e.company), role: roleName(str(e.position) || str(e.role)), category: str(e.category), difficulty: null, round: null, seniority: null,
       tags: b.tags, publishedAt: b.publishedAt, updatedAt: b.updatedAt,
-      relations: dedupeRelations(linkRelations(d.md)),
+      relations: dedupeRelations(linkRelations(m.md)),
       extra: {
-        language: /^[a-z]{2}(?:[-_][a-z]{2,4})?$/i.test(lang) ? lang.slice(0, 2).toLowerCase() : detectLanguage(d.md),
-        coverImage: str(e.featured_image) || [meta(html, 'og:image')].find((u) => u && !BRAND.test(u)) || null, // not the branded OG card
+        language,
+        ...(m.math && { math: true }),
+        // Not the branded OG card or an inline SVG card.
+        coverImage: [str(e.featured_image), meta(html, 'og:image')].find((u) => u && !BRAND.test(u) && !u.startsWith('data:')) || null,
         readingTime: e.reading_time ?? null,
         resourceType: e.resource_type || null,
       },
       sourceUrl: sourceUrl('resources', slug), partial: pub.partial,
     },
   };
+}
+
+/** Drops an "x-2" copy whose title and text repeat article "x" (5-word shingles, Jaccard >= 0.8). */
+function dropCopies(items, stats) {
+  const bySlug = new Map(items.map((it) => [it.slug, it]));
+  const shingles = (it) => new Set(grams(words(it.body), 5));
+  for (let k = items.length - 1; k >= 0; k--) {
+    const base = bySlug.get(/^(.+)-\d+$/.exec(items[k].slug)?.[1]);
+    if (!base || base.title.toLowerCase() !== items[k].title.toLowerCase()) continue;
+    const [a, c] = [shingles(base), shingles(items[k])];
+    let both = 0;
+    for (const x of a) if (c.has(x)) both++;
+    if (both >= 0.8 * (a.size + c.size - both)) {
+      items.splice(k, 1);
+      stats.skipped.duplicate = (stats.skipped.duplicate || 0) + 1;
+    }
+  }
 }
 
 function selfTest() {
@@ -567,10 +965,35 @@ function selfTest() {
   const { md, locked } = toMarkdown(doc);
   assert.equal(md, '## Plan\n\nUse `a_b` & **care** on [joins](https://prachub.com/concepts/joins).\n\n- one\n- two\n  1. deep\n\n```py\nx = 1\n```\n\n| A | B |\n| --- | --- |\n| 1\\|2 | 3 |');
   assert.equal(locked, 1);
-  const d = debrand('Original PracHub mocks, see [x](https://prachub.com/concepts/joins).\n\nTry PracHub Premium today.\n\n```\nPracHub\n```');
-  assert.equal(d.md, 'Original mocks, see [x](/concepts/joins).\n\n```\nPracHub\n```');
-  assert.deepEqual(linkRelations(d.md), [{ kind: 'concept', slug: 'joins' }]);
-  assert.equal(debrandText("Reviewed by PracHub. PracHub's bank, practice on PracHub."), 'Reviewed. our bank, practice here.');
+  const d = debrand([
+    '## Setup', '', "Start with [PracHub's heap question](https://prachub.com/coding-questions/heap). It is a record. Use a heap — see the "
+      + 'PracHub question: [x](https://prachub.com/coding-questions/x). Read [joins](https://prachub.com/concepts/joins).',
+    '', '1. Try it on PracHub.', '2. Time it.', '3. Explain.',
+    '', '| PracHub question | Focus | LeetCode | PracHub |', '| --- | --- | --- | --- |', '| [A](https://prachub.com/coding-questions/a) | heaps | yes | yes |',
+    '| PracHub Premium | x | y | z |', '', '## Practice on PracHub', '', 'Links.', '', '## Next', '', '*Note: checked in 2026; PracHub records are practice.*',
+    '', '```js', '// Original PracHub exercise', 'const lab = "prachub-lab";', '```'].join('\n'));
+  assert.equal(d.md, ['## Setup', '', 'Use a heap. Read [joins](/concepts/joins).', '', '1. Time it.', '2. Explain.',
+    '', '| Question | Focus | LeetCode |', '| --- | --- | --- |', '| [A](/coding-questions/a) | heaps | yes |', '', '## Next', '', '*Note: checked in 2026.*',
+    '', '```js', '// Original exercise', 'const lab = "sample-lab";', '```'].join('\n'));
+  assert.deepEqual(linkRelations(d.md), [{ kind: 'concept', slug: 'joins' }, { kind: 'question', slug: 'a' }]);
+  assert.equal(debrand('Our platform connects you with mentors. Tables need keys.').md, 'Tables need keys.');
+  assert.equal(debrand('## Plan\n\n### Day 1\n\nUse PracHub daily.\n\n### Day 2\n\nBuild.').md, '## Plan\n\n### Day 2\n\nBuild.');
+  const fifty = Array.from({ length: 12 }, (_, i) => `${i + 1}. Tell me about a time you changed a plan under pressure.`).join('\n');
+  assert.equal(debrand(`## The PracHub Behavioral 50\n\nPracHub ranks these.\n\n${fifty}\n\n## Five PracHub questions to practice next\n\n- [A](/x)`).md, `## The Behavioral 50\n\n${fifty}`);
+  assert.equal(debrandText("Reviewed by PracHub. Start from PracHub's bank, practice on PracHub."), 'Reviewed. Start from the bank, practice here.');
+  assert.deepEqual(sentences('See e.g. this. Then that!\nNext'), ['See e.g. this. ', 'Then that!\n', 'Next']);
+  assert.equal(embeddedHtml('Intro.\n\n<figure><svg><text>x</text></svg><figcaption>c</figcaption></figure>\n\n<div><iframe src="https://www.youtube.com/embed/abc?si=1" title="Joins &amp;amp; NULLs"></iframe></div>\n\n'
+    + '<table><tr><th>a</th></tr><tr><td><strong>1</strong></td></tr></table>\n\nUse `<p>` and <code>x</code>.'),
+    'Intro.\n\n[Video: Joins & NULLs](https://www.youtube.com/watch?v=abc)\n\n| a |\n| --- |\n| **1** |\n\nUse `<p>` and `x`.');
+  assert.equal(tidy('BERT from **:contentReference[oaicite:0]{index=0}**, a model. \u00e2\u20ac\u0153q\u00e2\u20ac\u009d\n\n```py\nx = 1\n\nThis line is prose again.'),
+    'BERT, a model. \u201cq\u201d\n\n```py\nx = 1\n```\n\nThis line is prose again.');
+  assert.equal(fixLinks('[a](https://x.io/p?utm_source=openai&id=2) [b]([https://y.io/](https://y.io/)) [c](citation) [d](/concepts/e)'),
+    '[a](https://x.io/p?id=2) [b](https://y.io/) c [d](/concepts/e)');
+  const tex = mathMarkdown('Let \\(n\\) be odd: (P(A\\mid B)=1). A $1 stake wins $b with probability $p$.\n\n\\[\nx^2\n\\]');
+  assert.deepEqual(tex, { md: 'Let $n$ be odd: $P(A\\mid B)=1$. A \\$1 stake wins \\$b with probability $p$.\n\n$$\nx^2\n$$', math: true });
+  assert.equal(mathMarkdown('Pay $5 and $10 now.').math, false);
+  assert.equal(promotional('x', 'Foo Review 2026: Is It Worth It?', 'PracHub is free. PracHub, PracHub, PracHub and PracHub.', 'en'), true);
+  assert.equal(promotional('x', 'Code Review Interview Guide', 'Use PracHub. PracHub PracHub PracHub PracHub.', 'en'), false);
   assert.equal(detectLanguage('Le système est conçu pour les entretiens et la préparation des candidats dans une équipe.'), 'fr');
   assert.equal(detectLanguage('Bài viết này giải thích cách chuẩn bị cho phỏng vấn và những câu hỏi thường gặp của các công ty.'), 'vi');
   assert.equal(detectLanguage('시스템 설계 면접을 준비하는 방법과 자주 나오는 질문을 정리했습니다.'), 'ko');
@@ -584,5 +1007,5 @@ function selfTest() {
 
 if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
   if (process.argv[2] === '--self-test') selfTest();
-  else run({ rawType: 'resources', name: 'articles', parse });
+  else run({ rawType: 'resources', name: 'articles', parse, finish: dropCopies });
 }
