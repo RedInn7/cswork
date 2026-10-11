@@ -51,6 +51,9 @@ export type OJSubmission = {
   runtimeMs?: number | null;
   memoryKb?: number | null;
   created_at: number;
+  /** Server clock, like created_at: the worker claimed / finished the job. */
+  startedAt?: number | null;
+  finishedAt?: number | null;
   code?: string;
   cases?: OJCase[];
   firstFailure?: {
@@ -159,6 +162,10 @@ export async function cancelOJ(
   return detail;
 }
 
+/** Failures carry `status`: the HTTP code, or 'timeout' / 'network' without a response. */
+const failure = (message: string, status: number | 'timeout' | 'network') =>
+  Object.assign(new Error(message), { status });
+
 export async function ojRequest<T>(
   path: string,
   data?: unknown,
@@ -182,17 +189,22 @@ export async function ojRequest<T>(
     });
     const result = await response.json().catch(() => null);
     if (!response.ok)
-      throw new Error(result?.error || `服务暂时不可用（${response.status}）`);
-    if (!result) throw new Error('服务返回了无法识别的数据，请重试');
+      throw failure(
+        result?.error || `服务暂时不可用（${response.status}）`,
+        response.status,
+      );
+    if (!result)
+      throw failure('服务返回了无法识别的数据，请重试', response.status);
     return result as T;
   } catch (error) {
     if (controller.signal.aborted && !signal?.aborted) {
-      throw new Error(
+      throw failure(
         '请求超时，请重试。重复请求会使用相同提交编号，避免重复判题。',
+        'timeout',
       );
     }
     if (error instanceof TypeError)
-      throw new Error('无法连接判题服务，请检查网络后重试');
+      throw failure('无法连接判题服务，请检查网络后重试', 'network');
     throw error;
   } finally {
     clearTimeout(timeout);

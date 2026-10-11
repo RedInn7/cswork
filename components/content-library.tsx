@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, BookOpen, Building2, ChevronDown, Search, X } from 'lucide-react';
 import { api } from '@/lib/types';
+import { track } from '@/lib/analytics';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { companyLogos } from '@/lib/oa-company-brands';
@@ -366,7 +367,10 @@ export function ContentList({
             className="rd-search ct-search"
             onSubmit={(e) => {
               e.preventDefault();
-              apply({ q: text.trim() });
+              const q = text.trim();
+              // An email typed into the box never leaves the browser.
+              if (q) track('search', { view: section, q: q.includes('@') ? null : q.slice(0, 80) });
+              apply({ q });
             }}
           >
             <Search size={14} aria-hidden="true" />

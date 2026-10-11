@@ -1,0 +1,879 @@
+/*
+ * Owner analytics on the redesign tokens. Every chart colour derives from --rd-*,
+ * so the page follows the redesign layer; `.dark` (the app's shadcn dark class)
+ * re-steps the neutrals for a dark surface. Colour = domain: sky for people
+ * (traffic, what users feel), emerald for the judge (accepted, judge time), zinc
+ * for context. Pairs validated with the dataviz palette checker (CVD ΔE ≥ 18).
+ */
+.om {
+  --om-views: color-mix(in oklab, var(--rd-sky) 45%, var(--rd-surface));
+  --om-visitors: var(--rd-sky);
+  --om-accepted: var(--rd-brand);
+  --om-other: color-mix(in oklab, var(--rd-muted) 40%, var(--rd-surface));
+  --om-felt: var(--rd-sky);
+  --om-judge: var(--rd-brand);
+  --om-context: var(--rd-subtle);
+}
+.dark .om {
+  --rd-ink: oklch(0.985 0 0);
+  --rd-ink-2: oklch(0.871 0.006 286.286);
+  --rd-muted: oklch(0.705 0.015 286.067);
+  --rd-subtle: oklch(0.552 0.016 285.938);
+  --rd-line: oklch(0.274 0.006 286.033);
+  --rd-line-soft: oklch(0.244 0.006 285.97);
+  --rd-fill: oklch(0.274 0.006 286.033);
+  --rd-fill-soft: oklch(0.244 0.006 285.97);
+  --rd-surface: oklch(0.21 0.006 285.885);
+  --rd-brand-ink: oklch(0.765 0.177 163.223);
+  --rd-brand-soft: oklch(0.262 0.051 172.552);
+  --rd-amber: oklch(0.795 0.184 86.047);
+  --rd-red: oklch(0.704 0.191 22.216);
+  --rd-shadow: none;
+}
+
+/* Toolbar: one row above everything it scopes. */
+.om-toolbar {
+  justify-content: space-between;
+  margin: 24px 0 16px;
+}
+.om-updated {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--rd-muted);
+  font-size: 12px;
+}
+.om-refresh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--rd-line);
+  border-radius: 999px;
+  background: var(--rd-surface);
+  color: var(--rd-muted);
+  transition: color 120ms ease;
+}
+.om-refresh:hover {
+  color: var(--rd-ink);
+}
+.om-refresh:disabled {
+  cursor: default;
+}
+.om-refresh .is-spinning {
+  animation: om-spin 0.9s linear infinite;
+}
+.om-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin-bottom: 14px;
+  padding: 10px 10px 10px 14px;
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--rd-red) 8%, var(--rd-surface));
+  color: var(--rd-red);
+  font-size: 13px;
+}
+
+/* Layout: 12 columns, folded by the content width (the sidebar eats the viewport). */
+.om-body {
+  container-type: inline-size;
+}
+.om-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
+  transition: opacity 160ms ease;
+}
+/* A refetch keeps the frame: the previous numbers fade until the new ones land. */
+.om-grid.is-stale {
+  opacity: 0.55;
+}
+.om-span-12 {
+  grid-column: span 12;
+}
+.om-span-8 {
+  grid-column: span 8;
+}
+.om-span-4 {
+  grid-column: span 4;
+}
+.om-skel {
+  border-radius: var(--rd-radius);
+  background: linear-gradient(90deg, var(--rd-fill), var(--rd-fill-soft), var(--rd-fill));
+  background-size: 200% 100%;
+  animation: om-shimmer 1.2s linear infinite;
+}
+
+/* KPI strip: one card, hairline-divided cells (the 1px gap shows the line colour). */
+.om-kpis {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  background: var(--rd-line);
+}
+.om-kpi {
+  min-width: 0;
+  padding: 16px 18px 18px;
+  background: var(--rd-surface);
+}
+.om-kpi-value {
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--rd-ink);
+}
+.om-kpi-sub {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--rd-muted);
+  text-wrap: balance;
+}
+.om-live {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-right: 10px;
+  border-radius: 999px;
+  background: var(--rd-brand);
+  animation: om-pulse 1.6s ease-in-out infinite;
+}
+
+/* Cards */
+.om-card {
+  min-width: 0;
+  padding: 18px 20px 20px;
+}
+.om-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+.om-card-head h2 {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--rd-ink);
+}
+.om-card-note {
+  margin: 2px 0 14px;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--rd-muted);
+}
+.om-card-extra {
+  font-size: 12px;
+  color: var(--rd-muted);
+}
+.om-card-head + .om-plots,
+.om-card-head + .om-none {
+  margin-top: 12px;
+}
+.om-none {
+  margin: 0;
+  padding: 22px 12px;
+  border: 1px dashed var(--rd-line);
+  border-radius: 12px;
+  color: var(--rd-muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* Daily trend */
+.om-plots {
+  position: relative;
+}
+.om-panel + .om-panel {
+  margin-top: 12px;
+}
+.om-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin-bottom: 4px;
+}
+.om-panel-head h3 {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rd-muted);
+}
+.om-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: var(--rd-ink-2);
+}
+.om-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.om-legend b {
+  font-weight: 700;
+  color: var(--rd-ink);
+}
+.om-key {
+  display: inline-block;
+  flex: none;
+}
+.om-key.is-bar {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+.om-key.is-line {
+  width: 12px;
+  height: 3px;
+  border-radius: 2px;
+}
+.om-key.is-views {
+  background: var(--om-views);
+}
+.om-key.is-visitors {
+  background: var(--om-visitors);
+}
+.om-key.is-accepted {
+  background: var(--om-accepted);
+}
+.om-key.is-other {
+  background: var(--om-other);
+}
+.om-plot {
+  display: block;
+  /* Until the card is measured the drawing scales down instead of overflowing. */
+  max-width: 100%;
+  height: auto;
+}
+.om-plot text {
+  font-family: var(--font-geist-mono);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  fill: var(--rd-muted);
+}
+.om-gridline,
+.om-baseline,
+.om-cross {
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+.om-gridline {
+  stroke: var(--rd-line-soft);
+}
+.om-baseline {
+  stroke: var(--rd-line);
+}
+.om-cross {
+  stroke: var(--rd-subtle);
+}
+.om-col {
+  transition: opacity 120ms ease;
+}
+.om-col.is-views {
+  fill: var(--om-views);
+}
+.om-col.is-accepted {
+  fill: var(--om-accepted);
+}
+.om-col.is-other {
+  fill: var(--om-other);
+}
+.om-plot.has-active .om-col {
+  opacity: 0.45;
+}
+.om-plot.has-active .om-col.is-active,
+.om-plot.has-active .is-active .om-col {
+  opacity: 1;
+}
+.om-line {
+  fill: none;
+  stroke: var(--om-visitors);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.om-dot {
+  fill: var(--om-visitors);
+  stroke: var(--rd-surface);
+  stroke-width: 2;
+}
+.om-hit {
+  fill: transparent;
+  cursor: crosshair;
+  /* Vertical swipes still scroll the page; horizontal drags scrub the days. */
+  touch-action: pan-y;
+}
+.om-plots:has(.om-scrub:focus-visible) {
+  border-radius: 10px;
+  outline: 2px solid var(--rd-brand);
+  outline-offset: 6px;
+}
+.om-tip {
+  position: absolute;
+  top: 26px;
+  z-index: 2;
+  padding: 10px 12px;
+  border: 1px solid var(--rd-line);
+  border-radius: 12px;
+  background: var(--rd-surface);
+  box-shadow: 0 10px 28px rgb(0 0 0 / 0.1);
+  font-size: 12px;
+  pointer-events: none;
+}
+.om-tip strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--rd-ink);
+}
+.om-tip-row {
+  display: grid;
+  grid-template-columns: 12px auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  line-height: 20px;
+}
+/* Values lead, labels follow. */
+.om-tip-row b {
+  font-family: var(--font-geist-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--rd-ink);
+}
+.om-tip-row span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--rd-muted);
+}
+.om-details {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rd-line-soft);
+}
+.om-details summary {
+  width: fit-content;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--rd-muted);
+}
+.om-details summary:hover {
+  color: var(--rd-ink);
+}
+.om-table-wrap {
+  max-height: 360px;
+  margin-top: 10px;
+  overflow: auto;
+}
+
+/* Tables */
+.om-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.om-table th,
+.om-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--rd-line-soft);
+  text-align: left;
+  white-space: nowrap;
+}
+.om-table thead th {
+  border-bottom-color: var(--rd-line);
+  color: var(--rd-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.om-table tbody th {
+  font-weight: 600;
+  color: var(--rd-ink);
+}
+.om-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.om-table .is-num {
+  text-align: right;
+  font-family: var(--font-geist-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--rd-ink-2);
+}
+.om-table thead .is-num {
+  font-family: inherit;
+  color: var(--rd-muted);
+}
+.om-meter {
+  display: inline-block;
+  width: 56px;
+  height: 6px;
+  margin-right: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--om-judge) 16%, var(--rd-surface));
+  vertical-align: middle;
+}
+.om-meter span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--om-judge);
+}
+
+/* Judge latency: values in columns, one shared axis for every timing. */
+.om-gap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  margin: 0 0 6px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: color-mix(in oklab, var(--om-felt) 8%, var(--rd-surface));
+  color: var(--rd-ink-2);
+  font-size: 13px;
+}
+.om-gap strong {
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--rd-ink);
+}
+.om-lat {
+  container-type: inline-size;
+}
+.om-lat-row {
+  display: grid;
+  grid-template-columns: 150px repeat(4, 58px) minmax(0, 1fr);
+  align-items: center;
+  column-gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rd-line-soft);
+}
+.om-lat-row.is-felt {
+  --om-tone: var(--om-felt);
+}
+.om-lat-row.is-judge {
+  --om-tone: var(--om-judge);
+}
+.om-lat-row.is-context {
+  --om-tone: var(--om-context);
+}
+.om-lat-head {
+  padding: 6px 0;
+  border-bottom-color: var(--rd-line);
+  color: var(--rd-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: right;
+}
+.om-lat-name {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+.om-lat-name strong {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--rd-ink);
+}
+.om-lat-name span {
+  font-size: 11px;
+  line-height: 15px;
+  color: var(--rd-muted);
+}
+.om-lat-values {
+  display: grid;
+  grid-column: 2 / span 4;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 12px;
+  margin: 0;
+}
+.om-lat-values dt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.om-lat-values dd {
+  margin: 0;
+  font-family: var(--font-geist-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+  color: var(--rd-ink-2);
+}
+.om-lat-values div:first-child dd {
+  font-weight: 700;
+  color: var(--rd-ink);
+}
+.om-lat-track {
+  position: relative;
+  height: 24px;
+  margin: 0 6px;
+  background-image:
+    linear-gradient(var(--rd-line), var(--rd-line)),
+    linear-gradient(var(--rd-line-soft), var(--rd-line-soft)),
+    linear-gradient(var(--rd-line-soft), var(--rd-line-soft));
+  background-position: 0 0, 50% 0, 100% 0;
+  background-size: 1px 100%;
+  background-repeat: no-repeat;
+}
+.om-lat-track > span {
+  position: absolute;
+  top: 50%;
+}
+.om-lat-tail {
+  height: 2px;
+  margin-top: -1px;
+  border-radius: 2px;
+  background: color-mix(in oklab, var(--om-tone) 45%, var(--rd-surface));
+}
+.om-lat-spread {
+  height: 8px;
+  margin-top: -4px;
+  border-radius: 4px;
+  background: color-mix(in oklab, var(--om-tone) 40%, var(--rd-surface));
+}
+.om-lat-dot {
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 999px;
+  background: var(--om-tone);
+  box-shadow: 0 0 0 2px var(--rd-surface);
+}
+.om-lat-ring {
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border: 2px solid var(--om-tone);
+  border-radius: 999px;
+  background: var(--rd-surface);
+}
+.om-lat-avg {
+  width: 2px;
+  height: 14px;
+  margin: -7px 0 0 -1px;
+  border-radius: 1px;
+  background: var(--rd-ink-2);
+}
+.om-lat-axis {
+  padding: 6px 0 0;
+  border-bottom: 0;
+}
+.om-lat-ticks {
+  position: relative;
+  grid-column: 6;
+  height: 14px;
+  margin: 0 6px;
+  font-family: var(--font-geist-mono);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--rd-muted);
+}
+.om-lat-ticks span {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+.om-lat-ticks span:nth-child(1) {
+  left: 0;
+}
+.om-lat-ticks span:nth-child(2) {
+  left: 50%;
+  transform: translateX(-50%);
+}
+.om-lat-ticks span:nth-child(3) {
+  right: 0;
+}
+.om-lat-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px 14px;
+  margin: 10px 0 0;
+  font-size: 11px;
+  color: var(--rd-muted);
+}
+.om-lat-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.om-glyph {
+  display: inline-block;
+  flex: none;
+}
+.om-glyph.is-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--rd-ink-2);
+}
+.om-glyph.is-spread {
+  width: 16px;
+  height: 6px;
+  border-radius: 3px;
+  background: color-mix(in oklab, var(--rd-ink-2) 35%, var(--rd-surface));
+}
+.om-glyph.is-ring {
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--rd-ink-2);
+  border-radius: 999px;
+}
+.om-glyph.is-avg {
+  width: 2px;
+  height: 11px;
+  border-radius: 1px;
+  background: var(--rd-ink-2);
+}
+
+/* Ranked bar lists: a soft bar behind the label, the number at the end. */
+.om-bars {
+  display: grid;
+  /* Rows shrink below a long slug or query instead of widening the card. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.om-bar {
+  --om-fill: var(--rd-sky);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 30px;
+  padding: 0 2px 0 10px;
+  font-size: 13px;
+}
+.om-bar.is-good {
+  --om-fill: var(--rd-brand);
+}
+.om-bar.is-bad {
+  --om-fill: var(--rd-red);
+}
+.om-bar.is-warn {
+  --om-fill: var(--rd-amber);
+}
+.om-bar.is-neutral {
+  --om-fill: var(--rd-muted);
+}
+.om-bar-fill {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 0;
+  min-width: 2px;
+  border-radius: 0 4px 4px 0;
+  background: color-mix(in oklab, var(--om-fill) 16%, transparent);
+}
+.om-bar-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--rd-ink);
+}
+.om-bar-label .rd-badge {
+  flex: none;
+}
+.om-bar-value {
+  position: relative;
+  flex: none;
+  font-family: var(--font-geist-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--rd-ink-2);
+}
+.om-bar-value small {
+  display: inline-block;
+  min-width: 34px;
+  margin-left: 6px;
+  font-size: 11px;
+  text-align: right;
+  color: var(--rd-muted);
+}
+.om-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.om-mono {
+  font-family: var(--font-geist-mono);
+  font-size: 12px;
+}
+.om-abbr {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--rd-surface);
+  color: var(--rd-ink-2);
+  font-family: var(--font-geist-mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+.om-abbr::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--om-fill);
+}
+.om-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+.om-link:hover .om-text {
+  color: var(--rd-brand-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.om-link:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--rd-brand);
+  outline-offset: 2px;
+}
+
+/* Fold by the content width. */
+@container (max-width: 900px) {
+  .om-span-8 {
+    grid-column: span 12;
+  }
+  .om-span-4 {
+    grid-column: span 6;
+  }
+  .om-kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@container (max-width: 600px) {
+  .om-grid {
+    gap: 12px;
+  }
+  .om-span-8,
+  .om-span-4 {
+    grid-column: span 12;
+  }
+  .om-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .om-kpi {
+    padding: 14px 14px 16px;
+  }
+  .om-kpi-value {
+    font-size: 24px;
+    line-height: 28px;
+  }
+  .om-card {
+    padding: 16px 14px 16px;
+  }
+}
+/* Narrow latency card: name, then the four values with their labels, then the axis. */
+@container (max-width: 560px) {
+  .om-lat-head {
+    display: none;
+  }
+  .om-lat-row {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 8px;
+  }
+  .om-lat-values {
+    grid-column: auto;
+  }
+  .om-lat-values div {
+    display: grid;
+    gap: 1px;
+  }
+  .om-lat-values dt {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    color: var(--rd-muted);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .om-lat-values dd {
+    text-align: left;
+  }
+  .om-lat-ticks {
+    grid-column: 1;
+  }
+  .om-lat-legend {
+    justify-content: flex-start;
+  }
+}
+
+@keyframes om-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes om-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.7);
+  }
+}
+@keyframes om-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .om-skel,
+  .om-live,
+  .om-refresh .is-spinning {
+    animation: none;
+  }
+  .om-grid,
+  .om-col {
+    transition: none;
+  }
+}

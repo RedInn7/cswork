@@ -157,6 +157,8 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
         id: `fresh-${++submitted}`,
         mode: body.mode,
         status: outcome,
+        startedAt: 41,
+        finishedAt: 101,
       };
       return Response.json({ id: freshSubmission.id, status: acknowledgement });
     }
@@ -321,7 +323,43 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       null,
       'history must not celebrate',
     );
+    // Analytics: a visible run reports judge_submit, then judge_result, once each.
+    const events = [];
+    window.gtag = (command, name, params) => events.push({ name, params });
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      get: () => 'visible',
+    });
+    globalThis.requestAnimationFrame = (callback) => setTimeout(callback, 0);
+    globalThis.cancelAnimationFrame = (frame) => clearTimeout(frame);
     await click(button('Run'));
+    await settle();
+    assert.deepEqual(
+      events.map((event) => event.name),
+      ['judge_submit', 'judge_result'],
+    );
+    assert.deepEqual(events[0].params, {
+      mode: 'run',
+      problem_id: 'lc-1',
+      code_language: 'python',
+    });
+    const { duration_ms, ...result } = events[1].params;
+    assert.ok(
+      Number.isFinite(duration_ms) && duration_ms >= 0,
+      'client latency',
+    );
+    assert.deepEqual(result, {
+      mode: 'run',
+      problem_id: 'lc-1',
+      code_language: 'python',
+      verdict: 'accepted',
+      passed: 2,
+      total: 2,
+      server_ms: 100,
+      queue_ms: 40,
+    });
+    delete window.gtag;
+    delete document.visibilityState;
     assert.equal(
       document.querySelector('.cs-accepted-banner'),
       null,

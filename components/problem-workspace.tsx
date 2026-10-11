@@ -96,6 +96,7 @@ import {
   type SubmissionPage,
 } from '@/lib/oj-client';
 import { FeedbackTiming } from '@/lib/oj-feedback-timing';
+import { track } from '@/lib/analytics';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import '@/app/editor.css';
@@ -117,6 +118,11 @@ type ReplaceRequest = {
 function isStarter(code: string, language: Language) {
   return Object.values(starterTemplates).some((set) => set[language] === code);
 }
+/** Analytics calls the formal judge "submit", like its button. */
+const judgeMode = (mode: string) => (mode === 'judge' ? 'submit' : 'run');
+/** ojRequest's HTTP code, 'timeout' or 'network'. */
+const failureStatus = (e: unknown) =>
+  String((e as { status?: number | string }).status ?? 'unknown');
 const safeLayoutStorage = {
   getItem(key: string) {
     try {
@@ -633,16 +639,36 @@ function Workspace({
     let timer: ReturnType<typeof setTimeout> | undefined;
     const frame = requestAnimationFrame(() => {
       timer = setTimeout(() => {
-        if (document.visibilityState === 'visible')
-          feedbackTiming.current?.finish(submission.id, submission.status);
-        else feedbackTiming.current?.cancel();
+        if (document.visibilityState !== 'visible') {
+          feedbackTiming.current?.cancel();
+          return;
+        }
+        // finish() answers once per click, so re-renders and remounts never repeat it.
+        const ms = feedbackTiming.current?.finish(
+          submission.id,
+          submission.status,
+        );
+        if (ms == null) return;
+        const { created_at, startedAt, finishedAt } = submission;
+        track('judge_result', {
+          mode: judgeMode(submission.mode),
+          problem_id: problem.id,
+          language: submission.language,
+          verdict: submission.status,
+          passed: submission.passed,
+          total: submission.total,
+          duration_ms: Math.round(ms),
+          // Server clock: received → finished, and → claimed by a worker.
+          server_ms: finishedAt == null ? null : finishedAt - created_at,
+          queue_ms: startedAt == null ? null : startedAt - created_at,
+        });
       }, 0);
     });
     return () => {
       cancelAnimationFrame(frame);
       clearTimeout(timer);
     };
-  }, [submission]);
+  }, [submission, problem.id]);
 
   useEffect(() => {
     if (
@@ -676,6 +702,12 @@ function Workspace({
         }
       } catch (e) {
         if (!controller.signal.aborted) {
+          track('judge_error', {
+            mode: judgeMode(submission.mode),
+            problem_id: problem.id,
+            stage: watching ? 'watch' : 'poll',
+            status: failureStatus(e),
+          });
           if (watching) setWatchFallback(true);
           else {
             setError((e as Error).message);
@@ -698,6 +730,7 @@ function Workspace({
     watchFallback,
     submitting,
     cancelling,
+    problem.id,
   ]);
 
   function updateCode(next: string) {
@@ -832,6 +865,11 @@ function Workspace({
           if (!alive.current || controller.signal.aborted) return;
           idempotency.current = null;
           feedbackTiming.current?.bind(result.id);
+          track('judge_submit', {
+            mode: judgeMode(mode),
+            problem_id: problem.id,
+            language,
+          });
           setSubmission({
             id: result.id,
             // A POST receipt has no result details; even a reused terminal job must
@@ -865,8 +903,15 @@ function Workspace({
           void latestRefresh.current().catch(() => {});
       }
     } catch (e) {
-      if (alive.current && !controller.signal.aborted)
+      if (alive.current && !controller.signal.aborted) {
         setError((e as Error).message);
+        track('judge_error', {
+          mode: judgeMode(mode),
+          problem_id: problem.id,
+          stage: 'submit',
+          status: failureStatus(e),
+        });
+      }
     } finally {
       if (submitController.current === controller) {
         busyRef.current = false;

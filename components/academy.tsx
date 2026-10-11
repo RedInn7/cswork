@@ -8,6 +8,7 @@ import {
 } from 'react';
 import {
   Activity,
+  BarChart3,
   Library,
   MessagesSquare,
   ScrollText,
@@ -64,6 +65,7 @@ import {
 } from './learning';
 import { JudgeStatus } from './judge-status';
 import { setLocale, useLocale, useT } from '@/lib/i18n';
+import { beacon, track } from '@/lib/analytics';
 import { englishMessage } from '@/lib/messages-en';
 import { ContentDetail, ContentList, contentSection } from './content-library';
 import {
@@ -73,6 +75,7 @@ import {
   ReleasesView,
 } from './support';
 import { TeacherView } from './teacher';
+import { OwnerMetrics } from './owner-metrics';
 import { LoginDialog, AccountView } from './account';
 import { registerAcademyTools } from '@/lib/webmcp';
 import Link from 'next/link';
@@ -108,6 +111,22 @@ const initial: Boot = {
   services: {},
 };
 type SearchResult = { id: string; title: string; snippet: string };
+// One page_view per URL change: StrictMode's second effect run doesn't repeat it.
+let lastPageView = '';
+function pageView() {
+  const url = location.pathname + location.search;
+  if (url === lastPageView) return;
+  lastPageView = url;
+  const p = new URLSearchParams(location.search),
+    view = p.get('view') || 'problems',
+    content = view === 'content';
+  // Owner dashboard only: GA4 counts these pushState page views itself.
+  beacon('page_view', {
+    view,
+    type: content ? p.get('type') : null,
+    slug: content ? p.get('slug') : null,
+  });
+}
 export function Academy() {
   const locale = useLocale(),
     t = useT();
@@ -156,6 +175,7 @@ export function Academy() {
       const p = Object.fromEntries(new URLSearchParams(location.search));
       setParams(p);
       setView(p.view || 'problems');
+      pageView();
     };
     sync();
     window.addEventListener('popstate', sync);
@@ -199,6 +219,7 @@ export function Academy() {
           ? location.hash
           : ''),
     );
+    pageView();
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
   useEffect(() => {
@@ -398,6 +419,13 @@ export function Academy() {
             title={t('仅老师可以访问工作台', 'Only teachers can open the dashboard')}
           />
         );
+      case 'metrics':
+        // The summary endpoint also checks the role; this only avoids a request that would fail.
+        return boot.person?.role === 'teacher' ? (
+          <OwnerMetrics navigate={navigate} />
+        ) : (
+          <Empty title={t('仅老师可以查看运营数据', 'Only teachers can view analytics')} />
+        );
       case 'account':
         return <AccountView boot={boot} refresh={refresh} />;
       default:
@@ -471,6 +499,15 @@ export function Academy() {
                     {t('教师工作台', 'Teacher dashboard')}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    isActive={view === 'metrics'}
+                    onClick={() => navigate('metrics')}
+                  >
+                    <BarChart3 size={18} />
+                    {t('运营数据', 'Analytics')}
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroup>
           )}
@@ -508,6 +545,7 @@ export function Academy() {
                     reviews: t('代码评审', 'Code reviews'),
                     releases: t('课程更新', 'Course updates'),
                     teacher: t('教师工作台', 'Teacher dashboard'),
+                    metrics: t('运营数据', 'Analytics'),
                     account: t('账号设置', 'Account settings'),
                   } as Record<string, string>
                 )[view] ||
@@ -527,7 +565,11 @@ export function Academy() {
               variant="ghost"
               className="locale-button"
               aria-label={locale === 'zh' ? 'Switch to English' : '切换到中文'}
-              onClick={() => setLocale(locale === 'zh' ? 'en' : 'zh')}
+              onClick={() => {
+                const next = locale === 'zh' ? 'en' : 'zh';
+                track('language_switch', { locale: next });
+                setLocale(next);
+              }}
             >
               <Languages size={16} />
               {locale === 'zh' ? 'EN' : '中文'}
