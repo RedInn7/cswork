@@ -19,6 +19,8 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { LessonMarkdown } from './lms-shared';
 import { api } from '@/lib/types';
+import { useLocale } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
 import { LeetcodeSyncPanel } from './leetcode-sync-panel';
 import type { Navigate } from './learning';
 
@@ -157,7 +159,8 @@ export function StudyLibrary({
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState('');
   const [detailRetry, setDetailRetry] = useState(0);
-  const [english, setEnglish] = useState(false);
+  const siteLocale = useLocale();
+  const [english, setEnglish] = useState(siteLocale === 'en');
   const [copyMessage, setCopyMessage] = useState('');
   const detailHeading = useRef<HTMLHeadingElement>(null);
   const t = (zh: string, en: string) => (english ? en : zh);
@@ -223,19 +226,15 @@ export function StudyLibrary({
   }
 
   useEffect(() => {
-    const syncLanguage = () => {
-      try {
-        setEnglish(localStorage.getItem('cswork:problem:locale') === 'en');
-      } catch {}
-    };
-    syncLanguage();
-    window.addEventListener('storage', syncLanguage);
-    window.addEventListener('focus', syncLanguage);
-    return () => {
-      window.removeEventListener('storage', syncLanguage);
-      window.removeEventListener('focus', syncLanguage);
-    };
-  }, []);
+    // The page's language switch (shared with the problem page) wins until the site
+    // language is switched, which clears it.
+    let stored: string | null = null;
+    try {
+      stored = localStorage.getItem('cswork:problem:locale');
+    } catch {}
+    setEnglish(stored ? stored === 'en' : siteLocale === 'en');
+    setCopyMessage('');
+  }, [siteLocale]);
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearch(query.trim());
@@ -400,7 +399,7 @@ export function StudyLibrary({
         )}
         {detailError && (
           <div className="study-state" role="alert">
-            <p>{detailError}</p>
+            <p>{t(detailError, englishMessage(detailError))}</p>
             <Button
               variant="outline"
               onClick={() => setDetailRetry((n) => n + 1)}
@@ -502,7 +501,7 @@ export function StudyLibrary({
               {source && (
                 <>
                   <a href={source} target="_blank" rel="noopener noreferrer">
-                    {english ? 'Open original problem' : '打开原题'}
+                    {t('打开原题', 'Open original problem')}
                     <ExternalLink size={14} />
                   </a>
                   <button
@@ -532,9 +531,10 @@ export function StudyLibrary({
             </div>
             {!body && fallbackBody && (
               <output className="study-language-fallback">
-                {english
-                  ? 'English translation is not available. Showing the available statement.'
-                  : '本题暂无中文题面，显示英文原题。'}
+                {t(
+                  '本题暂无中文题面，显示英文原题。',
+                  'English translation is not available. Showing the available statement.',
+                )}
               </output>
             )}
             <article
@@ -711,7 +711,7 @@ export function StudyLibrary({
                     '更新失败，请重试。',
                     'Could not update your round. Please retry.',
                   )}{' '}
-                  {roundError}
+                  {t(roundError, englishMessage(roundError))}
                 </p>
               )}
             </>
@@ -850,7 +850,7 @@ export function StudyLibrary({
       </div>
       {error ? (
         <div className="study-state" role="alert">
-          <p>{error}</p>
+          <p>{t(error, englishMessage(error))}</p>
           <Button variant="outline" onClick={() => setRetry((n) => n + 1)}>
             {t('重新加载', 'Reload')}
           </Button>

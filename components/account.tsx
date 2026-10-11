@@ -30,29 +30,78 @@ import {
   orderStatusNames,
   refundStatusNames,
   type CommerceOrder,
+  type OrderStatus,
+  type RefundStatus,
 } from '@/lib/commerce-types';
+import { readLocale, useLocale, useT, type Locale } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
 import { Heading } from './learning';
 import '@/app/commerce.css';
 
+// English labels for the shared (Chinese) status maps in lib/commerce-types.
+export const orderStatusEn: Record<OrderStatus, string> = {
+  creating: 'Preparing checkout',
+  pending: 'Awaiting payment',
+  processing: 'Processing payment',
+  paid: 'Paid',
+  partially_refunded: 'Partially refunded',
+  refunded: 'Refunded',
+  failed: 'Payment failed',
+  expired: 'Closed',
+};
+const refundStatusEn: Record<RefundStatus, string> = {
+  requested: 'Submitting',
+  pending: 'Refund pending',
+  succeeded: 'Refunded',
+  failed: 'Refund failed',
+  canceled: 'Cancelled',
+  requires_action: 'Needs recipient confirmation',
+};
+
 type AuthError = { message?: string; code?: string } | null | undefined;
+// Runs in event handlers, so the site language is read at call time.
 function check(error: AuthError) {
   if (!error) return;
-  const messages: Record<string, string> = {
-    INVALID_EMAIL_OR_PASSWORD: '邮箱或密码不正确。',
-    INVALID_PASSWORD: '当前密码不正确。',
-    INVALID_OTP: '验证码不正确，请重新输入。',
-    OTP_EXPIRED: '验证码已过期，请重新发送。',
-    TOO_MANY_ATTEMPTS: '尝试次数过多，请重新发送验证码。',
-    PASSWORD_TOO_SHORT: '密码至少需要 12 个字符。',
-    SESSION_EXPIRED: '请重新登录后再进行这个操作。',
-    TOO_MANY_REQUESTS: '操作较频繁，请稍后再试。',
+  const zh = readLocale() === 'zh';
+  const messages: Record<string, [string, string]> = {
+    INVALID_EMAIL_OR_PASSWORD: [
+      '邮箱或密码不正确。',
+      'Incorrect email or password.',
+    ],
+    INVALID_PASSWORD: ['当前密码不正确。', 'Your current password is incorrect.'],
+    INVALID_OTP: ['验证码不正确，请重新输入。', 'Incorrect code. Please try again.'],
+    OTP_EXPIRED: [
+      '验证码已过期，请重新发送。',
+      'This code has expired. Please request a new one.',
+    ],
+    TOO_MANY_ATTEMPTS: [
+      '尝试次数过多，请重新发送验证码。',
+      'Too many attempts. Please request a new code.',
+    ],
+    PASSWORD_TOO_SHORT: [
+      '密码至少需要 12 个字符。',
+      'Password must be at least 12 characters.',
+    ],
+    SESSION_EXPIRED: [
+      '请重新登录后再进行这个操作。',
+      'Please sign in again to do this.',
+    ],
+    TOO_MANY_REQUESTS: [
+      '操作较频繁，请稍后再试。',
+      'Too many requests. Please try again later.',
+    ],
   };
+  const known = messages[error.code || ''];
   throw new Error(
-    messages[error.code || ''] || error.message || '操作未完成，请稍后重试。',
+    known?.[zh ? 0 : 1] ||
+      (error.message && (zh ? error.message : englishMessage(error.message))) ||
+      (zh
+        ? '操作未完成，请稍后重试。'
+        : 'Something went wrong. Please try again later.'),
   );
 }
-function timestamp(value: string | number | Date) {
-  return new Date(value).toLocaleString('zh-CN', {
+function timestamp(value: string | number | Date, locale: Locale) {
+  return new Date(value).toLocaleString(locale === 'zh' ? 'zh-CN' : 'en-US', {
     dateStyle: 'medium',
     timeStyle: 'short',
   });
@@ -80,6 +129,7 @@ function PasswordRecovery({
   email?: string;
   onDone: () => Promise<void> | void;
 }) {
+  const t = useT();
   const [email, setEmail] = useState(initialEmail),
     [otp, setOtp] = useState(''),
     [password, setPassword] = useState(''),
@@ -113,7 +163,10 @@ function PasswordRecovery({
         setBusy(true);
         setError('');
         try {
-          if (password !== confirm) throw new Error('两次输入的密码不一致。');
+          if (password !== confirm)
+            throw new Error(
+              t('两次输入的密码不一致。', "Passwords don't match."),
+            );
           check(
             (await authClient.emailOtp.resetPassword({ email, otp, password }))
               .error,
@@ -129,10 +182,13 @@ function PasswordRecovery({
       }}
     >
       <p className="muted">
-        验证邮箱后设置新密码。完成后，所有设备需要重新登录。
+        {t(
+          '验证邮箱后设置新密码。完成后，所有设备需要重新登录。',
+          'Verify your email, then set a new password. All devices will need to sign in again.',
+        )}
       </p>
       <label>
-        账号邮箱
+        {t('账号邮箱', 'Account email')}
         <Input
           type="email"
           autoComplete="email"
@@ -146,10 +202,13 @@ function PasswordRecovery({
       {sent && (
         <>
           <p className="commerce-hint">
-            如果该邮箱已注册，验证码会发送到收件箱。5 分钟内有效。
+            {t(
+              '如果该邮箱已注册，验证码会发送到收件箱。5 分钟内有效。',
+              'If this email is registered, a code is on its way to your inbox. It expires in 5 minutes.',
+            )}
           </p>
           <label>
-            验证码
+            {t('验证码', 'Verification code')}
             <Input
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
@@ -161,7 +220,7 @@ function PasswordRecovery({
             />
           </label>
           <label>
-            新密码
+            {t('新密码', 'New password')}
             <Input
               type="password"
               autoComplete="new-password"
@@ -173,7 +232,7 @@ function PasswordRecovery({
             />
           </label>
           <label>
-            再次输入新密码
+            {t('再次输入新密码', 'Confirm new password')}
             <Input
               type="password"
               autoComplete="new-password"
@@ -187,7 +246,11 @@ function PasswordRecovery({
         </>
       )}
       <Button disabled={busy}>
-        {busy ? '正在处理…' : sent ? '确认设置密码' : '发送重置验证码'}
+        {busy
+          ? t('正在处理…', 'Working…')
+          : sent
+            ? t('确认设置密码', 'Set password')
+            : t('发送重置验证码', 'Send reset code')}
       </Button>
       {sent && (
         <Button
@@ -197,13 +260,16 @@ function PasswordRecovery({
           onClick={() => void send()}
         >
           {cooldown.seconds > 0
-            ? `${cooldown.seconds} 秒后可重发`
-            : '重新发送验证码'}
+            ? t(
+                `${cooldown.seconds} 秒后可重发`,
+                `Resend in ${cooldown.seconds}s`,
+              )
+            : t('重新发送验证码', 'Resend code')}
         </Button>
       )}
       {error && (
         <p className="error-text" role="alert">
-          {error}
+          {t(error, englishMessage(error))}
         </p>
       )}
     </form>
@@ -220,6 +286,7 @@ export function LoginDialog({
   boot: Boot;
   onSuccess: () => Promise<void>;
 }) {
+  const t = useT();
   const [email, setEmail] = useState(''),
     [password, setPassword] = useState(''),
     [otp, setOtp] = useState(''),
@@ -268,18 +335,29 @@ export function LoginDialog({
         <DialogHeader>
           <span className="login-mark">c</span>
           <DialogTitle>
-            {mode === 'reset' ? '找回你的账号。' : '登录 cswork'}
+            {mode === 'reset'
+              ? t('找回你的账号。', 'Recover your account')
+              : t('登录 cswork', 'Sign in to cswork')}
           </DialogTitle>
           <DialogDescription>
             {boot.services.email
-              ? '支持 QQ、163、Gmail 等个人邮箱。新用户可通过邮箱验证码注册。'
-              : '支持 QQ、163、Gmail 等个人邮箱。已有账号可直接用邮箱和密码登录。'}
+              ? t(
+                  '支持 QQ、163、Gmail 等个人邮箱。新用户可通过邮箱验证码注册。',
+                  'Works with personal email such as Gmail, QQ or 163. New users can sign up with an email code.',
+                )
+              : t(
+                  '支持 QQ、163、Gmail 等个人邮箱。已有账号可直接用邮箱和密码登录。',
+                  'Works with personal email such as Gmail, QQ or 163. Existing users can sign in with email and password.',
+                )}
           </DialogDescription>
         </DialogHeader>
         {mode !== 'reset' && (
           <>
             {boot.services.email && (
-              <div className="commerce-tabs" aria-label="登录方式">
+              <div
+                className="commerce-tabs"
+                aria-label={t('登录方式', 'Sign-in method')}
+              >
                 <Button
                   variant={mode === 'otp' ? 'secondary' : 'ghost'}
                   onClick={() => {
@@ -287,7 +365,7 @@ export function LoginDialog({
                     setError('');
                   }}
                 >
-                  邮箱注册 / 验证码
+                  {t('邮箱注册 / 验证码', 'Sign up / email code')}
                 </Button>
                 <Button
                   variant={mode === 'password' ? 'secondary' : 'ghost'}
@@ -296,7 +374,7 @@ export function LoginDialog({
                     setError('');
                   }}
                 >
-                  邮箱密码登录
+                  {t('邮箱密码登录', 'Email and password')}
                 </Button>
               </div>
             )}
@@ -326,7 +404,7 @@ export function LoginDialog({
               }}
             >
               <label>
-                个人邮箱
+                {t('个人邮箱', 'Email')}
                 <Input
                   type="email"
                   autoComplete="username"
@@ -340,7 +418,7 @@ export function LoginDialog({
               </label>
               {mode === 'password' ? (
                 <label>
-                  密码
+                  {t('密码', 'Password')}
                   <Input
                     type="password"
                     autoComplete="current-password"
@@ -353,7 +431,7 @@ export function LoginDialog({
               ) : (
                 sent && (
                   <label>
-                    验证码
+                    {t('验证码', 'Verification code')}
                     <Input
                       value={otp}
                       inputMode="numeric"
@@ -368,12 +446,12 @@ export function LoginDialog({
               )}
               <Button type="submit" disabled={busy}>
                 {busy
-                  ? '正在处理…'
+                  ? t('正在处理…', 'Working…')
                   : mode === 'password'
-                    ? '登录 cswork'
+                    ? t('登录 cswork', 'Sign in to cswork')
                     : sent
-                      ? '验证并登录 / 注册'
-                      : '发送验证码'}
+                      ? t('验证并登录 / 注册', 'Verify and sign in / sign up')
+                      : t('发送验证码', 'Send code')}
                 <ArrowRight size={15} />
               </Button>
               {mode === 'otp' && sent && (
@@ -385,8 +463,11 @@ export function LoginDialog({
                     onClick={() => void run(send)}
                   >
                     {cooldown.seconds > 0
-                      ? `${cooldown.seconds} 秒后可重发`
-                      : '重新发送'}
+                      ? t(
+                          `${cooldown.seconds} 秒后可重发`,
+                          `Resend in ${cooldown.seconds}s`,
+                        )
+                      : t('重新发送', 'Resend')}
                   </Button>
                   <Button
                     type="button"
@@ -397,7 +478,7 @@ export function LoginDialog({
                       setOtp('');
                     }}
                   >
-                    更换邮箱
+                    {t('更换邮箱', 'Change email')}
                   </Button>
                 </div>
               )}
@@ -410,15 +491,20 @@ export function LoginDialog({
                   setError('');
                 }}
               >
-                忘记密码 / 首次设置密码
+                {t('忘记密码 / 首次设置密码', 'Forgot password / set a password')}
               </Button>
             ) : (
               <p className="muted">
-                首次使用请打开老师提供的激活链接，设置密码后即可登录。邮箱验证码注册和找回密码暂未开放。
+                {t(
+                  '首次使用请打开老师提供的激活链接，设置密码后即可登录。邮箱验证码注册和找回密码暂未开放。',
+                  "First time here? Open the activation link from your teacher and set a password to sign in. Email-code sign-up and password recovery aren't available yet.",
+                )}
               </p>
             )}
             {(boot.services.google || boot.services.github) && (
-              <p className="muted">或使用第三方账号登录</p>
+              <p className="muted">
+                {t('或使用第三方账号登录', 'Or use a third-party account')}
+              </p>
             )}
             <div className="login-providers">
               {(['google', 'github'] as const)
@@ -461,7 +547,9 @@ export function LoginDialog({
                     ) : (
                       <span aria-hidden="true">⌘</span>
                     )}
-                    使用 {provider === 'google' ? 'Google' : 'GitHub'} 登录
+                    {provider === 'google'
+                      ? t('使用 Google 登录', 'Sign in with Google')
+                      : t('使用 GitHub 登录', 'Sign in with GitHub')}
                   </Button>
                 ))}
             </div>
@@ -473,11 +561,16 @@ export function LoginDialog({
               email={email}
               onDone={() => {
                 setMode('password');
-                setMessage('密码已更新，请用新密码登录。');
+                setMessage(
+                  t(
+                    '密码已更新，请用新密码登录。',
+                    'Password updated. Sign in with your new password.',
+                  ),
+                );
               }}
             />
             <Button variant="ghost" onClick={() => setMode('password')}>
-              返回登录
+              {t('返回登录', 'Back to sign in')}
             </Button>
           </>
         )}
@@ -488,20 +581,23 @@ export function LoginDialog({
         )}
         {error && (
           <p role="alert" className="error-text">
-            {error}
+            {t(error, englishMessage(error))}
           </p>
         )}
         <p className="muted text-xs">
-          了解账户与学习资料的使用方式，请阅读
+          {t(
+            '了解账户与学习资料的使用方式，请阅读',
+            'To learn how we use your account and study data, read the ',
+          )}
           <Link
             href="/privacy"
             target="_blank"
             rel="noreferrer"
             className="underline underline-offset-4"
           >
-            隐私说明
+            {t('隐私说明', 'privacy notice')}
           </Link>
-          。
+          {t('。', '.')}
         </p>
       </DialogContent>
     </Dialog>
@@ -525,10 +621,14 @@ export function OrderCard({
   order: CommerceOrder;
   onRefresh?: (order: CommerceOrder) => void;
 }) {
+  const t = useT(),
+    locale = useLocale();
   const [expanded, setExpanded] = useState(false),
     [detail, setDetail] = useState(order),
     [busy, setBusy] = useState(false),
     [error, setError] = useState('');
+  const price = (amount: number | null) =>
+    money(amount, detail.currency, locale);
   useEffect(() => setDetail(order), [order]);
   async function load(sync = false) {
     setBusy(true);
@@ -559,12 +659,12 @@ export function OrderCard({
       >
         <span>
           <strong>{detail.course_title}</strong>
-          <small>{timestamp(detail.created_at)}</small>
+          <small>{timestamp(detail.created_at, locale)}</small>
         </span>
         <span className="commerce-order-summary">
-          <strong>{money(detail.amount, detail.currency)}</strong>
+          <strong>{price(detail.amount)}</strong>
           <span className={`commerce-status commerce-status-${detail.status}`}>
-            {orderStatusNames[detail.status]}
+            {t(orderStatusNames[detail.status], orderStatusEn[detail.status])}
           </span>
           <ChevronDown size={16} />
         </span>
@@ -573,32 +673,38 @@ export function OrderCard({
         <div className="commerce-order-body">
           <dl className="commerce-details">
             <div>
-              <dt>订单编号</dt>
+              <dt>{t('订单编号', 'Order ID')}</dt>
               <dd>{detail.id}</dd>
             </div>
             <div>
-              <dt>课程权益</dt>
-              <dd>{detail.has_access ? '已经开通' : '尚未开通'}</dd>
+              <dt>{t('课程权益', 'Course access')}</dt>
+              <dd>
+                {detail.has_access
+                  ? t('已经开通', 'Unlocked')
+                  : t('尚未开通', 'Not unlocked yet')}
+              </dd>
             </div>
             {detail.amount_refunded > 0 && (
               <div>
-                <dt>已退款</dt>
-                <dd>{money(detail.amount_refunded, detail.currency)}</dd>
+                <dt>{t('已退款', 'Refunded')}</dt>
+                <dd>{price(detail.amount_refunded)}</dd>
               </div>
             )}
           </dl>
           {detail.refunds?.map((r) => (
             <div className="commerce-refund-row" key={r.id}>
               <span>
-                {money(r.amount, detail.currency)} ·{' '}
-                {refundStatusNames[r.status]}
-                <small>{r.reason}</small>
+                {price(r.amount)} ·{' '}
+                {t(refundStatusNames[r.status], refundStatusEn[r.status])}
+                <small>{t(r.reason, englishMessage(r.reason))}</small>
               </span>
-              <small>{timestamp(r.created_at)}</small>
+              <small>{timestamp(r.created_at, locale)}</small>
             </div>
           ))}
           {detail.last_error && (
-            <p className="commerce-hint">{detail.last_error}</p>
+            <p className="commerce-hint">
+              {t(detail.last_error, englishMessage(detail.last_error))}
+            </p>
           )}
           <div className="form-actions">
             <Button
@@ -607,11 +713,13 @@ export function OrderCard({
               onClick={() => void load(true)}
             >
               <RefreshCw size={14} />
-              {busy ? '正在确认…' : '刷新支付状态'}
+              {busy
+                ? t('正在确认…', 'Checking…')
+                : t('刷新支付状态', 'Refresh payment status')}
             </Button>
             {detail.checkout_url && (
               <Button onClick={() => location.assign(detail.checkout_url!)}>
-                继续支付
+                {t('继续支付', 'Continue to payment')}
                 <ArrowRight size={14} />
               </Button>
             )}
@@ -622,14 +730,14 @@ export function OrderCard({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                查看收据
+                {t('查看收据', 'View receipt')}
                 <ExternalLink size={14} />
               </a>
             )}
           </div>
           {error && (
             <p role="alert" className="error-text">
-              {error}
+              {t(error, englishMessage(error))}
             </p>
           )}
         </div>
@@ -644,6 +752,8 @@ export function AccountView({
   boot: Boot;
   refresh: () => Promise<void>;
 }) {
+  const t = useT(),
+    locale = useLocale();
   const [orders, setOrders] = useState<CommerceOrder[]>([]),
     [accounts, setAccounts] = useState<AccountInfo[]>([]),
     [sessions, setSessions] = useState<SessionInfo[]>([]),
@@ -703,10 +813,15 @@ export function AccountView({
   const hasPassword = accounts.some((a) => a.providerId === 'credential');
   return (
     <>
-      <Heading title="你的账号与课程权益。" />
+      <Heading
+        title={t('你的账号与课程权益。', 'Your account and course access')}
+      />
       <p className="muted mb-5 text-sm">
         <Link href="/privacy" className="underline underline-offset-4">
-          隐私说明与资料删除请求
+          {t(
+            '隐私说明与资料删除请求',
+            'Privacy notice and data deletion requests',
+          )}
         </Link>
       </p>
       <div className="commerce-account-grid">
@@ -714,10 +829,12 @@ export function AccountView({
           <div className="account-profile">
             <span className="avatar">{(p.name || p.email).slice(0, 1)}</span>
             <div>
-              <h2>{p.name || '我的账号'}</h2>
+              <h2>{p.name ? t(p.name, englishMessage(p.name)) : t('我的账号', 'My account')}</h2>
               <p>{p.email}</p>
               <span className="tag">
-                {p.verified ? '邮箱已验证' : '邮箱未验证'}
+                {p.verified
+                  ? t('邮箱已验证', 'Email verified')
+                  : t('邮箱未验证', 'Email not verified')}
               </span>
             </div>
           </div>
@@ -725,16 +842,19 @@ export function AccountView({
             className="stack-form"
             onSubmit={(e) => {
               e.preventDefault();
-              void run(async () => {
-                check(
-                  (await authClient.updateUser({ name: name.trim() })).error,
-                );
-                await refresh();
-              }, '昵称已保存。');
+              void run(
+                async () => {
+                  check(
+                    (await authClient.updateUser({ name: name.trim() })).error,
+                  );
+                  await refresh();
+                },
+                t('昵称已保存。', 'Nickname saved.'),
+              );
             }}
           >
             <label>
-              昵称
+              {t('昵称', 'Nickname')}
               <Input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -748,17 +868,20 @@ export function AccountView({
               variant="outline"
               disabled={busy || !name.trim() || name.trim() === p.name}
             >
-              保存昵称
+              {t('保存昵称', 'Save nickname')}
             </Button>
           </form>
         </section>
         <section className="form-card commerce-account-card">
           <h2>
             <ShieldCheck size={19} />
-            登录方式
+            {t('登录方式', 'Sign-in methods')}
           </h2>
           <p className="muted">
-            绑定同一邮箱的账号，课程与学习进度会保留在这里。
+            {t(
+              '绑定同一邮箱的账号，课程与学习进度会保留在这里。',
+              'Link accounts that use the same email. Your courses and progress stay with this account.',
+            )}
           </p>
           {(['google', 'github'] as const).map((provider) => {
             const linked = accounts.some((a) => a.providerId === provider);
@@ -766,7 +889,11 @@ export function AccountView({
               <div className="service-row" key={provider}>
                 <span>
                   {provider === 'google' ? 'Google' : 'GitHub'}
-                  {linked && <small className="commerce-success">已绑定</small>}
+                  {linked && (
+                    <small className="commerce-success">
+                      {t('已绑定', 'Linked')}
+                    </small>
+                  )}
                 </span>
                 <Button
                   variant="outline"
@@ -788,24 +915,26 @@ export function AccountView({
                   {linked ? (
                     <>
                       <Check size={14} />
-                      已绑定
+                      {t('已绑定', 'Linked')}
                     </>
                   ) : boot.services[provider] ? (
                     <>
                       <LinkIcon size={14} />
-                      绑定账号
+                      {t('绑定账号', 'Link account')}
                     </>
                   ) : (
-                    '暂未开放'
+                    t('暂未开放', 'Not available yet')
                   )}
                 </Button>
               </div>
             );
           })}
           <div className="service-row">
-            <span>邮箱验证码</span>
+            <span>{t('邮箱验证码', 'Email code')}</span>
             <span className="tag">
-              {boot.services.email ? '已开放' : '暂未开放'}
+              {boot.services.email
+                ? t('已开放', 'Available')
+                : t('暂未开放', 'Not available yet')}
             </span>
           </div>
         </section>
@@ -813,34 +942,42 @@ export function AccountView({
       <section className="form-card commerce-account-card">
         <h2>
           <KeyRound size={19} />
-          密码与账号恢复
+          {t('密码与账号恢复', 'Password and recovery')}
         </h2>
         {hasPassword ? (
           <form
             className="commerce-password-form"
             onSubmit={(e) => {
               e.preventDefault();
-              void run(async () => {
-                if (password !== confirm)
-                  throw new Error('两次输入的新密码不一致。');
-                check(
-                  (
-                    await authClient.changePassword({
-                      currentPassword,
-                      newPassword: password,
-                      revokeOtherSessions: true,
-                    })
-                  ).error,
-                );
-                setCurrentPassword('');
-                setPassword('');
-                setConfirm('');
-                await loadSecurity();
-              }, '密码已更新，其他设备已退出登录。');
+              void run(
+                async () => {
+                  if (password !== confirm)
+                    throw new Error(
+                      t('两次输入的新密码不一致。', "New passwords don't match."),
+                    );
+                  check(
+                    (
+                      await authClient.changePassword({
+                        currentPassword,
+                        newPassword: password,
+                        revokeOtherSessions: true,
+                      })
+                    ).error,
+                  );
+                  setCurrentPassword('');
+                  setPassword('');
+                  setConfirm('');
+                  await loadSecurity();
+                },
+                t(
+                  '密码已更新，其他设备已退出登录。',
+                  'Password updated. Other devices have been signed out.',
+                ),
+              );
             }}
           >
             <label>
-              当前密码
+              {t('当前密码', 'Current password')}
               <Input
                 type="password"
                 value={currentPassword}
@@ -851,7 +988,7 @@ export function AccountView({
               />
             </label>
             <label>
-              新密码
+              {t('新密码', 'New password')}
               <Input
                 type="password"
                 value={password}
@@ -860,11 +997,11 @@ export function AccountView({
                 minLength={12}
                 maxLength={128}
                 autoComplete="new-password"
-                placeholder="至少 12 个字符"
+                placeholder={t('至少 12 个字符', 'At least 12 characters')}
               />
             </label>
             <label>
-              确认新密码
+              {t('确认新密码', 'Confirm new password')}
               <Input
                 type="password"
                 value={confirm}
@@ -875,20 +1012,36 @@ export function AccountView({
                 autoComplete="new-password"
               />
             </label>
-            <Button disabled={busy}>更新密码并退出其他设备</Button>
+            <Button disabled={busy}>
+              {t(
+                '更新密码并退出其他设备',
+                'Update password and sign out other devices',
+              )}
+            </Button>
           </form>
         ) : (
-          <p className="muted">你尚未设置密码，可继续使用已绑定的方式登录。</p>
+          <p className="muted">
+            {t(
+              '你尚未设置密码，可继续使用已绑定的方式登录。',
+              "You haven't set a password. You can keep signing in with your linked accounts.",
+            )}
+          </p>
         )}
         {boot.services.email ? (
           <Button variant="ghost" onClick={() => setRecover(true)}>
             {hasPassword
-              ? '忘记当前密码？通过邮箱重置'
-              : '通过邮箱验证设置密码'}
+              ? t(
+                  '忘记当前密码？通过邮箱重置',
+                  'Forgot your password? Reset it by email',
+                )
+              : t('通过邮箱验证设置密码', 'Set a password by email')}
           </Button>
         ) : (
           <p className="muted">
-            邮箱找回暂未开放；请妥善保存密码，也可以使用已绑定的登录方式。
+            {t(
+              '邮箱找回暂未开放；请妥善保存密码，也可以使用已绑定的登录方式。',
+              "Email recovery isn't available yet. Keep your password safe, or sign in with a linked account.",
+            )}
           </p>
         )}
       </section>
@@ -897,25 +1050,33 @@ export function AccountView({
           <div>
             <h2>
               <Monitor size={19} />
-              登录设备
+              {t('登录设备', 'Signed-in devices')}
             </h2>
-            <p className="muted">发现不认识的设备时，可以立即让它退出。</p>
+            <p className="muted">
+              {t(
+                '发现不认识的设备时，可以立即让它退出。',
+                "If you see a device you don't recognize, sign it out right away.",
+              )}
+            </p>
           </div>
           <Button
             variant="outline"
             disabled={busy || sessions.length < 2}
             onClick={() =>
-              void run(async () => {
-                check((await authClient.revokeOtherSessions()).error);
-                await loadSecurity();
-              }, '其他设备已退出登录。')
+              void run(
+                async () => {
+                  check((await authClient.revokeOtherSessions()).error);
+                  await loadSecurity();
+                },
+                t('其他设备已退出登录。', 'Other devices have been signed out.'),
+              )
             }
           >
-            退出其他设备
+            {t('退出其他设备', 'Sign out other devices')}
           </Button>
         </div>
         {loading ? (
-          <p className="muted">正在读取登录设备…</p>
+          <p className="muted">{t('正在读取登录设备…', 'Loading devices…')}</p>
         ) : (
           sessions.map((s) => (
             <div className="commerce-session" key={s.id}>
@@ -934,14 +1095,14 @@ export function AccountView({
                         ? 'Mac'
                         : /Windows/i.test(s.userAgent || '')
                           ? 'Windows'
-                          : '浏览器'}
+                          : t('浏览器', 'Browser')}
                   {s.token === currentToken && (
-                    <span className="tag">当前设备</span>
+                    <span className="tag">{t('当前设备', 'This device')}</span>
                   )}
                 </strong>
                 <small>
-                  {s.ipAddress || '地址未记录'} · 最近活跃{' '}
-                  {timestamp(s.updatedAt)}
+                  {s.ipAddress || t('地址未记录', 'IP not recorded')} ·{' '}
+                  {t('最近活跃', 'Last active')} {timestamp(s.updatedAt, locale)}
                 </small>
               </div>
               {s.token !== currentToken && (
@@ -949,16 +1110,19 @@ export function AccountView({
                   variant="ghost"
                   disabled={busy}
                   onClick={() =>
-                    void run(async () => {
-                      check(
-                        (await authClient.revokeSession({ token: s.token }))
-                          .error,
-                      );
-                      await loadSecurity();
-                    }, '该设备已退出登录。')
+                    void run(
+                      async () => {
+                        check(
+                          (await authClient.revokeSession({ token: s.token }))
+                            .error,
+                        );
+                        await loadSecurity();
+                      },
+                      t('该设备已退出登录。', 'That device has been signed out.'),
+                    )
                   }
                 >
-                  退出
+                  {t('退出', 'Sign out')}
                 </Button>
               )}
             </div>
@@ -975,25 +1139,30 @@ export function AccountView({
           }
         >
           <LogOut size={15} />
-          退出当前账号
+          {t('退出当前账号', 'Sign out')}
         </Button>
       </section>
       <section className="form-card commerce-account-card">
-        <h2>课程权益</h2>
+        <h2>{t('课程权益', 'Course access')}</h2>
         {boot.courses.map((c) => (
           <div className="service-row" key={c.id}>
             <span>{c.title}</span>
-            <span className="tag">{c.has_access ? '已开通' : '未开通'}</span>
+            <span className="tag">
+              {c.has_access ? t('已开通', 'Unlocked') : t('未开通', 'Locked')}
+            </span>
           </div>
         ))}
       </section>
       <section className="form-card commerce-account-card">
-        <h2>订单与收据</h2>
+        <h2>{t('订单与收据', 'Orders and receipts')}</h2>
         <p className="muted">
-          课程购买、支付进度与退款记录保存在这里。老师直接开通的权益会显示在上方。
+          {t(
+            '课程购买、支付进度与退款记录保存在这里。老师直接开通的权益会显示在上方。',
+            'Course purchases, payment status and refunds are kept here. Access granted directly by a teacher is listed above.',
+          )}
         </p>
         {loading ? (
-          <p className="muted">正在读取订单…</p>
+          <p className="muted">{t('正在读取订单…', 'Loading orders…')}</p>
         ) : orders.length ? (
           orders.map((o) => (
             <OrderCard
@@ -1009,13 +1178,16 @@ export function AccountView({
           ))
         ) : (
           <div className="commerce-empty">
-            还没有订单，课程开通后就可以开始学习。
+            {t(
+              '还没有订单，课程开通后就可以开始学习。',
+              'No orders yet. Once a course is unlocked, you can start learning.',
+            )}
           </div>
         )}
       </section>
       {error && (
         <p role="alert" className="notice error">
-          {error}
+          {t(error, englishMessage(error))}
         </p>
       )}
       {message && (
@@ -1027,10 +1199,15 @@ export function AccountView({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {hasPassword ? '通过邮箱重设密码' : '为账号设置密码'}
+              {hasPassword
+                ? t('通过邮箱重设密码', 'Reset password by email')
+                : t('为账号设置密码', 'Set a password')}
             </DialogTitle>
             <DialogDescription>
-              只有验证邮箱后，密码才会变更。
+              {t(
+                '只有验证邮箱后，密码才会变更。',
+                'Your password changes only after you verify your email.',
+              )}
             </DialogDescription>
           </DialogHeader>
           <PasswordRecovery

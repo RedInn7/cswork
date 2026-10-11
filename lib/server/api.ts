@@ -20,6 +20,7 @@ import {
 } from './http';
 import { seed } from './seed';
 import { ensureOjSeed, listPublishedProblems } from './oj-problems';
+import { handleContent } from './content-library';
 import { handleOj } from './oj-api';
 import { judgeReady, submit, result } from './judge';
 import { playback } from './video';
@@ -164,6 +165,9 @@ export async function handle(request: Request) {
       const response = await handler(request, p, path);
       if (response) return response;
     }
+    if (resource === 'content')
+      // Public interview content library (read-only, separate database).
+      return await handleContent(request, p, path.slice(1));
     if (resource === 'oj')
       // handleOj requires sign-in except for public OA reads, the landing list and the judge feed.
       return await handleOj(request, p, path.slice(1));
@@ -516,6 +520,6 @@ export async function handle(request: Request) {
     }
     throw new HttpError(404, '操作不存在');
   } catch (e) {
-    return fail(e);
+    return fail(e, request);
   }
 }

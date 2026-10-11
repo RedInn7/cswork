@@ -9,6 +9,8 @@ import {
   Users,
 } from 'lucide-react';
 import { api, type Boot, type Course, date } from '@/lib/types';
+import { useLocale, useT } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
 import type {
   LmsGrant,
   LmsReview,
@@ -40,6 +42,7 @@ export function TeacherView({
   navigate: Navigate;
   refresh: () => Promise<void>;
 }) {
+  const t = useT();
   const params = new URLSearchParams(
     typeof location === 'undefined' ? '' : location.search,
   );
@@ -47,17 +50,30 @@ export function TeacherView({
   return (
     <>
       <Heading
-        title="今天，先解决这些。"
-        description="课程、学员和需要回复的问题，都在同一个工作台。"
+        title={t('今天，先解决这些。', 'What needs your attention today')}
+        description={t(
+          '课程、学员和需要回复的问题，都在同一个工作台。',
+          'Courses, students, and questions awaiting a reply, all in one dashboard.',
+        )}
       />
       <Tabs value={tab} onValueChange={(value) => setTab(String(value))}>
         <TabsList variant="line" className="teacher-tabs">
-          <TabsTrigger value="queue">待处理</TabsTrigger>
-          <TabsTrigger value="students">学员与权限</TabsTrigger>
-          <TabsTrigger value="publish">课程内容</TabsTrigger>
-          <TabsTrigger value="problems">题库管理</TabsTrigger>
-          <TabsTrigger value="commerce">订单与售卖</TabsTrigger>
-          <TabsTrigger value="services">服务状态</TabsTrigger>
+          <TabsTrigger value="queue">{t('待处理', 'Pending')}</TabsTrigger>
+          <TabsTrigger value="students">
+            {t('学员与权限', 'Students & access')}
+          </TabsTrigger>
+          <TabsTrigger value="publish">
+            {t('课程内容', 'Course content')}
+          </TabsTrigger>
+          <TabsTrigger value="problems">
+            {t('题库管理', 'Problem admin')}
+          </TabsTrigger>
+          <TabsTrigger value="commerce">
+            {t('订单与售卖', 'Orders & sales')}
+          </TabsTrigger>
+          <TabsTrigger value="services">
+            {t('服务状态', 'Service status')}
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="queue">
           <TeacherQueue boot={boot} navigate={navigate} />
@@ -106,6 +122,7 @@ type Struggle = {
   latest_submission_id: string;
 };
 function TeacherQueue({ boot, navigate }: { boot: Boot; navigate: Navigate }) {
+  const t = useT();
   const [data, setData] = useState<Dashboard | null>(null),
     [error, setError] = useState(''),
     [busy, setBusy] = useState(''),
@@ -138,10 +155,16 @@ function TeacherQueue({ boot, navigate }: { boot: Boot; navigate: Navigate }) {
   if (!data)
     return (
       <Empty
-        title={error || '正在加载待处理事项…'}
+        title={
+          error
+            ? t(error, englishMessage(error))
+            : t('正在加载待处理事项…', 'Loading pending items…')
+        }
         action={
           error ? (
-            <Button onClick={() => setRetry((n) => n + 1)}>重试</Button>
+            <Button onClick={() => setRetry((n) => n + 1)}>
+              {t('重试', 'Retry')}
+            </Button>
           ) : undefined
         }
       />
@@ -149,41 +172,61 @@ function TeacherQueue({ boot, navigate }: { boot: Boot; navigate: Navigate }) {
   return (
     <>
       <div className="lms-toolbar">
-        <p className="muted">按等待时间排列，统计覆盖全部记录。</p>
+        <p className="muted">
+          {t(
+            '按等待时间排列，统计覆盖全部记录。',
+            'Sorted by wait time. Counts include all records.',
+          )}
+        </p>
         <Button variant="outline" onClick={() => setRetry((n) => n + 1)}>
           <RefreshCw size={15} />
-          刷新待处理
+          {t('刷新待处理', 'Refresh queue')}
         </Button>
       </div>
       <div className="teacher-stats">
         {(
           [
-            [MessageSquare, data.counts.openTickets, '待老师回复'],
-            [GitPullRequest, data.counts.pendingReviews, '待评审作业'],
-            [MessageSquare, data.counts.waitingTickets, '待学员确认'],
-            [Users, data.counts.students, '注册学员'],
+            [
+              MessageSquare,
+              data.counts.openTickets,
+              '待老师回复',
+              'Awaiting teacher reply',
+            ],
+            [
+              GitPullRequest,
+              data.counts.pendingReviews,
+              '待评审作业',
+              'Pending reviews',
+            ],
+            [
+              MessageSquare,
+              data.counts.waitingTickets,
+              '待学员确认',
+              'Awaiting student confirmation',
+            ],
+            [Users, data.counts.students, '注册学员', 'Registered students'],
           ] as const
-        ).map(([Icon, count, label]) => (
+        ).map(([Icon, count, label, en]) => (
           <div className="stat-card" key={label}>
             <Icon size={19} />
             <strong>{count}</strong>
-            <span>{label}</span>
+            <span>{t(label, en)}</span>
           </div>
         ))}
       </div>
       {error && (
         <p className="notice error" role="alert">
-          {error}
+          {t(error, englishMessage(error))}
         </p>
       )}
       <div className="teacher-queue">
         <div className="section-title">
-          <h2>待回复工单</h2>
+          <h2>{t('待回复工单', 'Tickets awaiting reply')}</h2>
           <Button
             variant="link"
             onClick={() => navigate('tickets', { status: 'open' })}
           >
-            全部工单
+            {t('全部工单', 'All tickets')}
             <ArrowRight size={15} />
           </Button>
         </div>
@@ -192,7 +235,7 @@ function TeacherQueue({ boot, navigate }: { boot: Boot; navigate: Navigate }) {
           .map((ticket) => (
             <div className="queue-row" key={ticket.id}>
               <span className="avatar">
-                {(ticket.name || '学员').slice(0, 1)}
+                {(ticket.name || t('学员', 'Student')).slice(0, 1)}
               </span>
               <button
                 className="queue-main"
@@ -204,7 +247,10 @@ function TeacherQueue({ boot, navigate }: { boot: Boot; navigate: Navigate }) {
                 </small>
               </button>
               <NativeSelect
-                aria-label={`分配工单：${ticket.title}`}
+                aria-label={t(
+                  `分配工单：${ticket.title}`,
+                  `Assign ticket: ${ticket.title}`,
+                )}
                 disabled={!!busy}
                 value={ticket.assigned_to || ''}
                 onChange={async (e) => {
@@ -226,7 +272,9 @@ function TeacherQueue({ boot, navigate }: { boot: Boot; navigate: Navigate }) {
                   }
                 }}
               >
-                <NativeSelectOption value="">未分配</NativeSelectOption>
+                <NativeSelectOption value="">
+                  {t('未分配', 'Unassigned')}
+                </NativeSelectOption>
                 {data.staff.map((person) => (
                   <NativeSelectOption key={person.id} value={person.id}>
                     {person.name}
@@ -237,18 +285,22 @@ function TeacherQueue({ boot, navigate }: { boot: Boot; navigate: Navigate }) {
                 variant="outline"
                 onClick={() => navigate('tickets', { ticket: ticket.id })}
               >
-                回复
+                {t('回复', 'Reply')}
               </Button>
             </div>
           ))}
-        {!data.counts.openTickets && <Empty title="没有等待回复的问题" />}
+        {!data.counts.openTickets && (
+          <Empty
+            title={t('没有等待回复的问题', 'No questions awaiting reply')}
+          />
+        )}
         <div className="section-title">
-          <h2>待评审作业</h2>
+          <h2>{t('待评审作业', 'Pending reviews')}</h2>
           <Button
             variant="link"
             onClick={() => navigate('reviews', { status: 'pending' })}
           >
-            全部作业
+            {t('全部作业', 'All reviews')}
             <ArrowRight size={15} />
           </Button>
         </div>
@@ -269,14 +321,21 @@ function TeacherQueue({ boot, navigate }: { boot: Boot; navigate: Navigate }) {
                 </small>
               </div>
               <Button variant="outline" onClick={() => setReview(item.id)}>
-                开始评审
+                {t('开始评审', 'Start review')}
               </Button>
             </div>
           ))}
-        {!data.counts.pendingReviews && <Empty title="没有待评审作业" />}
+        {!data.counts.pendingReviews && (
+          <Empty title={t('没有待评审作业', 'No pending reviews')} />
+        )}
         <div className="section-title">
-          <h2>反复失败的练习</h2>
-          <span className="muted">近 7 天至少失败 3 次，且尚未通过</span>
+          <h2>{t('反复失败的练习', 'Repeated failures')}</h2>
+          <span className="muted">
+            {t(
+              '近 7 天至少失败 3 次，且尚未通过',
+              '3+ failed attempts in the last 7 days, not yet accepted',
+            )}
+          </span>
         </div>
         {struggles.map((item) => (
           <div className="queue-row" key={item.user_id + item.problem_id}>
@@ -286,22 +345,35 @@ function TeacherQueue({ boot, navigate }: { boot: Boot; navigate: Navigate }) {
                 {boot.problems.find((problem) => problem.id === item.problem_id)
                   ?.title || item.problem_id}
               </strong>
-              <small>{item.failures} 次未通过</small>
+              <small>
+                {t(
+                  `${item.failures} 次未通过`,
+                  `${item.failures} failed attempts`,
+                )}
+              </small>
             </div>
             <SubmissionLink
               id={item.latest_submission_id}
               navigate={navigate}
-              label="查看提交"
+              label={t('查看提交', 'View submission')}
             />
           </div>
         ))}
         {struggleError && (
           <p className="error-text" role="alert">
-            练习关注记录暂不可用：{struggleError}
+            {t(
+              `练习关注记录暂不可用：${struggleError}`,
+              `Repeated-failure data unavailable: ${englishMessage(struggleError)}`,
+            )}
           </p>
         )}
         {!struggles.length && !struggleError && (
-          <p className="quiet-empty">暂时没有需要关注的反复失败记录。</p>
+          <p className="quiet-empty">
+            {t(
+              '暂时没有需要关注的反复失败记录。',
+              'No repeated failures to look at right now.',
+            )}
+          </p>
         )}
       </div>
       <ReviewDetailDialog
@@ -323,6 +395,8 @@ function Grants({
   initialEmail: string;
   initialCourse: string;
 }) {
+  const t = useT();
+  const locale = useLocale();
   const [query, setQuery] = useState(initialEmail),
     [course, setCourse] = useState(''),
     [state, setState] = useState('active'),
@@ -340,9 +414,12 @@ function Grants({
   );
   return (
     <section className="form-card">
-      <h2>课程权限</h2>
+      <h2>{t('课程权限', 'Course access')}</h2>
       <p className="muted">
-        使用购买记录中的邮箱。尚未注册的学员验证相同邮箱后即可获得权限。
+        {t(
+          '使用购买记录中的邮箱。尚未注册的学员验证相同邮箱后即可获得权限。',
+          "Use the email from the purchase record. Students who haven't signed up get access once they verify that email.",
+        )}
       </p>
       <form
         className="stack-form"
@@ -359,7 +436,8 @@ function Grants({
           setError('');
           setNotice('');
           try {
-            if (!ids.length) throw new Error('请先创建课程');
+            if (!ids.length)
+              throw new Error(t('请先创建课程', 'Create a course first'));
             const failures = await Promise.allSettled(
               ids.map((id) =>
                 api('lms/grants', {
@@ -378,9 +456,17 @@ function Grants({
             list.refresh();
             if (failed.length)
               throw new Error(
-                `${ids.length - failed.length} 门已开通，${failed.length} 门未成功，请重试未开通课程。`,
+                t(
+                  `${ids.length - failed.length} 门已开通，${failed.length} 门未成功，请重试未开通课程。`,
+                  `${ids.length - failed.length} granted, ${failed.length} failed. Retry the courses that failed.`,
+                ),
               );
-            setNotice(`已开通 ${ids.length} 门课程`);
+            setNotice(
+              t(
+                `已开通 ${ids.length} 门课程`,
+                `Access granted to ${ids.length} ${ids.length === 1 ? 'course' : 'courses'}`,
+              ),
+            );
             form.reset();
           } catch (e) {
             setError((e as Error).message);
@@ -391,7 +477,7 @@ function Grants({
       >
         <div className="form-columns">
           <label htmlFor="lms-teacher-field-1">
-            学员邮箱
+            {t('学员邮箱', 'Student email')}
             <Input
               id="lms-teacher-field-1"
               name="email"
@@ -402,7 +488,7 @@ function Grants({
             />
           </label>
           <label htmlFor="lms-teacher-field-2">
-            开通课程
+            {t('开通课程', 'Course')}
             <NativeSelect
               id="lms-teacher-field-2"
               name="courseId"
@@ -415,15 +501,24 @@ function Grants({
                 </NativeSelectOption>
               ))}
               <NativeSelectOption value="__current__">
-                当前全部课程（不含未来新增课程）
+                {t(
+                  '当前全部课程（不含未来新增课程）',
+                  'All current courses (excludes future courses)',
+                )}
               </NativeSelectOption>
               <NativeSelectOption value="*">
-                全部课程，包含未来新增课程
+                {t(
+                  '全部课程，包含未来新增课程',
+                  'All courses, including future ones',
+                )}
               </NativeSelectOption>
             </NativeSelect>
           </label>
           <label htmlFor="lms-teacher-field-3">
-            有效期至（留空为永久）
+            {t(
+              '有效期至（留空为永久）',
+              'Expires on (leave blank for lifetime access)',
+            )}
             <Input
               id="lms-teacher-field-3"
               name="expires"
@@ -434,57 +529,70 @@ function Grants({
         </div>
         <Button type="submit" disabled={busy || !courses.length}>
           <Plus size={15} />
-          {busy ? '开通中…' : '开通权限'}
+          {busy ? t('开通中…', 'Granting…') : t('开通权限', 'Grant access')}
         </Button>
       </form>
       {notice && <output className="success-text">{notice}</output>}
       {error && (
         <p role="alert" className="notice error">
-          {error}
+          {t(error, englishMessage(error))}
         </p>
       )}
       <div className="lms-toolbar">
         <Input
-          aria-label="搜索授权邮箱"
+          aria-label={t('搜索授权邮箱', 'Search access by email')}
           value={query}
-          placeholder="按邮箱搜索权限…"
+          placeholder={t('按邮箱搜索权限…', 'Search access by email…')}
           onChange={(e) => setQuery(e.target.value)}
         />
         <NativeSelect
-          aria-label="按课程筛选权限"
+          aria-label={t('按课程筛选权限', 'Filter access by course')}
           value={course}
           onChange={(e) => setCourse(e.target.value)}
         >
-          <NativeSelectOption value="">全部课程</NativeSelectOption>
+          <NativeSelectOption value="">
+            {t('全部课程', 'All courses')}
+          </NativeSelectOption>
           {courses.map((item) => (
             <NativeSelectOption key={item.id} value={item.id}>
               {item.title}
             </NativeSelectOption>
           ))}
           <NativeSelectOption value="*">
-            包含未来课程的通用权限
+            {t(
+              '包含未来课程的通用权限',
+              'All-access (includes future courses)',
+            )}
           </NativeSelectOption>
         </NativeSelect>
         <NativeSelect
-          aria-label="权限状态"
+          aria-label={t('权限状态', 'Access status')}
           value={state}
           onChange={(e) => setState(e.target.value)}
         >
-          <NativeSelectOption value="active">有效</NativeSelectOption>
-          <NativeSelectOption value="revoked">已撤销</NativeSelectOption>
-          <NativeSelectOption value="expired">已过期</NativeSelectOption>
-          <NativeSelectOption value="">全部状态</NativeSelectOption>
+          <NativeSelectOption value="active">
+            {t('有效', 'Active')}
+          </NativeSelectOption>
+          <NativeSelectOption value="revoked">
+            {t('已撤销', 'Revoked')}
+          </NativeSelectOption>
+          <NativeSelectOption value="expired">
+            {t('已过期', 'Expired')}
+          </NativeSelectOption>
+          <NativeSelectOption value="">
+            {t('全部状态', 'All statuses')}
+          </NativeSelectOption>
         </NativeSelect>
         <Button variant="outline" onClick={list.refresh}>
-          刷新
+          {t('刷新', 'Refresh')}
         </Button>
       </div>
-      {list.busy && <output>正在加载权限…</output>}
+      {list.busy && <output>{t('正在加载权限…', 'Loading access…')}</output>}
       {list.error && (
         <p role="alert" className="error-text">
-          {list.error}{' '}
+          {t(list.error, englishMessage(list.error))}{' '}
           <Button variant="ghost" onClick={list.refresh}>
-            重试
+            {t('重试', 'Retry')}
           </Button>
         </p>
       )}
@@ -492,11 +600,11 @@ function Grants({
         <table className="lms-table">
           <thead>
             <tr>
-              <th>学员邮箱</th>
-              <th>课程</th>
-              <th>有效期</th>
-              <th>状态</th>
-              <th>操作</th>
+              <th>{t('学员邮箱', 'Student email')}</th>
+              <th>{t('课程', 'Course')}</th>
+              <th>{t('有效期', 'Expires')}</th>
+              <th>{t('状态', 'Status')}</th>
+              <th>{t('操作', 'Actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -505,21 +613,23 @@ function Grants({
                 <td>{grant.email}</td>
                 <td>
                   {grant.course_id === '*'
-                    ? '全部课程（含未来）'
+                    ? t('全部课程（含未来）', 'All courses (incl. future)')
                     : courses.find((c) => c.id === grant.course_id)?.title ||
                       grant.course_id}
                 </td>
                 <td>
                   {grant.expires_at
-                    ? new Date(grant.expires_at).toLocaleDateString('zh-CN')
-                    : '永久'}
+                    ? new Date(grant.expires_at).toLocaleDateString(
+                        locale === 'zh' ? 'zh-CN' : 'en-US',
+                      )
+                    : t('永久', 'Never')}
                 </td>
                 <td>
                   {grant.revoked_at
-                    ? '已撤销'
+                    ? t('已撤销', 'Revoked')
                     : grant.expires_at && grant.expires_at <= now
-                      ? '已过期'
-                      : '有效'}
+                      ? t('已过期', 'Expired')
+                      : t('有效', 'Active')}
                 </td>
                 <td>
                   {!grant.revoked_at && (
@@ -530,7 +640,10 @@ function Grants({
                       onClick={async () => {
                         if (
                           !window.confirm(
-                            `确定撤销 ${grant.email} 的这项课程权限？`,
+                            t(
+                              `确定撤销 ${grant.email} 的这项课程权限？`,
+                              `Revoke this course access for ${grant.email}?`,
+                            ),
                           )
                         )
                           return;
@@ -539,7 +652,7 @@ function Grants({
                         try {
                           await api(`lms/grants/${grant.id}/revoke`, {});
                           list.refresh();
-                          setNotice('权限已撤销');
+                          setNotice(t('权限已撤销', 'Access revoked'));
                         } catch (e) {
                           setError((e as Error).message);
                         } finally {
@@ -547,7 +660,7 @@ function Grants({
                         }
                       }}
                     >
-                      撤销
+                      {t('撤销', 'Revoke')}
                     </Button>
                   )}
                 </td>
@@ -557,13 +670,16 @@ function Grants({
         </table>
       </div>
       {list.data && !list.data.items.length && (
-        <p className="quiet-empty">没有符合条件的权限记录。</p>
+        <p className="quiet-empty">
+          {t('没有符合条件的权限记录。', 'No matching access records.')}
+        </p>
       )}
       <CursorPagination list={list} />
     </section>
   );
 }
 function Students({ courses }: { courses: Course[] }) {
+  const t = useT();
   const [query, setQuery] = useState('');
   const list = useCursorPage<LmsStudent>(
     'lms/students?' + new URLSearchParams({ q: useDebounced(query) }),
@@ -571,23 +687,23 @@ function Students({ courses }: { courses: Course[] }) {
   return (
     <section className="form-card">
       <div className="lms-toolbar">
-        <h2>学员名单</h2>
+        <h2>{t('学员名单', 'Students')}</h2>
         <Button variant="outline" onClick={list.refresh}>
-          刷新名单
+          {t('刷新名单', 'Refresh list')}
         </Button>
       </div>
       <Input
-        aria-label="搜索学员"
-        placeholder="搜索姓名或邮箱…"
+        aria-label={t('搜索学员', 'Search students')}
+        placeholder={t('搜索姓名或邮箱…', 'Search by name or email…')}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
-      {list.busy && <output>正在加载学员…</output>}
+      {list.busy && <output>{t('正在加载学员…', 'Loading students…')}</output>}
       {list.error && (
         <p role="alert" className="error-text">
-          {list.error}{' '}
+          {t(list.error, englishMessage(list.error))}{' '}
           <Button variant="ghost" onClick={list.refresh}>
-            重试
+            {t('重试', 'Retry')}
           </Button>
         </p>
       )}
@@ -595,34 +711,36 @@ function Students({ courses }: { courses: Course[] }) {
         <table className="lms-table">
           <thead>
             <tr>
-              <th>学员</th>
-              <th>账号状态</th>
-              <th>已开通课程</th>
-              <th>加入时间</th>
+              <th>{t('学员', 'Student')}</th>
+              <th>{t('账号状态', 'Account status')}</th>
+              <th>{t('已开通课程', 'Enrolled courses')}</th>
+              <th>{t('加入时间', 'Joined')}</th>
             </tr>
           </thead>
           <tbody>
             {list.data?.items.map((student) => (
               <tr key={student.email}>
                 <td>
-                  <strong>{student.name || '尚未注册'}</strong>
+                  <strong>
+                    {student.name || t('尚未注册', 'Not signed up')}
+                  </strong>
                   <small>{student.email}</small>
                 </td>
                 <td>
                   {!student.userId
-                    ? '待注册'
+                    ? t('待注册', 'Awaiting sign-up')
                     : student.verified
-                      ? '邮箱已验证'
-                      : '待验证邮箱'}
+                      ? t('邮箱已验证', 'Email verified')
+                      : t('待验证邮箱', 'Email not verified')}
                 </td>
                 <td>
                   {student.activeCourseIds
                     .map((id) =>
                       id === '*'
-                        ? '全部课程（含未来）'
+                        ? t('全部课程（含未来）', 'All courses (incl. future)')
                         : courses.find((c) => c.id === id)?.title || id,
                     )
-                    .join('、') || '暂无权限'}
+                    .join(t('、', ', ')) || t('暂无权限', 'No access')}
                 </td>
                 <td>{student.joinedAt ? date(student.joinedAt) : '—'}</td>
               </tr>
@@ -631,7 +749,9 @@ function Students({ courses }: { courses: Course[] }) {
         </table>
       </div>
       {list.data && !list.data.items.length && (
-        <p className="quiet-empty">没有符合条件的学员。</p>
+        <p className="quiet-empty">
+          {t('没有符合条件的学员。', 'No matching students.')}
+        </p>
       )}
       <CursorPagination list={list} />
     </section>
@@ -644,21 +764,22 @@ function Services({
   boot: Boot;
   refresh: () => Promise<void>;
 }) {
+  const t = useT();
   const [error, setError] = useState(''),
     [busy, setBusy] = useState(false);
   const labels: Record<string, string> = {
-    google: 'Google 登录',
-    github: 'GitHub 登录',
-    email: '邮箱验证码',
-    password: '密码登录',
-    video: '课程视频',
-    judge: '算法判题',
-    checkout: '课程购买',
+    google: t('Google 登录', 'Google sign-in'),
+    github: t('GitHub 登录', 'GitHub sign-in'),
+    email: t('邮箱验证码', 'Email verification code'),
+    password: t('密码登录', 'Password sign-in'),
+    video: t('课程视频', 'Course video'),
+    judge: t('算法判题', 'Code judge'),
+    checkout: t('课程购买', 'Course checkout'),
   };
   return (
     <div className="form-card">
       <div className="lms-toolbar">
-        <h2>服务配置状态</h2>
+        <h2>{t('服务配置状态', 'Service configuration')}</h2>
         <Button
           variant="outline"
           disabled={busy}
@@ -674,11 +795,14 @@ function Services({
             }
           }}
         >
-          重新检测
+          {t('重新检测', 'Recheck')}
         </Button>
       </div>
       <p className="muted">
-        这里检查服务配置是否齐全。视频处理、支付和判题结果会在各自流程中显示实际状态。
+        {t(
+          '这里检查服务配置是否齐全。视频处理、支付和判题结果会在各自流程中显示实际状态。',
+          'Checks whether each service is configured. Video processing, payments, and judging show their actual status in their own flows.',
+        )}
       </p>
       <div className="service-grid">
         {Object.entries(labels).map(([key, label]) => (
@@ -687,17 +811,22 @@ function Services({
             <span
               className={'tag ' + (boot.services[key] ? 'success-text' : '')}
             >
-              {boot.services[key] ? '配置已就绪' : '尚未接入'}
+              {boot.services[key]
+                ? t('配置已就绪', 'Configured')
+                : t('尚未接入', 'Not connected')}
             </span>
           </div>
         ))}
       </div>
       <p className="notice">
-        课程内容、学员和题库可在工作台直接管理。第三方服务的密钥由服务器管理员配置，接入后可点击重新检测。
+        {t(
+          '课程内容、学员和题库可在工作台直接管理。第三方服务的密钥由服务器管理员配置，接入后可点击重新检测。',
+          'Course content, students, and problems can be managed right here in the dashboard. Third-party service keys are set by the server admin; click Recheck once a service is connected.',
+        )}
       </p>
       {error && (
         <p role="alert" className="error-text">
-          {error}
+          {t(error, englishMessage(error))}
         </p>
       )}
     </div>

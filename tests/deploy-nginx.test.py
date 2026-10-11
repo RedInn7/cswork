@@ -39,7 +39,15 @@ server {
         self.assertIn("client_max_body_size 9m;", template)
         result = module.with_media_location(template)
         self.assertEqual(result.count("include /etc/nginx/snippets/cswork-oj-import.conf;"), 1)
+        self.assertEqual(result.count("include /etc/nginx/snippets/cswork-content-assets.conf;"), 1)
         self.assertEqual(module.with_media_location(result), result)
+
+    def test_content_assets_are_static_and_script_free(self):
+        snippet = (path.parent / "nginx-content-assets.conf").read_text()
+        self.assertIn("location ^~ /content-assets/ {", snippet)
+        self.assertIn("alias /srv/cswork/content-assets/;", snippet)
+        self.assertIn("sandbox", snippet)
+        self.assertNotIn("proxy_pass", snippet)
 
     def test_new_install_and_unknown_config(self):
         template = (path.parent / "nginx.conf.template").read_text()

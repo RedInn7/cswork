@@ -120,6 +120,13 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     results: [],
     compileOutput: '',
   };
+  const acmProblem = {
+    ...problem,
+    id: 'acm-1',
+    codingModes: ['acm'],
+    leetcodeTemplates: undefined,
+    sourceStatement: undefined,
+  };
   const originalFetch = globalThis.fetch;
   let outcome = 'accepted';
   let acknowledgement = 'queued';
@@ -178,7 +185,9 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       return Response.json({ items: [historical], nextCursor: null });
     if (url.includes('/status'))
       return Response.json({ available: true, languageVersions: {} });
-    return Response.json(problem);
+    return Response.json(
+      url.includes('/problems/acm-1') ? acmProblem : problem,
+    );
   };
   localStorage.setItem(
     draftStorageKey('student', 'lc-1', 'python', 'acm'),
@@ -229,8 +238,8 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       ),
     );
     await settle();
-    assert.ok(button('运行').closest('.cs-code-caption'));
-    assert.ok(button('提交').closest('.cs-code-caption'));
+    assert.ok(button('Run').closest('.cs-code-caption'));
+    assert.ok(button('Submit').closest('.cs-code-caption'));
     assert.equal(
       document.querySelector('.cs-workspace-header .cs-editor-run-actions'),
       null,
@@ -248,23 +257,29 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       document.querySelector('.cs-sample-pair').textContent,
       /\[0,1\]/,
     );
-    assert.equal(
-      document.querySelector('.cs-statement-heading h2').textContent,
-      '1. 两数之和',
-    );
-    assert.ok(document.querySelector('.cs-statement-solved'));
-    assert.equal(document.querySelector('#problem-topics'), null);
-    await click(button('主题'));
-    assert.equal(document.querySelector('#problem-topics').textContent, '数组');
-    await click(button('主题'));
-    await choose('题面语言', 'en');
+    // English site: the English statement is the default when it exists.
     assert.equal(
       document.querySelector('.cs-statement-heading h2').textContent,
       '1. Two Sum',
     );
-    await choose('题面语言', 'zh');
+    assert.ok(document.querySelector('.cs-statement-solved'));
+    assert.equal(document.querySelector('#problem-topics'), null);
+    await click(button('Topics'));
+    assert.equal(document.querySelector('#problem-topics').textContent, '数组');
+    await click(button('Topics'));
+    await choose('Statement language', 'zh');
     assert.equal(
-      document.querySelector('[aria-label="提交模式"]').value,
+      document.querySelector('.cs-statement-heading h2').textContent,
+      '1. 两数之和',
+    );
+    assert.ok(button('Topics'), 'labels follow the site language');
+    await choose('Statement language', 'en');
+    assert.equal(
+      document.querySelector('.cs-statement-heading h2').textContent,
+      '1. Two Sum',
+    );
+    assert.equal(
+      document.querySelector('[aria-label="Submission mode"]').value,
       'leetcode',
     );
     assert.match(document.body.textContent, /COMPLETE ORIGINAL DESCRIPTION/);
@@ -274,39 +289,39 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     );
     assert.doesNotMatch(document.body.textContent, /ACM INPUT|ACM OUTPUT/);
     await edit('# my LC draft');
-    await choose('提交模式', 'acm');
+    await choose('Submission mode', 'acm');
     assert.equal(editor().value, 'print("legacy ACM")');
     await edit('print("new ACM")');
-    await choose('提交模式', 'leetcode');
+    await choose('Submission mode', 'leetcode');
     assert.equal(editor().value, '# my LC draft');
-    await choose('编程语言', 'java');
+    await choose('Programming language', 'java');
     assert.equal(editor().value, templates.java);
     await edit('// java LC draft');
-    await choose('编程语言', 'python');
+    await choose('Programming language', 'python');
     assert.equal(editor().value, '# my LC draft');
-    await click(document.querySelector('[aria-label="重置为语言模板"]'));
-    await click(button('确认替换'));
+    await click(document.querySelector('[aria-label="Reset to template"]'));
+    await click(button('Replace'));
     assert.equal(editor().value, templates.python);
-    await choose('提交模式', 'acm');
+    await choose('Submission mode', 'acm');
     assert.equal(editor().value, 'print("new ACM")');
-    await choose('提交模式', 'leetcode');
-    await click(button('提交记录'));
-    await click(button('代码'));
-    await click(button('恢复到编辑器'));
-    await click(button('确认替换'));
+    await choose('Submission mode', 'leetcode');
+    await click(button('Submissions'));
+    await click(button('Code'));
+    await click(button('Restore to editor'));
+    await click(button('Replace'));
     assert.equal(
-      document.querySelector('[aria-label="提交模式"]').value,
+      document.querySelector('[aria-label="Submission mode"]').value,
       'acm',
     );
     assert.equal(editor().value, historical.code);
-    await choose('提交模式', 'leetcode');
+    await choose('Submission mode', 'leetcode');
     assert.equal(editor().value, templates.python);
     assert.equal(
       document.querySelector('.cs-accepted-banner'),
       null,
       'history must not celebrate',
     );
-    await click(button('运行'));
+    await click(button('Run'));
     assert.equal(
       document.querySelector('.cs-accepted-banner'),
       null,
@@ -314,10 +329,10 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     );
     outcome = 'wrong_answer';
     holdPost = true;
-    await act(async () => button('提交').click());
+    await act(async () => button('Submit').click());
     assert.match(
       document.querySelector('.cs-submitting').textContent,
-      /正在提交/,
+      /Submitting/,
     );
     assert.equal(
       document.querySelector('.cs-result-content'),
@@ -333,7 +348,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     try {
       // Flush the POST and initial pending GET without advancing polling time.
       await act(async () => {
-        button('提交').click();
+        button('Submit').click();
       });
       assert.ok(
         document.querySelector('.cs-accepted-banner'),
@@ -363,9 +378,12 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       document.querySelector('.cs-accepted-banner').textContent.trim(),
       'Accepted',
     );
-    await click(document.querySelector('[aria-label="收起通过提示"]'));
-    await click(button('题目描述'));
-    await choose('题面语言', 'en');
+    await click(
+      document.querySelector('[aria-label="Dismiss success message"]'),
+    );
+    await click(button('Description'));
+    // A Chinese statement on the English site keeps English labels.
+    await choose('Statement language', 'zh');
     assert.equal(
       document.querySelector('.cs-accepted-banner'),
       null,
@@ -414,6 +432,8 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       t.mock.timers.reset();
     }
     sessionStorage.setItem('cswork:oj:active:student:lc-1', freshSubmission.id);
+    // Reload on the Chinese site: Chinese statement and labels by default.
+    localStorage.setItem('cswork:locale', 'zh');
     await act(async () =>
       root.render(
         createElement(ProblemWorkspace, {
@@ -432,6 +452,41 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       null,
       'receipt prevents replay after reload',
     );
+    assert.equal(
+      document.querySelector('.cs-statement-heading h2').textContent,
+      '1. 两数之和',
+    );
+    assert.ok(button('运行').closest('.cs-code-caption'));
+    assert.ok(button('提交').closest('.cs-code-caption'));
+    assert.ok(document.querySelector('[aria-label="题面语言"]'));
+    // ACM starters follow the statement language; untouched ones switch with it.
+    const { starters, englishStarters } = await import('../lib/problems.ts');
+    const renderAcm = (key) =>
+      act(async () =>
+        root.render(
+          createElement(ProblemWorkspace, {
+            key,
+            problem: acmProblem,
+            boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
+            navigate() {},
+            ask() {},
+            refresh: async () => {},
+          }),
+        ),
+      );
+    await renderAcm('acm-zh');
+    await settle();
+    assert.equal(editor().value, starters.python);
+    await choose('题面语言', 'en');
+    assert.equal(editor().value, englishStarters.python);
+    await choose('题面语言', 'zh');
+    assert.equal(editor().value, starters.python);
+    // The header switch; it also drops the per-problem statement pick.
+    const { setLocale } = await import('../lib/i18n.ts');
+    await act(async () => setLocale('en'));
+    await renderAcm('acm-en');
+    await settle();
+    assert.equal(editor().value, englishStarters.python);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

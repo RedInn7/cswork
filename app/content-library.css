@@ -1,0 +1,335 @@
+/* Interview content library (questions, experiences, guides…) on the redesign tokens. */
+.ct-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 28px 0 10px;
+}
+.ct-search {
+  flex: 0 1 340px;
+}
+.ct-search button {
+  display: inline-flex;
+  color: var(--rd-subtle);
+}
+.ct-facets {
+  margin-bottom: 18px;
+}
+.ct-list-head {
+  margin: 4px 2px 10px;
+  color: var(--rd-muted);
+  font-size: 12px;
+}
+.ct-list {
+  display: grid;
+  gap: 12px;
+}
+.ct-card {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 18px;
+  text-align: left;
+  transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+button.ct-card:hover {
+  border-color: color-mix(in oklab, var(--rd-brand) 45%, var(--rd-line));
+  box-shadow: 0 4px 14px color-mix(in oklab, var(--rd-brand) 12%, transparent);
+  transform: translateY(-1px);
+}
+button.ct-card:focus-visible {
+  outline: 2px solid var(--rd-brand);
+  outline-offset: 2px;
+}
+.ct-card h3 {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 700;
+  color: var(--rd-ink);
+}
+.ct-summary {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: var(--rd-muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.ct-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  color: var(--rd-muted);
+}
+.ct-logo {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+}
+.ct-logo img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+.ct-meta-text + .ct-meta-text::before,
+.ct-diff + .ct-meta-text::before {
+  content: '·';
+  margin-right: 10px;
+  color: var(--rd-subtle);
+}
+.ct-diff {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.ct-diff-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: currentColor;
+}
+.ct-diff.is-easy {
+  color: var(--rd-brand);
+}
+.ct-diff.is-medium {
+  color: var(--rd-amber);
+}
+.ct-diff.is-hard {
+  color: oklch(0.586 0.253 17.585);
+}
+.ct-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ct-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ct-tag {
+  padding: 2px 6px;
+  border: 1px solid var(--rd-line-soft);
+  border-radius: 8px;
+  background: var(--rd-fill-soft);
+  color: var(--rd-muted);
+  font-size: 10px;
+}
+.ct-date {
+  color: var(--rd-subtle);
+  font-size: 11px;
+}
+.ct-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+  color: var(--rd-muted);
+  font-size: 13px;
+}
+.ct-pager button:disabled {
+  opacity: 0.45;
+}
+.ct-skeleton {
+  min-height: 116px;
+  background: linear-gradient(90deg, var(--rd-fill), var(--rd-fill-soft), var(--rd-fill));
+  background-size: 200% 100%;
+  animation: js-shimmer 1.2s linear infinite;
+}
+@keyframes js-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Detail page */
+.ct-detail {
+  max-width: 900px;
+}
+.ct-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  color: var(--rd-muted);
+  font-size: 13px;
+}
+.ct-crumbs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--rd-ink-2);
+  font-weight: 600;
+}
+.ct-crumbs button:hover {
+  color: var(--rd-brand-ink);
+}
+.ct-detail-head {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.ct-detail-head h1 {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.25;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--rd-ink);
+}
+.ct-lead {
+  margin: 0;
+  color: var(--rd-muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.ct-callout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in oklab, var(--rd-brand) 30%, var(--rd-line));
+  border-radius: 14px;
+  background: var(--rd-brand-soft);
+  color: var(--rd-brand-ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+.ct-body {
+  padding: 24px 28px;
+}
+.ct-body .oa-markdown {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--rd-ink-2);
+}
+.ct-body .oa-markdown h2,
+.ct-body .oa-markdown h3 {
+  color: var(--rd-ink);
+}
+.ct-section {
+  margin-top: 28px;
+}
+.ct-section h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--rd-ink);
+}
+.ct-sample {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 14px;
+}
+.ct-sample p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--rd-muted);
+  font-size: 13px;
+}
+.ct-sample pre {
+  margin: 6px 0 0;
+  padding: 10px 12px;
+  overflow-x: auto;
+  border-radius: 10px;
+  background: var(--rd-fill-soft);
+  border: 1px solid var(--rd-line-soft);
+  font-family: var(--font-geist-mono);
+  font-size: 12.5px;
+  white-space: pre-wrap;
+}
+.ct-sample-label {
+  color: var(--rd-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.ct-chapter {
+  margin-bottom: 10px;
+  padding: 14px 18px;
+}
+.ct-chapter h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.ct-chapter ol {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--rd-ink-2);
+  font-size: 14px;
+  line-height: 1.9;
+}
+.ct-chapter button:hover {
+  color: var(--rd-brand-ink);
+  text-decoration: underline;
+}
+.ct-faq {
+  margin-bottom: 8px;
+  padding: 12px 16px;
+}
+.ct-faq summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--rd-ink);
+}
+.ct-related {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+.ct-related-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--rd-ink);
+  transition: border-color 150ms ease;
+}
+.ct-related-item:hover {
+  border-color: color-mix(in oklab, var(--rd-brand) 45%, var(--rd-line));
+}
+@media (max-width: 760px) {
+  .ct-search {
+    flex: 1 1 100%;
+  }
+  .ct-body {
+    padding: 18px 16px;
+  }
+  .ct-detail-head h1 {
+    font-size: 24px;
+  }
+  .ct-sample {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ct-skeleton {
+    animation: none;
+  }
+  button.ct-card:hover {
+    transform: none;
+  }
+}

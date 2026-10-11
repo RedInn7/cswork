@@ -15,7 +15,7 @@ id cswork >/dev/null 2>&1 || useradd --system --user-group --home-dir /var/lib/c
 install -d -m 755 /srv/cswork/releases /opt/cswork/runtime /var/www/cswork-acme
 install -d -m 700 -o cswork -g cswork /var/lib/cswork /var/lib/cswork/attachments /var/lib/cswork/backups
 install -d -m 750 -o root -g cswork /etc/cswork
-install -d -m 2750 -o cswork -g www-data /srv/cswork/media
+install -d -m 2750 -o cswork -g www-data /srv/cswork/media /srv/cswork/content-assets
 install -m 755 "$node_binary" /opt/cswork/runtime/node.next
 mv -f /opt/cswork/runtime/node.next /opt/cswork/runtime/node
 
@@ -42,7 +42,7 @@ from pathlib import Path
 p=Path('/etc/cswork/cswork.env')
 lines=p.read_text().splitlines()
 keys={line.split('=',1)[0] for line in lines}
-for key,value in [('MEDIA_PATH','/srv/cswork/media'),('MEDIA_X_ACCEL_PREFIX','/__cswork_media/'),('MEDIA_MAX_BYTES','10737418240'),('ATTACHMENTS_MAX_BYTES','1073741824')]:
+for key,value in [('MEDIA_PATH','/srv/cswork/media'),('MEDIA_X_ACCEL_PREFIX','/__cswork_media/'),('MEDIA_MAX_BYTES','10737418240'),('ATTACHMENTS_MAX_BYTES','1073741824'),('CONTENT_DATABASE_PATH','/var/lib/cswork/content.sqlite')]:
     if key not in keys: lines.append(key+'='+value)
 p.write_text('\n'.join(lines)+'\n')
 p.chmod(0o640)
@@ -155,6 +155,7 @@ fi
 # Existing certificate configuration is retained on later releases.
 install -m 644 "$source_dir/deploy/nginx-media.conf" /etc/nginx/snippets/cswork-media.conf
 install -m 644 "$source_dir/deploy/nginx-oj-import.conf" /etc/nginx/snippets/cswork-oj-import.conf
+install -m 644 "$source_dir/deploy/nginx-content-assets.conf" /etc/nginx/snippets/cswork-content-assets.conf
 created_config=false
 if [[ ! -f /etc/nginx/sites-available/cswork ]]; then
   sed "s/CSWORK_HOSTNAME/$domain/g" "$source_dir/deploy/nginx.conf.template" > /etc/nginx/sites-available/cswork
