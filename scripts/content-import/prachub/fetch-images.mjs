@@ -23,7 +23,8 @@ export const KEEP = /^https:\/\/ik\.imagekit\.io\/9osfw19dn\/(cheatsheets\/(conc
 /** Image URLs in Markdown (![alt](url "title")) and inline <img src>. */
 export function imageUrls(text) {
   const out = [];
-  for (const m of text.matchAll(/!\[[^\]]*\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/g)) out.push(m[1]);
+  // Alt text may hold one level of brackets ("heights [2,1,5]").
+  for (const m of text.matchAll(/!\[(?:[^[\]]|\[[^\]]*\])*\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/g)) out.push(m[1]);
   for (const m of text.matchAll(/<img\b[^>]*\bsrc=["']([^"']+)["']/gi)) out.push(m[1]);
   return out;
 }
