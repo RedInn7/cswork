@@ -190,9 +190,9 @@ function Workspace({
     null,
   );
   useEffect(() => {
-    // A remembered English pick still applies (the toggle stores it, as before).
-    if (safeLayoutStorage.getItem('cswork:problem:locale') === 'en')
-      setStatementPick('en');
+    // The statement toggle's last pick applies until the site language is switched (setLocale clears it).
+    const stored = safeLayoutStorage.getItem('cswork:problem:locale');
+    if (stored === 'en' || stored === 'zh') setStatementPick(stored);
   }, []);
   const statementLocale: ProblemLocale =
     statementPick ??

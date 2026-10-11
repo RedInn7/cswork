@@ -481,7 +481,9 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     assert.equal(editor().value, englishStarters.python);
     await choose('题面语言', 'zh');
     assert.equal(editor().value, starters.python);
-    localStorage.setItem('cswork:locale', 'en');
+    // The header switch; it also drops the per-problem statement pick.
+    const { setLocale } = await import('../lib/i18n.ts');
+    await act(async () => setLocale('en'));
     await renderAcm('acm-en');
     await settle();
     assert.equal(editor().value, englishStarters.python);

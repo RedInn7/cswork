@@ -226,9 +226,13 @@ export function StudyLibrary({
   }
 
   useEffect(() => {
-    // The page's language switch starts from the site language and overrides it
-    // only until the site language changes.
-    setEnglish(siteLocale === 'en');
+    // The page's language switch (shared with the problem page) wins until the site
+    // language is switched, which clears it.
+    let stored: string | null = null;
+    try {
+      stored = localStorage.getItem('cswork:problem:locale');
+    } catch {}
+    setEnglish(stored ? stored === 'en' : siteLocale === 'en');
     setCopyMessage('');
   }, [siteLocale]);
   useEffect(() => {

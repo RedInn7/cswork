@@ -7,8 +7,11 @@ import { useCallback, useSyncExternalStore } from 'react';
 export type Locale = 'en' | 'zh';
 const KEY = 'cswork:locale';
 const listeners = new Set<() => void>();
+// The switch made on this page, so it works even when storage is blocked.
+let current: Locale | null = null;
 
 export function readLocale(): Locale {
+  if (current) return current;
   try {
     return typeof localStorage !== 'undefined' && localStorage.getItem(KEY) === 'zh' ? 'zh' : 'en';
   } catch {
@@ -16,8 +19,11 @@ export function readLocale(): Locale {
   }
 }
 export function setLocale(locale: Locale) {
+  current = locale;
   try {
     localStorage.setItem(KEY, locale);
+    // Problem statements follow the new site language again (their own toggle is a per-problem pick).
+    localStorage.removeItem('cswork:problem:locale');
   } catch {
     // Private mode: the switch still applies to this page view.
   }
