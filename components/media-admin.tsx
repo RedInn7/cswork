@@ -11,6 +11,8 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import { api } from '@/lib/types';
+import { readLocale, useT } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import {
@@ -39,6 +41,7 @@ export function MediaPicker({
   onChange: (ids: string[]) => void;
   onBusyChange?: (busy: boolean) => void;
 }) {
+  const t = useT();
   const [data, setData] = useState<Page>({
     items: [],
     hasMore: false,
@@ -88,13 +91,13 @@ export function MediaPicker({
       file.type ||
       (file.name.toLowerCase().endsWith('.webm') ? 'video/webm' : 'video/mp4');
     if (!['video/mp4', 'video/webm'].includes(mimeType)) {
-      setError('请选择 MP4 或 WebM 视频');
+      setError(t('请选择 MP4 或 WebM 视频', 'Choose an MP4 or WebM video'));
       return;
     }
     setBusy(true);
     onBusyChange?.(true);
     setError('');
-    setMessage(`正在上传 ${file.name}`);
+    setMessage(t(`正在上传 ${file.name}`, `Uploading ${file.name}`));
     setPercent(0);
     const controller = new AbortController();
     abort.current = controller;
@@ -142,6 +145,8 @@ export function MediaPicker({
             headers: {
               'Content-Type': 'application/octet-stream',
               'Upload-Offset': String(session!.offset),
+              // Raw fetch: ask for errors in the site language like api() does.
+              'X-Locale': readLocale(),
             },
             body: file.slice(
               session!.offset,
@@ -151,7 +156,10 @@ export function MediaPicker({
           },
         );
         const result = await r.json();
-        if (!r.ok) throw new Error(result.error || '上传暂时中断');
+        if (!r.ok)
+          throw new Error(
+            result.error || t('上传暂时中断', 'Upload interrupted'),
+          );
         session!.offset = result.offset;
         setPercent(Math.round((result.offset * 100) / file.size));
       }
@@ -164,13 +172,32 @@ export function MediaPicker({
       } catch {}
       setNames((previous) => ({ ...previous, [asset.id]: asset.name }));
       onChange([...value.filter((v) => v !== asset.id), asset.id]);
-      setMessage(`${file.name} 已上传并选中，发布章节后学员可见。`);
+      setMessage(
+        t(
+          `${file.name} 已上传并选中，发布章节后学员可见。`,
+          `${file.name} uploaded and selected. Students can see it once the lesson is published.`,
+        ),
+      );
       await load(0);
       setPage(0);
     } catch (e) {
       if ((e as Error).name === 'AbortError')
-        setMessage('上传已暂停。重新选择同一文件即可继续。');
-      else setError((e as Error).message + '。重新选择同一文件可继续上传。');
+        setMessage(
+          t(
+            '上传已暂停。重新选择同一文件即可继续。',
+            'Upload paused. Select the same file again to resume.',
+          ),
+        );
+      else {
+        const reason = (e as Error).message;
+        setError(
+          t(
+            reason + '。重新选择同一文件可继续上传。',
+            englishMessage(reason) +
+              '. Select the same file again to resume the upload.',
+          ),
+        );
+      }
     } finally {
       setBusy(false);
       onBusyChange?.(false);
@@ -184,11 +211,19 @@ export function MediaPicker({
     onChange(next);
   }
   return (
-    <section className="media-picker" aria-label="课程视频素材">
+    <section
+      className="media-picker"
+      aria-label={t('课程视频素材', 'Course video assets')}
+    >
       <div className="media-picker-heading">
         <div>
-          <h3>章节视频</h3>
-          <p>从素材库选择，或上传 MP4 / WebM；支持一章多段视频。</p>
+          <h3>{t('章节视频', 'Lesson videos')}</h3>
+          <p>
+            {t(
+              '从素材库选择，或上传 MP4 / WebM；支持一章多段视频。',
+              'Pick from the media library or upload MP4 / WebM. A lesson can have several videos.',
+            )}
+          </p>
         </div>
         <Button
           variant="outline"
@@ -196,7 +231,7 @@ export function MediaPicker({
           onClick={() => fileInput.current?.click()}
         >
           <Upload size={15} />
-          上传视频
+          {t('上传视频', 'Upload video')}
         </Button>
       </div>
       <input
@@ -211,7 +246,11 @@ export function MediaPicker({
       />
       {busy && (
         <div className="media-upload-status">
-          <progress aria-label="视频上传进度" value={percent} max={100} />
+          <progress
+            aria-label={t('视频上传进度', 'Video upload progress')}
+            value={percent}
+            max={100}
+          />
           <span>{percent}%</span>
           <Button
             size="sm"
@@ -219,14 +258,14 @@ export function MediaPicker({
             onClick={() => abort.current?.abort()}
           >
             <Pause size={14} />
-            暂停
+            {t('暂停', 'Pause')}
           </Button>
         </div>
       )}
       {message && <output className="muted">{message}</output>}
       {error && (
         <p role="alert" className="error-text">
-          {error}
+          {t(error, englishMessage(error))}
         </p>
       )}
       {value.length > 0 && (
@@ -235,14 +274,14 @@ export function MediaPicker({
             <li key={id}>
               <span>
                 <small>{String(i + 1).padStart(2, '0')}</small>
-                {names[id] || '已选择的视频'}
+                {names[id] || t('已选择的视频', 'Selected video')}
               </span>
               <div>
                 <Button
                   variant="ghost"
                   size="icon"
                   disabled={i === 0 || busy}
-                  aria-label={`上移视频 ${i + 1}`}
+                  aria-label={t(`上移视频 ${i + 1}`, `Move video ${i + 1} up`)}
                   onClick={() => move(i, -1)}
                 >
                   <ArrowUp size={14} />
@@ -251,7 +290,10 @@ export function MediaPicker({
                   variant="ghost"
                   size="icon"
                   disabled={i === value.length - 1 || busy}
-                  aria-label={`下移视频 ${i + 1}`}
+                  aria-label={t(
+                    `下移视频 ${i + 1}`,
+                    `Move video ${i + 1} down`,
+                  )}
                   onClick={() => move(i, 1)}
                 >
                   <ArrowDown size={14} />
@@ -260,7 +302,7 @@ export function MediaPicker({
                   variant="ghost"
                   size="icon"
                   disabled={busy}
-                  aria-label={`移除视频 ${i + 1}`}
+                  aria-label={t(`移除视频 ${i + 1}`, `Remove video ${i + 1}`)}
                   onClick={() => onChange(value.filter((v) => v !== id))}
                 >
                   <X size={14} />
@@ -280,15 +322,15 @@ export function MediaPicker({
         }}
       >
         <Input
-          aria-label="搜索视频素材"
-          placeholder="搜索素材名称"
+          aria-label={t('搜索视频素材', 'Search video assets')}
+          placeholder={t('搜索素材名称', 'Search by asset name')}
           value={query}
           disabled={busy}
           onChange={(e) => setQuery(e.target.value)}
         />
         <Button variant="outline" type="submit" disabled={busy}>
           <Search size={15} />
-          搜索
+          {t('搜索', 'Search')}
         </Button>
       </form>
       <div className="media-library">
@@ -316,7 +358,12 @@ export function MediaPicker({
                   <strong>{a.name}</strong>
                   <small>
                     {(a.size / 1048576).toFixed(1)} MB
-                    {a.duration ? ` · ${Math.ceil(a.duration / 60)} 分钟` : ''}
+                    {a.duration
+                      ? t(
+                          ` · ${Math.ceil(a.duration / 60)} 分钟`,
+                          ` · ${Math.ceil(a.duration / 60)} min`,
+                        )
+                      : ''}
                   </small>
                 </span>
               </button>
@@ -328,12 +375,17 @@ export function MediaPicker({
                   setPreview(a);
                 }}
               >
-                预览
+                {t('预览', 'Preview')}
               </Button>
             </div>
           ))}
         {!data.items.some((a) => a.status === 'ready') && (
-          <p className="muted">还没有可用视频。上传后可预览并加入章节。</p>
+          <p className="muted">
+            {t(
+              '还没有可用视频。上传后可预览并加入章节。',
+              'No videos available yet. Upload one to preview it and add it to the lesson.',
+            )}
+          </p>
         )}
       </div>
       <div className="media-page">
@@ -344,7 +396,7 @@ export function MediaPicker({
           onClick={() => void load()}
         >
           <RefreshCw size={14} />
-          刷新
+          {t('刷新', 'Refresh')}
         </Button>
         <span />
         <Button
@@ -353,7 +405,7 @@ export function MediaPicker({
           disabled={busy || !page}
           onClick={() => setPage((p) => p - 1)}
         >
-          上一页
+          {t('上一页', 'Previous')}
         </Button>
         <Button
           variant="outline"
@@ -361,7 +413,7 @@ export function MediaPicker({
           disabled={busy || !data.hasMore}
           onClick={() => setPage((p) => p + 1)}
         >
-          下一页
+          {t('下一页', 'Next')}
         </Button>
       </div>
       <Dialog
@@ -370,9 +422,14 @@ export function MediaPicker({
       >
         <DialogContent className="wide-dialog">
           <DialogHeader>
-            <DialogTitle>{preview?.name || '视频预览'}</DialogTitle>
+            <DialogTitle>
+              {preview?.name || t('视频预览', 'Video preview')}
+            </DialogTitle>
             <DialogDescription>
-              预览原始视频，确认声音与画面后再发布章节。
+              {t(
+                '预览原始视频，确认声音与画面后再发布章节。',
+                'Preview the original video and check its sound and picture before publishing the lesson.',
+              )}
             </DialogDescription>
           </DialogHeader>
           {preview && (
@@ -385,7 +442,12 @@ export function MediaPicker({
               style={{ width: '100%', maxHeight: '60vh' }}
               src={`/api/media/${encodeURIComponent(preview.id)}/play`}
               onError={() =>
-                setPreviewError('视频无法播放，请检查原文件格式或重新上传。')
+                setPreviewError(
+                  t(
+                    '视频无法播放，请检查原文件格式或重新上传。',
+                    "This video can't be played. Check the original file format or upload it again.",
+                  ),
+                )
               }
             />
           )}
