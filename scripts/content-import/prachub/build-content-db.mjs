@@ -81,8 +81,9 @@ export function localize(text) {
       i % 2
         ? part
         : part
-            .replace(/(!\[[^\]]*\]\(\s*<?)([^)\s>]+)/g, (all, head, url) => (assets[url] ? head + assets[url] : all))
-            .replace(/(<img\b[^>]*\bsrc=["'])([^"']+)/gi, (all, head, url) => (assets[url] ? head + assets[url] : all))
+            // Images we publish point at our copy; any other image is left out entirely.
+            .replace(/!\[([^\]]*)\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/g, (all, alt, url) => (assets[url] ? `![${alt}](${assets[url]})` : ''))
+            .replace(/<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi, (all, url) => (assets[url] ? `![](${assets[url]})` : ''))
             // [text](url) and [text](url "title"), not images (already handled above).
             .replace(/(?<!!)(\[[^\]]*\]\(\s*<?)([^)\s>]+)(>?(?:\s+"[^"]*")?\s*\))/g, (all, head, url, tail) => {
               const to = route(url);

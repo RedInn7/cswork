@@ -104,8 +104,9 @@ void test('detail resolves relations and points duplicates at our own problem', 
   // Links point inside CSWORK, images at our own copies; unknown pages keep only their text.
   assert.equal(
     exp.body,
-    'Two questions: [LRU](/?view=content&type=coding_question&slug=lru), [plans](#). ![chart](/content-assets/abc.png) ![gone](https://ik.imagekit.io/x/b.png)' +
-      ' Code `arr[i](/x)` stays. [Guide](/?view=content&type=guide&slug=google-swe "Google") [link](/?view=questions&company=google) ![v](https://ik.imagekit.io/x/a.png?tr=w-100)',
+    // Images without a published copy are left out (cover art, logos).
+    'Two questions: [LRU](/?view=content&type=coding_question&slug=lru), [plans](#). ![chart](/content-assets/abc.png) ' +
+      ' Code `arr[i](/x)` stays. [Guide](/?view=content&type=guide&slug=google-swe "Google") [link](/?view=questions&company=google) ',
   );
   assert.deepEqual(exp.relations.map((r: { slug: string }) => r.slug), ['lru']); // the missing one is dropped
   const dup = await get('item?type=questions&slug=two-sum');
