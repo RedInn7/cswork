@@ -494,31 +494,23 @@ export function Academy() {
             </SidebarGroup>
           )}
         </SidebarContent>
-        <SidebarFooter>
-          <button
-            className="profile"
-            onClick={() => (boot.person ? navigate('account') : setLogin(true))}
-          >
-            <span className="avatar">
-              {boot.person?.name.slice(0, 1) || 'S'}
-            </span>
-            <div>
-              <strong>
-                {boot.person?.name
-                  ? t(boot.person.name, englishMessage(boot.person.name))
-                  : t('登录学习空间', 'Sign in')}
-              </strong>
-              <small>
-                {boot.person?.role === 'teacher'
-                  ? t('老师账号', 'Teacher account')
-                  : boot.person
-                    ? t('SDE 学员', 'SDE student')
-                    : t('保存进度，开始学习', 'Save your progress and start learning')}
-              </small>
-            </div>
-            <Settings size={15} />
-          </button>
-        </SidebarFooter>
+        {/* Signed out, the top bar's button is the one way in; signed in, this is the account. */}
+        {boot.person && (
+          <SidebarFooter>
+            <button className="profile" onClick={() => navigate('account')}>
+              <span className="avatar">{boot.person.name.slice(0, 1) || 'S'}</span>
+              <div>
+                <strong>{t(boot.person.name, englishMessage(boot.person.name))}</strong>
+                <small>
+                  {boot.person.role === 'teacher'
+                    ? t('老师账号', 'Teacher account')
+                    : t('SDE 学员', 'SDE student')}
+                </small>
+              </div>
+              <Settings size={15} />
+            </button>
+          </SidebarFooter>
+        )}
       </Sidebar>
       <SidebarInset className="workspace">
         <header className="topbar">
