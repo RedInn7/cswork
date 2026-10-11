@@ -42,7 +42,7 @@ from pathlib import Path
 p=Path('/etc/cswork/cswork.env')
 lines=p.read_text().splitlines()
 keys={line.split('=',1)[0] for line in lines}
-for key,value in [('MEDIA_PATH','/srv/cswork/media'),('MEDIA_X_ACCEL_PREFIX','/__cswork_media/'),('MEDIA_MAX_BYTES','10737418240'),('ATTACHMENTS_MAX_BYTES','1073741824')]:
+for key,value in [('MEDIA_PATH','/srv/cswork/media'),('MEDIA_X_ACCEL_PREFIX','/__cswork_media/'),('MEDIA_MAX_BYTES','10737418240'),('ATTACHMENTS_MAX_BYTES','1073741824'),('CONTENT_DATABASE_PATH','/var/lib/cswork/content.sqlite')]:
     if key not in keys: lines.append(key+'='+value)
 p.write_text('\n'.join(lines)+'\n')
 p.chmod(0o640)
