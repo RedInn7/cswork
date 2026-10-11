@@ -9,6 +9,9 @@ import {
 import {
   Activity,
   ArrowUpRight,
+  Library,
+  MessagesSquare,
+  ScrollText,
   BookOpen,
   Code2,
   LayoutDashboard,
@@ -67,6 +70,7 @@ import {
   type Navigate,
 } from './learning';
 import { JudgeStatus } from './judge-status';
+import { ContentDetail, ContentList } from './content-library';
 import {
   TicketComposer,
   TicketView,
@@ -89,6 +93,9 @@ import {
 const nav: [LucideIcon, string, string][] = [
   [Code2, '算法题库', 'problems'],
   [Activity, '评测状态', 'status'],
+  [MessagesSquare, '面试题', 'questions'],
+  [ScrollText, '面经', 'experiences'],
+  [Library, '学习资料', 'resources'],
   [LayoutDashboard, '学习概览', 'home'],
   [BookOpen, '我的课程', 'courses'],
   [BookOpen, '算法知识点', 'knowledge'],
@@ -259,9 +266,10 @@ export function Academy() {
       );
     if (
       !boot.person &&
-      !['home', 'courses', 'knowledge', 'problems', 'problem', 'status'].includes(
-        view,
-      )
+      ![
+        'home', 'courses', 'knowledge', 'problems', 'problem', 'status',
+        'questions', 'experiences', 'resources', 'content',
+      ].includes(view)
     )
       return (
         <Empty
@@ -326,6 +334,12 @@ export function Academy() {
         );
       case 'status':
         return <JudgeStatus boot={boot} params={params} navigate={navigate} />;
+      case 'questions':
+      case 'experiences':
+      case 'resources':
+        return <ContentList key={view} section={view} params={params} navigate={navigate} />;
+      case 'content':
+        return <ContentDetail params={params} navigate={navigate} />;
       case 'problem':
         return selectedProblem ? (
           <ProblemWorkspace
