@@ -1,7 +1,7 @@
 import { ZodError } from 'zod';
 import { database, origin } from './env';
 import type { Person } from './auth';
-import { englishMessage } from './messages-en';
+import { englishMessage } from '@/lib/messages-en';
 export class HttpError extends Error {
   constructor(
     public status: number,
