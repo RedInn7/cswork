@@ -160,7 +160,8 @@ export function OaMarkdown({ body, math = false }: { body: string; math?: boolea
   const t = useT();
   const [mathPlugins, setMathPlugins] = useState<MathPlugins | null>(null);
   useEffect(() => {
-    if (math) void import('./markdown-math').then(setMathPlugins);
+    // Without KaTeX the TeX source stays readable, so a failed load just keeps the plain view.
+    if (math) import('./markdown-math').then(setMathPlugins, () => {});
   }, [math]);
   const withMath = math && mathPlugins;
   return (
@@ -169,7 +170,7 @@ export function OaMarkdown({ body, math = false }: { body: string; math?: boolea
           react-markdown shows raw HTML as escaped text rather than dropping it. */}
       <ReactMarkdown
         remarkPlugins={withMath ? [remarkGfm, withMath.remarkMath] : [remarkGfm]}
-        rehypePlugins={withMath ? [withMath.rehypeKatex] : []}
+        rehypePlugins={withMath ? [[withMath.rehypeKatex, { maxSize: 10, maxExpand: 200 }]] : []}
         components={{
           a: ({ node, href, children }) =>
             href?.startsWith('/?view=') ? (
