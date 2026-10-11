@@ -45,9 +45,9 @@ CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
 `);
 
 // Our own copies of images (fetch-images.mjs) and CSWORK routes for PracHub links.
-const assets = existsSync(join(PARSED, 'assets-map.json'))
-  ? JSON.parse(readFileSync(join(PARSED, 'assets-map.json'), 'utf8'))
-  : {};
+const readJson = (name, empty) =>
+  existsSync(join(PARSED, name)) ? JSON.parse(readFileSync(join(PARSED, name), 'utf8')) : empty;
+const assets = readJson('assets-map.json', {});
 const ROUTES = {
   'coding-questions': 'coding_question', 'interview-questions': 'interview_question',
   'interview-experiences': 'experience', concepts: 'concept', resources: 'article',
@@ -73,10 +73,10 @@ const localizeItem = (item) => {
   return item;
 };
 
-const dupes = new Map();
-const dupFile = join(PARSED, 'question-dupes.json');
-if (existsSync(dupFile))
-  for (const d of JSON.parse(readFileSync(dupFile, 'utf8'))) dupes.set(d.id, d.dupOf);
+// Automatic matches, minus the ones a reviewer rejected, plus the ones a reviewer confirmed.
+const dupes = new Map(readJson('question-dupes.json', []).map((d) => [d.id, d.dupOf]));
+for (const id of readJson('question-dupes-reject.json', [])) dupes.delete(id);
+for (const d of readJson('question-dupes-manual.json', [])) dupes.set(d.id, d.dupOf);
 
 const insert = db.prepare(`INSERT OR REPLACE INTO items(id,type,slug,title,summary,title_zh,summary_zh,level,body,company_slug,company_name,role,category,difficulty,round,seniority,tags,published_at,updated_at,relations,extra,partial,dup_of,listed)
   VALUES(@id,@type,@slug,@title,@summary,@title_zh,@summary_zh,@level,@body,@company_slug,@company_name,@role,@category,@difficulty,@round,@seniority,@tags,@published_at,@updated_at,@relations,@extra,@partial,@dup_of,@listed)`);

@@ -24,6 +24,7 @@ writeFileSync(join(parsed, 'coding-questions.jsonl'), lines([
 ]));
 writeFileSync(join(parsed, 'interview-questions.jsonl'), lines([
   item({ id: 'iq-topk', type: 'interview_question', slug: 'topk', title: 'Design a top-k ranking system', body: 'Ranking with heaps.', company: { slug: 'uber', name: 'Uber' }, difficulty: 'hard', round: 'Onsite', publishedAt: '2026-09-05' }),
+  item({ id: 'iq-lru-again', type: 'interview_question', slug: 'lru-again', title: 'LRU cache again', body: 'Same as the OA one.' }),
 ]));
 writeFileSync(join(parsed, 'experiences.jsonl'), lines([
   item({ id: 'ex-amazon-oa', type: 'experience', slug: 'amazon-oa', title: 'Amazon SDE OA', body: 'Two questions: [LRU](https://prachub.com/coding-questions/lru), [plans](https://prachub.com/pricing). ![chart](https://ik.imagekit.io/x/a.png) ![gone](https://ik.imagekit.io/x/b.png)', company: { slug: 'amazon', name: 'Amazon' }, relations: [{ kind: 'question', slug: 'lru' }, { kind: 'question', slug: 'missing' }], extra: { result: 'Offer' } }),
@@ -37,6 +38,12 @@ writeFileSync(join(parsed, 'algorithms-basics.jsonl'), lines([
 writeFileSync(join(parsed, 'assets-map.json'), JSON.stringify({ 'https://ik.imagekit.io/x/a.png': '/content-assets/abc.png' }));
 writeFileSync(join(folder, 'prachub', 'parsed', 'question-dupes.json'), JSON.stringify([
   { id: 'cq-two-sum', dupOf: { kind: 'library', id: 'lc-1', title: '两数之和' }, score: 0.97, method: 'title' },
+  { id: 'cq-lru', dupOf: { kind: 'oa', id: 'oa-x', title: 'Wrong match' }, score: 0.5, method: 'text' },
+]));
+// A reviewer rejected the second automatic match and confirmed another one.
+writeFileSync(join(parsed, 'question-dupes-reject.json'), JSON.stringify(['cq-lru']));
+writeFileSync(join(parsed, 'question-dupes-manual.json'), JSON.stringify([
+  { id: 'iq-lru-again', dupOf: { kind: 'oa', id: 'oa-lru', title: 'LRU', problem: 'oa-lru' }, score: 1, method: 'manual' },
 ]));
 const contentDb = join(folder, 'content.sqlite');
 const built = execFileSync(process.execPath, ['scripts/content-import/prachub/build-content-db.mjs', contentDb], {
@@ -72,6 +79,7 @@ void test('lists, filters, search and facets; duplicates stay out of lists', asy
   assert.equal((await get('list?type=questions&company=google')).items[0].slug, 'lru');
   assert.equal((await get('list?type=questions&difficulty=hard')).items[0].slug, 'topk');
   assert.equal((await get('list?type=questions&kind=coding_question')).total, 1);
+  assert.equal((await get('item?type=questions&slug=lru-again')).dupOf.problem, 'oa-lru');
   assert.equal((await get('list?type=questions&q=eviction')).items[0].slug, 'lru');
   assert.equal((await get('list?type=experience')).items[0].company.name, 'Amazon');
   await assert.rejects(get('list?type=secret'), status(400));
