@@ -157,11 +157,12 @@ export function OaMarkdown({ body }: { body: string }) {
   const t = useT();
   return (
     <div className="oa-markdown">
+      {/* No skipHtml: statements use angle brackets as text (`<timestamp>`, `List<String>`), and
+          react-markdown shows raw HTML as escaped text rather than dropping it. */}
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        skipHtml
         components={{
-          a: ({ href, children }) =>
+          a: ({ node, href, children }) =>
             href?.startsWith('/?view=') ? (
               // Links between library items stay inside the app.
               <a href={href} onClick={(e) => openInApp(e, href)}>
@@ -175,8 +176,13 @@ export function OaMarkdown({ body }: { body: string }) {
               >
                 {children}
               </a>
-            ) : (
+            ) : !href || href.startsWith('#') || /^[a-z][a-z0-9+.-]*:/i.test(href) ? (
               <span>{children}</span>
+            ) : (
+              // Not a link at all, e.g. `[q1,q2](A1,A2)->R` in a statement: show it as written.
+              <span>
+                {body.slice(node?.position?.start.offset ?? 0, node?.position?.end.offset ?? 0) || children}
+              </span>
             ),
           img: ({ src, alt }) =>
             typeof src === 'string' && /^\/content-assets\/[\w.-]+$/.test(src) ? (

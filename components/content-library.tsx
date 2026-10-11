@@ -62,7 +62,6 @@ type Detail = ContentSummary & {
   body: string;
   updatedAt: string | null;
   extra: {
-    samples?: { input: string; output: string; explanation?: string }[];
     constraints?: string[];
     /** Chinese body of a bilingual tutorial. */
     bodyZh?: string;
@@ -236,14 +235,17 @@ function FacetSelect({
 }) {
   const t = useT();
   if (!options.length) return null;
+  // The menu lists the most common values; a value from a link may not be among them.
+  const all = value && !options.some((o) => o.value === value) ? [{ value, label: value, n: 0 }, ...options] : options;
   return (
     <label className={`rd-chip ${value ? 'is-set' : ''}`}>
       <span className="sr-only">{label}</span>
       <select value={value} onChange={(e) => onChange(e.target.value)}>
         <option value="">{label}</option>
-        {options.map((o) => (
+        {all.map((o) => (
           <option key={o.value} value={o.value}>
-            {labelOf(t, DIFFICULTY, o.value) ?? o.label} · {o.n}
+            {labelOf(t, DIFFICULTY, o.value) ?? o.label}
+            {o.n ? ` · ${o.n}` : ''}
           </option>
         ))}
       </select>
@@ -276,6 +278,12 @@ export function ContentList({
   const [page, setPage] = useState<{ query: string; data: ListPage } | null>(null);
   const [error, setError] = useState('');
   const [text, setText] = useState(params.q || '');
+  // Back/forward or the sidebar can change the search; the box follows the URL.
+  const [shownQ, setShownQ] = useState(params.q);
+  if (shownQ !== params.q) {
+    setShownQ(params.q);
+    setText(params.q || '');
+  }
   useEffect(() => {
     let cancelled = false;
     api<ListPage>(`content/list?${query}`)
@@ -510,24 +518,6 @@ export function ContentDetail({
             <article className="rd-card ct-body rd-reveal" style={{ '--i': 2 } as React.CSSProperties}>
               <OaMarkdown body={localized(locale, item.body, item.extra.bodyZh)} />
             </article>
-            {!!item.extra.samples?.length && (
-              <section className="ct-section">
-                <h2>{t('样例', 'Examples')}</h2>
-                {item.extra.samples.map((sample, i) => (
-                  <div key={i} className="rd-card ct-sample">
-                    <div>
-                      <span className="ct-sample-label">{t('输入', 'Input')}</span>
-                      <pre>{sample.input}</pre>
-                    </div>
-                    <div>
-                      <span className="ct-sample-label">{t('输出', 'Output')}</span>
-                      <pre>{sample.output}</pre>
-                    </div>
-                    {sample.explanation && <p>{sample.explanation}</p>}
-                  </div>
-                ))}
-              </section>
-            )}
             {!!item.extra.faq?.length && (
               <section className="ct-section">
                 <h2>{t('常见问题', 'FAQ')}</h2>

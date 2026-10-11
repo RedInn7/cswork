@@ -53,18 +53,43 @@ const ROUTES = {
   'interview-experiences': 'experience', concepts: 'concept', resources: 'article',
   'interview-guide': 'guide', 'interview-prep': 'cheatsheet',
 };
+const SITE = /^(?:https?:\/\/(?:www\.)?prachub\.com)?(\/[^\s]*)?$/i;
+/** CSWORK link for an old-site URL or path, '#' when there is no counterpart, null when not an old-site link. */
+function route(url) {
+  const m = SITE.exec(url);
+  if (!m || (!m[1] && !/prachub\.com/i.test(url))) return null;
+  const path = m[1] || '/';
+  if (path.startsWith('/content-assets/') || path.startsWith('/?view=')) return null;
+  const [, kind, slug] = /^\/([a-z-]+)\/?([^?#]*)/i.exec(path) || [];
+  if (kind && Object.hasOwn(ROUTES, kind) && slug)
+    return `/?view=content&type=${ROUTES[kind]}&slug=${encodeURIComponent(slug.replace(/\/$/, ''))}`;
+  if (kind === 'companies' && slug) return `/?view=questions&company=${encodeURIComponent(slug.split('/')[0])}`;
+  // Pricing, sign-in and other site pages have no CSWORK counterpart: keep the text only.
+  return '#';
+}
+/** Points images at our own copies and old-site links at CSWORK; code spans and blocks are left alone. */
 export function localize(text) {
   if (!text) return text;
-  let out = text;
-  for (const url of imageUrls(out)) if (assets[url]) out = out.split(url).join(assets[url]);
-  return out.replace(/\]\(\s*<?(?:https?:\/\/(?:www\.)?prachub\.com)?(\/[^)\s>]*)>?\s*\)/g, (all, path) => {
-    const [, kind, slug] = /^\/([a-z-]+)\/?([^?#]*)/.exec(path) || [];
-    if (kind && ROUTES[kind] && slug) return `](/?view=content&type=${ROUTES[kind]}&slug=${encodeURIComponent(slug.replace(/\/$/, ''))})`;
-    if (kind === 'companies' && slug) return `](/?view=questions&company=${encodeURIComponent(slug.split('/')[0])})`;
-    if (path.startsWith('/content-assets/') || path.startsWith('/?view=')) return all;
-    // Pricing, sign-in and other site pages have no CSWORK counterpart: keep the text only.
-    return '](#)';
-  });
+  return text
+    .split(/(```[\s\S]*?```|`[^`\n]*`)/)
+    .map((part, i) =>
+      i % 2
+        ? part
+        : part
+            .replace(/(!\[[^\]]*\]\(\s*<?)([^)\s>]+)/g, (all, head, url) => (assets[url] ? head + assets[url] : all))
+            .replace(/(<img\b[^>]*\bsrc=["'])([^"']+)/gi, (all, head, url) => (assets[url] ? head + assets[url] : all))
+            // [text](url) and [text](url "title"), not images (already handled above).
+            .replace(/(?<!!)(\[[^\]]*\]\(\s*<?)([^)\s>]+)(>?(?:\s+"[^"]*")?\s*\))/g, (all, head, url, tail) => {
+              const to = route(url);
+              return to === null ? all : head + to + (to === '#' ? ')' : tail);
+            })
+            // Autolinks and bare URLs to the old site.
+            .replace(/<(https?:\/\/(?:www\.)?prachub\.com[^>\s]*)>|\bhttps?:\/\/(?:www\.)?prachub\.com[^\s)\]>"']*/gi, (all, inner) => {
+              const to = route(inner || all);
+              return to && to !== '#' ? `[link](${to})` : '';
+            }),
+    )
+    .join('');
 }
 const localizeItem = (item) => {
   item.body = localize(item.body);

@@ -3,9 +3,10 @@
 // Files: $PRACHUB_DIR/assets/<sha1>.<ext>   Map: parsed/assets-map.json (url -> /content-assets/<file>)
 // Resumable: URLs already in the map are skipped.
 import { createHash } from 'node:crypto';
-import { createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs';
 import { createInterface } from 'node:readline';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { DIR, PARSED } from './common.mjs';
 
 const ASSETS = join(DIR, 'assets');
@@ -65,4 +66,4 @@ async function main() {
   writeFileSync(MAP, JSON.stringify(map, null, 1));
   console.log(`done: fetched ${ok}, failed ${failed}, total local ${Object.keys(map).length}`);
 }
-if (import.meta.url === `file://${process.argv[1]}`) await main();
+if (process.argv[1] && fileURLToPath(import.meta.url) === realpathSync(process.argv[1])) await main();

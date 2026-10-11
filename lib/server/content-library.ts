@@ -44,7 +44,7 @@ function library() {
 }
 
 function typesOf(value: string | null): readonly ItemType[] {
-  if (value && GROUPS[value]) return GROUPS[value];
+  if (value && Object.hasOwn(GROUPS, value)) return GROUPS[value];
   if (value && (TYPES as readonly string[]).includes(value)) return [value as ItemType];
   throw new HttpError(400, '未知的内容类型');
 }
@@ -67,11 +67,15 @@ const row = (r: Record<string, unknown>) => ({
   publishedAt: r.published_at,
   partial: !!r.partial,
 });
-/** FTS5 query from free text: each word quoted, prefix-matched, AND-ed. */
+/**
+ * FTS5 query from free text: each word quoted and AND-ed. Only words of 3+ characters are
+ * prefix-matched; a one- or two-letter prefix walks most of the index and blocks the process.
+ */
 function ftsQuery(q: string) {
   const words = q.match(/[\p{L}\p{N}]+/gu)?.slice(0, 8) || [];
-  return words.map((w) => `"${w}"*`).join(' ');
+  return words.map((w) => (w.length >= 3 ? `"${w}"*` : `"${w}"`)).join(' ');
 }
+const CJK = /[\u3400-\u9fff]/;
 
 const facetCache = new Map<string, unknown>();
 function facets(db: Database.Database, types: readonly ItemType[]) {
@@ -117,13 +121,24 @@ function list(db: Database.Database, params: URLSearchParams) {
       args.push(value.slice(0, 120));
     }
   }
-  const q = ftsQuery((params.get('q') || '').slice(0, 120));
+  const text = (params.get('q') || '').trim().slice(0, 120);
+  // The index does not segment Chinese, so Chinese searches match titles, summaries and the
+  // Chinese text of tutorials by substring instead.
+  const cjk = CJK.test(text);
+  const q = cjk ? '' : ftsQuery(text);
   const from = q
     ? `items_fts f JOIN items i ON i.rowid=f.rowid`
     : 'items i';
   if (q) {
     where.push('items_fts MATCH ?');
     args.push(q);
+  } else if (cjk) {
+    const like = `%${text.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+    const has = `LIKE ? ESCAPE '\\'`;
+    where.push(
+      `(i.title ${has} OR i.summary ${has} OR i.title_zh ${has} OR i.summary_zh ${has} OR (i.type = 'algorithm' AND i.extra ${has}))`,
+    );
+    args.push(like, like, like, like, like);
   }
   // Tutorials read as a syllabus (core first, in the order they were written); the rest newest first.
   const order =
@@ -132,7 +147,7 @@ function list(db: Database.Database, params: URLSearchParams) {
       : types.includes('algorithm')
         ? "i.level = 'advanced', i.rowid"
         : 'i.published_at DESC, i.rowid DESC';
-  const page = Math.min(2000, Math.max(1, Number(params.get('page')) || 1));
+  const page = Math.min(2000, Math.max(1, Math.floor(Number(params.get('page'))) || 1));
   const total = (db.prepare(`SELECT COUNT(*) AS n FROM ${from} WHERE ${where.join(' AND ')}`).get(...args) as { n: number }).n;
   const items = db
     .prepare(
@@ -161,7 +176,7 @@ function item(db: Database.Database, params: URLSearchParams) {
         concept: ['concept'],
         algorithm: ['algorithm'],
       };
-      const target = kinds[rel.kind]
+      const target = Object.hasOwn(kinds, rel.kind)
         ? (db
             .prepare(`SELECT type,slug,title,company_name,difficulty FROM items WHERE type IN (${kinds[rel.kind].map(() => '?').join(',')}) AND slug=? AND listed=1`)
             .get(...kinds[rel.kind], rel.slug) as Record<string, unknown> | undefined)

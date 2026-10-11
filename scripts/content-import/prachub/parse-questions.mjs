@@ -152,14 +152,17 @@ function problem(pr, heading, title, mainMd) {
   const approach = ap && { explanation: cleanMd(ap.explanation, { demote: 3 }).md, timeComplexity: ap.time_complexity || null, spaceComplexity: ap.space_complexity || null };
   const tables = (pr.tables || []).map((t) => ({ name: t.name, columns: t.columns || [], sampleData: t.sample_data || [] }));
   const er = pr.expected_result;
-  const out = [heading && `## ${heading}`, similar(st.md, mainMd) < 0.8 && st.md];
+  // A part whose statement matches the main one is shown through the main statement.
+  const shown = similar(st.md, mainMd) < 0.8 ? st.md : mainMd;
+  const out = [heading && `## ${heading}`, shown === st.md && st.md];
   if (constraints.length && !/^#+\s*\**constraints/im.test(st.md)) out.push(`### Constraints\n\n${list(constraints)}`);
   for (const t of tables) {
     out.push(`### Table \`${t.name}\`\n\n${mdTable(t.columns.map((c) => ({ column: c.name, type: c.type, constraints: (c.constraints || []).join(', ') })), ['column', 'type', 'constraints'])}`);
     if (t.sampleData.length) out.push(`Sample data:\n\n${mdTable(t.sampleData)}`);
   }
   if (er?.sample_output?.length || er?.description) out.push(['### Expected output', er.description, er.sample_output?.length && mdTable(er.sample_output, er.columns)].filter(Boolean).join('\n\n'));
-  if (samples.length) {
+  // Many statements already list their examples; appending the samples again repeats them.
+  if (samples.length && !/^#{1,6}\s*\**\s*examples?\b|\*\*examples?\b/im.test(shown || '')) {
     out.push('### Examples\n\n' + samples.map((s, i) => [`**Example ${i + 1}**`, '```text', `Input: ${s.input}`, `Output: ${s.output}`, '```', s.explanation && `Explanation: ${s.explanation}`].filter(Boolean).join('\n')).join('\n\n'));
   }
   if (hints.length) out.push(`### Hints\n\n${list(hints, true)}`);

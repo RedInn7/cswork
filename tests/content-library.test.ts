@@ -27,7 +27,7 @@ writeFileSync(join(parsed, 'interview-questions.jsonl'), lines([
   item({ id: 'iq-lru-again', type: 'interview_question', slug: 'lru-again', title: 'LRU cache again', body: 'Same as the OA one.' }),
 ]));
 writeFileSync(join(parsed, 'experiences.jsonl'), lines([
-  item({ id: 'ex-amazon-oa', type: 'experience', slug: 'amazon-oa', title: 'Amazon SDE OA', body: 'Two questions: [LRU](https://prachub.com/coding-questions/lru), [plans](https://prachub.com/pricing). ![chart](https://ik.imagekit.io/x/a.png) ![gone](https://ik.imagekit.io/x/b.png)', company: { slug: 'amazon', name: 'Amazon' }, relations: [{ kind: 'question', slug: 'lru' }, { kind: 'question', slug: 'missing' }], extra: { result: 'Offer' } }),
+  item({ id: 'ex-amazon-oa', type: 'experience', slug: 'amazon-oa', title: 'Amazon SDE OA', body: 'Two questions: [LRU](https://prachub.com/coding-questions/lru), [plans](https://prachub.com/pricing). ![chart](https://ik.imagekit.io/x/a.png) ![gone](https://ik.imagekit.io/x/b.png) Code `arr[i](/x)` stays. [Guide](https://PracHub.com/interview-guide/google-swe "Google") https://prachub.com/companies/google/x ![v](https://ik.imagekit.io/x/a.png?tr=w-100)', company: { slug: 'amazon', name: 'Amazon' }, relations: [{ kind: 'question', slug: 'lru' }, { kind: 'question', slug: 'missing' }], extra: { result: 'Offer' } }),
 ]));
 writeFileSync(join(parsed, 'courses.jsonl'), lines([
   item({ id: 'co-sd', type: 'course', slug: 'sd', title: 'System design basics', body: 'Course intro.' }),
@@ -83,13 +83,22 @@ void test('lists, filters, search and facets; duplicates stay out of lists', asy
   assert.equal((await get('list?type=questions&q=eviction')).items[0].slug, 'lru');
   assert.equal((await get('list?type=experience')).items[0].company.name, 'Amazon');
   await assert.rejects(get('list?type=secret'), status(400));
+  await assert.rejects(get('list?type=constructor'), status(400));
+  assert.equal((await get('list?type=questions&page=1.5')).page, 1);
+  // Short words match whole words only; longer ones also match as a prefix.
+  assert.equal((await get('list?type=questions&q=ca')).total, 0);
+  assert.equal((await get('list?type=questions&q=cac')).items[0].slug, 'lru');
 });
 
 void test('detail resolves relations and points duplicates at our own problem', async () => {
   const exp = await get('item?type=experience&slug=amazon-oa');
   assert.equal(exp.extra.result, 'Offer');
   // Links point inside CSWORK, images at our own copies; unknown pages keep only their text.
-  assert.equal(exp.body, 'Two questions: [LRU](/?view=content&type=coding_question&slug=lru), [plans](#). ![chart](/content-assets/abc.png) ![gone](https://ik.imagekit.io/x/b.png)');
+  assert.equal(
+    exp.body,
+    'Two questions: [LRU](/?view=content&type=coding_question&slug=lru), [plans](#). ![chart](/content-assets/abc.png) ![gone](https://ik.imagekit.io/x/b.png)' +
+      ' Code `arr[i](/x)` stays. [Guide](/?view=content&type=guide&slug=google-swe "Google") [link](/?view=questions&company=google) ![v](https://ik.imagekit.io/x/a.png?tr=w-100)',
+  );
   assert.deepEqual(exp.relations.map((r: { slug: string }) => r.slug), ['lru']); // the missing one is dropped
   const dup = await get('item?type=questions&slug=two-sum');
   assert.deepEqual(dup.dupOf, { kind: 'library', id: 'lc-1', title: '两数之和' });
@@ -100,6 +109,10 @@ void test('detail resolves relations and points duplicates at our own problem', 
   assert.equal(tutorial.extra.bodyZh, '每次把区间折半。');
   assert.equal((await get('list?type=algorithm')).items[0].summaryZh, '在有序区间里折半查找');
   assert.equal(tutorial.level, 'core');
+  // Chinese search matches Chinese titles and tutorial text by substring.
+  assert.equal((await get(`list?type=algorithm&q=${encodeURIComponent('二分')}`)).items[0].slug, 'binary-search');
+  assert.equal((await get(`list?type=algorithm&q=${encodeURIComponent('折半')}`)).total, 1);
+  assert.equal((await get(`list?type=algorithm&q=${encodeURIComponent('二%')}`)).total, 0); // % is literal
   await assert.rejects(get('item?type=questions&slug=nope'), status(404));
   const stats = await get('stats');
   assert.equal(stats.counts.coding_question, 1);
