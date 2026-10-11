@@ -68,7 +68,7 @@ export function NotificationsPane({
                 .catch(() => {});
               close();
               const { view, ...params } = dest;
-              navigate(view || 'home', params);
+              navigate(view || 'problems', params);
             }}
           >
             <strong>

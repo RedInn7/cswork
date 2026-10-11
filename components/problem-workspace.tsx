@@ -260,6 +260,12 @@ function Workspace({
     'statement',
   );
   const [expanded, setExpanded] = useState(true);
+  // Focus mode hides the top bar (and its sign-in button), so the notice carries the one entry.
+  const signIn = expanded && !boot.person && (
+    <button onClick={() => window.dispatchEvent(new Event('cswork:auth-required'))}>
+      {t('登录 / 注册', 'Sign in / Sign up')}
+    </button>
+  );
   const consolePanel = usePanelRef();
   const [consoleCollapsed, setConsoleCollapsed] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -1873,12 +1879,13 @@ function Workspace({
             </button>
           </div>
         ) : (
-          // Signed out: retrying cannot succeed; the top bar's button is the way in.
+          // Signed out: retrying cannot succeed; sign in is the way forward.
           <div className="cs-workspace-notice" role="status">
             {t(
               '登录后即可查看完整题面并提交代码。',
               'Sign in to see the full statement and submit code.',
             )}
+            {signIn}
           </div>
         ))}
       {!accessible && !(problemError && !boot.person) && (
@@ -1898,6 +1905,7 @@ function Workspace({
                     ? '请先验证邮箱，再运行和提交解答。'
                     : '此题是课程练习，开通课程后可运行和提交。'
               } 当前代码可以继续编辑和保存。`}
+          {signIn}
         </div>
       )}
       {problem.judgeAvailable === false && (
