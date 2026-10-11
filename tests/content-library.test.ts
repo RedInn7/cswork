@@ -33,6 +33,9 @@ writeFileSync(join(parsed, 'experiences.jsonl'), lines([
 writeFileSync(join(parsed, 'courses.jsonl'), lines([
   item({ id: 'co-sd', type: 'course', slug: 'sd', title: 'System design basics', body: 'Course intro.' }),
 ]));
+writeFileSync(join(parsed, 'guides.jsonl'), lines([
+  item({ id: 'gd-acme-swe', type: 'guide', slug: 'acme-swe', title: 'Acme Software Engineer Interview Guide', body: 'Template text about idempotency.' }),
+]));
 writeFileSync(join(parsed, 'concepts.jsonl'), lines([
   // The source's summary is the body's opening cut mid-word.
   item({ id: 'cp-ab', type: 'concept', slug: 'ab', title: 'A/B testing', summary: 'Expect to demons', body: 'Expect to demonstrate depth in A/B testing: $p < 0.05$.', extra: { math: true } }),
@@ -89,6 +92,9 @@ void test('lists, filters, search and facets; duplicates stay out of lists', asy
   assert.equal((await get('item?type=questions&slug=lru-again')).dupOf.problem, 'oa-lru');
   assert.equal((await get('item?type=questions&slug=topk-copy')).dupOf.id, 'oa-lru');
   assert.equal((await get('list?type=questions&q=eviction')).items[0].slug, 'lru');
+  // Guides match by title, not by their (shared, templated) body text.
+  assert.equal((await get('list?type=guide&q=acme')).total, 1);
+  assert.equal((await get('list?type=guide&q=idempotency')).total, 0);
   assert.equal((await get('list?type=experience')).items[0].company.name, 'Amazon');
   await assert.rejects(get('list?type=secret'), status(400));
   await assert.rejects(get('list?type=constructor'), status(400));

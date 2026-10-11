@@ -45,7 +45,8 @@ CREATE TABLE items(
 CREATE UNIQUE INDEX items_type_slug ON items(type, slug);
 CREATE INDEX items_list ON items(type, listed, published_at);
 CREATE INDEX items_company ON items(type, company_slug);
-CREATE VIRTUAL TABLE items_fts USING fts5(title, summary, body, content='items', content_rowid='rowid', tokenize='unicode61');
+-- Contentless: rows are inserted explicitly so guides can be indexed by title and summary only.
+CREATE VIRTUAL TABLE items_fts USING fts5(title, summary, body, content='', tokenize='unicode61');
 CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
 `);
 
@@ -213,7 +214,10 @@ for (const file of FILES) {
   }
   db.transaction((rows) => rows.forEach((r) => insert.run(r)))(batch);
 }
-db.exec("INSERT INTO items_fts(items_fts) VALUES('rebuild')");
+// ~11k programmatic guides share most of their text: indexing their bodies would flood search
+// results with near-identical pages and double the index, so they match by title and summary.
+db.exec(`INSERT INTO items_fts(rowid, title, summary, body)
+  SELECT rowid, title, coalesce(summary, ''), CASE WHEN type = 'guide' THEN '' ELSE body END FROM items`);
 const listed = db.prepare('SELECT type, SUM(listed) AS listed, COUNT(*) AS n FROM items GROUP BY type').all();
 db.prepare('INSERT INTO meta(key,value) VALUES(?,?)').run('built_at', new Date().toISOString());
 db.prepare('INSERT INTO meta(key,value) VALUES(?,?)').run('counts', JSON.stringify(listed));
