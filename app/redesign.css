@@ -160,6 +160,10 @@
   display: inline-flex;
   margin: 0;
   min-width: 0;
+  max-width: 100%;
+  /* Many tabs on a phone scroll sideways instead of wrapping their labels. */
+  overflow-x: auto;
+  scrollbar-width: none;
   gap: 2px;
   padding: 3px;
   border: 1px solid var(--rd-line);
@@ -167,6 +171,8 @@
   background: var(--rd-surface);
 }
 .rd-segment button {
+  flex: none;
+  white-space: nowrap;
   height: 28px;
   padding: 0 14px;
   border-radius: 8px;
