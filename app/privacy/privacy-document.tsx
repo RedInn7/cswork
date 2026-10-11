@@ -29,7 +29,7 @@ export function PrivacyDocument() {
               cswork
               是提供课程、视频、编程练习与教学反馈的学习平台。这份说明介绍平台当前如何处理你的资料，以及你可以如何联系我们。
             </p>
-            <p className="privacy-updated">更新于 2026 年 10 月 7 日</p>
+            <p className="privacy-updated">更新于 2026 年 10 月 10 日</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">账户与第三方登录</h2>
@@ -102,7 +102,27 @@ export function PrivacyDocument() {
             </section>
 
             <section aria-labelledby="privacy-storage">
-              <h2 id="privacy-storage">存储、访问与保留</h2>
+              <h2 id="privacy-storage">可选统计、存储与保留</h2>
+              <p>
+                只有你点击允许后，平台才加载 Google Analytics 并使用统计
+                Cookie，了解访问量、设备和页面类别。Google
+                会接收浏览器统计请求，并可能生成大致地区等汇总数据。拒绝不影响网站功能。
+              </p>
+              <p>
+                我们仅发送预先限定的页面类别，不发送邮箱、昵称、用户标识、代码、搜索词、工单内容、邀请令牌或原始网址参数；不启用广告个性化或
+                Google
+                signals。来源统计只保留白名单内搜索引擎和社交网站的域名，不含路径或搜索内容。统计
+                Cookie 有效期为 90 天。
+              </p>
+              <p>
+                可随时通过右下角“Privacy /
+                隐私设置”撤回同意，停止后续统计并清除本网站的 Google Analytics
+                Cookie。之前已收集的数据不会因此自动删除；选择只保存在当前浏览器。详见{' '}
+                <a href="https://policies.google.com/privacy" rel="noreferrer">
+                  Google 隐私政策
+                </a>
+                。
+              </p>
               <p>
                 cswork
                 使用独立的应用、数据库和文件目录保存课程业务数据、视频及附件。当前部署与
@@ -142,7 +162,7 @@ export function PrivacyDocument() {
               practice, and teaching feedback. This notice explains how the
               platform currently handles your data and how you can contact us.
             </p>
-            <p className="privacy-updated">Updated October 7, 2026</p>
+            <p className="privacy-updated">Updated October 10, 2026</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">Accounts and third-party sign-in</h2>
@@ -287,7 +307,34 @@ export function PrivacyDocument() {
             </section>
 
             <section aria-labelledby="privacy-storage">
-              <h2 id="privacy-storage">Storage, access, and retention</h2>
+              <h2 id="privacy-storage">
+                Optional analytics, storage, and retention
+              </h2>
+              <p>
+                Only after you allow it, we load Google Analytics and use
+                analytics cookies to measure visits, devices and page
+                categories. Google receives browser analytics requests and may
+                derive approximate location reports. Declining does not affect
+                site features.
+              </p>
+              <p>
+                We send predefined page categories and allowlisted search/social
+                source domains without paths or queries, not email, names, user
+                IDs, code, search terms, ticket content, invitation tokens or
+                raw URL parameters. Advertising personalization and Google
+                signals are disabled. Analytics cookies expire after 90 days.
+              </p>
+              <p>
+                You can withdraw consent through “Privacy / 隐私设置” at the
+                bottom right. This stops future analytics and clears this site's
+                Google Analytics cookies, but does not automatically delete
+                previously collected data. Your choice is stored in the current
+                browser only. See{' '}
+                <a href="https://policies.google.com/privacy" rel="noreferrer">
+                  Google's privacy policy
+                </a>
+                .
+              </p>
               <p>
                 cswork uses a separate application, database, and file directory
                 to store its course business data, videos, and attachments. The

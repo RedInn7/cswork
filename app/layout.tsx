@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { Analytics } from '@/components/analytics';
+import { measurementId } from '@/lib/analytics';
 export const metadata: Metadata = {
   // English by default; components/academy.tsx swaps the title for Chinese readers.
   title: 'cswork · Learning workspace',
@@ -11,7 +13,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics id={measurementId(process.env.GA_MEASUREMENT_ID)} />
+      </body>
     </html>
   );
 }
