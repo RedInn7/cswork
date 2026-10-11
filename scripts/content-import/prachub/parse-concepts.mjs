@@ -37,9 +37,11 @@ function parse(html, slug, count) {
   if (m.math) count('math');
   if (pub.source === 'html') count('htmlBody');
   const role = str(e.roles?.[0]) || str(e.position) || str(e.role);
+  // The page shows its diagram from the payload, outside the Markdown; keep it at the top.
+  const diagram = str(e.image_url) ? `![${(str(e.image_alt) || title).replace(/[[\]]/g, '')}](${str(e.image_url)})\n\n` : '';
   return {
     item: {
-      id: `cp-${slug}`, type: 'concept', slug, title, summary: b.summary, body: m.md,
+      id: `cp-${slug}`, type: 'concept', slug, title, summary: b.summary, body: diagram + m.md,
       company: null, role: ROLES[role] || role, category: str(e.category), difficulty: null, round: null, seniority: null,
       tags: b.tags, publishedAt: b.publishedAt, updatedAt: b.updatedAt,
       relations: dedupeRelations([...anchorRelations(doc, ['concept', 'question']), ...linkRelations(m.md)], { kind: 'concept', slug }),
