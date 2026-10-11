@@ -38,7 +38,7 @@ writeFileSync(join(parsed, 'concepts.jsonl'), lines([
   item({ id: 'cp-ab', type: 'concept', slug: 'ab', title: 'A/B testing', summary: 'Expect to demons', body: 'Expect to demonstrate depth in A/B testing: $p < 0.05$.', extra: { math: true } }),
 ]));
 writeFileSync(join(parsed, 'algorithms-basics.jsonl'), lines([
-  item({ id: 'al-binary-search', type: 'algorithm', slug: 'binary-search', title: 'Binary search', titleZh: '二分查找', summaryZh: '在有序区间里折半查找', body: 'Halve the range.', extra: { level: 'core', bodyZh: '每次把区间折半。' } }),
+  item({ id: 'al-binary-search', type: 'algorithm', slug: 'binary-search', title: 'Binary search', titleZh: '二分查找', summaryZh: '在有序区间里折半查找', body: 'Halve the range.', extra: { level: 'core', bodyZh: '每次把区间折半。', sourceTitle: '原站标题', sources: ['docs/basic/binary.md'] } }),
 ]));
 writeFileSync(join(parsed, 'assets-map.json'), JSON.stringify({ 'https://ik.imagekit.io/x/a.png': '/content-assets/abc.png' }));
 writeFileSync(join(folder, 'prachub', 'parsed', 'question-dupes.json'), JSON.stringify([
@@ -117,6 +117,8 @@ void test('detail resolves relations and points duplicates at our own problem', 
   assert.equal(tutorial.extra.bodyZh, '每次把区间折半。');
   assert.equal((await get('list?type=algorithm')).items[0].summaryZh, '在有序区间里折半查找');
   assert.equal(tutorial.level, 'core');
+  assert.deepEqual(Object.keys(tutorial.extra).sort(), ['bodyZh', 'level']); // no provenance
+  assert.equal((await get(`list?type=algorithm&q=${encodeURIComponent('原站')}`)).total, 0);
   const concept = await get('item?type=concept&slug=ab');
   assert.equal(concept.summary, 'Expect to…');
   assert.equal(concept.extra.math, true);

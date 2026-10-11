@@ -110,7 +110,10 @@ export function excerpt(summary, body) {
   const cut = /[\p{L}\p{N}]/u.test(opening[head.length] || '') ? s.replace(/\s*\S+$/, '') : s;
   return `${cut.replace(/[\s,;:-]+$/, '')}…`;
 }
+// Provenance stays in parsed/ for us; the API (and search) must not expose it.
+const PRIVATE = ['sourceTitle', 'sources', 'sourceUrl', 'coverImage'];
 const localizeItem = (item) => {
+  for (const key of PRIVATE) delete item.extra?.[key];
   item.summary = excerpt(item.summary, item.body);
   item.body = localize(item.body);
   if (item.extra?.bodyZh) item.extra.bodyZh = localize(item.extra.bodyZh);
