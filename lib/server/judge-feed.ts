@@ -206,19 +206,9 @@ function feedStats(viewer: Person | null) {
            AND ${visible(viewer)}${andUnlisted()} ORDER BY s.rowid DESC LIMIT 200)`,
     )
     .get() as { n: number; ac: number };
-  const runtime = db
-    .prepare("SELECT healthy,details FROM oj_runtime WHERE id='worker'")
-    .get() as { healthy: number; details: string } | undefined;
-  let concurrency: number | null = null;
-  try {
-    concurrency = JSON.parse(runtime?.details || '{}').submissionConcurrency ?? null;
-  } catch {
-    concurrency = null;
-  }
   return {
     judging: judging.n,
     recent: recent.n,
     recentAccepted: recent.ac,
-    concurrency: runtime?.healthy ? concurrency : null,
   };
 }

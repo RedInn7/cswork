@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Activity,
   ChevronDown,
-  Cpu,
   Gauge,
   RefreshCw,
   Search,
@@ -43,7 +42,6 @@ type Feed = {
     judging: number;
     recent: number;
     recentAccepted: number;
-    concurrency: number | null;
   };
 };
 
@@ -381,15 +379,6 @@ export function JudgeStatus({
             <div className="rd-stat-value">
               {rate == null ? '—' : `${rate}%`}
               {stats?.recent ? <small>近 {stats.recent} 次</small> : null}
-            </div>
-          </div>
-          <div>
-            <div className="rd-stat-label">
-              <Cpu size={13} /> 判题并发
-            </div>
-            <div className="rd-stat-value">
-              {stats?.concurrency ?? '—'}
-              {stats?.concurrency ? <small>路</small> : null}
             </div>
           </div>
         </div>
