@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
 import styles from './leetcode-sync-panel.module.css';
-import { useLocale, useT } from '@/lib/i18n';
+import { readLocale, useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import type {
   LeetcodeSyncRun as Run,
@@ -37,7 +37,11 @@ async function request<T>(
     method: data === undefined ? 'GET' : 'POST',
     credentials: 'same-origin',
     signal,
-    headers: data === undefined ? {} : { 'Content-Type': 'application/json' },
+    // Like api(): server errors come back in the site language.
+    headers: {
+      'X-Locale': readLocale(),
+      ...(data === undefined ? {} : { 'Content-Type': 'application/json' }),
+    },
     body: data === undefined ? undefined : JSON.stringify(data),
   });
   const value = await response.json();

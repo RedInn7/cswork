@@ -193,7 +193,7 @@ export function FeedTable({
                     title={t('只看这位用户的提交', "Show only this user's submissions")}
                     onClick={() => onUser(item.seq)}
                   >
-                    {item.user}
+                    {t(item.user, englishMessage(item.user))}
                   </button>
                   {item.mine && <span className="rd-badge is-brand">{t('我', 'You')}</span>}
                 </span>

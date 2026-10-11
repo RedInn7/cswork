@@ -122,6 +122,8 @@ export function Academy() {
     t = useT();
   useEffect(() => {
     document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
+    document.title =
+      locale === 'zh' ? 'cswork · 学习工作台' : 'cswork · Learning workspace';
   }, [locale]);
   const [boot, setBoot] = useState<Boot>(initial),
     [loading, setLoading] = useState(true),
@@ -501,7 +503,11 @@ export function Academy() {
               {boot.person?.name.slice(0, 1) || 'S'}
             </span>
             <div>
-              <strong>{boot.person?.name || t('登录学习空间', 'Sign in')}</strong>
+              <strong>
+                {boot.person?.name
+                  ? t(boot.person.name, englishMessage(boot.person.name))
+                  : t('登录学习空间', 'Sign in')}
+              </strong>
               <small>
                 {boot.person?.role === 'teacher'
                   ? t('老师账号', 'Teacher account')

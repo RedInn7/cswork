@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Check, Circle, Clock3, ArrowUpRight } from 'lucide-react';
 import { api } from '@/lib/types';
 import { useT } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
 import type { Navigate } from './learning';
 
 type Progress = {
@@ -155,7 +156,8 @@ export function KnowledgeExercises({
                         navigate('problem', { problem: item.id });
                     }}
                   >
-                    {item.number}. {item.title}
+                    {/* A missing problem's title is the server's 题目暂不可用. */}
+                    {item.number}. {t(item.title, englishMessage(item.title))}
                   </a>
                   <span className="knowledge-exercise-difficulty">
                     {t(

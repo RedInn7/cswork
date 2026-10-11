@@ -1226,7 +1226,8 @@ function ReviewDetail({
             {t(statusNames[event.status], statusEn[event.status]) || event.kind}
           </strong>
           <small>
-            {event.actorName} · {date(event.createdAt)}
+            {t(event.actorName, englishMessage(event.actorName))} ·{' '}
+            {date(event.createdAt)}
             {event.lessonVersion
               ? t(' · 课件 v', ' · lesson v') + event.lessonVersion
               : ''}

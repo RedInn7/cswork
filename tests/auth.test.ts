@@ -46,7 +46,7 @@ function cookies(response: Response) {
     .join('; ');
 }
 function lastCode() {
-  const code = mail.at(-1)?.text.match(/验证码：(\d{6})/)?.[1];
+  const code = mail.at(-1)?.text.match(/(?:验证码：|Your code: )(\d{6})/)?.[1];
   assert.ok(code, 'Mail capture must contain a code');
   return code;
 }
@@ -151,7 +151,7 @@ test('OTP recovery creates password, distinguishes mail purpose and revokes all 
   assert.equal(signed.status, 200);
   const sent = await request('email-otp/request-password-reset', { email });
   assert.equal(sent.status, 200);
-  assert.equal(mail.at(-1)?.subject, '重设你的 cswork 密码');
+  assert.equal(mail.at(-1)?.subject, 'Reset your cswork password');
   const reset = await request('email-otp/reset-password', {
     email,
     otp: lastCode(),
@@ -231,6 +231,11 @@ test('native profile, identity and session endpoints work for the signed-in user
 });
 test('email verification purpose and missing provider are explicit', async () => {
   await sendAuthOTP({ email, otp: '123456', type: 'email-verification' });
+  assert.equal(mail.at(-1)?.subject, 'Verify your cswork email');
+  await sendAuthOTP(
+    { email, otp: '123456', type: 'email-verification' },
+    { getHeader: (key) => (key === 'x-locale' ? 'zh' : null) },
+  );
   assert.equal(mail.at(-1)?.subject, '验证你的 cswork 邮箱');
   const key = process.env.RESEND_API_KEY;
   delete process.env.RESEND_API_KEY;

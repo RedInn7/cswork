@@ -6,30 +6,36 @@ export type AuthMailPurpose =
   | 'email-verification'
   | 'forget-password'
   | 'change-email';
-const subjects: Record<AuthMailPurpose, string> = {
-  'sign-in': 'cswork 登录验证码',
-  'email-verification': '验证你的 cswork 邮箱',
-  'forget-password': '重设你的 cswork 密码',
-  'change-email': '确认你的 cswork 新邮箱',
+// [zh, en]
+const subjects: Record<AuthMailPurpose, [string, string]> = {
+  'sign-in': ['cswork 登录验证码', 'Your cswork sign-in code'],
+  'email-verification': ['验证你的 cswork 邮箱', 'Verify your cswork email'],
+  'forget-password': ['重设你的 cswork 密码', 'Reset your cswork password'],
+  'change-email': ['确认你的 cswork 新邮箱', 'Confirm your new cswork email'],
 };
-const actions: Record<AuthMailPurpose, string> = {
-  'sign-in': '登录或注册 cswork',
-  'email-verification': '验证邮箱',
-  'forget-password': '重设密码',
-  'change-email': '修改邮箱',
+const actions: Record<AuthMailPurpose, [string, string]> = {
+  'sign-in': ['登录或注册 cswork', 'sign in or sign up for cswork'],
+  'email-verification': ['验证邮箱', 'verify your email'],
+  'forget-password': ['重设密码', 'reset your password'],
+  'change-email': ['修改邮箱', 'change your email'],
 };
 export function mailReady() {
   return !!(setting('RESEND_API_KEY') && setting('MAIL_FROM'));
 }
-export async function sendAuthOTP({
-  email,
-  otp,
-  type,
-}: {
-  email: string;
-  otp: string;
-  type: AuthMailPurpose;
-}) {
+export async function sendAuthOTP(
+  {
+    email,
+    otp,
+    type,
+  }: {
+    email: string;
+    otp: string;
+    type: AuthMailPurpose;
+  },
+  // better-auth's request context; lib/auth-client.ts sends the site language.
+  ctx?: { getHeader: (key: string) => string | null },
+) {
+  const zh = ctx?.getHeader('x-locale') === 'zh';
   if (!mailReady())
     throw new Error('邮箱验证服务尚未开放，请使用已配置的登录方式或联系老师。');
   const endpoint = new URL(
@@ -56,8 +62,10 @@ export async function sendAuthOTP({
     body: JSON.stringify({
       from: setting('MAIL_FROM'),
       to: [email],
-      subject: subjects[type],
-      text: `你正在${actions[type]}。\n\n验证码：${otp}\n\n验证码 5 分钟内有效，请勿转发给他人。如果不是你发起的操作，请忽略这封邮件。`,
+      subject: subjects[type][zh ? 0 : 1],
+      text: zh
+        ? `你正在${actions[type][0]}。\n\n验证码：${otp}\n\n验证码 5 分钟内有效，请勿转发给他人。如果不是你发起的操作，请忽略这封邮件。`
+        : `You asked to ${actions[type][1]}.\n\nYour code: ${otp}\n\nThe code is valid for 5 minutes. Don't share it with anyone. If you didn't ask for this, ignore this email.`,
     }),
   });
   if (!response.ok) throw new Error('验证码邮件未能发送，请稍后重试。');

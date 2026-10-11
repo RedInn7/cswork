@@ -627,11 +627,8 @@ export function OrderCard({
     [detail, setDetail] = useState(order),
     [busy, setBusy] = useState(false),
     [error, setError] = useState('');
-  // ponytail: shared money() returns Chinese for a missing amount; only that case is localized here.
   const price = (amount: number | null) =>
-    amount === null || !detail.currency
-      ? t('待确认金额', 'Amount pending')
-      : money(amount, detail.currency);
+    money(amount, detail.currency, locale);
   useEffect(() => setDetail(order), [order]);
   async function load(sync = false) {
     setBusy(true);
@@ -832,7 +829,7 @@ export function AccountView({
           <div className="account-profile">
             <span className="avatar">{(p.name || p.email).slice(0, 1)}</span>
             <div>
-              <h2>{p.name || t('我的账号', 'My account')}</h2>
+              <h2>{p.name ? t(p.name, englishMessage(p.name)) : t('我的账号', 'My account')}</h2>
               <p>{p.email}</p>
               <span className="tag">
                 {p.verified

@@ -3,36 +3,41 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
+import ts from 'typescript';
 import { englishMessage } from '../lib/messages-en';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const CJK = /[㐀-鿿]/;
-const STRING = /'(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*"|`(?:[^`\\]|\\.)*`/g;
-// new HttpError(status, <message>): the message may span lines and use ?: between literals.
-const HTTP_ERROR =
-  /new HttpError\(\s*\d+\s*,((?:'(?:[^'\\\n]|\\.)*'|"(?:[^"\\\n]|\\.)*"|`(?:[^`\\]|\\.)*`|[^'"`()])*)\)/g;
-// Judge/auth/route messages: `message: '…'`, SQL `message='…'`, `{ error: '…' }`.
-const FIELD = /\b(?:message|error)\s*[:=]\s*('(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`)/g;
+// Seeded course content, and OTP mails (lib/server/mail.ts carries its own English).
+const NOT_MESSAGES = new Set(['lib/server/seed.ts', 'lib/server/seed-interview.ts', 'lib/server/mail.ts']);
+// LeetCode's own verdict text, matched in its API responses and never shown.
+const MATCHED = new Set(['通过']);
 
-/** Every Chinese HttpError / message / error literal in the server code; `${…}` becomes 1. */
+/** Every Chinese string literal in the server code; `${…}` becomes 1, SQL gives its quoted values. */
 function serverMessages() {
   const found = new Set<string>();
   for (const dir of ['lib/server', 'app/api']) {
     for (const file of readdirSync(join(root, dir), { recursive: true }) as string[]) {
-      if (!file.endsWith('.ts')) continue;
-      const source = readFileSync(join(root, dir, file), 'utf8');
-      const calls = [...source.matchAll(HTTP_ERROR)];
-      assert.equal(
-        calls.length,
-        source.split('new HttpError(').length - 1,
-        `${dir}/${file}: an HttpError message this scan cannot read`,
+      if (!file.endsWith('.ts') || NOT_MESSAGES.has(`${dir}/${file}`)) continue;
+      const source = ts.createSourceFile(
+        file,
+        readFileSync(join(root, dir, file), 'utf8'),
+        ts.ScriptTarget.Latest,
       );
-      const texts = [...calls, ...source.matchAll(FIELD)].map((m) => m[1]);
-      for (const text of texts)
-        for (const [quoted] of text.matchAll(STRING)) {
-          const message = quoted.slice(1, -1).replace(/\$\{[^}]*\}/g, '1');
-          if (CJK.test(message)) found.add(message);
+      const visit = (node: ts.Node) => {
+        if (ts.isStringLiteralLike(node) || ts.isTemplateExpression(node)) {
+          const text = ts.isTemplateExpression(node)
+            ? node.getText(source).slice(1, -1).replace(/\$\{[^}]*\}/g, '1')
+            : node.text;
+          // Stored messages inside SQL: message='…', COALESCE(name,'…').
+          const parts = /^\s*(?:SELECT|INSERT|UPDATE|DELETE|WITH)\b/.test(text)
+            ? [...text.matchAll(/'([^']*)'/g)].map((m) => m[1])
+            : [text];
+          for (const part of parts) if (CJK.test(part) && !MATCHED.has(part)) found.add(part);
         }
+        ts.forEachChild(node, visit);
+      };
+      visit(source);
     }
   }
   return found;
@@ -48,6 +53,7 @@ test('exact messages translate', () => {
   );
   assert.equal(englishMessage('已取消运行'), 'Run cancelled');
   assert.equal(englishMessage('昵称需为 1–80 个字符'), 'Display name must be 1–80 characters');
+  assert.equal(englishMessage('智能补全已就绪'), 'Code completion ready');
 });
 
 test('pattern messages keep their variable parts', () => {
@@ -66,5 +72,5 @@ test('every server message has English', () => {
   const messages = serverMessages();
   assert.ok(messages.size > 150, `scan found only ${messages.size} messages`);
   const missing = [...messages].filter((m) => CJK.test(englishMessage(m)));
-  assert.deepEqual(missing, [], 'add these to lib/messages-en.ts');
+  assert.deepEqual(missing, [], 'add these to lib/messages-en.ts (content-only files go in NOT_MESSAGES)');
 });

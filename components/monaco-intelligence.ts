@@ -17,6 +17,7 @@ import {
   signature,
   markers,
 } from '@/lib/editor-lsp-adapter';
+import { readLocale } from '@/lib/i18n';
 
 type Runtime = typeof Monaco;
 type Connection = {
@@ -116,7 +117,11 @@ export function attachIntelligence(
         try {
           const response = await fetch('/api/oj/intelligence', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            // Like api(): errors come back in the site language.
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Locale': readLocale(),
+            },
             body: JSON.stringify({
               ...identity,
               code,

@@ -1,4 +1,5 @@
 import type { Boot } from './types';
+import { readLocale } from './i18n';
 export function registerAcademyTools(
   get: () => Boot,
   navigate: (view: string, extra?: Record<string, string>) => void,
@@ -15,11 +16,15 @@ export function registerAcademyTools(
   ).modelContext;
   if (!context?.registerTool) return;
   const lifecycle = new AbortController();
+  // Tools are registered once, in the site language of that moment.
+  const zh = readLocale() === 'zh';
   const tools = [
     {
       name: 'list_learning_progress',
-      title: '查看学习进度',
-      description: '读取当前已登录学员的课时完成情况，不修改进度。',
+      title: zh ? '查看学习进度' : 'View learning progress',
+      description: zh
+        ? '读取当前已登录学员的课时完成情况，不修改进度。'
+        : "Reads the signed-in student's lesson completion without changing it.",
       inputSchema: {
         type: 'object',
         properties: {},
@@ -30,7 +35,8 @@ export function registerAcademyTools(
         if (!input || typeof input !== 'object' || Object.keys(input).length)
           throw new Error('Expected an empty object');
         const b = get();
-        if (!b.person) throw new Error('请先登录');
+        if (!b.person)
+          throw new Error(zh ? '请先登录' : 'Please sign in first');
         return {
           lessons: b.courses.flatMap((c) =>
             c.lessons.map((l) => ({
@@ -45,8 +51,10 @@ export function registerAcademyTools(
     },
     {
       name: 'open_course_lesson',
-      title: '打开课程章节',
-      description: '导航到有权限访问的章节，不自动标记完成。',
+      title: zh ? '打开课程章节' : 'Open a course lesson',
+      description: zh
+        ? '导航到有权限访问的章节，不自动标记完成。'
+        : 'Opens a lesson the student can access without marking it complete.',
       inputSchema: {
         type: 'object',
         properties: { lessonId: { type: 'string' } },
@@ -66,7 +74,10 @@ export function registerAcademyTools(
           c = b.courses.find(
             (c) => c.has_access && c.lessons.some((l) => l.id === d.lessonId),
           );
-        if (!b.person || !c) throw new Error('章节不存在或尚未授权');
+        if (!b.person || !c)
+          throw new Error(
+            zh ? '章节不存在或尚未授权' : 'Lesson not found or not unlocked',
+          );
         navigate('lesson', { lesson: d.lessonId });
         return { opened: d.lessonId };
       },

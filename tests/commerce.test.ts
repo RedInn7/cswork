@@ -524,3 +524,10 @@ test('checkout admission is rechecked after Stripe latency when access is alread
   await assert.rejects(checkout(p, 'race-owned'), failure(409));
   assert.equal(creates, count);
 });
+test('money() keeps its Chinese format and formats English separately', async () => {
+  const { money } = await import('../lib/commerce-types');
+  assert.equal(money(9900, 'cny'), '¥99.00');
+  assert.equal(money(9900, 'cny', 'en'), 'CN¥99.00');
+  assert.equal(money(null, 'usd'), '待确认金额');
+  assert.equal(money(null, 'usd', 'en'), 'Amount pending');
+});

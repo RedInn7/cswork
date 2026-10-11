@@ -177,7 +177,9 @@ export function CommerceAdmin({
             <div>
               <strong>{c.title}</strong>
               <small>
-                {c.price?.display || t('暂未开放购买', 'Not for sale yet')}
+                {c.price
+                  ? money(c.price.amount, c.price.currency, locale)
+                  : t('暂未开放购买', 'Not for sale yet')}
               </small>
             </div>
             <label className="sr-only" htmlFor={`price-${c.id}`}>
@@ -291,11 +293,11 @@ export function CommerceAdmin({
                   </span>
                 </div>
                 <div className="commerce-order-total">
-                  <strong>{money(order.amount, order.currency)}</strong>
+                  <strong>{money(order.amount, order.currency, locale)}</strong>
                   {order.amount_refunded > 0 && (
                     <small>
                       {t('已退款', 'Refunded')}{' '}
-                      {money(order.amount_refunded, order.currency)}
+                      {money(order.amount_refunded, order.currency, locale)}
                     </small>
                   )}
                   <small className="commerce-order-id">{order.id}</small>
@@ -304,8 +306,8 @@ export function CommerceAdmin({
                   <div className="commerce-refund-row" key={r.id}>
                     <span>
                       {t(refundStatusNames[r.status], refundStatusEn[r.status])}{' '}
-                      · {money(r.amount, order.currency)}
-                      <small>{r.reason}</small>
+                      · {money(r.amount, order.currency, locale)}
+                      <small>{t(r.reason, englishMessage(r.reason))}</small>
                     </span>
                     {r.last_error && (
                       <small>
@@ -442,6 +444,7 @@ export function CommerceAdmin({
                 {money(
                   (selected.amount || 0) - selected.amount_refunded,
                   selected.currency,
+                  locale,
                 )}
                 {t(
                   '；全额成功退款将撤销该订单的课程权益。',

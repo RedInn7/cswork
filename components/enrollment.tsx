@@ -102,7 +102,7 @@ export function EnrollmentClaim({
             <p className="muted">
               {t(
                 `将开通：${data.titles.join('、')}`,
-                `Unlocks: ${data.titles.join(', ')}`,
+                `Unlocks: ${data.titles.map(englishMessage).join(', ')}`,
               )}
             </p>
             {!data.matchesAccount ? (

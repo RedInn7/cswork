@@ -17,7 +17,8 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Progress as ProgressBar } from '@/components/ui/progress';
 import { api, type Boot, type Lesson, date } from '@/lib/types';
-import { useT } from '@/lib/i18n';
+import { useLocale, useT } from '@/lib/i18n';
+import { money } from '@/lib/commerce-types';
 import { englishMessage } from '@/lib/messages-en';
 import { Player } from './player';
 import { LessonMarkdown, LessonNotes } from './lms-shared';
@@ -53,6 +54,7 @@ export function CourseList({
   knowledge?: boolean;
 }) {
   const t = useT(),
+    locale = useLocale(),
     // "3 篇" / "3 topics": English needs a plural, the Chinese text is unchanged.
     count = (n: number, zh: string, en: string) =>
       `${n} ${t(zh, n === 1 ? en : en + 's')}`;
@@ -178,7 +180,7 @@ export function CourseList({
                         }}
                       >
                         {(c.purchase_available ?? boot.services.checkout)
-                          ? `${t('购买课程', 'Buy course')}${c.price ? ' · ' + c.price.display : ''}`
+                          ? `${t('购买课程', 'Buy course')}${c.price ? ' · ' + money(c.price.amount, c.price.currency, locale) : ''}`
                           : t('申请开通', 'Request access')}
                         <ArrowRight size={15} />
                       </Button>

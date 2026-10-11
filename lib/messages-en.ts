@@ -48,6 +48,8 @@ const EN: Record<string, string> = {
   '章节 ID 已存在': 'Lesson ID already exists',
   请先发布至少一个章节: 'Publish at least one lesson first',
   课程已开放: 'Course now available',
+  // Notification seeded by lib/server/seed.ts
+  'GoMall 课程讲义已开放': 'GoMall course notes are now available',
   新版本号必须大于当前发布版本: 'The new version number must be greater than the published version',
   课件正文不能为空: 'Lesson content cannot be empty',
   请等待所有视频处理完成后发布: 'Wait for all videos to finish processing before publishing',
@@ -171,6 +173,12 @@ const EN: Record<string, string> = {
     'Code completion is unavailable. You can still run and submit your code',
   '补全服务连接中断，继续输入或重新触发即可重试':
     'Lost connection to the completion service. Keep typing or trigger completion again to retry',
+  // Editor status line (components/monaco-intelligence.ts)
+  '正在启动语言服务…': 'Starting the language service…',
+  智能补全已就绪: 'Code completion ready',
+  '智能补全已就绪 · 错误检查请运行':
+    'Code completion ready · Run your code to check for errors',
+  语言服务暂不可用: 'Language service unavailable',
 
   // Problems, submissions and the judge
   题目不存在: 'Problem not found',
