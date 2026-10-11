@@ -2,7 +2,8 @@
 // Source of truth is the page's RSC payload (`initialExperience`): markdown body (content_md), rounds,
 // outcome, seniority and the linked practice questions. Locked experiences are counted and skipped.
 // Also exports the RSC / scrub / run helpers used by parse-learning.mjs and parse-cheatsheets.mjs.
-//   /opt/homebrew/bin/node scripts/content-import/prachub/parse-experiences.mjs
+//   /opt/homebrew/bin/node scripts/content-import/prachub/parse-experiences.mjs [--self-test]
+import assert from 'node:assert/strict';
 import { realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { listRaw, readRaw, sourceUrl, jsonLd, writeJsonl } from './common.mjs';
@@ -177,15 +178,28 @@ export function shape(v, depth = 3) {
 }
 
 export const scrubStats = { lines: 0 };
+// PracHub's promo sentence template, also seen without the name ("…on a platform built around…").
+const PROMO = /prachub|\bpracti[cs]ed something (?:very )?similar on\b/i;
 /** Strip PracHub branding/CTAs from Markdown: prachub.com link/src targets become site-relative; sentences
- *  naming PracHub (bare URLs included) and lines linking to pricing/login/register are dropped. Fenced code
- *  is left untouched. */
+ *  naming PracHub (bare URLs included) or in its promo template are dropped, as are lines linking to
+ *  pricing/login/register. Fenced code is left untouched. */
 export function scrub(md) {
   if (typeof md !== 'string') return '';
   const cta = /\]\(\/(?:pricing|login|register)\b/i;
-  // A "sentence" runs to a . ! ? that is followed by whitespace, so URLs and "e.g." stay inside it.
-  const sentence =
-    /(?:[^.!?\n]|[.!?](?=\S))*prachub(?:[^.!?\n]|[.!?](?=\S))*[.!?]*\s*/gi;
+  // A "sentence" runs to a . ! ? that is followed by whitespace, so URLs and "e.g." stay inside it. It starts
+  // at a non-space, so the neighbours keep their spacing and a list item its number ("5. ").
+  const s = String.raw`(?:[^.!?\n]|[.!?](?=\S))`;
+  // "Transactions: a new question, with detailed coverage on PracHub." loses only the PracHub clause.
+  const clause = new RegExp(
+    String.raw`,\s*with\b${s}*?prachub${s}*?(?=[.!?](?:\s|$))`,
+    'gi',
+  );
+  // A dropped promo takes along a sentence that only points back at it ("That familiarity gave me…") and
+  // the "Even so, " opening the next one.
+  const sentence = new RegExp(
+    String.raw`(?=\S)${s}*(?:${PROMO.source})${s}*[.!?]*\s*(?:That familiarity\b${s}*[.!?]*\s*)?(?:Even so, (\w))?`,
+    'gi',
+  );
   const out = [];
   let fence = false,
     dropped = 0;
@@ -196,12 +210,16 @@ export function scrub(md) {
     )
     .split('\n')) {
     if (/^\s*(?:```|~~~)/.test(line)) fence = !fence;
-    if (fence || !(/prachub/i.test(line) || cta.test(line))) {
+    if (fence || !(PROMO.test(line) || cta.test(line))) {
       out.push(line);
       continue;
     }
     dropped++;
-    const kept = cta.test(line) ? '' : line.replace(sentence, '');
+    const kept = cta.test(line)
+      ? ''
+      : line
+          .replace(clause, '')
+          .replace(sentence, (_, next) => next?.toUpperCase() ?? '');
     if (/[a-z0-9]/i.test(kept.replace(/^\s*(?:[-*+>]|#+|\d+[.)])\s*/, '')))
       out.push(kept.trimEnd());
   }
@@ -211,6 +229,115 @@ export function scrub(md) {
     /^\s*\n|\s+$/g,
     '',
   );
+}
+
+/** Single newlines inside top-level paragraphs -> Markdown hard breaks ("  " line ends): the source page
+ *  shows them as line breaks, react-markdown joins the lines. Code (fenced, indented, `inline`), lists,
+ *  headings, tables, blockquotes and blank-line breaks are left alone (CommonMark/GFM block rules). */
+function hardBreaks(md) {
+  const lines = md.split('\n');
+  const indent = (l) => l.length - l.trimStart().length;
+  const fenceOf = (l) => /^\s*(`{3,}|~{3,})/.exec(l)?.[1] ?? null;
+  // List item -> column its content starts at.
+  const itemAt = (l) => {
+    const m = /^( {0,3}(?:[-*+]|\d{1,9}[.)]))([ \t]+|$)/.exec(l);
+    return m && m[1].length + (m[2].length > 4 || !m[2] ? 1 : m[2].length);
+  };
+  const leaf = /^ {0,3}(?:#{1,6}(?:[ \t]|$)|([-*_])(?:[ \t]*\1){2,}[ \t]*$)/; // heading, rule
+  // A table starts at a row with a pipe followed by a |---|---| delimiter row.
+  const tableAt = (i) =>
+    lines[i].includes('|') &&
+    /\|/.test(lines[i + 1] ?? '') &&
+    /^ {0,3}\|?[ \t]*:?-+:?[ \t]*(?:\|[ \t]*:?-+:?[ \t]*)*\|?[ \t]*$/.test(
+      lines[i + 1],
+    );
+  // Lines that end a paragraph rather than continue it: only "1." starts a list there, "2." is text.
+  const ends = (i) =>
+    leaf.test(lines[i]) ||
+    /^ {0,3}(?:>|```|~~~|[-*+][ \t]+\S|1[.)][ \t]+\S)/.test(lines[i]) ||
+    tableAt(i);
+  let ctx = null, // 'para' | 'list' | 'quote' | 'table' | 'code' (indented)
+    offset = 0, // content column of the current top-level list item
+    gap = false, // blank line since the last list line
+    fence = null,
+    para = [];
+  const flush = (heading) => {
+    // A paragraph underlined with === / --- is a heading; a newline inside a `code span` is code.
+    if (!heading && para.length > 1) {
+      const text = para.map((i) => lines[i]).join('\n');
+      const code = [
+        ...text.matchAll(/(?<!`)(`+)(?!`)[\s\S]*?(?<!`)\1(?!`)/g),
+      ].map((m) => [m.index, m.index + m[0].length]);
+      let at = 0;
+      for (const i of para.slice(0, -1)) {
+        at += lines[i].length;
+        if (
+          !code.some(([a, b]) => a < at && at < b) &&
+          !/ {2}$|\\$/.test(lines[i])
+        )
+          lines[i] = `${lines[i].trimEnd()}  `;
+        at++;
+      }
+    }
+    para = [];
+  };
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i];
+    if (fence) {
+      if (new RegExp(`^\\s*${fence[0]}{${fence.length},}\\s*$`).test(l))
+        fence = null;
+      continue;
+    }
+    if (!l.trim()) {
+      flush();
+      gap = true;
+      if (ctx !== 'list' && ctx !== 'code') ctx = null;
+      continue;
+    }
+    const item = itemAt(l);
+    if (ctx === 'para') {
+      if (/^ {0,3}(?:=+|-+)[ \t]*$/.test(l)) {
+        flush(true);
+        ctx = null;
+        continue;
+      }
+      if (!ends(i)) {
+        para.push(i);
+        continue;
+      }
+      flush();
+    } else if (ctx === 'code' && indent(l) >= 4) continue;
+    // Items, indented lines and lazy text (no blank line before) stay in the list.
+    else if (
+      ctx === 'list' &&
+      (item || indent(l) >= offset || (!gap && !ends(i)))
+    ) {
+      if (item && indent(l) < offset) offset = item;
+      fence = fenceOf(l);
+      gap = false;
+      continue;
+    } else if (ctx === 'quote' && (/^ {0,3}>/.test(l) || !ends(i))) continue;
+    else if (ctx === 'table' && !ends(i)) continue;
+    // A new block.
+    gap = false;
+    fence = indent(l) < 4 ? fenceOf(l) : null;
+    if (item) offset = item;
+    ctx =
+      indent(l) >= 4
+        ? 'code'
+        : fence || leaf.test(l)
+          ? null
+          : item
+            ? 'list'
+            : /^ {0,3}>/.test(l)
+              ? 'quote'
+              : tableAt(i)
+                ? 'table'
+                : 'para';
+    if (ctx === 'para') para = [i];
+  }
+  flush();
+  return lines.join('\n');
 }
 
 /** Parse the raw pages of `type` with fn(slug, html) -> item | 'locked' | 'duplicate'; failures are counted. */
@@ -265,6 +392,7 @@ const TYPE = 'interview-experiences';
 const OUTCOME = {
   offer: 'Offer',
   rejected: 'Rejected',
+  ghosted: 'No response', // the page's wording
   no_response: 'No response',
   in_progress: 'In progress',
   unknown: null,
@@ -281,21 +409,33 @@ function parseExperience(slug, html) {
     });
   for (const k in tally) tally[k][exp[k]] = (tally[k][exp[k]] ?? 0) + 1;
   const ld = jsonLd(html);
-  if (
-    exp.locked === true ||
-    ld.some(
-      (o) => o['@type'] === 'BlogPosting' && o.isAccessibleForFree === false,
-    )
-  )
+  const post = ld.find((o) => o['@type'] === 'BlogPosting');
+  if (exp.locked === true || post?.isAccessibleForFree === false)
     return 'locked';
-  const body = scrub(exp.content_md);
+  const body = hardBreaks(scrub(exp.content_md));
   if (!body) throw new Error('empty content_md');
+  // content_preview is the body's opening as plain text. A promo sentence it cuts short ("I had practiced
+  // somethi…") is beyond scrub(): a cut-off last sentence the debranded body doesn't have goes too.
+  const flat = (s) =>
+    s
+      .replace(/[^\p{L}\p{N}]+/gu, ' ')
+      .trim()
+      .toLowerCase();
+  let summary = scrub(exp.content_preview);
+  if (PROMO.test(exp.content_md))
+    summary = summary
+      .replace(/(?<=^|[.!?]\s+)[^.!?]+…$/, (cut) =>
+        flat(body).includes(flat(cut)) ? cut : '',
+      )
+      .trimEnd();
   const companyUrl = ld
     .find((o) => o['@type'] === 'BreadcrumbList')
     ?.itemListElement?.map((e) => e.item)
     .find((u) => /\/companies\/[^/]+$/.test(u ?? ''));
   const outcome = String(exp.outcome ?? 'unknown');
   const difficulty = String(exp.difficulty ?? '').toLowerCase();
+  // "General" is the payload's "no level given"; the page shows no Level for it.
+  const level = exp.seniority === 'General' ? null : (exp.seniority ?? null);
   // "Practice the questions from this interview" (linked_posts) plus any internal links in the body.
   const linked = (exp.linked_posts ?? [])
     .filter((p) => p?.slug)
@@ -309,13 +449,18 @@ function parseExperience(slug, html) {
     type: 'experience',
     slug,
     title: exp.title ?? null,
-    summary: scrub(exp.content_preview) || null,
+    summary: summary || null,
     body,
-    company: companyOf(exp.company, companyUrl?.split('/companies/')[1]),
+    // The company the page shows (JSON-LD `about`, "Interview at a glance"), e.g. "Amazon India (ADCI)" for
+    // the payload's "ADCI - Karnataka": the payload's aliases would split one company into several.
+    company: companyOf(
+      post?.about?.name ?? exp.company,
+      companyUrl?.split('/companies/')[1],
+    ),
     role: exp.position ?? null,
     category: null,
     round: exp.interview_round ?? exp.rounds?.[0] ?? null,
-    seniority: exp.seniority ?? null,
+    seniority: level,
     difficulty: DIFFICULTY.has(difficulty) ? difficulty : null,
     tags: [],
     publishedAt: iso(exp.published_at),
@@ -326,8 +471,9 @@ function parseExperience(slug, html) {
         ? OUTCOME[outcome]
         : outcome.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase()),
       rounds: exp.rounds ?? [],
-      level: exp.seniority ?? null,
-      date: exp.experienced_at ?? null,
+      level,
+      // The page's date ("Reported Jul 2026", "Interview date Aug 2026") is reported_at's month.
+      date: exp.reported_at ?? null,
       dateBasis: exp.date_basis ?? null,
     },
     sourceUrl: sourceUrl(TYPE, slug),
@@ -335,9 +481,38 @@ function parseExperience(slug, html) {
   };
 }
 
-if (isMain(import.meta.url)) {
-  save('experiences', run('experiences', TYPE, parseExperience));
-  console.log(
-    `[experiences] values ${JSON.stringify(tally)}; scrubbed ${scrubStats.lines} branding/CTA lines`,
+function selfTest() {
+  const md =
+    'One\ntwo `co\nde`\nthree\n\n- item\n  more\n\n```\na\nb\n```\nHead\nline\n---';
+  assert.equal(
+    hardBreaks(md),
+    md.replace('One', 'One  ').replace('de`', 'de`  '),
   );
+  assert.equal(
+    scrub('5. Sets: new, with detailed coverage on PracHub. Hard.'),
+    '5. Sets: new. Hard.',
+  );
+  assert.equal(
+    scrub(
+      'A b. Then I had practiced something very similar on prachub.com. That familiarity helped. C d.',
+    ),
+    'A b. C d.',
+  );
+  assert.equal(
+    scrub(
+      'I had practiced something similar on a platform, so I was ready. Even so, it was hard.',
+    ),
+    'It was hard.',
+  );
+  console.log('self-test ok');
+}
+
+if (isMain(import.meta.url)) {
+  if (process.argv[2] === '--self-test') selfTest();
+  else {
+    save('experiences', run('experiences', TYPE, parseExperience));
+    console.log(
+      `[experiences] values ${JSON.stringify(tally)}; scrubbed ${scrubStats.lines} branding/CTA lines`,
+    );
+  }
 }
