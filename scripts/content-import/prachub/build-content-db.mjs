@@ -13,12 +13,18 @@ import { imageUrls } from './fetch-images.mjs';
 const out = process.argv[2] || join(DIR, 'content.sqlite');
 const tmp = `${out}.building`;
 // PracHub courses/lessons are parsed but not published for now (owner's call).
-// algorithms-*.jsonl are the bilingual interview tutorials adapted from OI Wiki.
+// algorithms-*.jsonl are the bilingual interview tutorials adapted from OI Wiki, inserted in
+// syllabus order (the list shows them in insertion order); unknown groups go last.
+const SYLLABUS = ['basics', 'datastructures', 'graphs-strings', 'dp-math'];
+const rank = (f) => (SYLLABUS.indexOf(f.slice('algorithms-'.length)) + 1 || SYLLABUS.length + 1);
 const FILES = [
   'coding-questions', 'interview-questions', 'experiences', 'guides', 'concepts',
   'articles', 'cheatsheets',
   ...(existsSync(PARSED)
-    ? readdirSync(PARSED).filter((f) => /^algorithms-[a-z-]+\.jsonl$/.test(f)).map((f) => f.slice(0, -6)).sort()
+    ? readdirSync(PARSED)
+        .filter((f) => /^algorithms-[a-z-]+\.jsonl$/.test(f))
+        .map((f) => f.slice(0, -6))
+        .sort((a, b) => rank(a) - rank(b) || a.localeCompare(b))
     : []),
 ];
 const TYPES = new Set(['coding_question', 'interview_question', 'experience', 'guide', 'concept', 'article', 'cheatsheet', 'algorithm']);
