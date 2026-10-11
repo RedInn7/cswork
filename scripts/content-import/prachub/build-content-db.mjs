@@ -108,6 +108,13 @@ const localizeItem = (item) => {
 const dupes = new Map(readJson('question-dupes.json', []).map((d) => [d.id, d.dupOf]));
 for (const id of readJson('question-dupes-reject.json', [])) dupes.delete(id);
 for (const d of readJson('question-dupes-manual.json', [])) dupes.set(d.id, d.dupOf);
+// A duplicate of a duplicate points at the final copy; an item a cycle leads back to is kept.
+for (const [id, dup] of dupes) {
+  let end = dup;
+  for (let hops = 0; end.kind === 'prachub' && dupes.has(end.id) && end.id !== id && hops < 10; hops++) end = dupes.get(end.id);
+  if (end.id === id) dupes.delete(id);
+  else dupes.set(id, end);
+}
 
 const insert = db.prepare(`INSERT OR REPLACE INTO items(id,type,slug,title,summary,title_zh,summary_zh,level,body,company_slug,company_name,role,category,difficulty,round,seniority,tags,published_at,updated_at,relations,extra,partial,dup_of,listed)
   VALUES(@id,@type,@slug,@title,@summary,@title_zh,@summary_zh,@level,@body,@company_slug,@company_name,@role,@category,@difficulty,@round,@seniority,@tags,@published_at,@updated_at,@relations,@extra,@partial,@dup_of,@listed)`);

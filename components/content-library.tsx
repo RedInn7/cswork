@@ -515,6 +515,26 @@ export function ContentDetail({
                 </button>
               </div>
             )}
+            {dup?.kind === 'prachub' && /^(cq|iq)-/.test(dup.id) && (
+              <div className="ct-callout rd-reveal" style={{ '--i': 1 } as React.CSSProperties}>
+                <span>
+                  {t('这道题有更完整的版本：', 'A more complete version of this question: ')}
+                  {dup.title || dup.id}
+                </span>
+                <button
+                  type="button"
+                  className="rd-button"
+                  onClick={() =>
+                    navigate('content', {
+                      type: dup.id.startsWith('cq-') ? 'coding_question' : 'interview_question',
+                      slug: dup.id.slice(3),
+                    })
+                  }
+                >
+                  {t('查看', 'Open')} <ArrowRight size={14} />
+                </button>
+              </div>
+            )}
             <article className="rd-card ct-body rd-reveal" style={{ '--i': 2 } as React.CSSProperties}>
               <OaMarkdown body={localized(locale, item.body, item.extra.bodyZh)} />
             </article>
