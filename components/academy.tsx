@@ -8,20 +8,15 @@ import {
 } from 'react';
 import {
   Activity,
-  ArrowUpRight,
   BookOpen,
   Code2,
-  LayoutDashboard,
   LifeBuoy,
   Bell,
-  Play,
   ArrowRight,
-  Check,
   Terminal,
   Search,
   Settings,
   Inbox,
-  Bookmark,
   ChevronRight,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -41,7 +36,6 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import {
   Dialog,
   DialogContent,
@@ -55,7 +49,6 @@ import {
   bootIdentity,
   mergeLiteBoot,
   type Boot,
-  type Lesson,
 } from '@/lib/types';
 import {
   CourseList,
@@ -63,7 +56,6 @@ import {
   ProblemList,
   ProblemWorkspace,
   Empty,
-  Heading,
   type Navigate,
 } from './learning';
 import { JudgeStatus } from './judge-status';
@@ -89,7 +81,6 @@ import {
 const nav: [LucideIcon, string, string][] = [
   [Code2, '算法题库', 'problems'],
   [Activity, '评测状态', 'status'],
-  [LayoutDashboard, '学习概览', 'home'],
   [BookOpen, '我的课程', 'courses'],
   [BookOpen, '算法知识点', 'knowledge'],
   [LifeBuoy, '我的工单', 'tickets'],
@@ -238,13 +229,7 @@ export function Academy() {
   const coursesHidden =
     !loading && !boot.courses.some((c) => c.id !== INTERVIEW_COURSE_ID);
   function content() {
-    if (loading)
-      // Only the overview can render before bootstrap; other views would flash the wrong page.
-      return view === 'home' ? (
-        <Home boot={boot} navigate={navigate} login={() => setLogin(true)} />
-      ) : (
-        <output className="page-loading">正在加载…</output>
-      );
+    if (loading) return <output className="page-loading">正在加载…</output>;
     if (error && !boot.courses.length)
       return (
         <Empty
@@ -259,7 +244,7 @@ export function Academy() {
       );
     if (
       !boot.person &&
-      !['home', 'courses', 'knowledge', 'problems', 'problem', 'status'].includes(
+      !['courses', 'knowledge', 'problems', 'problem', 'status'].includes(
         view,
       )
     )
@@ -371,10 +356,6 @@ export function Academy() {
         );
       case 'account':
         return <AccountView boot={boot} refresh={refresh} />;
-      case 'home':
-        return (
-          <Home boot={boot} navigate={navigate} login={() => setLogin(true)} />
-        );
       default:
         // Unknown or stale views fall back to the landing problem bank.
         return (
@@ -640,303 +621,6 @@ function FileSearchTitle({ title }: { title: string }) {
     </strong>
   );
 }
-type PracticeSummary = {
-  collection?: { solved: number; total: number };
-  currentRound?: { number: number };
-};
-
-/** The learner's curated-list round at a glance, with one click back into practice. */
-function PracticeCard({
-  personId,
-  navigate,
-  login,
-}: {
-  personId: string | null;
-  navigate: Navigate;
-  login: () => void;
-}) {
-  const signedIn = !!personId;
-  // undefined = loading, null = failed; never show a made-up 0/500 for either.
-  const [summary, setSummary] = useState<PracticeSummary | null | undefined>();
-  useEffect(() => {
-    if (!personId) return;
-    let current = true;
-    setSummary(undefined);
-    api<PracticeSummary>('oj/library?collection=ling-selected-500&page=1')
-      .then((data) => current && setSummary(data))
-      .catch(() => current && setSummary(null));
-    return () => {
-      current = false;
-    };
-  }, [personId]);
-  const solved = summary?.collection?.solved ?? 0,
-    total = summary?.collection?.total ?? 500;
-  return (
-    <div className="practice-card">
-      <span className="overline">
-        {signedIn && summary?.currentRound
-          ? `灵神题单 · 第 ${summary.currentRound.number} 轮`
-          : '灵神题单'}
-      </span>
-      {!signedIn ? (
-        <p>登录后自动记录每一轮的刷题进度。</p>
-      ) : summary === undefined ? (
-        <p aria-live="polite">正在读取刷题进度…</p>
-      ) : summary === null || !summary.collection ? (
-        <p role="status">刷题进度暂时无法读取，可以直接进入题库继续练习。</p>
-      ) : (
-        <>
-          <strong>
-            {solved}
-            <small> / {total} 已通过</small>
-          </strong>
-          <Progress value={total ? (solved / total) * 100 : 0} />
-        </>
-      )}
-      <div className="practice-card-actions">
-        <Button
-          className="primary-light"
-          onClick={() => (signedIn ? navigate('problems') : login())}
-        >
-          <Code2 size={16} />
-          继续刷题
-        </Button>
-        <button
-          className="practice-card-link"
-          onClick={() => navigate('problems', { library: 'oa' })}
-        >
-          OA 题目
-          <ArrowRight size={14} />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function Home({
-  boot,
-  navigate,
-  login,
-}: {
-  boot: Boot;
-  navigate: Navigate;
-  login: () => void;
-}) {
-  const all = boot.courses.flatMap((c) => c.lessons),
-    accessible = boot.courses
-      .filter((c) => c.has_access)
-      .flatMap((c) => c.lessons),
-    latest = [...boot.progress]
-      .filter((p) => accessible.some((l) => l.id === p.lesson_id))
-      .sort((a, b) => b.updated_at - a.updated_at)[0],
-    resume =
-      all.find((l) => l.id === latest?.lesson_id) ||
-      accessible.find(
-        (l) => !boot.progress.some((p) => p.lesson_id === l.id && p.completed),
-      ) ||
-      accessible[0] ||
-      all[0],
-    course =
-      boot.courses.find((c) => c.lessons.some((l) => l.id === resume?.id)) ||
-      boot.courses[0],
-    done = accessible.filter((l) =>
-      boot.progress.some((p) => p.lesson_id === l.id && p.completed),
-    ).length,
-    passed = new Set(
-      boot.submissions
-        .filter((s) => s.status === 'accepted')
-        .map((s) => s.problem_id),
-    ).size;
-  function start(l?: Lesson) {
-    if (!boot.person) {
-      login();
-      return;
-    }
-    if (
-      l &&
-      boot.courses.some(
-        (c) => c.has_access && c.lessons.some((item) => item.id === l.id),
-      )
-    )
-      navigate('lesson', { lesson: l.id });
-    else navigate('courses');
-  }
-  return (
-    <>
-      <Heading
-        title={boot.person ? '专注今天的进步。' : '从这里，成为更好的工程师。'}
-      />
-      <section className="continue-card">
-        <div>
-          <span className="overline">
-            {latest ? '继续你的学习' : '从这里开始'}
-          </span>
-          <h2>{latest ? resume?.title : course?.title || '你的下一门课程'}</h2>
-          <p>
-            {latest
-              ? resume?.summary
-              : course?.summary || '课程准备完成后，可以从这里进入学习。'}
-          </p>
-          <div className="course-meta">
-            <span>{course?.lessons.length || 0} 个章节</span>
-            <span>课件与配套视频</span>
-            <span>配套代码练习</span>
-          </div>
-          <Button className="primary-light" onClick={() => start(resume)}>
-            <Play size={16} fill="currentColor" />
-            {latest ? '继续学习' : '进入第一章'}
-            <ArrowRight size={16} />
-          </Button>
-        </div>
-        <PracticeCard
-          personId={boot.person?.id ?? null}
-          navigate={navigate}
-          login={login}
-        />
-      </section>
-      {boot.person && (
-        <div className="learning-stats">
-          <div>
-            <BookOpen size={18} />
-            <span>已完成课时</span>
-            <strong>
-              {done}
-              <small> / {accessible.length}</small>
-            </strong>
-          </div>
-          <div>
-            <Code2 size={18} />
-            <span>算法已通过</span>
-            <strong>
-              {passed}
-              <small> / {boot.problems.length}</small>
-            </strong>
-          </div>
-          <div>
-            <Bookmark size={18} />
-            <span>我的收藏</span>
-            <strong>{boot.progress.filter((p) => p.bookmarked).length}</strong>
-          </div>
-        </div>
-      )}
-      <div className="section-title">
-        <h2>你的学习路径</h2>
-        <button className="text-link" onClick={() => navigate('courses')}>
-          完整课程
-          <ArrowRight size={14} />
-        </button>
-      </div>
-      <div className="path-grid">
-        {[
-          ...new Set(
-            (course?.lessons || []).map((l) => l.section || '课程内容'),
-          ),
-        ].map((section, index) => {
-          const n = String(index + 1).padStart(2, '0'),
-            ls = (course?.lessons || []).filter(
-              (l) => (l.section || '课程内容') === section,
-            ),
-            completed = ls.filter((l) =>
-              boot.progress.some((p) => p.lesson_id === l.id && p.completed),
-            ).length;
-          return (
-            <button className="path-card" key={n} onClick={() => start(ls[0])}>
-              <div className="path-top">
-                <span>{n}</span>
-                <ArrowUpRight size={20} />
-              </div>
-              <h3>{section}</h3>
-              <p>{ls[0]?.summary || '按章节推进，完成配套练习。'}</p>
-              <small>{course?.title}</small>
-              <Progress value={ls.length ? (completed / ls.length) * 100 : 0} />
-              <div className="path-progress">
-                <span>
-                  {completed} / {ls.length} 课已完成
-                </span>
-                <span>
-                  {ls.length ? Math.round((completed / ls.length) * 100) : 0}%
-                </span>
-              </div>
-            </button>
-          );
-        })}
-      </div>
-      <div className="home-bottom">
-        <section>
-          <div className="section-title">
-            <h2>下一道，练起来。</h2>
-            <button className="text-link" onClick={() => navigate('problems')}>
-              全部练习
-              <ArrowRight size={14} />
-            </button>
-          </div>
-          <div className="quick-problems">
-            {boot.problems.slice(0, 3).map((p, i) => (
-              <button
-                key={p.id}
-                onClick={() => navigate('problem', { problem: p.id })}
-              >
-                <span className="quick-number">0{i + 1}</span>
-                <div>
-                  <strong>{p.title}</strong>
-                  <small>{p.tags.join(' · ')}</small>
-                </div>
-                <span
-                  className={
-                    'difficulty ' + (p.difficulty === '中等' ? 'medium' : '')
-                  }
-                >
-                  {p.difficulty}
-                </span>
-                <ChevronRight size={16} />
-              </button>
-            ))}
-          </div>
-        </section>
-        <section>
-          <div className="section-title">
-            <h2>学习支持</h2>
-          </div>
-          <div className="help-card">
-            <LifeBuoy size={23} />
-            <h3>把疑问留在这里。</h3>
-            <p>与老师私密沟通，每个问题都能回到对应的章节或代码。</p>
-            <Button
-              variant="outline"
-              onClick={() => (boot.person ? navigate('tickets') : login())}
-            >
-              我的工单
-              <ArrowRight size={15} />
-            </Button>
-          </div>
-        </section>
-      </div>
-      {boot.progress.some((p) => p.bookmarked) && (
-        <>
-          <div className="section-title">
-            <h2>收藏的章节</h2>
-          </div>
-          {all
-            .filter((l) =>
-              boot.progress.some((p) => p.lesson_id === l.id && p.bookmarked),
-            )
-            .map((l) => (
-              <button
-                className="lesson-row"
-                key={l.id}
-                onClick={() => start(l)}
-              >
-                <Bookmark size={16} />
-                {l.title}
-                <ArrowRight size={15} />
-              </button>
-            ))}
-        </>
-      )}
-    </>
-  );
-}
-
 function CloseMobileNavigation({ view }: { view: string }) {
   const { setOpenMobile } = useSidebar();
   useEffect(() => {
