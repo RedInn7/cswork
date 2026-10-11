@@ -17,6 +17,7 @@ test('judge renders live stages, selects first failure once, preserves privacy a
     'Event',
     'MouseEvent',
     'navigator',
+    'localStorage',
   ]) {
     descriptors.set(name, Object.getOwnPropertyDescriptor(globalThis, name));
     Object.defineProperty(globalThis, name, {
@@ -51,9 +52,9 @@ test('judge renders live stages, selects first failure once, preserves privacy a
     act(async () => document.querySelectorAll('[role="tab"]')[index].click());
   try {
     await render({});
-    assert.match(document.body.textContent, /等待评测资源/);
+    assert.match(document.body.textContent, /waiting for a judge/);
     await render({ status: 'compiling' });
-    assert.match(document.body.textContent, /正在编译代码/);
+    assert.match(document.body.textContent, /Compiling your code/);
     await render({
       status: 'running',
       passed: 1,
@@ -68,11 +69,14 @@ test('judge renders live stages, selects first failure once, preserves privacy a
         { ordinal: 2, status: 'pending', hidden: true },
       ],
     });
-    assert.match(document.body.textContent, /已检查 1 \/ 3 个测试点，1 个通过/);
-    assert.match(document.body.textContent, /全部通过才会显示通过/);
+    assert.match(
+      document.body.textContent,
+      /Checked 1 \/ 3 test cases, 1 passed/,
+    );
+    assert.match(document.body.textContent, /Accepted shows only if all pass/);
     assert.equal(
       document.querySelector('.cs-result-summary .cs-verdict').textContent,
-      '运行中',
+      'Running',
     );
     await render({
       status: 'wrong_answer',
@@ -99,9 +103,9 @@ test('judge renders live stages, selects first failure once, preserves privacy a
     assert.match(document.body.textContent, /failing input/);
     assert.match(document.body.textContent, /expected value/);
     assert.match(document.body.textContent, /actual value/);
-    assert.match(document.body.textContent, /仅显示部分内容/);
-    assert.match(document.body.textContent, /已停止后续评测/);
-    assert.doesNotMatch(document.body.textContent, /33 分/);
+    assert.match(document.body.textContent, /Only part is shown/);
+    assert.match(document.body.textContent, /judging stopped early/);
+    assert.doesNotMatch(document.body.textContent, /\b33\b/);
     assert.equal(document.querySelector('.cs-spin'), null);
     await clickCase(0);
     await render({});
@@ -112,7 +116,7 @@ test('judge renders live stages, selects first failure once, preserves privacy a
     await clickCase(2);
     assert.match(
       document.querySelector('[role="tabpanel"]').textContent,
-      /未运行/,
+      /Skipped/,
     );
     assert.doesNotMatch(document.body.textContent, /secret input/);
     await render({ id: 's2' });
@@ -133,9 +137,20 @@ test('judge renders live stages, selects first failure once, preserves privacy a
     });
     assert.equal(
       document.querySelector('.cs-result-summary .cs-verdict').textContent,
+      'Accepted',
+    );
+    assert.match(document.body.textContent, /3 \/ 3 test cases passed/);
+    // The Chinese site keeps the original wording.
+    localStorage.setItem('cswork:locale', 'zh');
+    await render({});
+    assert.equal(
+      document.querySelector('.cs-result-summary .cs-verdict').textContent,
       '通过',
     );
-    assert.match(document.body.textContent, /已通过 3 \/ 3/);
+    assert.match(
+      document.body.textContent,
+      /正式提交 · 已通过 3 \/ 3 个测试点/,
+    );
   } finally {
     await act(async () => root.unmount());
     dom.window.close();

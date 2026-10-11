@@ -3,19 +3,30 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
 import styles from './leetcode-sync-panel.module.css';
+import { useLocale, useT } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
 import type {
   LeetcodeSyncRun as Run,
   LeetcodeSyncState as History,
 } from '@/lib/leetcode-sync-types';
-const regionName = (region: 'cn' | 'us') =>
-  region === 'cn' ? '力扣国区' : 'LeetCode 美区';
-const statusName = {
-  running: '同步中',
-  complete: '同步完成',
-  cancelled: '已停止，已导入记录保留',
-  failed: '部分同步，请处理错误后继续',
-  truncated: '已达到本次同步上限，记录已保留',
+
+// Errors stay Chinese in state and pick their language at render;
+// server ones go through englishMessage.
+const messagesEn: Record<string, string> = {
+  '同步失败，请稍后重试': 'Sync failed. Please try again later',
+  '同步记录暂时无法加载，请重试。':
+    "Couldn't load sync history. Please try again.",
+  '同步中断，请重新填写凭据后继续。':
+    'Sync was interrupted. Re-enter your credentials to resume.',
+  '已停止请求，已同步记录会保留。':
+    'Requests stopped. Synced records are kept.',
+  '本地同步已停止，服务器状态未确认。重新打开可查看已保存记录。':
+    'Sync stopped here, but the server status is unconfirmed. Reopen to see saved records.',
 };
+const messageEn = (message: string) =>
+  Object.hasOwn(messagesEn, message)
+    ? messagesEn[message]
+    : englishMessage(message);
 
 async function request<T>(
   data?: unknown,
@@ -63,6 +74,25 @@ export function LeetcodeSyncPanel({
   onClose: () => void;
   onChanged: () => void;
 }) {
+  const t = useT();
+  const locale = useLocale();
+  const regionName = (value: 'cn' | 'us') =>
+    value === 'cn'
+      ? t('力扣国区', 'LeetCode China')
+      : t('LeetCode 美区', 'LeetCode US');
+  const statusName = {
+    running: t('同步中', 'Syncing'),
+    complete: t('同步完成', 'Sync complete'),
+    cancelled: t('已停止，已导入记录保留', 'Stopped; imported records kept'),
+    failed: t(
+      '部分同步，请处理错误后继续',
+      'Partially synced. Fix the error, then resume',
+    ),
+    truncated: t(
+      '已达到本次同步上限，记录已保留',
+      "Reached this sync's limit; records kept",
+    ),
+  };
   const [region, setRegion] = useState<'cn' | 'us'>('cn');
   const [roundId, setRoundId] = useState(currentRoundId);
   const [session, setSession] = useState('');
@@ -199,7 +229,7 @@ export function LeetcodeSyncPanel({
   return (
     <section className={styles.panel} aria-labelledby="leetcode-sync-title">
       <div className={styles.header}>
-        <h3 id="leetcode-sync-title">同步 LeetCode</h3>
+        <h3 id="leetcode-sync-title">{t('同步 LeetCode', 'Sync LeetCode')}</h3>
         <Button
           variant="ghost"
           onClick={() => {
@@ -208,32 +238,56 @@ export function LeetcodeSyncPanel({
             onClose();
           }}
         >
-          关闭
+          {t('关闭', 'Close')}
         </Button>
       </div>
       <p>
-        导入自己账号的历史成功提交，不导入代码。同步固定写入所选轮次，新开一轮仍从零开始。
+        {t(
+          '导入自己账号的历史成功提交，不导入代码。同步固定写入所选轮次，新开一轮仍从零开始。',
+          'Imports past accepted submissions from your own account (code is not imported). Records go into the round you pick; a new round still starts from zero.',
+        )}
       </p>
       <p className={styles.muted}>
-        同步当前 LeetCode 登录会话可访问的记录；不会切换原站刷题会话。
+        {t(
+          '同步当前 LeetCode 登录会话可访问的记录；不会切换原站刷题会话。',
+          'Syncs the records your current LeetCode sign-in can access. Your practice session on LeetCode is not switched.',
+        )}
       </p>
       <p className={styles.muted}>
-        登录凭据等同账号登录权限，不要分享给他人。本站仅临时使用，不保存凭据，也不需要你的密码。
+        {t(
+          '登录凭据等同账号登录权限，不要分享给他人。本站仅临时使用，不保存凭据，也不需要你的密码。',
+          'These credentials give full access to your account, so never share them. We use them only temporarily, never store them, and never need your password.',
+        )}
       </p>
       <details>
-        <summary>如何获取自己的登录凭据？</summary>
+        <summary>
+          {t('如何获取自己的登录凭据？', 'How do I get my credentials?')}
+        </summary>
         <ol>
-          <li>在浏览器登录你自己的 leetcode.cn 或 leetcode.com 账号。</li>
           <li>
-            打开浏览器开发者工具 → Application / 应用 → Cookies，选择对应站点。
+            {t(
+              '在浏览器登录你自己的 leetcode.cn 或 leetcode.com 账号。',
+              'Sign in to your own leetcode.cn or leetcode.com account in your browser.',
+            )}
           </li>
           <li>
-            复制 LEETCODE_SESSION 和 csrftoken
-            的值到下方。不要复制他人的凭据，也不要把整个 Cookie 列表分享出来。
+            {t(
+              '打开浏览器开发者工具 → Application / 应用 → Cookies，选择对应站点。',
+              "Open your browser's developer tools → Application → Cookies, and select the site.",
+            )}
+          </li>
+          <li>
+            {t(
+              '复制 LEETCODE_SESSION 和 csrftoken 的值到下方。不要复制他人的凭据，也不要把整个 Cookie 列表分享出来。',
+              "Paste the LEETCODE_SESSION and csrftoken values below. Don't use anyone else's credentials, and never share your whole cookie list.",
+            )}
           </li>
         </ol>
         <p>
-          凭据失效后重新登录获取；遇到验证码或访问限制，请回原站处理，不会绕过原站限制。
+          {t(
+            '凭据失效后重新登录获取；遇到验证码或访问限制，请回原站处理，不会绕过原站限制。',
+            "If the credentials expire, sign in again to get new ones. If you hit a CAPTCHA or an access limit, resolve it on LeetCode; we don't bypass its limits.",
+          )}
         </p>
       </details>
       <form
@@ -245,7 +299,7 @@ export function LeetcodeSyncPanel({
       >
         <div className={styles.fields}>
           <label>
-            账号地区
+            {t('账号地区', 'Account region')}
             <select
               value={region}
               disabled={busy}
@@ -255,12 +309,19 @@ export function LeetcodeSyncPanel({
                 clearCredentials();
               }}
             >
-              <option value="cn">力扣国区 · leetcode.cn</option>
-              <option value="us">LeetCode 美区 · leetcode.com</option>
+              <option value="cn">
+                {t('力扣国区 · leetcode.cn', 'LeetCode China · leetcode.cn')}
+              </option>
+              <option value="us">
+                {t(
+                  'LeetCode 美区 · leetcode.com',
+                  'LeetCode US · leetcode.com',
+                )}
+              </option>
             </select>
           </label>
           <label>
-            导入到哪一轮
+            {t('导入到哪一轮', 'Import into round')}
             <select
               value={roundId}
               disabled={busy}
@@ -271,8 +332,10 @@ export function LeetcodeSyncPanel({
             >
               {rounds.map((item) => (
                 <option key={item.id} value={item.id}>
-                  第 {item.number} 轮
-                  {item.id === currentRoundId ? '（当前）' : ''}
+                  {t(`第 ${item.number} 轮`, `Round ${item.number}`)}
+                  {item.id === currentRoundId
+                    ? t('（当前）', ' (current)')
+                    : ''}
                 </option>
               ))}
             </select>
@@ -304,7 +367,9 @@ export function LeetcodeSyncPanel({
         </div>
         <div className={styles.actions}>
           <Button type="submit" disabled={!canSubmit}>
-            {busy ? '正在读取提交记录…' : '开始同步'}
+            {busy
+              ? t('正在读取提交记录…', 'Reading submissions…')
+              : t('开始同步', 'Start sync')}
           </Button>
           {busy && (
             <Button
@@ -312,7 +377,7 @@ export function LeetcodeSyncPanel({
               variant="outline"
               onClick={() => void cancel()}
             >
-              停止同步
+              {t('停止同步', 'Stop sync')}
             </Button>
           )}
         </div>
@@ -321,57 +386,85 @@ export function LeetcodeSyncPanel({
         <div className={styles.progress} role="status" aria-live="polite">
           <strong>{statusName[run.status]}</strong>
           <div>
-            {regionName(run.region)} · {run.username} · 第{' '}
-            {fixedRound?.number ?? '—'} 轮
+            {regionName(run.region)} · {run.username} ·{' '}
+            {t(
+              `第 ${fixedRound?.number ?? '—'} 轮`,
+              `Round ${fixedRound?.number ?? '—'}`,
+            )}
           </div>
           <div>
-            已扫描 {run.scanned} · 成功提交 {run.accepted} · 已匹配{' '}
-            {run.matched} · 未匹配 {run.unmatched}
+            {t(
+              `已扫描 ${run.scanned} · 成功提交 ${run.accepted} · 已匹配 ${run.matched} · 未匹配 ${run.unmatched}`,
+              `Scanned ${run.scanned} · Accepted ${run.accepted} · Matched ${run.matched} · Unmatched ${run.unmatched}`,
+            )}
           </div>
         </div>
       )}
       {error && (
         <p className={styles.error} role="alert">
-          {error}
+          {t(error, messageEn(error))}
         </p>
       )}
       <details>
-        <summary>同步任务{history ? `（${history.runs.length}）` : ''}</summary>
+        <summary>
+          {t('同步任务', 'Sync jobs')}
+          {history
+            ? t(`（${history.runs.length}）`, ` (${history.runs.length})`)
+            : ''}
+        </summary>
         <ul className={styles.history}>
-          {history?.runs.map((item) => (
-            <li key={item.id}>
-              {regionName(item.region)} · {item.username} ·{' '}
-              {statusName[item.status]}
-              <span className={styles.meta}>
-                第 {rounds.find((r) => r.id === item.roundId)?.number ?? '—'} 轮
-                · 已扫描 {item.scanned} · 匹配 {item.matched} · 未匹配{' '}
-                {item.unmatched}
-              </span>
-              {['running', 'failed', 'cancelled'].includes(item.status) && (
-                <Button
-                  variant="outline"
-                  disabled={!canSubmit}
-                  onClick={() => {
-                    setRegion(item.region);
-                    setRoundId(item.roundId);
-                    void start(item);
-                  }}
-                >
-                  继续此任务
-                </Button>
-              )}
-              {item.error && <span className={styles.meta}>{item.error}</span>}
-            </li>
-          ))}
+          {history?.runs.map((item) => {
+            const round =
+              rounds.find((r) => r.id === item.roundId)?.number ?? '—';
+            return (
+              <li key={item.id}>
+                {regionName(item.region)} · {item.username} ·{' '}
+                {statusName[item.status]}
+                <span className={styles.meta}>
+                  {t(
+                    `第 ${round} 轮 · 已扫描 ${item.scanned} · 匹配 ${item.matched} · 未匹配 ${item.unmatched}`,
+                    `Round ${round} · Scanned ${item.scanned} · Matched ${item.matched} · Unmatched ${item.unmatched}`,
+                  )}
+                </span>
+                {['running', 'failed', 'cancelled'].includes(item.status) && (
+                  <Button
+                    variant="outline"
+                    disabled={!canSubmit}
+                    onClick={() => {
+                      setRegion(item.region);
+                      setRoundId(item.roundId);
+                      void start(item);
+                    }}
+                  >
+                    {t('继续此任务', 'Resume')}
+                  </Button>
+                )}
+                {item.error && (
+                  <span className={styles.meta}>
+                    {t(item.error, messageEn(item.error))}
+                  </span>
+                )}
+              </li>
+            );
+          })}
         </ul>
         <p className={styles.muted}>
-          继续任务前，填入该地区同一账号的新凭据；目标轮次不会改变。
+          {t(
+            '继续任务前，填入该地区同一账号的新凭据；目标轮次不会改变。',
+            'To resume a job, enter fresh credentials for the same account in that region. The target round stays the same.',
+          )}
         </p>
       </details>
       <details>
-        <summary>已导入成功提交{history ? `（${history.total}）` : ''}</summary>
+        <summary>
+          {t('已导入成功提交', 'Imported accepted submissions')}
+          {history ? t(`（${history.total}）`, ` (${history.total})`) : ''}
+        </summary>
         <p className={styles.muted}>
-          未匹配题目也保留记录，但不计入本站题单进度。
+          {t(
+            '未匹配题目也保留记录，但不计入本站题单进度。',
+            "Unmatched problems are kept too, but they don't count toward problem list progress here.",
+          )}
         </p>
         <ul className={styles.history}>
           {history?.records.map((item) => (
@@ -385,35 +478,42 @@ export function LeetcodeSyncPanel({
               </a>
               <span className={styles.meta}>
                 {regionName(item.region)} · {item.language} ·{' '}
-                {new Date(item.submittedAt).toLocaleString('zh-CN')} ·{' '}
-                {item.matchedProblemId ? '已匹配' : '未匹配本站题目'}
+                {new Date(item.submittedAt).toLocaleString(
+                  locale === 'zh' ? 'zh-CN' : 'en-US',
+                )}{' '}
+                ·{' '}
+                {item.matchedProblemId
+                  ? t('已匹配', 'Matched')
+                  : t('未匹配本站题目', 'No match on this site')}
               </span>
             </li>
           ))}
         </ul>
-        {history?.total === 0 && <p>还没有同步记录。</p>}
+        {history?.total === 0 && (
+          <p>{t('还没有同步记录。', 'No synced records yet.')}</p>
+        )}
         <div className={styles.actions}>
           <Button
             variant="outline"
             disabled={historyBusy || page <= 1}
             onClick={() => void loadHistory(page - 1)}
           >
-            上一页
+            {t('上一页', 'Previous')}
           </Button>
-          <span>第 {page} 页</span>
+          <span>{t(`第 ${page} 页`, `Page ${page}`)}</span>
           <Button
             variant="outline"
             disabled={historyBusy || !history?.hasMore}
             onClick={() => void loadHistory(page + 1)}
           >
-            下一页
+            {t('下一页', 'Next')}
           </Button>
           <Button
             variant="ghost"
             disabled={historyBusy}
             onClick={() => void loadHistory(page)}
           >
-            刷新记录
+            {t('刷新记录', 'Refresh')}
           </Button>
         </div>
       </details>

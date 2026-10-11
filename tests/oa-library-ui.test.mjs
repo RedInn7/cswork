@@ -96,7 +96,7 @@ test('OA library reveals solutions only on request, supports language/copy and c
   };
   try {
     await act(async () => root.render(createElement(OaLibrary)));
-    assert.match(document.body.textContent, /正在加载 OA/);
+    assert.match(document.body.textContent, /Loading OA/);
     await answer(requests[0], {
       items: [item],
       total: 1,
@@ -118,7 +118,7 @@ test('OA library reveals solutions only on request, supports language/copy and c
     );
     assert.match(
       document.querySelector('.oa-company-sidebar').textContent,
-      /全部公司/,
+      /All companies/,
     );
     assert.ok(
       document.querySelector('.oa-company-search input[type="search"]'),
@@ -140,7 +140,7 @@ test('OA library reveals solutions only on request, supports language/copy and c
     );
     assert.match(
       document.querySelector('.oa-company-options').textContent,
-      /没有匹配/,
+      /No matching/,
     );
     assert.equal(
       requests.length,
@@ -160,12 +160,12 @@ test('OA library reveals solutions only on request, supports language/copy and c
       contentHash: 'abc',
     });
     assert.equal(requests.length, 2);
-    assert.match(document.body.textContent, /运行样例、提交代码/);
+    assert.match(document.body.textContent, /Run the examples, submit your code/);
     assert.equal(
       document.querySelector('[aria-expanded]').getAttribute('aria-expanded'),
       'false',
     );
-    await click('查看题解');
+    await click('View solution');
     assert.match(requests[2].url, /\/solution$/);
     await answer(requests[2], {
       explanation: 'Reference explanation',
@@ -194,18 +194,18 @@ test('OA library reveals solutions only on request, supports language/copy and c
         },
       },
     });
-    await click('复制代码');
+    await click('Copy code');
     assert.equal(copied, 'return 2;');
     assert.equal(document.querySelectorAll('select option').length, 2);
     assert.equal(document.querySelectorAll('.oa-code code').length, 2);
-    await click('复制代码 2');
+    await click('Copy code 2');
     assert.equal(copied, 'return 3;');
-    await click('收起题解');
+    await click('Hide solution');
     assert.doesNotMatch(document.body.textContent, /Reference explanation/);
-    await click('返回 OA');
+    await click('Back to OA');
     await click('Test OA');
     const stale = requests.at(-1);
-    await click('返回 OA');
+    await click('Back to OA');
     assert.equal(stale.signal.aborted, true);
     await answer(stale, {
       ...item,
@@ -228,9 +228,9 @@ test('OA library reveals solutions only on request, supports language/copy and c
     await act(async () => requests.at(-1).resolve({ ok: false, status: 503 }));
     assert.match(
       document.querySelector('[role="alert"]').textContent,
-      /加载失败/,
+      /Failed to load/,
     );
-    await click('重试');
+    await click('Retry');
     await answer(requests.at(-1), {
       items: [],
       total: 0,
@@ -239,7 +239,7 @@ test('OA library reveals solutions only on request, supports language/copy and c
       companies: [{ slug: 'amazon', name: 'Amazon', count: 1 }],
       source: { name: 'OA Master' },
     });
-    assert.match(document.body.textContent, /没有找到匹配题目/);
+    assert.match(document.body.textContent, /No matching problems/);
     await act(async () => {
       const mobileSelect = document.querySelector('.oa-company-mobile select');
       mobileSelect.value = '';
@@ -303,9 +303,9 @@ test('OA library reveals solutions only on request, supports language/copy and c
     assert.match(document.body.textContent, /带时间戳/);
     assert.doesNotMatch(
       document.body.textContent,
-      /查看题解|开始练习|评测准备中/,
+      /View solution|Start practicing|Judging isn't ready/,
     );
-    await click('进入四阶段综合练习');
+    await click('Practice all four stages');
     assert.deepEqual(relatedNavigation, [
       'problem',
       { problem: 'oa-stripe-17' },
@@ -357,8 +357,8 @@ test('OA library reveals solutions only on request, supports language/copy and c
       judgeStatus: 'reading_only',
       statement: 'Pending statement',
     });
-    assert.match(document.body.textContent, /评测准备中/);
-    assert.doesNotMatch(document.body.textContent, /开始练习|查看题解/);
+    assert.match(document.body.textContent, /Judging isn't ready/);
+    assert.doesNotMatch(document.body.textContent, /Start practicing|View solution/);
     await act(async () =>
       root.render(createElement(OaEditorial, { problemId: 'oa-google-1' })),
     );

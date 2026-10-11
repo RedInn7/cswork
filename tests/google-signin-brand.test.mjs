@@ -21,6 +21,6 @@ test('Google sign-in uses a local official icon with its original aspect ratio',
   assert.match(source, /authClient\.signIn\.social\(\{/);
   assert.match(
     source,
-    /使用 \{provider === 'google' \? 'Google' : 'GitHub'\} 登录/,
+    /t\('使用 Google 登录', 'Sign in with Google'\)[\s\S]*?t\('使用 GitHub 登录', 'Sign in with GitHub'\)/,
   );
 });

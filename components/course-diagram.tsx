@@ -15,7 +15,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from './ui/dialog';
+import { useT } from '@/lib/i18n';
 import '@/app/diagrams.css';
+
+// English for the fallback labels of courseDiagramLabel(); accTitle text is course content.
+const LABEL_EN: Record<string, string> = {
+  课程时序图: 'Course sequence diagram',
+  课程状态图: 'Course state diagram',
+  课程流程图: 'Course flowchart',
+};
 
 let mermaidModule: Promise<(typeof import('mermaid'))['default']> | undefined;
 function loadMermaid() {
@@ -79,12 +87,13 @@ function DiagramCanvas({
   label: string;
   zoom?: number;
 }) {
+  const t = useT();
   return (
     <section
       className="course-diagram-canvas"
       // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard users must be able to focus and scroll a wide or tall diagram.
       tabIndex={0}
-      aria-label={`${label}，可滚动查看`}
+      aria-label={t(`${label}，可滚动查看`, `${label}, scrollable`)}
     >
       {/* oxlint-disable-next-line nextjs/no-img-element -- This locally generated SVG uses an isolated image context and its intrinsic dimensions. */}
       <img
@@ -100,6 +109,7 @@ function DiagramCanvas({
 }
 
 export function CourseDiagram({ source }: { source: string }) {
+  const t = useT();
   const target = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -108,7 +118,8 @@ export function CourseDiagram({ source }: { source: string }) {
   const [zoom, setZoom] = useState(1);
   const current =
     result?.source === source && result.attempt === attempt ? result : null;
-  const label = courseDiagramLabel(source);
+  const sourceLabel = courseDiagramLabel(source);
+  const label = t(sourceLabel, LABEL_EN[sourceLabel] ?? sourceLabel);
 
   useEffect(() => {
     const element = target.current;
@@ -185,37 +196,49 @@ export function CourseDiagram({ source }: { source: string }) {
             setZoom(1);
             setExpanded(true);
           }}
-          aria-label={`展开${label}`}
+          aria-label={t(`展开${label}`, `Expand ${label}`)}
         >
           <Maximize2 aria-hidden="true" />
-          展开
+          {t('展开', 'Expand')}
         </Button>
       </figcaption>
       {current?.image ? (
         <DiagramCanvas image={current.image} label={label} />
       ) : (
         <output className="course-diagram-status">
-          {current?.error ||
-            (visible ? '正在绘制图表…' : '滚动到此处后加载图表…')}
+          {current?.error
+            ? t(
+                current.error,
+                "This diagram can't be shown right now. View its source below, or try again later.",
+              )
+            : visible
+              ? t('正在绘制图表…', 'Drawing the diagram…')
+              : t(
+                  '滚动到此处后加载图表…',
+                  'The diagram loads when you scroll here…',
+                )}
           {current?.error && (
             <Button
               variant="outline"
               size="sm"
               onClick={() => setAttempt((value) => value + 1)}
             >
-              重试
+              {t('重试', 'Retry')}
             </Button>
           )}
         </output>
       )}
       <div className="course-diagram-footnote">
-        图表可横向滚动，展开后可缩放查看。
+        {t(
+          '图表可横向滚动，展开后可缩放查看。',
+          'Scroll sideways to see the whole diagram. Expand it to zoom.',
+        )}
       </div>
       <details
         className="course-diagram-source"
         open={current?.error ? true : undefined}
       >
-        <summary>查看图表源码</summary>
+        <summary>{t('查看图表源码', 'View diagram source')}</summary>
         <pre>
           <code>{source}</code>
         </pre>
@@ -225,16 +248,22 @@ export function CourseDiagram({ source }: { source: string }) {
           <DialogHeader>
             <DialogTitle>{label}</DialogTitle>
             <DialogDescription>
-              滚动查看完整图表，使用下方按钮调整大小。
+              {t(
+                '滚动查看完整图表，使用下方按钮调整大小。',
+                'Scroll to see the full diagram. Use the buttons below to resize it.',
+              )}
             </DialogDescription>
           </DialogHeader>
-          <div className="course-diagram-zoom" aria-label="图表缩放">
+          <div
+            className="course-diagram-zoom"
+            aria-label={t('图表缩放', 'Diagram zoom')}
+          >
             <Button
               variant="outline"
               size="icon-sm"
               disabled={zoom <= 0.5}
               onClick={() => setZoom((value) => Math.max(0.5, value - 0.25))}
-              aria-label="缩小图表"
+              aria-label={t('缩小图表', 'Zoom out')}
             >
               <Minus />
             </Button>
@@ -244,13 +273,13 @@ export function CourseDiagram({ source }: { source: string }) {
               size="icon-sm"
               disabled={zoom >= 2}
               onClick={() => setZoom((value) => Math.min(2, value + 0.25))}
-              aria-label="放大图表"
+              aria-label={t('放大图表', 'Zoom in')}
             >
               <Plus />
             </Button>
             <Button variant="ghost" size="sm" onClick={() => setZoom(1)}>
               <RotateCcw />
-              原始大小
+              {t('原始大小', 'Actual size')}
             </Button>
           </div>
           {current?.image && (

@@ -1,4 +1,5 @@
 import { readLocale } from './i18n';
+import { englishMessage } from './messages-en';
 import type { Problem } from './problems';
 export type Person = {
   id: string;
@@ -144,6 +145,9 @@ export function mergeLiteBoot(prev: Boot, next: Boot): Boot | null {
     ? { ...next, problems: prev.problems }
     : null;
 }
+/** Client-side fallback messages follow the site language, like the server's. */
+const localized = (message: string) =>
+  readLocale() === 'zh' ? message : englishMessage(message);
 export async function api<T = unknown>(
   path: string,
   data?: unknown,
@@ -161,7 +165,7 @@ export async function api<T = unknown>(
   try {
     result = await r.json();
   } catch {
-    throw new Error('服务暂时不可用，请稍后重试');
+    throw new Error(localized('服务暂时不可用，请稍后重试'));
   }
   if (!r.ok) {
     if (r.status === 401 && typeof window !== 'undefined')
@@ -172,7 +176,7 @@ export async function api<T = unknown>(
       'error' in result &&
       typeof result.error === 'string'
         ? result.error
-        : '操作失败';
+        : localized('操作失败');
     throw new ApiError(message, r.status, result);
   }
   return result as T;
@@ -193,30 +197,40 @@ export type PageResult<T> = {
   page: number;
   pageSize: number;
 };
-export const statusNames: Record<string, string> = {
-  accepted: '已通过',
-  queued: '排队中',
-  compiling: '编译中',
-  running: '运行中',
-  finished: '运行完成',
-  cancelled: '已取消',
-  memory_limit: '超出内存限制',
-  output_limit: '超出输出限制',
-  wrong_answer: '答案错误',
-  compile_error: '编译错误',
-  time_limit: '超出时间限制',
-  runtime_error: '运行错误',
-  system_error: '服务异常',
-  pending: '等待处理',
-  submitting: '提交中',
-  open: '待老师回复',
-  waiting: '待你确认',
-  resolved: '已解决',
-  approved: '评审通过',
-  changes_requested: '需要修改',
-  paid: '已支付',
-  refunded: '已退款',
+// [zh, en]
+const STATUS_NAMES: Record<string, [string, string]> = {
+  accepted: ['已通过', 'Accepted'],
+  queued: ['排队中', 'Queued'],
+  compiling: ['编译中', 'Compiling'],
+  running: ['运行中', 'Running'],
+  finished: ['运行完成', 'Finished'],
+  cancelled: ['已取消', 'Cancelled'],
+  memory_limit: ['超出内存限制', 'Memory Limit Exceeded'],
+  output_limit: ['超出输出限制', 'Output Limit Exceeded'],
+  wrong_answer: ['答案错误', 'Wrong Answer'],
+  compile_error: ['编译错误', 'Compile Error'],
+  time_limit: ['超出时间限制', 'Time Limit Exceeded'],
+  runtime_error: ['运行错误', 'Runtime Error'],
+  system_error: ['服务异常', 'System Error'],
+  pending: ['等待处理', 'Pending'],
+  submitting: ['提交中', 'Submitting'],
+  open: ['待老师回复', 'Awaiting teacher reply'],
+  waiting: ['待你确认', 'Awaiting your confirmation'],
+  resolved: ['已解决', 'Resolved'],
+  approved: ['评审通过', 'Approved'],
+  changes_requested: ['需要修改', 'Changes requested'],
+  paid: ['已支付', 'Paid'],
+  refunded: ['已退款', 'Refunded'],
 };
+/**
+ * Status labels in the site language. Each lookup reads the locale, so callers keep
+ * using statusNames[status]; they render after client data loads, not during hydration.
+ */
+// ponytail: Proxy so no caller changes; add statusName(status, locale) if one renders during SSR.
+export const statusNames = new Proxy<Record<string, string>>(
+  {},
+  { get: (_, key) => STATUS_NAMES[key as string]?.[readLocale() === 'zh' ? 0 : 1] },
+);
 export function date(n: number) {
   return new Date(n).toLocaleDateString('zh-CN', {
     month: '2-digit',

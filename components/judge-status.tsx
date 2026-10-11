@@ -11,6 +11,8 @@ import {
   X,
 } from 'lucide-react';
 import { api, type Boot } from '@/lib/types';
+import { useLocale, useT, type Locale } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
 import { companyLogos } from '@/lib/oa-company-brands';
 import type { Navigate } from './learning';
 import '@/app/redesign.css';
@@ -47,46 +49,50 @@ type Feed = {
   };
 };
 
-const VERDICTS: Record<string, { abbr: string; label: string; tone: string }> = {
-  accepted: { abbr: 'AC', label: '通过', tone: 'ac' },
-  wrong_answer: { abbr: 'WA', label: '答案错误', tone: 'wa' },
-  time_limit: { abbr: 'TLE', label: '超出时间', tone: 'tle' },
-  memory_limit: { abbr: 'MLE', label: '超出内存', tone: 'mle' },
-  output_limit: { abbr: 'OLE', label: '输出超限', tone: 'ole' },
-  runtime_error: { abbr: 'RE', label: '运行错误', tone: 're' },
-  compile_error: { abbr: 'CE', label: '编译错误', tone: 'ce' },
-  system_error: { abbr: 'SE', label: '判题异常', tone: 'se' },
-  cancelled: { abbr: '—', label: '已取消', tone: 'se' },
-  queued: { abbr: '…', label: '排队中', tone: 'pending' },
-  compiling: { abbr: '…', label: '编译中', tone: 'pending' },
-  running: { abbr: '…', label: '运行中', tone: 'pending' },
+/** Labels are [zh, en]. */
+const VERDICTS: Record<string, { abbr: string; label: [string, string]; tone: string }> = {
+  accepted: { abbr: 'AC', label: ['通过', 'Accepted'], tone: 'ac' },
+  wrong_answer: { abbr: 'WA', label: ['答案错误', 'Wrong Answer'], tone: 'wa' },
+  time_limit: { abbr: 'TLE', label: ['超出时间', 'Time Limit Exceeded'], tone: 'tle' },
+  memory_limit: { abbr: 'MLE', label: ['超出内存', 'Memory Limit Exceeded'], tone: 'mle' },
+  output_limit: { abbr: 'OLE', label: ['输出超限', 'Output Limit Exceeded'], tone: 'ole' },
+  runtime_error: { abbr: 'RE', label: ['运行错误', 'Runtime Error'], tone: 're' },
+  compile_error: { abbr: 'CE', label: ['编译错误', 'Compile Error'], tone: 'ce' },
+  system_error: { abbr: 'SE', label: ['判题异常', 'System Error'], tone: 'se' },
+  cancelled: { abbr: '—', label: ['已取消', 'Cancelled'], tone: 'se' },
+  queued: { abbr: '…', label: ['排队中', 'Queued'], tone: 'pending' },
+  compiling: { abbr: '…', label: ['编译中', 'Compiling'], tone: 'pending' },
+  running: { abbr: '…', label: ['运行中', 'Running'], tone: 'pending' },
 };
-const RESULT_FILTERS: [string, string][] = [
-  ['', '全部结果'],
-  ['accepted', '通过'],
-  ['wrong_answer', '答案错误'],
-  ['time_limit', '超出时间'],
-  ['memory_limit', '超出内存'],
-  ['runtime_error', '运行错误'],
-  ['compile_error', '编译错误'],
-  ['pending', '评测中'],
+/** [value, zh, en] */
+const RESULT_FILTERS: [string, string, string][] = [
+  ['', '全部结果', 'All results'],
+  ['accepted', '通过', 'Accepted'],
+  ['wrong_answer', '答案错误', 'Wrong Answer'],
+  ['time_limit', '超出时间', 'Time Limit Exceeded'],
+  ['memory_limit', '超出内存', 'Memory Limit Exceeded'],
+  ['runtime_error', '运行错误', 'Runtime Error'],
+  ['compile_error', '编译错误', 'Compile Error'],
+  ['pending', '评测中', 'Judging'],
 ];
-const LANGUAGES: [string, string][] = [
-  ['', '全部语言'],
-  ['cpp', 'C++'],
-  ['python', 'Python'],
-  ['java', 'Java'],
-  ['go', 'Go'],
+/** [value, zh, en] */
+const LANGUAGES: [string, string, string][] = [
+  ['', '全部语言', 'All languages'],
+  ['cpp', 'C++', 'C++'],
+  ['python', 'Python', 'Python'],
+  ['java', 'Java', 'Java'],
+  ['go', 'Go', 'Go'],
 ];
 const FILTER_KEYS = ['result', 'language', 'problem', 'userOf', 'mine'] as const;
 const POLL_MS = 5000;
 
-export function relativeTime(at: number, now = Date.now()) {
+export function relativeTime(at: number, now = Date.now(), locale: Locale = 'en') {
+  const t = (zh: string, en: string) => (locale === 'zh' ? zh : en);
   const s = Math.max(0, Math.round((now - at) / 1000));
-  if (s < 10) return '刚刚';
-  if (s < 60) return `${s} 秒前`;
-  if (s < 3600) return `${Math.floor(s / 60)} 分钟前`;
-  if (s < 86400) return `${Math.floor(s / 3600)} 小时前`;
+  if (s < 10) return t('刚刚', 'just now');
+  if (s < 60) return t(`${s} 秒前`, `${s} sec ago`);
+  if (s < 3600) return t(`${Math.floor(s / 60)} 分钟前`, `${Math.floor(s / 60)} min ago`);
+  if (s < 86400) return t(`${Math.floor(s / 3600)} 小时前`, `${Math.floor(s / 3600)} h ago`);
   const d = new Date(at);
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
@@ -109,14 +115,15 @@ export function mergeFeed(current: FeedItem[], page: FeedItem[]) {
 }
 
 function Verdict({ item }: { item: FeedItem }) {
-  const v = VERDICTS[item.status] || { abbr: '?', label: item.status, tone: 'se' };
+  const t = useT();
+  const v = VERDICTS[item.status] || { abbr: '?', label: [item.status, item.status], tone: 'se' };
   const progress =
     item.total > 0 && item.status !== 'accepted' && item.status !== 'compile_error';
   return (
     <span className={`js-verdict is-${v.tone}`}>
       <span className="js-dot" aria-hidden="true" />
       {v.tone !== 'pending' && <span className="js-abbr">{v.abbr}</span>}
-      {v.label}
+      {t(...v.label)}
       {progress && (
         <span className="js-progress">
           {item.passed}/{item.total}
@@ -141,20 +148,24 @@ export function FeedTable({
   onUser: (seq: number) => void;
   now: number;
 }) {
+  const t = useT();
+  const locale = useLocale();
   return (
     <table className="js-table">
-      <caption className="sr-only">全站评测状态，最新的提交在前</caption>
+      <caption className="sr-only">
+        {t('全站评测状态，最新的提交在前', 'Submissions across the site, newest first')}
+      </caption>
       <thead>
         <tr>
-          <th className="js-col-run">编号</th>
-          <th>用户</th>
-          <th>题目</th>
-          <th>结果</th>
-          <th className="is-num">用时</th>
-          <th className="is-num js-col-memory">内存</th>
-          <th className="js-col-language">语言</th>
-          <th className="is-num js-col-length">代码</th>
-          <th>提交时间</th>
+          <th className="js-col-run">{t('编号', 'ID')}</th>
+          <th>{t('用户', 'User')}</th>
+          <th>{t('题目', 'Problem')}</th>
+          <th>{t('结果', 'Result')}</th>
+          <th className="is-num">{t('用时', 'Runtime')}</th>
+          <th className="is-num js-col-memory">{t('内存', 'Memory')}</th>
+          <th className="js-col-language">{t('语言', 'Language')}</th>
+          <th className="is-num js-col-length">{t('代码', 'Code')}</th>
+          <th>{t('提交时间', 'Submitted')}</th>
         </tr>
       </thead>
       <tbody>
@@ -165,6 +176,7 @@ export function FeedTable({
             Object.hasOwn(companyLogos, item.source.company.slug)
               ? companyLogos[item.source.company.slug]
               : null;
+          const language = LANGUAGES.find(([id]) => id === item.language);
           return (
             <tr
               key={item.seq}
@@ -178,12 +190,12 @@ export function FeedTable({
                   <button
                     type="button"
                     className="js-user-filter"
-                    title="只看这位用户的提交"
+                    title={t('只看这位用户的提交', "Show only this user's submissions")}
                     onClick={() => onUser(item.seq)}
                   >
                     {item.user}
                   </button>
-                  {item.mine && <span className="rd-badge is-brand">我</span>}
+                  {item.mine && <span className="rd-badge is-brand">{t('我', 'You')}</span>}
                 </span>
               </td>
               <td className="js-cell-problem">
@@ -200,7 +212,7 @@ export function FeedTable({
                     </>
                   ) : (
                     <span className="rd-badge">
-                      {item.source.kind === 'library' ? '题库' : '课程'}
+                      {item.source.kind === 'library' ? t('题库', 'Problems') : t('课程', 'Course')}
                     </span>
                   )}
                   {title ? (
@@ -225,11 +237,11 @@ export function FeedTable({
               </td>
               <td className="is-num js-num js-col-memory">{memory(item.memoryKb)}</td>
               <td className="js-col-language">
-                {LANGUAGES.find(([id]) => id === item.language)?.[1] || item.language}
+                {(language && t(language[1], language[2])) || item.language}
               </td>
               <td className="is-num js-num js-col-length">{bytes(item.codeBytes)}</td>
               <td className="js-time js-cell-time" title={new Date(item.createdAt).toLocaleString()}>
-                {relativeTime(item.createdAt, now)}
+                {relativeTime(item.createdAt, now, locale)}
               </td>
             </tr>
           );
@@ -248,6 +260,7 @@ export function JudgeStatus({
   params: Record<string, string>;
   navigate: Navigate;
 }) {
+  const t = useT();
   const signedIn = !!boot.person;
   const filters = useMemo(() => {
     const out: Record<string, string> = {};
@@ -364,32 +377,39 @@ export function JudgeStatus({
     <div className="rd">
       <div className="rd-page">
         <header className="rd-head rd-reveal" style={{ '--i': 0 } as React.CSSProperties}>
-          <h1>评测状态</h1>
-          <p>全站提交实时滚动。只公开结果和用时；代码和测试点详情不公开，其他用户的昵称会打码。</p>
+          <h1>{t('评测状态', 'Status')}</h1>
+          <p>
+            {t(
+              '全站提交实时滚动。只公开结果和用时；代码和测试点详情不公开，其他用户的昵称会打码。',
+              "Live submissions from across the site. Only results and runtimes are public; code and test case details stay private, and other users' names are masked.",
+            )}
+          </p>
         </header>
         <div className="rd-stats rd-reveal" style={{ '--i': 1 } as React.CSSProperties}>
           <div>
             <div className="rd-stat-label">
-              <Activity size={13} /> 正在评测
+              <Activity size={13} /> {t('正在评测', 'Judging now')}
             </div>
             <div className="rd-stat-value">{stats ? stats.judging : '—'}</div>
           </div>
           <div>
             <div className="rd-stat-label">
-              <Gauge size={13} /> 最近通过率
+              <Gauge size={13} /> {t('最近通过率', 'Recent acceptance rate')}
             </div>
             <div className="rd-stat-value">
               {rate == null ? '—' : `${rate}%`}
-              {stats?.recent ? <small>近 {stats.recent} 次</small> : null}
+              {stats?.recent ? (
+                <small>{t(`近 ${stats.recent} 次`, `last ${stats.recent}`)}</small>
+              ) : null}
             </div>
           </div>
           <div>
             <div className="rd-stat-label">
-              <Cpu size={13} /> 判题并发
+              <Cpu size={13} /> {t('判题并发', 'Judge concurrency')}
             </div>
             <div className="rd-stat-value">
               {stats?.concurrency ?? '—'}
-              {stats?.concurrency ? <small>路</small> : null}
+              {stats?.concurrency ? <small>{t('路', 'slots')}</small> : null}
             </div>
           </div>
         </div>
@@ -398,46 +418,46 @@ export function JudgeStatus({
           <div className="js-filters">
             {boot.person && (
               <fieldset className="rd-segment">
-                <legend className="sr-only">提交范围</legend>
+                <legend className="sr-only">{t('提交范围', 'Submission scope')}</legend>
                 <button
                   type="button"
                   aria-pressed={!filters.mine}
                   onClick={() => apply({ mine: '' })}
                 >
-                  全部
+                  {t('全部', 'All')}
                 </button>
                 <button
                   type="button"
                   aria-pressed={!!filters.mine}
                   onClick={() => apply({ mine: '1' })}
                 >
-                  我的
+                  {t('我的', 'Mine')}
                 </button>
               </fieldset>
             )}
             <label className={`rd-chip ${filters.result ? 'is-set' : ''}`}>
-              <span className="sr-only">评测结果</span>
+              <span className="sr-only">{t('评测结果', 'Result')}</span>
               <select
                 value={filters.result || ''}
                 onChange={(e) => apply({ result: e.target.value })}
               >
-                {RESULT_FILTERS.map(([value, label]) => (
+                {RESULT_FILTERS.map(([value, zh, en]) => (
                   <option key={value} value={value}>
-                    {label}
+                    {t(zh, en)}
                   </option>
                 ))}
               </select>
               <ChevronDown size={13} className="rd-chip-caret" aria-hidden="true" />
             </label>
             <label className={`rd-chip ${filters.language ? 'is-set' : ''}`}>
-              <span className="sr-only">语言</span>
+              <span className="sr-only">{t('语言', 'Language')}</span>
               <select
                 value={filters.language || ''}
                 onChange={(e) => apply({ language: e.target.value })}
               >
-                {LANGUAGES.map(([value, label]) => (
+                {LANGUAGES.map(([value, zh, en]) => (
                   <option key={value} value={value}>
-                    {label}
+                    {t(zh, en)}
                   </option>
                 ))}
               </select>
@@ -445,8 +465,13 @@ export function JudgeStatus({
             </label>
             {filters.problem ? (
               <span className="rd-chip is-set">
-                题目：{problemTitle}
-                <button type="button" aria-label="清除题目筛选" onClick={() => apply({ problem: '' })}>
+                {t('题目：', 'Problem: ')}
+                {problemTitle}
+                <button
+                  type="button"
+                  aria-label={t('清除题目筛选', 'Clear problem filter')}
+                  onClick={() => apply({ problem: '' })}
+                >
                   <X size={13} />
                 </button>
               </span>
@@ -457,7 +482,10 @@ export function JudgeStatus({
                   e.preventDefault();
                   const id = findProblem(problemText);
                   if (id) apply({ problem: id });
-                  else setError('没有找到这道题，换个题号或标题试试');
+                  else
+                    setError(
+                      t('没有找到这道题，换个题号或标题试试', 'No matching problem. Try another ID or title.'),
+                    );
                   setProblemText('');
                 }}
               >
@@ -465,15 +493,20 @@ export function JudgeStatus({
                 <input
                   value={problemText}
                   onChange={(e) => setProblemText(e.target.value)}
-                  placeholder="题号或标题，回车筛选"
-                  aria-label="按题目筛选"
+                  placeholder={t('题号或标题，回车筛选', 'Problem ID or title, press Enter')}
+                  aria-label={t('按题目筛选', 'Filter by problem')}
                 />
               </form>
             )}
             {filters.userOf && (
               <span className="rd-chip is-set">
-                用户：{current?.userLabel || '…'}
-                <button type="button" aria-label="清除用户筛选" onClick={() => apply({ userOf: '' })}>
+                {t('用户：', 'User: ')}
+                {current?.userLabel || '…'}
+                <button
+                  type="button"
+                  aria-label={t('清除用户筛选', 'Clear user filter')}
+                  onClick={() => apply({ userOf: '' })}
+                >
                   <X size={13} />
                 </button>
               </span>
@@ -484,17 +517,21 @@ export function JudgeStatus({
             className="js-live"
             aria-pressed={live}
             onClick={() => setLive((on) => !on)}
-            title={live ? '每 5 秒自动刷新，点击暂停' : '已暂停，点击恢复自动刷新'}
+            title={
+              live
+                ? t('每 5 秒自动刷新，点击暂停', 'Refreshes every 5 seconds. Click to pause')
+                : t('已暂停，点击恢复自动刷新', 'Paused. Click to resume auto-refresh')
+            }
           >
             <span className="js-live-dot" aria-hidden="true" />
-            {live ? '实时' : '已暂停'}
+            {live ? t('实时', 'Live') : t('已暂停', 'Paused')}
             {!live && <RefreshCw size={12} aria-hidden="true" />}
           </button>
         </div>
 
         {error && (
           <div className="js-error" role="alert">
-            {error}
+            {t(error, englishMessage(error))}
           </div>
         )}
         <div className="rd-card js-card rd-reveal" style={{ '--i': 3 } as React.CSSProperties}>
@@ -528,34 +565,40 @@ export function JudgeStatus({
                     disabled={loadingMore}
                     onClick={() => void loadMore()}
                   >
-                    {loadingMore ? '加载中…' : '加载更早的提交'}
+                    {loadingMore ? t('加载中…', 'Loading…') : t('加载更早的提交', 'Load older submissions')}
                   </button>
                 </div>
               )}
             </>
           ) : current.next ? (
             <div className="js-empty">
-              <strong>最近的提交里没有符合条件的</strong>
-              <span>可以继续往更早的提交里找。</span>
+              <strong>{t('最近的提交里没有符合条件的', 'No recent submissions match')}</strong>
+              <span>{t('可以继续往更早的提交里找。', 'Keep looking through older submissions.')}</span>
               <button
                 type="button"
                 className="rd-button"
                 disabled={loadingMore}
                 onClick={() => void loadMore()}
               >
-                {loadingMore ? '查找中…' : '继续往前找'}
+                {loadingMore ? t('查找中…', 'Searching…') : t('继续往前找', 'Search older')}
               </button>
             </div>
           ) : (
             <div className="js-empty">
-              <strong>{query ? '没有符合条件的提交' : '还没有人提交'}</strong>
-              <span>{query ? '换个筛选条件试试。' : '去题库挑一道题，成为第一个出现在这里的人。'}</span>
+              <strong>
+                {query ? t('没有符合条件的提交', 'No matching submissions') : t('还没有人提交', 'No submissions yet')}
+              </strong>
+              <span>
+                {query
+                  ? t('换个筛选条件试试。', 'Try different filters.')
+                  : t('去题库挑一道题，成为第一个出现在这里的人。', 'Pick a problem and be the first one here.')}
+              </span>
               <button
                 type="button"
                 className="rd-button"
                 onClick={() => (query ? navigate('status') : navigate('problems'))}
               >
-                {query ? '清除筛选' : '去题库做题'}
+                {query ? t('清除筛选', 'Clear filters') : t('去题库做题', 'Browse problems')}
               </button>
             </div>
           )}

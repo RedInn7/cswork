@@ -1,5 +1,6 @@
 import type { Problem, Language } from './problems';
 import type { CodingMode } from './coding-mode';
+import { readLocale } from './i18n';
 
 export type OJProblem = Problem & {
   courseId?: string;
@@ -83,33 +84,34 @@ export const activeStatuses = new Set([
   'judging',
   'processing',
 ]);
-export const verdictNames: Record<string, string> = {
-  accepted: '通过',
-  wrong_answer: '答案错误',
-  compile_error: '编译错误',
-  time_limit: '超出时间限制',
-  memory_limit: '超出内存限制',
-  output_limit: '超出输出限制',
-  runtime_error: '运行错误',
-  system_error: '判题服务异常',
-  internal_error: '判题服务异常',
-  pending: '等待处理',
-  queued: '队列中',
-  submitting: '提交中',
-  compiling: '编译中',
-  running: '运行中',
-  judging: '判题中',
-  processing: '处理中',
-  cancelled: '已取消',
-  canceled: '已取消',
-  skipped: '未运行',
-  completed: '运行完成',
-  executed: '运行完成',
-  finished: '运行完成',
+/** Verdict labels as [zh, en]; pick with t(...verdict(status, mode)). */
+export const verdictNames: Record<string, [string, string]> = {
+  accepted: ['通过', 'Accepted'],
+  wrong_answer: ['答案错误', 'Wrong Answer'],
+  compile_error: ['编译错误', 'Compile Error'],
+  time_limit: ['超出时间限制', 'Time Limit Exceeded'],
+  memory_limit: ['超出内存限制', 'Memory Limit Exceeded'],
+  output_limit: ['超出输出限制', 'Output Limit Exceeded'],
+  runtime_error: ['运行错误', 'Runtime Error'],
+  system_error: ['判题服务异常', 'System Error'],
+  internal_error: ['判题服务异常', 'System Error'],
+  pending: ['等待处理', 'Pending'],
+  queued: ['队列中', 'Queued'],
+  submitting: ['提交中', 'Submitting'],
+  compiling: ['编译中', 'Compiling'],
+  running: ['运行中', 'Running'],
+  judging: ['判题中', 'Judging'],
+  processing: ['处理中', 'Processing'],
+  cancelled: ['已取消', 'Cancelled'],
+  canceled: ['已取消', 'Cancelled'],
+  skipped: ['未运行', 'Skipped'],
+  completed: ['运行完成', 'Finished'],
+  executed: ['运行完成', 'Finished'],
+  finished: ['运行完成', 'Finished'],
 };
-export function verdict(status: string, mode?: string) {
-  if (status === 'accepted' && mode === 'run') return '运行成功';
-  return verdictNames[status] || status;
+export function verdict(status: string, mode?: string): [string, string] {
+  if (status === 'accepted' && mode === 'run') return ['运行成功', 'Passed'];
+  return verdictNames[status] || [status, status];
 }
 
 export type OJReceipt = Pick<OJSubmission, 'id' | 'status'> &
@@ -170,8 +172,11 @@ export async function ojRequest<T>(
   try {
     const response = await fetch(`/api/oj/${path}`, {
       method: data === undefined ? 'GET' : 'POST',
-      headers:
-        data === undefined ? undefined : { 'Content-Type': 'application/json' },
+      // The server answers errors in the site language (English unless zh).
+      headers: {
+        'X-Locale': readLocale(),
+        ...(data === undefined ? {} : { 'Content-Type': 'application/json' }),
+      },
       body: data === undefined ? undefined : JSON.stringify(data),
       signal: controller.signal,
     });

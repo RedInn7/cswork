@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocale, useT } from '@/lib/i18n';
 
 type Activity = { problem_id: string; created_at: number };
 
@@ -27,6 +28,8 @@ export function PracticeCalendar({
   activity: Activity[];
   signedIn: boolean;
 }) {
+  const locale = useLocale();
+  const t = useT();
   const [now, setNow] = useState<number | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -70,7 +73,13 @@ export function PracticeCalendar({
           seen.add(id);
         const date = new Date(time);
         if (i % 7 === 0 && (i === 0 || date.getDate() <= 7))
-          months.push({ column: i / 7, label: `${date.getMonth() + 1}月` });
+          months.push({
+            column: i / 7,
+            label:
+              locale === 'zh'
+                ? `${date.getMonth() + 1}月`
+                : date.toLocaleString('en-US', { month: 'short' }),
+          });
       }
       // A label in the first column collides with the next month's if it starts within 3 weeks.
       if (months.length > 1 && months[1].column < 3) months.shift();
@@ -83,20 +92,36 @@ export function PracticeCalendar({
       }
     }
     return { cells, months, streak, total: seen.size };
-  }, [activity, dayStamp]);
+  }, [activity, dayStamp, locale]);
 
   return (
-    <section className="practice-calendar" aria-label="刷题日历">
+    <section
+      className="practice-calendar"
+      aria-label={t('刷题日历', 'Practice calendar')}
+    >
       <header>
-        <h3>刷题日历</h3>
+        <h3>{t('刷题日历', 'Practice calendar')}</h3>
         {signedIn ? (
-          <p>
-            近半年通过 <strong>{total}</strong> 题
-            <span aria-hidden="true"> · </span>
-            连续 <strong>{streak}</strong> 天
-          </p>
+          locale === 'zh' ? (
+            <p>
+              近半年通过 <strong>{total}</strong> 题
+              <span aria-hidden="true"> · </span>
+              连续 <strong>{streak}</strong> 天
+            </p>
+          ) : (
+            <p>
+              <strong>{total}</strong> solved in the last 6 months
+              <span aria-hidden="true"> · </span>
+              <strong>{streak}</strong>-day streak
+            </p>
+          )
         ) : (
-          <p>登录后自动记录每天通过的题目</p>
+          <p>
+            {t(
+              '登录后自动记录每天通过的题目',
+              'Sign in to track the problems you solve each day',
+            )}
+          </p>
         )}
       </header>
       <div className="practice-calendar-body" ref={scroller}>
@@ -120,7 +145,10 @@ export function PracticeCalendar({
                 title={
                   cell.future
                     ? undefined
-                    : `${new Date(cell.time).getMonth() + 1}月${new Date(cell.time).getDate()}日 · ${cell.count ? `通过 ${cell.count} 题` : '没有通过记录'}`
+                    : t(
+                        `${new Date(cell.time).getMonth() + 1}月${new Date(cell.time).getDate()}日 · ${cell.count ? `通过 ${cell.count} 题` : '没有通过记录'}`,
+                        `${new Date(cell.time).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · ${cell.count ? `${cell.count} solved` : 'Nothing solved'}`,
+                      )
                 }
               />
             ) : (
@@ -130,11 +158,11 @@ export function PracticeCalendar({
         </div>
       </div>
       <footer aria-hidden="true">
-        少
+        {t('少', 'Less')}
         {[0, 1, 2, 3, 4].map((l) => (
           <span key={l} data-level={l} />
         ))}
-        多
+        {t('多', 'More')}
       </footer>
     </section>
   );

@@ -7,6 +7,7 @@ import type {
 } from '@monaco-editor/react';
 import type { Language } from '@/lib/problems';
 import type { IntelligenceStatus } from '@/lib/editor-intelligence';
+import { useT } from '@/lib/i18n';
 import { attachIntelligence } from './monaco-intelligence';
 import {
   defaultEditorSettings,
@@ -73,6 +74,7 @@ export function CodeEditor({
   onIntelligenceStatus,
   onSuggestReady,
 }: CodeEditorProps) {
+  const t = useT();
   const { runtime, error, retry } = useMonacoRuntime();
   const callbacks = useRef({ onRun, onSubmit, onSave, onCursor });
   callbacks.current = { onRun, onSubmit, onSave, onCursor };
@@ -83,13 +85,13 @@ export function CodeEditor({
     const actions = [
       editor.addAction({
         id: 'cswork.run',
-        label: '运行样例 / 自定义输入',
+        label: t('运行样例 / 自定义输入', 'Run examples / custom input'),
         keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
         run: () => callbacks.current.onRun?.(),
       }),
       editor.addAction({
         id: 'cswork.submit',
-        label: '提交全部测试点',
+        label: t('提交全部测试点', 'Submit against all test cases'),
         keybindings: [
           monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Enter,
         ],
@@ -97,7 +99,7 @@ export function CodeEditor({
       }),
       editor.addAction({
         id: 'cswork.save',
-        label: '保存草稿',
+        label: t('保存草稿', 'Save draft'),
         keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
         run: () => callbacks.current.onSave?.(),
       }),
@@ -126,7 +128,9 @@ export function CodeEditor({
     };
   };
   const options: EditorProps['options'] = {
-    ariaLabel: readOnly ? '历史提交代码，只读' : '代码编辑器',
+    ariaLabel: readOnly
+      ? t('历史提交代码，只读', 'Submitted code, read-only')
+      : t('代码编辑器', 'Code editor'),
     automaticLayout: true,
     // Keep keyboard, clipboard and accessibility behavior consistent across browser hosts.
     editContext: false,
@@ -167,17 +171,24 @@ export function CodeEditor({
           options={options}
           onChange={(next) => onChange(next ?? '')}
           onMount={mounted}
-          loading={<div className="cs-editor-loading">正在初始化编辑器…</div>}
+          loading={
+            <div className="cs-editor-loading">
+              {t('正在初始化编辑器…', 'Starting the editor…')}
+            </div>
+          }
           keepCurrentModel={false}
         />
       ) : error ? (
         <div className="cs-editor-fallback">
           <div role="alert">
-            编辑器加载失败，代码仍可在下方编辑。
-            <button onClick={retry}>重试编辑器</button>
+            {t(
+              '编辑器加载失败，代码仍可在下方编辑。',
+              "The editor didn't load. You can still edit your code below.",
+            )}
+            <button onClick={retry}>{t('重试编辑器', 'Retry editor')}</button>
           </div>
           <textarea
-            aria-label="备用代码编辑器"
+            aria-label={t('备用代码编辑器', 'Fallback code editor')}
             value={value}
             readOnly={readOnly}
             spellCheck={false}
@@ -186,7 +197,7 @@ export function CodeEditor({
         </div>
       ) : (
         <div className="cs-editor-loading" role="status">
-          正在加载代码编辑器…
+          {t('正在加载代码编辑器…', 'Loading the code editor…')}
         </div>
       )}
     </div>
@@ -205,6 +216,7 @@ export function CodeDiff({
   language: Language;
   settings: EditorSettings;
 }) {
+  const t = useT();
   const { runtime, error, retry } = useMonacoRuntime();
   const options: DiffEditorProps['options'] = {
     editContext: false,
@@ -217,7 +229,10 @@ export function CodeDiff({
     wordWrap: settings.wordWrap ? 'on' : 'off',
     minimap: { enabled: false },
     scrollBeyondLastLine: false,
-    ariaLabel: '历史提交与当前草稿的差异',
+    ariaLabel: t(
+      '历史提交与当前草稿的差异',
+      'Differences between the submission and your current draft',
+    ),
   };
   return (
     <div className="cs-editor-host cs-diff-host" data-theme={settings.theme}>
@@ -245,13 +260,15 @@ export function CodeDiff({
         />
       ) : error ? (
         <div className="cs-editor-fallback">
-          <button onClick={retry}>重试差异编辑器</button>
+          <button onClick={retry}>
+            {t('重试差异编辑器', 'Retry diff editor')}
+          </button>
           <pre>{original}</pre>
           <pre>{modified}</pre>
         </div>
       ) : (
         <div className="cs-editor-loading" role="status">
-          正在加载代码对比…
+          {t('正在加载代码对比…', 'Loading the code comparison…')}
         </div>
       )}
     </div>
