@@ -7,19 +7,19 @@ import { HttpError, json, limitReader } from './http';
 
 /**
  * Read-only interview content library (questions, experiences, guides, concepts,
- * articles, cheatsheets, courses) built offline into its own SQLite file, separate
+ * articles, cheatsheets, algorithm tutorials) built offline into its own SQLite file, separate
  * from user data. Replacing the file is picked up without a restart.
  */
 const TYPES = [
   'coding_question', 'interview_question', 'experience', 'guide', 'concept',
-  'article', 'cheatsheet', 'course', 'lesson',
+  'article', 'cheatsheet', 'algorithm',
 ] as const;
 type ItemType = (typeof TYPES)[number];
 const GROUPS: Record<string, readonly ItemType[]> = {
   questions: ['coding_question', 'interview_question'],
 };
 const PAGE = 20;
-const SUMMARY = `type,slug,title,summary,company_slug,company_name,role,category,difficulty,round,seniority,tags,published_at,partial`;
+const SUMMARY = `type,slug,title,summary,title_zh,summary_zh,company_slug,company_name,role,category,difficulty,round,seniority,tags,published_at,partial`;
 
 let handle: { db: Database.Database; mtime: number; checked: number } | null = null;
 function library() {
@@ -53,6 +53,9 @@ const row = (r: Record<string, unknown>) => ({
   slug: r.slug,
   title: r.title,
   summary: r.summary,
+  // Bilingual tutorials carry Chinese too; the client picks by site language.
+  titleZh: r.title_zh ?? null,
+  summaryZh: r.summary_zh ?? null,
   company: r.company_slug ? { slug: r.company_slug, name: r.company_name } : null,
   role: r.role,
   category: r.category,
@@ -147,8 +150,7 @@ function item(db: Database.Database, params: URLSearchParams) {
         experience: ['experience'],
         guide: ['guide'],
         concept: ['concept'],
-        course: ['course'],
-        lesson: ['lesson'],
+        algorithm: ['algorithm'],
       };
       const target = kinds[rel.kind]
         ? (db

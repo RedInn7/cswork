@@ -3,7 +3,7 @@
 // Questions we already have (OA problems, library problems, PracHub duplicates) are
 // recorded in parsed/question-dupes.json and kept out of the lists.
 import Database from 'better-sqlite3';
-import { existsSync, readFileSync, renameSync, rmSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, renameSync, rmSync } from 'node:fs';
 import { createInterface } from 'node:readline';
 import { createReadStream } from 'node:fs';
 import { join } from 'node:path';
@@ -11,11 +11,16 @@ import { DIR, PARSED } from './common.mjs';
 
 const out = process.argv[2] || join(DIR, 'content.sqlite');
 const tmp = `${out}.building`;
+// PracHub courses/lessons are parsed but not published for now (owner's call).
+// algorithms-*.jsonl are the bilingual interview tutorials adapted from OI Wiki.
 const FILES = [
   'coding-questions', 'interview-questions', 'experiences', 'guides', 'concepts',
-  'articles', 'cheatsheets', 'courses', 'lessons',
+  'articles', 'cheatsheets',
+  ...(existsSync(PARSED)
+    ? readdirSync(PARSED).filter((f) => /^algorithms-[a-z-]+\.jsonl$/.test(f)).map((f) => f.slice(0, -6)).sort()
+    : []),
 ];
-const TYPES = new Set(['coding_question', 'interview_question', 'experience', 'guide', 'concept', 'article', 'cheatsheet', 'course', 'lesson']);
+const TYPES = new Set(['coding_question', 'interview_question', 'experience', 'guide', 'concept', 'article', 'cheatsheet', 'algorithm']);
 
 rmSync(tmp, { force: true });
 const db = new Database(tmp);
@@ -24,6 +29,7 @@ db.pragma('synchronous = OFF');
 db.exec(`
 CREATE TABLE items(
   id TEXT PRIMARY KEY, type TEXT NOT NULL, slug TEXT NOT NULL, title TEXT NOT NULL, summary TEXT,
+  title_zh TEXT, summary_zh TEXT,
   body TEXT NOT NULL, company_slug TEXT, company_name TEXT, role TEXT, category TEXT,
   difficulty TEXT, round TEXT, seniority TEXT, tags TEXT NOT NULL DEFAULT '[]',
   published_at TEXT, updated_at TEXT, relations TEXT NOT NULL DEFAULT '[]',
@@ -42,8 +48,8 @@ const dupFile = join(PARSED, 'question-dupes.json');
 if (existsSync(dupFile))
   for (const d of JSON.parse(readFileSync(dupFile, 'utf8'))) dupes.set(d.id, d.dupOf);
 
-const insert = db.prepare(`INSERT OR REPLACE INTO items(id,type,slug,title,summary,body,company_slug,company_name,role,category,difficulty,round,seniority,tags,published_at,updated_at,relations,extra,partial,dup_of,listed)
-  VALUES(@id,@type,@slug,@title,@summary,@body,@company_slug,@company_name,@role,@category,@difficulty,@round,@seniority,@tags,@published_at,@updated_at,@relations,@extra,@partial,@dup_of,@listed)`);
+const insert = db.prepare(`INSERT OR REPLACE INTO items(id,type,slug,title,summary,title_zh,summary_zh,body,company_slug,company_name,role,category,difficulty,round,seniority,tags,published_at,updated_at,relations,extra,partial,dup_of,listed)
+  VALUES(@id,@type,@slug,@title,@summary,@title_zh,@summary_zh,@body,@company_slug,@company_name,@role,@category,@difficulty,@round,@seniority,@tags,@published_at,@updated_at,@relations,@extra,@partial,@dup_of,@listed)`);
 const counts = {};
 let rejected = 0;
 for (const file of FILES) {
@@ -62,6 +68,7 @@ for (const file of FILES) {
     batch.push({
       id: item.id, type: item.type, slug: item.slug, title: item.title,
       summary: item.summary ?? null, body: item.body,
+      title_zh: item.titleZh ?? null, summary_zh: item.summaryZh ?? null,
       company_slug: item.company?.slug ?? null, company_name: item.company?.name ?? null,
       role: item.role ?? null, category: item.category ?? null,
       difficulty: ['easy', 'medium', 'hard'].includes(item.difficulty) ? item.difficulty : null,

@@ -29,7 +29,10 @@ writeFileSync(join(parsed, 'experiences.jsonl'), lines([
   item({ id: 'ex-amazon-oa', type: 'experience', slug: 'amazon-oa', title: 'Amazon SDE OA', body: 'Two questions.', company: { slug: 'amazon', name: 'Amazon' }, relations: [{ kind: 'question', slug: 'lru' }, { kind: 'question', slug: 'missing' }], extra: { result: 'Offer' } }),
 ]));
 writeFileSync(join(parsed, 'courses.jsonl'), lines([
-  item({ id: 'co-sd', type: 'course', slug: 'sd', title: 'System design basics', body: 'Course intro.', extra: { chapters: [{ title: 'Start', lessons: [{ slug: 'sd__intro', title: 'Intro', free: true }] }] } }),
+  item({ id: 'co-sd', type: 'course', slug: 'sd', title: 'System design basics', body: 'Course intro.' }),
+]));
+writeFileSync(join(parsed, 'algorithms-basics.jsonl'), lines([
+  item({ id: 'al-binary-search', type: 'algorithm', slug: 'binary-search', title: 'Binary search', titleZh: '二分查找', summaryZh: '在有序区间里折半查找', body: 'Halve the range.', extra: { level: 'core', bodyZh: '每次把区间折半。' } }),
 ]));
 writeFileSync(join(folder, 'prachub', 'parsed', 'question-dupes.json'), JSON.stringify([
   { id: 'cq-two-sum', dupOf: { kind: 'library', id: 'lc-1', title: '两数之和' }, score: 0.97, method: 'title' },
@@ -78,8 +81,12 @@ void test('detail resolves relations and points duplicates at our own problem', 
   assert.deepEqual(exp.relations.map((r: { slug: string }) => r.slug), ['lru']); // the missing one is dropped
   const dup = await get('item?type=questions&slug=two-sum');
   assert.deepEqual(dup.dupOf, { kind: 'library', id: 'lc-1', title: '两数之和' });
-  const course = await get('item?type=course&slug=sd');
-  assert.equal(course.extra.chapters[0].lessons[0].slug, 'sd__intro');
+  // PracHub courses are not published; bilingual tutorials are.
+  await assert.rejects(get('item?type=course&slug=sd'), status(400));
+  const tutorial = await get('item?type=algorithm&slug=binary-search');
+  assert.equal(tutorial.titleZh, '二分查找');
+  assert.equal(tutorial.extra.bodyZh, '每次把区间折半。');
+  assert.equal((await get('list?type=algorithm')).items[0].summaryZh, '在有序区间里折半查找');
   await assert.rejects(get('item?type=questions&slug=nope'), status(404));
   const stats = await get('stats');
   assert.equal(stats.counts.coding_question, 1);
