@@ -28,7 +28,7 @@ writeFileSync(join(parsed, 'interview-questions.jsonl'), lines([
   item({ id: 'iq-topk-copy', type: 'interview_question', slug: 'topk-copy', title: 'LRU cache, third copy', body: 'Same again.' }),
 ]));
 writeFileSync(join(parsed, 'experiences.jsonl'), lines([
-  item({ id: 'ex-amazon-oa', type: 'experience', slug: 'amazon-oa', title: 'Amazon SDE OA', body: 'Two questions: [LRU](https://prachub.com/coding-questions/lru), [plans](https://prachub.com/pricing). ![chart](https://ik.imagekit.io/x/a.png) ![gone](https://ik.imagekit.io/x/b.png) Code `arr[i](/x)` stays. [Guide](https://PracHub.com/interview-guide/google-swe "Google") https://prachub.com/companies/google/x ![v](https://ik.imagekit.io/x/a.png?tr=w-100)', company: { slug: 'amazon', name: 'Amazon' }, relations: [{ kind: 'question', slug: 'lru' }, { kind: 'question', slug: 'missing' }], extra: { result: 'Offer' } }),
+  item({ id: 'ex-amazon-oa', type: 'experience', slug: 'amazon-oa', title: 'Amazon SDE OA', body: 'Two questions: [LRU](https://prachub.com/coding-questions/lru), [plans](https://prachub.com/pricing). ![chart](https://ik.imagekit.io/x/a.png) ![gone](https://ik.imagekit.io/x/b.png) Code `arr[i](/x)` stays. [Guide](https://PracHub.com/interview-guide/google-swe "Google") https://prachub.com/companies/google/x ![v](https://ik.imagekit.io/x/a.png?tr=w-100) [same](/interview-questions/lru) [SWE](/positions/software-engineer) [all](https://prachub.com/questions)', company: { slug: 'amazon', name: 'Amazon' }, relations: [{ kind: 'question', slug: 'lru' }, { kind: 'question', slug: 'missing' }], extra: { result: 'Offer' } }),
 ]));
 writeFileSync(join(parsed, 'courses.jsonl'), lines([
   item({ id: 'co-sd', type: 'course', slug: 'sd', title: 'System design basics', body: 'Course intro.' }),
@@ -104,9 +104,11 @@ void test('detail resolves relations and points duplicates at our own problem', 
   // Links point inside CSWORK, images at our own copies; unknown pages keep only their text.
   assert.equal(
     exp.body,
-    // Images without a published copy are left out (cover art, logos).
+    // Images without a published copy are left out (cover art, logos); links point only at pages
+    // that exist, under their real type, and list pages map to filtered lists.
     'Two questions: [LRU](/?view=content&type=coding_question&slug=lru), [plans](#). ![chart](/content-assets/abc.png) ' +
-      ' Code `arr[i](/x)` stays. [Guide](/?view=content&type=guide&slug=google-swe "Google") [link](/?view=questions&company=google) ',
+      ' Code `arr[i](/x)` stays. [Guide](#) [link](/?view=questions&company=google)  [same](/?view=content&type=coding_question&slug=lru)' +
+      ' [SWE](/?view=questions&role=Software%20Engineer) [all](/?view=questions)',
   );
   assert.deepEqual(exp.relations.map((r: { slug: string }) => r.slug), ['lru']); // the missing one is dropped
   const dup = await get('item?type=questions&slug=two-sum');

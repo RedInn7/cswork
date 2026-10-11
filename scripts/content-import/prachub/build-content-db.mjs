@@ -53,22 +53,63 @@ CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
 const readJson = (name, empty) =>
   existsSync(join(PARSED, name)) ? JSON.parse(readFileSync(join(PARSED, name), 'utf8')) : empty;
 const assets = readJson('assets-map.json', {});
-const ROUTES = {
-  'coding-questions': 'coding_question', 'interview-questions': 'interview_question',
-  'interview-experiences': 'experience', concepts: 'concept', resources: 'article',
-  'interview-guide': 'guide', 'interview-prep': 'cheatsheet',
+// First pass over everything we publish, so links only point at pages that exist.
+const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const known = { pages: new Set(), companies: new Set(), roles: new Map(), categories: new Map() };
+for (const file of FILES) {
+  const path = join(PARSED, `${file}.jsonl`);
+  if (!existsSync(path)) continue;
+  for await (const line of createInterface({ input: createReadStream(path), crlfDelay: Infinity })) {
+    if (!line.trim()) continue;
+    const it = JSON.parse(line);
+    known.pages.add(`${it.type}:${it.slug}`);
+    if (it.company?.slug) known.companies.add(it.company.slug);
+    if (it.role) known.roles.set(slugify(it.role), it.role);
+    if (it.category) known.categories.set(slugify(it.category), it.category);
+  }
+}
+// Old-site sections -> our item types (a question may live under either questions path).
+const SECTIONS = {
+  'coding-questions': ['coding_question', 'interview_question'], 'interview-questions': ['interview_question', 'coding_question'],
+  'interview-experiences': ['experience'], concepts: ['concept'], resources: ['article'],
+  'interview-guide': ['guide'], 'interview-prep': ['cheatsheet'],
 };
-const SITE = /^(?:https?:\/\/(?:www\.)?prachub\.com)?(\/[^\s]*)?$/i;
+const LISTS = {
+  questions: 'questions', 'coding-questions': 'questions', 'interview-questions': 'questions', companies: 'questions',
+  positions: 'questions', categories: 'questions', 'interview-experiences': 'experiences',
+  resources: 'resources&type=article', concepts: 'resources&type=concept', 'interview-guide': 'resources&type=guide',
+  'interview-prep': 'resources&type=cheatsheet',
+};
+const OLD_SITE = /^(?:https?:\/\/(?:www\.)?prachub\.com(?=[/?#]|$)|\/(?!\/))/i;
+const questions = (filter, value) => `/?view=questions&${filter}=${encodeURIComponent(value)}`;
 /** CSWORK link for an old-site URL or path, '#' when there is no counterpart, null when not an old-site link. */
 function route(url) {
-  const m = SITE.exec(url);
-  if (!m || (!m[1] && !/prachub\.com/i.test(url))) return null;
-  const path = m[1] || '/';
-  if (path.startsWith('/content-assets/') || path.startsWith('/?view=')) return null;
-  const [, kind, slug] = /^\/([a-z-]+)\/?([^?#]*)/i.exec(path) || [];
-  if (kind && Object.hasOwn(ROUTES, kind) && slug)
-    return `/?view=content&type=${ROUTES[kind]}&slug=${encodeURIComponent(slug.replace(/\/$/, ''))}`;
-  if (kind === 'companies' && slug) return `/?view=questions&company=${encodeURIComponent(slug.split('/')[0])}`;
+  if (!OLD_SITE.test(url) || url.startsWith('/content-assets/') || url.startsWith('/?view=')) return null;
+  let u;
+  try {
+    u = new URL(url, 'https://prachub.com');
+  } catch {
+    return '#';
+  }
+  const [kind = '', slug = ''] = u.pathname.split('/').filter(Boolean);
+  if (slug && Object.hasOwn(SECTIONS, kind)) {
+    const type = SECTIONS[kind].find((t) => known.pages.has(`${t}:${slug}`));
+    return type ? `/?view=content&type=${type}&slug=${encodeURIComponent(slug)}` : '#';
+  }
+  if (slug && kind === 'companies') return known.companies.has(slug) ? questions('company', slug) : '/?view=questions';
+  if (slug && kind === 'positions') return known.roles.has(slug) ? questions('role', known.roles.get(slug)) : '/?view=questions';
+  if (slug && kind === 'categories')
+    return known.categories.has(slug) ? questions('category', known.categories.get(slug)) : '/?view=questions';
+  const filtered = () => {
+    for (const [param, values] of [['category', known.categories], ['role', known.roles]]) {
+      const v = slugify(u.searchParams.get(param) || '');
+      if (values.has(v)) return questions(param, values.get(v));
+    }
+    const company = u.searchParams.get('company');
+    return company && known.companies.has(company) ? questions('company', company) : null;
+  };
+  if (!kind) return filtered() || '#';
+  if (Object.hasOwn(LISTS, kind)) return (LISTS[kind] === 'questions' && filtered()) || `/?view=${LISTS[kind]}`;
   // Pricing, sign-in and other site pages have no CSWORK counterpart: keep the text only.
   return '#';
 }
