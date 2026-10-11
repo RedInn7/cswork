@@ -4,7 +4,8 @@
 // Resumable: URLs already in the map are skipped; files no longer kept are pruned.
 // Only explanatory diagrams are kept. Cover/hero art, promo graphics, testimonials and pasted
 // screenshots carry the old site's logo, QR codes or nothing worth keeping (checked by eye);
-// the builder drops every image that has no local copy.
+// the builder drops every image that has no local copy. To double-check that none shows the old
+// site's name or logo: swift scripts/content-import/prachub/ocr-images.swift $PRACHUB_DIR/assets
 import { createHash } from 'node:crypto';
 import { createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, unlinkSync, writeFileSync } from 'node:fs';
 import { createInterface } from 'node:readline';
