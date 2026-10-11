@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import {
   ANALYTICS_CONSENT_KEY,
   ANALYTICS_NAVIGATION_EVENT,
@@ -147,7 +146,9 @@ export function Analytics({ id }: { id: string }) {
           <p>
             是否允许 Google Analytics
             统计页面访问？不发送邮箱、代码或私密消息。拒绝不影响使用，可随时撤回。
-            <Link href="/privacy">Privacy / 隐私说明</Link>
+          {/* A full navigation unloads the existing analytics runtime. */}
+          {/* oxlint-disable-next-line next/no-html-link-for-pages */}
+          <a href="/privacy">Privacy / 隐私说明</a>
           </p>
           <div className="analytics-actions">
             <button type="button" onClick={() => save(false)}>
