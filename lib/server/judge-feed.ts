@@ -1,6 +1,7 @@
 import type { Person } from './auth';
 import { sqlite } from '@/db/sqlite';
 import { visibleCourseSql } from './course-visibility';
+import { setting } from './env';
 import { HttpError } from './http';
 import { oaLibrary } from './oa-library';
 
@@ -24,6 +25,19 @@ const libraryProblem = `s.problem_id IN (SELECT judge_problem_id FROM study_libr
 /** OA and library problems are public; course exercises follow course visibility. */
 const visible = (viewer: Person | null) =>
   `(s.problem_id LIKE 'oa-%' OR ${libraryProblem} OR (1=1${visibleCourseSql(viewer, 'p.course_id')}))`;
+
+/**
+ * Accounts kept off the public board, e.g. the owner's test runs: FEED_HIDDEN_USERS is a
+ * comma-separated list of user ids. Their rows still show under their own "mine" view.
+ */
+function unlisted() {
+  const ids = setting('FEED_HIDDEN_USERS')
+    .split(',')
+    .map((id) => id.trim())
+    .filter((id) => /^[A-Za-z0-9_-]{1,64}$/.test(id));
+  return ids.length ? `s.user_id NOT IN (${ids.map((id) => `'${id}'`).join(',')})` : '';
+}
+const andUnlisted = () => (unlisted() ? ` AND ${unlisted()}` : '');
 
 /** "张**", "Al***": enough to tell rows apart without publishing a real name. */
 const graphemes = new Intl.Segmenter('zh', { granularity: 'grapheme' });
@@ -85,7 +99,7 @@ export function judgeFeed(viewer: Person | null, params: URLSearchParams) {
       ? (db
           .prepare(
             `SELECT s.user_id,u.name FROM submissions s JOIN oj_problems p ON p.id=s.problem_id
-             LEFT JOIN user u ON u.id=s.user_id WHERE s.rowid=? AND s.mode='judge' AND ${visible(viewer)}`,
+             LEFT JOIN user u ON u.id=s.user_id WHERE s.rowid=? AND s.mode='judge' AND ${visible(viewer)}${andUnlisted()}`,
           )
           .get(userOf) as { user_id: string; name: string | null } | undefined)
       : undefined;
@@ -101,6 +115,7 @@ export function judgeFeed(viewer: Person | null, params: URLSearchParams) {
     where.push('s.user_id = ?');
     args.push(userId);
   }
+  if (params.get('mine') !== '1' && unlisted()) where.push(unlisted());
   const result = params.get('result');
   if (result) {
     if (!RESULTS.has(result)) throw new HttpError(400, '未知的评测结果');
@@ -180,7 +195,7 @@ function feedStats(viewer: Person | null) {
   const judging = db
     .prepare(
       `SELECT COUNT(*) AS n FROM submissions s JOIN oj_problems p ON p.id=s.problem_id
-       WHERE s.status IN ${PENDING} AND ${visible(viewer)}`,
+       WHERE s.status IN ${PENDING} AND ${visible(viewer)}${andUnlisted()}`,
     )
     .get() as { n: number };
   const recent = db
@@ -188,7 +203,7 @@ function feedStats(viewer: Person | null) {
       `SELECT COUNT(*) AS n,COALESCE(SUM(status='accepted'),0) AS ac FROM
         (SELECT s.status FROM submissions s JOIN oj_problems p ON p.id=s.problem_id
          WHERE s.mode='judge' AND +s.status NOT IN ('queued','compiling','running','cancelled')
-           AND ${visible(viewer)} ORDER BY s.rowid DESC LIMIT 200)`,
+           AND ${visible(viewer)}${andUnlisted()} ORDER BY s.rowid DESC LIMIT 200)`,
     )
     .get() as { n: number; ac: number };
   const runtime = db

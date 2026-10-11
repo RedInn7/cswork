@@ -163,6 +163,25 @@ void test('owner-only mode hides course exercises from everyone but the owner', 
   }
 });
 
+void test('hidden accounts stay off the public board but keep their own view', () => {
+  process.env.FEED_HIDDEN_USERS = `${alice.id}, not valid!`;
+  try {
+    const bobRow = all(null).items.find((i) => i.user === 'bo***')!;
+    for (const viewer of [null, bob, alice]) {
+      const feed = all(viewer);
+      assert.ok(feed.items.every((i) => i.user !== 'al***' && i.user !== 'alice-nick'));
+      assert.equal(feed.stats?.judging, 0); // alice's running submission is not counted
+    }
+    assert.equal(all(alice, 'mine=1').items.length, 2);
+    assert.ok(all(null, `userOf=${bobRow.seq}`).items.length > 0);
+    assert.throws(() => all(null, 'userOf=1'), (e: unknown) => (e as { status: number }).status === 404);
+  } finally {
+    delete process.env.FEED_HIDDEN_USERS;
+  }
+  // Removing the setting restores the account (row 1 is alice's).
+  assert.ok(all(null, 'userOf=1').items.length > 0);
+});
+
 void test('unindexed filters scan a bounded window and hand back a cursor', () => {
   db.transaction(() => {
     for (let i = 0; i < 20050; i++) submit('bob', 'lc-1', 'wrong_answer');
