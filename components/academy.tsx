@@ -17,6 +17,7 @@ import {
   LayoutDashboard,
   LifeBuoy,
   Bell,
+  Languages,
   Play,
   ArrowRight,
   Check,
@@ -70,6 +71,7 @@ import {
   type Navigate,
 } from './learning';
 import { JudgeStatus } from './judge-status';
+import { setLocale, useLocale } from '@/lib/i18n';
 import { ContentDetail, ContentList } from './content-library';
 import {
   TicketComposer,
@@ -114,6 +116,10 @@ const initial: Boot = {
 };
 type SearchResult = { id: string; title: string; snippet: string };
 export function Academy() {
+  const locale = useLocale();
+  useEffect(() => {
+    document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
+  }, [locale]);
   const [boot, setBoot] = useState<Boot>(initial),
     [loading, setLoading] = useState(true),
     [error, setError] = useState(''),
@@ -516,6 +522,15 @@ export function Academy() {
               <span>搜索课程内容</span>
               <kbd>搜索</kbd>
             </button>
+            <Button
+              variant="ghost"
+              className="locale-button"
+              aria-label={locale === 'zh' ? 'Switch to English' : '切换到中文'}
+              onClick={() => setLocale(locale === 'zh' ? 'en' : 'zh')}
+            >
+              <Languages size={16} />
+              {locale === 'zh' ? 'EN' : '中文'}
+            </Button>
             <Button
               size="icon"
               variant="ghost"

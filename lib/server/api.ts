@@ -520,6 +520,6 @@ export async function handle(request: Request) {
     }
     throw new HttpError(404, '操作不存在');
   } catch (e) {
-    return fail(e);
+    return fail(e, request);
   }
 }

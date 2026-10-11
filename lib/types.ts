@@ -1,3 +1,4 @@
+import { readLocale } from './i18n';
 import type { Problem } from './problems';
 export type Person = {
   id: string;
@@ -149,7 +150,11 @@ export async function api<T = unknown>(
 ): Promise<T> {
   const r = await fetch('/api/' + path, {
     method: data === undefined ? 'GET' : 'POST',
-    headers: data === undefined ? {} : { 'Content-Type': 'application/json' },
+    // The server answers errors in the site language (English unless zh).
+    headers: {
+      'X-Locale': readLocale(),
+      ...(data === undefined ? {} : { 'Content-Type': 'application/json' }),
+    },
     body: data === undefined ? undefined : JSON.stringify(data),
   });
   let result: unknown;
