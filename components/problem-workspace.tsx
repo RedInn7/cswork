@@ -1752,16 +1752,9 @@ function Workspace({
             </button>
           </div>
         ) : (
-          // Signed out: retrying cannot succeed, so offer the one action that can.
+          // Signed out: retrying cannot succeed; the top bar's button is the way in.
           <div className="cs-workspace-notice" role="status">
             登录后即可查看完整题面并提交代码。
-            <button
-              onClick={() =>
-                window.dispatchEvent(new Event('cswork:auth-required'))
-              }
-            >
-              登录 / 注册
-            </button>
           </div>
         ))}
       {!accessible && !(problemError && !boot.person) && (
