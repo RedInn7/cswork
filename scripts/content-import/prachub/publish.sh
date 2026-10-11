@@ -6,6 +6,12 @@ set -euo pipefail
 host=${1:-ubuntu@192.18.137.70}
 dir=${PRACHUB_DIR:-$HOME/cswork-prachub}
 test -s "$dir/content.sqlite"
+# The library must be built after the last image change, or its pages point at missing files.
+[[ ! -e "$dir/parsed/assets-map.json" || "$dir/content.sqlite" -nt "$dir/parsed/assets-map.json" ]] ||
+  { echo 'content.sqlite is older than parsed/assets-map.json: rebuild it first' >&2; exit 1; }
+# The app and nginx only use these files once install.sh (or the same manual steps) set them up.
+ssh "$host" 'sudo grep -q "^CONTENT_DATABASE_PATH=" /etc/cswork/cswork.env && test -f /etc/nginx/snippets/cswork-content-assets.conf' ||
+  { echo 'server is missing CONTENT_DATABASE_PATH or the content-assets nginx snippet (see deploy/install.sh)' >&2; exit 1; }
 mkdir -p "$dir/assets"
 rsync -az "$dir/assets/" "$host:/tmp/cswork-content-assets/"
 rsync -az "$dir/content.sqlite" "$host:/tmp/cswork-content.sqlite"

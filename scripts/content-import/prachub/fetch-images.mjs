@@ -45,6 +45,8 @@ async function main() {
         for (const url of imageUrls(text)) if (KEEP.test(absolute(url) || '')) used.add(url);
     }
   }
+  // Missing or empty parsed/ would otherwise prune every image.
+  if (!used.size) throw new Error(`no images referenced under ${PARSED}; refusing to prune`);
   for (const url of Object.keys(map)) if (!used.has(url)) delete map[url];
   const kept = new Set(Object.values(map).map((local) => local.split('/').pop()));
   let pruned = 0;

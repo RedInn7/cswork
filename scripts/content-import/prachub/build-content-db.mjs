@@ -57,6 +57,7 @@ CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
 const readJson = (name, empty) =>
   existsSync(join(PARSED, name)) ? JSON.parse(readFileSync(join(PARSED, name), 'utf8')) : empty;
 const assets = readJson('assets-map.json', {});
+const valid = (it) => TYPES.has(it.type) && it.id && it.slug && it.title && it.body?.trim();
 // First pass over everything we publish, so links only point at pages that exist.
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const known = { pages: new Set(), companies: new Set(), roles: new Map(), categories: new Map() };
@@ -66,6 +67,7 @@ for (const file of FILES) {
   for await (const line of createInterface({ input: createReadStream(path), crlfDelay: Infinity })) {
     if (!line.trim()) continue;
     const it = JSON.parse(line);
+    if (!valid(it)) continue;
     known.pages.add(`${it.type}:${it.slug}`);
     if (it.company?.slug) known.companies.add(it.company.slug);
     if (it.role) known.roles.set(slugify(it.role), it.role);
@@ -129,8 +131,9 @@ export function localize(text) {
             // Images we publish point at our copy; any other image is left out entirely.
             .replace(/!\[((?:[^[\]]|\[[^\]]*\])*)\]\(\s*<?([^)\s>]+)>?(?:\s+"[^"]*")?\s*\)/g, (all, alt, url) => (assets[url] ? `![${alt}](${assets[url]})` : ''))
             .replace(/<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi, (all, url) => (assets[url] ? `![](${assets[url]})` : ''))
-            // [text](url) and [text](url "title"), not images (already handled above).
-            .replace(/(?<!!)(\[[^\]]*\]\(\s*<?)([^)\s>]+)(>?(?:\s+"[^"]*")?\s*\))/g, (all, head, url, tail) => {
+            // Link targets ](url) and ](url "title"), whatever the link text holds (code spans,
+            // brackets). Images were rewritten above and point at /content-assets/, left alone.
+            .replace(/(\]\(\s*<?)([^)\s>]+)(>?(?:\s+"[^"]*")?\s*\))/g, (all, head, url, tail) => {
               const to = route(url);
               return to === null ? all : head + to + (to === '#' ? ')' : tail);
             })
@@ -161,8 +164,11 @@ export function excerpt(summary, body) {
 }
 // Provenance stays in parsed/ for us; the API (and search) must not expose it.
 const PRIVATE = ['sourceTitle', 'sources', 'sourceUrl', 'coverImage'];
+// Display math, or inline math with a TeX command; dollar amounts never contain a backslash.
+const TEX = /\$\$[\s\S]+?\$\$|\$[^$\n]*\\[a-zA-Z]+[^$\n]*\$/;
 const localizeItem = (item) => {
   for (const key of PRIVATE) delete item.extra?.[key];
+  if (!item.extra?.math && TEX.test(item.body)) item.extra = { ...item.extra, math: true };
   item.summary = excerpt(item.summary, item.body);
   item.body = localize(item.body);
   if (item.extra?.bodyZh) item.extra.bodyZh = localize(item.extra.bodyZh);
@@ -193,11 +199,12 @@ for (const file of FILES) {
   const batch = [];
   for await (const line of lines) {
     if (!line.trim()) continue;
-    const item = localizeItem(JSON.parse(line));
-    if (!TYPES.has(item.type) || !item.id || !item.slug || !item.title || !item.body?.trim()) {
+    const parsed = JSON.parse(line);
+    if (!valid(parsed)) {
       rejected++;
       continue;
     }
+    const item = localizeItem(parsed);
     const dup = dupes.get(item.id) || null;
     batch.push({
       id: item.id, type: item.type, slug: item.slug, title: item.title,

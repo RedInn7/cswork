@@ -26,6 +26,7 @@ writeFileSync(join(parsed, 'interview-questions.jsonl'), lines([
   item({ id: 'iq-topk', type: 'interview_question', slug: 'topk', title: 'Design a top-k ranking system', body: 'Ranking with heaps.', company: { slug: 'uber', name: 'Uber' }, difficulty: 'hard', round: 'Onsite', publishedAt: '2026-09-05' }),
   item({ id: 'iq-lru-again', type: 'interview_question', slug: 'lru-again', title: 'LRU cache again', body: 'Same as the OA one.' }),
   item({ id: 'iq-topk-copy', type: 'interview_question', slug: 'topk-copy', title: 'LRU cache, third copy', body: 'Same again.' }),
+
 ]));
 writeFileSync(join(parsed, 'experiences.jsonl'), lines([
   item({ id: 'ex-amazon-oa', type: 'experience', slug: 'amazon-oa', title: 'Amazon SDE OA', body: 'Two questions: [LRU](https://prachub.com/coding-questions/lru), [plans](https://prachub.com/pricing). ![chart](https://ik.imagekit.io/x/a.png) ![gone](https://ik.imagekit.io/x/b.png) Code `arr[i](/x)` stays. [Guide](https://PracHub.com/interview-guide/google-swe "Google") https://prachub.com/companies/google/x ![v](https://ik.imagekit.io/x/a.png?tr=w-100) [same](/interview-questions/lru) [SWE](/positions/software-engineer) [all](https://prachub.com/questions)', company: { slug: 'amazon', name: 'Amazon' }, relations: [{ kind: 'question', slug: 'lru' }, { kind: 'question', slug: 'missing' }], extra: { result: 'Offer' } }),
@@ -35,6 +36,10 @@ writeFileSync(join(parsed, 'courses.jsonl'), lines([
 ]));
 writeFileSync(join(parsed, 'guides.jsonl'), lines([
   item({ id: 'gd-acme-swe', type: 'guide', slug: 'acme-swe', title: 'Acme Software Engineer Interview Guide', body: 'Template text about idempotency.' }),
+]));
+writeFileSync(join(parsed, 'articles.jsonl'), lines([
+  item({ id: 'ar-sum', type: 'article', slug: 'sum', title: 'Sum it', body: 'Compute $$\\sum_{i=1}^{n} i$$ and see [`lru` cache](/coding-questions/lru).' }),
+  item({ id: 'ar-price', type: 'article', slug: 'price', title: 'Price it', body: 'Plans cost $100 and $200 a month.' }),
 ]));
 writeFileSync(join(parsed, 'concepts.jsonl'), lines([
   // The source's summary is the body's opening cut mid-word.
@@ -91,6 +96,11 @@ void test('lists, filters, search and facets; duplicates stay out of lists', asy
   assert.equal((await get('list?type=questions&kind=coding_question')).total, 1);
   assert.equal((await get('item?type=questions&slug=lru-again')).dupOf.problem, 'oa-lru');
   assert.equal((await get('item?type=questions&slug=topk-copy')).dupOf.id, 'oa-lru');
+  // TeX turns math on (dollar amounts don't); a link whose text has code is still rewritten.
+  const sum = await get('item?type=article&slug=sum');
+  assert.equal(sum.extra.math, true);
+  assert.match(sum.body, /\[`lru` cache\]\(\/\?view=content&type=coding_question&slug=lru\)/);
+  assert.equal((await get('item?type=article&slug=price')).extra.math, undefined);
   assert.equal((await get('list?type=questions&q=eviction')).items[0].slug, 'lru');
   // Guides match by title, not by their (shared, templated) body text.
   assert.equal((await get('list?type=guide&q=acme')).total, 1);

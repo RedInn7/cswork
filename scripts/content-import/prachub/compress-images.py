@@ -35,12 +35,16 @@ def main() -> None:
     for url, local in mapping.items():
         name = local.rsplit('/', 1)[1]
         src = ASSETS / name
-        if name.endswith(('.svg', '.gif', '.webp')) or not src.exists():
+        if name.endswith(('.svg', '.gif', '.webp', '.avif')) or not src.exists():
             continue
         if name in replaced:  # same image referenced by several URLs
             mapping[url] = replaced[name]
             continue
-        data = webp(src)
+        try:
+            data = webp(src)
+        except OSError as e:  # unreadable or unsupported: keep the original
+            print(f'kept {name}: {e}')
+            continue
         size = src.stat().st_size
         before += size
         if not data or len(data) >= size:
