@@ -8,20 +8,19 @@ import {
 } from 'react';
 import {
   Activity,
-  ArrowUpRight,
+  Library,
+  MessagesSquare,
+  ScrollText,
   BookOpen,
   Code2,
-  LayoutDashboard,
   LifeBuoy,
   Bell,
-  Play,
+  Languages,
   ArrowRight,
-  Check,
   Terminal,
   Search,
   Settings,
   Inbox,
-  Bookmark,
   ChevronRight,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -41,7 +40,6 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import {
   Dialog,
   DialogContent,
@@ -55,7 +53,6 @@ import {
   bootIdentity,
   mergeLiteBoot,
   type Boot,
-  type Lesson,
 } from '@/lib/types';
 import {
   CourseList,
@@ -63,10 +60,12 @@ import {
   ProblemList,
   ProblemWorkspace,
   Empty,
-  Heading,
   type Navigate,
 } from './learning';
 import { JudgeStatus } from './judge-status';
+import { setLocale, useLocale, useT } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
+import { ContentDetail, ContentList, contentSection } from './content-library';
 import {
   TicketComposer,
   TicketView,
@@ -86,13 +85,16 @@ import {
   isKnowledgeLesson,
 } from '@/lib/interview-curriculum';
 // Practice is the product's centre: the problem bank leads and is the landing view.
-const nav: [LucideIcon, string, string][] = [
-  [Code2, '算法题库', 'problems'],
-  [Activity, '评测状态', 'status'],
-  [LayoutDashboard, '学习概览', 'home'],
-  [BookOpen, '我的课程', 'courses'],
-  [BookOpen, '算法知识点', 'knowledge'],
-  [LifeBuoy, '我的工单', 'tickets'],
+// [icon, zh label, en label, view]
+const nav: [LucideIcon, string, string, string][] = [
+  [Code2, '算法题库', 'Problem Bank', 'problems'],
+  [Activity, '评测状态', 'Status', 'status'],
+  [MessagesSquare, '面试题', 'Interview Questions', 'questions'],
+  [ScrollText, '面经', 'Experiences', 'experiences'],
+  [Library, '学习资料', 'Resources', 'resources'],
+  [BookOpen, '我的课程', 'My Courses', 'courses'],
+  [BookOpen, '算法知识点', 'Algorithm Concepts', 'knowledge'],
+  [LifeBuoy, '我的工单', 'Support', 'tickets'],
 ];
 /** Views that only show teaching courses (the knowledge module stays open). */
 const courseViews = ['courses'];
@@ -107,6 +109,13 @@ const initial: Boot = {
 };
 type SearchResult = { id: string; title: string; snippet: string };
 export function Academy() {
+  const locale = useLocale(),
+    t = useT();
+  useEffect(() => {
+    document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
+    document.title =
+      locale === 'zh' ? 'cswork · 学习工作台' : 'cswork · Learning workspace';
+  }, [locale]);
   const [boot, setBoot] = useState<Boot>(initial),
     [loading, setLoading] = useState(true),
     [error, setError] = useState(''),
@@ -231,6 +240,9 @@ export function Academy() {
     setTicketContext(context);
   }
   const selectedProblem = boot.problems.find((p) => p.id === params.problem),
+    // An opened library item belongs to its list's menu entry.
+    navView = view === 'content' ? contentSection(params.type) : view,
+    current = nav.find((n) => n[3] === navView),
     unread =
       boot.unreadNotifications ??
       boot.notifications.filter((n) => !n.read_at).length;
@@ -238,38 +250,36 @@ export function Academy() {
   const coursesHidden =
     !loading && !boot.courses.some((c) => c.id !== INTERVIEW_COURSE_ID);
   function content() {
-    if (loading)
-      // Only the overview can render before bootstrap; other views would flash the wrong page.
-      return view === 'home' ? (
-        <Home boot={boot} navigate={navigate} login={() => setLogin(true)} />
-      ) : (
-        <output className="page-loading">正在加载…</output>
-      );
+    if (loading) return <output className="page-loading">{t('正在加载…', 'Loading…')}</output>;
     if (error && !boot.courses.length)
       return (
         <Empty
-          title="学习空间暂时无法加载"
-          description={error}
+          title={t('学习空间暂时无法加载', "Couldn't load your workspace")}
+          description={t(error, englishMessage(error))}
           action={
             <Button onClick={() => refresh().catch((e) => setError(e.message))}>
-              重新加载
+              {t('重新加载', 'Reload')}
             </Button>
           }
         />
       );
     if (
       !boot.person &&
-      !['home', 'courses', 'knowledge', 'problems', 'problem', 'status'].includes(
-        view,
-      )
+      ![
+        'courses', 'knowledge', 'problems', 'problem', 'status',
+        'questions', 'experiences', 'resources', 'content',
+      ].includes(view)
     )
       return (
         <Empty
-          title="登录后继续学习"
-          description="进度、笔记与老师的反馈会跟随你的账号保存。"
+          title={t('登录后继续学习', 'Sign in to continue')}
+          description={t(
+            '进度、笔记与老师的反馈会跟随你的账号保存。',
+            'Your progress, notes and teacher feedback are saved to your account.',
+          )}
           action={
             <Button onClick={() => setLogin(true)}>
-              登录 / 注册
+              {t('登录 / 注册', 'Sign in / Sign up')}
               <ArrowRight size={15} />
             </Button>
           }
@@ -283,11 +293,14 @@ export function Academy() {
     )
       return (
         <Empty
-          title="课程暂未开放"
-          description="课程正在整理中，可以先去算法题库刷题。"
+          title={t('课程暂未开放', 'Courses are not open yet')}
+          description={t(
+            '课程正在整理中，可以先去算法题库刷题。',
+            "We're still preparing the courses. Meanwhile, practice in the Problem Bank.",
+          )}
           action={
             <Button onClick={() => navigate('problems')}>
-              进入算法题库
+              {t('进入算法题库', 'Go to Problem Bank')}
               <ArrowRight size={15} />
             </Button>
           }
@@ -326,6 +339,18 @@ export function Academy() {
         );
       case 'status':
         return <JudgeStatus boot={boot} params={params} navigate={navigate} />;
+      case 'questions':
+      case 'experiences':
+      case 'resources':
+        return <ContentList key={view} section={view} params={params} navigate={navigate} />;
+      case 'content':
+        return (
+          <ContentDetail
+            params={params}
+            navigate={navigate}
+            problemIds={boot.problems.map((p) => p.id)}
+          />
+        );
       case 'problem':
         return selectedProblem ? (
           <ProblemWorkspace
@@ -338,9 +363,11 @@ export function Academy() {
           />
         ) : (
           <Empty
-            title="请选择一道题目"
+            title={t('请选择一道题目', 'Choose a problem')}
             action={
-              <Button onClick={() => navigate('problems')}>进入题库</Button>
+              <Button onClick={() => navigate('problems')}>
+                {t('进入题库', 'Go to Problems')}
+              </Button>
             }
           />
         );
@@ -367,14 +394,12 @@ export function Academy() {
             refresh={refresh}
           />
         ) : (
-          <Empty title="仅老师可以访问工作台" />
+          <Empty
+            title={t('仅老师可以访问工作台', 'Only teachers can open the dashboard')}
+          />
         );
       case 'account':
         return <AccountView boot={boot} refresh={refresh} />;
-      case 'home':
-        return (
-          <Home boot={boot} navigate={navigate} login={() => setLogin(true)} />
-        );
       default:
         // Unknown or stale views fall back to the landing problem bank.
         return (
@@ -406,17 +431,17 @@ export function Academy() {
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel>学习空间</SidebarGroupLabel>
+            <SidebarGroupLabel>{t('学习空间', 'Workspace')}</SidebarGroupLabel>
             <SidebarMenu>
               {nav
                 .filter(
-                  ([, , key]) => !coursesHidden || !courseViews.includes(key),
+                  ([, , , key]) => !coursesHidden || !courseViews.includes(key),
                 )
-                .map(([Icon, label, key]) => (
+                .map(([Icon, zh, en, key]) => (
                 <SidebarMenuItem key={key}>
                   <SidebarMenuButton
                     isActive={
-                      view === key ||
+                      navView === key ||
                       (view === 'lesson' &&
                         key ===
                           (isKnowledgeLesson(params.lesson)
@@ -427,7 +452,7 @@ export function Academy() {
                     onClick={() => navigate(key)}
                   >
                     <Icon size={18} />
-                    <span>{label}</span>
+                    <span>{t(zh, en)}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 ))}
@@ -435,7 +460,7 @@ export function Academy() {
           </SidebarGroup>
           {boot.person?.role === 'teacher' && (
             <SidebarGroup>
-              <SidebarGroupLabel>教学管理</SidebarGroupLabel>
+              <SidebarGroupLabel>{t('教学管理', 'Teaching')}</SidebarGroupLabel>
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton
@@ -443,7 +468,7 @@ export function Academy() {
                     onClick={() => navigate('teacher')}
                   >
                     <Inbox size={18} />
-                    教师工作台
+                    {t('教师工作台', 'Teacher dashboard')}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
@@ -456,8 +481,12 @@ export function Academy() {
             <button className="profile" onClick={() => navigate('account')}>
               <span className="avatar">{boot.person.name.slice(0, 1) || 'S'}</span>
               <div>
-                <strong>{boot.person.name}</strong>
-                <small>{boot.person.role === 'teacher' ? '老师账号' : 'SDE 学员'}</small>
+                <strong>{t(boot.person.name, englishMessage(boot.person.name))}</strong>
+                <small>
+                  {boot.person.role === 'teacher'
+                    ? t('老师账号', 'Teacher account')
+                    : t('SDE 学员', 'SDE student')}
+                </small>
               </div>
               <Settings size={15} />
             </button>
@@ -469,20 +498,20 @@ export function Academy() {
           <div className="flex items-center gap-3">
             <SidebarTrigger />
             <span>
-              {nav.find((n) => n[2] === view)?.[1] ||
+              {(current && t(current[1], current[2])) ||
                 (
                   {
                     lesson: isKnowledgeLesson(params.lesson)
-                      ? '算法知识点'
-                      : '课程学习',
-                    problem: '算法题库',
-                    reviews: '代码评审',
-                    releases: '课程更新',
-                    teacher: '教师工作台',
-                    account: '账号设置',
+                      ? t('算法知识点', 'Algorithm Concepts')
+                      : t('课程学习', 'Course'),
+                    problem: t('算法题库', 'Problem Bank'),
+                    reviews: t('代码评审', 'Code reviews'),
+                    releases: t('课程更新', 'Course updates'),
+                    teacher: t('教师工作台', 'Teacher dashboard'),
+                    account: t('账号设置', 'Account settings'),
                   } as Record<string, string>
                 )[view] ||
-                '算法题库'}
+                t('算法题库', 'Problem Bank')}
             </span>
           </div>
           <div className="topbar-actions">
@@ -491,13 +520,25 @@ export function Academy() {
               onClick={() => (boot.person ? setSearch(true) : setLogin(true))}
             >
               <Search size={15} />
-              <span>搜索课程内容</span>
-              <kbd>搜索</kbd>
+              <span>{t('搜索课程内容', 'Search course content')}</span>
+              <kbd>{t('搜索', 'Search')}</kbd>
             </button>
+            <Button
+              variant="ghost"
+              className="locale-button"
+              aria-label={locale === 'zh' ? 'Switch to English' : '切换到中文'}
+              onClick={() => setLocale(locale === 'zh' ? 'en' : 'zh')}
+            >
+              <Languages size={16} />
+              {locale === 'zh' ? 'EN' : '中文'}
+            </Button>
             <Button
               size="icon"
               variant="ghost"
-              aria-label={`通知，${unread} 条未读`}
+              aria-label={t(
+                `通知，${unread} 条未读`,
+                `Notifications, ${unread} unread`,
+              )}
               onClick={() =>
                 boot.person ? setNotificationOpen(true) : setLogin(true)
               }
@@ -507,7 +548,9 @@ export function Academy() {
               {unread > 0 && <i />}
             </Button>
             {!boot.person && (
-              <Button onClick={() => setLogin(true)}>登录 / 注册</Button>
+              <Button onClick={() => setLogin(true)}>
+                {t('登录 / 注册', 'Sign in / Sign up')}
+              </Button>
             )}
           </div>
         </header>
@@ -519,12 +562,15 @@ export function Academy() {
         >
           {error && boot.courses.length > 0 && (
             <p role="alert" className="notice error">
-              {error}
+              {t(error, englishMessage(error))}
             </p>
           )}
           {!!params.auth_error && (
             <p className="notice" role="alert">
-              第三方登录或账号绑定未完成，请重新尝试。你也可以使用邮箱登录。
+              {t(
+                '第三方登录或账号绑定未完成，请重新尝试。你也可以使用邮箱登录。',
+                "Third-party sign-in or account linking didn't finish. Please try again, or sign in with email.",
+              )}
             </p>
           )}
           {params.payment === 'success' && boot.person && params.session_id && (
@@ -532,15 +578,21 @@ export function Academy() {
           )}
           {params.payment === 'success' && !params.session_id && (
             <p className="notice">
-              请在账号的购买记录中查看付款状态。
+              {t(
+                '请在账号的购买记录中查看付款状态。',
+                'Check the payment status in your purchase history.',
+              )}
               <Button variant="link" onClick={() => navigate('account')}>
-                查看订单
+                {t('查看订单', 'View orders')}
               </Button>
             </p>
           )}
           {params.payment === 'cancelled' && (
             <p className="notice">
-              你已退出结账。需要时可从课程页面或购买记录继续支付。
+              {t(
+                '你已退出结账。需要时可从课程页面或购买记录继续支付。',
+                'You left checkout. You can resume payment from the course page or your purchase history at any time.',
+              )}
             </p>
           )}
           {!loading && (
@@ -554,7 +606,7 @@ export function Academy() {
         </main>
         <footer className="px-6 pb-6 text-xs text-muted-foreground">
           <Link href="/privacy" className="underline underline-offset-4">
-            隐私说明
+            {t('隐私说明', 'Privacy')}
           </Link>
         </footer>
       </SidebarInset>
@@ -573,9 +625,12 @@ export function Academy() {
       <Dialog open={search} onOpenChange={setSearch}>
         <DialogContent className="wide-dialog">
           <DialogHeader>
-            <DialogTitle>搜索课程内容</DialogTitle>
+            <DialogTitle>{t('搜索课程内容', 'Search course content')}</DialogTitle>
             <DialogDescription>
-              搜索讲义中的知识点，直接回到对应章节。
+              {t(
+                '搜索讲义中的知识点，直接回到对应章节。',
+                'Search the handouts and jump straight to the matching lesson.',
+              )}
             </DialogDescription>
           </DialogHeader>
           <Input
@@ -585,12 +640,12 @@ export function Academy() {
               setResults([]);
               setSearching(false);
             }}
-            aria-label="搜索课程内容"
-            placeholder="试试：幂等、库存、JWT…"
+            aria-label={t('搜索课程内容', 'Search course content')}
+            placeholder={t('试试：幂等、库存、JWT…', 'Try: idempotency, inventory, JWT…')}
           />
           <div className="search-results">
             {searching ? (
-              <p>正在搜索…</p>
+              <p>{t('正在搜索…', 'Searching…')}</p>
             ) : (
               results.map((r) => (
                 <button
@@ -606,7 +661,7 @@ export function Academy() {
               ))
             )}
             {query && !searching && !results.length && (
-              <p className="muted">没有找到匹配内容。</p>
+              <p className="muted">{t('没有找到匹配内容。', 'No matches found.')}</p>
             )}
           </div>
         </DialogContent>
@@ -614,9 +669,12 @@ export function Academy() {
       <Dialog open={notificationOpen} onOpenChange={setNotificationOpen}>
         <DialogContent className="wide-dialog">
           <DialogHeader>
-            <DialogTitle>你的消息</DialogTitle>
+            <DialogTitle>{t('你的消息', 'Notifications')}</DialogTitle>
             <DialogDescription>
-              老师的回复、作业评审和课程重要更新。
+              {t(
+                '老师的回复、作业评审和课程重要更新。',
+                'Teacher replies, assignment reviews and important course updates.',
+              )}
             </DialogDescription>
           </DialogHeader>
           {notificationOpen && boot.person && (
@@ -640,303 +698,6 @@ function FileSearchTitle({ title }: { title: string }) {
     </strong>
   );
 }
-type PracticeSummary = {
-  collection?: { solved: number; total: number };
-  currentRound?: { number: number };
-};
-
-/** The learner's curated-list round at a glance, with one click back into practice. */
-function PracticeCard({
-  personId,
-  navigate,
-  login,
-}: {
-  personId: string | null;
-  navigate: Navigate;
-  login: () => void;
-}) {
-  const signedIn = !!personId;
-  // undefined = loading, null = failed; never show a made-up 0/500 for either.
-  const [summary, setSummary] = useState<PracticeSummary | null | undefined>();
-  useEffect(() => {
-    if (!personId) return;
-    let current = true;
-    setSummary(undefined);
-    api<PracticeSummary>('oj/library?collection=ling-selected-500&page=1')
-      .then((data) => current && setSummary(data))
-      .catch(() => current && setSummary(null));
-    return () => {
-      current = false;
-    };
-  }, [personId]);
-  const solved = summary?.collection?.solved ?? 0,
-    total = summary?.collection?.total ?? 500;
-  return (
-    <div className="practice-card">
-      <span className="overline">
-        {signedIn && summary?.currentRound
-          ? `灵神题单 · 第 ${summary.currentRound.number} 轮`
-          : '灵神题单'}
-      </span>
-      {!signedIn ? (
-        <p>登录后自动记录每一轮的刷题进度。</p>
-      ) : summary === undefined ? (
-        <p aria-live="polite">正在读取刷题进度…</p>
-      ) : summary === null || !summary.collection ? (
-        <p role="status">刷题进度暂时无法读取，可以直接进入题库继续练习。</p>
-      ) : (
-        <>
-          <strong>
-            {solved}
-            <small> / {total} 已通过</small>
-          </strong>
-          <Progress value={total ? (solved / total) * 100 : 0} />
-        </>
-      )}
-      <div className="practice-card-actions">
-        <Button
-          className="primary-light"
-          onClick={() => (signedIn ? navigate('problems') : login())}
-        >
-          <Code2 size={16} />
-          继续刷题
-        </Button>
-        <button
-          className="practice-card-link"
-          onClick={() => navigate('problems', { library: 'oa' })}
-        >
-          OA 题目
-          <ArrowRight size={14} />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function Home({
-  boot,
-  navigate,
-  login,
-}: {
-  boot: Boot;
-  navigate: Navigate;
-  login: () => void;
-}) {
-  const all = boot.courses.flatMap((c) => c.lessons),
-    accessible = boot.courses
-      .filter((c) => c.has_access)
-      .flatMap((c) => c.lessons),
-    latest = [...boot.progress]
-      .filter((p) => accessible.some((l) => l.id === p.lesson_id))
-      .sort((a, b) => b.updated_at - a.updated_at)[0],
-    resume =
-      all.find((l) => l.id === latest?.lesson_id) ||
-      accessible.find(
-        (l) => !boot.progress.some((p) => p.lesson_id === l.id && p.completed),
-      ) ||
-      accessible[0] ||
-      all[0],
-    course =
-      boot.courses.find((c) => c.lessons.some((l) => l.id === resume?.id)) ||
-      boot.courses[0],
-    done = accessible.filter((l) =>
-      boot.progress.some((p) => p.lesson_id === l.id && p.completed),
-    ).length,
-    passed = new Set(
-      boot.submissions
-        .filter((s) => s.status === 'accepted')
-        .map((s) => s.problem_id),
-    ).size;
-  function start(l?: Lesson) {
-    if (!boot.person) {
-      login();
-      return;
-    }
-    if (
-      l &&
-      boot.courses.some(
-        (c) => c.has_access && c.lessons.some((item) => item.id === l.id),
-      )
-    )
-      navigate('lesson', { lesson: l.id });
-    else navigate('courses');
-  }
-  return (
-    <>
-      <Heading
-        title={boot.person ? '专注今天的进步。' : '从这里，成为更好的工程师。'}
-      />
-      <section className="continue-card">
-        <div>
-          <span className="overline">
-            {latest ? '继续你的学习' : '从这里开始'}
-          </span>
-          <h2>{latest ? resume?.title : course?.title || '你的下一门课程'}</h2>
-          <p>
-            {latest
-              ? resume?.summary
-              : course?.summary || '课程准备完成后，可以从这里进入学习。'}
-          </p>
-          <div className="course-meta">
-            <span>{course?.lessons.length || 0} 个章节</span>
-            <span>课件与配套视频</span>
-            <span>配套代码练习</span>
-          </div>
-          <Button className="primary-light" onClick={() => start(resume)}>
-            <Play size={16} fill="currentColor" />
-            {latest ? '继续学习' : '进入第一章'}
-            <ArrowRight size={16} />
-          </Button>
-        </div>
-        <PracticeCard
-          personId={boot.person?.id ?? null}
-          navigate={navigate}
-          login={login}
-        />
-      </section>
-      {boot.person && (
-        <div className="learning-stats">
-          <div>
-            <BookOpen size={18} />
-            <span>已完成课时</span>
-            <strong>
-              {done}
-              <small> / {accessible.length}</small>
-            </strong>
-          </div>
-          <div>
-            <Code2 size={18} />
-            <span>算法已通过</span>
-            <strong>
-              {passed}
-              <small> / {boot.problems.length}</small>
-            </strong>
-          </div>
-          <div>
-            <Bookmark size={18} />
-            <span>我的收藏</span>
-            <strong>{boot.progress.filter((p) => p.bookmarked).length}</strong>
-          </div>
-        </div>
-      )}
-      <div className="section-title">
-        <h2>你的学习路径</h2>
-        <button className="text-link" onClick={() => navigate('courses')}>
-          完整课程
-          <ArrowRight size={14} />
-        </button>
-      </div>
-      <div className="path-grid">
-        {[
-          ...new Set(
-            (course?.lessons || []).map((l) => l.section || '课程内容'),
-          ),
-        ].map((section, index) => {
-          const n = String(index + 1).padStart(2, '0'),
-            ls = (course?.lessons || []).filter(
-              (l) => (l.section || '课程内容') === section,
-            ),
-            completed = ls.filter((l) =>
-              boot.progress.some((p) => p.lesson_id === l.id && p.completed),
-            ).length;
-          return (
-            <button className="path-card" key={n} onClick={() => start(ls[0])}>
-              <div className="path-top">
-                <span>{n}</span>
-                <ArrowUpRight size={20} />
-              </div>
-              <h3>{section}</h3>
-              <p>{ls[0]?.summary || '按章节推进，完成配套练习。'}</p>
-              <small>{course?.title}</small>
-              <Progress value={ls.length ? (completed / ls.length) * 100 : 0} />
-              <div className="path-progress">
-                <span>
-                  {completed} / {ls.length} 课已完成
-                </span>
-                <span>
-                  {ls.length ? Math.round((completed / ls.length) * 100) : 0}%
-                </span>
-              </div>
-            </button>
-          );
-        })}
-      </div>
-      <div className="home-bottom">
-        <section>
-          <div className="section-title">
-            <h2>下一道，练起来。</h2>
-            <button className="text-link" onClick={() => navigate('problems')}>
-              全部练习
-              <ArrowRight size={14} />
-            </button>
-          </div>
-          <div className="quick-problems">
-            {boot.problems.slice(0, 3).map((p, i) => (
-              <button
-                key={p.id}
-                onClick={() => navigate('problem', { problem: p.id })}
-              >
-                <span className="quick-number">0{i + 1}</span>
-                <div>
-                  <strong>{p.title}</strong>
-                  <small>{p.tags.join(' · ')}</small>
-                </div>
-                <span
-                  className={
-                    'difficulty ' + (p.difficulty === '中等' ? 'medium' : '')
-                  }
-                >
-                  {p.difficulty}
-                </span>
-                <ChevronRight size={16} />
-              </button>
-            ))}
-          </div>
-        </section>
-        <section>
-          <div className="section-title">
-            <h2>学习支持</h2>
-          </div>
-          <div className="help-card">
-            <LifeBuoy size={23} />
-            <h3>把疑问留在这里。</h3>
-            <p>与老师私密沟通，每个问题都能回到对应的章节或代码。</p>
-            <Button
-              variant="outline"
-              onClick={() => (boot.person ? navigate('tickets') : login())}
-            >
-              我的工单
-              <ArrowRight size={15} />
-            </Button>
-          </div>
-        </section>
-      </div>
-      {boot.progress.some((p) => p.bookmarked) && (
-        <>
-          <div className="section-title">
-            <h2>收藏的章节</h2>
-          </div>
-          {all
-            .filter((l) =>
-              boot.progress.some((p) => p.lesson_id === l.id && p.bookmarked),
-            )
-            .map((l) => (
-              <button
-                className="lesson-row"
-                key={l.id}
-                onClick={() => start(l)}
-              >
-                <Bookmark size={16} />
-                {l.title}
-                <ArrowRight size={15} />
-              </button>
-            ))}
-        </>
-      )}
-    </>
-  );
-}
-
 function CloseMobileNavigation({ view }: { view: string }) {
   const { setOpenMobile } = useSidebar();
   useEffect(() => {

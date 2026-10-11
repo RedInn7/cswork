@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { api, type Person } from '@/lib/types';
+import { useT } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import {
@@ -26,6 +28,7 @@ export function EnrollmentClaim({
   onSuccess: () => Promise<void>;
   onLogin: () => void;
 }) {
+  const t = useT();
   const [token, setToken] = useState(''),
     [open, setOpen] = useState(false),
     [data, setData] = useState<Preview | null>(null);
@@ -35,11 +38,12 @@ export function EnrollmentClaim({
     [busy, setBusy] = useState(false);
   useEffect(() => {
     const read = () => {
-      const t = new URLSearchParams(location.hash.slice(1)).get('invite') || '';
+      const invite =
+        new URLSearchParams(location.hash.slice(1)).get('invite') || '';
       setData(null);
       setError('');
-      setToken(t);
-      setOpen(!!t);
+      setToken(invite);
+      setOpen(!!invite);
     };
     read();
     window.addEventListener('hashchange', read);
@@ -65,19 +69,29 @@ export function EnrollmentClaim({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="login-dialog">
         <DialogHeader>
-          <DialogTitle>欢迎加入 cswork。</DialogTitle>
-          <DialogDescription>接受老师的邀请，开启你的课程。</DialogDescription>
+          <DialogTitle>{t('欢迎加入 cswork。', 'Welcome to cswork')}</DialogTitle>
+          <DialogDescription>
+            {t(
+              '接受老师的邀请，开启你的课程。',
+              "Accept your teacher's invitation to start your course.",
+            )}
+          </DialogDescription>
         </DialogHeader>
         {data?.used ? (
           <>
-            <p>这份邀请已经使用，你可以直接登录学习。</p>
+            <p>
+              {t(
+                '这份邀请已经使用，你可以直接登录学习。',
+                'This invitation has already been used. Sign in to keep learning.',
+              )}
+            </p>
             <Button
               onClick={() => {
                 setOpen(false);
                 onLogin();
               }}
             >
-              前往登录
+              {t('前往登录', 'Go to sign in')}
             </Button>
           </>
         ) : data ? (
@@ -85,21 +99,34 @@ export function EnrollmentClaim({
             <p>
               <strong>{data.email}</strong>
             </p>
-            <p className="muted">将开通：{data.titles.join('、')}</p>
+            <p className="muted">
+              {t(
+                `将开通：${data.titles.join('、')}`,
+                `Unlocks: ${data.titles.map(englishMessage).join(', ')}`,
+              )}
+            </p>
             {!data.matchesAccount ? (
               <p role="alert">
-                当前账号与邀请邮箱不同。请先退出，再使用邀请对应的邮箱登录。
+                {t(
+                  '当前账号与邀请邮箱不同。请先退出，再使用邀请对应的邮箱登录。',
+                  "You're signed in with a different email than the invitation. Sign out, then sign in with the invited email.",
+                )}
               </p>
             ) : data.requiresLogin && !person ? (
               <>
-                <p>你已有 cswork 账号，请先登录后接受邀请。</p>
+                <p>
+                  {t(
+                    '你已有 cswork 账号，请先登录后接受邀请。',
+                    'You already have a cswork account. Sign in to accept the invitation.',
+                  )}
+                </p>
                 <Button
                   onClick={() => {
                     setOpen(false);
                     onLogin();
                   }}
                 >
-                  登录已有账号
+                  {t('登录已有账号', 'Sign in to your account')}
                 </Button>
               </>
             ) : (
@@ -130,7 +157,7 @@ export function EnrollmentClaim({
                 {!data.requiresLogin && (
                   <>
                     <label htmlFor="enrollment-field-1">
-                      你的称呼
+                      {t('你的称呼', 'Your name')}
                       <Input
                         id="enrollment-field-1"
                         required
@@ -141,7 +168,7 @@ export function EnrollmentClaim({
                       />
                     </label>
                     <label htmlFor="enrollment-field-2">
-                      设置密码
+                      {t('设置密码', 'Set a password')}
                       <Input
                         id="enrollment-field-2"
                         required
@@ -154,22 +181,27 @@ export function EnrollmentClaim({
                       />
                     </label>
                     <small className="muted">
-                      至少 12 位。今后可使用此邮箱和密码登录。
+                      {t(
+                        '至少 12 位。今后可使用此邮箱和密码登录。',
+                        "At least 12 characters. You'll sign in with this email and password.",
+                      )}
                     </small>
                   </>
                 )}
                 <Button type="submit" disabled={busy}>
-                  {busy ? '正在开通…' : '接受邀请并进入课程'}
+                  {busy
+                    ? t('正在开通…', 'Unlocking…')
+                    : t('接受邀请并进入课程', 'Accept invitation and start')}
                 </Button>
               </form>
             )}
           </>
         ) : !error ? (
-          <output>正在验证邀请…</output>
+          <output>{t('正在验证邀请…', 'Checking invitation…')}</output>
         ) : null}
         {error && (
           <p className="error-text" role="alert">
-            {error}
+            {t(error, englishMessage(error))}
           </p>
         )}
       </DialogContent>

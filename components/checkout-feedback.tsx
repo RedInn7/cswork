@@ -4,6 +4,9 @@ import { CheckCircle2, LoaderCircle, RefreshCw } from 'lucide-react';
 import { Button } from './ui/button';
 import { api } from '@/lib/types';
 import { type CommerceOrder, orderStatusNames } from '@/lib/commerce-types';
+import { useT } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
+import { orderStatusEn } from './account';
 import '@/app/commerce.css';
 export function CheckoutFeedback({
   sessionId,
@@ -12,6 +15,7 @@ export function CheckoutFeedback({
   sessionId: string;
   refresh: () => Promise<void>;
 }) {
+  const t = useT();
   const [order, setOrder] = useState<CommerceOrder | null>(null),
     [error, setError] = useState(''),
     [busy, setBusy] = useState(true),
@@ -80,28 +84,41 @@ export function CheckoutFeedback({
       <div>
         <strong>
           {successful
-            ? '付款已确认，课程已开通。'
+            ? t(
+                '付款已确认，课程已开通。',
+                'Payment confirmed. Your course is unlocked.',
+              )
             : order
-              ? orderStatusNames[order.status]
-              : '正在确认你的支付结果。'}
+              ? t(orderStatusNames[order.status], orderStatusEn[order.status])
+              : t('正在确认你的支付结果。', 'Confirming your payment…')}
         </strong>
         <p>
           {successful
-            ? `可以开始学习《${order!.course_title}》了。`
-            : error ||
-              (['failed', 'expired'].includes(order?.status || '')
-                ? '这笔订单没有完成支付，你可以重新购买。'
-                : '银行确认可能需要一点时间。确认结果会保存在订单中，无需再次付款。')}
+            ? t(
+                `可以开始学习《${order!.course_title}》了。`,
+                `You can now start “${order!.course_title}”.`,
+              )
+            : error
+              ? t(error, englishMessage(error))
+              : ['failed', 'expired'].includes(order?.status || '')
+                ? t(
+                    '这笔订单没有完成支付，你可以重新购买。',
+                    "This order wasn't paid. You can buy the course again.",
+                  )
+                : t(
+                    '银行确认可能需要一点时间。确认结果会保存在订单中，无需再次付款。',
+                    "Bank confirmation can take a moment. The result is saved to your order, so you don't need to pay again.",
+                  )}
         </p>
       </div>
       <div className="form-actions">
         {!busy && !successful && (
           <Button variant="outline" onClick={() => setAttempt((v) => v + 1)}>
-            重新确认
+            {t('重新确认', 'Check again')}
           </Button>
         )}
         <a className="commerce-link" href="/?view=account">
-          查看订单
+          {t('查看订单', 'View orders')}
         </a>
       </div>
     </section>

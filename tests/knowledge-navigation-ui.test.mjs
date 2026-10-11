@@ -137,23 +137,23 @@ test('exercise panel shows authoritative statuses, refreshes after practice, and
         }),
       ),
     );
-    assert.match(document.body.textContent, /已通过 0 \/ 3/);
-    assert.match(document.body.textContent, /尝试过，未通过/);
-    assert.match(document.body.textContent, /未开始/);
+    assert.match(document.body.textContent, /Solved here 0 \/ 3/);
+    assert.match(document.body.textContent, /Attempted, not solved/);
+    assert.match(document.body.textContent, /Not started/);
     solved = true;
     await act(async () =>
       window.dispatchEvent(new Event('cswork:practice-progress-changed')),
     );
-    assert.match(document.body.textContent, /已通过 1 \/ 3/);
+    assert.match(document.body.textContent, /Solved here 1 \/ 3/);
     failure = true;
     await act(async () =>
       window.dispatchEvent(new Event('cswork:practice-progress-changed')),
     );
-    assert.match(document.body.textContent, /暂时无法获取完成情况/);
-    assert.doesNotMatch(document.body.textContent, /未开始/);
+    assert.match(document.body.textContent, /Couldn't load your progress/);
+    assert.doesNotMatch(document.body.textContent, /Not started/);
     failure = false;
     await act(async () => document.querySelector('button').click());
-    assert.match(document.body.textContent, /已通过 1 \/ 3/);
+    assert.match(document.body.textContent, /Solved here 1 \/ 3/);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = oldFetch;

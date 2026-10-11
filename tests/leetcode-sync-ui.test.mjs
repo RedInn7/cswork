@@ -130,7 +130,7 @@ test('sync UI isolates round, paginates, clears secrets and aborts on close', as
   try {
     await render();
     await settle();
-    assert.match(document.body.textContent, /不保存凭据/);
+    assert.match(document.body.textContent, /never store them/);
     assert.equal(document.querySelectorAll('input[type="password"]').length, 2);
     await fill();
     await act(async () =>
@@ -154,8 +154,8 @@ test('sync UI isolates round, paginates, clears secrets and aborts on close', as
     });
     assert.equal(calls[1].body.action, 'continue');
     assert.ok(calls[1].at - calls[0].at >= 1450);
-    assert.match(document.body.textContent, /同步完成/);
-    assert.match(document.body.textContent, /已扫描 40/);
+    assert.match(document.body.textContent, /Sync complete/);
+    assert.match(document.body.textContent, /Scanned 40/);
     assert.equal(localStorage.length, 0);
     assert.equal(sessionStorage.length, 0);
     assert.ok(changed > 0);
@@ -168,7 +168,7 @@ test('sync UI isolates round, paginates, clears secrets and aborts on close', as
         ),
     );
     await settle();
-    await act(async () => button('停止同步').click());
+    await act(async () => button('Stop sync').click());
     const stoppedCalls = calls.length;
     assert.equal(calls.at(-1).body.action, 'cancel');
     assert.equal(calls.at(-1).body.runId, 'r-sync');
@@ -180,7 +180,7 @@ test('sync UI isolates round, paginates, clears secrets and aborts on close', as
       stoppedCalls,
       'cancel prevents another page request',
     );
-    assert.match(document.body.textContent, /已停止，已导入记录保留/);
+    assert.match(document.body.textContent, /Stopped; imported records kept/);
     phase = 'hold';
     await fill();
     await act(async () =>
@@ -190,7 +190,7 @@ test('sync UI isolates round, paginates, clears secrets and aborts on close', as
           new dom.window.Event('submit', { bubbles: true, cancelable: true }),
         ),
     );
-    await act(async () => button('关闭').click());
+    await act(async () => button('Close').click());
     assert.equal(closed, true);
     assert.equal(calls.at(-1).signal.aborted, true);
     assert.equal(

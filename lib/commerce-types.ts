@@ -1,3 +1,4 @@
+import type { Locale } from './i18n';
 export type OrderStatus =
   | 'creating'
   | 'pending'
@@ -73,14 +74,22 @@ export function currencyScale(currency: string) {
         }).resolvedOptions().maximumFractionDigits!)
   );
 }
-export function money(amount: number | null, currency: string | null) {
-  if (amount === null || !currency) return '待确认金额';
+/** Client callers pass the site locale; the server's price display keeps zh. */
+export function money(
+  amount: number | null,
+  currency: string | null,
+  locale: Locale = 'zh',
+) {
+  const zh = locale === 'zh';
+  if (amount === null || !currency) return zh ? '待确认金额' : 'Amount pending';
   try {
-    return new Intl.NumberFormat('zh-CN', {
+    return new Intl.NumberFormat(zh ? 'zh-CN' : 'en-US', {
       style: 'currency',
       currency: currency.toUpperCase(),
     }).format(amount / currencyScale(currency));
   } catch {
-    return `${amount} ${currency.toUpperCase()}（最小货币单位）`;
+    return zh
+      ? `${amount} ${currency.toUpperCase()}（最小货币单位）`
+      : `${amount} ${currency.toUpperCase()} (minor units)`;
   }
 }

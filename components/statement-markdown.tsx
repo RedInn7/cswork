@@ -3,6 +3,7 @@
 import React, { Children, isValidElement } from 'react';
 import Markdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useT } from '@/lib/i18n';
 
 // Imported statements use TeX-style scripts even inside Markdown inline code.
 // Keep this deliberately narrow: bare carets need a numeric base and exponent,
@@ -46,6 +47,18 @@ function proseText(children: React.ReactNode) {
 
 function StatementStrong({ children }: { children?: React.ReactNode }) {
   return <strong>{mathText(children)}</strong>;
+}
+
+function StatementImage({ src, alt }: { src?: unknown; alt?: string }) {
+  const t = useT();
+  return typeof src === 'string' ? (
+    <img
+      src={src}
+      alt={alt || t('题目图示', 'Problem illustration')}
+      loading="lazy"
+      referrerPolicy="no-referrer"
+    />
+  ) : null;
 }
 
 const components: Components = {
@@ -132,15 +145,7 @@ const components: Components = {
       {children}
     </a>
   ),
-  img: ({ src, alt }) =>
-    typeof src === 'string' ? (
-      <img
-        src={src}
-        alt={alt || '题目图示'}
-        loading="lazy"
-        referrerPolicy="no-referrer"
-      />
-    ) : null,
+  img: StatementImage,
 };
 
 export function StatementMarkdown({ body }: { body: string }) {

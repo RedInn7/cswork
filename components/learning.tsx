@@ -17,6 +17,9 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Progress as ProgressBar } from '@/components/ui/progress';
 import { api, type Boot, type Lesson, date } from '@/lib/types';
+import { useLocale, useT } from '@/lib/i18n';
+import { money } from '@/lib/commerce-types';
+import { englishMessage } from '@/lib/messages-en';
 import { Player } from './player';
 import { LessonMarkdown, LessonNotes } from './lms-shared';
 import { AlgorithmLibrary } from './algorithm-library';
@@ -50,17 +53,29 @@ export function CourseList({
   ask: (context: Record<string, string>) => void;
   knowledge?: boolean;
 }) {
+  const t = useT(),
+    locale = useLocale(),
+    // "3 篇" / "3 topics": English needs a plural, the Chinese text is unchanged.
+    count = (n: number, zh: string, en: string) =>
+      `${n} ${t(zh, n === 1 ? en : en + 's')}`;
   const [busy, setBusy] = useState(false),
     [error, setError] = useState('');
   return (
     <>
       <Heading
         label={knowledge ? 'ALGORITHMS' : 'THE CURRICULUM'}
-        title={knowledge ? '算法知识点' : '我的课程'}
+        title={
+          knowledge
+            ? t('算法知识点', 'Algorithm Concepts')
+            : t('我的课程', 'My Courses')
+        }
         description={
           knowledge
-            ? '原理、推导、代码与练习。按主题查阅，也可以从基础开始读。'
-            : '课程讲义、视频与配套练习。'
+            ? t(
+                '原理、推导、代码与练习。按主题查阅，也可以从基础开始读。',
+                'Principles, derivations, code and practice. Browse by topic, or start from the basics.',
+              )
+            : t('课程讲义、视频与配套练习。', 'Course handouts, videos and exercises.')
         }
       />
       {boot.courses
@@ -78,16 +93,24 @@ export function CourseList({
               <div className="course-detail-head">
                 <div>
                   <span className="tag">
-                    {knowledge ? 'SDE · 算法知识' : 'SDE · 系列课程'}
+                    {knowledge
+                      ? t('SDE · 算法知识', 'SDE · Algorithms')
+                      : t('SDE · 系列课程', 'SDE · Course series')}
                   </span>
                   <h2>{c.title}</h2>
                   <p>{c.summary}</p>
                   <div className="course-meta">
                     <span>
-                      {c.lessons.length} 个{knowledge ? '主题' : '章节'}
+                      {count(
+                        c.lessons.length,
+                        knowledge ? '个主题' : '个章节',
+                        knowledge ? 'topic' : 'lesson',
+                      )}
                     </span>
                     <span>
-                      {knowledge ? '交互图解与题目练习' : '配套算法与工程实验'}
+                      {knowledge
+                        ? t('交互图解与题目练习', 'Interactive diagrams and practice problems')
+                        : t('配套算法与工程实验', 'Algorithm and engineering labs')}
                     </span>
                     <span>v{c.version}</span>
                   </div>
@@ -97,11 +120,16 @@ export function CourseList({
                     <>
                       <span className="success-text">
                         <Check size={16} />
-                        已开通
+                        {t('已开通', 'Enrolled')}
                       </span>
                       <span className="muted">
-                        {knowledge ? '已读' : '完成'} {done} /{' '}
-                        {c.lessons.length} {knowledge ? '篇' : '课'}
+                        {knowledge ? t('已读', 'Read') : t('完成', 'Completed')}{' '}
+                        {done} /{' '}
+                        {count(
+                          c.lessons.length,
+                          knowledge ? '篇' : '课',
+                          knowledge ? 'topic' : 'lesson',
+                        )}
                       </span>
                       <ProgressBar
                         value={
@@ -123,8 +151,14 @@ export function CourseList({
                           ) {
                             ask({
                               courseId: c.id,
-                              title: `申请开通：${c.title}`,
-                              body: `希望开通「${c.title}」。\n购买记录或需要老师核实的信息：\n`,
+                              title: t(
+                                `申请开通：${c.title}`,
+                                `Access request: ${c.title}`,
+                              ),
+                              body: t(
+                                `希望开通「${c.title}」。\n购买记录或需要老师核实的信息：\n`,
+                                `I'd like access to "${c.title}".\nPurchase record or details for the teacher to verify:\n`,
+                              ),
                             });
                             return;
                           }
@@ -146,48 +180,68 @@ export function CourseList({
                         }}
                       >
                         {(c.purchase_available ?? boot.services.checkout)
-                          ? `购买课程${c.price ? ' · ' + c.price.display : ''}`
-                          : '申请开通'}
+                          ? `${t('购买课程', 'Buy course')}${c.price ? ' · ' + money(c.price.amount, c.price.currency, locale) : ''}`
+                          : t('申请开通', 'Request access')}
                         <ArrowRight size={15} />
                       </Button>
-                      <small>现有学员使用购买时的邮箱登录</small>
+                      <small>
+                        {t(
+                          '现有学员使用购买时的邮箱登录',
+                          'Existing students: sign in with the email you purchased with',
+                        )}
+                      </small>
                     </>
                   )}
                 </div>
               </div>
               {error && (
                 <div role="alert" className="notice">
-                  {error}
+                  {t(error, englishMessage(error))}
                 </div>
               )}
               <Tabs defaultValue="curriculum">
                 <TabsList variant="line">
                   <TabsTrigger value="curriculum">
-                    {knowledge ? '主题目录' : '课程目录'}
+                    {knowledge
+                      ? t('主题目录', 'Topics')
+                      : t('课程目录', 'Curriculum')}
                   </TabsTrigger>
                   <TabsTrigger value="about">
-                    {knowledge ? '阅读说明' : '课程介绍'}
+                    {knowledge
+                      ? t('阅读说明', 'How to use')
+                      : t('课程介绍', 'About')}
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="curriculum">
                   {[
-                    ...new Set(c.lessons.map((l) => l.section || '课程内容')),
+                    ...new Set(
+                      c.lessons.map(
+                        (l) => l.section || t('课程内容', 'Course content'),
+                      ),
+                    ),
                   ].map((section, i) => (
                     <div className="chapter-group" key={section}>
                       <div className="chapter-heading">
                         <span>0{i + 1}</span>
                         <h3>{section}</h3>
                         <small>
-                          {
+                          {count(
                             c.lessons.filter(
-                              (l) => (l.section || '课程内容') === section,
-                            ).length
-                          }{' '}
-                          {knowledge ? '篇' : '课'}
+                              (l) =>
+                                (l.section || t('课程内容', 'Course content')) ===
+                                section,
+                            ).length,
+                            knowledge ? '篇' : '课',
+                            knowledge ? 'topic' : 'lesson',
+                          )}
                         </small>
                       </div>
                       {c.lessons
-                        .filter((l) => (l.section || '课程内容') === section)
+                        .filter(
+                          (l) =>
+                            (l.section || t('课程内容', 'Course content')) ===
+                            section,
+                        )
                         .map((l) => {
                           const complete = boot.progress.some(
                             (p) => p.lesson_id === l.id && p.completed,
@@ -202,8 +256,14 @@ export function CourseList({
                                   : boot.person
                                     ? ask({
                                         courseId: c.id,
-                                        title: `申请开通：${c.title}`,
-                                        body: `希望学习「${c.title}」，请老师核实并开通课程。`,
+                                        title: t(
+                                          `申请开通：${c.title}`,
+                                          `Access request: ${c.title}`,
+                                        ),
+                                        body: t(
+                                          `希望学习「${c.title}」，请老师核实并开通课程。`,
+                                          `I'd like to take "${c.title}". Please verify and unlock the course for me.`,
+                                        ),
                                       })
                                     : login()
                               }
@@ -225,12 +285,12 @@ export function CourseList({
                               </span>
                               <span className="resource-label">
                                 <FileText size={13} />
-                                讲义
+                                {t('讲义', 'Handout')}
                               </span>
                               {!!l.has_video && (
                                 <span className="resource-label">
                                   <Video size={13} />
-                                  视频
+                                  {t('视频', 'Video')}
                                 </span>
                               )}
                               {boot.problems.some(
@@ -242,7 +302,7 @@ export function CourseList({
                               ) && (
                                 <span className="resource-label">
                                   <Code2 size={13} />
-                                  练习
+                                  {t('练习', 'Practice')}
                                 </span>
                               )}
                               {c.has_access ? (
@@ -258,37 +318,53 @@ export function CourseList({
                 </TabsContent>
                 <TabsContent value="about">
                   <div className="prose-content">
-                    <h3>{knowledge ? '关于这些知识点' : '关于本课程'}</h3>
+                    <h3>
+                      {knowledge
+                        ? t('关于这些知识点', 'About these concepts')
+                        : t('关于本课程', 'About this course')}
+                    </h3>
                     <p>{c.summary}</p>
-                    <h3>{knowledge ? '练习与进度' : '你会如何学习'}</h3>
+                    <h3>
+                      {knowledge
+                        ? t('练习与进度', 'Practice and progress')
+                        : t('你会如何学习', "How you'll learn")}
+                    </h3>
                     <p>
-                      {knowledge ? (
-                        '每篇正文后有配套题目、提示和当前轮次的通过状态。阅读标记与做题进度分别保存；提交通过后，题目会显示绿色勾选。'
-                      ) : (
-                        <>
-                          先读讲义理解业务规则，再跟随配套代码完成工程练习。算法题在独立判题环境运行，项目作业通过
-                          GitHub 仓库或 PR
-                          交给老师评审。遇到问题时，直接从当前章节发起私密工单。
-                        </>
-                      )}
+                      {knowledge
+                        ? t(
+                            '每篇正文后有配套题目、提示和当前轮次的通过状态。阅读标记与做题进度分别保存；提交通过后，题目会显示绿色勾选。',
+                            'Each article ends with practice problems, hints and your status in the current round. Reading marks and practice progress are saved separately; once a submission is accepted, the problem gets a green check.',
+                          )
+                        : t(
+                            '先读讲义理解业务规则，再跟随配套代码完成工程练习。算法题在独立判题环境运行，项目作业通过 GitHub 仓库或 PR 交给老师评审。遇到问题时，直接从当前章节发起私密工单。',
+                            'Read the handout to learn the business rules, then follow the companion code to finish the engineering exercises. Algorithm problems run in an isolated judge; project work goes to a teacher for review as a GitHub repo or PR. When you get stuck, open a private ticket right from the current lesson.',
+                          )}
                     </p>
-                    <h3>{knowledge ? '访问权限' : '课程权益'}</h3>
+                    <h3>
+                      {knowledge
+                        ? t('访问权限', 'Access')
+                        : t('课程权益', "What's included")}
+                    </h3>
                     <p>
-                      {knowledge ? (
-                        '已开通的学员可以阅读讲义、保存笔记，并在原有算法题库权限内完成配套练习。'
-                      ) : (
-                        <>
-                          现有付费学员由老师按原购买记录开通当前 SDE
-                          课程。视频按章节发布；课件修订会记录版本并在课程更新中说明。新增课程单独授权。
-                        </>
-                      )}
+                      {knowledge
+                        ? t(
+                            '已开通的学员可以阅读讲义、保存笔记，并在原有算法题库权限内完成配套练习。',
+                            'Enrolled students can read the handouts, save notes, and do the practice problems within their existing Problem Bank access.',
+                          )
+                        : t(
+                            '现有付费学员由老师按原购买记录开通当前 SDE 课程。视频按章节发布；课件修订会记录版本并在课程更新中说明。新增课程单独授权。',
+                            'Teachers unlock the current SDE course for existing paid students based on their original purchase. Videos are released lesson by lesson; handout revisions are versioned and explained in course updates. New courses are licensed separately.',
+                          )}
                     </p>
                   </div>
                 </TabsContent>
               </Tabs>
               {!c.lessons.length && (
                 <p className="quiet-empty">
-                  老师正在准备课程内容，发布后会出现在这里。
+                  {t(
+                    '老师正在准备课程内容，发布后会出现在这里。',
+                    'The teacher is preparing this course. Lessons will appear here once published.',
+                  )}
                 </p>
               )}
             </section>
@@ -350,6 +426,7 @@ export function LessonReader({
   ask: (context: Record<string, string>) => void;
   refresh: () => Promise<void>;
 }) {
+  const t = useT();
   const [lesson, setLesson] = useState<Lesson | null>(null),
     [error, setError] = useState(''),
     [saving, setSaving] = useState(false),
@@ -434,7 +511,7 @@ export function LessonReader({
   if (error && !lesson)
     return (
       <Empty
-        title={error}
+        title={t(error, englishMessage(error))}
         action={
           <div className="form-actions">
             <Button
@@ -443,7 +520,7 @@ export function LessonReader({
                 setLoadRetry((n) => n + 1);
               }}
             >
-              重新加载
+              {t('重新加载', 'Reload')}
             </Button>
             <Button
               variant="outline"
@@ -451,13 +528,18 @@ export function LessonReader({
                 navigate(isKnowledgeLesson(id) ? 'knowledge' : 'courses')
               }
             >
-              {isKnowledgeLesson(id) ? '返回知识点' : '返回课程'}
+              {isKnowledgeLesson(id)
+                ? t('返回知识点', 'Back to concepts')
+                : t('返回课程', 'Back to course')}
             </Button>
           </div>
         }
       />
     );
-  if (!lesson) return <div className="loading-state">正在加载课件…</div>;
+  if (!lesson)
+    return (
+      <div className="loading-state">{t('正在加载课件…', 'Loading handout…')}</div>
+    );
   const course = boot.courses.find((c) => c.id === lesson.course_id),
     all = course?.lessons || [],
     interviewChapter = interviewCatalog.find((chapter) => chapter.id === id),
@@ -473,13 +555,15 @@ export function LessonReader({
         <button
           onClick={() => navigate(interviewChapter ? 'knowledge' : 'courses')}
         >
-          {interviewChapter ? '算法知识点' : course?.title || '我的课程'}
+          {interviewChapter
+            ? t('算法知识点', 'Algorithm Concepts')
+            : course?.title || t('我的课程', 'My Courses')}
         </button>
         <ChevronRight size={14} />
         <span>
-          {interviewChapter ? '主题' : '第'}{' '}
+          {interviewChapter ? t('主题', 'Topic') : t('第', 'Lesson')}{' '}
           {String(lesson.position).padStart(2, '0')}
-          {interviewChapter ? '' : ' 课'}
+          {interviewChapter ? '' : t(' 课', '')}
         </span>
       </div>
       <div className="reader-heading">
@@ -491,7 +575,11 @@ export function LessonReader({
         </div>
         <Button
           variant="outline"
-          aria-label={lesson.progress?.bookmarked ? '取消收藏' : '收藏章节'}
+          aria-label={
+            lesson.progress?.bookmarked
+              ? t('取消收藏', 'Remove bookmark')
+              : t('收藏章节', 'Bookmark lesson')
+          }
           disabled={saving}
           onClick={() => save({ bookmarked: !lesson.progress?.bookmarked })}
         >
@@ -507,22 +595,24 @@ export function LessonReader({
             <TabsList variant="line" className="reader-tabs">
               <TabsTrigger value="handout">
                 <FileText size={15} />
-                {interviewChapter ? '知识讲解' : '课件'}
+                {interviewChapter
+                  ? t('知识讲解', 'Explanation')
+                  : t('课件', 'Handout')}
               </TabsTrigger>
               {!interviewChapter && (
                 <TabsTrigger value="video">
                   <Video size={15} />
-                  课程视频
+                  {t('课程视频', 'Video')}
                 </TabsTrigger>
               )}
               <TabsTrigger value="notes">
                 <Bookmark size={15} />
-                我的笔记
+                {t('我的笔记', 'My notes')}
               </TabsTrigger>
               {!interviewChapter && (
                 <TabsTrigger value="practice">
                   <Code2 size={15} />
-                  课后练习
+                  {t('课后练习', 'Practice')}
                 </TabsTrigger>
               )}
             </TabsList>
@@ -570,8 +660,14 @@ export function LessonReader({
                 />
               ) : (
                 <Empty
-                  title="课件已开放，视频待发布"
-                  description="可以先阅读本章讲义。老师发布视频后，会出现在课程更新中。"
+                  title={t(
+                    '课件已开放，视频待发布',
+                    'The handout is out; the video is coming soon',
+                  )}
+                  description={t(
+                    '可以先阅读本章讲义。老师发布视频后，会出现在课程更新中。',
+                    'Start with the handout for this lesson. Once the teacher publishes the video, it will show up in course updates.',
+                  )}
                 />
               )}
             </TabsContent>
@@ -602,7 +698,7 @@ export function LessonReader({
             </TabsContent>
             <TabsContent value="practice">
               <div className="practice-pane">
-                <h3>算法练习</h3>
+                <h3>{t('算法练习', 'Algorithm practice')}</h3>
                 {related.length ? (
                   related.map((p) => (
                     <button
@@ -612,39 +708,58 @@ export function LessonReader({
                     >
                       <Code2 size={18} />
                       <span>{p.title}</span>
-                      <span className="difficulty">{p.difficulty}</span>
+                      <span className="difficulty">
+                        {t(
+                          p.difficulty,
+                          { 简单: 'Easy', 中等: 'Medium', 困难: 'Hard' }[
+                            p.difficulty
+                          ],
+                        )}
+                      </span>
                       <ChevronRight size={16} />
                     </button>
                   ))
                 ) : (
                   <p className="muted">
                     {interviewChapter
-                      ? '请先取得对应算法题库的课程权限，再完成讲义中的训练。'
-                      : '本章先完成讲义中的工程练习，也可以进入算法题库巩固基础。'}
+                      ? t(
+                          '请先取得对应算法题库的课程权限，再完成讲义中的训练。',
+                          'Get access to the matching Problem Bank course first, then do the exercises in this lesson.',
+                        )
+                      : t(
+                          '本章先完成讲义中的工程练习，也可以进入算法题库巩固基础。',
+                          'Start with the engineering exercises in the handout, or strengthen the basics in the Problem Bank.',
+                        )}
                   </p>
                 )}
                 {!interviewChapter && (
                   <>
-                    <h3>提交工程作业</h3>
+                    <h3>{t('提交工程作业', 'Submit your project')}</h3>
                     <p className="muted">
-                      把你的实现提交到 GitHub 仓库或 PR，交给老师评审。
+                      {t(
+                        '把你的实现提交到 GitHub 仓库或 PR，交给老师评审。',
+                        'Submit your implementation as a GitHub repo or PR for teacher review.',
+                      )}
                     </p>
                     <Button
                       variant="outline"
                       onClick={() => navigate('reviews', { lesson: id })}
                     >
                       <GitPullRequest size={16} />
-                      提交作业
+                      {t('提交作业', 'Submit assignment')}
                     </Button>
                   </>
                 )}
                 {interviewChapter && (
                   <p className="muted">
-                    按讲义中的训练目标完成作业，提交后查看判题结果。复盘时在「我的笔记」记录不变量、复杂度和一个容易遗漏的边界条件。
+                    {t(
+                      '按讲义中的训练目标完成作业，提交后查看判题结果。复盘时在「我的笔记」记录不变量、复杂度和一个容易遗漏的边界条件。',
+                      'Work toward the goals in the lesson and check the judge results after you submit. When you review, use "My notes" to record the invariant, the complexity and one easy-to-miss edge case.',
+                    )}
                   </p>
                 )}
                 <Button variant="ghost" onClick={() => navigate('problems')}>
-                  浏览算法题库
+                  {t('浏览算法题库', 'Browse Problem Bank')}
                   <ArrowRight size={15} />
                 </Button>
               </div>
@@ -652,7 +767,7 @@ export function LessonReader({
           </Tabs>
           {error && (
             <div role="alert" className="notice error">
-              {error}
+              {t(error, englishMessage(error))}
             </div>
           )}
           <footer className="reader-footer">
@@ -664,18 +779,20 @@ export function LessonReader({
               <Check size={16} />
               {interviewChapter
                 ? lesson.progress?.completed
-                  ? '已读'
-                  : '标记已读'
+                  ? t('已读', 'Read')
+                  : t('标记已读', 'Mark as read')
                 : lesson.progress?.completed
-                  ? '已完成本课'
-                  : '标记本课完成'}
+                  ? t('已完成本课', 'Lesson completed')
+                  : t('标记本课完成', 'Mark lesson complete')}
             </Button>
             {next && (
               <Button
                 variant="ghost"
                 onClick={() => navigate('lesson', { lesson: next.id })}
               >
-                {interviewChapter ? '下一知识点' : '下一课'}
+                {interviewChapter
+                  ? t('下一知识点', 'Next concept')
+                  : t('下一课', 'Next lesson')}
                 <ArrowRight size={16} />
               </Button>
             )}
@@ -683,7 +800,7 @@ export function LessonReader({
         </section>
         <aside className="reader-aside">
           <div className="side-card">
-            <h3>学习目录</h3>
+            <h3>{t('学习目录', 'Contents')}</h3>
             <div className="mini-curriculum">
               {all.map((l) => (
                 <button
@@ -702,11 +819,21 @@ export function LessonReader({
           </div>
           <div className="help-card">
             <MessageSquare size={22} />
-            <h3>{interviewChapter ? '问题与反馈' : '卡住了？一起解决。'}</h3>
+            <h3>
+              {interviewChapter
+                ? t('问题与反馈', 'Questions and feedback')
+                : t('卡住了？一起解决。', "Stuck? Let's work it out.")}
+            </h3>
             <p>
               {interviewChapter
-                ? '问题仅你和老师可见，会附上当前知识点。'
-                : '问题仅你和老师可见，会附上当前章节与播放位置。'}
+                ? t(
+                    '问题仅你和老师可见，会附上当前知识点。',
+                    'Only you and the teacher can see your question. The current concept is attached.',
+                  )
+                : t(
+                    '问题仅你和老师可见，会附上当前章节与播放位置。',
+                    'Only you and the teacher can see your question. The current lesson and video position are attached.',
+                  )}
             </p>
             <Button
               variant="outline"
@@ -720,12 +847,12 @@ export function LessonReader({
                 })
               }
             >
-              向老师提问
+              {t('向老师提问', 'Ask the teacher')}
               <ArrowRight size={15} />
             </Button>
           </div>
           <div className="side-card">
-            <h3>课件版本</h3>
+            <h3>{t('课件版本', 'Handout versions')}</h3>
             {lesson.versions?.slice(0, 5).map((v) => (
               <button
                 className="version-line lms-version-link"
@@ -749,17 +876,22 @@ export function LessonReader({
       >
         <DialogContent className="wide-dialog lms-history-dialog">
           <DialogHeader>
-            <DialogTitle>课件 v{historyVersion}</DialogTitle>
+            <DialogTitle>
+              {t('课件', 'Handout')} v{historyVersion}
+            </DialogTitle>
             <DialogDescription>
-              查看已发布的历史课件，当前学习进度保持不变。
+              {t(
+                '查看已发布的历史课件，当前学习进度保持不变。',
+                'Viewing an earlier published handout. Your current progress stays the same.',
+              )}
             </DialogDescription>
           </DialogHeader>
           {historyError ? (
             <p role="alert" className="error-text">
-              {historyError}
+              {t(historyError, englishMessage(historyError))}
             </p>
           ) : historyBody === null ? (
-            <output>正在加载版本…</output>
+            <output>{t('正在加载版本…', 'Loading version…')}</output>
           ) : (
             <LessonMarkdown body={historyBody} lecture />
           )}

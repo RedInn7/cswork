@@ -21,6 +21,8 @@ import {
 import { CodeDiff, CodeEditor } from './editor';
 import { activeStatuses, verdict, type OJSubmission } from '@/lib/oj-client';
 import { type EditorSettings } from '@/lib/editor-settings';
+import { useLocale, useT } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
 import type { Language } from '@/lib/problems';
 
 export function Verdict({
@@ -28,6 +30,7 @@ export function Verdict({
 }: {
   submission: Pick<OJSubmission, 'status' | 'mode'>;
 }) {
+  const t = useT();
   const active = activeStatuses.has(submission.status);
   const success = ['accepted', 'completed', 'executed', 'finished'].includes(
     submission.status,
@@ -41,8 +44,8 @@ export function Verdict({
       ) : success ? (
         <Check size={14} />
       ) : null}
-      {verdict(submission.status, submission.mode)}
-      {submission.status === 'wrong_answer' && ' · Wrong Answer'}
+      {t(...verdict(submission.status, submission.mode))}
+      {submission.status === 'wrong_answer' && t(' · Wrong Answer', '')}
     </span>
   );
 }
@@ -56,6 +59,7 @@ export function CopyBlock({
   value: string;
   truncated?: boolean;
 }) {
+  const t = useT();
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState(false);
   useEffect(() => {
@@ -68,8 +72,8 @@ export function CopyBlock({
       <div>
         <span>{label}</span>
         <button
-          aria-label={`复制${label}`}
-          title={`复制${label}`}
+          aria-label={t(`复制${label}`, `Copy ${label.toLowerCase()}`)}
+          title={t(`复制${label}`, `Copy ${label.toLowerCase()}`)}
           onClick={async () => {
             try {
               await navigator.clipboard.writeText(value);
@@ -83,11 +87,23 @@ export function CopyBlock({
           {copied ? <Check size={13} /> : <Copy size={13} />}
         </button>
       </div>
-      <pre tabIndex={0}>{value || '（空）'}</pre>
+      <pre tabIndex={0}>{value || t('（空）', '(empty)')}</pre>
       {truncated && (
-        <small>内容过长，仅显示部分内容；复制也只包含当前显示的内容。</small>
+        <small>
+          {t(
+            '内容过长，仅显示部分内容；复制也只包含当前显示的内容。',
+            'Too long to show in full. Only part is shown, and copying includes only what is shown.',
+          )}
+        </small>
       )}
-      {error && <small role="status">复制失败，请选中文字后复制。</small>}
+      {error && (
+        <small role="status">
+          {t(
+            '复制失败，请选中文字后复制。',
+            "Couldn't copy. Select the text and copy it manually.",
+          )}
+        </small>
+      )}
     </div>
   );
 }
@@ -103,6 +119,8 @@ export function SubmissionResult({
   cancelling?: boolean;
   inspect?: () => void;
 }) {
+  const t = useT();
+  const locale = useLocale();
   const cases = submission.cases || [];
   const firstFailure = cases.findIndex((item) =>
     [
@@ -157,34 +175,55 @@ export function SubmissionResult({
         <div>
           <Verdict submission={submission} />
           <span className="cs-result-subtitle">
-            {submission.mode === 'run' ? '测试运行' : '正式提交'}
+            {submission.mode === 'run'
+              ? t('测试运行', 'Test run')
+              : t('正式提交', 'Submission')}
             {submission.mode === 'judge' && !running && (
               <>
                 {' '}
-                · 已通过 {submission.passed} / {submission.total} 个测试点
-                {skippedCases > 0 && <> · {skippedCases} 个未运行</>}
+                ·{' '}
+                {t(
+                  `已通过 ${submission.passed} / ${submission.total} 个测试点`,
+                  `${submission.passed} / ${submission.total} test cases passed`,
+                )}
+                {skippedCases > 0 && (
+                  <>
+                    {' '}
+                    · {t(`${skippedCases} 个未运行`, `${skippedCases} skipped`)}
+                  </>
+                )}
               </>
             )}
             {submission.queuedPosition != null && running && (
-              <> · 队列位置 {submission.queuedPosition}</>
+              <>
+                {' '}
+                ·{' '}
+                {t(
+                  `队列位置 ${submission.queuedPosition}`,
+                  `Queue position ${submission.queuedPosition}`,
+                )}
+              </>
             )}
             {running && submission.total > 0 && (
               <>
                 {' '}
-                · 已检查 {completedCases} / {submission.total} 个测试点，
-                {passedCases} 个通过
+                ·{' '}
+                {t(
+                  `已检查 ${completedCases} / ${submission.total} 个测试点，${passedCases} 个通过`,
+                  `Checked ${completedCases} / ${submission.total} test cases, ${passedCases} passed`,
+                )}
               </>
             )}
           </span>
         </div>
         <div className="cs-result-tools">
           {runtime != null && (
-            <span title="运行耗时">
+            <span title={t('运行耗时', 'Runtime')}>
               <Clock3 size={13} /> {Math.round(runtime)} ms
             </span>
           )}
           {memory != null && (
-            <span title="内存使用">
+            <span title={t('内存使用', 'Memory')}>
               <HardDrive size={13} /> {(memory / 1024).toFixed(1)} MB
             </span>
           )}
@@ -195,38 +234,62 @@ export function SubmissionResult({
               disabled={cancelling}
               onClick={cancel}
             >
-              {cancelling ? '取消中…' : '取消任务'}
+              {cancelling
+                ? t('取消中…', 'Cancelling…')
+                : t('取消任务', 'Cancel')}
             </Button>
           )}
           {inspect && (
             <Button size="sm" variant="ghost" onClick={inspect}>
               <FileCode2 size={14} />
-              本次代码
+              {t('本次代码', 'View code')}
             </Button>
           )}
         </div>
       </div>
       {submission.message && (
-        <p className="cs-result-message">{submission.message}</p>
+        <p className="cs-result-message">
+          {locale === 'en'
+            ? englishMessage(submission.message)
+            : submission.message}
+        </p>
       )}
       {submission.mode === 'judge' && firstFailure >= 0 && skippedCases > 0 && (
         <p className="cs-result-message">
-          发现未通过的测试点，已停止后续评测。下方可查看失败原因。
+          {t(
+            '发现未通过的测试点，已停止后续评测。下方可查看失败原因。',
+            'A test case failed, so judging stopped early. See why below.',
+          )}
         </p>
       )}
       {submission.compileOutput && (
-        <CopyBlock label="编译输出" value={submission.compileOutput} />
+        <CopyBlock
+          label={t('编译输出', 'Compile output')}
+          value={submission.compileOutput}
+        />
       )}
       {running && (
         <div className="cs-processing">
           <p role="status">
             {submission.status === 'compiling'
-              ? '正在编译代码，完成后开始检查测试点。'
+              ? t(
+                  '正在编译代码，完成后开始检查测试点。',
+                  'Compiling your code. Test cases run once it finishes.',
+                )
               : ['pending', 'queued', 'submitting'].includes(submission.status)
-                ? '提交已收到，正在等待评测资源。你可以继续编辑。'
+                ? t(
+                    '提交已收到，正在等待评测资源。你可以继续编辑。',
+                    'Submission received, waiting for a judge. You can keep editing.',
+                  )
                 : submission.mode === 'judge'
-                  ? '正在逐项检查；全部通过才会显示通过，遇到错误立即停止并显示结果。'
-                  : '正在运行测试，输出会自动更新。'}
+                  ? t(
+                      '正在逐项检查；全部通过才会显示通过，遇到错误立即停止并显示结果。',
+                      'Checking test cases one by one. Accepted shows only if all pass; judging stops at the first failure.',
+                    )
+                  : t(
+                      '正在运行测试，输出会自动更新。',
+                      'Running tests. Output updates automatically.',
+                    )}
           </p>
         </div>
       )}
@@ -235,14 +298,17 @@ export function SubmissionResult({
           <div
             className="cs-case-tabs"
             role="tablist"
-            aria-label="逐测试点结果"
+            aria-label={t('逐测试点结果', 'Results by test case')}
           >
             {cases.map((test, index) => (
               <button
                 type="button"
                 role="tab"
                 aria-selected={selected === index}
-                aria-label={`测试点 ${test.ordinal + 1}：${verdict(test.status, submission.mode)}`}
+                aria-label={t(
+                  `测试点 ${test.ordinal + 1}：${verdict(test.status, submission.mode)[0]}`,
+                  `Test case ${test.ordinal + 1}: ${verdict(test.status, submission.mode)[1]}`,
+                )}
                 aria-controls={`case-result-${submission.id}`}
                 id={`case-${submission.id}-${index}`}
                 key={test.ordinal}
@@ -250,10 +316,10 @@ export function SubmissionResult({
                 className={`${selected === index ? 'selected' : ''} ${['accepted', 'finished'].includes(test.status) ? 'success' : activeStatuses.has(test.status) || test.status === 'skipped' ? 'pending' : 'failed'}`}
               >
                 <span className="cs-case-dot" />
-                {test.hidden ? <LockKeyhole size={12} /> : null}测试点{' '}
-                {test.ordinal + 1}
+                {test.hidden ? <LockKeyhole size={12} /> : null}
+                {t('测试点', 'Case')} {test.ordinal + 1}
                 {' · '}
-                {verdict(test.status, submission.mode)}
+                {t(...verdict(test.status, submission.mode))}
               </button>
             ))}
           </div>
@@ -264,7 +330,9 @@ export function SubmissionResult({
               aria-labelledby={`case-${submission.id}-${selected}`}
             >
               <div className="cs-case-meta">
-                <strong>{verdict(current.status, submission.mode)}</strong>
+                <strong>
+                  {t(...verdict(current.status, submission.mode))}
+                </strong>
                 {current.runtimeMs != null && (
                   <span>{Math.round(current.runtimeMs)} ms</span>
                 )}
@@ -275,34 +343,37 @@ export function SubmissionResult({
               {current.hidden && !diagnostic ? (
                 <p className="cs-hidden-case">
                   <LockKeyhole size={15} />
-                  隐藏测试点仅显示判题结果和资源用量。
+                  {t(
+                    '隐藏测试点仅显示判题结果和资源用量。',
+                    'Hidden test cases show only the verdict and resource usage.',
+                  )}
                 </p>
               ) : (
                 <div className="cs-case-output">
                   {output.stdin !== undefined && (
                     <CopyBlock
-                      label="输入"
+                      label={t('输入', 'Input')}
                       value={output.stdin}
                       truncated={diagnostic?.truncated?.stdin}
                     />
                   )}
                   {output.expected !== undefined && (
                     <CopyBlock
-                      label="期望输出"
+                      label={t('期望输出', 'Expected output')}
                       value={output.expected}
                       truncated={diagnostic?.truncated?.expected}
                     />
                   )}
                   {output.stdout !== undefined && (
                     <CopyBlock
-                      label="实际输出"
+                      label={t('实际输出', 'Your output')}
                       value={output.stdout}
                       truncated={diagnostic?.truncated?.stdout}
                     />
                   )}
                   {output.stderr && (
                     <CopyBlock
-                      label="标准错误"
+                      label={t('标准错误', 'Stderr')}
                       value={output.stderr}
                       truncated={diagnostic?.truncated?.stderr}
                     />
@@ -316,8 +387,14 @@ export function SubmissionResult({
       {!running && !cases.length && !submission.compileOutput && (
         <p className="cs-result-message">
           {submission.status === 'cancelled'
-            ? '任务已取消。当前草稿已保留。'
-            : '本次提交没有逐测试点输出。'}
+            ? t(
+                '任务已取消。当前草稿已保留。',
+                'Cancelled. Your draft is kept.',
+              )
+            : t(
+                '本次提交没有逐测试点输出。',
+                'This submission has no per-test-case output.',
+              )}
         </p>
       )}
     </div>
@@ -339,6 +416,8 @@ export function SubmissionCodeDialog({
   settings: EditorSettings;
   restore: (submission: OJSubmission) => void;
 }) {
+  const t = useT();
+  const locale = useLocale();
   const [view, setView] = useState<'code' | 'diff' | 'result'>('code');
   useEffect(() => setView('code'), [submission?.id]);
   return (
@@ -350,13 +429,15 @@ export function SubmissionCodeDialog({
     >
       <DialogContent className="cs-history-dialog">
         <DialogHeader>
-          <DialogTitle>提交代码</DialogTitle>
+          <DialogTitle>{t('提交代码', 'Submitted code')}</DialogTitle>
           <DialogDescription>
             {submission && (
               <>
                 {submission.language} ·{' '}
-                {new Date(submission.created_at).toLocaleString('zh-CN')} ·{' '}
-                {verdict(submission.status, submission.mode)}
+                {new Date(submission.created_at).toLocaleString(
+                  locale === 'zh' ? 'zh-CN' : 'en-US',
+                )}{' '}
+                · {t(...verdict(submission.status, submission.mode))}
               </>
             )}
           </DialogDescription>
@@ -370,21 +451,21 @@ export function SubmissionCodeDialog({
                   onClick={() => setView('code')}
                 >
                   <FileCode2 size={14} />
-                  代码
+                  {t('代码', 'Code')}
                 </button>
                 <button
                   className={view === 'diff' ? 'active' : ''}
                   onClick={() => setView('diff')}
                 >
                   <GitCompareArrows size={14} />
-                  对比草稿
+                  {t('对比草稿', 'Compare with draft')}
                 </button>
                 <button
                   className={view === 'result' ? 'active' : ''}
                   onClick={() => setView('result')}
                 >
                   <Check size={14} />
-                  判题结果
+                  {t('判题结果', 'Result')}
                 </button>
               </div>
               <Button
@@ -393,7 +474,7 @@ export function SubmissionCodeDialog({
                 disabled={submission.code === undefined}
                 onClick={() => restore(submission)}
               >
-                恢复到编辑器
+                {t('恢复到编辑器', 'Restore to editor')}
               </Button>
             </div>
             {view === 'result' ? (
@@ -401,13 +482,22 @@ export function SubmissionCodeDialog({
                 <SubmissionResult submission={submission} />
               </div>
             ) : submission.code === undefined ? (
-              <p>该提交未保存可查看的代码。</p>
+              <p>
+                {t(
+                  '该提交未保存可查看的代码。',
+                  'No code was saved for this submission.',
+                )}
+              </p>
             ) : (
               <>
                 {view === 'diff' && (
                   <div className="cs-diff-labels">
-                    <span>历史提交 · {submission.language}</span>
-                    <span>当前草稿 · {language}</span>
+                    <span>
+                      {t('历史提交', 'Submission')} · {submission.language}
+                    </span>
+                    <span>
+                      {t('当前草稿', 'Current draft')} · {language}
+                    </span>
                   </div>
                 )}
                 <div className="cs-history-editor">

@@ -9,8 +9,18 @@ import {
   seekPosition,
 } from '@/lib/playback-state';
 import { Button } from '@/components/ui/button';
+import { useT } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
 import 'video.js/dist/video-js.css';
 import '@/app/media.css';
+
+// Effects store the Chinese text; it is translated at render so switching
+// languages never recreates the player.
+const playerErrorsEn: Record<string, string> = {
+  '视频尚未发布。你可以先阅读课件。':
+    "This video isn't published yet. You can read the lesson first.",
+  '视频暂时无法播放，请重新加载。': "The video can't play right now. Please reload.",
+};
 
 type Video = { id: string; name: string; url: string; mimeType: string };
 type Catalog = {
@@ -31,6 +41,7 @@ export function Player({
   assetId?: string | null;
   onProgress: ProgressCallback;
 }) {
+  const t = useT();
   const host = useRef<HTMLDivElement>(null);
   const callback = useRef({ lessonId, callback: onProgress });
   useLayoutEffect(() => {
@@ -268,7 +279,10 @@ export function Player({
   return (
     <div>
       {currentCatalog && currentCatalog.items.length > 1 && (
-        <fieldset className="video-playlist" aria-label="章节视频列表">
+        <fieldset
+          className="video-playlist"
+          aria-label={t('章节视频列表', 'Lesson videos')}
+        >
           {currentCatalog.items.map((video, index) => (
             <button
               type="button"
@@ -282,15 +296,17 @@ export function Player({
         </fieldset>
       )}
       <div ref={host} className="video-host" />
-      {waiting && !error && <output className="muted">正在加载视频…</output>}
+      {waiting && !error && (
+        <output className="muted">{t('正在加载视频…', 'Loading video…')}</output>
+      )}
       {error && (
         <div className="notice" role="alert">
-          {error}
+          {t(error, playerErrorsEn[error] ?? englishMessage(error))}
           <Button
             variant="outline"
             onClick={() => setAttempt((value) => value + 1)}
           >
-            重新加载
+            {t('重新加载', 'Reload')}
           </Button>
         </div>
       )}

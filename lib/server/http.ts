@@ -1,6 +1,7 @@
 import { ZodError } from 'zod';
 import { database, origin } from './env';
 import type { Person } from './auth';
+import { englishMessage } from '@/lib/messages-en';
 export class HttpError extends Error {
   constructor(
     public status: number,
@@ -18,13 +19,16 @@ export function json(data: unknown, status = 200) {
     },
   });
 }
-export function fail(error: unknown) {
+/** Errors speak the site language: English unless the client asked for zh. */
+export function fail(error: unknown, request?: Request) {
+  const say = (message: string) =>
+    request?.headers.get('x-locale') === 'zh' ? message : englishMessage(message);
   if (error instanceof HttpError)
-    return json({ error: error.message }, error.status);
+    return json({ error: say(error.message) }, error.status);
   if (error instanceof ZodError)
     return json(
       {
-        error: '请检查填写内容',
+        error: say('请检查填写内容'),
         fields: error.issues.map((i) => i.path.join('.')),
       },
       400,
@@ -33,7 +37,7 @@ export function fail(error: unknown) {
     'API failure',
     error instanceof Error ? error.message : 'unknown',
   );
-  return json({ error: '暂时无法完成，请稍后重试' }, 500);
+  return json({ error: say('暂时无法完成，请稍后重试') }, 500);
 }
 export function requirePerson(p: Person | null): asserts p is Person {
   if (!p) throw new HttpError(401, '请先登录');

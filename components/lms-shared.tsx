@@ -12,6 +12,8 @@ import Markdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from './ui/button';
 import { api } from '@/lib/types';
+import { useT } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
 import type { LmsPage } from '@/lib/lms-types';
 import { CourseDiagram } from './course-diagram';
 import { AlgorithmDemo } from './algorithm-demo';
@@ -52,18 +54,22 @@ const markdownComponents: Components = {
     </a>
   ),
   img: ({ src, alt }) =>
-    typeof src === 'string' ? (
-      <a href={src} target="_blank" rel="noreferrer">
-        {/* oxlint-disable-next-line nextjs/no-img-element -- Markdown can contain authenticated images with unknown dimensions; keep the original browser request. */}
-        <img
-          src={src}
-          alt={alt || '课程图示'}
-          loading="lazy"
-          referrerPolicy="no-referrer"
-        />
-      </a>
-    ) : null,
+    typeof src === 'string' ? <MarkdownImage src={src} alt={alt} /> : null,
 };
+function MarkdownImage({ src, alt }: { src: string; alt?: string }) {
+  const t = useT();
+  return (
+    <a href={src} target="_blank" rel="noreferrer">
+      {/* oxlint-disable-next-line nextjs/no-img-element -- Markdown can contain authenticated images with unknown dimensions; keep the original browser request. */}
+      <img
+        src={src}
+        alt={alt || t('课程图示', 'Course illustration')}
+        loading="lazy"
+        referrerPolicy="no-referrer"
+      />
+    </a>
+  );
+}
 
 export function LessonMarkdown({
   body,
@@ -96,11 +102,15 @@ export function Pagination({
   busy?: boolean;
   onPage: (page: number) => void;
 }) {
+  const t = useT();
   const pages = Math.max(1, Math.ceil(total / pageSize));
   return (
-    <nav className="lms-pagination" aria-label="分页">
+    <nav className="lms-pagination" aria-label={t('分页', 'Pagination')}>
       <span className="muted">
-        共 {total} 条 · 第 {page} / {pages} 页
+        {t(
+          `共 ${total} 条 · 第 ${page} / ${pages} 页`,
+          `${total} items · Page ${page} of ${pages}`,
+        )}
       </span>
       <div>
         <Button
@@ -108,14 +118,14 @@ export function Pagination({
           disabled={busy || page <= 1}
           onClick={() => onPage(page - 1)}
         >
-          上一页
+          {t('上一页', 'Previous')}
         </Button>
         <Button
           variant="outline"
           disabled={busy || page >= pages}
           onClick={() => onPage(page + 1)}
         >
-          下一页
+          {t('下一页', 'Next')}
         </Button>
       </div>
     </nav>
@@ -194,10 +204,15 @@ export function CursorPagination({
     next: () => unknown;
   };
 }) {
+  const t = useT();
+  const total = list.data?.total ?? '—';
   return (
-    <nav className="lms-pagination" aria-label="分页">
+    <nav className="lms-pagination" aria-label={t('分页', 'Pagination')}>
       <span className="muted">
-        共 {list.data?.total ?? '—'} 条 · 第 {list.page} 页
+        {t(
+          `共 ${total} 条 · 第 ${list.page} 页`,
+          `${total} items · Page ${list.page}`,
+        )}
       </span>
       <div>
         <Button
@@ -205,14 +220,14 @@ export function CursorPagination({
           disabled={list.busy || list.page <= 1}
           onClick={() => list.previous()}
         >
-          上一页
+          {t('上一页', 'Previous')}
         </Button>
         <Button
           variant="outline"
           disabled={list.busy || !list.data?.nextCursor}
           onClick={() => list.next()}
         >
-          下一页
+          {t('下一页', 'Next')}
         </Button>
       </div>
     </nav>
@@ -228,6 +243,7 @@ export function useDebounced(value: string, delay = 300) {
 }
 
 export function useLocalDraft(key: string, initial: string) {
+  const t = useT();
   const [value, setValue] = useState(initial);
   const [restored, setRestored] = useState(false);
   const [storageError, setStorageError] = useState('');
@@ -269,9 +285,27 @@ export function useLocalDraft(key: string, initial: string) {
     } catch {}
     setRestored(false);
   }, [key]);
-  return { value, update, clear, restored, storageError, loaded };
+  return {
+    value,
+    update,
+    clear,
+    restored,
+    // The state keeps the Chinese text so the effects above stay language-free.
+    storageError:
+      storageError &&
+      t(storageError, "Your browser can't save drafts. Submit before leaving."),
+    loaded,
+  };
 }
 
+// LessonNotes keeps its status as Chinese text (set from async saves); render picks the language.
+const noteStatusEn: Record<string, string> = {
+  笔记会自动保存: 'Notes save automatically',
+  '正在保存…': 'Saving…',
+  已保存: 'Saved',
+  已保留本地草稿: 'Kept as a local draft',
+  有未保存的修改: 'Unsaved changes',
+};
 export function LessonNotes({
   userId,
   lessonId,
@@ -283,6 +317,7 @@ export function LessonNotes({
   initial: string;
   onSaved: (note: string) => void;
 }) {
+  const t = useT();
   const draft = useLocalDraft(`cswork:notes:${userId}:${lessonId}`, initial);
   const [status, setStatus] = useState('笔记会自动保存');
   const [error, setError] = useState('');
@@ -351,29 +386,39 @@ export function LessonNotes({
   }, [lessonId, save]);
   return (
     <div className="notes-pane">
-      <label htmlFor="lesson-note">记下思路、疑问和你自己的理解</label>
+      <label htmlFor="lesson-note">
+        {t(
+          '记下思路、疑问和你自己的理解',
+          'Write down your ideas, questions and takeaways',
+        )}
+      </label>
       {draft.restored && (
-        <p className="notice">已恢复这台设备上的未保存笔记。</p>
+        <p className="notice">
+          {t(
+            '已恢复这台设备上的未保存笔记。',
+            'Restored unsaved notes from this device.',
+          )}
+        </p>
       )}
       <textarea
         id="lesson-note"
         value={draft.value}
         onChange={(e) => draft.update(e.target.value)}
         onBlur={() => void save()}
-        placeholder="这一章我学到了…"
+        placeholder={t('这一章我学到了…', 'In this lesson I learned…')}
         maxLength={20000}
       />
       <div className="lms-toolbar">
-        <output className="muted">{status}</output>
+        <output className="muted">{t(status, noteStatusEn[status])}</output>
         <Button variant="outline" onClick={() => void save()}>
-          立即保存
+          {t('立即保存', 'Save now')}
         </Button>
       </div>
       {(error || draft.storageError) && (
         <p className="error-text" role="alert">
-          {error || draft.storageError}{' '}
+          {error ? t(error, englishMessage(error)) : draft.storageError}{' '}
           <Button variant="ghost" onClick={() => void save()}>
-            重试保存
+            {t('重试保存', 'Retry save')}
           </Button>
         </p>
       )}

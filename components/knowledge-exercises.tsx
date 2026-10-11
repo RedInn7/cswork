@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import { Check, Circle, Clock3, ArrowUpRight } from 'lucide-react';
 import { api } from '@/lib/types';
+import { useT } from '@/lib/i18n';
+import { englishMessage } from '@/lib/messages-en';
 import type { Navigate } from './learning';
 
 type Progress = {
@@ -31,6 +33,7 @@ export function KnowledgeExercises({
   navigate: Navigate;
   userId?: string;
 }) {
+  const t = useT();
   const [data, setData] = useState<Progress | null>(null);
   const [error, setError] = useState(false);
   const [retry, setRetry] = useState(0);
@@ -80,38 +83,49 @@ export function KnowledgeExercises({
       aria-labelledby="knowledge-exercises-heading"
     >
       <div className="knowledge-exercises-heading">
-        <h2 id="knowledge-exercises-heading">例题与课后练习</h2>
+        <h2 id="knowledge-exercises-heading">
+          {t('例题与课后练习', 'Examples and practice')}
+        </h2>
         {data && !error && (
           <span>
-            第 {data.currentRound.number} 轮 · 本站已通过 {data.completed} /{' '}
+            {t('第', 'Round')} {data.currentRound.number}{' '}
+            {t('轮 · 本站已通过', '· Solved here')} {data.completed} /{' '}
             {data.total}
             {!!data.importedCompleted &&
-              ` · LeetCode 导入 ${data.importedCompleted}`}
+              t(
+                ` · LeetCode 导入 ${data.importedCompleted}`,
+                ` · ${data.importedCompleted} imported from LeetCode`,
+              )}
           </span>
         )}
       </div>
       {!userId ? (
-        <p>登录后可以练习，并查看本轮完成情况。</p>
+        <p>
+          {t(
+            '登录后可以练习，并查看本轮完成情况。',
+            'Sign in to practice and see your progress in this round.',
+          )}
+        </p>
       ) : error ? (
         <p role="alert">
-          暂时无法获取完成情况。
+          {t('暂时无法获取完成情况。', "Couldn't load your progress. ")}
           <button onClick={() => setRetry((value) => value + 1)}>
-            重新加载
+            {t('重新加载', 'Reload')}
           </button>
         </p>
       ) : !data ? (
-        <p role="status">正在读取练习进度…</p>
+        <p role="status">{t('正在读取练习进度…', 'Loading practice progress…')}</p>
       ) : (
         <ul>
           {data.items.map((item) => {
             const label =
               item.status === 'solved'
-                ? '已通过'
+                ? t('已通过', 'Solved')
                 : item.judging
-                  ? '判题中'
+                  ? t('判题中', 'Judging')
                   : item.status === 'attempted'
-                    ? '尝试过，未通过'
-                    : '未开始';
+                    ? t('尝试过，未通过', 'Attempted, not solved')
+                    : t('未开始', 'Not started');
             const Icon =
               item.status === 'solved'
                 ? Check
@@ -142,15 +156,19 @@ export function KnowledgeExercises({
                         navigate('problem', { problem: item.id });
                     }}
                   >
-                    {item.number}. {item.title}
+                    {/* A missing problem's title is the server's 题目暂不可用. */}
+                    {item.number}. {t(item.title, englishMessage(item.title))}
                   </a>
                   <span className="knowledge-exercise-difficulty">
-                    {(
-                      { Easy: '简单', Medium: '中等', Hard: '困难' } as Record<
-                        string,
-                        string
-                      >
-                    )[item.difficulty] ?? item.difficulty}
+                    {t(
+                      (
+                        { Easy: '简单', Medium: '中等', Hard: '困难' } as Record<
+                          string,
+                          string
+                        >
+                      )[item.difficulty] ?? item.difficulty,
+                      item.difficulty,
+                    )}
                   </span>
                   <ArrowUpRight size={16} aria-hidden="true" />
                 </div>
@@ -158,8 +176,11 @@ export function KnowledgeExercises({
                 <span className="knowledge-exercise-status">
                   {label}
                   {!!item.importedSources?.length &&
-                    ` · LeetCode ${item.importedSources.map((region) => (region === 'cn' ? '国区' : '美区')).join(' / ')}已通过`}
-                  {!item.available ? ' · 暂未开放' : ''}
+                    t(
+                      ` · LeetCode ${item.importedSources.map((region) => (region === 'cn' ? '国区' : '美区')).join(' / ')}已通过`,
+                      ` · Solved on LeetCode ${item.importedSources.map((region) => (region === 'cn' ? 'CN' : 'US')).join(' / ')}`,
+                    )}
+                  {!item.available ? t(' · 暂未开放', ' · Not available yet') : ''}
                 </span>
               </li>
             );

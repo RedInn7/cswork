@@ -453,5 +453,8 @@ test('teacher checker selector preserves the fixed OA option', () => {
     source,
     /'oa-',\s*\]\.some\(\(prefix\) => spec\.checker\.startsWith\(prefix\)\)/,
   );
-  assert.match(source, /<option value=\{spec\.checker\}>\s*本题专用规则/);
+  assert.match(
+    source,
+    /<option value=\{spec\.checker\}>\s*\{t\(\s*'本题专用规则/,
+  );
 });

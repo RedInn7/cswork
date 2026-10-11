@@ -139,12 +139,12 @@ test('curated practice UI preserves language and round history, deduplicates cli
       ),
     );
     await settle();
-    assert.match(document.body.textContent, /灵神题单精选/);
+    assert.match(document.body.textContent, /Ling’s Curated 500/);
     assert.deepEqual(
       [...document.querySelectorAll('.study-progress')].map(
         (node) => node.textContent,
       ),
-      ['已通过', '未通过', '未开始'],
+      ['Solved', 'Not solved', 'Not started'],
     );
     assert.equal(
       document.querySelectorAll('.study-row[data-progress="solved"]').length,
@@ -158,17 +158,17 @@ test('curated practice UI preserves language and round history, deduplicates cli
     );
     assert.equal(
       rows[0].querySelector('.study-row-main').textContent,
-      '1. 题目1',
+      '1. Problem 1',
     );
     assert.equal(
       rows[0].querySelector('.study-progress .sr-only').textContent,
-      '已通过',
+      'Solved',
     );
-    assert.equal(rows[1].querySelector('.study-progress').title, '未通过');
+    assert.equal(rows[1].querySelector('.study-progress').title, 'Not solved');
     assert.equal(rows[2].querySelector('.study-progress svg'), null);
     assert.equal(
       rows[2].querySelector('.study-row-main').title,
-      `3. ${longTitleZh}`,
+      `3. ${longTitleEn}`,
     );
     await act(async () => rows[0].click());
     assert.deepEqual(navigations, [['problem', { problem: 'lc-1' }]]);
@@ -185,6 +185,16 @@ test('curated practice UI preserves language and round history, deduplicates cli
           new URL(url, 'https://cswork.test').searchParams.get('collection') ===
           'ling-selected-500',
       ),
+    );
+    // English is the site default; the page switch still flips to Chinese and back.
+    await select(
+      document.querySelector('[aria-label="Collection language"]'),
+      'zh',
+    );
+    assert.match(document.body.textContent, /灵神题单精选/);
+    assert.equal(
+      document.querySelectorAll('.study-row-main')[2].title,
+      `3. ${longTitleZh}`,
     );
     await select(document.querySelector('[aria-label="题单语言"]'), 'en');
     assert.match(document.body.textContent, /Ling’s Curated 500/);

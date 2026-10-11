@@ -51,19 +51,19 @@ test('the table shows verdicts, the viewer badge and OA companies without links 
       now: 1_000_000 + 125_000,
     }),
   );
-  assert.match(html, /运行中<span class="js-progress">12\/28<\/span>/);
-  assert.match(html, /js-abbr">WA<\/span>答案错误<span class="js-progress">3\/28/);
-  assert.match(html, /js-abbr">AC<\/span>通过<\/span>/);
+  assert.match(html, /Running<span class="js-progress">12\/28<\/span>/);
+  assert.match(html, /js-abbr">WA<\/span>Wrong Answer<span class="js-progress">3\/28/);
+  assert.match(html, /js-abbr">AC<\/span>Accepted<\/span>/);
   assert.match(html, /class="is-mine is-new"/);
-  assert.match(html, /rd-badge is-brand">我</);
+  assert.match(html, /rd-badge is-brand">You</);
   assert.match(html, /rd-badge is-brand">Amazon</);
-  assert.match(html, /rd-badge">题库</);
+  assert.match(html, /rd-badge">Problems</);
   assert.match(html, />两数之和<\/button>/);
   assert.match(html, /<span class="js-problem-title">gone-problem<\/span>/);
   assert.match(html, /42 ms/);
   assert.match(html, /9\.0 MB/);
   assert.match(html, /2\.0 KB/);
-  assert.match(html, /2 分钟前/);
+  assert.match(html, /2 min ago/);
 });
 
 test('a poll replaces the newest page and keeps older pages', () => {
@@ -79,8 +79,13 @@ test('a poll replaces the newest page and keeps older pages', () => {
 
 test('relative times', () => {
   const now = Date.UTC(2026, 9, 10, 12);
-  assert.equal(relativeTime(now - 3_000, now), '刚刚');
-  assert.equal(relativeTime(now - 45_000, now), '45 秒前');
-  assert.equal(relativeTime(now - 7_200_000, now), '2 小时前');
+  assert.equal(relativeTime(now - 3_000, now), 'just now');
+  assert.equal(relativeTime(now - 45_000, now), '45 sec ago');
+  assert.equal(relativeTime(now - 7_200_000, now), '2 h ago');
   assert.match(relativeTime(now - 3 * 86_400_000, now), /^\d{2}-\d{2} \d{2}:\d{2}$/);
+  assert.equal(relativeTime(now - 3_000, now, 'zh'), '刚刚');
+  assert.equal(relativeTime(now - 45_000, now, 'zh'), '45 秒前');
+  assert.equal(relativeTime(now - 180_000, now, 'zh'), '3 分钟前');
+  assert.equal(relativeTime(now - 7_200_000, now, 'zh'), '2 小时前');
+  assert.match(relativeTime(now - 3 * 86_400_000, now, 'zh'), /^\d{2}-\d{2} \d{2}:\d{2}$/);
 });
