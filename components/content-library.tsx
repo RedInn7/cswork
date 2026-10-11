@@ -43,7 +43,12 @@ export type ContentSummary = {
 /** Experiences and concepts summarise with their opening lines; the page doesn't print them twice. */
 const flat = (s: string) => s.replace(/[^\p{L}\p{N}]+/gu, ' ').trim().toLowerCase();
 const opensWith = (body: string, summary: string) =>
-  flat(body.slice(0, 1000).replace(/^#{1,6}\s.*$/gm, '')).startsWith(flat(summary.replace(/…$/, '')).slice(0, 80));
+  flat(
+    body
+      .slice(0, 3000)
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+      .replace(/^#{1,6}\s.*$/gm, ''),
+  ).startsWith(flat(summary.replace(/…$/, '')).slice(0, 80));
 /** Tutorials are bilingual: Chinese readers get the Chinese text when there is one. */
 const localized = (locale: string, en: string, zh?: string | null) =>
   locale === 'zh' && zh ? zh : en;

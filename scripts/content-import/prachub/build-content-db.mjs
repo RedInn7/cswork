@@ -140,6 +140,8 @@ export function localize(text) {
     .join('');
 }
 const flat = (s) => s.replace(/[^\p{L}\p{N}]+/gu, ' ').trim().toLowerCase();
+/** The body's opening text: without images and headings. */
+const lead = (body) => body.slice(0, 3000).replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/^#{1,6}\s.*$/gm, '');
 /**
  * A summary that is just the body's opening cut at a fixed length ends cleanly with an
  * ellipsis instead of half a word ("Expect to demons").
@@ -147,8 +149,8 @@ const flat = (s) => s.replace(/[^\p{L}\p{N}]+/gu, ' ').trim().toLowerCase();
 export function excerpt(summary, body) {
   const s = summary?.replace(/\s+/g, ' ').trim();
   if (!s || /[.!?…:;)"'”’]$/.test(s)) return s || null;
-  // Headings ("## What's being tested") come before the text the summary was cut from.
-  const opening = flat(body.slice(0, s.length * 2 + 400).replace(/^#{1,6}\s.*$/gm, ''));
+  // A diagram and headings ("## What's being tested") come before the text the summary was cut from.
+  const opening = flat(lead(body).slice(0, s.length * 2 + 400));
   const head = flat(s);
   if (!opening.startsWith(head)) return s;
   const cut = /[\p{L}\p{N}]/u.test(opening[head.length] || '') ? s.replace(/\s*\S+$/, '') : s;

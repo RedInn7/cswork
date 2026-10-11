@@ -38,7 +38,7 @@ writeFileSync(join(parsed, 'guides.jsonl'), lines([
 ]));
 writeFileSync(join(parsed, 'concepts.jsonl'), lines([
   // The source's summary is the body's opening cut mid-word.
-  item({ id: 'cp-ab', type: 'concept', slug: 'ab', title: 'A/B testing', summary: 'Expect to demons', body: "## What's being tested\n\nExpect to demonstrate depth in A/B testing: $p < 0.05$.", extra: { math: true } }),
+  item({ id: 'cp-ab', type: 'concept', slug: 'ab', title: 'A/B testing', summary: 'Expect to demons', body: "![Diagram of a test](https://ik.imagekit.io/x/d.png)\n\n## What's being tested\n\nExpect to demonstrate depth in A/B testing: $p < 0.05$.", extra: { math: true } }),
 ]));
 writeFileSync(join(parsed, 'algorithms-basics.jsonl'), lines([
   item({ id: 'al-binary-search', type: 'algorithm', slug: 'binary-search', title: 'Binary search', titleZh: '二分查找', summaryZh: '在有序区间里折半查找', body: 'Halve the range.', extra: { level: 'core', bodyZh: '每次把区间折半。', sourceTitle: '原站标题', sources: ['docs/basic/binary.md'] } }),
