@@ -83,7 +83,7 @@ const bridgePrograms = new CompiledProgramCache(
 );
 const precompiles = new PrecompileScheduler();
 const admission = new SubmissionAdmission(OJ_WORKER_CONCURRENCY);
-const caseSlot = createSlots(OJ_CASE_SLOTS);
+const caseSlots = createSlots(OJ_CASE_SLOTS);
 let stopping = false;
 let maintaining = false;
 let engineAvailable = false;
@@ -141,20 +141,15 @@ async function judge(job: Job<{ submissionId: string }>) {
   }, 400);
   let releaseAdmission: (() => void) | undefined;
   let releaseForeground: (() => void) | undefined;
+  const exclusive =
+    !budget ||
+    exclusiveSubmission(budget.bytes, budget.memoryLimit, budget.outputLimit);
   try {
-    releaseAdmission = await admission.acquire(
-      !budget ||
-        exclusiveSubmission(
-          budget.bytes,
-          budget.memoryLimit,
-          budget.outputLimit,
-        ),
-      waiting.signal,
-    );
+    releaseAdmission = await admission.acquire(exclusive, waiting.signal);
     // A precompile of this exact program finishes into the cache it then hits.
     releaseForeground = await precompiles.enterForeground(precompileKey(row));
     clearInterval(monitor);
-    return await judgeSubmission(job);
+    return await judgeSubmission(job, exclusive);
   } catch (error) {
     if (!waiting.signal.aborted) throw error;
     const latest = submissionRow(row.id);
@@ -172,7 +167,10 @@ async function judge(job: Job<{ submissionId: string }>) {
     releaseAdmission?.();
   }
 }
-async function judgeSubmission(job: Job<{ submissionId: string }>) {
+async function judgeSubmission(
+  job: Job<{ submissionId: string }>,
+  exclusive: boolean,
+) {
   const id = job.data.submissionId;
   const initial = submissionRow(id);
   if (!initial || !ACTIVE.includes(initial.status)) return;
@@ -351,7 +349,7 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
       caseController.signal,
     ]);
     const executeCase = async (c: (typeof cases)[number]) => {
-      const release = await caseSlot(caseSignal);
+      const release = await caseSlots.acquire(caseSignal);
       try {
         current(id, attempt, controller.signal);
         // Codec decoding still runs in a fresh sandbox and never sees the tree.
@@ -363,10 +361,11 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
         release();
       }
     };
+    const width = caseConcurrency(snapshot.spec.memoryLimit, exclusive);
     for await (const { item: c, result } of orderedCaseResults(
       cases,
       executeCase,
-      caseConcurrency(snapshot.spec.memoryLimit),
+      () => (caseSlots.contended() ? Math.min(2, width) : width),
       () => caseController.abort(),
     )) {
       current(id, attempt, controller.signal);

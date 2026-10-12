@@ -105,6 +105,8 @@ test('rejected later case is handled immediately and propagated in case order', 
 test('large-memory problems stay serial and zero cases stay empty', async () => {
   assert.equal(caseConcurrency(256 * 1024), 4);
   assert.equal(caseConcurrency(512 * 1024), 4);
+  assert.equal(caseConcurrency(256 * 1024, true), 2, 'exclusive keeps two');
+  assert.equal(caseConcurrency(512 * 1024 + 1, true), 1);
   assert.equal(caseConcurrency(512 * 1024 + 1), 1);
   let active = 0;
   for await (const _ of orderedCaseResults(
@@ -129,15 +131,17 @@ test('large-memory problems stay serial and zero cases stay empty', async () => 
 });
 
 test('case slots cap sandboxes across submissions in FIFO order', async () => {
-  const acquire = createSlots(2);
+  const { acquire, contended } = createSlots(2);
   const signal = new AbortController().signal;
   const a = await acquire(signal);
   const b = await acquire(signal);
   const order: string[] = [];
+  assert.equal(contended(), false);
   const c = acquire(signal).then((release) => (order.push('c'), release));
   const d = acquire(signal).then((release) => (order.push('d'), release));
   await turn();
   assert.deepEqual(order, []);
+  assert.equal(contended(), true, 'others are waiting for a slot');
   a();
   a(); // a second release of the same lease is ignored
   const releaseC = await c;
@@ -152,7 +156,7 @@ test('case slots cap sandboxes across submissions in FIFO order', async () => {
   (await acquire(signal))();
 });
 test('an aborted wait leaves the queue without taking a slot', async () => {
-  const acquire = createSlots(1);
+  const { acquire } = createSlots(1);
   const held = await acquire(new AbortController().signal);
   const cancelled = new AbortController();
   const waiting = acquire(cancelled.signal);
@@ -164,4 +168,28 @@ test('an aborted wait leaves the queue without taking a slot', async () => {
   const already = new AbortController();
   already.abort();
   await assert.rejects(acquire(already.signal), { name: 'AbortError' });
+});
+
+test('a narrowing limit is honoured as slots free, without reordering', async () => {
+  let width = 4, active = 0, peak = 0;
+  const seen: number[] = [];
+  const peaks: number[] = [];
+  for await (const { result } of orderedCaseResults(
+    [0, 1, 2, 3, 4, 5, 6, 7],
+    async (n) => {
+      peak = Math.max(peak, ++active);
+      await turn();
+      active--;
+      return n;
+    },
+    () => width,
+  )) {
+    seen.push(result);
+    peaks.push(peak);
+    if (result === 1) (width = 2), (peak = 0);
+  }
+  assert.deepEqual(seen, [0, 1, 2, 3, 4, 5, 6, 7]);
+  assert.equal(peaks[0], 4, 'idle: four in flight');
+  // Cases started before narrowing finish; nothing new starts beyond two.
+  assert.ok(peaks.at(-1)! <= 3);
 });
