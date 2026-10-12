@@ -136,39 +136,51 @@ function limits(
  * Turns argv[1] (main.py or bridge.py) into a .pyc beside it, in the runner's own
  * Python. Every LeetCode case otherwise recompiles the ~75 KB support runtime:
  * its top-level exec('<module source>', module.__dict__) calls become
- * exec(<that source precompiled with the same future flags>, ...). The script keeps
- * its absolute .py filename, so tracebacks still name and quote the .py file the
- * case also receives. Any surprise falls back to plain bytecode of the same source.
+ * exec(<that source precompiled with the same future flags>, ...). The code keeps
+ * its absolute .py filename and the cases also receive the .py, so tracebacks
+ * name and quote it; argv[0] and __file__ are restored to the .py names
+ * (__loader__ alone stays the sourceless loader). Sources that emit compile
+ * warnings, or anything unexpected, get no .pyc: their cases run the .py exactly
+ * as before, so warnings still reach every case's stderr.
  */
 export const PYTHON_BYTECODE = `
-import __future__, ast, importlib.util, marshal, os, sys
+import __future__, ast, importlib.util, marshal, os, sys, warnings
 name = sys.argv[1]
 path = os.path.abspath(name)
 with open(name, 'rb') as f:
     data = f.read()
-tree = ast.parse(data, path)
 try:
-    flags = 0
-    for node in tree.body:
-        if isinstance(node, ast.ImportFrom) and node.module == '__future__':
-            for alias in node.names:
-                flags |= getattr(__future__, alias.name).compiler_flag
-        elif not (isinstance(node, ast.Expr) and isinstance(node.value, ast.Constant)):
-            break
-    for node in tree.body:
-        call = node.value if isinstance(node, ast.Expr) else None
-        if (isinstance(call, ast.Call) and isinstance(call.func, ast.Name) and call.func.id == 'exec'
-                and len(call.args) == 2 and not call.keywords
-                and isinstance(call.args[0], ast.Constant) and isinstance(call.args[0].value, str)
-                and isinstance(call.args[1], ast.Attribute) and call.args[1].attr == '__dict__'
-                and isinstance(call.args[1].value, ast.Name)
-                and call.args[1].value.id in ('_cswork_module', '_cswork_runtime')):
-            code = compile(call.args[0].value, '<string>', 'exec', flags, dont_inherit=True)
-            loads = ast.Call(ast.Attribute(ast.Call(ast.Name('__import__', ast.Load()), [ast.Constant('marshal')], []), 'loads', ast.Load()), [ast.Constant(marshal.dumps(code))], [])
-            call.args[0] = ast.copy_location(loads, call.args[0])
-    code = compile(ast.fix_missing_locations(tree), path, 'exec', dont_inherit=True)
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter('always')
+        tree = ast.parse(data, path)
+        flags = lead = 0
+        for node in tree.body:
+            if isinstance(node, ast.ImportFrom) and node.module == '__future__':
+                for alias in node.names:
+                    flags |= getattr(__future__, alias.name).compiler_flag
+            elif not (isinstance(node, ast.Expr) and isinstance(node.value, ast.Constant)):
+                break
+            lead += 1
+        for node in tree.body:
+            call = node.value if isinstance(node, ast.Expr) else None
+            if (isinstance(call, ast.Call) and isinstance(call.func, ast.Name) and call.func.id == 'exec'
+                    and len(call.args) == 2 and not call.keywords
+                    and isinstance(call.args[0], ast.Constant) and isinstance(call.args[0].value, str)
+                    and isinstance(call.args[1], ast.Attribute) and call.args[1].attr == '__dict__'
+                    and isinstance(call.args[1].value, ast.Name)
+                    and call.args[1].value.id in ('_cswork_module', '_cswork_runtime')):
+                code = compile(call.args[0].value, '<string>', 'exec', flags, dont_inherit=True)
+                # Through the support's own sys binding, never a global __import__.
+                loads = ast.parse("_cswork_sys.modules['marshal'].loads(b'')", mode='eval').body
+                loads.args[0] = ast.Constant(marshal.dumps(code))
+                call.args[0] = ast.copy_location(loads, call.args[0])
+        restore = ast.parse('import sys as _cswork_sys\\n_cswork_sys.argv[0] = _cswork_sys.argv[0][:-1]\\n__file__ = __file__[:-1]\\n').body
+        tree.body[lead:lead] = restore
+        code = compile(ast.fix_missing_locations(tree), path, 'exec', dont_inherit=True)
 except Exception:
-    code = compile(data, path, 'exec', dont_inherit=True)
+    sys.exit(0)
+if caught:
+    sys.exit(0)
 with open(name[:-3] + '.pyc', 'wb') as f:
     f.write(importlib.util.MAGIC_NUMBER + bytes(12) + marshal.dumps(code))
 `;
@@ -179,7 +191,7 @@ export async function compileBridge(source: string, signal: AbortSignal) {
       ...limits('', 30, 60, 1073741824, 65536),
       args: ['/usr/bin/python3', '-I', '-c', PYTHON_BYTECODE, 'bridge.py'],
       copyIn: { 'bridge.py': { content: source } },
-      copyOutCached: ['bridge.pyc'],
+      copyOutCached: ['bridge.pyc?'], // optional: absent means run from source
       copyOutMax: 16777216,
     },
     signal,
@@ -232,11 +244,10 @@ export async function compile(
 ) {
   // LeetCode-mode Python carries the support runtime; ACM Python runs as plain source.
   const bytecode = language === 'python' && source.includes(LEETCODE_SUPPORT);
+  // Python's bytecode is optional (see PYTHON_BYTECODE); the others must exist.
   const artifact =
     language === 'python'
-      ? bytecode
-        ? 'main.pyc'
-        : undefined
+      ? undefined
       : language === 'java'
         ? 'main.jar'
         : 'main';
@@ -302,7 +313,7 @@ export async function compile(
         'GOMAXPROCS=2',
       ],
       copyIn: { [sourceNames[language]]: { content: text } },
-      copyOutCached: artifact ? [artifact] : [],
+      copyOutCached: artifact ? [artifact] : bytecode ? ['main.pyc?'] : [],
       copyOutMax: 16777216,
     },
     signal,

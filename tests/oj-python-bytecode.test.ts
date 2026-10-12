@@ -90,3 +90,48 @@ test('a native bridge behaves identically from bytecode', () => {
   assert.equal(bytecode.stderr, plain.stderr);
   assert.equal(bytecode.status, plain.status);
 });
+
+/** Runs only the builder; reports whether it left a .pyc and what it printed. */
+function buildOnly(source: string) {
+  const dir = mkdtempSync(join(tmpdir(), 'cswork-pyc-'));
+  try {
+    writeFileSync(join(dir, 'main.py'), source);
+    const built = python(dir, ['-c', PYTHON_BYTECODE, 'main.py']);
+    return { built, pyc: existsSync(join(dir, 'main.pyc')) };
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+test('sources with compile warnings keep running from the .py', () => {
+  // The warning must still reach every case's stderr, as it did before.
+  const warned = twoSum.replace('        seen = {}\n', "        seen = {}\n        if len(nums) is 1: pass\n");
+  const { built, pyc } = buildOnly(lc1(warned));
+  assert.equal(built.status, 0);
+  assert.equal(built.stderr, '', 'the syntax check already reported it once');
+  assert.equal(pyc, false);
+});
+
+test('anything the builder cannot handle falls back to the .py', () => {
+  // ast.parse recurses where the compiler does not; py_compile accepts this.
+  const deep = `${twoSum}X = ${Array(9996).fill('1').join('+')}\n`;
+  const { built, pyc } = buildOnly(lc1(deep));
+  assert.equal(built.status, 0, built.stderr);
+  assert.equal(pyc, false);
+});
+
+test('the program still sees main.py as argv[0] and __file__', () => {
+  const peek = `import sys as _s\nprint(_s.argv[0], __file__.rsplit('/', 1)[-1])\n${twoSum}`;
+  const { plain, bytecode } = both('main.py', lc1(peek), '2\n1 2\n3\n');
+  assert.equal(plain.status, 0, plain.stderr);
+  assert.match(plain.stdout, /^main\.py main\.py\n/);
+  assert.equal(bytecode.stdout, plain.stdout);
+});
+
+test('a hoisted __future__ line that rebinds __import__ behaves as before', () => {
+  const hostile = `from __future__ import annotations; __import__ = None\n${twoSum}`;
+  const { plain, bytecode } = both('main.py', lc1(hostile), '2\n1 2\n3\n');
+  assert.equal(bytecode.stdout, plain.stdout);
+  assert.equal(bytecode.stderr, plain.stderr);
+  assert.equal(bytecode.status, plain.status);
+});
