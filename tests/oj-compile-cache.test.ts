@@ -349,15 +349,13 @@ void test('warm errors do not remain cached and closing during compilation dispo
 void test('Python is reused only when it left bytecode in the runner', async () => {
   let calls = 0;
   const cache = new CompiledProgramCache(
-    async (language, source) => ({
-      result: { status: 'Accepted' },
+    async (language, source) => {
+      calls++;
       // LeetCode-mode Python leaves main.pyc; plain ACM Python leaves nothing.
-      program: {
-        language,
-        source,
-        cache: source === 'leetcode' ? { 'main.pyc': String(++calls) } : (++calls, {}),
-      },
-    }),
+      const cache: Record<string, string> =
+        source === 'leetcode' ? { 'main.pyc': String(calls) } : {};
+      return { result: { status: 'Accepted' }, program: { language, source, cache } };
+    },
     async () => {},
   );
   try {
