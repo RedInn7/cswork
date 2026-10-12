@@ -231,6 +231,15 @@ export function withStdcxxPch(source: string) {
     '#include <cswork/stdc++.hpp>' + (lines[at].endsWith('\r') ? '\r' : '');
   return lines.join('\n');
 }
+/** `jar cf main.jar *.class`, including its failure when javac wrote no class. */
+const JAVA_JAR = `import glob, sys, zipfile
+names = sorted(glob.glob('*.class'))
+if not names:
+    sys.exit('*.class : no such file or directory')
+with zipfile.ZipFile('main.jar', 'w') as jar:
+    for name in names:
+        jar.write(name)
+`;
 const STDCXX_FALLBACK = {
   'cswork/stdc++.hpp': { content: '#include <bits/stdc++.h>\n' },
 };
@@ -283,8 +292,10 @@ export async function compile(
       '-c',
       // javac's own JVM: C1 only and serial GC start faster for one short
       // compile. Class files and the learner's JVM flags are unchanged. The jar is
-      // zipped by Python instead of a second JVM (`jar cf main.jar *.class`).
-      "/usr/bin/javac -J-XX:TieredStopAtLevel=1 -J-XX:+UseSerialGC -encoding UTF-8 Main.java && /usr/bin/python3 -I -c \"import glob, zipfile\nwith zipfile.ZipFile('main.jar', 'w') as jar:\n    for name in sorted(glob.glob('*.class')): jar.write(name)\"",
+      // zipped by Python ($1) instead of a second JVM (`jar cf main.jar *.class`).
+      '/usr/bin/javac -J-XX:TieredStopAtLevel=1 -J-XX:+UseSerialGC -encoding UTF-8 Main.java && exec /usr/bin/python3 -I -c "$1"',
+      'javac',
+      JAVA_JAR,
     ],
     python: [
       '/usr/bin/python3',
