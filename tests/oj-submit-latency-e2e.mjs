@@ -32,7 +32,8 @@ assert(![4317, 5050, 5053, 5054].includes(port));
 const rounds = Number(process.env.TEST_ROUNDS || 5);
 const languages = (process.env.TEST_LANGUAGES || 'cpp,python,java,go').split(',');
 const programs = {
-  cpp: '#include <cstdio>\nint main(){long long a,b;if(scanf("%lld%lld",&a,&b)==2)printf("%lld\\n",a+b);}\n',
+  // Most ACM C++ starts like this; it exercises the runner's stdc++ PCH.
+  cpp: '#include <bits/stdc++.h>\nusing namespace std;\nint main(){long long a,b;if(cin>>a>>b)cout<<a+b<<"\\n";}\n',
   java: 'public class Main{public static void main(String[]args){java.util.Scanner s=new java.util.Scanner(System.in);long a=s.nextLong(),b=s.nextLong();System.out.println(a+b);}}\n',
   python: 'import sys\na,b=map(int,sys.stdin.read().split())\nprint(a+b)\n',
   go: 'package main\nimport "fmt"\nfunc main(){var a,b int64\nfmt.Scan(&a,&b)\nfmt.Println(a+b)}\n',
