@@ -22,6 +22,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      - run: node --import tsx --test tests/seo.test.ts tests/public-library.test.ts
       - run: node --import tsx --test tests/analytics.test.ts tests/analytics-events.test.ts tests/analytics-ui.test.mjs
       - run: npm run test:platform
       - run: npm run test:diagrams
@@ -98,5 +99,6 @@ jobs:
       - run: python3 tests/deploy-nginx.test.py
       - run: bash -n deploy/install.sh deploy/app-only-release.sh deploy/release.sh && node --check scripts/oa-judge/unpublished-batches.mjs
       - run: npm run build
+      - run: node tests/seo-http.mjs
       - run: node tests/oa-library-http.mjs
       - run: node tests/leetcode-sync-http.mjs
