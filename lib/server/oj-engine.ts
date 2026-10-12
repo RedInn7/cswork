@@ -205,10 +205,16 @@ const STDCXX_PCH = '/usr/local/include/cswork/stdc++.hpp';
 export function withStdcxxPch(source: string) {
   if (source.includes(STDCXX_PCH)) return source; // LeetCode drivers already do this
   const lines = source.split('\n');
-  const at = lines.findIndex((line) =>
-    /^\s*#\s*include\s*<bits\/stdc\+\+\.h>\s*(\/\/.*)?$/.test(line),
-  );
-  if (at < 0) return source;
+  // Only where a PCH can apply anyway: preceded by nothing but blank lines,
+  // line comments and directives. This also keeps an include inside a block
+  // comment or raw string, where extra lines would shift numbering, untouched.
+  const include = /^\s*#\s*include\s*<bits\/stdc\+\+\.h>\s*(\/\/.*)?$/;
+  const leading = /^\s*(\/\/.*|#.*)?$/;
+  const at = lines.findIndex((raw) => {
+    const line = raw.replace(/\r$/, ''); // CRLF sources
+    return include.test(line) || !leading.test(line);
+  });
+  if (at < 0 || !include.test(lines[at].replace(/\r$/, ''))) return source;
   lines[at] = [
     `#if __has_include("${STDCXX_PCH}")`,
     `#include "${STDCXX_PCH}"`,
@@ -269,7 +275,7 @@ export async function compile(
       // javac's own JVM: C1 only and serial GC start faster for one short
       // compile. Class files and the learner's JVM flags are unchanged. The jar is
       // zipped by Python instead of a second JVM (`jar cf main.jar *.class`).
-      '/usr/bin/javac -J-XX:TieredStopAtLevel=1 -J-XX:+UseSerialGC -encoding UTF-8 Main.java && /usr/bin/python3 -I -c "import glob, zipfile\nwith zipfile.ZipFile(\'main.jar\', \'w\') as jar:\n    for name in sorted(glob.glob(\'*.class\')): jar.write(name)"',
+      "/usr/bin/javac -J-XX:TieredStopAtLevel=1 -J-XX:+UseSerialGC -encoding UTF-8 Main.java && /usr/bin/python3 -I -c \"import glob, zipfile\nwith zipfile.ZipFile('main.jar', 'w') as jar:\n    for name in sorted(glob.glob('*.class')): jar.write(name)\"",
     ],
     python: [
       '/usr/bin/python3',

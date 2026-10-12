@@ -36,3 +36,17 @@ test('sources without it, and LeetCode drivers that already use it, are unchange
   const quoted = '#include "bits/stdc++.h"\n';
   assert.equal(withStdcxxPch(quoted), quoted);
 });
+
+test('an include after code or inside a block comment is left alone', () => {
+  for (const source of [
+    '/*\n#include <bits/stdc++.h>\n*/\n#include <iostream>\nint main(){}\n',
+    'int x;\n#include <bits/stdc++.h>\n',
+    '#include <iostream>\r\nusing namespace std;\r\n#include <bits/stdc++.h>\r\n',
+  ])
+    assert.equal(withStdcxxPch(source), source);
+  // Directives and line comments before it are fine, including Windows line endings.
+  const crlf = '#define LOCAL 1\r\n// note\r\n#include <bits/stdc++.h>\r\nint main(){ return LOCAL; }\r\n';
+  const rewritten = withStdcxxPch(crlf);
+  assert.match(rewritten, /#line 4\n/);
+  assert.equal(reportedLine(rewritten, 'int main()'), 4);
+});
