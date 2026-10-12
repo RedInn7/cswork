@@ -332,6 +332,8 @@ export async function run(
       ? [
           '/usr/bin/python3',
           '-I',
+          // The trusted bridge needs only the standard library: skip site setup.
+          ...(program.bridgeSource ? ['-S'] : []),
           script,
           ...(program.leetcodeInput ? ['--leetcode-input'] : []),
         ]

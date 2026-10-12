@@ -20,7 +20,7 @@ left = [k for k in code.co_consts if isinstance(k, str) and len(k) > 500]
 print(json.dumps({'precompiled': len(blobs), 'sourceLeft': len(left), 'flags': sorted({b.co_flags & 0x1000000 for b in blobs})}))
 `;
 /** Builds name.pyc like the runner does, then runs .py and .pyc on the same input. */
-function both(name: string, source: string, input: string) {
+function both(name: string, source: string, input: string, flags: string[] = []) {
   const dir = mkdtempSync(join(tmpdir(), 'cswork-pyc-'));
   try {
     writeFileSync(join(dir, name), source);
@@ -29,7 +29,7 @@ function both(name: string, source: string, input: string) {
     const pyc = name.replace(/\.py$/, '.pyc');
     assert.ok(existsSync(join(dir, pyc)));
     const plain = python(dir, [name], input);
-    const bytecode = python(dir, [pyc], input);
+    const bytecode = python(dir, [...flags, pyc], input);
     const inspected = python(dir, ['-c', INSPECT, pyc]);
     assert.equal(inspected.status, 0, inspected.stderr);
     return { plain, bytecode, shape: JSON.parse(inspected.stdout) };
@@ -83,7 +83,7 @@ test('a native bridge behaves identically from bytecode', () => {
   );
   assert.ok(bridgeSource);
   // No compiled ./main here: both report the same launcher failure.
-  const { plain, bytecode, shape } = both('bridge.py', bridgeSource!, '2\n1 2\n3\n');
+  const { plain, bytecode, shape } = both('bridge.py', bridgeSource!, '2\n1 2\n3\n', ['-S']);
   assert.equal(shape.precompiled, 12);
   assert.notEqual(plain.status, 0);
   assert.equal(bytecode.stdout, plain.stdout);
