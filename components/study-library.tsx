@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { LessonMarkdown } from './lms-shared';
+import { StatementMarkdown } from './statement-markdown';
 import { api } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
@@ -541,7 +541,9 @@ export function StudyLibrary({
               className="study-statement"
               lang={body ? (english ? 'en' : 'zh') : undefined}
             >
-              <LessonMarkdown
+              <StatementMarkdown
+                // The workspace's statement repairs (scripts in `10^{9}`, CJK bold), page styles.
+                className="prose-content lms-markdown"
                 body={
                   body ||
                   fallbackBody ||
