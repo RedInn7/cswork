@@ -4,6 +4,7 @@ export class PrecompileScheduler {
   private closed = false;
   private active?: {
     id: string;
+    key?: string;
     controller: AbortController;
     settled: Promise<void>;
   };
@@ -13,11 +14,15 @@ export class PrecompileScheduler {
   get canStart() {
     return !this.closed && !this.foreground && !this.active;
   }
-  start(id: string, task: (signal: AbortSignal) => Promise<unknown>): boolean {
+  start(
+    id: string,
+    task: (signal: AbortSignal) => Promise<unknown>,
+    key?: string,
+  ): boolean {
     if (!this.canStart) return false;
     const controller = new AbortController();
     // Defer user task until the active record is installed synchronously.
-    const record = { id, controller, settled: Promise.resolve() };
+    const record = { id, key, controller, settled: Promise.resolve() };
     this.active = record;
     record.settled = Promise.resolve()
       .then(async () => {
@@ -38,10 +43,13 @@ export class PrecompileScheduler {
     active.controller.abort();
     await active.settled;
   }
-  async enterForeground(): Promise<() => void> {
+  /** `key` adopts a background compile of the same program instead of aborting it. */
+  async enterForeground(key?: string): Promise<() => void> {
     // Runs before the first await, preventing a new task during cancellation.
     this.foreground++;
-    await this.cancelBackground();
+    const active = this.active;
+    if (active && key !== undefined && active.key === key) await active.settled;
+    else await this.cancelBackground();
     let released = false;
     return () => {
       if (released) return;

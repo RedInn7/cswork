@@ -13,7 +13,9 @@ import {
   precompileDraftCurrent,
   consumePrecompileDraft,
   hasForegroundSubmissions,
+  precompileKey,
   prunePrecompileDrafts,
+  type PrecompileDraft,
   PRECOMPILE_TIMEOUT_MS,
 } from './oj-precompile';
 import type { OjProblemSpec } from '@/lib/oj-types';
@@ -149,7 +151,8 @@ async function judge(job: Job<{ submissionId: string }>) {
         ),
       waiting.signal,
     );
-    releaseForeground = await precompiles.enterForeground();
+    // A precompile of this exact program finishes into the cache it then hits.
+    releaseForeground = await precompiles.enterForeground(precompileKey(row));
     clearInterval(monitor);
     return await judgeSubmission(job);
   } catch (error) {
@@ -606,12 +609,13 @@ const dispatchTimer = setInterval(() => {
       // The durable outbox remains pending. Maintenance owns health/recovery.
     });
 }, OJ_DISPATCH_INTERVAL_MS);
+let activeDraft: PrecompileDraft | undefined;
 function precompileTick() {
   if (
     stopping ||
     !engineAvailable ||
     !precompileEnabled() ||
-    hasForegroundSubmissions()
+    hasForegroundSubmissions(activeDraft)
   ) {
     void precompiles.cancelBackground();
     return;
@@ -619,53 +623,59 @@ function precompileTick() {
   if (!precompiles.canStart) return;
   const draft = nextPrecompileDraft();
   if (!draft) return;
-  precompiles.start(draft.generation, async (signal) => {
-    const outdated = setInterval(() => {
-      if (!precompileDraftCurrent(draft) || hasForegroundSubmissions())
-        void precompiles.cancelBackground(draft.generation);
-    }, OJ_DISPATCH_INTERVAL_MS);
-    const timeout = AbortSignal.timeout(PRECOMPILE_TIMEOUT_MS);
-    const interrupted = AbortSignal.any([signal, timeout]);
-    try {
-      const version = db
-        .prepare(
-          'SELECT spec_json FROM oj_problem_versions WHERE id=? AND problem_id=?',
-        )
-        .get(draft.problem_version_id, draft.problem_id) as
-        | { spec_json: string }
-        | undefined;
-      if (!version) return;
-      const spec = JSON.parse(version.spec_json) as OjProblemSpec;
-      const source =
-        draft.coding_mode === 'leetcode'
-          ? leetcodeSource(
-              draft.problem_id,
-              draft.language,
-              draft.code,
-              spec.memoryLimit,
-            ).source
-          : draft.code;
-      interrupted.throwIfAborted();
-      const started = performance.now();
-      const result = await compiledPrograms.warm(
-        draft.user_id,
-        draft.language,
-        source,
-        interrupted,
-      );
-      console.info(
-        JSON.stringify({
-          event: 'oj_precompile',
-          language: draft.language,
-          result,
-          durationMs: Math.round(performance.now() - started),
-        }),
-      );
-    } finally {
-      clearInterval(outdated);
-      consumePrecompileDraft(draft);
-    }
-  });
+  precompiles.start(
+    draft.generation,
+    async (signal) => {
+      activeDraft = draft;
+      const outdated = setInterval(() => {
+        if (!precompileDraftCurrent(draft) || hasForegroundSubmissions(draft))
+          void precompiles.cancelBackground(draft.generation);
+      }, OJ_DISPATCH_INTERVAL_MS);
+      const timeout = AbortSignal.timeout(PRECOMPILE_TIMEOUT_MS);
+      const interrupted = AbortSignal.any([signal, timeout]);
+      try {
+        const version = db
+          .prepare(
+            'SELECT spec_json FROM oj_problem_versions WHERE id=? AND problem_id=?',
+          )
+          .get(draft.problem_version_id, draft.problem_id) as
+          | { spec_json: string }
+          | undefined;
+        if (!version) return;
+        const spec = JSON.parse(version.spec_json) as OjProblemSpec;
+        const source =
+          draft.coding_mode === 'leetcode'
+            ? leetcodeSource(
+                draft.problem_id,
+                draft.language,
+                draft.code,
+                spec.memoryLimit,
+              ).source
+            : draft.code;
+        interrupted.throwIfAborted();
+        const started = performance.now();
+        const result = await compiledPrograms.warm(
+          draft.user_id,
+          draft.language,
+          source,
+          interrupted,
+        );
+        console.info(
+          JSON.stringify({
+            event: 'oj_precompile',
+            language: draft.language,
+            result,
+            durationMs: Math.round(performance.now() - started),
+          }),
+        );
+      } finally {
+        clearInterval(outdated);
+        consumePrecompileDraft(draft);
+        if (activeDraft === draft) activeDraft = undefined;
+      }
+    },
+    precompileKey(draft),
+  );
 }
 const precompileTimer = setInterval(() => {
   try {
