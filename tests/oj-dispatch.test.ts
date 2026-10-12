@@ -6,11 +6,11 @@ import {
   OJ_DISPATCH_INTERVAL_MS,
 } from '../lib/server/oj-dispatch';
 
-test('outbox timer bounds dispatch wait to 50ms without busy polling', () => {
-  assert.ok(OJ_DISPATCH_INTERVAL_MS <= 50);
+test('outbox timer bounds dispatch wait to 20ms without busy polling', () => {
+  assert.ok(OJ_DISPATCH_INTERVAL_MS <= 20);
   assert.ok(
-    OJ_DISPATCH_INTERVAL_MS >= 50,
-    'at most 20 indexed drains per second',
+    OJ_DISPATCH_INTERVAL_MS >= 20,
+    'at most 50 indexed drains per second',
   );
 });
 

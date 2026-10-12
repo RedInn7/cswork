@@ -293,8 +293,9 @@ export async function waitForSubmission(
   );
   try {
     while (performance.now() < deadline) {
+      // One primary-key read per 25ms tick; the verdict shows up at most a tick late.
       await delay(
-        Math.min(100, Math.max(1, deadline - performance.now())),
+        Math.min(25, Math.max(1, deadline - performance.now())),
         undefined,
         { signal },
       );
