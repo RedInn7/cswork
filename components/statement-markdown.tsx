@@ -2,6 +2,7 @@
 
 import React, { Children, isValidElement, memo } from 'react';
 import Markdown, { type Components } from 'react-markdown';
+import remarkCjkFriendly from 'remark-cjk-friendly';
 import remarkGfm from 'remark-gfm';
 import { useT } from '@/lib/i18n';
 
@@ -32,11 +33,17 @@ function proseText(children: React.ReactNode) {
     if (typeof child !== 'string') return [child];
     const parts: React.ReactNode[] = [];
     let start = 0;
-    for (const match of child.matchAll(/\*\*([^*\n]*?\S)[ \t]+\*\*/g)) {
-      parts.push(child.slice(start, match.index));
+    // Imported `<strong> 原地 </strong>` became `** 原地 **`, `**原地 **` or
+    // `** 原地**`, which Markdown cannot parse. Bold the words and keep each
+    // space outside it; markers without any inner space are Markdown's own.
+    for (const match of child.matchAll(
+      /\*\*([ \t]*)(\S(?:[^*\n]*?\S)?)([ \t]*)\*\*/g,
+    )) {
+      if (!match[1] && !match[3]) continue;
+      parts.push(child.slice(start, match.index), match[1] ? ' ' : '');
       parts.push(
-        <strong key={`${index}:${match.index}`}>{match[1]}</strong>,
-        ' ',
+        <strong key={`${index}:${match.index}`}>{match[2]}</strong>,
+        match[3] ? ' ' : '',
       );
       start = match.index! + match[0].length;
     }
@@ -148,17 +155,130 @@ const components: Components = {
   img: StatementImage,
 };
 
+/**
+ * Imported statements wrote every `<strong>` and `</strong>` as `**`: inner
+ * spaces (`** 原地 **`), empty (`****`), adjacent (`**1****1**`) and nested
+ * (`****示例 2:****`, `**示例 **2:****`) bold. Markdown cannot pair those, and
+ * one bad pair derails every later one in the paragraph. Per line, outside
+ * fenced blocks and code spans, this re-pairs the markers like the original
+ * tags: a run at the start of a line opens, at the end closes, inside a line
+ * it first closes what is open, and a single marker closes when one is open.
+ * Only the outermost pair is kept, adjacent pairs merge, empty ones go, and
+ * inner spaces move outside. A line that does not balance is left to Markdown
+ * (bold may legitimately continue on the next line).
+ */
+export function tidyImportedBold(body: string) {
+  let fence = '';
+  return body
+    .split('\n')
+    .flatMap((line) => {
+      const opener = /^\s*(`{3,}|~{3,})/.exec(line)?.[1][0];
+      if (opener && (!fence || opener === fence)) {
+        fence = fence ? '' : opener;
+        return [line];
+      }
+      if (fence) return [line];
+      if (/^\s*\*{2,}\s*$/.test(line)) return [];
+      return [tidyBoldLine(line)];
+    })
+    .join('\n');
+}
+
+type BoldRun = { at: number; end: number; opens: number; closes: number };
+
+function tidyBoldLine(line: string) {
+  const runs: BoldRun[] = [];
+  for (const m of line.matchAll(/`+[^`]*?`+|\*+/g)) {
+    if (m[0][0] === '`') continue;
+    if (m[0].length % 2) return line; // `***`: not an imported tag sequence
+    runs.push({
+      at: m.index!,
+      end: m.index! + m[0].length,
+      opens: 0,
+      closes: 0,
+    });
+  }
+  if (!runs.length) return line;
+  const lead = /^\s*(?:[-*+]\s+|\d+\.\s+)?$/;
+  let depth = 0;
+  const byDepth: BoldRun[] = []; // singles that closed only because one was open
+  runs.forEach((run, i) => {
+    const count = (run.end - run.at) / 2;
+    const before = line[run.at - 1] ?? '';
+    const after = line[run.end] ?? '';
+    const atStart = i === 0 && lead.test(line.slice(0, run.at)) && count > 1;
+    const atEnd =
+      i === runs.length - 1 && !line.slice(run.end).trim() && count > 1;
+    if (atStart) run.opens = count;
+    else if (atEnd) {
+      // Not enough open: some earlier single was an inner opener after a space.
+      while (depth < count && byDepth.length) {
+        const flip = byDepth.pop()!;
+        ((flip.closes = 0), (flip.opens = 1), (depth += 2));
+      }
+      run.closes = Math.min(depth, count);
+    } else if (count === 1) {
+      if (depth) ((run.closes = 1), byDepth.push(run));
+      else run.opens = 1;
+    } else if (depth) {
+      run.closes = Math.min(depth, count);
+      run.opens = count - run.closes;
+    } else if (/\s/.test(before) || !before) run.opens = count;
+    // else: `最多****两次`, an empty pair inside text: nothing to keep
+    depth += run.opens - run.closes;
+  });
+  if (depth) return line;
+  // Keep only the outermost markers; a close and reopen in one run merge.
+  let out = '';
+  let at = 0;
+  let level = 0;
+  let open = -1;
+  for (const run of runs) {
+    const closesOuter = run.closes > 0 && level - run.closes === 0;
+    level -= run.closes;
+    const opensOuter = run.opens > 0 && level === 0;
+    level += run.opens;
+    if (closesOuter && opensOuter) {
+      out += line.slice(at, run.at); // `**1****1**`: one bold continues
+    } else if (closesOuter) {
+      const inner = out.slice(open) + line.slice(at, run.at);
+      out = out.slice(0, open);
+      const body = inner.trim();
+      const spaceBefore = open > 0 && !/\s/.test(out[out.length - 1] ?? ' ');
+      const spaceAfter = run.end < line.length && !/\s/.test(line[run.end]);
+      if (body)
+        out +=
+          (/^\s/.test(inner) && spaceBefore ? ' ' : '') +
+          '**' +
+          body +
+          '**' +
+          (/\s$/.test(inner) && spaceAfter ? ' ' : '');
+      else if (inner && spaceBefore && spaceAfter) out += ' ';
+    } else {
+      out += line.slice(at, run.at);
+      if (opensOuter) open = out.length;
+    }
+    at = run.end;
+  }
+  return out + line.slice(at);
+}
+
+// CJK-friendly emphasis: CommonMark cannot close `**进阶：**尝试` (punctuation
+// before the closing marker, a CJK letter after it); this plugin can.
+const MARKDOWN_PLUGINS = [remarkGfm, remarkCjkFriendly];
 // Parsing the statement is the costliest part of a workspace render; the many
 // re-renders while a submission is judged (status, verdict, history) skip it.
 export const StatementMarkdown = memo(function StatementMarkdown({
   body,
+  className = 'cs-statement-markdown',
 }: {
   body: string;
+  className?: string;
 }) {
   return (
-    <article className="cs-statement-markdown">
-      <Markdown remarkPlugins={[remarkGfm]} components={components}>
-        {body}
+    <article className={className}>
+      <Markdown remarkPlugins={MARKDOWN_PLUGINS} components={components}>
+        {tidyImportedBold(body)}
       </Markdown>
     </article>
   );

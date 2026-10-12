@@ -81,6 +81,12 @@ case ${1:-status} in
     echo "Back on https://$temp; $apex/$www stay configured." ;;
   http2)
     edit_nginx --http2
-    echo "HTTPS now negotiates HTTP/2: $(curl -s -o /dev/null -w '%{http_version}' --http2 --max-time 5 --resolve "$apex:443:127.0.0.1" "https://$apex/api/bootstrap")" ;;
+    # reload is asynchronous: old workers answer for a moment.
+    for _ in $(seq 10); do
+      version=$(curl -s -o /dev/null -w '%{http_version}' --http2 --max-time 5 --resolve "$apex:443:127.0.0.1" "https://$apex/api/bootstrap")
+      [[ $version == 2 ]] && break
+      sleep 1
+    done
+    echo "HTTPS negotiates HTTP/$version" ;;
   *) echo "usage: $0 status|prepare|cert|switch|rollback|http2"; exit 2 ;;
 esac
