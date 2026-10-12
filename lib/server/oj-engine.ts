@@ -161,6 +161,12 @@ try:
             elif not (isinstance(node, ast.Expr) and isinstance(node.value, ast.Constant)):
                 break
             lead += 1
+        # The support runtime must come right after them; learner statements
+        # hoisted with a __future__ line could tamper with what it relies on.
+        first = tree.body[lead] if lead < len(tree.body) else None
+        if not (isinstance(first, ast.Import) and first.names[0].name == 'sys'
+                and first.names[0].asname == '_cswork_sys'):
+            sys.exit(0)
         for node in tree.body:
             call = node.value if isinstance(node, ast.Expr) else None
             if (isinstance(call, ast.Call) and isinstance(call.func, ast.Name) and call.func.id == 'exec'
@@ -181,8 +187,11 @@ except Exception:
     sys.exit(0)
 if caught:
     sys.exit(0)
+blob = importlib.util.MAGIC_NUMBER + bytes(12) + marshal.dumps(code)
+if len(blob) > 16 * 1024 * 1024:  # the copy-out limit; the .py still runs
+    sys.exit(0)
 with open(name[:-3] + '.pyc', 'wb') as f:
-    f.write(importlib.util.MAGIC_NUMBER + bytes(12) + marshal.dumps(code))
+    f.write(blob)
 `;
 /** The trusted LeetCode bridge (support runtime + native launcher) as cached bytecode. */
 export async function compileBridge(source: string, signal: AbortSignal) {
@@ -219,16 +228,22 @@ export function withStdcxxPch(source: string) {
   if (source.includes('/usr/local/include/cswork/stdc++.hpp')) return source; // LeetCode drivers
   const lines = source.split('\n');
   // Only where a PCH can apply: preceded by nothing but blank lines, line
-  // comments and directives.
-  const include = /^\s*#\s*include\s*<bits\/stdc\+\+\.h>\s*(\/\/.*)?$/;
-  const leading = /^\s*(\/\/.*|#.*)?$/;
+  // comments and directives. GCC's directive whitespace is space and tab only.
+  const include =
+    /^[ \t]*#[ \t]*include[ \t]*<bits\/stdc\+\+\.h>[ \t]*(\/\/.*)?$/;
+  const leading = /^[ \t]*(\/\/.*|#.*)?$/;
   const at = lines.findIndex((raw) => {
     const line = raw.replace(/\r$/, ''); // CRLF sources
     return include.test(line) || !leading.test(line);
   });
-  if (at < 0 || !include.test(lines[at].replace(/\r$/, ''))) return source;
-  lines[at] =
-    '#include <cswork/stdc++.hpp>' + (lines[at].endsWith('\r') ? '\r' : '');
+  if (
+    at < 0 ||
+    !include.test(lines[at].replace(/\r$/, '')) ||
+    /\\\r?$/.test(lines[at - 1] ?? '') // continued from the line above
+  )
+    return source;
+  // Only the header name changes; the rest of the line stays byte for byte.
+  lines[at] = lines[at].replace('<bits/stdc++.h>', '<cswork/stdc++.hpp>');
   return lines.join('\n');
 }
 /** `jar cf main.jar *.class`, including its failure when javac wrote no class. */
@@ -236,7 +251,7 @@ const JAVA_JAR = `import glob, sys, zipfile
 names = sorted(glob.glob('*.class'))
 if not names:
     sys.exit('*.class : no such file or directory')
-with zipfile.ZipFile('main.jar', 'w') as jar:
+with zipfile.ZipFile('main.jar', 'w', zipfile.ZIP_DEFLATED) as jar:
     for name in names:
         jar.write(name)
 `;

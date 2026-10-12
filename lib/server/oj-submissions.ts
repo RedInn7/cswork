@@ -124,59 +124,61 @@ export async function createSubmission(p: Person, value: unknown) {
   );
   // Reserve the writer before reading duplicate/queue state. A deferred WAL
   // read transaction cannot safely upgrade while the judge is writing results.
-  return db.transaction(() => {
-    const duplicate = existing();
-    if (duplicate) return { id: duplicate.id, status: duplicate.status };
-    const counts = db
-      .prepare(
-        "SELECT COUNT(*) as total,SUM(user_id=?) as own FROM submissions WHERE status IN ('queued','compiling','running')",
-      )
-      .get(p.id) as { total: number; own: number };
-    if (counts.own >= 2)
-      throw new HttpError(
-        429,
-        '你已有两份代码正在处理，请等待完成或取消后再提交',
+  return db
+    .transaction(() => {
+      const duplicate = existing();
+      if (duplicate) return { id: duplicate.id, status: duplicate.status };
+      const counts = db
+        .prepare(
+          "SELECT COUNT(*) as total,SUM(user_id=?) as own FROM submissions WHERE status IN ('queued','compiling','running')",
+        )
+        .get(p.id) as { total: number; own: number };
+      if (counts.own >= 2)
+        throw new HttpError(
+          429,
+          '你已有两份代码正在处理，请等待完成或取消后再提交',
+        );
+      if (counts.total >= 128)
+        throw new HttpError(429, '判题队列已满，请稍后重试，代码草稿已保留');
+      const id = randomUUID(),
+        now = Date.now();
+      const total =
+        d.mode === 'judge'
+          ? caseCount(true)
+          : d.stdin !== undefined
+            ? 1
+            : caseCount(false);
+      const practiceRoundId =
+        d.mode === 'judge' && isSelectedProblem(d.problemId)
+          ? ensurePracticeRound(p.id)
+          : null;
+      db.prepare(
+        'INSERT INTO submissions(id,user_id,problem_id,problem_version_id,language,code,status,mode,custom_input,idempotency_key,request_hash,total,created_at,updated_at,practice_round_id,coding_mode,harness_version) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+      ).run(
+        id,
+        p.id,
+        d.problemId,
+        versionId,
+        d.language,
+        d.code,
+        'queued',
+        d.mode,
+        d.stdin ?? null,
+        d.idempotencyKey,
+        hash,
+        total,
+        now,
+        now,
+        practiceRoundId,
+        d.codingMode,
+        d.codingMode === 'leetcode' ? LEETCODE_HARNESS_VERSION : null,
       );
-    if (counts.total >= 128)
-      throw new HttpError(429, '判题队列已满，请稍后重试，代码草稿已保留');
-    const id = randomUUID(),
-      now = Date.now();
-    const total =
-      d.mode === 'judge'
-        ? caseCount(true)
-        : d.stdin !== undefined
-          ? 1
-          : caseCount(false);
-    const practiceRoundId =
-      d.mode === 'judge' && isSelectedProblem(d.problemId)
-        ? ensurePracticeRound(p.id)
-        : null;
-    db.prepare(
-      'INSERT INTO submissions(id,user_id,problem_id,problem_version_id,language,code,status,mode,custom_input,idempotency_key,request_hash,total,created_at,updated_at,practice_round_id,coding_mode,harness_version) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-    ).run(
-      id,
-      p.id,
-      d.problemId,
-      versionId,
-      d.language,
-      d.code,
-      'queued',
-      d.mode,
-      d.stdin ?? null,
-      d.idempotencyKey,
-      hash,
-      total,
-      now,
-      now,
-      practiceRoundId,
-      d.codingMode,
-      d.codingMode === 'leetcode' ? LEETCODE_HARNESS_VERSION : null,
-    );
-    db.prepare(
-      'INSERT INTO oj_outbox(submission_id,created_at) VALUES(?,?)',
-    ).run(id, now);
-    return { id, status: 'queued' };
-  }).immediate();
+      db.prepare(
+        'INSERT INTO oj_outbox(submission_id,created_at) VALUES(?,?)',
+      ).run(id, now);
+      return { id, status: 'queued' };
+    })
+    .immediate();
 }
 export function submissionRow(id: string) {
   return sqlite().prepare('SELECT * FROM submissions WHERE id=?').get(id) as
@@ -277,6 +279,16 @@ export const SUBMIT_HOLD_MS = 2_500;
 // this is waiting for a slot: reply at once, so the learner sees its queue
 // position and can cancel.
 const QUEUED_HOLD_MS = 300;
+/** A precompile of exactly this program exists: the judge adopts it while still 'queued'. */
+function precompiling(id: string) {
+  return Boolean(
+    sqlite()
+      .prepare(
+        "SELECT 1 FROM submissions s JOIN oj_precompile p ON p.user_id=s.user_id AND p.problem_version_id IS s.problem_version_id AND p.language=s.language AND p.coding_mode=COALESCE(s.coding_mode,'acm') AND p.code=s.code WHERE s.id=?",
+      )
+      .get(id),
+  );
+}
 export async function settleSubmission(
   p: Person,
   id: string,
@@ -285,6 +297,7 @@ export async function settleSubmission(
 ) {
   // Owner-checked by the caller's create; at most two in flight per learner.
   const query = stateQuery();
+  let adopting: boolean | undefined;
   const started = performance.now();
   const deadline = started + holdMs;
   while (performance.now() < deadline) {
@@ -292,7 +305,8 @@ export async function settleSubmission(
     if (!current || !ACTIVE.includes(current.status)) break;
     if (
       current.status === 'queued' &&
-      performance.now() - started >= QUEUED_HOLD_MS
+      performance.now() - started >= QUEUED_HOLD_MS &&
+      !(adopting ??= precompiling(id))
     )
       break;
     await delay(
@@ -321,8 +335,7 @@ export async function waitForSubmission(
   const progressAfter = previous ? previous.at + 500 : started + 500;
   if (
     !ACTIVE.includes(initial.status) ||
-    (watchToken(initial) !== after &&
-      (!previous || started >= progressAfter))
+    (watchToken(initial) !== after && (!previous || started >= progressAfter))
   )
     return reply(p, id);
   const waiting = waitingByUser.get(p.id) ?? 0;

@@ -10,7 +10,7 @@ test('the leading bits/stdc++.h include names the PCH wrapper on the same line',
   const before = source.split('\n'), after = rewritten.split('\n');
   // Same physical lines: diagnostics keep their numbers and quoted source.
   assert.equal(after.length, before.length);
-  assert.equal(after[1], WRAPPER);
+  assert.equal(after[1], '#include<cswork/stdc++.hpp>  // all', 'only the header name changes');
   after[1] = before[1];
   assert.deepEqual(after, before, 'only that one line changes');
 });
@@ -34,4 +34,16 @@ test('an include after code or inside a block comment is left alone', () => {
   // Directives and line comments before it are fine, Windows line endings kept.
   const crlf = '#define LOCAL 1\r\n// note\r\n#include <bits/stdc++.h>\r\nint main(){ return LOCAL; }\r\n';
   assert.equal(withStdcxxPch(crlf), crlf.replace('#include <bits/stdc++.h>', WRAPPER));
+});
+
+test('lines GCC would not read as that include are left alone', () => {
+  for (const source of [
+    '#include\u00a0<bits/stdc++.h>\nint main(){}\n', // NBSP: a compile error must stay one
+    '\u3000#include <bits/stdc++.h>\nint main(){}\n',
+    '// note \\\n#include <bits/stdc++.h>\nint main(){}\n', // continued comment
+  ])
+    assert.equal(withStdcxxPch(source), source);
+  // A trailing comment ending in a backslash keeps continuing the next line.
+  const tail = '#include <bits/stdc++.h> // all \\\nint unused;\nint main(){}\n';
+  assert.equal(withStdcxxPch(tail), tail.replace('<bits/stdc++.h>', '<cswork/stdc++.hpp>'));
 });

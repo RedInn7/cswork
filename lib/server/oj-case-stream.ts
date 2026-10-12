@@ -74,12 +74,12 @@ export function createSlots(size: number) {
   const lease = () => {
     let held = true;
     return () => {
-      if (held) (held = false), release();
+      if (held) ((held = false), release());
     };
   };
   return {
-    /** Someone is waiting for a slot: submissions should not widen. */
-    contended: () => waiting.length > 0,
+    /** Every slot is taken or someone waits: submissions should not widen. */
+    contended: () => free === 0 || waiting.length > 0,
     async acquire(signal: AbortSignal): Promise<() => void> {
       signal.throwIfAborted();
       if (free > 0) {

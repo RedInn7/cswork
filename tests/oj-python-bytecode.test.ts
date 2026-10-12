@@ -128,10 +128,15 @@ test('the program still sees main.py as argv[0] and __file__', () => {
   assert.equal(bytecode.stdout, plain.stdout);
 });
 
-test('a hoisted __future__ line that rebinds __import__ behaves as before', () => {
-  const hostile = `from __future__ import annotations; __import__ = None\n${twoSum}`;
-  const { plain, bytecode } = both('main.py', lc1(hostile), '2\n1 2\n3\n');
-  assert.equal(bytecode.stdout, plain.stdout);
-  assert.equal(bytecode.stderr, plain.stderr);
-  assert.equal(bytecode.status, plain.status);
+test('learner statements hoisted with a __future__ line keep the .py path', () => {
+  for (const line of [
+    'from __future__ import annotations; __import__ = None',
+    "from __future__ import annotations; import sys; del sys.modules['marshal']",
+  ]) {
+    const { built, pyc } = buildOnly(lc1(`${line}\n${twoSum}`));
+    assert.equal(built.status, 0, built.stderr);
+    assert.equal(pyc, false, line);
+  }
+  // A plain __future__ import still gets bytecode.
+  assert.equal(buildOnly(lc1(`from __future__ import annotations\n${twoSum}`)).pyc, true);
 });

@@ -37,7 +37,6 @@ import {
   run,
   cleanup,
   compileBridge,
-  EngineFailure,
   engineHealth,
   engineVerdict,
   matchesOutput,
@@ -218,8 +217,8 @@ async function judgeSubmission(
     | Promise<Awaited<ReturnType<CompiledProgramCache['acquire']>> | undefined>
     | undefined;
   let invalidateCompilation = false;
-  // The shared bridge is dropped only when the runner itself failed, never
-  // because one learner cancelled or ran out of time.
+  // The shared bridge is dropped on runner trouble (including a restart seen
+  // as a failed fetch), never because one learner cancelled or ran out of time.
   let invalidateBridge = false;
   let terminalFailureCommitted = false;
   try {
@@ -449,7 +448,8 @@ async function judgeSubmission(
     if (terminalFailureCommitted) return;
     // A restarted runner may have discarded cached file IDs. The bounded job retry must recompile.
     invalidateCompilation = true;
-    invalidateBridge = error instanceof EngineFailure;
+    invalidateBridge =
+      !(error instanceof LostAttempt) && !controller.signal.aborted;
     const latest = submissionRow(id);
     if (error instanceof LostAttempt || !latest || latest.attempt !== attempt)
       return;

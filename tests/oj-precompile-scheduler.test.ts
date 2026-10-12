@@ -127,3 +127,42 @@ void test('foreground of the same program adopts the background compile instead 
   assert.equal(scheduler.canStart, true);
   await scheduler.close();
 });
+
+void test('an adopted compile survives other foreground work and only close() stops it', async () => {
+  const scheduler = new PrecompileScheduler();
+  let aborted = false;
+  let finish!: () => void;
+  scheduler.start(
+    'adopted',
+    async (signal) => {
+      signal.addEventListener('abort', () => (aborted = true), { once: true });
+      await new Promise<void>((resolve) => {
+        finish = resolve;
+        signal.addEventListener('abort', () => resolve(), { once: true });
+      });
+    },
+    'mine',
+  );
+  await tick();
+  const adopting = scheduler.enterForeground('mine');
+  await tick();
+  // Another learner's submission and the background tick leave it alone.
+  (await scheduler.enterForeground('theirs'))();
+  await scheduler.cancelBackground();
+  assert.equal(aborted, false);
+  finish();
+  (await adopting)();
+  scheduler.start(
+    'adopted-2',
+    async (signal) =>
+      new Promise<void>((resolve) =>
+        signal.addEventListener('abort', () => resolve(), { once: true }),
+      ),
+    'mine-2',
+  );
+  await tick();
+  void scheduler.enterForeground('mine-2');
+  await tick();
+  await scheduler.close();
+  assert.equal(scheduler.canStart, false);
+});

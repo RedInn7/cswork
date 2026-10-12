@@ -336,3 +336,20 @@ test('a submit still waiting for a judge replies at once with its queue state', 
   assert.equal(receipt.status, 'queued');
   assert.ok(elapsed >= 280 && elapsed < 800, `queued hold: ${elapsed}`);
 });
+
+test('a submit whose judge is adopting its precompile keeps holding', async () => {
+  db.prepare(
+    "INSERT INTO submissions(id,user_id,problem_id,problem_version_id,language,code,status,total,created_at,updated_at,coding_mode) VALUES('adopting','alice','lc-1','v-adopt','cpp','int main(){}','queued',1,0,0,'acm')",
+  ).run();
+  db.prepare(
+    "INSERT INTO oj_precompile(user_id,generation,problem_id,problem_version_id,code,coding_mode,created_at,expires_at,language) VALUES('alice','g','lc-1','v-adopt','int main(){}','acm',0,9999999999999,'cpp')",
+  ).run();
+  try {
+    const started = performance.now();
+    const receipt = await settleSubmission(p, 'adopting', new AbortController().signal, 600);
+    assert.equal(receipt.status, 'queued');
+    assert.ok(performance.now() - started >= 550, 'no early queued reply');
+  } finally {
+    db.prepare("DELETE FROM oj_precompile WHERE user_id='alice'").run();
+  }
+});

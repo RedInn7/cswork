@@ -42,9 +42,11 @@ export class PrecompileScheduler {
       });
     return true;
   }
-  async cancelBackground(id?: string) {
+  /** An adopted task is a submission's own compile: only close() stops it. */
+  async cancelBackground(id?: string, force = false) {
     const active = this.active;
     if (!active || (id !== undefined && active.id !== id)) return;
+    if (active.adopted && !force) return;
     active.controller.abort();
     await active.settled;
   }
@@ -66,6 +68,6 @@ export class PrecompileScheduler {
   }
   async close() {
     this.closed = true;
-    await this.cancelBackground();
+    await this.cancelBackground(undefined, true);
   }
 }

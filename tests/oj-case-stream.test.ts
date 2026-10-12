@@ -136,12 +136,12 @@ test('case slots cap sandboxes across submissions in FIFO order', async () => {
   const a = await acquire(signal);
   const b = await acquire(signal);
   const order: string[] = [];
-  assert.equal(contended(), false);
+  assert.equal(contended(), true, 'every slot is taken');
   const c = acquire(signal).then((release) => (order.push('c'), release));
   const d = acquire(signal).then((release) => (order.push('d'), release));
   await turn();
   assert.deepEqual(order, []);
-  assert.equal(contended(), true, 'others are waiting for a slot');
+  assert.equal(contended(), true, 'and others are waiting');
   a();
   a(); // a second release of the same lease is ignored
   const releaseC = await c;
@@ -152,6 +152,7 @@ test('case slots cap sandboxes across submissions in FIFO order', async () => {
   releaseC();
   assert.deepEqual(order, ['c', 'd']);
   // Both slots are free again.
+  assert.equal(contended(), false);
   (await acquire(signal))();
   (await acquire(signal))();
 });
@@ -192,4 +193,28 @@ test('a narrowing limit is honoured as slots free, without reordering', async ()
   assert.equal(peaks[0], 4, 'idle: four in flight');
   // Cases started before narrowing finish; nothing new starts beyond two.
   assert.ok(peaks.at(-1)! <= 3);
+});
+
+test('a full runner narrows a new submission before its first case waits', async () => {
+  const { acquire, contended } = createSlots(4);
+  const signal = new AbortController().signal;
+  const held = await Promise.all([0, 1, 2, 3].map(() => acquire(signal)));
+  let started = 0;
+  const run = (async () => {
+    for await (const _ of orderedCaseResults(
+      [0, 1, 2, 3, 4, 5],
+      async (n) => {
+        started++;
+        (await acquire(signal))();
+        return n;
+      },
+      () => (contended() ? 2 : 4),
+    )) {
+    }
+  })();
+  await turn();
+  assert.equal(started, 2, 'two in flight while every slot is busy');
+  for (const release of held) release();
+  await run;
+  assert.equal(started, 6);
 });
