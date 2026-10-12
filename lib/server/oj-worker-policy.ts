@@ -19,6 +19,8 @@ export function workerConcurrency(
   throw new Error('OJ_WORKER_CONCURRENCY must be 1, 2, 3 or 4');
 }
 export const OJ_WORKER_CONCURRENCY = workerConcurrency();
+/** Case sandboxes in flight across all submissions: the runner's OJ_RUNNER_PARALLELISM. */
+export const OJ_CASE_SLOTS = 4;
 
 /** Inspect byte counts in SQLite, before materializing potentially large strings. */
 export function exclusiveSubmission(

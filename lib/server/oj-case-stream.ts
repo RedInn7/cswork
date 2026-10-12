@@ -1,8 +1,8 @@
-/** At most two independent sandboxes, preserving case order and individual limits. */
+/** A few independent sandboxes at a time, preserving case order and individual limits. */
 export async function* orderedCaseResults<T, R>(
   cases: readonly T[],
   execute: (item: T) => Promise<R>,
-  concurrency: 1 | 2,
+  concurrency: number,
   cancelPending?: () => void,
 ): AsyncGenerator<{ item: T; result: R }> {
   type Outcome = { ok: true; result: R } | { ok: false; error: unknown };
@@ -38,8 +38,50 @@ export async function* orderedCaseResults<T, R>(
   }
 }
 
-export function caseConcurrency(memoryLimitKb: number): 1 | 2 {
-  // The runner already has two slots and a 4 GiB cap. Keep larger-memory
-  // problems serial and leave room for interpreter/bridge startup and the host.
-  return memoryLimitKb <= 512 * 1024 ? 2 : 1;
+export function caseConcurrency(memoryLimitKb: number): 1 | 4 {
+  // Four 512 MiB cases fit the runner's four slots and 6 GiB cap; the
+  // worker-wide caseSlots below keep busy periods at four sandboxes in total.
+  // Larger-memory problems stay serial.
+  return memoryLimitKb <= 512 * 1024 ? 4 : 1;
+}
+
+/**
+ * FIFO cap on case sandboxes in flight across the whole worker. An idle runner
+ * gives one submission every slot; under load submissions share them, and
+ * compiles never queue behind a backlog of case runs inside the runner.
+ */
+export function createSlots(size: number) {
+  let free = size;
+  const waiting: (() => void)[] = [];
+  const release = () => {
+    const next = waiting.shift();
+    if (next) next();
+    else free++;
+  };
+  const lease = () => {
+    let held = true;
+    return () => {
+      if (held) (held = false), release();
+    };
+  };
+  return async function acquire(signal: AbortSignal): Promise<() => void> {
+    signal.throwIfAborted();
+    if (free > 0) {
+      free--;
+      return lease();
+    }
+    await new Promise<void>((resolve, reject) => {
+      const grant = () => {
+        signal.removeEventListener('abort', abort);
+        resolve();
+      };
+      const abort = () => {
+        waiting.splice(waiting.indexOf(grant) >>> 0, 1);
+        reject(signal.reason);
+      };
+      waiting.push(grant);
+      signal.addEventListener('abort', abort, { once: true });
+    });
+    return lease();
+  };
 }

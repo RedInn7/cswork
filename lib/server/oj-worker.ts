@@ -1,4 +1,8 @@
-import { orderedCaseResults, caseConcurrency } from './oj-case-stream';
+import {
+  orderedCaseResults,
+  caseConcurrency,
+  createSlots,
+} from './oj-case-stream';
 import { persistCase } from './oj-case-store';
 import { runCodecRoundTrip } from './oj-codec-roundtrip';
 import { CompiledProgramCache } from './oj-compile-cache';
@@ -22,6 +26,7 @@ import { seed } from './seed';
 import {
   assertSnapshotBudget,
   OJ_WORKER_CONCURRENCY,
+  OJ_CASE_SLOTS,
   exclusiveSubmission,
   SubmissionAdmission,
 } from './oj-worker-policy';
@@ -67,6 +72,7 @@ const controllers = new Map<string, AbortController>();
 const compiledPrograms = new CompiledProgramCache();
 const precompiles = new PrecompileScheduler();
 const admission = new SubmissionAdmission(OJ_WORKER_CONCURRENCY);
+const caseSlot = createSlots(OJ_CASE_SLOTS);
 let stopping = false;
 let maintaining = false;
 let engineAvailable = false;
@@ -321,12 +327,17 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
       caseController.signal,
     ]);
     const executeCase = async (c: (typeof cases)[number]) => {
-      current(id, attempt, controller.signal);
-      // Codec decoding still runs in a fresh sandbox and never sees the tree.
-      return snapshot.spec.checker === 'design-lc-297' ||
+      const release = await caseSlot(caseSignal);
+      try {
+        current(id, attempt, controller.signal);
+        // Codec decoding still runs in a fresh sandbox and never sees the tree.
+        return await (snapshot.spec.checker === 'design-lc-297' ||
         snapshot.spec.checker === 'design-lc-449'
-        ? runCodecRoundTrip(program!, c.input, snapshot.spec, caseSignal, run)
-        : run(program!, c.input, snapshot.spec, caseSignal);
+          ? runCodecRoundTrip(program!, c.input, snapshot.spec, caseSignal, run)
+          : run(program!, c.input, snapshot.spec, caseSignal));
+      } finally {
+        release();
+      }
     };
     for await (const { item: c, result } of orderedCaseResults(
       cases,

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   orderedCaseResults,
   caseConcurrency,
+  createSlots,
 } from '../lib/server/oj-case-stream';
 const turn = () => new Promise((resolve) => setImmediate(resolve));
 test('early failure aborts active neighbour without launching later cases', async () => {
@@ -102,7 +103,8 @@ test('rejected later case is handled immediately and propagated in case order', 
   assert.deepEqual(seen, [0]);
 });
 test('large-memory problems stay serial and zero cases stay empty', async () => {
-  assert.equal(caseConcurrency(256 * 1024), 2);
+  assert.equal(caseConcurrency(256 * 1024), 4);
+  assert.equal(caseConcurrency(512 * 1024), 4);
   assert.equal(caseConcurrency(512 * 1024 + 1), 1);
   let active = 0;
   for await (const _ of orderedCaseResults(
@@ -124,4 +126,42 @@ test('large-memory problems stay serial and zero cases stay empty', async () => 
     2,
   ))
     assert.fail();
+});
+
+test('case slots cap sandboxes across submissions in FIFO order', async () => {
+  const acquire = createSlots(2);
+  const signal = new AbortController().signal;
+  const a = await acquire(signal);
+  const b = await acquire(signal);
+  const order: string[] = [];
+  const c = acquire(signal).then((release) => (order.push('c'), release));
+  const d = acquire(signal).then((release) => (order.push('d'), release));
+  await turn();
+  assert.deepEqual(order, []);
+  a();
+  a(); // a second release of the same lease is ignored
+  const releaseC = await c;
+  await turn();
+  assert.deepEqual(order, ['c']);
+  b();
+  (await d)();
+  releaseC();
+  assert.deepEqual(order, ['c', 'd']);
+  // Both slots are free again.
+  (await acquire(signal))();
+  (await acquire(signal))();
+});
+test('an aborted wait leaves the queue without taking a slot', async () => {
+  const acquire = createSlots(1);
+  const held = await acquire(new AbortController().signal);
+  const cancelled = new AbortController();
+  const waiting = acquire(cancelled.signal);
+  const next = acquire(new AbortController().signal);
+  cancelled.abort();
+  await assert.rejects(waiting, { name: 'AbortError' });
+  held();
+  (await next)();
+  const already = new AbortController();
+  already.abort();
+  await assert.rejects(acquire(already.signal), { name: 'AbortError' });
 });
