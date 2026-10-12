@@ -193,6 +193,32 @@ export async function compileBridge(source: string, signal: AbortSignal) {
     } satisfies CompiledProgram,
   };
 }
+const STDCXX_PCH = '/usr/local/include/cswork/stdc++.hpp';
+/**
+ * The runner ships a precompiled <bits/stdc++.h> (deploy/oj/build-cpp-pch.sh)
+ * under the submission flags, but GCC only finds it through STDCXX_PCH: about
+ * 2.9s -> 1.0s per ACM compile. The learner's first such include is swapped for
+ * a guarded include of it and #line restores numbering, so diagnostics and
+ * __LINE__ are unchanged. GCC silently uses the plain header whenever the PCH
+ * does not apply (e.g. after other includes), so behaviour never changes.
+ */
+export function withStdcxxPch(source: string) {
+  if (source.includes(STDCXX_PCH)) return source; // LeetCode drivers already do this
+  const lines = source.split('\n');
+  const at = lines.findIndex((line) =>
+    /^\s*#\s*include\s*<bits\/stdc\+\+\.h>\s*(\/\/.*)?$/.test(line),
+  );
+  if (at < 0) return source;
+  lines[at] = [
+    `#if __has_include("${STDCXX_PCH}")`,
+    `#include "${STDCXX_PCH}"`,
+    '#else',
+    '#include <bits/stdc++.h>',
+    '#endif',
+    `#line ${at + 2}`,
+  ].join('\n');
+  return lines.join('\n');
+}
 export async function compile(
   language: Language,
   source: string,
@@ -208,6 +234,7 @@ export async function compile(
       : language === 'java'
         ? 'main.jar'
         : 'main';
+  const text = language === 'cpp' ? withStdcxxPch(source) : source;
   const commands: Record<Language, string[]> = {
     cpp: source.includes('// CSWORK_CPP_JSON_RUNTIME_V1')
       ? [
@@ -239,7 +266,10 @@ export async function compile(
     java: [
       '/bin/sh',
       '-c',
-      '/usr/bin/javac -encoding UTF-8 Main.java && /usr/bin/jar cf main.jar *.class',
+      // javac's own JVM: C1 only and serial GC start faster for one short
+      // compile. Class files and the learner's JVM flags are unchanged. The jar is
+      // zipped by Python instead of a second JVM (`jar cf main.jar *.class`).
+      '/usr/bin/javac -J-XX:TieredStopAtLevel=1 -J-XX:+UseSerialGC -encoding UTF-8 Main.java && /usr/bin/python3 -I -c "import glob, zipfile\nwith zipfile.ZipFile(\'main.jar\', \'w\') as jar:\n    for name in sorted(glob.glob(\'*.class\')): jar.write(name)"',
     ],
     python: [
       '/usr/bin/python3',
@@ -265,7 +295,7 @@ export async function compile(
         'CGO_ENABLED=0',
         'GOMAXPROCS=2',
       ],
-      copyIn: { [sourceNames[language]]: { content: source } },
+      copyIn: { [sourceNames[language]]: { content: text } },
       copyOutCached: artifact ? [artifact] : [],
       copyOutMax: 16777216,
     },
