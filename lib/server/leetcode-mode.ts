@@ -14,6 +14,8 @@ type Contract = {
   nativeBridge: string;
 };
 const problems = contracts.problems as Record<string, Contract>;
+/** Prefix of every LeetCode-mode Python program and native bridge. */
+export const LEETCODE_SUPPORT: string = contracts.support;
 // A submission binds to the reviewed adapter snapshot; never reinterpret a
 // queued submission against a different contract after deployment.
 export const LEETCODE_HARNESS_VERSION = createHash('sha256')

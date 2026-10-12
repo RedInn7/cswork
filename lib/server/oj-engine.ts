@@ -11,6 +11,7 @@ import { matchesStringStructure } from '@/lib/oj-string-structures';
 import { semanticCheckerId } from '@/lib/oj-semantic-contract';
 import { matchesSemantic } from '@/lib/oj-semantic-checkers';
 import type { Language } from '@/lib/problems';
+import { LEETCODE_SUPPORT } from './leetcode-mode';
 import {
   asciiTokens,
   parseIntegerRowCollection,
@@ -53,6 +54,8 @@ export type CompiledProgram = {
   source: string;
   cache: Record<string, string>;
   bridgeSource?: string;
+  /** Cached bytecode of bridgeSource, see compileBridge. */
+  bridgeBytecode?: string;
   leetcodeInput?: boolean;
 };
 export class EngineFailure extends Error {}
@@ -129,11 +132,82 @@ function limits(
     procLimit: 64,
   };
 }
+/**
+ * Turns argv[1] (main.py or bridge.py) into a .pyc beside it, in the runner's own
+ * Python. Every LeetCode case otherwise recompiles the ~75 KB support runtime:
+ * its top-level exec('<module source>', module.__dict__) calls become
+ * exec(<that source precompiled with the same future flags>, ...). The script keeps
+ * its absolute .py filename, so tracebacks still name and quote the .py file the
+ * case also receives. Any surprise falls back to plain bytecode of the same source.
+ */
+export const PYTHON_BYTECODE = `
+import __future__, ast, importlib.util, marshal, os, sys
+name = sys.argv[1]
+path = os.path.abspath(name)
+with open(name, 'rb') as f:
+    data = f.read()
+tree = ast.parse(data, path)
+try:
+    flags = 0
+    for node in tree.body:
+        if isinstance(node, ast.ImportFrom) and node.module == '__future__':
+            for alias in node.names:
+                flags |= getattr(__future__, alias.name).compiler_flag
+        elif not (isinstance(node, ast.Expr) and isinstance(node.value, ast.Constant)):
+            break
+    for node in tree.body:
+        call = node.value if isinstance(node, ast.Expr) else None
+        if (isinstance(call, ast.Call) and isinstance(call.func, ast.Name) and call.func.id == 'exec'
+                and len(call.args) == 2 and not call.keywords
+                and isinstance(call.args[0], ast.Constant) and isinstance(call.args[0].value, str)
+                and isinstance(call.args[1], ast.Attribute) and call.args[1].attr == '__dict__'
+                and isinstance(call.args[1].value, ast.Name)
+                and call.args[1].value.id in ('_cswork_module', '_cswork_runtime')):
+            code = compile(call.args[0].value, '<string>', 'exec', flags, dont_inherit=True)
+            loads = ast.Call(ast.Attribute(ast.Call(ast.Name('__import__', ast.Load()), [ast.Constant('marshal')], []), 'loads', ast.Load()), [ast.Constant(marshal.dumps(code))], [])
+            call.args[0] = ast.copy_location(loads, call.args[0])
+    code = compile(ast.fix_missing_locations(tree), path, 'exec', dont_inherit=True)
+except Exception:
+    code = compile(data, path, 'exec', dont_inherit=True)
+with open(name[:-3] + '.pyc', 'wb') as f:
+    f.write(importlib.util.MAGIC_NUMBER + bytes(12) + marshal.dumps(code))
+`;
+/** The trusted LeetCode bridge (support runtime + native launcher) as cached bytecode. */
+export async function compileBridge(source: string, signal: AbortSignal) {
+  const result = await execute(
+    {
+      ...limits('', 30, 60, 1073741824, 65536),
+      args: ['/usr/bin/python3', '-I', '-c', PYTHON_BYTECODE, 'bridge.py'],
+      copyIn: { 'bridge.py': { content: source } },
+      copyOutCached: ['bridge.pyc'],
+      copyOutMax: 16777216,
+    },
+    signal,
+  );
+  return {
+    result,
+    program: {
+      language: 'python' as Language,
+      source,
+      cache: result.fileIds ?? {},
+    } satisfies CompiledProgram,
+  };
+}
 export async function compile(
   language: Language,
   source: string,
   signal: AbortSignal,
 ) {
+  // LeetCode-mode Python carries the support runtime; ACM Python runs as plain source.
+  const bytecode = language === 'python' && source.includes(LEETCODE_SUPPORT);
+  const artifact =
+    language === 'python'
+      ? bytecode
+        ? 'main.pyc'
+        : undefined
+      : language === 'java'
+        ? 'main.jar'
+        : 'main';
   const commands: Record<Language, string[]> = {
     cpp: source.includes('// CSWORK_CPP_JSON_RUNTIME_V1')
       ? [
@@ -171,7 +245,10 @@ export async function compile(
       '/usr/bin/python3',
       '-I',
       '-c',
-      "import py_compile; py_compile.compile('main.py', doraise=True)",
+      // Line 1 stays the syntax check, so compile errors read exactly as before.
+      "import py_compile; py_compile.compile('main.py', doraise=True)" +
+        (bytecode ? '\n' + PYTHON_BYTECODE : ''),
+      ...(bytecode ? ['main.py'] : []),
     ],
   };
   const result = await execute(
@@ -189,10 +266,7 @@ export async function compile(
         'GOMAXPROCS=2',
       ],
       copyIn: { [sourceNames[language]]: { content: source } },
-      copyOutCached:
-        language === 'python'
-          ? []
-          : [language === 'java' ? 'main.jar' : 'main'],
+      copyOutCached: artifact ? [artifact] : [],
       copyOutMax: 16777216,
     },
     signal,
@@ -202,11 +276,7 @@ export async function compile(
     source,
     cache: result.fileIds ?? {},
   } satisfies CompiledProgram;
-  if (
-    result.status === 'Accepted' &&
-    language !== 'python' &&
-    !program.cache[language === 'java' ? 'main.jar' : 'main']
-  ) {
+  if (result.status === 'Accepted' && artifact && !program.cache[artifact]) {
     await cleanup(program);
     throw new EngineFailure('Compiled artifact missing');
   }
@@ -220,12 +290,19 @@ export async function run(
 ) {
   const memoryBytes = spec.memoryLimit * 1024;
   const heap = Math.max(8, Math.floor((spec.memoryLimit / 1024) * 0.6));
+  const script = program.bridgeSource
+    ? program.bridgeBytecode
+      ? 'bridge.pyc'
+      : 'bridge.py'
+    : program.cache['main.pyc']
+      ? 'main.pyc'
+      : 'main.py';
   const args =
     program.bridgeSource || program.language === 'python'
       ? [
           '/usr/bin/python3',
           '-I',
-          program.bridgeSource ? 'bridge.py' : 'main.py',
+          script,
           ...(program.leetcodeInput ? ['--leetcode-input'] : []),
         ]
       : program.language === 'java'
@@ -241,17 +318,17 @@ export async function run(
             'Main',
           ]
         : ['main'];
-  const copyIn =
-    program.language === 'python'
-      ? { 'main.py': { content: program.source } }
-      : Object.fromEntries(
-          Object.entries(program.cache).map(([name, fileId]) => [
-            name,
-            { fileId },
-          ]),
-        );
-  if (program.bridgeSource)
-    Object.assign(copyIn, { 'bridge.py': { content: program.bridgeSource } });
+  const copyIn: Record<string, EngineFile> = Object.fromEntries(
+    Object.entries(program.cache).map(([name, fileId]) => [name, { fileId }]),
+  );
+  // Bytecode runs keep the .py beside them for traceback source lines.
+  if (program.language === 'python')
+    copyIn['main.py'] = { content: program.source };
+  if (program.bridgeSource) {
+    copyIn['bridge.py'] = { content: program.bridgeSource };
+    if (program.bridgeBytecode)
+      copyIn['bridge.pyc'] = { fileId: program.bridgeBytecode };
+  }
   return execute(
     {
       ...limits(

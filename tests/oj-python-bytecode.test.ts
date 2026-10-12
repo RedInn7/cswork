@@ -1,0 +1,92 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, rmSync, writeFileSync, existsSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { PYTHON_BYTECODE } from '../lib/server/oj-engine';
+import { leetcodeSource } from '../lib/server/leetcode-mode';
+
+const python = (dir: string, args: string[], input = '') =>
+  spawnSync('python3', ['-I', ...args], { cwd: dir, input, encoding: 'utf8' });
+
+// Reports how many support modules were precompiled, whether any module source
+// string survived, and the future flags each precompiled module carries.
+const INSPECT = `
+import marshal, sys, json
+code = marshal.loads(open(sys.argv[1], 'rb').read()[16:])
+blobs = [marshal.loads(k) for k in code.co_consts if isinstance(k, bytes)]
+left = [k for k in code.co_consts if isinstance(k, str) and len(k) > 500]
+print(json.dumps({'precompiled': len(blobs), 'sourceLeft': len(left), 'flags': sorted({b.co_flags & 0x1000000 for b in blobs})}))
+`;
+/** Builds name.pyc like the runner does, then runs .py and .pyc on the same input. */
+function both(name: string, source: string, input: string) {
+  const dir = mkdtempSync(join(tmpdir(), 'cswork-pyc-'));
+  try {
+    writeFileSync(join(dir, name), source);
+    const built = python(dir, ['-c', PYTHON_BYTECODE, name]);
+    assert.equal(built.status, 0, built.stderr);
+    const pyc = name.replace(/\.py$/, '.pyc');
+    assert.ok(existsSync(join(dir, pyc)));
+    const plain = python(dir, [name], input);
+    const bytecode = python(dir, [pyc], input);
+    const inspected = python(dir, ['-c', INSPECT, pyc]);
+    assert.equal(inspected.status, 0, inspected.stderr);
+    return { plain, bytecode, shape: JSON.parse(inspected.stdout) };
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+const twoSum =
+  'class Solution:\n    def twoSum(self, nums, target):\n        seen = {}\n        for i, value in enumerate(nums):\n            if target-value in seen: return [seen[target-value],i]\n            seen[value] = i\n';
+const lc1 = (code: string) =>
+  leetcodeSource('lc-1', 'python', code, 262144).source;
+
+test('LeetCode Python bytecode answers exactly like the source', () => {
+  const { plain, bytecode, shape } = both('main.py', lc1(twoSum), '4\n1 2 4 8\n9\n');
+  // All twelve embedded support modules ship as code, none as source to recompile.
+  assert.deepEqual(shape, { precompiled: 12, sourceLeft: 0, flags: [0] });
+  assert.equal(plain.status, 0, plain.stderr);
+  assert.equal(bytecode.stdout, plain.stdout);
+  assert.equal(bytecode.stderr, plain.stderr);
+  assert.equal(bytecode.status, plain.status);
+});
+
+test('runtime errors keep the same traceback, file name and quoted line', () => {
+  const failing = twoSum.replace(
+    '        seen = {}\n',
+    "        seen = {}\n        raise ValueError('boom')\n",
+  );
+  const { plain, bytecode } = both('main.py', lc1(failing), '2\n1 2\n3\n');
+  assert.notEqual(plain.status, 0);
+  assert.match(plain.stderr, /main\.py", line \d+, in twoSum\n\s+raise ValueError\('boom'\)/);
+  assert.equal(bytecode.stderr, plain.stderr);
+  assert.equal(bytecode.status, plain.status);
+});
+
+test('future imports in user code apply to the precompiled support modules too', () => {
+  const annotated = `from __future__ import annotations\n${twoSum.replace('def twoSum(self, nums, target):', 'def twoSum(self, nums: Undefined, target: int) -> Nowhere:')}`;
+  const { plain, bytecode, shape } = both('main.py', lc1(annotated), '2\n1 2\n3\n');
+  // exec(source) inherits the caller's future flags, so the precompiled modules must too.
+  assert.deepEqual(shape.flags, [0x1000000]);
+  assert.equal(plain.status, 0, plain.stderr);
+  assert.equal(bytecode.stdout, plain.stdout);
+  assert.equal(bytecode.stderr, plain.stderr);
+});
+
+test('a native bridge behaves identically from bytecode', () => {
+  const { bridgeSource } = leetcodeSource(
+    'lc-1',
+    'cpp',
+    'class Solution {public: vector<int> twoSum(vector<int>& a,int t){return {};}};',
+    262144,
+  );
+  assert.ok(bridgeSource);
+  // No compiled ./main here: both report the same launcher failure.
+  const { plain, bytecode, shape } = both('bridge.py', bridgeSource!, '2\n1 2\n3\n');
+  assert.equal(shape.precompiled, 12);
+  assert.notEqual(plain.status, 0);
+  assert.equal(bytecode.stdout, plain.stdout);
+  assert.equal(bytecode.stderr, plain.stderr);
+  assert.equal(bytecode.status, plain.status);
+});

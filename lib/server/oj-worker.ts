@@ -33,6 +33,8 @@ import {
 import { ACTIVE, submissionRow, type SubmissionRow } from './oj-submissions';
 import {
   run,
+  cleanup,
+  compileBridge,
   engineHealth,
   engineVerdict,
   matchesOutput,
@@ -70,6 +72,13 @@ const queue = new Queue(QUEUE, {
 });
 const controllers = new Map<string, AbortController>();
 const compiledPrograms = new CompiledProgramCache();
+// LeetCode bridges hold no user code, so one bytecode copy serves every learner.
+const bridgePrograms = new CompiledProgramCache(
+  (_language, source, signal) => compileBridge(source, signal),
+  cleanup,
+  32,
+  30 * 60_000,
+);
 const precompiles = new PrecompileScheduler();
 const admission = new SubmissionAdmission(OJ_WORKER_CONCURRENCY);
 const caseSlot = createSlots(OJ_CASE_SLOTS);
@@ -202,6 +211,9 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
   let compilation:
     | Awaited<ReturnType<CompiledProgramCache['acquire']>>
     | undefined;
+  let bridgeAcquisition:
+    | Promise<Awaited<ReturnType<CompiledProgramCache['acquire']>> | undefined>
+    | undefined;
   let invalidateCompilation = false;
   let terminalFailureCommitted = false;
   try {
@@ -241,6 +253,12 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
           )
         : { source: claimed.code };
     const compileStarted = performance.now();
+    // Built beside the compile; without it the bridge simply runs from source.
+    bridgeAcquisition = wrapped.bridgeSource
+      ? bridgePrograms
+          .acquire('', 'python', wrapped.bridgeSource, controller.signal)
+          .catch(() => undefined)
+      : undefined;
     const compiled = await compiledPrograms.acquire(
       claimed.user_id,
       claimed.language,
@@ -248,6 +266,7 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
       controller.signal,
     );
     compilation = compiled;
+    const bridge = await bridgeAcquisition;
     console.info(
       JSON.stringify({
         event: 'oj_compile',
@@ -258,6 +277,8 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
     );
     program = compiled.program;
     program.bridgeSource = wrapped.bridgeSource;
+    if (bridge?.result.status === 'Accepted')
+      program.bridgeBytecode = bridge.program.cache['bridge.pyc'];
     program.leetcodeInput =
       claimed.coding_mode === 'leetcode' &&
       claimed.mode === 'run' &&
@@ -469,6 +490,7 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
     clearInterval(monitor);
     if (controllers.get(id) === controller) controllers.delete(id);
     if (compilation) await compilation.release(invalidateCompilation);
+    await (await bridgeAcquisition)?.release(invalidateCompilation);
   }
 }
 const worker = new Worker<{ submissionId: string }>(QUEUE, judge, {
@@ -496,6 +518,7 @@ async function maintenance() {
   maintaining = true;
   try {
     await compiledPrograms.prune();
+    await bridgePrograms.prune();
     prunePrecompileDrafts();
     // Recover cancelled attempts after a worker crash, including when Redis/runner is down.
     const cancelled = db
@@ -664,6 +687,7 @@ async function stop() {
   await precompiles.close();
   await worker.close();
   await compiledPrograms.close();
+  await bridgePrograms.close();
   await queue.close();
   db.prepare(
     "UPDATE oj_runtime SET healthy=0,heartbeat_at=? WHERE id='worker'",

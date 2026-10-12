@@ -145,7 +145,8 @@ export class CompiledProgramCache {
       if (
         !this.closed &&
         compilation.result.status === 'Accepted' &&
-        language !== 'python'
+        // Only runner artifacts are worth keeping; plain Python has none.
+        Object.keys(compilation.program.cache).length > 0
       ) {
         while (
           [...this.entries.values()].filter((e) => !e.background).length >=
