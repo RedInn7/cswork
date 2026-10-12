@@ -370,3 +370,35 @@ void test('Python is reused only when it left bytecode in the runner', async () 
     await cache.close();
   }
 });
+
+void test('a background compile error serves the one submit that adopts it, then recompiles', async () => {
+  let calls = 0;
+  const status = { value: 'Nonzero Exit Status' };
+  const cache = new CompiledProgramCache(
+    async (language, source) => {
+      calls++;
+      return { result: { status: status.value }, program: { language, source, cache: {} } };
+    },
+    async () => {},
+  );
+  const signal = new AbortController().signal;
+  try {
+    assert.equal(await cache.warm('learner', 'cpp', 'broken', signal), 'failed');
+    const adopted = await cache.acquire('learner', 'cpp', 'broken', signal);
+    assert.equal(adopted.cacheHit, true);
+    assert.equal(adopted.result.status, 'Nonzero Exit Status');
+    await adopted.release();
+    const later = await cache.acquire('learner', 'cpp', 'broken', signal);
+    assert.equal(later.cacheHit, false, 'a compile error is reused once only');
+    await later.release();
+    assert.equal(calls, 2);
+    // Runner faults are never reused.
+    status.value = 'Time Limit Exceeded';
+    assert.equal(await cache.warm('learner', 'cpp', 'slow', signal), 'failed');
+    const fresh = await cache.acquire('learner', 'cpp', 'slow', signal);
+    assert.equal(fresh.cacheHit, false);
+    await fresh.release();
+  } finally {
+    await cache.close();
+  }
+});

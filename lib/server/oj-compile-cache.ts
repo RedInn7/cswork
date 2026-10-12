@@ -9,6 +9,8 @@ type Entry = {
   leased: number;
   retired: boolean;
   background: boolean;
+  /** A background compile error, kept for the one submit that adopts it. */
+  once?: boolean;
 };
 
 /** Worker-local, per-user cache. Compiled files stay inside go-judge, never on the host. */
@@ -53,7 +55,10 @@ export class CompiledProgramCache {
       let retained = false;
       try {
         signal.throwIfAborted();
-        if (compilation.result.status !== 'Accepted') return 'failed';
+        const failed = compilation.result.status !== 'Accepted';
+        // Only a genuine compiler diagnostic is reusable, never a runner fault.
+        if (failed && compilation.result.status !== 'Nonzero Exit Status')
+          return 'failed';
         // Warm slots are independent of the foreground capacity.
         if (
           this.closed ||
@@ -67,9 +72,10 @@ export class CompiledProgramCache {
           leased: 0,
           retired: false,
           background: true,
+          once: failed,
         });
         retained = true;
-        return 'warmed';
+        return failed ? 'failed' : 'warmed';
       } finally {
         if (!retained) await this.dispose(compilation.program);
       }
@@ -113,7 +119,11 @@ export class CompiledProgramCache {
       // Lease before any asynchronous eviction so concurrent pruning cannot
       // dispose the binary that this acquisition is about to use.
       entry.leased++;
-      if (entry.background) {
+      if (entry.once) {
+        // Serve the precompile's compile error once; later submits recompile.
+        this.entries.delete(key);
+        entry.retired = true;
+      } else if (entry.background) {
         entry.background = false;
         while (
           [...this.entries.values()].filter((e) => !e.background).length >

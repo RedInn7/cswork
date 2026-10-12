@@ -106,6 +106,7 @@ void test('foreground of the same program adopts the background compile instead 
     return release;
   });
   await tick();
+  assert.equal(scheduler.isAdopted('same'), true);
   assert.equal(aborted, false, 'the matching compile keeps running');
   assert.equal(entered, false, 'and the foreground waits for it');
   assert.equal(scheduler.canStart, false);

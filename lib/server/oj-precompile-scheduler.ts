@@ -5,11 +5,16 @@ export class PrecompileScheduler {
   private active?: {
     id: string;
     key?: string;
+    adopted?: boolean;
     controller: AbortController;
     settled: Promise<void>;
   };
   get activeId() {
     return this.active?.id;
+  }
+  /** A foreground submission is waiting on this task's result. */
+  isAdopted(id: string) {
+    return this.active?.id === id && Boolean(this.active.adopted);
   }
   get canStart() {
     return !this.closed && !this.foreground && !this.active;
@@ -48,8 +53,10 @@ export class PrecompileScheduler {
     // Runs before the first await, preventing a new task during cancellation.
     this.foreground++;
     const active = this.active;
-    if (active && key !== undefined && active.key === key) await active.settled;
-    else await this.cancelBackground();
+    if (active && key !== undefined && active.key === key) {
+      active.adopted = true;
+      await active.settled;
+    } else await this.cancelBackground();
     let released = false;
     return () => {
       if (released) return;

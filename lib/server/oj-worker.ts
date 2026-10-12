@@ -632,12 +632,19 @@ function precompileTick() {
     draft.generation,
     async (signal) => {
       activeDraft = draft;
+      // Once a submission adopts this compile it is that submission's own
+      // compile: no speculative timeout, and later edits do not cancel it.
+      const adopted = () => precompiles.isAdopted(draft.generation);
       const outdated = setInterval(() => {
+        if (adopted()) return;
         if (!precompileDraftCurrent(draft) || hasForegroundSubmissions(draft))
           void precompiles.cancelBackground(draft.generation);
       }, OJ_DISPATCH_INTERVAL_MS);
-      const timeout = AbortSignal.timeout(PRECOMPILE_TIMEOUT_MS);
-      const interrupted = AbortSignal.any([signal, timeout]);
+      const timeout = new AbortController();
+      const timer = setTimeout(() => {
+        if (!adopted()) timeout.abort(new Error('Precompile timed out'));
+      }, PRECOMPILE_TIMEOUT_MS);
+      const interrupted = AbortSignal.any([signal, timeout.signal]);
       try {
         const version = db
           .prepare(
@@ -675,6 +682,7 @@ function precompileTick() {
         );
       } finally {
         clearInterval(outdated);
+        clearTimeout(timer);
         consumePrecompileDraft(draft);
         if (activeDraft === draft) activeDraft = undefined;
       }
