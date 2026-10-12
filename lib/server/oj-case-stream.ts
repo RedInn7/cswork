@@ -1,10 +1,13 @@
-/** At most two independent sandboxes, preserving case order and individual limits. */
+/** A few independent sandboxes at a time, preserving case order and individual limits. */
 export async function* orderedCaseResults<T, R>(
   cases: readonly T[],
   execute: (item: T) => Promise<R>,
-  concurrency: 1 | 2,
+  /** Cases in flight; a function is re-read whenever a slot frees. */
+  concurrency: number | (() => number),
   cancelPending?: () => void,
 ): AsyncGenerator<{ item: T; result: R }> {
+  const limit =
+    typeof concurrency === 'function' ? concurrency : () => concurrency;
   type Outcome = { ok: true; result: R } | { ok: false; error: unknown };
   const pending = new Map<number, Promise<Outcome>>();
   const start = (index: number) => {
@@ -21,14 +24,19 @@ export async function* orderedCaseResults<T, R>(
     );
   };
   let next = 0;
+  // Cases start in order, so pending always holds the window [index, next).
+  const fill = () => {
+    while (next < cases.length && pending.size < Math.max(1, limit()))
+      start(next++);
+  };
   try {
-    for (; next < Math.min(concurrency, cases.length); next++) start(next);
+    fill();
     for (let index = 0; index < cases.length; index++) {
       const outcome = await pending.get(index)!;
       pending.delete(index);
       if (!outcome.ok) throw outcome.error;
       yield { item: cases[index], result: outcome.result };
-      if (next < cases.length) start(next++);
+      fill();
     }
   } finally {
     if (pending.size) cancelPending?.();
@@ -38,8 +46,59 @@ export async function* orderedCaseResults<T, R>(
   }
 }
 
-export function caseConcurrency(memoryLimitKb: number): 1 | 2 {
-  // The runner already has two slots and a 4 GiB cap. Keep larger-memory
-  // problems serial and leave room for interpreter/bridge startup and the host.
-  return memoryLimitKb <= 512 * 1024 ? 2 : 1;
+export function caseConcurrency(
+  memoryLimitKb: number,
+  exclusive = false,
+): 1 | 2 | 4 {
+  // Larger-memory problems stay serial. Exclusive submissions (large output or
+  // snapshot) keep two: each in-flight case can bring back a body up to its
+  // output limit, and the worker's memory was sized for two.
+  if (memoryLimitKb > 512 * 1024) return 1;
+  return exclusive ? 2 : 4;
+}
+
+/**
+ * FIFO cap on case sandboxes in flight across the whole worker. An idle runner
+ * gives one submission up to four slots; once anyone waits, submissions narrow
+ * back to two, so failing ones waste no more runner time than before, and
+ * compiles never queue behind a backlog of case runs inside the runner.
+ */
+export function createSlots(size: number) {
+  let free = size;
+  const waiting: (() => void)[] = [];
+  const release = () => {
+    const next = waiting.shift();
+    if (next) next();
+    else free++;
+  };
+  const lease = () => {
+    let held = true;
+    return () => {
+      if (held) ((held = false), release());
+    };
+  };
+  return {
+    /** Every slot is taken or someone waits: submissions should not widen. */
+    contended: () => free === 0 || waiting.length > 0,
+    async acquire(signal: AbortSignal): Promise<() => void> {
+      signal.throwIfAborted();
+      if (free > 0) {
+        free--;
+        return lease();
+      }
+      await new Promise<void>((resolve, reject) => {
+        const grant = () => {
+          signal.removeEventListener('abort', abort);
+          resolve();
+        };
+        const abort = () => {
+          waiting.splice(waiting.indexOf(grant) >>> 0, 1);
+          reject(signal.reason);
+        };
+        waiting.push(grant);
+        signal.addEventListener('abort', abort, { once: true });
+      });
+      return lease();
+    },
+  };
 }

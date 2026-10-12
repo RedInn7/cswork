@@ -1,4 +1,8 @@
-import { orderedCaseResults, caseConcurrency } from './oj-case-stream';
+import {
+  orderedCaseResults,
+  caseConcurrency,
+  createSlots,
+} from './oj-case-stream';
 import { persistCase } from './oj-case-store';
 import { runCodecRoundTrip } from './oj-codec-roundtrip';
 import { CompiledProgramCache } from './oj-compile-cache';
@@ -9,7 +13,9 @@ import {
   precompileDraftCurrent,
   consumePrecompileDraft,
   hasForegroundSubmissions,
+  precompileKey,
   prunePrecompileDrafts,
+  type PrecompileDraft,
   PRECOMPILE_TIMEOUT_MS,
 } from './oj-precompile';
 import type { OjProblemSpec } from '@/lib/oj-types';
@@ -22,12 +28,15 @@ import { seed } from './seed';
 import {
   assertSnapshotBudget,
   OJ_WORKER_CONCURRENCY,
+  OJ_CASE_SLOTS,
   exclusiveSubmission,
   SubmissionAdmission,
 } from './oj-worker-policy';
 import { ACTIVE, submissionRow, type SubmissionRow } from './oj-submissions';
 import {
   run,
+  cleanup,
+  compileBridge,
   engineHealth,
   engineVerdict,
   matchesOutput,
@@ -65,8 +74,17 @@ const queue = new Queue(QUEUE, {
 });
 const controllers = new Map<string, AbortController>();
 const compiledPrograms = new CompiledProgramCache();
+// LeetCode bridges hold no user code, so one bytecode copy serves every learner.
+// The default 5-minute lifetime stays below the runner's -file-timeout=10m
+// (deploy/oj/entrypoint.sh), which would otherwise delete a cached bridge.
+const bridgePrograms = new CompiledProgramCache(
+  (_language, source, signal) => compileBridge(source, signal),
+  cleanup,
+  32,
+);
 const precompiles = new PrecompileScheduler();
 const admission = new SubmissionAdmission(OJ_WORKER_CONCURRENCY);
+const caseSlots = createSlots(OJ_CASE_SLOTS);
 let stopping = false;
 let maintaining = false;
 let engineAvailable = false;
@@ -124,19 +142,15 @@ async function judge(job: Job<{ submissionId: string }>) {
   }, 400);
   let releaseAdmission: (() => void) | undefined;
   let releaseForeground: (() => void) | undefined;
+  const exclusive =
+    !budget ||
+    exclusiveSubmission(budget.bytes, budget.memoryLimit, budget.outputLimit);
   try {
-    releaseAdmission = await admission.acquire(
-      !budget ||
-        exclusiveSubmission(
-          budget.bytes,
-          budget.memoryLimit,
-          budget.outputLimit,
-        ),
-      waiting.signal,
-    );
-    releaseForeground = await precompiles.enterForeground();
+    releaseAdmission = await admission.acquire(exclusive, waiting.signal);
+    // A precompile of this exact program finishes into the cache it then hits.
+    releaseForeground = await precompiles.enterForeground(precompileKey(row));
     clearInterval(monitor);
-    return await judgeSubmission(job);
+    return await judgeSubmission(job, exclusive);
   } catch (error) {
     if (!waiting.signal.aborted) throw error;
     const latest = submissionRow(row.id);
@@ -154,7 +168,10 @@ async function judge(job: Job<{ submissionId: string }>) {
     releaseAdmission?.();
   }
 }
-async function judgeSubmission(job: Job<{ submissionId: string }>) {
+async function judgeSubmission(
+  job: Job<{ submissionId: string }>,
+  exclusive: boolean,
+) {
   const id = job.data.submissionId;
   const initial = submissionRow(id);
   if (!initial || !ACTIVE.includes(initial.status)) return;
@@ -196,7 +213,13 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
   let compilation:
     | Awaited<ReturnType<CompiledProgramCache['acquire']>>
     | undefined;
+  let bridgeAcquisition:
+    | Promise<Awaited<ReturnType<CompiledProgramCache['acquire']>> | undefined>
+    | undefined;
   let invalidateCompilation = false;
+  // The shared bridge is dropped on runner trouble (including a restart seen
+  // as a failed fetch), never because one learner cancelled or ran out of time.
+  let invalidateBridge = false;
   let terminalFailureCommitted = false;
   try {
     const snapshot = await loadJudgeSnapshot(claimed.problem_version_id!);
@@ -235,6 +258,12 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
           )
         : { source: claimed.code };
     const compileStarted = performance.now();
+    // Built beside the compile; without it the bridge simply runs from source.
+    bridgeAcquisition = wrapped.bridgeSource
+      ? bridgePrograms
+          .acquire('', 'python', wrapped.bridgeSource, controller.signal)
+          .catch(() => undefined)
+      : undefined;
     const compiled = await compiledPrograms.acquire(
       claimed.user_id,
       claimed.language,
@@ -242,6 +271,7 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
       controller.signal,
     );
     compilation = compiled;
+    const bridge = await bridgeAcquisition;
     console.info(
       JSON.stringify({
         event: 'oj_compile',
@@ -252,6 +282,8 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
     );
     program = compiled.program;
     program.bridgeSource = wrapped.bridgeSource;
+    if (bridge?.result.status === 'Accepted')
+      program.bridgeBytecode = bridge.program.cache['bridge.pyc'];
     program.leetcodeInput =
       claimed.coding_mode === 'leetcode' &&
       claimed.mode === 'run' &&
@@ -321,17 +353,23 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
       caseController.signal,
     ]);
     const executeCase = async (c: (typeof cases)[number]) => {
-      current(id, attempt, controller.signal);
-      // Codec decoding still runs in a fresh sandbox and never sees the tree.
-      return snapshot.spec.checker === 'design-lc-297' ||
+      const release = await caseSlots.acquire(caseSignal);
+      try {
+        current(id, attempt, controller.signal);
+        // Codec decoding still runs in a fresh sandbox and never sees the tree.
+        return await (snapshot.spec.checker === 'design-lc-297' ||
         snapshot.spec.checker === 'design-lc-449'
-        ? runCodecRoundTrip(program!, c.input, snapshot.spec, caseSignal, run)
-        : run(program!, c.input, snapshot.spec, caseSignal);
+          ? runCodecRoundTrip(program!, c.input, snapshot.spec, caseSignal, run)
+          : run(program!, c.input, snapshot.spec, caseSignal));
+      } finally {
+        release();
+      }
     };
+    const width = caseConcurrency(snapshot.spec.memoryLimit, exclusive);
     for await (const { item: c, result } of orderedCaseResults(
       cases,
       executeCase,
-      caseConcurrency(snapshot.spec.memoryLimit),
+      () => (caseSlots.contended() ? Math.min(2, width) : width),
       () => caseController.abort(),
     )) {
       current(id, attempt, controller.signal);
@@ -410,6 +448,8 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
     if (terminalFailureCommitted) return;
     // A restarted runner may have discarded cached file IDs. The bounded job retry must recompile.
     invalidateCompilation = true;
+    invalidateBridge =
+      !(error instanceof LostAttempt) && !controller.signal.aborted;
     const latest = submissionRow(id);
     if (error instanceof LostAttempt || !latest || latest.attempt !== attempt)
       return;
@@ -458,6 +498,7 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
     clearInterval(monitor);
     if (controllers.get(id) === controller) controllers.delete(id);
     if (compilation) await compilation.release(invalidateCompilation);
+    await (await bridgeAcquisition)?.release(invalidateBridge);
   }
 }
 const worker = new Worker<{ submissionId: string }>(QUEUE, judge, {
@@ -485,6 +526,7 @@ async function maintenance() {
   maintaining = true;
   try {
     await compiledPrograms.prune();
+    await bridgePrograms.prune();
     prunePrecompileDrafts();
     // Recover cancelled attempts after a worker crash, including when Redis/runner is down.
     const cancelled = db
@@ -572,12 +614,13 @@ const dispatchTimer = setInterval(() => {
       // The durable outbox remains pending. Maintenance owns health/recovery.
     });
 }, OJ_DISPATCH_INTERVAL_MS);
+let activeDraft: PrecompileDraft | undefined;
 function precompileTick() {
   if (
     stopping ||
     !engineAvailable ||
     !precompileEnabled() ||
-    hasForegroundSubmissions()
+    hasForegroundSubmissions(activeDraft)
   ) {
     void precompiles.cancelBackground();
     return;
@@ -585,53 +628,67 @@ function precompileTick() {
   if (!precompiles.canStart) return;
   const draft = nextPrecompileDraft();
   if (!draft) return;
-  precompiles.start(draft.generation, async (signal) => {
-    const outdated = setInterval(() => {
-      if (!precompileDraftCurrent(draft) || hasForegroundSubmissions())
-        void precompiles.cancelBackground(draft.generation);
-    }, OJ_DISPATCH_INTERVAL_MS);
-    const timeout = AbortSignal.timeout(PRECOMPILE_TIMEOUT_MS);
-    const interrupted = AbortSignal.any([signal, timeout]);
-    try {
-      const version = db
-        .prepare(
-          'SELECT spec_json FROM oj_problem_versions WHERE id=? AND problem_id=?',
-        )
-        .get(draft.problem_version_id, draft.problem_id) as
-        | { spec_json: string }
-        | undefined;
-      if (!version) return;
-      const spec = JSON.parse(version.spec_json) as OjProblemSpec;
-      const source =
-        draft.coding_mode === 'leetcode'
-          ? leetcodeSource(
-              draft.problem_id,
-              draft.language,
-              draft.code,
-              spec.memoryLimit,
-            ).source
-          : draft.code;
-      interrupted.throwIfAborted();
-      const started = performance.now();
-      const result = await compiledPrograms.warm(
-        draft.user_id,
-        draft.language,
-        source,
-        interrupted,
-      );
-      console.info(
-        JSON.stringify({
-          event: 'oj_precompile',
-          language: draft.language,
-          result,
-          durationMs: Math.round(performance.now() - started),
-        }),
-      );
-    } finally {
-      clearInterval(outdated);
-      consumePrecompileDraft(draft);
-    }
-  });
+  precompiles.start(
+    draft.generation,
+    async (signal) => {
+      activeDraft = draft;
+      // Once a submission adopts this compile it is that submission's own
+      // compile: no speculative timeout, and later edits do not cancel it.
+      const adopted = () => precompiles.isAdopted(draft.generation);
+      const outdated = setInterval(() => {
+        if (adopted()) return;
+        if (!precompileDraftCurrent(draft) || hasForegroundSubmissions(draft))
+          void precompiles.cancelBackground(draft.generation);
+      }, OJ_DISPATCH_INTERVAL_MS);
+      const timeout = new AbortController();
+      const timer = setTimeout(() => {
+        if (!adopted()) timeout.abort(new Error('Precompile timed out'));
+      }, PRECOMPILE_TIMEOUT_MS);
+      const interrupted = AbortSignal.any([signal, timeout.signal]);
+      try {
+        const version = db
+          .prepare(
+            'SELECT spec_json FROM oj_problem_versions WHERE id=? AND problem_id=?',
+          )
+          .get(draft.problem_version_id, draft.problem_id) as
+          | { spec_json: string }
+          | undefined;
+        if (!version) return;
+        const spec = JSON.parse(version.spec_json) as OjProblemSpec;
+        const source =
+          draft.coding_mode === 'leetcode'
+            ? leetcodeSource(
+                draft.problem_id,
+                draft.language,
+                draft.code,
+                spec.memoryLimit,
+              ).source
+            : draft.code;
+        interrupted.throwIfAborted();
+        const started = performance.now();
+        const result = await compiledPrograms.warm(
+          draft.user_id,
+          draft.language,
+          source,
+          interrupted,
+        );
+        console.info(
+          JSON.stringify({
+            event: 'oj_precompile',
+            language: draft.language,
+            result,
+            durationMs: Math.round(performance.now() - started),
+          }),
+        );
+      } finally {
+        clearInterval(outdated);
+        clearTimeout(timer);
+        consumePrecompileDraft(draft);
+        if (activeDraft === draft) activeDraft = undefined;
+      }
+    },
+    precompileKey(draft),
+  );
 }
 const precompileTimer = setInterval(() => {
   try {
@@ -653,6 +710,7 @@ async function stop() {
   await precompiles.close();
   await worker.close();
   await compiledPrograms.close();
+  await bridgePrograms.close();
   await queue.close();
   db.prepare(
     "UPDATE oj_runtime SET healthy=0,heartbeat_at=? WHERE id='worker'",

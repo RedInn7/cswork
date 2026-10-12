@@ -86,3 +86,83 @@ void test('overlapping foreground reservations prevent background until all rele
   assert.equal(scheduler.canStart, true);
   await scheduler.close();
 });
+
+void test('foreground of the same program adopts the background compile instead of aborting it', async () => {
+  const scheduler = new PrecompileScheduler();
+  let finish!: () => void;
+  let aborted = false;
+  scheduler.start(
+    'same',
+    async (signal) => {
+      signal.addEventListener('abort', () => (aborted = true), { once: true });
+      await new Promise<void>((resolve) => (finish = resolve));
+    },
+    'program-a',
+  );
+  await tick();
+  let entered = false;
+  const entering = scheduler.enterForeground('program-a').then((release) => {
+    entered = true;
+    return release;
+  });
+  await tick();
+  assert.equal(scheduler.isAdopted('same'), true);
+  assert.equal(aborted, false, 'the matching compile keeps running');
+  assert.equal(entered, false, 'and the foreground waits for it');
+  assert.equal(scheduler.canStart, false);
+  finish();
+  (await entering)();
+  assert.equal(aborted, false);
+  // A different program still preempts speculation at once.
+  scheduler.start(
+    'other',
+    async (signal) =>
+      new Promise<void>((resolve) =>
+        signal.addEventListener('abort', () => resolve(), { once: true }),
+      ),
+    'program-b',
+  );
+  await tick();
+  (await scheduler.enterForeground('program-a'))();
+  assert.equal(scheduler.canStart, true);
+  await scheduler.close();
+});
+
+void test('an adopted compile survives other foreground work and only close() stops it', async () => {
+  const scheduler = new PrecompileScheduler();
+  let aborted = false;
+  let finish!: () => void;
+  scheduler.start(
+    'adopted',
+    async (signal) => {
+      signal.addEventListener('abort', () => (aborted = true), { once: true });
+      await new Promise<void>((resolve) => {
+        finish = resolve;
+        signal.addEventListener('abort', () => resolve(), { once: true });
+      });
+    },
+    'mine',
+  );
+  await tick();
+  const adopting = scheduler.enterForeground('mine');
+  await tick();
+  // Another learner's submission and the background tick leave it alone.
+  (await scheduler.enterForeground('theirs'))();
+  await scheduler.cancelBackground();
+  assert.equal(aborted, false);
+  finish();
+  (await adopting)();
+  scheduler.start(
+    'adopted-2',
+    async (signal) =>
+      new Promise<void>((resolve) =>
+        signal.addEventListener('abort', () => resolve(), { once: true }),
+      ),
+    'mine-2',
+  );
+  await tick();
+  void scheduler.enterForeground('mine-2');
+  await tick();
+  await scheduler.close();
+  assert.equal(scheduler.canStart, false);
+});

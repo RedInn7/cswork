@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   orderedCaseResults,
   caseConcurrency,
+  createSlots,
 } from '../lib/server/oj-case-stream';
 const turn = () => new Promise((resolve) => setImmediate(resolve));
 test('early failure aborts active neighbour without launching later cases', async () => {
@@ -102,7 +103,10 @@ test('rejected later case is handled immediately and propagated in case order', 
   assert.deepEqual(seen, [0]);
 });
 test('large-memory problems stay serial and zero cases stay empty', async () => {
-  assert.equal(caseConcurrency(256 * 1024), 2);
+  assert.equal(caseConcurrency(256 * 1024), 4);
+  assert.equal(caseConcurrency(512 * 1024), 4);
+  assert.equal(caseConcurrency(256 * 1024, true), 2, 'exclusive keeps two');
+  assert.equal(caseConcurrency(512 * 1024 + 1, true), 1);
   assert.equal(caseConcurrency(512 * 1024 + 1), 1);
   let active = 0;
   for await (const _ of orderedCaseResults(
@@ -124,4 +128,93 @@ test('large-memory problems stay serial and zero cases stay empty', async () => 
     2,
   ))
     assert.fail();
+});
+
+test('case slots cap sandboxes across submissions in FIFO order', async () => {
+  const { acquire, contended } = createSlots(2);
+  const signal = new AbortController().signal;
+  const a = await acquire(signal);
+  const b = await acquire(signal);
+  const order: string[] = [];
+  assert.equal(contended(), true, 'every slot is taken');
+  const c = acquire(signal).then((release) => (order.push('c'), release));
+  const d = acquire(signal).then((release) => (order.push('d'), release));
+  await turn();
+  assert.deepEqual(order, []);
+  assert.equal(contended(), true, 'and others are waiting');
+  a();
+  a(); // a second release of the same lease is ignored
+  const releaseC = await c;
+  await turn();
+  assert.deepEqual(order, ['c']);
+  b();
+  (await d)();
+  releaseC();
+  assert.deepEqual(order, ['c', 'd']);
+  // Both slots are free again.
+  assert.equal(contended(), false);
+  (await acquire(signal))();
+  (await acquire(signal))();
+});
+test('an aborted wait leaves the queue without taking a slot', async () => {
+  const { acquire } = createSlots(1);
+  const held = await acquire(new AbortController().signal);
+  const cancelled = new AbortController();
+  const waiting = acquire(cancelled.signal);
+  const next = acquire(new AbortController().signal);
+  cancelled.abort();
+  await assert.rejects(waiting, { name: 'AbortError' });
+  held();
+  (await next)();
+  const already = new AbortController();
+  already.abort();
+  await assert.rejects(acquire(already.signal), { name: 'AbortError' });
+});
+
+test('a narrowing limit is honoured as slots free, without reordering', async () => {
+  let width = 4, active = 0, peak = 0;
+  const seen: number[] = [];
+  const peaks: number[] = [];
+  for await (const { result } of orderedCaseResults(
+    [0, 1, 2, 3, 4, 5, 6, 7],
+    async (n) => {
+      peak = Math.max(peak, ++active);
+      await turn();
+      active--;
+      return n;
+    },
+    () => width,
+  )) {
+    seen.push(result);
+    peaks.push(peak);
+    if (result === 1) (width = 2), (peak = 0);
+  }
+  assert.deepEqual(seen, [0, 1, 2, 3, 4, 5, 6, 7]);
+  assert.equal(peaks[0], 4, 'idle: four in flight');
+  // Cases started before narrowing finish; nothing new starts beyond two.
+  assert.ok(peaks.at(-1)! <= 3);
+});
+
+test('a full runner narrows a new submission before its first case waits', async () => {
+  const { acquire, contended } = createSlots(4);
+  const signal = new AbortController().signal;
+  const held = await Promise.all([0, 1, 2, 3].map(() => acquire(signal)));
+  let started = 0;
+  const run = (async () => {
+    for await (const _ of orderedCaseResults(
+      [0, 1, 2, 3, 4, 5],
+      async (n) => {
+        started++;
+        (await acquire(signal))();
+        return n;
+      },
+      () => (contended() ? 2 : 4),
+    )) {
+    }
+  })();
+  await turn();
+  assert.equal(started, 2, 'two in flight while every slot is busy');
+  for (const release of held) release();
+  await run;
+  assert.equal(started, 6);
 });

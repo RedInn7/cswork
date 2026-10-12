@@ -91,6 +91,17 @@ server {
         self.assertEqual(module.with_canonical(switched, None), named)
         self.assertIn("cswork-media.conf", module.with_media_location(switched))
 
+    def test_http2_is_idempotent_and_keeps_the_canonical_redirect(self):
+        upgraded = module.with_http2(self.live + "    listen 443 ssl; # managed by Certbot\n")
+        self.assertEqual(upgraded.count("listen 443 ssl http2;"), 2)
+        self.assertNotIn("listen 443 ssl;", upgraded)
+        self.assertIn("listen 443 ssl http2; # managed by Certbot", upgraded)
+        self.assertEqual(module.with_http2(upgraded), upgraded)
+        self.assertEqual(module.with_http2("server {\n    listen 80;\n}\n"), "server {\n    listen 80;\n}\n")
+        switched = module.with_canonical(module.with_http2(self.live), "cswork.org")
+        self.assertGreater(switched.index("if ($host != cswork.org)"), switched.index("listen 443 ssl http2;"))
+        self.assertEqual(module.with_canonical(switched, None), module.with_http2(self.live))
+
 
 if __name__ == "__main__":
     unittest.main()

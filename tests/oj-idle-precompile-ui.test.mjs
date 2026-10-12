@@ -100,15 +100,15 @@ void test('idle precompile remains optional, debounced, private to the draft and
   };
   try {
     await t.test(
-      'waits 2500 ms after the final edit and sends exact source without running it',
+      'waits 1500 ms after the final edit and sends exact source without running it',
       async () => {
         await reset();
-        await tick(2000);
+        await tick(1000);
         assert.equal(calls.length, 0);
         const code =
           'class Solution { public: int solve() {\n return 2;\n } };';
         await render({ code });
-        await tick(2499);
+        await tick(1499);
         assert.equal(calls.length, 0);
         await tick(1);
         assert.equal(calls.length, 1);
@@ -165,7 +165,7 @@ void test('idle precompile remains optional, debounced, private to the draft and
       'hiding, editing, foreground submission and unmount cancel pending requests',
       async () => {
         await reset();
-        await tick(2400);
+        await tick(1400);
         await visibility('hidden');
         await tick(5000);
         assert.equal(calls.length, 0);

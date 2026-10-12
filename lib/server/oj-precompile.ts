@@ -56,13 +56,39 @@ export function consumePrecompileDraft(draft: PrecompileDraft) {
     .prepare('DELETE FROM oj_precompile WHERE user_id=? AND generation=?')
     .run(draft.user_id, draft.generation);
 }
-export function hasForegroundSubmissions() {
+/** Same learner, problem version, language, mode and code: the same compile. */
+export function precompileKey(x: {
+  user_id: string;
+  problem_version_id: string | null;
+  language: string;
+  coding_mode: string | null;
+  code: string;
+}) {
+  return JSON.stringify([
+    x.user_id,
+    x.problem_version_id,
+    x.language,
+    x.coding_mode || 'acm',
+    x.code,
+  ]);
+}
+/**
+ * Foreground work preempts speculation, except a submission of exactly the
+ * draft being compiled: finishing that compile is the submission's own compile.
+ */
+export function hasForegroundSubmissions(except?: PrecompileDraft) {
   return Boolean(
     sqlite()
       .prepare(
-        "SELECT 1 FROM submissions WHERE status IN ('queued','compiling','running') AND cancel_requested=0 LIMIT 1",
+        "SELECT 1 FROM submissions WHERE status IN ('queued','compiling','running') AND cancel_requested=0 AND NOT (user_id IS ? AND problem_version_id IS ? AND language IS ? AND COALESCE(coding_mode,'acm') IS ? AND code IS ?) LIMIT 1",
       )
-      .get(),
+      .get(
+        except?.user_id ?? null,
+        except?.problem_version_id ?? null,
+        except?.language ?? null,
+        except?.coding_mode ?? null,
+        except?.code ?? null,
+      ),
   );
 }
 export async function requestPrecompile(person: Person, input: unknown) {

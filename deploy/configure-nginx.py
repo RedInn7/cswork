@@ -30,6 +30,16 @@ def with_server_names(text: str, names: list[str]) -> str:
     return result
 
 
+def with_http2(text: str) -> str:
+    """Serve cswork's HTTPS over HTTP/2 (nginx 1.24 `listen ... http2` syntax).
+
+    A submit sends several requests at once; over HTTP/1.1 the verdict watch can
+    queue for a fresh TCP+TLS connection, two extra round trips. nginx enables
+    HTTP/2 for the whole 443 socket, so other HTTPS sites on it get it too.
+    No-op until certbot has added the 443 server (fresh installs)."""
+    return re.sub(r"(?m)^([ \t]*listen 443 ssl);", r"\1 http2;", text)
+
+
 CANONICAL_MARK = "# cswork-canonical"
 
 
@@ -38,7 +48,7 @@ def with_canonical(text: str, host: str | None) -> str:
     text = re.sub(rf"(?m)^[ \t]*if \(\$host != [^)]+\) {{[^\n]*{CANONICAL_MARK}\n", "", text)
     if not host:
         return text
-    tls = list(re.finditer(r"(?m)^([ \t]*)listen 443 ssl;[^\n]*\n", text))
+    tls = list(re.finditer(r"(?m)^([ \t]*)listen 443 ssl(?: http2)?;[^\n]*\n", text))
     if len(tls) != 1:
         raise ValueError("Cannot uniquely locate the cswork HTTPS server; refusing to rewrite nginx")
     indent, end = tls[0].group(1), tls[0].end()
@@ -50,10 +60,13 @@ if __name__ == "__main__":
     # configure-nginx.py FILE                      media/import includes (install.sh)
     # configure-nginx.py FILE --names A B ...      add hostnames
     # configure-nginx.py FILE --canonical HOST|-   redirect to HOST, or remove the redirect
+    # configure-nginx.py FILE --http2              serve HTTPS over HTTP/2
     path, args = Path(sys.argv[1]), sys.argv[2:]
     text = path.read_text()
     if args[:1] == ["--names"]:
         text = with_server_names(text, args[1:])
+    elif args[:1] == ["--http2"]:
+        text = with_http2(text)
     elif args[:1] == ["--canonical"]:
         text = with_canonical(text, None if args[1] == "-" else args[1])
     else:

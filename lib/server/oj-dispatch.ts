@@ -1,8 +1,8 @@
 import type Database from 'better-sqlite3';
 
-// At most 20 indexed reads/sec while idle; overlapping drains are coalesced.
-// Keep polling bounded while avoiding a 200ms post-submit scheduling gap.
-export const OJ_DISPATCH_INTERVAL_MS = 50;
+// At most 50 indexed reads/sec while idle; overlapping drains are coalesced.
+// Keep polling bounded while keeping the post-submit scheduling gap small.
+export const OJ_DISPATCH_INTERVAL_MS = 20;
 
 /** Fast path only; the worker's full reconciliation still recovers Redis loss. */
 export function createOutboxDispatcher(

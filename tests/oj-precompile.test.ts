@@ -15,6 +15,8 @@ const {
   nextPrecompileDraft,
   consumePrecompileDraft,
   precompileDraftCurrent,
+  hasForegroundSubmissions,
+  precompileKey,
 } = await import('../lib/server/oj-precompile');
 const student: Person = {
   id: 'student',
@@ -194,4 +196,38 @@ void test('unsupported languages and disabled feature skip without drafting', as
     status: 'skipped',
   });
   assert.equal(nextPrecompileDraft(), undefined);
+});
+
+void test('a submission of the draft being compiled does not preempt it; any other does', async () => {
+  const draft = {
+    user_id: 'student',
+    generation: 'g',
+    problem_id: 'watch-intervals',
+    problem_version_id: 'v1',
+    code: 'int main() { return 0; }',
+    coding_mode: 'acm' as const,
+    language: 'cpp' as const,
+    created_at: 0,
+    expires_at: 0,
+  };
+  const insert = (id: string, user: string, code: string, mode: string) =>
+    sqlite()
+      .prepare(
+        "INSERT INTO submissions(id,user_id,problem_id,problem_version_id,language,code,status,total,created_at,updated_at,coding_mode) VALUES(?,?,'watch-intervals','v1','cpp',?,'queued',1,0,0,?)",
+      )
+      .run(id, user, code, mode);
+  try {
+    assert.equal(hasForegroundSubmissions(draft), false);
+    insert('same', 'student', draft.code, 'acm');
+    assert.equal(precompileKey({ ...draft, coding_mode: null }), precompileKey(draft));
+    assert.equal(hasForegroundSubmissions(draft), false);
+    assert.equal(hasForegroundSubmissions(), true);
+    insert('edited', 'student', draft.code + ' ', 'acm');
+    assert.equal(hasForegroundSubmissions(draft), true);
+    sqlite().prepare("DELETE FROM submissions WHERE id='edited'").run();
+    insert('someone', 'other', draft.code, 'acm');
+    assert.equal(hasForegroundSubmissions(draft), true);
+  } finally {
+    sqlite().prepare("DELETE FROM submissions WHERE id IN ('same','edited','someone')").run();
+  }
 });
