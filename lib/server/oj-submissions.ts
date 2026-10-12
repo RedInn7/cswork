@@ -273,6 +273,10 @@ const TICK_MS = 25;
  * watch requests. Slower judgements return their current state and are watched.
  */
 export const SUBMIT_HOLD_MS = 2_500;
+// An idle judge claims a submission within tens of ms. One still queued after
+// this is waiting for a slot: reply at once, so the learner sees its queue
+// position and can cancel.
+const QUEUED_HOLD_MS = 300;
 export async function settleSubmission(
   p: Person,
   id: string,
@@ -281,10 +285,16 @@ export async function settleSubmission(
 ) {
   // Owner-checked by the caller's create; at most two in flight per learner.
   const query = stateQuery();
-  const deadline = performance.now() + holdMs;
+  const started = performance.now();
+  const deadline = started + holdMs;
   while (performance.now() < deadline) {
     const current = query.get(id) as SubmissionRow | undefined;
     if (!current || !ACTIVE.includes(current.status)) break;
+    if (
+      current.status === 'queued' &&
+      performance.now() - started >= QUEUED_HOLD_MS
+    )
+      break;
     await delay(
       Math.min(TICK_MS, Math.max(1, deadline - performance.now())),
       undefined,

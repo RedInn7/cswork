@@ -321,3 +321,18 @@ test('status steps right after a reply are coalesced; the verdict is not', async
     clearTimeout(verdict);
   }
 });
+
+test('a submit still waiting for a judge replies at once with its queue state', async () => {
+  db.prepare(
+    "INSERT INTO submissions(id,user_id,problem_id,language,code,status,total,created_at,updated_at) VALUES('waiting-slot','alice','lc-1','cpp','code','queued',1,0,0)",
+  ).run();
+  const started = performance.now();
+  const receipt = await settleSubmission(
+    p,
+    'waiting-slot',
+    new AbortController().signal,
+  );
+  const elapsed = performance.now() - started;
+  assert.equal(receipt.status, 'queued');
+  assert.ok(elapsed >= 280 && elapsed < 800, `queued hold: ${elapsed}`);
+});
