@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Children, isValidElement } from 'react';
+import React, { Children, isValidElement, memo } from 'react';
 import Markdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useT } from '@/lib/i18n';
@@ -148,7 +148,13 @@ const components: Components = {
   img: StatementImage,
 };
 
-export function StatementMarkdown({ body }: { body: string }) {
+// Parsing the statement is the costliest part of a workspace render; the many
+// re-renders while a submission is judged (status, verdict, history) skip it.
+export const StatementMarkdown = memo(function StatementMarkdown({
+  body,
+}: {
+  body: string;
+}) {
   return (
     <article className="cs-statement-markdown">
       <Markdown remarkPlugins={[remarkGfm]} components={components}>
@@ -156,4 +162,4 @@ export function StatementMarkdown({ body }: { body: string }) {
       </Markdown>
     </article>
   );
-}
+});
