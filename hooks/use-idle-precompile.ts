@@ -14,7 +14,9 @@ type IdlePrecompileOptions = {
   template: string;
 };
 
-const IDLE_MS = 2500;
+// Short enough that a pause before clicking Submit usually starts the compile the
+// submit then adopts (oj-precompile-scheduler enterForeground).
+const IDLE_MS = 1500;
 const REQUEST_INTERVAL_MS = 12000;
 const QUEUED_REMEMBER_MS = 30000;
 const CACHED_REMEMBER_MS = 4 * 60 * 1000;
