@@ -6,6 +6,7 @@
 #   cert      after DNS points here: expand the cswork certificate to all three names
 #   switch    after OAuth callbacks are registered: APP_URL=https://cswork.org, others 301 to it
 #   rollback  APP_URL back to the temporary domain, redirect removed
+#   http2     serve HTTPS over HTTP/2 (validated by nginx -t, restored if rejected)
 set -euo pipefail
 apex=cswork.org www=www.cswork.org temp=cswork.192.18.137.70.sslip.io ip=192.18.137.70
 vhost=/etc/nginx/sites-available/cswork env=/etc/cswork/cswork.env
@@ -78,5 +79,8 @@ case ${1:-status} in
     edit_nginx --canonical -
     set_app_url "https://$temp" || exit 1
     echo "Back on https://$temp; $apex/$www stay configured." ;;
-  *) echo "usage: $0 status|prepare|cert|switch|rollback"; exit 2 ;;
+  http2)
+    edit_nginx --http2
+    echo "HTTPS now negotiates HTTP/2: $(curl -s -o /dev/null -w '%{http_version}' --http2 --max-time 5 --resolve "$apex:443:127.0.0.1" "https://$apex/api/bootstrap")" ;;
+  *) echo "usage: $0 status|prepare|cert|switch|rollback|http2"; exit 2 ;;
 esac
