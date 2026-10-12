@@ -4,14 +4,10 @@ import { requestLocale } from '@/lib/server/locale';
 import './globals.css';
 import { Analytics } from '@/components/analytics';
 import { measurementId } from '@/lib/analytics';
+import { SEO_HOME, seoMetadata } from '@/lib/seo';
 // In the reader's language from the first byte, so the tab title doesn't flash either.
 export async function generateMetadata(): Promise<Metadata> {
-  return (await requestLocale()) === 'zh'
-    ? { title: 'cswork · 学习工作台', description: '从 Go 后端到系统设计，学习、练习与一对一反馈。' }
-    : {
-        title: 'cswork · Learning workspace',
-        description: 'From Go backends to system design: learn, practice and get one-on-one feedback.',
-      };
+  return seoMetadata({ ...SEO_HOME[await requestLocale()], path: '/' });
 }
 export default async function RootLayout({
   children,

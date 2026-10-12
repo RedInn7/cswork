@@ -68,6 +68,7 @@ import { setLocale, useLocale, useT } from '@/lib/i18n';
 import { beacon, track } from '@/lib/analytics';
 import { englishMessage } from '@/lib/messages-en';
 import { ContentDetail, ContentList, contentSection } from './content-library';
+import { WorkspaceIntro } from './workspace-intro';
 import {
   TicketComposer,
   TicketView,
@@ -132,8 +133,6 @@ export function Academy() {
     t = useT();
   useEffect(() => {
     document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
-    document.title =
-      locale === 'zh' ? 'cswork · 学习工作台' : 'cswork · Learning workspace';
   }, [locale]);
   const [boot, setBoot] = useState<Boot>(initial),
     [loading, setLoading] = useState(true),
@@ -645,9 +644,13 @@ export function Academy() {
               onLogin={() => setLogin(true)}
             />
           )}
+          {view === 'problems' && !params.library && <WorkspaceIntro />}
           {content()}
         </main>
-        <footer className="px-6 pb-6 text-xs text-muted-foreground">
+        <footer className="flex flex-wrap gap-5 px-6 pb-6 text-xs text-muted-foreground">
+          <Link prefetch={false} href="/library" className="underline underline-offset-4">
+            {t('公开面试资料', 'Interview resources')}
+          </Link>
           <Link href="/privacy" className="underline underline-offset-4">
             {t('隐私说明', 'Privacy')}
           </Link>

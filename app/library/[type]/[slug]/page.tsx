@@ -1,0 +1,72 @@
+import { notFound } from 'next/navigation';
+import { cache } from 'react';
+import Link from 'next/link';
+import 'katex/dist/katex.min.css';
+import { PublicLibraryMarkdown } from '../../markdown';
+import { seoMetadata } from '@/lib/seo';
+import {
+  PUBLIC_LIBRARY_TYPES,
+  publicLibraryItem,
+  publicLibraryPath,
+  publicLibraryDescription,
+} from '@/lib/server/public-library';
+
+type Props = { params: Promise<{ type: string; slug: string }> };
+const readItem = cache(publicLibraryItem);
+async function load(params: Props['params']) {
+  const { type, slug } = await params;
+  const item = readItem(type, slug);
+  if (!item) notFound();
+  return item;
+}
+
+export async function generateMetadata({ params }: Props) {
+  const item = await load(params);
+  return {
+    ...seoMetadata({
+      title: item.title,
+      description: publicLibraryDescription(item),
+      path: publicLibraryPath(item.type, item.slug),
+    }),
+    ...(item.type === 'guide'
+      ? { robots: { index: false, follow: true } }
+      : {}),
+  };
+}
+
+export default async function PublicLibraryDetail({ params }: Props) {
+  const item = await load(params);
+  return (
+    <article className="public-library-article">
+      <nav className="public-library-breadcrumb" aria-label="Breadcrumb">
+        <Link href="/library" prefetch={false}>
+          Library
+        </Link>
+        <span aria-hidden="true">/</span>
+        <a href={`/library?type=${item.type}`}>
+          {PUBLIC_LIBRARY_TYPES[item.type]}
+        </a>
+      </nav>
+      <header className="public-library-article-header">
+        <p className="public-library-eyebrow">
+          {PUBLIC_LIBRARY_TYPES[item.type]}
+          {item.company ? ` · ${item.company}` : ''}
+        </p>
+        <h1>{item.title}</h1>
+        {item.summary && (
+          <p className="public-library-summary">{item.summary}</p>
+        )}
+      </header>
+      <div className="public-library-prose">
+        <PublicLibraryMarkdown body={item.body} math={item.math} />
+      </div>
+      <aside className="public-library-next">
+        <h2>Put what you learned into practice.</h2>
+        <p>Work through coding problems in the cswork practice workspace.</p>
+        <Link href="/?view=problems" prefetch={false}>
+          Explore the problem bank →
+        </Link>
+      </aside>
+    </article>
+  );
+}

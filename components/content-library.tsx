@@ -210,7 +210,15 @@ export function ContentCard({
   const t = useT();
   const locale = useLocale();
   return (
-    <button type="button" className="rd-card ct-card" onClick={() => onOpen(item)}>
+    <a
+      href={`/?view=content&type=${encodeURIComponent(item.type)}&slug=${encodeURIComponent(item.slug)}`}
+      className="rd-card ct-card"
+      onClick={(event) => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        onOpen(item);
+      }}
+    >
       <ContentMeta item={item} />
       <h3>{localized(locale, item.title, item.titleZh)}</h3>
       {item.summary && (
@@ -230,7 +238,7 @@ export function ContentCard({
           {item.publishedAt ? ` · ${item.publishedAt.slice(0, 10)}` : ''}
         </span>
       </div>
-    </button>
+    </a>
   );
 }
 
