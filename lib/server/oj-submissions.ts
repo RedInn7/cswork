@@ -251,6 +251,49 @@ const waitingByUser = new Map<string, number>();
 // Bounded connection-independent history also coalesces tokens that became stale
 // while a response was in flight. It contains no submission content.
 const lastWatchReply = new Map<string, { status: string; at: number }>();
+/** Detail sent to the browser; its time paces the next non-final reply. */
+async function reply(p: Person, id: string) {
+  const detail = await submissionDetail(p, id);
+  const key = `${p.id}:${id}`;
+  lastWatchReply.delete(key);
+  lastWatchReply.set(key, { status: detail.status, at: performance.now() });
+  if (lastWatchReply.size > 1024)
+    lastWatchReply.delete(lastWatchReply.keys().next().value!);
+  return detail;
+}
+const stateQuery = () =>
+  sqlite().prepare(
+    'SELECT user_id,status,passed,total,attempt,cancel_requested,updated_at FROM submissions WHERE id=?',
+  );
+// One primary-key read per tick; a verdict shows up at most a tick late.
+const TICK_MS = 25;
+/**
+ * A fresh submit holds its response briefly so a fast verdict reaches the
+ * browser in the POST reply: one network round trip instead of a POST plus
+ * watch requests. Slower judgements return their current state and are watched.
+ */
+export const SUBMIT_HOLD_MS = 2_500;
+export async function settleSubmission(
+  p: Person,
+  id: string,
+  signal: AbortSignal,
+  holdMs = SUBMIT_HOLD_MS,
+) {
+  // Owner-checked by the caller's create; at most two in flight per learner.
+  const query = stateQuery();
+  const deadline = performance.now() + holdMs;
+  while (performance.now() < deadline) {
+    const current = query.get(id) as SubmissionRow | undefined;
+    if (!current || !ACTIVE.includes(current.status)) break;
+    await delay(
+      Math.min(TICK_MS, Math.max(1, deadline - performance.now())),
+      undefined,
+      { signal },
+    );
+  }
+  signal.throwIfAborted();
+  return reply(p, id);
+}
 export async function waitForSubmission(
   p: Person,
   id: string,
@@ -261,26 +304,17 @@ export async function waitForSubmission(
   signal.throwIfAborted();
   // Authorize before retaining a connection or reading any progress.
   const initial = owned(p, id);
-  const key = `${p.id}:${id}`;
-  const previous = lastWatchReply.get(key);
+  const previous = lastWatchReply.get(`${p.id}:${id}`);
   const started = performance.now();
+  // Final verdicts return at once. Any other change, status steps included, is
+  // sent at most every 500ms: each one costs the browser a full round trip.
   const progressAfter = previous ? previous.at + 500 : started + 500;
-  const reply = async () => {
-    const detail = await submissionDetail(p, id);
-    lastWatchReply.delete(key);
-    lastWatchReply.set(key, { status: detail.status, at: performance.now() });
-    if (lastWatchReply.size > 1024)
-      lastWatchReply.delete(lastWatchReply.keys().next().value!);
-    return detail;
-  };
   if (
     !ACTIVE.includes(initial.status) ||
     (watchToken(initial) !== after &&
-      (!previous ||
-        previous.status !== initial.status ||
-        started >= progressAfter))
+      (!previous || started >= progressAfter))
   )
-    return reply();
+    return reply(p, id);
   const waiting = waitingByUser.get(p.id) ?? 0;
   if (waiting >= 2) throw new HttpError(429, '等待中的请求过多，请稍后重试');
   waitingByUser.set(p.id, waiting + 1);
@@ -288,14 +322,11 @@ export async function waitForSubmission(
   // Request.signal. Keep a short hard bound even when abort is unavailable.
   const deadline = performance.now() + Math.min(3_000, Math.max(0, timeoutMs));
   // Fetch only state on each tick; full cases are materialized once on return.
-  const query = sqlite().prepare(
-    'SELECT user_id,status,passed,total,attempt,cancel_requested,updated_at FROM submissions WHERE id=?',
-  );
+  const query = stateQuery();
   try {
     while (performance.now() < deadline) {
-      // One primary-key read per 25ms tick; the verdict shows up at most a tick late.
       await delay(
-        Math.min(25, Math.max(1, deadline - performance.now())),
+        Math.min(TICK_MS, Math.max(1, deadline - performance.now())),
         undefined,
         { signal },
       );
@@ -304,13 +335,12 @@ export async function waitForSubmission(
         throw new HttpError(404, '提交不存在');
       if (
         !ACTIVE.includes(current.status) ||
-        current.status !== initial.status ||
         (watchToken(current) !== after && performance.now() >= progressAfter)
       )
         break;
     }
     signal.throwIfAborted();
-    return reply();
+    return reply(p, id);
   } finally {
     const remaining = (waitingByUser.get(p.id) ?? 1) - 1;
     if (remaining) waitingByUser.set(p.id, remaining);

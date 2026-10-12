@@ -8,7 +8,7 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 const dir = mkdtempSync(resolve(tmpdir(), 'submission-watch-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 const { sqlite } = await import('../db/sqlite');
-const { submissionDetail, waitForSubmission } =
+const { submissionDetail, waitForSubmission, settleSubmission } =
   await import('../lib/server/oj-submissions');
 const db = sqlite();
 migrate(drizzle(db), { migrationsFolder: resolve('drizzle') });
@@ -229,4 +229,95 @@ test('production wait has a three-second hard bound even without an abort signal
     elapsed >= 2_900 && elapsed < 3_600,
     `hard-bound elapsed: ${elapsed}`,
   );
+});
+
+test('a submit reply carries a verdict that lands within the hold', async () => {
+  insert('settle-fast');
+  const started = performance.now();
+  const finish = setTimeout(
+    () =>
+      db
+        .prepare(
+          "UPDATE submissions SET status='accepted',passed=1 WHERE id='settle-fast'",
+        )
+        .run(),
+    40,
+  );
+  try {
+    const result = await settleSubmission(
+      p,
+      'settle-fast',
+      new AbortController().signal,
+    );
+    assert.equal(result.status, 'accepted');
+    assert.ok(performance.now() - started < 400, 'returns as soon as judged');
+  } finally {
+    clearTimeout(finish);
+  }
+  insert('settle-slow');
+  const slow = await settleSubmission(
+    p,
+    'settle-slow',
+    new AbortController().signal,
+    60,
+  );
+  assert.equal(slow.status, 'running', 'a slow judgement is watched instead');
+});
+
+test('status steps right after a reply are coalesced; the verdict is not', async () => {
+  db.prepare(
+    "INSERT INTO submissions(id,user_id,problem_id,language,code,status,total,created_at,updated_at) VALUES('steps','alice','lc-1','cpp','code','queued',1,0,0)",
+  ).run();
+  const receipt = await settleSubmission(
+    p,
+    'steps',
+    new AbortController().signal,
+    1,
+  );
+  const step = setTimeout(
+    () =>
+      db
+        .prepare("UPDATE submissions SET status='running' WHERE id='steps'")
+        .run(),
+    20,
+  );
+  try {
+    const started = performance.now();
+    const running = await waitForSubmission(
+      p,
+      'steps',
+      receipt.watchToken,
+      new AbortController().signal,
+    );
+    assert.equal(running.status, 'running');
+    assert.ok(
+      performance.now() - started >= 400,
+      'queued -> running alone does not cost the browser a round trip',
+    );
+  } finally {
+    clearTimeout(step);
+  }
+  const current = await submissionDetail(p, 'steps');
+  const verdict = setTimeout(
+    () =>
+      db
+        .prepare(
+          "UPDATE submissions SET status='accepted',passed=1 WHERE id='steps'",
+        )
+        .run(),
+    20,
+  );
+  try {
+    const started = performance.now();
+    const done = await waitForSubmission(
+      p,
+      'steps',
+      current.watchToken,
+      new AbortController().signal,
+    );
+    assert.equal(done.status, 'accepted');
+    assert.ok(performance.now() - started < 300, 'verdicts are never held');
+  } finally {
+    clearTimeout(verdict);
+  }
 });
