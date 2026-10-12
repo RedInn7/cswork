@@ -69,6 +69,7 @@ import { beacon, track } from '@/lib/analytics';
 import { englishMessage } from '@/lib/messages-en';
 import { ContentDetail, ContentList, contentSection } from './content-library';
 import { WorkspaceIntro } from './workspace-intro';
+import { SEO_HOME } from '@/lib/seo';
 import {
   TicketComposer,
   TicketView,
@@ -133,6 +134,7 @@ export function Academy() {
     t = useT();
   useEffect(() => {
     document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
+    document.title = SEO_HOME[locale].title;
   }, [locale]);
   const [boot, setBoot] = useState<Boot>(initial),
     [loading, setLoading] = useState(true),
