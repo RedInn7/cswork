@@ -37,6 +37,7 @@ import {
   run,
   cleanup,
   compileBridge,
+  EngineFailure,
   engineHealth,
   engineVerdict,
   matchesOutput,
@@ -75,11 +76,12 @@ const queue = new Queue(QUEUE, {
 const controllers = new Map<string, AbortController>();
 const compiledPrograms = new CompiledProgramCache();
 // LeetCode bridges hold no user code, so one bytecode copy serves every learner.
+// The default 5-minute lifetime stays below the runner's -file-timeout=10m
+// (deploy/oj/entrypoint.sh), which would otherwise delete a cached bridge.
 const bridgePrograms = new CompiledProgramCache(
   (_language, source, signal) => compileBridge(source, signal),
   cleanup,
   32,
-  30 * 60_000,
 );
 const precompiles = new PrecompileScheduler();
 const admission = new SubmissionAdmission(OJ_WORKER_CONCURRENCY);
@@ -216,6 +218,9 @@ async function judgeSubmission(
     | Promise<Awaited<ReturnType<CompiledProgramCache['acquire']>> | undefined>
     | undefined;
   let invalidateCompilation = false;
+  // The shared bridge is dropped only when the runner itself failed, never
+  // because one learner cancelled or ran out of time.
+  let invalidateBridge = false;
   let terminalFailureCommitted = false;
   try {
     const snapshot = await loadJudgeSnapshot(claimed.problem_version_id!);
@@ -444,6 +449,7 @@ async function judgeSubmission(
     if (terminalFailureCommitted) return;
     // A restarted runner may have discarded cached file IDs. The bounded job retry must recompile.
     invalidateCompilation = true;
+    invalidateBridge = error instanceof EngineFailure;
     const latest = submissionRow(id);
     if (error instanceof LostAttempt || !latest || latest.attempt !== attempt)
       return;
@@ -492,7 +498,7 @@ async function judgeSubmission(
     clearInterval(monitor);
     if (controllers.get(id) === controller) controllers.delete(id);
     if (compilation) await compilation.release(invalidateCompilation);
-    await (await bridgeAcquisition)?.release(invalidateCompilation);
+    await (await bridgeAcquisition)?.release(invalidateBridge);
   }
 }
 const worker = new Worker<{ submissionId: string }>(QUEUE, judge, {
