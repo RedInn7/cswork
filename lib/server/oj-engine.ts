@@ -205,21 +205,21 @@ export async function compileBridge(source: string, signal: AbortSignal) {
     } satisfies CompiledProgram,
   };
 }
-const STDCXX_PCH = '/usr/local/include/cswork/stdc++.hpp';
 /**
  * The runner ships a precompiled <bits/stdc++.h> (deploy/oj/build-cpp-pch.sh)
- * under the submission flags, but GCC only finds it through STDCXX_PCH: about
- * 2.9s -> 1.0s per ACM compile. The learner's first such include is swapped for
- * a guarded include of it and #line restores numbering, so diagnostics and
- * __LINE__ are unchanged. GCC silently uses the plain header whenever the PCH
- * does not apply (e.g. after other includes), so behaviour never changes.
+ * under the submission flags, but GCC only finds it through the wrapper
+ * /usr/local/include/cswork/stdc++.hpp: about 2.9s -> 1.0s per ACM compile. The
+ * learner's leading include becomes one line naming that wrapper, so every line
+ * keeps its number and quoted source in diagnostics; only template notes gain an
+ * "included from .../cswork/stdc++.hpp:1" frame. Images without the wrapper
+ * find the fallback copy (STDCXX_FALLBACK) through -idirafter, and GCC uses the
+ * plain header whenever the PCH does not apply.
  */
 export function withStdcxxPch(source: string) {
-  if (source.includes(STDCXX_PCH)) return source; // LeetCode drivers already do this
+  if (source.includes('/usr/local/include/cswork/stdc++.hpp')) return source; // LeetCode drivers
   const lines = source.split('\n');
-  // Only where a PCH can apply anyway: preceded by nothing but blank lines,
-  // line comments and directives. This also keeps an include inside a block
-  // comment or raw string, where extra lines would shift numbering, untouched.
+  // Only where a PCH can apply: preceded by nothing but blank lines, line
+  // comments and directives.
   const include = /^\s*#\s*include\s*<bits\/stdc\+\+\.h>\s*(\/\/.*)?$/;
   const leading = /^\s*(\/\/.*|#.*)?$/;
   const at = lines.findIndex((raw) => {
@@ -227,16 +227,13 @@ export function withStdcxxPch(source: string) {
     return include.test(line) || !leading.test(line);
   });
   if (at < 0 || !include.test(lines[at].replace(/\r$/, ''))) return source;
-  lines[at] = [
-    `#if __has_include("${STDCXX_PCH}")`,
-    `#include "${STDCXX_PCH}"`,
-    '#else',
-    '#include <bits/stdc++.h>',
-    '#endif',
-    `#line ${at + 2}`,
-  ].join('\n');
+  lines[at] =
+    '#include <cswork/stdc++.hpp>' + (lines[at].endsWith('\r') ? '\r' : '');
   return lines.join('\n');
 }
+const STDCXX_FALLBACK = {
+  'cswork/stdc++.hpp': { content: '#include <bits/stdc++.h>\n' },
+};
 export async function compile(
   language: Language,
   source: string,
@@ -266,6 +263,7 @@ export async function compile(
           '-std=c++20',
           '-O2',
           '-pipe',
+          ...(text !== source ? ['-idirafter', '.'] : []),
           'main.cpp',
           '-o',
           'main',
@@ -312,7 +310,10 @@ export async function compile(
         'CGO_ENABLED=0',
         'GOMAXPROCS=2',
       ],
-      copyIn: { [sourceNames[language]]: { content: text } },
+      copyIn: {
+        [sourceNames[language]]: { content: text },
+        ...(text !== source ? STDCXX_FALLBACK : {}),
+      },
       copyOutCached: artifact ? [artifact] : bytecode ? ['main.pyc?'] : [],
       copyOutMax: 16777216,
     },
