@@ -3,7 +3,10 @@ import { resolve } from 'node:path';
 import { z } from 'zod';
 import { shownOaSql } from './env';
 import { HttpError, one, rows } from './http';
-import { formatOaVerifiedStatement } from '../oa-verified-statement';
+import {
+  cleanOaStatement,
+  formatOaVerifiedStatement,
+} from '../oa-verified-statement';
 
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
 const registrySchema = z.object({
@@ -190,11 +193,13 @@ export function oaEnglishStatement(id: string) {
     // Only parsed files are cached; a missing file is re-checked so later additions appear.
     const file = resolve(`content/oa-judge/translations/${id}.json`);
     try {
-      if (existsSync(file) && statSync(file).size < 1024 * 1024)
-        englishCache.set(
-          id,
-          englishStatement.parse(JSON.parse(readFileSync(file, 'utf8'))),
+      if (existsSync(file) && statSync(file).size < 1024 * 1024) {
+        const value = englishStatement.parse(
+          JSON.parse(readFileSync(file, 'utf8')),
         );
+        // Translations mirror the package, provenance notes included; display drops them.
+        englishCache.set(id, { ...value, en: cleanOaStatement(value.en) });
+      }
     } catch {
       // An unreadable translation simply falls back to the Chinese statement.
     }
