@@ -190,7 +190,8 @@ async function summarize(days: number) {
     )
     .raw();
   const visitors = m.prepare(`SELECT DISTINCT vid FROM events WHERE day=? AND vid<>'${SERVER}'`).pluck();
-  // Funnel steps: page views count visitors; signing in, running code and AC count accounts.
+  // Funnel steps: page views count visitors; the last three count the accounts that signed up in
+  // range, so a run or an AC is that account's first.
   const steps = m
     .prepare(
       `SELECT DISTINCT json_extract(params,'$.view'),vid FROM events
@@ -212,7 +213,7 @@ async function summarize(days: number) {
   const verdicts = new Map<string, number>(), views = new Map<string, number>(), content = new Map<string, number>();
   const searches = new Map<string, number>(), errors = new Map<string, number>(), locales = new Map<string, number>();
   const vids = new Set<string>(), server: [string, number][] = [];
-  const bank = new Set<string>(), opened = new Set<string>(), signedIn = new Set<string>();
+  const bank = new Set<string>(), opened = new Set<string>();
   const ran = new Set<string>(), solved = new Set<string>(), d1 = new Set<string>(), d7 = new Set<string>();
   const client: number[] = [], run: number[] = [], queue: number[] = [];
   let next = ((db.prepare('SELECT MAX(rowid) FROM submissions').pluck().get() as number | null) ?? 0) + 1;
@@ -222,14 +223,14 @@ async function summarize(days: number) {
     // Main database: formal submissions are mode 'judge'; times are ms.
     for (const [at, mode, status, language, finished, user] of submissions.all(lo, next) as
       [number, string, string, string, number | null, string][]) {
-      ran.add(user);
+      if (cohort.has(user)) ran.add(user);
       present.add(user);
       if (mode === 'run') d.runs++;
       if (mode !== 'judge') continue;
       d.submissions++;
       if (status === 'accepted') {
         d.accepted++;
-        solved.add(user);
+        if (cohort.has(user)) solved.add(user);
       }
       bump(verdicts, [status]);
       // Created -> finished; cancelled submissions never finished judging.
@@ -246,10 +247,7 @@ async function summarize(days: number) {
     d.visitors = seen.length;
     for (const vid of seen) vids.add(vid);
     for (const [view, vid] of steps.all(d.day) as [string, string][]) (view === 'problems' ? bank : opened).add(vid);
-    for (const user of accounts.all(d.day) as string[]) {
-      signedIn.add(user);
-      present.add(user);
-    }
+    for (const user of accounts.all(d.day) as string[]) present.add(user);
     // Returned: active (signed-in events or submissions) one or seven days after signing up.
     for (const user of present) {
       const joined = cohort.get(user);
@@ -300,21 +298,19 @@ async function summarize(days: number) {
       queuedNow: active.find(([status]) => status === 'queued')?.[1] ?? 0,
       runningNow: active.reduce((total, [status, n]) => total + (status === 'queued' ? 0 : n), 0),
     },
-    // ponytail: "ran code" and "AC" in the range, not lifetime firsts; add a first-ever filter if
-    // returning users blur the funnel. Accounts never seen signed in (beacons blocked) are left out.
+    // ponytail: returning accounts' first run or AC is left out; count it if old accounts matter.
     funnel: {
-      visitors: vids.size, problemBank: bank.size, problem: opened.size, signedIn: signedIn.size,
-      ran: [...ran].filter((u) => signedIn.has(u)).length,
-      accepted: [...solved].filter((u) => signedIn.has(u)).length,
+      visitors: vids.size, problemBank: bank.size, problem: opened.size, signedUp: cohort.size,
+      ran: ran.size, accepted: solved.size,
     },
-    // Newest cohort first; a return count is null until its day has come.
+    // Newest cohort first; a return count is null until its (UTC) day is over.
     retention: [...Map.groupBy(cohort, ([, day]) => day)]
       .sort((a, b) => b[0] - a[0])
       .map(([day, users]) => ({
         day: dayOf(day * DAY),
         users: users.length,
-        d1: day + 1 > last ? null : users.filter(([id]) => d1.has(id)).length,
-        d7: day + 7 > last ? null : users.filter(([id]) => d7.has(id)).length,
+        d1: day + 1 >= last ? null : users.filter(([id]) => d1.has(id)).length,
+        d7: day + 7 >= last ? null : users.filter(([id]) => d7.has(id)).length,
       })),
     topViews: top(views, ['view', 'type']),
     topContent: top(content, ['type', 'slug']),

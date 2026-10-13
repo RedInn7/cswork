@@ -54,12 +54,12 @@ type Judge = {
   queuedNow: number;
   runningNow: number;
 };
-/** Distinct visitors (the first three steps) and accounts (the rest) in the range. */
+/** Distinct visitors (the first three steps) and the accounts that signed up in the range (the rest). */
 type Funnel = {
   visitors: number;
   problemBank: number;
   problem: number;
-  signedIn: number;
+  signedUp: number;
   ran: number;
   accepted: number;
 };
@@ -541,9 +541,9 @@ const STEPS: [keyof Funnel, string, string][] = [
   ['visitors', '访客', 'Visitors'],
   ['problemBank', '看过题库', 'Viewed the problem bank'],
   ['problem', '打开过题目', 'Opened a problem'],
-  ['signedIn', '登录', 'Signed in'],
-  ['ran', '运行或提交代码', 'Ran code'],
-  ['accepted', '拿到 AC', 'Got an AC'],
+  ['signedUp', '注册登录', 'Signed up'],
+  ['ran', '首次运行代码', 'First run'],
+  ['accepted', '首次 AC', 'First AC'],
 ];
 
 /** Where visitors drop off: each step's count and its share of all visitors. */
@@ -556,8 +556,8 @@ function FunnelCard({ funnel, range }: { funnel: Funnel; range: string }) {
       title={t('转化漏斗', 'Funnel')}
       extra={<span className="om-card-extra">{range}</span>}
       note={t(
-        '前三步按访客计，后三步按登录账号计；百分比都相对访客。',
-        'The first three steps count visitors, the rest signed-in accounts; shares are of all visitors.',
+        '前三步按访客计，后三步只看这段时间新注册的账号；百分比都相对访客。',
+        'The first three steps count visitors, the rest accounts that signed up in this range; shares are of all visitors.',
       )}
     >
       <BarList

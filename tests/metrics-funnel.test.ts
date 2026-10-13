@@ -36,13 +36,15 @@ after(() => rmSync(folder, { recursive: true, force: true }));
 
 void test('funnel and D1/D7 return come from page views, server-side sign-ins and submissions', async () => {
   for (const [id, at] of [
-    ['u-old', today - 30 * DAY], ['u1', today - 8 * DAY + 1], ['u2', today - 8 * DAY + 2], ['u3', today - DAY + 1], ['u4', today + 1],
+    ['u-old', today - 30 * DAY], ['u1', today - 8 * DAY + 1], ['u2', today - 8 * DAY + 2],
+    ['u3', today - 2 * DAY + 1], ['u5', today - DAY + 1], ['u4', today + 1],
   ] as const)
     main.prepare('INSERT INTO user(id,name,email,email_verified,created_at,updated_at) VALUES(?,?,?,1,?,?)').run(id, id, `${id}@example.test`, at, at);
   // Appended in time order, as the app does.
   let n = 0;
   for (const [user, at, mode, status] of [
-    ['u2', today - DAY + 5, 'run', 'finished'], // u2 back on day 7, but never seen signed in
+    ['u-old', today - 3 * DAY, 'judge', 'accepted'], // an older account: not a first run or AC
+    ['u2', today - DAY + 5, 'run', 'finished'], // u2 back on day 7, though never seen signed in
     ['u1', today + 10, 'run', 'finished'],
     ['u1', today + 20, 'judge', 'accepted'],
     ['u4', today + 30, 'judge', 'wrong_answer'],
@@ -58,7 +60,9 @@ void test('funnel and D1/D7 return come from page views, server-side sign-ins an
   await view('visitor-1111', { view: 'problem' });
   await view('visitor-2222', { view: 'problems' }, person('u1'));
   await view('visitor-3333', { view: 'content', type: 'guide', slug: 'acme' });
-  await view('visitor-4444', { view: 'problems' }, person('u3')); // u3: back the day after signing up
+  await view('visitor-4444', { view: 'problems' }, person('u3'));
+  record('login', 'u-old', { method: 'email' });
+  record('login', 'u5', { method: 'google' }); // back today: D1 not over yet
   record('login', 'u1', { method: 'github' });
   record('sign_up', 'u4', { method: 'google' });
   record('login', 'u4', { method: 'google' });
@@ -66,10 +70,17 @@ void test('funnel and D1/D7 return come from page views, server-side sign-ins an
   const earlier = writer.prepare(`INSERT INTO events(at,day,name,vid,user_id,params) VALUES(?,?,'page_view','visitor-2222','u1',?)`);
   earlier.run(today - 7 * DAY, dayOf(today - 7 * DAY), '{"view":"problems"}'); // u1 on day 1
   earlier.run(today - DAY, dayOf(today - DAY), '{"view":"knowledge"}'); // u1 on day 7
+  writer
+    .prepare(`INSERT INTO events(at,day,name,vid,user_id,params) VALUES(?,?,'page_view','visitor-4444','u3',?)`)
+    .run(today - DAY, dayOf(today - DAY), '{"view":"problems"}'); // u3 back the day after signing up
   // Server-side events carry no visitor id and are never counted as visitors.
   assert.deepEqual(
     writer.prepare(`SELECT name,user_id,params FROM events WHERE vid='server' ORDER BY id`).raw().all(),
-    [['login', 'u1', '{"method":"github"}'], ['sign_up', 'u4', '{"method":"google"}'], ['login', 'u4', '{"method":"google"}']],
+    [
+      ['login', 'u-old', '{"method":"email"}'], ['login', 'u5', '{"method":"google"}'],
+      ['login', 'u1', '{"method":"github"}'], ['sign_up', 'u4', '{"method":"google"}'],
+      ['login', 'u4', '{"method":"google"}'],
+    ],
   );
   writer.close();
 
@@ -77,13 +88,15 @@ void test('funnel and D1/D7 return come from page views, server-side sign-ins an
     await handleMetrics(new Request('http://localhost/api/metrics/summary?days=14'), person('owner', 'teacher'), ['summary'])
   ).json();
   assert.equal(s.totals.visitors, 4);
-  assert.equal(s.totals.signups, 4);
+  assert.equal(s.totals.signups, 5);
   assert.equal(s.daily[13 - 8].signups, 2);
-  // u2 ran code but was never seen signed in; u4 signed in server-side only and got no AC.
-  assert.deepEqual(s.funnel, { visitors: 4, problemBank: 3, problem: 1, signedIn: 3, ran: 2, accepted: 1 });
+  // The last steps are this range's signups: u1 got an AC, u2 and u4 ran code; u-old is left out.
+  assert.deepEqual(s.funnel, { visitors: 4, problemBank: 3, problem: 1, signedUp: 5, ran: 3, accepted: 1 });
+  // A return day counts once it is over: u5 is back today, which is not.
   assert.deepEqual(s.retention, [
     { day: dayOf(today), users: 1, d1: null, d7: null },
-    { day: dayOf(today - DAY), users: 1, d1: 1, d7: null },
+    { day: dayOf(today - DAY), users: 1, d1: null, d7: null },
+    { day: dayOf(today - 2 * DAY), users: 1, d1: 1, d7: null },
     { day: dayOf(today - 8 * DAY), users: 2, d1: 1, d7: 2 },
   ]);
 });
