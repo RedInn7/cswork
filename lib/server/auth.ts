@@ -6,6 +6,7 @@ import { getDb } from '@/db';
 import * as schema from '@/db/schema';
 import { setting, origin, database } from './env';
 import { sendAuthOTP } from './mail';
+import { record } from './metrics';
 export type Person = {
   id: string;
   email: string;
@@ -13,6 +14,15 @@ export type Person = {
   role: 'student' | 'teacher';
   verified: boolean;
 };
+/** google / github for OAuth, email for codes and passwords; read the way
+ * better-auth's last-login-method plugin does. */
+function method(ctx: { path?: string; params?: { id?: string } } | null) {
+  const path = ctx?.path ?? '';
+  const id = path.startsWith('/callback/')
+    ? ctx?.params?.id || path.split('/').pop()
+    : path.startsWith('/sign-in/email') && 'email';
+  return id ? { method: id } : undefined;
+}
 export function auth() {
   const secret = setting('BETTER_AUTH_SECRET');
   if (secret.length < 32) throw new Error('Authentication is not configured');
@@ -40,6 +50,7 @@ export function auth() {
           before: async (user) => ({
             data: { ...user, name: user.name.trim().slice(0, 80) || '学员' },
           }),
+          after: async (user, ctx) => record('sign_up', user.id, method(ctx)),
         },
         update: {
           before: async (user) => {
@@ -54,6 +65,12 @@ export function auth() {
               });
             return { data: { ...user, name: user.name.trim() } };
           },
+        },
+      },
+      session: {
+        create: {
+          after: async (session, ctx) =>
+            record('login', session.userId, method(ctx)),
         },
       },
     },

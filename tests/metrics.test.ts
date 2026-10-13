@@ -68,7 +68,11 @@ void test('ingest keeps allowed events and params, coerced and clamped', async (
     ],
   });
   assert.equal(response.status, 204);
-  await post({ vid: 'visitor-0002', events: [{ name: 'login', params: { method: 'email' } }] }, alice);
+  // Sign-ins are recorded server-side only (the auth hooks); a client copy is dropped.
+  await post({
+    vid: 'visitor-0002',
+    events: [{ name: 'login', params: { method: 'email' } }, { name: 'page_view', params: { view: 'problems' } }],
+  }, alice);
   events = new Database(process.env.METRICS_DATABASE_PATH!, { readonly: true });
   // No IP addresses or user agents, ever.
   assert.deepEqual(
@@ -81,14 +85,14 @@ void test('ingest keeps allowed events and params, coerced and clamped', async (
     ['judge_result', 'visitor-0001', null, dayOf(Date.now())],
     ['judge_error', 'visitor-0001', null, dayOf(Date.now())],
     ['search', 'visitor-0001', null, dayOf(Date.now())],
-    ['login', 'visitor-0002', 'alice', dayOf(Date.now())],
+    ['page_view', 'visitor-0002', 'alice', dayOf(Date.now())],
   ]);
   assert.deepEqual(rows.map((r) => JSON.parse(r.params)), [
     { view: 'content', type: 'guide', slug: 'acme' },
     { mode: 'submit', verdict: 'v'.repeat(120), passed: 0, duration_ms: 3_600_000, queue_ms: 250 },
     { stage: 'poll', status: '503' },
     { q: 'two sum' },
-    { method: 'email' },
+    { view: 'problems' },
   ]);
 });
 

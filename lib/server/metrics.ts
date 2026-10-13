@@ -35,10 +35,12 @@ const EVENTS: Record<string, Record<string, Kind>> = {
   },
   judge_error: { mode: 'text', problem_id: 'text', stage: 'text', status: 'text' },
   language_switch: { locale: 'text' },
-  login: { method: 'text' },
-  sign_up: { method: 'text' },
+  // sign_up and login are recorded server-side by the auth hooks (record below), for every
+  // sign-in method; the client's copies (email only) still go to GA4 but are dropped here.
 };
 const VID = /^[A-Za-z0-9-]{8,64}$/;
+/** The vid of server-side events: too short for VID, so no beacon can send it. */
+const SERVER = 'server';
 const dayOf = (ms: number) => new Date(ms).toISOString().slice(0, 10);
 
 let store: {
@@ -89,6 +91,16 @@ function clean(event: unknown): [string, string] | null {
     }
   }
   return [name, JSON.stringify(kept)];
+}
+
+/** A server-side event (auth hooks). Never throws: analytics must not fail a sign-in. */
+export function record(name: 'sign_up' | 'login', userId: string, params: Record<string, string> = {}) {
+  try {
+    const now = Date.now();
+    metrics().insert.run(now, dayOf(now), name, SERVER, userId, JSON.stringify(params));
+  } catch {
+    /* Best effort, like the beacons. */
+  }
 }
 
 let pruneAfter = 0;
@@ -171,7 +183,7 @@ async function summarize(days: number) {
        FROM events WHERE name='page_view' AND day=? GROUP BY 1,2,3`,
     )
     .raw();
-  const visitors = m.prepare('SELECT DISTINCT vid FROM events WHERE day=?').pluck();
+  const visitors = m.prepare(`SELECT DISTINCT vid FROM events WHERE day=? AND vid<>'${SERVER}'`).pluck();
   const others = m
     .prepare(`SELECT name,params FROM events WHERE name IN ('search','judge_result','judge_error','language_switch') AND day=?`)
     .raw();
