@@ -4,19 +4,46 @@ import sys
 from pathlib import Path
 
 
+PROXY = r"(?m)^([ \t]*)location / \{\s*\n[ \t]*proxy_pass http://127\.0\.0\.1:4317;"
+
+
 def with_media_location(text: str) -> str:
     text = re.sub(
         r"^[ \t]*include /etc/nginx/snippets/cswork-(?:media|oj-import|content-assets)\.conf;[ \t]*\n",
         "", text, flags=re.M,
     )
-    pattern = r"(?m)^([ \t]*)location / \{\s*\n[ \t]*proxy_pass http://127\.0\.0\.1:4317;"
-    matches = list(re.finditer(pattern, text))
+    matches = list(re.finditer(PROXY, text))
     if len(matches) != 1:
         raise ValueError("Cannot uniquely locate the cswork proxy; refusing to rewrite nginx")
     start, indent = matches[0].start(), matches[0].group(1)
     return (text[:start] + indent + "include /etc/nginx/snippets/cswork-media.conf;\n"
             + indent + "include /etc/nginx/snippets/cswork-oj-import.conf;\n"
             + indent + "include /etc/nginx/snippets/cswork-content-assets.conf;\n" + text[start:])
+
+
+SERVER_SNIPPET = "include /etc/nginx/snippets/cswork-server.conf;"
+HEADERS = ('add_header Strict-Transport-Security "max-age=31536000" always;',
+           "add_header X-Frame-Options DENY always;")
+
+
+def with_hardening(text: str) -> str:
+    """Own access log and rate limits in every cswork server; HSTS and no framing on the app proxy.
+
+    add_header in a location replaces the server's, so the headers sit next to the
+    proxy's existing nosniff/Referrer-Policy instead of at server level."""
+    text = re.sub(
+        r"(?m)^[ \t]*(?:include /etc/nginx/snippets/cswork-server\.conf;"
+        r"|add_header (?:Strict-Transport-Security|X-Frame-Options) [^\n]*)\n", "", text)
+    text, count = re.subn(r"(?m)^([ \t]*)server_name[^\n]*\n",
+                          lambda m: m.group(0) + m.group(1) + SERVER_SNIPPET + "\n", text)
+    proxy = list(re.finditer(PROXY, text))
+    if not count or len(proxy) != 1:
+        raise ValueError("Cannot uniquely locate the cswork proxy; refusing to rewrite nginx")
+    anchor = re.compile(r"(?m)^([ \t]*)add_header Referrer-Policy [^\n]*\n").search(text, proxy[0].end())
+    if not anchor or "}" in text[proxy[0].end():anchor.start()]:
+        raise ValueError("No Referrer-Policy in the cswork proxy; refusing to rewrite nginx")
+    lines = "".join(anchor.group(1) + header + "\n" for header in HEADERS)
+    return text[:anchor.end()] + lines + text[anchor.end():]
 
 
 def with_server_names(text: str, names: list[str]) -> str:
@@ -57,7 +84,7 @@ def with_canonical(text: str, host: str | None) -> str:
 
 
 if __name__ == "__main__":
-    # configure-nginx.py FILE                      media/import includes (install.sh)
+    # configure-nginx.py FILE                      includes, headers, log, limits (install.sh)
     # configure-nginx.py FILE --names A B ...      add hostnames
     # configure-nginx.py FILE --canonical HOST|-   redirect to HOST, or remove the redirect
     # configure-nginx.py FILE --http2              serve HTTPS over HTTP/2
@@ -70,5 +97,5 @@ if __name__ == "__main__":
     elif args[:1] == ["--canonical"]:
         text = with_canonical(text, None if args[1] == "-" else args[1])
     else:
-        text = with_media_location(text)
+        text = with_hardening(with_media_location(text))
     path.write_text(text)

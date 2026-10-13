@@ -1,4 +1,13 @@
+import http.client
+import http.server
 import importlib.util
+import json
+import shutil
+import socket
+import subprocess
+import tempfile
+import threading
+import time
 import unittest
 from pathlib import Path
 
@@ -101,6 +110,124 @@ server {
         switched = module.with_canonical(module.with_http2(self.live), "cswork.org")
         self.assertGreater(switched.index("if ($host != cswork.org)"), switched.index("listen 443 ssl http2;"))
         self.assertEqual(module.with_canonical(switched, None), module.with_http2(self.live))
+
+
+class Hardening(unittest.TestCase):
+    live = FormalDomain.live.replace(
+        "        proxy_pass http://127.0.0.1:4317;\n",
+        "        proxy_pass http://127.0.0.1:4317;\n"
+        "        add_header X-Content-Type-Options nosniff always;\n"
+        "        add_header Referrer-Policy strict-origin-when-cross-origin always;\n")
+    hsts = 'add_header Strict-Transport-Security "max-age=31536000" always;'
+
+    def configure(self, text):
+        return module.with_hardening(module.with_media_location(text))
+
+    def test_every_server_logs_and_limits_and_only_the_proxy_gets_headers(self):
+        result = self.configure(module.with_canonical(module.with_http2(self.live), "cswork.org"))
+        self.assertEqual(result.count("include /etc/nginx/snippets/cswork-server.conf;"), 2)
+        proxy = result[result.index("proxy_pass http://127.0.0.1:4317;"):]
+        proxy = proxy[:proxy.index("}")]
+        for header in (self.hsts, "add_header X-Frame-Options DENY always;", "nosniff", "Referrer-Policy"):
+            self.assertEqual(result.count(header), 1)
+            self.assertIn(header, proxy)
+        self.assertEqual(self.configure(result), result)
+        self.assertIn("return 301 https://cswork.org$request_uri; } # cswork-canonical", result)
+        template = (path.parent / "nginx.conf.template").read_text()
+        self.assertEqual(self.configure(template).count("cswork-server.conf"), 1)
+        self.assertEqual(self.configure(self.configure(template)), self.configure(template))
+        with self.assertRaises(ValueError):
+            module.with_hardening(FormalDomain.live)  # proxy without its headers
+
+    def test_directives(self):
+        http_conf = (path.parent / "nginx-http.conf").read_text()
+        for line in ("server_tokens off;", "gzip_vary on;", "gzip_proxied any;", "gzip_comp_level 5;",
+                     "gzip_min_length 1024;", "gzip_types text/css application/javascript application/json "
+                     "image/svg+xml font/ttf application/xml text/plain;",
+                     "limit_req_zone $cswork_auth_key zone=cswork_auth:10m rate=2r/s;",
+                     "limit_req_zone $cswork_api_key zone=cswork_api:10m rate=10r/s;"):
+            self.assertIn("\n" + line + "\n", http_conf)
+        self.assertNotIn("\ngzip on;", http_conf)  # nginx.conf has it; a repeat fails nginx -t
+        for field in ("$host", "$request_time", "$upstream_response_time", "$status", "$body_bytes_sent"):
+            self.assertIn(field, http_conf[http_conf.index("log_format cswork"):])
+        server = (path.parent / "nginx-server.conf").read_text()
+        for line in ("access_log /var/log/nginx/cswork.access.log cswork;", "limit_req_status 429;",
+                     "limit_req zone=cswork_auth burst=20 nodelay;", "limit_req zone=cswork_api burst=60 nodelay;"):
+            self.assertIn(line, server)
+        self.assertIn(self.hsts, (path.parent / "nginx-oj-import.conf").read_text())
+
+    @unittest.skipUnless(shutil.which("nginx"), "nginx not installed")
+    def test_nginx_accepts_the_rendered_config_and_limits_only_api(self):
+        class App(http.server.BaseHTTPRequestHandler):
+            def do_GET(self):
+                self.send_response(200)
+                self.send_header("Content-Type", "application/javascript" if self.path.endswith(".js") else "application/json")
+                self.send_header("Content-Length", "2048")
+                self.end_headers()
+                self.wfile.write(b"a" * 2048)
+
+            def log_message(self, *args):
+                pass
+        app = http.server.ThreadingHTTPServer(("127.0.0.1", 0), App)
+        threading.Thread(target=app.serve_forever, daemon=True).start()
+        self.addCleanup(app.server_close)
+        self.addCleanup(app.shutdown)
+        with tempfile.TemporaryDirectory() as d, socket.socket() as probe:
+            probe.bind(("127.0.0.1", 0))
+            port = probe.getsockname()[1]
+            local = lambda text: (text.replace("/etc/nginx/snippets/", d + "/").replace("/var/log/nginx/", d + "/")
+                                  .replace("127.0.0.1:4317", f"127.0.0.1:{app.server_port}"))
+            vhost = self.configure((path.parent / "nginx.conf.template").read_text().replace("CSWORK_HOSTNAME", "cswork.test"))
+            Path(d, "cswork").write_text(local(vhost).replace("listen 80;", f"listen 127.0.0.1:{port};"))
+            for name in ("media", "oj-import", "content-assets", "server"):
+                Path(d, f"cswork-{name}.conf").write_text(local((path.parent / f"nginx-{name}.conf").read_text()))
+            Path(d, "http.conf").write_text((path.parent / "nginx-http.conf").read_text())
+            temps = " ".join(f"{t}_temp_path {d}/{t};" for t in ("client_body", "proxy", "fastcgi", "uwsgi", "scgi"))
+            # Stock Ubuntu nginx.conf: `gzip on;` in http, then conf.d, then sites.
+            Path(d, "nginx.conf").write_text(f"pid {d}/nginx.pid;\nevents {{}}\nhttp {{\n gzip on;\n access_log {d}/access.log;\n"
+                                             f" {temps}\n include {d}/http.conf;\n include {d}/cswork;\n}}\n")
+            probe.close()
+            cmd = ["nginx", "-p", d, "-e", f"{d}/error.log", "-c", f"{d}/nginx.conf"]
+            check = subprocess.run(cmd + ["-t"], capture_output=True, text=True)
+            self.assertEqual(check.returncode, 0, check.stderr)
+            server = subprocess.Popen(cmd + ["-g", "daemon off;"], stderr=subprocess.DEVNULL)
+            try:
+                conn = http.client.HTTPConnection("127.0.0.1", port, timeout=5)
+                for _ in range(50):
+                    try:
+                        conn.connect()
+                        break
+                    except OSError:
+                        time.sleep(0.1)
+
+                def statuses(url, n, **headers):
+                    seen = []
+                    for _ in range(n):
+                        conn.request("GET", url, headers={"Host": "cswork.test", **headers})
+                        response = conn.getresponse()
+                        response.body = response.read()
+                        seen.append(response.status)
+                    return response, seen
+                response, seen = statuses("/api/bootstrap", 90)
+                self.assertGreaterEqual(seen.count(200), 61)
+                self.assertEqual(response.status, 429)
+                self.assertIn("Too many requests", json.loads(response.body)["error"])
+                self.assertIn(429, statuses("/api//auth/get-session", 30)[1])
+                # The verdict long-poll and pages are not limited by nginx.
+                for url in ("/api/oj/submissions/s1?after=t&wait=1", "/library/algorithm"):
+                    response, seen = statuses(url, 90)
+                    self.assertNotIn(429, seen, url)
+                self.assertEqual(response.getheader("X-Frame-Options"), "DENY")
+                self.assertEqual(response.getheader("Strict-Transport-Security"), "max-age=31536000")
+                self.assertEqual(response.getheader("Server"), "nginx")
+                js = statuses("/_next/static/chunks/a.js", 1, **{"Accept-Encoding": "gzip"})[0]
+                self.assertEqual(js.getheader("Content-Encoding"), "gzip")
+                self.assertEqual(js.getheader("Vary"), "Accept-Encoding")
+                self.assertIn(" cswork.test rt=", Path(d, "cswork.access.log").read_text())
+            finally:
+                conn.close()
+                server.terminate()
+                server.wait(10)
 
 
 if __name__ == "__main__":
