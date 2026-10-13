@@ -81,7 +81,7 @@ if [[ ! -d "$target" ]]; then
   install -d -m 755 "$target/scripts"
   install -m 644 "$source_dir/scripts/backup.mjs" "$target/scripts/backup.mjs"
   install -d -m 755 "$target/deploy"
-  install -m 644 "$source_dir/deploy/domain-cutover.sh" "$source_dir/deploy/configure-nginx.py" "$target/deploy/"
+  install -m 644 "$source_dir"/deploy/{domain-cutover.sh,configure-nginx.py,apply-nginx-hardening.sh,nginx-http.conf,nginx-server.conf,nginx-oj-import.conf} "$target/deploy/"
   printf '%s\n' "$release" > "$target/REVISION"
   chown -R root:root "$target"
   chmod -R a+rX "$target"
@@ -156,6 +156,9 @@ fi
 install -m 644 "$source_dir/deploy/nginx-media.conf" /etc/nginx/snippets/cswork-media.conf
 install -m 644 "$source_dir/deploy/nginx-oj-import.conf" /etc/nginx/snippets/cswork-oj-import.conf
 install -m 644 "$source_dir/deploy/nginx-content-assets.conf" /etc/nginx/snippets/cswork-content-assets.conf
+install -m 644 "$source_dir/deploy/nginx-server.conf" /etc/nginx/snippets/cswork-server.conf
+# http level: gzip/server_tokens reach every site here; log format and zones are cswork-only.
+install -m 644 "$source_dir/deploy/nginx-http.conf" /etc/nginx/conf.d/cswork-http.conf
 created_config=false
 if [[ ! -f /etc/nginx/sites-available/cswork ]]; then
   sed "s/CSWORK_HOSTNAME/$domain/g" "$source_dir/deploy/nginx.conf.template" > /etc/nginx/sites-available/cswork
