@@ -164,3 +164,11 @@ Go候选镜像原生验证：`GO_JUDGE_URL=http://127.0.0.1:5052 python3 tests/g
 逐例持久化现在由 `persistCase` 使用IMMEDIATE事务：先取得写锁，再核验当前attempt/取消状态，原子写入用例与汇总进度。没有改变判题、case顺序、隐藏输出、公开输出限长和时间/内存单位。新增受限错误类型和code日志，不记录异常消息、SQL参数、源码或测试内容。其他临时故障仍保留有界重试，持续写锁超过5秒超时也不保证成功。
 
 回归验证直接调用真实持久化函数并使用另一SQLite线程持写锁：原DEFERRED失败，IMMEDIATE通过，保留已有23个结果、attempt不增加；取消/旧attempt拒写、进度更新失败整笔回滚、隐藏输出及公开限长均通过。相同10ms写入压力下，真实worker连续10次Python提交全部28/28、attempt=1，无错误和重试，耗时1138–1291ms（不含浏览器）。
+
+### 深递归（2026-10-13）
+
+LeetCode 上能 AC 的常规递归解在这里不能因为栈或解释器上限 RE。
+
+- Java：学员 JVM 统一由 `javaCommand()`（`lib/server/leetcode-mode.ts`）生成，ACM 运行和 LeetCode 桥接共用，`-Xss64m`（Codeforces 同值；原 256k 深约 2000 就 StackOverflowError）。go-judge 在 cgroup 池下只用 memory.max 限内存，不设 RLIMIT_AS/RLIMIT_DATA（`env/linuxcontainer/environment_linux.go`），线程栈只保留地址、按需提交，所以只有实际用到的栈页计入题目内存。本机 JDK 实测深 10^5 的树递归 RSS 68MB，空跑与 256k 相同（41MB）。
+- Python 3.13（镜像自带）：纯 Python 调用不占 C 栈，`sys.setrecursionlimit(1_000_000)` 对普通递归、`self.dfs`、TreeNode 递归有效，深 10^5 正常。但 3.12 起经过 C 实现的 `functools.lru_cache` 每层都消耗固定的 C 递归额度，`@cache` 深约 3300 就 RecursionError，与 recursionlimit 无关。LeetCode 函数模式的 `install()`（`scripts/leetcode-mode/runtime.py`）把 `functools._lru_cache_wrapper` 换成纯 Python 实现：无界缓存走精简版（缓存开销约为 C 版 1.5–2 倍），有界或 typed 用标准库自带的纯 Python 回退。`@cache`、`@lru_cache(None)`、裸 `@lru_cache`、方法上的 `@functools.cache` 在 3.13 下深 10^5 均通过（3.11 在 8MB 栈下深 10^5 会段错误）。
+- 仍有上限：递归经过 C 调用（`max(dfs(c) for c in ...)` 这类生成器、`map(dfs, ...)`、`sorted(key=...)` 回调）在 3.13 深约 5000 停止，3.13 没有提高这个上限的接口。要彻底解决需换 3.14（按真实栈大小检查）并配合大栈；ACM 模式的 Python 原样运行学员源码，不经过这层替换。
