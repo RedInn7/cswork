@@ -181,7 +181,10 @@ class Hardening(unittest.TestCase):
             Path(d, "cswork").write_text(local(vhost).replace("listen 80;", f"listen 127.0.0.1:{port};"))
             for name in ("media", "oj-import", "content-assets", "server"):
                 Path(d, f"cswork-{name}.conf").write_text(local((path.parent / f"nginx-{name}.conf").read_text()))
-            Path(d, "http.conf").write_text((path.parent / "nginx-http.conf").read_text())
+            # Requests come from loopback, which is exempt; an X-Test-Client header stands in for the address.
+            http_conf = (path.parent / "nginx-http.conf").read_text()
+            self.assertEqual(http_conf.count("map $remote_addr $cswork_client {"), 1)
+            Path(d, "http.conf").write_text(http_conf.replace("map $remote_addr", "map $http_x_test_client"))
             temps = " ".join(f"{t}_temp_path {d}/{t};" for t in ("client_body", "proxy", "fastcgi", "uwsgi", "scgi"))
             # Stock Ubuntu nginx.conf: `gzip on;` in http, then conf.d, then sites.
             Path(d, "nginx.conf").write_text(f"pid {d}/nginx.pid;\nevents {{}}\nhttp {{\n gzip on;\n access_log {d}/access.log;\n"
@@ -211,8 +214,12 @@ class Hardening(unittest.TestCase):
                 response, seen = statuses("/api/bootstrap", 90)
                 self.assertGreaterEqual(seen.count(200), 61)
                 self.assertEqual(response.status, 429)
-                self.assertIn("Too many requests", json.loads(response.body)["error"])
+                self.assertEqual(json.loads(response.body)["error"], "Too many requests, please retry shortly")
+                response = statuses("/api/bootstrap", 1, **{"X-Locale": "zh"})[0]
+                self.assertEqual((response.status, json.loads(response.body)["error"]), (429, "请求太频繁，请稍后再试"))
                 self.assertIn(429, statuses("/api//auth/get-session", 30)[1])
+                for url in ("/api/bootstrap", "/api/auth/get-session"):
+                    self.assertNotIn(429, statuses(url, 90, **{"X-Test-Client": "127.0.0.1"})[1], url)
                 # The verdict long-poll and pages are not limited by nginx.
                 for url in ("/api/oj/submissions/s1?after=t&wait=1", "/library/algorithm"):
                     response, seen = statuses(url, 90)
