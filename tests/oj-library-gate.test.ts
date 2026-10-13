@@ -18,6 +18,7 @@ process.env.GO_JUDGE_TOKEN = 'fixture';
 process.env.REDIS_URL = 'redis://127.0.0.1:6381';
 const { sqlite } = await import('../db/sqlite');
 const {
+  canSeeProblem,
   getCompileProblem,
   getJudgeProblem,
   getPublishedProblem,
@@ -133,6 +134,7 @@ async function inaccessible(id: string) {
     count,
   );
   assert.ok(!(await listPublishedProblems()).some((p) => p.id === id));
+  assert.equal(await canSeeProblem(student, id), false);
 }
 before(async () => {
   const db = sqlite();
@@ -578,6 +580,10 @@ void test('library problems judge free for verified accounts; course exercises k
   try {
     const ids = (await listPublishedProblems(student)).map((p) => p.id);
     assert.ok(ids.includes(libraryId) && !ids.includes(courseId));
+    // Ticket references follow the same rule, so hidden ones cannot be probed.
+    assert.equal(await canSeeProblem(student, courseId), false);
+    assert.equal(await canSeeProblem(student, libraryId), true);
+    assert.equal(await canSeeProblem(student, 'missing-problem'), false);
     await assert.rejects(getJudgeProblem(student, courseId), status404);
     assert.equal((await getJudgeProblem(student, libraryId)).problemId, libraryId);
     assert.ok((await listPublishedProblems(teacher)).some((p) => p.id === courseId));

@@ -19,7 +19,11 @@ import {
   limit,
 } from './http';
 import { seed } from './seed';
-import { ensureOjSeed, listPublishedProblems } from './oj-problems';
+import {
+  canSeeProblem,
+  ensureOjSeed,
+  listPublishedProblems,
+} from './oj-problems';
 import { handleContent } from './content-library';
 import { handleMetrics } from './metrics';
 import { handleOj } from './oj-api';
@@ -394,10 +398,7 @@ export async function handle(request: Request) {
           );
           if (!s || s.user_id !== p.id) throw new HttpError(404, '提交不存在');
         }
-        if (
-          d.problemId &&
-          !(await one('SELECT id FROM oj_problems WHERE id=?', d.problemId))
-        )
+        if (d.problemId && !(await canSeeProblem(p, d.problemId)))
           throw new HttpError(404, '题目不存在');
         const tid = crypto.randomUUID();
         db.prepare(

@@ -336,6 +336,15 @@ export async function getPublicOaProblem(problemId: string) {
   return { ...(await cachedPublicProblem(v)), freeJudge: true };
 }
 
+/** Catalogue visibility for one problem; hidden and missing look the same. */
+export async function canSeeProblem(p: Person, problemId: string) {
+  const pr = await one<GatedRow>(
+    `SELECT p.course_id,${freeJudge} AS free FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}${shownOaSql('p.id')}`,
+    problemId,
+  );
+  return !!pr && (!!pr.free || canSeeCourse(p, pr.course_id));
+}
+
 export async function getPublishedProblem(p: Person, problemId: string) {
   await requireOaJudgeReady(problemId);
   const pr = await one<GatedRow>(
