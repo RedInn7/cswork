@@ -36,32 +36,55 @@ void test('every learner JVM gets a 64 MiB thread stack', async () => {
   }
 });
 
-// The runner's Python is 3.13: C-level @cache recursion stops near depth 3300 there.
+// The runner's Python is 3.13: a C call between recursive frames (C @cache, or
+// max() iterating a generator) spends a fixed budget that stops near depth 3300.
 const python = spawnSync('python3.13', ['-c', '']).status === 0;
+function runPython(id: string, code: string, input: string) {
+  const dir = mkdtempSync(join(tmpdir(), 'cswork-deep-'));
+  try {
+    const { source } = leetcodeSource(id, 'python', code, 262144);
+    writeFileSync(join(dir, 'main.py'), source);
+    return spawnSync('python3.13', ['-I', 'main.py', '--leetcode-input'], {
+      cwd: dir,
+      input,
+      encoding: 'utf8',
+    });
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
 void test(
-  'memoized recursion 10^5 deep runs under python3.13 -I',
+  'recursion 10^5 deep runs under python3.13 -I',
   { skip: !python && 'python3.13 unavailable' },
   () => {
     const depth = 100000;
     const chain: (number | null)[] = [0];
     for (let i = 1; i < depth; i++) chain.push(i, null);
     chain.pop();
-    const dir = mkdtempSync(join(tmpdir(), 'cswork-deep-'));
-    try {
-      for (const decorator of ['@cache', '@lru_cache(None)', '@lru_cache']) {
-        const code = `class Solution:\n    def maxDepth(self, root):\n        ${decorator}\n        def d(node):\n            return 0 if node is None else 1 + max(d(node.left), d(node.right))\n        return d(root)\n`;
-        const { source } = leetcodeSource('lc-104', 'python', code, 262144);
-        writeFileSync(join(dir, 'main.py'), source);
-        const result = spawnSync(
-          'python3.13',
-          ['-I', 'main.py', '--leetcode-input'],
-          { cwd: dir, input: JSON.stringify(chain), encoding: 'utf8' },
-        );
-        assert.equal(result.stderr, '', decorator);
-        assert.equal(result.stdout, `${depth}\n`, decorator);
-      }
-    } finally {
-      rmSync(dir, { recursive: true, force: true });
+    for (const [decorator, value] of [
+      ['@cache', '1 + max(d(node.left), d(node.right))'],
+      ['@lru_cache(None)', '1 + max(d(node.left), d(node.right))'],
+      ['@lru_cache', '1 + max(d(node.left), d(node.right))'],
+      ['', '1 + max(d(c) for c in (node.left, node.right))'],
+    ]) {
+      const code = `class Solution:\n    def maxDepth(self, root):\n        ${decorator}\n        def d(node):\n            return 0 if node is None else ${value}\n        return d(root)\n`;
+      const result = runPython('lc-104', code, JSON.stringify(chain));
+      assert.equal(result.stderr, '', decorator + value);
+      assert.equal(result.stdout, `${depth}\n`, decorator + value);
     }
+  },
+);
+
+// Unfolded, a deep traceback overflows the 64 KiB stderr collector: an output limit.
+void test(
+  'a deep memoized failure stays a short runtime error',
+  { skip: !python && 'python3.13 unavailable' },
+  () => {
+    const code = `class Solution:\n    def coinChange(self, coins, amount):\n        @cache\n        def dp(a):\n            best = 1 // a\n            for c in coins:\n                if c <= a: best = min(best, dp(a - c) + 1)\n            return best\n        return dp(amount)\n`;
+    const result = runPython('lc-322', code, '[1,2,5]\n1000');
+    assert.equal(result.status, 1);
+    assert.ok(result.stderr.length < 4096, `${result.stderr.length} bytes`);
+    assert.match(result.stderr, /omitted[^]*repeated[^]*\nZeroDivisionError: [^\n]+\n$/);
   },
 );
