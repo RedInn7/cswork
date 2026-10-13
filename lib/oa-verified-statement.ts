@@ -8,8 +8,8 @@ const meta = new RegExp(
     // Forensics about where the text came from (FastPrep, OCR, MDX, pinned snapshots).
     String.raw`oamaster|fastprep|ocr(?![a-z])|\bmdx\b|(?:fixed|pinned|original|upstream|oamaster|truncated|same) snapshot|snapshot (?:content|fingerprint)|transcription|cross-checked|curated page|curation error|upstream (?:solutions?|code|snapshot|example|text|function)`,
     // Who compiled the statement and what it does not claim. Plain "original problem" can carry a rule, so it is not matched.
-    String.raw`(?:written|compiled|prepared|wrapped)(?: \w+)? by (?:this site|cswork)|(?:this site|cswork) independently|not (?:claimed|presented|treated)|do(?:es)? not (?:imply|mean|pose|represent|claim)|not (?:the )?(?:source's )?original|original source (?:did|does|has|gives) (?:not|no)|review (?:notes|record)|company source|source repository`,
-    String.raw`not given by the source|missing from the sources?|where the source lacks|missing (?:source |original )?(?:numeric )?(?:bounds|ranges|constraints)|typos in the source|source typos|corrections to (?:the )?examples|example corrections|judging conventions?|supplements added by this site|marked as this site's additions?|source's ranges are missing|statement for the original source|(?:original (?:statement|problem|text)|source) (?:gives|gave|published|has|provides) no (?:\S+ ){0,2}?(?:bounds?|constraints?|ranges?|examples?|limits?|sizes?|scale)\b|additions? by this site|this site's additions|\b(?:ranges?|bounds?|limits?|constraints?|domain|character set|format|protocol|examples?|I/O)\b[^;:.]{0,60}?\b(?:is|are|were|was) (?:\w+ )?added by (?:this site|cswork)|supplemented by this site are defined`,
+    String.raw`(?:written|compiled|prepared|wrapped)(?: \w+)? by (?:this site|cswork)|(?:this site|cswork) independently|not (?:claimed|presented)\b|not treated as (?:part of )?(?:the )?(?:original|source)|not treated as a task rule|do(?:es)? not (?:imply|mean|pose|represent|claim)|not (?:the )?(?:source's )?original|original source (?:did|does|has|gives) (?:not|no)|review (?:notes|record)|company source|source repository`,
+    String.raw`not given by the source|missing from the sources?|where the source lacks|missing (?:source |original )?(?:numeric )?(?:bounds|ranges|constraints)|typos in the source|source typos|corrections to (?:the )?examples|example corrections|judging conventions?|supplements added by this site|marked as this site's additions?|source's ranges are missing|statement for the original source|(?:original (?:statement|problem|text)|source(?: problem)?) (?:gives|gave|published|has|provides) no (?:\S+ ){0,2}?(?:bounds?|constraints?|ranges?|examples?|limits?|sizes?|scale)\b|additions? by this site|this site's additions|\b(?:ranges?|bounds?|limits?|constraints?|domain|character set|format|protocol|examples?|I/O)\b[^;:.]{0,60}?\b(?:is|are|were|was) (?:\w+ )?added by (?:this site|cswork)|supplemented by this site are defined`,
     // Sample notes that only point at the editorial or restate "follow the rules".
     String.raw`see the (?:accompanying |companion )?(?:notes|editorial|solution)\b|^\s*(?:process (?:the input )?according to the (?:problem |definite )?rules(?: above| in the statement)?|the example inputs and outputs follow the rules above directly|the output is the result computed according to the problem rules)[;.\s]*$`,
     String.raw`快照|整理页|审阅记录|交叉核对|交叉确认|上游(?:题解|代码|快照|样例|文字|函数题)|冒充|冒称|伪称|不声称|不宣称|不代表(?:原|上游|OAMaster)|不表示原题|不视为原始|原题(?:未|没有)(?:列出|给出?|公布|提供)|原始题面(?:没有|未)(?:公布|给|提供)|不是来源|不是原题额外|原题(?:平台|另有|提供)|不执行(?:上游|来源)`,
@@ -48,26 +48,35 @@ function cleanText(text: string) {
   const lines = text.split('\n').flatMap((line) => {
     if (/^\s*(?:```|~~~)/.test(line)) fenced = !fenced;
     if (fenced || !line.trim()) return [line];
-    const kept = (line.match(/.*?(?:[。！？]+|[.!?]+(?=\s|$)|$)\s*/g) || [])
+    // A list/quote marker belongs to the line, not to its first clause.
+    const mark = line.match(/^\s*(?:[-*+>]|\d+\.)\s+/)?.[0] ?? '';
+    // [^] rather than ".": \r, U+2028 and U+2029 must not split or lose text.
+    const kept = (
+      line
+        .slice(mark.length)
+        .match(/[^]*?(?:[。！？]+|[.!?]+(?=\s|$)|$)\s*/g) || []
+    )
       .map((sentence) => {
-        const left = sentence
-          .split(/(?<=[；;])/)
-          .map(keep)
-          .join('');
+        const parts = sentence.split(/(?<=[；;])/).map(keep);
+        const left = parts.join('');
         if (left === sentence) return sentence;
         let body = left.trim().replace(/[；;，：:。！？.!?]+$/, '');
         if (!body) return '';
         // A clause dropped from inside "(…; …)" must not take the closing bracket with it.
         if (depth(body) > depth(sentence))
           body += /（[^（）]*$/.test(body) ? '）' : ')';
-        // "…; the rest" keeps reading as a sentence once its first clause is gone.
-        const head = /^[A-Z]/.test(sentence) ? body[0].toUpperCase() : body[0];
+        // "…; the rest" keeps reading as a sentence once its first clause is gone. Text after a
+        // dropped "…OCR:" lead may be a literal ("bird=4", "aaaa") and keeps its case.
+        const head =
+          !parts[0].trim() && /^[A-Z]/.test(sentence)
+            ? body[0].toUpperCase()
+            : body[0];
         return head + body.slice(1) + sentence.match(/[。！？.!?]*\s*$/)![0];
       })
       .join('');
-    if (kept === line) return [line];
+    if (mark + kept === line) return [line];
     changed = true;
-    return kept.trim() ? [kept.trimEnd()] : [];
+    return kept.trim() ? [mark + kept.trimEnd()] : [];
   });
   // Untouched text stays byte-for-byte (markdown line breaks, spacing).
   return changed

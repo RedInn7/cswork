@@ -87,6 +87,8 @@ test('display copy drops provenance, keeps format notes and rules (real package 
     '固定距离时，来源与接收服务器形成区间二分图；按位置贪心匹配最左剩余请求。',
     // oa-amazon-62 style rule that mentions the original problem.
     'When the array is already sorted, zero swaps are valid for every non-negative k, so the literal original problem has no finite maximum.',
+    // oa-nvidia-7: "not treated as" a judging rule, not a disclaimer.
+    'Output exactly one JSON value. Any key order within objects and any JSON whitespace are accepted, numbers are compared by value, and booleans are not treated as numbers. Duplicate keys and trailing content are forbidden.',
   ];
   for (const text of rules) assert.equal(clean('input', text), text);
   // Untouched markdown is byte-for-byte, including fenced text and hard line breaks.
@@ -111,6 +113,34 @@ test('display copy drops provenance, keeps format notes and rules (real package 
   assert.equal(
     clean('input', '原始快照无数值界，本站1≤n≤200000，元素−10^9..10^9。'),
     '本站1≤n≤200000，元素−10^9..10^9。',
+  );
+  // oa-sig-3 / oa-google-78: literals after a dropped "…: " lead keep their case.
+  assert.equal(
+    clean(
+      'explanation',
+      'The other two public examples are added by this site: aaaa can be obtained from a--- by repeated copying.',
+    ),
+    'aaaa can be obtained from a--- by repeated copying.',
+  );
+  assert.equal(
+    clean(
+      'description',
+      'The source problem gave no value ranges; this site uses ranges small enough for a full search.',
+    ),
+    'This site uses ranges small enough for a full search.',
+  );
+  // CR, U+2028 and list markers survive a rewrite of their line.
+  for (const text of [
+    'First line n\r\nsecond line m',
+    'Values a\u2028b are given.',
+  ])
+    assert.equal(clean('description', text), text);
+  assert.equal(
+    clean(
+      'description',
+      '- The source gives no bounds; on this site 1≤n≤5.\n- Keep me.',
+    ),
+    '- On this site 1≤n≤5.\n- Keep me.',
   );
 });
 
