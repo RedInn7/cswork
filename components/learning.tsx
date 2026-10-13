@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, useRef } from 'react';
+import { lazy, Suspense, useEffect, useState, useRef } from 'react';
 import {
   ArrowRight,
   BookOpen,
@@ -20,7 +20,6 @@ import { api, type Boot, type Lesson, date } from '@/lib/types';
 import { useLocale, useT } from '@/lib/i18n';
 import { money } from '@/lib/commerce-types';
 import { englishMessage } from '@/lib/messages-en';
-import { Player } from './player';
 import { LessonMarkdown, LessonNotes } from './lms-shared';
 import { AlgorithmLibrary } from './algorithm-library';
 import interviewCatalog from '@/content/interview-catalog.json';
@@ -429,6 +428,10 @@ function LoadFailed() {
 export function loadFailed() {
   return { default: LoadFailed };
 }
+// The player (and its styles) loads when the video tab opens, not with the main chunk.
+const Player = lazy(() =>
+  import('./player').then((m) => ({ default: m.Player }), loadFailed),
+);
 export function LessonReader({
   id,
   boot,
@@ -644,36 +647,40 @@ export function LessonReader({
             </TabsContent>
             <TabsContent value="video">
               {lesson.has_video ? (
-                <Player
-                  lessonId={id}
-                  position={lesson.progress?.position || 0}
-                  assetId={lesson.progress?.video_asset_id}
-                  onProgress={(n, assetId) => {
-                    pos.current = n;
-                    setLesson((current) =>
-                      current
-                        ? {
-                            ...current,
-                            progress: {
-                              lesson_id: id,
-                              completed: 0,
-                              note: '',
-                              bookmarked: 0,
-                              updated_at: Date.now(),
-                              ...current.progress,
-                              position: n,
-                              video_asset_id: assetId,
-                            },
-                          }
-                        : current,
-                    );
-                    api('progress', {
-                      lessonId: id,
-                      position: n,
-                      videoAssetId: assetId,
-                    }).catch((e) => setError(e.message));
-                  }}
-                />
+                <Suspense
+                  fallback={<output className="muted">{t('正在加载视频…', 'Loading video…')}</output>}
+                >
+                  <Player
+                    lessonId={id}
+                    position={lesson.progress?.position || 0}
+                    assetId={lesson.progress?.video_asset_id}
+                    onProgress={(n, assetId) => {
+                      pos.current = n;
+                      setLesson((current) =>
+                        current
+                          ? {
+                              ...current,
+                              progress: {
+                                lesson_id: id,
+                                completed: 0,
+                                note: '',
+                                bookmarked: 0,
+                                updated_at: Date.now(),
+                                ...current.progress,
+                                position: n,
+                                video_asset_id: assetId,
+                              },
+                            }
+                          : current,
+                      );
+                      api('progress', {
+                        lessonId: id,
+                        position: n,
+                        videoAssetId: assetId,
+                      }).catch((e) => setError(e.message));
+                    }}
+                  />
+                </Suspense>
               ) : (
                 <Empty
                   title={t(
