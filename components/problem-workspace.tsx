@@ -78,7 +78,8 @@ import {
   problemStatement,
   type ProblemLocale,
   type Language,
-  type Problem,
+  type ProblemStatement,
+  type ProblemSummary,
 } from '@/lib/problems';
 import type { Boot } from '@/lib/types';
 import {
@@ -107,7 +108,7 @@ import { englishMessage } from '@/lib/messages-en';
 import '@/app/editor.css';
 
 type WorkspaceProps = {
-  problem: Problem;
+  problem: ProblemSummary;
   boot: Boot;
   navigate: (view: string, extra?: Record<string, string>) => void;
   ask: (context: Record<string, string>) => void;
@@ -119,6 +120,25 @@ type ReplaceRequest = {
   title: string;
   codingMode: CodingMode;
 };
+const blankStatement = (title: string): ProblemStatement => ({
+  title,
+  description: '',
+  input: '',
+  output: '',
+  explanation: '',
+  hints: [],
+});
+/** The catalogue entry until `problems/:id` answers: header fields only, no statement. */
+const summaryProblem = (p: ProblemSummary): OJProblem => ({
+  ...blankStatement(p.title),
+  sampleIn: '',
+  sampleOut: '',
+  lessonId: '',
+  timeLimit: 0,
+  memoryLimit: 0,
+  ...p,
+  translations: p.titleEn ? { en: blankStatement(p.titleEn) } : undefined,
+});
 /** An untouched ACM starter in either language can be swapped for the current one. */
 function isStarter(code: string, language: Language) {
   return Object.values(starterTemplates).some((set) => set[language] === code);
@@ -162,7 +182,7 @@ function Workspace({
   refresh,
 }: WorkspaceProps) {
   const userId = boot.person?.id || 'guest';
-  const [problem, setProblem] = useState<OJProblem>(initialProblem);
+  const [problem, setProblem] = useState(() => summaryProblem(initialProblem));
   const [neighbors, setNeighbors] = useState<{ prev?: string; next?: string }>(
     {},
   );
@@ -373,6 +393,13 @@ function Workspace({
         },
       ];
   const sample = samples[sampleIndex] || samples[0];
+  // Bootstrap carries no statements; this stands in until `problems/:id` answers.
+  const problemLoading = !loadedProblem && !problemError && (
+    <div className="cs-loading" role="status">
+      <LoaderCircle size={18} className="cs-spin" />
+      {t('正在加载题目…', 'Loading the problem…')}
+    </div>
+  );
   const languageOptions = languages.filter(
     (item) => !problem.languages || problem.languages.includes(item.id),
   );
@@ -1167,6 +1194,7 @@ function Workspace({
               </output>
             )}
             <div className="cs-problem-prose">
+              {problemLoading}
               {sourceBody && (
                 <>
                   <StatementMarkdown body={sourceBody} />
@@ -1640,51 +1668,70 @@ function Workspace({
                     )}
                   </div>
                   {inputMode === 'sample' ? (
-                    <>
-                      <div className="cs-input-toolbar">
-                        {samples.length > 1 && (
-                          <select
-                            aria-label={t('查看公开样例', 'Choose an example')}
-                            value={sampleIndex}
-                            onChange={(event) =>
-                              setSampleIndex(Number(event.target.value))
-                            }
-                          >
-                            {samples.map((item, index) => (
-                              <option key={item.name} value={index}>
-                                {t(item.name, `Example ${index + 1}`)}
-                              </option>
-                            ))}
-                          </select>
-                        )}
-                        <span>
-                          {t(
-                            `运行时检查全部 ${samples.length} 个公开样例`,
-                            samples.length === 1
-                              ? 'Run checks the public example'
-                              : `Run checks all ${samples.length} public examples`,
-                          )}
-                        </span>
-                      </div>
-                      {codingMode === 'leetcode' ? (
-                        <LeetCodeSamples
-                          problemId={problem.id}
-                          sample={sample}
-                          english={uiEnglish}
-                        />
-                      ) : (
-                        <div className="cs-sample-pair">
-                          <CopyBlock
-                            label={t('标准输入', 'Stdin')}
-                            value={sample.input}
-                          />
-                          <CopyBlock
-                            label={t('期望输出', 'Expected output')}
-                            value={sample.expectedOutput}
-                          />
+                    !loadedProblem ? (
+                      problemLoading || (
+                        <div className="cs-loading" role="status">
+                          {boot.person
+                            ? t(
+                                '题目加载失败，样例暂不可用。',
+                                "The problem didn't load, so the examples aren't available.",
+                              )
+                            : t(
+                                '登录后可查看样例。',
+                                'Sign in to see the examples.',
+                              )}
                         </div>
-                      )}
-                    </>
+                      )
+                    ) : (
+                      <>
+                        <div className="cs-input-toolbar">
+                          {samples.length > 1 && (
+                            <select
+                              aria-label={t(
+                                '查看公开样例',
+                                'Choose an example',
+                              )}
+                              value={sampleIndex}
+                              onChange={(event) =>
+                                setSampleIndex(Number(event.target.value))
+                              }
+                            >
+                              {samples.map((item, index) => (
+                                <option key={item.name} value={index}>
+                                  {t(item.name, `Example ${index + 1}`)}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                          <span>
+                            {t(
+                              `运行时检查全部 ${samples.length} 个公开样例`,
+                              samples.length === 1
+                                ? 'Run checks the public example'
+                                : `Run checks all ${samples.length} public examples`,
+                            )}
+                          </span>
+                        </div>
+                        {codingMode === 'leetcode' ? (
+                          <LeetCodeSamples
+                            problemId={problem.id}
+                            sample={sample}
+                            english={uiEnglish}
+                          />
+                        ) : (
+                          <div className="cs-sample-pair">
+                            <CopyBlock
+                              label={t('标准输入', 'Stdin')}
+                              value={sample.input}
+                            />
+                            <CopyBlock
+                              label={t('期望输出', 'Expected output')}
+                              value={sample.expectedOutput}
+                            />
+                          </div>
+                        )}
+                      </>
+                    )
                   ) : (
                     <>
                       <textarea

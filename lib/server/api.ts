@@ -19,11 +19,7 @@ import {
   limit,
 } from './http';
 import { seed } from './seed';
-import {
-  canSeeProblem,
-  ensureOjSeed,
-  listPublishedProblems,
-} from './oj-problems';
+import { canSeeProblem, ensureOjSeed, listProblemSummaries } from './oj-problems';
 import { handleContent } from './content-library';
 import { handleMetrics } from './metrics';
 import { health } from './health';
@@ -90,7 +86,7 @@ function services() {
     ),
   };
 }
-/** `lite` skips the problem catalogue (~3MB) for the client's periodic refresh. */
+/** `lite` skips the problem catalogue for the client's periodic refresh. */
 export async function bootstrap(p: Person | null, lite = false) {
   const cs = await rows<Course & { revision: number; position: number }>(
     `SELECT id,title,summary,version,published,revision,position FROM courses ${p?.role === 'teacher' ? '' : 'WHERE published=1'} ORDER BY position,id`,
@@ -111,7 +107,7 @@ export async function bootstrap(p: Person | null, lite = false) {
       p,
     ),
     courseAccess: cs.filter((c) => c.has_access).map((c) => c.id),
-    problems: lite ? undefined : await listPublishedProblems(p),
+    problems: lite ? undefined : await listProblemSummaries(p),
     progress: p
       ? await rows('SELECT * FROM progress WHERE user_id=?', p.id)
       : [],

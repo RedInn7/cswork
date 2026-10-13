@@ -162,7 +162,7 @@ export function Academy() {
   const personId = boot.person?.id,
     identity = bootIdentity(boot);
   // Periodic and post-submission refreshes only need personal data; the problem
-  // catalogue (~3MB) stays from the full load unless the identity changed.
+  // catalogue stays from the full load unless the identity changed.
   const refreshLite = useCallback(async () => {
     const next = await api<Boot>('bootstrap?lite=1');
     if (bootIdentity(next) !== identity) return refresh();

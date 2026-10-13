@@ -55,6 +55,13 @@ export type Problem = {
   timeLimit: number;
   memoryLimit: number;
 };
+/** Bootstrap's catalogue entry: no statement, the workspace loads it from `oj/problems/:id`. */
+export type ProblemSummary = Pick<Problem, 'id' | 'title' | 'difficulty' | 'tags'> & {
+  titleEn?: string;
+  lessonId?: string;
+  courseId?: string;
+  freeJudge?: boolean;
+};
 export const problems: Problem[] = [
   {
     id: 'watch-intervals',
