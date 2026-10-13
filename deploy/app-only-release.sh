@@ -35,9 +35,9 @@ queue status | "$node" -e 'let text="";process.stdin.on("data",v=>text+=v);proce
 cp -a "$artifact" "$target"
 install -d -m 755 "$target/scripts"
 install -m 644 "$build/scripts/backup.mjs" "$target/scripts/backup.mjs"
-# Domain operations run from the live release: sudo bash /srv/cswork/current/deploy/domain-cutover.sh
+# Domain/nginx operations run from the live release: sudo bash /srv/cswork/current/deploy/{domain-cutover,apply-nginx-hardening}.sh
 install -d -m 755 "$target/deploy"
-install -m 644 "$build/deploy/domain-cutover.sh" "$build/deploy/configure-nginx.py" "$target/deploy/"
+install -m 644 "$build"/deploy/{domain-cutover.sh,configure-nginx.py,apply-nginx-hardening.sh,nginx-http.conf,nginx-server.conf,nginx-oj-import.conf} "$target/deploy/"
 # Monitoring installs from the live release: sudo bash /srv/cswork/current/deploy/monitor/install.sh
 install -d -m 755 "$target/deploy/monitor"
 install -m 644 "$build"/deploy/monitor/* "$target/deploy/monitor/"

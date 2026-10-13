@@ -67,6 +67,14 @@ sudo /opt/cswork/runtime/node --env-file=/etc/cswork/cswork.env scripts/create-a
 
 `APP_URL` 同时决定登录回调地址和接口同源校验，所以同一时间只有一个域名能登录；每次改动前 nginx 配置和 env 都会留 `.before-<时间>` 备份，应用不健康会自动恢复。
 
+## nginx 压缩、安全头、日志与限流
+
+`sudo bash /srv/cswork/current/deploy/apply-nginx-hardening.sh`（可重复执行）。改动的文件先留 `.before-<时间>` 备份，`nginx -t` 不通过就全部恢复、不 reload；撤销用脚本最后打印的 `undo <时间>`。
+
+- `/etc/nginx/conf.d/cswork-http.conf`（http 级，**同机 csgrad、oamaster 也生效**）：`server_tokens off`、gzip 类型/级别/`gzip_vary`/`gzip_proxied any`。`gzip on` 留在 nginx.conf，不要在这里重复。另有 cswork 专用的 `log_format cswork`（combined 加 `$host`、`rt=`、`urt=`）和限流 zone。
+- `snippets/cswork-server.conf`（cswork 每个 server 块）：日志写 `/var/log/nginx/cswork.access.log`（logrotate 已覆盖 `*.log`）；按 IP 限流，`/api/auth/` 2r/s burst 20，其余 `/api/` 10r/s burst 60，超出返回 429（JSON `error` 按 `X-Locale` 给中文或英文）。本机来源（127.0.0.1、::1）不限流，服务器上 `--resolve cswork.org:443:127.0.0.1` 压测测的是应用本身。判题结果长轮询 `submissions/<id>?wait=1` 不经 nginx 限流（应用自己按用户限），页面与静态资源不限流。
+- 代理 location 和题包上传 location 加 `Strict-Transport-Security: max-age=31536000`（不含子域）和 `X-Frame-Options: DENY`。站内没有同源 iframe；需要被嵌入时改成 `SAMEORIGIN`。
+
 ## 运维与恢复
 
 ```sh
