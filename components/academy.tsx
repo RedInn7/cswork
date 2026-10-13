@@ -68,7 +68,7 @@ import {
 } from './learning';
 import { JudgeStatus } from './judge-status';
 import { setLocale, useLocale, useT } from '@/lib/i18n';
-import { beacon, track } from '@/lib/analytics';
+import { pageView as beaconPageView, track } from '@/lib/analytics';
 import { englishMessage } from '@/lib/messages-en';
 import { ContentDetail, ContentList, contentSection } from './content-library';
 import { WorkspaceIntro } from './workspace-intro';
@@ -122,17 +122,12 @@ const initial: Boot = {
   services: {},
 };
 type SearchResult = { id: string; title: string; snippet: string };
-// One page_view per URL change: StrictMode's second effect run doesn't repeat it.
-let lastPageView = '';
 function pageView() {
-  const url = location.pathname + location.search;
-  if (url === lastPageView) return;
-  lastPageView = url;
   const p = new URLSearchParams(location.search),
     view = p.get('view') || 'problems',
     content = view === 'content';
   // Owner dashboard only: GA4 counts these pushState page views itself.
-  beacon('page_view', {
+  beaconPageView({
     view,
     type: content ? p.get('type') : null,
     slug: content ? p.get('slug') : null,

@@ -29,7 +29,7 @@ export function PrivacyDocument() {
               cswork
               是提供课程、视频、编程练习与教学反馈的学习平台。这份说明介绍平台当前如何处理你的资料，以及你可以如何联系我们。
             </p>
-            <p className="privacy-updated">更新于 2026 年 10 月 10 日</p>
+            <p className="privacy-updated">更新于 2026 年 10 月 13 日</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">账户与第三方登录</h2>
@@ -101,7 +101,7 @@ export function PrivacyDocument() {
                 浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。
               </p>
               <p>
-                平台自己的服务器会记录基本的使用事件（访问的页面、站内搜索词、判题耗时与出错情况），用于运营统计。这部分统计不经过 Google，也不受下方 Google Analytics 选项的影响：浏览器本地存储里会保存一个随机生成的匿名访客编号，用来统计访客数；登录时事件会关联到你的账号。我们不记录 IP 地址和设备标识，这些记录保留 120 天。
+                平台自己的服务器会记录基本的使用事件（访问的页面、来源网站的域名和推广链接里的 utm 标签、站内搜索词、登录方式、判题耗时与出错情况），用于运营统计。这部分统计不经过 Google，也不受下方 Google Analytics 选项的影响：浏览器本地存储里会保存一个随机生成的匿名访客编号，用来统计访客数；登录时事件会关联到你的账号。我们不记录 IP 地址和设备标识，这些记录保留 120 天。
               </p>
             </section>
 
@@ -166,7 +166,7 @@ export function PrivacyDocument() {
               practice, and teaching feedback. This notice explains how the
               platform currently handles your data and how you can contact us.
             </p>
-            <p className="privacy-updated">Updated October 10, 2026</p>
+            <p className="privacy-updated">Updated October 13, 2026</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">Accounts and third-party sign-in</h2>
@@ -311,8 +311,9 @@ export function PrivacyDocument() {
               </p>
               <p>
                 The platform&apos;s own server records basic usage events (pages
-                viewed, site searches, judging time and errors) for operating
-                statistics. These do not go to Google and do not depend on the
+                viewed, the referring site&apos;s domain and campaign (utm) tags,
+                site searches, sign-in method, judging time and errors) for
+                operating statistics. These do not go to Google and do not depend on the
                 Google Analytics choice below: your browser&apos;s local storage
                 keeps a randomly generated anonymous visitor ID so visitors can
                 be counted, and when you are signed in, events are linked to

@@ -54,6 +54,17 @@ type Judge = {
   queuedNow: number;
   runningNow: number;
 };
+/** Distinct visitors (the first three steps) and the accounts that signed up in the range (the rest). */
+type Funnel = {
+  visitors: number;
+  problemBank: number;
+  problem: number;
+  signedUp: number;
+  ran: number;
+  accepted: number;
+};
+/** Accounts that signed up on `day` and came back a day / seven days later (null: not yet). */
+type Cohort = { day: string; users: number; d1: number | null; d7: number | null };
 /** GET /api/metrics/summary?days=N. Durations are milliseconds. */
 type Summary = {
   range: { days: number; from: string | number; to: string | number };
@@ -61,6 +72,8 @@ type Summary = {
   totals: Totals;
   daily: Day[];
   judge: Judge;
+  funnel?: Funnel;
+  retention?: Cohort[];
   topViews: { view: string; type?: string | null; count: number }[];
   topContent: { type: string; slug: string; count: number }[];
   topSearches: { q: string; count: number }[];
@@ -85,6 +98,7 @@ const VIEW_NAMES: Record<string, [string, string]> = {
   lesson: ['课时', 'Lesson'],
   tickets: ['我的工单', 'Support'],
   account: ['账户', 'Account'],
+  library: ['公开资料库', 'Public library'],
 };
 const TYPE_NAMES: Record<string, [string, string]> = {
   coding_question: ['编程题', 'Coding'],
@@ -221,12 +235,12 @@ function Kpi({
 }
 
 type BarRow = { key: string; label: ReactNode; count: number; tone?: string };
-/** Ranked rows: a soft bar behind each label, the count (and share) at the end. */
-function BarList({ rows, share, none }: { rows: BarRow[]; share?: boolean; none: string }) {
+/** Ranked rows: a soft bar behind each label, the count (and share of the rows' sum, or of `of`) at the end. */
+function BarList({ rows, share, of, none }: { rows: BarRow[]; share?: boolean; of?: number; none: string }) {
   const f = useFormat();
   if (!rows.length) return <p className="om-none">{none}</p>;
   const max = Math.max(1, ...rows.map((r) => r.count));
-  const total = rows.reduce((sum, r) => sum + r.count, 0);
+  const total = of ?? rows.reduce((sum, r) => sum + r.count, 0);
   return (
     <ol className="om-bars">
       {rows.map((r) => (
@@ -523,6 +537,102 @@ function Trend({ daily, totals, range }: { daily: Day[]; totals: Totals; range: 
   );
 }
 
+const STEPS: [keyof Funnel, string, string][] = [
+  ['visitors', '访客', 'Visitors'],
+  ['problemBank', '看过题库', 'Viewed the problem bank'],
+  ['problem', '打开过题目', 'Opened a problem'],
+  ['signedUp', '注册登录', 'Signed up'],
+  ['ran', '首次运行代码', 'First run'],
+  ['accepted', '首次 AC', 'First AC'],
+];
+
+/** Where visitors drop off: each step's count and its share of all visitors. */
+function FunnelCard({ funnel, range }: { funnel: Funnel; range: string }) {
+  const t = useT();
+  return (
+    <Card
+      className="om-span-8"
+      i={4}
+      title={t('转化漏斗', 'Funnel')}
+      extra={<span className="om-card-extra">{range}</span>}
+      note={t(
+        '前三步按访客计，后三步只看这段时间新注册的账号；百分比都相对访客。',
+        'The first three steps count visitors, the rest accounts that signed up in this range; shares are of all visitors.',
+      )}
+    >
+      <BarList
+        share
+        of={funnel.visitors}
+        none={t('这段时间还没有访客。', 'No visitors in this range yet.')}
+        rows={
+          funnel.visitors
+            ? STEPS.map(([key, zh, en]) => ({
+                key,
+                count: funnel[key],
+                label: <span className="om-text">{t(zh, en)}</span>,
+              }))
+            : []
+        }
+      />
+    </Card>
+  );
+}
+
+/** D1/D7 return by signup day, newest first. */
+function Retention({ cohorts }: { cohorts: Cohort[] }) {
+  const t = useT();
+  const f = useFormat();
+  const rate = (key: 'd1' | 'd7') => {
+    const due = cohorts.filter((c) => c[key] != null);
+    const users = due.reduce((sum, c) => sum + c.users, 0);
+    return users ? `${Math.round((due.reduce((sum, c) => sum + (c[key] ?? 0), 0) / users) * 100)}%` : '—';
+  };
+  const cell = (n: number | null, users: number) =>
+    n == null ? '—' : `${f.n(n)} · ${Math.round((n / users) * 100)}%`;
+  return (
+    <Card
+      className="om-span-4"
+      i={4}
+      title={t('注册后回访', 'Return after signup')}
+      extra={<span className="rd-badge">{`D1 ${rate('d1')} · D7 ${rate('d7')}`}</span>}
+      note={t(
+        '按注册日分组：第 1 天和第 7 天又来访或做题的账号',
+        'By signup day: accounts active again one day (D1) and seven days (D7) later',
+      )}
+    >
+      {cohorts.length ? (
+        <div className="om-table-wrap">
+          <table className="om-table">
+            <caption className="sr-only">
+              {t('按注册日的 D1/D7 回访，最新的在前', 'D1/D7 return by signup day, newest first')}
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">{t('注册日', 'Signed up')}</th>
+                <th scope="col" className="is-num">{t('注册', 'Signups')}</th>
+                <th scope="col" className="is-num">D1</th>
+                <th scope="col" className="is-num">D7</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cohorts.map((c) => (
+                <tr key={c.day}>
+                  <th scope="row">{f.day(c.day)}</th>
+                  <td className="is-num">{f.n(c.users)}</td>
+                  <td className="is-num">{cell(c.d1, c.users)}</td>
+                  <td className="is-num">{cell(c.d7, c.users)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="om-none">{t('这段时间没有新注册。', 'No signups in this range.')}</p>
+      )}
+    </Card>
+  );
+}
+
 const PERCENTILES = ['p50', 'p90', 'p99', 'avg'] as const;
 
 /** Measured vs felt: every timing on one shared axis, the numbers beside it. */
@@ -777,6 +887,8 @@ function Dashboard({
       </section>
 
       <Trend daily={data.daily ?? []} totals={totals} range={range} />
+      {data.funnel && <FunnelCard funnel={data.funnel} range={range} />}
+      {data.retention && <Retention cohorts={data.retention} />}
       <Latency judge={judge} />
 
       <Card

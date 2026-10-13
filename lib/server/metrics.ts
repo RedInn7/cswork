@@ -19,14 +19,19 @@ const SAMPLE = 50_000;
 const TOP = 20;
 const UNFINISHED = new Set(['queued', 'compiling', 'running', 'cancelled']);
 
-type Kind = 'text' | readonly [min: number, max: number];
+// text: up to 120 chars; tag: a short label (64 chars) grouped case-insensitively.
+type Kind = 'text' | 'tag' | readonly [min: number, max: number];
 const COUNT = [0, 1_000_000] as const;
 const MS = [0, 3_600_000] as const;
 const JUDGE = { mode: 'text', problem_id: 'text', language: 'text' } as const;
 /** Allowed events and their params; other names and keys are dropped. */
 const EVENTS: Record<string, Record<string, Kind>> = {
-  // slug is set on content pages and feeds topContent.
-  page_view: { view: 'text', type: 'text', slug: 'text' },
+  // slug is set on content pages and feeds topContent. The first view of a page load also
+  // says where the visit came from: an allowlisted referrer host and the UTM tags.
+  page_view: {
+    view: 'text', type: 'text', slug: 'text',
+    ref: 'tag', utm_source: 'tag', utm_medium: 'tag', utm_campaign: 'tag',
+  },
   search: { view: 'text', q: 'text', results: COUNT },
   judge_submit: JUDGE,
   judge_result: {
@@ -35,10 +40,12 @@ const EVENTS: Record<string, Record<string, Kind>> = {
   },
   judge_error: { mode: 'text', problem_id: 'text', stage: 'text', status: 'text' },
   language_switch: { locale: 'text' },
-  login: { method: 'text' },
-  sign_up: { method: 'text' },
+  // sign_up and login are recorded server-side by the auth hooks (record below), for every
+  // sign-in method; the client's copies (email only) still go to GA4 but are dropped here.
 };
 const VID = /^[A-Za-z0-9-]{8,64}$/;
+/** The vid of server-side events: too short for VID, so no beacon can send it. */
+const SERVER = 'server';
 const dayOf = (ms: number) => new Date(ms).toISOString().slice(0, 10);
 
 let store: {
@@ -78,17 +85,27 @@ function clean(event: unknown): [string, string] | null {
   const kept: Record<string, string | number> = {};
   for (const [key, kind] of Object.entries(EVENTS[name])) {
     const value = given[key];
-    if (kind === 'text') {
+    if (kind === 'text' || kind === 'tag') {
       if (typeof value !== 'string' && !(typeof value === 'number' && Number.isFinite(value))) continue;
-      const text = String(value).replace(/\s+/g, ' ').trim().slice(0, 120);
+      const text = String(value).replace(/\s+/g, ' ').trim().slice(0, kind === 'tag' ? 64 : 120);
       // Searches group case-insensitively in the top list.
-      if (text) kept[key] = key === 'q' ? text.toLowerCase() : text;
+      if (text) kept[key] = key === 'q' || kind === 'tag' ? text.toLowerCase() : text;
     } else {
       const n = typeof value === 'number' ? value : typeof value === 'string' && value.trim() ? Number(value) : NaN;
       if (Number.isFinite(n)) kept[key] = Math.min(kind[1], Math.max(kind[0], Math.round(n)));
     }
   }
   return [name, JSON.stringify(kept)];
+}
+
+/** A server-side event (auth hooks). Never throws: analytics must not fail a sign-in. */
+export function record(name: 'sign_up' | 'login', userId: string, params: Record<string, string> = {}) {
+  try {
+    const now = Date.now();
+    metrics().insert.run(now, dayOf(now), name, SERVER, userId, JSON.stringify(params));
+  } catch {
+    /* Best effort, like the beacons. */
+  }
 }
 
 let pruneAfter = 0;
@@ -145,6 +162,7 @@ const top = (counts: Map<string, number>, fields: string[]) =>
 async function summarize(days: number) {
   const generatedAt = Date.now();
   const first = Math.floor(generatedAt / DAY) - days + 1; // epoch day the range starts on
+  const last = first + days - 1;
   const daily = Array.from({ length: days }, (_, i) => ({
     day: dayOf((first + i) * DAY), pageViews: 0, visitors: 0, signups: 0, submissions: 0, runs: 0, accepted: 0,
   }));
@@ -163,7 +181,7 @@ async function summarize(days: number) {
     return lo;
   };
   const submissions = db
-    .prepare('SELECT created_at,mode,status,language,finished_at FROM submissions WHERE rowid>=? AND rowid<?')
+    .prepare('SELECT created_at,mode,status,language,finished_at,user_id FROM submissions WHERE rowid>=? AND rowid<?')
     .raw();
   const pages = m
     .prepare(
@@ -171,7 +189,23 @@ async function summarize(days: number) {
        FROM events WHERE name='page_view' AND day=? GROUP BY 1,2,3`,
     )
     .raw();
-  const visitors = m.prepare('SELECT DISTINCT vid FROM events WHERE day=?').pluck();
+  const visitors = m.prepare(`SELECT DISTINCT vid FROM events WHERE day=? AND vid<>'${SERVER}'`).pluck();
+  // Funnel steps: page views count visitors; the last three count the accounts that signed up in
+  // range, so a run or an AC is that account's first.
+  const steps = m
+    .prepare(
+      `SELECT DISTINCT json_extract(params,'$.view'),vid FROM events
+       WHERE name='page_view' AND day=? AND json_extract(params,'$.view') IN ('problems','problem')`,
+    )
+    .raw();
+  const accounts = m.prepare('SELECT DISTINCT user_id FROM events WHERE day=? AND user_id IS NOT NULL').pluck();
+  // Signups in range: daily counts and the cohorts for D1/D7 return. The user table is small and
+  // created_at is not indexed: a plain scan.
+  const cohort = new Map(
+    (db.prepare('SELECT id,created_at FROM user WHERE created_at>=?').raw().all(first * DAY) as [string, number][])
+      .map(([id, at]): [string, number] => [id, Math.floor(at / DAY)]),
+  );
+  for (const day of cohort.values()) if (daily[day - first]) daily[day - first].signups++;
   const others = m
     .prepare(`SELECT name,params FROM events WHERE name IN ('search','judge_result','judge_error','language_switch') AND day=?`)
     .raw();
@@ -179,18 +213,25 @@ async function summarize(days: number) {
   const verdicts = new Map<string, number>(), views = new Map<string, number>(), content = new Map<string, number>();
   const searches = new Map<string, number>(), errors = new Map<string, number>(), locales = new Map<string, number>();
   const vids = new Set<string>(), server: [string, number][] = [];
+  const bank = new Set<string>(), opened = new Set<string>();
+  const ran = new Set<string>(), solved = new Set<string>(), d1 = new Set<string>(), d7 = new Set<string>();
   const client: number[] = [], run: number[] = [], queue: number[] = [];
   let next = ((db.prepare('SELECT MAX(rowid) FROM submissions').pluck().get() as number | null) ?? 0) + 1;
   let judgeErrors = 0, timed = 0;
   for (let i = days - 1; i >= 0; i--) {
-    const d = daily[i], lo = firstRowid((first + i) * DAY, next);
+    const d = daily[i], lo = firstRowid((first + i) * DAY, next), present = new Set<string>();
     // Main database: formal submissions are mode 'judge'; times are ms.
-    for (const [at, mode, status, language, finished] of submissions.all(lo, next) as
-      [number, string, string, string, number | null][]) {
+    for (const [at, mode, status, language, finished, user] of submissions.all(lo, next) as
+      [number, string, string, string, number | null, string][]) {
+      if (cohort.has(user)) ran.add(user);
+      present.add(user);
       if (mode === 'run') d.runs++;
       if (mode !== 'judge') continue;
       d.submissions++;
-      if (status === 'accepted') d.accepted++;
+      if (status === 'accepted') {
+        d.accepted++;
+        if (cohort.has(user)) solved.add(user);
+      }
       bump(verdicts, [status]);
       // Created -> finished; cancelled submissions never finished judging.
       if (finished !== null && !UNFINISHED.has(status) && server.length < SAMPLE) server.push([language, finished - at]);
@@ -205,6 +246,14 @@ async function summarize(days: number) {
     const seen = visitors.all(d.day) as string[];
     d.visitors = seen.length;
     for (const vid of seen) vids.add(vid);
+    for (const [view, vid] of steps.all(d.day) as [string, string][]) (view === 'problems' ? bank : opened).add(vid);
+    for (const user of accounts.all(d.day) as string[]) present.add(user);
+    // Returned: active (signed-in events or submissions) one or seven days after signing up.
+    for (const user of present) {
+      const joined = cohort.get(user);
+      if (joined === first + i - 1) d1.add(user);
+      else if (joined === first + i - 7) d7.add(user);
+    }
     for (const [name, params] of others.all(d.day) as [string, string][]) {
       const e = JSON.parse(params) as Record<string, string | number | undefined>;
       if (name === 'search' && e.q !== undefined) bump(searches, [e.q]);
@@ -221,12 +270,6 @@ async function summarize(days: number) {
     }
     await pause();
   }
-  // The user table is small and created_at is not indexed: a plain scan.
-  const signups = db
-    .prepare(`SELECT created_at/${DAY},COUNT(*) FROM user WHERE created_at>=? GROUP BY 1`)
-    .raw()
-    .all(first * DAY) as [number, number][];
-  for (const [day, n] of signups) if (daily[day - first]) daily[day - first].signups += n;
   const active = db
     .prepare(`SELECT status,COUNT(*) FROM submissions WHERE status IN ('queued','compiling','running') GROUP BY status`)
     .raw()
@@ -255,6 +298,20 @@ async function summarize(days: number) {
       queuedNow: active.find(([status]) => status === 'queued')?.[1] ?? 0,
       runningNow: active.reduce((total, [status, n]) => total + (status === 'queued' ? 0 : n), 0),
     },
+    // ponytail: returning accounts' first run or AC is left out; count it if old accounts matter.
+    funnel: {
+      visitors: vids.size, problemBank: bank.size, problem: opened.size, signedUp: cohort.size,
+      ran: ran.size, accepted: solved.size,
+    },
+    // Newest cohort first; a return count is null until its (UTC) day is over.
+    retention: [...Map.groupBy(cohort, ([, day]) => day)]
+      .sort((a, b) => b[0] - a[0])
+      .map(([day, users]) => ({
+        day: dayOf(day * DAY),
+        users: users.length,
+        d1: day + 1 >= last ? null : users.filter(([id]) => d1.has(id)).length,
+        d7: day + 7 >= last ? null : users.filter(([id]) => d7.has(id)).length,
+      })),
     topViews: top(views, ['view', 'type']),
     topContent: top(content, ['type', 'slug']),
     topSearches: top(searches, ['q']),
