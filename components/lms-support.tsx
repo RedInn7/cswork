@@ -95,7 +95,7 @@ function TicketForm({
     body: context.body || '',
   });
   const draft = useLocalDraft(
-    `cswork:ticket:${boot.person?.id}:${context.courseId || context.lessonId || context.submissionId || 'general'}`,
+    `cswork:ticket:${boot.person?.id}:${context.courseId || context.lessonId || context.problemId || context.submissionId || 'general'}`,
     initial,
   );
   let fields = { title: context.title || '', body: context.body || '' };
@@ -198,6 +198,13 @@ function TicketForm({
                 context.lessonId}
               {context.videoPosition !== undefined &&
                 ` · ${time(Number(context.videoPosition))}`}
+            </p>
+          )}
+          {context.problemId && (
+            <p className="context-label">
+              {t('关联题目：', 'Problem: ')}
+              {boot.problems?.find((p) => p.id === context.problemId)?.title ||
+                context.problemId}
             </p>
           )}
           {(error || draft.storageError) && (
