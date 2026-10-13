@@ -299,7 +299,10 @@ export function Academy() {
   // The bare landing keeps the server's home title; other views name themselves.
   const pageName = !params.view
     ? undefined
-    : view === 'problem' && selectedProblem
+    : view === 'problem' &&
+        selectedProblem &&
+        // OA English statements only arrive with the detail fetch; don't title an English tab in Chinese.
+        (locale === 'zh' || selectedProblem.translations?.en)
       ? problemStatement(selectedProblem, locale).title
       : heading;
   useEffect(() => {
