@@ -1647,53 +1647,70 @@ function Workspace({
                     )}
                   </div>
                   {inputMode === 'sample' ? (
-                    <>
-                      <div className="cs-input-toolbar">
-                        {samples.length > 1 && (
-                          <select
-                            aria-label={t('查看公开样例', 'Choose an example')}
-                            value={sampleIndex}
-                            onChange={(event) =>
-                              setSampleIndex(Number(event.target.value))
-                            }
-                          >
-                            {samples.map((item, index) => (
-                              <option key={item.name} value={index}>
-                                {t(item.name, `Example ${index + 1}`)}
-                              </option>
-                            ))}
-                          </select>
-                        )}
-                        <span>
-                          {t(
-                            `运行时检查全部 ${samples.length} 个公开样例`,
-                            samples.length === 1
-                              ? 'Run checks the public example'
-                              : `Run checks all ${samples.length} public examples`,
-                          )}
-                        </span>
-                      </div>
-                      {!loadedProblem ? (
-                        problemLoading
-                      ) : codingMode === 'leetcode' ? (
-                        <LeetCodeSamples
-                          problemId={problem.id}
-                          sample={sample}
-                          english={uiEnglish}
-                        />
-                      ) : (
-                        <div className="cs-sample-pair">
-                          <CopyBlock
-                            label={t('标准输入', 'Stdin')}
-                            value={sample.input}
-                          />
-                          <CopyBlock
-                            label={t('期望输出', 'Expected output')}
-                            value={sample.expectedOutput}
-                          />
+                    !loadedProblem ? (
+                      problemLoading || (
+                        <div className="cs-loading" role="status">
+                          {boot.person
+                            ? t(
+                                '题目加载失败，样例暂不可用。',
+                                "The problem didn't load, so the examples aren't available.",
+                              )
+                            : t(
+                                '登录后可查看样例。',
+                                'Sign in to see the examples.',
+                              )}
                         </div>
-                      )}
-                    </>
+                      )
+                    ) : (
+                      <>
+                        <div className="cs-input-toolbar">
+                          {samples.length > 1 && (
+                            <select
+                              aria-label={t(
+                                '查看公开样例',
+                                'Choose an example',
+                              )}
+                              value={sampleIndex}
+                              onChange={(event) =>
+                                setSampleIndex(Number(event.target.value))
+                              }
+                            >
+                              {samples.map((item, index) => (
+                                <option key={item.name} value={index}>
+                                  {t(item.name, `Example ${index + 1}`)}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                          <span>
+                            {t(
+                              `运行时检查全部 ${samples.length} 个公开样例`,
+                              samples.length === 1
+                                ? 'Run checks the public example'
+                                : `Run checks all ${samples.length} public examples`,
+                            )}
+                          </span>
+                        </div>
+                        {codingMode === 'leetcode' ? (
+                          <LeetCodeSamples
+                            problemId={problem.id}
+                            sample={sample}
+                            english={uiEnglish}
+                          />
+                        ) : (
+                          <div className="cs-sample-pair">
+                            <CopyBlock
+                              label={t('标准输入', 'Stdin')}
+                              value={sample.input}
+                            />
+                            <CopyBlock
+                              label={t('期望输出', 'Expected output')}
+                              value={sample.expectedOutput}
+                            />
+                          </div>
+                        )}
+                      </>
+                    )
                   ) : (
                     <>
                       <textarea
