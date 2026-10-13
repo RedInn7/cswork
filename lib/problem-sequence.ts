@@ -18,3 +18,15 @@ export function problemNeighbors(id: string): { prev?: string; next?: string } {
     return {};
   }
 }
+
+/** The first unsolved id after `current` in list order, wrapping to the start; never `current`. */
+export function nextUnsolved(
+  ids: string[],
+  current: string,
+  solved: ReadonlySet<string>,
+) {
+  const at = ids.indexOf(current);
+  return [...ids.slice(at + 1), ...ids.slice(0, Math.max(at, 0))].find(
+    (id) => id !== current && !solved.has(id),
+  );
+}
