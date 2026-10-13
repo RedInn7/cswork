@@ -53,7 +53,7 @@
   margin: 0;
 }
 .study-language,
-.study-filters label {
+.study-filters > label {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -350,7 +350,7 @@
     flex-basis: 100%;
     min-width: 0;
   }
-  .study-filters label {
+  .study-filters > label {
     flex: 1 1 40%;
     gap: 6px;
     min-width: 0;
@@ -568,15 +568,15 @@
   display: grid;
   grid-template-areas: 'announce' 'line' 'habit';
   margin-bottom: 18px;
-  overflow: hidden;
   color: var(--route-white);
   border-radius: 14px;
   background: var(--route-dots), var(--route-navy);
   font-synthesis-weight: none;
 }
 @container bank (min-width: 860px) {
+  /* 356 - 2 x 22 padding = 312px, room for the 309px LED grid without a scrollbar. */
   .study-route {
-    grid-template-columns: minmax(0, 1fr) 336px;
+    grid-template-columns: minmax(0, 1fr) 356px;
     grid-template-areas: 'announce habit' 'line line';
   }
 }
@@ -588,8 +588,8 @@
   grid-area: announce;
   display: grid;
   align-content: start;
-  gap: 14px;
-  padding: 20px 22px 18px;
+  gap: 10px;
+  padding: 16px 22px 14px;
   min-width: 0;
 }
 .route-stop-now {
@@ -731,10 +731,15 @@
 }
 .route-today {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   font-size: 13px;
   color: var(--route-white-2);
+}
+.route-today-label,
+.route-today-count {
+  white-space: nowrap;
 }
 .route-today-label {
   font-weight: 600;
@@ -778,12 +783,12 @@
 .route-habit {
   grid-area: habit;
   min-width: 0;
-  padding: 20px 22px 18px;
+  padding: 16px 22px 14px;
   border-left: 1px solid var(--route-led-off);
 }
 .route-habit .practice-calendar {
   display: grid;
-  gap: 12px;
+  gap: 8px;
 }
 .route-habit .practice-calendar h3 {
   margin: 0;
@@ -834,6 +839,7 @@
 }
 .route-habit .practice-calendar-months span {
   font-size: 10px;
+  line-height: 12px;
   color: var(--route-white-3);
   white-space: nowrap;
 }
@@ -861,6 +867,7 @@
   justify-content: flex-end;
   gap: 3px;
   font-size: 10px;
+  line-height: 12px;
   color: var(--route-white-3);
 }
 .route-habit footer span {
@@ -881,7 +888,7 @@
 .route-line {
   grid-area: line;
   min-width: 0;
-  padding: 14px 22px 16px;
+  padding: 10px 22px 12px;
   border-top: 1px solid var(--route-led-off);
 }
 .route-line-head {
@@ -889,7 +896,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 10px 18px;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 .route-head-stats {
   display: flex;
@@ -977,7 +984,7 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(var(--n), minmax(22px, 1fr));
-  grid-template-rows: 16px 22px 84px;
+  grid-template-rows: 16px 22px 90px;
   min-width: calc(var(--n) * 22px);
   margin: 0;
   padding: 0;
@@ -1024,7 +1031,7 @@
   position: relative;
   grid-row: 2 / 4;
   display: grid;
-  grid-template-rows: 22px 84px;
+  grid-template-rows: 22px 90px;
   justify-items: center;
   min-width: 0;
   border-radius: 6px;
@@ -1148,12 +1155,14 @@
   order: 2;
   margin: 0;
 }
+/* 24px rows for WCAG 2.5.8; no labels, so no room kept for them at the end. */
 .study-route[data-folded] .route-stops {
-  grid-template-rows: 22px;
+  grid-template-rows: 24px;
+  padding-inline-end: 0;
 }
 .study-route[data-folded] .route-stop {
   grid-row: 1;
-  grid-template-rows: 22px;
+  grid-template-rows: 24px;
 }
 .study-route[data-folded] .route-track {
   grid-row: 1;
@@ -1162,6 +1171,7 @@
 /* Filters: the stage lens as a segmented control. */
 .route-stage {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 2px;
   padding: 2px;
@@ -1173,9 +1183,12 @@
 }
 .route-stage > span {
   padding: 0 8px 0 6px;
+  white-space: nowrap;
 }
 .route-stage label {
   position: relative;
+  display: flex;
+  white-space: nowrap;
 }
 .route-stage input {
   position: absolute;
@@ -1437,10 +1450,49 @@
   .route-dot {
     border: 1px solid CanvasText;
   }
+  /* Forced colours strip fills, gradients and shadows; redraw each state in system colours. */
+  .route-stop[data-state='done'] .route-dot,
+  .route-stop[data-state='partial'] .route-dot,
+  .route-stop[data-current] .route-dot::after,
+  .route-track,
+  .route-track i,
+  .route-punch[data-on],
+  .route-stage label:has(:checked) span {
+    forced-color-adjust: none;
+    box-shadow: none;
+  }
+  .route-stop[data-state='done'] .route-dot,
+  .route-track i,
+  .route-punch[data-on] {
+    background: CanvasText;
+  }
+  .route-stop[data-state='partial'] .route-dot {
+    background: linear-gradient(90deg, CanvasText 50%, Canvas 0);
+  }
+  .route-stop[data-state='empty'] .route-dot {
+    border-style: dashed;
+  }
+  .route-stop[data-current] .route-dot::after {
+    box-shadow: 0 0 0 3px Highlight;
+  }
+  .route-stop:has(:checked) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+  .route-track {
+    background: GrayText;
+  }
+  .route-punch {
+    border: 1px solid CanvasText;
+  }
+  .route-stage label:has(:checked) span {
+    background: Highlight;
+    color: HighlightText;
+  }
 }
 
 /* Narrow containers: one column; the line scrolls inside its card. */
-@container bank (max-width: 899px) {
+@container bank (max-width: 859px) {
   .route-scroll {
     mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
   }
@@ -1488,6 +1540,22 @@
   .study-bank .study-route[data-folded] .route-line {
     display: block;
   }
+  /* Too narrow to share a row with the CTA, and the announce is its own card here. */
+  .study-bank .study-route[data-folded] .route-announce {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 12px 16px;
+  }
+  /* The round summary can wrap to the card's left edge; open the panel across the card. */
+  .study-bank .route-line-head {
+    position: relative;
+  }
+  .study-bank .route-round {
+    position: static;
+  }
+  .route-round-panel {
+    inset-inline: 0;
+    min-width: 0;
+  }
   .route-streak-chip {
     display: inline-flex;
   }
@@ -1521,7 +1589,14 @@
   .route-stage label span {
     padding-block: 12px;
   }
-  .route-only {
+  .route-only,
+  .study-bank .route-target select,
+  .route-round summary,
+  .route-round-panel :is(button, select) {
     min-block-size: 44px;
+  }
+  .study-route[data-folded] .route-stops {
+    grid-template-columns: repeat(var(--n), minmax(24px, 1fr));
+    min-width: calc(var(--n) * 24px);
   }
 }
