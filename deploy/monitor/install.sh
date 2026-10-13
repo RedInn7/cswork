@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Idempotent: sudo bash deploy/monitor/install.sh
+# Idempotent; releases ship it: sudo bash /srv/cswork/current/deploy/monitor/install.sh
 # Alerts go to NOTIFY_URL in /etc/cswork/cswork.env (e.g. https://ntfy.sh/<secret-topic>); unset = journal only.
 set -euo pipefail
 [[ $EUID -eq 0 ]] || { echo 'Run install.sh through sudo'; exit 2; }

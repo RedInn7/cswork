@@ -38,6 +38,9 @@ install -m 644 "$build/scripts/backup.mjs" "$target/scripts/backup.mjs"
 # Domain operations run from the live release: sudo bash /srv/cswork/current/deploy/domain-cutover.sh
 install -d -m 755 "$target/deploy"
 install -m 644 "$build/deploy/domain-cutover.sh" "$build/deploy/configure-nginx.py" "$target/deploy/"
+# Monitoring installs from the live release: sudo bash /srv/cswork/current/deploy/monitor/install.sh
+install -d -m 755 "$target/deploy/monitor"
+install -m 644 "$build"/deploy/monitor/* "$target/deploy/monitor/"
 printf '%s\n' "$release" > "$target/REVISION"
 printf 'app-only\nbase=%s\n' "$base" > "$target/RELEASE_KIND"
 chown -R root:root "$target"
@@ -48,7 +51,10 @@ app_ready() {
   reply=$(curl -sS --connect-timeout 2 --max-time 3 -w '\n%{http_code}' http://127.0.0.1:4317/api/health) || return 1
   case ${reply##*$'\n'} in
     # 503 may only mean low disk or a stale judge; the worker is checked separately below.
-    200|503) "$node" -e 'process.exit(JSON.parse(process.argv[1]).db===true ? 0 : 1)' "${reply%$'\n'*}" ;;
+    # /api/health skips seeding, so also run the SPA's first request (lite: no 3MB problem list).
+    200|503) "$node" -e 'process.exit(JSON.parse(process.argv[1]).db===true ? 0 : 1)' "${reply%$'\n'*}" &&
+      curl -fsS --connect-timeout 2 --max-time 3 'http://127.0.0.1:4317/api/bootstrap?lite=1' |
+        "$node" -e 'let text="";process.stdin.on("data",v=>text+=v);process.stdin.on("end",()=>{const r=JSON.parse(text);process.exit(Array.isArray(r.courses)&&r.services?.password ? 0 : 1)})' ;;
     # Releases older than /api/health (rollback targets) answer 401/404: use the old probe.
     *) curl -fsS --connect-timeout 2 --max-time 3 http://127.0.0.1:4317/api/bootstrap |
         "$node" -e 'let text="";process.stdin.on("data",v=>text+=v);process.stdin.on("end",()=>{const r=JSON.parse(text);process.exit(Array.isArray(r.courses)&&Array.isArray(r.problems)&&r.problems.length>0&&r.services?.password ? 0 : 1)})' ;;
