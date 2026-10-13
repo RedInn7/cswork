@@ -646,7 +646,10 @@ export function Academy() {
               onLogin={() => setLogin(true)}
             />
           )}
-          {view === 'problems' && !params.library && <WorkspaceIntro />}
+          {/* Visitors and crawlers get the introduction; members go straight to the line. */}
+          {view === 'problems' && !params.library && !boot.person && (
+            <WorkspaceIntro />
+          )}
           {content()}
         </main>
         <footer className="flex flex-wrap gap-5 px-6 pb-6 text-xs text-muted-foreground">

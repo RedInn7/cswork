@@ -7,16 +7,10 @@ import Link from 'next/link';
 export function WorkspaceIntro() {
   const t = useT();
   return (
-    <section
-      className="mb-8 rounded-xl border border-border bg-card p-5 sm:p-7"
-      aria-labelledby="workspace-intro-title"
-    >
-      <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-        CSWork
-      </p>
+    <section className="mb-6" aria-labelledby="workspace-intro-title">
       <h1
         id="workspace-intro-title"
-        className="text-2xl font-semibold tracking-tight sm:text-3xl"
+        className="text-xl font-semibold sm:text-2xl"
       >
         {t(
           '算法、OA 与软件工程师面试准备',
