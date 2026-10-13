@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
 import {
+  cleanOaEditorial,
   cleanOaStatement,
   formatOaVerifiedStatement,
 } from '../lib/oa-verified-statement';
@@ -142,6 +143,28 @@ test('display copy drops provenance, keeps format notes and rules (real package 
     ),
     '- On this site 1≤n≤5.\n- Keep me.',
   );
+});
+
+test('editorials hide source links and fingerprints only (real registry text)', () => {
+  const editorial = (id: string) =>
+    JSON.parse(
+      readFileSync('content/oa-judge/registry.json', 'utf8'),
+    ).items.find((item: { id: string }) => item.id === id).editorial;
+  assert.match(
+    cleanOaEditorial(editorial('oa-weride-5')),
+    /\n\n起终点范围和两种移动精确定义；本站规定 stdin\/stdout。$/,
+  );
+  // A clause dropped inside a quote keeps the quote closed.
+  assert.match(
+    cleanOaEditorial(editorial('oa-google-38')),
+    /取字典序最大”。该页为二手汇总/,
+  );
+  for (const id of ['oa-google-21', 'oa-google-30', 'oa-cisco-9']) {
+    const raw = editorial(id);
+    const shown = cleanOaEditorial(raw);
+    assert.doesNotMatch(shown, /https?:\/\/|fingerprint|指纹/i, id);
+    assert.equal(shown.split('```').length, raw.split('```').length, id);
+  }
 });
 
 test('OA reader omits a sample note that only points at the notes or repeats a hint', () => {

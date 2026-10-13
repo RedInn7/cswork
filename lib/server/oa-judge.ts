@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { shownOaSql } from './env';
 import { HttpError, one, rows } from './http';
 import {
+  cleanOaEditorial,
   cleanOaStatement,
   formatOaVerifiedStatement,
 } from '../oa-verified-statement';
@@ -73,7 +74,7 @@ export function createOaJudgeRegistry(
       )
         throw new HttpError(409, '这道题的题解和测试数据正在校验，暂未开放');
       return {
-        explanation: entry.editorial,
+        explanation: cleanOaEditorial(entry.editorial),
         solutions: entry.authoredSolutions,
       };
     },

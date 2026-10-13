@@ -39,10 +39,10 @@ function keep(clause: string): string {
   return drop(clause) ? '' : clause;
 }
 
-const depth = (t: string) =>
-  (t.match(/[(（]/g) || []).length - (t.match(/[)）]/g) || []).length;
+const depth = (t: string, open = /[(（]/g, close = /[)）]/g) =>
+  (t.match(open) || []).length - (t.match(close) || []).length;
 
-function cleanText(text: string) {
+function cleanText(text: string, clean = keep) {
   let fenced = false;
   let changed = false;
   const lines = text.split('\n').flatMap((line) => {
@@ -57,12 +57,13 @@ function cleanText(text: string) {
         .match(/[^]*?(?:[。！？]+|[.!?]+(?=\s|$)|$)\s*/g) || []
     )
       .map((sentence) => {
-        const parts = sentence.split(/(?<=[；;])/).map(keep);
+        const parts = sentence.split(/(?<=[；;])/).map(clean);
         const left = parts.join('');
         if (left === sentence) return sentence;
         let body = left.trim().replace(/[；;，：:。！？.!?]+$/, '');
         if (!body) return '';
-        // A clause dropped from inside "(…; …)" must not take the closing bracket with it.
+        // A clause dropped from inside "(…; …)" or "“…；…”" must not take the closer with it.
+        if (depth(body, /“/g, /”/g) > depth(sentence, /“/g, /”/g)) body += '”';
         if (depth(body) > depth(sentence))
           body += /（[^（）]*$/.test(body) ? '）' : ')';
         // "…; the rest" keeps reading as a sentence once its first clause is gone. Text after a
@@ -98,7 +99,7 @@ export function cleanOaStatement<
   },
 >(spec: T): T {
   const explanation = cleanText(spec.explanation);
-  const hints = spec.hints?.map(cleanText).filter(Boolean);
+  const hints = spec.hints?.map((hint) => cleanText(hint)).filter(Boolean);
   return {
     ...spec,
     description: cleanText(spec.description),
@@ -111,6 +112,12 @@ export function cleanOaStatement<
     ...(hints && { hints }),
   };
 }
+
+/** Editorials keep their forensics prose; only source links and fingerprints are hidden. */
+export const cleanOaEditorial = (text: string) =>
+  cleanText(text, (clause) =>
+    /https?:\/\/|fingerprint|指纹/i.test(clause) ? '' : clause,
+  );
 
 /** Only public fields from the exact published judge version belong in the OA reader. */
 export function formatOaVerifiedStatement(
