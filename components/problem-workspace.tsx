@@ -290,13 +290,20 @@ function Workspace({
   useEffect(() => {
     if (userId === 'guest') return;
     const controller = new AbortController();
-    let timer: ReturnType<typeof setTimeout>;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let busy = false;
     async function health() {
+      clearTimeout(timer);
+      // Hidden tabs stop polling; becoming visible refreshes at once.
+      if (busy || document.visibilityState !== 'visible') return;
+      busy = true;
+      let available = false;
       try {
         const status = await ojRequest<{
           available: boolean;
           languageVersions: Partial<Record<Language, string>>;
         }>('status', undefined, controller.signal);
+        available = status.available;
         if (!controller.signal.aborted)
           setProblem((previous) => ({
             ...previous,
@@ -306,13 +313,18 @@ function Workspace({
       } catch {
         /* A transient network failure does not discard the current editor state. */
       } finally {
-        if (!controller.signal.aborted) timer = setTimeout(health, 15000);
+        busy = false;
+        // A healthy judge rarely flips; recheck sooner while it is down or unreachable.
+        if (!controller.signal.aborted)
+          timer = setTimeout(health, available ? 60000 : 15000);
       }
     }
     void health();
+    document.addEventListener('visibilitychange', health);
     return () => {
       controller.abort();
       clearTimeout(timer);
+      document.removeEventListener('visibilitychange', health);
     };
   }, [userId]);
   const [submission, setSubmission] = useState<OJSubmission | null>(null);
