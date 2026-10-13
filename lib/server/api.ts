@@ -153,7 +153,9 @@ export async function handle(request: Request) {
       return await webhook(request);
     }
     // Cheap unauthenticated probe: before seeding and session lookup.
-    if (resource === 'health' && request.method === 'GET') return health();
+    // vinext answers HEAD through GET with request.method still 'HEAD'.
+    if (resource === 'health' && ['GET', 'HEAD'].includes(request.method))
+      return health();
     if (request.method !== 'GET') sameOrigin(request);
     if (resource === 'metrics')
       // Analytics beacons and the owner summary need only the session, not the seed checks below.
