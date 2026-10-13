@@ -5,6 +5,10 @@
  * tests/messages-en.test.ts fails when a server HttpError/judge message has no entry.
  */
 const EN: Record<string, string> = {
+  // Curated list stages (lib/server/study-library.ts), shown as filter and pip labels
+  基础: 'Foundation',
+  核心: 'Core',
+  进阶: 'Advanced',
   // Shared API errors (lib/server/http.ts and route plumbing)
   请先登录: 'Please sign in first',
   请检查填写内容: 'Please check the highlighted fields',
