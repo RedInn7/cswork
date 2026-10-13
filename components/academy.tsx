@@ -63,6 +63,7 @@ import {
   ProblemList,
   ProblemWorkspace,
   Empty,
+  loadFailed,
   type Navigate,
 } from './learning';
 import { JudgeStatus } from './judge-status';
@@ -92,10 +93,10 @@ import {
 } from '@/lib/interview-curriculum';
 // Teacher-only screens load on first visit instead of shipping in the main chunk.
 const TeacherView = lazy(() =>
-  import('./teacher').then((m) => ({ default: m.TeacherView })),
+  import('./teacher').then((m) => ({ default: m.TeacherView }), loadFailed),
 );
 const OwnerMetrics = lazy(() =>
-  import('./owner-metrics').then((m) => ({ default: m.OwnerMetrics })),
+  import('./owner-metrics').then((m) => ({ default: m.OwnerMetrics }), loadFailed),
 );
 // Practice is the product's centre: the problem bank leads and is the landing view.
 // [icon, zh label, en label, view]

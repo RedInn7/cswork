@@ -413,6 +413,22 @@ export function Empty({
     </div>
   );
 }
+// A tab left open across a deploy 404s the old split chunk; offer a reload instead of crashing the page.
+function LoadFailed() {
+  const t = useT();
+  return (
+    <Empty
+      title={t('页面加载失败', 'Failed to load this page')}
+      action={
+        <Button onClick={() => location.reload()}>{t('重新加载', 'Reload')}</Button>
+      }
+    />
+  );
+}
+// Rejection handler for lazy(): import('./x').then(m => ({ default: m.X }), loadFailed)
+export function loadFailed() {
+  return { default: LoadFailed };
+}
 export function LessonReader({
   id,
   boot,
