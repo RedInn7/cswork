@@ -164,3 +164,15 @@ Go候选镜像原生验证：`GO_JUDGE_URL=http://127.0.0.1:5052 python3 tests/g
 逐例持久化现在由 `persistCase` 使用IMMEDIATE事务：先取得写锁，再核验当前attempt/取消状态，原子写入用例与汇总进度。没有改变判题、case顺序、隐藏输出、公开输出限长和时间/内存单位。新增受限错误类型和code日志，不记录异常消息、SQL参数、源码或测试内容。其他临时故障仍保留有界重试，持续写锁超过5秒超时也不保证成功。
 
 回归验证直接调用真实持久化函数并使用另一SQLite线程持写锁：原DEFERRED失败，IMMEDIATE通过，保留已有23个结果、attempt不增加；取消/旧attempt拒写、进度更新失败整笔回滚、隐藏输出及公开限长均通过。相同10ms写入压力下，真实worker连续10次Python提交全部28/28、attempt=1，无错误和重试，耗时1138–1291ms（不含浏览器）。
+
+### 深递归（2026-10-13）
+
+LeetCode 上能 AC 的常规递归解在这里不能因为栈或解释器上限 RE。
+
+- Java：学员 JVM 统一由 `javaCommand()`（`lib/server/leetcode-mode.ts`）生成，ACM 运行和 LeetCode 桥接共用，`-Xss64m`（Codeforces 同值；原 256k 深约 2000 就 StackOverflowError）。go-judge 在 cgroup 池下只用 memory.max 限内存，不设 RLIMIT_AS/RLIMIT_DATA（`env/linuxcontainer/environment_linux.go`），线程栈只保留地址、按需提交，所以只有实际用到的栈页计入题目内存。本机 JDK 实测深 10^5 的树递归 RSS 68MB，空跑与 256k 相同（41MB）。
+- Python 3.13（镜像自带）：纯 Python 调用不占 C 栈，`sys.setrecursionlimit(1_000_000)` 对普通递归、`self.dfs`、TreeNode 递归有效，深 10^5 正常。但 3.12 起每层经过一次 C 调用都消耗固定的 C 递归额度（约 10000），与 recursionlimit 无关：C 实现的 `functools.lru_cache` 让 `@cache` 深约 3300 就 RecursionError，`min(dp(a - c) for c in coins)` 这类内置函数迭代生成器的写法深约 5000 停止。LeetCode 函数模式的 `install()`（`scripts/leetcode-mode/runtime.py`）因此：
+  - 把 `functools._lru_cache_wrapper` 换成纯 Python 实现：无界缓存走精简 dict 版（每次调用约为 C 版 1.3 倍），有界或 typed 用按插入顺序淘汰的 dict LRU（1000×1000 LCS `@lru_cache(maxsize=10**7)` 0.40s→0.50s，typed 0.33s→0.76s）。与 C 版唯一的差别：非 typed 时 `f(1)` 和 `f(1.0)` 共用一条缓存（C 版的快路径把它们分开，文档允许两种）。
+  - 学员代码里出现生成器时（扫描主模块的 code 对象），把用到的 `min/max/sum/any/all` 换成在 Python 里迭代生成器的版本：`min/max/sum` 先用列表推导取完再交给内置函数（结果和比较顺序不变），`any/all` 逐个短路。没有生成器的提交仍用原生内置函数，不付额外开销（包装后每次调用约 80ns，原生约 20ns）。
+  - 安装 `sys.excepthook`：去掉上面这些包装帧，让递归 traceback 重新折叠成 "[Previous line repeated N more times]"，且只格式化最内层 50 帧并注明省略帧数。否则深层报错的 traceback 超过 64KB stderr 收集上限，被判成输出超限；深 10^6 的无限递归格式化全部帧还要 20 多秒。
+  `@cache`、`@lru_cache(None)`、裸 `@lru_cache`、方法上的 `@functools.cache`、`max/sum/all(... for ...)` 在 3.13 下深 10^4、10^5 均通过（树递归深 10^5 RSS 84–140MB；3.11 在 8MB 栈下深 10^5 会段错误）。
+- 仍有上限：递归经过其他 C 调用（`map(dfs, ...)`、`sorted(..., key=...)` 回调、`list/tuple/set(生成器)`、`''.join(生成器)`）在 3.13 深约 5000 停止，3.13 没有提高这个上限的接口；要彻底解决需换 3.14（按真实栈大小检查）并配合大栈线程。ACM 模式的 Python 原样运行学员源码，不经过这层替换。无基例的无限递归会一直递归到 recursionlimit（10^6 帧约 300–500MB），通常先触发内存超限，原来的普通递归也是如此。

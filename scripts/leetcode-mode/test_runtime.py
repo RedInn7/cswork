@@ -59,6 +59,43 @@ class Contracts(unittest.TestCase):
         source = 'class Solution:\n def removeDuplicates(self,nums):\n  nums[:2]=[1,2]\n  return 2\n'
         self.assertEqual(invoke(26, source, '[1,1,2]', True), '2\n1 2\n')
 
+    def test_deep_memoized_recursion(self):
+        # The C lru_cache stops near depth 3300 on 3.12+, setrecursionlimit or not.
+        for decorator in ('@cache', '@lru_cache(None)', '@functools.lru_cache'):
+            source = ('class Solution:\n def coinChange(self, coins, amount):\n'
+                      f'  {decorator}\n  def dp(a):\n   best = 0 if a == 0 else 10**9\n'
+                      '   for c in coins:\n    if c <= a: best = min(best, dp(a - c) + 1)\n   return best\n'
+                      '  answer = dp(amount)\n  assert dp.cache_info().currsize\n  dp.cache_clear()\n'
+                      '  assert dp.cache_info().currsize == 0\n  return answer\n')
+            self.assertEqual(invoke(322, source, '[1,2,5]\n10000', True), '2000\n', decorator)
+
+    def test_generator_recursion(self):
+        # min/all iterating a generator from C would spend that budget too.
+        source = ('class Solution:\n def coinChange(self, coins, amount):\n  @cache\n  def dp(a):\n'
+                  '   if a == 0: return 0\n   assert all(dp(a - c) >= 0 for c in coins if c <= a)\n'
+                  '   return min(dp(a - c) for c in coins if c <= a) + 1\n  return dp(amount)\n')
+        self.assertEqual(invoke(322, source, '[1,2,5]\n10000', True), '2000\n')
+        # Without a generator the built-ins stay native.
+        plain = 'class Solution:\n def coinChange(self, coins, amount):\n  import builtins\n  return int(min is builtins.min)\n'
+        self.assertEqual(invoke(322, plain, '[1]\n1', True), '1\n')
+
+    def test_lru_matches_functools(self):
+        import _functools
+        import functools
+        import random
+        scope = {}
+        exec(ASSET['support'], scope)
+        rng = random.Random(7)
+        for maxsize, typed in ((0, False), (1, False), (3, False), (3, True), (None, True), (None, False)):
+            # Untyped, C keys f(1) and f(1.0) apart as a fast-path quirk; ours shares them.
+            keys = [rng.choice((1, 2, 3, 'a', 4) + (1.0,) * typed) for _ in range(300)]
+            runs = []
+            for make in (scope['_cswork_runtime']._lru_cache_wrapper, _functools._lru_cache_wrapper):
+                calls = []
+                f = make(lambda x: calls.append(repr(x)) or repr(x), maxsize, typed, functools._CacheInfo)
+                runs.append(([f(k) if i % 5 else f(x=k) for i, k in enumerate(keys)], calls, f.cache_info()))
+            self.assertEqual(runs[0], runs[1], (maxsize, typed))
+
     def test_tree_identity(self):
         source = 'class Solution:\n def lowestCommonAncestor(self,root,p,q):\n  assert p is root.left and q is root.right\n  return root\n'
         # Custom LeetCode examples use node values; native calls receive pointers.
