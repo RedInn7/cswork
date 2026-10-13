@@ -50,7 +50,7 @@ jobs:
       - run: node --check tests/oj-capacity-admission-integration.mjs
       - run: bash -n tests/oj-capacity-benchmark.sh deploy/oj-capacity-release.sh
       - run: node --check deploy/oj-queue-control.cjs
-      - run: npx tsx --test tests/oj-i18n.test.ts tests/study-library.test.ts tests/ling-curated.test.ts
+      - run: npx tsx --test tests/oj-i18n.test.ts tests/study-library.test.ts tests/ling-curated.test.ts tests/practice-stats.test.ts
       - run: npx tsx --test tests/practice-round-migration.test.ts
       - run: node --import tsx --test tests/leetcode-sync.test.ts tests/leetcode-practice-progress.test.ts
       - run: node --import tsx --test tests/leetcode-sync-ui.test.mjs

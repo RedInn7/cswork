@@ -11,6 +11,12 @@ import {
   curatedSections,
   LING_CURATED_ID,
 } from "../lib/ling-curated";
+import {
+  OTHER_SECTION,
+  ROUTE_SECTIONS,
+  routeStops,
+  STOP_NAMES,
+} from "../lib/route-stops";
 const dir = mkdtempSync(resolve(tmpdir(), "ling-selected-test-"));
 process.env.DATABASE_PATH = resolve(dir, "test.sqlite");
 const { sqlite } = await import("../db/sqlite");
@@ -116,6 +122,71 @@ void test("collection keeps study order across pagination and excludes all-libra
     for (const secret of ["HIDDEN-MARKER", "/private/reference.py"])
       assert.ok(!JSON.stringify(value).includes(secret));
 });
+void test("every curated section is one named stop in exactly one route group", () => {
+  for (const { slug } of curatedSections) {
+    assert.ok(Object.hasOwn(STOP_NAMES, slug), slug);
+    assert.equal(
+      ROUTE_SECTIONS.filter((group) => group.slugs.includes(slug)).length,
+      1,
+      slug,
+    );
+  }
+  assert.equal(Object.keys(STOP_NAMES).length, curatedSections.length);
+  // Groups follow the curriculum order, so each one is a single run on the line.
+  const { stops, runs } = routeStops(selected().collection.sections);
+  assert.deepEqual(
+    runs.map(({ en, span }) => [en, span]),
+    ROUTE_SECTIONS.map(({ en, slugs }) => [en, slugs.length]),
+  );
+  assert.equal(stops[34].code, "35");
+});
+void test("route stops keep server order, group contiguous runs and fall back for unknown slugs", () => {
+  const section = (slug: string, title = slug, titleEn?: string) => ({
+    slug,
+    title,
+    titleEn,
+    total: 2,
+    solved: 1,
+  });
+  const { stops, runs } = routeStops([
+    section("array-foundations"),
+    section("hash-counting"),
+    section("array", "数组", "Arrays"),
+    section("toString", "谜"),
+    section("linked-list"),
+    section("graph-connectivity"),
+  ]);
+  assert.deepEqual(
+    stops.map((s) => [s.code, s.index, s.start, s.group.en]),
+    [
+      ["01", 0, true, "Linear Structures"],
+      ["02", 1, false, "Linear Structures"],
+      ["03", 2, true, "Other"],
+      ["04", 3, false, "Other"],
+      ["05", 4, true, "Lists & Trees"],
+      ["06", 5, true, "Graphs"],
+    ],
+  );
+  assert.deepEqual(runs, [
+    { zh: "线性结构", en: "Linear Structures", from: 0, span: 2 },
+    { ...OTHER_SECTION, from: 2, span: 2 },
+    { zh: "链表与树", en: "Lists & Trees", from: 4, span: 1 },
+    { zh: "图论", en: "Graphs", from: 5, span: 1 },
+  ]);
+  assert.deepEqual(
+    [stops[0].shortZh, stops[0].shortEn],
+    ["原地数组", "In-place Arrays"],
+  );
+  assert.deepEqual(
+    [stops[2].shortZh, stops[2].shortEn, stops[2].titleEn],
+    ["数组", "Arrays", "Arrays"],
+  );
+  assert.deepEqual(
+    [stops[3].shortZh, stops[3].shortEn, stops[3].titleEn],
+    ["谜", "谜", "谜"],
+  );
+  assert.deepEqual(routeStops([]), { stops: [], runs: [] });
+});
 void test("section, stage, search, difficulty and progress filters compose", () => {
   const entry = curatedEntries[0];
   const result = selected(
@@ -173,6 +244,25 @@ void test("progress is user scoped, counts judge acceptance once, and preserves 
     [id],
   );
   assert.equal(selected("status=ready", "alice").total, 1);
+  // next is the problem nextProblemId points to; guests get the first judgeable one.
+  for (const [userId, expected] of [
+    ["bob", id],
+    ["alice", null],
+  ] as const) {
+    const result = selected("", userId);
+    assert.equal(result.nextProblemId, expected);
+    assert.equal(result.next?.judgeProblemId ?? null, expected);
+  }
+  assert.equal(selected().nextProblemId, null);
+  assert.deepEqual(selected().next, {
+    judgeProblemId: id,
+    number,
+    titleZh: `题目[${number}]`,
+    titleEn: `Problem ${number}`,
+    difficulty: "中等",
+    sectionSlug: curatedEntries[0].sectionSlug,
+    stage: curatedEntries[0].stage,
+  });
   sqlite()
     .prepare("UPDATE study_library SET verified_hash=NULL WHERE id=?")
     .run(id);
@@ -233,4 +323,28 @@ void test("independent rounds preserve history, isolate users and ignore runs", 
   );
   assert.equal(practiceRoundState("alice").rounds[1].solved, 1);
   assert.equal(listStudyLibrary(new URLSearchParams("q=999999")).total, 0);
+});
+void test("section stage counts add up to the section counts", () => {
+  for (const userId of [undefined, "alice"]) {
+    const { collection, next, nextProblemId } = selected("", userId);
+    assert.equal(nextProblemId, null);
+    // Nothing is judgeable any more: guests still get the first stop of the line.
+    assert.equal(next?.number ?? null, userId ? null : curatedEntries[0].number);
+    assert.equal(
+      collection.sections.reduce((sum, s) => sum + s.total, 0),
+      500,
+    );
+    for (const section of collection.sections) {
+      const stages = Object.values(section.stages);
+      assert.equal(stages.length, 3);
+      assert.equal(
+        stages.reduce((sum, s) => sum + s.total, 0),
+        section.total,
+      );
+      assert.equal(
+        stages.reduce((sum, s) => sum + s.solved, 0),
+        section.solved,
+      );
+    }
+  }
 });

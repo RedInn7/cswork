@@ -1,62 +1,6 @@
 .study-collection-tabs {
   margin-bottom: 24px;
 }
-/* Progress + rounds share one bar so the list starts above the fold. */
-.study-dashboard {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px 28px;
-  padding: 14px 18px;
-  margin-bottom: 16px;
-  border: 1px solid #dce7e4;
-  border-radius: 12px;
-  background: #f4f8f7;
-}
-.study-dashboard-signin {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex: 1;
-  font-size: 13px;
-  color: #586b66;
-}
-.study-dashboard-stats {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  flex: 1;
-  min-width: 260px;
-}
-.study-dashboard-stats > div {
-  display: grid;
-  grid-template-columns: auto auto;
-  align-items: baseline;
-  column-gap: 10px;
-}
-.study-dashboard-stats span {
-  grid-column: 1 / -1;
-  font-size: 12px;
-  color: #586b66;
-}
-.study-dashboard-stats strong {
-  font-size: 22px;
-  letter-spacing: -0.03em;
-  color: #254d43;
-  font-variant-numeric: tabular-nums;
-}
-.study-dashboard-stats small {
-  font-size: 12px;
-  font-weight: 400;
-  color: #687b74;
-  letter-spacing: 0;
-}
-.study-dashboard-stats progress {
-  width: 120px;
-  height: 6px;
-  accent-color: #327b76;
-}
 .study-selection-note p {
   font-size: 12px;
   line-height: 1.8;
@@ -109,7 +53,7 @@
   margin: 0;
 }
 .study-language,
-.study-filters label {
+.study-filters > label {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -171,18 +115,6 @@
 .study-list[aria-busy='true'] {
   opacity: 0.6;
 }
-.study-list-head {
-  display: grid;
-  grid-template-columns: 22px minmax(0, 1fr) 64px;
-  gap: 12px;
-  padding: 8px 16px;
-  color: var(--muted-foreground);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-}
-.study-list-head span:last-child {
-  justify-self: end;
-}
 .study-row {
   display: grid;
   width: 100%;
@@ -212,15 +144,6 @@
   font-size: 12px;
   font-weight: 400;
   font-variant-numeric: tabular-nums;
-}
-.study-row-section {
-  margin-left: 8px;
-  padding: 1px 6px;
-  border-radius: 4px;
-  background: #eef2f1;
-  color: #64756d;
-  font-size: 11px;
-  font-weight: 400;
 }
 .study-row-main {
   display: block;
@@ -427,13 +350,10 @@
     flex-basis: 100%;
     min-width: 0;
   }
-  .study-filters label {
+  .study-filters > label {
     flex: 1 1 40%;
     gap: 6px;
     min-width: 0;
-  }
-  .study-row-section {
-    display: none;
   }
   .study-filters select {
     width: 100%;
@@ -563,132 +483,1120 @@
   color: #35d96c;
 }
 
-/* Practice landing: list identity + round on the left, the practice calendar on the right. */
-.study-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 20px;
-  align-items: stretch;
-  margin-bottom: 16px;
+/* ------------------------------------------------------------------
+   Line 500: the problem bank as a metro line. One dark "next stop" car
+   display carries the topics and the practice habit; everything else on
+   the page stays quiet and dense. Scoped to .study-bank (the OA tab also
+   uses .study-library) and to the switch above it.
+   ------------------------------------------------------------------ */
+@font-face {
+  font-family: 'Overpass';
+  src: url('/fonts/overpass-latin-var.woff2') format('woff2');
+  font-weight: 400 800;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-2019,
+    U+201C-201D, U+2026;
 }
-.study-hero-main {
+@property --frac {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+.algorithm-library {
+  --route-navy: #0e1a2b;
+  --route-slate: #2b3a50;
+  --route-amber: #ffb23f;
+  --route-line: #2ebd85;
+  --route-ac: #0d7a63;
+  --route-white: #eef3f8;
+  --route-white-2: #c7d2e0;
+  --route-white-3: #9fb0c6;
+  --route-ring: #6b7c93;
+  --route-led-off: #1e2b40;
+  --route-pip-off: #d5dce4;
+  --font-route: 'Overpass', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei UI',
+    'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif;
+  --route-dots: radial-gradient(rgb(238 243 248 / 0.035) 1px, transparent 1.5px)
+    0 0 / 8px 8px;
+}
+.study-bank,
+.algorithm-library-switch {
+  font-family: var(--font-route);
+}
+.study-bank {
+  container: bank / inline-size;
+}
+.study-bank :lang(zh),
+.study-bank:lang(zh) {
+  letter-spacing: 0;
+}
+
+/* Heading: the line's roundel, then the collection name. */
+.study-bank .study-library-heading {
+  margin: 8px 0 18px;
+}
+.study-bank .study-library-heading h2 {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 14px;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+.study-bank:lang(zh) .study-library-heading h2 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.route-roundel {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 4px solid var(--route-line);
+  background: var(--route-navy);
+  color: var(--route-white);
+  font: 800 13px/1 var(--font-route);
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+
+/* The car display. */
+.study-route {
+  display: grid;
+  grid-template-areas: 'announce' 'line' 'habit';
+  margin-bottom: 18px;
+  color: var(--route-white);
+  border-radius: 14px;
+  background: var(--route-dots), var(--route-navy);
+  font-synthesis-weight: none;
+}
+@container bank (min-width: 860px) {
+  /* 356 - 2 x 22 padding = 312px, room for the 309px LED grid without a scrollbar. */
+  .study-route {
+    grid-template-columns: minmax(0, 1fr) 356px;
+    grid-template-areas: 'announce habit' 'line line';
+  }
+}
+.route-loading {
+  min-block-size: 360px;
+  justify-content: center;
+}
+.route-announce {
+  grid-area: announce;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 16px 22px 14px;
   min-width: 0;
 }
-.study-hero-main .study-library-heading {
-  margin-bottom: 0;
-}
-.study-hero-main .study-dashboard {
-  margin-bottom: 0;
-}
-.practice-calendar {
-  display: grid;
-  gap: 10px;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--card);
-}
-.practice-calendar header {
+.route-stop-now {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+  align-items: flex-start;
   gap: 16px;
+  min-width: 0;
 }
-.practice-calendar h3 {
+.route-led {
+  font: 800 40px/1 var(--font-route);
+  font-variant-numeric: tabular-nums;
+  color: var(--route-amber);
+  text-shadow: 0 0 18px rgb(255 178 63 / 0.35);
+}
+.route-led[data-risk] {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--route-amber);
+  text-shadow: none;
+}
+.route-kicker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 4px;
+  font: 600 12px/1.3 var(--font-route);
+  color: var(--route-white-3);
+}
+.route-streak-chip {
+  display: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgb(255 178 63 / 0.14);
+  color: var(--route-amber);
+}
+.route-name {
+  margin: 0;
+  font: 700 24px/1.2 var(--font-route);
+  color: var(--route-white);
+  overflow-wrap: anywhere;
+}
+.study-bank:lang(zh) .route-name {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.route-stop-count {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 0;
   font-size: 13px;
-  font-weight: 600;
-  color: var(--foreground);
+  color: var(--route-white-2);
+  font-variant-numeric: tabular-nums;
 }
-.practice-calendar header p {
+.route-to-go {
+  padding: 1px 7px;
+  border: 1px solid var(--route-amber);
+  border-radius: 5px;
+  background: var(--route-navy);
+  color: var(--route-amber);
   font-size: 12px;
-  color: var(--muted-foreground);
+  font-weight: 600;
+  white-space: nowrap;
 }
-.practice-calendar header strong {
-  color: var(--primary);
-  font-family: var(--font-mono);
+
+/* The next problem, printed like a ticket. */
+.route-ticket {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px dashed rgb(238 243 248 / 0.22);
+  border-radius: 10px;
+  background: rgb(238 243 248 / 0.04);
+  min-width: 0;
+}
+.route-ticket .study-number {
+  min-width: 0;
+  padding-right: 12px;
+  border-right: 1px dashed rgb(238 243 248 / 0.22);
+  color: var(--route-white-3);
+}
+.route-ticket strong {
+  font-size: 15px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.route-ticket .route-level {
+  background: transparent;
+  padding: 0;
+  font-size: 13px;
+  color: #39d4d6;
+}
+.route-ticket .route-level[data-level='medium'],
+.route-ticket .route-level[data-level='中等'] {
+  color: #ffc43d;
+}
+.route-ticket .route-level[data-level='hard'],
+.route-ticket .route-level[data-level='困难'] {
+  color: #ff747c;
+}
+.route-ticket .study-pips i {
+  background: rgb(238 243 248 / 0.18);
+}
+.route-ticket .study-pips[data-level='1'] i:nth-child(-n + 1),
+.route-ticket .study-pips[data-level='2'] i:nth-child(-n + 2),
+.route-ticket .study-pips[data-level='3'] i:nth-child(-n + 3) {
+  background: rgb(238 243 248 / 0.8);
+}
+
+.route-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 22px;
+}
+.study-bank .route-cta {
+  min-height: 40px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--route-amber);
+  color: var(--route-navy);
+  font: 700 14px/1 var(--font-route);
+}
+.study-bank .route-cta:hover {
+  background: #ffc266;
+}
+.study-bank .route-cta:focus-visible,
+.route-round summary:focus-visible,
+.route-fold:focus-visible,
+.route-target select:focus-visible {
+  outline: 2px solid var(--route-white);
+  outline-offset: 2px;
+}
+.route-today {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--route-white-2);
+}
+.route-today-label,
+.route-today-count {
+  white-space: nowrap;
+}
+.route-today-label {
   font-weight: 600;
 }
-.practice-calendar-body {
+.route-punches {
+  display: inline-flex;
+  gap: 6px;
+}
+.route-punch {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px var(--route-ring);
+}
+.route-punch[data-on] {
+  background: var(--route-amber);
+  box-shadow: 0 0 8px rgb(255 178 63 / 0.55);
+}
+.route-today-count {
+  font-weight: 700;
+  color: var(--route-white);
+  font-variant-numeric: tabular-nums;
+}
+.study-bank .route-target select {
+  padding: 4px 22px 4px 8px;
+  border-color: var(--route-slate);
+  border-radius: 7px;
+  background-color: var(--route-navy);
+  color: var(--route-white-2);
+  font-size: 12px;
+}
+.route-pace,
+.route-note {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--route-white-3);
+}
+
+/* Practice habit: three numbers and the calendar as an amber LED panel. */
+.route-habit {
+  grid-area: habit;
+  min-width: 0;
+  padding: 16px 22px 14px;
+  border-left: 1px solid var(--route-led-off);
+}
+.route-habit .practice-calendar {
+  display: grid;
+  gap: 8px;
+}
+.route-habit .practice-calendar h3 {
+  margin: 0;
+  font: 600 12px/1.2 var(--font-route);
+  color: var(--route-white-3);
+}
+.route-stats {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: start;
+  gap: 4px 22px;
+  margin: 0;
+}
+.route-stats div {
   display: grid;
   gap: 4px;
 }
-.practice-calendar-months,
-.practice-calendar-grid {
+.route-stats dt {
+  order: 2;
+  font-size: 12px;
+  color: var(--route-white-3);
+}
+.route-stats dd {
+  margin: 0;
+  font: 800 24px/1 var(--font-route);
+  font-variant-numeric: tabular-nums;
+  color: var(--route-white);
+}
+.route-stats .route-led {
+  font-size: 24px;
+}
+.route-habit[data-guest] .route-stats dd,
+.study-route:not([data-member]) .route-stats dd {
+  color: var(--route-white-3);
+  text-shadow: none;
+}
+.route-habit .practice-calendar-body {
   display: grid;
-  grid-template-columns: repeat(26, 11px);
+  gap: 4px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+.route-habit .practice-calendar-months,
+.route-habit .practice-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(26, 9px);
   column-gap: 3px;
 }
-.practice-calendar-months span {
+.route-habit .practice-calendar-months span {
   font-size: 10px;
-  color: var(--muted-foreground);
+  line-height: 12px;
+  color: var(--route-white-3);
   white-space: nowrap;
 }
-.practice-calendar-grid {
-  grid-template-rows: repeat(7, 11px);
+.route-habit .practice-calendar-grid {
+  grid-template-rows: repeat(7, 9px);
   grid-auto-flow: column;
   row-gap: 3px;
 }
-.practice-calendar span[data-level],
-.practice-calendar-grid span {
-  width: 11px;
-  height: 11px;
-  border-radius: 2px;
+.route-habit .practice-calendar-grid span,
+.route-habit span[data-level] {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
 }
-.practice-calendar [data-level='0'] { background: #e7edea; }
-.practice-calendar [data-level='1'] { background: #b6ddd0; }
-.practice-calendar [data-level='2'] { background: #6cbda3; }
-.practice-calendar [data-level='3'] { background: #2b977a; }
-.practice-calendar [data-level='4'] { background: var(--primary); }
-.practice-calendar [data-future] {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px #edf1ef;
-}
-.practice-calendar footer {
+.route-habit [data-level='0'] { background: var(--route-led-off); }
+.route-habit [data-level='1'] { background: color-mix(in srgb, var(--route-amber) 35%, var(--route-led-off)); }
+.route-habit [data-level='2'] { background: color-mix(in srgb, var(--route-amber) 60%, var(--route-led-off)); }
+.route-habit [data-level='3'] { background: color-mix(in srgb, var(--route-amber) 82%, var(--route-led-off)); }
+.route-habit [data-level='4'] { background: var(--route-amber); box-shadow: 0 0 6px rgb(255 178 63 / 0.6); }
+.route-habit [data-today] { box-shadow: 0 0 0 1.5px var(--route-white); }
+.route-habit [data-future] { background: none; box-shadow: inset 0 0 0 1px var(--route-led-off); }
+.route-habit footer {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 3px;
   font-size: 10px;
-  color: var(--muted-foreground);
+  line-height: 12px;
+  color: var(--route-white-3);
 }
-.practice-calendar footer span {
+.route-habit footer span {
   margin: 0 1px;
 }
-.practice-calendar-body {
-  overflow-x: auto;
+.route-nudge,
+.route-habit .route-pace {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--route-white-2);
 }
-/* Below this width the calendar would squeeze the header copy into a thin column. */
-@media (max-width: 1300px) {
-  .study-hero {
-    grid-template-columns: minmax(0, 1fr);
+.route-nudge[data-risk] {
+  color: var(--route-amber);
+}
+
+/* The line itself. */
+.route-line {
+  grid-area: line;
+  min-width: 0;
+  padding: 10px 22px 12px;
+  border-top: 1px solid var(--route-led-off);
+}
+.route-line-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin-bottom: 6px;
+}
+.route-head-stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+  margin-right: auto;
+  font-size: 13px;
+  color: var(--route-white-2);
+}
+.route-head-stats strong {
+  font: 800 18px/1 var(--font-route);
+  color: var(--route-white);
+  font-variant-numeric: tabular-nums;
+}
+.route-head-stats small {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--route-white-3);
+}
+.route-round {
+  position: relative;
+  font-size: 13px;
+}
+.route-round summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--route-slate);
+  border-radius: 8px;
+  color: var(--route-white-2);
+  cursor: pointer;
+  list-style: none;
+}
+.route-round summary::-webkit-details-marker {
+  display: none;
+}
+.route-round[open] summary svg {
+  transform: rotate(180deg);
+}
+.route-round-panel {
+  position: absolute;
+  z-index: 5;
+  right: 0;
+  top: calc(100% + 6px);
+  display: grid;
+  gap: 8px;
+  min-width: 240px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #fff;
+  color: #27343e;
+  box-shadow: 0 12px 32px rgb(14 26 43 / 0.28);
+}
+.route-round-panel label {
+  font-size: 12px;
+  color: #66717c;
+}
+.route-ready {
+  font-size: 12px;
+  color: #66717c;
+}
+.route-fold {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--route-slate);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--route-white-2);
+  cursor: pointer;
+}
+.route-scroll {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--route-slate) transparent;
+}
+.route-stops {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(22px, 1fr));
+  grid-template-rows: 16px 22px 90px;
+  min-width: calc(var(--n) * 22px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.study-bank:lang(en) .route-stops {
+  padding-inline-end: 64px;
+}
+.route-sections {
+  display: contents;
+}
+.route-sections span {
+  grid-row: 1;
+  min-width: 0;
+  overflow: hidden;
+  padding-inline-start: 6px;
+  border-inline-start: 1px solid var(--route-slate);
+  font: 600 12px/14px var(--font-route);
+  color: var(--route-white-2);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.route-track {
+  position: relative;
+  grid-row: 2;
+  grid-column: 1 / -1;
+  align-self: center;
+  height: 4px;
+  margin-inline: calc(50% / var(--n));
+  border-radius: 2px;
+  background: var(--route-slate);
+}
+.route-track i {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: calc(var(--p) * 100%);
+  border-radius: inherit;
+  background: var(--route-line);
+  box-shadow: 0 0 8px rgb(46 189 133 / 0.45);
+  transform-origin: left;
+}
+.route-stop {
+  position: relative;
+  grid-row: 2 / 4;
+  display: grid;
+  grid-template-rows: 22px 90px;
+  justify-items: center;
+  min-width: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.route-dot {
+  position: relative;
+  align-self: center;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--route-navy) 0 3px, transparent 3.5px),
+    conic-gradient(var(--route-line) calc(var(--frac) * 1turn), var(--route-slate) 0);
+}
+.route-stop[data-state='todo'] .route-dot {
+  background: var(--route-navy);
+  box-shadow: inset 0 0 0 2px var(--route-ring);
+}
+.route-stop[data-state='done'] .route-dot {
+  background: var(--route-line);
+}
+.route-stop[data-state='empty'] .route-dot {
+  background: var(--route-navy);
+  outline: 1px dashed var(--route-ring);
+}
+.route-stop[data-start] .route-dot {
+  width: 14px;
+  height: 14px;
+  box-shadow: 0 0 0 2px var(--route-white);
+}
+.route-stop[data-start][data-state='todo'] .route-dot {
+  box-shadow: inset 0 0 0 2px var(--route-ring), 0 0 0 2px var(--route-white);
+}
+.route-stop[data-current] .route-dot {
+  width: 18px;
+  height: 18px;
+}
+.route-stop[data-current] .route-dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px var(--route-amber), 0 0 14px rgb(255 178 63 / 0.55);
+}
+/* Out of flow, so long names never widen a column: every stop stays evenly spaced. */
+.route-label {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  font: 500 13px/1 var(--font-route);
+  color: var(--route-white-2);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  transform: translateX(-50%);
+}
+.study-bank:lang(en) .route-label {
+  top: 26px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+  writing-mode: horizontal-tb;
+  transform-origin: 0 0;
+  transform: rotate(45deg);
+}
+.route-stop[data-current] .route-label {
+  color: var(--route-amber);
+}
+.route-stop:has(:checked) {
+  background: rgb(238 243 248 / 0.06);
+}
+.route-stop:has(:checked) .route-label {
+  color: var(--route-white);
+  font-weight: 700;
+  text-decoration: underline 2px;
+  text-underline-offset: 4px;
+}
+.route-stop:has(:focus-visible) .route-dot {
+  outline: 2px solid var(--route-white);
+  outline-offset: 3px;
+}
+.route-stop:has(:disabled) {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Folded: the line and one line of status, about 128px. */
+.study-route[data-folded] {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'announce' 'line';
+}
+.study-route[data-folded] :is(.route-habit, .route-ticket, .route-pace, .route-note, .route-target, .route-head-stats, .route-sections, .route-label) {
+  display: none;
+}
+.study-route[data-folded] .route-announce {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  padding: 12px 22px 0;
+}
+.study-route[data-folded] .route-stop-now {
+  align-items: center;
+}
+.study-route[data-folded] .route-led {
+  font-size: 22px;
+}
+.study-route[data-folded] .route-name {
+  font-size: 16px;
+}
+.study-route[data-folded] .route-stop-count {
+  margin-top: 2px;
+}
+.study-route[data-folded] .route-line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 0;
+}
+.study-route[data-folded] .route-line-head {
+  order: 2;
+  margin: 0;
+}
+/* 24px rows for WCAG 2.5.8; no labels, so no room kept for them at the end. */
+.study-route[data-folded] .route-stops {
+  grid-template-rows: 24px;
+  padding-inline-end: 0;
+}
+.study-route[data-folded] .route-stop {
+  grid-row: 1;
+  grid-template-rows: 24px;
+}
+.study-route[data-folded] .route-track {
+  grid-row: 1;
+}
+
+/* Filters: the stage lens as a segmented control. */
+.route-stage {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid #dce1e6;
+  border-radius: 9px;
+  background: #fff;
+  font-size: 12px;
+  color: #66717c;
+}
+.route-stage > span {
+  padding: 0 8px 0 6px;
+  white-space: nowrap;
+}
+.route-stage label {
+  position: relative;
+  display: flex;
+  white-space: nowrap;
+}
+.route-stage input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.route-stage label span {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 7px;
+  color: #27343e;
+  cursor: pointer;
+}
+.route-stage label:has(:checked) span {
+  background: var(--route-navy);
+  color: var(--route-white);
+}
+.route-stage label:has(:focus-visible) span {
+  outline: 2px solid #327b76;
+  outline-offset: 2px;
+}
+
+/* A chosen stop above the list. */
+.route-selected {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid #dfe5ea;
+  border-radius: 12px;
+  background: #f6f8fa;
+  font-size: 13px;
+}
+.route-selected strong {
+  font-size: 15px;
+  font-weight: 650;
+}
+.route-selected-count,
+.route-selected-stages {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  color: #56636d;
+  font-variant-numeric: tabular-nums;
+}
+.route-selected-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+.route-code {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--route-navy);
+  color: var(--route-white);
+  font: 800 12px/1 var(--font-route);
+  font-variant-numeric: tabular-nums;
+}
+.study-bank meter {
+  width: 64px;
+  height: 6px;
+  accent-color: var(--route-ac);
+}
+.study-bank meter::-webkit-meter-optimum-value {
+  background: var(--route-ac);
+}
+
+/* The list: stop headings, stage pips, the next problem. */
+.route-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 14px 0 6px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--route-navy);
+}
+.route-heading:first-child {
+  margin-top: 4px;
+}
+.route-heading-name {
+  font-size: 14px;
+}
+.route-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #56636d;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.route-count meter {
+  width: 48px;
+}
+.route-only {
+  margin-left: auto;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #3a6c69;
+  font: 600 12px/1.2 var(--font-route);
+  cursor: pointer;
+}
+.route-only:hover {
+  background: #eef2f4;
+}
+.route-only:focus-visible {
+  outline: 2px solid #327b76;
+  outline-offset: 2px;
+}
+.study-bank .study-row {
+  min-height: 44px;
+  padding: 8px 16px;
+}
+.study-bank .study-row-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 12px;
+}
+.study-bank .study-row-main small {
+  grid-column: 1 / -1;
+}
+.study-bank .study-row-main strong {
+  font-weight: 500;
+}
+.study-pips {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+.study-pips i {
+  width: 3px;
+  height: 9px;
+  border-radius: 1px;
+  background: var(--route-pip-off);
+}
+.study-pips[data-level='1'] i:nth-child(-n + 1),
+.study-pips[data-level='2'] i:nth-child(-n + 2),
+.study-pips[data-level='3'] i:nth-child(-n + 3) {
+  background: rgb(14 26 43 / 0.75);
+}
+.route-next-pill {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 1px 7px;
+  border: 1px solid var(--route-amber);
+  border-radius: 5px;
+  background: var(--route-navy);
+  color: var(--route-amber);
+  font: 700 11px/16px var(--font-route);
+  vertical-align: 2px;
+}
+.study-bank .study-row[data-next] {
+  box-shadow: inset 3px 0 0 var(--route-amber);
+}
+/* After the zebra stripes: a dark hover keeps the bright difficulty colours legible. */
+.study-bank .study-row:is(:hover, :focus-visible) {
+  background: var(--route-navy);
+  color: var(--route-white);
+}
+.study-bank .study-row:is(:hover, :focus-visible) .study-number {
+  color: var(--route-white-3);
+}
+.study-bank .study-row:is(:hover, :focus-visible) .study-pips i {
+  background: var(--route-slate);
+}
+.study-bank .study-row:is(:hover, :focus-visible) .study-pips[data-level='1'] i:nth-child(-n + 1),
+.study-bank .study-row:is(:hover, :focus-visible) .study-pips[data-level='2'] i:nth-child(-n + 2),
+.study-bank .study-row:is(:hover, :focus-visible) .study-pips[data-level='3'] i:nth-child(-n + 3) {
+  background: rgb(238 243 248 / 0.8);
+}
+.algorithm-library-switch button[aria-pressed='true'] {
+  background: var(--route-navy);
+  color: var(--route-white);
+}
+
+/* The one orchestrated moment, and motion that answers the learner. */
+@media (prefers-reduced-motion: no-preference) {
+  .route-stop {
+    transition: --frac 500ms ease-out;
+  }
+  .route-dot {
+    transition: transform 120ms;
+  }
+  .route-stop:hover .route-dot {
+    transform: scale(1.15);
+  }
+  .route-stops[data-enter] .route-track i {
+    animation: route-fill 700ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  }
+  .route-stops[data-enter] .route-dot {
+    animation: stop-pop 240ms ease-out backwards;
+    animation-delay: calc(var(--i) * 18ms);
+  }
+  .route-stops[data-enter] [data-current] .route-dot::after {
+    animation: ring-blink 600ms 760ms backwards;
+  }
+  .route-today[data-celebrate] .route-punch[data-on] {
+    animation: punch-in 260ms ease-out backwards;
+    animation-delay: calc(var(--k) * 90ms);
+  }
+  .study-bank .route-cta:active {
+    transform: translateY(1px);
+  }
+  .study-bank .study-row {
+    transition: background-color 100ms;
   }
 }
-/* On phones the list comes first; the calendar follows it instead of pushing it down. */
+@media (prefers-reduced-motion: reduce) {
+  .study-bank .study-row {
+    transition: none;
+  }
+}
+@keyframes route-fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes stop-pop {
+  from {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+}
+@keyframes ring-blink {
+  0%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+@keyframes punch-in {
+  from {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+}
+@media (forced-colors: active) {
+  .route-led[data-risk] {
+    color: CanvasText;
+    -webkit-text-stroke: 0;
+  }
+  .route-dot {
+    border: 1px solid CanvasText;
+  }
+  /* Forced colours strip fills, gradients and shadows; redraw each state in system colours. */
+  .route-stop[data-state='done'] .route-dot,
+  .route-stop[data-state='partial'] .route-dot,
+  .route-stop[data-current] .route-dot::after,
+  .route-track,
+  .route-track i,
+  .route-punch[data-on],
+  .route-stage label:has(:checked) span {
+    forced-color-adjust: none;
+    box-shadow: none;
+  }
+  .route-stop[data-state='done'] .route-dot,
+  .route-track i,
+  .route-punch[data-on] {
+    background: CanvasText;
+  }
+  .route-stop[data-state='partial'] .route-dot {
+    background: linear-gradient(90deg, CanvasText 50%, Canvas 0);
+  }
+  .route-stop[data-state='empty'] .route-dot {
+    border-style: dashed;
+  }
+  .route-stop[data-current] .route-dot::after {
+    box-shadow: 0 0 0 3px Highlight;
+  }
+  .route-stop:has(:checked) {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+  .route-track {
+    background: GrayText;
+  }
+  .route-punch {
+    border: 1px solid CanvasText;
+  }
+  .route-stage label:has(:checked) span {
+    background: Highlight;
+    color: HighlightText;
+  }
+}
+
+/* Narrow containers: one column; the line scrolls inside its card. */
+@container bank (max-width: 859px) {
+  .route-scroll {
+    mask-image: linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent);
+  }
+  .route-habit {
+    border-left: 0;
+    border-top: 1px solid var(--route-led-off);
+  }
+}
+
+/* Phones: each part becomes its own card; the list comes before the calendar. */
 @media (max-width: 640px) {
-  .study-library:has(> .study-hero) {
+  .study-bank:has(> .study-route) {
     display: flex;
     flex-direction: column;
   }
-  .study-hero {
-    display: contents;
-  }
-  .study-hero-main {
-    order: 0;
-  }
-  .practice-calendar {
-    order: 10;
-    margin-top: 16px;
-  }
-  .study-library:has(> .study-hero) > :not(.study-hero) {
+  .study-bank:has(> .study-route) > * {
     order: 5;
   }
-  .study-list-head {
-    grid-template-columns: 20px minmax(0, 1fr) 48px;
-    gap: 8px;
-    padding: 8px;
+  .study-bank .study-library-heading {
+    order: -1;
+  }
+  .study-bank .study-route {
+    display: contents;
+  }
+  .study-bank :is(.route-announce, .route-line, .route-habit) {
+    border: 0;
+    border-radius: 14px;
+    color: var(--route-white);
+    background: var(--route-dots), var(--route-navy);
+  }
+  .study-bank .route-announce {
+    order: 0;
+    padding: 16px;
+  }
+  .study-bank .route-line {
+    order: 1;
+    margin-top: 8px;
+    padding: 12px 14px;
+  }
+  .study-bank .route-habit {
+    order: 10;
+    margin-top: 16px;
+    padding: 16px;
+  }
+  .study-bank .study-route[data-folded] .route-line {
+    display: block;
+  }
+  /* Too narrow to share a row with the CTA, and the announce is its own card here. */
+  .study-bank .study-route[data-folded] .route-announce {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 12px 16px;
+  }
+  /* The round summary can wrap to the card's left edge; open the panel across the card. */
+  .study-bank .route-line-head {
+    position: relative;
+  }
+  .study-bank .route-round {
+    position: static;
+  }
+  .route-round-panel {
+    inset-inline: 0;
+    min-width: 0;
+  }
+  .route-streak-chip {
+    display: inline-flex;
+  }
+  .route-ticket {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .route-ticket .study-pips {
+    display: none;
+  }
+  .study-bank .route-cta {
+    inline-size: 100%;
+    min-block-size: 44px;
+  }
+  .route-name {
+    font-size: 20px;
+  }
+  .study-bank .study-row {
+    min-height: 48px;
+  }
+  .route-selected-actions {
+    margin-left: 0;
+  }
+}
+
+/* Fingers need 44px; the compact controls grow only on touch screens. */
+@media (pointer: coarse) {
+  .route-fold {
+    width: 44px;
+    height: 44px;
+  }
+  .route-stage label span {
+    padding-block: 12px;
+  }
+  .route-only,
+  .study-bank .route-target select,
+  .route-round summary,
+  .route-round-panel :is(button, select) {
+    min-block-size: 44px;
+  }
+  .study-route[data-folded] .route-stops {
+    grid-template-columns: repeat(var(--n), minmax(24px, 1fr));
+    min-width: calc(var(--n) * 24px);
   }
 }

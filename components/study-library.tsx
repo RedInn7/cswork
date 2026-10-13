@@ -1,16 +1,20 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
-import { PracticeCalendar } from './practice-calendar';
+import { PracticeCalendar, usePracticeStats } from './practice-calendar';
+import { RouteLine } from './route-line';
+import { routeStops, type RouteStop } from '@/lib/route-stops';
 import {
   ArrowLeft,
   ArrowRight,
   Check,
   Circle,
   Clock3,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
   Copy,
   ExternalLink,
   Search,
@@ -70,6 +74,16 @@ type LibraryPage = RoundState & {
   topics: string[];
   sequence?: string[];
   nextProblemId?: string | null;
+  /** The recommended next problem, for everyone (signed out: the first stop). */
+  next?: {
+    judgeProblemId: string | null;
+    number: number;
+    titleZh: string;
+    titleEn: string;
+    difficulty: string;
+    sectionSlug: string;
+    stage: string;
+  } | null;
   collection?: {
     id: string;
     title: string;
@@ -83,6 +97,7 @@ type LibraryPage = RoundState & {
       titleEn?: string;
       total: number;
       solved: number;
+      stages?: Record<string, { total: number; solved: number }>;
     }[];
   };
 };
@@ -164,6 +179,44 @@ export function StudyLibrary({
   const [copyMessage, setCopyMessage] = useState('');
   const detailHeading = useRef<HTMLHeadingElement>(null);
   const t = (zh: string, en: string) => (english ? en : zh);
+  const stats = usePracticeStats(activity, english);
+  // Per-device preferences: a folded line and the daily target.
+  const [folded, setFolded] = useState(false);
+  const [target, setTarget] = useState(3);
+  const [celebrate, setCelebrate] = useState(false);
+  useEffect(() => {
+    try {
+      setFolded(localStorage.getItem('cswork:route:folded') === '1');
+      const saved = Number(localStorage.getItem('cswork:practice:daily-target'));
+      if ([1, 2, 3, 5].includes(saved)) setTarget(saved);
+    } catch {}
+  }, []);
+  function changeFolded(value: boolean) {
+    setFolded(value);
+    try {
+      localStorage.setItem('cswork:route:folded', value ? '1' : '0');
+    } catch {}
+  }
+  function changeTarget(value: number) {
+    setTarget(value);
+    try {
+      localStorage.setItem('cswork:practice:daily-target', String(value));
+    } catch {}
+  }
+  // Reaching the daily target is celebrated once per day on this device. It waits
+  // for the panel so its live region exists before the text arrives.
+  const lineShown = !!data?.collection;
+  useEffect(() => {
+    if (!stats || !signedIn || !lineShown || stats.today < target) return;
+    const day = new Date().toDateString();
+    try {
+      if (localStorage.getItem('cswork:practice:trip-done') === day) return;
+      localStorage.setItem('cswork:practice:trip-done', day);
+    } catch {
+      return;
+    }
+    setCelebrate(true);
+  }, [stats, signedIn, lineShown, target]);
   const difficultyName = (value: string) =>
     english
       ? (
@@ -577,152 +630,412 @@ export function StudyLibrary({
     stage,
     status,
   }).toString();
-  // The server picks the next unsolved judgeable problem across the whole list;
-  // never act on a previous filter's response while a new one is loading.
-  const nextProblemId =
-    loading && dataQuery !== currentQuery ? null : data?.nextProblemId;
+  // next, nextProblemId and sequence span the whole line, so a previous
+  // filter's response still holds them; only its rows are stale while loading.
+  const stale = loading && dataQuery !== currentQuery;
+  const nextProblemId = data?.nextProblemId;
+  const next = data?.next ?? null;
+  const route = data?.collection ? routeStops(data.collection.sections) : null;
+  const stops = route?.stops ?? [];
+  const currentSlug =
+    next?.sectionSlug ??
+    stops.find((stop) => stop.solved < stop.total)?.slug ??
+    stops.at(-1)?.slug ??
+    '';
+  const currentStop = stops.find((stop) => stop.slug === currentSlug);
+  const solvedAll =
+    member &&
+    !!data?.collection &&
+    data.collection.solved >= data.collection.total;
+  const roundNumber = data?.currentRound?.number || 1;
+  const stageNames: Record<string, string> = {
+    基础: t('基础', 'Foundation'),
+    核心: t('核心', 'Core'),
+    进阶: t('进阶', 'Advanced'),
+  };
+  const stopName = (stop: RouteStop) =>
+    english ? stop.titleEn || stop.title : stop.title;
+  const today = stats?.today ?? 0;
+  const tripDone = member && today >= target;
+  const startNext = () => {
+    const id = nextProblemId ?? next?.judgeProblemId;
+    if (!id) return;
+    rememberProblemSequence(data?.sequence ?? [id]);
+    navigate('problem', { problem: id });
+  };
+  const selectStop = (slug: string) => {
+    setSection(slug);
+    setPage(1);
+  };
+  // The control that moved focus unmounts; land on the stop, or on any stop the
+  // stage lens leaves enabled.
+  const focusStop = (slug: string) =>
+    requestAnimationFrame(() => {
+      const radio = document.getElementById(`route-stop-${slug}`);
+      (radio instanceof HTMLInputElement && !radio.disabled
+        ? radio
+        : document.querySelector<HTMLInputElement>('.route-stops input:not(:disabled)')
+      )?.focus();
+    });
+  const selectedStop = stops.find((stop) => stop.slug === section);
+  const pips = (value?: string) => {
+    const level = value === '进阶' ? 3 : value === '核心' ? 2 : value ? 1 : 0;
+    if (!level) return null;
+    return (
+      <span
+        className="study-pips"
+        data-level={level}
+        title={t(`阶段：${value}`, `Stage: ${stageNames[value!] || value}`)}
+      >
+        <i aria-hidden="true" />
+        <i aria-hidden="true" />
+        <i aria-hidden="true" />
+        <span className="sr-only">{stageNames[value!] || value}</span>
+      </span>
+    );
+  };
+  const kicker = !member || !data?.collection?.solved
+    ? t('始发站', 'First stop')
+    : solvedAll && !next
+      ? t('终点站', 'End of the line')
+      : t('下一站', 'Next stop');
+  const remaining = currentStop ? currentStop.total - currentStop.solved : 0;
+  const daysLeft = data?.collection
+    ? Math.ceil((data.collection.total - data.collection.solved) / target)
+    : 0;
+
   return (
-    <section className="study-library" lang={english ? 'en' : 'zh'}>
-      <div className="study-hero">
-        <div className="study-hero-main">
+    <section className="study-library study-bank" lang={english ? 'en' : 'zh'}>
       <header className="study-library-heading">
         <div>
-          <h2>{t('灵神题单精选', 'Ling’s Curated 500')}</h2>
+          <h2>
+            <span className="route-roundel" aria-hidden="true">
+              500
+            </span>
+            {t('灵神题单精选', 'Ling’s Curated 500')}
+          </h2>
           <p>
             {t(
-              '面向美国 SDE 编程面试，从基础到进阶练习 500 道题。由 cswork 从灵神题单中筛选与编排。',
-              '500 problems for US SDE coding interviews, from fundamentals to advanced topics. Selected and organized by cswork from Ling’s study lists.',
+              '35 个专题、500 道题，按顺序从基础练到进阶。由 cswork 从灵神题单中筛选编排。',
+              '35 topics and 500 problems in order, from fundamentals to advanced. Selected and ordered by cswork from Ling’s study lists.',
             )}
           </p>
         </div>
         {languageControl}
       </header>
-      {(!member ||
-        data?.currentRound ||
-        (collection === 'ling-selected-500' && data?.collection)) && (
-        // One compact bar so the problem list starts above the fold.
-        <div className="study-dashboard" aria-busy={roundBusy}>
-          {!member && (
-            // A hint only: the top bar's button is the single way to sign in.
-            <div className="study-dashboard-signin">
-              <span>
-                {t(
-                  '登录后记录每一轮的通过进度，并在站内提交代码。',
-                  'Sign in to track each round and submit code here.',
-                )}
+      {route && currentStop ? (
+        <div
+          className="study-route"
+          data-folded={folded || undefined}
+          data-member={member || undefined}
+          aria-busy={roundBusy}
+        >
+          <div className="route-announce">
+            <div className="route-stop-now">
+              <span className="route-led" aria-hidden="true">
+                {currentStop.code}
               </span>
-            </div>
-          )}
-          {member &&
-            collection === 'ling-selected-500' &&
-            data?.collection &&
-            !error && (
-              <div className="study-dashboard-stats">
-                <div>
-                  <span>
-                    {t(
-                      `第 ${data.currentRound?.number || 1} 轮通过`,
-                      `Solved in round ${data.currentRound?.number || 1}`,
-                    )}
-                  </span>
-                  <strong>
-                    {data.collection.solved}
-                    <small> / {data.collection.total}</small>
-                  </strong>
-                  <progress
-                    aria-label={t('本轮通过进度', 'Current round progress')}
-                    value={data.collection.solved}
-                    max={data.collection.total}
-                  />
-                </div>
-                <div>
-                  <span>{t('站内可判题', 'Ready to submit')}</span>
-                  <strong>
-                    {data.collection.ready}
-                    <small> {t('道', 'problems')}</small>
-                  </strong>
-                </div>
-              </div>
-            )}
-          {data?.currentRound && (
-            <>
-              <div className="study-round-actions">
-                {nextProblemId && (
-                  <Button
-                    onClick={() => {
-                      rememberProblemSequence(data.sequence ?? [nextProblemId]);
-                      navigate('problem', { problem: nextProblemId });
-                    }}
-                  >
-                    {t('继续刷题', 'Continue')}
-                  </Button>
-                )}
-                <Button
-                  variant="outline"
-                  aria-expanded={syncOpen}
-                  onClick={() => setSyncOpen((open) => !open)}
-                >
-                  {t('同步 LeetCode', 'Sync LeetCode')}
-                </Button>
-                <label htmlFor="practice-round">
-                  {t('当前轮次', 'Current round')}
-                </label>
-                <select
-                  id="practice-round"
-                  value={data.activeRoundId}
-                  disabled={roundBusy || loading}
-                  onChange={(event) => void changeRound(event.target.value)}
-                >
-                  {data.rounds.map((round) => (
-                    <option key={round.id} value={round.id}>
-                      {t(`第 ${round.number} 轮`, `Round ${round.number}`)} ·{' '}
-                      {round.solved}/{data.collection?.total || 500}
-                    </option>
-                  ))}
-                </select>
-                <Button
-                  variant="outline"
-                  disabled={roundBusy || loading}
-                  onClick={() => void changeRound()}
-                  title={t(
-                    '每轮单独记录通过进度；新开一轮会从零开始，历史进度和提交记录保留。',
-                    'Each round tracks its own progress. Start fresh while keeping every earlier round and submission.',
+              <span className="sr-only">
+                {t(`第 ${currentStop.index + 1} 站`, `Stop ${currentStop.index + 1}`)}
+              </span>
+              <div>
+                <p className="route-kicker">
+                  {kicker}
+                  {member && !!stats?.streak && (
+                    <span className="route-streak-chip">
+                      {t(`连续 ${stats.streak} 天`, `${stats.streak}-day streak`)}
+                    </span>
                   )}
-                >
-                  {roundBusy
-                    ? t('正在更新…', 'Updating…')
-                    : t('新开一轮', 'Start a new round')}
-                </Button>
-              </div>
-              {roundNotice && (
-                <output className="study-round-feedback">
-                  {roundNotice === 'created'
+                </p>
+                <h3 className="route-name">{stopName(currentStop)}</h3>
+                <p className="route-stop-count">
+                  {member
                     ? t(
-                        '新一轮已开启，之前的进度已保留。',
-                        'New round started. Your earlier progress is saved.',
+                        `本站已通过 ${currentStop.solved} / ${currentStop.total}`,
+                        `${currentStop.solved} of ${currentStop.total} solved at this stop`,
                       )
                     : t(
-                        '已切换轮次，可继续这一轮的练习。',
-                        'Round switched. Continue practicing in this round.',
+                        `本站共 ${currentStop.total} 道题`,
+                        `${currentStop.total} problems at this stop`,
                       )}
-                </output>
-              )}
-              {roundError && (
-                <p className="study-round-feedback error-text" role="alert">
-                  {t(
-                    '更新失败，请重试。',
-                    'Could not update your round. Please retry.',
-                  )}{' '}
-                  {t(roundError, englishMessage(roundError))}
+                  {member && remaining > 0 && remaining <= 3 && (
+                    <span className="route-to-go">
+                      {t(`还差 ${remaining} 题`, `${remaining} to go`)}
+                    </span>
+                  )}
                 </p>
+              </div>
+            </div>
+            {next && (
+              <div className="route-ticket">
+                <span className="study-number">{next.number}</span>
+                <strong>{english ? next.titleEn || next.titleZh : next.titleZh || next.titleEn}</strong>
+                <span
+                  className="route-level study-level"
+                  data-level={next.difficulty.toLowerCase()}
+                >
+                  {difficultyName(next.difficulty)}
+                </span>
+                {pips(next.stage)}
+              </div>
+            )}
+            <div className="route-actions">
+              {!member ? (
+                <Button
+                  className="route-cta"
+                  onClick={() =>
+                    window.dispatchEvent(new Event('cswork:auth-required'))
+                  }
+                >
+                  {t('登录后上车', 'Sign in to board')}
+                </Button>
+              ) : nextProblemId || next ? (
+                <Button className="route-cta" onClick={startNext}>
+                  {tripDone
+                    ? t('再刷一题', 'One more problem')
+                    : t('开始下一题', 'Start next problem')}
+                </Button>
+              ) : solvedAll ? (
+                <Button
+                  className="route-cta"
+                  disabled={roundBusy || loading}
+                  onClick={() => void changeRound()}
+                >
+                  {t(`开始第 ${roundNumber + 1} 轮`, `Start round ${roundNumber + 1}`)}
+                </Button>
+              ) : null}
+              {member && (
+                <div
+                  className="route-today"
+                  data-celebrate={(celebrate && tripDone) || undefined}
+                >
+                  <span className="route-today-label">
+                    {t('今日行程', 'Today’s trip')}
+                  </span>
+                  <span className="route-punches" aria-hidden="true">
+                    {Array.from({ length: target }, (_, k) => (
+                      <i
+                        key={k}
+                        className="route-punch"
+                        data-on={k < today || undefined}
+                        style={{ '--k': k } as React.CSSProperties}
+                      />
+                    ))}
+                  </span>
+                  <span className="route-today-count" aria-hidden="true">
+                    {Math.min(today, 99)} / {target}
+                  </span>
+                  <span className="sr-only">
+                    {t(
+                      `今天已通过 ${today} 题，目标 ${target} 题`,
+                      `${today} of ${target} solved today`,
+                    )}
+                  </span>
+                  <label className="route-target">
+                    <span className="sr-only">{t('每日目标', 'Daily target')}</span>
+                    <select
+                      value={target}
+                      onChange={(event) => changeTarget(Number(event.target.value))}
+                    >
+                      {[1, 2, 3, 5].map((n) => (
+                        <option key={n} value={n}>
+                          {t(`每天 ${n} 题`, `${n} a day`)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <output className="sr-only" aria-live="polite">
+                    {celebrate && tripDone
+                      ? t(
+                          `今日行程完成：已通过 ${today} 题`,
+                          `Today’s trip is done: ${today} solved`,
+                        )
+                      : ''}
+                  </output>
+                </div>
               )}
-            </>
-          )}
+            </div>
+            {member && data?.collection && !solvedAll && (
+              <p className="route-pace">
+                {t(
+                  `按每天 ${target} 题，约 ${daysLeft} 天到终点站。`,
+                  `At ${target} a day, about ${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} to the end of the line.`,
+                )}
+              </p>
+            )}
+            {!member ? (
+              <p className="route-note">
+                {t(
+                  '登录后，线路图会点亮你走过的每一站，并可在站内提交代码。',
+                  'Sign in to light up every stop you pass and submit code here.',
+                )}
+              </p>
+            ) : solvedAll && !next ? (
+              <p className="route-note">
+                {t(
+                  `第 ${roundNumber} 轮的 ${data?.collection?.total} 道题已全部通过。`,
+                  `You solved all ${data?.collection?.total} problems in round ${roundNumber}.`,
+                )}
+              </p>
+            ) : !next && !nextProblemId ? (
+              <p className="route-note">
+                {t(
+                  '站内可提交的题目已全部通过，其余题目可前往 LeetCode 练习。',
+                  'You’ve solved every problem you can submit here. Practice the rest on LeetCode.',
+                )}
+              </p>
+            ) : null}
+          </div>
+          <div className="route-habit">
+            <PracticeCalendar
+              stats={stats}
+              signedIn={member}
+              target={target}
+              t={t}
+              lineTotal={data?.collection?.total}
+            />
+          </div>
+          <div className="route-line" id="route-line">
+            <div className="route-line-head">
+              <span className="route-head-stats">
+                {member && data?.collection ? (
+                  <>
+                    <span>
+                      {t(`第 ${roundNumber} 轮通过`, `Solved in round ${roundNumber}`)}
+                    </span>
+                    <strong>
+                      {data.collection.solved}
+                      <small> / {data.collection.total}</small>
+                    </strong>
+                    <span>
+                      {t(
+                        `已到站 ${stops.filter((stop) => stop.total && stop.solved >= stop.total).length} / ${stops.length}`,
+                        `${stops.filter((stop) => stop.total && stop.solved >= stop.total).length} of ${stops.length} stops complete`,
+                      )}
+                    </span>
+                  </>
+                ) : (
+                  <span>
+                    {t(
+                      `${stops.length} 站，${data?.collection?.total} 道题`,
+                      `${stops.length} stops, ${data?.collection?.total} problems`,
+                    )}
+                  </span>
+                )}
+              </span>
+              {data?.currentRound && (
+                <details className="route-round">
+                  <summary>
+                    {t(`第 ${roundNumber} 轮`, `Round ${roundNumber}`)}
+                    <ChevronDown size={14} aria-hidden="true" />
+                  </summary>
+                  <div className="route-round-panel">
+                    <label htmlFor="practice-round">
+                      {t('当前轮次', 'Current round')}
+                    </label>
+                    <select
+                      id="practice-round"
+                      value={data.activeRoundId}
+                      disabled={roundBusy || loading}
+                      onChange={(event) => void changeRound(event.target.value)}
+                    >
+                      {data.rounds.map((round) => (
+                        <option key={round.id} value={round.id}>
+                          {t(`第 ${round.number} 轮`, `Round ${round.number}`)} ·{' '}
+                          {round.solved}/{data.collection?.total || 500}
+                        </option>
+                      ))}
+                    </select>
+                    <Button
+                      variant="outline"
+                      disabled={roundBusy || loading}
+                      onClick={() => void changeRound()}
+                      title={t(
+                        '每轮单独记录通过进度；新开一轮会从零开始，历史进度和提交记录保留。',
+                        'Each round tracks its own progress. Start fresh while keeping every earlier round and submission.',
+                      )}
+                    >
+                      {roundBusy
+                        ? t('正在更新…', 'Updating…')
+                        : t('新开一轮', 'Start a new round')}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      aria-expanded={syncOpen}
+                      onClick={() => setSyncOpen((open) => !open)}
+                    >
+                      {t('同步 LeetCode', 'Sync LeetCode')}
+                    </Button>
+                    {data.collection && (
+                      <span className="route-ready">
+                        {t(
+                          `站内可判题 ${data.collection.ready} 道`,
+                          `${data.collection.ready} ready to submit here`,
+                        )}
+                      </span>
+                    )}
+                  </div>
+                </details>
+              )}
+              <button
+                type="button"
+                className="route-fold"
+                aria-expanded={!folded}
+                aria-controls="route-line"
+                onClick={() => changeFolded(!folded)}
+              >
+                {folded ? (
+                  <ChevronDown size={16} aria-hidden="true" />
+                ) : (
+                  <ChevronUp size={16} aria-hidden="true" />
+                )}
+                <span className="sr-only">
+                  {folded
+                    ? t('展开线路图', 'Expand the line')
+                    : t('收起线路图', 'Collapse the line')}
+                </span>
+              </button>
+            </div>
+            <RouteLine
+              stops={stops}
+              runs={route.runs}
+              currentSlug={currentSlug}
+              selected={section}
+              onSelect={selectStop}
+              stage={stage}
+              stageName={stageNames[stage] || ''}
+              member={member}
+              english={english}
+              disabled={roundBusy}
+            />
+          </div>
         </div>
+      ) : (
+        <output className="study-state route-loading">
+          {error
+            ? t('暂时无法加载', 'Unable to load right now')
+            : t('正在读取线路…', 'Loading the line…')}
+        </output>
       )}
-        </div>
-        <PracticeCalendar activity={activity} signedIn={signedIn} />
-      </div>
+      {roundNotice && (
+        <output className="study-round-feedback">
+          {roundNotice === 'created'
+            ? t(
+                '新一轮已开启，之前的进度已保留。',
+                'New round started. Your earlier progress is saved.',
+              )
+            : t(
+                '已切换轮次，可继续这一轮的练习。',
+                'Round switched. Continue practicing in this round.',
+              )}
+        </output>
+      )}
+      {roundError && (
+        <p className="study-round-feedback error-text" role="alert">
+          {t('更新失败，请重试。', 'Could not update your round. Please retry.')}{' '}
+          {t(roundError, englishMessage(roundError))}
+        </p>
+      )}
       {syncOpen && data?.currentRound && (
         <LeetcodeSyncPanel
           rounds={data.rounds}
@@ -745,26 +1058,28 @@ export function StudyLibrary({
             onChange={(event) => setQuery(event.target.value)}
           />
         </div>
-        <label>
-          {t('专题', 'Topic')}
-          <select
-            aria-label={t('精选专题', 'Curated topic')}
-            value={section}
-            onChange={(event) => {
-              setSection(event.target.value);
-              setPage(1);
-            }}
-          >
-            <option value="">{t('全部专题', 'All topics')}</option>
-            {data?.collection?.sections.map((item) => (
-              <option key={item.slug} value={item.slug}>
-                {`${english ? item.titleEn || item.title : item.title}${
-                  member ? ` · ${item.solved}/${item.total}` : ''
-                }`}
-              </option>
-            ))}
-          </select>
-        </label>
+        <div
+          className="route-stage"
+          role="radiogroup"
+          aria-labelledby="route-stage-label"
+        >
+          <span id="route-stage-label">{t('阶段', 'Stage')}</span>
+          {['', '基础', '核心', '进阶'].map((value) => (
+            <label key={value || 'all'}>
+              <input
+                type="radio"
+                name="route-stage"
+                value={value}
+                checked={stage === value}
+                onChange={() => {
+                  setStage(value);
+                  setPage(1);
+                }}
+              />
+              <span>{value ? stageNames[value] : t('全部', 'All')}</span>
+            </label>
+          ))}
+        </div>
         <label>
           {t('难度', 'Difficulty')}
           <select
@@ -780,75 +1095,130 @@ export function StudyLibrary({
             <option value="困难">{t('困难', 'Hard')}</option>
           </select>
         </label>
-        {collection === 'ling-selected-500' && (
-          <>
-            <label>
-              {t('阶段', 'Stage')}
-              <select
-                value={stage}
-                onChange={(event) => {
-                  setStage(event.target.value);
-                  setPage(1);
-                }}
-              >
-                <option value="">{t('全部阶段', 'All stages')}</option>
-                {['基础', '核心', '进阶'].map((item) => (
-                  <option key={item} value={item}>
-                    {t(
-                      item,
-                      (
-                        {
-                          基础: 'Foundation',
-                          核心: 'Core',
-                          进阶: 'Advanced',
-                        } as Record<string, string>
-                      )[item] || item,
-                    )}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              {t('进度', 'Progress')}
-              <select
-                value={status}
-                onChange={(event) => {
-                  setStatus(event.target.value);
-                  setPage(1);
-                }}
-              >
-                <option value="">{t('全部题目', 'All problems')}</option>
-                {/* Round progress filters only mean something with an account. */}
-                {member && (
-                  <>
-                    <option value="todo">
-                      {t('尚未通过', 'Not solved this round')}
-                    </option>
-                    <option value="solved">
-                      {t('已通过', 'Solved this round')}
-                    </option>
-                    <option value="attempted">
-                      {t('已尝试 · 未通过', 'Attempted · Not solved')}
-                    </option>
-                    <option value="not_started">
-                      {t('未开始', 'Not started')}
-                    </option>
-                  </>
-                )}
-                <option value="ready">
-                  {t('可站内判题', 'Ready to submit')}
+        <label>
+          {t('进度', 'Progress')}
+          <select
+            value={status}
+            onChange={(event) => {
+              setStatus(event.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="">{t('全部题目', 'All problems')}</option>
+            {/* Round progress filters only mean something with an account. */}
+            {member && (
+              <>
+                <option value="todo">
+                  {t('尚未通过', 'Not solved this round')}
                 </option>
-              </select>
-            </label>
-          </>
-        )}
+                <option value="solved">
+                  {t('已通过', 'Solved this round')}
+                </option>
+                <option value="attempted">
+                  {t('已尝试 · 未通过', 'Attempted · Not solved')}
+                </option>
+                <option value="not_started">{t('未开始', 'Not started')}</option>
+              </>
+            )}
+            <option value="ready">{t('可站内判题', 'Ready to submit')}</option>
+          </select>
+        </label>
       </fieldset>
+      {selectedStop && (
+        <div className="route-selected">
+          <span className="route-code">{selectedStop.code}</span>
+          <strong>{stopName(selectedStop)}</strong>
+          {member ? (
+            <span className="route-selected-count">
+              {t(
+                `已通过 ${selectedStop.solved} / ${selectedStop.total}`,
+                `${selectedStop.solved} of ${selectedStop.total} solved`,
+              )}
+              <meter
+                min={0}
+                max={selectedStop.total || 1}
+                value={selectedStop.solved}
+                aria-hidden="true"
+              />
+              {selectedStop.total - selectedStop.solved > 0 &&
+                selectedStop.total - selectedStop.solved <= 3 && (
+                  <span className="route-to-go">
+                    {t(
+                      `还差 ${selectedStop.total - selectedStop.solved} 题`,
+                      `${selectedStop.total - selectedStop.solved} to go`,
+                    )}
+                  </span>
+                )}
+            </span>
+          ) : (
+            <span className="route-selected-count">
+              {t(
+                `本站 ${selectedStop.total} 道题`,
+                `${selectedStop.total} problems at this stop`,
+              )}
+            </span>
+          )}
+          {selectedStop.stages && (
+            <span className="route-selected-stages">
+              {['基础', '核心', '进阶'].map((value) =>
+                selectedStop.stages?.[value]?.total ? (
+                  <span key={value}>
+                    {stageNames[value]} {selectedStop.stages[value].total}
+                  </span>
+                ) : null,
+              )}
+            </span>
+          )}
+          <span className="route-selected-actions">
+            {member &&
+              (() => {
+                const resume = stale
+                  ? undefined
+                  : data?.items.find((item) => canJudge(item) && !item.solved);
+                return resume ? (
+                  <Button
+                    onClick={() => {
+                      rememberProblemSequence(
+                        data!.items.flatMap((row) =>
+                          canJudge(row) ? [row.judgeProblemId!] : [],
+                        ),
+                      );
+                      navigate('problem', { problem: resume.judgeProblemId! });
+                    }}
+                  >
+                    {t('从本站继续', 'Continue at this stop')}
+                  </Button>
+                ) : null;
+              })()}
+            <Button
+              variant="outline"
+              onClick={() => {
+                const slug = section;
+                selectStop('');
+                focusStop(slug);
+              }}
+            >
+              {t('回到全线', 'Show the whole line')}
+            </Button>
+          </span>
+        </div>
+      )}
       <div className="study-result-summary" aria-live="polite">
         {loading
           ? t('正在查找题目…', 'Finding problems…')
           : error
             ? t('暂时无法加载', 'Unable to load right now')
-            : t(`共 ${data?.total || 0} 道题`, `${data?.total || 0} problems`)}
+            : !search && !difficulty && !stage && !status && !section
+              ? t(
+                  `全线共 ${data?.total || 0} 道题`,
+                  `${data?.total || 0} problems on the line`,
+                )
+              : section && !search && !difficulty && !stage && !status
+                ? t(
+                    `本站 ${data?.total || 0} 道题`,
+                    `${data?.total || 0} problems at this stop`,
+                  )
+                : t(`共 ${data?.total || 0} 道题`, `${data?.total || 0} problems`)}
       </div>
       {error ? (
         <div className="study-state" role="alert">
@@ -890,108 +1260,154 @@ export function StudyLibrary({
       ) : (
         <>
           <div className="study-list" aria-busy={loading}>
-            <div className="study-list-head" aria-hidden="true">
-              <span />
-              <span>{t('题目', 'Problem')}</span>
-              <span>{t('难度', 'Difficulty')}</span>
-            </div>
-            {data.items.map((item) => (
-              <button
-                type="button"
-                className="study-row"
-                data-progress={
-                  item.solved ? 'solved' : item.progressStatus || 'not_started'
-                }
-                key={item.id}
-                onClick={() => {
-                  // Statements need an account; ask to sign in rather than open an empty page.
-                  if (!member) {
-                    window.dispatchEvent(new Event('cswork:auth-required'));
-                    return;
-                  }
-                  if (canJudge(item)) {
-                    rememberProblemSequence(
-                      data.items.flatMap((row) =>
-                        canJudge(row) ? [row.judgeProblemId!] : [],
-                      ),
-                    );
-                    navigate('problem', { problem: item.judgeProblemId! });
-                  } else setSelected(item.id);
-                }}
-              >
-                <span
-                  className="study-progress"
-                  data-progress={
-                    item.solved
-                      ? 'solved'
-                      : item.progressStatus || 'not_started'
-                  }
-                  title={
-                    item.solved
-                      ? t('已通过', 'Solved')
-                      : item.judging
-                        ? t('判题中', 'Judging')
-                        : item.progressStatus === 'attempted'
-                          ? t('未通过', 'Not solved')
-                          : t('未开始', 'Not started')
-                  }
-                >
-                  {item.solved ? (
-                    <Check size={18} aria-hidden="true" />
-                  ) : item.judging ? (
-                    <Clock3 size={18} aria-hidden="true" />
-                  ) : item.progressStatus === 'attempted' ? (
-                    <Circle size={18} aria-hidden="true" />
-                  ) : null}
-                  <span className="sr-only">
-                    {item.solved
-                      ? t('已通过', 'Solved')
-                      : item.judging
-                        ? t('判题中', 'Judging')
-                        : item.progressStatus === 'attempted'
-                          ? t('未通过', 'Not solved')
-                          : t('未开始', 'Not started')}
-                  </span>
-                </span>
-                <span
-                  className="study-row-main"
-                  title={`${item.number}. ${title(item, english)}`}
-                >
-                  <strong>
-                    <span className="study-number">{item.number}.</span>{' '}
-                    {title(item, english)}
-                    {item.selection && (
-                      <span className="study-row-section">
-                        {english
-                          ? item.selection.sectionTitleEn ||
-                            item.selection.sectionTitle
-                          : item.selection.sectionTitle}
+            {data.items.map((item, index) => {
+              const slug = item.selection?.sectionSlug;
+              const stop =
+                !section && slug && slug !== data.items[index - 1]?.selection?.sectionSlug
+                  ? stops.find((candidate) => candidate.slug === slug)
+                  : undefined;
+              const isNext =
+                !!item.judgeProblemId &&
+                item.judgeProblemId === (next?.judgeProblemId ?? nextProblemId);
+              return (
+                <Fragment key={item.id}>
+                  {stop && (
+                    <h3 className="route-heading">
+                      <span className="route-code">{stop.code}</span>
+                      <span className="route-heading-name">{stopName(stop)}</span>
+                      <span className="route-count">
+                        {member ? (
+                          <>
+                            {stop.solved}/{stop.total}
+                            <meter
+                              min={0}
+                              max={stop.total || 1}
+                              value={stop.solved}
+                              aria-hidden="true"
+                            />
+                          </>
+                        ) : (
+                          t(`${stop.total} 道题`, `${stop.total} problems`)
+                        )}
                       </span>
-                    )}
-                  </strong>
-                  {!!item.importedSources?.length && (
-                    <small>
-                      {item.solvedLocally
-                        ? t('本站通过 · ', 'Local AC · ')
-                        : ''}
-                      {item.importedSources
-                        .map((source) =>
-                          source === 'cn'
-                            ? t('力扣国区通过', 'LeetCode CN AC')
-                            : t('LeetCode 美区通过', 'LeetCode US AC'),
-                        )
-                        .join(' · ')}
-                    </small>
+                      {member &&
+                        stop.total - stop.solved > 0 &&
+                        stop.total - stop.solved <= 3 && (
+                          <span className="route-to-go">
+                            {t(
+                              `还差 ${stop.total - stop.solved} 题`,
+                              `${stop.total - stop.solved} to go`,
+                            )}
+                          </span>
+                        )}
+                      <button
+                        type="button"
+                        className="route-only"
+                        onClick={() => {
+                          selectStop(stop.slug);
+                          focusStop(stop.slug);
+                        }}
+                      >
+                        {t('只看这一站', 'This stop only')}
+                      </button>
+                    </h3>
                   )}
-                </span>
-                <span
-                  className="study-level"
-                  data-level={item.difficulty.toLowerCase()}
-                >
-                  {difficultyName(item.difficulty)}
-                </span>
-              </button>
-            ))}
+                  <button
+                    type="button"
+                    className="study-row"
+                    data-next={isNext || undefined}
+                    data-progress={
+                      item.solved ? 'solved' : item.progressStatus || 'not_started'
+                    }
+                    onClick={() => {
+                      // Statements need an account; ask to sign in rather than open an empty page.
+                      if (!member) {
+                        window.dispatchEvent(new Event('cswork:auth-required'));
+                        return;
+                      }
+                      if (canJudge(item)) {
+                        rememberProblemSequence(
+                          data.items.flatMap((row) =>
+                            canJudge(row) ? [row.judgeProblemId!] : [],
+                          ),
+                        );
+                        navigate('problem', { problem: item.judgeProblemId! });
+                      } else setSelected(item.id);
+                    }}
+                  >
+                    <span
+                      className="study-progress"
+                      data-progress={
+                        item.solved
+                          ? 'solved'
+                          : item.progressStatus || 'not_started'
+                      }
+                      title={
+                        item.solved
+                          ? t('已通过', 'Solved')
+                          : item.judging
+                            ? t('判题中', 'Judging')
+                            : item.progressStatus === 'attempted'
+                              ? t('未通过', 'Not solved')
+                              : t('未开始', 'Not started')
+                      }
+                    >
+                      {item.solved ? (
+                        <Check size={18} aria-hidden="true" />
+                      ) : item.judging ? (
+                        <Clock3 size={18} aria-hidden="true" />
+                      ) : item.progressStatus === 'attempted' ? (
+                        <Circle size={18} aria-hidden="true" />
+                      ) : null}
+                      <span className="sr-only">
+                        {item.solved
+                          ? t('已通过', 'Solved')
+                          : item.judging
+                            ? t('判题中', 'Judging')
+                            : item.progressStatus === 'attempted'
+                              ? t('未通过', 'Not solved')
+                              : t('未开始', 'Not started')}
+                      </span>
+                    </span>
+                    <span
+                      className="study-row-main"
+                      title={`${item.number}. ${title(item, english)}`}
+                    >
+                      <strong>
+                        {isNext && (
+                          <span className="route-next-pill">
+                            {t('下一题', 'Next')}
+                          </span>
+                        )}
+                        <span className="study-number">{item.number}.</span>{' '}
+                        {title(item, english)}
+                      </strong>
+                      {pips(item.selection?.stage)}
+                      {!!item.importedSources?.length && (
+                        <small>
+                          {item.solvedLocally
+                            ? t('本站通过 · ', 'Local AC · ')
+                            : ''}
+                          {item.importedSources
+                            .map((source) =>
+                              source === 'cn'
+                                ? t('力扣国区通过', 'LeetCode CN AC')
+                                : t('LeetCode 美区通过', 'LeetCode US AC'),
+                            )
+                            .join(' · ')}
+                        </small>
+                      )}
+                    </span>
+                    <span
+                      className="study-level"
+                      data-level={item.difficulty.toLowerCase()}
+                    >
+                      {difficultyName(item.difficulty)}
+                    </span>
+                  </button>
+                </Fragment>
+              );
+            })}
           </div>
           <nav
             className="study-pagination"
