@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { ojImportSchema, OJ_MAX_IMPORT_BYTES } from '@/lib/oj-types';
-import { problems } from '@/lib/problems';
+import { problems, type ProblemSummary } from '@/lib/problems';
 import type {
   OjProblemPackage,
   OjProblemSpec,
@@ -316,6 +316,23 @@ export async function listPublishedProblems(
       )
       .map(async (v) => ({ ...(await cachedPublicProblem(v)), freeJudge: !!v.free })),
   );
+}
+
+/** Bootstrap ships list and navigation fields only; statements (~3MB in all) load per problem. */
+export async function listProblemSummaries(p: Person | null) {
+  return (await listPublishedProblems(p)).map(problemSummary);
+}
+export function problemSummary(p: OjPublicProblem): ProblemSummary {
+  return {
+    id: p.id,
+    title: p.title,
+    titleEn: p.translations?.en?.title,
+    difficulty: p.difficulty,
+    tags: p.tags,
+    lessonId: p.lessonId || undefined,
+    courseId: p.courseId,
+    freeJudge: p.freeJudge,
+  };
 }
 
 /** OA statements are public: anyone may read them; running and submitting need a verified account. */

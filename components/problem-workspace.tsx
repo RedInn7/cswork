@@ -73,7 +73,8 @@ import {
   problemStatement,
   type ProblemLocale,
   type Language,
-  type Problem,
+  type ProblemStatement,
+  type ProblemSummary,
 } from '@/lib/problems';
 import type { Boot } from '@/lib/types';
 import {
@@ -102,7 +103,7 @@ import { englishMessage } from '@/lib/messages-en';
 import '@/app/editor.css';
 
 type WorkspaceProps = {
-  problem: Problem;
+  problem: ProblemSummary;
   boot: Boot;
   navigate: (view: string, extra?: Record<string, string>) => void;
   ask: (context: Record<string, string>) => void;
@@ -114,6 +115,25 @@ type ReplaceRequest = {
   title: string;
   codingMode: CodingMode;
 };
+const blankStatement = (title: string): ProblemStatement => ({
+  title,
+  description: '',
+  input: '',
+  output: '',
+  explanation: '',
+  hints: [],
+});
+/** The catalogue entry until `problems/:id` answers: header fields only, no statement. */
+const summaryProblem = (p: ProblemSummary): OJProblem => ({
+  ...blankStatement(p.title),
+  sampleIn: '',
+  sampleOut: '',
+  lessonId: '',
+  timeLimit: 0,
+  memoryLimit: 0,
+  ...p,
+  translations: p.titleEn ? { en: blankStatement(p.titleEn) } : undefined,
+});
 /** An untouched ACM starter in either language can be swapped for the current one. */
 function isStarter(code: string, language: Language) {
   return Object.values(starterTemplates).some((set) => set[language] === code);
@@ -157,7 +177,7 @@ function Workspace({
   refresh,
 }: WorkspaceProps) {
   const userId = boot.person?.id || 'guest';
-  const [problem, setProblem] = useState<OJProblem>(initialProblem);
+  const [problem, setProblem] = useState(() => summaryProblem(initialProblem));
   const [neighbors, setNeighbors] = useState<{ prev?: string; next?: string }>(
     {},
   );
