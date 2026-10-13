@@ -157,9 +157,11 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
         id: `fresh-${++submitted}`,
         mode: body.mode,
         status: outcome,
-        startedAt: 41,
-        finishedAt: 101,
+        // The Accepted dialog counts this AC on its own day.
+        created_at: Date.now(),
       };
+      freshSubmission.startedAt = freshSubmission.created_at + 40;
+      freshSubmission.finishedAt = freshSubmission.created_at + 100;
       return Response.json({ id: freshSubmission.id, status: acknowledgement });
     }
     if (url.includes('/submissions/fresh-')) {
