@@ -49,6 +49,12 @@ const summary = (days) => ({
     queuedNow: 2,
     runningNow: 1,
   },
+  funnel: { visitors: 2345, problemBank: 1800, problem: 900, signedIn: 120, ran: 80, accepted: 40 },
+  retention: [
+    { day: '2026-10-10', users: 3, d1: null, d7: null },
+    { day: '2026-10-09', users: 4, d1: 2, d7: null },
+    { day: '2026-10-02', users: 5, d1: 1, d7: 2 },
+  ],
   topViews: [
     { view: 'problems', type: null, count: 5000 },
     { view: 'content', type: 'experience', count: 1200 },
@@ -168,6 +174,17 @@ test('owner metrics render the summary, refetch per range and handle empty and e
     );
     assert.match(text(), /ACAccepted250/);
     assert.match(text(), /WAWrong Answer100/);
+
+    // Funnel: shares of all visitors; return by signup day, pooled over the cohorts that are due.
+    const funnel = card('Funnel').textContent;
+    for (const s of ['Visitors2,345100%', 'Viewed the problem bank1,80077%', 'Opened a problem90038%', 'Got an AC402%'])
+      assert.ok(funnel.includes(s), `funnel shows ${s}`);
+    const back = card('Return after signup');
+    assert.equal(back.querySelector('.rd-badge').textContent, 'D1 33% · D7 40%');
+    assert.deepEqual(
+      [...back.querySelectorAll('tbody tr')].map((tr) => tr.textContent),
+      ['Oct 103——', 'Oct 942 · 50%—', 'Oct 251 · 20%2 · 40%'],
+    );
 
     // Top lists, errors and locales.
     assert.match(text(), /Problem Bank5,000/);
