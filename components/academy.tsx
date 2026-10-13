@@ -1,5 +1,7 @@
 'use client';
 import {
+  lazy,
+  Suspense,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -76,8 +78,6 @@ import {
   ReviewsView,
   ReleasesView,
 } from './support';
-import { TeacherView } from './teacher';
-import { OwnerMetrics } from './owner-metrics';
 import { LoginDialog, AccountView } from './account';
 import { registerAcademyTools } from '@/lib/webmcp';
 import Link from 'next/link';
@@ -89,6 +89,13 @@ import {
   INTERVIEW_COURSE_ID,
   isKnowledgeLesson,
 } from '@/lib/interview-curriculum';
+// Teacher-only screens load on first visit instead of shipping in the main chunk.
+const TeacherView = lazy(() =>
+  import('./teacher').then((m) => ({ default: m.TeacherView })),
+);
+const OwnerMetrics = lazy(() =>
+  import('./owner-metrics').then((m) => ({ default: m.OwnerMetrics })),
+);
 // Practice is the product's centre: the problem bank leads and is the landing view.
 // [icon, zh label, en label, view]
 const nav: [LucideIcon, string, string, string][] = [
@@ -654,13 +661,17 @@ export function Academy() {
             ) : (
               <WorkspaceIntro />
             ))}
-          {content()}
+          <Suspense
+            fallback={<output className="page-loading">{t('正在加载…', 'Loading…')}</output>}
+          >
+            {content()}
+          </Suspense>
         </main>
         <footer className="flex flex-wrap gap-5 px-6 pb-6 text-xs text-muted-foreground">
           <Link prefetch={false} href="/library" className="underline underline-offset-4">
             {t('公开面试资料', 'Interview resources')}
           </Link>
-          <Link href="/privacy" className="underline underline-offset-4">
+          <Link prefetch={false} href="/privacy" className="underline underline-offset-4">
             {t('隐私说明', 'Privacy')}
           </Link>
         </footer>
