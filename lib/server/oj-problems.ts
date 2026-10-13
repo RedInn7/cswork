@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { ojImportSchema, OJ_MAX_IMPORT_BYTES } from '@/lib/oj-types';
 import { problems } from '@/lib/problems';
+import { cleanOaStatement } from '@/lib/oa-verified-statement';
 import type {
   OjProblemPackage,
   OjProblemSpec,
@@ -252,7 +253,11 @@ export async function getJudgeProblem(p: Person, problemId: string) {
 }
 
 async function publicProblem(version: VersionRow): Promise<OjPublicProblem> {
-  const spec = JSON.parse(version.spec_json) as OjProblemSpec;
+  const parsed = JSON.parse(version.spec_json) as OjProblemSpec;
+  // OA packages keep provenance notes under their checksum; readers get the display copy.
+  const spec = version.problem_id.startsWith('oa-')
+    ? cleanOaStatement(parsed)
+    : parsed;
   // This query deliberately never loads hidden inputs or outputs into public serialization.
   const samples = await rows<{
     name: string;
