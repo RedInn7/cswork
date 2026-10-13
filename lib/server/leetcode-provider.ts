@@ -28,6 +28,14 @@ export type LeetcodeProvider = {
     lastKey: string,
   ): Promise<LeetcodePage>;
 };
+/** Structure only (issue paths and codes): values may carry account data. */
+function logShape(api: string, error: z.ZodError) {
+  console.error(
+    'LeetCode schema mismatch',
+    api,
+    error.issues.slice(0, 20).map((i) => `${i.path.join('.')}:${i.code}`),
+  );
+}
 export const leetcodeOrigin = (region: LeetcodeRegion) =>
   region === 'cn' ? 'https://leetcode.cn' : 'https://leetcode.com';
 const MAX_RESPONSE = 2 * 1024 * 1024;
@@ -132,8 +140,10 @@ export function createLeetcodeProvider(
           }),
         })
         .safeParse(value);
-      if (!parsed.success)
+      if (!parsed.success) {
+        logShape('identity', parsed.error);
         throw new HttpError(502, 'LeetCode 账号接口格式发生变化，已停止同步');
+      }
       if (!parsed.data.data.userStatus.isSignedIn)
         throw new HttpError(401, 'LeetCode 登录已失效，请重新登录');
       const name = username.safeParse(parsed.data.data.userStatus.username);
@@ -179,11 +189,13 @@ export function createLeetcodeProvider(
           last_key: z.string().max(4096).optional(),
         })
         .safeParse(value);
-      if (!parsed.success)
+      if (!parsed.success) {
+        logShape('submissions', parsed.error);
         throw new HttpError(
           502,
           'LeetCode 提交接口格式发生变化，未导入本页记录',
         );
+      }
       const data = parsed.data;
       if (
         data.has_next &&

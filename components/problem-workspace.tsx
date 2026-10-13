@@ -374,6 +374,10 @@ function Workspace({
           (course.id === problem.courseId ||
             course.lessons.some((lesson) => lesson.id === problem.lessonId)),
       ));
+  // The server only sends courses this viewer may see (canSeeCourse).
+  const courseVisible = boot.courses.some((course) =>
+    course.lessons.some((lesson) => lesson.id === problem.lessonId),
+  );
   const disabled =
     !ready ||
     recovering ||
@@ -1848,27 +1852,30 @@ function Workspace({
           )}
           <button
             className="cs-top-button"
-            aria-label={t('向老师提问', 'Ask a teacher')}
-            title={t('向老师提问', 'Ask a teacher')}
+            aria-label={t('报告题目问题 / 提问', 'Report a problem / Ask')}
+            title={t('报告题目问题 / 提问', 'Report a problem / Ask')}
             onClick={() =>
+              // No lessonId: the problem's course may be hidden (owner-only mode).
               ask({
-                lessonId: problem.lessonId,
+                problemId: problem.id,
                 ...(submission ? { submissionId: submission.id } : {}),
               })
             }
           >
             <MessageSquare size={15} />
-            <span>{t('向老师提问', 'Ask a teacher')}</span>
+            <span>{t('报告题目问题 / 提问', 'Report a problem / Ask')}</span>
           </button>
-          <button
-            className="cs-top-button"
-            aria-label={t('相关课程', 'Related course')}
-            title={t('相关课程', 'Related course')}
-            onClick={() => navigate('lesson', { lesson: problem.lessonId })}
-          >
-            <BookOpen size={15} />
-            <span>{t('相关课程', 'Related course')}</span>
-          </button>
+          {courseVisible && (
+            <button
+              className="cs-top-button"
+              aria-label={t('相关课程', 'Related course')}
+              title={t('相关课程', 'Related course')}
+              onClick={() => navigate('lesson', { lesson: problem.lessonId })}
+            >
+              <BookOpen size={15} />
+              <span>{t('相关课程', 'Related course')}</span>
+            </button>
+          )}
           <button
             className="cs-top-button"
             aria-label={

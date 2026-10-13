@@ -19,7 +19,11 @@ import {
   limit,
 } from './http';
 import { seed } from './seed';
-import { ensureOjSeed, listPublishedProblems } from './oj-problems';
+import {
+  canSeeProblem,
+  ensureOjSeed,
+  listPublishedProblems,
+} from './oj-problems';
 import { handleContent } from './content-library';
 import { handleMetrics } from './metrics';
 import { handleOj } from './oj-api';
@@ -363,6 +367,7 @@ export async function handle(request: Request) {
             lessonId: id.optional(),
             courseId: id.optional(),
             submissionId: id.optional(),
+            problemId: id.optional(),
             videoPosition: z.number().min(0).max(86400).optional(),
             videoAssetId: id.optional(),
           })
@@ -393,6 +398,8 @@ export async function handle(request: Request) {
           );
           if (!s || s.user_id !== p.id) throw new HttpError(404, '提交不存在');
         }
+        if (d.problemId && !(await canSeeProblem(p, d.problemId)))
+          throw new HttpError(404, '题目不存在');
         const tid = crypto.randomUUID();
         db.prepare(
           'INSERT INTO tickets(id,user_id,title,body,lesson_id,course_id,submission_id,video_position,video_asset_id,status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -400,7 +407,11 @@ export async function handle(request: Request) {
           .bind(
             tid,
             p.id,
-            d.title,
+            // ponytail: tickets has no problem_id column; the title tag serves
+            // lists, search and per-problem counts until one is worth a migration.
+            d.problemId
+              ? `[${d.problemId}] ${d.title}`.slice(0, 180)
+              : d.title,
             d.body,
             d.lessonId || null,
             d.courseId || null,
