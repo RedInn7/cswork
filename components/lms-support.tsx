@@ -19,7 +19,8 @@ import {
 } from '@/lib/types';
 import type { LmsReview, LmsTicket } from '@/lib/lms-types';
 import type { OJSubmission } from '@/lib/oj-client';
-import { readLocale, useT } from '@/lib/i18n';
+import { readLocale, useLocale, useT } from '@/lib/i18n';
+import { problemStatement } from '@/lib/problems';
 import { englishMessage } from '@/lib/messages-en';
 import { SubmissionResult } from './oj-results';
 import { CodeEditor } from './editor';
@@ -90,6 +91,8 @@ function TicketForm({
   boot,
 }: ComposerProps & { context: Record<string, string> }) {
   const t = useT();
+  const locale = useLocale();
+  const problem = boot.problems?.find((p) => p.id === context.problemId);
   const initial = JSON.stringify({
     title: context.title || '',
     body: context.body || '',
@@ -203,7 +206,7 @@ function TicketForm({
           {context.problemId && (
             <p className="context-label">
               {t('关联题目：', 'Problem: ')}
-              {boot.problems?.find((p) => p.id === context.problemId)?.title ||
+              {(problem && problemStatement(problem, locale).title) ||
                 context.problemId}
             </p>
           )}
