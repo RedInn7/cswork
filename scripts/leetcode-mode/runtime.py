@@ -14,54 +14,58 @@ from result_contract import validate_result, format_result
 from complex_design_semantics import CLASSES
 
 
-@functools.cache  # load the stdlib copy once
-def _stdlib_pure_lru():
-    """functools' own pure-Python _lru_cache_wrapper, its fallback for builds without _functools."""
-    import importlib.util
-    native = sys.modules.get('_functools')
-    sys.modules['_functools'] = None  # every `from _functools import` in functools is optional
-    try:
-        spec = importlib.util.find_spec('functools')
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-    finally:
-        sys.modules['_functools'] = native
-    return module._lru_cache_wrapper
-
-
 def _lru_cache_wrapper(user_function, maxsize, typed, info):
     """functools.lru_cache/cache without C frames between recursive calls.
 
     Since 3.12 each call through the C wrapper also spends CPython's fixed C
     recursion budget, so memoized recursion fails near depth 3300 whatever
     sys.setrecursionlimit says. Python-to-Python calls do not, leaving only the
-    recursion limit and memory. The unbounded @cache path stays lean (1.5-2x
-    the C overhead per call); bounded or typed caches use the stdlib copy.
+    recursion limit and memory. Per call this costs about 1.3x the C wrapper,
+    bounded too (a dict keeps LRU order, oldest first); typed about 2x.
     """
-    if maxsize is not None or typed:
-        return _stdlib_pure_lru()(user_function, maxsize, typed, info)
     cache = {}
     get = cache.get
+    pop = cache.pop
     miss = object()
     hits = misses = 0
 
-    def wrapper(*args, **kwds):
-        nonlocal hits, misses
-        key = (*args, miss, *kwds.items()) if kwds else args
-        result = get(key, miss)
-        if result is miss:
-            misses += 1
-            result = cache[key] = user_function(*args, **kwds)
-        else:
-            hits += 1
-        return result
+    if maxsize is None and not typed:
+        def wrapper(*args, **kwds):
+            nonlocal hits, misses
+            key = (*args, miss, *kwds.items()) if kwds else args
+            result = get(key, miss)
+            if result is miss:
+                misses += 1
+                result = cache[key] = user_function(*args, **kwds)
+            else:
+                hits += 1
+            return result
+    else:
+        def wrapper(*args, **kwds):
+            nonlocal hits, misses
+            key = (*args, miss, *kwds.items()) if kwds else args
+            if typed:
+                key += (*map(type, args), *map(type, kwds.values()))
+            result = pop(key, miss)
+            if result is miss:
+                misses += 1
+                result = user_function(*args, **kwds)
+                if maxsize != 0:
+                    # The call may have cached this key already; only a new key evicts.
+                    if maxsize is not None and key not in cache and len(cache) >= maxsize:
+                        del cache[next(iter(cache))]
+                    cache[key] = result
+            else:
+                hits += 1
+                cache[key] = result  # now the most recently used
+            return result
 
     def cache_clear():
         nonlocal hits, misses
         cache.clear()
         hits = misses = 0
 
-    wrapper.cache_info = lambda: info(hits, misses, None, len(cache))
+    wrapper.cache_info = lambda: info(hits, misses, maxsize, len(cache))
     wrapper.cache_clear = cache_clear
     return wrapper
 
