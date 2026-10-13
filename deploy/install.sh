@@ -153,32 +153,44 @@ if [[ -f "$target/oj-worker/index.mjs" && -f /etc/cswork/oj.env ]]; then
 fi
 
 # Existing certificate configuration is retained on later releases.
+# conf.d/cswork-http.conf is read by every site on this nginx, so every file written
+# here is restored (or removed if new) unless nginx -t accepts the result.
+nginx_files=(/etc/nginx/snippets/cswork-{media,oj-import,content-assets,server}.conf
+  /etc/nginx/conf.d/cswork-http.conf /etc/nginx/sites-available/cswork)
+nginx_backup=$(mktemp -d)
+for f in "${nginx_files[@]}"; do
+  if [[ -e "$f" ]]; then cp -p "$f" "$nginx_backup/"; fi
+done
+created_link=false
+restore_nginx() {
+  for f in "${nginx_files[@]}"; do
+    if [[ -e "$nginx_backup/${f##*/}" ]]; then cp -p "$nginx_backup/${f##*/}" "$f"; else rm -f "$f"; fi
+  done
+  if [[ "$created_link" == true ]]; then unlink /etc/nginx/sites-enabled/cswork; fi
+  rm -rf "$nginx_backup"
+  echo 'cswork nginx entry failed validation; previous nginx files restored, existing nginx stays running.'
+}
+trap restore_nginx EXIT
 install -m 644 "$source_dir/deploy/nginx-media.conf" /etc/nginx/snippets/cswork-media.conf
 install -m 644 "$source_dir/deploy/nginx-oj-import.conf" /etc/nginx/snippets/cswork-oj-import.conf
 install -m 644 "$source_dir/deploy/nginx-content-assets.conf" /etc/nginx/snippets/cswork-content-assets.conf
 install -m 644 "$source_dir/deploy/nginx-server.conf" /etc/nginx/snippets/cswork-server.conf
 # http level: gzip/server_tokens reach every site here; log format and zones are cswork-only.
 install -m 644 "$source_dir/deploy/nginx-http.conf" /etc/nginx/conf.d/cswork-http.conf
-created_config=false
 if [[ ! -f /etc/nginx/sites-available/cswork ]]; then
   sed "s/CSWORK_HOSTNAME/$domain/g" "$source_dir/deploy/nginx.conf.template" > /etc/nginx/sites-available/cswork
-  created_config=true
 fi
 # Preserve the existing general request limit. Only the exact teacher save
 # location in cswork-oj-import.conf accepts a 128 MiB package plus its envelope.
 sed -i 's/client_max_body_size 3m;/client_max_body_size 9m;/' /etc/nginx/sites-available/cswork
 python3 "$source_dir/deploy/configure-nginx.py" /etc/nginx/sites-available/cswork
-created_link=false
 if [[ ! -e /etc/nginx/sites-enabled/cswork ]]; then
   ln -s /etc/nginx/sites-available/cswork /etc/nginx/sites-enabled/cswork
   created_link=true
 fi
-if ! nginx -t; then
-  if [[ "$created_link" == true ]]; then unlink /etc/nginx/sites-enabled/cswork; fi
-  if [[ "$created_config" == true ]]; then unlink /etc/nginx/sites-available/cswork; fi
-  echo 'cswork nginx entry failed validation; existing nginx stays running.'
-  exit 1
-fi
+nginx -t
+trap - EXIT
+rm -rf "$nginx_backup"
 systemctl reload nginx
 install -m 644 "$source_dir/deploy/cswork-backup.service" /etc/systemd/system/cswork-backup.service
 install -m 644 "$source_dir/deploy/cswork-backup.timer" /etc/systemd/system/cswork-backup.timer
