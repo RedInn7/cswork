@@ -22,6 +22,28 @@ export const LEETCODE_HARNESS_VERSION = createHash('sha256')
   .update(JSON.stringify(contracts))
   .digest('hex');
 
+/**
+ * The learner's JVM, for ACM runs and LeetCode bridges alike. -Xss64m (as on
+ * Codeforces) lets recursive DFS go 10^5+ deep where 256k overflowed near 2000.
+ * go-judge enforces memoryLimit through cgroup memory.max (no RLIMIT_AS or
+ * RLIMIT_DATA under the cgroup pool), and thread stacks are reserved, not
+ * committed: only the pages a run touches count against its limit.
+ */
+export function javaCommand(memoryKiB: number) {
+  const heap = Math.max(8, Math.floor((memoryKiB / 1024) * 0.6));
+  return [
+    '/usr/bin/java',
+    `-Xmx${heap}m`,
+    '-Xss64m',
+    '-XX:ReservedCodeCacheSize=32m',
+    '-XX:MaxMetaspaceSize=64m',
+    '-XX:ActiveProcessorCount=1',
+    '-cp',
+    'main.jar',
+    'Main',
+  ];
+}
+
 export function leetcodeContract(id: string) {
   return problems[id] || null;
 }
@@ -71,21 +93,7 @@ export function leetcodeSource(
       : language === 'java'
         ? buildLeetCodeJava(c.number, code, c.templates.java)
         : buildLeetCodeGo(c.number, code, c.templates.go);
-  const heap = Math.max(8, Math.floor((memoryKiB / 1024) * 0.6));
-  const command =
-    language === 'java'
-      ? [
-          '/usr/bin/java',
-          `-Xmx${heap}m`,
-          '-Xss256k',
-          '-XX:ReservedCodeCacheSize=32m',
-          '-XX:MaxMetaspaceSize=64m',
-          '-XX:ActiveProcessorCount=1',
-          '-cp',
-          'main.jar',
-          'Main',
-        ]
-      : ['./main'];
+  const command = language === 'java' ? javaCommand(memoryKiB) : ['./main'];
   return {
     source,
     bridgeSource:

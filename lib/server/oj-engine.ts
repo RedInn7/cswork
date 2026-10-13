@@ -11,7 +11,7 @@ import { matchesStringStructure } from '@/lib/oj-string-structures';
 import { semanticCheckerId } from '@/lib/oj-semantic-contract';
 import { matchesSemantic } from '@/lib/oj-semantic-checkers';
 import type { Language } from '@/lib/problems';
-import { LEETCODE_SUPPORT } from './leetcode-mode';
+import { javaCommand, LEETCODE_SUPPORT } from './leetcode-mode';
 import {
   asciiTokens,
   parseIntegerRowCollection,
@@ -363,7 +363,6 @@ export async function run(
   signal: AbortSignal,
 ) {
   const memoryBytes = spec.memoryLimit * 1024;
-  const heap = Math.max(8, Math.floor((spec.memoryLimit / 1024) * 0.6));
   const script = program.bridgeSource
     ? program.bridgeBytecode
       ? 'bridge.pyc'
@@ -382,17 +381,7 @@ export async function run(
           ...(program.leetcodeInput ? ['--leetcode-input'] : []),
         ]
       : program.language === 'java'
-        ? [
-            '/usr/bin/java',
-            `-Xmx${heap}m`,
-            '-Xss256k',
-            '-XX:ReservedCodeCacheSize=32m',
-            '-XX:MaxMetaspaceSize=64m',
-            '-XX:ActiveProcessorCount=1',
-            '-cp',
-            'main.jar',
-            'Main',
-          ]
+        ? javaCommand(spec.memoryLimit)
         : ['main'];
   const copyIn: Record<string, EngineFile> = Object.fromEntries(
     Object.entries(program.cache).map(([name, fileId]) => [name, { fileId }]),
