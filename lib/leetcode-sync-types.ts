@@ -1,3 +1,5 @@
+/** Off while LeetCode's submission API changed shape (cn and us both fail); flip to re-enable UI and API. */
+export const LEETCODE_SYNC_AVAILABLE = false;
 export type LeetcodeRegion = 'cn' | 'us';
 export type LeetcodeSyncStatus =
   | 'running'

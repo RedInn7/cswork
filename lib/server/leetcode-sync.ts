@@ -1,10 +1,11 @@
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
-import type {
-  LeetcodeAcceptedRecord,
-  LeetcodeSyncRun,
-  LeetcodeSyncState,
+import {
+  LEETCODE_SYNC_AVAILABLE,
+  type LeetcodeAcceptedRecord,
+  type LeetcodeSyncRun,
+  type LeetcodeSyncState,
 } from '@/lib/leetcode-sync-types';
 import type { Person } from './auth';
 import {
@@ -366,7 +367,16 @@ export async function handleLeetcodeSync(
     await changeLeetcodeSync(
       person.id,
       value,
-      createLeetcodeProvider(fetch, request.signal),
+      LEETCODE_SYNC_AVAILABLE
+        ? createLeetcodeProvider(fetch, request.signal)
+        : unavailable,
     ),
   );
 }
+// Refuses at the upstream boundary: requests still validate, nothing reaches LeetCode
+// and no run is created; cancel keeps working.
+const refuse = () =>
+  Promise.reject(
+    new HttpError(503, 'LeetCode 同步暂不可用：LeetCode 接口有变化，正在适配'),
+  );
+const unavailable: LeetcodeProvider = { identity: refuse, page: refuse };
