@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import {
   Group,
   Panel,
@@ -7,7 +7,12 @@ import {
   useDefaultLayout,
   usePanelRef,
 } from 'react-resizable-panels';
-import { problemNeighbors } from '@/lib/problem-sequence';
+import {
+  nextUnsolved,
+  problemNeighbors,
+  rememberProblemSequence,
+} from '@/lib/problem-sequence';
+import { practiceStats, type Activity } from './practice-calendar';
 import {
   ArrowLeft,
   BookOpen,
@@ -1895,31 +1900,16 @@ function Workspace({
         </div>
       </div>
       {success && (
-        <Dialog
-          open
-          onOpenChange={(open) => {
-            if (!open) setSuccess(null);
-          }}
-        >
-          <DialogContent
-            className="cs-accepted-dialog"
-            showCloseButton={false}
-            aria-describedby={undefined}
-          >
-            <div className="cs-accepted-banner">
-              <DialogTitle className="cs-accepted-title">Accepted</DialogTitle>
-              <button
-                className="cs-accepted-dismiss"
-                aria-label={
-                  uiEnglish ? 'Dismiss success message' : '收起通过提示'
-                }
-                onClick={() => setSuccess(null)}
-              >
-                <X size={18} />
-              </button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <AcceptedDialog
+          problemId={problem.id}
+          line={!!problem.practiceRound}
+          acceptedAt={success.created_at}
+          activity={boot.activity}
+          fallbackNext={neighbors.next}
+          english={uiEnglish}
+          navigate={navigate}
+          onClose={() => setSuccess(null)}
+        />
       )}
       {problemError &&
         (boot.person ? (
@@ -2126,6 +2116,173 @@ function Workspace({
         }}
       />
     </div>
+  );
+}
+
+type NextStop = { id: string; sequence?: string[] } | null;
+
+/**
+ * Line 500: the server's next stop across the line. OA: the company's next
+ * unsolved judgeable problem. undefined for any other problem.
+ */
+async function findNextProblem(
+  problemId: string,
+  line: boolean,
+  signal: AbortSignal,
+): Promise<NextStop | undefined> {
+  if (line) {
+    const page = await ojRequest<{
+      nextProblemId: string | null;
+      sequence: string[];
+    }>('library?collection=ling-selected-500', undefined, signal);
+    return page.nextProblemId && page.nextProblemId !== problemId
+      ? { id: page.nextProblemId, sequence: page.sequence }
+      : null;
+  }
+  const company = /^oa-(.+)-\d+$/.exec(problemId)?.[1];
+  if (!company) return undefined;
+  const ids: string[] = [];
+  const solved = new Set<string>();
+  // ponytail: pages load until an unsolved problem follows this one; the largest company (~390) is ~13 pages.
+  for (let page = 1; ; page++) {
+    const result = await ojRequest<{
+      items: { id: string; progress?: string }[];
+      total: number;
+      pageSize: number;
+    }>(
+      `oa-library?${new URLSearchParams({ company, ready: '1', page: String(page) })}`,
+      undefined,
+      signal,
+    );
+    for (const item of result.items) {
+      ids.push(item.id);
+      if (item.progress === 'solved') solved.add(item.id);
+    }
+    const at = ids.indexOf(problemId);
+    if (
+      (at >= 0 && ids.slice(at + 1).some((id) => !solved.has(id))) ||
+      page * result.pageSize >= result.total
+    )
+      break;
+  }
+  const id = nextUnsolved(ids, problemId, solved);
+  return id ? { id, sequence: ids } : null;
+}
+
+function AcceptedDialog({
+  problemId,
+  line,
+  acceptedAt,
+  activity,
+  fallbackNext,
+  english,
+  navigate,
+  onClose,
+}: {
+  problemId: string;
+  line: boolean;
+  acceptedAt: number;
+  activity?: Activity[];
+  fallbackNext?: string;
+  english: boolean;
+  navigate: WorkspaceProps['navigate'];
+  onClose: () => void;
+}) {
+  const t = (zh: string, en: string) => (english ? en : zh);
+  const primary = useRef<HTMLButtonElement>(null);
+  const [target] = useState(() => {
+    try {
+      const saved = Number(
+        localStorage.getItem('cswork:practice:daily-target'),
+      );
+      return [1, 2, 3, 5].includes(saved) ? saved : 3;
+    } catch {
+      return 3;
+    }
+  });
+  // Opened only in the browser, so the local day is safe to read here. The
+  // bootstrap refresh may not include this AC yet; a problem counts once a day.
+  // Count it on its server day like the activity feed; min() keeps a slow
+  // client clock from pushing it into tomorrow.
+  const [now] = useState(Date.now);
+  const stats = useMemo(
+    () =>
+      practiceStats(
+        [
+          ...(activity ?? []),
+          { problem_id: problemId, created_at: Math.min(acceptedAt, now) },
+        ],
+        new Date(now).toDateString(),
+        english,
+      ),
+    [activity, problemId, acceptedAt, now, english],
+  );
+  const [next, setNext] = useState<NextStop | 'loading'>('loading');
+  useEffect(() => {
+    const controller = new AbortController();
+    const fallback = fallbackNext ? { id: fallbackNext } : null;
+    findNextProblem(problemId, line, controller.signal).then(
+      (found) => setNext(found === undefined ? fallback : found),
+      () => {
+        if (!controller.signal.aborted) setNext(fallback);
+      },
+    );
+    return () => controller.abort();
+  }, [problemId, line, fallbackNext]);
+  const go = () => {
+    if (next === 'loading') return;
+    if (!next)
+      return navigate(
+        'problems',
+        problemId.startsWith('oa-') ? { library: 'oa' } : undefined,
+      );
+    if (next.sequence) rememberProblemSequence(next.sequence);
+    navigate('problem', { problem: next.id });
+  };
+  return (
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <DialogContent
+        className="cs-accepted-dialog"
+        showCloseButton={false}
+        initialFocus={primary}
+      >
+        <div className="cs-accepted-banner">
+          <DialogTitle className="cs-accepted-title">Accepted</DialogTitle>
+          <DialogDescription className="cs-accepted-stats">
+            {t(
+              `今日 ${stats.today} / ${target} · 连续 ${stats.streak} 天`,
+              `Today ${stats.today} / ${target} · ${stats.streak}-day streak`,
+            )}
+          </DialogDescription>
+          <Button
+            ref={primary}
+            size="lg"
+            className="cs-accepted-next"
+            disabled={next === 'loading'}
+            focusableWhenDisabled
+            onClick={go}
+          >
+            {next === 'loading' ? <LoaderCircle className="cs-spin" /> : null}
+            {next === null
+              ? t('返回题库', 'Back to problems')
+              : t('下一题', 'Next problem')}
+            {next !== 'loading' && next !== null ? <ChevronRight /> : null}
+          </Button>
+          <button
+            className="cs-accepted-dismiss"
+            aria-label={english ? 'Dismiss success message' : '收起通过提示'}
+            onClick={onClose}
+          >
+            <X size={18} />
+          </button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

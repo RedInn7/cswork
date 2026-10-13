@@ -157,9 +157,11 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
         id: `fresh-${++submitted}`,
         mode: body.mode,
         status: outcome,
-        startedAt: 41,
-        finishedAt: 101,
+        // The Accepted dialog counts this AC on its own day.
+        created_at: Date.now(),
       };
+      freshSubmission.startedAt = freshSubmission.created_at + 40;
+      freshSubmission.finishedAt = freshSubmission.created_at + 100;
       return Response.json({ id: freshSubmission.id, status: acknowledgement });
     }
     if (url.includes('/submissions/fresh-')) {
@@ -412,9 +414,10 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     );
     assert.equal(progressEvents, 1);
     assert.ok(watchReads > 0, 'active submission uses the watch endpoint');
+    // This AC counts today before the bootstrap refresh; with no list to follow, go back.
     assert.equal(
       document.querySelector('.cs-accepted-banner').textContent.trim(),
-      'Accepted',
+      'AcceptedToday 1 / 3 · 1-day streakBack to problems',
     );
     await click(
       document.querySelector('[aria-label="Dismiss success message"]'),
