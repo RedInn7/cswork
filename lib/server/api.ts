@@ -22,6 +22,7 @@ import { seed } from './seed';
 import { ensureOjSeed, listPublishedProblems } from './oj-problems';
 import { handleContent } from './content-library';
 import { handleMetrics } from './metrics';
+import { health } from './health';
 import { handleOj } from './oj-api';
 import { judgeReady, submit, result } from './judge';
 import { playback } from './video';
@@ -151,6 +152,8 @@ export async function handle(request: Request) {
       const { webhook } = await import('./payments');
       return await webhook(request);
     }
+    // Cheap unauthenticated probe: before seeding and session lookup.
+    if (resource === 'health' && request.method === 'GET') return health();
     if (request.method !== 'GET') sameOrigin(request);
     if (resource === 'metrics')
       // Analytics beacons and the owner summary need only the session, not the seed checks below.
