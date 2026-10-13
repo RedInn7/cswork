@@ -9,6 +9,8 @@ import {
   sitemapLibraryRange,
   SITEMAP_URL_LIMIT,
   xmlResponse,
+  workspaceTitle,
+  SEO_HOME,
 } from '../lib/seo';
 import { GET as robots } from '../app/robots.txt/route';
 
@@ -34,6 +36,13 @@ test('page metadata uses one production canonical and matching social previews',
   assert.throws(() =>
     seoMetadata({ title: 'x', description: 'x', path: '//other.example/' }),
   );
+});
+
+test('workspace tab titles name the view and keep the home title on the landing page', () => {
+  assert.equal(workspaceTitle('zh'), SEO_HOME.zh.title);
+  assert.equal(workspaceTitle('en'), SEO_HOME.en.title);
+  assert.equal(workspaceTitle('zh', '两数之和'), '两数之和 · CSWork');
+  assert.equal(workspaceTitle('en', 'Problem Bank'), 'Problem Bank · CSWork');
 });
 
 test('sitemaps escape query URLs and use actual valid update dates only', () => {

@@ -71,7 +71,8 @@ import { beacon, track } from '@/lib/analytics';
 import { englishMessage } from '@/lib/messages-en';
 import { ContentDetail, ContentList, contentSection } from './content-library';
 import { WorkspaceIntro } from './workspace-intro';
-import { SEO_HOME } from '@/lib/seo';
+import { workspaceTitle } from '@/lib/seo';
+import { problemStatement } from '@/lib/problems';
 import {
   TicketComposer,
   TicketView,
@@ -141,7 +142,6 @@ export function Academy() {
     t = useT();
   useEffect(() => {
     document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
-    document.title = SEO_HOME[locale].title;
   }, [locale]);
   const [boot, setBoot] = useState<Boot>(initial),
     [loading, setLoading] = useState(true),
@@ -279,6 +279,31 @@ export function Academy() {
   // The server omits teaching courses hidden from this account (owner-only mode).
   const coursesHidden =
     !loading && !boot.courses.some((c) => c.id !== INTERVIEW_COURSE_ID);
+  const heading =
+    (current && t(current[1], current[2])) ||
+    (
+      {
+        lesson: isKnowledgeLesson(params.lesson)
+          ? t('算法知识点', 'Algorithm Concepts')
+          : t('课程学习', 'Course'),
+        problem: t('算法题库', 'Problem Bank'),
+        reviews: t('代码评审', 'Code reviews'),
+        releases: t('课程更新', 'Course updates'),
+        teacher: t('教师工作台', 'Teacher dashboard'),
+        metrics: t('运营数据', 'Analytics'),
+        account: t('账号设置', 'Account settings'),
+      } as Record<string, string>
+    )[view] ||
+    t('算法题库', 'Problem Bank');
+  // The bare landing keeps the server's home title; other views name themselves.
+  const pageName = !params.view
+    ? undefined
+    : view === 'problem' && selectedProblem
+      ? problemStatement(selectedProblem, locale).title
+      : heading;
+  useEffect(() => {
+    document.title = workspaceTitle(locale, pageName);
+  }, [locale, pageName]);
   function content() {
     if (loading) return <output className="page-loading">{t('正在加载…', 'Loading…')}</output>;
     if (error && !boot.courses.length)
@@ -543,23 +568,7 @@ export function Academy() {
         <header className="topbar">
           <div className="flex items-center gap-3">
             <SidebarTrigger />
-            <span>
-              {(current && t(current[1], current[2])) ||
-                (
-                  {
-                    lesson: isKnowledgeLesson(params.lesson)
-                      ? t('算法知识点', 'Algorithm Concepts')
-                      : t('课程学习', 'Course'),
-                    problem: t('算法题库', 'Problem Bank'),
-                    reviews: t('代码评审', 'Code reviews'),
-                    releases: t('课程更新', 'Course updates'),
-                    teacher: t('教师工作台', 'Teacher dashboard'),
-                    metrics: t('运营数据', 'Analytics'),
-                    account: t('账号设置', 'Account settings'),
-                  } as Record<string, string>
-                )[view] ||
-                t('算法题库', 'Problem Bank')}
-            </span>
+            <span>{heading}</span>
           </div>
           <div className="topbar-actions">
             <button
