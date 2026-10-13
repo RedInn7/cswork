@@ -1896,7 +1896,6 @@ function Workspace({
         <AcceptedDialog
           problemId={problem.id}
           line={!!problem.practiceRound}
-          acceptedAt={success.created_at}
           activity={boot.activity}
           fallbackNext={neighbors.next}
           english={uiEnglish}
@@ -2165,7 +2164,6 @@ async function findNextProblem(
 function AcceptedDialog({
   problemId,
   line,
-  acceptedAt,
   activity,
   fallbackNext,
   english,
@@ -2174,7 +2172,6 @@ function AcceptedDialog({
 }: {
   problemId: string;
   line: boolean;
-  acceptedAt: number;
   activity?: Activity[];
   fallbackNext?: string;
   english: boolean;
@@ -2195,17 +2192,15 @@ function AcceptedDialog({
   });
   // Opened only in the browser, so the local day is safe to read here. The
   // bootstrap refresh may not include this AC yet; a problem counts once a day.
+  const [now] = useState(Date.now);
   const stats = useMemo(
     () =>
       practiceStats(
-        [
-          ...(activity ?? []),
-          { problem_id: problemId, created_at: acceptedAt },
-        ],
-        new Date().toDateString(),
+        [...(activity ?? []), { problem_id: problemId, created_at: now }],
+        new Date(now).toDateString(),
         english,
       ),
-    [activity, problemId, acceptedAt, english],
+    [activity, problemId, now, english],
   );
   const [next, setNext] = useState<NextStop | 'loading'>('loading');
   useEffect(() => {

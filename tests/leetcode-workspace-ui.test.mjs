@@ -412,9 +412,10 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     );
     assert.equal(progressEvents, 1);
     assert.ok(watchReads > 0, 'active submission uses the watch endpoint');
+    // This AC counts today before the bootstrap refresh; with no list to follow, go back.
     assert.equal(
       document.querySelector('.cs-accepted-banner').textContent.trim(),
-      'Accepted',
+      'AcceptedToday 1 / 3 · 1-day streakBack to problems',
     );
     await click(
       document.querySelector('[aria-label="Dismiss success message"]'),
