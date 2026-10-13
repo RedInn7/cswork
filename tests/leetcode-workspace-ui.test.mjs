@@ -137,6 +137,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
   let releasePost;
   let failWatch = false;
   let watchReads = 0;
+  let statusReads = 0;
   let failDetailOnce = false;
   let submitted = 0;
   let progressEvents = 0;
@@ -185,7 +186,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     if (url.includes('/submissions/old-acm')) return Response.json(historical);
     if (url.includes('/submissions'))
       return Response.json({ items: [historical], nextCursor: null });
-    if (url.includes('/status'))
+    if (url.includes('/status') && ++statusReads)
       return Response.json({ available: true, languageVersions: {} });
     return Response.json(
       url.includes('/problems/acm-1') ? acmProblem : problem,
@@ -240,6 +241,8 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       ),
     );
     await settle();
+    // A hidden tab (jsdom's default) skips judge health polls.
+    assert.equal(statusReads, 0);
     assert.ok(button('Run').closest('.cs-code-caption'));
     assert.ok(button('Submit').closest('.cs-code-caption'));
     assert.equal(
@@ -330,6 +333,10 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       configurable: true,
       get: () => 'visible',
     });
+    // Becoming visible checks judge health at once.
+    await act(async () => document.dispatchEvent(new Event('visibilitychange')));
+    await settle();
+    assert.equal(statusReads, 1);
     globalThis.requestAnimationFrame = (callback) => setTimeout(callback, 0);
     globalThis.cancelAnimationFrame = (frame) => clearTimeout(frame);
     await click(button('Run'));
