@@ -294,6 +294,10 @@ try {
   const guest = await request('bootstrap');
   assert.equal(guest.person, null);
   assert.ok(guest.problems.some((p) => p.id === 'watch-intervals'));
+  // Statements load per problem from oj/problems/:id, never in bootstrap.
+  for (const p of guest.problems)
+    for (const key of ['description', 'samples', 'translations'])
+      assert.ok(!(key in p), `${p.id}.${key}`);
   assert.equal(
     db.prepare('SELECT COUNT(*) AS n FROM oj_problems WHERE published=1').get()
       .n,

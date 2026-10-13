@@ -1,6 +1,6 @@
 import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
@@ -90,4 +90,14 @@ void test('the English title rides along; the English statement does not', async
   });
   assert.equal(entry.titleEn, 'English title');
   assert.ok(!JSON.stringify(entry).includes('English statement'));
+});
+
+// ponytail: source check; api.ts cannot load outside Vite. oj-integration.mjs asserts the HTTP payload.
+void test('bootstrap() serves the summary list, never the full catalogue', () => {
+  const api = readFileSync('lib/server/api.ts', 'utf8');
+  assert.match(
+    api,
+    /problems: lite \? undefined : await listProblemSummaries\(p\)/,
+  );
+  assert.doesNotMatch(api, /listPublishedProblems/);
 });
