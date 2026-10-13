@@ -73,7 +73,7 @@ import { englishMessage } from '@/lib/messages-en';
 import { ContentDetail, ContentList, contentSection } from './content-library';
 import { WorkspaceIntro } from './workspace-intro';
 import { workspaceTitle } from '@/lib/seo';
-import { problemStatement } from '@/lib/problems';
+import { problemTitle } from '@/lib/problems';
 import {
   TicketComposer,
   TicketView,
@@ -297,8 +297,8 @@ export function Academy() {
     : view === 'problem' &&
         selectedProblem &&
         // OA English statements only arrive with the detail fetch; don't title an English tab in Chinese.
-        (locale === 'zh' || selectedProblem.translations?.en)
-      ? problemStatement(selectedProblem, locale).title
+        (locale === 'zh' || selectedProblem.titleEn)
+      ? problemTitle(selectedProblem, locale)
       : heading;
   useEffect(() => {
     document.title = workspaceTitle(locale, pageName);

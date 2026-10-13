@@ -408,9 +408,11 @@ void test('disabled sync refuses before LeetCode and creates no run', {
   }
   assert.equal(fetched, false);
   assert.equal(
-    sqlite()
-      .prepare('SELECT COUNT(*) AS n FROM leetcode_sync_runs WHERE user_id=?')
-      .get(user).n,
+    (
+      sqlite()
+        .prepare('SELECT COUNT(*) AS n FROM leetcode_sync_runs WHERE user_id=?')
+        .get(user) as { n: number }
+    ).n,
     0,
   );
 });

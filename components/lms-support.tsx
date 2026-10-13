@@ -20,7 +20,7 @@ import {
 import type { LmsReview, LmsTicket } from '@/lib/lms-types';
 import type { OJSubmission } from '@/lib/oj-client';
 import { readLocale, useLocale, useT } from '@/lib/i18n';
-import { problemStatement } from '@/lib/problems';
+import { problemTitle } from '@/lib/problems';
 import { englishMessage } from '@/lib/messages-en';
 import { SubmissionResult } from './oj-results';
 import { CodeEditor } from './editor';
@@ -206,7 +206,7 @@ function TicketForm({
           {context.problemId && (
             <p className="context-label">
               {t('关联题目：', 'Problem: ')}
-              {(problem && problemStatement(problem, locale).title) ||
+              {(problem && problemTitle(problem, locale)) ||
                 context.problemId}
             </p>
           )}
