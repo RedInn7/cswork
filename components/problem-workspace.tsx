@@ -376,6 +376,13 @@ function Workspace({
         },
       ];
   const sample = samples[sampleIndex] || samples[0];
+  // Bootstrap carries no statements; this stands in until `problems/:id` answers.
+  const problemLoading = !loadedProblem && !problemError && (
+    <div className="cs-loading" role="status">
+      <LoaderCircle size={18} className="cs-spin" />
+      {t('正在加载题目…', 'Loading the problem…')}
+    </div>
+  );
   const languageOptions = languages.filter(
     (item) => !problem.languages || problem.languages.includes(item.id),
   );
@@ -1166,6 +1173,7 @@ function Workspace({
               </output>
             )}
             <div className="cs-problem-prose">
+              {problemLoading}
               {sourceBody && (
                 <>
                   <StatementMarkdown body={sourceBody} />
@@ -1665,7 +1673,9 @@ function Workspace({
                           )}
                         </span>
                       </div>
-                      {codingMode === 'leetcode' ? (
+                      {!loadedProblem ? (
+                        problemLoading
+                      ) : codingMode === 'leetcode' ? (
                         <LeetCodeSamples
                           problemId={problem.id}
                           sample={sample}

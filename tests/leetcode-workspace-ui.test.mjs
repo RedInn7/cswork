@@ -127,6 +127,16 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     leetcodeTemplates: undefined,
     sourceStatement: undefined,
   };
+  // Bootstrap's catalogue entry: the statement arrives with problems/:id.
+  const summary = ({ id, title, translations, difficulty, tags, lessonId, courseId }) => ({
+    id,
+    title,
+    titleEn: translations.en.title,
+    difficulty,
+    tags,
+    lessonId,
+    courseId,
+  });
   const originalFetch = globalThis.fetch;
   let outcome = 'accepted';
   let acknowledgement = 'queued';
@@ -229,7 +239,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     await act(async () =>
       root.render(
         createElement(ProblemWorkspace, {
-          problem,
+          problem: summary(problem),
           boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
           navigate(path) {
             navigations.push(path);
@@ -476,7 +486,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       root.render(
         createElement(ProblemWorkspace, {
           key: 'reloaded',
-          problem,
+          problem: summary(problem),
           boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
           navigate() {},
           ask() {},
@@ -504,7 +514,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
         root.render(
           createElement(ProblemWorkspace, {
             key,
-            problem: acmProblem,
+            problem: summary(acmProblem),
             boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
             navigate() {},
             ask() {},
