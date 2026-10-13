@@ -31,11 +31,30 @@ export function analyticsReferrer(referrer: string): string {
       'facebook.com',
       'youtube.com',
       't.co',
+      'x.com',
+      'baidu.com',
+      'zhihu.com',
+      'xiaohongshu.com',
+      'bilibili.com',
+      'v2ex.com',
+      '1point3acres.com',
+      'chatgpt.com',
+      'perplexity.ai',
     ];
     const source = sources.find(
       (host) => url.hostname === host || url.hostname.endsWith(`.${host}`),
     );
     return source ? `${url.protocol}//${source}/` : '';
+  } catch {
+    return '';
+  }
+}
+/** The referring site for the owner dashboard: an allowlisted host, or 'other'. */
+export function referrerHost(referrer: string, self: string) {
+  const source = analyticsReferrer(referrer);
+  if (source) return new URL(source).hostname;
+  try {
+    return new URL(referrer).host === self ? '' : 'other';
   } catch {
     return '';
   }
@@ -107,6 +126,48 @@ export function beacon(name: string, params: Params = {}) {
   } catch {
     /* Analytics is best effort. */
   }
+}
+
+let lastPage = '',
+  visited = false;
+/**
+ * Once per tab session, so a reload or an OAuth round trip is not a new visit;
+ * per page load when storage is blocked.
+ */
+function newVisit() {
+  if (visited) return false;
+  visited = true;
+  try {
+    if (sessionStorage.getItem('cswork:visit')) return false;
+    sessionStorage.setItem('cswork:visit', '1');
+  } catch {
+    /* Counted per page load. */
+  }
+  return true;
+}
+/**
+ * One page_view per URL: StrictMode's second effect run doesn't repeat it.
+ * The first of a visit also says where it came from: the referring host and
+ * the UTM tags, never a URL.
+ */
+export function pageView(params: Params) {
+  if (typeof window === 'undefined') return;
+  const url = location.pathname + location.search;
+  if (url === lastPage) return;
+  lastPage = url;
+  const p = new URLSearchParams(location.search);
+  beacon(
+    'page_view',
+    newVisit()
+      ? {
+          ...params,
+          ref: referrerHost(document.referrer, location.host) || null,
+          utm_source: p.get('utm_source'),
+          utm_medium: p.get('utm_medium'),
+          utm_campaign: p.get('utm_campaign'),
+        }
+      : params,
+  );
 }
 
 /** GA4 (no-op without the gtag snippet: dev, tests, ad blockers) plus the owner dashboard. */

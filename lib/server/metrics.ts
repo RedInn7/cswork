@@ -19,14 +19,19 @@ const SAMPLE = 50_000;
 const TOP = 20;
 const UNFINISHED = new Set(['queued', 'compiling', 'running', 'cancelled']);
 
-type Kind = 'text' | readonly [min: number, max: number];
+// text: up to 120 chars; tag: a short label (64 chars) grouped case-insensitively.
+type Kind = 'text' | 'tag' | readonly [min: number, max: number];
 const COUNT = [0, 1_000_000] as const;
 const MS = [0, 3_600_000] as const;
 const JUDGE = { mode: 'text', problem_id: 'text', language: 'text' } as const;
 /** Allowed events and their params; other names and keys are dropped. */
 const EVENTS: Record<string, Record<string, Kind>> = {
-  // slug is set on content pages and feeds topContent.
-  page_view: { view: 'text', type: 'text', slug: 'text' },
+  // slug is set on content pages and feeds topContent. The first view of a page load also
+  // says where the visit came from: an allowlisted referrer host and the UTM tags.
+  page_view: {
+    view: 'text', type: 'text', slug: 'text',
+    ref: 'tag', utm_source: 'tag', utm_medium: 'tag', utm_campaign: 'tag',
+  },
   search: { view: 'text', q: 'text', results: COUNT },
   judge_submit: JUDGE,
   judge_result: {
@@ -80,11 +85,11 @@ function clean(event: unknown): [string, string] | null {
   const kept: Record<string, string | number> = {};
   for (const [key, kind] of Object.entries(EVENTS[name])) {
     const value = given[key];
-    if (kind === 'text') {
+    if (kind === 'text' || kind === 'tag') {
       if (typeof value !== 'string' && !(typeof value === 'number' && Number.isFinite(value))) continue;
-      const text = String(value).replace(/\s+/g, ' ').trim().slice(0, 120);
+      const text = String(value).replace(/\s+/g, ' ').trim().slice(0, kind === 'tag' ? 64 : 120);
       // Searches group case-insensitively in the top list.
-      if (text) kept[key] = key === 'q' ? text.toLowerCase() : text;
+      if (text) kept[key] = key === 'q' || kind === 'tag' ? text.toLowerCase() : text;
     } else {
       const n = typeof value === 'number' ? value : typeof value === 'string' && value.trim() ? Number(value) : NaN;
       if (Number.isFinite(n)) kept[key] = Math.min(kind[1], Math.max(kind[0], Math.round(n)));

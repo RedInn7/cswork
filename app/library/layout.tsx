@@ -1,5 +1,6 @@
 import './library.css';
 import Link from 'next/link';
+import { LibraryPageView } from './page-view';
 
 export default function LibraryLayout({
   children,
@@ -27,6 +28,7 @@ export default function LibraryLayout({
           Privacy
         </Link>
       </footer>
+      <LibraryPageView />
     </div>
   );
 }

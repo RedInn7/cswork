@@ -68,10 +68,19 @@ void test('ingest keeps allowed events and params, coerced and clamped', async (
     ],
   });
   assert.equal(response.status, 204);
-  // Sign-ins are recorded server-side only (the auth hooks); a client copy is dropped.
+  // The first view of a visit says where it came from; sign-ins are recorded server-side only.
   await post({
     vid: 'visitor-0002',
-    events: [{ name: 'login', params: { method: 'email' } }, { name: 'page_view', params: { view: 'problems' } }],
+    events: [
+      { name: 'login', params: { method: 'email' } },
+      {
+        name: 'page_view',
+        params: {
+          view: 'problems', ref: 'google.com', utm_source: ' Reddit ', utm_medium: 'CPC',
+          utm_campaign: 'Launch '.repeat(20), utm_term: 'private', referrer: 'https://google.com/?q=x',
+        },
+      },
+    ],
   }, alice);
   events = new Database(process.env.METRICS_DATABASE_PATH!, { readonly: true });
   // No IP addresses or user agents, ever.
@@ -92,7 +101,7 @@ void test('ingest keeps allowed events and params, coerced and clamped', async (
     { mode: 'submit', verdict: 'v'.repeat(120), passed: 0, duration_ms: 3_600_000, queue_ms: 250 },
     { stage: 'poll', status: '503' },
     { q: 'two sum' },
-    { view: 'problems' },
+    { view: 'problems', ref: 'google.com', utm_source: 'reddit', utm_medium: 'cpc', utm_campaign: 'launch '.repeat(10).slice(0, 64) },
   ]);
 });
 
