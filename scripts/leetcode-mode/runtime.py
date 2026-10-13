@@ -4,7 +4,7 @@ import json
 import sys
 import subprocess
 from contextlib import redirect_stdout
-from types import CodeType, GeneratorType
+from types import CodeType, GeneratorType, TracebackType
 from pathlib import Path
 import tree_codec as trees
 import linked_codec as lists
@@ -100,6 +100,9 @@ def _all(iterable):
 
 
 _CONSUMERS = {'min': _drain(min), 'max': _drain(max), 'sum': _drain(sum), 'any': _any, 'all': _all}
+# Harness frames that sit between recursive learner calls.
+_HIDDEN = {code for function in (_lru_cache_wrapper, _drain) for code in function.__code__.co_consts
+           if type(code) is CodeType} | {_any.__code__, _all.__code__}
 
 
 def _generator_consumers(code):
@@ -113,10 +116,44 @@ def _generator_consumers(code):
     return _CONSUMERS.keys() & {name for c in codes for name in c.co_names}
 
 
+def _excepthook(kind, value, tb):
+    """The default report minus harness frames, so recursion folds into
+    "[Previous line repeated N more times]" again. Only the innermost frames are
+    formatted: 10^6 of them take 20+ s and, unfolded, overflow the 64 KiB stderr
+    collector, so a deep failure would read as a time or output limit."""
+    import traceback
+    pending, seen, omitted = [value], set(), 0
+    while pending:
+        error = pending.pop()
+        if error is None or id(error) in seen:
+            continue
+        seen.add(id(error))
+        kept = []
+        frame = error.__traceback__
+        while frame is not None:
+            if frame.tb_frame.f_code not in _HIDDEN:
+                kept.append(frame)
+            frame = frame.tb_next
+        if error is value:
+            omitted = len(kept) - 50
+        frame = None  # rebuilt, not relinked: setting tb_next walks the rest of the chain
+        for entry in reversed(kept[-50:]):
+            frame = TracebackType(frame, entry.tb_frame, entry.tb_lasti, entry.tb_lineno)
+        error.__traceback__ = frame
+        pending += error.__cause__, error.__context__
+    lines = traceback.format_exception(kind, value, value.__traceback__)
+    header = 'Traceback (most recent call last):\n'
+    if omitted > 0 and header in lines:
+        at = len(lines) - lines[::-1].index(header)  # the last one is this exception's
+        lines.insert(at, f'  ... {omitted} outer frames omitted ...\n')
+    sys.stderr.write(''.join(lines))
+
+
 def install(spec, scope):
     # functools.lru_cache looks this up when it decorates, so @cache, @lru_cache
     # and the learner's own `from functools import ...` all get it.
     functools._lru_cache_wrapper = _lru_cache_wrapper
+    sys.excepthook = _excepthook
     # install() runs from the main module, whose code already holds the learner's.
     for name in _generator_consumers(sys._getframe(1).f_code):
         scope[name] = _CONSUMERS[name]
