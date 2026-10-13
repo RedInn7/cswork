@@ -59,6 +59,16 @@ class Contracts(unittest.TestCase):
         source = 'class Solution:\n def removeDuplicates(self,nums):\n  nums[:2]=[1,2]\n  return 2\n'
         self.assertEqual(invoke(26, source, '[1,1,2]', True), '2\n1 2\n')
 
+    def test_deep_memoized_recursion(self):
+        # The C lru_cache stops near depth 3300 on 3.12+, setrecursionlimit or not.
+        for decorator in ('@cache', '@lru_cache(None)', '@functools.lru_cache'):
+            source = ('class Solution:\n def coinChange(self, coins, amount):\n'
+                      f'  {decorator}\n  def dp(a):\n   best = 0 if a == 0 else 10**9\n'
+                      '   for c in coins:\n    if c <= a: best = min(best, dp(a - c) + 1)\n   return best\n'
+                      '  answer = dp(amount)\n  assert dp.cache_info().currsize\n  dp.cache_clear()\n'
+                      '  assert dp.cache_info().currsize == 0\n  return answer\n')
+            self.assertEqual(invoke(322, source, '[1,2,5]\n10000', True), '2000\n', decorator)
+
     def test_tree_identity(self):
         source = 'class Solution:\n def lowestCommonAncestor(self,root,p,q):\n  assert p is root.left and q is root.right\n  return root\n'
         # Custom LeetCode examples use node values; native calls receive pointers.
