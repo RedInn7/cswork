@@ -43,12 +43,22 @@ printf 'app-only\nbase=%s\n' "$base" > "$target/RELEASE_KIND"
 chown -R root:root "$target"
 chmod -R a+rX "$target"
 
+app_ready() {
+  local reply
+  reply=$(curl -sS --connect-timeout 2 --max-time 3 -w '\n%{http_code}' http://127.0.0.1:4317/api/health) || return 1
+  case ${reply##*$'\n'} in
+    # 503 may only mean low disk or a stale judge; the worker is checked separately below.
+    200|503) "$node" -e 'process.exit(JSON.parse(process.argv[1]).db===true ? 0 : 1)' "${reply%$'\n'*}" ;;
+    # Releases older than /api/health (rollback targets) answer 401/404: use the old probe.
+    *) curl -fsS --connect-timeout 2 --max-time 3 http://127.0.0.1:4317/api/bootstrap |
+        "$node" -e 'let text="";process.stdin.on("data",v=>text+=v);process.stdin.on("end",()=>{const r=JSON.parse(text);process.exit(Array.isArray(r.courses)&&Array.isArray(r.problems)&&r.problems.length>0&&r.services?.password ? 0 : 1)})' ;;
+  esac
+}
 wait_for_health() {
   local started=$1
   for attempt in {1..40}; do
     if systemctl is-active --quiet cswork.service && systemctl is-active --quiet cswork-oj-worker.service &&
-      curl -fsS --connect-timeout 2 --max-time 3 http://127.0.0.1:4317/api/bootstrap |
-        "$node" -e 'let text="";process.stdin.on("data",v=>text+=v);process.stdin.on("end",()=>{const r=JSON.parse(text);process.exit(Array.isArray(r.courses)&&Array.isArray(r.problems)&&r.problems.length>0&&r.services?.password ? 0 : 1)})' &&
+      app_ready &&
       STARTED="$started" "$node" --env-file=/etc/cswork/cswork.env --input-type=module -e '
         import {createRequire} from "node:module";
         const Database=createRequire("/srv/cswork/current/package.json")("better-sqlite3");
