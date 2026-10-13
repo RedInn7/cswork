@@ -1,0 +1,13 @@
+[Unit]
+Description=Notify that %i failed
+# Restart=on-failure units fail on every crash; cap a crash loop at 3 messages per hour.
+StartLimitIntervalSec=1h
+StartLimitBurst=3
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/cswork-notify "%i failed on %H"
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
