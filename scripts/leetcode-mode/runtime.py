@@ -4,6 +4,7 @@ import json
 import sys
 import subprocess
 from contextlib import redirect_stdout
+from types import CodeType, GeneratorType
 from pathlib import Path
 import tree_codec as trees
 import linked_codec as lists
@@ -70,10 +71,55 @@ def _lru_cache_wrapper(user_function, maxsize, typed, info):
     return wrapper
 
 
+def _drain(builtin):
+    # Drains a generator argument in Python: built-ins iterating it from C would
+    # spend the same C budget once per level, as in max(dfs(c) for c in node.children).
+    def call(*args, **kwds):
+        if args and type(args[0]) is GeneratorType:
+            args = ([value for value in args[0]], *args[1:])
+        return builtin(*args, **kwds)
+    return call
+
+
+def _any(iterable):
+    if type(iterable) is not GeneratorType:
+        return any(iterable)
+    for value in iterable:
+        if value:
+            return True
+    return False
+
+
+def _all(iterable):
+    if type(iterable) is not GeneratorType:
+        return all(iterable)
+    for value in iterable:
+        if not value:
+            return False
+    return True
+
+
+_CONSUMERS = {'min': _drain(min), 'max': _drain(max), 'sum': _drain(sum), 'any': _any, 'all': _all}
+
+
+def _generator_consumers(code):
+    """Consumer built-ins to drain in Python, only when the learner writes generators."""
+    codes, index = [code], 0
+    while index < len(codes):
+        codes += [c for c in codes[index].co_consts if type(c) is CodeType]
+        index += 1
+    if not any(c.co_flags & 0x20 for c in codes):  # inspect.CO_GENERATOR
+        return ()
+    return _CONSUMERS.keys() & {name for c in codes for name in c.co_names}
+
+
 def install(spec, scope):
     # functools.lru_cache looks this up when it decorates, so @cache, @lru_cache
     # and the learner's own `from functools import ...` all get it.
     functools._lru_cache_wrapper = _lru_cache_wrapper
+    # install() runs from the main module, whose code already holds the learner's.
+    for name in _generator_consumers(sys._getframe(1).f_code):
+        scope[name] = _CONSUMERS[name]
     scope.update(TreeNode=trees.TreeNode, ListNode=lists.ListNode,
                  Interval=auxiliary.Interval, MountainArray=auxiliary.MountainArray)
     if spec.get('specialId'):
