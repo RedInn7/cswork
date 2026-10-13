@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 # Every 5 minutes (cswork-watch.timer): app health, root disk, TLS expiry.
-# One notification per problem per 6h; a recovery message when it clears.
+# At most one alert per problem per 6h; one recovery message after an alerted problem clears.
 set -u
 domain=cswork.org
 state=${STATE_DIRECTORY:-/var/lib/cswork-watch}
 host=$(hostname)
 
+# $1.sent: last alert (kept across recoveries, so flapping stays quiet for 6h);
+# $1: alerted and not yet recovered, so only an alerted problem reports recovery.
 problem() {
-  # find prints the marker only if it was touched within the last 6h.
-  [[ -n $(find "$state/$1" -mmin -360 2>/dev/null) ]] && return
-  cswork-notify "$2" && touch "$state/$1"
+  [[ -n $(find "$state/$1.sent" -mmin -360 2>/dev/null) ]] && return
+  cswork-notify "$2" && touch "$state/$1.sent" "$state/$1"
 }
 fine() {
   [[ -e "$state/$1" ]] || return 0
@@ -17,8 +18,11 @@ fine() {
   cswork-notify "$1 recovered on $host"
 }
 
-if out=$(curl -sS --fail-with-body --max-time 10 http://127.0.0.1:4317/api/health 2>&1); then fine health
-else problem health "cswork health failing on $host: $out"; fi
+# Two consecutive failures: a release restarts the app and worker for tens of seconds.
+if out=$(curl -sS --fail-with-body --max-time 10 http://127.0.0.1:4317/api/health 2>&1); then
+  rm -f "$state/health.fail"; fine health
+elif [[ -e "$state/health.fail" ]]; then problem health "cswork health failing on $host: $out"
+else touch "$state/health.fail"; fi
 
 used=$(df --output=pcent / | tail -n 1 | tr -dc 0-9)
 if (( ${used:-0} > 85 )); then problem disk "root disk ${used}% full on $host"
