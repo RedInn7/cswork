@@ -8,7 +8,10 @@ import {
   curatedSections,
   LING_CURATED_ID,
   LING_CURATED_TITLE,
+  type CuratedEntry,
 } from '@/lib/ling-curated';
+
+const CURATED_STAGES: CuratedEntry['stage'][] = ['基础', '核心', '进阶'];
 
 type LibraryRow = {
   id: string;
@@ -166,18 +169,35 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
   // Curated order of problems judgeable here, so "continue" and prev/next span every page.
   const sequence = all.flatMap((item) =>
     item.caseStatus === 'verified' && item.judgeProblemId
-      ? [{ id: item.judgeProblemId, solved: item.solved }]
+      ? [item.judgeProblemId]
       : [],
   );
+  // The first unsolved sequence entry. Guests have solved nothing, so they get
+  // the first judgeable problem, or the first curated one if none is judgeable.
+  const nextItem =
+    all.find(
+      (item) =>
+        item.caseStatus === 'verified' && item.judgeProblemId && !item.solved,
+    ) ?? (userId ? undefined : all[0]);
   return {
     items: filtered.slice((page - 1) * 30, page * 30),
     total: filtered.length,
     page,
     pageSize: 30,
     topics: [],
-    sequence: sequence.map((item) => item.id),
-    nextProblemId: userId
-      ? (sequence.find((item) => !item.solved)?.id ?? null)
+    sequence,
+    nextProblemId: userId ? (nextItem?.judgeProblemId ?? null) : null,
+    // Returned to everyone: for members it is the problem nextProblemId points to.
+    next: nextItem
+      ? {
+          judgeProblemId: nextItem.judgeProblemId,
+          number: nextItem.number,
+          titleZh: nextItem.titleZh,
+          titleEn: nextItem.titleEn,
+          difficulty: nextItem.difficulty,
+          sectionSlug: nextItem.selection.sectionSlug,
+          stage: nextItem.selection.stage,
+        }
       : null,
     ...roundState,
     collection: {
@@ -195,6 +215,20 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
           ...section,
           total: items.length,
           solved: items.filter((item) => item.solved).length,
+          stages: Object.fromEntries(
+            CURATED_STAGES.map((stage) => {
+              const staged = items.filter(
+                (item) => item.selection.stage === stage,
+              );
+              return [
+                stage,
+                {
+                  total: staged.length,
+                  solved: staged.filter((item) => item.solved).length,
+                },
+              ];
+            }),
+          ) as Record<CuratedEntry['stage'], { total: number; solved: number }>,
         };
       }),
     },
