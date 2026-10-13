@@ -203,9 +203,11 @@ export function StudyLibrary({
       localStorage.setItem('cswork:practice:daily-target', String(value));
     } catch {}
   }
-  // Reaching the daily target is celebrated once per day on this device.
+  // Reaching the daily target is celebrated once per day on this device. It waits
+  // for the panel so its live region exists before the text arrives.
+  const lineShown = !!data?.collection;
   useEffect(() => {
-    if (!stats || !signedIn || stats.today < target) return;
+    if (!stats || !signedIn || !lineShown || stats.today < target) return;
     const day = new Date().toDateString();
     try {
       if (localStorage.getItem('cswork:practice:trip-done') === day) return;
@@ -214,7 +216,7 @@ export function StudyLibrary({
       return;
     }
     setCelebrate(true);
-  }, [stats, signedIn, target]);
+  }, [stats, signedIn, lineShown, target]);
   const difficultyName = (value: string) =>
     english
       ? (
@@ -628,11 +630,11 @@ export function StudyLibrary({
     stage,
     status,
   }).toString();
-  // The server picks the next unsolved judgeable problem across the whole list;
-  // never act on a previous filter's response while a new one is loading.
+  // next, nextProblemId and sequence span the whole line, so a previous
+  // filter's response still holds them; only its rows are stale while loading.
   const stale = loading && dataQuery !== currentQuery;
-  const nextProblemId = stale ? null : data?.nextProblemId;
-  const next = stale ? null : (data?.next ?? null);
+  const nextProblemId = data?.nextProblemId;
+  const next = data?.next ?? null;
   const route = data?.collection ? routeStops(data.collection.sections) : null;
   const stops = route?.stops ?? [];
   const currentSlug =
@@ -665,6 +667,16 @@ export function StudyLibrary({
     setSection(slug);
     setPage(1);
   };
+  // The control that moved focus unmounts; land on the stop, or on any stop the
+  // stage lens leaves enabled.
+  const focusStop = (slug: string) =>
+    requestAnimationFrame(() => {
+      const radio = document.getElementById(`route-stop-${slug}`);
+      (radio instanceof HTMLInputElement && !radio.disabled
+        ? radio
+        : document.querySelector<HTMLInputElement>('.route-stops input:not(:disabled)')
+      )?.focus();
+    });
   const selectedStop = stops.find((stop) => stop.slug === section);
   const pips = (value?: string) => {
     const level = value === '进阶' ? 3 : value === '核心' ? 2 : value ? 1 : 0;
@@ -688,6 +700,9 @@ export function StudyLibrary({
       ? t('终点站', 'End of the line')
       : t('下一站', 'Next stop');
   const remaining = currentStop ? currentStop.total - currentStop.solved : 0;
+  const daysLeft = data?.collection
+    ? Math.ceil((data.collection.total - data.collection.solved) / target)
+    : 0;
 
   return (
     <section className="study-library study-bank" lang={english ? 'en' : 'zh'}>
@@ -792,7 +807,7 @@ export function StudyLibrary({
               {member && (
                 <div
                   className="route-today"
-                  data-celebrate={celebrate || undefined}
+                  data-celebrate={(celebrate && tripDone) || undefined}
                 >
                   <span className="route-today-label">
                     {t('今日行程', 'Today’s trip')}
@@ -830,7 +845,7 @@ export function StudyLibrary({
                     </select>
                   </label>
                   <output className="sr-only" aria-live="polite">
-                    {celebrate
+                    {celebrate && tripDone
                       ? t(
                           `今日行程完成：已通过 ${today} 题`,
                           `Today’s trip is done: ${today} solved`,
@@ -843,8 +858,8 @@ export function StudyLibrary({
             {member && data?.collection && !solvedAll && (
               <p className="route-pace">
                 {t(
-                  `按每天 ${target} 题，约 ${Math.ceil((data.collection.total - data.collection.solved) / target)} 天到终点站。`,
-                  `At ${target} a day, about ${Math.ceil((data.collection.total - data.collection.solved) / target)} days to the end of the line.`,
+                  `按每天 ${target} 题，约 ${daysLeft} 天到终点站。`,
+                  `At ${target} a day, about ${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} to the end of the line.`,
                 )}
               </p>
             )}
@@ -1157,9 +1172,9 @@ export function StudyLibrary({
           <span className="route-selected-actions">
             {member &&
               (() => {
-                const resume = data?.items.find(
-                  (item) => canJudge(item) && !item.solved,
-                );
+                const resume = stale
+                  ? undefined
+                  : data?.items.find((item) => canJudge(item) && !item.solved);
                 return resume ? (
                   <Button
                     onClick={() => {
@@ -1180,9 +1195,7 @@ export function StudyLibrary({
               onClick={() => {
                 const slug = section;
                 selectStop('');
-                requestAnimationFrame(() =>
-                  document.getElementById(`route-stop-${slug}`)?.focus(),
-                );
+                focusStop(slug);
               }}
             >
               {t('回到全线', 'Show the whole line')}
@@ -1290,7 +1303,10 @@ export function StudyLibrary({
                       <button
                         type="button"
                         className="route-only"
-                        onClick={() => selectStop(stop.slug)}
+                        onClick={() => {
+                          selectStop(stop.slug);
+                          focusStop(stop.slug);
+                        }}
                       >
                         {t('只看这一站', 'This stop only')}
                       </button>

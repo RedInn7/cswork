@@ -91,7 +91,8 @@ export function practiceStats(
     cells,
     months,
     streak,
-    best,
+    // The streak may run past the grid's first day; the best is never shorter.
+    best: Math.max(best, streak),
     today: cells[todayIndex].count,
     total: seen.size,
     todayIndex,

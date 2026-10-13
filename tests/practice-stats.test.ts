@@ -38,3 +38,13 @@ void test('best is the longest run inside the grid', () => {
   assert.equal(stats.streak, 0);
   assert.equal(stats.total, 1);
 });
+
+void test('a streak longer than the grid is also the best', () => {
+  const stats = practiceStats(
+    Array.from({ length: 183 }, (_, k) => ac(`p${k}`, -k)),
+    dayStamp,
+    true,
+  );
+  assert.equal(stats.streak, 183);
+  assert.equal(stats.best, 183);
+});

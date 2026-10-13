@@ -647,9 +647,13 @@ export function Academy() {
             />
           )}
           {/* Visitors and crawlers get the introduction; members go straight to the line. */}
-          {view === 'problems' && !params.library && !boot.person && (
-            <WorkspaceIntro />
-          )}
+          {view === 'problems' &&
+            !params.library &&
+            (boot.person ? (
+              <h1 className="sr-only">{t('算法题库', 'Problem Bank')}</h1>
+            ) : (
+              <WorkspaceIntro />
+            ))}
           {content()}
         </main>
         <footer className="flex flex-wrap gap-5 px-6 pb-6 text-xs text-muted-foreground">
