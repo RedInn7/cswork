@@ -1,0 +1,12 @@
+[Unit]
+Description=cswork health, disk and TLS watch
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/cswork-watch
+StateDirectory=cswork-watch
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
