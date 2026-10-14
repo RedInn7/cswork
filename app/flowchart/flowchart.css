@@ -1,0 +1,426 @@
+/* Pattern decision tree: the mock OA public shell plus Line 500's navy board for the walk. */
+.flow-page {
+  --white: #eef3f8;
+  --white-2: #c7d2e0;
+  --white-3: #9fb0c6;
+  --ac: #0d7a63;
+}
+.flow-page .mock-public-hero {
+  padding-block: 28px;
+}
+
+/* The board: one question at a time. */
+.flow-walk {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  margin-top: -18px;
+}
+.flow-walk[hidden] {
+  display: none;
+}
+@media (min-width: 900px) {
+  .flow-walk {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    align-items: start;
+  }
+}
+.flow-board {
+  display: grid;
+  gap: 18px;
+  min-height: 300px;
+  align-content: space-between;
+  padding: 26px 28px 22px;
+  border-radius: 18px;
+  border-top: 6px solid var(--line);
+  background:
+    radial-gradient(rgb(238 243 248 / 0.035) 1px, transparent 1.5px) 0 0 / 8px 8px,
+    var(--navy);
+  color: var(--white);
+}
+.flow-kicker {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber);
+  font-variant-numeric: tabular-nums;
+}
+.flow-now {
+  margin: 0;
+  max-width: 30em;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 750;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  overflow-wrap: anywhere;
+}
+.flow-page:lang(zh) .flow-now {
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.flow-now:focus {
+  outline: none;
+}
+.flow-now:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 6px;
+  border-radius: 4px;
+}
+.flow-board .flow-eg {
+  margin: 0;
+  color: var(--white-3);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.flow-answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+.flow-page button {
+  font: inherit;
+  cursor: pointer;
+}
+.flow-answers button {
+  min-height: 56px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  font-size: 20px;
+  font-weight: 800;
+}
+.flow-answers [data-answer='yes'] {
+  background: var(--line);
+  color: var(--navy);
+}
+.flow-answers [data-answer='no'] {
+  border-color: var(--white-3);
+  background: transparent;
+  color: var(--white);
+}
+.flow-answers button:hover {
+  filter: brightness(1.08);
+}
+.flow-answers [data-answer='no']:hover {
+  border-color: var(--white);
+}
+.flow-board button:focus-visible {
+  outline: 3px solid var(--amber);
+  outline-offset: 3px;
+}
+.flow-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--slate);
+}
+.flow-controls button {
+  padding: 6px 0;
+  border: 0;
+  background: none;
+  color: var(--white-2);
+  font-size: 14px;
+  font-weight: 650;
+}
+.flow-controls button:hover:not(:disabled) {
+  color: var(--white);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.flow-controls button:disabled {
+  color: var(--white-3);
+  opacity: 0.5;
+  cursor: default;
+}
+
+.flow-step {
+  display: grid;
+  gap: 14px;
+}
+
+/* The arrival: the stop's number as an amber LED, the reason and the two ways on. */
+.flow-arrival {
+  display: grid;
+  gap: 8px;
+}
+.flow-stop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 750;
+}
+.flow-code {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border: 4px solid var(--line);
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.flow-why {
+  margin: 0;
+  max-width: 46em;
+  line-height: 1.7;
+}
+.flow-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 2px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+.flow-board .flow-code {
+  width: 64px;
+  height: 64px;
+  border-width: 5px;
+  color: var(--amber);
+  font-size: 24px;
+  text-shadow: 0 0 18px rgb(255 178 63 / 0.35);
+}
+.flow-board .flow-stop {
+  font-size: 24px;
+}
+.flow-board .flow-why {
+  color: var(--white-2);
+  font-size: 16px;
+}
+.flow-board .flow-links a {
+  color: var(--amber);
+}
+.flow-board .flow-links a:first-child {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 10px;
+  background: var(--amber);
+  color: var(--navy);
+  text-decoration: none;
+}
+.flow-board .flow-links a:first-child:hover {
+  background: #ffc266;
+}
+.flow-board .flow-links {
+  align-items: center;
+  margin-top: 8px;
+}
+.flow-board a:focus-visible {
+  outline-color: var(--white);
+}
+
+/* The answers so far, drawn as the stretch of line already travelled. */
+.flow-trail {
+  padding: 18px 20px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: #fff;
+}
+.flow-trail h3 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--muted);
+}
+.flow-trail ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.flow-trail li {
+  position: relative;
+  padding-left: 20px;
+}
+.flow-trail li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--line);
+}
+.flow-trail li::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 13px;
+  width: 11px;
+  height: 11px;
+  box-sizing: border-box;
+  border: 3px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+}
+.flow-trail button {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 4px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: left;
+}
+.flow-trail button:hover {
+  background: #f1f4f7;
+}
+.flow-trail button:focus-visible {
+  outline: 2px solid var(--ac);
+}
+.flow-trail-q {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.flow-trail-a {
+  flex: none;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  background: #e7f6ef;
+  color: var(--ac);
+}
+.flow-trail-a[data-answer='no'] {
+  background: #eef1f4;
+  color: var(--muted);
+}
+
+/* The whole tree as a list: open without JavaScript, a disclosure with it. */
+.flow-outline > summary {
+  cursor: pointer;
+  width: fit-content;
+  padding: 6px 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+.flow-outline > summary:focus-visible {
+  outline: 2px solid var(--ac);
+  outline-offset: 4px;
+}
+.flow-list {
+  display: grid;
+  gap: 12px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.flow-list > li {
+  display: grid;
+  gap: 8px;
+  padding: 18px 20px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: #fff;
+  scroll-margin-top: 16px;
+}
+.flow-list > li:target {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 3px rgb(255 178 63 / 0.25);
+}
+.flow-q {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.flow-num {
+  margin-right: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.flow-list .flow-eg {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.flow-list dl {
+  display: grid;
+  gap: 8px;
+  margin: 6px 0 0;
+}
+.flow-list dl > div {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+.flow-list dt {
+  padding: 3px 0;
+  border-radius: 999px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  background: #e7f6ef;
+  color: var(--ac);
+}
+.flow-list [data-answer='no'] dt {
+  background: #eef1f4;
+  color: var(--muted);
+}
+.flow-list dd {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.flow-list .flow-arrival {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f6f7f9;
+}
+.flow-list .flow-why {
+  font-size: 14px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .flow-step {
+    animation: flow-in 220ms ease-out both;
+  }
+  .flow-answers button {
+    transition: filter 120ms, border-color 120ms;
+  }
+}
+@keyframes flow-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@media (max-width: 640px) {
+  .flow-board {
+    padding: 22px 18px 18px;
+  }
+  .flow-board .flow-code {
+    width: 52px;
+    height: 52px;
+    font-size: 20px;
+  }
+  .flow-board .flow-stop {
+    font-size: 20px;
+  }
+  .flow-list > li {
+    padding: 16px;
+  }
+}
