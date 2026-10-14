@@ -3,7 +3,7 @@ import '../library/library.css';
 import '../discuss.css';
 import Link from 'next/link';
 import { requestLocale } from '@/lib/server/locale';
-import { JoinCommunity } from './parts';
+import { JoinCommunity } from './community-link';
 
 /** Discussion pages (/discuss, /discuss/<id>): crawlable reading on the classic lists' shell. */
 export default async function DiscussLayout({ children }: { children: React.ReactNode }) {

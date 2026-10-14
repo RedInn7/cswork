@@ -756,6 +756,9 @@ export function Academy() {
             {t('公开面试资料', 'Interview resources')}
           </Link>
           <Link prefetch={false} href="/mcp" className="underline underline-offset-4">{t('在 AI 编辑器里练题', 'Practice from your AI editor')}</Link>
+          <Link prefetch={false} href="/discuss" className="underline underline-offset-4">
+            {t('讨论区', 'Discussion board')}
+          </Link>
           <Link prefetch={false} href="/privacy" className="underline underline-offset-4">
             {t('隐私说明', 'Privacy')}
           </Link>
