@@ -1,12 +1,10 @@
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { cache } from 'react';
-import { levelOf, problemAppHref } from '@/lib/classic-lists';
-import { problemTitle } from '@/lib/problems';
 import { seoMetadata } from '@/lib/seo';
 import { publicCatalogue, readList } from '@/lib/server/learner-cloud';
 import { requestLocale } from '@/lib/server/locale';
+import { PublicListView } from '../../views';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -37,58 +35,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PublicListPage({ params }: Props) {
-  const { list, items, zh } = await load((await params).id);
-  const t = (a: string, b: string) => (zh ? a : b);
-  return (
-    <article>
-      <section className="lists-public-hero">
-        <p className="lists-public-kicker">
-          {list.owner ? (
-            <>
-              {t('题单 · 来自 ', 'List · by ')}
-              <Link href={`/u/${list.owner}`} prefetch={false} className="learner-owner">
-                @{list.owner}
-              </Link>
-            </>
-          ) : (
-            t('学习者题单', 'Learner list')
-          )}
-        </p>
-        <h1>{list.title}</h1>
-        {list.description && <p className="learner-description">{list.description}</p>}
-        <div className="lists-public-meter">
-          <span>
-            <strong>{items.length}</strong> {t('道题', items.length === 1 ? 'problem' : 'problems')}
-          </span>
-        </div>
-        <a className="lists-public-cta" href={`/?view=lists&list=${encodeURIComponent(list.id)}&utm_source=list`}>
-          {t('复制到我的题单并开始练习', 'Copy it to my lists and practice')} →
-        </a>
-      </section>
-      {items.length ? (
-        <ol className="lists-public-rows learner-rows">
-          {items.map(({ id, problem }, index) => {
-            const level = levelOf(problem.difficulty);
-            return (
-              <li key={id}>
-                <span className="lists-public-number">{index + 1}</span>
-                <a href={problemAppHref(id)}>
-                  {id.startsWith('lc-') ? `${id.slice(3)}. ` : ''}
-                  {problemTitle(problem, zh ? 'zh' : 'en')}
-                </a>
-                <span className="lists-public-tags">
-                  <span className="lists-public-judge">{id.startsWith('lc-') ? 'LeetCode' : 'OA'}</span>
-                </span>
-                <span className="lists-public-level" data-level={level?.[0]}>
-                  {level ? (zh ? level[1] : level[2]) : ''}
-                </span>
-              </li>
-            );
-          })}
-        </ol>
-      ) : (
-        <p className="learner-empty">{t('这个题单还是空的。', 'This list is empty for now.')}</p>
-      )}
-    </article>
-  );
+  return <PublicListView {...await load((await params).id)} />;
 }

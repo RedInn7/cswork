@@ -22,6 +22,9 @@ const ROUNDS: [string, string, string][] = [
   ['onsite', 'VO / 现场', 'Onsite / VO'],
 ];
 const monthOf = (time: number) => new Date(time).toISOString().slice(0, 7);
+/** Answers are shown only when they have the summary's shape. */
+const isSummary = (s: Partial<ReportSummary> | null | undefined): s is ReportSummary =>
+  typeof s?.total === 'number' && Array.isArray(s.companies) && Array.isArray(s.mine);
 
 /** The star row's "add to list": the learner's lists with a tick where this problem is in. */
 export function ListMenu({ problemId, english }: { problemId: string; english: boolean }) {
@@ -35,7 +38,7 @@ export function ListMenu({ problemId, english }: { problemId: string; english: b
     if (!open) return;
     let live = true;
     api<{ items: MenuList[] }>(`oj/lists?problem=${encodeURIComponent(problemId)}`).then(
-      (r) => live && setLists(r.items),
+      (r) => live && setLists(Array.isArray(r.items) ? r.items : []),
       (e: Error) => live && setError(e.message),
     );
     return () => {
@@ -164,7 +167,7 @@ export function AskedReport({ problemId, english }: { problemId: string; english
   useEffect(() => {
     let live = true;
     api<ReportSummary>(`oj/reports?problem=${encodeURIComponent(problemId)}`).then(
-      (s) => live && setSummary(s),
+      (s) => live && isSummary(s) && setSummary(s),
       () => {},
     );
     return () => {
@@ -175,6 +178,7 @@ export function AskedReport({ problemId, english }: { problemId: string; english
     if (!open || companies) return;
     api<{ items: { slug: string; name: string }[] }>('oj/reports/companies').then(
       (r) => {
+        if (!Array.isArray(r.items)) return setCompanies([]);
         setCompanies(r.items);
         if (suggested && r.items.some((c) => c.slug === suggested)) setCompany((c) => c || suggested);
       },
@@ -185,7 +189,8 @@ export function AskedReport({ problemId, english }: { problemId: string; english
     setBusy(true);
     setError('');
     try {
-      setSummary(await api<ReportSummary>(path, body));
+      const next = await api<ReportSummary>(path, body);
+      if (isSummary(next)) setSummary(next);
       return true;
     } catch (e) {
       setError((e as Error).message);
