@@ -8,6 +8,7 @@ import { reportWindow, slotOf, type MockSession, type Slot } from '@/lib/mock-oa
 import { canonicalCompany, employerSlug, OTHER_COMPANY } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
 import { companyDirectory, hasHub } from './company-hub';
+import { ratingHistory } from './contest-ratings';
 import { library } from './content-library';
 import { hiddenCompanies, shownOaSql } from './env';
 import { HttpError, json, limit, limitReader, requirePerson } from './http';
@@ -725,6 +726,7 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
           WHERE f.follower_id=@me) AS following`,
     )
     .get({ me: profile.user_id }) as { followers: number; following: number };
+  const contest = ratingHistory(profile.user_id);
   return {
     handle: profile.handle,
     bio: profile.bio,
@@ -739,7 +741,9 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     lists,
     listStars,
     languages: [...byLanguage].map(([language, n]) => ({ language, n })).sort((a, b) => b.n - a.n),
-    badges: profileBadges(profile.user_id, catalogue, stops),
+    // Rated weeklies, oldest first (lib/server/contests.ts): the curve and the contest badges.
+    contest: contest.map(({ week, after, rank, entrants }) => ({ week, after, rank, entrants })),
+    badges: profileBadges(profile.user_id, catalogue, stops, contest),
     posts: {
       items: posts.slice(0, 10).map((post) => ({
         id: post.id,
@@ -761,7 +765,12 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
  * (shown problems only), OA companies of the public catalogue and the stored mock OAs. Days and
  * streaks fall on the server's local dates, which may differ from the learner's by one near midnight.
  */
-function profileBadges(userId: string, catalogue: PublicCatalogue, stops: ReadonlyMap<string, number>) {
+function profileBadges(
+  userId: string,
+  catalogue: PublicCatalogue,
+  stops: ReadonlyMap<string, number>,
+  contest: ReturnType<typeof ratingHistory> = [],
+) {
   const ac = (
     sqlite()
       .prepare(`SELECT problem_id AS id,created_at AS at FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'`)
@@ -785,6 +794,7 @@ function profileBadges(userId: string, catalogue: PublicCatalogue, stops: Readon
     acTimes: ac.map((s) => s.at),
     companies: [...companies.values()],
     perfectMock: mockHistory(userId, 1000).some((m) => !!m.result && m.result.score >= m.result.max),
+    contests: contest,
   }).flatMap((b) => (b.earned ? [{ id: b.id, group: b.group, zh: b.zh, en: b.en }] : []));
 }
 

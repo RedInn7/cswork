@@ -1,5 +1,7 @@
 import '../lists/lists.css';
 import './u.css';
+import '../lc-rating.css';
+import '../contest/contest.css';
 import Link from 'next/link';
 import { JoinCommunity } from '../discuss/community-link';
 import { requestLocale } from '@/lib/server/locale';

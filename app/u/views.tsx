@@ -7,6 +7,7 @@ import type { publicProfile, readList } from '@/lib/server/learner-cloud';
 import { FollowButton } from '@/components/follow-button';
 import { ListStar } from '@/components/list-star';
 import { LocalDay, ProfileHeatmap } from './heatmap';
+import { RatingCurve } from '@/components/contest-parts';
 
 /** Judge languages by their usual names; anything else as stored. */
 const LANGUAGE_NAMES: Record<string, string> = { python: 'Python', cpp: 'C++', java: 'Java', go: 'Go', sql: 'SQL' };
@@ -76,6 +77,18 @@ export function ProfileView({
       </section>
 
       <ProfileHeatmap activity={profile.activity} zh={zh} />
+
+      {!!profile.contest?.length && (
+        <section aria-labelledby="learner-contest">
+          <h2 id="learner-contest" className="lists-public-h2">
+            {t('周赛 rating', 'Weekly contest rating')}
+            <small>
+              <a href="/contest/leaderboard">{t('排行榜', 'Leaderboard')}</a>
+            </small>
+          </h2>
+          <RatingCurve points={profile.contest} zh={zh} />
+        </section>
+      )}
 
       {(!!profile.languages?.length || !!profile.badges?.length) && (
         <div className="learner-pair">

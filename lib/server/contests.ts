@@ -7,6 +7,7 @@ import {
   eloRatings,
   entryWindow,
   rankRows,
+  RATE_GRACE,
   standings,
   START_RATING,
   weeklyId,
@@ -18,6 +19,7 @@ import {
   type ContestSubmission,
   type Standing,
 } from '@/lib/contest';
+export { RATE_GRACE } from '@/lib/contest';
 import { drawMock, LADDER, seededRandom } from '@/lib/mock-oa';
 import type { ProblemSummary } from '@/lib/problems';
 import type { Person } from './auth';
@@ -28,6 +30,7 @@ import { mockCatalogue, mockPool } from './mock-oa';
 import { readJson } from './my-practice';
 import { listProblemSummaries } from './oj-problems';
 import { ratedJudgeable } from './study-library';
+export { ratingHistory } from './contest-ratings';
 import { code as inviteCode, newCode, plain } from './study-groups';
 
 /**
@@ -39,8 +42,6 @@ import { code as inviteCode, newCode, plain } from './study-groups';
  * joining, never account ids; a private room reads as missing to anyone not in it.
  */
 const MINUTE = 60000;
-/** Late verdicts land before a weekly is rated. */
-export const RATE_GRACE = 15 * MINUTE;
 /** A weekly avoids problems used by this many earlier weeklies. */
 const RECENT_WEEKLIES = 26;
 export const ROOM_CAP: Record<string, number> = { mashup: 100, duel: 2 };
@@ -221,27 +222,6 @@ export async function leaderboard(p: Person | null, max = 100, now = Date.now())
   });
 }
 
-/** A learner's rated weeklies, oldest first: the profile's rating curve and contest badges. */
-export function ratingHistory(userId: string) {
-  return (
-    sqlite()
-      .prepare(
-        `SELECT c.id,c.starts_at AS at,r.before,r.after,r.rank,r.entrants,r.solved,c.problem_ids_json AS ids
-        FROM contest_ratings r JOIN contest_rooms c ON c.id=r.room_id WHERE r.user_id=? ORDER BY c.starts_at`,
-      )
-      .all(userId) as {
-      id: string;
-      at: number;
-      before: number;
-      after: number;
-      rank: number;
-      entrants: number;
-      solved: number;
-      ids: string;
-    }[]
-  ).map(({ ids, id, ...r }) => ({ ...r, week: Number(id.slice(7)), total: (JSON.parse(ids) as string[]).length }));
-}
-
 // ---------------------------------------------------------------- rooms
 
 function readable(id: string, p: Person | null) {
@@ -345,6 +325,14 @@ export async function roomView(id: string, p: Person | null, now = Date.now()) {
     rated: !!row.rated_at,
     me: entry && window ? { name: entry.display_name, virtual: entry.virtual_start !== null, ...window } : null,
     canJoin: !!p && !entry && row.visibility === 'public' && (cap === null || entrants < cap),
+    // The name the reader last raced under, to prefill the join form.
+    suggestedName:
+      p && !entry
+        ? ((sqlite()
+            .prepare('SELECT display_name FROM contest_entries WHERE user_id=? ORDER BY joined_at DESC LIMIT 1')
+            .pluck()
+            .get(p.id) as string | undefined) ?? '')
+        : '',
   };
 }
 export type RoomView = Awaited<ReturnType<typeof roomView>>;

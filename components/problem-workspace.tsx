@@ -70,6 +70,7 @@ import {
   MockExamDone,
   useMockExam,
 } from './mock-exam-bar';
+import { ContestBar, useContestRoom } from './contest-bar';
 import { useReplayRecorder } from './mock-replay';
 import { reportWindow } from '@/lib/mock-oa';
 import {
@@ -158,6 +159,10 @@ type WorkspaceProps = {
   refresh: () => Promise<void>;
   /** ?mock=<session id>: the problem is a question of a timed mock OA. */
   mock?: string;
+  /** ?room=<contest id>: the problem is a question of a contest room (lib/server/contests.ts). */
+  room?: string;
+  /** ?tab=solutions opens on the community solutions (a contest's upsolve links). */
+  tab?: string;
 };
 type MaxPanel = 'statement' | 'code' | 'console';
 type ReplaceRequest = {
@@ -262,11 +267,14 @@ function Workspace({
   ask,
   refresh,
   mock,
+  room,
+  tab,
 }: WorkspaceProps) {
   const userId = boot.person?.id || 'guest';
-  // A running mock OA hides solutions, hints and the way to other problems.
+  // A running mock OA or contest hides solutions, hints and the way to other problems.
   const exam = useMockExam(mock, userId, initialProblem.id);
-  const examMode = !!exam?.running;
+  const contest = useContestRoom(room, initialProblem.id);
+  const examMode = !!exam?.running || !!contest?.running;
   // A mock question starts from the template, not this browser's earlier draft of it.
   const [draftId] = useState(() =>
     exam ? `${initialProblem.id}:mock:${exam.session.id}` : initialProblem.id,
@@ -378,7 +386,7 @@ function Workspace({
   const runButton = useRef<HTMLButtonElement>(null);
   const [leftTab, setLeftTab] = useState<
     'statement' | 'history' | 'editorial' | 'notes' | 'solutions'
-  >('statement');
+  >(tab === 'solutions' && boot.person && communityProblem(initialProblem.id) ? 'solutions' : 'statement');
   // Private to an account, and closed during a mock exam like the editorial.
   const note = useProblemNote(
     boot.person && !examMode ? userId : null,
@@ -2614,6 +2622,9 @@ function Workspace({
         ) : (
           <MockExamDone session={exam.session} navigate={navigate} />
         ))}
+      {contest && !exam && (
+        <ContestBar contest={contest} problemId={problem.id} submissions={boot.submissions ?? []} navigate={navigate} />
+      )}
       <div className="cs-workspace-header">
         <div className="cs-workspace-heading">
           {!examMode && (

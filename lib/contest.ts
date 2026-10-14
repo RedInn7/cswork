@@ -25,6 +25,8 @@ export const WEEKLY_MINUTES = 90;
 export const weekNumber = (now: number) => Math.floor((now - WEEKLY_EPOCH) / WEEK) + 1;
 export const weeklyStart = (week: number) => WEEKLY_EPOCH + (week - 1) * WEEK + WEEKLY_OFFSET;
 export const weeklyId = (week: number) => `weekly-${week}`;
+/** Late verdicts land before a finished weekly is rated. */
+export const RATE_GRACE = 15 * MINUTE;
 export const weeklyTitle = (week: number, zh: boolean) => (zh ? `CSWork 周赛 第 ${week} 期` : `CSWork Weekly #${week}`);
 
 /** Q1–Q4 by contest rating (zerotrac): [from, to] inclusive. */
@@ -63,6 +65,13 @@ export function drawWeekly(
   }
   return picked;
 }
+
+/** Room kinds as [zh, en]. */
+export const CONTEST_KINDS = {
+  weekly: ['周赛', 'Weekly'],
+  mashup: ['自选赛', 'Mashup'],
+  duel: ['1v1 对战', '1v1 duel'],
+} as const satisfies Record<string, readonly [string, string]>;
 
 // ---------------------------------------------------------------- standings (ICPC rules)
 
