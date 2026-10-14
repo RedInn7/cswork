@@ -529,6 +529,39 @@ async function search(q: string) {
     .map((s) => ({ id: s.id, title: s.title, titleEn: s.titleEn ?? null, difficulty: s.difficulty, rating: lcRating(s.id) }));
 }
 
+// ---------------------------------------------------------------- fairness
+
+/**
+ * The problems of every room running for this learner now: a live entrant's from the start to
+ * the end, a virtual one's inside their own window. A duel waiting for its second entrant hasn't
+ * started (roomView). One query on contest_entries_user; a request that checks many problems
+ * reads it once.
+ */
+export function runningContestProblems(userId: string, now = Date.now()) {
+  return new Set(
+    sqlite()
+      .prepare(
+        `SELECT DISTINCT j.value FROM contest_entries e JOIN contest_rooms c ON c.id=e.room_id, json_each(c.problem_ids_json) j
+        WHERE e.user_id=@user AND COALESCE(e.virtual_start,c.starts_at)<=@now
+          AND @now<COALESCE(e.virtual_start,c.starts_at)+c.duration_min*${MINUTE}
+          AND (c.kind<>'duel' OR (SELECT COUNT(*) FROM contest_entries x WHERE x.room_id=c.id)>=${ROOM_CAP.duel})`,
+      )
+      .pluck()
+      .all({ user: userId, now }) as string[],
+  );
+}
+export const inRunningContest = (userId: string, problemId: string, now = Date.now()) =>
+  runningContestProblems(userId, now).has(problemId);
+/**
+ * 403 while the problem is in a contest running for this learner: its editorial, community
+ * solutions and the AI tutor open again once their window ends. The workspace hides them in a
+ * room already; this holds for the raw API and the problem opened outside the room.
+ */
+export function refuseInContest(p: Person | null, problemId: string, now = Date.now()) {
+  if (p && inRunningContest(p.id, problemId, now))
+    throw new HttpError(403, '这道题在你正在进行的比赛里，题解、讨论和 AI 助教赛后开放');
+}
+
 /** /api/oj/contests/…: the weekly, standings and the leaderboard read signed out; the rest needs an account. */
 export async function handleContests(request: Request, p: Person | null, path: string[]) {
   const [, id, action, extra] = path;

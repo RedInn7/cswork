@@ -276,6 +276,8 @@ const EN: Record<string, string> = {
   '每天最多创建 10 个比赛房间': 'You can open at most 10 contest rooms a day',
   房间已满: 'This room is full',
   这个昵称在本场已被使用: 'Someone in this contest already uses that name',
+  '这道题在你正在进行的比赛里，题解、讨论和 AI 助教赛后开放':
+    "This problem is in a contest you're taking. Its editorial, solutions and AI tutor open once your contest ends",
   // Community solutions (lib/server/solution-posts.ts)
   题解不存在: 'Solution not found',
   评论不存在: 'Comment not found',
