@@ -16,6 +16,10 @@ export type OJProblem = Problem & {
   codingModes?: CodingMode[];
   leetcodeTemplates?: Partial<Record<Language, string>>;
   leetcodeInputHelp?: { zh: string; en: string } | null;
+  /** LeetCode mode's parameters, one custom-case field each; null keeps the raw text. */
+  leetcodeParams?: { name: string; type: string }[] | null;
+  /** How outputs are compared; line-by-line diffs only make sense for exact and tokens. */
+  checker?: string;
   practiceRound?: { id: string; number: number } | null;
   sourceStatement?: {
     descriptionZh: string;

@@ -30,6 +30,7 @@ import {
   OJ_WORKER_CONCURRENCY,
   OJ_CASE_SLOTS,
   exclusiveSubmission,
+  leetcodeShape,
   SubmissionAdmission,
 } from './oj-worker-policy';
 import {
@@ -248,10 +249,8 @@ async function judgeSubmission(
       totalSeconds * 1000,
     );
     current(id, attempt, controller.signal);
-    if (
-      claimed.coding_mode === 'leetcode' &&
-      claimed.harness_version !== LEETCODE_HARNESS_VERSION
-    ) {
+    const shape = leetcodeShape(claimed);
+    if (shape.wrap && claimed.harness_version !== LEETCODE_HARNESS_VERSION) {
       update(id, attempt, {
         status: 'system_error',
         message: '函数驱动版本已更新，请重新提交；原代码已保留。',
@@ -259,15 +258,14 @@ async function judgeSubmission(
       });
       return;
     }
-    const wrapped =
-      claimed.coding_mode === 'leetcode'
-        ? leetcodeSource(
-            snapshot.spec.id,
-            claimed.language,
-            claimed.code,
-            snapshot.spec.memoryLimit,
-          )
-        : { source: claimed.code };
+    const wrapped = shape.wrap
+      ? leetcodeSource(
+          snapshot.spec.id,
+          claimed.language,
+          claimed.code,
+          snapshot.spec.memoryLimit,
+        )
+      : { source: claimed.code };
     const compileStarted = performance.now();
     // Built beside the compile; without it the bridge simply runs from source.
     bridgeAcquisition = wrapped.bridgeSource
@@ -295,10 +293,7 @@ async function judgeSubmission(
     program.bridgeSource = wrapped.bridgeSource;
     if (bridge?.result.status === 'Accepted')
       program.bridgeBytecode = bridge.program.cache['bridge.pyc'];
-    program.leetcodeInput =
-      claimed.coding_mode === 'leetcode' &&
-      claimed.mode === 'run' &&
-      claimed.custom_input !== null;
+    program.leetcodeInput = shape.leetcodeInput;
     current(id, attempt, controller.signal);
     if (compiled.result.status !== 'Accepted') {
       update(id, attempt, {

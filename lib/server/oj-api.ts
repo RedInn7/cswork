@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { leetcodeTemplates, leetcodeContract } from './leetcode-mode';
+import { leetcodeTemplates, leetcodeContract, leetcodeParams } from './leetcode-mode';
 import {
   changePracticeRound,
   practiceRoundState,
@@ -14,7 +14,7 @@ import { handleMockOa } from './mock-oa';
 import { handleSpeedrun } from './speedrun';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
-import { handleMyPractice, problemVote } from './my-practice';
+import { handleMyPractice, problemVote, readJson } from './my-practice';
 import { handleAiTutor, isAiRoute } from './ai-tutor';
 import { handleAiInterview } from './ai-interviewer';
 import { handleAiAsk } from './ai-ask';
@@ -68,6 +68,7 @@ import {
 } from './oj-problems';
 import {
   createPlaygroundRun,
+  createReferenceRun,
   createSubmission,
   submissionDetail,
   waitForSubmission,
@@ -146,6 +147,7 @@ export async function handleOj(
       codingModes: templates ? ['leetcode', 'acm'] : ['acm'],
       leetcodeTemplates: templates,
       leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
+      leetcodeParams: leetcodeParams(id),
       sourceStatement: getStudySourceStatement(id),
       curatedHint: hint,
       // Contest rating (zerotrac), null outside rated contests.
@@ -310,6 +312,17 @@ export async function handleOj(
   }
   if (resource === 'submissions' && id && action === 'cancel')
     return json(await cancelSubmission(p, id));
+  if (resource === 'problems' && id && action === 'expected' && !operation) {
+    // A custom case's expected output from the verified editorial's best approach: closed,
+    // like the editorial, while the problem is in this learner's running contest.
+    const editorial = lingEditorial(id);
+    if (!editorial?.verified) throw new HttpError(404, '这道题没有可用的参考解');
+    refuseInContest(p, id);
+    const data = await readJson(request, 200000);
+    const created = await createReferenceRun(p, id, data, editorial.approaches.at(-1)!.python);
+    // Watched like a run: GET submissions/<id>?wait=1; its code never comes back.
+    return json(await settleSubmission(p, created.id, request.signal), 201);
+  }
   if (resource === 'playground' && id === 'run' && !action) {
     let data: unknown;
     try {

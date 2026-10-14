@@ -12,6 +12,8 @@ type Contract = {
   pythonTemplate: string;
   customInputHelp?: { zh: string; en: string } | null;
   nativeBridge: string;
+  /** A design problem has classname and methods instead of params. */
+  signature: { params?: { name: string; type: string }[]; classname?: string };
 };
 const problems = contracts.problems as Record<string, Contract>;
 /** Prefix of every LeetCode-mode Python program and native bridge. */
@@ -46,6 +48,17 @@ export function javaCommand(memoryKiB: number) {
 
 export function leetcodeContract(id: string) {
   return problems[id] || null;
+}
+
+/**
+ * The function's parameters, for one labelled custom-case field each. null keeps the raw
+ * text: design problems, Codec round trips and problems with their own input help.
+ */
+export function leetcodeParams(id: string) {
+  const c = leetcodeContract(id);
+  if (!c?.signature.params || c.signature.classname || c.customInputHelp || ['lc-297', 'lc-449'].includes(id))
+    return null;
+  return c.signature.params.map(({ name, type }) => ({ name, type }));
 }
 
 export function leetcodeTemplates(id: string) {

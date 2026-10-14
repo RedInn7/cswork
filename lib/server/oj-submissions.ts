@@ -24,8 +24,11 @@ export type SubmissionRow = {
   language: Language;
   code: string;
   status: string;
-  /** playground: /playground runs, no problem, never in history or statistics. */
-  mode: 'judge' | 'run' | 'playground';
+  /**
+   * playground: /playground runs, no problem, never in history or statistics. reference: the
+   * editorial's code on a learner's custom case (createReferenceRun), never shown as theirs.
+   */
+  mode: 'judge' | 'run' | 'playground' | 'reference';
   coding_mode: CodingMode;
   harness_version: string | null;
   custom_input: string | null;
@@ -97,13 +100,16 @@ function priorRequest(userId: string, key: string, hash: string) {
     throw new HttpError(409, '此请求编号已经用于另一份代码，请重新提交');
   return row;
 }
-/** Inside the caller's IMMEDIATE transaction: two in flight per learner, 128 in all. */
-function admit(p: Person) {
+/**
+ * Inside the caller's IMMEDIATE transaction: two in flight per learner, 128 in all. Reference
+ * runs ride beside a custom run, so they have their own two and never block a submit.
+ */
+function admit(p: Person, reference = false) {
   const counts = sqlite()
     .prepare(
-      "SELECT COUNT(*) as total,SUM(user_id=?) as own FROM submissions WHERE status IN ('queued','compiling','running')",
+      "SELECT COUNT(*) as total,SUM(user_id=? AND (mode='reference')=?) as own FROM submissions WHERE status IN ('queued','compiling','running')",
     )
-    .get(p.id) as { total: number; own: number };
+    .get(p.id, reference ? 1 : 0) as { total: number; own: number };
   if (counts.own >= 2)
     throw new HttpError(
       429,
@@ -277,6 +283,64 @@ export async function createSubmission(p: Person, value: unknown) {
       coding_mode: d.codingMode,
       harness_version:
         d.codingMode === 'leetcode' ? LEETCODE_HARNESS_VERSION : null,
+    });
+  }).immediate();
+}
+const referenceSchema = z
+  .object({
+    stdin: z.string().max(MAX_STDIN_BYTES),
+    // The custom case's format: LeetCode's JSON lines, or the ACM test-file stdin.
+    codingMode: z.enum(['leetcode', 'acm']).default('leetcode'),
+    idempotencyKey: z.string().regex(/^[a-zA-Z0-9_-]{16,100}$/),
+  })
+  .strict();
+/**
+ * The expected output of a learner's custom case: `code` (the verified editorial's best
+ * Python approach, a LeetCode Solution class) runs on it as mode 'reference'. The same case
+ * reuses its earlier run; the caller checks the editorial and any running contest.
+ */
+export async function createReferenceRun(p: Person, problemId: string, value: unknown, code: string) {
+  const d = referenceSchema.parse(value);
+  if (Buffer.byteLength(d.stdin) > MAX_STDIN_BYTES)
+    throw new HttpError(413, '代码和自定义输入分别最多 64 KiB');
+  if (d.stdin.includes('\0')) throw new HttpError(400, '内容不能包含空字符');
+  if (p.role !== 'teacher' && !p.verified)
+    throw new HttpError(403, '请先验证邮箱，再运行和提交代码');
+  const { versionId, spec } = await getCompileProblem(p, problemId);
+  if (!spec.languages.includes('python') || !leetcodeContract(problemId))
+    throw new HttpError(404, '这道题没有可用的参考解');
+  const hash = createHash('sha256')
+    .update(JSON.stringify(['reference', versionId, d.codingMode, d.stdin, code, LEETCODE_HARNESS_VERSION]))
+    .digest('hex');
+  const db = sqlite();
+  const reuse = () =>
+    db
+      .prepare(
+        "SELECT id,status FROM submissions WHERE user_id=? AND mode='reference' AND request_hash=? AND status NOT IN ('cancelled','system_error') ORDER BY created_at DESC LIMIT 1",
+      )
+      .get(p.id, hash) as { id: string; status: string } | undefined;
+  const prior = reuse() ?? priorRequest(p.id, d.idempotencyKey, hash);
+  if (prior) return { id: prior.id, status: prior.status };
+  if (!judgeReady())
+    throw new HttpError(503, '判题服务尚未配置，代码草稿已保留');
+  await limit(p, 'oj-expected', 60, 3600);
+  return db.transaction(() => {
+    const duplicate = reuse() ?? priorRequest(p.id, d.idempotencyKey, hash);
+    if (duplicate) return { id: duplicate.id, status: duplicate.status };
+    admit(p, true);
+    return enqueue(p, d.idempotencyKey, {
+      problem_id: problemId,
+      problem_version_id: versionId,
+      language: 'python',
+      code,
+      mode: 'reference',
+      custom_input: d.stdin,
+      request_hash: hash,
+      total: 1,
+      practice_round_id: null,
+      // The worker always wraps a reference as LeetCode; this keeps the case's input format.
+      coding_mode: d.codingMode,
+      harness_version: LEETCODE_HARNESS_VERSION,
     });
   }).immediate();
 }
@@ -530,7 +594,8 @@ export async function submissionDetail(p: Person, id: string) {
             stdin: c.input,
             expected: c.expectedOutput,
             stdout: r?.stdout ?? '',
-            stderr: r?.stderr ?? '',
+            // A reference traceback would quote the editorial's code.
+            stderr: s.mode === 'reference' ? '' : (r?.stderr ?? ''),
           }
         : {}),
     };
@@ -596,15 +661,17 @@ export async function submissionDetail(p: Person, id: string) {
   return {
     ...summary(s),
     watchToken: watchToken(s),
-    code: s.code,
+    code: s.mode === 'reference' ? undefined : s.code,
     cases,
     firstFailure,
-    compileOutput: s.compile_output ?? '',
+    compileOutput: s.mode === 'reference' ? '' : (s.compile_output ?? ''),
     queuedPosition: position,
     cancelRequested: Boolean(s.cancel_requested),
     problemVersion: snapshot ? `v${snapshot.revision}` : undefined,
   };
 }
+/** Never the learner's own attempts: /playground, editorial reference runs, ai-assisted projects. */
+const UNLISTED_MODES = "('playground','reference','project')";
 export function submissionHistory(
   p: Person,
   problemId: string | null,
@@ -623,7 +690,7 @@ export function submissionHistory(
       throw new HttpError(400, '分页游标无效');
     }
   }
-  const filters = ["user_id=?", "mode<>'playground'"];
+  const filters = ['user_id=?', `mode NOT IN ${UNLISTED_MODES}`];
   const params: (string | number)[] = [p.id];
   if (problemId) {
     filters.push('problem_id=?');
