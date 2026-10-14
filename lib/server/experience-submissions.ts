@@ -298,6 +298,22 @@ export function companyMemberExperiences(company: string, max = 6) {
   return { items, total };
 }
 
+/** Posts approved since `since` (ms), newest first: the library's "recently added" page. */
+export function recentMemberExperiences(since: number, max = 20) {
+  const names = companyNames();
+  return (
+    sqlite()
+      .prepare(
+        `SELECT s.*,${HANDLE} FROM experience_submissions s WHERE s.reviewed_at>=? AND ${PUBLIC}
+        ORDER BY s.reviewed_at DESC, s.id LIMIT ?`,
+      )
+      .all(since, max * 2) as Row[]
+  )
+    .filter((r) => names.has(r.company_slug))
+    .slice(0, max)
+    .map((r) => summaryOf(r, names));
+}
+
 // ---------------------------------------------------------------- one post
 
 /**

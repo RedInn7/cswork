@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import Link from 'next/link';
 import { seoMetadata } from '@/lib/seo';
+import { RecentView, recentMetadata } from './recent';
 import {
   PUBLIC_LIBRARY_TYPES,
   parsePublicLibraryQuery,
@@ -28,7 +29,10 @@ async function load(searchParams: Props['searchParams']) {
   return { query, result };
 }
 
+const isRecent = async (searchParams: Props['searchParams']) => (await searchParams).view === 'recent';
+
 export async function generateMetadata({ searchParams }: Props) {
+  if (await isRecent(searchParams)) return recentMetadata();
   const { query } = await load(searchParams);
   const title = query.type
     ? PUBLIC_LIBRARY_TYPES[query.type]
@@ -46,6 +50,7 @@ export async function generateMetadata({ searchParams }: Props) {
 }
 
 export default async function LibraryPage({ searchParams }: Props) {
+  if (await isRecent(searchParams)) return <RecentView />;
   const { query, result } = await load(searchParams);
   return (
     <>
@@ -66,6 +71,7 @@ export default async function LibraryPage({ searchParams }: Props) {
         >
           All topics
         </Link>
+        <a href="/library?view=recent">Recently added</a>
         {Object.entries(PUBLIC_LIBRARY_TYPES).map(([type, title]) => (
           <a
             key={type}
