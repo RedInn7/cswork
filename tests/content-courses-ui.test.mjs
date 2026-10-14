@@ -1,0 +1,238 @@
+// The Line 500 editorial tab and the /system-design course: server-rendered pages,
+// the chapter quiz's saving (account note or this browser) and the editorial's lock and diff.
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { register, createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
+import { readFileSync } from 'node:fs';
+import { JSDOM } from 'jsdom';
+import { createElement, act } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+
+const react = pathToFileURL(createRequire(import.meta.url).resolve('react')).href;
+const prefix = `import React from ${JSON.stringify(react)};`;
+const mocks = {
+  'next/headers': `export const cookies = async () => ({ get: () => (globalThis.__locale ? { value: globalThis.__locale } : undefined) });`,
+  'next/navigation': `export function notFound() { throw Object.assign(new Error('NEXT_NOT_FOUND'), { digest: 'NEXT_NOT_FOUND' }); }`,
+  'next/link': `${prefix}export default function Link({ href, prefetch, children, ...rest }) { return React.createElement('a', { href, ...rest }, children); }`,
+  editor: `${prefix}export function CodeDiff(p) { return React.createElement('pre', { 'data-diff': '', 'data-original': p.original, 'data-modified': p.modified, 'data-language': p.originalLanguage, 'aria-label': p.ariaLabel }); }`,
+  alert: `${prefix}export const AlertDialog=({open,children})=>open?React.createElement('div',{role:'alertdialog'},children):null;export const AlertDialogContent=({children})=>React.createElement('div',null,children);export const AlertDialogDescription=AlertDialogContent;export const AlertDialogHeader=AlertDialogContent;export const AlertDialogFooter=AlertDialogContent;export const AlertDialogTitle=AlertDialogContent;export const AlertDialogAction=({children,onClick})=>React.createElement('button',{onClick},children);export const AlertDialogCancel=AlertDialogAction;`,
+};
+register(
+  `data:text/javascript,${encodeURIComponent(`const mocks=${JSON.stringify(mocks)};
+export async function resolve(s,c,n){if(s.startsWith('next/')&&mocks[s])return {url:'mock:'+s,shortCircuit:true};return n(s,c);}
+export async function load(u,c,n){
+  if(u.startsWith('mock:'))return {format:'module',source:mocks[u.slice(5)],shortCircuit:true};
+  if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};
+  if(u.endsWith('/components/editor.tsx'))return {format:'module',source:mocks.editor,shortCircuit:true};
+  if(u.endsWith('/components/ui/alert-dialog.tsx'))return {format:'module',source:mocks.alert,shortCircuit:true};
+  return n(u,c);}`)}`,
+  import.meta.url,
+);
+
+const course = JSON.parse(readFileSync(new URL('../lib/content/system-design-course.json', import.meta.url), 'utf8'));
+const editorials = JSON.parse(readFileSync(new URL('../lib/content/ling-editorials.json', import.meta.url), 'utf8'));
+const [framework, shortener] = course.chapters;
+
+function useDom() {
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/system-design/framework' });
+  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'navigator'])
+    Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  return dom;
+}
+const parse = (html) => new JSDOM(`<main>${html}</main>`).window.document;
+const settle = () => act(async () => new Promise((r) => setTimeout(r, 10)));
+const buttons = (text) => [...document.querySelectorAll('button')].filter((b) => b.textContent.includes(text));
+
+test('the course index and chapters render on the server with links, quiz and pager', async () => {
+  const { default: Index, generateMetadata: indexMeta } = await import('../app/system-design/page.tsx');
+  const { default: Chapter, generateMetadata } = await import('../app/system-design/[slug]/page.tsx');
+  const params = (slug) => ({ params: Promise.resolve({ slug }) });
+  globalThis.__locale = 'zh';
+  let doc = parse(renderToStaticMarkup(await Index()));
+  const cards = [...doc.querySelectorAll('.sd-sheets a')];
+  assert.equal(cards.length, course.chapters.length);
+  assert.ok(cards.every((a, i) => a.getAttribute('href') === `/system-design/${course.chapters[i].slug}`));
+  assert.ok(cards[0].querySelector('.sd-sheet-title').textContent === framework.titleZh);
+  assert.equal(doc.querySelectorAll('h1').length, 1);
+  const ld = [...doc.querySelectorAll('script[type="application/ld+json"]')].map((s) => JSON.parse(s.textContent));
+  assert.deepEqual(ld.map((x) => x['@type']), ['BreadcrumbList', 'ItemList']);
+  assert.equal((await indexMeta()).alternates.canonical, 'https://cswork.org/system-design');
+
+  globalThis.__locale = 'en';
+  doc = parse(renderToStaticMarkup(await Chapter(params('framework'))));
+  assert.equal(doc.querySelector('h1').textContent, framework.titleEn);
+  // Links between chapters survive the safe renderer; the quiz waits for its saved answers.
+  assert.ok(doc.querySelector('.public-library-prose a[href="/system-design/url-shortener"]') !== null);
+  assert.equal(doc.querySelectorAll('.sd-quiz fieldset').length, framework.quiz.length);
+  assert.ok([...doc.querySelectorAll('.sd-quiz-choices button')].every((b) => b.disabled));
+  assert.ok(doc.querySelector('.sd-pager a[rel="next"]').getAttribute('href') === '/system-design/url-shortener');
+  const meta = await generateMetadata(params('framework'));
+  assert.ok(meta.title.startsWith(framework.titleEn));
+  assert.equal(meta.alternates.canonical, 'https://cswork.org/system-design/framework');
+
+  doc = parse(renderToStaticMarkup(await Chapter(params('url-shortener'))));
+  assert.ok(doc.querySelector('.public-library-prose table') !== null);
+  assert.ok(doc.querySelector('.sd-pager a[rel="prev"]').getAttribute('href') === '/system-design/framework');
+  assert.ok(doc.querySelector('.sd-pager > :last-child').getAttribute('href') === '/system-design');
+  await assert.rejects(Chapter(params('nope')), /NEXT_NOT_FOUND/);
+  await assert.rejects(Chapter(params('__proto__')), /NEXT_NOT_FOUND/);
+});
+
+test('signed out, quiz answers lock, explain and stay in this browser; bad saved data is ignored', async () => {
+  const dom = useDom();
+  const { createRoot } = await import('react-dom/client');
+  const { SdQuiz } = await import('../app/system-design/quiz.tsx');
+  const original = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async (url, init = {}) => {
+    calls.push(init.method ?? 'GET');
+    return Response.json({ error: 'Sign in first' }, { status: 401 });
+  };
+  const key = 'cswork:sd-quiz:framework';
+  const root = createRoot(document.getElementById('root'));
+  try {
+    localStorage.setItem(key, JSON.stringify({ picks: [9, null, null] }));
+    await act(async () => root.render(createElement(SdQuiz, { slug: 'framework', quiz: framework.quiz, zh: false })));
+    await settle();
+    assert.equal(document.querySelectorAll('.sd-quiz-why').length, 0, 'an out-of-range pick is ignored');
+    assert.ok(document.querySelector('.sd-quiz-foot').textContent.includes('stay on this device'));
+    const wrong = framework.quiz[0].answer === 0 ? 1 : 0;
+    const first = () => [...document.querySelectorAll('.sd-quiz-list > li')][0];
+    await act(async () => first().querySelectorAll('button')[wrong].click());
+    assert.ok(first().querySelector('.sd-quiz-why[data-state="wrong"]') !== null);
+    assert.ok(first().querySelector('.sd-quiz-why').textContent.includes(`The answer is ${'ABCD'[framework.quiz[0].answer]}.`));
+    assert.ok(first().querySelector(`button[data-state="right"]`) === first().querySelectorAll('button')[framework.quiz[0].answer]);
+    assert.ok([...first().querySelectorAll('button')].every((b) => b.disabled), 'an answered question is locked');
+    assert.deepEqual(JSON.parse(localStorage.getItem(key)).picks, [wrong, null, null]);
+    const second = () => [...document.querySelectorAll('.sd-quiz-list > li')][1];
+    await act(async () => second().querySelectorAll('button')[framework.quiz[1].answer].click());
+    assert.ok(second().querySelector('.sd-quiz-why[data-state="right"]') !== null);
+    assert.equal(document.querySelector('.sd-quiz-score').textContent, '2 of 3 answered · 1 correct');
+    assert.deepEqual(calls, ['GET'], 'nothing is sent while signed out');
+    await act(async () => buttons('Start over')[0].click());
+    assert.equal(localStorage.getItem(key), null);
+    assert.equal(document.querySelectorAll('.sd-quiz-why').length, 0);
+
+    // Saved answers come back on the next visit.
+    localStorage.setItem(key, JSON.stringify({ picks: [framework.quiz[0].answer, null, null] }));
+    await act(async () => root.render(createElement('div')));
+    await act(async () => root.render(createElement(SdQuiz, { slug: 'framework', quiz: framework.quiz, zh: true })));
+    await settle();
+    assert.ok(document.querySelector('.sd-quiz-why[data-state="right"]').textContent.startsWith('答对了。'));
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = original;
+    dom.window.close();
+  }
+});
+
+test('signed in, answers are the sd:<slug> note, sent in order, and guest answers move over', async () => {
+  const dom = useDom();
+  const { createRoot } = await import('react-dom/client');
+  const { SdQuiz } = await import('../app/system-design/quiz.tsx');
+  const original = globalThis.fetch;
+  const puts = [];
+  let inFlight = 0;
+  let overlapped = false;
+  globalThis.fetch = async (url, init = {}) => {
+    assert.equal(String(url), '/api/oj/notes?target=sd%3Aurl-shortener');
+    if (init.method === 'PUT') {
+      puts.push(JSON.parse(init.body).body);
+      overlapped ||= ++inFlight > 1;
+      // The first save is slow: the next one must wait for it rather than overtake it.
+      await new Promise((r) => setTimeout(r, puts.length === 1 ? 40 : 0));
+      inFlight--;
+      return Response.json({ ok: true });
+    }
+    return Response.json({ target: 'sd:url-shortener', body: '', updatedAt: null });
+  };
+  const key = 'cswork:sd-quiz:url-shortener';
+  const root = createRoot(document.getElementById('root'));
+  try {
+    localStorage.setItem(key, JSON.stringify({ picks: [1, null, null] }));
+    await act(async () => root.render(createElement(SdQuiz, { slug: 'url-shortener', quiz: shortener.quiz, zh: false })));
+    await settle();
+    assert.equal(localStorage.getItem(key), null, 'the guest copy moved to the account');
+    assert.ok(document.querySelector('.sd-quiz-foot').textContent.includes('saved to your account'));
+    const third = () => [...document.querySelectorAll('.sd-quiz-list > li')][2];
+    await act(async () => third().querySelectorAll('button')[0].click());
+    await act(async () => new Promise((r) => setTimeout(r, 60)));
+    assert.equal(overlapped, false, 'one save at a time');
+    assert.deepEqual(
+      puts.map((body) => JSON.parse(body).picks),
+      [
+        [1, null, null],
+        [1, null, 0],
+      ],
+    );
+    await act(async () => buttons('Start over')[0].click());
+    await settle();
+    assert.equal(puts.at(-1), '', 'starting over removes the note');
+    assert.equal(localStorage.getItem(key), null, 'nothing is kept in the browser while signed in');
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = original;
+    dom.window.close();
+  }
+});
+
+test('the editorial stays locked until solved or confirmed, switches language and diffs my code', async () => {
+  const dom = useDom();
+  const { createRoot } = await import('react-dom/client');
+  const { LingEditorial } = await import('../components/ling-editorial.tsx');
+  const editorial = editorials['lc-1'];
+  const root = createRoot(document.getElementById('root'));
+  let unlocks = 0;
+  const render = (props) =>
+    act(async () =>
+      root.render(
+        createElement(LingEditorial, {
+          editorial,
+          english: true,
+          unlocked: false,
+          onUnlock: () => unlocks++,
+          code: 'my code',
+          language: 'cpp',
+          settings: {},
+          ...props,
+        }),
+      ),
+    );
+  try {
+    await render();
+    assert.ok(document.querySelector('.cs-route-hint-locked') !== null);
+    assert.equal(document.querySelectorAll('.cs-ling-code').length, 0, 'no code before unlocking');
+    await act(async () => buttons('Show anyway')[0].click());
+    assert.ok(document.querySelector('[role="alertdialog"]') !== null);
+    await act(async () => buttons('Show editorial')[0].click());
+    assert.equal(unlocks, 1);
+
+    await render({ unlocked: true });
+    assert.equal(document.querySelectorAll('.cs-ling-approaches > li').length, editorial.approaches.length);
+    assert.ok(document.querySelector('.cs-ling-unverified') !== null);
+    // The editor's language picks the tab; C++ code shows first.
+    assert.ok(buttons('C++')[0].getAttribute('aria-pressed') === 'true');
+    assert.equal(document.querySelector('.cs-ling-code').textContent, editorial.approaches[0].cpp);
+    await act(async () => buttons('Python')[0].click());
+    assert.equal(document.querySelector('.cs-ling-code').textContent, editorial.approaches[0].python);
+    const compare = buttons('Compare with my code')[1];
+    await act(async () => compare.click());
+    assert.equal(compare.getAttribute('aria-expanded'), 'true');
+    const diff = document.querySelector('pre[data-diff]');
+    assert.equal(diff.getAttribute('data-original'), editorial.approaches[1].python);
+    assert.equal(diff.getAttribute('data-modified'), 'my code');
+    assert.equal(diff.getAttribute('data-language'), 'python');
+    assert.equal(diff.getAttribute('aria-label'), 'Differences between the editorial and my code');
+    await act(async () => buttons('Hide comparison')[0].click());
+    assert.equal(document.querySelectorAll('pre[data-diff]').length, 0);
+
+    await render({ unlocked: true, english: false, editorial: { ...editorial, verified: true } });
+    assert.ok(document.querySelector('.cs-ling-verified').textContent.includes('代码已通过本题全部测试'));
+    assert.ok(document.querySelector('.cs-ling-approaches h3').textContent.includes(editorial.approaches[0].nameZh));
+  } finally {
+    await act(async () => root.unmount());
+    dom.window.close();
+  }
+});
