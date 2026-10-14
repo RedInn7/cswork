@@ -396,8 +396,11 @@ export function darkBlock(css, { manual = new Set(), from } = {}) {
     rule.append(decls);
     parent.append(rule);
   };
-  root.each((node) => copy(node, out));
-  if (!out.nodes.length) return '';
+  // Screen only: a page printed from dark mode prints with the light colours.
+  const screen = postcss.atRule({ name: 'media', params: 'screen' });
+  root.each((node) => copy(node, screen));
+  if (!screen.nodes?.length) return '';
+  out.append(screen);
   out.walk((n) => {
     n.raws.before = n.parent === out ? '\n' : '\n' + '  '.repeat(depth(n));
     if (n.type !== 'decl') n.raws.after = '\n' + '  '.repeat(depth(n));
