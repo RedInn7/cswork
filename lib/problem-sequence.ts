@@ -13,6 +13,29 @@ export function rememberProblemSequence(ids: string[], library?: string) {
   }
 }
 
+// The bank's filters as last listed, so the workspace's shuffle draws under them.
+const libraryQueryKey = 'cswork:library-query';
+export function rememberLibraryQuery(params: URLSearchParams) {
+  try {
+    sessionStorage.setItem(libraryQueryKey, params.toString());
+  } catch {
+    // Without storage the shuffle falls back to unsolved problems.
+  }
+}
+/** `oj/library` parameters for one random pick: the bank's last filters, else unsolved ones. */
+export function randomPickQuery() {
+  let saved = '';
+  try {
+    saved = sessionStorage.getItem(libraryQueryKey) || '';
+  } catch {
+    // Same fallback as an empty session.
+  }
+  const params = new URLSearchParams(saved || 'status=todo');
+  params.delete('page');
+  params.set('random', '1');
+  return params.toString();
+}
+
 /** The remembered list; empty when there is none or storage is unavailable. */
 export function problemSequence(): string[] {
   try {

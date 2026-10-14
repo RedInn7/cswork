@@ -1,7 +1,7 @@
 'use client';
 
 import { Fragment, useEffect, useRef, useState } from 'react';
-import { rememberProblemSequence } from '@/lib/problem-sequence';
+import { rememberLibraryQuery, rememberProblemSequence } from '@/lib/problem-sequence';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
 import { StudyPlan, useStudyPlan, type PlanTodo } from './study-plan';
 import { RouteLine } from './route-line';
@@ -395,6 +395,7 @@ export function StudyLibrary({
         if (current && request === listRequest.current) {
           setData(result);
           setDataQuery(params.toString());
+          rememberLibraryQuery(params);
         }
       })
       .catch((reason: Error) => {
