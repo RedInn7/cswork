@@ -33,6 +33,8 @@ writeFileSync(join(parsed, 'experiences.jsonl'), lines([
   item({ id: 'ex-uber-onsite', type: 'experience', slug: 'uber-onsite', title: 'Uber onsite', body: 'Four rounds.', company: { slug: 'uber', name: 'Uber' }, publishedAt: '2026-08-01', extra: { result: 'Rejected', rounds: ['Online Assessment', 'Onsite'], date: '2026-03-13', dateBasis: 'interview' } }),
   // The report's date is not the interview's; no outcome is no outcome.
   item({ id: 'ex-uber-screen', type: 'experience', slug: 'uber-screen', title: 'Uber screen', body: 'One round.', company: { slug: 'uber', name: 'Uber' }, publishedAt: '2026-08-02', extra: { result: null, rounds: ['Technical Screen'], date: '2026-07-01', dateBasis: 'source_report' } }),
+  // Shared last, interviewed long ago.
+  item({ id: 'ex-uber-old', type: 'experience', slug: 'uber-old', title: 'Uber loop from last year', body: 'Old loop.', company: { slug: 'uber', name: 'Uber' }, publishedAt: '2026-09-20', extra: { result: null, rounds: [], date: '2025-01-05', dateBasis: 'interview' } }),
 ]));
 writeFileSync(join(parsed, 'courses.jsonl'), lines([
   item({ id: 'co-sd', type: 'course', slug: 'sd', title: 'System design basics', body: 'Course intro.' }),
@@ -180,6 +182,12 @@ void test('experiences carry outcome, rounds and interview date; outcome filter 
   assert.deepEqual(
     list.facets.results.map((f: { value: string; n: number }) => [f.value, f.n]).sort(),
     [['Offer', 1], ['Rejected', 1]],
+  );
+  // By when it happened (interview date, else the report's date, else publication); ?sort=new by publication.
+  assert.deepEqual(list.items.map((i: Row) => i.slug), ['amazon-oa', 'uber-screen', 'uber-onsite', 'uber-old']);
+  assert.deepEqual(
+    (await get('list?type=experience&sort=new')).items.map((i: Row) => i.slug),
+    ['uber-old', 'amazon-oa', 'uber-screen', 'uber-onsite'],
   );
   assert.deepEqual((await get('list?type=experience&result=Offer')).items.map((i: Row) => i.slug), ['amazon-oa']);
   assert.equal((await get('list?type=experience&result=Offer&company=uber')).total, 0);
