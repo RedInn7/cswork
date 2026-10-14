@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import Database from 'better-sqlite3';
-import { companyStats, MIN_EXPERIENCES } from '../lib/server/company-stats';
+import { companyStats, MIN_EXPERIENCES, sixMonthsBefore } from '../lib/server/company-stats';
 
 const db = new Database(':memory:');
 db.exec(`CREATE TABLE items(
@@ -57,6 +57,13 @@ void test('company stats aggregate public experiences and questions over every s
   assert.deepEqual(stats.roles, [{ value: 'Software Engineer', n: 2 }, { value: 'Data Scientist', n: 1 }]);
   assert.deepEqual(stats.categories, [{ value: 'Coding & Algorithms', n: 2 }, { value: 'System Design', n: 1 }]);
   assert.equal(stats.questions, 4);
+});
+
+void test('the six-month window starts on the same day, clamped at month end', () => {
+  assert.deepEqual(
+    ['2026-10-14', '2026-08-31', '2026-10-31', '2028-08-31', '2026-03-31'].map((d) => sixMonthsBefore(new Date(d + 'T12:00:00Z'))),
+    ['2026-04-14', '2026-02-28', '2026-04-30', '2028-02-29', '2025-09-30'],
+  );
 });
 
 void test('too few experiences, no library or no spellings: no stats; results are cached per day', () => {

@@ -38,14 +38,20 @@ export function companyStats(
   now = new Date(),
 ): CompanyStats | null {
   if (!db || !spellings.length) return null;
-  const from = new Date(now);
-  from.setUTCMonth(from.getUTCMonth() - 6);
-  const since = from.toISOString().slice(0, 10);
+  const since = sixMonthsBefore(now);
   let entry = cache.get(db);
   if (entry?.since !== since) cache.set(db, (entry = { since, stats: new Map() }));
   const key = spellings.join('\n');
   if (!entry.stats.has(key)) entry.stats.set(key, compute(db, JSON.stringify(spellings), since));
   return entry.stats.get(key)!;
+}
+
+/** The same day six months earlier, clamped to that month's last day (08-31 → 02-28), as YYYY-MM-DD. */
+export function sixMonthsBefore(now: Date) {
+  const year = now.getUTCFullYear();
+  const month = now.getUTCMonth() - 6;
+  const last = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  return new Date(Date.UTC(year, month, Math.min(now.getUTCDate(), last))).toISOString().slice(0, 10);
 }
 
 function compute(db: Database.Database, slugs: string, since: string): CompanyStats | null {
