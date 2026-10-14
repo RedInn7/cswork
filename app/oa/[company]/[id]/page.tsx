@@ -7,7 +7,7 @@ import {
   oaCompanyPath,
   oaProblemPath,
 } from '@/lib/oa-company-brands';
-import { oaStatementMarkdown } from '@/lib/oa-verified-statement';
+import { oaStatementLang, oaStatementMarkdown } from '@/lib/oa-verified-statement';
 import { breadcrumbJsonLd, oaPageTitle, seoMetadata } from '@/lib/seo';
 import { HttpError } from '@/lib/server/http';
 import { requestLocale } from '@/lib/server/locale';
@@ -44,8 +44,10 @@ const load = cache(async (slug: string, id: string) => {
     company,
     judged,
     statement,
-    // Catalog text and translations are English; verified packages are Chinese.
-    statementLang: !judged || english ? 'en' : 'zh-CN',
+    // Verified packages are Chinese and their translations English; catalog text varies.
+    statementLang: judged ? (english ? 'en' : 'zh-CN') : oaStatementLang(statement),
+    // Title only: no statement and nothing to judge, so not worth indexing.
+    thin: !judged && !statement.trim(),
     // A mock only draws judge-ready problems.
     mock: company.slug !== OTHER_COMPANY && !!listed?.company.ready,
     locale,
@@ -58,15 +60,18 @@ const load = cache(async (slug: string, id: string) => {
 export async function generateMetadata({ params }: Props) {
   const { company, id } = await params;
   const page = await load(company, id);
-  return seoMetadata({
-    title: oaPageTitle(page.locale, page.name, page.item.title),
-    description: publicLibraryDescription({
-      title: page.item.title,
-      summary: null,
-      body: page.statement,
+  return {
+    ...seoMetadata({
+      title: oaPageTitle(page.locale, page.name, page.item.title),
+      description: publicLibraryDescription({
+        title: page.item.title,
+        summary: null,
+        body: page.statement,
+      }),
+      path: oaProblemPath(page.company.slug, page.item.id),
     }),
-    path: oaProblemPath(page.company.slug, page.item.id),
-  });
+    ...(page.thin ? { robots: { index: false, follow: true } } : {}),
+  };
 }
 
 export default async function OaProblemPage({ params }: Props) {

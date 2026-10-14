@@ -6,7 +6,7 @@ import {
   oaCompanyName,
   oaProblemPath,
 } from '../lib/oa-company-brands';
-import { oaStatementMarkdown } from '../lib/oa-verified-statement';
+import { oaStatementLang, oaStatementMarkdown } from '../lib/oa-verified-statement';
 import { breadcrumbJsonLd, oaPageTitle } from '../lib/seo';
 import { hiddenCompanies } from '../lib/server/env';
 import { createOaLibrary } from '../lib/server/oa-library';
@@ -77,6 +77,14 @@ void test('OA page titles, breadcrumbs and English statement headings', () => {
   const samples = [{ input: '1\n', expectedOutput: '2\n' }];
   assert.match(oaStatementMarkdown(spec, samples, 'en'), /## Input\n\nI\n\n## Output[\s\S]*## Example 1\n\nInput:[\s\S]*## Example notes\n\nE$/);
   assert.match(oaStatementMarkdown(spec, samples), /## 输入格式[\s\S]*## 样例 1\n\n输入：/);
+  const statement = (id: string) =>
+    catalog().items.find((item: { id: string }) => item.id === id).statement;
+  // Chinese prose full of English identifiers, and English prose with a few Chinese notes.
+  assert.equal(oaStatementLang(statement('oa-amazon-mern-2')), 'zh-CN');
+  assert.equal(oaStatementLang(statement('oa-amazon-mern-10')), 'zh-CN');
+  assert.equal(oaStatementLang(statement('oa-salesforce-31')), 'en');
+  assert.equal(oaStatementLang('Return `数组` length.'), 'en');
+  assert.equal(oaStatementLang(''), 'en');
 });
 
 void test('sitemap entries and pages leave out hidden companies and their merged aliases', () => {
@@ -103,6 +111,9 @@ void test('sitemap entries and pages leave out hidden companies and their merged
     // A hidden company's update time does not leak into the index lastmod.
     assert.equal(updated.get('/oa'), new Date(at).toISOString());
     assert.equal(updated.get('/oa/meta/oa-meta-2'), null);
+    // Title-only pages are noindex, so they are not submitted.
+    assert(!paths.includes('/oa/intuit/oa-intuit-5'));
+    assert(library.sitemapEntries(new Map([['oa-intuit-5', {}]])).some((e) => e.path === '/oa/intuit/oa-intuit-5'));
     assert.equal(library.problem('oa-google-1'), undefined);
     assert.equal(library.problem('oa-amazon-mern-2'), undefined);
     assert.equal(library.company('google'), undefined);

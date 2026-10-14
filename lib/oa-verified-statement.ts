@@ -133,6 +133,17 @@ export function formatOaVerifiedStatement(
   return oaStatementMarkdown(cleanOaStatement(raw), samples);
 }
 
+/**
+ * Prose language of a catalog statement, for `lang`. Code is ignored; a Han character
+ * counts as a word, and Chinese prose keeps English identifiers (~30% Han in the catalog).
+ */
+export function oaStatementLang(text: string) {
+  const prose = text.replace(/```[\s\S]*?```|`[^`\n]*`/g, ' ');
+  const han = prose.match(/[\u3400-\u9fff]/g)?.length ?? 0;
+  const words = prose.match(/[A-Za-z]+/g)?.length ?? 0;
+  return han > 0.3 * (han + words) ? 'zh-CN' : 'en';
+}
+
 const headings = {
   zh: ['输入格式', '输出格式', '样例', '输入：', '输出：', '样例说明'],
   en: ['Input', 'Output', 'Example', 'Input:', 'Output:', 'Example notes'],

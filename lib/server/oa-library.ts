@@ -219,10 +219,13 @@ export function createOaLibrary(
           path: oaCompanyPath(company.slug),
           updatedAt: date(latest.get(company.slug)),
         })),
-        ...shown.items.map((item) => ({
-          path: oaProblemPath(item.companySlug, item.id),
-          updatedAt: date(ready.get(item.id)?.updatedAt),
-        })),
+        // Title-only pages (no statement, nothing to judge) are noindex and stay out.
+        ...shown.items
+          .filter((item) => ready.has(item.id) || item.statement.trim())
+          .map((item) => ({
+            path: oaProblemPath(item.companySlug, item.id),
+            updatedAt: date(ready.get(item.id)?.updatedAt),
+          })),
       ];
     },
     list(params: URLSearchParams, ready: ReadonlySet<string> = new Set()) {
