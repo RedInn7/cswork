@@ -26,7 +26,8 @@ export function LibrarySwitch({
       <button
         type="button"
         aria-pressed={section === 'oa'}
-        onClick={() => navigate('problems', { library: 'oa' })}
+        // Re-navigating would drop the URL filters OaLibrary keeps in sync.
+        onClick={() => section !== 'oa' && navigate('problems', { library: 'oa' })}
       >
         {t('OA 题目', 'OA problems')} <span>OA Master</span>
       </button>

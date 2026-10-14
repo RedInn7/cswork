@@ -4,16 +4,17 @@ import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Navigate } from './learning';
-import { companyInitials, companyLogos } from '@/lib/oa-company-brands';
-import { useT } from '@/lib/i18n';
+import {
+  canonicalCompany,
+  companyHue,
+  companyInitials,
+  companyLogos,
+  oaCompanyName,
+  oaProblemPath,
+} from '@/lib/oa-company-brands';
+import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
-
-function companyHue(slug: string) {
-  let hash = 0;
-  for (const char of slug || '') hash = (hash * 31 + char.charCodeAt(0)) % 360;
-  return hash;
-}
 
 /** Text remains the accessible identity; the logo is only a visual aid. */
 export function CompanyIdentity({
@@ -43,7 +44,6 @@ export function CompanyIdentity({
         ) : (
           <span
             className="oa-company-initials"
-            // Stable per-company hue so a missing logo still reads as an identity mark.
             style={{ '--oa-hue': companyHue(slug) } as React.CSSProperties}
           >
             {companyInitials(name)}
@@ -85,7 +85,8 @@ type Page = {
   total: number;
   page: number;
   pageSize: number;
-  companies: { slug: string; name: string; count: number }[];
+  /** `count`: every listed problem; `ready`: the practice-ready ones. */
+  companies: { slug: string; name: string; count: number; ready?: number }[];
   source: { name: string; url: string; commit: string };
 };
 type Detail = Item & {
@@ -144,10 +145,16 @@ function safeLink(value: string | undefined) {
   }
 }
 
+/** A plain left click stays in the app; modified clicks keep the browser's link behaviour. */
+function plainClick(e: React.MouseEvent<HTMLAnchorElement>) {
+  if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return false;
+  e.preventDefault();
+  return true;
+}
+
 /** Same-tab navigation to another view; the app follows history via popstate. */
 function openInApp(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
-  if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-  e.preventDefault();
+  if (!plainClick(e)) return;
   history.pushState(null, '', href);
   dispatchEvent(new PopStateEvent('popstate'));
   scrollTo({ top: 0 });
@@ -215,16 +222,29 @@ export function OaMarkdown({ body, math = false }: { body: string; math?: boolea
 
 export function OaLibrary({ navigate }: { navigate?: Navigate }) {
   const t = useT();
+  const locale = useLocale();
+  const companyName = (slug: string, name: string) =>
+    oaCompanyName(slug, name, locale);
   const progressLabels = {
     solved: t('已通过', 'Solved'),
     attempted: t('尝试过', 'Attempted'),
   };
-  const [query, setQuery] = useState('');
-  const [search, setSearch] = useState('');
-  const [company, setCompany] = useState('');
+  // Filters live in the URL (?company=&q=&page=&ready=0) so a list can be shared or reloaded.
+  const [initial] = useState(() =>
+    typeof location === 'undefined'
+      ? new URLSearchParams()
+      : new URLSearchParams(location.search),
+  );
+  const [query, setQuery] = useState(initial.get('q') || '');
+  const [search, setSearch] = useState(query.trim());
+  const [company, setCompany] = useState(
+    canonicalCompany(initial.get('company') || ''),
+  );
   const [companySearch, setCompanySearch] = useState('');
-  const [readyOnly, setReadyOnly] = useState(true);
-  const [page, setPage] = useState(1);
+  const [readyOnly, setReadyOnly] = useState(initial.get('ready') !== '0');
+  const [page, setPage] = useState(
+    () => Math.max(1, Number.parseInt(initial.get('page') || '', 10) || 1),
+  );
   const [data, setData] = useState<Page | null>(null);
   const [companies, setCompanies] = useState<Page['companies']>([]);
   const [error, setError] = useState('');
@@ -242,11 +262,26 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
   const copyGeneration = useRef(0);
   useEffect(() => {
     const timer = setTimeout(() => {
+      // The first run must not reset a page restored from the URL.
+      if (query.trim() === search) return;
       setSearch(query.trim());
       setPage(1);
     }, 250);
     return () => clearTimeout(timer);
-  }, [query]);
+  }, [query, search]);
+  useEffect(() => {
+    const url = new URL(location.href);
+    const filters = {
+      company,
+      q: search,
+      page: page > 1 ? String(page) : '',
+      ready: readyOnly ? '' : '0',
+    };
+    for (const [key, value] of Object.entries(filters))
+      if (value) url.searchParams.set(key, value);
+      else url.searchParams.delete(key);
+    if (url.href !== location.href) history.replaceState(history.state, '', url);
+  }, [company, search, page, readyOnly]);
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
@@ -348,7 +383,8 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
             <header className="study-library-heading">
               <div>
                 <span className="study-kicker">
-                  {t('OA 题目', 'OA problem')} · {currentDetail.companyName} ·
+                  {t('OA 题目', 'OA problem')} ·{' '}
+                  {companyName(currentDetail.companySlug, currentDetail.companyName)} ·
                   OA MASTER
                 </span>
                 <h2 ref={heading} tabIndex={-1}>
@@ -558,9 +594,12 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
     setCompany(slug);
     setPage(1);
   };
-  const companyTotal = companies.reduce((total, item) => total + item.count, 0);
+  // Sidebar counts follow the practice-ready toggle, so "All companies" matches the result count.
+  const shownCount = (item: Page['companies'][number]) =>
+    readyOnly ? (item.ready ?? item.count) : item.count;
+  const companyTotal = companies.reduce((total, item) => total + shownCount(item), 0);
   const visibleCompanies = companies.filter((item) =>
-    item.name
+    companyName(item.slug, item.name)
       .toLocaleLowerCase()
       .includes(companySearch.trim().toLocaleLowerCase()),
   );
@@ -623,8 +662,11 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                   aria-pressed={company === item.slug}
                   onClick={() => chooseCompany(item.slug)}
                 >
-                  <CompanyIdentity slug={item.slug} name={item.name} />
-                  <span>{item.count}</span>
+                  <CompanyIdentity
+                    slug={item.slug}
+                    name={companyName(item.slug, item.name)}
+                  />
+                  <span>{shownCount(item)}</span>
                 </button>
               ))}
               {!visibleCompanies.length && (
@@ -635,7 +677,9 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
             </div>
           </nav>
           <p className="oa-company-caption">
-            {t('数量为收录题目总数', 'Counts include every listed problem')}
+            {readyOnly
+              ? t('数量为可练习题目数', 'Counts are practice-ready problems')
+              : t('数量为收录题目总数', 'Counts include every listed problem')}
           </p>
         </aside>
         <div className="oa-browser-results">
@@ -669,7 +713,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                 <option value="">{t('全部公司', 'All companies')}</option>
                 {companies.map((item) => (
                   <option key={item.slug} value={item.slug}>
-                    {item.name} ({item.count})
+                    {companyName(item.slug, item.name)} ({shownCount(item)})
                   </option>
                 ))}
               </select>
@@ -688,8 +732,8 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
               <>
                 <p className="study-result-summary" role="status">
                   {t(
-                    `共 ${data.total} 道 OA 题目 · 来源 OA Master`,
-                    `${data.total} OA ${data.total === 1 ? 'problem' : 'problems'} · Source: OA Master`,
+                    `共 ${data.total} 道${readyOnly ? '可练习的' : ''} OA 题目 · 来源 OA Master`,
+                    `${data.total}${readyOnly ? ' practice-ready' : ''} OA ${data.total === 1 ? 'problem' : 'problems'} · Source: OA Master`,
                   )}
                 </p>
                 {data.items.length === 0 ? (
@@ -709,11 +753,13 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                       <span>{t('难度', 'Difficulty')}</span>
                     </div>
                     {data.items.map((item) => (
-                      <button
-                        type="button"
+                      // A real link for new tabs and crawlers; a plain click stays in the app.
+                      <a
                         className="oa-row"
                         key={item.id}
-                        onClick={() => {
+                        href={oaProblemPath(item.companySlug, item.id)}
+                        onClick={(event) => {
+                          if (!plainClick(event)) return;
                           if (
                             item.judgeStatus === 'ready' &&
                             item.judgeProblemId &&
@@ -747,7 +793,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                         <span className="oa-company">
                           <CompanyIdentity
                             slug={item.companySlug}
-                            name={item.companyName}
+                            name={companyName(item.companySlug, item.companyName)}
                           />
                         </span>
                         <span className="oa-number">#{item.number}</span>
@@ -783,7 +829,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                               : '—'
                             : t('仅题面', 'Statement only')}
                         </span>
-                      </button>
+                      </a>
                     ))}
                   </div>
                 )}
@@ -832,6 +878,7 @@ export function OaCompanyBadge({
   english?: boolean;
 }) {
   const t = useT();
+  const locale = useLocale();
   const [identity, setIdentity] = useState<{
     id: string;
     companyName: string;
@@ -863,7 +910,11 @@ export function OaCompanyBadge({
         <strong>
           <CompanyIdentity
             slug={identity.companySlug}
-            name={identity.companyName}
+            name={oaCompanyName(
+              identity.companySlug,
+              identity.companyName,
+              english ? 'en' : locale,
+            )}
           />
         </strong>
       )}

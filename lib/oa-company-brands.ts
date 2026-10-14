@@ -116,6 +116,30 @@ export const companyLogos: Readonly<Record<string, string>> = {
   'publicis-sapient': '/company-logos/publicissapient.svg',
 };
 
+/** Catalog slugs that name the same employer as another slug: listed, linked and counted once. */
+export const companyAliases: Readonly<Record<string, string>> = {
+  barclay: 'barclays',
+  sig: 'susquehanna-international-group',
+  'amazon-mern': 'amazon', // Amazon's MERN frontend OA
+  'ibm-frontend': 'ibm',
+};
+export const canonicalCompany = (slug: string) =>
+  Object.hasOwn(companyAliases, slug) ? companyAliases[slug] : slug;
+/** The catalog files problems it cannot attribute under "unknown": shown as Other, listed last. */
+export const OTHER_COMPANY = 'unknown';
+export const oaCompanyName = (slug: string, name: string, locale: 'zh' | 'en') =>
+  slug === OTHER_COMPANY ? (locale === 'zh' ? '其他' : 'Other') : name;
+export const oaCompanyPath = (slug: string) => `/oa/${canonicalCompany(slug)}`;
+export const oaProblemPath = (slug: string, id: string) =>
+  `${oaCompanyPath(slug)}/${encodeURIComponent(id)}`;
+
+/** Stable per-company hue so a missing logo still reads as an identity mark. */
+export function companyHue(slug: string) {
+  let hash = 0;
+  for (const char of slug || '') hash = (hash * 31 + char.charCodeAt(0)) % 360;
+  return hash;
+}
+
 export function companyInitials(name: string): string {
   if (/^[A-Z0-9]{1,4}$/.test(name.trim())) return name.trim();
   const words = name.trim().split(/\s+/).filter(Boolean);

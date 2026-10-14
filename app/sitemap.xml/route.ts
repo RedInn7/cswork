@@ -10,6 +10,6 @@ import { mockOaPaths } from '@/lib/server/mock-oa-presets';
 export function GET() {
   const statics = SITEMAP_STATIC_ENTRIES.length + mockOaPaths().length;
   return xmlResponse(
-    sitemapIndexXml(sitemapPageCount(publicLibraryCount(), statics)),
+    sitemapIndexXml(sitemapPageCount(publicLibraryCount(), statics), ['oa']),
   );
 }

@@ -1,0 +1,363 @@
+/*
+ * Public OA pages (/oa, /oa/<company>, /oa/<company>/<id>) on the library shell.
+ * Borrows the problem bank's "Line 500" signals: navy ticket panel, signal amber
+ * for the call to action, Overpass for numerals and Latin.
+ */
+@font-face {
+  /* Same file and range as app/study-library.css; that sheet is not loaded here. */
+  font-family: 'Overpass';
+  src: url('/fonts/overpass-latin-var.woff2') format('woff2');
+  font-weight: 400 800;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-2019,
+    U+201C-201D, U+2026;
+}
+.oa-public {
+  --oa-navy: #0e1a2b;
+  --oa-amber: #ffb23f;
+  --oa-line: #2ebd85;
+  --oa-paper: #f7f9f7;
+  --oa-rule: #dce5df;
+  --oa-muted: #60766c;
+  --oa-num: 'Overpass', 'PingFang SC', 'Microsoft YaHei UI', sans-serif;
+}
+
+/* Stats strip */
+.oa-public-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 56px;
+  margin: 0 0 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--oa-rule);
+}
+.oa-public-stats dt {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--oa-muted);
+}
+.oa-public-stats dd {
+  margin: 4px 0 0;
+  font-family: var(--oa-num);
+  font-size: 34px;
+  font-weight: 750;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.oa-public-stats div:nth-child(2) dd {
+  color: #0d7a63;
+}
+.oa-public-section {
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  color: var(--oa-muted);
+  margin: 0 0 14px;
+}
+
+/* Company marks: reviewed logo or hued initials */
+.oa-public .oa-company-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--oa-rule);
+}
+.oa-public .oa-company-logo img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+.oa-public .oa-company-logo:has(.oa-company-initials) {
+  background: oklch(0.94 0.045 var(--oa-hue, 250));
+  border-color: transparent;
+}
+.oa-public .oa-company-initials {
+  color: oklch(0.42 0.13 var(--oa-hue, 250));
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Company board */
+.oa-public-companies {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
+  gap: 10px;
+}
+.oa-public-companies a {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: center;
+  height: 100%;
+  padding: 14px;
+  border: 1px solid var(--oa-rule);
+  border-radius: 12px;
+  background: #fff;
+  color: inherit;
+  transition:
+    border-color 140ms ease,
+    transform 140ms ease;
+}
+.oa-public-companies a:hover {
+  text-decoration: none;
+  border-color: #087158;
+  transform: translateY(-1px);
+}
+.oa-public-companies .oa-company-logo {
+  grid-row: span 2;
+}
+.oa-public-company-name {
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.oa-public-company-count {
+  font-family: var(--oa-num);
+  font-size: 12px;
+  color: var(--oa-muted);
+  font-variant-numeric: tabular-nums;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .oa-public-companies li {
+    animation: oa-public-rise 360ms ease both;
+    animation-delay: calc(var(--i, 0) * 18ms);
+  }
+}
+@keyframes oa-public-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* Company page */
+.oa-public-company-head {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.oa-public-company-head > .oa-company-logo {
+  flex-basis: 56px;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  margin-top: 4px;
+}
+.oa-public-company-head > .oa-company-logo img {
+  width: 32px;
+  height: 32px;
+}
+.oa-public-company-head .oa-company-initials {
+  font-size: 18px;
+}
+.oa-public-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 26px 0 34px;
+}
+.oa-public a.oa-public-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 9px;
+  background: var(--oa-amber);
+  color: var(--oa-navy);
+  font-weight: 700;
+  text-decoration: none;
+}
+.oa-public a.oa-public-cta:hover {
+  background: #ffc466;
+}
+.oa-public a.oa-public-cta.is-quiet {
+  background: transparent;
+  color: #087158;
+  border: 1px solid currentColor;
+}
+.oa-public-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid var(--oa-rule);
+}
+.oa-public-list a {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 6px;
+  border-bottom: 1px solid var(--oa-rule);
+  color: inherit;
+}
+.oa-public-list a:hover {
+  text-decoration: none;
+  background: #eef4ef;
+}
+.oa-public-list a:hover .oa-public-title {
+  color: #087158;
+}
+.oa-public-number {
+  font-family: var(--oa-num);
+  font-size: 13px;
+  color: var(--oa-muted);
+  font-variant-numeric: tabular-nums;
+}
+.oa-public-title {
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+.oa-public-chip {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+  background: #eaf0eb;
+  color: var(--oa-muted);
+}
+.oa-public-chip[data-level='easy'] {
+  background: #dff3ea;
+  color: #0b6b4f;
+}
+.oa-public-chip[data-level='medium'] {
+  background: #fdf0d9;
+  color: #8a5300;
+}
+.oa-public-chip[data-level='hard'] {
+  background: #fbe3e7;
+  color: #a62a40;
+}
+
+/* Problem page: the assessment ticket */
+.oa-public-problem {
+  max-width: 860px;
+}
+.oa-public-ticket {
+  margin: 0 0 40px;
+  padding: 28px 30px 4px;
+  border-radius: 16px;
+  color: #eef3f8;
+  background:
+    radial-gradient(rgb(238 243 248 / 0.05) 1px, transparent 1.5px) 0 0 / 8px 8px,
+    var(--oa-navy);
+}
+.oa-public-ticket-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  font-size: 14px;
+  color: #c7d2e0;
+}
+.oa-public-ticket-line .oa-public-number {
+  color: var(--oa-amber);
+  letter-spacing: 0.06em;
+}
+.oa-public .oa-public-ticket h1 {
+  color: #fff;
+  font-size: clamp(28px, 4vw, 40px);
+  margin-bottom: 16px;
+}
+.oa-public-ticket-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.oa-public-ticket .oa-public-chip {
+  background: rgb(238 243 248 / 0.1);
+  color: #eef3f8;
+}
+.oa-public-ticket .oa-public-chip[data-level='ready'] {
+  background: rgb(46 189 133 / 0.18);
+  color: #7fe0b8;
+}
+.oa-public-ticket .oa-public-actions {
+  position: relative;
+  margin: 22px -30px 0;
+  padding: 22px 30px 24px;
+  border-top: 2px dashed rgb(238 243 248 / 0.16);
+}
+/* Ticket notches either side of the perforation. */
+.oa-public-ticket .oa-public-actions::before,
+.oa-public-ticket .oa-public-actions::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -9px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--oa-paper);
+}
+.oa-public-ticket .oa-public-actions::after {
+  left: auto;
+  right: -9px;
+}
+.oa-public-ticket a.oa-public-cta.is-quiet {
+  color: #eef3f8;
+}
+.oa-public-ticket a:focus-visible {
+  outline-color: var(--oa-amber);
+}
+.oa-public-pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 48px;
+}
+.oa-public-pager a {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid var(--oa-rule);
+  border-radius: 12px;
+  color: #152c24;
+  overflow-wrap: anywhere;
+}
+.oa-public-pager a[rel='next'] {
+  text-align: right;
+}
+.oa-public-pager span {
+  font-size: 12px;
+  color: var(--oa-muted);
+}
+@media (max-width: 600px) {
+  .oa-public-stats {
+    gap: 14px 32px;
+  }
+  .oa-public-stats dd {
+    font-size: 28px;
+  }
+  .oa-public-company-head > .oa-company-logo {
+    display: none;
+  }
+  .oa-public-list a {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+  .oa-public-list .oa-public-chip {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .oa-public-ticket {
+    padding: 22px 20px 4px;
+  }
+  .oa-public-ticket .oa-public-actions {
+    margin-inline: -20px;
+    padding-inline: 20px;
+  }
+  .oa-public-pager {
+    grid-template-columns: 1fr;
+  }
+}

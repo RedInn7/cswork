@@ -94,13 +94,18 @@
   cursor: pointer;
   transition: background-color 120ms ease;
 }
+/* Rows are links to /oa/<company>/<id>; beat `.oa-library a`. */
+.oa-library .oa-row {
+  color: inherit;
+  text-decoration: none;
+}
 .oa-row:nth-of-type(even) {
   background: color-mix(in oklab, var(--muted) 45%, transparent);
 }
 .oa-row:hover {
   background: color-mix(in oklab, var(--primary) 7%, var(--card));
 }
-.oa-row:focus-visible {
+.oa-library .oa-row:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: -2px;
 }

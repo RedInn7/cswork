@@ -6,6 +6,8 @@ import {
   sitemapXml,
   xmlResponse,
 } from '@/lib/seo';
+import { oaLibrary } from '@/lib/server/oa-library';
+import { oaReadyProblems } from '@/lib/server/oa-judge';
 import {
   publicLibraryCount,
   publicLibraryEntries,
@@ -18,6 +20,13 @@ export async function GET(
   context: { params: Promise<{ page: string }> },
 ) {
   const { page: rawPage } = await context.params;
+  // OA pages: well under one shard (about 1,700 URLs), lastmod from the live judge versions.
+  if (rawPage === 'oa')
+    return xmlResponse(
+      sitemapXml(
+        sitemapChunks(oaLibrary().sitemapEntries(await oaReadyProblems()))[0],
+      ),
+    );
   if (!/^[1-9]\d{0,6}$/.test(rawPage))
     return new Response('Not found', { status: 404 });
   const page = Number(rawPage);
