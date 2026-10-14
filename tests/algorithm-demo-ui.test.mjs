@@ -75,3 +75,36 @@ test('topic pages embed their stop demos under an anchor; stops without one have
   assert.ok(doc.getElementById(section.getAttribute('aria-labelledby')) !== null);
   assert.ok(render('linked-list').getElementById('algorithm-demo') === null);
 });
+
+test('dark mode: graph labels clear 4.5:1 on their node and arrowheads match their line', async () => {
+  const fs = await import('node:fs');
+  const postcss = (await import('postcss')).default;
+  const { contrast, parseColor } = await import('../scripts/dark-theme.mjs');
+  // Hand-tuned app/theme.css wins; the rest comes from the generated block.
+  const sheets = ['app/theme.css', 'app/algorithm-demo.css'].map((f) => postcss.parse(fs.readFileSync(f, 'utf8')));
+  const dark = (selector, prop) => {
+    for (const sheet of sheets) {
+      let value;
+      sheet.walkRules((r) => {
+        if (r.selectors.includes(`.dark .algorithm-demo ${selector}`))
+          r.walkDecls(prop, (d) => {
+            value = d.value;
+          });
+      });
+      if (value) return parseColor(value).rgb;
+    }
+    throw new Error(`no dark ${prop} for ${selector}`);
+  };
+  const node = '.algorithm-demo-node';
+  const halo = dark(`${node} .algorithm-demo-note`, 'stroke');
+  const pairs = [
+    [dark(`${node} text`, 'fill'), dark(`${node} circle`, 'fill')],
+    [dark(`${node} text`, 'fill'), dark(`${node}.is-visited circle`, 'fill')],
+    [dark(`${node} .algorithm-demo-note`, 'fill'), halo],
+    [dark(`${node}.is-active .algorithm-demo-note`, 'fill'), halo],
+    ...['is-active', 'is-answer', 'is-blocked'].map((s) => [dark(`${node}.${s} text`, 'fill'), dark(`${node}.${s} circle`, 'fill')]),
+  ];
+  for (const [text, ground] of pairs) assert.ok(contrast(text, ground) >= 4.5);
+  for (const s of ['', '.is-active', '.is-visited', '.is-answer', '.is-muted'])
+    assert.deepEqual(dark(`.algorithm-demo-edge${s} polygon`, 'fill'), dark(`.algorithm-demo-edge${s} line`, 'stroke'));
+});
