@@ -47,7 +47,11 @@ function pipe(args, input, { timeout = 10000, maxBuffer = 262144 } = {}) {
       clearTimeout(timer);
       if (code === 0 && size <= maxBuffer)
         resolve(Buffer.concat(chunks).toString('utf8'));
-      else reject(new BrokerError(422, 'Formatting failed; fix syntax errors and retry'));
+      // ruff exits 2 on code it can't parse; anything else (an image without ruff: 126/127,
+      // a kill on timeout or output size) is the service's fault, not the learner's.
+      else if (code === 2)
+        reject(new BrokerError(422, 'Formatting failed; fix syntax errors and retry'));
+      else reject(new BrokerError(503, 'Formatter unavailable; retry shortly'));
     });
     child.stdin.on('error', () => {});
     child.stdin.end(input);
