@@ -25,6 +25,7 @@ import {
   Settings,
   Inbox,
   ChevronRight,
+  Dices,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -95,6 +96,9 @@ import {
 const TeacherView = lazy(() =>
   import('./teacher').then((m) => ({ default: m.TeacherView }), loadFailed),
 );
+const MockInterview = lazy(() =>
+  import('./mock-interview').then((m) => ({ default: m.MockInterview }), loadFailed),
+);
 const OwnerMetrics = lazy(() =>
   import('./owner-metrics').then((m) => ({ default: m.OwnerMetrics }), loadFailed),
 );
@@ -104,6 +108,7 @@ const nav: [LucideIcon, string, string, string][] = [
   [Code2, '算法题库', 'Problem Bank', 'problems'],
   [Activity, '评测状态', 'Status', 'status'],
   [MessagesSquare, '面试题', 'Interview Questions', 'questions'],
+  [Dices, '模拟面试', 'Mock Interview', 'mock-interview'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
   [Library, '学习资料', 'Resources', 'resources'],
   [BookOpen, '我的课程', 'My Courses', 'courses'],
@@ -321,7 +326,7 @@ export function Academy() {
       !boot.person &&
       ![
         'courses', 'knowledge', 'problems', 'problem', 'status',
-        'questions', 'experiences', 'resources', 'content',
+        'questions', 'experiences', 'resources', 'content', 'mock-interview',
       ].includes(view)
     )
       return (
@@ -397,6 +402,14 @@ export function Academy() {
       case 'experiences':
       case 'resources':
         return <ContentList key={view} section={view} params={params} navigate={navigate} />;
+      case 'mock-interview':
+        return (
+          <MockInterview
+            params={params}
+            navigate={navigate}
+            problemIds={boot.problems.map((p) => p.id)}
+          />
+        );
       case 'content':
         return (
           <ContentDetail

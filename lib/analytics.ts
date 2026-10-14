@@ -10,6 +10,7 @@ const pages: Record<string, string> = {
   questions: 'Questions',
   experiences: 'Experiences',
   resources: 'Resources',
+  'mock-interview': 'Mock interview',
   status: 'Service status',
 };
 export function measurementId(value: string | undefined): string {

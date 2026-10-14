@@ -40,6 +40,8 @@ const EVENTS: Record<string, Record<string, Kind>> = {
   },
   judge_error: { mode: 'text', problem_id: 'text', stage: 'text', status: 'text' },
   language_switch: { locale: 'text' },
+  mock_interview_start: { company: 'tag', template: 'tag', mode: 'tag' },
+  mock_interview_finish: { company: 'tag', template: 'tag', mode: 'tag' },
   // sign_up and login are recorded server-side by the auth hooks (record below), for every
   // sign-in method; the client's copies (email only) still go to GA4 but are dropped here.
 };

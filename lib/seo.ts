@@ -63,6 +63,7 @@ export const SITEMAP_URL_LIMIT = 45_000;
 export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/' },
   { path: '/library' },
+  { path: '/mock-interview' },
   { path: '/privacy' },
 ];
 export function sitemapPageCount(libraryCount: number): number {
