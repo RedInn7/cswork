@@ -13,6 +13,7 @@ import {
   BarChart3,
   Library,
   MessagesSquare,
+  MessageCircle,
   ScrollText,
   BookOpen,
   Code2,
@@ -119,6 +120,9 @@ const MyLists = lazy(() =>
 const StudyGroups = lazy(() =>
   import('./study-groups').then((m) => ({ default: m.StudyGroups }), loadFailed),
 );
+const DiscussBoard = lazy(() =>
+  import('./discuss-board').then((m) => ({ default: m.DiscussBoard }), loadFailed),
+);
 const Speedrun = lazy(() =>
   import('./speedrun').then((m) => ({ default: m.Speedrun }), loadFailed),
 );
@@ -139,6 +143,7 @@ const nav: [LucideIcon, string, string, string][] = [
   [Dices, '模拟面试', 'Mock Interview', 'mock-interview'],
   [BookUser, 'STAR 故事库', 'Story Bank', 'stories'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
+  [MessageCircle, '讨论区', 'Discuss', 'discuss'],
   [Library, '学习资料', 'Resources', 'resources'],
   [BookOpen, '我的课程', 'My Courses', 'courses'],
   [BookOpen, '算法知识点', 'Algorithm Concepts', 'knowledge'],
@@ -356,6 +361,7 @@ export function Academy() {
       ![
         'courses', 'knowledge', 'problems', 'problem', 'status',
         'questions', 'experiences', 'resources', 'content', 'mock-interview', 'mock', 'speedrun',
+        'discuss',
       ].includes(view)
     )
       return (
@@ -446,6 +452,8 @@ export function Academy() {
         return <MyLists key={boot.person?.id} boot={boot} navigate={navigate} list={params.list} />;
       case 'group':
         return <StudyGroups key={boot.person?.id} navigate={navigate} params={params} />;
+      case 'discuss':
+        return <DiscussBoard key={boot.person?.id || 'guest'} params={params} navigate={navigate} signedIn={!!boot.person} />;
       case 'questions':
       case 'experiences':
       case 'resources':
