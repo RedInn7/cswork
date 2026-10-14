@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { BadgeCheck, GitCompare, Lock } from 'lucide-react';
 import {
   AlertDialog,
@@ -14,7 +14,7 @@ import {
 import { CodeDiff } from './editor';
 import { StatementMarkdown } from './statement-markdown';
 import type { LingEditorial as Editorial } from '@/lib/oj-client';
-import type { Language } from '@/lib/problems';
+import { languages, type Language } from '@/lib/problems';
 import type { EditorSettings } from '@/lib/editor-settings';
 import '@/app/ling-editorial.css';
 
@@ -51,11 +51,14 @@ export function LingEditorial({
   const [lang, setLang] = useState<EditorialLang>(language === 'cpp' ? 'cpp' : 'python');
   const [compare, setCompare] = useState<number | null>(null);
   const [confirm, setConfirm] = useState(false);
+  // The confirm unmounts the locked panel and its button, so focus lands on the heading instead.
+  const confirmed = useRef(false);
+  const heading = useRef<HTMLHeadingElement>(null);
   const langName = LANGS.find(([id]) => id === lang)![1];
   return (
     <section className="cs-ling-editorial" aria-labelledby="ling-editorial-title">
       <div className="cs-ling-editorial-head">
-        <h2 id="ling-editorial-title">{t('官方题解', 'Editorial')}</h2>
+        <h2 id="ling-editorial-title" ref={heading} tabIndex={-1}>{t('官方题解', 'Editorial')}</h2>
         {editorial.verified ? (
           <span className="cs-ling-verified">
             <BadgeCheck size={14} aria-hidden="true" />
@@ -76,7 +79,13 @@ export function LingEditorial({
               'Unlocks once you pass this problem. The approach you find yourself is the one you remember in an interview.',
             )}
           </p>
-          <button type="button" onClick={() => setConfirm(true)}>
+          <button
+            type="button"
+            onClick={() => {
+              confirmed.current = false;
+              setConfirm(true);
+            }}
+          >
             {t('仍要查看', 'Show anyway')}
           </button>
         </div>
@@ -139,7 +148,8 @@ export function LingEditorial({
                         {t('官方题解', 'Editorial')} · {langName}
                       </span>
                       <span>
-                        {t('我的代码', 'My code')} · {language}
+                        {t('我的代码', 'My code')} ·{' '}
+                        {languages.find((item) => item.id === language)?.name ?? language}
                       </span>
                     </div>
                     <div className="cs-history-editor cs-ling-diff">
@@ -160,7 +170,7 @@ export function LingEditorial({
         </>
       )}
       <AlertDialog open={confirm} onOpenChange={setConfirm}>
-        <AlertDialogContent>
+        <AlertDialogContent finalFocus={() => (confirmed.current && heading.current) || true}>
           <AlertDialogHeader>
             <AlertDialogTitle>{t('现在查看官方题解？', 'Show the editorial now?')}</AlertDialogTitle>
             <AlertDialogDescription>
@@ -174,6 +184,7 @@ export function LingEditorial({
             <AlertDialogCancel>{t('再想想', 'Keep trying')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
+                confirmed.current = true;
                 setConfirm(false);
                 onUnlock();
               }}
