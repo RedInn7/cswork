@@ -266,18 +266,26 @@ function tidyBoldLine(line: string) {
 // CJK-friendly emphasis: CommonMark cannot close `**进阶：**尝试` (punctuation
 // before the closing marker, a CJK letter after it); this plugin can.
 const MARKDOWN_PLUGINS = [remarkGfm, remarkCjkFriendly];
+const UNTRUSTED_HIDDEN = ['img'];
 // Parsing the statement is the costliest part of a workspace render; the many
 // re-renders while a submission is judged (status, verdict, history) skip it.
 export const StatementMarkdown = memo(function StatementMarkdown({
   body,
   className = 'cs-statement-markdown',
+  untrusted = false,
 }: {
   body: string;
   className?: string;
+  /** Other learners' text: no images, so a post cannot load a tracking pixel for its readers. */
+  untrusted?: boolean;
 }) {
   return (
     <article className={className}>
-      <Markdown remarkPlugins={MARKDOWN_PLUGINS} components={components}>
+      <Markdown
+        remarkPlugins={MARKDOWN_PLUGINS}
+        components={components}
+        disallowedElements={untrusted ? UNTRUSTED_HIDDEN : undefined}
+      >
         {tidyImportedBold(body)}
       </Markdown>
     </article>

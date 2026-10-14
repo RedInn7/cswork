@@ -52,6 +52,7 @@ import { OaCompanyBadge, OaEditorial } from './oa-library';
 import { CompanyTags } from './company-tags';
 import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-notes';
 import { AskedReport, communityProblem } from './problem-community';
+import { SolutionPosts, SolutionsTab } from './solution-posts';
 import { HintLadder, useHintLadder } from './hint-ladder';
 import { SimilarProblems } from './similar-problems';
 import {
@@ -333,7 +334,7 @@ function Workspace({
   const suggest = useRef<(() => void) | null>(null);
   const runButton = useRef<HTMLButtonElement>(null);
   const [leftTab, setLeftTab] = useState<
-    'statement' | 'history' | 'editorial' | 'notes'
+    'statement' | 'history' | 'editorial' | 'notes' | 'solutions'
   >('statement');
   // Private to an account, and closed during a mock exam like the editorial.
   const note = useProblemNote(
@@ -1253,8 +1254,11 @@ function Workspace({
             onClick={() => setLeftTab('editorial')}
           >
             <BookOpen size={15} />
-            {uiEnglish ? 'Solution' : '题解'}
+            {uiEnglish ? 'Editorial' : '官方题解'}
           </button>
+        )}
+        {boot.person && communityProblem(problem.id) && !examMode && (
+          <SolutionsTab active={leftTab === 'solutions'} onSelect={() => setLeftTab('solutions')} english={uiEnglish} />
         )}
       </div>
       <div className="cs-statement-scroll">
@@ -1269,6 +1273,8 @@ function Workspace({
           <ProblemNotes note={note} english={uiEnglish} />
         ) : leftTab === 'editorial' ? (
           <OaEditorial key={problem.id} problemId={problem.id} />
+        ) : leftTab === 'solutions' && boot.person && !examMode ? (
+          <SolutionPosts key={problem.id} problemId={problem.id} english={uiEnglish} code={code} language={language} />
         ) : leftTab === 'statement' ? (
           <>
             <div className="cs-statement-heading">
