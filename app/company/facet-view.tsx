@@ -22,6 +22,7 @@ import './landing.css';
  */
 const label = (kind: 'role' | 'cat', value: string, zh: boolean) =>
   kind === 'cat' && Object.hasOwn(CATEGORIES, value) ? CATEGORIES[value][zh ? 0 : 1] : value;
+const SHOWN_EXPERIENCES = 12;
 const spa = (params: Record<string, string>) => `/?${new URLSearchParams(params)}`;
 
 function describe(page: FacetPage, zh: boolean) {
@@ -60,20 +61,17 @@ export async function FacetView({ page }: { page: FacetPage }) {
   const name = label(facet.kind, facet.value, zh);
   const path = facetPath(facet.kind, facet.slug, company?.slug);
   const heading = facetPageTitle(zh ? 'zh' : 'en', facet.kind, name, company?.name).replace(/ \| .*$/, '');
-  const trail = [
-    { name: 'CSWork', path: '/' },
-    ...(company
-      ? [{ name: company.name, path: companyHubPath(company.slug) }]
-      : [{ name: facet.kind === 'role' ? (zh ? '岗位' : 'Roles') : zh ? '类别' : 'Categories', path }]),
-    { name, path },
-  ];
+  // As the visible trail: there is no roles or categories index page to sit between.
+  const trail = [{ name: 'CSWork', path: '/' }, ...(company ? [{ name: company.name, path: companyHubPath(company.slug) }] : []), { name, path }];
+  const shown = experiences.slice(0, SHOWN_EXPERIENCES);
   // The SPA filters by one library spelling: the facet's and the company's most used ones.
   const filter = {
     [facet.kind === 'role' ? 'role' : 'category']: facet.value,
     ...(company?.library[0] ? { company: company.library[0] } : {}),
   };
   const items = [
-    ...experiences.map((e) => ({ name: e.title, path: publicLibraryPath(e.type, e.slug) })),
+    // Only what the page lists.
+    ...shown.map((e) => ({ name: e.title, path: publicLibraryPath(e.type, e.slug) })),
     ...questions.map((q) => ({ name: q.title, path: publicLibraryPath(q.type, q.slug) })),
   ];
   return (
@@ -135,7 +133,7 @@ export async function FacetView({ page }: { page: FacetPage }) {
             </a>
           </div>
           <ul className="company-hub-cards">
-            {experiences.slice(0, 12).map((item) => (
+            {shown.map((item) => (
               <li key={item.slug}>
                 <a href={publicLibraryPath(item.type, item.slug)}>{item.title}</a>
                 <Facts item={item} zh={zh} />
