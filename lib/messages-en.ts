@@ -333,7 +333,8 @@ const EN: Record<string, string> = {
   请先在题面里选中一段文字: 'Select some text in the statement first',
   通过本题后才能分析复杂度: 'Complexity analysis opens once you pass this problem',
   还没有失败的运行或提交可以分析: 'There is no failed run or submission to look at yet',
-  只能给题目投票: 'Only problems can be voted on',
+  '只能给题目投票，或给面经和面试题点赞': 'Only problems can be voted on, and experiences and interview questions upvoted',
+  只有老师可以把内容设为精选: 'Only teachers can mark content as curated',
   // AI interviewer (lib/server/ai-interviewer.ts)
   'AI 面试官暂时不可用，请稍后再试': 'The AI interviewer is unavailable right now. Please try again later',
   'AI 面试官无法回答这个请求': "The AI interviewer can't answer this request",
