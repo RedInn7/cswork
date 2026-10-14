@@ -87,6 +87,11 @@
     background: rgb(238 243 248 / 0.8);
   }
 
+  /* The ticket stub's perforation faces the dark card, not the navy stub: keep it a hairline. */
+  .dark .mock-card-stub {
+    border-left: 2px dashed #2e3339;
+  }
+
   /*
    * Checked verdict chips sit on --rd-red / --rd-brand-ink, which turn light here; the
    * label would otherwise keep the rating scale's light text (1.6–2.6:1).
@@ -148,9 +153,12 @@
     background: #eef2f0;
   }
   [data-theme='dark'] img[src^='/company-logos/']:not(:is(.oa-company-logo, .mock-logo, .mock-public-logo) > img) {
+    background: #eef2f0;
+  }
+  /* The plate's box at zero specificity: a logo that sizes its own (.mi-logo, .cs-company-chip img) keeps it. */
+  :where([data-theme='dark'] img[src^='/company-logos/']:not(:is(.oa-company-logo, .mock-logo, .mock-public-logo) > img)) {
     padding: 1px;
     border-radius: 3px;
-    background: #eef2f0;
   }
 
   /* Native controls, scrollbars and the selection follow the page. */
