@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
-import { experienceFacts, RESULTS, ROUND_LABELS } from '@/lib/experience';
+import { experienceFacts, MEMBER_BODY, RESULTS, ROUND_LABELS } from '@/lib/experience';
 import { employerSlug } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
 import { companyPractice } from './company-hub';
@@ -21,8 +21,7 @@ const DAY = 86400000;
 // ponytail: flat caps; a reputation system can loosen them for trusted authors later.
 const PER_DAY = 3;
 const PENDING_MAX = 5;
-export const BODY_MIN = 80;
-export const BODY_MAX = 20000;
+export const { min: BODY_MIN, max: BODY_MAX } = MEMBER_BODY;
 /** Distinct readers' reports that take an approved post down until a teacher looks again. */
 export const FLAGS_HIDE = 3;
 /** Approved posts a list merges at most. */

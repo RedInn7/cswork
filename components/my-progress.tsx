@@ -17,6 +17,7 @@ import {
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
 import { BadgeWall, progressBadges } from './achievements';
 import { MockCloudHistory } from './mock-cloud-history';
+import { MyExperienceSubmissions } from './experience-submissions';
 import { Button } from './ui/button';
 import type { Navigate } from './learning';
 import '@/app/my-progress.css';
@@ -463,6 +464,7 @@ export function MyProgress({
         )}
       </div>
       {boot.person && <MockCloudHistory userId={boot.person.id} navigate={navigate} english={english} />}
+      {boot.person && <MyExperienceSubmissions english={english} navigate={navigate} open={initialTab === 'share'} />}
     </section>
   );
 }

@@ -13,6 +13,7 @@ import { OaMarkdown } from './oa-library';
 import { kindOf, splitBody, type BodyParts } from '@/lib/mock-interview';
 import { TryFirst } from './try-first';
 import { StoryPicker } from './story-bank';
+import { MemberPost, type MemberInfo } from './experience-report';
 import '@/app/redesign.css';
 import '@/app/content-library.css';
 
@@ -50,6 +51,8 @@ export type ContentSummary = {
   result?: string | null;
   rounds?: string[];
   interviewDate?: string | null;
+  /** A member's own experience (lib/server/experience-submissions.ts); its slug is member.<id>. */
+  member?: { handle: string | null };
 };
 /** Experiences and concepts summarise with their opening lines; the page doesn't print them twice. */
 const flat = (s: string) => s.replace(/[^\p{L}\p{N}]+/gu, ' ').trim().toLowerCase();
@@ -109,7 +112,9 @@ type Detail = ContentSummary & {
   practice?: string | null;
   /** Experiences and interview questions: practice for their company. */
   companyPractice?: CompanyPractice | null;
-};
+  /** Member posts: the questions they were asked. */
+  questions?: string[];
+} & { member?: MemberInfo };
 
 /**
  * Sections of the library and the content types behind them. Texts are [zh, en];
@@ -213,6 +218,7 @@ export function ContentMeta({ item }: { item: ContentSummary }) {
   const rounds = item.rounds?.map((r) => labelOf(t, ROUND_LABELS, r) ?? r) ?? [];
   return (
     <div className="ct-meta">
+      {item.member && <span className="rd-badge is-member">{t('学员投稿', 'Member submission')}</span>}
       {item.company && <CompanyMark company={item.company} />}
       {result && (
         <span className="rd-badge ct-result" data-tone={result.tone}>
@@ -385,6 +391,12 @@ export function ContentList({
         <header className="rd-head rd-reveal" style={{ '--i': 0 } as React.CSSProperties}>
           <h1>{t(...meta.title)}</h1>
           <p>{t(...meta.lead)}</p>
+          {section === 'experiences' && (
+            // Members write their own; the form lives on My progress (components/experience-submissions.tsx).
+            <button type="button" className="rd-button" onClick={() => navigate('progress', { tab: 'share' })}>
+              {t('投稿我的面经', 'Share your experience')} <ArrowRight size={14} aria-hidden="true" />
+            </button>
+          )}
         </header>
         <div className="rd-stats rd-reveal" style={{ '--i': 1 } as React.CSSProperties}>
           <div>
@@ -777,6 +789,7 @@ export function ContentDetail({
                 </details>
               )}
             </article>
+            {item.member && <MemberPost member={item.member} questions={item.questions ?? []} />}
             {behavioral && (
               <StoryPicker
                 userId={userId}
