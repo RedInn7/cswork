@@ -201,3 +201,117 @@ test('solo mock interview: the answer box comes before the reveal; behavioral sl
   assert.equal(document.body.textContent.includes('SECRET-RUBRIC'), true);
   await act(async () => root.unmount());
 });
+
+test('a guest answer is saved to the account on sign-in, or offered against the saved one', async () => {
+  const { TryFirst } = await import('../components/try-first.tsx');
+  const puts = [];
+  let saved = '';
+  globalThis.fetch = async (url, init = {}) => {
+    const u = String(url);
+    if (init.method === 'PUT') {
+      puts.push(JSON.parse(init.body).body);
+      return Response.json({ updatedAt: 9 });
+    }
+    if (u.includes('target=content')) return Response.json({ body: saved, updatedAt: saved ? 1 : null });
+    throw new Error(`unexpected ${u}`);
+  };
+  // Question page (no local copy): typed as a guest, then signed in without a reload.
+  const root = createRoot(document.getElementById('root'));
+  const view = (userId) =>
+    act(async () => root.render(createElement(TryFirst, { userId, target: 'content:interview_question/q9', revealed: false, onReveal() {} })));
+  await view(null);
+  await type(document.querySelector('.ip-try-input'), 'guest outline');
+  await view('u1');
+  await settle();
+  assert.equal(document.querySelector('.ip-try-input').value === 'guest outline', true, 'still on screen after sign-in');
+  assert.deepEqual(puts, ['guest outline']);
+  await act(async () => root.unmount());
+
+  // Solo mock interview (kept in the run as a guest), with a different answer already saved: the learner picks.
+  saved = 'answer from last week';
+  puts.length = 0;
+  let run = 'run notes';
+  const again = createRoot(document.getElementById('root'));
+  const solo = (userId) =>
+    act(async () =>
+      again.render(
+        createElement(TryFirst, {
+          userId, target: 'content:interview_question/q9', revealed: false, onReveal() {},
+          local: { value: run, onChange: (v) => (run = v) },
+        }),
+      ),
+    );
+  await solo(null);
+  await solo('u1');
+  await settle();
+  assert.equal(document.querySelector('.ip-try-input').value === 'answer from last week', true);
+  assert.equal(document.body.textContent.includes("Use this device's version"), true);
+  await click("Use this device's version");
+  await settle(900);
+  assert.deepEqual(puts, ['run notes']);
+  await act(async () => again.unmount());
+});
+
+test('story picks and editor saves build on the stories as stored now; switching asks first', async () => {
+  const puts = [];
+  // What the server holds; the test changes it behind the page's back, as another tab would.
+  const server = {
+    s1: { title: 'Launch slip', competencies: ['conflict'], situation: 'OLD' },
+    s2: { title: 'Schema fight', competencies: ['conflict'] },
+  };
+  globalThis.fetch = async (url, init = {}) => {
+    const u = String(url);
+    if (u.includes('/api/content/item')) return Response.json(question);
+    if (init.method === 'PUT') {
+      const id = decodeURIComponent(u.split('target=')[1]).slice('story:'.length);
+      const story = JSON.parse(JSON.parse(init.body).body);
+      puts.push([id, story]);
+      server[id] = story;
+      return Response.json({ updatedAt: 9 });
+    }
+    if (u.includes('prefix=story')) return Response.json({ items: Object.entries(server).map(([id, s]) => storyNote(id, s)) });
+    if (u.includes('target=content')) return Response.json({ body: '', updatedAt: null });
+    throw new Error(`unexpected ${u}`);
+  };
+  const root = createRoot(document.getElementById('root'));
+  await act(async () =>
+    root.render(createElement(ContentDetail, { params: { type: 'interview_question', slug: 'disagree-1' }, navigate() {}, problemIds: [], userId: 'u1' })),
+  );
+  await settle();
+  server.s1 = { ...server.s1, situation: 'EDITED IN THE BANK' };
+  const select = document.querySelector('.ip-pick-select');
+  await act(async () => {
+    select.value = 's1';
+    select.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
+  });
+  await settle();
+  assert.equal(puts.at(-1)[1].situation, 'EDITED IN THE BANK', 'the pick does not write back the stale copy');
+  await act(async () => root.unmount());
+
+  // The bank: open s2, type without saving, then click s1: asked first; saying no keeps the text.
+  let asked = 0;
+  globalThis.confirm = () => (asked++, false);
+  const bank = createRoot(document.getElementById('root'));
+  await act(async () => bank.render(createElement(StoryBank, { userId: 'u1' })));
+  await settle();
+  await click('Schema fight');
+  await type(document.querySelector('[data-field="action"] textarea'), 'unsaved action');
+  await click('Launch slip');
+  assert.equal(asked, 1);
+  assert.equal(document.querySelector('[data-field="action"] textarea').value === 'unsaved action', true);
+
+  // Meanwhile a question page picked s2 for another question; saving here keeps that link.
+  const link = { key: 'interview_question/other', title: 'Other', company: null };
+  server.s2 = { ...server.s2, questions: [link] };
+  await act(async () => document.querySelector('#ip-editor').requestSubmit());
+  await settle();
+  const [id, story] = puts.at(-1);
+  assert.equal(id, 's2');
+  assert.equal(story.action, 'unsaved action');
+  assert.deepEqual(story.questions, [link]);
+  // Saved now: switching no longer asks.
+  await click('Launch slip');
+  assert.equal(asked, 1);
+  assert.equal(document.querySelector('.ip-field input').value === 'Launch slip', true);
+  await act(async () => bank.unmount());
+});

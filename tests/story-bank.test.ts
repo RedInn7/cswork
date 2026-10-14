@@ -7,7 +7,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
 import {
-  assignStory, blankStory, competenciesFor, parseStory, rankStories, storiesMarkdown, storyBody, wordCount,
+  assignStory, blankStory, competenciesFor, keepLinks, parseStory, rankStories, storiesMarkdown, storyBody, wordCount,
   type Story,
 } from '../lib/story-bank';
 
@@ -18,14 +18,17 @@ const { handleOj } = await import('../lib/server/oj-api');
 
 const me: Person = { id: 'story-me', name: 'Me', email: 'me@example.test', role: 'student', verified: true };
 const other: Person = { ...me, id: 'story-other', email: 'other@example.test' };
-async function call(p: Person, method: string, path: string, body?: unknown) {
+function send(p: Person, method: string, path: string, body?: unknown) {
   const url = new URL(`https://cswork.test/api/oj/${path}`);
   const request = new Request(url, {
     method,
     body: body === undefined ? undefined : JSON.stringify(body),
     headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
   });
-  const response = await handleOj(request, p, url.pathname.split('/').slice(3));
+  return handleOj(request, p, url.pathname.split('/').slice(3));
+}
+async function call(p: Person, method: string, path: string, body?: unknown) {
+  const response = await send(p, method, path, body);
   assert.equal(response.status, 200, path);
   return response.json();
 }
@@ -73,6 +76,20 @@ void test('stories sharing competencies rank first; a pick moves the question of
   assert.deepEqual(assignStory([a, b, c], null, q).map((s) => s.id), ['c'], 'clearing the pick');
 });
 
+void test('saving the editor keeps links made elsewhere and drops the ones unlinked in it', () => {
+  const q = (key: string) => ({ key, title: key, company: null });
+  const base = story({ id: 's', title: 'Old', questions: [q('a'), q('b')] });
+  // Since opening: question c picked this story on another tab; the editor unlinked b and retitled it.
+  const edited = { ...base, title: 'New', questions: [q('a')] };
+  const stored = { ...base, questions: [q('a'), q('b'), q('c')] };
+  const saved = keepLinks(edited, base, stored);
+  assert.equal(saved.title, 'New');
+  assert.deepEqual(saved.questions.map((x) => x.key), ['a', 'c']);
+  // A question moved to another story elsewhere stays off this one.
+  assert.deepEqual(keepLinks(base, base, { ...base, questions: [q('b')] }).questions.map((x) => x.key), ['b']);
+  assert.equal(keepLinks(edited, base, null), edited, 'not stored yet');
+});
+
 void test('word counts read Chinese and English; the export lists every story with its STAR parts', () => {
   assert.equal(wordCount("I didn't wait for the fix."), 6);
   assert.ok(wordCount('我先复现了问题') >= 3);
@@ -103,4 +120,18 @@ void test('the notes API stores stories privately and lists them with their bodi
   assert.equal(all.items.some((i) => 'body' in i), false);
   await call(me, 'PUT', 'notes?target=story:m1x', { body: '' });
   assert.equal(((await call(me, 'GET', 'notes?prefix=story:')) as Items).items.length, 0);
+});
+
+void test('stories are capped per learner, since the story list returns every body', async () => {
+  const add = sqlite().prepare('INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,?,?,?)');
+  for (let i = 0; i < 200; i++) add.run(me.id, `story:cap${i}`, '{}', i);
+  const status = (target: string) =>
+    send(me, 'PUT', `notes?target=${target}`, { body: '{"title":"x"}' }).then(
+      (r) => r.status,
+      (e: { status?: number }) => e.status,
+    );
+  assert.equal(await status('story:one-more'), 409);
+  assert.equal(await status('story:cap7'), 200, 'editing a story is fine');
+  assert.equal(await status('content:interview_question/q2'), 200, 'other notes are not stories');
+  sqlite().prepare("DELETE FROM user_notes WHERE user_id=? AND target LIKE 'story:cap%'").run(me.id);
 });
