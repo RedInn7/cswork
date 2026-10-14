@@ -59,9 +59,12 @@ jobs:
       - run: node --test tests/monitor-watch.test.mjs
       - run: node --import tsx --test tests/mock-oa.test.ts tests/mock-interview.test.ts tests/oa-pages.test.ts tests/problem-hint.test.ts
       - run: node --import tsx --test tests/mock-oa-ui.test.mjs
+      - run: node --import tsx --test tests/classic-lists.test.ts tests/classic-lists-ui.test.mjs
       - run: node --import tsx --test tests/leetcode-sync.test.ts tests/leetcode-practice-progress.test.ts
       - run: node --import tsx --test tests/leetcode-sync-ui.test.mjs
       - run: node --import tsx --test tests/study-library-ui.test.mjs
+      - run: node --import tsx --test tests/my-practice.test.ts tests/my-progress-ui.test.mjs tests/problem-notes-ui.test.mjs
+      - run: node --import tsx --test tests/study-plan.test.ts tests/study-plan-ui.test.mjs
       - run: node --test --test-concurrency=1 tests/oa-import.test.mjs
       - run: node --import tsx --test --test-concurrency=1 tests/oa-library.test.ts tests/oa-library-ui.test.mjs
       - run: node --import tsx --test tests/judge-status-ui.test.mjs

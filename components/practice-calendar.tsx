@@ -126,6 +126,11 @@ function nudge(stats: PracticeStats, signedIn: boolean, target: number, t: T) {
       '登录后，每天通过的题都会点亮一格。',
       'Sign in and every day you solve lights up a dot.',
     );
+  if (!target)
+    return t(
+      '今天按计划不排练习题，留给 OA。',
+      'No practice planned today: it’s for the OA.',
+    );
   if (today >= target)
     return t(
       `今日行程完成，连续第 ${streak} 天。`,
@@ -162,7 +167,7 @@ export function PracticeCalendar({
 }: {
   stats: PracticeStats | null;
   signedIn: boolean;
-  /** Daily target for the nudge and the signed-out pace line. */
+  /** Daily target for the nudge and the signed-out pace line; 0 on a planned OA day. */
   target: number;
   t: T;
   /** Problems on the whole line; when signed out, adds the pace pitch. */
@@ -175,7 +180,7 @@ export function PracticeCalendar({
       scroller.current.scrollLeft = scroller.current.scrollWidth;
   }, [stats]);
   const risk = !!stats && stats.streak > 0 && stats.today === 0;
-  const weeks = lineTotal ? Math.ceil(lineTotal / target / 7) : 0;
+  const weeks = lineTotal && target ? Math.ceil(lineTotal / target / 7) : 0;
 
   return (
     <section

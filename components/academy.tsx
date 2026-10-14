@@ -27,6 +27,7 @@ import {
   ChevronRight,
   Dices,
   Timer,
+  TrendingUp,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -103,6 +104,9 @@ const MockInterview = lazy(() =>
 const MockOa = lazy(() =>
   import('./mock-oa').then((m) => ({ default: m.MockOa }), loadFailed),
 );
+const MyProgress = lazy(() =>
+  import('./my-progress').then((m) => ({ default: m.MyProgress }), loadFailed),
+);
 const OwnerMetrics = lazy(() =>
   import('./owner-metrics').then((m) => ({ default: m.OwnerMetrics }), loadFailed),
 );
@@ -112,6 +116,7 @@ const nav: [LucideIcon, string, string, string][] = [
   [Code2, '算法题库', 'Problem Bank', 'problems'],
   [Timer, '模拟 OA', 'Mock OA', 'mock'],
   [Activity, '评测状态', 'Status', 'status'],
+  [TrendingUp, '我的进度', 'My progress', 'progress'],
   [MessagesSquare, '面试题', 'Interview Questions', 'questions'],
   [Dices, '模拟面试', 'Mock Interview', 'mock-interview'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
@@ -407,6 +412,15 @@ export function Academy() {
         );
       case 'status':
         return <JudgeStatus boot={boot} params={params} navigate={navigate} />;
+      case 'progress':
+        return (
+          <MyProgress
+            key={boot.person?.id}
+            boot={boot}
+            navigate={navigate}
+            tab={params.tab}
+          />
+        );
       case 'questions':
       case 'experiences':
       case 'resources':

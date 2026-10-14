@@ -2,16 +2,21 @@
 
 import { StudyLibrary } from './study-library';
 import { OaLibrary } from './oa-library';
+import { ClassicList } from './classic-list';
+import { classicList, classicLists } from '@/lib/classic-lists';
 import type { Navigate } from './learning';
 import { useT } from '@/lib/i18n';
 
-/** Problem bank sections: Ling's list, OA problems and the timed mock OA. */
+/** Problem bank sections: Ling's list, OA problems, the timed mock OA and the classic lists. */
 export function LibrarySwitch({
   section,
   navigate,
+  list = '',
 }: {
-  section: 'leetcode' | 'oa' | 'mock';
+  section: 'leetcode' | 'oa' | 'mock' | 'classic';
   navigate: Navigate;
+  /** The classic list shown, when section is 'classic'. */
+  list?: string;
 }) {
   const t = useT();
   return (
@@ -38,6 +43,24 @@ export function LibrarySwitch({
       >
         {t('模拟 OA', 'Mock OA')} <span>{t('限时', 'Timed')}</span>
       </button>
+      <label className="algorithm-library-lists" data-active={!!list || undefined}>
+        <span>{t('经典题单', 'Classic lists')}</span>
+        <select
+          value={list}
+          onChange={(event) =>
+            event.target.value && navigate('problems', { library: event.target.value })
+          }
+        >
+          <option value="" disabled>
+            {t('选择对照题单…', 'Choose a mapped list…')}
+          </option>
+          {classicLists.map((item) => (
+            <option key={item.slug} value={item.slug}>
+              {t(item.nameZh, item.nameEn)}
+            </option>
+          ))}
+        </select>
+      </label>
     </nav>
   );
 }
@@ -48,13 +71,22 @@ export function AlgorithmLibrary(props: {
   collection?: string;
   activity: { problem_id: string; created_at: number }[];
   signedIn: boolean;
+  userId?: string | null;
 }) {
-  const section = props.collection === 'oa' ? 'oa' : 'leetcode';
+  const list = classicList(props.collection)?.slug;
+  const section = props.collection === 'oa' ? 'oa' : list ? 'classic' : 'leetcode';
   return (
     <div className="algorithm-library">
-      <LibrarySwitch section={section} navigate={props.navigate} />
+      <LibrarySwitch section={section} navigate={props.navigate} list={list} />
       {section === 'oa' ? (
         <OaLibrary navigate={props.navigate} />
+      ) : list ? (
+        <ClassicList
+          key={list}
+          slug={list}
+          navigate={props.navigate}
+          signedIn={props.signedIn}
+        />
       ) : (
         <StudyLibrary {...props} />
       )}

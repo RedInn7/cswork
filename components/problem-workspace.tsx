@@ -13,6 +13,7 @@ import {
   rememberProblemSequence,
 } from '@/lib/problem-sequence';
 import { practiceStats, type Activity } from './practice-calendar';
+import { localDay, readTodayTarget } from '@/lib/study-plan';
 import {
   ArrowLeft,
   BookOpen,
@@ -45,6 +46,7 @@ import {
 import { Button } from './ui/button';
 import { OaCompanyBadge, OaEditorial } from './oa-library';
 import { CompanyTags } from './company-tags';
+import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-notes';
 import {
   ExamAcceptedDialog,
   MockExamBar,
@@ -210,9 +212,9 @@ function Workspace({
   // In the exam the Submissions tab lists only this exam's attempts.
   const examFrom = exam?.running ? reportWindow(exam.session).from : 0;
   const [problem, setProblem] = useState(() => summaryProblem(initialProblem));
-  const [neighbors, setNeighbors] = useState<{ prev?: string; next?: string }>(
-    {},
-  );
+  const [neighbors, setNeighbors] = useState<
+    ReturnType<typeof problemNeighbors>
+  >({});
   // Client-only: the sequence lives in sessionStorage, written by the list the learner came from.
   useEffect(() => setNeighbors(problemNeighbors(problem.id)), [problem.id]);
   const [codingMode, setCodingMode] = useState<CodingMode>('leetcode');
@@ -307,8 +309,13 @@ function Workspace({
       : say(intelligence.message);
   const suggest = useRef<(() => void) | null>(null);
   const runButton = useRef<HTMLButtonElement>(null);
-  const [leftTab, setLeftTab] = useState<'statement' | 'history' | 'editorial'>(
-    'statement',
+  const [leftTab, setLeftTab] = useState<
+    'statement' | 'history' | 'editorial' | 'notes'
+  >('statement');
+  // Private to an account, and closed during a mock exam like the editorial.
+  const note = useProblemNote(
+    boot.person && !examMode ? userId : null,
+    initialProblem.id,
   );
   const [bottomTab, setBottomTab] = useState<'input' | 'result'>('input');
   const [inputMode, setInputMode] = useState<'sample' | 'custom'>('sample');
@@ -1153,6 +1160,14 @@ function Workspace({
           <History size={15} />
           {uiEnglish ? 'Submissions' : '提交记录'}
         </button>
+        {note.enabled && (
+          <NotesTab
+            note={note}
+            active={leftTab === 'notes'}
+            onSelect={() => setLeftTab('notes')}
+            english={uiEnglish}
+          />
+        )}
         {problem.id.startsWith('oa-') && !examMode && (
           <button
             role="tab"
@@ -1173,7 +1188,9 @@ function Workspace({
             english={uiEnglish}
           />
         )}
-        {leftTab === 'editorial' ? (
+        {leftTab === 'notes' && note.enabled ? (
+          <ProblemNotes note={note} english={uiEnglish} />
+        ) : leftTab === 'editorial' ? (
           <OaEditorial key={problem.id} problemId={problem.id} />
         ) : leftTab === 'statement' ? (
           <>
@@ -1184,6 +1201,9 @@ function Workspace({
                   : ''}
                 {statement.title}
               </h2>
+              {note.enabled && (
+                <ProblemMarks problemId={problem.id} english={uiEnglish} />
+              )}
               {shownHistory.some(
                 (item) =>
                   item.mode === 'judge' &&
@@ -2065,10 +2085,7 @@ function Workspace({
               className="cs-back"
               aria-label={t('返回题库', 'Back to problems')}
               onClick={() =>
-                navigate(
-                  'problems',
-                  problem.id.startsWith('oa-') ? { library: 'oa' } : undefined,
-                )
+                navigate('problems', backTo(problem.id, neighbors.library))
               }
             >
               <ArrowLeft size={18} />
@@ -2180,6 +2197,7 @@ function Workspace({
         <AcceptedDialog
           problemId={problem.id}
           line={!!problem.practiceRound}
+          library={neighbors.library}
           acceptedAt={success.created_at}
           seconds={solveSeconds}
           activity={boot.activity}
@@ -2427,20 +2445,29 @@ function Workspace({
 
 type NextStop = { id: string; sequence?: string[] } | null;
 
+/** Back to the list the learner came from: the OA library, a classic list, or the bank. */
+const backTo = (problemId: string, library?: string) =>
+  problemId.startsWith('oa-')
+    ? { library: 'oa' }
+    : library
+      ? { library }
+      : undefined;
+
 /**
- * Line 500: the server's next stop across the line. OA: the company's next
- * unsolved judgeable problem. undefined for any other problem.
+ * A collection (a classic list or Line 500): the server's next unsolved
+ * problem in it. OA: the company's next unsolved judgeable problem.
+ * undefined for any other problem.
  */
 async function findNextProblem(
   problemId: string,
-  line: boolean,
+  collection: string | undefined,
   signal: AbortSignal,
 ): Promise<NextStop | undefined> {
-  if (line) {
+  if (collection) {
     const page = await ojRequest<{
       nextProblemId: string | null;
       sequence: string[];
-    }>('library?collection=ling-selected-500', undefined, signal);
+    }>(`library?${new URLSearchParams({ collection })}`, undefined, signal);
     return page.nextProblemId && page.nextProblemId !== problemId
       ? { id: page.nextProblemId, sequence: page.sequence }
       : null;
@@ -2478,6 +2505,7 @@ async function findNextProblem(
 function AcceptedDialog({
   problemId,
   line,
+  library,
   acceptedAt,
   seconds,
   activity,
@@ -2488,6 +2516,8 @@ function AcceptedDialog({
 }: {
   problemId: string;
   line: boolean;
+  /** The classic list the problem was opened from; its order wins over Line 500's. */
+  library?: string;
   acceptedAt: number;
   seconds: number | null;
   activity?: Activity[];
@@ -2498,12 +2528,11 @@ function AcceptedDialog({
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const primary = useRef<HTMLButtonElement>(null);
+  // The bank page's target for today (its sprint plan's count, 0 on a mock OA
+  // or OA day), else the "n a day" picker.
   const [target] = useState(() => {
     try {
-      const saved = Number(
-        localStorage.getItem('cswork:practice:daily-target'),
-      );
-      return [1, 2, 3, 5].includes(saved) ? saved : 3;
+      return readTodayTarget(localStorage, localDay());
     } catch {
       return 3;
     }
@@ -2529,22 +2558,22 @@ function AcceptedDialog({
   useEffect(() => {
     const controller = new AbortController();
     const fallback = fallbackNext ? { id: fallbackNext } : null;
-    findNextProblem(problemId, line, controller.signal).then(
+    findNextProblem(
+      problemId,
+      library ?? (line ? 'ling-selected-500' : undefined),
+      controller.signal,
+    ).then(
       (found) => setNext(found === undefined ? fallback : found),
       () => {
         if (!controller.signal.aborted) setNext(fallback);
       },
     );
     return () => controller.abort();
-  }, [problemId, line, fallbackNext]);
+  }, [problemId, line, library, fallbackNext]);
   const go = () => {
     if (next === 'loading') return;
-    if (!next)
-      return navigate(
-        'problems',
-        problemId.startsWith('oa-') ? { library: 'oa' } : undefined,
-      );
-    if (next.sequence) rememberProblemSequence(next.sequence);
+    if (!next) return navigate('problems', backTo(problemId, library));
+    if (next.sequence) rememberProblemSequence(next.sequence, library);
     navigate('problem', { problem: next.id });
   };
   return (
@@ -2563,8 +2592,8 @@ function AcceptedDialog({
           <DialogTitle className="cs-accepted-title">Accepted</DialogTitle>
           <DialogDescription className="cs-accepted-stats">
             {t(
-              `今日 ${stats.today} / ${target} · 连续 ${stats.streak} 天`,
-              `Today ${stats.today} / ${target} · ${stats.streak}-day streak`,
+              `今日 ${stats.today}${target ? ` / ${target}` : ''} · 连续 ${stats.streak} 天`,
+              `Today ${stats.today}${target ? ` / ${target}` : ''} · ${stats.streak}-day streak`,
             )}
             {seconds != null &&
               t(

@@ -4,6 +4,7 @@ import { hiddenCompanies } from './env';
 import { HttpError } from './http';
 import { practiceRoundState } from './practice-rounds';
 import { studyProgress } from './practice-progress';
+import { problemMarks } from './my-practice';
 import {
   curatedByNumber,
   curatedEntries,
@@ -12,8 +13,11 @@ import {
   LING_CURATED_TITLE,
   type CuratedEntry,
 } from '@/lib/ling-curated';
+import { classicList, type ClassicList } from '@/lib/classic-lists';
+import { STOP_NAMES } from '@/lib/route-stops';
 
 const CURATED_STAGES: CuratedEntry['stage'][] = ['基础', '核心', '进阶'];
+const STOP_INDEX = new Map(curatedSections.map((section, index) => [section.slug, index]));
 
 type LibraryRow = {
   id: string;
@@ -52,11 +56,18 @@ function summary(row: LibraryRow) {
     judgeProblemId: row.ready ? row.judge_problem_id : null,
   };
 }
+/** The list API: a classic list by its slug, otherwise Line 500 or the whole bank. */
+export function listLibrary(params: URLSearchParams, userId?: string) {
+  const classic = classicList(params.get('collection'));
+  return classic
+    ? listClassicLibrary(classic, userId)
+    : listStudyLibrary(params, userId);
+}
 export function listStudyLibrary(params: URLSearchParams, userId?: string) {
   const collection = params.get('collection');
   if (!collection || collection === LING_CURATED_ID)
     return listCuratedLibrary(params, userId);
-  if (collection && collection !== 'all') throw new HttpError(400, '未知题单');
+  if (collection !== 'all') throw new HttpError(400, '未知题单');
   const db = sqlite();
   const q = (params.get('q') || '').trim().slice(0, 180);
   const topic = (params.get('topic') || '').slice(0, 100);
@@ -124,11 +135,14 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
     ? studyProgress(userId, roundState.activeRoundId)
     : new Map();
   const tags = companyTagIndex(hiddenCompanies());
+  const marks = userId ? problemMarks(userId) : new Map<string, Set<string>>();
   const all = rows
     .map((row) => ({
       ...summary(row),
       selection: curatedByNumber.get(row.number)!,
       companies: tags.get(row.id) ?? [],
+      starred: !!marks.get(row.judge_problem_id ?? row.id)?.has('star'),
+      redo: !!marks.get(row.judge_problem_id ?? row.id)?.has('redo'),
       solved: !!progress.get(row.id)?.solved,
       solvedLocally: !!progress.get(row.id)?.solvedLocally,
       importedSources: progress.get(row.id)?.importedSources ?? [],
@@ -166,7 +180,9 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
               ? item.progressStatus === status
               : status === 'ready'
                 ? item.caseStatus === 'verified'
-                : false)),
+                : status === 'starred' || status === 'redo'
+                  ? item[status]
+                  : false)),
   );
   const page = Math.max(
     1,
@@ -209,6 +225,13 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
       (a, b) => b.count - a.count || a.name.localeCompare(b.name, 'en'),
     ),
     sequence,
+    // The study plan (lib/study-plan.ts) counts what is left of the sequence:
+    // [problem id, difficulty, stop index] per unsolved entry, in line order.
+    planTodo: all.flatMap((item) =>
+      item.caseStatus === 'verified' && item.judgeProblemId && !item.solved
+        ? [[item.judgeProblemId, item.difficulty, STOP_INDEX.get(item.selection.sectionSlug) ?? 0] as const]
+        : [],
+    ),
     nextProblemId: userId ? (nextItem?.judgeProblemId ?? null) : null,
     // Returned to everyone: for members it is the problem nextProblemId points to.
     next: nextItem
@@ -255,6 +278,105 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
         };
       }),
     },
+  };
+}
+const stopCodes = new Map(
+  curatedSections.map((section, index) => [
+    section.slug,
+    String(index + 1).padStart(2, '0'),
+  ]),
+);
+
+/**
+ * A classic list in its own groups and order. Problems not judgeable here are
+ * external: listed with a LeetCode link, left out of progress and the sequence.
+ */
+export function listClassicLibrary(list: ClassicList, userId?: string) {
+  const rows = new Map(
+    (
+      sqlite()
+        .prepare(
+          `SELECT ${columns} FROM study_library l
+    WHERE l.number IN (SELECT value FROM json_each(?))`,
+        )
+        .all(
+          JSON.stringify(list.groups.flatMap((group) => group.numbers)),
+        ) as LibraryRow[]
+    ).map((row) => [row.number, summary(row)]),
+  );
+  // Progress in the active round, as on Line 500.
+  const progress = userId
+    ? studyProgress(userId, practiceRoundState(userId).activeRoundId)
+    : new Map();
+  const item = (number: number) => {
+    const row = rows.get(number);
+    // summary() only exposes the judge id of a problem that is judgeable now.
+    const judgeProblemId = row?.judgeProblemId ?? null;
+    const state = judgeProblemId ? progress.get(row!.id) : undefined;
+    const selection = curatedByNumber.get(number);
+    const [stopZh, stopEn] =
+      selection && Object.hasOwn(STOP_NAMES, selection.sectionSlug)
+        ? STOP_NAMES[selection.sectionSlug]
+        : [selection?.sectionTitle ?? '', selection?.sectionTitleEn ?? ''];
+    return {
+      number,
+      slug: row?.slug ?? '',
+      titleZh: row?.titleZh ?? '',
+      titleEn: row?.titleEn ?? '',
+      difficulty: row?.difficulty ?? '',
+      judgeProblemId,
+      external: !judgeProblemId,
+      // Its Line 500 stop, judgeable here or not.
+      stop: selection
+        ? {
+            slug: selection.sectionSlug,
+            code: stopCodes.get(selection.sectionSlug) ?? '',
+            nameZh: stopZh,
+            nameEn: stopEn,
+          }
+        : null,
+      solved: !!state?.solved,
+      progressStatus: (state?.solved
+        ? 'solved'
+        : state?.attempted
+          ? 'attempted'
+          : 'not_started') as 'solved' | 'attempted' | 'not_started',
+      judging: !!state?.pending,
+    };
+  };
+  const groups = list.groups.map((group) => {
+    const items = group.numbers.map(item);
+    const judgeable = items.filter((entry) => !entry.external);
+    return {
+      nameZh: group.nameZh,
+      nameEn: group.nameEn,
+      total: items.length,
+      ready: judgeable.length,
+      solved: judgeable.filter((entry) => entry.solved).length,
+      items,
+    };
+  });
+  // A number listed in two groups counts once.
+  const unique = [
+    ...new Map(
+      groups.flatMap((group) => group.items).map((entry) => [entry.number, entry]),
+    ).values(),
+  ];
+  const judgeable = unique.filter((entry) => !entry.external);
+  return {
+    collection: {
+      id: list.slug,
+      nameZh: list.nameZh,
+      nameEn: list.nameEn,
+      source: list.source,
+      total: unique.length,
+      ready: judgeable.length,
+      solved: judgeable.filter((entry) => entry.solved).length,
+    },
+    groups,
+    sequence: judgeable.map((entry) => entry.judgeProblemId!),
+    nextProblemId:
+      judgeable.find((entry) => !entry.solved)?.judgeProblemId ?? null,
   };
 }
 function publicSourceUrl(value: string | null) {

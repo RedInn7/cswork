@@ -1,0 +1,189 @@
+/* Private notes tab and the star / redo-later marks in the problem workspace.
+   Workspace tokens only, so the dark editor theme carries over; the amber is
+   Line 500's signal colour. */
+.cs-pane-tabs .cs-tab-dot {
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  align-self: center;
+  border-radius: 50%;
+  background: #ffb23f;
+  box-shadow: 0 0 0 2px rgb(255 178 63 / 0.18);
+}
+.cs-notes {
+  display: grid;
+  gap: 12px;
+}
+.cs-notes-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+.cs-notes-head p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--cs-muted);
+}
+.cs-notes-switch {
+  display: inline-flex;
+  margin: 0;
+  padding: 2px;
+  border: 1px solid var(--cs-border);
+  border-radius: 8px;
+  background: var(--cs-surface-soft, #f8f9fb);
+}
+.cs-notes-switch button {
+  padding: 3px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--cs-muted);
+}
+.cs-notes-switch button[aria-pressed='true'] {
+  background: var(--cs-surface, #fff);
+  color: var(--cs-text);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.08);
+}
+.cs-notes-input {
+  width: 100%;
+  min-height: 320px;
+  padding: 14px 16px;
+  resize: vertical;
+  border: 1px solid var(--cs-border);
+  border-radius: 10px;
+  background: var(--cs-surface, #fff);
+  color: var(--cs-text);
+  font: 13px/1.75 var(--font-mono, ui-monospace, monospace);
+  tab-size: 4;
+}
+.cs-notes-input::placeholder {
+  color: var(--cs-muted);
+}
+.cs-notes-input:focus-visible,
+.cs-notes-switch button:focus-visible,
+.cs-mark:focus-visible {
+  outline: 2px solid var(--cs-blue);
+  outline-offset: 2px;
+}
+.cs-notes-preview {
+  min-height: 320px;
+  padding: 14px 16px;
+  border: 1px dashed var(--cs-border);
+  border-radius: 10px;
+}
+.cs-notes-empty,
+.cs-notes-state {
+  margin: 0;
+  padding: 48px 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--cs-muted);
+}
+.cs-notes-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 18px;
+  font-size: 12px;
+  color: var(--cs-muted);
+}
+.cs-notes-warn {
+  color: #b45309;
+}
+.cs-notes-foot button,
+.cs-notes-state button {
+  color: var(--cs-blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+/* A local draft that lost to a newer saved note: the learner picks which to keep. */
+.cs-notes-conflict {
+  display: grid;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, #ffb23f 45%, var(--cs-border));
+  border-left: 3px solid #ffb23f;
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--cs-text);
+}
+.cs-notes-conflict p {
+  margin: 0;
+}
+.cs-notes-conflict summary {
+  cursor: pointer;
+  color: var(--cs-muted);
+}
+.cs-notes-conflict pre {
+  max-height: 160px;
+  margin: 6px 0 0;
+  overflow: auto;
+  white-space: pre-wrap;
+  font: 12px/1.6 var(--font-mono, ui-monospace, monospace);
+  color: var(--cs-muted);
+}
+.cs-notes-conflict-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+.cs-notes-conflict button {
+  color: var(--cs-blue);
+  font-weight: 600;
+}
+.cs-notes-conflict button:focus-visible,
+.cs-notes-conflict summary:focus-visible {
+  outline: 2px solid var(--cs-blue);
+  outline-offset: 2px;
+}
+.cs-notes-size {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+.cs-notes-size[data-over] {
+  color: #b45309;
+  font-weight: 600;
+}
+
+/* Title row: the heading takes the room, the marks and the solved badge sit right. */
+.cs-statement-heading:has(.cs-problem-marks) h2 {
+  margin-right: auto;
+}
+.cs-problem-marks {
+  display: inline-flex;
+  flex: none;
+  gap: 2px;
+}
+.cs-mark {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--cs-muted);
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.cs-mark:hover {
+  background: var(--cs-surface-soft, #f8f9fb);
+  color: var(--cs-text);
+}
+.cs-mark[data-mark='star'][aria-pressed='true'] {
+  color: #e8971c;
+}
+.cs-mark[data-mark='star'][aria-pressed='true'] svg {
+  fill: #ffb23f;
+}
+.cs-mark[data-mark='redo'][aria-pressed='true'] {
+  color: var(--cs-blue);
+  background: color-mix(in srgb, var(--cs-blue) 12%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs-mark {
+    transition: none;
+  }
+}

@@ -16,6 +16,7 @@ import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
 import { OA_KIND_NAMES, TOPIC_NAMES, topicName } from '@/lib/route-stops';
+import { Star } from 'lucide-react';
 
 /** Text remains the accessible identity; the logo is only a visual aid. */
 export function CompanyIdentity({
@@ -75,6 +76,7 @@ type Item = {
   /** Set only for non-coding problems. */
   kind?: 'mcq' | 'sql' | 'other';
   progress?: 'solved' | 'attempted';
+  starred?: boolean;
 };
 const difficultyLevels: Record<string, string> = {
   简单: 'easy',
@@ -846,7 +848,15 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                         </span>
                         <span className="oa-number">#{item.number}</span>
                         <span className="oa-title">
-                          <strong>{item.title}</strong>
+                          <strong>
+                            {item.title}
+                            {item.starred && (
+                              <>
+                                <Star className="study-star" size={14} aria-hidden="true" />
+                                <span className="sr-only">{t('（已收藏）', ' (starred)')}</span>
+                              </>
+                            )}
+                          </strong>
                           {item.kind && Object.hasOwn(OA_KIND_NAMES, item.kind) && (
                             <small data-kind={item.kind}>{t(...OA_KIND_NAMES[item.kind])}</small>
                           )}
