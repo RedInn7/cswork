@@ -106,6 +106,10 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       sourceUrl: 'https://leetcode.cn/problems/two-sum/',
     },
     curatedHint: { zh: 'ZH APPROACH', en: 'EN APPROACH' },
+    // Eight company reports: six chips, then "+2".
+    companies: ['Amazon', 'Meta', 'Uber', 'Apple', 'DoorDash', 'LinkedIn', 'Snap', 'Waymo'].map(
+      (name, i) => ({ slug: name.toLowerCase(), name, rounds: [i ? 'Onsite' : 'Online Assessment'], oa: !i }),
+    ),
   };
   const historical = {
     id: 'old-acm',
@@ -294,6 +298,12 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     await click(button('Topics'));
     assert.equal(document.querySelector('#problem-topics').textContent, '数组');
     await click(button('Topics'));
+    const chips = () =>
+      [...document.querySelectorAll('ul[aria-label="Asked at"] .cs-company-chip')].map((n) => n.textContent);
+    assert.deepEqual(chips(), ['AmazonOA', 'Meta', 'Uber', 'Apple', 'DoorDash', 'LinkedIn']);
+    await click(button('+2 more companies'));
+    assert.equal(chips().length, 8);
+    assert.ok(button('Less'));
     await choose('Statement language', 'zh');
     assert.equal(
       document.querySelector('.cs-statement-heading h2').textContent,
@@ -620,6 +630,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     assert.equal(document.querySelector('.cs-route-hint') === null, true);
     // The exam bar's clock replaces the problem timer.
     assert.equal(document.querySelector('.cs-timer') === null, true);
+    assert.equal(document.querySelector('.cs-company-tags') === null, true, 'no company hints in a mock');
     localStorage.removeItem(examKey);
     delete problem.hintEarned;
     // ACM starters follow the statement language; untouched ones switch with it.

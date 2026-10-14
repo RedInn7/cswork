@@ -1,4 +1,3 @@
-/// <reference types="vite/client" />
 import type Database from 'better-sqlite3';
 import {
   ROUNDS,
@@ -11,6 +10,7 @@ import {
   splitBody,
   type PoolItem,
 } from '@/lib/mock-interview';
+import { lcIdBySource } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
 import { HttpError } from './http';
 
@@ -31,34 +31,12 @@ export type PoolRow = PoolItem & {
   problem: string | null;
 };
 
-/** Content coding questions → LeetCode problems we judge; bundled when the file exists. */
-let lcMap: Map<string, string> | undefined;
-function judgeMap() {
-  if (!lcMap) {
-    let files: Record<string, unknown> = {};
-    try {
-      files = import.meta.glob('/lib/content/company-lc-map.json', { eager: true, import: 'default' });
-    } catch {
-      // Outside Vite (tests, scripts): no map.
-    }
-    // Either { "<slug>": "lc-1" | { problem } } or [{ source, problem }].
-    type Entry = { source?: string; slug?: string; problem?: string; lc?: string } | null;
-    const raw = Object.values(files)[0] as Entry[] | Record<string, string | Entry> | undefined;
-    const pairs = Array.isArray(raw)
-      ? raw.map((e) => [e?.source ?? e?.slug, e?.problem ?? e?.lc])
-      : Object.entries(raw ?? {}).map(([key, v]) => [key, typeof v === 'string' ? v : (v?.problem ?? v?.lc)]);
-    lcMap = new Map(pairs.filter((p): p is [string, string] => typeof p[0] === 'string' && /^lc-\d+$/.test(String(p[1]))));
-  }
-  return lcMap;
-}
-
 // Rebuilt libraries open as a new handle, so the cache follows the handle.
 const pools = new WeakMap<Database.Database, PoolRow[]>();
 export function mockPool(db: Database.Database): PoolRow[] {
   let pool = pools.get(db);
   if (!pool) {
     const hidden = [...hiddenCompanies()];
-    const map = judgeMap();
     const rows = db
       .prepare(
         `SELECT id, type, slug, title, company_slug AS company, company_name AS companyName, role, category, round,
@@ -72,7 +50,7 @@ export function mockPool(db: Database.Database): PoolRow[] {
       .all(...hidden) as (Omit<PoolRow, 'listed'> & { listed: number })[];
     pool = rows
       .filter((r) => !r.problem || !hidden.some((slug) => r.problem!.startsWith(`oa-${slug}-`)))
-      .map((r) => ({ ...r, listed: !!r.listed, problem: r.problem ?? map.get(r.slug) ?? map.get(r.id) ?? null }));
+      .map((r) => ({ ...r, listed: !!r.listed, problem: r.problem ?? (r.type === 'coding_question' ? lcIdBySource.get(r.slug) : undefined) ?? null }));
     pools.set(db, pool);
   }
   return pool;
