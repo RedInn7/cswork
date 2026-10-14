@@ -240,8 +240,13 @@ export function Speedrun({ boot, navigate }: { boot: Boot; navigate: Navigate })
             <Zap size={14} aria-hidden />
             {t('题型快练', 'Pattern speedrun')}
           </p>
-          <p className="sr-count" aria-label={t(`第 ${index + 1} 题，共 ${questions.length} 题`, `Question ${index + 1} of ${questions.length}`)}>
-            <span className="sr-led">{String(index + 1).padStart(2, '0')}</span>
+          <p className="sr-count">
+            <span className="sr-only">
+              {t(`第 ${index + 1} 题，共 ${questions.length} 题`, `Question ${index + 1} of ${questions.length}`)}
+            </span>
+            <span className="sr-led" aria-hidden>
+              {String(index + 1).padStart(2, '0')}
+            </span>
             <span aria-hidden>/{String(questions.length).padStart(2, '0')}</span>
           </p>
         </div>
@@ -296,12 +301,13 @@ export function Speedrun({ boot, navigate }: { boot: Boot; navigate: Navigate })
                   onClick={() => answer(slug)}
                 >
                   <kbd aria-hidden>{i + 1}</kbd>
+                  {/* Stop numbers and group names wait for the answer: they would give it away. */}
                   <span className="sr-roundel" aria-hidden>
-                    {stopCode(slug)}
+                    {picked && stopCode(slug)}
                   </span>
                   <span className="sr-choice-name">
                     {stopName(slug)}
-                    <small>{groupName(slug)}</small>
+                    {picked && <small>{groupName(slug)}</small>}
                   </span>
                   {state === 'right' && <span className="sr-only">{t('（正确答案）', '(correct answer)')}</span>}
                   {state === 'wrong' && <span className="sr-only">{t('（你的选择）', '(your pick)')}</span>}

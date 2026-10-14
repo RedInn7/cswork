@@ -57,12 +57,18 @@ test('the speedrun answers with 1-4, moves on with Enter, and records the best s
   assert.ok(text().includes('Problem 1'));
   assert.ok(text().includes('Given an array'), 'members see the excerpt the server sent');
   assert.equal(document.querySelectorAll('.sr-choice').length, 4);
+  const hints = () =>
+    [...document.querySelectorAll('.sr-roundel')].some((r) => r.textContent) || document.querySelector('.sr-choice small') !== null;
+  assert.equal(hints(), false, 'stop numbers and group names stay hidden until the answer');
+  assert.equal(document.querySelector('.sr-count')?.hasAttribute('aria-label'), false);
+  assert.equal(document.querySelector('.sr-count .sr-only')?.textContent === 'Question 1 of 2', true);
   assert.equal(document.querySelector('.sr-guest') === null, true, 'no sign-in prompt when an excerpt is present');
 
   // Wrong answer with key 1: the right stop is shown, the reason appears, Next takes focus.
   await key('1');
   assert.ok(text().includes("Not quite: it's stop 02, Hashing"));
   assert.ok(text().includes('Reason 1'));
+  assert.equal(hints(), true, 'the answer reveals stop numbers and group names');
   assert.equal(document.querySelector('.sr-choice[data-state="wrong"]')?.textContent.includes('In-place Arrays'), true);
   assert.equal(document.querySelectorAll('.sr-choice:disabled').length, 4);
   assert.equal(document.activeElement?.classList.contains('sr-cta'), true);
