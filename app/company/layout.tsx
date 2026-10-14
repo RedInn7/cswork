@@ -1,6 +1,7 @@
 import '../library/library.css';
 import '../oa/oa.css';
 import './company.css';
+import './landing.css';
 import '../company-stats.css';
 import '../experience-submissions.css';
 import Link from 'next/link';

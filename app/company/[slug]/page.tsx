@@ -2,12 +2,14 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { oaDifficulty } from '@/lib/server/oa-topics';
 import { cache } from 'react';
-import { RESULTS, ROUND_LABELS, type ExperienceFacts } from '@/lib/experience';
+import { ROUND_LABELS } from '@/lib/experience';
 import { companyHubPath, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
 import { breadcrumbJsonLd, companyPageTitle, seoMetadata } from '@/lib/seo';
 import { CompanyStatsCard } from '@/components/company-stats-card';
 import { companyHub } from '@/lib/server/company-hub';
 import { companyStats } from '@/lib/server/company-stats';
+import { companyFacets } from '@/lib/server/seo-facets';
+import { CATEGORIES } from '@/components/company-stats-card';
 import { companyMemberExperiences, memberExperiencePath, memberIdOf } from '@/lib/server/experience-submissions';
 import { library } from '@/lib/server/content-library';
 import { requestLocale } from '@/lib/server/locale';
@@ -15,6 +17,7 @@ import { oaReadyProblems } from '@/lib/server/oa-judge';
 import { publicLibraryPath } from '@/lib/server/public-library';
 import { OaCompanyMark, OaDifficulty } from '../../oa/parts';
 import { CompanyAsked } from '../asked-reports';
+import { Facts, QUESTION_LEVELS } from '../parts';
 
 type Props = { params: Promise<{ slug: string }> };
 const OA_SHOWN = 8;
@@ -40,6 +43,7 @@ const load = cache(async (slug: string) => {
     experiences: [...members.items, ...hub.experiences].slice(0, 6),
     experienceTotal: hub.company.experiences + members.total,
     stats: companyStats(library(), hub.company.library),
+    facets: companyFacets(library(), hub.company.slug),
     ready,
     locale,
     lead,
@@ -56,39 +60,6 @@ export async function generateMetadata({ params }: Props) {
 }
 
 const spa = (params: Record<string, string>) => `/?${new URLSearchParams(params)}`;
-const QUESTION_LEVELS: Record<string, [string, string]> = {
-  easy: ['简单', 'Easy'],
-  medium: ['中等', 'Medium'],
-  hard: ['困难', 'Hard'],
-};
-
-/** Outcome, rounds and interview month of an experience; nothing when the report has none. */
-function Facts({ item, zh }: { item: Partial<ExperienceFacts>; zh: boolean }) {
-  const result = item.result && Object.hasOwn(RESULTS, item.result) ? RESULTS[item.result] : null;
-  const rounds = (item.rounds ?? []).map((r) =>
-    Object.hasOwn(ROUND_LABELS, r) ? ROUND_LABELS[r][zh ? 0 : 1] : r,
-  );
-  if (!result && !rounds.length && !item.interviewDate) return null;
-  return (
-    <p className="company-hub-facts">
-      {result && (
-        <span className="oa-public-chip" data-result={result.tone}>
-          {zh ? result.zh : result.en}
-        </span>
-      )}
-      {!!rounds.length && (
-        <span>
-          <span aria-hidden="true">{rounds.join(' → ')}</span>
-          <span className="sr-only">{zh ? `轮次：${rounds.join('、')}` : `Rounds: ${rounds.join(', ')}`}</span>
-        </span>
-      )}
-      {item.interviewDate && (
-        <span>{zh ? `面试于 ${item.interviewDate.slice(0, 7)}` : `Interviewed ${item.interviewDate.slice(0, 7)}`}</span>
-      )}
-    </p>
-  );
-}
-
 function SectionHead({ id, title, count, all, zh }: { id: string; title: string; count: string; all: string; zh: boolean }) {
   return (
     <div className="company-hub-section-head">
@@ -103,7 +74,7 @@ function SectionHead({ id, title, count, all, zh }: { id: string; title: string;
 }
 
 export default async function CompanyPage({ params }: Props) {
-  const { company, oa, leetcode, experiences, experienceTotal, questions, mockOa, mockInterview, stats, ready, locale, lead } = await load(
+  const { company, oa, leetcode, experiences, experienceTotal, questions, mockOa, mockInterview, stats, facets, ready, locale, lead } = await load(
     (await params).slug,
   );
   const zh = locale === 'zh';
@@ -168,6 +139,20 @@ export default async function CompanyPage({ params }: Props) {
         </nav>
       )}
       {stats && <CompanyStatsCard stats={stats} locale={locale} />}
+      {!!facets.length && (
+        <nav className="company-hub-facets" aria-labelledby="company-facets">
+          <h2 id="company-facets">{zh ? '按岗位和题目类别' : 'By role and question category'}</h2>
+          <ul>
+            {facets.map((f) => (
+              <li key={f.path}>
+                <a href={f.path} data-kind={f.kind}>
+                  {f.kind === 'cat' && Object.hasOwn(CATEGORIES, f.name) ? CATEGORIES[f.name][zh ? 0 : 1] : f.name} <b>{f.n}</b>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
 
       {!!oa.length && (
         <section className="company-hub-section" aria-labelledby="oa">

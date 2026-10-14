@@ -2,7 +2,7 @@ import { RESULTS, ROUND_LABELS } from '@/lib/experience';
 import type { CompanyStats, Share } from '@/lib/server/company-stats';
 
 /** Question categories in the content library, [zh, en]. */
-const CATEGORIES: Record<string, [string, string]> = {
+export const CATEGORIES: Record<string, [string, string]> = {
   'Coding & Algorithms': ['编程与算法', 'Coding & algorithms'],
   'Behavioral & Leadership': ['行为与领导力', 'Behavioral & leadership'],
   'System Design': ['系统设计', 'System design'],
