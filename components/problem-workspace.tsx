@@ -462,6 +462,14 @@ function Workspace({
   const [historyError, setHistoryError] = useState('');
   const [historyRevision, setHistoryRevision] = useState(0);
   const shownHistory = history.filter((item) => item.created_at >= examFrom);
+  // A practice-round problem counts as passed only by an AC in this round (badge and editorial lock).
+  const solvedThisRound = shownHistory.some(
+    (item) =>
+      item.mode === 'judge' &&
+      item.status === 'accepted' &&
+      (!problem.practiceRound ||
+        (!!practiceRound && item.practiceRoundId === practiceRound.id)),
+  );
   // The Line 500 editorial opens once the problem is passed, or after a confirm kept until reload.
   const [editorialAsked, setEditorialAsked] = useState(false);
   const [problemError, setProblemError] = useState('');
@@ -1515,10 +1523,7 @@ function Workspace({
             key={problem.id}
             editorial={problem.lingEditorial}
             english={uiEnglish}
-            unlocked={
-              editorialAsked ||
-              shownHistory.some((item) => item.mode === 'judge' && item.status === 'accepted')
-            }
+            unlocked={editorialAsked || solvedThisRound}
             onUnlock={() => setEditorialAsked(true)}
             code={code}
             language={language}
@@ -1552,14 +1557,7 @@ function Workspace({
                   <AskedReport problemId={problem.id} english={uiEnglish} signedIn={false} />
                 )
               )}
-              {shownHistory.some(
-                (item) =>
-                  item.mode === 'judge' &&
-                  item.status === 'accepted' &&
-                  (!problem.practiceRound ||
-                    (!!practiceRound &&
-                      item.practiceRoundId === practiceRound.id)),
-              ) && (
+              {solvedThisRound && (
                 <span className="cs-statement-solved">
                   {uiEnglish ? 'Solved' : '已通过'}
                   <CircleCheck size={18} />
