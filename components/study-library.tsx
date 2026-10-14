@@ -217,7 +217,7 @@ export function StudyLibrary({
   // Company pages link here with ?company=<slug>&sort=frequency.
   const [company, setCompany] = useState(() => urlParam('company').slice(0, 80));
   const [sort, setSort] = useState(() => (SORTS.includes(urlParam('sort')) ? urlParam('sort') : ''));
-  const [dir, setDir] = useState(() => (urlParam('dir') === 'desc' ? 'desc' : 'asc'));
+  const [dir, setDir] = useState<string>(() => (urlParam('dir') === 'desc' ? 'desc' : 'asc'));
   // Report counts belong to one company: without a filter the line keeps its order.
   const order = sort === 'frequency' && !company ? '' : sort;
   // A rating band, one of the learner's lists (or a public one linked here), a solved month.
@@ -420,12 +420,12 @@ export function StudyLibrary({
     status,
     company,
     sort: order,
-    ...(order && order !== 'frequency' && { dir }),
-    ...(ratingMin && { ratingMin }),
-    ...(ratingMax && { ratingMax }),
-    ...(list && { list }),
+    ...(!!order && order !== 'frequency' && { dir }),
+    ...(!!ratingMin && { ratingMin }),
+    ...(!!ratingMax && { ratingMax }),
+    ...(!!list && { list }),
     // Months are the learner's own: the server reads them in this browser's zone.
-    ...(solvedMonth && { solved: solvedMonth, tz: String(new Date().getTimezoneOffset()) }),
+    ...(!!solvedMonth && { solved: solvedMonth, tz: String(new Date().getTimezoneOffset()) }),
   }).toString();
   useEffect(() => {
     if (roundBusy) return;

@@ -148,7 +148,7 @@ export function PointsPanel({ english, onChange }: { english: boolean; onChange?
             {data.ledger.map((entry, i) => (
               <li key={`${entry.createdAt}-${i}`}>
                 <span>
-                  {t(...(REASONS[entry.reason] ?? ['其他', 'Other']))}
+                  {t(...(REASONS[entry.reason] ?? (['其他', 'Other'] as const)))}
                   {entry.delta < 0 && entry.reason === 'experience' && t('（下架扣回）', ' (taken back)')}
                 </span>
                 <time dateTime={new Date(entry.createdAt).toISOString()}>{date(entry.createdAt)}</time>

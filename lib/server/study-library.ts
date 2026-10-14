@@ -171,11 +171,11 @@ export function listStudyLibrary(params: URLSearchParams, userId?: string) {
     sort === 'rating'
       ? `r.rating IS NULL,r.rating ${dir},l.number`
       : sort === 'difficulty'
-        ? `rank IS NULL,rank ${dir},l.number`
+        ? `level IS NULL,level ${dir},l.number`
         : `l.number ${sort === 'number' ? dir : 'ASC'}`;
-  const rank = `CASE lower(l.difficulty) ${Object.entries(DIFFICULTY_RANK)
+  const level = `CASE lower(l.difficulty) ${Object.entries(DIFFICULTY_RANK)
     .map(([name, n]) => `WHEN '${name}' THEN ${n}`)
-    .join(' ')} END AS rank`;
+    .join(' ')} END AS level`;
   const total = (
     db
       .prepare(`${rated} SELECT COUNT(*) AS n FROM ${from}${clause}`)
@@ -184,7 +184,7 @@ export function listStudyLibrary(params: URLSearchParams, userId?: string) {
   const items = (
     db
       .prepare(
-        `${rated} SELECT ${columns},${rank} FROM ${from}${clause} ORDER BY ${order} LIMIT 30 OFFSET ?`,
+        `${rated} SELECT ${columns},${level} FROM ${from}${clause} ORDER BY ${order} LIMIT 30 OFFSET ?`,
       )
       .all(RATINGS_SQL_JSON, ...values, (page - 1) * 30) as LibraryRow[]
   ).map(summary);

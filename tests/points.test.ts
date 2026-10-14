@@ -127,11 +127,14 @@ void test('an AC pays the day, the first AC of a problem, the daily problem and 
   assert.equal(await points.awardAccepted(first, now), 0, 'a replay pays nothing');
   // A second AC of the same problem the same day: nothing new.
   assert.equal(await points.awardAccepted(accepted('ac-user', 'lc-1', now + 1), now), 0);
-  // A run is no formal submission.
+  // A run is no formal submission; an old AC read today (history from before points) pays nothing.
   assert.equal(await points.awardAccepted({ ...first, id: 'x', mode: 'run' }, now), 0);
+  assert.equal(await points.awardAccepted(accepted('old-user', 'lc-1', now - 3 * DAY), now), 0);
   assert.equal(points.balance('ac-user'), 35);
   // Six earlier days in a row: the 7th (today) pays the streak; those days pay their own 10.
-  for (let d = 6; d >= 1; d--) await points.awardAccepted(accepted('streak-user', `lc-90${d}`, now - d * DAY), now);
+  // Each paid as it was judged.
+  for (let d = 6; d >= 1; d--)
+    await points.awardAccepted(accepted('streak-user', `lc-90${d}`, now - d * DAY), now - d * DAY);
   const before = points.balance('streak-user');
   const today = await points.awardAccepted(accepted('streak-user', 'lc-999', now), now);
   assert.equal(today, 10 + 5 + 50);
@@ -236,7 +239,7 @@ void test('redeem: freezes cost 100, 3 a month; AI packs cost 50 for 5 calls pas
 
 void test('the ledger API hides voters and report ids, and an AC pays through the submission detail', async () => {
   const me = person('api-user');
-  const sub = accepted('api-user', 'lc-1', Date.now() - 2 * DAY);
+  const sub = accepted('api-user', 'lc-1', Date.now() - DAY);
   points.award('api-user', 'upvote', 'post-1:secret-voter', 2);
   await call(me, ['submissions', sub.id]);
   const view = (await call(me, ['points'])) as { balance: number; ledger: { reason: string; ref?: string }[] };

@@ -100,12 +100,14 @@ function streakTo(userId: string, day: string) {
   return n;
 }
 
+/** ACs older than this earn nothing when their verdict is read: history from before points never pays. */
+export const AWARD_WINDOW = 2 * DAY;
 /** Points for one accepted formal submission; safe to call again for the same one. */
 export async function awardAccepted(
   s: { id: string; user_id: string; problem_id: string; mode: string; status: string; created_at: number },
   now = Date.now(),
 ) {
-  if (s.mode !== 'judge' || s.status !== 'accepted') return 0;
+  if (s.mode !== 'judge' || s.status !== 'accepted' || now - s.created_at > AWARD_WINDOW) return 0;
   const day = beijingDate(s.created_at);
   let total = 0;
   const newDay = award(s.user_id, 'ac-day', day, POINTS.acDay, now);

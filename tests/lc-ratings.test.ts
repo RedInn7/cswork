@@ -150,6 +150,8 @@ void test('rows and the problem GET carry the rating; filters and sorts by ratin
     listStudyLibrary(new URLSearchParams(`collection=all&${query}`)).items.map((i) => i.number);
   assert.deepEqual(all('sort=rating&dir=desc'), [...rated, 26]);
   assert.deepEqual(all(`ratingMin=${mid}&sort=rating`), rated.filter((n) => r(n) >= mid).reverse());
+  assert.deepEqual(all('sort=difficulty&dir=desc')[0], 1049);
+  assert.deepEqual(all('sort=number&dir=desc'), [...NUMBERS].sort((a, b) => b - a));
   const problem = (await (
     await handleOj(new Request('https://cswork.test/api/oj/problems/lc-1046'), me, ['problems', 'lc-1046'])
   ).json()) as { rating: number | null };
