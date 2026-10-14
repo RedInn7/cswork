@@ -32,7 +32,7 @@ export type OJProblem = Problem & {
   /** Failed formal submissions this round, counted up to 2. */
   failedSubmissions?: number;
   /** Line 500's three progressive hints: observation, invariant, steps. */
-  hints?: { zh: string[]; en: string[] } | null;
+  lingHints?: { zh: string[]; en: string[] } | null;
   similar?: SimilarProblem[];
 };
 export type SimilarProblem = {

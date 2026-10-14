@@ -96,7 +96,7 @@ export async function handleOj(
       hintEarned: failed > 0,
       failedSubmissions: failed,
       // Observation, invariant, steps: the client opens them one at a time (components/hint-ladder.tsx).
-      hints: lingHints(id),
+      lingHints: lingHints(id),
       // A nicety under the statement: it never fails the problem itself.
       similar: await similarProblems(id, p?.id, tags).catch(() => []),
       practiceRound: round,

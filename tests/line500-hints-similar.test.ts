@@ -155,8 +155,10 @@ void test('GET problems/:id serves the three hints, the round failure count and 
     (await handleOj(new Request(`https://cswork.test/api/oj/problems/${id}`), student, ['problems', id])).json();
 
   let body = await get('lc-1');
-  assert.equal(body.hints.zh.length, 3);
-  assert.equal(body.hints.en.length, 3);
+  assert.equal(body.lingHints.zh.length, 3);
+  assert.equal(body.lingHints.en.length, 3);
+  // The statement's own hints field is left alone.
+  assert.deepEqual(body.hints, []);
   assert.equal(body.failedSubmissions, 0);
   assert.equal(body.hintEarned, false);
   // Neighbours in the stop first, then a company pick; lc-27 is not related.
@@ -188,6 +190,6 @@ void test('GET problems/:id serves the three hints, the round failure count and 
 
   // Off Line 500 there is nothing to hint.
   body = await get('lc-999901');
-  assert.equal(body.hints, null);
+  assert.equal(body.lingHints, null);
   assert.equal(body.failedSubmissions, 0);
 });
