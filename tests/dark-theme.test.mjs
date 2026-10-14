@@ -130,11 +130,17 @@ test('the header toggle cycles system → light → dark and saves the pick', as
   await act(async () => reactRoot.unmount());
 });
 
-test('the root layout runs the script in <head> and renders a pinned cookie theme', () => {
+test('the root layout runs the script in <head> and leaves the theme attributes to it', () => {
   const layout = read('app/layout.tsx');
   assert.ok(/<head>\s*<script dangerouslySetInnerHTML=\{\{ __html: THEME_SCRIPT \}\} \/>/.test(layout));
   assert.ok(layout.includes("import './theme.css'"));
-  assert.ok(layout.includes('suppressHydrationWarning'));
+  // React re-renders this layout on navigation: any class / data-theme / style it owned
+  // would be diffed back to the server's value, undoing a switch made since.
+  let html = /<html\b([^>]*)>/.exec(layout)?.[1] ?? '';
+  while (/\{[^{}]*\}/.test(html)) html = html.replace(/\{[^{}]*\}/g, '');
+  const props = html.replace(/(['"]).*?\1/g, '').match(/[\w-]+/g) ?? [];
+  assert.ok(props.includes('suppressHydrationWarning'), html);
+  assert.ok(props.every((p) => p === 'lang' || p === 'suppressHydrationWarning'), html);
   assert.ok(read('components/academy.tsx').includes('<ThemeToggle />'));
 });
 
@@ -228,3 +234,4 @@ test('dark text keeps 4.5:1: tokens, generated pairs and the text mapping', () =
         assert.ok(contrast(out, REFERENCE_SURFACE) >= 4.5, `rgb(${r} ${g} ${b})`);
       }
 });
+

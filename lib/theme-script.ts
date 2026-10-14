@@ -1,8 +1,8 @@
 /**
  * Site theme: 'system' (follow the OS) by default, or a pinned 'light' / 'dark'.
- * The pick lives in localStorage; the cswork_theme cookie mirrors it so app/layout.tsx
- * renders a pinned theme into the first HTML. THEME_SCRIPT runs inline in <head>
- * before first paint, so a reader on "system" with a dark OS never sees a light flash.
+ * The pick lives in localStorage; the cswork_theme cookie mirrors it for when storage
+ * is blocked. THEME_SCRIPT runs inline in <head> before first paint, so no reader sees
+ * a light flash; the server never renders these attributes (see app/layout.tsx).
  * <html> gets `.dark` (the class every stylesheet's dark block keys off),
  * data-theme="light|dark" and a matching color-scheme.
  * No React here: the server layout imports these constants.
@@ -11,11 +11,6 @@ export type ThemePreference = 'system' | 'light' | 'dark';
 export type Theme = 'light' | 'dark';
 export const THEME_KEY = 'cswork:theme';
 export const THEME_COOKIE = 'cswork_theme';
-
-/** The theme the server can render from the cookie alone ('system' waits for the script). */
-export function cookieTheme(value: string | undefined): Theme | null {
-  return value === 'dark' || value === 'light' ? value : null;
-}
 
 /** The theme on screen right now (what THEME_SCRIPT applied); light outside a browser. */
 export function currentTheme(): Theme {
