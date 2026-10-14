@@ -1,4 +1,5 @@
 'use client';
+import { useSyncExternalStore } from 'react';
 import { usePracticeStats, type Activity, type PracticeCell } from '@/components/practice-calendar';
 
 const LEVEL = (count: number) => (count === 0 ? 0 : count === 1 ? 1 : count <= 3 ? 2 : count <= 5 ? 3 : 4);
@@ -52,5 +53,20 @@ export function ProfileHeatmap({ activity, zh }: { activity: Activity[]; zh: boo
         </div>
       </div>
     </section>
+  );
+}
+
+const noop = () => () => {};
+const localDay = (time: number) => {
+  const d = new Date(time);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+/** A date in the reader's time zone, as the heatmap counts it; blank in the server's HTML. */
+export function LocalDay({ time, className }: { time: number; className?: string }) {
+  const day = useSyncExternalStore(noop, () => localDay(time), () => '');
+  return (
+    <time dateTime={new Date(time).toISOString()} className={className}>
+      {day}
+    </time>
   );
 }

@@ -2,7 +2,7 @@ import { levelOf, problemAppHref } from '@/lib/classic-lists';
 import { problemTitle, type ProblemSummary } from '@/lib/problems';
 import { STOP_NAMES, stopHref } from '@/lib/route-stops';
 import type { publicProfile, readList } from '@/lib/server/learner-cloud';
-import { ProfileHeatmap } from './heatmap';
+import { LocalDay, ProfileHeatmap } from './heatmap';
 
 /** /u/<handle>: a learner's opt-in page. Pure of request context, so tests render it directly. */
 export function ProfileView({
@@ -97,9 +97,7 @@ export function ProfileView({
                 <li key={r.id}>
                   <span className="lists-public-number">{r.id.startsWith('lc-') ? r.id.slice(3) : 'OA'}</span>
                   <a href={problemAppHref(r.id)}>{problemTitle(p, zh ? 'zh' : 'en')}</a>
-                  <time dateTime={new Date(r.at).toISOString()} className="lists-public-count">
-                    {new Date(r.at).toISOString().slice(0, 10)}
-                  </time>
+                  <LocalDay time={r.at} className="lists-public-count" />
                   <span className="lists-public-level" data-level={level?.[0]}>
                     {level ? (zh ? level[1] : level[2]) : ''}
                   </span>

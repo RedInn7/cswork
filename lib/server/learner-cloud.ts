@@ -7,7 +7,7 @@ import { canonicalCompany, employerSlug, OTHER_COMPANY } from '@/lib/oa-company-
 import type { Person } from './auth';
 import { companyDirectory, hasHub } from './company-hub';
 import { library } from './content-library';
-import { hiddenCompanies } from './env';
+import { hiddenCompanies, shownOaSql } from './env';
 import { HttpError, json, limit, limitReader, requirePerson } from './http';
 import { mockReport } from './mock-oa';
 import { readJson } from './my-practice';
@@ -19,6 +19,7 @@ import { canSeeProblem, listProblemSummaries } from './oj-problems';
  * names its owner in the WHERE clause; a list or profile someone else owns reads as missing.
  */
 const DAY = 86400000;
+const HOUR = 3600000;
 // ponytail: flat per-learner caps keep a scripted client from growing the tables forever.
 const MOCK_ROWS = 1000;
 const LIST_MAX = 100;
@@ -39,6 +40,10 @@ function hiddenProblem(id: string, hidden = hiddenCompanies()) {
 /** Published OA or Line 500 problems only: course exercises never enter lists or reports. */
 async function publicProblem(p: Person, id: string) {
   return problemId.safeParse(id).success && !hiddenProblem(id) && (await canSeeProblem(p, id));
+}
+/** Reports and public pages need a verified address (teachers excepted), or they are a spam inlet. */
+function requireVerified(p: Person) {
+  if (!p.verified && p.role !== 'teacher') throw new HttpError(403, '请先验证邮箱');
 }
 export const monthKey = (time: number) => new Date(time).toISOString().slice(0, 7);
 /** The first month (YYYY-MM, UTC) still inside the "recent" window at `now`. */
@@ -267,13 +272,15 @@ const summary = (r: ListRow & { count: number }): ListSummary => ({
   count: r.count,
   updatedAt: r.updated_at,
 });
-const COUNT = '(SELECT COUNT(*) FROM user_list_items i WHERE i.list_id=l.id) AS count';
+/** Items a list shows: hidden companies' problems count nowhere, as in listItems. */
+const count = () =>
+  `(SELECT COUNT(*) FROM user_list_items i WHERE i.list_id=l.id${shownOaSql('i.problem_id')}) AS count`;
 
 function myLists(userId: string, problem: string | null) {
   return (
     sqlite()
       .prepare(
-        `SELECT l.*,${COUNT},EXISTS(SELECT 1 FROM user_list_items i WHERE i.list_id=l.id AND i.problem_id=?) AS has
+        `SELECT l.*,${count()},EXISTS(SELECT 1 FROM user_list_items i WHERE i.list_id=l.id AND i.problem_id=?) AS has
         FROM user_lists l WHERE l.owner_id=? ORDER BY l.updated_at DESC, l.id`,
       )
       .all(problem, userId) as (ListRow & { count: number; has: number })[]
@@ -397,6 +404,7 @@ async function handleLists(request: Request, p: Person | null, id?: string, acti
       })
       .strict()
       .parse(await readJson(request, 64000));
+    if (d.visibility === 'public') requireVerified(p);
     const keep: string[] = [];
     for (const problem of new Set(d.problemIds)) if (await publicProblem(p, problem)) keep.push(problem);
     const created = newList(p, d);
@@ -445,6 +453,7 @@ async function handleLists(request: Request, p: Person | null, id?: string, acti
     })
     .strict()
     .parse(await readJson(request, 8000));
+  if (d.visibility === 'public') requireVerified(p);
   db.prepare(
     `UPDATE user_lists SET title=COALESCE(?,title),description=COALESCE(?,description),
       visibility=COALESCE(?,visibility),updated_at=? WHERE id=? AND owner_id=?`,
@@ -495,6 +504,7 @@ async function handleProfile(request: Request, p: Person) {
   if (request.method !== 'POST') throw new HttpError(404, '接口不存在');
   await limit(p, 'profile-write', 20);
   const d = profileInput.parse(await readJson(request, 2000));
+  if (d.visible) requireVerified(p);
   const now = Date.now();
   try {
     sqlite()
@@ -561,20 +571,29 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     const stop = curatedByNumber.get(Number(/^lc-(\d+)$/.exec(s.id)?.[1]))?.sectionSlug;
     if (stop) stops.set(stop, (stops.get(stop) ?? 0) + 1);
   }
+  // The heatmap needs only "distinct problems per local day": whole UTC hours (a :30 time zone
+  // may shift an AC near midnight by a day) and opaque problem numbers, nothing finer.
+  const ordinal = new Map<string, string>();
   const activity = (
     db
       .prepare(
-        `SELECT problem_id,created_at FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'
-        AND created_at>? ORDER BY created_at DESC LIMIT 5000`,
+        `SELECT problem_id,created_at/${HOUR} AS hour FROM submissions WHERE user_id=? AND mode='judge'
+        AND status='accepted' AND created_at>? GROUP BY problem_id,hour ORDER BY hour DESC LIMIT 5000`,
       )
-      .all(profile.user_id, now - 183 * DAY) as { problem_id: string; created_at: number }[]
-  ).filter((a) => shown(a.problem_id));
-  const lists = db
-    .prepare(
-      `SELECT l.id,l.title,${COUNT} FROM user_lists l WHERE l.owner_id=? AND l.visibility='public'
-      ORDER BY l.updated_at DESC LIMIT 20`,
-    )
-    .all(profile.user_id) as { id: string; title: string; count: number }[];
+      .all(profile.user_id, now - 183 * DAY) as { problem_id: string; hour: number }[]
+  ).flatMap((a) => {
+    if (!shown(a.problem_id)) return [];
+    if (!ordinal.has(a.problem_id)) ordinal.set(a.problem_id, String(ordinal.size));
+    return [{ problem_id: ordinal.get(a.problem_id)!, created_at: a.hour * HOUR }];
+  });
+  // Counted like /u/lists/<id> shows them: only problems a guest can open.
+  const lists = (
+    db
+      .prepare(
+        `SELECT id,title FROM user_lists WHERE owner_id=? AND visibility='public' ORDER BY updated_at DESC LIMIT 20`,
+      )
+      .all(profile.user_id) as { id: string; title: string }[]
+  ).map((l) => ({ ...l, count: listItems(l.id).filter((i) => catalogue.has(i.problemId)).length }));
   return {
     handle: profile.handle,
     bio: profile.bio,
@@ -585,7 +604,7 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
       .filter(([stop]) => stops.has(stop))
       .map(([stop, total]) => ({ slug: stop, solved: stops.get(stop)!, total })),
     activity,
-    recent: solved.slice(0, 10),
+    recent: solved.slice(0, 10).map((s) => ({ id: s.id, at: s.at - (s.at % HOUR) })),
     lists,
   };
 }
@@ -666,7 +685,7 @@ async function handleReports(request: Request, p: Person | null, action?: string
   }
   requirePerson(p);
   if (request.method !== 'POST') throw new HttpError(404, '接口不存在');
-  if (!p.verified && p.role !== 'teacher') throw new HttpError(403, '请先验证邮箱');
+  requireVerified(p);
   await limit(p, 'report-write', 10);
   const db = sqlite(),
     now = Date.now();

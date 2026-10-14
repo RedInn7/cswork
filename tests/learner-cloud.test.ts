@@ -131,6 +131,14 @@ void test('lists: create, add, rename, share, fork and delete, each write checke
   assert.equal(await status(me, 'POST', `${path}/items`, { problemId: 'oa-hiddenco-1', on: true }), 404);
   const menu = await ok<{ items: { id: string; count: number; has: boolean }[] }>(me, 'GET', 'lists?problem=oa-amazon-1');
   assert.deepEqual(menu.items.map((l) => [l.id, l.count, l.has]), [[created.id, 2, true]]);
+  // A company hidden after the fact drops out of the count as it does from the list.
+  sqlite()
+    .prepare(`INSERT INTO user_list_items(list_id,problem_id,position,added_at) VALUES(?,'oa-hiddenco-1',99,1)`)
+    .run(created.id);
+  assert.equal((await ok<{ items: { count: number }[] }>(me, 'GET', 'lists')).items[0].count, 2);
+  // Public pages need a verified address; private lists do not.
+  assert.equal(await status(fresh, 'POST', 'lists', { title: 'spam', visibility: 'public' }), 403);
+  assert.equal(await status(fresh, 'POST', 'lists', { title: 'mine' }), 201);
   // Private: another learner and guests see nothing, and cannot write or fork.
   assert.equal(await status(other, 'GET', path), 404);
   assert.equal(await status(null, 'GET', path), 404);
@@ -161,6 +169,10 @@ void test('lists: create, add, rename, share, fork and delete, each write checke
 
 void test('the public profile is off by default, names nobody and counts only published problems', async () => {
   submit(me.id, 'course-x', 'accepted', now - 1000);
+  // Two ACs of one problem in one hour are one heatmap entry.
+  const hour = Math.floor(now / 3600000) * 3600000;
+  submit(me.id, 'lc-1', 'accepted', hour + 1);
+  submit(me.id, 'lc-1', 'accepted', hour + 2);
   submit(me.id, 'oa-hiddenco-1', 'accepted', now - 1000);
   const catalogue = new Map([
     ['lc-1', { difficulty: '简单' }],
@@ -181,13 +193,18 @@ void test('the public profile is off by default, names nobody and counts only pu
   assert.deepEqual(saved.profile, { handle: 'line-rider', visible: false, indexable: false, bio: 'grinding' });
   assert.equal(publicProfile('line-rider', catalogue), null, 'not public until switched on');
   assert.equal(await status(other, 'POST', 'profile', { handle: 'line-rider', visible: true }), 409);
+  assert.equal(await status(fresh, 'POST', 'profile', { handle: 'fresh-one', visible: true }), 403, 'verify first');
+  assert.equal(await status(fresh, 'POST', 'profile', { handle: 'fresh-one', visible: false }), 200);
   await ok(me, 'POST', 'profile', { handle: 'line-rider', visible: true, bio: 'grinding' });
   const page = publicProfile('line-rider', catalogue, now)!;
   assert.equal(page.handle, 'line-rider');
   assert.equal(page.indexable, false);
   assert.deepEqual(page.solved, { total: 1, easy: 1, medium: 0, hard: 0 });
   assert.deepEqual(page.recent.map((r) => r.id), ['lc-1']);
-  assert.ok(page.activity.every((a) => catalogue.has(a.problem_id)));
+  // Activity carries opaque numbers and whole hours: no problem ids or exact times for guests.
+  assert.ok(page.activity.every((a) => /^\d+$/.test(a.problem_id) && a.created_at % 3600000 === 0));
+  assert.equal(page.activity.filter((a) => a.created_at === hour).length, 1);
+  assert.ok(page.recent.every((r) => r.at % 3600000 === 0));
   assert.equal(page.stops.length, 1);
   assert.equal(JSON.stringify(page).includes('me@example.test'), false);
   assert.equal(JSON.stringify(page).includes('cloud-me'), false, 'no user id either');
