@@ -58,7 +58,7 @@ export const postVotes = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.postId, t.userId] })],
 );
-/** target: post:<id> or comment:<id>; one report per learner; cleared when a moderator acts. */
+/** target: post:<id> or comment:<id>; one report per learner; reason set to "cleared" when a moderator acts. */
 export const postReports = sqliteTable(
   'post_reports',
   {

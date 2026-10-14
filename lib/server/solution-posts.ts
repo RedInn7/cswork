@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
-import { autoTitle, isChannel, REPORTS_HIDE, targetKind } from '@/lib/community';
+import { autoTitle, isChannel, REPORT_CLEARED, REPORTS_HIDE, targetKind } from '@/lib/community';
 import { STOP_NAMES } from '@/lib/route-stops';
 import type { Person } from './auth';
 import { library } from './content-library';
@@ -95,7 +95,7 @@ const shape = (r: PostRow) => Object.assign(byline(r), { voted: !!r.voted });
 
 export const canModerate = (p: Person | null) => !!p && (p.role === 'teacher' || isCourseOwner(p));
 const reportedDown = (target: string) =>
-  `(SELECT COUNT(*) FROM post_reports r WHERE r.target=${target})>=${REPORTS_HIDE}`;
+  `(SELECT COUNT(*) FROM post_reports r WHERE r.target=${target} AND r.reason<>'${REPORT_CLEARED}')>=${REPORTS_HIDE}`;
 /** Posts tagged with a hidden company stay out like the company's own pages. */
 const hiddenTags = () => {
   const slugs = [...hiddenCompanies()].filter((s) => /^[a-z0-9-]+$/.test(s));
@@ -160,7 +160,7 @@ async function listPosts(p: Person | null, params: URLSearchParams) {
   const rows = db
     .prepare(
       `${POST},${params.get('body') === '1' ? 'sp.body' : 'substr(sp.body,1,300) AS excerpt'} ${FROM_POST}
-      WHERE ${all ? "sp.problem_id LIKE 'discuss:%'" : 'sp.problem_id=@problem'} ${tag ? 'AND sp.tag=@tag' : ''}
+      WHERE ${all ? "sp.problem_id>='discuss:' AND sp.problem_id<'discuss;'" : 'sp.problem_id=@problem'} ${tag ? 'AND sp.tag=@tag' : ''}
         AND (sp.user_id=@me OR (sp.hidden=${SHOWN} AND NOT ${reportedDown("'post:'||sp.id")}))
         AND sp.hidden<>${REMOVED}${hiddenTags()}
       ORDER BY ${order},sp.id LIMIT ${PAGE + 1} OFFSET @offset`,
@@ -234,11 +234,18 @@ export async function publicPost(id: string) {
 }
 const idOk = (value: string) => id.safeParse(value).success;
 
-/** A shown post on a visible target, for votes, comments and reports. */
+/**
+ * A post this learner may act on (vote, comment, report): shown, not reported down unless it is
+ * their own, not tagged with a hidden company, on a visible target. As readPost sees it, so a
+ * write never lands on a post its reply then reads as missing.
+ */
 async function openPost(p: Person, postId: string) {
   const row = sqlite()
-    .prepare(`SELECT problem_id AS problemId,user_id AS userId FROM solution_posts WHERE id=? AND hidden=${SHOWN}`)
-    .get(postId) as { problemId: string; userId: string } | undefined;
+    .prepare(
+      `SELECT sp.problem_id AS problemId,sp.user_id AS userId FROM solution_posts sp
+      WHERE sp.id=@id AND sp.hidden=${SHOWN} AND (sp.user_id=@me OR NOT ${reportedDown("'post:'||sp.id")})${hiddenTags()}`,
+    )
+    .get({ id: postId, me: p.id }) as { problemId: string; userId: string } | undefined;
   if (!row || !(await visibleTarget(p, row.problemId))) throw new HttpError(404, '题解不存在');
   return row;
 }
@@ -253,7 +260,10 @@ async function report(p: Person, target: string, authorId: string, request: Requ
   return json({ reported: true });
 }
 
-/** hide / unhide flips between shown and moderated (an author's removal stays); any action clears the reports. */
+/**
+ * hide / unhide flips between shown and moderated (an author's removal stays); any action clears
+ * the reports (kept, marked cleared, so the same readers cannot report it down again).
+ */
 function moderate(p: Person, kind: 'post' | 'comment', targetId: string, action: string) {
   if (!['hide', 'unhide', 'dismiss'].includes(action)) throw new HttpError(404, '题解接口不存在');
   requireModerator(p);
@@ -265,7 +275,7 @@ function moderate(p: Person, kind: 'post' | 'comment', targetId: string, action:
   }
   const row = db.prepare(`SELECT hidden FROM ${table} WHERE id=?`).get(targetId) as { hidden: number } | undefined;
   if (!row) throw new HttpError(404, kind === 'post' ? '题解不存在' : '评论不存在');
-  db.prepare('DELETE FROM post_reports WHERE target=?').run(`${kind}:${targetId}`);
+  db.prepare('UPDATE post_reports SET reason=? WHERE target=?').run(REPORT_CLEARED, `${kind}:${targetId}`);
   auditStatement(p, `${kind}.${action}`, targetId).run();
   return json({ id: targetId, hidden: row.hidden });
 }
@@ -288,7 +298,7 @@ const ITEM_POST = `SELECT 'post' AS kind,sp.id,sp.id AS postId,sp.problem_id AS 
 const ITEM_COMMENT = `SELECT 'comment' AS kind,c.id,c.post_id AS postId,sp.problem_id AS problemId,sp.title,
   substr(c.body,1,600) AS excerpt,COALESCE(u.name,'') AS author,c.hidden,c.created_at AS createdAt`;
 const REPORTS = `WITH r AS (SELECT target,COUNT(*) AS reports,group_concat(DISTINCT reason) AS reasons,
-  MAX(created_at) AS lastAt FROM post_reports GROUP BY target)`;
+  MAX(created_at) AS lastAt FROM post_reports WHERE reason<>'${REPORT_CLEARED}' GROUP BY target)`;
 
 /** The teacher view's queue: reported posts and comments first, then the latest ones. */
 async function moderationQueue(p: Person) {

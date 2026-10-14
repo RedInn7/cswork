@@ -121,6 +121,8 @@ void test('targets and titles', () => {
   assert.equal(targetKind('q:tell-me'), 'q');
   assert.equal(autoTitle('\n## **STAR** answer: the [conflict](x)\nmore'), 'STAR answer: the conflict');
   assert.equal(autoTitle('x'.repeat(100)).length, 80);
+  assert.equal(autoTitle(' 👍👍 \n!!'), '👍👍 !!', 'only emoji: the body itself');
+  assert.equal(autoTitle('[](https://x.test)'), '[](https://x.test)');
 });
 
 void test('threads: channels read signed out, writes need a verified account and a known company tag', async () => {
@@ -161,6 +163,12 @@ void test('three reports take a thread down for everyone but its author until a 
   const { post } = await ok(me, 'POST', 'oj/posts', { problemId: 'discuss:site', title: 'Buy cheap pills', body: 'spam' });
   for (const p of others.slice(0, 3)) await ok(p, 'POST', `oj/posts/${post.id}/report`, { reason: 'spam' });
   assert.equal((await call(others[3], 'GET', `oj/posts/${post.id}`)).status, 404);
+  // Nothing lands on a post that reads as missing: no comment saved, no vote counted.
+  assert.equal((await call(others[3], 'POST', `oj/posts/${post.id}/comments`, { body: 'still here' })).status, 404);
+  assert.equal((await call(others[3], 'POST', `oj/posts/${post.id}/vote`, { on: true })).status, 404);
+  const landed = sqlite().prepare('SELECT (SELECT COUNT(*) FROM post_comments WHERE post_id=@id)+(SELECT COUNT(*) FROM post_votes WHERE post_id=@id)');
+  assert.equal(landed.pluck().get({ id: post.id }), 0);
+  assert.equal((await call(me, 'POST', `oj/posts/${post.id}/comments`, { body: 'context' })).status, 201, 'its author still can');
   assert.equal((await ok(null, 'GET', 'oj/posts?problem=discuss:site')).items.length, 0);
   assert.equal((await ok(me, 'GET', 'oj/posts?problem=discuss:site')).items.length, 1, 'the author still sees it');
   assert.equal((await call(teacher, 'GET', `oj/posts/${post.id}`)).status, 200);
@@ -168,6 +176,18 @@ void test('three reports take a thread down for everyone but its author until a 
   assert.ok(queue.reported.some((i: { id: string }) => i.id === post.id), 'threads reach the queue');
   await ok(teacher, 'POST', `oj/posts/${post.id}/dismiss`, {});
   assert.equal((await ok(null, 'GET', 'oj/posts?problem=discuss:site')).items.length, 1);
+  // The same three cannot take it down again; three new reports after the decision can.
+  for (const p of others.slice(0, 3)) await ok(p, 'POST', `oj/posts/${post.id}/report`, { reason: 'spam' });
+  assert.equal((await ok(null, 'GET', 'oj/posts?problem=discuss:site')).items.length, 1);
+  assert.equal((await ok(teacher, 'GET', 'oj/posts/moderation')).reported.some((i: { id: string }) => i.id === post.id), false);
+  await ok(others[3], 'POST', `oj/posts/${post.id}/report`, { reason: 'spam' });
+  assert.equal((await ok(teacher, 'GET', 'oj/posts/moderation')).reported.find((i: { id: string }) => i.id === post.id)?.reports, 1);
+  await ok(teacher, 'POST', `oj/posts/${post.id}/dismiss`, {});
+  // Every channel at once reads through the problem_id index, not a scan of every solution.
+  const plan = sqlite()
+    .prepare(`EXPLAIN QUERY PLAN SELECT id FROM solution_posts sp WHERE sp.problem_id>='discuss:' AND sp.problem_id<'discuss;'`)
+    .all() as { detail: string }[];
+  assert.equal(plan.some((r) => /^SCAN sp$/.test(r.detail)), false, JSON.stringify(plan));
 });
 
 void test('answers to questions and comments on experiences take their first line as a title', async () => {
@@ -178,6 +198,8 @@ void test('answers to questions and comments on experiences take their first lin
   assert.equal((await ok(null, 'GET', 'oj/posts?problem=q:tell-me-conflict&body=1')).items[0].body.includes('Task'), true);
   await ok(others[0], 'POST', 'oj/posts', { problemId: 'exp:amz-1', body: 'Thanks, same loop for me.' });
   assert.equal((await ok(null, 'GET', 'oj/posts?problem=exp:amz-1')).items.length, 1);
+  const thumbs = await ok(others[1], 'POST', 'oj/posts', { problemId: 'exp:amz-2', body: '👍👍' });
+  assert.equal(thumbs.post.title, '👍👍', 'no title box, so never "please add a title"');
   assert.equal((await call(me, 'POST', 'oj/posts', { problemId: 'exp:member.AAAAAAAAAAAA', body: 'x' })).status, 404);
   // A Line 500 stop tags a solution with its technique.
   assert.equal((await call(me, 'POST', 'oj/posts', { problemId: 'oa-amazon-1', title: 't', body: 'b', tag: 'amazon' })).status, 400);
@@ -245,6 +267,9 @@ void test('list plaza: saves and copies count, hot and new orders, title search'
   for (const p of others.slice(1, 3)) await ok(p, 'POST', `oj/lists/${b}/star`, { on: true });
   await ok(others[1], 'POST', `oj/lists/${b}/star`, { on: true });
   await ok(others[3], 'POST', `oj/lists/${a}/fork`, {});
+  // Copies count each other verified account once: not the owner's own, not repeats, not unverified ones.
+  for (const p of [me, me, others[3], fresh]) await ok(p, 'POST', `oj/lists/${a}/fork`, {});
+  assert.equal((await ok(null, 'GET', `oj/lists/${a}`)).forks, 1);
   const read = await ok(others[1], 'GET', `oj/lists/${b}`);
   assert.deepEqual([read.stars, read.forks, read.starred], [2, 0, true]);
   assert.deepEqual((await ok(others[1], 'GET', 'oj/lists/starred')).items.map((l: { id: string }) => l.id), [b]);
