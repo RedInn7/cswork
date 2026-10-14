@@ -431,3 +431,18 @@ void test('private rooms: picked, drawn or replayed problems, invite codes, duel
   assert.ok(mine.mine.some((r) => r.id === picked.id));
   assert.equal(mine.me?.name, 'Stan');
 });
+
+void test('a public profile shows the contest curve and badges only once the learner opts in', async () => {
+  const { publicProfile } = await import('../lib/server/learner-cloud');
+  await ok(amy, 'POST', 'profile', { handle: 'amy-races', visible: true });
+  const plain = publicProfile('amy-races', new Map())!;
+  assert.deepEqual(plain.contest, []);
+  assert.equal(plain.badges.some((b) => b.group === 'contest'), false);
+  await ok(amy, 'POST', 'profile', { handle: 'amy-races', visible: true, showContest: true });
+  const shown = publicProfile('amy-races', new Map())!;
+  assert.deepEqual(shown.contest.map((c) => c.week), [WEEK]);
+  assert.ok(shown.badges.some((b) => b.group === 'contest'));
+  // Hiding the page drops the opt-in with it.
+  await ok(amy, 'POST', 'profile', { handle: 'amy-races', visible: false, showContest: true });
+  assert.equal(sqlite().prepare('SELECT show_contest FROM user_profiles WHERE user_id=?').pluck().get(amy.id), 0);
+});

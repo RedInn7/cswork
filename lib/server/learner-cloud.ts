@@ -573,6 +573,7 @@ const profileInput = z
       .refine((h) => !RESERVED.has(h) && !h.includes('--')),
     visible: z.boolean(),
     indexable: z.boolean().default(false),
+    showContest: z.boolean().default(false),
     bio: z.string().trim().max(160).default(''),
   })
   .strict();
@@ -581,6 +582,7 @@ type ProfileRow = {
   handle: string;
   visible: number;
   indexable: number;
+  show_contest: number;
   bio: string;
 };
 function myProfile(userId: string) {
@@ -588,7 +590,7 @@ function myProfile(userId: string) {
     .prepare('SELECT * FROM user_profiles WHERE user_id=?')
     .get(userId) as ProfileRow | undefined;
   return r
-    ? { handle: r.handle, visible: !!r.visible, indexable: !!r.indexable, bio: r.bio }
+    ? { handle: r.handle, visible: !!r.visible, indexable: !!r.indexable, showContest: !!r.show_contest, bio: r.bio }
     : null;
 }
 async function handleProfile(request: Request, p: Person) {
@@ -604,11 +606,12 @@ async function handleProfile(request: Request, p: Person) {
   try {
     sqlite()
       .prepare(
-        `INSERT INTO user_profiles(user_id,handle,visible,indexable,bio,created_at,updated_at) VALUES(?,?,?,?,?,?,?)
+        `INSERT INTO user_profiles(user_id,handle,visible,indexable,show_contest,bio,created_at,updated_at)
+        VALUES(?,?,?,?,?,?,?,?)
         ON CONFLICT(user_id) DO UPDATE SET handle=excluded.handle,visible=excluded.visible,
-          indexable=excluded.indexable,bio=excluded.bio,updated_at=excluded.updated_at`,
+          indexable=excluded.indexable,show_contest=excluded.show_contest,bio=excluded.bio,updated_at=excluded.updated_at`,
       )
-      .run(p.id, d.handle, +d.visible, +(d.visible && d.indexable), d.bio, now, now);
+      .run(p.id, d.handle, +d.visible, +(d.visible && d.indexable), +(d.visible && d.showContest), d.bio, now, now);
   } catch (error) {
     if ((error as { code?: string }).code === 'SQLITE_CONSTRAINT_UNIQUE')
       throw new HttpError(409, '这个主页名已被占用');
@@ -726,7 +729,8 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
           WHERE f.follower_id=@me) AS following`,
     )
     .get({ me: profile.user_id }) as { followers: number; following: number };
-  const contest = ratingHistory(profile.user_id);
+  // Opt-in: each weekly's rank and rating match one row of that weekly's public scoreboard.
+  const contest = profile.show_contest ? ratingHistory(profile.user_id) : [];
   return {
     handle: profile.handle,
     bio: profile.bio,
