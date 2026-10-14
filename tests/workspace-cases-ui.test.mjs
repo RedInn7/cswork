@@ -88,6 +88,9 @@ test('custom cases, the remembered topics toggle and AC standing', async () => {
   const posts = [];
   const statsUrls = [];
   let verdict = 'run';
+  // The first statement load waits until the test releases it.
+  let release;
+  let held = new Promise((r) => (release = r));
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url, init) => {
     if (url.endsWith('/submissions') && init?.method === 'POST') {
@@ -129,7 +132,7 @@ test('custom cases, the remembered topics toggle and AC standing', async () => {
         ...base,
         status: 'accepted',
         passed: 1,
-        runtimeMs: 25,
+        runtimeMs: 25.4,
         cases: [{ ordinal: 0, status: 'accepted', hidden: true }],
       });
     }
@@ -141,6 +144,10 @@ test('custom cases, the remembered topics toggle and AC standing', async () => {
       return Response.json({ items: [], nextCursor: null });
     if (url.includes('/status'))
       return Response.json({ available: true, languageVersions: {} });
+    if (held) {
+      await held;
+      held = null;
+    }
     return Response.json(problem);
   };
   let root = createRoot(document.getElementById('root'));
@@ -189,17 +196,22 @@ test('custom cases, the remembered topics toggle and AC standing', async () => {
   };
   const stored = () =>
     JSON.parse(localStorage.getItem('cswork:cases:student:acm-1') || 'null');
+  const settingsKey = 'cswork:editor:settings:student';
+  localStorage.setItem(settingsKey, JSON.stringify({ fontSize: 16, keymap: 'vim' }));
   try {
     await mount();
-    // Topics: hidden by default, company tags shown; the toggle is remembered.
+    // Topics: hidden by default; the toggle is remembered, and a click while the
+    // statement still loads keeps the other saved editor settings.
     assert.equal(document.querySelector('#problem-topics') === null, true);
-    assert.equal(document.querySelector('.cs-company-tags') !== null, true);
     await click(button('Topics'));
     assert.equal(document.querySelector('#problem-topics').textContent, '数学');
-    assert.equal(
-      JSON.parse(localStorage.getItem('cswork:editor:settings:student')).hideTags,
-      false,
-    );
+    const saved = JSON.parse(localStorage.getItem(settingsKey));
+    assert.equal(saved.hideTags === false && saved.fontSize === 16 && saved.keymap === 'vim', true);
+    release();
+    await settle();
+    // Loaded: company tags shown, topics still shown.
+    assert.equal(document.querySelector('.cs-company-tags') !== null, true);
+    assert.equal(document.querySelector('#problem-topics') !== null, true);
 
     // One blank case to start; type, copy the example into case 2, run case 2.
     await click(button('Custom input'));
@@ -247,7 +259,8 @@ test('custom cases, the remembered topics toggle and AC standing', async () => {
     const banner = document.querySelector('.cs-accepted-banner').textContent;
     assert.match(banner, /30 of 40 people solved it \(75%\)/);
     assert.match(banner, /Faster than 87% of people who solved it in Python 3/);
-    assert.match(statsUrls.at(-1), /problem-stats\/acm-1\?language=python&runtimeMs=25$/);
+    // Unrounded, so sub-ms differences are compared on the server.
+    assert.match(statsUrls.at(-1), /problem-stats\/acm-1\?language=python&runtimeMs=25\.4$/);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

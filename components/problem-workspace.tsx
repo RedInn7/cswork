@@ -1315,7 +1315,9 @@ function Workspace({
                   }
                   onClick={() =>
                     changeSettings({
-                      ...settings,
+                      // Before the problem loads, settings are still the defaults:
+                      // merge onto the stored ones instead of overwriting them.
+                      ...(loadedProblem ? settings : readEditorSettings(userId)),
                       hideTags: !settings.hideTags,
                     })
                   }
@@ -2752,7 +2754,8 @@ function AcceptedDialog({
   useEffect(() => {
     const controller = new AbortController();
     const query = new URLSearchParams({ language });
-    if (runtimeMs != null) query.set('runtimeMs', String(Math.round(runtimeMs)));
+    // Unrounded: C++/Go runs crowd 1-5 ms, and rounding would pass slower runs as faster.
+    if (runtimeMs != null) query.set('runtimeMs', String(runtimeMs));
     ojRequest<Standing>(
       `problem-stats/${encodeURIComponent(problemId)}?${query}`,
       undefined,
