@@ -4,6 +4,7 @@ import { problemTitle, type ProblemSummary } from '@/lib/problems';
 import { STOP_NAMES, stopHref } from '@/lib/route-stops';
 import type { followPeople } from '@/lib/server/follows';
 import type { publicProfile, readList } from '@/lib/server/learner-cloud';
+import type { profileCertificates } from '@/lib/server/certificates';
 import { FollowButton } from '@/components/follow-button';
 import { ListStar } from '@/components/list-star';
 import { LocalDay, ProfileHeatmap } from './heatmap';
@@ -16,10 +17,13 @@ export function ProfileView({
   profile,
   catalogue,
   zh,
+  certificates = [],
 }: {
   profile: NonNullable<ReturnType<typeof publicProfile>>;
   catalogue: ReadonlyMap<string, ProblemSummary>;
   zh: boolean;
+  /** Course completion certificates (lib/server/certificates.ts). */
+  certificates?: ReturnType<typeof profileCertificates>;
 }) {
   const t = (a: string, b: string) => (zh ? a : b);
   const { solved } = profile;
@@ -196,6 +200,24 @@ export function ProfileView({
               );
             })}
           </ol>
+        </section>
+      )}
+
+      {!!certificates.length && (
+        <section aria-labelledby="learner-certificates">
+          <h2 id="learner-certificates" className="lists-public-h2">
+            {t('结业证书', 'Certificates')}
+          </h2>
+          <ul className="lists-public-board">
+            {certificates.map((c) => (
+              <li key={c.id}>
+                <a href={`/certificate/${c.id}`}>
+                  <strong>{c.course}</strong>
+                  <LocalDay time={c.issuedAt} className="lists-public-count" />
+                </a>
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 

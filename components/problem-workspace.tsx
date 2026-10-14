@@ -1829,6 +1829,7 @@ function Workspace({
                 hints={problem.lingHints}
                 ladder={hintLadder}
                 english={uiEnglish}
+                stop={problem.stop}
               />
             )}
             {/* Off unless the server has AI configured; never during a mock OA or on SQL problems. */}

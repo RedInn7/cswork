@@ -22,6 +22,7 @@ import {
 } from './ui/dialog';
 import { LessonMarkdown, formText } from './lms-shared';
 import { MediaPicker } from './media-admin';
+import { COURSE_CATEGORIES, COURSE_LEVELS } from '@/lib/course-catalog';
 
 type CourseDetail = {
   course: LmsCourse;
@@ -175,6 +176,8 @@ export function CourseAdmin({
                         summary: fd.get('summary'),
                         position: Number(fd.get('position')),
                         published: fd.get('published') === 'on',
+                        category: formText(fd, 'category'),
+                        level: formText(fd, 'level'),
                       });
                     });
                   }}
@@ -210,6 +213,42 @@ export function CourseAdmin({
                       required
                     />
                   </label>
+                  <label htmlFor="course-admin-category">
+                    {t('目录分类', 'Catalog category')}
+                    <NativeSelect
+                      id="course-admin-category"
+                      name="category"
+                      defaultValue={detail.course.category ?? ''}
+                    >
+                      <NativeSelectOption value="">{t('未分类', 'None')}</NativeSelectOption>
+                      {COURSE_CATEGORIES.map(([value, zh, en]) => (
+                        <NativeSelectOption key={value} value={value}>
+                          {t(zh, en)}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                  </label>
+                  <label htmlFor="course-admin-level">
+                    {t('难度级别', 'Level')}
+                    <NativeSelect
+                      id="course-admin-level"
+                      name="level"
+                      defaultValue={detail.course.level ?? ''}
+                    >
+                      <NativeSelectOption value="">{t('未设置', 'None')}</NativeSelectOption>
+                      {COURSE_LEVELS.map(([value, zh, en]) => (
+                        <NativeSelectOption key={value} value={value}>
+                          {t(zh, en)}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                  </label>
+                  <p className="muted">
+                    {t(
+                      '每门课第一个已发布的章节对学员免费试读。',
+                      'The first published lesson of every course is a free preview for students.',
+                    )}
+                  </p>
                   <label className="checkbox-label">
                     <input
                       name="published"

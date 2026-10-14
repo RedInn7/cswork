@@ -4,10 +4,13 @@ import { useEffect, useId, useMemo, useState } from 'react';
 import {
   createDemoTrace,
   isDemoKind,
+  type DemoGraph,
   type DemoKind,
 } from '@/lib/algorithm-demo';
-import { useT } from '@/lib/i18n';
-import '@/app/algorithm-demo.css';
+import { useLocale, useT } from '@/lib/i18n';
+
+// No CSS import here, so pure node tests can render pages that embed a demo:
+// app/algorithm-demo.css is imported by components/lms-shared.tsx and app/topics/layout.tsx.
 
 export function AlgorithmDemo({ kind }: { kind: string }) {
   const t = useT();
@@ -23,8 +26,9 @@ export function AlgorithmDemo({ kind }: { kind: string }) {
   return <DemoPlayer key={kind} kind={kind} />;
 }
 function DemoPlayer({ kind }: { kind: DemoKind }) {
-  const t = useT();
-  const trace = useMemo(() => createDemoTrace(kind), [kind]);
+  const t = useT(),
+    english = useLocale() === 'en';
+  const trace = useMemo(() => createDemoTrace(kind, english), [kind, english]);
   const [step, setStep] = useState(0),
     [playing, setPlaying] = useState(false),
     [speed, setSpeed] = useState(1200);
@@ -65,8 +69,10 @@ function DemoPlayer({ kind }: { kind: DemoKind }) {
         <h3 id={titleId}>{trace.title}</h3>
         <p>{trace.question}</p>
       </header>
+      {frame.graph && <DemoGraphView graph={frame.graph} />}
+      {frame.cells.length > 0 && (
       <div
-        className={`algorithm-demo-cells ${trace.columns ? 'algorithm-demo-grid' : ''}`}
+        className={`algorithm-demo-cells ${trace.columns ? 'algorithm-demo-grid' : ''} ${(trace.columns ?? 0) >= 6 ? 'is-dense' : ''}`}
         style={
           trace.columns
             ? {
@@ -90,6 +96,7 @@ function DemoPlayer({ kind }: { kind: DemoKind }) {
           </div>
         ))}
       </div>
+      )}
       <div className="algorithm-demo-legend">
         <span>
           <i className="is-active" />
@@ -106,14 +113,14 @@ function DemoPlayer({ kind }: { kind: DemoKind }) {
       </div>
       {frame.queue && (
         <div className="algorithm-demo-queue">
-          <strong>{t('队首 → 队尾', 'Front → back')}</strong>
+          <strong>{trace.queueLabel ?? t('队首 → 队尾', 'Front → back')}</strong>
           <div>
             {frame.queue.length ? (
               frame.queue.map((item, i) => (
                 <span key={`${item}:${i}`}>{item}</span>
               ))
             ) : (
-              <span>{t('空队列', 'Empty queue')}</span>
+              <span>{t('空', 'Empty')}</span>
             )}
           </div>
         </div>
@@ -209,5 +216,79 @@ function DemoPlayer({ kind }: { kind: DemoKind }) {
         {trace.invariant}
       </p>
     </section>
+  );
+}
+
+const R = 4.2;
+/**
+ * A frame's graph or tree in SVG. Arrowheads are drawn per edge (no shared marker), so they
+ * take the edge's state colour; the caption below narrates each step for screen readers.
+ */
+function DemoGraphView({ graph }: { graph: DemoGraph }) {
+  const t = useT();
+  const at = new Map(graph.nodes.map((n) => [n.id, n]));
+  const stateWord = (state?: string) =>
+    state === 'active'
+      ? t('，当前', ', current')
+      : state === 'answer'
+        ? t('，结果', ', result')
+        : state === 'visited'
+          ? t('，已处理', ', done')
+          : '';
+  return (
+    <svg
+      className="algorithm-demo-graph"
+      viewBox={`0 0 ${graph.width} ${graph.height}`}
+      role="img"
+      aria-label={
+        t('图：', 'Graph: ') +
+        graph.nodes
+          .map((n) => `${n.label || n.note || n.id}${n.label && n.note ? ` (${n.note})` : ''}${stateWord(n.state)}`)
+          .join(t('；', '; '))
+      }
+    >
+      {graph.edges.map((e) => {
+        const a = at.get(e.from)!,
+          b = at.get(e.to)!;
+        const len = Math.hypot(b.x - a.x, b.y - a.y) || 1,
+          ux = (b.x - a.x) / len,
+          uy = (b.y - a.y) / len;
+        // The line runs border to border, so arrowheads land on the circle's edge.
+        const x1 = a.x + ux * R,
+          y1 = a.y + uy * R,
+          x2 = b.x - ux * (R + 0.4),
+          y2 = b.y - uy * (R + 0.4);
+        return (
+          <g key={`${e.from}>${e.to}`} className={`algorithm-demo-edge ${e.state ? `is-${e.state}` : ''}`}>
+            <line x1={x1} y1={y1} x2={x2} y2={y2} />
+            {e.directed && (
+              <polygon
+                points={`${x2},${y2} ${x2 - ux * 2.6 - uy * 1.5},${y2 - uy * 2.6 + ux * 1.5} ${x2 - ux * 2.6 + uy * 1.5},${y2 - uy * 2.6 - ux * 1.5}`}
+              />
+            )}
+            {e.label && (
+              <text x={(a.x + b.x) / 2 - uy * 3} y={(a.y + b.y) / 2 + ux * 3} dominantBaseline="middle" textAnchor="middle">
+                {e.label}
+              </text>
+            )}
+          </g>
+        );
+      })}
+      {graph.nodes.map((n) => (
+        <g key={n.id} className={`algorithm-demo-node ${n.state ? `is-${n.state}` : ''}`}>
+          <circle cx={n.x} cy={n.y} r={n.label ? R : R * 0.6} />
+          {n.label && (
+            <text x={n.x} y={n.y} dominantBaseline="central" textAnchor="middle">
+              {n.label}
+            </text>
+          )}
+          {n.note && (
+            <text className="algorithm-demo-note" x={n.x} y={n.y + R + 3.2} dominantBaseline="middle" textAnchor="middle">
+              {n.note}
+            </text>
+          )}
+        </g>
+      ))}
+    </svg>
   );
 }

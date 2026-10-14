@@ -37,6 +37,8 @@ export type OJProblem = Problem & {
   lingHints?: { zh: string[]; en: string[] } | null;
   /** Line 500 editorial (lib/content/ling-editorials.json), shown once solved or after a confirm. */
   lingEditorial?: LingEditorial | null;
+  /** The problem's Line 500 stop slug, null off the line. */
+  stop?: string | null;
   similar?: SimilarProblem[];
 };
 /** Approaches from brute force to best; `verified`: every approach passed the judge's tests. */

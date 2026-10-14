@@ -113,7 +113,9 @@ try {
     status: 400,
   });
   assert.equal(ab.courses[0].has_access, false);
-  await req('lessons/00-overview', { user: a, status: 403 });
+  // The first lesson is the free preview; the next one needs the course.
+  assert.ok((await req('lessons/00-overview', { user: a })).body.length > 1000);
+  await req('lessons/00-overview-architecture', { user: a, status: 403 });
   const grant = await req('teacher/grants', {
     user: teacher,
     data: { email: a.email, courseId: 'gomall' },
@@ -124,7 +126,7 @@ try {
     data: { email: unverified.email, courseId: 'gomall' },
     status: 201,
   });
-  await req('lessons/00-overview', { user: unverified, status: 403 });
+  await req('lessons/00-overview-architecture', { user: unverified, status: 403 });
   const lesson = await req('lessons/00-overview', { user: a });
   assert.ok(lesson.body.length > 1000);
   assert.equal('stream_uid' in lesson, false);
@@ -318,7 +320,7 @@ try {
   });
   await req('releases/' + release.id + '/read', { user: a, data: {} });
   await req('teacher/revoke', { user: teacher, data: { id: grant.id } });
-  await req('lessons/00-overview', { user: a, status: 403 });
+  await req('lessons/00-overview-architecture', { user: a, status: 403 });
   // Self-hosted code never trusts identity headers, even without a Sites gateway.
   const spoof = await fetch(base + '/api/teacher', {
     headers: {

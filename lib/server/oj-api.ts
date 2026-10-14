@@ -18,6 +18,7 @@ import { handleMyPractice, problemVote } from './my-practice';
 import { handleAiTutor, isAiRoute } from './ai-tutor';
 import { handleAiInterview } from './ai-interviewer';
 import { handleAiAsk } from './ai-ask';
+import { handleAiResume } from './ai-resume';
 import { problemStats } from './problem-stats';
 import { handleDrafts, handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { handleSolutionPosts } from './solution-posts';
@@ -26,7 +27,7 @@ import { handleStudyGroups } from './study-groups';
 import { handleFollows } from './follows';
 import { handleApiTokens } from './api-tokens';
 import { dailyProblem } from './daily-problem';
-import { curatedHint } from '@/lib/ling-curated';
+import { curatedByNumber, curatedHint } from '@/lib/ling-curated';
 import { companyTagIndex } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
 import {
@@ -149,6 +150,8 @@ export async function handleOj(
       // learner reading the raw response in a custom mock OA with lc- problems still sees the code.
       // ponytail: move it to GET problems/<id>/editorial, fetched after the confirm, if that matters.
       lingEditorial: lingEditorial(id),
+      // Its Line 500 stop, so the hint ladder can link the stop's animation (/topics/<stop>).
+      stop: curatedByNumber.get(Number(/^lc-(\d+)$/.exec(id)?.[1]))?.sectionSlug ?? null,
       // A nicety under the statement: it never fails the problem itself.
       similar: await similarProblems(id, p?.id, tags).catch(() => []),
       practiceRound: round,
@@ -197,6 +200,8 @@ export async function handleOj(
     return handleAiInterview(request, p, id);
   // Questions answered from the site's own pages (lib/server/ai-ask.ts).
   if (resource === 'ai' && id === 'ask' && !action) return handleAiAsk(request, p);
+  // The resume review on /career/resume (lib/server/ai-resume.ts).
+  if (resource === 'ai' && id === 'resume' && !action) return handleAiResume(request, p);
   if (resource === 'points' && !action) return handlePoints(request, p, id);
   if (request.method === 'GET') {
     if (resource === 'library') {

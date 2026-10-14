@@ -40,6 +40,12 @@ import {
   DialogDescription,
 } from './ui/dialog';
 import { SelectionAsk } from './command-palette';
+import {
+  COURSE_CATEGORIES,
+  COURSE_LEVELS,
+  catalogLabel,
+  filterCourses,
+} from '@/lib/course-catalog';
 export type Navigate = (view: string, extra?: Record<string, string>) => void;
 export function CourseList({
   boot,
@@ -60,7 +66,19 @@ export function CourseList({
     count = (n: number, zh: string, en: string) =>
       `${n} ${t(zh, n === 1 ? en : en + 's')}`;
   const [busy, setBusy] = useState(false),
-    [error, setError] = useState('');
+    [error, setError] = useState(''),
+    [filter, setFilter] = useState({ category: '', level: '' }),
+    // Certificates listed on the public profile, after a change made on this page.
+    [onProfile, setOnProfile] = useState<Record<string, boolean>>({});
+  const listed = boot.courses.filter((c) =>
+    knowledge ? c.id === INTERVIEW_COURSE_ID : c.id !== INTERVIEW_COURSE_ID,
+  );
+  // Only the categories and levels some course has: no filter that always comes up empty.
+  const facets = [
+    ['category', t('分类', 'Category'), COURSE_CATEGORIES],
+    ['level', t('级别', 'Level'), COURSE_LEVELS],
+  ] as const;
+  const shown = filterCourses(listed, filter);
   return (
     <>
       <Heading
@@ -79,16 +97,48 @@ export function CourseList({
             : t('课程讲义、视频与配套练习。', 'Course handouts, videos and exercises.')
         }
       />
-      {boot.courses
-        .filter((c) =>
-          knowledge
-            ? c.id === INTERVIEW_COURSE_ID
-            : c.id !== INTERVIEW_COURSE_ID,
-        )
+      {!knowledge &&
+        listed.some((c) => c.category || c.level) && (
+          <div className="course-filters">
+            {facets.map(([key, label, options]) => {
+              const present = options.filter(([value]) => listed.some((c) => c[key] === value));
+              return (
+                present.length > 0 && (
+                  <div className="course-filter-group" role="group" aria-label={label} key={key}>
+                    <span aria-hidden="true">{label}</span>
+                    {[['', t('全部', 'All')] as const, ...present.map(([value, zh, en]) => [value, t(zh, en)] as const)].map(
+                      ([value, text]) => (
+                        <button
+                          type="button"
+                          key={value || 'all'}
+                          className="course-filter-chip"
+                          aria-pressed={filter[key] === value}
+                          onClick={() => setFilter((f) => ({ ...f, [key]: value }))}
+                        >
+                          {text}
+                        </button>
+                      ),
+                    )}
+                  </div>
+                )
+              );
+            })}
+          </div>
+        )}
+      {!knowledge && listed.length > 0 && !shown.length && (
+        <div className="quiet-empty course-filter-empty">
+          <p>{t('没有符合筛选条件的课程。', 'No course matches these filters.')}</p>
+          <Button variant="outline" onClick={() => setFilter({ category: '', level: '' })}>
+            {t('清除筛选', 'Clear filters')}
+          </Button>
+        </div>
+      )}
+      {shown
         .map((c) => {
           const done = c.lessons.filter((l) =>
             boot.progress.some((p) => p.lesson_id === l.id && p.completed),
           ).length;
+          const certificate = boot.certificates?.find((x) => x.courseId === c.id);
           return (
             <section className="course-detail" key={c.id}>
               <div className="course-detail-head">
@@ -98,6 +148,14 @@ export function CourseList({
                       ? t('SDE · 算法知识', 'SDE · Algorithms')
                       : t('SDE · 系列课程', 'SDE · Course series')}
                   </span>
+                  {[c.category, c.level].map(
+                    (value) =>
+                      catalogLabel(value, locale === 'zh') && (
+                        <span className="course-badge" key={value}>
+                          {catalogLabel(value, locale === 'zh')}
+                        </span>
+                      ),
+                  )}
                   <h2>{c.title}</h2>
                   <p>{c.summary}</p>
                   <div className="course-meta">
@@ -137,6 +195,44 @@ export function CourseList({
                           c.lessons.length ? (done / c.lessons.length) * 100 : 0
                         }
                       />
+                      {certificate && (
+                        <a className="course-certificate-link" href={`/certificate/${certificate.id}`}>
+                          {t('查看结业证书', 'View your certificate')}
+                          <ArrowRight size={14} aria-hidden="true" />
+                        </a>
+                      )}
+                      {certificate && (
+                        // Off by default: the certificate shows the account name, a public profile never does.
+                        <label className="course-certificate-share">
+                          <input
+                            type="checkbox"
+                            disabled={busy}
+                            checked={onProfile[certificate.id] ?? !!certificate.onProfile}
+                            onChange={async (e) => {
+                              const on = e.target.checked;
+                              setBusy(true);
+                              setError('');
+                              try {
+                                await api(`certificates/${certificate.id}`, { onProfile: on });
+                                setOnProfile((m) => ({ ...m, [certificate.id]: on }));
+                              } catch (err) {
+                                setError((err as Error).message);
+                              } finally {
+                                setBusy(false);
+                              }
+                            }}
+                          />
+                          <span>
+                            {t('在公开主页展示', 'Show on my public profile')}
+                            <small>
+                              {t(
+                                '访客可从主页打开证书，证书上显示你的账号名称。',
+                                'Visitors can open it from your profile; it shows your account name.',
+                              )}
+                            </small>
+                          </span>
+                        </label>
+                      )}
                     </>
                   ) : (
                     <>
@@ -247,12 +343,14 @@ export function CourseList({
                           const complete = boot.progress.some(
                             (p) => p.lesson_id === l.id && p.completed,
                           );
+                          // The free preview lesson opens for any signed-in account.
+                          const open = c.has_access || (!!l.preview && !!boot.person);
                           return (
                             <button
                               className="lesson-row"
                               key={l.id}
                               onClick={() =>
-                                c.has_access
+                                open
                                   ? navigate('lesson', { lesson: l.id })
                                   : boot.person
                                     ? ask({
@@ -284,6 +382,9 @@ export function CourseList({
                                 <strong>{l.title}</strong>
                                 <small>{l.summary}</small>
                               </span>
+                              {l.preview && !c.has_access && (
+                                <span className="preview-label">{t('免费试读', 'Free preview')}</span>
+                              )}
                               <span className="resource-label">
                                 <FileText size={13} />
                                 {t('讲义', 'Handout')}
@@ -306,7 +407,7 @@ export function CourseList({
                                   {t('练习', 'Practice')}
                                 </span>
                               )}
-                              {c.has_access ? (
+                              {c.has_access || l.preview ? (
                                 <ChevronRight size={16} />
                               ) : (
                                 <Lock size={15} />
@@ -569,7 +670,10 @@ export function LessonReader({
         p.lessonId === id ||
         interviewChapter?.homeworkProblemIds.includes(p.id),
     ),
-    next = all[all.findIndex((l) => l.id === id) + 1];
+    next = all[all.findIndex((l) => l.id === id) + 1],
+    // Free preview reader: everything past this lesson (next, contents, questions, versions,
+    // assignments) needs the course, so those links lead back to the course to unlock it.
+    locked = !!course && !course.has_access;
   return (
     <>
       <div className="breadcrumb">
@@ -610,6 +714,21 @@ export function LessonReader({
           />
         </Button>
       </div>
+      {/* Without the course, the only lesson that loads is its free preview. */}
+      {course && !course.has_access && (
+        <div className="preview-notice" role="note">
+          <strong>{t('免费试读', 'Free preview')}</strong>
+          <span>
+            {t(
+              `这是「${course.title}」的试读章节，开通课程后可以学习全部 ${all.length} 课。`,
+              `This is the free preview of "${course.title}". Unlock the course to take all ${all.length} lessons.`,
+            )}
+          </span>
+          <Button variant="outline" size="sm" onClick={() => navigate(interviewChapter ? 'knowledge' : 'courses')}>
+            {t('查看课程', 'See the course')}
+          </Button>
+        </div>
+      )}
       <div className="learning-layout">
         <section className="reader-card">
           <Tabs value={tab} onValueChange={(value) => setTab(String(value))}>
@@ -642,7 +761,8 @@ export function LessonReader({
               <SelectionAsk>
                 <LessonMarkdown body={lesson.body || ''} lecture />
               </SelectionAsk>
-              {interviewChapter && (
+              {/* Practice status needs the course: a preview reader gets the explanation only. */}
+              {interviewChapter && course?.has_access && (
                 <KnowledgeExercises
                   lessonId={id}
                   navigate={navigate}
@@ -760,7 +880,7 @@ export function LessonReader({
                         )}
                   </p>
                 )}
-                {!interviewChapter && (
+                {!interviewChapter && !locked && (
                   <>
                     <h3>{t('提交工程作业', 'Submit your project')}</h3>
                     <p className="muted">
@@ -813,7 +933,7 @@ export function LessonReader({
                   ? t('已完成本课', 'Lesson completed')
                   : t('标记本课完成', 'Mark lesson complete')}
             </Button>
-            {next && (
+            {next && !locked && (
               <Button
                 variant="ghost"
                 onClick={() => navigate('lesson', { lesson: next.id })}
@@ -830,72 +950,88 @@ export function LessonReader({
           <div className="side-card">
             <h3>{t('学习目录', 'Contents')}</h3>
             <div className="mini-curriculum">
-              {all.map((l) => (
+              {all.map((l) => {
+                const closed = locked && !l.preview;
+                return (
+                  <button
+                    key={l.id}
+                    className={l.id === id ? 'current' : ''}
+                    onClick={() =>
+                      closed
+                        ? navigate(interviewChapter ? 'knowledge' : 'courses')
+                        : navigate('lesson', { lesson: l.id })
+                    }
+                  >
+                    <span>{String(l.position).padStart(2, '0')}</span>
+                    <span>{l.title}</span>
+                    {closed ? (
+                      <>
+                        <Lock size={12} aria-hidden="true" />
+                        <span className="sr-only">{t('（需开通课程）', ' (unlock the course to open)')}</span>
+                      </>
+                    ) : (
+                      boot.progress.some((p) => p.lesson_id === l.id && p.completed) && <Check size={12} />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          {!locked && (
+            <div className="help-card">
+              <MessageSquare size={22} />
+              <h3>
+                {interviewChapter
+                  ? t('问题与反馈', 'Questions and feedback')
+                  : t('卡住了？一起解决。', "Stuck? Let's work it out.")}
+              </h3>
+              <p>
+                {interviewChapter
+                  ? t(
+                      '问题仅你和老师可见，会附上当前知识点。',
+                      'Only you and the teacher can see your question. The current concept is attached.',
+                    )
+                  : t(
+                      '问题仅你和老师可见，会附上当前章节与播放位置。',
+                      'Only you and the teacher can see your question. The current lesson and video position are attached.',
+                    )}
+              </p>
+              <Button
+                variant="outline"
+                onClick={() =>
+                  ask({
+                    lessonId: id,
+                    videoPosition: String(Math.floor(pos.current)),
+                    ...(lesson.progress?.video_asset_id
+                      ? { videoAssetId: lesson.progress.video_asset_id }
+                      : {}),
+                  })
+                }
+              >
+                {t('向老师提问', 'Ask the teacher')}
+                <ArrowRight size={15} />
+              </Button>
+            </div>
+          )}
+          {!locked && (
+            <div className="side-card">
+              <h3>{t('课件版本', 'Handout versions')}</h3>
+              {lesson.versions?.slice(0, 5).map((v) => (
                 <button
-                  key={l.id}
-                  className={l.id === id ? 'current' : ''}
-                  onClick={() => navigate('lesson', { lesson: l.id })}
+                  className="version-line lms-version-link"
+                  key={v.version}
+                  onClick={() => {
+                    setHistoryBody(null);
+                    setHistoryError('');
+                    setHistoryVersion(v.version);
+                  }}
                 >
-                  <span>{String(l.position).padStart(2, '0')}</span>
-                  <span>{l.title}</span>
-                  {boot.progress.some(
-                    (p) => p.lesson_id === l.id && p.completed,
-                  ) && <Check size={12} />}
+                  <span>v{v.version}</span>
+                  <span>{date(v.created_at)}</span>
                 </button>
               ))}
             </div>
-          </div>
-          <div className="help-card">
-            <MessageSquare size={22} />
-            <h3>
-              {interviewChapter
-                ? t('问题与反馈', 'Questions and feedback')
-                : t('卡住了？一起解决。', "Stuck? Let's work it out.")}
-            </h3>
-            <p>
-              {interviewChapter
-                ? t(
-                    '问题仅你和老师可见，会附上当前知识点。',
-                    'Only you and the teacher can see your question. The current concept is attached.',
-                  )
-                : t(
-                    '问题仅你和老师可见，会附上当前章节与播放位置。',
-                    'Only you and the teacher can see your question. The current lesson and video position are attached.',
-                  )}
-            </p>
-            <Button
-              variant="outline"
-              onClick={() =>
-                ask({
-                  lessonId: id,
-                  videoPosition: String(Math.floor(pos.current)),
-                  ...(lesson.progress?.video_asset_id
-                    ? { videoAssetId: lesson.progress.video_asset_id }
-                    : {}),
-                })
-              }
-            >
-              {t('向老师提问', 'Ask the teacher')}
-              <ArrowRight size={15} />
-            </Button>
-          </div>
-          <div className="side-card">
-            <h3>{t('课件版本', 'Handout versions')}</h3>
-            {lesson.versions?.slice(0, 5).map((v) => (
-              <button
-                className="version-line lms-version-link"
-                key={v.version}
-                onClick={() => {
-                  setHistoryBody(null);
-                  setHistoryError('');
-                  setHistoryVersion(v.version);
-                }}
-              >
-                <span>v{v.version}</span>
-                <span>{date(v.created_at)}</span>
-              </button>
-            ))}
-          </div>
+          )}
         </aside>
       </div>
       <Dialog

@@ -221,7 +221,10 @@ export function StoryBank({ userId }: { userId: string }) {
             {t(
               '把经历写成 STAR 故事（情境、任务、行动、结果），标上它能证明的能力项。六到八个好故事就能覆盖大多数行为题；模拟面试和题目页抽到行为题时，可以直接挑一个来讲。',
               'Write your experiences as STAR stories (Situation, Task, Action, Result) and tag what each one proves. Six to eight good stories cover most behavioral questions, and mock interviews and question pages let you pick one to tell.',
-            )}
+            )}{' '}
+            <a href="/guide/onsite">
+              {t('求职指南：终面与行为面 →', 'Career guide: final rounds and behavioural interviews →')}
+            </a>
           </p>
           <div className="ip-bank-actions">
             <button type="button" className="rd-button" onClick={() => open(blankStory())}>

@@ -7,6 +7,11 @@ import { sqlite } from '@/db/sqlite';
 import { one, rows, HttpError, requireTeacher, auditStatement } from './http';
 import { ensurePrivate } from './video';
 import { slug, title, expected, liveLesson, conflict } from './lms-common';
+import { CATEGORY_VALUES, LEVEL_VALUES } from '@/lib/course-catalog';
+
+// '' clears a catalog field; leaving it out keeps the stored value.
+const category = z.enum(['', ...CATEGORY_VALUES]).optional(),
+  level = z.enum(['', ...LEVEL_VALUES]).optional();
 
 const payloadSchema = z
   .object({
@@ -75,6 +80,8 @@ export async function createCourse(p: Person, data: unknown) {
       title,
       summary: z.string().trim().max(12000),
       position: z.number().int().nonnegative().default(0),
+      category,
+      level,
     })
     .strict()
     .parse(data);
@@ -85,9 +92,9 @@ export async function createCourse(p: Person, data: unknown) {
     db.batch([
       db
         .prepare(
-          "INSERT INTO courses(id,title,summary,version,published,revision,position) VALUES(?,?,?,'1.0.0',0,1,?)",
+          "INSERT INTO courses(id,title,summary,version,published,revision,position,category,level) VALUES(?,?,?,'1.0.0',0,1,?,?,?)",
         )
-        .bind(d.id, d.title, d.summary, d.position),
+        .bind(d.id, d.title, d.summary, d.position, d.category ?? '', d.level ?? ''),
       auditStatement(p, 'course.create', d.id),
     ]);
   } catch (e) {
@@ -106,6 +113,8 @@ export async function updateCourse(p: Person, id: string, data: unknown) {
       summary: z.string().trim().max(12000),
       published: z.boolean(),
       position: z.number().int().min(0).max(100000),
+      category,
+      level,
     })
     .strict()
     .parse(data);
@@ -122,13 +131,15 @@ export async function updateCourse(p: Person, id: string, data: unknown) {
   sqlite().transaction(() => {
     const result = db
       .prepare(
-        'UPDATE courses SET title=?,summary=?,published=?,position=?,revision=revision+1 WHERE id=? AND revision=? RETURNING id',
+        'UPDATE courses SET title=?,summary=?,published=?,position=?,category=COALESCE(?,category),level=COALESCE(?,level),revision=revision+1 WHERE id=? AND revision=? RETURNING id',
       )
       .bind(
         d.title,
         d.summary,
         Number(d.published),
         d.position,
+        d.category ?? null,
+        d.level ?? null,
         id,
         d.expectedRevision,
       )
