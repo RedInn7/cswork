@@ -11,7 +11,8 @@ const MAX_ROWS = 5000;
 const MAX_STORIES = 200;
 // story:<id> holds one STAR story as JSON (components/story-bank.tsx); list:<id> starred is a
 // saved public list, written through /api/oj/lists/<id>/star (which checks the list) only.
-const target = z.string().regex(/^(?:problem|content|story|list):[\w./-]{1,200}$/);
+// sd:<chapter> holds a system design chapter's quiz answers as JSON (app/system-design/quiz.tsx).
+const target = z.string().regex(/^(?:problem|content|story|list|sd):[\w./-]{1,200}$/);
 // up/down: the problem's vote, one per learner (setting one clears the other).
 const mark = z.enum(['star', 'redo', 'up', 'down']);
 const VOTE = { up: 'down', down: 'up' } as const;
