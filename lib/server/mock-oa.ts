@@ -4,6 +4,7 @@ import lcMapFile from '@/lib/content/company-lc-map.json';
 import {
   drawMock,
   LADDER,
+  REPORT_SLACK,
   scoreMock,
   seededRandom,
   slotOf,
@@ -269,9 +270,10 @@ export async function mockReport(p: Person, params: URLSearchParams) {
   );
   const items = ids.map((id) => ({
     id,
+    // First-AC times count from the real start, not the slack-widened window.
     ...summarizeAttempts(
       found.filter((s) => s.problem_id === id),
-      from,
+      from + REPORT_SLACK,
     ),
   }));
   return {

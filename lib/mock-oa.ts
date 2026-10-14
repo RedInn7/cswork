@@ -240,12 +240,14 @@ export function finishMock(
   return { ...s, finishedAt: end, reason: end < now ? 'timeout' : reason };
 }
 
-/** Server-time window of the exam's submissions; a few seconds of slack for clock jitter. */
+/** Clock-jitter slack on each side of the exam window. */
+export const REPORT_SLACK = 5000;
+/** Server-time window of the exam's submissions, widened by REPORT_SLACK. */
 export function reportWindow(s: MockSession) {
   const end = s.finishedAt ?? mockDeadline(s);
   return {
-    from: Math.round((s.startedAt ?? s.createdAt) + s.skew - 5000),
-    to: Math.round(end + s.skew + 5000),
+    from: Math.round((s.startedAt ?? s.createdAt) + s.skew - REPORT_SLACK),
+    to: Math.round(end + s.skew + REPORT_SLACK),
   };
 }
 
