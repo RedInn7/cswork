@@ -1,5 +1,5 @@
 'use client';
-import { usePracticeStats, type Activity } from '@/components/practice-calendar';
+import { usePracticeStats, type Activity, type PracticeCell } from '@/components/practice-calendar';
 
 const LEVEL = (count: number) => (count === 0 ? 0 : count === 1 ? 1 : count <= 3 ? 2 : count <= 5 ? 3 : 4);
 
@@ -10,6 +10,8 @@ const LEVEL = (count: number) => (count === 0 ? 0 : count === 1 ? 1 : count <= 3
 export function ProfileHeatmap({ activity, zh }: { activity: Activity[]; zh: boolean }) {
   const stats = usePracticeStats(activity, !zh);
   const t = (a: string, b: string) => (zh ? a : b);
+  // Before mount: blank cells, so server and browser time zones never disagree.
+  const cells: (PracticeCell | null)[] = stats?.cells ?? Array.from({ length: 26 * 7 }, () => null);
   return (
     <section className="learner-heatmap" aria-labelledby="learner-heatmap-title">
       <h2 id="learner-heatmap-title" className="lists-public-h2">
@@ -32,7 +34,7 @@ export function ProfileHeatmap({ activity, zh }: { activity: Activity[]; zh: boo
           ))}
         </div>
         <div className="learner-heatmap-grid" role="presentation">
-          {(stats?.cells ?? Array.from({ length: 26 * 7 }, () => null)).map((cell, i) => (
+          {cells.map((cell, i) => (
             <span
               key={i}
               data-level={cell && !cell.future ? LEVEL(cell.count) : cell ? undefined : 0}

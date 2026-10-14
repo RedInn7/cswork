@@ -11,7 +11,7 @@ type Props = { params: Promise<{ handle: string }> };
 /** Off, missing and reserved handles are all a plain 404: nothing says an account exists. */
 const load = cache(async (handle: string) => {
   const catalogue = await publicCatalogue();
-  const profile = publicProfile(decodeURIComponent(handle).toLowerCase(), catalogue);
+  const profile = publicProfile(handle.toLowerCase(), catalogue);
   if (!profile) notFound();
   return { profile, catalogue, zh: (await requestLocale()) === 'zh' };
 });

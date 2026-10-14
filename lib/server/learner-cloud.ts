@@ -61,7 +61,7 @@ const mockInput = z
     slots: z.array(z.enum(['easy', 'medium', 'hard'])).min(1).max(4),
     ids: z.array(problemId).min(1).max(4),
     minutes: z.number().int().min(1).max(240),
-    skew: z.number().finite().min(-DAY).max(DAY),
+    skew: z.number().min(-DAY).max(DAY),
     createdAt: z.number().int().positive(),
     startedAt: z.number().int().positive(),
     finishedAt: z.number().int().positive(),
@@ -535,10 +535,12 @@ const STOP_TOTALS = curatedEntries.reduce(
 );
 /**
  * A visible profile's page data, or null (hidden, missing and switched off look the same).
- * Only problems in `catalogue` count, so course exercises and hidden companies never show.
+ * Only published OA and LeetCode problems in `catalogue` count: course exercises (maybe paid)
+ * and hidden companies never show.
  */
 export function publicProfile(handle: string, catalogue: PublicCatalogue, now = Date.now()) {
   if (!HANDLE.test(handle)) return null;
+  const shown = (id: string) => problemId.safeParse(id).success && catalogue.has(id);
   const db = sqlite();
   const profile = db
     .prepare('SELECT * FROM user_profiles WHERE handle=? AND visible=1')
@@ -551,7 +553,7 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
         WHERE user_id=? AND mode='judge' AND status='accepted' GROUP BY problem_id ORDER BY at DESC,problem_id`,
       )
       .all(profile.user_id) as { id: string; at: number }[]
-  ).filter((s) => catalogue.has(s.id));
+  ).filter((s) => shown(s.id));
   const levels: Record<Slot, number> = { easy: 0, medium: 0, hard: 0 };
   const stops = new Map<string, number>();
   for (const s of solved) {
@@ -567,7 +569,7 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
         AND created_at>? ORDER BY created_at DESC LIMIT 5000`,
       )
       .all(profile.user_id, now - 183 * DAY) as { problem_id: string; created_at: number }[]
-  ).filter((a) => catalogue.has(a.problem_id));
+  ).filter((a) => shown(a.problem_id));
   const lists = db
     .prepare(
       `SELECT l.id,l.title,${COUNT} FROM user_lists l WHERE l.owner_id=? AND l.visibility='public'

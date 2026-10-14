@@ -60,7 +60,7 @@ export function ListMenu({ problemId, english }: { problemId: string; english: b
       setError((e as Error).message);
     }
   }
-  async function create(event: React.FormEvent) {
+  async function create(event: { preventDefault(): void }) {
     event.preventDefault();
     if (!title.trim()) return;
     setBusy(true);
@@ -204,7 +204,7 @@ export function AskedReport({ problemId, english }: { problemId: string; english
     const r = ROUNDS.find(([key]) => key === value);
     return r ? t(r[1], r[2]) : value;
   };
-  const now = Date.now();
+  const [now] = useState(() => Date.now());
   return (
     <Popover
       open={open}
@@ -262,9 +262,9 @@ export function AskedReport({ problemId, english }: { problemId: string; english
           </ul>
         ) : null}
         {done ? (
-          <p className="cloud-pop-done" role="status">
+          <output className="cloud-pop-done">
             {t('已记录，谢谢！报告人不会公开。', "Thanks, it's recorded. Reporters are never shown.")}
-          </p>
+          </output>
         ) : (
           <form
             className="cloud-asked-form"

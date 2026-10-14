@@ -166,6 +166,8 @@ void test('the public profile is off by default, names nobody and counts only pu
     ['lc-1', { difficulty: '简单' }],
     ['lc-3', { difficulty: '中等' }],
     ['oa-amazon-1', { difficulty: '中等' }],
+    // A course exercise a guest could open still never counts on a profile.
+    ['course-x', { difficulty: '简单' }],
   ]);
   assert.deepEqual(await ok(me, 'GET', 'profile'), { profile: null });
   assert.equal(await status(me, 'POST', 'profile', { handle: 'lists', visible: true }), 400, 'reserved');
