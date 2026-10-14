@@ -48,7 +48,10 @@ export function useReplayRecorder(session: MockSession | null, problemId: string
       const copy = track;
       // One write at a time, in order; a version over the cap is not kept and recording stops.
       writing = writing.then(async () => {
-        if ((await saveTrack(key, copy, cap)) === 'full') copy.full = true;
+        if ((await saveTrack(key, copy, cap)) !== 'full') return;
+        copy.full = true;
+        // The version kept (the last under the cap) says so too: for the report's note, and so a remount doesn't record on.
+        await saveTrack(key, { ...((await loadTrack(key)) ?? emptyTrack()), full: true }, Infinity);
       });
     };
     const snap = () => {

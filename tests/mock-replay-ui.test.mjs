@@ -133,6 +133,50 @@ test('recording a running exam, then replaying it on the report', async () => {
   }
 });
 
+test('a track over its size cap stops recording, and the report says so', async () => {
+  const { randomBytes } = await import('node:crypto');
+  mock.timers.enable({ apis: ['setInterval', 'Date'], now: 2_000_000 });
+  const start = Date.now();
+  // Two questions share REPLAY_BYTES: each track may take half.
+  const session = { id: 's-full', ids: ['p1', 'p2'], minutes: 60, startedAt: start, skew: 0, slots: ['easy', 'hard'], createdAt: start };
+  let setCode;
+  function Recorder({ running }) {
+    const [code, set] = useState('a');
+    setCode = set;
+    useReplayRecorder(running ? session : null, 'p1', code);
+    return null;
+  }
+  const until = async (done) => {
+    for (let i = 0; i < 200 && !(await done()); i++) await new Promise((r) => setTimeout(r, 20));
+  };
+  const saved = async () => (await loadSession('s-full', ['p1']))[0];
+  const root = createRoot(document.getElementById('root'));
+  try {
+    await act(async () => root.render(createElement(Recorder, { running: true })));
+    await act(() => until(async () => (await saved())?.frames.length === 1));
+    // A paste too big to keep, even gzipped.
+    await act(async () => setCode(randomBytes(1_600_000).toString('base64')));
+    await act(async () => mock.timers.tick(2000));
+    await act(() => until(async () => (await saved())?.full === true));
+    const track = await saved();
+    assert.equal(track.full, true);
+    assert.deepEqual(track.frames.map((f) => f[3]), ['a']);
+    // Remounted (another question and back): nothing more is recorded.
+    await act(async () => root.render(createElement(Recorder, { running: false })));
+    await act(async () => root.render(createElement(Recorder, { running: true })));
+    await act(async () => setCode('b'));
+    await act(async () => mock.timers.tick(2000));
+    await act(flush);
+    assert.deepEqual((await saved()).opens, [0]);
+    await act(async () => root.render(createElement(MockReplay, { session: { ...session, finishedAt: start + 60_000 }, title: (id) => id })));
+    await act(() => until(async () => !!document.querySelector('.mock-replay-code figcaption')));
+    assert.equal(document.querySelector('.mock-replay-code figcaption').textContent.includes('size cap'), true);
+  } finally {
+    await act(async () => root.unmount());
+    mock.timers.reset();
+  }
+});
+
 test('a session that left every history on this browser loses its replay', async () => {
   stored.set(trackKey('kept', 'p1'), 'x');
   stored.set(trackKey('gone', 'p1'), 'x');
