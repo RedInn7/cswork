@@ -318,8 +318,11 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
             'No unsolved practice-ready problem matches these filters.',
           ),
         );
-      else if (navigate) navigate('problem', { problem: random });
-      else location.assign('/?' + new URLSearchParams({ view: 'problem', problem: random }));
+      else if (navigate) {
+        // Drop the sequence and library left by whichever list was opened before.
+        rememberProblemSequence([random]);
+        navigate('problem', { problem: random });
+      } else location.assign('/?' + new URLSearchParams({ view: 'problem', problem: random }));
     } catch (e) {
       const message = e instanceof Error ? e.message : '加载失败，请重试';
       setPickMessage(t(message, readErrorEn(message)));
@@ -700,7 +703,6 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
         <button
           type="button"
           className="oa-new-banner"
-          aria-pressed={sort === 'new' && !company && !topic && !status && !search}
           onClick={() => {
             // Only the newest list: every other filter is cleared.
             setSort('new');

@@ -544,7 +544,7 @@ test('OA list: new-this-week banner, progress and newest-first filters in the UR
     url: 'https://cswork.test/?view=problems&library=oa&status=todo',
   });
   const saved = new Map();
-  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'navigator', 'location', 'history']) {
+  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'navigator', 'location', 'history', 'sessionStorage']) {
     saved.set(name, Object.getOwnPropertyDescriptor(globalThis, name));
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   }
@@ -600,24 +600,29 @@ test('OA list: new-this-week banner, progress and newest-first filters in the UR
     );
     assert.equal(new URL(location.href).searchParams.get('sort'), 'new');
     await answer(requests.at(-1), page());
-    assert.ok(button('added this week').getAttribute('aria-pressed') === 'true');
+    // An action, not a toggle: no pressed state.
+    assert.ok(!button('added this week').hasAttribute('aria-pressed'));
     assert.match(document.querySelector('.oa-added').textContent, /Added 2026-10-12/);
     assert.match(document.querySelector('.study-result-summary').textContent, /newest first/);
     // Pick one asks for a random problem under the same filters and opens it.
+    sessionStorage.setItem('cswork:problem-library', 'classic');
     await act(async () => button('Pick one').click());
     const pick = params(requests.at(-1));
     assert.deepEqual([pick.get('random'), pick.get('sort')], ['1', 'new']);
     assert.ok(button('Pick one').disabled);
     await answer(requests.at(-1), page({ random: 'oa-acme-7' }));
     assert.deepEqual(navigation, ['problem', { problem: 'oa-acme-7' }]);
+    // The workspace's previous/next no longer follow the list opened before.
+    assert.ok(sessionStorage.getItem('cswork:problem-sequence') === '["oa-acme-7"]');
+    assert.ok(sessionStorage.getItem('cswork:problem-library') === null);
     await act(async () => button('Pick one').click());
     await answer(requests.at(-1), page({ random: null }));
     assert.match(document.querySelector('.oa-pick-message').textContent, /No unsolved practice-ready problem/);
     // Guests see no progress menu and no banner when nothing is new.
     await act(async () => root.render(createElement(OaLibrary, { key: 'guest' })));
     await answer(requests.at(-1), page({ signedIn: false, newThisWeek: 0 }));
-    assert.equal(document.querySelector('.oa-status-filter'), null);
-    assert.equal(document.querySelector('.oa-new-banner'), null);
+    assert.ok(document.querySelector('.oa-status-filter') === null);
+    assert.ok(document.querySelector('.oa-new-banner') === null);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

@@ -209,11 +209,15 @@ test('curated practice UI preserves language and round history, deduplicates cli
     // Pick one draws under the list's own filters and opens the problem; none left says so.
     const pickButton = () =>
       [...document.querySelectorAll('button')].find((node) => node.textContent.includes('Pick one'));
+    sessionStorage.setItem('cswork:problem-library', 'classic');
     await act(async () => pickButton().click());
     await settle();
     const pick = new URL(requests.at(-1), 'https://cswork.test').searchParams;
     assert.deepEqual([pick.get('random'), pick.get('collection')], ['1', 'ling-selected-500']);
     assert.deepEqual(navigations.at(-1), ['problem', { problem: 'lc-3' }]);
+    // The workspace's previous/next and "back to list" follow this line, not a classic list.
+    assert.ok(JSON.parse(sessionStorage.getItem('cswork:problem-sequence')).includes('lc-3'));
+    assert.ok(sessionStorage.getItem('cswork:problem-library') === null);
     pickResult = null;
     await act(async () => pickButton().click());
     await settle();

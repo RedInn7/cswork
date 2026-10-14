@@ -724,8 +724,11 @@ export function StudyLibrary({
       const { random } = await api<{ random?: string | null }>(
         `oj/library?${currentQuery}&random=1`,
       );
-      if (random) navigate('problem', { problem: random });
-      else
+      if (random) {
+        // Previous/next and "back to list" follow this line, not the last list opened.
+        rememberProblemSequence(data?.sequence ?? [random]);
+        navigate('problem', { problem: random });
+      } else
         setPickMessage(
           t(
             '当前筛选下没有未通过的可判题目。',
