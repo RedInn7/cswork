@@ -91,6 +91,10 @@ const used = (user: string) =>
 void test('search terms: content words and Chinese bigrams, no stop words', () => {
   assert.deepEqual(askTerms('How does a hash table handle collisions?').words, ['hash', 'table', 'handle', 'collisions']);
   assert.deepEqual(askTerms('哈希表怎么处理冲突').grams, ['哈希', '希表', '表怎', '么处', '处理', '理冲', '冲突']);
+  // Latin glued to Chinese splits off; 2-letter acronyms count, 2-letter words do not.
+  assert.deepEqual(askTerms('什么是LRU缓存'), { words: ['lru'], grams: ['缓存'] });
+  assert.deepEqual(askTerms('Amazon的OA考什么').words, ['amazon', 'oa']);
+  assert.deepEqual(askTerms('what IS DP').words, ['dp']);
 });
 
 void test('sources: public written pages only, best match first, with the matching excerpt', () => {
@@ -115,6 +119,7 @@ void test('sources: public written pages only, best match first, with the matchi
   assert.equal(pointers.title, '双指针');
   assert.equal(pointers.excerpt.includes('相向移动'), true);
   assert.deepEqual(askSources(db, 'zzz qqq'), []);
+  assert.equal(askSources(db, '什么是LRU缓存', '', 'zh')[0].slug, 'lru');
 });
 
 void test('citations: unknown numbers dropped, only cited pages returned', () => {
@@ -123,6 +128,9 @@ void test('citations: unknown numbers dropped, only cited pages returned', () =>
   assert.equal(text, 'A [1]. B [3]. C  .');
   assert.deepEqual(cited.map((s) => s.n), [1, 3]);
   assert.equal('excerpt' in cited[0], false, 'excerpts stay on the server');
+  const grouped = citedAnswer('X [1, 2]. Y [2-9]. Z [7，9].', sources);
+  assert.equal(grouped.text, 'X [1, 2]. Y [2, 3]. Z .');
+  assert.deepEqual(grouped.sources.map((s) => s.n), [1, 2, 3]);
 });
 
 void test('ask: answers from the sources with citations, on the ask quota', async () => {

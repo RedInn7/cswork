@@ -66,7 +66,8 @@ export function askSources(
         `SELECT ${columns} FROM (SELECT rowid AS id, rank AS r FROM items_fts WHERE items_fts MATCH ? ORDER BY rank LIMIT 60) f
          JOIN items i ON i.rowid=f.id WHERE ${PUBLIC} ORDER BY f.r LIMIT 30`,
       )
-      .all(words.map((w) => `"${w}"*`).join(' OR ')) as Row[])
+      // Short words (DP, OA) match exactly, as in content-library's ftsQuery.
+      .all(words.map((w) => (w.length >= 3 ? `"${w}"*` : `"${w}"`)).join(' OR ')) as Row[])
       found.set(r.rowid, r);
   if (grams.length) {
     const like = (g: string) => `%${g}%`;
@@ -102,11 +103,15 @@ export function askSources(
 /** The reply without citations of sources it was not given, and the sources it did cite. */
 export function citedAnswer(text: string, sources: readonly AskSource[]) {
   const shown = new Set<number>();
-  const clean = text.replace(/\[(\d{1,2})\]/g, (mark, n: string) => {
-    const k = Number(n);
-    if (k < 1 || k > sources.length) return '';
-    shown.add(k);
-    return mark;
+  // [1], and the grouped forms models write: [1, 2], [1，2], [1-3].
+  const clean = text.replace(/\[(\d{1,2}(?:\s*[,，、\-–]\s*\d{1,2})*)\]/g, (_mark, list: string) => {
+    const kept = new Set<number>();
+    for (const part of list.split(/\s*[,，、]\s*/)) {
+      const [a, b = a] = part.split(/\s*[-–]\s*/).map(Number);
+      for (let k = Math.max(1, a); k <= Math.min(b, sources.length); k++) kept.add(k);
+    }
+    for (const k of kept) shown.add(k);
+    return kept.size ? `[${[...kept].join(', ')}]` : '';
   });
   return { text: clean, sources: sources.filter((s) => shown.has(s.n)).map(({ excerpt: _excerpt, ...s }) => s) };
 }
