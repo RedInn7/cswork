@@ -90,6 +90,7 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { CodeEditor } from './editor';
+import { DebugButton } from './python-debugger-button';
 import { ProblemTimer, formatClock, stopTimer } from './problem-timer';
 import { ACM_IO_TEMPLATES } from '@/lib/acm-io-templates';
 import { useIdlePrecompile } from '@/hooks/use-idle-precompile';
@@ -2310,6 +2311,15 @@ function Workspace({
                         {t('自定义输入', 'Custom input')}
                       </button>
                     </div>
+                    {language !== 'sql' && (
+                      <DebugButton
+                        language={language}
+                        code={code}
+                        stdin={inputMode === 'custom' ? stdin : (exampleCase ?? '')}
+                        mode={codingMode}
+                        template={codingMode === 'leetcode' ? templateFor('python', 'leetcode') : ''}
+                      />
+                    )}
                     {inputMode === 'custom' && (
                       <span
                         className={

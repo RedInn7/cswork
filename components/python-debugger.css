@@ -1,0 +1,513 @@
+/* The Python step debugger (components/python-debugger.tsx) and its launcher. */
+.cs-input-toolbar .pydbg-launch,
+.cs-input-toolbar .pydbg-only {
+  margin-left: auto;
+}
+.pydbg-only {
+  font-size: 11.5px;
+  color: #6f7b8d;
+}
+.pydbg-only button {
+  text-decoration: underline;
+}
+
+.pydbg {
+  max-width: min(1180px, calc(100vw - 24px)) !important;
+  width: 100%;
+  height: min(820px, calc(100dvh - 24px));
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column;
+  gap: 0 !important;
+  overflow: hidden;
+}
+.pydbg-head {
+  padding: 16px 56px 10px 20px;
+}
+.pydbg-head [data-slot='dialog-title'] {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.2px;
+}
+.pydbg-head [data-slot='dialog-title'] span {
+  font: 500 11px/1.4 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  color: #2f7d6b;
+  padding: 2px 7px;
+  border: 1px solid #cfe6dd;
+  border-radius: 99px;
+  background: #f1f9f5;
+}
+.pydbg-head [data-slot='dialog-description'] {
+  margin-top: 6px;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.pydbg-status {
+  padding: 8px 20px;
+  border-top: 1px solid #e6ebf2;
+  font-size: 12.5px;
+  color: #45546a;
+  background: #fafbfd;
+}
+.pydbg-status p {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+.pydbg-status progress {
+  width: 120px;
+  height: 6px;
+  accent-color: #2f7d6b;
+}
+.pydbg-failed,
+.pydbg-error-text {
+  color: #b42318;
+}
+.pydbg-failed button {
+  margin-left: 4px;
+  text-decoration: underline;
+}
+.pydbg-note {
+  flex-basis: 100%;
+  padding: 6px 9px;
+  border-radius: 6px;
+  color: #7a4f00;
+  background: #fff6dc;
+}
+
+.pydbg-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 1fr);
+  border-top: 1px solid #e6ebf2;
+}
+.pydbg-code {
+  min-height: 0;
+  border-right: 1px solid #e6ebf2;
+}
+.pydbg-code .glyph-margin,
+.pydbg-code .line-numbers {
+  cursor: pointer;
+}
+.pydbg-side {
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 12px 14px 16px;
+}
+
+.pydbg-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pydbg-controls button,
+.pydbg-input button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 9px;
+  border: 1px solid #d5dde8;
+  border-radius: 7px;
+  background: #fff;
+  color: #26344a;
+  font-size: 12px;
+  font-weight: 550;
+}
+.pydbg-controls button:hover:not(:disabled),
+.pydbg-input button:hover:not(:disabled) {
+  background: #eef3fa;
+  border-color: #b9c7dc;
+}
+.pydbg-controls button:disabled,
+.pydbg-input button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.pydbg-controls button:focus-visible,
+.pydbg-input button:focus-visible,
+.pydbg-timeline input:focus-visible,
+.pydbg-input textarea:focus-visible,
+.pydbg-input summary:focus-visible {
+  outline: 2px solid #3d63b8;
+  outline-offset: 1px;
+}
+
+.pydbg-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.pydbg-depths {
+  width: 100%;
+  height: 26px;
+  border-radius: 5px;
+  background: #f4f7fa;
+}
+.pydbg-depths polyline {
+  fill: none;
+  stroke: #2f7d6b;
+  stroke-width: 1.3;
+  vector-effect: non-scaling-stroke;
+}
+.pydbg-depths .pydbg-hit {
+  stroke: #d64545;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.pydbg-depths .pydbg-now {
+  stroke: #d99a00;
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+}
+.pydbg-timeline input {
+  width: 100%;
+  accent-color: #2f7d6b;
+}
+.pydbg-where {
+  font: 12px/1.5 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  color: #45546a;
+}
+
+.pydbg-panel h3 {
+  margin-bottom: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #66748a;
+}
+.pydbg-panel table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 12px/1.5 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+.pydbg-panel th,
+.pydbg-panel td {
+  padding: 3px 6px;
+  border-bottom: 1px solid #edf1f6;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.pydbg-panel th {
+  width: 32%;
+  font-weight: 600;
+  color: #26344a;
+}
+.pydbg-panel td {
+  color: #1d2a3d;
+}
+.pydbg-panel tr.changed th,
+.pydbg-panel tr.changed td {
+  background: #fff3cf;
+}
+.pydbg-panel tr.changed th::after {
+  content: ' \2022';
+  color: #c98a00;
+}
+.pydbg-panel tr.pydbg-return th,
+.pydbg-panel tr.pydbg-return td {
+  background: #e7f4ee;
+}
+.pydbg-empty {
+  font-size: 12px;
+  color: #7b8799;
+}
+.pydbg-stack {
+  list-style: none;
+  font: 12px/1.6 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+.pydbg-stack li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  color: #45546a;
+}
+.pydbg-stack li[aria-current] {
+  background: #eef3fa;
+  color: #1f4fa3;
+  font-weight: 600;
+}
+.pydbg-stack small {
+  color: #7b8799;
+}
+.pydbg-stdout {
+  min-height: 34px;
+  max-height: 170px;
+  overflow: auto;
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid #e3e8f0;
+  border-radius: 7px;
+  background: #f6f8fb;
+  color: #1d2a3d;
+  font: 12px/1.5 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.pydbg-result {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #26344a;
+}
+.pydbg-result code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  overflow-wrap: anywhere;
+}
+.pydbg-input summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #26344a;
+}
+.pydbg-input textarea {
+  display: block;
+  width: 100%;
+  min-height: 80px;
+  margin: 8px 0;
+  padding: 7px 9px;
+  border: 1px solid #d5dde8;
+  border-radius: 7px;
+  background: #fff;
+  color: #1d2a3d;
+  font: 12px/1.5 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  resize: vertical;
+}
+.pydbg-foot {
+  padding: 8px 20px 12px;
+  border-top: 1px solid #e6ebf2;
+  font-size: 11.5px;
+  color: #66748a;
+}
+
+/* Monaco decorations: the line about to run, a return, the failing line, breakpoints. */
+.pydbg-line-current {
+  background: #fff1c2;
+}
+.pydbg-line-return {
+  background: #e3f1ec;
+}
+.pydbg-line-error {
+  background: #fde3e1;
+}
+.pydbg-glyph-break,
+.pydbg-glyph-here {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+.pydbg-glyph-break::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #d64545;
+}
+.pydbg-glyph-here::after {
+  content: '\25B6';
+  font-size: 9px;
+  color: #c98a00;
+}
+
+@media (max-width: 760px) {
+  .pydbg-body {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 38vh auto;
+    overflow-y: auto;
+  }
+  .pydbg-code {
+    border-right: 0;
+    border-bottom: 1px solid #e6ebf2;
+  }
+  .pydbg-side {
+    overflow: visible;
+  }
+}
+
+/* Hand-tuned for dark: the mapped fills vanish on the dark editor, so these stay translucent. */
+.dark .pydbg .pydbg-line-current,
+.dark .pydbg .pydbg-panel tr.changed th,
+.dark .pydbg .pydbg-panel tr.changed td {
+  background: rgba(255, 196, 0, 0.16);
+}
+.dark .pydbg .pydbg-line-return,
+.dark .pydbg .pydbg-panel tr.pydbg-return th,
+.dark .pydbg .pydbg-panel tr.pydbg-return td {
+  background: rgba(80, 200, 160, 0.16);
+}
+.dark .pydbg .pydbg-line-error {
+  background: rgba(255, 96, 80, 0.2);
+}
+.dark .pydbg .pydbg-depths polyline {
+  stroke: #5cc3a6;
+}
+
+/* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
+@media screen {
+  .dark .pydbg-only {
+    color: #b0bbcb;
+  }
+  .dark .pydbg-only button {
+    text-decoration: underline;
+  }
+  .dark .pydbg-head [data-slot='dialog-title'] span {
+    color: #8ecebc;
+    border: 1px solid #23352f;
+    background: #121614;
+  }
+  .dark .pydbg-status {
+    border-top: 1px solid #292d32;
+    color: #bbcae0;
+    background: #171718;
+  }
+  .dark .pydbg-status progress {
+    accent-color: #2f7d6b;
+  }
+  .dark .pydbg-failed,
+  .dark .pydbg-error-text {
+    color: #fea99c;
+  }
+  .dark .pydbg-failed button {
+    text-decoration: underline;
+  }
+  .dark .pydbg-note {
+    color: #e8bf89;
+    background: #191405;
+  }
+  .dark .pydbg-body {
+    border-top: 1px solid #292d32;
+  }
+  .dark .pydbg-code {
+    border-right: 1px solid #292d32;
+  }
+  .dark .pydbg-controls button,
+  .dark .pydbg-input button {
+    border: 1px solid #2d333b;
+    background: #191919;
+    color: #c8d8f0;
+  }
+  .dark .pydbg-controls button:hover:not(:disabled),
+  .dark .pydbg-input button:hover:not(:disabled) {
+    background: #101317;
+    border-color: #303c4d;
+  }
+  .dark .pydbg-controls button:focus-visible,
+  .dark .pydbg-input button:focus-visible,
+  .dark .pydbg-timeline input:focus-visible,
+  .dark .pydbg-input textarea:focus-visible,
+  .dark .pydbg-input summary:focus-visible {
+    outline: 2px solid #a2c0fe;
+  }
+  .dark .pydbg-depths {
+    background: #131517;
+  }
+  .dark .pydbg-depths polyline {
+    fill: none;
+    stroke: #2f7d6b;
+  }
+  .dark .pydbg-depths .pydbg-hit {
+    stroke: #d64545;
+  }
+  .dark .pydbg-depths .pydbg-now {
+    stroke: #d99a00;
+  }
+  .dark .pydbg-timeline input {
+    accent-color: #2f7d6b;
+  }
+  .dark .pydbg-where {
+    color: #bbcae0;
+  }
+  .dark .pydbg-panel h3 {
+    color: #b0bdd2;
+  }
+  .dark .pydbg-panel th,
+  .dark .pydbg-panel td {
+    border-bottom: 1px solid #282b2e;
+  }
+  .dark .pydbg-panel th {
+    color: #c8d8f0;
+  }
+  .dark .pydbg-panel td {
+    color: #cedcf2;
+  }
+  .dark .pydbg-panel tr.changed th,
+  .dark .pydbg-panel tr.changed td {
+    background: #191200;
+  }
+  .dark .pydbg-panel tr.changed th::after {
+    color: #dda650;
+  }
+  .dark .pydbg-panel tr.pydbg-return th,
+  .dark .pydbg-panel tr.pydbg-return td {
+    background: #0c1310;
+  }
+  .dark .pydbg-empty {
+    color: #a7b2c2;
+  }
+  .dark .pydbg-stack li {
+    color: #bbcae0;
+  }
+  .dark .pydbg-stack li[aria-current] {
+    background: #101317;
+    color: #abcafe;
+  }
+  .dark .pydbg-stack small {
+    color: #a7b2c2;
+  }
+  .dark .pydbg-stdout {
+    border: 1px solid #2a2e34;
+    background: #141617;
+    color: #cedcf2;
+  }
+  .dark .pydbg-result {
+    color: #c8d8f0;
+  }
+  .dark .pydbg-input summary {
+    color: #c8d8f0;
+  }
+  .dark .pydbg-input textarea {
+    border: 1px solid #2d333b;
+    background: #191919;
+    color: #cedcf2;
+  }
+  .dark .pydbg-foot {
+    border-top: 1px solid #292d32;
+    color: #b0bdd2;
+  }
+  .dark .pydbg-line-current {
+    background: #171101;
+  }
+  .dark .pydbg-line-return {
+    background: #0b1310;
+  }
+  .dark .pydbg-line-error {
+    background: #1b0e0d;
+  }
+  .dark .pydbg-glyph-break::before {
+    background: #d64545;
+  }
+  .dark .pydbg-glyph-here::after {
+    color: #dda650;
+  }
+  @media (max-width: 760px) {
+    .dark .pydbg-code {
+      border-right: 0;
+      border-bottom: 1px solid #292d32;
+    }
+  }
+}
+/* ── end dark theme ── */

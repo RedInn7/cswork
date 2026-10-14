@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link2, LoaderCircle, Play, RotateCcw } from 'lucide-react';
 import { CodeEditor } from '@/components/editor';
+import { DebugButton } from '@/components/python-debugger-button';
 import { SubmissionResult } from '@/components/oj-results';
 import { Button } from '@/components/ui/button';
 import { defaultEditorSettings, languageFiles } from '@/lib/editor-settings';
@@ -235,6 +236,7 @@ export function PlaygroundView({ signedIn, verified }: { signedIn: boolean; veri
             >
               <RotateCcw size={15} />
             </button>
+            <DebugButton language={language} code={code} stdin={saved.stdin} mode="acm" />
             <Button variant="outline" size="sm" onClick={share}>
               <Link2 size={14} /> {t('分享链接', 'Share link')}
             </Button>

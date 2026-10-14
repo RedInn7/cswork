@@ -62,6 +62,8 @@ export type CodeEditorProps = {
   onSuggestReady?: (suggest: (() => void) | null) => void;
   /** Format Document through the language service; null while unmounted or for SQL. */
   onFormatReady?: (format: (() => void) | null) => void;
+  /** The mounted Monaco editor, for decorations and gutter clicks; may return a disposer. */
+  onEditorMount?: (...args: Parameters<OnMount>) => void | (() => void);
 };
 export function CodeEditor({
   value,
@@ -78,6 +80,7 @@ export function CodeEditor({
   onIntelligenceStatus,
   onSuggestReady,
   onFormatReady,
+  onEditorMount,
 }: CodeEditorProps) {
   const t = useT();
   const { runtime, error, retry } = useMonacoRuntime();
@@ -164,7 +167,9 @@ export function CodeEditor({
         editor.trigger('cswork', 'editor.action.triggerSuggest', {});
       });
     }
+    const detach = onEditorMount?.(editor, monaco);
     cleanup.current = () => {
+      detach?.();
       actions.forEach((action) => action.dispose());
       onSuggestReady?.(null);
       onFormatReady?.(null);
