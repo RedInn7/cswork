@@ -17,7 +17,7 @@ import {
   type KindId, type Text,
 } from '@/lib/mock-interview';
 import {
-  RUBRIC, VERDICTS, decodeFeedback, encodeFeedback, rubricAverage, type Feedback, type RubricId,
+  RUBRIC, VERDICTS, decodeFeedback, encodeFeedback, forSet, questionTag, rubricAverage, type Feedback, type RubricId,
 } from '@/lib/mock-interview-feedback';
 import type { Navigate } from './learning';
 import { OaMarkdown } from './oa-library';
@@ -569,9 +569,8 @@ function Session({
     window.addEventListener('hashchange', read);
     return () => window.removeEventListener('hashchange', read);
   }, []);
-  const [savedFeedback, setSavedFeedback] = useState(
-    () => pastSessions().find((p) => new URLSearchParams(p.query).toString() === key)?.feedback ?? null,
-  );
+  const [saved, setSaved] = useState(() => pastSessions().find((p) => new URLSearchParams(p.query).toString() === key) ?? null);
+  const savedFeedback = saved?.feedback ?? null;
   const linked = new URLSearchParams(hash.slice(1)).get('fb');
   const fromLink = useMemo(() => decodeFeedback(linked), [linked]);
   const fromHistory = useMemo(() => decodeFeedback(savedFeedback), [savedFeedback]);
@@ -609,14 +608,14 @@ function Session({
       setData(set);
       setQuery(next);
       // Replace, not push: the address always reproduces the set on screen.
-      window.history.replaceState(null, '', '/?' + new URLSearchParams({ view: 'mock-interview', ...next }));
+      window.history.replaceState(null, '', '/?' + new URLSearchParams({ view: 'mock-interview', ...next }) + location.hash);
     } catch (e) {
       setRollError((e as Error).message);
     } finally {
       setRolling(null);
     }
   };
-  /** Saves this set to the history, keeping what an earlier save of it had; false when storage is blocked. */
+  /** Saves this set to the history, keeping what an earlier save of it had; null when storage is blocked. */
   const remember = (change: (old: Past | undefined) => Partial<Past>, rating: (i: number) => number | null, elapsed: number[]) => {
     const past = pastSessions();
     const old = past.find((p) => new URLSearchParams(p.query).toString() === key);
@@ -633,7 +632,7 @@ function Session({
       feedback: old?.feedback,
       ...change(old),
     };
-    return write(HISTORY, [entry, ...past.filter((p) => p !== old)].slice(0, 30));
+    return write(HISTORY, [entry, ...past.filter((p) => p !== old)].slice(0, 30)) ? entry : null;
   };
   const finish = () => {
     const done = { ...commit(run), since: null, phase: 'done' as const, finished: true };
@@ -644,11 +643,18 @@ function Session({
   const feedback = fromLink ?? fromHistory;
   const value = fromLink ? linked : savedFeedback;
   const saveFeedback = () => {
-    if (!feedback || !value) return false;
-    // A set practiced here keeps its own ratings and time; otherwise the interviewer's ratings stand in.
-    const ok = remember((old) => ({ ...old, at: Date.now(), feedback: value }), (i) => feedback.questions[i]?.rating ?? null, run.elapsed);
-    if (ok) setSavedFeedback(value);
-    return ok;
+    // Feedback for another set never lands on this one's history entry.
+    if (!feedback || !value || !forSet(feedback, query)) return false;
+    // A set practiced here keeps its own ratings and time; otherwise the interviewer's ratings stand in,
+    // each only on the question it was given for.
+    const rating = (i: number) => {
+      const q = feedback.questions[i];
+      const id = data.slots[i]?.item?.id;
+      return q && id && (!q.tag || q.tag === questionTag(id)) ? q.rating : null;
+    };
+    const entry = remember((old) => ({ ...old, at: Date.now(), feedback: value }), rating, run.elapsed);
+    if (entry) setSaved(entry);
+    return !!entry;
   };
   const card =
     mode !== 'interviewer' && (feedback || linked) ? (
@@ -659,12 +665,13 @@ function Session({
         broken={!!linked && !fromLink}
         saved={!!value && value === savedFeedback}
         onSave={saveFeedback}
+        known={saved?.items ?? []}
       />
     ) : null;
 
   const props = { data, query, mode, run, setRun, now, problemIds, navigate, finish };
   if (mode === 'interviewer') return <InterviewerSheet {...props} />;
-  if (run.phase === 'plan') return <Plan {...props} card={card} reroll={reroll} rolling={rolling} rollError={rollError} />;
+  if (run.phase === 'plan') return <Plan {...props} card={card} locked={!!feedback} reroll={reroll} rolling={rolling} rollError={rollError} />;
   if (run.phase === 'done') return <Summary {...props} card={card} />;
   return <Runner {...props} />;
 }
@@ -746,15 +753,22 @@ function Plan({
   query,
   setRun,
   card,
+  locked,
   reroll,
   rolling,
   rollError,
-}: SessionProps & { card: React.ReactNode; reroll: (i: number) => void; rolling: number | null; rollError: string }) {
+}: SessionProps & { card: React.ReactNode; locked: boolean; reroll: (i: number) => void; rolling: number | null; rollError: string }) {
   const t = useT();
+  // `locked` while feedback is on screen: a re-roll would put its scores beside questions they weren't given for.
   return (
     <>
       <SetHead data={data} query={query} mode="solo" />
       {card}
+      {locked && (
+        <p className="mi-muted mi-reroll-off" id="mi-reroll-off">
+          {t('带着面试官反馈时不能换题，免得评分对不上题目。', 'Re-rolling is off while this feedback is open, so each score stays with its question.')}
+        </p>
+      )}
       {rollError && (
         <div className="js-error" role="alert">
           {t(`没换成，这套题没变：${rollError}`, `Couldn't re-roll; the set is unchanged. ${englishMessage(rollError)}`)}
@@ -774,7 +788,8 @@ function Plan({
             <button
               type="button"
               className="rd-button is-quiet mi-reroll"
-              disabled={rolling !== null || slot.pool < 2}
+              disabled={locked || rolling !== null || slot.pool < 2}
+              aria-describedby={locked ? 'mi-reroll-off' : undefined}
               onClick={() => reroll(i)}
               aria-label={t(`第 ${i + 1} 题换一题`, `Re-roll question ${i + 1}`)}
             >
@@ -1354,7 +1369,11 @@ export function FeedbackLink({ data, query, run }: Pick<SessionProps, 'data' | '
         verdict: VERDICTS.find(([id]) => id === run.verdict)?.[0] ?? null,
         strengths: run.strengths ?? run.summary ?? '',
         improvements: run.improvements ?? '',
-        questions: data.slots.map((_, i) => ({ rating: run.ratings[i] ?? null, note: withNotes ? (run.notes[i] ?? '') : '' })),
+        questions: data.slots.map((slot, i) => ({
+          rating: run.ratings[i] ?? null,
+          note: withNotes ? (run.notes[i] ?? '') : '',
+          tag: slot.item ? questionTag(slot.item.id) : '',
+        })),
       }),
     [data, query, run, withNotes],
   );
@@ -1422,6 +1441,7 @@ export function FeedbackCard({
   broken,
   saved,
   onSave,
+  known = [],
 }: {
   data: MockSet;
   query: Record<string, string>;
@@ -1429,6 +1449,8 @@ export function FeedbackCard({
   broken: boolean;
   saved: boolean;
   onSave: () => boolean;
+  /** Questions saved with this set in the history: the titles as they were when the feedback was saved. */
+  known?: { id: string; title: string }[];
 }) {
   const t = useT();
   const [failed, setFailed] = useState(false);
@@ -1445,7 +1467,10 @@ export function FeedbackCard({
     );
   const average = rubricAverage(feedback.rubric);
   const verdict = VERDICTS.find(([id]) => id === feedback.verdict);
-  const sameSet = feedback.seed === query.set && feedback.rerolls.join('.') === (query.rr ?? '');
+  const sameSet = forSet(feedback, query);
+  // Ratings line up by position, but a changed bank draws other questions from the same seed: each
+  // rating names its question by tag, and one that's moved is shown by the title it was given for.
+  const titles = [...known, ...data.slots.flatMap((s) => (s.item ? [s.item] : []))];
   return (
     <section className="mi-fb rd-reveal" style={{ '--i': 1 } as React.CSSProperties} aria-labelledby="mi-fb-kicker mi-fb-title">
       <div className="mi-fb-board">
@@ -1476,7 +1501,10 @@ export function FeedbackCard({
         {broken && <p className="mi-fb-cut" role="alert">{brokenNote}</p>}
         {!sameSet && (
           <p className="mi-fb-cut">
-            {t('这份反馈是给另一套题写的，题目可能对不上。', 'This feedback was written for a different set, so the questions may not line up.')}
+            {t(
+              '这份反馈是给另一套题写的，题目可能对不上，也存不进这套题的记录。',
+              "This feedback was written for a different set: the questions may not line up, and it can't be saved with this one.",
+            )}
           </p>
         )}
         <dl className="mi-fb-rubric">
@@ -1511,7 +1539,10 @@ export function FeedbackCard({
             <h3 className="mi-fb-sub">{t('逐题评分', 'Question by question')}</h3>
             <ol className="mi-fb-qs">
               {feedback.questions.map((q, i) => {
-                const slot = data.slots[i];
+                const drawn = data.slots[i];
+                // An untagged rating can't be checked, so it takes the slot as is.
+                const slot = !q.tag || (drawn?.item && questionTag(drawn.item.id) === q.tag) ? drawn : undefined;
+                const title = slot ? slot.item?.title : titles.find((x) => questionTag(x.id) === q.tag)?.title;
                 return (
                   <li key={i}>
                     <span className="mi-fb-no" aria-hidden="true">
@@ -1519,7 +1550,14 @@ export function FeedbackCard({
                     </span>
                     <div>
                       {slot && <span className="mi-table-kind">{t(...(slot.name ?? KINDS[slot.kind].name))}</span>}
-                      <p className="mi-fb-q">{slot?.item?.title ?? t(`第 ${i + 1} 题`, `Question ${i + 1}`)}</p>
+                      <p className="mi-fb-q">{title ?? t(`第 ${i + 1} 题`, `Question ${i + 1}`)}</p>
+                      {!slot && (
+                        <p className="mi-muted mi-fb-moved">
+                          {title
+                            ? t('这一题现在抽到的是别的题，评分和记录是给上面这道题的。', 'This slot now draws another question; the score and notes are for the one above.')
+                            : t('题库更新过，这一题对不上了：评分和记录是给原来那道题的。', 'The bank has changed since; the score and notes are for the question originally drawn here.')}
+                        </p>
+                      )}
                       {q.note && <p className="mi-fb-q-note">{q.note}</p>}
                     </div>
                     {q.rating ? <Pips n={q.rating} label={t(...SCORES[q.rating - 1])} /> : <span className="mi-muted">{t('未评', 'Not scored')}</span>}
@@ -1529,19 +1567,21 @@ export function FeedbackCard({
             </ol>
           </section>
         )}
-        <div className="mi-fb-actions">
-          <button type="button" className="rd-button" onClick={() => setFailed(!onSave())}>
-            {saved ? <Check size={14} aria-hidden="true" /> : <Save size={14} aria-hidden="true" />}
-            {saved ? t('已存进模拟记录', 'Saved to my sessions') : t('存进我的模拟记录', 'Save to my sessions')}
-          </button>
-          <p role="status" className="mi-fb-status">
-            {saved
-              ? t('存在这台设备上，在「最近的模拟」里能找回。', 'Kept on this device; find it under Recent sessions.')
-              : failed
-                ? t('没存上：这个浏览器不让网页存本地数据。', "Couldn't save: this browser blocks local storage.")
-                : ''}
-          </p>
-        </div>
+        {sameSet && (
+          <div className="mi-fb-actions">
+            <button type="button" className="rd-button" onClick={() => setFailed(!onSave())}>
+              {saved ? <Check size={14} aria-hidden="true" /> : <Save size={14} aria-hidden="true" />}
+              {saved ? t('已存进模拟记录', 'Saved to my sessions') : t('存进我的模拟记录', 'Save to my sessions')}
+            </button>
+            <p role="status" className="mi-fb-status">
+              {saved
+                ? t('存在这台设备上，在「最近的模拟」里能找回。', 'Kept on this device; find it under Recent sessions.')
+                : failed
+                  ? t('没存上：这个浏览器不让网页存本地数据。', "Couldn't save: this browser blocks local storage.")
+                  : ''}
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -12,6 +12,7 @@ register(
   import.meta.url,
 );
 const { FeedbackCard, FeedbackLink } = await import('../components/mock-interview.tsx');
+const { questionTag } = await import('../lib/mock-interview-feedback.ts');
 
 const item = (id, title) => ({
   id, type: 'coding_question', slug: id, title, company: null, role: null, round: null, difficulty: null, problem: null,
@@ -34,7 +35,7 @@ const feedback = {
   verdict: 'yes',
   strengths: 'Asked about <empty> input first',
   improvements: 'Say the complexity out loud',
-  questions: [{ rating: 3, note: 'Clear STAR story' }, { rating: null, note: '' }],
+  questions: [{ rating: 3, note: 'Clear STAR story', tag: questionTag('b1') }, { rating: null, note: '', tag: questionTag('c1') }],
 };
 const card = (props) =>
   renderToStaticMarkup(createElement(FeedbackCard, { data, query, feedback, broken: false, saved: false, onSave: () => true, ...props }));
@@ -53,11 +54,31 @@ test('the candidate sees the verdict, rubric, notes and each question with its r
   assert.ok(/role="status"/.test(html));
   assert.ok(html.includes('Save to my sessions'));
   assert.equal(html.includes('different set'), false);
+  assert.equal(html.includes('mi-fb-moved'), false);
+});
+
+test('a rating whose question changed is shown by its own title or flagged, never beside another question', () => {
+  // The bank changed: the same seed now draws c2 where the interviewer rated c1.
+  const redrawn = { ...data, slots: [data.slots[0], { ...data.slots[1], item: item('c2', 'Two sum') }] };
+  const notes = { ...feedback, questions: [feedback.questions[0], { rating: 2, note: 'Missed the visited set', tag: questionTag('c1') }] };
+  const lost = card({ data: redrawn, feedback: notes });
+  assert.equal(lost.includes('Two sum'), false);
+  assert.ok(/Question 2<\/p><p class="mi-muted mi-fb-moved">The bank has changed/.test(lost));
+  assert.ok(lost.includes('Missed the visited set'));
+  // Saved with the set, the history still knows the title it was given for.
+  const found = card({ data: redrawn, feedback: notes, known: [{ id: 'c1', title: 'Merge intervals' }] });
+  assert.ok(/Merge intervals<\/p><p class="mi-muted mi-fb-moved">This slot now draws another question/.test(found));
+  // An untagged rating can't be checked and takes the slot as drawn.
+  const untagged = card({ data: redrawn, feedback: { ...notes, questions: notes.questions.map((q) => ({ ...q, tag: '' })) } });
+  assert.ok(untagged.includes('Two sum'));
+  assert.equal(untagged.includes('mi-fb-moved'), false);
 });
 
 test('a saved card says where it lives; another set and a broken link are flagged', () => {
   assert.ok(card({ saved: true }).includes('Recent sessions'));
-  assert.ok(card({ query: { ...query, rr: '1' } }).includes('different set'));
+  const other = card({ query: { ...query, rr: '1' } });
+  assert.ok(other.includes('different set'));
+  assert.equal(other.includes('Save to my sessions'), false);
   const broken = card({ feedback: null, broken: true });
   assert.ok(/role="alert"[^>]*>.*incomplete or damaged/.test(broken));
   assert.equal(broken.includes('mi-fb-title'), false);
