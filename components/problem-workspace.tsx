@@ -69,6 +69,7 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { CodeEditor } from './editor';
+import { ACM_IO_TEMPLATES } from '@/lib/acm-io-templates';
 import { useIdlePrecompile } from '@/hooks/use-idle-precompile';
 import { StatementMarkdown } from './statement-markdown';
 import { LeetCodeSamples } from './leetcode-samples';
@@ -117,6 +118,7 @@ import { track } from '@/lib/analytics';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import '@/app/editor.css';
+import '@/app/workbench-tools.css';
 
 type WorkspaceProps = {
   problem: ProblemSummary;
@@ -302,6 +304,7 @@ function Workspace({
       ? t('语言服务待启动', 'Language service not started')
       : say(intelligence.message);
   const suggest = useRef<(() => void) | null>(null);
+  const insert = useRef<((text: string) => void) | null>(null);
   const [leftTab, setLeftTab] = useState<'statement' | 'history' | 'editorial'>(
     'statement',
   );
@@ -828,6 +831,15 @@ function Workspace({
     setSaveStatus(['正在保存草稿…', 'Saving draft…']);
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => persistDraft(), 350);
+  }
+  function insertIoTemplate(id: string) {
+    const template = ACM_IO_TEMPLATES.find((item) => item.id === id);
+    const text = template?.code[language];
+    if (!text) return;
+    // An untouched starter already has a main(): swap it rather than nest a second one.
+    if (isStarter(code, language)) updateCode(text);
+    else if (insert.current) insert.current(text);
+    else updateCode(`${code.trimEnd()}\n\n${text}`);
   }
   function templateFor(next: Language, mode: CodingMode) {
     return mode === 'leetcode'
@@ -1578,6 +1590,32 @@ function Workspace({
           >
             <Download size={15} />
           </button>
+          {codingMode === 'acm' && (
+            <select
+              className="cs-io-templates"
+              aria-label={t('插入输入模板', 'Insert an input template')}
+              title={t(
+                '插入常见输入形态的读写模板（插到光标处）',
+                'Insert a reading/writing template for a common input shape (at the cursor)',
+              )}
+              value=""
+              disabled={!ready}
+              onChange={(event) => insertIoTemplate(event.target.value)}
+            >
+              <option value="" disabled>
+                {t('输入模板', 'Input templates')}
+              </option>
+              {ACM_IO_TEMPLATES.map((item) => (
+                <option
+                  key={item.id}
+                  value={item.id}
+                  title={t(item.note.zh, item.note.en)}
+                >
+                  {t(item.title.zh, item.title.en)}
+                </option>
+              ))}
+            </select>
+          )}
           <button
             aria-label={t('重置为语言模板', 'Reset to template')}
             title={t('重置为语言模板', 'Reset to template')}
@@ -1631,6 +1669,9 @@ function Workspace({
                   onIntelligenceStatus={setIntelligence}
                   onSuggestReady={(action) => {
                     suggest.current = action;
+                  }}
+                  onInsertReady={(action) => {
+                    insert.current = action;
                   }}
                   onChange={updateCode}
                   path={`cswork://draft/${encodeURIComponent(userId)}/${problem.id}/${codingMode}/${editorFile}`}

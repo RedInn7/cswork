@@ -262,6 +262,11 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       document.querySelector('.cs-workspace-header .cs-editor-run-actions'),
       null,
     );
+    // Input templates are for ACM stdin programs only.
+    assert.equal(
+      document.querySelector('[aria-label="Insert an input template"]') === null,
+      true,
+    );
     assert.equal(editor().value, templates.python);
     assert.match(
       document.querySelector('.cs-sample-pair').textContent,
@@ -622,6 +627,14 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     await renderAcm('acm-en');
     await settle();
     assert.equal(editor().value, englishStarters.python);
+    // An input template replaces an untouched starter; otherwise it is added.
+    const { ACM_IO_TEMPLATES } = await import('../lib/acm-io-templates.ts');
+    const [single, eof] = ACM_IO_TEMPLATES;
+    await choose('Insert an input template', 'eof');
+    assert.equal(editor().value === eof.code.python, true);
+    await edit('# mine');
+    await choose('Insert an input template', 'single');
+    assert.equal(editor().value === `# mine\n\n${single.code.python}`, true);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

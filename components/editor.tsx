@@ -58,6 +58,8 @@ export type CodeEditorProps = {
   problemId?: string;
   onIntelligenceStatus?: (status: IntelligenceStatus) => void;
   onSuggestReady?: (suggest: (() => void) | null) => void;
+  /** insertAtCursor: replaces the selection (or inserts at the caret) as one undo step. */
+  onInsertReady?: (insert: ((text: string) => void) | null) => void;
 };
 export function CodeEditor({
   value,
@@ -73,6 +75,7 @@ export function CodeEditor({
   problemId,
   onIntelligenceStatus,
   onSuggestReady,
+  onInsertReady,
 }: CodeEditorProps) {
   const t = useT();
   const { runtime, error, retry } = useMonacoRuntime();
@@ -122,9 +125,21 @@ export function CodeEditor({
         editor.trigger('cswork', 'editor.action.triggerSuggest', {});
       });
     }
+    if (!readOnly)
+      onInsertReady?.((text) => {
+        const range = editor.getSelection();
+        if (!range) return;
+        editor.pushUndoStop();
+        editor.executeEdits('cswork.insert', [
+          { range, text, forceMoveMarkers: true },
+        ]);
+        editor.pushUndoStop();
+        editor.focus();
+      });
     cleanup.current = () => {
       actions.forEach((action) => action.dispose());
       onSuggestReady?.(null);
+      onInsertReady?.(null);
     };
   };
   const options: EditorProps['options'] = {
