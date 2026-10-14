@@ -117,7 +117,7 @@ type WorkspaceProps = {
   navigate: (view: string, extra?: Record<string, string>) => void;
   ask: (context: Record<string, string>) => void;
   refresh: () => Promise<void>;
-  /** Timed OA practice: no hints or solution links. */
+  /** Timed OA practice: hides the Line 500 hint, statement hints and the OA Solution tab. */
   examMode?: boolean;
 };
 type ReplaceRequest = {
@@ -1092,7 +1092,7 @@ function Workspace({
           <History size={15} />
           {uiEnglish ? 'Submissions' : '提交记录'}
         </button>
-        {problem.id.startsWith('oa-') && (
+        {problem.id.startsWith('oa-') && !examMode && (
           <button
             role="tab"
             className={leftTab === 'editorial' ? 'active' : ''}
@@ -1160,7 +1160,7 @@ function Workspace({
                   {uiEnglish ? 'Topics' : '主题'}
                 </button>
               )}
-              {!sourceBody && statement.hints.length > 0 && (
+              {!sourceBody && !examMode && statement.hints.length > 0 && (
                 <button
                   className="cs-statement-pill"
                   aria-expanded={hintsOpen}
@@ -1266,7 +1266,7 @@ function Workspace({
                 </>
               )}
             </div>
-            {!sourceBody && hintsOpen && statement.hints.length > 0 && (
+            {!sourceBody && !examMode && hintsOpen && statement.hints.length > 0 && (
               <div className="cs-hints" id="problem-hints">
                 <div>
                   <Lightbulb size={17} />
