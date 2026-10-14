@@ -63,6 +63,7 @@ import {
   MockExamDone,
   useMockExam,
 } from './mock-exam-bar';
+import { useReplayRecorder } from './mock-replay';
 import { reportWindow } from '@/lib/mock-oa';
 import {
   Dialog,
@@ -447,6 +448,18 @@ function Workspace({
   const hintLadder = useHintLadder(submission, problem.failedSubmissionIds);
   // AI hints and review: kept here so a tab switch does not drop the replies.
   const aiTutor = useAiTutor(initialProblem.id);
+  // A running mock OA records this question for the report's code replay (this browser only).
+  const recordReplay = useReplayRecorder(
+    exam?.running && ready ? exam.session : null,
+    initialProblem.id,
+    code,
+  );
+  useEffect(() => {
+    if (!submission || activeStatuses.has(submission.status) || submission.status === 'cancelled') return;
+    // The POST acknowledgement may already say accepted but has no test details.
+    if (submission.status === 'accepted' && submission.total <= 0) return;
+    recordReplay.current(submission);
+  }, [submission, recordReplay]);
   const [success, setSuccess] = useState<OJSubmission | null>(null);
   const [solveSeconds, setSolveSeconds] = useState<number | null>(null);
   const announcedSuccess = useRef<string | null>(null);
