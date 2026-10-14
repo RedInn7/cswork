@@ -5,7 +5,14 @@ import { rememberProblemSequence } from '@/lib/problem-sequence';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
 import { StudyPlan, useStudyPlan, type PlanTodo } from './study-plan';
 import { RouteLine } from './route-line';
-import { routeStops, stopFromUrl, type RouteStop } from '@/lib/route-stops';
+import {
+  askedText,
+  routeStops,
+  stopFromUrl,
+  topicName,
+  type RouteStop,
+} from '@/lib/route-stops';
+import { dailySolved, dailyStreak, type DailyProblem } from '@/lib/daily-problem';
 import {
   ArrowLeft,
   ArrowRight,
@@ -161,10 +168,13 @@ export function StudyLibrary({
   activity = [],
   signedIn = false,
   userId,
+  daily,
 }: {
   navigate: Navigate;
   availableProblemIds: string[];
   activity?: { problem_id: string; created_at: number }[];
+  /** Today's problem from the bootstrap. */
+  daily?: DailyProblem | null;
   signedIn?: boolean;
   /** Keys the sprint plan on this device; guests share one. */
   userId?: string | null;
@@ -215,7 +225,7 @@ export function StudyLibrary({
   const [copyMessage, setCopyMessage] = useState('');
   const detailHeading = useRef<HTMLHeadingElement>(null);
   const t = (zh: string, en: string) => (english ? en : zh);
-  const stats = usePracticeStats(activity, english);
+  const stats = usePracticeStats(activity, english, daily?.done);
   // Per-device preferences: a folded line and the sprint plan, whose daily
   // count (else the "n a day" picker) is today's target.
   const [folded, setFolded] = useState(false);
@@ -701,6 +711,9 @@ export function StudyLibrary({
   const stopName = (stop: RouteStop) =>
     english ? stop.titleEn || stop.title : stop.title;
   const today = stats?.today ?? 0;
+  // Read after mount (stats), like the calendar, so server and browser clocks never disagree.
+  const dailyRun = member && stats && daily ? dailyStreak(daily.done, Date.now()) : 0;
+  const dailyDone = member && !!daily && dailySolved(daily);
   // 0 on a mock OA or OA day: no practice planned.
   const tripDone = member && !!target && today >= target;
   const startNext = () => {
@@ -827,6 +840,63 @@ export function StudyLibrary({
                   {difficultyName(next.difficulty)}
                 </span>
                 {pips(next.stage)}
+              </div>
+            )}
+            {daily && (
+              <div
+                className="route-ticket route-daily"
+                data-done={dailyDone || undefined}
+              >
+                <span className="route-daily-tag">
+                  <Star size={14} aria-hidden="true" />
+                  {t('今日一题', 'Daily problem')}
+                </span>
+                <strong>{english ? daily.titleEn || daily.title : daily.title}</strong>
+                <span
+                  className="route-level study-level"
+                  data-level={daily.difficulty.toLowerCase()}
+                >
+                  {difficultyName(daily.difficulty)}
+                </span>
+                <a
+                  className="route-daily-go"
+                  // Guests get the public page: OA statements are open, LeetCode needs an account.
+                  href={
+                    member
+                      ? `/?${new URLSearchParams({ view: 'problem', problem: daily.id })}`
+                      : '/daily'
+                  }
+                  onClick={(event) => {
+                    if (!member || event.button || event.metaKey || event.ctrlKey || event.shiftKey)
+                      return;
+                    event.preventDefault();
+                    navigate('problem', { problem: daily.id });
+                  }}
+                >
+                  {dailyDone ? (
+                    <>
+                      <Check size={14} aria-hidden="true" />
+                      {t('已完成', 'Done')}
+                    </>
+                  ) : member ? (
+                    t('去做题', 'Solve it')
+                  ) : (
+                    t('查看', 'View')
+                  )}
+                </a>
+                <span className="route-daily-meta">
+                  {daily.kind === 'oa'
+                    ? t(`${daily.company?.name ?? ''} OA · 双号日练热门公司 OA`, `${daily.company?.name ?? ''} OA · even dates bring a hot company’s OA`)
+                    : t(
+                        `500 路 · ${topicName(daily.stop ?? '', true)} · 单号日练 500 路`,
+                        `Line 500 · ${topicName(daily.stop ?? '', false)} · odd dates ride Line 500`,
+                      )}
+                  {dailyRun > 0 && (
+                    <span className="route-daily-run">
+                      {t(`每日一题连续 ${dailyRun} 天`, `${dailyRun}-day daily streak`)}
+                    </span>
+                  )}
+                </span>
               </div>
             )}
             <div className="route-actions">
@@ -994,6 +1064,12 @@ export function StudyLibrary({
                   </span>
                 )}
               </span>
+              {stops.some((stop) => stop.companies) && (
+                <span className="route-heat-key">
+                  <i aria-hidden="true" />
+                  {t('热度点：面经出现越多越亮', 'Dots glow with interview reports')}
+                </span>
+              )}
               {data?.currentRound && (
                 <details className="route-round">
                   <summary>
@@ -1249,6 +1325,9 @@ export function StudyLibrary({
         <div className="route-selected">
           <span className="route-code">{selectedStop.code}</span>
           <strong>{stopName(selectedStop)}</strong>
+          {!!selectedStop.companies && (
+            <span className="route-asked">{askedText(selectedStop, !english)}</span>
+          )}
           {member ? (
             <span className="route-selected-count">
               {t(
@@ -1397,6 +1476,9 @@ export function StudyLibrary({
                     <h3 className="route-heading">
                       <span className="route-code">{stop.code}</span>
                       <span className="route-heading-name">{stopName(stop)}</span>
+                      {!!stop.companies && (
+                        <span className="route-asked">{askedText(stop, !english)}</span>
+                      )}
                       <span className="route-count">
                         {member ? (
                           <>
