@@ -222,7 +222,7 @@ function mapValue(value, role, ground) {
 }
 
 // Tokens app/theme.css turns light in dark mode: text drawn on them needs dark ink.
-const LIGHT_ACCENT = /var\(--(primary|sidebar-primary|verdict-(ac|tle|wa)|destructive|ring|rd-brand|rd-sky|cs-blue)\)/;
+const LIGHT_ACCENT = /var\(--(primary|sidebar-primary|verdict-(ac|tle|wa)|destructive|ring|rd-ink(-2)?|rd-brand(-ink)?|rd-red|rd-amber|rd-sky|cs-blue)\)/;
 const SURFACE_TOKEN = /var\(--(background|card|popover|muted|secondary|accent|sidebar|input|rd-surface|rd-fill[\w-]*|cs-surface[\w-]*|cs-canvas)\)/;
 export const DARK_INK = '#0b1411';
 
@@ -284,13 +284,14 @@ export function stripBlock(css) {
 /** Classify a background value: what will the dark block do to the surface behind text? */
 function bgClass(value, vars) {
   const resolved = value.replace(/var\((--[\w-]+)\)/g, (m, name) => (vars.has(name) && !LIGHT_ACCENT.test(m) && !SURFACE_TOKEN.test(m) ? vars.get(name) : m));
-  if (LIGHT_ACCENT.test(resolved)) return { kind: 'accent' };
-  // Tints mixed with transparent are faint overlays, not the surface behind text.
+  // Tints mixed with transparent are faint overlays, not the surface behind text,
+  // and an accent mixed into a surface is still a dark surface.
   const opaque = resolved
     .replace(/url\([^)]*\)/g, '')
     .replace(/color-mix\((?:[^()]|\([^()]*\))*\)/g, (m) =>
       m.includes('transparent') ? '' : SURFACE_TOKEN.test(m) ? 'var(--card)' : m,
     );
+  if (LIGHT_ACCENT.test(opaque)) return { kind: 'accent' };
   const literals = (opaque.match(COLOR_RE) || []).map(parseColor).filter(Boolean);
   const solid = literals.filter((c) => c.alpha >= 0.35);
   if (solid.length) {

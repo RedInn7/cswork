@@ -87,6 +87,16 @@
     background: rgb(238 243 248 / 0.8);
   }
 
+  /*
+   * Checked verdict chips sit on --rd-red / --rd-brand-ink, which turn light here; the
+   * label would otherwise keep the rating scale's light text (1.6–2.6:1).
+   */
+  .dark .mi-verdicts label[data-verdict^='strong-no']:has(input:checked),
+  .dark .mi-verdicts label[data-verdict='no']:has(input:checked),
+  .dark .mi-verdicts label[data-verdict$='yes']:has(input:checked) {
+    color: #0b1411;
+  }
+
   /* Google's own dark sign-in button (fill, stroke and label from its brand guidelines). */
   .dark .login-providers .google-signin {
     background: #131314;

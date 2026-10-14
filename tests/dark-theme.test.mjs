@@ -15,6 +15,7 @@ import {
   parseColor,
   prefixSelector,
   REFERENCE_SURFACE,
+  rgbToOklch,
   themedFiles,
   withDarkBlock,
 } from '../scripts/dark-theme.mjs';
@@ -235,3 +236,54 @@ test('dark text keeps 4.5:1: tokens, generated pairs and the text mapping', () =
       }
 });
 
+// Solid fills on tokens app/theme.css turns light (ink, brand, red, amber …): the text on
+// them has to turn dark too. Marks that hold no text (dots, glyphs, bar fills) are named here.
+const MARKS = new Set([
+  '.dark .notification-button i',
+  '.dark .js-live-dot',
+  ".dark .js-live[aria-pressed='true'] .js-live-dot",
+  '.dark td[data-over] .mi-bar i',
+  '.dark .om-live',
+  '.dark .om-lat-avg',
+  '.dark .om-glyph.is-dot',
+  '.dark .om-glyph.is-avg',
+]);
+
+test('text on a fill that turns light in dark mode keeps 4.5:1', () => {
+  const tokens = new Map();
+  const manual = new Map();
+  postcss.parse(read('app/theme.css')).walkDecls((d) => {
+    if (d.prop.startsWith('--')) {
+      const c = parseColor(d.value);
+      if (c) tokens.set(d.prop, c.rgb);
+    } else if (d.prop === 'color' && d.parent.type === 'rule')
+      for (const s of d.parent.selectors) manual.set(s.trim().replace(/\s+/g, ' '), d.value);
+  });
+  const token = (value) => tokens.get(/^var\((--[\w-]+)\)$/.exec(value?.trim() ?? '')?.[1]);
+  const colour = (value) => token(value) ?? parseColor(value ?? '')?.rgb;
+  // `.x[data-a]:has(:checked) b` falls back to the text colour of `.x b`.
+  const base = (sel) => sel.replace(/\[[^\]]*\]|:[\w-]+(\((?:[^()]|\([^()]*\))*\))?/g, '');
+  let fills = 0;
+  for (const file of themedFiles(root)) {
+    const [, block] = read(file).split(START);
+    if (!block) continue;
+    const text = new Map();
+    const fillRules = [];
+    postcss.parse(block.replace(END, '')).walkRules((rule) => {
+      const get = (prop) => rule.nodes.findLast((n) => n.type === 'decl' && n.prop === prop)?.value;
+      for (const s of rule.selectors.map((s) => s.replace(/\s+/g, ' '))) {
+        if (get('color')) text.set(s, get('color'));
+        fillRules.push([s, get('background') ?? get('background-color')]);
+      }
+    });
+    for (const [sel, fill] of fillRules) {
+      const bg = token(fill);
+      if (!bg || rgbToOklch(bg).L <= 0.6 || MARKS.has(sel)) continue;
+      fills++;
+      const fg = colour(manual.get(sel) ?? text.get(sel) ?? text.get(base(sel)));
+      const ratio = fg ? contrast(fg, bg) : 0;
+      assert.ok(ratio >= 4.5, `${file} ${sel}: text on ${fill} is ${fg ? ratio.toFixed(2) + ':1' : 'unset'}`);
+    }
+  }
+  assert.ok(fills >= 8, `checked ${fills} fills`);
+});
