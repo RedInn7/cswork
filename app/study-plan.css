@@ -1,0 +1,266 @@
+/*
+ * Sprint plan (components/study-plan.tsx) inside the line's announce panel.
+ * Line 500 tokens from study-library.css: navy panel, amber for what is due,
+ * dashed ticket edges for things the learner fills in.
+ */
+.route-plan {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding-top: 12px;
+  border-top: 1px dashed rgb(238 243 248 / 0.16);
+}
+.route-plan-card {
+  padding: 14px 16px;
+  border: 1px dashed rgb(255 178 63 / 0.55);
+  border-radius: 10px;
+  background:
+    linear-gradient(100deg, rgb(255 178 63 / 0.09), transparent 60%),
+    rgb(238 243 248 / 0.03);
+}
+.route-plan-kicker {
+  margin: 0;
+  font: 700 11px/1.2 var(--font-route);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--route-amber);
+}
+.study-bank:lang(zh) .route-plan-kicker {
+  letter-spacing: 0.2em;
+}
+.route-plan-title {
+  margin: 0;
+  font: 650 16px/1.4 var(--font-route);
+  color: var(--route-white);
+  overflow-wrap: anywhere;
+}
+.route-plan-title:focus {
+  outline: none;
+}
+.route-plan-title:focus-visible {
+  outline: 2px solid var(--route-white);
+  outline-offset: 2px;
+}
+.route-plan-title strong {
+  font-weight: 800;
+  font-size: 1.3em;
+  color: var(--route-amber);
+  font-variant-numeric: tabular-nums;
+}
+.route-plan-text {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--route-white-2);
+}
+.route-plan-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+}
+.route-plan-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 32px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--route-white-2);
+  font: 600 13px/1.2 var(--font-route);
+  text-decoration: underline;
+  text-decoration-color: rgb(238 243 248 / 0.3);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.route-plan-link:hover {
+  color: var(--route-white);
+  text-decoration-color: currentColor;
+}
+.route-plan-entry {
+  justify-self: start;
+}
+.route-plan-mock {
+  justify-self: start;
+  padding: 4px 10px;
+  border: 1px solid var(--route-amber);
+  border-radius: 7px;
+  color: var(--route-amber);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.route-plan-mock::after {
+  content: ' →';
+}
+:is(.route-plan-link, .route-plan-mock, .route-plan-weeks summary, .route-plan-weeks a, .route-plan-weeks ol):focus-visible,
+.route-plan-form :is(input, select):focus-visible {
+  outline: 2px solid var(--route-white);
+  outline-offset: 2px;
+}
+
+/* The form: fields on a dark ticket. */
+.route-plan-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px 14px;
+}
+.route-plan-fields label {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--route-white-2);
+}
+.route-plan-fields .route-plan-wide {
+  grid-column: 1 / -1;
+}
+.route-plan-fields small {
+  font-weight: 400;
+  color: var(--route-white-3);
+}
+.study-bank .route-plan-form :is(input, select) {
+  min-block-size: 36px;
+  inline-size: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--route-slate);
+  border-radius: 7px;
+  background-color: var(--route-navy);
+  color: var(--route-white);
+  font: 500 14px/1.2 var(--font-route);
+  font-variant-numeric: tabular-nums;
+  color-scheme: dark;
+}
+.route-plan-error {
+  margin: 0;
+  font-size: 12px;
+  color: #ff9aa0;
+}
+
+/* Week by week: a timetable that scrolls inside the panel. */
+.route-plan-weeks summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-block-size: 32px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--route-white-2);
+  cursor: pointer;
+  list-style: none;
+}
+.route-plan-weeks summary::-webkit-details-marker {
+  display: none;
+}
+.route-plan-weeks[open] summary svg {
+  transform: rotate(180deg);
+}
+.route-plan-weeks ol {
+  display: grid;
+  max-block-size: 280px;
+  margin: 4px 0 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  overscroll-behavior: contain;
+}
+.route-plan-weeks li {
+  display: grid;
+  grid-template-columns: 6.5em 11em minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 7px 8px 7px 10px;
+  border-left: 3px solid var(--route-line);
+  border-bottom: 1px solid var(--route-led-off);
+  color: var(--route-white-2);
+}
+.route-plan-weeks li[data-sprint] {
+  border-left-color: var(--route-amber);
+}
+.route-plan-week {
+  display: grid;
+  font-weight: 700;
+  color: var(--route-white);
+}
+.route-plan-week small {
+  font-weight: 400;
+  color: var(--route-white-3);
+}
+.route-plan-stops {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--route-white-3);
+}
+.route-plan-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  gap: 4px;
+}
+.route-plan-tag {
+  padding: 1px 7px;
+  border: 1px solid rgb(255 178 63 / 0.5);
+  border-radius: 5px;
+  color: var(--route-amber);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.route-plan-tag[data-oa] {
+  background: var(--route-amber);
+  color: var(--route-navy);
+}
+a.route-plan-tag:hover {
+  background: rgb(255 178 63 / 0.14);
+}
+
+/* A plan of many problems a day: the punch card wraps instead of overflowing. */
+.route-punches {
+  flex-wrap: wrap;
+}
+.study-route[data-folded] .route-plan {
+  display: none;
+}
+
+@container bank (max-width: 559px) {
+  .route-plan-weeks li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .route-plan-stops {
+    grid-column: 1 / -1;
+    white-space: normal;
+  }
+  .route-plan-tags {
+    grid-column: 1 / -1;
+    justify-content: start;
+  }
+}
+@media (pointer: coarse) {
+  .route-plan-link,
+  .route-plan-weeks summary {
+    min-block-size: 44px;
+  }
+}
+@media (forced-colors: active) {
+  .route-plan-card,
+  .route-plan-tag,
+  .route-plan-mock {
+    border-color: CanvasText;
+  }
+  .route-plan-tag[data-oa] {
+    forced-color-adjust: none;
+    background: Highlight;
+    color: HighlightText;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .route-plan-weeks summary svg {
+    transition: transform 150ms;
+  }
+}

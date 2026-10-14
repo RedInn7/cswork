@@ -3,6 +3,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
+import { StudyPlan, useStudyPlan, type PlanTodo } from './study-plan';
 import { RouteLine } from './route-line';
 import { routeStops, type RouteStop } from '@/lib/route-stops';
 import {
@@ -79,6 +80,8 @@ type LibraryPage = RoundState & {
   /** Companies on the line, with how many of its problems they asked. */
   companies?: { slug: string; name: string; count: number }[];
   sequence?: string[];
+  /** What is left of the sequence, for the sprint plan. */
+  planTodo?: PlanTodo[];
   nextProblemId?: string | null;
   /** The recommended next problem, for everyone (signed out: the first stop). */
   next?: {
@@ -149,11 +152,14 @@ export function StudyLibrary({
   availableProblemIds,
   activity = [],
   signedIn = false,
+  userId,
 }: {
   navigate: Navigate;
   availableProblemIds: string[];
   activity?: { problem_id: string; created_at: number }[];
   signedIn?: boolean;
+  /** Keys the sprint plan on this device; guests share one. */
+  userId?: string | null;
 }) {
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState('');
@@ -187,15 +193,13 @@ export function StudyLibrary({
   const detailHeading = useRef<HTMLHeadingElement>(null);
   const t = (zh: string, en: string) => (english ? en : zh);
   const stats = usePracticeStats(activity, english);
-  // Per-device preferences: a folded line and the daily target.
+  // Per-device preferences: a folded line and the sprint plan, whose daily
+  // count (else the "n a day" picker) is today's target.
   const [folded, setFolded] = useState(false);
-  const [target, setTarget] = useState(3);
   const [celebrate, setCelebrate] = useState(false);
   useEffect(() => {
     try {
       setFolded(localStorage.getItem('cswork:route:folded') === '1');
-      const saved = Number(localStorage.getItem('cswork:practice:daily-target'));
-      if ([1, 2, 3, 5].includes(saved)) setTarget(saved);
     } catch {}
   }, []);
   function changeFolded(value: boolean) {
@@ -204,11 +208,10 @@ export function StudyLibrary({
       localStorage.setItem('cswork:route:folded', value ? '1' : '0');
     } catch {}
   }
+  const sprint = useStudyPlan(userId, data?.planTodo);
+  const target = sprint.target;
   function changeTarget(value: number) {
-    setTarget(value);
-    try {
-      localStorage.setItem('cswork:practice:daily-target', String(value));
-    } catch {}
+    if (sprint.goal) sprint.save({ ...sprint.goal, dailyTarget: value });
   }
   // Reaching the daily target is celebrated once per day on this device. It waits
   // for the panel so its live region exists before the text arrives.
@@ -841,19 +844,22 @@ export function StudyLibrary({
                       `${today} of ${target} solved today`,
                     )}
                   </span>
-                  <label className="route-target">
-                    <span className="sr-only">{t('每日目标', 'Daily target')}</span>
-                    <select
-                      value={target}
-                      onChange={(event) => changeTarget(Number(event.target.value))}
-                    >
-                      {[1, 2, 3, 5].map((n) => (
-                        <option key={n} value={n}>
-                          {t(`每天 ${n} 题`, `${n} a day`)}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                  {/* A sprint plan sets the count; its summary below says how. */}
+                  {!sprint.plan?.daily && (
+                    <label className="route-target">
+                      <span className="sr-only">{t('每日目标', 'Daily target')}</span>
+                      <select
+                        value={target}
+                        onChange={(event) => changeTarget(Number(event.target.value))}
+                      >
+                        {[1, 2, 3, 5].map((n) => (
+                          <option key={n} value={n}>
+                            {t(`每天 ${n} 题`, `${n} a day`)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
                   <output className="sr-only" aria-live="polite">
                     {celebrate && tripDone
                       ? t(
@@ -865,7 +871,7 @@ export function StudyLibrary({
                 </div>
               )}
             </div>
-            {member && data?.collection && !solvedAll && (
+            {member && data?.collection && !solvedAll && !sprint.plan && (
               <p className="route-pace">
                 {t(
                   `按每天 ${target} 题，约 ${daysLeft} 天到终点站。`,
@@ -895,6 +901,14 @@ export function StudyLibrary({
                 )}
               </p>
             ) : null}
+            <StudyPlan
+              goal={sprint.goal}
+              plan={sprint.plan}
+              today={sprint.today}
+              onSave={sprint.save}
+              stops={stops}
+              english={english}
+            />
           </div>
           <div className="route-habit">
             <PracticeCalendar

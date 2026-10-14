@@ -940,6 +940,7 @@ export function ProblemList({
       availableProblemIds={boot.problems.map((problem) => problem.id)}
       activity={boot.activity || []}
       signedIn={!!boot.person}
+      userId={boot.person?.id}
     />
   );
 }

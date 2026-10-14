@@ -48,6 +48,7 @@ export function AlgorithmLibrary(props: {
   collection?: string;
   activity: { problem_id: string; created_at: number }[];
   signedIn: boolean;
+  userId?: string | null;
 }) {
   const section = props.collection === 'oa' ? 'oa' : 'leetcode';
   return (
