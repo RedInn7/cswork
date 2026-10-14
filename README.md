@@ -53,7 +53,7 @@ HOST=127.0.0.1 PORT=4317 npm start
 - **账号**：Better Auth。服务器 CLI 初始化老师；密码开放登录但关闭未经验证的公开密码注册。邀请链接可完成入学；Google、GitHub 已在正式站配置并支持公开注册；邮箱验证码需额外邮件凭据。只有已验证邮箱且命中服务器白名单的用户才能成为老师。账号页支持昵称、设备会话、关联身份、改密与验证码找回。
 - **第三方登录**：配置 `GOOGLE_CLIENT_ID/SECRET`、`GITHUB_CLIENT_ID/SECRET`；回调地址为正式域名下 `/api/auth/callback/google`、`/api/auth/callback/github`。为 cswork 单独创建 OAuth 应用，不复用 CSGrad 的身份后端。
 - **验证码**：配置 `RESEND_API_KEY`、已验证发件域名的 `MAIL_FROM`；有效期 5 分钟，最多 5 次尝试。
-- **AI 助教**：配置 `ANTHROPIC_API_KEY` 后题目页出现 AI 提示（苏格拉底式，不给代码）和代码点评（复杂度、边界、风格）；未配置时完全隐藏，模拟 OA 中也隐藏。每人每天 10 次提示、5 次点评，全站每天 `AI_TUTOR_DAILY_BUDGET` 次（默认 500），计数存 `ai_usage` 表；可用 `AI_TUTOR_HINT_MODEL`、`AI_TUTOR_REVIEW_MODEL` 换模型。日志与统计只记次数和 token 数，不记题面、代码或回复。
+- **AI 助教**：配置 `ANTHROPIC_API_KEY` 后题目页出现 AI 提示（苏格拉底式，不给代码）和代码点评（复杂度、边界、风格）；未配置时完全隐藏，模拟 OA 中也隐藏。每人每天 10 次提示、5 次点评、20 次追问、5 次用例生成、5 次调试、10 次复杂度分析、20 次题面解释（合计最多 75 次），全站每天 `AI_TUTOR_DAILY_BUDGET` 次（默认 2500；调整单人上限时同步调整它），计数存 `ai_usage` 表；可用 `AI_TUTOR_HINT_MODEL`、`AI_TUTOR_REVIEW_MODEL` 换模型。日志与统计只记次数和 token 数，不记题面、代码或回复。
 - **算法判题**：Monaco 编辑器、BullMQ 持久化队列、独立 go-judge 1.12.3 沙箱，支持 C++20、Python、Java 和 Go。教师可管理测试点、保存草稿并发布不可变版本；提交支持逐点结果、取消与自动重试。部署见 [OJ 运行时](docs/oj-runtime.md) 和 [判题开发说明](docs/OJ.md)。
 - **视频**：Video.js 播放自有服务器上的 MP4/WebM。每个播放请求检查课程权限，正式环境通过 Nginx internal/X-Accel-Redirect 支持拖动和 Range 传输；应用不把整段视频读入内存。可选 Cloudflare Stream 仍支持签名播放与续签，已有 Stream 令牌撤权后最长保留 1 小时。
 - **收费**：Stripe Checkout，配置 `STRIPE_SECRET_KEY`、`STRIPE_WEBHOOK_SECRET`；教师为各课程绑定 Price，`STRIPE_PRICE_GOMALL` 兼容旧配置。Webhook `/api/stripe/webhook` 订阅 `checkout.session.completed`、`checkout.session.async_payment_succeeded`、`checkout.session.async_payment_failed`、`checkout.session.expired`、`charge.refunded`、`refund.created`、`refund.updated`、`refund.failed`。测试环境凭据与正式收款完全分开。

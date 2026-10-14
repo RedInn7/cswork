@@ -33,8 +33,9 @@ export const AI_DAILY_LIMITS: Record<AiKind, number> = {
   complexity: 10,
   explain: 20,
 };
-// Calls per UTC day across all learners; AI_TUTOR_DAILY_BUDGET overrides it.
-const DEFAULT_BUDGET = 500;
+// Calls per UTC day across all learners; AI_TUTOR_DAILY_BUDGET overrides it. About 34 learners
+// maxing every kind (75 calls each) before it runs out, so a few accounts cannot drain it for all.
+const DEFAULT_BUDGET = 2500;
 export const AI_CODE_CHARS = 20_000;
 const STATEMENT_CHARS = 12_000;
 const QUESTION_CHARS = 1000;
