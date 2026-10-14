@@ -636,7 +636,10 @@ export function LessonReader({
         p.lessonId === id ||
         interviewChapter?.homeworkProblemIds.includes(p.id),
     ),
-    next = all[all.findIndex((l) => l.id === id) + 1];
+    next = all[all.findIndex((l) => l.id === id) + 1],
+    // Free preview reader: everything past this lesson (next, contents, questions, versions,
+    // assignments) needs the course, so those links lead back to the course to unlock it.
+    locked = !!course && !course.has_access;
   return (
     <>
       <div className="breadcrumb">
@@ -843,7 +846,7 @@ export function LessonReader({
                         )}
                   </p>
                 )}
-                {!interviewChapter && (
+                {!interviewChapter && !locked && (
                   <>
                     <h3>{t('提交工程作业', 'Submit your project')}</h3>
                     <p className="muted">
@@ -896,7 +899,7 @@ export function LessonReader({
                   ? t('已完成本课', 'Lesson completed')
                   : t('标记本课完成', 'Mark lesson complete')}
             </Button>
-            {next && (
+            {next && !locked && (
               <Button
                 variant="ghost"
                 onClick={() => navigate('lesson', { lesson: next.id })}
@@ -913,72 +916,88 @@ export function LessonReader({
           <div className="side-card">
             <h3>{t('学习目录', 'Contents')}</h3>
             <div className="mini-curriculum">
-              {all.map((l) => (
+              {all.map((l) => {
+                const closed = locked && !l.preview;
+                return (
+                  <button
+                    key={l.id}
+                    className={l.id === id ? 'current' : ''}
+                    onClick={() =>
+                      closed
+                        ? navigate(interviewChapter ? 'knowledge' : 'courses')
+                        : navigate('lesson', { lesson: l.id })
+                    }
+                  >
+                    <span>{String(l.position).padStart(2, '0')}</span>
+                    <span>{l.title}</span>
+                    {closed ? (
+                      <>
+                        <Lock size={12} aria-hidden="true" />
+                        <span className="sr-only">{t('（需开通课程）', ' (unlock the course to open)')}</span>
+                      </>
+                    ) : (
+                      boot.progress.some((p) => p.lesson_id === l.id && p.completed) && <Check size={12} />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          {!locked && (
+            <div className="help-card">
+              <MessageSquare size={22} />
+              <h3>
+                {interviewChapter
+                  ? t('问题与反馈', 'Questions and feedback')
+                  : t('卡住了？一起解决。', "Stuck? Let's work it out.")}
+              </h3>
+              <p>
+                {interviewChapter
+                  ? t(
+                      '问题仅你和老师可见，会附上当前知识点。',
+                      'Only you and the teacher can see your question. The current concept is attached.',
+                    )
+                  : t(
+                      '问题仅你和老师可见，会附上当前章节与播放位置。',
+                      'Only you and the teacher can see your question. The current lesson and video position are attached.',
+                    )}
+              </p>
+              <Button
+                variant="outline"
+                onClick={() =>
+                  ask({
+                    lessonId: id,
+                    videoPosition: String(Math.floor(pos.current)),
+                    ...(lesson.progress?.video_asset_id
+                      ? { videoAssetId: lesson.progress.video_asset_id }
+                      : {}),
+                  })
+                }
+              >
+                {t('向老师提问', 'Ask the teacher')}
+                <ArrowRight size={15} />
+              </Button>
+            </div>
+          )}
+          {!locked && (
+            <div className="side-card">
+              <h3>{t('课件版本', 'Handout versions')}</h3>
+              {lesson.versions?.slice(0, 5).map((v) => (
                 <button
-                  key={l.id}
-                  className={l.id === id ? 'current' : ''}
-                  onClick={() => navigate('lesson', { lesson: l.id })}
+                  className="version-line lms-version-link"
+                  key={v.version}
+                  onClick={() => {
+                    setHistoryBody(null);
+                    setHistoryError('');
+                    setHistoryVersion(v.version);
+                  }}
                 >
-                  <span>{String(l.position).padStart(2, '0')}</span>
-                  <span>{l.title}</span>
-                  {boot.progress.some(
-                    (p) => p.lesson_id === l.id && p.completed,
-                  ) && <Check size={12} />}
+                  <span>v{v.version}</span>
+                  <span>{date(v.created_at)}</span>
                 </button>
               ))}
             </div>
-          </div>
-          <div className="help-card">
-            <MessageSquare size={22} />
-            <h3>
-              {interviewChapter
-                ? t('问题与反馈', 'Questions and feedback')
-                : t('卡住了？一起解决。', "Stuck? Let's work it out.")}
-            </h3>
-            <p>
-              {interviewChapter
-                ? t(
-                    '问题仅你和老师可见，会附上当前知识点。',
-                    'Only you and the teacher can see your question. The current concept is attached.',
-                  )
-                : t(
-                    '问题仅你和老师可见，会附上当前章节与播放位置。',
-                    'Only you and the teacher can see your question. The current lesson and video position are attached.',
-                  )}
-            </p>
-            <Button
-              variant="outline"
-              onClick={() =>
-                ask({
-                  lessonId: id,
-                  videoPosition: String(Math.floor(pos.current)),
-                  ...(lesson.progress?.video_asset_id
-                    ? { videoAssetId: lesson.progress.video_asset_id }
-                    : {}),
-                })
-              }
-            >
-              {t('向老师提问', 'Ask the teacher')}
-              <ArrowRight size={15} />
-            </Button>
-          </div>
-          <div className="side-card">
-            <h3>{t('课件版本', 'Handout versions')}</h3>
-            {lesson.versions?.slice(0, 5).map((v) => (
-              <button
-                className="version-line lms-version-link"
-                key={v.version}
-                onClick={() => {
-                  setHistoryBody(null);
-                  setHistoryError('');
-                  setHistoryVersion(v.version);
-                }}
-              >
-                <span>v{v.version}</span>
-                <span>{date(v.created_at)}</span>
-              </button>
-            ))}
-          </div>
+          )}
         </aside>
       </div>
       <Dialog
