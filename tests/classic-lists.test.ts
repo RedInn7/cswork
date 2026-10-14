@@ -81,7 +81,9 @@ void test('the data file holds the four mapped lists as numbers and groups only'
     assert.ok(l.groups.length > 0, l.slug);
     const numbers = l.groups.flatMap((g) => g.numbers);
     assert.ok(numbers.every((n) => Number.isInteger(n) && n > 0), l.slug);
-    assert.equal(new Set(numbers).size, numbers.length, `${l.slug} repeats a number`);
+    // A list may file one problem under two groups (Blind 75 has 23 in Linked List and Heap).
+    for (const g of l.groups) assert.equal(new Set(g.numbers).size, g.numbers.length, `${l.slug} repeats a number in a group`);
+    assert.ok(new Set(numbers).size >= numbers.length - 2, `${l.slug} repeats too many numbers`);
     for (const g of l.groups) assert.ok(g.nameZh && g.nameEn && g.numbers.length, l.slug);
   }
   assert.equal(classicList('blind-75')?.nameEn, 'Blind 75');
