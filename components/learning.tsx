@@ -724,7 +724,8 @@ export function LessonReader({
               <SelectionAsk>
                 <LessonMarkdown body={lesson.body || ''} lecture />
               </SelectionAsk>
-              {interviewChapter && (
+              {/* Practice status needs the course: a preview reader gets the explanation only. */}
+              {interviewChapter && course?.has_access && (
                 <KnowledgeExercises
                   lessonId={id}
                   navigate={navigate}

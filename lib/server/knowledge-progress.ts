@@ -9,8 +9,7 @@ import { studyProgress } from './practice-progress';
 export async function getKnowledgeProgress(person: Person, lessonId: string) {
   const chapter = catalog.find((entry) => entry.id === lessonId);
   if (!chapter) throw new HttpError(404, '知识点不存在');
-  // The knowledge course's free preview topic shows its practice too (a read path).
-  await liveLesson(person, lessonId, true);
+  await liveLesson(person, lessonId);
   const db = sqlite();
   return db.transaction(() => {
     const currentRound = db
