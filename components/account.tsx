@@ -692,14 +692,17 @@ export function OrderCard({
               <dt>{t('订单编号', 'Order ID')}</dt>
               <dd>{detail.id}</dd>
             </div>
-            <div>
-              <dt>{t('课程权益', 'Course access')}</dt>
-              <dd>
-                {detail.has_access
-                  ? t('已经开通', 'Unlocked')
-                  : t('尚未开通', 'Not unlocked yet')}
-              </dd>
-            </div>
+            {/* A gift never unlocks the buyer: its block below says where the code stands. */}
+            {!detail.gift && (
+              <div>
+                <dt>{t('课程权益', 'Course access')}</dt>
+                <dd>
+                  {detail.has_access
+                    ? t('已经开通', 'Unlocked')
+                    : t('尚未开通', 'Not unlocked yet')}
+                </dd>
+              </div>
+            )}
             {detail.amount_refunded > 0 && (
               <div>
                 <dt>{t('已退款', 'Refunded')}</dt>
