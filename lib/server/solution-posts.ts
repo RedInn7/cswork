@@ -69,12 +69,14 @@ type PostRow = {
   excerpt?: string;
 };
 /** Your own name to you; to everyone else the public handle if you chose one, else a masked name. */
-const byline = <T extends { author: string; handle: string | null; mine: number }>({ handle, ...r }: T) => ({
-  ...r,
-  author: r.mine ? r.author : handle || (r.author ? maskName(r.author) : ''),
-  mine: !!r.mine,
-});
-const shape = (r: PostRow) => ({ ...byline(r), voted: !!r.voted });
+const byline = <T extends { author: string; handle: string | null; mine: number }>(row: T) => {
+  const { handle, ...rest } = row;
+  return Object.assign(rest, {
+    author: row.mine ? row.author : handle || (row.author ? maskName(row.author) : ''),
+    mine: !!row.mine,
+  });
+};
+const shape = (r: PostRow) => Object.assign(byline(r), { voted: !!r.voted });
 
 export const canModerate = (p: Person) => p.role === 'teacher' || isCourseOwner(p);
 function requireModerator(p: Person) {
