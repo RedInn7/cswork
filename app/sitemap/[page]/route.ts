@@ -17,6 +17,7 @@ import {
   publicLibraryPath,
 } from '@/lib/server/public-library';
 import { mockOaPaths } from '@/lib/server/mock-oa-presets';
+import { systemDesignPaths } from '@/lib/server/system-design-course';
 
 export async function GET(
   _request: Request,
@@ -38,7 +39,7 @@ export async function GET(
   if (!/^[1-9]\d{0,6}$/.test(rawPage))
     return new Response('Not found', { status: 404 });
   const page = Number(rawPage);
-  const statics = [...SITEMAP_STATIC_ENTRIES, ...mockOaPaths()];
+  const statics = [...SITEMAP_STATIC_ENTRIES, ...mockOaPaths(), ...systemDesignPaths()];
   if (page > sitemapPageCount(publicLibraryCount(), statics.length))
     return new Response('Not found', { status: 404 });
   const { offset, limit } = sitemapLibraryRange(page, statics.length);
