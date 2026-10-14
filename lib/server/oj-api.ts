@@ -11,6 +11,7 @@ import { judgeFeed } from './judge-feed';
 import { requestPrecompile } from './oj-precompile';
 import { handleOaLibrary } from './oa-library';
 import { handleMockOa } from './mock-oa';
+import { handleSpeedrun } from './speedrun';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
 import { curatedHint } from '@/lib/ling-curated';
@@ -63,6 +64,8 @@ export async function handleOj(
   if (resource === 'oa-library')
     return handleOaLibrary(request, p, path.slice(1));
   if (resource === 'mock-oa') return handleMockOa(request, p, path.slice(1));
+  if (request.method === 'GET' && resource === 'speedrun' && !id)
+    return handleSpeedrun(request, p);
   if (request.method === 'GET' && resource === 'problems' && id && !action) {
     // OA statements are public; other problems keep the course entitlement gate.
     const oa = id.startsWith('oa-');

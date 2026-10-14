@@ -12,6 +12,7 @@ const pages: Record<string, string> = {
   experiences: 'Experiences',
   resources: 'Resources',
   'mock-interview': 'Mock interview',
+  speedrun: 'Pattern speedrun',
   status: 'Service status',
 };
 export function measurementId(value: string | undefined): string {
