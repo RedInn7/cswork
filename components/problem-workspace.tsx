@@ -43,6 +43,12 @@ import {
 import { Button } from './ui/button';
 import { OaCompanyBadge, OaEditorial } from './oa-library';
 import {
+  ExamAcceptedDialog,
+  MockExamBar,
+  MockExamDone,
+  useMockExam,
+} from './mock-exam-bar';
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -113,6 +119,8 @@ type WorkspaceProps = {
   navigate: (view: string, extra?: Record<string, string>) => void;
   ask: (context: Record<string, string>) => void;
   refresh: () => Promise<void>;
+  /** ?mock=<session id>: the problem is a question of a timed mock OA. */
+  mock?: string;
 };
 type ReplaceRequest = {
   code: string;
@@ -180,8 +188,12 @@ function Workspace({
   navigate,
   ask,
   refresh,
+  mock,
 }: WorkspaceProps) {
   const userId = boot.person?.id || 'guest';
+  // A running mock OA hides solutions, hints and the way to other problems.
+  const exam = useMockExam(mock, userId, initialProblem.id);
+  const examMode = !!exam?.running;
   const [problem, setProblem] = useState(() => summaryProblem(initialProblem));
   const [neighbors, setNeighbors] = useState<{ prev?: string; next?: string }>(
     {},
@@ -1070,7 +1082,7 @@ function Workspace({
           <History size={15} />
           {uiEnglish ? 'Submissions' : '提交记录'}
         </button>
-        {problem.id.startsWith('oa-') && (
+        {problem.id.startsWith('oa-') && !examMode && (
           <button
             role="tab"
             className={leftTab === 'editorial' ? 'active' : ''}
@@ -1138,7 +1150,7 @@ function Workspace({
                   {uiEnglish ? 'Topics' : '主题'}
                 </button>
               )}
-              {!sourceBody && statement.hints.length > 0 && (
+              {!examMode && !sourceBody && statement.hints.length > 0 && (
                 <button
                   className="cs-statement-pill"
                   aria-expanded={hintsOpen}
@@ -1244,7 +1256,7 @@ function Workspace({
                 </>
               )}
             </div>
-            {!sourceBody && hintsOpen && statement.hints.length > 0 && (
+            {!examMode && !sourceBody && hintsOpen && statement.hints.length > 0 && (
               <div className="cs-hints" id="problem-hints">
                 <div>
                   <Lightbulb size={17} />
@@ -1859,20 +1871,34 @@ function Workspace({
       className={`cs-workspace ${expanded ? 'expanded' : ''}`}
       data-theme={settings.theme}
     >
+      {exam &&
+        (examMode ? (
+          <MockExamBar
+            session={exam.session}
+            userId={userId}
+            problemId={problem.id}
+            submissions={boot.submissions}
+            navigate={navigate}
+          />
+        ) : (
+          <MockExamDone session={exam.session} navigate={navigate} />
+        ))}
       <div className="cs-workspace-header">
         <div className="cs-workspace-heading">
-          <button
-            className="cs-back"
-            aria-label={t('返回题库', 'Back to problems')}
-            onClick={() =>
-              navigate(
-                'problems',
-                problem.id.startsWith('oa-') ? { library: 'oa' } : undefined,
-              )
-            }
-          >
-            <ArrowLeft size={18} />
-          </button>
+          {!examMode && (
+            <button
+              className="cs-back"
+              aria-label={t('返回题库', 'Back to problems')}
+              onClick={() =>
+                navigate(
+                  'problems',
+                  problem.id.startsWith('oa-') ? { library: 'oa' } : undefined,
+                )
+              }
+            >
+              <ArrowLeft size={18} />
+            </button>
+          )}
           <div>
             <span className="cs-workspace-eyebrow">
               cswork / {uiEnglish ? 'Problems' : '题库'}
@@ -1884,7 +1910,7 @@ function Workspace({
           </div>
         </div>
         <div className="cs-workspace-navigation">
-          {(neighbors.prev || neighbors.next) && (
+          {!examMode && (neighbors.prev || neighbors.next) && (
             <div className="cs-problem-steps">
               <button
                 className="cs-top-button"
@@ -1929,7 +1955,7 @@ function Workspace({
             <MessageSquare size={15} />
             <span>{t('报告题目问题 / 提问', 'Report a problem / Ask')}</span>
           </button>
-          {courseVisible && (
+          {courseVisible && !examMode && (
             <button
               className="cs-top-button"
               aria-label={t('相关课程', 'Related course')}
@@ -1958,7 +1984,17 @@ function Workspace({
           </button>
         </div>
       </div>
-      {success && (
+      {success && exam && examMode && (
+        <ExamAcceptedDialog
+          session={exam.session}
+          problemId={problem.id}
+          submissions={boot.submissions}
+          userId={userId}
+          navigate={navigate}
+          onClose={() => setSuccess(null)}
+        />
+      )}
+      {success && !examMode && (
         <AcceptedDialog
           problemId={problem.id}
           line={!!problem.practiceRound}
