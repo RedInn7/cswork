@@ -1550,7 +1550,7 @@ function Workspace({
               />
             )}
             {/* Off unless the server has AI configured; never during a mock OA. */}
-            {boot.services.ai && !!boot.person && !examMode && (
+            {boot.services?.ai && !!boot.person && !examMode && (
               <AiTutor
                 tutor={aiTutor}
                 language={language}

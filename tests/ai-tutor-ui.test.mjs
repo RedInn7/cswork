@@ -14,7 +14,7 @@ register(
 
 test('the workspace shows the tutor only with AI on, signed in, and outside a mock OA', () => {
   const source = readFileSync(new URL('../components/problem-workspace.tsx', import.meta.url), 'utf8');
-  assert.equal(source.includes('boot.services.ai && !!boot.person && !examMode && ('), true);
+  assert.equal(source.includes('boot.services?.ai && !!boot.person && !examMode && ('), true);
   // The bootstrap flag follows the server key.
   const api = readFileSync(new URL('../lib/server/api.ts', import.meta.url), 'utf8');
   assert.equal(api.includes('ai: aiEnabled()'), true);
