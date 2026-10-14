@@ -51,7 +51,9 @@ void test('every editorial is a Line 500 problem with 1-4 complete bilingual app
 });
 
 void test('the loader returns an editorial by problem id and nothing for others', () => {
-  assert.equal(lingEditorial('lc-1')?.approaches[0].nameEn, 'Brute force');
+  const file = editorials as Record<string, unknown>;
+  assert.ok(file['lc-1'], 'lc-1 has an editorial');
+  assert.deepEqual(lingEditorial('lc-1'), file['lc-1']);
   assert.equal(lingEditorial('lc-999999'), null);
   assert.equal(lingEditorial('oa-x-1'), null);
   assert.equal(lingEditorial('__proto__'), null);

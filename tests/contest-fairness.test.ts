@@ -20,6 +20,7 @@ delete process.env.COURSE_ACCESS;
 const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
 const { inRunningContest, runningContestProblems } = await import('../lib/server/contests');
+const { lingEditorial } = await import('../lib/server/ling-editorials');
 
 const MIN = 60000;
 const LOCKED = '这道题在你正在进行的比赛里，题解、讨论和 AI 助教赛后开放';
@@ -64,6 +65,10 @@ const entry = (roomId: string, p: Person, virtualStart: number | null = null) =>
   sqlite()
     .prepare('INSERT INTO contest_entries(room_id,user_id,display_name,joined_at,virtual_start) VALUES(?,?,?,0,?)')
     .run(roomId, p.id, p.id, virtualStart);
+// A study problem with no Line 500 editorial: the first lc-<n> the editorial file leaves out.
+let bareNumber = 1;
+while (lingEditorial(`lc-${bareNumber}`)) bareNumber++;
+const bare = `lc-${bareNumber}`;
 const ai = (p: Person, problemId: string) =>
   status(p, 'POST', 'ai/complexity', { problemId, language: 'python', code: 'x = 1' });
 
@@ -77,8 +82,9 @@ before(() => {
   db.prepare(
     "INSERT INTO lessons(id,course_id,title,summary,section,position,body,version,updated_at) VALUES('00-overview','gomall','T','','t',0,'','1',0)",
   ).run();
-  // lc-1 (in the room) and lc-20 (not) both have a Line 500 editorial; lc-2 has none.
-  for (const [n, id] of [1, 2, 20].map((n) => [n, `lc-${n}`] as const)) {
+  // lc-1 (in the room) and lc-20 (not) both have a Line 500 editorial; `bare` has none.
+  assert.ok(lingEditorial('lc-1') && lingEditorial('lc-20'));
+  for (const [n, id] of [1, bareNumber, 20].map((n) => [n, `lc-${n}`] as const)) {
     db.prepare(
       `INSERT INTO oj_problems(id,course_id,lesson_id,current_version_id,published,created_at,updated_at) VALUES(?,'gomall','00-overview',?,1,1,1)`,
     ).run(id, `v-${n}`);
@@ -132,8 +138,12 @@ void test('the problem payload carries no editorial, only whether one exists and
   const problem = (await response.json()) as Record<string, unknown>;
   assert.equal('lingEditorial' in problem, false);
   assert.equal(typeof problem.lingEditorialVerified, 'boolean');
-  assert.equal(JSON.stringify(problem).includes('Brute force'), false);
-  const none = (await (await call(amy, 'GET', 'problems/lc-2')).json()) as Record<string, unknown>;
+  // No approach's code, in any language, rides along (compared JSON-escaped, as the payload carries it).
+  const payload = JSON.stringify(problem);
+  for (const approach of lingEditorial('lc-1')!.approaches)
+    for (const code of [approach.python, approach.cpp])
+      assert.equal(payload.includes(JSON.stringify(code).slice(1, -1)), false);
+  const none = (await (await call(amy, 'GET', `problems/${bare}`)).json()) as Record<string, unknown>;
   assert.equal(none.lingEditorialVerified, null);
   // The hint ladder stays server-side in the contest too; outside it, the same problem has it.
   assert.equal(problem.lingHints, null);
@@ -144,7 +154,7 @@ void test('the problem payload carries no editorial, only whether one exists and
 
 void test('the editorial endpoint: signed in, 403 in a running contest, open elsewhere and after', async () => {
   assert.equal(await status(null, 'GET', 'problems/lc-1/editorial'), 401);
-  assert.equal(await status(bob, 'GET', 'problems/lc-2/editorial'), 404);
+  assert.equal(await status(bob, 'GET', `problems/${bare}/editorial`), 404);
   const refused = await refusal(amy, 'GET', 'problems/lc-1/editorial');
   assert.equal(refused.status, 403);
   assert.equal(refused.message, LOCKED);
