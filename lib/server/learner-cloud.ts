@@ -172,23 +172,21 @@ export async function saveMockSessions(p: Person, input: unknown) {
     if (!row && room <= 0) break;
     const session = { ...s, skew: Math.round(s.skew) } as MockSession;
     const { from, to } = reportWindow(session);
-    let report: Awaited<ReturnType<typeof mockReport>> | null = null;
-    try {
-      report = await mockReport(
-        p,
-        new URLSearchParams({
-          ids: s.ids.join(','),
-          from: String(from),
-          to: String(to),
-          scoring: s.scoring,
-          slots: s.slots.join(','),
-        }),
-      );
-    } catch (error) {
+    const report = await mockReport(
+      p,
+      new URLSearchParams({
+        ids: s.ids.join(','),
+        from: String(from),
+        to: String(to),
+        scoring: s.scoring,
+        slots: s.slots.join(','),
+      }),
+    ).catch((error: unknown) => {
       // An impossible window (over 4 hours, say) is not a mock this server would report.
-      if (error instanceof HttpError) continue;
+      if (error instanceof HttpError) return null;
       throw error;
-    }
+    });
+    if (!report) continue;
     const done = !report.pending;
     upsert.run(
       s.id,
@@ -319,9 +317,10 @@ function ownerHandle(ownerId: string) {
 export function readList(id: string, userId: string | null) {
   try {
     const row = readableList(id, userId);
+    const items = listItems(id);
     return {
-      ...summary({ ...row, count: 0 }),
-      items: listItems(id),
+      ...summary({ ...row, count: items.length }),
+      items,
       mine: row.owner_id === userId,
       owner: ownerHandle(row.owner_id),
       forkedFrom: row.forked_from,
