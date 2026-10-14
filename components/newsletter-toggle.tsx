@@ -6,7 +6,8 @@ import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import '@/app/newsletter/newsletter.css';
 
-type Status = { subscribed: boolean; confirmed: boolean; mail: boolean };
+/** `resend`: the confirmation mail went out over a day ago and was never clicked. */
+type Status = { subscribed: boolean; confirmed: boolean; mail: boolean; resend?: boolean };
 
 /** Subscribe or unsubscribe the signed-in account (the account page and /newsletter). */
 export function NewsletterToggle() {
@@ -64,6 +65,11 @@ export function NewsletterToggle() {
                     'You’re on the list. Once email delivery is switched on, we’ll send a confirmation email first; issues start after you confirm.',
                   )}
           </p>
+          {status.resend && (
+            <button type="button" className="newsletter-button is-quiet" disabled={busy} onClick={() => void change(true)}>
+              {t('没收到？重发确认邮件', 'Didn’t get it? Send it again')}
+            </button>
+          )}
           <button type="button" className="newsletter-button is-quiet" disabled={busy} onClick={() => void change(false)}>
             {t('退订', 'Unsubscribe')}
           </button>

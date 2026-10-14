@@ -56,7 +56,7 @@ async function status(p: Person | null, method: string, body?: unknown) {
   }
 }
 const state = async (p: Person, method = 'GET', body?: unknown, zh = false) =>
-  (await (await call(p, method, body, zh)).json()) as { subscribed: boolean; confirmed: boolean; mail: boolean };
+  (await (await call(p, method, body, zh)).json()) as { subscribed: boolean; confirmed: boolean; mail: boolean; resend: boolean };
 const sub = (user: string) =>
   sqlite().prepare('SELECT * FROM newsletter_subs WHERE user_id=?').get(user) as {
     token: string;
@@ -102,14 +102,14 @@ void test('signed-in, verified learners subscribe; confirming waits until mail i
   assert.equal(await status(person('n-unverified', { verified: false }), 'POST', { subscribe: true }), 403);
   assert.equal(await status(person('n-x'), 'POST', { subscribe: 'yes' }), 400);
   const amy = person('n-amy');
-  assert.deepEqual(await state(amy), { subscribed: false, confirmed: false, mail: false });
-  assert.deepEqual(await state(amy, 'POST', { subscribe: true }, true), { subscribed: true, confirmed: false, mail: false });
+  assert.deepEqual(await state(amy), { subscribed: false, confirmed: false, mail: false, resend: false });
+  assert.deepEqual(await state(amy, 'POST', { subscribe: true }, true), { subscribed: true, confirmed: false, mail: false, resend: false });
   assert.equal(sub(amy.id).locale, 'zh');
   assert.match(sub(amy.id).token, /^[A-Za-z0-9_-]{43}$/);
   assert.equal(sub(amy.id).confirm_sent_at, null);
   assert.equal(mail.length, 0);
   // Unsubscribing in the app keeps the row (and its token) but stops everything.
-  assert.deepEqual(await state(amy, 'POST', { subscribe: false }), { subscribed: false, confirmed: false, mail: false });
+  assert.deepEqual(await state(amy, 'POST', { subscribe: false }), { subscribed: false, confirmed: false, mail: false, resend: false });
   assert.ok(sub(amy.id).unsubscribed_at);
 });
 
@@ -120,7 +120,7 @@ void test('with mail configured: one confirmation mail, a confirm link, one-clic
   process.env.MAIL_FROM = 'CSWork <news@cswork.test>';
   try {
     const bob = person('n-bob');
-    assert.deepEqual(await state(bob, 'POST', { subscribe: true, locale: 'en' }), { subscribed: true, confirmed: false, mail: true });
+    assert.deepEqual(await state(bob, 'POST', { subscribe: true, locale: 'en' }), { subscribed: true, confirmed: false, mail: true, resend: false });
     const { token } = sub(bob.id);
     assert.equal(mail.length, 1);
     assert.deepEqual(mail[0].to, ['n-bob@example.test']);
@@ -128,17 +128,27 @@ void test('with mail configured: one confirmation mail, a confirm link, one-clic
     assert.ok(mail[0].text.includes(`https://cswork.test/api/newsletter/confirm?token=${token}`));
     assert.equal(mail[0].headers?.['List-Unsubscribe'], `<https://cswork.test/api/newsletter/unsubscribe?token=${token}>`);
     assert.equal(mail[0].headers?.['List-Unsubscribe-Post'], 'List-Unsubscribe=One-Click');
-    // Subscribing again does not mail again.
+    // Subscribing again does not mail again, until a day has passed without a click: then it
+    // offers to and does (spam folder, deleted mail).
     await state(bob, 'POST', { subscribe: true });
     assert.equal(mail.length, 1);
+    sqlite().prepare('UPDATE newsletter_subs SET confirm_sent_at=? WHERE user_id=?').run(Date.now() - DAY - 1000, bob.id);
+    assert.equal((await state(bob)).resend, true);
+    assert.equal((await state(bob, 'POST', { subscribe: true })).resend, false);
+    assert.equal(mail.length, 2);
+    assert.ok(mail[1].text.includes(`confirm?token=${token}`));
     const bad = await link('/api/newsletter/confirm?token=nope');
     assert.equal(bad.headers.get('location'), 'https://cswork.test/newsletter?invalid=1');
     const confirmed = await link(`/api/newsletter/confirm?token=${token}`);
     assert.equal(confirmed.status, 303);
     assert.equal(confirmed.headers.get('location'), 'https://cswork.test/newsletter?confirmed=1');
-    assert.deepEqual(await state(bob), { subscribed: true, confirmed: true, mail: true });
-    // A link scanner's GET never unsubscribes; the provider's one-click POST does.
-    assert.equal((await link(`/api/newsletter/unsubscribe?token=${token}`)).status, 404);
+    assert.deepEqual(await state(bob), { subscribed: true, confirmed: true, mail: true, resend: false });
+    // A link scanner's GET never unsubscribes: it lands on the page with the button. The
+    // provider's one-click POST does.
+    const get = await link(`/api/newsletter/unsubscribe?token=${token}`);
+    assert.equal(get.status, 303);
+    assert.equal(get.headers.get('location'), `https://cswork.test/newsletter/unsubscribe?token=${token}`);
+    assert.equal((await link('/api/newsletter/unsubscribe?token=nope')).headers.get('location'), 'https://cswork.test/newsletter/unsubscribe');
     assert.equal((await state(bob)).subscribed, true);
     const once = await link(`/api/newsletter/unsubscribe?token=${token}`, 'POST', 'List-Unsubscribe=One-Click');
     assert.equal(once.status, 200);
@@ -200,4 +210,17 @@ void test('an issue gathers the week’s discussions; archives drop companies hi
   assert.ok(text.includes('Unsubscribe: https://cswork.test/newsletter/unsubscribe?token=tok'));
   assert.ok(!text.includes('Hidden') && !text.includes('Calm thread'));
   assert.ok(issueText(read, true, 'tok').includes('热门讨论'));
+});
+
+void test('recomposing an older week finds its reports however many were approved since', async () => {
+  const start = isoWeek(Date.now()).start - 21 * DAY;
+  const add = sqlite().prepare(
+    `INSERT INTO experience_submissions(id,user_id,company_slug,title,role,interview_month,body,status,reviewed_at,created_at)
+    VALUES(?,'n-amy','stripe',?,'SWE','2026-01','Body','approved',?,?)`,
+  );
+  add.run('weekreport01', 'That week', start + DAY, start + DAY);
+  // 120 approved after it: more than the old newest-50 window held.
+  for (let i = 0; i < 120; i++) add.run(`laterrep${String(i).padStart(4, '0')}`, `Later ${i}`, start + 8 * DAY + i, start + 8 * DAY + i);
+  const issue = await composeIssue(start);
+  assert.deepEqual(issue.experiences.map((e) => e.title), ['That week']);
 });

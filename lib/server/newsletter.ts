@@ -83,8 +83,9 @@ async function newProblems(start: number, end: number) {
 
 async function topDiscussions(start: number, end: number) {
   const found: Issue['discussions'] = [];
-  // Newest first through the public board (its visibility rules), then by votes.
-  for (let offset = 0; offset < 300; offset += 30) {
+  // Newest first through the public board (its visibility rules), then by votes. As far back as
+  // listPosts pages (offset 5000), so recomposing an older week still reaches it.
+  for (let offset = 0; offset <= 5000; offset += 30) {
     const page = await publicPosts('discuss:all', { sort: 'new', offset: String(offset) });
     for (const post of page?.items ?? [])
       if (post.createdAt >= start && post.createdAt < end)
@@ -124,16 +125,13 @@ async function dailies(start: number) {
 /** The issue for the ISO week starting `start`, from what the site published that week. */
 export async function composeIssue(start: number): Promise<Issue> {
   const end = start + 7 * DAY;
-  const experiences = recentMemberExperiences(start, 50)
-    .items.filter((e) => e.publishedAt && Date.parse(e.publishedAt) < end)
-    .slice(0, TOP)
-    .map((e) => ({
-      id: memberIdOf(e.slug)!,
-      title: e.title,
-      company: e.company.slug,
-      companyName: e.company.name,
-      href: memberExperiencePath(memberIdOf(e.slug)!),
-    }));
+  const experiences = recentMemberExperiences(start, TOP, end).items.map((e) => ({
+    id: memberIdOf(e.slug)!,
+    title: e.title,
+    company: e.company.slug,
+    companyName: e.company.name,
+    href: memberExperiencePath(memberIdOf(e.slug)!),
+  }));
   return {
     id: isoWeek(start).id,
     startsAt: start,
@@ -193,17 +191,24 @@ type Sub = {
 const subOf = (user: string) =>
   sqlite().prepare('SELECT * FROM newsletter_subs WHERE user_id=?').get(user) as Sub | undefined;
 const linkFor = (path: string, token: string) => `${origin()}${path}?token=${token}`;
+/** How long before a lost confirmation mail may be sent again. */
+const RESEND_AFTER = DAY;
 export const unsubscribeUrl = (token: string) => linkFor('/api/newsletter/unsubscribe', token);
 export const confirmUrl = (token: string) => linkFor('/api/newsletter/confirm', token);
 
-/** The double opt-in mail; never throws (the confirmation can be sent again by the script). */
+/**
+ * The double opt-in mail; never throws. Not confirmed a day later (spam folder, deleted)? The
+ * learner subscribes again and it goes out again; the script only sends the ones deferred
+ * while mail was off, so nobody gets weekly reminders they never asked for.
+ */
 export async function sendConfirmation(sub: Pick<Sub, 'user_id' | 'email' | 'locale' | 'token'>, now = Date.now()) {
   if (!mailReady()) return false;
   try {
     await sendMail({
       to: sub.email,
       ...newsletterConfirmation(sub.locale === 'zh', confirmUrl(sub.token)),
-      key: `cswork-newsletter-confirm-${sub.token}`,
+      // Per day: a resend a day later is a new mail, not a deduplicated retry.
+      key: `cswork-newsletter-confirm-${sub.token}-${Math.floor(now / RESEND_AFTER)}`,
       headers: { 'List-Unsubscribe': `<${unsubscribeUrl(sub.token)}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
     });
   } catch (error) {
@@ -214,10 +219,19 @@ export async function sendConfirmation(sub: Pick<Sub, 'user_id' | 'email' | 'loc
   return true;
 }
 
-const status = (user: string) => {
+const resendable = (sub: Sub, now: number) =>
+  sub.confirmed_at === null && (sub.confirm_sent_at === null || now - sub.confirm_sent_at >= RESEND_AFTER);
+const status = (user: string, now = Date.now()) => {
   const sub = subOf(user);
   const on = !!sub && sub.unsubscribed_at === null;
-  return { subscribed: on, confirmed: on && sub.confirmed_at !== null, mail: mailReady() };
+  const mail = mailReady();
+  return {
+    subscribed: on,
+    confirmed: on && sub.confirmed_at !== null,
+    mail,
+    // The confirmation went out over a day ago and was never clicked: offer to send it again.
+    resend: on && mail && sub.confirm_sent_at !== null && resendable(sub, now),
+  };
 };
 
 /** /api/oj/newsletter: the reader's subscription. */
@@ -250,7 +264,7 @@ export async function handleNewsletter(request: Request, p: Person | null, path:
       confirm_sent_at=CASE WHEN email=excluded.email THEN confirm_sent_at END,email=excluded.email`,
   ).run(p.id, p.email, locale, randomBytes(32).toString('base64url'), now);
   const sub = subOf(p.id)!;
-  if (sub.confirmed_at === null && sub.confirm_sent_at === null) await sendConfirmation(sub, now);
+  if (resendable(sub, now)) await sendConfirmation(sub, now);
   return json(status(p.id));
 }
 
@@ -258,7 +272,8 @@ export async function handleNewsletter(request: Request, p: Person | null, path:
  * /api/newsletter/confirm and /unsubscribe?token=: the links in the mails, answered before the
  * same-origin check (mail clients post List-Unsubscribe=One-Click from nowhere). Confirming
  * is a GET from the mail; unsubscribing is a POST, from the /newsletter/unsubscribe page or
- * the one-click header, so link scanners cannot unsubscribe anyone.
+ * the one-click header, so link scanners cannot unsubscribe anyone. A GET of the unsubscribe
+ * URL lands on that page.
  */
 export async function handleNewsletterLink(request: Request, action: string | undefined) {
   // Generous: mail providers send one-click unsubscribes from a few shared addresses in bursts,
@@ -275,6 +290,9 @@ export async function handleNewsletterLink(request: Request, action: string | un
       : 0;
     return Response.redirect(`${origin()}/newsletter?${done ? 'confirmed' : 'invalid'}=1`, 303);
   }
+  // Mail clients without RFC 8058 open the header's URL: they get the page with the button.
+  if (action === 'unsubscribe' && request.method === 'GET')
+    return Response.redirect(`${origin()}/newsletter/unsubscribe${TOKEN.test(token) ? `?token=${token}` : ''}`, 303);
   if (action === 'unsubscribe' && request.method === 'POST') {
     if (TOKEN.test(token))
       db.prepare('UPDATE newsletter_subs SET unsubscribed_at=COALESCE(unsubscribed_at,?) WHERE token=?').run(now, token);

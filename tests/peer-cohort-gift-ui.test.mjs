@@ -339,12 +339,15 @@ test('redeem form: the code from the link fragment, sent once', async () => {
 
 test('newsletter toggle: signed out, then subscribe while mail is off', async () => {
   let signedIn = false;
+  let lost = false;
   const api = serve((path, body) => {
     if (path === 'oj/newsletter' && !body)
-      return signedIn
-        ? Response.json({ subscribed: false, confirmed: false, mail: false })
-        : Response.json({ error: 'Please sign in first' }, { status: 401 });
-    if (path === 'oj/newsletter') return Response.json({ subscribed: body.subscribe, confirmed: false, mail: false });
+      return lost
+        ? Response.json({ subscribed: true, confirmed: false, mail: true, resend: true })
+        : signedIn
+          ? Response.json({ subscribed: false, confirmed: false, mail: false })
+          : Response.json({ error: 'Please sign in first' }, { status: 401 });
+    if (path === 'oj/newsletter') return Response.json({ subscribed: body.subscribe, confirmed: false, mail: lost, resend: false });
   });
   try {
     let root = await mount(createElement(NewsletterToggle));
@@ -359,6 +362,14 @@ test('newsletter toggle: signed out, then subscribe while mail is off', async ()
     await act(async () => button('Unsubscribe').click());
     await wait();
     assert.deepEqual(api.posts.at(-1), ['oj/newsletter', { subscribe: false, locale: 'en' }]);
+    await act(async () => root.unmount());
+    // A confirmation sent over a day ago and never clicked: one button sends it again.
+    lost = true;
+    root = await mount(createElement(NewsletterToggle));
+    await act(async () => button('Send it again').click());
+    await wait();
+    assert.deepEqual(api.posts.at(-1), ['oj/newsletter', { subscribe: true, locale: 'en' }]);
+    assert.ok(![...document.querySelectorAll('button')].some((b) => b.textContent.includes('Send it again')));
     await act(async () => root.unmount());
   } finally {
     api.restore();
