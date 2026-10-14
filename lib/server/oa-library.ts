@@ -1,6 +1,15 @@
 import { readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { z } from 'zod';
+import {
+  canonicalCompany,
+  companyAliases,
+  OTHER_COMPANY,
+  oaCompanyName,
+  oaCompanyPath,
+  oaProblemPath,
+} from '@/lib/oa-company-brands';
+import type { SitemapEntry } from '@/lib/seo';
 import type { Person } from './auth';
 import { hiddenCompanies } from './env';
 import { HttpError, json, limitReader, requirePerson, rows } from './http';
@@ -69,12 +78,17 @@ const stripeStageHashes: Readonly<Record<string, string>> = {
 };
 const stripeCombinedHash =
   '8edcfc526cb4ae5bdd1fd560c5f28fd90879d1108530ddb7f2b1e18a08d6f585';
-function summary(item: Item, ready: ReadonlySet<string> = new Set()) {
+type Company = { slug: string; name: string };
+function summary(
+  item: Item,
+  company: Company,
+  ready: ReadonlySet<string> = new Set(),
+) {
   // Explicit projection: titles/languages only, never statements or reference code.
   return {
     id: item.id,
-    companySlug: item.companySlug,
-    companyName: item.companyName,
+    companySlug: company.slug,
+    companyName: company.name,
     number: item.number,
     title: item.title,
     sourceUrl: item.sourceUrl,
@@ -127,43 +141,127 @@ export function createOaLibrary(
   for (const company of companies.values())
     if (company.count !== (counts.get(company.slug) || 0))
       throw new Error('OA company count mismatch');
-  function find(id: string) {
+  // One entry per employer: aliased slugs fold into their company; Other is listed last.
+  const merged = catalog.companies
+    .filter((company) => !Object.hasOwn(companyAliases, company.slug))
+    .map(({ slug, name }) => ({ slug, name }))
+    .sort(
+      (a, b) =>
+        Number(a.slug === OTHER_COMPANY) - Number(b.slug === OTHER_COMPANY),
+    );
+  const employers = new Map(merged.map((company) => [company.slug, company]));
+  for (const slug of companies.keys())
+    if (!employers.has(canonicalCompany(slug)))
+      throw new Error('OA company alias target missing');
+  const employer = (item: Item) =>
+    employers.get(canonicalCompany(item.companySlug))!;
+  /** Visible items and their companies, counted from the items so hidden aliases drop out too. */
+  function visible(ready: ReadonlySet<string> = new Set()) {
+    const hidden = hiddenCompanies();
+    const shown = catalog.items.filter((item) => !hidden.has(item.companySlug));
+    const tally = new Map<string, { count: number; ready: number }>();
+    for (const item of shown) {
+      const slug = employer(item).slug;
+      const entry = tally.get(slug) ?? { count: 0, ready: 0 };
+      entry.count++;
+      if (ready.has(item.id)) entry.ready++;
+      tally.set(slug, entry);
+    }
+    return {
+      items: shown,
+      companies: merged.flatMap((company) =>
+        tally.has(company.slug) ? [{ ...company, ...tally.get(company.slug)! }] : [],
+      ),
+    };
+  }
+  function problem(id: string) {
     const item = items.get(id);
-    if (!item || hiddenCompanies().has(item.companySlug)) throw new HttpError(404, 'OA 题目不存在');
-    return item;
+    return item && !hiddenCompanies().has(item.companySlug)
+      ? { item, company: employer(item) }
+      : undefined;
+  }
+  function find(id: string) {
+    const found = problem(id);
+    if (!found) throw new HttpError(404, 'OA 题目不存在');
+    return found.item;
   }
   return {
+    problem,
+    /** Server-rendered company page: the employer and its visible problems in catalog order. */
+    company(slug: string, ready: ReadonlySet<string> = new Set()) {
+      const shown = visible(ready);
+      const company = shown.companies.find((c) => c.slug === slug);
+      return company
+        ? {
+            company,
+            items: shown.items
+              .filter((item) => employer(item).slug === slug)
+              .map((item) => summary(item, company, ready)),
+          }
+        : undefined;
+    },
+    companies: (ready: ReadonlySet<string> = new Set()) =>
+      visible(ready).companies,
+    /** /oa, company and problem pages; lastmod is the live judge version's publish time. */
+    sitemapEntries(
+      ready: ReadonlyMap<string, { updatedAt?: number }> = new Map(),
+    ): SitemapEntry[] {
+      const shown = visible();
+      const latest = new Map<string, number>();
+      for (const item of shown.items) {
+        const at = ready.get(item.id)?.updatedAt || 0;
+        const slug = employer(item).slug;
+        if (at > (latest.get(slug) || 0)) latest.set(slug, at);
+      }
+      const date = (at = 0) => (at > 0 ? new Date(at).toISOString() : null);
+      return [
+        { path: '/oa', updatedAt: date(Math.max(0, ...latest.values())) },
+        ...shown.companies.map((company) => ({
+          path: oaCompanyPath(company.slug),
+          updatedAt: date(latest.get(company.slug)),
+        })),
+        // Title-only pages (no statement, nothing to judge) are noindex and stay out.
+        ...shown.items
+          .filter((item) => ready.has(item.id) || item.statement.trim())
+          .map((item) => ({
+            path: oaProblemPath(item.companySlug, item.id),
+            updatedAt: date(ready.get(item.id)?.updatedAt),
+          })),
+      ];
+    },
     list(params: URLSearchParams, ready: ReadonlySet<string> = new Set()) {
       const query = (params.get('q') || '')
         .trim()
         .slice(0, 180)
         .toLocaleLowerCase();
-      const company = (params.get('company') || '').slice(0, 160);
-      const hidden = hiddenCompanies();
-      if (company && (!companies.has(company) || hidden.has(company)))
+      // Old links may still name a merged slug (?company=barclay).
+      const company = canonicalCompany((params.get('company') || '').slice(0, 160));
+      const shown = visible(ready);
+      if (company && !shown.companies.some((c) => c.slug === company))
         throw new HttpError(400, '未知公司');
       const value = params.get('page') || '1';
       const page = /^\d+$/.test(value)
         ? Math.min(10000, Math.max(1, Number(value)))
         : 1;
-      const found = catalog.items.filter(
+      const found = shown.items.filter(
         (item) =>
-          !hidden.has(item.companySlug) &&
           (params.get('ready') !== '1' || ready.has(item.id)) &&
-          (!company || item.companySlug === company) &&
+          (!company || employer(item).slug === company) &&
           (!query ||
-            `${item.id} ${item.title} ${item.companyName} ${item.number}`
+            // Other is also found by the name the UI shows for it.
+            `${item.id} ${item.title} ${item.companyName} ${item.number}${employer(item).slug === OTHER_COMPANY ? ` ${oaCompanyName(OTHER_COMPANY, '', 'zh')} other` : ''}`
               .toLocaleLowerCase()
               .includes(query)),
       );
       return {
         items: found
           .slice((page - 1) * 30, page * 30)
-          .map((item) => summary(item, ready)),
+          .map((item) => summary(item, employer(item), ready)),
         total: found.length,
         page,
         pageSize: 30,
-        companies: catalog.companies.filter((c) => !hidden.has(c.slug)),
+        // `count` is every listed problem, `ready` the practice-ready ones.
+        companies: shown.companies,
         source: {
           name: 'OA Master',
           url: catalog.source.origin,
@@ -187,7 +285,7 @@ export function createOaLibrary(
             }
           : undefined;
       return {
-        ...summary(item, ready),
+        ...summary(item, employer(item), ready),
         statement: item.statement,
         contentHash: item.contentHash,
         ...(relatedPractice ? { relatedPractice } : {}),

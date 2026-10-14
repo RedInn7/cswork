@@ -6,6 +6,8 @@ import { dirname, join, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
 import Database from 'better-sqlite3';
+import { drizzle } from 'drizzle-orm/better-sqlite3';
+import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 
 const dir = mkdtempSync(join(tmpdir(), 'cswork-seo-http-'));
 const entry = resolve('dist/standalone/server.js');
@@ -72,6 +74,10 @@ insert.run(
   null,
 );
 db.close();
+// The OA sitemap shard reads published judge versions from the app database.
+const appDb = new Database(join(dir, 'app.sqlite'));
+migrate(drizzle(appDb), { migrationsFolder: resolve('drizzle') });
+appDb.close();
 const base = 'http://127.0.0.1:4328';
 const server = spawn(process.execPath, [entry], {
   cwd: dirname(entry),
@@ -82,7 +88,7 @@ const server = spawn(process.execPath, [entry], {
     HOST: '127.0.0.1',
     PORT: '4328',
     APP_URL: base,
-    DATABASE_PATH: join(dir, 'unused-user.sqlite'),
+    DATABASE_PATH: join(dir, 'app.sqlite'),
     CONTENT_DATABASE_PATH: contentPath,
     BETTER_AUTH_SECRET: 'local-seo-test-only-secret-at-least-32-characters',
     OJ_ENABLED: 'false',
@@ -176,6 +182,7 @@ try {
     allMaps,
     /https:\/\/cswork.org\/library\/algorithm\/algorithm-00/,
   );
+  assert.match(allMaps, /https:\/\/cswork.org\/oa\/[a-z0-9-]+\/oa-[a-z0-9-]+</);
   assert.doesNotMatch(
     allMaps,
     /article\/(?:unlisted|partial|duplicate)|guide\/template-guide|view=|localhost/,

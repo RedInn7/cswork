@@ -102,7 +102,8 @@ try {
   assert(!publicHtml.includes(first.statement.slice(0, 100)));
   const list = await (await req('/api/oj/oa-library')).json();
   assert.equal(list.total, catalog.items.length);
-  assert.equal(list.companies.length, catalog.companies.length);
+  // barclay, sig, amazon-mern and ibm-frontend fold into their companies (lib/oa-company-brands.ts).
+  assert.equal(list.companies.length, catalog.companies.length - 4);
   assert.equal(list.items.length, 30);
   assert(!('statement' in list.items[0]));
   assert(!('solutions' in list.items[0]));
@@ -132,6 +133,39 @@ try {
   await req('/api/oj/oa-library?company=not-a-company', 400);
   await req('/api/oj/oa-library/' + first.id + '/solution/extra', 404);
   await req('/api/oj/library');
+  // Server-rendered, indexable OA pages and their sitemap shard.
+  const html = async (path, expected = 200) =>
+    (await req(path, expected, false)).text();
+  const problemPath = `/oa/${first.companySlug}/${first.id}`;
+  const index = await html('/oa');
+  assert.match(index, new RegExp(`href="/oa/${first.companySlug}"`));
+  assert.match(index, /rel="canonical"[^>]*href="https:\/\/cswork.org\/oa"/);
+  assert.doesNotMatch(index, /href="\/oa\/(?:barclay|sig|amazon-mern|ibm-frontend)"/);
+  assert.match(await html(`/oa/${first.companySlug}`), new RegExp(`href="${problemPath}"`));
+  const problem = await html(problemPath);
+  assert.match(problem, /<title>[^<]+ OA: [^<]+ \| CSWork<\/title>/);
+  assert.match(
+    problem,
+    new RegExp(`rel="canonical"[^>]*href="https://cswork.org${problemPath}"`),
+  );
+  assert.match(problem, /BreadcrumbList/);
+  // The mock link appears only for a company with a mock preset page.
+  const presets = JSON.parse(readFileSync('lib/content/mock-oa-presets.json', 'utf8')).companies;
+  const preset = presets.find(
+    (c) => c.slug === first.companySlug || c.aliases.includes(first.companySlug),
+  );
+  const mockLinks = [...problem.matchAll(/href="\/mock-oa\/([^"]+)"/g)].map((m) => m[1]);
+  // Never a link to a mock page that doesn't exist; with a preset it names the preset.
+  assert.deepEqual([...new Set(mockLinks)], preset && mockLinks.length ? [preset.slug] : []);
+  assert.doesNotMatch(problem, /name="robots"[^>]*noindex/);
+  for (const path of [
+    '/oa/amazon-mern',
+    `/oa/meta/${first.id === 'oa-meta-1' ? 'oa-meta-999' : first.id}`,
+    '/oa/meta/oa-missing-1',
+  ])
+    await html(path, 404);
+  assert.match(await html('/sitemap/oa'), new RegExp(`https://cswork.org${problemPath}<`));
+  assert.match(await html('/sitemap.xml'), /https:\/\/cswork.org\/sitemap\/oa</);
   console.log(
     JSON.stringify({
       event: 'oa_http_complete',

@@ -5,11 +5,13 @@ const pages: Record<string, string> = {
   courses: 'Courses',
   knowledge: 'Knowledge',
   problems: 'Problem library',
+  mock: 'Mock OA',
   problem: 'Practice',
   lesson: 'Lesson',
   questions: 'Questions',
   experiences: 'Experiences',
   resources: 'Resources',
+  'mock-interview': 'Mock interview',
   status: 'Service status',
 };
 export function measurementId(value: string | undefined): string {

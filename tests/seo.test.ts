@@ -8,6 +8,7 @@ import {
   sitemapPageCount,
   sitemapLibraryRange,
   SITEMAP_URL_LIMIT,
+  SITEMAP_STATIC_ENTRIES,
   xmlResponse,
   workspaceTitle,
   SEO_HOME,
@@ -79,12 +80,13 @@ test('large libraries are fully partitioned instead of silently truncated', () =
 
 test('database sitemap batches account for static pages without gaps or overlaps', () => {
   assert.equal(sitemapPageCount(0), 1);
-  assert.equal(sitemapPageCount(SITEMAP_URL_LIMIT - 3), 1);
-  assert.equal(sitemapPageCount(SITEMAP_URL_LIMIT - 2), 2);
+  const fixed = SITEMAP_STATIC_ENTRIES.length;
+  assert.equal(sitemapPageCount(SITEMAP_URL_LIMIT - fixed), 1);
+  assert.equal(sitemapPageCount(SITEMAP_URL_LIMIT - fixed + 1), 2);
   const first = sitemapLibraryRange(1);
   const second = sitemapLibraryRange(2);
   const third = sitemapLibraryRange(3);
-  assert.deepEqual(first, { offset: 0, limit: SITEMAP_URL_LIMIT - 3 });
+  assert.deepEqual(first, { offset: 0, limit: SITEMAP_URL_LIMIT - fixed });
   assert.equal(second.offset, first.offset + first.limit);
   assert.equal(third.offset, second.offset + second.limit);
 });

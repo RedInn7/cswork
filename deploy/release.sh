@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
 # One-command production release, run on the server as the deploy user (sudo required):
 #   ssh ubuntu@SERVER 'bash -s -- [REF] [TEACHER_EMAIL]' < deploy/release.sh
-# Green GitHub checks -> build in /srv/cswork/builds -> app-only deploy (health check + auto rollback)
+# Green GitHub checks -> build in RAM (/dev/shm/cswork-builds) -> app-only deploy (health check + auto rollback)
 # -> publish every verified OA batch not yet in production -> remove the build.
 set -euo pipefail
 ref=${1:-main}
 repo=${CSWORK_REPO:-git@github.com:RedInn7/cswork.git}
 api=https://api.github.com/repos/RedInn7/cswork
 prod_node=/opt/cswork/runtime/node
-builds=/srv/cswork/builds
+# A build peaks around 7GiB; the root disk holds the live DB, so builds go to tmpfs.
+builds=${CSWORK_BUILDS:-/dev/shm/cswork-builds}
 env_file=/etc/cswork/cswork.env
 log() { printf '[release %s] %s\n' "$(date +%H:%M:%S)" "$*"; }
 die() { log "ERROR: $*"; exit 1; }
@@ -45,6 +46,8 @@ log 'CI green'
 sudo install -d -o "$USER" -g "$USER" -m 755 "$builds"
 find "$builds" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
 dir="$builds/$sha"
+# Never leave gigabytes of build in RAM, even when a step fails.
+trap 'rm -rf "$dir"' EXIT
 free_gib=$(( $(df --output=avail -B1 "$builds" | tail -1) / 1073741824 ))
 (( free_gib >= ${MIN_FREE_GIB:-8} )) || die "only ${free_gib}GiB free; a build needs about 7GiB"
 git clone -q --filter=blob:none --no-checkout "$repo" "$dir"

@@ -12,7 +12,7 @@ import {
 import { api, type Boot } from '@/lib/types';
 import { useLocale, useT, type Locale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
-import { companyLogos } from '@/lib/oa-company-brands';
+import { companyLogos, oaCompanyName } from '@/lib/oa-company-brands';
 import type { Navigate } from './learning';
 import '@/app/redesign.css';
 import '@/app/judge-status.css';
@@ -206,7 +206,9 @@ export function FeedTable({
                           <img src={logo} alt="" width={18} height={18} loading="lazy" />
                         </span>
                       )}
-                      <span className="rd-badge is-brand">{item.source.company.name}</span>
+                      <span className="rd-badge is-brand">
+                        {oaCompanyName(item.source.company.slug, item.source.company.name, locale)}
+                      </span>
                     </>
                   ) : (
                     <span className="rd-badge">

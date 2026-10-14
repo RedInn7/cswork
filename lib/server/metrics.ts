@@ -40,6 +40,14 @@ const EVENTS: Record<string, Record<string, Kind>> = {
   },
   judge_error: { mode: 'text', problem_id: 'text', stage: 'text', status: 'text' },
   language_switch: { locale: 'text' },
+  mock_interview_start: { company: 'tag', template: 'tag', mode: 'tag' },
+  mock_interview_finish: { company: 'tag', template: 'tag', mode: 'tag' },
+  // Timed mock OA (components/mock-oa.tsx): company is a slug or 'custom'.
+  mock_start: { company: 'tag', questions: [1, 4], minutes: [15, 180], source: 'text' },
+  mock_finish: {
+    company: 'tag', questions: [1, 4], score: [0, 600], max: [0, 600],
+    solved: [0, 4], reason: 'text',
+  },
   // sign_up and login are recorded server-side by the auth hooks (record below), for every
   // sign-in method; the client's copies (email only) still go to GA4 but are dropped here.
 };

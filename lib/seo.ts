@@ -55,6 +55,41 @@ export function seoMetadata({
   };
 }
 
+/** OA page titles: the index, a company (`company`), or one of its problems (`company`, `title`). */
+export function oaPageTitle(
+  locale: keyof typeof SEO_HOME,
+  company?: string,
+  title?: string,
+) {
+  const zh = locale === 'zh';
+  const name = !company
+    ? zh
+      ? '公司 OA 真题题库'
+      : 'Company OA Questions'
+    : title
+      ? zh
+        ? `${company} OA 真题：${title}`
+        : `${company} OA: ${title}`
+      : zh
+        ? `${company} OA 真题与在线判题`
+        : `${company} OA Questions & Practice`;
+  return `${name} | ${SITE_NAME}`;
+}
+
+/** schema.org BreadcrumbList for an inline ld+json script (`<` escaped). */
+export function breadcrumbJsonLd(trail: { name: string; path: string }[]) {
+  return JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: trail.map((step, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: step.name,
+      item: publicUrl(step.path),
+    })),
+  }).replace(/</g, '\\u003c');
+}
+
 export type SitemapEntry = { path: string; updatedAt?: string | null };
 const XML_START = '<?xml version="1.0" encoding="UTF-8"?>';
 const XML_NAMESPACE = 'http://www.sitemaps.org/schemas/sitemap/0.9';
@@ -63,23 +98,26 @@ export const SITEMAP_URL_LIMIT = 45_000;
 export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/' },
   { path: '/library' },
+  { path: '/mock-interview' },
   { path: '/privacy' },
 ];
-export function sitemapPageCount(libraryCount: number): number {
-  return Math.ceil(
-    (libraryCount + SITEMAP_STATIC_ENTRIES.length) / SITEMAP_URL_LIMIT,
-  );
+/** `statics`: entries written before the library on page 1 (static pages plus the mock OA pages). */
+export function sitemapPageCount(
+  libraryCount: number,
+  statics = SITEMAP_STATIC_ENTRIES.length,
+): number {
+  return Math.ceil((libraryCount + statics) / SITEMAP_URL_LIMIT);
 }
-export function sitemapLibraryRange(page: number): {
+export function sitemapLibraryRange(
+  page: number,
+  statics = SITEMAP_STATIC_ENTRIES.length,
+): {
   offset: number;
   limit: number;
 } {
   return {
-    offset: Math.max(
-      0,
-      (page - 1) * SITEMAP_URL_LIMIT - SITEMAP_STATIC_ENTRIES.length,
-    ),
-    limit: SITEMAP_URL_LIMIT - (page === 1 ? SITEMAP_STATIC_ENTRIES.length : 0),
+    offset: Math.max(0, (page - 1) * SITEMAP_URL_LIMIT - statics),
+    limit: SITEMAP_URL_LIMIT - (page === 1 ? statics : 0),
   };
 }
 const SITEMAP_BYTE_LIMIT = 45 * 1024 * 1024;
@@ -134,12 +172,12 @@ export function sitemapXml(nodes: string[]): string {
   return `${XML_START}<urlset xmlns="${XML_NAMESPACE}">${nodes.join('')}</urlset>`;
 }
 
-export function sitemapIndexXml(count: number): string {
-  const nodes = Array.from(
-    { length: count },
-    (_, index) =>
-      `<sitemap><loc>${SITE_URL}/sitemap/${index + 1}</loc></sitemap>`,
-  );
+/** Numbered library shards, then named ones (`/sitemap/oa`). */
+export function sitemapIndexXml(count: number, named: string[] = []): string {
+  const nodes = [
+    ...Array.from({ length: count }, (_, index) => String(index + 1)),
+    ...named,
+  ].map((page) => `<sitemap><loc>${SITE_URL}/sitemap/${page}</loc></sitemap>`);
   return `${XML_START}<sitemapindex xmlns="${XML_NAMESPACE}">${nodes.join('')}</sitemapindex>`;
 }
 

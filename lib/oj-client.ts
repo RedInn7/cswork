@@ -23,6 +23,9 @@ export type OJProblem = Problem & {
     sourceEnUrl: string;
     attribution: string;
   } | null;
+  curatedHint?: { zh: string; en: string } | null;
+  /** A failed formal submission in the current practice round. */
+  hintEarned?: boolean;
 };
 export type OJCase = {
   ordinal: number;
@@ -87,6 +90,26 @@ export const activeStatuses = new Set([
   'judging',
   'processing',
 ]);
+const failedVerdicts = new Set([
+  'wrong_answer',
+  'compile_error',
+  'time_limit',
+  'memory_limit',
+  'output_limit',
+  'runtime_error',
+]);
+/** A formal submission that failed on the learner's code (not the judge) earns the hint. */
+export const hintUnlocked = (items: Pick<OJSubmission, 'mode' | 'status'>[]) =>
+  items.some((item) => item.mode === 'judge' && failedVerdicts.has(item.status));
+/** The problem's community solutions on leetcode.cn (zh) or leetcode.com (en). */
+export function leetcodeSolutionsUrl(source: string | undefined, english: boolean) {
+  const slug = /^https:\/\/leetcode\.(?:cn|com)\/problems\/([a-z0-9-]+)/.exec(
+    source || '',
+  )?.[1];
+  return slug
+    ? `https://leetcode.${english ? 'com' : 'cn'}/problems/${slug}/solutions/`
+    : '';
+}
 /** Verdict labels as [zh, en]; pick with t(...verdict(status, mode)). */
 export const verdictNames: Record<string, [string, string]> = {
   accepted: ['通过', 'Accepted'],

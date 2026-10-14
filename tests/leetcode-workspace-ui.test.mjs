@@ -105,6 +105,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       attribution: 'ATTRIBUTION MUST NOT SHOW',
       sourceUrl: 'https://leetcode.cn/problems/two-sum/',
     },
+    curatedHint: { zh: 'ZH APPROACH', en: 'EN APPROACH' },
   };
   const historical = {
     id: 'old-acm',
@@ -305,6 +306,9 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       /DUPLICATE SUMMARY|ATTRIBUTION MUST NOT SHOW|返回课程|查看课程|展开提示/,
     );
     assert.doesNotMatch(document.body.textContent, /ACM INPUT|ACM OUTPUT/);
+    // The Line 500 hint stays locked until a failed formal submission.
+    assert.match(document.querySelector('.cs-route-hint').textContent, /Show anyway/);
+    assert.doesNotMatch(document.body.textContent, /EN APPROACH/);
     await edit('# my LC draft');
     await choose('Submission mode', 'acm');
     assert.equal(editor().value, 'print("legacy ACM")');
@@ -440,6 +444,14 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       document.querySelector('[aria-label="Dismiss success message"]'),
     );
     await click(button('Description'));
+    // The earlier Wrong Answer lit the hint for good, collapsed until asked.
+    const hint = document.querySelector('.cs-route-hint[data-lit] details');
+    assert.equal(hint.open, false);
+    assert.match(hint.textContent, /EN APPROACH.*ZH APPROACH/);
+    assert.equal(
+      hint.querySelector('a').href,
+      'https://leetcode.com/problems/two-sum/solutions/',
+    );
     // A Chinese statement on the English site keeps English labels.
     await choose('Statement language', 'zh');
     assert.equal(
@@ -517,6 +529,71 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     assert.ok(button('运行').closest('.cs-code-caption'));
     assert.ok(button('提交').closest('.cs-code-caption'));
     assert.ok(document.querySelector('[aria-label="题面语言"]'));
+    // Without a failed submission, the hint opens only after a confirm.
+    assert.equal(document.querySelector('.cs-route-hint details'), null);
+    await click(button('仍要查看'));
+    await click(button('查看提示'));
+    assert.equal(document.querySelector('.cs-route-hint details').open, true);
+    assert.match(
+      document.querySelector('.cs-route-hint').textContent,
+      /ZH APPROACH.*EN APPROACH/,
+    );
+    assert.equal(
+      document.querySelector('.cs-route-hint a').href,
+      'https://leetcode.cn/problems/two-sum/solutions/',
+    );
+    // An earlier failure the server counted lights it on load, collapsed.
+    problem.hintEarned = true;
+    await act(async () =>
+      root.render(
+        createElement(ProblemWorkspace, {
+          key: 'earned',
+          problem: summary(problem),
+          boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
+          navigate() {},
+          ask() {},
+          refresh: async () => {},
+        }),
+      ),
+    );
+    await settle();
+    assert.equal(
+      document.querySelector('.cs-route-hint[data-lit] details').open,
+      false,
+    );
+    // Exam mode (a running mock OA holding this problem) never shows hints.
+    const examKey = 'cswork:mock:v1:student';
+    const startedAt = Date.now() - 1000;
+    localStorage.setItem(
+      examKey,
+      JSON.stringify({
+        active: {
+          id: 'exam-1', company: null, name: null, platform: null, preset: false,
+          scoring: 'tests', source: 'lc', slots: ['easy'], ids: [problem.id],
+          minutes: 60, skew: 0, createdAt: startedAt, startedAt,
+        },
+        history: [],
+      }),
+    );
+    await act(async () =>
+      root.render(
+        createElement(ProblemWorkspace, {
+          key: 'exam',
+          mock: 'exam-1',
+          problem: summary(problem),
+          boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
+          navigate() {},
+          ask() {},
+          refresh: async () => {},
+        }),
+      ),
+    );
+    await settle();
+    assert.ok(document.querySelector('.cs-statement-heading'));
+    // Booleans, not elements: a failing diff of a jsdom node exhausts the heap.
+    assert.equal(document.querySelector('.cs-route-hint') === null, true);
+    localStorage.removeItem(examKey);
+    delete problem.hintEarned;
     // ACM starters follow the statement language; untouched ones switch with it.
     const { starters, englishStarters } = await import('../lib/problems.ts');
     const renderAcm = (key) =>

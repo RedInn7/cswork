@@ -52,6 +52,8 @@ test('OA library reveals solutions only on request, supports language/copy and c
     'Event',
     'MouseEvent',
     'navigator',
+    'location',
+    'history',
   ]) {
     saved.set(name, Object.getOwnPropertyDescriptor(globalThis, name));
     Object.defineProperty(globalThis, name, {
@@ -77,9 +79,10 @@ test('OA library reveals solutions only on request, supports language/copy and c
   const root = createRoot(document.getElementById('root'));
   const answer = async (request, body) =>
     act(async () => request.resolve({ ok: true, json: async () => body }));
+  // Problem rows are links (/oa/<company>/<id>); the rest are buttons.
   const click = async (text) =>
     act(async () =>
-      [...document.querySelectorAll('button')]
+      [...document.querySelectorAll('button, a.oa-row')]
         .find((button) => button.textContent.includes(text))
         .click(),
     );
@@ -106,6 +109,15 @@ test('OA library reveals solutions only on request, supports language/copy and c
       source: { name: 'OA Master' },
     });
     assert.match(document.body.textContent, /SQL/);
+    assert.equal(
+      document.querySelector('a.oa-row').getAttribute('href'),
+      '/oa/amazon/amazon-1',
+    );
+    assert.match(document.body.textContent, /1 practice-ready OA problem/);
+    assert.match(
+      document.querySelector('.oa-company-caption').textContent,
+      /practice-ready/,
+    );
     assert.equal(
       document
         .querySelector('.oa-company-nav button')
@@ -215,6 +227,8 @@ test('OA library reveals solutions only on request, supports language/copy and c
     assert.doesNotMatch(document.body.textContent, /STALE CONTENT/);
     await click('Amazon');
     assert.match(requests.at(-1).url, /company=amazon/);
+    // Filters are mirrored into the address bar without adding history entries.
+    assert.equal(new URL(location.href).searchParams.get('company'), 'amazon');
     assert.equal(
       document
         .querySelector('.oa-company-options button')
@@ -359,6 +373,34 @@ test('OA library reveals solutions only on request, supports language/copy and c
     });
     assert.match(document.body.textContent, /Judging isn't ready/);
     assert.doesNotMatch(document.body.textContent, /Start practicing|View solution/);
+    await click('Back to OA');
+    navigation = undefined;
+    // A modified click is the browser's (new tab), not an in-app navigation.
+    await act(async () =>
+      document.querySelector('a.oa-row').dispatchEvent(
+        new dom.window.MouseEvent('click', {
+          bubbles: true,
+          cancelable: true,
+          ctrlKey: true,
+        }),
+      ),
+    );
+    assert.equal(navigation, undefined);
+    // Filters restore from the URL; a merged slug resolves to its company.
+    history.replaceState(
+      null,
+      '',
+      '/?view=problems&library=oa&company=barclay&page=2&ready=0',
+    );
+    await act(async () =>
+      root.render(createElement(OaLibrary, { key: 'from-url' })),
+    );
+    const restored = new URL(requests.at(-1).url, 'https://cswork.test')
+      .searchParams;
+    assert.deepEqual(
+      [restored.get('company'), restored.get('page'), restored.get('ready')],
+      ['barclays', '2', '0'],
+    );
     await act(async () =>
       root.render(createElement(OaEditorial, { problemId: 'oa-google-1' })),
     );

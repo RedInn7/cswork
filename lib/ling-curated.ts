@@ -31,3 +31,8 @@ export const curatedSections = Array.from(
     ]),
   ).values(),
 );
+/** The curated one-line approach for a Line 500 problem, served with problems/:id. */
+export function curatedHint(problemId: string) {
+  const entry = curatedByNumber.get(Number(/^lc-(\d+)$/.exec(problemId)?.[1]));
+  return entry ? { zh: entry.reason, en: entry.reasonEn } : null;
+}

@@ -25,6 +25,8 @@ import {
   Settings,
   Inbox,
   ChevronRight,
+  Dices,
+  Timer,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -95,6 +97,12 @@ import {
 const TeacherView = lazy(() =>
   import('./teacher').then((m) => ({ default: m.TeacherView }), loadFailed),
 );
+const MockInterview = lazy(() =>
+  import('./mock-interview').then((m) => ({ default: m.MockInterview }), loadFailed),
+);
+const MockOa = lazy(() =>
+  import('./mock-oa').then((m) => ({ default: m.MockOa }), loadFailed),
+);
 const OwnerMetrics = lazy(() =>
   import('./owner-metrics').then((m) => ({ default: m.OwnerMetrics }), loadFailed),
 );
@@ -102,8 +110,10 @@ const OwnerMetrics = lazy(() =>
 // [icon, zh label, en label, view]
 const nav: [LucideIcon, string, string, string][] = [
   [Code2, '算法题库', 'Problem Bank', 'problems'],
+  [Timer, '模拟 OA', 'Mock OA', 'mock'],
   [Activity, '评测状态', 'Status', 'status'],
   [MessagesSquare, '面试题', 'Interview Questions', 'questions'],
+  [Dices, '模拟面试', 'Mock Interview', 'mock-interview'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
   [Library, '学习资料', 'Resources', 'resources'],
   [BookOpen, '我的课程', 'My Courses', 'courses'],
@@ -321,7 +331,7 @@ export function Academy() {
       !boot.person &&
       ![
         'courses', 'knowledge', 'problems', 'problem', 'status',
-        'questions', 'experiences', 'resources', 'content',
+        'questions', 'experiences', 'resources', 'content', 'mock-interview', 'mock',
       ].includes(view)
     )
       return (
@@ -391,12 +401,24 @@ export function Academy() {
             library={params.library}
           />
         );
+      case 'mock':
+        return (
+          <MockOa key={boot.person?.id || 'guest'} boot={boot} params={params} navigate={navigate} />
+        );
       case 'status':
         return <JudgeStatus boot={boot} params={params} navigate={navigate} />;
       case 'questions':
       case 'experiences':
       case 'resources':
         return <ContentList key={view} section={view} params={params} navigate={navigate} />;
+      case 'mock-interview':
+        return (
+          <MockInterview
+            params={params}
+            navigate={navigate}
+            problemIds={boot.problems.map((p) => p.id)}
+          />
+        );
       case 'content':
         return (
           <ContentDetail
@@ -414,6 +436,7 @@ export function Academy() {
             navigate={navigate}
             ask={ask}
             refresh={refreshLite}
+            mock={params.mock}
           />
         ) : (
           <Empty
@@ -508,7 +531,8 @@ export function Academy() {
                           (isKnowledgeLesson(params.lesson)
                             ? 'knowledge'
                             : 'courses')) ||
-                      (view === 'problem' && key === 'problems')
+                      (view === 'problem' &&
+                        key === (params.mock ? 'mock' : 'problems'))
                     }
                     onClick={() => navigate(key)}
                   >
