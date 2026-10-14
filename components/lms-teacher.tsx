@@ -775,6 +775,7 @@ function Services({
     video: t('课程视频', 'Course video'),
     judge: t('算法判题', 'Code judge'),
     checkout: t('课程购买', 'Course checkout'),
+    ai: t('AI 助教（ANTHROPIC_API_KEY）', 'AI tutor (ANTHROPIC_API_KEY)'),
   };
   return (
     <div className="form-card">
