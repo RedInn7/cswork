@@ -2376,6 +2376,13 @@ function Workspace({
           line={!!problem.practiceRound}
           library={neighbors.library}
           acceptedAt={success.created_at}
+          language={success.language}
+          runtimeMs={
+            success.runtimeMs ??
+            (typeof success.runtime === 'number'
+              ? success.runtime * 1000
+              : null)
+          }
           seconds={solveSeconds}
           activity={boot.activity}
           fallbackNext={neighbors.next}
@@ -2621,6 +2628,11 @@ function Workspace({
 }
 
 type NextStop = { id: string; sequence?: string[] } | null;
+/** GET problem-stats: lib/server/problem-stats.ts. */
+type Standing = {
+  acceptance: { attempted: number; accepted: number } | null;
+  beats: number | null;
+};
 
 /** Back to the list the learner came from: the OA library, a classic list, or the bank. */
 const backTo = (problemId: string, library?: string) =>
@@ -2684,6 +2696,8 @@ function AcceptedDialog({
   line,
   library,
   acceptedAt,
+  language,
+  runtimeMs,
   seconds,
   activity,
   fallbackNext,
@@ -2692,6 +2706,8 @@ function AcceptedDialog({
   onClose,
 }: {
   problemId: string;
+  language: string;
+  runtimeMs: number | null;
   line: boolean;
   /** The classic list the problem was opened from; its order wins over Line 500's. */
   library?: string;
@@ -2731,6 +2747,25 @@ function AcceptedDialog({
       ),
     [activity, problemId, acceptedAt, now, english],
   );
+  // Aggregates only (lib/server/problem-stats.ts); null below its sample floors.
+  const [standing, setStanding] = useState<Partial<Standing> | null>(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    const query = new URLSearchParams({ language });
+    if (runtimeMs != null) query.set('runtimeMs', String(Math.round(runtimeMs)));
+    ojRequest<Standing>(
+      `problem-stats/${encodeURIComponent(problemId)}?${query}`,
+      undefined,
+      controller.signal,
+    ).then(setStanding, () => {
+      /* A nicety: the dialog never waits on or fails with it. */
+    });
+    return () => controller.abort();
+  }, [problemId, language, runtimeMs]);
+  const acceptance = standing?.acceptance;
+  const beats = standing?.beats ?? null;
+  const languageName =
+    languages.find((item) => item.id === language)?.name ?? language;
   const [next, setNext] = useState<NextStop | 'loading'>('loading');
   useEffect(() => {
     const controller = new AbortController();
@@ -2778,6 +2813,26 @@ function AcceptedDialog({
                 ` · Solved in ${formatClock(seconds)}`,
               )}
           </DialogDescription>
+          {(acceptance || beats !== null) && (
+            <p className="cs-accepted-standing">
+              {acceptance && (
+                <span>
+                  {t(
+                    `${acceptance.accepted} / ${acceptance.attempted} 人通过（${Math.round((100 * acceptance.accepted) / acceptance.attempted)}%）`,
+                    `${acceptance.accepted} of ${acceptance.attempted} people solved it (${Math.round((100 * acceptance.accepted) / acceptance.attempted)}%)`,
+                  )}
+                </span>
+              )}
+              {beats !== null && (
+                <span>
+                  {t(
+                    `运行时间快于本站 ${beats}% 的 ${languageName} 通过者`,
+                    `Faster than ${beats}% of people who solved it in ${languageName}`,
+                  )}
+                </span>
+              )}
+            </p>
+          )}
           <Button
             ref={primary}
             size="lg"
