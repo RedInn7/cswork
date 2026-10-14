@@ -251,6 +251,20 @@ const EN: Record<string, string> = {
   '组长不能退出，可以解散小组': "The owner can't leave. Disband the group instead",
   只有组长可以管理小组: 'Only the group owner can manage the group',
   成员不存在: 'Member not found',
+  // Peer mock interviews (lib/server/mock-peer.ts); notification titles too
+  同伴模拟面试已匹配: 'Peer mock interview matched',
+  同伴模拟面试已取消: 'Peer mock interview cancelled',
+  对方报告你没有出席模拟面试: 'Your partner reported that you missed the mock interview',
+  对方: 'Partner',
+  '你被报告爽约两次，匹配已暂停 90 天': 'Two partners reported you missing, so matching is paused for 90 days',
+  '一周内取消了 3 场已匹配的面试，暂时不能匹配': 'You cancelled 3 matched sessions this week, so matching is paused for now',
+  你已经有一个在等待匹配的请求: 'You already have a request waiting for a partner',
+  '已经约了 3 场，先完成再约': 'You already have 3 sessions booked. Finish one before booking more',
+  '请至少选一个未来 7 天内的时段': 'Pick at least one time slot in the next 7 days',
+  这场模拟面试不存在: 'Mock interview not found',
+  这场模拟面试已结束或已取消: 'This mock interview is over or was cancelled',
+  这场模拟面试已开始或已取消: 'This mock interview has started or was cancelled',
+  现在不能报告爽约: "You can't report a no-show right now",
   故事已达上限: "You've reached the limit for stories",
   // Community solutions (lib/server/solution-posts.ts)
   题解不存在: 'Solution not found',
@@ -448,6 +462,12 @@ const EN: Record<string, string> = {
   '退款结果正在确认，请稍后刷新；重试会继续同一笔退款。':
     'Confirming the refund. Refresh shortly; retrying continues the same refund.',
   支付尚未配置: 'Payments are not configured',
+  // Course gifts (lib/server/course-gifts.ts); notification titles too
+  课程礼物的兑换码已生成: 'Your course gift code is ready',
+  你送出的课程礼物已被兑换: 'Your course gift was redeemed',
+  兑换码无效或已被使用: 'This gift code is invalid or already used',
+  这个兑换码已被使用或已作废: 'This gift code was already used or voided',
+  '你已经开通了这门课程，兑换码可以留给别人': 'You already have this course. Save the code for someone else',
   缺少签名: 'Missing signature',
   签名验证失败: 'Signature verification failed',
 

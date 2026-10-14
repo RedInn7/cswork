@@ -414,22 +414,25 @@ export function companyMemberExperiences(company: string, max = 6) {
   return { items, total };
 }
 
-/** Posts approved since `since` (ms), newest first, and how many there are: the library's "recently added" page. */
-export function recentMemberExperiences(since: number, max = 20) {
+/** Posts approved since `since` (ms) and before `until`, newest first, and how many there are: the library's "recently added" page. */
+export function recentMemberExperiences(since: number, max = 20, until = Number.MAX_SAFE_INTEGER) {
   const names = companyNames();
   const db = sqlite();
   const total = (
     db
-      .prepare(`SELECT s.company_slug AS slug, COUNT(*) AS n FROM experience_submissions s WHERE s.reviewed_at>=? AND ${PUBLIC} GROUP BY s.company_slug`)
-      .all(since) as { slug: string; n: number }[]
+      .prepare(
+        `SELECT s.company_slug AS slug, COUNT(*) AS n FROM experience_submissions s WHERE s.reviewed_at>=? AND s.reviewed_at<? AND ${PUBLIC}
+        GROUP BY s.company_slug`,
+      )
+      .all(since, until) as { slug: string; n: number }[]
   ).reduce((sum, r) => sum + (names.has(r.slug) ? r.n : 0), 0);
   const items = (
     db
       .prepare(
-        `SELECT s.*,${HANDLE} FROM experience_submissions s WHERE s.reviewed_at>=? AND ${PUBLIC}
+        `SELECT s.*,${HANDLE} FROM experience_submissions s WHERE s.reviewed_at>=? AND s.reviewed_at<? AND ${PUBLIC}
         ORDER BY s.reviewed_at DESC, s.id LIMIT ?`,
       )
-      .all(since, max * 2) as Row[]
+      .all(since, until, max * 2) as Row[]
   )
     .filter((r) => names.has(r.company_slug))
     .slice(0, max)

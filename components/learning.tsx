@@ -46,6 +46,7 @@ import {
   catalogLabel,
   filterCourses,
 } from '@/lib/course-catalog';
+import { GiftButton } from './course-gift';
 export type Navigate = (view: string, extra?: Record<string, string>) => void;
 export function CourseList({
   boot,
@@ -289,6 +290,8 @@ export function CourseList({
                       </small>
                     </>
                   )}
+                  {/* Owners can buy it for someone else too. */}
+                  {boot.person && c.purchase_available && <GiftButton courseId={c.id} />}
                 </div>
               </div>
               {error && (

@@ -4,6 +4,7 @@ import { setting, origin } from './env';
 import { sqlite } from '@/db/sqlite';
 import { HttpError, json, limit, allowed, boundedText } from './http';
 import type { Person } from './auth';
+import { giftInfo, giftSql, isGift, markGift, settleGift } from './course-gifts';
 import {
   money,
   type CommerceOrder,
@@ -139,9 +140,11 @@ export async function annotateCommerceCourses<
   );
   return courses;
 }
-function lockOrder(p: Person, courseId: string, price: Stripe.Price) {
+/** A gift (lib/server/course-gifts.ts) skips the access checks and holds its own checkout lock. */
+function lockOrder(p: Person, courseId: string, price: Stripe.Price, gift = false) {
   const db = sqlite(),
-    now = Date.now();
+    now = Date.now(),
+    lockKey = gift ? `gift:${courseId}` : courseId;
   return db.transaction(() => {
     // Stripe price lookup yields to other requests; keep the final admission
     // decision and order reservation in the same database transaction.
@@ -154,21 +157,21 @@ function lockOrder(p: Person, courseId: string, price: Stripe.Price) {
       .get(p.email, courseId, now);
     const hasPaid = db
       .prepare(
-        "SELECT id FROM orders WHERE user_id=? AND course_id=? AND status IN ('paid','partially_refunded') LIMIT 1",
+        `SELECT id FROM orders WHERE user_id=? AND course_id=? AND status IN ('paid','partially_refunded')${giftSql('orders.id', true)} LIMIT 1`,
       )
       .get(p.id, courseId);
-    if (hasAccess || hasPaid)
+    if (!gift && (hasAccess || hasPaid))
       throw new HttpError(409, '课程已经开通，无需重复购买');
     const existing = db
       .prepare(
         'SELECT o.* FROM commerce_checkout_locks l JOIN orders o ON o.id=l.order_id WHERE l.user_id=? AND l.course_id=?',
       )
-      .get(p.id, courseId) as OrderRow | undefined;
+      .get(p.id, lockKey) as OrderRow | undefined;
     if (existing) return existing;
     // Adopt a pre-upgrade pending checkout so deploying does not create another charge opportunity.
     const previous = db
       .prepare(
-        "SELECT * FROM orders WHERE user_id=? AND course_id=? AND status IN ('creating','pending','processing') ORDER BY created_at DESC LIMIT 1",
+        `SELECT * FROM orders WHERE user_id=? AND course_id=? AND status IN ('creating','pending','processing')${giftSql('orders.id', !gift)} ORDER BY created_at DESC LIMIT 1`,
       )
       .get(p.id, courseId) as OrderRow | undefined;
     const id = previous?.id || randomUUID();
@@ -186,17 +189,18 @@ function lockOrder(p: Person, courseId: string, price: Stripe.Price) {
         now,
         now,
       );
-    else if (!previous.price_id)
+    if (!previous && gift) markGift(id, p.id, courseId, now);
+    else if (previous && !previous.price_id)
       db.prepare('UPDATE orders SET price_id=? WHERE id=?').run(price.id, id);
     db.prepare(
       'INSERT INTO commerce_checkout_locks(user_id,course_id,order_id,created_at) VALUES(?,?,?,?)',
-    ).run(p.id, courseId, id, now);
+    ).run(p.id, lockKey, id, now);
     return orderRow(id)!;
   })();
 }
-export async function checkout(p: Person, courseId: string) {
+export async function checkout(p: Person, courseId: string, gift = false) {
   if (!p.verified) throw new HttpError(403, '请先验证邮箱');
-  if (await allowed(p, courseId))
+  if (!gift && (await allowed(p, courseId)))
     throw new HttpError(409, '课程已经开通，无需重复购买');
   if (!stripeReady())
     throw new HttpError(503, '课程购买尚未开放，可先向老师申请开通。');
@@ -207,7 +211,7 @@ export async function checkout(p: Person, courseId: string) {
   const price = await validPrice(priceId),
     client = stripeClient();
   for (let attempt = 0; attempt < 2; attempt++) {
-    const order = lockOrder(p, courseId, price);
+    const order = lockOrder(p, courseId, price, gift);
     if (order.checkout_id) {
       const session = await retrieveSession(order.checkout_id);
       await applySession(order, session);
@@ -226,9 +230,10 @@ export async function checkout(p: Person, courseId: string) {
           line_items: [{ price: order.price_id!, quantity: 1 }],
           customer_email: order.email,
           client_reference_id: order.id,
-          metadata: { orderId: order.id, courseId },
+          metadata: { orderId: order.id, courseId, ...(gift ? { gift: '1' } : {}) },
           payment_intent_data: { metadata: { orderId: order.id } },
-          success_url: `${origin()}/?view=courses&payment=success&session_id={CHECKOUT_SESSION_ID}`,
+          // A gift's code waits on the account page, with the order.
+          success_url: `${origin()}/?view=${gift ? 'account' : 'courses'}&payment=success&session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${origin()}/?view=account&payment=cancelled`,
           allow_promotion_codes: true,
           integration_identifier: 'cswork_qmzkrvta',
@@ -275,6 +280,7 @@ function validateSession(order: OrderRow, session: Stripe.Checkout.Session) {
     session.client_reference_id !== order.id ||
     session.metadata?.orderId !== order.id ||
     session.metadata?.courseId !== order.course_id ||
+    (session.metadata?.gift === '1') !== isGift(order.id) ||
     (order.checkout_id && order.checkout_id !== session.id)
   )
     throw new HttpError(400, '支付订单信息不一致');
@@ -397,7 +403,8 @@ async function applySession(order: OrderRow, session: Stripe.Checkout.Session) {
       status === 'failed' ? '支付未完成，可以重新发起购买。' : null,
       order.id,
     );
-    if (paid && !fullyRefunded) {
+    if (isGift(order.id)) settleGift(order.id, paid, fullyRefunded, now);
+    else if (paid && !fullyRefunded) {
       db.prepare(
         "INSERT OR IGNORE INTO grants(id,email,course_id,source,created_at) VALUES(?,?,?,'purchase',?)",
       ).run(`order:${order.id}`, order.email, order.course_id, now);
@@ -498,6 +505,7 @@ export async function orderDetail(
       )
       .all(order.id) as CommerceOrder['refunds'],
     ...(resume ? { checkout_url: checkoutUrl } : {}),
+    gift: giftInfo(order.id, p),
   };
 }
 export async function refundOrder(

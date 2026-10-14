@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import Link from 'next/link';
 import {
   ArrowRight, BookOpen, Bot, Check, ChevronLeft, ChevronRight, Code2, Copy, Dices, ExternalLink, Eye, Flag,
   History as HistoryIcon, Lightbulb, Link2, LoaderCircle, MessageSquareText, Mic, Minus, Pause, Play, Plus, Printer,
@@ -24,6 +23,7 @@ import {
   AI_MESSAGE_CHARS, AI_TURNS, candidateTurns, openerFor, reportFeedback, type AiReport, type Turn,
 } from '@/lib/mock-ai-interview';
 import type { Navigate } from './learning';
+import { ModeTabs } from './mock-modes';
 import { OaMarkdown } from './oa-library';
 import { TryFirst } from './try-first';
 import { StoryPicker } from './story-bank';
@@ -153,7 +153,7 @@ export function MockInterview({
   return (
     <div className="rd mi">
       <div className="rd-page">
-        <ModeTabs navigate={navigate} />
+        <ModeTabs navigate={navigate} current="mock-interview" />
         {query.set ? (
           <Session
             // Another account is another sitting (an AI interview's transcript is kept per account).
@@ -174,26 +174,6 @@ export function MockInterview({
 }
 const modeOf = (as: string | undefined, ai: boolean): Mode =>
   as === 'interviewer' || as === 'candidate' || (as === 'ai' && ai) ? as : 'solo';
-
-function ModeTabs({ navigate }: { navigate: Navigate }) {
-  const t = useT();
-  // Plain clicks stay in the app; modified clicks open a tab as usual.
-  const go = (view: string) => (e: React.MouseEvent) => {
-    if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    e.preventDefault();
-    navigate(view);
-  };
-  return (
-    <nav className="mi-modes mi-noprint" aria-label={t('模拟练习', 'Mock practice')}>
-      <Link href="/?view=mock" prefetch={false} onClick={go('mock')}>
-        {t('模拟 OA', 'Mock OA')}
-      </Link>
-      <Link href="/?view=mock-interview" prefetch={false} aria-current="page" onClick={go('mock-interview')}>
-        {t('模拟面试', 'Mock interview')}
-      </Link>
-    </nav>
-  );
-}
 
 function CompanyLogo({ slug }: { slug: string }) {
   const logo = Object.hasOwn(companyLogos, slug) ? companyLogos[slug] : null;

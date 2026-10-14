@@ -40,6 +40,8 @@ import { Heading } from './learning';
 import { PublicProfileSettings } from './public-profile-settings';
 import { ApiTokenSettings } from './api-tokens';
 import '@/app/commerce.css';
+import { GiftBlock, RedeemGift } from './course-gift';
+import { NewsletterToggle } from './newsletter-toggle';
 
 // English labels for the shared (Chinese) status maps in lib/commerce-types.
 export const orderStatusEn: Record<OrderStatus, string> = {
@@ -676,6 +678,7 @@ export function OrderCard({
         </span>
         <span className="commerce-order-summary">
           <strong>{price(detail.amount)}</strong>
+          {detail.gift && <span className="commerce-gift-tag">{t('礼物', 'Gift')}</span>}
           <span className={`commerce-status commerce-status-${detail.status}`}>
             {t(orderStatusNames[detail.status], orderStatusEn[detail.status])}
           </span>
@@ -689,14 +692,17 @@ export function OrderCard({
               <dt>{t('订单编号', 'Order ID')}</dt>
               <dd>{detail.id}</dd>
             </div>
-            <div>
-              <dt>{t('课程权益', 'Course access')}</dt>
-              <dd>
-                {detail.has_access
-                  ? t('已经开通', 'Unlocked')
-                  : t('尚未开通', 'Not unlocked yet')}
-              </dd>
-            </div>
+            {/* A gift never unlocks the buyer: its block below says where the code stands. */}
+            {!detail.gift && (
+              <div>
+                <dt>{t('课程权益', 'Course access')}</dt>
+                <dd>
+                  {detail.has_access
+                    ? t('已经开通', 'Unlocked')
+                    : t('尚未开通', 'Not unlocked yet')}
+                </dd>
+              </div>
+            )}
             {detail.amount_refunded > 0 && (
               <div>
                 <dt>{t('已退款', 'Refunded')}</dt>
@@ -704,6 +710,7 @@ export function OrderCard({
               </div>
             )}
           </dl>
+          {detail.gift && <GiftBlock order={detail} onChange={(next) => (setDetail(next), onRefresh?.(next))} />}
           {detail.refunds?.map((r) => (
             <div className="commerce-refund-row" key={r.id}>
               <span>
@@ -1174,6 +1181,22 @@ export function AccountView({
             </span>
           </div>
         ))}
+      </section>
+      <section className="form-card commerce-account-card" id="redeem-gift">
+        <h2>{t('兑换课程礼物', 'Redeem a course gift')}</h2>
+        <p className="muted">
+          {t('收到别人送的兑换码？课程会开通在当前账号上。', 'Got a gift code? The course unlocks on this account.')}
+        </p>
+        <RedeemGift
+          onDone={(title) => {
+            setMessage(t(`《${title}》已开通。`, `“${title}” is unlocked.`));
+            void refresh();
+          }}
+        />
+      </section>
+      <section className="form-card commerce-account-card" id="newsletter">
+        <h2>{t('每周周报', 'Weekly newsletter')}</h2>
+        <NewsletterToggle />
       </section>
       <section className="form-card commerce-account-card">
         <h2>{t('订单与收据', 'Orders and receipts')}</h2>
