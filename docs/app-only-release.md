@@ -11,7 +11,7 @@ ssh ubuntu@<服务器> 'bash -s -- main' < deploy/release.sh
 脚本依次执行：
 
 1. 检查目标提交在 GitHub 上的全部 CI 检查是否已成功完成；没跑完或有失败就停止。
-2. 在 `/srv/cswork/builds/<sha>` 克隆并构建，使用与线上相同的 Node 版本。目录对 cswork 用户可读，不需要临时改权限。可用空间不足 8 GiB 时直接停止。
+2. 在内存盘 `/dev/shm/cswork-builds/<sha>` 克隆并构建（构建峰值约 7 GiB，根分区放不下；可用 `CSWORK_BUILDS` 覆盖），无论成功失败退出时都会删掉，使用与线上相同的 Node 版本。目录对 cswork 用户可读，不需要临时改权限。可用空间不足 8 GiB 时直接停止。
 3. 如果 `drizzle/` 或 `db/` 有改动，停止并提示改用 `deploy/install.sh`。
 4. 调用下面的 `app-only-release.sh` 部署，失败会自动回滚。
 5. 找出所有还没发布的已验证 OA 批次，逐批运行 `publish-oa-judge.ts`，发布完复查一遍。
