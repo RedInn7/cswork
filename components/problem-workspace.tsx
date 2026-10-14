@@ -13,6 +13,7 @@ import {
   rememberProblemSequence,
 } from '@/lib/problem-sequence';
 import { practiceStats, type Activity } from './practice-calendar';
+import { localDay, readTodayTarget } from '@/lib/study-plan';
 import {
   ArrowLeft,
   BookOpen,
@@ -2517,12 +2518,11 @@ function AcceptedDialog({
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const primary = useRef<HTMLButtonElement>(null);
+  // The bank page's target for today (its sprint plan's count, 0 on a mock OA
+  // or OA day), else the "n a day" picker.
   const [target] = useState(() => {
     try {
-      const saved = Number(
-        localStorage.getItem('cswork:practice:daily-target'),
-      );
-      return [1, 2, 3, 5].includes(saved) ? saved : 3;
+      return readTodayTarget(localStorage, localDay());
     } catch {
       return 3;
     }
@@ -2582,8 +2582,8 @@ function AcceptedDialog({
           <DialogTitle className="cs-accepted-title">Accepted</DialogTitle>
           <DialogDescription className="cs-accepted-stats">
             {t(
-              `今日 ${stats.today} / ${target} · 连续 ${stats.streak} 天`,
-              `Today ${stats.today} / ${target} · ${stats.streak}-day streak`,
+              `今日 ${stats.today}${target ? ` / ${target}` : ''} · 连续 ${stats.streak} 天`,
+              `Today ${stats.today}${target ? ` / ${target}` : ''} · ${stats.streak}-day streak`,
             )}
             {seconds != null &&
               t(

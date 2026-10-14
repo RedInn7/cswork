@@ -3,6 +3,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
+import { StudyPlan, useStudyPlan, type PlanTodo } from './study-plan';
 import { RouteLine } from './route-line';
 import { routeStops, stopFromUrl, type RouteStop } from '@/lib/route-stops';
 import {
@@ -83,6 +84,8 @@ type LibraryPage = RoundState & {
   /** Companies on the line, with how many of its problems they asked. */
   companies?: { slug: string; name: string; count: number }[];
   sequence?: string[];
+  /** What is left of the sequence, for the sprint plan. */
+  planTodo?: PlanTodo[];
   nextProblemId?: string | null;
   /** The recommended next problem, for everyone (signed out: the first stop). */
   next?: {
@@ -153,11 +156,14 @@ export function StudyLibrary({
   availableProblemIds,
   activity = [],
   signedIn = false,
+  userId,
 }: {
   navigate: Navigate;
   availableProblemIds: string[];
   activity?: { problem_id: string; created_at: number }[];
   signedIn?: boolean;
+  /** Keys the sprint plan on this device; guests share one. */
+  userId?: string | null;
 }) {
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState('');
@@ -200,15 +206,13 @@ export function StudyLibrary({
   const detailHeading = useRef<HTMLHeadingElement>(null);
   const t = (zh: string, en: string) => (english ? en : zh);
   const stats = usePracticeStats(activity, english);
-  // Per-device preferences: a folded line and the daily target.
+  // Per-device preferences: a folded line and the sprint plan, whose daily
+  // count (else the "n a day" picker) is today's target.
   const [folded, setFolded] = useState(false);
-  const [target, setTarget] = useState(3);
   const [celebrate, setCelebrate] = useState(false);
   useEffect(() => {
     try {
       setFolded(localStorage.getItem('cswork:route:folded') === '1');
-      const saved = Number(localStorage.getItem('cswork:practice:daily-target'));
-      if ([1, 2, 3, 5].includes(saved)) setTarget(saved);
     } catch {}
   }, []);
   function changeFolded(value: boolean) {
@@ -217,17 +221,16 @@ export function StudyLibrary({
       localStorage.setItem('cswork:route:folded', value ? '1' : '0');
     } catch {}
   }
+  const sprint = useStudyPlan(userId, data?.planTodo, data?.sequence, activity);
+  const target = sprint.target;
   function changeTarget(value: number) {
-    setTarget(value);
-    try {
-      localStorage.setItem('cswork:practice:daily-target', String(value));
-    } catch {}
+    if (sprint.goal) sprint.save({ ...sprint.goal, dailyTarget: value });
   }
   // Reaching the daily target is celebrated once per day on this device. It waits
   // for the panel so its live region exists before the text arrives.
   const lineShown = !!data?.collection;
   useEffect(() => {
-    if (!stats || !signedIn || !lineShown || stats.today < target) return;
+    if (!stats || !signedIn || !lineShown || !target || stats.today < target) return;
     const day = new Date().toDateString();
     try {
       if (localStorage.getItem('cswork:practice:trip-done') === day) return;
@@ -656,11 +659,17 @@ export function StudyLibrary({
   // next, nextProblemId and sequence span the whole line, so a previous
   // filter's response still holds them; only its rows are stale while loading.
   const stale = loading && dataQuery !== currentQuery;
-  const nextProblemId = data?.nextProblemId;
-  const next = data?.next ?? null;
+  // A sprint plan from a later stop starts the trip there: the CTA, the stop on
+  // show and the list's mark follow it. Only the line's first problem has a
+  // ticket, so it hides then.
+  const planStart = member ? sprint.start : undefined;
+  const nextProblemId = planStart?.[0] ?? data?.nextProblemId;
+  const next =
+    planStart && planStart[0] !== data?.next?.judgeProblemId ? null : (data?.next ?? null);
   const route = data?.collection ? routeStops(data.collection.sections) : null;
   const stops = route?.stops ?? [];
   const currentSlug =
+    (planStart ? stops[planStart[2]]?.slug : undefined) ??
     next?.sectionSlug ??
     stops.find((stop) => stop.solved < stop.total)?.slug ??
     stops.at(-1)?.slug ??
@@ -679,11 +688,16 @@ export function StudyLibrary({
   const stopName = (stop: RouteStop) =>
     english ? stop.titleEn || stop.title : stop.title;
   const today = stats?.today ?? 0;
-  const tripDone = member && today >= target;
+  // 0 on a mock OA or OA day: no practice planned.
+  const tripDone = member && !!target && today >= target;
   const startNext = () => {
     const id = nextProblemId ?? next?.judgeProblemId;
     if (!id) return;
-    rememberProblemSequence(data?.sequence ?? [id]);
+    const sequence = data?.sequence ?? [id];
+    // From the plan's start stop, previous/next stay on the planned part of the line.
+    rememberProblemSequence(
+      planStart ? sequence.slice(Math.max(0, sequence.indexOf(id))) : sequence,
+    );
     navigate('problem', { problem: id });
   };
   const selectStop = (slug: string) => {
@@ -835,38 +849,51 @@ export function StudyLibrary({
                   <span className="route-today-label">
                     {t('今日行程', 'Today’s trip')}
                   </span>
-                  <span className="route-punches" aria-hidden="true">
-                    {Array.from({ length: target }, (_, k) => (
-                      <i
-                        key={k}
-                        className="route-punch"
-                        data-on={k < today || undefined}
-                        style={{ '--k': k } as React.CSSProperties}
-                      />
-                    ))}
-                  </span>
-                  <span className="route-today-count" aria-hidden="true">
-                    {Math.min(today, 99)} / {target}
-                  </span>
-                  <span className="sr-only">
-                    {t(
-                      `今天已通过 ${today} 题，目标 ${target} 题`,
-                      `${today} of ${target} solved today`,
-                    )}
-                  </span>
-                  <label className="route-target">
-                    <span className="sr-only">{t('每日目标', 'Daily target')}</span>
-                    <select
-                      value={target}
-                      onChange={(event) => changeTarget(Number(event.target.value))}
-                    >
-                      {[1, 2, 3, 5].map((n) => (
-                        <option key={n} value={n}>
-                          {t(`每天 ${n} 题`, `${n} a day`)}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                  {target ? (
+                    <>
+                      <span className="route-punches" aria-hidden="true">
+                        {Array.from({ length: target }, (_, k) => (
+                          <i
+                            key={k}
+                            className="route-punch"
+                            data-on={k < today || undefined}
+                            style={{ '--k': k } as React.CSSProperties}
+                          />
+                        ))}
+                      </span>
+                      <span className="route-today-count" aria-hidden="true">
+                        {Math.min(today, 99)} / {target}
+                      </span>
+                      <span className="sr-only">
+                        {t(
+                          `今天已通过 ${today} 题，目标 ${target} 题`,
+                          `${today} of ${target} solved today`,
+                        )}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="route-today-rest">
+                      {sprint.plan?.days[0]?.oa
+                        ? t('OA 日，不排练习题', 'OA day, no practice planned')
+                        : t('模拟 OA 日，不排练习题', 'Mock OA day, no practice planned')}
+                    </span>
+                  )}
+                  {/* A sprint plan sets the count; its summary below says how. */}
+                  {!sprint.plan?.daily && (
+                    <label className="route-target">
+                      <span className="sr-only">{t('每日目标', 'Daily target')}</span>
+                      <select
+                        value={target}
+                        onChange={(event) => changeTarget(Number(event.target.value))}
+                      >
+                        {[1, 2, 3, 5].map((n) => (
+                          <option key={n} value={n}>
+                            {t(`每天 ${n} 题`, `${n} a day`)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
                   <output className="sr-only" aria-live="polite">
                     {celebrate && tripDone
                       ? t(
@@ -878,7 +905,7 @@ export function StudyLibrary({
                 </div>
               )}
             </div>
-            {member && data?.collection && !solvedAll && (
+            {member && data?.collection && !solvedAll && !sprint.plan && (
               <p className="route-pace">
                 {t(
                   `按每天 ${target} 题，约 ${daysLeft} 天到终点站。`,
@@ -908,6 +935,14 @@ export function StudyLibrary({
                 )}
               </p>
             ) : null}
+            <StudyPlan
+              goal={sprint.goal}
+              plan={sprint.plan}
+              today={sprint.today}
+              onSave={sprint.save}
+              stops={stops}
+              english={english}
+            />
           </div>
           <div className="route-habit">
             <PracticeCalendar
@@ -1325,7 +1360,7 @@ export function StudyLibrary({
                   : undefined;
               const isNext =
                 !!item.judgeProblemId &&
-                item.judgeProblemId === (next?.judgeProblemId ?? nextProblemId);
+                item.judgeProblemId === (nextProblemId ?? next?.judgeProblemId);
               return (
                 <Fragment key={item.id}>
                   {stop && (

@@ -158,7 +158,7 @@ void test('invalid batch rolls back completely', () => {
   assert.throws(() => loadStudyLibrary(sqlite(), file));
   assert.equal(listStudyLibrary(new URLSearchParams()).total, 1);
 });
-void test('verification expires when the source snapshot or published judge version changes', () => {
+void test('verification expires when the source snapshot or published judge version changes', async () => {
   const db = sqlite();
   db.prepare(
     `INSERT INTO oj_problems(id,course_id,lesson_id,current_version_id,published,created_at,updated_at) VALUES('lc-3','gomall','00-overview','v1',1,1,1)`,
@@ -171,6 +171,18 @@ void test('verification expires when the source snapshot or published judge vers
     "UPDATE study_library SET judge_problem_id='lc-3',verified_hash=content_hash || ':v1' WHERE id='lc-3'",
   ).run();
   assert.equal(getStudyLibrary('lc-3').caseStatus, 'verified');
+  // The study plan's todo: judgeable and unsolved, with difficulty and stop.
+  const { curatedByNumber, curatedSections } = await import('../lib/ling-curated');
+  assert.deepEqual(
+    (listStudyLibrary(new URLSearchParams()) as { planTodo?: unknown }).planTodo,
+    [
+      [
+        'lc-3',
+        '中等',
+        curatedSections.findIndex((s) => s.slug === curatedByNumber.get(3)!.sectionSlug),
+      ],
+    ],
+  );
   db.prepare(
     "UPDATE oj_problems SET current_version_id='v2' WHERE id='lc-3'",
   ).run();
