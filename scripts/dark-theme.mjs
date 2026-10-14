@@ -158,7 +158,7 @@ export function lightText(rgb, ground = REFERENCE_SURFACE) {
 
 /**
  * Map one parsed colour for a role:
- * 'bg' | 'border' | 'shadow' | 'text' | 'fill' | 'stroke' | 'keep'.
+ * 'bg' | 'border' | 'outline' | 'shadow' | 'text' | 'fill' | 'stroke' | 'keep'.
  * Returns {rgb, alpha} (possibly unchanged).
  */
 export function mapColor(color, role, ground) {
@@ -185,6 +185,10 @@ export function mapColor(color, role, ground) {
         return { rgb: withL(o, 0.62 + (0.45 - o.L) * 0.4), alpha };
       }
       return same;
+    case 'outline':
+      // Focus rings must stay visible on the dark surface, whatever their hue.
+      if (alpha >= 0.35 && o.L < 0.65) return { rgb: lightText(rgb), alpha };
+      return mapColor(color, 'border');
     case 'shadow':
       if (!saturated && o.L >= 0.75 && alpha >= 0.35) return { rgb: hairline(o), alpha };
       return same;
@@ -225,7 +229,8 @@ export const DARK_INK = '#0b1411';
 const BG_PROPS = /^background(-color|-image)?$/;
 const TEXT_PROPS = /^(color|-webkit-text-fill-color|caret-color|text-decoration(-color)?|text-emphasis-color)$/;
 const SHADOW_PROPS = /^(box-shadow|text-shadow)$/;
-const BORDER_PROPS = /^(border(-(top|right|bottom|left|block|inline)(-(start|end))?)?(-color|-style|-width)?|border-image.*|outline(-color|-style|-width)?|column-rule(-color)?)$/;
+const BORDER_PROPS = /^(border(-(top|right|bottom|left|block|inline)(-(start|end))?)?(-color|-style|-width)?|border-image.*|column-rule(-color)?)$/;
+const OUTLINE_PROPS = /^outline(-color|-style|-width)?$/;
 const FILL_PROPS = /^(fill|stop-color|flood-color|lighting-color)$/;
 const STROKE_PROPS = /^(stroke|scrollbar-color|accent-color)$/;
 
@@ -235,6 +240,7 @@ export function roleOf(prop) {
   if (TEXT_PROPS.test(prop)) return 'text';
   if (SHADOW_PROPS.test(prop)) return 'shadow';
   if (BORDER_PROPS.test(prop)) return 'border';
+  if (OUTLINE_PROPS.test(prop)) return 'outline';
   if (FILL_PROPS.test(prop)) return 'fill';
   if (STROKE_PROPS.test(prop)) return 'stroke';
   return null;
