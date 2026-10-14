@@ -371,10 +371,19 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
     ),
     sequence,
     // The study plan (lib/study-plan.ts) counts what is left of the sequence:
-    // [problem id, difficulty, stop index] per unsolved entry, in line order.
+    // [problem id, difficulty, stop index, stage index, rating] per unsolved entry, in
+    // line order. Stage and rating pick what a short plan keeps.
     planTodo: all.flatMap((item) =>
       item.caseStatus === 'verified' && item.judgeProblemId && !item.solved
-        ? [[item.judgeProblemId, item.difficulty, STOP_INDEX.get(item.selection.sectionSlug) ?? 0] as const]
+        ? [
+            [
+              item.judgeProblemId,
+              item.difficulty,
+              STOP_INDEX.get(item.selection.sectionSlug) ?? 0,
+              CURATED_STAGES.indexOf(item.selection.stage),
+              item.rating === null ? null : Math.round(item.rating),
+            ] as const,
+          ]
         : [],
     ),
     nextProblemId: userId ? (nextItem?.judgeProblemId ?? null) : null,

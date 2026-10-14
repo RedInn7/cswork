@@ -4,6 +4,8 @@ import {
   addDays,
   buildPlan,
   DEFAULT_GOAL,
+  fitPlan,
+  mixPlan,
   isDay,
   loadGoal,
   minutesFor,
@@ -17,6 +19,7 @@ import {
   type PlanGoal,
   type PlanProblem,
 } from '../lib/study-plan';
+import { ROUTE_SLUGS, STOP_PREREQS } from '../lib/route-stops';
 
 const today = '2026-10-14'; // A Wednesday.
 const amazon = { slug: 'amazon', name: 'Amazon', aliases: ['amazon'], minutes: 90 };
@@ -463,4 +466,122 @@ void test('the .ics without a company, an OA date or anything left', () => {
   assert.ok(open.includes('RRULE:FREQ=DAILY;COUNT=2'));
   assert.ok(open.includes('SUMMARY:CSWork daily trip: 2 problems'));
   assert.ok(!open.some((row) => row.startsWith('UID:cswork-plan-oa')));
+});
+
+// Problems on given stops: `per` each, ids lc-<stop>-<k>.
+const stops = (list: number[], per: number, extra: (k: number) => Partial<PlanProblem> = () => ({})) =>
+  list.flatMap((stop) =>
+    Array.from({ length: per }, (_, k) => ({ id: `lc-${stop}-${k}`, difficulty: '中等', stop, ...extra(k) })),
+  );
+const firstAt = (problems: PlanProblem[]) => {
+  const at = new Map<number, number>();
+  problems.forEach((p, i) => {
+    if (p.stop !== undefined && !at.has(p.stop)) at.set(p.stop, i);
+  });
+  return at;
+};
+
+void test('a plan too short for the line keeps some of every stop, foundations and easier ratings first', () => {
+  // No date, one week at 7 h: 2 a day for 7 days = 14 of 50 problems.
+  const line = stops([0, 1, 2, 3, 4], 10, (k) => ({ stage: k < 3 ? 0 : 1, rating: 2000 - k * 100 }));
+  const plan = buildPlan({ goal: goal({ weeks: 1 }), today, line });
+  const kept = plan.days.flatMap((day) => day.problems);
+  assert.equal(plan.days.length, 7);
+  assert.equal(kept.length, 14);
+  assert.equal(plan.todo, 50);
+  assert.equal(plan.cut, 36);
+  assert.deepEqual([...new Set(kept.map((p) => p.stop))].sort(), [0, 1, 2, 3, 4], 'every stop');
+  // Stop 0 keeps three: its foundation problems (k < 3), not its lower-rated core ones.
+  assert.deepEqual(
+    kept.filter((p) => p.stop === 0).map((p) => p.id),
+    ['lc-0-0', 'lc-0-1', 'lc-0-2'],
+  );
+  // Within a stage the lower rating wins; shares follow stop size.
+  const fit = fitPlan(
+    [...stops([5], 4, (k) => ({ stage: 1, rating: 1000 + (3 - k) * 100 })), ...stops([6], 12)],
+    8,
+  );
+  assert.deepEqual(fit.filter((p) => p.stop === 5).map((p) => p.id), ['lc-5-2', 'lc-5-3']);
+  assert.equal(fit.filter((p) => p.stop === 6).length, 6);
+  assert.deepEqual(fitPlan(line, 0), []);
+  assert.equal(fitPlan(line, 99).length, 50);
+  // With an OA date the same: 10 days, the line before the sprint and after the mocks.
+  const dated = buildPlan({ goal: goal({ oaDate: addDays(today, 10) }), today, line });
+  assert.ok(dated.cut > 0);
+  assert.equal(new Set(dated.days.flatMap((day) => day.problems.map((p) => p.stop))).size, 5);
+  assert.equal(dated.daily, 2, 'the budget still sets the pace');
+});
+
+void test('weeks mix stops, and a stop starts only after its prerequisites in the plan', () => {
+  // array-foundations (0) comes before hash-counting (1) and string-processing (2).
+  const plan = buildPlan({ goal: goal({ weeklyHours: 14 }), today, line: stops([0, 1, 2], 6) });
+  const order = plan.days.flatMap((day) => day.problems);
+  assert.equal(order[0].stop, 0);
+  assert.deepEqual(order.slice(0, 6).map((p) => p.stop), [0, 0, 1, 2, 0, 1]);
+  assert.ok(planWeeks(plan.days)[0].stops.length >= 2, 'several topics in the first week');
+  assert.deepEqual(planWeeks(plan.days)[0].stops, [0, 1, 2]);
+
+  // The whole line, shuffled any way: every prerequisite in the plan shows up first.
+  const all = stops(ROUTE_SLUGS.map((_, i) => i), 2);
+  const orders = [0, 1, 2, 7, 42].map((shuffle) => mixPlan(all, shuffle));
+  for (const mixed of orders) {
+    assert.deepEqual(mixed.map((p) => p.id).toSorted(), all.map((p) => p.id).toSorted());
+    const at = firstAt(mixed);
+    ROUTE_SLUGS.forEach((slug, stop) => {
+      for (const p of STOP_PREREQS[slug])
+        assert.ok(at.get(ROUTE_SLUGS.indexOf(p))! < at.get(stop)!, `${p} before ${slug}`);
+    });
+  }
+  assert.notDeepEqual(orders[0].map((p) => p.id), orders[1].map((p) => p.id), 'regenerate reshuffles');
+  // A prerequisite outside the plan does not hold a stop back.
+  assert.deepEqual(
+    mixPlan(stops([8, 13], 2)).map((p) => p.stop),
+    [8, 13, 8, 13],
+    'grid search rides from the start when binary trees are not in the plan',
+  );
+});
+
+void test('difficulty and topic filters, an empty result, the pool and the plan length', () => {
+  const line = [
+    { id: 'lc-1', difficulty: '简单', stop: 0 },
+    { id: 'lc-2', difficulty: '困难', stop: 5 },
+    { id: 'lc-3', difficulty: '中等', stop: 5 },
+  ];
+  const hard = buildPlan({ goal: goal({ difficulties: ['hard'] }), today, line });
+  assert.deepEqual(hard.days.flatMap((day) => ids(day.problems)), ['lc-2']);
+  assert.equal(hard.filtered, 2);
+  const search = buildPlan({ goal: goal({ topics: ['binary-search'] }), today, line });
+  assert.deepEqual(search.days.flatMap((day) => ids(day.problems)), ['lc-2', 'lc-3']);
+  // Nothing left under the filters: an empty plan that says why.
+  const none = buildPlan({ goal: goal({ difficulties: ['easy'], topics: ['binary-search'] }), today, line });
+  assert.equal(none.todo, 0);
+  assert.equal(none.filtered, 3);
+  assert.equal(none.daily, 0);
+  assert.ok(none.days.every((day) => !day.problems.length));
+  // A classic list ignores the start stop; its problems off the line drop out of a topic filter.
+  const listed = [{ id: 'lc-9', difficulty: 'Easy' }, ...line];
+  assert.equal(buildPlan({ goal: goal({ pool: 'blind-75', startStop: 3 }), today, line: listed }).todo, 4);
+  assert.equal(buildPlan({ goal: goal({ startStop: 3 }), today, line }).todo, 2);
+  assert.equal(buildPlan({ goal: goal({ pool: 'blind-75', topics: ['array-foundations'] }), today, line: listed }).todo, 1);
+  // Without a date, the weeks set the length.
+  assert.equal(buildPlan({ goal: goal({ weeks: 2 }), today, line }).days.length, 14);
+  assert.equal(buildPlan({ goal: goal({ weeks: 26, oaDate: addDays(today, 3) }), today, line }).days.length, 4);
+
+  const normal = normalizeGoal({
+    pool: 'leetcode-hot-100',
+    weeks: 26,
+    difficulties: ['hard', 'bogus', 'easy'],
+    topics: ['binary-search', 'nope'],
+    shuffle: 3,
+  });
+  assert.equal(normal.pool, 'leetcode-hot-100');
+  assert.equal(normal.weeks, 26);
+  assert.deepEqual(normal.difficulties, ['easy', 'hard']);
+  assert.deepEqual(normal.topics, ['binary-search']);
+  assert.equal(normal.shuffle, 3);
+  const odd = normalizeGoal({ pool: 'hot-100', weeks: 27, difficulties: [], topics: [...ROUTE_SLUGS] });
+  assert.equal(odd.pool, 'line');
+  assert.equal(odd.weeks, 4);
+  assert.deepEqual(odd.difficulties, ['easy', 'medium', 'hard'], 'none reads as all');
+  assert.deepEqual(odd.topics, [], 'every stop reads as all');
 });

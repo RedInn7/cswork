@@ -4,7 +4,8 @@
  * tests. v1 keeps the goal in this browser only (planStorageKey), like the mock
  * OA history; syncing it across devices needs a table.
  */
-import { slotOf } from './mock-oa';
+import { slotOf, SLOTS, type Slot } from './mock-oa';
+import { ROUTE_SLUGS, stopPrereqs } from './route-stops';
 
 export type PlanCompany = {
   slug: string;
@@ -27,9 +28,29 @@ export type PlanGoal = {
   startStop: number;
   /** "n a day" whenever no plan applies (was cswork:practice:daily-target). */
   dailyTarget: number;
+  /** Where the line's part of the plan comes from: Line 500 or a classic list's slug. */
+  pool: PlanPool;
+  /** Plan length without a usable OA date. */
+  weeks: number;
+  /** Difficulties to plan (all by default). */
+  difficulties: Slot[];
+  /** Stop slugs to plan; empty plans every stop. */
+  topics: string[];
+  /** "Regenerate" bumps it: other stops ride together, the unsolved problems stay the same. */
+  shuffle: number;
 };
-/** One problem left to do; stop is its 0-based stop on the line (OA problems have none). */
-export type PlanProblem = { id: string; difficulty?: string | null; stop?: number };
+/**
+ * One problem left to do; stop is its 0-based stop on the line (OA problems and list
+ * problems off the line have none). stage (0 基础 … 2 进阶) and rating pick what a short
+ * plan keeps.
+ */
+export type PlanProblem = {
+  id: string;
+  difficulty?: string | null;
+  stop?: number;
+  stage?: number;
+  rating?: number | null;
+};
 export type PlanDay = {
   date: string;
   problems: PlanProblem[];
@@ -47,12 +68,17 @@ export type Plan = {
   daysLeft: number | null;
   /** The saved OA date has passed; the plan runs open-ended until it is changed. */
   expired: boolean;
+  /** Problems left under the filters, line and company. */
   todo: number;
   avgMinutes: number;
   /** Today's pace (the line's, or the sprint's in the last week), as of this morning. */
   daily: number;
-  /** Today through the OA day, or OPEN_DAYS without a date. */
+  /** Today through the OA day, or goal.weeks without a date. */
   days: PlanDay[];
+  /** Problems the difficulty and topic filters leave out. */
+  filtered: number;
+  /** Of todo, the problems left out so the rest fit before the OA (or in goal.weeks). */
+  cut: number;
 };
 export type PlanWeek = {
   start: string;
@@ -63,15 +89,27 @@ export type PlanWeek = {
   mocks: number;
   sprint: boolean;
   oa: boolean;
-  /** First and last stop of the week's line problems, if any. */
-  stops: [number, number] | null;
+  /** The stops of the week's line problems, in plan order. */
+  stops: number[];
 };
 
 export const MINUTES = { easy: 15, medium: 25, hard: 40 } as const;
 export const SPRINT_DAYS = 7;
 export const MAX_DAYS = 365;
-export const OPEN_DAYS = 28;
 export const DAILY_TARGETS = [1, 2, 3, 5];
+/** Line 500, then the classic lists (lib/classic-lists.ts slugs) a plan can draw from. */
+export const PLAN_POOLS = [
+  'line',
+  'grind-75',
+  'blind-75',
+  'leetcode-75',
+  'leetcode-hot-100',
+  'top-interview-150',
+] as const;
+export type PlanPool = (typeof PLAN_POOLS)[number];
+export const MAX_WEEKS = 26;
+/** How many stops ride together while the plan mixes them. */
+const MIX = 3;
 export const LEGACY_TARGET_KEY = 'cswork:practice:daily-target';
 /** {date, n}: today's target as the bank page set it, read by the workspace's AC dialog. */
 export const TODAY_TARGET_KEY = 'cswork:practice:today-target';
@@ -85,6 +123,11 @@ export const DEFAULT_GOAL: PlanGoal = {
   solvedBefore: 0,
   startStop: 0,
   dailyTarget: 3,
+  pool: 'line',
+  weeks: 4,
+  difficulties: [...SLOTS],
+  topics: [],
+  shuffle: 0,
 };
 
 const DAY = 86400000;
@@ -141,6 +184,18 @@ export function normalizeGoal(raw: unknown): PlanGoal {
     dailyTarget: DAILY_TARGETS.includes(g.dailyTarget as number)
       ? (g.dailyTarget as number)
       : DEFAULT_GOAL.dailyTarget,
+    pool: PLAN_POOLS.includes(g.pool as PlanPool) ? (g.pool as PlanPool) : 'line',
+    weeks: int(g.weeks, 1, MAX_WEEKS, DEFAULT_GOAL.weeks),
+    // None chosen reads as all, like a goal saved before the filters existed.
+    difficulties: SLOTS.some((slot) => Array.isArray(g.difficulties) && g.difficulties.includes(slot))
+      ? SLOTS.filter((slot) => (g.difficulties as unknown[]).includes(slot))
+      : [...SLOTS],
+    topics: Array.isArray(g.topics)
+      ? ((chosen) => (chosen.length === ROUTE_SLUGS.length ? [] : chosen))(
+          ROUTE_SLUGS.filter((slug) => (g.topics as unknown[]).includes(slug)),
+        )
+      : [],
+    shuffle: int(g.shuffle, 0, 1e6, 0),
   };
 }
 
@@ -203,15 +258,95 @@ export function suggestStartStop(totals: readonly number[], solvedBefore: number
 export const oaDateInRange = (date: string, today: string) =>
   isDay(date) && daysBetween(today, date) >= 0 && daysBetween(today, date) <= MAX_DAYS;
 
+/** Does the goal's difficulty and topic filter keep this problem? */
+export function planned(goal: PlanGoal, problem: PlanProblem) {
+  const slug = problem.stop === undefined ? undefined : ROUTE_SLUGS[problem.stop];
+  return (
+    goal.difficulties.includes(slotOf(problem.difficulty?.toLowerCase()) ?? 'medium') &&
+    (!goal.topics.length || (!!slug && goal.topics.includes(slug)))
+  );
+}
+
+const byStop = (problems: readonly PlanProblem[]) => {
+  const groups = new Map<number | undefined, PlanProblem[]>();
+  for (const p of problems) groups.set(p.stop, [...(groups.get(p.stop) ?? []), p]);
+  return groups;
+};
+
 /**
- * Todo = the line's unsolved problems from goal.startStop on (in sequence), then
- * the target company's unsolved OA problems. With D days to the OA, the days
+ * n of the problems, still covering every stop: each stop's share follows its size
+ * (one each first, in order), and a stop keeps its foundation-stage, then lower-rated
+ * problems, then the line's order. The kept problems stay in their given order.
+ */
+export function fitPlan(problems: readonly PlanProblem[], n: number) {
+  const lists = [...byStop(problems).values()];
+  const taken = lists.map(() => 0);
+  for (let k = 0; k < n; k++) {
+    let best = -1;
+    lists.forEach((list, i) => {
+      if (taken[i] < list.length && (best < 0 || taken[i] / list.length < taken[best] / lists[best].length))
+        best = i;
+    });
+    if (best < 0) break;
+    taken[best]++;
+  }
+  const keep = new Set(
+    lists.flatMap((list, i) =>
+      list
+        .toSorted((a, b) => (a.stage ?? 1) - (b.stage ?? 1) || (a.rating ?? 1e9) - (b.rating ?? 1e9))
+        .slice(0, taken[i]),
+    ),
+  );
+  return problems.filter((p) => keep.has(p));
+}
+
+/**
+ * The problems mixed across stops: up to MIX stops ride together, one problem each in
+ * turn, so a week holds several topics. A stop joins once each of its prerequisites
+ * (lib/route-stops.ts STOP_PREREQS) that is in the plan has shown up, so it first appears
+ * after them; the earliest such stop joins, or with `shuffle` a pseudo-random one.
+ */
+export function mixPlan(problems: readonly PlanProblem[], shuffle = 0) {
+  const groups = byStop(problems);
+  const pending = [...groups.entries()];
+  const prereqs = (stop: number | undefined) =>
+    stop === undefined
+      ? []
+      : stopPrereqs(ROUTE_SLUGS[stop] ?? '')
+          .map((slug) => ROUTE_SLUGS.indexOf(slug))
+          .filter((index) => groups.has(index));
+  const started = new Set<number | undefined>();
+  const riding: typeof pending = [];
+  const mixed: PlanProblem[] = [];
+  for (let joined = 0; mixed.length < problems.length; ) {
+    while (riding.length < MIX) {
+      const ready = pending.filter(([stop]) => prereqs(stop).every((p) => started.has(p)));
+      if (!ready.length) break;
+      const pick = ready[shuffle ? (Math.imul(shuffle + joined++, 2654435761) >>> 0) % ready.length : 0];
+      pending.splice(pending.indexOf(pick), 1);
+      riding.push(pick);
+    }
+    for (const group of [...riding]) {
+      mixed.push(group[1].shift()!);
+      started.add(group[0]);
+      if (!group[1].length) riding.splice(riding.indexOf(group), 1);
+    }
+  }
+  return mixed;
+}
+
+/**
+ * Todo = the pool's unsolved problems (Line 500 from goal.startStop on, or a classic
+ * list's) under the goal's difficulty and topic filters, mixed across stops (mixPlan),
+ * then the target company's unsolved OA problems. With D days to the OA, the days
  * before the last week ride the line only:
  * daily = min(ceil(line / (D - 7)), weekly budget / average minutes), at least 1.
  * The last 7 days hold two mock OAs, at D-5 and D-2 (one when fewer than 3 days
  * are left), and save the company's problems for the rest, ceil(company / those
  * days) a day within the budget; the line fills in once they run out.
- * Without a date (or a past or > 365-day one) the budget sets the pace, line first.
+ * Without a date (or a past or > 365-day one) the budget sets the pace, line first,
+ * over goal.weeks. When the days cannot hold the line, fitPlan keeps what they can,
+ * spread over every stop, instead of cutting the last stops.
  * `done` counts the problems of each kind solved earlier today: paces count from
  * this morning, so working off today's problems does not lower today's goal.
  */
@@ -230,12 +365,15 @@ export function buildPlan({
 }): Plan {
   const d = goal.oaDate && isDay(goal.oaDate) ? daysBetween(today, goal.oaDate) : null;
   const daysLeft = d !== null && d >= 0 && d <= MAX_DAYS ? d : null;
-  const queue = line.filter((p) => (p.stop ?? 0) >= goal.startStop);
-  const todo = queue.length + company.length;
+  const from = goal.pool === 'line' ? goal.startStop : 0;
+  const ahead = line.filter((p) => (p.stop ?? 0) >= from);
+  const wanted = ahead.filter((p) => planned(goal, p));
   // ponytail: the average leaves out today's solved problems (their difficulty is
   // not sent), so the budget can shift by one when they differ a lot from the rest.
-  const avgMinutes = todo
-    ? [...queue, ...company].reduce((sum, p) => sum + minutesFor(p.difficulty), 0) / todo
+  // It also counts problems a short plan cuts.
+  const all = wanted.length + company.length;
+  const avgMinutes = all
+    ? [...wanted, ...company].reduce((sum, p) => sum + minutesFor(p.difficulty), 0) / all
     : MINUTES.medium;
   const budget = Math.max(1, Math.floor((goal.weeklyHours * 60) / 7 / avgMinutes));
   const sprintFrom = daysLeft === null ? Infinity : Math.max(0, daysLeft - SPRINT_DAYS);
@@ -246,65 +384,78 @@ export function buildPlan({
       )
     : [];
   const doneToday = (done.line ?? 0) + (done.company ?? 0);
-  const lineLeft = queue.length + (done.line ?? 0);
   const companyLeft = company.length + (done.company ?? 0);
   const pace = (left: number, days: number) =>
     left ? Math.min(Math.ceil(left / Math.max(1, days)), budget) : 0;
-  const linePace =
-    daysLeft === null
-      ? lineLeft + companyLeft
-        ? budget
-        : 0
-      : pace(lineLeft, daysLeft - SPRINT_DAYS);
   const companyPace = pace(companyLeft, sprintDays - mockDays.length);
-  let l = 0,
-    c = 0;
-  const days: PlanDay[] = [];
-  for (let i = 0; i < (daysLeft === null ? OPEN_DAYS : daysLeft + 1); i++) {
-    const date = addDays(today, i);
-    if (i === daysLeft) {
-      days.push({ date, problems: [], minutes: 0, sprint: true, oa: true });
-      continue;
+  const schedule = (queue: readonly PlanProblem[]) => {
+    const lineLeft = queue.length + (done.line ?? 0);
+    const linePace =
+      daysLeft === null
+        ? lineLeft + companyLeft
+          ? budget
+          : 0
+        : pace(lineLeft, daysLeft - SPRINT_DAYS);
+    let l = 0,
+      c = 0;
+    const days: PlanDay[] = [];
+    for (let i = 0; i < (daysLeft === null ? goal.weeks * 7 : daysLeft + 1); i++) {
+      const date = addDays(today, i);
+      if (i === daysLeft) {
+        days.push({ date, problems: [], minutes: 0, sprint: true, oa: true });
+        continue;
+      }
+      const sprint = i >= sprintFrom;
+      const mock = mockDays.indexOf(i) + 1;
+      if (mock) {
+        days.push({ date, problems: [], minutes: goal.company?.minutes ?? 90, sprint, mock });
+        continue;
+      }
+      // A sprint day goes to the company while its problems last (today: while any
+      // were left this morning).
+      const companyDay = sprint && (i ? c < company.length : companyLeft > 0);
+      const next = () =>
+        companyDay
+          ? (company[c++] ?? queue[l++])
+          : daysLeft === null
+            ? (queue[l++] ?? company[c++])
+            : queue[l++];
+      const problems: PlanProblem[] = [];
+      const solved = i ? 0 : doneToday;
+      for (let k = solved; k < (companyDay ? companyPace : linePace); k++) {
+        const problem = next();
+        if (!problem) break; // Nothing left to plan.
+        problems.push(problem);
+      }
+      days.push({
+        date,
+        problems,
+        minutes: Math.round(
+          problems.reduce((sum, p) => sum + minutesFor(p.difficulty), 0) + solved * avgMinutes,
+        ),
+        sprint,
+        ...(solved ? { done: solved } : {}),
+      });
     }
-    const sprint = i >= sprintFrom;
-    const mock = mockDays.indexOf(i) + 1;
-    if (mock) {
-      days.push({ date, problems: [], minutes: goal.company?.minutes ?? 90, sprint, mock });
-      continue;
-    }
-    // A sprint day goes to the company while its problems last (today: while any
-    // were left this morning).
-    const companyDay = sprint && (i ? c < company.length : companyLeft > 0);
-    const next = () =>
-      companyDay
-        ? (company[c++] ?? queue[l++])
-        : daysLeft === null
-          ? (queue[l++] ?? company[c++])
-          : queue[l++];
-    const problems: PlanProblem[] = [];
-    const solved = i ? 0 : doneToday;
-    for (let k = solved; k < (companyDay ? companyPace : linePace); k++) {
-      const problem = next();
-      if (!problem) break; // Nothing left to plan.
-      problems.push(problem);
-    }
-    days.push({
-      date,
-      problems,
-      minutes: Math.round(
-        problems.reduce((sum, p) => sum + minutesFor(p.difficulty), 0) + solved * avgMinutes,
-      ),
-      sprint,
-      ...(solved ? { done: solved } : {}),
-    });
+    return { days, linePace, planned: Math.min(l, queue.length) };
+  };
+  let queue = mixPlan(wanted, goal.shuffle);
+  let run = schedule(queue);
+  // Too much for the days: keep what they hold, over every stop, and lay it out again.
+  // (No room at all, as on the OA day, leaves the queue whole.)
+  if (run.planned && run.planned < queue.length) {
+    queue = mixPlan(fitPlan(wanted, run.planned), goal.shuffle);
+    run = schedule(queue);
   }
   return {
     daysLeft,
     expired: d !== null && d < 0,
-    todo,
+    todo: all,
     avgMinutes,
-    daily: sprintFrom === 0 && companyLeft ? companyPace : linePace,
-    days,
+    daily: sprintFrom === 0 && companyLeft ? companyPace : run.linePace,
+    days: run.days,
+    filtered: ahead.length - wanted.length,
+    cut: wanted.length - queue.length,
   };
 }
 
@@ -323,7 +474,7 @@ export function planWeeks(days: readonly PlanDay[]): PlanWeek[] {
         mocks: 0,
         sprint: false,
         oa: false,
-        stops: null,
+        stops: [],
       };
       weeks.push(week);
     }
@@ -335,8 +486,7 @@ export function planWeeks(days: readonly PlanDay[]): PlanWeek[] {
     week.sprint ||= day.sprint;
     week.oa ||= !!day.oa;
     for (const { stop } of day.problems)
-      if (stop !== undefined)
-        week.stops = week.stops ? [week.stops[0], stop] : [stop, stop];
+      if (stop !== undefined && !week.stops.includes(stop)) week.stops.push(stop);
   }
   return weeks;
 }
