@@ -5,8 +5,20 @@
 export type SqlCell = string | number | null | { blob: string } | { float: string };
 export type SqlTable = { columns: number; rows: SqlCell[][] };
 
-/** null when the text is not a whole canonical result (an error, a cut-off output). */
+/**
+ * Stored outputs are cut at FEEDBACK_BYTES (lib/server/oj-case-store.ts), with
+ * no marker in the per-case path; a cut that lands on a line end still parses,
+ * so text this long is treated as cut off.
+ */
+export const SQL_RESULT_MAX_BYTES = 32768;
+
+/**
+ * null when the text is not a whole canonical result (an error, a cut-off
+ * output) or holds an integer JavaScript cannot hold exactly (SQLite's are
+ * 64-bit), which would make two different rows look the same.
+ */
 export function parseSqlResult(text: string): SqlTable | null {
+  if (new TextEncoder().encode(text).byteLength >= SQL_RESULT_MAX_BYTES) return null;
   const lines = text.split('\n');
   if (lines.at(-1) === '') lines.pop();
   const head = /^columns: (\d+)$/.exec(lines[0] ?? '');
@@ -17,6 +29,7 @@ export function parseSqlResult(text: string): SqlTable | null {
     try {
       const row = JSON.parse(line) as unknown;
       if (!Array.isArray(row) || row.length !== columns) return null;
+      if (row.some((cell) => Number.isInteger(cell) && !Number.isSafeInteger(cell))) return null;
       rows.push(row as SqlCell[]);
     } catch {
       return null;

@@ -1,6 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { diffSqlResults, parseSqlResult, sqlCellText, SQL_DIFF_MAX_ROWS } from '../lib/sql-result';
+import { FEEDBACK_BYTES } from '../lib/server/oj-case-store';
+import {
+  diffSqlResults,
+  parseSqlResult,
+  sqlCellText,
+  SQL_DIFF_MAX_ROWS,
+  SQL_RESULT_MAX_BYTES,
+} from '../lib/sql-result';
 
 const table = (columns: number, ...rows: unknown[][]) =>
   `columns: ${columns}\n${rows.map((row) => JSON.stringify(row) + '\n').join('')}`;
@@ -19,6 +26,26 @@ void test('the judge output parses back into a table; anything else is not a res
   assert.equal(parseSqlResult('columns: 2\n["a", 1]\n["b", '), null);
   assert.equal(parseSqlResult('columns: 2\n["a"]\n'), null);
   assert.equal(parseSqlResult(''), null);
+});
+
+void test('outputs at the storage cap are taken as cut off, even when they end on a whole row', () => {
+  assert.equal(SQL_RESULT_MAX_BYTES, FEEDBACK_BYTES);
+  // Wide rows cut exactly at a line end: the text parses, but must not read as missing rows.
+  const row = ['x'.repeat(95), 1];
+  const rows = Array.from({ length: 320 }, () => row);
+  const head = new TextEncoder().encode(table(2, ...rows)).byteLength;
+  const last = ['y'.repeat(SQL_RESULT_MAX_BYTES - head - JSON.stringify(['', 1]).length - 1), 1];
+  const cut = table(2, ...rows, last);
+  assert.equal(new TextEncoder().encode(cut).byteLength, SQL_RESULT_MAX_BYTES);
+  assert.equal(parseSqlResult(cut), null);
+  assert.equal(parseSqlResult(table(2, row)) !== null, true);
+});
+
+void test('integers past 2^53 fall back to the raw text instead of comparing equal', () => {
+  assert.equal(parseSqlResult('columns: 1\n[9007199254740993]\n'), null);
+  assert.equal(parseSqlResult('columns: 1\n[-9007199254740993]\n'), null);
+  assert.deepEqual(parseSqlResult('columns: 1\n[9007199254740991]\n'), { columns: 1, rows: [[9007199254740991]] });
+  assert.deepEqual(parseSqlResult('columns: 1\n[3.1416]\n'), { columns: 1, rows: [[3.1416]] });
 });
 
 void test('rows diff as same, missing, extra and changed; changed rows name their columns', () => {

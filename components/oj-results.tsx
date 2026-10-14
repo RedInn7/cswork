@@ -389,7 +389,10 @@ export function SubmissionResult({
                 <div className="cs-case-output">
                   {submission.language === 'sql' &&
                     output.expected !== undefined &&
-                    output.stdout !== undefined && (
+                    output.stdout !== undefined &&
+                    // A cut-off side can still parse and would misreport missing rows.
+                    !diagnostic?.truncated?.expected &&
+                    !diagnostic?.truncated?.stdout && (
                       <SqlResultDiff expected={output.expected} actual={output.stdout} />
                     )}
                   {output.stdin !== undefined && (
