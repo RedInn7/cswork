@@ -69,7 +69,7 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { CodeEditor } from './editor';
-import { ProblemTimer, formatClock, timerSeconds } from './problem-timer';
+import { ProblemTimer, formatClock, stopTimer } from './problem-timer';
 import { ACM_IO_TEMPLATES } from '@/lib/acm-io-templates';
 import { useIdlePrecompile } from '@/hooks/use-idle-precompile';
 import { StatementMarkdown } from './statement-markdown';
@@ -712,8 +712,8 @@ function Workspace({
     } catch {
       /* Feedback still works when browser storage is unavailable. */
     }
-    // The exam clock replaces the problem timer during a mock OA.
-    const seconds = examMode ? null : timerSeconds(userId, initialProblem.id);
+    // The exam clock replaces the problem timer during a mock OA; an AC stops it.
+    const seconds = examMode ? null : stopTimer(userId, initialProblem.id);
     track('judge_accept', {
       problem_id: initialProblem.id,
       language: submission.language,

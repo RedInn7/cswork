@@ -31,7 +31,7 @@ test('problem timer counts up, persists, counts down and alerts at zero', async 
     now: 1_700_000_000_000,
   });
   const { createRoot } = await import('react-dom/client');
-  const { ProblemTimer, formatClock, timerSeconds } =
+  const { ProblemTimer, formatClock, timerSeconds, stopTimer } =
     await import('../components/problem-timer.tsx');
   let root = createRoot(document.getElementById('root'));
   const mount = () =>
@@ -93,6 +93,37 @@ test('problem timer counts up, persists, counts down and alerts at zero', async 
     await tick(8_000);
     assert.equal(document.querySelector('[role="status"]').textContent, '');
     assert.equal(timerSeconds('u1', 'p1'), 5 * 60 + 9);
+    // Another tab's write shows up here.
+    const key = 'cswork:timer:u1:p1';
+    const other = {
+      mode: 'up',
+      minutes: 5,
+      elapsed: 1_200_000,
+      startedAt: null,
+    };
+    localStorage.setItem(key, JSON.stringify(other));
+    await act(async () =>
+      window.dispatchEvent(new window.StorageEvent('storage', { key })),
+    );
+    assert.equal(clock(), '20:00');
+    assert.equal(has('Resume timer'), true);
+    // A click builds on what is stored, even before that tab's event arrives.
+    localStorage.setItem(key, JSON.stringify({ ...other, elapsed: 1_500_000 }));
+    await click('Resume timer');
+    await tick(60_000);
+    assert.equal(clock(), '26:00');
+    // An AC stops the clock, on screen too.
+    let stopped;
+    await act(async () => (stopped = stopTimer('u1', 'p1')));
+    assert.equal(stopped, 26 * 60);
+    await tick(60_000);
+    assert.equal(has('Resume timer') && clock() === '26:00', true);
+    // A clock left running for days is no solve time.
+    const days = { ...other, elapsed: 0, startedAt: Date.now() - 7 * 3600_000 };
+    localStorage.setItem(key, JSON.stringify(days));
+    await act(async () => (stopped = stopTimer('u1', 'p1')));
+    assert.equal(stopped, null);
+    assert.equal(JSON.parse(localStorage.getItem(key)).startedAt, null);
     // Corrupt storage reads as a timer that never ran.
     localStorage.setItem('cswork:timer:u1:p1', '{broken');
     assert.equal(timerSeconds('u1', 'p1'), null);

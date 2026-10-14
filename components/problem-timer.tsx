@@ -16,6 +16,16 @@ const storageKey = (userId: string, problemId: string) =>
   `cswork:timer:${userId}:${problemId}`;
 const elapsedMs = (s: TimerState, now: number) =>
   s.elapsed + (s.startedAt == null ? 0 : Math.max(0, now - s.startedAt));
+const pause = (s: TimerState): TimerState =>
+  s.startedAt == null
+    ? s
+    : { ...s, elapsed: elapsedMs(s, Date.now()), startedAt: null };
+const start = (s: TimerState): TimerState =>
+  s.startedAt == null ? { ...s, startedAt: Date.now() } : s;
+// Other tabs announce writes with 'storage'; same-tab writes (stopTimer) with this.
+const CHANGED = 'cswork:timer-changed';
+// Longer than this, the clock was left running (closed tab, next day), not solving.
+const MAX_SOLVE_SECONDS = 6 * 3600;
 
 function readTimer(userId: string, problemId: string): TimerState | null {
   try {
@@ -35,12 +45,31 @@ function readTimer(userId: string, problemId: string): TimerState | null {
   }
   return null;
 }
+function writeTimer(userId: string, problemId: string, s: TimerState) {
+  try {
+    localStorage.setItem(storageKey(userId, problemId), JSON.stringify(s));
+  } catch {
+    /* The timer still runs for this page. */
+  }
+}
 
 /** Seconds on this problem's timer, or null when it never ran. */
 export function timerSeconds(userId: string, problemId: string) {
   const s = readTimer(userId, problemId);
   const ms = s ? elapsedMs(s, Date.now()) : 0;
   return ms >= 1000 ? Math.floor(ms / 1000) : null;
+}
+
+/** An AC ends the attempt: pauses the timer and returns its seconds, or null
+ * when it never ran or ran implausibly long. */
+export function stopTimer(userId: string, problemId: string) {
+  const s = readTimer(userId, problemId);
+  if (s?.startedAt != null) {
+    writeTimer(userId, problemId, pause(s));
+    window.dispatchEvent(new Event(CHANGED));
+  }
+  const seconds = timerSeconds(userId, problemId);
+  return seconds != null && seconds <= MAX_SOLVE_SECONDS ? seconds : null;
 }
 
 /** mm:ss, h:mm:ss past an hour, with a minus sign for countdown overtime. */
@@ -72,11 +101,25 @@ export function ProblemTimer({
   const [state, setState] = useState(fresh);
   const [now, setNow] = useState(0);
   const [timeUp, setTimeUp] = useState(false);
-  // Storage is browser-only: read it after mount so SSR markup matches.
+  // Storage is browser-only: read it after mount so SSR markup matches, then
+  // follow writes from other tabs and stopTimer.
   useEffect(() => {
-    setState(readTimer(userId, problemId) ?? fresh());
-    setNow(Date.now());
+    const load = () => {
+      setState(readTimer(userId, problemId) ?? fresh());
+      setNow(Date.now());
+    };
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === null || event.key === storageKey(userId, problemId))
+        load();
+    };
+    load();
     setTimeUp(false);
+    window.addEventListener('storage', onStorage);
+    window.addEventListener(CHANGED, load);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener(CHANGED, load);
+    };
   }, [userId, problemId]);
   const running = state.startedAt != null;
   useEffect(() => {
@@ -100,18 +143,12 @@ export function ProblemTimer({
     return () => clearTimeout(hide);
   }, [timeUp]);
 
-  function save(next: TimerState) {
-    const at = Date.now();
+  // Builds on the stored state: another tab may have moved it since this render.
+  function save(change: (s: TimerState) => TimerState) {
+    const next = change(readTimer(userId, problemId) ?? state);
+    writeTimer(userId, problemId, next);
     setState(next);
-    setNow(at);
-    try {
-      localStorage.setItem(
-        storageKey(userId, problemId),
-        JSON.stringify(next),
-      );
-    } catch {
-      /* The timer still runs for this page. */
-    }
+    setNow(Date.now());
   }
   const overdue = countdown && elapsed > 0 && remaining <= 0;
   const idle = !running && elapsed === 0;
@@ -137,7 +174,9 @@ export function ProblemTimer({
             ? t('倒计时 · 点击切换为正计时', 'Countdown · switch to stopwatch')
             : t('正计时 · 点击切换为倒计时', 'Stopwatch · switch to countdown')
         }
-        onClick={() => save({ ...state, mode: countdown ? 'up' : 'down' })}
+        onClick={() =>
+          save((s) => ({ ...s, mode: countdown ? 'up' : 'down' }))
+        }
       >
         {countdown ? <Hourglass size={15} /> : <Timer size={15} />}
       </button>
@@ -146,9 +185,10 @@ export function ProblemTimer({
           className="cs-timer-minutes"
           aria-label={t('倒计时时长', 'Countdown length')}
           value={state.minutes}
-          onChange={(event) =>
-            save({ ...state, minutes: Number(event.target.value) })
-          }
+          onChange={(event) => {
+            const minutes = Number(event.target.value);
+            save((s) => ({ ...s, minutes }));
+          }}
         >
           {[...new Set([...CHOICES, state.minutes])]
             .sort((a, b) => a - b)
@@ -179,17 +219,7 @@ export function ProblemTimer({
               ? t('开始计时', 'Start timer')
               : t('继续计时', 'Resume timer')
         }
-        onClick={() =>
-          save(
-            running
-              ? {
-                  ...state,
-                  elapsed: elapsedMs(state, Date.now()),
-                  startedAt: null,
-                }
-              : { ...state, startedAt: Date.now() },
-          )
-        }
+        onClick={() => save(running ? pause : start)}
       >
         {running ? <Pause size={15} /> : <Play size={15} />}
       </button>
@@ -200,7 +230,7 @@ export function ProblemTimer({
           title={t('重置计时', 'Reset timer')}
           onClick={() => {
             setTimeUp(false);
-            save({ ...state, elapsed: 0, startedAt: null });
+            save((s) => ({ ...s, elapsed: 0, startedAt: null }));
           }}
         >
           <RotateCcw size={14} />
