@@ -429,6 +429,27 @@ export const ojImportSchema = z
         message: '语言不能重复',
         path: ['problem', 'languages'],
       });
+    // sql- problems are free, publicly listed and judged by the SQL harness
+    // (lib/server/sql-judge.ts), so the prefix, the language and the SQL
+    // track's home lesson go together.
+    const sqlLanguage = data.problem.languages.includes('sql');
+    if (
+      (sqlLanguage || data.problem.id.startsWith('sql-')) &&
+      !(
+        sqlLanguage &&
+        data.problem.languages.length === 1 &&
+        data.problem.id.startsWith('sql-') &&
+        data.problem.checker === 'exact' &&
+        data.problem.courseId === 'gomall' &&
+        data.problem.lessonId === '00-overview'
+      )
+    )
+      ctx.addIssue({
+        code: 'custom',
+        path: ['problem', 'languages'],
+        message:
+          'SQL 题只能用 sql- 题号、仅 SQL 语言、exact 校验并放在 gomall/00-overview / SQL problems need a sql- id, SQL only, the exact checker and gomall/00-overview',
+      });
     if (new Set(data.cases.map((c) => c.name)).size !== data.cases.length)
       ctx.addIssue({
         code: 'custom',
