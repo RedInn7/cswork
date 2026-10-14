@@ -1,9 +1,10 @@
 /**
  * The step debugger behind components/python-debugger.tsx: a Python tracer that runs in
- * Pyodide inside a Web Worker (never on the judge), and the pure functions that replay
- * its trace. The tracer records one step per executed line (and per return) of the
- * learner's code: line, frame depth, locals (repr cut to 200 chars) and how much stdout
- * there was; call stacks are rebuilt from depths here instead of being shipped per step.
+ * Pyodide inside a Web Worker owned by an opaque-origin iframe (never on the judge), and
+ * the pure functions that replay its trace. The tracer records one step per executed line
+ * (and per return) of the learner's code: line, frame depth, locals (repr cut to 200 chars)
+ * and how much stdout there was; call stacks are rebuilt from depths here instead of being
+ * shipped per step.
  */
 import type { CodingMode } from './coding-mode';
 
@@ -471,9 +472,9 @@ def _cswork_debug(request):
 `;
 
 /**
- * The worker's whole source (a classic worker started from a Blob). After Pyodide is up it
- * deletes every way to reach the network or this origin's storage, because the code it runs
- * may come from someone else's share link.
+ * The worker's whole source (a classic worker started from a Blob inside the sandbox page
+ * below, so it never runs with this site's origin). After Pyodide is up it also deletes the
+ * network and storage APIs it no longer needs, as a second layer.
  */
 export function workerSource(): string {
   return `"use strict";
@@ -507,4 +508,33 @@ self.onmessage = function (event) {
   });
 };
 `;
+}
+
+/** The sandbox page's CSP, which its blob worker inherits: Pyodide's pinned directory and nothing else. */
+export const SANDBOX_CSP = `default-src 'none'; script-src 'unsafe-inline' 'wasm-unsafe-eval' ${PYODIDE_URL}; worker-src blob:; connect-src ${PYODIDE_URL}`;
+
+/**
+ * The page of the hidden iframe that owns the worker, loaded as srcdoc with
+ * sandbox="allow-scripts" and no allow-same-origin: its origin is opaque, so code from a
+ * share link (or a tampered pyodide.js) can't read this site's cookies or call its APIs as
+ * the learner. It says "ready", then relays the parent's requests to the worker and the
+ * worker's messages back; "noworker" and "crash" stand for the worker failing to start or dying.
+ */
+export function sandboxSource(): string {
+  // < keeps the worker source from closing the <script> early.
+  const worker = JSON.stringify(workerSource()).replace(/</g, '\\u003c');
+  return `<!doctype html><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${SANDBOX_CSP}"><script>
+var worker;
+try {
+  worker = new Worker(URL.createObjectURL(new Blob([${worker}], { type: "text/javascript" })));
+} catch (error) {
+  parent.postMessage({ type: "noworker" }, "*");
+}
+if (worker) {
+  worker.onmessage = function (event) { parent.postMessage(event.data, "*"); };
+  worker.onerror = function () { parent.postMessage({ type: "crash" }, "*"); };
+  onmessage = function (event) { if (event.source === parent) worker.postMessage(event.data); };
+  parent.postMessage({ type: "ready" }, "*");
+}
+</script>`;
 }

@@ -21,9 +21,9 @@ import {
   parseTrace,
   PYODIDE_MB,
   PYODIDE_VERSION,
+  sandboxSource,
   stackAt,
   stdoutAt,
-  workerSource,
   type HarnessNote,
   type Move,
   type Trace,
@@ -35,11 +35,47 @@ type Monaco = Parameters<Mount>[1];
 type View = { editor: Editor; monaco: Monaco; decorations: ReturnType<Editor['createDecorationsCollection']> };
 type Pair = [string, string];
 
-// ponytail: one Blob URL per page, never revoked; a worker per open debugger.
-let workerUrl: string | undefined;
-function startWorker() {
-  workerUrl ??= URL.createObjectURL(new Blob([workerSource()], { type: 'text/javascript' }));
-  return new Worker(workerUrl);
+type Message = { type: string; json?: string; message?: string };
+type Sandbox = {
+  onmessage: ((event: { data: Message }) => void) | null;
+  onerror: (() => void) | null;
+  postMessage: (data: unknown) => void;
+  terminate: () => void;
+};
+/**
+ * The worker runs inside a hidden iframe with an opaque origin (see sandboxSource), never
+ * with this site's origin: the code may come from someone else's share link. Removing the
+ * iframe kills the worker.
+ */
+function startSandbox(): Sandbox {
+  const frame = document.createElement('iframe');
+  frame.setAttribute('sandbox', 'allow-scripts');
+  frame.title = 'Python sandbox';
+  frame.hidden = true;
+  frame.srcdoc = sandboxSource();
+  let waiting: unknown[] | null = [];
+  const box: Sandbox = {
+    onmessage: null,
+    onerror: null,
+    postMessage: (data) => void (waiting ? waiting.push(data) : frame.contentWindow?.postMessage(data, '*')),
+    terminate: () => {
+      window.removeEventListener('message', listen);
+      frame.remove();
+    },
+  };
+  const listen = (event: MessageEvent) => {
+    const data = event.data as Message | null;
+    if (event.source !== frame.contentWindow || !data || typeof data !== 'object') return;
+    if (data.type === 'ready') {
+      const queued = waiting ?? [];
+      waiting = null;
+      queued.forEach(box.postMessage);
+    } else if (data.type === 'crash') box.onerror?.();
+    else box.onmessage?.({ data });
+  };
+  window.addEventListener('message', listen);
+  document.body.append(frame);
+  return box;
 }
 
 const NOTES: Record<HarnessNote['code'], Pair> = {
@@ -83,7 +119,7 @@ export function PythonDebugger({ code, stdin: firstInput, mode, template = '', o
   const [index, setIndex] = useState(0);
   const [breakpoints, setBreakpoints] = useState<ReadonlySet<number>>(() => new Set());
   const [view, setView] = useState<View | null>(null);
-  const worker = useRef<Worker | null>(null);
+  const worker = useRef<Sandbox | null>(null);
   const loaded = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const marks = useRef(breakpoints);
@@ -104,14 +140,8 @@ export function PythonDebugger({ code, stdin: firstInput, mode, template = '', o
     clearTimeout(timer.current);
     setFailure(null);
     setPhase(loaded.current ? 'running' : 'loading');
-    let current: Worker;
-    try {
-      current = worker.current ??= startWorker();
-    } catch {
-      fail(['这个浏览器不能启动 Web Worker，调试器用不了。', "This browser can't start a Web Worker, so the debugger can't run."]);
-      return;
-    }
-    current.onmessage = (event: MessageEvent<{ type: string; json?: string; message?: string }>) => {
+    const current = (worker.current ??= startSandbox());
+    current.onmessage = (event) => {
       const data = event.data;
       if (data.type === 'loaded') {
         loaded.current = true;
@@ -131,7 +161,9 @@ export function PythonDebugger({ code, stdin: firstInput, mode, template = '', o
         // Like starting a debugger: run to the first breakpoint, if any.
         setIndex(marks.current.size ? moveTo(next.steps, -1, 'continue', marks.current) : 0);
         setPhase('done');
-      } else
+      } else if (data.type === 'noworker')
+        fail(['这个浏览器不能启动 Web Worker，调试器用不了。', "This browser can't start a Web Worker, so the debugger can't run."]);
+      else
         fail(
           loaded.current
             ? ['调试器内部出错：' + (data.message ?? ''), 'The debugger failed: ' + (data.message ?? '')]
