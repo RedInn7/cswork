@@ -17,7 +17,6 @@ const { createRoot } = await import('react-dom/client');
 const { ContentDetail, ContentList } = await import('../components/content-library.tsx');
 
 const settle = () => act(async () => new Promise((r) => setTimeout(r, 10)));
-const text = () => document.body.textContent;
 const facet = (value, n) => ({ value, label: value, n });
 const experience = (slug, o) => ({
   type: 'experience', slug, title: `Experience ${slug}`, summary: null, company: { slug: 'uber', name: 'Uber' },
