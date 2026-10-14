@@ -49,7 +49,7 @@ export default async function MockOaCompany({ params }: Props) {
   // "None" / "None (remark)" means coding only; anything else is a section the mock leaves out.
   const sections = zh ? p.sections_zh : p.sections_en;
   const extra = /^(?:None\b|无)/.test(sections) ? '' : sections;
-  const order = p.slots.map((s) => LEVEL[s][zh ? 0 : 1]).join(zh ? ' → ' : ' → ');
+  const order = p.slots.map((s) => LEVEL[s][zh ? 0 : 1]).join(' → ');
   const url = `${SITE_URL}/mock-oa/${p.slug}`;
   const jsonLd = {
     '@context': 'https://schema.org',
