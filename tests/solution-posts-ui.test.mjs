@@ -32,8 +32,10 @@ const body = [
   '<script>window.hacked = 1</script><img src="https://tracker.example/x.png">',
   '![pixel](https://tracker.example/pixel.png)',
   '[bad](javascript:alert(1)) [good](https://cswork.org)',
+  'Use 2 ** 10 and 3 ** 4 here, `2^10` too.',
   '```python',
   'seen = {}',
+  'ans = x ** 2 + y ** 3',
   '```',
 ].join('\n');
 
@@ -88,6 +90,10 @@ test('solutions stay locked until an AC or a confirm, render posts without HTML 
     assert.equal(article.querySelector('h2')?.textContent, 'Idea');
     assert.equal(article.querySelector('pre code')?.textContent.includes('seen = {}'), true);
     assert.equal(article.querySelector('script, img') === null, true);
+    // None of the imported-statement repairs (bold, superscripts) rewrite a learner's text or code.
+    assert.equal(article.textContent.includes('Use 2 ** 10 and 3 ** 4 here, 2^10 too.'), true);
+    assert.equal(article.querySelector('pre code')?.textContent.includes('ans = x ** 2 + y ** 3'), true);
+    assert.equal(article.querySelector('strong, sup') === null, true);
     assert.equal(dom.window.hacked === undefined, true);
     const links = [...article.querySelectorAll('a')].map((a) => a.getAttribute('href') ?? '');
     assert.equal(links.some((href) => href.startsWith('javascript')), false);

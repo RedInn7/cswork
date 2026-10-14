@@ -267,6 +267,8 @@ function tidyBoldLine(line: string) {
 // before the closing marker, a CJK letter after it); this plugin can.
 const MARKDOWN_PLUGINS = [remarkGfm, remarkCjkFriendly];
 const UNTRUSTED_HIDDEN = ['img'];
+// The overrides above repair imported statements (bold, scripts, labels); a learner's text renders as typed.
+const UNTRUSTED_COMPONENTS: Components = { a: components.a };
 // Parsing the statement is the costliest part of a workspace render; the many
 // re-renders while a submission is judged (status, verdict, history) skip it.
 export const StatementMarkdown = memo(function StatementMarkdown({
@@ -276,17 +278,18 @@ export const StatementMarkdown = memo(function StatementMarkdown({
 }: {
   body: string;
   className?: string;
-  /** Other learners' text: no images, so a post cannot load a tracking pixel for its readers. */
+  /** Other learners' text: rendered as typed (none of the imported-statement repairs) and
+   *  without images, so a post cannot load a tracking pixel for its readers. */
   untrusted?: boolean;
 }) {
   return (
     <article className={className}>
       <Markdown
         remarkPlugins={MARKDOWN_PLUGINS}
-        components={components}
+        components={untrusted ? UNTRUSTED_COMPONENTS : components}
         disallowedElements={untrusted ? UNTRUSTED_HIDDEN : undefined}
       >
-        {tidyImportedBold(body)}
+        {untrusted ? body : tidyImportedBold(body)}
       </Markdown>
     </article>
   );
