@@ -87,14 +87,14 @@ export function ApiTokenSettings() {
         </div>
       </form>
       {fresh && (
-        <div className="pat-fresh" role="status">
-          <p>
+        <div className="pat-fresh">
+          <output>
             <strong>{fresh.name}</strong>
             {t(
               '：令牌只显示这一次，请现在复制到 MCP 客户端的 CSWORK_TOKEN。',
               ': this token is shown only once. Copy it into your MCP client as CSWORK_TOKEN now.',
             )}
-          </p>
+          </output>
           <div className="pat-secret">
             <input
               readOnly

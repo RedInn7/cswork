@@ -69,7 +69,7 @@ void test('tokens are random, shown once and stored only as their SHA-256', asyn
   assert.equal(stored.token_hash, hashToken(a.token));
   assert.ok(!JSON.stringify(sqlite().prepare('SELECT * FROM api_tokens').all()).includes(a.token));
   const list = (await (await call(me, 'GET', 'tokens')).json()) as { items: Record<string, unknown>[] };
-  assert.deepEqual(list.items.map((t) => t.name).sort(), ['Claude Code', 'Cursor']);
+  assert.deepEqual(new Set(list.items.map((t) => t.name)), new Set(['Claude Code', 'Cursor']));
   // The list never carries the token or its hash.
   assert.ok(list.items.every((t) => !('token' in t) && !('token_hash' in t) && !('tokenHash' in t)));
   assert.equal(await status(call(me, 'POST', 'tokens', { name: '  ' })), 400);

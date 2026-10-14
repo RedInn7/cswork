@@ -16,7 +16,7 @@ const name = z
       .trim()
       .min(1)
       .max(60)
-      .regex(/^[^\u0000-\u001f\u007f]+$/),
+      .regex(/^\P{Cc}+$/u),
   })
   .strict();
 

@@ -100,7 +100,7 @@ test('the account card creates a token, shows it once and revokes with confirmat
     const secret = document.querySelector('.pat-secret input');
     assert.equal(secret.value, `cswork_pat_${'z'.repeat(43)}`);
     assert.equal(secret.readOnly, true);
-    assert.ok(document.querySelector('.pat-fresh').getAttribute('role') === 'status');
+    assert.ok(document.querySelector('.pat-fresh output') !== null);
     assert.equal(document.querySelectorAll('.pat-list .service-row').length, 2);
     assert.equal(document.querySelector('.pat-create input').value, '');
 

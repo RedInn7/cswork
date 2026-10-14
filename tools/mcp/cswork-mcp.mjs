@@ -275,7 +275,16 @@ async function answer(method, params = {}) {
         'Practice CSWork algorithm and company OA problems: search_problems or get_daily_problem, read it with get_problem, try code with run_code, then submit_code. Let the learner write the solution unless they ask for one.',
     };
   if (method === 'ping') return {};
-  if (method === 'tools/list') return { tools: TOOLS.map(({ run, ...tool }) => tool) };
+  if (method === 'tools/list')
+    return {
+      tools: TOOLS.map(({ name, title, description, inputSchema, annotations }) => ({
+        name,
+        title,
+        description,
+        inputSchema,
+        annotations,
+      })),
+    };
   if (method === 'tools/call') {
     const tool = TOOLS.find((t) => t.name === params.name);
     if (!tool) throw Object.assign(new Error(`Unknown tool: ${params.name}`), { code: -32602 });
