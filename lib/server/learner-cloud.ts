@@ -11,7 +11,7 @@ import { hiddenCompanies } from './env';
 import { HttpError, json, limit, limitReader, requirePerson } from './http';
 import { mockReport } from './mock-oa';
 import { readJson } from './my-practice';
-import { canSeeProblem } from './oj-problems';
+import { canSeeProblem, listProblemSummaries } from './oj-problems';
 
 /**
  * Learner data that lives on the server (db/learner-cloud-schema.ts): finished mock OAs,
@@ -515,6 +515,20 @@ async function handleProfile(request: Request, p: Person) {
 
 /** What /u/<handle> needs from the catalogue: the published problems anyone can open. */
 export type PublicCatalogue = ReadonlyMap<string, { difficulty?: string }>;
+type Summaries = Map<string, Awaited<ReturnType<typeof listProblemSummaries>>[number]>;
+// ponytail: one snapshot for 5 minutes, like the mock OA pools; publishes show up after that.
+let catalogueCache: { at: number; value: Promise<Summaries> } | null = null;
+/** Published problems a signed-out reader may open (no course exercises, no hidden companies). */
+export function publicCatalogue() {
+  if (!catalogueCache || Date.now() - catalogueCache.at > 300000) {
+    const value = listProblemSummaries(null).then((all) => new Map(all.map((p) => [p.id, p])));
+    catalogueCache = { at: Date.now(), value };
+    value.catch(() => {
+      if (catalogueCache?.value === value) catalogueCache = null;
+    });
+  }
+  return catalogueCache.value;
+}
 const STOP_TOTALS = curatedEntries.reduce(
   (m, e) => m.set(e.sectionSlug, (m.get(e.sectionSlug) ?? 0) + 1),
   new Map<string, number>(),

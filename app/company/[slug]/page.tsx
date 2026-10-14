@@ -11,6 +11,7 @@ import { requestLocale } from '@/lib/server/locale';
 import { oaReadyProblems } from '@/lib/server/oa-judge';
 import { publicLibraryPath } from '@/lib/server/public-library';
 import { OaCompanyMark, OaDifficulty } from '../../oa/parts';
+import { CompanyAsked } from '../asked-reports';
 
 type Props = { params: Promise<{ slug: string }> };
 const OA_SHOWN = 8;
@@ -231,6 +232,8 @@ export default async function CompanyPage({ params }: Props) {
           </ol>
         </section>
       )}
+
+      <CompanyAsked slug={company.slug} zh={zh} />
 
       {!!experiences.length && (
         <section className="company-hub-section" aria-labelledby="experiences">
