@@ -12,6 +12,7 @@ import { requestPrecompile } from './oj-precompile';
 import { handleOaLibrary } from './oa-library';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
+import { curatedHint } from '@/lib/ling-curated';
 import {
   getStudyLibrary,
   getStudySourceStatement,
@@ -77,6 +78,7 @@ export async function handleOj(
       leetcodeTemplates: templates,
       leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
       sourceStatement: getStudySourceStatement(id),
+      curatedHint: curatedHint(id),
       practiceRound:
         p && isSelectedProblem(id) ? practiceRoundState(p.id).currentRound : null,
       maxCodeBytes: MAX_CODE_BYTES,
