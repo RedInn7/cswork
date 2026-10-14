@@ -38,6 +38,10 @@ export function TryFirst({
   const edit = guest && local ? local.onChange : note.edit;
   const [asking, setAsking] = useState(false);
   const box = useRef<HTMLTextAreaElement>(null);
+  const tryButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (asking) tryButton.current?.focus();
+  }, [asking]);
   const checked = useRef(false);
   useEffect(() => {
     if (checked.current || note.state === 'loading') return;
@@ -71,7 +75,7 @@ export function TryFirst({
       {note.state === 'load-failed' ? (
         <p className="ip-warn" role="alert">
           {t('你的答案没能加载。', "Couldn't load your answer.")} {note.error}{' '}
-          <button type="button" onClick={note.retry}>
+          <button type="button" onClick={() => note.retry()}>
             {t('重试', 'Retry')}
           </button>
         </p>
@@ -114,7 +118,7 @@ export function TryFirst({
               <span className="ip-warn-text">
                 {t('没能保存，已暂存在这台设备，下次打开会自动补存。', "Couldn't save. A copy is kept on this device for next time.")}{' '}
                 {note.error}{' '}
-                <button type="button" onClick={note.retry}>
+                <button type="button" onClick={() => note.retry()}>
                   {t('重试', 'Retry')}
                 </button>
               </span>
@@ -132,7 +136,8 @@ export function TryFirst({
             <Eye size={14} aria-hidden="true" /> {t('对照参考答案', 'Compare with the reference answer')}
           </button>
         ) : asking ? (
-          <div className="ip-try-ask" role="group" aria-label={t('先试着写？', 'Try first?')}>
+          <fieldset className="ip-try-ask">
+            <legend className="sr-only">{t('先试着写？', 'Try first?')}</legend>
             <p>
               {t(
                 '先写几句再看？哪怕只是思路的骨架，对照答案时也更容易看出差在哪。',
@@ -140,9 +145,9 @@ export function TryFirst({
               )}
             </p>
             <button
+              ref={tryButton}
               type="button"
               className="rd-button"
-              autoFocus
               onClick={() => {
                 setAsking(false);
                 box.current?.focus();
@@ -153,7 +158,7 @@ export function TryFirst({
             <button type="button" className="rd-button is-quiet" onClick={() => onReveal(true)}>
               {t('还是直接看', 'Show it anyway')}
             </button>
-          </div>
+          </fieldset>
         ) : (
           <button type="button" className="rd-button is-quiet ip-try-skip" onClick={() => setAsking(true)}>
             <Eye size={14} aria-hidden="true" /> {t('直接看答案', 'Show the answer')}

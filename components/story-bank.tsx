@@ -32,17 +32,17 @@ function useStories(userId: string | null) {
   return {
     stories,
     error,
-    retry() {
+    retry: () => {
       setError('');
       setReload((n) => n + 1);
     },
-    async save(story: Story) {
+    save: async (story: Story) => {
       const updatedAt = await putNote(storyTarget(story.id), storyBody(story));
       const saved = { ...story, updatedAt };
       setStories((list) => [saved, ...(list ?? []).filter((s) => s.id !== story.id)]);
       return saved;
     },
-    async remove(id: string) {
+    remove: async (id: string) => {
       // An emptied note is deleted.
       await putNote(storyTarget(id), '');
       setStories((list) => (list ?? []).filter((s) => s.id !== id));
@@ -182,7 +182,10 @@ export function StoryBank({ userId }: { userId: string }) {
   }
   const open = (story: Story) => {
     setDraft(story);
-    requestAnimationFrame(() => document.getElementById('ip-editor')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    requestAnimationFrame(() => {
+      document.getElementById('ip-editor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.querySelector<HTMLInputElement>('#ip-editor input')?.focus({ preventScroll: true });
+    });
   };
   return (
     <div className="rd ip">
@@ -347,8 +350,7 @@ function StoryEditor({
   const counts = Object.fromEntries(STAR.map((f) => [f, wordCount(form[f])])) as Record<(typeof STAR)[number], number>;
   const total = STAR.reduce((sum, f) => sum + counts[f], 0);
   const actionShare = total ? Math.round((counts.action / total) * 100) : 0;
-  async function submit(event: React.FormEvent) {
-    event.preventDefault();
+  async function submit() {
     setState('saving');
     setError('');
     try {
@@ -369,7 +371,10 @@ function StoryEditor({
     ['Amazon Leadership Principles', COMPETENCIES.filter((c) => c.lp)],
   ] as const;
   return (
-    <form id="ip-editor" className="rd-card ip-editor" onSubmit={submit} aria-labelledby="ip-editor-h">
+    <form id="ip-editor" className="rd-card ip-editor" onSubmit={(event) => {
+        event.preventDefault();
+        void submit();
+      }} aria-labelledby="ip-editor-h">
       <header className="ip-editor-head">
         <h2 id="ip-editor-h">{isNew ? t('新故事', 'New story') : t('编辑故事', 'Edit story')}</h2>
         <button type="button" className="ip-icon" onClick={close} aria-label={t('关闭编辑器', 'Close the editor')}>
@@ -381,7 +386,6 @@ function StoryEditor({
         <input
           required
           maxLength={120}
-          autoFocus={isNew}
           value={form.title}
           onChange={(e) => set({ title: e.target.value })}
           placeholder={t('例如：上线前一周推翻缓存方案', 'e.g. Reworking the cache a week before launch')}
@@ -465,9 +469,7 @@ function StoryEditor({
         <button type="button" className="rd-button is-quiet" onClick={close}>
           {t('关闭', 'Close')}
         </button>
-        <span className="ip-editor-state" role="status">
-          {state === 'saved' && !dirty ? t('已保存', 'Saved') : ''}
-        </span>
+        <output className="ip-editor-state">{state === 'saved' && !dirty ? t('已保存', 'Saved') : ''}</output>
         {!isNew && (
           <button
             type="button"

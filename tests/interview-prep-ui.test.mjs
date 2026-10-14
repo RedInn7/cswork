@@ -120,7 +120,7 @@ test('question page: the rubric stays closed until the learner writes or insists
 
 test('story bank: writes a story with STAR parts and competencies, lists it, exports Markdown', async () => {
   const puts = [];
-  let items = [];
+  const items = [];
   globalThis.fetch = async (url, init = {}) => {
     const u = String(url);
     if (init.method === 'PUT') {
