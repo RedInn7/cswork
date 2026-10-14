@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { oaDifficulty } from '@/lib/server/oa-topics';
 import { cache } from 'react';
 import { RESULTS, ROUND_LABELS, type ExperienceFacts } from '@/lib/experience';
 import { companyHubPath, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
@@ -169,7 +170,7 @@ export default async function CompanyPage({ params }: Props) {
                   <span className="oa-public-number">#{item.number}</span>
                   <span className="oa-public-title">{item.title}</span>
                   {item.judgeStatus === 'ready' ? (
-                    <OaDifficulty value={ready.get(item.id)?.difficulty} locale={locale} />
+                    <OaDifficulty {...oaDifficulty(item.id, ready.get(item.id)?.difficulty)} locale={locale} />
                   ) : (
                     <span className="oa-public-chip" data-level="reading">
                       {zh ? '仅题面' : 'Statement only'}
@@ -217,7 +218,7 @@ export default async function CompanyPage({ params }: Props) {
                       {zh ? `${p.count} 次面经报告，最近 ${p.last.slice(0, 7)}` : `${p.count} ${p.count === 1 ? 'report' : 'reports'}, latest ${p.last.slice(0, 7)}`}
                     </span>
                   </span>
-                  <OaDifficulty value={p.difficulty} locale={locale} />
+                  <OaDifficulty difficulty={p.difficulty} locale={locale} />
                 </>
               );
               return (
