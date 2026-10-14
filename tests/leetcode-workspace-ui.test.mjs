@@ -561,12 +561,25 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       document.querySelector('.cs-route-hint[data-lit] details').open,
       false,
     );
-    // Exam mode never shows hints.
+    // Exam mode (a running mock OA holding this problem) never shows hints.
+    const examKey = 'cswork:mock:v1:student';
+    const startedAt = Date.now() - 1000;
+    localStorage.setItem(
+      examKey,
+      JSON.stringify({
+        active: {
+          id: 'exam-1', company: null, name: null, platform: null, preset: false,
+          scoring: 'tests', source: 'lc', slots: ['easy'], ids: [problem.id],
+          minutes: 60, skew: 0, createdAt: startedAt, startedAt,
+        },
+        history: [],
+      }),
+    );
     await act(async () =>
       root.render(
         createElement(ProblemWorkspace, {
           key: 'exam',
-          examMode: true,
+          mock: 'exam-1',
           problem: summary(problem),
           boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
           navigate() {},
@@ -577,7 +590,9 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     );
     await settle();
     assert.ok(document.querySelector('.cs-statement-heading'));
-    assert.equal(document.querySelector('.cs-route-hint'), null);
+    // Booleans, not elements: a failing diff of a jsdom node exhausts the heap.
+    assert.equal(document.querySelector('.cs-route-hint') === null, true);
+    localStorage.removeItem(examKey);
     delete problem.hintEarned;
     // ACM starters follow the statement language; untouched ones switch with it.
     const { starters, englishStarters } = await import('../lib/problems.ts');

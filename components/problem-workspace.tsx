@@ -1975,7 +1975,7 @@ function Workspace({
             session={exam.session}
             userId={userId}
             problemId={problem.id}
-            submissions={boot.submissions}
+            submissions={boot.submissions ?? []}
             navigate={navigate}
           />
         ) : (
@@ -2086,7 +2086,7 @@ function Workspace({
         <ExamAcceptedDialog
           session={exam.session}
           problemId={problem.id}
-          submissions={boot.submissions}
+          submissions={boot.submissions ?? []}
           userId={userId}
           navigate={navigate}
           onClose={() => setSuccess(null)}

@@ -580,8 +580,8 @@ function Session({
       const shown = new Set(data.slots.map((s) => s.item?.id));
       const exclude = read(AVOID, true) ? seenIds().filter((id) => !shown.has(id)).join(',') : '';
       const set = await api<MockSet>(`content/mock?${apiQuery({ ...query, rr }, exclude ? { exclude } : {})}`);
-      const next = { ...query, rr: set.rerolls.join('.') };
-      if (!next.rr) delete next.rr;
+      const { rr: _old, ...rest } = query;
+      const next = set.rerolls.length ? { ...rest, rr: set.rerolls.join('.') } : rest;
       setData(set);
       setQuery(next);
       // Replace, not push: the address always reproduces the set on screen.

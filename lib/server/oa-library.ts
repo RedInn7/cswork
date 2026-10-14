@@ -5,6 +5,7 @@ import {
   canonicalCompany,
   companyAliases,
   OTHER_COMPANY,
+  oaCompanyName,
   oaCompanyPath,
   oaProblemPath,
 } from '@/lib/oa-company-brands';
@@ -248,7 +249,7 @@ export function createOaLibrary(
           (!company || employer(item).slug === company) &&
           (!query ||
             // Other is also found by the name the UI shows for it.
-            `${item.id} ${item.title} ${item.companyName} ${item.number}${employer(item).slug === OTHER_COMPANY ? ' 其他 other' : ''}`
+            `${item.id} ${item.title} ${item.companyName} ${item.number}${employer(item).slug === OTHER_COMPANY ? ` ${oaCompanyName(OTHER_COMPANY, '', 'zh')} other` : ''}`
               .toLocaleLowerCase()
               .includes(query)),
       );
