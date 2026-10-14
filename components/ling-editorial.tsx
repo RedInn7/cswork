@@ -82,7 +82,8 @@ export function LingEditorial({
         </div>
       ) : (
         <>
-          <div className="cs-ling-langs" role="group" aria-label={t('代码语言', 'Code language')}>
+          <fieldset className="cs-ling-langs">
+            <legend className="sr-only">{t('代码语言', 'Code language')}</legend>
             {LANGS.map(([id, name]) => (
               <button
                 key={id}
@@ -93,7 +94,7 @@ export function LingEditorial({
                 {name}
               </button>
             ))}
-          </div>
+          </fieldset>
           <ol className="cs-ling-approaches">
             {editorial.approaches.map((approach, i) => (
               <li key={i} aria-labelledby={`ling-approach-${i}`}>
@@ -119,11 +120,7 @@ export function LingEditorial({
                   className="cs-statement-markdown cs-ling-idea"
                   untrusted
                 />
-                <pre
-                  className="cs-ling-code"
-                  tabIndex={0}
-                  aria-label={t(`解法 ${i + 1} 的 ${langName} 代码`, `Approach ${i + 1} in ${langName}`)}
-                >
+                <pre className="cs-ling-code">
                   <code>{approach[lang]}</code>
                 </pre>
                 <button
