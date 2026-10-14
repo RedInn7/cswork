@@ -53,6 +53,7 @@ import { CompanyTags } from './company-tags';
 import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-notes';
 import { AskedReport, communityProblem } from './problem-community';
 import { HintLadder, useHintLadder } from './hint-ladder';
+import { AiTutor, useAiTutor } from './ai-tutor';
 import { SimilarProblems } from './similar-problems';
 import {
   ExamAcceptedDialog,
@@ -438,6 +439,8 @@ function Workspace({
       setRouteHint((state) => (state === 'locked' ? 'earned' : state));
   }, [problem.hintEarned, submission]);
   const hintLadder = useHintLadder(submission, problem.failedSubmissionIds);
+  // AI hints and review: kept here so a tab switch does not drop the replies.
+  const aiTutor = useAiTutor(initialProblem.id);
   const [success, setSuccess] = useState<OJSubmission | null>(null);
   const [solveSeconds, setSolveSeconds] = useState<number | null>(null);
   const announcedSuccess = useRef<string | null>(null);
@@ -1544,6 +1547,17 @@ function Workspace({
                 hints={problem.lingHints}
                 ladder={hintLadder}
                 english={uiEnglish}
+              />
+            )}
+            {/* Off unless the server has AI configured; never during a mock OA. */}
+            {boot.services.ai && !!boot.person && !examMode && (
+              <AiTutor
+                tutor={aiTutor}
+                language={language}
+                codingMode={codingMode}
+                code={code}
+                english={uiEnglish}
+                accepted={submission?.mode === 'judge' && submission.status === 'accepted'}
               />
             )}
             {!!problem.similar?.length && !examMode && (
