@@ -6,6 +6,7 @@ import {
   finishMock,
   formatClock,
   mockClock,
+  mockExamFor,
   parseMockState,
   questionStates,
   reportWindow,
@@ -198,4 +199,23 @@ test('stored state survives refresh, settles expired exams and caps the history'
     { problem_id: 'oa-amazon-1', status: 'accepted', created_at: start - 3_600_000 },
   ]);
   assert.deepEqual(states, ['todo', 'tried'], 'an AC from before the exam does not count');
+});
+
+test('a problem is in exam mode via ?mock=, or when the running mock holds it', () => {
+  const start = 1_000_000,
+    now = start + 60_000;
+  const running = session({ startedAt: start });
+  const done = finishMock(session({ id: 's0', startedAt: start - 7_200_000 }), start);
+  const state = { active: running, history: [done] };
+  assert.equal(mockExamFor(state, 's1', 'lc-1', now)?.running, true);
+  // Opened from the library mid-exam: still the exam.
+  assert.equal(mockExamFor(state, undefined, 'oa-amazon-1', now)?.session.id, 's1');
+  assert.equal(mockExamFor(state, undefined, 'lc-9', now), null);
+  // A handed-in mock reopened from its link is review, not an exam.
+  assert.equal(mockExamFor(state, 's0', 'lc-1', now)?.running, false);
+  // Without ?mock= an expired or unstarted mock does not apply.
+  assert.equal(mockExamFor(state, undefined, 'lc-1', start + 91 * 60000), null);
+  const drawn = { active: session(), history: [] };
+  assert.equal(mockExamFor(drawn, 's1', 'lc-1', now), null);
+  assert.equal(mockExamFor(drawn, undefined, 'lc-1', now), null);
 });

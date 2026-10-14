@@ -20,8 +20,10 @@ import {
   finishMock,
   formatClock,
   mockClock,
+  mockExamFor,
   questionStates,
   readMockState,
+  watchMockState,
   writeMockState,
   type MockSession,
 } from '@/lib/mock-oa';
@@ -30,21 +32,30 @@ import '@/app/mock-oa.css';
 type Navigate = (view: string, extra?: Record<string, string>) => void;
 type Submissions = { problem_id: string; status: string; created_at: number }[];
 
-/** The mock this problem was opened from (?mock=<id>); running only before its deadline. */
+/**
+ * The mock this problem belongs to (?mock=<id>, or the running one that holds it);
+ * running only before its deadline. Follows hand-ins and new draws from other tabs.
+ */
 export function useMockExam(
   mock: string | undefined,
   userId: string,
   problemId: string,
 ) {
   // Client-only: the workspace never renders on the server.
-  const [exam] = useState(() => {
-    const session = findMock(readMockState(userId), mock);
-    if (!session?.ids.includes(problemId)) return null;
-    return {
-      session,
-      running: mockClock(session, Date.now()).phase === 'running',
+  const [exam, setExam] = useState(() =>
+    mockExamFor(readMockState(userId), mock, problemId, Date.now()),
+  );
+  useEffect(() => {
+    const sync = () =>
+      setExam(mockExamFor(readMockState(userId), mock, problemId, Date.now()));
+    // A hidden tab may have missed a write; it re-reads when shown again.
+    document.addEventListener('visibilitychange', sync);
+    const unwatch = watchMockState(userId, sync);
+    return () => {
+      unwatch();
+      document.removeEventListener('visibilitychange', sync);
     };
-  });
+  }, [mock, userId, problemId]);
   return exam;
 }
 

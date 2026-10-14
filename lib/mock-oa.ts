@@ -345,3 +345,28 @@ export function findMock(state: MockState, id: string | undefined) {
     ? state.active
     : (state.history.find((s) => s.id === id) ?? null);
 }
+/** Calls back when another tab writes this user's mocks; returns the unsubscribe. */
+export function watchMockState(userId: string, onChange: () => void) {
+  const key = mockStorageKey(userId);
+  const listener = (e: StorageEvent) => {
+    if (e.key === null || e.key === key) onChange();
+  };
+  window.addEventListener('storage', listener);
+  return () => window.removeEventListener('storage', listener);
+}
+
+/**
+ * The started mock a problem belongs to: the one in ?mock=, else the running one
+ * when it holds this problem (opened from the library mid-exam). Null otherwise.
+ */
+export function mockExamFor(
+  state: MockState,
+  mock: string | undefined,
+  problemId: string,
+  now: number,
+) {
+  const session = mock ? findMock(state, mock) : state.active;
+  if (!session?.startedAt || !session.ids.includes(problemId)) return null;
+  const running = mockClock(session, now).phase === 'running';
+  return mock || running ? { session, running } : null;
+}
