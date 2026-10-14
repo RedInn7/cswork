@@ -94,3 +94,10 @@ test('fractional milliseconds: ties and sub-ms gaps are not counted as slower', 
   assert.equal(problemStats('lc-fast', 'cpp', 1.28).beats, 3);
   assert.equal(problemStats('lc-fast', 'cpp', 0.5).beats, 100);
 });
+
+test('the endpoint answers only for problems the viewer can see', async () => {
+  const { readFileSync } = await import('node:fs');
+  const api = readFileSync(new URL('../lib/server/oj-api.ts', import.meta.url), 'utf8');
+  const route = api.slice(api.indexOf("resource === 'problem-stats'"));
+  assert.match(route.slice(0, 400), /canSeeProblem\(p, id\)/);
+});

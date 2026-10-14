@@ -38,6 +38,7 @@ import {
   requireTeacher,
 } from './http';
 import {
+  canSeeProblem,
   getPublishedProblem,
   getPublicOaProblem,
   listTeacherProblems,
@@ -150,7 +151,9 @@ export async function handleOj(
     if (resource === 'status') return json(ojStatus());
     if (resource === 'problem-stats' && id && !action) {
       await limit(p, 'oj-read', 240);
-      if (!/^[\w-]{1,100}$/.test(id)) throw new HttpError(404, '题目不存在');
+      // Same gate as the statement: owner-only course exercises stay invisible.
+      if (!/^[\w-]{1,100}$/.test(id) || !(await canSeeProblem(p, id)))
+        throw new HttpError(404, '题目不存在');
       const runtime = Number(url.searchParams.get('runtimeMs') ?? NaN);
       return json(
         problemStats(
