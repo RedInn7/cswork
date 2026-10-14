@@ -325,7 +325,6 @@ function Workspace({
   const [sampleIndex, setSampleIndex] = useState(0);
   const [recovering, setRecovering] = useState(false);
   const [hintCount, setHintCount] = useState(0);
-  const [topicsOpen, setTopicsOpen] = useState(false);
   const [hintsOpen, setHintsOpen] = useState(false);
   // Line 500 hint: earned by a failed formal submission, or shown on request after a confirm.
   const [routeHint, setRouteHint] = useState<'locked' | 'earned' | 'asked'>(
@@ -1138,6 +1137,10 @@ function Workspace({
     }
   }
 
+  // Topic tags name the technique; source labels (灵神题单 …) are not topics.
+  const topics = problem.tags.filter(
+    (tag) => !/灵神|题单|leetcode|来源/i.test(tag),
+  );
   const description = (
     <section className="cs-statement-pane">
       <div
@@ -1231,20 +1234,27 @@ function Workspace({
                     ]
                   : problem.difficulty}
               </span>
-              {!examMode &&
-                problem.tags.some(
-                  (tag) => !/灵神|题单|leetcode|来源/i.test(tag),
-                ) && (
-                  <button
-                    className="cs-statement-pill"
-                    aria-expanded={topicsOpen}
-                    aria-controls="problem-topics"
-                    onClick={() => setTopicsOpen((open) => !open)}
-                  >
-                    <Tag size={15} />
-                    {uiEnglish ? 'Topics' : '主题'}
-                  </button>
-                )}
+              {!examMode && topics.length > 0 && (
+                <button
+                  className="cs-statement-pill"
+                  aria-expanded={!settings.hideTags}
+                  aria-controls="problem-topics"
+                  title={
+                    uiEnglish
+                      ? 'Show or hide topic tags; this browser remembers'
+                      : '显示 / 隐藏专题标签，此浏览器会记住'
+                  }
+                  onClick={() =>
+                    changeSettings({
+                      ...settings,
+                      hideTags: !settings.hideTags,
+                    })
+                  }
+                >
+                  <Tag size={15} />
+                  {uiEnglish ? 'Topics' : '主题'}
+                </button>
+              )}
               {!examMode && !sourceBody && statement.hints.length > 0 && (
                 <button
                   className="cs-statement-pill"
@@ -1285,15 +1295,13 @@ function Workspace({
             {!examMode && !!problem.companies?.length && (
               <CompanyTags companies={problem.companies} english={uiEnglish} />
             )}
-            {!examMode && topicsOpen && (
+            {!examMode && !settings.hideTags && topics.length > 0 && (
               <div className="cs-statement-topics" id="problem-topics">
-                {problem.tags
-                  .filter((tag) => !/灵神|题单|leetcode|来源/i.test(tag))
-                  .map((tag) => (
-                    <span className="cs-statement-pill" key={tag}>
-                      {tag}
-                    </span>
-                  ))}
+                {topics.map((tag) => (
+                  <span className="cs-statement-pill" key={tag}>
+                    {tag}
+                  </span>
+                ))}
               </div>
             )}
             {statementLocale === 'en' && !english && (
@@ -2761,6 +2769,47 @@ function SettingsDialog({
               checked={settings.minimap}
               onChange={(event) =>
                 change({ ...settings, minimap: event.target.checked })
+              }
+            />
+          </label>
+          <label>
+            <span>
+              {t('键位', 'Keybindings')}
+              <small>
+                {t(
+                  'Vim 模式下 :w 保存草稿',
+                  'In Vim mode, :w saves the draft',
+                )}
+              </small>
+            </span>
+            <select
+              value={settings.keymap}
+              onChange={(event) =>
+                change({
+                  ...settings,
+                  keymap: event.target.value as EditorSettings['keymap'],
+                })
+              }
+            >
+              <option value="default">{t('默认', 'Default')}</option>
+              <option value="vim">Vim</option>
+            </select>
+          </label>
+          <label>
+            <span>
+              {t('隐藏专题标签', 'Hide topic tags')}
+              <small>
+                {t(
+                  '防剧透，练 OA 时建议打开；公司标签照常显示',
+                  'No spoilers; recommended for OA practice. Company tags still show',
+                )}
+              </small>
+            </span>
+            <input
+              type="checkbox"
+              checked={settings.hideTags}
+              onChange={(event) =>
+                change({ ...settings, hideTags: event.target.checked })
               }
             />
           </label>
