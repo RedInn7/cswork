@@ -13,6 +13,7 @@ import { handleOaLibrary } from './oa-library';
 import { handleMockOa } from './mock-oa';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
+import { handleMyPractice } from './my-practice';
 import { curatedHint } from '@/lib/ling-curated';
 import { companyTagIndex } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
@@ -116,6 +117,8 @@ export async function handleOj(
   requirePerson(p);
   if (resource === 'leetcode-sync')
     return handleLeetcodeSync(request, p, path.slice(1));
+  if (!id && (resource === 'history' || resource === 'notes' || resource === 'marks'))
+    return handleMyPractice(request, p, resource);
   if (request.method === 'GET') {
     if (resource === 'library') {
       await limit(p, 'library-read', 120);

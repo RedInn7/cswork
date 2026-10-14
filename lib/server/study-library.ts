@@ -4,6 +4,7 @@ import { hiddenCompanies } from './env';
 import { HttpError } from './http';
 import { practiceRoundState } from './practice-rounds';
 import { studyProgress } from './practice-progress';
+import { problemMarks } from './my-practice';
 import {
   curatedByNumber,
   curatedEntries,
@@ -124,11 +125,14 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
     ? studyProgress(userId, roundState.activeRoundId)
     : new Map();
   const tags = companyTagIndex(hiddenCompanies());
+  const marks = userId ? problemMarks(userId) : new Map<string, Set<string>>();
   const all = rows
     .map((row) => ({
       ...summary(row),
       selection: curatedByNumber.get(row.number)!,
       companies: tags.get(row.id) ?? [],
+      starred: !!marks.get(row.judge_problem_id ?? row.id)?.has('star'),
+      redo: !!marks.get(row.judge_problem_id ?? row.id)?.has('redo'),
       solved: !!progress.get(row.id)?.solved,
       solvedLocally: !!progress.get(row.id)?.solvedLocally,
       importedSources: progress.get(row.id)?.importedSources ?? [],
@@ -166,7 +170,9 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
               ? item.progressStatus === status
               : status === 'ready'
                 ? item.caseStatus === 'verified'
-                : false)),
+                : status === 'starred' || status === 'redo'
+                  ? item[status]
+                  : false)),
   );
   const page = Math.max(
     1,
