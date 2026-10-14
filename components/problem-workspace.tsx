@@ -13,6 +13,7 @@ import {
   rememberProblemSequence,
 } from '@/lib/problem-sequence';
 import { practiceStats, type Activity } from './practice-calendar';
+import { AcceptedExtras } from './achievements';
 import { localDay, readTodayTarget } from '@/lib/study-plan';
 import {
   ArrowLeft,
@@ -2836,6 +2837,7 @@ function AcceptedDialog({
               )}
             </p>
           )}
+          <AcceptedExtras problemId={problemId} acceptedAt={acceptedAt} activity={activity} english={english} />
           <Button
             ref={primary}
             size="lg"

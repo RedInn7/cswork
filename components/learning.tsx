@@ -939,6 +939,7 @@ export function ProblemList({
       collection={library}
       availableProblemIds={boot.problems.map((problem) => problem.id)}
       activity={boot.activity || []}
+      daily={boot.daily}
       signedIn={!!boot.person}
       userId={boot.person?.id}
     />

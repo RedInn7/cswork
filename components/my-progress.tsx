@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight, Check, Circle, Star } from 'lucide-react';
 import { api, type Boot } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
@@ -15,6 +15,7 @@ import {
   type PracticeHistoryItem,
 } from '@/lib/practice-review';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
+import { BadgeWall, progressBadges } from './achievements';
 import { Button } from './ui/button';
 import type { Navigate } from './learning';
 import '@/app/my-progress.css';
@@ -25,10 +26,14 @@ type Data = {
   history: PracticeHistoryItem[];
   marks: Mark[];
   notes: Note[];
+  /** Line 500 stops with this round's progress, for the badges; empty when the list failed. */
+  sections: { slug: string; solved: number; total: number }[];
+  /** OA employer names for the company badges; empty when the OA library failed. */
+  companyNames: Map<string, string>;
   /** Read once per load, so every tab agrees on "today". */
   now: number;
 };
-type Tab = 'history' | 'mistakes' | 'review' | 'starred' | 'redo' | 'notes';
+type Tab = 'history' | 'mistakes' | 'review' | 'starred' | 'redo' | 'notes' | 'badges';
 const TABS: [Tab, string, string][] = [
   ['history', '练习历史', 'History'],
   ['mistakes', '错题本', 'Mistakes'],
@@ -36,6 +41,7 @@ const TABS: [Tab, string, string][] = [
   ['starred', '收藏', 'Starred'],
   ['redo', '待重做', 'To redo'],
   ['notes', '有笔记', 'With notes'],
+  ['badges', '徽章', 'Badges'],
 ];
 const DAY = 86400000;
 const problemOf = (target: string) =>
@@ -65,7 +71,7 @@ export function MyProgress({
   const [result, setResult] = useState('');
   const [period, setPeriod] = useState('');
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
-  const stats = usePracticeStats(boot.activity ?? [], english);
+  const stats = usePracticeStats(boot.activity ?? [], english, boot.daily?.done);
   // Line 500's daily target, read only: the trip itself lives on the bank page.
   // This view only renders after the client bootstrap, so storage is safe here.
   const [target] = useState(() => {
@@ -82,13 +88,20 @@ export function MyProgress({
       api<{ items: PracticeHistoryItem[] }>('oj/history'),
       api<{ items: Mark[] }>('oj/marks'),
       api<{ items: Note[] }>('oj/notes'),
+      // Badges only: the rest of the page works without it.
+      api<{ collection?: { sections: Data['sections'] } }>(
+        'oj/library?collection=ling-selected-500',
+      ).catch(() => null),
+      api<{ companies: { slug: string; name: string }[] }>('oj/oa-library').catch(() => null),
     ])
-      .then(([history, marks, notes]) => {
+      .then(([history, marks, notes, line, oa]) => {
         if (current)
           setData({
             history: history.items,
             marks: marks.items,
             notes: notes.items,
+            sections: line?.collection?.sections ?? [],
+            companyNames: new Map(oa?.companies.map((c) => [c.slug, c.name])),
             now: Date.now(),
           });
       })
@@ -110,6 +123,21 @@ export function MyProgress({
   const starredIds = new Set(marked('star').map((m) => m.id));
   const due = data ? dueReviews(data.history, data.now) : [];
   const mistakes = data ? wrongBook(data.history) : [];
+  const personId = boot.person?.id;
+  const badges = useMemo(
+    () =>
+      data
+        ? progressBadges({
+            sections: data.sections,
+            history: data.history,
+            problems: boot.problems,
+            userId: personId,
+            now: data.now,
+            companyNames: data.companyNames,
+          })
+        : [],
+    [data, boot.problems, personId],
+  );
   const noted = (data?.notes ?? []).flatMap((n) => {
     const id = problemOf(n.target);
     return id ? [{ id, at: n.updatedAt }] : [];
@@ -121,6 +149,7 @@ export function MyProgress({
     starred: starredIds.size,
     redo: marked('redo').length,
     notes: noted.length,
+    badges: badges.filter((b) => b.earned).length,
   };
   const date = (time: number) =>
     new Date(time).toLocaleDateString(english ? 'en-US' : 'zh-CN', {
@@ -234,6 +263,7 @@ export function MyProgress({
 
   function panel() {
     if (!data) return null;
+    if (tab === 'badges') return <BadgeWall badges={badges} english={english} />;
     if (tab === 'history') {
       const since = period ? data.now - Number(period) * DAY : 0;
       const shown = data.history.filter(

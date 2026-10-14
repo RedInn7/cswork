@@ -280,10 +280,15 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
         const items = all.filter(
           (item) => item.selection.sectionSlug === section.slug,
         );
+        // Topic frequency: companies whose reports map onto this stop, and the reports.
+        // ponytail: counted per request from the tags, so hidden companies stay out.
+        const asked = items.flatMap((item) => item.companies);
         return {
           ...section,
           total: items.length,
           solved: items.filter((item) => item.solved).length,
+          companies: new Set(asked.map((c) => c.slug)).size,
+          reports: asked.reduce((sum, c) => sum + c.count, 0),
           stages: Object.fromEntries(
             CURATED_STAGES.map((stage) => {
               const staged = items.filter(

@@ -11,6 +11,9 @@ export type RouteSectionInput = {
   total: number;
   solved: number;
   stages?: Record<string, StageCount>;
+  /** Companies whose interview reports map onto the stop, and how many reports. */
+  companies?: number;
+  reports?: number;
 };
 export type RouteStop = {
   slug: string;
@@ -28,6 +31,8 @@ export type RouteStop = {
   total: number;
   solved: number;
   stages?: Record<string, StageCount>;
+  companies?: number;
+  reports?: number;
 };
 /** A contiguous run of stops in one group; `from` is the 0-based index of its first stop. */
 export type RouteRun = RouteGroup & { from: number; span: number };
@@ -85,6 +90,15 @@ export function stopFromUrl() {
   return Object.hasOwn(STOP_NAMES, slug) ? slug : '';
 }
 
+/** A stop's topic frequency, or '' without reports. Report counts, never a probability. */
+export function askedText(stop: { companies?: number; reports?: number }, zh: boolean) {
+  const { companies = 0, reports = 0 } = stop;
+  if (!companies) return '';
+  return zh
+    ? `${companies} 家公司考过 · 面经出现 ${reports} 次`
+    : `asked by ${companies} ${companies === 1 ? 'company' : 'companies'} · in ${reports} ${reports === 1 ? 'report' : 'reports'}`;
+}
+
 const groupOf = new Map(
   ROUTE_SECTIONS.flatMap(({ zh, en, slugs }) => {
     const group: RouteGroup = { zh, en };
@@ -120,6 +134,8 @@ export function routeStops(sections: readonly RouteSectionInput[]) {
       total: section.total,
       solved: section.solved,
       stages: section.stages,
+      companies: section.companies,
+      reports: section.reports,
     };
   });
   return { stops, runs };

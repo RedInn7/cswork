@@ -126,11 +126,18 @@ void test('the curated list filters by company and marks each row with two compa
   );
   assert.equal(list('bytedance').total, 0, 'aliases filter under the merged slug');
   assert.equal(list('airbnb').total, 0);
+  // Topic frequency: every company and report mapped onto lc-3's stop.
+  type Stop = { slug: string; total: number; companies: number; reports: number };
+  const stop = () =>
+    (listStudyLibrary(new URLSearchParams()) as unknown as { collection: { sections: Stop[] } })
+      .collection.sections.find((s) => s.total > 0)!;
+  assert.deepEqual([stop().companies, stop().reports], [5, 7]);
   const previous = process.env.HIDDEN_COMPANIES;
   process.env.HIDDEN_COMPANIES = 'amazon';
   try {
     assert.equal(list('amazon').total, 0);
     assert.equal(list().companies.some((c) => c.slug === 'amazon'), false);
+    assert.deepEqual([stop().companies, stop().reports], [4, 5], 'hidden companies stay out');
   } finally {
     if (previous === undefined) delete process.env.HIDDEN_COMPANIES;
     else process.env.HIDDEN_COMPANIES = previous;
