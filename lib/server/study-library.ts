@@ -231,7 +231,15 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
       entry.count++;
       companyCounts.set(slug, entry);
     }
+  // random=1, "Pick one": an unsolved problem judgeable here, under the filters.
+  const pool =
+    params.get('random') === '1'
+      ? filtered.filter((item) => item.caseStatus === 'verified' && item.judgeProblemId && !item.solved)
+      : [];
   return {
+    ...(params.get('random') === '1' && {
+      random: pool.length ? pool[Math.floor(Math.random() * pool.length)].judgeProblemId : null,
+    }),
     items: filtered.slice((page - 1) * 30, page * 30).map((item) => ({
       ...item,
       // Two marks per row; the filtered company leads so a row shows why it matched.
@@ -280,10 +288,15 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
         const items = all.filter(
           (item) => item.selection.sectionSlug === section.slug,
         );
+        // Topic frequency: companies whose reports map onto this stop, and the reports.
+        // ponytail: counted per request from the tags, so hidden companies stay out.
+        const asked = items.flatMap((item) => item.companies);
         return {
           ...section,
           total: items.length,
           solved: items.filter((item) => item.solved).length,
+          companies: new Set(asked.map((c) => c.slug)).size,
+          reports: asked.reduce((sum, c) => sum + c.count, 0),
           stages: Object.fromEntries(
             CURATED_STAGES.map((stage) => {
               const staged = items.filter(

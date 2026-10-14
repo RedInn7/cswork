@@ -7,7 +7,10 @@ import { boundedText, HttpError, json, limit } from './http';
 
 // ponytail: flat per-learner caps keep a scripted client from growing the tables forever.
 const MAX_ROWS = 5000;
-const target = z.string().regex(/^(?:problem|content):[\w./-]{1,200}$/);
+// The story list returns every body (up to NOTE_MAX_BYTES each), so stories get a cap of their own.
+const MAX_STORIES = 200;
+// story:<id> holds one STAR story as JSON (components/story-bank.tsx).
+const target = z.string().regex(/^(?:problem|content|story):[\w./-]{1,200}$/);
 const mark = z.enum(['star', 'redo']);
 // The verdicts that count against the learner's code; judge faults and cancels do not.
 const FAILED = `'wrong_answer','compile_error','time_limit','memory_limit','output_limit','runtime_error'`;
@@ -61,7 +64,7 @@ export function problemMarks(userId: string) {
   return marks;
 }
 
-async function readJson(request: Request, max: number) {
+export async function readJson(request: Request, max: number) {
   try {
     return JSON.parse(await boundedText(request, max)) as unknown;
   } catch (error) {
@@ -88,14 +91,18 @@ export async function handleMyPractice(
     await limit(p, 'my-practice-read', 120);
     if (resource === 'history') return json({ items: practiceHistory(p.id) });
     if (resource === 'notes') {
-      if (!params.has('target'))
+      if (!params.has('target')) {
+        // ?prefix=story: lists the story bank with its bodies in one request.
+        const stories = params.get('prefix') === 'story:';
         return json({
           items: db
             .prepare(
-              'SELECT target,updated_at AS updatedAt FROM user_notes WHERE user_id=? ORDER BY updated_at DESC',
+              `SELECT target,${stories ? 'body,' : ''}updated_at AS updatedAt FROM user_notes
+              WHERE user_id=? AND target LIKE ? ORDER BY updated_at DESC`,
             )
-            .all(p.id),
+            .all(p.id, stories ? 'story:%' : '%'),
         });
+      }
       const key = target.parse(params.get('target'));
       const note = db
         .prepare(
@@ -131,8 +138,18 @@ export async function handleMyPractice(
       db.prepare('DELETE FROM user_notes WHERE user_id=? AND target=?').run(p.id, key);
       return json({ target: key, body: '', updatedAt: null });
     }
-    if (!db.prepare('SELECT 1 FROM user_notes WHERE user_id=? AND target=?').get(p.id, key))
+    if (!db.prepare('SELECT 1 FROM user_notes WHERE user_id=? AND target=?').get(p.id, key)) {
       full('user_notes', p.id);
+      if (
+        key.startsWith('story:') &&
+        (
+          db
+            .prepare("SELECT COUNT(*) AS n FROM user_notes WHERE user_id=? AND target LIKE 'story:%'")
+            .get(p.id) as { n: number }
+        ).n >= MAX_STORIES
+      )
+        throw new HttpError(409, '故事已达上限');
+    }
     const now = Date.now();
     db.prepare(
       `INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,?,?,?)

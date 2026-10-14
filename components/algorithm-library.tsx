@@ -70,6 +70,7 @@ export function AlgorithmLibrary(props: {
   availableProblemIds: string[];
   collection?: string;
   activity: { problem_id: string; created_at: number }[];
+  daily?: import('@/lib/daily-problem').DailyProblem | null;
   signedIn: boolean;
   userId?: string | null;
 }) {

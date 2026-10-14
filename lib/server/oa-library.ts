@@ -241,7 +241,23 @@ export function createOaLibrary(
           })),
       ];
     },
-    list(params: URLSearchParams, ready: ReadonlySet<string> = new Set()) {
+    list(
+      params: URLSearchParams,
+      ready: ReadonlySet<string> = new Set(),
+      {
+        progress = new Map(),
+        addedAt = new Map(),
+        now = Date.now(),
+        random = Math.random,
+      }: {
+        /** The visitor's judge submissions per problem. */
+        progress?: ReadonlyMap<string, 'solved' | 'attempted'>;
+        /** When each judgeable problem went online (ms): ?sort=new and newThisWeek. */
+        addedAt?: ReadonlyMap<string, number>;
+        now?: number;
+        random?: () => number;
+      } = {},
+    ) {
       const query = (params.get('q') || '')
         .trim()
         .slice(0, 180)
@@ -258,9 +274,15 @@ export function createOaLibrary(
       // An unknown topic (an old or mistyped link) filters nothing.
       const topicParam = params.get('topic') || '';
       const topic = Object.hasOwn(TOPIC_NAMES, topicParam) ? topicParam : '';
+      // todo = not solved yet (as on Line 500); unknown values filter nothing.
+      const status = ['solved', 'attempted', 'todo'].find((s) => s === params.get('status'));
       const matched = shown.items.filter(
         (item) =>
           (params.get('ready') !== '1' || ready.has(item.id)) &&
+          (!status ||
+            (status === 'todo'
+              ? progress.get(item.id) !== 'solved'
+              : progress.get(item.id) === status)) &&
           (!company || employer(item).slug === company) &&
           (!query ||
             // Other is also found by the name the UI shows for it.
@@ -276,11 +298,27 @@ export function createOaLibrary(
       const found = topic
         ? matched.filter((item) => topicOf(item.id)?.t.includes(topic))
         : matched;
+      // Newest first; problems not judgeable yet have no publish time and keep catalog order last.
+      if (params.get('sort') === 'new')
+        found.sort((a, b) => (addedAt.get(b.id) ?? 0) - (addedAt.get(a.id) ?? 0));
+      // "Pick one": an unsolved judgeable problem under these filters.
+      const pool =
+        params.get('random') === '1'
+          ? found.filter((item) => ready.has(item.id) && progress.get(item.id) !== 'solved')
+          : [];
+      const weekAgo = now - 7 * 24 * 3600 * 1000;
       return {
-        items: found
-          .slice((page - 1) * 30, page * 30)
-          .map((item) => summary(item, employer(item), ready, topicOf)),
+        items: found.slice((page - 1) * 30, page * 30).map((item) => ({
+          ...summary(item, employer(item), ready, topicOf),
+          ...(addedAt.has(item.id) && { addedAt: addedAt.get(item.id) }),
+        })),
         total: found.length,
+        ...(params.get('random') === '1' && {
+          random: pool.length ? pool[Math.floor(random() * pool.length)].id : null,
+        }),
+        // Site-wide, not per filter: the banner that opens ?sort=new.
+        newThisWeek: shown.items.filter((item) => ready.has(item.id) && (addedAt.get(item.id) ?? 0) >= weekAgo)
+          .length,
         page,
         pageSize: 30,
         // `count` is every listed problem, `ready` the practice-ready ones.
@@ -366,7 +404,6 @@ export async function handleOaLibrary(
     if (ready.has(id)) detail.statement = await oaVerifiedStatement(id);
     return json(detail);
   }
-  const page = data.list(new URL(request.url).searchParams, ready);
   const progress = new Map(
     person
       ? (
@@ -374,12 +411,18 @@ export async function handleOaLibrary(
             `SELECT problem_id,MAX(status='accepted') AS solved FROM submissions WHERE user_id=? AND mode='judge' AND problem_id LIKE 'oa-%' GROUP BY problem_id`,
             person.id,
           )
-        ).map((r) => [r.problem_id, r.solved ? 'solved' : 'attempted'])
+        ).map((r) => [r.problem_id, r.solved ? ('solved' as const) : ('attempted' as const)])
       : [],
   );
+  const page = data.list(new URL(request.url).searchParams, ready, {
+    progress,
+    addedAt: new Map([...problems].map(([key, meta]) => [key, meta.firstAt])),
+  });
   const marks = person ? problemMarks(person.id) : new Map<string, Set<string>>();
   return json({
     ...page,
+    // The progress filter only means something with an account.
+    signedIn: !!person,
     items: page.items.map((item) => {
       const meta = problems.get(item.id);
       return {

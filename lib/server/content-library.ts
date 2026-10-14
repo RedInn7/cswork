@@ -171,8 +171,13 @@ function list(db: Database.Database, params: URLSearchParams) {
             )
             .all(q, ...args) as Record<string, unknown>[]);
   } else {
-    // Tutorials read as a syllabus (core first, in the order they were written); the rest newest first.
-    const order = types.includes('algorithm') ? "i.level = 'advanced', i.rowid" : 'i.published_at DESC, i.rowid DESC';
+    // Tutorials read as a syllabus (core first, in the order they were written); experiences by
+    // when they happened (the interview's date, else the report's) unless ?sort=new; the rest newest first.
+    const order = types.includes('algorithm')
+      ? "i.level = 'advanced', i.rowid"
+      : types.length === 1 && types[0] === 'experience' && params.get('sort') !== 'new'
+        ? "COALESCE(json_extract(i.extra,'$.date'), substr(i.published_at,1,10)) DESC, i.published_at DESC, i.rowid DESC"
+        : 'i.published_at DESC, i.rowid DESC';
     total = (db.prepare(`SELECT COUNT(*) AS n FROM items i WHERE ${where.join(' AND ')}`).get(...args) as { n: number }).n;
     items =
       offset >= total

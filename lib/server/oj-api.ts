@@ -15,6 +15,8 @@ import { handleSpeedrun } from './speedrun';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
 import { handleMyPractice } from './my-practice';
+import { problemStats } from './problem-stats';
+import { handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { curatedHint } from '@/lib/ling-curated';
 import { companyTagIndex } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
@@ -37,6 +39,7 @@ import {
   requireTeacher,
 } from './http';
 import {
+  canSeeProblem,
   getPublishedProblem,
   getPublicOaProblem,
   listTeacherProblems,
@@ -67,7 +70,10 @@ export async function handleOj(
     [resource, id, action, operation] = path;
   if (resource === 'oa-library')
     return handleOaLibrary(request, p, path.slice(1));
+  if (resource === 'mock-oa' && id === 'history' && !action) return handleMockHistory(request, p);
   if (resource === 'mock-oa') return handleMockOa(request, p, path.slice(1));
+  if (resource === 'lists' || resource === 'profile' || resource === 'reports')
+    return handleLearnerCloud(request, p, path);
   if (request.method === 'GET' && resource === 'speedrun' && !id)
     return handleSpeedrun(request, p);
   if (request.method === 'GET' && resource === 'problems' && id && !action) {
@@ -147,6 +153,20 @@ export async function handleOj(
       return json(practiceRoundState(p.id));
     }
     if (resource === 'status') return json(ojStatus());
+    if (resource === 'problem-stats' && id && !action) {
+      await limit(p, 'oj-read', 240);
+      // Same gate as the statement: owner-only course exercises stay invisible.
+      if (!/^[\w-]{1,100}$/.test(id) || !(await canSeeProblem(p, id)))
+        throw new HttpError(404, '题目不存在');
+      const runtime = Number(url.searchParams.get('runtimeMs') ?? NaN);
+      return json(
+        problemStats(
+          id,
+          url.searchParams.get('language'),
+          Number.isFinite(runtime) ? runtime : null,
+        ),
+      );
+    }
     if (resource === 'submissions') {
       if (id && url.searchParams.get('wait') === '1') {
         await limit(p, 'oj-watch', 360);

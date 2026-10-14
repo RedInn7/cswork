@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import type { RouteRun, RouteStop } from '@/lib/route-stops';
+import { askedText, type RouteRun, type RouteStop } from '@/lib/route-stops';
 
 // The entrance plays once per page load, not on every remount or refresh.
 let routeAnimated = false;
@@ -56,6 +56,8 @@ export function RouteLine({
         stop.offsetLeft - (scroller.clientWidth - stop.offsetWidth) / 2;
   }, [currentSlug, stops.length]);
   const t = (zh: string, en: string) => (english ? en : zh);
+  // Heat dots in thirds of the most asked stop's company count.
+  const hottest = Math.max(1, ...stops.map((stop) => stop.companies ?? 0));
   return (
     <div className="route-scroll" ref={box}>
       <fieldset
@@ -117,7 +119,9 @@ export function RouteLine({
                 ? t('，已全部通过', ', all solved')
                 : member && left > 0 && left <= 3
                   ? t(`，还差 ${left} 题`, `, ${left} to go`)
-                  : '');
+                  : '') +
+            (stop.companies ? t('，', ', ') + askedText(stop, !english) : '');
+          const heat = stop.companies ? Math.ceil((3 * stop.companies) / hottest) : 0;
           return (
             <label
               key={stop.slug}
@@ -150,6 +154,7 @@ export function RouteLine({
                 }}
               />
               <span className="route-dot" />
+              {heat > 0 && <span className="route-heat" data-heat={heat} aria-hidden="true" />}
               <span className="route-label" aria-hidden="true">
                 {english ? stop.shortEn : stop.shortZh}
               </span>

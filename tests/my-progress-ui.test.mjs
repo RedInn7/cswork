@@ -76,6 +76,16 @@ test('progress page lists history, mistakes, reviews due today and the learner m
       });
     if (url.endsWith('/oj/notes'))
       return Response.json({ items: [{ target: 'problem:lc-1', updatedAt: now }] });
+    if (url.endsWith('/oj/library?collection=ling-selected-500'))
+      return Response.json({
+        collection: {
+          sections: [
+            { slug: 'array-foundations', solved: 1, total: 2 },
+            // This round shows nothing solved, but lc-1 was accepted here before.
+            { slug: 'hash-counting', solved: 0, total: 1 },
+          ],
+        },
+      });
     throw new Error(`unexpected ${url}`);
   };
   const navigations = [];
@@ -114,8 +124,8 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     assert.equal(document.querySelector('h1').textContent, 'My progress');
     assert.deepEqual(
       [...document.querySelectorAll('[role="tab"] .progress-count')].map((n) => n.textContent),
-      ['2', '2', '1', '1', '1', '1'],
-      'history, mistakes, due, starred (problems only), redo, notes',
+      ['2', '2', '1', '1', '1', '1', '1'],
+      'history, mistakes, due, starred (problems only), redo, notes, badges earned',
     );
     assert.deepEqual(titles(), ['Acme OA', '1. Two Sum']);
     assert.ok(!!document.querySelector('.progress-row .study-star'), 'starred rows show the star');
@@ -152,6 +162,18 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     assert.equal(sessionStorage.length > 0, true, 'prev/next follows the tab list');
     await act(async () => tab('notes').click());
     assert.deepEqual(titles(), ['1. Two Sum']);
+    // The badge wall: stop roundels in line order, milestones with their progress.
+    await act(async () => tab('badges').click());
+    const stops = [...document.querySelectorAll('.badge-stops li')];
+    assert.equal(stops.length, 2);
+    assert.deepEqual(stops.map((li) => li.hasAttribute('data-earned')), [false, true]);
+    assert.match(stops[0].textContent, /1 of 2 solved/);
+    assert.match(stops[1].textContent, /Hashing, cleared/);
+    assert.match(document.querySelector('.badge-board-head p').textContent, /1 of 2 stops cleared/);
+    const medals = [...document.querySelectorAll('.badge-medal')].map((m) => m.textContent);
+    assert.deepEqual(medals.slice(0, 3), ['77-day streak1 / 7', '3030-day streak1 / 30', '100100-day streak1 / 100']);
+    assert.equal(medals.length, 6, 'three streaks, two active-day counts and the perfect mock');
+    assert.match(document.querySelector('.badge-empty').textContent, /3\+ problems/);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

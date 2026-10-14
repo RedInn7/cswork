@@ -126,11 +126,18 @@ void test('the curated list filters by company and marks each row with two compa
   );
   assert.equal(list('bytedance').total, 0, 'aliases filter under the merged slug');
   assert.equal(list('airbnb').total, 0);
+  // Topic frequency: every company and report mapped onto lc-3's stop.
+  type Stop = { slug: string; total: number; companies: number; reports: number };
+  const stop = () =>
+    (listStudyLibrary(new URLSearchParams()) as unknown as { collection: { sections: Stop[] } })
+      .collection.sections.find((s) => s.total > 0)!;
+  assert.deepEqual([stop().companies, stop().reports], [5, 7]);
   const previous = process.env.HIDDEN_COMPANIES;
   process.env.HIDDEN_COMPANIES = 'amazon';
   try {
     assert.equal(list('amazon').total, 0);
     assert.equal(list().companies.some((c) => c.slug === 'amazon'), false);
+    assert.deepEqual([stop().companies, stop().reports], [4, 5], 'hidden companies stay out');
   } finally {
     if (previous === undefined) delete process.env.HIDDEN_COMPANIES;
     else process.env.HIDDEN_COMPANIES = previous;
@@ -207,10 +214,17 @@ void test('verification expires when the source snapshot or published judge vers
       ],
     ],
   );
+  // Pick one: a judgeable unsolved problem under the filters; null when the filters leave none.
+  const pick = (query: string) =>
+    (listStudyLibrary(new URLSearchParams(query)) as { random?: string | null }).random;
+  assert.equal(pick('random=1'), 'lc-3');
+  assert.equal(pick('random=1&difficulty=困难'), null);
+  assert.equal(pick(''), undefined);
   db.prepare(
     "UPDATE oj_problems SET current_version_id='v2' WHERE id='lc-3'",
   ).run();
   assert.equal(getStudyLibrary('lc-3').judgeProblemId, null);
+  assert.equal(pick('random=1'), null, 'no longer judgeable');
   db.prepare(
     "UPDATE study_library SET verified_hash=content_hash || ':v2' WHERE id='lc-3'",
   ).run();

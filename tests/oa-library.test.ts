@@ -197,3 +197,42 @@ void test('OA library lists topics and kinds, and filters by topic with counts t
   const page = real.list(new URLSearchParams('topic=sql&ready=0'));
   assert(page.total > 0 && page.items.every((item) => item.topics.includes('sql')));
 });
+void test('OA list filters by progress, sorts newest first, counts this week and picks an unsolved judgeable problem', () => {
+  const library = createOaLibrary(fixture());
+  const ready = new Set(['oa-meta-1', 'oa-meta-2', 'oa-meta-3', 'oa-meta-4']);
+  const progress = new Map([
+    ['oa-meta-1', 'solved' as const],
+    ['oa-meta-2', 'attempted' as const],
+    ['oa-meta-9', 'attempted' as const],
+  ]);
+  const day = 24 * 3600 * 1000;
+  const now = 100 * day;
+  const addedAt = new Map([
+    ['oa-meta-1', now - 30 * day],
+    ['oa-meta-2', now - 2 * day],
+    ['oa-meta-3', now - 1 * day],
+    ['oa-meta-4', now - 8 * day],
+  ]);
+  const list = (query: string) =>
+    library.list(new URLSearchParams(query), ready, { progress, addedAt, now });
+  const ids = (query: string) => list(query).items.map((item) => item.id);
+  assert.deepEqual(ids('status=solved'), ['oa-meta-1']);
+  assert.deepEqual(ids('status=attempted'), ['oa-meta-2', 'oa-meta-9']);
+  assert.equal(list('status=todo').total, 34);
+  assert.equal(list('status=bogus').total, 35, 'unknown statuses filter nothing');
+  assert.equal(library.list(new URLSearchParams('status=solved'), ready).total, 0, 'guests have solved nothing');
+  // Newest first; problems without a publish time keep catalog order after them.
+  assert.deepEqual(ids('sort=new').slice(0, 5), ['oa-meta-3', 'oa-meta-2', 'oa-meta-4', 'oa-meta-1', 'oa-meta-5']);
+  assert.equal(list('sort=new').items[0].addedAt, now - day);
+  assert.equal(list('').newThisWeek, 2);
+  assert.equal(list('company=meta&status=solved').newThisWeek, 2, 'the banner is site-wide');
+  // Pick one: only judgeable, unsolved, within the filters; null when none is left.
+  assert.equal('random' in list(''), false);
+  const picks = new Set<string | null>();
+  for (const r of [0, 0.34, 0.67, 0.99])
+    picks.add(library.list(new URLSearchParams('random=1'), ready, { progress, addedAt, now, random: () => r }).random ?? null);
+  assert.deepEqual([...picks].sort(), ['oa-meta-2', 'oa-meta-3', 'oa-meta-4']);
+  assert.equal(list('random=1&q=题目%203').random, 'oa-meta-3');
+  assert.equal(list('random=1&status=solved').random, null);
+  assert.equal(library.list(new URLSearchParams('random=1')).random, null, 'nothing judgeable');
+});

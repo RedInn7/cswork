@@ -120,14 +120,17 @@ export function SubmissionResult({
   inspect,
   onUseInput,
   maxStdinBytes = 65536,
+  ranCase,
 }: {
   submission: OJSubmission;
   cancel?: () => void;
   cancelling?: boolean;
   inspect?: () => void;
-  /** Loads the failing case into custom input; the workspace passes it in ACM mode only. */
+  /** Adds the failing case to the custom cases; the workspace passes it in ACM mode only. */
   onUseInput?: (input: string) => void;
   maxStdinBytes?: number;
+  /** The workspace's custom case (1-based) this run used. */
+  ranCase?: number;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -209,6 +212,8 @@ export function SubmissionResult({
             {submission.mode === 'run'
               ? t('测试运行', 'Test run')
               : t('正式提交', 'Submission')}
+            {ranCase !== undefined &&
+              t(` · 自定义用例 ${ranCase}`, ` · Custom case ${ranCase}`)}
             {submission.mode === 'judge' && !running && (
               <>
                 {' '}
@@ -400,7 +405,7 @@ export function SubmissionResult({
                             }}
                           >
                             <Bug size={13} />
-                            {t('用这个用例调试', 'Debug with this case')}
+                            {t('加入为新用例', 'Add as a custom case')}
                           </button>
                         )
                       }

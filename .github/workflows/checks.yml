@@ -39,6 +39,7 @@ jobs:
       - run: npx tsx --test tests/oj-submission-watch.test.ts tests/leetcode-cpp-value-transport.test.ts tests/leetcode-cpp-static-runtime.test.ts
       - run: npx tsx --test tests/oj-client-feedback.test.ts
       - run: node --import tsx --test tests/oj-failfast-ui.test.mjs tests/problem-timer-ui.test.mjs
+      - run: node --import tsx --test tests/editor-settings-extras.test.ts tests/problem-stats.test.ts tests/workspace-cases-ui.test.mjs
       - run: node --check tests/oj-failfast-integration.mjs
       - run: node --check tests/oa-judge-integration.mjs
       - run: node --test tests/oa-native-reference.test.mjs
@@ -64,11 +65,15 @@ jobs:
       - run: node --import tsx --test tests/speedrun.test.ts tests/speedrun-api.test.ts tests/speedrun-ui.test.mjs
       - run: node --import tsx --test tests/pattern-flowchart.test.ts tests/pattern-flowchart-ui.test.mjs
       - run: node --import tsx --test tests/company-hub.test.ts
+      - run: node --import tsx --test tests/company-stats.test.ts
       - run: node --import tsx --test tests/content-library-ui.test.mjs
       - run: node --import tsx --test tests/leetcode-sync.test.ts tests/leetcode-practice-progress.test.ts
       - run: node --import tsx --test tests/leetcode-sync-ui.test.mjs
       - run: node --import tsx --test tests/study-library-ui.test.mjs
       - run: node --import tsx --test tests/my-practice.test.ts tests/my-progress-ui.test.mjs tests/problem-notes-ui.test.mjs
+      - run: node --import tsx --test tests/daily-problem.test.ts tests/achievements.test.ts tests/practice-loop-ui.test.mjs
+      - run: node --import tsx --test tests/learner-cloud.test.ts tests/learner-cloud-ui.test.mjs
+      - run: node --import tsx --test tests/story-bank.test.ts tests/interview-prep-ui.test.mjs
       - run: node --import tsx --test tests/study-plan.test.ts tests/study-plan-ui.test.mjs
       - run: node --test --test-concurrency=1 tests/oa-import.test.mjs
       - run: node --import tsx --test --test-concurrency=1 tests/oa-library.test.ts tests/oa-library-ui.test.mjs

@@ -1,5 +1,6 @@
 import '../library/library.css';
 import './landing.css';
+import '../company-stats.css';
 import Link from 'next/link';
 
 export default function MockInterviewLayout({ children }: { children: React.ReactNode }) {

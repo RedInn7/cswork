@@ -8,6 +8,9 @@ export type EditorSettings = {
   wordWrap: boolean;
   minimap: boolean;
   layout: 'horizontal' | 'vertical';
+  /** Topic tags (the spoilers) stay behind the Topics button; company tags always show. */
+  hideTags: boolean;
+  keymap: 'default' | 'vim';
 };
 
 export const defaultEditorSettings: EditorSettings = {
@@ -17,6 +20,8 @@ export const defaultEditorSettings: EditorSettings = {
   wordWrap: false,
   minimap: false,
   layout: 'horizontal',
+  hideTags: true,
+  keymap: 'default',
 };
 
 export function settingsKey(userId: string) {
@@ -35,6 +40,8 @@ export function readEditorSettings(userId: string): EditorSettings {
       wordWrap: value.wordWrap === true,
       minimap: value.minimap === true,
       layout: value.layout === 'vertical' ? 'vertical' : 'horizontal',
+      hideTags: value.hideTags !== false,
+      keymap: value.keymap === 'vim' ? 'vim' : 'default',
     };
   } catch {
     return defaultEditorSettings;

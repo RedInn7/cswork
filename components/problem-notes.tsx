@@ -5,6 +5,7 @@ import { api } from '@/lib/types';
 import { readLocale } from '@/lib/i18n';
 import { NOTE_MAX_BYTES } from '@/lib/practice-review';
 import { StatementMarkdown } from './statement-markdown';
+import { AskedReport, communityProblem, ListMenu } from './problem-community';
 import '@/app/problem-notes.css';
 
 type T = (zh: string, en: string) => string;
@@ -40,7 +41,7 @@ function writeDraft(key: string, draft: Draft | null) {
 }
 const stamp = (value: unknown) => (typeof value === 'number' ? value : null);
 /** Saves the note and returns the server's new updatedAt. */
-async function putNote(target: string, body: string) {
+export async function putNote(target: string, body: string) {
   const response = await fetch(
     `/api/oj/notes?target=${encodeURIComponent(target)}`,
     {
@@ -55,7 +56,7 @@ async function putNote(target: string, body: string) {
   return stamp(result?.updatedAt);
 }
 
-export type ProblemNote = ReturnType<typeof useProblemNote>;
+export type ProblemNote = ReturnType<typeof useNote>;
 
 /**
  * The learner's private note on one problem. Saves `delay` ms after typing stops,
@@ -69,7 +70,14 @@ export function useProblemNote(
   problemId: string,
   delay = 800,
 ) {
-  const target = `problem:${problemId}`;
+  return useNote(userId, `problem:${problemId}`, delay);
+}
+
+/**
+ * The same for any note target (`content:<type>/<slug>`: a written answer). Key the caller by target.
+ * What a guest types (or `guestText`, kept by the caller) is saved to the account on sign-in.
+ */
+export function useNote(userId: string | null, target: string, delay = 800, guestText = '') {
   const key = userId ? draftKey(userId, target) : '';
   const [text, setText] = useState('');
   const [state, setState] = useState<NoteState>('loading');
@@ -81,6 +89,8 @@ export function useProblemNote(
   const latest = useRef('');
   const sent = useRef('');
   const base = useRef<number | null>(null);
+  // What a guest typed before signing in; it becomes the note once they do.
+  const guest = useRef(userId ? '' : guestText);
   const keep = (body: string | null) =>
     writeDraft(key, body === null ? null : { body, base: base.current });
   const busy = useRef(false);
@@ -129,6 +139,12 @@ export function useProblemNote(
         else if (draft.base === base.current) latest.current = draft.body;
         // Never overwrite a note changed elsewhere since the draft was written.
         else lost = draft.body;
+        const typed = guest.current;
+        guest.current = '';
+        if (typed.trim() && typed !== latest.current) {
+          if (!latest.current.trim()) latest.current = typed;
+          else lost ??= typed;
+        }
         setConflict(lost);
         setText(latest.current);
         setState(sendable() || !unsaved() ? 'idle' : 'too-long');
@@ -163,6 +179,7 @@ export function useProblemNote(
   }, [userId, key]);
 
   function edit(value: string) {
+    if (!userId) guest.current = value;
     latest.current = value;
     setText(value);
     clearTimeout(timer.current);
@@ -422,6 +439,12 @@ export function ProblemMarks({
           <Icon size={17} aria-hidden="true" />
         </button>
       ))}
+      {communityProblem(problemId) && (
+        <>
+          <ListMenu problemId={problemId} english={english} />
+          <AskedReport problemId={problemId} english={english} />
+        </>
+      )}
       {error && (
         <span role="alert" className="sr-only">
           {t('标记没有保存：', 'Mark not saved: ')}

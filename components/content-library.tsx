@@ -10,6 +10,9 @@ import { RESULTS, ROUND_LABELS } from '@/lib/experience';
 import { companyLogos } from '@/lib/oa-company-brands';
 import type { Navigate } from './learning';
 import { OaMarkdown } from './oa-library';
+import { kindOf, splitBody, type BodyParts } from '@/lib/mock-interview';
+import { TryFirst } from './try-first';
+import { StoryPicker } from './story-bank';
 import '@/app/redesign.css';
 import '@/app/content-library.css';
 
@@ -322,7 +325,7 @@ function FacetSelect({
   );
 }
 
-const FILTERS = ['type', 'kind', 'company', 'role', 'category', 'difficulty', 'round', 'result', 'q', 'page'] as const;
+const FILTERS = ['type', 'kind', 'company', 'role', 'category', 'difficulty', 'round', 'result', 'sort', 'q', 'page'] as const;
 /** Each list's last filters, search and page, so an item's back link returns to the same list. */
 const lastList: Record<string, Record<string, string>> = {};
 
@@ -463,6 +466,17 @@ export function ContentList({
                 </button>
               </>
             )}
+            {type === 'experience' && (
+              // Experiences list by when they happened; newly shared ones on request.
+              <label className={`rd-chip ${filters.sort ? 'is-set' : ''}`}>
+                <span className="sr-only">{t('排序', 'Order')}</span>
+                <select value={filters.sort === 'new' ? 'new' : ''} onChange={(e) => apply({ sort: e.target.value })}>
+                  <option value="">{t('按面试/发帖时间', 'By interview or post date')}</option>
+                  <option value="new">{t('按发布时间', 'Newly shared')}</option>
+                </select>
+                <ChevronDown size={13} className="rd-chip-caret" aria-hidden="true" />
+              </label>
+            )}
           </div>
         )}
 
@@ -488,7 +502,10 @@ export function ContentList({
                 ? t('，按相关度排序', ', sorted by relevance')
                 : type === 'algorithm'
                   ? t('，核心专题在前', ', core topics first')
-                  : t('，最新的在前', ', newest first')}
+                  : type === 'experience' && filters.sort !== 'new'
+                    ? // Two thirds of reports give only the post's date, so say so rather than "interview date".
+                      t('，按面试时间（没有则按原帖时间），最近的在前', ", most recent first (interview date, else the original post's)")
+                    : t('，最新的在前', ', newest first')}
             </div>
             <div className="ct-list">
               {data.items.map((item) => (
@@ -602,15 +619,25 @@ function PracticeCard({
   );
 }
 
+/** The reference parts of a question, closed until the learner has tried (lib/mock-interview.ts splitBody). */
+const ANSWER_PARTS: [keyof BodyParts, string, string][] = [
+  ['followUps', '可能的追问', 'Likely follow-ups'],
+  ['rubric', '面试官想听到什么', 'What interviewers look for'],
+  ['solution', '参考答案', 'Reference answer'],
+];
+
 export function ContentDetail({
   params,
   navigate,
   problemIds,
+  userId = null,
 }: {
   params: Record<string, string>;
   navigate: Navigate;
   /** Judge problems this visitor can open. */
   problemIds: string[];
+  /** Signed-in learner: their written answers and stories are saved. */
+  userId?: string | null;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -635,6 +662,15 @@ export function ContentDetail({
   // Related questions this visitor can practise come first (the sort is stable).
   const canPractise = (rel: Relation) => !!rel.problem && problemIds.includes(rel.problem);
   const relations = [...(item?.relations ?? [])].sort((a, b) => Number(canPractise(b)) - Number(canPractise(a)));
+  // Questions with a reference answer show it after "write your answer first"; one that won't split shows whole.
+  const split = useMemo(
+    () => (item && (item.type === 'interview_question' || item.type === 'coding_question') ? splitBody(item.body) : null),
+    [item],
+  );
+  const gated = split && (split.solution || split.rubric) ? split : null;
+  const [revealed, setRevealed] = useState('');
+  const open = revealed === key;
+  const behavioral = item?.type === 'interview_question' && kindOf(item.category) === 'behavioral';
   const section = contentSection(params.type);
   const back = () =>
     navigate(section, lastList[section] ?? (section === 'resources' ? { type: params.type } : {}));
@@ -733,8 +769,48 @@ export function ContentDetail({
               </div>
             )}
             <article className="rd-card ct-body rd-reveal" style={{ '--i': 2 } as React.CSSProperties}>
-              <OaMarkdown body={localized(locale, item.body, item.extra.bodyZh)} math={!!item.extra.math} />
+              <OaMarkdown body={gated ? gated.question : localized(locale, item.body, item.extra.bodyZh)} math={!!item.extra.math} />
+              {gated?.hints && (
+                <details className="ct-hints">
+                  <summary>{t('提示', 'Hints')}</summary>
+                  <OaMarkdown body={gated.hints} math={!!item.extra.math} />
+                </details>
+              )}
             </article>
+            {behavioral && (
+              <StoryPicker
+                userId={userId}
+                question={{ key: `${item.type}/${item.slug}`, title: item.title, company: item.company?.name ?? null }}
+                text={`${item.title}\n${gated?.question ?? item.body}`}
+              />
+            )}
+            {gated && (
+              <TryFirst
+                key={key}
+                userId={userId}
+                target={`content:${item.type}/${item.slug}`}
+                revealed={open}
+                revealOnLoad
+                code={item.type === 'coding_question'}
+                onReveal={(asked) => {
+                  setRevealed(key);
+                  if (asked) requestAnimationFrame(() => document.getElementById('ct-answer')?.focus());
+                }}
+              />
+            )}
+            {gated && open && (
+              <article id="ct-answer" tabIndex={-1} className="rd-card ct-body ct-answer" aria-label={t('参考答案', 'Reference answer')}>
+                {ANSWER_PARTS.map(
+                  ([part, zh, en]) =>
+                    gated[part] && (
+                      <section key={part}>
+                        <h2>{t(zh, en)}</h2>
+                        <OaMarkdown body={gated[part]} math={!!item.extra.math} />
+                      </section>
+                    ),
+                )}
+              </article>
+            )}
             {item.companyPractice && (
               <PracticeCard practice={item.companyPractice} navigate={navigate} problemIds={problemIds} />
             )}

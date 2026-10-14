@@ -1,13 +1,23 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Snowflake } from 'lucide-react';
+import { beijingDate } from '@/lib/daily-problem';
 
 export type Activity = { problem_id: string; created_at: number };
-export type PracticeCell = { time: number; count: number; future: boolean };
+export type PracticeCell = {
+  time: number;
+  count: number;
+  future: boolean;
+  /** A gap day a streak freeze covered. */
+  frozen?: boolean;
+  /** The daily problem was solved on this day. */
+  daily?: boolean;
+};
 export type PracticeStats = {
   cells: PracticeCell[];
   months: { column: number; label: string }[];
-  /** Consecutive AC days ending today, or yesterday while today has none yet. */
+  /** Consecutive AC days ending today, or yesterday while today has none yet; freezes bridge gaps. */
   streak: number;
   /** Longest run of AC days inside the grid. */
   best: number;
@@ -16,11 +26,17 @@ export type PracticeStats = {
   /** Distinct problems accepted inside the grid. */
   total: number;
   todayIndex: number;
+  /** Streak freezes left this calendar month. */
+  freezesLeft: number;
+  /** Yesterday is a gap: today's first AC spends a freeze on it, and the streak counts on that. */
+  rescue: boolean;
 };
 type T = (zh: string, en: string) => string;
 
 const WEEKS = 26; // The server sends 183 days of activity to cover the grid.
 const DAY = 86400000;
+/** Streak freezes each calendar month; used up automatically, oldest gap first. */
+export const FREEZES_PER_MONTH = 2;
 
 function dayKey(time: number) {
   const d = new Date(time);
@@ -31,14 +47,23 @@ function level(count: number) {
   return count === 0 ? 0 : count === 1 ? 1 : count <= 3 ? 2 : count <= 5 ? 3 : 4;
 }
 
+const monthOf = (time: number) => {
+  const d = new Date(time);
+  return d.getFullYear() * 12 + d.getMonth();
+};
+
 /**
  * Half a year of accepted problems, one cell per local day (weeks start on Monday).
- * `dayStamp` is `Date#toDateString()` of the local day the grid ends on.
+ * `dayStamp` is `Date#toDateString()` of the local day the grid ends on. A day with no
+ * AC between two AC days spends one of the month's streak freezes and keeps the streak
+ * (it adds no day to it). `daily`: times the daily problem was solved, starred cells.
  */
 export function practiceStats(
-  activity: Activity[],
+  activity: readonly Activity[],
   dayStamp: string,
   english: boolean,
+  daily: readonly number[] = [],
+  weeks = WEEKS,
 ): PracticeStats {
   const solvedByDay = new Map<string, Set<string>>();
   for (const { problem_id, created_at } of activity) {
@@ -48,23 +73,41 @@ export function practiceStats(
     solvedByDay.set(key, set);
   }
   const count = (time: number) => solvedByDay.get(dayKey(time))?.size ?? 0;
+  // A daily problem belongs to its Beijing date (as dailyStreak counts it): star the local
+  // cell with that date. ponytail: one that is still tomorrow here appears at local midnight.
+  const dailyDays = new Set(daily.map((t) => dayKey(Date.parse(`${beijingDate(t)}T12:00`))));
   const cells: PracticeCell[] = [];
   const months: { column: number; label: string }[] = [];
   const seen = new Set<string>();
   const today = new Date(dayStamp);
   const weekday = (today.getDay() + 6) % 7; // Monday = 0
-  const todayIndex = weekday + (WEEKS - 1) * 7;
+  const todayIndex = weekday + (weeks - 1) * 7;
   const start = today.getTime() - todayIndex * DAY;
+  // Noon avoids daylight-saving edges when stepping by whole days.
+  const noon = (i: number) => start + i * DAY + DAY / 2;
+  const used = new Map<number, number>();
+  const frozen = new Set<string>();
+  // Today is not over, so the last day a freeze can cover is yesterday.
+  for (let i = 1; i < todayIndex; i++) {
+    const time = noon(i);
+    const month = monthOf(time);
+    const spent = used.get(month) ?? 0;
+    if (!count(time) && count(time - DAY) && count(time + DAY) && spent < FREEZES_PER_MONTH) {
+      used.set(month, spent + 1);
+      frozen.add(dayKey(time));
+    }
+  }
   let best = 0;
   let run = 0;
-  for (let i = 0; i < WEEKS * 7; i++) {
-    // Noon avoids daylight-saving edges when stepping by whole days.
-    const time = start + i * DAY + DAY / 2;
+  for (let i = 0; i < weeks * 7; i++) {
+    const time = noon(i);
     const future = i > todayIndex;
-    const cell = { time, count: future ? 0 : count(time), future };
+    const cell: PracticeCell = { time, count: future ? 0 : count(time), future };
+    if (frozen.has(dayKey(time))) cell.frozen = true;
+    if (!future && dailyDays.has(dayKey(time))) cell.daily = true;
     cells.push(cell);
     if (!future) {
-      run = cell.count ? run + 1 : 0;
+      run = cell.count ? run + 1 : cell.frozen ? run : 0;
       best = Math.max(best, run);
       for (const id of solvedByDay.get(dayKey(time)) ?? []) seen.add(id);
     }
@@ -81,10 +124,17 @@ export function practiceStats(
   if (months.length > 1 && months[1].column < 3) months.shift();
   // A streak survives until the end of today even if today has no AC yet.
   let streak = 0;
-  let day = today.getTime() + DAY / 2;
+  let day = noon(todayIndex);
   if (count(day) === 0) day -= DAY;
-  while (count(day) > 0) {
-    streak++;
+  // An empty yesterday after an AC day: today's first AC will freeze it.
+  const rescue =
+    !count(day) &&
+    day < noon(todayIndex) &&
+    count(day - DAY) > 0 &&
+    (used.get(monthOf(day)) ?? 0) < FREEZES_PER_MONTH;
+  if (rescue) day -= DAY;
+  while (count(day) > 0 || frozen.has(dayKey(day))) {
+    if (count(day)) streak++;
     day -= DAY;
   }
   return {
@@ -96,6 +146,8 @@ export function practiceStats(
     today: cells[todayIndex].count,
     total: seen.size,
     todayIndex,
+    freezesLeft: FREEZES_PER_MONTH - (used.get(monthOf(noon(todayIndex))) ?? 0),
+    rescue,
   };
 }
 
@@ -104,7 +156,11 @@ export function practiceStats(
  * zones never disagree. Re-reads the clock on focus so a page left open past
  * midnight shows the new day.
  */
-export function usePracticeStats(activity: Activity[], english: boolean) {
+export function usePracticeStats(
+  activity: readonly Activity[],
+  english: boolean,
+  daily?: readonly number[],
+) {
   const [dayStamp, setDayStamp] = useState<string | null>(null);
   useEffect(() => {
     const tick = () => setDayStamp(new Date().toDateString());
@@ -114,13 +170,13 @@ export function usePracticeStats(activity: Activity[], english: boolean) {
   }, []);
   return useMemo(
     () =>
-      dayStamp === null ? null : practiceStats(activity, dayStamp, english),
-    [activity, dayStamp, english],
+      dayStamp === null ? null : practiceStats(activity, dayStamp, english, daily),
+    [activity, dayStamp, english, daily],
   );
 }
 
 function nudge(stats: PracticeStats, signedIn: boolean, target: number, t: T) {
-  const { streak, today, total } = stats;
+  const { streak, today, total, rescue } = stats;
   if (!signedIn)
     return t(
       '登录后，每天通过的题都会点亮一格。',
@@ -140,6 +196,11 @@ function nudge(stats: PracticeStats, signedIn: boolean, target: number, t: T) {
     return t(
       `今天已通过 ${today} 题，再刷 ${target - today} 题完成今日行程。`,
       `${today} solved today. ${target - today} more to finish today’s trip.`,
+    );
+  if (rescue)
+    return t(
+      `昨天断了一天：今天刷一题，自动用一次保护日接上连续 ${streak} 天。`,
+      `You missed yesterday. Solve one today and a streak freeze keeps your ${streak}-day streak.`,
     );
   if (streak > 0)
     return t(
@@ -222,12 +283,14 @@ export function PracticeCalendar({
                   data-level={cell.future ? undefined : level(cell.count)}
                   data-future={cell.future || undefined}
                   data-today={i === stats.todayIndex || undefined}
+                  data-frozen={cell.frozen || undefined}
+                  data-daily={cell.daily || undefined}
                   title={
                     cell.future
                       ? undefined
                       : t(
-                          `${new Date(cell.time).getMonth() + 1}月${new Date(cell.time).getDate()}日 · ${cell.count ? `通过 ${cell.count} 题` : '没有通过记录'}`,
-                          `${new Date(cell.time).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · ${cell.count ? `${cell.count} solved` : 'Nothing solved'}`,
+                          `${new Date(cell.time).getMonth() + 1}月${new Date(cell.time).getDate()}日 · ${cell.count ? `通过 ${cell.count} 题` : cell.frozen ? '已用保护日' : '没有通过记录'}${cell.daily ? ' · 完成每日一题' : ''}`,
+                          `${new Date(cell.time).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} · ${cell.count ? `${cell.count} solved` : cell.frozen ? 'Streak freeze used' : 'Nothing solved'}${cell.daily ? ' · Daily problem solved' : ''}`,
                         )
                   }
                 />
@@ -238,6 +301,12 @@ export function PracticeCalendar({
         </div>
       </div>
       <footer aria-hidden="true">
+        <span className="practice-legend-keys">
+          <span data-level={4} data-daily />
+          {t('每日一题', 'Daily')}
+          <span data-level={0} data-frozen />
+          {t('保护日', 'Freeze')}
+        </span>
         {t('少', 'Less')}
         {[0, 1, 2, 3, 4].map((l) => (
           <span key={l} data-level={l} />
@@ -247,6 +316,15 @@ export function PracticeCalendar({
       {stats && (
         <p className="route-nudge" data-risk={risk || undefined}>
           {nudge(stats, signedIn, target, t)}
+          {signedIn && stats.total > 0 && (
+            <span className="route-freeze">
+              <Snowflake size={12} aria-hidden="true" />
+              {t(
+                `本月还剩 ${stats.freezesLeft} 次断签保护`,
+                `${stats.freezesLeft} streak ${stats.freezesLeft === 1 ? 'freeze' : 'freezes'} left this month`,
+              )}
+            </span>
+          )}
         </p>
       )}
       {!signedIn && weeks > 0 && (
