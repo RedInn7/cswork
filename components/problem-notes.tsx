@@ -72,8 +72,11 @@ export function useProblemNote(
   return useNote(userId, `problem:${problemId}`, delay);
 }
 
-/** The same for any note target (`content:<type>/<slug>`: a written answer). Key the caller by target. */
-export function useNote(userId: string | null, target: string, delay = 800) {
+/**
+ * The same for any note target (`content:<type>/<slug>`: a written answer). Key the caller by target.
+ * What a guest types (or `guestText`, kept by the caller) is saved to the account on sign-in.
+ */
+export function useNote(userId: string | null, target: string, delay = 800, guestText = '') {
   const key = userId ? draftKey(userId, target) : '';
   const [text, setText] = useState('');
   const [state, setState] = useState<NoteState>('loading');
@@ -85,6 +88,8 @@ export function useNote(userId: string | null, target: string, delay = 800) {
   const latest = useRef('');
   const sent = useRef('');
   const base = useRef<number | null>(null);
+  // What a guest typed before signing in; it becomes the note once they do.
+  const guest = useRef(userId ? '' : guestText);
   const keep = (body: string | null) =>
     writeDraft(key, body === null ? null : { body, base: base.current });
   const busy = useRef(false);
@@ -133,6 +138,12 @@ export function useNote(userId: string | null, target: string, delay = 800) {
         else if (draft.base === base.current) latest.current = draft.body;
         // Never overwrite a note changed elsewhere since the draft was written.
         else lost = draft.body;
+        const typed = guest.current;
+        guest.current = '';
+        if (typed.trim() && typed !== latest.current) {
+          if (!latest.current.trim()) latest.current = typed;
+          else lost ??= typed;
+        }
         setConflict(lost);
         setText(latest.current);
         setState(sendable() || !unsaved() ? 'idle' : 'too-long');
@@ -167,6 +178,7 @@ export function useNote(userId: string | null, target: string, delay = 800) {
   }, [userId, key]);
 
   function edit(value: string) {
+    if (!userId) guest.current = value;
     latest.current = value;
     setText(value);
     clearTimeout(timer.current);

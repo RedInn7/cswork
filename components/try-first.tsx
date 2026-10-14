@@ -9,7 +9,8 @@ import '@/app/interview-prep.css';
  * "Write your answer first": the learner's answer to a question, saved as their note on it
  * (`content:<type>/<slug>`), above a reference answer that stays closed until they compare.
  * Showing it without writing anything asks once whether they'd rather try first.
- * Key it by target. Guests type into `local` when given (kept by the caller), else into nothing saved.
+ * Key it by target. A guest's answer is kept in `local` when given (by the caller), and either way
+ * saved to their account once they sign in.
  */
 export function TryFirst({
   userId,
@@ -32,10 +33,14 @@ export function TryFirst({
 }) {
   const t = useT();
   const id = useId();
-  const note = useNote(userId, target);
+  const note = useNote(userId, target, 800, local?.value);
   const guest = !userId;
   const text = guest && local ? local.value : note.text;
-  const edit = guest && local ? local.onChange : note.edit;
+  // A guest's answer also goes to the note, which saves it to the account on sign-in.
+  const edit = (value: string) => {
+    if (guest) local?.onChange(value);
+    note.edit(value);
+  };
   const [asking, setAsking] = useState(false);
   const box = useRef<HTMLTextAreaElement>(null);
   const tryButton = useRef<HTMLButtonElement>(null);
@@ -85,8 +90,8 @@ export function TryFirst({
             <div className="ip-warn" role="alert">
               <p>
                 {t(
-                  '这台设备上有一份没保存的旧版本，但答案之后在别处改过了。下面是最新保存的内容。',
-                  'This device has an older unsaved version, but the answer was changed elsewhere since. The latest saved one is below.',
+                  '这台设备上有一份没保存的版本（比如登录前写的），和账号里保存的答案不一样。下面是账号里保存的内容。',
+                  'This device has an unsaved version (written before you signed in, say) that differs from the answer saved to your account. The saved one is below.',
                 )}
               </p>
               <button type="button" onClick={() => note.resolve(true)}>
