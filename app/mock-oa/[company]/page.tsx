@@ -46,7 +46,9 @@ export default async function MockOaCompany({ params }: Props) {
   const zh = (await requestLocale()) === 'zh';
   const { title, lead, description } = text(p, zh);
   const pool = (await mockPoolSizes())?.get(p.slug);
-  const extra = zh ? (p.sections_zh === '无' ? '' : p.sections_zh) : p.sections_en === 'None' ? '' : p.sections_en;
+  // "None" / "None (remark)" means coding only; anything else is a section the mock leaves out.
+  const sections = zh ? p.sections_zh : p.sections_en;
+  const extra = /^(?:None\b|无)/.test(sections) ? '' : sections;
   const order = p.slots.map((s) => LEVEL[s][zh ? 0 : 1]).join(zh ? ' → ' : ' → ');
   const url = `${SITE_URL}/mock-oa/${p.slug}`;
   const jsonLd = {
@@ -80,7 +82,7 @@ export default async function MockOaCompany({ params }: Props) {
           : 'Each question 0–100 by tests passed',
     ],
     [zh ? '适用' : 'Roles', p.roles.join(zh ? '、' : ', ')],
-    [zh ? '编程之外' : 'Besides coding', extra || (zh ? '无' : 'None')],
+    [zh ? '编程之外' : 'Besides coding', sections],
   ];
   return (
     <article>

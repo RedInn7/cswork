@@ -40,6 +40,8 @@ import {
   mockClock,
   readMockState,
   reportWindow,
+  settleMockState,
+  slotOf,
   writeMockState,
   type MockSession,
   type MockSource,
@@ -115,9 +117,15 @@ const LEVEL_NAME: Record<Slot, [string, string]> = {
   hard: ['困难', 'Hard'],
 };
 const MINUTES = [15, 30, 45, 60, 70, 75, 90, 120, 150, 180];
-/** "None" (or 无) means coding is the whole OA; anything longer says what else there is. */
-const extraSections = (p: Preset, zh: boolean) =>
-  zh ? (p.sections_zh === '无' ? '' : p.sections_zh) : p.sections_en === 'None' ? '' : p.sections_en;
+/**
+ * What the real OA has besides coding. "None" (无) means coding only; "None (…)"
+ * keeps its remark (proctoring, dropped MCQs) as a coding-only note.
+ */
+function extraSections(p: Preset, zh: boolean) {
+  const text = zh ? p.sections_zh : p.sections_en;
+  const none = /^(?:None|无)\s*(?:[(（](.*)[)）])?$/.exec(text);
+  return none ? { codingOnly: true, text: none[1] ?? '' } : { codingOnly: false, text };
+}
 const platformKey = (platform: string | null) =>
   (platform || '').split(/[\s/]/)[0].toLowerCase();
 /** Ids from the running mock and the last five, so a new draw brings fresh problems. */
@@ -220,7 +228,9 @@ export function MockOa({
       setError(t('请先验证邮箱，验证后才能提交代码和参加模拟。', 'Verify your email first: submitting code and taking mocks need it.'));
       return;
     }
-    const live = state.active?.startedAt && mockClock(state.active, Date.now()).phase === 'running';
+    // A mock whose time ran out on this page goes to the history first.
+    const current = settleMockState(state, Date.now());
+    const live = !!current.active?.startedAt;
     if (live && !confirmed) {
       setReplace({ key, request });
       return;
@@ -229,7 +239,7 @@ export function MockOa({
     try {
       const drawn = await ojRequest<Drawn>('mock-oa/draw', {
         ...request,
-        exclude: recentIds(state),
+        exclude: recentIds(current),
       });
       const now = Date.now();
       const session: MockSession = {
@@ -248,7 +258,7 @@ export function MockOa({
       };
       // A replaced running mock is handed in as it stands; an unstarted draw is just dropped.
       const base =
-        live && state.active ? archiveMock(state, finishMock(state.active, now)) : state;
+        live && current.active ? archiveMock(current, finishMock(current.active, now)) : current;
       save({ ...base, active: session });
       navigate('mock', { session: session.id });
     } catch (e) {
@@ -282,24 +292,25 @@ export function MockOa({
           )}
         </p>
       )}
-      {params.report ? (
-        report?.finishedAt ? (
-          <MockReport
-            key={report.id}
-            session={report}
-            boot={boot}
-            navigate={navigate}
-            onResult={(result) => {
-              const latest = readMockState(userId);
-              const stored = findMock(latest, report.id) ?? report;
-              save(archiveMock(latest, { ...stored, result }));
-            }}
-            again={() => draw('again', drawRequest(report))}
-            busy={busy === 'again'}
-          />
-        ) : (
-          <MissingSession navigate={navigate} />
-        )
+      {report?.finishedAt ? (
+        <MockReport
+          key={report.id}
+          session={report}
+          boot={boot}
+          navigate={navigate}
+          onResult={(result) => {
+            // In place: an older report keeps its spot in the history.
+            const latest = readMockState(userId);
+            save({
+              ...latest,
+              history: latest.history.map((h) => (h.id === report.id ? { ...h, result } : h)),
+            });
+          }}
+          again={() => draw('again', drawRequest(report))}
+          busy={busy === 'again'}
+        />
+      ) : params.report && !report ? (
+        <MissingSession navigate={navigate} />
       ) : params.session && briefing && !briefing.startedAt ? (
         <MockBriefing
           session={briefing}
@@ -412,7 +423,19 @@ function LiveStrip({
     return () => clearInterval(timer);
   }, []);
   const clock = mockClock(session, now);
-  if (clock.phase === 'finished') return null;
+  if (clock.phase === 'finished')
+    return (
+      <div className="mock-live">
+        <span className="mock-live-tag">{t('时间到', "Time's up")}</span>
+        <strong>{session.name || t('自定义模拟', 'Custom mock')}</strong>
+        <span className="mock-live-actions">
+          <button type="button" className="mock-cta" onClick={handIn}>
+            {t('查看成绩单', 'See the report')}
+            <ArrowRight size={16} />
+          </button>
+        </span>
+      </div>
+    );
   const running = clock.phase === 'running';
   return (
     <div className="mock-live" data-warn={clock.warning || undefined}>
@@ -598,10 +621,14 @@ function MockLanding({
                       </span>
                     </p>
                     <Stops slots={c.slots} zh={zh} />
-                    {extra && (
-                      <p className="mock-extra" title={extra}>
-                        <b>{t('编程之外（不模拟）：', 'Besides coding (not simulated): ')}</b>
-                        {extra}
+                    {extra.text && (
+                      <p className="mock-extra" title={extra.text}>
+                        <b>
+                          {extra.codingOnly
+                            ? t('只有编程：', 'Coding only: ')
+                            : t('编程之外（不模拟）：', 'Besides coding (not simulated): ')}
+                        </b>
+                        {extra.text}
                       </p>
                     )}
                     <footer>
@@ -805,7 +832,9 @@ function MockHistory({ history, navigate }: { history: MockSession[]; navigate: 
                 <span className="mock-history-score">
                   {s.result ? (
                     <>
-                      <b>{s.result.score}</b>/{s.result.max}
+                      <span>
+                        <b>{s.result.score}</b>/{s.result.max}
+                      </span>
                       <small>
                         {t(`通过 ${s.result.solved}/${s.ids.length}`, `${s.result.solved}/${s.ids.length} solved`)}
                       </small>
@@ -849,7 +878,7 @@ function MockBriefing({
     zh = useLocale() === 'zh';
   const known = new Set(boot.problems.map((p) => p.id));
   const missing = session.ids.some((id) => !known.has(id));
-  const extra = preset ? extraSections(preset, zh) : '';
+  const extra = preset && !extraSections(preset, zh).codingOnly ? extraSections(preset, zh).text : '';
   return (
     <section className="mock-board mock-briefing" aria-labelledby="mock-briefing-title">
       <p className="mock-kicker">
@@ -1086,8 +1115,10 @@ function MockReport({
                 <span className="mock-result-title">
                   <strong>{summary ? problemTitle(summary, locale) : id}</strong>
                   <small>
-                    {t(LEVEL_NAME[session.slots[index] ?? 'medium'][0], LEVEL_NAME[session.slots[index] ?? 'medium'][1])}
-                    {item ? t(` · 提交 ${item.attempts} 次`, ` · ${item.attempts} submissions`) : ''}
+                    {t(...LEVEL_NAME[slotOf(summary?.difficulty) ?? session.slots[index] ?? 'medium'])}
+                    {item
+                      ? t(` · 提交 ${item.attempts} 次`, ` · ${item.attempts} submission${item.attempts === 1 ? '' : 's'}`)
+                      : ''}
                     {item?.firstAcceptedMs != null
                       ? t(` · ${formatClock(item.firstAcceptedMs)} 时通过`, ` · AC at ${formatClock(item.firstAcceptedMs)}`)
                       : ''}
