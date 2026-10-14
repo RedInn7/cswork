@@ -12,9 +12,11 @@ const MAX_STORIES = 200;
 // story:<id> holds one STAR story as JSON (components/story-bank.tsx); list:<id> starred is a
 // saved public list, written through /api/oj/lists/<id>/star (which checks the list) only.
 // sd:<chapter> holds a system design chapter's quiz answers as JSON (app/system-design/quiz.tsx).
-const target = z.string().regex(/^(?:problem|content|story|list|sd):[\w./-]{1,200}$/);
+// sub:<submission id> is a note on one submission; q:<slug> is a content library question.
+const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q):[\w./-]{1,200}$/);
 // up/down: the problem's vote, one per learner (setting one clears the other).
-const mark = z.enum(['star', 'redo', 'up', 'down']);
+// done: ticked by hand (solved elsewhere); read: a chapter or page marked as read.
+const mark = z.enum(['star', 'redo', 'up', 'down', 'done', 'read']);
 const VOTE = { up: 'down', down: 'up' } as const;
 // The verdicts that count against the learner's code; judge faults and cancels do not.
 const FAILED = `'wrong_answer','compile_error','time_limit','memory_limit','output_limit','runtime_error'`;
