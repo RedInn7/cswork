@@ -1,0 +1,592 @@
+/*
+ * Interview prep: "write your answer first" (question pages, solo mock interviews), the
+ * "which story would you tell?" picker, and the STAR story bank (?view=stories).
+ * Built on the redesign layer (.rd tokens). Amber marks the learner's own turn; emerald the
+ * reference and anything already covered.
+ */
+.ip-muted {
+  margin: 0;
+  color: var(--rd-muted);
+  font-size: 13px;
+}
+.ip-warn,
+.ip-warn-text {
+  color: var(--rd-red);
+  font-size: 13px;
+}
+.ip-warn {
+  margin: 0;
+}
+.ip-warn button,
+.ip-warn-text button {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------ try first */
+.ip-try {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 18px 20px 20px;
+  border: 1px solid color-mix(in oklch, var(--rd-amber) 34%, var(--rd-line));
+  border-left: 4px solid var(--rd-amber);
+  border-radius: var(--rd-radius);
+  background: color-mix(in oklch, var(--rd-amber) 5%, var(--rd-surface));
+}
+.ip-try[data-revealed] {
+  border-left-color: var(--rd-brand);
+  border-color: var(--rd-line);
+  background: var(--rd-surface);
+}
+.ip-try-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--rd-ink);
+  font-size: 15px;
+  font-weight: 800;
+}
+.ip-try-head p {
+  margin: 4px 0 0;
+  color: var(--rd-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.ip-try-input {
+  width: 100%;
+  min-height: 140px;
+  padding: 12px 14px;
+  border: 1px solid var(--rd-line);
+  border-radius: 12px;
+  /* Faint ruled lines: a page to write on, not a form field. */
+  background:
+    repeating-linear-gradient(transparent 0 calc(1.7em - 1px), color-mix(in oklch, var(--rd-amber) 12%, transparent) calc(1.7em - 1px) 1.7em)
+      0 12px / 100% 1.7em local,
+    var(--rd-surface);
+  color: var(--rd-ink);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.7;
+  resize: vertical;
+}
+.ip-try-input[data-code] {
+  background: #fbfcfd;
+  font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  tab-size: 4;
+}
+.ip-try-input:focus {
+  outline: none;
+  border-color: var(--rd-amber);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--rd-amber) 18%, transparent);
+}
+.ip-try-status {
+  min-height: 18px;
+  margin: -2px 0 0;
+  color: var(--rd-subtle);
+  font-size: 12px;
+}
+.ip-try-go,
+.ip-try-skip {
+  justify-self: start;
+}
+.ip-try-ask {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: color-mix(in oklch, var(--rd-amber) 10%, var(--rd-surface));
+  animation: rd-rise 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.ip-try-ask p {
+  flex-basis: 100%;
+  margin: 0 0 2px;
+  color: var(--rd-ink-2);
+  font-size: 13px;
+  line-height: 1.55;
+}
+/* In the mock interview's side panel the panel is the card. */
+.mi-work-side .ip-try {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.mi-work-side .ip-try-input {
+  min-height: 240px;
+}
+
+/* ------------------------------------------------------------ question page */
+.ct-hints {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--rd-line);
+}
+.ct-hints summary {
+  cursor: pointer;
+  color: var(--rd-ink-2);
+  font-size: 13px;
+  font-weight: 700;
+}
+.ct-answer {
+  display: grid;
+  gap: 18px;
+  margin-top: 16px;
+  border-top: 3px solid var(--rd-brand);
+  animation: rd-rise 360ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.ct-answer:focus:not(:focus-visible) {
+  outline: none;
+}
+.ct-answer section + section {
+  padding-top: 18px;
+  border-top: 1px solid var(--rd-line-soft);
+}
+.ct-answer h2 {
+  margin: 0 0 8px;
+  color: var(--rd-brand-ink);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------ story picker */
+.ip-pick {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 16px 18px;
+  border: 1px solid var(--rd-line);
+  border-radius: var(--rd-radius);
+  background: var(--rd-surface);
+}
+.mi-work-side .ip-pick {
+  margin: 0;
+}
+.ip-pick h3 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--rd-ink);
+  font-size: 14px;
+  font-weight: 800;
+}
+.ip-pick-wants {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  color: var(--rd-muted);
+  font-size: 12px;
+}
+.ip-pick-wants > span:first-child {
+  margin-right: 4px;
+}
+.ip-pick-select {
+  width: 100%;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--rd-line);
+  border-radius: 10px;
+  background: var(--rd-surface);
+  color: var(--rd-ink);
+  font: inherit;
+  font-size: 14px;
+}
+.ip-pick-select:focus {
+  outline: none;
+  border-color: var(--rd-brand);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--rd-brand) 15%, transparent);
+}
+.ip-pick-story summary {
+  cursor: pointer;
+  color: var(--rd-brand-ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+.ip-pick-bank {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  justify-self: start;
+  color: var(--rd-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.ip-pick-bank:hover {
+  color: var(--rd-brand-ink);
+}
+.ip-star {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 0;
+}
+.ip-star dt {
+  color: var(--rd-ink-2);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ip-star dd {
+  margin: 2px 0 0;
+  color: var(--rd-ink-2);
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* ------------------------------------------------------------ story bank */
+.ip-bank {
+  display: grid;
+  gap: 20px;
+  max-width: 1040px;
+}
+.ip-eyebrow {
+  margin: 0 0 6px;
+  color: var(--rd-amber);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ip-bank-head h1 {
+  margin: 0;
+  color: var(--rd-ink);
+  font-size: 36px;
+  line-height: 40px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+.ip-lead {
+  max-width: 720px;
+  margin: 10px 0 0;
+  color: var(--rd-muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.ip-bank-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+.ip-bank-actions .rd-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/* Sixteen principles as a board: lit once a story covers them. */
+.ip-cover h2 {
+  margin: 0 0 10px;
+  color: var(--rd-ink-2);
+  font-size: 13px;
+  font-weight: 700;
+}
+.ip-cover h2 b {
+  color: var(--rd-brand-ink);
+  font-variant-numeric: tabular-nums;
+}
+.ip-cover ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ip-cover li {
+  padding: 4px 10px;
+  border: 1px dashed var(--rd-line);
+  border-radius: 999px;
+  color: var(--rd-subtle);
+  font-size: 12px;
+  font-weight: 600;
+}
+.ip-cover li[data-on] {
+  border: 1px solid color-mix(in oklab, var(--rd-brand) 35%, transparent);
+  background: var(--rd-brand-soft);
+  color: var(--rd-brand-ink);
+}
+.ip-skeleton {
+  height: 180px;
+  background: linear-gradient(90deg, var(--rd-fill-soft), var(--rd-fill), var(--rd-fill-soft)) 0 0 / 200% 100%;
+  animation: ip-shimmer 1.4s linear infinite;
+}
+@keyframes ip-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+.ip-table-wrap {
+  overflow-x: auto;
+}
+.ip-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.ip-table th,
+.ip-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rd-line-soft);
+  text-align: left;
+  vertical-align: top;
+}
+.ip-table thead th {
+  color: var(--rd-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ip-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.ip-table tbody tr[aria-current] {
+  background: color-mix(in oklch, var(--rd-amber) 6%, transparent);
+}
+.ip-table tbody th button {
+  color: var(--rd-ink);
+  font-weight: 700;
+  text-align: left;
+}
+.ip-table tbody th button:hover {
+  color: var(--rd-brand-ink);
+  text-decoration: underline;
+}
+.ip-table td {
+  color: var(--rd-ink-2);
+}
+.ip-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* The editor: four lettered cards, the action card the widest. */
+.ip-editor {
+  display: grid;
+  gap: 16px;
+  padding: 22px 24px;
+  scroll-margin-top: 80px;
+  animation: rd-rise 360ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.ip-editor-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ip-editor-head h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+.ip-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  color: var(--rd-muted);
+}
+.ip-icon:hover {
+  background: var(--rd-fill);
+  color: var(--rd-ink);
+}
+.ip-field {
+  display: grid;
+  gap: 6px;
+}
+.ip-field > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--rd-ink-2);
+  font-size: 13px;
+  font-weight: 700;
+}
+.ip-field > span b {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--rd-ink);
+  color: #fff;
+  font-size: 12px;
+}
+.ip-field[data-field='action'] > span b {
+  background: var(--rd-amber);
+}
+.ip-count {
+  margin-left: auto;
+  color: var(--rd-subtle);
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.ip-field input,
+.ip-field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--rd-line);
+  border-radius: 10px;
+  background: var(--rd-surface);
+  color: var(--rd-ink);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.ip-field textarea {
+  resize: vertical;
+}
+.ip-field input:focus,
+.ip-field textarea:focus {
+  outline: none;
+  border-color: var(--rd-brand);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--rd-brand) 15%, transparent);
+}
+.ip-guide {
+  color: var(--rd-muted);
+  font-size: 12px;
+}
+.ip-star-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.ip-star-grid [data-field='action'] {
+  grid-column: 1 / -1;
+}
+.ip-length {
+  margin: 0;
+  color: var(--rd-ink-2);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.ip-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.ip-chips legend {
+  margin-bottom: 8px;
+  padding: 0;
+  color: var(--rd-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ip-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 11px;
+  border: 1px solid var(--rd-line);
+  border-radius: 999px;
+  background: var(--rd-surface);
+  color: var(--rd-ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ip-chip input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.ip-chip:has(input:checked) {
+  border-color: color-mix(in oklab, var(--rd-brand) 40%, transparent);
+  background: var(--rd-brand-soft);
+  color: var(--rd-brand-ink);
+}
+.ip-chip:has(input:focus-visible) {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--rd-brand) 22%, transparent);
+}
+.ip-answers h3 {
+  margin: 0 0 6px;
+  color: var(--rd-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ip-answers ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+.ip-answers li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ip-answers a {
+  color: var(--rd-ink-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.ip-editor-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rd-line-soft);
+}
+.ip-editor-foot .rd-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.ip-editor-state {
+  color: var(--rd-brand-ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+.ip-delete {
+  margin-left: auto;
+  color: var(--rd-red);
+}
+
+@media (max-width: 720px) {
+  .ip-bank-head h1 {
+    font-size: 28px;
+    line-height: 34px;
+  }
+  .ip-star-grid {
+    grid-template-columns: 1fr;
+  }
+  .ip-editor {
+    padding: 18px 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ip-try-ask,
+  .ip-editor,
+  .ct-answer,
+  .ip-skeleton {
+    animation: none;
+  }
+}
+@media print {
+  .ip-try-ask,
+  .ip-try-skip,
+  .ip-try-go,
+  .ip-pick-bank {
+    display: none;
+  }
+}
