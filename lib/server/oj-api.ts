@@ -29,10 +29,12 @@ import { hiddenCompanies } from './env';
 import {
   getStudyLibrary,
   getStudySourceStatement,
+  levelPicks,
   lingHints,
   listLibrary,
   similarProblems,
 } from './study-library';
+import { lcRating } from './lc-ratings';
 import { classicList } from '@/lib/classic-lists';
 import { requireCourseOwner } from './course-visibility';
 import {
@@ -111,6 +113,8 @@ export async function handleOj(
       leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
       sourceStatement: getStudySourceStatement(id),
       curatedHint: hint,
+      // Contest rating (zerotrac), null outside rated contests.
+      rating: lcRating(id),
       companies: tags.get(id) ?? [],
       hintEarned: failed.length > 0,
       // Ids, not a count: the client unions them with live verdicts so none counts twice.
@@ -164,6 +168,10 @@ export async function handleOj(
       return json(
         id ? getStudyLibrary(id) : listLibrary(url.searchParams, p.id),
       );
+    }
+    if (resource === 'recommend' && !id) {
+      await limit(p, 'library-read', 120);
+      return json(levelPicks(p.id));
     }
     if (resource === 'practice-rounds' && !id) {
       await limit(p, 'library-read', 120);
