@@ -285,6 +285,7 @@ function Workspace({
   const statementLocaleRef = useRef(statementLocale);
   statementLocaleRef.current = statementLocale;
   const statement = problemStatement(problem, statementLocale);
+  const sqlTrack = problem.id.startsWith('sql-');
   const english = statementLocale === 'en' && !!problem.translations?.en;
   // Labels that followed an English statement still do; otherwise the site language decides.
   const uiEnglish = english || locale === 'en';
@@ -1411,15 +1412,23 @@ function Workspace({
               )}
               {codingMode === 'acm' && (
                 <>
-                  {!sourceBody && (
-                    <p style={{ whiteSpace: 'pre-wrap' }}>
-                      {statement.description}
-                    </p>
-                  )}
+                  {/* SQL track statements are Markdown: schema blocks and column tables. */}
+                  {!sourceBody &&
+                    (sqlTrack ? (
+                      <StatementMarkdown body={statement.description} />
+                    ) : (
+                      <p style={{ whiteSpace: 'pre-wrap' }}>
+                        {statement.description}
+                      </p>
+                    ))}
                   <h3>{uiEnglish ? 'Input' : '输入格式'}</h3>
                   <p style={{ whiteSpace: 'pre-wrap' }}>{statement.input}</p>
                   <h3>{uiEnglish ? 'Output' : '输出格式'}</h3>
-                  <p style={{ whiteSpace: 'pre-wrap' }}>{statement.output}</p>
+                  {sqlTrack ? (
+                    <StatementMarkdown body={statement.output} />
+                  ) : (
+                    <p style={{ whiteSpace: 'pre-wrap' }}>{statement.output}</p>
+                  )}
                   <h3>{uiEnglish ? 'Examples' : '样例'}</h3>
                   {samples.map((item, index) => (
                     <div key={item.name}>

@@ -12,11 +12,11 @@
      "title": "Employees Without a Valid Manager",
      "description": "The company is cleaning up its org chart. Find every employee without a valid manager: `manager_id` is NULL, or it points to an employee who does not exist.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `id` | employee id |\n| `name` | employee name |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `id`: employee id\n- `name`: employee name\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "Ava and Eve have a NULL manager_id; Hugo's manager id 42 does not exist. Everyone else's manager is in the table.",
      "hints": [
       "LEFT JOIN employees to itself: the manager side is all NULL when there is no match.",
-      "`x = NULL` is never true; test for missing values with `IS NULL`."
+      "x = NULL is never true; test for missing values with IS NULL."
      ]
     }
    },
@@ -26,11 +26,11 @@
    ],
    "description": "公司在清理组织架构。找出所有「找不到上级」的员工：`manager_id` 为 NULL，或者 `manager_id` 指向的员工并不存在。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `id` | 员工编号 |\n| `name` | 员工姓名 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `id`：员工编号\n- `name`：员工姓名\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Ava 和 Eve 的 manager_id 是 NULL；Hugo 的上级编号 42 不存在。其余员工的上级都在表里。",
    "hints": [
     "把 employees 和自己做 LEFT JOIN：没匹配上的上级那一侧全是 NULL。",
-    "`x = NULL` 永远不为真，判断空值要用 `IS NULL`。"
+    "x = NULL 永远不为真，判断空值要用 IS NULL。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
@@ -91,11 +91,11 @@
      "title": "Customers per City",
      "description": "Count the customers in each city. Customers whose `city` is NULL form one group named `Unknown` (no real city in the data is called Unknown).\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `city` | city, with NULL shown as Unknown |\n| `customers` | number of customers there |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `city`: city, with NULL shown as Unknown\n- `customers`: number of customers there\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "Austin has Alice, Cara and Femi, Boston has two customers, and Dev's city is unknown.",
      "hints": [
-      "`COALESCE(city, 'Unknown')` replaces NULL with a default.",
-      "`COUNT(city)` skips NULLs; `COUNT(*)` counts every row."
+      "COALESCE(city, 'Unknown') replaces NULL with a default.",
+      "COUNT(city) skips NULLs; COUNT(*) counts every row."
      ]
     }
    },
@@ -105,11 +105,11 @@
    ],
    "description": "统计每个城市有多少客户。`city` 为 NULL 的客户归到名为 `Unknown` 的一组（数据中不会有真的叫 Unknown 的城市）。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `city` | 城市，NULL 显示为 Unknown |\n| `customers` | 该城市的客户数 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `city`：城市，NULL 显示为 Unknown\n- `customers`：该城市的客户数\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Austin 有 Alice、Cara、Femi 三位客户，Boston 有两位，Dev 的城市未知。",
    "hints": [
-    "`COALESCE(city, 'Unknown')` 把 NULL 换成默认值。",
-    "`COUNT(city)` 不计 NULL，`COUNT(*)` 计所有行。"
+    "COALESCE(city, 'Unknown') 把 NULL 换成默认值。",
+    "COUNT(city) 不计 NULL，COUNT(*) 计所有行。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
@@ -170,11 +170,11 @@
      "title": "Absences and Averages",
      "description": "`enrollments.score` is NULL when a student enrolled but missed the exam; a score of 0 is a real result. For each course with at least one enrollment, report the number enrolled, the number who sat the exam, the average score of those who sat (NULL if nobody did), and the average counting absences as 0. Round both averages with `ROUND(x, 2)`.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE courses (\n  id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL\n);\nCREATE TABLE enrollments (\n  student_id INTEGER NOT NULL,\n  course_id INTEGER NOT NULL,\n  score INTEGER            -- NULL: did not sit the exam\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `title` | course title |\n| `enrolled` | students enrolled |\n| `sat` | students who sat the exam |\n| `avg_score` | average of those who sat |\n| `avg_with_zero` | average with absences as 0 |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `title`: course title\n- `enrolled`: students enrolled\n- `sat`: students who sat the exam\n- `avg_score`: average of those who sat\n- `avg_with_zero`: average with absences as 0\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "Algebra has three enrolled and two who sat: (90+75)/2 = 82.5, and 165/3 = 55 with the absence as 0. Nobody sat Chemistry, so its average is NULL. Drama has no enrollments and is left out.",
      "hints": [
-      "`AVG` and `COUNT(col)` skip NULLs.",
-      "Integer division truncates in SQLite: `165 / 2` is 82."
+      "AVG and COUNT(col) skip NULLs.",
+      "Integer division truncates in SQLite: 165 / 2 is 82."
      ]
     }
    },
@@ -184,11 +184,11 @@
    ],
    "description": "`enrollments.score` 为 NULL 表示学生选了课但缺考，0 分是真实成绩。对每门至少有一人选课的课程，求：选课人数、参加考试人数、参加考试者的平均分（没人参加时为 NULL），以及把缺考按 0 分计的平均分。两个平均分都用 `ROUND(x, 2)` 保留两位小数。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE courses (\n  id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL\n);\nCREATE TABLE enrollments (\n  student_id INTEGER NOT NULL,\n  course_id INTEGER NOT NULL,\n  score INTEGER            -- NULL: did not sit the exam\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `title` | 课程名 |\n| `enrolled` | 选课人数 |\n| `sat` | 参加考试人数 |\n| `avg_score` | 参加者平均分 |\n| `avg_with_zero` | 缺考按 0 分的平均分 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `title`：课程名\n- `enrolled`：选课人数\n- `sat`：参加考试人数\n- `avg_score`：参加者平均分\n- `avg_with_zero`：缺考按 0 分的平均分\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Algebra 三人选课、两人考试：(90+75)/2 = 82.5，缺考记 0 为 165/3 = 55。Chemistry 无人考试，平均分是 NULL。Drama 没人选课，不输出。",
    "hints": [
-    "`AVG` 和 `COUNT(col)` 会跳过 NULL。",
-    "SQLite 里整数相除会截断：`165 / 2` 是 82。"
+    "AVG 和 COUNT(col) 会跳过 NULL。",
+    "SQLite 里整数相除会截断：165 / 2 是 82。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
@@ -249,11 +249,11 @@
      "title": "Customers Who Never Ordered",
      "description": "Find the customers who have never placed an order of any status (a cancelled order still counts as placed). Note that guest orders have a NULL `customer_id`.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `id` | customer id |\n| `name` | customer name |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `id`: customer id\n- `name`: customer name\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "Dev and Femi have no orders. Bob has only a cancelled order, which still counts.",
      "hints": [
-      "Use `NOT EXISTS`, or `LEFT JOIN … WHERE o.id IS NULL`.",
-      "When the subquery returns a NULL, `x NOT IN (…)` is never true."
+      "Use NOT EXISTS, or LEFT JOIN … WHERE o.id IS NULL.",
+      "When the subquery returns a NULL, x NOT IN (…) is never true."
      ]
     }
    },
@@ -263,11 +263,11 @@
    ],
    "description": "找出从未下过任何订单的客户（已取消的订单也算下过单）。注意：游客订单的 `customer_id` 是 NULL。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `id` | 客户编号 |\n| `name` | 客户姓名 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `id`：客户编号\n- `name`：客户姓名\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Dev 和 Femi 没有订单。Bob 只有一笔已取消的订单，也算下过单。",
    "hints": [
-    "`NOT EXISTS` 或 `LEFT JOIN … WHERE o.id IS NULL` 都可以。",
-    "子查询结果里有 NULL 时，`x NOT IN (…)` 永远不为真。"
+    "NOT EXISTS 或 LEFT JOIN … WHERE o.id IS NULL 都可以。",
+    "子查询结果里有 NULL 时，x NOT IN (…) 永远不为真。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
@@ -328,10 +328,10 @@
      "title": "Earning More Than the Manager",
      "description": "Find the employees paid strictly more than their direct manager. Employees whose manager is NULL or missing are not compared.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `employee` | employee name |\n| `salary` | employee's salary |\n| `manager` | manager's name |\n| `manager_salary` | manager's salary |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `employee`: employee name\n- `salary`: employee's salary\n- `manager`: manager's name\n- `manager_salary`: manager's salary\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "Finn (8500) out-earns his manager Eve (8000), and Jack (5500) out-earns Hugo (5000). Ben and Chloe earn less than Ava.",
      "hints": [
-      "Join the table to itself with two aliases, employee e and manager m: `ON m.id = e.manager_id`."
+      "Join the table to itself with two aliases, employee e and manager m: ON m.id = e.manager_id."
      ]
     }
    },
@@ -341,10 +341,10 @@
    ],
    "description": "找出工资严格高于自己直属上级的员工。上级不存在或为 NULL 的员工不参与比较。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `employee` | 员工姓名 |\n| `salary` | 员工工资 |\n| `manager` | 上级姓名 |\n| `manager_salary` | 上级工资 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `employee`：员工姓名\n- `salary`：员工工资\n- `manager`：上级姓名\n- `manager_salary`：上级工资\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Finn（8500）高于上级 Eve（8000），Jack（5500）高于上级 Hugo（5000）。Ben 和 Chloe 低于 Ava。",
    "hints": [
-    "同一张表 JOIN 两次，用别名区分员工 e 和上级 m：`ON m.id = e.manager_id`。"
+    "同一张表 JOIN 两次，用别名区分员工 e 和上级 m：ON m.id = e.manager_id。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
@@ -405,11 +405,11 @@
      "title": "Headcount per Department",
      "description": "List every department with its number of employees, showing 0 for empty departments. Employees without a department are not counted.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `department` | department name |\n| `headcount` | number of employees |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `department`: department name\n- `headcount`: number of employees\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "Engineering has 4, Sales 3, Support 2, and Legal has none, so 0; Iris belongs to no department.",
      "hints": [
       "Start from departments and LEFT JOIN employees so empty departments stay.",
-      "Count `COUNT(e.id)`: `COUNT(*)` counts the empty department’s padded row as 1."
+      "Count COUNT(e.id): COUNT(*) counts the empty department’s padded row as 1."
      ]
     }
    },
@@ -419,11 +419,11 @@
    ],
    "description": "列出每个部门及其员工人数，没有员工的部门显示 0。不属于任何部门的员工不计入。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `department` | 部门名 |\n| `headcount` | 员工人数 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `department`：部门名\n- `headcount`：员工人数\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Engineering 4 人，Sales 3 人，Support 2 人，Legal 没有员工显示 0；Iris 不属于任何部门。",
    "hints": [
     "从 departments 出发 LEFT JOIN employees，空部门才会保留。",
-    "数员工要用 `COUNT(e.id)`：`COUNT(*)` 会把空部门那一行也算成 1。"
+    "数员工要用 COUNT(e.id)：COUNT(*) 会把空部门那一行也算成 1。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
@@ -484,7 +484,7 @@
      "title": "Paid Order Totals",
      "description": "For every paid (`status = 'paid'`) order with at least one item, compute its total: the sum of `quantity * unit_price` over its items (the price actually charged, not the list price). Show `Guest` as the customer of guest orders.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `order_id` | order id |\n| `customer` | customer name or Guest |\n| `total` | order total |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `order_id`: order id\n- `customer`: customer name or Guest\n- `total`: order total\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "Order 1 is 2×30 + 1×55 = 115 (the chess set was charged 55, not 60). Order 6 is a guest order. Orders 3 and 9 were cancelled and are left out.",
      "hints": [
       "Inner-join orders to their items but left-join customers, so guest orders survive."
@@ -497,7 +497,7 @@
    ],
    "description": "对每笔至少包含一件商品的已支付（`status = 'paid'`）订单，求订单金额：各明细 `quantity * unit_price` 之和（按实际成交价，不是商品标价）。游客订单的客户名显示为 `Guest`。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `order_id` | 订单编号 |\n| `customer` | 客户姓名或 Guest |\n| `total` | 订单金额 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `order_id`：订单编号\n- `customer`：客户姓名或 Guest\n- `total`：订单金额\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "订单 1 是 2×30 + 1×55 = 115（棋盘按折扣价 55 计）。订单 6 是游客订单。订单 3、9 已取消，不输出。",
    "hints": [
     "订单和明细用内连接，订单和客户用左连接，游客订单才不会丢。"
@@ -561,10 +561,10 @@
      "title": "Same-City Pairs",
      "description": "List every pair of different customers who live in the same known city, each pair once with `first_id < second_id`. Customers with a NULL city are never paired.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `city` | city |\n| `first_id` | smaller customer id |\n| `second_id` | larger customer id |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `city`: city\n- `first_id`: smaller customer id\n- `second_id`: larger customer id\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "Austin has customers 1, 3 and 6, giving (1,3), (1,6) and (3,6); Boston gives (2,5). Dev’s city is unknown, so he is not paired.",
      "hints": [
-      "In the self-join, `a.id < b.id` drops self-pairs and the mirrored (b,a) duplicates.",
+      "In the self-join, a.id < b.id drops self-pairs and the mirrored (b,a) duplicates.",
       "NULL = NULL yields NULL, not true."
      ]
     }
@@ -575,10 +575,10 @@
    ],
    "description": "列出所有住在同一个已知城市的两位不同客户，每一对只出现一次，且 `first_id < second_id`。城市为 NULL 的客户不和任何人配对。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `city` | 城市 |\n| `first_id` | 编号较小的客户 |\n| `second_id` | 编号较大的客户 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `city`：城市\n- `first_id`：编号较小的客户\n- `second_id`：编号较大的客户\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Austin 有客户 1、3、6，组成 (1,3)、(1,6)、(3,6) 三对；Boston 有 (2,5)。Dev 城市未知，不配对。",
    "hints": [
-    "自连接时用 `a.id < b.id` 去掉自己和自己、以及 (b,a) 这种重复。",
+    "自连接时用 a.id < b.id 去掉自己和自己、以及 (b,a) 这种重复。",
     "NULL = NULL 的结果是 NULL，不是真。"
    ],
    "timeLimit": 2,
@@ -640,10 +640,10 @@
      "title": "Frequent Buyers",
      "description": "Find the customers with at least 3 paid orders, along with that number. Cancelled orders do not count.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `id` | customer id |\n| `name` | customer name |\n| `paid_orders` | number of paid orders |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `id`: customer id\n- `name`: customer name\n- `paid_orders`: number of paid orders\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "Alice has 4 orders, but order 9 was cancelled, which leaves exactly 3 paid. Cara has only 2.",
      "hints": [
-      "`WHERE` filters rows first; `HAVING` filters the groups afterwards."
+      "WHERE filters rows first; HAVING filters the groups afterwards."
      ]
     }
    },
@@ -653,10 +653,10 @@
    ],
    "description": "找出已支付订单不少于 3 笔的客户，并给出已支付订单数。已取消的订单不算。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `id` | 客户编号 |\n| `name` | 客户姓名 |\n| `paid_orders` | 已支付订单数 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `id`：客户编号\n- `name`：客户姓名\n- `paid_orders`：已支付订单数\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Alice 有 4 笔订单，其中订单 9 已取消，已支付的恰好 3 笔。Cara 只有 2 笔。",
    "hints": [
-    "`WHERE` 先筛行，`HAVING` 再筛分组。"
+    "WHERE 先筛行，HAVING 再筛分组。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
@@ -717,10 +717,10 @@
      "title": "Category Revenue Board",
      "description": "Compute the revenue of each product category over paid orders (the sum of `quantity * unit_price`), keeping only categories with revenue of at least 300. Sort by revenue, highest first, breaking ties by category name ascending.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `category` | category |\n| `revenue` | revenue |\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `category`: category\n- `revenue`: revenue\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "Books makes 60+90+30+45+300 = 525 and Games 55+25+180+60 = 320; Kitchen makes only 230 and is filtered out.",
      "hints": [
-      "Conditions on aggregates go in `HAVING`.",
+      "Conditions on aggregates go in HAVING.",
       "Row order is compared here, so spell out the tie-break in ORDER BY."
      ]
     }
@@ -731,10 +731,10 @@
    ],
    "description": "按商品类目统计已支付订单的销售额（`quantity * unit_price` 之和），只保留销售额不少于 300 的类目。结果按销售额从高到低排序，销售额相同时按类目名升序。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `category` | 类目 |\n| `revenue` | 销售额 |\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `category`：类目\n- `revenue`：销售额\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Books 共 60+90+30+45+300 = 525，Games 共 55+25+180+60 = 320，Kitchen 只有 230，被过滤掉。",
    "hints": [
-    "聚合之后的条件写在 `HAVING`。",
+    "聚合之后的条件写在 HAVING。",
     "本题比较行的顺序，ORDER BY 要写全平局规则。"
    ],
    "timeLimit": 2,
@@ -796,10 +796,10 @@
      "title": "Duplicate Emails",
      "description": "Email addresses are case-insensitive. Find the addresses used by more than one customer, in lowercase, with the number of customers using each.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `email` | email in lowercase |\n| `accounts` | customers using it |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `email`: email in lowercase\n- `accounts`: customers using it\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "alice@mail.com and Alice@Mail.com are the same address, used by 2 customers.",
      "hints": [
-      "Group by `LOWER(email)` and output `LOWER(email)` too."
+      "Group by LOWER(email) and output LOWER(email) too."
      ]
     }
    },
@@ -809,10 +809,10 @@
    ],
    "description": "邮箱不区分大小写。找出被不止一位客户使用的邮箱，输出其全小写形式和使用它的客户数。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `email` | 全小写的邮箱 |\n| `accounts` | 使用该邮箱的客户数 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `email`：全小写的邮箱\n- `accounts`：使用该邮箱的客户数\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "alice@mail.com 和 Alice@Mail.com 是同一个邮箱，被 2 位客户使用。",
    "hints": [
-    "按 `LOWER(email)` 分组，输出的也是 `LOWER(email)`。"
+    "按 LOWER(email) 分组，输出的也是 LOWER(email)。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
@@ -873,7 +873,7 @@
      "title": "Second-Highest Salary",
      "description": "Find the second-highest distinct salary among all employees, or NULL if there is none (for example when everyone earns the same). The result is exactly one row and one column.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `second_salary` | second-highest distinct salary, or NULL |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `second_salary`: second-highest distinct salary, or NULL\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "The distinct salaries, highest first, are 12000, 9000, 8500, … so the answer is 9000 (Ben and Chloe share it, which still counts once).",
      "hints": [
       "A scalar subquery with no row is NULL, and the outer SELECT still returns one row.",
@@ -887,7 +887,7 @@
    ],
    "description": "求所有员工工资中第二高的不同值。如果不存在（比如所有人工资相同），返回 NULL。结果恰好一行一列。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `second_salary` | 第二高的不同工资，或 NULL |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `second_salary`：第二高的不同工资，或 NULL\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "不同的工资从高到低是 12000、9000、8500……第二高是 9000（Ben 和 Chloe 并列也只算一个值）。",
    "hints": [
     "标量子查询没有结果时值为 NULL，外层 SELECT 仍会返回一行。",
@@ -959,7 +959,7 @@
      "title": "Above the Department Average",
      "description": "Find the employees paid strictly more than their own department's average salary. Employees without a department are left out.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `department` | department name |\n| `employee` | employee name |\n| `salary` | salary |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `department`: department name\n- `employee`: employee name\n- `salary`: salary\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "Engineering averages 9250 and only Ava is above it; Sales averages 7500, beaten by Eve and Finn; Support averages 5250, beaten by Jack.",
      "hints": [
       "A correlated subquery computes the average for the current row's department_id.",
@@ -973,7 +973,7 @@
    ],
    "description": "找出工资严格高于本部门平均工资的员工。没有部门的员工不参与。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `department` | 部门名 |\n| `employee` | 员工姓名 |\n| `salary` | 工资 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `department`：部门名\n- `employee`：员工姓名\n- `salary`：工资\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Engineering 平均 9250，只有 Ava 高于它；Sales 平均 7500，Eve 和 Finn 高于它；Support 平均 5250，Jack 高于它。",
    "hints": [
     "相关子查询：在 WHERE 里按当前行的 department_id 现算平均值。",
@@ -1038,10 +1038,10 @@
      "title": "Bought Every Category",
      "description": "Which customers have bought, in paid orders, at least one product from every category that appears in `products`?\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `id` | customer id |\n| `name` | customer name |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `id`: customer id\n- `name`: customer name\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "There are three categories: Books, Games and Kitchen. Alice covers them in orders 1 and 2, and Elle in order 7; Cara never bought Kitchen.",
      "hints": [
-      "Compare the number of distinct categories each customer bought with the total: `COUNT(DISTINCT …)`."
+      "Compare the number of distinct categories each customer bought with the total: COUNT(DISTINCT …)."
      ]
     }
    },
@@ -1051,10 +1051,10 @@
    ],
    "description": "`products` 表里出现过的每个类目，客户都在已支付订单中至少买过一件，这样的客户有哪些？\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `id` | 客户编号 |\n| `name` | 客户姓名 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `id`：客户编号\n- `name`：客户姓名\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "类目共有 Books、Games、Kitchen 三个。Alice 在订单 1、2 里买齐了，Elle 在订单 7 里买齐了；Cara 没买过 Kitchen。",
    "hints": [
-    "把每位客户买过的不同类目数和全部类目数比较：`COUNT(DISTINCT …)`。"
+    "把每位客户买过的不同类目数和全部类目数比较：COUNT(DISTINCT …)。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
@@ -1115,11 +1115,11 @@
      "title": "Latest Order per Customer",
      "description": "For each customer with orders (any status; guest orders excluded), find the latest order: the latest `order_date`, and among orders on that day the one with the largest `id`.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `customer_id` | customer id |\n| `order_id` | latest order id |\n| `order_date` | that order's date |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `customer_id`: customer id\n- `order_id`: latest order id\n- `order_date`: that order's date\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "Alice's (1) order 9 was cancelled but is still her latest; Cara's (3) latest is order 8 on March 1.",
      "hints": [
-      "`MAX(id)` and `MAX(order_date)` are separate maxima and may come from different rows.",
-      "`ROW_NUMBER() OVER (PARTITION BY … ORDER BY …)` ranks rows within each group."
+      "MAX(id) and MAX(order_date) are separate maxima and may come from different rows.",
+      "ROW_NUMBER() OVER (PARTITION BY … ORDER BY …) ranks rows within each group."
      ]
     }
    },
@@ -1129,11 +1129,11 @@
    ],
    "description": "对每位下过单的客户（任何状态都算，游客订单除外），找出其最新的一笔订单：`order_date` 最晚，同一天有多笔时取 `id` 最大的那笔。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `customer_id` | 客户编号 |\n| `order_id` | 最新订单编号 |\n| `order_date` | 该订单日期 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `customer_id`：客户编号\n- `order_id`：最新订单编号\n- `order_date`：该订单日期\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Alice（1）的订单 9 虽已取消，仍是她最晚的一笔；Cara（3）最新的是 3 月 1 日的订单 8。",
    "hints": [
-    "`MAX(id)` 和 `MAX(order_date)` 分别取最大值，不一定来自同一行。",
-    "`ROW_NUMBER() OVER (PARTITION BY … ORDER BY …)` 可以给每组排名。"
+    "MAX(id) 和 MAX(order_date) 分别取最大值，不一定来自同一行。",
+    "ROW_NUMBER() OVER (PARTITION BY … ORDER BY …) 可以给每组排名。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
@@ -1194,10 +1194,10 @@
      "title": "Top Three Pay Levels per Department",
      "description": "Within each department, rank the distinct salary values from highest to lowest and keep the top three levels. Output every employee whose salary falls in those levels (everyone sharing a level is included). Employees without a department are left out.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `department` | department name |\n| `employee` | employee name |\n| `salary` | salary |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `department`: department name\n- `employee`: employee name\n- `salary`: salary\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "Engineering’s levels are 12000, 9000 and 7000: Ben and Chloe share the second level and Dan is in the third, so all four are listed.",
      "hints": [
-      "`RANK` skips numbers after ties, `DENSE_RANK` does not, and `ROW_NUMBER` ignores ties."
+      "RANK skips numbers after ties, DENSE_RANK does not, and ROW_NUMBER ignores ties."
      ]
     }
    },
@@ -1207,10 +1207,10 @@
    ],
    "description": "在每个部门内，把不同的工资值从高到低排，取前三档。输出工资落在前三档的所有员工（同档的人都要输出）。没有部门的员工不参与。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `department` | 部门名 |\n| `employee` | 员工姓名 |\n| `salary` | 工资 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `department`：部门名\n- `employee`：员工姓名\n- `salary`：工资\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Engineering 的工资档是 12000、9000、7000：Ben 和 Chloe 同在第二档，Dan 在第三档，四人都输出。",
    "hints": [
-    "`RANK` 遇到并列会跳号，`DENSE_RANK` 不会，`ROW_NUMBER` 不处理并列。"
+    "RANK 遇到并列会跳号，DENSE_RANK 不会，ROW_NUMBER 不处理并列。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
@@ -1271,10 +1271,10 @@
      "title": "Running Daily Revenue",
      "description": "For each date with paid sales, give that day’s revenue (the sum of `quantity * unit_price`) and the running total up to and including that day. Sort by date ascending.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `day` | date |\n| `revenue` | revenue that day |\n| `running_total` | running total |\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `day`: date\n- `revenue`: revenue that day\n- `running_total`: running total\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "January 5 makes 115; January 20 has only order 2’s 80 (order 3 was cancelled), 195 in total; February 14 has two orders worth 210, …",
      "hints": [
-      "First aggregate to one row per day, then take `SUM(revenue) OVER (ORDER BY day)` outside."
+      "First aggregate to one row per day, then take SUM(revenue) OVER (ORDER BY day) outside."
      ]
     }
    },
@@ -1284,10 +1284,10 @@
    ],
    "description": "对每个有已支付销售的日期，给出当天销售额（`quantity * unit_price` 之和）和截至当天的累计销售额。按日期升序输出。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `day` | 日期 |\n| `revenue` | 当天销售额 |\n| `running_total` | 累计销售额 |\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `day`：日期\n- `revenue`：当天销售额\n- `running_total`：累计销售额\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "1 月 5 日 115，1 月 20 日只有订单 2 的 80（订单 3 已取消），累计 195；2 月 14 日有两笔共 210……",
    "hints": [
-    "先按天聚合成一天一行，再在外层做 `SUM(revenue) OVER (ORDER BY day)`。"
+    "先按天聚合成一天一行，再在外层做 SUM(revenue) OVER (ORDER BY day)。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
@@ -1348,11 +1348,11 @@
      "title": "Month-over-Month Revenue",
      "description": "Compute paid revenue per month (`YYYY-MM`), listing only months with sales, together with the change from the previous listed month (this month minus that one); the first month’s change is NULL. Sort by month ascending.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `month` | month as YYYY-MM |\n| `revenue` | revenue that month |\n| `change` | change from the previous listed month |\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `month`: month as YYYY-MM\n- `revenue`: revenue that month\n- `change`: change from the previous listed month\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "January makes 115+80 = 195; February 115+180+30 = 325, a change of 130; March 255+300 = 555, a change of 230.",
      "hints": [
-      "`strftime('%Y-%m', order_date)` extracts the year and month.",
-      "`LAG(x) OVER (ORDER BY …)` reads the previous row, NULL on the first."
+      "strftime('%Y-%m', order_date) extracts the year and month.",
+      "LAG(x) OVER (ORDER BY …) reads the previous row, NULL on the first."
      ]
     }
    },
@@ -1362,11 +1362,11 @@
    ],
    "description": "按月份（`YYYY-MM`）统计已支付订单的销售额，只列出有销售的月份，并给出与上一个列出的月份相比的变化量（本月减上月）；第一个月份的变化量为 NULL。按月份升序输出。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `month` | 月份 YYYY-MM |\n| `revenue` | 当月销售额 |\n| `change` | 与上一个列出月份的差 |\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `month`：月份 YYYY-MM\n- `revenue`：当月销售额\n- `change`：与上一个列出月份的差\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "1 月 115+80 = 195；2 月 115+180+30 = 325，变化 130；3 月 255+300 = 555，变化 230。",
    "hints": [
-    "`strftime('%Y-%m', order_date)` 取出年月。",
-    "`LAG(x) OVER (ORDER BY …)` 取上一行的值，第一行为 NULL。"
+    "strftime('%Y-%m', order_date) 取出年月。",
+    "LAG(x) OVER (ORDER BY …) 取上一行的值，第一行为 NULL。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
@@ -1427,11 +1427,11 @@
      "title": "Three Days in a Row",
      "description": "Find the users who logged in on at least 3 consecutive calendar days. Several logins on one day count as one day; streaks may cross month and year boundaries.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `user_id` | user id |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `user_id`: user id\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "User 1 logged in on February 27, 28 and 29, 2024 (a leap year); user 3 on March 1–3; user 4 on only two days.",
      "hints": [
       "First deduplicate (user_id, login_date).",
-      "Consecutive dates minus their row number give the same value: `julianday(login_date) - ROW_NUMBER() …`."
+      "Consecutive dates minus their row number give the same value: julianday(login_date) - ROW_NUMBER() …."
      ]
     }
    },
@@ -1441,11 +1441,11 @@
    ],
    "description": "找出曾在连续至少 3 个自然日都登录过的用户。同一天登录多次只算一天；跨月、跨年也算连续。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `user_id` | 用户编号 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `user_id`：用户编号\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "用户 1 在 2024 年 2 月 27、28、29 日连续登录（闰年）；用户 3 在 3 月 1–3 日连续登录；用户 4 只有两天。",
    "hints": [
     "先对 (user_id, login_date) 去重。",
-    "连续的日期减去它的序号（ROW_NUMBER）会得到同一个值：`julianday(login_date) - ROW_NUMBER() …`。"
+    "连续的日期减去它的序号（ROW_NUMBER）会得到同一个值：julianday(login_date) - ROW_NUMBER() …。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
@@ -1506,11 +1506,11 @@
      "title": "Next-Day Retention",
      "description": "A user's first day is the date of their first login. Next-day retention is the number of users who also logged in on the day after their first day, divided by the number of users, rounded with `ROUND(x, 2)`. There is always at least one user. The result is exactly one row and one column.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n| `retention` | next-day retention |\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `retention`: next-day retention\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "Of 4 users, users 1 (Feb 27 → 28), 3 (Mar 1 → 2) and 4 (Feb 28 → 29) came back the next day and user 2 did not: 3/4 = 0.75.",
      "hints": [
-      "`date(first_day, '+1 day')` gives the next day.",
-      "Multiply by `1.0` before dividing to avoid integer division."
+      "date(first_day, '+1 day') gives the next day.",
+      "Multiply by 1.0 before dividing to avoid integer division."
      ]
     }
    },
@@ -1520,11 +1520,11 @@
    ],
    "description": "每位用户第一次登录的那天是其首日。次日留存率 = 首日的下一天也登录过的用户数 ÷ 用户总数，用 `ROUND(x, 2)` 保留两位小数。数据保证至少有一位用户。结果恰好一行一列。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n| `retention` | 次日留存率 |\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `retention`：次日留存率\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "4 位用户中，用户 1（2 月 27 日→28 日）、3（3 月 1 日→2 日）、4（2 月 28 日→29 日）次日回来了，用户 2 没有，留存率 3/4 = 0.75。",
    "hints": [
-    "`date(first_day, '+1 day')` 得到下一天。",
-    "先乘 `1.0` 再相除，避免整数除法。"
+    "date(first_day, '+1 day') 得到下一天。",
+    "先乘 1.0 再相除，避免整数除法。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,

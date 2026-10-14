@@ -67,7 +67,7 @@ function statement(problem: SqlProblem, locale: 'zh' | 'en') {
   const zh = locale === 'zh';
   const schema = problem.tables.map((table) => SCHEMAS[problem.schema][table]).join('\n');
   const columns = problem.columns
-    .map(([name, meaningZh, meaningEn]) => `| \`${name}\` | ${zh ? meaningZh : meaningEn} |`)
+    .map(([name, meaningZh, meaningEn]) => `- \`${name}\`${zh ? '：' : ': '}${zh ? meaningZh : meaningEn}`)
     .join('\n');
   const order = problem.ordered
     ? zh
@@ -85,10 +85,11 @@ function statement(problem: SqlProblem, locale: 'zh' | 'en') {
       ? "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。"
       : "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
     output: zh
-      ? `按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n| 列 | 含义 |\n| --- | --- |\n${columns}\n\n${order}\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。`
-      : `Return these columns in this order (names are not compared, their order is):\n\n| Column | Meaning |\n| --- | --- |\n${columns}\n\n${order}\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).`,
+      ? `按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n${columns}\n\n${order}\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。`
+      : `Return these columns in this order (names are not compared, their order is):\n\n${columns}\n\n${order}\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).`,
     explanation: problem.explanation[locale],
-    hints: problem.hints[locale],
+    // Hints render as plain text; only the description and output are Markdown.
+    hints: problem.hints[locale].map((hint) => hint.replaceAll('`', '')),
   };
 }
 
