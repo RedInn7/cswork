@@ -348,7 +348,7 @@ function colourOf(value, lookup, depth = 0) {
   if (layers.slice(0, -1).some((layer) => (layer.match(LITERAL) ?? []).some((c) => parseColor(c)?.alpha >= 0.35)))
     return null;
   v = layers.at(-1);
-  if (v === 'transparent') return { rgb: [0, 0, 0], alpha: 0 };
+  if (v === 'transparent' || v === 'none') return { rgb: [0, 0, 0], alpha: 0 };
   const mix = /^color-mix\(in [\w-]+(?: \w+ hue)?,\s*(.*)\)$/s.exec(v);
   if (mix) {
     const parts = topLevel(mix[1]).map((part) => {
@@ -407,8 +407,9 @@ test('every dark text colour clears 4.5:1 on the surface behind it', () => {
     return (name) => chain.find((map) => map.has(name))?.get(name);
   };
 
-  // Every dark rule's text and background, by selector (app/theme.css last, so it wins).
-  const text = new Map();
+  // Every dark rule's text (each rule, in every file and @media), and backgrounds by selector
+  // (app/theme.css last, so it wins) for rules that set colour without a background.
+  const text = [];
   const fill = new Map();
   const grounds = new Map();
   for (const file of [...sheets, 'app/theme.css']) {
@@ -422,9 +423,9 @@ test('every dark text colour clears 4.5:1 on the surface behind it', () => {
       for (const sel of rule.selectors.filter((s) => DARK_RULE.test(s))) {
         const lookup = lookupFor(file, WORKBENCH_DARK.test(sel));
         const key = norm(sel);
-        if (fg) text.set(key, { file, value: fg, lookup });
+        const c = bg === undefined ? undefined : colourOf(bg, lookup);
+        if (fg) text.push({ sel: key, file, value: fg, lookup, own: c });
         if (bg === undefined) continue;
-        const c = colourOf(bg, lookup);
         fill.set(key, c);
         const bare = unprefix(sel);
         if (c?.alpha >= 0.99 && !bare.includes(':')) grounds.set(contexts(bare).self[0], c.rgb);
@@ -435,10 +436,10 @@ test('every dark text colour clears 4.5:1 on the surface behind it', () => {
   const card = parseColor(themeVars.root.get('--card')).rgb;
   const failures = [];
   let pairs = 0;
-  for (const [sel, { file, value, lookup }] of text) {
+  for (const { sel, file, value, lookup, own: declared } of text) {
     const fg = colourOf(value, lookup);
     if (!fg || fg.alpha < 0.05) continue;
-    const own = fill.get(sel);
+    const own = declared === undefined ? fill.get(sel) : declared;
     if (own === null) continue; // an image or gradient: nothing to measure against
     const { self, above } = contexts(unprefix(sel));
     const ground = [...self, ...above].map((c) => grounds.get(c)).find(Boolean) ?? card;
