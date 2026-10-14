@@ -107,6 +107,7 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/acm-io' },
   { path: '/flowchart' },
   { path: '/daily' },
+  { path: '/mcp' },
   { path: '/mock-interview' },
   { path: '/privacy' },
   { path: '/lists' },

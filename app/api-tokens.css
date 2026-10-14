@@ -1,0 +1,80 @@
+/* Account page: MCP access tokens (components/api-tokens.tsx), on the form-card look. */
+.pat-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+.pat-form label {
+  font-size: 13px;
+  font-weight: 600;
+}
+.pat-create {
+  display: flex;
+  gap: 8px;
+}
+.pat-create > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+/* The one-time reveal: amber like the other "act now" signals. */
+.pat-fresh {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, #e8971c 45%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, #ffb23f 12%, transparent);
+  color: var(--cs-text, #1d252d);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.pat-fresh p {
+  margin: 0;
+}
+.pat-secret {
+  display: flex;
+  gap: 8px;
+}
+.pat-secret input {
+  flex: 1;
+  min-width: 0;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--border, #d5dce4);
+  border-radius: 8px;
+  background: var(--cs-surface, #fff);
+  color: inherit;
+  font: 12.5px/1 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+.pat-secret input:focus-visible {
+  outline: 2px solid #327b76;
+  outline-offset: 1px;
+}
+.pat-list {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.pat-list .service-row {
+  padding: 12px 0;
+}
+.pat-list .service-row > span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.pat-list b {
+  color: var(--cs-text, #1d252d);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.pat-list small {
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 600px) {
+  .pat-create,
+  .pat-secret {
+    flex-direction: column;
+  }
+}
