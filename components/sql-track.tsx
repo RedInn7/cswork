@@ -1,7 +1,7 @@
 'use client';
 
 import '@/app/classic-list.css';
-import { Check, Database } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Button } from './ui/button';
 import { useLocale } from '@/lib/i18n';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
@@ -53,9 +53,7 @@ export function SqlTrack({
   return (
     <section className="study-library study-bank classic-list" lang={english ? 'en' : 'zh'}>
       <div className="classic-board">
-        <p className="classic-kicker">
-          <Database size={13} aria-hidden="true" /> {t('SQL 专项 · SQLite 方言', 'SQL track · SQLite dialect')}
-        </p>
+        <p className="classic-kicker">{t('SQL 专项 · SQLite 方言', 'SQL track · SQLite dialect')}</p>
         <h1>{t('SQL 专项练习', 'SQL Practice Track')}</h1>
         <p className="classic-lead">
           {t(
