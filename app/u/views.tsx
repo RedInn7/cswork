@@ -1,8 +1,15 @@
 import { levelOf, problemAppHref } from '@/lib/classic-lists';
+import { threadPath } from '@/lib/community';
 import { problemTitle, type ProblemSummary } from '@/lib/problems';
 import { STOP_NAMES, stopHref } from '@/lib/route-stops';
+import type { followPeople } from '@/lib/server/follows';
 import type { publicProfile, readList } from '@/lib/server/learner-cloud';
+import { FollowButton } from '@/components/follow-button';
+import { ListStar } from '@/components/list-star';
 import { LocalDay, ProfileHeatmap } from './heatmap';
+
+/** Judge languages by their usual names; anything else as stored. */
+const LANGUAGE_NAMES: Record<string, string> = { python: 'Python', cpp: 'C++', java: 'Java', go: 'Go', sql: 'SQL' };
 
 /** /u/<handle>: a learner's opt-in page. Pure of request context, so tests render it directly. */
 export function ProfileView({
@@ -27,6 +34,20 @@ export function ProfileView({
         <p className="lists-public-kicker">{t('学习者主页', 'Learner profile')}</p>
         <h1>@{profile.handle}</h1>
         {profile.bio && <p>{profile.bio}</p>}
+        <div className="learner-social">
+          <a href={`/u/${profile.handle}/followers`}>
+            <b>{profile.followers ?? 0}</b> {t('关注者', (profile.followers ?? 0) === 1 ? 'follower' : 'followers')}
+          </a>
+          <a href={`/u/${profile.handle}/following`}>
+            <b>{profile.following ?? 0}</b> {t('关注中', 'following')}
+          </a>
+          {!!profile.listStars && (
+            <span>
+              <b>{profile.listStars}</b> {t('次题单被收藏', profile.listStars === 1 ? 'list save' : 'list saves')}
+            </span>
+          )}
+          <FollowButton handle={profile.handle} zh={zh} />
+        </div>
         <dl className="learner-stats">
           <div className="learner-total">
             <dt>{t('已通过', 'Solved')}</dt>
@@ -57,6 +78,47 @@ export function ProfileView({
       </section>
 
       <ProfileHeatmap activity={profile.activity} zh={zh} />
+
+      {(!!profile.languages?.length || !!profile.badges?.length) && (
+        <div className="learner-pair">
+          {!!profile.languages?.length && (
+            <section aria-labelledby="learner-langs">
+              <h2 id="learner-langs" className="lists-public-h2">
+                {t('语言', 'Languages')}
+                <small>{t('按通过的不同题数', 'distinct problems solved')}</small>
+              </h2>
+              <ul className="learner-langs">
+                {profile.languages.map((l) => (
+                  <li key={l.language}>
+                    <span>{LANGUAGE_NAMES[l.language] ?? l.language}</span>
+                    <b>{l.n}</b>
+                    <span
+                      className="lists-public-bar"
+                      style={{ '--frac': l.n / Math.max(1, profile.languages[0].n) } as React.CSSProperties}
+                      aria-hidden="true"
+                    />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+          {!!profile.badges?.length && (
+            <section aria-labelledby="learner-badges">
+              <h2 id="learner-badges" className="lists-public-h2">
+                {t('徽章', 'Badges')}
+                <small>{t(`${profile.badges.length} 枚`, `${profile.badges.length} earned`)}</small>
+              </h2>
+              <ul className="learner-badges">
+                {profile.badges.map((b) => (
+                  <li key={b.id} data-group={b.group}>
+                    {zh ? b.zh : b.en}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </div>
+      )}
 
       {!!profile.stops.length && (
         <section aria-labelledby="learner-stops">
@@ -108,6 +170,37 @@ export function ProfileView({
         </section>
       )}
 
+      {!!profile.posts?.total && (
+        <section aria-labelledby="learner-posts">
+          <h2 id="learner-posts" className="lists-public-h2">
+            {t('题解与讨论', 'Solutions and threads')}
+            <small>
+              {t(
+                `${profile.posts.total} 篇 · 共获 ${profile.posts.votes} 赞`,
+                `${profile.posts.total} posts · ${profile.posts.votes} ${profile.posts.votes === 1 ? 'upvote' : 'upvotes'}`,
+              )}
+            </small>
+          </h2>
+          <ol className="lists-public-rows learner-rows learner-posts">
+            {profile.posts.items.map((post) => {
+              const thread = post.target.startsWith('discuss:');
+              return (
+                <li key={post.id}>
+                  <span className="lists-public-number">{thread ? t('讨论', 'Thread') : t('题解', 'Solution')}</span>
+                  <a href={thread ? threadPath(post.id) : problemAppHref(post.target)}>{post.title}</a>
+                  <LocalDay time={post.createdAt} className="lists-public-count" />
+                  <span className="lists-public-count">
+                    <span aria-hidden="true">▲ </span>
+                    {post.votes}
+                    <span className="sr-only">{t(' 赞', post.votes === 1 ? ' upvote' : ' upvotes')}</span>
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      )}
+
       {!!profile.lists.length && (
         <section aria-labelledby="learner-lists">
           <h2 id="learner-lists" className="lists-public-h2">
@@ -118,7 +211,10 @@ export function ProfileView({
               <li key={l.id}>
                 <a href={`/u/lists/${l.id}`}>
                   <strong>{l.title}</strong>
-                  <span className="lists-public-count">{t(`${l.count} 题`, `${l.count} problems`)}</span>
+                  <span className="lists-public-count">
+                    {t(`${l.count} 题`, `${l.count} problems`)}
+                    {!!l.stars && t(` · ${l.stars} 收藏`, ` · ${l.stars} ${l.stars === 1 ? 'save' : 'saves'}`)}
+                  </span>
                 </a>
               </li>
             ))}
@@ -168,6 +264,7 @@ export function PublicListView({
             <strong>{items.length}</strong> {t('道题', items.length === 1 ? 'problem' : 'problems')}
           </span>
         </div>
+        <ListStar id={list.id} stars={list.stars ?? 0} forks={list.forks ?? 0} zh={zh} />
         <a className="lists-public-cta" href={`/?view=lists&list=${encodeURIComponent(list.id)}&utm_source=list`}>
           {t('复制到我的题单并开始练习', 'Copy it to my lists and practice')} →
         </a>
@@ -196,6 +293,64 @@ export function PublicListView({
       ) : (
         <p className="learner-empty">{t('这个题单还是空的。', 'This list is empty for now.')}</p>
       )}
+    </article>
+  );
+}
+
+/** /u/<handle>/followers and /following: visible profiles only. */
+export function FollowListView({
+  people,
+  which,
+  zh,
+}: {
+  people: NonNullable<ReturnType<typeof followPeople>>;
+  which: 'followers' | 'following';
+  zh: boolean;
+}) {
+  const t = (a: string, b: string) => (zh ? a : b);
+  return (
+    <article>
+      <nav className="lists-public-crumbs" aria-label={t('导航路径', 'Breadcrumb')}>
+        <a href={`/u/${people.handle}`}>@{people.handle}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{which === 'followers' ? t('关注者', 'Followers') : t('关注中', 'Following')}</span>
+      </nav>
+      <section className="lists-public-hero learner-hero">
+        <p className="lists-public-kicker">{which === 'followers' ? t('关注者', 'Followers') : t('关注中', 'Following')}</p>
+        <h1>@{people.handle}</h1>
+        <div className="learner-social">
+          <a href={`/u/${people.handle}/followers`} aria-current={which === 'followers' ? 'page' : undefined}>
+            <b>{people.followers}</b> {t('关注者', people.followers === 1 ? 'follower' : 'followers')}
+          </a>
+          <a href={`/u/${people.handle}/following`} aria-current={which === 'following' ? 'page' : undefined}>
+            <b>{people.followees}</b> {t('关注中', 'following')}
+          </a>
+        </div>
+      </section>
+      {people.items.length ? (
+        <ul className="lists-public-board">
+          {people.items.map((p) => (
+            <li key={p.handle}>
+              <a href={`/u/${p.handle}`}>
+                <strong>@{p.handle}</strong>
+                {p.bio && <span className="lists-public-count">{p.bio}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="learner-empty">
+          {which === 'followers'
+            ? t('还没有公开主页的关注者。', 'No followers with a public profile yet.')
+            : t('还没有关注公开主页。', 'Not following any public profile yet.')}
+        </p>
+      )}
+      <p className="learner-note">
+        {t(
+          '只列出开启了公开主页的学习者。',
+          'Only learners who turned their public profile on are listed.',
+        )}
+      </p>
     </article>
   );
 }

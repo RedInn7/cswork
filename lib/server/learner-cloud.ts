@@ -676,7 +676,7 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
   const lists = (
     db
       .prepare(
-        `SELECT id,title,${STARS('id')} AS stars FROM user_lists WHERE owner_id=? AND visibility='public'
+        `SELECT id,title,${STARS('user_lists.id')} AS stars FROM user_lists WHERE owner_id=? AND visibility='public'
         ORDER BY updated_at DESC LIMIT 20`,
       )
       .all(profile.user_id) as { id: string; title: string; stars: number }[]
