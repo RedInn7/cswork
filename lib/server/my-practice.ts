@@ -3,6 +3,7 @@ import { sqlite } from '@/db/sqlite';
 import { curatedByNumber } from '@/lib/ling-curated';
 import { NOTE_MAX_BYTES, type PracticeHistoryItem } from '@/lib/practice-review';
 import type { Person } from './auth';
+import { library } from './content-library';
 import { boundedText, HttpError, json, limit } from './http';
 
 // ponytail: flat per-learner caps keep a scripted client from growing the tables forever.
@@ -95,6 +96,79 @@ function full(table: 'user_notes' | 'user_marks', userId: string) {
   if (n >= MAX_ROWS) throw new HttpError(409, '笔记或标记已达上限');
 }
 
+// The notes hub searches written notes only: quiz answers (sd:), stories and drafts stay out.
+const NOTE_KINDS = ['problem', 'content', 'sub'] as const;
+const NOTES_PAGE = 50;
+const SNIPPET = 160;
+const noteCursor = z.object({ at: z.number().int(), target: z.string().max(210) });
+/** Notes whose body holds every word of q (up to 6), newest first, 50 a page, each with a snippet. */
+function searchNotes(userId: string, params: URLSearchParams) {
+  // ?prefix= takes a kind with or without its colon, like the story bank's prefix=story:.
+  const kind = params.get('prefix')?.replace(/:$/, '');
+  const kinds = kind ? [z.enum(NOTE_KINDS).parse(kind)] : NOTE_KINDS;
+  const words = (params.get('q') ?? '').trim().split(/\s+/).filter(Boolean).slice(0, 6);
+  let after: z.infer<typeof noteCursor> | null = null;
+  if (params.get('cursor')) {
+    try {
+      after = noteCursor.parse(JSON.parse(Buffer.from(params.get('cursor')!, 'base64url').toString()));
+    } catch {
+      throw new HttpError(400, '分页游标无效');
+    }
+  }
+  const where = [
+    'n.user_id=?',
+    `(${kinds.map(() => 'n.target LIKE ?').join(' OR ')})`,
+    ...words.map(() => "n.body LIKE ? ESCAPE '\\'"),
+  ];
+  const args: (string | number)[] = [
+    userId,
+    ...kinds.map((k) => `${k}:%`),
+    ...words.map((w) => `%${w.replace(/[\\%_]/g, '\\$&')}%`),
+  ];
+  const total = (
+    sqlite().prepare(`SELECT COUNT(*) AS n FROM user_notes n WHERE ${where.join(' AND ')}`).get(...args) as { n: number }
+  ).n;
+  if (after) {
+    where.push('(n.updated_at<? OR (n.updated_at=? AND n.target<?))');
+    args.push(after.at, after.at, after.target);
+  }
+  // A submission note links to its problem's history; another learner's submission never joins.
+  const rows = sqlite()
+    .prepare(
+      `SELECT n.target,n.body,n.updated_at AS updatedAt,s.problem_id AS problemId FROM user_notes n
+      LEFT JOIN submissions s ON n.target LIKE 'sub:%' AND s.id=substr(n.target,5) AND s.user_id=n.user_id
+      WHERE ${where.join(' AND ')} ORDER BY n.updated_at DESC,n.target DESC LIMIT ${NOTES_PAGE + 1}`,
+    )
+    .all(...args) as { target: string; body: string; updatedAt: number; problemId: string | null }[];
+  const db = library();
+  const items = rows.slice(0, NOTES_PAGE).map(({ body, ...row }) => {
+    // Around the first hit (the start without q), on one line.
+    const text = body.replace(/\s+/g, ' ').trim();
+    const lower = text.toLowerCase();
+    const hits = words.map((w) => lower.indexOf(w.toLowerCase())).filter((i) => i >= 0);
+    const start = hits.length ? Math.max(0, Math.min(...hits) - 40) : 0;
+    const end = Math.min(text.length, start + SNIPPET);
+    const snippet = `${start ? '…' : ''}${text.slice(start, end)}${end < text.length ? '…' : ''}`;
+    // A written answer shows its question's title (null when the library isn't published).
+    const content = /^content:(\w+)\/(.+)$/.exec(row.target);
+    const title = content
+      ? ((db
+          ?.prepare('SELECT title,title_zh AS titleZh FROM items WHERE type=? AND slug=?')
+          .get(content[1], content[2]) as { title: string; titleZh: string | null } | undefined) ?? null)
+      : null;
+    return { ...row, snippet, title };
+  });
+  const last = items.at(-1);
+  return {
+    items,
+    total,
+    nextCursor:
+      rows.length > NOTES_PAGE && last
+        ? Buffer.from(JSON.stringify({ at: last.updatedAt, target: last.target })).toString('base64url')
+        : null,
+  };
+}
+
 /** GET history; GET/PUT notes; GET/POST marks. Private to the signed-in learner. */
 export async function handleMyPractice(
   request: Request,
@@ -109,15 +183,16 @@ export async function handleMyPractice(
     if (resource === 'notes') {
       if (!params.has('target')) {
         // ?prefix=story: lists the story bank with its bodies in one request.
-        const stories = params.get('prefix') === 'story:';
-        return json({
-          items: db
-            .prepare(
-              `SELECT target,${stories ? 'body,' : ''}updated_at AS updatedAt FROM user_notes
-              WHERE user_id=? AND target LIKE ? ORDER BY updated_at DESC`,
-            )
-            .all(p.id, stories ? 'story:%' : '%'),
-        });
+        if (params.get('prefix') === 'story:')
+          return json({
+            items: db
+              .prepare(
+                `SELECT target,body,updated_at AS updatedAt FROM user_notes
+                WHERE user_id=? AND target LIKE 'story:%' ORDER BY updated_at DESC`,
+              )
+              .all(p.id),
+          });
+        return json(searchNotes(p.id, params));
       }
       const key = target.parse(params.get('target'));
       const note = db
@@ -142,6 +217,11 @@ export async function handleMyPractice(
   if (resource === 'notes' && request.method === 'PUT') {
     await limit(p, 'note-write', 120);
     const key = target.parse(params.get('target'));
+    if (
+      key.startsWith('sub:') &&
+      !db.prepare('SELECT 1 FROM submissions WHERE id=? AND user_id=?').get(key.slice(4), p.id)
+    )
+      throw new HttpError(404, '提交不存在');
     // JSON escapes can double the body; the byte cap below is the real limit.
     const { body } = z
       .object({ body: z.string() })

@@ -135,6 +135,65 @@ void test('a note is private, replaced whole, removed when emptied and capped at
   assert.equal((await ok<{ items: unknown[] }>(me, 'GET', 'notes')).items.length, 0);
 });
 
+void test('the notes hub searches written notes by every word, with snippets and pages', async () => {
+  type Hits = {
+    items: { target: string; snippet: string; problemId: string | null; updatedAt: number }[];
+    total: number;
+    nextCursor: string | null;
+  };
+  const put = (target: string, body: string) => ok(me, 'PUT', `notes?target=${encodeURIComponent(target)}`, { body });
+  await put('problem:lc-1', `${'开头。'.repeat(60)}用哈希表一遍扫描，记下 Complement 的下标。`);
+  await put('content:interview_question/lru', 'LRU: hash map plus a doubly linked list');
+  await put('sd:url-shortener', '{"q1":"hash"}'); // Quiz answers never show up.
+  await put('story:1', 'hash story');
+  // A note on one of the learner's own submissions; someone else's is a 404.
+  await put('sub:s1', '50% 的 WA 来自 a_b 下标');
+  assert.equal(await status(me, 'PUT', 'notes?target=sub:s10', { body: 'x' }), 404);
+  assert.equal(await status(me, 'PUT', 'notes?target=sub:nope', { body: 'x' }), 404);
+  // Saved in the same millisecond: set the order explicitly.
+  for (const [target, at] of [['problem:lc-1', 10], ['content:interview_question/lru', 20], ['sub:s1', 30]] as const)
+    sqlite().prepare('UPDATE user_notes SET updated_at=? WHERE user_id=? AND target=?').run(at, me.id, target);
+  const search = (query: string) => ok<Hits>(me, 'GET', `notes${query}`);
+  const all = await search('');
+  assert.deepEqual(all.items.map((i) => i.target), ['sub:s1', 'content:interview_question/lru', 'problem:lc-1']);
+  assert.equal(all.total, 3);
+  assert.equal(all.items[0].problemId, 'lc-1', 'a submission note links to its problem');
+  assert.equal(all.items[1].problemId, null);
+  assert.ok(all.items[2].snippet.startsWith('开头。') && all.items[2].snippet.endsWith('…'), 'from the start without q');
+  const hash = await search('?q=HASH');
+  assert.deepEqual(hash.items.map((i) => i.target), ['content:interview_question/lru'], 'case-insensitive, every word');
+  const cjk = await search(`?q=${encodeURIComponent('哈希表  complement')}`);
+  assert.deepEqual(cjk.items.map((i) => i.target), ['problem:lc-1']);
+  assert.ok(cjk.items[0].snippet.startsWith('…') && cjk.items[0].snippet.includes('用哈希表'), 'around the first hit');
+  // % and _ are literal, not wildcards.
+  assert.deepEqual((await search('?q=50%25')).items.map((i) => i.target), ['sub:s1']);
+  assert.deepEqual((await search('?q=a_b')).items.map((i) => i.target), ['sub:s1']);
+  assert.equal((await search('?q=a%25b')).total, 0);
+  assert.deepEqual((await search('?prefix=content')).items.map((i) => i.target), ['content:interview_question/lru']);
+  assert.deepEqual((await search('?prefix=sub:')).items.map((i) => i.target), ['sub:s1']);
+  assert.equal(await status(me, 'GET', 'notes?prefix=sd'), 400);
+  assert.equal(await status(me, 'GET', 'notes?cursor=junk'), 400);
+  // The story bank keeps its own listing, bodies included.
+  const stories = await ok<{ items: { target: string; body: string }[] }>(me, 'GET', 'notes?prefix=story%3A');
+  assert.deepEqual(stories.items.map((i) => [i.target, i.body]), [['story:1', 'hash story']]);
+  assert.equal((await ok<Hits>(other, 'GET', 'notes')).total, 0);
+  // 50 a page: the cursor picks up after the last one shown.
+  sqlite().transaction(() => {
+    for (let i = 0; i < 60; i++)
+      sqlite()
+        .prepare('INSERT INTO user_notes(user_id,target,body,updated_at) VALUES(?,?,?,?)')
+        .run(me.id, `problem:p-${i}`, `bulk ${i}`, 1000 + Math.floor(i / 2));
+  })();
+  const first = await search('?q=bulk');
+  assert.equal(first.items.length, 50);
+  assert.equal(first.total, 60);
+  const rest = await search(`?q=bulk&cursor=${first.nextCursor}`);
+  assert.equal(rest.items.length, 10);
+  assert.equal(rest.nextCursor, null);
+  assert.equal(new Set([...first.items, ...rest.items].map((i) => i.target)).size, 60);
+  sqlite().prepare("DELETE FROM user_notes WHERE user_id=? AND target<>'story:1'").run(me.id);
+});
+
 void test('marks toggle per learner and drive the Line 500 starred/redo filters', async () => {
   const mark = (p: Person, m: string, on: boolean) =>
     ok(p, 'POST', 'marks', { target: 'problem:lc-1', mark: m, on });
