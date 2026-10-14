@@ -72,22 +72,23 @@ export function useProblemNote(
   const sent = useRef('');
   const busy = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const dirty = () =>
-    sent.current !== latest.current && bytes(latest.current) <= NOTE_MAX_BYTES;
+  const unsaved = () => sent.current !== latest.current;
+  // An over-size note stays a local draft until it is shortened.
+  const sendable = () => unsaved() && bytes(latest.current) <= NOTE_MAX_BYTES;
 
   async function flush() {
     if (busy.current || !userId) return;
     busy.current = true;
     try {
-      while (dirty()) {
+      while (sendable()) {
         const body = latest.current;
         setState('saving');
         await putNote(target, body);
         sent.current = body;
       }
-      writeDraft(key, null);
+      writeDraft(key, unsaved() ? latest.current : null);
       setError('');
-      setState(bytes(latest.current) > NOTE_MAX_BYTES ? 'too-long' : 'saved');
+      setState(unsaved() ? 'too-long' : 'saved');
     } catch (reason) {
       writeDraft(key, latest.current);
       setError((reason as Error).message);
@@ -108,8 +109,8 @@ export function useProblemNote(
         sent.current = server;
         latest.current = draft ?? server;
         setText(latest.current);
-        setState('idle');
-        if (draft !== null) void flush();
+        setState(sendable() || !unsaved() ? 'idle' : 'too-long');
+        if (sendable()) void flush();
       })
       .catch((reason: Error) => {
         if (!current) return;
@@ -126,19 +127,17 @@ export function useProblemNote(
     if (!userId) return;
     // Closing the tab cannot wait for a request; the draft is sent on the next visit.
     const keep = () => {
-      if (dirty()) writeDraft(key, latest.current);
+      if (unsaved()) writeDraft(key, latest.current);
     };
     window.addEventListener('pagehide', keep);
     return () => {
       window.removeEventListener('pagehide', keep);
       clearTimeout(timer.current);
       // Leaving the problem: save now instead of after the pause.
-      if (dirty()) {
-        writeDraft(key, latest.current);
-        void flush();
-      }
+      if (unsaved()) writeDraft(key, latest.current);
+      if (sendable()) void flush();
     };
-    // oxlint-disable-next-line react-hooks/exhaustive-deps -- dirty and flush read refs only.
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- unsaved, sendable and flush read refs only.
   }, [userId, key]);
 
   function edit(value: string) {

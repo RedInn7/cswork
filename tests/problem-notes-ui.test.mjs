@@ -97,8 +97,9 @@ test('notes save once after typing pauses and keep a local draft when saving fai
     await wait(60);
     assert.equal(puts.length, 2, 'an over-size note is never sent');
     assert.match(document.querySelector('[role="alert"]').textContent, /Over 20 KB/);
-    // A draft left by an earlier failure wins over the server copy and is sent again.
     await act(async () => root.unmount());
+    assert.equal(localStorage.getItem(draft)?.length, 21 * 1024, 'but it is kept on this device');
+    // A draft left by an earlier failure wins over the server copy and is sent again.
     localStorage.setItem(draft, 'offline edit');
     const again = createRoot(document.getElementById('root'));
     await act(async () => again.render(createElement(Harness)));
