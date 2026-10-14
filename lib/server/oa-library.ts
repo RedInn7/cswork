@@ -244,7 +244,8 @@ export function createOaLibrary(
           (params.get('ready') !== '1' || ready.has(item.id)) &&
           (!company || employer(item).slug === company) &&
           (!query ||
-            `${item.id} ${item.title} ${item.companyName} ${item.number}`
+            // Other is also found by the name the UI shows for it.
+            `${item.id} ${item.title} ${item.companyName} ${item.number}${employer(item).slug === OTHER_COMPANY ? ' 其他 other' : ''}`
               .toLocaleLowerCase()
               .includes(query)),
       );
