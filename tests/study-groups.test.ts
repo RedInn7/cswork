@@ -74,6 +74,9 @@ void test('create, join by code, and members only ever see display names', async
   );
   // An RTL override or zero-width character is not a name.
   assert.equal(await status(owner, 'POST', 'groups', { name: 'Grind', displayName: 'ab‮cd' }), 400);
+  // Nor are names that render blank: Hangul fillers, the braille blank, a lone combining mark.
+  for (const blank of ['\u3164', '\u115F', '\u2800', '\u3164\u3164', 'a\uFFA0', '\u0301'])
+    assert.equal(await status(person('g-blank'), 'POST', 'groups', { name: 'Grind', displayName: blank }), 400, escape(blank));
   const made = await ok(owner, 'POST', 'groups', { name: 'Line 500 sprint', displayName: 'Captain' });
   assert.equal(made.role, 'owner');
   assert.match(made.inviteCode!, /^[A-HJ-NP-Z2-9]{8}$/);
@@ -88,6 +91,11 @@ void test('create, join by code, and members only ever see display names', async
   assert.deepEqual(preview, { id: null, name: 'Line 500 sprint', members: 1, full: false });
   assert.equal(await status(amy, 'GET', 'groups/preview?code=ZZZZZZZZ'), 404);
   assert.equal(await status(amy, 'POST', 'groups/join', { code: typed, displayName: 'captain' }), 409, 'names are unique per group');
+  // Uniqueness folds non-ASCII case and compatibility forms too.
+  await ok(owner, 'POST', `groups/${made.id}/me`, { displayName: 'Élan' });
+  assert.equal(await status(amy, 'POST', 'groups/join', { code: typed, displayName: 'élan' }), 409);
+  assert.equal(await status(amy, 'POST', 'groups/join', { code: typed, displayName: 'ÉＬＡＮ' }), 409);
+  await ok(owner, 'POST', `groups/${made.id}/me`, { displayName: 'Captain' });
   const joined = await ok(amy, 'POST', 'groups/join', { code: typed, displayName: 'Amy' });
   assert.equal(joined.id, made.id);
   assert.equal(joined.role, 'member');

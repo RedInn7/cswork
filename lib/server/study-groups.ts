@@ -24,14 +24,18 @@ export const HISTORY_DAYS = 98;
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const CODE = /^[A-HJ-NP-Z2-9]{8}$/;
 
-/** Plain text without control or invisible format characters (no RTL overrides or zero widths). */
+/**
+ * Plain text without control or invisible characters (no RTL overrides, zero widths, or the
+ * Hangul fillers and braille blank that are letters/symbols but render as nothing), and with
+ * at least one visible character when not empty.
+ */
 const plain = (max: number, min = 1) =>
   z
     .string()
     .trim()
     .min(min)
     .max(max)
-    .refine((s) => !/\p{C}/u.test(s));
+    .refine((s) => !/[\p{C}\u115F\u1160\u3164\uFFA0\u2800]/u.test(s) && (!s || /[\p{L}\p{N}\p{S}\p{P}]/u.test(s)));
 const displayName = plain(24);
 const groupId = z.string().regex(/^[A-Za-z0-9_-]{12}$/);
 const code = z
@@ -173,10 +177,15 @@ export function myGroups(userId: string) {
     .all(userId) as { id: string; name: string; role: MemberRow['role']; joinedAt: number; members: number }[];
 }
 
+/** Compared in JS: SQLite lower() folds ASCII only, so É and é would pass as two names. */
+const fold = (s: string) => s.normalize('NFKC').toLowerCase();
 function nameTaken(group: string, name: string, except: string) {
-  return !!sqlite()
-    .prepare('SELECT 1 FROM study_group_members WHERE group_id=? AND lower(display_name)=lower(?) AND user_id<>?')
-    .get(group, name, except);
+  const wanted = fold(name);
+  return (
+    sqlite()
+      .prepare('SELECT display_name FROM study_group_members WHERE group_id=? AND user_id<>?')
+      .all(group, except) as { display_name: string }[]
+  ).some((m) => fold(m.display_name) === wanted);
 }
 function joinedCount(userId: string) {
   return (
