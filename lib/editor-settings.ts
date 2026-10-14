@@ -50,6 +50,24 @@ export function readEditorSettings(userId: string): EditorSettings {
   }
 }
 
+/**
+ * Save the settings. The theme is kept out until the reader picks one (it differs from
+ * the site theme, or one was saved before), so saving font size or tags doesn't pin the
+ * editor to whatever the site happened to be at the time.
+ */
+export function writeEditorSettings(userId: string, next: EditorSettings) {
+  const key = settingsKey(userId);
+  let saved: { theme?: unknown } = {};
+  try {
+    saved = JSON.parse(localStorage.getItem(key) || '{}');
+  } catch {
+    // Unreadable: written over below.
+  }
+  const picked = saved.theme === 'light' || saved.theme === 'dark' || next.theme !== currentTheme();
+  const { theme, ...rest } = next;
+  localStorage.setItem(key, JSON.stringify(picked ? { theme, ...rest } : rest));
+}
+
 export type EditorDraft = { code: string; updatedAt: number };
 
 export function draftStorageKey(
