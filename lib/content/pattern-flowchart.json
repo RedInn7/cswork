@@ -1,0 +1,439 @@
+{
+  "start": "q-design",
+  "nodes": {
+    "q-design": {
+      "q": ["题目要你实现一个类，它的几个方法会被反复调用吗？", "Are you asked to build a class whose methods get called over and over?"],
+      "eg": ["如 LRU 缓存、最小栈、迭代器", "e.g. an LRU cache, a min stack, an iterator"],
+      "yes": "q-design-lookup",
+      "no": "q-graph"
+    },
+    "q-design-lookup": {
+      "q": ["要按 key 或按时间戳快速查询，或者维护一个不断流入的数据流（缓存、快照、中位数、第 k 大）？", "Do you need fast lookups by key or by timestamp, or must you keep up with a stream of incoming values (caches, snapshots, a running median, the k-th largest)?"],
+      "eg": ["如 LRU 缓存、O(1) 时间插入删除和随机取值、基于时间的键值存储、数据流的中位数", "e.g. LRU Cache, Insert Delete GetRandom O(1), Time Based Key-Value Store, Find Median from Data Stream"],
+      "yes": "to-design-cache-index",
+      "no": "q-design-prefix"
+    },
+    "to-design-cache-index": {
+      "stop": "design-cache-index",
+      "why": ["哈希表负责 O(1) 定位，双向链表或“和末尾交换”负责 O(1) 删除；按时间查就在有序列表上二分，数据流的中位数和第 k 大交给堆。", "A hash map finds things in O(1) and a doubly linked list or swap-with-last removes them in O(1); look up by time with binary search over a sorted list, and keep a running median or the k-th largest in heaps."],
+      "tutorial": "hash-table"
+    },
+    "q-design-prefix": {
+      "q": ["操作围绕字符串前缀或文件路径，或者要把一个结构编码成字符串再还原？", "Do the operations revolve around string prefixes or file paths, or turning a structure into a string and back?"],
+      "eg": ["如前缀树、内存文件系统、序列化二叉树", "e.g. a trie, an in-memory file system, serializing a binary tree"],
+      "yes": "to-design-trie-serialization",
+      "no": "to-design-containers"
+    },
+    "to-design-trie-serialization": {
+      "stop": "design-trie-serialization",
+      "why": ["按字符或路径一层层往下建节点就是字典树；序列化时把空孩子也写出来，才能唯一还原。", "Adding one node per character or path segment gives you a trie; when serializing, write out empty children too so decoding is unambiguous."],
+      "tutorial": "trie"
+    },
+    "to-design-containers": {
+      "stop": "design-containers",
+      "why": ["用栈、队列、数组和链表把接口拼出来，关键在摊还复杂度和空、满这些边界。", "Assemble the interface from stacks, queues, arrays and lists; what matters is amortized cost and the empty and full edge cases."],
+      "tutorial": "queue-and-deque"
+    },
+    "q-graph": {
+      "q": ["输入描述的是“谁和谁相连”吗：树、图、网格，或者 A 依赖 B？", "Does the input describe what connects to what: a tree, a graph, a grid, or “A depends on B”?"],
+      "eg": ["给了 root、边列表、邻接表，或一个二维字符矩阵", "you get a root, an edge list, an adjacency list, or a 2D board"],
+      "yes": "q-tree",
+      "no": "q-linked"
+    },
+    "q-tree": {
+      "q": ["是一棵二叉树吗（给了 root，每个节点最多两个孩子）？", "Is it a binary tree (you get a root, and each node has at most two children)?"],
+      "eg": ["节点类型是 TreeNode", "the node type is TreeNode"],
+      "yes": "q-bst",
+      "no": "q-board"
+    },
+    "q-bst": {
+      "q": ["是二叉搜索树，并且可以利用“左小右大”的顺序？", "Is it a binary search tree whose left-smaller, right-larger order you can use?"],
+      "eg": ["如二叉搜索树中第 K 小的元素、验证二叉搜索树", "e.g. Kth Smallest Element in a BST, Validate Binary Search Tree"],
+      "yes": "to-binary-search-tree",
+      "no": "q-tree-build"
+    },
+    "to-binary-search-tree": {
+      "stop": "binary-search-tree",
+      "why": ["BST 的中序遍历就是升序序列；查找、插入和第 k 小都只需沿一条路径往下走。", "An in-order walk of a BST is sorted, and search, insert and k-th smallest each follow a single path down."],
+      "tutorial": "binary-search-tree"
+    },
+    "q-tree-build": {
+      "q": ["要根据遍历序列把树建出来，或者把树改造成另一种形状？", "Do you build the tree from traversal orders, or reshape it into something else?"],
+      "eg": ["如从前序与中序遍历序列构造二叉树、二叉树展开为链表", "e.g. Construct Binary Tree from Preorder and Inorder Traversal, Flatten Binary Tree to Linked List"],
+      "yes": "to-binary-tree-build",
+      "no": "q-tree-path"
+    },
+    "to-binary-tree-build": {
+      "stop": "binary-tree-build",
+      "why": ["前序（或后序）定根，中序分出左右子树，递归下去；改造类题先想清楚每个节点的指针最后指向哪里。", "Preorder (or postorder) gives the root and inorder splits the subtrees, then recurse; when reshaping, decide where each node's pointers should end up first."],
+      "tutorial": "tree-basics"
+    },
+    "q-tree-path": {
+      "q": ["答案和路径有关吗：根到叶、路径和、两个节点的最近公共祖先、任意两点之间的最大路径？", "Is the answer about paths: root to leaf, path sums, the lowest common ancestor, the best path between any two nodes?"],
+      "eg": ["如路径总和 III、二叉树中的最大路径和", "e.g. Path Sum III, Binary Tree Maximum Path Sum"],
+      "yes": "to-binary-tree-paths",
+      "no": "q-tree-choice"
+    },
+    "to-binary-tree-paths": {
+      "stop": "binary-tree-paths",
+      "why": ["DFS 时把“当前路径的状态”往下传，把“子树里最好的结果”往上返回，答案在两者交汇的节点更新。", "Pass the current path's state down, return the subtree's best result up, and update the answer at the node where the two meet."],
+      "tutorial": "tree-dp"
+    },
+    "q-tree-choice": {
+      "q": ["每个节点都要决定选或不选，而且父子之间互相限制？", "Does every node make a take-or-skip choice that constrains its parent and children?"],
+      "eg": ["如打家劫舍 III", "e.g. House Robber III"],
+      "yes": "to-dp-search-game",
+      "no": "to-binary-tree"
+    },
+    "to-dp-search-game": {
+      "stop": "dp-search-game",
+      "why": ["后序遍历，每个节点返回“选它”和“不选它”两个值，父节点据此组合，这就是树形 DP。", "Walk post-order and have each node return two values, with it and without it; the parent combines them. That is tree DP."],
+      "tutorial": "tree-dp"
+    },
+    "to-binary-tree": {
+      "stop": "binary-tree",
+      "why": ["先决定用前序、中序、后序还是层序，再想清楚递归函数返回什么，多数题就是一次遍历。", "Choose pre-, in-, post- or level-order, then decide what the recursive call returns; most problems are a single traversal."],
+      "tutorial": "tree-basics"
+    },
+    "q-board": {
+      "q": ["要在棋盘或字符矩阵上试着填数、放子或走一条路，走不通就撤回重来？", "On a board or character grid, do you try placing values or tracing a path, and undo the move when it fails?"],
+      "eg": ["如单词搜索、单词搜索 II、解数独", "e.g. Word Search, Word Search II, Sudoku Solver"],
+      "yes": "to-backtracking-board",
+      "no": "q-grid"
+    },
+    "to-backtracking-board": {
+      "stop": "backtracking-constraints",
+      "why": ["DFS 前先标记当前格子，这条路失败就恢复原状，再试下一个方向或数字；用集合或位掩码记下每行、每列、每宫已用的数字，尽早剪枝。", "Mark the cell before recursing and restore it when the branch fails, then try the next direction or digit; track what each row, column and box already uses in sets or bitmasks so you prune early."],
+      "tutorial": "backtracking"
+    },
+    "q-grid": {
+      "q": ["是二维网格，每个格子只和上下左右相邻？", "Is it a 2D grid where each cell touches only its four neighbours?"],
+      "eg": ["如岛屿数量、腐烂的橘子、不同路径", "e.g. Number of Islands, Rotting Oranges, Unique Paths"],
+      "yes": "q-grid-dp",
+      "no": "q-order"
+    },
+    "q-grid-dp": {
+      "q": ["每个格子的答案只取决于它上方和左方的格子（比如只能向右或向下走）？", "Does each cell's answer depend only on the cells above and to its left (say you may only move right or down)?"],
+      "eg": ["如不同路径、最小路径和、最大正方形", "e.g. Unique Paths, Minimum Path Sum, Maximal Square"],
+      "yes": "to-dp-grid",
+      "no": "to-grid-traversal"
+    },
+    "to-dp-grid": {
+      "stop": "dp-grid",
+      "why": ["dp[i][j] 由上方和左方推出，按行填表；通常只留一行也够。", "dp[i][j] comes from the cell above and the cell to the left; fill row by row, and one row of memory is usually enough."],
+      "tutorial": "dynamic-programming-basics"
+    },
+    "to-grid-traversal": {
+      "stop": "grid-traversal",
+      "why": ["数连通块就用 DFS 或 BFS 把整块“淹掉”；求最少步数或同时扩散，用（多源）BFS 一层层推进。", "Count regions by flooding each one with DFS or BFS; for fewest steps or things spreading at once, run (multi-source) BFS layer by layer."],
+      "tutorial": "graph-bfs"
+    },
+    "q-order": {
+      "q": ["边表示先后依赖，要排出一个合法顺序，或者判断依赖里有没有环？", "Do the edges mean “must come before”, and you need a valid order or need to detect a cycle?"],
+      "eg": ["如课程表、火星词典", "e.g. Course Schedule, Alien Dictionary"],
+      "yes": "to-graph-topological",
+      "no": "q-shortest"
+    },
+    "to-graph-topological": {
+      "stop": "graph-topological",
+      "why": ["反复取出入度为 0 的点（Kahn 算法）；如果有点始终取不出来，说明有环。", "Repeatedly remove nodes with in-degree 0 (Kahn's algorithm); if some never come out, there is a cycle."],
+      "tutorial": "topological-sort"
+    },
+    "q-shortest": {
+      "q": ["要求从起点到终点的最少步数或最小代价？", "Do you need the fewest steps or the lowest cost from a start to a target?"],
+      "eg": ["如单词接龙、网络延迟时间、K 站中转内最便宜的航班", "e.g. Word Ladder, Network Delay Time, Cheapest Flights Within K Stops"],
+      "yes": "to-graph-shortest-path",
+      "no": "q-span"
+    },
+    "to-graph-shortest-path": {
+      "stop": "graph-shortest-path",
+      "why": ["边权都一样用 BFS，非负权用 Dijkstra；状态可以是“位置 + 额外信息”，比如还剩几次中转。", "Equal edge weights mean BFS; non-negative weights mean Dijkstra. A state can be “position plus extra info”, such as stops left."],
+      "tutorial": "shortest-paths"
+    },
+    "q-span": {
+      "q": ["要挑一些边把所有点连起来，并让总代价最小？", "Must you pick edges that connect every node at the lowest total cost?"],
+      "eg": ["如连接所有点的最小费用", "e.g. Min Cost to Connect All Points"],
+      "yes": "to-graph-spanning-tree",
+      "no": "to-graph-connectivity"
+    },
+    "to-graph-spanning-tree": {
+      "stop": "graph-spanning-tree",
+      "why": ["把边按代价排序，用并查集逐条加入不会成环的边（Kruskal）；稠密图也可以用 Prim。", "Sort edges by cost and add each one that joins two separate components, tracked with union-find (Kruskal); Prim suits dense graphs."],
+      "tutorial": "minimum-spanning-tree"
+    },
+    "to-graph-connectivity": {
+      "stop": "graph-connectivity",
+      "why": ["只关心谁和谁连通、有几个连通块，或者边一条条加进来时，用并查集；一次 DFS 也常常够用。", "When you only care who is connected, how many components there are, or edges arrive one at a time, use union-find; a single DFS often works too."],
+      "tutorial": "union-find"
+    },
+    "q-linked": {
+      "q": ["输入是链表吗？", "Is the input a linked list?"],
+      "eg": ["如反转链表、环形链表、删除链表的倒数第 N 个结点", "e.g. Reverse Linked List, Linked List Cycle, Remove Nth Node From End of List"],
+      "yes": "to-linked-list",
+      "no": "q-all"
+    },
+    "to-linked-list": {
+      "stop": "linked-list",
+      "why": ["哑节点省掉头节点的特判，快慢指针找中点和环，三个指针原地反转，几乎覆盖所有链表题。", "A dummy head removes special cases, fast and slow pointers find the middle and cycles, and three pointers reverse in place. That covers nearly every list problem."],
+      "tutorial": "linked-list"
+    },
+    "q-all": {
+      "q": ["要列出所有满足条件的方案（子集、排列、组合），而不只是数一数有几个？", "Must you list every valid solution (subsets, permutations, combinations), not just count them?"],
+      "eg": ["如子集、全排列、组合总和；三数之和这类只挑两三个数凑目标和的题答否", "e.g. Subsets, Permutations, Combination Sum; picking two or three numbers that hit a target (3Sum) is a no"],
+      "yes": "q-all-string",
+      "no": "q-intervals"
+    },
+    "q-all-string": {
+      "q": ["是把一个字符串切成几段，或者拼出合法的字符串？", "Are you cutting a string into pieces, or assembling valid strings?"],
+      "eg": ["如括号生成、分割回文串、复原 IP 地址", "e.g. Generate Parentheses, Palindrome Partitioning, Restore IP Addresses"],
+      "yes": "to-backtracking-strings",
+      "no": "q-all-board"
+    },
+    "to-backtracking-strings": {
+      "stop": "backtracking-strings",
+      "why": ["每一步决定从当前位置切多长，切出来的这段合法才继续往下递归。", "At each step choose how long the next piece is, and recurse only if that piece is valid."],
+      "tutorial": "backtracking"
+    },
+    "q-all-board": {
+      "q": ["约束很多，必须边搜边剪枝，比如在棋盘上摆棋子、用四张牌凑出 24？", "Are there many constraints, so you must prune as you search, like placing pieces on a board or making 24 from four cards?"],
+      "eg": ["如 N 皇后、N 皇后 II、24 点游戏", "e.g. N-Queens, N-Queens II, 24 Game"],
+      "yes": "to-backtracking-constraints",
+      "no": "to-backtracking-enumeration"
+    },
+    "to-backtracking-constraints": {
+      "stop": "backtracking-constraints",
+      "why": ["用集合或位掩码记录已经占用的行、列和格子，一冲突就立刻回退，剪枝决定能不能在时限内跑完。", "Track used rows, columns and cells in sets or bitmasks and back out the moment something conflicts; pruning decides whether it finishes in time."],
+      "tutorial": "backtracking"
+    },
+    "to-backtracking-enumeration": {
+      "stop": "backtracking-enumeration",
+      "why": ["画出递归树：子集看每个元素选不选，排列看每个位置放谁；先排序再跳过相同的相邻元素来去重。", "Draw the recursion tree: for subsets each element is in or out, for permutations each slot gets one element. Sort first and skip equal neighbours to avoid duplicates."],
+      "tutorial": "backtracking"
+    },
+    "q-intervals": {
+      "q": ["输入是一组区间 [开始, 结束]？", "Is the input a list of intervals [start, end]?"],
+      "eg": ["如合并区间、插入区间、无重叠区间、用最少数量的箭引爆气球", "e.g. Merge Intervals, Insert Interval, Non-overlapping Intervals, Minimum Number of Arrows to Burst Balloons"],
+      "yes": "to-prefix-intervals-ranges",
+      "no": "q-sorted"
+    },
+    "to-prefix-intervals-ranges": {
+      "stop": "prefix-intervals",
+      "why": ["先按开始（或结束）排序再扫一遍：重叠就合并，要留下最多不重叠区间就按结束时间贪心；要数同一时刻有几个重叠，就在端点上 +1 / −1 做差分。", "Sort by start (or end) and sweep once: merge what overlaps, keep the most non-overlapping ones greedily by end time, and to count overlaps at a moment add +1 / −1 at the endpoints, a difference array."],
+      "tutorial": "greedy"
+    },
+    "q-sorted": {
+      "q": ["数组已经有序，或者答案具有单调性（x 可行，那么比 x 大的也都可行）？", "Is the array sorted, or is the answer monotone (if x works, every larger x works too)?"],
+      "eg": ["如两数之和 II、三数之和（先排序）、搜索旋转排序数组、爱吃香蕉的珂珂", "e.g. Two Sum II, 3Sum (sort first), Search in Rotated Sorted Array, Koko Eating Bananas"],
+      "yes": "q-sorted-pair",
+      "no": "q-contig"
+    },
+    "q-sorted-pair": {
+      "q": ["要在有序数组里找两三个数凑出目标和，或者从两端往中间收？", "Do you look for two or three values in the sorted array that hit a target sum, or close in from both ends?"],
+      "eg": ["如两数之和 II、三数之和、有序数组的平方", "e.g. Two Sum II, 3Sum, Squares of a Sorted Array"],
+      "yes": "to-two-pointers-sorted",
+      "no": "to-binary-search"
+    },
+    "to-two-pointers-sorted": {
+      "stop": "two-pointers-windows",
+      "why": ["左右指针各站一端：和太小就右移左指针，太大就左移右指针，O(n) 扫完；三数之和先固定一个数，剩下的照此处理。", "Put one pointer at each end: move the left one up when the sum is too small and the right one down when it is too big, O(n) in all; for 3Sum fix one number and do the same on the rest."],
+      "tutorial": "two-pointers-sliding-window"
+    },
+    "to-binary-search": {
+      "stop": "binary-search",
+      "why": ["有序就别线性扫：找位置直接二分；“最大值最小”这类题就二分答案，再写一个 O(n) 的判定。", "Sorted data deserves better than a linear scan: binary search for positions, and for “minimize the maximum” binary search the answer with an O(n) check."],
+      "tutorial": "binary-search"
+    },
+    "q-contig": {
+      "q": ["问的是连续的子数组或子串？", "Is the question about a contiguous subarray or substring?"],
+      "eg": ["如无重复字符的最长子串、和为 K 的子数组、乘积最大子数组", "e.g. Longest Substring Without Repeating Characters, Subarray Sum Equals K, Maximum Product Subarray"],
+      "yes": "q-contig-palin",
+      "no": "q-topk"
+    },
+    "q-contig-palin": {
+      "q": ["要找回文子串：最长的那个，或者一共有几个？", "Are you after palindromic substrings: the longest one, or how many there are?"],
+      "eg": ["如最长回文子串、回文子串", "e.g. Longest Palindromic Substring, Palindromic Substrings"],
+      "yes": "to-dp-palindrome-substring",
+      "no": "q-contig-best"
+    },
+    "to-dp-palindrome-substring": {
+      "stop": "dp-palindrome",
+      "why": ["以每个字符和每对相邻字符为中心向两边扩，O(n²) 就够；也可以让 dp[i][j] 记录 s[i..j] 是否回文，按长度从短到长填。", "Expand around every character and every gap between two, which is O(n²); or let dp[i][j] say whether s[i..j] is a palindrome and fill it from short ranges to long."],
+      "tutorial": "interval-dp"
+    },
+    "q-contig-best": {
+      "q": ["要的是一段连续元素的最大和或最大乘积，元素有正有负？", "Do you want the largest sum or product of a contiguous run, with both positive and negative values?"],
+      "eg": ["如乘积最大子数组、环形子数组的最大和、删除一次得到子数组最大和", "e.g. Maximum Product Subarray, Maximum Sum Circular Subarray, Maximum Subarray Sum with One Deletion"],
+      "yes": "to-dp-state-machine",
+      "no": "q-window"
+    },
+    "to-dp-state-machine": {
+      "stop": "dp-state-machine",
+      "why": ["只看“以 i 结尾的最好结果”，它只依赖 i−1；求乘积时要同时记最大和最小，因为负负得正。最基础的最大子数组和在第 01 站。", "Track the best result ending at i, which depends only on i−1; for products keep both the max and the min, since two negatives make a positive. Plain Maximum Subarray sits at stop 01."],
+      "tutorial": "dp-state-design"
+    },
+    "q-window": {
+      "q": ["元素可能是负数，或者要统计和恰好等于 k 的子数组有几个？", "Can elements be negative, or must you count subarrays whose sum is exactly k?"],
+      "eg": ["如和为 K 的子数组、连续数组", "e.g. Subarray Sum Equals K, Contiguous Array"],
+      "yes": "to-prefix-intervals",
+      "no": "to-two-pointers-windows"
+    },
+    "to-prefix-intervals": {
+      "stop": "prefix-intervals",
+      "why": ["前缀和把区间和变成两个数之差，用哈希表记住前面出现过的前缀和；要批量给区间加值就用差分数组。", "Prefix sums turn a range sum into the difference of two values; keep earlier prefix sums in a hash map. For many range updates, use a difference array."],
+      "tutorial": "prefix-sum-difference-array"
+    },
+    "to-two-pointers-windows": {
+      "stop": "two-pointers-windows",
+      "why": ["元素非负或只关心字符种类时，右指针扩张、左指针收缩，每个元素进出窗口各一次，整体 O(n)。", "With non-negative values or character counts, grow the window on the right and shrink it on the left; each element enters and leaves once, O(n) overall."],
+      "tutorial": "two-pointers-sliding-window"
+    },
+    "q-topk": {
+      "q": ["要第 k 大、前 k 个，或者每个元素右边第一个更大（更小）的数？", "Do you need the k-th largest, the top k, or the next greater (or smaller) element for each item?"],
+      "eg": ["如数组中的第 K 个最大元素、每日温度、柱状图中最大的矩形", "e.g. Kth Largest Element in an Array, Daily Temperatures, Largest Rectangle in Histogram"],
+      "yes": "to-stacks-heaps",
+      "no": "q-nest"
+    },
+    "to-stacks-heaps": {
+      "stop": "stacks-heaps",
+      "why": ["第 k 大和前 k 个用大小为 k 的堆；“下一个更大的元素”和柱状图中的最大矩形用单调栈，每个元素只进出栈一次。", "Use a size-k heap for the k-th largest and the top k; use a monotonic stack for the next greater element and the largest rectangle, pushing and popping each element once."],
+      "tutorial": "heap-priority-queue"
+    },
+    "q-nest": {
+      "q": ["要处理嵌套或成对的结构（括号、表达式、编码字符串），或者总是先处理最近放进去的那个？", "Do you handle nested or paired structure (brackets, expressions, encoded strings), or always deal with the most recently added item first?"],
+      "eg": ["如有效的括号、字符串解码、基本计算器、小行星碰撞", "e.g. Valid Parentheses, Decode String, Basic Calculator, Asteroid Collision"],
+      "yes": "to-stacks-nesting",
+      "no": "q-optimize"
+    },
+    "to-stacks-nesting": {
+      "stop": "stacks-heaps",
+      "why": ["遇到左括号或新的一层就压栈，遇到右括号就弹出最近的那个来配对或结算；表达式求值再加一个运算符栈。", "Push on an opening bracket or a new level, and pop the most recent one to match or settle it on a closing one; to evaluate expressions keep a second stack for operators."],
+      "tutorial": "stack"
+    },
+    "q-optimize": {
+      "q": ["求最大值、最小值或方案数，并且前面的选择会影响后面还能怎么选？", "Do you want a maximum, a minimum or a number of ways, where earlier choices limit later ones?"],
+      "eg": ["如爬楼梯、打家劫舍、零钱兑换、跳跃游戏", "e.g. Climbing Stairs, House Robber, Coin Change, Jump Game"],
+      "yes": "q-two-seq",
+      "no": "q-pair"
+    },
+    "q-two-seq": {
+      "q": ["要比较两个字符串（或两个序列）：匹配、编辑，或者找公共部分？", "Do you compare two strings or sequences: matching, editing, or finding a common part?"],
+      "eg": ["如最长公共子序列、编辑距离、交错字符串", "e.g. Longest Common Subsequence, Edit Distance, Interleaving String"],
+      "yes": "to-dp-string",
+      "no": "q-palin"
+    },
+    "to-dp-string": {
+      "stop": "dp-string",
+      "why": ["dp[i][j] 表示 s 的前 i 个字符和 t 的前 j 个字符的答案，按末尾字符相等或不等分别转移。", "Let dp[i][j] answer the question for the first i characters of s and the first j of t, then handle whether the last characters match."],
+      "tutorial": "dynamic-programming-basics"
+    },
+    "q-palin": {
+      "q": ["和回文有关，或者答案要通过合并、拆分区间 [i, j] 得到？", "Is it about palindromes, or is the answer built by merging or splitting a range [i, j]?"],
+      "eg": ["如最长回文子序列、戳气球", "e.g. Longest Palindromic Subsequence, Burst Balloons"],
+      "yes": "to-dp-palindrome",
+      "no": "q-pick"
+    },
+    "to-dp-palindrome": {
+      "stop": "dp-palindrome",
+      "why": ["dp[i][j] 只依赖更短的区间，所以按区间长度从小到大计算。", "dp[i][j] depends only on shorter ranges, so fill it in order of increasing length."],
+      "tutorial": "interval-dp"
+    },
+    "q-pick": {
+      "q": ["从一堆物品或数字里挑一些，凑出某个和或容量，问能不能凑、最少几个、有多少种？", "Do you pick items or numbers to reach a target sum or capacity, asking whether you can, how few you need, or how many ways?"],
+      "eg": ["如零钱兑换、分割等和子集、目标和", "e.g. Coin Change, Partition Equal Subset Sum, Target Sum"],
+      "yes": "to-dp-knapsack",
+      "no": "q-states"
+    },
+    "to-dp-knapsack": {
+      "stop": "dp-knapsack",
+      "why": ["外层枚举物品、内层枚举容量；每件只能用一次就倒序遍历容量，可以重复用就正序。", "Loop over items outside and capacity inside; go through capacity downward if each item is used once, upward if it can repeat."],
+      "tutorial": "knapsack"
+    },
+    "q-states": {
+      "q": ["每一天只可能处于少数几种状态之一，比如持有或不持有股票、冷冻期？", "Is each day in one of a few states, such as holding a stock, not holding one, or cooling down?"],
+      "eg": ["如买卖股票的最佳时机系列", "e.g. the Best Time to Buy and Sell Stock series"],
+      "yes": "to-dp-stock",
+      "no": "q-subseq"
+    },
+    "to-dp-stock": {
+      "stop": "dp-stock",
+      "why": ["每天为每种状态（持有、不持有、冷冻）记一个最大收益，按天在状态之间转移。", "Keep the best profit for each state (holding, not holding, cooling down) and move between states day by day."],
+      "tutorial": "dp-state-design"
+    },
+    "q-subseq": {
+      "q": ["可以跳着选元素，只要选出来的保持某种先后或大小关系（最长递增子序列一类）？", "Can you skip elements as long as the ones you keep follow some order (the longest increasing subsequence family)?"],
+      "eg": ["如最长递增子序列、俄罗斯套娃信封问题", "e.g. Longest Increasing Subsequence, Russian Doll Envelopes"],
+      "yes": "to-dp-subsequence",
+      "no": "q-segments"
+    },
+    "to-dp-subsequence": {
+      "stop": "dp-subsequence",
+      "why": ["dp[i] 表示以第 i 个元素结尾的最好结果，从前面所有能接上的 j 转移；O(n log n) 的写法用贪心加二分。", "Let dp[i] be the best result ending at element i, built from every earlier j it can follow; the O(n log n) version uses greedy plus binary search."],
+      "tutorial": "dynamic-programming-basics"
+    },
+    "q-segments": {
+      "q": ["要把数组切成若干段，或者在时间轴上安排互不冲突的任务？", "Do you cut the array into segments, or schedule non-overlapping jobs on a timeline?"],
+      "eg": ["如最低票价、规划兼职工作、分隔数组以得到最大和", "e.g. Minimum Cost For Tickets, Maximum Profit in Job Scheduling, Partition Array for Maximum Sum"],
+      "yes": "to-dp-scheduling",
+      "no": "q-greedy"
+    },
+    "to-dp-scheduling": {
+      "stop": "dp-scheduling",
+      "why": ["dp[i] 表示处理完前 i 个元素（或到第 i 个时间点）的最优值，枚举最后一段从哪里开始。", "Let dp[i] be the best value after the first i elements (or by time i), and try every place the last segment could start."],
+      "tutorial": "dynamic-programming-basics"
+    },
+    "q-greedy": {
+      "q": ["能说清楚为什么每一步都选当前最好的，最后不会吃亏？", "Can you argue that taking the best-looking option at every step never backfires?"],
+      "eg": ["如跳跃游戏、加油站、分发糖果", "e.g. Jump Game, Gas Station, Candy"],
+      "yes": "to-greedy-scheduling",
+      "no": "to-dp-foundations"
+    },
+    "to-greedy-scheduling": {
+      "stop": "greedy-scheduling",
+      "why": ["先排序，或者一路维护“目前最远能到哪里”，再用交换论证说明换成别的选择不会更好。", "Sort, or keep track of how far you can reach so far, then use an exchange argument to show no other choice does better."],
+      "tutorial": "greedy"
+    },
+    "to-dp-foundations": {
+      "stop": "dp-foundations",
+      "why": ["先写清楚“第 i 步的答案由前面哪几步推出”，从记忆化搜索写起，再改成递推。", "Write down which earlier steps step i depends on; start with memoized recursion, then turn it into a loop."],
+      "tutorial": "memoization"
+    },
+    "q-pair": {
+      "q": ["要找满足某种关系的一对元素，或者按某个特征分组、计数？", "Are you looking for a pair with some relation, or grouping and counting by a key?"],
+      "eg": ["如两数之和、字母异位词分组、最长连续序列", "e.g. Two Sum, Group Anagrams, Longest Consecutive Sequence"],
+      "yes": "to-hash-counting",
+      "no": "q-bits"
+    },
+    "to-hash-counting": {
+      "stop": "hash-counting",
+      "why": ["边扫边把见过的值存进哈希表，或者给每一组算一个共同的 key（比如排序后的字符串）。", "Store what you have seen in a hash map as you scan, or compute one shared key per group (such as the sorted string)."],
+      "tutorial": "hash-table"
+    },
+    "q-bits": {
+      "q": ["和二进制位、异或、只出现一次的数字，或者整数溢出边界有关？", "Is it about binary digits, XOR, the number that appears once, or integer overflow limits?"],
+      "eg": ["如只出现一次的数字、位 1 的个数、x 的平方根", "e.g. Single Number, Number of 1 Bits, Sqrt(x)"],
+      "yes": "to-bits-math",
+      "no": "q-string"
+    },
+    "to-bits-math": {
+      "stop": "bits-math",
+      "why": ["记住几条常用技巧：x & (x − 1) 去掉最低位的 1，a ^ a = 0，再注意 32 位整数溢出。", "Learn a few tricks: x & (x − 1) clears the lowest set bit, a ^ a = 0, and watch out for 32-bit overflow."],
+      "tutorial": "bit-manipulation"
+    },
+    "q-string": {
+      "q": ["主要工作是按规则解析或匹配一个字符串？", "Is the main work parsing or matching a string by rules?"],
+      "eg": ["如字符串转换整数、反转字符串中的单词、找出字符串中第一个匹配项的下标", "e.g. String to Integer (atoi), Reverse Words in a String, Find the Index of the First Occurrence in a String"],
+      "yes": "to-string-processing",
+      "no": "to-array-foundations"
+    },
+    "to-string-processing": {
+      "stop": "string-processing",
+      "why": ["按规则一个字符一个字符地往前走，处理好空格、正负号和越界；找子串可以用 KMP。", "Walk the string one character at a time, handling spaces, signs and overflow; for substring search, KMP is an option."],
+      "tutorial": "string-basics"
+    },
+    "to-array-foundations": {
+      "stop": "array-foundations",
+      "why": ["多半是原地改数组：读写双指针、交换元素，或者先排序再扫一遍。", "Usually an in-place array job: read and write pointers, swaps, or sort first and scan once."],
+      "tutorial": "sorting-in-practice"
+    }
+  }
+}
