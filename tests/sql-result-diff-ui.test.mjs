@@ -62,6 +62,23 @@ test('a failed SQL case shows the result diff; other languages and error output 
     await render(submission('sql', 'columns: 2\n["Ava", 12000]\n["Ben", 9000]\n["Dev", null]\n'));
     assert.match(document.querySelector('.cs-sql-diff figcaption').textContent, /3 rows, identical/);
 
+    // A cut-off first failure can still parse; its truncation flag keeps the table away.
+    const cut = 'columns: 2\n["Ava", 12000]\n';
+    await render({
+      ...submission('sql', cut),
+      firstFailure: {
+        ordinal: 0,
+        status: 'wrong_answer',
+        stdin: 'CREATE TABLE t (x);',
+        expected,
+        stdout: cut,
+        stderr: '',
+        truncated: { stdin: false, expected: false, stdout: true, stderr: false },
+      },
+    });
+    assert.equal(!!document.querySelector('.cs-sql-diff'), false);
+    assert.ok(document.body.textContent.includes('Your output'));
+
     // An SQL error is not a result: no table.
     await render(submission('sql', 'SQL 错误 / SQL error: no such column: nope'));
     assert.equal(!!document.querySelector('.cs-sql-diff'), false);
