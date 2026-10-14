@@ -32,6 +32,9 @@ export default async function OaLayout({
         <Link href="/library" prefetch={false}>
           {zh ? '面试资料库' : 'Library'}
         </Link>
+        <Link href="/topics" prefetch={false}>
+          {zh ? '代码模板速查' : 'Code templates'}
+        </Link>
         <Link href="/privacy" prefetch={false}>
           {zh ? '隐私' : 'Privacy'}
         </Link>
