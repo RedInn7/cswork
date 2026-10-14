@@ -227,6 +227,7 @@ const EN: Record<string, string> = {
   '待审核的投稿太多，请等审核后再投': 'You have too many submissions awaiting review. Please wait for a review first',
   不能举报自己的投稿: "You can't report your own submission",
   请写明不通过的原因: 'Please tell the author why it was rejected',
+  '正文的引用、列表或强调嵌套太深': 'The post nests quotes, lists or emphasis too deeply',
   故事已达上限: "You've reached the limit for stories",
   '代码最多 64 KiB': 'Code can be at most 64 KiB',
   代码不能包含空字符: 'Code cannot contain null characters',

@@ -151,6 +151,34 @@ test('the review queue: rejecting needs a note, approving posts the decision', a
   }
 });
 
+test('a post the markdown renderer chokes on shows as plain text and can still be rejected', async () => {
+  const body = `${'>'.repeat(5000)} nested past the stack`;
+  const queue = {
+    pending: [{
+      id: 'P2', title: 'Deep', company: { slug: 'amazon', name: 'Amazon' }, role: 'SWE', result: null, rounds: [],
+      interviewDate: null, body, questions: [], status: 'pending', note: '', createdAt: 1, flags: 0, reasons: [], shown: true,
+      member: { handle: null },
+    }],
+    flagged: [],
+    approved: [],
+  };
+  const { calls, restore } = stub({ 'GET oj/experiences/review': queue, 'POST oj/experiences/P2/review': { pending: [], flagged: [], approved: [] } });
+  const quiet = console.error;
+  console.error = () => {};
+  try {
+    const root = await mount(createElement(ExperienceReview));
+    assert.ok(document.querySelector('pre.xs-plain')?.textContent === body);
+    await act(async () => set(document.querySelector('.xs-card textarea'), 'Unreadable'));
+    await act(async () => button('Reject').click());
+    await wait();
+    assert.ok(calls.some((c) => c.key === 'POST oj/experiences/P2/review' && c.body.status === 'rejected'));
+    root.unmount();
+  } finally {
+    console.error = quiet;
+    restore();
+  }
+});
+
 test('a member post shows its status to the author and a report control to other readers', async () => {
   const member = { id: 'CCCCCCCCCCCC', handle: null, status: 'approved', public: true, mine: false, note: '' };
   const html = (props) => new JSDOM(renderToStaticMarkup(createElement(MemberPost, props))).window.document;

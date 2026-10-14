@@ -13,7 +13,7 @@ import { OaMarkdown } from './oa-library';
 import { kindOf, splitBody, type BodyParts } from '@/lib/mock-interview';
 import { TryFirst } from './try-first';
 import { StoryPicker } from './story-bank';
-import { MemberPost, type MemberInfo } from './experience-report';
+import { MemberPost, SafeMarkdown, type MemberInfo } from './experience-report';
 import '@/app/redesign.css';
 import '@/app/content-library.css';
 
@@ -781,7 +781,7 @@ export function ContentDetail({
               </div>
             )}
             <article className="rd-card ct-body rd-reveal" style={{ '--i': 2 } as React.CSSProperties}>
-              <OaMarkdown body={gated ? gated.question : localized(locale, item.body, item.extra.bodyZh)} math={!!item.extra.math} />
+              <SafeMarkdown body={gated ? gated.question : localized(locale, item.body, item.extra.bodyZh)} math={!!item.extra.math} />
               {gated?.hints && (
                 <details className="ct-hints">
                   <summary>{t('提示', 'Hints')}</summary>

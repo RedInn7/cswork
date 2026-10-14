@@ -115,6 +115,7 @@ void test('submitting checks the account, the fields and the company; emails and
     { rounds: ['Lunch'] },
     { result: 'Hired' },
     { month: '2019-01' },
+    { body: `${'>'.repeat(2000)} nested far past what the renderer's stack holds` }, // ~1700 levels crash react-markdown
     { questions: Array(21).fill('Two sum') },
     { extra: 1 },
   ])
@@ -208,6 +209,50 @@ void test('only the author withdraws a post; daily and pending caps hold', async
   ugc.submitExperience(writer, post(), later);
   ugc.submitExperience(writer, post(), later);
   assert.throws(() => ugc.submitExperience(writer, post(), later + 1), { status: 409 });
+});
+
+void test('markdownDepth catches nesting that overflows the renderer and passes ordinary posts', () => {
+  const deep = 2000;
+  for (const [name, text] of Object.entries({
+    quotes: '>'.repeat(deep),
+    stars: `${'*'.repeat(9000)}x${'*'.repeat(9000)}`,
+    bullets: `${'* '.repeat(deep)}x`,
+    dashes: `${'- '.repeat(deep)}x`,
+    numbered: `${'1. '.repeat(deep)}x`,
+    quotedLists: `${'> - '.repeat(deep)}x`,
+    spacedEmphasis: `${'*a '.repeat(deep)}b${' a*'.repeat(deep)}`,
+    strong: `${'**a '.repeat(deep)}b${' a**'.repeat(deep)}`,
+    strike: `${'~~a '.repeat(deep)}b${' a~~'.repeat(deep)}`,
+    overLines: `${'*a\n'.repeat(deep)}b${' a*'.repeat(deep)}`,
+    otherCloser: `${'*a b~ '.repeat(deep)}c${' a*'.repeat(deep)}`,
+    footnote: `[^1]: ${'> '.repeat(deep)}x`,
+    // Not fences, so the quotes after them count: a backtick in the info string, a fence in a list
+    // item that the next line closes, a fence inside an HTML block.
+    fakeFence: `\`\`\`a\`\n${'> '.repeat(deep)}x\n\`\`\``,
+    listFence: `- a\n  \`\`\`\n${'> '.repeat(deep)}x\n\`\`\``,
+    htmlFence: `<div>\n\`\`\`\n\n${'> '.repeat(deep)}x\n\`\`\``,
+    crlf: `\`\`\`\r\nx\r\n\`\`\`\r\n${'> '.repeat(deep)}x`,
+  }))
+    assert.ok(ugc.markdownDepth(text) > ugc.DEPTH_MAX, name);
+  const ordinary = [
+    '## 一面（45 min）',
+    '> 面试官先问了 **项目**，然后 *追问* 细节 ~约 10 分钟~。',
+    '- 第一题：`LRU cache`，要求 O(1)，用了 `dict` + 双向链表',
+    '  - follow up：线程安全？加锁 / `__init__` 里初始化',
+    '1. 3~5 轮，每轮 ~45min，snake_case 和 a*b 不算强调',
+    '',
+    '```cpp',
+    ...Array(40).fill('Node *next = *head; int **grid = &p; f(*args, **kwargs);'),
+    '```',
+    '',
+    '***',
+    'HR 说 *offer* 一周内发，base ~180k，**总包** 还行。',
+  ].join('\n');
+  assert.ok(ugc.markdownDepth(ordinary) <= 4, String(ugc.markdownDepth(ordinary)));
+  // Linear: the longest post scans in well under a frame.
+  const started = performance.now();
+  for (const text of ['>'.repeat(20000), '*a '.repeat(6666), ' '.repeat(20000), '[^'.repeat(10000)]) ugc.markdownDepth(text);
+  assert.ok(performance.now() - started < 200);
 });
 
 void test('emails are masked in linear time', () => {

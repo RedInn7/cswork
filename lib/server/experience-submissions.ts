@@ -50,6 +50,52 @@ const field = (min: number, max: number) =>
     .max(max)
     .transform((s) => redactEmails(clean(s)).trim())
     .refine((s) => s.length >= min);
+/** Nesting a post may reach: thousands of levels overflow the markdown renderer's stack. */
+export const DEPTH_MAX = 32;
+const loose = (c: string) => /[\s\p{P}\p{S}]/u.test(c);
+/** Quote, list item and footnote markers opening a line. */
+const CONTAINERS = /^(?:[ \t]*(?:>|[*+-](?=[ \t])|\d{1,9}[.)](?=[ \t])|\[\^[^\]\n]{0,999}\]:))+/;
+/**
+ * How deeply markdown nests, from above: quote, list and footnote markers opening a line plus
+ * emphasis runs (`*`, `_`, `~`) left open in the paragraph, by CommonMark's flanking rules.
+ * Linear in the text. Unindented fenced code is skipped (pointers and `*args` would add up).
+ * Nesting by indentation alone isn't counted: every level indents each line below it, so the
+ * length cap holds it to ~140.
+ */
+export function markdownDepth(text: string) {
+  // An HTML block can swallow a fence line; with one about, fenced code counts like any text.
+  const fences = !/^ {0,3}</m.test(text);
+  const open: Record<string, number> = { '*': 0, _: 0, '~': 0 };
+  let deepest = 0,
+    fence = '';
+  for (const line of text.split(/\r\n?|\n/)) {
+    if (fence) {
+      const close = /^ {0,3}(`{3,}|~{3,})[ \t]*$/.exec(line)?.[1];
+      if (close?.[0] === fence[0] && close.length >= fence.length) fence = '';
+      continue;
+    }
+    // Only an unindented fence surely sits at the top, where nothing but its close ends it.
+    fence = (fences && /^(?:`{3,}(?=[^`]*$)|~{3,})/.exec(line)?.[0]) || '';
+    const markers = fence ? '' : (CONTAINERS.exec(line)?.[0] ?? '');
+    const rest = fence ? '' : line.slice(markers.length);
+    // A blank line, fence, list item or heading starts a paragraph; a quote marker may continue one.
+    if (!rest.trim() || /[*+\-\d^]/.test(markers) || /^\s*#/.test(rest)) open['*'] = open._ = open['~'] = 0;
+    const blocks = markers.match(/>|[*+-]|\d{1,9}[.)]|\[\^/g)?.length ?? 0;
+    deepest = Math.max(deepest, blocks + open['*'] + open._ + open['~']);
+    for (const run of rest.matchAll(/\*+|_+|~+/g)) {
+      const before = rest[run.index - 1] ?? ' ',
+        after = rest[run.index + run[0].length] ?? ' ';
+      const left = !/\s/.test(after) && (!loose(after) || loose(before));
+      const right = !/\s/.test(before) && (!loose(before) || loose(after));
+      const c = run[0][0];
+      if (left && !right) {
+        open[c] += run[0].length;
+        deepest = Math.max(deepest, blocks + open['*'] + open._ + open['~']);
+      } else if (right && !left) open[c] = Math.max(0, open[c] - run[0].length);
+    }
+  }
+  return deepest;
+}
 const ROUNDS = Object.keys(ROUND_LABELS) as [string, ...string[]];
 const OUTCOMES = Object.keys(RESULTS) as [string, ...string[]];
 const submission = z
@@ -333,6 +379,7 @@ export function mySubmissions(userId: string) {
 export function submitExperience(p: Person, input: unknown, now = Date.now()) {
   requireVerified(p);
   const d = submission.parse(input);
+  if (markdownDepth(d.body) > DEPTH_MAX) throw new HttpError(400, '正文的引用、列表或强调嵌套太深');
   // This month (a day ahead for time zones) back to three years ago.
   if (d.month > monthKey(now + DAY) || d.month < recentSince(now, 36)) throw new HttpError(400, '面试月份无效');
   const company = employerSlug(d.company);

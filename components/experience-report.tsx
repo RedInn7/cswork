@@ -1,8 +1,36 @@
 'use client';
-import { useState } from 'react';
+import { Component, useState, type ReactNode } from 'react';
 import { api } from '@/lib/types';
 import { useT } from '@/lib/i18n';
+import { OaMarkdown } from './oa-library';
 import '@/app/experience-submissions.css';
+
+type Plain = { text: string; children: ReactNode };
+/** Shows `text` as written when its children throw while rendering. */
+class PlainOnError extends Component<Plain, { failed: boolean; text: string }> {
+  state = { failed: false, text: this.props.text };
+  static getDerivedStateFromProps(props: Plain, state: { text: string }) {
+    return props.text === state.text ? null : { failed: false, text: props.text };
+  }
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  render() {
+    return this.state.failed ? <pre className="xs-plain">{this.props.text}</pre> : this.props.children;
+  }
+}
+
+/**
+ * OaMarkdown that falls back to plain text when it can't render, e.g. a post nesting quotes
+ * thousands deep overflows the renderer's stack: the page and its review buttons stay usable.
+ */
+export function SafeMarkdown({ body, math }: { body: string; math?: boolean }) {
+  return (
+    <PlainOnError text={body}>
+      <OaMarkdown body={body} math={math} />
+    </PlainOnError>
+  );
+}
 
 const REASONS: [string, string, string][] = [
   ['nda', '涉及保密协议（NDA）', 'Breaks an NDA'],

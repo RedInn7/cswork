@@ -4,7 +4,7 @@ import { RefreshCw } from 'lucide-react';
 import { api } from '@/lib/types';
 import { useT } from '@/lib/i18n';
 import { RESULTS, ROUND_LABELS } from '@/lib/experience';
-import { OaMarkdown } from './oa-library';
+import { SafeMarkdown } from './experience-report';
 import { Button } from './ui/button';
 import '@/app/experience-submissions.css';
 
@@ -136,7 +136,7 @@ function ReviewCard({ item, onQueue }: { item: Item; onQueue: (queue: Queue) => 
       <details open={pending}>
         <summary>{t('正文和题目', 'Post and questions')}</summary>
         <div>
-          <OaMarkdown body={item.body} />
+          <SafeMarkdown body={item.body} />
           {!!item.questions.length && (
             <ol>
               {item.questions.map((q, i) => (
