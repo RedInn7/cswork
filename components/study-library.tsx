@@ -46,8 +46,8 @@ type LibraryItem = {
   importedSources?: string[];
   progressStatus?: 'solved' | 'attempted' | 'not_started';
   judging?: boolean;
-  /** Up to two companies that asked it, for the row marks. */
-  companies?: { slug: string; name: string }[];
+  /** Up to two companies that asked it, for the row marks, with their report counts. */
+  companies?: { slug: string; name: string; count?: number; last?: string }[];
   selection?: {
     order: number;
     sectionSlug: string;
@@ -143,6 +143,10 @@ function safeSource(value: string) {
 function canJudge(item: LibraryItem) {
   return item.caseStatus === 'verified' && !!item.judgeProblemId;
 }
+const urlParam = (key: string) =>
+  typeof location === 'undefined'
+    ? ''
+    : new URLSearchParams(location.search).get(key) || '';
 
 export function StudyLibrary({
   navigate,
@@ -168,7 +172,13 @@ export function StudyLibrary({
   const [section, setSection] = useState('');
   const [stage, setStage] = useState('');
   const [status, setStatus] = useState('');
-  const [company, setCompany] = useState('');
+  // Company pages link here with ?company=<slug>&sort=frequency.
+  const [company, setCompany] = useState(() => urlParam('company').slice(0, 80));
+  const [sort, setSort] = useState(() =>
+    urlParam('sort') === 'frequency' ? 'frequency' : '',
+  );
+  // Report counts belong to one company: without a filter the line keeps its order.
+  const order = company ? sort : '';
   const [difficulty, setDifficulty] = useState('');
   const [page, setPage] = useState(1);
   const [data, setData] = useState<LibraryPage | null>(null);
@@ -347,6 +357,7 @@ export function StudyLibrary({
       stage,
       status,
       company,
+      sort: order,
     });
     api<LibraryPage>(`oj/library?${params}`)
       .then((result) => {
@@ -375,6 +386,7 @@ export function StudyLibrary({
     stage,
     status,
     company,
+    order,
     roundBusy,
   ]);
   useEffect(() => {
@@ -639,6 +651,7 @@ export function StudyLibrary({
     stage,
     status,
     company,
+    sort: order,
   }).toString();
   // next, nextProblemId and sequence span the whole line, so a previous
   // filter's response still holds them; only its rows are stale while loading.
@@ -1161,6 +1174,23 @@ export function StudyLibrary({
                   {c.name} ({c.count})
                 </option>
               ))}
+            </select>
+          </label>
+        )}
+        {company && (
+          <label>
+            {t('排序', 'Order')}
+            <select
+              value={sort}
+              onChange={(event) => {
+                setSort(event.target.value);
+                setPage(1);
+              }}
+            >
+              <option value="">{t('线路顺序', 'Line order')}</option>
+              <option value="frequency">
+                {t('该公司报告次数', 'Most reported here')}
+              </option>
             </select>
           </label>
         )}

@@ -168,6 +168,13 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
                 ? item.caseStatus === 'verified'
                 : false)),
   );
+  // sort=frequency: the chosen company's most reported problems first. The sort is
+  // stable, so equal counts keep the line's order.
+  if (company && params.get('sort') === 'frequency') {
+    const reports = (item: (typeof all)[number]) =>
+      item.companies.find((c) => c.slug === company)?.count ?? 0;
+    filtered.sort((a, b) => reports(b) - reports(a));
+  }
   const page = Math.max(
     1,
     Math.min(10000, Number.parseInt(params.get('page') || '1', 10) || 1),
@@ -199,7 +206,7 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
       companies: [...item.companies]
         .sort((a, b) => Number(b.slug === company) - Number(a.slug === company))
         .slice(0, 2)
-        .map(({ slug, name }) => ({ slug, name })),
+        .map(({ slug, name, count, last }) => ({ slug, name, count, last })),
     })),
     total: filtered.length,
     page,

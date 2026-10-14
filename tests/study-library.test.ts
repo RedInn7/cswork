@@ -105,16 +105,18 @@ void test('the curated list filters by company and marks each row with two compa
       items: { companies: Company[] }[];
       companies: Company[];
     };
-  // lc-3 (company-lc-map): Amazon, ByteDance, Microsoft, Snowflake, TikTok.
+  // lc-3 (company-lc-map v2): TikTok + ByteDance (2 reports, latest 2026-09), Amazon (2), then
+  // Microsoft, Snowflake and Lowe's (1 each). Marks carry each company's report count and date.
   assert.deepEqual(list().items[0].companies, [
-    { slug: 'amazon', name: 'Amazon' },
-    { slug: 'microsoft', name: 'Microsoft' },
+    { slug: 'tiktok', name: 'TikTok / ByteDance', count: 2, last: '2026-09-10' },
+    { slug: 'amazon', name: 'Amazon', count: 2, last: '2025-08-04' },
   ]);
   assert.deepEqual(
     list().companies.find((c) => c.slug === 'tiktok'),
     { slug: 'tiktok', name: 'TikTok / ByteDance', count: 1 },
     'TikTok and ByteDance count once',
   );
+  assert.equal(list().companies.find((c) => c.slug === 'lowe-s')?.name, "Lowe's", 'display names, not slugs');
   const tiktok = list('tiktok');
   assert.equal(tiktok.total, 1);
   assert.deepEqual(
@@ -133,6 +135,28 @@ void test('the curated list filters by company and marks each row with two compa
     if (previous === undefined) delete process.env.HIDDEN_COMPANIES;
     else process.env.HIDDEN_COMPANIES = previous;
   }
+});
+void test('sort=frequency orders a company filter by its report count, ties in line order', () => {
+  // Amazon reported lc-3 twice; lc-1 (line stop 21) and lc-49 (stop 22) once each.
+  const three = resolve(dir, 'three.jsonl');
+  writeFileSync(
+    three,
+    [
+      source,
+      { ...source, id: 'lc-1', number: 1, slug: 'two-sum', titleEn: 'Two Sum' },
+      { ...source, id: 'lc-49', number: 49, slug: 'group-anagrams', titleEn: 'Group Anagrams' },
+    ]
+      .map((row) => JSON.stringify(row))
+      .join('\n') + '\n',
+  );
+  loadStudyLibrary(sqlite(), three);
+  const ids = (params: Record<string, string>) =>
+    listStudyLibrary(new URLSearchParams(params)).items.map((item) => item.id);
+  assert.deepEqual(ids({ company: 'amazon' }), ['lc-1', 'lc-49', 'lc-3']);
+  assert.deepEqual(ids({ company: 'amazon', sort: 'frequency' }), ['lc-3', 'lc-1', 'lc-49']);
+  // Without a company there is nothing to rank by: the line's order stays.
+  assert.deepEqual(ids({ sort: 'frequency' }).slice(0, 3), ['lc-1', 'lc-49', 'lc-3']);
+  sqlite().prepare("DELETE FROM study_library WHERE id IN ('lc-1','lc-49')").run();
 });
 void test('legacy candidate inputs and supplied answers are rejected atomically', () => {
   writeFileSync(
