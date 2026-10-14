@@ -1,5 +1,6 @@
 import type { Problem, Language } from './problems';
 import type { CodingMode } from './coding-mode';
+import type { CompanyTag } from './company-tags';
 import { readLocale } from './i18n';
 
 export type OJProblem = Problem & {
@@ -24,6 +25,8 @@ export type OJProblem = Problem & {
     attribution: string;
   } | null;
   curatedHint?: { zh: string; en: string } | null;
+  /** Companies reported to have asked this problem (lib/company-tags.ts). */
+  companies?: CompanyTag[];
   /** A failed formal submission in the current practice round. */
   hintEarned?: boolean;
 };
