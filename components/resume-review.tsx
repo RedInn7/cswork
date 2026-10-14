@@ -72,8 +72,8 @@ export function ResumeReview({ zh }: { zh: boolean }) {
           {t('简历文字', 'Resume text')}
           <small id="resume-text-hint">
             {t(
-              `从 PDF 或文档里复制全部文字粘贴进来，至少 ${RESUME_MIN} 个字符，最多 ${RESUME_CHARS.toLocaleString()} 个。不支持上传文件。`,
-              `Copy all the text from your PDF or document and paste it here: at least ${RESUME_MIN} characters, at most ${RESUME_CHARS.toLocaleString()}. File uploads are not supported.`,
+              `从 PDF 或文档里复制全部文字粘贴进来，至少 ${RESUME_MIN} 个字符，最多 ${RESUME_CHARS.toLocaleString('en-US')} 个。不支持上传文件。`,
+              `Copy all the text from your PDF or document and paste it here: at least ${RESUME_MIN} characters, at most ${RESUME_CHARS.toLocaleString('en-US')}. File uploads are not supported.`,
             )}
           </small>
           <textarea
