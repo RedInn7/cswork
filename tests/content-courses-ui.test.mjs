@@ -16,7 +16,7 @@ const mocks = {
   'next/navigation': `export function notFound() { throw Object.assign(new Error('NEXT_NOT_FOUND'), { digest: 'NEXT_NOT_FOUND' }); }`,
   'next/link': `${prefix}export default function Link({ href, prefetch, children, ...rest }) { return React.createElement('a', { href, ...rest }, children); }`,
   editor: `${prefix}export function CodeDiff(p) { return React.createElement('pre', { 'data-diff': '', 'data-original': p.original, 'data-modified': p.modified, 'data-language': p.originalLanguage, 'aria-label': p.ariaLabel }); }`,
-  alert: `${prefix}export const AlertDialog=({open,children})=>open?React.createElement('div',{role:'alertdialog'},children):null;export const AlertDialogContent=({children})=>React.createElement('div',null,children);export const AlertDialogDescription=AlertDialogContent;export const AlertDialogHeader=AlertDialogContent;export const AlertDialogFooter=AlertDialogContent;export const AlertDialogTitle=AlertDialogContent;export const AlertDialogAction=({children,onClick})=>React.createElement('button',{onClick},children);export const AlertDialogCancel=AlertDialogAction;`,
+  alert: `${prefix}export const AlertDialog=({open,children})=>open?React.createElement('div',{role:'alertdialog'},children):null;const Box=({children})=>React.createElement('div',null,children);export const AlertDialogContent=({children,finalFocus})=>{React.useEffect(()=>()=>{const to=finalFocus?.();queueMicrotask(()=>to instanceof HTMLElement&&to.focus());},[]);return Box({children});};export const AlertDialogDescription=Box;export const AlertDialogHeader=Box;export const AlertDialogFooter=Box;export const AlertDialogTitle=Box;export const AlertDialogAction=({children,onClick})=>React.createElement('button',{onClick},children);export const AlertDialogCancel=AlertDialogAction;`,
 };
 register(
   `data:text/javascript,${encodeURIComponent(`const mocks=${JSON.stringify(mocks)};
@@ -100,11 +100,15 @@ test('signed out, quiz answers lock, explain and stay in this browser; bad saved
     assert.ok(document.querySelector('.sd-quiz-foot').textContent.includes('stay on this device'));
     const wrong = framework.quiz[0].answer === 0 ? 1 : 0;
     const first = () => [...document.querySelectorAll('.sd-quiz-list > li')][0];
+    first().querySelectorAll('button')[wrong].focus();
     await act(async () => first().querySelectorAll('button')[wrong].click());
+    assert.ok(document.activeElement === first().querySelectorAll('button')[wrong], 'the pick keeps focus');
     assert.ok(first().querySelector('.sd-quiz-why[data-state="wrong"]') !== null);
     assert.ok(first().querySelector('.sd-quiz-why').textContent.includes(`The answer is ${'ABCD'[framework.quiz[0].answer]}.`));
     assert.ok(first().querySelector(`button[data-state="right"]`) === first().querySelectorAll('button')[framework.quiz[0].answer]);
-    assert.ok([...first().querySelectorAll('button')].every((b) => b.disabled), 'an answered question is locked');
+    assert.ok([...first().querySelectorAll('button')].every((b) => b.getAttribute('aria-disabled') === 'true'), 'an answered question is locked');
+    await act(async () => first().querySelectorAll('button')[framework.quiz[0].answer].click());
+    assert.ok(first().querySelector('.sd-quiz-why[data-state="wrong"]') !== null, 'a second click changes nothing');
     assert.deepEqual(JSON.parse(localStorage.getItem(key)).picks, [wrong, null, null]);
     const second = () => [...document.querySelectorAll('.sd-quiz-list > li')][1];
     await act(async () => second().querySelectorAll('button')[framework.quiz[1].answer].click());
@@ -210,6 +214,9 @@ test('the editorial stays locked until solved or confirmed, switches language an
     assert.equal(unlocks, 1);
 
     await render({ unlocked: true });
+    await settle();
+    // The confirm unmounted the "Show anyway" button; focus goes to the heading, not <body>.
+    assert.ok(document.activeElement === document.getElementById('ling-editorial-title'), 'focus lands on the heading');
     assert.equal(document.querySelectorAll('.cs-ling-approaches > li').length, editorial.approaches.length);
     assert.ok(document.querySelector('.cs-ling-unverified') !== null);
     // The editor's language picks the tab; C++ code shows first.
@@ -224,6 +231,7 @@ test('the editorial stays locked until solved or confirmed, switches language an
     assert.equal(diff.getAttribute('data-original'), editorial.approaches[1].python);
     assert.equal(diff.getAttribute('data-modified'), 'my code');
     assert.equal(diff.getAttribute('data-language'), 'python');
+    assert.ok(document.querySelector('.cs-diff-labels').textContent.includes('My code · C++'), 'both labels use display names');
     assert.equal(diff.getAttribute('aria-label'), 'Differences between the editorial and my code');
     await act(async () => buttons('Hide comparison')[0].click());
     assert.equal(document.querySelectorAll('pre[data-diff]').length, 0);

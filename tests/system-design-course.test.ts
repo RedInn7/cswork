@@ -68,6 +68,7 @@ void test('the course file has unique slugs and complete bilingual chapters and 
 });
 
 void test('the loader finds chapters by slug and lists the course pages for the sitemap', () => {
+  // The mock interview's design rounds link to /system-design/framework.
   assert.equal(sdChapter('framework')?.slug, 'framework');
   assert.equal(sdChapter('nope'), undefined);
   assert.equal(sdChapter('__proto__'), undefined);
