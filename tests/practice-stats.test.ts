@@ -80,9 +80,14 @@ void test('an empty yesterday counts on today’s AC to freeze it', () => {
 });
 
 void test('daily problem days are starred and a longer grid finds an older best', () => {
-  const stats = practiceStats([ac('a', -1)], dayStamp, true, [day(-1)]);
+  // Beijing Oct 13 08:00, twice, and Oct 14 04:00: one star per Beijing date in any time zone.
+  const daily = [Date.UTC(2026, 9, 13, 0), Date.UTC(2026, 9, 13, 1), Date.UTC(2026, 9, 13, 20)];
+  const stats = practiceStats([ac('a', -1)], dayStamp, true, daily);
   assert.equal(stats.cells[stats.todayIndex - 1].daily, true);
-  assert.equal(stats.cells.filter((c) => c.daily).length, 1);
+  assert.deepEqual(
+    stats.cells.flatMap((c) => (c.daily ? [new Date(c.time).getDate()] : [])),
+    [13, 14],
+  );
   const old = Array.from({ length: 8 }, (_, k) => ac('a', -300 - k));
   assert.equal(practiceStats(old, dayStamp, true).best, 0);
   assert.equal(practiceStats(old, dayStamp, true, [], 52).best, 8);

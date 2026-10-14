@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Snowflake } from 'lucide-react';
+import { beijingDate } from '@/lib/daily-problem';
 
 export type Activity = { problem_id: string; created_at: number };
 export type PracticeCell = {
@@ -72,7 +73,9 @@ export function practiceStats(
     solvedByDay.set(key, set);
   }
   const count = (time: number) => solvedByDay.get(dayKey(time))?.size ?? 0;
-  const dailyDays = new Set(daily.map(dayKey));
+  // A daily problem belongs to its Beijing date (as dailyStreak counts it): star the local
+  // cell with that date. ponytail: one that is still tomorrow here appears at local midnight.
+  const dailyDays = new Set(daily.map((t) => dayKey(Date.parse(`${beijingDate(t)}T12:00`))));
   const cells: PracticeCell[] = [];
   const months: { column: number; label: string }[] = [];
   const seen = new Set<string>();
