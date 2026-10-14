@@ -4,7 +4,7 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
 import { RouteLine } from './route-line';
-import { routeStops, type RouteStop } from '@/lib/route-stops';
+import { routeStops, stopFromUrl, type RouteStop } from '@/lib/route-stops';
 import {
   ArrowLeft,
   ArrowRight,
@@ -160,7 +160,8 @@ export function StudyLibrary({
   const roundPending = useRef(false);
   const createKey = useRef<string | null>(null);
   const listRequest = useRef(0);
-  const [section, setSection] = useState('');
+  // ?section=<stop> opens on that stop (links from the mock OA topics).
+  const [section, setSection] = useState(stopFromUrl);
   const [stage, setStage] = useState('');
   const [status, setStatus] = useState('');
   const [difficulty, setDifficulty] = useState('');

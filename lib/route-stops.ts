@@ -73,6 +73,12 @@ export const topicName = (slug: string, zh: boolean) =>
 /** Line 500 practice for a topic, or null when the topic is not one of its stops. */
 export const stopHref = (slug: string) =>
   Object.hasOwn(STOP_NAMES, slug) ? `/?view=problems&section=${slug}` : null;
+/** The stop named by ?section= in this page's URL, or '' (also on the server). */
+export function stopFromUrl() {
+  if (typeof location === 'undefined') return '';
+  const slug = new URLSearchParams(location.search).get('section') || '';
+  return Object.hasOwn(STOP_NAMES, slug) ? slug : '';
+}
 
 const groupOf = new Map(
   ROUTE_SECTIONS.flatMap(({ zh, en, slugs }) => {

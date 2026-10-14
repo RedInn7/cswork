@@ -8,7 +8,7 @@ register(
   import.meta.url,
 );
 const { MockExamBar } = await import('../components/mock-exam-bar.tsx');
-const { MockOa } = await import('../components/mock-oa.tsx');
+const { MockOa, MockTopicBrief } = await import('../components/mock-oa.tsx');
 
 const session = (startedAt) => ({
   id: 's1',
@@ -74,4 +74,57 @@ test('early in the exam there is no warning; guests can open the mock landing', 
   assert.match(landing, /One click draws a real-format OA/);
   assert.match(landing, /aria-busy="true"/, 'company cards load after the presets request');
   assert.match(landing, /Finished mocks show up here/);
+});
+
+test('the check-in says what the OA tests and links its topics to their Line 500 stops', () => {
+  const preset = {
+    topics: [
+      { slug: 'greedy-scheduling', weight: 1 },
+      { slug: 'simulation', weight: 0.5 },
+    ],
+    focus_zh: '贪心',
+    focus_en: 'Greedy with sorting.',
+    style_zh: '故事',
+    style_en: 'Long stories.',
+    tips_zh: '先看范围',
+    tips_en: 'Check the constraints.',
+    evidence: 'thin',
+  };
+  const html = renderToStaticMarkup(createElement(MockTopicBrief, { preset, navigate() {} }));
+  assert.match(html, /What this OA tests/);
+  assert.match(html, /Greedy with sorting\./);
+  assert.match(html, /Long stories\./);
+  assert.match(html, /Check the constraints\./);
+  assert.match(html, /<a href="\/\?view=problems&amp;section=greedy-scheduling">Greedy<\/a>/);
+  // Simulation is not a Line 500 stop: named, not linked.
+  assert.match(html, /<span>Simulation<\/span>/);
+  assert.match(html, /--w:0\.5/);
+  assert.match(html, /weight 50%/);
+  assert.match(html, /little public information/);
+  const solid = renderToStaticMarkup(
+    createElement(MockTopicBrief, { preset: { ...preset, evidence: 'data+reports' }, navigate() {} }),
+  );
+  assert.doesNotMatch(solid, /little public information/);
+});
+
+test('a ?section= link opens Line 500 on that stop; anything else opens the whole line', async () => {
+  const { stopFromUrl, stopHref, topicName } = await import('../lib/route-stops.ts');
+  assert.equal(stopFromUrl(), '', 'no location on the server');
+  try {
+    for (const [search, stop] of [
+      ['?view=problems&section=binary-search', 'binary-search'],
+      ['?view=problems&section=simulation', ''],
+      ['?view=problems&section=__proto__', ''],
+      ['?view=problems', ''],
+    ]) {
+      globalThis.location = { search };
+      assert.equal(stopFromUrl(), stop, search);
+    }
+  } finally {
+    delete globalThis.location;
+  }
+  assert.equal(stopHref('sql'), null);
+  assert.equal(topicName('sql', true), 'SQL');
+  assert.equal(topicName('simulation', true), '模拟/实现');
+  assert.equal(topicName('made-up', false), 'made-up');
 });
