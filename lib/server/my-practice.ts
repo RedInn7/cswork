@@ -61,7 +61,7 @@ export function problemMarks(userId: string) {
   return marks;
 }
 
-async function readJson(request: Request, max: number) {
+export async function readJson(request: Request, max: number) {
   try {
     return JSON.parse(await boundedText(request, max)) as unknown;
   } catch (error) {

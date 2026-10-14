@@ -51,6 +51,7 @@ import { Button } from './ui/button';
 import { OaCompanyBadge, OaEditorial } from './oa-library';
 import { CompanyTags } from './company-tags';
 import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-notes';
+import { AskedReport, communityProblem } from './problem-community';
 import { HintLadder, useHintLadder } from './hint-ladder';
 import { SimilarProblems } from './similar-problems';
 import {
@@ -1277,8 +1278,13 @@ function Workspace({
                   : ''}
                 {statement.title}
               </h2>
-              {note.enabled && (
+              {note.enabled ? (
                 <ProblemMarks problemId={problem.id} english={uiEnglish} />
+              ) : (
+                !boot.person &&
+                communityProblem(problem.id) && (
+                  <AskedReport problemId={problem.id} english={uiEnglish} signedIn={false} />
+                )
               )}
               {shownHistory.some(
                 (item) =>

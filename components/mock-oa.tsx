@@ -51,6 +51,7 @@ import {
   type Scoring,
   type Slot,
 } from '@/lib/mock-oa';
+import { syncMockHistory, uploadMocks } from '@/lib/mock-cloud';
 import '@/app/mock-oa.css';
 
 type Preset = {
@@ -190,7 +191,8 @@ function Stops({ slots, zh }: { slots: Slot[]; zh: boolean }) {
 
 /**
  * Timed mock OA (?view=mock): the company board, check-in (&session=) and the
- * score report (&report=). Sessions and history stay in this browser.
+ * score report (&report=). The running session lives in this browser; finished
+ * ones also follow the account (lib/mock-cloud.ts).
  */
 export function MockOa({
   boot,
@@ -215,6 +217,16 @@ export function MockOa({
   };
   // Another tab's draw, start or hand-in shows up here too.
   useEffect(() => watchMockState(userId, () => setState(readMockState(userId))), [userId]);
+  // Signed in, finished mocks sync with the account: other devices' show up here too.
+  const signedIn = !!boot.person;
+  useEffect(() => {
+    if (!signedIn) return;
+    let live = true;
+    void syncMockHistory(userId).then((merged) => live && merged && setState(merged));
+    return () => {
+      live = false;
+    };
+  }, [userId, signedIn]);
   // Persist what reading settled: a mock whose time ran out while away is now history.
   // Once per mount (keyed by user): the first render's settled state.
   useEffect(() => {
@@ -334,6 +346,8 @@ export function MockOa({
               ...latest,
               history: latest.history.map((h) => (h.id === report.id ? { ...h, result } : h)),
             }));
+            // The server scores it again on its own; a failed upload retries on the next visit.
+            if (signedIn) uploadMocks([{ ...report, result }]).catch(() => {});
           }}
           again={() => draw('again', drawRequest(report))}
           busy={busy === 'again'}
@@ -854,7 +868,7 @@ function MockHistory({ history, navigate }: { history: MockSession[]; navigate: 
     <section className="mock-section" aria-labelledby="mock-history-title">
       <div className="mock-toolbar">
         <h3 id="mock-history-title">{t('最近的模拟', 'Recent mocks')}</h3>
-        <p>{t('最多保留 30 场，只存在这个浏览器里。', 'The last 30, kept in this browser only.')}</p>
+        <p>{t('最近 30 场，已同步到你的账号，换台设备也能看到。', 'The last 30, synced to your account across devices.')}</p>
       </div>
       {history.length ? (
         <ol className="mock-history">
@@ -1262,8 +1276,8 @@ function MockReport({
         </ol>
         <p className="mock-footnote">
           {t(
-            '部分分：判题遇到第一个未通过的用例就停止，所以按它之前通过的用例数计。成绩只统计开考到交卷之间的提交，只保存在这个浏览器里。',
-            'Partial credit: the judge stops at the first failing test, so it counts the tests passed before that one. Only submissions between the start and the hand-in count, and the result is kept in this browser only.',
+            '部分分：判题遇到第一个未通过的用例就停止，所以按它之前通过的用例数计。成绩只统计开考到交卷之间的提交，并同步到你的账号。',
+            'Partial credit: the judge stops at the first failing test, so it counts the tests passed before that one. Only submissions between the start and the hand-in count, and the result is saved to your account.',
           )}
         </p>
         <div className="mock-actions">

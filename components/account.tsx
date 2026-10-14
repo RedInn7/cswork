@@ -37,6 +37,7 @@ import {
 import { readLocale, useLocale, useT, type Locale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { Heading } from './learning';
+import { PublicProfileSettings } from './public-profile-settings';
 import '@/app/commerce.css';
 
 // English labels for the shared (Chinese) status maps in lib/commerce-types.
@@ -950,6 +951,7 @@ export function AccountView({
           </div>
         </section>
       </div>
+      <PublicProfileSettings />
       <section className="form-card commerce-account-card">
         <h2>
           <KeyRound size={19} />

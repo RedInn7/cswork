@@ -5,6 +5,7 @@ import { api } from '@/lib/types';
 import { readLocale } from '@/lib/i18n';
 import { NOTE_MAX_BYTES } from '@/lib/practice-review';
 import { StatementMarkdown } from './statement-markdown';
+import { AskedReport, communityProblem, ListMenu } from './problem-community';
 import '@/app/problem-notes.css';
 
 type T = (zh: string, en: string) => string;
@@ -422,6 +423,12 @@ export function ProblemMarks({
           <Icon size={17} aria-hidden="true" />
         </button>
       ))}
+      {communityProblem(problemId) && (
+        <>
+          <ListMenu problemId={problemId} english={english} />
+          <AskedReport problemId={problemId} english={english} />
+        </>
+      )}
       {error && (
         <span role="alert" className="sr-only">
           {t('标记没有保存：', 'Mark not saved: ')}
