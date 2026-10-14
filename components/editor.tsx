@@ -14,6 +14,7 @@ import {
   defaultEditorSettings,
   type EditorSettings,
 } from '@/lib/editor-settings';
+import { currentTheme } from '@/lib/theme-script';
 
 type Runtime = typeof import('./monaco-client');
 let runtimePromise: Promise<Runtime> | undefined;
@@ -64,7 +65,7 @@ export function CodeEditor({
   value,
   language,
   onChange,
-  settings = defaultEditorSettings,
+  settings = { ...defaultEditorSettings, theme: currentTheme() },
   path,
   readOnly = false,
   onRun,

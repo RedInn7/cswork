@@ -1,5 +1,6 @@
 import { starters, type Language } from './problems';
 import type { CodingMode } from './coding-mode';
+import { currentTheme } from './theme-script';
 
 export type EditorSettings = {
   theme: 'light' | 'dark';
@@ -32,7 +33,8 @@ export function readEditorSettings(userId: string): EditorSettings {
   try {
     const value = JSON.parse(localStorage.getItem(settingsKey(userId)) || '{}');
     return {
-      theme: value.theme === 'dark' ? 'dark' : 'light',
+      // Until the reader picks one here, the editor follows the site theme.
+      theme: value.theme === 'dark' || value.theme === 'light' ? value.theme : currentTheme(),
       fontSize: [12, 13, 14, 15, 16, 18, 20].includes(value.fontSize)
         ? value.fontSize
         : 14,

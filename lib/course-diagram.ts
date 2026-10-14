@@ -2,7 +2,30 @@ import type { MermaidConfig } from 'mermaid';
 
 export const DIAGRAM_MAX_LENGTH = 30_000;
 
-export function courseDiagramConfig(): MermaidConfig {
+// Diagrams render to images once, in the theme the page had when mermaid loaded.
+const DIAGRAM_COLORS = {
+  light: {
+    primaryColor: '#eef3fc',
+    primaryTextColor: '#273b5b',
+    primaryBorderColor: '#8ca6cc',
+    lineColor: '#617b9f',
+    secondaryColor: '#f0f7f5',
+    tertiaryColor: '#f9f5ec',
+    background: '#ffffff',
+  },
+  dark: {
+    darkMode: true,
+    primaryColor: '#1c2a3d',
+    primaryTextColor: '#dce6f5',
+    primaryBorderColor: '#5d7aa3',
+    lineColor: '#8ea6c8',
+    secondaryColor: '#17302a',
+    tertiaryColor: '#2e2818',
+    background: '#191919',
+  },
+};
+
+export function courseDiagramConfig(theme: 'light' | 'dark' = 'light'): MermaidConfig {
   return {
     startOnLoad: false,
     securityLevel: 'strict',
@@ -14,13 +37,7 @@ export function courseDiagramConfig(): MermaidConfig {
     fontFamily: 'Arial, "PingFang SC", "Microsoft YaHei", sans-serif',
     themeVariables: {
       fontSize: '15px',
-      primaryColor: '#eef3fc',
-      primaryTextColor: '#273b5b',
-      primaryBorderColor: '#8ca6cc',
-      lineColor: '#617b9f',
-      secondaryColor: '#f0f7f5',
-      tertiaryColor: '#f9f5ec',
-      background: '#ffffff',
+      ...DIAGRAM_COLORS[theme],
     },
     secure: [
       'secure',

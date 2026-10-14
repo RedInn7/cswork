@@ -4,7 +4,6 @@ import { useSyncExternalStore } from 'react';
 import {
   THEME_COOKIE,
   THEME_KEY,
-  type Theme,
   type ThemePreference,
 } from './theme-script';
 
@@ -20,13 +19,6 @@ export function readThemePreference(): ThemePreference {
   if (typeof document === 'undefined') return 'system';
   const cookie = new RegExp(`(?:^|; )${THEME_COOKIE}=(light|dark|system)`).exec(document.cookie);
   return (cookie?.[1] as ThemePreference | undefined) ?? 'system';
-}
-
-/** The theme on screen right now (what the inline script applied). */
-export function currentTheme(): Theme {
-  return typeof document !== 'undefined' && document.documentElement.classList.contains('dark')
-    ? 'dark'
-    : 'light';
 }
 
 export function setThemePreference(preference: ThemePreference) {
