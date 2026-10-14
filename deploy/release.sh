@@ -56,12 +56,20 @@ git -C "$dir" checkout -q "$sha"
 if [[ "$sha" != "$base" ]]; then
   git -C "$dir" cat-file -e "$base^{commit}" 2>/dev/null ||
     die "deployed commit $base is not in the repository; cannot compare schemas"
-  # app-only-release.sh never migrates; schema changes need a full install.sh release.
+  # New tables and indexes migrate here, before the new app starts; the running app
+  # ignores them. Anything else (drop, rename, rewrite) needs a full install.sh release.
+  migrations=''
   if ! git -C "$dir" diff --quiet "$base" "$sha" -- drizzle db; then
-    die "schema changed between $base and $sha; use deploy/install.sh"
+    migrations=$(bash "$dir/deploy/check-additive-migrations.sh" "$dir" "$base" "$sha") ||
+      die "schema change between $base and $sha: $migrations; use deploy/install.sh"
   fi
   log 'installing and building'
   (cd "$dir" && npm ci --no-audit --no-fund >/dev/null && npm run build >/dev/null)
+  if [[ -n "$migrations" ]]; then
+    log "applying additive migrations: $(tr '\n' ' ' <<<"$migrations")"
+    (cd "$dir" && sudo -u cswork "$prod_node" --env-file="$env_file" scripts/migrate.mjs) ||
+      die 'migration failed; nothing deployed'
+  fi
   log 'deploying'
   sudo bash "$dir/deploy/app-only-release.sh" "$base" "$sha" "$dir" "$prod_node"
 else
@@ -69,7 +77,7 @@ else
   (cd "$dir" && npm ci --no-audit --no-fund >/dev/null)
 fi
 
-# Builds are world-readable under /srv, so the service user reads them directly.
+# Builds are world-readable, so the service user reads them directly.
 as_cswork() { (cd "$dir" && sudo -u cswork "$prod_node" --env-file="$env_file" "$@"); }
 # Process substitution would hide a crash; capture first so a failure stops the release clearly.
 listed=$(as_cswork scripts/oa-judge/unpublished-batches.mjs) || die 'could not list unpublished OA batches'

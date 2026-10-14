@@ -36,3 +36,7 @@ sudo bash deploy/app-only-release.sh \
 失败会回切旧版本并检查健康；回滚无法确认健康时维持队列暂停并报错，需要人工处理。正常运行中的程序仍可能写入业务数据和 worker 心跳；“不改数据库”指不执行部署迁移或直接修改数据，并非停止全部业务写入。不要并行运行其他部署工具；锁仅防止该脚本自身重复执行。
 
 部署后核对新版本 `REVISION`、登录后 OA 列表/题解、匿名访问拒绝及私有目录 404，再检查原有算法题单和评测队列。脚本失败或中断留下的候选版本目录保留供排查，不自动删除任何发布目录。
+
+## 只新增表的迁移
+
+`release.sh` 发现 `drizzle/` 或 `db/` 有变化时，先用 `deploy/check-additive-migrations.sh` 检查：只允许新增迁移文件（以及对应的 snapshot 和 `_journal.json`），新 SQL 里不能有 drop / rename / delete / update / replace。通过后，在新版本构建完、上线前，以 cswork 用户运行 `scripts/migrate.mjs`。旧版本照常运行，不受新表影响；部署失败回滚后，新表留着也没有影响。其他类型的结构变更仍然要走 `deploy/install.sh`。
