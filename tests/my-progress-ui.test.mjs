@@ -140,6 +140,8 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     await act(async () => tab('review').click());
     assert.deepEqual(titles(), ['1. Two Sum']);
     assert.match(document.querySelector('.progress-detail').textContent, /overdue/);
+    await act(async () => tab('starred').click());
+    assert.deepEqual(titles(), ['1. Two Sum'], 'the Starred tab lists star marks');
     await act(async () => tab('redo').click());
     assert.deepEqual(titles(), ['2. Add Two Numbers']);
     assert.match(document.querySelector('.progress-detail').textContent, /Not submitted yet/);

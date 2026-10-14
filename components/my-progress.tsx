@@ -324,7 +324,7 @@ export function MyProgress({
         }),
         ['今天没有到期的复习。通过的题会在 3、7、21、60 天后回来找你。', 'Nothing due today. Solved problems come back after 3, 7, 21 and 60 days.'],
       );
-    const entries = tab === 'notes' ? noted : marked(tab);
+    const entries = tab === 'notes' ? noted : marked(tab === 'starred' ? 'star' : 'redo');
     return list(
       entries.map(({ id, at }) => {
         const item = byId.get(id);
