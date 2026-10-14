@@ -26,6 +26,7 @@ import { api } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { LeetcodeSyncPanel } from './leetcode-sync-panel';
+import { CompanyMarks } from './company-tags';
 import { LEETCODE_SYNC_AVAILABLE } from '@/lib/leetcode-sync-types';
 import type { Navigate } from './learning';
 
@@ -45,6 +46,8 @@ type LibraryItem = {
   importedSources?: string[];
   progressStatus?: 'solved' | 'attempted' | 'not_started';
   judging?: boolean;
+  /** Up to two companies that asked it, for the row marks. */
+  companies?: { slug: string; name: string }[];
   selection?: {
     order: number;
     sectionSlug: string;
@@ -73,6 +76,8 @@ type LibraryPage = RoundState & {
   page: number;
   pageSize: number;
   topics: string[];
+  /** Companies on the line, with how many of its problems they asked. */
+  companies?: { slug: string; name: string; count: number }[];
   sequence?: string[];
   nextProblemId?: string | null;
   /** The recommended next problem, for everyone (signed out: the first stop). */
@@ -172,6 +177,7 @@ export function StudyLibrary({
   }, [section]);
   const [stage, setStage] = useState('');
   const [status, setStatus] = useState('');
+  const [company, setCompany] = useState('');
   const [difficulty, setDifficulty] = useState('');
   const [page, setPage] = useState(1);
   const [data, setData] = useState<LibraryPage | null>(null);
@@ -330,7 +336,7 @@ export function StudyLibrary({
       if (!roundPending.current) setRetry((value) => value + 1);
     }, 3000);
     return () => window.clearInterval(timer);
-  }, [data, roundBusy, page, search, difficulty, section, stage, status]);
+  }, [data, roundBusy, page, search, difficulty, section, stage, status, company]);
   useEffect(() => {
     if (roundBusy) return;
     let current = true;
@@ -349,6 +355,7 @@ export function StudyLibrary({
       section,
       stage,
       status,
+      company,
     });
     api<LibraryPage>(`oj/library?${params}`)
       .then((result) => {
@@ -376,6 +383,7 @@ export function StudyLibrary({
     section,
     stage,
     status,
+    company,
     roundBusy,
   ]);
   useEffect(() => {
@@ -639,6 +647,7 @@ export function StudyLibrary({
     section,
     stage,
     status,
+    company,
   }).toString();
   // next, nextProblemId and sequence span the whole line, so a previous
   // filter's response still holds them; only its rows are stale while loading.
@@ -1145,6 +1154,25 @@ export function StudyLibrary({
             <option value="ready">{t('可站内判题', 'Ready to submit')}</option>
           </select>
         </label>
+        {!!data?.companies?.length && (
+          <label>
+            {t('公司', 'Company')}
+            <select
+              value={company}
+              onChange={(event) => {
+                setCompany(event.target.value);
+                setPage(1);
+              }}
+            >
+              <option value="">{t('全部公司', 'All companies')}</option>
+              {data.companies.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.name} ({c.count})
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
       </fieldset>
       {selectedStop && (
         <div className="route-selected">
@@ -1230,12 +1258,12 @@ export function StudyLibrary({
           ? t('正在查找题目…', 'Finding problems…')
           : error
             ? t('暂时无法加载', 'Unable to load right now')
-            : !search && !difficulty && !stage && !status && !section
+            : !search && !difficulty && !stage && !status && !section && !company
               ? t(
                   `全线共 ${data?.total || 0} 道题`,
                   `${data?.total || 0} problems on the line`,
                 )
-              : section && !search && !difficulty && !stage && !status
+              : section && !search && !difficulty && !stage && !status && !company
                 ? t(
                     `本站 ${data?.total || 0} 道题`,
                     `${data?.total || 0} problems at this stop`,
@@ -1273,6 +1301,7 @@ export function StudyLibrary({
               setSection('');
               setStage('');
               setStatus('');
+              setCompany('');
               setPage(1);
             }}
           >
@@ -1405,6 +1434,9 @@ export function StudyLibrary({
                         {title(item, english)}
                       </strong>
                       {pips(item.selection?.stage)}
+                      {!!item.companies?.length && (
+                        <CompanyMarks companies={item.companies} english={english} />
+                      )}
                       {!!item.importedSources?.length && (
                         <small>
                           {item.solvedLocally

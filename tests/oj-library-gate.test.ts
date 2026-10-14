@@ -326,6 +326,11 @@ void test('LeetCode submissions preserve raw code, isolate request identity and 
   );
   const supportedBody = await supported.json();
   assert.deepEqual(supportedBody.codingModes, ['leetcode', 'acm']);
+  // Company tags ride along with the statement (lib/content/company-lc-map.json).
+  assert.deepEqual(
+    supportedBody.companies.map((c: { slug: string }) => c.slug),
+    ['amazon', 'meta'],
+  );
   assert.match(
     supportedBody.leetcodeTemplates.python,
     /def twoSum\(self, nums: List\[int\], target: int\) -> List\[int\]:/,

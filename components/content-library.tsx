@@ -83,6 +83,8 @@ type Detail = ContentSummary & {
   relations: Relation[];
   /** `problem` is the judge problem id when the bank has one for it. */
   dupOf: { kind: 'oa' | 'library' | 'prachub'; id: string; title?: string; problem?: string } | null;
+  /** A judgeable LeetCode problem this coding question maps to. */
+  practice?: string | null;
 };
 
 /**
@@ -488,6 +490,9 @@ export function ContentDetail({
   const item = current?.item;
   const dup = item?.dupOf;
   const judgeable = !!dup?.problem && problemIds.includes(dup.problem);
+  // The mapped LeetCode problem, unless the duplicate callout below already links one.
+  const practice =
+    item?.practice && problemIds.includes(item.practice) && !(dup && dup.kind !== 'prachub') ? item.practice : null;
   const section = contentSection(params.type);
   const back = () =>
     navigate(section, lastList[section] ?? (section === 'resources' ? { type: params.type } : {}));
@@ -542,6 +547,27 @@ export function ContentDetail({
                   {judgeable ? t('去做题', 'Go to problem') : t('打开题库', 'Open Problem Bank')}{' '}
                   <ArrowRight size={14} />
                 </button>
+              </div>
+            )}
+            {practice && (
+              <div className="ct-callout rd-reveal" style={{ '--i': 1 } as React.CSSProperties}>
+                <span>
+                  {t(
+                    '算法题库里有对应的题，可以直接在线写代码、提交评测。',
+                    'The Problem Bank has a matching problem you can code and submit online.',
+                  )}
+                </span>
+                <a
+                  className="rd-button"
+                  href={`/?view=problem&problem=${encodeURIComponent(practice)}`}
+                  onClick={(event) => {
+                    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                    event.preventDefault();
+                    navigate('problem', { problem: practice });
+                  }}
+                >
+                  {t('在 CSWork 上在线写代码', 'Practice this problem here')} <ArrowRight size={14} aria-hidden="true" />
+                </a>
               </div>
             )}
             {dup?.kind === 'prachub' && /^(cq|iq)-/.test(dup.id) && (
