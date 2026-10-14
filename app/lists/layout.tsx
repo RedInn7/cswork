@@ -1,5 +1,6 @@
 import './lists.css';
 import Link from 'next/link';
+import { JoinCommunity } from '../discuss/community-link';
 import { requestLocale } from '@/lib/server/locale';
 
 /** Crawlable classic list mappings: which problems of each list are judgeable here. */
@@ -29,6 +30,10 @@ export default async function ListsLayout({
         <Link href="/mock-oa" prefetch={false}>
           {zh ? '模拟 OA' : 'Mock OA'}
         </Link>
+        <Link href="/lists/community" prefetch={false}>
+          {zh ? '题单广场' : 'Community lists'}
+        </Link>
+        <JoinCommunity zh={zh} />
         <Link href="/privacy" prefetch={false}>
           {zh ? '隐私说明' : 'Privacy'}
         </Link>
