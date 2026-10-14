@@ -147,6 +147,7 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/mock-interview' },
   { path: '/privacy' },
   { path: '/lists' },
+  { path: '/company/top' },
   ...classicLists.map((list) => ({ path: `/lists/${list.slug}` })),
   { path: '/topics' },
   ...ROUTE_SECTIONS.flatMap((s) => s.slugs.map((slug) => ({ path: `/topics/${slug}` }))),

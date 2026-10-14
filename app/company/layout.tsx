@@ -33,6 +33,9 @@ export default async function CompanyLayout({
         {children}
       </main>
       <footer className="public-library-footer">
+        <Link href="/company/top" prefetch={false}>
+          {zh ? '全站高频 Top 100' : 'Top 100 problems'}
+        </Link>
         <Link href="/oa" prefetch={false}>
           {zh ? '全部公司 OA' : 'All company OAs'}
         </Link>
