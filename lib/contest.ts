@@ -4,7 +4,6 @@
  */
 import type { RatingBand } from './lc-rating';
 import { seededRandom } from './mock-oa';
-import { activeStatuses } from './oj-client';
 
 const MINUTE = 60000,
   HOUR = 60 * MINUTE,
@@ -77,6 +76,11 @@ export const CONTEST_KINDS = {
 
 /** Each wrong verdict before a problem's first AC adds 5 minutes. */
 export const PENALTY_MS = 5 * MINUTE;
+/**
+ * Verdicts still on their way: lib/oj-client.ts's activeStatuses, copied because that module
+ * pulls the client-only i18n into the server code that scores rooms.
+ */
+const PENDING = new Set(['pending', 'submitting', 'queued', 'compiling', 'running', 'judging', 'processing']);
 /** Verdicts that cost a penalty: compile errors and judge faults do not. */
 export const PENALIZED = new Set(['wrong_answer', 'time_limit', 'memory_limit', 'output_limit', 'runtime_error']);
 
@@ -160,7 +164,7 @@ export function standings(
           return { solved: true, at, wrong, pending: false };
         }
         if (PENALIZED.has(s.status)) wrong++;
-        else if (activeStatuses.has(s.status)) pending = true;
+        else if (PENDING.has(s.status)) pending = true;
       }
       return { solved: false, at: null, wrong, pending };
     });
