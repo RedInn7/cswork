@@ -110,6 +110,9 @@ const MockInterview = lazy(() =>
 const MockPeer = lazy(() =>
   import('./mock-peer').then((m) => ({ default: m.MockPeer }), loadFailed),
 );
+const GiftRedeemPage = lazy(() =>
+  import('./course-gift').then((m) => ({ default: m.GiftRedeemPage }), loadFailed),
+);
 const MockOa = lazy(() =>
   import('./mock-oa').then((m) => ({ default: m.MockOa }), loadFailed),
 );
@@ -512,6 +515,8 @@ export function Academy() {
         );
       case 'account':
         return <AccountView boot={boot} refresh={refresh} />;
+      case 'gift':
+        return <GiftRedeemPage navigate={navigate} refresh={refresh} />;
       default:
         // Unknown or stale views fall back to the landing problem bank.
         return (
@@ -733,6 +738,9 @@ export function Academy() {
           <Link prefetch={false} href="/mcp" className="underline underline-offset-4">{t('在 AI 编辑器里练题', 'Practice from your AI editor')}</Link>
           <Link prefetch={false} href="/discuss" className="underline underline-offset-4">
             {t('讨论区', 'Discussion board')}
+          </Link>
+          <Link prefetch={false} href="/newsletter" className="underline underline-offset-4">
+            {t('每周周报', 'Weekly newsletter')}
           </Link>
           <Link prefetch={false} href="/privacy" className="underline underline-offset-4">
             {t('隐私说明', 'Privacy')}
