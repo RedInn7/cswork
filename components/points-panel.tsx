@@ -13,7 +13,7 @@ export type PointsSummary = {
   prices: { freeze: number; ai: number };
   rules: Record<string, number>;
   freezes: { boughtThisMonth: number; monthlyMax: number; purchased: number[] };
-  ai: { bonus: number; packUses: number } | null;
+  ai: { bonus: number; packUses: number; perDay?: number } | null;
 };
 const REASONS: Record<string, [string, string]> = {
   'ac-day': ['当天首次通过', 'First AC of the day'],
@@ -133,6 +133,7 @@ export function PointsPanel({ english, onChange }: { english: boolean; onChange?
               <strong>{t(`AI 助教 ${data.ai.packUses} 次`, `${data.ai.packUses} AI tutor calls`)}</strong>
               <small>
                 {t(`${prices.ai} 分 · 剩余 ${data.ai.bonus} 次`, `${prices.ai} pts · ${data.ai.bonus} left`)}
+                {!!data.ai.perDay && t(` · 每天最多用 ${data.ai.perDay} 次`, ` · up to ${data.ai.perDay} a day`)}
               </small>
             </span>
           </button>
