@@ -68,6 +68,11 @@ test('the harness compares result sets: unordered, typed, NULL- and float-normal
     runner.run('SELECT AVG(x) FROM t WHERE x < 3', data).stdout,
     runner.run('SELECT 1.5', '').stdout,
   );
+  // BLOBs and infinities are tagged, so they never equal the text they print as.
+  assert.equal(
+    runner.run("SELECT x'00ff', 'x00ff', 1e999, -1e999, 'inf'", '').stdout,
+    'columns: 5\n[{"blob": "00ff"}, "x00ff", {"float": "inf"}, {"float": "-inf"}, "inf"]\n',
+  );
   // Column count and column order count; names do not.
   assert.equal(runner.run('SELECT x AS a, name AS b FROM t', data).stdout.split('\n')[0], 'columns: 2');
   assert.notEqual(runner.run('SELECT x, name FROM t', data).stdout, asc.stdout);
@@ -105,6 +110,8 @@ test('the harness rejects anything but one read-only query', () => {
     const result = runner.run(query, data);
     assert.equal(result.ok, false, query);
     assert.match(result.stderr, message, query);
+    // One bilingual line: Chinese, then the English after " / ".
+    assert.match(result.stderr, /^[^\n]*\p{Script=Han}[^\n]* \/ [A-Z]/u, query);
     assert.equal(result.stdout, '', query);
   }
   // A trailing semicolon and comment are fine; a broken dataset is reported as such.
@@ -150,6 +157,19 @@ test('the packages are 20 valid, bilingual, SQL-only judge packages', () => {
     // The sample is what the statement shows: its input recreates the data.
     assert.equal(parsed.cases[0].input, datasetSql(PROBLEMS[index], PROBLEMS[index].sample));
   });
+  // The sql- prefix (free, public) and the SQL language only go together, SQL-only,
+  // exact-checked and in the SQL track's lesson.
+  const sql = packages[0];
+  const variant = (problem: Partial<OjProblemPackage['problem']>) =>
+    ojImportSchema.safeParse({ ...sql, problem: { ...sql.problem, ...problem } }).success;
+  assert.equal(variant({}), true);
+  assert.equal(variant({ id: 'course-sql' }), false);
+  assert.equal(variant({ languages: ['sql', 'python'] }), false);
+  assert.equal(variant({ languages: ['python'] }), false);
+  assert.equal(variant({ checker: 'tokens' }), false);
+  assert.equal(variant({ courseId: 'private-course' }), false);
+  assert.equal(variant({ lessonId: 'lesson-2' }), false);
+  assert.equal(variant({ id: 'lc-1', languages: ['sql'] }), false);
 });
 
 /** A stand-in go-judge: writes copyIn files and runs the command with local executables. */
