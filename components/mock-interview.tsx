@@ -1,15 +1,16 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
-  ArrowRight, Check, ChevronLeft, ChevronRight, Code2, Copy, Dices, ExternalLink, Eye, Flag,
-  History as HistoryIcon, Lightbulb, Link2, MessageSquareText, Minus, Pause, Play, Plus, Printer, RotateCcw, Save,
-  ShieldAlert, Shuffle, Users,
+  ArrowRight, Bot, Check, ChevronLeft, ChevronRight, Code2, Copy, Dices, ExternalLink, Eye, Flag,
+  History as HistoryIcon, Lightbulb, Link2, LoaderCircle, MessageSquareText, Mic, Minus, Pause, Play, Plus, Printer,
+  RotateCcw, Save, Send, ShieldAlert, Shuffle, Users, Volume2,
 } from 'lucide-react';
 import { api } from '@/lib/types';
 import { track } from '@/lib/analytics';
-import { useT } from '@/lib/i18n';
+import { useLocale, useT } from '@/lib/i18n';
+import { ojRequest } from '@/lib/oj-client';
 import { englishMessage } from '@/lib/messages-en';
 import { companyLogos } from '@/lib/oa-company-brands';
 import {
@@ -19,6 +20,9 @@ import {
 import {
   RUBRIC, VERDICTS, decodeFeedback, encodeFeedback, forSet, questionTag, rubricAverage, type Feedback, type RubricId,
 } from '@/lib/mock-interview-feedback';
+import {
+  AI_MESSAGE_CHARS, AI_TURNS, candidateTurns, openerFor, reportFeedback, type AiReport, type Turn,
+} from '@/lib/mock-ai-interview';
 import type { Navigate } from './learning';
 import { OaMarkdown } from './oa-library';
 import { TryFirst } from './try-first';
@@ -47,7 +51,7 @@ type Item = {
 };
 type DrawnSlot = { kind: KindId; minutes: number; name?: Text; similar: boolean; pool: number; item: Item | null };
 type MockSet = { seed: string; rerolls: number[]; template: { id: string; name: Text }; slots: DrawnSlot[] };
-type Mode = 'solo' | 'candidate' | 'interviewer';
+type Mode = 'solo' | 'candidate' | 'interviewer' | 'ai';
 /** One sitting, per viewer and mode. Slot-indexed; `since` is when the running clock last started. */
 type Run = {
   phase: 'plan' | 'run' | 'done';
@@ -66,6 +70,9 @@ type Run = {
   /** Start and finish were counted for this sitting (saved, so a reload or a review doesn't count again). */
   started?: boolean;
   finished?: boolean;
+  /** AI interviewer: each question's transcript, and the server's ticket for this interview. */
+  chat?: Record<number, Turn[]>;
+  ticket?: string;
 };
 type Past = {
   query: Record<string, string>;
@@ -129,12 +136,15 @@ export function MockInterview({
   navigate,
   problemIds,
   userId = null,
+  ai = false,
 }: {
   params: Record<string, string>;
   navigate: Navigate;
   problemIds: string[];
   /** Signed in: solo answers and story picks are saved to the account. */
   userId?: string | null;
+  /** The server has the AI interviewer on and the viewer is signed in. */
+  ai?: boolean;
 }) {
   const query = pick(params);
   const key = new URLSearchParams(query).toString();
@@ -143,7 +153,15 @@ export function MockInterview({
       <div className="rd-page">
         <ModeTabs navigate={navigate} />
         {query.set ? (
-          <Session key={`${key}:${params.as ?? ''}`} query={query} mode={modeOf(params.as)} navigate={navigate} problemIds={problemIds} userId={userId} />
+          <Session
+            key={`${key}:${params.as ?? ''}`}
+            query={query}
+            mode={modeOf(params.as, ai)}
+            navigate={navigate}
+            problemIds={problemIds}
+            userId={userId}
+            ai={ai}
+          />
         ) : (
           <Setup params={params} navigate={navigate} />
         )}
@@ -151,7 +169,8 @@ export function MockInterview({
     </div>
   );
 }
-const modeOf = (as: string | undefined): Mode => (as === 'interviewer' || as === 'candidate' ? as : 'solo');
+const modeOf = (as: string | undefined, ai: boolean): Mode =>
+  as === 'interviewer' || as === 'candidate' || (as === 'ai' && ai) ? as : 'solo';
 
 function ModeTabs({ navigate }: { navigate: Navigate }) {
   const t = useT();
@@ -450,7 +469,8 @@ function Setup({ params, navigate }: { params: Record<string, string>; navigate:
                     <strong>
                       {p.feedback && (
                         <span className="mi-history-fb">
-                          <MessageSquareText size={12} aria-hidden="true" /> {t('有反馈', 'Feedback')}
+                          <MessageSquareText size={12} aria-hidden="true" />{' '}
+                          {decodeFeedback(p.feedback)?.ai ? t('AI 评估', 'AI report') : t('有反馈', 'Feedback')}
                         </span>
                       )}
                       {p.company ? `${p.company} · ` : ''}
@@ -503,18 +523,21 @@ function Session({
   navigate,
   problemIds,
   userId,
+  ai,
 }: {
   query: Record<string, string>;
   mode: Mode;
   navigate: Navigate;
   problemIds: string[];
   userId: string | null;
+  ai: boolean;
 }) {
   const t = useT();
   const [query, setQuery] = useState(initial);
   const key = new URLSearchParams(query).toString();
-  // The candidate's view fetches questions without the answers, so its data carries none.
-  const [data, setData] = useState<MockSet | null>(() => (handoff?.key === key && mode !== 'candidate' ? handoff.set : null));
+  // The candidate's view and the AI interview fetch questions without the answers, so their data carries none.
+  const questionsOnly = mode === 'candidate' || mode === 'ai';
+  const [data, setData] = useState<MockSet | null>(() => (handoff?.key === key && !questionsOnly ? handoff.set : null));
   const [error, setError] = useState('');
   const [rolling, setRolling] = useState<number | null>(null);
   // A failed re-roll leaves the set as it was: it says so beside it, not instead of it.
@@ -522,14 +545,14 @@ function Session({
   useEffect(() => {
     if (data) return;
     let cancelled = false;
-    api<MockSet>(`content/mock?${apiQuery(initial, mode === 'candidate' ? { parts: 'question' } : {})}`)
+    api<MockSet>(`content/mock?${apiQuery(initial, questionsOnly ? { parts: 'question' } : {})}`)
       .then((set) => !cancelled && setData(set))
       .catch((e: Error) => !cancelled && setError(e.message));
     return () => {
       cancelled = true;
     };
     // Fetched once; a re-roll replaces the set in place.
-  }, [data, initial, mode]);
+  }, [data, initial, questionsOnly]);
   const storeKey = `${mode}:${key}`;
   const [run, setRun] = useState<Run>(() => {
     const saved = read<Record<string, Run & { at?: number }>>(RUNS, {})[storeKey];
@@ -676,10 +699,20 @@ function Session({
       />
     ) : null;
 
-  const props = { data, query, mode, run, setRun, now, problemIds, navigate, finish, userId };
+  /** The AI's report, kept with this set in the history like an interviewer's feedback link. */
+  const saveReport = (value: string, report: Feedback) => {
+    const entry = remember(
+      (old) => ({ ...old, at: Date.now(), feedback: value }),
+      (i) => report.questions[i]?.rating ?? null,
+      commit(run).elapsed,
+    );
+    if (entry) setSaved(entry);
+  };
+  const props = { data, query, mode, run, setRun, now, problemIds, navigate, finish, userId, ai };
   if (mode === 'interviewer') return <InterviewerSheet {...props} />;
+  if (mode === 'ai' && run.phase !== 'done') return <AiRunner {...props} onReport={saveReport} />;
   if (run.phase === 'plan') return <Plan {...props} card={card} locked={!!feedback} reroll={reroll} rolling={rolling} rollError={rollError} />;
-  if (run.phase === 'done') return <Summary {...props} card={card} />;
+  if (run.phase === 'done') return <Summary {...props} card={card} report={mode === 'ai' ? savedFeedback : null} />;
   return <Runner {...props} />;
 }
 type SessionProps = {
@@ -693,6 +726,7 @@ type SessionProps = {
   navigate: Navigate;
   finish: () => void;
   userId: string | null;
+  ai: boolean;
 };
 
 const shareLink = (query: Record<string, string>, as: Mode) =>
@@ -710,7 +744,9 @@ function SetHead({ data, query, mode }: Pick<SessionProps, 'data' | 'query' | 'm
           ? t('面试官视图', 'Interviewer view')
           : mode === 'candidate'
             ? t('候选人视图', 'Candidate view')
-            : t('独自练习', 'Solo practice')}
+            : mode === 'ai'
+              ? t('AI 面试官', 'AI interviewer')
+              : t('独自练习', 'Solo practice')}
         <span className="mi-seed" title={t('抽题编号：同一个链接抽到同一套题', 'Set number: the same link draws the same set')}>
           No. {data.seed}
         </span>
@@ -760,6 +796,8 @@ function Plan({
   data,
   query,
   setRun,
+  navigate,
+  ai,
   card,
   locked,
   reroll,
@@ -825,6 +863,25 @@ function Plan({
           </button>
         </div>
         <PairLinks query={query} />
+        {ai && (
+          <div className="mi-ai-start">
+            <div>
+              <p className="mi-ticket-kicker">
+                <Bot size={14} aria-hidden="true" /> {t('AI 面试官', 'AI interviewer')} · Beta
+              </p>
+              <h2>{t('和 AI 面试官对练这套题', 'Run this set with an AI interviewer')}</h2>
+              <p>
+                {t(
+                  `像真实面试一样一问一答：先澄清需求，卡住时才给提示，答完再追问。每场最多 ${AI_TURNS} 轮，结束后按五项评分出报告；每天 3 场。`,
+                  `A real back-and-forth: clarify first, hints only when you're stuck, follow-ups once you've answered. Up to ${AI_TURNS} messages per interview, then a report on the five-part rubric; 3 interviews a day.`,
+                )}
+              </p>
+            </div>
+            <button type="button" className="mi-cta" onClick={() => navigate('mock-interview', { ...query, as: 'ai' })}>
+              <Bot size={16} aria-hidden="true" /> {t('开始 AI 面试', 'Start the AI interview')}
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
@@ -1167,8 +1224,359 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userI
   );
 }
 
-function Summary({ data, query, mode, run, setRun, navigate, card }: SessionProps & { card: React.ReactNode }) {
+/* ------------------------------------------------------- AI interviewer */
+
+type Recognition = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((e: { resultIndex: number; results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }> }) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+};
+const SPEAK = 'cswork:mock-interview:speak';
+/**
+ * The browser's own speech: reading the interviewer aloud (speechSynthesis) and dictation
+ * (SpeechRecognition, prefixed in Chrome and Safari). Each is hidden where the browser has none.
+ */
+function useSpeech(locale: 'zh' | 'en', onText: (text: string) => void) {
+  const lang = locale === 'zh' ? 'zh-CN' : 'en-US';
+  const [canSpeak] = useState(() => typeof speechSynthesis !== 'undefined');
+  const [Engine] = useState(() => {
+    const w = window as unknown as Record<string, (new () => Recognition) | undefined>;
+    return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
+  });
+  const [speak, setSpeak] = useState(() => read(SPEAK, false));
+  const [listening, setListening] = useState(false);
+  const recognition = useRef<Recognition | null>(null);
+  const heard = useRef(onText);
+  heard.current = onText;
+  useEffect(
+    () => () => {
+      recognition.current?.stop();
+      if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
+    },
+    [],
+  );
+  return {
+    canSpeak,
+    speak,
+    toggleSpeak: () => {
+      const next = !speak;
+      setSpeak(next);
+      write(SPEAK, next);
+      if (!next) speechSynthesis.cancel();
+    },
+    say: (text: string) => {
+      if (!canSpeak || !speak) return;
+      speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+      speechSynthesis.speak(utterance);
+    },
+    canListen: !!Engine,
+    listening,
+    toggleListen: () => {
+      if (recognition.current) return recognition.current.stop();
+      if (!Engine) return;
+      const r = new Engine();
+      r.lang = lang;
+      r.continuous = true;
+      r.interimResults = false;
+      r.onresult = (e) => {
+        for (let i = e.resultIndex; i < e.results.length; i++)
+          if (e.results[i].isFinal) heard.current(e.results[i][0].transcript.trim());
+      };
+      r.onend = () => {
+        recognition.current = null;
+        setListening(false);
+      };
+      recognition.current = r;
+      setListening(true);
+      try {
+        r.start();
+      } catch {
+        r.onend?.();
+      }
+    },
+  };
+}
+
+/**
+ * The interview with the AI: the question and a code box on the left, the conversation beside
+ * it. The answers stay on the server; each message sends this question's transcript, the clock
+ * and (in a coding round) the code. Finishing asks for the rubric report.
+ */
+function AiRunner({
+  data,
+  query,
+  run,
+  setRun,
+  now,
+  problemIds,
+  finish,
+  onReport,
+}: SessionProps & { onReport: (value: string, report: Feedback) => void }) {
   const t = useT();
+  const locale = useLocale() === 'zh' ? 'zh' : 'en';
+  const [draft, setDraft] = useState('');
+  const [busy, setBusy] = useState<'turn' | 'report' | null>(null);
+  const [error, setError] = useState('');
+  const speech = useSpeech(locale, (text) => text && setDraft((d) => (d.trim() ? `${d.trimEnd()} ${text}` : text)));
+  const log = useRef<HTMLOListElement>(null);
+  const slot = data.slots[run.index];
+  const item = slot?.item;
+  const chat = run.chat?.[run.index] ?? [];
+  const used = candidateTurns(Object.values(run.chat ?? {}));
+  const left = Math.max(0, AI_TURNS - used);
+  useEffect(() => {
+    // The newest message in view.
+    if (log.current) log.current.scrollTop = log.current.scrollHeight;
+  }, [chat.length, busy, run.index]);
+  if (!slot) return null;
+  const code = slot.kind === 'coding' || slot.kind === 'sql';
+  const last = run.index === data.slots.length - 1;
+  const go = (index: number) => setRun((r) => ({ ...commit(r), index }));
+  const say = (message: string) => (locale === 'en' ? englishMessage(message) : message);
+
+  const send = async () => {
+    const text = draft.trim();
+    if (!text || busy || !left || !item) return;
+    const index = run.index;
+    const history: Turn[] = [...chat, { role: 'candidate', text }];
+    const elapsedSec = Math.round(spent(run, index, Date.now()));
+    // Talking to the interviewer starts the clock.
+    setRun((r) => ({ ...(r.since === null ? { ...r, since: Date.now() } : r), chat: { ...r.chat, [index]: history } }));
+    setDraft('');
+    setBusy('turn');
+    setError('');
+    try {
+      const answer = await ojRequest<{ text: string; ticket: string }>('ai/interview', {
+        seed: query.set,
+        ...(run.ticket ? { ticket: run.ticket } : {}),
+        locale,
+        itemId: item.id,
+        minutes: slot.minutes,
+        elapsedSec,
+        code: code ? (run.notes[index] ?? '') : '',
+        history,
+      });
+      setRun((r) => ({ ...r, ticket: answer.ticket, chat: { ...r.chat, [index]: [...history, { role: 'interviewer', text: answer.text }] } }));
+      speech.say(answer.text);
+    } catch (caught) {
+      const failure = caught as Error & { status?: number | string };
+      // Not answered: the message comes back to the box to send again, and costs no turn.
+      setRun((r) => ({
+        ...r,
+        ...(failure.status === 409 ? { ticket: undefined } : {}),
+        chat: { ...r.chat, [index]: (r.chat?.[index] ?? []).filter((turn) => turn !== history[history.length - 1]) },
+      }));
+      setDraft((d) => d || text);
+      setError(failure.status === 'timeout' ? say('AI 面试官响应超时，请稍后再试') : say(failure.message));
+    } finally {
+      setBusy(null);
+    }
+  };
+  const end = async () => {
+    if (!used || !run.ticket) return finish();
+    setBusy('report');
+    setError('');
+    try {
+      const elapsed = commit(run).elapsed;
+      const asked = data.slots.flatMap((s, i) => (s.item ? [i] : []));
+      const { report } = await ojRequest<{ report: AiReport }>('ai/interview-report', {
+        seed: query.set,
+        ticket: run.ticket,
+        locale,
+        questions: asked.map((i) => ({
+          itemId: data.slots[i].item!.id,
+          minutes: data.slots[i].minutes,
+          elapsedSec: Math.round(elapsed[i] ?? 0),
+          code: data.slots[i].kind === 'coding' || data.slots[i].kind === 'sql' ? (run.notes[i] ?? '') : '',
+          history: run.chat?.[i] ?? [],
+        })),
+      });
+      // The report lists the questions asked; the feedback lists every slot.
+      const feedback = reportFeedback(
+        { ...report, questions: data.slots.map((_, i) => report.questions[asked.indexOf(i)] ?? { rating: null, note: '' }) },
+        {
+          seed: query.set,
+          rerolls: query.rr ? query.rr.split('.').map(Number) : [],
+          itemIds: data.slots.map((s) => s.item?.id ?? null),
+        },
+      );
+      const made = encodeFeedback(feedback);
+      if (made) onReport(made.value, feedback);
+      finish();
+    } catch (caught) {
+      const failure = caught as Error & { status?: number | string };
+      setError(failure.status === 'timeout' ? say('AI 面试官响应超时，请稍后再试') : say(failure.message));
+      setBusy(null);
+    }
+  };
+  const opener = openerFor(slot.kind);
+  return (
+    <>
+      <SetHead data={data} query={query} mode="ai" />
+      <Rail data={data} run={run} onGo={go} />
+      <section className="mi-stage" aria-label={t('计时', 'Timer')}>
+        <div className="mi-stage-now">
+          <p className="mi-stage-kicker">
+            {t(`第 ${run.index + 1} / ${data.slots.length} 题`, `Question ${run.index + 1} of ${data.slots.length}`)} ·{' '}
+            {t(`建议 ${slot.minutes} 分钟`, `${slot.minutes} min suggested`)}
+          </p>
+          <p className="mi-stage-title">{t(...(slot.name ?? KINDS[slot.kind].name))}</p>
+        </div>
+        <Clock
+          seconds={spent(run, run.index, now)}
+          minutes={slot.minutes}
+          running={run.since !== null}
+          onToggle={() => setRun((r) => (r.since === null ? { ...r, since: Date.now() } : { ...commit(r), since: null }))}
+        />
+      </section>
+      <div className="mi-work">
+        <div className="mi-work-main">
+          <QuestionCard slot={slot} problemIds={problemIds} showSource={false} />
+          {item && code && (
+            <Notes
+              label={t('代码（每次发消息时一起发给 AI 面试官）', 'Code (sent to the AI interviewer with each message)')}
+              code
+              value={run.notes[run.index] ?? ''}
+              onChange={(v) => setRun((r) => ({ ...r, notes: { ...r.notes, [r.index]: v } }))}
+            />
+          )}
+        </div>
+        {item && (
+          <aside className="mi-work-side mi-ai-side" aria-labelledby="mi-ai-title">
+            <header className="mi-ai-head">
+              <strong id="mi-ai-title">
+                <Bot size={16} aria-hidden="true" /> {t('AI 面试官', 'AI interviewer')}
+              </strong>
+              <span className="mi-ai-left" data-low={left <= 5 || undefined}>
+                {t(`本场还剩 ${left} 轮`, `${left} of ${AI_TURNS} messages left`)}
+              </span>
+              {speech.canSpeak && (
+                <button type="button" className="mi-ai-tool" aria-pressed={speech.speak} onClick={speech.toggleSpeak}>
+                  <Volume2 size={14} aria-hidden="true" /> {t('朗读', 'Read aloud')}
+                </button>
+              )}
+            </header>
+            <ol className="mi-ai-log" ref={log} aria-live="polite" aria-relevant="additions" aria-busy={busy === 'turn'}>
+              <li data-role="interviewer">
+                <span className="sr-only">{t('面试官：', 'Interviewer: ')}</span>
+                {t(...opener)}
+              </li>
+              {chat.map((turn, i) => (
+                <li key={i} data-role={turn.role}>
+                  <span className="sr-only">{turn.role === 'candidate' ? t('你：', 'You: ') : t('面试官：', 'Interviewer: ')}</span>
+                  {turn.text}
+                </li>
+              ))}
+              {busy === 'turn' && (
+                <li data-role="interviewer" data-pending>
+                  <LoaderCircle size={14} className="mi-spin" aria-hidden="true" /> {t('面试官在想…', 'The interviewer is thinking…')}
+                </li>
+              )}
+            </ol>
+            {error && (
+              <p className="mi-ai-error" role="alert">
+                {error}
+              </p>
+            )}
+            <form
+              className="mi-ai-compose"
+              onSubmit={(e) => {
+                e.preventDefault();
+                void send();
+              }}
+            >
+              <label htmlFor="mi-ai-input" className="sr-only">
+                {t('回答面试官', 'Reply to the interviewer')}
+              </label>
+              <textarea
+                id="mi-ai-input"
+                value={draft}
+                maxLength={AI_MESSAGE_CHARS}
+                rows={4}
+                disabled={!left}
+                placeholder={left ? t('回答面试官…（⌘/Ctrl + Enter 发送）', 'Reply… (⌘/Ctrl + Enter to send)') : t('这场的对话轮数用完了', 'This interview is out of messages')}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                    e.preventDefault();
+                    void send();
+                  }
+                }}
+              />
+              <div className="mi-ai-actions">
+                {speech.canListen && (
+                  <button
+                    type="button"
+                    className="mi-ai-tool"
+                    aria-pressed={speech.listening}
+                    disabled={!left}
+                    onClick={speech.toggleListen}
+                  >
+                    <Mic size={14} aria-hidden="true" /> {speech.listening ? t('停止听写', 'Stop dictation') : t('语音输入', 'Dictate')}
+                  </button>
+                )}
+                <button type="submit" className="mi-cta" disabled={!draft.trim() || !!busy || !left}>
+                  <Send size={15} aria-hidden="true" /> {t('发送', 'Send')}
+                </button>
+              </div>
+            </form>
+            <p className="mi-ai-privacy">
+              {t(
+                '对话、题目和代码会发给 Anthropic 生成面试官的回复，不含邮箱和姓名；参考答案只在服务器上。语音输入用浏览器自带的识别，音频可能由浏览器厂商处理。AI 也会出错。',
+                "The conversation, the question and your code go to Anthropic to write the interviewer's replies, never your email or name; the answer key stays on our server. Dictation uses your browser's own recognition, which may send audio to the browser's maker. AI can be wrong.",
+              )}
+            </p>
+          </aside>
+        )}
+      </div>
+      <nav className="mi-steps" aria-label={t('换题', 'Questions')}>
+        <button type="button" className="rd-button is-quiet" disabled={!run.index} onClick={() => go(run.index - 1)}>
+          <ChevronLeft size={15} aria-hidden="true" /> {t('上一题', 'Previous')}
+        </button>
+        {last ? (
+          <button type="button" className="mi-cta" disabled={!!busy} onClick={() => void end()}>
+            {busy === 'report' ? <LoaderCircle size={15} className="mi-spin" aria-hidden="true" /> : <Flag size={15} aria-hidden="true" />}
+            {busy === 'report'
+              ? t('正在生成评估…', 'Writing the report…')
+              : used
+                ? t('结束并生成评估', 'Finish and get the report')
+                : t('结束面试', 'Finish')}
+          </button>
+        ) : (
+          <button type="button" className="mi-cta" onClick={() => go(run.index + 1)}>
+            {t('下一题', 'Next question')} <ChevronRight size={15} aria-hidden="true" />
+          </button>
+        )}
+      </nav>
+      {last && !!used && error && busy === null && (
+        <p className="mi-muted mi-ai-skip">
+          <button type="button" className="rd-button is-quiet" onClick={finish}>
+            {t('不要评估，直接结束', 'Finish without a report')}
+          </button>
+        </p>
+      )}
+    </>
+  );
+}
+
+function Summary({
+  data,
+  query,
+  mode,
+  run,
+  setRun,
+  navigate,
+  card,
+  report,
+}: SessionProps & { card: React.ReactNode; report?: string | null }) {
+  const t = useT();
+  const [copied, setCopied] = useState<boolean | null>(null);
   const rated = data.slots.map((_, i) => run.ratings[i]).filter(Boolean) as number[];
   const total = data.slots.reduce((sum, _, i) => sum + (run.elapsed[i] ?? 0), 0);
   const planned = data.slots.reduce((sum, s) => sum + s.minutes * 60, 0);
@@ -1235,6 +1643,26 @@ function Summary({ data, query, mode, run, setRun, navigate, card }: SessionProp
           <button type="button" className="rd-button is-quiet" onClick={() => setRun((r) => ({ ...r, phase: 'run', index: 0 }))}>
             <Eye size={14} aria-hidden="true" /> {t('回看题目和答案', 'Review questions & answers')}
           </button>
+        )}
+        {report && (
+          <button
+            type="button"
+            className="rd-button is-quiet"
+            onClick={() =>
+              navigator.clipboard.writeText(`${shareLink(query, 'solo')}#fb=${report}`).then(
+                () => setCopied(true),
+                () => setCopied(false),
+              )
+            }
+          >
+            {copied ? <Check size={14} aria-hidden="true" /> : <Link2 size={14} aria-hidden="true" />}
+            {copied ? t('已复制评估链接', 'Report link copied') : t('复制评估链接', 'Copy the report link')}
+          </button>
+        )}
+        {copied === false && (
+          <span role="status" className="mi-muted">
+            {t('浏览器没让复制。', 'Your browser blocked copying.')}
+          </span>
         )}
         <button
           type="button"
@@ -1502,7 +1930,7 @@ export function FeedbackCard({
       <div className="mi-fb-board">
         <div className="mi-fb-head">
           <p className="mi-ticket-kicker" id="mi-fb-kicker">
-            {t('面试官反馈', 'Interviewer feedback')}
+            {feedback.ai ? t('AI 面试官评估', 'AI interviewer report') : t('面试官反馈', 'Interviewer feedback')}
           </p>
           <h2 id="mi-fb-title">
             {verdict ? (
@@ -1514,7 +1942,9 @@ export function FeedbackCard({
             )}
           </h2>
           <p className="mi-fb-private">
-            {t('只在你的链接里，没有经过服务器。', 'Carried in your link only; it never went through our server.')}
+            {feedback.ai
+              ? t('AI 根据这场对话写的，可能出错；只存在这台设备和你的链接里。', 'Written by the AI from this conversation and may be wrong; kept on this device and in your link only.')
+              : t('只在你的链接里，没有经过服务器。', 'Carried in your link only; it never went through our server.')}
           </p>
         </div>
         <p className="mi-fb-average">

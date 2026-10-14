@@ -143,6 +143,9 @@ export function PrivacyDocument() {
                 Anthropic，用于生成回复；不发送邮箱、姓名或账户标识。平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不使用 AI 助教就不会发送。
               </p>
               <p>
+                使用模拟面试的 AI 面试官时，服务器会把这道题的题面和面试官参考资料、你这一题的对话、计时和代码框里的代码发送给 Anthropic，用于生成面试官的回复和结束时的评估；同样不发送邮箱、姓名或账户标识，平台不保存对话和评估，它们只存在你的浏览器里。语音输入使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；不点语音输入就不会录音。模拟 OA 的代码回放只保存在你的浏览器里，不会上传。
+              </p>
+              <p>
                 平台会为持续提供课程、处理教学反馈、对账及故障恢复保留必要资料和备份，目前没有对所有账户及学习记录统一设置自动删除期限。业务数据与备份的清理时间可能不同；收到删除请求后，会确认涉及的资料、处理范围及需要保留的记录。
               </p>
             </section>
@@ -390,6 +393,20 @@ export function PrivacyDocument() {
                 identifiers are not sent. The platform records only how many
                 calls you make each day and their usage, never what was sent
                 or the AI's reply. Nothing is sent unless you use the tutor.
+              </p>
+              <p>
+                When you use the AI interviewer in a mock interview, the server
+                sends the question, its interviewer notes, your conversation on
+                that question, the clock and the code in the code box to
+                Anthropic to write the interviewer&apos;s replies and the final
+                report. Your email, name and account identifiers are not sent,
+                and the platform keeps neither the conversation nor the report:
+                they live in your browser. Dictation uses your browser&apos;s own
+                speech recognition; some browsers (Chrome, for example) send the
+                audio to the browser maker&apos;s servers to turn it into text,
+                without going through this platform, and nothing is recorded
+                unless you press dictate. Mock OA code replays stay in your
+                browser and are never uploaded.
               </p>
               <p>
                 The platform retains necessary data and backups to keep
