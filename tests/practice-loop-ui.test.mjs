@@ -20,7 +20,7 @@ globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 globalThis.requestAnimationFrame ??= (fn) => setTimeout(fn, 0);
 const { createRoot } = await import('react-dom/client');
 const { StudyLibrary } = await import('../components/study-library.tsx');
-const { AcceptedExtras } = await import('../components/achievements.tsx');
+const { AcceptedExtras, progressBadges } = await import('../components/achievements.tsx');
 const { beijingDate } = await import('../lib/daily-problem.ts');
 
 const DAY = 86400000;
@@ -161,3 +161,23 @@ test('no unlock for a stop a LeetCode import already cleared, or a streak milest
   } finally {
     await act(async () => root.unmount());
   }
+});
+
+test('company badges fold aliased OA slugs into one employer with its library name', () => {
+  const ids = ['barclay-1', 'barclay-2', 'barclays-1', 'barclays-2', 'sig-1', 'sig-2', 'sig-3', 'susquehanna-international-group-1'];
+  const problems = ids.map((id) => ({ id: `oa-${id}`, title: id, difficulty: '中等', tags: [] }));
+  const history = problems
+    .filter((p) => p.id !== 'oa-susquehanna-international-group-1')
+    .map((p) => ({ problemId: p.id, firstAcAt: 1, acAt: [1], stop: null }));
+  const badges = progressBadges({
+    sections: [], history, problems, now: Date.now(),
+    companyNames: new Map([['susquehanna-international-group', 'SIG']]),
+  }).filter((b) => b.group === 'company');
+  assert.deepEqual(
+    badges.map((b) => [b.id, b.en, b.earned, b.progress.join('/')]),
+    [
+      ['company:barclays', 'Barclays OA cleared', true, '4/4'],
+      ['company:susquehanna-international-group', 'SIG OA cleared', false, '3/4'],
+    ],
+  );
+});

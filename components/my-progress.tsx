@@ -28,6 +28,8 @@ type Data = {
   notes: Note[];
   /** Line 500 stops with this round's progress, for the badges; empty when the list failed. */
   sections: { slug: string; solved: number; total: number }[];
+  /** OA employer names for the company badges; empty when the OA library failed. */
+  companyNames: Map<string, string>;
   /** Read once per load, so every tab agrees on "today". */
   now: number;
 };
@@ -90,14 +92,16 @@ export function MyProgress({
       api<{ collection?: { sections: Data['sections'] } }>(
         'oj/library?collection=ling-selected-500',
       ).catch(() => null),
+      api<{ companies: { slug: string; name: string }[] }>('oj/oa-library').catch(() => null),
     ])
-      .then(([history, marks, notes, line]) => {
+      .then(([history, marks, notes, line, oa]) => {
         if (current)
           setData({
             history: history.items,
             marks: marks.items,
             notes: notes.items,
             sections: line?.collection?.sections ?? [],
+            companyNames: new Map(oa?.companies.map((c) => [c.slug, c.name])),
             now: Date.now(),
           });
       })
@@ -129,6 +133,7 @@ export function MyProgress({
             problems: boot.problems,
             userId: personId,
             now: data.now,
+            companyNames: data.companyNames,
           })
         : [],
     [data, boot.problems, personId],

@@ -9,6 +9,7 @@ import {
   type Badge,
 } from '@/lib/achievements';
 import { readMockState } from '@/lib/mock-oa';
+import { canonicalCompany } from '@/lib/oa-company-brands';
 import type { PracticeHistoryItem } from '@/lib/practice-review';
 import type { ProblemSummary } from '@/lib/problems';
 import { api } from '@/lib/types';
@@ -32,12 +33,15 @@ export function progressBadges({
   problems,
   userId,
   now,
+  companyNames = new Map(),
 }: {
   sections: readonly Section[];
   history: readonly PracticeHistoryItem[];
   problems: readonly ProblemSummary[];
   userId?: string;
   now: number;
+  /** Employer slug -> name, as the OA library lists them. */
+  companyNames?: ReadonlyMap<string, string>;
 }) {
   const solved = new Set(history.flatMap((item) => (item.firstAcAt ? [item.problemId] : [])));
   const perStop = new Map<string, number>();
@@ -45,9 +49,16 @@ export function progressBadges({
     if (item.firstAcAt && item.stop) perStop.set(item.stop, (perStop.get(item.stop) ?? 0) + 1);
   const companies = new Map<string, { slug: string; name: string; solved: number; total: number }>();
   for (const { id } of problems) {
-    const slug = /^oa-(.+)-\d+$/.exec(id)?.[1];
-    if (!slug) continue;
-    const entry = companies.get(slug) ?? { slug, name: titleCase(slug), solved: 0, total: 0 };
+    const raw = /^oa-(.+)-\d+$/.exec(id)?.[1];
+    if (!raw) continue;
+    // One employer per badge, like the OA library: sig and susquehanna-... are one company.
+    const slug = canonicalCompany(raw);
+    const entry = companies.get(slug) ?? {
+      slug,
+      name: companyNames.get(slug) ?? titleCase(slug),
+      solved: 0,
+      total: 0,
+    };
     entry.total++;
     if (solved.has(id)) entry.solved++;
     companies.set(slug, entry);
@@ -120,7 +131,7 @@ export function BadgeWall({ badges, english }: { badges: Badge[]; english: boole
             <p>
               {t(
                 `已通关 ${cleared} / ${stops.length} 站 · 共解锁 ${earned} 枚徽章`,
-                `${cleared} of ${stops.length} stops cleared · ${earned} badges unlocked`,
+                `${cleared} of ${stops.length} stops cleared · ${earned} ${earned === 1 ? 'badge' : 'badges'} unlocked`,
               )}
             </p>
           </div>
