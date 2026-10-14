@@ -7,6 +7,7 @@ import {
   wholeDocumentEdit,
 } from '../scripts/language-service/protocol.mjs';
 import { LanguageSession } from '../scripts/language-service/broker.mjs';
+import { ConnectionError, ConnectionErrors, ResponseError } from 'vscode-jsonrpc/node.js';
 import { textEdits } from '../lib/editor-lsp-adapter';
 
 const format = {
@@ -57,26 +58,44 @@ void test('ruff runs inside the session container on stdin, and unchanged code n
   ]);
 });
 
-void test('a formatter refusing broken code answers 422 and keeps the session', async () => {
-  let closed = false;
+function formattingSession(failure: Error, dead = false) {
   const session = {
     language: 'go',
     uri: 'file:///workspace/main.go',
+    dead,
+    closed: false,
     connection: {
       sendRequest: async (method: string, params: { options: unknown }) => {
         assert.equal(method, 'textDocument/formatting');
         assert.deepEqual(params.options, { tabSize: 4, insertSpaces: true });
-        throw new Error('gofmt: expected declaration');
+        throw failure;
       },
     },
     timed: (promise: Promise<unknown>) => promise,
     close: async () => {
-      closed = true;
+      session.closed = true;
     },
   };
-  await assert.rejects(
-    LanguageSession.prototype.format.call(session, 4),
-    (error: { status?: number }) => error.status === 422,
+  return session;
+}
+const statusOf = (session: object) =>
+  LanguageSession.prototype.format.call(session, 4).then(
+    () => 200,
+    (error: { status?: number }) => error.status,
   );
-  assert.equal(closed, false);
+
+void test('a formatter refusing broken code answers 422 and keeps the session', async () => {
+  const session = formattingSession(new ResponseError(-32603, 'gofmt: expected declaration'));
+  assert.equal(await statusOf(session), 422);
+  assert.equal(session.closed, false);
+});
+
+void test('a dropped or closed language server is an outage (503), not a syntax error', async () => {
+  assert.equal(
+    await statusOf(formattingSession(new ConnectionError(ConnectionErrors.Closed, 'closed'))),
+    503,
+  );
+  assert.equal(await statusOf(formattingSession(new Error('write EPIPE'))), 503);
+  // A session that died while the request was out: even its error reply isn't about the code.
+  assert.equal(await statusOf(formattingSession(new ResponseError(-32603, 'x'), true)), 503);
 });

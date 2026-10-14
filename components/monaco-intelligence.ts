@@ -209,10 +209,12 @@ export function attachIntelligence(
           }
           return result as IntelligenceResponse;
         } catch (error) {
-          // Code the formatter can't parse: the service itself is fine.
+          // Code the formatter can't parse, or a formatter outage once the service has
+          // answered: completion itself is fine, and Format stays clickable to retry.
           if (
             action === 'format' &&
-            (error as { status?: number }).status === 422
+            ((error as { status?: number }).status === 422 ||
+              (started && !controller.signal.aborted))
           ) {
             if (!disposed) status({ state: 'ready', message: (error as Error).message });
             return null;

@@ -180,6 +180,7 @@ const EN: Record<string, string> = {
     'The completion service is busy. Keep typing or trigger completion again to retry',
   '代码已更新，请重新触发补全': 'The code changed. Trigger completion again',
   '无法格式化：请先修正语法错误': "Couldn't format: fix the syntax errors first",
+  '格式化暂不可用，请稍后重试': 'Formatting is unavailable right now. Try again shortly',
   '补全服务暂不可用，代码仍可运行和提交':
     'Code completion is unavailable. You can still run and submit your code',
   '补全服务连接中断，继续输入或重新触发即可重试':

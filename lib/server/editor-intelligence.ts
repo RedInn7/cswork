@@ -154,6 +154,8 @@ export async function handleEditorIntelligence(
     );
     if (!response.ok) {
       await response.body?.cancel();
+      if (response.status === 503 && (data as { action?: string }).action === 'format')
+        throw new HttpError(503, '格式化暂不可用，请稍后重试');
       if (response.status === 429 || response.status === 503)
         throw new HttpError(503, '补全服务暂忙，继续输入或重新触发即可重试');
       if (response.status === 409)

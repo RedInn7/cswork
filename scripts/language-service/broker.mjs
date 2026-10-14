@@ -5,6 +5,7 @@ import { promisify } from 'node:util';
 import { pathToFileURL } from 'node:url';
 import {
   createMessageConnection,
+  ResponseError,
   StreamMessageReader,
   StreamMessageWriter,
 } from 'vscode-jsonrpc/node.js';
@@ -384,11 +385,14 @@ export class LanguageSession {
         })
         .then(
           (value) => ({ value }),
-          () => ({ failed: true }),
+          (error) => ({ error }),
         ),
       15000,
     );
-    if (answer.failed)
+    // Only the server's own error reply is about the code; a closed or dropped connection is an outage.
+    if (answer.error && (this.dead || !(answer.error instanceof ResponseError)))
+      throw new BrokerError(503, 'Formatter unavailable; retry shortly');
+    if (answer.error)
       throw new BrokerError(422, 'Formatting failed; fix syntax errors and retry');
     return answer.value;
   }
