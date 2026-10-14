@@ -73,7 +73,6 @@ export async function generateMetadata({ params }: Props) {
 }
 
 const spa = (params: Record<string, string>) => `/?${new URLSearchParams(params)}`;
-
 function SectionHead({ id, title, count, all, zh }: { id: string; title: string; count: string; all: string; zh: boolean }) {
   return (
     <div className="company-hub-section-head">

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { CompanyChip } from '@/lib/company-tags';
+import type { ReportWindows } from '@/lib/report-windows';
 import { companyInitials, companyLogos } from '@/lib/oa-company-brands';
 
 const SHOWN = 6;
@@ -12,11 +13,11 @@ const ROUND_ZH: Record<string, string> = {
   Onsite: '现场面',
 };
 /** A company's reports by age: [zh, en] and the buckets each part adds up. */
-const AGES = [
+const AGES: [string, string, (keyof ReportWindows)[]][] = [
   ['近 6 月', '≤6 mo', ['m3', 'm6']],
   ['6–12 月', '6–12 mo', ['y1']],
   ['更早', 'older', ['y2', 'older']],
-] as const;
+];
 const logoOf = (slug: string) =>
   Object.hasOwn(companyLogos, slug) ? companyLogos[slug] : null;
 

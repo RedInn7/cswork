@@ -10,8 +10,8 @@ import { memberExperiences, memberFacets, memberIdOf, memberItem, mergePage, typ
 import { setting } from './env';
 import { HttpError, json, limitReader } from './http';
 import { recentSince } from './learner-cloud';
-import { acceptedPeople } from './problem-stats';
 import { mockCompanies, mockPool, mockSet } from './mock-interview';
+import { acceptedPeople } from './problem-stats';
 
 /**
  * Read-only interview content library (questions, experiences, guides, concepts,
