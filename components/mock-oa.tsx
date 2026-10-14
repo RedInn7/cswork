@@ -688,11 +688,9 @@ function CustomMock({
   const [minutes, setMinutes] = useState(90);
   const [level, setLevel] = useState<'ladder' | Slot>('ladder');
   const [source, setSource] = useState<MockSource>('mixed');
-  const counts = [...presets.companies, ...presets.others].find((c) => c.slug === company)?.pool ?? {
-    ...presets.all,
-    total: presets.all.oa + presets.all.lc,
-  };
-  const pool = { mixed: counts.total, oa: counts.oa, lc: counts.lc }[source];
+  const counts =
+    [...presets.companies, ...presets.others].find((c) => c.slug === company)?.pool ?? presets.all;
+  const pool = source === 'mixed' ? counts.oa + counts.lc : counts[source];
   const radio = <T extends string | number>(
     name: string,
     value: T,
