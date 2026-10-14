@@ -187,6 +187,16 @@ try {
     allMaps,
     /article\/(?:unlisted|partial|duplicate)|guide\/template-guide|view=|localhost/,
   );
+  // Static pages are listed before the library in the first shard.
+  assert.match(allMaps, /<loc>https:\/\/cswork.org\/acm-io<\/loc>/);
+  const acmIo = await html('/acm-io');
+  assert.match(
+    acmIo,
+    /rel="canonical"[^>]*href="https:\/\/cswork.org\/acm-io"/,
+  );
+  assert.match(acmIo, /ACM 模式输入输出模板/);
+  assert.match(acmIo, /while \(cin &gt;&gt; a &gt;&gt; b\)/);
+  assert.match(acmIo, /"@type":"BreadcrumbList"/);
   const privacy = await html('/privacy');
   assert.match(
     privacy,
