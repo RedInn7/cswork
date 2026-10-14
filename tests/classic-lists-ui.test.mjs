@@ -72,7 +72,7 @@ test('classic lists show groups and progress, link external problems out and swi
   const requests = [];
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url) => {
-    requests.push(String(url));
+    requests.push(url);
     return Response.json(view);
   };
   const navigations = [];
