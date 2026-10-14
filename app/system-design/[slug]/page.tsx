@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
 import { requestLocale } from '@/lib/server/locale';
@@ -42,9 +43,13 @@ export default async function SystemDesignChapter({ params }: Props) {
         }}
       />
       <nav className="public-library-breadcrumb" aria-label={t('面包屑', 'Breadcrumb')}>
-        <a href="/">{SITE_NAME}</a>
+        <Link href="/" prefetch={false}>
+          {SITE_NAME}
+        </Link>
         <span aria-hidden="true">/</span>
-        <a href={sdPath()}>{t('系统设计', 'System design')}</a>
+        <Link href={sdPath()} prefetch={false}>
+          {t('系统设计', 'System design')}
+        </Link>
       </nav>
       <header className="public-library-article-header sd-chapter-header">
         <p className="sd-sheet-no">

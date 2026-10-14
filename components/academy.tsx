@@ -560,7 +560,15 @@ export function Academy() {
                       (view === 'problem' &&
                         key === (params.mock ? 'mock' : 'problems'))
                     }
-                    render={key.startsWith('/') ? <a href={key} /> : undefined}
+                    render={
+                      key.startsWith('/')
+                        ? ({ children, ...props }) => (
+                            <a {...props} href={key}>
+                              {children}
+                            </a>
+                          )
+                        : undefined
+                    }
                     onClick={key.startsWith('/') ? undefined : () => navigate(key)}
                   >
                     <Icon size={18} />

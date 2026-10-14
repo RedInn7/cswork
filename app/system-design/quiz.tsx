@@ -6,6 +6,18 @@ type Picks = (number | null)[];
 const LETTERS = 'ABCDEFGH';
 const localKey = (slug: string) => `cswork:sd-quiz:${slug}`;
 const noteUrl = (slug: string) => `/api/oj/notes?target=${encodeURIComponent(`sd:${slug}`)}`;
+/** Saves the answers as the note; an empty body removes it (lib/server/my-practice.ts). */
+const putPicks = (slug: string, picks: Picks) =>
+  fetch(noteUrl(slug), {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      body: picks.every((pick) => pick === null) ? '' : JSON.stringify({ picks }),
+    }),
+  }).then(
+    (response) => response.ok,
+    () => false,
+  );
 
 /** Saved answers, one per question (null: not answered); anything malformed or stale reads as none. */
 export function parsePicks(raw: unknown, quiz: SdQuestion[]): Picks | null {
@@ -50,21 +62,10 @@ export function SdQuiz({ slug, quiz, zh }: { slug: string; quiz: SdQuestion[]; z
   // Saves go out one at a time, so an older body never lands after a newer one.
   const queue = useRef(Promise.resolve());
 
-  function save(next: Picks, account: boolean) {
-    const empty = next.every((pick) => pick === null);
-    if (!account) return writeLocal(slug, empty ? null : next);
-    // An empty body removes the note (lib/server/my-practice.ts).
-    const body = empty ? '' : JSON.stringify({ picks: next });
-    queue.current = queue.current.then(() =>
-      fetch(noteUrl(slug), {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body }),
-      }).then(
-        (response) => setSaveFailed(!response.ok),
-        () => setSaveFailed(true),
-      ),
-    );
+  function save(next: Picks) {
+    if (where !== 'account')
+      return writeLocal(slug, next.every((pick) => pick === null) ? null : next);
+    queue.current = queue.current.then(() => putPicks(slug, next).then((ok) => setSaveFailed(!ok)));
   }
 
   useEffect(() => {
@@ -80,8 +81,10 @@ export function SdQuiz({ slug, quiz, zh }: { slug: string; quiz: SdQuestion[]; z
         else if (local) {
           // Answered while signed out: the account takes them over.
           setPicks(local);
-          save(local, true);
           writeLocal(slug, null);
+          queue.current = queue.current.then(() =>
+            putPicks(slug, local).then((ok) => setSaveFailed(!ok)),
+          );
         }
       })
       .catch(() => {
@@ -92,19 +95,18 @@ export function SdQuiz({ slug, quiz, zh }: { slug: string; quiz: SdQuestion[]; z
     return () => {
       current = false;
     };
-    // Once per chapter: `quiz` comes with the slug.
-  }, [slug]);
+  }, [slug, quiz]);
 
   const choose = (question: number, choice: number) => {
     if (picks[question] !== null) return;
     const next = picks.map((pick, i) => (i === question ? choice : pick));
     setPicks(next);
-    save(next, where === 'account');
+    save(next);
   };
   const restart = () => {
     const next = quiz.map(() => null);
     setPicks(next);
-    save(next, where === 'account');
+    save(next);
   };
   const answered = picks.filter((pick) => pick !== null).length;
   const right = picks.filter((pick, i) => pick === quiz[i].answer).length;
@@ -112,13 +114,13 @@ export function SdQuiz({ slug, quiz, zh }: { slug: string; quiz: SdQuestion[]; z
     <section className="sd-quiz" aria-labelledby="sd-quiz-title">
       <header className="sd-quiz-head">
         <h2 id="sd-quiz-title">{t('章节测验', 'Chapter quiz')}</h2>
-        <p className="sd-quiz-score" role="status">
+        <output className="sd-quiz-score">
           {answered === 0
             ? t(`${quiz.length} 道选择题`, `${quiz.length} questions`)
             : answered === quiz.length
               ? t(`完成：答对 ${right} / ${quiz.length}`, `Done: ${right} of ${quiz.length} correct`)
               : t(`已答 ${answered} / ${quiz.length} · 答对 ${right}`, `${answered} of ${quiz.length} answered · ${right} correct`)}
-        </p>
+        </output>
       </header>
       <ol className="sd-quiz-list">
         {quiz.map((question, i) => {
