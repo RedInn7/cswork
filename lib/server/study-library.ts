@@ -6,7 +6,7 @@ import { HttpError, rows } from './http';
 import { oaLibrary } from './oa-library';
 import { oaReadyProblems } from './oa-judge';
 import { oaDifficulty, oaTopic } from './oa-topics';
-import { practiceRoundState } from './practice-rounds';
+import { ensurePracticeRound, practiceRoundState } from './practice-rounds';
 import { studyProgress } from './practice-progress';
 import {
   curatedByNumber,
@@ -455,7 +455,7 @@ export async function similarProblems(
   );
   // Solved as on the Line 500 list: this practice round, imported LeetCode records included.
   const progress = userId
-    ? studyProgress(userId, practiceRoundState(userId).activeRoundId)
+    ? studyProgress(userId, ensurePracticeRound(userId))
     : new Map();
   return picked.map((n) => {
     const row = judgeable.get(n)!;

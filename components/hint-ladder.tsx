@@ -52,6 +52,8 @@ export function HintLadder({
   const list = hints[english ? 'en' : 'zh'];
   const [shown, setShown] = useState(0);
   const [confirm, setConfirm] = useState(false);
+  // Confirmed: focus goes to the hint it opened; cancelled: back to "Show anyway".
+  const confirmed = useRef(false);
   // ponytail: a reload mid-judge can count that verdict twice (hint 3 one failure early);
   // exact needs the failed ids from the server.
   const [liveFailed, setLiveFailed] = useState<string[]>([]);
@@ -159,13 +161,20 @@ export function HintLadder({
               <strong>{english ? `Hint ${next}: ` : `提示 ${next}：`}</strong>
               {lockedReason}
             </p>
-            <button onClick={() => setConfirm(true)}>
+            <button
+              onClick={() => {
+                confirmed.current = false;
+                setConfirm(true);
+              }}
+            >
               {english ? 'Show anyway' : '仍要查看'}
             </button>
           </div>
         ))}
       <AlertDialog open={confirm} onOpenChange={setConfirm}>
-        <AlertDialogContent finalFocus={() => latest.current || true}>
+        <AlertDialogContent
+          finalFocus={() => (confirmed.current && latest.current) || true}
+        >
           <AlertDialogHeader>
             <AlertDialogTitle>
               {english ? `Show hint ${next} now?` : `现在查看提示 ${next}？`}
@@ -181,6 +190,7 @@ export function HintLadder({
             <AlertDialogCancel>{english ? 'Keep trying' : '再想想'}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
+                confirmed.current = true;
                 reveal();
                 setConfirm(false);
               }}
