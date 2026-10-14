@@ -1,0 +1,154 @@
+/* /mcp: on the public library's shell and palette, like /acm-io. Numbered steps down a
+   rail, terminal-dark snippets, the tool names in mono. */
+.mcp-public code,
+.mcp-public pre {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+.mcp-steps {
+  max-width: 860px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+.mcp-steps > li {
+  position: relative;
+  padding: 0 0 40px 56px;
+  counter-increment: step;
+}
+/* The rail joins the step numbers. */
+.mcp-steps > li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #087158;
+  border-radius: 50%;
+  background: #fff;
+  color: #087158;
+  font: 600 13px/1 'SFMono-Regular', Consolas, monospace;
+}
+.mcp-steps > li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 44px;
+  bottom: 8px;
+  left: 18px;
+  border-left: 1px dashed #b9cdc3;
+}
+.mcp-steps h2 {
+  margin: 4px 0 10px;
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.mcp-steps h3 {
+  margin: 22px 0 8px;
+  font-size: 15px;
+  font-weight: 650;
+}
+.mcp-steps p,
+.mcp-facts {
+  margin: 0 0 10px;
+  line-height: 1.8;
+}
+.mcp-note {
+  color: #54695f;
+  font-size: 14px;
+}
+.mcp-snippet {
+  min-width: 0;
+  margin: 10px 0;
+  border-radius: 10px;
+  background: #13241e;
+  overflow: hidden;
+}
+.mcp-snippet figcaption {
+  padding: 9px 16px 0;
+  color: #8fb3a3;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.mcp-snippet pre {
+  margin: 0;
+  padding: 6px 16px 14px;
+  overflow-x: auto;
+  color: #e6f2ec;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.mcp-prompts {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+.mcp-prompts li {
+  padding: 10px 14px;
+  border: 1px solid #dce5df;
+  border-left: 3px solid #087158;
+  border-radius: 8px;
+  background: #fff;
+}
+.mcp-section {
+  max-width: 860px;
+  padding: 32px 0 8px;
+  border-top: 1px solid #dce5df;
+}
+.mcp-section h2 {
+  margin: 0 0 16px;
+  font-size: 24px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.mcp-tools {
+  display: grid;
+  gap: 0;
+  margin: 0 0 24px;
+}
+.mcp-tools > div {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e8eee9;
+}
+.mcp-tools dt code {
+  color: #087158;
+  font-size: 13px;
+  font-weight: 600;
+}
+.mcp-tools dd {
+  margin: 0;
+  line-height: 1.7;
+}
+.mcp-facts {
+  padding-left: 20px;
+}
+.mcp-facts li + li {
+  margin-top: 6px;
+}
+@media (max-width: 600px) {
+  .mcp-steps > li {
+    padding-left: 48px;
+  }
+  .mcp-steps > li::before {
+    width: 32px;
+    height: 32px;
+  }
+  .mcp-steps > li:not(:last-child)::after {
+    left: 16px;
+  }
+  .mcp-tools > div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .mcp-snippet pre {
+    font-size: 12px;
+  }
+}
