@@ -1285,11 +1285,11 @@ GROUP BY UPPER(SUBSTR(name, 1, 1));`,
     tables: ['employees'],
     ordered: true,
     task: {
-      zh: '统计每一年（`YYYY`）入职的员工人数，只列出有人入职的年份，按年份升序输出。',
-      en: 'Count the employees hired in each year (`YYYY`), listing only years with hires, sorted by year ascending.',
+      zh: "统计每一年入职的员工人数，年份写成文本 `'YYYY'`，只列出有人入职的年份，按年份升序输出。",
+      en: "Count the employees hired in each year, with the year as text `'YYYY'`, listing only years with hires, sorted by year ascending.",
     },
     columns: [
-      ['year', '年份 YYYY', 'year as YYYY'],
+      ['year', "年份文本 'YYYY'", "year as text 'YYYY'"],
       ['hires', '入职人数', 'number of hires'],
     ],
     explanation: {
@@ -1297,8 +1297,14 @@ GROUP BY UPPER(SUBSTR(name, 1, 1));`,
       en: '2018 brought Ava and Eve, 2021 Dan and Hugo, 2022 Finn and Jack, and the other years one hire each.',
     },
     hints: {
-      zh: ["`strftime('%Y', hire_date)` 取年份，`'%m'` 取月份（不带年）。"],
-      en: ["`strftime('%Y', hire_date)` gives the year; `'%m'` gives the month without the year."],
+      zh: [
+        "`strftime('%Y', hire_date)` 取年份，`'%m'` 取月份（不带年）。",
+        "strftime 返回的是文本；判题区分类型，CAST 成整数 2018 后就和期望的文本 '2018' 不相等。",
+      ],
+      en: [
+        "`strftime('%Y', hire_date)` gives the year; `'%m'` gives the month without the year.",
+        "strftime returns text, and the judge compares types: CAST it to the integer 2018 and it no longer equals the text '2018'.",
+      ],
     },
     reference: `SELECT strftime('%Y', hire_date) AS year, COUNT(*) AS hires
 FROM employees
@@ -1308,6 +1314,7 @@ ORDER BY year;`,
     wrong: [
       "SELECT strftime('%Y', hire_date) AS year, COUNT(*) AS hires FROM employees GROUP BY year ORDER BY hires DESC, year;",
       "SELECT strftime('%Y', hire_date) AS year, COUNT(*) FROM employees GROUP BY hire_date ORDER BY year;",
+      "SELECT CAST(strftime('%Y', hire_date) AS INTEGER), COUNT(*) FROM employees GROUP BY 1 ORDER BY 1;",
     ],
     sample: COMPANY.sample,
     hidden: [COMPANY.ties, COMPANY_DATES],

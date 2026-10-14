@@ -3700,12 +3700,13 @@
    "translations": {
     "en": {
      "title": "Hires per Year",
-     "description": "Count the employees hired in each year (`YYYY`), listing only years with hires, sorted by year ascending.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
+     "description": "Count the employees hired in each year, with the year as text `'YYYY'`, listing only years with hires, sorted by year ascending.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
      "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
-     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `year`: year as YYYY\n- `hires`: number of hires\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `year`: year as text 'YYYY'\n- `hires`: number of hires\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
      "explanation": "2018 brought Ava and Eve, 2021 Dan and Hugo, 2022 Finn and Jack, and the other years one hire each.",
      "hints": [
-      "strftime('%Y', hire_date) gives the year; '%m' gives the month without the year."
+      "strftime('%Y', hire_date) gives the year; '%m' gives the month without the year.",
+      "strftime returns text, and the judge compares types: CAST it to the integer 2018 and it no longer equals the text '2018'."
      ]
     }
    },
@@ -3713,12 +3714,13 @@
     "SQL",
     "日期处理"
    ],
-   "description": "统计每一年（`YYYY`）入职的员工人数，只列出有人入职的年份，按年份升序输出。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
+   "description": "统计每一年入职的员工人数，年份写成文本 `'YYYY'`，只列出有人入职的年份，按年份升序输出。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
    "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
-   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `year`：年份 YYYY\n- `hires`：入职人数\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `year`：年份文本 'YYYY'\n- `hires`：入职人数\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "2018 年 Ava 和 Eve 入职，2021 年 Dan 和 Hugo，2022 年 Finn 和 Jack，其余年份各 1 人。",
    "hints": [
-    "strftime('%Y', hire_date) 取年份，'%m' 取月份（不带年）。"
+    "strftime('%Y', hire_date) 取年份，'%m' 取月份（不带年）。",
+    "strftime 返回的是文本；判题区分类型，CAST 成整数 2018 后就和期望的文本 '2018' 不相等。"
    ],
    "timeLimit": 2,
    "memoryLimit": 131072,
