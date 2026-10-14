@@ -2,7 +2,7 @@ import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { achievements, longestStreak } from '@/lib/achievements';
-import { isChannel, REPORTS_HIDE } from '@/lib/community';
+import { isChannel, REPORT_CLEARED, REPORTS_HIDE } from '@/lib/community';
 import { curatedByNumber, curatedEntries } from '@/lib/ling-curated';
 import { reportWindow, slotOf, type MockSession, type Slot } from '@/lib/mock-oa';
 import { canonicalCompany, employerSlug, OTHER_COMPANY } from '@/lib/oa-company-brands';
@@ -322,9 +322,17 @@ function ownerHandle(ownerId: string) {
     )?.handle ?? null
   );
 }
-/** Saves (user_marks star on list:<id>) and copies of a list. */
-const STARS = (list: string) => `(SELECT COUNT(*) FROM user_marks m WHERE m.target='list:'||${list} AND m.mark='star')`;
-const FORKS = (list: string) => `(SELECT COUNT(*) FROM user_lists f WHERE f.forked_from=${list})`;
+/**
+ * Saves (user_marks star on list:<id>) and copies of a list, by verified accounts only, each
+ * account once and never the owner: forking needs no verification, so one account forking
+ * its own list again and again must not climb the plaza.
+ */
+const VERIFIED = (col: string) => `EXISTS(SELECT 1 FROM "user" u WHERE u.id=${col} AND u.email_verified=1)`;
+const STARS = (list: string) =>
+  `(SELECT COUNT(*) FROM user_marks m WHERE m.target='list:'||${list} AND m.mark='star' AND ${VERIFIED('m.user_id')})`;
+const FORKS = (list: string) =>
+  `(SELECT COUNT(DISTINCT f.owner_id) FROM user_lists f WHERE f.forked_from=${list} AND ${VERIFIED('f.owner_id')}
+    AND f.owner_id<>(SELECT o.owner_id FROM user_lists o WHERE o.id=${list}))`;
 /** A list as its page shows it; null when missing or private to someone else. */
 export function readList(id: string, userId: string | null) {
   try {
@@ -682,7 +690,7 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
       .all(profile.user_id) as { id: string; title: string; stars: number }[]
   ).map((l) => ({ ...l, count: listItems(l.id).filter((i) => catalogue.has(i.problemId)).length }));
   const listStars = db
-    .prepare(`SELECT COUNT(*) FROM user_marks WHERE mark='star' AND target IN
+    .prepare(`SELECT COUNT(*) FROM user_marks m WHERE m.mark='star' AND ${VERIFIED('m.user_id')} AND m.target IN
       (SELECT 'list:'||id FROM user_lists WHERE owner_id=? AND visibility='public')`)
     .pluck()
     .get(profile.user_id) as number;
@@ -702,7 +710,7 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
         `SELECT sp.id,sp.problem_id AS target,sp.title,sp.tag,sp.created_at AS createdAt,
           (SELECT COUNT(*) FROM post_votes v WHERE v.post_id=sp.id) AS votes
         FROM solution_posts sp WHERE sp.user_id=? AND sp.hidden=0
-          AND (SELECT COUNT(*) FROM post_reports r WHERE r.target='post:'||sp.id)<${REPORTS_HIDE}
+          AND (SELECT COUNT(*) FROM post_reports r WHERE r.target='post:'||sp.id AND r.reason<>'${REPORT_CLEARED}')<${REPORTS_HIDE}
         ORDER BY sp.created_at DESC LIMIT 500`,
       )
       .all(profile.user_id) as { id: string; target: string; title: string; tag: string; createdAt: number; votes: number }[]
