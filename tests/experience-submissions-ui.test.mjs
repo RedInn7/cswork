@@ -76,7 +76,7 @@ test('sharing an experience: the form posts ordered rounds and split questions, 
     assert.equal(document.querySelector('.xs-status').getAttribute('data-status'), 'rejected');
     const form = document.querySelector('form.xs-form');
     assert.ok(form !== null, 'tab=share opens the form');
-    assert.equal(form.querySelectorAll('select option').length, 3);
+    assert.equal(form.querySelector('select').querySelectorAll('option').length, 3, 'the company menu');
     await act(async () => {
       set(form.querySelector('select'), 'uber');
       set(form.querySelector('input[list]'), 'Software Engineer');

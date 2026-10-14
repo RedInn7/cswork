@@ -3,6 +3,8 @@ import { cache } from 'react';
 import Link from 'next/link';
 import 'katex/dist/katex.min.css';
 import { PublicLibraryMarkdown } from '../../markdown';
+import { PostsPreview } from '../../../discuss/parts';
+import '../../../discuss.css';
 import { seoMetadata } from '@/lib/seo';
 import { lcIdBySource } from '@/lib/company-tags';
 import { RESULTS, ROUND_LABELS, type ExperienceFacts } from '@/lib/experience';
@@ -132,6 +134,14 @@ export default async function PublicLibraryDetail({ params }: Props) {
       <div className="public-library-prose">
         <PublicLibraryMarkdown body={item.body} math={item.math} />
       </div>
+      {(item.type === 'interview_question' || item.type === 'experience') && (
+        <PostsPreview
+          target={`${item.type === 'experience' ? 'exp' : 'q'}:${item.slug}`}
+          zh={false}
+          title={item.type === 'experience' ? 'Comments' : 'Community answers'}
+          appHref={`/?${new URLSearchParams({ view: 'content', type: item.type, slug: item.slug })}`}
+        />
+      )}
       {company ? (
         <Practice practice={company} />
       ) : practice ? (
