@@ -54,6 +54,8 @@ export type Feedback = {
   improvements: string;
   /** Per question, in the set's order. `tag` is questionTag of the question rated ('' when unknown). */
   questions: { rating: number | null; note: string; tag: string }[];
+  /** Written by the AI interviewer (lib/mock-ai-interview.ts), not a person. */
+  ai?: boolean;
 };
 
 /**
@@ -75,9 +77,9 @@ const VERSION = 1;
 export const MAX_FEEDBACK = 2048;
 /**
  * Wire format: short keys, empty fields left out. k is the rubric in RUBRIC order, 0 = unscored;
- * each q is [rating (0 = unscored), tag, note] with trailing empties left out.
+ * each q is [rating (0 = unscored), tag, note] with trailing empties left out; a = 1 when the AI wrote it.
  */
-type Wire = { v: number; s: string; r?: number[]; k?: number[]; o?: string; g?: string; i?: string; q?: (number | string)[][] };
+type Wire = { v: number; s: string; r?: number[]; k?: number[]; o?: string; g?: string; i?: string; q?: (number | string)[][]; a?: 1 };
 
 const toBase64Url = (text: string) => {
   let binary = '';
@@ -103,6 +105,7 @@ function toWire(f: Feedback, cap: number): Wire {
   if (f.improvements) w.i = cut(f.improvements);
   if (f.questions.length)
     w.q = f.questions.map((q) => (q.note ? [q.rating ?? 0, q.tag, cut(q.note)] : q.tag ? [q.rating ?? 0, q.tag] : [q.rating ?? 0]));
+  if (f.ai) w.a = 1;
   return w;
 }
 
@@ -161,6 +164,7 @@ export function decodeFeedback(value: string | null | undefined): Feedback | nul
         const [rating, tag, note] = list(q);
         return { rating: score(rating), note: text(note), tag: typeof tag === 'string' && /^[0-9a-z]{4}$/.test(tag) ? tag : '' };
       }),
+    ...(w.a === 1 ? { ai: true } : {}),
   };
 }
 

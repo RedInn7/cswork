@@ -74,39 +74,48 @@ const input = z
   .strict();
 
 export const aiEnabled = () => !!setting('ANTHROPIC_API_KEY');
-const today = () => new Date().toISOString().slice(0, 10);
+export const today = () => new Date().toISOString().slice(0, 10);
 // 0 is a valid budget: it pauses the tutor for everyone.
 function budget() {
   const raw = setting('AI_TUTOR_DAILY_BUDGET').trim();
   const n = raw ? Number(raw) : NaN;
   return Number.isFinite(n) && n >= 0 ? n : DEFAULT_BUDGET;
 }
-const usedToday = (userId: string, kind: AiKind, day: string) =>
+const usedToday = (userId: string, kind: string, day: string) =>
   (sqlite()
     .prepare('SELECT count FROM ai_usage WHERE day=? AND user_id=? AND kind=?')
     .pluck()
     .get(day, userId, kind) as number | undefined) ?? 0;
 
-/** Takes one call from the learner's quota and the site budget; returns calls left today. */
-function reserve(userId: string, kind: AiKind, day: string) {
+/**
+ * Takes one from the learner's daily `kind` quota (`max` a day; `spentMessage` once used up)
+ * and from the site budget; returns how many are left today. Other AI features
+ * (lib/server/ai-interviewer.ts) keep their own kinds in the same table and budget.
+ */
+export function takeQuota(userId: string, kind: string, day: string, max: number, spentMessage: string) {
   const db = sqlite();
   return db.transaction(() => {
     const spent = db.prepare('SELECT COALESCE(SUM(count),0) FROM ai_usage WHERE day=?').pluck().get(day) as number;
     if (spent >= budget()) throw new HttpError(503, 'AI 助教今天的额度已用完，明天再来');
     const used = usedToday(userId, kind, day);
-    if (used >= AI_DAILY_LIMITS[kind])
-      throw new HttpError(
-        429,
-        kind === 'hint' ? '今天的 AI 提示次数已用完，明天再来' : '今天的 AI 点评次数已用完，明天再来',
-      );
+    if (used >= max) throw new HttpError(429, spentMessage);
     db.prepare(
       'INSERT INTO ai_usage(day,user_id,kind,count) VALUES(?,?,?,1) ON CONFLICT(day,user_id,kind) DO UPDATE SET count=count+1',
     ).run(day, userId, kind);
-    return AI_DAILY_LIMITS[kind] - used - 1;
+    return max - used - 1;
   })();
 }
+/** Takes one call from the learner's quota and the site budget; returns calls left today. */
+const reserve = (userId: string, kind: AiKind, day: string) =>
+  takeQuota(
+    userId,
+    kind,
+    day,
+    AI_DAILY_LIMITS[kind],
+    kind === 'hint' ? '今天的 AI 提示次数已用完，明天再来' : '今天的 AI 点评次数已用完，明天再来',
+  );
 /** Adds the call's tokens; a call the API cannot have billed (refund) hands its quota back. */
-function settle(userId: string, kind: AiKind, day: string, refund: boolean, tokens: { in: number; out: number }) {
+export function settle(userId: string, kind: string, day: string, refund: boolean, tokens: { in: number; out: number }) {
   sqlite()
     .prepare(
       'UPDATE ai_usage SET count=count-?,input_tokens=input_tokens+?,output_tokens=output_tokens+? WHERE day=? AND user_id=? AND kind=?',
@@ -228,9 +237,9 @@ function lastVerdict(userId: string, problemId: string) {
   };
 }
 
-function callClaude(kind: AiKind, user: string, signal: AbortSignal) {
-  const model = setting(kind === 'hint' ? 'AI_TUTOR_HINT_MODEL' : 'AI_TUTOR_REVIEW_MODEL') || MODELS[kind];
-  const fallback = FALLBACK_MODELS.has(model);
+/** POST /v1/messages with the server's key; models that have one get the server-side refusal fallback. */
+export function anthropicFetch(body: { model: string } & Record<string, unknown>, signal: AbortSignal) {
+  const fallback = FALLBACK_MODELS.has(body.model);
   return fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -239,17 +248,23 @@ function callClaude(kind: AiKind, user: string, signal: AbortSignal) {
       'anthropic-version': '2023-06-01',
       ...(fallback ? { 'anthropic-beta': 'server-side-fallback-2026-07-01' } : {}),
     },
-    body: JSON.stringify({
-      model,
+    body: JSON.stringify({ ...body, ...(fallback ? { fallbacks: 'default' } : {}) }),
+    signal,
+  });
+}
+
+function callClaude(kind: AiKind, user: string, signal: AbortSignal) {
+  return anthropicFetch(
+    {
+      model: setting(kind === 'hint' ? 'AI_TUTOR_HINT_MODEL' : 'AI_TUTOR_REVIEW_MODEL') || MODELS[kind],
       max_tokens: MAX_TOKENS[kind],
       // Low effort: a short reply that should arrive in seconds.
       output_config: { effort: 'low' },
       system: SYSTEM[kind],
       messages: [{ role: 'user', content: user }],
-      ...(fallback ? { fallbacks: 'default' } : {}),
-    }),
+    },
     signal,
-  });
+  );
 }
 
 /** POST oj/ai/hint and oj/ai/review: one reply for the signed-in learner; GET oj/ai/usage: calls left today. */

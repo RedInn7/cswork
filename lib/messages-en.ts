@@ -277,6 +277,16 @@ const EN: Record<string, string> = {
   'AI 助教暂时不可用，请稍后再试': 'The AI tutor is unavailable right now. Please try again later',
   'AI 助教无法回答这个请求': "The AI tutor can't answer this request",
   '代码过长，AI 助教最多读取 20000 个字符': 'The code is too long; the AI tutor reads at most 20,000 characters',
+  // AI interviewer (lib/server/ai-interviewer.ts)
+  'AI 面试官暂时不可用，请稍后再试': 'The AI interviewer is unavailable right now. Please try again later',
+  'AI 面试官无法回答这个请求': "The AI interviewer can't answer this request",
+  'AI 面试官响应超时，请稍后再试': 'The AI interviewer took too long. Please try again',
+  '今天的 AI 模拟面试次数已用完，明天再来': "You've used today's AI mock interviews. Come back tomorrow",
+  '今天的 AI 面试对话轮数已用完，明天再来': "You've used today's AI interview messages. Come back tomorrow",
+  '这场 AI 面试已失效，请重新开始': 'This AI interview has expired. Your next message starts a new one',
+  '这场面试的对话轮数已用完': 'This interview is out of messages',
+  题目不在面试题库里: "This question isn't in the interview bank",
+  还没有可以评估的对话: "There's no conversation to grade yet",
   '请先写一些代码再请求点评': 'Write some code before asking for a review',
   // Written into submission.message by the judge worker
   '任务多次中断，请重新提交': 'Judging was interrupted too many times. Please submit again',
