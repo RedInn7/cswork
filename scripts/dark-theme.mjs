@@ -16,7 +16,10 @@
  * - dark text → light text, then nudged until it clears 4.5:1 on its surface;
  * - saturated or already-dark backgrounds (navy signs, amber chips, brand buttons)
  *   stay, and so does the text drawn on them;
- * - light hairlines → dark hairlines; dark neutral lines → light lines.
+ * - light hairlines → dark hairlines; dark neutral lines → light lines;
+ * - text drawn with an accent or ink token the block leaves alone (`var(--route-navy)`)
+ *   is mapped through the token's light value when it would be unreadable on dark.
+ * Tokens resolve across stylesheets (a page's palette often lives in another file).
  * Hand-tuned values live in app/theme.css; any `.dark` selector + property set there
  * is left out of the generated blocks.
  *
@@ -322,17 +325,42 @@ export function contexts(sel) {
   return { self: [...new Set(self)], above: [...new Set(above)] };
 }
 
+/** Custom properties as the light theme first defines them, and the names some dark-scoped rule sets. */
+export function lightVars(root) {
+  const vars = new Map();
+  const darkSet = new Set();
+  root.walkDecls(/^--/, (d) => {
+    if (DARK_SCOPED.test(d.parent.selector ?? '')) darkSet.add(d.prop);
+    else if (!vars.has(d.prop)) vars.set(d.prop, d.value);
+  });
+  return { vars, darkSet };
+}
+
 /**
  * Build the generated dark block for one stylesheet (without markers).
- * `manual` is a Set of `selector|prop` already hand-set in app/theme.css.
+ * `manual` is a Set of `selector|prop` already hand-set in app/theme.css; `shared` holds
+ * the custom properties other stylesheets define (a page's tokens often live in another file).
  */
-export function darkBlock(css, { manual = new Set(), from } = {}) {
+export function darkBlock(css, { manual = new Set(), shared = new Map(), darkSet = new Set(), from } = {}) {
   const root = postcss.parse(stripBlock(css), { from });
-  // Custom properties as the light theme first defines them, for resolving var(--x) backgrounds.
-  const vars = new Map();
-  root.walkDecls(/^--/, (d) => {
-    if (!vars.has(d.prop) && !DARK_SCOPED.test(d.parent.selector ?? '')) vars.set(d.prop, d.value);
-  });
+  // Custom properties as the light theme first defines them (this file's first), for resolving
+  // var(--x) backgrounds and ink.
+  const local = lightVars(root);
+  const vars = new Map([...shared, ...local.vars]);
+  const tuned = new Set([...darkSet, ...local.darkSet]);
+  // Accent and ink tokens the dark block leaves alone (`--route-navy`, `--oa-easy`, `--cs-ai`):
+  // text drawn with one that would be unreadable here is mapped through its light value, or
+  // navy ink stays navy on a dark surface. Names app/theme.css or a dark-scoped rule sets
+  // are tuned by hand.
+  const manualVars = new Set([...manual].map((k) => k.slice(k.lastIndexOf('|') + 1)).filter((p) => p.startsWith('--')));
+  const fixedInk = (value, unreadable) =>
+    value.replace(/var\((--[\w-]+)\)/g, (m, name) => {
+      const v = vars.get(name);
+      if (!v || customRole(name) !== 'keep' || manualVars.has(name) || tuned.has(name)) return m;
+      // ponytail: the first light definition wins; a scope that redefines the token is not tracked.
+      const c = parseColor(v);
+      return c && unreadable(c.rgb) ? v.trim() : m;
+    });
   // Which selectors paint a background, and what the dark block does to it.
   const grounds = new Map();
   root.walkRules((rule) => {
@@ -386,12 +414,13 @@ export function darkBlock(css, { manual = new Set(), from } = {}) {
         // copied as is, so the cascade still prefers it over mapped rules
       } else if (role === 'text' && !custom) {
         if (context?.kind === 'accent') {
-          value = value.replace(COLOR_RE, (m) => {
+          value = fixedInk(value, (rgb) => rgbToOklch(rgb).L > 0.85).replace(COLOR_RE, (m) => {
             const c = parseColor(m);
             return c && rgbToOklch(c.rgb).L > 0.85 ? DARK_INK : m;
           });
         } else if (context?.kind !== 'keep') {
-          value = mapValue(value, 'text', context?.ground);
+          const ground = context?.ground ?? REFERENCE_SURFACE;
+          value = mapValue(fixedInk(value, (rgb) => contrast(rgb, ground) < 4.5), 'text', context?.ground);
         }
       } else if (role !== 'copy' && role !== 'keep') {
         value = mapValue(value, role);
@@ -455,13 +484,29 @@ export function themedFiles(dir) {
   return found.sort();
 }
 
-export function regenerate(dir, { check = false } = {}) {
+/**
+ * What every stylesheet's block is generated with: app/theme.css's keys, every file's tokens,
+ * and the tokens some file sets for a dark scope (tuned there, so never mapped).
+ */
+export function themeOptions(dir) {
   const manual = manualKeys(fs.readFileSync(path.join(dir, MANUAL), 'utf8'));
+  const shared = new Map();
+  const darkSet = new Set();
+  for (const file of themedFiles(dir)) {
+    const found = lightVars(postcss.parse(stripBlock(fs.readFileSync(path.join(dir, file), 'utf8'))));
+    for (const [name, value] of found.vars) if (!shared.has(name)) shared.set(name, value);
+    for (const name of found.darkSet) darkSet.add(name);
+  }
+  return { manual, shared, darkSet };
+}
+
+export function regenerate(dir, { check = false } = {}) {
+  const options = themeOptions(dir);
   const stale = [];
   for (const file of themedFiles(dir)) {
     const full = path.join(dir, file);
     const css = fs.readFileSync(full, 'utf8');
-    const next = withDarkBlock(css, { manual, from: full });
+    const next = withDarkBlock(css, { ...options, from: full });
     if (next === css) continue;
     stale.push(file);
     if (!check) fs.writeFileSync(full, next);

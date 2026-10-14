@@ -17,6 +17,7 @@ import {
   REFERENCE_SURFACE,
   rgbToOklch,
   themedFiles,
+  themeOptions,
   withDarkBlock,
 } from '../scripts/dark-theme.mjs';
 import { THEME_COOKIE, THEME_KEY, THEME_SCRIPT } from '../lib/theme-script.ts';
@@ -155,14 +156,15 @@ const SKIPPED = (node) => {
 };
 
 test('every stylesheet carries an up-to-date dark block covering its background and text colours', () => {
-  const manual = manualKeys(read('app/theme.css'));
+  const options = themeOptions(root);
+  const { manual } = options;
   const files = themedFiles(root);
   assert.ok(files.length >= 30);
   assert.ok(files.includes('app/globals.css') && files.includes('app/study-library.css'));
   for (const file of files) {
     const css = read(file);
     // Fresh: regenerating changes nothing (run `node scripts/dark-theme.mjs` after colour edits).
-    assert.ok(withDarkBlock(css, { manual, from: file }) === css, `${file}: dark block is stale`);
+    assert.ok(withDarkBlock(css, { ...options, from: file }) === css, `${file}: dark block is stale`);
     const [light, block = ''] = css.split(START);
     const covered = new Set(manualKeys(block.replace(END, '')));
     for (const key of manual) covered.add(key);
