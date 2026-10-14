@@ -1,11 +1,24 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { api, ApiError } from '@/lib/types';
 
 type State = { following: boolean; self: boolean; signedIn: boolean; followers: number; followees: number };
 
-/** /u/<handle>: follow or unfollow; signed out it points at signing in. Your own page has none. */
-export function FollowButton({ handle, zh }: { handle: string; zh: boolean }) {
+/**
+ * /u/<handle>: the follower count (server-rendered, then live), `children`, and a follow or
+ * unfollow button; signed out it points at signing in. Your own page has no button.
+ */
+export function FollowButton({
+  handle,
+  zh,
+  followers,
+  children,
+}: {
+  handle: string;
+  zh: boolean;
+  followers: number;
+  children?: ReactNode;
+}) {
   const t = (a: string, b: string) => (zh ? a : b);
   const [state, setState] = useState<State | null>(null);
   const [busy, setBusy] = useState(false);
@@ -20,12 +33,28 @@ export function FollowButton({ handle, zh }: { handle: string; zh: boolean }) {
       live = false;
     };
   }, [handle]);
-  if (!state || state.self) return null;
+  const n = state?.followers ?? followers;
+  const count = (
+    <a href={`/u/${handle}/followers`}>
+      <b>{n}</b> {t('关注者', n === 1 ? 'follower' : 'followers')}
+    </a>
+  );
+  if (!state || state.self)
+    return (
+      <>
+        {count}
+        {children}
+      </>
+    );
   if (!state.signedIn)
     return (
-      <a className="learner-follow" href="/?view=progress">
-        {t('登录后关注', 'Sign in to follow')}
-      </a>
+      <>
+        {count}
+        {children}
+        <a className="learner-follow" href="/?view=progress">
+          {t('登录后关注', 'Sign in to follow')}
+        </a>
+      </>
     );
   async function toggle() {
     setBusy(true);
@@ -39,17 +68,21 @@ export function FollowButton({ handle, zh }: { handle: string; zh: boolean }) {
     }
   }
   return (
-    <span className="learner-follow-wrap">
-      <button
-        type="button"
-        className="learner-follow"
-        aria-pressed={state.following}
-        disabled={busy}
-        onClick={() => void toggle()}
-      >
-        {state.following ? t('已关注', 'Following') : t('关注', 'Follow')}
-      </button>
-      {error && <span role="alert">{error}</span>}
-    </span>
+    <>
+      {count}
+      {children}
+      <span className="learner-follow-wrap">
+        <button
+          type="button"
+          className="learner-follow"
+          aria-pressed={state.following}
+          disabled={busy}
+          onClick={() => void toggle()}
+        >
+          {state.following ? t('已关注', 'Following') : t('关注', 'Follow')}
+        </button>
+        {error && <span role="alert">{error}</span>}
+      </span>
+    </>
   );
 }

@@ -32,6 +32,7 @@ const { MemberStatsCard } = await import('../components/company-stats-card.tsx')
 const { MyExperienceSubmissions } = await import('../components/experience-submissions.tsx');
 const { ContentList } = await import('../components/content-library.tsx');
 const { ProfileView, PublicListView, FollowListView } = await import('../app/u/views.tsx');
+const { FollowButton } = await import('../components/follow-button.tsx');
 
 const wait = (ms = 5) =>
   act(async () => {
@@ -234,6 +235,28 @@ test('the profile shows languages, badges, posts, follows and list saves; follow
   assert.equal(page.querySelector('.list-star').textContent.includes('2 saves'), true);
   assert.equal(page.querySelector('.list-star').textContent.includes('1 copy'), true);
   assert.equal(page.querySelector('.list-star button[aria-pressed="false"]') !== null, true);
+});
+
+test('following from a profile updates its follower count in place', async () => {
+  const state = (following, followers) => ({ following, self: false, signedIn: true, followers, followees: 0 });
+  const { restore } = stub((key, body) =>
+    key.startsWith('GET oj/follows?') ? state(false, 5) : key === 'POST oj/follows' ? state(body.on, body.on ? 6 : 5) : undefined,
+  );
+  const count = () => $('a[href="/u/ada/followers"]').textContent;
+  try {
+    await mount(createElement(FollowButton, { handle: 'ada', zh: false, followers: 5 }, createElement('i', null, 'kept')));
+    assert.equal(count(), '5 followers');
+    assert.equal($('i')?.textContent === 'kept', true, 'children stay between the count and the button');
+    await act(async () => button('Follow').click());
+    await wait();
+    assert.equal(count(), '6 followers');
+    assert.equal($('button[aria-pressed="true"]') !== null, true);
+    await act(async () => button('Following').click());
+    await wait();
+    assert.equal(count(), '5 followers');
+  } finally {
+    restore();
+  }
 });
 
 test('the weekly board ranks me among the people I follow', async () => {

@@ -35,18 +35,16 @@ export function ProfileView({
         <h1>@{profile.handle}</h1>
         {profile.bio && <p>{profile.bio}</p>}
         <div className="learner-social">
-          <a href={`/u/${profile.handle}/followers`}>
-            <b>{profile.followers ?? 0}</b> {t('关注者', (profile.followers ?? 0) === 1 ? 'follower' : 'followers')}
-          </a>
-          <a href={`/u/${profile.handle}/following`}>
-            <b>{profile.following ?? 0}</b> {t('关注中', 'following')}
-          </a>
-          {!!profile.listStars && (
-            <span>
-              <b>{profile.listStars}</b> {t('次题单被收藏', profile.listStars === 1 ? 'list save' : 'list saves')}
-            </span>
-          )}
-          <FollowButton handle={profile.handle} zh={zh} />
+          <FollowButton handle={profile.handle} zh={zh} followers={profile.followers ?? 0}>
+            <a href={`/u/${profile.handle}/following`}>
+              <b>{profile.following ?? 0}</b> {t('关注中', 'following')}
+            </a>
+            {!!profile.listStars && (
+              <span>
+                <b>{profile.listStars}</b> {t('次题单被收藏', profile.listStars === 1 ? 'list save' : 'list saves')}
+              </span>
+            )}
+          </FollowButton>
         </div>
         <dl className="learner-stats">
           <div className="learner-total">
