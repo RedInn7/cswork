@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import lcMapFile from '../lib/content/company-lc-map.json';
 import presetsFile from '../lib/content/mock-oa-presets.json';
-import { companyLcProblems, companyTagIndex, lcIdBySource } from '../lib/company-tags';
+import { companyLcProblems, companyTagIndex, inWindow, lcIdBySource, reportWindow, windowCounts } from '../lib/company-tags';
 import { employerSlug } from '../lib/oa-company-brands';
 
 const presets = [
@@ -32,11 +32,11 @@ void test('aliases merge into one company: rounds dedupe, counts add up, the lat
     presets,
     { zeta: 'Zeta Corp' },
   );
-  assert.deepEqual(index.get('lc-1'), [
-    // OA first, then report count, then the latest report.
-    { slug: 'tiktok', name: 'TikTok / ByteDance', rounds: ['Onsite', 'Online Assessment'], oa: true, count: 3, last: '2026-09-10' },
-    { slug: 'meta', name: 'Meta', rounds: ['Technical Screen', 'Onsite', 'HR Screen'], oa: false, count: 4, last: '2026-03-01' },
-    { slug: 'zeta', name: 'Zeta Corp', rounds: ['Onsite'], oa: false, count: 1, last: '2026-10-01' },
+  assert.deepEqual(index.get('lc-1')?.map(({ sources, ...tag }) => ({ ...tag, sources: sources.length })), [
+    // OA first, then report count, then the latest report; every report's source is kept.
+    { slug: 'tiktok', name: 'TikTok / ByteDance', rounds: ['Onsite', 'Online Assessment'], oa: true, count: 3, last: '2026-09-10', sources: 3 },
+    { slug: 'meta', name: 'Meta', rounds: ['Technical Screen', 'Onsite', 'HR Screen'], oa: false, count: 4, last: '2026-03-01', sources: 4 },
+    { slug: 'zeta', name: 'Zeta Corp', rounds: ['Onsite'], oa: false, count: 1, last: '2026-10-01', sources: 1 },
   ]);
   assert.deepEqual(index.get('lc-2')?.map((c) => c.slug), ['tiktok']);
   assert.equal(index.has('oa-meta-1'), false, 'only lc ids are tagged');
@@ -65,8 +65,8 @@ void test('company problems: library spellings fold into the employer, most repo
   });
   assert.deepEqual([...problems.keys()].sort(), ['acme', 'jpmorgan-chase']);
   assert.deepEqual(problems.get('jpmorgan-chase'), [
-    { id: 'lc-2', rounds: ['Onsite'], count: 3, last: '2025-01-01' },
-    { id: 'lc-1', rounds: ['Onsite', 'Technical Screen'], count: 2, last: '2026-06-01' },
+    { id: 'lc-2', rounds: ['Onsite'], count: 3, last: '2025-01-01', sources: ['lc-2-Onsite-0', 'lc-2-Onsite-1', 'lc-2-Onsite-2'] },
+    { id: 'lc-1', rounds: ['Onsite', 'Technical Screen'], count: 2, last: '2026-06-01', sources: ['lc-1-Onsite-0', 'lc-1-Technical Screen-0'] },
   ]);
   assert.deepEqual(problems.get('acme')?.map((p) => p.id), ['lc-4', 'lc-3'], 'equal counts: latest first');
 });
@@ -100,4 +100,31 @@ void test('the shipped v2 map: counts, dates, names and every source slug', () =
   const jpm = [...companyTagIndex().values()].flat().filter((c) => /morgan/.test(c.slug));
   assert.ok(jpm.some((c) => c.slug === 'jpmorgan-chase' && c.name === 'JPMorgan Chase'));
   assert.ok(!jpm.some((c) => c.slug === 'j-p-morgan'));
+});
+
+void test('merged spellings keep each source once', () => {
+  const twice = e('lc-5', ['Onsite']);
+  const merged = companyLcProblems(new Set(), { 'j-p-morgan': [twice], jpmorganchase: [twice] }).get('jpmorgan-chase')!;
+  assert.deepEqual(merged[0].sources, ['lc-5-Onsite-0']);
+});
+
+void test('report windows: disjoint buckets by age, undated reports count as older', () => {
+  const now = Date.parse('2026-10-14T12:00:00Z');
+  const day = (n: number) => new Date(now - n * 86400000).toISOString().slice(0, 10);
+  const dated = new Map([
+    ['ninety', { date: day(90) }],
+    ['ninety-one', { date: day(91) }],
+    ['half', { date: day(182) }],
+    ['year', { date: day(365) }],
+    ['two', { date: day(730) }],
+    ['old', { date: day(731) }],
+    ['undated', { date: null }],
+  ]);
+  // Whole days: 90 days back is still in at noon (90.5 days after that date's midnight).
+  assert.deepEqual(windowCounts(['ninety'], dated, now), { m3: 1, m6: 0, y1: 0, y2: 0, older: 0 }, 'exactly 90 days is in the 3 months');
+  const w = windowCounts([...dated.keys(), 'not-in-the-library'], dated, now);
+  assert.deepEqual(w, { m3: 1, m6: 2, y1: 1, y2: 1, older: 3 });
+  assert.deepEqual(['3m', '6m', '1y', '2y', 'all'].map((x) => inWindow(w, reportWindow(x))), [1, 3, 4, 5, 8]);
+  assert.equal(reportWindow('5y'), 'all', 'unknown windows read as all');
+  assert.equal(reportWindow(['3m']), 'all');
 });

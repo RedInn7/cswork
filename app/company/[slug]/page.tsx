@@ -2,11 +2,14 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { oaDifficulty } from '@/lib/server/oa-topics';
 import { cache } from 'react';
+import { inWindow, REPORT_WINDOWS, reportWindow, windowCounts, type ReportWindow } from '@/lib/company-tags';
+import lcMapFile from '@/lib/content/company-lc-map.json';
 import { ROUND_LABELS } from '@/lib/experience';
 import { companyHubPath, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
 import { breadcrumbJsonLd, companyPageTitle, seoMetadata } from '@/lib/seo';
 import { CompanyStatsCard, MemberStatsCard } from '@/components/company-stats-card';
 import { companyHub } from '@/lib/server/company-hub';
+import { sourceDates, type SourceItem } from '@/lib/server/company-insights';
 import { companyStats } from '@/lib/server/company-stats';
 import { companyFacets } from '@/lib/server/seo-facets';
 import { CATEGORIES } from '@/components/company-stats-card';
@@ -24,8 +27,20 @@ import { OaCompanyMark, OaDifficulty } from '../../oa/parts';
 import { CompanyAsked } from '../asked-reports';
 import { Facts, QUESTION_LEVELS } from '../parts';
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
 const OA_SHOWN = 8;
+const LC_SHOWN = 10;
+/** ?window= links, [zh, en]. */
+const WINDOW_LABELS: Record<ReportWindow, [string, string]> = {
+  '3m': ['近 3 个月', '3 months'],
+  '6m': ['近 6 个月', '6 months'],
+  '1y': ['近 1 年', '1 year'],
+  '2y': ['近 2 年', '2 years'],
+  all: ['全部', 'All time'],
+};
 const load = cache(async (slug: string) => {
   const ready = await oaReadyProblems();
   const hub = companyHub(library(), slug, new Set(ready.keys()));
@@ -66,6 +81,30 @@ export async function generateMetadata({ params }: Props) {
 }
 
 const spa = (params: Record<string, string>) => `/?${new URLSearchParams(params)}`;
+
+/**
+ * The most reported problems inside the report window, with their counts there and the reports
+ * behind them that have a public page (newest first).
+ */
+function inReportWindow<P extends { sources: string[]; last: string }>(
+  problems: readonly P[],
+  period: ReportWindow,
+  dated: ReadonlyMap<string, SourceItem>,
+  now = Date.now(),
+) {
+  const counted = (slugs: readonly string[]) => inWindow(windowCounts(slugs, dated, now), period);
+  return problems
+    .map((p) => ({
+      ...p,
+      n: counted(p.sources),
+      refs: p.sources
+        .flatMap((slug) => (dated.get(slug)?.page && counted([slug]) ? [dated.get(slug)!] : []))
+        .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')),
+    }))
+    .filter((p) => p.n > 0)
+    .sort((a, b) => b.n - a.n || b.last.localeCompare(a.last))
+    .slice(0, LC_SHOWN);
+}
 function SectionHead({ id, title, count, all, zh }: { id: string; title: string; count: string; all: string; zh: boolean }) {
   return (
     <div className="company-hub-section-head">
@@ -79,16 +118,19 @@ function SectionHead({ id, title, count, all, zh }: { id: string; title: string;
   );
 }
 
-export default async function CompanyPage({ params }: Props) {
+export default async function CompanyPage({ params, searchParams }: Props) {
+  const period = reportWindow((await searchParams).window);
   const { company, oa, leetcode, experiences, experienceTotal, questions, mockOa, mockInterview, stats, memberStats, facets, ready, locale, lead } = await load(
     (await params).slug,
   );
   const zh = locale === 'zh';
+  const ranked = inReportWindow(leetcode, period, sourceDates());
+  const most = Math.max(1, ...ranked.map((p) => p.n));
   // SPA lists filter by one library spelling: the employer's most used one.
   const spelling = company.library[0] ?? company.slug;
   const stops = [
     oa.length && { id: 'oa', label: zh ? 'OA 真题' : 'OA', n: company.oa },
-    leetcode.length && { id: 'leetcode', label: zh ? '高频 LeetCode' : 'Top LeetCode', n: leetcode.length },
+    leetcode.length && { id: 'leetcode', label: zh ? '高频 LeetCode' : 'Top LeetCode', n: Math.min(leetcode.length, LC_SHOWN) },
     experiences.length && { id: 'experiences', label: zh ? '面经' : 'Experiences', n: experienceTotal },
     questions.length && { id: 'questions', label: zh ? '面试题' : 'Questions', n: company.questions },
   ].filter((s): s is { id: string; label: string; n: number } => !!s);
@@ -205,40 +247,74 @@ export default async function CompanyPage({ params }: Props) {
           <SectionHead
             id="leetcode"
             title={zh ? '高频 LeetCode 题' : 'Most reported LeetCode problems'}
-            count={zh ? `按面经报告次数` : 'by interview reports'}
-            all={spa({ view: 'problems', company: company.slug, sort: 'frequency' })}
+            count={zh ? `按面经报告次数 · 数据更新至 ${lcMapFile.generated}` : `by interview reports · data as of ${lcMapFile.generated}`}
+            all={spa({ view: 'problems', company: company.slug, sort: 'frequency', ...(period !== 'all' && { window: period }) })}
             zh={zh}
           />
-          <ol className="company-hub-lc">
-            {leetcode.map((p, index) => {
-              const title = zh ? p.titleZh || p.titleEn : p.titleEn || p.titleZh;
-              const body = (
-                <>
-                  <span className="company-hub-rank" aria-hidden="true">
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
-                  <span className="company-hub-lc-title">
-                    <span className="oa-public-number">LC {p.number}</span> {title}
-                  </span>
-                  <span className="company-hub-freq" title={zh ? `${p.count} 次面经报告，最近 ${p.last}` : `${p.count} reports, latest ${p.last}`}>
-                    <span aria-hidden="true">
-                      ×{p.count} · {p.last.slice(0, 7)}
+          {/* Server-rendered filter links; the canonical page is the unfiltered one. */}
+          <nav className="company-hub-windows" aria-label={zh ? '报告时间范围' : 'Reports from the last'}>
+            {[...REPORT_WINDOWS, 'all' as const].map((w) => (
+              <a
+                key={w}
+                href={`${companyHubPath(company.slug)}${w === 'all' ? '' : `?window=${w}`}#leetcode`}
+                rel="nofollow"
+                aria-current={w === period ? 'true' : undefined}
+              >
+                {WINDOW_LABELS[w][zh ? 0 : 1]}
+              </a>
+            ))}
+          </nav>
+          {ranked.length ? (
+            <ol className="company-hub-lc">
+              {ranked.map((p, index) => {
+                const title = zh ? p.titleZh || p.titleEn : p.titleEn || p.titleZh;
+                const body = (
+                  <>
+                    <span className="company-hub-rank" aria-hidden="true">
+                      {String(index + 1).padStart(2, '0')}
                     </span>
-                    <span className="sr-only">
-                      {zh ? `${p.count} 次面经报告，最近 ${p.last.slice(0, 7)}` : `${p.count} ${p.count === 1 ? 'report' : 'reports'}, latest ${p.last.slice(0, 7)}`}
+                    <span className="company-hub-lc-title">
+                      <span className="oa-public-number">LC {p.number}</span> {title}
+                      {/* Reports here against the most reported row on the page. */}
+                      <span className="company-hub-bar" aria-hidden="true">
+                        <span style={{ width: `${(100 * p.n) / most}%` }} />
+                      </span>
                     </span>
-                  </span>
-                  <OaDifficulty difficulty={p.difficulty} locale={locale} />
-                </>
-              );
-              return (
-                <li key={p.id}>
-                  {/* Problems not judgeable here yet are listed without a link. */}
-                  {p.judgeProblemId ? <a href={spa({ view: 'problem', problem: p.judgeProblemId })}>{body}</a> : <div>{body}</div>}
-                </li>
-              );
-            })}
-          </ol>
+                    <span className="company-hub-freq" title={zh ? `${p.n} 次面经报告，最近 ${p.last}` : `${p.n} reports, latest ${p.last}`}>
+                      <span aria-hidden="true">
+                        ×{p.n} · {p.last.slice(0, 7)}
+                      </span>
+                      <span className="sr-only">
+                        {zh ? `${p.n} 次面经报告，最近 ${p.last.slice(0, 7)}` : `${p.n} ${p.n === 1 ? 'report' : 'reports'}, latest ${p.last.slice(0, 7)}`}
+                      </span>
+                    </span>
+                    <OaDifficulty difficulty={p.difficulty} locale={locale} />
+                  </>
+                );
+                return (
+                  <li key={p.id}>
+                    {/* Problems not judgeable here yet are listed without a link. */}
+                    {p.judgeProblemId ? <a href={spa({ view: 'problem', problem: p.judgeProblemId })}>{body}</a> : <div>{body}</div>}
+                    {!!p.refs.length && (
+                      <details className="company-hub-sources">
+                        <summary>{zh ? `来源 ${p.refs.length} 篇面经` : `${p.refs.length} source ${p.refs.length === 1 ? 'report' : 'reports'}`}</summary>
+                        <ul>
+                          {p.refs.map((r) => (
+                            <li key={r.slug}>
+                              <a href={publicLibraryPath(r.type, r.slug)}>{r.title}</a>
+                              {r.date && <time dateTime={r.date}>{r.date.slice(0, 7)}</time>}
+                            </li>
+                          ))}
+                        </ul>
+                      </details>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+          ) : (
+            <p className="company-hub-more">{zh ? '这段时间没有面经报告。' : 'No reports in this period.'}</p>
+          )}
         </section>
       )}
 

@@ -1,5 +1,6 @@
 import { sqlite } from '@/db/sqlite';
 import { companyTagIndex } from '@/lib/company-tags';
+import lcMapFile from '@/lib/content/company-lc-map.json';
 import { employerSlug } from '@/lib/oa-company-brands';
 import { library } from './content-library';
 import { hiddenCompanies } from './env';
@@ -148,4 +149,33 @@ export async function recentAdditions(
     oa: oa.slice(0, 40),
     oaTotal: oa.length,
   };
+}
+
+/** A report behind company-lc-map.json: its library row's date and, when it has a public page, its title. */
+export type SourceItem = { type: string; slug: string; title: string; date: string | null; page: boolean };
+// ponytail: every source of the map in one query (a few hundred slugs), kept 10 minutes.
+let sources: { at: number; hidden: string; value: Map<string, SourceItem> } | null = null;
+/**
+ * Content slug → its listed library row, for every source in company-lc-map.json. Hidden companies'
+ * and unlisted rows are left out (their reports then count as undated). A slug can name rows of
+ * several types; the coding question wins, as the map's sources are coding questions.
+ */
+export function sourceDates(now = Date.now(), hidden: ReadonlySet<string> = hiddenCompanies()) {
+  const key = [...hidden].sort().join(',');
+  if (sources && sources.hidden === key && now - sources.at < 10 * 60_000) return sources.value;
+  const value = new Map<string, SourceItem>();
+  const slugs = Object.values(lcMapFile.companies).flatMap((entries) => entries.flatMap((e) => e.sources));
+  const rows = (library()
+    ?.prepare(
+      `SELECT type,slug,title,COALESCE(json_extract(extra,'$.date'), substr(published_at,1,10)) AS date,
+         (partial=0 AND dup_of IS NULL AND trim(title)<>'') AS page
+       FROM items WHERE listed=1 AND type IN ('coding_question','interview_question','experience')
+         AND slug IN (SELECT value FROM json_each(?))
+         ${hidden.size ? `AND LOWER(COALESCE(company_slug,'')) NOT IN (${[...hidden].map(() => '?').join(',')})` : ''}
+       ORDER BY type<>'coding_question', type<>'interview_question'`,
+    )
+    .all(JSON.stringify(slugs), ...hidden) ?? []) as (Omit<SourceItem, 'page'> & { page: number })[];
+  for (const r of rows) if (!value.has(r.slug)) value.set(r.slug, { ...r, page: !!r.page });
+  sources = { at: now, hidden: key, value };
+  return value;
 }
