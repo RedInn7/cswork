@@ -12,7 +12,8 @@ import { requestLocale } from '@/lib/server/locale';
 import { oaReadyProblems } from '@/lib/server/oa-judge';
 import { oaLibrary } from '@/lib/server/oa-library';
 import { mockPresetFor } from '@/lib/server/mock-oa-presets';
-import { OaCompanyMark, OaDifficulty } from '../parts';
+import { oaDifficulty } from '@/lib/server/oa-topics';
+import { OaCompanyMark, OaDifficulty, oaTopicLine } from '../parts';
 
 type Props = { params: Promise<{ company: string }> };
 const load = cache(async (slug: string) => {
@@ -104,9 +105,17 @@ export default async function OaCompanyPage({ params }: Props) {
           <li key={item.id}>
             <a href={oaProblemPath(item.companySlug, item.id)}>
               <span className="oa-public-number">#{item.number}</span>
-              <span className="oa-public-title">{item.title}</span>
+              <span className="oa-public-title">
+                {item.title}
+                {(item.topics.length > 0 || item.kind) && (
+                  <span className="oa-public-topics">{oaTopicLine(item, zh)}</span>
+                )}
+              </span>
               {item.judgeStatus === 'ready' ? (
-                <OaDifficulty value={ready.get(item.id)?.difficulty} locale={locale} />
+                <OaDifficulty
+                  {...oaDifficulty(item.id, ready.get(item.id)?.difficulty)}
+                  locale={locale}
+                />
               ) : (
                 <span className="oa-public-chip" data-level="reading">
                   {zh ? '仅题面' : 'Statement only'}
