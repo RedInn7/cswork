@@ -11,7 +11,9 @@ const MAX_ROWS = 5000;
 const MAX_STORIES = 200;
 // story:<id> holds one STAR story as JSON (components/story-bank.tsx).
 const target = z.string().regex(/^(?:problem|content|story):[\w./-]{1,200}$/);
-const mark = z.enum(['star', 'redo']);
+// up/down: the problem's vote, one per learner (setting one clears the other).
+const mark = z.enum(['star', 'redo', 'up', 'down']);
+const VOTE = { up: 'down', down: 'up' } as const;
 // The verdicts that count against the learner's code; judge faults and cancels do not.
 const FAILED = `'wrong_answer','compile_error','time_limit','memory_limit','output_limit','runtime_error'`;
 
@@ -62,6 +64,16 @@ export function problemMarks(userId: string) {
     marks.set(id, (marks.get(id) ?? new Set<string>()).add(row.mark));
   }
   return marks;
+}
+
+/** The learner's vote on a problem, or null. */
+export function problemVote(userId: string, problemId: string) {
+  return (
+    (sqlite()
+      .prepare("SELECT mark FROM user_marks WHERE user_id=? AND target=? AND mark IN ('up','down') LIMIT 1")
+      .pluck()
+      .get(userId, `problem:${problemId}`) as 'up' | 'down' | undefined) ?? null
+  );
 }
 
 export async function readJson(request: Request, max: number) {
@@ -163,6 +175,8 @@ export async function handleMyPractice(
       .object({ target, mark, on: z.boolean() })
       .strict()
       .parse(await readJson(request, 1000));
+    const vote = d.mark === 'up' || d.mark === 'down';
+    if (vote && !d.target.startsWith('problem:')) throw new HttpError(400, '只能给题目投票');
     if (!d.on)
       db.prepare('DELETE FROM user_marks WHERE user_id=? AND target=? AND mark=?').run(
         p.id,
@@ -171,9 +185,17 @@ export async function handleMyPractice(
       );
     else {
       full('user_marks', p.id);
-      db.prepare(
-        'INSERT INTO user_marks(user_id,target,mark,created_at) VALUES(?,?,?,?) ON CONFLICT DO NOTHING',
-      ).run(p.id, d.target, d.mark, Date.now());
+      db.transaction(() => {
+        if (vote)
+          db.prepare('DELETE FROM user_marks WHERE user_id=? AND target=? AND mark=?').run(
+            p.id,
+            d.target,
+            VOTE[d.mark as keyof typeof VOTE],
+          );
+        db.prepare(
+          'INSERT INTO user_marks(user_id,target,mark,created_at) VALUES(?,?,?,?) ON CONFLICT DO NOTHING',
+        ).run(p.id, d.target, d.mark, Date.now());
+      })();
     }
     return json(d);
   }

@@ -3,6 +3,7 @@ import {
   text,
   integer,
   primaryKey,
+  index,
 } from 'drizzle-orm/sqlite-core';
 
 // Private per-learner annotations. No foreign keys: release.sh only applies
@@ -18,7 +19,8 @@ export const userNotes = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.userId, t.target] })],
 );
-// mark: star or redo today; read and asked later, so no CHECK constraint.
+// mark: star, redo, or a problem vote (up/down, one of the two); read and asked later,
+// so no CHECK constraint. The target index counts a problem's votes (problem-stats).
 export const userMarks = sqliteTable(
   'user_marks',
   {
@@ -27,5 +29,8 @@ export const userMarks = sqliteTable(
     mark: text('mark').notNull(),
     createdAt: integer('created_at').notNull(),
   },
-  (t) => [primaryKey({ columns: [t.userId, t.target, t.mark] })],
+  (t) => [
+    primaryKey({ columns: [t.userId, t.target, t.mark] }),
+    index('user_marks_target_mark').on(t.target, t.mark),
+  ],
 );
