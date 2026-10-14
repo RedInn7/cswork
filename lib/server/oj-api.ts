@@ -27,7 +27,7 @@ import { handleStudyGroups } from './study-groups';
 import { handleMockPeer } from './mock-peer';
 import { handleNewsletter } from './newsletter';
 import { handleFollows } from './follows';
-import { handleContests } from './contests';
+import { handleContests, refuseInContest } from './contests';
 import { handleApiTokens } from './api-tokens';
 import { dailyProblem } from './daily-problem';
 import { curatedByNumber, curatedHint } from '@/lib/ling-curated';
@@ -102,6 +102,8 @@ export async function handleOj(
 ) {
   const url = new URL(request.url),
     [resource, id, action, operation] = path;
+  // An OA editorial is closed while its problem is in the reader's running contest, like Line 500's.
+  if (resource === 'oa-library' && action === 'solution') refuseInContest(p, id);
   if (resource === 'oa-library')
     return handleOaLibrary(request, p, path.slice(1));
   if (resource === 'mock-oa' && id === 'history' && !action) return handleMockHistory(request, p);
@@ -152,11 +154,9 @@ export async function handleOj(
       failedSubmissionIds: failed,
       // Observation, invariant, steps: the client opens them one at a time (components/hint-ladder.tsx).
       lingHints: lingHints(id),
-      // Line 500 editorial, sent with the problem like lingHints. The lock (until solved or confirmed)
-      // and hiding it in a mock OA are client-side only: the server can't see the exam state, so a
-      // learner reading the raw response in a custom mock OA with lc- problems still sees the code.
-      // ponytail: move it to GET problems/<id>/editorial, fetched after the confirm, if that matters.
-      lingEditorial: lingEditorial(id),
+      // Whether a Line 500 editorial exists (null: none) and its code passed the judge. The editorial
+      // itself is GET problems/<id>/editorial, fetched once the learner unlocks it.
+      lingEditorialVerified: lingEditorial(id)?.verified ?? null,
       // Its Line 500 stop, so the hint ladder can link the stop's animation (/topics/<stop>).
       stop: curatedByNumber.get(Number(/^lc-(\d+)$/.exec(id)?.[1]))?.sectionSlug ?? null,
       // A nicety under the statement: it never fails the problem itself.
@@ -167,6 +167,16 @@ export async function handleOj(
       judgeAvailable: ojStatus().available,
       languageVersions: ojStatus().languageVersions,
     });
+  }
+  if (request.method === 'GET' && resource === 'problems' && id && action === 'editorial' && !operation) {
+    requirePerson(p);
+    await limit(p, 'oj-read', 240);
+    const editorial = lingEditorial(id);
+    if (!editorial) throw new HttpError(404, '题解不存在');
+    // Never while the problem is in this learner's running contest; then the statement's own gate.
+    refuseInContest(p, id);
+    await getPublishedProblem(p, id);
+    return json(editorial);
   }
   if (
     request.method === 'GET' &&

@@ -35,8 +35,11 @@ export type OJProblem = Problem & {
   failedSubmissionIds?: string[];
   /** Line 500's three progressive hints: observation, invariant, steps. */
   lingHints?: { zh: string[]; en: string[] } | null;
-  /** Line 500 editorial (lib/content/ling-editorials.json), shown once solved or after a confirm. */
-  lingEditorial?: LingEditorial | null;
+  /**
+   * Whether a Line 500 editorial exists (null: none) and its code passed the judge. The editorial
+   * is GET problems/<id>/editorial (components/ling-editorial.tsx), once solved or after a confirm.
+   */
+  lingEditorialVerified?: boolean | null;
   /** The problem's Line 500 stop slug, null off the line. */
   stop?: string | null;
   similar?: SimilarProblem[];
