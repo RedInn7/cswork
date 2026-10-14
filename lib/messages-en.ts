@@ -251,6 +251,16 @@ const EN: Record<string, string> = {
   只有组长可以管理小组: 'Only the group owner can manage the group',
   成员不存在: 'Member not found',
   故事已达上限: "You've reached the limit for stories",
+  // Contest rooms and the weekly contest (lib/server/contests.ts)
+  比赛不存在: 'Contest not found',
+  比赛接口不存在: 'Contest endpoint not found',
+  '开赛时间最多提前 7 天': 'A contest can start at most 7 days from now',
+  有题目不能用于比赛: "Some of these problems can't be used in a contest",
+  '可判的题目不够，换个题源或减少题量': 'Not enough judgeable problems. Pick another source or fewer questions',
+  这场周赛没有可判的题目: 'None of that contest’s problems can be judged here',
+  '每天最多创建 10 个比赛房间': 'You can open at most 10 contest rooms a day',
+  房间已满: 'This room is full',
+  这个昵称在本场已被使用: 'Someone in this contest already uses that name',
   // Community solutions (lib/server/solution-posts.ts)
   题解不存在: 'Solution not found',
   评论不存在: 'Comment not found',

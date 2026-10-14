@@ -432,6 +432,13 @@ const ratedRows = () =>
       `SELECT ${columns} FROM study_library l WHERE l.number IN (SELECT CAST(key AS INTEGER) FROM json_each(?))`,
     )
     .all(RATINGS_SQL_JSON) as LibraryRow[];
+/** Judgeable problems with a contest rating: the weekly contest's pool (lib/server/contests.ts). */
+export const ratedJudgeable = () =>
+  ratedRows().flatMap((row) =>
+    row.ready && row.judge_problem_id
+      ? [{ id: row.judge_problem_id, rating: lcRatingOf(row.number)!.rating }]
+      : [],
+  );
 
 /**
  * view=contests: the bank by weekly / biweekly contest, newest first (a contest's highest

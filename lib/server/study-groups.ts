@@ -29,7 +29,7 @@ const CODE = /^[A-HJ-NP-Z2-9]{8}$/;
  * Hangul fillers and braille blank that are letters/symbols but render as nothing), and with
  * at least one visible character when not empty.
  */
-const plain = (max: number, min = 1) =>
+export const plain = (max: number, min = 1) =>
   z
     .string()
     .trim()
@@ -38,7 +38,7 @@ const plain = (max: number, min = 1) =>
     .refine((s) => !/[\p{C}\u115F\u1160\u3164\uFFA0\u2800]/u.test(s) && (!s || /[\p{L}\p{N}\p{S}\p{P}]/u.test(s)));
 const displayName = plain(24);
 const groupId = z.string().regex(/^[A-Za-z0-9_-]{12}$/);
-const code = z
+export const code = z
   .string()
   .max(40)
   .transform((s) => s.replace(/[\s-]/g, '').toUpperCase())
@@ -59,7 +59,7 @@ type MemberRow = { user_id: string; display_name: string; role: 'owner' | 'membe
 function requireVerified(p: Person) {
   if (!p.verified && p.role !== 'teacher') throw new HttpError(403, '请先验证邮箱');
 }
-const newCode = () => [...randomBytes(8)].map((b) => ALPHABET[b & 31]).join('');
+export const newCode = () => [...randomBytes(8)].map((b) => ALPHABET[b & 31]).join('');
 /** An opaque per-group member handle, so pages never carry account ids. */
 export const memberKey = (group: string, user: string) =>
   createHash('sha256').update(`${group}:${user}`).digest('base64url').slice(0, 12);
