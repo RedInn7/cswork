@@ -139,7 +139,7 @@ export function PrivacyDocument() {
                 CSGrad 共用服务器基础设施，但两者的业务和账户数据没有对接。
               </p>
               <p>
-                除提供服务所需的教师和运维访问外，第三方登录、邮件和支付功能会与相应服务商交换完成这些功能所需的资料。课程中的外部图片或视频链接也可能让浏览器向对应资源服务商发出请求。
+                除提供服务所需的教师和运维访问外，第三方登录、邮件和支付功能会与相应服务商交换完成这些功能所需的资料。课程中的外部图片或视频链接也可能让浏览器向对应资源服务商发出请求。打开 Python 逐行调试器时，浏览器会从 jsDelivr（cdn.jsdelivr.net）下载 Pyodide 运行时；你的代码和输入只在浏览器里运行，不会发给 jsDelivr 或本平台。
               </p>
               <p>
                 在题目页使用 AI 助教（提示、代码点评、追问、边界用例、失败调试、复杂度分析或解释选中的题面文字）时，服务器会把这道题的题面、你当前的代码和你在这道题上最近一次判题结果发送给
@@ -404,7 +404,11 @@ export function PrivacyDocument() {
                 features exchange the information needed to perform those
                 functions with the corresponding service providers. External
                 image or video links in courses may also cause your browser to
-                send requests to the corresponding resource providers.
+                send requests to the corresponding resource providers. Opening the
+                Python step debugger makes your browser download the Pyodide
+                runtime from jsDelivr (cdn.jsdelivr.net); your code and input
+                run only in the browser and are not sent to jsDelivr or to
+                cswork.
               </p>
               <p>
                 When you use the AI tutor on a problem page (a hint, a code
