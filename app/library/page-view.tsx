@@ -10,7 +10,8 @@ export function LibraryPageView() {
   const search = useSearchParams();
   useEffect(() => {
     const [, view, type, slug] = path.split('/');
-    pageView({ view, type: type ?? search.get('type'), slug });
+    // Top content links slugs to view=content; OA problems count under their company.
+    pageView({ view, type: type ?? search.get('type'), slug: view === 'library' ? slug : null });
   }, [path, search]);
   return null;
 }
