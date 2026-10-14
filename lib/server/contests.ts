@@ -95,8 +95,8 @@ async function judgeable() {
 const hiddenOa = (id: string, hidden: ReadonlySet<string>) =>
   [...hidden].some((slug) => id.startsWith(`oa-${slug}-`));
 /** The room's problems still shown here: unpublished and hidden-company ones drop out. */
-async function roomProblems(row: RoomRow) {
-  const { byId } = await judgeable();
+async function roomProblems(row: RoomRow, found?: Awaited<ReturnType<typeof judgeable>>) {
+  const { byId } = found ?? (await judgeable());
   const hidden = hiddenCompanies();
   return (JSON.parse(row.problem_ids_json) as string[]).filter((id) => byId.has(id) && !hiddenOa(id, hidden));
 }
@@ -262,8 +262,9 @@ function card(row: RoomRow & { entrants?: number }) {
 export async function roomView(id: string, p: Person | null, now = Date.now()) {
   if (id.startsWith('weekly-')) await settleWeeklies(now);
   const { row, entry } = readable(id, p);
-  const ids = await roomProblems(row);
-  const { byId } = await judgeable();
+  const found = await judgeable();
+  const ids = await roomProblems(row, found);
+  const { byId } = found;
   const end = endOf(row);
   const phase = now < row.starts_at ? 'upcoming' : now < end ? 'running' : 'ended';
   const board = phase === 'upcoming' ? null : roomStandings(row, ids, now);
@@ -293,7 +294,9 @@ export async function roomView(id: string, p: Person | null, now = Date.now()) {
           rating: rating ? { before: rating.before, after: rating.after } : null,
         };
       });
-  const window = entry ? entryWindow({ startsAt: row.starts_at, durationMin: row.duration_min }, { virtualStart: entry.virtual_start }) : null;
+  const own = entry
+    ? entryWindow({ startsAt: row.starts_at, durationMin: row.duration_min }, { virtualStart: entry.virtual_start })
+    : null;
   const entrants = board?.entries.length ?? entrantCount(row.id);
   const cap = ROOM_CAP[row.kind] ?? null;
   return {
@@ -323,7 +326,7 @@ export async function roomView(id: string, p: Person | null, now = Date.now()) {
     standings: board ? { live: shown(board.live), virtual: shown(board.virtual) } : null,
     winner: row.kind === 'duel' && board ? (duelWinner(board.live)?.name ?? null) : null,
     rated: !!row.rated_at,
-    me: entry && window ? { name: entry.display_name, virtual: entry.virtual_start !== null, ...window } : null,
+    me: entry && own ? { name: entry.display_name, virtual: entry.virtual_start !== null, ...own } : null,
     canJoin: !!p && !entry && row.visibility === 'public' && (cap === null || entrants < cap),
     // The name the reader last raced under, to prefill the join form.
     suggestedName:

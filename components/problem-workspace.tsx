@@ -275,12 +275,20 @@ function Workspace({
   const exam = useMockExam(mock, userId, initialProblem.id);
   const contest = useContestRoom(room, initialProblem.id);
   const examMode = !!exam?.running || !!contest?.running;
-  // A mock question starts from the template, not this browser's earlier draft of it.
+  // A mock or contest question starts from the template, not this browser's earlier draft of it.
   const [draftId] = useState(() =>
-    exam ? `${initialProblem.id}:mock:${exam.session.id}` : initialProblem.id,
+    exam
+      ? `${initialProblem.id}:mock:${exam.session.id}`
+      : room
+        ? `${initialProblem.id}:room:${room}`
+        : initialProblem.id,
   );
   // In the exam the Submissions tab lists only this exam's attempts.
-  const examFrom = exam?.running ? reportWindow(exam.session).from : 0;
+  const examFrom = exam?.running
+    ? reportWindow(exam.session).from
+    : contest?.running
+      ? (contest.view.me?.start ?? 0)
+      : 0;
   const [problem, setProblem] = useState(() => summaryProblem(initialProblem));
   const [neighbors, setNeighbors] = useState<
     ReturnType<typeof problemNeighbors>
@@ -555,7 +563,7 @@ function Workspace({
     code: starters.python,
   });
   // Signed in and not a mock question: drafts also live on the server, across devices.
-  const cloudSync = !!boot.person && !mock;
+  const cloudSync = !!boot.person && !mock && !room;
   const cloudFor = (next: Language, mode: CodingMode) =>
     cloudSync ? { problemId: draftId, language: next, codingMode: mode } : undefined;
   const [restored, setRestored] = useState<{ previous: string; at: number } | null>(null);

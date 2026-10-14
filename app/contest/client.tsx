@@ -445,13 +445,14 @@ export function WeeklyClock({ startsAt, endsAt, now }: { startsAt: number; endsA
 export function JoinByCode({ initialCode, suggested }: { initialCode: string; suggested: string }) {
   const t = useT();
   const [code, setCode] = useState(initialCode);
-  const [preview, setPreview] = useState<{ id: string; title: string; kind: RoomView['kind']; startsAt: number; durationMin: number; entrants: number; full: boolean } | null>(null);
+  type Preview = { id: string; title: string; kind: RoomView['kind']; entrants: number; full: boolean };
+  const [preview, setPreview] = useState<Preview | null>(null);
   const [error, setError] = useState('');
   const look = useCallback(async (value: string) => {
     setError('');
     setPreview(null);
     try {
-      setPreview(await api(`oj/contests/preview?${new URLSearchParams({ code: value })}`));
+      setPreview(await api<Preview>(`oj/contests/preview?${new URLSearchParams({ code: value })}`));
     } catch (e) {
       setError((e as Error).message);
     }

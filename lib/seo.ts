@@ -155,6 +155,8 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   ...classicLists.map((list) => ({ path: `/lists/${list.slug}` })),
   { path: '/lists/community' },
   { path: '/discuss' },
+  { path: '/contest' },
+  { path: '/contest/leaderboard' },
   { path: '/topics' },
   ...ROUTE_SECTIONS.flatMap((s) => s.slugs.map((slug) => ({ path: `/topics/${slug}` }))),
 ];
