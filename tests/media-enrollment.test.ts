@@ -33,6 +33,11 @@ const student = {
 db.prepare(
   "INSERT INTO courses(id,title,summary,version,published) VALUES('course','Course','summary','1.0.0',1)",
 ).run();
+// The course's first published lesson is its free preview (lms-common previewLessonId), so
+// 'lesson' comes second and keeps needing the grant.
+db.prepare(
+  "INSERT INTO lessons(id,course_id,title,summary,section,position,body,version,updated_at) VALUES('a-intro','course','Intro','summary','section',0,'free','1.0.0',1)",
+).run();
 db.prepare(
   "INSERT INTO lessons(id,course_id,title,summary,section,position,body,version,updated_at) VALUES('lesson','course','Lesson','summary','section',0,'body','1.0.0',1)",
 ).run();
