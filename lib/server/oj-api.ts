@@ -14,6 +14,8 @@ import { handleMockOa } from './mock-oa';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
 import { curatedHint } from '@/lib/ling-curated';
+import { companyTagIndex } from '@/lib/company-tags';
+import { hiddenCompanies } from './env';
 import {
   getStudyLibrary,
   getStudySourceStatement,
@@ -85,6 +87,7 @@ export async function handleOj(
       leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
       sourceStatement: getStudySourceStatement(id),
       curatedHint: hint,
+      companies: companyTagIndex(hiddenCompanies()).get(id) ?? [],
       // Per round like Solved, over all history rather than the first page.
       hintEarned: hint && p ? hintEarned(p.id, id, round?.id) : false,
       practiceRound: round,

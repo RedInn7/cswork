@@ -44,6 +44,7 @@ import {
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { OaCompanyBadge, OaEditorial } from './oa-library';
+import { CompanyTags } from './company-tags';
 import {
   ExamAcceptedDialog,
   MockExamBar,
@@ -1214,6 +1215,10 @@ function Workspace({
                 <option value="en">English</option>
               </select>
             </div>
+            {/* Company reports are a hint too: never during a mock. */}
+            {!examMode && !!problem.companies?.length && (
+              <CompanyTags companies={problem.companies} english={uiEnglish} />
+            )}
             {!examMode && topicsOpen && (
               <div className="cs-statement-topics" id="problem-topics">
                 {problem.tags

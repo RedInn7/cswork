@@ -97,6 +97,43 @@ void test('public detail excludes hidden cases and reference solutions; supports
     [],
   );
 });
+void test('the curated list filters by company and marks each row with two companies', () => {
+  type Company = { slug: string; name: string; count?: number };
+  const list = (company = '') =>
+    listStudyLibrary(new URLSearchParams({ q: '3', company })) as unknown as {
+      total: number;
+      items: { companies: Company[] }[];
+      companies: Company[];
+    };
+  // lc-3 (company-lc-map): Amazon, ByteDance, Microsoft, Snowflake, TikTok.
+  assert.deepEqual(list().items[0].companies, [
+    { slug: 'amazon', name: 'Amazon' },
+    { slug: 'microsoft', name: 'Microsoft' },
+  ]);
+  assert.deepEqual(
+    list().companies.find((c) => c.slug === 'tiktok'),
+    { slug: 'tiktok', name: 'TikTok / ByteDance', count: 1 },
+    'TikTok and ByteDance count once',
+  );
+  const tiktok = list('tiktok');
+  assert.equal(tiktok.total, 1);
+  assert.deepEqual(
+    tiktok.items[0].companies.map((c) => c.slug),
+    ['tiktok', 'amazon'],
+    'the filtered company leads the marks',
+  );
+  assert.equal(list('bytedance').total, 0, 'aliases filter under the merged slug');
+  assert.equal(list('airbnb').total, 0);
+  const previous = process.env.HIDDEN_COMPANIES;
+  process.env.HIDDEN_COMPANIES = 'amazon';
+  try {
+    assert.equal(list('amazon').total, 0);
+    assert.equal(list().companies.some((c) => c.slug === 'amazon'), false);
+  } finally {
+    if (previous === undefined) delete process.env.HIDDEN_COMPANIES;
+    else process.env.HIDDEN_COMPANIES = previous;
+  }
+});
 void test('legacy candidate inputs and supplied answers are rejected atomically', () => {
   writeFileSync(
     file,

@@ -221,12 +221,17 @@ void test('the server pool never holds partial or hidden questions and keeps jud
   row('iq-unlisted', 'amazon', { listed: 0 });
   row('cq-dup', 'uber', { listed: 0, category: CODING, dup: { kind: 'library', id: 'lc-1', problem: 'lc-1' } });
   row('cq-dup-hidden', 'uber', { listed: 0, category: CODING, dup: { kind: 'oa', id: 'oa-secretco-1', problem: 'oa-secretco-1' } });
+  // A listed coding question company-lc-map pairs with LeetCode 322.
+  insert.run('cq-coin', 'coding_question', 'solve-decimal-coin-change', 'Coin change', 'airbnb', 'Airbnb', 'Software Engineer',
+    CODING, 'medium', 'Onsite', 0, 1, null, '{}', 'Make change.');
   const previous = process.env.HIDDEN_COMPANIES;
   process.env.HIDDEN_COMPANIES = 'secretco';
   try {
     const found = mockPool(db);
-    assert.deepEqual(found.map((r) => r.id), ['cq-dup', 'iq-ok']);
-    assert.equal(found[0].problem, 'lc-1');
+    assert.deepEqual(found.map((r) => r.id), ['cq-coin', 'cq-dup', 'iq-ok']);
+    assert.equal(found[0].problem, 'lc-322');
+    assert.equal(found[1].problem, 'lc-1');
+    assert.equal(found[2].problem, null);
     const set = mockSet(db, new URLSearchParams('template=custom&mix=behavioral.1&company=amazon&seed=a1'));
     assert.equal(set.slots[0].item?.id, 'iq-ok');
     assert.equal(set.slots[0].item?.question, 'Tell me about Ownership.');

@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3';
 import { existsSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { lcIdBySource } from '@/lib/company-tags';
 import type { Person } from './auth';
 import { setting } from './env';
 import { HttpError, json, limitReader } from './http';
@@ -206,6 +207,8 @@ function item(db: Database.Database, params: URLSearchParams) {
     extra: JSON.parse(found.extra as string),
     relations,
     dupOf: found.dup_of ? JSON.parse(found.dup_of as string) : null,
+    /** The judgeable LeetCode problem this coding question maps to (company-lc-map). */
+    practice: (found.type === 'coding_question' && lcIdBySource.get(found.slug as string)) || null,
   };
 }
 
