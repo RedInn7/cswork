@@ -1,1 +1,0 @@
-ALTER TABLE `user_profiles` ADD `show_contest` integer DEFAULT 0 NOT NULL;
