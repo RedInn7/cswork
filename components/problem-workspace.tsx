@@ -1137,19 +1137,20 @@ function Workspace({
                     ]
                   : problem.difficulty}
               </span>
-              {problem.tags.some(
-                (tag) => !/灵神|题单|leetcode|来源/i.test(tag),
-              ) && (
-                <button
-                  className="cs-statement-pill"
-                  aria-expanded={topicsOpen}
-                  aria-controls="problem-topics"
-                  onClick={() => setTopicsOpen((open) => !open)}
-                >
-                  <Tag size={15} />
-                  {uiEnglish ? 'Topics' : '主题'}
-                </button>
-              )}
+              {!examMode &&
+                problem.tags.some(
+                  (tag) => !/灵神|题单|leetcode|来源/i.test(tag),
+                ) && (
+                  <button
+                    className="cs-statement-pill"
+                    aria-expanded={topicsOpen}
+                    aria-controls="problem-topics"
+                    onClick={() => setTopicsOpen((open) => !open)}
+                  >
+                    <Tag size={15} />
+                    {uiEnglish ? 'Topics' : '主题'}
+                  </button>
+                )}
               {!examMode && !sourceBody && statement.hints.length > 0 && (
                 <button
                   className="cs-statement-pill"
@@ -1186,7 +1187,7 @@ function Workspace({
                 <option value="en">English</option>
               </select>
             </div>
-            {topicsOpen && (
+            {!examMode && topicsOpen && (
               <div className="cs-statement-topics" id="problem-topics">
                 {problem.tags
                   .filter((tag) => !/灵神|题单|leetcode|来源/i.test(tag))
