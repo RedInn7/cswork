@@ -262,6 +262,10 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       document.querySelector('.cs-workspace-header .cs-editor-run-actions'),
       null,
     );
+    assert.equal(
+      document.querySelector('.cs-workspace-header .cs-timer') !== null,
+      true,
+    );
     // Input templates are for ACM stdin programs only.
     assert.equal(
       document.querySelector('[aria-label="Insert an input template"]') === null,
@@ -464,12 +468,29 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       null,
       'dismissed feedback must not replay',
     );
+    // A problem timer that ran puts its reading in the dialog and judge_accept.
+    const timerKey = 'cswork:timer:student:lc-1';
+    localStorage.setItem(
+      timerKey,
+      JSON.stringify({
+        mode: 'up',
+        minutes: 15,
+        elapsed: 754_000,
+        startedAt: null,
+      }),
+    );
+    const accepts = [];
+    window.gtag = (command, name, params) =>
+      name === 'judge_accept' && accepts.push(params);
     acknowledgement = 'accepted';
     await click(button('Submit'));
     assert.match(
       document.querySelector('.cs-accepted-banner').textContent,
-      /Accepted/,
+      /Accepted.*Solved in 12:34/,
     );
+    assert.equal(accepts.length === 1 && accepts[0].seconds === 754, true);
+    delete window.gtag;
+    localStorage.removeItem(timerKey);
     assert.equal(progressEvents, 2);
     await click(
       document.querySelector('[aria-label="Dismiss success message"]'),
@@ -597,6 +618,8 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     assert.ok(document.querySelector('.cs-statement-heading'));
     // Booleans, not elements: a failing diff of a jsdom node exhausts the heap.
     assert.equal(document.querySelector('.cs-route-hint') === null, true);
+    // The exam bar's clock replaces the problem timer.
+    assert.equal(document.querySelector('.cs-timer') === null, true);
     localStorage.removeItem(examKey);
     delete problem.hintEarned;
     // ACM starters follow the statement language; untouched ones switch with it.

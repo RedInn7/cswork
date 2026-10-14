@@ -69,6 +69,7 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { CodeEditor } from './editor';
+import { ProblemTimer, formatClock, timerSeconds } from './problem-timer';
 import { ACM_IO_TEMPLATES } from '@/lib/acm-io-templates';
 import { useIdlePrecompile } from '@/hooks/use-idle-precompile';
 import { StatementMarkdown } from './statement-markdown';
@@ -397,6 +398,7 @@ function Workspace({
       setRouteHint((state) => (state === 'locked' ? 'earned' : state));
   }, [problem.hintEarned, submission]);
   const [success, setSuccess] = useState<OJSubmission | null>(null);
+  const [solveSeconds, setSolveSeconds] = useState<number | null>(null);
   const announcedSuccess = useRef<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [cancelling, setCancelling] = useState(false);
@@ -711,6 +713,14 @@ function Workspace({
     } catch {
       /* Feedback still works when browser storage is unavailable. */
     }
+    // The exam clock replaces the problem timer during a mock OA.
+    const seconds = examMode ? null : timerSeconds(userId, initialProblem.id);
+    track('judge_accept', {
+      problem_id: initialProblem.id,
+      language: submission.language,
+      seconds,
+    });
+    setSolveSeconds(seconds);
     setSuccess(submission);
     setHistory((items) => [
       submission,
@@ -2121,6 +2131,13 @@ function Workspace({
               <span>{t('相关课程', 'Related course')}</span>
             </button>
           )}
+          {!examMode && (
+            <ProblemTimer
+              userId={userId}
+              problemId={problem.id}
+              difficulty={problem.difficulty}
+            />
+          )}
           <button
             className="cs-top-button"
             aria-label={
@@ -2154,6 +2171,7 @@ function Workspace({
           problemId={problem.id}
           line={!!problem.practiceRound}
           acceptedAt={success.created_at}
+          seconds={solveSeconds}
           activity={boot.activity}
           fallbackNext={neighbors.next}
           english={uiEnglish}
@@ -2451,6 +2469,7 @@ function AcceptedDialog({
   problemId,
   line,
   acceptedAt,
+  seconds,
   activity,
   fallbackNext,
   english,
@@ -2460,6 +2479,7 @@ function AcceptedDialog({
   problemId: string;
   line: boolean;
   acceptedAt: number;
+  seconds: number | null;
   activity?: Activity[];
   fallbackNext?: string;
   english: boolean;
@@ -2536,6 +2556,11 @@ function AcceptedDialog({
               `今日 ${stats.today} / ${target} · 连续 ${stats.streak} 天`,
               `Today ${stats.today} / ${target} · ${stats.streak}-day streak`,
             )}
+            {seconds != null &&
+              t(
+                ` · 本题用时 ${formatClock(seconds)}`,
+                ` · Solved in ${formatClock(seconds)}`,
+              )}
           </DialogDescription>
           <Button
             ref={primary}
