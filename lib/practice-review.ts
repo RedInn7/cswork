@@ -1,4 +1,7 @@
-// Client-safe: the progress page and GET /api/oj/history share these shapes.
+// Client-safe: the progress page, the notes tab and /api/oj/* share these.
+
+/** UTF-8 bytes of one private note. */
+export const NOTE_MAX_BYTES = 20 * 1024;
 
 /** One problem's formal (judge) submissions by the signed-in learner. */
 export type PracticeHistoryItem = {

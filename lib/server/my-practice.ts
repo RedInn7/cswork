@@ -1,12 +1,10 @@
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { curatedByNumber } from '@/lib/ling-curated';
-import type { PracticeHistoryItem } from '@/lib/practice-review';
+import { NOTE_MAX_BYTES, type PracticeHistoryItem } from '@/lib/practice-review';
 import type { Person } from './auth';
 import { boundedText, HttpError, json, limit } from './http';
 
-/** UTF-8 bytes of one note; the client counts the same way. */
-export const NOTE_MAX_BYTES = 20 * 1024;
 // ponytail: flat per-learner caps keep a scripted client from growing the tables forever.
 const MAX_ROWS = 5000;
 const target = z.string().regex(/^(?:problem|content):[\w./-]{1,200}$/);
