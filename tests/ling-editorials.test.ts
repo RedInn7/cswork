@@ -9,6 +9,8 @@ import { lingEditorial } from '../lib/server/ling-editorials';
 const FIELDS = ['cpp', 'ideaEn', 'ideaZh', 'nameEn', 'nameZh', 'python', 'space', 'time'];
 // Room for a long DP idea or a verbose C++ solution; anything past this is a paste accident.
 const MAX = { name: 60, idea: 1200, cost: 40, code: 6000 } as const;
+const BIG_O = String.raw`(?:[A-Za-z]+(?:/[A-Za-z]+)* )?O\([^()]*(?:\([^()]*\)[^()]*)*\)`;
+const COST = new RegExp(`^${BIG_O}(?:, ${BIG_O})*$`);
 
 void test('every editorial is a Line 500 problem with 1-4 complete bilingual approaches', () => {
   const file = editorials as Record<string, Record<string, unknown>>;
@@ -42,8 +44,10 @@ void test('every editorial is a Line 500 problem with 1-4 complete bilingual app
               : MAX.code;
         if (value.length > max) bad.push(`${at}.${key}: ${value.length} > ${max} chars`);
       }
+      // Shown to both languages: big-O only, a list of them labelled by the code's own method names at most.
       for (const key of ['time', 'space'])
-        if (!/^O\(.+\)$/.test(String(approach[key]))) bad.push(`${at}.${key}: not big-O`);
+        if (!COST.test(String(approach[key])) || /[一-鿿]/.test(String(approach[key])))
+          bad.push(`${at}.${key}: not big-O`);
       if (!/[一-鿿]/.test(String(approach.ideaZh))) bad.push(`${at}.ideaZh: no Chinese`);
     });
   }
