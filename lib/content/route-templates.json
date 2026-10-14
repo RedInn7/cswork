@@ -1,0 +1,1472 @@
+[
+  {
+    "slug": "array-foundations",
+    "pattern": {
+      "zh": "读写双指针原地压缩",
+      "en": "Read/write pointers for in-place compaction"
+    },
+    "complexity": "O(n) time · O(1) space",
+    "points": [
+      {
+        "zh": "写指针 w 左边是已经确定保留的结果；读指针只往前扫，两个指针都只走一遍。",
+        "en": "Everything left of the write pointer w is final; the read pointer only scans forward, so each pointer moves once."
+      },
+      {
+        "zh": "判断能不能保留时和 nums[w-k] 比，也就是和「结果」比，而不是和上一个读到的原始元素比。",
+        "en": "Decide whether to keep a value by comparing it with nums[w-k], the kept result, not with the previous raw element."
+      },
+      {
+        "zh": "原地合并两个有序数组时从尾部往前写，就不会覆盖还没读到的数据。",
+        "en": "When merging two sorted arrays in place, write from the back so you never overwrite unread data."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "题目要的是新长度，判题只看前 k 个位置；返回数组本身或者去比较 k 之后的内容都会出错。",
+        "en": "The judge reads only the first k slots; return the new length and never rely on anything past it."
+      },
+      {
+        "zh": "边遍历边删除（Python 的 list.remove、Java 的 ArrayList.remove）是 O(n²)，还会跳过元素。",
+        "en": "Deleting while iterating (list.remove, ArrayList.remove) is O(n²) and skips elements."
+      },
+      {
+        "zh": "排序比较器写成 a - b，值接近 ±2^31 时会溢出；用 Integer.compare 或直接比较大小。",
+        "en": "A comparator written as a - b overflows near ±2^31; use Integer.compare or a plain < comparison."
+      }
+    ],
+    "code": {
+      "python": "def keep_at_most(nums: list[int], k: int) -> int:\n    \"\"\"Sorted nums: keep each value at most k times, in place. Returns the new length.\"\"\"\n    w = 0  # nums[:w] is the kept prefix\n    for x in nums:\n        if w < k or nums[w - k] != x:\n            nums[w] = x\n            w += 1\n    return w",
+      "cpp": "// Sorted nums: keep each value at most k times, in place. Returns the new length.\nint keepAtMost(vector<int>& nums, int k) {\n    int w = 0;  // nums[0, w) is the kept prefix\n    for (int x : nums)\n        if (w < k || nums[w - k] != x) nums[w++] = x;\n    return w;\n}",
+      "java": "class Solution {\n    // Sorted nums: keep each value at most k times, in place. Returns the new length.\n    int keepAtMost(int[] nums, int k) {\n        int w = 0; // nums[0, w) is the kept prefix\n        for (int x : nums)\n            if (w < k || nums[w - k] != x) nums[w++] = x;\n        return w;\n    }\n}",
+      "go": "// keepAtMost keeps each value of sorted nums at most k times, in place,\n// and returns the new length.\nfunc keepAtMost(nums []int, k int) int {\n\tw := 0 // nums[:w] is the kept prefix\n\tfor _, x := range nums {\n\t\tif w < k || nums[w-k] != x {\n\t\t\tnums[w] = x\n\t\t\tw++\n\t\t}\n\t}\n\treturn w\n}"
+    }
+  },
+  {
+    "slug": "hash-counting",
+    "pattern": {
+      "zh": "边扫边查的哈希表",
+      "en": "One-pass hash map lookup"
+    },
+    "complexity": "O(n) time · O(n) space",
+    "points": [
+      {
+        "zh": "先查补数、再存自己：一遍扫描就能找到「之前出现过」的配对，也不会把同一个元素用两次。",
+        "en": "Query the complement before storing the current value: one pass finds earlier partners and never pairs an element with itself."
+      },
+      {
+        "zh": "存什么取决于问什么：要位置就存下标，要个数就存次数，要最早出现的位置就只在第一次出现时存。",
+        "en": "Store what the question needs: an index for positions, a count for how many, and the first index only when you need the earliest."
+      },
+      {
+        "zh": "键可以组合出来：排序后的字符串、计数元组、(行, 值) 对，都能把「同一类」放进同一个桶。",
+        "en": "Keys can be built: a sorted string, a count tuple or a (row, value) pair puts everything of one kind into one bucket."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "先插入再查询，target 恰好等于 2x 时会把同一个元素和自己配成一对。",
+        "en": "Inserting before querying pairs an element with itself when target equals 2x."
+      },
+      {
+        "zh": "C++ 的 map[key] 读一个不存在的键会插入默认值；只想判断存在时用 find 或 count。",
+        "en": "In C++, map[key] on a missing key inserts a default value; use find or count to test membership."
+      },
+      {
+        "zh": "Java 里两个 Integer 用 == 比较，超过 127 时可能不相等；用 equals 或先拆箱成 int。",
+        "en": "In Java, comparing two Integer objects with == can fail above 127; use equals or unbox to int first."
+      }
+    ],
+    "code": {
+      "python": "def two_sum(nums: list[int], target: int) -> tuple[int, int]:\n    seen: dict[int, int] = {}  # value -> index of an earlier element\n    for i, x in enumerate(nums):\n        if target - x in seen:  # look up before inserting: no self-pairing\n            return seen[target - x], i\n        seen[x] = i\n    return -1, -1",
+      "cpp": "pair<int, int> twoSum(const vector<int>& nums, int target) {\n    unordered_map<int, int> seen;  // value -> index of an earlier element\n    for (int i = 0; i < (int)nums.size(); i++) {\n        auto it = seen.find(target - nums[i]);  // find() never inserts, unlike []\n        if (it != seen.end()) return {it->second, i};\n        seen[nums[i]] = i;\n    }\n    return {-1, -1};\n}",
+      "java": "class Solution {\n    int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> seen = new HashMap<>(); // value -> index of an earlier element\n        for (int i = 0; i < nums.length; i++) {\n            Integer j = seen.get(target - nums[i]); // look up before inserting: no self-pairing\n            if (j != null) return new int[] {j, i};\n            seen.put(nums[i], i);\n        }\n        return new int[] {-1, -1};\n    }\n}",
+      "go": "func twoSum(nums []int, target int) (int, int) {\n\tseen := map[int]int{} // value -> index of an earlier element\n\tfor i, x := range nums {\n\t\tif j, ok := seen[target-x]; ok { // look up before inserting: no self-pairing\n\t\t\treturn j, i\n\t\t}\n\t\tseen[x] = i\n\t}\n\treturn -1, -1\n}"
+    }
+  },
+  {
+    "slug": "string-processing",
+    "pattern": {
+      "zh": "KMP 前缀函数匹配",
+      "en": "KMP prefix function"
+    },
+    "complexity": "O(n + m) time · O(m) space",
+    "points": [
+      {
+        "zh": "pi[i] 是 pat[0..i] 中「既是真前缀又是真后缀」的最长长度；失配时 j 退回 pi[j-1]，文本指针从不回头。",
+        "en": "pi[i] is the length of the longest proper prefix of pat[0..i] that is also its suffix; on a mismatch j falls back to pi[j-1] and the text pointer never moves back."
+      },
+      {
+        "zh": "建 pi 表和在文本里匹配是同一段循环：建表就是模式串和自己匹配。",
+        "en": "Building pi and scanning the text are the same loop: building the table is the pattern matching against itself."
+      },
+      {
+        "zh": "解析类题目用一个下标手动往前读数字、符号和括号，边界比 split 好处理。",
+        "en": "For parsing tasks, advance one index by hand over digits, signs and brackets; edge cases are easier than with split."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "匹配成功后要令 j = pi[j-1] 继续，否则会漏掉重叠出现（\"aaaa\" 里的 \"aa\" 出现 3 次）。",
+        "en": "After a full match set j = pi[j-1]; otherwise you miss overlapping occurrences (\"aa\" occurs 3 times in \"aaaa\")."
+      },
+      {
+        "zh": "在循环里用 + 拼字符串是 O(n²)；Python 先收集到列表再 join，Java 用 StringBuilder。",
+        "en": "Concatenating strings with + in a loop is O(n²); collect pieces and join in Python, use StringBuilder in Java."
+      },
+      {
+        "zh": "Go 里 s[i] 是字节、len(s) 是字节数；处理中文等多字节字符要先转成 []rune。",
+        "en": "In Go, s[i] is a byte and len(s) counts bytes; convert to []rune for multi-byte text such as Chinese."
+      }
+    ],
+    "code": {
+      "python": "def find_all(text: str, pat: str) -> list[int]:\n    \"\"\"Start index of every occurrence of a non-empty pat in text.\"\"\"\n    m = len(pat)\n    pi = [0] * m  # pi[i]: longest proper prefix of pat[:i+1] that is also its suffix\n    j = 0\n    for i in range(1, m):\n        while j and pat[i] != pat[j]:\n            j = pi[j - 1]\n        if pat[i] == pat[j]:\n            j += 1\n        pi[i] = j\n    res, j = [], 0\n    for i, c in enumerate(text):\n        while j and c != pat[j]:\n            j = pi[j - 1]\n        if c == pat[j]:\n            j += 1\n        if j == m:\n            res.append(i - m + 1)\n            j = pi[j - 1]  # keep going: matches may overlap\n    return res",
+      "cpp": "// Start index of every occurrence of a non-empty pat in text.\nvector<int> findAll(const string& text, const string& pat) {\n    int m = pat.size();\n    vector<int> pi(m, 0);  // pi[i]: longest proper border of pat[0..i]\n    for (int i = 1, j = 0; i < m; i++) {\n        while (j && pat[i] != pat[j]) j = pi[j - 1];\n        if (pat[i] == pat[j]) j++;\n        pi[i] = j;\n    }\n    vector<int> res;\n    for (int i = 0, j = 0; i < (int)text.size(); i++) {\n        while (j && text[i] != pat[j]) j = pi[j - 1];\n        if (text[i] == pat[j]) j++;\n        if (j == m) {\n            res.push_back(i - m + 1);\n            j = pi[j - 1];  // keep going: matches may overlap\n        }\n    }\n    return res;\n}",
+      "java": "class Solution {\n    // Start index of every occurrence of a non-empty pat in text.\n    List<Integer> findAll(String text, String pat) {\n        int m = pat.length();\n        int[] pi = new int[m]; // pi[i]: longest proper border of pat[0..i]\n        for (int i = 1, j = 0; i < m; i++) {\n            while (j > 0 && pat.charAt(i) != pat.charAt(j)) j = pi[j - 1];\n            if (pat.charAt(i) == pat.charAt(j)) j++;\n            pi[i] = j;\n        }\n        List<Integer> res = new ArrayList<>();\n        for (int i = 0, j = 0; i < text.length(); i++) {\n            while (j > 0 && text.charAt(i) != pat.charAt(j)) j = pi[j - 1];\n            if (text.charAt(i) == pat.charAt(j)) j++;\n            if (j == m) {\n                res.add(i - m + 1);\n                j = pi[j - 1]; // keep going: matches may overlap\n            }\n        }\n        return res;\n    }\n}",
+      "go": "// findAll returns the start index of every occurrence of a non-empty pat in text.\nfunc findAll(text, pat string) []int {\n\tm := len(pat)\n\tpi := make([]int, m) // pi[i]: longest proper border of pat[:i+1]\n\tfor i, j := 1, 0; i < m; i++ {\n\t\tfor j > 0 && pat[i] != pat[j] {\n\t\t\tj = pi[j-1]\n\t\t}\n\t\tif pat[i] == pat[j] {\n\t\t\tj++\n\t\t}\n\t\tpi[i] = j\n\t}\n\tvar res []int\n\tfor i, j := 0, 0; i < len(text); i++ {\n\t\tfor j > 0 && text[i] != pat[j] {\n\t\t\tj = pi[j-1]\n\t\t}\n\t\tif text[i] == pat[j] {\n\t\t\tj++\n\t\t}\n\t\tif j == m {\n\t\t\tres = append(res, i-m+1)\n\t\t\tj = pi[j-1] // keep going: matches may overlap\n\t\t}\n\t}\n\treturn res\n}"
+    }
+  },
+  {
+    "slug": "two-pointers-windows",
+    "pattern": {
+      "zh": "可变长度滑动窗口",
+      "en": "Variable-size sliding window"
+    },
+    "complexity": "O(n) time · O(Σ) space",
+    "points": [
+      {
+        "zh": "右端每步前进一格，左端只在窗口不合法时收缩；两个指针都只前进，总共 O(n)。",
+        "en": "The right end advances every step and the left end moves only while the window is invalid; both only go forward, so the total is O(n)."
+      },
+      {
+        "zh": "求最长窗口：收缩完再更新答案；求最短窗口：在「仍然合法」的收缩循环里更新答案。",
+        "en": "For the longest window, update the answer after shrinking; for the shortest, update it inside the shrink loop while the window is still valid."
+      },
+      {
+        "zh": "有序数组上求两数之和、去重、反转用相向双指针；判环、找中点用快慢指针。",
+        "en": "On sorted arrays use opposite-end pointers for pair sums, dedupe and reversal; use fast/slow pointers for cycles and midpoints."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "收缩时忘了把移出窗口的元素计数减一，窗口状态就和实际内容对不上。",
+        "en": "Forgetting to decrement the count of the element leaving the window desynchronises the window state."
+      },
+      {
+        "zh": "数组里有负数时，「和超过 k 就收缩」不再单调，滑动窗口失效，要改用前缀和。",
+        "en": "With negative numbers \"shrink when the sum exceeds k\" is no longer monotonic and the window breaks; use prefix sums instead."
+      },
+      {
+        "zh": "「恰好 k 个」很难直接滑，用「至多 k 个」减去「至多 k-1 个」。",
+        "en": "\"Exactly k\" is awkward to slide directly; compute at-most(k) minus at-most(k-1)."
+      }
+    ],
+    "code": {
+      "python": "from collections import defaultdict\n\n\ndef longest_unique(s: str) -> int:\n    \"\"\"Length of the longest substring without repeated characters.\"\"\"\n    cnt = defaultdict(int)  # counts inside the window s[left:right+1]\n    left = best = 0\n    for right, c in enumerate(s):\n        cnt[c] += 1\n        while cnt[c] > 1:  # shrink until the window is valid again\n            cnt[s[left]] -= 1\n            left += 1\n        best = max(best, right - left + 1)\n    return best",
+      "cpp": "// Length of the longest substring without repeated characters.\nint longestUnique(const string& s) {\n    unordered_map<char, int> cnt;  // counts inside the window s[left..right]\n    int left = 0, best = 0;\n    for (int right = 0; right < (int)s.size(); right++) {\n        char c = s[right];\n        cnt[c]++;\n        while (cnt[c] > 1) cnt[s[left++]]--;  // shrink until the window is valid again\n        best = max(best, right - left + 1);\n    }\n    return best;\n}",
+      "java": "class Solution {\n    // Length of the longest substring without repeated characters.\n    int longestUnique(String s) {\n        Map<Character, Integer> cnt = new HashMap<>(); // counts inside the window s[left..right]\n        int left = 0, best = 0;\n        for (int right = 0; right < s.length(); right++) {\n            char c = s.charAt(right);\n            cnt.merge(c, 1, Integer::sum);\n            while (cnt.get(c) > 1) cnt.merge(s.charAt(left++), -1, Integer::sum); // shrink\n            best = Math.max(best, right - left + 1);\n        }\n        return best;\n    }\n}",
+      "go": "// longestUnique returns the length of the longest substring without repeated bytes.\nfunc longestUnique(s string) int {\n\tcnt := map[byte]int{} // counts inside the window s[left:right+1]\n\tleft, best := 0, 0\n\tfor right := 0; right < len(s); right++ {\n\t\tc := s[right]\n\t\tcnt[c]++\n\t\tfor cnt[c] > 1 { // shrink until the window is valid again\n\t\t\tcnt[s[left]]--\n\t\t\tleft++\n\t\t}\n\t\tbest = max(best, right-left+1)\n\t}\n\treturn best\n}"
+    }
+  },
+  {
+    "slug": "prefix-intervals",
+    "pattern": {
+      "zh": "前缀和 + 哈希计数",
+      "en": "Prefix sums with a hash count"
+    },
+    "complexity": "O(n) time · O(n) space",
+    "points": [
+      {
+        "zh": "区间和等于两个前缀和之差：sum(l..r) = pre[r+1] - pre[l]；前缀数组多开一位，pre[0] = 0。",
+        "en": "A range sum is the difference of two prefix sums: sum(l..r) = pre[r+1] - pre[l]; allocate one extra slot with pre[0] = 0."
+      },
+      {
+        "zh": "统计「和为 k 的子数组」时，哈希表先放 {0: 1}，代表从下标 0 开始的子数组。",
+        "en": "When counting subarrays that sum to k, seed the map with {0: 1} for subarrays that start at index 0."
+      },
+      {
+        "zh": "多次区间加值用差分数组：diff[l] += v，diff[r+1] -= v，最后求一遍前缀和；合并区间先按左端点排序。",
+        "en": "For many range updates use a difference array (diff[l] += v, diff[r+1] -= v, then one prefix pass); to merge intervals, sort by left end first."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "忘了放 {0: 1}，会漏掉所有从下标 0 开始的子数组。",
+        "en": "Without the {0: 1} seed you miss every subarray that starts at index 0."
+      },
+      {
+        "zh": "前缀和很容易超过 32 位整数，C++ 用 long long，Java 用 long。",
+        "en": "Prefix sums overflow 32-bit integers easily; use long long in C++ and long in Java."
+      },
+      {
+        "zh": "先把当前前缀和存进表再查询，k = 0 时会把空子数组也算进去。",
+        "en": "Storing the current prefix before querying counts the empty subarray when k = 0."
+      }
+    ],
+    "code": {
+      "python": "def count_subarrays(nums: list[int], k: int) -> int:\n    \"\"\"Number of non-empty subarrays whose sum is k (negatives allowed).\"\"\"\n    seen = {0: 1}  # prefix sum -> occurrences; the empty prefix counts once\n    pre = ans = 0\n    for x in nums:\n        pre += x\n        ans += seen.get(pre - k, 0)  # sum(j..i) = pre_i - pre_j\n        seen[pre] = seen.get(pre, 0) + 1\n    return ans",
+      "cpp": "// Number of non-empty subarrays whose sum is k (negatives allowed).\nint countSubarrays(const vector<int>& nums, int k) {\n    unordered_map<long long, int> seen{{0, 1}};  // prefix sum -> occurrences\n    long long pre = 0;\n    int ans = 0;\n    for (int x : nums) {\n        pre += x;\n        auto it = seen.find(pre - k);  // sum(j..i) = pre_i - pre_j\n        if (it != seen.end()) ans += it->second;\n        seen[pre]++;\n    }\n    return ans;\n}",
+      "java": "class Solution {\n    // Number of non-empty subarrays whose sum is k (negatives allowed).\n    int countSubarrays(int[] nums, int k) {\n        Map<Long, Integer> seen = new HashMap<>(); // prefix sum -> occurrences\n        seen.put(0L, 1); // the empty prefix\n        long pre = 0;\n        int ans = 0;\n        for (int x : nums) {\n            pre += x;\n            ans += seen.getOrDefault(pre - k, 0); // sum(j..i) = pre_i - pre_j\n            seen.merge(pre, 1, Integer::sum);\n        }\n        return ans;\n    }\n}",
+      "go": "// countSubarrays returns how many non-empty subarrays sum to k (negatives allowed).\nfunc countSubarrays(nums []int, k int) int {\n\tseen := map[int]int{0: 1} // prefix sum -> occurrences; the empty prefix counts once\n\tpre, ans := 0, 0\n\tfor _, x := range nums {\n\t\tpre += x\n\t\tans += seen[pre-k] // sum(j..i) = pre_i - pre_j\n\t\tseen[pre]++\n\t}\n\treturn ans\n}"
+    }
+  },
+  {
+    "slug": "binary-search",
+    "pattern": {
+      "zh": "左闭右开区间找「第一个为真」",
+      "en": "First true on a half-open range"
+    },
+    "complexity": "O(log n) checks",
+    "points": [
+      {
+        "zh": "先把问题改写成单调的判定 ok(x)：前面全是假、后面全是真，然后二分找第一个真。",
+        "en": "Rewrite the problem as a monotonic check ok(x), false then true, and search for the first true."
+      },
+      {
+        "zh": "区间 [lo, hi) 左闭右开：ok(mid) 时 hi = mid，否则 lo = mid + 1；循环条件 lo < hi，结束时 lo 就是答案。",
+        "en": "On the half-open range [lo, hi): set hi = mid when ok(mid), else lo = mid + 1; loop while lo < hi, and lo is the answer at the end."
+      },
+      {
+        "zh": "答案范围已知、给定一个答案能 O(n) 验证时，直接对答案二分：最小速度、最大化最小值都是这一类。",
+        "en": "When the answer's range is known and a candidate can be checked in O(n), binary search the answer itself: minimum speed, maximise the minimum and so on."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "lo = mid 配合向下取整的 mid 会死循环；用这个模板时只写 lo = mid + 1。",
+        "en": "lo = mid with a rounded-down mid loops forever; with this template only ever write lo = mid + 1."
+      },
+      {
+        "zh": "(lo + hi) / 2 在 C++、Java、Go 里可能溢出，写成 lo + (hi - lo) / 2。",
+        "en": "(lo + hi) / 2 can overflow in C++, Java and Go; write lo + (hi - lo) / 2."
+      },
+      {
+        "zh": "hi 本身不会被检查：上界要取到一定可行的值，否则返回的 hi 会被误当成答案。",
+        "en": "hi itself is never checked: pick an upper bound that is surely feasible, or a returned hi gets mistaken for an answer."
+      }
+    ],
+    "code": {
+      "python": "from typing import Callable\n\n\ndef first_true(lo: int, hi: int, ok: Callable[[int], bool]) -> int:\n    \"\"\"Smallest x in [lo, hi) with ok(x), where ok goes False..False True..True; hi if none.\"\"\"\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if ok(mid):\n            hi = mid  # mid may be the answer: keep it in range\n        else:\n            lo = mid + 1\n    return lo\n\n\ndef lower_bound(nums: list[int], target: int) -> int:\n    \"\"\"First index whose value is >= target (len(nums) if none).\"\"\"\n    return first_true(0, len(nums), lambda i: nums[i] >= target)",
+      "cpp": "// Smallest x in [lo, hi) with ok(x), where ok goes false..false true..true; hi if none.\nlong long firstTrue(long long lo, long long hi, const function<bool(long long)>& ok) {\n    while (lo < hi) {\n        long long mid = lo + (hi - lo) / 2;\n        if (ok(mid)) hi = mid;  // mid may be the answer: keep it in range\n        else lo = mid + 1;\n    }\n    return lo;\n}\n\n// First index whose value is >= target (nums.size() if none).\nint lowerBound(const vector<int>& nums, int target) {\n    return firstTrue(0, nums.size(), [&](long long i) { return nums[i] >= target; });\n}",
+      "java": "import java.util.function.LongPredicate;\n\nclass Solution {\n    // Smallest x in [lo, hi) with ok(x), where ok goes false..false true..true; hi if none.\n    long firstTrue(long lo, long hi, LongPredicate ok) {\n        while (lo < hi) {\n            long mid = lo + (hi - lo) / 2;\n            if (ok.test(mid)) hi = mid; // mid may be the answer: keep it in range\n            else lo = mid + 1;\n        }\n        return lo;\n    }\n\n    // First index whose value is >= target (nums.length if none).\n    int lowerBound(int[] nums, int target) {\n        return (int) firstTrue(0, nums.length, i -> nums[(int) i] >= target);\n    }\n}",
+      "go": "// firstTrue returns the smallest x in [lo, hi) with ok(x), where ok goes\n// false..false true..true; hi if none. sort.Search is the same idea.\nfunc firstTrue(lo, hi int, ok func(int) bool) int {\n\tfor lo < hi {\n\t\tmid := lo + (hi-lo)/2\n\t\tif ok(mid) {\n\t\t\thi = mid // mid may be the answer: keep it in range\n\t\t} else {\n\t\t\tlo = mid + 1\n\t\t}\n\t}\n\treturn lo\n}\n\n// lowerBound returns the first index whose value is >= target (len(nums) if none).\nfunc lowerBound(nums []int, target int) int {\n\treturn firstTrue(0, len(nums), func(i int) bool { return nums[i] >= target })\n}"
+    }
+  },
+  {
+    "slug": "stacks-heaps",
+    "pattern": {
+      "zh": "单调栈：下一个更大元素",
+      "en": "Monotonic stack: next greater element"
+    },
+    "complexity": "O(n) time · O(n) space",
+    "points": [
+      {
+        "zh": "栈里存下标而不是值：既能取到值，也能算距离（比如「还要等几天才升温」）。",
+        "en": "Keep indexes on the stack, not values: you can still read the value and also measure distances such as days until a warmer day."
+      },
+      {
+        "zh": "每个元素只进栈、出栈各一次，所以虽然套了 while，总复杂度仍是 O(n)。",
+        "en": "Each element is pushed and popped once, so the nested while is still O(n) overall."
+      },
+      {
+        "zh": "求前 k 大用大小为 k 的小根堆；滑动窗口最值用单调双端队列，队头过期就弹出。",
+        "en": "For the top k keep a min-heap of size k; for sliding-window maxima use a monotonic deque and drop the front once it leaves the window."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "有重复值时 < 和 <= 结果不同，先想清楚要「严格更大」还是「大于等于」。",
+        "en": "With duplicates, < and <= give different answers; decide whether you need strictly greater or greater-or-equal."
+      },
+      {
+        "zh": "Python 的 heapq 只有小根堆，要大根堆就存相反数。",
+        "en": "Python's heapq is a min-heap only; push negated values to get a max-heap."
+      },
+      {
+        "zh": "Java 的 Stack 类又慢又是同步的，栈和队列都用 ArrayDeque；比较器不要写成 a - b。",
+        "en": "Java's Stack class is slow and synchronized; use ArrayDeque for stacks and queues, and don't write comparators as a - b."
+      }
+    ],
+    "code": {
+      "python": "def next_greater(nums: list[int]) -> list[int]:\n    \"\"\"For each i, the first value to the right that is strictly greater, or -1.\"\"\"\n    ans = [-1] * len(nums)\n    stack = []  # indexes still waiting; their values decrease from bottom to top\n    for i, x in enumerate(nums):\n        while stack and nums[stack[-1]] < x:\n            ans[stack.pop()] = x\n        stack.append(i)\n    return ans",
+      "cpp": "// For each i, the first value to the right that is strictly greater, or -1.\nvector<int> nextGreater(const vector<int>& nums) {\n    vector<int> ans(nums.size(), -1);\n    vector<int> st;  // indexes still waiting; their values decrease from bottom to top\n    for (int i = 0; i < (int)nums.size(); i++) {\n        while (!st.empty() && nums[st.back()] < nums[i]) {\n            ans[st.back()] = nums[i];\n            st.pop_back();\n        }\n        st.push_back(i);\n    }\n    return ans;\n}",
+      "java": "class Solution {\n    // For each i, the first value to the right that is strictly greater, or -1.\n    int[] nextGreater(int[] nums) {\n        int[] ans = new int[nums.length];\n        Arrays.fill(ans, -1);\n        Deque<Integer> st = new ArrayDeque<>(); // indexes still waiting; values decrease to the top\n        for (int i = 0; i < nums.length; i++) {\n            while (!st.isEmpty() && nums[st.peek()] < nums[i]) ans[st.pop()] = nums[i];\n            st.push(i);\n        }\n        return ans;\n    }\n}",
+      "go": "// nextGreater returns, for each i, the first value to the right that is strictly greater, or -1.\nfunc nextGreater(nums []int) []int {\n\tans := make([]int, len(nums))\n\tvar st []int // indexes still waiting; their values decrease from bottom to top\n\tfor i, x := range nums {\n\t\tans[i] = -1\n\t\tfor len(st) > 0 && nums[st[len(st)-1]] < x {\n\t\t\tans[st[len(st)-1]] = x\n\t\t\tst = st[:len(st)-1]\n\t\t}\n\t\tst = append(st, i)\n\t}\n\treturn ans\n}"
+    }
+  },
+  {
+    "slug": "greedy-scheduling",
+    "pattern": {
+      "zh": "按结束时间排序选区间",
+      "en": "Sort by end time, keep what fits"
+    },
+    "complexity": "O(n log n) time",
+    "points": [
+      {
+        "zh": "总是选结束最早的区间，给后面留的空间最多。交换论证：任何最优解的第一个区间都能换成它而不变差。",
+        "en": "Always take the interval that ends first; it leaves the most room. Exchange argument: the first pick of any optimal answer can be swapped for it without loss."
+      },
+      {
+        "zh": "最少删除数 = 总数 - 最多保留数；「最少几支箭」也是同一个循环，只是端点相接也算重叠。",
+        "en": "Minimum removals = total minus the maximum kept; \"minimum arrows\" is the same loop, except that touching endpoints count as overlapping."
+      },
+      {
+        "zh": "写贪心之前先说清楚「为什么局部最优不吃亏」；说不清楚时，多半要换成动态规划。",
+        "en": "Before writing a greedy, state why the local choice never hurts; if you can't, the problem probably needs DP."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "按开始时间排序再贪心，会被一个开始很早、持续很长的区间卡住。",
+        "en": "Sorting by start time lets one long interval that starts early block everything else."
+      },
+      {
+        "zh": "端点相接算不算重叠由题意决定：>= 和 > 只差一个字符，答案就不一样。",
+        "en": "Whether touching endpoints overlap depends on the problem; >= versus > is one character and a different answer."
+      },
+      {
+        "zh": "比较器写成 a[1] - b[1]，端点接近 ±2^31 时会溢出。",
+        "en": "A comparator written as a[1] - b[1] overflows near ±2^31."
+      }
+    ],
+    "code": {
+      "python": "def max_non_overlapping(intervals: list[list[int]]) -> int:\n    \"\"\"Most intervals you can keep with no overlap; [a, b] and [b, c] may touch.\"\"\"\n    count, end = 0, float(\"-inf\")\n    for start, finish in sorted(intervals, key=lambda iv: iv[1]):\n        if start >= end:  # fits after the last kept interval\n            count += 1\n            end = finish\n    return count",
+      "cpp": "// Most intervals you can keep with no overlap; [a, b] and [b, c] may touch.\nint maxNonOverlapping(vector<vector<int>> intervals) {\n    sort(intervals.begin(), intervals.end(),\n         [](const vector<int>& a, const vector<int>& b) { return a[1] < b[1]; });\n    int count = 0;\n    long long end = LLONG_MIN;\n    for (auto& iv : intervals)\n        if (iv[0] >= end) {  // fits after the last kept interval\n            count++;\n            end = iv[1];\n        }\n    return count;\n}",
+      "java": "class Solution {\n    // Most intervals you can keep with no overlap; [a, b] and [b, c] may touch.\n    int maxNonOverlapping(int[][] intervals) {\n        Arrays.sort(intervals, (a, b) -> Integer.compare(a[1], b[1]));\n        int count = 0;\n        long end = Long.MIN_VALUE;\n        for (int[] iv : intervals)\n            if (iv[0] >= end) { // fits after the last kept interval\n                count++;\n                end = iv[1];\n            }\n        return count;\n    }\n}",
+      "go": "import (\n\t\"math\"\n\t\"sort\"\n)\n\n// maxNonOverlapping returns the most intervals you can keep with no overlap;\n// [a, b] and [b, c] may touch.\nfunc maxNonOverlapping(intervals [][]int) int {\n\tsort.Slice(intervals, func(i, j int) bool { return intervals[i][1] < intervals[j][1] })\n\tcount, end := 0, math.MinInt\n\tfor _, iv := range intervals {\n\t\tif iv[0] >= end { // fits after the last kept interval\n\t\t\tcount++\n\t\t\tend = iv[1]\n\t\t}\n\t}\n\treturn count\n}"
+    }
+  },
+  {
+    "slug": "linked-list",
+    "pattern": {
+      "zh": "反转链表 + 快慢指针",
+      "en": "Reverse in place, fast and slow pointers"
+    },
+    "complexity": "O(n) time · O(1) space",
+    "points": [
+      {
+        "zh": "改指针之前先存下 next。反转只有三步：存 next、指回前驱、整体前移。",
+        "en": "Save next before rewiring. Reversal is three moves: save next, point back, step forward."
+      },
+      {
+        "zh": "头结点可能被删除或替换时，先建一个哑结点 dummy 指向 head，最后返回 dummy.next。",
+        "en": "When the head may be removed or replaced, start from a dummy node that points at head and return dummy.next."
+      },
+      {
+        "zh": "快指针一次两步、慢指针一次一步：找中点、判环、找倒数第 k 个结点都用它。",
+        "en": "Fast pointer two steps, slow pointer one: this finds the middle, detects a cycle and locates the k-th node from the end."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "先改了 head.next 再去取 next，后面的链表就丢了。",
+        "en": "Rewiring head.next before saving it loses the rest of the list."
+      },
+      {
+        "zh": "访问 fast.next.next 之前要确认 fast 和 fast.next 都不为空。",
+        "en": "Check that fast and fast.next are non-null before touching fast.next.next."
+      },
+      {
+        "zh": "把链表拆成两段后忘了把前半段的尾部置空，合并或遍历时会成环。",
+        "en": "After splitting a list, forgetting to null out the first half's tail creates a cycle when you merge or traverse."
+      }
+    ],
+    "code": {
+      "python": "class ListNode:\n    def __init__(self, val=0, next=None):\n        self.val, self.next = val, next\n\n\ndef reverse(head):\n    prev = None\n    while head:\n        nxt = head.next  # save it before rewiring\n        head.next = prev\n        prev, head = head, nxt\n    return prev\n\n\ndef middle(head):\n    \"\"\"Middle node; the second of the two middles for even lengths.\"\"\"\n    slow = fast = head\n    while fast and fast.next:\n        slow, fast = slow.next, fast.next.next\n    return slow",
+      "cpp": "struct ListNode {\n    int val;\n    ListNode* next;\n    ListNode(int v, ListNode* n = nullptr) : val(v), next(n) {}\n};\n\nListNode* reverseList(ListNode* head) {\n    ListNode* prev = nullptr;\n    while (head) {\n        ListNode* nxt = head->next;  // save it before rewiring\n        head->next = prev;\n        prev = head;\n        head = nxt;\n    }\n    return prev;\n}\n\n// Middle node; the second of the two middles for even lengths.\nListNode* middle(ListNode* head) {\n    ListNode *slow = head, *fast = head;\n    while (fast && fast->next) {\n        slow = slow->next;\n        fast = fast->next->next;\n    }\n    return slow;\n}",
+      "java": "class ListNode {\n    int val;\n    ListNode next;\n\n    ListNode(int val, ListNode next) {\n        this.val = val;\n        this.next = next;\n    }\n}\n\nclass Solution {\n    ListNode reverse(ListNode head) {\n        ListNode prev = null;\n        while (head != null) {\n            ListNode nxt = head.next; // save it before rewiring\n            head.next = prev;\n            prev = head;\n            head = nxt;\n        }\n        return prev;\n    }\n\n    // Middle node; the second of the two middles for even lengths.\n    ListNode middle(ListNode head) {\n        ListNode slow = head, fast = head;\n        while (fast != null && fast.next != null) {\n            slow = slow.next;\n            fast = fast.next.next;\n        }\n        return slow;\n    }\n}",
+      "go": "type ListNode struct {\n\tVal  int\n\tNext *ListNode\n}\n\nfunc reverse(head *ListNode) *ListNode {\n\tvar prev *ListNode\n\tfor head != nil {\n\t\tnext := head.Next // save it before rewiring\n\t\thead.Next = prev\n\t\tprev, head = head, next\n\t}\n\treturn prev\n}\n\n// middle returns the middle node; the second of the two middles for even lengths.\nfunc middle(head *ListNode) *ListNode {\n\tslow, fast := head, head\n\tfor fast != nil && fast.Next != nil {\n\t\tslow, fast = slow.Next, fast.Next.Next\n\t}\n\treturn slow\n}"
+    }
+  },
+  {
+    "slug": "binary-tree",
+    "pattern": {
+      "zh": "按层 BFS",
+      "en": "Level-order BFS"
+    },
+    "complexity": "O(n) time · O(width) space",
+    "points": [
+      {
+        "zh": "每一轮先记下队列长度，正好处理这么多个结点，层与层就分开了。",
+        "en": "Record the queue length at the start of each round; processing exactly that many nodes separates one level from the next."
+      },
+      {
+        "zh": "写递归 DFS 前先想清楚「子树返回什么」：深度、是否平衡、结点数，都是把左右两边的结果合并。",
+        "en": "Before writing a recursive DFS, decide what a subtree returns (depth, balance, size); the answer is always a merge of left and right."
+      },
+      {
+        "zh": "前序、中序、后序的区别只在于「处理当前结点」放在两次递归的前面、中间还是后面。",
+        "en": "Pre-, in- and post-order differ only in whether you handle the current node before, between or after the two recursive calls."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "用一直在变化的队列长度当循环上界，会把下一层的结点也算进这一层。",
+        "en": "Using the live queue length as the loop bound mixes the next level into the current one."
+      },
+      {
+        "zh": "Python 用 list.pop(0) 当队列是 O(n) 的，要用 collections.deque。",
+        "en": "list.pop(0) is O(n) in Python; use collections.deque for queues."
+      },
+      {
+        "zh": "树退化成链时递归深度能到 10^5，Python 会爆栈；改成迭代或调高 recursionlimit。",
+        "en": "A degenerate tree recurses 10^5 levels deep and overflows Python's stack; go iterative or raise the recursion limit."
+      }
+    ],
+    "code": {
+      "python": "from collections import deque\n\n\nclass TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val, self.left, self.right = val, left, right\n\n\ndef level_order(root) -> list[list[int]]:\n    if not root:\n        return []\n    levels, q = [], deque([root])\n    while q:\n        level = []\n        for _ in range(len(q)):  # exactly the nodes of this level\n            node = q.popleft()\n            level.append(node.val)\n            for child in (node.left, node.right):\n                if child:\n                    q.append(child)\n        levels.append(level)\n    return levels",
+      "cpp": "struct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int v, TreeNode* l = nullptr, TreeNode* r = nullptr) : val(v), left(l), right(r) {}\n};\n\nvector<vector<int>> levelOrder(TreeNode* root) {\n    vector<vector<int>> levels;\n    queue<TreeNode*> q;\n    if (root) q.push(root);\n    while (!q.empty()) {\n        levels.emplace_back();\n        for (int k = q.size(); k > 0; k--) {  // exactly the nodes of this level\n            TreeNode* node = q.front();\n            q.pop();\n            levels.back().push_back(node->val);\n            if (node->left) q.push(node->left);\n            if (node->right) q.push(node->right);\n        }\n    }\n    return levels;\n}",
+      "java": "class TreeNode {\n    int val;\n    TreeNode left, right;\n\n    TreeNode(int val) {\n        this.val = val;\n    }\n\n    TreeNode(int val, TreeNode left, TreeNode right) {\n        this.val = val;\n        this.left = left;\n        this.right = right;\n    }\n}\n\nclass Solution {\n    List<List<Integer>> levelOrder(TreeNode root) {\n        List<List<Integer>> levels = new ArrayList<>();\n        Deque<TreeNode> q = new ArrayDeque<>();\n        if (root != null) q.offer(root);\n        while (!q.isEmpty()) {\n            List<Integer> level = new ArrayList<>();\n            for (int k = q.size(); k > 0; k--) { // exactly the nodes of this level\n                TreeNode node = q.poll();\n                level.add(node.val);\n                if (node.left != null) q.offer(node.left);\n                if (node.right != null) q.offer(node.right);\n            }\n            levels.add(level);\n        }\n        return levels;\n    }\n}",
+      "go": "type TreeNode struct {\n\tVal         int\n\tLeft, Right *TreeNode\n}\n\nfunc levelOrder(root *TreeNode) [][]int {\n\tvar levels [][]int\n\tvar q []*TreeNode\n\tif root != nil {\n\t\tq = append(q, root)\n\t}\n\tfor len(q) > 0 {\n\t\tvar level []int\n\t\tvar next []*TreeNode // the following level\n\t\tfor _, node := range q {\n\t\t\tlevel = append(level, node.Val)\n\t\t\tif node.Left != nil {\n\t\t\t\tnext = append(next, node.Left)\n\t\t\t}\n\t\t\tif node.Right != nil {\n\t\t\t\tnext = append(next, node.Right)\n\t\t\t}\n\t\t}\n\t\tlevels = append(levels, level)\n\t\tq = next\n\t}\n\treturn levels\n}"
+    }
+  },
+  {
+    "slug": "binary-tree-paths",
+    "pattern": {
+      "zh": "后序返回单边贡献，全局记录拐弯路径",
+      "en": "Return the one-sided gain, record the bent path globally"
+    },
+    "complexity": "O(n) time · O(h) stack",
+    "points": [
+      {
+        "zh": "递归函数返回「从当前结点往下走的最好单边路径」，因为要继续往上接的路径只能选一边。",
+        "en": "The recursion returns the best one-sided downward path, because a path that continues upward can use only one child."
+      },
+      {
+        "zh": "在当前结点拐弯的路径（左 + 根 + 右）只用来更新全局答案，不返回给父结点。",
+        "en": "The path that bends at the node (left + node + right) only updates the global answer; it is never returned to the parent."
+      },
+      {
+        "zh": "根到叶的路径题用「进入时加、离开时减」维护当前路径；任意起点的路径和用前缀和 + 哈希表。",
+        "en": "For root-to-leaf paths, add on entry and remove on exit; for path sums starting anywhere, use prefix sums with a hash map."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "全局答案初始化成 0，所有值都是负数的树会得到错误的 0。",
+        "en": "Initialising the answer to 0 is wrong when every value in the tree is negative."
+      },
+      {
+        "zh": "子树贡献为负时要截成 0（这一边不接），否则会把答案拖低。",
+        "en": "Clamp a negative child gain to 0 (don't take that side), or it drags the answer down."
+      },
+      {
+        "zh": "把拐弯路径也返回给父结点，等于让一条路径分叉，结果会偏大。",
+        "en": "Returning the bent path to the parent lets a path fork, which overcounts."
+      }
+    ],
+    "code": {
+      "python": "class TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val, self.left, self.right = val, left, right\n\n\ndef max_path_sum(root) -> int:\n    \"\"\"Largest sum of any non-empty path between two nodes.\"\"\"\n    best = float(\"-inf\")\n\n    def gain(node) -> int:  # best downward path sum that starts at node\n        nonlocal best\n        if not node:\n            return 0\n        left, right = max(gain(node.left), 0), max(gain(node.right), 0)\n        best = max(best, node.val + left + right)  # the path that bends at node\n        return node.val + max(left, right)  # only one side can continue upward\n\n    gain(root)\n    return best",
+      "cpp": "struct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int v, TreeNode* l = nullptr, TreeNode* r = nullptr) : val(v), left(l), right(r) {}\n};\n\n// Largest sum of any non-empty path between two nodes.\nint maxPathSum(TreeNode* root) {\n    int best = INT_MIN;\n    function<int(TreeNode*)> gain = [&](TreeNode* node) {  // best downward path from node\n        if (!node) return 0;\n        int left = max(gain(node->left), 0), right = max(gain(node->right), 0);\n        best = max(best, node->val + left + right);  // the path that bends at node\n        return node->val + max(left, right);         // only one side continues upward\n    };\n    gain(root);\n    return best;\n}",
+      "java": "class TreeNode {\n    int val;\n    TreeNode left, right;\n\n    TreeNode(int val) {\n        this.val = val;\n    }\n\n    TreeNode(int val, TreeNode left, TreeNode right) {\n        this.val = val;\n        this.left = left;\n        this.right = right;\n    }\n}\n\nclass Solution {\n    private int best;\n\n    // Largest sum of any non-empty path between two nodes.\n    int maxPathSum(TreeNode root) {\n        best = Integer.MIN_VALUE;\n        gain(root);\n        return best;\n    }\n\n    private int gain(TreeNode node) { // best downward path sum that starts at node\n        if (node == null) return 0;\n        int left = Math.max(gain(node.left), 0), right = Math.max(gain(node.right), 0);\n        best = Math.max(best, node.val + left + right); // the path that bends at node\n        return node.val + Math.max(left, right); // only one side continues upward\n    }\n}",
+      "go": "import \"math\"\n\ntype TreeNode struct {\n\tVal         int\n\tLeft, Right *TreeNode\n}\n\n// maxPathSum returns the largest sum of any non-empty path between two nodes.\nfunc maxPathSum(root *TreeNode) int {\n\tbest := math.MinInt\n\tvar gain func(*TreeNode) int // best downward path sum that starts at node\n\tgain = func(node *TreeNode) int {\n\t\tif node == nil {\n\t\t\treturn 0\n\t\t}\n\t\tleft, right := max(gain(node.Left), 0), max(gain(node.Right), 0)\n\t\tbest = max(best, node.Val+left+right) // the path that bends at node\n\t\treturn node.Val + max(left, right)    // only one side continues upward\n\t}\n\tgain(root)\n\treturn best\n}"
+    }
+  },
+  {
+    "slug": "binary-tree-build",
+    "pattern": {
+      "zh": "前序定根，中序分左右",
+      "en": "Preorder picks the root, inorder splits the sides"
+    },
+    "complexity": "O(n) time · O(n) space",
+    "points": [
+      {
+        "zh": "前序的第一个值是根；在中序里找到它，左边是左子树，右边是右子树。",
+        "en": "The first preorder value is the root; find it in inorder, and everything to its left is the left subtree, everything to its right the right subtree."
+      },
+      {
+        "zh": "用哈希表存「值 → 中序下标」，每次切分 O(1)，整体 O(n)。",
+        "en": "A value-to-inorder-index map makes each split O(1) and the whole build O(n)."
+      },
+      {
+        "zh": "按「先左后右」递归时，前序指针顺序往后取就是下一个根，不用计算子数组长度；后序 + 中序则从后往前取、先右后左。",
+        "en": "Recursing left before right, the next preorder value is always the next root, so no lengths are needed; with postorder plus inorder, read from the back and build right before left."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "值有重复时中序位置不唯一，这个方法就不成立了。",
+        "en": "With duplicate values the inorder position is ambiguous and this method breaks."
+      },
+      {
+        "zh": "每层递归都切片复制数组（Python 切片、Java copyOfRange），会退化成 O(n²)。",
+        "en": "Copying subarrays at every level (Python slices, Java copyOfRange) degrades the build to O(n²)."
+      },
+      {
+        "zh": "后序 + 中序时如果仍然先建左子树，取到的根的顺序就错了。",
+        "en": "With postorder plus inorder, building the left subtree first takes the roots in the wrong order."
+      }
+    ],
+    "code": {
+      "python": "class TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val, self.left, self.right = val, left, right\n\n\ndef build_tree(preorder: list[int], inorder: list[int]):\n    \"\"\"Rebuild a tree with distinct values from its preorder and inorder walks.\"\"\"\n    pos = {v: i for i, v in enumerate(inorder)}  # value -> inorder index: O(1) splits\n    roots = iter(preorder)  # preorder yields roots in exactly the order we build them\n\n    def build(lo: int, hi: int):  # the subtree whose inorder range is [lo, hi)\n        if lo == hi:\n            return None\n        root = TreeNode(next(roots))\n        mid = pos[root.val]\n        root.left = build(lo, mid)  # left before right, matching preorder\n        root.right = build(mid + 1, hi)\n        return root\n\n    return build(0, len(inorder))",
+      "cpp": "struct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int v, TreeNode* l = nullptr, TreeNode* r = nullptr) : val(v), left(l), right(r) {}\n};\n\n// Rebuild a tree with distinct values from its preorder and inorder walks.\nTreeNode* buildTree(const vector<int>& preorder, const vector<int>& inorder) {\n    unordered_map<int, int> pos;  // value -> inorder index: O(1) splits\n    for (int i = 0; i < (int)inorder.size(); i++) pos[inorder[i]] = i;\n    int next = 0;  // preorder yields roots in exactly the order we build them\n    function<TreeNode*(int, int)> build = [&](int lo, int hi) -> TreeNode* {  // inorder [lo, hi)\n        if (lo == hi) return nullptr;\n        TreeNode* root = new TreeNode(preorder[next++]);\n        int mid = pos[root->val];\n        root->left = build(lo, mid);  // left before right, matching preorder\n        root->right = build(mid + 1, hi);\n        return root;\n    };\n    return build(0, inorder.size());\n}",
+      "java": "class TreeNode {\n    int val;\n    TreeNode left, right;\n\n    TreeNode(int val) {\n        this.val = val;\n    }\n\n    TreeNode(int val, TreeNode left, TreeNode right) {\n        this.val = val;\n        this.left = left;\n        this.right = right;\n    }\n}\n\nclass Solution {\n    private int[] preorder;\n    private int next; // preorder yields roots in exactly the order we build them\n    private final Map<Integer, Integer> pos = new HashMap<>(); // value -> inorder index\n\n    // Rebuild a tree with distinct values from its preorder and inorder walks.\n    TreeNode buildTree(int[] preorder, int[] inorder) {\n        this.preorder = preorder;\n        next = 0;\n        pos.clear();\n        for (int i = 0; i < inorder.length; i++) pos.put(inorder[i], i);\n        return build(0, inorder.length);\n    }\n\n    private TreeNode build(int lo, int hi) { // the subtree whose inorder range is [lo, hi)\n        if (lo == hi) return null;\n        TreeNode root = new TreeNode(preorder[next++]);\n        int mid = pos.get(root.val);\n        root.left = build(lo, mid); // left before right, matching preorder\n        root.right = build(mid + 1, hi);\n        return root;\n    }\n}",
+      "go": "type TreeNode struct {\n\tVal         int\n\tLeft, Right *TreeNode\n}\n\n// buildTree rebuilds a tree with distinct values from its preorder and inorder walks.\nfunc buildTree(preorder, inorder []int) *TreeNode {\n\tpos := make(map[int]int, len(inorder)) // value -> inorder index: O(1) splits\n\tfor i, v := range inorder {\n\t\tpos[v] = i\n\t}\n\tnext := 0                            // preorder yields roots in exactly the order we build them\n\tvar build func(lo, hi int) *TreeNode // the subtree whose inorder range is [lo, hi)\n\tbuild = func(lo, hi int) *TreeNode {\n\t\tif lo == hi {\n\t\t\treturn nil\n\t\t}\n\t\troot := &TreeNode{Val: preorder[next]}\n\t\tnext++\n\t\tmid := pos[root.Val]\n\t\troot.Left = build(lo, mid) // left before right, matching preorder\n\t\troot.Right = build(mid+1, hi)\n\t\treturn root\n\t}\n\treturn build(0, len(inorder))\n}"
+    }
+  },
+  {
+    "slug": "binary-search-tree",
+    "pattern": {
+      "zh": "迭代中序：按顺序走 BST",
+      "en": "Iterative inorder walks a BST in sorted order"
+    },
+    "complexity": "O(h + k) time · O(h) space",
+    "points": [
+      {
+        "zh": "BST 的中序遍历是升序的：第 k 小、验证 BST、找前驱后继，都能转成中序问题。",
+        "en": "An inorder walk of a BST is sorted, so k-th smallest, validation and predecessor/successor all become inorder problems."
+      },
+      {
+        "zh": "验证 BST 要把上下界 (lo, hi) 往下传，每个结点都必须落在祖先给出的开区间里。",
+        "en": "To validate a BST, pass (lo, hi) bounds down; every node must sit strictly inside the range its ancestors allow."
+      },
+      {
+        "zh": "查找和插入只走一条路径，复杂度是 O(h)：平衡时 O(log n)，退化成链时 O(n)。",
+        "en": "Search and insert follow a single path, O(h): O(log n) when balanced and O(n) on a chain."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "只拿结点和它的左右孩子比较，发现不了「右子树深处有比根还小的值」。",
+        "en": "Comparing a node only with its children misses a small value deep in the right subtree."
+      },
+      {
+        "zh": "用 INT_MIN / INT_MAX 当边界，结点值恰好是极值时会误判；用 long 或空值表示「无界」。",
+        "en": "Using INT_MIN/INT_MAX as bounds fails when a node holds that exact value; use long or null for \"unbounded\"."
+      },
+      {
+        "zh": "迭代中序里忘了转向 node.right，会重复弹出同一批结点或者提前结束。",
+        "en": "Forgetting to move to node.right in the iterative walk repeats nodes or stops early."
+      }
+    ],
+    "code": {
+      "python": "class TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val, self.left, self.right = val, left, right\n\n\ndef kth_smallest(root, k: int) -> int:\n    \"\"\"1-indexed; assumes 1 <= k <= number of nodes.\"\"\"\n    stack, node = [], root\n    while True:\n        while node:  # go as far left as possible\n            stack.append(node)\n            node = node.left\n        node = stack.pop()  # the next value in sorted order\n        k -= 1\n        if k == 0:\n            return node.val\n        node = node.right",
+      "cpp": "struct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int v, TreeNode* l = nullptr, TreeNode* r = nullptr) : val(v), left(l), right(r) {}\n};\n\n// 1-indexed; assumes 1 <= k <= number of nodes.\nint kthSmallest(TreeNode* root, int k) {\n    stack<TreeNode*> st;\n    TreeNode* node = root;\n    while (true) {\n        for (; node; node = node->left) st.push(node);  // go as far left as possible\n        node = st.top();  // the next value in sorted order\n        st.pop();\n        if (--k == 0) return node->val;\n        node = node->right;\n    }\n}",
+      "java": "class TreeNode {\n    int val;\n    TreeNode left, right;\n\n    TreeNode(int val) {\n        this.val = val;\n    }\n\n    TreeNode(int val, TreeNode left, TreeNode right) {\n        this.val = val;\n        this.left = left;\n        this.right = right;\n    }\n}\n\nclass Solution {\n    // 1-indexed; assumes 1 <= k <= number of nodes.\n    int kthSmallest(TreeNode root, int k) {\n        Deque<TreeNode> st = new ArrayDeque<>();\n        TreeNode node = root;\n        while (true) {\n            for (; node != null; node = node.left) st.push(node); // go as far left as possible\n            node = st.pop(); // the next value in sorted order\n            if (--k == 0) return node.val;\n            node = node.right;\n        }\n    }\n}",
+      "go": "type TreeNode struct {\n\tVal         int\n\tLeft, Right *TreeNode\n}\n\n// kthSmallest is 1-indexed and assumes 1 <= k <= number of nodes.\nfunc kthSmallest(root *TreeNode, k int) int {\n\tvar st []*TreeNode\n\tnode := root\n\tfor {\n\t\tfor ; node != nil; node = node.Left { // go as far left as possible\n\t\t\tst = append(st, node)\n\t\t}\n\t\tnode = st[len(st)-1] // the next value in sorted order\n\t\tst = st[:len(st)-1]\n\t\tk--\n\t\tif k == 0 {\n\t\t\treturn node.Val\n\t\t}\n\t\tnode = node.Right\n\t}\n}"
+    }
+  },
+  {
+    "slug": "grid-traversal",
+    "pattern": {
+      "zh": "多源 BFS，一步扩一圈",
+      "en": "Multi-source BFS, one ring per step"
+    },
+    "complexity": "O(rows × cols)",
+    "points": [
+      {
+        "zh": "所有起点一开始就一起入队，相当于从一个虚拟的超级源点出发；BFS 的层数就是最短距离。",
+        "en": "Enqueue every source at the start, as if from one virtual super source; the BFS layer is the shortest distance."
+      },
+      {
+        "zh": "入队时就标记已访问，同一个格子不会被重复加入。",
+        "en": "Mark a cell visited when it is enqueued, so it is never added twice."
+      },
+      {
+        "zh": "只问连通块（岛屿个数、面积）时 DFS、BFS 都可以；问最少步数必须用 BFS。",
+        "en": "For connected components (island count, area) DFS or BFS both work; for the fewest steps you need BFS."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "出队时才标记，同一个格子会被多个邻居重复入队，大网格上会超时。",
+        "en": "Marking on dequeue lets several neighbours enqueue the same cell, which times out on large grids."
+      },
+      {
+        "zh": "一开始就没有新鲜橘子时答案是 0，既不是 -1，也不是层数。",
+        "en": "When nothing is fresh at the start the answer is 0, not -1 and not the layer count."
+      },
+      {
+        "zh": "递归 DFS 在 1000×1000 的网格上会爆栈；大网格用 BFS 或显式栈。",
+        "en": "Recursive DFS on a 1000×1000 grid overflows the stack; use BFS or an explicit stack."
+      }
+    ],
+    "code": {
+      "python": "from collections import deque\n\n\ndef minutes_to_rot(grid: list[list[int]]) -> int:\n    \"\"\"0 empty, 1 fresh, 2 rotten. Minutes until nothing is fresh, or -1.\"\"\"\n    rows, cols = len(grid), len(grid[0])\n    q = deque((r, c) for r in range(rows) for c in range(cols) if grid[r][c] == 2)\n    fresh = sum(row.count(1) for row in grid)\n    minutes = 0\n    while q and fresh:\n        minutes += 1\n        for _ in range(len(q)):  # every rotten cell spreads one step this minute\n            r, c = q.popleft()\n            for nr, nc in ((r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1)):\n                if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == 1:\n                    grid[nr][nc] = 2  # mark when enqueued, not when popped\n                    fresh -= 1\n                    q.append((nr, nc))\n    return -1 if fresh else minutes",
+      "cpp": "// 0 empty, 1 fresh, 2 rotten. Minutes until nothing is fresh, or -1.\nint minutesToRot(vector<vector<int>> grid) {\n    int rows = grid.size(), cols = grid[0].size(), fresh = 0, minutes = 0;\n    queue<pair<int, int>> q;\n    for (int r = 0; r < rows; r++)\n        for (int c = 0; c < cols; c++) {\n            if (grid[r][c] == 2) q.push({r, c});\n            if (grid[r][c] == 1) fresh++;\n        }\n    const int dr[] = {1, -1, 0, 0}, dc[] = {0, 0, 1, -1};\n    while (!q.empty() && fresh) {\n        minutes++;\n        for (int k = q.size(); k > 0; k--) {  // every rotten cell spreads one step this minute\n            auto [r, c] = q.front();\n            q.pop();\n            for (int d = 0; d < 4; d++) {\n                int nr = r + dr[d], nc = c + dc[d];\n                if (nr < 0 || nr >= rows || nc < 0 || nc >= cols || grid[nr][nc] != 1) continue;\n                grid[nr][nc] = 2;  // mark when enqueued, not when popped\n                fresh--;\n                q.push({nr, nc});\n            }\n        }\n    }\n    return fresh ? -1 : minutes;\n}",
+      "java": "class Solution {\n    // 0 empty, 1 fresh, 2 rotten. Minutes until nothing is fresh, or -1.\n    int minutesToRot(int[][] grid) {\n        int rows = grid.length, cols = grid[0].length, fresh = 0, minutes = 0;\n        Deque<int[]> q = new ArrayDeque<>();\n        for (int r = 0; r < rows; r++)\n            for (int c = 0; c < cols; c++) {\n                if (grid[r][c] == 2) q.offer(new int[] {r, c});\n                if (grid[r][c] == 1) fresh++;\n            }\n        int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};\n        while (!q.isEmpty() && fresh > 0) {\n            minutes++;\n            for (int k = q.size(); k > 0; k--) { // every rotten cell spreads one step this minute\n                int[] cell = q.poll();\n                for (int[] d : dirs) {\n                    int nr = cell[0] + d[0], nc = cell[1] + d[1];\n                    if (nr < 0 || nr >= rows || nc < 0 || nc >= cols || grid[nr][nc] != 1) continue;\n                    grid[nr][nc] = 2; // mark when enqueued, not when popped\n                    fresh--;\n                    q.offer(new int[] {nr, nc});\n                }\n            }\n        }\n        return fresh > 0 ? -1 : minutes;\n    }\n}",
+      "go": "// minutesToRot takes 0 empty, 1 fresh, 2 rotten and returns the minutes until\n// nothing is fresh, or -1.\nfunc minutesToRot(grid [][]int) int {\n\ttype cell struct{ r, c int }\n\trows, cols := len(grid), len(grid[0])\n\tvar q []cell\n\tfresh := 0\n\tfor r := range grid {\n\t\tfor c, v := range grid[r] {\n\t\t\tswitch v {\n\t\t\tcase 2:\n\t\t\t\tq = append(q, cell{r, c})\n\t\t\tcase 1:\n\t\t\t\tfresh++\n\t\t\t}\n\t\t}\n\t}\n\tdirs := []cell{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}\n\tminutes := 0\n\tfor len(q) > 0 && fresh > 0 {\n\t\tminutes++\n\t\tvar next []cell // every rotten cell spreads one step this minute\n\t\tfor _, p := range q {\n\t\t\tfor _, d := range dirs {\n\t\t\t\tnr, nc := p.r+d.r, p.c+d.c\n\t\t\t\tif nr < 0 || nr >= rows || nc < 0 || nc >= cols || grid[nr][nc] != 1 {\n\t\t\t\t\tcontinue\n\t\t\t\t}\n\t\t\t\tgrid[nr][nc] = 2 // mark when enqueued, not when popped\n\t\t\t\tfresh--\n\t\t\t\tnext = append(next, cell{nr, nc})\n\t\t\t}\n\t\t}\n\t\tq = next\n\t}\n\tif fresh > 0 {\n\t\treturn -1\n\t}\n\treturn minutes\n}"
+    }
+  },
+  {
+    "slug": "graph-connectivity",
+    "pattern": {
+      "zh": "并查集：路径压缩 + 按大小合并",
+      "en": "Union-find with path compression and union by size"
+    },
+    "complexity": "≈ O(α(n)) per operation",
+    "points": [
+      {
+        "zh": "find 时做路径压缩，union 时把小树挂到大树下；两者一起用，单次操作几乎是常数时间。",
+        "en": "Compress paths in find and hang the smaller tree under the larger in union; together each operation is close to constant time."
+      },
+      {
+        "zh": "union 返回 false 说明两点本来就连通：无向图判环、找冗余连接都靠它。",
+        "en": "union returning false means the two ends were already connected, which is how you detect cycles and redundant edges."
+      },
+      {
+        "zh": "连通块个数、块的大小这类信息只记在根上，合并时累加。",
+        "en": "Keep per-component data such as size only on the root and add it up when merging."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "用 parent[a] == parent[b] 判断连通是错的，必须比较 find(a) == find(b)。",
+        "en": "parent[a] == parent[b] does not mean connected; compare find(a) == find(b)."
+      },
+      {
+        "zh": "合并时写成 parent[a] = b，而不是把两个根连起来，会破坏树的结构。",
+        "en": "Writing parent[a] = b instead of linking the two roots corrupts the structure."
+      },
+      {
+        "zh": "结点是字符串或坐标时，先映射成 0..n-1 的编号，或者用哈希表存 parent。",
+        "en": "When nodes are strings or coordinates, map them to 0..n-1 first, or keep parent in a hash map."
+      }
+    ],
+    "code": {
+      "python": "class DSU:\n    def __init__(self, n: int):\n        self.parent = list(range(n))\n        self.size = [1] * n\n        self.count = n  # number of components\n\n    def find(self, x: int) -> int:\n        while self.parent[x] != x:\n            self.parent[x] = self.parent[self.parent[x]]  # path halving\n            x = self.parent[x]\n        return x\n\n    def union(self, a: int, b: int) -> bool:\n        a, b = self.find(a), self.find(b)\n        if a == b:\n            return False  # already connected: this edge would close a cycle\n        if self.size[a] < self.size[b]:\n            a, b = b, a\n        self.parent[b] = a  # hang the smaller tree under the larger\n        self.size[a] += self.size[b]\n        self.count -= 1\n        return True",
+      "cpp": "struct DSU {\n    vector<int> parent, size;\n    int count;  // number of components\n\n    DSU(int n) : parent(n), size(n, 1), count(n) { iota(parent.begin(), parent.end(), 0); }\n\n    int find(int x) {\n        while (parent[x] != x) x = parent[x] = parent[parent[x]];  // path halving\n        return x;\n    }\n\n    bool unite(int a, int b) {\n        a = find(a), b = find(b);\n        if (a == b) return false;  // already connected: this edge would close a cycle\n        if (size[a] < size[b]) swap(a, b);\n        parent[b] = a;  // hang the smaller tree under the larger\n        size[a] += size[b];\n        count--;\n        return true;\n    }\n};",
+      "java": "class DSU {\n    private final int[] parent, size;\n    int count; // number of components\n\n    DSU(int n) {\n        parent = new int[n];\n        size = new int[n];\n        for (int i = 0; i < n; i++) {\n            parent[i] = i;\n            size[i] = 1;\n        }\n        count = n;\n    }\n\n    int find(int x) {\n        while (parent[x] != x) x = parent[x] = parent[parent[x]]; // path halving\n        return x;\n    }\n\n    boolean union(int a, int b) {\n        a = find(a);\n        b = find(b);\n        if (a == b) return false; // already connected: this edge would close a cycle\n        if (size[a] < size[b]) {\n            int t = a;\n            a = b;\n            b = t;\n        }\n        parent[b] = a; // hang the smaller tree under the larger\n        size[a] += size[b];\n        count--;\n        return true;\n    }\n}",
+      "go": "type DSU struct {\n\tparent, size []int\n\tcount        int // number of components\n}\n\nfunc NewDSU(n int) *DSU {\n\td := &DSU{parent: make([]int, n), size: make([]int, n), count: n}\n\tfor i := range d.parent {\n\t\td.parent[i], d.size[i] = i, 1\n\t}\n\treturn d\n}\n\nfunc (d *DSU) Find(x int) int {\n\tfor d.parent[x] != x {\n\t\td.parent[x] = d.parent[d.parent[x]] // path halving\n\t\tx = d.parent[x]\n\t}\n\treturn x\n}\n\nfunc (d *DSU) Union(a, b int) bool {\n\ta, b = d.Find(a), d.Find(b)\n\tif a == b {\n\t\treturn false // already connected: this edge would close a cycle\n\t}\n\tif d.size[a] < d.size[b] {\n\t\ta, b = b, a\n\t}\n\td.parent[b] = a // hang the smaller tree under the larger\n\td.size[a] += d.size[b]\n\td.count--\n\treturn true\n}"
+    }
+  },
+  {
+    "slug": "graph-topological",
+    "pattern": {
+      "zh": "Kahn 算法：入度为 0 的先出队",
+      "en": "Kahn's algorithm: dequeue zero in-degree nodes"
+    },
+    "complexity": "O(V + E)",
+    "points": [
+      {
+        "zh": "入度为 0 的点没有未完成的前置依赖，可以先放；放下之后把它指向的点入度减一。",
+        "en": "A node with in-degree 0 has no unfinished prerequisites; place it, then decrement the in-degree of everything it points to."
+      },
+      {
+        "zh": "输出的点数少于 n，说明剩下的点都在环上：「能不能修完所有课」就是这样判断的。",
+        "en": "If fewer than n nodes come out, the rest sit on a cycle; that is the whole check for course-schedule problems."
+      },
+      {
+        "zh": "要求字典序最小的拓扑序时，把队列换成小根堆。",
+        "en": "For the lexicographically smallest order, replace the queue with a min-heap."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "边的方向读反（「a 依赖 b」应该建 b → a），整个顺序就倒过来了。",
+        "en": "Reading an edge backwards (\"a depends on b\" means b → a) reverses the whole order."
+      },
+      {
+        "zh": "只把一开始入度为 0 的点入队，后面减到 0 的点忘了入队。",
+        "en": "Enqueuing only the nodes that start at in-degree 0 and forgetting the ones that drop to 0 later."
+      },
+      {
+        "zh": "DFS 写拓扑排序时只有「访问过 / 没访问」两种状态是判不出环的，还需要「访问中」这第三种状态。",
+        "en": "A DFS topological sort with only visited/unvisited cannot see cycles; it needs a third \"in progress\" state."
+      }
+    ],
+    "code": {
+      "python": "from collections import deque\n\n\ndef topo_order(n: int, edges: list[tuple[int, int]]) -> list[int]:\n    \"\"\"Edge (u, v) means u comes before v. Returns [] if there is a cycle.\"\"\"\n    graph = [[] for _ in range(n)]\n    indeg = [0] * n\n    for u, v in edges:\n        graph[u].append(v)\n        indeg[v] += 1\n    q = deque(i for i in range(n) if indeg[i] == 0)\n    order = []\n    while q:\n        u = q.popleft()\n        order.append(u)\n        for v in graph[u]:\n            indeg[v] -= 1\n            if indeg[v] == 0:  # every prerequisite of v is placed\n                q.append(v)\n    return order if len(order) == n else []",
+      "cpp": "// Edge {u, v} means u comes before v. Returns {} if there is a cycle.\nvector<int> topoOrder(int n, const vector<pair<int, int>>& edges) {\n    vector<vector<int>> graph(n);\n    vector<int> indeg(n, 0);\n    for (auto [u, v] : edges) {\n        graph[u].push_back(v);\n        indeg[v]++;\n    }\n    queue<int> q;\n    for (int i = 0; i < n; i++)\n        if (indeg[i] == 0) q.push(i);\n    vector<int> order;\n    while (!q.empty()) {\n        int u = q.front();\n        q.pop();\n        order.push_back(u);\n        for (int v : graph[u])\n            if (--indeg[v] == 0) q.push(v);  // every prerequisite of v is placed\n    }\n    if ((int)order.size() < n) order.clear();\n    return order;\n}",
+      "java": "class Solution {\n    // Edge {u, v} means u comes before v. Returns an empty list if there is a cycle.\n    List<Integer> topoOrder(int n, int[][] edges) {\n        List<List<Integer>> graph = new ArrayList<>();\n        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());\n        int[] indeg = new int[n];\n        for (int[] e : edges) {\n            graph.get(e[0]).add(e[1]);\n            indeg[e[1]]++;\n        }\n        Deque<Integer> q = new ArrayDeque<>();\n        for (int i = 0; i < n; i++) if (indeg[i] == 0) q.offer(i);\n        List<Integer> order = new ArrayList<>();\n        while (!q.isEmpty()) {\n            int u = q.poll();\n            order.add(u);\n            for (int v : graph.get(u))\n                if (--indeg[v] == 0) q.offer(v); // every prerequisite of v is placed\n        }\n        return order.size() == n ? order : new ArrayList<>();\n    }\n}",
+      "go": "// topoOrder takes edges {u, v} meaning u comes before v; it returns nil if there is a cycle.\nfunc topoOrder(n int, edges [][2]int) []int {\n\tgraph := make([][]int, n)\n\tindeg := make([]int, n)\n\tfor _, e := range edges {\n\t\tgraph[e[0]] = append(graph[e[0]], e[1])\n\t\tindeg[e[1]]++\n\t}\n\tvar q []int\n\tfor i, d := range indeg {\n\t\tif d == 0 {\n\t\t\tq = append(q, i)\n\t\t}\n\t}\n\torder := make([]int, 0, n)\n\tfor len(q) > 0 {\n\t\tu := q[0]\n\t\tq = q[1:]\n\t\torder = append(order, u)\n\t\tfor _, v := range graph[u] {\n\t\t\tindeg[v]--\n\t\t\tif indeg[v] == 0 { // every prerequisite of v is placed\n\t\t\t\tq = append(q, v)\n\t\t\t}\n\t\t}\n\t}\n\tif len(order) < n {\n\t\treturn nil\n\t}\n\treturn order\n}"
+    }
+  },
+  {
+    "slug": "graph-shortest-path",
+    "pattern": {
+      "zh": "Dijkstra：堆 + 懒删除",
+      "en": "Dijkstra with a heap and lazy deletion"
+    },
+    "complexity": "O((V + E) log V)",
+    "points": [
+      {
+        "zh": "每次从堆里取出当前距离最小的点，它的距离就确定了；前提是所有边权非负。",
+        "en": "The node popped with the smallest tentative distance is final; this only holds when every edge weight is non-negative."
+      },
+      {
+        "zh": "不做 decrease-key：直接把新距离压进堆，弹出时发现比 dist 大就跳过（懒删除）。",
+        "en": "Skip decrease-key: push the new distance and, on pop, discard entries larger than dist (lazy deletion)."
+      },
+      {
+        "zh": "边权只有 0 和 1 时用双端队列 BFS；有负权用 Bellman-Ford；状态里带「已用次数」时，把 (点, 次数) 当成一个新结点。",
+        "en": "With 0/1 weights use deque BFS; with negative weights use Bellman-Ford; when the state carries extra data such as stops used, treat (node, count) as the node."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "不跳过过期的堆元素，同一个点会被反复松弛，稠密图上会超时。",
+        "en": "Not skipping stale heap entries relaxes the same node again and again and times out on dense graphs."
+      },
+      {
+        "zh": "距离累加超出 32 位整数；用 INT_MAX 当无穷大时，d + w 还会溢出成负数。",
+        "en": "Distances outgrow 32-bit integers, and INT_MAX used as infinity turns negative once w is added."
+      },
+      {
+        "zh": "有向图当成无向图建边（或者反过来），所有距离都会错。",
+        "en": "Building a directed graph as undirected (or the reverse) makes every distance wrong."
+      }
+    ],
+    "code": {
+      "python": "import heapq\n\n\ndef dijkstra(n: int, edges: list[tuple[int, int, int]], src: int) -> list[int]:\n    \"\"\"Directed edges (u, v, w) with w >= 0. Unreachable nodes get -1.\"\"\"\n    graph = [[] for _ in range(n)]\n    for u, v, w in edges:\n        graph[u].append((v, w))\n    dist = [float(\"inf\")] * n\n    dist[src] = 0\n    heap = [(0, src)]\n    while heap:\n        d, u = heapq.heappop(heap)\n        if d > dist[u]:\n            continue  # stale entry: u was settled with a shorter distance\n        for v, w in graph[u]:\n            if d + w < dist[v]:\n                dist[v] = d + w\n                heapq.heappush(heap, (dist[v], v))\n    return [d if d != float(\"inf\") else -1 for d in dist]",
+      "cpp": "// Directed edges {u, v, w} with w >= 0. Unreachable nodes get -1.\nvector<long long> dijkstra(int n, const vector<array<int, 3>>& edges, int src) {\n    vector<vector<pair<int, int>>> graph(n);\n    for (auto& [u, v, w] : edges) graph[u].push_back({v, w});\n    vector<long long> dist(n, LLONG_MAX);\n    priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<>> pq;  // min-heap\n    dist[src] = 0;\n    pq.push({0, src});\n    while (!pq.empty()) {\n        auto [d, u] = pq.top();\n        pq.pop();\n        if (d > dist[u]) continue;  // stale entry: u was settled with a shorter distance\n        for (auto [v, w] : graph[u])\n            if (d + w < dist[v]) {\n                dist[v] = d + w;\n                pq.push({dist[v], v});\n            }\n    }\n    for (auto& d : dist)\n        if (d == LLONG_MAX) d = -1;\n    return dist;\n}",
+      "java": "class Solution {\n    // Directed edges {u, v, w} with w >= 0. Unreachable nodes get -1.\n    long[] dijkstra(int n, int[][] edges, int src) {\n        List<List<int[]>> graph = new ArrayList<>();\n        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());\n        for (int[] e : edges) graph.get(e[0]).add(new int[] {e[1], e[2]});\n        long[] dist = new long[n];\n        Arrays.fill(dist, Long.MAX_VALUE);\n        PriorityQueue<long[]> pq = new PriorityQueue<>((a, b) -> Long.compare(a[0], b[0]));\n        dist[src] = 0;\n        pq.offer(new long[] {0, src});\n        while (!pq.isEmpty()) {\n            long[] top = pq.poll();\n            long d = top[0];\n            int u = (int) top[1];\n            if (d > dist[u]) continue; // stale entry: u was settled with a shorter distance\n            for (int[] e : graph.get(u))\n                if (d + e[1] < dist[e[0]]) {\n                    dist[e[0]] = d + e[1];\n                    pq.offer(new long[] {dist[e[0]], e[0]});\n                }\n        }\n        for (int i = 0; i < n; i++) if (dist[i] == Long.MAX_VALUE) dist[i] = -1;\n        return dist;\n    }\n}",
+      "go": "import \"container/heap\"\n\ntype item struct{ dist, node int }\ntype minHeap []item\n\nfunc (h minHeap) Len() int           { return len(h) }\nfunc (h minHeap) Less(i, j int) bool { return h[i].dist < h[j].dist }\nfunc (h minHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\nfunc (h *minHeap) Push(x any)        { *h = append(*h, x.(item)) }\nfunc (h *minHeap) Pop() any {\n\told := *h\n\tx := old[len(old)-1]\n\t*h = old[:len(old)-1]\n\treturn x\n}\n\n// dijkstra takes directed edges {u, v, w} with w >= 0; unreachable nodes get -1.\nfunc dijkstra(n int, edges [][3]int, src int) []int {\n\tgraph := make([][][2]int, n)\n\tfor _, e := range edges {\n\t\tgraph[e[0]] = append(graph[e[0]], [2]int{e[1], e[2]})\n\t}\n\tdist := make([]int, n)\n\tfor i := range dist {\n\t\tdist[i] = -1 // not reached yet\n\t}\n\tdist[src] = 0\n\th := &minHeap{{0, src}}\n\tfor h.Len() > 0 {\n\t\ttop := heap.Pop(h).(item)\n\t\tif top.dist > dist[top.node] {\n\t\t\tcontinue // stale entry: the node was settled with a shorter distance\n\t\t}\n\t\tfor _, e := range graph[top.node] {\n\t\t\tv, nd := e[0], top.dist+e[1]\n\t\t\tif dist[v] == -1 || nd < dist[v] {\n\t\t\t\tdist[v] = nd\n\t\t\t\theap.Push(h, item{nd, v})\n\t\t\t}\n\t\t}\n\t}\n\treturn dist\n}"
+    }
+  },
+  {
+    "slug": "graph-spanning-tree",
+    "pattern": {
+      "zh": "Kruskal：按边权排序 + 并查集",
+      "en": "Kruskal: sort the edges, join with union-find"
+    },
+    "complexity": "O(E log E)",
+    "points": [
+      {
+        "zh": "按边权从小到大看每条边：能连起两个不同连通块就选，否则跳过（选了会成环）。",
+        "en": "Go through the edges from lightest to heaviest; take an edge if it joins two different components, otherwise skip it (it would close a cycle)."
+      },
+      {
+        "zh": "选够 n-1 条边就是一棵生成树；最后不够 n-1 条，说明图不连通。",
+        "en": "n-1 chosen edges form a spanning tree; fewer than that means the graph is disconnected."
+      },
+      {
+        "zh": "点少边多的稠密图（比如坐标点两两相连）用 O(n²) 的 Prim，往往比给所有边排序更快。",
+        "en": "On dense graphs such as all pairs of points, the O(n²) form of Prim is often faster than sorting every edge."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "没检查是否连通，直接返回累加的边权。",
+        "en": "Returning the summed weight without checking that every node got connected."
+      },
+      {
+        "zh": "坐标点两两连边有 n²/2 条，内存和排序时间都可能超限。",
+        "en": "All pairs of points give n²/2 edges, which can exceed both the memory and the time limit for sorting."
+      },
+      {
+        "zh": "点的编号从 1 开始，并查集却只开了 n 个位置。",
+        "en": "Nodes numbered from 1 overflow a union-find sized n by one."
+      }
+    ],
+    "code": {
+      "python": "def mst_weight(n: int, edges: list[tuple[int, int, int]]) -> int:\n    \"\"\"Undirected edges (u, v, w). Weight of a minimum spanning tree, or -1 if disconnected.\"\"\"\n    parent = list(range(n))\n\n    def find(x: int) -> int:\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]\n            x = parent[x]\n        return x\n\n    total = used = 0\n    for u, v, w in sorted(edges, key=lambda e: e[2]):\n        ru, rv = find(u), find(v)\n        if ru != rv:  # the lightest edge joining two different components\n            parent[ru] = rv\n            total += w\n            used += 1\n    return total if used == n - 1 else -1",
+      "cpp": "// Undirected edges {u, v, w}. Weight of a minimum spanning tree, or -1 if disconnected.\nlong long mstWeight(int n, vector<array<int, 3>> edges) {\n    sort(edges.begin(), edges.end(), [](auto& a, auto& b) { return a[2] < b[2]; });\n    vector<int> parent(n);\n    iota(parent.begin(), parent.end(), 0);\n    auto find = [&](int x) {\n        while (parent[x] != x) x = parent[x] = parent[parent[x]];\n        return x;\n    };\n    long long total = 0;\n    int used = 0;\n    for (auto& [u, v, w] : edges) {\n        int ru = find(u), rv = find(v);\n        if (ru == rv) continue;  // would close a cycle\n        parent[ru] = rv;\n        total += w;\n        used++;\n    }\n    return used == n - 1 ? total : -1;\n}",
+      "java": "class Solution {\n    private int[] parent;\n\n    // Undirected edges {u, v, w}. Weight of a minimum spanning tree, or -1 if disconnected.\n    long mstWeight(int n, int[][] edges) {\n        Arrays.sort(edges, (a, b) -> Integer.compare(a[2], b[2]));\n        parent = new int[n];\n        for (int i = 0; i < n; i++) parent[i] = i;\n        long total = 0;\n        int used = 0;\n        for (int[] e : edges) {\n            int ru = find(e[0]), rv = find(e[1]);\n            if (ru == rv) continue; // would close a cycle\n            parent[ru] = rv;\n            total += e[2];\n            used++;\n        }\n        return used == n - 1 ? total : -1;\n    }\n\n    private int find(int x) {\n        while (parent[x] != x) x = parent[x] = parent[parent[x]];\n        return x;\n    }\n}",
+      "go": "import \"sort\"\n\n// mstWeight takes undirected edges {u, v, w} and returns the weight of a minimum\n// spanning tree, or -1 if the graph is disconnected.\nfunc mstWeight(n int, edges [][3]int) int {\n\tsort.Slice(edges, func(i, j int) bool { return edges[i][2] < edges[j][2] })\n\tparent := make([]int, n)\n\tfor i := range parent {\n\t\tparent[i] = i\n\t}\n\tfind := func(x int) int {\n\t\tfor parent[x] != x {\n\t\t\tparent[x] = parent[parent[x]]\n\t\t\tx = parent[x]\n\t\t}\n\t\treturn x\n\t}\n\ttotal, used := 0, 0\n\tfor _, e := range edges {\n\t\tru, rv := find(e[0]), find(e[1])\n\t\tif ru == rv {\n\t\t\tcontinue // would close a cycle\n\t\t}\n\t\tparent[ru] = rv\n\t\ttotal += e[2]\n\t\tused++\n\t}\n\tif used != n-1 {\n\t\treturn -1\n\t}\n\treturn total\n}"
+    }
+  },
+  {
+    "slug": "backtracking-enumeration",
+    "pattern": {
+      "zh": "选择、递归、撤销；同层跳过重复",
+      "en": "Choose, recurse, undo; skip duplicates on the same level"
+    },
+    "complexity": "O(n · 2^n)",
+    "points": [
+      {
+        "zh": "模板只有三步：做选择、递归、撤销选择；path 是整个搜索共用的一份。",
+        "en": "The template is three moves: choose, recurse, undo. path is a single buffer shared by the whole search."
+      },
+      {
+        "zh": "先排序，再用 i > start && nums[i] == nums[i-1] 跳过：同一层不重复选相同的值，更深的层可以。",
+        "en": "Sort first, then skip with i > start && nums[i] == nums[i-1]: a value is not reused on the same level, but deeper levels may use it."
+      },
+      {
+        "zh": "组合从 start 往后选，避免 {1,2} 和 {2,1} 同时出现；排列每次从头选，用 used 数组标记。",
+        "en": "Combinations pick from start onward so {1,2} and {2,1} don't both appear; permutations scan from the beginning with a used array."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "结果里直接存 path 的引用，回溯结束后所有结果都变成同一个空列表。",
+        "en": "Storing a reference to path leaves every result as the same empty list once the search finishes."
+      },
+      {
+        "zh": "把 i > start 写成 i > 0，更深层里合法的重复值也会被跳过。",
+        "en": "Writing i > 0 instead of i > start also skips legitimate repeats on deeper levels."
+      },
+      {
+        "zh": "忘了先排序，相同的值不相邻，去重判断就失效了。",
+        "en": "Forgetting to sort leaves equal values apart, and the duplicate check does nothing."
+      }
+    ],
+    "code": {
+      "python": "def subsets_with_dup(nums: list[int]) -> list[list[int]]:\n    nums = sorted(nums)  # equal values become neighbours\n    res, path = [], []\n\n    def dfs(start: int) -> None:\n        res.append(path[:])  # copy: path keeps changing\n        for i in range(start, len(nums)):\n            if i > start and nums[i] == nums[i - 1]:\n                continue  # this value was already tried at this level\n            path.append(nums[i])\n            dfs(i + 1)\n            path.pop()  # undo the choice\n\n    dfs(0)\n    return res",
+      "cpp": "vector<vector<int>> subsetsWithDup(vector<int> nums) {\n    sort(nums.begin(), nums.end());  // equal values become neighbours\n    vector<vector<int>> res;\n    vector<int> path;\n    function<void(int)> dfs = [&](int start) {\n        res.push_back(path);  // copies path\n        for (int i = start; i < (int)nums.size(); i++) {\n            if (i > start && nums[i] == nums[i - 1]) continue;  // already tried at this level\n            path.push_back(nums[i]);\n            dfs(i + 1);\n            path.pop_back();  // undo the choice\n        }\n    };\n    dfs(0);\n    return res;\n}",
+      "java": "class Solution {\n    private final List<List<Integer>> res = new ArrayList<>();\n    private final List<Integer> path = new ArrayList<>();\n    private int[] nums;\n\n    List<List<Integer>> subsetsWithDup(int[] nums) {\n        this.nums = nums.clone();\n        Arrays.sort(this.nums); // equal values become neighbours\n        res.clear();\n        dfs(0);\n        return res;\n    }\n\n    private void dfs(int start) {\n        res.add(new ArrayList<>(path)); // copy: path keeps changing\n        for (int i = start; i < nums.length; i++) {\n            if (i > start && nums[i] == nums[i - 1]) continue; // already tried at this level\n            path.add(nums[i]);\n            dfs(i + 1);\n            path.remove(path.size() - 1); // undo the choice\n        }\n    }\n}",
+      "go": "import \"sort\"\n\nfunc subsetsWithDup(nums []int) [][]int {\n\tnums = append([]int(nil), nums...)\n\tsort.Ints(nums) // equal values become neighbours\n\tvar res [][]int\n\tvar path []int\n\tvar dfs func(start int)\n\tdfs = func(start int) {\n\t\tres = append(res, append([]int(nil), path...)) // copy: path keeps changing\n\t\tfor i := start; i < len(nums); i++ {\n\t\t\tif i > start && nums[i] == nums[i-1] {\n\t\t\t\tcontinue // this value was already tried at this level\n\t\t\t}\n\t\t\tpath = append(path, nums[i])\n\t\t\tdfs(i + 1)\n\t\t\tpath = path[:len(path)-1] // undo the choice\n\t\t}\n\t}\n\tdfs(0)\n\treturn res\n}"
+    }
+  },
+  {
+    "slug": "backtracking-strings",
+    "pattern": {
+      "zh": "按切分点回溯 + 回文预处理",
+      "en": "Backtrack over cut points with a palindrome table"
+    },
+    "complexity": "O(n · 2^n)",
+    "points": [
+      {
+        "zh": "回溯的每一层决定「下一段切到哪里」，start 走到 n 就得到一种完整的切法。",
+        "en": "Each level decides where the next piece ends; when start reaches n you have one complete split."
+      },
+      {
+        "zh": "先用 O(n²) 的区间 DP 算出每个子串是不是回文，回溯里的判断就是 O(1)。",
+        "en": "Precompute an O(n²) table of which substrings are palindromes so each check inside the search is O(1)."
+      },
+      {
+        "zh": "复原 IP 地址、单词拆分也是同一个框架，只是「这一段是否合法」的判断不同。",
+        "en": "Restoring IP addresses and word break use the same frame; only the \"is this piece valid\" test changes."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "在回溯里每次都重新用双指针判断回文，重复计算会让常数大很多。",
+        "en": "Re-checking palindromes with two pointers inside the search repeats work and inflates the constant."
+      },
+      {
+        "zh": "只要求方案数或最少切几刀时，不要枚举，改用 DP。",
+        "en": "If you only need the number of ways or the fewest cuts, don't enumerate; use DP."
+      },
+      {
+        "zh": "子串下标是左闭右开还是左闭右闭要统一；s[start:end+1] 和 substring(start, end+1) 很容易差一位。",
+        "en": "Keep one convention for substring bounds; s[start:end+1] and substring(start, end+1) are easy to get off by one."
+      }
+    ],
+    "code": {
+      "python": "def partition(s: str) -> list[list[str]]:\n    \"\"\"Every way to cut s into palindromes.\"\"\"\n    n = len(s)\n    pal = [[False] * n for _ in range(n)]  # pal[i][j]: s[i..j] is a palindrome\n    for i in range(n - 1, -1, -1):\n        for j in range(i, n):\n            pal[i][j] = s[i] == s[j] and (j - i < 2 or pal[i + 1][j - 1])\n    res, path = [], []\n\n    def dfs(start: int) -> None:\n        if start == n:\n            res.append(path[:])\n            return\n        for end in range(start, n):  # the next piece is s[start..end]\n            if pal[start][end]:\n                path.append(s[start : end + 1])\n                dfs(end + 1)\n                path.pop()\n\n    dfs(0)\n    return res",
+      "cpp": "// Every way to cut s into palindromes.\nvector<vector<string>> partition(const string& s) {\n    int n = s.size();\n    vector<vector<bool>> pal(n, vector<bool>(n, false));  // pal[i][j]: s[i..j] is a palindrome\n    for (int i = n - 1; i >= 0; i--)\n        for (int j = i; j < n; j++) pal[i][j] = s[i] == s[j] && (j - i < 2 || pal[i + 1][j - 1]);\n    vector<vector<string>> res;\n    vector<string> path;\n    function<void(int)> dfs = [&](int start) {\n        if (start == n) {\n            res.push_back(path);\n            return;\n        }\n        for (int end = start; end < n; end++)  // the next piece is s[start..end]\n            if (pal[start][end]) {\n                path.push_back(s.substr(start, end - start + 1));\n                dfs(end + 1);\n                path.pop_back();\n            }\n    };\n    dfs(0);\n    return res;\n}",
+      "java": "class Solution {\n    private final List<List<String>> res = new ArrayList<>();\n    private final List<String> path = new ArrayList<>();\n    private boolean[][] pal; // pal[i][j]: s[i..j] is a palindrome\n    private String s;\n\n    // Every way to cut s into palindromes.\n    List<List<String>> partition(String s) {\n        int n = s.length();\n        this.s = s;\n        pal = new boolean[n][n];\n        for (int i = n - 1; i >= 0; i--)\n            for (int j = i; j < n; j++)\n                pal[i][j] = s.charAt(i) == s.charAt(j) && (j - i < 2 || pal[i + 1][j - 1]);\n        res.clear();\n        dfs(0);\n        return res;\n    }\n\n    private void dfs(int start) {\n        if (start == s.length()) {\n            res.add(new ArrayList<>(path));\n            return;\n        }\n        for (int end = start; end < s.length(); end++) // the next piece is s[start..end]\n            if (pal[start][end]) {\n                path.add(s.substring(start, end + 1));\n                dfs(end + 1);\n                path.remove(path.size() - 1);\n            }\n    }\n}",
+      "go": "// partition returns every way to cut s into palindromes.\nfunc partition(s string) [][]string {\n\tn := len(s)\n\tpal := make([][]bool, n) // pal[i][j]: s[i..j] is a palindrome\n\tfor i := range pal {\n\t\tpal[i] = make([]bool, n)\n\t}\n\tfor i := n - 1; i >= 0; i-- {\n\t\tfor j := i; j < n; j++ {\n\t\t\tpal[i][j] = s[i] == s[j] && (j-i < 2 || pal[i+1][j-1])\n\t\t}\n\t}\n\tvar res [][]string\n\tvar path []string\n\tvar dfs func(start int)\n\tdfs = func(start int) {\n\t\tif start == n {\n\t\t\tres = append(res, append([]string(nil), path...))\n\t\t\treturn\n\t\t}\n\t\tfor end := start; end < n; end++ { // the next piece is s[start..end]\n\t\t\tif pal[start][end] {\n\t\t\t\tpath = append(path, s[start:end+1])\n\t\t\t\tdfs(end + 1)\n\t\t\t\tpath = path[:len(path)-1]\n\t\t\t}\n\t\t}\n\t}\n\tdfs(0)\n\treturn res\n}"
+    }
+  },
+  {
+    "slug": "backtracking-constraints",
+    "pattern": {
+      "zh": "N 皇后：按列和两条对角线剪枝",
+      "en": "N-Queens: prune by column and both diagonals"
+    },
+    "complexity": "O(n!) worst case",
+    "points": [
+      {
+        "zh": "每行只放一个皇后，搜索树只在列上分叉；列、主对角线 r-c、副对角线 r+c 各用一个数组标记。",
+        "en": "Place one queen per row so the search branches only on columns; mark columns, diagonals (r-c) and anti-diagonals (r+c) in three arrays."
+      },
+      {
+        "zh": "剪枝越早越好：递归之前就判断冲突，而不是放满整个棋盘再检查。",
+        "en": "Prune as early as possible: test for conflicts before recursing, not after the board is full."
+      },
+      {
+        "zh": "数独、组合总和这类题先排序，在「剩下的值已经不可能满足」时用 break，比 continue 省得多。",
+        "en": "For sudoku and combination-sum style problems, sort first and break as soon as the remaining values cannot work; break saves far more than continue."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "主对角线下标 r-c 会是负数，要加上 n-1 的偏移。",
+        "en": "The diagonal index r-c can be negative; offset it by n-1."
+      },
+      {
+        "zh": "回溯返回前忘了把标记改回去，后面的分支全被误剪。",
+        "en": "Forgetting to clear the marks before returning wrongly prunes every later branch."
+      },
+      {
+        "zh": "需要输出棋盘时，用可变的字符数组逐格修改，最后再转字符串，不要每一步都复制整盘。",
+        "en": "When printing boards, edit a mutable character buffer and convert it once at the end instead of copying the whole board at every step."
+      }
+    ],
+    "code": {
+      "python": "def total_queens(n: int) -> int:\n    \"\"\"Number of ways to place n non-attacking queens on an n x n board.\"\"\"\n    cols, diag, anti = [False] * n, [False] * (2 * n - 1), [False] * (2 * n - 1)\n\n    def place(r: int) -> int:\n        if r == n:\n            return 1\n        count = 0\n        for c in range(n):\n            d = r - c + n - 1  # shift r - c into 0..2n-2\n            if cols[c] or diag[d] or anti[r + c]:\n                continue  # attacked: prune this branch\n            cols[c] = diag[d] = anti[r + c] = True\n            count += place(r + 1)\n            cols[c] = diag[d] = anti[r + c] = False  # undo\n        return count\n\n    return place(0)",
+      "cpp": "// Number of ways to place n non-attacking queens on an n x n board.\nint totalQueens(int n) {\n    vector<bool> cols(n), diag(2 * n - 1), anti(2 * n - 1);\n    function<int(int)> place = [&](int r) {\n        if (r == n) return 1;\n        int count = 0;\n        for (int c = 0; c < n; c++) {\n            int d = r - c + n - 1;  // shift r - c into 0..2n-2\n            if (cols[c] || diag[d] || anti[r + c]) continue;  // attacked: prune this branch\n            cols[c] = diag[d] = anti[r + c] = true;\n            count += place(r + 1);\n            cols[c] = diag[d] = anti[r + c] = false;  // undo\n        }\n        return count;\n    };\n    return place(0);\n}",
+      "java": "class Solution {\n    private boolean[] cols, diag, anti;\n    private int n;\n\n    // Number of ways to place n non-attacking queens on an n x n board.\n    int totalQueens(int n) {\n        this.n = n;\n        cols = new boolean[n];\n        diag = new boolean[2 * n - 1];\n        anti = new boolean[2 * n - 1];\n        return place(0);\n    }\n\n    private int place(int r) {\n        if (r == n) return 1;\n        int count = 0;\n        for (int c = 0; c < n; c++) {\n            int d = r - c + n - 1; // shift r - c into 0..2n-2\n            if (cols[c] || diag[d] || anti[r + c]) continue; // attacked: prune this branch\n            cols[c] = diag[d] = anti[r + c] = true;\n            count += place(r + 1);\n            cols[c] = diag[d] = anti[r + c] = false; // undo\n        }\n        return count;\n    }\n}",
+      "go": "// totalQueens returns the number of ways to place n non-attacking queens on an n x n board.\nfunc totalQueens(n int) int {\n\tcols, diag, anti := make([]bool, n), make([]bool, 2*n-1), make([]bool, 2*n-1)\n\tvar place func(r int) int\n\tplace = func(r int) int {\n\t\tif r == n {\n\t\t\treturn 1\n\t\t}\n\t\tcount := 0\n\t\tfor c := 0; c < n; c++ {\n\t\t\td := r - c + n - 1 // shift r - c into 0..2n-2\n\t\t\tif cols[c] || diag[d] || anti[r+c] {\n\t\t\t\tcontinue // attacked: prune this branch\n\t\t\t}\n\t\t\tcols[c], diag[d], anti[r+c] = true, true, true\n\t\t\tcount += place(r + 1)\n\t\t\tcols[c], diag[d], anti[r+c] = false, false, false // undo\n\t\t}\n\t\treturn count\n\t}\n\treturn place(0)\n}"
+    }
+  },
+  {
+    "slug": "dp-foundations",
+    "pattern": {
+      "zh": "一维 DP + 滚动变量",
+      "en": "1-D DP with rolling variables"
+    },
+    "complexity": "O(n) time · O(1) space",
+    "points": [
+      {
+        "zh": "先用一句话定义状态，比如 dp[i] = 只看前 i 个元素时的最优值；状态说清楚了，转移通常就出来了。",
+        "en": "Define the state in one sentence, such as dp[i] = the best answer using the first i elements; once that is precise, the transition usually follows."
+      },
+      {
+        "zh": "转移只看「最后一步做了什么」：第 i 个选还是不选，最后一跳是 1 步还是 2 步。",
+        "en": "Derive the transition from the last decision: take element i or not, last jump of 1 step or 2."
+      },
+      {
+        "zh": "dp[i] 只依赖前一两项时，用两个变量滚动，空间从 O(n) 降到 O(1)。",
+        "en": "When dp[i] depends only on the previous one or two values, roll two variables and cut space from O(n) to O(1)."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "dp 和输入的下标错位：dp 多开一位时 dp[0] 表示「什么都没选」，答案在 dp[n]。",
+        "en": "dp and input indexes drift apart: with one extra slot dp[0] means \"nothing chosen yet\" and the answer is dp[n]."
+      },
+      {
+        "zh": "滚动更新时先覆盖了 prev1 再拿它算新值，用到的已经是新数据了。",
+        "en": "When rolling, overwriting prev1 before computing the new value means you read the updated value by mistake."
+      },
+      {
+        "zh": "方案数很快会超出 64 位；题目要求取模时，每一步都要取模。",
+        "en": "Counts quickly outgrow 64 bits; when the problem asks for a modulus, apply it at every step."
+      }
+    ],
+    "code": {
+      "python": "def rob(nums: list[int]) -> int:\n    \"\"\"Largest sum of elements with no two adjacent.\"\"\"\n    prev2 = prev1 = 0  # best totals up to i-2 and up to i-1\n    for x in nums:\n        prev2, prev1 = prev1, max(prev1, prev2 + x)  # skip x, or take it after i-2\n    return prev1",
+      "cpp": "// Largest sum of elements with no two adjacent.\nlong long rob(const vector<int>& nums) {\n    long long prev2 = 0, prev1 = 0;  // best totals up to i-2 and up to i-1\n    for (int x : nums) {\n        long long cur = max(prev1, prev2 + x);  // skip x, or take it after i-2\n        prev2 = prev1;\n        prev1 = cur;\n    }\n    return prev1;\n}",
+      "java": "class Solution {\n    // Largest sum of elements with no two adjacent.\n    long rob(int[] nums) {\n        long prev2 = 0, prev1 = 0; // best totals up to i-2 and up to i-1\n        for (int x : nums) {\n            long cur = Math.max(prev1, prev2 + x); // skip x, or take it after i-2\n            prev2 = prev1;\n            prev1 = cur;\n        }\n        return prev1;\n    }\n}",
+      "go": "// rob returns the largest sum of elements with no two adjacent.\nfunc rob(nums []int) int {\n\tprev2, prev1 := 0, 0 // best totals up to i-2 and up to i-1\n\tfor _, x := range nums {\n\t\tprev2, prev1 = prev1, max(prev1, prev2+x) // skip x, or take it after i-2\n\t}\n\treturn prev1\n}"
+    }
+  },
+  {
+    "slug": "dp-grid",
+    "pattern": {
+      "zh": "网格 DP 压成一行",
+      "en": "Grid DP compressed to one row"
+    },
+    "complexity": "O(rows × cols) time · O(cols) space",
+    "points": [
+      {
+        "zh": "dp[r][c] 只依赖上方和左方，按行从左到右填，一行数组就够：更新前 dp[c] 是上方，dp[c-1] 是左方。",
+        "en": "dp[r][c] depends only on the cells above and to the left, so fill row by row, left to right, in one array: before the update dp[c] is \"above\" and dp[c-1] is \"left\"."
+      },
+      {
+        "zh": "第一行、第一列只有一个来源，要么单独处理，要么用无穷大哨兵统一写法。",
+        "en": "The first row and column have a single source; handle them separately or use an infinity sentinel."
+      },
+      {
+        "zh": "路径计数就把 min 换成加法；有障碍的格子直接置 0。",
+        "en": "To count paths, replace min with addition and set obstacle cells to 0."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "哨兵用 INT_MAX 再加上格子值会溢出，要保证只在有限值上做加法。",
+        "en": "Adding a cell value to an INT_MAX sentinel overflows; only ever add to finite values."
+      },
+      {
+        "zh": "允许往四个方向走时没有填表顺序，DP 不成立，要用 BFS 或 Dijkstra。",
+        "en": "If moves can go in all four directions there is no fill order and DP fails; use BFS or Dijkstra."
+      },
+      {
+        "zh": "压成一行之后，如果转移还需要左上角的值，要在它被覆盖前先存到变量里。",
+        "en": "After compressing to one row, save the top-left value in a variable before it is overwritten if the transition needs it."
+      }
+    ],
+    "code": {
+      "python": "def min_path_sum(grid: list[list[int]]) -> int:\n    \"\"\"Cheapest path from top-left to bottom-right moving only right or down.\"\"\"\n    cols = len(grid[0])\n    dp = [float(\"inf\")] * cols  # before row r is filled, dp[c] holds row r-1\n    dp[0] = 0\n    for row in grid:\n        for c in range(cols):\n            left = dp[c - 1] if c else float(\"inf\")\n            dp[c] = min(dp[c], left) + row[c]  # from above (old dp[c]) or the left (new dp[c-1])\n    return dp[-1]",
+      "cpp": "// Cheapest path from top-left to bottom-right moving only right or down.\nint minPathSum(const vector<vector<int>>& grid) {\n    int cols = grid[0].size();\n    vector<int> dp(cols, INT_MAX);  // before row r is filled, dp[c] holds row r-1\n    dp[0] = 0;\n    for (auto& row : grid)\n        for (int c = 0; c < cols; c++) {\n            int best = c ? min(dp[c], dp[c - 1]) : dp[c];  // from above or from the left\n            dp[c] = best + row[c];  // best is always finite here\n        }\n    return dp[cols - 1];\n}",
+      "java": "class Solution {\n    // Cheapest path from top-left to bottom-right moving only right or down.\n    int minPathSum(int[][] grid) {\n        int cols = grid[0].length;\n        int[] dp = new int[cols]; // before row r is filled, dp[c] holds row r-1\n        Arrays.fill(dp, Integer.MAX_VALUE);\n        dp[0] = 0;\n        for (int[] row : grid)\n            for (int c = 0; c < cols; c++) {\n                int best = c > 0 ? Math.min(dp[c], dp[c - 1]) : dp[c]; // from above or the left\n                dp[c] = best + row[c]; // best is always finite here\n            }\n        return dp[cols - 1];\n    }\n}",
+      "go": "import \"math\"\n\n// minPathSum returns the cheapest path from top-left to bottom-right moving only right or down.\nfunc minPathSum(grid [][]int) int {\n\tcols := len(grid[0])\n\tdp := make([]int, cols) // before row r is filled, dp[c] holds row r-1\n\tfor c := 1; c < cols; c++ {\n\t\tdp[c] = math.MaxInt\n\t}\n\tfor _, row := range grid {\n\t\tfor c := range row {\n\t\t\tbest := dp[c]\n\t\t\tif c > 0 {\n\t\t\t\tbest = min(best, dp[c-1]) // from above or from the left\n\t\t\t}\n\t\t\tdp[c] = best + row[c] // best is always finite here\n\t\t}\n\t}\n\treturn dp[cols-1]\n}"
+    }
+  },
+  {
+    "slug": "dp-knapsack",
+    "pattern": {
+      "zh": "0/1 背包倒序，完全背包正序",
+      "en": "0/1 knapsack backwards, unbounded forwards"
+    },
+    "complexity": "O(n × target)",
+    "points": [
+      {
+        "zh": "0/1 背包倒序遍历容量，保证 dp[s-x] 还是「没用过 x」的旧值；完全背包正序遍历，允许同一件物品重复使用。",
+        "en": "The 0/1 knapsack loops capacity downwards so dp[s-x] is still the value without x; the unbounded version loops upwards so an item can be reused."
+      },
+      {
+        "zh": "物品在外层、容量在内层，数的是组合（不计顺序）；容量在外层、物品在内层，数的是排列。",
+        "en": "Items outside and capacity inside counts combinations (order ignored); capacity outside and items inside counts permutations."
+      },
+      {
+        "zh": "很多题要先转化成背包：「分成两个和相等的子集」= 能否凑出 sum/2；「目标和」= 凑出 (sum+target)/2。",
+        "en": "Many problems reduce to a knapsack: equal-sum partition asks whether sum/2 is reachable, and target sum asks for (sum+target)/2."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "0/1 背包写成正序，同一件物品会被用很多次。",
+        "en": "Looping a 0/1 knapsack forwards uses the same item many times."
+      },
+      {
+        "zh": "计数问题 dp[0] = 1（什么都不选也是一种方案）；求最值问题 dp[0] = 0，其余初始化为无穷。",
+        "en": "For counting, dp[0] = 1 (choosing nothing is one way); for min/max, dp[0] = 0 and everything else starts at infinity."
+      },
+      {
+        "zh": "转化成 (sum+target)/2 之前没检查奇偶性和正负，会得到错误的下标。",
+        "en": "Reducing to (sum+target)/2 without checking parity and sign gives a bad index."
+      }
+    ],
+    "code": {
+      "python": "def count_subsets(nums: list[int], target: int) -> int:\n    \"\"\"Ways to pick a subset (each item at most once) that sums to target.\"\"\"\n    dp = [1] + [0] * target  # dp[s]: ways to reach sum s\n    for x in nums:\n        for s in range(target, x - 1, -1):  # backwards: x is used at most once\n            dp[s] += dp[s - x]\n    return dp[target]\n\n\ndef count_combinations(coins: list[int], amount: int) -> int:\n    \"\"\"Ways to make amount with unlimited coins, order ignored.\"\"\"\n    dp = [1] + [0] * amount\n    for coin in coins:  # coins outside: each multiset is counted once\n        for s in range(coin, amount + 1):  # forwards: a coin may be reused\n            dp[s] += dp[s - coin]\n    return dp[amount]",
+      "cpp": "// Ways to pick a subset (each item at most once) that sums to target.\nlong long countSubsets(const vector<int>& nums, int target) {\n    vector<long long> dp(target + 1, 0);  // dp[s]: ways to reach sum s\n    dp[0] = 1;\n    for (int x : nums)\n        for (int s = target; s >= x; s--) dp[s] += dp[s - x];  // backwards: x used at most once\n    return dp[target];\n}\n\n// Ways to make amount with unlimited coins, order ignored.\nlong long countCombinations(const vector<int>& coins, int amount) {\n    vector<long long> dp(amount + 1, 0);\n    dp[0] = 1;\n    for (int coin : coins)  // coins outside: each multiset is counted once\n        for (int s = coin; s <= amount; s++) dp[s] += dp[s - coin];  // forwards: reuse allowed\n    return dp[amount];\n}",
+      "java": "class Solution {\n    // Ways to pick a subset (each item at most once) that sums to target.\n    long countSubsets(int[] nums, int target) {\n        long[] dp = new long[target + 1]; // dp[s]: ways to reach sum s\n        dp[0] = 1;\n        for (int x : nums)\n            for (int s = target; s >= x; s--) dp[s] += dp[s - x]; // backwards: x used at most once\n        return dp[target];\n    }\n\n    // Ways to make amount with unlimited coins, order ignored.\n    long countCombinations(int[] coins, int amount) {\n        long[] dp = new long[amount + 1];\n        dp[0] = 1;\n        for (int coin : coins) // coins outside: each multiset is counted once\n            for (int s = coin; s <= amount; s++) dp[s] += dp[s - coin]; // forwards: reuse allowed\n        return dp[amount];\n    }\n}",
+      "go": "// countSubsets returns the ways to pick a subset (each item at most once) that sums to target.\nfunc countSubsets(nums []int, target int) int {\n\tdp := make([]int, target+1) // dp[s]: ways to reach sum s\n\tdp[0] = 1\n\tfor _, x := range nums {\n\t\tfor s := target; s >= x; s-- { // backwards: x is used at most once\n\t\t\tdp[s] += dp[s-x]\n\t\t}\n\t}\n\treturn dp[target]\n}\n\n// countCombinations returns the ways to make amount with unlimited coins, order ignored.\nfunc countCombinations(coins []int, amount int) int {\n\tdp := make([]int, amount+1)\n\tdp[0] = 1\n\tfor _, coin := range coins { // coins outside: each multiset is counted once\n\t\tfor s := coin; s <= amount; s++ { // forwards: a coin may be reused\n\t\t\tdp[s] += dp[s-coin]\n\t\t}\n\t}\n\treturn dp[amount]\n}"
+    }
+  },
+  {
+    "slug": "dp-subsequence",
+    "pattern": {
+      "zh": "LIS：tails 数组 + 二分",
+      "en": "LIS with a tails array and binary search"
+    },
+    "complexity": "O(n log n)",
+    "points": [
+      {
+        "zh": "tails[k] 是长度为 k+1 的递增子序列可能的最小结尾；它本身是递增的，所以可以二分。",
+        "en": "tails[k] is the smallest possible tail of an increasing subsequence of length k+1; it is itself sorted, so you can binary search it."
+      },
+      {
+        "zh": "严格递增用 lower_bound（第一个 ≥ x），非递减用 upper_bound（第一个 > x）。",
+        "en": "Strictly increasing uses lower_bound (first ≥ x); non-decreasing uses upper_bound (first > x)."
+      },
+      {
+        "zh": "二维的「信封嵌套」先按宽升序、宽相同时按高降序排序，再对高做 LIS。",
+        "en": "For 2-D nesting such as envelopes, sort by width ascending and by height descending on ties, then run LIS on the heights."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "tails 数组不是真实存在的最长子序列，只有长度是对的；要输出方案得另外记录前驱。",
+        "en": "tails is not an actual longest subsequence, only its length is right; record predecessors if you must output one."
+      },
+      {
+        "zh": "严格和非严格用错了二分函数，重复元素多的用例会差 1 甚至更多。",
+        "en": "Using the wrong bound for strict versus non-strict is off by one or more on inputs with many duplicates."
+      },
+      {
+        "zh": "要求「最长子序列有几个」时，O(n log n) 写法不够，要回到 O(n²) 的 dp 加计数数组。",
+        "en": "Counting how many longest subsequences there are needs the O(n²) dp with a count array."
+      }
+    ],
+    "code": {
+      "python": "from bisect import bisect_left\n\n\ndef lis_length(nums: list[int]) -> int:\n    \"\"\"Length of the longest strictly increasing subsequence.\"\"\"\n    tails = []  # tails[k]: smallest tail of an increasing subsequence of length k+1\n    for x in nums:\n        i = bisect_left(tails, x)  # bisect_right for non-decreasing\n        if i == len(tails):\n            tails.append(x)\n        else:\n            tails[i] = x\n    return len(tails)",
+      "cpp": "// Length of the longest strictly increasing subsequence.\nint lisLength(const vector<int>& nums) {\n    vector<int> tails;  // tails[k]: smallest tail of an increasing subsequence of length k+1\n    for (int x : nums) {\n        auto it = lower_bound(tails.begin(), tails.end(), x);  // upper_bound for non-decreasing\n        if (it == tails.end()) tails.push_back(x);\n        else *it = x;\n    }\n    return tails.size();\n}",
+      "java": "class Solution {\n    // Length of the longest strictly increasing subsequence.\n    int lisLength(int[] nums) {\n        int[] tails = new int[nums.length]; // tails[k]: smallest tail of length k+1\n        int len = 0;\n        for (int x : nums) {\n            int lo = 0, hi = len; // first index with tails[i] >= x (use > for non-decreasing)\n            while (lo < hi) {\n                int mid = (lo + hi) >>> 1;\n                if (tails[mid] >= x) hi = mid;\n                else lo = mid + 1;\n            }\n            tails[lo] = x;\n            if (lo == len) len++;\n        }\n        return len;\n    }\n}",
+      "go": "import \"sort\"\n\n// lisLength returns the length of the longest strictly increasing subsequence.\nfunc lisLength(nums []int) int {\n\tvar tails []int // tails[k]: smallest tail of an increasing subsequence of length k+1\n\tfor _, x := range nums {\n\t\ti := sort.SearchInts(tails, x) // first index with tails[i] >= x\n\t\tif i == len(tails) {\n\t\t\ttails = append(tails, x)\n\t\t} else {\n\t\t\ttails[i] = x\n\t\t}\n\t}\n\treturn len(tails)\n}"
+    }
+  },
+  {
+    "slug": "dp-string",
+    "pattern": {
+      "zh": "双串 DP：dp[i][j] 看两个前缀",
+      "en": "Two-string DP over prefixes"
+    },
+    "complexity": "O(m × n)",
+    "points": [
+      {
+        "zh": "dp[i][j] 定义在前缀上：a 的前 i 个字符和 b 的前 j 个字符；多开一行一列表示空串。",
+        "en": "dp[i][j] is defined on prefixes, the first i characters of a and the first j of b, with an extra row and column for the empty string."
+      },
+      {
+        "zh": "末尾字符相等就继承 dp[i-1][j-1]；不相等时，替换、删除、插入分别对应左上、上、左三个格子。",
+        "en": "If the last characters match, inherit dp[i-1][j-1]; otherwise replace, delete and insert map to the diagonal, upper and left cells."
+      },
+      {
+        "zh": "最长公共子序列、不同的子序列、通配符匹配都是这张表，只是转移不同。",
+        "en": "Longest common subsequence, distinct subsequences and wildcard matching all use this table with different transitions."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "dp 的下标是前缀长度，对应的字符是 a[i-1]；写成 a[i] 会错一位。",
+        "en": "dp indexes are prefix lengths, so the matching character is a[i-1]; writing a[i] is off by one."
+      },
+      {
+        "zh": "忘了初始化第 0 行和第 0 列（变成空串需要删 i 次，从空串变来需要插 j 次）。",
+        "en": "Forgetting row 0 and column 0: reaching the empty string takes i deletions, building from it takes j insertions."
+      },
+      {
+        "zh": "压成一行时，左上角的值会被本行覆盖，需要额外一个变量保存。",
+        "en": "In a one-row version the diagonal value is overwritten by the current row; keep it in a separate variable."
+      }
+    ],
+    "code": {
+      "python": "def edit_distance(a: str, b: str) -> int:\n    m, n = len(a), len(b)\n    # dp[i][j]: edits to turn a[:i] into b[:j]; row 0 and column 0 are the empty prefixes\n    dp = [[0] * (n + 1) for _ in range(m + 1)]\n    for i in range(m + 1):\n        dp[i][0] = i\n    for j in range(n + 1):\n        dp[0][j] = j\n    for i in range(1, m + 1):\n        for j in range(1, n + 1):\n            if a[i - 1] == b[j - 1]:\n                dp[i][j] = dp[i - 1][j - 1]\n            else:  # replace, delete from a, insert into a\n                dp[i][j] = 1 + min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1])\n    return dp[m][n]",
+      "cpp": "int editDistance(const string& a, const string& b) {\n    int m = a.size(), n = b.size();\n    // dp[i][j]: edits to turn a[0, i) into b[0, j); row 0 and column 0 are the empty prefixes\n    vector<vector<int>> dp(m + 1, vector<int>(n + 1));\n    for (int i = 0; i <= m; i++) dp[i][0] = i;\n    for (int j = 0; j <= n; j++) dp[0][j] = j;\n    for (int i = 1; i <= m; i++)\n        for (int j = 1; j <= n; j++)\n            dp[i][j] = a[i - 1] == b[j - 1]\n                           ? dp[i - 1][j - 1]\n                           : 1 + min({dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1]});  // replace, delete, insert\n    return dp[m][n];\n}",
+      "java": "class Solution {\n    int editDistance(String a, String b) {\n        int m = a.length(), n = b.length();\n        // dp[i][j]: edits to turn a[0, i) into b[0, j); row 0 and column 0 are the empty prefixes\n        int[][] dp = new int[m + 1][n + 1];\n        for (int i = 0; i <= m; i++) dp[i][0] = i;\n        for (int j = 0; j <= n; j++) dp[0][j] = j;\n        for (int i = 1; i <= m; i++)\n            for (int j = 1; j <= n; j++)\n                if (a.charAt(i - 1) == b.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];\n                else // replace, delete, insert\n                    dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));\n        return dp[m][n];\n    }\n}",
+      "go": "func editDistance(a, b string) int {\n\tm, n := len(a), len(b)\n\t// dp[i][j]: edits to turn a[:i] into b[:j]; row 0 and column 0 are the empty prefixes\n\tdp := make([][]int, m+1)\n\tfor i := range dp {\n\t\tdp[i] = make([]int, n+1)\n\t\tdp[i][0] = i\n\t}\n\tfor j := range dp[0] {\n\t\tdp[0][j] = j\n\t}\n\tfor i := 1; i <= m; i++ {\n\t\tfor j := 1; j <= n; j++ {\n\t\t\tif a[i-1] == b[j-1] {\n\t\t\t\tdp[i][j] = dp[i-1][j-1]\n\t\t\t} else { // replace, delete, insert\n\t\t\t\tdp[i][j] = 1 + min(dp[i-1][j-1], dp[i-1][j], dp[i][j-1])\n\t\t\t}\n\t\t}\n\t}\n\treturn dp[m][n]\n}"
+    }
+  },
+  {
+    "slug": "dp-palindrome",
+    "pattern": {
+      "zh": "区间 DP：左端点倒序枚举",
+      "en": "Interval DP with the left end running backwards"
+    },
+    "complexity": "O(n²)",
+    "points": [
+      {
+        "zh": "dp[i][j] 只依赖更短的区间 dp[i+1][*] 和 dp[*][j-1]，所以 i 倒序、j 正序填表。",
+        "en": "dp[i][j] depends only on shorter ranges, dp[i+1][*] and dp[*][j-1], so fill i backwards and j forwards."
+      },
+      {
+        "zh": "两端字符相等就向内收缩并加 2，否则去掉一端，取两种情况的较大值。",
+        "en": "If the two ends match, shrink inward and add 2; otherwise drop one end and keep the better of the two."
+      },
+      {
+        "zh": "只问回文子串（必须连续）时，中心扩展法 O(n²) 时间、O(1) 空间，更简单。",
+        "en": "For palindromic substrings (contiguous), expanding around each center is simpler: O(n²) time and O(1) space."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "i 正序枚举时 dp[i+1][*] 还没有算出来，结果全错。",
+        "en": "Iterating i forwards reads dp[i+1][*] before it has been computed."
+      },
+      {
+        "zh": "子序列（可以不连续）和子串（必须连续）是两道题，转移不能混用。",
+        "en": "Subsequence (gaps allowed) and substring (contiguous) are different problems with different transitions."
+      },
+      {
+        "zh": "中心扩展要同时试奇数中心 (i, i) 和偶数中心 (i, i+1)。",
+        "en": "Center expansion must try both odd centers (i, i) and even centers (i, i+1)."
+      }
+    ],
+    "code": {
+      "python": "def longest_pal_subseq(s: str) -> int:\n    n = len(s)\n    dp = [[0] * n for _ in range(n)]  # dp[i][j]: answer for s[i..j]\n    for i in range(n - 1, -1, -1):  # i backwards so dp[i+1][*] is ready\n        dp[i][i] = 1\n        for j in range(i + 1, n):\n            if s[i] == s[j]:\n                dp[i][j] = dp[i + 1][j - 1] + 2\n            else:\n                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])\n    return dp[0][n - 1] if n else 0",
+      "cpp": "int longestPalSubseq(const string& s) {\n    int n = s.size();\n    if (n == 0) return 0;\n    vector<vector<int>> dp(n, vector<int>(n, 0));  // dp[i][j]: answer for s[i..j]\n    for (int i = n - 1; i >= 0; i--) {  // i backwards so dp[i+1][*] is ready\n        dp[i][i] = 1;\n        for (int j = i + 1; j < n; j++)\n            dp[i][j] = s[i] == s[j] ? dp[i + 1][j - 1] + 2 : max(dp[i + 1][j], dp[i][j - 1]);\n    }\n    return dp[0][n - 1];\n}",
+      "java": "class Solution {\n    int longestPalSubseq(String s) {\n        int n = s.length();\n        if (n == 0) return 0;\n        int[][] dp = new int[n][n]; // dp[i][j]: answer for s[i..j]\n        for (int i = n - 1; i >= 0; i--) { // i backwards so dp[i+1][*] is ready\n            dp[i][i] = 1;\n            for (int j = i + 1; j < n; j++)\n                dp[i][j] = s.charAt(i) == s.charAt(j)\n                        ? dp[i + 1][j - 1] + 2\n                        : Math.max(dp[i + 1][j], dp[i][j - 1]);\n        }\n        return dp[0][n - 1];\n    }\n}",
+      "go": "func longestPalSubseq(s string) int {\n\tn := len(s)\n\tif n == 0 {\n\t\treturn 0\n\t}\n\tdp := make([][]int, n) // dp[i][j]: answer for s[i..j]\n\tfor i := range dp {\n\t\tdp[i] = make([]int, n)\n\t}\n\tfor i := n - 1; i >= 0; i-- { // i backwards so dp[i+1][*] is ready\n\t\tdp[i][i] = 1\n\t\tfor j := i + 1; j < n; j++ {\n\t\t\tif s[i] == s[j] {\n\t\t\t\tdp[i][j] = dp[i+1][j-1] + 2\n\t\t\t} else {\n\t\t\t\tdp[i][j] = max(dp[i+1][j], dp[i][j-1])\n\t\t\t}\n\t\t}\n\t}\n\treturn dp[0][n-1]\n}"
+    }
+  },
+  {
+    "slug": "dp-state-machine",
+    "pattern": {
+      "zh": "以 i 结尾的状态：同时记最大和最小",
+      "en": "Ending-at-i states: track both max and min"
+    },
+    "complexity": "O(n) time · O(1) space",
+    "points": [
+      {
+        "zh": "状态定义成「以 i 结尾」，连续子数组的转移就只有两种：接在前一段后面，或者从 i 重新开始。",
+        "en": "Define the state as \"ending at i\"; a contiguous subarray then has two transitions: extend the previous run or restart at i."
+      },
+      {
+        "zh": "乘法遇到负数时最大会变成最小，所以要同时维护最大和最小两个状态。",
+        "en": "A negative factor turns the maximum into the minimum, so keep both a max state and a min state."
+      },
+      {
+        "zh": "状态机 DP 就是给每个位置多设几个状态（持有 / 不持有、上一个选没选），把状态之间的每条转移都写出来。",
+        "en": "State-machine DP gives each position a few states (holding or not, previous taken or not) and writes out every transition between them."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "先更新了 hi 再用新的 hi 去算 lo，用到的是同一轮已经改过的值。",
+        "en": "Updating hi first and then computing lo from the new hi mixes values from the same step."
+      },
+      {
+        "zh": "答案初始化成 0，全是负数的数组就会出错。",
+        "en": "Starting the answer at 0 is wrong for an all-negative array."
+      },
+      {
+        "zh": "最大子数组和（Kadane）的转移是 cur = max(x, cur + x)，不要漏掉「重新开始」这一项。",
+        "en": "Kadane's maximum subarray sum uses cur = max(x, cur + x); don't drop the restart option."
+      }
+    ],
+    "code": {
+      "python": "def max_product(nums: list[int]) -> int:\n    \"\"\"Largest product of a non-empty contiguous subarray.\"\"\"\n    hi = lo = best = nums[0]  # max and min product of a subarray ending here\n    for x in nums[1:]:\n        cand = (x, hi * x, lo * x)  # restart, or extend; a negative x swaps max and min\n        hi, lo = max(cand), min(cand)\n        best = max(best, hi)\n    return best",
+      "cpp": "// Largest product of a non-empty contiguous subarray.\nlong long maxProduct(const vector<int>& nums) {\n    long long hi = nums[0], lo = nums[0], best = nums[0];  // max and min product ending here\n    for (size_t i = 1; i < nums.size(); i++) {\n        long long x = nums[i];\n        long long a = hi * x, b = lo * x;  // a negative x swaps max and min\n        hi = max({x, a, b});  // restart, or extend\n        lo = min({x, a, b});\n        best = max(best, hi);\n    }\n    return best;\n}",
+      "java": "class Solution {\n    // Largest product of a non-empty contiguous subarray.\n    long maxProduct(int[] nums) {\n        long hi = nums[0], lo = nums[0], best = nums[0]; // max and min product ending here\n        for (int i = 1; i < nums.length; i++) {\n            long x = nums[i], a = hi * x, b = lo * x; // a negative x swaps max and min\n            hi = Math.max(x, Math.max(a, b)); // restart, or extend\n            lo = Math.min(x, Math.min(a, b));\n            best = Math.max(best, hi);\n        }\n        return best;\n    }\n}",
+      "go": "// maxProduct returns the largest product of a non-empty contiguous subarray.\nfunc maxProduct(nums []int) int {\n\thi, lo, best := nums[0], nums[0], nums[0] // max and min product ending here\n\tfor _, x := range nums[1:] {\n\t\ta, b := hi*x, lo*x                  // a negative x swaps max and min\n\t\thi, lo = max(x, a, b), min(x, a, b) // restart, or extend\n\t\tbest = max(best, hi)\n\t}\n\treturn best\n}"
+    }
+  },
+  {
+    "slug": "dp-stock",
+    "pattern": {
+      "zh": "持有 / 冷却 / 空仓三状态",
+      "en": "Three states: holding, cooling down, free"
+    },
+    "complexity": "O(n) time · O(1) space",
+    "points": [
+      {
+        "zh": "先写清楚每天结束时可能处于哪几种状态，再写「昨天的哪种状态 + 今天的什么动作」能到达它。",
+        "en": "Name the states you can be in at the end of a day, then list which state yesterday plus which action today reaches each one."
+      },
+      {
+        "zh": "同一天的几个新值都要用前一天的旧值计算，所以要同时赋值或者先存临时变量。",
+        "en": "All of today's values must come from yesterday's, so assign them simultaneously or through temporaries."
+      },
+      {
+        "zh": "最多 k 次交易就加一维 k；手续费在每次卖出（或买入）时扣一次；只交易一次就是「记录历史最低价」。",
+        "en": "At most k trades adds a k dimension; a fee is charged once per sale (or purchase); a single trade is just tracking the lowest price so far."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "持有状态初始化成 0，相当于第 0 天白送了一股。",
+        "en": "Starting the holding state at 0 means you got a share for free on day 0."
+      },
+      {
+        "zh": "用负无穷做初值时，C++ / Java 里 hold + p 会溢出；取 MIN / 2 这样的值。",
+        "en": "With negative infinity as the start value, hold + p overflows in C++ and Java; use something like MIN / 2."
+      },
+      {
+        "zh": "有冷却期时，买入只能从「空仓」状态转过来，不能从「刚卖出」状态直接买。",
+        "en": "With a cooldown you can buy only from the free state, never straight after selling."
+      }
+    ],
+    "code": {
+      "python": "def max_profit_cooldown(prices: list[int]) -> int:\n    \"\"\"Unlimited trades, but after selling you must wait one day before buying.\"\"\"\n    hold, cool, free = float(\"-inf\"), 0, 0  # profit at the end of a day in each state\n    for p in prices:\n        hold, cool, free = (\n            max(hold, free - p),  # keep holding, or buy today (only from free)\n            hold + p,  # sell today\n            max(free, cool),  # rest\n        )\n    return max(cool, free)",
+      "cpp": "// Unlimited trades, but after selling you must wait one day before buying.\nlong long maxProfitCooldown(const vector<int>& prices) {\n    long long hold = LLONG_MIN / 2, cool = 0, free = 0;  // profit at day end in each state\n    for (int p : prices) {\n        long long h = max(hold, free - p);  // keep holding, or buy today (only from free)\n        long long c = hold + p;             // sell today\n        long long f = max(free, cool);      // rest\n        hold = h, cool = c, free = f;\n    }\n    return max(cool, free);\n}",
+      "java": "class Solution {\n    // Unlimited trades, but after selling you must wait one day before buying.\n    long maxProfitCooldown(int[] prices) {\n        long hold = Long.MIN_VALUE / 2, cool = 0, free = 0; // profit at day end in each state\n        for (int p : prices) {\n            long h = Math.max(hold, free - p); // keep holding, or buy today (only from free)\n            long c = hold + p; // sell today\n            long f = Math.max(free, cool); // rest\n            hold = h;\n            cool = c;\n            free = f;\n        }\n        return Math.max(cool, free);\n    }\n}",
+      "go": "import \"math\"\n\n// maxProfitCooldown allows unlimited trades, but after selling you must wait\n// one day before buying again.\nfunc maxProfitCooldown(prices []int) int {\n\thold, cool, free := math.MinInt/2, 0, 0 // profit at the end of a day in each state\n\tfor _, p := range prices {\n\t\t// keep holding or buy today (only from free); sell today; rest\n\t\thold, cool, free = max(hold, free-p), hold+p, max(free, cool)\n\t}\n\treturn max(cool, free)\n}"
+    }
+  },
+  {
+    "slug": "dp-scheduling",
+    "pattern": {
+      "zh": "按结束时间排序 + 二分找上一个兼容任务",
+      "en": "Sort by end, binary search the last compatible job"
+    },
+    "complexity": "O(n log n)",
+    "points": [
+      {
+        "zh": "按结束时间排序后，dp[i] = 前 i 个任务的最优值；第 i 个任务要么不选，要么接在最后一个不冲突的任务后面。",
+        "en": "After sorting by end time, dp[i] is the best over the first i jobs; job i is either skipped or appended after the last job that doesn't overlap it."
+      },
+      {
+        "zh": "「最后一个不冲突的任务」在结束时间数组里二分查找，整体 O(n log n)。",
+        "en": "Find the last compatible job by binary searching the end times, for O(n log n) overall."
+      },
+      {
+        "zh": "「把数组分成 k 段」这类题，状态通常是 dp[段数][结尾位置]，转移时枚举最后一段从哪里开始。",
+        "en": "\"Split the array into k parts\" problems usually use dp[parts][end] and enumerate where the last part starts."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "首尾相接算不算冲突，决定了用 upper_bound 还是 lower_bound。",
+        "en": "Whether touching endpoints conflict decides between upper_bound and lower_bound."
+      },
+      {
+        "zh": "按开始时间排序、每次贪心选利润最高的，在带权的版本里不成立。",
+        "en": "Sorting by start time and greedily taking the highest profit fails once jobs carry weights."
+      },
+      {
+        "zh": "排序时只排了结束时间，开始时间和利润没有跟着一起动。",
+        "en": "Sorting only the end times without moving the start times and profits along with them."
+      }
+    ],
+    "code": {
+      "python": "from bisect import bisect_right\n\n\ndef max_profit(start: list[int], end: list[int], profit: list[int]) -> int:\n    \"\"\"Best total profit of non-overlapping jobs; a job may start when another ends.\"\"\"\n    jobs = sorted(zip(end, start, profit))\n    ends = [e for e, _, _ in jobs]\n    dp = [0] * (len(jobs) + 1)  # dp[i]: best using the first i jobs by end time\n    for i, (_, s, p) in enumerate(jobs):\n        k = bisect_right(ends, s, 0, i)  # jobs[:k] all end by time s\n        dp[i + 1] = max(dp[i], dp[k] + p)  # skip job i, or take it after jobs[:k]\n    return dp[-1]",
+      "cpp": "// Best total profit of non-overlapping jobs; a job may start when another ends.\nlong long maxProfit(const vector<int>& start, const vector<int>& end, const vector<int>& profit) {\n    int n = start.size();\n    vector<array<int, 3>> jobs(n);  // {end, start, profit}\n    for (int i = 0; i < n; i++) jobs[i] = {end[i], start[i], profit[i]};\n    sort(jobs.begin(), jobs.end());\n    vector<long long> dp(n + 1, 0);  // dp[i]: best using the first i jobs by end time\n    for (int i = 0; i < n; i++) {\n        auto [e, s, p] = jobs[i];\n        // k = number of earlier jobs that end by time s\n        int k = upper_bound(jobs.begin(), jobs.begin() + i, s,\n                            [](int t, const array<int, 3>& job) { return t < job[0]; }) - jobs.begin();\n        dp[i + 1] = max(dp[i], dp[k] + p);  // skip job i, or take it after the first k jobs\n    }\n    return dp[n];\n}",
+      "java": "class Solution {\n    // Best total profit of non-overlapping jobs; a job may start when another ends.\n    long maxProfit(int[] start, int[] end, int[] profit) {\n        int n = start.length;\n        Integer[] order = new Integer[n];\n        for (int i = 0; i < n; i++) order[i] = i;\n        Arrays.sort(order, (a, b) -> Integer.compare(end[a], end[b]));\n        long[] dp = new long[n + 1]; // dp[i]: best using the first i jobs by end time\n        for (int i = 0; i < n; i++) {\n            int job = order[i];\n            int lo = 0, hi = i; // k = number of earlier jobs that end by start[job]\n            while (lo < hi) {\n                int mid = (lo + hi) >>> 1;\n                if (end[order[mid]] > start[job]) hi = mid;\n                else lo = mid + 1;\n            }\n            dp[i + 1] = Math.max(dp[i], dp[lo] + profit[job]); // skip it, or take it after them\n        }\n        return dp[n];\n    }\n}",
+      "go": "import \"sort\"\n\n// maxProfit returns the best total profit of non-overlapping jobs; a job may\n// start when another ends.\nfunc maxProfit(start, end, profit []int) int {\n\tn := len(start)\n\torder := make([]int, n)\n\tfor i := range order {\n\t\torder[i] = i\n\t}\n\tsort.Slice(order, func(a, b int) bool { return end[order[a]] < end[order[b]] })\n\tdp := make([]int, n+1) // dp[i]: best using the first i jobs by end time\n\tfor i, job := range order {\n\t\t// k = number of earlier jobs that end by start[job]\n\t\tk := sort.Search(i, func(m int) bool { return end[order[m]] > start[job] })\n\t\tdp[i+1] = max(dp[i], dp[k]+profit[job]) // skip it, or take it after them\n\t}\n\treturn dp[n]\n}"
+    }
+  },
+  {
+    "slug": "dp-search-game",
+    "pattern": {
+      "zh": "树形 DP：每个结点返回（选，不选）",
+      "en": "Tree DP: each node returns (take, skip)"
+    },
+    "complexity": "O(n)",
+    "points": [
+      {
+        "zh": "树形 DP 用后序遍历：先拿到左右子树的结果，再算当前结点，每个结点返回一个小元组。",
+        "en": "Tree DP runs post-order: get both children's results first, then compute the current node, returning a small tuple."
+      },
+      {
+        "zh": "按「当前结点选不选」拆状态，比在父结点里往下看两层更简单，也不会重复计算。",
+        "en": "Splitting the state by whether the current node is taken is simpler than looking two levels down from the parent, and nothing is computed twice."
+      },
+      {
+        "zh": "两人博弈题常用「当前先手比对手多拿多少」作为状态：dp[i][j] = max(nums[i] - dp[i+1][j], nums[j] - dp[i][j-1])。",
+        "en": "Two-player games often use the score difference for the player to move: dp[i][j] = max(nums[i] - dp[i+1][j], nums[j] - dp[i][j-1])."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "不返回元组，而是用「祖父 + 孙子」的写法又不做记忆化，会指数级重复计算。",
+        "en": "The grandparent-plus-grandchildren version without memoization repeats work exponentially."
+      },
+      {
+        "zh": "不选当前结点时，孩子也不一定要选，每个孩子都要取 max(选, 不选)。",
+        "en": "When the node is skipped the children are free, so take max(take, skip) for each child, not just take."
+      },
+      {
+        "zh": "博弈题如果按「我的得分」建状态，往往还得再记对手的得分；用差值更省事。",
+        "en": "Modelling a game by \"my score\" usually forces you to track the opponent as well; the difference is simpler."
+      }
+    ],
+    "code": {
+      "python": "class TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val, self.left, self.right = val, left, right\n\n\ndef rob_tree(root) -> int:\n    \"\"\"Largest sum of node values with no parent-child pair both taken.\"\"\"\n\n    def dfs(node) -> tuple[int, int]:  # (best if node is taken, best if it is not)\n        if not node:\n            return 0, 0\n        lt, ls = dfs(node.left)\n        rt, rs = dfs(node.right)\n        take = node.val + ls + rs  # children must be skipped\n        skip = max(lt, ls) + max(rt, rs)  # children are free to choose\n        return take, skip\n\n    return max(dfs(root))",
+      "cpp": "struct TreeNode {\n    int val;\n    TreeNode *left, *right;\n    TreeNode(int v, TreeNode* l = nullptr, TreeNode* r = nullptr) : val(v), left(l), right(r) {}\n};\n\n// {best if node is taken, best if it is not}\npair<long long, long long> robDfs(TreeNode* node) {\n    if (!node) return {0, 0};\n    auto [lt, ls] = robDfs(node->left);\n    auto [rt, rs] = robDfs(node->right);\n    long long take = node->val + ls + rs;          // children must be skipped\n    long long skip = max(lt, ls) + max(rt, rs);    // children are free to choose\n    return {take, skip};\n}\n\n// Largest sum of node values with no parent-child pair both taken.\nlong long robTree(TreeNode* root) {\n    auto [take, skip] = robDfs(root);\n    return max(take, skip);\n}",
+      "java": "class TreeNode {\n    int val;\n    TreeNode left, right;\n\n    TreeNode(int val) {\n        this.val = val;\n    }\n\n    TreeNode(int val, TreeNode left, TreeNode right) {\n        this.val = val;\n        this.left = left;\n        this.right = right;\n    }\n}\n\nclass Solution {\n    // Largest sum of node values with no parent-child pair both taken.\n    long robTree(TreeNode root) {\n        long[] r = dfs(root);\n        return Math.max(r[0], r[1]);\n    }\n\n    private long[] dfs(TreeNode node) { // {best if node is taken, best if it is not}\n        if (node == null) return new long[] {0, 0};\n        long[] l = dfs(node.left), r = dfs(node.right);\n        long take = node.val + l[1] + r[1]; // children must be skipped\n        long skip = Math.max(l[0], l[1]) + Math.max(r[0], r[1]); // children are free to choose\n        return new long[] {take, skip};\n    }\n}",
+      "go": "type TreeNode struct {\n\tVal         int\n\tLeft, Right *TreeNode\n}\n\n// robTree returns the largest sum of node values with no parent-child pair both taken.\nfunc robTree(root *TreeNode) int {\n\tvar dfs func(*TreeNode) (take, skip int)\n\tdfs = func(node *TreeNode) (int, int) {\n\t\tif node == nil {\n\t\t\treturn 0, 0\n\t\t}\n\t\tlt, ls := dfs(node.Left)\n\t\trt, rs := dfs(node.Right)\n\t\ttake := node.Val + ls + rs        // children must be skipped\n\t\tskip := max(lt, ls) + max(rt, rs) // children are free to choose\n\t\treturn take, skip\n\t}\n\ttake, skip := dfs(root)\n\treturn max(take, skip)\n}"
+    }
+  },
+  {
+    "slug": "design-containers",
+    "pattern": {
+      "zh": "惰性迭代器：hasNext 负责前进",
+      "en": "Lazy iterator: hasNext does the advancing"
+    },
+    "complexity": "O(1) amortised per call",
+    "points": [
+      {
+        "zh": "把「跳过空行、走到下一个有效元素」放进 hasNext，next 只负责取值；这样连续调用多次 hasNext 也没有副作用。",
+        "en": "Put \"skip empty rows and reach the next valid element\" in hasNext and let next only read; calling hasNext repeatedly then has no side effects."
+      },
+      {
+        "zh": "只保存位置（行号、列号），不要在构造函数里把所有元素复制成一个大数组。",
+        "en": "Keep only positions (row and column) instead of copying every element into one big array in the constructor."
+      },
+      {
+        "zh": "任意深度的嵌套列表用一个栈保存各层的位置；Python 里用生成器 yield from 最自然。",
+        "en": "For arbitrarily nested lists keep a stack of positions, one per level; in Python a generator with yield from is the natural fit."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "中间或末尾有空行时，hasNext 只看下一行就会返回错误的 true。",
+        "en": "With empty rows in the middle or at the end, looking only at the next row makes hasNext return a wrong true."
+      },
+      {
+        "zh": "next 里不先调用 hasNext，直接取值会越界。",
+        "en": "A next that doesn't call hasNext first reads out of bounds."
+      },
+      {
+        "zh": "迭代过程中修改了原容器：Java 会抛 ConcurrentModificationException，其他语言则是悄悄出错。",
+        "en": "Modifying the container while iterating throws ConcurrentModificationException in Java and fails silently elsewhere."
+      }
+    ],
+    "code": {
+      "python": "class Flatten2D:\n    \"\"\"Iterates a list of lists in order, skipping empty rows.\"\"\"\n\n    def __init__(self, rows: list[list[int]]):\n        self.rows, self.r, self.c = rows, 0, 0\n\n    def has_next(self) -> bool:\n        while self.r < len(self.rows) and self.c == len(self.rows[self.r]):\n            self.r, self.c = self.r + 1, 0  # skip finished and empty rows\n        return self.r < len(self.rows)\n\n    def next(self) -> int:\n        if not self.has_next():\n            raise StopIteration\n        self.c += 1\n        return self.rows[self.r][self.c - 1]",
+      "cpp": "// Iterates a vector of vectors in order, skipping empty rows.\nclass Flatten2D {\n    const vector<vector<int>>& rows;\n    size_t r = 0, c = 0;\n\npublic:\n    Flatten2D(const vector<vector<int>>& rows) : rows(rows) {}\n\n    bool hasNext() {\n        while (r < rows.size() && c == rows[r].size()) r++, c = 0;  // skip finished and empty rows\n        return r < rows.size();\n    }\n\n    int next() {\n        if (!hasNext()) throw out_of_range(\"no more elements\");\n        return rows[r][c++];\n    }\n};",
+      "java": "// Iterates a list of lists in order, skipping empty rows.\nclass Flatten2D implements Iterator<Integer> {\n    private final List<List<Integer>> rows;\n    private int r = 0, c = 0;\n\n    Flatten2D(List<List<Integer>> rows) {\n        this.rows = rows;\n    }\n\n    @Override\n    public boolean hasNext() {\n        while (r < rows.size() && c == rows.get(r).size()) { // skip finished and empty rows\n            r++;\n            c = 0;\n        }\n        return r < rows.size();\n    }\n\n    @Override\n    public Integer next() {\n        if (!hasNext()) throw new NoSuchElementException();\n        return rows.get(r).get(c++);\n    }\n}",
+      "go": "// Flatten2D iterates a slice of slices in order, skipping empty rows.\ntype Flatten2D struct {\n\trows [][]int\n\tr, c int\n}\n\nfunc (it *Flatten2D) HasNext() bool {\n\tfor it.r < len(it.rows) && it.c == len(it.rows[it.r]) {\n\t\tit.r, it.c = it.r+1, 0 // skip finished and empty rows\n\t}\n\treturn it.r < len(it.rows)\n}\n\nfunc (it *Flatten2D) Next() int {\n\tif !it.HasNext() {\n\t\tpanic(\"no more elements\")\n\t}\n\tit.c++\n\treturn it.rows[it.r][it.c-1]\n}"
+    }
+  },
+  {
+    "slug": "design-cache-index",
+    "pattern": {
+      "zh": "LRU：哈希表 + 双向链表",
+      "en": "LRU: hash map plus doubly linked list"
+    },
+    "complexity": "O(1) get and put",
+    "points": [
+      {
+        "zh": "哈希表负责 O(1) 找到结点，双向链表负责 O(1) 把结点移到头部、删除尾部。",
+        "en": "The hash map finds a node in O(1); the doubly linked list moves it to the front and drops the tail in O(1)."
+      },
+      {
+        "zh": "get 也算一次「使用」，要把结点移到最新的一端；put 一个已存在的键要更新值并移动，而不是再插一份。",
+        "en": "A get counts as a use and moves the node to the most recent end; put on an existing key updates and moves it instead of inserting a second copy."
+      },
+      {
+        "zh": "面试要求手写链表时，用头尾两个哨兵结点，插入删除就不用判断空指针。",
+        "en": "When you must hand-roll the list, sentinel head and tail nodes remove every null check."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "淘汰尾结点时只删了链表、没删哈希表里的键（或者反过来）。",
+        "en": "Evicting the tail from the list but not from the map, or the other way round."
+      },
+      {
+        "zh": "先插入再淘汰还是先淘汰再插入要统一，并想清楚容量为 0 这种边界。",
+        "en": "Decide once whether you insert then evict or evict then insert, and think through edge cases such as capacity 0."
+      },
+      {
+        "zh": "链表结点里不存 key，淘汰时就不知道该删哈希表里的哪一项。",
+        "en": "Without the key stored in the list node you can't tell which map entry to delete on eviction."
+      }
+    ],
+    "code": {
+      "python": "from collections import OrderedDict\n\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.cap = capacity\n        self.data = OrderedDict()  # a hash map over a doubly linked list; the end is most recent\n\n    def get(self, key: int) -> int:\n        if key not in self.data:\n            return -1\n        self.data.move_to_end(key)  # mark as most recently used\n        return self.data[key]\n\n    def put(self, key: int, value: int) -> None:\n        self.data[key] = value\n        self.data.move_to_end(key)\n        if len(self.data) > self.cap:\n            self.data.popitem(last=False)  # evict the least recently used",
+      "cpp": "class LRUCache {\n    int cap;\n    list<pair<int, int>> items;                               // front = most recently used\n    unordered_map<int, list<pair<int, int>>::iterator> pos;   // key -> its node in items\n\npublic:\n    LRUCache(int capacity) : cap(capacity) {}\n\n    int get(int key) {\n        auto it = pos.find(key);\n        if (it == pos.end()) return -1;\n        items.splice(items.begin(), items, it->second);  // move to front in O(1)\n        return it->second->second;\n    }\n\n    void put(int key, int value) {\n        if (auto it = pos.find(key); it != pos.end()) {\n            it->second->second = value;\n            items.splice(items.begin(), items, it->second);\n            return;\n        }\n        items.emplace_front(key, value);\n        pos[key] = items.begin();\n        if ((int)items.size() > cap) {\n            pos.erase(items.back().first);  // evict the least recently used\n            items.pop_back();\n        }\n    }\n};",
+      "java": "// LinkedHashMap in access order is a hash map over a doubly linked list.\nclass LRUCache extends LinkedHashMap<Integer, Integer> {\n    private final int cap;\n\n    LRUCache(int capacity) {\n        super(16, 0.75f, true); // accessOrder = true: every get moves the entry to the end\n        cap = capacity;\n    }\n\n    int get(int key) {\n        return getOrDefault(key, -1);\n    }\n\n    @Override\n    protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {\n        return size() > cap; // evict the least recently used after an insert\n    }\n}",
+      "go": "import \"container/list\"\n\ntype entry struct{ key, value int }\n\ntype LRUCache struct {\n\tcap   int\n\torder *list.List            // front = most recently used\n\tpos   map[int]*list.Element // key -> its element in order\n}\n\nfunc NewLRUCache(capacity int) *LRUCache {\n\treturn &LRUCache{cap: capacity, order: list.New(), pos: map[int]*list.Element{}}\n}\n\nfunc (c *LRUCache) Get(key int) int {\n\tel, ok := c.pos[key]\n\tif !ok {\n\t\treturn -1\n\t}\n\tc.order.MoveToFront(el)\n\treturn el.Value.(*entry).value\n}\n\nfunc (c *LRUCache) Put(key, value int) {\n\tif el, ok := c.pos[key]; ok {\n\t\tel.Value.(*entry).value = value\n\t\tc.order.MoveToFront(el)\n\t\treturn\n\t}\n\tc.pos[key] = c.order.PushFront(&entry{key, value})\n\tif c.order.Len() > c.cap {\n\t\toldest := c.order.Back() // evict the least recently used\n\t\tc.order.Remove(oldest)\n\t\tdelete(c.pos, oldest.Value.(*entry).key)\n\t}\n}"
+    }
+  },
+  {
+    "slug": "design-trie-serialization",
+    "pattern": {
+      "zh": "字典树：结点存孩子和计数",
+      "en": "Trie nodes hold children and counts"
+    },
+    "complexity": "O(length) per operation",
+    "points": [
+      {
+        "zh": "每个结点代表一个前缀；插入和查询都是顺着字符往下走，耗时只和单词长度有关。",
+        "en": "Each node is a prefix; insert and lookup walk down one character at a time, so the cost depends only on the word length."
+      },
+      {
+        "zh": "结点上存计数（有多少单词经过、有多少单词在此结束），前缀计数和删除都能 O(L) 完成。",
+        "en": "Counts on the nodes (words passing through, words ending here) make prefix counting and deletion O(L)."
+      },
+      {
+        "zh": "序列化二叉树用前序遍历加空结点标记（如 \"#\"），反序列化时按同样的顺序递归读回来。",
+        "en": "Serialize a binary tree in preorder with a null marker such as \"#\", and deserialize by reading it back in the same order."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "把 search（完整单词）和 startsWith（前缀）混为一谈，忘了检查结束标记。",
+        "en": "Mixing up search (a whole word) and startsWith (a prefix) by not checking the end-of-word marker."
+      },
+      {
+        "zh": "固定 26 叉数组默认只有小写字母；有大写、数字或 Unicode 时，孩子改用哈希表存。",
+        "en": "A fixed 26-way array assumes lowercase letters; use a hash map of children for uppercase, digits or Unicode."
+      },
+      {
+        "zh": "序列化时值之间不加分隔符，多位数和负数就没法还原。",
+        "en": "Serializing without separators makes multi-digit and negative values impossible to parse back."
+      }
+    ],
+    "code": {
+      "python": "class Trie:\n    def __init__(self):\n        self.children: dict[str, Trie] = {}\n        self.prefix = 0  # words passing through this node\n        self.words = 0  # words ending exactly here\n\n    def insert(self, word: str) -> None:\n        node = self\n        for ch in word:\n            node = node.children.setdefault(ch, Trie())\n            node.prefix += 1\n        node.words += 1\n\n    def _walk(self, s: str):\n        node = self\n        for ch in s:\n            node = node.children.get(ch)\n            if node is None:\n                return None\n        return node\n\n    def count_word(self, word: str) -> int:\n        node = self._walk(word)\n        return node.words if node else 0\n\n    def count_prefix(self, prefix: str) -> int:\n        node = self._walk(prefix)\n        return node.prefix if node else 0",
+      "cpp": "// Lowercase words. Nodes live in one vector; child index 0 means \"none\" (0 is the root).\nclass Trie {\n    struct Node {\n        array<int, 26> next{};\n        int prefix = 0, words = 0;  // words passing through / ending exactly here\n    };\n    vector<Node> nodes = vector<Node>(1);\n\n    int walk(const string& s) const {  // node index for s, or -1\n        int cur = 0;\n        for (char ch : s)\n            if (!(cur = nodes[cur].next[ch - 'a'])) return -1;\n        return cur;\n    }\n\npublic:\n    void insert(const string& word) {\n        int cur = 0;\n        for (char ch : word) {\n            int c = ch - 'a';\n            if (!nodes[cur].next[c]) {\n                nodes[cur].next[c] = nodes.size();\n                nodes.emplace_back();  // may reallocate: never hold a Node& across this\n            }\n            cur = nodes[cur].next[c];\n            nodes[cur].prefix++;\n        }\n        nodes[cur].words++;\n    }\n\n    int countWord(const string& word) const {\n        int i = walk(word);\n        return i < 0 ? 0 : nodes[i].words;\n    }\n\n    int countPrefix(const string& prefix) const {\n        int i = walk(prefix);\n        return i < 0 ? 0 : nodes[i].prefix;\n    }\n};",
+      "java": "// Lowercase words.\nclass Trie {\n    private final Trie[] next = new Trie[26];\n    private int prefix, words; // words passing through / ending exactly here\n\n    void insert(String word) {\n        Trie node = this;\n        for (char ch : word.toCharArray()) {\n            int c = ch - 'a';\n            if (node.next[c] == null) node.next[c] = new Trie();\n            node = node.next[c];\n            node.prefix++;\n        }\n        node.words++;\n    }\n\n    private Trie walk(String s) {\n        Trie node = this;\n        for (char ch : s.toCharArray()) {\n            node = node.next[ch - 'a'];\n            if (node == null) return null;\n        }\n        return node;\n    }\n\n    int countWord(String word) {\n        Trie node = walk(word);\n        return node == null ? 0 : node.words;\n    }\n\n    int countPrefix(String prefix) {\n        Trie node = walk(prefix);\n        return node == null ? 0 : node.prefix;\n    }\n}",
+      "go": "// Trie stores lowercase words.\ntype Trie struct {\n\tnext   [26]*Trie\n\tprefix int // words passing through this node\n\twords  int // words ending exactly here\n}\n\nfunc (t *Trie) Insert(word string) {\n\tnode := t\n\tfor i := 0; i < len(word); i++ {\n\t\tc := word[i] - 'a'\n\t\tif node.next[c] == nil {\n\t\t\tnode.next[c] = &Trie{}\n\t\t}\n\t\tnode = node.next[c]\n\t\tnode.prefix++\n\t}\n\tnode.words++\n}\n\nfunc (t *Trie) walk(s string) *Trie {\n\tnode := t\n\tfor i := 0; i < len(s) && node != nil; i++ {\n\t\tnode = node.next[s[i]-'a']\n\t}\n\treturn node\n}\n\nfunc (t *Trie) CountWord(word string) int {\n\tif node := t.walk(word); node != nil {\n\t\treturn node.words\n\t}\n\treturn 0\n}\n\nfunc (t *Trie) CountPrefix(prefix string) int {\n\tif node := t.walk(prefix); node != nil {\n\t\treturn node.prefix\n\t}\n\treturn 0\n}"
+    }
+  },
+  {
+    "slug": "bits-math",
+    "pattern": {
+      "zh": "位运算小工具与快速幂",
+      "en": "Bit tricks and fast power"
+    },
+    "complexity": "O(log n)",
+    "points": [
+      {
+        "zh": "x & (x-1) 去掉最低位的 1，x & -x 取出最低位的 1；异或满足 a ^ a = 0，可以找出只出现一次的数。",
+        "en": "x & (x-1) clears the lowest set bit and x & -x isolates it; XOR satisfies a ^ a = 0, which finds the element that appears once."
+      },
+      {
+        "zh": "快速幂把指数按二进制拆开：每轮把底数平方，指数这一位是 1 就乘进结果，O(log exp)。",
+        "en": "Fast power splits the exponent into bits: square the base every round and multiply it into the result when the bit is 1, O(log exp)."
+      },
+      {
+        "zh": "不超过 20 个元素的集合可以用一个整数当掩码，for (s = mask; s; s = (s-1) & mask) 枚举它的所有非空子集。",
+        "en": "A set of up to 20 items fits in an integer mask; for (s = mask; s; s = (s-1) & mask) enumerates every non-empty submask."
+      }
+    ],
+    "pitfalls": [
+      {
+        "zh": "两个 10^9 量级的数相乘会超出 32 位，取模乘法之前先转成 long / long long。",
+        "en": "Multiplying two values near 10^9 overflows 32 bits; widen to long / long long before the modular multiply."
+      },
+      {
+        "zh": "Java 的 >> 会保留符号位，处理负数用无符号右移 >>>；Python 整数无限长，负数要先 & 0xFFFFFFFF。",
+        "en": "Java's >> keeps the sign, so use >>> for negatives; Python ints are unbounded, so mask negatives with & 0xFFFFFFFF first."
+      },
+      {
+        "zh": "C++ 里位运算优先级低于比较：x & 1 == 0 实际是 x & (1 == 0)，一定要加括号（Java 会直接编译报错）。",
+        "en": "In C++ bitwise operators bind looser than comparisons, so x & 1 == 0 means x & (1 == 0); add parentheses (Java refuses to compile it)."
+      }
+    ],
+    "code": {
+      "python": "def popcount(x: int) -> int:\n    \"\"\"Set bits in a non-negative x (int.bit_count() in Python 3.10+).\"\"\"\n    count = 0\n    while x:\n        x &= x - 1  # clear the lowest set bit\n        count += 1\n    return count\n\n\ndef pow_mod(base: int, exp: int, mod: int) -> int:\n    \"\"\"base ** exp % mod by repeated squaring (the built-in pow(base, exp, mod) does the same).\"\"\"\n    result, base = 1 % mod, base % mod\n    while exp:\n        if exp & 1:\n            result = result * base % mod\n        base = base * base % mod\n        exp >>= 1\n    return result",
+      "cpp": "// Set bits in x (__builtin_popcount does the same).\nint popcount(unsigned x) {\n    int count = 0;\n    for (; x; x &= x - 1) count++;  // clear the lowest set bit\n    return count;\n}\n\n// base^exp % mod by repeated squaring; mod < 2^31 keeps every product in 64 bits.\nlong long powMod(long long base, long long exp, long long mod) {\n    long long result = 1 % mod;\n    for (base %= mod; exp; exp >>= 1) {\n        if (exp & 1) result = result * base % mod;\n        base = base * base % mod;\n    }\n    return result;\n}",
+      "java": "class Solution {\n    // Set bits in x (Integer.bitCount does the same).\n    int popcount(int x) {\n        int count = 0;\n        for (; x != 0; x &= x - 1) count++; // clear the lowest set bit\n        return count;\n    }\n\n    // base^exp % mod by repeated squaring; mod < 2^31 keeps every product in a long.\n    long powMod(long base, long exp, long mod) {\n        long result = 1 % mod;\n        for (base %= mod; exp > 0; exp >>= 1) {\n            if ((exp & 1) == 1) result = result * base % mod;\n            base = base * base % mod;\n        }\n        return result;\n    }\n}",
+      "go": "// popcount counts the set bits in x (bits.OnesCount does the same).\nfunc popcount(x uint) int {\n\tcount := 0\n\tfor ; x != 0; x &= x - 1 { // clear the lowest set bit\n\t\tcount++\n\t}\n\treturn count\n}\n\n// powMod returns base^exp % mod by repeated squaring; mod < 2^31 keeps every\n// product inside an int64.\nfunc powMod(base, exp, mod int) int {\n\tresult := 1 % mod\n\tfor base %= mod; exp > 0; exp >>= 1 {\n\t\tif exp&1 == 1 {\n\t\t\tresult = result * base % mod\n\t\t}\n\t\tbase = base * base % mod\n\t}\n\treturn result\n}"
+    }
+  }
+]
