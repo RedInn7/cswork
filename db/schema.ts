@@ -24,6 +24,12 @@ export * from './api-tokens-schema';
 export * from './user-drafts-schema';
 export * from './points-schema';
 export * from './user-follows-schema';
+export * from './certificates-schema';
+export * from './mock-peer-schema';
+export * from './group-camp-schema';
+export * from './newsletter-schema';
+export * from './course-gift-schema';
+export * from './contests-schema';
 import { practiceRounds } from './practice-round-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),
@@ -113,6 +119,9 @@ export const courses = sqliteTable('courses', {
   published: integer('published').notNull().default(1),
   revision: integer('revision').notNull().default(1),
   position: integer('position').notNull().default(0),
+  // Catalog filters (lib/course-catalog.ts); '' until a teacher sets them.
+  category: text('category').notNull().default(''),
+  level: text('level').notNull().default(''),
 });
 export const lessons = sqliteTable(
   'lessons',

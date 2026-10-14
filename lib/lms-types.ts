@@ -14,6 +14,8 @@ export type LmsCourse = {
   position: number;
   lessonCount: number;
   publishedLessonCount: number;
+  category?: string;
+  level?: string;
 };
 export type LmsLessonPayload = {
   title: string;

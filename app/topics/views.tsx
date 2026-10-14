@@ -3,6 +3,8 @@ import { SITE_NAME, SITE_URL, breadcrumbJsonLd } from '@/lib/seo';
 import { TEMPLATE_LANGS, line500Path, topicPath } from '@/lib/route-templates';
 import { CodeBlock } from './code-block';
 import { RatingBadge } from '@/components/rating-badge';
+import { AlgorithmDemo } from '@/components/algorithm-demo';
+import { stopDemos } from '@/lib/route-stops';
 import { TOPIC_GROUPS, TOPIC_STOPS, type TopicStop } from './stops';
 
 export const INDEX_COPY = {
@@ -207,6 +209,20 @@ export function TopicView({ stop, zh }: { stop: TopicStop; zh: boolean }) {
           </ul>
         </section>
       </div>
+      {stopDemos(stop.slug).length > 0 && (
+        <section className="topics-demos" id="algorithm-demo" aria-labelledby="topic-demos">
+          <h2 id="topic-demos">{t('看动画', 'Watch it run')}</h2>
+          <p className="topics-template-lead">
+            {t(
+              '一步一步播放这个模式在小例子上的执行过程。可以暂停、单步前进或后退，拖动进度条跳到任意一步。',
+              'Step through the pattern on a small example. Pause, step forwards or back, or drag the slider to any step.',
+            )}
+          </p>
+          {stopDemos(stop.slug).map((kind) => (
+            <AlgorithmDemo key={kind} kind={kind} />
+          ))}
+        </section>
+      )}
       <section className="topics-template" aria-labelledby="topic-template">
         <h2 id="topic-template">{t('模板', 'Template')}</h2>
         <p className="topics-template-lead">

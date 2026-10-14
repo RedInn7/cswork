@@ -25,6 +25,8 @@ export type Lesson = {
   revision?: number;
   published?: number;
   media_asset_id?: string | null;
+  /** The course's free preview lesson: open to any signed-in account. */
+  preview?: boolean;
 };
 export type Course = {
   id: string;
@@ -39,6 +41,9 @@ export type Course = {
   price_id?: string | null;
   purchase_available?: boolean;
   price?: { amount: number; currency: string; display: string } | null;
+  /** Catalog filters (lib/course-catalog.ts); '' when unset. */
+  category?: string;
+  level?: string;
 };
 export type Progress = {
   lesson_id: string;
@@ -86,6 +91,8 @@ export type Boot = {
   notifications: Notification[];
   unreadNotifications?: number;
   services: Record<string, boolean>;
+  /** Course completion certificates (lib/server/certificates.ts); id is the public verification code. */
+  certificates?: { id: string; courseId: string; issuedAt: number; onProfile?: number }[];
 };
 export type Ticket = {
   attachments?: {

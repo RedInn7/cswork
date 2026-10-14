@@ -1,5 +1,6 @@
 // Route-map data for the curated collection. Client-safe: never import
 // lib/ling-curated.ts here, it would pull the whole curated JSON into the bundle.
+import type { DemoKind } from './algorithm-demo';
 
 export type RouteGroup = { zh: string; en: string };
 export type StageCount = { total: number; solved: number };
@@ -66,6 +67,25 @@ export const STOP_NAMES: Record<string, [string, string]> = {
   'design-cache-index': ['缓存索引', 'Caches'], 'design-trie-serialization': ['字典树序列化', 'Trie & Codec'],
   'bits-math': ['位运算', 'Bits & Math'],
 };
+/** The step-by-step animations (lib/algorithm-demo.ts) shown on a stop's /topics page, in order. */
+export const STOP_DEMOS: Partial<Record<string, DemoKind[]>> = {
+  'two-pointers-windows': ['two-pointers', 'sliding-window'],
+  'binary-search': ['binary-search'],
+  'stacks-heaps': ['monotonic-stack', 'heap'],
+  'grid-traversal': ['bfs', 'dfs'],
+  'graph-connectivity': ['union-find'],
+  'graph-topological': ['topo-sort'],
+  'graph-shortest-path': ['dijkstra'],
+  'backtracking-enumeration': ['backtracking'],
+  'dp-foundations': ['dp'],
+  'dp-knapsack': ['dp'],
+  'dp-grid': ['dp-table'],
+  'dp-subsequence': ['dp-table'],
+  'dp-string': ['dp-table'],
+  'design-trie-serialization': ['trie'],
+};
+/** A stop's animations, none for an unknown slug. */
+export const stopDemos = (slug: string) => (Object.hasOwn(STOP_DEMOS, slug) ? STOP_DEMOS[slug]! : []);
 /** OA topic labels: the 35 stops plus two OA-only topics that are not on the line. */
 export const TOPIC_NAMES: Record<string, [string, string]> = {
   ...STOP_NAMES,

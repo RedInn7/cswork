@@ -21,8 +21,10 @@ cswork 使用 Monaco Editor 作为浏览器编辑器、BullMQ 作为持久化任
 ## SQL 专项
 
 - 语言 `sql` 不改沙箱镜像：worker 跳过编译，在沙箱里用 `python3 -I -S` 运行受信任的 harness（`lib/server/sql-judge.ts`）。stdin 是测试点的建表和插入 SQL，`query.sql` 是学员的一条 SELECT。harness 把数据装进内存 SQLite，设 `PRAGMA query_only` 后执行查询，输出统一格式：首行列数，之后每行一个 JSON 数组；NULL 为 null，小数保留 4 位，整数值的小数等于整数，文本不等于数字，BLOB 和 ±inf 输出为 `{"blob": hex}`、`{"float": "inf"}`，不会和文本相等；默认把行排序后比较，数据首行为 `-- cswork:ordered` 时比较顺序。判题用 `exact` checker。SQL 错误是运行错误，公开样例会显示中英双语的错误信息。
-- 题目源在 `scripts/sql-track/`（20 道原创题、手写边界数据、参考答案、等价答案和常见错解）。`node --import tsx scripts/sql-track/build.ts` 用本机 python3 的 sqlite3 跑全部查询，生成 `content/sql-track/packages.json` 和列表用的 `lib/content/sql-track.json`；等价答案必须在所有数据上一致，每个错解必须被某个隐藏数据集拒绝，否则构建失败。CI 的 `tests/sql-track.test.ts` 重跑构建并和已提交文件比对。
+- 题目源在 `scripts/sql-track/`（50 道原创题：1–20 在 `problems.ts`，21–50 在 `problems-more.ts`；手写边界数据、参考答案、等价答案和常见错解）。`node --import tsx scripts/sql-track/build.ts` 用本机 python3 的 sqlite3 跑全部查询，生成 `content/sql-track/packages.json` 和列表用的 `lib/content/sql-track.json`；等价答案必须在所有数据上一致，每个错解必须被某个隐藏数据集拒绝，否则构建失败。CI 的 `tests/sql-track.test.ts` 重跑构建并和已提交文件比对。
 - 发布：`deploy/release.sh` 在 OA 批次之后运行 `scripts/publish-sql-track.ts`，未变化的题跳过。`sql-` 题和 OA 一样对已验证邮箱的账号免费评测；导入校验保留这个前缀：`sql` 语言和 `sql-` 题号必须同时出现，且只能是 `['sql']`、`exact` checker、挂在 `gomall/00-overview`，后台也只对 `sql-` 题显示 SQL 选项。入口是题库的「SQL 专项」（`?view=problems&library=sql`）。
+- 结果对比：SQL 测试点的期望输出和实际输出都是上面的统一格式时，结果面板（`components/sql-result-diff.tsx`，解析与行 diff 在 `lib/sql-result.ts`）把两边画成一张表：相同的行、缺少的行（−）、多出的行（+），答错的行显示期望和实际两行并标出不同的格子。以下情况只显示原文：超过 400 行；报错；首个失败点带截断标记；任一侧达到 32 KB（存储上限 `FEEDBACK_BYTES`，逐点结果没有截断标记，截在行尾的输出仍能解析，所以按长度兜底）；含超出 JavaScript 安全整数范围（2^53）的整数（SQLite 是 64 位整数，解析后会丢精度，两个不同的行会显示成一致）。
+- 不做 Pandas 专项：判题镜像没有 pandas（`deploy/oj/Dockerfile` 只装了 python3 标准库），学员代码也不能联网装包。要做时先在镜像里装 `python3-pandas` 并在 `deploy/oj/verify-runtime.py` 里检查它。
 
 ## 持久化与运行
 

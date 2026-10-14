@@ -1,0 +1,324 @@
+/*
+ * The weekly newsletter: its archive and issues on the classic lists' public shell
+ * (lists.css: navy hero, amber kicker, green line), plus the subscribe control, which the
+ * account page shows too. An issue reads like a station's weekly notice board.
+ */
+.newsletter-toggle {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+.newsletter-toggle p {
+  max-width: 46em;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.newsletter-toggle output {
+  font-size: 13px;
+  opacity: 0.75;
+}
+.newsletter-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 10px;
+  background: #ffb23f;
+  color: #0e1a2b;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+a.newsletter-button {
+  color: #0e1a2b;
+}
+.newsletter-button:hover:not(:disabled) {
+  background: #ffc266;
+  text-decoration: none;
+}
+.newsletter-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.newsletter-button.is-quiet {
+  background: transparent;
+  color: inherit;
+  box-shadow: inset 0 0 0 1px currentColor;
+  font-weight: 650;
+}
+.newsletter-button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+.newsletter-hero .newsletter-toggle p {
+  color: #c7d2e0;
+}
+.newsletter-hero form {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+}
+.newsletter-notice {
+  justify-self: start;
+  padding: 8px 14px;
+  border-left: 3px solid #2ebd85;
+  background: rgb(46 189 133 / 0.12);
+  color: #b6f0d6;
+  font-size: 15px;
+}
+.newsletter-h2 {
+  margin: 0 0 14px;
+  font-size: 20px;
+  font-weight: 800;
+}
+.newsletter-week {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+.newsletter-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------- archive: a departures list ---------- */
+.newsletter-issues {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--rule);
+  list-style: none;
+}
+.newsletter-issues a {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 6px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+  font-size: 15px;
+  text-decoration: none;
+}
+.newsletter-issues a:hover {
+  background: #fff;
+  text-decoration: none;
+}
+.newsletter-issues .newsletter-week {
+  color: var(--ac);
+  font-weight: 800;
+}
+
+/* ---------- an issue ---------- */
+.newsletter-masthead h1 {
+  font-variant-numeric: tabular-nums;
+}
+.newsletter-tally {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 36px;
+  margin: 4px 0 0;
+}
+.newsletter-tally div {
+  display: grid;
+  gap: 2px;
+}
+.newsletter-tally dt {
+  color: #9fb0c6;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.newsletter-tally dd {
+  margin: 0;
+  color: #ffb23f;
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 16px rgb(255 178 63 / 0.4);
+}
+.newsletter-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+.newsletter-columns > section {
+  min-width: 0;
+  padding: 22px 24px 20px;
+  border-top: 4px solid var(--line);
+  border-radius: 4px 4px 14px 14px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(14 26 43 / 0.06);
+}
+.newsletter-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0 0 0 20px;
+}
+.newsletter-list li {
+  padding-left: 4px;
+  line-height: 1.5;
+}
+.newsletter-list li::marker {
+  color: var(--muted);
+  font-size: 13px;
+}
+.newsletter-list a {
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.newsletter-list span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+}
+.newsletter-daily {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.newsletter-daily th {
+  padding: 0 8px 8px 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+}
+.newsletter-daily td {
+  padding: 8px 8px 8px 0;
+  border-top: 1px solid var(--rule);
+  vertical-align: middle;
+}
+.newsletter-daily td:last-child {
+  width: 34%;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.newsletter-bar {
+  display: inline-block;
+  width: calc(var(--frac, 0) * 70%);
+  min-width: 3px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 999px;
+  background: var(--line);
+  vertical-align: middle;
+}
+.newsletter-cta {
+  padding: 24px 28px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid var(--rule);
+}
+
+@media (max-width: 760px) {
+  .newsletter-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .newsletter-issues a {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .newsletter-issues a > span:nth-child(2) {
+    grid-column: 1;
+    grid-row: 2;
+    color: var(--muted);
+    font-size: 13px;
+  }
+}
+
+/* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
+@media screen {
+  .dark .newsletter-button {
+    border: 0;
+    background: #ffb23f;
+    color: #0e1a2b;
+    text-decoration: none;
+  }
+  .dark a.newsletter-button {
+    color: #0e1a2b;
+  }
+  .dark .newsletter-button:hover:not(:disabled) {
+    background: #ffc266;
+    text-decoration: none;
+  }
+  .dark .newsletter-button.is-quiet {
+    background: transparent;
+    color: inherit;
+    box-shadow: inset 0 0 0 1px currentColor;
+  }
+  .dark .newsletter-button:focus-visible {
+    outline: 2px solid currentColor;
+  }
+  .dark .newsletter-hero .newsletter-toggle p {
+    color: #c8d2de;
+  }
+  .dark .newsletter-notice {
+    border-left: 3px solid #2ebd85;
+    background: #2ebd851f;
+    color: #bdeed8;
+  }
+  .dark .newsletter-empty {
+    color: var(--muted);
+  }
+  .dark .newsletter-issues {
+    border-top: 1px solid var(--rule);
+  }
+  .dark .newsletter-issues a {
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .dark .newsletter-issues a:hover {
+    background: #191919;
+    text-decoration: none;
+  }
+  .dark .newsletter-issues .newsletter-week {
+    color: #87d2bb;
+  }
+  .dark .newsletter-tally dt {
+    color: #a4b3c5;
+  }
+  .dark .newsletter-tally dd {
+    color: #f7b55c;
+    text-shadow: 0 0 16px #ffb23f66;
+  }
+  .dark .newsletter-columns > section {
+    border-top: 4px solid var(--line);
+    background: #191919;
+    box-shadow: 0 1px 3px #0e1a2b0f;
+  }
+  .dark .newsletter-list li::marker {
+    color: var(--muted);
+  }
+  .dark .newsletter-list span {
+    color: var(--muted);
+  }
+  .dark .newsletter-daily th {
+    color: var(--muted);
+  }
+  .dark .newsletter-daily td {
+    border-top: 1px solid var(--rule);
+  }
+  .dark .newsletter-bar {
+    background: var(--line);
+  }
+  .dark .newsletter-cta {
+    background: #191919;
+    border: 1px solid var(--rule);
+  }
+  @media (max-width: 760px) {
+    .dark .newsletter-issues a > span:nth-child(2) {
+      color: var(--muted);
+    }
+  }
+}
+/* ── end dark theme ── */

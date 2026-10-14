@@ -164,7 +164,8 @@
   gap: 6px;
 }
 .classic-stop,
-.classic-external {
+.classic-external,
+.classic-twin {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -179,6 +180,11 @@
   height: 18px;
   font-size: 11px;
 }
+/* A book problem's LeetCode twin. */
+.classic-twin {
+  color: #5d6b78;
+  font-variant-numeric: tabular-nums;
+}
 .classic-external {
   padding: 1px 7px;
   border-radius: 5px;
@@ -188,7 +194,7 @@
 .study-bank .study-row[data-external] .study-progress {
   color: #8a96a1;
 }
-.study-bank .study-row:is(:hover, :focus-visible) :is(.classic-stop, .classic-external) {
+.study-bank .study-row:is(:hover, :focus-visible) :is(.classic-stop, .classic-external, .classic-twin) {
   color: var(--route-white-2);
 }
 .study-bank .study-row:is(:hover, :focus-visible) .classic-external {
@@ -295,6 +301,9 @@
   .dark .classic-stop {
     color: #c1cfdd;
   }
+  .dark .classic-twin {
+    color: #b5c2ce;
+  }
   .dark .classic-external {
     box-shadow: inset 0 0 0 1px #2e3339;
     color: #b5c2ce;
@@ -302,7 +311,7 @@
   .dark .study-bank .study-row[data-external] .study-progress {
     color: #a8b3bc;
   }
-  .dark .study-bank .study-row:is(:hover, :focus-visible) :is(.classic-stop, .classic-external) {
+  .dark .study-bank .study-row:is(:hover, :focus-visible) :is(.classic-stop, .classic-external, .classic-twin) {
     color: var(--route-white-2);
   }
   .dark .study-bank .study-row:is(:hover, :focus-visible) .classic-external {

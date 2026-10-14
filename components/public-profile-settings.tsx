@@ -8,7 +8,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import '@/app/learner-cloud.css';
 
-type Profile = { handle: string; visible: boolean; indexable: boolean; bio: string };
+type Profile = { handle: string; visible: boolean; indexable: boolean; showContest: boolean; bio: string };
 const HANDLE = '^[a-z0-9][a-z0-9\\-]{1,28}[a-z0-9]$';
 
 /** Account settings: the opt-in public page /u/<handle>. Off until the learner turns it on. */
@@ -16,7 +16,7 @@ export function PublicProfileSettings() {
   const t = useT();
   const id = useId();
   const [saved, setSaved] = useState<Profile | null>(null);
-  const [form, setForm] = useState<Profile>({ handle: '', visible: false, indexable: false, bio: '' });
+  const [form, setForm] = useState<Profile>({ handle: '', visible: false, indexable: false, showContest: false, bio: '' });
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -60,6 +60,7 @@ export function PublicProfileSettings() {
             ...form,
             handle: form.handle.trim().toLowerCase(),
             indexable: form.visible && form.indexable,
+            showContest: form.visible && form.showContest,
           })
             .then(({ profile }) => {
               setSaved(profile);
@@ -113,6 +114,23 @@ export function PublicProfileSettings() {
           <span>
             {t('允许搜索引擎收录', 'Let search engines index it')}
             <small>{t('不勾选时页面带 noindex。', 'Unticked, the page carries noindex.')}</small>
+          </span>
+        </label>
+        <label className="cloud-check">
+          <input
+            type="checkbox"
+            checked={form.visible && form.showContest}
+            disabled={!form.visible}
+            onChange={(e) => setForm({ ...form, showContest: e.target.checked })}
+          />
+          <span>
+            {t('显示周赛 rating 曲线和比赛徽章', 'Show my weekly contest rating and contest badges')}
+            <small>
+              {t(
+                '曲线带每期的名次和 rating，别人能据此在公开计分板上认出你的比赛昵称。',
+                'The curve carries each weekly’s rank and rating, which lets others find your contest name on the public scoreboards.',
+              )}
+            </small>
           </span>
         </label>
         <Button variant="outline" disabled={busy || !loaded || !form.handle.trim()}>

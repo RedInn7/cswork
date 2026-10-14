@@ -62,6 +62,8 @@ export type CodeEditorProps = {
   onSuggestReady?: (suggest: (() => void) | null) => void;
   /** Format Document through the language service; null while unmounted or for SQL. */
   onFormatReady?: (format: (() => void) | null) => void;
+  /** The mounted Monaco editor, for decorations and gutter clicks; may return a disposer. */
+  onEditorMount?: (...args: Parameters<OnMount>) => void | (() => void);
 };
 export function CodeEditor({
   value,
@@ -78,6 +80,7 @@ export function CodeEditor({
   onIntelligenceStatus,
   onSuggestReady,
   onFormatReady,
+  onEditorMount,
 }: CodeEditorProps) {
   const t = useT();
   const { runtime, error, retry } = useMonacoRuntime();
@@ -164,7 +167,9 @@ export function CodeEditor({
         editor.trigger('cswork', 'editor.action.triggerSuggest', {});
       });
     }
+    const detach = onEditorMount?.(editor, monaco);
     cleanup.current = () => {
+      detach?.();
       actions.forEach((action) => action.dispose());
       onSuggestReady?.(null);
       onFormatReady?.(null);
@@ -256,12 +261,15 @@ export function CodeDiff({
   originalLanguage,
   language,
   settings,
+  ariaLabel,
 }: {
   original: string;
   modified: string;
   originalLanguage: Language;
   language: Language;
   settings: EditorSettings;
+  /** What the two sides are; defaults to a past submission against the draft. */
+  ariaLabel?: string;
 }) {
   const t = useT();
   const { runtime, error, retry } = useMonacoRuntime();
@@ -276,10 +284,12 @@ export function CodeDiff({
     wordWrap: settings.wordWrap ? 'on' : 'off',
     minimap: { enabled: false },
     scrollBeyondLastLine: false,
-    ariaLabel: t(
-      '历史提交与当前草稿的差异',
-      'Differences between the submission and your current draft',
-    ),
+    ariaLabel:
+      ariaLabel ??
+      t(
+        '历史提交与当前草稿的差异',
+        'Differences between the submission and your current draft',
+      ),
   };
   return (
     <div className="cs-editor-host cs-diff-host" data-theme={settings.theme}>

@@ -65,9 +65,10 @@ export function CheckoutFeedback({
       clearTimeout(timer);
     };
   }, [sessionId, attempt]);
-  const successful =
-    !!order?.has_access &&
-    ['paid', 'partially_refunded'].includes(order.status);
+  const paid = !!order && ['paid', 'partially_refunded'].includes(order.status);
+  // A gift unlocks nothing for the buyer: its code waits in the order below.
+  const gift = !!order?.gift;
+  const successful = paid && (gift || !!order?.has_access);
   return (
     <section
       className={`commerce-payment-feedback ${successful ? 'is-complete' : ''}`}
@@ -83,7 +84,9 @@ export function CheckoutFeedback({
       )}
       <div>
         <strong>
-          {successful
+          {successful && gift
+            ? t('付款已确认，礼物兑换码已生成。', 'Payment confirmed. Your gift code is ready.')
+            : successful
             ? t(
                 '付款已确认，课程已开通。',
                 'Payment confirmed. Your course is unlocked.',
@@ -93,7 +96,12 @@ export function CheckoutFeedback({
               : t('正在确认你的支付结果。', 'Confirming your payment…')}
         </strong>
         <p>
-          {successful
+          {successful && gift
+            ? t(
+                `在下方「订单与收据」里展开《${order!.course_title}》这笔订单，复制兑换码或链接发给对方。`,
+                `Open the “${order!.course_title}” order under Orders and receipts below to copy the code or link for your recipient.`,
+              )
+            : successful
             ? t(
                 `可以开始学习《${order!.course_title}》了。`,
                 `You can now start “${order!.course_title}”.`,

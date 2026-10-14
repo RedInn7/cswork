@@ -17,6 +17,7 @@ import { englishMessage } from '@/lib/messages-en';
 import type { LmsPage } from '@/lib/lms-types';
 import { CourseDiagram } from './course-diagram';
 import { AlgorithmDemo } from './algorithm-demo';
+import '@/app/algorithm-demo.css';
 export function formText(form: FormData, name: string): string {
   const value = form.get(name);
   return typeof value === 'string' ? value : '';

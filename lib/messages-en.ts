@@ -64,6 +64,7 @@ const EN: Record<string, string> = {
   '此版本已经发布，请重新载入后使用新版本号':
     'This version is already published. Reload and use a new version number',
   课件版本不存在: 'Lesson version not found',
+  证书不存在: 'Certificate not found',
   请先发布课件版本: 'Publish a lesson version first',
   '内容已被更新，请重新载入后再提交；你的编辑尚未覆盖服务器内容':
     'This content was updated elsewhere. Reload before submitting; your edits have not overwritten the saved version',
@@ -250,7 +251,33 @@ const EN: Record<string, string> = {
   '组长不能退出，可以解散小组': "The owner can't leave. Disband the group instead",
   只有组长可以管理小组: 'Only the group owner can manage the group',
   成员不存在: 'Member not found',
+  // Peer mock interviews (lib/server/mock-peer.ts); notification titles too
+  同伴模拟面试已匹配: 'Peer mock interview matched',
+  同伴模拟面试已取消: 'Peer mock interview cancelled',
+  对方报告你没有出席模拟面试: 'Your partner reported that you missed the mock interview',
+  对方: 'Partner',
+  '你被报告爽约两次，匹配已暂停 90 天': 'Two partners reported you missing, so matching is paused for 90 days',
+  '一周内取消了 3 场已匹配的面试，暂时不能匹配': 'You cancelled 3 matched sessions this week, so matching is paused for now',
+  你已经有一个在等待匹配的请求: 'You already have a request waiting for a partner',
+  '已经约了 3 场，先完成再约': 'You already have 3 sessions booked. Finish one before booking more',
+  '请至少选一个未来 7 天内的时段': 'Pick at least one time slot in the next 7 days',
+  这场模拟面试不存在: 'Mock interview not found',
+  这场模拟面试已结束或已取消: 'This mock interview is over or was cancelled',
+  这场模拟面试已开始或已取消: 'This mock interview has started or was cancelled',
+  现在不能报告爽约: "You can't report a no-show right now",
   故事已达上限: "You've reached the limit for stories",
+  // Contest rooms and the weekly contest (lib/server/contests.ts)
+  比赛不存在: 'Contest not found',
+  比赛接口不存在: 'Contest endpoint not found',
+  '开赛时间最多提前 7 天': 'A contest can start at most 7 days from now',
+  有题目不能用于比赛: "Some of these problems can't be used in a contest",
+  '可判的题目不够，换个题源或减少题量': 'Not enough judgeable problems. Pick another source or fewer questions',
+  这场周赛没有可判的题目: 'None of that contest’s problems can be judged here',
+  '每天最多创建 10 个比赛房间': 'You can open at most 10 contest rooms a day',
+  房间已满: 'This room is full',
+  这个昵称在本场已被使用: 'Someone in this contest already uses that name',
+  '这道题在你正在进行的比赛里，题解、讨论和 AI 助教赛后开放':
+    "This problem is in a contest you're taking. Its editorial, solutions and AI tutor open once your contest ends",
   // Community solutions (lib/server/solution-posts.ts)
   题解不存在: 'Solution not found',
   评论不存在: 'Comment not found',
@@ -297,6 +324,10 @@ const EN: Record<string, string> = {
   '今天的 AI 调试次数已用完，明天再来': "You've used today's AI debugging help. Come back tomorrow",
   '今天的 AI 复杂度分析次数已用完，明天再来': "You've used today's AI complexity checks. Come back tomorrow",
   '今天的 AI 解释次数已用完，明天再来': "You've used today's AI explanations. Come back tomorrow",
+  // Resume review (lib/server/ai-resume.ts)
+  '今天的简历点评次数已用完，明天再来': "You've used today's resume reviews. Come back tomorrow",
+  '请粘贴完整的简历文字（至少 80 个字符）': 'Paste your whole resume as text (at least 80 characters)',
+  '简历过长，最多读取 12000 个字符': 'The resume is too long; the review reads at most 12,000 characters',
   '这道题没有 LeetCode 模式': "This problem has no LeetCode mode",
   请先输入问题: 'Type a question first',
   请先在题面里选中一段文字: 'Select some text in the statement first',
@@ -443,6 +474,12 @@ const EN: Record<string, string> = {
   '退款结果正在确认，请稍后刷新；重试会继续同一笔退款。':
     'Confirming the refund. Refresh shortly; retrying continues the same refund.',
   支付尚未配置: 'Payments are not configured',
+  // Course gifts (lib/server/course-gifts.ts); notification titles too
+  课程礼物的兑换码已生成: 'Your course gift code is ready',
+  你送出的课程礼物已被兑换: 'Your course gift was redeemed',
+  兑换码无效或已被使用: 'This gift code is invalid or already used',
+  这个兑换码已被使用或已作废: 'This gift code was already used or voided',
+  '你已经开通了这门课程，兑换码可以留给别人': 'You already have this course. Save the code for someone else',
   缺少签名: 'Missing signature',
   签名验证失败: 'Signature verification failed',
 

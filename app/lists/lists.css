@@ -261,7 +261,8 @@
   gap: 6px;
 }
 .lists-public-stop,
-.lists-public-judge {
+.lists-public-judge,
+.lists-public-twin {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -292,6 +293,20 @@
   background: #e8f6ef;
   color: var(--ac);
   font-weight: 700;
+}
+/* A book problem's LeetCode twin, beside the judge tag. */
+.lists-public-twin {
+  padding: 2px 8px;
+  box-shadow: inset 0 0 0 1px var(--rule);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+/* Book labels (剑指 Offer 32-III) need a wider number column. */
+.lists-public-rows[data-book] li {
+  grid-template-columns: 108px minmax(0, 1fr) auto 56px;
+}
+.lists-public-rows[data-book] .lists-public-number {
+  white-space: nowrap;
 }
 .lists-public-judge[data-external] {
   background: transparent;
@@ -347,6 +362,12 @@
   .lists-public-rows li {
     grid-template-columns: 44px minmax(0, 1fr) auto;
     padding: 10px 12px;
+  }
+  .lists-public-rows[data-book] li {
+    grid-template-columns: 100px minmax(0, 1fr) auto;
+  }
+  .lists-public-rows[data-book] .lists-public-number {
+    font-size: 12px;
   }
   .lists-public-tags {
     grid-column: 2;
@@ -469,6 +490,10 @@
   .dark .lists-public-judge {
     background: #0d1411;
     color: #87d2bb;
+  }
+  .dark .lists-public-twin {
+    box-shadow: inset 0 0 0 1px var(--rule);
+    color: var(--muted);
   }
   .dark .lists-public-judge[data-external] {
     background: transparent;

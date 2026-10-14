@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
 import { requestLocale } from '@/lib/server/locale';
 import {
+  bookProblemUrl,
   classicList,
   classicListAppHref,
   classicLists,
@@ -11,6 +12,8 @@ import {
   levelOf,
   problemAppHref,
   problemTitle,
+  refLabel,
+  sourceUrl,
 } from '@/lib/classic-lists';
 import { listClassicLibrary } from '@/lib/server/study-library';
 
@@ -51,7 +54,7 @@ export default async function ClassicListPage({ params }: Props) {
   const { list, view } = loaded;
   const zh = (await requestLocale()) === 'zh';
   const { name, description } = text(loaded, zh);
-  const { total, ready } = view.collection;
+  const { total, ready, mapped } = view.collection;
   return (
     <article>
       <script
@@ -85,6 +88,13 @@ export default async function ClassicListPage({ params }: Props) {
             aria-hidden="true"
           />
           <span>{zh ? `站外 ${total - ready} 道` : `${total - ready} external`}</span>
+          {list.refLabel && (
+            <span>
+              {zh
+                ? `${mapped} / ${total} 道有力扣主站对应题`
+                : `${mapped} of ${total} have a LeetCode twin`}
+            </span>
+          )}
         </div>
         <a className="lists-public-cta" href={classicListAppHref(list.slug)}>
           {zh ? '在题库里按这份题单练习' : 'Practice this list in the bank'} →
@@ -104,18 +114,24 @@ export default async function ClassicListPage({ params }: Props) {
                 : `${group.total} problems · ${group.ready} judgeable here`}
             </small>
           </h2>
-          <ol className="lists-public-rows">
+          <ol className="lists-public-rows" data-book={list.refLabel ? true : undefined}>
             {group.items.map((item) => {
               const level = levelOf(item.difficulty);
               const label = problemTitle(item, !zh);
               return (
-                <li key={item.number}>
-                  <span className="lists-public-number">{item.number}</span>
+                <li key={item.ref ?? item.number}>
+                  <span className="lists-public-number">
+                    {item.ref ? refLabel(list, item.ref, !zh) : item.number}
+                  </span>
                   {item.judgeProblemId ? (
                     <a href={problemAppHref(item.judgeProblemId)}>{label}</a>
                   ) : (
                     <a
-                      href={leetcodeUrl(item.number, item.slug, !zh)}
+                      href={
+                        item.refSlug
+                          ? bookProblemUrl(item.refSlug)
+                          : leetcodeUrl(item.number!, item.slug, !zh)
+                      }
                       rel="nofollow noopener noreferrer"
                       target="_blank"
                     >
@@ -124,6 +140,9 @@ export default async function ClassicListPage({ params }: Props) {
                     </a>
                   )}
                   <span className="lists-public-tags">
+                    {item.ref && item.number !== null && (
+                      <span className="lists-public-twin">LeetCode {item.number}</span>
+                    )}
                     {item.stop && (
                       <span
                         className="lists-public-stop"
@@ -153,8 +172,8 @@ export default async function ClassicListPage({ params }: Props) {
           {zh
             ? `${name} 由其发布方整理，本页只按题号对照，不是官方页面。原题单：`
             : `${name} is published by its own authors. This page only maps it by problem number and is not official. The original list: `}
-          <a href={list.source} rel="nofollow noopener noreferrer" target="_blank">
-            {new URL(list.source).hostname}
+          <a href={sourceUrl(list)} rel="nofollow noopener noreferrer" target="_blank">
+            {new URL(sourceUrl(list)).hostname}
           </a>
         </p>
       </section>

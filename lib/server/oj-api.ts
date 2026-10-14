@@ -18,15 +18,19 @@ import { handleMyPractice, problemVote } from './my-practice';
 import { handleAiTutor, isAiRoute } from './ai-tutor';
 import { handleAiInterview } from './ai-interviewer';
 import { handleAiAsk } from './ai-ask';
+import { handleAiResume } from './ai-resume';
 import { problemStats } from './problem-stats';
 import { handleDrafts, handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { handleSolutionPosts } from './solution-posts';
 import { handleExperienceSubmissions } from './experience-submissions';
 import { handleStudyGroups } from './study-groups';
+import { handleMockPeer } from './mock-peer';
+import { handleNewsletter } from './newsletter';
 import { handleFollows } from './follows';
+import { handleContests, inRunningContest, refuseInContest } from './contests';
 import { handleApiTokens } from './api-tokens';
 import { dailyProblem } from './daily-problem';
-import { curatedHint } from '@/lib/ling-curated';
+import { curatedByNumber, curatedHint } from '@/lib/ling-curated';
 import { companyTagIndex } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
 import {
@@ -38,6 +42,7 @@ import {
   similarProblems,
 } from './study-library';
 import { lcRating } from './lc-ratings';
+import { lingEditorial } from './ling-editorials';
 import { awardAccepted, handlePoints } from './points';
 import { classicList } from '@/lib/classic-lists';
 import { requireCourseOwner } from './course-visibility';
@@ -97,6 +102,8 @@ export async function handleOj(
 ) {
   const url = new URL(request.url),
     [resource, id, action, operation] = path;
+  // An OA editorial is closed while its problem is in the reader's running contest, like Line 500's.
+  if (resource === 'oa-library' && action === 'solution') refuseInContest(p, id);
   if (resource === 'oa-library')
     return handleOaLibrary(request, p, path.slice(1));
   if (resource === 'mock-oa' && id === 'history' && !action) return handleMockHistory(request, p);
@@ -105,7 +112,11 @@ export async function handleOj(
     return handleLearnerCloud(request, p, path);
   if (resource === 'experiences') return handleExperienceSubmissions(request, p, path.slice(1));
   if (resource === 'groups') return handleStudyGroups(request, p, path);
+  if (resource === 'peer') return handleMockPeer(request, p, path.slice(1));
+  if (resource === 'newsletter') return handleNewsletter(request, p, path.slice(1));
   if (resource === 'follows') return handleFollows(request, p, path.slice(1));
+  // The weekly, standings and the rating board read signed out; the handler checks the rest.
+  if (resource === 'contests') return handleContests(request, p, path);
   if (request.method === 'GET' && resource === 'speedrun' && !id)
     return handleSpeedrun(request, p);
   if (request.method === 'GET' && resource === 'problems' && id && !action) {
@@ -124,7 +135,9 @@ export async function handleOj(
     const templates = leetcodeTemplates(id);
     const round =
       p && isSelectedProblem(id) ? practiceRoundState(p.id).currentRound : null;
-    const hint = curatedHint(id);
+    // In this learner's running contest the hints stay server-side, like the editorial.
+    const live = p ? inRunningContest(p.id, id) : false;
+    const hint = live ? null : curatedHint(id);
     const tags = companyTagIndex(hiddenCompanies());
     // Per round like Solved, over all history rather than the first page; 2 opens hint 3.
     const failed = hint && p ? failedJudgeIds(p.id, id, round?.id) : [];
@@ -142,7 +155,12 @@ export async function handleOj(
       // Ids, not a count: the client unions them with live verdicts so none counts twice.
       failedSubmissionIds: failed,
       // Observation, invariant, steps: the client opens them one at a time (components/hint-ladder.tsx).
-      lingHints: lingHints(id),
+      lingHints: live ? null : lingHints(id),
+      // Whether a Line 500 editorial exists (null: none) and its code passed the judge. The editorial
+      // itself is GET problems/<id>/editorial, fetched once the learner unlocks it.
+      lingEditorialVerified: lingEditorial(id)?.verified ?? null,
+      // Its Line 500 stop, so the hint ladder can link the stop's animation (/topics/<stop>).
+      stop: curatedByNumber.get(Number(/^lc-(\d+)$/.exec(id)?.[1]))?.sectionSlug ?? null,
       // A nicety under the statement: it never fails the problem itself.
       similar: await similarProblems(id, p?.id, tags).catch(() => []),
       practiceRound: round,
@@ -151,6 +169,16 @@ export async function handleOj(
       judgeAvailable: ojStatus().available,
       languageVersions: ojStatus().languageVersions,
     });
+  }
+  if (request.method === 'GET' && resource === 'problems' && id && action === 'editorial' && !operation) {
+    requirePerson(p);
+    await limit(p, 'oj-read', 240);
+    const editorial = lingEditorial(id);
+    if (!editorial) throw new HttpError(404, '题解不存在');
+    // Never while the problem is in this learner's running contest; then the statement's own gate.
+    refuseInContest(p, id);
+    await getPublishedProblem(p, id);
+    return json(editorial);
   }
   if (
     request.method === 'GET' &&
@@ -191,6 +219,8 @@ export async function handleOj(
     return handleAiInterview(request, p, id);
   // Questions answered from the site's own pages (lib/server/ai-ask.ts).
   if (resource === 'ai' && id === 'ask' && !action) return handleAiAsk(request, p);
+  // The resume review on /career/resume (lib/server/ai-resume.ts).
+  if (resource === 'ai' && id === 'resume' && !action) return handleAiResume(request, p);
   if (resource === 'points' && !action) return handlePoints(request, p, id);
   if (request.method === 'GET') {
     if (resource === 'library') {

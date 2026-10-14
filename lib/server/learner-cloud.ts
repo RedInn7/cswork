@@ -8,6 +8,7 @@ import { reportWindow, slotOf, type MockSession, type Slot } from '@/lib/mock-oa
 import { canonicalCompany, employerSlug, OTHER_COMPANY } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
 import { companyDirectory, hasHub } from './company-hub';
+import { ratingHistory } from './contest-ratings';
 import { library } from './content-library';
 import { hiddenCompanies, shownOaSql } from './env';
 import { HttpError, json, limit, limitReader, requirePerson } from './http';
@@ -572,6 +573,7 @@ const profileInput = z
       .refine((h) => !RESERVED.has(h) && !h.includes('--')),
     visible: z.boolean(),
     indexable: z.boolean().default(false),
+    showContest: z.boolean().default(false),
     bio: z.string().trim().max(160).default(''),
   })
   .strict();
@@ -580,6 +582,7 @@ type ProfileRow = {
   handle: string;
   visible: number;
   indexable: number;
+  show_contest: number;
   bio: string;
 };
 function myProfile(userId: string) {
@@ -587,7 +590,7 @@ function myProfile(userId: string) {
     .prepare('SELECT * FROM user_profiles WHERE user_id=?')
     .get(userId) as ProfileRow | undefined;
   return r
-    ? { handle: r.handle, visible: !!r.visible, indexable: !!r.indexable, bio: r.bio }
+    ? { handle: r.handle, visible: !!r.visible, indexable: !!r.indexable, showContest: !!r.show_contest, bio: r.bio }
     : null;
 }
 async function handleProfile(request: Request, p: Person) {
@@ -603,11 +606,12 @@ async function handleProfile(request: Request, p: Person) {
   try {
     sqlite()
       .prepare(
-        `INSERT INTO user_profiles(user_id,handle,visible,indexable,bio,created_at,updated_at) VALUES(?,?,?,?,?,?,?)
+        `INSERT INTO user_profiles(user_id,handle,visible,indexable,show_contest,bio,created_at,updated_at)
+        VALUES(?,?,?,?,?,?,?,?)
         ON CONFLICT(user_id) DO UPDATE SET handle=excluded.handle,visible=excluded.visible,
-          indexable=excluded.indexable,bio=excluded.bio,updated_at=excluded.updated_at`,
+          indexable=excluded.indexable,show_contest=excluded.show_contest,bio=excluded.bio,updated_at=excluded.updated_at`,
       )
-      .run(p.id, d.handle, +d.visible, +(d.visible && d.indexable), d.bio, now, now);
+      .run(p.id, d.handle, +d.visible, +(d.visible && d.indexable), +(d.visible && d.showContest), d.bio, now, now);
   } catch (error) {
     if ((error as { code?: string }).code === 'SQLITE_CONSTRAINT_UNIQUE')
       throw new HttpError(409, '这个主页名已被占用');
@@ -725,6 +729,8 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
           WHERE f.follower_id=@me) AS following`,
     )
     .get({ me: profile.user_id }) as { followers: number; following: number };
+  // Opt-in: each weekly's rank and rating match one row of that weekly's public scoreboard.
+  const contest = profile.show_contest ? ratingHistory(profile.user_id) : [];
   return {
     handle: profile.handle,
     bio: profile.bio,
@@ -739,7 +745,9 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     lists,
     listStars,
     languages: [...byLanguage].map(([language, n]) => ({ language, n })).sort((a, b) => b.n - a.n),
-    badges: profileBadges(profile.user_id, catalogue, stops),
+    // Rated weeklies, oldest first (lib/server/contests.ts): the curve and the contest badges.
+    contest: contest.map(({ week, after, rank, entrants }) => ({ week, after, rank, entrants })),
+    badges: profileBadges(profile.user_id, catalogue, stops, contest),
     posts: {
       items: posts.slice(0, 10).map((post) => ({
         id: post.id,
@@ -761,7 +769,12 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
  * (shown problems only), OA companies of the public catalogue and the stored mock OAs. Days and
  * streaks fall on the server's local dates, which may differ from the learner's by one near midnight.
  */
-function profileBadges(userId: string, catalogue: PublicCatalogue, stops: ReadonlyMap<string, number>) {
+function profileBadges(
+  userId: string,
+  catalogue: PublicCatalogue,
+  stops: ReadonlyMap<string, number>,
+  contest: ReturnType<typeof ratingHistory> = [],
+) {
   const ac = (
     sqlite()
       .prepare(`SELECT problem_id AS id,created_at AS at FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'`)
@@ -785,6 +798,7 @@ function profileBadges(userId: string, catalogue: PublicCatalogue, stops: Readon
     acTimes: ac.map((s) => s.at),
     companies: [...companies.values()],
     perfectMock: mockHistory(userId, 1000).some((m) => !!m.result && m.result.score >= m.result.max),
+    contests: contest,
   }).flatMap((b) => (b.earned ? [{ id: b.id, group: b.group, zh: b.zh, en: b.en }] : []));
 }
 

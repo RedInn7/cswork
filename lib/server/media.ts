@@ -7,6 +7,7 @@ import { randomUUID } from 'node:crypto';
 import { sqlite } from '@/db/sqlite';
 import type { Person } from './auth';
 import { requireCourseOwner, requireCourseVisible } from './course-visibility';
+import { previewLessonId } from './lms-common';
 import { setting } from './env';
 import {
   body,
@@ -118,7 +119,8 @@ async function lessonAccess(p: Person, id: string) {
   if (!l || (p.role !== 'teacher' && (!l.published || !l.course_published)))
     throw new HttpError(404, '章节不存在');
   requireCourseVisible(p, l.course_id);
-  await requireCourse(p, l.course_id);
+  // The course's free preview lesson plays for any signed-in account.
+  if ((await previewLessonId(l.course_id)) !== l.id) await requireCourse(p, l.course_id);
   return l;
 }
 function ids(l: VideoLesson): string[] {

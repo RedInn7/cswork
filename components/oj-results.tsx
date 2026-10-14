@@ -20,6 +20,7 @@ import {
   DialogTitle,
 } from './ui/dialog';
 import { CodeDiff, CodeEditor } from './editor';
+import { SqlResultDiff } from './sql-result-diff';
 import { activeStatuses, verdict, type OJSubmission } from '@/lib/oj-client';
 import { type EditorSettings } from '@/lib/editor-settings';
 import { useLocale, useT } from '@/lib/i18n';
@@ -386,6 +387,14 @@ export function SubmissionResult({
                 </p>
               ) : (
                 <div className="cs-case-output">
+                  {submission.language === 'sql' &&
+                    output.expected !== undefined &&
+                    output.stdout !== undefined &&
+                    // A cut-off side can still parse and would misreport missing rows.
+                    !diagnostic?.truncated?.expected &&
+                    !diagnostic?.truncated?.stdout && (
+                      <SqlResultDiff expected={output.expected} actual={output.stdout} />
+                    )}
                   {output.stdin !== undefined && (
                     <CopyBlock
                       label={t('输入', 'Input')}

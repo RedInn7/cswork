@@ -171,6 +171,30 @@
     background: #3fb26a;
   }
 
+  /*
+   * Algorithm demo graphs (app/algorithm-demo.css): SVG labels sit on a node's own fill, which
+   * the generator steps differently from the text, and arrowheads must match their line.
+   * tests/algorithm-demo-ui.test.mjs checks these labels at ≥ 4.5:1.
+   */
+  .dark .algorithm-demo .algorithm-demo-edge polygon {
+    fill: #333e4b;
+  }
+  .dark .algorithm-demo .algorithm-demo-edge.is-muted polygon {
+    fill: #2d343c;
+  }
+  .dark .algorithm-demo .algorithm-demo-node.is-active text {
+    fill: #ffffff;
+  }
+  .dark .algorithm-demo .algorithm-demo-node.is-active .algorithm-demo-note {
+    fill: #98bcff;
+  }
+  .dark .algorithm-demo .algorithm-demo-node.is-answer text {
+    fill: #8fe0b9;
+  }
+  .dark .algorithm-demo .algorithm-demo-node.is-blocked text {
+    fill: #ffb4b4;
+  }
+
   /* Native controls, scrollbars and the selection follow the page. */
   .dark ::selection {
     background: color-mix(in oklab, var(--primary) 35%, transparent);

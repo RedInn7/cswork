@@ -19,12 +19,26 @@ export function courseAccess(p: Person, column: string) {
     args: [p.email, Date.now()] as SqlValue[],
   };
 }
-export async function liveLesson(p: Person, id: string) {
+/** A course's free preview: its first published lesson, while the course itself is published. */
+export async function previewLessonId(courseId: string) {
+  return (
+    await one<{ id: string }>(
+      'SELECT l.id FROM lessons l JOIN courses c ON c.id=l.course_id WHERE l.course_id=? AND l.published=1 AND c.published=1 ORDER BY l.position,l.id LIMIT 1',
+      courseId,
+    )
+  )?.id;
+}
+/**
+ * A published lesson this person may open. `preview`: reading paths (the lesson, its video,
+ * reading progress) also let any signed-in account open the course's free preview lesson;
+ * tickets and code reviews still need the course.
+ */
+export async function liveLesson(p: Person, id: string, preview = false) {
   const l = await one<LessonRow>('SELECT * FROM lessons WHERE id=?', id);
   if (!l || (p.role !== 'teacher' && !l.published))
     throw new HttpError(404, '章节不存在或尚未发布');
   requireCourseVisible(p, l.course_id);
-  await requireCourse(p, l.course_id);
+  if (!(preview && (await previewLessonId(l.course_id)) === l.id)) await requireCourse(p, l.course_id);
   return l;
 }
 export function cursorFrom(url: URL) {

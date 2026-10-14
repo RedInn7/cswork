@@ -139,7 +139,7 @@ export function PrivacyDocument() {
                 CSGrad 共用服务器基础设施，但两者的业务和账户数据没有对接。
               </p>
               <p>
-                除提供服务所需的教师和运维访问外，第三方登录、邮件和支付功能会与相应服务商交换完成这些功能所需的资料。课程中的外部图片或视频链接也可能让浏览器向对应资源服务商发出请求。
+                除提供服务所需的教师和运维访问外，第三方登录、邮件和支付功能会与相应服务商交换完成这些功能所需的资料。课程中的外部图片或视频链接也可能让浏览器向对应资源服务商发出请求。打开 Python 逐行调试器时，浏览器会从 jsDelivr（cdn.jsdelivr.net）下载 Pyodide 运行时；你的代码和输入只在浏览器里运行，不会发给 jsDelivr 或本平台。
               </p>
               <p>
                 在题目页使用 AI 助教（提示、代码点评、追问、边界用例、失败调试、复杂度分析或解释选中的题面文字）时，服务器会把这道题的题面、你当前的代码和你在这道题上最近一次判题结果发送给
@@ -151,6 +151,10 @@ export function PrivacyDocument() {
               <p>
                 在搜索框（⌘K）里点「问 AI」时，服务器会把你的问题、你选中的页面文字（如有）和站内匹配到的几段公开内容发送给
                 Anthropic，用于生成带出处的回答；同样不发送邮箱、姓名或账户标识，也只记录调用次数和用量。只搜索不提问不会发送。
+              </p>
+              <p id="privacy-resume">
+                在「简历 AI 点评」页（/career/resume）提交时，服务器会把你粘贴的简历文字、目标岗位和职位描述（如有）发送给
+                Anthropic，用于生成点评；不发送你的邮箱或账户标识。简历里本身写着的姓名、电话等信息会随文字一起发送，提交前可以先删掉。平台不保存简历文字和点评结果，只记录每天的调用次数和用量；点评只显示在你当前的浏览器页面里。不提交就不会发送。
               </p>
               <p>
                 平台会为持续提供课程、处理教学反馈、对账及故障恢复保留必要资料和备份，目前没有对所有账户及学习记录统一设置自动删除期限。业务数据与备份的清理时间可能不同；收到删除请求后，会确认涉及的资料、处理范围及需要保留的记录。
@@ -404,7 +408,11 @@ export function PrivacyDocument() {
                 features exchange the information needed to perform those
                 functions with the corresponding service providers. External
                 image or video links in courses may also cause your browser to
-                send requests to the corresponding resource providers.
+                send requests to the corresponding resource providers. Opening the
+                Python step debugger makes your browser download the Pyodide
+                runtime from jsDelivr (cdn.jsdelivr.net); your code and input
+                run only in the browser and are not sent to jsDelivr or to
+                cswork.
               </p>
               <p>
                 When you use the AI tutor on a problem page (a hint, a code
@@ -444,6 +452,17 @@ export function PrivacyDocument() {
                 them. Again no email, name or account identifier is sent, and
                 only call counts and usage are recorded. Searching without
                 asking sends nothing.
+              </p>
+              <p id="privacy-resume">
+                When you submit on the AI resume review page (/career/resume),
+                the server sends the resume text you pasted, the target role and
+                any job description to Anthropic to write the review. Your email
+                and account identifier are not sent, but anything written in the
+                resume itself (such as your name or phone number) goes with the
+                text, so remove it first if you prefer. The platform does not
+                store the resume text or the review; it records only daily call
+                counts and usage, and the review exists only on your open page.
+                Nothing is sent unless you submit.
               </p>
               <p>
                 The platform retains necessary data and backups to keep

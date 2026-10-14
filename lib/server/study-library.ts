@@ -21,7 +21,12 @@ import {
   LING_CURATED_TITLE,
   type CuratedEntry,
 } from '@/lib/ling-curated';
-import { classicList, type ClassicList } from '@/lib/classic-lists';
+import {
+  classicList,
+  groupEntries,
+  type ClassicEntry,
+  type ClassicList,
+} from '@/lib/classic-lists';
 import { STOP_NAMES } from '@/lib/route-stops';
 
 const CURATED_STAGES: CuratedEntry['stage'][] = ['基础', '核心', '进阶'];
@@ -432,6 +437,13 @@ const ratedRows = () =>
       `SELECT ${columns} FROM study_library l WHERE l.number IN (SELECT CAST(key AS INTEGER) FROM json_each(?))`,
     )
     .all(RATINGS_SQL_JSON) as LibraryRow[];
+/** Judgeable problems with a contest rating: the weekly contest's pool (lib/server/contests.ts). */
+export const ratedJudgeable = () =>
+  ratedRows().flatMap((row) =>
+    row.ready && row.judge_problem_id
+      ? [{ id: row.judge_problem_id, rating: lcRatingOf(row.number)!.rating }]
+      : [],
+  );
 
 /**
  * view=contests: the bank by weekly / biweekly contest, newest first (a contest's highest
@@ -528,8 +540,10 @@ const stopCodes = new Map(
 /**
  * A classic list in its own groups and order. Problems not judgeable here are
  * external: listed with a LeetCode link, left out of progress and the sequence.
+ * A book list's problem without a LeetCode twin is external too (number null).
  */
 export function listClassicLibrary(list: ClassicList, userId?: string) {
+  const entries = list.groups.map(groupEntries);
   const rows = new Map(
     (
       sqlite()
@@ -538,7 +552,7 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
     WHERE l.number IN (SELECT value FROM json_each(?))`,
         )
         .all(
-          JSON.stringify(list.groups.flatMap((group) => group.numbers)),
+          JSON.stringify(entries.flat().flatMap((entry) => entry.number ?? [])),
         ) as LibraryRow[]
     ).map((row) => [row.number, summary(row)]),
   );
@@ -546,18 +560,21 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
   const progress = userId
     ? studyProgress(userId, practiceRoundState(userId).activeRoundId)
     : new Map();
-  const item = (number: number) => {
-    const row = rows.get(number);
+  const item = ({ number, ref, refSlug }: ClassicEntry) => {
+    const row = number === null ? undefined : rows.get(number);
     // summary() only exposes the judge id of a problem that is judgeable now.
     const judgeProblemId = row?.judgeProblemId ?? null;
     const state = judgeProblemId ? progress.get(row!.id) : undefined;
-    const selection = curatedByNumber.get(number);
+    const selection = number === null ? undefined : curatedByNumber.get(number);
     const [stopZh, stopEn] =
       selection && Object.hasOwn(STOP_NAMES, selection.sectionSlug)
         ? STOP_NAMES[selection.sectionSlug]
         : [selection?.sectionTitle ?? '', selection?.sectionTitleEn ?? ''];
     return {
       number,
+      /** The book's own number and leetcode.cn page; null on LeetCode lists. */
+      ref,
+      refSlug,
       slug: row?.slug ?? '',
       titleZh: row?.titleZh ?? '',
       titleEn: row?.titleEn ?? '',
@@ -582,8 +599,8 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
       judging: !!state?.pending,
     };
   };
-  const groups = list.groups.map((group) => {
-    const items = group.numbers.map(item);
+  const groups = list.groups.map((group, index) => {
+    const items = entries[index].map(item);
     const judgeable = items.filter((entry) => !entry.external);
     return {
       nameZh: group.nameZh,
@@ -594,10 +611,10 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
       items,
     };
   });
-  // A number listed in two groups counts once.
+  // A number listed in two groups counts once; every book problem counts.
   const unique = [
     ...new Map(
-      groups.flatMap((group) => group.items).map((entry) => [entry.number, entry]),
+      groups.flatMap((group) => group.items).map((entry) => [entry.ref ?? entry.number, entry]),
     ).values(),
   ];
   const judgeable = unique.filter((entry) => !entry.external);
@@ -608,11 +625,14 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
       nameEn: list.nameEn,
       source: list.source,
       total: unique.length,
+      /** Problems with a LeetCode twin (all of them on a LeetCode list). */
+      mapped: unique.filter((entry) => entry.number !== null).length,
       ready: judgeable.length,
       solved: judgeable.filter((entry) => entry.solved).length,
     },
     groups,
-    sequence: judgeable.map((entry) => entry.judgeProblemId!),
+    // Two book problems can share one twin: it is solved once.
+    sequence: [...new Set(judgeable.map((entry) => entry.judgeProblemId!))],
     nextProblemId:
       judgeable.find((entry) => !entry.solved)?.judgeProblemId ?? null,
   };

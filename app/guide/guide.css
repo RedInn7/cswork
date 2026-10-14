@@ -1,0 +1,797 @@
+/* Career guide (/guide) and the resume review (/career/resume): a field manual on Line 500's
+   navy board, with the amber signal used as the season track and chapter numbers. */
+.guide-public {
+  --guide-amber: #ffb23f;
+  --guide-amber-ink: #8a5a00;
+}
+.guide-top-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+.guide-h2,
+.guide-season h2 {
+  margin: 0 0 16px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #5d6b78;
+}
+
+/* ── the season track ── */
+.guide-season ol {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.guide-season ol::before {
+  content: '';
+  position: absolute;
+  top: 33px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--guide-amber);
+}
+.guide-season li {
+  position: relative;
+  display: grid;
+  grid-template-rows: 20px 14px auto auto;
+  gap: 8px;
+  padding-right: 14px;
+  animation: guide-rise 0.5s calc(var(--i, 0) * 70ms) both;
+}
+.guide-season li::before {
+  content: '';
+  grid-row: 2;
+  width: 14px;
+  height: 14px;
+  box-sizing: border-box;
+  border: 3px solid #0e1a2b;
+  border-radius: 50%;
+  background: #ffffff;
+  z-index: 1;
+}
+.guide-season-months {
+  grid-row: 1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0e1a2b;
+}
+.guide-season li strong {
+  font-size: 15px;
+  line-height: 1.3;
+}
+.guide-season li > span:last-child {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #5d6b78;
+}
+.guide-season-note {
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  color: #5d6b78;
+}
+@keyframes guide-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* ── chapter cards ── */
+.guide-chapters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.guide-chapters a {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 4px 16px;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 18px 20px;
+  border: 1px solid #e1e6eb;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #1d252d;
+  text-decoration: none;
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+}
+.guide-chapters a:hover {
+  border-color: #0e1a2b;
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+.guide-chapters .guide-no {
+  grid-row: span 2;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--guide-amber-ink);
+}
+.guide-chapters strong {
+  font-size: 16px;
+  line-height: 1.35;
+}
+.guide-chapters a > span:last-child {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: #5d6b78;
+}
+.guide-review-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 24px;
+  padding: 22px 26px;
+  border-radius: 16px;
+  background: #0e1a2b;
+  color: #eef3f8;
+}
+.guide-review-cta p {
+  margin: 0;
+  font-size: 15px;
+}
+.mock-public .guide-review-cta a {
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: var(--guide-amber);
+  color: #0e1a2b;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* ── a chapter ── */
+.guide-layout {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 44px;
+  align-items: start;
+}
+.guide-toc {
+  position: sticky;
+  top: 20px;
+}
+.guide-toc ol {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mock-public .guide-toc a {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 6px;
+  padding: 7px 10px;
+  border-left: 3px solid transparent;
+  border-radius: 0 8px 8px 0;
+  color: #3a4652;
+  font-size: 13.5px;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.guide-toc a span {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  color: #5d6b78;
+}
+.mock-public .guide-toc a:hover {
+  background: #eef1f4;
+}
+.mock-public .guide-toc a[aria-current='page'] {
+  border-left-color: var(--guide-amber);
+  background: #ffffff;
+  color: #0e1a2b;
+  font-weight: 700;
+}
+.guide-article {
+  max-width: 72ch;
+  min-width: 0;
+}
+.guide-article-head {
+  display: grid;
+  gap: 12px;
+  padding-bottom: 22px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #e1e6eb;
+}
+.guide-article-kicker {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: var(--guide-amber-ink);
+}
+.guide-article-head h1 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+.guide-article-head > p:last-child {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #5d6b78;
+}
+.guide-body {
+  font-size: 16.5px;
+  line-height: 1.78;
+}
+.guide-body h2 {
+  margin: 36px 0 10px;
+  padding-left: 12px;
+  border-left: 4px solid var(--guide-amber);
+  font-size: 21px;
+  line-height: 1.3;
+}
+.guide-body p,
+.guide-body ul,
+.guide-body ol {
+  margin: 0 0 14px;
+}
+.guide-body li + li {
+  margin-top: 6px;
+}
+.guide-body strong {
+  color: #0e1a2b;
+}
+.guide-body blockquote {
+  margin: 0 0 16px;
+  padding: 14px 18px;
+  border-left: 4px solid #0e1a2b;
+  border-radius: 0 12px 12px 0;
+  background: #ffffff;
+  color: #2b3a50;
+}
+.guide-body blockquote p {
+  margin: 0;
+}
+.guide-body code {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: #eef1f4;
+  font-size: 0.9em;
+}
+.guide-body pre {
+  margin: 0 0 18px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  border-radius: 12px;
+  background: #0e1a2b;
+  color: #e4ecf5;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.guide-body pre code {
+  padding: 0;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+}
+.guide-body :is(pre, .guide-table):focus-visible {
+  outline: 2px solid #0d7a63;
+  outline-offset: 3px;
+}
+.guide-table {
+  margin: 0 0 18px;
+  overflow-x: auto;
+  border: 1px solid #e1e6eb;
+  border-radius: 12px;
+  background: #ffffff;
+}
+.guide-table table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.guide-table th,
+.guide-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #e1e6eb;
+  text-align: left;
+  vertical-align: top;
+}
+.guide-table th {
+  background: #f1f4f7;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #3a4652;
+}
+.guide-table tr:last-child td {
+  border-bottom: 0;
+}
+.guide-adjacent {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 36px;
+}
+.guide-adjacent a {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid #e1e6eb;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #1d252d;
+  text-decoration: none;
+}
+.guide-adjacent a[rel='next'],
+.guide-adjacent a:last-child {
+  text-align: right;
+}
+.guide-adjacent small {
+  color: #5d6b78;
+  font-size: 12px;
+}
+
+/* ── the resume review ── */
+.resume-review {
+  display: grid;
+  gap: 22px;
+}
+.resume-privacy {
+  display: grid;
+  gap: 6px;
+  padding: 14px 18px;
+  border: 1px solid #f0d9a8;
+  border-radius: 12px;
+  background: #fff8ea;
+  color: #4a3a12;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.resume-privacy strong {
+  color: #3b2c06;
+}
+.resume-privacy p {
+  margin: 0;
+}
+.resume-form {
+  display: grid;
+  gap: 16px;
+}
+.resume-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.resume-form label small {
+  font-weight: 400;
+  color: #5d6b78;
+}
+.resume-form :is(input, textarea) {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #c9d1da;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1d252d;
+  font: inherit;
+  font-weight: 400;
+  line-height: 1.55;
+}
+.resume-form textarea {
+  resize: vertical;
+}
+.resume-form #resume-text {
+  min-height: 300px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+}
+.resume-form :is(input, textarea):focus-visible {
+  outline: 2px solid #0d7a63;
+  outline-offset: 1px;
+  border-color: #0d7a63;
+}
+.resume-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+.resume-actions button {
+  min-height: 42px;
+  padding: 9px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: #0e1a2b;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.resume-actions button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.resume-actions button:focus-visible {
+  outline: 2px solid var(--guide-amber);
+  outline-offset: 3px;
+}
+.resume-actions small {
+  color: #5d6b78;
+  font-size: 13px;
+}
+.resume-error {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fdecec;
+  color: #8f1f1f;
+  font-size: 14px;
+}
+.resume-off {
+  padding: 20px 22px;
+  border: 1px dashed #c9d1da;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #3a4652;
+}
+.resume-result {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+  border: 1px solid #e1e6eb;
+  border-radius: 16px;
+  background: #ffffff;
+}
+.resume-result h2 {
+  margin: 0;
+  font-size: 22px;
+}
+.resume-result h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--guide-amber-ink);
+}
+.resume-result ul {
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.65;
+}
+.resume-summary {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.65;
+}
+.resume-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.resume-keywords li {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+.resume-keywords.is-missing li {
+  border: 1px solid #e9b4b4;
+  background: #fdf1f1;
+  color: #8f1f1f;
+}
+.resume-keywords.is-present li {
+  border: 1px solid #a7d8c2;
+  background: #ecf8f2;
+  color: #0b6b48;
+}
+.resume-rewrites {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.resume-rewrites li {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #f6f7f9;
+}
+.resume-rewrites del {
+  color: #8f1f1f;
+}
+.resume-rewrites ins {
+  color: #0b6b48;
+  text-decoration: none;
+  font-weight: 600;
+}
+.resume-rewrites small {
+  color: #5d6b78;
+  font-size: 13px;
+}
+
+@media (max-width: 860px) {
+  .guide-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .guide-toc {
+    position: static;
+    order: 2;
+  }
+  .guide-chapters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .guide-season ol {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+    padding-left: 30px;
+  }
+  .guide-season ol::before {
+    top: 4px;
+    bottom: 4px;
+    left: 5px;
+    right: auto;
+    width: 4px;
+    height: auto;
+  }
+  .guide-season li {
+    grid-template-rows: auto;
+    gap: 4px;
+  }
+  .guide-season li::before {
+    position: absolute;
+    top: 3px;
+    left: -30px;
+  }
+  .guide-season-months {
+    grid-row: auto;
+  }
+}
+@media (max-width: 560px) {
+  .guide-adjacent {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .resume-result {
+    padding: 18px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guide-season li {
+    animation: none;
+  }
+  .guide-chapters a {
+    transition: none;
+  }
+  .guide-chapters a:hover {
+    transform: none;
+  }
+}
+@media print {
+  .guide-toc,
+  .guide-adjacent,
+  .mock-public-header,
+  .mock-public-footer {
+    display: none;
+  }
+  .guide-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
+@media screen {
+  .dark .guide-public {
+    --guide-amber-ink: #e6b97e;
+  }
+  .dark .guide-h2,
+  .dark .guide-season h2 {
+    color: #b5c2ce;
+  }
+  .dark .guide-season ol::before {
+    background: var(--guide-amber);
+  }
+  .dark .guide-season li::before {
+    border: 3px solid #94a4bb;
+    background: #191919;
+  }
+  .dark .guide-season-months {
+    color: #d6e4f9;
+  }
+  .dark .guide-season li > span:last-child {
+    color: #b5c2ce;
+  }
+  .dark .guide-season-note {
+    color: #b5c2ce;
+  }
+  .dark .guide-chapters a {
+    border: 1px solid #2b2f33;
+    background: #191919;
+    color: #d6dfe8;
+    text-decoration: none;
+  }
+  .dark .guide-chapters a:hover {
+    border-color: #94a4bb;
+    text-decoration: none;
+  }
+  .dark .guide-chapters .guide-no {
+    color: var(--guide-amber-ink);
+  }
+  .dark .guide-chapters a > span:last-child {
+    color: #b5c2ce;
+  }
+  .dark .guide-review-cta {
+    background: #0e1a2b;
+    color: #eef3f8;
+  }
+  .dark .mock-public .guide-review-cta a {
+    background: var(--guide-amber);
+    color: #0e1a2b;
+    text-decoration: none;
+  }
+  .dark .mock-public .guide-toc a {
+    border-left: 3px solid transparent;
+    color: #c4d1dd;
+    text-decoration: none;
+  }
+  .dark .guide-toc a span {
+    color: #b5c2ce;
+  }
+  .dark .mock-public .guide-toc a:hover {
+    background: #101213;
+  }
+  .dark .mock-public .guide-toc a[aria-current='page'] {
+    border-left-color: var(--guide-amber);
+    background: #191919;
+    color: #d6e4f9;
+  }
+  .dark .guide-article-head {
+    border-bottom: 1px solid #2b2f33;
+  }
+  .dark .guide-article-kicker {
+    color: var(--guide-amber-ink);
+  }
+  .dark .guide-article-head > p:last-child {
+    color: #b5c2ce;
+  }
+  .dark .guide-body h2 {
+    border-left: 4px solid var(--guide-amber);
+  }
+  .dark .guide-body strong {
+    color: #d6e4f9;
+  }
+  .dark .guide-body blockquote {
+    border-left: 4px solid #94a4bb;
+    background: #191919;
+    color: #c5d5ed;
+  }
+  .dark .guide-body code {
+    background: #101213;
+  }
+  .dark .guide-body pre {
+    background: #0e1a2b;
+    color: #e4ecf5;
+  }
+  .dark .guide-body pre code {
+    background: none;
+    color: inherit;
+  }
+  .dark .guide-body :is(pre, .guide-table):focus-visible {
+    outline: 2px solid #87d2bb;
+  }
+  .dark .guide-table {
+    border: 1px solid #2b2f33;
+    background: #191919;
+  }
+  .dark .guide-table th,
+  .dark .guide-table td {
+    border-bottom: 1px solid #2b2f33;
+  }
+  .dark .guide-table th {
+    background: #121315;
+    color: #c4d1dd;
+  }
+  .dark .guide-table tr:last-child td {
+    border-bottom: 0;
+  }
+  .dark .guide-adjacent a {
+    border: 1px solid #2b2f33;
+    background: #191919;
+    color: #d6dfe8;
+    text-decoration: none;
+  }
+  .dark .guide-adjacent small {
+    color: #b5c2ce;
+  }
+  .dark .resume-privacy {
+    border: 1px solid #3e3111;
+    background: #19150e;
+    color: #e1d1ad;
+  }
+  .dark .resume-privacy strong {
+    color: #e7d7b6;
+  }
+  .dark .resume-form label small {
+    color: #b5c2ce;
+  }
+  .dark .resume-form :is(input, textarea) {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .resume-form :is(input, textarea):focus-visible {
+    outline: 2px solid #87d2bb;
+    border-color: #0d7a63;
+  }
+  .dark .resume-actions button {
+    border: 0;
+    background: #0e1a2b;
+    color: #ffffff;
+  }
+  .dark .resume-actions button:focus-visible {
+    outline: 2px solid var(--guide-amber);
+  }
+  .dark .resume-actions small {
+    color: #b5c2ce;
+  }
+  .dark .resume-error {
+    background: #180f0f;
+    color: #fcb6ae;
+  }
+  .dark .resume-off {
+    border: 1px dashed #31383f;
+    background: #191919;
+    color: #c4d1dd;
+  }
+  .dark .resume-result {
+    border: 1px solid #2b2f33;
+    background: #191919;
+  }
+  .dark .resume-result h3 {
+    color: var(--guide-amber-ink);
+  }
+  .dark .resume-keywords.is-missing li {
+    border: 1px solid #533132;
+    background: #181212;
+    color: #fcb6ae;
+  }
+  .dark .resume-keywords.is-present li {
+    border: 1px solid #1c4133;
+    background: #0f1512;
+    color: #94d8b5;
+  }
+  .dark .resume-rewrites li {
+    background: #151516;
+  }
+  .dark .resume-rewrites del {
+    color: #fcb6ae;
+  }
+  .dark .resume-rewrites ins {
+    color: #94d8b5;
+    text-decoration: none;
+  }
+  .dark .resume-rewrites small {
+    color: #b5c2ce;
+  }
+}
+/* ── end dark theme ── */

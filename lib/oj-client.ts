@@ -35,7 +35,28 @@ export type OJProblem = Problem & {
   failedSubmissionIds?: string[];
   /** Line 500's three progressive hints: observation, invariant, steps. */
   lingHints?: { zh: string[]; en: string[] } | null;
+  /**
+   * Whether a Line 500 editorial exists (null: none) and its code passed the judge. The editorial
+   * is GET problems/<id>/editorial (components/ling-editorial.tsx), once solved or after a confirm.
+   */
+  lingEditorialVerified?: boolean | null;
+  /** The problem's Line 500 stop slug, null off the line. */
+  stop?: string | null;
   similar?: SimilarProblem[];
+};
+/** Approaches from brute force to best; `verified`: every approach passed the judge's tests. */
+export type LingEditorial = {
+  approaches: {
+    nameZh: string;
+    nameEn: string;
+    ideaZh: string;
+    ideaEn: string;
+    time: string;
+    space: string;
+    python: string;
+    cpp: string;
+  }[];
+  verified: boolean;
 };
 export type SimilarProblem = {
   id: string;

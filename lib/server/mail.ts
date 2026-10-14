@@ -38,6 +38,37 @@ export async function sendAuthOTP(
   const zh = ctx?.getHeader('x-locale') === 'zh';
   if (!mailReady())
     throw new Error('邮箱验证服务尚未开放，请使用已配置的登录方式或联系老师。');
+  const key = createHash('sha256')
+    .update(`${email}\n${type}\n${otp}`)
+    .digest('hex');
+  await sendMail({
+    to: email,
+    subject: subjects[type][zh ? 0 : 1],
+    text: zh
+      ? `你正在${actions[type][0]}。\n\n验证码：${otp}\n\n验证码 5 分钟内有效，请勿转发给他人。如果不是你发起的操作，请忽略这封邮件。`
+      : `You asked to ${actions[type][1]}.\n\nYour code: ${otp}\n\nThe code is valid for 5 minutes. Don't share it with anyone. If you didn't ask for this, ignore this email.`,
+    key: `cswork-otp-${key}`,
+  }).catch((error: unknown) => {
+    console.error('mail', error instanceof Error ? error.message : 'unknown');
+    throw new Error('验证码邮件未能发送，请稍后重试。');
+  });
+}
+
+/** One plain-text mail through Resend; `key` makes retries idempotent. Throws unless sent. */
+export async function sendMail({
+  to,
+  subject,
+  text,
+  key,
+  headers,
+}: {
+  to: string;
+  subject: string;
+  text: string;
+  key: string;
+  headers?: Record<string, string>;
+}) {
+  if (!mailReady()) throw new Error('mail is not configured');
   const endpoint = new URL(
     '/emails',
     setting('MAIL_API_BASE_URL') || 'https://api.resend.com',
@@ -48,25 +79,33 @@ export async function sendAuthOTP(
     !['127.0.0.1', 'localhost', '[::1]'].includes(endpoint.hostname)
   )
     throw new Error('邮件服务地址必须使用 HTTPS');
-  const key = createHash('sha256')
-    .update(`${email}\n${type}\n${otp}`)
-    .digest('hex');
   const response = await fetch(endpoint, {
     method: 'POST',
     signal: AbortSignal.timeout(8000),
     headers: {
       Authorization: `Bearer ${setting('RESEND_API_KEY')}`,
       'Content-Type': 'application/json',
-      'Idempotency-Key': `cswork-otp-${key}`,
+      'Idempotency-Key': key,
     },
     body: JSON.stringify({
       from: setting('MAIL_FROM'),
-      to: [email],
-      subject: subjects[type][zh ? 0 : 1],
-      text: zh
-        ? `你正在${actions[type][0]}。\n\n验证码：${otp}\n\n验证码 5 分钟内有效，请勿转发给他人。如果不是你发起的操作，请忽略这封邮件。`
-        : `You asked to ${actions[type][1]}.\n\nYour code: ${otp}\n\nThe code is valid for 5 minutes. Don't share it with anyone. If you didn't ask for this, ignore this email.`,
+      to: [to],
+      subject,
+      text,
+      ...(headers ? { headers } : {}),
     }),
   });
-  if (!response.ok) throw new Error('验证码邮件未能发送，请稍后重试。');
+  if (!response.ok) throw new Error(`mail not sent (${response.status})`);
 }
+
+/** The newsletter's double opt-in mail (lib/server/newsletter.ts). */
+export const newsletterConfirmation = (zh: boolean, link: string) =>
+  zh
+    ? {
+        subject: '确认订阅 CSWork 周报',
+        text: `点下面的链接确认订阅 CSWork 周报（每周一封：新题、热门讨论、每日一题战报）：\n\n${link}\n\n不是你订阅的？忽略这封邮件就好，不会再收到。`,
+      }
+    : {
+        subject: 'Confirm your CSWork weekly subscription',
+        text: `Confirm your subscription to the CSWork weekly (one email a week: new problems, top discussions and daily problem results):\n\n${link}\n\nDidn't subscribe? Ignore this email and you won't hear from us.`,
+      };

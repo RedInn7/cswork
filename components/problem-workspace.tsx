@@ -56,6 +56,7 @@ import {
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { OaCompanyBadge, OaEditorial } from './oa-library';
+import { LingEditorial } from './ling-editorial';
 import { CompanyTags } from './company-tags';
 import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-notes';
 import { AskedReport, communityProblem } from './problem-community';
@@ -70,6 +71,7 @@ import {
   MockExamDone,
   useMockExam,
 } from './mock-exam-bar';
+import { ContestBar, useContestRoom } from './contest-bar';
 import { useReplayRecorder } from './mock-replay';
 import { reportWindow } from '@/lib/mock-oa';
 import {
@@ -90,6 +92,7 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { CodeEditor } from './editor';
+import { DebugButton } from './python-debugger-button';
 import { ProblemTimer, formatClock, stopTimer } from './problem-timer';
 import { ACM_IO_TEMPLATES } from '@/lib/acm-io-templates';
 import { useIdlePrecompile } from '@/hooks/use-idle-precompile';
@@ -147,6 +150,7 @@ import { englishMessage } from '@/lib/messages-en';
 import '@/app/editor.css';
 import '@/app/lc-rating.css';
 import '@/app/workbench-tools.css';
+import '@/app/sql-result.css';
 import '@/app/workspace-panels.css';
 import '@/app/workspace-sync.css';
 
@@ -158,6 +162,10 @@ type WorkspaceProps = {
   refresh: () => Promise<void>;
   /** ?mock=<session id>: the problem is a question of a timed mock OA. */
   mock?: string;
+  /** ?room=<contest id>: the problem is a question of a contest room (lib/server/contests.ts). */
+  room?: string;
+  /** ?tab=solutions opens on the community solutions (a contest's upsolve links). */
+  tab?: string;
 };
 type MaxPanel = 'statement' | 'code' | 'console';
 type ReplaceRequest = {
@@ -262,17 +270,28 @@ function Workspace({
   ask,
   refresh,
   mock,
+  room,
+  tab,
 }: WorkspaceProps) {
   const userId = boot.person?.id || 'guest';
-  // A running mock OA hides solutions, hints and the way to other problems.
+  // A running mock OA or contest hides solutions, hints and the way to other problems.
   const exam = useMockExam(mock, userId, initialProblem.id);
-  const examMode = !!exam?.running;
-  // A mock question starts from the template, not this browser's earlier draft of it.
+  const contest = useContestRoom(room, initialProblem.id);
+  const examMode = !!exam?.running || !!contest?.running;
+  // A mock or contest question starts from the template, not this browser's earlier draft of it.
   const [draftId] = useState(() =>
-    exam ? `${initialProblem.id}:mock:${exam.session.id}` : initialProblem.id,
+    exam
+      ? `${initialProblem.id}:mock:${exam.session.id}`
+      : room
+        ? `${initialProblem.id}:room:${room}`
+        : initialProblem.id,
   );
   // In the exam the Submissions tab lists only this exam's attempts.
-  const examFrom = exam?.running ? reportWindow(exam.session).from : 0;
+  const examFrom = exam?.running
+    ? reportWindow(exam.session).from
+    : contest?.running
+      ? (contest.view.me?.start ?? 0)
+      : 0;
   const [problem, setProblem] = useState(() => summaryProblem(initialProblem));
   const [neighbors, setNeighbors] = useState<
     ReturnType<typeof problemNeighbors>
@@ -378,7 +397,7 @@ function Workspace({
   const runButton = useRef<HTMLButtonElement>(null);
   const [leftTab, setLeftTab] = useState<
     'statement' | 'history' | 'editorial' | 'notes' | 'solutions'
-  >('statement');
+  >(tab === 'solutions' && boot.person && communityProblem(initialProblem.id) ? 'solutions' : 'statement');
   // Private to an account, and closed during a mock exam like the editorial.
   const note = useProblemNote(
     boot.person && !examMode ? userId : null,
@@ -461,6 +480,16 @@ function Workspace({
   const [historyError, setHistoryError] = useState('');
   const [historyRevision, setHistoryRevision] = useState(0);
   const shownHistory = history.filter((item) => item.created_at >= examFrom);
+  // A practice-round problem counts as passed only by an AC in this round (badge and editorial lock).
+  const solvedThisRound = shownHistory.some(
+    (item) =>
+      item.mode === 'judge' &&
+      item.status === 'accepted' &&
+      (!problem.practiceRound ||
+        (!!practiceRound && item.practiceRoundId === practiceRound.id)),
+  );
+  // The Line 500 editorial opens once the problem is passed, or after a confirm kept until reload.
+  const [editorialAsked, setEditorialAsked] = useState(false);
   const [problemError, setProblemError] = useState('');
   const [problemRevision, setProblemRevision] = useState(0);
   useEffect(() => {
@@ -547,7 +576,7 @@ function Workspace({
     code: starters.python,
   });
   // Signed in and not a mock question: drafts also live on the server, across devices.
-  const cloudSync = !!boot.person && !mock;
+  const cloudSync = !!boot.person && !mock && !room;
   const cloudFor = (next: Language, mode: CodingMode) =>
     cloudSync ? { problemId: draftId, language: next, codingMode: mode } : undefined;
   const [restored, setRestored] = useState<{ previous: string; at: number } | null>(null);
@@ -1481,7 +1510,7 @@ function Workspace({
             english={uiEnglish}
           />
         )}
-        {problem.id.startsWith('oa-') && !examMode && (
+        {(problem.id.startsWith('oa-') || problem.lingEditorialVerified != null) && !examMode && (
           <button
             role="tab"
             className={leftTab === 'editorial' ? 'active' : ''}
@@ -1507,6 +1536,18 @@ function Workspace({
         )}
         {leftTab === 'notes' && note.enabled ? (
           <ProblemNotes note={note} english={uiEnglish} />
+        ) : leftTab === 'editorial' && problem.lingEditorialVerified != null && !examMode ? (
+          <LingEditorial
+            key={problem.id}
+            problemId={problem.id}
+            verified={problem.lingEditorialVerified}
+            english={uiEnglish}
+            unlocked={editorialAsked || solvedThisRound}
+            onUnlock={() => setEditorialAsked(true)}
+            code={code}
+            language={language}
+            settings={settings}
+          />
         ) : leftTab === 'editorial' ? (
           <OaEditorial key={problem.id} problemId={problem.id} />
         ) : leftTab === 'solutions' && boot.person && !examMode ? (
@@ -1535,14 +1576,7 @@ function Workspace({
                   <AskedReport problemId={problem.id} english={uiEnglish} signedIn={false} />
                 )
               )}
-              {shownHistory.some(
-                (item) =>
-                  item.mode === 'judge' &&
-                  item.status === 'accepted' &&
-                  (!problem.practiceRound ||
-                    (!!practiceRound &&
-                      item.practiceRoundId === practiceRound.id)),
-              ) && (
+              {solvedThisRound && (
                 <span className="cs-statement-solved">
                   {uiEnglish ? 'Solved' : '已通过'}
                   <CircleCheck size={18} />
@@ -1812,6 +1846,7 @@ function Workspace({
                 hints={problem.lingHints}
                 ladder={hintLadder}
                 english={uiEnglish}
+                stop={problem.stop}
               />
             )}
             {/* Off unless the server has AI configured; never during a mock OA or on SQL problems. */}
@@ -2310,6 +2345,15 @@ function Workspace({
                         {t('自定义输入', 'Custom input')}
                       </button>
                     </div>
+                    {language !== 'sql' && (
+                      <DebugButton
+                        language={language}
+                        code={code}
+                        stdin={inputMode === 'custom' ? stdin : (exampleCase ?? '')}
+                        mode={codingMode}
+                        template={codingMode === 'leetcode' ? templateFor('python', 'leetcode') : ''}
+                      />
+                    )}
                     {inputMode === 'custom' && (
                       <span
                         className={
@@ -2614,6 +2658,9 @@ function Workspace({
         ) : (
           <MockExamDone session={exam.session} navigate={navigate} />
         ))}
+      {contest && !exam && (
+        <ContestBar contest={contest} problemId={problem.id} submissions={boot.submissions ?? []} navigate={navigate} />
+      )}
       <div className="cs-workspace-header">
         <div className="cs-workspace-heading">
           {!examMode && (
