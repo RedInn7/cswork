@@ -18,6 +18,12 @@ cswork 使用 Monaco Editor 作为浏览器编辑器、BullMQ 作为持久化任
 
 限制：导入总 JSON ≤8 MiB、2–64 测试点、每点输入/答案 ≤4 MiB；至少一个公开样例及一个隐藏点。CPU 0.1–10 秒/点，内存 16–512 MiB，输出 1–4096 KiB。`tokens` 按 ASCII 空白比较 token；`exact` 仅规范化 CRLF 后逐字比较。
 
+## SQL 专项
+
+- 语言 `sql` 不改沙箱镜像：worker 跳过编译，在沙箱里用 `python3 -I -S` 运行受信任的 harness（`lib/server/sql-judge.ts`）。stdin 是测试点的建表和插入 SQL，`query.sql` 是学员的一条 SELECT。harness 把数据装进内存 SQLite，设 `PRAGMA query_only` 后执行查询，输出统一格式：首行列数，之后每行一个 JSON 数组；NULL 为 null，小数保留 4 位，整数值的小数等于整数，文本不等于数字；默认把行排序后比较，数据首行为 `-- cswork:ordered` 时比较顺序。判题用 `exact` checker。SQL 错误是运行错误，公开样例会显示错误信息。
+- 题目源在 `scripts/sql-track/`（20 道原创题、手写边界数据、参考答案、等价答案和常见错解）。`node --import tsx scripts/sql-track/build.ts` 用本机 python3 的 sqlite3 跑全部查询，生成 `content/sql-track/packages.json` 和列表用的 `lib/content/sql-track.json`；等价答案必须在所有数据上一致，每个错解必须被某个隐藏数据集拒绝，否则构建失败。CI 的 `tests/sql-track.test.ts` 重跑构建并和已提交文件比对。
+- 发布：`deploy/release.sh` 在 OA 批次之后运行 `scripts/publish-sql-track.ts`，未变化的题跳过。`sql-` 题和 OA 一样对已验证邮箱的账号免费评测。入口是题库的「SQL 专项」（`?view=problems&library=sql`）。
+
 ## 持久化与运行
 
 固定例外：`oa-pure-storage-8` 使用 `oa-binary-search-witness`，原题没有输入，只保留一个公开空输入测试点，不构造重复隐藏数据。检查器接受所有合法的 Java int 二分查找反例，而非比较固定输出；其余题目仍要求公开和隐藏测试点。
@@ -34,7 +40,7 @@ worker 每 200 毫秒投递新提交，另每 5 秒恢复未完成提交到 Bull
 
 ## API
 
-**访问规则**：OA 和题库（灵神/LeetCode）题对任何已验证邮箱的登录用户免费开放读题、运行、提交、预编译和编辑器辅助，不需要课程授权；匿名用户只能看 OA 题面和精选列表。课程配套练习仍按课程授权，并受课程「仅所有者可见」开关限制。限流、并发上限、沙箱和提交记录隔离对所有人一致。
+**访问规则**：OA、SQL 专项和题库（灵神/LeetCode）题对任何已验证邮箱的登录用户免费开放读题、运行、提交、预编译和编辑器辅助，不需要课程授权；匿名用户只能看 OA 题面和精选列表。课程配套练习仍按课程授权，并受课程「仅所有者可见」开关限制。限流、并发上限、沙箱和提交记录隔离对所有人一致。
 
 | 接口                                         | 用途                                                                      |
 | -------------------------------------------- | ------------------------------------------------------------------------- |
