@@ -5,10 +5,15 @@ import { cache } from 'react';
 import { RESULTS, ROUND_LABELS, type ExperienceFacts } from '@/lib/experience';
 import { companyHubPath, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
 import { breadcrumbJsonLd, companyPageTitle, seoMetadata } from '@/lib/seo';
-import { CompanyStatsCard } from '@/components/company-stats-card';
+import { CompanyStatsCard, MemberStatsCard } from '@/components/company-stats-card';
 import { companyHub } from '@/lib/server/company-hub';
 import { companyStats } from '@/lib/server/company-stats';
-import { companyMemberExperiences, memberExperiencePath, memberIdOf } from '@/lib/server/experience-submissions';
+import {
+  companyMemberExperiences,
+  memberExperiencePath,
+  memberExperienceStats,
+  memberIdOf,
+} from '@/lib/server/experience-submissions';
 import { library } from '@/lib/server/content-library';
 import { requestLocale } from '@/lib/server/locale';
 import { oaReadyProblems } from '@/lib/server/oa-judge';
@@ -40,6 +45,7 @@ const load = cache(async (slug: string) => {
     experiences: [...members.items, ...hub.experiences].slice(0, 6),
     experienceTotal: hub.company.experiences + members.total,
     stats: companyStats(library(), hub.company.library),
+    memberStats: memberExperienceStats(hub.company.slug),
     ready,
     locale,
     lead,
@@ -103,7 +109,7 @@ function SectionHead({ id, title, count, all, zh }: { id: string; title: string;
 }
 
 export default async function CompanyPage({ params }: Props) {
-  const { company, oa, leetcode, experiences, experienceTotal, questions, mockOa, mockInterview, stats, ready, locale, lead } = await load(
+  const { company, oa, leetcode, experiences, experienceTotal, questions, mockOa, mockInterview, stats, memberStats, ready, locale, lead } = await load(
     (await params).slug,
   );
   const zh = locale === 'zh';
@@ -152,6 +158,9 @@ export default async function CompanyPage({ params }: Props) {
             {zh ? '模拟面试抽题' : 'Mock interview'}
           </a>
         )}
+        <a className="oa-public-cta is-quiet" href={`/discuss?${new URLSearchParams({ company: company.slug })}`}>
+          {zh ? `讨论 ${company.name}` : `Discuss ${company.name}`}
+        </a>
       </div>
       {stops.length > 1 && (
         <nav className="company-hub-stops" aria-label={zh ? '本页内容' : 'On this page'}>
@@ -168,6 +177,7 @@ export default async function CompanyPage({ params }: Props) {
         </nav>
       )}
       {stats && <CompanyStatsCard stats={stats} locale={locale} />}
+      {memberStats && <MemberStatsCard stats={memberStats} locale={locale} />}
 
       {!!oa.length && (
         <section className="company-hub-section" aria-labelledby="oa">
