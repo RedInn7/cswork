@@ -5,6 +5,7 @@ const pages: Record<string, string> = {
   courses: 'Courses',
   knowledge: 'Knowledge',
   problems: 'Problem library',
+  mock: 'Mock OA',
   problem: 'Practice',
   lesson: 'Lesson',
   questions: 'Questions',

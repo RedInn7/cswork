@@ -10,6 +10,7 @@ import { handleEditorIntelligence } from './editor-intelligence';
 import { judgeFeed } from './judge-feed';
 import { requestPrecompile } from './oj-precompile';
 import { handleOaLibrary } from './oa-library';
+import { handleMockOa } from './mock-oa';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
 import {
@@ -57,6 +58,7 @@ export async function handleOj(
     [resource, id, action, operation] = path;
   if (resource === 'oa-library')
     return handleOaLibrary(request, p, path.slice(1));
+  if (resource === 'mock-oa') return handleMockOa(request, p, path.slice(1));
   if (request.method === 'GET' && resource === 'problems' && id && !action) {
     // OA statements are public; other problems keep the course entitlement gate.
     const oa = id.startsWith('oa-');
