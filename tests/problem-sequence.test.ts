@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   nextUnsolved,
   problemNeighbors,
+  problemSequence,
   rememberProblemSequence,
 } from '../lib/problem-sequence';
 
@@ -35,7 +36,9 @@ void test('a classic list is remembered with its sequence and cleared by other l
       removeItem: (k: string) => store.delete(k),
     },
   });
+  assert.deepEqual(problemSequence(), []);
   rememberProblemSequence(ids, 'blind-75');
+  assert.deepEqual(problemSequence(), ids);
   assert.deepEqual(problemNeighbors('b'), { prev: 'a', next: 'c', library: 'blind-75' });
   // A problem opened from elsewhere does not inherit the list.
   assert.deepEqual(problemNeighbors('x'), {});

@@ -114,8 +114,15 @@ function clean(event: unknown): [string, string] | null {
   return [name, JSON.stringify(kept)];
 }
 
-/** A server-side event (auth hooks). Never throws: analytics must not fail a sign-in. */
-export function record(name: 'sign_up' | 'login', userId: string, params: Record<string, string> = {}) {
+/**
+ * A server-side event (auth hooks; ai_tutor: kind, outcome and token counts, never prompts or
+ * code). Never throws: analytics must not fail a sign-in.
+ */
+export function record(
+  name: 'sign_up' | 'login' | 'ai_tutor',
+  userId: string,
+  params: Record<string, string | number> = {},
+) {
   try {
     const now = Date.now();
     metrics().insert.run(now, dayOf(now), name, SERVER, userId, JSON.stringify(params));

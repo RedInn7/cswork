@@ -266,19 +266,37 @@ function tidyBoldLine(line: string) {
 // CJK-friendly emphasis: CommonMark cannot close `**进阶：**尝试` (punctuation
 // before the closing marker, a CJK letter after it); this plugin can.
 const MARKDOWN_PLUGINS = [remarkGfm, remarkCjkFriendly];
+// Text we did not write (AI replies): no image can load and no link can be followed,
+// whatever Markdown form it takes (inline, reference, autolink, bare URL). Links keep their text.
+const PLAIN = ['img', 'a'];
+// Other learners' posts: links stay, images never load (no tracking pixels).
+const UNTRUSTED_HIDDEN = ['img'];
+// The overrides above repair imported statements (bold, scripts, labels); a learner's text renders as typed.
+const UNTRUSTED_COMPONENTS: Components = { a: components.a };
 // Parsing the statement is the costliest part of a workspace render; the many
 // re-renders while a submission is judged (status, verdict, history) skip it.
 export const StatementMarkdown = memo(function StatementMarkdown({
   body,
   className = 'cs-statement-markdown',
+  plain = false,
+  untrusted = false,
 }: {
   body: string;
   className?: string;
+  plain?: boolean;
+  /** Other learners' text: rendered as typed (none of the imported-statement repairs) and
+   *  without images, so a post cannot load a tracking pixel for its readers. */
+  untrusted?: boolean;
 }) {
   return (
     <article className={className}>
-      <Markdown remarkPlugins={MARKDOWN_PLUGINS} components={components}>
-        {tidyImportedBold(body)}
+      <Markdown
+        remarkPlugins={MARKDOWN_PLUGINS}
+        components={untrusted ? UNTRUSTED_COMPONENTS : components}
+        disallowedElements={plain ? PLAIN : untrusted ? UNTRUSTED_HIDDEN : undefined}
+        unwrapDisallowed={plain}
+      >
+        {untrusted ? body : tidyImportedBold(body)}
       </Markdown>
     </article>
   );

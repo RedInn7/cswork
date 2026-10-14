@@ -5,6 +5,7 @@ import { lcIdBySource } from '@/lib/company-tags';
 import { experienceColumns, experienceFacts, experienceFactsOf } from '@/lib/experience';
 import type { Person } from './auth';
 import { companyPractice } from './company-hub';
+import { memberExperiences, memberIdOf, memberItem, mergePage } from './experience-submissions';
 import { setting } from './env';
 import { HttpError, json, limitReader } from './http';
 import { mockCompanies, mockPool, mockSet } from './mock-interview';
@@ -153,40 +154,55 @@ function list(db: Database.Database, params: URLSearchParams) {
   const page = Math.min(2000, Math.max(1, Math.floor(Number(params.get('page'))) || 1));
   const offset = (page - 1) * PAGE;
   const columns = `${SUMMARY.split(',').map((c) => `i.${c}`).join(',')},${experienceColumns('i.')}`;
+  // Approved member submissions merge into the experiences list (lib/server/experience-submissions.ts).
+  const members = types.length === 1 && types[0] === 'experience' ? memberExperiences(params) : [];
   let total: number;
-  let items: Record<string, unknown>[];
+  let read: (limit: number, skip: number) => Record<string, unknown>[];
+  // Every matching row's sort key, for placing member posts; null when ranked by relevance.
+  let keys: () => (string | null)[] | null = () => null;
   if (q) {
     // Rank inside the index and keep this list's rows only. `+rowid` stops SQLite from pushing the
     // IN list into FTS (one MATCH per row), and joining after LIMIT reads 20 rows, not every hit:
     // "interview" matches ~20k items and used to block the process for a second or more.
     const hits = `FROM items_fts WHERE items_fts MATCH ? AND +rowid IN (SELECT i.rowid FROM items i WHERE ${where.join(' AND ')})`;
     total = (db.prepare(`SELECT COUNT(*) AS n ${hits}`).get(q, ...args) as { n: number }).n;
-    items =
-      offset >= total
+    read = (limit, skip) =>
+      skip >= total
         ? []
         : (db
             .prepare(
-              `SELECT ${columns} FROM (SELECT rowid AS id, rank AS r ${hits} ORDER BY rank LIMIT ${PAGE} OFFSET ${offset}) f
+              `SELECT ${columns} FROM (SELECT rowid AS id, rank AS r ${hits} ORDER BY rank LIMIT ${limit} OFFSET ${skip}) f
                JOIN items i ON i.rowid=f.id ORDER BY f.r`,
             )
             .all(q, ...args) as Record<string, unknown>[]);
   } else {
     // Tutorials read as a syllabus (core first, in the order they were written); experiences by
     // when they happened (the interview's date, else the report's) unless ?sort=new; the rest newest first.
+    const byDate = types.length === 1 && types[0] === 'experience' && params.get('sort') !== 'new';
+    const date = "COALESCE(json_extract(i.extra,'$.date'), substr(i.published_at,1,10))";
     const order = types.includes('algorithm')
       ? "i.level = 'advanced', i.rowid"
-      : types.length === 1 && types[0] === 'experience' && params.get('sort') !== 'new'
-        ? "COALESCE(json_extract(i.extra,'$.date'), substr(i.published_at,1,10)) DESC, i.published_at DESC, i.rowid DESC"
+      : byDate
+        ? `${date} DESC, i.published_at DESC, i.rowid DESC`
         : 'i.published_at DESC, i.rowid DESC';
     total = (db.prepare(`SELECT COUNT(*) AS n FROM items i WHERE ${where.join(' AND ')}`).get(...args) as { n: number }).n;
-    items =
-      offset >= total
+    read = (limit, skip) =>
+      skip >= total
         ? []
         : (db
-            .prepare(`SELECT ${columns} FROM items i WHERE ${where.join(' AND ')} ORDER BY ${order} LIMIT ${PAGE} OFFSET ${offset}`)
+            .prepare(`SELECT ${columns} FROM items i WHERE ${where.join(' AND ')} ORDER BY ${order} LIMIT ${limit} OFFSET ${skip}`)
             .all(...args) as Record<string, unknown>[]);
+    // ponytail: every matching key per request (~4k experiences, a few ms); cache per filter if it shows in profiles.
+    keys = () =>
+      db
+        .prepare(`SELECT ${byDate ? date : 'i.published_at'} FROM items i WHERE ${where.join(' AND ')}`)
+        .pluck()
+        .all(...args) as (string | null)[];
   }
-  return { items: items.map(row), total, page, pageSize: PAGE, facets: facets(db, types) };
+  const items = members.length
+    ? mergePage(members, keys(), offset, PAGE, (limit, skip) => read(limit, skip).map(row))
+    : read(PAGE, offset).map(row);
+  return { items, total: total + members.length, page, pageSize: PAGE, facets: facets(db, types) };
 }
 
 function item(db: Database.Database, params: URLSearchParams) {
@@ -255,6 +271,9 @@ export async function handleContent(request: Request, p: Person | null, path: st
   const db = library();
   const params = new URL(request.url).searchParams;
   const [action] = path;
+  // A member's own experience (lib/server/experience-submissions.ts), library or not.
+  if (action === 'item' && params.get('type') === 'experience' && memberIdOf(params.get('slug')))
+    return json(await memberItem(db, params.get('slug')!, p));
   if (!db) {
     if (action === 'stats') return json({ counts: {}, companies: 0, updatedAt: null });
     if (action === 'list') return json({ items: [], total: 0, page: 1, pageSize: PAGE, facets: null });

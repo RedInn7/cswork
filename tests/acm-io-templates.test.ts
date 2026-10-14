@@ -5,10 +5,10 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { ACM_IO_TEMPLATES } from '../lib/acm-io-templates';
-import type { Language } from '../lib/problems';
+import type { CodeLanguage } from '../lib/problems';
 
 const toolchains: Record<
-  Language,
+  CodeLanguage,
   { probe: string[]; file: string; build?: string[]; run: string[] }
 > = {
   python: { probe: ['python3', '--version'], file: 'main.py', run: ['python3', 'main.py'] },
@@ -33,7 +33,7 @@ const toolchains: Record<
 };
 const exec = ([command, ...args]: string[], cwd: string, input = '') =>
   spawnSync(command, args, { cwd, input, encoding: 'utf8', timeout: 120_000 });
-const available = (language: Language) =>
+const available = (language: CodeLanguage) =>
   exec(toolchains[language].probe, tmpdir()).status === 0;
 // Token-based in every language, so one token per line must give the same answer.
 const anyLayout = new Set(['single', 'array', 'graph', 'join', 'fast']);
@@ -44,14 +44,14 @@ void test('every template is bilingual, complete and uniquely named', () => {
   for (const item of ACM_IO_TEMPLATES) {
     for (const text of [item.title, item.note])
       assert.ok(text.zh.trim() && text.en.trim(), item.id);
-    for (const language of Object.keys(toolchains) as Language[])
+    for (const language of Object.keys(toolchains) as CodeLanguage[])
       assert.ok(item.code[language].endsWith('\n'), `${item.id} ${language}`);
     assert.ok(item.sample.output.endsWith('\n'), item.id);
   }
 });
 
 // Python always runs; compilers that are missing locally are skipped (CI has all four).
-for (const language of Object.keys(toolchains) as Language[]) {
+for (const language of Object.keys(toolchains) as CodeLanguage[]) {
   const ok = language === 'python' || available(language);
   void test(`${language} templates print the sample output`, { skip: !ok && `no ${language} toolchain` }, () => {
     const { file, build, run } = toolchains[language];

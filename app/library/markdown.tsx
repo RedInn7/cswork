@@ -19,9 +19,12 @@ function safeLink(value: string | undefined) {
 export function PublicLibraryMarkdown({
   body,
   math,
+  ugc = false,
 }: {
   body: string;
   math: boolean;
+  /** Member-written text: its links carry no endorsement. */
+  ugc?: boolean;
 }) {
   return (
     <ReactMarkdown
@@ -35,7 +38,7 @@ export function PublicLibraryMarkdown({
           href?.startsWith('/?view=') ? (
             <a href={href}>{children}</a>
           ) : safeLink(href) ? (
-            <a href={safeLink(href)} rel="noopener noreferrer">
+            <a href={safeLink(href)} rel={ugc ? 'ugc nofollow noopener noreferrer' : 'noopener noreferrer'}>
               {children}
             </a>
           ) : !href ||

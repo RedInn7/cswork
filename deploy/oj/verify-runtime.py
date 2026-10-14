@@ -135,7 +135,9 @@ int main(){std::string input;std::getline(std::cin,input);auto value=cswork::Par
     accepted(run(['main'], {'main': {'fileId': result['fileIds']['main']}} , stdin='3 8\n'), 'Go cached executable executes', '11\n')
     language_versions = {}
     for language, command in [('cpp', ['/usr/bin/g++', '--version']), ('python', ['/usr/bin/python3', '--version']),
-                              ('java', ['/usr/bin/java', '-version']), ('go', ['/usr/bin/go', 'version'])]:
+                              ('java', ['/usr/bin/java', '-version']), ('go', ['/usr/bin/go', 'version']),
+                              # The SQL track's harness (lib/server/sql-judge.ts) needs the stdlib sqlite3.
+                              ('sql', ['/usr/bin/python3', '-I', '-S', '-c', 'import sqlite3; print(sqlite3.sqlite_version)'])]:
         version_result = run(command)
         accepted(version_result, f'{language} toolchain version available')
         outputs = version_result.get('files', {})

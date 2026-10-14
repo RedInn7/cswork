@@ -16,6 +16,11 @@ export * from './practice-round-schema';
 export * from './leetcode-sync-schema';
 export * from './user-notes-schema';
 export * from './learner-cloud-schema';
+export * from './ai-usage-schema';
+export * from './solution-posts-schema';
+export * from './experience-submissions-schema';
+export * from './study-groups-schema';
+export * from './api-tokens-schema';
 import { practiceRounds } from './practice-round-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),

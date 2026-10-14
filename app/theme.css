@@ -1,0 +1,132 @@
+/*
+ * Dark theme, hand-tuned part. <html> carries `.dark` (+ data-theme) when the reader
+ * picks dark, or picks "system" on a dark OS; the inline script in app/layout.tsx sets
+ * it before first paint. Tokens live here; every other stylesheet gets a generated
+ * `.dark` block from scripts/dark-theme.mjs, which leaves out any selector + property
+ * set in this file. Text pairs are checked at ≥ 4.5:1 in tests/dark-theme.test.mjs.
+ */
+/* Screen only: printing from dark mode keeps the light colours. */
+@media screen {
+  :root.dark {
+    color-scheme: dark;
+    /* Green-tinted charcoal: page darkest, cards one step up, popovers above that. */
+    --background: #0f1412;
+    --foreground: #e2eae6;
+    --card: #161b18;
+    --card-foreground: #e2eae6;
+    --popover: #1b1f1d;
+    --popover-foreground: #e2eae6;
+    /* Brand green lifts to a light tint so it reads as text; ink on it turns dark. */
+    --primary: #48cba1;
+    --primary-foreground: #061a14;
+    --secondary: #162f26;
+    --secondary-foreground: #aee2ce;
+    --muted: #1f2422;
+    --muted-foreground: #9daba4;
+    --accent: #1b2b25;
+    --accent-foreground: #aee2ce;
+    --destructive: #f66d67;
+    --border: #2c322f;
+    --input: #383f3b;
+    --ring: #4ba686;
+    --sidebar: #131715;
+    --sidebar-foreground: #b1bab5;
+    --sidebar-primary: #48cba1;
+    --sidebar-primary-foreground: #061a14;
+    --sidebar-accent: #1b2b25;
+    --sidebar-accent-foreground: #aee2ce;
+    --sidebar-border: #2c322f;
+    --sidebar-ring: #4ba686;
+    --verdict-ac: #49d3a1;
+    --verdict-tle: #f2af48;
+    --verdict-wa: #f97770;
+    --chart-1: #48cba1;
+    --chart-2: #6cb8f0;
+    --chart-3: #f2af48;
+    --chart-4: #c49cf2;
+    --chart-5: #f97770;
+  }
+
+  /* Redesign layer (app/redesign.css): the same zinc steps the owner analytics use. */
+  .dark .rd {
+    --rd-ink: oklch(0.985 0 0);
+    --rd-ink-2: oklch(0.871 0.006 286.286);
+    --rd-muted: oklch(0.705 0.015 286.067);
+    --rd-subtle: oklch(0.65 0.016 285.938);
+    --rd-line: oklch(0.32 0.006 286.033);
+    --rd-line-soft: oklch(0.27 0.006 285.97);
+    --rd-fill: oklch(0.274 0.006 286.033);
+    --rd-fill-soft: oklch(0.244 0.006 285.97);
+    --rd-surface: oklch(0.21 0.006 285.885);
+    --rd-brand: oklch(0.72 0.15 163.225);
+    --rd-brand-ink: oklch(0.79 0.15 163.223);
+    --rd-brand-soft: oklch(0.262 0.051 172.552);
+    --rd-amber: oklch(0.795 0.184 86.047);
+    --rd-red: oklch(0.704 0.191 22.216);
+    --rd-sky: oklch(0.72 0.14 241.966);
+    --rd-shadow: none;
+  }
+
+  /*
+   * Line 500 difficulty pips: dark bars on a light row become light bars on a dark row
+   * (the generator keeps solid dark fills, which would vanish here).
+   */
+  .dark .algorithm-library,
+  .dark .mock-exam-bar {
+    --route-pip-off: #3a4656;
+  }
+  .dark .study-pips[data-level='1'] i:nth-child(-n + 1),
+  .dark .study-pips[data-level='2'] i:nth-child(-n + 2),
+  .dark .study-pips[data-level='3'] i:nth-child(-n + 3),
+  .dark .route-ticket .study-pips[data-level='1'] i:nth-child(-n + 1),
+  .dark .route-ticket .study-pips[data-level='2'] i:nth-child(-n + 2),
+  .dark .route-ticket .study-pips[data-level='3'] i:nth-child(-n + 3),
+  .dark .study-bank .study-row:is(:hover, :focus-visible) .study-pips[data-level='1'] i:nth-child(-n + 1),
+  .dark .study-bank .study-row:is(:hover, :focus-visible) .study-pips[data-level='2'] i:nth-child(-n + 2),
+  .dark .study-bank .study-row:is(:hover, :focus-visible) .study-pips[data-level='3'] i:nth-child(-n + 3) {
+    background: rgb(238 243 248 / 0.8);
+  }
+
+  /*
+   * Checked verdict chips sit on --rd-red / --rd-brand-ink, which turn light here; the
+   * label would otherwise keep the rating scale's light text (1.6–2.6:1).
+   */
+  .dark .mi-verdicts label[data-verdict^='strong-no']:has(input:checked),
+  .dark .mi-verdicts label[data-verdict='no']:has(input:checked),
+  .dark .mi-verdicts label[data-verdict$='yes']:has(input:checked) {
+    color: #0b1411;
+  }
+
+  /* Google's own dark sign-in button (fill, stroke and label from its brand guidelines). */
+  .dark .login-providers .google-signin {
+    background: #131314;
+    border: 1px solid #8e918f;
+    color: #e3e3e3;
+  }
+  .dark .login-providers .google-signin:hover:not(:disabled) {
+    background: #1f1f21;
+  }
+  .dark .google-signin-icon {
+    background: transparent;
+  }
+
+  /* Native controls, scrollbars and the selection follow the page. */
+  .dark ::selection {
+    background: color-mix(in oklab, var(--primary) 35%, transparent);
+  }
+}
+
+/* The header toggle (components/theme-toggle.tsx). */
+.theme-toggle svg {
+  transition: transform 0.25s ease;
+}
+.theme-toggle:hover svg {
+  transform: rotate(-18deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle svg,
+  .theme-toggle:hover svg {
+    transition: none;
+    transform: none;
+  }
+}

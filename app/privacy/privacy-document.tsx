@@ -29,7 +29,7 @@ export function PrivacyDocument() {
               cswork
               是提供课程、视频、编程练习与教学反馈的学习平台。这份说明介绍平台当前如何处理你的资料，以及你可以如何联系我们。
             </p>
-            <p className="privacy-updated">更新于 2026 年 10 月 13 日</p>
+            <p className="privacy-updated">更新于 2026 年 10 月 14 日</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">账户与第三方登录</h2>
@@ -139,6 +139,10 @@ export function PrivacyDocument() {
                 除提供服务所需的教师和运维访问外，第三方登录、邮件和支付功能会与相应服务商交换完成这些功能所需的资料。课程中的外部图片或视频链接也可能让浏览器向对应资源服务商发出请求。
               </p>
               <p>
+                在题目页使用 AI 助教（提示或代码点评）时，服务器会把这道题的题面、你当前的代码和你在这道题上最近一次判题结果发送给
+                Anthropic，用于生成回复；不发送邮箱、姓名或账户标识。平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不使用 AI 助教就不会发送。
+              </p>
+              <p>
                 平台会为持续提供课程、处理教学反馈、对账及故障恢复保留必要资料和备份，目前没有对所有账户及学习记录统一设置自动删除期限。业务数据与备份的清理时间可能不同；收到删除请求后，会确认涉及的资料、处理范围及需要保留的记录。
               </p>
             </section>
@@ -169,7 +173,7 @@ export function PrivacyDocument() {
               practice, and teaching feedback. This notice explains how the
               platform currently handles your data and how you can contact us.
             </p>
-            <p className="privacy-updated">Updated October 13, 2026</p>
+            <p className="privacy-updated">Updated October 14, 2026</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">Accounts and third-party sign-in</h2>
@@ -377,6 +381,15 @@ export function PrivacyDocument() {
                 functions with the corresponding service providers. External
                 image or video links in courses may also cause your browser to
                 send requests to the corresponding resource providers.
+              </p>
+              <p>
+                When you use the AI tutor on a problem page (a hint or a code
+                review), the server sends that problem's statement, your
+                current code and your latest verdict on that problem to
+                Anthropic to write the reply. Your email, name and account
+                identifiers are not sent. The platform records only how many
+                calls you make each day and their usage, never what was sent
+                or the AI's reply. Nothing is sent unless you use the tutor.
               </p>
               <p>
                 The platform retains necessary data and backups to keep

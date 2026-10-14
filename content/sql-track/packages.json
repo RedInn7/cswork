@@ -1,0 +1,1575 @@
+[
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-01",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "找不到上级的员工",
+   "difficulty": "简单",
+   "translations": {
+    "en": {
+     "title": "Employees Without a Valid Manager",
+     "description": "The company is cleaning up its org chart. Find every employee without a valid manager: `manager_id` is NULL, or it points to an employee who does not exist.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `id`: employee id\n- `name`: employee name\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "Ava and Eve have a NULL manager_id; Hugo's manager id 42 does not exist. Everyone else's manager is in the table.",
+     "hints": [
+      "LEFT JOIN employees to itself: the manager side is all NULL when there is no match.",
+      "x = NULL is never true; test for missing values with IS NULL."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "过滤与 NULL"
+   ],
+   "description": "公司在清理组织架构。找出所有「找不到上级」的员工：`manager_id` 为 NULL，或者 `manager_id` 指向的员工并不存在。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `id`：员工编号\n- `name`：员工姓名\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "Ava 和 Eve 的 manager_id 是 NULL；Hugo 的上级编号 42 不存在。其余员工的上级都在表里。",
+   "hints": [
+    "把 employees 和自己做 LEFT JOIN：没匹配上的上级那一侧全是 NULL。",
+    "x = NULL 永远不为真，判断空值要用 IS NULL。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Ava', 1, NULL, 12000, '2018-04-02'),\n  (2, 'Ben', 1, 1, 9000, '2019-07-15'),\n  (3, 'Chloe', 1, 1, 9000, '2020-01-20'),\n  (4, 'Dan', 1, 2, 7000, '2021-03-08'),\n  (5, 'Eve', 2, NULL, 8000, '2018-11-30'),\n  (6, 'Finn', 2, 5, 8500, '2022-05-16'),\n  (7, 'Gia', 2, 5, 6000, '2023-02-01'),\n  (8, 'Hugo', 3, 42, 5000, '2021-09-12'),\n  (9, 'Iris', NULL, 1, 4500, '2024-01-08'),\n  (10, 'Jack', 3, 8, 5500, '2022-10-03');\n",
+    "expectedOutput": "columns: 2\n[1, \"Ava\"]\n[5, \"Eve\"]\n[8, \"Hugo\"]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Kai', 1, NULL, 7000, '2019-01-01'),\n  (2, 'Lea', 1, 1, 7000, '2019-02-01'),\n  (3, 'Max', 1, 1, 7000, '2019-03-01'),\n  (4, 'Nia', 1, 2, 6500, '2020-01-01'),\n  (5, 'Omar', 1, 2, 6000, '2020-02-01'),\n  (6, 'Pia', 1, 3, 5500, '2021-01-01'),\n  (7, 'Quin', 2, 1, 8000, '2021-06-01'),\n  (8, 'Rosa', NULL, NULL, 9000, '2022-01-01'),\n  (9, 'Sam', NULL, 8, 9500, '2022-02-02');\n",
+    "expectedOutput": "columns: 2\n[1, \"Kai\"]\n[8, \"Rosa\"]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Tara', 1, NULL, 10000, '2018-01-01'),\n  (2, 'Uma', 1, 1, 10000, '2018-05-01'),\n  (3, 'Vic', 2, 77, 3000, '2020-01-01'),\n  (4, 'Wes', 2, 3, 3000, '2020-06-01'),\n  (5, 'Xia', 2, 3, 3200, '2021-01-01');\n",
+    "expectedOutput": "columns: 2\n[1, \"Tara\"]\n[3, \"Vic\"]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Fay', 3, 5, 3500, '2020-04-23'),\n  (2, 'Xan', 1, 5, 3000, '2022-07-19'),\n  (3, 'Yul', 1, 10, 9000, '2023-12-04'),\n  (4, 'Mia', NULL, NULL, 6000, '2023-08-15'),\n  (5, 'Wyn', 1, 4, 8000, '2022-04-15'),\n  (6, 'Gil', 2, 3, 3000, '2020-08-11'),\n  (7, 'Nat', 2, 10, 5000, '2020-08-03'),\n  (8, 'Bea', NULL, 2, 4000, '2022-06-04'),\n  (9, 'Zoe', 2, NULL, 4000, '2023-09-11'),\n  (10, 'Ida', NULL, 7, 12000, '2020-02-15'),\n  (11, 'Lev', NULL, 2, 4000, '2018-07-03'),\n  (12, 'Pam', 3, NULL, 12000, '2024-01-21'),\n  (13, 'Una', 4, NULL, 8000, '2021-04-04');\n",
+    "expectedOutput": "columns: 2\n[12, \"Pam\"]\n[13, \"Una\"]\n[4, \"Mia\"]\n[9, \"Zoe\"]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Sue', 4, 13, 3000, '2021-04-26'),\n  (2, 'Hal', 2, 16, 7000, '2018-01-27'),\n  (3, 'Val', 5, 6, 7000, '2024-04-21'),\n  (4, 'Fay', 3, 95, 4500, '2024-01-11'),\n  (5, 'Zoe', 1, 14, 4000, '2020-08-01'),\n  (6, 'Ted', 1, 1, 4000, '2018-11-05'),\n  (7, 'Abe', 3, 6, 9000, '2018-09-12'),\n  (8, 'Eli', 5, 5, 8000, '2023-12-05'),\n  (9, 'Nat', 4, 10, 4500, '2023-06-25'),\n  (10, 'Cal', 5, 15, 3000, '2022-01-27'),\n  (11, 'Yul', 4, 2, 3500, '2022-03-25'),\n  (12, 'Oz', 2, 8, 3500, '2019-02-27'),\n  (13, 'Una', 3, NULL, 8000, '2018-09-08'),\n  (14, 'Kay', 2, 93, 4000, '2022-09-19'),\n  (15, 'Gil', 3, NULL, 3000, '2018-03-02'),\n  (16, 'Xan', 4, 12, 7000, '2024-06-26');\n",
+    "expectedOutput": "columns: 2\n[13, \"Una\"]\n[14, \"Kay\"]\n[15, \"Gil\"]\n[4, \"Fay\"]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-02",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "各城市的客户数",
+   "difficulty": "简单",
+   "translations": {
+    "en": {
+     "title": "Customers per City",
+     "description": "Count the customers in each city. Customers whose `city` is NULL form one group named `Unknown` (no real city in the data is called Unknown).\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `city`: city, with NULL shown as Unknown\n- `customers`: number of customers there\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "Austin has Alice, Cara and Femi, Boston has two customers, and Dev's city is unknown.",
+     "hints": [
+      "COALESCE(city, 'Unknown') replaces NULL with a default.",
+      "COUNT(city) skips NULLs; COUNT(*) counts every row."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "过滤与 NULL"
+   ],
+   "description": "统计每个城市有多少客户。`city` 为 NULL 的客户归到名为 `Unknown` 的一组（数据中不会有真的叫 Unknown 的城市）。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `city`：城市，NULL 显示为 Unknown\n- `customers`：该城市的客户数\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "Austin 有 Alice、Cara、Femi 三位客户，Boston 有两位，Dev 的城市未知。",
+   "hints": [
+    "COALESCE(city, 'Unknown') 把 NULL 换成默认值。",
+    "COUNT(city) 不计 NULL，COUNT(*) 计所有行。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Alice', 'alice@mail.com', 'Austin'),\n  (2, 'Bob', 'bob@mail.com', 'Boston'),\n  (3, 'Cara', 'Alice@Mail.com', 'Austin'),\n  (4, 'Dev', 'dev@mail.com', NULL),\n  (5, 'Elle', 'elle@mail.com', 'Boston'),\n  (6, 'Femi', 'femi@mail.com', 'Austin');\n",
+    "expectedOutput": "columns: 2\n[\"Austin\", 3]\n[\"Boston\", 2]\n[\"Unknown\", 1]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Gus', 'gus@mail.com', 'Denver'),\n  (2, 'Hana', 'HANA@mail.com', 'Denver'),\n  (3, 'Ian', 'hana@mail.com', NULL),\n  (4, 'Jo', 'jo@mail.com', NULL),\n  (5, 'Kim', 'Jo@Mail.com', 'Denver'),\n  (6, 'Lu', 'lu@mail.com', 'Seattle');\n",
+    "expectedOutput": "columns: 2\n[\"Denver\", 3]\n[\"Seattle\", 1]\n[\"Unknown\", 2]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Mo', 'mo@mail.com', 'Austin'),\n  (2, 'Ned', 'ned@mail.com', 'Austin'),\n  (3, 'Ola', 'ola@mail.com', 'Austin');\n",
+    "expectedOutput": "columns: 2\n[\"Austin\", 3]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Ted', 'ted@mail.com', 'Seattle'),\n  (2, 'Lev', 'lev@mail.com', 'Austin'),\n  (3, 'Mia', 'Lev@mail.com', 'Seattle'),\n  (4, 'Val', 'val@mail.com', 'Denver'),\n  (5, 'Kay', 'kay@mail.com', 'Denver'),\n  (6, 'Una', 'una@mail.com', 'Boston'),\n  (7, 'Abe', 'abe@mail.com', NULL),\n  (8, 'Pam', 'Una@mail.com', 'Seattle'),\n  (9, 'Oz', 'oz@mail.com', 'Denver'),\n  (10, 'Dee', 'dee@mail.com', 'Boston'),\n  (11, 'Eli', 'eli@mail.com', 'Seattle'),\n  (12, 'Ray', 'ray@mail.com', 'Denver');\n",
+    "expectedOutput": "columns: 2\n[\"Austin\", 1]\n[\"Boston\", 2]\n[\"Denver\", 4]\n[\"Seattle\", 4]\n[\"Unknown\", 1]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Xan', 'xan@mail.com', 'Denver'),\n  (2, 'Ray', 'ray@mail.com', 'Seattle'),\n  (3, 'Oz', 'oz@mail.com', 'Austin'),\n  (4, 'Ida', 'ida@mail.com', 'Denver'),\n  (5, 'Una', 'una@mail.com', NULL),\n  (6, 'Kay', 'Una@mail.com', 'Boston'),\n  (7, 'Sue', 'Una@mail.com', 'Denver');\n",
+    "expectedOutput": "columns: 2\n[\"Austin\", 1]\n[\"Boston\", 1]\n[\"Denver\", 3]\n[\"Seattle\", 1]\n[\"Unknown\", 1]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-03",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "缺考与平均分",
+   "difficulty": "中等",
+   "translations": {
+    "en": {
+     "title": "Absences and Averages",
+     "description": "`enrollments.score` is NULL when a student enrolled but missed the exam; a score of 0 is a real result. For each course with at least one enrollment, report the number enrolled, the number who sat the exam, the average score of those who sat (NULL if nobody did), and the average counting absences as 0. Round both averages with `ROUND(x, 2)`.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE courses (\n  id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL\n);\nCREATE TABLE enrollments (\n  student_id INTEGER NOT NULL,\n  course_id INTEGER NOT NULL,\n  score INTEGER            -- NULL: did not sit the exam\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `title`: course title\n- `enrolled`: students enrolled\n- `sat`: students who sat the exam\n- `avg_score`: average of those who sat\n- `avg_with_zero`: average with absences as 0\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "Algebra has three enrolled and two who sat: (90+75)/2 = 82.5, and 165/3 = 55 with the absence as 0. Nobody sat Chemistry, so its average is NULL. Drama has no enrollments and is left out.",
+     "hints": [
+      "AVG and COUNT(col) skip NULLs.",
+      "Integer division truncates in SQLite: 165 / 2 is 82."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "过滤与 NULL"
+   ],
+   "description": "`enrollments.score` 为 NULL 表示学生选了课但缺考，0 分是真实成绩。对每门至少有一人选课的课程，求：选课人数、参加考试人数、参加考试者的平均分（没人参加时为 NULL），以及把缺考按 0 分计的平均分。两个平均分都用 `ROUND(x, 2)` 保留两位小数。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE courses (\n  id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL\n);\nCREATE TABLE enrollments (\n  student_id INTEGER NOT NULL,\n  course_id INTEGER NOT NULL,\n  score INTEGER            -- NULL: did not sit the exam\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `title`：课程名\n- `enrolled`：选课人数\n- `sat`：参加考试人数\n- `avg_score`：参加者平均分\n- `avg_with_zero`：缺考按 0 分的平均分\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "Algebra 三人选课、两人考试：(90+75)/2 = 82.5，缺考记 0 为 165/3 = 55。Chemistry 无人考试，平均分是 NULL。Drama 没人选课，不输出。",
+   "hints": [
+    "AVG 和 COUNT(col) 会跳过 NULL。",
+    "SQLite 里整数相除会截断：165 / 2 是 82。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE courses (\n  id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL\n);\nCREATE TABLE enrollments (\n  student_id INTEGER NOT NULL,\n  course_id INTEGER NOT NULL,\n  score INTEGER            -- NULL: did not sit the exam\n);\nINSERT INTO courses VALUES\n  (1, 'Algebra'),\n  (2, 'Biology'),\n  (3, 'Chemistry'),\n  (4, 'Drama');\nINSERT INTO enrollments VALUES\n  (1, 1, 90),\n  (2, 1, 75),\n  (3, 1, NULL),\n  (1, 2, 88),\n  (4, 2, NULL),\n  (2, 3, NULL),\n  (3, 3, NULL);\n",
+    "expectedOutput": "columns: 5\n[\"Algebra\", 3, 2, 82.5, 55]\n[\"Biology\", 2, 1, 88, 44]\n[\"Chemistry\", 2, 0, null, 0]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE courses (\n  id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL\n);\nCREATE TABLE enrollments (\n  student_id INTEGER NOT NULL,\n  course_id INTEGER NOT NULL,\n  score INTEGER            -- NULL: did not sit the exam\n);\nINSERT INTO courses VALUES\n  (1, 'Databases'),\n  (2, 'Economics'),\n  (3, 'French');\nINSERT INTO enrollments VALUES\n  (1, 1, 70),\n  (2, 1, 80),\n  (3, 1, 85),\n  (1, 2, NULL),\n  (2, 2, NULL),\n  (3, 2, 100),\n  (1, 3, 61),\n  (2, 3, 62);\n",
+    "expectedOutput": "columns: 5\n[\"Databases\", 3, 3, 78.33, 78.33]\n[\"Economics\", 3, 1, 100, 33.33]\n[\"French\", 2, 2, 61.5, 61.5]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE courses (\n  id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL\n);\nCREATE TABLE enrollments (\n  student_id INTEGER NOT NULL,\n  course_id INTEGER NOT NULL,\n  score INTEGER            -- NULL: did not sit the exam\n);\nINSERT INTO courses VALUES\n  (1, 'Geometry'),\n  (2, 'History');\nINSERT INTO enrollments VALUES\n  (1, 1, 0),\n  (2, 1, NULL);\n",
+    "expectedOutput": "columns: 5\n[\"Geometry\", 2, 1, 0, 0]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE courses (\n  id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL\n);\nCREATE TABLE enrollments (\n  student_id INTEGER NOT NULL,\n  course_id INTEGER NOT NULL,\n  score INTEGER            -- NULL: did not sit the exam\n);\nINSERT INTO courses VALUES\n  (1, 'Chemistry'),\n  (2, 'French'),\n  (3, 'Databases'),\n  (4, 'Algebra'),\n  (5, 'Biology');\nINSERT INTO enrollments VALUES\n  (1, 1, 60),\n  (1, 2, NULL),\n  (1, 3, 42),\n  (1, 4, 75),\n  (2, 1, 42),\n  (2, 3, 45),\n  (2, 4, 45),\n  (2, 5, NULL),\n  (3, 4, NULL),\n  (3, 5, 69),\n  (4, 1, 56),\n  (4, 5, 41),\n  (5, 1, NULL),\n  (5, 4, NULL),\n  (6, 3, NULL),\n  (7, 2, 45),\n  (7, 4, 80);\n",
+    "expectedOutput": "columns: 5\n[\"Algebra\", 5, 3, 66.67, 40]\n[\"Biology\", 3, 2, 55, 36.67]\n[\"Chemistry\", 4, 3, 52.67, 39.5]\n[\"Databases\", 3, 2, 43.5, 29]\n[\"French\", 2, 1, 45, 22.5]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE courses (\n  id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL\n);\nCREATE TABLE enrollments (\n  student_id INTEGER NOT NULL,\n  course_id INTEGER NOT NULL,\n  score INTEGER            -- NULL: did not sit the exam\n);\nINSERT INTO courses VALUES\n  (1, 'Biology'),\n  (2, 'French'),\n  (3, 'Databases');\nINSERT INTO enrollments VALUES\n  (1, 1, 93),\n  (2, 1, 50),\n  (2, 2, 52),\n  (3, 2, NULL),\n  (4, 1, 45),\n  (4, 3, 69),\n  (5, 3, 69),\n  (6, 1, 42),\n  (6, 2, 50),\n  (8, 2, 97),\n  (8, 3, 43),\n  (9, 3, 77),\n  (10, 1, NULL),\n  (10, 2, 51),\n  (10, 3, 50);\n",
+    "expectedOutput": "columns: 5\n[\"Biology\", 5, 4, 57.5, 46]\n[\"Databases\", 5, 5, 61.6, 61.6]\n[\"French\", 5, 4, 62.5, 50]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-04",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "从未下单的客户",
+   "difficulty": "简单",
+   "translations": {
+    "en": {
+     "title": "Customers Who Never Ordered",
+     "description": "Find the customers who have never placed an order of any status (a cancelled order still counts as placed). Note that guest orders have a NULL `customer_id`.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `id`: customer id\n- `name`: customer name\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "Dev and Femi have no orders. Bob has only a cancelled order, which still counts.",
+     "hints": [
+      "Use NOT EXISTS, or LEFT JOIN … WHERE o.id IS NULL.",
+      "When the subquery returns a NULL, x NOT IN (…) is never true."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "连接"
+   ],
+   "description": "找出从未下过任何订单的客户（已取消的订单也算下过单）。注意：游客订单的 `customer_id` 是 NULL。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `id`：客户编号\n- `name`：客户姓名\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "Dev 和 Femi 没有订单。Bob 只有一笔已取消的订单，也算下过单。",
+   "hints": [
+    "NOT EXISTS 或 LEFT JOIN … WHERE o.id IS NULL 都可以。",
+    "子查询结果里有 NULL 时，x NOT IN (…) 永远不为真。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO customers VALUES\n  (1, 'Alice', 'alice@mail.com', 'Austin'),\n  (2, 'Bob', 'bob@mail.com', 'Boston'),\n  (3, 'Cara', 'Alice@Mail.com', 'Austin'),\n  (4, 'Dev', 'dev@mail.com', NULL),\n  (5, 'Elle', 'elle@mail.com', 'Boston'),\n  (6, 'Femi', 'femi@mail.com', 'Austin');\nINSERT INTO orders VALUES\n  (1, 1, '2024-01-05', 'paid'),\n  (2, 1, '2024-01-20', 'paid'),\n  (3, 2, '2024-01-20', 'cancelled'),\n  (4, 3, '2024-02-02', 'paid'),\n  (5, 1, '2024-02-14', 'paid'),\n  (6, NULL, '2024-02-14', 'paid'),\n  (7, 5, '2024-03-01', 'paid'),\n  (8, 3, '2024-03-01', 'paid'),\n  (9, 1, '2024-03-09', 'cancelled');\n",
+    "expectedOutput": "columns: 2\n[4, \"Dev\"]\n[6, \"Femi\"]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO customers VALUES\n  (1, 'Gus', 'gus@mail.com', 'Denver'),\n  (2, 'Hana', 'HANA@mail.com', 'Denver'),\n  (3, 'Ian', 'hana@mail.com', NULL),\n  (4, 'Jo', 'jo@mail.com', NULL),\n  (5, 'Kim', 'Jo@Mail.com', 'Denver'),\n  (6, 'Lu', 'lu@mail.com', 'Seattle');\nINSERT INTO orders VALUES\n  (1, 1, '2024-04-01', 'paid'),\n  (2, 1, '2024-04-01', 'paid'),\n  (3, 1, '2024-04-03', 'paid'),\n  (4, 2, '2024-04-03', 'cancelled'),\n  (5, 2, '2024-04-03', 'cancelled'),\n  (6, 2, '2024-04-04', 'cancelled'),\n  (7, NULL, '2024-04-04', 'paid'),\n  (8, 4, '2024-05-10', 'paid'),\n  (9, 4, '2024-05-10', 'paid');\n",
+    "expectedOutput": "columns: 2\n[3, \"Ian\"]\n[5, \"Kim\"]\n[6, \"Lu\"]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO customers VALUES\n  (1, 'Mo', 'mo@mail.com', 'Austin'),\n  (2, 'Ned', 'ned@mail.com', 'Austin'),\n  (3, 'Ola', 'ola@mail.com', 'Austin');\nINSERT INTO orders VALUES\n  (1, 1, '2024-06-30', 'paid'),\n  (2, 1, '2024-06-01', 'paid'),\n  (3, 2, '2024-05-15', 'cancelled'),\n  (4, 2, '2024-05-20', 'paid'),\n  (5, 3, '2024-07-01', 'paid'),\n  (6, NULL, '2024-08-01', 'paid');\n",
+    "expectedOutput": "columns: 2\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO customers VALUES\n  (1, 'Pam', 'pam@mail.com', 'Denver'),\n  (2, 'Kay', 'kay@mail.com', 'Seattle'),\n  (3, 'Jon', 'jon@mail.com', 'Seattle'),\n  (4, 'Eli', 'eli@mail.com', NULL),\n  (5, 'Bea', 'bea@mail.com', NULL),\n  (6, 'Zoe', 'Kay@mail.com', NULL),\n  (7, 'Hal', 'hal@mail.com', 'Seattle'),\n  (8, 'Oz', 'oz@mail.com', 'Denver'),\n  (9, 'Gil', 'gil@mail.com', 'Austin'),\n  (10, 'Lev', 'lev@mail.com', 'Seattle');\nINSERT INTO orders VALUES\n  (1, 8, '2024-03-18', 'paid'),\n  (2, 4, '2024-01-27', 'cancelled'),\n  (3, 9, '2024-04-01', 'paid'),\n  (4, 7, '2024-01-07', 'cancelled'),\n  (5, 7, '2024-04-12', 'cancelled'),\n  (6, 2, '2024-05-09', 'paid'),\n  (7, 9, '2024-02-21', 'paid'),\n  (8, NULL, '2024-01-21', 'cancelled'),\n  (9, NULL, '2024-01-22', 'cancelled'),\n  (10, 7, '2024-01-12', 'paid'),\n  (11, 1, '2024-03-13', 'cancelled');\n",
+    "expectedOutput": "columns: 2\n[10, \"Lev\"]\n[3, \"Jon\"]\n[5, \"Bea\"]\n[6, \"Zoe\"]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO customers VALUES\n  (1, 'Una', 'una@mail.com', 'Austin'),\n  (2, 'Lev', 'Una@mail.com', NULL),\n  (3, 'Bea', 'bea@mail.com', NULL),\n  (4, 'Sue', 'sue@mail.com', NULL),\n  (5, 'Val', 'val@mail.com', 'Seattle'),\n  (6, 'Ted', 'ted@mail.com', NULL),\n  (7, 'Hal', 'hal@mail.com', 'Boston'),\n  (8, 'Ida', 'ida@mail.com', 'Denver'),\n  (9, 'Ray', 'ray@mail.com', 'Austin'),\n  (10, 'Fay', 'fay@mail.com', 'Denver'),\n  (11, 'Dee', 'dee@mail.com', NULL);\nINSERT INTO orders VALUES\n  (1, 2, '2024-03-12', 'paid'),\n  (2, 3, '2024-01-18', 'paid'),\n  (3, 1, '2024-04-10', 'cancelled'),\n  (4, NULL, '2024-01-23', 'paid'),\n  (5, NULL, '2024-05-02', 'paid'),\n  (6, 3, '2024-05-26', 'cancelled'),\n  (7, 7, '2024-05-29', 'paid'),\n  (8, 10, '2024-02-19', 'paid'),\n  (9, 7, '2024-04-05', 'cancelled'),\n  (10, 2, '2024-05-24', 'paid'),\n  (11, 3, '2024-02-22', 'paid'),\n  (12, 5, '2024-05-22', 'paid'),\n  (13, 3, '2024-03-17', 'paid'),\n  (14, 10, '2024-02-09', 'paid'),\n  (15, 2, '2024-05-27', 'paid');\n",
+    "expectedOutput": "columns: 2\n[11, \"Dee\"]\n[4, \"Sue\"]\n[6, \"Ted\"]\n[8, \"Ida\"]\n[9, \"Ray\"]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-05",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "比上级挣得多",
+   "difficulty": "简单",
+   "translations": {
+    "en": {
+     "title": "Earning More Than the Manager",
+     "description": "Find the employees paid strictly more than their direct manager. Employees whose manager is NULL or missing are not compared.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `employee`: employee name\n- `salary`: employee's salary\n- `manager`: manager's name\n- `manager_salary`: manager's salary\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "Finn (8500) out-earns his manager Eve (8000), and Jack (5500) out-earns Hugo (5000). Ben and Chloe earn less than Ava.",
+     "hints": [
+      "Join the table to itself with two aliases, employee e and manager m: ON m.id = e.manager_id."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "连接"
+   ],
+   "description": "找出工资严格高于自己直属上级的员工。上级不存在或为 NULL 的员工不参与比较。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `employee`：员工姓名\n- `salary`：员工工资\n- `manager`：上级姓名\n- `manager_salary`：上级工资\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "Finn（8500）高于上级 Eve（8000），Jack（5500）高于上级 Hugo（5000）。Ben 和 Chloe 低于 Ava。",
+   "hints": [
+    "同一张表 JOIN 两次，用别名区分员工 e 和上级 m：ON m.id = e.manager_id。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Ava', 1, NULL, 12000, '2018-04-02'),\n  (2, 'Ben', 1, 1, 9000, '2019-07-15'),\n  (3, 'Chloe', 1, 1, 9000, '2020-01-20'),\n  (4, 'Dan', 1, 2, 7000, '2021-03-08'),\n  (5, 'Eve', 2, NULL, 8000, '2018-11-30'),\n  (6, 'Finn', 2, 5, 8500, '2022-05-16'),\n  (7, 'Gia', 2, 5, 6000, '2023-02-01'),\n  (8, 'Hugo', 3, 42, 5000, '2021-09-12'),\n  (9, 'Iris', NULL, 1, 4500, '2024-01-08'),\n  (10, 'Jack', 3, 8, 5500, '2022-10-03');\n",
+    "expectedOutput": "columns: 4\n[\"Finn\", 8500, \"Eve\", 8000]\n[\"Jack\", 5500, \"Hugo\", 5000]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Kai', 1, NULL, 7000, '2019-01-01'),\n  (2, 'Lea', 1, 1, 7000, '2019-02-01'),\n  (3, 'Max', 1, 1, 7000, '2019-03-01'),\n  (4, 'Nia', 1, 2, 6500, '2020-01-01'),\n  (5, 'Omar', 1, 2, 6000, '2020-02-01'),\n  (6, 'Pia', 1, 3, 5500, '2021-01-01'),\n  (7, 'Quin', 2, 1, 8000, '2021-06-01'),\n  (8, 'Rosa', NULL, NULL, 9000, '2022-01-01'),\n  (9, 'Sam', NULL, 8, 9500, '2022-02-02');\n",
+    "expectedOutput": "columns: 4\n[\"Quin\", 8000, \"Kai\", 7000]\n[\"Sam\", 9500, \"Rosa\", 9000]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Tara', 1, NULL, 10000, '2018-01-01'),\n  (2, 'Uma', 1, 1, 10000, '2018-05-01'),\n  (3, 'Vic', 2, 77, 3000, '2020-01-01'),\n  (4, 'Wes', 2, 3, 3000, '2020-06-01'),\n  (5, 'Xia', 2, 3, 3200, '2021-01-01');\n",
+    "expectedOutput": "columns: 4\n[\"Xia\", 3200, \"Vic\", 3000]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Lev', 1, 12, 4500, '2021-02-06'),\n  (2, 'Ted', 4, 12, 3500, '2023-08-07'),\n  (3, 'Una', 3, NULL, 7000, '2019-11-20'),\n  (4, 'Ray', 2, 3, 4500, '2023-08-11'),\n  (5, 'Zoe', 4, 11, 12000, '2023-02-14'),\n  (6, 'Ida', 1, 16, 8000, '2018-12-09'),\n  (7, 'Cal', 2, 15, 4000, '2020-03-09'),\n  (8, 'Dee', NULL, 3, 3000, '2019-03-24'),\n  (9, 'Xan', 1, 12, 3000, '2021-06-10'),\n  (10, 'Hal', 3, 6, 7000, '2023-10-21'),\n  (11, 'Wyn', 4, 14, 12000, '2023-08-15'),\n  (12, 'Oz', 4, 15, 7000, '2023-02-20'),\n  (13, 'Nat', 2, NULL, 8000, '2021-03-26'),\n  (14, 'Pam', 2, NULL, 12000, '2021-03-31'),\n  (15, 'Eli', 3, 12, 3500, '2019-04-11'),\n  (16, 'Gil', 1, 12, 4500, '2018-11-14'),\n  (17, 'Kay', 2, 16, 3000, '2022-02-02');\n",
+    "expectedOutput": "columns: 4\n[\"Cal\", 4000, \"Eli\", 3500]\n[\"Ida\", 8000, \"Gil\", 4500]\n[\"Oz\", 7000, \"Eli\", 3500]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Zoe', 3, 3, 7000, '2022-07-12'),\n  (2, 'Lev', 1, NULL, 12000, '2023-11-08'),\n  (3, 'Sue', 1, 9, 6000, '2021-11-05'),\n  (4, 'Abe', 2, 3, 8000, '2019-02-04'),\n  (5, 'Eli', 2, NULL, 12000, '2022-05-27'),\n  (6, 'Nat', 2, 9, 4500, '2018-10-15'),\n  (7, 'Wyn', 2, 1, 12000, '2018-11-08'),\n  (8, 'Ida', 3, 9, 12000, '2021-02-04'),\n  (9, 'Cal', 2, 13, 3000, '2018-06-11'),\n  (10, 'Val', 1, 9, 8000, '2022-05-06'),\n  (11, 'Ted', NULL, 4, 8000, '2020-01-19'),\n  (12, 'Jon', 1, 11, 4000, '2023-06-24'),\n  (13, 'Dee', 3, 5, 4500, '2023-10-12');\n",
+    "expectedOutput": "columns: 4\n[\"Abe\", 8000, \"Sue\", 6000]\n[\"Ida\", 12000, \"Cal\", 3000]\n[\"Nat\", 4500, \"Cal\", 3000]\n[\"Sue\", 6000, \"Cal\", 3000]\n[\"Val\", 8000, \"Cal\", 3000]\n[\"Wyn\", 12000, \"Zoe\", 7000]\n[\"Zoe\", 7000, \"Sue\", 6000]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-06",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "部门人数（含空部门）",
+   "difficulty": "简单",
+   "translations": {
+    "en": {
+     "title": "Headcount per Department",
+     "description": "List every department with its number of employees, showing 0 for empty departments. Employees without a department are not counted.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `department`: department name\n- `headcount`: number of employees\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "Engineering has 4, Sales 3, Support 2, and Legal has none, so 0; Iris belongs to no department.",
+     "hints": [
+      "Start from departments and LEFT JOIN employees so empty departments stay.",
+      "Count COUNT(e.id): COUNT(*) counts the empty department’s padded row as 1."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "连接"
+   ],
+   "description": "列出每个部门及其员工人数，没有员工的部门显示 0。不属于任何部门的员工不计入。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `department`：部门名\n- `headcount`：员工人数\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "Engineering 4 人，Sales 3 人，Support 2 人，Legal 没有员工显示 0；Iris 不属于任何部门。",
+   "hints": [
+    "从 departments 出发 LEFT JOIN employees，空部门才会保留。",
+    "数员工要用 COUNT(e.id)：COUNT(*) 会把空部门那一行也算成 1。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Engineering'),\n  (2, 'Sales'),\n  (3, 'Support'),\n  (4, 'Legal');\nINSERT INTO employees VALUES\n  (1, 'Ava', 1, NULL, 12000, '2018-04-02'),\n  (2, 'Ben', 1, 1, 9000, '2019-07-15'),\n  (3, 'Chloe', 1, 1, 9000, '2020-01-20'),\n  (4, 'Dan', 1, 2, 7000, '2021-03-08'),\n  (5, 'Eve', 2, NULL, 8000, '2018-11-30'),\n  (6, 'Finn', 2, 5, 8500, '2022-05-16'),\n  (7, 'Gia', 2, 5, 6000, '2023-02-01'),\n  (8, 'Hugo', 3, 42, 5000, '2021-09-12'),\n  (9, 'Iris', NULL, 1, 4500, '2024-01-08'),\n  (10, 'Jack', 3, 8, 5500, '2022-10-03');\n",
+    "expectedOutput": "columns: 2\n[\"Engineering\", 4]\n[\"Legal\", 0]\n[\"Sales\", 3]\n[\"Support\", 2]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Research'),\n  (2, 'Design');\nINSERT INTO employees VALUES\n  (1, 'Kai', 1, NULL, 7000, '2019-01-01'),\n  (2, 'Lea', 1, 1, 7000, '2019-02-01'),\n  (3, 'Max', 1, 1, 7000, '2019-03-01'),\n  (4, 'Nia', 1, 2, 6500, '2020-01-01'),\n  (5, 'Omar', 1, 2, 6000, '2020-02-01'),\n  (6, 'Pia', 1, 3, 5500, '2021-01-01'),\n  (7, 'Quin', 2, 1, 8000, '2021-06-01'),\n  (8, 'Rosa', NULL, NULL, 9000, '2022-01-01'),\n  (9, 'Sam', NULL, 8, 9500, '2022-02-02');\n",
+    "expectedOutput": "columns: 2\n[\"Design\", 1]\n[\"Research\", 6]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Finance'),\n  (2, 'Ops'),\n  (3, 'Facilities');\nINSERT INTO employees VALUES\n  (1, 'Tara', 1, NULL, 10000, '2018-01-01'),\n  (2, 'Uma', 1, 1, 10000, '2018-05-01'),\n  (3, 'Vic', 2, 77, 3000, '2020-01-01'),\n  (4, 'Wes', 2, 3, 3000, '2020-06-01'),\n  (5, 'Xia', 2, 3, 3200, '2021-01-01');\n",
+    "expectedOutput": "columns: 2\n[\"Facilities\", 0]\n[\"Finance\", 2]\n[\"Ops\", 3]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Support'),\n  (2, 'Legal'),\n  (3, 'Engineering');\nINSERT INTO employees VALUES\n  (1, 'Mia', 1, 94, 4000, '2024-04-08'),\n  (2, 'Xan', 3, 14, 3500, '2019-08-13'),\n  (3, 'Hal', 3, 4, 9000, '2021-09-04'),\n  (4, 'Gil', 1, 2, 6000, '2021-09-04'),\n  (5, 'Sue', 2, 8, 3500, '2019-06-21'),\n  (6, 'Wyn', 3, 7, 6000, '2020-11-30'),\n  (7, 'Ray', NULL, 14, 7000, '2019-01-08'),\n  (8, 'Zoe', 3, 2, 6000, '2018-10-27'),\n  (9, 'Val', 2, 6, 3500, '2024-07-22'),\n  (10, 'Oz', 2, NULL, 8000, '2024-05-06'),\n  (11, 'Pam', 1, 1, 12000, '2023-08-01'),\n  (12, 'Ida', NULL, 2, 8000, '2023-03-28'),\n  (13, 'Cal', 3, 92, 6000, '2019-07-23'),\n  (14, 'Nat', 2, 4, 4000, '2021-02-17'),\n  (15, 'Lev', 1, 17, 8000, '2019-11-22'),\n  (16, 'Fay', 2, 17, 3500, '2023-01-31'),\n  (17, 'Jon', 2, 12, 7000, '2018-09-23');\n",
+    "expectedOutput": "columns: 2\n[\"Engineering\", 5]\n[\"Legal\", 6]\n[\"Support\", 4]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Support'),\n  (2, 'Design'),\n  (3, 'Legal');\nINSERT INTO employees VALUES\n  (1, 'Ida', 2, NULL, 4000, '2018-02-10'),\n  (2, 'Pam', 1, 1, 4500, '2024-07-06'),\n  (3, 'Zoe', 3, 13, 3000, '2023-10-10'),\n  (4, 'Hal', 2, 7, 9000, '2018-04-24'),\n  (5, 'Wyn', NULL, NULL, 3000, '2018-08-05'),\n  (6, 'Eli', 3, 14, 7000, '2020-01-24'),\n  (7, 'Abe', 1, 12, 8000, '2021-11-21'),\n  (8, 'Jon', NULL, 3, 9000, '2020-04-03'),\n  (9, 'Bea', 3, 12, 6000, '2024-04-24'),\n  (10, 'Gil', 1, 14, 5000, '2020-11-12'),\n  (11, 'Val', 2, 7, 8000, '2021-10-29'),\n  (12, 'Mia', 3, 6, 6000, '2023-12-17'),\n  (13, 'Yul', 2, 9, 7000, '2020-03-30'),\n  (14, 'Lev', 2, NULL, 9000, '2022-06-16');\n",
+    "expectedOutput": "columns: 2\n[\"Design\", 5]\n[\"Legal\", 4]\n[\"Support\", 3]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-07",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "已支付订单的金额",
+   "difficulty": "中等",
+   "translations": {
+    "en": {
+     "title": "Paid Order Totals",
+     "description": "For every paid (`status = 'paid'`) order with at least one item, compute its total: the sum of `quantity * unit_price` over its items (the price actually charged, not the list price). Show `Guest` as the customer of guest orders.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `order_id`: order id\n- `customer`: customer name or Guest\n- `total`: order total\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "Order 1 is 2×30 + 1×55 = 115 (the chess set was charged 55, not 60). Order 6 is a guest order. Orders 3 and 9 were cancelled and are left out.",
+     "hints": [
+      "Inner-join orders to their items but left-join customers, so guest orders survive."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "连接"
+   ],
+   "description": "对每笔至少包含一件商品的已支付（`status = 'paid'`）订单，求订单金额：各明细 `quantity * unit_price` 之和（按实际成交价，不是商品标价）。游客订单的客户名显示为 `Guest`。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `order_id`：订单编号\n- `customer`：客户姓名或 Guest\n- `total`：订单金额\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "订单 1 是 2×30 + 1×55 = 115（棋盘按折扣价 55 计）。订单 6 是游客订单。订单 3、9 已取消，不输出。",
+   "hints": [
+    "订单和明细用内连接，订单和客户用左连接，游客订单才不会丢。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO customers VALUES\n  (1, 'Alice', 'alice@mail.com', 'Austin'),\n  (2, 'Bob', 'bob@mail.com', 'Boston'),\n  (3, 'Cara', 'Alice@Mail.com', 'Austin'),\n  (4, 'Dev', 'dev@mail.com', NULL),\n  (5, 'Elle', 'elle@mail.com', 'Boston'),\n  (6, 'Femi', 'femi@mail.com', 'Austin');\nINSERT INTO products VALUES\n  (1, 'SQL Basics', 'Books', 30),\n  (2, 'Graph Theory', 'Books', 45),\n  (3, 'Chess Set', 'Games', 60),\n  (4, 'Puzzle Box', 'Games', 25),\n  (5, 'Chef Knife', 'Kitchen', 80);\nINSERT INTO orders VALUES\n  (1, 1, '2024-01-05', 'paid'),\n  (2, 1, '2024-01-20', 'paid'),\n  (3, 2, '2024-01-20', 'cancelled'),\n  (4, 3, '2024-02-02', 'paid'),\n  (5, 1, '2024-02-14', 'paid'),\n  (6, NULL, '2024-02-14', 'paid'),\n  (7, 5, '2024-03-01', 'paid'),\n  (8, 3, '2024-03-01', 'paid'),\n  (9, 1, '2024-03-09', 'cancelled');\nINSERT INTO order_items VALUES\n  (1, 1, 2, 30),\n  (1, 3, 1, 55),\n  (2, 5, 1, 80),\n  (3, 4, 4, 25),\n  (4, 2, 2, 45),\n  (4, 4, 1, 25),\n  (5, 3, 3, 60),\n  (6, 1, 1, 30),\n  (7, 5, 2, 75),\n  (7, 2, 1, 45),\n  (7, 3, 1, 60),\n  (8, 1, 10, 30),\n  (9, 5, 1, 80);\n",
+    "expectedOutput": "columns: 3\n[1, \"Alice\", 115]\n[2, \"Alice\", 80]\n[4, \"Cara\", 115]\n[5, \"Alice\", 180]\n[6, \"Guest\", 30]\n[7, \"Elle\", 255]\n[8, \"Cara\", 300]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO customers VALUES\n  (1, 'Gus', 'gus@mail.com', 'Denver'),\n  (2, 'Hana', 'HANA@mail.com', 'Denver'),\n  (3, 'Ian', 'hana@mail.com', NULL),\n  (4, 'Jo', 'jo@mail.com', NULL),\n  (5, 'Kim', 'Jo@Mail.com', 'Denver'),\n  (6, 'Lu', 'lu@mail.com', 'Seattle');\nINSERT INTO products VALUES\n  (1, 'Trowel', 'Garden', 20),\n  (2, 'Seeds', 'Garden', 5),\n  (3, 'Novel', 'Books', 15);\nINSERT INTO orders VALUES\n  (1, 1, '2024-04-01', 'paid'),\n  (2, 1, '2024-04-01', 'paid'),\n  (3, 1, '2024-04-03', 'paid'),\n  (4, 2, '2024-04-03', 'cancelled'),\n  (5, 2, '2024-04-03', 'cancelled'),\n  (6, 2, '2024-04-04', 'cancelled'),\n  (7, NULL, '2024-04-04', 'paid'),\n  (8, 4, '2024-05-10', 'paid'),\n  (9, 4, '2024-05-10', 'paid');\nINSERT INTO order_items VALUES\n  (1, 1, 3, 20),\n  (1, 3, 1, 15),\n  (2, 2, 10, 5),\n  (3, 1, 5, 20),\n  (4, 3, 2, 15),\n  (5, 1, 1, 20),\n  (6, 2, 1, 5),\n  (7, 1, 1, 18),\n  (8, 2, 4, 5),\n  (9, 3, 19, 15);\n",
+    "expectedOutput": "columns: 3\n[1, \"Gus\", 75]\n[2, \"Gus\", 50]\n[3, \"Gus\", 100]\n[7, \"Guest\", 18]\n[8, \"Jo\", 20]\n[9, \"Jo\", 285]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO customers VALUES\n  (1, 'Mo', 'mo@mail.com', 'Austin'),\n  (2, 'Ned', 'ned@mail.com', 'Austin'),\n  (3, 'Ola', 'ola@mail.com', 'Austin');\nINSERT INTO products VALUES\n  (1, 'Lamp', 'Home', 40),\n  (2, 'Mug', 'Kitchen', 12);\nINSERT INTO orders VALUES\n  (1, 1, '2024-06-30', 'paid'),\n  (2, 1, '2024-06-01', 'paid'),\n  (3, 2, '2024-05-15', 'cancelled'),\n  (4, 2, '2024-05-20', 'paid'),\n  (5, 3, '2024-07-01', 'paid'),\n  (6, NULL, '2024-08-01', 'paid');\nINSERT INTO order_items VALUES\n  (1, 1, 1, 40),\n  (1, 2, 1, 12),\n  (2, 2, 25, 12),\n  (4, 1, 10, 40),\n  (5, 2, 1, 12),\n  (6, 1, 8, 40);\n",
+    "expectedOutput": "columns: 3\n[1, \"Mo\", 52]\n[2, \"Mo\", 300]\n[4, \"Ned\", 400]\n[5, \"Ola\", 12]\n[6, \"Guest\", 320]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO customers VALUES\n  (1, 'Kay', 'kay@mail.com', 'Denver'),\n  (2, 'Mia', 'mia@mail.com', 'Denver'),\n  (3, 'Xan', 'xan@mail.com', 'Denver'),\n  (4, 'Jon', 'jon@mail.com', 'Boston'),\n  (5, 'Abe', 'Jon@mail.com', 'Austin'),\n  (6, 'Dee', 'dee@mail.com', NULL),\n  (7, 'Bea', 'bea@mail.com', 'Seattle'),\n  (8, 'Val', 'Xan@mail.com', 'Austin'),\n  (9, 'Ted', 'Jon@mail.com', 'Austin'),\n  (10, 'Wyn', 'wyn@mail.com', 'Denver');\nINSERT INTO products VALUES\n  (1, 'Seeds', 'Garden', 60),\n  (2, 'Knife', 'Kitchen', 19),\n  (3, 'Pan', 'Kitchen', 42),\n  (4, 'Puzzle', 'Games', 15),\n  (5, 'Cookbook', 'Books', 29);\nINSERT INTO orders VALUES\n  (1, 8, '2024-03-21', 'paid'),\n  (2, 10, '2024-03-15', 'paid'),\n  (3, 4, '2024-05-29', 'paid'),\n  (4, 10, '2024-04-07', 'paid'),\n  (5, 8, '2024-03-09', 'cancelled'),\n  (6, 5, '2024-05-26', 'paid'),\n  (7, 7, '2024-02-07', 'paid'),\n  (8, 8, '2024-03-20', 'cancelled'),\n  (9, 7, '2024-01-02', 'paid'),\n  (10, 4, '2024-03-18', 'paid'),\n  (11, 1, '2024-02-08', 'paid'),\n  (12, 1, '2024-02-07', 'paid'),\n  (13, 7, '2024-01-02', 'paid'),\n  (14, 8, '2024-03-04', 'paid'),\n  (15, 10, '2024-04-04', 'paid'),\n  (16, 10, '2024-02-17', 'paid'),\n  (17, 1, '2024-01-23', 'paid'),\n  (18, 9, '2024-03-05', 'paid'),\n  (19, 10, '2024-03-30', 'cancelled');\nINSERT INTO order_items VALUES\n  (1, 5, 2, 24),\n  (1, 4, 2, 12),\n  (2, 5, 3, 25),\n  (2, 1, 2, 58),\n  (2, 4, 2, 12),\n  (3, 5, 1, 24),\n  (3, 1, 2, 56),\n  (4, 3, 1, 34),\n  (4, 2, 2, 18),\n  (4, 5, 1, 26),\n  (5, 2, 2, 17),\n  (5, 5, 1, 26),\n  (8, 5, 1, 28),\n  (8, 1, 1, 53),\n  (8, 3, 3, 36),\n  (9, 3, 3, 35),\n  (9, 4, 1, 14),\n  (10, 3, 3, 42),\n  (11, 5, 1, 27),\n  (11, 3, 1, 41),\n  (11, 2, 3, 18),\n  (12, 1, 3, 57),\n  (13, 4, 3, 15),\n  (14, 3, 3, 39),\n  (14, 1, 1, 57),\n  (15, 3, 1, 35),\n  (16, 2, 1, 18),\n  (18, 1, 1, 50),\n  (18, 5, 2, 27),\n  (19, 4, 3, 13),\n  (19, 1, 1, 58);\n",
+    "expectedOutput": "columns: 3\n[1, \"Val\", 72]\n[10, \"Jon\", 126]\n[11, \"Kay\", 122]\n[12, \"Kay\", 171]\n[13, \"Bea\", 45]\n[14, \"Val\", 174]\n[15, \"Wyn\", 35]\n[16, \"Wyn\", 18]\n[18, \"Ted\", 104]\n[2, \"Wyn\", 215]\n[3, \"Jon\", 136]\n[4, \"Wyn\", 96]\n[9, \"Bea\", 119]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO customers VALUES\n  (1, 'Eli', 'eli@mail.com', 'Boston'),\n  (2, 'Val', 'Eli@mail.com', 'Seattle'),\n  (3, 'Pam', 'pam@mail.com', 'Austin'),\n  (4, 'Wyn', 'wyn@mail.com', 'Seattle'),\n  (5, 'Sue', 'Eli@mail.com', 'Austin'),\n  (6, 'Una', 'una@mail.com', 'Seattle'),\n  (7, 'Ted', 'ted@mail.com', 'Boston'),\n  (8, 'Mia', 'mia@mail.com', 'Seattle');\nINSERT INTO products VALUES\n  (1, 'Mug', 'Kitchen', 41),\n  (2, 'Chess Set', 'Games', 6),\n  (3, 'Seeds', 'Garden', 5),\n  (4, 'Cookbook', 'Books', 44),\n  (5, 'Pan', 'Kitchen', 48),\n  (6, 'Dice', 'Games', 42),\n  (7, 'Knife', 'Kitchen', 14);\nINSERT INTO orders VALUES\n  (1, 6, '2024-02-24', 'paid'),\n  (2, 3, '2024-01-28', 'paid'),\n  (3, 7, '2024-01-23', 'paid'),\n  (4, 2, '2024-03-22', 'paid'),\n  (5, 7, '2024-01-02', 'paid'),\n  (6, NULL, '2024-01-22', 'paid'),\n  (7, NULL, '2024-01-27', 'paid'),\n  (8, 5, '2024-02-18', 'cancelled'),\n  (9, 5, '2024-01-19', 'paid'),\n  (10, 1, '2024-02-28', 'paid'),\n  (11, 4, '2024-04-12', 'paid'),\n  (12, 1, '2024-01-20', 'paid'),\n  (13, 5, '2024-01-15', 'paid'),\n  (14, 5, '2024-05-06', 'paid'),\n  (15, 8, '2024-04-25', 'paid'),\n  (16, 3, '2024-02-20', 'paid'),\n  (17, NULL, '2024-02-01', 'cancelled'),\n  (18, 6, '2024-04-08', 'cancelled'),\n  (19, 8, '2024-02-17', 'cancelled'),\n  (20, 1, '2024-05-26', 'paid');\nINSERT INTO order_items VALUES\n  (1, 2, 1, 5),\n  (1, 6, 1, 40),\n  (1, 3, 3, 4),\n  (2, 4, 2, 37),\n  (2, 5, 2, 47),\n  (2, 3, 3, 5),\n  (3, 1, 3, 41),\n  (3, 3, 1, 4),\n  (4, 7, 2, 12),\n  (4, 6, 1, 40),\n  (5, 4, 1, 39),\n  (5, 1, 3, 33),\n  (5, 5, 3, 40),\n  (6, 2, 3, 5),\n  (6, 1, 2, 38),\n  (7, 4, 1, 43),\n  (7, 2, 1, 5),\n  (8, 7, 3, 12),\n  (8, 2, 2, 6),\n  (8, 4, 2, 37),\n  (9, 3, 3, 4),\n  (11, 2, 1, 6),\n  (11, 1, 2, 36),\n  (12, 3, 1, 4),\n  (12, 6, 3, 41),\n  (12, 1, 1, 35),\n  (13, 2, 3, 6),\n  (14, 3, 1, 5),\n  (16, 2, 3, 6),\n  (16, 3, 2, 4),\n  (17, 6, 3, 34),\n  (17, 1, 1, 35),\n  (18, 3, 2, 5),\n  (20, 6, 2, 42),\n  (20, 5, 3, 42),\n  (20, 1, 3, 40);\n",
+    "expectedOutput": "columns: 3\n[1, \"Una\", 57]\n[11, \"Wyn\", 78]\n[12, \"Eli\", 162]\n[13, \"Sue\", 18]\n[14, \"Sue\", 5]\n[16, \"Pam\", 26]\n[2, \"Pam\", 183]\n[20, \"Eli\", 330]\n[3, \"Ted\", 127]\n[4, \"Val\", 64]\n[5, \"Ted\", 258]\n[6, \"Guest\", 91]\n[7, \"Guest\", 48]\n[9, \"Sue\", 12]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-08",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "同城客户配对",
+   "difficulty": "中等",
+   "translations": {
+    "en": {
+     "title": "Same-City Pairs",
+     "description": "List every pair of different customers who live in the same known city, each pair once with `first_id < second_id`. Customers with a NULL city are never paired.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `city`: city\n- `first_id`: smaller customer id\n- `second_id`: larger customer id\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "Austin has customers 1, 3 and 6, giving (1,3), (1,6) and (3,6); Boston gives (2,5). Dev’s city is unknown, so he is not paired.",
+     "hints": [
+      "In the self-join, a.id < b.id drops self-pairs and the mirrored (b,a) duplicates.",
+      "NULL = NULL yields NULL, not true."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "连接"
+   ],
+   "description": "列出所有住在同一个已知城市的两位不同客户，每一对只出现一次，且 `first_id < second_id`。城市为 NULL 的客户不和任何人配对。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `city`：城市\n- `first_id`：编号较小的客户\n- `second_id`：编号较大的客户\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "Austin 有客户 1、3、6，组成 (1,3)、(1,6)、(3,6) 三对；Boston 有 (2,5)。Dev 城市未知，不配对。",
+   "hints": [
+    "自连接时用 a.id < b.id 去掉自己和自己、以及 (b,a) 这种重复。",
+    "NULL = NULL 的结果是 NULL，不是真。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Alice', 'alice@mail.com', 'Austin'),\n  (2, 'Bob', 'bob@mail.com', 'Boston'),\n  (3, 'Cara', 'Alice@Mail.com', 'Austin'),\n  (4, 'Dev', 'dev@mail.com', NULL),\n  (5, 'Elle', 'elle@mail.com', 'Boston'),\n  (6, 'Femi', 'femi@mail.com', 'Austin');\n",
+    "expectedOutput": "columns: 3\n[\"Austin\", 1, 3]\n[\"Austin\", 1, 6]\n[\"Austin\", 3, 6]\n[\"Boston\", 2, 5]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Gus', 'gus@mail.com', 'Denver'),\n  (2, 'Hana', 'HANA@mail.com', 'Denver'),\n  (3, 'Ian', 'hana@mail.com', NULL),\n  (4, 'Jo', 'jo@mail.com', NULL),\n  (5, 'Kim', 'Jo@Mail.com', 'Denver'),\n  (6, 'Lu', 'lu@mail.com', 'Seattle');\n",
+    "expectedOutput": "columns: 3\n[\"Denver\", 1, 2]\n[\"Denver\", 1, 5]\n[\"Denver\", 2, 5]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Mo', 'mo@mail.com', 'Austin'),\n  (2, 'Ned', 'ned@mail.com', 'Austin'),\n  (3, 'Ola', 'ola@mail.com', 'Austin');\n",
+    "expectedOutput": "columns: 3\n[\"Austin\", 1, 2]\n[\"Austin\", 1, 3]\n[\"Austin\", 2, 3]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Cal', 'cal@mail.com', NULL),\n  (2, 'Mia', 'mia@mail.com', 'Boston'),\n  (3, 'Kay', 'kay@mail.com', 'Boston'),\n  (4, 'Ida', 'ida@mail.com', 'Austin'),\n  (5, 'Jon', 'jon@mail.com', 'Boston'),\n  (6, 'Pam', 'pam@mail.com', 'Boston'),\n  (7, 'Nat', 'Ida@mail.com', 'Seattle'),\n  (8, 'Gil', 'Jon@mail.com', 'Seattle'),\n  (9, 'Fay', 'Ida@mail.com', 'Boston'),\n  (10, 'Lev', 'Cal@mail.com', 'Boston'),\n  (11, 'Hal', 'hal@mail.com', 'Boston');\n",
+    "expectedOutput": "columns: 3\n[\"Boston\", 10, 11]\n[\"Boston\", 2, 10]\n[\"Boston\", 2, 11]\n[\"Boston\", 2, 3]\n[\"Boston\", 2, 5]\n[\"Boston\", 2, 6]\n[\"Boston\", 2, 9]\n[\"Boston\", 3, 10]\n[\"Boston\", 3, 11]\n[\"Boston\", 3, 5]\n[\"Boston\", 3, 6]\n[\"Boston\", 3, 9]\n[\"Boston\", 5, 10]\n[\"Boston\", 5, 11]\n[\"Boston\", 5, 6]\n[\"Boston\", 5, 9]\n[\"Boston\", 6, 10]\n[\"Boston\", 6, 11]\n[\"Boston\", 6, 9]\n[\"Boston\", 9, 10]\n[\"Boston\", 9, 11]\n[\"Seattle\", 7, 8]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Nat', 'nat@mail.com', 'Boston'),\n  (2, 'Eli', 'eli@mail.com', 'Seattle'),\n  (3, 'Ida', 'ida@mail.com', 'Boston'),\n  (4, 'Ted', 'Ida@mail.com', 'Seattle'),\n  (5, 'Jon', 'jon@mail.com', 'Seattle'),\n  (6, 'Zoe', 'zoe@mail.com', 'Seattle'),\n  (7, 'Val', 'val@mail.com', 'Boston');\n",
+    "expectedOutput": "columns: 3\n[\"Boston\", 1, 3]\n[\"Boston\", 1, 7]\n[\"Boston\", 3, 7]\n[\"Seattle\", 2, 4]\n[\"Seattle\", 2, 5]\n[\"Seattle\", 2, 6]\n[\"Seattle\", 4, 5]\n[\"Seattle\", 4, 6]\n[\"Seattle\", 5, 6]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-09",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "活跃买家",
+   "difficulty": "简单",
+   "translations": {
+    "en": {
+     "title": "Frequent Buyers",
+     "description": "Find the customers with at least 3 paid orders, along with that number. Cancelled orders do not count.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `id`: customer id\n- `name`: customer name\n- `paid_orders`: number of paid orders\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "Alice has 4 orders, but order 9 was cancelled, which leaves exactly 3 paid. Cara has only 2.",
+     "hints": [
+      "WHERE filters rows first; HAVING filters the groups afterwards."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "分组与 HAVING"
+   ],
+   "description": "找出已支付订单不少于 3 笔的客户，并给出已支付订单数。已取消的订单不算。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `id`：客户编号\n- `name`：客户姓名\n- `paid_orders`：已支付订单数\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "Alice 有 4 笔订单，其中订单 9 已取消，已支付的恰好 3 笔。Cara 只有 2 笔。",
+   "hints": [
+    "WHERE 先筛行，HAVING 再筛分组。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO customers VALUES\n  (1, 'Alice', 'alice@mail.com', 'Austin'),\n  (2, 'Bob', 'bob@mail.com', 'Boston'),\n  (3, 'Cara', 'Alice@Mail.com', 'Austin'),\n  (4, 'Dev', 'dev@mail.com', NULL),\n  (5, 'Elle', 'elle@mail.com', 'Boston'),\n  (6, 'Femi', 'femi@mail.com', 'Austin');\nINSERT INTO orders VALUES\n  (1, 1, '2024-01-05', 'paid'),\n  (2, 1, '2024-01-20', 'paid'),\n  (3, 2, '2024-01-20', 'cancelled'),\n  (4, 3, '2024-02-02', 'paid'),\n  (5, 1, '2024-02-14', 'paid'),\n  (6, NULL, '2024-02-14', 'paid'),\n  (7, 5, '2024-03-01', 'paid'),\n  (8, 3, '2024-03-01', 'paid'),\n  (9, 1, '2024-03-09', 'cancelled');\n",
+    "expectedOutput": "columns: 3\n[1, \"Alice\", 3]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO customers VALUES\n  (1, 'Gus', 'gus@mail.com', 'Denver'),\n  (2, 'Hana', 'HANA@mail.com', 'Denver'),\n  (3, 'Ian', 'hana@mail.com', NULL),\n  (4, 'Jo', 'jo@mail.com', NULL),\n  (5, 'Kim', 'Jo@Mail.com', 'Denver'),\n  (6, 'Lu', 'lu@mail.com', 'Seattle');\nINSERT INTO orders VALUES\n  (1, 1, '2024-04-01', 'paid'),\n  (2, 1, '2024-04-01', 'paid'),\n  (3, 1, '2024-04-03', 'paid'),\n  (4, 2, '2024-04-03', 'cancelled'),\n  (5, 2, '2024-04-03', 'cancelled'),\n  (6, 2, '2024-04-04', 'cancelled'),\n  (7, NULL, '2024-04-04', 'paid'),\n  (8, 4, '2024-05-10', 'paid'),\n  (9, 4, '2024-05-10', 'paid');\n",
+    "expectedOutput": "columns: 3\n[1, \"Gus\", 3]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO customers VALUES\n  (1, 'Mo', 'mo@mail.com', 'Austin'),\n  (2, 'Ned', 'ned@mail.com', 'Austin'),\n  (3, 'Ola', 'ola@mail.com', 'Austin');\nINSERT INTO orders VALUES\n  (1, 1, '2024-06-30', 'paid'),\n  (2, 1, '2024-06-01', 'paid'),\n  (3, 2, '2024-05-15', 'cancelled'),\n  (4, 2, '2024-05-20', 'paid'),\n  (5, 3, '2024-07-01', 'paid'),\n  (6, NULL, '2024-08-01', 'paid');\n",
+    "expectedOutput": "columns: 3\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO customers VALUES\n  (1, 'Bea', 'bea@mail.com', NULL),\n  (2, 'Wyn', 'wyn@mail.com', 'Denver'),\n  (3, 'Yul', 'yul@mail.com', 'Boston'),\n  (4, 'Hal', 'hal@mail.com', 'Denver'),\n  (5, 'Fay', 'fay@mail.com', NULL),\n  (6, 'Cal', 'cal@mail.com', 'Austin');\nINSERT INTO orders VALUES\n  (1, 2, '2024-05-28', 'paid'),\n  (2, 2, '2024-01-31', 'paid'),\n  (3, 6, '2024-01-12', 'paid'),\n  (4, 5, '2024-05-05', 'paid'),\n  (5, 1, '2024-03-23', 'paid'),\n  (6, 1, '2024-02-29', 'paid'),\n  (7, 5, '2024-01-08', 'paid'),\n  (8, 1, '2024-02-06', 'paid'),\n  (9, 3, '2024-04-23', 'paid'),\n  (10, 1, '2024-03-17', 'paid'),\n  (11, 1, '2024-02-18', 'paid'),\n  (12, NULL, '2024-02-16', 'paid'),\n  (13, 2, '2024-05-26', 'paid'),\n  (14, 3, '2024-02-20', 'paid');\n",
+    "expectedOutput": "columns: 3\n[1, \"Bea\", 5]\n[2, \"Wyn\", 3]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO customers VALUES\n  (1, 'Jon', 'jon@mail.com', 'Austin'),\n  (2, 'Gil', 'gil@mail.com', 'Denver'),\n  (3, 'Pam', 'pam@mail.com', 'Seattle'),\n  (4, 'Xan', 'xan@mail.com', 'Denver'),\n  (5, 'Nat', 'nat@mail.com', 'Boston'),\n  (6, 'Abe', 'abe@mail.com', 'Denver'),\n  (7, 'Cal', 'Gil@mail.com', 'Austin'),\n  (8, 'Fay', 'fay@mail.com', 'Denver'),\n  (9, 'Sue', 'sue@mail.com', 'Austin'),\n  (10, 'Ray', 'Fay@mail.com', NULL),\n  (11, 'Lev', 'lev@mail.com', 'Boston');\nINSERT INTO orders VALUES\n  (1, NULL, '2024-04-22', 'paid'),\n  (2, NULL, '2024-05-30', 'paid'),\n  (3, 1, '2024-02-27', 'paid'),\n  (4, 4, '2024-03-24', 'cancelled'),\n  (5, 10, '2024-03-19', 'paid'),\n  (6, 3, '2024-05-15', 'paid'),\n  (7, 2, '2024-05-29', 'paid'),\n  (8, 4, '2024-01-12', 'paid');\n",
+    "expectedOutput": "columns: 3\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-10",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "类目销售榜",
+   "difficulty": "中等",
+   "translations": {
+    "en": {
+     "title": "Category Revenue Board",
+     "description": "Compute the revenue of each product category over paid orders (the sum of `quantity * unit_price`), keeping only categories with revenue of at least 300. Sort by revenue, highest first, breaking ties by category name ascending.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `category`: category\n- `revenue`: revenue\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "Books makes 60+90+30+45+300 = 525 and Games 55+25+180+60 = 320; Kitchen makes only 230 and is filtered out.",
+     "hints": [
+      "Conditions on aggregates go in HAVING.",
+      "Row order is compared here, so spell out the tie-break in ORDER BY."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "分组与 HAVING"
+   ],
+   "description": "按商品类目统计已支付订单的销售额（`quantity * unit_price` 之和），只保留销售额不少于 300 的类目。结果按销售额从高到低排序，销售额相同时按类目名升序。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `category`：类目\n- `revenue`：销售额\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "Books 共 60+90+30+45+300 = 525，Games 共 55+25+180+60 = 320，Kitchen 只有 230，被过滤掉。",
+   "hints": [
+    "聚合之后的条件写在 HAVING。",
+    "本题比较行的顺序，ORDER BY 要写全平局规则。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "-- cswork:ordered\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO products VALUES\n  (1, 'SQL Basics', 'Books', 30),\n  (2, 'Graph Theory', 'Books', 45),\n  (3, 'Chess Set', 'Games', 60),\n  (4, 'Puzzle Box', 'Games', 25),\n  (5, 'Chef Knife', 'Kitchen', 80);\nINSERT INTO orders VALUES\n  (1, 1, '2024-01-05', 'paid'),\n  (2, 1, '2024-01-20', 'paid'),\n  (3, 2, '2024-01-20', 'cancelled'),\n  (4, 3, '2024-02-02', 'paid'),\n  (5, 1, '2024-02-14', 'paid'),\n  (6, NULL, '2024-02-14', 'paid'),\n  (7, 5, '2024-03-01', 'paid'),\n  (8, 3, '2024-03-01', 'paid'),\n  (9, 1, '2024-03-09', 'cancelled');\nINSERT INTO order_items VALUES\n  (1, 1, 2, 30),\n  (1, 3, 1, 55),\n  (2, 5, 1, 80),\n  (3, 4, 4, 25),\n  (4, 2, 2, 45),\n  (4, 4, 1, 25),\n  (5, 3, 3, 60),\n  (6, 1, 1, 30),\n  (7, 5, 2, 75),\n  (7, 2, 1, 45),\n  (7, 3, 1, 60),\n  (8, 1, 10, 30),\n  (9, 5, 1, 80);\n",
+    "expectedOutput": "columns: 2\n[\"Books\", 525]\n[\"Games\", 320]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "-- cswork:ordered\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO products VALUES\n  (1, 'Trowel', 'Garden', 20),\n  (2, 'Seeds', 'Garden', 5),\n  (3, 'Novel', 'Books', 15);\nINSERT INTO orders VALUES\n  (1, 1, '2024-04-01', 'paid'),\n  (2, 1, '2024-04-01', 'paid'),\n  (3, 1, '2024-04-03', 'paid'),\n  (4, 2, '2024-04-03', 'cancelled'),\n  (5, 2, '2024-04-03', 'cancelled'),\n  (6, 2, '2024-04-04', 'cancelled'),\n  (7, NULL, '2024-04-04', 'paid'),\n  (8, 4, '2024-05-10', 'paid'),\n  (9, 4, '2024-05-10', 'paid');\nINSERT INTO order_items VALUES\n  (1, 1, 3, 20),\n  (1, 3, 1, 15),\n  (2, 2, 10, 5),\n  (3, 1, 5, 20),\n  (4, 3, 2, 15),\n  (5, 1, 1, 20),\n  (6, 2, 1, 5),\n  (7, 1, 1, 18),\n  (8, 2, 4, 5),\n  (9, 3, 19, 15);\n",
+    "expectedOutput": "columns: 2\n[\"Books\", 300]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "-- cswork:ordered\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO products VALUES\n  (1, 'Lamp', 'Home', 40),\n  (2, 'Mug', 'Kitchen', 12);\nINSERT INTO orders VALUES\n  (1, 1, '2024-06-30', 'paid'),\n  (2, 1, '2024-06-01', 'paid'),\n  (3, 2, '2024-05-15', 'cancelled'),\n  (4, 2, '2024-05-20', 'paid'),\n  (5, 3, '2024-07-01', 'paid'),\n  (6, NULL, '2024-08-01', 'paid');\nINSERT INTO order_items VALUES\n  (1, 1, 1, 40),\n  (1, 2, 1, 12),\n  (2, 2, 25, 12),\n  (4, 1, 10, 40),\n  (5, 2, 1, 12),\n  (6, 1, 8, 40);\n",
+    "expectedOutput": "columns: 2\n[\"Home\", 760]\n[\"Kitchen\", 324]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "-- cswork:ordered\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO products VALUES\n  (1, 'Cookbook', 'Books', 17),\n  (2, 'Mug', 'Kitchen', 52),\n  (3, 'Pan', 'Kitchen', 57),\n  (4, 'Puzzle', 'Games', 34),\n  (5, 'Chess Set', 'Games', 55),\n  (6, 'Novel', 'Books', 7),\n  (7, 'Knife', 'Kitchen', 51),\n  (8, 'Dice', 'Games', 21);\nINSERT INTO orders VALUES\n  (1, 6, '2024-05-20', 'paid'),\n  (2, 5, '2024-01-09', 'paid'),\n  (3, 4, '2024-04-13', 'paid'),\n  (4, 3, '2024-01-18', 'paid'),\n  (5, 7, '2024-04-04', 'paid'),\n  (6, 5, '2024-01-25', 'cancelled'),\n  (7, 6, '2024-03-27', 'cancelled'),\n  (8, 2, '2024-03-03', 'cancelled'),\n  (9, 5, '2024-02-25', 'paid'),\n  (10, 7, '2024-05-01', 'paid'),\n  (11, 5, '2024-03-14', 'cancelled'),\n  (12, 2, '2024-01-25', 'cancelled'),\n  (13, 3, '2024-04-26', 'cancelled'),\n  (14, 3, '2024-05-10', 'paid'),\n  (15, 7, '2024-03-21', 'paid'),\n  (16, 3, '2024-05-06', 'paid'),\n  (17, 3, '2024-01-19', 'paid');\nINSERT INTO order_items VALUES\n  (1, 7, 3, 49),\n  (1, 2, 3, 52),\n  (3, 7, 2, 46),\n  (3, 2, 1, 51),\n  (3, 5, 3, 48),\n  (4, 6, 3, 7),\n  (5, 6, 2, 6),\n  (6, 2, 1, 50),\n  (7, 1, 3, 17),\n  (7, 3, 3, 53),\n  (9, 8, 1, 17),\n  (9, 7, 1, 45),\n  (10, 8, 2, 17),\n  (10, 6, 1, 6),\n  (11, 5, 3, 46),\n  (11, 6, 3, 6),\n  (12, 4, 1, 28),\n  (13, 6, 1, 6),\n  (13, 8, 3, 20),\n  (14, 6, 2, 6),\n  (14, 8, 1, 20),\n  (14, 5, 3, 48),\n  (16, 2, 3, 46),\n  (16, 1, 3, 17),\n  (17, 8, 3, 18);\n",
+    "expectedOutput": "columns: 2\n[\"Kitchen\", 629]\n[\"Games\", 413]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "-- cswork:ordered\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO products VALUES\n  (1, 'Hose', 'Garden', 24),\n  (2, 'Knife', 'Kitchen', 8),\n  (3, 'Mug', 'Kitchen', 44),\n  (4, 'Dice', 'Games', 57),\n  (5, 'Seeds', 'Garden', 31);\nINSERT INTO orders VALUES\n  (1, NULL, '2024-05-05', 'paid'),\n  (2, NULL, '2024-03-07', 'paid'),\n  (3, NULL, '2024-05-02', 'paid'),\n  (4, 2, '2024-05-27', 'paid'),\n  (5, 2, '2024-05-26', 'paid'),\n  (6, 6, '2024-02-03', 'paid'),\n  (7, 5, '2024-01-22', 'paid'),\n  (8, 9, '2024-02-26', 'paid'),\n  (9, 5, '2024-02-08', 'paid'),\n  (10, 5, '2024-01-17', 'paid'),\n  (11, 10, '2024-01-03', 'paid'),\n  (12, 8, '2024-03-31', 'paid'),\n  (13, 7, '2024-04-12', 'paid');\nINSERT INTO order_items VALUES\n  (1, 3, 1, 38),\n  (4, 2, 2, 7),\n  (4, 5, 2, 30),\n  (5, 3, 1, 41),\n  (6, 3, 1, 42),\n  (7, 1, 1, 24),\n  (7, 3, 3, 37),\n  (10, 4, 3, 57),\n  (11, 5, 1, 29),\n  (11, 1, 2, 22),\n  (13, 3, 3, 38),\n  (13, 5, 2, 29);\n",
+    "expectedOutput": "columns: 2\n[\"Kitchen\", 360]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-11",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "重复的邮箱",
+   "difficulty": "简单",
+   "translations": {
+    "en": {
+     "title": "Duplicate Emails",
+     "description": "Email addresses are case-insensitive. Find the addresses used by more than one customer, in lowercase, with the number of customers using each.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `email`: email in lowercase\n- `accounts`: customers using it\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "alice@mail.com and Alice@Mail.com are the same address, used by 2 customers.",
+     "hints": [
+      "Group by LOWER(email) and output LOWER(email) too."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "分组与 HAVING"
+   ],
+   "description": "邮箱不区分大小写。找出被不止一位客户使用的邮箱，输出其全小写形式和使用它的客户数。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `email`：全小写的邮箱\n- `accounts`：使用该邮箱的客户数\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "alice@mail.com 和 Alice@Mail.com 是同一个邮箱，被 2 位客户使用。",
+   "hints": [
+    "按 LOWER(email) 分组，输出的也是 LOWER(email)。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Alice', 'alice@mail.com', 'Austin'),\n  (2, 'Bob', 'bob@mail.com', 'Boston'),\n  (3, 'Cara', 'Alice@Mail.com', 'Austin'),\n  (4, 'Dev', 'dev@mail.com', NULL),\n  (5, 'Elle', 'elle@mail.com', 'Boston'),\n  (6, 'Femi', 'femi@mail.com', 'Austin');\n",
+    "expectedOutput": "columns: 2\n[\"alice@mail.com\", 2]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Gus', 'gus@mail.com', 'Denver'),\n  (2, 'Hana', 'HANA@mail.com', 'Denver'),\n  (3, 'Ian', 'hana@mail.com', NULL),\n  (4, 'Jo', 'jo@mail.com', NULL),\n  (5, 'Kim', 'Jo@Mail.com', 'Denver'),\n  (6, 'Lu', 'lu@mail.com', 'Seattle');\n",
+    "expectedOutput": "columns: 2\n[\"hana@mail.com\", 2]\n[\"jo@mail.com\", 2]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Mo', 'mo@mail.com', 'Austin'),\n  (2, 'Ned', 'ned@mail.com', 'Austin'),\n  (3, 'Ola', 'ola@mail.com', 'Austin');\n",
+    "expectedOutput": "columns: 2\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Zoe', 'zoe@mail.com', 'Austin'),\n  (2, 'Eli', 'Zoe@mail.com', 'Austin'),\n  (3, 'Sue', 'sue@mail.com', NULL),\n  (4, 'Nat', 'nat@mail.com', 'Seattle'),\n  (5, 'Cal', 'Zoe@mail.com', 'Boston'),\n  (6, 'Ray', 'ray@mail.com', 'Austin'),\n  (7, 'Pam', 'pam@mail.com', 'Boston'),\n  (8, 'Una', 'una@mail.com', 'Austin'),\n  (9, 'Yul', 'Zoe@mail.com', 'Denver'),\n  (10, 'Oz', 'oz@mail.com', 'Austin'),\n  (11, 'Mia', 'mia@mail.com', NULL);\n",
+    "expectedOutput": "columns: 2\n[\"zoe@mail.com\", 4]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nINSERT INTO customers VALUES\n  (1, 'Dee', 'dee@mail.com', 'Austin'),\n  (2, 'Pam', 'pam@mail.com', 'Austin'),\n  (3, 'Oz', 'oz@mail.com', 'Boston'),\n  (4, 'Lev', 'lev@mail.com', NULL),\n  (5, 'Zoe', 'Lev@mail.com', 'Boston'),\n  (6, 'Nat', 'nat@mail.com', 'Boston'),\n  (7, 'Bea', 'bea@mail.com', 'Denver');\n",
+    "expectedOutput": "columns: 2\n[\"lev@mail.com\", 2]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-12",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "第二高的工资",
+   "difficulty": "中等",
+   "translations": {
+    "en": {
+     "title": "Second-Highest Salary",
+     "description": "Find the second-highest distinct salary among all employees, or NULL if there is none (for example when everyone earns the same). The result is exactly one row and one column.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `second_salary`: second-highest distinct salary, or NULL\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "The distinct salaries, highest first, are 12000, 9000, 8500, … so the answer is 9000 (Ben and Chloe share it, which still counts once).",
+     "hints": [
+      "A scalar subquery with no row is NULL, and the outer SELECT still returns one row.",
+      "Or look for the largest salary below the maximum."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "子查询"
+   ],
+   "description": "求所有员工工资中第二高的不同值。如果不存在（比如所有人工资相同），返回 NULL。结果恰好一行一列。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `second_salary`：第二高的不同工资，或 NULL\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "不同的工资从高到低是 12000、9000、8500……第二高是 9000（Ben 和 Chloe 并列也只算一个值）。",
+   "hints": [
+    "标量子查询没有结果时值为 NULL，外层 SELECT 仍会返回一行。",
+    "也可以找「小于最大值的最大值」。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Ava', 1, NULL, 12000, '2018-04-02'),\n  (2, 'Ben', 1, 1, 9000, '2019-07-15'),\n  (3, 'Chloe', 1, 1, 9000, '2020-01-20'),\n  (4, 'Dan', 1, 2, 7000, '2021-03-08'),\n  (5, 'Eve', 2, NULL, 8000, '2018-11-30'),\n  (6, 'Finn', 2, 5, 8500, '2022-05-16'),\n  (7, 'Gia', 2, 5, 6000, '2023-02-01'),\n  (8, 'Hugo', 3, 42, 5000, '2021-09-12'),\n  (9, 'Iris', NULL, 1, 4500, '2024-01-08'),\n  (10, 'Jack', 3, 8, 5500, '2022-10-03');\n",
+    "expectedOutput": "columns: 1\n[9000]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Kai', 1, NULL, 7000, '2019-01-01'),\n  (2, 'Lea', 1, 1, 7000, '2019-02-01'),\n  (3, 'Max', 1, 1, 7000, '2019-03-01'),\n  (4, 'Nia', 1, 2, 6500, '2020-01-01'),\n  (5, 'Omar', 1, 2, 6000, '2020-02-01'),\n  (6, 'Pia', 1, 3, 5500, '2021-01-01'),\n  (7, 'Quin', 2, 1, 8000, '2021-06-01'),\n  (8, 'Rosa', NULL, NULL, 9000, '2022-01-01'),\n  (9, 'Sam', NULL, 8, 9500, '2022-02-02');\n",
+    "expectedOutput": "columns: 1\n[9000]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Tara', 1, NULL, 10000, '2018-01-01'),\n  (2, 'Uma', 1, 1, 10000, '2018-05-01'),\n  (3, 'Vic', 2, 77, 3000, '2020-01-01'),\n  (4, 'Wes', 2, 3, 3000, '2020-06-01'),\n  (5, 'Xia', 2, 3, 3200, '2021-01-01');\n",
+    "expectedOutput": "columns: 1\n[3200]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 3",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Yara', 1, NULL, 5000, '2020-01-01'),\n  (2, 'Zane', 1, 1, 5000, '2020-02-01');\n",
+    "expectedOutput": "columns: 1\n[null]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Una', 2, NULL, 4500, '2021-04-27'),\n  (2, 'Jon', 3, 10, 6000, '2018-02-21'),\n  (3, 'Abe', 4, NULL, 3000, '2021-05-21'),\n  (4, 'Nat', 2, 9, 12000, '2022-03-18'),\n  (5, 'Fay', 1, 8, 5000, '2020-05-02'),\n  (6, 'Eli', 1, 8, 3500, '2024-02-06'),\n  (7, 'Wyn', NULL, 4, 5000, '2023-08-15'),\n  (8, 'Pam', NULL, 7, 3500, '2022-02-16'),\n  (9, 'Dee', 2, 6, 3500, '2023-08-19'),\n  (10, 'Ted', 1, 7, 5000, '2023-04-21'),\n  (11, 'Zoe', 5, 10, 4500, '2024-02-27'),\n  (12, 'Bea', 4, NULL, 7000, '2021-09-07'),\n  (13, 'Oz', 5, 6, 5000, '2021-04-07');\n",
+    "expectedOutput": "columns: 1\n[7000]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO employees VALUES\n  (1, 'Bea', 4, 11, 8000, '2022-09-22'),\n  (2, 'Yul', 4, 12, 3000, '2018-05-13'),\n  (3, 'Hal', 2, 1, 7000, '2023-08-29'),\n  (4, 'Abe', 4, 9, 12000, '2022-07-21'),\n  (5, 'Eli', 1, NULL, 7000, '2023-12-27'),\n  (6, 'Xan', NULL, 97, 3500, '2023-11-25'),\n  (7, 'Dee', 3, 1, 12000, '2021-04-15'),\n  (8, 'Gil', NULL, 1, 4500, '2020-09-27'),\n  (9, 'Zoe', 2, 1, 6000, '2022-08-21'),\n  (10, 'Pam', 1, 1, 6000, '2023-02-21'),\n  (11, 'Nat', 5, 12, 9000, '2019-02-12'),\n  (12, 'Fay', 2, NULL, 4500, '2018-10-28'),\n  (13, 'Una', 4, 5, 4000, '2019-12-30');\n",
+    "expectedOutput": "columns: 1\n[9000]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-13",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "高于部门平均工资",
+   "difficulty": "中等",
+   "translations": {
+    "en": {
+     "title": "Above the Department Average",
+     "description": "Find the employees paid strictly more than their own department's average salary. Employees without a department are left out.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `department`: department name\n- `employee`: employee name\n- `salary`: salary\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "Engineering averages 9250 and only Ava is above it; Sales averages 7500, beaten by Eve and Finn; Support averages 5250, beaten by Jack.",
+     "hints": [
+      "A correlated subquery computes the average for the current row's department_id.",
+      "Or compute the averages per department first and join them back."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "子查询"
+   ],
+   "description": "找出工资严格高于本部门平均工资的员工。没有部门的员工不参与。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `department`：部门名\n- `employee`：员工姓名\n- `salary`：工资\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "Engineering 平均 9250，只有 Ava 高于它；Sales 平均 7500，Eve 和 Finn 高于它；Support 平均 5250，Jack 高于它。",
+   "hints": [
+    "相关子查询：在 WHERE 里按当前行的 department_id 现算平均值。",
+    "也可以先按部门算好平均值，再 JOIN 回来。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Engineering'),\n  (2, 'Sales'),\n  (3, 'Support'),\n  (4, 'Legal');\nINSERT INTO employees VALUES\n  (1, 'Ava', 1, NULL, 12000, '2018-04-02'),\n  (2, 'Ben', 1, 1, 9000, '2019-07-15'),\n  (3, 'Chloe', 1, 1, 9000, '2020-01-20'),\n  (4, 'Dan', 1, 2, 7000, '2021-03-08'),\n  (5, 'Eve', 2, NULL, 8000, '2018-11-30'),\n  (6, 'Finn', 2, 5, 8500, '2022-05-16'),\n  (7, 'Gia', 2, 5, 6000, '2023-02-01'),\n  (8, 'Hugo', 3, 42, 5000, '2021-09-12'),\n  (9, 'Iris', NULL, 1, 4500, '2024-01-08'),\n  (10, 'Jack', 3, 8, 5500, '2022-10-03');\n",
+    "expectedOutput": "columns: 3\n[\"Engineering\", \"Ava\", 12000]\n[\"Sales\", \"Eve\", 8000]\n[\"Sales\", \"Finn\", 8500]\n[\"Support\", \"Jack\", 5500]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Research'),\n  (2, 'Design');\nINSERT INTO employees VALUES\n  (1, 'Kai', 1, NULL, 7000, '2019-01-01'),\n  (2, 'Lea', 1, 1, 7000, '2019-02-01'),\n  (3, 'Max', 1, 1, 7000, '2019-03-01'),\n  (4, 'Nia', 1, 2, 6500, '2020-01-01'),\n  (5, 'Omar', 1, 2, 6000, '2020-02-01'),\n  (6, 'Pia', 1, 3, 5500, '2021-01-01'),\n  (7, 'Quin', 2, 1, 8000, '2021-06-01'),\n  (8, 'Rosa', NULL, NULL, 9000, '2022-01-01'),\n  (9, 'Sam', NULL, 8, 9500, '2022-02-02');\n",
+    "expectedOutput": "columns: 3\n[\"Research\", \"Kai\", 7000]\n[\"Research\", \"Lea\", 7000]\n[\"Research\", \"Max\", 7000]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Finance'),\n  (2, 'Ops'),\n  (3, 'Facilities');\nINSERT INTO employees VALUES\n  (1, 'Tara', 1, NULL, 10000, '2018-01-01'),\n  (2, 'Uma', 1, 1, 10000, '2018-05-01'),\n  (3, 'Vic', 2, 77, 3000, '2020-01-01'),\n  (4, 'Wes', 2, 3, 3000, '2020-06-01'),\n  (5, 'Xia', 2, 3, 3200, '2021-01-01');\n",
+    "expectedOutput": "columns: 3\n[\"Ops\", \"Xia\", 3200]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Engineering'),\n  (2, 'Finance'),\n  (3, 'Legal'),\n  (4, 'Support');\nINSERT INTO employees VALUES\n  (1, 'Lev', 4, NULL, 6000, '2019-12-07'),\n  (2, 'Xan', 4, 11, 3000, '2023-06-05'),\n  (3, 'Ted', 2, NULL, 7000, '2024-04-03'),\n  (4, 'Fay', 4, 10, 5000, '2018-01-10'),\n  (5, 'Val', 2, 9, 7000, '2022-08-18'),\n  (6, 'Nat', 3, 3, 12000, '2020-01-01'),\n  (7, 'Ray', 1, 10, 3500, '2020-09-03'),\n  (8, 'Wyn', 1, 1, 5000, '2023-04-13'),\n  (9, 'Kay', 3, 97, 9000, '2023-08-02'),\n  (10, 'Gil', 1, NULL, 6000, '2018-11-16'),\n  (11, 'Ida', 3, NULL, 8000, '2020-05-03');\n",
+    "expectedOutput": "columns: 3\n[\"Engineering\", \"Gil\", 6000]\n[\"Engineering\", \"Wyn\", 5000]\n[\"Legal\", \"Nat\", 12000]\n[\"Support\", \"Fay\", 5000]\n[\"Support\", \"Lev\", 6000]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Legal'),\n  (2, 'Design'),\n  (3, 'Support'),\n  (4, 'Sales'),\n  (5, 'Engineering');\nINSERT INTO employees VALUES\n  (1, 'Sue', 1, 12, 12000, '2020-09-09'),\n  (2, 'Ida', 5, NULL, 6000, '2022-02-25'),\n  (3, 'Val', 1, 11, 4000, '2020-12-12'),\n  (4, 'Gil', 3, 3, 5000, '2020-09-09'),\n  (5, 'Dee', 5, 7, 6000, '2020-08-10'),\n  (6, 'Mia', 2, 12, 4000, '2019-09-17'),\n  (7, 'Ray', 1, NULL, 3500, '2021-02-16'),\n  (8, 'Yul', 5, 2, 4500, '2023-04-18'),\n  (9, 'Nat', NULL, NULL, 4500, '2021-06-18'),\n  (10, 'Pam', 1, NULL, 12000, '2022-06-19'),\n  (11, 'Una', 4, 5, 5000, '2022-03-17'),\n  (12, 'Eli', 4, 9, 3500, '2024-01-16');\n",
+    "expectedOutput": "columns: 3\n[\"Engineering\", \"Dee\", 6000]\n[\"Engineering\", \"Ida\", 6000]\n[\"Legal\", \"Pam\", 12000]\n[\"Legal\", \"Sue\", 12000]\n[\"Sales\", \"Una\", 5000]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-14",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "买齐所有类目",
+   "difficulty": "困难",
+   "translations": {
+    "en": {
+     "title": "Bought Every Category",
+     "description": "Which customers have bought, in paid orders, at least one product from every category that appears in `products`?\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `id`: customer id\n- `name`: customer name\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "There are three categories: Books, Games and Kitchen. Alice covers them in orders 1 and 2, and Elle in order 7; Cara never bought Kitchen.",
+     "hints": [
+      "Compare the number of distinct categories each customer bought with the total: COUNT(DISTINCT …)."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "子查询"
+   ],
+   "description": "`products` 表里出现过的每个类目，客户都在已支付订单中至少买过一件，这样的客户有哪些？\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `id`：客户编号\n- `name`：客户姓名\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "类目共有 Books、Games、Kitchen 三个。Alice 在订单 1、2 里买齐了，Elle 在订单 7 里买齐了；Cara 没买过 Kitchen。",
+   "hints": [
+    "把每位客户买过的不同类目数和全部类目数比较：COUNT(DISTINCT …)。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO customers VALUES\n  (1, 'Alice', 'alice@mail.com', 'Austin'),\n  (2, 'Bob', 'bob@mail.com', 'Boston'),\n  (3, 'Cara', 'Alice@Mail.com', 'Austin'),\n  (4, 'Dev', 'dev@mail.com', NULL),\n  (5, 'Elle', 'elle@mail.com', 'Boston'),\n  (6, 'Femi', 'femi@mail.com', 'Austin');\nINSERT INTO products VALUES\n  (1, 'SQL Basics', 'Books', 30),\n  (2, 'Graph Theory', 'Books', 45),\n  (3, 'Chess Set', 'Games', 60),\n  (4, 'Puzzle Box', 'Games', 25),\n  (5, 'Chef Knife', 'Kitchen', 80);\nINSERT INTO orders VALUES\n  (1, 1, '2024-01-05', 'paid'),\n  (2, 1, '2024-01-20', 'paid'),\n  (3, 2, '2024-01-20', 'cancelled'),\n  (4, 3, '2024-02-02', 'paid'),\n  (5, 1, '2024-02-14', 'paid'),\n  (6, NULL, '2024-02-14', 'paid'),\n  (7, 5, '2024-03-01', 'paid'),\n  (8, 3, '2024-03-01', 'paid'),\n  (9, 1, '2024-03-09', 'cancelled');\nINSERT INTO order_items VALUES\n  (1, 1, 2, 30),\n  (1, 3, 1, 55),\n  (2, 5, 1, 80),\n  (3, 4, 4, 25),\n  (4, 2, 2, 45),\n  (4, 4, 1, 25),\n  (5, 3, 3, 60),\n  (6, 1, 1, 30),\n  (7, 5, 2, 75),\n  (7, 2, 1, 45),\n  (7, 3, 1, 60),\n  (8, 1, 10, 30),\n  (9, 5, 1, 80);\n",
+    "expectedOutput": "columns: 2\n[1, \"Alice\"]\n[5, \"Elle\"]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO customers VALUES\n  (1, 'Gus', 'gus@mail.com', 'Denver'),\n  (2, 'Hana', 'HANA@mail.com', 'Denver'),\n  (3, 'Ian', 'hana@mail.com', NULL),\n  (4, 'Jo', 'jo@mail.com', NULL),\n  (5, 'Kim', 'Jo@Mail.com', 'Denver'),\n  (6, 'Lu', 'lu@mail.com', 'Seattle');\nINSERT INTO products VALUES\n  (1, 'Trowel', 'Garden', 20),\n  (2, 'Seeds', 'Garden', 5),\n  (3, 'Novel', 'Books', 15);\nINSERT INTO orders VALUES\n  (1, 1, '2024-04-01', 'paid'),\n  (2, 1, '2024-04-01', 'paid'),\n  (3, 1, '2024-04-03', 'paid'),\n  (4, 2, '2024-04-03', 'cancelled'),\n  (5, 2, '2024-04-03', 'cancelled'),\n  (6, 2, '2024-04-04', 'cancelled'),\n  (7, NULL, '2024-04-04', 'paid'),\n  (8, 4, '2024-05-10', 'paid'),\n  (9, 4, '2024-05-10', 'paid');\nINSERT INTO order_items VALUES\n  (1, 1, 3, 20),\n  (1, 3, 1, 15),\n  (2, 2, 10, 5),\n  (3, 1, 5, 20),\n  (4, 3, 2, 15),\n  (5, 1, 1, 20),\n  (6, 2, 1, 5),\n  (7, 1, 1, 18),\n  (8, 2, 4, 5),\n  (9, 3, 19, 15);\n",
+    "expectedOutput": "columns: 2\n[1, \"Gus\"]\n[4, \"Jo\"]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO customers VALUES\n  (1, 'Mo', 'mo@mail.com', 'Austin'),\n  (2, 'Ned', 'ned@mail.com', 'Austin'),\n  (3, 'Ola', 'ola@mail.com', 'Austin');\nINSERT INTO products VALUES\n  (1, 'Lamp', 'Home', 40),\n  (2, 'Mug', 'Kitchen', 12);\nINSERT INTO orders VALUES\n  (1, 1, '2024-06-30', 'paid'),\n  (2, 1, '2024-06-01', 'paid'),\n  (3, 2, '2024-05-15', 'cancelled'),\n  (4, 2, '2024-05-20', 'paid'),\n  (5, 3, '2024-07-01', 'paid'),\n  (6, NULL, '2024-08-01', 'paid');\nINSERT INTO order_items VALUES\n  (1, 1, 1, 40),\n  (1, 2, 1, 12),\n  (2, 2, 25, 12),\n  (4, 1, 10, 40),\n  (5, 2, 1, 12),\n  (6, 1, 8, 40);\n",
+    "expectedOutput": "columns: 2\n[1, \"Mo\"]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO customers VALUES\n  (1, 'Kay', 'kay@mail.com', 'Boston'),\n  (2, 'Lev', 'lev@mail.com', NULL),\n  (3, 'Fay', 'fay@mail.com', 'Austin'),\n  (4, 'Ray', 'Kay@mail.com', 'Denver'),\n  (5, 'Pam', 'pam@mail.com', 'Seattle'),\n  (6, 'Mia', 'mia@mail.com', NULL),\n  (7, 'Jon', 'jon@mail.com', 'Austin'),\n  (8, 'Ida', 'ida@mail.com', 'Boston'),\n  (9, 'Abe', 'abe@mail.com', 'Seattle'),\n  (10, 'Cal', 'cal@mail.com', 'Boston'),\n  (11, 'Val', 'val@mail.com', NULL),\n  (12, 'Wyn', 'Ida@mail.com', 'Seattle');\nINSERT INTO products VALUES\n  (1, 'Atlas', 'Books', 17),\n  (2, 'Novel', 'Books', 36),\n  (3, 'Hose', 'Garden', 12),\n  (4, 'Trowel', 'Garden', 10),\n  (5, 'Chess Set', 'Games', 37),\n  (6, 'Cookbook', 'Books', 50);\nINSERT INTO orders VALUES\n  (1, 5, '2024-05-20', 'cancelled'),\n  (2, 12, '2024-04-25', 'paid'),\n  (3, 10, '2024-02-07', 'paid'),\n  (4, 6, '2024-03-10', 'cancelled'),\n  (5, NULL, '2024-02-15', 'cancelled'),\n  (6, NULL, '2024-03-27', 'cancelled'),\n  (7, 7, '2024-02-22', 'paid'),\n  (8, 10, '2024-01-05', 'paid'),\n  (9, 10, '2024-02-09', 'paid'),\n  (10, 6, '2024-05-26', 'paid'),\n  (11, 10, '2024-02-13', 'paid'),\n  (12, 5, '2024-01-21', 'paid'),\n  (13, 5, '2024-04-23', 'paid'),\n  (14, 4, '2024-03-07', 'paid'),\n  (15, NULL, '2024-02-09', 'paid'),\n  (16, 5, '2024-04-25', 'cancelled'),\n  (17, 8, '2024-01-15', 'paid'),\n  (18, 6, '2024-02-06', 'paid');\nINSERT INTO order_items VALUES\n  (1, 3, 2, 11),\n  (3, 6, 1, 47),\n  (3, 2, 1, 36),\n  (4, 6, 3, 47),\n  (5, 3, 1, 12),\n  (7, 5, 1, 31),\n  (8, 1, 3, 15),\n  (8, 3, 1, 12),\n  (8, 6, 3, 45),\n  (9, 4, 2, 10),\n  (10, 3, 2, 11),\n  (11, 2, 1, 31),\n  (13, 3, 1, 10),\n  (13, 2, 2, 32),\n  (14, 4, 2, 9),\n  (16, 1, 1, 14),\n  (17, 2, 1, 33),\n  (17, 1, 2, 17),\n  (18, 1, 2, 16),\n  (18, 6, 2, 43);\n",
+    "expectedOutput": "columns: 2\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE customers (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  city TEXT                -- NULL: unknown\n);\nCREATE TABLE products (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  price INTEGER NOT NULL   -- list price\n);\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO customers VALUES\n  (1, 'Sue', 'sue@mail.com', 'Boston'),\n  (2, 'Xan', 'xan@mail.com', 'Denver'),\n  (3, 'Hal', 'hal@mail.com', NULL),\n  (4, 'Jon', 'Sue@mail.com', 'Boston'),\n  (5, 'Oz', 'oz@mail.com', 'Austin'),\n  (6, 'Wyn', 'wyn@mail.com', 'Denver'),\n  (7, 'Val', 'val@mail.com', 'Denver'),\n  (8, 'Dee', 'dee@mail.com', NULL);\nINSERT INTO products VALUES\n  (1, 'Puzzle', 'Games', 38),\n  (2, 'Atlas', 'Books', 11),\n  (3, 'Cookbook', 'Books', 37),\n  (4, 'Pan', 'Kitchen', 50),\n  (5, 'Hose', 'Garden', 44),\n  (6, 'Chess Set', 'Games', 60);\nINSERT INTO orders VALUES\n  (1, 6, '2024-03-04', 'paid'),\n  (2, 4, '2024-03-28', 'paid'),\n  (3, 2, '2024-02-04', 'cancelled'),\n  (4, 2, '2024-01-31', 'paid'),\n  (5, 1, '2024-01-18', 'paid'),\n  (6, 6, '2024-02-26', 'cancelled'),\n  (7, 8, '2024-03-24', 'paid'),\n  (8, 7, '2024-04-04', 'paid'),\n  (9, 7, '2024-05-02', 'paid'),\n  (10, 6, '2024-04-03', 'cancelled'),\n  (11, 5, '2024-05-02', 'paid'),\n  (12, 6, '2024-05-12', 'paid'),\n  (13, NULL, '2024-02-06', 'paid'),\n  (14, 7, '2024-04-06', 'paid'),\n  (15, 5, '2024-02-07', 'paid'),\n  (16, 7, '2024-02-14', 'paid'),\n  (17, 4, '2024-03-27', 'paid'),\n  (18, 7, '2024-01-09', 'paid');\nINSERT INTO order_items VALUES\n  (1, 4, 2, 42),\n  (1, 6, 1, 52),\n  (1, 5, 3, 40),\n  (2, 3, 2, 34),\n  (2, 5, 2, 36),\n  (3, 3, 2, 35),\n  (3, 1, 3, 31),\n  (3, 4, 3, 42),\n  (5, 4, 3, 44),\n  (5, 3, 2, 33),\n  (6, 2, 3, 9),\n  (6, 6, 3, 49),\n  (6, 5, 3, 37),\n  (7, 2, 3, 9),\n  (9, 4, 3, 44),\n  (9, 3, 1, 35),\n  (11, 5, 3, 39),\n  (12, 6, 2, 55),\n  (13, 1, 3, 35),\n  (13, 5, 2, 44),\n  (13, 4, 1, 46),\n  (15, 4, 1, 40),\n  (15, 5, 3, 43),\n  (16, 6, 1, 51),\n  (16, 4, 3, 43),\n  (17, 4, 2, 45),\n  (17, 1, 3, 37),\n  (17, 3, 2, 33);\n",
+    "expectedOutput": "columns: 2\n[4, \"Jon\"]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-15",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "每位客户的最新订单",
+   "difficulty": "中等",
+   "translations": {
+    "en": {
+     "title": "Latest Order per Customer",
+     "description": "For each customer with orders (any status; guest orders excluded), find the latest order: the latest `order_date`, and among orders on that day the one with the largest `id`.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `customer_id`: customer id\n- `order_id`: latest order id\n- `order_date`: that order's date\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "Alice's (1) order 9 was cancelled but is still her latest; Cara's (3) latest is order 8 on March 1.",
+     "hints": [
+      "MAX(id) and MAX(order_date) are separate maxima and may come from different rows.",
+      "ROW_NUMBER() OVER (PARTITION BY … ORDER BY …) ranks rows within each group."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "子查询"
+   ],
+   "description": "对每位下过单的客户（任何状态都算，游客订单除外），找出其最新的一笔订单：`order_date` 最晚，同一天有多笔时取 `id` 最大的那笔。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `customer_id`：客户编号\n- `order_id`：最新订单编号\n- `order_date`：该订单日期\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "Alice（1）的订单 9 虽已取消，仍是她最晚的一笔；Cara（3）最新的是 3 月 1 日的订单 8。",
+   "hints": [
+    "MAX(id) 和 MAX(order_date) 分别取最大值，不一定来自同一行。",
+    "ROW_NUMBER() OVER (PARTITION BY … ORDER BY …) 可以给每组排名。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO orders VALUES\n  (1, 1, '2024-01-05', 'paid'),\n  (2, 1, '2024-01-20', 'paid'),\n  (3, 2, '2024-01-20', 'cancelled'),\n  (4, 3, '2024-02-02', 'paid'),\n  (5, 1, '2024-02-14', 'paid'),\n  (6, NULL, '2024-02-14', 'paid'),\n  (7, 5, '2024-03-01', 'paid'),\n  (8, 3, '2024-03-01', 'paid'),\n  (9, 1, '2024-03-09', 'cancelled');\n",
+    "expectedOutput": "columns: 3\n[1, 9, \"2024-03-09\"]\n[2, 3, \"2024-01-20\"]\n[3, 8, \"2024-03-01\"]\n[5, 7, \"2024-03-01\"]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO orders VALUES\n  (1, 1, '2024-04-01', 'paid'),\n  (2, 1, '2024-04-01', 'paid'),\n  (3, 1, '2024-04-03', 'paid'),\n  (4, 2, '2024-04-03', 'cancelled'),\n  (5, 2, '2024-04-03', 'cancelled'),\n  (6, 2, '2024-04-04', 'cancelled'),\n  (7, NULL, '2024-04-04', 'paid'),\n  (8, 4, '2024-05-10', 'paid'),\n  (9, 4, '2024-05-10', 'paid');\n",
+    "expectedOutput": "columns: 3\n[1, 3, \"2024-04-03\"]\n[2, 6, \"2024-04-04\"]\n[4, 9, \"2024-05-10\"]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO orders VALUES\n  (1, 1, '2024-06-30', 'paid'),\n  (2, 1, '2024-06-01', 'paid'),\n  (3, 2, '2024-05-15', 'cancelled'),\n  (4, 2, '2024-05-20', 'paid'),\n  (5, 3, '2024-07-01', 'paid'),\n  (6, NULL, '2024-08-01', 'paid');\n",
+    "expectedOutput": "columns: 3\n[1, 1, \"2024-06-30\"]\n[2, 4, \"2024-05-20\"]\n[3, 5, \"2024-07-01\"]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO orders VALUES\n  (1, 8, '2024-03-19', 'paid'),\n  (2, 8, '2024-04-15', 'paid'),\n  (3, 1, '2024-04-24', 'paid'),\n  (4, 6, '2024-04-02', 'cancelled'),\n  (5, NULL, '2024-01-23', 'paid'),\n  (6, 6, '2024-01-30', 'paid'),\n  (7, 3, '2024-02-26', 'paid'),\n  (8, 2, '2024-01-02', 'paid');\n",
+    "expectedOutput": "columns: 3\n[1, 3, \"2024-04-24\"]\n[2, 8, \"2024-01-02\"]\n[3, 7, \"2024-02-26\"]\n[6, 4, \"2024-04-02\"]\n[8, 2, \"2024-04-15\"]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nINSERT INTO orders VALUES\n  (1, 3, '2024-04-21', 'paid'),\n  (2, 4, '2024-03-03', 'paid'),\n  (3, 2, '2024-01-31', 'paid'),\n  (4, NULL, '2024-01-31', 'paid'),\n  (5, 6, '2024-01-21', 'cancelled'),\n  (6, 8, '2024-04-30', 'cancelled'),\n  (7, 8, '2024-04-13', 'cancelled'),\n  (8, 2, '2024-02-22', 'cancelled'),\n  (9, 1, '2024-02-07', 'paid'),\n  (10, 7, '2024-01-28', 'cancelled');\n",
+    "expectedOutput": "columns: 3\n[1, 9, \"2024-02-07\"]\n[2, 8, \"2024-02-22\"]\n[3, 1, \"2024-04-21\"]\n[4, 2, \"2024-03-03\"]\n[6, 5, \"2024-01-21\"]\n[7, 10, \"2024-01-28\"]\n[8, 6, \"2024-04-30\"]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-16",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "部门工资前三档",
+   "difficulty": "困难",
+   "translations": {
+    "en": {
+     "title": "Top Three Pay Levels per Department",
+     "description": "Within each department, rank the distinct salary values from highest to lowest and keep the top three levels. Output every employee whose salary falls in those levels (everyone sharing a level is included). Employees without a department are left out.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `department`: department name\n- `employee`: employee name\n- `salary`: salary\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "Engineering’s levels are 12000, 9000 and 7000: Ben and Chloe share the second level and Dan is in the third, so all four are listed.",
+     "hints": [
+      "RANK skips numbers after ties, DENSE_RANK does not, and ROW_NUMBER ignores ties."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "窗口函数"
+   ],
+   "description": "在每个部门内，把不同的工资值从高到低排，取前三档。输出工资落在前三档的所有员工（同档的人都要输出）。没有部门的员工不参与。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `department`：部门名\n- `employee`：员工姓名\n- `salary`：工资\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "Engineering 的工资档是 12000、9000、7000：Ben 和 Chloe 同在第二档，Dan 在第三档，四人都输出。",
+   "hints": [
+    "RANK 遇到并列会跳号，DENSE_RANK 不会，ROW_NUMBER 不处理并列。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Engineering'),\n  (2, 'Sales'),\n  (3, 'Support'),\n  (4, 'Legal');\nINSERT INTO employees VALUES\n  (1, 'Ava', 1, NULL, 12000, '2018-04-02'),\n  (2, 'Ben', 1, 1, 9000, '2019-07-15'),\n  (3, 'Chloe', 1, 1, 9000, '2020-01-20'),\n  (4, 'Dan', 1, 2, 7000, '2021-03-08'),\n  (5, 'Eve', 2, NULL, 8000, '2018-11-30'),\n  (6, 'Finn', 2, 5, 8500, '2022-05-16'),\n  (7, 'Gia', 2, 5, 6000, '2023-02-01'),\n  (8, 'Hugo', 3, 42, 5000, '2021-09-12'),\n  (9, 'Iris', NULL, 1, 4500, '2024-01-08'),\n  (10, 'Jack', 3, 8, 5500, '2022-10-03');\n",
+    "expectedOutput": "columns: 3\n[\"Engineering\", \"Ava\", 12000]\n[\"Engineering\", \"Ben\", 9000]\n[\"Engineering\", \"Chloe\", 9000]\n[\"Engineering\", \"Dan\", 7000]\n[\"Sales\", \"Eve\", 8000]\n[\"Sales\", \"Finn\", 8500]\n[\"Sales\", \"Gia\", 6000]\n[\"Support\", \"Hugo\", 5000]\n[\"Support\", \"Jack\", 5500]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Research'),\n  (2, 'Design');\nINSERT INTO employees VALUES\n  (1, 'Kai', 1, NULL, 7000, '2019-01-01'),\n  (2, 'Lea', 1, 1, 7000, '2019-02-01'),\n  (3, 'Max', 1, 1, 7000, '2019-03-01'),\n  (4, 'Nia', 1, 2, 6500, '2020-01-01'),\n  (5, 'Omar', 1, 2, 6000, '2020-02-01'),\n  (6, 'Pia', 1, 3, 5500, '2021-01-01'),\n  (7, 'Quin', 2, 1, 8000, '2021-06-01'),\n  (8, 'Rosa', NULL, NULL, 9000, '2022-01-01'),\n  (9, 'Sam', NULL, 8, 9500, '2022-02-02');\n",
+    "expectedOutput": "columns: 3\n[\"Design\", \"Quin\", 8000]\n[\"Research\", \"Kai\", 7000]\n[\"Research\", \"Lea\", 7000]\n[\"Research\", \"Max\", 7000]\n[\"Research\", \"Nia\", 6500]\n[\"Research\", \"Omar\", 6000]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Finance'),\n  (2, 'Ops'),\n  (3, 'Facilities');\nINSERT INTO employees VALUES\n  (1, 'Tara', 1, NULL, 10000, '2018-01-01'),\n  (2, 'Uma', 1, 1, 10000, '2018-05-01'),\n  (3, 'Vic', 2, 77, 3000, '2020-01-01'),\n  (4, 'Wes', 2, 3, 3000, '2020-06-01'),\n  (5, 'Xia', 2, 3, 3200, '2021-01-01');\n",
+    "expectedOutput": "columns: 3\n[\"Finance\", \"Tara\", 10000]\n[\"Finance\", \"Uma\", 10000]\n[\"Ops\", \"Vic\", 3000]\n[\"Ops\", \"Wes\", 3000]\n[\"Ops\", \"Xia\", 3200]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Sales'),\n  (2, 'Legal'),\n  (3, 'Engineering'),\n  (4, 'Design'),\n  (5, 'Finance');\nINSERT INTO employees VALUES\n  (1, 'Oz', 4, 12, 12000, '2024-06-27'),\n  (2, 'Ted', 3, 12, 9000, '2020-07-19'),\n  (3, 'Dee', 4, 2, 3500, '2021-05-19'),\n  (4, 'Gil', 5, 98, 4500, '2019-08-19'),\n  (5, 'Zoe', 2, 7, 4000, '2018-06-02'),\n  (6, 'Una', 2, 4, 8000, '2023-12-05'),\n  (7, 'Wyn', 5, NULL, 4000, '2021-11-17'),\n  (8, 'Abe', 5, 13, 8000, '2021-08-14'),\n  (9, 'Mia', 4, 12, 9000, '2022-10-14'),\n  (10, 'Ray', 3, 15, 3500, '2018-12-15'),\n  (11, 'Nat', 2, 16, 6000, '2024-07-25'),\n  (12, 'Val', 1, 2, 4500, '2022-10-20'),\n  (13, 'Cal', 4, NULL, 4500, '2022-07-03'),\n  (14, 'Yul', 2, NULL, 5000, '2019-05-20'),\n  (15, 'Sue', 1, 1, 4000, '2023-06-16'),\n  (16, 'Eli', NULL, 96, 7000, '2021-06-29'),\n  (17, 'Jon', 2, 10, 7000, '2024-02-08'),\n  (18, 'Kay', 2, NULL, 5000, '2023-12-08');\n",
+    "expectedOutput": "columns: 3\n[\"Design\", \"Cal\", 4500]\n[\"Design\", \"Mia\", 9000]\n[\"Design\", \"Oz\", 12000]\n[\"Engineering\", \"Ray\", 3500]\n[\"Engineering\", \"Ted\", 9000]\n[\"Finance\", \"Abe\", 8000]\n[\"Finance\", \"Gil\", 4500]\n[\"Finance\", \"Wyn\", 4000]\n[\"Legal\", \"Jon\", 7000]\n[\"Legal\", \"Nat\", 6000]\n[\"Legal\", \"Una\", 8000]\n[\"Sales\", \"Sue\", 4000]\n[\"Sales\", \"Val\", 4500]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE departments (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nCREATE TABLE employees (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  department_id INTEGER,   -- NULL: not in any department\n  manager_id INTEGER,      -- NULL: no manager\n  salary INTEGER NOT NULL,\n  hire_date TEXT NOT NULL  -- 'YYYY-MM-DD'\n);\nINSERT INTO departments VALUES\n  (1, 'Sales'),\n  (2, 'Support'),\n  (3, 'Design');\nINSERT INTO employees VALUES\n  (1, 'Nat', 1, 8, 4000, '2019-01-02'),\n  (2, 'Eli', 1, 10, 4000, '2021-03-02'),\n  (3, 'Bea', 1, 11, 5000, '2019-12-01'),\n  (4, 'Abe', 2, 8, 3000, '2022-05-13'),\n  (5, 'Ray', 1, 92, 8000, '2021-12-10'),\n  (6, 'Kay', 3, 8, 3500, '2022-08-30'),\n  (7, 'Oz', 3, 6, 7000, '2024-03-07'),\n  (8, 'Gil', NULL, 9, 4000, '2022-07-25'),\n  (9, 'Dee', 3, 5, 4000, '2020-04-24'),\n  (10, 'Wyn', 1, NULL, 7000, '2024-05-15'),\n  (11, 'Ted', 3, 8, 3000, '2020-11-17');\n",
+    "expectedOutput": "columns: 3\n[\"Design\", \"Dee\", 4000]\n[\"Design\", \"Kay\", 3500]\n[\"Design\", \"Oz\", 7000]\n[\"Sales\", \"Bea\", 5000]\n[\"Sales\", \"Ray\", 8000]\n[\"Sales\", \"Wyn\", 7000]\n[\"Support\", \"Abe\", 3000]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-17",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "每日累计销售额",
+   "difficulty": "中等",
+   "translations": {
+    "en": {
+     "title": "Running Daily Revenue",
+     "description": "For each date with paid sales, give that day’s revenue (the sum of `quantity * unit_price`) and the running total up to and including that day. Sort by date ascending.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `day`: date\n- `revenue`: revenue that day\n- `running_total`: running total\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "January 5 makes 115; January 20 has only order 2’s 80 (order 3 was cancelled), 195 in total; February 14 has two orders worth 210, …",
+     "hints": [
+      "First aggregate to one row per day, then take SUM(revenue) OVER (ORDER BY day) outside."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "窗口函数"
+   ],
+   "description": "对每个有已支付销售的日期，给出当天销售额（`quantity * unit_price` 之和）和截至当天的累计销售额。按日期升序输出。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `day`：日期\n- `revenue`：当天销售额\n- `running_total`：累计销售额\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "1 月 5 日 115，1 月 20 日只有订单 2 的 80（订单 3 已取消），累计 195；2 月 14 日有两笔共 210……",
+   "hints": [
+    "先按天聚合成一天一行，再在外层做 SUM(revenue) OVER (ORDER BY day)。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "-- cswork:ordered\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO orders VALUES\n  (1, 1, '2024-01-05', 'paid'),\n  (2, 1, '2024-01-20', 'paid'),\n  (3, 2, '2024-01-20', 'cancelled'),\n  (4, 3, '2024-02-02', 'paid'),\n  (5, 1, '2024-02-14', 'paid'),\n  (6, NULL, '2024-02-14', 'paid'),\n  (7, 5, '2024-03-01', 'paid'),\n  (8, 3, '2024-03-01', 'paid'),\n  (9, 1, '2024-03-09', 'cancelled');\nINSERT INTO order_items VALUES\n  (1, 1, 2, 30),\n  (1, 3, 1, 55),\n  (2, 5, 1, 80),\n  (3, 4, 4, 25),\n  (4, 2, 2, 45),\n  (4, 4, 1, 25),\n  (5, 3, 3, 60),\n  (6, 1, 1, 30),\n  (7, 5, 2, 75),\n  (7, 2, 1, 45),\n  (7, 3, 1, 60),\n  (8, 1, 10, 30),\n  (9, 5, 1, 80);\n",
+    "expectedOutput": "columns: 3\n[\"2024-01-05\", 115, 115]\n[\"2024-01-20\", 80, 195]\n[\"2024-02-02\", 115, 310]\n[\"2024-02-14\", 210, 520]\n[\"2024-03-01\", 555, 1075]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "-- cswork:ordered\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO orders VALUES\n  (1, 1, '2024-04-01', 'paid'),\n  (2, 1, '2024-04-01', 'paid'),\n  (3, 1, '2024-04-03', 'paid'),\n  (4, 2, '2024-04-03', 'cancelled'),\n  (5, 2, '2024-04-03', 'cancelled'),\n  (6, 2, '2024-04-04', 'cancelled'),\n  (7, NULL, '2024-04-04', 'paid'),\n  (8, 4, '2024-05-10', 'paid'),\n  (9, 4, '2024-05-10', 'paid');\nINSERT INTO order_items VALUES\n  (1, 1, 3, 20),\n  (1, 3, 1, 15),\n  (2, 2, 10, 5),\n  (3, 1, 5, 20),\n  (4, 3, 2, 15),\n  (5, 1, 1, 20),\n  (6, 2, 1, 5),\n  (7, 1, 1, 18),\n  (8, 2, 4, 5),\n  (9, 3, 19, 15);\n",
+    "expectedOutput": "columns: 3\n[\"2024-04-01\", 125, 125]\n[\"2024-04-03\", 100, 225]\n[\"2024-04-04\", 18, 243]\n[\"2024-05-10\", 305, 548]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "-- cswork:ordered\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO orders VALUES\n  (1, 1, '2024-06-30', 'paid'),\n  (2, 1, '2024-06-01', 'paid'),\n  (3, 2, '2024-05-15', 'cancelled'),\n  (4, 2, '2024-05-20', 'paid'),\n  (5, 3, '2024-07-01', 'paid'),\n  (6, NULL, '2024-08-01', 'paid');\nINSERT INTO order_items VALUES\n  (1, 1, 1, 40),\n  (1, 2, 1, 12),\n  (2, 2, 25, 12),\n  (4, 1, 10, 40),\n  (5, 2, 1, 12),\n  (6, 1, 8, 40);\n",
+    "expectedOutput": "columns: 3\n[\"2024-05-20\", 400, 400]\n[\"2024-06-01\", 300, 700]\n[\"2024-06-30\", 52, 752]\n[\"2024-07-01\", 12, 764]\n[\"2024-08-01\", 320, 1084]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "-- cswork:ordered\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO orders VALUES\n  (1, NULL, '2024-05-10', 'cancelled'),\n  (2, 6, '2024-05-20', 'paid'),\n  (3, 9, '2024-05-18', 'cancelled'),\n  (4, 6, '2024-03-29', 'paid'),\n  (5, 10, '2024-02-01', 'paid'),\n  (6, 10, '2024-01-22', 'paid'),\n  (7, 7, '2024-01-16', 'cancelled'),\n  (8, 4, '2024-04-21', 'paid'),\n  (9, 6, '2024-04-25', 'cancelled'),\n  (10, 1, '2024-02-15', 'paid'),\n  (11, 6, '2024-03-25', 'paid'),\n  (12, 9, '2024-02-24', 'paid'),\n  (13, 2, '2024-05-26', 'cancelled'),\n  (14, 2, '2024-01-05', 'cancelled'),\n  (15, 7, '2024-05-16', 'cancelled'),\n  (16, 10, '2024-04-03', 'cancelled'),\n  (17, 4, '2024-03-14', 'cancelled'),\n  (18, 9, '2024-01-31', 'paid'),\n  (19, NULL, '2024-03-07', 'cancelled');\nINSERT INTO order_items VALUES\n  (1, 6, 2, 30),\n  (3, 6, 3, 27),\n  (4, 4, 2, 4),\n  (4, 3, 3, 22),\n  (4, 5, 3, 45),\n  (5, 5, 3, 42),\n  (5, 3, 3, 20),\n  (7, 4, 3, 5),\n  (7, 5, 3, 39),\n  (9, 2, 2, 5),\n  (9, 1, 3, 44),\n  (10, 4, 1, 5),\n  (11, 1, 1, 51),\n  (12, 5, 1, 44),\n  (12, 2, 2, 5),\n  (13, 4, 1, 5),\n  (13, 6, 3, 30),\n  (14, 2, 3, 5),\n  (14, 4, 3, 4),\n  (15, 4, 3, 5),\n  (15, 3, 3, 20),\n  (16, 5, 2, 41),\n  (19, 3, 2, 21);\n",
+    "expectedOutput": "columns: 3\n[\"2024-02-01\", 186, 186]\n[\"2024-02-15\", 5, 191]\n[\"2024-02-24\", 54, 245]\n[\"2024-03-25\", 51, 296]\n[\"2024-03-29\", 209, 505]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "-- cswork:ordered\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO orders VALUES\n  (1, 1, '2024-01-13', 'paid'),\n  (2, 10, '2024-04-07', 'cancelled'),\n  (3, 2, '2024-04-22', 'paid'),\n  (4, 8, '2024-04-10', 'cancelled'),\n  (5, 5, '2024-05-15', 'paid'),\n  (6, 7, '2024-01-10', 'cancelled'),\n  (7, NULL, '2024-02-21', 'paid'),\n  (8, 7, '2024-02-08', 'paid'),\n  (9, 8, '2024-02-24', 'paid'),\n  (10, 7, '2024-04-16', 'paid'),\n  (11, 9, '2024-03-07', 'paid'),\n  (12, 10, '2024-05-17', 'paid'),\n  (13, 7, '2024-04-06', 'paid'),\n  (14, 1, '2024-05-06', 'cancelled'),\n  (15, 9, '2024-02-01', 'cancelled'),\n  (16, 8, '2024-05-28', 'cancelled'),\n  (17, 3, '2024-02-22', 'paid');\nINSERT INTO order_items VALUES\n  (1, 1, 2, 21),\n  (3, 5, 1, 7),\n  (4, 6, 2, 20),\n  (5, 4, 1, 47),\n  (5, 2, 1, 51),\n  (6, 1, 1, 21),\n  (7, 3, 1, 18),\n  (7, 4, 3, 48),\n  (9, 4, 2, 49),\n  (11, 5, 2, 6),\n  (11, 6, 3, 19),\n  (12, 3, 3, 22),\n  (12, 6, 2, 20),\n  (14, 3, 3, 22),\n  (16, 1, 1, 23),\n  (16, 3, 2, 18);\n",
+    "expectedOutput": "columns: 3\n[\"2024-01-13\", 42, 42]\n[\"2024-02-21\", 162, 204]\n[\"2024-02-24\", 98, 302]\n[\"2024-03-07\", 69, 371]\n[\"2024-04-22\", 7, 378]\n[\"2024-05-15\", 98, 476]\n[\"2024-05-17\", 106, 582]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-18",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "月度销售额环比",
+   "difficulty": "中等",
+   "translations": {
+    "en": {
+     "title": "Month-over-Month Revenue",
+     "description": "Compute paid revenue per month (`YYYY-MM`), listing only months with sales, together with the change from the previous listed month (this month minus that one); the first month’s change is NULL. Sort by month ascending.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `month`: month as YYYY-MM\n- `revenue`: revenue that month\n- `change`: change from the previous listed month\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "January makes 115+80 = 195; February 115+180+30 = 325, a change of 130; March 255+300 = 555, a change of 230.",
+     "hints": [
+      "strftime('%Y-%m', order_date) extracts the year and month.",
+      "LAG(x) OVER (ORDER BY …) reads the previous row, NULL on the first."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "窗口函数"
+   ],
+   "description": "按月份（`YYYY-MM`）统计已支付订单的销售额，只列出有销售的月份，并给出与上一个列出的月份相比的变化量（本月减上月）；第一个月份的变化量为 NULL。按月份升序输出。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `month`：月份 YYYY-MM\n- `revenue`：当月销售额\n- `change`：与上一个列出月份的差\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "1 月 115+80 = 195；2 月 115+180+30 = 325，变化 130；3 月 255+300 = 555，变化 230。",
+   "hints": [
+    "strftime('%Y-%m', order_date) 取出年月。",
+    "LAG(x) OVER (ORDER BY …) 取上一行的值，第一行为 NULL。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "-- cswork:ordered\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO orders VALUES\n  (1, 1, '2024-01-05', 'paid'),\n  (2, 1, '2024-01-20', 'paid'),\n  (3, 2, '2024-01-20', 'cancelled'),\n  (4, 3, '2024-02-02', 'paid'),\n  (5, 1, '2024-02-14', 'paid'),\n  (6, NULL, '2024-02-14', 'paid'),\n  (7, 5, '2024-03-01', 'paid'),\n  (8, 3, '2024-03-01', 'paid'),\n  (9, 1, '2024-03-09', 'cancelled');\nINSERT INTO order_items VALUES\n  (1, 1, 2, 30),\n  (1, 3, 1, 55),\n  (2, 5, 1, 80),\n  (3, 4, 4, 25),\n  (4, 2, 2, 45),\n  (4, 4, 1, 25),\n  (5, 3, 3, 60),\n  (6, 1, 1, 30),\n  (7, 5, 2, 75),\n  (7, 2, 1, 45),\n  (7, 3, 1, 60),\n  (8, 1, 10, 30),\n  (9, 5, 1, 80);\n",
+    "expectedOutput": "columns: 3\n[\"2024-01\", 195, null]\n[\"2024-02\", 325, 130]\n[\"2024-03\", 555, 230]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "-- cswork:ordered\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO orders VALUES\n  (1, 1, '2024-04-01', 'paid'),\n  (2, 1, '2024-04-01', 'paid'),\n  (3, 1, '2024-04-03', 'paid'),\n  (4, 2, '2024-04-03', 'cancelled'),\n  (5, 2, '2024-04-03', 'cancelled'),\n  (6, 2, '2024-04-04', 'cancelled'),\n  (7, NULL, '2024-04-04', 'paid'),\n  (8, 4, '2024-05-10', 'paid'),\n  (9, 4, '2024-05-10', 'paid');\nINSERT INTO order_items VALUES\n  (1, 1, 3, 20),\n  (1, 3, 1, 15),\n  (2, 2, 10, 5),\n  (3, 1, 5, 20),\n  (4, 3, 2, 15),\n  (5, 1, 1, 20),\n  (6, 2, 1, 5),\n  (7, 1, 1, 18),\n  (8, 2, 4, 5),\n  (9, 3, 19, 15);\n",
+    "expectedOutput": "columns: 3\n[\"2024-04\", 243, null]\n[\"2024-05\", 305, 62]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "-- cswork:ordered\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO orders VALUES\n  (1, 1, '2024-06-30', 'paid'),\n  (2, 1, '2024-06-01', 'paid'),\n  (3, 2, '2024-05-15', 'cancelled'),\n  (4, 2, '2024-05-20', 'paid'),\n  (5, 3, '2024-07-01', 'paid'),\n  (6, NULL, '2024-08-01', 'paid');\nINSERT INTO order_items VALUES\n  (1, 1, 1, 40),\n  (1, 2, 1, 12),\n  (2, 2, 25, 12),\n  (4, 1, 10, 40),\n  (5, 2, 1, 12),\n  (6, 1, 8, 40);\n",
+    "expectedOutput": "columns: 3\n[\"2024-05\", 400, null]\n[\"2024-06\", 352, -48]\n[\"2024-07\", 12, -340]\n[\"2024-08\", 320, 308]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "-- cswork:ordered\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO orders VALUES\n  (1, NULL, '2024-05-18', 'cancelled'),\n  (2, 4, '2024-02-14', 'paid'),\n  (3, 2, '2024-04-16', 'paid'),\n  (4, 7, '2024-01-03', 'paid'),\n  (5, 6, '2024-03-02', 'paid'),\n  (6, 5, '2024-05-25', 'paid'),\n  (7, 7, '2024-04-02', 'paid'),\n  (8, 3, '2024-03-09', 'paid'),\n  (9, 4, '2024-05-02', 'cancelled'),\n  (10, NULL, '2024-01-11', 'paid'),\n  (11, 3, '2024-04-04', 'paid'),\n  (12, 3, '2024-04-23', 'cancelled'),\n  (13, 4, '2024-04-06', 'cancelled'),\n  (14, 4, '2024-01-30', 'paid');\nINSERT INTO order_items VALUES\n  (2, 6, 3, 36),\n  (3, 6, 1, 29),\n  (3, 4, 1, 34),\n  (5, 3, 2, 51),\n  (6, 2, 3, 24),\n  (6, 5, 2, 36),\n  (8, 4, 2, 32),\n  (9, 4, 2, 39),\n  (10, 2, 1, 24),\n  (12, 1, 2, 22),\n  (14, 1, 3, 26);\n",
+    "expectedOutput": "columns: 3\n[\"2024-01\", 102, null]\n[\"2024-02\", 108, 6]\n[\"2024-03\", 166, 58]\n[\"2024-04\", 63, -103]\n[\"2024-05\", 144, 81]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "-- cswork:ordered\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER,     -- NULL: guest checkout\n  order_date TEXT NOT NULL, -- 'YYYY-MM-DD'\n  status TEXT NOT NULL     -- 'paid' or 'cancelled'\n);\nCREATE TABLE order_items (\n  order_id INTEGER NOT NULL,\n  product_id INTEGER NOT NULL,\n  quantity INTEGER NOT NULL,\n  unit_price INTEGER NOT NULL -- price actually charged per unit\n);\nINSERT INTO orders VALUES\n  (1, 8, '2024-04-27', 'paid'),\n  (2, 4, '2024-05-25', 'paid'),\n  (3, NULL, '2024-05-17', 'paid'),\n  (4, 1, '2024-01-20', 'paid'),\n  (5, 6, '2024-02-15', 'paid'),\n  (6, 3, '2024-03-13', 'cancelled'),\n  (7, 7, '2024-02-29', 'paid'),\n  (8, 1, '2024-01-19', 'paid'),\n  (9, 4, '2024-04-08', 'paid'),\n  (10, 1, '2024-04-27', 'paid'),\n  (11, 6, '2024-04-08', 'paid'),\n  (12, 7, '2024-05-23', 'paid'),\n  (13, NULL, '2024-03-11', 'paid');\nINSERT INTO order_items VALUES\n  (1, 2, 1, 19),\n  (1, 5, 1, 13),\n  (2, 6, 2, 12),\n  (2, 1, 1, 18),\n  (2, 4, 1, 49),\n  (3, 2, 3, 17),\n  (4, 1, 2, 19),\n  (4, 3, 3, 22),\n  (4, 4, 3, 53),\n  (5, 1, 3, 16),\n  (5, 3, 2, 22),\n  (6, 1, 2, 17),\n  (6, 6, 1, 12),\n  (7, 5, 1, 14),\n  (8, 2, 1, 18),\n  (8, 1, 1, 17),\n  (8, 6, 3, 13),\n  (9, 4, 3, 49),\n  (10, 6, 3, 12),\n  (11, 1, 2, 19),\n  (11, 3, 2, 21),\n  (12, 6, 2, 12),\n  (13, 5, 3, 14);\n",
+    "expectedOutput": "columns: 3\n[\"2024-01\", 337, null]\n[\"2024-02\", 106, -231]\n[\"2024-03\", 42, -64]\n[\"2024-04\", 295, 253]\n[\"2024-05\", 166, -129]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-19",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "连续三天登录",
+   "difficulty": "困难",
+   "translations": {
+    "en": {
+     "title": "Three Days in a Row",
+     "description": "Find the users who logged in on at least 3 consecutive calendar days. Several logins on one day count as one day; streaks may cross month and year boundaries.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `user_id`: user id\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "User 1 logged in on February 27, 28 and 29, 2024 (a leap year); user 3 on March 1–3; user 4 on only two days.",
+     "hints": [
+      "First deduplicate (user_id, login_date).",
+      "Consecutive dates minus their row number give the same value: julianday(login_date) - ROW_NUMBER() …."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "日期处理"
+   ],
+   "description": "找出曾在连续至少 3 个自然日都登录过的用户。同一天登录多次只算一天；跨月、跨年也算连续。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `user_id`：用户编号\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "用户 1 在 2024 年 2 月 27、28、29 日连续登录（闰年）；用户 3 在 3 月 1–3 日连续登录；用户 4 只有两天。",
+   "hints": [
+    "先对 (user_id, login_date) 去重。",
+    "连续的日期减去它的序号（ROW_NUMBER）会得到同一个值：julianday(login_date) - ROW_NUMBER() …。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\nINSERT INTO logins VALUES\n  (1, '2024-02-27'),\n  (1, '2024-02-28'),\n  (1, '2024-02-28'),\n  (1, '2024-02-29'),\n  (1, '2024-03-02'),\n  (2, '2024-02-27'),\n  (2, '2024-03-01'),\n  (3, '2024-03-01'),\n  (3, '2024-03-02'),\n  (3, '2024-03-03'),\n  (4, '2024-02-28'),\n  (4, '2024-02-29');\n",
+    "expectedOutput": "columns: 1\n[1]\n[3]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\nINSERT INTO logins VALUES\n  (5, '2024-01-01'),\n  (5, '2024-01-02'),\n  (5, '2024-01-02'),\n  (5, '2024-01-04'),\n  (6, '2024-01-30'),\n  (6, '2024-01-31'),\n  (6, '2024-02-01'),\n  (7, '2024-12-30'),\n  (7, '2024-12-31'),\n  (7, '2025-01-01'),\n  (7, '2025-01-02');\n",
+    "expectedOutput": "columns: 1\n[6]\n[7]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\nINSERT INTO logins VALUES\n  (8, '2024-05-01'),\n  (8, '2024-05-01'),\n  (9, '2024-05-01'),\n  (9, '2024-05-03'),\n  (10, '2024-05-02'),\n  (10, '2024-05-03');\n",
+    "expectedOutput": "columns: 1\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\nINSERT INTO logins VALUES\n  (5, '2024-03-03'),\n  (3, '2024-02-20'),\n  (2, '2024-02-20'),\n  (2, '2024-02-17'),\n  (4, '2024-02-26'),\n  (4, '2024-02-28'),\n  (1, '2024-02-29'),\n  (7, '2024-02-19'),\n  (7, '2024-02-16'),\n  (5, '2024-02-29'),\n  (4, '2024-02-23'),\n  (1, '2024-03-01'),\n  (6, '2024-02-29'),\n  (4, '2024-02-23'),\n  (3, '2024-02-19'),\n  (5, '2024-03-03'),\n  (4, '2024-02-29'),\n  (6, '2024-02-29'),\n  (7, '2024-02-20'),\n  (5, '2024-02-27'),\n  (3, '2024-02-16'),\n  (1, '2024-02-29'),\n  (2, '2024-02-20'),\n  (2, '2024-02-17'),\n  (1, '2024-02-27'),\n  (3, '2024-02-16'),\n  (2, '2024-02-16'),\n  (6, '2024-02-28'),\n  (2, '2024-02-19'),\n  (5, '2024-02-22'),\n  (2, '2024-02-19');\n",
+    "expectedOutput": "columns: 1\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\nINSERT INTO logins VALUES\n  (2, '2024-02-20'),\n  (2, '2024-02-19'),\n  (4, '2024-02-18'),\n  (3, '2024-03-03'),\n  (2, '2024-02-24'),\n  (2, '2024-02-22'),\n  (4, '2024-02-19'),\n  (4, '2024-02-17'),\n  (2, '2024-02-21'),\n  (1, '2024-02-24'),\n  (2, '2024-02-19'),\n  (2, '2024-02-20'),\n  (3, '2024-03-02'),\n  (4, '2024-02-18'),\n  (1, '2024-03-04'),\n  (1, '2024-03-02'),\n  (1, '2024-02-29'),\n  (2, '2024-02-29');\n",
+    "expectedOutput": "columns: 1\n[2]\n[4]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ },
+ {
+  "schemaVersion": 1,
+  "problem": {
+   "id": "sql-20",
+   "courseId": "gomall",
+   "lessonId": "00-overview",
+   "title": "次日留存率",
+   "difficulty": "中等",
+   "translations": {
+    "en": {
+     "title": "Next-Day Retention",
+     "description": "A user's first day is the date of their first login. Next-day retention is the number of users who also logged in on the day after their first day, divided by the number of users, rounded with `ROUND(x, 2)`. There is always at least one user. The result is exactly one row and one column.\n\nTables in the database (SQLite):\n\n```sql\nCREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\n```",
+     "input": "Each test first runs SQL that creates and fills the tables in an empty in-memory SQLite database (the sample input is one such dataset), then runs your query. Submit exactly one SELECT statement (it may start with WITH; the trailing semicolon is optional). The database is read-only to your query. The dialect is SQLite 3: strings use single quotes, dates are 'YYYY-MM-DD' text, and date(), julianday() and strftime() work on them.",
+     "output": "Return these columns in this order (names are not compared, their order is):\n\n- `retention`: next-day retention\n\nRows may come in any order.\n\nThe judge formats the result before comparing: the first line is the column count, then each row is a JSON array. NULL is null; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); text never equals a number ('3' is not 3).",
+     "explanation": "Of 4 users, users 1 (Feb 27 → 28), 3 (Mar 1 → 2) and 4 (Feb 28 → 29) came back the next day and user 2 did not: 3/4 = 0.75.",
+     "hints": [
+      "date(first_day, '+1 day') gives the next day.",
+      "Multiply by 1.0 before dividing to avoid integer division."
+     ]
+    }
+   },
+   "tags": [
+    "SQL",
+    "日期处理"
+   ],
+   "description": "每位用户第一次登录的那天是其首日。次日留存率 = 首日的下一天也登录过的用户数 ÷ 用户总数，用 `ROUND(x, 2)` 保留两位小数。数据保证至少有一位用户。结果恰好一行一列。\n\n数据库中的表（SQLite）：\n\n```sql\nCREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\n```",
+   "input": "每个测试点先在空的 SQLite 内存数据库里执行建表和插入数据的 SQL（样例输入就是其中一组），再执行你的查询。只提交一条 SELECT 语句（可以以 WITH 开头，末尾分号可有可无），数据库对你的查询只读。方言是 SQLite 3：字符串用单引号，日期以 'YYYY-MM-DD' 文本保存，可以用 date()、julianday()、strftime() 处理。",
+   "output": "按以下顺序返回这些列（列名不参与比较，列的顺序参与比较）：\n\n- `retention`：次日留存率\n\n行的顺序不限。\n\n判题器把结果整理成统一格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。NULL 写作 null；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；文本和数字不相等（'3' 不等于 3）。",
+   "explanation": "4 位用户中，用户 1（2 月 27 日→28 日）、3（3 月 1 日→2 日）、4（2 月 28 日→29 日）次日回来了，用户 2 没有，留存率 3/4 = 0.75。",
+   "hints": [
+    "date(first_day, '+1 day') 得到下一天。",
+    "先乘 1.0 再相除，避免整数除法。"
+   ],
+   "timeLimit": 2,
+   "memoryLimit": 131072,
+   "outputLimit": 64,
+   "checker": "exact",
+   "languages": [
+    "sql"
+   ]
+  },
+  "cases": [
+   {
+    "name": "样例 1",
+    "input": "CREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\nINSERT INTO logins VALUES\n  (1, '2024-02-27'),\n  (1, '2024-02-28'),\n  (1, '2024-02-28'),\n  (1, '2024-02-29'),\n  (1, '2024-03-02'),\n  (2, '2024-02-27'),\n  (2, '2024-03-01'),\n  (3, '2024-03-01'),\n  (3, '2024-03-02'),\n  (3, '2024-03-03'),\n  (4, '2024-02-28'),\n  (4, '2024-02-29');\n",
+    "expectedOutput": "columns: 1\n[0.75]\n",
+    "hidden": false,
+    "weight": 1
+   },
+   {
+    "name": "边界 1",
+    "input": "CREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\nINSERT INTO logins VALUES\n  (5, '2024-01-01'),\n  (5, '2024-01-02'),\n  (5, '2024-01-02'),\n  (5, '2024-01-04'),\n  (6, '2024-01-30'),\n  (6, '2024-01-31'),\n  (6, '2024-02-01'),\n  (7, '2024-12-30'),\n  (7, '2024-12-31'),\n  (7, '2025-01-01'),\n  (7, '2025-01-02');\n",
+    "expectedOutput": "columns: 1\n[1]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "边界 2",
+    "input": "CREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\nINSERT INTO logins VALUES\n  (8, '2024-05-01'),\n  (8, '2024-05-01'),\n  (9, '2024-05-01'),\n  (9, '2024-05-03'),\n  (10, '2024-05-02'),\n  (10, '2024-05-03');\n",
+    "expectedOutput": "columns: 1\n[0.33]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 1",
+    "input": "CREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\nINSERT INTO logins VALUES\n  (6, '2024-02-15'),\n  (6, '2024-02-22'),\n  (6, '2024-02-22'),\n  (1, '2024-03-06'),\n  (2, '2024-02-16'),\n  (6, '2024-02-18'),\n  (1, '2024-03-04'),\n  (5, '2024-02-18'),\n  (6, '2024-02-17'),\n  (3, '2024-03-05'),\n  (1, '2024-03-05'),\n  (6, '2024-02-16'),\n  (1, '2024-03-07'),\n  (2, '2024-02-17'),\n  (1, '2024-03-12'),\n  (2, '2024-02-22'),\n  (1, '2024-03-06'),\n  (6, '2024-02-20'),\n  (2, '2024-02-19'),\n  (4, '2024-02-19'),\n  (1, '2024-03-09');\n",
+    "expectedOutput": "columns: 1\n[0.5]\n",
+    "hidden": true,
+    "weight": 1
+   },
+   {
+    "name": "随机 2",
+    "input": "CREATE TABLE logins (\n  user_id INTEGER NOT NULL,\n  login_date TEXT NOT NULL -- 'YYYY-MM-DD'; several logins a day are possible\n);\nINSERT INTO logins VALUES\n  (1, '2024-02-15'),\n  (1, '2024-02-20'),\n  (4, '2024-03-05'),\n  (3, '2024-03-08'),\n  (2, '2024-02-23'),\n  (3, '2024-03-03'),\n  (2, '2024-02-20'),\n  (2, '2024-02-23'),\n  (3, '2024-03-13'),\n  (4, '2024-03-08'),\n  (1, '2024-02-22'),\n  (3, '2024-03-06'),\n  (3, '2024-03-15');\n",
+    "expectedOutput": "columns: 1\n[0]\n",
+    "hidden": true,
+    "weight": 1
+   }
+  ]
+ }
+]

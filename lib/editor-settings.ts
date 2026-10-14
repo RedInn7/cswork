@@ -1,5 +1,6 @@
 import { starters, type Language } from './problems';
 import type { CodingMode } from './coding-mode';
+import { currentTheme } from './theme-script';
 
 export type EditorSettings = {
   theme: 'light' | 'dark';
@@ -32,7 +33,8 @@ export function readEditorSettings(userId: string): EditorSettings {
   try {
     const value = JSON.parse(localStorage.getItem(settingsKey(userId)) || '{}');
     return {
-      theme: value.theme === 'dark' ? 'dark' : 'light',
+      // Until the reader picks one here, the editor follows the site theme.
+      theme: value.theme === 'dark' || value.theme === 'light' ? value.theme : currentTheme(),
       fontSize: [12, 13, 14, 15, 16, 18, 20].includes(value.fontSize)
         ? value.fontSize
         : 14,
@@ -46,6 +48,24 @@ export function readEditorSettings(userId: string): EditorSettings {
   } catch {
     return defaultEditorSettings;
   }
+}
+
+/**
+ * Save the settings. The theme is kept out until the reader picks one (it differs from
+ * the site theme, or one was saved before), so saving font size or tags doesn't pin the
+ * editor to whatever the site happened to be at the time.
+ */
+export function writeEditorSettings(userId: string, next: EditorSettings) {
+  const key = settingsKey(userId);
+  let saved: { theme?: unknown } = {};
+  try {
+    saved = JSON.parse(localStorage.getItem(key) || '{}');
+  } catch {
+    // Unreadable: written over below.
+  }
+  const picked = saved.theme === 'light' || saved.theme === 'dark' || next.theme !== currentTheme();
+  const { theme, ...rest } = next;
+  localStorage.setItem(key, JSON.stringify(picked ? { theme, ...rest } : rest));
 }
 
 export type EditorDraft = { code: string; updatedAt: number };
@@ -110,4 +130,5 @@ export const languageFiles: Record<Language, string> = {
   go: 'main.go',
   java: 'Main.java',
   cpp: 'main.cpp',
+  sql: 'query.sql',
 };

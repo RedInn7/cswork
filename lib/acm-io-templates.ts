@@ -1,4 +1,4 @@
-import type { Language } from './problems';
+import type { CodeLanguage } from './problems';
 
 /**
  * Stdin/stdout skeletons for ACM-mode problems, written for CSWork. Each one is
@@ -9,7 +9,7 @@ export type AcmIoTemplate = {
   title: { zh: string; en: string };
   note: { zh: string; en: string };
   sample: { input: string; output: string };
-  code: Record<Language, string>;
+  code: Record<CodeLanguage, string>;
 };
 
 // Raw source: backslashes stay as written; drops the newline after the backtick.

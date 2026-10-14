@@ -50,6 +50,8 @@ import { grantCourse, revokeGrant, dashboard } from './lms-roster';
 import { lessonEditor, saveLessonDraft, publishLesson } from './lms-courses';
 import { uploadAttachment, downloadAttachment } from './files';
 import { dailyProblem } from './daily-problem';
+import { aiEnabled } from './ai-tutor';
+import { tokenCaller } from './api-tokens';
 const id = z.string().min(1).max(100),
   short = z.string().trim().min(1).max(180),
   long = z.string().trim().min(1).max(12000);
@@ -85,6 +87,8 @@ function services() {
     checkout: !!(
       setting('STRIPE_SECRET_KEY') && setting('STRIPE_WEBHOOK_SECRET')
     ),
+    // AI hints and code review on the problem page (lib/server/ai-tutor.ts).
+    ai: aiEnabled(),
   };
 }
 /** `lite` skips the problem catalogue for the client's periodic refresh. */
@@ -159,13 +163,15 @@ export async function handle(request: Request) {
     // vinext answers HEAD through GET with request.method still 'HEAD'.
     if (resource === 'health' && ['GET', 'HEAD'].includes(request.method))
       return health();
-    if (request.method !== 'GET') sameOrigin(request);
+    // MCP clients send a personal access token instead of a cookie: no CSRF to guard against.
+    const viaToken = await tokenCaller(request, path);
+    if (request.method !== 'GET' && !viaToken) sameOrigin(request);
     if (resource === 'metrics')
       // Analytics beacons and the owner summary need only the session, not the seed checks below.
       return await handleMetrics(request, await person(request), path.slice(1));
     await seed();
     await ensureOjSeed();
-    const p = await person(request),
+    const p = viaToken ?? (await person(request)),
       db = database(),
       now = Date.now();
     for (const handler of [

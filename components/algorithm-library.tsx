@@ -3,17 +3,18 @@
 import { StudyLibrary } from './study-library';
 import { OaLibrary } from './oa-library';
 import { ClassicList } from './classic-list';
+import { SqlTrack } from './sql-track';
 import { classicList, classicLists } from '@/lib/classic-lists';
 import type { Navigate } from './learning';
 import { useT } from '@/lib/i18n';
 
-/** Problem bank sections: Ling's list, OA problems, the timed mock OA and the classic lists. */
+/** Problem bank sections: Ling's list, OA problems, the timed mock OA, the SQL track and the classic lists. */
 export function LibrarySwitch({
   section,
   navigate,
   list = '',
 }: {
-  section: 'leetcode' | 'oa' | 'mock' | 'classic';
+  section: 'leetcode' | 'oa' | 'mock' | 'sql' | 'classic';
   navigate: Navigate;
   /** The classic list shown, when section is 'classic'. */
   list?: string;
@@ -42,6 +43,13 @@ export function LibrarySwitch({
         onClick={() => navigate('mock')}
       >
         {t('模拟 OA', 'Mock OA')} <span>{t('限时', 'Timed')}</span>
+      </button>
+      <button
+        type="button"
+        aria-pressed={section === 'sql'}
+        onClick={() => navigate('problems', { library: 'sql' })}
+      >
+        {t('SQL 专项', 'SQL track')} <span>SQLite</span>
       </button>
       <label className="algorithm-library-lists" data-active={!!list || undefined}>
         <span>{t('经典题单', 'Classic lists')}</span>
@@ -75,12 +83,20 @@ export function AlgorithmLibrary(props: {
   userId?: string | null;
 }) {
   const list = classicList(props.collection)?.slug;
-  const section = props.collection === 'oa' ? 'oa' : list ? 'classic' : 'leetcode';
+  const section =
+    props.collection === 'oa' ? 'oa' : props.collection === 'sql' ? 'sql' : list ? 'classic' : 'leetcode';
   return (
     <div className="algorithm-library">
       <LibrarySwitch section={section} navigate={props.navigate} list={list} />
       {section === 'oa' ? (
         <OaLibrary navigate={props.navigate} />
+      ) : section === 'sql' ? (
+        <SqlTrack
+          navigate={props.navigate}
+          availableProblemIds={props.availableProblemIds}
+          activity={props.activity}
+          signedIn={props.signedIn}
+        />
       ) : list ? (
         <ClassicList
           key={list}

@@ -1,9 +1,10 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { emailOTP } from 'better-auth/plugins';
-import { APIError } from 'better-auth/api';
+import { APIError, createAuthMiddleware, isAPIError } from 'better-auth/api';
 import { getDb } from '@/db';
 import * as schema from '@/db/schema';
+import { revokeUserTokens } from './api-tokens';
 import { setting, origin, database } from './env';
 import { sendAuthOTP } from './mail';
 import { record } from './metrics';
@@ -38,6 +39,19 @@ export function auth() {
       minPasswordLength: 12,
       maxPasswordLength: 128,
       revokeSessionsOnPasswordReset: true,
+      // A reset ends access tokens as well as sessions: a token outlives no takeover.
+      onPasswordReset: async ({ user }) => revokeUserTokens(user.id),
+    },
+    hooks: {
+      // So does a successful password change or signing out other devices.
+      after: createAuthMiddleware(async (ctx) => {
+        const ends =
+          ctx.path === '/revoke-other-sessions' ||
+          ctx.path === '/revoke-sessions' ||
+          (ctx.path === '/change-password' && ctx.body?.revokeOtherSessions === true);
+        const id = ctx.context.session?.user.id;
+        if (ends && id && !isAPIError(ctx.context.returned)) revokeUserTokens(id);
+      }),
     },
     database: drizzleAdapter(getDb(), {
       provider: 'sqlite',

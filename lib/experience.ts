@@ -59,3 +59,6 @@ export const experienceFactsOf = (extra: Record<string, unknown> | null | undefi
     rounds: extra?.rounds,
     interview_date: extra?.dateBasis === 'interview' ? extra.date : null,
   });
+
+/** A member-written experience's body length in characters (lib/server/experience-submissions.ts). */
+export const MEMBER_BODY = { min: 80, max: 20000 } as const;

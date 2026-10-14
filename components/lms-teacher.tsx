@@ -32,6 +32,8 @@ import { ReviewDetailDialog, SubmissionLink } from './lms-support';
 import { CourseAdmin } from './course-admin';
 import { OjAdmin } from './oj-admin';
 import { CommerceAdmin } from './commerce-admin';
+import { PostModeration } from './solution-posts';
+import { ExperienceReview } from './experience-review';
 
 export function TeacherView({
   boot,
@@ -68,12 +70,14 @@ export function TeacherView({
           <TabsTrigger value="problems">
             {t('题库管理', 'Problem admin')}
           </TabsTrigger>
+          <TabsTrigger value="posts">{t('题解审核', 'Solutions')}</TabsTrigger>
           <TabsTrigger value="commerce">
             {t('订单与售卖', 'Orders & sales')}
           </TabsTrigger>
           <TabsTrigger value="services">
             {t('服务状态', 'Service status')}
           </TabsTrigger>
+          <TabsTrigger value="experiences">{t('面经审核', 'Experience review')}</TabsTrigger>
         </TabsList>
         <TabsContent value="queue">
           <TeacherQueue boot={boot} navigate={navigate} />
@@ -92,11 +96,17 @@ export function TeacherView({
         <TabsContent value="problems">
           <OjAdmin boot={boot} refresh={refresh} />
         </TabsContent>
+        <TabsContent value="posts">
+          <PostModeration />
+        </TabsContent>
         <TabsContent value="commerce">
           <CommerceAdmin courses={boot.courses} refresh={refresh} />
         </TabsContent>
         <TabsContent value="services">
           <Services boot={boot} refresh={refresh} />
+        </TabsContent>
+        <TabsContent value="experiences">
+          <ExperienceReview />
         </TabsContent>
       </Tabs>
     </>
@@ -775,6 +785,7 @@ function Services({
     video: t('课程视频', 'Course video'),
     judge: t('算法判题', 'Code judge'),
     checkout: t('课程购买', 'Course checkout'),
+    ai: t('AI 助教（ANTHROPIC_API_KEY）', 'AI tutor (ANTHROPIC_API_KEY)'),
   };
   return (
     <div className="form-card">

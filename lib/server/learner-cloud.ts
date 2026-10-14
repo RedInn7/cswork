@@ -38,11 +38,11 @@ function hiddenProblem(id: string, hidden = hiddenCompanies()) {
   return !!company && (hidden.has(company) || hidden.has(canonicalCompany(company)));
 }
 /** Published OA or Line 500 problems only: course exercises never enter lists or reports. */
-async function publicProblem(p: Person, id: string) {
+export async function publicProblem(p: Person, id: string) {
   return problemId.safeParse(id).success && !hiddenProblem(id) && (await canSeeProblem(p, id));
 }
 /** Reports and public pages need a verified address (teachers excepted), or they are a spam inlet. */
-function requireVerified(p: Person) {
+export function requireVerified(p: Person) {
   if (!p.verified && p.role !== 'teacher') throw new HttpError(403, '请先验证邮箱');
 }
 export const monthKey = (time: number) => new Date(time).toISOString().slice(0, 7);

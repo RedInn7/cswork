@@ -14,6 +14,7 @@ import {
   defaultEditorSettings,
   type EditorSettings,
 } from '@/lib/editor-settings';
+import { currentTheme } from '@/lib/theme-script';
 
 type Runtime = typeof import('./monaco-client');
 let runtimePromise: Promise<Runtime> | undefined;
@@ -64,7 +65,7 @@ export function CodeEditor({
   value,
   language,
   onChange,
-  settings = defaultEditorSettings,
+  settings = { ...defaultEditorSettings, theme: currentTheme() },
   path,
   readOnly = false,
   onRun,
@@ -143,11 +144,13 @@ export function CodeEditor({
     ];
     const model = editor.getModel();
     if (!readOnly && problemId && model) {
-      actions.push(
-        attachIntelligence(monaco, model, problemId, language, (status) =>
-          onIntelligenceStatus?.(status),
-        ),
-      );
+      // SQL has no language server: Monaco highlights it, word completion fills in names.
+      if (language !== 'sql')
+        actions.push(
+          attachIntelligence(monaco, model, problemId, language, (status) =>
+            onIntelligenceStatus?.(status),
+          ),
+        );
       onSuggestReady?.(() => {
         editor.focus();
         editor.trigger('cswork', 'editor.action.triggerSuggest', {});
@@ -187,7 +190,7 @@ export function CodeEditor({
     quickSuggestionsDelay: 250,
     suggestOnTriggerCharacters: true,
     parameterHints: { enabled: true },
-    wordBasedSuggestions: problemId ? 'off' : 'currentDocument',
+    wordBasedSuggestions: problemId && language !== 'sql' ? 'off' : 'currentDocument',
   };
   return (
     <div className="cs-editor-host" data-theme={settings.theme}>

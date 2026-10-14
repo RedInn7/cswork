@@ -20,12 +20,12 @@ const RESULTS = new Set([
   'accepted', 'wrong_answer', 'time_limit', 'memory_limit', 'output_limit',
   'runtime_error', 'compile_error', 'system_error', 'cancelled', 'pending',
 ]);
-const LANGUAGES = new Set(['cpp', 'python', 'java', 'go']);
+const LANGUAGES = new Set(['cpp', 'python', 'java', 'go', 'sql']);
 const libraryProblem = `s.problem_id IN (SELECT judge_problem_id FROM study_library WHERE judge_problem_id IS NOT NULL)`;
 
-/** OA and library problems are public; course exercises follow course visibility. */
+/** OA, SQL track and library problems are public; course exercises follow course visibility. */
 const visible = (viewer: Person | null) =>
-  `((s.problem_id LIKE 'oa-%' OR ${libraryProblem} OR (1=1${visibleCourseSql(viewer, 'p.course_id')}))${shownOaSql('s.problem_id')})`;
+  `((s.problem_id LIKE 'oa-%' OR s.problem_id LIKE 'sql-%' OR ${libraryProblem} OR (1=1${visibleCourseSql(viewer, 'p.course_id')}))${shownOaSql('s.problem_id')})`;
 
 /**
  * Accounts kept off the public board, e.g. the owner's test runs: FEED_HIDDEN_USERS is a
@@ -164,7 +164,7 @@ export function judgeFeed(viewer: Person | null, params: URLSearchParams) {
       problemId: r.problem_id,
       source: r.problem_id.startsWith('oa-')
         ? { kind: 'oa' as const, company: oaCompany(r.problem_id) }
-        : { kind: r.library ? ('library' as const) : ('course' as const) },
+        : { kind: r.library || r.problem_id.startsWith('sql-') ? ('library' as const) : ('course' as const) },
       user: mine ? r.user_name?.trim() || '我' : maskName(r.user_name),
       mine,
       language: r.language,

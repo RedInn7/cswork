@@ -53,7 +53,7 @@ export function judgeReady() {
 const inputSchema = z
   .object({
     problemId: z.string().min(1).max(80),
-    language: z.enum(['python', 'go', 'java', 'cpp']),
+    language: z.enum(['python', 'go', 'java', 'cpp', 'sql']),
     code: z.string().min(1).max(MAX_CODE_BYTES),
     mode: z.enum(['judge', 'run']).default('judge'),
     codingMode: z.enum(['leetcode', 'acm']).default('acm'),

@@ -1,13 +1,13 @@
 import { createHash } from 'node:crypto';
 import contracts from '@/lib/content/leetcode-contracts.json';
-import type { Language } from '@/lib/problems';
+import type { CodeLanguage, Language } from '@/lib/problems';
 import { buildLeetCodeCpp, getLeetCodeCppTemplate } from './leetcode-cpp';
 import { buildLeetCodeJava, getLeetCodeJavaTemplate } from './leetcode-java';
 import { buildLeetCodeGo, getLeetCodeGoTemplate } from './leetcode-go';
 
 type Contract = {
   number: number;
-  templates: Record<Language, string>;
+  templates: Record<CodeLanguage, string>;
   pythonWrapper: string;
   pythonTemplate: string;
   customInputHelp?: { zh: string; en: string } | null;

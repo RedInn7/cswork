@@ -30,6 +30,7 @@ import {
   Timer,
   TrendingUp,
   ListChecks,
+  UsersRound,
   Zap,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -93,6 +94,7 @@ import Link from 'next/link';
 import { CheckoutFeedback } from './checkout-feedback';
 import { EnrollmentClaim } from './enrollment';
 import { NotificationsPane } from './lms-notifications';
+import { ThemeToggle } from './theme-toggle';
 import '@/app/lms.css';
 import {
   INTERVIEW_COURSE_ID,
@@ -114,6 +116,9 @@ const MyProgress = lazy(() =>
 const MyLists = lazy(() =>
   import('./my-lists').then((m) => ({ default: m.MyLists }), loadFailed),
 );
+const StudyGroups = lazy(() =>
+  import('./study-groups').then((m) => ({ default: m.StudyGroups }), loadFailed),
+);
 const Speedrun = lazy(() =>
   import('./speedrun').then((m) => ({ default: m.Speedrun }), loadFailed),
 );
@@ -129,6 +134,7 @@ const nav: [LucideIcon, string, string, string][] = [
   [Activity, '评测状态', 'Status', 'status'],
   [TrendingUp, '我的进度', 'My progress', 'progress'],
   [ListChecks, '我的题单', 'My lists', 'lists'],
+  [UsersRound, '学习小组', 'Study groups', 'group'],
   [MessagesSquare, '面试题', 'Interview Questions', 'questions'],
   [Dices, '模拟面试', 'Mock Interview', 'mock-interview'],
   [BookUser, 'STAR 故事库', 'Story Bank', 'stories'],
@@ -438,6 +444,8 @@ export function Academy() {
         );
       case 'lists':
         return <MyLists key={boot.person?.id} boot={boot} navigate={navigate} list={params.list} />;
+      case 'group':
+        return <StudyGroups key={boot.person?.id} navigate={navigate} params={params} />;
       case 'questions':
       case 'experiences':
       case 'resources':
@@ -650,6 +658,7 @@ export function Academy() {
               <Languages size={16} />
               {locale === 'zh' ? 'EN' : '中文'}
             </Button>
+            <ThemeToggle />
             <Button
               size="icon"
               variant="ghost"
@@ -738,6 +747,7 @@ export function Academy() {
           <Link prefetch={false} href="/library" className="underline underline-offset-4">
             {t('公开面试资料', 'Interview resources')}
           </Link>
+          <Link prefetch={false} href="/mcp" className="underline underline-offset-4">{t('在 AI 编辑器里练题', 'Practice from your AI editor')}</Link>
           <Link prefetch={false} href="/privacy" className="underline underline-offset-4">
             {t('隐私说明', 'Privacy')}
           </Link>
