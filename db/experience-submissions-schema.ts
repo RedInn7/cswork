@@ -22,6 +22,15 @@ export const experienceSubmissions = sqliteTable(
     interviewMonth: text('interview_month').notNull(),
     body: text('body').notNull(),
     questions: text('questions').notNull().default('[]'),
+    // Optional structured facts: difficulty 1-5, sentiment pos|neutral|neg, channel
+    // referral|online|campus|recruiter|other, employment fulltime|intern, season like 2026-fall.
+    difficulty: integer('difficulty'),
+    sentiment: text('sentiment'),
+    channel: text('channel'),
+    employment: text('employment'),
+    season: text('season'),
+    location: text('location'),
+    durationWeeks: integer('duration_weeks'),
     status: text('status').notNull().default('pending'),
     reviewNote: text('review_note').notNull().default(''),
     reviewedBy: text('reviewed_by'),
