@@ -92,7 +92,7 @@ const clock = (seconds: number) => {
 function read<T>(key: string, fallback: T): T {
   try {
     const value = localStorage.getItem(key);
-    return value ? (JSON.parse(value) as T) : fallback;
+    return value ? ((JSON.parse(value) as T | null) ?? fallback) : fallback;
   } catch {
     return fallback;
   }
@@ -108,7 +108,8 @@ const pastSessions = () => {
   const list = read<Past[]>(HISTORY, []);
   return Array.isArray(list) ? list : [];
 };
-const seenIds = () => [...new Set(pastSessions().flatMap((p) => p.items.map((i) => i.id)))].slice(0, 100);
+/** The most recently practiced questions; kept short so the request URL stays small. */
+const seenIds = () => [...new Set(pastSessions().flatMap((p) => p.items.map((i) => i.id)))].slice(0, 60);
 /** The set the setup just drew, so the session doesn't fetch it again. */
 let handoff: { key: string; set: MockSet } | null = null;
 
@@ -546,11 +547,13 @@ function Session({
       </div>
     );
 
-  async function reroll(index: number) {
+  const reroll = async (index: number) => {
     setRolling(index);
     try {
       const rr = [...(query.rr ? query.rr.split('.') : []), String(index)].join('.');
-      const exclude = read(AVOID, true) ? seenIds().join(',') : '';
+      // Only the re-rolled slot may move, so questions already on screen are not excluded.
+      const shown = new Set(data.slots.map((s) => s.item?.id));
+      const exclude = read(AVOID, true) ? seenIds().filter((id) => !shown.has(id)).join(',') : '';
       const set = await api<MockSet>(`content/mock?${apiQuery({ ...query, rr }, exclude ? { exclude } : {})}`);
       const next = { ...query, rr: set.rerolls.join('.') };
       if (!next.rr) delete next.rr;
@@ -563,7 +566,7 @@ function Session({
     } finally {
       setRolling(null);
     }
-  }
+  };
   const finish = () => {
     const done = { ...commit(run), since: null, phase: 'done' as const };
     setRun(done);
@@ -572,7 +575,7 @@ function Session({
     const entry: Past = {
       query,
       name: data.template.name,
-      company: data.slots.find((s) => s.item?.company && !s.similar)?.item?.company?.name ?? null,
+      company: (query.company && data.slots.find((s) => s.item?.company && !s.similar)?.item?.company?.name) || null,
       at: Date.now(),
       items: data.slots.flatMap((s, i) =>
         s.item
@@ -607,7 +610,8 @@ const shareLink = (query: Record<string, string>, as: Mode) =>
 function SetHead({ data, query, mode }: Pick<SessionProps, 'data' | 'query' | 'mode'>) {
   const t = useT();
   const total = data.slots.reduce((sum, s) => sum + s.minutes, 0);
-  const company = data.slots.find((s) => s.item?.company && !s.similar)?.item?.company;
+  // The chosen company, named as the library names it (a set without one names none).
+  const company = query.company ? data.slots.find((s) => s.item?.company && !s.similar)?.item?.company : undefined;
   return (
     <header className="mi-head rd-reveal" style={{ '--i': 0 } as React.CSSProperties}>
       <p className="mi-head-kicker">
@@ -622,7 +626,7 @@ function SetHead({ data, query, mode }: Pick<SessionProps, 'data' | 'query' | 'm
       </p>
       <h1>
         {company && <CompanyLogo slug={company.slug} />}
-        <span>{(query.company && company ? `${company.name} · ` : '') + t(...data.template.name)}</span>
+        <span>{(company ? `${company.name} · ` : '') + t(...data.template.name)}</span>
       </h1>
       <p className="mi-head-meta">
         {t(`${data.slots.length} 题 · 约 ${total} 分钟`, `${data.slots.length} questions · about ${total} minutes`)}
