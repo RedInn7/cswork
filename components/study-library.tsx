@@ -1132,6 +1132,9 @@ export function StudyLibrary({
                   {t('热度点：面经出现越多越亮', 'Dots glow with interview reports')}
                 </span>
               )}
+              <a className="route-graph-link" href="/roadmap">
+                {t('查看依赖图', 'Prerequisite graph')}
+              </a>
               {data?.currentRound && (
                 <details className="route-round">
                   <summary>
