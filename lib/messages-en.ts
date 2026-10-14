@@ -222,6 +222,7 @@ const EN: Record<string, string> = {
   面试月份无效: 'Invalid interview month',
   没有这家公司: 'Unknown company',
   今天的报告次数已达上限: "You've reached today's limit for reports",
+  故事已达上限: "You've reached the limit for stories",
   '代码最多 64 KiB': 'Code can be at most 64 KiB',
   代码不能包含空字符: 'Code cannot contain null characters',
   '代码和自定义输入分别最多 64 KiB': 'Code and custom input are limited to 64 KiB each',

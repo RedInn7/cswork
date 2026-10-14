@@ -21,6 +21,8 @@ import {
 } from '@/lib/mock-interview-feedback';
 import type { Navigate } from './learning';
 import { OaMarkdown } from './oa-library';
+import { TryFirst } from './try-first';
+import { StoryPicker } from './story-bank';
 import '@/app/redesign.css';
 import '@/app/mock-interview.css';
 
@@ -126,10 +128,13 @@ export function MockInterview({
   params,
   navigate,
   problemIds,
+  userId = null,
 }: {
   params: Record<string, string>;
   navigate: Navigate;
   problemIds: string[];
+  /** Signed in: solo answers and story picks are saved to the account. */
+  userId?: string | null;
 }) {
   const query = pick(params);
   const key = new URLSearchParams(query).toString();
@@ -138,7 +143,7 @@ export function MockInterview({
       <div className="rd-page">
         <ModeTabs navigate={navigate} />
         {query.set ? (
-          <Session key={`${key}:${params.as ?? ''}`} query={query} mode={modeOf(params.as)} navigate={navigate} problemIds={problemIds} />
+          <Session key={`${key}:${params.as ?? ''}`} query={query} mode={modeOf(params.as)} navigate={navigate} problemIds={problemIds} userId={userId} />
         ) : (
           <Setup params={params} navigate={navigate} />
         )}
@@ -497,11 +502,13 @@ function Session({
   mode,
   navigate,
   problemIds,
+  userId,
 }: {
   query: Record<string, string>;
   mode: Mode;
   navigate: Navigate;
   problemIds: string[];
+  userId: string | null;
 }) {
   const t = useT();
   const [query, setQuery] = useState(initial);
@@ -669,7 +676,7 @@ function Session({
       />
     ) : null;
 
-  const props = { data, query, mode, run, setRun, now, problemIds, navigate, finish };
+  const props = { data, query, mode, run, setRun, now, problemIds, navigate, finish, userId };
   if (mode === 'interviewer') return <InterviewerSheet {...props} />;
   if (run.phase === 'plan') return <Plan {...props} card={card} locked={!!feedback} reroll={reroll} rolling={rolling} rollError={rollError} />;
   if (run.phase === 'done') return <Summary {...props} card={card} />;
@@ -685,6 +692,7 @@ type SessionProps = {
   problemIds: string[];
   navigate: Navigate;
   finish: () => void;
+  userId: string | null;
 };
 
 const shareLink = (query: Record<string, string>, as: Mode) =>
@@ -1037,7 +1045,7 @@ function Pips({ n, label }: { n: number; label: string }) {
   );
 }
 
-function Runner({ data, query, mode, run, setRun, now, problemIds, finish }: SessionProps) {
+function Runner({ data, query, mode, run, setRun, now, problemIds, finish, userId }: SessionProps) {
   const t = useT();
   const slot = data.slots[run.index];
   const item = slot?.item;
@@ -1089,24 +1097,37 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish }: Ses
         {item && (
           // Beside the question on wide screens, so the notes stay in view while reading.
           <aside className="mi-work-side" aria-label={t('草稿与自评', 'Notes and rating')}>
-            <Notes
-              label={code ? t('思路与代码草稿（只存在这台设备上）', 'Notes & code sketch (saved on this device only)') : t('要点草稿（只存在这台设备上）', 'Notes (saved on this device only)')}
-              code={code}
-              value={run.notes[run.index] ?? ''}
-              onChange={(v) => setRun((r) => ({ ...r, notes: { ...r.notes, [r.index]: v } }))}
-            />
-            {solo && ((item.hints && !shown.hint) || !shown.answer) && (
+            {slot.kind === 'behavioral' && (
+              <StoryPicker
+                userId={userId}
+                question={{ key: `${item.type}/${item.slug}`, title: item.title, company: item.company?.name ?? null }}
+                text={`${item.title}\n${item.question}`}
+              />
+            )}
+            {solo ? (
+              // Solo: the answer is written before the reference opens; saved per question when signed in.
+              <TryFirst
+                key={`${item.type}/${item.slug}`}
+                userId={userId}
+                target={`content:${item.type}/${item.slug}`}
+                revealed={!!shown.answer}
+                onReveal={() => show('answer')}
+                code={code}
+                local={{ value: run.notes[run.index] ?? '', onChange: (v) => setRun((r) => ({ ...r, notes: { ...r.notes, [r.index]: v } })) }}
+              />
+            ) : (
+              <Notes
+                label={code ? t('思路与代码草稿（只存在这台设备上）', 'Notes & code sketch (saved on this device only)') : t('要点草稿（只存在这台设备上）', 'Notes (saved on this device only)')}
+                code={code}
+                value={run.notes[run.index] ?? ''}
+                onChange={(v) => setRun((r) => ({ ...r, notes: { ...r.notes, [r.index]: v } }))}
+              />
+            )}
+            {solo && item.hints && !shown.hint && (
               <div className="mi-reveals">
-                {item.hints && !shown.hint && (
-                  <button type="button" className="rd-button is-quiet" onClick={() => show('hint')}>
-                    <Lightbulb size={14} aria-hidden="true" /> {t('给个提示', 'Show a hint')}
-                  </button>
-                )}
-                {!shown.answer && (
-                  <button type="button" className="rd-button is-quiet" onClick={() => show('answer')}>
-                    <Eye size={14} aria-hidden="true" /> {t('查看参考要点', 'Reveal what interviewers look for')}
-                  </button>
-                )}
+                <button type="button" className="rd-button is-quiet" onClick={() => show('hint')}>
+                  <Lightbulb size={14} aria-hidden="true" /> {t('给个提示', 'Show a hint')}
+                </button>
               </div>
             )}
             {solo && shown.hint && item.hints && (

@@ -26,6 +26,7 @@ import {
   Inbox,
   ChevronRight,
   Dices,
+  BookUser,
   Timer,
   TrendingUp,
   ListChecks,
@@ -76,6 +77,7 @@ import { setLocale, useLocale, useT } from '@/lib/i18n';
 import { pageView as beaconPageView, track } from '@/lib/analytics';
 import { englishMessage } from '@/lib/messages-en';
 import { ContentDetail, ContentList, contentSection } from './content-library';
+import { StoryBank } from './story-bank';
 import { WorkspaceIntro } from './workspace-intro';
 import { workspaceTitle } from '@/lib/seo';
 import { problemTitle } from '@/lib/problems';
@@ -129,6 +131,7 @@ const nav: [LucideIcon, string, string, string][] = [
   [ListChecks, '我的题单', 'My lists', 'lists'],
   [MessagesSquare, '面试题', 'Interview Questions', 'questions'],
   [Dices, '模拟面试', 'Mock Interview', 'mock-interview'],
+  [BookUser, 'STAR 故事库', 'Story Bank', 'stories'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
   [Library, '学习资料', 'Resources', 'resources'],
   [BookOpen, '我的课程', 'My Courses', 'courses'],
@@ -445,6 +448,7 @@ export function Academy() {
             params={params}
             navigate={navigate}
             problemIds={boot.problems.map((p) => p.id)}
+            userId={boot.person?.id ?? null}
           />
         );
       case 'content':
@@ -453,8 +457,11 @@ export function Academy() {
             params={params}
             navigate={navigate}
             problemIds={boot.problems.map((p) => p.id)}
+            userId={boot.person?.id ?? null}
           />
         );
+      case 'stories':
+        return <StoryBank key={boot.person!.id} userId={boot.person!.id} />;
       case 'problem':
         return selectedProblem ? (
           <ProblemWorkspace

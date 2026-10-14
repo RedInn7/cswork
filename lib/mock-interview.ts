@@ -404,7 +404,7 @@ export function splitBody(body: string): BodyParts {
 }
 
 /** Amazon's Leadership Principles a behavioral question names. */
-const PRINCIPLES: [string, RegExp][] = [
+export const PRINCIPLES: [string, RegExp][] = [
   ['Customer Obsession', /customer[- ]obsess/i],
   ['Ownership', /\bownership\b/i],
   ['Invent and Simplify', /invent and simplify/i],
