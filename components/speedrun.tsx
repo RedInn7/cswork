@@ -121,6 +121,7 @@ export function Speedrun({ boot, navigate }: { boot: Boot; navigate: Navigate })
   const solveHref = (item: SpeedrunQuestion) => `/?view=problem&problem=${encodeURIComponent(item.id)}`;
   const solve = (item: SpeedrunQuestion) => inApp(() => navigate('problem', { problem: item.id }));
   const again = () => {
+    setError('');
     setQuestions(null);
     setRound((n) => n + 1);
   };
