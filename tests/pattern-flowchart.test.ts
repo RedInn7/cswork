@@ -11,6 +11,7 @@ import {
   type Question,
 } from '../lib/pattern-flowchart';
 import { ROUTE_SECTIONS, STOP_NAMES } from '../lib/route-stops';
+import curated from '../lib/content/ling-curated-500.json';
 
 const { start, nodes } = FLOWCHART;
 const ids = Object.keys(nodes);
@@ -54,6 +55,32 @@ test('the tree has no cycles, no orphans, one parent per node, and reaches all 3
   assert.equal(questionOrder().length, questions.length);
   const reached = new Set(ids.flatMap((id) => { const n = nodes[id]; return isLeaf(n) ? [n.stop] : []; }));
   assert.equal(reached.size, ROUTE_SECTIONS.flatMap((s) => s.slugs).length);
+});
+
+test('problems walked with honest answers land on the stop that lists them', () => {
+  const sectionOf = new Map(curated.map((p) => [p.number, p.sectionSlug]));
+  // Problem number -> the questions a reader would answer yes to; everything else is no.
+  const walks: [number, string[]][] = [
+    [56, ['q-intervals']], // Merge Intervals
+    [57, ['q-intervals', 'q-sorted']], // Insert Interval: sorted, but intervals come first
+    [79, ['q-graph', 'q-grid', 'q-board']], // Word Search
+    [37, ['q-graph', 'q-board']], // Sudoku Solver
+    [51, ['q-all', 'q-all-board']], // N-Queens
+    [5, ['q-contig', 'q-contig-palin', 'q-optimize', 'q-palin']], // Longest Palindromic Substring
+    [20, ['q-nest', 'q-pair', 'q-string']], // Valid Parentheses
+    [224, ['q-nest', 'q-string']], // Basic Calculator
+    [295, ['q-design', 'q-design-lookup', 'q-topk']], // Find Median from Data Stream
+    [981, ['q-design', 'q-design-lookup']], // Time Based Key-Value Store
+    [15, ['q-sorted', 'q-sorted-pair', 'q-pair']], // 3Sum
+    [167, ['q-sorted', 'q-sorted-pair']], // Two Sum II
+    [1186, ['q-contig', 'q-contig-best', 'q-optimize']], // Maximum Subarray Sum with One Deletion
+    [215, ['q-topk']], // Kth Largest Element in an Array
+  ];
+  for (const [number, yes] of walks) {
+    let id = start;
+    for (let node = nodes[id]; !isLeaf(node); node = nodes[id]) id = yes.includes(id) ? node.yes : node.no;
+    assert.equal((nodes[id] as { stop: string }).stop, sectionOf.get(number), `${number} -> ${id}`);
+  }
 });
 
 test('every text is bilingual: Chinese first, English second', () => {

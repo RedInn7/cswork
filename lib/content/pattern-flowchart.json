@@ -8,14 +8,14 @@
       "no": "q-graph"
     },
     "q-design-lookup": {
-      "q": ["难点在于按 key 在 O(1) 内查到数据，同时还要淘汰旧数据或随机取一个？", "Is the hard part O(1) lookup by key, combined with evicting old entries or picking one at random?"],
-      "eg": ["如 LRU / LFU 缓存、O(1) 时间插入删除和随机取值", "e.g. LRU / LFU caches, insert, delete and getRandom in O(1)"],
+      "q": ["要按 key 或按时间戳快速查询，或者维护一个不断流入的数据流（缓存、快照、中位数、第 k 大）？", "Do you need fast lookups by key or by timestamp, or must you keep up with a stream of incoming values (caches, snapshots, a running median, the k-th largest)?"],
+      "eg": ["如 LRU 缓存、O(1) 时间插入删除和随机取值、基于时间的键值存储、数据流的中位数", "e.g. LRU Cache, Insert Delete GetRandom O(1), Time Based Key-Value Store, Find Median from Data Stream"],
       "yes": "to-design-cache-index",
       "no": "q-design-prefix"
     },
     "to-design-cache-index": {
       "stop": "design-cache-index",
-      "why": ["哈希表负责 O(1) 定位，双向链表或“和末尾交换”负责 O(1) 删除，把两者拼起来。", "A hash map finds things in O(1); a doubly linked list or swap-with-last removes them in O(1). Combine the two."],
+      "why": ["哈希表负责 O(1) 定位，双向链表或“和末尾交换”负责 O(1) 删除；按时间查就在有序列表上二分，数据流的中位数和第 k 大交给堆。", "A hash map finds things in O(1) and a doubly linked list or swap-with-last removes them in O(1); look up by time with binary search over a sorted list, and keep a running median or the k-th largest in heaps."],
       "tutorial": "hash-table"
     },
     "q-design-prefix": {
@@ -44,7 +44,7 @@
       "q": ["是一棵二叉树吗（给了 root，每个节点最多两个孩子）？", "Is it a binary tree (you get a root, and each node has at most two children)?"],
       "eg": ["节点类型是 TreeNode", "the node type is TreeNode"],
       "yes": "q-bst",
-      "no": "q-grid"
+      "no": "q-board"
     },
     "q-bst": {
       "q": ["是二叉搜索树，并且可以利用“左小右大”的顺序？", "Is it a binary search tree whose left-smaller, right-larger order you can use?"],
@@ -94,6 +94,17 @@
       "stop": "binary-tree",
       "why": ["先决定用前序、中序、后序还是层序，再想清楚递归函数返回什么，多数题就是一次遍历。", "Choose pre-, in-, post- or level-order, then decide what the recursive call returns; most problems are a single traversal."],
       "tutorial": "tree-basics"
+    },
+    "q-board": {
+      "q": ["要在棋盘或字符矩阵上试着填数、放子或走一条路，走不通就撤回重来？", "On a board or character grid, do you try placing values or tracing a path, and undo the move when it fails?"],
+      "eg": ["如单词搜索、单词搜索 II、解数独", "e.g. Word Search, Word Search II, Sudoku Solver"],
+      "yes": "to-backtracking-board",
+      "no": "q-grid"
+    },
+    "to-backtracking-board": {
+      "stop": "backtracking-constraints",
+      "why": ["DFS 前先标记当前格子，这条路失败就恢复原状，再试下一个方向或数字；用集合或位掩码记下每行、每列、每宫已用的数字，尽早剪枝。", "Mark the cell before recursing and restore it when the branch fails, then try the next direction or digit; track what each row, column and box already uses in sets or bitmasks so you prune early."],
+      "tutorial": "backtracking"
     },
     "q-grid": {
       "q": ["是二维网格，每个格子只和上下左右相邻？", "Is it a 2D grid where each cell touches only its four neighbours?"],
@@ -167,10 +178,10 @@
       "tutorial": "linked-list"
     },
     "q-all": {
-      "q": ["要列出所有满足条件的方案，而不只是数一数有几个？", "Must you list every valid solution, not just count them?"],
-      "eg": ["如子集、全排列、组合总和", "e.g. Subsets, Permutations, Combination Sum"],
+      "q": ["要列出所有满足条件的方案（子集、排列、组合），而不只是数一数有几个？", "Must you list every valid solution (subsets, permutations, combinations), not just count them?"],
+      "eg": ["如子集、全排列、组合总和；三数之和这类只挑两三个数凑目标和的题答否", "e.g. Subsets, Permutations, Combination Sum; picking two or three numbers that hit a target (3Sum) is a no"],
       "yes": "q-all-string",
-      "no": "q-sorted"
+      "no": "q-intervals"
     },
     "q-all-string": {
       "q": ["是把一个字符串切成几段，或者拼出合法的字符串？", "Are you cutting a string into pieces, or assembling valid strings?"],
@@ -184,8 +195,8 @@
       "tutorial": "backtracking"
     },
     "q-all-board": {
-      "q": ["在棋盘或格子上放东西，约束很多，需要尽早剪枝？", "Are you placing things on a board under many constraints, so you must prune early?"],
-      "eg": ["如 N 皇后、解数独、单词搜索", "e.g. N-Queens, Sudoku Solver, Word Search"],
+      "q": ["约束很多，必须边搜边剪枝，比如在棋盘上摆棋子、用四张牌凑出 24？", "Are there many constraints, so you must prune as you search, like placing pieces on a board or making 24 from four cards?"],
+      "eg": ["如 N 皇后、N 皇后 II、24 点游戏", "e.g. N-Queens, N-Queens II, 24 Game"],
       "yes": "to-backtracking-constraints",
       "no": "to-backtracking-enumeration"
     },
@@ -199,11 +210,33 @@
       "why": ["画出递归树：子集看每个元素选不选，排列看每个位置放谁；先排序再跳过相同的相邻元素来去重。", "Draw the recursion tree: for subsets each element is in or out, for permutations each slot gets one element. Sort first and skip equal neighbours to avoid duplicates."],
       "tutorial": "backtracking"
     },
+    "q-intervals": {
+      "q": ["输入是一组区间 [开始, 结束]？", "Is the input a list of intervals [start, end]?"],
+      "eg": ["如合并区间、插入区间、无重叠区间、用最少数量的箭引爆气球", "e.g. Merge Intervals, Insert Interval, Non-overlapping Intervals, Minimum Number of Arrows to Burst Balloons"],
+      "yes": "to-prefix-intervals-ranges",
+      "no": "q-sorted"
+    },
+    "to-prefix-intervals-ranges": {
+      "stop": "prefix-intervals",
+      "why": ["先按开始（或结束）排序再扫一遍：重叠就合并，要留下最多不重叠区间就按结束时间贪心；要数同一时刻有几个重叠，就在端点上 +1 / −1 做差分。", "Sort by start (or end) and sweep once: merge what overlaps, keep the most non-overlapping ones greedily by end time, and to count overlaps at a moment add +1 / −1 at the endpoints, a difference array."],
+      "tutorial": "greedy"
+    },
     "q-sorted": {
       "q": ["数组已经有序，或者答案具有单调性（x 可行，那么比 x 大的也都可行）？", "Is the array sorted, or is the answer monotone (if x works, every larger x works too)?"],
-      "eg": ["如搜索旋转排序数组、爱吃香蕉的珂珂", "e.g. Search in Rotated Sorted Array, Koko Eating Bananas"],
-      "yes": "to-binary-search",
+      "eg": ["如两数之和 II、三数之和（先排序）、搜索旋转排序数组、爱吃香蕉的珂珂", "e.g. Two Sum II, 3Sum (sort first), Search in Rotated Sorted Array, Koko Eating Bananas"],
+      "yes": "q-sorted-pair",
       "no": "q-contig"
+    },
+    "q-sorted-pair": {
+      "q": ["要在有序数组里找两三个数凑出目标和，或者从两端往中间收？", "Do you look for two or three values in the sorted array that hit a target sum, or close in from both ends?"],
+      "eg": ["如两数之和 II、三数之和、有序数组的平方", "e.g. Two Sum II, 3Sum, Squares of a Sorted Array"],
+      "yes": "to-two-pointers-sorted",
+      "no": "to-binary-search"
+    },
+    "to-two-pointers-sorted": {
+      "stop": "two-pointers-windows",
+      "why": ["左右指针各站一端：和太小就右移左指针，太大就左移右指针，O(n) 扫完；三数之和先固定一个数，剩下的照此处理。", "Put one pointer at each end: move the left one up when the sum is too small and the right one down when it is too big, O(n) in all; for 3Sum fix one number and do the same on the rest."],
+      "tutorial": "two-pointers-sliding-window"
     },
     "to-binary-search": {
       "stop": "binary-search",
@@ -212,19 +245,30 @@
     },
     "q-contig": {
       "q": ["问的是连续的子数组或子串？", "Is the question about a contiguous subarray or substring?"],
-      "eg": ["如无重复字符的最长子串、和为 K 的子数组、最大子数组和", "e.g. Longest Substring Without Repeating Characters, Subarray Sum Equals K, Maximum Subarray"],
-      "yes": "q-contig-best",
-      "no": "q-intervals"
+      "eg": ["如无重复字符的最长子串、和为 K 的子数组、乘积最大子数组", "e.g. Longest Substring Without Repeating Characters, Subarray Sum Equals K, Maximum Product Subarray"],
+      "yes": "q-contig-palin",
+      "no": "q-topk"
+    },
+    "q-contig-palin": {
+      "q": ["要找回文子串：最长的那个，或者一共有几个？", "Are you after palindromic substrings: the longest one, or how many there are?"],
+      "eg": ["如最长回文子串、回文子串", "e.g. Longest Palindromic Substring, Palindromic Substrings"],
+      "yes": "to-dp-palindrome-substring",
+      "no": "q-contig-best"
+    },
+    "to-dp-palindrome-substring": {
+      "stop": "dp-palindrome",
+      "why": ["以每个字符和每对相邻字符为中心向两边扩，O(n²) 就够；也可以让 dp[i][j] 记录 s[i..j] 是否回文，按长度从短到长填。", "Expand around every character and every gap between two, which is O(n²); or let dp[i][j] say whether s[i..j] is a palindrome and fill it from short ranges to long."],
+      "tutorial": "interval-dp"
     },
     "q-contig-best": {
       "q": ["要的是一段连续元素的最大和或最大乘积，元素有正有负？", "Do you want the largest sum or product of a contiguous run, with both positive and negative values?"],
-      "eg": ["如最大子数组和、乘积最大子数组、环形子数组的最大和", "e.g. Maximum Subarray, Maximum Product Subarray, Maximum Sum Circular Subarray"],
+      "eg": ["如乘积最大子数组、环形子数组的最大和、删除一次得到子数组最大和", "e.g. Maximum Product Subarray, Maximum Sum Circular Subarray, Maximum Subarray Sum with One Deletion"],
       "yes": "to-dp-state-machine",
       "no": "q-window"
     },
     "to-dp-state-machine": {
       "stop": "dp-state-machine",
-      "why": ["只看“以 i 结尾的最好结果”，它只依赖 i−1；求乘积时要同时记最大和最小，因为负负得正。", "Track the best result ending at i, which depends only on i−1; for products keep both the max and the min, since two negatives make a positive."],
+      "why": ["只看“以 i 结尾的最好结果”，它只依赖 i−1；求乘积时要同时记最大和最小，因为负负得正。最基础的最大子数组和在第 01 站。", "Track the best result ending at i, which depends only on i−1; for products keep both the max and the min, since two negatives make a positive. Plain Maximum Subarray sits at stop 01."],
       "tutorial": "dp-state-design"
     },
     "q-window": {
@@ -243,27 +287,27 @@
       "why": ["元素非负或只关心字符种类时，右指针扩张、左指针收缩，每个元素进出窗口各一次，整体 O(n)。", "With non-negative values or character counts, grow the window on the right and shrink it on the left; each element enters and leaves once, O(n) overall."],
       "tutorial": "two-pointers-sliding-window"
     },
-    "q-intervals": {
-      "q": ["输入是一组区间 [开始, 结束]？", "Is the input a list of intervals [start, end]?"],
-      "eg": ["如合并区间、无重叠区间、用最少数量的箭引爆气球", "e.g. Merge Intervals, Non-overlapping Intervals, Minimum Number of Arrows to Burst Balloons"],
-      "yes": "to-greedy-intervals",
-      "no": "q-topk"
-    },
-    "to-greedy-intervals": {
-      "stop": "greedy-scheduling",
-      "why": ["先排序：合并区间按开始时间，保留最多不重叠区间按结束时间，然后扫一遍。", "Sort first, by start to merge intervals or by end to keep the most non-overlapping ones, then sweep once."],
-      "tutorial": "greedy"
-    },
     "q-topk": {
-      "q": ["要第 k 大、前 k 个、数据流的中位数，或者每个元素右边第一个更大的数？", "Do you need the k-th largest, the top k, a running median, or the next greater element?"],
-      "eg": ["如数组中的第 K 个最大元素、每日温度、数据流的中位数", "e.g. Kth Largest Element in an Array, Daily Temperatures, Find Median from Data Stream"],
+      "q": ["要第 k 大、前 k 个，或者每个元素右边第一个更大（更小）的数？", "Do you need the k-th largest, the top k, or the next greater (or smaller) element for each item?"],
+      "eg": ["如数组中的第 K 个最大元素、每日温度、柱状图中最大的矩形", "e.g. Kth Largest Element in an Array, Daily Temperatures, Largest Rectangle in Histogram"],
       "yes": "to-stacks-heaps",
-      "no": "q-optimize"
+      "no": "q-nest"
     },
     "to-stacks-heaps": {
       "stop": "stacks-heaps",
-      "why": ["第 k 大和前 k 个用大小为 k 的堆，中位数用两个堆；“下一个更大的元素”用单调栈。", "Use a size-k heap for the k-th largest and the top k, two heaps for a running median, and a monotonic stack for the next greater element."],
+      "why": ["第 k 大和前 k 个用大小为 k 的堆；“下一个更大的元素”和柱状图中的最大矩形用单调栈，每个元素只进出栈一次。", "Use a size-k heap for the k-th largest and the top k; use a monotonic stack for the next greater element and the largest rectangle, pushing and popping each element once."],
       "tutorial": "heap-priority-queue"
+    },
+    "q-nest": {
+      "q": ["要处理嵌套或成对的结构（括号、表达式、编码字符串），或者总是先处理最近放进去的那个？", "Do you handle nested or paired structure (brackets, expressions, encoded strings), or always deal with the most recently added item first?"],
+      "eg": ["如有效的括号、字符串解码、基本计算器、小行星碰撞", "e.g. Valid Parentheses, Decode String, Basic Calculator, Asteroid Collision"],
+      "yes": "to-stacks-nesting",
+      "no": "q-optimize"
+    },
+    "to-stacks-nesting": {
+      "stop": "stacks-heaps",
+      "why": ["遇到左括号或新的一层就压栈，遇到右括号就弹出最近的那个来配对或结算；表达式求值再加一个运算符栈。", "Push on an opening bracket or a new level, and pop the most recent one to match or settle it on a closing one; to evaluate expressions keep a second stack for operators."],
+      "tutorial": "stack"
     },
     "q-optimize": {
       "q": ["求最大值、最小值或方案数，并且前面的选择会影响后面还能怎么选？", "Do you want a maximum, a minimum or a number of ways, where earlier choices limit later ones?"],
