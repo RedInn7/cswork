@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b4739550-5213-49f9-9c09-51f5670f75bd",
+  "id": "616f615c-d9a0-4ff7-aa75-dcac4478ce26",
   "prevId": "761e9fca-78f5-4e77-8528-3e50e683ee82",
   "tables": {
     "account": {
@@ -4338,6 +4338,21 @@
             "updated_at"
           ],
           "isUnique": false
+        },
+        "user_lists_fork": {
+          "name": "user_lists_fork",
+          "columns": [
+            "forked_from"
+          ],
+          "isUnique": false
+        },
+        "user_lists_public": {
+          "name": "user_lists_public",
+          "columns": [
+            "visibility",
+            "updated_at"
+          ],
+          "isUnique": false
         }
       },
       "foreignKeys": {},
@@ -4464,7 +4479,15 @@
           "default": 0
         }
       },
-      "indexes": {},
+      "indexes": {
+        "ai_usage_user": {
+          "name": "ai_usage_user",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "ai_usage_day_user_id_kind_pk": {
@@ -4696,6 +4719,14 @@
           "autoincrement": false,
           "default": "''"
         },
+        "tag": {
+          "name": "tag",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
         "hidden": {
           "name": "hidden",
           "type": "integer",
@@ -4740,6 +4771,15 @@
         "solution_posts_time": {
           "name": "solution_posts_time",
           "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        },
+        "solution_posts_tag": {
+          "name": "solution_posts_tag",
+          "columns": [
+            "problem_id",
+            "tag",
             "created_at"
           ],
           "isUnique": false
@@ -4878,6 +4918,55 @@
           "notNull": true,
           "autoincrement": false,
           "default": "'[]'"
+        },
+        "difficulty": {
+          "name": "difficulty",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "sentiment": {
+          "name": "sentiment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "channel": {
+          "name": "channel",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "employment": {
+          "name": "employment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "season": {
+          "name": "season",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "location": {
+          "name": "location",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "duration_weeks": {
+          "name": "duration_weeks",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         },
         "status": {
           "name": "status",
@@ -5172,6 +5261,187 @@
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "user_drafts": {
+      "name": "user_drafts",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "problem_id": {
+          "name": "problem_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "language": {
+          "name": "language",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "coding_mode": {
+          "name": "coding_mode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "user_drafts_user_time": {
+          "name": "user_drafts_user_time",
+          "columns": [
+            "user_id",
+            "updated_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "user_drafts_user_id_problem_id_language_coding_mode_pk": {
+          "columns": [
+            "user_id",
+            "problem_id",
+            "language",
+            "coding_mode"
+          ],
+          "name": "user_drafts_user_id_problem_id_language_coding_mode_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "point_ledger": {
+      "name": "point_ledger",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "delta": {
+          "name": "delta",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "ref_id": {
+          "name": "ref_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "point_ledger_once": {
+          "name": "point_ledger_once",
+          "columns": [
+            "user_id",
+            "reason",
+            "ref_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "user_follows": {
+      "name": "user_follows",
+      "columns": {
+        "follower_id": {
+          "name": "follower_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "followee_id": {
+          "name": "followee_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "user_follows_followee": {
+          "name": "user_follows_followee",
+          "columns": [
+            "followee_id",
+            "created_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "user_follows_follower_id_followee_id_pk": {
+          "columns": [
+            "follower_id",
+            "followee_id"
+          ],
+          "name": "user_follows_follower_id_followee_id_pk"
+        }
+      },
       "uniqueConstraints": {},
       "checkConstraints": {}
     }

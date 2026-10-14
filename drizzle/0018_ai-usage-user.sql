@@ -1,1 +1,0 @@
-CREATE INDEX `ai_usage_user` ON `ai_usage` (`user_id`);
