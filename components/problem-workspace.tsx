@@ -338,6 +338,7 @@ function Workspace({
         ? t('语言服务待启动', 'Language service not started')
         : say(intelligence.message);
   const suggest = useRef<(() => void) | null>(null);
+  const format = useRef<(() => void) | null>(null);
   const runButton = useRef<HTMLButtonElement>(null);
   const [leftTab, setLeftTab] = useState<
     'statement' | 'history' | 'editorial' | 'notes' | 'solutions'
@@ -1851,6 +1852,19 @@ function Workspace({
           >
             {t('触发补全', 'Autocomplete')}
           </button>
+          {language !== 'sql' && (
+            <button
+              title={t(
+                '用语言服务格式化代码（Shift + Alt + F）',
+                'Format the code with the language service (Shift + Alt + F)',
+              )}
+              className="cs-suggest-trigger"
+              disabled={!ready || intelligence.state === 'unavailable'}
+              onClick={() => format.current?.()}
+            >
+              {t('格式化', 'Format')}
+            </button>
+          )}
         </div>
       </div>
       <Group
@@ -1870,6 +1884,9 @@ function Workspace({
                   onIntelligenceStatus={setIntelligence}
                   onSuggestReady={(action) => {
                     suggest.current = action;
+                  }}
+                  onFormatReady={(action) => {
+                    format.current = action;
                   }}
                   onChange={updateCode}
                   path={`cswork://draft/${encodeURIComponent(userId)}/${problem.id}/${codingMode}/${editorFile}`}
@@ -2574,6 +2591,7 @@ function Workspace({
                 ),
               ],
               [t('参数提示', 'Parameter hints'), 'Ctrl / ⌘ + Shift + Space'],
+              [t('格式化代码', 'Format code'), 'Shift + Alt / ⌥ + F'],
               [t('查找', 'Find'), 'Ctrl / ⌘ + F'],
               [t('命令面板', 'Command palette'), 'F1'],
               [t('注释 / 取消注释', 'Toggle comment'), 'Ctrl / ⌘ + /'],

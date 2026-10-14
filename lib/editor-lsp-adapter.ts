@@ -7,6 +7,7 @@ import type {
   MarkupContent,
   Range,
   SignatureHelp,
+  TextEdit,
 } from 'vscode-languageserver-protocol';
 
 export type MonacoRuntime = typeof Monaco;
@@ -198,6 +199,14 @@ export function signature(
     },
     dispose() {},
   };
+}
+
+/** Format Document edits; the broker already dropped anything but plain text edits. */
+export function textEdits(result: TextEdit[] | null): Monaco.languages.TextEdit[] {
+  return (result ?? []).map((edit) => ({
+    range: range(edit.range),
+    text: edit.newText,
+  }));
 }
 
 export function markers(

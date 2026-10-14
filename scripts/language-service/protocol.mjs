@@ -31,7 +31,11 @@ export const ACTIONS = Object.freeze({
   hover: 'textDocument/hover',
   signature: 'textDocument/signatureHelp',
   diagnostics: null,
+  // Python has no LSP formatter here: the broker pipes the document through ruff instead.
+  format: 'textDocument/formatting',
 });
+/** Actions that act on the whole document and take no cursor position. */
+const WHOLE_DOCUMENT = new Set(['diagnostics', 'format']);
 export class BrokerError extends Error {
   constructor(status, message) {
     super(message);
@@ -65,7 +69,7 @@ export function validateRequest(body) {
     throw new BrokerError(413, 'Code exceeds 65536 bytes');
   if (!Number.isSafeInteger(body.version) || body.version < 1)
     throw new BrokerError(400, 'Invalid document version');
-  if (body.action !== 'diagnostics') {
+  if (!WHOLE_DOCUMENT.has(body.action)) {
     const p = body.position;
     const lines = body.code.split('\n');
     if (
@@ -86,6 +90,11 @@ export function validateRequest(body) {
       Buffer.byteLength(body.cppContext) > 32768)
   )
     throw new BrokerError(400, 'Invalid C++ context');
+  if (
+    body.tabSize !== undefined &&
+    (body.action !== 'format' || ![2, 4].includes(body.tabSize))
+  )
+    throw new BrokerError(400, 'Invalid tab size');
   const allowed = new Set([
     'ownerId',
     'documentId',
@@ -95,6 +104,7 @@ export function validateRequest(body) {
     'action',
     'position',
     'cppContext',
+    'tabSize',
   ]);
   if (Object.keys(body).some((k) => !allowed.has(k)))
     throw new BrokerError(400, 'Unknown request field');
@@ -169,8 +179,67 @@ const completionFields = [
   'tags',
   'preselect',
 ];
+/**
+ * `ruff format -` inside the session's own container (networkless, read-only, same user):
+ * source arrives on stdin, formatted source leaves on stdout. Nothing touches the host.
+ */
+export function pythonFormatArguments(name, tabSize = 4) {
+  if (![2, 4].includes(tabSize)) throw new BrokerError(400, 'Invalid tab size');
+  return [
+    'exec',
+    '--interactive',
+    '--user',
+    '10001:10001',
+    name,
+    'ruff',
+    'format',
+    '--no-cache',
+    '--config',
+    `indent-width = ${tabSize}`,
+    '--stdin-filename',
+    'main.py',
+    '-',
+  ];
+}
+/** One edit replacing the whole document, or none when nothing changed. */
+export function wholeDocumentEdit(code, formatted) {
+  if (formatted === code) return [];
+  const lines = code.split('\n');
+  return [
+    {
+      range: {
+        start: { line: 0, character: 0 },
+        end: { line: lines.length - 1, character: lines.at(-1).length },
+      },
+      newText: formatted,
+    },
+  ];
+}
+
 // Never forward server commands, opaque data, workspace edits, or arbitrary file URIs.
 export function safeResult(action, result) {
+  if (action === 'format') {
+    const edits = Array.isArray(result) ? result : [];
+    // A formatter answers with plain text edits; anything else (or too many) is dropped whole.
+    if (
+      edits.length > 5000 ||
+      edits.some(
+        (e) =>
+          typeof e?.newText !== 'string' ||
+          ![e.range?.start, e.range?.end].every(
+            (p) => Number.isSafeInteger(p?.line) && Number.isSafeInteger(p?.character),
+          ),
+      )
+    )
+      return [];
+    return edits.map((e) => ({
+      range: {
+        start: { line: e.range.start.line, character: e.range.start.character },
+        end: { line: e.range.end.line, character: e.range.end.character },
+      },
+      newText: e.newText,
+    }));
+  }
   if (action === 'completion') {
     const items = Array.isArray(result) ? result : result?.items || [];
     const filtered = items

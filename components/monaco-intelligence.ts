@@ -4,6 +4,7 @@ import type {
   CompletionList,
   Hover,
   SignatureHelp,
+  TextEdit,
 } from 'vscode-languageserver-protocol';
 import type { Language } from '@/lib/problems';
 import type {
@@ -16,6 +17,7 @@ import {
   hover,
   signature,
   markers,
+  textEdits,
 } from '@/lib/editor-lsp-adapter';
 import { readLocale } from '@/lib/i18n';
 
@@ -25,6 +27,7 @@ type Connection = {
     action: IntelligenceAction,
     position?: Monaco.Position,
     token?: Monaco.CancellationToken,
+    tabSize?: number,
   ) => Promise<IntelligenceResponse | null>;
 };
 const connections = new WeakMap<Monaco.editor.ITextModel, Connection>();
@@ -70,6 +73,21 @@ function register(monaco: Runtime) {
           : null;
       },
     });
+    // Format Document (Shift+Alt+F, the toolbar button): gopls, clangd, JDT LS, ruff.
+    monaco.languages.registerDocumentFormattingEditProvider(language, {
+      displayName: 'CSWork',
+      async provideDocumentFormattingEdits(model, options, token) {
+        const response = await connections
+          .get(model)
+          ?.request(
+            'format',
+            undefined,
+            token,
+            options.tabSize === 2 ? 2 : 4,
+          );
+        return response ? textEdits(response.result as TextEdit[] | null) : [];
+      },
+    });
   }
 }
 
@@ -97,7 +115,7 @@ export function attachIntelligence(
   let queue: Promise<unknown> = Promise.resolve();
   const controllers = new Set<AbortController>();
   const connection: Connection = {
-    request(action, position, token) {
+    request(action, position, token, tabSize) {
       const version = model.getVersionId();
       const code = model.getValue();
       const work = async (): Promise<IntelligenceResponse | null> => {
@@ -127,6 +145,7 @@ export function attachIntelligence(
               code,
               version,
               action,
+              ...(tabSize ? { tabSize } : {}),
               ...(position
                 ? {
                     position: {
@@ -142,7 +161,11 @@ export function attachIntelligence(
             ]),
           });
           const result = await response.json();
-          if (!response.ok) throw new Error(result.error || '语言服务暂不可用');
+          if (!response.ok)
+            throw Object.assign(
+              new Error(result.error || '语言服务暂不可用'),
+              { status: response.status },
+            );
           if (
             disposed ||
             model.isDisposed() ||
@@ -186,6 +209,14 @@ export function attachIntelligence(
           }
           return result as IntelligenceResponse;
         } catch (error) {
+          // Code the formatter can't parse: the service itself is fine.
+          if (
+            action === 'format' &&
+            (error as { status?: number }).status === 422
+          ) {
+            if (!disposed) status({ state: 'ready', message: (error as Error).message });
+            return null;
+          }
           if (
             !disposed &&
             !controller.signal.aborted &&

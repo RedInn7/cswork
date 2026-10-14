@@ -14,6 +14,8 @@ case "$1" in
     ;;
   cpp)
     printf '%s\n' '-std=c++20' '-Wall' '-Wextra' > /workspace/compile_flags.txt
+    # Format Document follows the editor's default 4-space indent instead of LLVM's 2.
+    printf '%s\n' 'BasedOnStyle: LLVM' 'IndentWidth: 4' 'ColumnLimit: 100' > /workspace/.clang-format
     if [ -n "${CSWORK_CPP_CONTEXT:-}" ]; then
       printf '%s' "$CSWORK_CPP_CONTEXT" | base64 -d > /workspace/leetcode.hpp
       printf '%s\n' '-include' '/workspace/leetcode.hpp' >> /workspace/compile_flags.txt

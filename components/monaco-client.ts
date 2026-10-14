@@ -14,6 +14,8 @@ import 'monaco-editor/editor/contrib/contextmenu/browser/contextmenu.js';
 import 'monaco-editor/editor/contrib/cursorUndo/browser/cursorUndo.js';
 import 'monaco-editor/editor/browser/widget/diffEditor/diffEditor.contribution.js';
 import 'monaco-editor/editor/contrib/folding/browser/folding.js';
+// Format Document (Shift+Alt+F); the providers come from monaco-intelligence.ts.
+import 'monaco-editor/editor/contrib/format/browser/formatActions.js';
 import 'monaco-editor/editor/contrib/fontZoom/browser/fontZoom.js';
 import 'monaco-editor/features/find/register.js';
 import 'monaco-editor/editor/contrib/find/browser/findController.js';
