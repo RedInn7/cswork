@@ -139,7 +139,11 @@ export function TopicView({ stop, zh }: { stop: TopicStop; zh: boolean }) {
           description,
           url: `${SITE_URL}${topicPath(stop.slug)}`,
           inLanguage: zh ? 'zh-CN' : 'en',
-          programmingLanguage: TEMPLATE_LANGS.map(([, label]) => label),
+          hasPart: TEMPLATE_LANGS.map(([, label]) => ({
+            '@type': 'SoftwareSourceCode',
+            programmingLanguage: label,
+            codeSampleType: 'template',
+          })),
           isPartOf: { '@type': 'CollectionPage', url: `${SITE_URL}/topics` },
         })}
       />
@@ -163,7 +167,11 @@ export function TopicView({ stop, zh }: { stop: TopicStop; zh: boolean }) {
           </p>
         </div>
         <a className="topics-cta" href={line500Path(stop.slug)}>
-          {t(`去 500 路练这一站 · ${stop.problems} 题`, `Practise this stop · ${stop.problems} problems`)}
+          {/* ponytail: the Line 500 list does not read ?section= yet, so the label points at the stop number instead of promising a filter. */}
+          {t(
+            `打开 500 路题单 · 第 ${stop.no} 站 · ${stop.problems} 题`,
+            `Open the Line 500 list · stop ${stop.no} · ${stop.problems} problems`,
+          )}
           <span aria-hidden="true">→</span>
         </a>
       </header>

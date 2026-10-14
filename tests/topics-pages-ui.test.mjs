@@ -50,13 +50,16 @@ test('a stop page shows points, pitfalls, four languages with one open, and link
     assert.ok(details.map((d) => d.querySelector('summary').textContent).join() === 'Python,C++,Java,Go');
     // Scrollable code is keyboard-focusable and labelled; comments are dimmed, code is intact.
     const pres = [...doc.querySelectorAll('pre.topics-pre')];
-    assert.ok(pres.every((p) => p.getAttribute('tabindex') === '0' && p.getAttribute('aria-label')));
+    // role=region: aria-label is ignored on a bare <pre> (implicit role generic).
+    assert.ok(
+      pres.every((p) => p.getAttribute('tabindex') === '0' && p.getAttribute('role') === 'region' && p.getAttribute('aria-label')),
+    );
     assert.ok(pres[0].textContent === stop.code.python);
     assert.ok(pres[3].textContent === stop.code.go);
     assert.ok(doc.querySelectorAll('.topics-comment').length > 0);
     const cta = doc.querySelector('a.topics-cta');
     assert.ok(cta.getAttribute('href') === '/?view=problems&section=binary-search');
-    assert.ok(cta.textContent.includes(String(stop.problems)));
+    assert.ok(cta.textContent.includes(String(stop.problems)) && cta.textContent.includes(stop.no));
     // The complexity badge is in the page language, not English on the zh page.
     const badge = doc.querySelector('.topics-complexity').textContent;
     assert.ok(badge === (zh ? stop.complexity.zh : stop.complexity.en));
@@ -67,6 +70,9 @@ test('a stop page shows points, pitfalls, four languages with one open, and link
     assert.equal(crumbs.itemListElement.length, 3);
     assert.ok(crumbs.itemListElement[2].item === 'https://cswork.org/topics/binary-search');
     assert.equal(article['@type'], 'TechArticle');
+    // programmingLanguage belongs to SoftwareSourceCode, not TechArticle.
+    assert.ok(!('programmingLanguage' in article));
+    assert.ok(article.hasPart.map((part) => part.programmingLanguage).join() === 'Python,C++,Java,Go');
     assert.ok(article.description === topicCopy(stop, zh).description);
   }
 });
