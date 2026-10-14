@@ -10,7 +10,7 @@ import '@/app/ai-tutor.css';
 
 type Kind = 'hint' | 'review';
 type Reply = { id: number; kind: Kind; text: string };
-type Answer = { kind: Kind; text: string; remaining: number; limit: number };
+type Answer = { kind: Kind; text: string; remaining: number; limit: number; bonus?: number };
 
 /**
  * The tutor's memory, kept by the workspace like the hint ladder's: switching tabs unmounts
@@ -22,15 +22,21 @@ export function useAiTutor(problemId: string) {
   const [busy, setBusy] = useState<Kind | null>(null);
   const [error, setError] = useState('');
   // Calls left today, from the server; unknown (no number shown) until it answers.
-  const [left, setLeft] = useState<Record<Kind, number | null>>({ hint: null, review: null });
+  // bonus: calls bought with points (either kind), used once today's run out.
+  const [left, setLeft] = useState<Record<Kind | 'bonus', number | null>>({ hint: null, review: null, bonus: null });
   const next = useRef(0);
   const loaded = useRef(false);
   const load = useCallback(() => {
     if (loaded.current) return;
     loaded.current = true;
-    ojRequest<Record<Kind, number>>('ai/usage').then(
+    ojRequest<Record<Kind | 'bonus', number>>('ai/usage').then(
       // A call that answered first already knows better.
-      (fresh) => setLeft((counts) => ({ hint: counts.hint ?? fresh.hint, review: counts.review ?? fresh.review })),
+      (fresh) =>
+        setLeft((counts) => ({
+          hint: counts.hint ?? fresh.hint,
+          review: counts.review ?? fresh.review,
+          bonus: counts.bonus ?? fresh.bonus ?? 0,
+        })),
       () => {},
     );
   }, []);
@@ -54,7 +60,7 @@ export function useAiTutor(problemId: string) {
             .map((r) => r.text),
         });
         setReplies((list) => [...list, { id: ++next.current, kind, text: answer.text }]);
-        setLeft((counts) => ({ ...counts, [kind]: answer.remaining }));
+        setLeft((counts) => ({ ...counts, [kind]: answer.remaining, bonus: answer.bonus ?? counts.bonus }));
       } catch (caught) {
         const failure = caught as Error & { status?: number | string };
         const message =
@@ -65,7 +71,7 @@ export function useAiTutor(problemId: string) {
             : failure.message;
         setError(context.english ? englishMessage(message) : message);
         // Out of today's quota: say so on the button too.
-        if (failure.status === 429) setLeft((counts) => ({ ...counts, [kind]: 0 }));
+        if (failure.status === 429) setLeft((counts) => ({ ...counts, [kind]: 0, bonus: 0 }));
       } finally {
         setBusy(null);
       }
@@ -102,7 +108,8 @@ export function AiTutor({
   const count = (kind: Kind) => {
     const n = left[kind];
     if (n === null) return null;
-    return <span className="cs-ai-tutor-count">{english ? `${n} left today` : `今天还剩 ${n} 次`}</span>;
+    const extra = left.bonus ? (english ? ` · +${left.bonus} bought` : ` · 另有兑换 ${left.bonus} 次`) : '';
+    return <span className="cs-ai-tutor-count">{english ? `${n} left today${extra}` : `今天还剩 ${n} 次${extra}`}</span>;
   };
   return (
     <section
@@ -157,7 +164,7 @@ export function AiTutor({
       <div className="cs-ai-tutor-actions">
         <button
           type="button"
-          disabled={busy !== null || left.hint === 0}
+          disabled={busy !== null || (left.hint === 0 && !left.bonus)}
           onClick={() => void ask('hint', context)}
         >
           {busy === 'hint' ? (
@@ -175,7 +182,7 @@ export function AiTutor({
         <button
           type="button"
           data-primary={accepted || undefined}
-          disabled={busy !== null || left.review === 0 || !code.trim()}
+          disabled={busy !== null || (left.review === 0 && !left.bonus) || !code.trim()}
           onClick={() => void ask('review', context)}
         >
           {busy === 'review' ? (

@@ -2433,6 +2433,7 @@ function Workspace({
           }
           seconds={solveSeconds}
           activity={boot.activity}
+          bought={boot.purchasedFreezes}
           fallbackNext={neighbors.next}
           english={uiEnglish}
           navigate={navigate}
@@ -2748,6 +2749,7 @@ function AcceptedDialog({
   runtimeMs,
   seconds,
   activity,
+  bought,
   fallbackNext,
   english,
   navigate,
@@ -2762,6 +2764,8 @@ function AcceptedDialog({
   acceptedAt: number;
   seconds: number | null;
   activity?: Activity[];
+  /** Streak freezes bought with points (bootstrap purchasedFreezes). */
+  bought?: number[];
   fallbackNext?: string;
   english: boolean;
   navigate: WorkspaceProps['navigate'];
@@ -2792,8 +2796,11 @@ function AcceptedDialog({
         ],
         new Date(now).toDateString(),
         english,
+        [],
+        undefined,
+        bought,
       ),
-    [activity, problemId, acceptedAt, now, english],
+    [activity, problemId, acceptedAt, now, english, bought],
   );
   // Aggregates only (lib/server/problem-stats.ts); null below its sample floors.
   const [standing, setStanding] = useState<Partial<Standing> | null>(null);
@@ -2890,7 +2897,7 @@ function AcceptedDialog({
               )}
             </p>
           )}
-          <AcceptedExtras problemId={problemId} acceptedAt={acceptedAt} activity={activity} english={english} />
+          <AcceptedExtras problemId={problemId} acceptedAt={acceptedAt} activity={activity} bought={bought} english={english} />
           <Button
             ref={primary}
             size="lg"

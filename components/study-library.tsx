@@ -170,10 +170,13 @@ export function StudyLibrary({
   signedIn = false,
   userId,
   daily,
+  purchasedFreezes,
 }: {
   navigate: Navigate;
   availableProblemIds: string[];
   activity?: { problem_id: string; created_at: number }[];
+  /** Streak freezes bought with points, from the bootstrap. */
+  purchasedFreezes?: number[];
   /** Today's problem from the bootstrap. */
   daily?: DailyProblem | null;
   signedIn?: boolean;
@@ -228,7 +231,7 @@ export function StudyLibrary({
   const [copyMessage, setCopyMessage] = useState('');
   const detailHeading = useRef<HTMLHeadingElement>(null);
   const t = (zh: string, en: string) => (english ? en : zh);
-  const stats = usePracticeStats(activity, english, daily?.done);
+  const stats = usePracticeStats(activity, english, daily?.done, purchasedFreezes);
   // The daily streak's "now"; shown only after mount (with stats), so SSR never reads it.
   const [openedAt] = useState(Date.now);
   // Per-device preferences: a folded line and the sprint plan, whose daily

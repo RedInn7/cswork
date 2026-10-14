@@ -7,6 +7,7 @@ import { auditStatement, HttpError, json, limit } from './http';
 import { maskName } from './judge-feed';
 import { publicProblem, requireVerified } from './learner-cloud';
 import { readJson } from './my-practice';
+import { awardUpvote } from './points';
 
 /**
  * Community solutions per problem and their comments (db/solution-posts-schema.ts).
@@ -286,13 +287,13 @@ export async function handleSolutionPosts(request: Request, p: Person, path: str
       const { on } = z.object({ on: z.boolean() }).strict().parse(await readJson(request, 200));
       const post = await openPost(p, target);
       if (post.userId === p.id) throw new HttpError(400, '不能给自己的题解投票');
-      if (on)
-        db.prepare('INSERT INTO post_votes(post_id,user_id,created_at) VALUES(?,?,?) ON CONFLICT DO NOTHING').run(
-          target,
-          p.id,
-          now,
-        );
-      else db.prepare('DELETE FROM post_votes WHERE post_id=? AND user_id=?').run(target, p.id);
+      if (on) {
+        const { changes } = db
+          .prepare('INSERT INTO post_votes(post_id,user_id,created_at) VALUES(?,?,?) ON CONFLICT DO NOTHING')
+          .run(target, p.id, now);
+        // Once per voter and post, ever: un-voting and voting again pays nothing more.
+        if (changes) awardUpvote(post.userId, p, target, now);
+      } else db.prepare('DELETE FROM post_votes WHERE post_id=? AND user_id=?').run(target, p.id);
       const { votes } = db.prepare('SELECT COUNT(*) AS votes FROM post_votes WHERE post_id=?').get(target) as {
         votes: number;
       };

@@ -35,6 +35,7 @@ import {
   similarProblems,
 } from './study-library';
 import { lcRating } from './lc-ratings';
+import { awardAccepted, handlePoints } from './points';
 import { classicList } from '@/lib/classic-lists';
 import { requireCourseOwner } from './course-visibility';
 import {
@@ -63,12 +64,28 @@ import {
   waitForSubmission,
   settleSubmission,
   submissionHistory,
+  submissionRow,
   failedJudgeIds,
   cancelSubmission,
   ojStatus,
   MAX_CODE_BYTES,
   MAX_STDIN_BYTES,
 } from './oj-submissions';
+/**
+ * Points for an accepted formal submission whenever its verdict reaches a client (submit,
+ * watch or detail): idempotent, so every path may call it; a failure never costs the verdict.
+ * Kept here, not in oj-submissions, so the judge worker bundle stays free of it.
+ */
+async function withPoints<T extends { id: string; status: string; mode: string }>(detail: T) {
+  if (detail.status === 'accepted' && detail.mode === 'judge') {
+    const row = submissionRow(detail.id);
+    if (row)
+      await awardAccepted(row).catch((error: unknown) =>
+        console.error('points', error instanceof Error ? error.name : 'unknown'),
+      );
+  }
+  return detail;
+}
 export async function handleOj(
   request: Request,
   p: Person | null,
@@ -162,6 +179,7 @@ export async function handleOj(
     return handleMyPractice(request, p, resource);
   if (resource === 'ai' && (id === 'hint' || id === 'review' || id === 'usage') && !action)
     return handleAiTutor(request, p, id);
+  if (resource === 'points' && !action) return handlePoints(request, p, id);
   if (request.method === 'GET') {
     if (resource === 'library') {
       await limit(p, 'library-read', 120);
@@ -197,12 +215,12 @@ export async function handleOj(
         await limit(p, 'oj-watch', 360);
         const after = url.searchParams.get('after') || '';
         if (after.length > 160) throw new HttpError(400, '无效的进度标记');
-        return json(await waitForSubmission(p, id, after, request.signal));
+        return json(await withPoints(await waitForSubmission(p, id, after, request.signal)));
       }
       await limit(p, 'oj-read', 240);
       return json(
         id
-          ? await submissionDetail(p, id)
+          ? await withPoints(await submissionDetail(p, id))
           : submissionHistory(
               p,
               url.searchParams.get('problemId'),
@@ -259,7 +277,7 @@ export async function handleOj(
     // idempotent replays, after briefly waiting for a fast verdict. Clients
     // watch slower ones without a detail GET; hidden case inputs/outputs never
     // enter the response.
-    return json(await settleSubmission(p, created.id, request.signal), 201);
+    return json(await withPoints(await settleSubmission(p, created.id, request.signal)), 201);
   }
   if (resource === 'admin' && id === 'problems') {
     requireTeacher(p);

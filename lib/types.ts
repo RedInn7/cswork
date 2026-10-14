@@ -79,6 +79,8 @@ export type Boot = {
   progress: Progress[];
   submissions: Submission[];
   activity?: { problem_id: string; created_at: number }[];
+  /** When this learner bought streak freezes with points (lib/server/points.ts). */
+  purchasedFreezes?: number[];
   /** Today's problem, the same for everyone (lib/daily-problem.ts). */
   daily?: DailyProblem | null;
   notifications: Notification[];

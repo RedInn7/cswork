@@ -8,6 +8,7 @@ import { companyPractice } from './company-hub';
 import { auditStatement, HttpError, json, limit, requirePerson, requireTeacher } from './http';
 import { monthKey, recentSince, reportCompanies } from './learner-cloud';
 import { readJson } from './my-practice';
+import { settleExperience } from './points';
 import { publicLibraryDescription } from './public-library';
 import type Database from 'better-sqlite3';
 
@@ -418,6 +419,8 @@ export async function submitExperience(p: Person, input: unknown, now = Date.now
 /** The author takes a post down for good, whatever its status. */
 function withdraw(p: Person, id: string) {
   const db = sqlite();
+  // A withdrawn report takes its points with it (settled while the row still names the author).
+  if (db.prepare('SELECT 1 FROM experience_submissions WHERE id=? AND user_id=?').get(id, p.id)) settleExperience(id, false);
   const gone = db.transaction(() => {
     const { changes } = db.prepare('DELETE FROM experience_submissions WHERE id=? AND user_id=?').run(id, p.id);
     if (changes) db.prepare('DELETE FROM experience_flags WHERE submission_id=?').run(id);
@@ -444,6 +447,9 @@ function flag(p: Person, id: string, input: unknown) {
       ON CONFLICT(submission_id,user_id) DO UPDATE SET reason=excluded.reason,note=excluded.note`,
     )
     .run(id, p.id, d.reason, d.note, Date.now());
+  // Reported down (FLAGS_HIDE readers): the author's points for it go back until a teacher re-approves.
+  const flags = sqlite().prepare('SELECT COUNT(*) FROM experience_flags WHERE submission_id=?').pluck().get(id) as number;
+  if (flags >= FLAGS_HIDE) settleExperience(id, false);
   return { id, flagged: true };
 }
 
@@ -499,6 +505,7 @@ function review(p: Person, id: string, input: unknown) {
     return changes;
   })();
   if (!done) throw new HttpError(404, '内容不存在');
+  settleExperience(id, d.status === 'approved');
   auditStatement(p, `experience.${d.status}`, id).run();
   return reviewQueue();
 }

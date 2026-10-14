@@ -79,7 +79,7 @@ export function MyProgress({
   const [result, setResult] = useState('');
   const [period, setPeriod] = useState('');
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
-  const stats = usePracticeStats(boot.activity ?? [], english, boot.daily?.done);
+  const stats = usePracticeStats(boot.activity ?? [], english, boot.daily?.done, boot.purchasedFreezes);
   // Line 500's daily target, read only: the trip itself lives on the bank page.
   // This view only renders after the client bootstrap, so storage is safe here.
   const [target] = useState(() => {

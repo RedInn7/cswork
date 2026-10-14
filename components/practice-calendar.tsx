@@ -37,6 +37,7 @@ const WEEKS = 26; // The server sends 183 days of activity to cover the grid.
 const DAY = 86400000;
 /** Streak freezes each calendar month; used up automatically, oldest gap first. */
 export const FREEZES_PER_MONTH = 2;
+// Freezes bought with points (bootstrap purchasedFreezes) add to the month they were bought in.
 
 function dayKey(time: number) {
   const d = new Date(time);
@@ -57,6 +58,7 @@ const monthOf = (time: number) => {
  * `dayStamp` is `Date#toDateString()` of the local day the grid ends on. A day with no
  * AC between two AC days spends one of the month's streak freezes and keeps the streak
  * (it adds no day to it). `daily`: times the daily problem was solved, starred cells.
+ * `bought`: when freezes were bought with points; each adds one to its local month.
  */
 export function practiceStats(
   activity: readonly Activity[],
@@ -64,7 +66,10 @@ export function practiceStats(
   english: boolean,
   daily: readonly number[] = [],
   weeks = WEEKS,
+  bought: readonly number[] = [],
 ): PracticeStats {
+  const allowance = (month: number) =>
+    FREEZES_PER_MONTH + bought.filter((time) => monthOf(time) === month).length;
   const solvedByDay = new Map<string, Set<string>>();
   for (const { problem_id, created_at } of activity) {
     const key = dayKey(created_at);
@@ -92,7 +97,7 @@ export function practiceStats(
     const time = noon(i);
     const month = monthOf(time);
     const spent = used.get(month) ?? 0;
-    if (!count(time) && count(time - DAY) && count(time + DAY) && spent < FREEZES_PER_MONTH) {
+    if (!count(time) && count(time - DAY) && count(time + DAY) && spent < allowance(month)) {
       used.set(month, spent + 1);
       frozen.add(dayKey(time));
     }
@@ -131,7 +136,7 @@ export function practiceStats(
     !count(day) &&
     day < noon(todayIndex) &&
     count(day - DAY) > 0 &&
-    (used.get(monthOf(day)) ?? 0) < FREEZES_PER_MONTH;
+    (used.get(monthOf(day)) ?? 0) < allowance(monthOf(day));
   if (rescue) day -= DAY;
   while (count(day) > 0 || frozen.has(dayKey(day))) {
     if (count(day)) streak++;
@@ -146,7 +151,7 @@ export function practiceStats(
     today: cells[todayIndex].count,
     total: seen.size,
     todayIndex,
-    freezesLeft: FREEZES_PER_MONTH - (used.get(monthOf(noon(todayIndex))) ?? 0),
+    freezesLeft: allowance(monthOf(noon(todayIndex))) - (used.get(monthOf(noon(todayIndex))) ?? 0),
     rescue,
   };
 }
@@ -160,6 +165,7 @@ export function usePracticeStats(
   activity: readonly Activity[],
   english: boolean,
   daily?: readonly number[],
+  bought?: readonly number[],
 ) {
   const [dayStamp, setDayStamp] = useState<string | null>(null);
   useEffect(() => {
@@ -170,8 +176,8 @@ export function usePracticeStats(
   }, []);
   return useMemo(
     () =>
-      dayStamp === null ? null : practiceStats(activity, dayStamp, english, daily),
-    [activity, dayStamp, english, daily],
+      dayStamp === null ? null : practiceStats(activity, dayStamp, english, daily, WEEKS, bought),
+    [activity, dayStamp, english, daily, bought],
   );
 }
 
