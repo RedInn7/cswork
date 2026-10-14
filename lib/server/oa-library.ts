@@ -9,6 +9,7 @@ import {
   oaCompanyPath,
   oaProblemPath,
 } from '@/lib/oa-company-brands';
+import { TOPIC_NAMES } from '@/lib/route-stops';
 import type { SitemapEntry } from '@/lib/seo';
 import type { Person } from './auth';
 import { hiddenCompanies } from './env';
@@ -18,6 +19,7 @@ import {
   oaReadyProblems,
   oaVerifiedStatement,
 } from './oa-judge';
+import { oaDifficulty, oaTopic, type OaTopic } from './oa-topics';
 
 const slug = z
   .string()
@@ -79,11 +81,14 @@ const stripeStageHashes: Readonly<Record<string, string>> = {
 const stripeCombinedHash =
   '8edcfc526cb4ae5bdd1fd560c5f28fd90879d1108530ddb7f2b1e18a08d6f585';
 type Company = { slug: string; name: string };
+type TopicOf = (id: string) => OaTopic | undefined;
 function summary(
   item: Item,
   company: Company,
-  ready: ReadonlySet<string> = new Set(),
+  ready: ReadonlySet<string>,
+  topicOf: TopicOf,
 ) {
+  const topic = topicOf(item.id);
   // Explicit projection: titles/languages only, never statements or reference code.
   return {
     id: item.id,
@@ -97,6 +102,9 @@ function summary(
       ? ('ready' as const)
       : ('reading_only' as const),
     ...(ready.has(item.id) ? { judgeProblemId: item.id } : {}),
+    // AI-estimated topics, most important first; non-coding questions say what they are.
+    topics: topic?.t ?? [],
+    ...(topic && topic.k !== 'coding' && { kind: topic.k }),
   };
 }
 
@@ -110,9 +118,12 @@ export function createOaLibrary(
       explanation: string;
       solutions: { language: string; code: string }[];
     };
+    /** Topic estimates per problem; lib/content/oa-topics.json by default. */
+    topics?: TopicOf;
   } = {},
 ) {
   const catalog = schema.parse(input);
+  const topicOf = options.topics ?? oaTopic;
   const companies = new Map(
     catalog.companies.map((company) => [company.slug, company]),
   );
@@ -196,7 +207,7 @@ export function createOaLibrary(
             company,
             items: shown.items
               .filter((item) => employer(item).slug === slug)
-              .map((item) => summary(item, company, ready)),
+              .map((item) => summary(item, company, ready, topicOf)),
           }
         : undefined;
     },
@@ -243,7 +254,10 @@ export function createOaLibrary(
       const page = /^\d+$/.test(value)
         ? Math.min(10000, Math.max(1, Number(value)))
         : 1;
-      const found = shown.items.filter(
+      // An unknown topic (an old or mistyped link) filters nothing.
+      const topicParam = params.get('topic') || '';
+      const topic = Object.hasOwn(TOPIC_NAMES, topicParam) ? topicParam : '';
+      const matched = shown.items.filter(
         (item) =>
           (params.get('ready') !== '1' || ready.has(item.id)) &&
           (!company || employer(item).slug === company) &&
@@ -253,15 +267,26 @@ export function createOaLibrary(
               .toLocaleLowerCase()
               .includes(query)),
       );
+      // Topic counts follow every other filter, so each option says what picking it shows.
+      const counts = new Map<string, number>();
+      for (const item of matched)
+        for (const slug of topicOf(item.id)?.t ?? [])
+          counts.set(slug, (counts.get(slug) ?? 0) + 1);
+      const found = topic
+        ? matched.filter((item) => topicOf(item.id)?.t.includes(topic))
+        : matched;
       return {
         items: found
           .slice((page - 1) * 30, page * 30)
-          .map((item) => summary(item, employer(item), ready)),
+          .map((item) => summary(item, employer(item), ready, topicOf)),
         total: found.length,
         page,
         pageSize: 30,
         // `count` is every listed problem, `ready` the practice-ready ones.
         companies: shown.companies,
+        topics: [...counts]
+          .map(([slug, count]) => ({ slug, count }))
+          .sort((a, b) => b.count - a.count || a.slug.localeCompare(b.slug)),
         source: {
           name: 'OA Master',
           url: catalog.source.origin,
@@ -285,7 +310,7 @@ export function createOaLibrary(
             }
           : undefined;
       return {
-        ...summary(item, employer(item), ready),
+        ...summary(item, employer(item), ready, topicOf),
         statement: item.statement,
         contentHash: item.contentHash,
         ...(relatedPractice ? { relatedPractice } : {}),
@@ -358,7 +383,8 @@ export async function handleOaLibrary(
       return {
         ...item,
         ...(meta && {
-          difficulty: meta.difficulty,
+          // The package's default 中等 gives way to the estimate (flagged as such).
+          ...oaDifficulty(item.id, meta.difficulty),
           // Company and the generic OA label are already shown in their own column.
           tags: meta.tags
             .filter((tag) => tag !== 'OA' && tag !== item.companyName)

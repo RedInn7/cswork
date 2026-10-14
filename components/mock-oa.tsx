@@ -30,6 +30,7 @@ import { englishMessage } from '@/lib/messages-en';
 import { ojRequest, verdict } from '@/lib/oj-client';
 import { problemTitle } from '@/lib/problems';
 import { companyInitials, companyLogos } from '@/lib/oa-company-brands';
+import { stopHref, topicName } from '@/lib/route-stops';
 import type { Boot } from '@/lib/types';
 import {
   archiveMock,
@@ -39,8 +40,8 @@ import {
   LADDER,
   mockClock,
   readMockState,
+  reportLevel,
   reportWindow,
-  slotOf,
   watchMockState,
   writeMockState,
   type MockSession,
@@ -64,6 +65,15 @@ type Preset = {
   sections_en: string;
   notes_zh: string;
   notes_en: string;
+  /** Weighted 0–1, heaviest first. */
+  topics: { slug: string; weight: number }[];
+  focus_zh: string;
+  focus_en: string;
+  style_zh: string;
+  style_en: string;
+  tips_zh: string;
+  tips_en: string;
+  evidence: string;
   pool: { oa: number; lc: number; total: number };
 };
 type Presets = {
@@ -101,6 +111,8 @@ type Report = {
     best: QuestionResult | null;
     firstAcceptedMs: number | null;
     pending: boolean;
+    /** An OA problem's estimated difficulty (lib/content/oa-topics.json). */
+    estimate?: Slot | null;
   }[];
   score: { value: number; min: number; max: number; per: number[]; estimate: boolean };
   pending: boolean;
@@ -333,6 +345,7 @@ export function MockOa({
           session={briefing}
           preset={presets?.companies.find((c) => c.slug === briefing.company)}
           boot={boot}
+          navigate={navigate}
           busy={busy === 'redraw'}
           redraw={() => draw('redraw', drawRequest(briefing))}
           cancel={() => {
@@ -651,6 +664,14 @@ function MockLanding({
                       </span>
                     </p>
                     <Stops slots={c.slots} zh={zh} />
+                    <p className="mock-focus" title={zh ? c.focus_zh : c.focus_en}>
+                      {zh ? c.focus_zh : c.focus_en}
+                    </p>
+                    <ul className="mock-topic-chips" aria-label={t('主要考点', 'Main topics')}>
+                      {c.topics.slice(0, 3).map((topic) => (
+                        <li key={topic.slug}>{topicName(topic.slug, zh)}</li>
+                      ))}
+                    </ul>
                     {extra.text && (
                       <p className="mock-extra" title={extra.text}>
                         <b>
@@ -882,10 +903,78 @@ function MockHistory({ history, navigate }: { history: MockSession[]; navigate: 
   );
 }
 
+/** What a company's OA tests: focus, the weighted topics (linked to their Line 500 stops), style and tips. */
+export function MockTopicBrief({ preset, navigate }: { preset: Preset; navigate: Navigate }) {
+  const t = useT(),
+    zh = useLocale() === 'zh';
+  const linked = preset.topics.some((topic) => stopHref(topic.slug));
+  return (
+    <section className="mock-brief" aria-labelledby="mock-brief-title">
+      <h3 id="mock-brief-title">{t('这家 OA 考什么', 'What this OA tests')}</h3>
+      <div className="mock-brief-main">
+        <p className="mock-brief-focus">{zh ? preset.focus_zh : preset.focus_en}</p>
+        <ol className="mock-weights" aria-label={t('考点，按权重排序', 'Topics, heaviest first')}>
+          {preset.topics.map(({ slug, weight }) => {
+            const href = stopHref(slug),
+              name = topicName(slug, zh);
+            return (
+              <li key={slug} style={{ '--w': weight } as React.CSSProperties}>
+                {href ? (
+                  <a
+                    href={href}
+                    onClick={(e) => {
+                      if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                      e.preventDefault();
+                      navigate('problems', { section: slug });
+                    }}
+                  >
+                    {name}
+                  </a>
+                ) : (
+                  <span>{name}</span>
+                )}
+                <i aria-hidden="true" />
+                <span className="sr-only">
+                  {t(`权重 ${Math.round(weight * 100)}%`, `weight ${Math.round(weight * 100)}%`)}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+        {linked && (
+          <p className="mock-brief-hint">
+            {t('点专题名，去 500 路对应的站点专项练习。', 'Pick a topic to practise its stop on Line 500.')}
+          </p>
+        )}
+      </div>
+      <dl className="mock-brief-notes">
+        <div>
+          <dt>{t('题面风格', 'Style')}</dt>
+          <dd>{zh ? preset.style_zh : preset.style_en}</dd>
+        </div>
+        <div>
+          <dt>{t('备考建议', 'Tips')}</dt>
+          <dd>{zh ? preset.tips_zh : preset.tips_en}</dd>
+        </div>
+      </dl>
+      {preset.evidence === 'thin' && (
+        <p className="mock-brief-caveat">
+          <Info size={14} aria-hidden="true" />
+          {t(
+            '这家公司公开的 OA 信息很少，以上内容只作参考。',
+            'There is little public information about this OA, so treat this as a rough guide.',
+          )}
+        </p>
+      )}
+    </section>
+  );
+}
+
 function MockBriefing({
   session,
   preset,
   boot,
+  navigate,
   busy,
   redraw,
   cancel,
@@ -894,6 +983,7 @@ function MockBriefing({
   session: MockSession;
   preset?: Preset;
   boot: Boot;
+  navigate: Navigate;
   busy: boolean;
   redraw: () => void;
   cancel: () => void;
@@ -928,6 +1018,7 @@ function MockBriefing({
           <small>{t('限时', 'TIME LIMIT')}</small>
         </div>
       </div>
+      {preset && <MockTopicBrief preset={preset} navigate={navigate} />}
       <ul className="mock-rules">
         <li>
           <Timer size={16} aria-hidden="true" />
@@ -1134,13 +1225,18 @@ function MockReport({
             const item = data?.items.find((i) => i.id === id);
             const summary = titles.get(id);
             const [state, label] = item ? resultLabel(item, t) : ['todo', '—'];
+            const { level, estimated } = reportLevel(id, summary?.difficulty, item?.estimate, session.slots[index]);
             return (
               <li key={id} data-state={state}>
                 <span className="mock-q">Q{index + 1}</span>
                 <span className="mock-result-title">
                   <strong>{summary ? problemTitle(summary, locale) : id}</strong>
                   <small>
-                    {t(...LEVEL_NAME[slotOf(summary?.difficulty) ?? session.slots[index] ?? 'medium'])}
+                    <span title={estimated ? t('AI 估计的难度', 'AI-estimated difficulty') : undefined}>
+                      {estimated && <span aria-hidden="true">≈</span>}
+                      {estimated && <span className="sr-only">{t('估计', 'Estimated ')}</span>}
+                      {t(...LEVEL_NAME[level])}
+                    </span>
                     {item
                       ? t(` · 提交 ${item.attempts} 次`, ` · ${item.attempts} submission${item.attempts === 1 ? '' : 's'}`)
                       : ''}

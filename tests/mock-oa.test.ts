@@ -9,21 +9,27 @@ import {
   mockExamFor,
   parseMockState,
   questionStates,
+  reportLevel,
   reportWindow,
   scoreMock,
   seededRandom,
   settleMockState,
   summarizeAttempts,
+  topicAffinity,
+  topicDistribution,
+  wholePercents,
   type MockSession,
   type PoolItem,
 } from '../lib/mock-oa';
 import { mockCatalogue, mockPool } from '../lib/server/mock-oa';
 import { mockOaPaths, shownMockPresets } from '../lib/server/mock-oa-presets';
+import { oaDifficulty, oaTopicProfile } from '../lib/server/oa-topics';
 
-const lc = (n: number, difficulty: PoolItem['difficulty']): PoolItem => ({
+const lc = (n: number, difficulty: PoolItem['difficulty'], topics?: string[]): PoolItem => ({
   id: `lc-${n}`,
   difficulty,
-  oa: false,
+  loose: false,
+  ...(topics && { topics }),
 });
 const pool: PoolItem[] = [
   lc(1, 'easy'),
@@ -73,18 +79,80 @@ test('exclusions and solved problems are avoided, but only while the pool allows
   assert.equal(drawMock({ pool, slots: ['easy', 'hard'], exclude: all })!.length, 2);
 });
 
-test('OA problems fit within one difficulty step; a pool smaller than the slots draws nothing', () => {
+test('loose OA labels fit within one difficulty step; a pool smaller than the slots draws nothing', () => {
   const oa: PoolItem[] = [
-    { id: 'oa-acme-1', difficulty: 'medium', oa: true },
-    { id: 'oa-acme-2', difficulty: 'easy', oa: true },
+    { id: 'oa-acme-1', difficulty: 'medium', loose: true },
+    { id: 'oa-acme-2', difficulty: 'easy', loose: true },
   ];
   // The default 中等 OA label fits a hard slot; an OA easy does not.
   for (let seed = 1; seed < 10; seed++)
     assert.deepEqual(drawMock({ pool: oa, slots: ['hard'], random: seededRandom(seed) }), ['oa-acme-1']);
   // An exact LeetCode match beats an OA problem one step away.
   assert.deepEqual(drawMock({ pool: [...oa, lc(9, 'hard')], slots: ['hard'] }), ['lc-9']);
+  // An estimated OA difficulty fits exactly, like LeetCode.
+  const estimated: PoolItem = { id: 'oa-acme-3', difficulty: 'medium', loose: false };
+  for (let seed = 1; seed < 10; seed++)
+    assert.deepEqual(
+      drawMock({ pool: [estimated, lc(7, 'hard')], slots: ['hard'], random: seededRandom(seed) }),
+      ['lc-7'],
+    );
   assert.equal(drawMock({ pool: oa, slots: ['easy', 'medium', 'hard'] }), null);
   assert.equal(drawMock({ pool: [lc(1, 'easy'), lc(1, 'easy')], slots: ['easy', 'easy'] }), null);
+});
+
+test("the company's topics tilt the draw without making it deterministic", () => {
+  const topics = [
+    { slug: 'greedy-scheduling', weight: 1 },
+    { slug: 'hash-counting', weight: 0.5 },
+  ];
+  const weights = new Map(topics.map((t) => [t.slug, t.weight]));
+  assert.equal(topicAffinity(['greedy-scheduling', 'hash-counting'], weights), 1.25);
+  assert.equal(topicAffinity(['dp-grid', 'greedy-scheduling'], weights), 0.5);
+  assert.equal(topicAffinity(undefined, weights), 0);
+  const onTopic = lc(11, 'medium', ['greedy-scheduling']),
+    offTopic = lc(12, 'medium', ['dp-grid']);
+  const wins = { 'lc-11': 0, 'lc-12': 0 } as Record<string, number>;
+  for (let seed = 1; seed <= 400; seed++)
+    wins[drawMock({ pool: [onTopic, offTopic], slots: ['medium'], topics, random: seededRandom(seed) })![0]]++;
+  // Weights 3 : 1, so about 300 : 100 — and the off-topic problem still comes up.
+  assert.ok(wins['lc-11'] > 240 && wins['lc-11'] < 360, JSON.stringify(wins));
+  assert.ok(wins['lc-12'] > 40, JSON.stringify(wins));
+  // Recency, solved and difficulty still come first.
+  for (let seed = 1; seed < 20; seed++) {
+    const random = seededRandom(seed);
+    assert.deepEqual(drawMock({ pool: [onTopic, offTopic], slots: ['medium'], topics, solved: new Set(['lc-11']), random }), ['lc-12']);
+    assert.deepEqual(drawMock({ pool: [onTopic, offTopic], slots: ['medium'], topics, exclude: new Set(['lc-11']), random }), ['lc-12']);
+    assert.deepEqual(
+      drawMock({ pool: [lc(13, 'hard', ['greedy-scheduling']), offTopic], slots: ['medium'], topics, random }),
+      ['lc-12'],
+    );
+  }
+  // Without company topics the draw is even.
+  const even = { 'lc-11': 0, 'lc-12': 0 } as Record<string, number>;
+  for (let seed = 1; seed <= 400; seed++)
+    even[drawMock({ pool: [onTopic, offTopic], slots: ['medium'], random: seededRandom(seed) })![0]]++;
+  assert.ok(Math.abs(even['lc-11'] - 200) < 50, JSON.stringify(even));
+});
+
+test('topic distribution weights positions 1/0.5/0.25; profiles and difficulty come from the estimates', () => {
+  const shares = topicDistribution([['a', 'b'], ['b'], ['c', 'a', 'b', 'd']]);
+  assert.deepEqual(
+    shares.map((s) => [s.slug, s.weight]),
+    [['b', 1.75], ['a', 1.5], ['c', 1], ['d', 0]],
+  );
+  assert.equal(shares.reduce((sum, s) => sum + s.share, 0), 1);
+  assert.deepEqual(topicDistribution([]), []);
+  const amazon = oaTopicProfile(['amazon', 'amazon-mern']);
+  assert.ok(amazon.count >= 400);
+  assert.equal(amazon.difficulty.easy + amazon.difficulty.medium + amazon.difficulty.hard, amazon.count);
+  assert.equal(amazon.topics[0].slug, 'greedy-scheduling');
+  assert.equal(oaTopicProfile(['tiktok', 'bytedance']).count, 0);
+  assert.deepEqual(oaTopicProfile(['amazon']).count, amazon.count - oaTopicProfile(['amazon-mern']).count);
+  // A package's explicit 简单/困难 stands; its default 中等 gives way to the estimate.
+  assert.deepEqual(oaDifficulty('oa-amazon-1', '中等'), { difficulty: '困难', difficultyEstimated: true });
+  assert.deepEqual(oaDifficulty('oa-amazon-1', '简单'), { difficulty: '简单', difficultyEstimated: false });
+  assert.deepEqual(oaDifficulty('oa-nope-1', '中等'), { difficulty: '中等', difficultyEstimated: false });
+  assert.deepEqual(oaDifficulty('oa-nope-1'), {});
 });
 
 test('pools join OA companies and mapped LeetCode problems, never hidden companies', () => {
@@ -96,15 +164,24 @@ test('pools join OA companies and mapped LeetCode problems, never hidden compani
     { id: 'lc-2', difficulty: '中等' },
     { id: 'course-x', difficulty: '简单' },
   ]);
-  assert.deepEqual(cat.oa.get('amazon-mern')?.map((p) => p.id), ['oa-amazon-mern-2']);
+  // oa-amazon-mern-2 is a MERN build task, not a coding question: never drawn.
+  assert.equal(cat.oa.get('amazon-mern'), undefined);
+  assert.deepEqual(cat.oa.get('amazon'), [
+    { id: 'oa-amazon-1', difficulty: 'hard', loose: false, topics: ['stacks-heaps', 'bits-math'] },
+  ]);
+  assert.equal(cat.oa.get('google')?.[0].difficulty, 'easy', 'the estimate replaces the package label');
+  assert.deepEqual(mockCatalogue([{ id: 'oa-acme-9', difficulty: '中等' }]).oa.get('acme'), [
+    { id: 'oa-acme-9', difficulty: 'medium', loose: true },
+  ]);
   assert.equal(cat.lc.get('lc-1')?.difficulty, 'easy');
+  assert.deepEqual(cat.lc.get('lc-1')?.topics, ['hash-counting'], 'a Line 500 problem is on its stop');
   const map = new Map([
     ['amazon', ['lc-1', 'lc-404']],
     ['google', ['lc-2']],
   ]);
   const ids = (aliases: string[] | null, source: 'mixed' | 'oa' | 'lc', hidden = new Set<string>()) =>
     mockPool(cat, aliases, source, hidden, map).map((p) => p.id).sort();
-  assert.deepEqual(ids(['amazon', 'amazon-mern'], 'mixed'), ['lc-1', 'oa-amazon-1', 'oa-amazon-mern-2']);
+  assert.deepEqual(ids(['amazon', 'amazon-mern'], 'mixed'), ['lc-1', 'oa-amazon-1']);
   assert.deepEqual(ids(['amazon'], 'oa'), ['oa-amazon-1']);
   assert.deepEqual(ids(['amazon'], 'lc'), ['lc-1'], 'unjudgeable lc-404 is dropped');
   const hidden = new Set(['google']);
@@ -115,6 +192,28 @@ test('pools join OA companies and mapped LeetCode problems, never hidden compani
   const tiktok = shownMockPresets(new Set(['bytedance'])).find((c) => c.slug === 'tiktok')!;
   assert.deepEqual(tiktok.aliases, ['tiktok']);
   assert.ok(mockOaPaths().some((p) => p.path === '/mock-oa/tiktok'));
+});
+
+test("a report labels a question by its LeetCode or explicit package difficulty, else the OA estimate, else the slot", () => {
+  assert.deepEqual(reportLevel('lc-1', '简单', null, 'hard'), { level: 'easy', estimated: false });
+  // A hard slot that only a medium problem could fill (capital-one, ebay).
+  assert.deepEqual(reportLevel('oa-capital-one-1', '中等', 'medium', 'hard'), { level: 'medium', estimated: true });
+  assert.deepEqual(reportLevel('oa-x-1', '困难', 'medium', 'easy'), { level: 'hard', estimated: false });
+  assert.deepEqual(reportLevel('oa-x-1', '中等', null, 'easy'), { level: 'easy', estimated: false });
+  assert.deepEqual(reportLevel('lc-2', undefined, 'easy', undefined), { level: 'medium', estimated: false });
+});
+
+test('whole percentages always total 100 by the largest remainder', () => {
+  assert.deepEqual(wholePercents([1, 1, 1]), [34, 33, 33]);
+  // Amazon's estimated mix (75/254/71): 19/64/18 = 101% when each is rounded alone.
+  assert.deepEqual(wholePercents([75, 254, 71]), [19, 63, 18]);
+  assert.deepEqual(wholePercents([0, 0]), [0, 0]);
+  for (const aliases of [['openai'], ['ebay'], ['amazon'], ['doordash'], ['uber']]) {
+    const profile = oaTopicProfile(aliases);
+    const sum = (list: number[]) => list.reduce((a, b) => a + b, 0);
+    assert.equal(sum(wholePercents(profile.topics.map((t) => t.weight))), 100, aliases[0]);
+    assert.equal(sum(wholePercents(Object.values(profile.difficulty))), 100, aliases[0]);
+  }
 });
 
 test('scoring: passed fraction per question, or a weighted 200–600 GCA estimate', () => {

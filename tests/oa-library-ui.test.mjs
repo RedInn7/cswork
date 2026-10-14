@@ -96,6 +96,9 @@ test('OA library reveals solutions only on request, supports language/copy and c
     languages: ['python', 'java', 'cpp', 'sql'],
     judgeStatus: 'ready',
     judgeProblemId: 'amazon-1',
+    difficulty: '中等',
+    difficultyEstimated: true,
+    topics: ['greedy-scheduling', 'simulation'],
   };
   try {
     await act(async () => root.render(createElement(OaLibrary)));
@@ -106,9 +109,24 @@ test('OA library reveals solutions only on request, supports language/copy and c
       page: 1,
       pageSize: 30,
       companies: [{ slug: 'amazon', name: 'Amazon', count: 1 }],
+      topics: [
+        { slug: 'greedy-scheduling', count: 1 },
+        { slug: 'simulation', count: 1 },
+      ],
       source: { name: 'OA Master' },
     });
     assert.match(document.body.textContent, /SQL/);
+    // Estimated topics as chips, an estimated difficulty marked ≈, and the topic menu with counts.
+    assert.deepEqual(
+      [...document.querySelectorAll('.oa-row .oa-title small')].map((chip) => chip.textContent),
+      ['SQL', 'Greedy', 'Simulation'],
+    );
+    assert.match(document.querySelector('.oa-row .oa-difficulty').textContent, /^≈Estimated Medium$/);
+    assert.match(document.querySelector('.study-result-summary').textContent, /AI-estimated/);
+    assert.deepEqual(
+      [...document.querySelectorAll('.oa-topic-filter option')].map((option) => option.textContent),
+      ['All topics', 'Greedy (1)', 'Simulation (1)'],
+    );
     assert.equal(
       document.querySelector('a.oa-row').getAttribute('href'),
       '/oa/amazon/amazon-1',
@@ -239,6 +257,21 @@ test('OA library reveals solutions only on request, supports language/copy and c
       document.querySelector('.oa-company-mobile select').value,
       'amazon',
     );
+    const topicSelect = document.querySelector('.oa-topic-filter select');
+    await act(async () => {
+      topicSelect.value = 'simulation';
+      topicSelect.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
+    });
+    assert.equal(
+      new URL(requests.at(-1).url, 'https://cswork.test').searchParams.get('topic'),
+      'simulation',
+    );
+    assert.equal(new URL(location.href).searchParams.get('topic'), 'simulation');
+    await act(async () => {
+      topicSelect.value = '';
+      topicSelect.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
+    });
+    assert.equal(new URL(location.href).searchParams.get('topic'), null);
     await act(async () => requests.at(-1).resolve({ ok: false, status: 503 }));
     assert.match(
       document.querySelector('[role="alert"]').textContent,
@@ -390,7 +423,7 @@ test('OA library reveals solutions only on request, supports language/copy and c
     history.replaceState(
       null,
       '',
-      '/?view=problems&library=oa&company=barclay&page=2&ready=0',
+      '/?view=problems&library=oa&company=barclay&page=2&ready=0&topic=hash-counting',
     );
     await act(async () =>
       root.render(createElement(OaLibrary, { key: 'from-url' })),
@@ -398,8 +431,18 @@ test('OA library reveals solutions only on request, supports language/copy and c
     const restored = new URL(requests.at(-1).url, 'https://cswork.test')
       .searchParams;
     assert.deepEqual(
-      [restored.get('company'), restored.get('page'), restored.get('ready')],
-      ['barclays', '2', '0'],
+      [restored.get('company'), restored.get('page'), restored.get('ready'), restored.get('topic')],
+      ['barclays', '2', '0', 'hash-counting'],
+    );
+    // Before its counts arrive, the chosen topic is still the selected option.
+    assert.equal(document.querySelector('.oa-topic-filter select').value, 'hash-counting');
+    history.replaceState(null, '', '/?view=problems&library=oa&topic=not-a-topic');
+    await act(async () =>
+      root.render(createElement(OaLibrary, { key: 'bad-topic' })),
+    );
+    assert.equal(
+      new URL(requests.at(-1).url, 'https://cswork.test').searchParams.get('topic'),
+      '',
     );
     await act(async () =>
       root.render(createElement(OaEditorial, { problemId: 'oa-google-1' })),

@@ -4,7 +4,7 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
 import { RouteLine } from './route-line';
-import { routeStops, type RouteStop } from '@/lib/route-stops';
+import { routeStops, stopFromUrl, type RouteStop } from '@/lib/route-stops';
 import {
   ArrowLeft,
   ArrowRight,
@@ -165,7 +165,16 @@ export function StudyLibrary({
   const roundPending = useRef(false);
   const createKey = useRef<string | null>(null);
   const listRequest = useRef(0);
-  const [section, setSection] = useState('');
+  // ?section=<stop> opens on that stop (links from the mock OA topics).
+  const [section, setSection] = useState(stopFromUrl);
+  // Kept in the URL, so going back or reloading reopens the stop chosen since.
+  useEffect(() => {
+    if (typeof location === 'undefined') return;
+    const url = new URL(location.href);
+    if (section) url.searchParams.set('section', section);
+    else url.searchParams.delete('section');
+    if (url.href !== location.href) history.replaceState(history.state, '', url);
+  }, [section]);
   const [stage, setStage] = useState('');
   const [status, setStatus] = useState('');
   const [company, setCompany] = useState('');

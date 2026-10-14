@@ -6,6 +6,9 @@ import { requestLocale } from '@/lib/server/locale';
 import { shownMockPresets, type MockPreset } from '@/lib/server/mock-oa-presets';
 import { mockPoolSizes } from '@/lib/server/mock-oa';
 import { companyLogos } from '@/lib/oa-company-brands';
+import { SLOTS, wholePercents } from '@/lib/mock-oa';
+import { stopHref, topicName } from '@/lib/route-stops';
+import { oaTopicProfile } from '@/lib/server/oa-topics';
 
 type Props = { params: Promise<{ company: string }> };
 const LEVEL = {
@@ -13,6 +16,9 @@ const LEVEL = {
   medium: ['中等', 'medium'],
   hard: ['困难', 'hard'],
 } as const;
+
+/** Fewer OA problems than this are too few to measure; the preset's reported topics stand in. */
+const MEASURABLE = 5;
 
 /** Hidden or unknown companies are a real 404. */
 async function load(params: Props['params']) {
@@ -66,6 +72,25 @@ export default async function MockOaCompany({ params }: Props) {
     },
   };
   const logo = Object.hasOwn(companyLogos, p.slug) ? companyLogos[p.slug] : null;
+  const profile = oaTopicProfile(p.aliases);
+  const measured = profile.count >= MEASURABLE;
+  // Measured: share of the topic labels (top 8), rounded over all topics so they total
+  // 100%. Otherwise: the reported topics' relative weight.
+  const shares = wholePercents(profile.topics.map((t) => t.weight));
+  const bars = measured
+    ? profile.topics
+        .slice(0, 8)
+        .map((t, i) => ({ slug: t.slug, value: t.share, label: `${shares[i]}%` }))
+    : p.topics.map((t) => ({ slug: t.slug, value: t.weight, label: t.weight.toFixed(2) }));
+  const top = Math.max(...bars.map((b) => b.value), 0) || 1;
+  const mix = wholePercents(SLOTS.map((s) => profile.difficulty[s]));
+  const chartCaption = measured
+    ? zh
+      ? `基于本站 ${profile.count} 道 ${p.name} OA 真题的专题标注（AI 辅助估计）`
+      : `From topic labels on ${profile.count} ${p.name} OA problems on this site (AI-assisted estimates)`
+    : zh
+      ? `${profile.count ? `本站只有 ${profile.count} 道 ${p.name} OA 真题，样本太少` : `本站还没有 ${p.name} OA 真题`}；下面是候选人面经里反复提到的考点（相对权重）`
+      : `${profile.count ? `Only ${profile.count} ${p.name} OA ${profile.count === 1 ? 'problem' : 'problems'} on this site, too few to measure` : `No ${p.name} OA problems on this site yet`}; these are the topics candidate reports keep mentioning (relative weight)`;
   const facts: [string, string][] = [
     [zh ? '平台' : 'Platform', p.platform],
     [zh ? '题量' : 'Questions', String(p.questions)],
@@ -137,6 +162,75 @@ export default async function MockOaCompany({ params }: Props) {
           ))}
         </dl>
         <p className="mock-public-notes">{zh ? p.notes_zh : p.notes_en}</p>
+      </section>
+      <section className="mock-public-tests" aria-labelledby="mock-public-tests">
+        <h2 id="mock-public-tests" className="mock-public-h2">
+          {zh ? `${p.name} OA 考察内容` : `What the ${p.name} OA tests`}
+        </h2>
+        <p className="mock-public-focus">{zh ? p.focus_zh : p.focus_en}</p>
+        <div className="mock-public-tests-grid">
+          <figure className="mock-public-chart">
+            <figcaption>{chartCaption}</figcaption>
+            <ol className="mock-public-bars">
+              {bars.map(({ slug, value, label }) => {
+                const href = stopHref(slug),
+                  name = topicName(slug, zh);
+                return (
+                  <li key={slug} style={{ '--w': value / top } as React.CSSProperties}>
+                    <span className="mock-public-bar-name">
+                      {href ? <a href={href}>{name}</a> : name}
+                    </span>
+                    <span className="mock-public-bar" aria-hidden="true" />
+                    <span className="mock-public-bar-value">
+                      {label}
+                    </span>
+                  </li>
+                );
+              })}
+            </ol>
+            {bars.some((b) => stopHref(b.slug)) && (
+              <p className="mock-public-hint">
+                {zh
+                  ? '点专题名，去 500 路对应的站点专项练习。'
+                  : 'Pick a topic to practise its stop on Line 500.'}
+              </p>
+            )}
+            {measured && (
+              <div className="mock-public-mix">
+                <p>{zh ? '估计难度分布' : 'Estimated difficulty mix'}</p>
+                <div className="mock-public-mix-bar" aria-hidden="true">
+                  {SLOTS.filter((s) => profile.difficulty[s]).map((s) => (
+                    <i key={s} data-level={s} style={{ flexGrow: profile.difficulty[s] }} />
+                  ))}
+                </div>
+                <ul>
+                  {SLOTS.map((s, i) => (
+                    <li key={s} data-level={s}>
+                      {LEVEL[s][zh ? 0 : 1]} {mix[i]}%
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </figure>
+          <dl className="mock-public-advice">
+            <div>
+              <dt>{zh ? '题面风格' : 'Style'}</dt>
+              <dd>{zh ? p.style_zh : p.style_en}</dd>
+            </div>
+            <div>
+              <dt>{zh ? '备考建议' : 'How to prepare'}</dt>
+              <dd>{zh ? p.tips_zh : p.tips_en}</dd>
+            </div>
+          </dl>
+        </div>
+        {p.evidence === 'thin' && (
+          <p className="mock-public-caveat">
+            {zh
+              ? '这家公司公开的 OA 信息很少，以上内容只作参考。'
+              : 'There is little public information about this OA, so treat this as a rough guide.'}
+          </p>
+        )}
       </section>
       <section className="mock-public-split" aria-label={zh ? '模拟范围' : 'What the mock covers'}>
         <div>

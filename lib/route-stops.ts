@@ -61,6 +61,29 @@ export const STOP_NAMES: Record<string, [string, string]> = {
   'design-cache-index': ['缓存索引', 'Caches'], 'design-trie-serialization': ['字典树序列化', 'Trie & Codec'],
   'bits-math': ['位运算', 'Bits & Math'],
 };
+/** OA topic labels: the 35 stops plus two OA-only topics that are not on the line. */
+export const TOPIC_NAMES: Record<string, [string, string]> = {
+  ...STOP_NAMES,
+  simulation: ['模拟/实现', 'Simulation'],
+  sql: ['SQL', 'SQL'],
+};
+/** Labels for OA problems that are neither coding nor SQL (oa-topics.json `k`). */
+export const OA_KIND_NAMES: Record<string, [string, string]> = {
+  mcq: ['概念题', 'Concept question'],
+  other: ['非算法题', 'Non-algorithmic'],
+};
+/** A topic's short name in the locale; unknown slugs show as written. */
+export const topicName = (slug: string, zh: boolean) =>
+  Object.hasOwn(TOPIC_NAMES, slug) ? TOPIC_NAMES[slug][zh ? 0 : 1] : slug;
+/** Line 500 practice for a topic, or null when the topic is not one of its stops. */
+export const stopHref = (slug: string) =>
+  Object.hasOwn(STOP_NAMES, slug) ? `/?view=problems&section=${slug}` : null;
+/** The stop named by ?section= in this page's URL, or '' (also on the server). */
+export function stopFromUrl() {
+  if (typeof location === 'undefined') return '';
+  const slug = new URLSearchParams(location.search).get('section') || '';
+  return Object.hasOwn(STOP_NAMES, slug) ? slug : '';
+}
 
 const groupOf = new Map(
   ROUTE_SECTIONS.flatMap(({ zh, en, slugs }) => {

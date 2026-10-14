@@ -15,6 +15,7 @@ import {
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
+import { OA_KIND_NAMES, TOPIC_NAMES, topicName } from '@/lib/route-stops';
 
 /** Text remains the accessible identity; the logo is only a visual aid. */
 export function CompanyIdentity({
@@ -66,7 +67,13 @@ type Item = {
   judgeStatus: 'reading_only' | 'ready';
   judgeProblemId?: string;
   difficulty?: string;
+  /** The package had only its default 中等, so this is the AI estimate. */
+  difficultyEstimated?: boolean;
   tags?: string[];
+  /** AI-estimated topic slugs, most important first. */
+  topics?: string[];
+  /** Set only for non-coding problems. */
+  kind?: 'mcq' | 'sql' | 'other';
   progress?: 'solved' | 'attempted';
 };
 const difficultyLevels: Record<string, string> = {
@@ -87,6 +94,8 @@ type Page = {
   pageSize: number;
   /** `count`: every listed problem; `ready`: the practice-ready ones. */
   companies: { slug: string; name: string; count: number; ready?: number }[];
+  /** Matches per topic under the other filters. */
+  topics?: { slug: string; count: number }[];
   source: { name: string; url: string; commit: string };
 };
 type Detail = Item & {
@@ -229,7 +238,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
     solved: t('已通过', 'Solved'),
     attempted: t('尝试过', 'Attempted'),
   };
-  // Filters live in the URL (?company=&q=&page=&ready=0) so a list can be shared or reloaded.
+  // Filters live in the URL (?company=&topic=&q=&page=&ready=0) so a list can be shared or reloaded.
   const [initial] = useState(() =>
     typeof location === 'undefined'
       ? new URLSearchParams()
@@ -240,6 +249,11 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
   const [company, setCompany] = useState(
     canonicalCompany(initial.get('company') || ''),
   );
+  const [topic, setTopic] = useState(() => {
+    const value = initial.get('topic') || '';
+    return Object.hasOwn(TOPIC_NAMES, value) ? value : '';
+  });
+  const [topics, setTopics] = useState<NonNullable<Page['topics']>>([]);
   const [companySearch, setCompanySearch] = useState('');
   const [readyOnly, setReadyOnly] = useState(initial.get('ready') !== '0');
   const [page, setPage] = useState(
@@ -273,6 +287,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
     const url = new URL(location.href);
     const filters = {
       company,
+      topic,
       q: search,
       page: page > 1 ? String(page) : '',
       ready: readyOnly ? '' : '0',
@@ -281,7 +296,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
       if (value) url.searchParams.set(key, value);
       else url.searchParams.delete(key);
     if (url.href !== location.href) history.replaceState(history.state, '', url);
-  }, [company, search, page, readyOnly]);
+  }, [company, topic, search, page, readyOnly]);
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
@@ -290,6 +305,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
     const params = new URLSearchParams({
       q: search,
       company,
+      topic,
       page: String(page),
       ready: readyOnly ? '1' : '0',
     });
@@ -298,6 +314,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
         if (!controller.signal.aborted) {
           setData(value);
           setCompanies(value.companies);
+          setTopics(value.topics ?? []);
         }
       })
       .catch((e) => {
@@ -307,7 +324,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
         if (!controller.signal.aborted) setLoading(false);
       });
     return () => controller.abort();
-  }, [search, company, page, retry, readyOnly]);
+  }, [search, company, topic, page, retry, readyOnly]);
   useEffect(() => {
     const controller = new AbortController();
     setDetail(null);
@@ -594,6 +611,15 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
     setCompany(slug);
     setPage(1);
   };
+  const zh = locale === 'zh';
+  // The chosen topic stays an option even when the other filters leave it no matches.
+  const topicOptions =
+    topic && !topics.some((item) => item.slug === topic)
+      ? [...topics, { slug: topic, count: 0 }]
+      : topics;
+  const anyEstimated = data?.items.some(
+    (item) => item.judgeStatus === 'ready' && item.difficultyEstimated,
+  );
   // Sidebar counts follow the practice-ready toggle, so "All companies" matches the result count.
   const shownCount = (item: Page['companies'][number]) =>
     readyOnly ? (item.ready ?? item.count) : item.count;
@@ -718,6 +744,23 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                 ))}
               </select>
             </label>
+            <label className="oa-topic-filter">
+              {t('专题', 'Topic')}
+              <select
+                value={topic}
+                onChange={(event) => {
+                  setTopic(event.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="">{t('全部专题', 'All topics')}</option>
+                {topicOptions.map((item) => (
+                  <option key={item.slug} value={item.slug}>
+                    {topicName(item.slug, zh)} ({item.count})
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
           {loading ? (
             <p className="study-state" role="status">
@@ -735,6 +778,11 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                     `共 ${data.total} 道${readyOnly ? '可练习的' : ''} OA 题目 · 来源 OA Master`,
                     `${data.total}${readyOnly ? ' practice-ready' : ''} OA ${data.total === 1 ? 'problem' : 'problems'} · Source: OA Master`,
                   )}
+                  {anyEstimated &&
+                    t(
+                      ' · 难度带 ≈ 的是 AI 估计，专题同为 AI 标注',
+                      ' · ≈ marks an AI-estimated difficulty; topics are AI-labelled too',
+                    )}
                 </p>
                 {data.items.length === 0 ? (
                   <p className="study-state">
@@ -799,13 +847,19 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                         <span className="oa-number">#{item.number}</span>
                         <span className="oa-title">
                           <strong>{item.title}</strong>
+                          {item.kind && Object.hasOwn(OA_KIND_NAMES, item.kind) && (
+                            <small data-kind={item.kind}>{t(...OA_KIND_NAMES[item.kind])}</small>
+                          )}
                           {[
                             ...new Set([
                               // Only unusual languages (SQL, Bash…) tell the reader something.
                               ...item.languages
                                 .filter((lang) => !codeLanguages.has(lang))
                                 .map((lang) => languageNames[lang] || lang),
-                              ...(item.tags || []),
+                              // The estimated topics replace the packages' uneven tags.
+                              ...(item.topics?.length
+                                ? item.topics.map((slug) => topicName(slug, zh))
+                                : item.tags || []),
                             ]),
                           ].map((tag) => (
                             <small key={tag}>{tag}</small>
@@ -819,15 +873,35 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                               : 'reading'
                           }
                         >
-                          {item.judgeStatus === 'ready'
-                            ? item.difficulty
-                              ? t(
+                          {item.judgeStatus === 'ready' ? (
+                            item.difficulty ? (
+                              <span
+                                title={
+                                  item.difficultyEstimated
+                                    ? t('AI 估计的难度', 'AI-estimated difficulty')
+                                    : undefined
+                                }
+                              >
+                                {item.difficultyEstimated && (
+                                  <>
+                                    <span aria-hidden="true">≈</span>
+                                    <span className="oa-visually-hidden">
+                                      {t('估计', 'Estimated ')}
+                                    </span>
+                                  </>
+                                )}
+                                {t(
                                   item.difficulty,
                                   difficultyNames[item.difficulty] ||
                                     item.difficulty,
-                                )
-                              : '—'
-                            : t('仅题面', 'Statement only')}
+                                )}
+                              </span>
+                            ) : (
+                              '—'
+                            )
+                          ) : (
+                            t('仅题面', 'Statement only')
+                          )}
                         </span>
                       </a>
                     ))}

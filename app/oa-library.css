@@ -66,7 +66,7 @@
 }
 /* Dense judge-list rows: status · company · number · title · difficulty. */
 .oa-list {
-  --oa-columns: 22px 150px 52px minmax(0, 1fr) 64px;
+  --oa-columns: 22px 150px 52px minmax(0, 1fr) 72px;
   --oa-easy: #0d8a63;
   --oa-medium: #b7700a;
   --oa-hard: #cf3a52;
@@ -173,6 +173,16 @@
   font-size: 13px;
   font-weight: 600;
   color: var(--muted-foreground);
+  white-space: nowrap;
+}
+/* Concept and other non-coding questions stand out from the topic chips. */
+.oa-row .oa-title small[data-kind] {
+  background: color-mix(in oklab, #b7700a 14%, var(--card));
+  color: color-mix(in oklab, #b7700a 70%, var(--foreground));
+  font-weight: 600;
+}
+.oa-library .oa-topic-filter select {
+  max-width: 170px;
 }
 .oa-difficulty[data-level='easy'] { color: var(--oa-easy); }
 .oa-difficulty[data-level='medium'] { color: var(--oa-medium); }
@@ -205,7 +215,7 @@
 }
 @media (max-width: 720px) {
   .oa-list {
-    --oa-columns: 18px minmax(0, 1fr) 52px;
+    --oa-columns: 18px minmax(0, 1fr) 62px;
   }
   .oa-list-head,
   .oa-row .oa-company,
@@ -388,8 +398,13 @@
     min-height: 44px;
   }
   .oa-search input,
-  .oa-company-mobile select {
+  .oa-company-mobile select,
+  .oa-topic-filter select {
     font-size: 16px;
+  }
+  .oa-library .oa-topic-filter select {
+    min-width: 0;
+    min-height: 44px;
   }
 }
 .oa-title strong {
