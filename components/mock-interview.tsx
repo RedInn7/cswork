@@ -1419,7 +1419,12 @@ export function FeedbackLink({ data, query, run }: Pick<SessionProps, 'data' | '
       {shown && (
         <div className="mi-link">
           <label>
-            <span>{t('反馈链接（不含参考答案的评分表）', 'Feedback link (scores and notes, no answer key)')}</span>
+            <span>
+              {t(
+                '反馈链接（打开后能看参考答案，面试结束后再发）',
+                'Feedback link (opens solo practice with the answer key; send it after the interview)',
+              )}
+            </span>
             <input readOnly value={link} onFocus={(e) => e.target.select()} />
           </label>
         </div>
