@@ -48,7 +48,7 @@ function stub(routes) {
   const calls = [];
   const original = globalThis.fetch;
   globalThis.fetch = async (url, init = {}) => {
-    const key = `${init.method || 'GET'} ${String(url).replace('/api/', '')}`;
+    const key = `${init.method || 'GET'} ${(typeof url === 'string' ? url : url.url).replace('/api/', '')}`;
     const body = init.body ? JSON.parse(init.body) : undefined;
     calls.push({ key, body });
     const answer = routes[key];
@@ -172,7 +172,7 @@ test('a member post shows its status to the author and a report control to other
     await act(async () => document.querySelector('form').dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true })));
     await wait();
     assert.deepEqual(calls[0].body, { reason: 'nda', note: '' });
-    assert.ok(document.querySelector('[role="status"]') !== null);
+    assert.ok(document.querySelector('output.xs-report') !== null);
     root.unmount();
   } finally {
     restore();

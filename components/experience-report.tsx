@@ -20,7 +20,7 @@ export function ReportExperience({ id }: { id: string }) {
   const [note, setNote] = useState('');
   const [state, setState] = useState<'idle' | 'sending' | 'sent'>('idle');
   const [error, setError] = useState('');
-  async function send(event: React.FormEvent) {
+  async function send(event: { preventDefault(): void }) {
     event.preventDefault();
     if (!reason) return;
     setState('sending');
@@ -35,9 +35,9 @@ export function ReportExperience({ id }: { id: string }) {
   }
   if (state === 'sent')
     return (
-      <p className="xs-report" role="status">
+      <output className="xs-report">
         {t('已收到举报，老师会尽快处理。', 'Thanks. A teacher will look at it soon.')}
-      </p>
+      </output>
     );
   return (
     <details className="xs-report">
@@ -93,7 +93,7 @@ export function MemberPost({ member, questions }: { member: MemberInfo; question
   return (
     <>
       {!member.public && (
-        <p className="xs-notice" data-status={member.status} role="status">
+        <output className="xs-notice" data-status={member.status}>
           {member.status === 'pending'
             ? t('这篇面经正在审核，只有你和老师能看到。', 'This post is in review. Only you and the teachers can see it.')
             : member.status === 'rejected'
@@ -106,7 +106,7 @@ export function MemberPost({ member, questions }: { member: MemberInfo; question
               {member.note}
             </>
           )}
-        </p>
+        </output>
       )}
       {!!questions.length && (
         <section className="rd-card ct-body xs-questions" aria-labelledby="xs-questions-h">

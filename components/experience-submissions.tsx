@@ -192,7 +192,7 @@ function ExperienceForm({
   const set = (patch: Partial<Form>) => setForm((f) => ({ ...f, ...patch }));
   const questions = form.questions.split('\n').map((q) => q.trim()).filter(Boolean);
   const length = form.body.trim().length;
-  async function submit(event: React.FormEvent) {
+  async function submit(event: { preventDefault(): void }) {
     event.preventDefault();
     // The browser checks the required fields; these two it cannot.
     if (!form.rounds.length) return setError(t('请至少选一个轮次', 'Pick at least one round'));
@@ -265,7 +265,9 @@ function ExperienceForm({
           />
           <datalist id="xs-roles">
             {ROLES.map((r) => (
-              <option key={r} value={r} />
+              <option key={r} value={r}>
+                {r}
+              </option>
             ))}
           </datalist>
         </label>

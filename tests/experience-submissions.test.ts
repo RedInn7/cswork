@@ -63,9 +63,11 @@ async function call(p: Person | null, method: string, path: string, body?: unkno
   const parts = url.pathname.split('/').slice(3);
   try {
     const response = path.startsWith('content/') ? await handleContent(r, p, parts) : await handleOj(r, p, parts);
+    // oxlint-disable-next-line typescript/no-explicit-any -- Loose JSON for terse assertions.
     return { status: response.status, data: (await response.json()) as any };
   } catch (error) {
     // The API wrapper turns HttpError/ZodError into responses.
+    // oxlint-disable-next-line typescript/no-explicit-any -- Loose JSON for terse assertions.
     return { status: (error as { status?: number }).status ?? 400, data: null as any };
   }
 }

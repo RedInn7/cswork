@@ -56,7 +56,9 @@ export default async function MemberExperiencePage({ params }: Props) {
           {zh ? '资料库' : 'Library'}
         </Link>
         <span aria-hidden="true">/</span>
-        <a href="/?view=experiences">{zh ? '面经' : 'Interview experiences'}</a>
+        <Link href="/?view=experiences" prefetch={false}>
+          {zh ? '面经' : 'Interview experiences'}
+        </Link>
         <span aria-hidden="true">/</span>
         <Link href={companyHubPath(item.company.slug)} prefetch={false}>
           {item.company.name}
@@ -85,7 +87,7 @@ export default async function MemberExperiencePage({ params }: Props) {
           )}
         </p>
         {!member.public && (
-          <p className="xs-notice" data-status={member.status} role="status">
+          <output className="xs-notice" data-status={member.status}>
             {member.status === 'pending'
               ? zh
                 ? '正在审核，只有你和老师能看到这一页。'
@@ -94,7 +96,7 @@ export default async function MemberExperiencePage({ params }: Props) {
                 ? '这篇面经没有公开。'
                 : 'This post is not published.'}
             {member.note && (zh ? ` 审核意见：${member.note}` : ` Review note: ${member.note}`)}
-          </p>
+          </output>
         )}
       </header>
       <div className="public-library-prose">
@@ -121,7 +123,9 @@ export default async function MemberExperiencePage({ params }: Props) {
           <Link href={companyHubPath(item.company.slug)} prefetch={false}>
             {zh ? `${item.company.name} 公司主页 →` : `${item.company.name} company page →`}
           </Link>
-          <a href="/?view=progress&tab=share">{zh ? '投稿我的面经 →' : 'Share your experience →'}</a>
+          <Link href="/?view=progress&tab=share" prefetch={false}>
+            {zh ? '投稿我的面经 →' : 'Share your experience →'}
+          </Link>
           {member.public && !member.mine && <ReportExperience id={member.id} />}
         </div>
       </aside>
