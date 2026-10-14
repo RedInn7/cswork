@@ -43,7 +43,7 @@ function dayKey(time: number) {
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 }
 
-function level(count: number) {
+export function level(count: number) {
   return count === 0 ? 0 : count === 1 ? 1 : count <= 3 ? 2 : count <= 5 ? 3 : 4;
 }
 
