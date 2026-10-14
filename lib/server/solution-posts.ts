@@ -5,6 +5,7 @@ import { autoTitle, isChannel, REPORT_CLEARED, REPORTS_HIDE, targetKind } from '
 import { STOP_NAMES } from '@/lib/route-stops';
 import type { Person } from './auth';
 import { library } from './content-library';
+import { refuseInContest, runningContestProblems } from './contests';
 import { isCourseOwner } from './course-visibility';
 import { hiddenCompanies } from './env';
 import { memberIdOf, readMember } from './experience-submissions';
@@ -132,6 +133,10 @@ function titleOf(target: string, d: { title: string; body: string }) {
   if (!title) throw new HttpError(400, '请填写标题');
   return title;
 }
+/** A judge problem's solutions are closed to a learner while it is in their running contest (403). */
+function refuseDuringContest(p: Person | null, target: string) {
+  if (targetKind(target) === 'problem') refuseInContest(p, target);
+}
 function requireModerator(p: Person) {
   if (!canModerate(p)) throw new HttpError(403, '仅老师可以管理题解');
 }
@@ -151,6 +156,7 @@ async function listPosts(p: Person | null, params: URLSearchParams) {
   const problem = params.get('problem') ?? '';
   const all = problem === 'discuss:all';
   if (!all && !(await visibleTarget(p, problem))) throw new HttpError(404, '题目不存在或尚未发布');
+  if (!all) refuseDuringContest(p, problem);
   const order = params.get('sort') === 'new' ? 'sp.created_at DESC' : 'votes DESC,sp.created_at DESC';
   const offset = Math.min(Math.max(0, Math.floor(Number(params.get('offset')) || 0)), 5000);
   // ?language=: one language's posts (the AC dialog's histogram links here); '' is all.
@@ -196,6 +202,7 @@ async function readPost(p: Person | null, postId: string) {
     ((row.hidden === SHOWN && !down()) || (row.hidden !== REMOVED && row.mine) || canModerate(p)) &&
     (await visibleTarget(p, row.problemId));
   if (!row || !visible) throw new HttpError(404, '题解不存在');
+  refuseDuringContest(p, row.problemId);
   const comments = (
     db
       .prepare(
@@ -250,6 +257,7 @@ async function openPost(p: Person, postId: string) {
     )
     .get({ id: postId, me: p.id }) as { problemId: string; userId: string } | undefined;
   if (!row || !(await visibleTarget(p, row.problemId))) throw new HttpError(404, '题解不存在');
+  refuseDuringContest(p, row.problemId);
   return row;
 }
 
@@ -334,10 +342,13 @@ async function moderationQueue(p: Person) {
       )
       .all() as QueueItem[]),
   ].sort((a, b) => b.createdAt - a.createdAt);
-  // A hidden company's problems stay out of the queue like everywhere else.
+  // A hidden company's problems stay out of the queue like everywhere else, and so do the
+  // problems of a contest running for this moderator.
   const seen = new Map<string, boolean>();
+  const running = runningContestProblems(p.id);
   const shown = async (item: QueueItem) => {
-    if (!seen.has(item.problemId)) seen.set(item.problemId, await visibleTarget(p, item.problemId));
+    if (!seen.has(item.problemId))
+      seen.set(item.problemId, !running.has(item.problemId) && (await visibleTarget(p, item.problemId)));
     return seen.get(item.problemId)!;
   };
   const keep = async (items: QueueItem[]) => {
@@ -378,6 +389,7 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
   if (resource === 'posts' && !target) {
     const d = postInput.extend({ problemId: z.string().max(320) }).parse(await readJson(request, 90000));
     if (!(await visibleTarget(p, d.problemId))) throw new HttpError(404, '题目不存在或尚未发布');
+    refuseDuringContest(p, d.problemId);
     if (!validTag(d.problemId, d.tag)) throw new HttpError(400, '标签无效');
     const title = titleOf(d.problemId, d);
     underCap('solution_posts', p, POSTS_PER_DAY, '今天发布的帖子已达上限');
@@ -396,6 +408,7 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
         .prepare(`SELECT problem_id AS problemId FROM solution_posts WHERE id=? AND user_id=? AND hidden<>${REMOVED}`)
         .get(target, p.id) as { problemId: string } | undefined;
       if (!own) throw new HttpError(404, '题解不存在');
+      refuseDuringContest(p, own.problemId);
       if (!validTag(own.problemId, d.tag)) throw new HttpError(400, '标签无效');
       db.prepare(
         `UPDATE solution_posts SET title=?,body=?,language=?,tag=?,updated_at=? WHERE id=? AND user_id=? AND hidden<>${REMOVED}`,
