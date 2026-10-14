@@ -24,7 +24,7 @@ export type AiKind = 'hint' | 'review' | 'chat' | 'tests' | 'debug' | 'complexit
 const KINDS: AiKind[] = ['hint', 'review', 'chat', 'tests', 'debug', 'complexity', 'explain'];
 type Reply = { id: number; kind: AiKind; text: string; mine?: boolean; quote?: string };
 export type CaseIdea = { input: string; why: string };
-type Answer = { kind: AiKind; text?: string; cases?: CaseIdea[]; remaining: number; limit: number };
+type Answer = { kind: AiKind; text?: string; cases?: CaseIdea[]; remaining: number; limit: number; bonus?: number };
 export type AiContext = { language: Language; codingMode: CodingMode; code: string; english: boolean };
 // The server's caps (lib/server/ai-tutor.ts): the question, the selection, eight rounds back.
 const QUESTION_MAX = 1000;
@@ -44,24 +44,25 @@ export function useAiTutor(problemId: string) {
   // Which surface asked: the thread, the console (tests) or the AC dialog (complexity).
   const [error, setError] = useState<{ kind: AiKind; message: string } | null>(null);
   // Calls left today, from the server; unknown (no number shown) until it answers.
-  const [left, setLeft] = useState<Record<AiKind, number | null>>(
-    () => Object.fromEntries(KINDS.map((k) => [k, null])) as Record<AiKind, number | null>,
+  // bonus: calls bought with points (any kind), used once that kind's run out today.
+  const [left, setLeft] = useState<Record<AiKind | 'bonus', number | null>>(
+    () => Object.fromEntries([...KINDS, 'bonus'].map((k) => [k, null])) as Record<AiKind | 'bonus', number | null>,
   );
   const next = useRef(0);
   const loaded = useRef(false);
   const load = useCallback(() => {
     if (loaded.current) return;
     loaded.current = true;
-    ojRequest<Partial<Record<AiKind, number>>>('ai/usage').then(
+    ojRequest<Partial<Record<AiKind | 'bonus', number>>>('ai/usage').then(
       // A call that answered first already knows better.
       (fresh) =>
-        setLeft(
-          (counts) =>
-            Object.fromEntries(KINDS.map((k) => [k, counts[k] ?? fresh[k] ?? null])) as Record<
-              AiKind,
-              number | null
-            >,
-        ),
+        setLeft((counts) => ({
+          ...(Object.fromEntries(KINDS.map((k) => [k, counts[k] ?? fresh[k] ?? null])) as Record<
+            AiKind,
+            number | null
+          >),
+          bonus: counts.bonus ?? fresh.bonus ?? 0,
+        })),
       () => {},
     );
   }, []);
@@ -99,7 +100,7 @@ export function useAiTutor(problemId: string) {
               : []),
             { id: ++next.current, kind, text: answer.text ?? '', quote: extra.selection },
           ]);
-        setLeft((counts) => ({ ...counts, [kind]: answer.remaining }));
+        setLeft((counts) => ({ ...counts, [kind]: answer.remaining, bonus: answer.bonus ?? counts.bonus }));
         return true;
       } catch (caught) {
         const failure = caught as Error & { status?: number | string };
@@ -111,7 +112,7 @@ export function useAiTutor(problemId: string) {
             : failure.message;
         setError({ kind, message: context.english ? englishMessage(message) : message });
         // Out of today's quota: say so on the button too.
-        if (failure.status === 429) setLeft((counts) => ({ ...counts, [kind]: 0 }));
+        if (failure.status === 429) setLeft((counts) => ({ ...counts, [kind]: 0, bonus: 0 }));
         return false;
       } finally {
         setBusy(null);
@@ -127,8 +128,12 @@ const Spin = () => <LoaderCircle size={14} className="cs-ai-tutor-spin" aria-hid
 function Count({ tutor, kind, english }: { tutor: Tutor; kind: AiKind; english: boolean }) {
   const n = tutor.left[kind];
   if (n === null) return null;
-  return <span className="cs-ai-tutor-count">{english ? `${n} left today` : `今天还剩 ${n} 次`}</span>;
+  const bonus = tutor.left.bonus;
+  const extra = bonus ? (english ? ` · +${bonus} bought` : ` · 另有兑换 ${bonus} 次`) : '';
+  return <span className="cs-ai-tutor-count">{english ? `${n} left today${extra}` : `今天还剩 ${n} 次${extra}`}</span>;
 }
+/** Today's calls of this kind are gone and no bought ones are left. */
+const out = (tutor: Tutor, kind: AiKind) => tutor.left[kind] === 0 && !tutor.left.bonus;
 const Failure = ({ tutor, kinds }: { tutor: Tutor; kinds: AiKind[] }) =>
   tutor.error && kinds.includes(tutor.error.kind) ? (
     <p className="cs-ai-tutor-error" role="alert">
@@ -161,7 +166,7 @@ export function AiTutor({
   /** The latest run or submission failed: "why did it fail" is on offer. */
   failed?: boolean;
 }) {
-  const { replies, busy, left, ask, load } = tutor;
+  const { replies, busy, ask, load } = tutor;
   const t = (zh: string, en: string) => (english ? en : zh);
   const context = { language, codingMode, code, english };
   const hints = replies.filter((r) => r.kind === 'hint').length;
@@ -230,7 +235,7 @@ export function AiTutor({
       </div>
       <Failure tutor={tutor} kinds={['hint', 'review', 'chat', 'debug', 'explain']} />
       <div className="cs-ai-tutor-actions">
-        <button type="button" disabled={busy !== null || left.hint === 0} onClick={() => void ask('hint', context)}>
+        <button type="button" disabled={busy !== null || out(tutor, 'hint')} onClick={() => void ask('hint', context)}>
           {busy === 'hint' ? <Spin /> : <MessageCircleQuestion size={14} aria-hidden="true" />}
           {busy === 'hint'
             ? t('正在想…', 'Thinking…')
@@ -242,7 +247,7 @@ export function AiTutor({
         <button
           type="button"
           data-primary={accepted || undefined}
-          disabled={busy !== null || left.review === 0 || !code.trim()}
+          disabled={busy !== null || out(tutor, 'review') || !code.trim()}
           onClick={() => void ask('review', context)}
         >
           {busy === 'review' ? <Spin /> : <ScanSearch size={14} aria-hidden="true" />}
@@ -256,7 +261,7 @@ export function AiTutor({
         {failed && (
           <button
             type="button"
-            disabled={busy !== null || left.debug === 0}
+            disabled={busy !== null || out(tutor, 'debug')}
             onClick={() => void ask('debug', context)}
           >
             {busy === 'debug' ? <Spin /> : <Bug size={14} aria-hidden="true" />}
@@ -292,7 +297,7 @@ export function AiTutor({
           type="submit"
           aria-label={t('发送问题', 'Send question')}
           title={t('发送问题', 'Send question')}
-          disabled={busy !== null || left.chat === 0 || !question.trim()}
+          disabled={busy !== null || out(tutor, 'chat') || !question.trim()}
         >
           {busy === 'chat' ? <Spin /> : <SendHorizontal size={15} aria-hidden="true" />}
         </button>
@@ -316,7 +321,7 @@ export function AiCaseIdeas({
   /** Adds the input as a custom case; false when there is no room. */
   onAdd: (input: string) => boolean;
 }) {
-  const { ideas, busy, left, ask, load } = tutor;
+  const { ideas, busy, ask, load } = tutor;
   const english = context.english;
   const t = (zh: string, en: string) => (english ? en : zh);
   const [added, setAdded] = useState<ReadonlySet<string>>(new Set());
@@ -326,7 +331,7 @@ export function AiCaseIdeas({
       <button
         type="button"
         className="cs-ai-cases-ask"
-        disabled={busy !== null || left.tests === 0}
+        disabled={busy !== null || out(tutor, 'tests')}
         onClick={() => void ask('tests', context).then((ok) => ok && setAdded(new Set()))}
       >
         {busy === 'tests' ? <Spin /> : <FlaskConical size={14} aria-hidden="true" />}
@@ -364,7 +369,7 @@ export function AiCaseIdeas({
 
 /** "Analyse complexity" in the AC dialog: time, space and the best known bound for this problem. */
 export function AiComplexity({ tutor, context }: { tutor: Tutor; context: AiContext }) {
-  const { replies, busy, left, ask, load } = tutor;
+  const { replies, busy, ask, load } = tutor;
   const t = (zh: string, en: string) => (context.english ? en : zh);
   // Only what this dialog asked for, not an analysis from an earlier AC.
   const [since] = useState(() => replies.at(-1)?.id ?? 0);
@@ -375,7 +380,7 @@ export function AiComplexity({ tutor, context }: { tutor: Tutor; context: AiCont
       {!answer && (
         <button
           type="button"
-          disabled={busy !== null || left.complexity === 0 || !context.code.trim()}
+          disabled={busy !== null || out(tutor, 'complexity') || !context.code.trim()}
           onClick={() => void ask('complexity', context)}
         >
           {busy === 'complexity' ? <Spin /> : <Gauge size={14} aria-hidden="true" />}

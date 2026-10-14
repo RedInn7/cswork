@@ -50,6 +50,7 @@ import { grantCourse, revokeGrant, dashboard } from './lms-roster';
 import { lessonEditor, saveLessonDraft, publishLesson } from './lms-courses';
 import { uploadAttachment, downloadAttachment } from './files';
 import { dailyProblem } from './daily-problem';
+import { purchasedFreezes } from './points';
 import { aiEnabled } from './ai-tutor';
 import { tokenCaller } from './api-tokens';
 const id = z.string().min(1).max(100),
@@ -131,6 +132,8 @@ export async function bootstrap(p: Person | null, lite = false) {
           Date.now() - 183 * 86400000,
         )
       : [],
+    // Streak freezes bought with points; the calendar adds them to their month's free ones.
+    purchasedFreezes: p ? purchasedFreezes(p.id) : [],
     notifications: p
       ? await rows(
           `SELECT * FROM notifications WHERE user_id=?${courseNotificationFilter(p)} ORDER BY created_at DESC LIMIT 50`,

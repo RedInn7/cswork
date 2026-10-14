@@ -181,3 +181,13 @@ test('company badges fold aliased OA slugs into one employer with its library na
     ],
   );
 });
+
+test('a streak badge counts freezes bought with points, as the calendar does', () => {
+  // October: free freezes bridge the 2nd and 4th, a freeze bought on the 9th the 8th.
+  const day = (d) => new Date(2026, 9, d, 12).getTime();
+  const history = [{ problemId: 'lc-1', firstAcAt: day(1), acAt: [1, 3, 5, 6, 7, 9, 10, 11].map(day), stop: null }];
+  const week = (bought) =>
+    progressBadges({ sections: [], history, problems: [], now: day(11), bought }).find((b) => b.id === 'streak:7').earned;
+  assert.equal(week(undefined), false);
+  assert.equal(week([day(9)]), true);
+});

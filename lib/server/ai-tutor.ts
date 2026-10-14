@@ -204,18 +204,48 @@ const usedToday = (userId: string, kind: AiKind, day: string) =>
     .pluck()
     .get(day, userId, kind) as number | undefined) ?? 0;
 
-/** Takes one call from the learner's quota and the site budget; returns calls left today. */
+/** Extra calls a points pack buys (lib/server/points.ts); they never expire and serve any kind. */
+export const AI_PACK_USES = 5;
+/** Bought calls one learner may use per UTC day, so a hoard cannot drain the site budget. */
+export const AI_BONUS_PER_DAY = 10;
+// Calls past each kind's daily limit; the limits are code constants, so they are inlined.
+const OVER = `COALESCE(SUM(MAX(0,count-CASE kind ${AI_KINDS.map((k) => `WHEN '${k}' THEN ${AI_DAILY_LIMITS[k]}`).join(' ')} ELSE count END)),0)`;
+/**
+ * Bought calls not used yet: packs × AI_PACK_USES minus every call past a daily limit so far;
+ * with `day`, no more than what is left of that day's AI_BONUS_PER_DAY.
+ * ponytail: derived from ai_usage, so a refunded call (settle) hands its bonus back too;
+ * changing AI_DAILY_LIMITS re-reads the past against the new limits.
+ */
+export function aiBonusLeft(userId: string, day?: string) {
+  const db = sqlite();
+  const packs = db
+    .prepare("SELECT COUNT(*) FROM point_ledger WHERE user_id=? AND reason='ai-pack'")
+    .pluck()
+    .get(userId) as number;
+  // Most learners never buy one: skip reading their usage at all.
+  if (!packs) return 0;
+  const over = db.prepare(`SELECT ${OVER} FROM ai_usage WHERE user_id=?`).pluck().get(userId) as number;
+  const left = Math.max(0, packs * AI_PACK_USES - over);
+  if (!day) return left;
+  const overToday = db
+    .prepare(`SELECT ${OVER} FROM ai_usage WHERE day=? AND user_id=?`)
+    .pluck()
+    .get(day, userId) as number;
+  return Math.max(0, Math.min(left, AI_BONUS_PER_DAY - overToday));
+}
+
+/** Takes one call from the learner's quota (or bought calls past it) and the site budget; returns calls left today. */
 function reserve(userId: string, kind: AiKind, day: string) {
   const db = sqlite();
   return db.transaction(() => {
     const spent = db.prepare('SELECT COALESCE(SUM(count),0) FROM ai_usage WHERE day=?').pluck().get(day) as number;
     if (spent >= budget()) throw new HttpError(503, 'AI 助教今天的额度已用完，明天再来');
     const used = usedToday(userId, kind, day);
-    if (used >= AI_DAILY_LIMITS[kind]) throw new HttpError(429, QUOTA_MESSAGES[kind]);
+    if (used >= AI_DAILY_LIMITS[kind] && !aiBonusLeft(userId, day)) throw new HttpError(429, QUOTA_MESSAGES[kind]);
     db.prepare(
       'INSERT INTO ai_usage(day,user_id,kind,count) VALUES(?,?,?,1) ON CONFLICT(day,user_id,kind) DO UPDATE SET count=count+1',
     ).run(day, userId, kind);
-    return AI_DAILY_LIMITS[kind] - used - 1;
+    return Math.max(0, AI_DAILY_LIMITS[kind] - used - 1);
   })();
 }
 /** Adds the call's tokens; a call the API cannot have billed (refund) hands its quota back. */
@@ -590,9 +620,10 @@ export async function handleAiTutor(request: Request, p: Person, kind: AiKind | 
     if (request.method !== 'GET') throw new HttpError(404, '接口不存在');
     await limit(p, 'oj-read', 240);
     const day = today();
-    return json(
-      Object.fromEntries(AI_KINDS.map((k) => [k, Math.max(0, AI_DAILY_LIMITS[k] - usedToday(p.id, k, day))])),
-    );
+    return json({
+      ...Object.fromEntries(AI_KINDS.map((k) => [k, Math.max(0, AI_DAILY_LIMITS[k] - usedToday(p.id, k, day))])),
+      bonus: aiBonusLeft(p.id, day),
+    });
   }
   if (request.method !== 'POST') throw new HttpError(404, '接口不存在');
   await limit(p, 'ai-tutor', 6);
@@ -698,13 +729,13 @@ export async function handleAiTutor(request: Request, p: Person, kind: AiKind | 
       // None in the box's format (or cut off by max_tokens): a failed call, still spent.
       if (!cases.length) throw new HttpError(503, 'AI 助教暂时不可用，请稍后再试');
       outcome = 'ok';
-      return json({ kind, cases, remaining, limit: AI_DAILY_LIMITS[kind] });
+      return json({ kind, cases, remaining, limit: AI_DAILY_LIMITS[kind], bonus: aiBonusLeft(p.id, day) });
     }
     const text = tidyReply(raw, kind, kind === 'chat' && verdict.accepted ? SNIPPETS : CODE_CAPS[kind]);
     // Nothing left (all thinking, or a hint that was only code): a failed call, still spent.
     if (!text) throw new HttpError(503, 'AI 助教暂时不可用，请稍后再试');
     outcome = 'ok';
-    return json({ kind, text, remaining, limit: AI_DAILY_LIMITS[kind] });
+    return json({ kind, text, remaining, limit: AI_DAILY_LIMITS[kind], bonus: aiBonusLeft(p.id, day) });
   } catch (error) {
     if (error instanceof HttpError) throw error;
     console.error('AI tutor upstream', error instanceof Error ? error.name : 'unknown');

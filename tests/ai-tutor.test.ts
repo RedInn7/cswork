@@ -278,10 +278,11 @@ void test('per-learner daily limit, then the site-wide daily budget', async () =
 void test('usage: calls left today, so the buttons start from the real count', async () => {
   const learner: Person = { ...me, id: 'ai-usage', email: 'ai-usage@example.test' };
   const left = async () => (await (await call(learner, 'usage', null, 'GET')).json()) as Record<string, number>;
-  assert.deepEqual(await left(), AI_DAILY_LIMITS);
+  // bonus: calls bought with points (lib/server/points.ts), none here.
+  assert.deepEqual(await left(), { ...AI_DAILY_LIMITS, bonus: 0 });
   assert.deepEqual(Object.keys(AI_DAILY_LIMITS).sort(), [...AI_KINDS].sort());
   assert.equal(await status(learner, 'hint', ask()), 200);
-  assert.deepEqual(await left(), { ...AI_DAILY_LIMITS, hint: AI_DAILY_LIMITS.hint - 1 });
+  assert.deepEqual(await left(), { ...AI_DAILY_LIMITS, hint: AI_DAILY_LIMITS.hint - 1, bonus: 0 });
   assert.equal(await status(learner, 'usage', ask()), 404);
   delete process.env.ANTHROPIC_API_KEY;
   assert.equal(await status(learner, 'usage', null, 'GET'), 404);

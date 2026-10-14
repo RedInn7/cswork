@@ -18,6 +18,8 @@ import { PracticeCalendar, usePracticeStats } from './practice-calendar';
 import { BadgeWall, progressBadges } from './achievements';
 import { MockCloudHistory } from './mock-cloud-history';
 import { MyExperienceSubmissions } from './experience-submissions';
+import { LevelPicks } from './level-picks';
+import { PointsPanel } from './points-panel';
 import { Button } from './ui/button';
 import type { Navigate } from './learning';
 import '@/app/my-progress.css';
@@ -79,7 +81,9 @@ export function MyProgress({
   const [result, setResult] = useState('');
   const [period, setPeriod] = useState('');
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
-  const stats = usePracticeStats(boot.activity ?? [], english, boot.daily?.done);
+  // A freeze bought below counts on the calendar at once, before the bootstrap refreshes.
+  const [bought, setBought] = useState<number[] | null>(null);
+  const stats = usePracticeStats(boot.activity ?? [], english, boot.daily?.done, bought ?? boot.purchasedFreezes);
   // Line 500's daily target, read only: the trip itself lives on the bank page.
   // This view only renders after the client bootstrap, so storage is safe here.
   const [target] = useState(() => {
@@ -142,9 +146,10 @@ export function MyProgress({
             userId: personId,
             now: data.now,
             companyNames: data.companyNames,
+            bought: bought ?? boot.purchasedFreezes,
           })
         : [],
-    [data, boot.problems, personId],
+    [data, boot.problems, personId, bought, boot.purchasedFreezes],
   );
   const noted = (data?.notes ?? []).flatMap((n) => {
     const id = problemOf(n.target);
@@ -413,6 +418,7 @@ export function MyProgress({
           <PracticeCalendar stats={stats} signedIn target={target} t={t} />
         </div>
       </header>
+      {boot.person && <LevelPicks english={english} navigate={navigate} />}
       <div
         className="progress-tabs"
         role="tablist"
@@ -471,6 +477,7 @@ export function MyProgress({
           panel()
         )}
       </div>
+      {boot.person && <PointsPanel english={english} onChange={(s) => setBought(s.freezes.purchased)} />}
       {boot.person && <MockCloudHistory userId={boot.person.id} navigate={navigate} english={english} />}
       {boot.person && <MyExperienceSubmissions english={english} navigate={navigate} open={initialTab === 'share'} />}
     </section>

@@ -25,6 +25,8 @@ export type OJProblem = Problem & {
     attribution: string;
   } | null;
   curatedHint?: { zh: string; en: string } | null;
+  /** Contest rating (zerotrac), null outside rated contests. */
+  rating?: number | null;
   /** Companies reported to have asked this problem (lib/company-tags.ts). */
   companies?: CompanyTag[];
   /** A failed formal submission in the current practice round. */

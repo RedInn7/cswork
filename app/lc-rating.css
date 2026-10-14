@@ -1,0 +1,512 @@
+/* Contest ratings: the band chip (components/rating-badge.tsx), the contest grid
+   (components/contest-grid.tsx) and "problems at your level" (components/level-picks.tsx).
+   The chip reads like a fare-zone stamp on the Line 500 ticket stock. */
+.lc-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px;
+  border: 1px solid #cfd6dd;
+  border-radius: 5px;
+  background: #eef1f4;
+  color: #4f5b66;
+  font: 700 11px/16px 'Overpass', var(--font-mono, ui-monospace), monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.lc-rating::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.lc-rating[data-band='green'] {
+  border-color: #a9d9bd;
+  background: #e8f5ee;
+  color: #1f6b43;
+}
+.lc-rating[data-band='cyan'] {
+  border-color: #9fd8df;
+  background: #e3f5f7;
+  color: #0a6672;
+}
+.lc-rating[data-band='blue'] {
+  border-color: #b0c6f0;
+  background: #e8effc;
+  color: #2353ad;
+}
+.lc-rating[data-band='purple'] {
+  border-color: #cdb9ef;
+  background: #f1ebfb;
+  color: #643ba8;
+}
+.lc-rating[data-band='orange'] {
+  border-color: #f0c79a;
+  background: #fdf0e3;
+  color: #994c09;
+}
+.lc-rating[data-band='red'] {
+  border-color: #eeb4b4;
+  background: #fcebeb;
+  color: #ad2a2a;
+}
+
+/* On a Line 500 row: a fixed slot between the stage pips and the company marks
+   (:not() outranks study-library.css's rule whichever loads last; classic lists keep theirs). */
+.study-bank:not(.classic-list) .study-row-main {
+  grid-template-columns: minmax(0, 1fr) auto 46px 36px;
+}
+.study-bank:not(.classic-list) .study-row-main > .lc-rating {
+  grid-row: 1;
+  grid-column: 3;
+  justify-self: end;
+}
+.study-bank:not(.classic-list) .study-row-main > .study-companies {
+  grid-column: 4;
+}
+.study-acceptance {
+  color: #66717c;
+  font: 600 11px/1 'Overpass', var(--font-mono, ui-monospace), monospace;
+}
+
+/* Sort, rating band, my lists, solved month: the bank's second filter row. */
+.study-sorts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin: 0 0 14px;
+  padding: 0;
+  border: 0;
+}
+.study-sorts > label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #66717c;
+  font-size: 12px;
+}
+.study-sorts select,
+.study-sorts input[type='month'] {
+  min-height: 32px;
+  border: 1px solid #dce1e6;
+  border-radius: 7px;
+  background: #fff;
+  color: #1d252d;
+  font: inherit;
+  font-size: 13px;
+  padding: 0 8px;
+}
+.study-browse {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid #dce1e6;
+  border-radius: 8px;
+  background: #f4f6f8;
+}
+.study-browse button {
+  min-height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #4f5b66;
+  font-size: 13px;
+  cursor: pointer;
+}
+.study-browse button[aria-pressed='true'] {
+  background: #0e1a2b;
+  color: #ffb23f;
+}
+.study-browse button:focus-visible,
+.route-rating-sort:focus-visible,
+.contest-cell:focus-visible,
+.level-pick:focus-visible {
+  outline: 2px solid #327b76;
+  outline-offset: 2px;
+}
+.route-rating-sort {
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid #c7d2e0;
+  border-radius: 7px;
+  background: #fff;
+  color: #1d252d;
+  font-size: 13px;
+  cursor: pointer;
+}
+.route-rating-sort[aria-pressed='true'] {
+  border-color: #0e1a2b;
+  background: #0e1a2b;
+  color: #ffb23f;
+}
+
+/* Contests: one row per contest, Q1–Q4 across, like a timetable. */
+.contest-grid {
+  display: grid;
+  gap: 6px;
+}
+.contest-head,
+.contest-row {
+  display: grid;
+  grid-template-columns: 128px repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  align-items: stretch;
+}
+.contest-head {
+  color: #697681;
+  font: 700 11px/1 'Overpass', var(--font-mono, ui-monospace), monospace;
+  letter-spacing: 0.12em;
+  padding: 0 0 4px;
+}
+.contest-name {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  border-left: 3px solid #0e1a2b;
+  color: #1d252d;
+  font-size: 13px;
+  font-weight: 600;
+}
+.contest-name[data-kind='b'] {
+  border-left-color: #ffb23f;
+}
+.contest-row > [role='cell'] {
+  display: grid;
+  min-width: 0;
+}
+.contest-cell {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  min-height: 62px;
+  padding: 8px 10px;
+  border: 1px solid #e3e7eb;
+  border-radius: 8px;
+  background: #fff;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.contest-cell:hover {
+  border-color: #0e1a2b;
+}
+.contest-cell[data-progress='solved'] {
+  border-color: #9fd7bf;
+  background: #eef8f3;
+}
+.contest-cell[data-progress='attempted'] {
+  border-color: #f0d49d;
+}
+.contest-cell strong {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.contest-cell-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #697681;
+  font-size: 11px;
+}
+.contest-cell-meta svg {
+  color: #0d7a63;
+}
+.contest-empty {
+  border: 1px dashed #e3e7eb;
+  border-radius: 8px;
+}
+@media (max-width: 720px) {
+  .contest-head {
+    display: none;
+  }
+  .contest-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .contest-name {
+    grid-column: 1 / -1;
+    padding: 6px 10px;
+  }
+  .contest-empty {
+    display: none;
+  }
+}
+
+/* Problems at your level: three tiers, three picks each, with the Elo chance. */
+.level-picks {
+  margin: 0 0 24px;
+  padding: 18px 20px 20px;
+  border-radius: 12px;
+  background: #0e1a2b;
+  color: #eef3f8;
+}
+.level-picks-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 16px;
+  margin-bottom: 14px;
+}
+.level-picks-head h2 {
+  margin: 0;
+  color: #eef3f8;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+.level-picks-head p {
+  margin: 0;
+  color: #9fb0c6;
+  font-size: 12px;
+}
+.level-picks-level {
+  color: #ffb23f;
+  font: 800 22px/1 'Overpass', var(--font-mono, ui-monospace), monospace;
+  font-variant-numeric: tabular-nums;
+}
+.level-picks-tiers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.level-tier h3 {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 8px;
+  color: #c7d2e0;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+}
+.level-tier h3 small {
+  color: #9fb0c6;
+  font: 600 11px/1.4 'Overpass', var(--font-mono, ui-monospace), monospace;
+  letter-spacing: 0;
+}
+.level-tier ol {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.level-pick {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #1e2b40;
+  color: #eef3f8;
+  text-decoration: none;
+}
+.level-pick:hover {
+  background: #2b3a50;
+}
+.level-pick strong {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 550;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.level-pick-chance {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #9fb0c6;
+  font-size: 11px;
+}
+.level-pick-chance meter {
+  flex: 1;
+  height: 4px;
+}
+.level-tier-empty {
+  margin: 0;
+  color: #9fb0c6;
+  font-size: 12px;
+}
+@media (max-width: 720px) {
+  .level-picks-tiers {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* /topics/<stop>: the stop's rating range under the sign. */
+.topics-ratings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 0;
+  font-size: 13px;
+}
+
+/* Problem page: as tall as the difficulty pill beside it. */
+.cs-statement-tools .lc-rating {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 19px;
+}
+
+/* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
+@media screen {
+  .dark .lc-rating {
+    border: 1px solid #30363b;
+    background: #101213;
+    color: #bcc8d3;
+  }
+  .dark .lc-rating::before {
+    background: currentColor;
+  }
+  .dark .lc-rating[data-band='green'] {
+    border-color: #20412f;
+    background: #0d1410;
+    color: #99d7af;
+  }
+  .dark .lc-rating[data-band='cyan'] {
+    border-color: #114045;
+    background: #091415;
+    color: #93d3dd;
+  }
+  .dark .lc-rating[data-band='blue'] {
+    border-color: #2d3b56;
+    background: #0d1117;
+    color: #aac8fb;
+  }
+  .dark .lc-rating[data-band='purple'] {
+    border-color: #403552;
+    background: #120f17;
+    color: #ccbbfd;
+  }
+  .dark .lc-rating[data-band='orange'] {
+    border-color: #483219;
+    background: #18110a;
+    color: #f8af81;
+  }
+  .dark .lc-rating[data-band='red'] {
+    border-color: #533031;
+    background: #170f0f;
+    color: #ffa9a1;
+  }
+  .dark .study-acceptance {
+    color: #b5bfc9;
+  }
+  .dark .study-sorts {
+    border: 0;
+  }
+  .dark .study-sorts > label {
+    color: #b5bfc9;
+  }
+  .dark .study-sorts select,
+  .dark .study-sorts input[type='month'] {
+    border: 1px solid #2d3135;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .study-browse {
+    border: 1px solid #2d3135;
+    background: #131416;
+  }
+  .dark .study-browse button {
+    border: 0;
+    background: transparent;
+    color: #bcc8d3;
+  }
+  .dark .study-browse button[aria-pressed='true'] {
+    background: #0e1a2b;
+    color: #ffb23f;
+  }
+  .dark .study-browse button:focus-visible,
+  .dark .route-rating-sort:focus-visible,
+  .dark .contest-cell:focus-visible,
+  .dark .level-pick:focus-visible {
+    outline: 2px solid #90ccc7;
+  }
+  .dark .route-rating-sort {
+    border: 1px solid #2f3743;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .route-rating-sort[aria-pressed='true'] {
+    border-color: #0e1a2b;
+    background: #0e1a2b;
+    color: #ffb23f;
+  }
+  .dark .contest-head {
+    color: #b2bec8;
+  }
+  .dark .contest-name {
+    border-left: 3px solid #94a4bb;
+    color: #d6dfe8;
+  }
+  .dark .contest-name[data-kind='b'] {
+    border-left-color: #ffb23f;
+  }
+  .dark .contest-cell {
+    border: 1px solid #2c2f32;
+    background: #191919;
+    color: inherit;
+  }
+  .dark .contest-cell:hover {
+    border-color: #94a4bb;
+  }
+  .dark .contest-cell[data-progress='solved'] {
+    border-color: #1d4234;
+    background: #101613;
+  }
+  .dark .contest-cell[data-progress='attempted'] {
+    border-color: #403213;
+  }
+  .dark .contest-cell-meta {
+    color: #b2bec8;
+  }
+  .dark .contest-cell-meta svg {
+    color: #87d2bb;
+  }
+  .dark .contest-empty {
+    border: 1px dashed #2c2f32;
+  }
+  .dark .level-picks {
+    background: #0e1a2b;
+    color: #eef3f8;
+  }
+  .dark .level-picks-head h2 {
+    color: #eff3f7;
+  }
+  .dark .level-picks-head p {
+    color: #a4b3c5;
+  }
+  .dark .level-picks-level {
+    color: #f7b55c;
+  }
+  .dark .level-tier h3 {
+    color: #c8d2de;
+  }
+  .dark .level-tier h3 small {
+    color: #a4b3c5;
+  }
+  .dark .level-pick {
+    background: #1e2b40;
+    color: #eef3f8;
+    text-decoration: none;
+  }
+  .dark .level-pick:hover {
+    background: #2b3a50;
+  }
+  .dark .level-pick-chance {
+    color: #a4b3c5;
+  }
+  .dark .level-tier-empty {
+    color: #a4b3c5;
+  }
+}
+/* ── end dark theme ── */

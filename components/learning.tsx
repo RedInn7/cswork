@@ -30,6 +30,7 @@ import {
 import { KnowledgeExercises } from './knowledge-exercises';
 import '@/app/knowledge-exercises.css';
 import '@/app/study-library.css';
+import '@/app/lc-rating.css';
 import '@/app/oa-library.css';
 import {
   Dialog,
@@ -940,6 +941,7 @@ export function ProblemList({
       availableProblemIds={boot.problems.map((problem) => problem.id)}
       activity={boot.activity || []}
       daily={boot.daily}
+      purchasedFreezes={boot.purchasedFreezes}
       signedIn={!!boot.person}
       userId={boot.person?.id}
     />

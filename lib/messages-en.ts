@@ -220,6 +220,10 @@ const EN: Record<string, string> = {
   访问令牌不存在: 'Access token not found',
   '最多保留 10 个访问令牌，请先吊销不用的': 'You can keep at most 10 access tokens. Revoke one you no longer use first',
   笔记或标记已达上限: "You've reached the limit for notes or marks",
+  // Points (lib/server/points.ts) and the bank's solved-date filter
+  积分不足: 'Not enough points',
+  '本月的补签卡已经买满 3 张': "You've bought this month's 3 streak freezes",
+  无效的日期: 'Invalid date',
   // Lists, public profile and asked reports (lib/server/learner-cloud.ts)
   题单不存在: 'List not found',
   题单接口不存在: 'List endpoint not found',

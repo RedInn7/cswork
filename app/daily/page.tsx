@@ -1,6 +1,7 @@
 import '../library/library.css';
 import '../oa/oa.css';
 import './daily.css';
+import '../lc-rating.css';
 import { Suspense } from 'react';
 import { oaStatementMarkdown } from '@/lib/oa-verified-statement';
 import { seoMetadata } from '@/lib/seo';

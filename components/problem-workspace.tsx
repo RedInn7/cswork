@@ -16,6 +16,7 @@ import {
 } from '@/lib/problem-sequence';
 import { practiceStats, type Activity } from './practice-calendar';
 import { AcceptedExtras } from './achievements';
+import { RatingBadge } from './rating-badge';
 import { localDay, readTodayTarget } from '@/lib/study-plan';
 import {
   ArrowLeft,
@@ -143,6 +144,7 @@ import { track } from '@/lib/analytics';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import '@/app/editor.css';
+import '@/app/lc-rating.css';
 import '@/app/workbench-tools.css';
 import '@/app/workspace-panels.css';
 import '@/app/workspace-sync.css';
@@ -1544,6 +1546,8 @@ function Workspace({
                     ]
                   : problem.difficulty}
               </span>
+              {/* Contest rating (zerotrac); kept out of a mock like the company tags. */}
+              {!examMode && <RatingBadge rating={problem.rating} english={uiEnglish} />}
               {!examMode && topics.length > 0 && (
                 <button
                   className="cs-statement-pill"
@@ -2740,6 +2744,7 @@ function Workspace({
           memoryKb={success.memoryKb ?? success.memory ?? null}
           seconds={solveSeconds}
           activity={boot.activity}
+          bought={boot.purchasedFreezes}
           fallbackNext={neighbors.next}
           english={uiEnglish}
           navigate={navigate}
@@ -3169,6 +3174,7 @@ function AcceptedDialog({
   memoryKb,
   seconds,
   activity,
+  bought,
   fallbackNext,
   english,
   navigate,
@@ -3190,6 +3196,8 @@ function AcceptedDialog({
   acceptedAt: number;
   seconds: number | null;
   activity?: Activity[];
+  /** Streak freezes bought with points (bootstrap purchasedFreezes). */
+  bought?: number[];
   fallbackNext?: string;
   english: boolean;
   navigate: WorkspaceProps['navigate'];
@@ -3220,8 +3228,11 @@ function AcceptedDialog({
         ],
         new Date(now).toDateString(),
         english,
+        [],
+        undefined,
+        bought,
       ),
-    [activity, problemId, acceptedAt, now, english],
+    [activity, problemId, acceptedAt, now, english, bought],
   );
   // Aggregates only (lib/server/problem-stats.ts); null below its sample floors.
   const [standing, setStanding] = useState<Partial<Standing> | null>(null);
@@ -3333,7 +3344,13 @@ function AcceptedDialog({
             />
           )}
           {ai && <AiComplexity tutor={ai.tutor} context={ai.context} />}
-          <AcceptedExtras problemId={problemId} acceptedAt={acceptedAt} activity={activity} english={english} />
+          <AcceptedExtras
+            problemId={problemId}
+            acceptedAt={acceptedAt}
+            activity={activity}
+            bought={bought}
+            english={english}
+          />
           <Button
             ref={primary}
             size="lg"

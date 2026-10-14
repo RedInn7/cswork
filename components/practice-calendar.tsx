@@ -37,6 +37,8 @@ const WEEKS = 26; // The server sends 183 days of activity to cover the grid.
 const DAY = 86400000;
 /** Streak freezes each calendar month; used up automatically, oldest gap first. */
 export const FREEZES_PER_MONTH = 2;
+// Freezes bought with points (bootstrap purchasedFreezes) come after the free ones and cover
+// a gap from the day before the purchase (the rescue) to the end of the purchase's month.
 
 function dayKey(time: number) {
   const d = new Date(time);
@@ -57,6 +59,9 @@ const monthOf = (time: number) => {
  * `dayStamp` is `Date#toDateString()` of the local day the grid ends on. A day with no
  * AC between two AC days spends one of the month's streak freezes and keeps the streak
  * (it adds no day to it). `daily`: times the daily problem was solved, starred cells.
+ * `bought`: when freezes were bought with points; each covers one gap after the month's
+ * free ones, from the day before it was bought to the end of that local month, so it never
+ * goes to a gap that broke a streak before the purchase.
  */
 export function practiceStats(
   activity: readonly Activity[],
@@ -64,6 +69,7 @@ export function practiceStats(
   english: boolean,
   daily: readonly number[] = [],
   weeks = WEEKS,
+  bought: readonly number[] = [],
 ): PracticeStats {
   const solvedByDay = new Map<string, Set<string>>();
   for (const { problem_id, created_at } of activity) {
@@ -85,17 +91,28 @@ export function practiceStats(
   const start = today.getTime() - todayIndex * DAY;
   // Noon avoids daylight-saving edges when stepping by whole days.
   const noon = (i: number) => start + i * DAY + DAY / 2;
-  const used = new Map<number, number>();
+  const freeUsed = new Map<number, number>();
+  const tokens = [...bought]
+    .sort((a, b) => a - b)
+    .map((time) => ({ from: new Date(time).setHours(0, 0, 0, 0) - DAY, month: monthOf(time), used: false }));
+  // A freeze for the gap at `time` (a noon): a free one of its month, else the first unused
+  // bought one that reaches it. `spend` false only asks.
+  const freeze = (time: number, spend: boolean) => {
+    const month = monthOf(time);
+    const free = freeUsed.get(month) ?? 0;
+    if (free < FREEZES_PER_MONTH) {
+      if (spend) freeUsed.set(month, free + 1);
+      return true;
+    }
+    const token = tokens.find((t) => !t.used && t.from <= time && month <= t.month);
+    if (token && spend) token.used = true;
+    return !!token;
+  };
   const frozen = new Set<string>();
   // Today is not over, so the last day a freeze can cover is yesterday.
   for (let i = 1; i < todayIndex; i++) {
     const time = noon(i);
-    const month = monthOf(time);
-    const spent = used.get(month) ?? 0;
-    if (!count(time) && count(time - DAY) && count(time + DAY) && spent < FREEZES_PER_MONTH) {
-      used.set(month, spent + 1);
-      frozen.add(dayKey(time));
-    }
+    if (!count(time) && count(time - DAY) && count(time + DAY) && freeze(time, true)) frozen.add(dayKey(time));
   }
   let best = 0;
   let run = 0;
@@ -127,11 +144,7 @@ export function practiceStats(
   let day = noon(todayIndex);
   if (count(day) === 0) day -= DAY;
   // An empty yesterday after an AC day: today's first AC will freeze it.
-  const rescue =
-    !count(day) &&
-    day < noon(todayIndex) &&
-    count(day - DAY) > 0 &&
-    (used.get(monthOf(day)) ?? 0) < FREEZES_PER_MONTH;
+  const rescue = !count(day) && day < noon(todayIndex) && count(day - DAY) > 0 && freeze(day, false);
   if (rescue) day -= DAY;
   while (count(day) > 0 || frozen.has(dayKey(day))) {
     if (count(day)) streak++;
@@ -146,7 +159,10 @@ export function practiceStats(
     today: cells[todayIndex].count,
     total: seen.size,
     todayIndex,
-    freezesLeft: FREEZES_PER_MONTH - (used.get(monthOf(noon(todayIndex))) ?? 0),
+    freezesLeft:
+      FREEZES_PER_MONTH -
+      (freeUsed.get(monthOf(noon(todayIndex))) ?? 0) +
+      tokens.filter((t) => !t.used && t.month === monthOf(noon(todayIndex))).length,
     rescue,
   };
 }
@@ -160,6 +176,7 @@ export function usePracticeStats(
   activity: readonly Activity[],
   english: boolean,
   daily?: readonly number[],
+  bought?: readonly number[],
 ) {
   const [dayStamp, setDayStamp] = useState<string | null>(null);
   useEffect(() => {
@@ -170,8 +187,8 @@ export function usePracticeStats(
   }, []);
   return useMemo(
     () =>
-      dayStamp === null ? null : practiceStats(activity, dayStamp, english, daily),
-    [activity, dayStamp, english, daily],
+      dayStamp === null ? null : practiceStats(activity, dayStamp, english, daily, WEEKS, bought),
+    [activity, dayStamp, english, daily, bought],
   );
 }
 

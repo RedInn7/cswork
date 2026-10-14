@@ -57,8 +57,7 @@ export function dailySource(summaries: readonly ProblemSummary[], hot: Hot) {
 // ponytail: one snapshot for 5 minutes, like the mock OA catalogue; publishes show up after that.
 let cached: { at: number; value: Promise<ReturnType<typeof dailySource>> } | null = null;
 
-/** Today's problem (Beijing date) for everyone, with this viewer's completions from `activity`. */
-export async function dailyProblem(activity: readonly Activity[] = [], now = Date.now()) {
+function source(now: number) {
   if (!cached || now - cached.at > 300000) {
     const value = listProblemSummaries(null).then((s) => dailySource(s, shownMockPresets()));
     cached = { at: now, value };
@@ -66,5 +65,15 @@ export async function dailyProblem(activity: readonly Activity[] = [], now = Dat
       if (cached?.value === value) cached = null;
     });
   }
-  return (await cached.value).daily(activity, now);
+  return cached.value;
+}
+
+/** Today's problem (Beijing date) for everyone, with this viewer's completions from `activity`. */
+export async function dailyProblem(activity: readonly Activity[] = [], now = Date.now()) {
+  return (await source(now)).daily(activity, now);
+}
+
+/** The daily problem's id on a Beijing `date` (YYYY-MM-DD), e.g. the day an AC was judged. */
+export async function dailyIdOn(date: string, now = Date.now()) {
+  return (await source(now)).pick(date);
 }

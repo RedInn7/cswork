@@ -13,12 +13,16 @@ import {
   loadGoal,
   localDay,
   oaDateInRange,
+  planGroups,
   planIcs,
   planStorageKey,
   planWeeks,
+  PLAN_VIEW_KEY,
   suggestStartStop,
   TODAY_TARGET_KEY,
   type Plan,
+  type PlanGroupBy,
+  type PlanOrder,
   type PlanCompany,
   type PlanGoal,
   type PlanProblem,
@@ -175,6 +179,22 @@ export function StudyPlan({
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const [editing, setEditing] = useState(false);
+  // How the week list groups (week / stop / difficulty) and orders stops; this browser remembers.
+  const [view, setView] = useState<{ by: PlanGroupBy; order: PlanOrder }>({ by: 'week', order: 'plan' });
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(PLAN_VIEW_KEY) || 'null');
+      if (['week', 'topic', 'difficulty'].includes(saved?.by) && ['plan', 'difficulty'].includes(saved?.order))
+        // oxlint-disable-next-line react/react-compiler -- The saved view exists only in the browser, after hydration.
+        setView({ by: saved.by, order: saved.order });
+    } catch {}
+  }, []);
+  const changeView = (next: { by: PlanGroupBy; order: PlanOrder }) => {
+    setView(next);
+    try {
+      localStorage.setItem(PLAN_VIEW_KEY, JSON.stringify(next));
+    } catch {}
+  };
   const refocus = useRef(false);
   const entry = useRef<HTMLButtonElement>(null);
   const heading = useRef<HTMLHeadingElement>(null);
@@ -323,53 +343,109 @@ export function StudyPlan({
           {t('按周查看', 'Week by week')}
           <ChevronDown size={14} aria-hidden="true" />
         </summary>
-        {/* oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- The list scrolls inside the panel; keyboard users need to reach it (WCAG 2.1.1). */}
-        <ol tabIndex={0} aria-label={t('每周计划', 'Weekly plan')}>
-          {weeks.map((w, i) => (
-            <li key={w.start} data-sprint={w.sprint || undefined} data-oa={w.oa || undefined}>
-              <span className="route-plan-week">
-                {i === 0 ? t('本周', 'This week') : t(`第 ${i + 1} 周`, `Week ${i + 1}`)}
-                <small>
-                  {monthDay(w.start)}
-                  {w.end !== w.start && `–${monthDay(w.end)}`}
-                </small>
-              </span>
-              <span>
-                {w.problems
-                  ? t(
-                      `${w.problems} 题 · 约 ${practice(w)} 小时`,
-                      `${w.problems} ${w.problems === 1 ? 'problem' : 'problems'} · ~${practice(w)} h`,
-                    )
-                  : w.oa || w.mocks
-                    ? ''
-                    : t('无新题', 'Nothing new')}
-              </span>
-              <span className="route-plan-stops">
-                {w.stops &&
-                  (w.stops[0] === w.stops[1]
-                    ? stopLabel(w.stops[0])
-                    : `${stopLabel(w.stops[0])} → ${stopLabel(w.stops[1])}`)}
-              </span>
-              <span className="route-plan-tags">
-                {w.sprint && !(w.oa && w.days.length === 1) && (
-                  <span className="route-plan-tag">{t('冲刺周', 'Sprint')}</span>
-                )}
-                {w.days
-                  .filter((day) => day.mock)
-                  .map((day) => (
-                    <a key={day.date} className="route-plan-tag" href={mockHref}>
-                      {t(`模拟 OA ${monthDay(day.date)}`, `Mock OA ${monthDay(day.date)}`)}
-                    </a>
-                  ))}
-                {w.oa && (
-                  <span className="route-plan-tag" data-oa>
-                    OA {monthDay(w.end)}
-                  </span>
-                )}
-              </span>
-            </li>
-          ))}
-        </ol>
+        <div className="route-plan-view">
+          <label>
+            {t('分组', 'Group')}
+            <select
+              value={view.by}
+              onChange={(event) => changeView({ ...view, by: event.target.value as PlanGroupBy })}
+            >
+              <option value="week">{t('按周', 'By week')}</option>
+              <option value="topic">{t('按专题', 'By topic')}</option>
+              <option value="difficulty">{t('按难度', 'By difficulty')}</option>
+            </select>
+          </label>
+          {view.by === 'topic' && (
+            <label>
+              {t('排序', 'Order')}
+              <select
+                value={view.order}
+                onChange={(event) => changeView({ ...view, order: event.target.value as PlanOrder })}
+              >
+                <option value="plan">{t('原顺序', 'Plan order')}</option>
+                <option value="difficulty">{t('先易后难', 'Easier first')}</option>
+              </select>
+            </label>
+          )}
+        </div>
+        {view.by !== 'week' ? (
+          // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Scrolls inside the panel, like the weeks.
+          <ol
+            tabIndex={0}
+            data-group={view.by}
+            aria-label={view.by === 'topic' ? t('按专题的计划', 'Plan by topic') : t('按难度的计划', 'Plan by difficulty')}
+          >
+            {planGroups(plan.days, view.by, view.order).map((g) => (
+              <li key={g.key}>
+                <span className="route-plan-week">
+                  {g.level
+                    ? { easy: t('简单', 'Easy'), medium: t('中等', 'Medium'), hard: t('困难', 'Hard') }[g.level]
+                    : g.stop === null
+                      ? t('目标公司 OA', 'Target company OA')
+                      : stopLabel(g.stop)}
+                  <small>
+                    {monthDay(g.first)}
+                    {g.last !== g.first && `–${monthDay(g.last)}`}
+                  </small>
+                </span>
+                <span>
+                  {t(
+                    `${g.problems} 题 · 约 ${hours(g.minutes)} 小时`,
+                    `${g.problems} ${g.problems === 1 ? 'problem' : 'problems'} · ~${hours(g.minutes)} h`,
+                  )}
+                </span>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          // oxlint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- The list scrolls inside the panel; keyboard users need to reach it (WCAG 2.1.1).
+          <ol tabIndex={0} aria-label={t('每周计划', 'Weekly plan')}>
+            {weeks.map((w, i) => (
+              <li key={w.start} data-sprint={w.sprint || undefined} data-oa={w.oa || undefined}>
+                <span className="route-plan-week">
+                  {i === 0 ? t('本周', 'This week') : t(`第 ${i + 1} 周`, `Week ${i + 1}`)}
+                  <small>
+                    {monthDay(w.start)}
+                    {w.end !== w.start && `–${monthDay(w.end)}`}
+                  </small>
+                </span>
+                <span>
+                  {w.problems
+                    ? t(
+                        `${w.problems} 题 · 约 ${practice(w)} 小时`,
+                        `${w.problems} ${w.problems === 1 ? 'problem' : 'problems'} · ~${practice(w)} h`,
+                      )
+                    : w.oa || w.mocks
+                      ? ''
+                      : t('无新题', 'Nothing new')}
+                </span>
+                <span className="route-plan-stops">
+                  {w.stops &&
+                    (w.stops[0] === w.stops[1]
+                      ? stopLabel(w.stops[0])
+                      : `${stopLabel(w.stops[0])} → ${stopLabel(w.stops[1])}`)}
+                </span>
+                <span className="route-plan-tags">
+                  {w.sprint && !(w.oa && w.days.length === 1) && (
+                    <span className="route-plan-tag">{t('冲刺周', 'Sprint')}</span>
+                  )}
+                  {w.days
+                    .filter((day) => day.mock)
+                    .map((day) => (
+                      <a key={day.date} className="route-plan-tag" href={mockHref}>
+                        {t(`模拟 OA ${monthDay(day.date)}`, `Mock OA ${monthDay(day.date)}`)}
+                      </a>
+                    ))}
+                  {w.oa && (
+                    <span className="route-plan-tag" data-oa>
+                      OA {monthDay(w.end)}
+                    </span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ol>
+        )}
       </details>
     </section>
   );

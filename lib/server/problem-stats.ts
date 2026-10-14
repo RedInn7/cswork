@@ -156,3 +156,24 @@ export function problemStats(
     votes: { ...entry.votes },
   };
 }
+
+let shares: { at: number; map: Map<string, number> } | null = null;
+/**
+ * Accepted share of people per LeetCode-bank problem, for the bank's "acceptance" sort: one
+ * grouped query for every problem, cached like the per-problem stats. Problems tried by
+ * fewer than MIN_PEOPLE are left out (they sort last), so no small group is exposed.
+ */
+export function acceptanceIndex(now = Date.now()) {
+  if (shares && now - shares.at < TTL) return shares.map;
+  const rows = sqlite()
+    .prepare(
+      `SELECT s.problem_id id, COUNT(DISTINCT s.user_id) attempted,
+              COUNT(DISTINCT CASE WHEN s.status='accepted' THEN s.user_id END) accepted
+         FROM submissions s WHERE s.mode='judge' AND s.problem_id LIKE 'lc-%'
+          AND s.status NOT IN ${UNSETTLED}${andUnlisted()}
+        GROUP BY s.problem_id HAVING attempted>=?`,
+    )
+    .all(MIN_PEOPLE) as { id: string; attempted: number; accepted: number }[];
+  shares = { at: now, map: new Map(rows.map((r) => [r.id, r.accepted / r.attempted])) };
+  return shares.map;
+}
