@@ -45,6 +45,8 @@ import {
 import { Button } from './ui/button';
 import { OaCompanyBadge, OaEditorial } from './oa-library';
 import { CompanyTags } from './company-tags';
+import { HintLadder } from './hint-ladder';
+import { SimilarProblems } from './similar-problems';
 import {
   ExamAcceptedDialog,
   MockExamBar,
@@ -1427,6 +1429,23 @@ function Workspace({
                   )}
                 </div>
               </section>
+            )}
+            {problem.lingHints && !examMode && (
+              <HintLadder
+                problemId={problem.id}
+                userId={userId}
+                hints={problem.lingHints}
+                failed={problem.failedSubmissions ?? 0}
+                submission={submission}
+                english={uiEnglish}
+              />
+            )}
+            {!!problem.similar?.length && !examMode && (
+              <SimilarProblems
+                items={problem.similar}
+                english={uiEnglish}
+                navigate={navigate}
+              />
             )}
           </>
         ) : (
