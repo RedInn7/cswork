@@ -155,3 +155,45 @@ void test('companies in HIDDEN_COMPANIES leave the list, the company menu, detai
   }
   assert.equal(library.list(new URLSearchParams()).total, 35); // back once cleared
 });
+void test('OA library lists topics and kinds, and filters by topic with counts that follow the other filters', () => {
+  const topics = (id: string) => {
+    const n = Number(id.split('-').pop());
+    return n > 30
+      ? undefined
+      : {
+          t: n % 2 ? ['greedy-scheduling', 'hash-counting'] : ['hash-counting'],
+          d: 'easy' as const,
+          k: n === 2 ? ('mcq' as const) : ('coding' as const),
+        };
+  };
+  const library = createOaLibrary(fixture(), { topics });
+  const all = library.list(new URLSearchParams());
+  assert.deepEqual(all.topics, [
+    { slug: 'hash-counting', count: 30 },
+    { slug: 'greedy-scheduling', count: 15 },
+  ]);
+  assert.deepEqual(all.items[0].topics, ['greedy-scheduling', 'hash-counting']);
+  assert.equal(all.items[0].kind, undefined, 'coding problems carry no kind');
+  assert.equal(all.items[1].kind, 'mcq');
+  assert.deepEqual(all.items[30 - 1].topics, ['hash-counting']);
+  const greedy = library.list(new URLSearchParams('topic=greedy-scheduling'));
+  assert.equal(greedy.total, 15);
+  assert(greedy.items.every((item) => item.topics.includes('greedy-scheduling')));
+  // Counts ignore the topic itself but follow the search.
+  assert.deepEqual(greedy.topics, all.topics);
+  assert.deepEqual(
+    library.list(new URLSearchParams('topic=greedy-scheduling&q=题目%2031')).topics,
+    [],
+  );
+  assert.equal(library.list(new URLSearchParams('q=题目%201&topic=hash-counting')).total, 11);
+  // Unknown topics (old or mistyped links) filter nothing rather than failing.
+  for (const value of ['made-up', '__proto__', 'constructor'])
+    assert.equal(library.list(new URLSearchParams({ topic: value })).total, 35);
+  assert.deepEqual(library.detail('oa-meta-2').topics, ['hash-counting']);
+  assert.equal(library.detail('oa-meta-2').kind, 'mcq');
+  assert.deepEqual(library.detail('oa-meta-33').topics, []);
+  // The checked-in estimates cover the real catalog.
+  const real = createOaLibrary(JSON.parse(readFileSync('content/oa-master/catalog.json', 'utf8')));
+  const page = real.list(new URLSearchParams('topic=sql&ready=0'));
+  assert(page.total > 0 && page.items.every((item) => item.topics.includes('sql')));
+});

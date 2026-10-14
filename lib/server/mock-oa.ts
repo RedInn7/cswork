@@ -63,7 +63,7 @@ export function mockCatalogue(
         id: p.id,
         difficulty: slotOf(p.difficulty),
         loose: false,
-        ...(stop && { topics: [stop] }),
+        ...(stop ? { topics: [stop] } : {}),
       });
     }
     const company = /^oa-(.+)-\d+$/.exec(p.id)?.[1];

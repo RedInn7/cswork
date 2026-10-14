@@ -147,9 +147,9 @@ test('topic distribution weights positions 1/0.5/0.25; profiles and difficulty c
   assert.equal(oaTopicProfile(['tiktok', 'bytedance']).count, 0);
   assert.deepEqual(oaTopicProfile(['amazon']).count, amazon.count - oaTopicProfile(['amazon-mern']).count);
   // A package's explicit 简单/困难 stands; its default 中等 gives way to the estimate.
-  assert.deepEqual(oaDifficulty('oa-amazon-1', '中等'), { difficulty: '困难', estimated: true });
-  assert.deepEqual(oaDifficulty('oa-amazon-1', '简单'), { difficulty: '简单', estimated: false });
-  assert.deepEqual(oaDifficulty('oa-nope-1', '中等'), { difficulty: '中等', estimated: false });
+  assert.deepEqual(oaDifficulty('oa-amazon-1', '中等'), { difficulty: '困难', difficultyEstimated: true });
+  assert.deepEqual(oaDifficulty('oa-amazon-1', '简单'), { difficulty: '简单', difficultyEstimated: false });
+  assert.deepEqual(oaDifficulty('oa-nope-1', '中等'), { difficulty: '中等', difficultyEstimated: false });
   assert.deepEqual(oaDifficulty('oa-nope-1'), {});
 });
 

@@ -67,6 +67,11 @@ export const TOPIC_NAMES: Record<string, [string, string]> = {
   simulation: ['模拟/实现', 'Simulation'],
   sql: ['SQL', 'SQL'],
 };
+/** Labels for OA problems that are neither coding nor SQL (oa-topics.json `k`). */
+export const OA_KIND_NAMES: Record<string, [string, string]> = {
+  mcq: ['概念题', 'Concept question'],
+  other: ['非算法题', 'Non-algorithmic'],
+};
 /** A topic's short name in the locale; unknown slugs show as written. */
 export const topicName = (slug: string, zh: boolean) =>
   Object.hasOwn(TOPIC_NAMES, slug) ? TOPIC_NAMES[slug][zh ? 0 : 1] : slug;

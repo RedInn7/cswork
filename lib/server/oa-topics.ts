@@ -19,10 +19,10 @@ const ZH: Record<Slot, string> = { easy: '简单', medium: '中等', hard: '困�
  */
 export function oaDifficulty(id: string, packaged?: string | null) {
   if (packaged === '简单' || packaged === '困难')
-    return { difficulty: packaged, estimated: false };
+    return { difficulty: packaged, difficultyEstimated: false };
   const estimate = oaTopic(id)?.d;
-  if (estimate) return { difficulty: ZH[estimate], estimated: true };
-  return packaged ? { difficulty: packaged, estimated: false } : {};
+  if (estimate) return { difficulty: ZH[estimate], difficultyEstimated: true };
+  return packaged ? { difficulty: packaged, difficultyEstimated: false } : {};
 }
 
 /** What a company's OA problems cover: topic shares and the estimated difficulty mix. */
