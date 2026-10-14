@@ -270,11 +270,11 @@ export function AcceptedExtras({
   return (
     <div className="cs-accepted-extras">
       {unlocks.length > 0 && (
-        <p className="cs-accepted-unlock" role="status">
+        <output className="cs-accepted-unlock">
           <Award size={16} aria-hidden="true" />
           {t('解锁：', 'Unlocked: ')}
           {unlocks.map((b) => t(b.zh, b.en)).join(t('、', ', '))}
-        </p>
+        </output>
       )}
       {freezes && (
         <p className="cs-accepted-freeze">

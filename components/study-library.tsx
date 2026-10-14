@@ -226,6 +226,8 @@ export function StudyLibrary({
   const detailHeading = useRef<HTMLHeadingElement>(null);
   const t = (zh: string, en: string) => (english ? en : zh);
   const stats = usePracticeStats(activity, english, daily?.done);
+  // The daily streak's "now"; shown only after mount (with stats), so SSR never reads it.
+  const [openedAt] = useState(Date.now);
   // Per-device preferences: a folded line and the sprint plan, whose daily
   // count (else the "n a day" picker) is today's target.
   const [folded, setFolded] = useState(false);
@@ -711,8 +713,7 @@ export function StudyLibrary({
   const stopName = (stop: RouteStop) =>
     english ? stop.titleEn || stop.title : stop.title;
   const today = stats?.today ?? 0;
-  // Read after mount (stats), like the calendar, so server and browser clocks never disagree.
-  const dailyRun = member && stats && daily ? dailyStreak(daily.done, Date.now()) : 0;
+  const dailyRun = member && stats && daily ? dailyStreak(daily.done, openedAt) : 0;
   const dailyDone = member && !!daily && dailySolved(daily);
   // 0 on a mock OA or OA day: no practice planned.
   const tripDone = member && !!target && today >= target;
