@@ -16,7 +16,8 @@ import {
   type MockSession,
   type PoolItem,
 } from '../lib/mock-oa';
-import { mockCatalogue, mockPool, shownMockPresets } from '../lib/server/mock-oa';
+import { mockCatalogue, mockPool } from '../lib/server/mock-oa';
+import { mockOaPaths, shownMockPresets } from '../lib/server/mock-oa-presets';
 
 const lc = (n: number, difficulty: PoolItem['difficulty']): PoolItem => ({
   id: `lc-${n}`,
@@ -112,6 +113,7 @@ test('pools join OA companies and mapped LeetCode problems, never hidden compani
   assert.ok(!shownMockPresets(new Set(['amazon'])).some((c) => c.slug === 'amazon'));
   const tiktok = shownMockPresets(new Set(['bytedance'])).find((c) => c.slug === 'tiktok')!;
   assert.deepEqual(tiktok.aliases, ['tiktok']);
+  assert.ok(mockOaPaths().some((p) => p.path === '/mock-oa/tiktok'));
 });
 
 test('scoring: passed fraction per question, or a weighted 200–600 GCA estimate', () => {

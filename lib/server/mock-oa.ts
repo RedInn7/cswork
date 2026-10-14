@@ -1,6 +1,5 @@
 import { randomInt } from 'node:crypto';
 import { z } from 'zod';
-import presetsFile from '@/lib/content/mock-oa-presets.json';
 import lcMapFile from '@/lib/content/company-lc-map.json';
 import {
   drawMock,
@@ -12,7 +11,6 @@ import {
   type MockSource,
   type PoolItem,
   type Scoring,
-  type Slot,
 } from '@/lib/mock-oa';
 import type { Person } from './auth';
 import { hiddenCompanies } from './env';
@@ -25,14 +23,10 @@ import {
   requirePerson,
   rows,
 } from './http';
+import { MOCK_PRESETS_UPDATED, shownMockPresets } from './mock-oa-presets';
 import { oaLibrary } from './oa-library';
 import { listProblemSummaries } from './oj-problems';
 
-export type MockPreset = Omit<
-  (typeof presetsFile)['companies'][number],
-  'slots' | 'scoring'
-> & { slots: Slot[]; scoring: Scoring };
-const presets = presetsFile.companies as MockPreset[];
 /** Content company slug → judgeable LeetCode ids (lib/content/company-lc-map.json). */
 const lcMap = new Map(
   Object.entries(
@@ -42,14 +36,6 @@ const lcMap = new Map(
     list.map((entry) => entry.id).filter((id) => /^lc-\d{1,6}$/.test(id)),
   ]),
 );
-
-/** Hidden companies (HIDDEN_COMPANIES) never appear, as presets or as aliases. */
-export function shownMockPresets(hidden = hiddenCompanies()): MockPreset[] {
-  return presets
-    .filter((c) => !hidden.has(c.slug))
-    .map((c) => ({ ...c, aliases: c.aliases.filter((a) => !hidden.has(a)) }))
-    .filter((c) => c.aliases.length);
-}
 
 export type MockCatalogue = {
   oa: Map<string, PoolItem[]>;
@@ -148,8 +134,7 @@ export async function mockPresetsWithPools() {
     .filter((c) => c.pool > 0)
     .sort((a, b) => a.name.localeCompare(b.name));
   return {
-    version: presetsFile.version,
-    updated: presetsFile.updated,
+    updated: MOCK_PRESETS_UPDATED,
     companies,
     others,
     all: {
@@ -159,17 +144,17 @@ export async function mockPresetsWithPools() {
   };
 }
 
-/** Server-rendered company pages: the preset and its pool size, or null. */
-export async function mockPresetPage(slug: string) {
-  const preset = shownMockPresets().find((c) => c.slug === slug);
-  if (!preset) return null;
-  let pool: number | null = null;
+/** Server-rendered pages: each shown preset's pool size, or null when the catalogue is unavailable. */
+export async function mockPoolSizes() {
   try {
-    pool = mockPool(await catalogue(), preset.aliases, 'mixed').length;
+    const cat = await catalogue();
+    return new Map(
+      shownMockPresets().map((c) => [c.slug, mockPool(cat, c.aliases, 'mixed').length]),
+    );
   } catch {
-    /* The page still describes the format without a live count. */
+    // The pages still describe the formats without live counts.
+    return null;
   }
-  return { preset, pool };
 }
 
 const companySlug = z.string().regex(/^[a-z0-9-]{1,80}$/);

@@ -65,21 +65,23 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/library' },
   { path: '/privacy' },
 ];
-export function sitemapPageCount(libraryCount: number): number {
-  return Math.ceil(
-    (libraryCount + SITEMAP_STATIC_ENTRIES.length) / SITEMAP_URL_LIMIT,
-  );
+/** `statics`: entries written before the library on page 1 (static pages plus the mock OA pages). */
+export function sitemapPageCount(
+  libraryCount: number,
+  statics = SITEMAP_STATIC_ENTRIES.length,
+): number {
+  return Math.ceil((libraryCount + statics) / SITEMAP_URL_LIMIT);
 }
-export function sitemapLibraryRange(page: number): {
+export function sitemapLibraryRange(
+  page: number,
+  statics = SITEMAP_STATIC_ENTRIES.length,
+): {
   offset: number;
   limit: number;
 } {
   return {
-    offset: Math.max(
-      0,
-      (page - 1) * SITEMAP_URL_LIMIT - SITEMAP_STATIC_ENTRIES.length,
-    ),
-    limit: SITEMAP_URL_LIMIT - (page === 1 ? SITEMAP_STATIC_ENTRIES.length : 0),
+    offset: Math.max(0, (page - 1) * SITEMAP_URL_LIMIT - statics),
+    limit: SITEMAP_URL_LIMIT - (page === 1 ? statics : 0),
   };
 }
 const SITEMAP_BYTE_LIMIT = 45 * 1024 * 1024;
