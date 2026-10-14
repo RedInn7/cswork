@@ -182,18 +182,26 @@ test('signed in, answers are the sd:<slug> note, sent in order, and guest answer
   }
 });
 
-test('the editorial stays locked until solved or confirmed, switches language and diffs my code', async () => {
+test('the editorial stays locked until solved or confirmed, is fetched only then, switches language and diffs my code', async () => {
   const dom = useDom();
   const { createRoot } = await import('react-dom/client');
   const { LingEditorial } = await import('../components/ling-editorial.tsx');
   const editorial = editorials['lc-1'];
   const root = createRoot(document.getElementById('root'));
+  const original = globalThis.fetch;
+  const fetched = [];
+  let reply = [200, editorial];
+  globalThis.fetch = async (url) => {
+    fetched.push(String(url));
+    return new Response(JSON.stringify(reply[1]), { status: reply[0], headers: { 'Content-Type': 'application/json' } });
+  };
   let unlocks = 0;
   const render = (props) =>
     act(async () =>
       root.render(
         createElement(LingEditorial, {
-          editorial,
+          problemId: 'lc-1',
+          verified: editorial.verified,
           english: true,
           unlocked: false,
           onUnlock: () => unlocks++,
@@ -212,11 +220,13 @@ test('the editorial stays locked until solved or confirmed, switches language an
     assert.ok(document.querySelector('[role="alertdialog"]') !== null);
     await act(async () => buttons('Show editorial')[0].click());
     assert.equal(unlocks, 1);
+    assert.deepEqual(fetched, [], 'nothing is fetched while locked');
 
     await render({ unlocked: true });
     await settle();
     // The confirm unmounted the "Show anyway" button; focus goes to the heading, not <body>.
     assert.ok(document.activeElement === document.getElementById('ling-editorial-title'), 'focus lands on the heading');
+    assert.deepEqual(fetched, ['/api/oj/problems/lc-1/editorial']);
     assert.equal(document.querySelectorAll('.cs-ling-approaches > li').length, editorial.approaches.length);
     assert.ok(document.querySelector('.cs-ling-unverified') !== null);
     // The editor's language picks the tab; C++ code shows first.
@@ -236,10 +246,24 @@ test('the editorial stays locked until solved or confirmed, switches language an
     await act(async () => buttons('Hide comparison')[0].click());
     assert.equal(document.querySelectorAll('pre[data-diff]').length, 0);
 
-    await render({ unlocked: true, english: false, editorial: { ...editorial, verified: true } });
+    await render({ unlocked: true, english: false, verified: true });
     assert.ok(document.querySelector('.cs-ling-verified').textContent.includes('代码已通过本题全部测试'));
     assert.ok(document.querySelector('.cs-ling-approaches h3').textContent.includes(editorial.approaches[0].nameZh));
+    assert.equal(fetched.length, 1, 'fetched once');
+
+    // Refused during the learner's running contest: the server's reason and a retry.
+    reply = [403, { error: '这道题在你正在进行的比赛里，题解、讨论和 AI 助教赛后开放' }];
+    await render({ unlocked: true, key: 'refused' });
+    await settle();
+    assert.ok(document.querySelector('[role="alert"]').textContent.includes("contest you're taking"));
+    assert.equal(document.querySelectorAll('.cs-ling-code').length, 0);
+    reply = [200, editorial];
+    await act(async () => buttons('Retry')[0].click());
+    await settle();
+    assert.equal(document.querySelectorAll('.cs-ling-approaches > li').length, editorial.approaches.length);
+    assert.equal(fetched.length, 3);
   } finally {
+    globalThis.fetch = original;
     await act(async () => root.unmount());
     dom.window.close();
   }

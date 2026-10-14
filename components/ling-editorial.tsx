@@ -1,5 +1,5 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BadgeCheck, GitCompare, Lock } from 'lucide-react';
 import {
   AlertDialog,
@@ -13,7 +13,8 @@ import {
 } from './ui/alert-dialog';
 import { CodeDiff } from './editor';
 import { StatementMarkdown } from './statement-markdown';
-import type { LingEditorial as Editorial } from '@/lib/oj-client';
+import { ojRequest, type LingEditorial as Editorial } from '@/lib/oj-client';
+import { englishMessage } from '@/lib/messages-en';
 import { languages, type Language } from '@/lib/problems';
 import type { EditorSettings } from '@/lib/editor-settings';
 import '@/app/ling-editorial.css';
@@ -28,10 +29,12 @@ type EditorialLang = (typeof LANGS)[number][0];
  * The Line 500 editorial tab: approaches from brute force to best, each with its idea,
  * complexity and Python / C++ code, and a diff of that code against the editor's.
  * Locked until the learner has passed the problem, unless they confirm they want it now;
- * the workspace keeps that choice (`unlocked`) so switching tabs doesn't forget it.
+ * the workspace keeps that choice (`unlocked`) so switching tabs doesn't forget it. The editorial
+ * is fetched only once unlocked; the server refuses it during the learner's running contest.
  */
 export function LingEditorial({
-  editorial,
+  problemId,
+  verified,
   english,
   unlocked,
   onUnlock,
@@ -39,7 +42,8 @@ export function LingEditorial({
   language,
   settings,
 }: {
-  editorial: Editorial;
+  problemId: string;
+  verified: boolean;
   english: boolean;
   unlocked: boolean;
   onUnlock: () => void;
@@ -55,11 +59,27 @@ export function LingEditorial({
   const confirmed = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const langName = LANGS.find(([id]) => id === lang)![1];
+  const [editorial, setEditorial] = useState<Editorial | null>(null);
+  const [error, setError] = useState('');
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    if (!unlocked || editorial) return;
+    const controller = new AbortController();
+    setError('');
+    ojRequest<Editorial>(`problems/${encodeURIComponent(problemId)}/editorial`, undefined, controller.signal)
+      .then((value) => {
+        if (!controller.signal.aborted) setEditorial(value);
+      })
+      .catch((reason: Error) => {
+        if (!controller.signal.aborted) setError(reason.message);
+      });
+    return () => controller.abort();
+  }, [unlocked, editorial, problemId, attempt]);
   return (
     <section className="cs-ling-editorial" aria-labelledby="ling-editorial-title">
       <div className="cs-ling-editorial-head">
         <h2 id="ling-editorial-title" ref={heading} tabIndex={-1}>{t('官方题解', 'Editorial')}</h2>
-        {editorial.verified ? (
+        {verified ? (
           <span className="cs-ling-verified">
             <BadgeCheck size={14} aria-hidden="true" />
             {t('代码已通过本题全部测试', 'Code passes every test of this problem')}
@@ -89,6 +109,15 @@ export function LingEditorial({
             {t('仍要查看', 'Show anyway')}
           </button>
         </div>
+      ) : error ? (
+        <div role="alert">
+          {english ? englishMessage(error) : error}{' '}
+          <button type="button" onClick={() => setAttempt((n) => n + 1)}>
+            {t('重试', 'Retry')}
+          </button>
+        </div>
+      ) : !editorial ? (
+        <p role="status">{t('正在加载题解…', 'Loading the editorial…')}</p>
       ) : (
         <>
           <fieldset className="cs-ling-langs">

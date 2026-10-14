@@ -1510,7 +1510,7 @@ function Workspace({
             english={uiEnglish}
           />
         )}
-        {(problem.id.startsWith('oa-') || !!problem.lingEditorial) && !examMode && (
+        {(problem.id.startsWith('oa-') || problem.lingEditorialVerified != null) && !examMode && (
           <button
             role="tab"
             className={leftTab === 'editorial' ? 'active' : ''}
@@ -1536,10 +1536,11 @@ function Workspace({
         )}
         {leftTab === 'notes' && note.enabled ? (
           <ProblemNotes note={note} english={uiEnglish} />
-        ) : leftTab === 'editorial' && problem.lingEditorial && !examMode ? (
+        ) : leftTab === 'editorial' && problem.lingEditorialVerified != null && !examMode ? (
           <LingEditorial
             key={problem.id}
-            editorial={problem.lingEditorial}
+            problemId={problem.id}
+            verified={problem.lingEditorialVerified}
             english={uiEnglish}
             unlocked={editorialAsked || solvedThisRound}
             onUnlock={() => setEditorialAsked(true)}
