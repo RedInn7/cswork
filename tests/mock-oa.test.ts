@@ -125,6 +125,15 @@ test('pools join OA companies and mapped LeetCode problems, never hidden compani
   assert.deepEqual(lcIds(['jpmorgan-chase']), jpm);
   assert.deepEqual(lcIds(['j-p-morgan']), jpm, 'a library spelling finds its employer');
   assert.deepEqual(lcIds(['j-p-morgan'], new Set(['jpmorgan-chase'])), []);
+  // A hidden spelling's reports leave its employer's pool too, as they leave company tags.
+  const tiktokAll = (companyLcProblems().get('tiktok') ?? []).map((p) => p.id);
+  const kept = new Set((companyLcProblems(new Set(['bytedance'])).get('tiktok') ?? []).map((p) => p.id));
+  const onlyBytedance = tiktokAll.filter((id) => !kept.has(id));
+  assert.ok(onlyBytedance.length > 0);
+  const tiktokCat = mockCatalogue(tiktokAll.map((id) => ({ id, difficulty: '中等' })));
+  const tiktokPool = mockPool(tiktokCat, tiktok.aliases, 'lc', new Set(['bytedance'])).map((p) => p.id);
+  assert.ok(tiktokPool.length > 0);
+  assert.ok(!tiktokPool.some((id) => onlyBytedance.includes(id)));
 });
 
 test('scoring: passed fraction per question, or a weighted 200–600 GCA estimate', () => {

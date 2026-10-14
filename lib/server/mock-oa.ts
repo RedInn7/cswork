@@ -30,10 +30,22 @@ import { MOCK_PRESETS_UPDATED, shownMockPresets } from './mock-oa-presets';
 import { oaLibrary } from './oa-library';
 import { listProblemSummaries } from './oj-problems';
 
-/** Employer slug → its reported LeetCode ids, library spellings merged (lib/company-tags.ts). */
-const lcMap = new Map(
-  [...companyLcProblems()].map(([slug, problems]) => [slug, problems.map((p) => p.id)]),
-);
+/**
+ * Employer slug → its reported LeetCode ids, library spellings merged and hidden spellings'
+ * reports left out (lib/company-tags.ts), the same as company tags and pages show.
+ */
+let lcMapCache: { key: string; map: Map<string, string[]> } | null = null;
+function lcMap(hidden: ReadonlySet<string>) {
+  const key = [...hidden].sort().join(',');
+  if (lcMapCache?.key !== key)
+    lcMapCache = {
+      key,
+      map: new Map(
+        [...companyLcProblems(hidden)].map(([slug, problems]) => [slug, problems.map((p) => p.id)]),
+      ),
+    };
+  return lcMapCache.map;
+}
 /** Display names of LeetCode-map companies that have no OA catalog entry. */
 const lcMapNames = new Map(
   Object.entries(lcMapFile.names).map(([slug, name]) => [employerSlug(slug), name]),
@@ -68,7 +80,7 @@ export function mockPool(
   aliases: readonly string[] | null,
   source: MockSource,
   hidden: ReadonlySet<string> = hiddenCompanies(),
-  map: ReadonlyMap<string, readonly string[]> = lcMap,
+  map: ReadonlyMap<string, readonly string[]> = lcMap(hidden),
 ): PoolItem[] {
   const shown = aliases?.filter((a) => !hidden.has(a));
   if (shown && !shown.length) return [];
@@ -128,7 +140,7 @@ export async function mockPresetsWithPools() {
   });
   const taken = new Set(shown.flatMap((c) => [c.slug, ...c.aliases]));
   const names = catalogNames();
-  const others = [...new Set([...cat.oa.keys(), ...lcMap.keys()])]
+  const others = [...new Set([...cat.oa.keys(), ...lcMap(hidden).keys()])]
     .filter((slug) => !taken.has(slug) && !hidden.has(slug))
     .map((slug) => {
       const oa = mockPool(cat, [slug], 'oa').length,
