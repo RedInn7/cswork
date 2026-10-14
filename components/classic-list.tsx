@@ -9,16 +9,23 @@ import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
 import {
+  bookProblemUrl,
   classicList,
   leetcodeUrl,
   levelOf,
   problemAppHref,
   problemTitle,
+  refLabel,
+  sourceUrl,
 } from '@/lib/classic-lists';
 import type { Navigate } from './learning';
 
 type ClassicItem = {
-  number: number;
+  /** The LeetCode number; null for a book problem without a main-site twin. */
+  number: number | null;
+  /** Book lists: the problem's number in the book and its leetcode.cn slug. */
+  ref?: string | null;
+  refSlug?: string | null;
   slug: string;
   titleZh: string;
   titleEn: string;
@@ -32,7 +39,7 @@ type ClassicItem = {
 };
 type Counts = { total: number; ready: number; solved: number };
 type ClassicView = {
-  collection: Counts & { id: string };
+  collection: Counts & { id: string; mapped?: number };
   groups: (Counts & { nameZh: string; nameEn: string; items: ClassicItem[] })[];
   sequence: string[];
   nextProblemId: string | null;
@@ -115,7 +122,7 @@ export function ClassicList({
             '按题号对照到本站题库：能在本站判题的直接提交，其余标为站外，去力扣练习。由 cswork 对照整理，并非官方题单。',
             'Mapped to this bank by problem number: judgeable problems are submitted here, the rest are marked external and practiced on LeetCode. Mapped by cswork; not the official list.',
           )}{' '}
-          <a href={list.source} target="_blank" rel="noopener noreferrer">
+          <a href={sourceUrl(list)} target="_blank" rel="noopener noreferrer">
             {t('原题单', 'Original list')}
             <ExternalLink size={12} aria-hidden="true" />
             <span className="sr-only">{t('（在新窗口打开）', ' (opens in a new tab)')}</span>
@@ -147,6 +154,14 @@ export function ClassicList({
                   `${data.collection.total - data.collection.ready} external, not counted`,
                 )}
               </span>
+              {list.refLabel && data.collection.mapped !== undefined && (
+                <span className="classic-coverage">
+                  {t(
+                    `${data.collection.mapped} / ${data.collection.total} 道有力扣主站对应题`,
+                    `${data.collection.mapped} of ${data.collection.total} have a LeetCode twin`,
+                  )}
+                </span>
+              )}
             </p>
             {signedIn && (
               <progress
@@ -238,10 +253,20 @@ export function ClassicList({
                     <span className="study-row-main">
                       <strong>
                         {next && <span className="route-next-pill">{t('下一题', 'Next')}</span>}
-                        <span className="study-number">{item.number}.</span>{' '}
+                        <span className="study-number">
+                          {item.ref ? refLabel(list, item.ref, english) : `${item.number}.`}
+                        </span>{' '}
                         {problemTitle(item, english)}
                       </strong>
                       <span className="classic-tags">
+                        {item.ref && item.number !== null && (
+                          <span
+                            className="classic-twin"
+                            title={t('力扣主站上的同一道题', 'The same problem on LeetCode')}
+                          >
+                            LeetCode {item.number}
+                          </span>
+                        )}
                         {item.stop && (
                           <span
                             className="classic-stop"
@@ -262,9 +287,10 @@ export function ClassicList({
                   </>
                 );
                 // Every row is a link, so the zebra stripes stay regular.
+                const key = item.ref ?? item.number;
                 return item.judgeProblemId ? (
                   <a
-                    key={item.number}
+                    key={key}
                     className="study-row"
                     href={problemAppHref(item.judgeProblemId)}
                     data-next={next || undefined}
@@ -274,10 +300,15 @@ export function ClassicList({
                   </a>
                 ) : (
                   <a
-                    key={item.number}
+                    key={key}
                     className="study-row"
                     data-external
-                    href={leetcodeUrl(item.number, item.slug, english)}
+                    href={
+                      // A book problem opens its own page; a LeetCode number its problem.
+                      item.refSlug
+                        ? bookProblemUrl(item.refSlug)
+                        : leetcodeUrl(item.number!, item.slug, english)
+                    }
                     target="_blank"
                     rel="noopener noreferrer"
                   >

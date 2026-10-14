@@ -148,6 +148,7 @@ import { englishMessage } from '@/lib/messages-en';
 import '@/app/editor.css';
 import '@/app/lc-rating.css';
 import '@/app/workbench-tools.css';
+import '@/app/sql-result.css';
 import '@/app/workspace-panels.css';
 import '@/app/workspace-sync.css';
 

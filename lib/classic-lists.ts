@@ -9,13 +9,40 @@ export type ClassicList = {
   slug: string;
   nameZh: string;
   nameEn: string;
-  /** Where the list is published; shown as the source. */
+  /** Where the list is published: a URL, then how it was read. */
   source: string;
-  groups: { nameZh: string; nameEn: string; numbers: number[] }[];
+  /** Book lists name each problem by its number in the book: 剑指 Offer 07, 面试题 01.02. */
+  refLabel?: { zh: string; en: string };
+  /**
+   * A LeetCode list's groups hold problem numbers. A book list's groups hold its
+   * own problems in book order instead: the book number, the main-site LeetCode
+   * twin (null when there is none) and the slug of its page on leetcode.cn.
+   */
+  groups: {
+    nameZh: string;
+    nameEn: string;
+    numbers?: number[];
+    refs?: { ref: string; lc: number | null; slug: string }[];
+  }[];
 };
 export const classicLists = lists as ClassicList[];
 export const classicList = (slug: string | null | undefined) =>
   classicLists.find((list) => list.slug === slug);
+
+/** One row: a LeetCode number, a book problem, or a book problem and its twin. */
+export type ClassicEntry = { number: number | null; ref: string | null; refSlug: string | null };
+export const groupEntries = (group: ClassicList['groups'][number]): ClassicEntry[] =>
+  group.refs?.map(({ ref, lc, slug }) => ({ number: lc, ref, refSlug: slug })) ??
+  (group.numbers ?? []).map((number) => ({ number, ref: null, refSlug: null }));
+
+/** The source's link: its first token (the rest says how the list was read). */
+export const sourceUrl = (list: ClassicList) => list.source.split(/\s/, 1)[0];
+
+/** A book problem's own page on leetcode.cn, where the book lists are published. */
+export const bookProblemUrl = (slug: string) =>
+  /^[A-Za-z0-9-]+$/.test(slug)
+    ? `https://leetcode.cn/problems/${slug}/`
+    : 'https://leetcode.cn/problemset/';
 
 /** A problem judged elsewhere: leetcode.cn for Chinese readers, leetcode.com for English. */
 export function leetcodeUrl(number: number, slug: string, english: boolean) {
@@ -45,10 +72,17 @@ export const levelOf = (value: string) =>
 
 /** A row title in the reader's language; numbers missing from the bank get a plain label. */
 export const problemTitle = (
-  item: { number: number; titleZh: string; titleEn: string },
+  item: { number: number | null; titleZh: string; titleEn: string },
   english: boolean,
 ) =>
   (english ? item.titleEn : item.titleZh) ||
   item.titleEn ||
   item.titleZh ||
-  `LeetCode ${item.number}`;
+  (item.number ? `LeetCode ${item.number}` : english ? 'On leetcode.cn' : '力扣中国站原题');
+
+/** A book problem's label, e.g. 剑指 Offer 07; empty for LeetCode lists. */
+export const refLabel = (
+  list: Pick<ClassicList, 'refLabel'>,
+  ref: string | null,
+  english: boolean,
+) => (ref && list.refLabel ? `${english ? list.refLabel.en : list.refLabel.zh} ${ref}` : '');

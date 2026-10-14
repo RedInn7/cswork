@@ -1,19 +1,22 @@
 /**
- * The SQL track: 20 practice problems written for CSWork. Each one names its
+ * The SQL track: 50 practice problems written for CSWork (21–50 live in
+ * problems-more.ts). Each one names its
  * tables, a reference query, other accepted forms, and common wrong queries the
  * hidden datasets must reject. scripts/sql-track/build.ts turns them into judge
  * packages; tests/sql-track.test.ts reruns every query on every dataset.
  */
 import { APP, COMPANY, SCHOOL, SHOP, type Data, type SchemaName } from './datasets';
+import { MORE_PROBLEMS } from './problems-more';
 
 type Text = { zh: string; en: string };
-export type GroupKey = 'basics' | 'joins' | 'grouping' | 'subqueries' | 'windows' | 'dates';
+export type GroupKey = 'basics' | 'joins' | 'grouping' | 'subqueries' | 'windows' | 'strings' | 'dates';
 export const GROUPS: { key: GroupKey; zh: string; en: string }[] = [
   { key: 'basics', zh: '过滤与 NULL', en: 'Filtering & NULL' },
   { key: 'joins', zh: '连接', en: 'Joins' },
   { key: 'grouping', zh: '分组与 HAVING', en: 'GROUP BY & HAVING' },
   { key: 'subqueries', zh: '子查询', en: 'Subqueries' },
   { key: 'windows', zh: '窗口函数', en: 'Window functions' },
+  { key: 'strings', zh: '字符串处理', en: 'Strings' },
   { key: 'dates', zh: '日期处理', en: 'Dates' },
 ];
 export type SqlProblem = {
@@ -869,4 +872,5 @@ SELECT ROUND(1.0 * SUM(EXISTS (SELECT 1 FROM logins l WHERE l.user_id = f.user_i
     sample: APP.sample,
     hidden: [APP.boundaries, APP.sparse],
   },
+  ...MORE_PROBLEMS,
 ];
