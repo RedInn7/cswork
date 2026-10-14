@@ -14,6 +14,7 @@ import {
 } from '@/lib/ling-curated';
 
 const CURATED_STAGES: CuratedEntry['stage'][] = ['基础', '核心', '进阶'];
+const STOP_INDEX = new Map(curatedSections.map((section, index) => [section.slug, index]));
 
 type LibraryRow = {
   id: string;
@@ -209,6 +210,13 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
       (a, b) => b.count - a.count || a.name.localeCompare(b.name, 'en'),
     ),
     sequence,
+    // The study plan (lib/study-plan.ts) counts what is left of the sequence:
+    // [problem id, difficulty, stop index] per unsolved entry, in line order.
+    planTodo: all.flatMap((item) =>
+      item.caseStatus === 'verified' && item.judgeProblemId && !item.solved
+        ? [[item.judgeProblemId, item.difficulty, STOP_INDEX.get(item.selection.sectionSlug) ?? 0] as const]
+        : [],
+    ),
     nextProblemId: userId ? (nextItem?.judgeProblemId ?? null) : null,
     // Returned to everyone: for members it is the problem nextProblemId points to.
     next: nextItem
