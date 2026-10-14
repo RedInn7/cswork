@@ -2,14 +2,14 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { oaDifficulty } from '@/lib/server/oa-topics';
 import { cache } from 'react';
-import { inWindow, REPORT_WINDOWS, reportWindow, WINDOW_NAMES, windowCounts, type ReportWindow } from '@/lib/report-windows';
+import { REPORT_WINDOWS, reportWindow, WINDOW_NAMES } from '@/lib/report-windows';
 import lcMapFile from '@/lib/content/company-lc-map.json';
 import { ROUND_LABELS } from '@/lib/experience';
 import { companyHubPath, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
 import { breadcrumbJsonLd, companyPageTitle, seoMetadata } from '@/lib/seo';
 import { CompanyStatsCard, MemberStatsCard } from '@/components/company-stats-card';
 import { companyHub } from '@/lib/server/company-hub';
-import { sourceDates, type SourceItem } from '@/lib/server/company-insights';
+import { rankInWindow, sourceDates } from '@/lib/server/company-insights';
 import { companyStats } from '@/lib/server/company-stats';
 import { companyFacets } from '@/lib/server/seo-facets';
 import { CATEGORIES } from '@/components/company-stats-card';
@@ -74,29 +74,6 @@ export async function generateMetadata({ params }: Props) {
 
 const spa = (params: Record<string, string>) => `/?${new URLSearchParams(params)}`;
 
-/**
- * The most reported problems inside the report window, with their counts there and the reports
- * behind them that have a public page (newest first).
- */
-function inReportWindow<P extends { sources: string[]; last: string }>(
-  problems: readonly P[],
-  period: ReportWindow,
-  dated: ReadonlyMap<string, SourceItem>,
-  now = Date.now(),
-) {
-  const counted = (slugs: readonly string[]) => inWindow(windowCounts(slugs, dated, now), period);
-  return problems
-    .map((p) => ({
-      ...p,
-      n: counted(p.sources),
-      refs: p.sources
-        .flatMap((slug) => (dated.get(slug)?.page && counted([slug]) ? [dated.get(slug)!] : []))
-        .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')),
-    }))
-    .filter((p) => p.n > 0)
-    .sort((a, b) => b.n - a.n || b.last.localeCompare(a.last))
-    .slice(0, LC_SHOWN);
-}
 function SectionHead({ id, title, count, all, zh }: { id: string; title: string; count: string; all: string; zh: boolean }) {
   return (
     <div className="company-hub-section-head">
@@ -116,7 +93,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
     (await params).slug,
   );
   const zh = locale === 'zh';
-  const ranked = inReportWindow(leetcode, period, sourceDates());
+  const ranked = rankInWindow(leetcode, period, sourceDates()).slice(0, LC_SHOWN);
   const most = Math.max(1, ...ranked.map((p) => p.n));
   // SPA lists filter by one library spelling: the employer's most used one.
   const spelling = company.library[0] ?? company.slug;

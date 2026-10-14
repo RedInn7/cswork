@@ -53,10 +53,10 @@ content.close();
 const { sqlite } = await import('../db/sqlite');
 migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') });
 const { loadStudyLibrary } = await import('../scripts/load-study-library.mjs');
-const { topProblems, recentAdditions, sourceDates } = await import('../lib/server/company-insights');
+const { topProblems, recentAdditions, rankInWindow, sourceDates } = await import('../lib/server/company-insights');
 const { listStudyLibrary } = await import('../lib/server/study-library');
 const { windowCounts } = await import('../lib/report-windows');
-const { companyTagIndex } = await import('../lib/company-tags');
+const { companyLcProblems, companyTagIndex } = await import('../lib/company-tags');
 const { reportCompanies } = await import('../lib/server/learner-cloud');
 const { createOaLibrary } = await import('../lib/server/oa-library');
 const { companyStats, lastQuarters } = await import('../lib/server/company-stats');
@@ -191,6 +191,14 @@ void test('report sources: listed rows only, dated by the interview else the pos
   assert.equal(dated.has('implement-python-function-for-longest-unique-substring-length'), false, 'hidden company');
   const lru = companyTagIndex().get('lc-146')!.find((t) => t.slug === 'amazon')!;
   assert.deepEqual(windowCounts(lru.sources, dated, NOW), { m3: 1, m6: 0, y1: 0, y2: 1, older: 0 });
+  // A company page: counts inside the window, and the reports behind a row that have a page.
+  const amazon = companyLcProblems().get('amazon')!.filter((p) => p.id === 'lc-146' || p.id === 'lc-3');
+  const row = (p: ReturnType<typeof rankInWindow>[number]) => [p.id, p.n, p.refs.map((r) => r.date)];
+  assert.deepEqual(rankInWindow(amazon, '3m', dated, NOW).map(row), [['lc-146', 1, ['2026-09-01']]], 'none left at zero');
+  assert.deepEqual(rankInWindow(amazon, 'all', dated, NOW).map(row), [
+    ['lc-146', 2, ['2026-09-01', '2025-01-01']],
+    ['lc-3', 2, []],
+  ]);
   // The bank's frequency order counts the window's reports only: both have two in all.
   const ids = (window: string) =>
     listStudyLibrary(new URLSearchParams({ company: 'amazon', sort: 'frequency', window })).items.map((i) => i.id);

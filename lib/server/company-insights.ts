@@ -1,6 +1,7 @@
 import { sqlite } from '@/db/sqlite';
 import { companyTagIndex } from '@/lib/company-tags';
 import lcMapFile from '@/lib/content/company-lc-map.json';
+import { inWindow, windowCounts, type ReportWindow } from '@/lib/report-windows';
 import { employerSlug } from '@/lib/oa-company-brands';
 import { library } from './content-library';
 import { hiddenCompanies } from './env';
@@ -178,4 +179,27 @@ export function sourceDates(now = Date.now(), hidden: ReadonlySet<string> = hidd
   for (const r of rows) if (!value.has(r.slug)) value.set(r.slug, { ...r, page: !!r.page });
   sources = { at: now, hidden: key, value };
   return value;
+}
+
+/**
+ * A company's problems by their reports inside the window (`n`), none left at zero, with the reports
+ * behind each that have a public page (`refs`, newest first).
+ */
+export function rankInWindow<P extends { sources: string[]; last: string }>(
+  problems: readonly P[],
+  period: ReportWindow,
+  dated: ReadonlyMap<string, SourceItem>,
+  now = Date.now(),
+) {
+  const counted = (slugs: readonly string[]) => inWindow(windowCounts(slugs, dated, now), period);
+  return problems
+    .map((p) => ({
+      ...p,
+      n: counted(p.sources),
+      refs: p.sources
+        .flatMap((slug) => (dated.get(slug)?.page && counted([slug]) ? [dated.get(slug)!] : []))
+        .sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')),
+    }))
+    .filter((p) => p.n > 0)
+    .sort((a, b) => b.n - a.n || b.last.localeCompare(a.last));
 }
