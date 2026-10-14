@@ -6,6 +6,10 @@
  */
 const EN: Record<string, string> = {
   // Curated list stages (lib/server/study-library.ts), shown as filter and pip labels
+  // Problem difficulty (lib/server/oa-topics.ts maps estimates onto these)
+  简单: 'Easy',
+  中等: 'Medium',
+  困难: 'Hard',
   基础: 'Foundation',
   核心: 'Core',
   进阶: 'Advanced',
