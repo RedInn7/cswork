@@ -57,8 +57,8 @@ export function SqlTrack({
         <h1>{t('SQL 专项练习', 'SQL Practice Track')}</h1>
         <p className="classic-lead">
           {t(
-            'CSWork 原创的 SQL 题：连接、分组与 HAVING、子查询、窗口函数、NULL 和日期处理。提交一条 SELECT，判题器在 SQLite 内存数据库里对多组隐藏数据运行它并比较结果集。',
-            'Original CSWork SQL problems: joins, GROUP BY and HAVING, subqueries, window functions, NULLs and dates. Submit one SELECT; the judge runs it on several hidden datasets in an in-memory SQLite database and compares the result sets.',
+            'CSWork 原创的 SQL 题：连接、分组与 HAVING、子查询、窗口函数、NULL、字符串和日期处理。提交一条 SELECT，判题器在 SQLite 内存数据库里对多组隐藏数据运行它并比较结果集；答错时可以逐行对比期望和实际结果。',
+            'Original CSWork SQL problems: joins, GROUP BY and HAVING, subqueries, window functions, NULLs, strings and dates. Submit one SELECT; the judge runs it on several hidden datasets in an in-memory SQLite database and compares the result sets, and a wrong answer shows the expected and actual rows side by side.',
           )}
         </p>
         {sequence.length > 0 && (
