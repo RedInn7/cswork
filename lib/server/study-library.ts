@@ -1,7 +1,11 @@
 import { sqlite } from '@/db/sqlite';
-import { companyTagIndex } from '@/lib/company-tags';
+import { companyTagIndex, type CompanyTag } from '@/lib/company-tags';
+import hintFile from '@/lib/content/ling-hints.json';
 import { hiddenCompanies } from './env';
-import { HttpError } from './http';
+import { HttpError, rows } from './http';
+import { oaLibrary } from './oa-library';
+import { oaReadyProblems } from './oa-judge';
+import { oaDifficulty, oaTopic } from './oa-topics';
 import { practiceRoundState } from './practice-rounds';
 import { studyProgress } from './practice-progress';
 import {
@@ -329,4 +333,142 @@ export function getStudyLibrary(id: string) {
       withExpected: row.expected_count,
     },
   };
+}
+
+// Server-only: the three Line 500 hints never enter a client bundle.
+const lingHintFile = hintFile as Record<string, { zh: string[]; en: string[] }>;
+/** The three progressive hints of a Line 500 problem: observation, invariant, steps. */
+export const lingHints = (problemId: string) =>
+  Object.hasOwn(lingHintFile, problemId) ? lingHintFile[problemId] : null;
+
+export type SimilarProblem = {
+  id: string;
+  title: string;
+  titleEn?: string;
+  difficulty: string;
+  solved: boolean;
+};
+
+/**
+ * Line 500 numbers like `number`: the 4 judgeable ones nearest it in the same stop by
+ * curated order (shown in that order), then up to 2 more asked by the same companies,
+ * most companies in common first.
+ */
+export function pickSimilarLc(
+  number: number,
+  judgeable: readonly number[],
+  companiesOf: (number: number) => readonly string[],
+) {
+  const self = curatedByNumber.get(number);
+  const order = (n: number) => curatedByNumber.get(n)?.order ?? Infinity;
+  const others = judgeable.filter((n) => n !== number && curatedByNumber.has(n));
+  const near = self
+    ? others
+        .filter((n) => curatedByNumber.get(n)!.sectionSlug === self.sectionSlug)
+        .sort(
+          (a, b) =>
+            Math.abs(order(a) - self.order) - Math.abs(order(b) - self.order) ||
+            order(a) - order(b),
+        )
+        .slice(0, 4)
+        .sort((a, b) => order(a) - order(b))
+    : [];
+  const mine = new Set(companiesOf(number));
+  const shared = (n: number) => companiesOf(n).filter((c) => mine.has(c)).length;
+  const asked = others
+    .filter((n) => !near.includes(n) && shared(n) > 0)
+    .sort((a, b) => shared(b) - shared(a) || order(a) - order(b))
+    .slice(0, 2);
+  return [...near, ...asked];
+}
+
+/**
+ * Same-company OA problems like `id` (`company` is the judgeable ones in catalog order):
+ * those sharing a topic, most shared first, then the ones after it in catalog order.
+ */
+export function pickSimilarOa(
+  id: string,
+  company: readonly string[],
+  topicsOf: (id: string) => readonly string[],
+  max = 6,
+) {
+  const at = company.indexOf(id);
+  const after = [...company.slice(at + 1), ...company.slice(0, Math.max(at, 0))];
+  const mine = new Set(topicsOf(id));
+  const shared = (x: string) => topicsOf(x).filter((t) => mine.has(t)).length;
+  const overlap = after.filter((x) => shared(x) > 0).sort((a, b) => shared(b) - shared(a));
+  return [...new Set([...overlap, ...after])].slice(0, max);
+}
+
+/** "Similar problems" under a statement: judgeable ones only, each marked solved for the user. */
+export async function similarProblems(
+  problemId: string,
+  userId: string | undefined,
+  tags: ReadonlyMap<string, CompanyTag[]> = companyTagIndex(hiddenCompanies()),
+): Promise<SimilarProblem[]> {
+  if (problemId.startsWith('oa-')) {
+    const found = oaLibrary().problem(problemId);
+    if (!found) return [];
+    const ready = await oaReadyProblems();
+    const items = (oaLibrary().company(found.company.slug, new Set(ready.keys()))?.items ?? [])
+      .filter((item) => item.judgeStatus === 'ready');
+    const byId = new Map(items.map((item) => [item.id, item]));
+    const picked = pickSimilarOa(
+      problemId,
+      items.map((item) => item.id),
+      (id) => oaTopic(id)?.t ?? [],
+    );
+    const solved = new Set(
+      userId
+        ? (
+            await rows<{ problem_id: string }>(
+              `SELECT DISTINCT problem_id FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted' AND problem_id IN (SELECT value FROM json_each(?))`,
+              userId,
+              JSON.stringify(picked),
+            )
+          ).map((r) => r.problem_id)
+        : [],
+    );
+    return picked.map((id) => ({
+      id,
+      title: byId.get(id)!.title,
+      difficulty: oaDifficulty(id, ready.get(id)?.difficulty).difficulty ?? '中等',
+      solved: solved.has(id),
+    }));
+  }
+  const number = Number(/^lc-(\d+)$/.exec(problemId)?.[1]);
+  if (!number) return [];
+  // ponytail: reads the 500 Line 500 rows per call, like the list; narrow to candidates if it shows in profiles.
+  const judgeable = new Map(
+    (
+      sqlite()
+        .prepare(
+          `SELECT ${columns} FROM study_library l WHERE l.number IN (SELECT value FROM json_each(?))`,
+        )
+        .all(JSON.stringify(curatedEntries.map((entry) => entry.number))) as LibraryRow[]
+    )
+      .filter((row) => row.ready && row.judge_problem_id)
+      .map((row) => [row.number, row]),
+  );
+  const picked = pickSimilarLc(number, [...judgeable.keys()], (n) =>
+    (tags.get(`lc-${n}`) ?? []).map((c) => c.slug),
+  );
+  // Solved as on the Line 500 list: this practice round, imported LeetCode records included.
+  const progress = userId
+    ? studyProgress(userId, practiceRoundState(userId).activeRoundId)
+    : new Map();
+  return picked.map((n) => {
+    const row = judgeable.get(n)!;
+    return {
+      id: row.judge_problem_id!,
+      title: row.title_zh,
+      titleEn: row.title_en,
+      // Imported rows may say Easy/Medium/Hard; the workspace speaks 简单/中等/困难.
+      difficulty:
+        ({ easy: '简单', medium: '中等', hard: '困难' } as Record<string, string>)[
+          row.difficulty.toLowerCase()
+        ] ?? row.difficulty,
+      solved: !!progress.get(row.id)?.solved,
+    };
+  });
 }

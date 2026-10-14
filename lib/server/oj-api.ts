@@ -19,7 +19,9 @@ import { hiddenCompanies } from './env';
 import {
   getStudyLibrary,
   getStudySourceStatement,
+  lingHints,
   listStudyLibrary,
+  similarProblems,
 } from './study-library';
 import { requireCourseOwner } from './course-visibility';
 import {
@@ -47,7 +49,7 @@ import {
   waitForSubmission,
   settleSubmission,
   submissionHistory,
-  hintEarned,
+  failedJudgeCount,
   cancelSubmission,
   ojStatus,
   MAX_CODE_BYTES,
@@ -80,6 +82,9 @@ export async function handleOj(
     const round =
       p && isSelectedProblem(id) ? practiceRoundState(p.id).currentRound : null;
     const hint = curatedHint(id);
+    const tags = companyTagIndex(hiddenCompanies());
+    // Per round like Solved, over all history rather than the first page; 2 opens hint 3.
+    const failed = hint && p ? failedJudgeCount(p.id, id, round?.id) : 0;
     return json({
       ...problem,
       codingModes: templates ? ['leetcode', 'acm'] : ['acm'],
@@ -87,9 +92,13 @@ export async function handleOj(
       leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
       sourceStatement: getStudySourceStatement(id),
       curatedHint: hint,
-      companies: companyTagIndex(hiddenCompanies()).get(id) ?? [],
-      // Per round like Solved, over all history rather than the first page.
-      hintEarned: hint && p ? hintEarned(p.id, id, round?.id) : false,
+      companies: tags.get(id) ?? [],
+      hintEarned: failed > 0,
+      failedSubmissions: failed,
+      // Observation, invariant, steps: the client opens them one at a time (components/hint-ladder.tsx).
+      hints: lingHints(id),
+      // A nicety under the statement: it never fails the problem itself.
+      similar: await similarProblems(id, p?.id, tags).catch(() => []),
       practiceRound: round,
       maxCodeBytes: MAX_CODE_BYTES,
       maxStdinBytes: MAX_STDIN_BYTES,

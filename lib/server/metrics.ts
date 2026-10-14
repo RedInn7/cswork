@@ -43,6 +43,8 @@ const EVENTS: Record<string, Record<string, Kind>> = {
   fail_case_debug: { problem_id: 'text', language: 'text', verdict: 'text' },
   // seconds: the learner's own problem timer, when it ran (components/problem-timer.tsx).
   judge_accept: { problem_id: 'text', language: 'text', seconds: [0, 86_400] },
+  // A Line 500 hint opened, 1-3 (components/hint-ladder.tsx).
+  hint_open: { problem_id: 'text', level: [1, 3] },
   language_switch: { locale: 'text' },
   mock_interview_start: { company: 'tag', template: 'tag', mode: 'tag' },
   mock_interview_finish: { company: 'tag', template: 'tag', mode: 'tag' },

@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { test } from 'node:test';
 import hints from '../lib/content/ling-hints.json';
 import { curatedEntries } from '../lib/ling-curated';
@@ -32,4 +34,13 @@ void test('every Line 500 problem has exactly three zh and three en hints, nothi
     }
   }
   assert.deepEqual(bad, []);
+});
+
+void test('only server code imports the hint file, so it stays out of client bundles', () => {
+  const importers = ['app', 'components', 'hooks', 'lib']
+    .flatMap((dir) =>
+      (readdirSync(dir, { recursive: true }) as string[]).map((f) => join(dir, f)),
+    )
+    .filter((f) => /\.(tsx?|mjs)$/.test(f) && readFileSync(f, 'utf8').includes('ling-hints.json'));
+  assert.deepEqual(importers, [join('lib', 'server', 'study-library.ts')]);
 });
