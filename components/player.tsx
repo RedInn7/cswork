@@ -11,6 +11,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
+// The player module is lazy-loaded, so these 46KB of styles stay out of the site-wide CSS.
+import 'video.js/dist/video-js.css';
 import '@/app/media.css';
 
 // Effects store the Chinese text; it is translated at render so switching
@@ -214,8 +216,6 @@ export function Player({
         const [next, { default: videojs }] = await Promise.all([
           source(),
           import('video.js'),
-          // Its 46KB of styles ship with the player, not the site-wide CSS.
-          import('video.js/dist/video-js.css'),
         ]);
         if (disposed || !host.current) return;
         const el = document.createElement('video-js');
