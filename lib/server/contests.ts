@@ -438,7 +438,7 @@ async function createRoom(p: Person, input: unknown, now = Date.now()) {
       .rated()
       .flatMap(({ id }) => {
         const r = lcRatingOf(Number(id.slice(3)));
-        return r?.contest === d.replay && allowed.has(id) ? [{ id, q: r.q }] : [];
+        return r && r.contest === d.replay && allowed.has(id) ? [{ id, q: r.q }] : [];
       })
       .sort((a, b) => a.q - b.q)
       .map((x) => x.id);

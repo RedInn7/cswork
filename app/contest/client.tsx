@@ -66,7 +66,10 @@ export function Countdown({ to, skew = 0, label }: { to: number; skew?: number; 
   );
 }
 
-const kindLabel = (kind: RoomView['kind'], t: T) => t(...CONTEST_KINDS[kind]);
+const kindLabel = (kind: RoomView['kind'], t: T) => {
+  const [zh, en] = CONTEST_KINDS[kind];
+  return t(zh, en);
+};
 const PHASE: Record<RoomView['phase'], [string, string]> = {
   upcoming: ['未开赛', 'Upcoming'],
   running: ['进行中', 'Live'],
@@ -103,7 +106,7 @@ function NameForm({
     <form className="contest-join" onSubmit={go}>
       <label>
         <span>{t('比赛昵称（计分板上公开显示）', 'Contest name (shown on the scoreboard)')}</span>
-        <input value={name} onChange={(e) => setName(e.target.value)} maxLength={24} required autoComplete="nickname" />
+        <input value={name} onChange={(e) => setName(e.target.value)} maxLength={24} required />
       </label>
       <button type="submit" disabled={busy || !name.trim()}>
         {label}
@@ -344,11 +347,11 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
         </p>
       )}
       {view.kind === 'duel' && view.phase !== 'upcoming' && (
-        <p className="contest-winner" role="status">
+        <output className="contest-winner">
           {view.winner
             ? t(`${view.winner} 率先通过全部题目，赢下对战`, `${view.winner} solved everything first and wins the duel`)
             : t('先通过全部题目的一方获胜；都没做完则按计分板。', 'First to solve every question wins; otherwise the scoreboard decides.')}
-        </p>
+        </output>
       )}
 
       {view.problems ? (
@@ -449,11 +452,12 @@ export function JoinByCode({ initialCode, suggested }: { initialCode: string; su
   const [preview, setPreview] = useState<Preview | null>(null);
   const [error, setError] = useState('');
   const look = useCallback(async (value: string) => {
-    setError('');
-    setPreview(null);
     try {
-      setPreview(await api<Preview>(`oj/contests/preview?${new URLSearchParams({ code: value })}`));
+      const found = await api<Preview>(`oj/contests/preview?${new URLSearchParams({ code: value })}`);
+      setError('');
+      setPreview(found);
     } catch (e) {
+      setPreview(null);
       setError((e as Error).message);
     }
   }, []);
@@ -537,10 +541,7 @@ export function CreateRoom({
   const [error, setError] = useState('');
   useEffect(() => {
     const q = query.trim();
-    if (!q) {
-      setHits([]);
-      return;
-    }
+    if (!q) return;
     let current = true;
     const timer = setTimeout(() => {
       api<{ items: Hit[] }>(`oj/contests/search?${new URLSearchParams({ q })}`)
@@ -596,7 +597,7 @@ export function CreateRoom({
       </label>
       <label>
         <span>{t('你的比赛昵称', 'Your contest name')}</span>
-        <input value={name} onChange={(e) => setName(e.target.value)} maxLength={24} required autoComplete="nickname" />
+        <input value={name} onChange={(e) => setName(e.target.value)} maxLength={24} required />
       </label>
       <fieldset className="contest-segment">
         <legend>{t('题目', 'Questions')}</legend>
@@ -619,7 +620,7 @@ export function CreateRoom({
             <span>{t('搜索题号或标题（最多 6 题）', 'Search by number or title (up to 6)')}</span>
             <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={t('如 15 或 三数之和', 'e.g. 15 or 3Sum')} />
           </label>
-          {!!hits.length && (
+          {!!query.trim() && !!hits.length && (
             <ul className="contest-hits" aria-label={t('搜索结果', 'Results')}>
               {hits.map((h) => (
                 <li key={h.id}>

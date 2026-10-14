@@ -58,10 +58,10 @@ const RATED = [
 ] as const;
 contestSources.rated = () => RATED.map(([id, rating]) => ({ id, rating }));
 contestSources.summaries = async () => [
-  ...RATED.map(([id]) => ({ id, title: `题 ${id}`, titleEn: `Problem ${id}`, difficulty: '中等', tags: [] })),
-  { id: 'lc-1', title: '两数之和', titleEn: 'Two Sum', difficulty: '简单', tags: [] },
-  { id: 'oa-acme-1', title: 'Acme 1', difficulty: '中等', tags: [] },
-  { id: 'oa-hiddenco-1', title: 'Hidden 1', difficulty: '中等', tags: [] },
+  ...RATED.map(([id]) => ({ id, title: `题 ${id}`, titleEn: `Problem ${id}`, difficulty: '中等' as const, tags: [] })),
+  { id: 'lc-1', title: '两数之和', titleEn: 'Two Sum', difficulty: '简单' as const, tags: [] },
+  { id: 'oa-acme-1', title: 'Acme 1', difficulty: '中等' as const, tags: [] },
+  { id: 'oa-hiddenco-1', title: 'Hidden 1', difficulty: '中等' as const, tags: [] },
 ];
 
 function call(p: Person | null, method: string, path: string, body?: unknown) {
