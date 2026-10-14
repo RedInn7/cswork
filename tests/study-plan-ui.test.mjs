@@ -47,6 +47,17 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
     pageSize: 30,
     topics: [],
     planTodo: Array.from({ length: 40 }, (_, i) => [`lc-${i + 1}`, '中等', i < 20 ? 0 : 1]),
+    sequence: Array.from({ length: 40 }, (_, i) => `lc-${i + 1}`),
+    nextProblemId: 'lc-1',
+    next: {
+      judgeProblemId: 'lc-1',
+      number: 1,
+      titleZh: '两数之和',
+      titleEn: 'Two Sum',
+      difficulty: '简单',
+      sectionSlug: 'array-foundations',
+      stage: '基础',
+    },
     collection: {
       id: 'ling-selected-500',
       total: 40,
@@ -100,14 +111,15 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
     });
   };
   const field = (label) =>
-    [...document.querySelectorAll('.route-plan-fields label')]
-      .find((node) => node.textContent.startsWith(label))
-      .querySelector('input, select');
+    [...document.querySelectorAll('.route-plan-fields label')].find(
+      (node) => node.textContent.startsWith(label),
+    ).control;
+  const opened = [];
   try {
     await act(async () =>
       root.render(
         createElement(StudyLibrary, {
-          navigate: () => {},
+          navigate: (view, params) => opened.push(params?.problem),
           availableProblemIds: [],
           signedIn: true,
           userId: 'u1',
@@ -125,6 +137,10 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
     await settle();
     const date = field('OA date');
     assert.ok(document.activeElement === date, 'the date field takes focus');
+    assert.ok(
+      !document.querySelector('.route-plan-fields label small'),
+      'hints describe the fields instead of naming them',
+    );
     assert.equal(date.min, today);
     assert.equal(date.max, addDays(today, 365));
     assert.ok(requests.some((url) => url.includes('mock-oa/presets')));
@@ -160,8 +176,13 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
     assert.match(heading.textContent, /^37 days to your OA · This week: \d+ planned$/);
     assert.match(document.querySelector('.route-plan-text').textContent, /2 a day · 14 h a week · Target: Amazon/);
     assert.equal(document.querySelector('.route-today-count').textContent, '0 / 2');
-    assert.equal(document.querySelector('.route-target'), null, 'the plan replaces the picker');
-    assert.equal(document.querySelector('.route-pace'), null);
+    assert.ok(!document.querySelector('.route-target'), 'the plan replaces the picker');
+    assert.ok(!document.querySelector('.route-pace'));
+    assert.deepEqual(
+      JSON.parse(localStorage.getItem('cswork:practice:today-target')),
+      { date: today, n: 2 },
+      'the AC dialog reads today’s target',
+    );
 
     const weeks = [...document.querySelectorAll('.route-plan-weeks li')];
     assert.ok(weeks.length >= 6);
@@ -183,6 +204,30 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
     assert.equal(field('Hours a week').value, '14');
     await act(async () => button('Cancel').click());
     assert.ok(document.activeElement === document.getElementById('route-plan-title'));
+
+    // A later start stop: the trip starts there, not at the line's first problem.
+    assert.ok(!!document.querySelector('.route-ticket'));
+    await act(async () => button('Edit plan').click());
+    await type(field('Start at stop'), '1');
+    await act(async () => button('Save plan').click());
+    await settle();
+    assert.equal(document.querySelector('.route-name').textContent, 'Hashing');
+    assert.ok(!document.querySelector('.route-ticket'), 'the ticket only knows the line’s first');
+    await act(async () => button('Start next problem').click());
+    assert.deepEqual(opened, ['lc-21']);
+    assert.equal(JSON.parse(sessionStorage.getItem('cswork:problem-sequence'))[0], 'lc-21');
+
+    // OA day: no practice target, no punches, no celebration.
+    await act(async () => button('Edit plan').click());
+    await type(field('OA date'), today);
+    await act(async () => button('Save plan').click());
+    await settle();
+    assert.equal(document.getElementById('route-plan-title').textContent, 'Your OA is today. Good luck!');
+    assert.equal(document.querySelector('.route-today-rest').textContent, 'OA day, no practice planned');
+    assert.equal(document.querySelectorAll('.route-punch').length, 0);
+    assert.ok(!document.querySelector('[data-celebrate]'));
+    assert.match(document.querySelector('.route-nudge').textContent, /No practice planned today/);
+    assert.equal(JSON.parse(localStorage.getItem('cswork:practice:today-target')).n, 0);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

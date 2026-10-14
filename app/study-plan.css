@@ -104,7 +104,7 @@
   align-items: start;
   gap: 10px 14px;
 }
-.route-plan-fields label {
+.route-plan-fields > :is(label, .route-plan-field) {
   display: grid;
   align-content: start;
   gap: 4px;
@@ -268,4 +268,10 @@ a.route-plan-tag:hover {
   .route-plan-weeks summary svg {
     transition: transform 150ms;
   }
+}
+
+/* Today's trip on a mock OA or OA day: words instead of punches, free to wrap. */
+.route-today-rest {
+  font-weight: 600;
+  color: var(--route-white);
 }

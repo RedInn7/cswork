@@ -17,6 +17,7 @@ import {
   planStorageKey,
   planWeeks,
   suggestStartStop,
+  TODAY_TARGET_KEY,
   type Plan,
   type PlanCompany,
   type PlanGoal,
@@ -33,9 +34,11 @@ type OaPage = {
   total: number;
 };
 
-/** The target company's judgeable OA problems not solved yet. */
+type CompanyProblem = PlanProblem & { solved: boolean };
+
+/** The target company's judgeable OA problems. */
 async function companyProblems(aliases: string[], signal: AbortSignal) {
-  const found = new Map<string, PlanProblem>();
+  const found = new Map<string, CompanyProblem>();
   await Promise.all(
     aliases.map(async (alias) => {
       // ponytail: 4 pages (120 problems) outlast any sprint week; aliases the
@@ -47,8 +50,11 @@ async function companyProblems(aliases: string[], signal: AbortSignal) {
           signal,
         ).catch(() => null);
         for (const item of data?.items ?? [])
-          if (item.progress !== 'solved')
-            found.set(item.id, { id: item.id, difficulty: item.difficulty });
+          found.set(item.id, {
+            id: item.id,
+            difficulty: item.difficulty,
+            solved: item.progress === 'solved',
+          });
         if (!data || page * 30 >= data.total) return;
       }
     }),
@@ -58,11 +64,15 @@ async function companyProblems(aliases: string[], signal: AbortSignal) {
 
 /**
  * The sprint goal on this device, the plan it makes from the line's `planTodo`,
- * and today's target: the plan's daily count, else the "n a day" picker.
+ * and today's target: the plan's daily count (0 on a mock OA or OA day), else
+ * the "n a day" picker. `sequence` and `activity` tell which of today's ACs
+ * belonged to the plan this morning.
  */
 export function useStudyPlan(
   userId: string | null | undefined,
   todo: readonly PlanTodo[] | undefined,
+  sequence: readonly string[] | undefined,
+  activity: readonly { problem_id: string; created_at: number }[],
 ) {
   const [goal, setGoal] = useState<PlanGoal | null>(null);
   const [today, setToday] = useState('');
@@ -79,14 +89,13 @@ export function useStudyPlan(
     setGoal(next);
     try {
       localStorage.setItem(planStorageKey(userId), JSON.stringify(next));
-      // ponytail: the workspace's AC dialog still reads the old key; mirror the
-      // picker there until it reads the plan.
+      // The AC dialog falls back to it on days this page was not opened.
       localStorage.setItem(LEGACY_TARGET_KEY, String(next.dailyTarget));
     } catch {}
   }
   const aliases =
     goal?.status === 'planned' && goal.company ? goal.company.aliases.join(',') : '';
-  const [company, setCompany] = useState<{ aliases: string; problems: PlanProblem[] }>({
+  const [company, setCompany] = useState<{ aliases: string; problems: CompanyProblem[] }>({
     aliases: '',
     problems: [],
   });
@@ -98,24 +107,47 @@ export function useStudyPlan(
     });
     return () => controller.abort();
   }, [aliases]);
-  const plan = useMemo(
-    () =>
-      goal?.status === 'planned' && todo && today
-        ? buildPlan({
-            goal,
-            today,
-            line: todo.map(([id, difficulty, stop]) => ({ id, difficulty, stop })),
-            company: company.aliases === aliases ? company.problems : [],
-          })
-        : null,
-    [goal, today, todo, company, aliases],
-  );
+  const plan = useMemo(() => {
+    if (goal?.status !== 'planned' || !todo || !today) return null;
+    // Today's ACs left `todo` (or will once the lists refresh) but still count
+    // toward today's goal.
+    const solvedToday = new Set(
+      activity.flatMap((a) =>
+        localDay(new Date(a.created_at)) === today ? [a.problem_id] : [],
+      ),
+    );
+    const all = company.aliases === aliases ? company.problems : [];
+    return buildPlan({
+      goal,
+      today,
+      line: todo.flatMap(([id, difficulty, stop]) =>
+        solvedToday.has(id) ? [] : [{ id, difficulty, stop }],
+      ),
+      company: all.filter((p) => !p.solved && !solvedToday.has(p.id)),
+      done: {
+        line: sequence?.filter((id) => solvedToday.has(id)).length ?? 0,
+        company: all.filter((p) => solvedToday.has(p.id)).length,
+      },
+    });
+  }, [goal, today, todo, sequence, activity, company, aliases]);
+  const day = plan?.days[0];
+  const from = plan ? (goal?.startStop ?? 0) : 0;
+  const target =
+    day?.mock || day?.oa ? 0 : plan?.daily || goal?.dailyTarget || DEFAULT_GOAL.dailyTarget;
+  useEffect(() => {
+    if (!goal || !today) return;
+    try {
+      localStorage.setItem(TODAY_TARGET_KEY, JSON.stringify({ date: today, n: target }));
+    } catch {}
+  }, [goal, today, target]);
   return {
     goal,
     plan,
     today,
     save,
-    target: plan?.daily || goal?.dailyTarget || DEFAULT_GOAL.dailyTarget,
+    target,
+    /** The line's first unsolved problem from a later start stop: where the trip starts. */
+    start: from > 0 ? todo?.find(([, , stop]) => stop >= from) : undefined,
   };
 }
 
@@ -419,10 +451,12 @@ function PlanForm({
     >
       <p className="route-plan-kicker">{t('冲刺计划', 'Sprint plan')}</p>
       <div className="route-plan-fields">
-        <label>
-          {t('OA 日期', 'OA date')}
+        {/* Hints sit outside the labels: they are descriptions, not names. */}
+        <div className="route-plan-field">
+          <label htmlFor="route-plan-date">{t('OA 日期', 'OA date')}</label>
           <input
             ref={first}
+            id="route-plan-date"
             type="date"
             value={oaDate}
             min={today}
@@ -431,7 +465,7 @@ function PlanForm({
             onChange={(event) => setOaDate(event.target.value)}
           />
           <small id="route-plan-date-hint">{t('还不知道可以留空', 'Leave empty if unknown')}</small>
-        </label>
+        </div>
         <label>
           {t('目标公司', 'Target company')}
           <select value={slug} onChange={(event) => setSlug(event.target.value)}>
@@ -477,9 +511,10 @@ function PlanForm({
           />
         </label>
         {stops.length > 0 && (
-          <label className="route-plan-wide">
-            {t('从哪一站出发', 'Start at stop')}
+          <div className="route-plan-field route-plan-wide">
+            <label htmlFor="route-plan-start">{t('从哪一站出发', 'Start at stop')}</label>
             <select
+              id="route-plan-start"
               value={start}
               aria-describedby="route-plan-start-hint"
               onChange={(event) => setStart(Number(event.target.value))}
@@ -498,7 +533,7 @@ function PlanForm({
                   )
                 : t('从第一站开始，按顺序走完全线。', 'Start at the first stop and ride the whole line.')}
             </small>
-          </label>
+          </div>
         )}
       </div>
       {error && (
