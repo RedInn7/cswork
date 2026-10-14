@@ -11,7 +11,7 @@ import { oaStatementMarkdown } from '@/lib/oa-verified-statement';
 import { breadcrumbJsonLd, oaPageTitle, seoMetadata } from '@/lib/seo';
 import { HttpError } from '@/lib/server/http';
 import { requestLocale } from '@/lib/server/locale';
-import { oaEnglishStatement } from '@/lib/server/oa-judge';
+import { oaEnglishStatement, oaReadyProblems } from '@/lib/server/oa-judge';
 import { oaLibrary } from '@/lib/server/oa-library';
 import { getPublicOaProblem } from '@/lib/server/oj-problems';
 import { publicLibraryDescription } from '@/lib/server/public-library';
@@ -36,7 +36,8 @@ const load = cache(async (slug: string, id: string) => {
     ? oaStatementMarkdown(english || judged, judged.samples, locale)
     : item.statement;
   const name = oaCompanyName(company.slug, company.name, locale);
-  const siblings = oaLibrary().company(company.slug)?.items ?? [];
+  const listed = oaLibrary().company(company.slug, new Set((await oaReadyProblems()).keys()));
+  const siblings = listed?.items ?? [];
   const at = siblings.findIndex((sibling) => sibling.id === id);
   return {
     item,
@@ -45,6 +46,8 @@ const load = cache(async (slug: string, id: string) => {
     statement,
     // Catalog text and translations are English; verified packages are Chinese.
     statementLang: !judged || english ? 'en' : 'zh-CN',
+    // A mock only draws judge-ready problems.
+    mock: company.slug !== OTHER_COMPANY && !!listed?.company.ready,
     locale,
     name,
     previous: siblings[at - 1],
@@ -69,7 +72,7 @@ export async function generateMetadata({ params }: Props) {
 export default async function OaProblemPage({ params }: Props) {
   const { company: slug, id } = await params;
   const page = await load(slug, id);
-  const { item, company, judged, statement, statementLang, locale, name } = page;
+  const { item, company, judged, statement, statementLang, mock, locale, name } = page;
   const zh = locale === 'zh';
   return (
     <article className="public-library-article oa-public-problem">
@@ -113,7 +116,7 @@ export default async function OaProblemPage({ params }: Props) {
             </span>
           )}
         </p>
-        {(judged || company.slug !== OTHER_COMPANY) && (
+        {(judged || mock) && (
           <div className="oa-public-actions">
             {judged && (
               <a
@@ -123,7 +126,7 @@ export default async function OaProblemPage({ params }: Props) {
                 {zh ? '在线判题' : 'Run & submit'}
               </a>
             )}
-            {company.slug !== OTHER_COMPANY && (
+            {mock && (
               <a
                 className={judged ? 'oa-public-cta is-quiet' : 'oa-public-cta'}
                 href={`/mock-oa/${company.slug}`}

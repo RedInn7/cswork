@@ -75,14 +75,21 @@ export default async function OaCompanyPage({ params }: Props) {
         </div>
       </header>
       <div className="oa-public-actions">
-        {company.slug !== OTHER_COMPANY && (
+        {/* A mock only draws judge-ready problems. */}
+        {company.slug !== OTHER_COMPANY && company.ready > 0 && (
           <a className="oa-public-cta" href={`/mock-oa/${company.slug}`}>
             {zh ? `模拟 ${name} OA` : `Mock ${name} OA`}
           </a>
         )}
         <a
           className="oa-public-cta is-quiet"
-          href={`/?${new URLSearchParams({ view: 'problems', library: 'oa', company: company.slug })}`}
+          href={`/?${new URLSearchParams({
+            view: 'problems',
+            library: 'oa',
+            company: company.slug,
+            // The workspace lists practice-ready problems unless told otherwise.
+            ...(company.ready ? {} : { ready: '0' }),
+          })}`}
         >
           {zh ? '在练习工作台中筛选' : 'Open in the workspace'}
         </a>
