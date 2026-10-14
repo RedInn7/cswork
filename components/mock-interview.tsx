@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight, Check, ChevronLeft, ChevronRight, Code2, Copy, Dices, ExternalLink, Eye, Flag,
@@ -53,6 +53,9 @@ type Run = {
   shown: Record<number, { hint?: boolean; answer?: boolean }>;
   verdict?: string;
   summary?: string;
+  /** Start and finish were counted for this sitting (saved, so a reload or a review doesn't count again). */
+  started?: boolean;
+  finished?: boolean;
 };
 type Past = {
   query: Record<string, string>;
@@ -542,12 +545,12 @@ function Session({
     const timer = setInterval(() => setNow(Date.now()), 500);
     return () => clearInterval(timer);
   }, [run.since]);
-  const started = useRef(false);
   useEffect(() => {
-    if (!data || started.current || run.phase !== 'run') return;
-    started.current = true;
+    if (!data || run.started || run.phase !== 'run') return;
+    // oxlint-disable-next-line react/react-compiler -- Flags the analytics event on the saved sitting once, so a reload doesn't send it again.
+    setRun((r) => ({ ...r, started: true }));
     track('mock_interview_start', { company: query.company || 'any', template: query.template, mode });
-  }, [data, run.phase, query, mode]);
+  }, [data, run.phase, run.started, query, mode]);
 
   if (error)
     return (
@@ -590,9 +593,9 @@ function Session({
     }
   };
   const finish = () => {
-    const done = { ...commit(run), since: null, phase: 'done' as const };
+    const done = { ...commit(run), since: null, phase: 'done' as const, finished: true };
     setRun(done);
-    track('mock_interview_finish', { company: query.company || 'any', template: query.template, mode });
+    if (!run.finished) track('mock_interview_finish', { company: query.company || 'any', template: query.template, mode });
     if (mode !== 'solo') return;
     const entry: Past = {
       query,
