@@ -136,6 +136,7 @@ test('classic lists show groups and progress, link external problems out and swi
     await click(start);
     assert.deepEqual(navigations.at(-1), ['problem', { problem: 'lc-21' }]);
     assert.equal(sessionStorage.getItem('cswork:problem-sequence'), '["lc-1","lc-21"]');
+    assert.equal(sessionStorage.getItem('cswork:problem-library'), 'blind-75');
     await click(document.querySelector('a.study-row'));
     assert.deepEqual(navigations.at(-1), ['problem', { problem: 'lc-1' }]);
 

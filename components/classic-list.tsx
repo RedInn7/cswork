@@ -89,7 +89,7 @@ export function ClassicList({
       window.dispatchEvent(new Event('cswork:auth-required'));
       return;
     }
-    rememberProblemSequence(data?.sequence ?? [judgeProblemId]);
+    rememberProblemSequence(data?.sequence ?? [judgeProblemId], slug);
     navigate('problem', { problem: judgeProblemId });
   };
   const status = (item: ClassicItem) =>
@@ -163,7 +163,7 @@ export function ClassicList({
               <Button
                 className="route-cta"
                 onClick={() => {
-                  rememberProblemSequence(data.sequence);
+                  rememberProblemSequence(data.sequence, slug);
                   navigate('problem', { problem: data.nextProblemId! });
                 }}
               >
