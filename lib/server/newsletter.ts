@@ -261,7 +261,9 @@ export async function handleNewsletter(request: Request, p: Person | null, path:
  * the one-click header, so link scanners cannot unsubscribe anyone.
  */
 export async function handleNewsletterLink(request: Request, action: string | undefined) {
-  await limitReader(request, null, 'newsletter-link', 30);
+  // Generous: mail providers send one-click unsubscribes from a few shared addresses in bursts,
+  // and a 256-bit token is not guessable anyway; the limit only bounds the writes.
+  await limitReader(request, null, 'newsletter-link', 600);
   const token = new URL(request.url).searchParams.get('token') ?? '';
   const db = sqlite();
   const now = Date.now();
