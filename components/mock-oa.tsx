@@ -1229,7 +1229,8 @@ function MockReport({
                 <span className="mock-result-title">
                   <strong>{summary ? problemTitle(summary, locale) : id}</strong>
                   <small>
-                    {t(...LEVEL_NAME[slotOf(summary?.difficulty) ?? session.slots[index] ?? 'medium'])}
+                    {/* An OA problem was drawn into its slot by its estimate; the package label is a default. */}
+                    {t(...LEVEL_NAME[slotOf(id.startsWith('lc-') ? summary?.difficulty : null) ?? session.slots[index] ?? 'medium'])}
                     {item
                       ? t(` · 提交 ${item.attempts} 次`, ` · ${item.attempts} submission${item.attempts === 1 ? '' : 's'}`)
                       : ''}
