@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { CODE_LANGUAGES, problemStatement } from '@/lib/problems';
 import type { Person } from './auth';
+import { refuseInContest } from './contests';
 import { setting } from './env';
 import { HttpError, json, limit } from './http';
 import { leetcodeContract } from './leetcode-mode';
@@ -695,6 +696,8 @@ export async function handleAiTutor(request: Request, p: Person, kind: TutorKind
   if (request.method !== 'POST') throw new HttpError(404, '接口不存在');
   await limit(p, 'ai-tutor', 6);
   const data = input.parse(await readJson(request, AI_CODE_CHARS * 4 + 60_000));
+  // No tutor on a problem of this learner's running contest; refused before any quota is reserved.
+  refuseInContest(p, data.problemId);
   if (data.code.length > AI_CODE_CHARS) throw new HttpError(413, '代码过长，AI 助教最多读取 20000 个字符');
   if ((kind === 'review' || kind === 'complexity') && !data.code.trim())
     throw new HttpError(400, '请先写一些代码再请求点评');
