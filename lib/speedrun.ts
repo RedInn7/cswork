@@ -38,23 +38,23 @@ function shuffle<T>(list: readonly T[], random: () => number) {
   return out;
 }
 
-/** The three stops closest to `slug`: same group first, then by distance on the line. */
+/** Three stops from the answer's group in random order, borrowing the nearest stops outside it
+ * when the group is short. A fixed nearest-three pick made the answer guessable from stop numbers. */
 export function distractors(slug: string, random: () => number) {
   const at = position.get(slug)!;
   const g = LINE[at].g;
   return LINE.map((stop, i) => ({
     slug: stop.slug,
-    other: stop.g === g ? 0 : 1,
-    distance: Math.abs(i - at),
-    tie: random(),
+    // Same group sorts first ([-1, 0)); outsiders by distance, random among equals.
+    rank: stop.g === g ? random() - 1 : Math.abs(i - at) + random(),
   }))
-    .filter((stop) => stop.distance > 0)
-    .sort((a, b) => a.other - b.other || a.distance - b.distance || a.tie - b.tie)
+    .filter((stop) => stop.slug !== slug)
+    .sort((a, b) => a.rank - b.rank)
     .slice(0, 3)
     .map((stop) => stop.slug);
 }
 
-/** One round: distinct stops while they last, each with the answer and its nearest neighbours. */
+/** One round: distinct stops while they last, each with the answer and three stops from its group. */
 export function speedrunRound(
   pool: readonly SpeedrunPoolItem[],
   random: () => number = Math.random,

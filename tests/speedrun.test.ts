@@ -59,19 +59,37 @@ void test('a small pool repeats stops instead of coming up short, and an empty p
   assert.deepEqual(speedrunRound([], seededRandom(1)), []);
 });
 
-void test('distractors are the nearest stops in the same group, borrowing neighbours only when the group is small', () => {
-  const dp = ROUTE_SECTIONS.find((g) => g.en === 'Dynamic Programming')!.slugs;
-  for (let seed = 1; seed <= 20; seed++) {
-    const near = distractors('dp-knapsack', seededRandom(seed));
-    assert.ok(near.every((s) => dp.includes(s)));
-    // Index 2 in DP: both stops at distance 1 always, then one at distance 2.
-    assert.ok(near.includes('dp-grid') && near.includes('dp-subsequence'));
-    assert.ok(near.includes('dp-foundations') || near.includes('dp-string'));
-  }
+void test('distractors come from anywhere in the answer\'s group, borrowing the nearest outsiders only when it is small', () => {
+  for (const group of ROUTE_SECTIONS.filter((g) => g.slugs.length >= 4))
+    for (const slug of group.slugs) {
+      const seen = new Set<string>();
+      for (let seed = 1; seed <= 200; seed++) {
+        const near = distractors(slug, seededRandom(seed));
+        assert.equal(near.every((s) => group.slugs.includes(s) && s !== slug), true);
+        near.forEach((s) => seen.add(s));
+      }
+      assert.equal(seen.size, group.slugs.length - 1, `${slug}: every sibling shows up, not just the nearest three`);
+    }
   // Backtracking has three stops: both siblings plus the nearest stop outside it.
-  const back = distractors('backtracking-strings', seededRandom(3));
-  assert.ok(back.includes('backtracking-enumeration') && back.includes('backtracking-constraints'));
-  assert.ok(['graph-spanning-tree', 'dp-foundations'].some((s) => back.includes(s)));
+  const outside = new Set<string>();
+  for (let seed = 1; seed <= 40; seed++) {
+    const back = distractors('backtracking-strings', seededRandom(seed));
+    assert.equal(back.includes('backtracking-enumeration') && back.includes('backtracking-constraints'), true);
+    outside.add(back.find((s) => !s.startsWith('backtracking-'))!);
+  }
+  assert.deepEqual([...outside].sort(), ['dp-foundations', 'graph-spanning-tree'], 'equidistant outsiders take turns');
+});
+
+void test('away from the group ends, the stop numbers do not give away which choice is right', () => {
+  for (const group of ROUTE_SECTIONS.filter((g) => g.slugs.length >= 5))
+    for (const slug of group.slugs.slice(1, -1)) {
+      const places = new Set<number>();
+      for (let seed = 1; seed <= 200; seed++) {
+        const choices = [slug, ...distractors(slug, seededRandom(seed))];
+        places.add(choices.map(stopCode).sort().indexOf(stopCode(slug)));
+      }
+      assert.equal(places.size > 1, true, `${slug}: the answer always sits at place ${[...places]}`);
+    }
 });
 
 void test('stop codes and groups follow the Line 500 order', () => {
