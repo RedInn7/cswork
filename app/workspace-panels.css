@@ -1,0 +1,314 @@
+/* Problem workspace extras (components/problem-workspace.tsx, problem-meta.tsx): one-panel
+   maximize, the meta line under the title, and the AC dialog's runtime/memory chart.
+   Workspace tokens where the workspace owns the surface; the AC dialog is portalled out of
+   it, so that chart uses the dialog's own greens and greys. */
+
+/* ── Maximize: CSS hides the other panels; the saved layout and sizes stay as they are. */
+.cs-panel-max {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 5px;
+  color: var(--cs-muted);
+}
+.cs-panel-max:hover {
+  color: var(--cs-blue);
+  background: color-mix(in srgb, var(--cs-blue) 12%, transparent);
+}
+.cs-console-header > .cs-panel-max {
+  margin-right: 6px;
+}
+.cs-code-caption > .cs-panel-max {
+  margin-right: -6px;
+}
+.cs-statement-pane {
+  position: relative;
+}
+.cs-statement-pane > .cs-panel-max {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+.cs-statement-pane:has(> .cs-panel-max) > .cs-pane-tabs {
+  padding-right: 42px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.cs-workspace-body[data-maximized='statement'] #workbench,
+.cs-workspace-body[data-maximized='code'] #statement,
+.cs-workspace-body[data-maximized='code'] #console,
+.cs-workspace-body[data-maximized='console'] #statement,
+.cs-workspace-body[data-maximized='console'] #code,
+.cs-workspace-body[data-maximized] .cs-main-panels > .cs-separator,
+.cs-workspace-body[data-maximized='code'] .cs-code-console > .cs-separator,
+.cs-workspace-body[data-maximized='console'] .cs-code-console > .cs-separator {
+  /* The panel library sets display inline. */
+  display: none !important;
+}
+
+/* ── The line under the title: acceptance, votes, share. */
+.cs-problem-meta {
+  display: contents;
+}
+.cs-problem-meta-rate {
+  color: var(--cs-muted);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.cs-problem-votes {
+  display: inline-flex;
+  border-radius: 999px;
+  background: var(--cs-surface-soft);
+}
+.cs-problem-vote,
+.cs-problem-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: var(--cs-muted);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+}
+.cs-problem-vote + .cs-problem-vote {
+  box-shadow: inset 1px 0 0 var(--cs-border);
+  border-radius: 0 999px 999px 0;
+}
+.cs-problem-vote:first-child {
+  border-radius: 999px 0 0 999px;
+}
+.cs-problem-vote:hover,
+.cs-problem-share:hover {
+  color: var(--cs-text);
+}
+.cs-problem-vote[data-vote='up'][aria-pressed='true'] {
+  color: #0f7a5c;
+}
+.cs-problem-vote[data-vote='down'][aria-pressed='true'] {
+  color: #c2410c;
+}
+.cs-problem-vote[aria-pressed='true'] svg {
+  fill: currentColor;
+  fill-opacity: 0.18;
+}
+.cs-problem-share {
+  background: var(--cs-surface-soft);
+}
+.cs-problem-meta-note {
+  color: var(--cs-muted);
+  font-size: 12px;
+}
+.cs-workspace[data-theme='dark'] .cs-problem-vote[data-vote='up'][aria-pressed='true'] {
+  color: #5fd3a8;
+}
+.cs-workspace[data-theme='dark'] .cs-problem-vote[data-vote='down'][aria-pressed='true'] {
+  color: #fb923c;
+}
+
+/* ── Solutions filtered to one language (from the chart below). */
+.cs-posts-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-right: auto;
+  padding: 3px 9px;
+  border: 1px solid var(--cs-border);
+  border-radius: 999px;
+  color: var(--cs-text);
+  font-size: 12px;
+}
+.cs-posts-filter:hover {
+  border-color: var(--cs-blue);
+  color: var(--cs-blue);
+}
+
+/* ── AC dialog: everyone's best in this language, the learner's bucket in the dialog's green. */
+.cs-perf {
+  margin: 18px 0 0;
+  text-align: left;
+}
+.cs-perf-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.cs-perf-toggle {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 7px;
+  background: #f1f5f4;
+}
+.cs-perf-toggle > button {
+  padding: 2px 10px;
+  border-radius: 5px;
+  color: #6b7280;
+  font-size: 12px;
+}
+.cs-perf-toggle > button[aria-pressed='true'] {
+  background: #fff;
+  color: #111827;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.1);
+}
+.cs-perf-toggle > button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.cs-perf-beats {
+  color: #15803d;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.cs-perf-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 72px;
+  margin: 10px 0 0;
+  padding: 0 0 1px;
+  border-bottom: 1px solid #d1d5db;
+  list-style: none;
+}
+.cs-perf-bars > li {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  height: 100%;
+}
+.cs-perf-bars button {
+  width: 100%;
+  height: var(--cs-bar);
+  min-height: 0;
+  border-radius: 3px 3px 0 0;
+  background: #cfd8d4;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+  transform-origin: bottom;
+  animation: cs-perf-rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.cs-perf-bars > li:nth-child(n + 6) button {
+  animation-delay: 60ms;
+}
+.cs-perf-bars > li:nth-child(n + 12) button {
+  animation-delay: 120ms;
+}
+.cs-perf-bars button:not(:disabled) {
+  cursor: pointer;
+}
+.cs-perf-bars button:not(:disabled):hover {
+  background: #9fb3ab;
+}
+.cs-perf-bars > li[data-mine] button {
+  background: #15803d;
+}
+.cs-perf-bars button:focus-visible {
+  outline: 2px solid #15803d;
+  outline-offset: 2px;
+}
+.cs-perf-axis {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+  color: #6b7280;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+@keyframes cs-perf-rise {
+  from {
+    transform: scaleY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs-perf-bars button {
+    animation: none;
+  }
+}
+
+/* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
+@media screen {
+  .dark .cs-panel-max {
+    color: var(--cs-muted);
+  }
+  .dark .cs-panel-max:hover {
+    color: var(--cs-blue);
+    background: color-mix(in srgb, var(--cs-blue) 12%, transparent);
+  }
+  .dark .cs-problem-meta-rate {
+    color: var(--cs-muted);
+  }
+  .dark .cs-problem-votes {
+    background: var(--cs-surface-soft);
+  }
+  .dark .cs-problem-vote,
+  .dark .cs-problem-share {
+    color: var(--cs-muted);
+  }
+  .dark .cs-problem-vote + .cs-problem-vote {
+    box-shadow: inset 1px 0 0 var(--cs-border);
+  }
+  .dark .cs-problem-vote:hover,
+  .dark .cs-problem-share:hover {
+    color: var(--cs-text);
+  }
+  .dark .cs-problem-vote[data-vote='up'][aria-pressed='true'] {
+    color: #88d3b6;
+  }
+  .dark .cs-problem-vote[data-vote='down'][aria-pressed='true'] {
+    color: #fca285;
+  }
+  .dark .cs-problem-vote[aria-pressed='true'] svg {
+    fill: currentColor;
+  }
+  .dark .cs-problem-share {
+    background: var(--cs-surface-soft);
+  }
+  .dark .cs-problem-meta-note {
+    color: var(--cs-muted);
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-problem-vote[data-vote='up'][aria-pressed='true'] {
+    color: #5fd3a8;
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-problem-vote[data-vote='down'][aria-pressed='true'] {
+    color: #fb923c;
+  }
+  .dark .cs-posts-filter {
+    border: 1px solid var(--cs-border);
+    color: var(--cs-text);
+  }
+  .dark .cs-posts-filter:hover {
+    border-color: var(--cs-blue);
+    color: var(--cs-blue);
+  }
+  .dark .cs-perf-toggle {
+    background: #121413;
+  }
+  .dark .cs-perf-toggle > button {
+    color: #b6bdca;
+  }
+  .dark .cs-perf-toggle > button[aria-pressed='true'] {
+    background: #191919;
+    color: #dbe4f6;
+    box-shadow: 0 1px 2px #0f172a1a;
+  }
+  .dark .cs-perf-beats {
+    color: #86d597;
+  }
+  .dark .cs-perf-bars {
+    border-bottom: 1px solid #32353a;
+  }
+  .dark .cs-perf-bars button:focus-visible {
+    outline: 2px solid #86d597;
+  }
+  .dark .cs-perf-axis {
+    color: #b6bdca;
+  }
+}
+/* ── end dark theme ── */
