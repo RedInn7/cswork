@@ -538,3 +538,94 @@ test('OA library reveals solutions only on request, supports language/copy and c
     dom.window.close();
   }
 });
+
+test('OA list: new-this-week banner, progress and newest-first filters in the URL, and Pick one', async () => {
+  const dom = new JSDOM('<div id="root"></div>', {
+    url: 'https://cswork.test/?view=problems&library=oa&status=todo',
+  });
+  const saved = new Map();
+  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'navigator', 'location', 'history']) {
+    saved.set(name, Object.getOwnPropertyDescriptor(globalThis, name));
+    Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  }
+  const originalFetch = globalThis.fetch;
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const requests = [];
+  globalThis.fetch = (url, options) =>
+    new Promise((resolve) => requests.push({ url, signal: options.signal, resolve }));
+  const { createRoot } = await import('react-dom/client');
+  const { OaLibrary } = await import('../components/oa-library.tsx');
+  const root = createRoot(document.getElementById('root'));
+  const answer = async (request, body) => act(async () => request.resolve({ ok: true, json: async () => body }));
+  const params = (request) => new URL(request.url, 'https://cswork.test').searchParams;
+  const button = (text) => [...document.querySelectorAll('button')].find((b) => b.textContent.includes(text));
+  const change = async (select, value) =>
+    act(async () => {
+      select.value = value;
+      select.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
+    });
+  const page = (o = {}) => ({
+    items: [
+      {
+        id: 'oa-acme-1', companySlug: 'acme', companyName: 'Acme', number: 1, title: 'Fresh OA',
+        sourceUrl: 'https://oamaster.com/docs/companies/acme', languages: ['python'],
+        judgeStatus: 'ready', judgeProblemId: 'oa-acme-1', topics: [], addedAt: Date.UTC(2026, 9, 12),
+      },
+    ],
+    total: 1, page: 1, pageSize: 30, companies: [{ slug: 'acme', name: 'Acme', count: 1, ready: 1 }],
+    source: { name: 'OA Master' }, newThisWeek: 3, signedIn: true, ...o,
+  });
+  let navigation;
+  try {
+    await act(async () => root.render(createElement(OaLibrary, { navigate: (...args) => (navigation = args) })));
+    // A progress filter from a link is sent and kept.
+    assert.equal(params(requests[0]).get('status'), 'todo');
+    await answer(requests[0], page());
+    assert.match(button('added this week').textContent, /3 practice-ready OA problems added this week/);
+    const status = document.querySelector('.oa-status-filter select');
+    assert.ok(status && status.value === 'todo');
+    assert.equal(document.querySelectorAll('.oa-added').length, 0, 'dates only in the newest-first list');
+    await change(status, 'solved');
+    assert.equal(params(requests.at(-1)).get('status'), 'solved');
+    assert.equal(new URL(location.href).searchParams.get('status'), 'solved');
+    await answer(requests.at(-1), page());
+    // The banner opens the newest list with every other filter cleared.
+    await act(async () => button('Acme').click());
+    assert.equal(params(requests.at(-1)).get('company'), 'acme');
+    await act(async () => button('added this week').click());
+    const newest = params(requests.at(-1));
+    assert.deepEqual(
+      [newest.get('sort'), newest.get('status'), newest.get('company'), newest.get('ready')],
+      ['new', '', '', '1'],
+    );
+    assert.equal(new URL(location.href).searchParams.get('sort'), 'new');
+    await answer(requests.at(-1), page());
+    assert.ok(button('added this week').getAttribute('aria-pressed') === 'true');
+    assert.match(document.querySelector('.oa-added').textContent, /Added 2026-10-12/);
+    assert.match(document.querySelector('.study-result-summary').textContent, /newest first/);
+    // Pick one asks for a random problem under the same filters and opens it.
+    await act(async () => button('Pick one').click());
+    const pick = params(requests.at(-1));
+    assert.deepEqual([pick.get('random'), pick.get('sort')], ['1', 'new']);
+    assert.ok(button('Pick one').disabled);
+    await answer(requests.at(-1), page({ random: 'oa-acme-7' }));
+    assert.deepEqual(navigation, ['problem', { problem: 'oa-acme-7' }]);
+    await act(async () => button('Pick one').click());
+    await answer(requests.at(-1), page({ random: null }));
+    assert.match(document.querySelector('.oa-pick-message').textContent, /No unsolved practice-ready problem/);
+    // Guests see no progress menu and no banner when nothing is new.
+    await act(async () => root.render(createElement(OaLibrary, { key: 'guest' })));
+    await answer(requests.at(-1), page({ signedIn: false, newThisWeek: 0 }));
+    assert.equal(document.querySelector('.oa-status-filter'), null);
+    assert.equal(document.querySelector('.oa-new-banner'), null);
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = originalFetch;
+    delete globalThis.IS_REACT_ACT_ENVIRONMENT;
+    for (const [name, descriptor] of saved) {
+      if (descriptor) Object.defineProperty(globalThis, name, descriptor);
+      else delete globalThis[name];
+    }
+    dom.window.close();
+  }
+});

@@ -16,7 +16,7 @@ import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
 import { OA_KIND_NAMES, TOPIC_NAMES, topicName } from '@/lib/route-stops';
-import { Star } from 'lucide-react';
+import { Shuffle, Star } from 'lucide-react';
 
 /** Text remains the accessible identity; the logo is only a visual aid. */
 export function CompanyIdentity({
@@ -77,6 +77,8 @@ type Item = {
   kind?: 'mcq' | 'sql' | 'other';
   progress?: 'solved' | 'attempted';
   starred?: boolean;
+  /** When a judgeable problem went online (ms). */
+  addedAt?: number;
 };
 const difficultyLevels: Record<string, string> = {
   简单: 'easy',
@@ -99,7 +101,13 @@ type Page = {
   /** Matches per topic under the other filters. */
   topics?: { slug: string; count: number }[];
   source: { name: string; url: string; commit: string };
+  /** Judgeable problems that went online in the last 7 days, site-wide. */
+  newThisWeek?: number;
+  signedIn?: boolean;
+  /** ?random=1: an unsolved judgeable problem under the filters. */
+  random?: string | null;
 };
+const STATUSES = ['solved', 'attempted', 'todo'] as const;
 type Detail = Item & {
   statement: string;
   contentHash: string;
@@ -258,6 +266,15 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
   const [topics, setTopics] = useState<NonNullable<Page['topics']>>([]);
   const [companySearch, setCompanySearch] = useState('');
   const [readyOnly, setReadyOnly] = useState(initial.get('ready') !== '0');
+  const [status, setStatus] = useState<string>(
+    () => STATUSES.find((value) => value === initial.get('status')) ?? '',
+  );
+  const [sort, setSort] = useState(initial.get('sort') === 'new' ? 'new' : '');
+  // Kept across loads so the banner and the progress menu don't blink while a page loads.
+  const [newThisWeek, setNewThisWeek] = useState(0);
+  const [signedIn, setSignedIn] = useState(false);
+  const [picking, setPicking] = useState(false);
+  const [pickMessage, setPickMessage] = useState('');
   const [page, setPage] = useState(
     () => Math.max(1, Number.parseInt(initial.get('page') || '', 10) || 1),
   );
@@ -276,6 +293,40 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
   const [copyMessage, setCopyMessage] = useState('');
   const heading = useRef<HTMLHeadingElement>(null);
   const copyGeneration = useRef(0);
+  const listParams = () =>
+    new URLSearchParams({
+      q: search,
+      company,
+      topic,
+      page: String(page),
+      ready: readyOnly ? '1' : '0',
+      status,
+      sort,
+    });
+  // "Pick one": an unsolved practice-ready problem under the current filters.
+  const pickOne = async () => {
+    setPicking(true);
+    setPickMessage('');
+    try {
+      const params = listParams();
+      params.set('random', '1');
+      const { random } = await read<Page>('?' + params, new AbortController().signal);
+      if (!random)
+        setPickMessage(
+          t(
+            '当前筛选下没有未通过的可练习题目。',
+            'No unsolved practice-ready problem matches these filters.',
+          ),
+        );
+      else if (navigate) navigate('problem', { problem: random });
+      else location.assign('/?' + new URLSearchParams({ view: 'problem', problem: random }));
+    } catch (e) {
+      const message = e instanceof Error ? e.message : '加载失败，请重试';
+      setPickMessage(t(message, readErrorEn(message)));
+    } finally {
+      setPicking(false);
+    }
+  };
   useEffect(() => {
     const timer = setTimeout(() => {
       // The first run must not reset a page restored from the URL.
@@ -293,30 +344,27 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
       q: search,
       page: page > 1 ? String(page) : '',
       ready: readyOnly ? '' : '0',
+      status,
+      sort,
     };
     for (const [key, value] of Object.entries(filters))
       if (value) url.searchParams.set(key, value);
       else url.searchParams.delete(key);
     if (url.href !== location.href) history.replaceState(history.state, '', url);
-  }, [company, topic, search, page, readyOnly]);
+  }, [company, topic, search, page, readyOnly, status, sort]);
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
     setError('');
     setData(null);
-    const params = new URLSearchParams({
-      q: search,
-      company,
-      topic,
-      page: String(page),
-      ready: readyOnly ? '1' : '0',
-    });
-    read<Page>('?' + params, controller.signal)
+    read<Page>('?' + listParams(), controller.signal)
       .then((value) => {
         if (!controller.signal.aborted) {
           setData(value);
           setCompanies(value.companies);
           setTopics(value.topics ?? []);
+          setNewThisWeek(value.newThisWeek ?? 0);
+          setSignedIn(!!value.signedIn);
         }
       })
       .catch((e) => {
@@ -326,7 +374,8 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
         if (!controller.signal.aborted) setLoading(false);
       });
     return () => controller.abort();
-  }, [search, company, topic, page, retry, readyOnly]);
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- listParams reads exactly these filters.
+  }, [search, company, topic, page, retry, readyOnly, status, sort]);
   useEffect(() => {
     const controller = new AbortController();
     setDetail(null);
@@ -647,6 +696,30 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
           </p>
         </div>
       </header>
+      {newThisWeek > 0 && (
+        <button
+          type="button"
+          className="oa-new-banner"
+          aria-pressed={sort === 'new' && !company && !topic && !status && !search}
+          onClick={() => {
+            // Only the newest list: every other filter is cleared.
+            setSort('new');
+            setCompany('');
+            setTopic('');
+            setStatus('');
+            setQuery('');
+            setSearch('');
+            setReadyOnly(true);
+            setPage(1);
+          }}
+        >
+          <span className="oa-new-dot" aria-hidden="true" />
+          {t(`本周新增 ${newThisWeek} 道可练习 OA 题`, `${newThisWeek} practice-ready OA ${newThisWeek === 1 ? 'problem' : 'problems'} added this week`)}
+          <span className="oa-new-cta">
+            {t('按上线时间查看', 'See newest first')} <span aria-hidden="true">→</span>
+          </span>
+        </button>
+      )}
       <div className="oa-browser">
         <aside
           className="oa-company-sidebar"
@@ -763,7 +836,49 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                 ))}
               </select>
             </label>
+            {/* Progress only means something with an account; a filter from a link stays visible. */}
+            {(signedIn || status) && (
+              <label className="oa-status-filter">
+                {t('进度', 'Progress')}
+                <select
+                  value={status}
+                  onChange={(event) => {
+                    setStatus(event.target.value);
+                    setPage(1);
+                  }}
+                >
+                  <option value="">{t('全部进度', 'Any progress')}</option>
+                  <option value="todo">{t('尚未通过', 'Not solved')}</option>
+                  <option value="attempted">{t('尝试过 · 未通过', 'Attempted · Not solved')}</option>
+                  <option value="solved">{t('已通过', 'Solved')}</option>
+                </select>
+              </label>
+            )}
+            <label className="oa-sort-filter">
+              {t('排序', 'Order')}
+              <select
+                value={sort}
+                onChange={(event) => {
+                  setSort(event.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="">{t('按公司题号', 'By company')}</option>
+                <option value="new">{t('最新上线', 'Newest first')}</option>
+              </select>
+            </label>
+            <button
+              type="button"
+              className="oa-pick-one"
+              disabled={picking}
+              onClick={pickOne}
+            >
+              <Shuffle size={14} aria-hidden="true" /> {t('随机一题', 'Pick one')}
+            </button>
           </div>
+          <p className="oa-pick-message" role="status">
+            {pickMessage}
+          </p>
           {loading ? (
             <p className="study-state" role="status">
               {t('正在加载 OA 题目…', 'Loading OA problems…')}
@@ -780,6 +895,8 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                     `共 ${data.total} 道${readyOnly ? '可练习的' : ''} OA 题目 · 来源 OA Master`,
                     `${data.total}${readyOnly ? ' practice-ready' : ''} OA ${data.total === 1 ? 'problem' : 'problems'} · Source: OA Master`,
                   )}
+                  {sort === 'new' &&
+                    t(' · 按上线时间倒序', ' · newest first')}
                   {anyEstimated &&
                     t(
                       ' · 难度带 ≈ 的是 AI 估计，专题同为 AI 标注',
@@ -857,6 +974,16 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                               </>
                             )}
                           </strong>
+                          {sort === 'new' && item.addedAt && (
+                            <small className="oa-added">
+                              <time dateTime={new Date(item.addedAt).toISOString()}>
+                                {t(
+                                  `${new Date(item.addedAt).toISOString().slice(5, 10)} 上线`,
+                                  `Added ${new Date(item.addedAt).toISOString().slice(0, 10)}`,
+                                )}
+                              </time>
+                            </small>
+                          )}
                           {item.kind && Object.hasOwn(OA_KIND_NAMES, item.kind) && (
                             <small data-kind={item.kind}>{t(...OA_KIND_NAMES[item.kind])}</small>
                           )}
