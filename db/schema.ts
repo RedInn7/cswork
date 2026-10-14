@@ -29,6 +29,7 @@ export * from './mock-peer-schema';
 export * from './group-camp-schema';
 export * from './newsletter-schema';
 export * from './course-gift-schema';
+export * from './contests-schema';
 import { practiceRounds } from './practice-round-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),

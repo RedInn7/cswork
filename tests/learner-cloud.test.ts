@@ -190,7 +190,7 @@ void test('the public profile is off by default, names nobody and counts only pu
     indexable: true,
     bio: 'grinding',
   });
-  assert.deepEqual(saved.profile, { handle: 'line-rider', visible: false, indexable: false, bio: 'grinding' });
+  assert.deepEqual(saved.profile, { handle: 'line-rider', visible: false, indexable: false, showContest: false, bio: 'grinding' });
   assert.equal(publicProfile('line-rider', catalogue), null, 'not public until switched on');
   assert.equal(await status(other, 'POST', 'profile', { handle: 'line-rider', visible: true }), 409);
   assert.equal(await status(fresh, 'POST', 'profile', { handle: 'fresh-one', visible: true }), 403, 'verify first');

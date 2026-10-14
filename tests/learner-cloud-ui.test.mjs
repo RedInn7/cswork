@@ -312,14 +312,15 @@ test('the public profile card is off until switched on and saves a lowercase han
   };
   try {
     const root = await mount(createElement(PublicProfileSettings));
-    const [visible, indexable] = document.querySelectorAll('.cloud-check input');
+    const [visible, indexable, showContest] = document.querySelectorAll('.cloud-check input');
     assert.equal(visible.checked, false);
     assert.equal(indexable.disabled, true, 'search indexing needs a public page first');
+    assert.equal(showContest.disabled, true, 'so does the contest rating');
     await act(async () => type(document.querySelector('.cloud-handle input'), 'Line-Rider'));
     await act(async () => visible.click());
     await act(async () => document.querySelector('form.cloud-profile-form').requestSubmit());
     await wait();
-    assert.deepEqual(posts, [{ handle: 'line-rider', visible: true, indexable: false, bio: '' }]);
+    assert.deepEqual(posts, [{ handle: 'line-rider', visible: true, indexable: false, showContest: false, bio: '' }]);
     assert.ok(document.querySelector('a[href="/u/line-rider"]') !== null);
     await act(async () => root.unmount());
   } finally {

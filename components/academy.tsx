@@ -471,6 +471,8 @@ export function Academy() {
             ask={ask}
             refresh={refreshLite}
             mock={params.mock}
+            room={params.room}
+            tab={params.tab}
           />
         ) : (
           <Empty
@@ -753,6 +755,9 @@ export function Academy() {
           </Link>
           <Link prefetch={false} href="/newsletter" className="underline underline-offset-4">
             {t('每周周报', 'Weekly newsletter')}
+          </Link>
+          <Link prefetch={false} href="/contest" className="underline underline-offset-4">
+            {t('周赛与比赛房间', 'Weekly contest & rooms')}
           </Link>
           <Link prefetch={false} href="/privacy" className="underline underline-offset-4">
             {t('隐私说明', 'Privacy')}

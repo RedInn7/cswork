@@ -77,12 +77,17 @@ export const userListItems = sqliteTable(
   (t) => [primaryKey({ columns: [t.listId, t.problemId] })],
 );
 
-/** Opt-in public page /u/<handle>: off by default, never shows the name or email. */
+/**
+ * Opt-in public page /u/<handle>: off by default, never shows the name or email. show_contest:
+ * the weekly rating curve and contest badges, a second opt-in because each weekly's rank ties
+ * the page to a contest name on the public scoreboards.
+ */
 export const userProfiles = sqliteTable('user_profiles', {
   userId: text('user_id').primaryKey(),
   handle: text('handle').notNull().unique(),
   visible: integer('visible').notNull().default(0),
   indexable: integer('indexable').notNull().default(0),
+  showContest: integer('show_contest').notNull().default(0),
   bio: text('bio').notNull().default(''),
   createdAt: integer('created_at').notNull(),
   updatedAt: integer('updated_at').notNull(),

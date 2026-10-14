@@ -157,6 +157,8 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/lists/community' },
   { path: '/discuss' },
   { path: '/newsletter' },
+  { path: '/contest' },
+  { path: '/contest/leaderboard' },
   { path: '/topics' },
   ...ROUTE_SECTIONS.flatMap((s) => s.slugs.map((slug) => ({ path: `/topics/${slug}` }))),
   { path: guidePath() },

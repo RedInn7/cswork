@@ -1,7 +1,7 @@
 // Achievement badges, all computed from practice data (no table). Client-safe.
 import { STOP_NAMES } from './route-stops';
 
-export type BadgeGroup = 'stop' | 'line' | 'streak' | 'days' | 'company' | 'mock';
+export type BadgeGroup = 'stop' | 'line' | 'streak' | 'days' | 'company' | 'mock' | 'contest';
 export type Badge = {
   id: string;
   group: BadgeGroup;
@@ -21,7 +21,11 @@ export type AchievementInput = {
   /** Companies with judgeable OAs: how many there are and how many are solved. */
   companies: readonly { slug: string; name: string; solved: number; total: number }[];
   perfectMock: boolean;
+  /** Rated weekly contests (lib/server/contests.ts); the contest badges appear only when given. */
+  contests?: readonly ContestResult[];
 };
+/** One rated weekly: live rank among `entrants`, rating after it, problems solved of `total`. */
+export type ContestResult = { rank: number; entrants: number; after: number; solved: number; total: number };
 
 export const STREAK_BADGES = [7, 30, 100] as const;
 export const DAY_BADGES = [50, 100] as const;
@@ -135,7 +139,38 @@ export function achievements(input: AchievementInput): Badge[] {
     earned: input.perfectMock,
     progress: [Number(input.perfectMock), 1],
   });
+  if (input.contests) badges.push(...contestBadges(input.contests));
   return badges;
+}
+
+export const CONTEST_REGULAR = 10;
+/** A podium counts in a weekly of at least this many rated entrants. */
+export const PODIUM_MIN = 10;
+export const RAPID_RATING = 1850;
+
+/** The weekly contest's badges, in our own names (the Line 500 train classes). */
+export function contestBadges(results: readonly ContestResult[]): Badge[] {
+  const badge = (id: string, zh: string, en: string, have: number, need = 1): Badge => ({
+    id: `contest:${id}`,
+    group: 'contest',
+    zh,
+    en,
+    earned: have >= need,
+    progress: reached(have, need),
+  });
+  const any = (test: (r: ContestResult) => boolean) => Number(results.some(test));
+  return [
+    badge('first', '首次发车', 'First departure', results.length),
+    badge('regular', `周赛常客 ${CONTEST_REGULAR} 场`, `${CONTEST_REGULAR} weeklies`, results.length, CONTEST_REGULAR),
+    badge('sweep', '全线贯通', 'Full line', any((r) => r.total > 0 && r.solved >= r.total)),
+    badge('podium', '前三进站', 'Podium finish', any((r) => r.rank <= 3 && r.entrants >= PODIUM_MIN)),
+    badge(
+      'rapid',
+      '直达段位',
+      'Rapid class',
+      any((r) => r.after >= RAPID_RATING && r.rank <= Math.ceil(r.entrants / 4)),
+    ),
+  ];
 }
 
 /** Badges earned in `after` that were not earned in `before`. */
