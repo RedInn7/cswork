@@ -20,6 +20,7 @@ import {
   ChevronLeft,
   Check,
   CircleCheck,
+  Copy,
   Tag,
   ChevronRight,
   ChevronDown,
@@ -37,10 +38,12 @@ import {
   MessageSquare,
   Minimize2,
   Play,
+  Plus,
   RotateCcw,
   Send,
   Settings2,
   Terminal,
+  Trash2,
   X,
 } from 'lucide-react';
 import { Button } from './ui/button';
@@ -79,6 +82,7 @@ import { ACM_IO_TEMPLATES } from '@/lib/acm-io-templates';
 import { useIdlePrecompile } from '@/hooks/use-idle-precompile';
 import { StatementMarkdown } from './statement-markdown';
 import { LeetCodeSamples } from './leetcode-samples';
+import { leetcodePublicSample } from '@/lib/leetcode-public-samples';
 import type { CodingMode } from '@/lib/coding-mode';
 import type { IntelligenceStatus } from '@/lib/editor-intelligence';
 import {
@@ -185,6 +189,21 @@ const safeLayoutStorage = {
     }
   },
 };
+
+const MAX_CASES = 5;
+function readCases(key: string): string[] {
+  try {
+    const value: unknown = JSON.parse(localStorage.getItem(key) || 'null');
+    const cases = Array.isArray(value)
+      ? value
+          .filter((item): item is string => typeof item === 'string')
+          .slice(0, MAX_CASES)
+      : [];
+    return cases.length ? cases : [''];
+  } catch {
+    return [''];
+  }
+}
 
 export function ProblemWorkspace(props: WorkspaceProps) {
   return (
@@ -321,11 +340,21 @@ function Workspace({
   );
   const [bottomTab, setBottomTab] = useState<'input' | 'result'>('input');
   const [inputMode, setInputMode] = useState<'sample' | 'custom'>('sample');
-  const [stdin, setStdin] = useState('');
+  // Custom cases (at most 5) live in this browser, per problem and submission mode;
+  // Run sends the selected one, so the judge still gets one stdin per run.
+  const casesKey = `cswork:cases:${userId}:${initialProblem.id}${codingMode === 'leetcode' ? ':leetcode' : ''}`;
+  const [customCases, setCustomCases] = useState(['']);
+  const [caseIndex, setCaseIndex] = useState(0);
+  const stdin = customCases[caseIndex] ?? '';
+  // Which custom case the shown run used, for the result's caption.
+  const [ranCase, setRanCase] = useState<number | null>(null);
+  useEffect(() => {
+    setCustomCases(readCases(casesKey));
+    setCaseIndex(0);
+  }, [casesKey]);
   const [sampleIndex, setSampleIndex] = useState(0);
   const [recovering, setRecovering] = useState(false);
   const [hintCount, setHintCount] = useState(0);
-  const [topicsOpen, setTopicsOpen] = useState(false);
   const [hintsOpen, setHintsOpen] = useState(false);
   // Line 500 hint: earned by a failed formal submission, or shown on request after a confirm.
   const [routeHint, setRouteHint] = useState<'locked' | 'earned' | 'asked'>(
@@ -448,6 +477,16 @@ function Workspace({
         },
       ];
   const sample = samples[sampleIndex] || samples[0];
+  // The example as custom input: ACM stdin as is; LeetCode's "name = value" lines become
+  // one JSON value per line. null when there is no such form to copy.
+  const exampleCase = !loadedProblem
+    ? null
+    : codingMode === 'acm'
+      ? sample.input
+      : (leetcodePublicSample(problem.id, sample)?.input?.replace(
+          /^[A-Za-z_]\w*\s*=\s*/gm,
+          '',
+        ) ?? null);
   // Bootstrap carries no statements; this stands in until `problems/:id` answers.
   const problemLoading = !loadedProblem && !problemError && (
     <div className="cs-loading" role="status">
@@ -853,9 +892,39 @@ function Workspace({
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => persistDraft(), 350);
   }
+  function saveCases(next: string[], index: number) {
+    setCustomCases(next);
+    setCaseIndex(index);
+    try {
+      localStorage.setItem(casesKey, JSON.stringify(next));
+    } catch {
+      /* Still usable for this visit. */
+    }
+  }
+  /** Adds a case and selects it; an identical one is selected instead, a lone blank one is filled. */
+  function addCase(input: string) {
+    const existing = customCases.indexOf(input);
+    if (existing >= 0) saveCases(customCases, existing);
+    else if (customCases.length === 1 && !customCases[0]) saveCases([input], 0);
+    else if (customCases.length >= MAX_CASES) {
+      setError(
+        t(
+          `最多保存 ${MAX_CASES} 个自定义用例，请先删除一个。`,
+          `You can keep up to ${MAX_CASES} custom cases. Delete one first.`,
+        ),
+      );
+      return false;
+    } else saveCases([...customCases, input], customCases.length);
+    return true;
+  }
+  function deleteCase() {
+    const next = customCases.filter((_, index) => index !== caseIndex);
+    if (!next.length) return saveCases([''], 0);
+    saveCases(next, Math.min(caseIndex, next.length - 1));
+  }
   function debugWithCase(input: string) {
+    if (!addCase(input)) return;
     setInputMode('custom');
-    setStdin(input);
     showConsole('input');
     // Run stays mounted across console tabs; focus it before this button unmounts.
     runButton.current?.focus();
@@ -918,10 +987,8 @@ function Workspace({
     };
     draftDirty.current = override !== undefined;
     setLanguage(next);
-    if (mode !== codingMode) {
-      setStdin('');
-      setInputMode('sample');
-    }
+    // The other mode has its own saved cases (casesKey).
+    if (mode !== codingMode) setInputMode('sample');
     setCodingMode(mode);
     setCode(override ?? nextCode);
     setCursor({ line: 1, column: 1 });
@@ -973,6 +1040,7 @@ function Workspace({
     busyRef.current = true;
     setSubmitting(true);
     setSubmission(null);
+    setRanCase(mode === 'run' && inputMode === 'custom' ? caseIndex : null);
     showConsole('result');
     setMobilePane('editor');
     setError('');
@@ -1138,6 +1206,10 @@ function Workspace({
     }
   }
 
+  // Topic tags name the technique; source labels (灵神题单 …) are not topics.
+  const topics = problem.tags.filter(
+    (tag) => !/灵神|题单|leetcode|来源/i.test(tag),
+  );
   const description = (
     <section className="cs-statement-pane">
       <div
@@ -1231,20 +1303,29 @@ function Workspace({
                     ]
                   : problem.difficulty}
               </span>
-              {!examMode &&
-                problem.tags.some(
-                  (tag) => !/灵神|题单|leetcode|来源/i.test(tag),
-                ) && (
-                  <button
-                    className="cs-statement-pill"
-                    aria-expanded={topicsOpen}
-                    aria-controls="problem-topics"
-                    onClick={() => setTopicsOpen((open) => !open)}
-                  >
-                    <Tag size={15} />
-                    {uiEnglish ? 'Topics' : '主题'}
-                  </button>
-                )}
+              {!examMode && topics.length > 0 && (
+                <button
+                  className="cs-statement-pill"
+                  aria-expanded={!settings.hideTags}
+                  aria-controls="problem-topics"
+                  title={
+                    uiEnglish
+                      ? 'Show or hide topic tags; this browser remembers'
+                      : '显示 / 隐藏专题标签，此浏览器会记住'
+                  }
+                  onClick={() =>
+                    changeSettings({
+                      // Before the problem loads, settings are still the defaults:
+                      // merge onto the stored ones instead of overwriting them.
+                      ...(loadedProblem ? settings : readEditorSettings(userId)),
+                      hideTags: !settings.hideTags,
+                    })
+                  }
+                >
+                  <Tag size={15} />
+                  {uiEnglish ? 'Topics' : '主题'}
+                </button>
+              )}
               {!examMode && !sourceBody && statement.hints.length > 0 && (
                 <button
                   className="cs-statement-pill"
@@ -1285,15 +1366,13 @@ function Workspace({
             {!examMode && !!problem.companies?.length && (
               <CompanyTags companies={problem.companies} english={uiEnglish} />
             )}
-            {!examMode && topicsOpen && (
+            {!examMode && !settings.hideTags && topics.length > 0 && (
               <div className="cs-statement-topics" id="problem-topics">
-                {problem.tags
-                  .filter((tag) => !/灵神|题单|leetcode|来源/i.test(tag))
-                  .map((tag) => (
-                    <span className="cs-statement-pill" key={tag}>
-                      {tag}
-                    </span>
-                  ))}
+                {topics.map((tag) => (
+                  <span className="cs-statement-pill" key={tag}>
+                    {tag}
+                  </span>
+                ))}
               </div>
             )}
             {statementLocale === 'en' && !english && (
@@ -1958,15 +2037,91 @@ function Workspace({
                     )
                   ) : (
                     <>
+                      <div className="cs-custom-cases">
+                        <div
+                          className="cs-case-tabs"
+                          role="tablist"
+                          aria-label={t('自定义用例', 'Custom cases')}
+                        >
+                          {customCases.map((_, index) => (
+                            <button
+                              key={index}
+                              type="button"
+                              role="tab"
+                              aria-selected={index === caseIndex}
+                              aria-controls="custom-case-input"
+                              className={index === caseIndex ? 'selected' : ''}
+                              onClick={() => setCaseIndex(index)}
+                            >
+                              {t(`用例 ${index + 1}`, `Case ${index + 1}`)}
+                            </button>
+                          ))}
+                        </div>
+                        <button
+                          type="button"
+                          aria-label={t('新增用例', 'Add a case')}
+                          title={t('新增用例', 'Add a case')}
+                          disabled={customCases.length >= MAX_CASES}
+                          onClick={() => addCase('')}
+                        >
+                          <Plus size={14} />
+                        </button>
+                        {exampleCase !== null && (
+                          <button
+                            type="button"
+                            title={t(
+                              '把当前样例复制为新用例',
+                              'Copy the current example into a new case',
+                            )}
+                            disabled={
+                              customCases.length >= MAX_CASES &&
+                              !customCases.includes(exampleCase)
+                            }
+                            onClick={() => addCase(exampleCase)}
+                          >
+                            <Copy size={13} />
+                            {t('复制样例', 'Copy example')}
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          aria-label={t(
+                            `删除用例 ${caseIndex + 1}`,
+                            `Delete case ${caseIndex + 1}`,
+                          )}
+                          title={t(
+                            `删除用例 ${caseIndex + 1}`,
+                            `Delete case ${caseIndex + 1}`,
+                          )}
+                          disabled={customCases.length === 1 && !stdin}
+                          onClick={deleteCase}
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
                       <textarea
+                        id="custom-case-input"
                         className="cs-custom-input"
                         aria-label={
                           codingMode === 'leetcode'
-                            ? t('自定义函数参数', 'Custom function arguments')
-                            : t('自定义标准输入', 'Custom stdin')
+                            ? t(
+                                `自定义函数参数（用例 ${caseIndex + 1}）`,
+                                `Custom function arguments (case ${caseIndex + 1})`,
+                              )
+                            : t(
+                                `自定义标准输入（用例 ${caseIndex + 1}）`,
+                                `Custom stdin (case ${caseIndex + 1})`,
+                              )
                         }
                         value={stdin}
-                        onChange={(event) => setStdin(event.target.value)}
+                        onChange={(event) =>
+                          saveCases(
+                            customCases.map((item, index) =>
+                              index === caseIndex ? event.target.value : item,
+                            ),
+                            caseIndex,
+                          )
+                        }
                         placeholder={
                           codingMode === 'leetcode'
                             ? t(
@@ -1994,8 +2149,8 @@ function Workspace({
                                   'One JSON argument per line. For design problems, line 1 is the array of operation names and line 2 the array of their arguments. Trees and linked lists use the array form of the original problem.',
                                 ))}
                         {t(
-                          '自定义输入展示程序输出；提交时会运行题目的全部测试点。',
-                          ' Custom input shows your program output; Submit runs all test cases.',
+                          `运行只跑选中的用例并展示程序输出，用例保存在此浏览器（最多 ${MAX_CASES} 个）；提交时会运行题目的全部测试点。`,
+                          ` Run tries the selected case and shows your program output; cases stay in this browser (up to ${MAX_CASES}). Submit runs all test cases.`,
                         )}
                       </p>
                     </>
@@ -2018,6 +2173,11 @@ function Workspace({
                   inspect={() => inspect(submission)}
                   onUseInput={codingMode === 'acm' ? debugWithCase : undefined}
                   maxStdinBytes={maxStdinBytes}
+                  ranCase={
+                    submission.mode === 'run' && ranCase !== null
+                      ? ranCase + 1
+                      : undefined
+                  }
                 />
               ) : (
                 <div className="cs-empty compact">
@@ -2218,6 +2378,13 @@ function Workspace({
           line={!!problem.practiceRound}
           library={neighbors.library}
           acceptedAt={success.created_at}
+          language={success.language}
+          runtimeMs={
+            success.runtimeMs ??
+            (typeof success.runtime === 'number'
+              ? success.runtime * 1000
+              : null)
+          }
           seconds={solveSeconds}
           activity={boot.activity}
           fallbackNext={neighbors.next}
@@ -2463,6 +2630,11 @@ function Workspace({
 }
 
 type NextStop = { id: string; sequence?: string[] } | null;
+/** GET problem-stats: lib/server/problem-stats.ts. */
+type Standing = {
+  acceptance: { attempted: number; accepted: number } | null;
+  beats: number | null;
+};
 
 /** Back to the list the learner came from: the OA library, a classic list, or the bank. */
 const backTo = (problemId: string, library?: string) =>
@@ -2526,6 +2698,8 @@ function AcceptedDialog({
   line,
   library,
   acceptedAt,
+  language,
+  runtimeMs,
   seconds,
   activity,
   fallbackNext,
@@ -2534,6 +2708,8 @@ function AcceptedDialog({
   onClose,
 }: {
   problemId: string;
+  language: string;
+  runtimeMs: number | null;
   line: boolean;
   /** The classic list the problem was opened from; its order wins over Line 500's. */
   library?: string;
@@ -2573,6 +2749,26 @@ function AcceptedDialog({
       ),
     [activity, problemId, acceptedAt, now, english],
   );
+  // Aggregates only (lib/server/problem-stats.ts); null below its sample floors.
+  const [standing, setStanding] = useState<Partial<Standing> | null>(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    const query = new URLSearchParams({ language });
+    // Unrounded: C++/Go runs crowd 1-5 ms, and rounding would pass slower runs as faster.
+    if (runtimeMs != null) query.set('runtimeMs', String(runtimeMs));
+    ojRequest<Standing>(
+      `problem-stats/${encodeURIComponent(problemId)}?${query}`,
+      undefined,
+      controller.signal,
+    ).then(setStanding, () => {
+      /* A nicety: the dialog never waits on or fails with it. */
+    });
+    return () => controller.abort();
+  }, [problemId, language, runtimeMs]);
+  const acceptance = standing?.acceptance;
+  const beats = standing?.beats ?? null;
+  const languageName =
+    languages.find((item) => item.id === language)?.name ?? language;
   const [next, setNext] = useState<NextStop | 'loading'>('loading');
   useEffect(() => {
     const controller = new AbortController();
@@ -2620,6 +2816,26 @@ function AcceptedDialog({
                 ` · Solved in ${formatClock(seconds)}`,
               )}
           </DialogDescription>
+          {(acceptance || beats !== null) && (
+            <p className="cs-accepted-standing">
+              {acceptance && (
+                <span>
+                  {t(
+                    `${acceptance.accepted} / ${acceptance.attempted} 人通过（${Math.round((100 * acceptance.accepted) / acceptance.attempted)}%）`,
+                    `${acceptance.accepted} of ${acceptance.attempted} people solved it (${Math.round((100 * acceptance.accepted) / acceptance.attempted)}%)`,
+                  )}
+                </span>
+              )}
+              {beats !== null && (
+                <span>
+                  {t(
+                    `运行时间快于本站 ${beats}% 的 ${languageName} 通过者`,
+                    `Faster than ${beats}% of people who solved it in ${languageName}`,
+                  )}
+                </span>
+              )}
+            </p>
+          )}
           <Button
             ref={primary}
             size="lg"
@@ -2761,6 +2977,47 @@ function SettingsDialog({
               checked={settings.minimap}
               onChange={(event) =>
                 change({ ...settings, minimap: event.target.checked })
+              }
+            />
+          </label>
+          <label>
+            <span>
+              {t('键位', 'Keybindings')}
+              <small>
+                {t(
+                  'Vim 模式下 :w 保存草稿',
+                  'In Vim mode, :w saves the draft',
+                )}
+              </small>
+            </span>
+            <select
+              value={settings.keymap}
+              onChange={(event) =>
+                change({
+                  ...settings,
+                  keymap: event.target.value as EditorSettings['keymap'],
+                })
+              }
+            >
+              <option value="default">{t('默认', 'Default')}</option>
+              <option value="vim">Vim</option>
+            </select>
+          </label>
+          <label>
+            <span>
+              {t('隐藏专题标签', 'Hide topic tags')}
+              <small>
+                {t(
+                  '防剧透，练 OA 时建议打开；公司标签照常显示',
+                  'No spoilers; recommended for OA practice. Company tags still show',
+                )}
+              </small>
+            </span>
+            <input
+              type="checkbox"
+              checked={settings.hideTags}
+              onChange={(event) =>
+                change({ ...settings, hideTags: event.target.checked })
               }
             />
           </label>

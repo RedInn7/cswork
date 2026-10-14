@@ -9,6 +9,7 @@ import type { Language } from '@/lib/problems';
 import type { IntelligenceStatus } from '@/lib/editor-intelligence';
 import { useT } from '@/lib/i18n';
 import { attachIntelligence } from './monaco-intelligence';
+import type { VimAdapter } from './vendor/monaco-vim/index.js';
 import {
   defaultEditorSettings,
   type EditorSettings,
@@ -80,8 +81,38 @@ export function CodeEditor({
   callbacks.current = { onRun, onSubmit, onSave, onCursor };
   const cleanup = useRef<(() => void) | null>(null);
   useEffect(() => () => cleanup.current?.(), []);
+  const [instance, setInstance] = useState<Parameters<OnMount>[0] | null>(
+    null,
+  );
+  const vimStatus = useRef<HTMLDivElement>(null);
+  const vim = !readOnly && settings.keymap === 'vim';
+  useEffect(() => {
+    if (!vim || !instance) return;
+    let active = true;
+    let adapter: VimAdapter | undefined;
+    // Its own chunk: only people who pick Vim download it.
+    import('./vendor/monaco-vim/index.js').then(
+      ({ initVimMode }) => {
+        if (!active) return;
+        adapter = initVimMode(instance, vimStatus.current);
+        adapter.save = () => callbacks.current.onSave?.(); // :w
+      },
+      () => {
+        /* The default keymap keeps working when the Vim chunk can't load. */
+      },
+    );
+    return () => {
+      active = false;
+      try {
+        adapter?.dispose();
+      } catch {
+        /* On unmount Monaco may already have disposed the editor. */
+      }
+    };
+  }, [vim, instance]);
   const mounted: OnMount = (editor, monaco) => {
     cleanup.current?.();
+    setInstance(editor);
     const actions = [
       editor.addAction({
         id: 'cswork.run',
@@ -162,7 +193,7 @@ export function CodeEditor({
     <div className="cs-editor-host" data-theme={settings.theme}>
       {runtime ? (
         <runtime.Editor
-          height="100%"
+          height={vim ? 'calc(100% - 24px)' : '100%'}
           width="100%"
           language={language}
           value={value}
@@ -199,6 +230,10 @@ export function CodeEditor({
         <div className="cs-editor-loading" role="status">
           {t('正在加载代码编辑器…', 'Loading the code editor…')}
         </div>
+      )}
+      {/* monaco-vim fills this bar (mode, pending keys, the : command line). */}
+      {runtime && vim && (
+        <div ref={vimStatus} className="cs-vim-status" />
       )}
     </div>
   );

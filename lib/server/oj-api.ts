@@ -15,6 +15,7 @@ import { handleSpeedrun } from './speedrun';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
 import { handleMyPractice } from './my-practice';
+import { problemStats } from './problem-stats';
 import { curatedHint } from '@/lib/ling-curated';
 import { companyTagIndex } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
@@ -37,6 +38,7 @@ import {
   requireTeacher,
 } from './http';
 import {
+  canSeeProblem,
   getPublishedProblem,
   getPublicOaProblem,
   listTeacherProblems,
@@ -147,6 +149,20 @@ export async function handleOj(
       return json(practiceRoundState(p.id));
     }
     if (resource === 'status') return json(ojStatus());
+    if (resource === 'problem-stats' && id && !action) {
+      await limit(p, 'oj-read', 240);
+      // Same gate as the statement: owner-only course exercises stay invisible.
+      if (!/^[\w-]{1,100}$/.test(id) || !(await canSeeProblem(p, id)))
+        throw new HttpError(404, '题目不存在');
+      const runtime = Number(url.searchParams.get('runtimeMs') ?? NaN);
+      return json(
+        problemStats(
+          id,
+          url.searchParams.get('language'),
+          Number.isFinite(runtime) ? runtime : null,
+        ),
+      );
+    }
     if (resource === 'submissions') {
       if (id && url.searchParams.get('wait') === '1') {
         await limit(p, 'oj-watch', 360);

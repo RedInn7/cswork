@@ -38,7 +38,7 @@ function unlisted() {
     .filter((id) => /^[A-Za-z0-9_-]{1,64}$/.test(id));
   return ids.length ? `s.user_id NOT IN (${ids.map((id) => `'${id}'`).join(',')})` : '';
 }
-const andUnlisted = () => (unlisted() ? ` AND ${unlisted()}` : '');
+export const andUnlisted = () => (unlisted() ? ` AND ${unlisted()}` : '');
 
 /** "张**", "Al***": enough to tell rows apart without publishing a real name. */
 const graphemes = new Intl.Segmenter('zh', { granularity: 'grapheme' });
