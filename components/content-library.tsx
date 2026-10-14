@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, BookOpen, Building2, ChevronDown, Search, Trophy, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BadgeCheck, BookOpen, Building2, ChevronDown, Search, Sparkles, ThumbsUp, Trophy, X } from 'lucide-react';
 import { api } from '@/lib/types';
 import { track } from '@/lib/analytics';
 import { useLocale, useT } from '@/lib/i18n';
@@ -13,6 +13,7 @@ import {
   seasonLabel,
   SENTIMENTS,
   SOURCES,
+  MEMBER_FACETS,
   MEMBER_FILTERS,
   type MemberDetails,
 } from '@/lib/experience';
@@ -24,6 +25,7 @@ import { TryFirst } from './try-first';
 import { StoryPicker } from './story-bank';
 import { MemberPost, SafeMarkdown, type MemberInfo } from './experience-report';
 import { CommunityPosts } from './discuss-board';
+import { AskedReport } from './problem-community';
 import '@/app/redesign.css';
 import '@/app/content-library.css';
 import { SelectionAsk } from './command-palette';
@@ -36,6 +38,7 @@ type Facets = {
   categories: Facet[];
   difficulties: Facet[];
   rounds: Facet[];
+  seniorities?: Facet[];
   /** Experiences: self-reported outcomes. */
   results?: Facet[];
   total: number;
@@ -66,6 +69,19 @@ export type ContentSummary = {
   member?: { handle: string | null };
   /** Member experiences: the optional structured facts. */
   details?: MemberDetails;
+  /** A teacher's pick. */
+  curated?: boolean;
+  /** What learners did with it (lib/server/content-library.ts). */
+  stats?: ContentStats;
+};
+type ContentStats = {
+  /** Answers to a question, comments on an experience. */
+  answers: number;
+  ups: number;
+  /** Learners who said they were asked it in the recent months, and the latest month. */
+  asked: { n: number; last: string } | null;
+  /** People who solved the judge problem a coding question maps to. */
+  practised: number | null;
 };
 /** Experiences and concepts summarise with their opening lines; the page doesn't print them twice. */
 const flat = (s: string) => s.replace(/[^\p{L}\p{N}]+/gu, ' ').trim().toLowerCase();
@@ -86,7 +102,7 @@ type ListPage = {
   pageSize: number;
   facets: Facets | null;
   /** Experiences: values of the filters only member posts carry. */
-  memberFacets?: Record<(typeof MEMBER_FILTERS)[number], Facet[]> | null;
+  memberFacets?: Record<(typeof MEMBER_FACETS)[number], Facet[]> | null;
   /** A member-only filter is on: imported experiences are left out. */
   memberOnly?: boolean;
 };
@@ -235,6 +251,11 @@ export function ContentMeta({ item }: { item: ContentSummary }) {
   const rounds = item.rounds?.map((r) => labelOf(t, ROUND_LABELS, r) ?? r) ?? [];
   return (
     <div className="ct-meta">
+      {item.curated && (
+        <span className="rd-badge ct-curated">
+          <Sparkles size={11} aria-hidden="true" /> {t('精选', 'Curated')}
+        </span>
+      )}
       {item.member && <span className="rd-badge is-member">{t('学员投稿', 'Member submission')}</span>}
       {item.company && <CompanyMark company={item.company} />}
       {result && (
@@ -303,6 +324,27 @@ function DetailsMeta({ details: d }: { details: MemberDetails }) {
   );
 }
 
+/** A card's counts, the ones above zero. */
+function StatsLine({ stats: s, type }: { stats: ContentStats; type: string }) {
+  const t = useT();
+  const facts = [
+    s.practised && t(`${s.practised} 人练过`, `${s.practised} solved it`),
+    s.asked && t(`最近被问 ${s.asked.last} · ${s.asked.n} 人`, `Asked ${s.asked.last} · ${s.asked.n} ${s.asked.n === 1 ? 'learner' : 'learners'}`),
+    s.answers &&
+      (type === 'experience'
+        ? t(`${s.answers} 条评论`, `${s.answers} ${s.answers === 1 ? 'comment' : 'comments'}`)
+        : t(`${s.answers} 个回答`, `${s.answers} ${s.answers === 1 ? 'answer' : 'answers'}`)),
+    s.ups && t(`${s.ups} 个赞`, `${s.ups} ${s.ups === 1 ? 'upvote' : 'upvotes'}`),
+  ].filter((x): x is string => !!x);
+  return facts.length ? (
+    <p className="ct-stats">
+      {facts.map((fact) => (
+        <span key={fact}>{fact}</span>
+      ))}
+    </p>
+  ) : null;
+}
+
 export function ContentCard({
   item,
   onOpen,
@@ -327,6 +369,7 @@ export function ContentCard({
       {item.summary && (
         <p className="ct-summary">{localized(locale, item.summary, item.summaryZh)}</p>
       )}
+      {item.stats && <StatsLine stats={item.stats} type={item.type} />}
       <div className="ct-foot">
         <span className="ct-tags">
           {item.category && <span className="ct-tag">{item.category}</span>}
@@ -379,13 +422,24 @@ function FacetSelect({
 }
 
 const FILTERS = [
-  'type', 'kind', 'company', 'role', 'category', 'difficulty', 'round', 'result', 'sort', 'q', 'page',
+  'type', 'kind', 'company', 'role', 'category', 'difficulty', 'round', 'seniority', 'result', 'curated', 'sort', 'q', 'page',
   ...MEMBER_FILTERS,
 ] as const;
+/** List orders, [value, zh, en]; experiences list by interview date first and can show the newly shared. */
+const SORTS: [string, string, string][] = [
+  ['', '最新', 'Latest'],
+  ['popular', '热门', 'Popular'],
+  ['hot', '最热', 'Trending'],
+];
+const EXPERIENCE_SORTS: [string, string, string][] = [
+  ['', '最近面试', 'Recent interviews'],
+  ['new', '新发布', 'Newly shared'],
+  ...SORTS.slice(1),
+];
 /** The offer channel of the discussion board, next to "Offers only". */
 const OFFER_STORIES = '/?view=discuss&channel=offer';
 /** Labels for the member-only filters' values, [zh, en] per value or a function for seasons. */
-const MEMBER_FILTER_LABELS: Record<(typeof MEMBER_FILTERS)[number], [string, string, Record<string, [string, string]> | null]> = {
+const MEMBER_FILTER_LABELS: Record<(typeof MEMBER_FACETS)[number], [string, string, Record<string, [string, string]> | null]> = {
   employment: ['全职 / 实习', 'Full-time / intern', EMPLOYMENT],
   season: ['招聘季', 'Season', null],
   channel: ['渠道', 'Channel', SOURCES],
@@ -524,6 +578,15 @@ export function ContentList({
             <FacetSelect label={t('类别', 'Category')} value={filters.category || ''} options={data.facets.categories} onChange={(v) => apply({ category: v })} />
             <FacetSelect label={t('难度', 'Difficulty')} value={filters.difficulty || ''} options={data.facets.difficulties} onChange={(v) => apply({ difficulty: v })} />
             <FacetSelect label={t('轮次', 'Round')} value={filters.round || ''} options={data.facets.rounds} onChange={(v) => apply({ round: v })} />
+            <FacetSelect label={t('职级', 'Seniority')} value={filters.seniority || ''} options={data.facets.seniorities ?? []} onChange={(v) => apply({ seniority: v })} />
+            <button
+              type="button"
+              className={`rd-chip ${filters.curated ? 'is-set' : ''}`}
+              aria-pressed={!!filters.curated}
+              onClick={() => apply({ curated: filters.curated ? '' : '1' })}
+            >
+              <Sparkles size={13} aria-hidden="true" /> {t('只看精选', 'Curated only')}
+            </button>
             {!!data.facets.results?.length && (
               <>
                 <FacetSelect label={t('结果', 'Outcome')} value={filters.result || ''} options={data.facets.results} onChange={(v) => apply({ result: v })} />
@@ -544,8 +607,18 @@ export function ContentList({
                 </a>
               </>
             )}
+            {type === 'experience' && (
+              <button
+                type="button"
+                className={`rd-chip ${filters.verified ? 'is-set' : ''}`}
+                aria-pressed={!!filters.verified}
+                onClick={() => apply({ verified: filters.verified ? '' : '1' })}
+              >
+                <BadgeCheck size={13} aria-hidden="true" /> {t('只看已验证作者', 'Verified authors only')}
+              </button>
+            )}
             {data.memberFacets &&
-              MEMBER_FILTERS.map((key) => {
+              MEMBER_FACETS.map((key) => {
                 const [nameZh, nameEn, labels] = MEMBER_FILTER_LABELS[key];
                 const options = (data.memberFacets?.[key] ?? []).map((o) => ({
                   ...o,
@@ -561,16 +634,16 @@ export function ContentList({
                   />
                 );
               })}
-            {type === 'experience' && (
-              // Experiences list by when they happened; newly shared ones on request.
-              <label className={`rd-chip ${filters.sort ? 'is-set' : ''}`}>
-                <span className="sr-only">{t('排序', 'Order')}</span>
-                <select value={filters.sort === 'new' ? 'new' : ''} onChange={(e) => apply({ sort: e.target.value })}>
-                  <option value="">{t('按面试/发帖时间', 'By interview or post date')}</option>
-                  <option value="new">{t('按发布时间', 'Newly shared')}</option>
-                </select>
-                <ChevronDown size={13} className="rd-chip-caret" aria-hidden="true" />
-              </label>
+            {type !== 'algorithm' && (
+              // Latest (experiences: by when they happened, or newly shared), popular, or trending lately.
+              <fieldset className="rd-segment ct-sorts">
+                <legend className="sr-only">{t('排序', 'Order')}</legend>
+                {(type === 'experience' ? EXPERIENCE_SORTS : SORTS).map(([value, zh, en]) => (
+                  <button key={value} type="button" aria-pressed={(filters.sort || '') === value} onClick={() => apply({ sort: value })}>
+                    {t(zh, en)}
+                  </button>
+                ))}
+              </fieldset>
             )}
           </div>
         )}
@@ -583,8 +656,8 @@ export function ContentList({
         {data?.memberOnly && (
           <output className="ct-member-note">
             {t(
-              '仅显示学员投稿：导入的面经没有全职/实习、招聘季和渠道这些字段。',
-              'Showing members’ posts only: imported experiences have no employment, season or channel.',
+              '仅显示学员投稿：导入的面经没有全职/实习、招聘季、渠道和作者验证这些字段。',
+              'Showing members’ posts only: imported experiences have no employment, season, channel or verified author.',
             )}
           </output>
         )}
@@ -601,14 +674,18 @@ export function ContentList({
                 `共 ${data.total.toLocaleString()} 条`,
                 `${data.total.toLocaleString()} ${data.total === 1 ? 'result' : 'results'}`,
               )}
-              {filters.q
-                ? t('，按相关度排序', ', sorted by relevance')
-                : type === 'algorithm'
-                  ? t('，核心专题在前', ', core topics first')
-                  : type === 'experience' && filters.sort !== 'new'
-                    ? // Two thirds of reports give only the post's date, so say so rather than "interview date".
-                      t('，按面试时间（没有则按原帖时间），最近的在前', ", most recent first (interview date, else the original post's)")
-                    : t('，最新的在前', ', newest first')}
+              {filters.sort === 'popular'
+                ? t('，按热度排序（收藏、回答、被问和点赞）', ', most popular first (stars, answers, reports and upvotes)')
+                : filters.sort === 'hot'
+                  ? t('，按近期热度排序', ', trending first')
+                  : filters.q
+                    ? t('，按相关度排序', ', sorted by relevance')
+                    : type === 'algorithm'
+                      ? t('，核心专题在前', ', core topics first')
+                      : type === 'experience' && filters.sort !== 'new'
+                        ? // Two thirds of reports give only the post's date, so say so rather than "interview date".
+                          t('，按面试时间（没有则按原帖时间），最近的在前', ", most recent first (interview date, else the original post's)")
+                        : t('，最新的在前', ', newest first')}
             </div>
             <div className="ct-list">
               {data.items.map((item) => (
@@ -729,11 +806,98 @@ const ANSWER_PARTS: [keyof BodyParts, string, string][] = [
   ['solution', '参考答案', 'Reference answer'],
 ];
 
+/**
+ * Under an item's title: an upvote (experiences and interview questions), a teacher's curated pick,
+ * and "I was asked this" (an interview question, or the judge problem a coding question maps to).
+ */
+function ItemActions({ item, userId, teacher }: { item: Detail; userId: string | null; teacher: boolean }) {
+  const t = useT();
+  const english = useLocale() === 'en';
+  const target = `content:${item.type}/${item.slug}`;
+  // This learner's marks on the item, and whether it was upvoted when loaded (the count may hold that vote).
+  const [mine, setMine] = useState<Set<string>>(new Set());
+  const [was, setWas] = useState(false);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    if (!userId) return;
+    let live = true;
+    api<{ items: { mark: string }[] }>(`oj/marks?target=${encodeURIComponent(target)}`).then(
+      (r) => {
+        if (!live || !Array.isArray(r.items)) return;
+        const marks = new Set(r.items.map((m) => m.mark));
+        setWas(marks.has('up'));
+        setMine(marks);
+      },
+      () => {},
+    );
+    return () => {
+      live = false;
+    };
+  }, [userId, target]);
+  async function toggle(mark: 'up' | 'curated') {
+    if (!userId) return void window.dispatchEvent(new Event('cswork:auth-required'));
+    const on = !mine.has(mark);
+    setError('');
+    try {
+      await api('oj/marks', { target, mark, on });
+      setMine((now) => {
+        const next = new Set(now);
+        if (on) next.add(mark);
+        else next.delete(mark);
+        return next;
+      });
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
+  const votable = item.type === 'experience' || item.type === 'interview_question';
+  const ups = Math.max(0, (item.stats?.ups ?? 0) + Number(mine.has('up')) - Number(was));
+  const asked =
+    item.type === 'interview_question' && !item.member
+      ? `q:${item.slug}`
+      : item.type === 'coding_question'
+        ? item.practice
+        : null;
+  if (!votable && !teacher && !asked) return null;
+  return (
+    <div className="ct-actions">
+      {votable && (
+        <button
+          type="button"
+          className={`rd-chip ${mine.has('up') ? 'is-set' : ''}`}
+          aria-pressed={mine.has('up')}
+          onClick={() => void toggle('up')}
+        >
+          <ThumbsUp size={13} aria-hidden="true" /> {t('有用', 'Helpful')}
+          {ups > 0 && <span className="ct-actions-count">{ups}</span>}
+        </button>
+      )}
+      {teacher && (
+        <button
+          type="button"
+          className={`rd-chip ${mine.has('curated') ? 'is-set' : ''}`}
+          aria-pressed={mine.has('curated')}
+          onClick={() => void toggle('curated')}
+        >
+          <Sparkles size={13} aria-hidden="true" /> {t('设为精选', 'Curate')}
+        </button>
+      )}
+      {asked && <AskedReport problemId={asked} english={english} signedIn={!!userId} labelled />}
+      {error && (
+        <span className="ct-actions-error" role="alert">
+          {t(error, englishMessage(error))}
+        </span>
+      )}
+    </div>
+  );
+}
+
 export function ContentDetail({
   params,
   navigate,
   problemIds,
   userId = null,
+  teacher = false,
 }: {
   params: Record<string, string>;
   navigate: Navigate;
@@ -741,6 +905,8 @@ export function ContentDetail({
   problemIds: string[];
   /** Signed-in learner: their written answers and stories are saved. */
   userId?: string | null;
+  /** Teachers can mark items curated. */
+  teacher?: boolean;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -802,6 +968,7 @@ export function ContentDetail({
               {item.summary && !opensWith(item.body, item.summary) && (
                 <p className="ct-lead">{localized(locale, item.summary, item.summaryZh)}</p>
               )}
+              <ItemActions key={key} item={item} userId={userId} teacher={teacher} />
             </header>
             {dup && dup.kind !== 'prachub' && (
               <div className="ct-callout rd-reveal" style={{ '--i': 1 } as React.CSSProperties}>

@@ -457,6 +457,7 @@ export function Academy() {
             navigate={navigate}
             problemIds={boot.problems.map((p) => p.id)}
             userId={boot.person?.id ?? null}
+            teacher={boot.person?.role === 'teacher'}
           />
         );
       case 'stories':

@@ -6,6 +6,7 @@ import { PublicLibraryMarkdown } from '../../markdown';
 import { PostsPreview } from '../../../discuss/parts';
 import '../../../discuss.css';
 import { SelectionAsk } from '@/components/command-palette';
+import { AskedReport } from '@/components/problem-community';
 import { seoMetadata } from '@/lib/seo';
 import { lcIdBySource } from '@/lib/company-tags';
 import { RESULTS, ROUND_LABELS, type ExperienceFacts } from '@/lib/experience';
@@ -128,6 +129,12 @@ export default async function PublicLibraryDetail({ params }: Props) {
         </p>
         <h1>{item.title}</h1>
         {item.facts && <Facts facts={item.facts} />}
+        {/* "I was asked this": a question as q:<slug>, a coding question as the judge problem it maps to. */}
+        {(item.type === 'interview_question' || practice) && (
+          <div className="public-library-asked">
+            <AskedReport problemId={practice ?? `q:${item.slug}`} english labelled />
+          </div>
+        )}
         {item.summary && (
           <p className="public-library-summary">{item.summary}</p>
         )}

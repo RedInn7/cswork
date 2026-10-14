@@ -61,14 +61,16 @@ test('experience rows show outcome, rounds and interview month; the Offer quick 
   assert.equal(offers.getAttribute('aria-pressed'), 'false');
   await act(async () => offers.click());
   assert.deepEqual(navigations.at(-1), ['experiences', { type: 'experience', result: 'Offer' }]);
-  // Experiences list by interview date; the order menu switches to newly shared ones.
+  // Experiences list by interview date; the order tabs switch to newly shared, popular or trending ones.
   assert.match(document.querySelector('.ct-list-head').textContent, /most recent first \(interview date, else the original post's\)/);
-  const order = [...document.querySelectorAll('select')].find((s) => s.querySelector('option[value="new"]'));
-  await act(async () => {
-    order.value = 'new';
-    order.dispatchEvent(new Event('change', { bubbles: true }));
-  });
+  const orders = [...document.querySelectorAll('.ct-sorts button')];
+  assert.deepEqual(orders.map((b) => b.textContent), ['Recent interviews', 'Newly shared', 'Popular', 'Trending']);
+  assert.equal(orders[0].getAttribute('aria-pressed'), 'true');
+  await act(async () => orders[1].click());
   assert.deepEqual(navigations.at(-1), ['experiences', { type: 'experience', sort: 'new' }]);
+  // Member posts by authors with a verified address.
+  await act(async () => [...document.querySelectorAll('button')].find((b) => b.textContent.includes('Verified authors only')).click());
+  assert.deepEqual(navigations.at(-1), ['experiences', { type: 'experience', verified: '1' }]);
   await act(async () =>
     root.render(createElement(ContentList, { section: 'experiences', params: { result: 'Offer' }, navigate: () => {} })),
   );
@@ -119,5 +121,85 @@ test('detail: practice card for the company and judge-ready relations first', as
   assert.ok(related[0].textContent.includes('Coin change') && related[0].textContent.includes('Judge-ready'));
   assert.equal(related[1].textContent.includes('Judge-ready'), false);
   assert.equal(document.querySelector('.ct-result').textContent, 'Offer');
+  await act(async () => root.unmount());
+});
+
+test('question cards: counts, curated badge, seniority, curated filter and popular order', async () => {
+  const question = (slug, o) => ({
+    ...experience(slug), type: 'interview_question', round: null, curated: false,
+    stats: { answers: 0, ups: 0, asked: null, practised: null }, ...o,
+  });
+  globalThis.fetch = async () =>
+    Response.json({
+      items: [
+        question('q1', { curated: true, stats: { answers: 3, ups: 1, asked: { n: 2, last: '2026-09' }, practised: null } }),
+        question('q2', { type: 'coding_question', stats: { answers: 0, ups: 0, asked: null, practised: 41 } }),
+        question('q3'),
+      ],
+      total: 3, page: 1, pageSize: 20,
+      facets: {
+        companies: [], companyTotal: 0, roles: [], categories: [], difficulties: [], rounds: [],
+        seniorities: [facet('Senior', 2)], total: 3,
+      },
+    });
+  const navigations = [];
+  const root = createRoot(document.getElementById('root'));
+  await act(async () =>
+    root.render(createElement(ContentList, { section: 'questions', params: { sort: 'popular' }, navigate: (...a) => navigations.push(a) })),
+  );
+  await settle();
+  const [q1, q2, q3] = document.querySelectorAll('.ct-card');
+  assert.equal(q1.querySelector('.ct-curated').textContent.trim(), 'Curated');
+  assert.deepEqual([...q1.querySelectorAll('.ct-stats span')].map((n) => n.textContent), ['Asked 2026-09 · 2 learners', '3 answers', '1 upvote']);
+  assert.deepEqual([...q2.querySelectorAll('.ct-stats span')].map((n) => n.textContent), ['41 solved it']);
+  assert.equal(q3.querySelector('.ct-stats'), null, 'nothing to count, no line');
+  assert.equal(q2.querySelector('.ct-curated'), null);
+  assert.match(document.querySelector('.ct-list-head').textContent, /most popular first/);
+  const orders = [...document.querySelectorAll('.ct-sorts button')];
+  assert.deepEqual(orders.map((b) => [b.textContent, b.getAttribute('aria-pressed')]), [['Latest', 'false'], ['Popular', 'true'], ['Trending', 'false']]);
+  await act(async () => orders[2].click());
+  assert.deepEqual(navigations.at(-1), ['questions', { type: 'questions', sort: 'hot' }]);
+  assert.ok([...document.querySelectorAll('option')].some((o) => o.textContent === 'Senior · 2'));
+  await act(async () => [...document.querySelectorAll('button')].find((b) => b.textContent.includes('Curated only')).click());
+  assert.deepEqual(navigations.at(-1), ['questions', { type: 'questions', sort: 'popular', curated: '1' }]);
+  assert.equal([...document.querySelectorAll('button')].some((b) => b.textContent.includes('Verified authors')), false, 'experiences only');
+  await act(async () => root.unmount());
+});
+
+test('detail actions: upvote, a teacher\'s curated pick and "I was asked this too"', async () => {
+  const posts = [];
+  globalThis.fetch = async (url, init) => {
+    if (init?.method === 'POST') {
+      posts.push([String(url), JSON.parse(init.body)]);
+      return Response.json(JSON.parse(init.body));
+    }
+    if (String(url).includes('/api/oj/marks')) return Response.json({ items: [{ target: 'content:interview_question/q1', mark: 'up', createdAt: 1 }] });
+    if (String(url).includes('/api/oj/reports')) return Response.json({ problemId: 'q:q1', months: 6, total: 4, last: '2026-09', companies: [], mine: [] });
+    return Response.json({
+      ...experience('q1'), type: 'interview_question', round: null, curated: false,
+      stats: { answers: 0, ups: 3, asked: null, practised: null },
+      body: 'Question body.', updatedAt: null, extra: {}, dupOf: null, practice: null, relations: [], companyPractice: null,
+    });
+  };
+  const root = createRoot(document.getElementById('root'));
+  await act(async () =>
+    root.render(
+      createElement(ContentDetail, { params: { type: 'interview_question', slug: 'q1' }, navigate: () => {}, problemIds: [], userId: 'u1', teacher: true }),
+    ),
+  );
+  await settle();
+  const actions = document.querySelector('.ct-actions');
+  const helpful = [...actions.querySelectorAll('button')].find((b) => b.textContent.includes('Helpful'));
+  assert.equal(helpful.getAttribute('aria-pressed'), 'true');
+  assert.equal(helpful.querySelector('.ct-actions-count').textContent, '3');
+  await act(async () => helpful.click());
+  await settle();
+  assert.deepEqual(posts.at(-1), ['/api/oj/marks', { target: 'content:interview_question/q1', mark: 'up', on: false }]);
+  assert.equal(helpful.querySelector('.ct-actions-count').textContent, '2', 'the own vote leaves the count');
+  await act(async () => [...actions.querySelectorAll('button')].find((b) => b.textContent.includes('Curate')).click());
+  await settle();
+  assert.deepEqual(posts.at(-1), ['/api/oj/marks', { target: 'content:interview_question/q1', mark: 'curated', on: true }]);
+  const asked = actions.querySelector('.cs-asked');
+  assert.match(asked.textContent, /I was asked this too4/);
   await act(async () => root.unmount());
 });

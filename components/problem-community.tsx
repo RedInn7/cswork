@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useId, useState } from 'react';
 import { ListPlus, MessageSquareQuote } from 'lucide-react';
+import { englishMessage } from '@/lib/messages-en';
 import { employerSlug } from '@/lib/oa-company-brands';
 import { api } from '@/lib/types';
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from './ui/popover';
@@ -165,11 +166,15 @@ export function AskedReport({
   problemId,
   english,
   signedIn = true,
+  labelled = false,
 }: {
+  /** A judge problem, or q:<slug> for a library interview question. */
   problemId: string;
   english: boolean;
   /** Signed out: the count still shows, and a click asks to sign in. */
   signedIn?: boolean;
+  /** Says "I was asked this too" beside the icon (library pages, where no star row explains it). */
+  labelled?: boolean;
 }) {
   const t: T = (zh, en) => (english ? en : zh);
   // An OA problem preselects its own employer.
@@ -214,7 +219,7 @@ export function AskedReport({
       if (isSummary(next)) setSummary(next);
       return true;
     } catch (e) {
-      setError((e as Error).message);
+      setError(t((e as Error).message, englishMessage((e as Error).message)));
       return false;
     } finally {
       setBusy(false);
@@ -232,6 +237,7 @@ export function AskedReport({
   const badge = (
     <>
       <MessageSquareQuote size={16} aria-hidden="true" />
+      {labelled && <span aria-hidden="true">{t('我也被问过', 'I was asked this too')}</span>}
       {label && <span aria-hidden="true">{summary!.total}</span>}
     </>
   );
