@@ -152,6 +152,35 @@ void test('a body splits into the candidate part and the interviewer notes', () 
   assert.deepEqual(splitBody('# Follow-up email\nWrite it.'), {
     question: '# Follow-up email\nWrite it.', hints: '', followUps: '', rubric: '', solution: '',
   });
+  // Quoted hints and grading notes in the question are the interviewer's too; a quote in code stays.
+  const quoted = splitBody(`Sort it.
+
+> **Hint: Use a heap**
+>
+> Pop the smallest.
+
+\`\`\`text
+> **Hint: in code stays**
+\`\`\`
+
+### Part 2
+
+More.
+
+> **Hint** Two heaps.
+
+### Evaluation Focus
+- O(n log n).
+
+### Extensions to Discuss
+1. Streams?`);
+  assert.deepEqual(quoted, {
+    question: 'Sort it.\n\n```text\n> **Hint: in code stays**\n```\n\n### Part 2\n\nMore.',
+    hints: '**Hint: Use a heap**\n\nPop the smallest.\n\n**Part 2**\n\n**Hint** Two heaps.',
+    followUps: '1. Streams?',
+    rubric: '#### Evaluation Focus\n- O(n log n).',
+    solution: '',
+  });
   assert.deepEqual(leadershipPrinciples('Tell me about a time you showed Ownership and had to Dive Deep; disagree and commit.'), [
     'Ownership', 'Dive Deep', 'Disagree and Commit',
   ]);
