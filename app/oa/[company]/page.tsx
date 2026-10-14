@@ -11,6 +11,7 @@ import { breadcrumbJsonLd, oaPageTitle, seoMetadata } from '@/lib/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { oaReadyProblems } from '@/lib/server/oa-judge';
 import { oaLibrary } from '@/lib/server/oa-library';
+import { mockPresetFor } from '@/lib/server/mock-oa-presets';
 import { OaCompanyMark, OaDifficulty } from '../parts';
 
 type Props = { params: Promise<{ company: string }> };
@@ -43,6 +44,10 @@ export default async function OaCompanyPage({ params }: Props) {
     (await params).company,
   );
   const zh = locale === 'zh';
+  const mock =
+    company.slug !== OTHER_COMPANY && company.ready > 0
+      ? (mockPresetFor(company.slug)?.slug ?? null)
+      : null;
   return (
     <>
       <script
@@ -75,9 +80,9 @@ export default async function OaCompanyPage({ params }: Props) {
         </div>
       </header>
       <div className="oa-public-actions">
-        {/* A mock only draws judge-ready problems. */}
-        {company.slug !== OTHER_COMPANY && company.ready > 0 && (
-          <a className="oa-public-cta" href={`/mock-oa/${company.slug}`}>
+        {/* A mock needs a preset page and only draws judge-ready problems. */}
+        {mock && (
+          <a className="oa-public-cta" href={`/mock-oa/${mock}`}>
             {zh ? `模拟 ${name} OA` : `Mock ${name} OA`}
           </a>
         )}

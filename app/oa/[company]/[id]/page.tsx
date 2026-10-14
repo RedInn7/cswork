@@ -10,6 +10,7 @@ import {
 import { oaStatementLang, oaStatementMarkdown } from '@/lib/oa-verified-statement';
 import { breadcrumbJsonLd, oaPageTitle, seoMetadata } from '@/lib/seo';
 import { HttpError } from '@/lib/server/http';
+import { mockPresetFor } from '@/lib/server/mock-oa-presets';
 import { requestLocale } from '@/lib/server/locale';
 import { oaEnglishStatement, oaReadyProblems } from '@/lib/server/oa-judge';
 import { oaLibrary } from '@/lib/server/oa-library';
@@ -48,8 +49,11 @@ const load = cache(async (slug: string, id: string) => {
     statementLang: judged ? (english ? 'en' : 'zh-CN') : oaStatementLang(statement),
     // Title only: no statement and nothing to judge, so not worth indexing.
     thin: !judged && !statement.trim(),
-    // A mock only draws judge-ready problems.
-    mock: company.slug !== OTHER_COMPANY && !!listed?.company.ready,
+    // A mock needs a preset page and only draws judge-ready problems.
+    mock:
+      company.slug !== OTHER_COMPANY && listed?.company.ready
+        ? (mockPresetFor(company.slug)?.slug ?? null)
+        : null,
     locale,
     name,
     previous: siblings[at - 1],
@@ -134,7 +138,7 @@ export default async function OaProblemPage({ params }: Props) {
             {mock && (
               <a
                 className={judged ? 'oa-public-cta is-quiet' : 'oa-public-cta'}
-                href={`/mock-oa/${company.slug}`}
+                href={`/mock-oa/${mock}`}
               >
                 {zh ? `模拟 ${name} OA` : `Mock ${name} OA`}
               </a>

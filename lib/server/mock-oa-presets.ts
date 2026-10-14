@@ -17,6 +17,10 @@ export function shownMockPresets(hidden = hiddenCompanies()): MockPreset[] {
     .filter((c) => c.aliases.length);
 }
 
+/** The shown preset a company (or one of its aliases) is mocked under, if any. */
+export const mockPresetFor = (slug: string) =>
+  shownMockPresets().find((c) => c.slug === slug || c.aliases.includes(slug));
+
 /** Public mock OA pages for the sitemap. */
 export function mockOaPaths() {
   return [

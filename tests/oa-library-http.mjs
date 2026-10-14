@@ -149,7 +149,14 @@ try {
     new RegExp(`rel="canonical"[^>]*href="https://cswork.org${problemPath}"`),
   );
   assert.match(problem, /BreadcrumbList/);
-  assert.match(problem, /href="\/mock-oa\//);
+  // The mock link appears only for a company with a mock preset page.
+  const presets = JSON.parse(readFileSync('lib/content/mock-oa-presets.json', 'utf8')).companies;
+  const preset = presets.find(
+    (c) => c.slug === first.companySlug || c.aliases.includes(first.companySlug),
+  );
+  const mockLinks = [...problem.matchAll(/href="\/mock-oa\/([^"]+)"/g)].map((m) => m[1]);
+  // Never a link to a mock page that doesn't exist; with a preset it names the preset.
+  assert.deepEqual([...new Set(mockLinks)], preset && mockLinks.length ? [preset.slug] : []);
   assert.doesNotMatch(problem, /name="robots"[^>]*noindex/);
   for (const path of [
     '/oa/amazon-mern',
