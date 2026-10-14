@@ -292,8 +292,9 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     const chips = () =>
       [...document.querySelectorAll('ul[aria-label="Asked at"] .cs-company-chip')].map((n) => n.textContent);
     assert.deepEqual(chips(), ['AmazonOA', 'Meta', 'Uber', 'Apple', 'DoorDash', 'LinkedIn']);
-    await click(document.querySelector('[aria-label="Show 2 more companies"]'));
+    await click(button('+2 more companies'));
     assert.equal(chips().length, 8);
+    assert.ok(button('Less'));
     await choose('Statement language', 'zh');
     assert.equal(
       document.querySelector('.cs-statement-heading h2').textContent,

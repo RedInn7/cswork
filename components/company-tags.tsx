@@ -53,10 +53,10 @@ export function CompanyTags({ companies, english }: { companies: CompanyTag[]; e
           type="button"
           className="cs-company-more"
           aria-expanded={open}
-          aria-label={open ? t('收起公司', 'Show fewer companies') : t(`再显示 ${more} 家公司`, `Show ${more} more companies`)}
           onClick={() => setOpen(!open)}
         >
           {open ? t('收起', 'Less') : `+${more}`}
+          {!open && <span className="sr-only">{t(' 家公司', ' more companies')}</span>}
         </button>
       )}
     </div>
