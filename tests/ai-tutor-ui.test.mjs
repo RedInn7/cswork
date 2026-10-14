@@ -12,9 +12,12 @@ register(
   import.meta.url,
 );
 
-test('the workspace shows the tutor only with AI on, signed in, and outside a mock OA', () => {
+test('the workspace shows the tutor only with AI on, signed in, outside a mock OA and off SQL problems', () => {
   const source = readFileSync(new URL('../components/problem-workspace.tsx', import.meta.url), 'utf8');
-  assert.equal(source.includes('boot.services?.ai && !!boot.person && !examMode && ('), true);
+  assert.equal(source.includes("const aiOn = !!boot.services?.ai && !!boot.person && !examMode && language !== 'sql';"), true);
+  // The server takes code languages only, so the tutor itself hides on the SQL track too.
+  assert.equal(/\{aiOn && \(\s*<AiTutor\b/.test(source), true);
+  assert.equal(source.includes('boot.services?.ai && !!boot.person && !examMode && ('), false);
   // The bootstrap flag follows the server key.
   const api = readFileSync(new URL('../lib/server/api.ts', import.meta.url), 'utf8');
   assert.equal(api.includes('ai: aiEnabled()'), true);

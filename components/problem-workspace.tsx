@@ -1697,8 +1697,8 @@ function Workspace({
                 english={uiEnglish}
               />
             )}
-            {/* Off unless the server has AI configured; never during a mock OA. */}
-            {boot.services?.ai && !!boot.person && !examMode && (
+            {/* Off unless the server has AI configured; never during a mock OA or on SQL problems. */}
+            {aiOn && (
               <AiTutor
                 tutor={aiTutor}
                 language={language}
