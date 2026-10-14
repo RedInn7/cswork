@@ -494,7 +494,8 @@ function Workspace({
   // The solutions tab's language filter, set from the AC dialog's histogram.
   const [solutionsLanguage, setSolutionsLanguage] = useState('');
   const prose = useRef<HTMLDivElement>(null);
-  const aiOn = !!boot.services?.ai && !!boot.person && !examMode;
+  // The tutor's extras; SQL track problems have no AI (lib/server/ai-tutor.ts takes code languages).
+  const aiOn = !!boot.services?.ai && !!boot.person && !examMode && language !== 'sql';
   const aiContext: AiContext = { language, codingMode, code, english: uiEnglish };
   const [success, setSuccess] = useState<OJSubmission | null>(null);
   const [solveSeconds, setSolveSeconds] = useState<number | null>(null);
@@ -2337,7 +2338,7 @@ function Workspace({
                           ` Run tries the selected case and shows your program output; cases stay in this browser (up to ${MAX_CASES}). Submit runs all test cases.`,
                         )}
                       </p>
-                      {aiOn && language !== 'sql' && (
+                      {aiOn && (
                         <AiCaseIdeas
                           tutor={aiTutor}
                           context={aiContext}
