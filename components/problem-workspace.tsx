@@ -10,6 +10,7 @@ import {
 import {
   nextUnsolved,
   problemNeighbors,
+  problemSequence,
   rememberProblemSequence,
 } from '@/lib/problem-sequence';
 import { practiceStats, type Activity } from './practice-calendar';
@@ -2794,8 +2795,16 @@ function AcceptedDialog({
   const beats = standing?.beats ?? null;
   const languageName =
     languages.find((item) => item.id === language)?.name ?? language;
-  const [next, setNext] = useState<NextStop | 'loading'>('loading');
+  const [next, setNext] = useState<NextStop | 'loading'>(() => {
+    if (library !== 'sql') return 'loading';
+    // The SQL track is a static list with no server collection: its next
+    // unsolved problem, in the order its page remembered.
+    const solved = new Set(activity?.map((item) => item.problem_id));
+    const id = nextUnsolved(problemSequence(), problemId, solved);
+    return id ? { id } : null;
+  });
   useEffect(() => {
+    if (library === 'sql') return;
     const controller = new AbortController();
     const fallback = fallbackNext ? { id: fallbackNext } : null;
     findNextProblem(

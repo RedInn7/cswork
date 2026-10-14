@@ -13,6 +13,15 @@ export function rememberProblemSequence(ids: string[], library?: string) {
   }
 }
 
+/** The remembered list; empty when there is none or storage is unavailable. */
+export function problemSequence(): string[] {
+  try {
+    return JSON.parse(sessionStorage.getItem(key) || '[]') as string[];
+  } catch {
+    return [];
+  }
+}
+
 /** Previous/next in the remembered list, and that list's library while `id` is in it. */
 export function problemNeighbors(id: string): {
   prev?: string;
@@ -20,7 +29,7 @@ export function problemNeighbors(id: string): {
   library?: string;
 } {
   try {
-    const ids = JSON.parse(sessionStorage.getItem(key) || '[]') as string[];
+    const ids = problemSequence();
     const index = ids.indexOf(id);
     return index < 0
       ? {}
