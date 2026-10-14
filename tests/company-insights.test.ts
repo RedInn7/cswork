@@ -135,8 +135,10 @@ void test('OA difficulty filter: easy / medium / hard as shown, estimates includ
   };
   const levels: Record<string, string> = { 'oa-meta-1': 'easy', 'oa-meta-2': 'hard', 'oa-meta-3': 'hard' };
   const library = createOaLibrary(catalog, { topics: () => undefined });
-  const ids = (q: string) => library.list(new URLSearchParams(q), new Set(), { difficultyOf: (id) => levels[id] }).items.map((i) => i.id);
-  assert.deepEqual(ids('difficulty=hard'), ['oa-meta-2', 'oa-meta-3']);
+  // oa-meta-3 is statement only: its row shows no level, so no level finds it.
+  const ready = new Set(['oa-meta-1', 'oa-meta-2', 'oa-meta-4']);
+  const ids = (q: string) => library.list(new URLSearchParams(q), ready, { difficultyOf: (id) => levels[id] }).items.map((i) => i.id);
+  assert.deepEqual(ids('difficulty=hard'), ['oa-meta-2']);
   assert.deepEqual(ids('difficulty=easy'), ['oa-meta-1']);
   assert.deepEqual(ids('difficulty=medium'), []);
   assert.equal(ids('difficulty=nonsense').length, 4, 'unknown levels filter nothing');

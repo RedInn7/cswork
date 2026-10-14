@@ -717,6 +717,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
             setStatus('');
             setQuery('');
             setSearch('');
+            setLevel('');
             setReadyOnly(true);
             setPage(1);
           }}

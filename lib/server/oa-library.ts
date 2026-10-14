@@ -279,7 +279,8 @@ export function createOaLibrary(
       const topic = Object.hasOwn(TOPIC_NAMES, topicParam) ? topicParam : '';
       // todo = not solved yet (as on Line 500); unknown values filter nothing.
       const status = ['solved', 'attempted', 'todo'].find((s) => s === params.get('status'));
-      // easy / medium / hard, estimates included; unknown values filter nothing.
+      // easy / medium / hard, estimates included; unknown values filter nothing. Only judgeable
+      // problems show a level (the rest read "statement only"), so only they match one.
       const difficulty = ['easy', 'medium', 'hard'].find((d) => d === params.get('difficulty'));
       const matched = shown.items.filter(
         (item) =>
@@ -289,7 +290,7 @@ export function createOaLibrary(
               ? progress.get(item.id) !== 'solved'
               : progress.get(item.id) === status)) &&
           (!company || employer(item).slug === company) &&
-          (!difficulty || difficultyOf(item.id) === difficulty) &&
+          (!difficulty || (ready.has(item.id) && difficultyOf(item.id) === difficulty)) &&
           (!query ||
             // Other is also found by the name the UI shows for it.
             `${item.id} ${item.title} ${item.companyName} ${item.number}${employer(item).slug === OTHER_COMPANY ? ` ${oaCompanyName(OTHER_COMPANY, '', 'zh')} other` : ''}`
