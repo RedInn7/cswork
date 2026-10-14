@@ -2,10 +2,10 @@ import Database from 'better-sqlite3';
 import { existsSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { lcIdBySource } from '@/lib/company-tags';
-import { experienceColumns, experienceFacts, experienceFactsOf } from '@/lib/experience';
+import { experienceColumns, experienceFacts, experienceFactsOf, MEMBER_FILTERS } from '@/lib/experience';
 import type { Person } from './auth';
 import { companyPractice } from './company-hub';
-import { memberExperiences, memberIdOf, memberItem, mergePage } from './experience-submissions';
+import { memberExperiences, memberFacets, memberIdOf, memberItem, mergePage } from './experience-submissions';
 import { setting } from './env';
 import { HttpError, json, limitReader } from './http';
 import { mockCompanies, mockPool, mockSet } from './mock-interview';
@@ -155,7 +155,21 @@ function list(db: Database.Database, params: URLSearchParams) {
   const offset = (page - 1) * PAGE;
   const columns = `${SUMMARY.split(',').map((c) => `i.${c}`).join(',')},${experienceColumns('i.')}`;
   // Approved member submissions merge into the experiences list (lib/server/experience-submissions.ts).
-  const members = types.length === 1 && types[0] === 'experience' ? memberExperiences(params) : [];
+  const experiences = types.length === 1 && types[0] === 'experience';
+  const members = experiences ? memberExperiences(params) : [];
+  // Employment, season and channel exist on member posts only: such a filter lists those alone.
+  if (MEMBER_FILTERS.some((key) => params.get(key))) {
+    const page = Math.min(2000, Math.max(1, Math.floor(Number(params.get('page'))) || 1));
+    return {
+      items: members.slice((page - 1) * PAGE, page * PAGE).map((m) => m.item),
+      total: members.length,
+      page,
+      pageSize: PAGE,
+      facets: facets(db, types),
+      memberFacets: experiences ? memberFacets() : null,
+      memberOnly: true,
+    };
+  }
   let total: number;
   let read: (limit: number, skip: number) => Record<string, unknown>[];
   // Every matching row's sort key, for placing member posts; null when ranked by relevance.
@@ -202,7 +216,14 @@ function list(db: Database.Database, params: URLSearchParams) {
   const items = members.length
     ? mergePage(members, keys(), offset, PAGE, (limit, skip) => read(limit, skip).map(row))
     : read(PAGE, offset).map(row);
-  return { items, total: total + members.length, page, pageSize: PAGE, facets: facets(db, types) };
+  return {
+    items,
+    total: total + members.length,
+    page,
+    pageSize: PAGE,
+    facets: facets(db, types),
+    memberFacets: experiences ? memberFacets() : null,
+  };
 }
 
 function item(db: Database.Database, params: URLSearchParams) {
