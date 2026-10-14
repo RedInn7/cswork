@@ -21,6 +21,7 @@ import {
   stripeReady,
   validPrice,
 } from './payments';
+import { redeemGift, reissueGift } from './course-gifts';
 export { annotateCommerceCourses } from './payments';
 const objectId = z.string().min(1).max(200);
 const sessionId = z
@@ -36,6 +37,7 @@ export async function handleCommerce(
   const ours =
     resource === 'checkout' ||
     resource === 'orders' ||
+    resource === 'gifts' ||
     (resource === 'teacher' &&
       (id === 'orders' || (id === 'courses' && subaction === 'price')));
   if (!ours) return null;
@@ -45,15 +47,21 @@ export async function handleCommerce(
   if (resource === 'checkout') {
     if (request.method !== 'POST' || path.length !== 1)
       throw new HttpError(405, '操作方式无效');
-    return json(
-      await checkout(
-        p,
-        z
-          .object({ courseId: objectId })
-          .strict()
-          .parse(await body(request)).courseId,
-      ),
-    );
+    const d = z
+      .object({ courseId: objectId, gift: z.boolean().optional() })
+      .strict()
+      .parse(await body(request));
+    return json(await checkout(p, d.courseId, d.gift));
+  }
+  // Course gifts (lib/server/course-gifts.ts): redeem a code; the buyer swaps an unused one.
+  if (resource === 'gifts') {
+    if (request.method === 'POST' && id === 'redeem' && path.length === 2)
+      return json(await redeemGift(p, await body(request)));
+    if (request.method === 'POST' && id && action === 'reissue' && path.length === 3) {
+      await reissueGift(p, id);
+      return json(await orderDetail(p, id));
+    }
+    throw new HttpError(405, '操作方式无效');
   }
   if (resource === 'orders') {
     if (request.method === 'GET' && !id) {

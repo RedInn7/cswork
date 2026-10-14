@@ -41,6 +41,8 @@ export type CommerceOrder = {
   has_access: boolean;
   refunds?: Refund[];
   checkout_url?: string | null;
+  /** A course bought as a gift: its code (the buyer's, while unused) and what became of it. */
+  gift?: { code: string | null; issuedAt: number | null; redeemedAt: number | null; revokedAt: number | null };
 };
 export const orderStatusNames: Record<OrderStatus, string> = {
   creating: '准备结账',

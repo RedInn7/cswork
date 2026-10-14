@@ -24,6 +24,7 @@ import { handleSolutionPosts } from './solution-posts';
 import { handleExperienceSubmissions } from './experience-submissions';
 import { handleStudyGroups } from './study-groups';
 import { handleMockPeer } from './mock-peer';
+import { handleNewsletter } from './newsletter';
 import { handleFollows } from './follows';
 import { handleApiTokens } from './api-tokens';
 import { dailyProblem } from './daily-problem';
@@ -107,6 +108,7 @@ export async function handleOj(
   if (resource === 'experiences') return handleExperienceSubmissions(request, p, path.slice(1));
   if (resource === 'groups') return handleStudyGroups(request, p, path);
   if (resource === 'peer') return handleMockPeer(request, p, path.slice(1));
+  if (resource === 'newsletter') return handleNewsletter(request, p, path.slice(1));
   if (resource === 'follows') return handleFollows(request, p, path.slice(1));
   if (request.method === 'GET' && resource === 'speedrun' && !id)
     return handleSpeedrun(request, p);

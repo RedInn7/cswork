@@ -162,6 +162,11 @@ export async function handle(request: Request) {
       const { webhook } = await import('./payments');
       return await webhook(request);
     }
+    if (resource === 'newsletter') {
+      // Mail links: token-authenticated, and the one-click unsubscribe POST has no Origin.
+      const { handleNewsletterLink } = await import('./newsletter');
+      return await handleNewsletterLink(request, resourceId);
+    }
     // Cheap unauthenticated probe: before seeding and session lookup.
     // vinext answers HEAD through GET with request.method still 'HEAD'.
     if (resource === 'health' && ['GET', 'HEAD'].includes(request.method))
