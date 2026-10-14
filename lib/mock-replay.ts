@@ -152,7 +152,17 @@ export async function saveTrack(key: string, track: Track, cap: number): Promise
   }
 }
 /** Every track of a session, in question order (null where none was recorded). */
-export const loadSession = (session: string, ids: readonly string[]) => Promise.all(ids.map((id) => loadTrack(trackKey(session, id))));
+/** Writes still in flight in this page: a hand-in's last snapshot lands as the report opens. */
+let pending: Promise<unknown> = Promise.resolve();
+/** Queues a recorder's write so readers in this page see it. */
+export const trackWrite = <T,>(write: Promise<T>) => {
+  pending = Promise.all([pending, write.catch(() => {})]);
+  return write;
+};
+export const loadSession = async (session: string, ids: readonly string[]) => {
+  await pending;
+  return Promise.all(ids.map((id) => loadTrack(trackKey(session, id))));
+};
 /**
  * Drops the tracks of sessions no account on this browser still has (a mock leaves the history
  * after MOCK_HISTORY newer ones). The states are read when the keys are, so a mock drawn in
