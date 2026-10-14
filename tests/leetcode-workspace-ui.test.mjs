@@ -108,7 +108,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     curatedHint: { zh: 'ZH APPROACH', en: 'EN APPROACH' },
     // Eight company reports: six chips, then "+2".
     companies: ['Amazon', 'Meta', 'Uber', 'Apple', 'DoorDash', 'LinkedIn', 'Snap', 'Waymo'].map(
-      (name, i) => ({ slug: name.toLowerCase(), name, rounds: [i ? 'Onsite' : 'Online Assessment'], oa: !i }),
+      (name, i) => ({ slug: name.toLowerCase(), name, rounds: [i ? 'Onsite' : 'Online Assessment'], oa: !i, count: i ? 1 : 3, last: '2026-09-14' }),
     ),
   };
   const historical = {
@@ -291,7 +291,15 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     await click(button('Topics'));
     const chips = () =>
       [...document.querySelectorAll('ul[aria-label="Asked at"] .cs-company-chip')].map((n) => n.textContent);
-    assert.deepEqual(chips(), ['AmazonOA', 'Meta', 'Uber', 'Apple', 'DoorDash', 'LinkedIn']);
+    assert.deepEqual(
+      chips().slice(0, 2),
+      ['AmazonOA×3 · 2026-09 (3 reports, latest 2026-09-14)', 'Meta×1 · 2026-09 (1 report, latest 2026-09-14)'],
+      'compact frequency on screen, the full text for screen readers',
+    );
+    assert.deepEqual(
+      [...document.querySelectorAll('ul[aria-label="Asked at"] .cs-company-name')].map((n) => n.textContent),
+      ['Amazon', 'Meta', 'Uber', 'Apple', 'DoorDash', 'LinkedIn'],
+    );
     await click(button('+2 more companies'));
     assert.equal(chips().length, 8);
     assert.ok(button('Less'));

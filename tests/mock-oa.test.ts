@@ -17,6 +17,7 @@ import {
   type MockSession,
   type PoolItem,
 } from '../lib/mock-oa';
+import { companyLcProblems } from '../lib/company-tags';
 import { mockCatalogue, mockPool } from '../lib/server/mock-oa';
 import { mockOaPaths, shownMockPresets } from '../lib/server/mock-oa-presets';
 
@@ -115,6 +116,15 @@ test('pools join OA companies and mapped LeetCode problems, never hidden compani
   const tiktok = shownMockPresets(new Set(['bytedance'])).find((c) => c.slug === 'tiktok')!;
   assert.deepEqual(tiktok.aliases, ['tiktok']);
   assert.ok(mockOaPaths().some((p) => p.path === '/mock-oa/tiktok'));
+  // The shipped v2 map files J.P. Morgan reports under the employer the preset is named for.
+  const jpm = (companyLcProblems().get('jpmorgan-chase') ?? []).map((p) => p.id).sort();
+  assert.ok(jpm.length > 0);
+  const jpmCat = mockCatalogue(jpm.map((id) => ({ id, difficulty: '中等' })));
+  const lcIds = (aliases: string[], hidden = new Set<string>()) =>
+    mockPool(jpmCat, aliases, 'lc', hidden).map((p) => p.id).sort();
+  assert.deepEqual(lcIds(['jpmorgan-chase']), jpm);
+  assert.deepEqual(lcIds(['j-p-morgan']), jpm, 'a library spelling finds its employer');
+  assert.deepEqual(lcIds(['j-p-morgan'], new Set(['jpmorgan-chase'])), []);
 });
 
 test('scoring: passed fraction per question, or a weighted 200–600 GCA estimate', () => {

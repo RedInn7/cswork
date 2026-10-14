@@ -1,6 +1,8 @@
 import { randomInt } from 'node:crypto';
 import { z } from 'zod';
+import { companyLcProblems } from '@/lib/company-tags';
 import lcMapFile from '@/lib/content/company-lc-map.json';
+import { employerSlug } from '@/lib/oa-company-brands';
 import {
   drawMock,
   LADDER,
@@ -28,14 +30,13 @@ import { MOCK_PRESETS_UPDATED, shownMockPresets } from './mock-oa-presets';
 import { oaLibrary } from './oa-library';
 import { listProblemSummaries } from './oj-problems';
 
-/** Content company slug → judgeable LeetCode ids (lib/content/company-lc-map.json). */
+/** Employer slug → its reported LeetCode ids, library spellings merged (lib/company-tags.ts). */
 const lcMap = new Map(
-  Object.entries(
-    (lcMapFile as { companies: Record<string, { id: string }[]> }).companies,
-  ).map(([slug, list]) => [
-    slug,
-    list.map((entry) => entry.id).filter((id) => /^lc-\d{1,6}$/.test(id)),
-  ]),
+  [...companyLcProblems()].map(([slug, problems]) => [slug, problems.map((p) => p.id)]),
+);
+/** Display names of LeetCode-map companies that have no OA catalog entry. */
+const lcMapNames = new Map(
+  Object.entries(lcMapFile.names).map(([slug, name]) => [employerSlug(slug), name]),
 );
 
 export type MockCatalogue = {
@@ -77,8 +78,9 @@ export function mockPool(
       if (!hidden.has(company) && (!shown || shown.includes(company)))
         for (const item of list) items.set(item.id, item);
   if (source !== 'oa') {
+    // The map is keyed by employer: a library spelling finds its employer's problems.
     const ids = shown
-      ? shown.flatMap((a) => map.get(a) ?? [])
+      ? shown.flatMap((a) => (hidden.has(employerSlug(a)) ? [] : (map.get(employerSlug(a)) ?? [])))
       : [...catalogue.lc.keys()];
     for (const id of ids) {
       const item = catalogue.lc.get(id);
@@ -90,7 +92,8 @@ export function mockPool(
 
 // ponytail: one catalogue snapshot for 5 minutes; publishes show up after that.
 let cached: { at: number; value: Promise<MockCatalogue> } | null = null;
-function catalogue() {
+/** Judgeable problems for anyone, cached; company pages count from it too. */
+export function catalogue() {
   if (!cached || Date.now() - cached.at > 300000) {
     const value = listProblemSummaries(null).then(mockCatalogue);
     cached = { at: Date.now(), value };
@@ -130,7 +133,11 @@ export async function mockPresetsWithPools() {
     .map((slug) => {
       const oa = mockPool(cat, [slug], 'oa').length,
         lc = mockPool(cat, [slug], 'lc').length;
-      return { slug, name: names.get(slug) ?? slug, pool: { oa, lc, total: oa + lc } };
+      return {
+        slug,
+        name: names.get(slug) ?? lcMapNames.get(slug) ?? slug,
+        pool: { oa, lc, total: oa + lc },
+      };
     })
     .filter((c) => c.pool.total > 0)
     .sort((a, b) => a.name.localeCompare(b.name));

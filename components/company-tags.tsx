@@ -32,21 +32,32 @@ export function CompanyTags({ companies, english }: { companies: CompanyTag[]; e
         {label}
       </span>
       <ul aria-label={label}>
-        {(open ? companies : companies.slice(0, SHOWN)).map((c) => (
-          <li
-            key={c.slug}
-            className="cs-company-chip"
-            title={c.rounds.map((r) => (english ? r : ROUND_ZH[r] || r)).join(' · ')}
-          >
-            <Logo slug={c.slug} size={14} />
-            {c.name}
-            {c.oa && (
-              <abbr className="cs-company-oa" title={t('在线笔试', 'Online Assessment')}>
-                OA
-              </abbr>
-            )}
-          </li>
-        ))}
+        {(open ? companies : companies.slice(0, SHOWN)).map((c) => {
+          const reports = t(
+            `${c.count} 次面经报告，最近 ${c.last}`,
+            `${c.count} ${c.count === 1 ? 'report' : 'reports'}, latest ${c.last}`,
+          );
+          return (
+            <li
+              key={c.slug}
+              className="cs-company-chip"
+              title={`${c.rounds.map((r) => (english ? r : ROUND_ZH[r] || r)).join(' · ')} — ${reports}`}
+            >
+              <Logo slug={c.slug} size={14} />
+              <span className="cs-company-name">{c.name}</span>
+              {c.oa && (
+                <abbr className="cs-company-oa" title={t('在线笔试', 'Online Assessment')}>
+                  OA
+                </abbr>
+              )}
+              {/* Compact on screen; the full count and date are read out. */}
+              <span className="cs-company-freq" aria-hidden="true">
+                ×{c.count} · {c.last.slice(0, 7)}
+              </span>
+              <span className="sr-only">{t(`（${reports}）`, ` (${reports})`)}</span>
+            </li>
+          );
+        })}
       </ul>
       {more > 0 && (
         <button
@@ -63,13 +74,22 @@ export function CompanyTags({ companies, english }: { companies: CompanyTag[]; e
   );
 }
 
-/** Up to two tiny marks for a list row; the names are read out once. */
-export function CompanyMarks({ companies, english }: { companies: { slug: string; name: string }[]; english: boolean }) {
+/** Up to two tiny marks for a list row; the names (and report counts) are read out once. */
+export function CompanyMarks({
+  companies,
+  english,
+}: {
+  companies: { slug: string; name: string; count?: number }[];
+  english: boolean;
+}) {
   const shown = companies.slice(0, 2);
+  const spoken = shown.map((c) =>
+    !c.count ? c.name : english ? `${c.name} (${c.count} ${c.count === 1 ? 'report' : 'reports'})` : `${c.name}（${c.count} 次报告）`,
+  );
   return (
-    <span className="study-companies" title={shown.map((c) => c.name).join(' · ')}>
+    <span className="study-companies" title={shown.map((c) => (c.count ? `${c.name} ×${c.count}` : c.name)).join(' · ')}>
       <span className="sr-only">
-        {(english ? 'Asked at: ' : '面试出现过：') + shown.map((c) => c.name).join(english ? ', ' : '、')}
+        {(english ? 'Asked at: ' : '面试出现过：') + spoken.join(english ? ', ' : '、')}
       </span>
       {shown.map((c) => (
         <span key={c.slug} className="study-company" aria-hidden="true">
