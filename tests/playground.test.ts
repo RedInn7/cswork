@@ -88,7 +88,7 @@ void test('playground runs stay out of history, the status board, statistics and
   assert.equal(submissionHistory(me, null, null).items.length, 0);
   assert.equal(submissionHistory(me, 'playground', null).items.length, 0);
   assert.equal(judgeFeed(me, new URLSearchParams({ mine: '1' })).items.length, 0);
-  assert.deepEqual(problemStats('playground', 'cpp', 10), { acceptance: null, beats: null });
+  assert.deepEqual(problemStats('playground', 'cpp', 10), { acceptance: null, beats: null, beatsMemory: null, histogram: null, votes: { up: 0, down: 0 } });
   assert.equal(practiceHistory(me.id).length, 0);
 });
 
