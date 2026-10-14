@@ -66,7 +66,7 @@ export function PrivacyDocument() {
                 代码并停止输入片刻，平台可能将最新草稿发送到服务器预编译。预编译只准备可执行程序，不自动运行测试，也不产生提交记录或学习成绩。预编译请求处理后或到期时会从任务队列移除，编译结果仅作短期缓存。
               </p>
               <p>
-                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行，不计入提交记录；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。
+                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行：每次运行的代码和输入同样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，只是不出现在提交列表、统计和学习进度中；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。
               </p>
             </section>
 
@@ -267,9 +267,12 @@ export function PrivacyDocument() {
                 drafts; the least recently edited go first. Drafts of mock OA
                 questions stay in the current browser only. Runs in the code
                 playground (/playground) execute in the isolated environment
-                like custom-input runs and never count as submissions; a share
-                link carries the code after the # in the address, which the
-                server does not store.
+                like custom-input runs, and like them each run&apos;s code and
+                input are kept with your run records, which you and the
+                teachers who manage your learning can view under their
+                permissions; they never appear in your submission list,
+                statistics or progress. A share link carries the code after
+                the # in the address, which the server does not store.
               </p>
             </section>
 
