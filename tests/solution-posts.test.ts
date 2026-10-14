@@ -91,6 +91,17 @@ void test('posts: write, list by votes or date, edit and delete only your own', 
   const serialized = JSON.stringify(await ok(me, 'GET', 'posts?problem=oa-amazon-1'));
   assert.ok(!serialized.includes('@example.test'), 'no email in the list');
   assert.ok(!serialized.includes('posts-other'), 'no user ids in the list');
+  // Others see a masked name (account names are often real ones), or the public handle once chosen.
+  const authors = async () => (await ok<List>(other, 'GET', 'posts?problem=oa-amazon-1&sort=new')).items.map((p) => p.author);
+  assert.deepEqual(await authors(), ['Grace', 'Ad***']);
+  const profile = sqlite().prepare(
+    'INSERT INTO user_profiles(user_id,handle,visible,indexable,bio,created_at,updated_at) VALUES(?,?,?,0,\'\',1,1)',
+  );
+  profile.run(me.id, 'ada-dev', 0);
+  assert.deepEqual(await authors(), ['Grace', 'Ad***'], 'a hidden profile keeps its handle private');
+  sqlite().prepare('UPDATE user_profiles SET visible=1 WHERE user_id=?').run(me.id);
+  assert.deepEqual(await authors(), ['Grace', 'ada-dev']);
+  sqlite().prepare('DELETE FROM user_profiles WHERE user_id=?').run(me.id);
 
   // Another learner can neither edit nor delete it (no IDOR).
   assert.equal(await status(other, 'POST', `posts/${first.post.id}/edit`, { title: 'x', body: 'y' }), 404);
@@ -134,6 +145,7 @@ void test('comments, reports and teacher moderation', async () => {
   assert.equal(withComment.comments.length, 1);
   assert.equal(withComment.comments[0].author, 'Grace');
   assert.equal(withComment.comments[0].mine, true);
+  assert.equal((await ok<Detail>(me, 'GET', `posts/${post.id}`)).comments[0].author, 'Gr***');
   assert.equal(await status(other, 'POST', `posts/${post.id}/comments`, { body: 'x'.repeat(1001) }), 400);
   const commentId = withComment.comments[0].id;
   // Only the author removes a comment.

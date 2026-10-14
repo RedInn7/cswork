@@ -4,6 +4,7 @@ import { sqlite } from '@/db/sqlite';
 import type { Person } from './auth';
 import { isCourseOwner } from './course-visibility';
 import { auditStatement, HttpError, json, limit } from './http';
+import { maskName } from './judge-feed';
 import { publicProblem, requireVerified } from './learner-cloud';
 import { readJson } from './my-practice';
 
@@ -11,7 +12,8 @@ import { readJson } from './my-practice';
  * Community solutions per problem and their comments (db/solution-posts-schema.ts).
  * Signed in only. Every read re-checks that the problem is still visible (HIDDEN_COMPANIES,
  * course gates), every author write names its author in the WHERE clause, and authors
- * show by display name only. Bodies are Markdown the client renders without raw HTML.
+ * show by their public handle or a masked name (never the account name, which is often a
+ * real one). Bodies are Markdown the client renders without raw HTML.
  */
 const DAY = 86400000;
 const PAGE = 30;
@@ -42,12 +44,13 @@ const commentInput = z.object({ body: text(1000) }).strict();
 const reportInput = z.object({ reason: z.enum(['spam', 'offensive', 'wrong', 'other']) }).strict();
 
 const POST = `SELECT sp.id,sp.problem_id AS problemId,sp.title,sp.language,sp.hidden,
-  sp.created_at AS createdAt,sp.updated_at AS updatedAt,COALESCE(u.name,'') AS author,
+  sp.created_at AS createdAt,sp.updated_at AS updatedAt,COALESCE(u.name,'') AS author,pr.handle,
   sp.user_id=@me AS mine,
   (SELECT COUNT(*) FROM post_votes v WHERE v.post_id=sp.id) AS votes,
   EXISTS(SELECT 1 FROM post_votes v WHERE v.post_id=sp.id AND v.user_id=@me) AS voted,
   (SELECT COUNT(*) FROM post_comments c WHERE c.post_id=sp.id AND c.hidden=0) AS comments`;
-const FROM_POST = `FROM solution_posts sp LEFT JOIN "user" u ON u.id=sp.user_id`;
+const PROFILE = (col: string) => `LEFT JOIN user_profiles pr ON pr.user_id=${col} AND pr.visible=1`;
+const FROM_POST = `FROM solution_posts sp LEFT JOIN "user" u ON u.id=sp.user_id ${PROFILE('sp.user_id')}`;
 type PostRow = {
   id: string;
   problemId: string;
@@ -57,6 +60,7 @@ type PostRow = {
   createdAt: number;
   updatedAt: number;
   author: string;
+  handle: string | null;
   mine: number;
   votes: number;
   voted: number;
@@ -64,7 +68,13 @@ type PostRow = {
   body?: string;
   excerpt?: string;
 };
-const shape = (r: PostRow) => ({ ...r, mine: !!r.mine, voted: !!r.voted });
+/** Your own name to you; to everyone else the public handle if you chose one, else a masked name. */
+const byline = <T extends { author: string; handle: string | null; mine: number }>({ handle, ...r }: T) => ({
+  ...r,
+  author: r.mine ? r.author : handle || (r.author ? maskName(r.author) : ''),
+  mine: !!r.mine,
+});
+const shape = (r: PostRow) => ({ ...byline(r), voted: !!r.voted });
 
 export const canModerate = (p: Person) => p.role === 'teacher' || isCourseOwner(p);
 function requireModerator(p: Person) {
@@ -114,12 +124,12 @@ async function readPost(p: Person, postId: string) {
   const comments = (
     db
       .prepare(
-        `SELECT c.id,c.body,c.created_at AS createdAt,COALESCE(u.name,'') AS author,c.user_id=@me AS mine
-        FROM post_comments c LEFT JOIN "user" u ON u.id=c.user_id
+        `SELECT c.id,c.body,c.created_at AS createdAt,COALESCE(u.name,'') AS author,pr.handle,c.user_id=@me AS mine
+        FROM post_comments c LEFT JOIN "user" u ON u.id=c.user_id ${PROFILE('c.user_id')}
         WHERE c.post_id=@id AND c.hidden=${SHOWN} ORDER BY c.created_at,c.id LIMIT 500`,
       )
-      .all({ me: p.id, id: postId }) as { mine: number }[]
-  ).map((c) => ({ ...c, mine: !!c.mine }));
+      .all({ me: p.id, id: postId }) as { author: string; handle: string | null; mine: number }[]
+  ).map(byline);
   return { post: shape(row), comments };
 }
 
