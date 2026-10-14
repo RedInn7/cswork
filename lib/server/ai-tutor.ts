@@ -12,8 +12,9 @@ import { getStudySourceStatement } from './study-library';
 /**
  * AI hints and code review on the problem page (components/ai-tutor.tsx). Off unless the
  * server has ANTHROPIC_API_KEY; the key never leaves the server. Each call reserves the
- * learner's daily quota and the site's daily budget in ai_usage first, and a failed call
- * gives it back. Logs and metrics carry counts only, never the problem, code or reply.
+ * learner's daily quota and the site's daily budget in ai_usage first, and only a call the
+ * API cannot have billed gives it back. Logs and metrics carry counts only, never the
+ * problem, code or reply.
  */
 export type AiKind = 'hint' | 'review';
 export const AI_DAILY_LIMITS: Record<AiKind, number> = { hint: 10, review: 5 };
@@ -26,6 +27,11 @@ const MODELS: Record<AiKind, string> = { hint: 'claude-haiku-5-5', review: 'clau
 // Thinking counts toward max_tokens, so the caps leave room for it; REPLY_CHARS caps what is shown.
 const MAX_TOKENS: Record<AiKind, number> = { hint: 1024, review: 2048 };
 const REPLY_CHARS: Record<AiKind, number> = { hint: 1200, review: 4000 };
+// Code a reply may show: none in a hint; in a review at most two blocks of four lines, six in all.
+const CODE_CAPS: Record<AiKind, { blocks: number; lines: number; total: number; spans: number; spanChars: number }> = {
+  hint: { blocks: 0, lines: 0, total: 0, spans: 4, spanChars: 40 },
+  review: { blocks: 2, lines: 4, total: 6, spans: 12, spanChars: 80 },
+};
 // Server-side refusal fallback exists for these models; Haiku has none (a list is a 400 there).
 const FALLBACK_MODELS = new Set(['claude-sonnet-5-5', 'claude-opus-5-5', 'claude-opus-5', 'claude-fable-5-1']);
 // Under the client's 30-second request timeout, so the learner gets this server's answer.
@@ -69,7 +75,17 @@ const input = z
 
 export const aiEnabled = () => !!setting('ANTHROPIC_API_KEY');
 const today = () => new Date().toISOString().slice(0, 10);
-const budget = () => Number(setting('AI_TUTOR_DAILY_BUDGET')) || DEFAULT_BUDGET;
+// 0 is a valid budget: it pauses the tutor for everyone.
+function budget() {
+  const raw = setting('AI_TUTOR_DAILY_BUDGET').trim();
+  const n = raw ? Number(raw) : NaN;
+  return Number.isFinite(n) && n >= 0 ? n : DEFAULT_BUDGET;
+}
+const usedToday = (userId: string, kind: AiKind, day: string) =>
+  (sqlite()
+    .prepare('SELECT count FROM ai_usage WHERE day=? AND user_id=? AND kind=?')
+    .pluck()
+    .get(day, userId, kind) as number | undefined) ?? 0;
 
 /** Takes one call from the learner's quota and the site budget; returns calls left today. */
 function reserve(userId: string, kind: AiKind, day: string) {
@@ -77,11 +93,7 @@ function reserve(userId: string, kind: AiKind, day: string) {
   return db.transaction(() => {
     const spent = db.prepare('SELECT COALESCE(SUM(count),0) FROM ai_usage WHERE day=?').pluck().get(day) as number;
     if (spent >= budget()) throw new HttpError(503, 'AI 助教今天的额度已用完，明天再来');
-    const used =
-      (db
-        .prepare('SELECT count FROM ai_usage WHERE day=? AND user_id=? AND kind=?')
-        .pluck()
-        .get(day, userId, kind) as number | undefined) ?? 0;
+    const used = usedToday(userId, kind, day);
     if (used >= AI_DAILY_LIMITS[kind])
       throw new HttpError(
         429,
@@ -93,7 +105,7 @@ function reserve(userId: string, kind: AiKind, day: string) {
     return AI_DAILY_LIMITS[kind] - used - 1;
   })();
 }
-/** Adds the call's tokens; a failed call (refund) hands its quota back. */
+/** Adds the call's tokens; a call the API cannot have billed (refund) hands its quota back. */
 function settle(userId: string, kind: AiKind, day: string, refund: boolean, tokens: { in: number; out: number }) {
   sqlite()
     .prepare(
@@ -102,17 +114,76 @@ function settle(userId: string, kind: AiKind, day: string, refund: boolean, toke
     .run(refund ? 1 : 0, tokens.in, tokens.out, day, userId, kind);
 }
 
-/** No images or links, no code block in a hint, none over four lines in a review, a length cap. */
+// A line's text after any quote and list markers, where a fence may open.
+const bare = (line: string) => line.replace(/^(?:[ \t]*(?:>|[-*+](?=[ \t])|\d{1,9}[.)](?=[ \t])))*[ \t]*/, '');
+const FENCE = /^(?:(`{3,})[^`]*|(~{3,}).*)$/;
+const LIST_ITEM = /^\s*(?:[-*+]|\d{1,9}[.)])\s/;
+const INDENTED = /^(?: {4}|\t)/;
+
+/**
+ * No images or links, no code in a hint, little in a review, a length cap. Code is fenced
+ * (``` or ~~~, also inside a list or quote; an unclosed fence runs to the end), indented
+ * after a blank line, or inline spans (capped in number and length).
+ */
 export function tidyReply(text: string, kind: AiKind) {
-  const maxLines = kind === 'hint' ? 0 : 4;
-  let out = text
-    .replace(/!?\[([^\]]*)\]\((?:[^()]|\([^()]*\))*\)/g, '$1')
-    .replace(/```[^\n]*\n?([\s\S]*?)(?:```|$)/g, (block, body: string) =>
-      body.trimEnd().split('\n').length <= maxLines ? block : '',
-    )
-    .trim();
-  if (out.length > REPLY_CHARS[kind]) out = out.slice(0, REPLY_CHARS[kind]).trimEnd() + '…';
-  return out;
+  const cap = CODE_CAPS[kind];
+  const lines = text.replace(/\r\n?/g, '\n').split('\n');
+  const out: string[] = [];
+  let prose: string[] = [];
+  let blocks = 0;
+  let total = 0;
+  let spans = 0;
+  const flush = () => {
+    out.push(
+      prose
+        .join('\n')
+        .replace(/!?\[([^\]]*)\]\((?:[^()]|\([^()]*\))*\)/g, '$1')
+        .replace(/(?<!`)(`+)(?!`)([\s\S]*?[^`])\1(?!`)/g, (span, _, body: string) =>
+          ++spans <= cap.spans && body.length <= cap.spanChars ? span : '',
+        ),
+    );
+    prose = [];
+  };
+  for (let i = 0; i < lines.length; ) {
+    const fence = FENCE.exec(bare(lines[i]));
+    // ponytail: an indented line after a blank one is code unless it is a list item; a loose
+    // list's continuation paragraph is over-stripped, which a short reply can afford.
+    const indented =
+      !fence && INDENTED.test(lines[i]) && !!lines[i].trim() && !lines[i - 1]?.trim() && !LIST_ITEM.test(lines[i]);
+    if (!fence && !indented) {
+      prose.push(lines[i++]);
+      continue;
+    }
+    let end = i + 1;
+    let body: string[];
+    if (fence) {
+      const mark = fence[1] ?? fence[2];
+      const closes = (line: string) => {
+        const close = /^(`{3,}|~{3,})[ \t]*$/.exec(bare(line))?.[1];
+        return !!close && close[0] === mark[0] && close.length >= mark.length;
+      };
+      while (end < lines.length && !closes(lines[end])) end++;
+      body = lines.slice(i + 1, end);
+      end = Math.min(end + 1, lines.length);
+    } else {
+      while (end < lines.length && (!lines[end].trim() || INDENTED.test(lines[end]))) end++;
+      while (!lines[end - 1].trim()) end--;
+      body = lines.slice(i, end);
+    }
+    const block = lines.slice(i, end);
+    const n = body.filter((line) => line.trim()).length;
+    flush();
+    if (blocks < cap.blocks && n <= cap.lines && total + n <= cap.total) {
+      blocks++;
+      total += n;
+      out.push(block.join('\n'));
+    }
+    i = end;
+  }
+  flush();
+  let tidy = out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  if (tidy.length > REPLY_CHARS[kind]) tidy = tidy.slice(0, REPLY_CHARS[kind]).trimEnd() + '…';
+  return tidy;
 }
 
 const VERDICTS: Record<string, string> = {
@@ -124,30 +195,43 @@ const VERDICTS: Record<string, string> = {
   runtime_error: 'Runtime error',
   compile_error: 'Compile error',
 };
-/** The learner's own latest verdict on this problem: counts only, never a hidden case. */
+const FINISHED = Object.keys(VERDICTS)
+  .map((status) => `'${status}'`)
+  .join(',');
+/**
+ * The learner's own latest finished verdict on this problem (one still judging or cancelled
+ * is skipped): counts only, never a hidden case. accepted: any formal submission passed.
+ */
 function lastVerdict(userId: string, problemId: string) {
-  const row = sqlite()
+  const db = sqlite();
+  const row = db
     .prepare(
       `SELECT status,passed,total,mode,language,compile_output AS compileOutput FROM submissions
-      WHERE user_id=? AND problem_id=? ORDER BY created_at DESC,rowid DESC LIMIT 1`,
+      WHERE user_id=? AND problem_id=? AND status IN (${FINISHED}) ORDER BY created_at DESC,rowid DESC LIMIT 1`,
     )
     .get(userId, problemId) as
     | { status: string; passed: number; total: number; mode: string; language: string; compileOutput: string | null }
     | undefined;
-  if (!row || !VERDICTS[row.status]) return { accepted: false, text: 'No finished submission yet.' };
+  const accepted = !!db
+    .prepare(
+      "SELECT 1 FROM submissions WHERE user_id=? AND problem_id=? AND mode='judge' AND status='accepted' LIMIT 1",
+    )
+    .get(userId, problemId);
+  if (!row) return { accepted, text: 'No finished submission yet.' };
   const what = row.mode === 'run' ? 'Test run on the examples' : 'Submission';
   const compile =
     row.status === 'compile_error' && row.compileOutput ? `\nCompiler output:\n${row.compileOutput.slice(0, 800)}` : '';
+  const passedBefore = accepted && !(row.mode === 'judge' && row.status === 'accepted') ? ' An earlier submission was accepted.' : '';
   return {
-    accepted: row.status === 'accepted' && row.mode === 'judge',
-    text: `${what} (${row.language}): ${VERDICTS[row.status]}, ${row.passed}/${row.total} test cases passed.${compile}`,
+    accepted,
+    text: `${what} (${row.language}): ${VERDICTS[row.status]}, ${row.passed}/${row.total} test cases passed.${compile}${passedBefore}`,
   };
 }
 
-async function callClaude(kind: AiKind, user: string, signal: AbortSignal) {
+function callClaude(kind: AiKind, user: string, signal: AbortSignal) {
   const model = setting(kind === 'hint' ? 'AI_TUTOR_HINT_MODEL' : 'AI_TUTOR_REVIEW_MODEL') || MODELS[kind];
   const fallback = FALLBACK_MODELS.has(model);
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
+  return fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -164,23 +248,23 @@ async function callClaude(kind: AiKind, user: string, signal: AbortSignal) {
       messages: [{ role: 'user', content: user }],
       ...(fallback ? { fallbacks: 'default' } : {}),
     }),
-    signal: AbortSignal.any([signal, AbortSignal.timeout(UPSTREAM_MS)]),
+    signal,
   });
-  if (!response.ok) {
-    // Status only: the error body may echo the request.
-    console.error('AI tutor upstream', response.status);
-    throw new HttpError(503, 'AI 助教暂时不可用，请稍后再试');
-  }
-  return (await response.json()) as {
-    stop_reason?: string;
-    content?: { type: string; text?: string }[];
-    usage?: { input_tokens?: number; output_tokens?: number };
-  };
 }
 
-/** POST oj/ai/hint and oj/ai/review: one reply for the signed-in learner. */
-export async function handleAiTutor(request: Request, p: Person, kind: AiKind) {
-  if (!aiEnabled() || request.method !== 'POST') throw new HttpError(404, '接口不存在');
+/** POST oj/ai/hint and oj/ai/review: one reply for the signed-in learner; GET oj/ai/usage: calls left today. */
+export async function handleAiTutor(request: Request, p: Person, kind: AiKind | 'usage') {
+  if (!aiEnabled()) throw new HttpError(404, '接口不存在');
+  if (kind === 'usage') {
+    if (request.method !== 'GET') throw new HttpError(404, '接口不存在');
+    await limit(p, 'oj-read', 240);
+    const day = today();
+    return json({
+      hint: Math.max(0, AI_DAILY_LIMITS.hint - usedToday(p.id, 'hint', day)),
+      review: Math.max(0, AI_DAILY_LIMITS.review - usedToday(p.id, 'review', day)),
+    });
+  }
+  if (request.method !== 'POST') throw new HttpError(404, '接口不存在');
   await limit(p, 'ai-tutor', 6);
   const data = input.parse(await readJson(request, AI_CODE_CHARS * 4 + 20_000));
   if (data.code.length > AI_CODE_CHARS) throw new HttpError(413, '代码过长，AI 助教最多读取 20000 个字符');
@@ -215,9 +299,28 @@ ${kind === 'hint' ? 'Give the next single hint.' : verdict.accepted ? 'Review th
   const day = today();
   const remaining = reserve(p.id, kind, day);
   let outcome = 'error';
+  // Refunded only when the API cannot have billed: an error status, or no connection at all.
+  // Once a request may have reached it (a 200, an abort, a timeout) the call counts, even
+  // when nothing usable came back, so neither quota can be drained and handed back.
+  let refund = false;
   let tokens = { in: 0, out: 0 };
   try {
-    const reply = await callClaude(kind, user, request.signal);
+    const signal = AbortSignal.any([request.signal, AbortSignal.timeout(UPSTREAM_MS)]);
+    const response = await callClaude(kind, user, signal).catch((error: unknown) => {
+      refund = !signal.aborted;
+      throw error;
+    });
+    if (!response.ok) {
+      refund = true;
+      // Status only: the error body may echo the request.
+      console.error('AI tutor upstream', response.status);
+      throw new HttpError(503, 'AI 助教暂时不可用，请稍后再试');
+    }
+    const reply = (await response.json()) as {
+      stop_reason?: string;
+      content?: { type: string; text?: string }[];
+      usage?: { input_tokens?: number; output_tokens?: number };
+    };
     tokens = { in: reply.usage?.input_tokens ?? 0, out: reply.usage?.output_tokens ?? 0 };
     if (reply.stop_reason === 'refusal') {
       outcome = 'refusal';
@@ -230,7 +333,7 @@ ${kind === 'hint' ? 'Give the next single hint.' : verdict.accepted ? 'Review th
         .join(''),
       kind,
     );
-    // Nothing left (all thinking, or a hint that was only code): a failed call.
+    // Nothing left (all thinking, or a hint that was only code): a failed call, still spent.
     if (!text) throw new HttpError(503, 'AI 助教暂时不可用，请稍后再试');
     outcome = 'ok';
     return json({ kind, text, remaining, limit: AI_DAILY_LIMITS[kind] });
@@ -239,8 +342,7 @@ ${kind === 'hint' ? 'Give the next single hint.' : verdict.accepted ? 'Review th
     console.error('AI tutor upstream', error instanceof Error ? error.name : 'unknown');
     throw new HttpError(503, 'AI 助教暂时不可用，请稍后再试');
   } finally {
-    // A refusal still spent the call; any other failure hands it back.
-    settle(p.id, kind, day, outcome === 'error', tokens);
+    settle(p.id, kind, day, refund, tokens);
     record('ai_tutor', p.id, { kind, outcome, input_tokens: tokens.in, output_tokens: tokens.out });
   }
 }

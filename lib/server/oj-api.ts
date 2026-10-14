@@ -142,7 +142,7 @@ export async function handleOj(
     return handleLeetcodeSync(request, p, path.slice(1));
   if (!id && (resource === 'history' || resource === 'notes' || resource === 'marks'))
     return handleMyPractice(request, p, resource);
-  if (resource === 'ai' && (id === 'hint' || id === 'review') && !action)
+  if (resource === 'ai' && (id === 'hint' || id === 'review' || id === 'usage') && !action)
     return handleAiTutor(request, p, id);
   if (request.method === 'GET') {
     if (resource === 'library') {

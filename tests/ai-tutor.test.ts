@@ -36,18 +36,19 @@ const ok = (text: string, extra: Record<string, unknown> = {}) => () =>
     ...extra,
   });
 
-function call(p: Person, kind: string, body: unknown, method = 'POST') {
+function call(p: Person, kind: string, body: unknown, method = 'POST', signal?: AbortSignal) {
   const url = new URL(`https://cswork.test/api/oj/ai/${kind}`);
   const request = new Request(url, {
     method,
     body: method === 'POST' ? JSON.stringify(body) : undefined,
     headers: { 'Content-Type': 'application/json' },
+    signal,
   });
   return handleOj(request, p, ['ai', kind]);
 }
-async function status(p: Person, kind: string, body: unknown, method = 'POST') {
+async function status(p: Person, kind: string, body: unknown, method = 'POST', signal?: AbortSignal) {
   try {
-    return (await call(p, kind, body, method)).status;
+    return (await call(p, kind, body, method, signal)).status;
   } catch (error) {
     return (error as { status?: number }).status ?? 400;
   }
@@ -116,8 +117,10 @@ before(async () => {
   );
   db.prepare(
     `INSERT INTO submissions(id,user_id,problem_id,language,code,status,passed,total,mode,created_at,updated_at)
-    VALUES('ai-s1',?,'lc-1','python','x','wrong_answer',3,7,'judge',1,1)`,
-  ).run(me.id);
+    VALUES('ai-s1',?,'lc-1','python','x','wrong_answer',3,7,'judge',1,1),
+    -- Newer but still judging: the tutor reads the last finished verdict instead.
+    ('ai-s2',?,'lc-1','python','x','queued',0,0,'judge',2,2)`,
+  ).run(me.id, me.id);
   globalThis.fetch = (async (url: string, init: RequestInit) => {
     sent.push({
       url,
@@ -214,7 +217,7 @@ void test('gates: verified account, visible problem, size and shape limits', asy
   assert.equal(sent.length, 0);
 });
 
-void test('a failed upstream call hands the quota back; a refusal spends it', async () => {
+void test('only a call the API cannot have billed hands the quota back', async () => {
   const before = used(other.id, 'hint');
   reply = () => new Response('{"error":{"type":"overloaded_error"}}', { status: 529 });
   assert.equal(await status(other, 'hint', ask()), 503);
@@ -224,13 +227,24 @@ void test('a failed upstream call hands the quota back; a refusal spends it', as
   };
   assert.equal(await status(other, 'hint', ask()), 503);
   assert.equal(used(other.id, 'hint'), before);
-  // Only thinking, or only code: nothing to show, so nothing is charged.
+  // A 200 was billed even when nothing is left to show (only thinking, or only code).
   reply = ok('```\nprint(1)\n```');
   assert.equal(await status(other, 'hint', ask()), 503);
-  assert.equal(used(other.id, 'hint'), before);
+  assert.equal(used(other.id, 'hint'), before + 1);
   reply = ok('', { stop_reason: 'refusal', content: [] });
   assert.equal(await status(other, 'hint', ask()), 422);
-  assert.equal(used(other.id, 'hint'), before + 1);
+  assert.equal(used(other.id, 'hint'), before + 2);
+  // A learner who cancels mid-call: the request may have reached the API, so it counts.
+  const controller = new AbortController();
+  reply = () => {
+    controller.abort();
+    throw new DOMException('aborted', 'AbortError');
+  };
+  assert.equal(await status(other, 'hint', ask(), 'POST', controller.signal), 503);
+  assert.equal(used(other.id, 'hint'), before + 3);
+  // The whole budget counts those calls too.
+  const spent = sqlite().prepare('SELECT SUM(count) FROM ai_usage').pluck().get() as number;
+  assert.equal(spent >= 3, true);
 });
 
 void test('per-learner daily limit, then the site-wide daily budget', async () => {
@@ -250,6 +264,39 @@ void test('per-learner daily limit, then the site-wide daily budget', async () =
   sqlite().prepare('DELETE FROM limits').run();
   assert.equal(await status({ ...me, id: 'ai-fresh', email: 'f@example.test' }, 'hint', ask()), 503);
   assert.equal(sent.length, 0);
+  // 0 pauses the tutor; an unparsable value falls back to the default.
+  process.env.AI_TUTOR_DAILY_BUDGET = '0';
+  assert.equal(await status({ ...me, id: 'ai-zero', email: 'z@example.test' }, 'hint', ask()), 503);
+  assert.equal(sent.length, 0);
+  process.env.AI_TUTOR_DAILY_BUDGET = 'lots';
+  assert.equal(await status({ ...me, id: 'ai-zero', email: 'z@example.test' }, 'hint', ask()), 200);
+});
+
+void test('usage: calls left today, so the buttons start from the real count', async () => {
+  const learner: Person = { ...me, id: 'ai-usage', email: 'ai-usage@example.test' };
+  const left = async () => (await (await call(learner, 'usage', null, 'GET')).json()) as Record<string, number>;
+  assert.deepEqual(await left(), { hint: AI_DAILY_LIMITS.hint, review: AI_DAILY_LIMITS.review });
+  assert.equal(await status(learner, 'hint', ask()), 200);
+  assert.deepEqual(await left(), { hint: AI_DAILY_LIMITS.hint - 1, review: AI_DAILY_LIMITS.review });
+  assert.equal(await status(learner, 'usage', ask()), 404);
+  delete process.env.ANTHROPIC_API_KEY;
+  assert.equal(await status(learner, 'usage', null, 'GET'), 404);
+});
+
+void test('the verdict: the last finished one, and an earlier AC still makes it a review of a pass', async () => {
+  const learner: Person = { ...me, id: 'ai-ac', email: 'ai-ac@example.test' };
+  sqlite()
+    .prepare(
+      `INSERT INTO submissions(id,user_id,problem_id,language,code,status,passed,total,mode,created_at,updated_at)
+      VALUES('ai-ac1',?,'lc-1','python','x','accepted',7,7,'judge',3,3),('ai-ac2',?,'lc-1','python','x','wrong_answer',0,1,'run',4,4),
+      ('ai-ac3',?,'lc-1','python','x','cancelled',0,0,'judge',5,5)`,
+    )
+    .run(learner.id, learner.id, learner.id);
+  assert.equal(await status(learner, 'review', ask()), 200);
+  const user = (sent[0].body.messages as { content: string }[])[0].content;
+  assert.equal(user.includes('Test run on the examples (python): Wrong answer, 0/1'), true);
+  assert.equal(user.includes('An earlier submission was accepted.'), true);
+  assert.equal(user.includes('Review this accepted solution.'), true);
 });
 
 void test('metrics get counts only, never the code, statement or reply', () => {
@@ -276,4 +323,33 @@ void test('tidyReply: no images, hint code blocks dropped, long review blocks dr
   // An unclosed fence still counts as code.
   assert.equal(tidyReply('Hmm.\n```\nwhile True:', 'hint'), 'Hmm.');
   assert.equal(tidyReply('x'.repeat(5000), 'hint').length <= 1201, true);
+});
+
+void test('tidyReply: no way around the code caps', () => {
+  const solution = 'def twoSum(nums, target):\n    seen = {}\n    for i, x in enumerate(nums):\n        if target - x in seen:\n            return [seen[target - x], i]\n        seen[x] = i';
+  // Tilde fences, fences inside a list or quote, unclosed fences.
+  assert.equal(tidyReply(`Hmm.\n~~~python\n${solution}\n~~~\nWhy?`, 'hint'), 'Hmm.\nWhy?');
+  assert.equal(tidyReply(`Hmm.\n- ~~~\n  ${solution}\n  ~~~`, 'hint'), 'Hmm.');
+  assert.equal(tidyReply('Hmm.\n> ```\n> x = 1\n> ```', 'hint'), 'Hmm.');
+  assert.equal(tidyReply('Hmm.\n```\nwhile True:\n  pass', 'hint'), 'Hmm.');
+  // A four-backtick fence leaves no stray backtick.
+  assert.equal(tidyReply('Hmm.\n````\nx = 1\n```\n````\nWhy?', 'hint'), 'Hmm.\nWhy?');
+  // An indented code block.
+  const indented = solution
+    .split('\n')
+    .map((line) => `    ${line}`)
+    .join('\n');
+  assert.equal(tidyReply(`Hmm.\n\n${indented}\n\nWhy?`, 'hint'), 'Hmm.\n\nWhy?');
+  // A nested list item is not code.
+  assert.equal(tidyReply('- a\n\n    - b', 'review'), '- a\n\n    - b');
+  // Inline spans: short ones stay, long or too many go, even across lines.
+  assert.equal(tidyReply('Check `nums[i]`.', 'hint'), 'Check `nums[i]`.');
+  assert.equal(tidyReply(`Use \`${solution}\`.`, 'hint').includes('seen'), false);
+  const many = tidyReply('`a=1` `b=2` `c=3` `d=4` `e=5` `f=6`', 'hint');
+  assert.equal(many.includes('`d=4`') && !many.includes('e=5') && !many.includes('f=6'), true);
+  // A review keeps at most two short blocks, six lines in all.
+  const block = (n: number) => '```py\n' + 'a = 1\n'.repeat(n) + '```';
+  const review = tidyReply([block(3), block(3), block(3)].join('\nand\n'), 'review');
+  assert.equal(review.split('a = 1').length - 1, 6);
+  assert.equal(tidyReply([block(4), block(3)].join('\n'), 'review').split('a = 1').length - 1, 4);
 });
