@@ -27,7 +27,7 @@ const pool = [
   item(9999, 'not-a-stop'),
 ];
 
-test('a round has ten problems on ten different stops, each answer among four distinct choices', () => {
+void test('a round has ten problems on ten different stops, each answer among four distinct choices', () => {
   for (let seed = 1; seed <= 50; seed++) {
     const round = speedrunRound(pool, seededRandom(seed));
     assert.equal(round.length, 10);
@@ -44,14 +44,14 @@ test('a round has ten problems on ten different stops, each answer among four di
   }
 });
 
-test('the answer is not always in the same slot', () => {
+void test('the answer is not always in the same slot', () => {
   const slots = new Set<number>();
   for (let seed = 1; seed <= 20; seed++)
     for (const q of speedrunRound(pool, seededRandom(seed))) slots.add(q.choices.indexOf(q.answer));
-  assert.deepEqual([...slots].sort(), [0, 1, 2, 3]);
+  assert.deepEqual([...slots].sort((a, b) => a - b), [0, 1, 2, 3]);
 });
 
-test('a small pool repeats stops instead of coming up short, and an empty pool gives an empty round', () => {
+void test('a small pool repeats stops instead of coming up short, and an empty pool gives an empty round', () => {
   const tiny = [item(1, 'dp-stock'), item(2, 'dp-stock'), item(3, 'bits-math')];
   const round = speedrunRound(tiny, seededRandom(7));
   assert.equal(round.length, 3);
@@ -59,7 +59,7 @@ test('a small pool repeats stops instead of coming up short, and an empty pool g
   assert.deepEqual(speedrunRound([], seededRandom(1)), []);
 });
 
-test('distractors are the nearest stops in the same group, borrowing neighbours only when the group is small', () => {
+void test('distractors are the nearest stops in the same group, borrowing neighbours only when the group is small', () => {
   const dp = ROUTE_SECTIONS.find((g) => g.en === 'Dynamic Programming')!.slugs;
   for (let seed = 1; seed <= 20; seed++) {
     const near = distractors('dp-knapsack', seededRandom(seed));
@@ -74,7 +74,7 @@ test('distractors are the nearest stops in the same group, borrowing neighbours 
   assert.ok(['graph-spanning-tree', 'dp-foundations'].some((s) => back.includes(s)));
 });
 
-test('stop codes and groups follow the Line 500 order', () => {
+void test('stop codes and groups follow the Line 500 order', () => {
   assert.equal(stopCode('array-foundations'), '01');
   assert.equal(stopCode('bits-math'), '35');
   assert.equal(stopCode('nope'), '--');
@@ -82,7 +82,7 @@ test('stop codes and groups follow the Line 500 order', () => {
   assert.equal(groupIndex('nope'), -1);
 });
 
-test('firstParagraph keeps the opening prose and trims long ones at a sentence end', () => {
+void test('firstParagraph keeps the opening prose and trims long ones at a sentence end', () => {
   assert.equal(
     firstParagraph('![fig](https://x/y.png)\n\n给你一个数组 `nums` 。\n\n**示例 1：**'),
     '给你一个数组 `nums` 。',

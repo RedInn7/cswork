@@ -35,7 +35,7 @@ test('the speedrun answers with 1-4, moves on with Enter, and records the best s
   const beacons = [];
   let rounds = 0;
   globalThis.fetch = async (url, init) => {
-    if (String(url).startsWith('/api/metrics')) {
+    if (url.startsWith('/api/metrics')) {
       beacons.push(JSON.parse(init.body));
       return new Response('{}');
     }
@@ -118,7 +118,7 @@ test('a blocked localStorage never breaks the round', async () => {
     },
   });
   globalThis.fetch = async (url) =>
-    String(url).startsWith('/api/metrics') ? new Response('{}') : Response.json({ questions: round.slice(1) });
+    url.startsWith('/api/metrics') ? new Response('{}') : Response.json({ questions: round.slice(1) });
   const { createRoot } = await import('react-dom/client');
   const root = createRoot(document.getElementById('root'));
   await act(async () => root.render(createElement(Speedrun, { boot: { person: null }, navigate() {} })));

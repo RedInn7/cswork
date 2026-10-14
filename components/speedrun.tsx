@@ -92,14 +92,12 @@ export function Speedrun({ boot, navigate }: { boot: Boot; navigate: Navigate })
   }
 
   // 1-4 answer, Enter moves on. Buttons and fields keep their own keys.
-  const keys = useRef({ answer, next, q, picked });
-  keys.current = { answer, next, q, picked };
+  // ponytail: re-subscribes after every render so the handler sees current state.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
       const target = e.target as HTMLElement | null;
       if (target?.closest?.('input, textarea, select, [contenteditable="true"], [role="dialog"]')) return;
-      const { answer, next, q, picked } = keys.current;
       if (/^[1-4]$/.test(e.key) && q && !picked) {
         e.preventDefault();
         answer(q.choices[Number(e.key) - 1]);
@@ -110,7 +108,7 @@ export function Speedrun({ boot, navigate }: { boot: Boot; navigate: Navigate })
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  });
 
   const stopName = (slug: string) =>
     Object.hasOwn(STOP_NAMES, slug) ? STOP_NAMES[slug][en ? 1 : 0] : slug;
@@ -188,9 +186,9 @@ export function Speedrun({ boot, navigate }: { boot: Boot; navigate: Navigate })
               <RotateCcw size={15} aria-hidden />
               {t('再来一轮', 'Another round')}
             </button>
-            <a className="sr-link" href="/?view=problems" onClick={inApp(() => navigate('problems'))}>
+            <button type="button" className="sr-link" onClick={() => navigate('problems')}>
               {t('回到 500 路', 'Back to Line 500')}
-            </a>
+            </button>
           </div>
         </div>
         <div className="sr-paper">
@@ -276,13 +274,13 @@ export function Speedrun({ boot, navigate }: { boot: Boot; navigate: Navigate })
             </div>
           )
         )}
-        <div className="sr-ask" role="group" aria-labelledby="sr-ask">
-          <p id="sr-ask" className="sr-ask-label">
+        <fieldset className="sr-ask">
+          <legend className="sr-ask-label">
             {t('这道题该在哪一站下车？', 'Which stop does this problem belong to?')}
             <span className="sr-hint" aria-hidden>
               {t('按 1–4 作答', 'Press 1–4')}
             </span>
-          </p>
+          </legend>
           <div className="sr-choices">
             {current.choices.map((slug, i) => {
               const state = !picked ? undefined : slug === current.answer ? 'right' : slug === picked ? 'wrong' : 'off';
@@ -310,7 +308,7 @@ export function Speedrun({ boot, navigate }: { boot: Boot; navigate: Navigate })
               );
             })}
           </div>
-        </div>
+        </fieldset>
         <div className="sr-verdict" aria-live="polite">
           {picked && (
             <div data-right={right || undefined}>
