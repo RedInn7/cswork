@@ -395,7 +395,8 @@ Short “exploding” deadlines happen. Ask for an extension with a concrete dat
 - **CPT（课程实习）**：工作属于课程的一部分时（例如有学分的实习），可在学习期间工作。由学校 DSO 针对具体雇主和日期批准。全职 CPT 累计 12 个月及以上，会失去 OPT 资格。
 - **OPT（选择性实习）**：每个学位层级最多 12 个月工作许可，通常在毕业后使用。用 I-765 表向 USCIS 申请，一般在项目结束日前 90 天到结束后 60 天之间提交；必须等 EAD 卡批下来、且到了卡上的开始日期才能上班。毕业后的 OPT 有失业天数上限（90 天）。
 - **STEM OPT 延期**：学位在 DHS 的 STEM 专业清单上的毕业生，可以在参加 E-Verify 的雇主处工作，并提交培训计划（I-983 表），把 OPT 延长 24 个月；失业天数上限再加 60 天。
-- **H-1B** 是常见的长期工作签证。大多数首次申请要参加每年的注册抽签，通常在 3 月，10 月 1 日起生效；持有美国硕士及以上学位的人多一次机会。“Cap-gap” 规则可以衔接 OPT 结束和 H-1B 生效之间的空档。2025 年美国政府宣布对部分 H-1B 申请加收新费用，并提出修改抽签的选取方式；请以你注册当年 USCIS 公布的规则为准。
+- **H-1B** 是常见的长期工作签证。大多数首次申请要参加每年的注册抽签，通常在 3 月，10 月 1 日起生效；持有美国硕士及以上学位的人多一次机会。“Cap-gap” 规则可以衔接 OPT 结束和 H-1B 生效之间的空档。2025 年美国政府宣布对部分 H-1B 申请加收新费用，并把抽签改为按工资级别加权（FY2027 起）；请以你注册当年 USCIS 公布的规则为准。
+- 想把自己的日期排一排：[身份时间线计算器](/career/visa-timeline) 按项目结束日和 OPT 日期算出各个窗口和截止日，数据只存在你的浏览器里。
 
 ## 加拿大
 - 持学签在读期间可以校外打工，但每周有工时上限，近几年调整过。
@@ -411,7 +412,8 @@ Short “exploding” deadlines happen. Ask for an extension with a concrete dat
 - **CPT (Curricular Practical Training)** lets you work during your programme when the work is part of your curriculum, such as a credit-bearing internship. Your school’s DSO authorises it for a specific employer and dates. Twelve months or more of full-time CPT ends your eligibility for OPT.
 - **OPT (Optional Practical Training)** gives up to 12 months of work authorisation per degree level, usually used after graduation. You apply to USCIS with Form I-765, typically from 90 days before to 60 days after your programme end date, and you may only start work once your EAD card is approved and its start date has arrived. Post-completion OPT allows a limited number of unemployment days (90).
 - **STEM OPT extension**: graduates of degrees on the DHS STEM list can extend OPT by 24 months while working for an employer enrolled in E-Verify, with a training plan (Form I-983). The unemployment allowance grows by 60 days.
-- **H-1B** is the usual longer-term work visa. Most first-time petitions go through an annual registration lottery, typically in March, for an October 1 start; holders of a US master’s or higher degree get an extra chance. “Cap-gap” rules can bridge the time between the end of OPT and an H-1B start. In 2025 the US government announced a new fee for some H-1B petitions and proposed changing how registrations are selected; check USCIS for the rules in force in the year you register.
+- **H-1B** is the usual longer-term work visa. Most first-time petitions go through an annual registration lottery, typically in March, for an October 1 start; holders of a US master’s or higher degree get an extra chance. “Cap-gap” rules can bridge the time between the end of OPT and an H-1B start. In 2025 the US government announced a new fee for some H-1B petitions and moved selection to a lottery weighted by wage level (from FY2027); check USCIS for the rules in force in the year you register.
+- To lay out your own dates, the [visa timeline calculator](/career/visa-timeline) works out each window and deadline from your program end and OPT dates, and keeps them in your browser only.
 
 ## Canada
 - A study permit may allow off-campus work during your studies, up to a weekly hour limit that has changed in recent years.
