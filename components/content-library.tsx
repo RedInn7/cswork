@@ -468,7 +468,7 @@ export function ContentList({
               <label className={`rd-chip ${filters.sort ? 'is-set' : ''}`}>
                 <span className="sr-only">{t('排序', 'Order')}</span>
                 <select value={filters.sort === 'new' ? 'new' : ''} onChange={(e) => apply({ sort: e.target.value })}>
-                  <option value="">{t('按面试时间', 'By interview date')}</option>
+                  <option value="">{t('按面试/发帖时间', 'By interview or post date')}</option>
                   <option value="new">{t('按发布时间', 'Newly shared')}</option>
                 </select>
                 <ChevronDown size={13} className="rd-chip-caret" aria-hidden="true" />
@@ -500,7 +500,8 @@ export function ContentList({
                 : type === 'algorithm'
                   ? t('，核心专题在前', ', core topics first')
                   : type === 'experience' && filters.sort !== 'new'
-                    ? t('，按面试时间，最近的在前', ', most recent interviews first')
+                    ? // Two thirds of reports give only the post's date, so say so rather than "interview date".
+                      t('，按面试时间（没有则按原帖时间），最近的在前', ", most recent first (interview date, else the original post's)")
                     : t('，最新的在前', ', newest first')}
             </div>
             <div className="ct-list">

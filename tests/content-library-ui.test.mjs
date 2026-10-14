@@ -62,7 +62,7 @@ test('experience rows show outcome, rounds and interview month; the Offer quick 
   await act(async () => offers.click());
   assert.deepEqual(navigations.at(-1), ['experiences', { type: 'experience', result: 'Offer' }]);
   // Experiences list by interview date; the order menu switches to newly shared ones.
-  assert.match(document.querySelector('.ct-list-head').textContent, /most recent interviews first/);
+  assert.match(document.querySelector('.ct-list-head').textContent, /most recent first \(interview date, else the original post's\)/);
   const order = [...document.querySelectorAll('select')].find((s) => s.querySelector('option[value="new"]'));
   await act(async () => {
     order.value = 'new';
