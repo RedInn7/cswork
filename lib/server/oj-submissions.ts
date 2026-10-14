@@ -555,14 +555,18 @@ export function submissionHistory(
         : null,
   };
 }
-/** A formal verdict that failed on the learner's code, within the practice round when given. */
-export function hintEarned(userId: string, problemId: string, roundId?: string) {
-  return !!sqlite()
-    .prepare(
-      `SELECT 1 FROM submissions WHERE user_id=? AND problem_id=? AND mode='judge' AND status IN ('wrong_answer','compile_error','time_limit','memory_limit','output_limit','runtime_error')${roundId ? ' AND practice_round_id=?' : ''} LIMIT 1`,
-    )
-    .get(userId, problemId, ...(roundId ? [roundId] : []));
+/** Formal verdicts that failed on the learner's code, within the practice round when given; up to `cap` ids. */
+export function failedJudgeIds(userId: string, problemId: string, roundId?: string, cap = 2) {
+  return (
+    sqlite()
+      .prepare(
+        `SELECT id FROM submissions WHERE user_id=? AND problem_id=? AND mode='judge' AND status IN ('wrong_answer','compile_error','time_limit','memory_limit','output_limit','runtime_error')${roundId ? ' AND practice_round_id=?' : ''} LIMIT ?`,
+      )
+      .all(userId, problemId, ...(roundId ? [roundId] : []), cap) as { id: string }[]
+  ).map((row) => row.id);
 }
+export const hintEarned = (userId: string, problemId: string, roundId?: string) =>
+  failedJudgeIds(userId, problemId, roundId, 1).length > 0;
 export function cancelSubmission(p: Person, id: string) {
   owned(p, id);
   sqlite()

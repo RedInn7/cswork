@@ -326,10 +326,16 @@ void test('LeetCode submissions preserve raw code, isolate request identity and 
   );
   const supportedBody = await supported.json();
   assert.deepEqual(supportedBody.codingModes, ['leetcode', 'acm']);
-  // Company tags ride along with the statement (lib/content/company-lc-map.json).
+  // Company tags ride along with the statement (lib/content/company-lc-map.json):
+  // one report each, so the latest report leads.
   assert.deepEqual(
-    supportedBody.companies.map((c: { slug: string }) => c.slug),
-    ['amazon', 'meta'],
+    supportedBody.companies.map((c: { slug: string; count: number; last: string }) => [c.slug, c.count, c.last]),
+    [
+      ['meta', 1, '2026-09-14'],
+      ['agoda', 1, '2025-12-14'],
+      ['amazon', 1, '2025-11-20'],
+      ['aeonea', 1, '2025-09-06'],
+    ],
   );
   assert.match(
     supportedBody.leetcodeTemplates.python,

@@ -187,7 +187,20 @@ test('curated practice UI preserves language and round history, deduplicates cli
       'meta',
     );
     assert.equal(document.querySelectorAll('.study-row').length, 3);
+    // A chosen company can rank by its report count; the order rides along in the same request.
+    await select(document.querySelector('option[value="frequency"]').parentElement, 'frequency');
+    assert.equal(
+      new URL(requests.at(-1), 'https://cswork.test').searchParams.get('sort'),
+      'frequency',
+    );
+    assert.equal(document.querySelectorAll('.study-row').length, 3, 'the ranked page is not stale');
     await select(document.querySelector('option[value="meta"]').parentElement, '');
+    assert.equal(
+      new URL(requests.at(-1), 'https://cswork.test').searchParams.get('sort'),
+      '',
+      'no company, nothing to rank by',
+    );
+    assert.equal(document.querySelector('option[value="frequency"]') === null, true);
     await act(async () => document.querySelectorAll('.study-row')[0].click());
     assert.deepEqual(navigations, [['problem', { problem: 'lc-1' }]]);
     const beforeRefresh = requests.length;

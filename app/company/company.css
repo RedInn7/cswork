@@ -1,0 +1,233 @@
+/*
+ * Company pages (/company/<slug>) on the OA shell (app/oa/oa.css): the sections read as stops
+ * on a line, ranks and counts in Overpass, signal amber for frequency.
+ */
+.company-hub-stops {
+  margin: 0 0 8px;
+  overflow-x: auto;
+}
+.company-hub-stops ol {
+  position: relative;
+  /* As wide as its stops, so the line ends at the last one. */
+  display: inline-flex;
+  gap: 28px;
+  margin: 0;
+  padding: 0 2px 10px;
+  list-style: none;
+}
+/* The line the stops sit on. */
+.company-hub-stops ol::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 7px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--oa-line);
+}
+.company-hub-stops a {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+  padding-top: 22px;
+  color: #152c24;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.company-hub-stops a::before {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 0;
+  width: 15px;
+  height: 15px;
+  box-sizing: border-box;
+  border: 3px solid var(--oa-line);
+  border-radius: 50%;
+  background: var(--oa-paper);
+}
+.company-hub-stops a:hover {
+  text-decoration: none;
+  color: #087158;
+}
+.company-hub-stops a:hover::before {
+  background: var(--oa-amber);
+}
+.company-hub-stop-n {
+  font-family: var(--oa-num);
+  font-size: 22px;
+  font-weight: 750;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.company-hub-section {
+  margin-top: 52px;
+  scroll-margin-top: 24px;
+}
+.company-hub-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 20px;
+  margin-bottom: 14px;
+}
+.company-hub-section-head h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.company-hub-section-head small {
+  margin-left: 6px;
+  color: var(--oa-muted);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.company-hub-section-head a {
+  font-size: 14px;
+  font-weight: 600;
+}
+.company-hub-more {
+  margin: 14px 0 0;
+  font-size: 14px;
+}
+
+/* Most reported LeetCode problems: rank, title, frequency, difficulty. */
+.company-hub-lc {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--oa-rule);
+}
+.company-hub-lc li > a,
+.company-hub-lc li > div {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 13px 6px;
+  border-bottom: 1px solid var(--oa-rule);
+  color: inherit;
+}
+.company-hub-lc li > a:hover {
+  text-decoration: none;
+  background: #eef4ef;
+}
+.company-hub-lc li > a:hover .company-hub-lc-title {
+  color: #087158;
+}
+.company-hub-rank {
+  font-family: var(--oa-num);
+  font-size: 20px;
+  font-weight: 750;
+  color: var(--oa-navy);
+  font-variant-numeric: tabular-nums;
+}
+.company-hub-lc li:first-child .company-hub-rank {
+  color: #b77405;
+}
+.company-hub-lc-title {
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+.company-hub-lc-title .oa-public-number {
+  margin-right: 6px;
+}
+.company-hub-freq {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--oa-navy);
+  color: var(--oa-amber);
+  font-family: var(--oa-num);
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Experiences */
+.company-hub-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.company-hub-cards li {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--oa-rule);
+  border-radius: 12px;
+  background: #fff;
+}
+.company-hub-cards li > a {
+  color: #152c24;
+  font-weight: 600;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.company-hub-cards li:hover {
+  border-color: #087158;
+}
+.company-hub-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin: 0;
+  color: var(--oa-muted);
+  font-size: 13px;
+}
+.company-hub-role {
+  margin: auto 0 0;
+  color: var(--oa-muted);
+  font-size: 12px;
+}
+/* A self-reported outcome: a label, never a rate. */
+.oa-public-chip[data-result='good'] {
+  background: #dff3ea;
+  color: #0b6b4f;
+}
+.oa-public-chip[data-result='bad'] {
+  background: #fbe3e7;
+  color: #a62a40;
+}
+.company-hub-questions a {
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+}
+
+@media (max-width: 600px) {
+  .company-hub-stops ol {
+    gap: 20px;
+  }
+  /* Title on its own row; frequency and difficulty share the next. */
+  .company-hub-lc li > a,
+  .company-hub-lc li > div {
+    grid-template-columns: 34px auto minmax(0, 1fr);
+    row-gap: 6px;
+  }
+  .company-hub-lc-title {
+    grid-column: 2 / -1;
+  }
+  .company-hub-freq {
+    grid-column: 2;
+  }
+  .company-hub-lc .oa-public-chip {
+    grid-column: 3;
+    justify-self: start;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .company-hub-section {
+    animation: oa-public-rise 360ms ease both;
+  }
+}

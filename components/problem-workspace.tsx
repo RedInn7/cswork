@@ -47,6 +47,8 @@ import { Button } from './ui/button';
 import { OaCompanyBadge, OaEditorial } from './oa-library';
 import { CompanyTags } from './company-tags';
 import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-notes';
+import { HintLadder, useHintLadder } from './hint-ladder';
+import { SimilarProblems } from './similar-problems';
 import {
   ExamAcceptedDialog,
   MockExamBar,
@@ -404,6 +406,7 @@ function Workspace({
     if (problem.hintEarned || hintUnlocked(submission ? [submission] : []))
       setRouteHint((state) => (state === 'locked' ? 'earned' : state));
   }, [problem.hintEarned, submission]);
+  const hintLadder = useHintLadder(submission, problem.failedSubmissionIds);
   const [success, setSuccess] = useState<OJSubmission | null>(null);
   const [solveSeconds, setSolveSeconds] = useState<number | null>(null);
   const announcedSuccess = useRef<string | null>(null);
@@ -1447,6 +1450,22 @@ function Workspace({
                   )}
                 </div>
               </section>
+            )}
+            {problem.lingHints && !examMode && (
+              <HintLadder
+                problemId={problem.id}
+                userId={userId}
+                hints={problem.lingHints}
+                ladder={hintLadder}
+                english={uiEnglish}
+              />
+            )}
+            {!!problem.similar?.length && !examMode && (
+              <SimilarProblems
+                items={problem.similar}
+                english={uiEnglish}
+                navigate={navigate}
+              />
             )}
           </>
         ) : (
