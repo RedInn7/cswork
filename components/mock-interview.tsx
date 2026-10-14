@@ -495,6 +495,8 @@ function Session({
   const [data, setData] = useState<MockSet | null>(() => (handoff?.key === key ? handoff.set : null));
   const [error, setError] = useState('');
   const [rolling, setRolling] = useState<number | null>(null);
+  // A failed re-roll leaves the set as it was: it says so beside it, not instead of it.
+  const [rollError, setRollError] = useState('');
   useEffect(() => {
     if (data) return;
     let cancelled = false;
@@ -567,6 +569,7 @@ function Session({
 
   const reroll = async (index: number) => {
     setRolling(index);
+    setRollError('');
     try {
       const rr = [...(query.rr ? query.rr.split('.') : []), String(index)].join('.');
       // Only the re-rolled slot may move, so questions already on screen are not excluded.
@@ -580,7 +583,7 @@ function Session({
       // Replace, not push: the address always reproduces the set on screen.
       window.history.replaceState(null, '', '/?' + new URLSearchParams({ view: 'mock-interview', ...next }));
     } catch (e) {
-      setError((e as Error).message);
+      setRollError((e as Error).message);
     } finally {
       setRolling(null);
     }
@@ -606,7 +609,7 @@ function Session({
 
   const props = { data, query, mode, run, setRun, now, problemIds, navigate, finish };
   if (mode === 'interviewer') return <InterviewerSheet {...props} />;
-  if (run.phase === 'plan') return <Plan {...props} reroll={reroll} rolling={rolling} />;
+  if (run.phase === 'plan') return <Plan {...props} reroll={reroll} rolling={rolling} rollError={rollError} />;
   if (run.phase === 'done') return <Summary {...props} />;
   return <Runner {...props} />;
 }
@@ -683,11 +686,23 @@ function SlotBadges({ slot }: { slot: DrawnSlot }) {
   );
 }
 
-function Plan({ data, query, setRun, reroll, rolling }: SessionProps & { reroll: (i: number) => void; rolling: number | null }) {
+function Plan({
+  data,
+  query,
+  setRun,
+  reroll,
+  rolling,
+  rollError,
+}: SessionProps & { reroll: (i: number) => void; rolling: number | null; rollError: string }) {
   const t = useT();
   return (
     <>
       <SetHead data={data} query={query} mode="solo" />
+      {rollError && (
+        <div className="js-error" role="alert">
+          {t(`没换成，这套题没变：${rollError}`, `Couldn't re-roll; the set is unchanged. ${englishMessage(rollError)}`)}
+        </div>
+      )}
       <ol className="mi-plan">
         {data.slots.map((slot, i) => (
           <li key={`${i}:${slot.item?.id}`} className="rd-card mi-plan-row mi-flap" style={{ '--i': i } as React.CSSProperties}>
