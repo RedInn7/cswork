@@ -189,3 +189,48 @@
 .cs-editor-host[data-theme='dark'] .cs-vim-status .vim-notification {
   color: #fbbf24;
 }
+/* Custom cases: Case 1 / Case 2 / + above the custom input. */
+.cs-custom-cases {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.cs-custom-cases > .cs-case-tabs {
+  margin: 0;
+}
+.cs-custom-cases > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 7px;
+  border-radius: 6px;
+  color: #7d899c;
+  font-size: 10px;
+}
+.cs-custom-cases > button:hover:not(:disabled) {
+  background: #f0f3f8;
+  color: var(--primary);
+}
+.cs-custom-cases > button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.cs-custom-cases > button:last-child {
+  margin-left: auto;
+}
+.cs-custom-cases > button:last-child:hover:not(:disabled) {
+  color: #b42318;
+}
+.cs-workspace[data-theme='dark'] .cs-custom-cases .cs-case-tabs > button {
+  border-color: var(--cs-border);
+  color: var(--cs-muted);
+}
+.cs-workspace[data-theme='dark'] .cs-custom-cases .cs-case-tabs > button.selected {
+  background: #2b3851;
+  color: var(--cs-blue);
+}
+.cs-workspace[data-theme='dark'] .cs-custom-cases > button:hover:not(:disabled) {
+  background: #2b3851;
+}
