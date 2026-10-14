@@ -33,7 +33,7 @@ export function setThemePreference(preference: ThemePreference) {
     // Sandboxed frames have no cookies.
   }
   // The inline script's own apply(), so the page and the first paint agree on the rules.
-  (window as { __cswTheme?: () => void }).__cswTheme?.();
+  (window as Window & { __cswTheme?: () => void }).__cswTheme?.();
   for (const listener of listeners) listener();
 }
 
