@@ -21,7 +21,6 @@ if (BASE.protocol !== 'https:' && !['localhost', '127.0.0.1', '[::1]'].includes(
   process.stderr.write('cswork-mcp: CSWORK_BASE_URL must use https\n');
   process.exit(1);
 }
-const POLL_MS = Number(process.env.CSWORK_POLL_MS) || 1500;
 const WAIT_MS = 30000;
 const CLIP = 2000;
 
@@ -94,11 +93,18 @@ async function problemText(problemId, language = 'python') {
   return lines.join('\n');
 }
 
+/**
+ * Waits for a verdict on the server's long poll: each ?wait=1 request is held until the
+ * state moves past `after` (about 3 s at most), so 30 s costs ~10 calls of the token's 60/min.
+ */
 async function settled(result) {
   const deadline = Date.now() + WAIT_MS;
-  while (ACTIVE.includes(result.status) && Date.now() < deadline) {
-    await new Promise((resolve) => setTimeout(resolve, POLL_MS));
-    result = await api(`oj/submissions/${id(result.id)}`);
+  try {
+    while (ACTIVE.includes(result.status) && Date.now() < deadline)
+      result = await api(`oj/submissions/${id(result.id)}?wait=1&after=${encodeURIComponent(result.watchToken ?? '')}`);
+  } catch (error) {
+    // The submission exists: keep its id, or the model submits the same code again.
+    return { ...result, pollError: error.message };
   }
   return result;
 }
@@ -110,6 +116,8 @@ function verdictText(s) {
       (s.runtimeMs != null ? ` · ${Math.round(s.runtimeMs)} ms` : '') +
       (s.memoryKb != null ? ` · ${Math.round(s.memoryKb / 1024)} MB` : ''),
   ];
+  if (s.pollError)
+    lines.push(`Checking the verdict failed: ${s.pollError}. Do not submit again; call get_submission with ${s.id} in a minute.`);
   if (s.message) lines.push(s.message);
   if (s.compileOutput) lines.push('', 'Compile output:', '```', clip(s.compileOutput), '```');
   for (const c of (s.cases || []).filter((c) => !c.hidden).slice(0, 10)) {

@@ -41,14 +41,17 @@ const routes = {
     mode: body.mode,
     language: body.language,
     codingMode: body.codingMode,
-    status: 'running',
+    status: body.code === 'slow' ? 'queued' : 'running',
+    ...(body.code === 'slow' && { id: 'sub-42' }),
+    watchToken: 'w0',
     passed: 0,
     total: 1,
     cases: [],
   }),
+  'GET /api/oj/submissions/sub-42': () => ({ httpStatus: 429, error: 'Too many requests' }),
   'GET /api/oj/submissions/sub-1': () =>
     ++polls < 2
-      ? { id: 'sub-1', mode: 'run', language: 'python', status: 'running', passed: 0, total: 1, cases: [] }
+      ? { id: 'sub-1', mode: 'run', language: 'python', status: 'running', watchToken: 'w1', passed: 0, total: 1, cases: [] }
       : {
           id: 'sub-1',
           mode: 'run',
@@ -70,8 +73,13 @@ const server = createServer((request, response) => {
     seen.push({ method: request.method, url, headers: request.headers, body: text ? JSON.parse(text) : undefined });
     const route = routes[`${request.method} ${url.pathname}`];
     const unauthorized = request.headers.authorization !== `Bearer ${TOKEN}`;
-    response.writeHead(unauthorized ? 401 : route ? 200 : 404, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify(unauthorized ? { error: 'The access token is invalid or revoked' } : route ? route(seen.at(-1).body) : { error: 'nope' }));
+    const { httpStatus = 200, ...body } = unauthorized
+      ? { httpStatus: 401, error: 'The access token is invalid or revoked' }
+      : route
+        ? route(seen.at(-1).body)
+        : { httpStatus: 404, error: 'nope' };
+    response.writeHead(httpStatus, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify(body));
   });
 });
 let base;
@@ -83,7 +91,7 @@ after(() => server.close());
 
 function start(env = {}) {
   const child = spawn(process.execPath, ['tools/mcp/cswork-mcp.mjs'], {
-    env: { PATH: process.env.PATH, CSWORK_BASE_URL: base, CSWORK_TOKEN: TOKEN, CSWORK_POLL_MS: '10', ...env },
+    env: { PATH: process.env.PATH, CSWORK_BASE_URL: base, CSWORK_TOKEN: TOKEN, ...env },
     stdio: ['pipe', 'pipe', 'pipe'],
   });
   const waiting = new Map();
@@ -185,8 +193,10 @@ test('tools call cswork with the bearer token and format the results', async () 
     assert.equal(posted.codingMode, 'acm');
     assert.match(posted.idempotencyKey, /^[a-zA-Z0-9_-]{16,100}$/);
     assert.equal('stdin' in posted, false);
-    // Still running after the POST: the tool polls until the verdict.
+    // Still running after the POST: the tool long-polls from the last watch token until the verdict.
     assert.match(text(run), /Submission sub-1: wrong answer/);
+    const polled = seen.filter((r) => r.url.pathname === '/api/oj/submissions/sub-1').map((r) => r.url.search);
+    assert.deepEqual(polled, ['?wait=1&after=w0', '?wait=1&after=w1']);
     assert.match(text(run), /stdout:\n```\n1 0/);
     polls = 0;
     await mcp.request('tools/call', {
@@ -199,6 +209,22 @@ test('tools call cswork with the bearer token and format the results', async () 
     assert.notEqual(submitted.idempotencyKey, posted.idempotencyKey);
     polls = 5;
     assert.match(text(await mcp.request('tools/call', { name: 'get_submission', arguments: { submission_id: 'sub-1' } })), /passed 0\/1 · 12 ms · 9 MB/);
+  } finally {
+    mcp.stop();
+  }
+});
+
+test('a failed verdict poll keeps the submission id instead of an error', async () => {
+  const mcp = start();
+  try {
+    const reply = await mcp.request('tools/call', {
+      name: 'submit_code',
+      arguments: { problem_id: 'lc-1', language: 'python', code: 'slow' },
+    });
+    assert.equal(reply.result.isError, undefined);
+    assert.match(text(reply), /Submission sub-42: queued/);
+    assert.match(text(reply), /Too many requests.*Do not submit again; call get_submission with sub-42/);
+    assert.equal(seen.filter((r) => r.url.pathname === '/api/oj/submissions/sub-42').length, 1);
   } finally {
     mcp.stop();
   }
