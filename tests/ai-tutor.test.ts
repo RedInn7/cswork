@@ -268,6 +268,7 @@ void test('metrics get counts only, never the code, statement or reply', () => {
 
 void test('tidyReply: no images, hint code blocks dropped, long review blocks dropped, capped', () => {
   assert.equal(tidyReply('See ![diagram](https://x.test/a.png).', 'hint'), 'See diagram.');
+  assert.equal(tidyReply('Read [the docs](javascript:alert(1)).', 'review'), 'Read the docs.');
   assert.equal(tidyReply('Ask why.\n```\nx = 1\n```', 'hint'), 'Ask why.');
   const long = '```py\n' + 'a = 1\n'.repeat(5) + '```';
   assert.equal(tidyReply(`Fine.\n${long}`, 'review'), 'Fine.');

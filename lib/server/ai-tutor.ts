@@ -102,11 +102,11 @@ function settle(userId: string, kind: AiKind, day: string, refund: boolean, toke
     .run(refund ? 1 : 0, tokens.in, tokens.out, day, userId, kind);
 }
 
-/** No images, no code block in a hint, none over four lines in a review, and a length cap. */
+/** No images or links, no code block in a hint, none over four lines in a review, a length cap. */
 export function tidyReply(text: string, kind: AiKind) {
   const maxLines = kind === 'hint' ? 0 : 4;
   let out = text
-    .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/!?\[([^\]]*)\]\((?:[^()]|\([^()]*\))*\)/g, '$1')
     .replace(/```[^\n]*\n?([\s\S]*?)(?:```|$)/g, (block, body: string) =>
       body.trimEnd().split('\n').length <= maxLines ? block : '',
     )
