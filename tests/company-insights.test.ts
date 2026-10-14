@@ -38,12 +38,24 @@ page('experience', '2026-10-12T00:00:00Z', { partial: 1 });
 page('guide', '2026-10-12T00:00:00Z');
 page('article', '2026-10-12T00:00:00Z', { slug: 'bad slug!' });
 page('experience', '2026-10-11T00:00:00Z', { company: 'hush', name: 'Hush' });
+// Reports behind Amazon's lc-146 and lc-3 in company-lc-map.json, dated by the interview (extra) or the post.
+const source = (slug: string, o: Record<string, unknown> = {}) =>
+  page('coding_question', '2025-01-01T00:00:00Z', { slug, title: `Source ${slug}`, ...o });
+source('implement-lru-cache-with-o-1-ops', { extra: JSON.stringify({ date: '2026-09-01' }) });
+source('implement-and-analyze-an-lru-query-cache');
+source('determine-length-of-longest-unique-substring', { listed: 0 });
+source('determine-length-of-longest-unique-substring', { type: 'experience', listed: 0 });
+source('implement-python-function-for-longest-unique-substring-length', { company: 'hush', name: 'Hush' });
+// The same slug as an experience: the coding question is the report.
+page('experience', '2020-01-01T00:00:00Z', { slug: 'implement-lru-cache-with-o-1-ops' });
 content.close();
 
 const { sqlite } = await import('../db/sqlite');
 migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') });
 const { loadStudyLibrary } = await import('../scripts/load-study-library.mjs');
-const { topProblems, recentAdditions } = await import('../lib/server/company-insights');
+const { topProblems, recentAdditions, sourceDates } = await import('../lib/server/company-insights');
+const { listStudyLibrary } = await import('../lib/server/study-library');
+const { windowCounts } = await import('../lib/report-windows');
 const { companyTagIndex } = await import('../lib/company-tags');
 const { reportCompanies } = await import('../lib/server/learner-cloud');
 const { createOaLibrary } = await import('../lib/server/oa-library');
@@ -167,4 +179,21 @@ void test('company stats: quarterly trend of experiences and question categories
   assert.deepEqual(row('Coding & Algorithms'), [0, 0, 0, 0, 3, 0]);
   assert.deepEqual(row('System Design'), [0, 0, 0, 1, 0, 0]);
   assert.equal(trend.series[0].value, 'experience');
+});
+
+void test('report sources: listed rows only, dated by the interview else the post, hidden companies out', () => {
+  const dated = sourceDates(NOW, new Set(['hush']));
+  assert.deepEqual(dated.get('implement-lru-cache-with-o-1-ops'), {
+    type: 'coding_question', slug: 'implement-lru-cache-with-o-1-ops', title: 'Source implement-lru-cache-with-o-1-ops', date: '2026-09-01', page: true,
+  });
+  assert.equal(dated.get('implement-and-analyze-an-lru-query-cache')?.date, '2025-01-01');
+  assert.equal(dated.has('determine-length-of-longest-unique-substring'), false, 'taken down');
+  assert.equal(dated.has('implement-python-function-for-longest-unique-substring-length'), false, 'hidden company');
+  const lru = companyTagIndex().get('lc-146')!.find((t) => t.slug === 'amazon')!;
+  assert.deepEqual(windowCounts(lru.sources, dated, NOW), { m3: 1, m6: 0, y1: 0, y2: 1, older: 0 });
+  // The bank's frequency order counts the window's reports only: both have two in all.
+  const ids = (window: string) =>
+    listStudyLibrary(new URLSearchParams({ company: 'amazon', sort: 'frequency', window })).items.map((i) => i.id);
+  assert.deepEqual(ids('3m'), ['lc-146', 'lc-3']);
+  assert.deepEqual(ids('all'), listStudyLibrary(new URLSearchParams({ company: 'amazon' })).items.map((i) => i.id), 'ties keep the line order');
 });

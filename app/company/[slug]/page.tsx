@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { oaDifficulty } from '@/lib/server/oa-topics';
 import { cache } from 'react';
-import { inWindow, REPORT_WINDOWS, reportWindow, windowCounts, type ReportWindow } from '@/lib/company-tags';
+import { inWindow, REPORT_WINDOWS, reportWindow, WINDOW_NAMES, windowCounts, type ReportWindow } from '@/lib/report-windows';
 import lcMapFile from '@/lib/content/company-lc-map.json';
 import { ROUND_LABELS } from '@/lib/experience';
 import { companyHubPath, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
@@ -33,14 +33,6 @@ type Props = {
 };
 const OA_SHOWN = 8;
 const LC_SHOWN = 10;
-/** ?window= links, [zh, en]. */
-const WINDOW_LABELS: Record<ReportWindow, [string, string]> = {
-  '3m': ['近 3 个月', '3 months'],
-  '6m': ['近 6 个月', '6 months'],
-  '1y': ['近 1 年', '1 year'],
-  '2y': ['近 2 年', '2 years'],
-  all: ['全部', 'All time'],
-};
 const load = cache(async (slug: string) => {
   const ready = await oaReadyProblems();
   const hub = companyHub(library(), slug, new Set(ready.keys()));
@@ -260,7 +252,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
                 rel="nofollow"
                 aria-current={w === period ? 'true' : undefined}
               >
-                {WINDOW_LABELS[w][zh ? 0 : 1]}
+                {WINDOW_NAMES[w][zh ? 0 : 1]}
               </a>
             ))}
           </nav>

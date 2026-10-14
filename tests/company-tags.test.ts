@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import lcMapFile from '../lib/content/company-lc-map.json';
 import presetsFile from '../lib/content/mock-oa-presets.json';
-import { companyLcProblems, companyTagIndex, inWindow, lcIdBySource, reportWindow, windowCounts } from '../lib/company-tags';
+import { companyLcProblems, companyTagIndex, lcIdBySource } from '../lib/company-tags';
+import { inWindow, reportWindow, windowCounts } from '../lib/report-windows';
 import { employerSlug } from '../lib/oa-company-brands';
 
 const presets = [

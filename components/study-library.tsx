@@ -37,6 +37,7 @@ import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { LeetcodeSyncPanel } from './leetcode-sync-panel';
 import { CompanyMarks } from './company-tags';
+import { REPORT_WINDOWS, reportWindow, WINDOW_NAMES } from '@/lib/report-windows';
 import { RatingBadge } from './rating-badge';
 import { ContestGrid } from './contest-grid';
 import { LEETCODE_SYNC_AVAILABLE } from '@/lib/leetcode-sync-types';
@@ -223,6 +224,8 @@ export function StudyLibrary({
   const [dir, setDir] = useState<string>(() => (urlParam('dir') === 'desc' ? 'desc' : 'asc'));
   // Report counts belong to one company: without a filter the line keeps its order.
   const order = sort === 'frequency' && !company ? '' : sort;
+  // Reports of the last 3 months to 2 years (?window=) for the frequency order; all by default.
+  const [period, setPeriod] = useState(() => reportWindow(urlParam('window')));
   // A rating band, one of the learner's lists (or a public one linked here), a solved month.
   const [band, setBand] = useState('');
   const [list, setList] = useState(() => urlParam('list').slice(0, 40));
@@ -427,6 +430,7 @@ export function StudyLibrary({
     company,
     sort: order,
     ...(!!order && order !== 'frequency' && { dir }),
+    ...(order === 'frequency' && period !== 'all' && { window: period }),
     ...(!!ratingMin && { ratingMin }),
     ...(!!ratingMax && { ratingMax }),
     ...(!!list && { list }),
@@ -1425,6 +1429,24 @@ export function StudyLibrary({
             <option value="number:desc">{t('题号 大→小', 'Number, descending')}</option>
           </select>
         </label>
+        {order === 'frequency' && (
+          <label>
+            {t('报告时间', 'Reported in')}
+            <select
+              value={period}
+              onChange={(event) => {
+                setPeriod(reportWindow(event.target.value));
+                setPage(1);
+              }}
+            >
+              {[...REPORT_WINDOWS, 'all' as const].map((value) => (
+                <option key={value} value={value}>
+                  {t(...WINDOW_NAMES[value])}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <label>
           {t('难度分', 'Rating')}
           <select

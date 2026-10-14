@@ -1,6 +1,6 @@
 import type { Problem, Language } from './problems';
 import type { CodingMode } from './coding-mode';
-import type { CompanyTag } from './company-tags';
+import type { CompanyChip } from './company-tags';
 import { readLocale } from './i18n';
 
 export type OJProblem = Problem & {
@@ -28,7 +28,7 @@ export type OJProblem = Problem & {
   /** Contest rating (zerotrac), null outside rated contests. */
   rating?: number | null;
   /** Companies reported to have asked this problem (lib/company-tags.ts). */
-  companies?: CompanyTag[];
+  companies?: CompanyChip[];
   /** A failed formal submission in the current practice round. */
   hintEarned?: boolean;
   /** Failed formal submissions this round, up to 2 ids. */
