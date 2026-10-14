@@ -7,7 +7,8 @@ import { boundedText, HttpError, json, limit } from './http';
 
 // ponytail: flat per-learner caps keep a scripted client from growing the tables forever.
 const MAX_ROWS = 5000;
-const target = z.string().regex(/^(?:problem|content):[\w./-]{1,200}$/);
+// story:<id> holds one STAR story as JSON (components/story-bank.tsx).
+const target = z.string().regex(/^(?:problem|content|story):[\w./-]{1,200}$/);
 const mark = z.enum(['star', 'redo']);
 // The verdicts that count against the learner's code; judge faults and cancels do not.
 const FAILED = `'wrong_answer','compile_error','time_limit','memory_limit','output_limit','runtime_error'`;
@@ -88,14 +89,18 @@ export async function handleMyPractice(
     await limit(p, 'my-practice-read', 120);
     if (resource === 'history') return json({ items: practiceHistory(p.id) });
     if (resource === 'notes') {
-      if (!params.has('target'))
+      if (!params.has('target')) {
+        // ?prefix=story: lists the story bank with its bodies in one request.
+        const stories = params.get('prefix') === 'story:';
         return json({
           items: db
             .prepare(
-              'SELECT target,updated_at AS updatedAt FROM user_notes WHERE user_id=? ORDER BY updated_at DESC',
+              `SELECT target,${stories ? 'body,' : ''}updated_at AS updatedAt FROM user_notes
+              WHERE user_id=? AND target LIKE ? ORDER BY updated_at DESC`,
             )
-            .all(p.id),
+            .all(p.id, stories ? 'story:%' : '%'),
         });
+      }
       const key = target.parse(params.get('target'));
       const note = db
         .prepare(
