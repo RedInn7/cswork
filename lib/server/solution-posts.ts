@@ -201,7 +201,14 @@ async function readPost(p: Person | null, postId: string) {
         WHERE c.post_id=@id AND c.hidden=${SHOWN} AND (c.user_id=@me OR NOT ${reportedDown("'comment:'||c.id")})
         ORDER BY c.created_at,c.id LIMIT 500`,
       )
-      .all({ me, id: postId }) as { author: string; handle: string | null; mine: number }[]
+      .all({ me, id: postId }) as {
+      id: string;
+      body: string;
+      createdAt: number;
+      author: string;
+      handle: string | null;
+      mine: number;
+    }[]
   ).map(byline);
   return { post: shape(row), comments };
 }

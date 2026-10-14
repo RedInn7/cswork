@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
+import { targetKind, threadPath, type TargetKind } from '@/lib/community';
+import { STOP_NAMES } from '@/lib/route-stops';
 import { StatementMarkdown } from './statement-markdown';
 import { Button } from './ui/button';
 import {
@@ -34,6 +36,8 @@ export type PostSummary = {
   problemId: string;
   title: string;
   language: string;
+  /** A company slug on a thread, a Line 500 stop (technique) on a solution. */
+  tag?: string;
   hidden: number;
   createdAt: number;
   updatedAt: number;
@@ -81,6 +85,75 @@ export function codeBlock(code: string, language: string) {
   const fence = '`'.repeat(Math.max(3, run + 1));
   return `${fence}${language}\n${code.replace(/\n+$/, '')}\n${fence}`;
 }
+/** Copy that changes with what the posts hang off: [zh, en]. */
+const WORDS: Record<
+  TargetKind,
+  { label: [string, string]; write: [string, string]; all: [string, string]; empty: [string, string]; loading: [string, string] }
+> = {
+  problem: {
+    label: ['社区题解', 'Community solutions'],
+    write: ['写题解', 'Write a solution'],
+    all: ['全部题解', 'All solutions'],
+    empty: ['还没有题解，来写第一篇吧。', 'No solutions yet. Be the first to share one.'],
+    loading: ['正在加载题解…', 'Loading solutions…'],
+  },
+  discuss: {
+    label: ['讨论', 'Discussion'],
+    write: ['发帖', 'New thread'],
+    all: ['全部帖子', 'All threads'],
+    empty: ['这里还没有帖子，来开个头吧。', 'No threads here yet. Start one.'],
+    loading: ['正在加载帖子…', 'Loading threads…'],
+  },
+  q: {
+    label: ['社区回答', 'Community answers'],
+    write: ['写我的回答', 'Write your answer'],
+    all: ['全部回答', 'All answers'],
+    empty: ['还没有人分享回答。', 'No one has shared an answer yet.'],
+    loading: ['正在加载回答…', 'Loading answers…'],
+  },
+  exp: {
+    label: ['评论', 'Comments'],
+    write: ['写评论', 'Add a comment'],
+    all: ['全部评论', 'All comments'],
+    empty: ['还没有评论。', 'No comments yet.'],
+    loading: ['正在加载评论…', 'Loading comments…'],
+  },
+};
+/** Line 500 stops, the techniques a solution can be tagged with, in line order. */
+const TECHNIQUES = Object.entries(STOP_NAMES);
+type Company = { slug: string; name: string };
+let companiesRequest: Promise<Company[]> | null = null;
+/** The companies a thread may be tagged with (the server's company pages), fetched once. */
+export function threadCompanies() {
+  companiesRequest ??= api<{ items: Company[] }>('oj/reports/companies').then(
+    (r) => (Array.isArray(r.items) ? r.items : []),
+    () => {
+      // A failed request is tried again next time.
+      companiesRequest = null;
+      return [];
+    },
+  );
+  return companiesRequest;
+}
+function useCompanies(on: boolean) {
+  const [companies, setCompanies] = useState<Company[]>([]);
+  useEffect(() => {
+    if (!on) return;
+    let live = true;
+    void threadCompanies().then((c) => live && setCompanies(c));
+    return () => {
+      live = false;
+    };
+  }, [on]);
+  return companies;
+}
+/** A post's tag as a label: the technique's or the company's name. */
+function tagLabel(tag: string | undefined, kind: TargetKind, english: boolean, companies: Company[]) {
+  if (!tag) return '';
+  if (kind === 'problem') return Object.hasOwn(STOP_NAMES, tag) ? STOP_NAMES[tag][english ? 1 : 0] : '';
+  return companies.find((c) => c.slug === tag)?.name ?? tag;
+}
+const authRequired = () => window.dispatchEvent(new Event('cswork:auth-required'));
 const peekKey = (problemId: string) => `cswork:solutions-peek:${problemId}`;
 function readPeek(problemId: string) {
   try {
@@ -109,22 +182,38 @@ export function SolutionsTab({
 }
 
 /**
- * Community solutions for one problem: locked until the learner has an AC (or confirms
- * they want to look), then a list by votes or date, one post with its comments, and an
+ * Community posts on one target (lib/community.ts). On a problem: solutions, locked until the
+ * learner has an AC (or confirms they want to look), filterable by technique. Elsewhere: a
+ * channel's threads (`tag` filters them by company), answers to a question or comments on an
+ * experience, never locked. Then a list by votes or date, one post with its comments, and an
  * editor. `code`/`language` are the workspace editor's, offered as the new post's code.
+ * Signed out (`signedIn` false) reading works where the server allows it; writing asks to sign in.
  */
 export function SolutionPosts({
   problemId,
   english,
   code = '',
   language = '',
+  tag = '',
+  initialPost,
+  signedIn = true,
 }: {
   problemId: string;
   english: boolean;
   code?: string;
   language?: string;
+  tag?: string;
+  /** Open this post first (a link from a thread's page). */
+  initialPost?: string;
+  signedIn?: boolean;
 }) {
   const t: T = (zh, en) => (english ? en : zh);
+  const kind = targetKind(problemId);
+  const words = WORDS[kind];
+  const companies = useCompanies(kind === 'discuss');
+  const [technique, setTechnique] = useState('');
+  const filter = kind === 'problem' ? technique : tag;
+  const query = `oj/posts?problem=${encodeURIComponent(problemId)}${filter ? `&tag=${encodeURIComponent(filter)}` : ''}`;
   const [sort, setSort] = useState<'votes' | 'new'>('votes');
   const [page, setPage] = useState<Page | null>(null);
   const [error, setError] = useState('');
@@ -133,26 +222,24 @@ export function SolutionPosts({
   const [peek, setPeek] = useState(() => readPeek(problemId));
   const [view, setView] = useState<
     { kind: 'list' } | { kind: 'post'; id: string } | { kind: 'edit'; post: Detail['post'] | null }
-  >({ kind: 'list' });
+  >(() => (initialPost ? { kind: 'post', id: initialPost } : { kind: 'list' }));
   const [confirm, setConfirm] = useState<Confirm | null>(null);
   useEffect(() => {
     let live = true;
     setError('');
-    api<Page>(`oj/posts?problem=${encodeURIComponent(problemId)}&sort=${sort}`).then(
+    api<Page>(`${query}&sort=${sort}`).then(
       (p) => live && setPage(p),
       (e: Error) => live && setError(e.message),
     );
     return () => {
       live = false;
     };
-  }, [problemId, sort, reload]);
+  }, [query, sort, reload]);
   async function more() {
     if (!page) return;
     setLoadingMore(true);
     try {
-      const next = await api<Page>(
-        `oj/posts?problem=${encodeURIComponent(problemId)}&sort=${sort}&offset=${page.items.length}`,
-      );
+      const next = await api<Page>(`${query}&sort=${sort}&offset=${page.items.length}`);
       setPage({ ...next, items: [...page.items, ...next.items.filter((n) => !page.items.some((p) => p.id === n.id))] });
     } catch (e) {
       setError((e as Error).message);
@@ -194,6 +281,9 @@ export function SolutionPosts({
         onBack={back}
         onEdit={(post) => setView({ kind: 'edit', post })}
         ask={setConfirm}
+        backLabel={t(...words.all)}
+        tagName={(value) => tagLabel(value, kind, english, companies)}
+        signedIn={signedIn}
       />
     );
   else if (view.kind === 'edit')
@@ -204,6 +294,8 @@ export function SolutionPosts({
         initial={view.post}
         code={code}
         language={language}
+        companies={companies}
+        defaultTag={tag}
         onCancel={() => (view.post ? setView({ kind: 'post', id: view.post.id }) : setView({ kind: 'list' }))}
         onSaved={(id) => setView({ kind: 'post', id })}
       />
@@ -219,7 +311,7 @@ export function SolutionPosts({
         </button>
       </div>
     ) : (
-      <output className="cs-posts-state">{t('正在加载题解…', 'Loading solutions…')}</output>
+      <output className="cs-posts-state">{t(...words.loading)}</output>
     );
   else if (!page.solved && !peek)
     body = (
@@ -270,9 +362,26 @@ export function SolutionPosts({
               {t('最新', 'Newest')}
             </button>
           </fieldset>
-          <button type="button" className="cs-posts-write" onClick={() => setView({ kind: 'edit', post: null })}>
+          {kind === 'problem' && (
+            <label className="cs-posts-filter">
+              <span className="sr-only">{t('按技巧筛选', 'Filter by technique')}</span>
+              <select value={technique} onChange={(e) => setTechnique(e.target.value)}>
+                <option value="">{t('全部技巧', 'All techniques')}</option>
+                {TECHNIQUES.map(([slug, [zh, en]]) => (
+                  <option key={slug} value={slug}>
+                    {english ? en : zh}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          <button
+            type="button"
+            className="cs-posts-write"
+            onClick={() => (signedIn ? setView({ kind: 'edit', post: null }) : authRequired())}
+          >
             <Pencil size={14} aria-hidden="true" />
-            {t('写题解', 'Write a solution')}
+            {t(...words.write)}
           </button>
         </header>
         {error && (
@@ -285,12 +394,14 @@ export function SolutionPosts({
             {page.items.map((post) => (
               <li key={post.id}>
                 <button type="button" className="cs-post-row" onClick={() => setView({ kind: 'post', id: post.id })}>
-                  <span className="cs-post-row-title">{post.title}</span>
+                  {/* Answers and comments are titled by their first line: the excerpt says it all. */}
+                  {(kind === 'problem' || kind === 'discuss') && <span className="cs-post-row-title">{post.title}</span>}
                   {post.excerpt && <span className="cs-post-row-excerpt">{plainExcerpt(post.excerpt)}</span>}
                   <span className="cs-post-row-meta">
                     <span>{post.author || t('学员', 'Learner')}</span>
                     <span>{day(post.createdAt, english)}</span>
                     {post.language && <span className="cs-post-lang">{langName(post.language)}</span>}
+                    {post.tag && <span className="cs-post-tag">{tagLabel(post.tag, kind, english, companies)}</span>}
                     {post.hidden === MODERATED && (
                       <span className="cs-post-flag">{t('已被隐藏', 'Hidden')}</span>
                     )}
@@ -310,9 +421,7 @@ export function SolutionPosts({
             ))}
           </ul>
         ) : (
-          <p className="cs-posts-state">
-            {t('还没有题解，来写第一篇吧。', 'No solutions yet. Be the first to share one.')}
-          </p>
+          <p className="cs-posts-state">{t(...words.empty)}</p>
         )}
         {page.more && (
           <button type="button" className="cs-posts-more" disabled={loadingMore} onClick={() => void more()}>
@@ -322,7 +431,7 @@ export function SolutionPosts({
       </>
     );
   return (
-    <section className="cs-posts" aria-label={t('社区题解', 'Community solutions')}>
+    <section className="cs-posts" aria-label={t(...words.label)}>
       {body}
       {dialog}
     </section>
@@ -335,12 +444,18 @@ function PostView({
   onBack,
   onEdit,
   ask,
+  backLabel,
+  tagName,
+  signedIn,
 }: {
   id: string;
   english: boolean;
   onBack: () => void;
   onEdit: (post: Detail['post']) => void;
   ask: (confirm: Confirm) => void;
+  backLabel: string;
+  tagName: (tag: string | undefined) => string;
+  signedIn: boolean;
 }) {
   const t: T = (zh, en) => (english ? en : zh);
   const [detail, setDetail] = useState<Detail | null>(null);
@@ -360,7 +475,7 @@ function PostView({
   const backButton = (
     <button type="button" className="cs-posts-back" onClick={onBack}>
       <ArrowLeft size={14} aria-hidden="true" />
-      {t('全部题解', 'All solutions')}
+      {backLabel}
     </button>
   );
   if (!detail)
@@ -377,7 +492,9 @@ function PostView({
       </>
     );
   const { post } = detail;
+  const postKind = targetKind(post.problemId);
   async function vote() {
+    if (!signedIn) return authRequired();
     const on = !post.voted;
     setError('');
     try {
@@ -389,6 +506,7 @@ function PostView({
   }
   async function send(event: FormEvent) {
     event.preventDefault();
+    if (!signedIn) return authRequired();
     if (!comment.trim()) return;
     setBusy(true);
     setError('');
@@ -418,12 +536,16 @@ function PostView({
           {t('这篇题解已被老师隐藏，只有你能看到。', 'An instructor hid this solution. Only you can see it.')}
         </p>
       )}
-      <h3 className="cs-post-title">{post.title}</h3>
+      {(postKind === 'problem' || postKind === 'discuss') && <h3 className="cs-post-title">{post.title}</h3>}
       <p className="cs-post-meta">
         <span>{post.author || t('学员', 'Learner')}</span>
         <span>{day(post.createdAt, english)}</span>
         {post.updatedAt > post.createdAt + 60000 && <span>{t('已编辑', 'edited')}</span>}
         {post.language && <span className="cs-post-lang">{langName(post.language)}</span>}
+        {post.tag && <span className="cs-post-tag">{tagName(post.tag)}</span>}
+        {postKind === 'discuss' && post.hidden === 0 && (
+          <a href={threadPath(post.id)}>{t('公开链接', 'Public link')}</a>
+        )}
       </p>
       <StatementMarkdown body={post.body} untrusted className="cs-statement-markdown cs-post-body" />
       <div className="cs-post-actions">
@@ -463,7 +585,7 @@ function PostView({
             </button>
           </>
         ) : (
-          <Report path={`oj/posts/${post.id}/report`} english={english} />
+          signedIn && <Report path={`oj/posts/${post.id}/report`} english={english} />
         )}
       </div>
       {error && (
@@ -502,7 +624,7 @@ function PostView({
                       {t('删除', 'Delete')}
                     </button>
                   ) : (
-                    <Report path={`oj/post-comments/${c.id}/report`} english={english} />
+                    signedIn && <Report path={`oj/post-comments/${c.id}/report`} english={english} />
                   )}
                 </div>
                 <p className="cs-comment-body">{c.body}</p>
@@ -587,6 +709,8 @@ function PostEditor({
   initial,
   code,
   language,
+  companies,
+  defaultTag,
   onCancel,
   onSaved,
 }: {
@@ -595,18 +719,27 @@ function PostEditor({
   initial: Detail['post'] | null;
   code: string;
   language: string;
+  companies: Company[];
+  defaultTag: string;
   onCancel: () => void;
   onSaved: (id: string) => void;
 }) {
   const t: T = (zh, en) => (english ? en : zh);
+  const kind = targetKind(problemId);
+  const solution = kind === 'problem';
+  // Answers and comments have no title or language of their own.
+  const titled = solution || kind === 'discuss';
   const editorLang = langName(language) ? language : '';
   const [title, setTitle] = useState(initial?.title ?? '');
   const [lang, setLang] = useState(initial ? initial.language : editorLang);
-  // A new post starts from a short outline with the editor's code already in it.
+  const [tag, setTag] = useState(initial ? (initial.tag ?? '') : defaultTag);
+  // A new solution starts from a short outline with the editor's code already in it.
   const [body, setBody] = useState(
     () =>
       initial?.body ??
-      [
+      (!solution
+        ? ''
+        : [
         t('## 思路', '## Approach'),
         '',
         '',
@@ -618,7 +751,7 @@ function PostEditor({
         t('## 代码', '## Code'),
         '',
         code.trim() ? codeBlock(code, editorLang) : '',
-      ].join('\n'),
+      ].join('\n')),
   );
   const [preview, setPreview] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -628,7 +761,7 @@ function PostEditor({
     setBusy(true);
     setError('');
     try {
-      const data = { title, body, language: lang };
+      const data = { title: titled ? title : '', body, language: solution ? lang : '', tag };
       const saved = initial
         ? await api<Detail>(`oj/posts/${initial.id}/edit`, data)
         : await api<Detail>('oj/posts', { ...data, problemId });
@@ -640,29 +773,67 @@ function PostEditor({
   }
   return (
     <form className="cs-post-editor" onSubmit={(e) => void save(e)}>
-      <h3>{initial ? t('编辑题解', 'Edit solution') : t('写题解', 'Write a solution')}</h3>
+      <h3>
+        {initial
+          ? solution
+            ? t('编辑题解', 'Edit solution')
+            : t('编辑', 'Edit')
+          : solution
+            ? t('写题解', 'Write a solution')
+            : t(...WORDS[kind].write)}
+      </h3>
       <p className="cs-post-editor-note">
         {t(
-          '所有人可见，显示你的昵称。支持 Markdown 和代码块；不支持图片和 HTML。',
-          'Everyone can read it, under your display name. Markdown and code blocks work; images and HTML do not.',
+          '所有人可见，显示你的公开主页名或打码后的昵称。支持 Markdown 和代码块；不支持图片和 HTML。',
+          'Everyone can read it, under your public handle or a masked display name. Markdown and code blocks work; images and HTML do not.',
         )}
       </p>
       <div className="cs-post-editor-row">
-        <label>
-          <span>{t('标题', 'Title')}</span>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={TITLE_MAX} required />
-        </label>
-        <label>
-          <span>{t('语言', 'Language')}</span>
-          <select value={lang} onChange={(e) => setLang(e.target.value)}>
-            <option value="">{t('不限', 'Any')}</option>
-            {LANGS.map(([id, name]) => (
-              <option key={id} value={id}>
-                {name}
-              </option>
-            ))}
-          </select>
-        </label>
+        {titled && (
+          <label>
+            <span>{t('标题', 'Title')}</span>
+            <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={TITLE_MAX} required />
+          </label>
+        )}
+        {solution && (
+          <label>
+            <span>{t('语言', 'Language')}</span>
+            <select value={lang} onChange={(e) => setLang(e.target.value)}>
+              <option value="">{t('不限', 'Any')}</option>
+              {LANGS.map(([id, name]) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+        {solution && (
+          <label>
+            <span>{t('技巧', 'Technique')}</span>
+            <select value={tag} onChange={(e) => setTag(e.target.value)}>
+              <option value="">{t('不标注', 'None')}</option>
+              {TECHNIQUES.map(([slug, [zh, en]]) => (
+                <option key={slug} value={slug}>
+                  {english ? en : zh}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+        {kind === 'discuss' && (
+          <label>
+            <span>{t('公司', 'Company')}</span>
+            <select value={tag} onChange={(e) => setTag(e.target.value)}>
+              <option value="">{t('不限公司', 'No company')}</option>
+              {companies.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
       </div>
       <div className="cs-post-editor-tools">
         <fieldset className="cs-posts-sort">
@@ -713,7 +884,7 @@ function PostEditor({
         <button type="button" onClick={onCancel}>
           {t('取消', 'Cancel')}
         </button>
-        <button type="submit" className="cs-posts-write" disabled={busy || !title.trim() || !body.trim()}>
+        <button type="submit" className="cs-posts-write" disabled={busy || (titled && !title.trim()) || !body.trim()}>
           {busy ? t('正在发布…', 'Publishing…') : initial ? t('保存', 'Save') : t('发布', 'Publish')}
         </button>
       </footer>
@@ -740,6 +911,16 @@ const REASONS: Record<string, [string, string]> = {
   wrong: ['解法有误', 'Wrong'],
   other: ['其他', 'Other'],
 };
+
+/** Where a moderator reads a post in place: its problem, its thread page or its library item. */
+function targetHref(target: string, postId: string) {
+  const kind = targetKind(target);
+  const key = target.slice(target.indexOf(':') + 1);
+  if (kind === 'discuss') return `/?view=discuss&channel=${encodeURIComponent(key)}&post=${encodeURIComponent(postId)}`;
+  if (kind === 'q' || kind === 'exp')
+    return `/?${new URLSearchParams({ view: 'content', type: kind === 'q' ? 'interview_question' : 'experience', slug: key })}`;
+  return `/?view=problem&problem=${encodeURIComponent(target)}`;
+}
 
 /** The teacher view's tab: reported posts and comments first, then the latest; hide, restore or dismiss. */
 export function PostModeration() {
@@ -779,7 +960,7 @@ export function PostModeration() {
     <li key={`${item.kind}:${item.id}`} className="post-mod-item" data-hidden={item.hidden || undefined}>
       <p className="post-mod-meta">
         <span className="cs-post-lang">{item.kind === 'post' ? t('题解', 'Solution') : t('评论', 'Comment')}</span>
-        <a href={`/?view=problem&problem=${encodeURIComponent(item.problemId)}`}>{item.problemId}</a>
+        <a href={targetHref(item.problemId, item.postId)}>{item.problemId}</a>
         <span>{item.author || t('学员', 'Learner')}</span>
         <span>{day(item.createdAt, english)}</span>
         {!!item.reports && (
