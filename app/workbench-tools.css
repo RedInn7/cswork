@@ -7,3 +7,32 @@
 .cs-workspace .cs-editor-controls > select.cs-io-templates:hover {
   color: var(--primary);
 }
+.cs-output-block > div > .cs-case-debug {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 6px 0 auto;
+  padding: 2px 7px;
+  border-radius: 5px;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 550;
+}
+.cs-output-block > div > .cs-case-debug[aria-disabled='true'] {
+  color: #94a0b3;
+  cursor: not-allowed;
+}
+.cs-output-block > div > .cs-case-debug[aria-disabled='true']:hover {
+  background: transparent;
+}
+.cs-case-debug-note {
+  margin: -6px 0 12px;
+  color: #9d4b32;
+  font-size: 11px;
+}
+.cs-workspace[data-theme='dark'] .cs-output-block > div > .cs-case-debug {
+  color: var(--cs-blue);
+}
+.cs-workspace[data-theme='dark'] .cs-case-debug-note {
+  color: #f0a58a;
+}

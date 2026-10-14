@@ -305,6 +305,7 @@ function Workspace({
       : say(intelligence.message);
   const suggest = useRef<(() => void) | null>(null);
   const insert = useRef<((text: string) => void) | null>(null);
+  const runButton = useRef<HTMLButtonElement>(null);
   const [leftTab, setLeftTab] = useState<'statement' | 'history' | 'editorial'>(
     'statement',
   );
@@ -831,6 +832,18 @@ function Workspace({
     setSaveStatus(['正在保存草稿…', 'Saving draft…']);
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => persistDraft(), 350);
+  }
+  function debugWithCase(input: string) {
+    setInputMode('custom');
+    setStdin(input);
+    showConsole('input');
+    // Run stays mounted across console tabs; focus it before this button unmounts.
+    runButton.current?.focus();
+    track('fail_case_debug', {
+      problem_id: problem.id,
+      language,
+      verdict: submission?.status,
+    });
   }
   function insertIoTemplate(id: string) {
     const template = ACM_IO_TEMPLATES.find((item) => item.id === id);
@@ -1508,6 +1521,7 @@ function Workspace({
         <span>{editorFile}</span>
         <div className="cs-editor-run-actions">
           <Button
+            ref={runButton}
             variant="ghost"
             disabled={
               disabled || (inputMode === 'custom' && stdinBytes > maxStdinBytes)
@@ -1943,6 +1957,8 @@ function Workspace({
                   cancel={cancel}
                   cancelling={cancelling}
                   inspect={() => inspect(submission)}
+                  onUseInput={codingMode === 'acm' ? debugWithCase : undefined}
+                  maxStdinBytes={maxStdinBytes}
                 />
               ) : (
                 <div className="cs-empty compact">
