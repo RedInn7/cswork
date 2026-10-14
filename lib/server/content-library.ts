@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import type { Person } from './auth';
 import { setting } from './env';
 import { HttpError, json, limitReader } from './http';
-import { mockCompanies, mockSet } from './mock-interview';
+import { mockCompanies, mockPool, mockSet } from './mock-interview';
 
 /**
  * Read-only interview content library (questions, experiences, guides, concepts,
@@ -237,6 +237,6 @@ export async function handleContent(request: Request, p: Person | null, path: st
   if (action === 'stats') return json(stats(db));
   // Mock interviews: a drawn set, and the companies to draw from.
   if (action === 'mock') return json(mockSet(db, params));
-  if (action === 'mock-companies') return json({ companies: mockCompanies(db) });
+  if (action === 'mock-companies') return json({ companies: mockCompanies(db), total: mockPool(db).length });
   throw new HttpError(404, '接口不存在');
 }
