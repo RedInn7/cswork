@@ -19,6 +19,7 @@ import {
   type OJSubmission,
 } from '@/lib/oj-client';
 import { track } from '@/lib/analytics';
+import { stopDemos } from '@/lib/route-stops';
 import '@/app/problem-aids.css';
 
 const LEVELS = [
@@ -66,12 +67,15 @@ export function HintLadder({
   hints,
   ladder: { shown, setShown, failed, openedAt },
   english,
+  stop,
 }: {
   problemId: string;
   userId: string;
   hints: { zh: string[]; en: string[] };
   ladder: ReturnType<typeof useHintLadder>;
   english: boolean;
+  /** The problem's Line 500 stop: its /topics page may animate the pattern. */
+  stop?: string | null;
 }) {
   const list = hints[english ? 'en' : 'zh'];
   const [confirm, setConfirm] = useState(false);
@@ -180,6 +184,18 @@ export function HintLadder({
             </button>
           </div>
         ))}
+      {stop && stopDemos(stop).length > 0 && (
+        <a
+          className="cs-hint-ladder-demo"
+          href={`/topics/${stop}#algorithm-demo`}
+          target="_blank"
+          rel="noopener"
+        >
+          {english ? 'Watch the pattern animated' : '看动画：一步步演示这个模式'}
+          <span className="sr-only">{english ? ' (opens in a new tab)' : '（在新标签页打开）'}</span>
+          <ChevronRight size={14} aria-hidden="true" />
+        </a>
+      )}
       <AlertDialog open={confirm} onOpenChange={setConfirm}>
         <AlertDialogContent
           finalFocus={() => (confirmed.current && latest.current) || true}

@@ -26,7 +26,7 @@ import { handleStudyGroups } from './study-groups';
 import { handleFollows } from './follows';
 import { handleApiTokens } from './api-tokens';
 import { dailyProblem } from './daily-problem';
-import { curatedHint } from '@/lib/ling-curated';
+import { curatedByNumber, curatedHint } from '@/lib/ling-curated';
 import { companyTagIndex } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
 import {
@@ -143,6 +143,8 @@ export async function handleOj(
       failedSubmissionIds: failed,
       // Observation, invariant, steps: the client opens them one at a time (components/hint-ladder.tsx).
       lingHints: lingHints(id),
+      // Its Line 500 stop, so the hint ladder can link the stop's animation (/topics/<stop>).
+      stop: curatedByNumber.get(Number(/^lc-(\d+)$/.exec(id)?.[1]))?.sectionSlug ?? null,
       // A nicety under the statement: it never fails the problem itself.
       similar: await similarProblems(id, p?.id, tags).catch(() => []),
       practiceRound: round,

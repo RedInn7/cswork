@@ -1,6 +1,7 @@
 import '../library/library.css';
 import './topics.css';
 import '../lc-rating.css';
+import '../algorithm-demo.css';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { LibraryPageView } from '../library/page-view';

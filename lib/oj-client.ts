@@ -35,6 +35,8 @@ export type OJProblem = Problem & {
   failedSubmissionIds?: string[];
   /** Line 500's three progressive hints: observation, invariant, steps. */
   lingHints?: { zh: string[]; en: string[] } | null;
+  /** The problem's Line 500 stop slug, null off the line. */
+  stop?: string | null;
   similar?: SimilarProblem[];
 };
 export type SimilarProblem = {
