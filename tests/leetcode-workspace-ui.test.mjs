@@ -268,7 +268,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     );
     // Input templates are for ACM stdin programs only.
     assert.equal(
-      document.querySelector('[aria-label="Insert an input template"]') === null,
+      document.querySelector('[aria-label="Use an input template"]') === null,
       true,
     );
     assert.equal(editor().value, templates.python);
@@ -650,14 +650,20 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     await renderAcm('acm-en');
     await settle();
     assert.equal(editor().value, englishStarters.python);
-    // An input template replaces an untouched starter; otherwise it is added.
+    // Templates are whole programs: an untouched starter is swapped, edits ask first.
     const { ACM_IO_TEMPLATES } = await import('../lib/acm-io-templates.ts');
     const [single, eof] = ACM_IO_TEMPLATES;
-    await choose('Insert an input template', 'eof');
+    await choose('Use an input template', 'eof');
     assert.equal(editor().value === eof.code.python, true);
     await edit('# mine');
-    await choose('Insert an input template', 'single');
-    assert.equal(editor().value === `# mine\n\n${single.code.python}`, true);
+    await choose('Use an input template', 'single');
+    assert.equal(editor().value === '# mine', true);
+    assert.match(
+      document.querySelector('[role="alertdialog"]').textContent,
+      /Switch to the "Single test case" template\?/,
+    );
+    await click(button('Replace'));
+    assert.equal(editor().value === single.code.python, true);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

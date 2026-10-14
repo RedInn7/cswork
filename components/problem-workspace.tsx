@@ -305,7 +305,6 @@ function Workspace({
       ? t('语言服务待启动', 'Language service not started')
       : say(intelligence.message);
   const suggest = useRef<(() => void) | null>(null);
-  const insert = useRef<((text: string) => void) | null>(null);
   const runButton = useRef<HTMLButtonElement>(null);
   const [leftTab, setLeftTab] = useState<'statement' | 'history' | 'editorial'>(
     'statement',
@@ -855,14 +854,23 @@ function Workspace({
       verdict: submission?.status,
     });
   }
-  function insertIoTemplate(id: string) {
+  function applyIoTemplate(id: string) {
     const template = ACM_IO_TEMPLATES.find((item) => item.id === id);
     const text = template?.code[language];
-    if (!text) return;
-    // An untouched starter already has a main(): swap it rather than nest a second one.
+    if (!template || !text || text === code) return;
+    // Templates are whole programs (main, class Main, package main): splicing one
+    // into edited code can't compile, so it replaces the draft, after a confirm.
     if (isStarter(code, language)) updateCode(text);
-    else if (insert.current) insert.current(text);
-    else updateCode(`${code.trimEnd()}\n\n${text}`);
+    else
+      setReplaceRequest({
+        language,
+        codingMode,
+        code: text,
+        title: t(
+          `换成「${template.title.zh}」模板？`,
+          `Switch to the "${template.title.en}" template?`,
+        ),
+      });
   }
   function templateFor(next: Language, mode: CodingMode) {
     return mode === 'leetcode'
@@ -1617,14 +1625,14 @@ function Workspace({
           {codingMode === 'acm' && (
             <select
               className="cs-io-templates"
-              aria-label={t('插入输入模板', 'Insert an input template')}
+              aria-label={t('使用输入模板', 'Use an input template')}
               title={t(
-                '插入常见输入形态的读写模板（插到光标处）',
-                'Insert a reading/writing template for a common input shape (at the cursor)',
+                '常见输入形态的完整读写程序，会替换当前代码（改过的代码先确认）',
+                'A whole read/write program for a common input shape. It replaces your code (edited code asks first)',
               )}
               value=""
               disabled={!ready}
-              onChange={(event) => insertIoTemplate(event.target.value)}
+              onChange={(event) => applyIoTemplate(event.target.value)}
             >
               <option value="" disabled>
                 {t('输入模板', 'Input templates')}
@@ -1693,9 +1701,6 @@ function Workspace({
                   onIntelligenceStatus={setIntelligence}
                   onSuggestReady={(action) => {
                     suggest.current = action;
-                  }}
-                  onInsertReady={(action) => {
-                    insert.current = action;
                   }}
                   onChange={updateCode}
                   path={`cswork://draft/${encodeURIComponent(userId)}/${problem.id}/${codingMode}/${editorFile}`}

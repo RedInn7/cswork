@@ -124,11 +124,11 @@ export default function AcmIoPage() {
           </section>
         ))}
         <p className="acm-io-cta">
-          写题时在编辑器工具栏切到 ACM 模式，选「输入模板」即可把这些模板插到光标处。
+          写题时在编辑器工具栏切到 ACM 模式，选「输入模板」即可换成其中任一份完整程序（改过的代码会先确认）。
           <span lang="en">
             {' '}
             In the practice editor, switch to ACM mode and pick Input templates to
-            insert any of these at the cursor.
+            start from any of these whole programs (edited code asks first).
           </span>{' '}
           <Link href="/?view=problems" prefetch={false}>
             去题库练习 · Open the problems →
