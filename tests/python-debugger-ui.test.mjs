@@ -93,6 +93,32 @@ class FakeWorker {
     this.terminated = true;
   }
 }
+/**
+ * Stands in for the browser loading the sandboxed iframe: its inline script runs in a vm
+ * with FakeWorker, messages cross as they would between the windows, and removing the
+ * iframe kills its worker.
+ */
+const frames = [];
+function boot(window, frame) {
+  frames.push(frame);
+  const scope = {
+    Blob,
+    URL,
+    Worker: class extends FakeWorker {
+      constructor(url) {
+        super(url);
+        frame.worker = this;
+      }
+    },
+    parent: {
+      postMessage: (data) =>
+        setTimeout(() => frame.isConnected && window.dispatchEvent(new window.MessageEvent('message', { data, source: frame.contentWindow }))),
+    },
+  };
+  vm.createContext(scope);
+  vm.runInContext(frame.srcdoc.split('<script>')[1].replace('</script>', ''), scope);
+  frame.contentWindow.addEventListener('message', (event) => scope.onmessage({ data: event.data, source: scope.parent }));
+}
 const open = () => {
   let release;
   const promise = new Promise((resolve) => (release = resolve));
@@ -103,7 +129,12 @@ async function mount(props) {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/playground' });
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'KeyboardEvent', 'localStorage', 'navigator', 'location', 'history'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
-  globalThis.Worker = FakeWorker;
+  new dom.window.MutationObserver((records) => {
+    for (const record of records) {
+      for (const node of record.addedNodes) if (node.tagName === 'IFRAME') boot(dom.window, node);
+      for (const node of record.removedNodes) if (node.tagName === 'IFRAME') node.worker?.terminate();
+    }
+  }).observe(dom.window.document.body, { childList: true });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
   const { DebugButton } = await import('../components/python-debugger-button.tsx');
@@ -140,8 +171,11 @@ test('opening downloads the runtime, then the trace replays with breakpoints, st
     assert.equal(workers.length, 0);
     await click('Debug');
     await settle();
-    // Lazy: the worker (and Pyodide) start only once the debugger opens.
+    // Lazy: the worker (and Pyodide) start only once the debugger opens, inside an iframe
+    // with an opaque origin (no allow-same-origin).
     assert.equal(workers.length, 1);
+    assert.equal(frames.at(-1).getAttribute('sandbox'), 'allow-scripts');
+    assert.equal(frames.at(-1).hidden, true);
     assert.equal(status().includes('Downloading the Python runtime (about 12 MB'), true);
     assert.equal(document.querySelector('.pydbg-status progress') !== null, true);
     assert.equal(button('Step over').disabled, true);
@@ -191,6 +225,10 @@ test('opening downloads the runtime, then the trace replays with breakpoints, st
     assert.equal(document.querySelector('.pydbg-stdout').textContent, '6\ndone\n');
     await click('Reset');
     assert.equal(where(), 'Step 1 / 14 · line 1 · main');
+    // Only the sandbox iframe is listened to.
+    window.postMessage({ type: 'noworker' }, '*');
+    await settle();
+    assert.equal(document.querySelector('.pydbg-failed') === null, true);
 
     // F9 (the Monaco action) toggles the breakpoint on the cursor line.
     await act(async () => globalThis.__monaco.actions.find((a) => a.id === 'cswork.debug.breakpoint').run());
@@ -198,6 +236,7 @@ test('opening downloads the runtime, then the trace replays with breakpoints, st
   } finally {
     await act(async () => root.unmount());
   }
+  assert.equal(document.querySelector('iframe') === null, true);
   assert.equal(workers.at(-1).terminated, true);
 });
 
@@ -238,6 +277,7 @@ test("a runtime that can't download shows an alert, and Retry starts over", asyn
     await click('Debug');
     await settle(100);
     assert.equal(document.querySelector('.pydbg-failed[role="alert"]').textContent.includes("Couldn't download the Python runtime"), true);
+    assert.equal(document.querySelector('iframe') === null, true);
     assert.equal(workers.at(-1).terminated, true);
     broken = false;
     await click('Retry');

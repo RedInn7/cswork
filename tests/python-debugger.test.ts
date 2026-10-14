@@ -8,6 +8,8 @@ import {
   moveTo,
   parseTrace,
   PYODIDE_URL,
+  SANDBOX_CSP,
+  sandboxSource,
   stackAt,
   stdoutAt,
   TRACER_SOURCE,
@@ -274,4 +276,67 @@ test('the worker loads the pinned Pyodide once, then cuts itself off from the ne
   assert.equal(ran[0], 'tracer');
   assert.equal(JSON.parse(ran[2]).code, 'x = 2');
   for (const name of ['fetch', 'XMLHttpRequest', 'importScripts', 'indexedDB']) assert.equal(name in context, false, name);
+});
+
+test('the sandbox page owns the worker, relays only its parent, and its CSP reaches only pinned Pyodide', async () => {
+  const page = sandboxSource();
+  assert.equal(page.includes(`http-equiv="Content-Security-Policy" content="${SANDBOX_CSP}"`), true);
+  // No eval for the learner's code (Pyodide needs only wasm), no fetches beyond the pinned build.
+  assert.equal(SANDBOX_CSP.includes("'unsafe-eval'"), false);
+  assert.equal(SANDBOX_CSP.endsWith(`connect-src ${PYODIDE_URL}`), true);
+  const [, script, ...rest] = page.split('<script>');
+  assert.equal(rest.length, 0);
+  // The embedded worker source can't end the script early.
+  assert.equal(script.indexOf('</'), script.length - '</script>'.length);
+
+  const boot = (Worker: unknown) => {
+    const toParent: { type: string }[] = [];
+    const blobs: Blob[] = [];
+    const context: Record<string, unknown> = {
+      Worker,
+      Blob,
+      URL: { createObjectURL: (blob: Blob) => `blob:${blobs.push(blob)}` },
+      parent: { postMessage: (data: { type: string }, origin: string) => origin === '*' && toParent.push(data) },
+    };
+    vm.createContext(context);
+    vm.runInContext(script.slice(0, -'</script>'.length), context);
+    return { context, toParent, blobs };
+  };
+  type Fake = { url: string; posted: unknown[]; onmessage: (e: { data: unknown }) => void; onerror: () => void };
+  let worker: Fake | undefined;
+  const { context, toParent, blobs } = boot(
+    class {
+      posted: unknown[] = [];
+      constructor(public url: string) {
+        worker = this as unknown as Fake;
+      }
+      postMessage(data: unknown) {
+        this.posted.push(data);
+      }
+    },
+  );
+  assert.equal(await blobs[0].text(), workerSource());
+  assert.equal(worker?.url, 'blob:1');
+  const relay = context.onmessage as (event: { source: unknown; data: unknown }) => void;
+  relay({ source: {}, data: 'from another window' });
+  relay({ source: context.parent, data: 'request' });
+  assert.deepEqual(worker?.posted, ['request']);
+  worker?.onmessage({ data: { type: 'trace' } });
+  worker?.onerror();
+  assert.deepEqual(
+    toParent.map((m) => m.type),
+    ['ready', 'trace', 'crash'],
+  );
+
+  const failed = boot(
+    class {
+      constructor() {
+        throw new Error('SecurityError');
+      }
+    },
+  );
+  assert.deepEqual(
+    failed.toParent.map((m) => m.type),
+    ['noworker'],
+  );
 });
