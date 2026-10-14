@@ -1,6 +1,7 @@
 import { randomInt } from 'node:crypto';
 import { z } from 'zod';
 import lcMapFile from '@/lib/content/company-lc-map.json';
+import { curatedByNumber } from '@/lib/ling-curated';
 import {
   drawMock,
   LADDER,
@@ -26,6 +27,7 @@ import {
 } from './http';
 import { MOCK_PRESETS_UPDATED, shownMockPresets } from './mock-oa-presets';
 import { oaLibrary } from './oa-library';
+import { oaTopic } from './oa-topics';
 import { listProblemSummaries } from './oj-problems';
 
 /** Content company slug → judgeable LeetCode ids (lib/content/company-lc-map.json). */
@@ -42,18 +44,38 @@ export type MockCatalogue = {
   oa: Map<string, PoolItem[]>;
   lc: Map<string, PoolItem>;
 };
-/** Published, verified problems anyone may judge, grouped for the pools. */
+/**
+ * Published, verified problems anyone may judge, grouped for the pools. OA problems
+ * take the estimated difficulty and topics (lib/content/oa-topics.json) and leave
+ * out concept, SQL and other non-coding questions; one without an estimate keeps its
+ * package label as a loose fit. A LeetCode problem's topic is its Line 500 stop.
+ */
 export function mockCatalogue(
   problems: readonly { id: string; difficulty?: string }[],
 ): MockCatalogue {
   const oa = new Map<string, PoolItem[]>(),
     lc = new Map<string, PoolItem>();
   for (const p of problems) {
-    const item = { id: p.id, difficulty: slotOf(p.difficulty), oa: false };
-    if (/^lc-\d{1,6}$/.test(p.id)) lc.set(p.id, item);
+    const number = /^lc-(\d{1,6})$/.exec(p.id)?.[1];
+    if (number) {
+      const stop = curatedByNumber.get(Number(number))?.sectionSlug;
+      lc.set(p.id, {
+        id: p.id,
+        difficulty: slotOf(p.difficulty),
+        loose: false,
+        ...(stop && { topics: [stop] }),
+      });
+    }
     const company = /^oa-(.+)-\d+$/.exec(p.id)?.[1];
-    if (company)
-      oa.set(company, [...(oa.get(company) ?? []), { ...item, oa: true }]);
+    if (!company) continue;
+    const meta = oaTopic(p.id);
+    if (meta && meta.k !== 'coding') continue;
+    oa.set(company, [
+      ...(oa.get(company) ?? []),
+      meta
+        ? { id: p.id, difficulty: meta.d, loose: false, topics: meta.t }
+        : { id: p.id, difficulty: slotOf(p.difficulty), loose: true },
+    ]);
   }
   return { oa, lc };
 }
@@ -215,6 +237,7 @@ export async function drawMockOa(p: Person, input: unknown) {
     slots,
     solved,
     exclude: new Set(d.exclude),
+    topics: preset?.topics,
     random: seededRandom(randomInt(2 ** 31)),
   });
   if (!ids)

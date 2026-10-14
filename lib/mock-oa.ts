@@ -37,7 +37,44 @@ export function seededRandom(seed: number) {
   };
 }
 
-export type PoolItem = { id: string; difficulty: Slot | null; oa: boolean };
+/**
+ * `loose`: the difficulty is a package default (an OA problem without an estimate),
+ * so it fits any slot within one step. `topics`: most important first.
+ */
+export type PoolItem = {
+  id: string;
+  difficulty: Slot | null;
+  loose: boolean;
+  topics?: readonly string[];
+};
+export type TopicWeight = { slug: string; weight: number };
+/** A problem's first, second and third topic count 1, 0.5 and 0.25. */
+export const TOPIC_POSITION = [1, 0.5, 0.25] as const;
+/** How well a problem's topics match a company's weighted topics (0 = no overlap). */
+export function topicAffinity(
+  topics: readonly string[] = [],
+  weights: ReadonlyMap<string, number>,
+) {
+  return topics.reduce(
+    (sum, slug, i) => sum + (TOPIC_POSITION[i] ?? 0) * (weights.get(slug) ?? 0),
+    0,
+  );
+}
+/** Topic shares over a set of problems, positions weighted 1/0.5/0.25, largest first. */
+export function topicDistribution(lists: readonly (readonly string[])[]) {
+  const mass = new Map<string, number>();
+  for (const list of lists)
+    list.forEach((slug, i) =>
+      mass.set(slug, (mass.get(slug) ?? 0) + (TOPIC_POSITION[i] ?? 0)),
+    );
+  const total = [...mass.values()].reduce((a, b) => a + b, 0) || 1;
+  return [...mass]
+    .map(([slug, weight]) => ({ slug, weight, share: weight / total }))
+    .sort((a, b) => b.weight - a.weight || a.slug.localeCompare(b.slug));
+}
+// ponytail: a perfect topic match (affinity 1) is 3× as likely as no overlap; raise
+// this to lean harder on the company's topics.
+const AFFINITY = 2;
 /** Lexicographic a < b. */
 function before(a: number[], b: number[]) {
   for (let k = 0; k < a.length; k++) if (a[k] !== b[k]) return a[k] < b[k];
@@ -47,30 +84,36 @@ function before(a: number[], b: number[]) {
 /**
  * One problem per slot, in slot order, or null when the pool is too small.
  * Per slot the best candidate wins by: not just seen (exclude) > fits the slot's
- * difficulty > not solved yet > closest difficulty > random. LeetCode difficulty is
- * reliable, so it fits only its own slot; OA labels are mostly a default 中等, so an
- * OA problem fits any slot within one step (a medium fits every slot).
+ * difficulty > not solved yet > closest difficulty > a weighted random draw. A
+ * difficulty fits only its own slot, except a `loose` one (a default 中等 OA label),
+ * which fits any slot within one step. The random draw favours problems on the
+ * company's `topics` (weight 1 + 2·affinity) without ever ruling the rest out.
  */
 export function drawMock({
   pool,
   slots,
   solved = new Set(),
   exclude = new Set(),
+  topics = [],
   random = Math.random,
 }: {
   pool: readonly PoolItem[];
   slots: readonly Slot[];
   solved?: ReadonlySet<string>;
   exclude?: ReadonlySet<string>;
+  topics?: readonly TopicWeight[];
   random?: () => number;
 }): string[] | null {
   const left = [...new Map(pool.map((item) => [item.id, item])).values()];
   if (left.length < slots.length) return null;
-  // Fisher–Yates first: the stable scan below then breaks ties at random.
-  for (let i = left.length - 1; i > 0; i--) {
-    const j = Math.floor(random() * (i + 1));
-    [left[i], left[j]] = [left[j], left[i]];
-  }
+  const weights = new Map(topics.map((t) => [t.slug, t.weight]));
+  // Efraimidis–Spirakis: the largest u^(1/w) is a draw weighted by w.
+  const lottery = new Map(
+    left.map((item) => [
+      item.id,
+      random() ** (1 / (1 + AFFINITY * topicAffinity(item.topics, weights))),
+    ]),
+  );
   const picked: string[] = [];
   for (const slot of slots) {
     let best = -1,
@@ -80,12 +123,13 @@ export function drawMock({
         item.difficulty === null
           ? 1
           : Math.abs(RANK[item.difficulty] - RANK[slot]);
-      const fits = item.oa ? distance <= 1 : distance === 0;
+      const fits = item.loose ? distance <= 1 : distance === 0;
       const key = [
         +exclude.has(item.id),
         +!fits,
         +solved.has(item.id),
         distance,
+        -lottery.get(item.id)!,
       ];
       if (best < 0 || before(key, bestKey)) {
         best = index;
