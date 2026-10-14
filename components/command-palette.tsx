@@ -199,6 +199,8 @@ function Palette({ ai }: { ai: boolean }) {
 
   useEffect(() => {
     const key = (event: KeyboardEvent) => {
+      // ⌘K starts Monaco's chords (⌘K ⌘C…): the code editor keeps it.
+      if (event.defaultPrevented || (event.target instanceof Element && event.target.closest('.monaco-editor'))) return;
       if ((event.metaKey || event.ctrlKey) && !event.altKey && event.key.toLowerCase() === 'k') {
         event.preventDefault();
         setOpen((value) => !value);

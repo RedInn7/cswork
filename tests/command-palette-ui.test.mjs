@@ -76,6 +76,14 @@ test('⌘K: merged results, keyboard selection, same-tab workspace navigation, A
   await act(async () => root.render(createElement(CommandPalette, { ai: true }, createElement(SelectionAsk, null, createElement('p', null, 'Lecture text')))));
   const dialog = document.querySelector('dialog.cmdk');
   assert.equal(dialog.hasAttribute('open'), false);
+  // Inside the code editor ⌘K belongs to Monaco.
+  const editor = document.createElement('div');
+  editor.className = 'monaco-editor';
+  editor.append(document.createElement('textarea'));
+  document.body.append(editor);
+  await act(async () => editor.firstChild.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true })));
+  assert.equal(dialog.hasAttribute('open'), false);
+  editor.remove();
   await act(async () => window.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'k', ctrlKey: true })));
   assert.equal(dialog.hasAttribute('open'), true);
   const input = document.querySelector('.cmdk-bar input');
