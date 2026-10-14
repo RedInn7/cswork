@@ -11,6 +11,7 @@ import {
   RefreshCw,
   ThumbsUp,
   Trash2,
+  X,
 } from 'lucide-react';
 import { api } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
@@ -118,14 +119,19 @@ export function SolutionPosts({
   english,
   code = '',
   language = '',
+  only = '',
 }: {
   problemId: string;
   english: boolean;
   code?: string;
   language?: string;
+  /** Opened from the AC dialog's histogram: that language's posts first; the chip clears it. */
+  only?: string;
 }) {
   const t: T = (zh, en) => (english ? en : zh);
   const [sort, setSort] = useState<'votes' | 'new'>('votes');
+  const [filter, setFilter] = useState(() => (langName(only) ? only : ''));
+  const query = `oj/posts?problem=${encodeURIComponent(problemId)}&sort=${sort}${filter ? `&language=${filter}` : ''}`;
   const [page, setPage] = useState<Page | null>(null);
   const [error, setError] = useState('');
   const [reload, setReload] = useState(0);
@@ -138,21 +144,19 @@ export function SolutionPosts({
   useEffect(() => {
     let live = true;
     setError('');
-    api<Page>(`oj/posts?problem=${encodeURIComponent(problemId)}&sort=${sort}`).then(
+    api<Page>(query).then(
       (p) => live && setPage(p),
       (e: Error) => live && setError(e.message),
     );
     return () => {
       live = false;
     };
-  }, [problemId, sort, reload]);
+  }, [query, reload]);
   async function more() {
     if (!page) return;
     setLoadingMore(true);
     try {
-      const next = await api<Page>(
-        `oj/posts?problem=${encodeURIComponent(problemId)}&sort=${sort}&offset=${page.items.length}`,
-      );
+      const next = await api<Page>(`${query}&offset=${page.items.length}`);
       setPage({ ...next, items: [...page.items, ...next.items.filter((n) => !page.items.some((p) => p.id === n.id))] });
     } catch (e) {
       setError((e as Error).message);
@@ -270,6 +274,17 @@ export function SolutionPosts({
               {t('最新', 'Newest')}
             </button>
           </fieldset>
+          {filter && (
+            <button
+              type="button"
+              className="cs-posts-filter"
+              aria-label={t(`清除筛选：只看 ${langName(filter)}`, `Clear filter: ${langName(filter)} only`)}
+              onClick={() => setFilter('')}
+            >
+              {t(`只看 ${langName(filter)}`, `${langName(filter)} only`)}
+              <X size={12} aria-hidden="true" />
+            </button>
+          )}
           <button type="button" className="cs-posts-write" onClick={() => setView({ kind: 'edit', post: null })}>
             <Pencil size={14} aria-hidden="true" />
             {t('写题解', 'Write a solution')}

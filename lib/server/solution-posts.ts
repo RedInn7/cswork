@@ -95,15 +95,18 @@ async function listPosts(p: Person, params: URLSearchParams) {
   if (!(await publicProblem(p, problem))) throw new HttpError(404, '题目不存在或尚未发布');
   const order = params.get('sort') === 'new' ? 'sp.created_at DESC' : 'votes DESC,sp.created_at DESC';
   const offset = Math.min(Math.max(0, Math.floor(Number(params.get('offset')) || 0)), 5000);
+  // ?language=: one language's posts (the AC dialog's histogram links here); '' is all.
+  const language = postInput.shape.language.parse(params.get('language') ?? '');
   const db = sqlite();
   // An author still sees their own moderated post (with a notice), nobody else does.
   const rows = db
     .prepare(
       `${POST},substr(sp.body,1,300) AS excerpt ${FROM_POST}
       WHERE sp.problem_id=@problem AND (sp.hidden=${SHOWN} OR (sp.hidden=${MODERATED} AND sp.user_id=@me))
+        AND (@language='' OR sp.language=@language)
       ORDER BY ${order},sp.id LIMIT ${PAGE + 1} OFFSET @offset`,
     )
-    .all({ me: p.id, problem, offset }) as PostRow[];
+    .all({ me: p.id, problem, offset, language }) as PostRow[];
   const solved = !!db
     .prepare(
       "SELECT 1 FROM submissions WHERE user_id=? AND problem_id=? AND mode='judge' AND status='accepted' LIMIT 1",
