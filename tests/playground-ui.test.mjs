@@ -24,8 +24,9 @@ const { encodeShare } = await import('../lib/playground-share.ts');
 const shared = { language: 'go', code: 'package main\nfunc main() { println("shared") }\n', stdin: '7\n' };
 const link = await encodeShare(shared);
 
-async function mount(url, props) {
+async function mount(url, props, stored) {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', { url });
+  if (stored) dom.window.localStorage.setItem('cswork:playground:v1', stored);
   for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'navigator', 'location', 'history'])
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
@@ -54,6 +55,67 @@ test('a share link opens its code and input; signed out, running asks to sign in
     assert.equal(document.querySelector('a[href="/?view=account"]') !== null, true);
     assert.equal(button('Run') === undefined, true);
     assert.equal(document.body.textContent.includes('Loaded the code from the link'), true);
+    // Nothing of the learner's was there, so nothing to restore.
+    assert.equal(button('Restore my code') === undefined, true);
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
+
+const typeInto = (node, value) =>
+  act(async () => {
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
+    setter.call(node, value);
+    node.dispatchEvent(new window.Event('input', { bubbles: true }));
+  });
+const saveWait = () =>
+  act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 450));
+  });
+
+test('the link is read once: a reload keeps later edits, not the link snapshot', async () => {
+  let { root } = await mount(`https://cswork.test/playground#c=${link}`, { signedIn: false, verified: false });
+  let stored;
+  try {
+    assert.equal(location.hash === '', true);
+    assert.equal(location.href === 'https://cswork.test/playground', true);
+    await typeInto(editor(), 'package main\nfunc main() { println("mine now") }\n');
+    await saveWait();
+    stored = localStorage.getItem('cswork:playground:v1');
+  } finally {
+    await act(async () => root.unmount());
+  }
+  // The reload: same storage, and the address bar no longer carries #c=.
+  ({ root } = await mount('https://cswork.test/playground', { signedIn: false, verified: false }, stored));
+  try {
+    assert.equal(editor().value.includes('mine now'), true);
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
+
+test("a link over the learner's own code keeps it, across reloads, until restored or dismissed", async () => {
+  const own = JSON.stringify({ language: 'python', stdin: 'my input', code: { go: 'package main // mine\n' } });
+  let { root } = await mount(`https://cswork.test/playground#c=${link}`, { signedIn: false, verified: false }, own);
+  let stored;
+  try {
+    assert.equal(editor().value, shared.code);
+    assert.equal(button('Restore my code') !== undefined, true);
+    await saveWait();
+    stored = localStorage.getItem('cswork:playground:v1');
+    assert.equal(JSON.parse(stored).replaced.code, 'package main // mine\n');
+  } finally {
+    await act(async () => root.unmount());
+  }
+  ({ root } = await mount('https://cswork.test/playground', { signedIn: false, verified: false }, stored));
+  try {
+    assert.equal(editor().value, shared.code);
+    await act(async () => button('Restore my code').click());
+    assert.equal(editor().value, 'package main // mine\n');
+    assert.equal(document.querySelector('textarea:not([aria-label])').value, 'my input');
+    assert.equal(button('Restore my code') === undefined, true);
+    await saveWait();
+    assert.equal(JSON.parse(localStorage.getItem('cswork:playground:v1')).replaced === undefined, true);
   } finally {
     await act(async () => root.unmount());
   }
@@ -88,12 +150,7 @@ test('signed in: Run sends the code and stdin, watches the run and shows its out
       editor().value = 'int main(){}';
       editor().dispatchEvent(new window.Event('input', { bubbles: true }));
     });
-    const stdin = document.querySelector('textarea:not([aria-label])');
-    await act(async () => {
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
-      setter.call(stdin, 'hi');
-      stdin.dispatchEvent(new window.Event('input', { bubbles: true }));
-    });
+    await typeInto(document.querySelector('textarea:not([aria-label])'), 'hi');
     await act(async () => button('Run').click());
     await settle();
     assert.equal(posts.length, 1);
@@ -118,7 +175,7 @@ test('signed in: Run sends the code and stdin, watches the run and shows its out
   }
 });
 
-test('Share puts the code in the fragment and copies the link', async () => {
+test('Share copies a #c= link without putting it in the address bar', async () => {
   const { root } = await mount('https://cswork.test/playground', { signedIn: true, verified: true });
   let copied = '';
   Object.defineProperty(navigator, 'clipboard', {
@@ -128,9 +185,18 @@ test('Share puts the code in the fragment and copies the link', async () => {
   try {
     await act(async () => button('Share link').click());
     await settle();
-    assert.equal(location.hash.startsWith('#c='), true);
-    assert.equal(copied === location.href, true);
+    assert.equal(location.hash === '', true);
+    assert.equal(copied.startsWith('https://cswork.test/playground#c='), true);
     assert.equal(document.body.textContent.includes('Link copied'), true);
+    // No clipboard: the link shows in a field to copy by hand.
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: async () => Promise.reject(new Error('denied')) },
+    });
+    await act(async () => button('Share link').click());
+    await settle();
+    assert.equal(document.querySelector('input[readonly]')?.value === copied, true);
+    assert.equal(location.hash === '', true);
   } finally {
     await act(async () => root.unmount());
   }

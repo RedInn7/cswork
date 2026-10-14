@@ -154,7 +154,7 @@
   letter-spacing: 0.02em;
 }
 .playground-stdin small {
-  color: #7a8d84;
+  color: #5f7268;
   font-family: 'SFMono-Regular', Consolas, monospace;
   font-size: 10px;
   font-weight: 400;
@@ -198,13 +198,53 @@
   padding: 9px 14px;
   border-top: 1px solid #dce5df;
   background: #fafcfb;
-  color: #6a7d74;
+  color: #5b6e65;
   font-size: 11.5px;
 }
 .playground-footer > output {
   margin-left: auto;
   color: #0b6b52;
   font-weight: 600;
+}
+.playground-share-url {
+  flex: 1 1 260px;
+  min-width: 0;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid #dce5df;
+  border-radius: 6px;
+  background: #fff;
+  color: #152c24;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 11px;
+}
+.playground-replaced {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  flex-basis: 100%;
+  padding: 6px 10px;
+  border: 1px solid #e3d7b8;
+  border-radius: 8px;
+  background: #fbf6e8;
+  color: #5c4a1d;
+}
+.playground-replaced > button {
+  padding: 2px 9px;
+  border: 1px solid #d6c79f;
+  border-radius: 6px;
+  background: #fff;
+  color: #4f3f17;
+  font-weight: 600;
+}
+.playground-replaced > button:hover {
+  background: #f3ead2;
+}
+.playground-share-url:focus-visible,
+.playground-replaced > button:focus-visible {
+  outline: 2px solid #087158;
+  outline-offset: 1px;
 }
 
 @media (max-width: 860px) {
@@ -294,7 +334,7 @@
     color: #bdd2c8;
   }
   .dark .playground-stdin small {
-    color: #a5b6ae;
+    color: #b2c4ba;
   }
   .dark .playground-stdin textarea {
     border: 1px solid #2b322d;
@@ -310,10 +350,32 @@
   .dark .playground-footer {
     border-top: 1px solid #2b322d;
     background: #171817;
-    color: #aebfb7;
+    color: #b4c5bd;
   }
   .dark .playground-footer > output {
     color: #93d7bd;
+  }
+  .dark .playground-share-url {
+    border: 1px solid #2b322d;
+    background: #191919;
+    color: #cbe3d9;
+  }
+  .dark .playground-replaced {
+    border: 1px solid #3d3319;
+    background: #17140d;
+    color: #dccaa2;
+  }
+  .dark .playground-replaced > button {
+    border: 1px solid #443919;
+    background: #191919;
+    color: #dfcfab;
+  }
+  .dark .playground-replaced > button:hover {
+    background: #171205;
+  }
+  .dark .playground-share-url:focus-visible,
+  .dark .playground-replaced > button:focus-visible {
+    outline: 2px solid #8ed5bc;
   }
   @media (max-width: 860px) {
     .dark .playground-editor {

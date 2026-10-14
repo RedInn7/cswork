@@ -17,23 +17,41 @@ import {
 import { languages, starterTemplates, type CodeLanguage } from '@/lib/problems';
 import { currentTheme } from '@/lib/theme-script';
 
-/** This browser's scratchpad: the language, stdin and one program per language. */
+/**
+ * This browser's scratchpad: the language, stdin and one program per language, plus what a
+ * share link last replaced (kept until the learner restores or dismisses it).
+ */
 const STORAGE_KEY = 'cswork:playground:v1';
-type Saved = { language: CodeLanguage; stdin: string; code: Partial<Record<CodeLanguage, string>> };
+type Replaced = { language: CodeLanguage; code?: string; stdin: string };
+type Saved = {
+  language: CodeLanguage;
+  stdin: string;
+  code: Partial<Record<CodeLanguage, string>>;
+  replaced?: Replaced;
+};
 function readSaved(): Saved {
   try {
     const value = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') as Partial<Saved> | null;
-    if (value && PLAYGROUND_LANGUAGES.includes(value.language as CodeLanguage))
+    if (value && PLAYGROUND_LANGUAGES.includes(value.language as CodeLanguage)) {
+      const replaced = value.replaced;
       return {
         language: value.language as CodeLanguage,
         stdin: typeof value.stdin === 'string' ? value.stdin : '',
         code: value.code && typeof value.code === 'object' ? value.code : {},
+        ...(replaced &&
+        PLAYGROUND_LANGUAGES.includes(replaced.language) &&
+        typeof replaced.stdin === 'string' &&
+        (replaced.code === undefined || typeof replaced.code === 'string')
+          ? { replaced }
+          : {}),
       };
+    }
   } catch {
     /* Blocked or unreadable storage: start fresh. */
   }
   return { language: 'python', stdin: '', code: {} };
 }
+const nameOf = (id: CodeLanguage) => languages.find((item) => item.id === id)?.name;
 const bytes = (text: string) => new TextEncoder().encode(text).byteLength;
 const MAX_BYTES = 65536;
 
@@ -46,16 +64,29 @@ export function PlaygroundView({ signedIn, verified }: { signedIn: boolean; veri
   const [cancelling, setCancelling] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState<[string, string] | null>(null);
+  const [shareUrl, setShareUrl] = useState('');
   const run = useRef<AbortController | null>(null);
 
   // Saved scratchpad first; a #c= share link on top of it (also when pasted into this tab).
+  // The fragment is dropped once read, so a reload keeps later edits instead of the snapshot.
   useEffect(() => {
     let active = true;
     const load = () =>
       void decodeShare(location.hash).then((shared: PlaygroundState | null) => {
         if (!active) return;
+        if (location.hash.includes('c='))
+          history.replaceState(history.state, '', location.pathname + location.search);
         const base = readSaved();
         if (shared) {
+          const mine = base.code[shared.language];
+          const ownCode =
+            mine !== undefined &&
+            mine !== shared.code &&
+            !Object.values(starterTemplates).some((starters) => starters[shared.language] === mine);
+          const ownStdin = base.stdin.trim() !== '' && base.stdin !== shared.stdin;
+          // ponytail: one backup; a second link before restore/dismiss keeps the first (the learner's own) code.
+          if ((ownCode || ownStdin) && !base.replaced)
+            base.replaced = { language: shared.language, code: mine, stdin: base.stdin };
           base.language = shared.language;
           base.code = { ...base.code, [shared.language]: shared.code };
           base.stdin = shared.stdin;
@@ -72,6 +103,8 @@ export function PlaygroundView({ signedIn, verified }: { signedIn: boolean; veri
       run.current?.abort();
     };
   }, []);
+  // A copied link is of the code as it was: stale after the next edit.
+  useEffect(() => setShareUrl(''), [saved]);
   useEffect(() => {
     if (!saved) return;
     const timer = setTimeout(() => {
@@ -100,6 +133,16 @@ export function PlaygroundView({ signedIn, verified }: { signedIn: boolean; veri
   const update = (patch: Partial<Saved>) => setSaved((value) => value && { ...value, ...patch });
   const setCode = (next: string) =>
     setSaved((value) => value && { ...value, code: { ...value.code, [value.language]: next } });
+  /** Puts back the code and stdin a share link replaced; the link's version goes. */
+  const restore = () =>
+    setSaved((value) => {
+      if (!value?.replaced) return value;
+      const { language: lang, code: previous, stdin } = value.replaced;
+      const next = { ...value.code };
+      if (previous === undefined) delete next[lang];
+      else next[lang] = previous;
+      return { language: lang, stdin, code: next };
+    });
 
   async function start() {
     if (!signedIn || !verified || busy || tooBig || !code.trim()) return;
@@ -152,12 +195,14 @@ export function PlaygroundView({ signedIn, verified }: { signedIn: boolean; veri
       ]);
       return;
     }
-    history.replaceState(null, '', `#c=${value}`);
+    // Not put in the address bar: a reload there would bring this snapshot back over later edits.
+    const url = `${location.origin}${location.pathname}#c=${value}`;
     try {
-      await navigator.clipboard.writeText(location.href);
+      await navigator.clipboard.writeText(url);
       setNotice(['链接已复制，打开即是这份代码和输入', 'Link copied: it opens this code and input']);
     } catch {
-      setNotice(['链接在地址栏里，复制它即可分享', 'The link is in the address bar: copy it to share']);
+      setShareUrl(url);
+      setNotice(['复制下面的链接即可分享', 'Copy the link below to share it']);
     }
   }
 
@@ -173,7 +218,7 @@ export function PlaygroundView({ signedIn, verified }: { signedIn: boolean; veri
                 aria-pressed={id === language}
                 onClick={() => update({ language: id })}
               >
-                {languages.find((item) => item.id === id)?.name}
+                {nameOf(id)}
               </button>
             ))}
           </fieldset>
@@ -260,8 +305,8 @@ export function PlaygroundView({ signedIn, verified }: { signedIn: boolean; veri
         <div className="playground-footer">
           <span>
             {t(
-              '单次运行限 3 秒 CPU、256 MB 内存；每小时 30 次。不计入提交记录。',
-              'Each run gets 3 s of CPU and 256 MB; 30 runs an hour. Runs never count as submissions.',
+              '单次运行限 3 秒 CPU、256 MB 内存；每小时 30 次。运行会留存在你的运行记录里，但不出现在提交列表和统计中。',
+              'Each run gets 3 s of CPU and 256 MB; 30 runs an hour. Runs are kept in your run records but never appear in your submissions or statistics.',
             )}
           </span>
           {tooBig && (
@@ -270,6 +315,31 @@ export function PlaygroundView({ signedIn, verified }: { signedIn: boolean; veri
             </span>
           )}
           {notice && <output>{t(...notice)}</output>}
+          {shareUrl && (
+            <input
+              className="playground-share-url"
+              readOnly
+              value={shareUrl}
+              aria-label={t('分享链接', 'Share link')}
+              onFocus={(event) => event.currentTarget.select()}
+            />
+          )}
+          {saved.replaced && (
+            <div className="playground-replaced" role="status">
+              <span>
+                {t(
+                  `链接替换了你原来的 ${nameOf(saved.replaced.language)} 代码和输入`,
+                  `The link replaced your own ${nameOf(saved.replaced.language)} code and input`,
+                )}
+              </span>
+              <button type="button" onClick={restore}>
+                {t('恢复我的代码', 'Restore my code')}
+              </button>
+              <button type="button" onClick={() => update({ replaced: undefined })}>
+                {t('保留链接的代码', "Keep the link's code")}
+              </button>
+            </div>
+          )}
         </div>
       </section>
     </Shell>
