@@ -232,6 +232,9 @@ void test('the server pool never holds partial or hidden questions and keeps jud
     assert.equal(set.slots[0].item?.question, 'Tell me about Ownership.');
     assert.equal(set.slots[0].item?.solution, 'Use STAR.');
     assert.deepEqual(set.slots[0].item?.principles, ['Ownership']);
+    const candidate = mockSet(db, new URLSearchParams('template=custom&mix=behavioral.1&company=amazon&seed=a1&parts=question'));
+    assert.equal(candidate.slots[0].item?.question, 'Tell me about Ownership.');
+    assert.equal(candidate.slots[0].item?.solution, '');
     assert.throws(() => mockSet(db, new URLSearchParams('template=nope')), { status: 400 });
     assert.throws(() => mockSet(db, new URLSearchParams('template=phone&seed=a%20b')), { status: 400 });
   } finally {

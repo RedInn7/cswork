@@ -111,6 +111,8 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
     ).map((r) => [r.id, r]),
   );
   const amazon = companyGroup('amazon');
+  // The candidate's view asks for the questions alone: no answers in its responses either.
+  const questionOnly = params.get('parts') === 'question';
   return {
     seed,
     rerolls: drawn.rerolls,
@@ -119,6 +121,7 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
       if (!item) return { ...slot, item: null };
       const row = bodies.get(item.id);
       const parts = splitBody(row?.body ?? '');
+      if (questionOnly) Object.assign(parts, { hints: '', followUps: '', rubric: '', solution: '' });
       return {
         ...slot,
         item: {

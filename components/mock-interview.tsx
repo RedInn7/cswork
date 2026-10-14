@@ -492,7 +492,8 @@ function Session({
   const t = useT();
   const [query, setQuery] = useState(initial);
   const key = new URLSearchParams(query).toString();
-  const [data, setData] = useState<MockSet | null>(() => (handoff?.key === key ? handoff.set : null));
+  // The candidate's view fetches questions without the answers, so its data carries none.
+  const [data, setData] = useState<MockSet | null>(() => (handoff?.key === key && mode !== 'candidate' ? handoff.set : null));
   const [error, setError] = useState('');
   const [rolling, setRolling] = useState<number | null>(null);
   // A failed re-roll leaves the set as it was: it says so beside it, not instead of it.
@@ -500,14 +501,14 @@ function Session({
   useEffect(() => {
     if (data) return;
     let cancelled = false;
-    api<MockSet>(`content/mock?${apiQuery(initial)}`)
+    api<MockSet>(`content/mock?${apiQuery(initial, mode === 'candidate' ? { parts: 'question' } : {})}`)
       .then((set) => !cancelled && setData(set))
       .catch((e: Error) => !cancelled && setError(e.message));
     return () => {
       cancelled = true;
     };
     // Fetched once; a re-roll replaces the set in place.
-  }, [data, initial]);
+  }, [data, initial, mode]);
   const storeKey = `${mode}:${key}`;
   const [run, setRun] = useState<Run>(() => {
     const saved = read<Record<string, Run & { at?: number }>>(RUNS, {})[storeKey];
