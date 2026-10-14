@@ -1,0 +1,200 @@
+/*
+ * Company interview stats (components/company-stats-card.tsx): a navy departure board in the
+ * Line 500 palette, figures in Overpass, outcomes as one stacked bar of reports.
+ */
+.company-stats {
+  --cs-navy: #0e1a2b;
+  --cs-slate: #1e2b40;
+  --cs-amber: #ffb23f;
+  --cs-line: #2ebd85;
+  --cs-rose: #f0788c;
+  --cs-text: #eef3f8;
+  --cs-muted: #9fb0c6;
+  --cs-num: 'Overpass', 'PingFang SC', 'Microsoft YaHei UI', sans-serif;
+  margin: 32px 0 8px;
+  padding: 22px 22px 24px;
+  border-radius: 16px;
+  background:
+    radial-gradient(rgb(238 243 248 / 0.035) 1px, transparent 1.5px) 0 0 / 8px 8px,
+    var(--cs-navy);
+  color: var(--cs-text);
+}
+.company-stats-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+}
+.public-library .company-stats h2 {
+  margin: 0;
+  color: var(--cs-text);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.company-stats-head p {
+  margin: 0;
+  color: var(--cs-amber);
+  font-size: 13px;
+  font-weight: 650;
+}
+.company-stats-figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 36px;
+  margin: 16px 0 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgb(238 243 248 / 0.12);
+}
+.company-stats-figures dt {
+  color: var(--cs-muted);
+  font-size: 12px;
+}
+.company-stats-figures dd {
+  margin: 2px 0 0;
+  font-family: var(--cs-num);
+  font-size: 30px;
+  font-weight: 750;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.company-stats-figures div:first-child dd {
+  color: var(--cs-amber);
+}
+.company-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 22px 32px;
+}
+.public-library .company-stats h3 {
+  margin: 0;
+  color: var(--cs-text);
+  font-size: 14px;
+  font-weight: 700;
+}
+.company-stats-note {
+  margin: 2px 0 10px;
+  color: var(--cs-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.company-stats-bars,
+.company-stats-legend,
+.company-stats-roles {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.company-stats-bars li {
+  display: grid;
+  grid-template-columns: minmax(0, 12em) minmax(48px, 1fr) 3.2em;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+  font-size: 13px;
+}
+.company-stats-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.company-stats-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--cs-slate);
+}
+.company-stats-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cs-line);
+}
+.company-stats-panel.is-wide {
+  grid-column: 1 / -1;
+}
+.company-stats-panel.is-amber .company-stats-track span {
+  background: var(--cs-amber);
+}
+.company-stats-n {
+  text-align: right;
+  font-family: var(--cs-num);
+  font-variant-numeric: tabular-nums;
+}
+.company-stats-stack {
+  display: flex;
+  gap: 2px;
+  height: 12px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--cs-slate);
+}
+.company-stats-stack span,
+.company-stats-legend li::before {
+  background: var(--cs-muted);
+}
+.company-stats-stack [data-tone='good'],
+.company-stats-legend [data-tone='good']::before {
+  background: var(--cs-line);
+}
+.company-stats-stack [data-tone='bad'],
+.company-stats-legend [data-tone='bad']::before {
+  background: var(--cs-rose);
+}
+.company-stats-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-top: 10px;
+  font-size: 13px;
+}
+.company-stats-legend li::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 2px;
+}
+.company-stats-legend b,
+.company-stats-roles b {
+  font-family: var(--cs-num);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.company-stats-roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.company-stats-roles li {
+  padding: 4px 10px;
+  border: 1px solid rgb(238 243 248 / 0.16);
+  border-radius: 999px;
+  font-size: 13px;
+}
+.company-stats-roles b {
+  margin-left: 4px;
+  color: var(--cs-amber);
+}
+@media (max-width: 600px) {
+  .company-stats {
+    padding: 18px 16px 20px;
+  }
+  .company-stats-figures {
+    gap: 8px 24px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .company-stats-track span,
+  .company-stats-stack span {
+    animation: company-stats-grow 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    transform-origin: left;
+  }
+}
+@keyframes company-stats-grow {
+  from {
+    transform: scaleX(0);
+  }
+}

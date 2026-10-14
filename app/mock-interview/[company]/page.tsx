@@ -2,6 +2,10 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { SITE_URL, seoMetadata } from '@/lib/seo';
 import { KINDS, TEMPLATES, companyGroup, kindOf, kindSummary, type KindId } from '@/lib/mock-interview';
+import { CompanyStatsCard } from '@/components/company-stats-card';
+import { employerSlug } from '@/lib/oa-company-brands';
+import { companyDirectory } from '@/lib/server/company-hub';
+import { companyStats } from '@/lib/server/company-stats';
 import { library } from '@/lib/server/content-library';
 import { landingCompanies, mockPool } from '@/lib/server/mock-interview';
 import { publicLibraryPath } from '@/lib/server/public-library';
@@ -22,7 +26,9 @@ async function load(params: Props['params']) {
     const list = samples.get(kind) ?? [];
     if (list.length < 5) samples.set(kind, [...list, item]);
   }
-  return { company, samples };
+  // Stats over every library spelling of the employer (none for a hidden one).
+  const stats = companyStats(db, companyDirectory(db).get(employerSlug(company.slug))?.library ?? []);
+  return { company, samples, stats };
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -35,7 +41,7 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default async function CompanyMockInterview({ params }: Props) {
-  const { company, samples } = await load(params);
+  const { company, samples, stats } = await load(params);
   const url = `${SITE_URL}/mock-interview/${company.slug}`;
   return (
     <>
@@ -75,6 +81,7 @@ export default async function CompanyMockInterview({ params }: Props) {
       <p className="mock-landing-cta">
         <a href={`/?view=mock-interview&company=${encodeURIComponent(company.slug)}`}>Draw a {company.name} set →</a>
       </p>
+      {stats && <CompanyStatsCard stats={stats} locale="en" />}
       <section className="mock-landing-section" aria-labelledby="mock-templates">
         <h2 id="mock-templates">Pick a round</h2>
         <ul className="mock-landing-templates">
