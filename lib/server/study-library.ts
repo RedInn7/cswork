@@ -1,4 +1,6 @@
 import { sqlite } from '@/db/sqlite';
+import { companyTagIndex } from '@/lib/company-tags';
+import { hiddenCompanies } from './env';
 import { HttpError } from './http';
 import { practiceRoundState } from './practice-rounds';
 import { studyProgress } from './practice-progress';
@@ -121,10 +123,12 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
   const progress = userId
     ? studyProgress(userId, roundState.activeRoundId)
     : new Map();
+  const tags = companyTagIndex(hiddenCompanies());
   const all = rows
     .map((row) => ({
       ...summary(row),
       selection: curatedByNumber.get(row.number)!,
+      companies: tags.get(row.id) ?? [],
       solved: !!progress.get(row.id)?.solved,
       solvedLocally: !!progress.get(row.id)?.solvedLocally,
       importedSources: progress.get(row.id)?.importedSources ?? [],
@@ -141,6 +145,7 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
   const difficulty = params.get('difficulty') || '';
   const stage = params.get('stage') || '';
   const status = params.get('status') || '';
+  const company = (params.get('company') || '').slice(0, 80);
   const filtered = all.filter(
     (item) =>
       (!q ||
@@ -151,6 +156,7 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
       (!section || item.selection.sectionSlug === section) &&
       (!difficulty || item.difficulty === difficulty) &&
       (!stage || item.selection.stage === stage) &&
+      (!company || item.companies.some((c) => c.slug === company)) &&
       (!status ||
         (status === 'solved'
           ? item.solved
@@ -179,12 +185,29 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
       (item) =>
         item.caseStatus === 'verified' && item.judgeProblemId && !item.solved,
     ) ?? (userId ? undefined : all[0]);
+  const companyCounts = new Map<string, { slug: string; name: string; count: number }>();
+  for (const item of all)
+    for (const { slug, name } of item.companies) {
+      const entry = companyCounts.get(slug) ?? { slug, name, count: 0 };
+      entry.count++;
+      companyCounts.set(slug, entry);
+    }
   return {
-    items: filtered.slice((page - 1) * 30, page * 30),
+    items: filtered.slice((page - 1) * 30, page * 30).map((item) => ({
+      ...item,
+      // Two marks per row; the filtered company leads so a row shows why it matched.
+      companies: [...item.companies]
+        .sort((a, b) => Number(b.slug === company) - Number(a.slug === company))
+        .slice(0, 2)
+        .map(({ slug, name }) => ({ slug, name })),
+    })),
     total: filtered.length,
     page,
     pageSize: 30,
     topics: [],
+    companies: [...companyCounts.values()].sort(
+      (a, b) => b.count - a.count || a.name.localeCompare(b.name, 'en'),
+    ),
     sequence,
     nextProblemId: userId ? (nextItem?.judgeProblemId ?? null) : null,
     // Returned to everyone: for members it is the problem nextProblemId points to.
