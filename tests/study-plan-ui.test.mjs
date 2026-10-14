@@ -291,3 +291,130 @@ test('skipping the card leaves a way back to it', async () => {
     dom.window.close();
   }
 });
+
+test('a plan from a classic list, for some weeks, difficulties and topics, and regenerated', async () => {
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
+  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage'])
+    Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const { createRoot } = await import('react-dom/client');
+  const { StudyLibrary } = await import('../components/study-library.tsx');
+  const item = (n, difficulty, stop, extra = {}) => ({
+    number: n,
+    judgeProblemId: `lc-${n}`,
+    difficulty,
+    solved: false,
+    stop: stop ? { slug: stop, code: '01', nameZh: '', nameEn: '' } : null,
+    ...extra,
+  });
+  const pool = {
+    collection: { id: 'blind-75', total: 6, ready: 5, solved: 1 },
+    groups: [
+      {
+        items: [
+          item(1, 'Easy', 'hash-counting'),
+          item(2, 'Hard', 'array-foundations'),
+          item(3, 'Medium', null),
+          item(4, 'Easy', null, { judgeProblemId: null }),
+          item(5, 'Easy', 'hash-counting', { solved: true }),
+        ],
+      },
+      { items: [item(1, 'Easy', 'hash-counting')] },
+    ],
+    sequence: ['lc-1', 'lc-2', 'lc-3', 'lc-5'],
+  };
+  const requests = [];
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    const url = typeof input === 'string' ? input : input.url;
+    requests.push(url);
+    if (url.includes('collection=blind-75')) return Response.json(pool);
+    if (url.includes('mock-oa/presets')) return Response.json({ companies: [] });
+    return Response.json({
+      rounds: [],
+      activeRoundId: null,
+      currentRound: null,
+      items: [],
+      total: 0,
+      page: 1,
+      pageSize: 30,
+      topics: [],
+      planTodo: [['lc-1', '简单', 1, 0, null]],
+      sequence: ['lc-1'],
+      collection: {
+        id: 'ling-selected-500',
+        total: 1,
+        ready: 1,
+        solved: 0,
+        sections: [{ slug: 'array-foundations', title: '数组', titleEn: 'Arrays', total: 1, solved: 0 }],
+      },
+    });
+  };
+  const root = createRoot(document.getElementById('root'));
+  const settle = () => act(async () => new Promise((r) => setTimeout(r, 10)));
+  const button = (text) => [...document.querySelectorAll('button')].find((node) => node.textContent === text);
+  const label = (text) =>
+    [...document.querySelectorAll('.route-plan-fields label')].find((node) => node.textContent.startsWith(text));
+  const set = async (node, value) => {
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(Object.getPrototypeOf(node), 'value').set.call(node, value);
+      node.dispatchEvent(new Event(node.tagName === 'SELECT' ? 'change' : 'input', { bubbles: true }));
+    });
+  };
+  const click = (node) => act(async () => node.click());
+  const saved = () => JSON.parse(localStorage.getItem('cswork:plan:v1:u1'));
+  try {
+    await act(async () =>
+      root.render(
+        createElement(StudyLibrary, { navigate: () => {}, availableProblemIds: [], signedIn: true, userId: 'u1' }),
+      ),
+    );
+    await settle();
+    await click(button('Plan my sprint'));
+    await settle();
+    // No OA date: the weeks slider sets the length.
+    const weeks = document.getElementById('route-plan-weeks');
+    assert.equal(weeks.type, 'range');
+    assert.equal(weeks.value, '4');
+    await set(weeks, '2');
+    assert.match(document.getElementById('route-plan-weeks-hint').textContent, /^2 weeks/);
+    await set(label('Problem pool').control, 'blind-75');
+    assert.ok(!label('Start at stop'), 'a classic list has no start stop');
+    await click(label('Hard').control);
+    await click(button('Save plan'));
+    await settle();
+    assert.deepEqual(
+      (({ pool, weeks, difficulties, topics, shuffle }) => ({ pool, weeks, difficulties, topics, shuffle }))(saved()),
+      { pool: 'blind-75', weeks: 2, difficulties: ['easy', 'medium'], topics: [], shuffle: 0 },
+    );
+    assert.ok(requests.some((url) => url.endsWith('/api/oj/library?collection=blind-75')));
+    // Easy lc-1 (listed twice) and medium lc-3; not the hard one, the external or the solved one.
+    const text = document.querySelector('.route-plan-text').textContent;
+    assert.match(text, /3 a day · 7 h a week · Pool: Blind 75/);
+    const group = document.querySelector('.route-plan-view select');
+    await set(group, 'topic');
+    const groups = [...document.querySelectorAll('.route-plan-weeks ol[data-group] .route-plan-week')];
+    assert.equal(groups.length, 2, 'one stop and the list problems off the line');
+    assert.equal(groups[1].firstChild.textContent, 'Other problems');
+
+    // Regenerate: a new mix of the same unsolved problems.
+    await click(button('Regenerate'));
+    assert.equal(saved().shuffle, 1);
+
+    // No topic at all is refused; a topic the list does not reach leaves an empty plan that says why.
+    await click(button('Edit plan'));
+    await click(button('Clear all'));
+    await click(button('Save plan'));
+    assert.match(document.querySelector('.route-plan [role="alert"]').textContent, /at least one topic/);
+    await click(label('05 ').control);
+    await click(button('Save plan'));
+    await settle();
+    assert.deepEqual(saved().topics, ['prefix-intervals']);
+    assert.match(document.querySelector('.route-plan-text').textContent, /^Nothing left under your filters/);
+    assert.match(document.querySelector('.route-plan-note').textContent, /Widen the difficulty or topics/);
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = originalFetch;
+    dom.window.close();
+  }
+});

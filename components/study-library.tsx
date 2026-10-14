@@ -730,7 +730,7 @@ export function StudyLibrary({
   const route = data?.collection ? routeStops(data.collection.sections) : null;
   const stops = route?.stops ?? [];
   const currentSlug =
-    (planStart ? stops[planStart[2]]?.slug : undefined) ??
+    (planStart ? stops[planStart[2] ?? 0]?.slug : undefined) ??
     next?.sectionSlug ??
     stops.find((stop) => stop.solved < stop.total)?.slug ??
     stops.at(-1)?.slug ??

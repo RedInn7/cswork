@@ -499,7 +499,7 @@ export const PLAN_VIEW_KEY = 'cswork:plan:view';
 const LEVELS = ['easy', 'medium', 'hard'] as const;
 export type PlanGroup = {
   key: string;
-  /** The stop (topic grouping); null for OA problems, which have none. */
+  /** The stop (topic grouping); null off the line (key 'oa' or 'other'). */
   stop: number | null;
   level: (typeof LEVELS)[number] | null;
   problems: number;
@@ -519,7 +519,11 @@ export function planGroups(days: readonly PlanDay[], by: 'topic' | 'difficulty',
   for (const day of days)
     for (const problem of day.problems) {
       const level = slotOf(problem.difficulty?.toLowerCase()) ?? 'medium';
-      const key = by === 'difficulty' ? level : String(problem.stop ?? 'oa');
+      // Off the line: the target company's OA problems, or a classic list's others.
+      const key =
+        by === 'difficulty'
+          ? level
+          : String(problem.stop ?? (problem.id.startsWith('oa-') ? 'oa' : 'other'));
       const group = groups.get(key) ?? {
         key,
         stop: by === 'topic' ? (problem.stop ?? null) : null,
