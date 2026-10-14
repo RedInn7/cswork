@@ -27,7 +27,7 @@ import { handleStudyGroups } from './study-groups';
 import { handleMockPeer } from './mock-peer';
 import { handleNewsletter } from './newsletter';
 import { handleFollows } from './follows';
-import { handleContests, refuseInContest } from './contests';
+import { handleContests, inRunningContest, refuseInContest } from './contests';
 import { handleApiTokens } from './api-tokens';
 import { dailyProblem } from './daily-problem';
 import { curatedByNumber, curatedHint } from '@/lib/ling-curated';
@@ -135,7 +135,9 @@ export async function handleOj(
     const templates = leetcodeTemplates(id);
     const round =
       p && isSelectedProblem(id) ? practiceRoundState(p.id).currentRound : null;
-    const hint = curatedHint(id);
+    // In this learner's running contest the hints stay server-side, like the editorial.
+    const live = p ? inRunningContest(p.id, id) : false;
+    const hint = live ? null : curatedHint(id);
     const tags = companyTagIndex(hiddenCompanies());
     // Per round like Solved, over all history rather than the first page; 2 opens hint 3.
     const failed = hint && p ? failedJudgeIds(p.id, id, round?.id) : [];
@@ -153,7 +155,7 @@ export async function handleOj(
       // Ids, not a count: the client unions them with live verdicts so none counts twice.
       failedSubmissionIds: failed,
       // Observation, invariant, steps: the client opens them one at a time (components/hint-ladder.tsx).
-      lingHints: lingHints(id),
+      lingHints: live ? null : lingHints(id),
       // Whether a Line 500 editorial exists (null: none) and its code passed the judge. The editorial
       // itself is GET problems/<id>/editorial, fetched once the learner unlocks it.
       lingEditorialVerified: lingEditorial(id)?.verified ?? null,

@@ -135,6 +135,11 @@ void test('the problem payload carries no editorial, only whether one exists and
   assert.equal(JSON.stringify(problem).includes('Brute force'), false);
   const none = (await (await call(amy, 'GET', 'problems/lc-2')).json()) as Record<string, unknown>;
   assert.equal(none.lingEditorialVerified, null);
+  // The hint ladder stays server-side in the contest too; outside it, the same problem has it.
+  assert.equal(problem.lingHints, null);
+  assert.equal(problem.curatedHint, null);
+  const outside = (await (await call(bob, 'GET', 'problems/lc-1')).json()) as Record<string, unknown>;
+  assert.notEqual(outside.lingHints, null);
 });
 
 void test('the editorial endpoint: signed in, 403 in a running contest, open elsewhere and after', async () => {
