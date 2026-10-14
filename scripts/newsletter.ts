@@ -78,7 +78,7 @@ async function main() {
     console.log('Mail is not configured (RESEND_API_KEY, MAIL_FROM): nothing sent.');
     return;
   }
-  const issue = readIssue(id);
+  const issue = await readIssue(id);
   if (!issue) {
     console.error(`${id} has not been composed yet.`);
     process.exit(1);

@@ -165,36 +165,39 @@ void test('an issue gathers the week’s discussions; archives drop companies hi
   const post = db.prepare(
     `INSERT INTO solution_posts(id,problem_id,user_id,title,body,created_at,updated_at) VALUES(?,?,?,?,'Body text here',?,?)`,
   );
-  post.run('post-hot-001', 'discuss:interview', 'n-amy', 'Hot thread', start + 1000, start + 1000);
-  post.run('post-calm-01', 'discuss:career', 'n-amy', 'Calm thread', start + 2000, start + 2000);
-  post.run('post-old-001', 'discuss:interview', 'n-amy', 'Last week', start - DAY, start - DAY);
-  post.run('post-solve-1', 'lc-1', 'n-amy', 'A solution', start + 3000, start + 3000);
-  for (const user of ['v1', 'v2']) db.prepare('INSERT INTO post_votes(post_id,user_id,created_at) VALUES(?,?,?)').run('post-hot-001', user, start);
+  post.run('00000000-0000-4000-8000-000000000001', 'discuss:interview', 'n-amy', 'Hot thread', start + 1000, start + 1000);
+  post.run('00000000-0000-4000-8000-000000000002', 'discuss:career', 'n-amy', 'Calm thread', start + 2000, start + 2000);
+  post.run('00000000-0000-4000-8000-000000000003', 'discuss:interview', 'n-amy', 'Last week', start - DAY, start - DAY);
+  post.run('00000000-0000-4000-8000-000000000004', 'lc-1', 'n-amy', 'A solution', start + 3000, start + 3000);
+  for (const user of ['v1', 'v2']) db.prepare('INSERT INTO post_votes(post_id,user_id,created_at) VALUES(?,?,?)').run('00000000-0000-4000-8000-000000000001', user, start);
   const issue = await composeIssue(start);
   assert.equal(issue.id, isoWeek(start).id);
   assert.deepEqual(
     issue.discussions.map((d) => [d.title, d.votes, d.href]),
     [
-      ['Hot thread', 2, '/discuss/post-hot-001'],
-      ['Calm thread', 0, '/discuss/post-calm-01'],
+      ['Hot thread', 2, '/discuss/00000000-0000-4000-8000-000000000001'],
+      ['Calm thread', 0, '/discuss/00000000-0000-4000-8000-000000000002'],
     ],
   );
   saveIssue({
     ...issue,
     experiences: [
-      { title: 'Shown', company: 'stripe', companyName: 'Stripe', href: '/library/experience-ugc/a' },
-      { title: 'Hidden', company: 'hiddenco', companyName: 'Hidden Co', href: '/library/experience-ugc/b' },
+      { id: 'exp-shown', title: 'Shown', company: 'stripe', companyName: 'Stripe', href: '/library/experience-ugc/a' },
+      { id: 'exp-hidden', title: 'Hidden', company: 'hiddenco', companyName: 'Hidden Co', href: '/library/experience-ugc/b' },
     ],
   });
   assert.deepEqual(issueList().map((i) => i.id), [issue.id]);
-  const read = readIssue(issue.id)!;
-  assert.deepEqual(read.experiences.map((e) => e.title), ['Shown']);
-  assert.equal(readIssue('2000-W01'), null);
+  // Taken down since: a moderator hides the calm thread.
+  db.prepare('UPDATE solution_posts SET hidden=2 WHERE id=?').run('00000000-0000-4000-8000-000000000002');
+  const read = (await readIssue(issue.id))!;
+  assert.deepEqual(read.experiences.map((e) => e.title), [], 'neither report is public: one company hidden, one not approved');
+  assert.deepEqual(read.discussions.map((d) => d.title), ['Hot thread']);
+  assert.equal(await readIssue('2000-W01'), null);
   const text = issueText(read, false, 'tok');
   assert.ok(text.startsWith(`CSWork weekly · ${issue.id}`));
-  assert.ok(text.includes('- Hot thread (2 upvotes): https://cswork.test/discuss/post-hot-001'));
+  assert.ok(text.includes('- Hot thread (2 upvotes): https://cswork.test/discuss/00000000-0000-4000-8000-000000000001'));
   assert.ok(text.includes(`Read it online: https://cswork.test/newsletter/${issue.id}`));
   assert.ok(text.includes('Unsubscribe: https://cswork.test/newsletter/unsubscribe?token=tok'));
-  assert.ok(!text.includes('Hidden'));
+  assert.ok(!text.includes('Hidden') && !text.includes('Calm thread'));
   assert.ok(issueText(read, true, 'tok').includes('热门讨论'));
 });

@@ -7,13 +7,13 @@ import { oaProblemPath } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
 import { dailyProblem } from './daily-problem';
 import { hiddenCompanies, origin } from './env';
-import { memberExperiencePath, memberIdOf, recentMemberExperiences } from './experience-submissions';
+import { memberExperiencePath, memberIdOf, readMember, recentMemberExperiences } from './experience-submissions';
 import { boundedText, HttpError, json, limit, limitReader, requirePerson } from './http';
 import { mailReady, newsletterConfirmation, sendMail } from './mail';
 import { readJson } from './my-practice';
 import { oaLibrary } from './oa-library';
 import { oaReadyProblems } from './oa-judge';
-import { publicPosts } from './solution-posts';
+import { publicPost, publicPosts } from './solution-posts';
 
 /**
  * The weekly newsletter (db/newsletter-schema.ts). Signed-in learners with a verified email
@@ -48,9 +48,9 @@ export type Issue = {
   /** OA problems that went online this week (judgeable here). */
   problems: { id: string; title: string; company: string; companyName: string; href: string }[];
   /** Member interview experiences approved this week. */
-  experiences: { title: string; company: string; companyName: string; href: string }[];
+  experiences: { id: string; title: string; company: string; companyName: string; href: string }[];
   /** This week's discussion threads, most upvoted first. */
-  discussions: { title: string; href: string; votes: number; comments: number }[];
+  discussions: { id: string; title: string; href: string; votes: number; comments: number }[];
   /** The week's daily problems and how many learners solved each on its day. */
   daily: { date: string; title: string; titleEn: string | null; company: string | null; href: string; solvers: number }[];
 };
@@ -88,7 +88,7 @@ async function topDiscussions(start: number, end: number) {
     const page = await publicPosts('discuss:all', { sort: 'new', offset: String(offset) });
     for (const post of page?.items ?? [])
       if (post.createdAt >= start && post.createdAt < end)
-        found.push({ title: post.title, href: threadPath(post.id), votes: post.votes, comments: post.comments });
+        found.push({ id: post.id, title: post.title, href: threadPath(post.id), votes: post.votes, comments: post.comments });
     if (!page?.more || (page.items.at(-1)?.createdAt ?? 0) < start) break;
   }
   return found.sort((a, b) => b.votes - a.votes || b.comments - a.comments).slice(0, 5);
@@ -128,6 +128,7 @@ export async function composeIssue(start: number): Promise<Issue> {
     .items.filter((e) => e.publishedAt && Date.parse(e.publishedAt) < end)
     .slice(0, TOP)
     .map((e) => ({
+      id: memberIdOf(e.slug)!,
       title: e.title,
       company: e.company.slug,
       companyName: e.company.name,
@@ -158,8 +159,11 @@ export function issueList() {
     .prepare('SELECT id,starts_at AS startsAt FROM newsletter_issues ORDER BY starts_at DESC LIMIT 300')
     .all() as { id: string; startsAt: number }[];
 }
-/** An archived issue, less anything from companies hidden since it was composed. */
-export function readIssue(id: string): Issue | null {
+/**
+ * An archived issue, less anything no longer public since it was composed: companies hidden
+ * since, and posts or reports taken down by their author or a moderator.
+ */
+export async function readIssue(id: string): Promise<Issue | null> {
   const row = sqlite().prepare('SELECT data_json FROM newsletter_issues WHERE id=?').get(id) as
     | { data_json: string }
     | undefined;
@@ -167,10 +171,12 @@ export function readIssue(id: string): Issue | null {
   const issue = JSON.parse(row.data_json) as Issue;
   const hidden = hiddenCompanies();
   const shown = <T extends { company: string | null }>(items: T[]) => items.filter((i) => !i.company || !hidden.has(i.company));
+  const live = await Promise.all(issue.discussions.map((d) => publicPost(d.id)));
   return {
     ...issue,
     problems: shown(issue.problems),
-    experiences: shown(issue.experiences),
+    experiences: shown(issue.experiences).filter((e) => readMember(e.id, null)),
+    discussions: issue.discussions.filter((_, i) => live[i]),
     daily: shown(issue.daily),
   };
 }

@@ -9,7 +9,7 @@ import { weekRange } from '../parts';
 
 type Props = { params: Promise<{ week: string }> };
 const load = cache(async (week: string) => {
-  const issue = weekStart(week) !== null ? readIssue(week) : null;
+  const issue = weekStart(week) !== null ? await readIssue(week) : null;
   if (!issue) notFound();
   return { issue, zh: (await requestLocale()) === 'zh' };
 });
