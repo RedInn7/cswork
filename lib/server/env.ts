@@ -1,9 +1,5 @@
 import { queries } from '@/db/sqlite';
-import {
-  companyAliases,
-  employerSlug,
-  libraryCompanyAliases,
-} from '@/lib/oa-company-brands';
+import { hiddenCompanySlugs } from '@/lib/oa-company-brands';
 export function setting(key: string): string {
   return process.env[key] || '';
 }
@@ -16,20 +12,10 @@ export function database() {
  * so clearing the setting (and restarting) brings them back.
  */
 export function hiddenCompanies(): Set<string> {
-  const hidden = new Set(
-    setting('HIDDEN_COMPANIES')
-      .split(',')
-      .map((slug) => slug.trim().toLowerCase())
-      .filter((slug) => /^[a-z0-9-]{1,80}$/.test(slug)),
-  );
   // Hiding a company hides the catalog and library slugs merged into it (lib/oa-company-brands.ts).
-  for (const [alias, slug] of Object.entries(companyAliases))
-    if (hidden.has(slug)) hidden.add(alias);
-  for (const alias of Object.keys(libraryCompanyAliases))
-    if (hidden.has(employerSlug(alias))) hidden.add(alias);
-  return hidden;
+  return hiddenCompanySlugs(setting('HIDDEN_COMPANIES'));
 }
-/** ` AND <column> NOT LIKE 'oa-<slug>-%'` for every hidden company (slugs are validated above). */
+/** ` AND <column> NOT LIKE 'oa-<slug>-%'` for every hidden company (hiddenCompanySlugs validates them). */
 export const shownOaSql = (column: string) =>
   [...hiddenCompanies()].map((slug) => ` AND ${column} NOT LIKE 'oa-${slug}-%'`).join('');
 export function origin(): string {

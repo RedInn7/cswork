@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import { existsSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { experienceFactsOf, type ExperienceFacts } from '@/lib/experience';
+import { hiddenCompanySlugs } from '@/lib/oa-company-brands';
 
 export const PUBLIC_LIBRARY_TYPES = {
   algorithm: 'Algorithm tutorials',
@@ -24,11 +25,9 @@ const publicWhere = `listed=1 AND partial=0 AND dup_of IS NULL
 
 function publicSelection(indexable = false) {
   // The import removes taken-down material before publication. Also honor current
-  // company visibility when a deployment changes it before rebuilding the library.
-  const hidden = (process.env.HIDDEN_COMPANIES || '')
-    .split(',')
-    .map((slug) => slug.trim().toLowerCase())
-    .filter((slug) => /^[a-z0-9-]{1,80}$/.test(slug));
+  // company visibility when a deployment changes it before rebuilding the library,
+  // including the library spellings merged into a hidden company (facebook under meta).
+  const hidden = [...hiddenCompanySlugs(process.env.HIDDEN_COMPANIES || '')];
   return {
     where:
       publicWhere +

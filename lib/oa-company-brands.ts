@@ -156,6 +156,23 @@ export const employerSlug = (slug: string) =>
   canonicalCompany(
     Object.hasOwn(libraryCompanyAliases, slug) ? libraryCompanyAliases[slug] : slug,
   );
+/**
+ * The HIDDEN_COMPANIES setting (comma-separated slugs, e.g. "google") → the slugs to hide:
+ * each valid listed slug plus the catalog and library slugs merged into it.
+ */
+export function hiddenCompanySlugs(setting: string): Set<string> {
+  const hidden = new Set(
+    setting
+      .split(',')
+      .map((slug) => slug.trim().toLowerCase())
+      .filter((slug) => /^[a-z0-9-]{1,80}$/.test(slug)),
+  );
+  for (const [alias, slug] of Object.entries(companyAliases))
+    if (hidden.has(slug)) hidden.add(alias);
+  for (const alias of Object.keys(libraryCompanyAliases))
+    if (hidden.has(employerSlug(alias))) hidden.add(alias);
+  return hidden;
+}
 /** Company hub page (/company/<employer>): OA, frequent LeetCode, experiences and questions. */
 export const companyHubPath = (slug: string) => `/company/${employerSlug(slug)}`;
 /** The catalog files problems it cannot attribute under "unknown": shown as Other, listed last. */
