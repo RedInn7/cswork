@@ -1,8 +1,11 @@
 /* AI tutor on the problem page (components/ai-tutor.tsx): a margin-note panel under the
    hint ladder. Workspace tokens only, so the dark editor theme carries over; teal marks the
-   tutor apart from Line 500's amber signal. */
+   tutor apart from Line 500's amber signal. Each color keeps WCAG AA (4.5:1) on its surface
+   in both themes. */
 .cs-ai-tutor {
-  --cs-ai: #1f9e8f;
+  --cs-ai: #137a6e;
+  --cs-ai-ink: #fff;
+  --cs-ai-error: #b45309;
   margin-top: 12px;
   padding: 13px 16px 14px;
   border: 1px solid var(--cs-border);
@@ -71,7 +74,7 @@
 }
 .cs-ai-tutor-error {
   margin: 10px 0 0;
-  color: #b45309;
+  color: var(--cs-ai-error);
   font-size: 12.5px;
 }
 .cs-ai-tutor-actions {
@@ -104,10 +107,10 @@
 .cs-ai-tutor-actions > button[data-primary] {
   border-color: var(--cs-ai);
   background: var(--cs-ai);
-  color: #fff;
+  color: var(--cs-ai-ink);
 }
 .cs-ai-tutor-actions > button[data-primary]:hover:not(:disabled) {
-  color: #fff;
+  color: var(--cs-ai-ink);
   filter: brightness(1.08);
 }
 .cs-ai-tutor-actions > button:disabled {
@@ -124,7 +127,12 @@
   font-variant-numeric: tabular-nums;
 }
 .cs-ai-tutor-actions > button[data-primary] .cs-ai-tutor-count {
-  color: rgb(255 255 255 / 0.8);
+  color: inherit;
+}
+.cs-workspace[data-theme='dark'] .cs-ai-tutor {
+  --cs-ai: #5cc8b8;
+  --cs-ai-ink: #10151d;
+  --cs-ai-error: #fbbf24;
 }
 .cs-ai-tutor-spin {
   animation: cs-ai-tutor-spin 0.9s linear infinite;
