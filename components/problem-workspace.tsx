@@ -328,9 +328,11 @@ function Workspace({
     message: '语言服务待启动',
   });
   const intelligenceText =
-    intelligence.state === 'idle'
-      ? t('语言服务待启动', 'Language service not started')
-      : say(intelligence.message);
+    language === 'sql'
+      ? t('SQLite 方言 · 一条 SELECT', 'SQLite dialect · one SELECT')
+      : intelligence.state === 'idle'
+        ? t('语言服务待启动', 'Language service not started')
+        : say(intelligence.message);
   const suggest = useRef<(() => void) | null>(null);
   const runButton = useRef<HTMLButtonElement>(null);
   const [leftTab, setLeftTab] = useState<
@@ -533,6 +535,7 @@ function Workspace({
       !!loadedProblem &&
       !disabled &&
       problem.judgeAvailable === true &&
+      language !== 'sql' && // nothing to compile
       (!problem.codingModes || problem.codingModes.includes(codingMode)),
     userId,
     problemId: problem.id,
@@ -604,6 +607,9 @@ function Workspace({
       );
       if (languages.some((item) => item.id === storedLanguage))
         chosen = storedLanguage as Language;
+      // An SQL problem opens in SQL, and SQL never carries over to other problems.
+      if (loadedProblem.languages && !loadedProblem.languages.includes(chosen))
+        chosen = loadedProblem.languages[0];
       const stored = readEditorDraft(
         userId,
         draftId,
@@ -1606,8 +1612,8 @@ function Workspace({
                         : '测试运行'
                       : `${item.passed} / ${item.total} ${uiEnglish ? 'passed' : '通过'}`}{' '}
                     · {item.language}
-                    {' · '}
-                    {item.codingMode === 'leetcode' ? 'LeetCode' : 'ACM'}
+                    {item.language !== 'sql' &&
+                      ` · ${item.codingMode === 'leetcode' ? 'LeetCode' : 'ACM'}`}
                     {item.practiceRoundNumber
                       ? ` · ${uiEnglish ? 'Round ' + item.practiceRoundNumber : '第 ' + item.practiceRoundNumber + ' 轮'}`
                       : ''}
@@ -1707,23 +1713,25 @@ function Workspace({
       </div>
       <div className="cs-editor-toolbar">
         <div className="cs-editor-controls">
-          <select
-            aria-label={t('提交模式', 'Submission mode')}
-            value={codingMode}
-            disabled={!ready}
-            onChange={(event) =>
-              switchLanguage(
-                language,
-                undefined,
-                event.target.value as CodingMode,
-              )
-            }
-          >
-            {(problem.codingModes || ['acm']).includes('leetcode') && (
-              <option value="leetcode">LeetCode</option>
-            )}
-            <option value="acm">ACM</option>
-          </select>
+          {language !== 'sql' && (
+            <select
+              aria-label={t('提交模式', 'Submission mode')}
+              value={codingMode}
+              disabled={!ready}
+              onChange={(event) =>
+                switchLanguage(
+                  language,
+                  undefined,
+                  event.target.value as CodingMode,
+                )
+              }
+            >
+              {(problem.codingModes || ['acm']).includes('leetcode') && (
+                <option value="leetcode">LeetCode</option>
+              )}
+              <option value="acm">ACM</option>
+            </select>
+          )}
           <select
             aria-label={t('编程语言', 'Programming language')}
             value={language}
@@ -1753,7 +1761,7 @@ function Workspace({
           >
             <Download size={15} />
           </button>
-          {codingMode === 'acm' && (
+          {codingMode === 'acm' && language !== 'sql' && (
             <select
               className="cs-io-templates"
               aria-label={t('使用输入模板', 'Use an input template')}
