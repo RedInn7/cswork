@@ -592,11 +592,13 @@ test('OA list: new-this-week banner, progress and newest-first filters in the UR
     // The banner opens the newest list with every other filter cleared.
     await act(async () => button('Acme').click());
     assert.equal(params(requests.at(-1)).get('company'), 'acme');
+    await change(document.querySelector('.oa-level-filter select'), 'hard');
+    assert.equal(params(requests.at(-1)).get('difficulty'), 'hard');
     await act(async () => button('added this week').click());
     const newest = params(requests.at(-1));
     assert.deepEqual(
-      [newest.get('sort'), newest.get('status'), newest.get('company'), newest.get('ready')],
-      ['new', '', '', '1'],
+      [newest.get('sort'), newest.get('status'), newest.get('company'), newest.get('difficulty'), newest.get('ready')],
+      ['new', '', '', '', '1'],
     );
     assert.equal(new URL(location.href).searchParams.get('sort'), 'new');
     await answer(requests.at(-1), page());

@@ -108,6 +108,7 @@ type Page = {
   random?: string | null;
 };
 const STATUSES = ['solved', 'attempted', 'todo'] as const;
+const LEVELS = ['easy', 'medium', 'hard'] as const;
 type Detail = Item & {
   statement: string;
   contentHash: string;
@@ -270,6 +271,9 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
     () => STATUSES.find((value) => value === initial.get('status')) ?? '',
   );
   const [sort, setSort] = useState(initial.get('sort') === 'new' ? 'new' : '');
+  const [level, setLevel] = useState<string>(
+    () => LEVELS.find((value) => value === initial.get('difficulty')) ?? '',
+  );
   // Kept across loads so the banner and the progress menu don't blink while a page loads.
   const [newThisWeek, setNewThisWeek] = useState(0);
   const [signedIn, setSignedIn] = useState(false);
@@ -302,6 +306,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
       ready: readyOnly ? '1' : '0',
       status,
       sort,
+      difficulty: level,
     });
   // "Pick one": an unsolved practice-ready problem under the current filters.
   const pickOne = async () => {
@@ -349,12 +354,13 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
       ready: readyOnly ? '' : '0',
       status,
       sort,
+      difficulty: level,
     };
     for (const [key, value] of Object.entries(filters))
       if (value) url.searchParams.set(key, value);
       else url.searchParams.delete(key);
     if (url.href !== location.href) history.replaceState(history.state, '', url);
-  }, [company, topic, search, page, readyOnly, status, sort]);
+  }, [company, topic, search, page, readyOnly, status, sort, level]);
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
@@ -378,7 +384,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
       });
     return () => controller.abort();
     // oxlint-disable-next-line react-hooks/exhaustive-deps -- listParams reads exactly these filters.
-  }, [search, company, topic, page, retry, readyOnly, status, sort]);
+  }, [search, company, topic, page, retry, readyOnly, status, sort, level]);
   useEffect(() => {
     const controller = new AbortController();
     setDetail(null);
@@ -711,6 +717,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
             setStatus('');
             setQuery('');
             setSearch('');
+            setLevel('');
             setReadyOnly(true);
             setPage(1);
           }}
@@ -856,6 +863,22 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                 </select>
               </label>
             )}
+            <label className="oa-level-filter">
+              {t('难度', 'Difficulty')}
+              <select
+                value={level}
+                title={t('包含 AI 估计的难度', 'Includes AI-estimated levels')}
+                onChange={(event) => {
+                  setLevel(event.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="">{t('全部难度', 'Any difficulty')}</option>
+                <option value="easy">{t('简单', 'Easy')}</option>
+                <option value="medium">{t('中等', 'Medium')}</option>
+                <option value="hard">{t('困难', 'Hard')}</option>
+              </select>
+            </label>
             <label className="oa-sort-filter">
               {t('排序', 'Order')}
               <select

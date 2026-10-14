@@ -288,6 +288,7 @@ const EN: Record<string, string> = {
   'AI 助教今天的额度已用完，明天再来': 'The AI tutor is out of credit for today. Come back tomorrow',
   '今天的 AI 提示次数已用完，明天再来': "You've used today's AI hints. Come back tomorrow",
   '今天的 AI 点评次数已用完，明天再来': "You've used today's AI reviews. Come back tomorrow",
+  '今天的 AI 问答次数已用完，明天再来': "You've used today's Ask AI questions. Come back tomorrow",
   'AI 助教暂时不可用，请稍后再试': 'The AI tutor is unavailable right now. Please try again later',
   'AI 助教无法回答这个请求': "The AI tutor can't answer this request",
   '代码过长，AI 助教最多读取 20000 个字符': 'The code is too long; the AI tutor reads at most 20,000 characters',

@@ -1,0 +1,552 @@
+/*
+ * ⌘K palette (components/command-palette.tsx): a Line 500 departure board. The query sits on
+ * the navy sign with the amber signal rule; each result group runs on its own line colour, and
+ * "Ask AI" is the amber ticket at the end of the board. Surfaces use the site tokens, so the
+ * dark theme follows; the navy sign and its text stay as they are.
+ */
+@font-face {
+  /* Same file and range as app/study-library.css, which this page may not load. */
+  font-family: 'Overpass';
+  src: url('/fonts/overpass-latin-var.woff2') format('woff2');
+  font-weight: 400 800;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-2019,
+    U+201C-201D, U+2026;
+}
+.cmdk {
+  width: min(660px, calc(100vw - 32px));
+  max-height: none;
+  margin: min(12vh, 96px) auto auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--popover-foreground);
+  overflow: visible;
+}
+.cmdk::backdrop {
+  background: rgb(14 26 43 / 0.42);
+  backdrop-filter: blur(3px);
+}
+.cmdk-panel {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--popover);
+  box-shadow:
+    0 24px 60px -18px rgb(14 26 43 / 0.45),
+    0 2px 6px rgb(14 26 43 / 0.08);
+  animation: cmdk-in 160ms ease-out;
+}
+@keyframes cmdk-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.99);
+  }
+}
+.cmdk-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px 11px 16px;
+  border-bottom: 3px solid #ffb23f;
+  background:
+    radial-gradient(rgb(238 243 248 / 0.05) 1px, transparent 1.5px) 0 0 / 8px 8px,
+    #0e1a2b;
+  color: #eef3f8;
+}
+.cmdk-bar > svg {
+  flex: none;
+  color: #ffb23f;
+}
+.cmdk-bar input {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #eef3f8;
+  font-size: 16px;
+  font-weight: 550;
+  letter-spacing: -0.005em;
+}
+.cmdk-bar input::placeholder {
+  color: #9fb0c6;
+  font-weight: 450;
+}
+.cmdk kbd,
+.cmdk-trigger kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  font: 700 10.5px/16px 'Overpass', system-ui, sans-serif;
+  letter-spacing: 0.04em;
+}
+.cmdk-bar kbd {
+  border-color: rgb(238 243 248 / 0.25);
+  color: #9fb0c6;
+}
+.cmdk-spin {
+  flex: none;
+  animation: cmdk-spin 0.9s linear infinite;
+}
+@keyframes cmdk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.cmdk-context {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, #ffb23f 12%, var(--popover));
+  font-size: 13px;
+}
+.cmdk-context > span {
+  flex: none;
+  color: #8a5a00;
+  font: 700 10.5px/1.6 'Overpass', system-ui, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.cmdk-context q {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--popover-foreground);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cmdk-context button {
+  flex: none;
+  border: 0;
+  background: none;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.cmdk-list {
+  max-height: min(52vh, 440px);
+  padding: 6px 0 8px;
+  overflow-y: auto;
+}
+.cmdk-group {
+  --line: #2ebd85;
+}
+.cmdk-group[data-group='oa'] {
+  --line: #e89a1d;
+}
+.cmdk-group[data-group='topics'] {
+  --line: #3a86d1;
+}
+.cmdk-group[data-group='companies'] {
+  --line: #e0607a;
+}
+.cmdk-group[data-group='content'] {
+  --line: #8a6bd1;
+}
+.cmdk-group[data-group='lessons'] {
+  --line: #6b7c93;
+}
+.cmdk-group-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 16px 3px;
+  color: var(--muted-foreground);
+  font: 700 10.5px/1.6 'Overpass', system-ui, sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.cmdk-group-name::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border: 2.5px solid var(--line);
+  border-radius: 50%;
+  background: var(--popover);
+}
+.cmdk-group a,
+.cmdk-ask {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 6px;
+  padding: 7px 10px 7px 13px;
+  border-left: 3px solid transparent;
+  border-radius: 8px;
+  color: var(--popover-foreground);
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.cmdk-group a[aria-selected='true'] {
+  border-left-color: var(--line);
+  background: var(--accent);
+}
+.cmdk-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cmdk-meta {
+  flex: none;
+  max-width: 40%;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cmdk-enter {
+  flex: none;
+  color: var(--muted-foreground);
+  opacity: 0;
+}
+[aria-selected='true'] > .cmdk-enter {
+  opacity: 1;
+}
+/* Stays in view at the foot of a long list. */
+.cmdk-ask {
+  position: sticky;
+  bottom: 0;
+  margin: 8px 8px 2px;
+  padding: 10px 12px;
+  border: 1px dashed color-mix(in srgb, #ffb23f 70%, var(--border));
+  border-radius: 10px;
+  background: color-mix(in srgb, #ffb23f 8%, var(--popover));
+}
+.cmdk-ask > svg {
+  flex: none;
+  color: #b97400;
+}
+.cmdk-ask[aria-selected='true'] {
+  border-style: solid;
+  border-color: #ffb23f;
+  background: color-mix(in srgb, #ffb23f 18%, var(--popover));
+}
+.cmdk-answer-region:empty {
+  display: none;
+}
+.cmdk-status,
+.cmdk-error,
+.cmdk-answer {
+  margin: 0;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px;
+}
+.cmdk-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted-foreground);
+}
+.cmdk-error {
+  color: #b45309;
+}
+.cmdk-answer {
+  max-height: min(40vh, 340px);
+  overflow-y: auto;
+  background: color-mix(in srgb, var(--muted) 45%, var(--popover));
+}
+.cmdk-answer-text {
+  line-height: 1.65;
+}
+.cmdk-sources {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.cmdk-sources li {
+  display: flex;
+  gap: 8px;
+  padding: 3px 0;
+  font-size: 13px;
+}
+.cmdk-source-n {
+  flex: none;
+  color: #8a5a00;
+  font: 700 12px/1.6 'Overpass', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.cmdk-sources a {
+  color: var(--popover-foreground);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  text-underline-offset: 3px;
+}
+.cmdk-fine {
+  margin: 10px 0 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.cmdk-empty {
+  margin: 0;
+  padding: 18px 16px 20px;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  text-align: center;
+}
+.cmdk-foot {
+  display: flex;
+  gap: 16px;
+  padding: 8px 16px;
+  border-top: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-size: 11.5px;
+}
+.cmdk-foot kbd {
+  margin-right: 3px;
+}
+.cmdk-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 8px 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--background);
+  color: var(--muted-foreground);
+  font-size: 13px;
+  cursor: pointer;
+}
+.cmdk-trigger:hover {
+  color: var(--foreground);
+}
+.cmdk-selection-ask {
+  position: fixed;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: #0e1a2b;
+  box-shadow: 0 8px 22px -8px rgb(14 26 43 / 0.55);
+  color: #eef3f8;
+  font-size: 13px;
+  font-weight: 650;
+  transform: translateX(-50%);
+  cursor: pointer;
+  animation: cmdk-in 120ms ease-out;
+}
+.cmdk-selection-ask svg {
+  color: #ffb23f;
+}
+.cmdk :focus-visible,
+.cmdk-trigger:focus-visible,
+.cmdk-selection-ask:focus-visible {
+  outline: 2px solid #ffb23f;
+  outline-offset: 2px;
+}
+@media (max-width: 560px) {
+  .cmdk {
+    margin-top: 16px;
+  }
+  .cmdk-meta {
+    display: none;
+  }
+  .cmdk-foot {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cmdk-panel,
+  .cmdk-selection-ask,
+  .cmdk-spin {
+    animation: none;
+  }
+}
+/* In the public pages' header, beside the workspace link. */
+.public-library-search {
+  margin-left: auto;
+}
+@media (max-width: 560px) {
+  .cmdk-trigger span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+.cmdk-ask-note {
+  margin: 0;
+  padding: 0 16px 10px;
+}
+
+/* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
+@media screen {
+  .dark .cmdk {
+    border: 0;
+    background: transparent;
+    color: var(--popover-foreground);
+  }
+  .dark .cmdk::backdrop {
+    background: rgb(14 26 43 / 0.42);
+  }
+  .dark .cmdk-panel {
+    border: 1px solid var(--border);
+    background: var(--popover);
+    box-shadow: 0 24px 60px -18px #0e1a2b73,
+    0 2px 6px #0e1a2b14;
+  }
+  .dark .cmdk-bar {
+    border-bottom: 3px solid #ffb23f;
+    background: radial-gradient(rgb(238 243 248 / 0.05) 1px, transparent 1.5px) 0 0 / 8px 8px,
+    #0e1a2b;
+    color: #eef3f8;
+  }
+  .dark .cmdk-bar > svg {
+    color: #ffb23f;
+  }
+  .dark .cmdk-bar input {
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: #eef3f8;
+  }
+  .dark .cmdk-bar input::placeholder {
+    color: #9fb0c6;
+  }
+  .dark .cmdk kbd,
+  .dark .cmdk-trigger kbd {
+    border: 1px solid var(--border);
+  }
+  .dark .cmdk-bar kbd {
+    border-color: rgb(238 243 248 / 0.25);
+    color: #9fb0c6;
+  }
+  .dark .cmdk-context {
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, #ffb23f 12%, var(--popover));
+  }
+  .dark .cmdk-context > span {
+    color: #e6b97e;
+  }
+  .dark .cmdk-context q {
+    color: var(--popover-foreground);
+  }
+  .dark .cmdk-context button {
+    border: 0;
+    background: none;
+    color: var(--muted-foreground);
+    text-decoration: underline;
+  }
+  .dark .cmdk-group {
+    --line: #2ebd85;
+  }
+  .dark .cmdk-group[data-group='oa'] {
+    --line: #e89a1d;
+  }
+  .dark .cmdk-group[data-group='topics'] {
+    --line: #3a86d1;
+  }
+  .dark .cmdk-group[data-group='companies'] {
+    --line: #e0607a;
+  }
+  .dark .cmdk-group[data-group='content'] {
+    --line: #8a6bd1;
+  }
+  .dark .cmdk-group[data-group='lessons'] {
+    --line: #6b7c93;
+  }
+  .dark .cmdk-group-name {
+    color: var(--muted-foreground);
+  }
+  .dark .cmdk-group-name::before {
+    border: 2.5px solid var(--line);
+    background: var(--popover);
+  }
+  .dark .cmdk-group a,
+  .dark .cmdk-ask {
+    border-left: 3px solid transparent;
+    color: var(--popover-foreground);
+    text-decoration: none;
+  }
+  .dark .cmdk-group a[aria-selected='true'] {
+    border-left-color: var(--line);
+    background: var(--accent);
+  }
+  .dark .cmdk-meta {
+    color: var(--muted-foreground);
+  }
+  .dark .cmdk-enter {
+    color: var(--muted-foreground);
+  }
+  .dark .cmdk-ask {
+    border: 1px dashed color-mix(in srgb, #ffb23f 70%, var(--border));
+    background: color-mix(in srgb, #ffb23f 8%, var(--popover));
+  }
+  .dark .cmdk-ask > svg {
+    color: #e0a35c;
+  }
+  .dark .cmdk-ask[aria-selected='true'] {
+    border-style: solid;
+    border-color: #ffb23f;
+    background: color-mix(in srgb, #ffb23f 18%, var(--popover));
+  }
+  .dark .cmdk-status,
+  .dark .cmdk-error,
+  .dark .cmdk-answer {
+    border-bottom: 1px solid var(--border);
+  }
+  .dark .cmdk-status {
+    color: var(--muted-foreground);
+  }
+  .dark .cmdk-error {
+    color: #fda473;
+  }
+  .dark .cmdk-answer {
+    background: color-mix(in srgb, var(--muted) 45%, var(--popover));
+  }
+  .dark .cmdk-source-n {
+    color: #e6b97e;
+  }
+  .dark .cmdk-sources a {
+    color: var(--popover-foreground);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  }
+  .dark .cmdk-fine {
+    color: var(--muted-foreground);
+  }
+  .dark .cmdk-empty {
+    color: var(--muted-foreground);
+  }
+  .dark .cmdk-foot {
+    border-top: 1px solid var(--border);
+    color: var(--muted-foreground);
+  }
+  .dark .cmdk-trigger {
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--muted-foreground);
+  }
+  .dark .cmdk-trigger:hover {
+    color: var(--foreground);
+  }
+  .dark .cmdk-selection-ask {
+    border: 0;
+    background: #0e1a2b;
+    box-shadow: 0 8px 22px -8px rgb(14 26 43 / 0.55);
+    color: #eef3f8;
+  }
+  .dark .cmdk-selection-ask svg {
+    color: #ffb23f;
+  }
+  .dark .cmdk :focus-visible,
+  .dark .cmdk-trigger:focus-visible,
+  .dark .cmdk-selection-ask:focus-visible {
+    outline: 2px solid #ffb23f;
+  }
+}
+/* ── end dark theme ── */

@@ -88,6 +88,7 @@ void test('the stats card says what it is based on and never calls outcomes a pa
     results: [{ value: 'Rejected', n: 2 }, { value: 'Offer', n: 1 }],
     roles: [{ value: 'Software Engineer', n: 2 }],
     categories: [{ value: 'Coding & Algorithms', n: 2 }],
+    trend: null,
   };
   const zh = renderToStaticMarkup(createElement(CompanyStatsCard, { stats, locale: 'zh' }));
   assert.ok(zh.includes('基于 10 篇面经'));

@@ -3,7 +3,7 @@ import type { CompanyStats, Share } from '@/lib/server/company-stats';
 import type { MemberStats } from '@/lib/server/experience-submissions';
 
 /** Question categories in the content library, [zh, en]. */
-const CATEGORIES: Record<string, [string, string]> = {
+export const CATEGORIES: Record<string, [string, string]> = {
   'Coding & Algorithms': ['编程与算法', 'Coding & algorithms'],
   'Behavioral & Leadership': ['行为与领导力', 'Behavioral & leadership'],
   'System Design': ['系统设计', 'System design'],
@@ -117,6 +117,49 @@ export function CompanyStatsCard({ stats, locale }: { stats: CompanyStats; local
               {zh ? `${s.questions} 道面试题的分布` : `Across ${s.questions} ${s.questions === 1 ? 'question' : 'questions'}`}
             </p>
             <Bars rows={s.categories} of={s.questions} name={(v) => label(CATEGORIES, v, zh)} zh={zh} />
+          </div>
+        )}
+        {s.trend && (
+          <div className="company-stats-panel is-wide">
+            <h3>{zh ? '题型趋势' : 'Trend by quarter'}</h3>
+            <p className="company-stats-note">
+              {zh
+                ? '每季度的面经篇数和各类面试题数（面经按面试日期，题目按收录日期）'
+                : 'Experiences and questions per quarter (experiences by interview date, questions by posting date)'}
+            </p>
+            <table className="company-stats-trend">
+              <caption className="sr-only">{zh ? '最近六个季度的面经与题目数量' : 'Experiences and questions over the last six quarters'}</caption>
+              <thead>
+                <tr>
+                  <td />
+                  {s.trend.quarters.map((q) => (
+                    <th scope="col" key={q}>
+                      {`${q.slice(5)} ’${q.slice(2, 4)}`}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {s.trend.series.map((row, index) => {
+                  const max = Math.max(1, ...row.counts);
+                  return (
+                    <tr key={row.value} data-series={row.value === 'experience' ? 'experience' : index}>
+                      <th scope="row" title={row.value}>
+                        {row.value === 'experience' ? (zh ? '面经' : 'Experiences') : label(CATEGORIES, row.value, zh)}
+                      </th>
+                      {row.counts.map((n, i) => (
+                        <td key={s.trend!.quarters[i]}>
+                          <span className="company-stats-col" aria-hidden="true">
+                            <span style={{ height: `${(n / max) * 100}%` }} />
+                          </span>
+                          <span className="company-stats-col-n">{n}</span>
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         )}
         {!!s.roles.length && (

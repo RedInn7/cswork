@@ -149,6 +149,10 @@ export function PrivacyDocument() {
                 使用模拟面试的 AI 面试官时，服务器会把这道题的题面和面试官参考资料、你这一题的对话、计时和代码框里的代码发送给 Anthropic，用于生成面试官的回复和结束时的评估；同样不发送邮箱、姓名或账户标识，平台不保存对话和评估，它们只存在你的浏览器里。语音输入使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；不点语音输入就不会录音。模拟 OA 的代码回放只保存在你的浏览器里，不会上传。
               </p>
               <p>
+                在搜索框（⌘K）里点「问 AI」时，服务器会把你的问题、你选中的页面文字（如有）和站内匹配到的几段公开内容发送给
+                Anthropic，用于生成带出处的回答；同样不发送邮箱、姓名或账户标识，也只记录调用次数和用量。只搜索不提问不会发送。
+              </p>
+              <p>
                 平台会为持续提供课程、处理教学反馈、对账及故障恢复保留必要资料和备份，目前没有对所有账户及学习记录统一设置自动删除期限。业务数据与备份的清理时间可能不同；收到删除请求后，会确认涉及的资料、处理范围及需要保留的记录。
               </p>
             </section>
@@ -432,6 +436,14 @@ export function PrivacyDocument() {
                 without going through this platform, and nothing is recorded
                 unless you press dictate. Mock OA code replays stay in your
                 browser and are never uploaded.
+              </p>
+              <p>
+                When you choose Ask AI in the search box (⌘K), the server sends
+                your question, any page text you selected and a few matching
+                public CSWork pages to Anthropic to write an answer that cites
+                them. Again no email, name or account identifier is sent, and
+                only call counts and usage are recorded. Searching without
+                asking sends nothing.
               </p>
               <p>
                 The platform retains necessary data and backups to keep

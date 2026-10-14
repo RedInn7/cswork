@@ -22,6 +22,8 @@ const TYPES = [
 type ItemType = (typeof TYPES)[number];
 const GROUPS: Record<string, readonly ItemType[]> = {
   questions: ['coding_question', 'interview_question'],
+  // Site search (components/command-palette.tsx): every written page, not the programmatic guides.
+  search: TYPES.filter((t) => t !== 'guide'),
 };
 const PAGE = 20;
 const SUMMARY = `type,slug,title,summary,title_zh,summary_zh,level,company_slug,company_name,role,category,difficulty,round,seniority,tags,published_at,partial`;

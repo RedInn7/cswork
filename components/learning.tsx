@@ -39,6 +39,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from './ui/dialog';
+import { SelectionAsk } from './command-palette';
 export type Navigate = (view: string, extra?: Record<string, string>) => void;
 export function CourseList({
   boot,
@@ -637,7 +638,10 @@ export function LessonReader({
               )}
             </TabsList>
             <TabsContent value="handout">
-              <LessonMarkdown body={lesson.body || ''} lecture />
+              {/* Selecting handout text offers "Ask AI" about it (components/command-palette.tsx). */}
+              <SelectionAsk>
+                <LessonMarkdown body={lesson.body || ''} lecture />
+              </SelectionAsk>
               {interviewChapter && (
                 <KnowledgeExercises
                   lessonId={id}

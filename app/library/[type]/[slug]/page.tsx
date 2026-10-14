@@ -5,6 +5,7 @@ import 'katex/dist/katex.min.css';
 import { PublicLibraryMarkdown } from '../../markdown';
 import { PostsPreview } from '../../../discuss/parts';
 import '../../../discuss.css';
+import { SelectionAsk } from '@/components/command-palette';
 import { seoMetadata } from '@/lib/seo';
 import { lcIdBySource } from '@/lib/company-tags';
 import { RESULTS, ROUND_LABELS, type ExperienceFacts } from '@/lib/experience';
@@ -131,9 +132,10 @@ export default async function PublicLibraryDetail({ params }: Props) {
           <p className="public-library-summary">{item.summary}</p>
         )}
       </header>
-      <div className="public-library-prose">
+      {/* Selecting text offers "Ask AI" about it when AI is on. */}
+      <SelectionAsk className="public-library-prose">
         <PublicLibraryMarkdown body={item.body} math={item.math} />
-      </div>
+      </SelectionAsk>
       {(item.type === 'interview_question' || item.type === 'experience') && (
         <PostsPreview
           target={`${item.type === 'experience' ? 'exp' : 'q'}:${item.slug}`}

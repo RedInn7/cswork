@@ -25,6 +25,13 @@ export function oaDifficulty(id: string, packaged?: string | null) {
   return packaged ? { difficulty: packaged, difficultyEstimated: false } : {};
 }
 
+const SLOT_OF: Record<string, Slot> = { 简单: 'easy', 中等: 'medium', 困难: 'hard' };
+/** The level oaDifficulty shows, as a slot (the OA library's ?difficulty= filter). */
+export const oaDifficultySlot = (id: string, packaged?: string | null): Slot | undefined => {
+  const shown = oaDifficulty(id, packaged).difficulty;
+  return shown && Object.hasOwn(SLOT_OF, shown) ? SLOT_OF[shown] : undefined;
+};
+
 /** What a company's OA problems cover: topic shares and the estimated difficulty mix. */
 export function oaTopicProfile(aliases: readonly string[]) {
   const pattern = new RegExp(
