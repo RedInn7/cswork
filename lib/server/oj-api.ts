@@ -18,6 +18,7 @@ import { handleMyPractice } from './my-practice';
 import { handleAiTutor } from './ai-tutor';
 import { problemStats } from './problem-stats';
 import { handleLearnerCloud, handleMockHistory } from './learner-cloud';
+import { handleSolutionPosts } from './solution-posts';
 import { curatedHint } from '@/lib/ling-curated';
 import { companyTagIndex } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
@@ -138,6 +139,7 @@ export async function handleOj(
     return json(judgeFeed(p, url.searchParams));
   }
   requirePerson(p);
+  if (resource === 'posts' || resource === 'post-comments') return handleSolutionPosts(request, p, path);
   if (resource === 'leetcode-sync')
     return handleLeetcodeSync(request, p, path.slice(1));
   if (!id && (resource === 'history' || resource === 'notes' || resource === 'marks'))

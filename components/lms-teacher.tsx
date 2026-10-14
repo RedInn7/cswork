@@ -32,6 +32,7 @@ import { ReviewDetailDialog, SubmissionLink } from './lms-support';
 import { CourseAdmin } from './course-admin';
 import { OjAdmin } from './oj-admin';
 import { CommerceAdmin } from './commerce-admin';
+import { PostModeration } from './solution-posts';
 
 export function TeacherView({
   boot,
@@ -68,6 +69,7 @@ export function TeacherView({
           <TabsTrigger value="problems">
             {t('题库管理', 'Problem admin')}
           </TabsTrigger>
+          <TabsTrigger value="posts">{t('题解审核', 'Solutions')}</TabsTrigger>
           <TabsTrigger value="commerce">
             {t('订单与售卖', 'Orders & sales')}
           </TabsTrigger>
@@ -91,6 +93,9 @@ export function TeacherView({
         </TabsContent>
         <TabsContent value="problems">
           <OjAdmin boot={boot} refresh={refresh} />
+        </TabsContent>
+        <TabsContent value="posts">
+          <PostModeration />
         </TabsContent>
         <TabsContent value="commerce">
           <CommerceAdmin courses={boot.courses} refresh={refresh} />
