@@ -9,6 +9,7 @@ import { ensurePracticeRound, isSelectedProblem } from './practice-rounds';
 import { getCompileProblem } from './oj-problems';
 import { leetcodeContract, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import type { CodingMode } from '@/lib/coding-mode';
+import type { OjProblemSpec } from '@/lib/oj-types';
 import { boundedFeedback, FEEDBACK_BYTES } from './oj-case-store';
 
 export const MAX_CODE_BYTES = 65536;
@@ -23,7 +24,8 @@ export type SubmissionRow = {
   language: Language;
   code: string;
   status: string;
-  mode: 'judge' | 'run';
+  /** playground: /playground runs, no problem, never in history or statistics. */
+  mode: 'judge' | 'run' | 'playground';
   coding_mode: CodingMode;
   harness_version: string | null;
   custom_input: string | null;
@@ -61,6 +63,139 @@ const inputSchema = z
     idempotencyKey: z.string().regex(/^[a-zA-Z0-9_-]{16,100}$/),
   })
   .strict();
+/** The problem id of /playground runs; no oj_problems row has it. */
+export const PLAYGROUND_PROBLEM_ID = 'playground';
+/** Fixed limits for playground runs (seconds, KiB), in the shape the engine reads. */
+export const PLAYGROUND_SPEC = {
+  id: PLAYGROUND_PROBLEM_ID,
+  timeLimit: 3,
+  memoryLimit: 262144,
+  outputLimit: 64,
+} as OjProblemSpec;
+/** Per learner per hour, apart from problem runs and submissions. */
+export const PLAYGROUND_RUNS_PER_HOUR = 30;
+type Queued = Pick<
+  SubmissionRow,
+  | 'problem_id'
+  | 'problem_version_id'
+  | 'language'
+  | 'code'
+  | 'mode'
+  | 'custom_input'
+  | 'request_hash'
+  | 'total'
+  | 'practice_round_id'
+  | 'coding_mode'
+  | 'harness_version'
+>;
+/** The learner's earlier request under this idempotency key; another program under it is a 409. */
+function priorRequest(userId: string, key: string, hash: string) {
+  const row = sqlite()
+    .prepare('SELECT * FROM submissions WHERE user_id=? AND idempotency_key=?')
+    .get(userId, key) as SubmissionRow | undefined;
+  if (row && row.request_hash !== hash)
+    throw new HttpError(409, '此请求编号已经用于另一份代码，请重新提交');
+  return row;
+}
+/** Inside the caller's IMMEDIATE transaction: two in flight per learner, 128 in all. */
+function admit(p: Person) {
+  const counts = sqlite()
+    .prepare(
+      "SELECT COUNT(*) as total,SUM(user_id=?) as own FROM submissions WHERE status IN ('queued','compiling','running')",
+    )
+    .get(p.id) as { total: number; own: number };
+  if (counts.own >= 2)
+    throw new HttpError(
+      429,
+      '你已有两份代码正在处理，请等待完成或取消后再提交',
+    );
+  if (counts.total >= 128)
+    throw new HttpError(429, '判题队列已满，请稍后重试，代码草稿已保留');
+}
+/** Inside the same transaction, after admit: the row and its durable outbox entry. */
+function enqueue(p: Person, key: string, row: Queued) {
+  const db = sqlite();
+  const id = randomUUID(),
+    now = Date.now();
+  db.prepare(
+    'INSERT INTO submissions(id,user_id,problem_id,problem_version_id,language,code,status,mode,custom_input,idempotency_key,request_hash,total,created_at,updated_at,practice_round_id,coding_mode,harness_version) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+  ).run(
+    id,
+    p.id,
+    row.problem_id,
+    row.problem_version_id,
+    row.language,
+    row.code,
+    'queued',
+    row.mode,
+    row.custom_input,
+    key,
+    row.request_hash,
+    row.total,
+    now,
+    now,
+    row.practice_round_id,
+    row.coding_mode,
+    row.harness_version,
+  );
+  db.prepare(
+    'INSERT INTO oj_outbox(submission_id,created_at) VALUES(?,?)',
+  ).run(id, now);
+  return { id, status: 'queued' };
+}
+const playgroundSchema = z
+  .object({
+    language: z.enum(['python', 'go', 'java', 'cpp']),
+    code: z.string().min(1).max(MAX_CODE_BYTES),
+    stdin: z.string().max(MAX_STDIN_BYTES).default(''),
+    idempotencyKey: z.string().regex(/^[a-zA-Z0-9_-]{16,100}$/),
+  })
+  .strict();
+/**
+ * A /playground run: the learner's program on their stdin, compiled and run like a
+ * custom-input run but with no problem behind it. mode 'playground' keeps it out of
+ * history, the status board, statistics, streaks and progress (all read mode='judge').
+ */
+export async function createPlaygroundRun(p: Person, value: unknown) {
+  const d = playgroundSchema.parse(value);
+  if (
+    Buffer.byteLength(d.code) > MAX_CODE_BYTES ||
+    Buffer.byteLength(d.stdin) > MAX_STDIN_BYTES
+  )
+    throw new HttpError(413, '代码和自定义输入分别最多 64 KiB');
+  if (d.code.includes('\0') || d.stdin.includes('\0'))
+    throw new HttpError(400, '内容不能包含空字符');
+  // Free compute, so the same gate as free problems: a verified address.
+  if (p.role !== 'teacher' && !p.verified)
+    throw new HttpError(403, '请先验证邮箱，再运行和提交代码');
+  const hash = createHash('sha256')
+    .update(JSON.stringify([PLAYGROUND_PROBLEM_ID, d.language, d.code, d.stdin]))
+    .digest('hex');
+  const prior = priorRequest(p.id, d.idempotencyKey, hash);
+  if (prior) return { id: prior.id, status: prior.status };
+  if (!judgeReady())
+    throw new HttpError(503, '判题服务尚未配置，代码草稿已保留');
+  await limit(p, 'oj-playground', PLAYGROUND_RUNS_PER_HOUR, 3600);
+  const db = sqlite();
+  return db.transaction(() => {
+    const duplicate = priorRequest(p.id, d.idempotencyKey, hash);
+    if (duplicate) return { id: duplicate.id, status: duplicate.status };
+    admit(p);
+    return enqueue(p, d.idempotencyKey, {
+      problem_id: PLAYGROUND_PROBLEM_ID,
+      problem_version_id: null,
+      language: d.language,
+      code: d.code,
+      mode: 'playground',
+      custom_input: d.stdin,
+      request_hash: hash,
+      total: 1,
+      practice_round_id: null,
+      coding_mode: 'acm',
+      harness_version: null,
+    });
+  }).immediate();
+}
 export async function createSubmission(p: Person, value: unknown) {
   const d = inputSchema.parse(value);
   if (
@@ -103,16 +238,7 @@ export async function createSubmission(p: Person, value: unknown) {
         .get(versionId) as { n: number }
     ).n;
   if (!caseCount(true)) throw new HttpError(503, '题目测试数据尚未就绪');
-  const existing = () => {
-    const row = db
-      .prepare(
-        'SELECT * FROM submissions WHERE user_id=? AND idempotency_key=?',
-      )
-      .get(p.id, d.idempotencyKey) as SubmissionRow | undefined;
-    if (row && row.request_hash !== hash)
-      throw new HttpError(409, '此请求编号已经用于另一份代码，请重新提交');
-    return row;
-  };
+  const existing = () => priorRequest(p.id, d.idempotencyKey, hash);
   const prior = existing();
   if (prior) return { id: prior.id, status: prior.status };
   if (!judgeReady())
@@ -127,20 +253,7 @@ export async function createSubmission(p: Person, value: unknown) {
   return db.transaction(() => {
     const duplicate = existing();
     if (duplicate) return { id: duplicate.id, status: duplicate.status };
-    const counts = db
-      .prepare(
-        "SELECT COUNT(*) as total,SUM(user_id=?) as own FROM submissions WHERE status IN ('queued','compiling','running')",
-      )
-      .get(p.id) as { total: number; own: number };
-    if (counts.own >= 2)
-      throw new HttpError(
-        429,
-        '你已有两份代码正在处理，请等待完成或取消后再提交',
-      );
-    if (counts.total >= 128)
-      throw new HttpError(429, '判题队列已满，请稍后重试，代码草稿已保留');
-    const id = randomUUID(),
-      now = Date.now();
+    admit(p);
     const total =
       d.mode === 'judge'
         ? caseCount(true)
@@ -151,31 +264,20 @@ export async function createSubmission(p: Person, value: unknown) {
       d.mode === 'judge' && isSelectedProblem(d.problemId)
         ? ensurePracticeRound(p.id)
         : null;
-    db.prepare(
-      'INSERT INTO submissions(id,user_id,problem_id,problem_version_id,language,code,status,mode,custom_input,idempotency_key,request_hash,total,created_at,updated_at,practice_round_id,coding_mode,harness_version) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-    ).run(
-      id,
-      p.id,
-      d.problemId,
-      versionId,
-      d.language,
-      d.code,
-      'queued',
-      d.mode,
-      d.stdin ?? null,
-      d.idempotencyKey,
-      hash,
+    return enqueue(p, d.idempotencyKey, {
+      problem_id: d.problemId,
+      problem_version_id: versionId,
+      language: d.language,
+      code: d.code,
+      mode: d.mode,
+      custom_input: d.stdin ?? null,
+      request_hash: hash,
       total,
-      now,
-      now,
-      practiceRoundId,
-      d.codingMode,
-      d.codingMode === 'leetcode' ? LEETCODE_HARNESS_VERSION : null,
-    );
-    db.prepare(
-      'INSERT INTO oj_outbox(submission_id,created_at) VALUES(?,?)',
-    ).run(id, now);
-    return { id, status: 'queued' };
+      practice_round_id: practiceRoundId,
+      coding_mode: d.codingMode,
+      harness_version:
+        d.codingMode === 'leetcode' ? LEETCODE_HARNESS_VERSION : null,
+    });
   }).immediate();
 }
 export function submissionRow(id: string) {
@@ -377,7 +479,7 @@ export async function submissionDetail(p: Person, id: string) {
         .get(s.problem_version_id) as { revision: number } | undefined)
     : undefined;
   const definitions =
-    s.mode === 'run' && s.custom_input !== null
+    s.mode !== 'judge' && s.custom_input !== null
       ? [
           {
             ordinal: 0,
@@ -521,7 +623,7 @@ export function submissionHistory(
       throw new HttpError(400, '分页游标无效');
     }
   }
-  const filters = ['user_id=?'];
+  const filters = ["user_id=?", "mode<>'playground'"];
   const params: (string | number)[] = [p.id];
   if (problemId) {
     filters.push('problem_id=?');

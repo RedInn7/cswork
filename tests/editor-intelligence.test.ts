@@ -361,3 +361,18 @@ void test('browser abort propagates to the in-flight broker HTTP request', async
     await new Promise((done) => setTimeout(done, 10));
   assert.ok(responseClosed);
 });
+
+void test('format needs no cursor, forwards the tab size, and maps unparsable code to 422', async () => {
+  const { position: _position, ...rest } = input;
+  const format = { ...rest, action: 'format', tabSize: 2 };
+  assert.equal((await invoke(format)).status, 200);
+  assert.equal(seen.at(-1)?.body.action, 'format');
+  assert.equal(seen.at(-1)?.body.tabSize, 2);
+  assert.equal(seen.at(-1)?.body.position, undefined);
+  assert.equal((await invoke({ ...format, tabSize: 3 })).status, 400);
+  // A tab size belongs to Format Document only.
+  assert.equal((await invoke({ ...input, tabSize: 4 })).status, 400);
+  responseStatus = 422;
+  rawResponse = JSON.stringify({ error: 'Formatting failed' });
+  assert.equal((await invoke(format)).status, 422);
+});

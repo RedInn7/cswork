@@ -48,6 +48,7 @@ import {
   RotateCcw,
   Send,
   Settings2,
+  SquareTerminal,
   Terminal,
   Trash2,
   X,
@@ -90,6 +91,7 @@ import { CodeEditor } from './editor';
 import { ProblemTimer, formatClock, stopTimer } from './problem-timer';
 import { ACM_IO_TEMPLATES } from '@/lib/acm-io-templates';
 import { useIdlePrecompile } from '@/hooks/use-idle-precompile';
+import { encodeShare } from '@/lib/playground-share';
 import { StatementMarkdown } from './statement-markdown';
 import { LeetCodeSamples } from './leetcode-samples';
 import { leetcodePublicSample } from '@/lib/leetcode-public-samples';
@@ -115,11 +117,14 @@ import type { Boot } from '@/lib/types';
 import {
   defaultEditorSettings,
   draftStorageKey,
+  flushCloudDrafts,
   languageFiles,
+  readCloudDraft,
   readEditorDraft,
   readEditorSettings,
   writeEditorDraft,
   writeEditorSettings,
+  type CloudDraftTarget,
   type EditorSettings,
 } from '@/lib/editor-settings';
 import {
@@ -140,6 +145,7 @@ import { englishMessage } from '@/lib/messages-en';
 import '@/app/editor.css';
 import '@/app/workbench-tools.css';
 import '@/app/workspace-panels.css';
+import '@/app/workspace-sync.css';
 
 type WorkspaceProps = {
   problem: ProblemSummary;
@@ -201,6 +207,17 @@ const safeLayoutStorage = {
     }
   },
 };
+
+/** "5 分钟前" / "5 minutes ago" for the cross-device restore notice. */
+function draftAge(at: number, locale: 'zh' | 'en') {
+  const minutes = Math.max(1, Math.round((Date.now() - at) / 60000));
+  const format = new Intl.RelativeTimeFormat(locale === 'zh' ? 'zh-CN' : 'en');
+  return minutes < 60
+    ? format.format(-minutes, 'minute')
+    : minutes < 1440
+      ? format.format(-Math.round(minutes / 60), 'hour')
+      : format.format(-Math.round(minutes / 1440), 'day');
+}
 
 const MAX_CASES = 5;
 // A run or submission the learner can ask the AI tutor about.
@@ -354,6 +371,7 @@ function Workspace({
         ? t('语言服务待启动', 'Language service not started')
         : say(intelligence.message);
   const suggest = useRef<(() => void) | null>(null);
+  const format = useRef<(() => void) | null>(null);
   const runButton = useRef<HTMLButtonElement>(null);
   const [leftTab, setLeftTab] = useState<
     'statement' | 'history' | 'editorial' | 'notes' | 'solutions'
@@ -509,7 +527,15 @@ function Workspace({
   const [loadingSubmission, setLoadingSubmission] = useState<string | null>(
     null,
   );
-  const draft = useRef({ key: '', code: starters.python });
+  const draft = useRef<{ key: string; code: string; cloud?: CloudDraftTarget }>({
+    key: '',
+    code: starters.python,
+  });
+  // Signed in and not a mock question: drafts also live on the server, across devices.
+  const cloudSync = !!boot.person && !mock;
+  const cloudFor = (next: Language, mode: CodingMode) =>
+    cloudSync ? { problemId: draftId, language: next, codingMode: mode } : undefined;
+  const [restored, setRestored] = useState<{ previous: string; at: number } | null>(null);
   const draftDirty = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const alive = useRef(false);
@@ -654,7 +680,7 @@ function Workspace({
     if (!draft.current.key || !draftDirty.current) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     try {
-      writeEditorDraft(draft.current.key, draft.current.code);
+      writeEditorDraft(draft.current.key, draft.current.code, draft.current.cloud);
       draftDirty.current = false;
       if (notify && alive.current) {
         setSaveStatus(['草稿已保存到此浏览器', 'Draft saved in this browser']);
@@ -708,6 +734,7 @@ function Workspace({
       draft.current = {
         key: draftStorageKey(userId, draftId, chosen, initialMode),
         code: stored.code,
+        cloud: cloudFor(chosen, initialMode),
       };
       setLanguage(chosen);
       setCode(stored.code);
@@ -723,6 +750,7 @@ function Workspace({
       draft.current = {
         key: draftStorageKey(userId, draftId, chosen, initialMode),
         code: template(chosen),
+        cloud: cloudFor(chosen, initialMode),
       };
       setLanguage(chosen);
       setCode(template(chosen));
@@ -732,7 +760,10 @@ function Workspace({
       ]);
     }
     setReady(true);
-    const save = () => persistDraft();
+    const save = () => {
+      persistDraft();
+      flushCloudDrafts();
+    };
     window.addEventListener('pagehide', save);
     const visibility = () => {
       if (document.visibilityState === 'hidden') save();
@@ -747,7 +778,47 @@ function Workspace({
       window.removeEventListener('pagehide', save);
       document.removeEventListener('visibilitychange', visibility);
     };
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- cloudFor only reads cloudSync and draftId, both fixed for this workspace.
   }, [userId, draftId, persistDraft, loadedProblem]);
+
+  // A newer copy from another device replaces the draft unless it was edited since opening; undo puts it back.
+  useEffect(() => {
+    const target = draft.current.cloud;
+    if (!ready || !target) return;
+    const key = draft.current.key;
+    const controller = new AbortController();
+    readCloudDraft(target, controller.signal).then(
+      (cloud) => {
+        if (
+          !cloud ||
+          draft.current.key !== key ||
+          draftDirty.current ||
+          cloud.code === draft.current.code
+        )
+          return;
+        let local = 0;
+        try {
+          local = readEditorDraft(userId, draftId, target.language, target.codingMode).updatedAt;
+        } catch {
+          /* Unreadable here: the server copy is the one to show. */
+        }
+        if (cloud.updatedAt <= local) return;
+        const previous = draft.current.code;
+        draft.current.code = cloud.code;
+        setCode(cloud.code);
+        try {
+          localStorage.setItem(key, JSON.stringify(cloud));
+        } catch {
+          /* Still shown for this visit. */
+        }
+        setRestored({ previous, at: cloud.updatedAt });
+      },
+      () => {
+        /* Offline or signed out elsewhere: the local draft stands. */
+      },
+    );
+    return () => controller.abort();
+  }, [ready, language, codingMode, userId, draftId]);
 
   useEffect(() => {
     const query = window.matchMedia('(max-width: 900px)');
@@ -982,6 +1053,7 @@ function Workspace({
     draft.current.code = next;
     draftDirty.current = true;
     setCode(next);
+    setRestored(null);
     setSaveStatus(['正在保存草稿…', 'Saving draft…']);
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => persistDraft(), 350);
@@ -1078,9 +1150,11 @@ function Workspace({
     draft.current = {
       key: draftStorageKey(userId, draftId, next, mode),
       code: override ?? nextCode,
+      cloud: cloudFor(next, mode),
     };
     draftDirty.current = override !== undefined;
     setLanguage(next);
+    setRestored(null);
     // The other mode has its own saved cases (casesKey).
     if (mode !== codingMode) setInputMode('sample');
     setCodingMode(mode);
@@ -1098,6 +1172,32 @@ function Workspace({
         "Couldn't save editor preferences. Check your browser storage settings.",
       ]);
     }
+  }
+  /** This code and its stdin in a /playground tab (a #c= share link; no problem attached). */
+  async function openPlayground() {
+    if (language === 'sql') return;
+    // Opened inside the click so it isn't blocked as a popup; the link follows once encoded.
+    const tab = window.open('about:blank', '_blank');
+    const value = await encodeShare({
+      language,
+      code,
+      stdin: inputMode === 'custom' ? stdin : (exampleCase ?? ''),
+    });
+    if (!value) {
+      tab?.close();
+      setError(
+        t(
+          '代码太长，放不进 Playground 链接（压缩后上限 32 KB）。',
+          'The code is too long for a Playground link (32 KB compressed).',
+        ),
+      );
+      return;
+    }
+    const url = `/playground#c=${value}`;
+    if (tab) {
+      tab.opener = null;
+      tab.location.href = url;
+    } else location.href = url;
   }
   function downloadCode() {
     const url = URL.createObjectURL(
@@ -1930,6 +2030,18 @@ function Workspace({
             <Download size={15} />
           </button>
           {codingMode === 'acm' && language !== 'sql' && (
+            <button
+              aria-label={t('在 Playground 打开', 'Open in Playground')}
+              title={t(
+                '在 Playground 打开：带上代码和当前输入，可改可分享，不算提交',
+                'Open in Playground with this code and input: edit and share freely, never a submission',
+              )}
+              onClick={() => void openPlayground()}
+            >
+              <SquareTerminal size={15} />
+            </button>
+          )}
+          {codingMode === 'acm' && language !== 'sql' && (
             <select
               className="cs-io-templates"
               aria-label={t('使用输入模板', 'Use an input template')}
@@ -1989,8 +2101,41 @@ function Workspace({
           >
             {t('触发补全', 'Autocomplete')}
           </button>
+          {language !== 'sql' && (
+            <button
+              title={t(
+                '用语言服务格式化代码（Shift + Alt + F）',
+                'Format the code with the language service (Shift + Alt + F)',
+              )}
+              className="cs-suggest-trigger"
+              disabled={!ready || intelligence.state === 'unavailable'}
+              onClick={() => format.current?.()}
+            >
+              {t('格式化', 'Format')}
+            </button>
+          )}
         </div>
       </div>
+      {restored && (
+        <output className="cs-draft-restored">
+          <span>
+            {t(
+              `已从另一台设备恢复（${draftAge(restored.at, 'zh')}）`,
+              `Restored from another device (${draftAge(restored.at, 'en')})`,
+            )}
+          </span>
+          <button type="button" onClick={() => updateCode(restored.previous)}>
+            {t('撤销', 'Undo')}
+          </button>
+          <button
+            type="button"
+            aria-label={t('关闭提示', 'Dismiss')}
+            onClick={() => setRestored(null)}
+          >
+            <X size={13} />
+          </button>
+        </output>
+      )}
       <Group
         orientation="vertical"
         className="cs-code-console"
@@ -2008,6 +2153,9 @@ function Workspace({
                   onIntelligenceStatus={setIntelligence}
                   onSuggestReady={(action) => {
                     suggest.current = action;
+                  }}
+                  onFormatReady={(action) => {
+                    format.current = action;
                   }}
                   onChange={updateCode}
                   path={`cswork://draft/${encodeURIComponent(userId)}/${problem.id}/${codingMode}/${editorFile}`}
@@ -2744,6 +2892,7 @@ function Workspace({
                 ),
               ],
               [t('参数提示', 'Parameter hints'), 'Ctrl / ⌘ + Shift + Space'],
+              [t('格式化代码', 'Format code'), 'Shift + Alt / ⌥ + F'],
               [t('查找', 'Find'), 'Ctrl / ⌘ + F'],
               [t('命令面板', 'Command palette'), 'F1'],
               [t('注释 / 取消注释', 'Toggle comment'), 'Ctrl / ⌘ + /'],
