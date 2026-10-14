@@ -141,7 +141,8 @@ function queueCloudDraft(key: string, target: CloudDraftTarget, draft: EditorDra
     void fetch(cloudDraftUrl(target), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(draft),
+      // sentAt lets the server re-base updatedAt on its own clock (devices' clocks differ).
+      body: JSON.stringify({ ...draft, sentAt: Date.now() }),
       keepalive,
     }).catch(() => {});
   };
@@ -160,10 +161,16 @@ export async function readCloudDraft(
 ): Promise<EditorDraft | null> {
   const response = await fetch(cloudDraftUrl(target), { signal });
   if (!response.ok) return null;
-  const { draft } = (await response.json()) as { draft?: EditorDraft | null };
-  return draft && typeof draft.code === 'string' && Number.isFinite(draft.updatedAt)
-    ? draft
-    : null;
+  const { draft, now } = (await response.json()) as {
+    draft?: EditorDraft | null;
+    now?: number;
+  };
+  if (!draft || typeof draft.code !== 'string' || !Number.isFinite(draft.updatedAt))
+    return null;
+  // Server time to this browser's, so it compares with local drafts whatever this clock says.
+  return Number.isFinite(now)
+    ? { code: draft.code, updatedAt: draft.updatedAt + Date.now() - now! }
+    : draft;
 }
 
 /** Saves in this browser and, given a cloud target (signed in), uploads 3 s later. */

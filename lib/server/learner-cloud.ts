@@ -739,13 +739,20 @@ const draftKey = z
   })
   .strict();
 const draftInput = z
-  .object({ code: z.string(), updatedAt: z.number().int().positive() })
+  .object({
+    code: z.string(),
+    updatedAt: z.number().int().positive(),
+    // The browser's clock when it sent this: updatedAt is then re-based on the server's.
+    sentAt: z.number().int().positive().optional(),
+  })
   .strict();
 
 /**
  * GET/PUT /api/oj/cloud/drafts/<problemId>?language=&mode=: the signed-in learner's own
  * draft, keyed by their id from the session (never the request). A PUT older than the
- * stored copy is ignored, so a stale tab can't overwrite a newer device's edit.
+ * stored copy is ignored, so a stale tab can't overwrite a newer device's edit. Times are
+ * kept on the server's clock (an edit's age by the browser's clock, taken from the server's
+ * now), and a GET returns that now, so a device whose clock is off still compares rightly.
  */
 export async function handleDrafts(request: Request, p: Person, problem?: string) {
   if (!problem || !/^[\w-]{1,100}$/.test(problem)) throw new HttpError(404, '接口不存在');
@@ -762,17 +769,21 @@ export async function handleDrafts(request: Request, p: Person, problem?: string
         'SELECT code,updated_at AS updatedAt FROM user_drafts WHERE user_id=? AND problem_id=? AND language=? AND coding_mode=?',
       )
       .get(p.id, problem, key.language, key.mode) as { code: string; updatedAt: number } | undefined;
-    return json({ draft: row ?? null });
+    return json({ draft: row ?? null, now: Date.now() });
   }
   if (request.method !== 'PUT') throw new HttpError(404, '接口不存在');
   await limit(p, 'draft-write', 60);
   const d = draftInput.parse(await readJson(request, 400000));
   if (Buffer.byteLength(d.code) > DRAFT_BYTES) throw new HttpError(413, '代码超过 64 KiB');
   if (d.code.includes('\0')) throw new HttpError(400, '内容不能包含空字符');
-  // A clock running ahead could otherwise pin this copy as newest forever.
-  const updatedAt = Math.min(d.updatedAt, Date.now());
-  db.transaction(() => {
-    db.prepare(
+  const now = Date.now();
+  const updatedAt =
+    d.sentAt === undefined
+      ? // An older tab without sentAt: a clock running ahead could otherwise pin this copy as newest.
+        Math.min(d.updatedAt, now)
+      : Math.max(1, now - Math.max(0, d.sentAt - d.updatedAt));
+  const saved = db.transaction(() => {
+    const { changes } = db.prepare(
       `INSERT INTO user_drafts(user_id,problem_id,language,coding_mode,code,updated_at) VALUES(?,?,?,?,?,?)
       ON CONFLICT(user_id,problem_id,language,coding_mode) DO UPDATE SET code=excluded.code,updated_at=excluded.updated_at
       WHERE excluded.updated_at>=user_drafts.updated_at`,
@@ -781,8 +792,10 @@ export async function handleDrafts(request: Request, p: Person, problem?: string
       `DELETE FROM user_drafts WHERE rowid IN (SELECT rowid FROM user_drafts WHERE user_id=?
       ORDER BY updated_at DESC LIMIT -1 OFFSET ?)`,
     ).run(p.id, DRAFT_ROWS);
+    return changes > 0;
   })();
-  return json({ saved: true });
+  // false: a newer copy from another device is already there and stays.
+  return json({ saved });
 }
 
 /** /api/oj/{lists,profile,reports}/…: public list and report reads work signed out. */

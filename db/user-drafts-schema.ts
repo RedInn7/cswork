@@ -8,7 +8,8 @@ import {
 
 // Editor drafts that follow a signed-in learner across devices (lib/server/learner-cloud.ts).
 // No foreign keys: release.sh only applies additive SQL; the per-learner cap is a runtime DELETE.
-// updated_at is the editing browser's clock (capped at the server's), compared with local drafts.
+// updated_at is on the server's clock (the edit's age by the browser's clock, taken from the
+// server's now); clients shift it to their own clock before comparing with local drafts.
 export const userDrafts = sqliteTable(
   'user_drafts',
   {

@@ -12,9 +12,8 @@ process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
 const { DRAFT_ROWS } = await import('../lib/server/learner-cloud');
-const { CLOUD_DRAFT_DELAY_MS, cloudDraftUrl, flushCloudDrafts, writeEditorDraft } = await import(
-  '../lib/editor-settings'
-);
+const { CLOUD_DRAFT_DELAY_MS, cloudDraftUrl, flushCloudDrafts, readCloudDraft, writeEditorDraft } =
+  await import('../lib/editor-settings');
 
 const me: Person = { id: 'draft-me', name: 'Me', email: 'me@example.test', role: 'student', verified: true };
 const other: Person = { ...me, id: 'draft-other', email: 'other@example.test' };
@@ -29,7 +28,10 @@ async function call(p: Person | null, method: string, target: string, body?: unk
   });
   try {
     const response = await handleOj(request, p, url.pathname.split('/').slice(3));
-    return { status: response.status, body: (await response.json()) as { draft?: { code: string; updatedAt: number } | null } };
+    return {
+      status: response.status,
+      body: (await response.json()) as { draft?: { code: string; updatedAt: number } | null; now?: number; saved?: boolean },
+    };
   } catch (error) {
     return { status: (error as { status?: number }).status ?? 400, body: {} };
   }
@@ -62,6 +64,40 @@ void test('an older upload never overwrites a newer device’s edit; future cloc
   const saved = await draftOf(me);
   assert.equal(saved?.code, 'ahead');
   assert.ok(saved!.updatedAt <= Date.now());
+});
+
+void test('times are re-based on the server clock, so a slow device clock never loses its newer edit', async () => {
+  const target = 'cloud/drafts/lc-skew?language=go&mode=acm';
+  const hour = 3600000;
+  // Device A (clock right) edited 10 minutes ago.
+  const a = Date.now();
+  await call(me, 'PUT', target, { code: 'A, older', updatedAt: a - 600000, sentAt: a });
+  // Device B's clock is an hour slow; its edit was 5 seconds ago, real time.
+  const b = Date.now() - hour;
+  const put = await call(me, 'PUT', target, { code: 'B, newer', updatedAt: b - 5000, sentAt: b });
+  assert.equal(put.body.saved, true);
+  const got = await call(me, 'GET', target);
+  assert.equal(got.body.draft?.code, 'B, newer');
+  assert.ok(Math.abs(got.body.draft!.updatedAt - (Date.now() - 5000)) < 2000);
+  assert.ok(Math.abs(got.body.now! - Date.now()) < 2000);
+  // A's stale tab uploading again is still refused, and says so.
+  const stale = await call(me, 'PUT', target, { code: 'A, stale', updatedAt: a - 600000, sentAt: Date.now() });
+  assert.equal(stale.body.saved, false);
+  assert.equal((await draftOf(me, target))?.code, 'B, newer');
+});
+
+void test('a fetched draft is shifted onto this browser’s clock', async () => {
+  const realFetch = globalThis.fetch;
+  const serverNow = Date.now() + 3600000; // this browser runs an hour slow
+  globalThis.fetch = (async () =>
+    Response.json({ draft: { code: 'x', updatedAt: serverNow - 5000 }, now: serverNow })) as typeof fetch;
+  try {
+    const draft = await readCloudDraft({ problemId: 'lc-1', language: 'python', codingMode: 'acm' });
+    assert.equal(draft?.code, 'x');
+    assert.ok(Math.abs(draft!.updatedAt - (Date.now() - 5000)) < 1000);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
 });
 
 void test('bad keys and oversized or odd code are refused', async () => {
@@ -117,6 +153,7 @@ void test('signed-in drafts upload once typing pauses, and flush when the tab go
     assert.equal(sent[0].url, cloudDraftUrl(target));
     assert.equal(sent[0].init.method, 'PUT');
     assert.equal(JSON.parse(sent[0].init.body as string).code, 'ab');
+    assert.equal(Number.isInteger(JSON.parse(sent[0].init.body as string).sentAt), true);
     assert.equal(JSON.parse(store.get('k')!).code, 'ab');
     writeEditorDraft('k', 'abc', target);
     flushCloudDrafts();
