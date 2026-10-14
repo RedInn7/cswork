@@ -208,13 +208,18 @@ export const ratingWeight = (contests: number) => {
  * Elo the LeetCode way: each entrant's expected rank comes from everyone's ratings
  * (logistic); the rating whose expected rank is the geometric mean of the expected and the
  * actual rank is the target, and the rating moves toward it by ratingWeight(contests).
+ * `rank` is the shared standings rank (1, 2, 2, 4); a tie counts as the middle of the places it
+ * covers (2.5 for the two 2s), else everyone tied at the bottom would gain.
  * ponytail: O(n² · 40); fine for hundreds of entrants, sort and bucket if it reaches thousands.
  */
 export function eloRatings(players: readonly { rating: number; contests: number; rank: number }[]) {
   if (players.length < 2) return players.map((p) => p.rating);
+  const tied = new Map<number, number>();
+  for (const p of players) tied.set(p.rank, (tied.get(p.rank) ?? 0) + 1);
   return players.map((p, i) => {
     const others = players.flatMap((o, j) => (j === i ? [] : [o.rating]));
-    const target = Math.sqrt(expectedRank(p.rating, others) * p.rank);
+    const place = p.rank + (tied.get(p.rank)! - 1) / 2;
+    const target = Math.sqrt(expectedRank(p.rating, others) * place);
     // expectedRank falls as the rating rises.
     let lo = 0,
       hi = 5000;
