@@ -9,8 +9,10 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { promisify } from 'node:util';
 import { ROUTE_SECTIONS } from '../lib/route-stops';
+import { SITEMAP_STATIC_ENTRIES } from '../lib/seo';
 import {
   TEMPLATE_LANGS,
+  commentStart,
   line500Path,
   routeTemplates,
   templateFor,
@@ -956,6 +958,15 @@ void test('every Line 500 stop has a complete bilingual template, in route order
   }
   assert.equal(templateFor('no-such-stop'), undefined);
   assert.equal(line500Path('binary-search'), '/?view=problems&section=binary-search');
+});
+
+void test('topic pages are in the sitemap; code comments are found outside literals', () => {
+  const paths = new Set(SITEMAP_STATIC_ENTRIES.map((entry) => entry.path));
+  assert(paths.has('/topics'));
+  for (const t of routeTemplates) assert(paths.has(`/topics/${t.slug}`), t.slug);
+  assert.equal(commentStart('x = "a#b"  # note', 'python'), 11);
+  assert.equal(commentStart("c = '/'; // ok", 'cpp'), 9);
+  assert.equal(commentStart('s := "//"', 'go'), -1);
 });
 
 const limit = Math.max(1, Math.min(3, availableParallelism() - 1));
