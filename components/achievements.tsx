@@ -34,6 +34,7 @@ export function progressBadges({
   userId,
   now,
   companyNames = new Map(),
+  bought = [],
 }: {
   sections: readonly Section[];
   history: readonly PracticeHistoryItem[];
@@ -42,6 +43,8 @@ export function progressBadges({
   now: number;
   /** Employer slug -> name, as the OA library lists them. */
   companyNames?: ReadonlyMap<string, string>;
+  /** Streak freezes bought with points (bootstrap purchasedFreezes), as on the calendar. */
+  bought?: readonly number[];
 }) {
   const solved = new Set(history.flatMap((item) => (item.firstAcAt ? [item.problemId] : [])));
   const perStop = new Map<string, number>();
@@ -70,7 +73,7 @@ export function progressBadges({
   const weeks = Math.max(26, Math.ceil((now - first) / WEEK) + 2);
   return achievements({
     stops: sections.map((s) => ({ ...s, solved: Math.max(s.solved, perStop.get(s.slug) ?? 0) })),
-    bestStreak: practiceStats(acActivity, new Date(now).toDateString(), false, [], weeks).best,
+    bestStreak: practiceStats(acActivity, new Date(now).toDateString(), false, [], weeks, bought).best,
     acTimes: acActivity.map((a) => a.created_at),
     companies: [...companies.values()],
     perfectMock:

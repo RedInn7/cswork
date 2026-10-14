@@ -58,8 +58,9 @@ export function stopLabel(slug: string, t: T) {
 }
 
 /**
- * Per member: the streak (practiceStats, freezes included, so it matches the member's own
- * calendar), today's count and the last 14 local days. `dayStamp` is Date#toDateString().
+ * Per member: the streak (practiceStats with the free freezes; freezes bought with points
+ * stay private, so a buyer's own calendar may run longer), today's count and the last 14
+ * local days. `dayStamp` is Date#toDateString().
  */
 export function memberBoard(member: Member, dayStamp: string) {
   const midnight = new Date(dayStamp).getTime();
@@ -726,8 +727,8 @@ function GroupPage({ id, navigate, t, english }: { id: string; navigate: Navigat
         <p className="group-legend">
           <Snowflake size={12} aria-hidden="true" />
           {t(
-            '每天至少通过一题算打卡；冰蓝格是断签保护日（每月 2 次，和个人日历一样）。',
-            'Solving at least one problem checks you in. Ice-blue days are streak freezes (2 a month, as on your own calendar).',
+            '每天至少通过一题算打卡；冰蓝格是断签保护日（每月免费 2 次；用积分买的补签卡只计入个人日历）。',
+            'Solving at least one problem checks you in. Ice-blue days are streak freezes (the free 2 a month; ones bought with points count on your own calendar only).',
           )}
         </p>
       </section>

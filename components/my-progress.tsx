@@ -146,9 +146,10 @@ export function MyProgress({
             userId: personId,
             now: data.now,
             companyNames: data.companyNames,
+            bought: bought ?? boot.purchasedFreezes,
           })
         : [],
-    [data, boot.problems, personId],
+    [data, boot.problems, personId, bought, boot.purchasedFreezes],
   );
   const noted = (data?.notes ?? []).flatMap((n) => {
     const id = problemOf(n.target);
