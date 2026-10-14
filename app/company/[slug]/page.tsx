@@ -8,6 +8,7 @@ import { breadcrumbJsonLd, companyPageTitle, seoMetadata } from '@/lib/seo';
 import { CompanyStatsCard } from '@/components/company-stats-card';
 import { companyHub } from '@/lib/server/company-hub';
 import { companyStats } from '@/lib/server/company-stats';
+import { companyMemberExperiences, memberExperiencePath, memberIdOf } from '@/lib/server/experience-submissions';
 import { library } from '@/lib/server/content-library';
 import { requestLocale } from '@/lib/server/locale';
 import { oaReadyProblems } from '@/lib/server/oa-judge';
@@ -32,7 +33,17 @@ const load = cache(async (slug: string) => {
   const lead = zh
     ? `${name} 面试准备：${parts.join('、')}${hub.leetcode.length ? '，以及面经里出现最多的 LeetCode 题' : ''}。在 CSWork 在线写代码、提交评测，或来一场限时模拟。`
     : `Prepare for ${name}: ${parts.join(', ')}${hub.leetcode.length ? ', and the LeetCode problems candidates report most' : ''}. Code and submit online on CSWork, or take a timed mock.`;
-  return { ...hub, stats: companyStats(library(), hub.company.library), ready, locale, lead };
+  // Approved member posts lead the experiences, marked as such (lib/server/experience-submissions.ts).
+  const members = companyMemberExperiences(hub.company.slug, 3);
+  return {
+    ...hub,
+    experiences: [...members.items, ...hub.experiences].slice(0, 6),
+    experienceTotal: hub.company.experiences + members.total,
+    stats: companyStats(library(), hub.company.library),
+    ready,
+    locale,
+    lead,
+  };
 });
 
 export async function generateMetadata({ params }: Props) {
@@ -92,16 +103,16 @@ function SectionHead({ id, title, count, all, zh }: { id: string; title: string;
 }
 
 export default async function CompanyPage({ params }: Props) {
-  const { company, oa, leetcode, experiences, questions, mockOa, mockInterview, stats, ready, locale, lead } = await load(
+  const { company, oa, leetcode, experiences, experienceTotal, questions, mockOa, mockInterview, stats, ready, locale, lead } = await load(
     (await params).slug,
   );
   const zh = locale === 'zh';
   // SPA lists filter by one library spelling: the employer's most used one.
-  const spelling = company.library[0];
+  const spelling = company.library[0] ?? company.slug;
   const stops = [
     oa.length && { id: 'oa', label: zh ? 'OA 真题' : 'OA', n: company.oa },
     leetcode.length && { id: 'leetcode', label: zh ? '高频 LeetCode' : 'Top LeetCode', n: leetcode.length },
-    experiences.length && { id: 'experiences', label: zh ? '面经' : 'Experiences', n: company.experiences },
+    experiences.length && { id: 'experiences', label: zh ? '面经' : 'Experiences', n: experienceTotal },
     questions.length && { id: 'questions', label: zh ? '面试题' : 'Questions', n: company.questions },
   ].filter((s): s is { id: string; label: string; n: number } => !!s);
   return (
@@ -243,14 +254,19 @@ export default async function CompanyPage({ params }: Props) {
           <SectionHead
             id="experiences"
             title={zh ? '最新面经' : 'Latest interview experiences'}
-            count={zh ? `${company.experiences} 篇` : `${company.experiences}`}
+            count={zh ? `${experienceTotal} 篇` : `${experienceTotal}`}
             all={spa({ view: 'experiences', company: spelling })}
             zh={zh}
           />
           <ul className="company-hub-cards">
             {experiences.map((item) => (
               <li key={item.slug}>
-                <a href={publicLibraryPath(item.type, item.slug)}>{item.title}</a>
+                {'member' in item && (
+                  <span className="xs-badge">{zh ? '学员投稿' : 'Member submission'}</span>
+                )}
+                <a href={'member' in item ? memberExperiencePath(memberIdOf(item.slug)!) : publicLibraryPath(item.type, item.slug)}>
+                  {item.title}
+                </a>
                 <Facts item={item} zh={zh} />
                 {item.role && <p className="company-hub-role">{item.role}</p>}
               </li>

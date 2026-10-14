@@ -19,6 +19,7 @@ import { handleAiTutor } from './ai-tutor';
 import { problemStats } from './problem-stats';
 import { handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { handleSolutionPosts } from './solution-posts';
+import { handleExperienceSubmissions } from './experience-submissions';
 import { curatedHint } from '@/lib/ling-curated';
 import { companyTagIndex } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
@@ -76,6 +77,7 @@ export async function handleOj(
   if (resource === 'mock-oa') return handleMockOa(request, p, path.slice(1));
   if (resource === 'lists' || resource === 'profile' || resource === 'reports')
     return handleLearnerCloud(request, p, path);
+  if (resource === 'experiences') return handleExperienceSubmissions(request, p, path.slice(1));
   if (request.method === 'GET' && resource === 'speedrun' && !id)
     return handleSpeedrun(request, p);
   if (request.method === 'GET' && resource === 'problems' && id && !action) {

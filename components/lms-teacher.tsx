@@ -33,6 +33,7 @@ import { CourseAdmin } from './course-admin';
 import { OjAdmin } from './oj-admin';
 import { CommerceAdmin } from './commerce-admin';
 import { PostModeration } from './solution-posts';
+import { ExperienceReview } from './experience-review';
 
 export function TeacherView({
   boot,
@@ -76,6 +77,7 @@ export function TeacherView({
           <TabsTrigger value="services">
             {t('服务状态', 'Service status')}
           </TabsTrigger>
+          <TabsTrigger value="experiences">{t('面经审核', 'Experience review')}</TabsTrigger>
         </TabsList>
         <TabsContent value="queue">
           <TeacherQueue boot={boot} navigate={navigate} />
@@ -102,6 +104,9 @@ export function TeacherView({
         </TabsContent>
         <TabsContent value="services">
           <Services boot={boot} refresh={refresh} />
+        </TabsContent>
+        <TabsContent value="experiences">
+          <ExperienceReview />
         </TabsContent>
       </Tabs>
     </>
