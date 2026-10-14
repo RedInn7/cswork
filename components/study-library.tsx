@@ -1278,558 +1278,559 @@ export function StudyLibrary({
           }}
         />
       ) : (
+        // The line view; its children keep the indentation they had before the contest view.
         <>
-          <fieldset className="study-filters" disabled={roundBusy}>
-            <legend className="sr-only">{t('筛选题目', 'Filter problems')}</legend>
-            <div className="study-search">
-              <Search size={17} />
-              <Input
-                aria-label={t('搜索灵神题单', 'Search curated problems')}
-                placeholder={t(
-                  '搜索题号、中英文名称…',
-                  'Search number or Chinese / English title…',
-                )}
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-              />
-            </div>
-            <div
-              className="route-stage"
-              role="radiogroup"
-              aria-labelledby="route-stage-label"
-            >
-              <span id="route-stage-label">{t('阶段', 'Stage')}</span>
-              {['', '基础', '核心', '进阶'].map((value) => (
-                <label key={value || 'all'}>
-                  <input
-                    type="radio"
-                    name="route-stage"
-                    value={value}
-                    checked={stage === value}
-                    onChange={() => {
-                      setStage(value);
-                      setPage(1);
-                    }}
-                  />
-                  <span>{value ? stageNames[value] : t('全部', 'All')}</span>
-                </label>
-              ))}
-            </div>
-            <label>
-              {t('难度', 'Difficulty')}
-              <select
-                value={difficulty}
-                onChange={(event) => {
-                  setDifficulty(event.target.value);
-                  setPage(1);
-                }}
-              >
-                <option value="">{t('全部难度', 'All difficulties')}</option>
-                <option value="简单">{t('简单', 'Easy')}</option>
-                <option value="中等">{t('中等', 'Medium')}</option>
-                <option value="困难">{t('困难', 'Hard')}</option>
-              </select>
-            </label>
-            <label>
-              {t('进度', 'Progress')}
-              <select
-                value={status}
-                onChange={(event) => {
-                  setStatus(event.target.value);
-                  setPage(1);
-                }}
-              >
-                <option value="">{t('全部题目', 'All problems')}</option>
-                {/* Round progress filters only mean something with an account. */}
-                {member && (
-                  <>
-                    <option value="todo">
-                      {t('尚未通过', 'Not solved this round')}
-                    </option>
-                    <option value="solved">
-                      {t('已通过', 'Solved this round')}
-                    </option>
-                    <option value="attempted">
-                      {t('已尝试 · 未通过', 'Attempted · Not solved')}
-                    </option>
-                    <option value="not_started">{t('未开始', 'Not started')}</option>
-                    <option value="starred">{t('已收藏', 'Starred')}</option>
-                    <option value="redo">{t('待重做', 'To redo')}</option>
-                  </>
-                )}
-                <option value="ready">{t('可站内判题', 'Ready to submit')}</option>
-              </select>
-            </label>
-            {!!data?.companies?.length && (
-              <label>
-                {t('公司', 'Company')}
-                <select
-                  value={company}
-                  onChange={(event) => {
-                    setCompany(event.target.value);
-                    setPage(1);
-                  }}
-                >
-                  <option value="">{t('全部公司', 'All companies')}</option>
-                  {data.companies.map((c) => (
-                    <option key={c.slug} value={c.slug}>
-                      {c.name} ({c.count})
-                    </option>
-                  ))}
-                </select>
-              </label>
+      <fieldset className="study-filters" disabled={roundBusy}>
+        <legend className="sr-only">{t('筛选题目', 'Filter problems')}</legend>
+        <div className="study-search">
+          <Search size={17} />
+          <Input
+            aria-label={t('搜索灵神题单', 'Search curated problems')}
+            placeholder={t(
+              '搜索题号、中英文名称…',
+              'Search number or Chinese / English title…',
             )}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+        </div>
+        <div
+          className="route-stage"
+          role="radiogroup"
+          aria-labelledby="route-stage-label"
+        >
+          <span id="route-stage-label">{t('阶段', 'Stage')}</span>
+          {['', '基础', '核心', '进阶'].map((value) => (
+            <label key={value || 'all'}>
+              <input
+                type="radio"
+                name="route-stage"
+                value={value}
+                checked={stage === value}
+                onChange={() => {
+                  setStage(value);
+                  setPage(1);
+                }}
+              />
+              <span>{value ? stageNames[value] : t('全部', 'All')}</span>
+            </label>
+          ))}
+        </div>
+        <label>
+          {t('难度', 'Difficulty')}
+          <select
+            value={difficulty}
+            onChange={(event) => {
+              setDifficulty(event.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="">{t('全部难度', 'All difficulties')}</option>
+            <option value="简单">{t('简单', 'Easy')}</option>
+            <option value="中等">{t('中等', 'Medium')}</option>
+            <option value="困难">{t('困难', 'Hard')}</option>
+          </select>
+        </label>
+        <label>
+          {t('进度', 'Progress')}
+          <select
+            value={status}
+            onChange={(event) => {
+              setStatus(event.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="">{t('全部题目', 'All problems')}</option>
+            {/* Round progress filters only mean something with an account. */}
+            {member && (
+              <>
+                <option value="todo">
+                  {t('尚未通过', 'Not solved this round')}
+                </option>
+                <option value="solved">
+                  {t('已通过', 'Solved this round')}
+                </option>
+                <option value="attempted">
+                  {t('已尝试 · 未通过', 'Attempted · Not solved')}
+                </option>
+                <option value="not_started">{t('未开始', 'Not started')}</option>
+                <option value="starred">{t('已收藏', 'Starred')}</option>
+                <option value="redo">{t('待重做', 'To redo')}</option>
+              </>
+            )}
+            <option value="ready">{t('可站内判题', 'Ready to submit')}</option>
+          </select>
+        </label>
+        {!!data?.companies?.length && (
+          <label>
+            {t('公司', 'Company')}
+            <select
+              value={company}
+              onChange={(event) => {
+                setCompany(event.target.value);
+                setPage(1);
+              }}
+            >
+              <option value="">{t('全部公司', 'All companies')}</option>
+              {data.companies.map((c) => (
+                <option key={c.slug} value={c.slug}>
+                  {c.name} ({c.count})
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+        <button
+          type="button"
+          className="study-pick-one"
+          disabled={picking}
+          onClick={pickOne}
+        >
+          <Shuffle size={15} aria-hidden="true" /> {t('随机一题', 'Pick one')}
+        </button>
+      </fieldset>
+      <fieldset className="study-sorts" disabled={roundBusy}>
+        <legend className="sr-only">{t('排序与更多筛选', 'Order and more filters')}</legend>
+        <label>
+          {t('排序', 'Order')}
+          <select
+            value={!order ? '' : order === 'frequency' ? 'frequency' : `${order}:${dir}`}
+            onChange={(event) => {
+              const [value, way = 'asc'] = event.target.value.split(':');
+              setSort(value);
+              setDir(way);
+              setPage(1);
+            }}
+          >
+            <option value="">{t('线路顺序', 'Line order')}</option>
+            {company && (
+              <option value="frequency">
+                {t('该公司报告次数', 'Most reported here')}
+              </option>
+            )}
+            <option value="rating:asc">{t('难度分 低→高', 'Rating, low to high')}</option>
+            <option value="rating:desc">{t('难度分 高→低', 'Rating, high to low')}</option>
+            <option value="difficulty:asc">{t('难度 易→难', 'Difficulty, easy first')}</option>
+            <option value="difficulty:desc">{t('难度 难→易', 'Difficulty, hard first')}</option>
+            <option value="acceptance:desc">{t('通过率 高→低', 'Acceptance, high to low')}</option>
+            <option value="acceptance:asc">{t('通过率 低→高', 'Acceptance, low to high')}</option>
+            <option value="number:asc">{t('题号 小→大', 'Number, ascending')}</option>
+            <option value="number:desc">{t('题号 大→小', 'Number, descending')}</option>
+          </select>
+        </label>
+        <label>
+          {t('难度分', 'Rating')}
+          <select
+            value={band}
+            onChange={(event) => {
+              setBand(event.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="">{t('不限', 'Any')}</option>
+            {BANDS.map((value) => {
+              const [from, to] = value.split('-');
+              return (
+                <option key={value} value={value}>
+                  {from === '0' ? `< ${Number(to) + 1}` : to ? `${from}–${to}` : `≥ ${from}`}
+                </option>
+              );
+            })}
+          </select>
+        </label>
+        {member && (lists.length > 0 || !!list) && (
+          <label>
+            {t('我的题单', 'My lists')}
+            <select
+              value={list}
+              onChange={(event) => {
+                setList(event.target.value);
+                setPage(1);
+              }}
+            >
+              <option value="">{t('全部', 'All')}</option>
+              {list && !lists.some((l) => l.id === list) && (
+                <option value={list}>{t('链接里的题单', 'The linked list')}</option>
+              )}
+              {lists.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.title}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+        {member && (
+          <label>
+            {t('通过月份', 'Solved in')}
+            <input
+              type="month"
+              value={solvedMonth}
+              max={new Date().toISOString().slice(0, 7)}
+              onChange={(event) => {
+                setSolvedMonth(/^\d{4}-\d{2}$/.test(event.target.value) ? event.target.value : '');
+                setPage(1);
+              }}
+            />
+          </label>
+        )}
+      </fieldset>
+      <p className="study-pick-message" role="status">
+        {pickMessage}
+      </p>
+      {selectedStop && (
+        <div className="route-selected">
+          <span className="route-code">{selectedStop.code}</span>
+          <strong>{stopName(selectedStop)}</strong>
+          {!!selectedStop.companies && (
+            <span className="route-asked">{askedText(selectedStop, !english)}</span>
+          )}
+          {member ? (
+            <span className="route-selected-count">
+              {t(
+                `已通过 ${selectedStop.solved} / ${selectedStop.total}`,
+                `${selectedStop.solved} of ${selectedStop.total} solved`,
+              )}
+              <meter
+                min={0}
+                max={selectedStop.total || 1}
+                value={selectedStop.solved}
+                aria-hidden="true"
+              />
+              {selectedStop.total - selectedStop.solved > 0 &&
+                selectedStop.total - selectedStop.solved <= 3 && (
+                  <span className="route-to-go">
+                    {t(
+                      `还差 ${selectedStop.total - selectedStop.solved} 题`,
+                      `${selectedStop.total - selectedStop.solved} to go`,
+                    )}
+                  </span>
+                )}
+            </span>
+          ) : (
+            <span className="route-selected-count">
+              {t(
+                `本站 ${selectedStop.total} 道题`,
+                `${selectedStop.total} problems at this stop`,
+              )}
+            </span>
+          )}
+          {selectedStop.stages && (
+            <span className="route-selected-stages">
+              {['基础', '核心', '进阶'].map((value) =>
+                selectedStop.stages?.[value]?.total ? (
+                  <span key={value}>
+                    {stageNames[value]} {selectedStop.stages[value].total}
+                  </span>
+                ) : null,
+              )}
+            </span>
+          )}
+          <span className="route-selected-actions">
+            {member &&
+              (() => {
+                const resume = stale
+                  ? undefined
+                  : data?.items.find((item) => canJudge(item) && !item.solved);
+                return resume ? (
+                  <Button
+                    onClick={() => {
+                      rememberProblemSequence(
+                        data!.items.flatMap((row) =>
+                          canJudge(row) ? [row.judgeProblemId!] : [],
+                        ),
+                      );
+                      navigate('problem', { problem: resume.judgeProblemId! });
+                    }}
+                  >
+                    {t('从本站继续', 'Continue at this stop')}
+                  </Button>
+                ) : null;
+              })()}
             <button
               type="button"
-              className="study-pick-one"
-              disabled={picking}
-              onClick={pickOne}
+              className="route-rating-sort"
+              aria-pressed={order === 'rating'}
+              onClick={() => {
+                setSort(order === 'rating' ? '' : 'rating');
+                setDir('asc');
+                setPage(1);
+              }}
             >
-              <Shuffle size={15} aria-hidden="true" /> {t('随机一题', 'Pick one')}
+              {t('按难度分排序', 'Sort by rating')}
             </button>
-          </fieldset>
-          <fieldset className="study-sorts" disabled={roundBusy}>
-            <legend className="sr-only">{t('排序与更多筛选', 'Order and more filters')}</legend>
-            <label>
-              {t('排序', 'Order')}
-              <select
-                value={!order ? '' : order === 'frequency' ? 'frequency' : `${order}:${dir}`}
-                onChange={(event) => {
-                  const [value, way = 'asc'] = event.target.value.split(':');
-                  setSort(value);
-                  setDir(way);
-                  setPage(1);
-                }}
-              >
-                <option value="">{t('线路顺序', 'Line order')}</option>
-                {company && (
-                  <option value="frequency">
-                    {t('该公司报告次数', 'Most reported here')}
-                  </option>
-                )}
-                <option value="rating:asc">{t('难度分 低→高', 'Rating, low to high')}</option>
-                <option value="rating:desc">{t('难度分 高→低', 'Rating, high to low')}</option>
-                <option value="difficulty:asc">{t('难度 易→难', 'Difficulty, easy first')}</option>
-                <option value="difficulty:desc">{t('难度 难→易', 'Difficulty, hard first')}</option>
-                <option value="acceptance:desc">{t('通过率 高→低', 'Acceptance, high to low')}</option>
-                <option value="acceptance:asc">{t('通过率 低→高', 'Acceptance, low to high')}</option>
-                <option value="number:asc">{t('题号 小→大', 'Number, ascending')}</option>
-                <option value="number:desc">{t('题号 大→小', 'Number, descending')}</option>
-              </select>
-            </label>
-            <label>
-              {t('难度分', 'Rating')}
-              <select
-                value={band}
-                onChange={(event) => {
-                  setBand(event.target.value);
-                  setPage(1);
-                }}
-              >
-                <option value="">{t('不限', 'Any')}</option>
-                {BANDS.map((value) => {
-                  const [from, to] = value.split('-');
-                  return (
-                    <option key={value} value={value}>
-                      {from === '0' ? `< ${Number(to) + 1}` : to ? `${from}–${to}` : `≥ ${from}`}
-                    </option>
-                  );
-                })}
-              </select>
-            </label>
-            {member && (lists.length > 0 || !!list) && (
-              <label>
-                {t('我的题单', 'My lists')}
-                <select
-                  value={list}
-                  onChange={(event) => {
-                    setList(event.target.value);
-                    setPage(1);
-                  }}
-                >
-                  <option value="">{t('全部', 'All')}</option>
-                  {list && !lists.some((l) => l.id === list) && (
-                    <option value={list}>{t('链接里的题单', 'The linked list')}</option>
-                  )}
-                  {lists.map((l) => (
-                    <option key={l.id} value={l.id}>
-                      {l.title}
-                    </option>
-                  ))}
-                </select>
-              </label>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const slug = section;
+                selectStop('');
+                focusStop(slug);
+              }}
+            >
+              {t('回到全线', 'Show the whole line')}
+            </Button>
+          </span>
+        </div>
+      )}
+      <div className="study-result-summary" aria-live="polite">
+        {loading
+          ? t('正在查找题目…', 'Finding problems…')
+          : error
+            ? t('暂时无法加载', 'Unable to load right now')
+            : !search && !difficulty && !stage && !status && !section && !company && !band && !list && !solvedMonth
+              ? t(
+                  `全线共 ${data?.total || 0} 道题`,
+                  `${data?.total || 0} problems on the line`,
+                )
+              : section && !search && !difficulty && !stage && !status && !company && !band && !list && !solvedMonth
+                ? t(
+                    `本站 ${data?.total || 0} 道题`,
+                    `${data?.total || 0} problems at this stop`,
+                  )
+                : t(`共 ${data?.total || 0} 道题`, `${data?.total || 0} problems`)}
+      </div>
+      {error ? (
+        <div className="study-state" role="alert">
+          <p>{t(error, englishMessage(error))}</p>
+          <Button variant="outline" onClick={() => setRetry((n) => n + 1)}>
+            {t('重新加载', 'Reload')}
+          </Button>
+        </div>
+      ) : loading && (!data || dataQuery !== currentQuery) ? (
+        // Background refreshes (window focus, judging polls) keep the current list;
+        // a new filter or page never shows the previous query's rows as if current.
+        <output className="study-state">
+          {t('正在加载题单…', 'Loading collection…')}
+        </output>
+      ) : !data?.items.length ? (
+        <div className="study-state">
+          <h3>{t('没有找到匹配的题目', 'No matching problems')}</h3>
+          <p>
+            {t(
+              '换个关键词，或清除筛选后再试。',
+              'Try another search or clear your filters.',
             )}
-            {member && (
-              <label>
-                {t('通过月份', 'Solved in')}
-                <input
-                  type="month"
-                  value={solvedMonth}
-                  max={new Date().toISOString().slice(0, 7)}
-                  onChange={(event) => {
-                    setSolvedMonth(/^\d{4}-\d{2}$/.test(event.target.value) ? event.target.value : '');
-                    setPage(1);
-                  }}
-                />
-              </label>
-            )}
-          </fieldset>
-          <p className="study-pick-message" role="status">
-            {pickMessage}
           </p>
-          {selectedStop && (
-            <div className="route-selected">
-              <span className="route-code">{selectedStop.code}</span>
-              <strong>{stopName(selectedStop)}</strong>
-              {!!selectedStop.companies && (
-                <span className="route-asked">{askedText(selectedStop, !english)}</span>
-              )}
-              {member ? (
-                <span className="route-selected-count">
-                  {t(
-                    `已通过 ${selectedStop.solved} / ${selectedStop.total}`,
-                    `${selectedStop.solved} of ${selectedStop.total} solved`,
-                  )}
-                  <meter
-                    min={0}
-                    max={selectedStop.total || 1}
-                    value={selectedStop.solved}
-                    aria-hidden="true"
-                  />
-                  {selectedStop.total - selectedStop.solved > 0 &&
-                    selectedStop.total - selectedStop.solved <= 3 && (
-                      <span className="route-to-go">
-                        {t(
-                          `还差 ${selectedStop.total - selectedStop.solved} 题`,
-                          `${selectedStop.total - selectedStop.solved} to go`,
+          <Button
+            variant="outline"
+            onClick={() => {
+              setQuery('');
+              setSearch('');
+              setDifficulty('');
+              setSection('');
+              setStage('');
+              setStatus('');
+              setCompany('');
+              setBand('');
+              setList('');
+              setSolvedMonth('');
+              setPage(1);
+            }}
+          >
+            {t('清除筛选', 'Clear filters')}
+          </Button>
+        </div>
+      ) : (
+        <>
+          <div className="study-list" aria-busy={loading}>
+            {data.items.map((item, index) => {
+              const slug = item.selection?.sectionSlug;
+              const stop =
+                lineOrder && !section && slug && slug !== data.items[index - 1]?.selection?.sectionSlug
+                  ? stops.find((candidate) => candidate.slug === slug)
+                  : undefined;
+              const isNext =
+                !!item.judgeProblemId &&
+                item.judgeProblemId === (nextProblemId ?? next?.judgeProblemId);
+              return (
+                <Fragment key={item.id}>
+                  {stop && (
+                    <h3 className="route-heading">
+                      <span className="route-code">{stop.code}</span>
+                      <span className="route-heading-name">{stopName(stop)}</span>
+                      {!!stop.companies && (
+                        <span className="route-asked">{askedText(stop, !english)}</span>
+                      )}
+                      <span className="route-count">
+                        {member ? (
+                          <>
+                            {stop.solved}/{stop.total}
+                            <meter
+                              min={0}
+                              max={stop.total || 1}
+                              value={stop.solved}
+                              aria-hidden="true"
+                            />
+                          </>
+                        ) : (
+                          t(`${stop.total} 道题`, `${stop.total} problems`)
                         )}
                       </span>
-                    )}
-                </span>
-              ) : (
-                <span className="route-selected-count">
-                  {t(
-                    `本站 ${selectedStop.total} 道题`,
-                    `${selectedStop.total} problems at this stop`,
-                  )}
-                </span>
-              )}
-              {selectedStop.stages && (
-                <span className="route-selected-stages">
-                  {['基础', '核心', '进阶'].map((value) =>
-                    selectedStop.stages?.[value]?.total ? (
-                      <span key={value}>
-                        {stageNames[value]} {selectedStop.stages[value].total}
-                      </span>
-                    ) : null,
-                  )}
-                </span>
-              )}
-              <span className="route-selected-actions">
-                {member &&
-                  (() => {
-                    const resume = stale
-                      ? undefined
-                      : data?.items.find((item) => canJudge(item) && !item.solved);
-                    return resume ? (
-                      <Button
-                        onClick={() => {
-                          rememberProblemSequence(
-                            data!.items.flatMap((row) =>
-                              canJudge(row) ? [row.judgeProblemId!] : [],
-                            ),
-                          );
-                          navigate('problem', { problem: resume.judgeProblemId! });
-                        }}
-                      >
-                        {t('从本站继续', 'Continue at this stop')}
-                      </Button>
-                    ) : null;
-                  })()}
-                <button
-                  type="button"
-                  className="route-rating-sort"
-                  aria-pressed={order === 'rating'}
-                  onClick={() => {
-                    setSort(order === 'rating' ? '' : 'rating');
-                    setDir('asc');
-                    setPage(1);
-                  }}
-                >
-                  {t('按难度分排序', 'Sort by rating')}
-                </button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    const slug = section;
-                    selectStop('');
-                    focusStop(slug);
-                  }}
-                >
-                  {t('回到全线', 'Show the whole line')}
-                </Button>
-              </span>
-            </div>
-          )}
-          <div className="study-result-summary" aria-live="polite">
-            {loading
-              ? t('正在查找题目…', 'Finding problems…')
-              : error
-                ? t('暂时无法加载', 'Unable to load right now')
-                : !search && !difficulty && !stage && !status && !section && !company && !band && !list && !solvedMonth
-                  ? t(
-                      `全线共 ${data?.total || 0} 道题`,
-                      `${data?.total || 0} problems on the line`,
-                    )
-                  : section && !search && !difficulty && !stage && !status && !company && !band && !list && !solvedMonth
-                    ? t(
-                        `本站 ${data?.total || 0} 道题`,
-                        `${data?.total || 0} problems at this stop`,
-                      )
-                    : t(`共 ${data?.total || 0} 道题`, `${data?.total || 0} problems`)}
-          </div>
-          {error ? (
-            <div className="study-state" role="alert">
-              <p>{t(error, englishMessage(error))}</p>
-              <Button variant="outline" onClick={() => setRetry((n) => n + 1)}>
-                {t('重新加载', 'Reload')}
-              </Button>
-            </div>
-          ) : loading && (!data || dataQuery !== currentQuery) ? (
-            // Background refreshes (window focus, judging polls) keep the current list;
-            // a new filter or page never shows the previous query's rows as if current.
-            <output className="study-state">
-              {t('正在加载题单…', 'Loading collection…')}
-            </output>
-          ) : !data?.items.length ? (
-            <div className="study-state">
-              <h3>{t('没有找到匹配的题目', 'No matching problems')}</h3>
-              <p>
-                {t(
-                  '换个关键词，或清除筛选后再试。',
-                  'Try another search or clear your filters.',
-                )}
-              </p>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setQuery('');
-                  setSearch('');
-                  setDifficulty('');
-                  setSection('');
-                  setStage('');
-                  setStatus('');
-                  setCompany('');
-                  setBand('');
-                  setList('');
-                  setSolvedMonth('');
-                  setPage(1);
-                }}
-              >
-                {t('清除筛选', 'Clear filters')}
-              </Button>
-            </div>
-          ) : (
-            <>
-              <div className="study-list" aria-busy={loading}>
-                {data.items.map((item, index) => {
-                  const slug = item.selection?.sectionSlug;
-                  const stop =
-                    lineOrder && !section && slug && slug !== data.items[index - 1]?.selection?.sectionSlug
-                      ? stops.find((candidate) => candidate.slug === slug)
-                      : undefined;
-                  const isNext =
-                    !!item.judgeProblemId &&
-                    item.judgeProblemId === (nextProblemId ?? next?.judgeProblemId);
-                  return (
-                    <Fragment key={item.id}>
-                      {stop && (
-                        <h3 className="route-heading">
-                          <span className="route-code">{stop.code}</span>
-                          <span className="route-heading-name">{stopName(stop)}</span>
-                          {!!stop.companies && (
-                            <span className="route-asked">{askedText(stop, !english)}</span>
-                          )}
-                          <span className="route-count">
-                            {member ? (
-                              <>
-                                {stop.solved}/{stop.total}
-                                <meter
-                                  min={0}
-                                  max={stop.total || 1}
-                                  value={stop.solved}
-                                  aria-hidden="true"
-                                />
-                              </>
-                            ) : (
-                              t(`${stop.total} 道题`, `${stop.total} problems`)
+                      {member &&
+                        stop.total - stop.solved > 0 &&
+                        stop.total - stop.solved <= 3 && (
+                          <span className="route-to-go">
+                            {t(
+                              `还差 ${stop.total - stop.solved} 题`,
+                              `${stop.total - stop.solved} to go`,
                             )}
                           </span>
-                          {member &&
-                            stop.total - stop.solved > 0 &&
-                            stop.total - stop.solved <= 3 && (
-                              <span className="route-to-go">
-                                {t(
-                                  `还差 ${stop.total - stop.solved} 题`,
-                                  `${stop.total - stop.solved} to go`,
-                                )}
-                              </span>
-                            )}
-                          <button
-                            type="button"
-                            className="route-only"
-                            onClick={() => {
-                              selectStop(stop.slug);
-                              focusStop(stop.slug);
-                            }}
-                          >
-                            {t('只看这一站', 'This stop only')}
-                          </button>
-                        </h3>
-                      )}
+                        )}
                       <button
                         type="button"
-                        className="study-row"
-                        data-next={isNext || undefined}
-                        data-progress={
-                          item.solved ? 'solved' : item.progressStatus || 'not_started'
-                        }
+                        className="route-only"
                         onClick={() => {
-                          // Statements need an account; ask to sign in rather than open an empty page.
-                          if (!member) {
-                            window.dispatchEvent(new Event('cswork:auth-required'));
-                            return;
-                          }
-                          if (canJudge(item)) {
-                            rememberProblemSequence(
-                              data.items.flatMap((row) =>
-                                canJudge(row) ? [row.judgeProblemId!] : [],
-                              ),
-                            );
-                            navigate('problem', { problem: item.judgeProblemId! });
-                          } else setSelected(item.id);
+                          selectStop(stop.slug);
+                          focusStop(stop.slug);
                         }}
                       >
-                        <span
-                          className="study-progress"
-                          data-progress={
-                            item.solved
-                              ? 'solved'
-                              : item.progressStatus || 'not_started'
-                          }
-                          title={
-                            item.solved
-                              ? t('已通过', 'Solved')
-                              : item.judging
-                                ? t('判题中', 'Judging')
-                                : item.progressStatus === 'attempted'
-                                  ? t('未通过', 'Not solved')
-                                  : t('未开始', 'Not started')
-                          }
-                        >
-                          {item.solved ? (
-                            <Check size={18} aria-hidden="true" />
-                          ) : item.judging ? (
-                            <Clock3 size={18} aria-hidden="true" />
-                          ) : item.progressStatus === 'attempted' ? (
-                            <Circle size={18} aria-hidden="true" />
-                          ) : null}
-                          <span className="sr-only">
-                            {item.solved
-                              ? t('已通过', 'Solved')
-                              : item.judging
-                                ? t('判题中', 'Judging')
-                                : item.progressStatus === 'attempted'
-                                  ? t('未通过', 'Not solved')
-                                  : t('未开始', 'Not started')}
-                          </span>
-                        </span>
-                        <span
-                          className="study-row-main"
-                          title={`${item.number}. ${title(item, english)}`}
-                        >
-                          <strong>
-                            {isNext && (
-                              <span className="route-next-pill">
-                                {t('下一题', 'Next')}
-                              </span>
-                            )}
-                            <span className="study-number">{item.number}.</span>{' '}
-                            {title(item, english)}
-                            {item.starred && (
-                              <>
-                                <Star className="study-star" size={14} aria-hidden="true" />
-                                <span className="sr-only">{t('（已收藏）', ' (starred)')}</span>
-                              </>
-                            )}
-                          </strong>
-                          {pips(item.selection?.stage)}
-                          <RatingBadge rating={item.rating} english={english} />
-                          {!!item.companies?.length && (
-                            <CompanyMarks companies={item.companies} english={english} />
-                          )}
-                          {item.acceptance !== undefined && (
-                            <small className="study-acceptance">
-                              {t(`通过率 ${item.acceptance}%`, `${item.acceptance}% accepted`)}
-                            </small>
-                          )}
-                          {!!item.importedSources?.length && (
-                            <small>
-                              {item.solvedLocally
-                                ? t('本站通过 · ', 'Local AC · ')
-                                : ''}
-                              {item.importedSources
-                                .map((source) =>
-                                  source === 'cn'
-                                    ? t('力扣国区通过', 'LeetCode CN AC')
-                                    : t('LeetCode 美区通过', 'LeetCode US AC'),
-                                )
-                                .join(' · ')}
-                            </small>
-                          )}
-                        </span>
-                        <span
-                          className="study-level"
-                          data-level={item.difficulty.toLowerCase()}
-                        >
-                          {difficultyName(item.difficulty)}
-                        </span>
+                        {t('只看这一站', 'This stop only')}
                       </button>
-                    </Fragment>
-                  );
-                })}
-              </div>
-              <nav
-                className="study-pagination"
-                aria-label={t('题单分页', 'Problem pagination')}
-              >
-                <Button
-                  variant="outline"
-                  disabled={page <= 1}
-                  onClick={() => setPage((n) => n - 1)}
-                  aria-label={t('上一页', 'Previous page')}
-                >
-                  <ChevronLeft size={16} />
-                  {t('上一页', 'Previous')}
-                </Button>
-                <span>
-                  {t(
-                    `第 ${data.page} / ${pages} 页`,
-                    `Page ${data.page} of ${pages}`,
+                    </h3>
                   )}
-                </span>
-                <Button
-                  variant="outline"
-                  disabled={page >= pages}
-                  onClick={() => setPage((n) => n + 1)}
-                  aria-label={t('下一页', 'Next page')}
-                >
-                  {t('下一页', 'Next')}
-                  <ChevronRight size={16} />
-                </Button>
-              </nav>
-            </>
-          )}
+                  <button
+                    type="button"
+                    className="study-row"
+                    data-next={isNext || undefined}
+                    data-progress={
+                      item.solved ? 'solved' : item.progressStatus || 'not_started'
+                    }
+                    onClick={() => {
+                      // Statements need an account; ask to sign in rather than open an empty page.
+                      if (!member) {
+                        window.dispatchEvent(new Event('cswork:auth-required'));
+                        return;
+                      }
+                      if (canJudge(item)) {
+                        rememberProblemSequence(
+                          data.items.flatMap((row) =>
+                            canJudge(row) ? [row.judgeProblemId!] : [],
+                          ),
+                        );
+                        navigate('problem', { problem: item.judgeProblemId! });
+                      } else setSelected(item.id);
+                    }}
+                  >
+                    <span
+                      className="study-progress"
+                      data-progress={
+                        item.solved
+                          ? 'solved'
+                          : item.progressStatus || 'not_started'
+                      }
+                      title={
+                        item.solved
+                          ? t('已通过', 'Solved')
+                          : item.judging
+                            ? t('判题中', 'Judging')
+                            : item.progressStatus === 'attempted'
+                              ? t('未通过', 'Not solved')
+                              : t('未开始', 'Not started')
+                      }
+                    >
+                      {item.solved ? (
+                        <Check size={18} aria-hidden="true" />
+                      ) : item.judging ? (
+                        <Clock3 size={18} aria-hidden="true" />
+                      ) : item.progressStatus === 'attempted' ? (
+                        <Circle size={18} aria-hidden="true" />
+                      ) : null}
+                      <span className="sr-only">
+                        {item.solved
+                          ? t('已通过', 'Solved')
+                          : item.judging
+                            ? t('判题中', 'Judging')
+                            : item.progressStatus === 'attempted'
+                              ? t('未通过', 'Not solved')
+                              : t('未开始', 'Not started')}
+                      </span>
+                    </span>
+                    <span
+                      className="study-row-main"
+                      title={`${item.number}. ${title(item, english)}`}
+                    >
+                      <strong>
+                        {isNext && (
+                          <span className="route-next-pill">
+                            {t('下一题', 'Next')}
+                          </span>
+                        )}
+                        <span className="study-number">{item.number}.</span>{' '}
+                        {title(item, english)}
+                        {item.starred && (
+                          <>
+                            <Star className="study-star" size={14} aria-hidden="true" />
+                            <span className="sr-only">{t('（已收藏）', ' (starred)')}</span>
+                          </>
+                        )}
+                      </strong>
+                      {pips(item.selection?.stage)}
+                      <RatingBadge rating={item.rating} english={english} />
+                      {!!item.companies?.length && (
+                        <CompanyMarks companies={item.companies} english={english} />
+                      )}
+                      {item.acceptance !== undefined && (
+                        <small className="study-acceptance">
+                          {t(`通过率 ${item.acceptance}%`, `${item.acceptance}% accepted`)}
+                        </small>
+                      )}
+                      {!!item.importedSources?.length && (
+                        <small>
+                          {item.solvedLocally
+                            ? t('本站通过 · ', 'Local AC · ')
+                            : ''}
+                          {item.importedSources
+                            .map((source) =>
+                              source === 'cn'
+                                ? t('力扣国区通过', 'LeetCode CN AC')
+                                : t('LeetCode 美区通过', 'LeetCode US AC'),
+                            )
+                            .join(' · ')}
+                        </small>
+                      )}
+                    </span>
+                    <span
+                      className="study-level"
+                      data-level={item.difficulty.toLowerCase()}
+                    >
+                      {difficultyName(item.difficulty)}
+                    </span>
+                  </button>
+                </Fragment>
+              );
+            })}
+          </div>
+          <nav
+            className="study-pagination"
+            aria-label={t('题单分页', 'Problem pagination')}
+          >
+            <Button
+              variant="outline"
+              disabled={page <= 1}
+              onClick={() => setPage((n) => n - 1)}
+              aria-label={t('上一页', 'Previous page')}
+            >
+              <ChevronLeft size={16} />
+              {t('上一页', 'Previous')}
+            </Button>
+            <span>
+              {t(
+                `第 ${data.page} / ${pages} 页`,
+                `Page ${data.page} of ${pages}`,
+              )}
+            </span>
+            <Button
+              variant="outline"
+              disabled={page >= pages}
+              onClick={() => setPage((n) => n + 1)}
+              aria-label={t('下一页', 'Next page')}
+            >
+              {t('下一页', 'Next')}
+              <ChevronRight size={16} />
+            </Button>
+          </nav>
+        </>
+      )}
         </>
       )}
     </section>
