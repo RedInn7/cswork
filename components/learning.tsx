@@ -67,7 +67,9 @@ export function CourseList({
       `${n} ${t(zh, n === 1 ? en : en + 's')}`;
   const [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
-    [filter, setFilter] = useState({ category: '', level: '' });
+    [filter, setFilter] = useState({ category: '', level: '' }),
+    // Certificates listed on the public profile, after a change made on this page.
+    [onProfile, setOnProfile] = useState<Record<string, boolean>>({});
   const listed = boot.courses.filter((c) =>
     knowledge ? c.id === INTERVIEW_COURSE_ID : c.id !== INTERVIEW_COURSE_ID,
   );
@@ -198,6 +200,38 @@ export function CourseList({
                           {t('查看结业证书', 'View your certificate')}
                           <ArrowRight size={14} aria-hidden="true" />
                         </a>
+                      )}
+                      {certificate && (
+                        // Off by default: the certificate shows the account name, a public profile never does.
+                        <label className="course-certificate-share">
+                          <input
+                            type="checkbox"
+                            disabled={busy}
+                            checked={onProfile[certificate.id] ?? !!certificate.onProfile}
+                            onChange={async (e) => {
+                              const on = e.target.checked;
+                              setBusy(true);
+                              setError('');
+                              try {
+                                await api(`certificates/${certificate.id}`, { onProfile: on });
+                                setOnProfile((m) => ({ ...m, [certificate.id]: on }));
+                              } catch (err) {
+                                setError((err as Error).message);
+                              } finally {
+                                setBusy(false);
+                              }
+                            }}
+                          />
+                          <span>
+                            {t('在公开主页展示', 'Show on my public profile')}
+                            <small>
+                              {t(
+                                '访客可从主页打开证书，证书上显示你的账号名称。',
+                                'Visitors can open it from your profile; it shows your account name.',
+                              )}
+                            </small>
+                          </span>
+                        </label>
                       )}
                     </>
                   ) : (

@@ -64,6 +64,7 @@ const EN: Record<string, string> = {
   '此版本已经发布，请重新载入后使用新版本号':
     'This version is already published. Reload and use a new version number',
   课件版本不存在: 'Lesson version not found',
+  证书不存在: 'Certificate not found',
   请先发布课件版本: 'Publish a lesson version first',
   '内容已被更新，请重新载入后再提交；你的编辑尚未覆盖服务器内容':
     'This content was updated elsewhere. Reload before submitting; your edits have not overwritten the saved version',

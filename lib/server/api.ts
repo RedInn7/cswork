@@ -53,7 +53,7 @@ import { dailyProblem } from './daily-problem';
 import { purchasedFreezes } from './points';
 import { aiEnabled } from './ai-tutor';
 import { tokenCaller } from './api-tokens';
-import { certificatesFor, finishedCourses } from './certificates';
+import { certificatesFor, finishedCourses, showOnProfile } from './certificates';
 const id = z.string().min(1).max(100),
   short = z.string().trim().min(1).max(180),
   long = z.string().trim().min(1).max(12000);
@@ -479,6 +479,12 @@ export async function handle(request: Request) {
       db.prepare('UPDATE notifications SET read_at=? WHERE id=? AND user_id=?')
         .bind(now, d.id, p.id)
         .run();
+      return json({ saved: true });
+    }
+    if (resource === 'certificates' && resourceId && request.method === 'POST') {
+      // Opt in (or out) of listing a certificate on the public profile; owner's rows only.
+      const d = z.object({ onProfile: z.boolean() }).strict().parse(data);
+      if (!showOnProfile(p.id, resourceId, d.onProfile)) throw new HttpError(404, '证书不存在');
       return json({ saved: true });
     }
     if (resource === 'releases' && resourceId && action === 'read') {

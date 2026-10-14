@@ -92,7 +92,7 @@ export type Boot = {
   unreadNotifications?: number;
   services: Record<string, boolean>;
   /** Course completion certificates (lib/server/certificates.ts); id is the public verification code. */
-  certificates?: { id: string; courseId: string; issuedAt: number }[];
+  certificates?: { id: string; courseId: string; issuedAt: number; onProfile?: number }[];
 };
 export type Ticket = {
   attachments?: {

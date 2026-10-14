@@ -20,7 +20,7 @@ const { sqlite } = await import('../db/sqlite');
 const { liveLesson, previewLessonId } = await import('../lib/server/lms-common');
 const { handleMedia } = await import('../lib/server/media');
 const { updateCourse, createCourse, courseList } = await import('../lib/server/lms-courses');
-const { CERTIFICATE_ID, certificateById, certificatesFor, finishedCourses, profileCertificates } = await import(
+const { CERTIFICATE_ID, certificateById, certificatesFor, finishedCourses, profileCertificates, showOnProfile } = await import(
   '../lib/server/certificates'
 );
 const { catalogLabel, filterCourses } = await import('../lib/course-catalog');
@@ -136,23 +136,26 @@ test('the first published lesson of a published course is a free preview, for re
   delete process.env.COURSE_OWNER_ID;
 });
 
-test('a course is finished when every published lesson of a held course is complete', () => {
+test('a course is finished when every published lesson of a held, published course is complete', () => {
   const courses = [
-    { id: 'sysd', has_access: true, lessons: [{ id: 'l1', published: 1 }, { id: 'l2', published: 1 }, { id: 'l0', published: 0 }] },
-    { id: 'empty', has_access: true, lessons: [] },
-    { id: 'other', has_access: false, lessons: [{ id: 'o1', published: 1 }] },
+    { id: 'sysd', published: 1, has_access: true, lessons: [{ id: 'l1', published: 1 }, { id: 'l2', published: 1 }, { id: 'l0', published: 0 }] },
+    { id: 'empty', published: 1, has_access: true, lessons: [] },
+    { id: 'other', published: 1, has_access: false, lessons: [{ id: 'o1', published: 1 }] },
+    // A teacher holds every course, unpublished ones included: no certificate for those.
+    { id: 'draft-course', published: 0, has_access: true, lessons: [{ id: 'd1', published: 1 }] },
   ];
   const done = (ids: string[]) => ids.map((lesson_id) => ({ lesson_id, completed: 1 }));
   assert.deepEqual(finishedCourses(courses, done(['l1'])), []);
   assert.deepEqual(finishedCourses(courses, [...done(['l1']), { lesson_id: 'l2', completed: 0 }]), []);
-  assert.deepEqual(finishedCourses(courses, done(['l1', 'l2', 'o1'])), ['sysd']);
+  assert.deepEqual(finishedCourses(courses, done(['l1', 'l2', 'o1', 'd1'])), ['sysd']);
 });
 
-test('certificates are issued once, verify publicly, and show on a visible profile only', () => {
+test('certificates are issued once, verify publicly, and show on a visible profile only when listed', () => {
   assert.deepEqual(certificatesFor(member.id, []), []);
   const [cert] = certificatesFor(member.id, ['sysd'], 1_790_000_000_000);
   assert.ok(CERTIFICATE_ID.test(cert.id));
   assert.equal(cert.courseId, 'sysd');
+  assert.equal(cert.onProfile, 0);
   // Issued once: later bootstraps read the same row.
   assert.deepEqual(certificatesFor(member.id, ['sysd']), [cert]);
   assert.equal(db.prepare('SELECT COUNT(*) FROM certificates').pluck().get(), 1);
@@ -171,17 +174,32 @@ test('certificates are issued once, verify publicly, and show on a visible profi
   assert.deepEqual(profileCertificates('ada'), []);
   assert.equal(certificateById(cert.id)!.handle, null);
   db.prepare('UPDATE user_profiles SET visible=1 WHERE user_id=?').run(member.id);
+  // A visible profile still lists nothing until the learner opts in: the page shows the name.
+  assert.deepEqual(profileCertificates('ada'), []);
+  assert.equal(certificateById(cert.id)!.handle, null);
+  // Only the owner's row changes.
+  assert.equal(showOnProfile(stranger.id, cert.id, true), false);
+  assert.deepEqual(profileCertificates('ada'), []);
+  assert.equal(showOnProfile(member.id, cert.id, true), true);
   assert.deepEqual(
     profileCertificates('ada').map((c) => c.course),
     ['System Design'],
   );
   assert.equal(certificateById(cert.id)!.handle, 'ada');
+  // An unpublished course's certificate (issued earlier, or by a teacher) is not public.
+  const [draft] = certificatesFor(member.id, ['draft-course']).filter((c) => c.courseId === 'draft-course');
+  showOnProfile(member.id, draft.id, true);
+  assert.equal(certificateById(draft.id), null);
+  assert.deepEqual(profileCertificates('ada').map((c) => c.courseId), ['sysd']);
+  db.prepare("DELETE FROM certificates WHERE id=?").run(draft.id);
   process.env.COURSE_ACCESS = 'owner';
   process.env.COURSE_OWNER_ID = 'nobody';
   assert.equal(certificateById(cert.id), null);
   assert.deepEqual(profileCertificates('ada'), []);
   delete process.env.COURSE_ACCESS;
   delete process.env.COURSE_OWNER_ID;
+  showOnProfile(member.id, cert.id, false);
+  assert.deepEqual(profileCertificates('ada'), []);
 });
 
 test('the certificate page shows the name, course, date and verification id in both languages', () => {
