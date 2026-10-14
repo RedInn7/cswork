@@ -104,7 +104,10 @@ export function PrivacyDocument() {
                 地址、设备或浏览器信息与有效期，用于账号安全和查看已登录设备；服务器也会产生访问、错误和管理操作记录，以排查故障和限制滥用。
               </p>
               <p>
-                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。
+                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传。
+              </p>
+              <p>
+                把网站安装到主屏后，浏览器会缓存离线提示页和网站自身的脚本、样式等构建文件，不缓存任何页面内容和个人数据；在账号设置里退出登录时，这些缓存会一并清空。
               </p>
               <p>
                 平台自己的服务器会记录基本的使用事件（访问的页面、来源网站的域名和推广链接里的 utm 标签、站内搜索词、登录方式、判题耗时与出错情况），用于运营统计。这部分统计不经过 Google，也不受下方 Google Analytics 选项的影响：浏览器本地存储里会保存一个随机生成的匿名访客编号，用来统计访客数；登录时事件会关联到你的账号。我们不记录 IP 地址和设备标识，这些记录保留 120 天。
@@ -352,7 +355,14 @@ export function PrivacyDocument() {
                 current browser; signing out does not automatically clear all
                 local drafts. On a shared device, you can clear this site’s
                 stored data in your browser; this also clears local content that
-                has not been submitted yet.
+                has not been submitted yet. Dates you enter in the visa timeline
+                stay in the current browser and are never uploaded.
+              </p>
+              <p>
+                If you install the site to your home screen, the browser caches
+                the offline page and the site&apos;s own build files (scripts,
+                styles); it caches no page content and no personal data, and
+                signing out in account settings empties these caches.
               </p>
               <p>
                 The platform&apos;s own server records basic usage events (pages
