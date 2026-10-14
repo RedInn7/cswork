@@ -63,6 +63,7 @@ test('progress page lists history, mistakes, reviews due today and the learner m
       stop: 'hash-counting',
     },
   ];
+  const searches = [];
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url) => {
     if (url.endsWith('/oj/history')) return Response.json({ items: history });
@@ -75,7 +76,28 @@ test('progress page lists history, mistakes, reviews due today and the learner m
         ],
       });
     if (url.endsWith('/oj/notes'))
-      return Response.json({ items: [{ target: 'problem:lc-1', updatedAt: now }] });
+      return Response.json({
+        items: [{ target: 'problem:lc-1', updatedAt: now, snippet: 'One pass with a hash map', problemId: null, title: null }],
+        total: 1,
+        nextCursor: null,
+      });
+    if (url.includes('/oj/notes?q=')) {
+      searches.push(decodeURIComponent(url.split('q=')[1]).replace(/\+/g, ' '));
+      return Response.json({
+        items: [
+          { target: 'sub:s-9', updatedAt: now, snippet: '…WA on the EMPTY list…', problemId: 'lc-2', title: null },
+          {
+            target: 'content:interview_question/lru',
+            updatedAt: now,
+            snippet: 'empty cache evicts nothing',
+            problemId: null,
+            title: { title: 'Design an LRU cache', titleZh: '设计 LRU 缓存' },
+          },
+        ],
+        total: 2,
+        nextCursor: null,
+      });
+    }
     if (url.endsWith('/oj/library?collection=ling-selected-500'))
       return Response.json({
         collection: {
@@ -162,6 +184,33 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     assert.equal(sessionStorage.length > 0, true, 'prev/next follows the tab list');
     await act(async () => tab('notes').click());
     assert.deepEqual(titles(), ['1. Two Sum']);
+    assert.equal(document.querySelector('.progress-snippet').textContent, 'One pass with a hash map');
+    // Search waits for typing to pause, then marks each word in the snippets.
+    const search = document.querySelector('input[type="search"]');
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+    for (const value of ['emp', 'empty list']) {
+      await act(async () => {
+        setter.call(search, value);
+        search.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+    }
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 350));
+    });
+    assert.deepEqual(searches, ['empty list'], 'debounced: one request');
+    assert.deepEqual(titles(), ['2. Add Two Numbers', 'Design an LRU cache']);
+    assert.deepEqual(
+      [...document.querySelectorAll('.progress-snippet mark')].map((m) => m.textContent),
+      ['EMPTY', 'list', 'empty'],
+    );
+    const [subRow, contentRow] = document.querySelectorAll('.progress-list .progress-row');
+    assert.equal(subRow.getAttribute('href'), '/?view=problem&problem=lc-2&tab=history');
+    assert.match(subRow.textContent, /Submission note/);
+    await act(async () => subRow.click());
+    assert.deepEqual(navigations.at(-1), ['problem', { problem: 'lc-2', tab: 'history' }]);
+    assert.equal(contentRow.getAttribute('href'), '/?view=content&type=interview_question&slug=lru');
+    await act(async () => contentRow.click());
+    assert.deepEqual(navigations.at(-1), ['content', { type: 'interview_question', slug: 'lru' }]);
     // The badge wall: stop roundels in line order, milestones with their progress.
     await act(async () => tab('badges').click());
     const stops = [...document.querySelectorAll('.badge-stops li')];

@@ -193,6 +193,36 @@
   border-radius: 50%;
   background: #fff;
 }
+/* A note's opening, or the lines around a search hit, under its row. */
+.progress-snippet {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  color: #4d5862;
+  font-size: 13px;
+  line-height: 1.6;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.progress-snippet mark {
+  padding: 0 1px;
+  border-radius: 2px;
+  background: #fde68a;
+  color: #1f2328;
+}
+.progress-filters input[type='search'] {
+  min-width: 14em;
+  padding: 9px 12px;
+  border: 1px solid #dce1e6;
+  border-radius: 9px;
+  background: #fff;
+  color: #27343e;
+  font: inherit;
+}
+.progress-filters input[type='search']:focus-visible {
+  outline: 2px solid #327b76;
+  outline-offset: 2px;
+}
 .progress-empty p {
   max-width: 34em;
   margin: 0;
@@ -283,6 +313,21 @@
   .dark .progress-stop::before {
     border: 2px solid var(--route-line);
     background: #191919;
+  }
+  .dark .progress-snippet {
+    color: #bec9d3;
+  }
+  .dark .progress-snippet mark {
+    background: #fde68a;
+    color: #1f2328;
+  }
+  .dark .progress-filters input[type='search'] {
+    border: 1px solid #2d3135;
+    background: #191919;
+    color: #cbd9e4;
+  }
+  .dark .progress-filters input[type='search']:focus-visible {
+    outline: 2px solid #90ccc7;
   }
   .dark .progress-empty p {
     color: #b5bfc9;

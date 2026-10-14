@@ -61,6 +61,7 @@ import { OaCompanyBadge, OaEditorial } from './oa-library';
 import { LingEditorial } from './ling-editorial';
 import { CompanyTags } from './company-tags';
 import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-notes';
+import { SubmissionNote } from './submission-note';
 import { AskedReport, communityProblem } from './problem-community';
 import { SolutionPosts, SolutionsTab } from './solution-posts';
 import { HintLadder, useHintLadder } from './hint-ladder';
@@ -166,7 +167,7 @@ type WorkspaceProps = {
   mock?: string;
   /** ?room=<contest id>: the problem is a question of a contest room (lib/server/contests.ts). */
   room?: string;
-  /** ?tab=solutions opens on the community solutions (a contest's upsolve links). */
+  /** ?tab=solutions opens on the community solutions (a contest's upsolve links); ?tab=history on Submissions. */
   tab?: string;
 };
 type MaxPanel = 'statement' | 'code' | 'console';
@@ -399,7 +400,13 @@ function Workspace({
   const runButton = useRef<HTMLButtonElement>(null);
   const [leftTab, setLeftTab] = useState<
     'statement' | 'history' | 'editorial' | 'notes' | 'solutions'
-  >(tab === 'solutions' && boot.person && communityProblem(initialProblem.id) ? 'solutions' : 'statement');
+  >(
+    tab === 'solutions' && boot.person && communityProblem(initialProblem.id)
+      ? 'solutions'
+      : tab === 'history' && boot.person
+        ? 'history'
+        : 'statement',
+  );
   // Private to an account, and closed during a mock exam like the editorial.
   const note = useProblemNote(
     boot.person && !examMode ? userId : null,
@@ -3072,6 +3079,7 @@ function Workspace({
         currentCode={code}
         language={language}
         settings={settings}
+        note={inspected && boot.person && !examMode && <SubmissionNote key={inspected.id} userId={userId} submissionId={inspected.id} />}
         restore={(item) => {
           if (item.code === undefined) return;
           setInspected(null);

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { ArrowRight, Check, Circle, Star } from 'lucide-react';
 import { api, type Boot } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
@@ -26,11 +26,19 @@ import type { Navigate } from './learning';
 import '@/app/my-progress.css';
 
 type Mark = { target: string; mark: string; createdAt: number };
-type Note = { target: string; updatedAt: number };
+/** A notes-hub hit (lib/server/my-practice.ts): sub: notes carry their problem, content: notes a title. */
+type Note = {
+  target: string;
+  updatedAt: number;
+  snippet: string;
+  problemId: string | null;
+  title: { title: string; titleZh: string | null } | null;
+};
+type NotePage = { items: Note[]; total: number; nextCursor: string | null };
 type Data = {
   history: PracticeHistoryItem[];
   marks: Mark[];
-  notes: Note[];
+  notes: NotePage;
   /** Line 500 stops with this round's progress, for the badges; empty when the list failed. */
   sections: { slug: string; solved: number; total: number }[];
   /** OA employer names for the company badges; empty when the OA library failed. */
@@ -51,6 +59,13 @@ const TABS: [Tab, string, string][] = [
 const DAY = 86400000;
 const problemOf = (target: string) =>
   target.startsWith('problem:') ? target.slice(8) : null;
+/** The snippet with each search word in <mark>. */
+function highlight(text: string, words: string[]) {
+  if (!words.length) return text;
+  const pattern = new RegExp(`(${words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
+  // split() with one capture group puts the matches at the odd indices.
+  return text.split(pattern).map((part, i) => (i % 2 ? <mark key={i}>{part}</mark> : part));
+}
 const source = (id: string): 'lc' | 'oa' | 'sql' | 'course' =>
   id.startsWith('lc-')
     ? 'lc'
@@ -100,7 +115,7 @@ export function MyProgress({
     Promise.all([
       api<{ items: PracticeHistoryItem[] }>('oj/history'),
       api<{ items: Mark[] }>('oj/marks'),
-      api<{ items: Note[] }>('oj/notes'),
+      api<NotePage>('oj/notes'),
       // Badges only: the rest of the page works without it.
       api<{ collection?: { sections: Data['sections'] } }>(
         'oj/library?collection=ling-selected-500',
@@ -112,7 +127,7 @@ export function MyProgress({
           setData({
             history: history.items,
             marks: marks.items,
-            notes: notes.items,
+            notes,
             sections: line?.collection?.sections ?? [],
             companyNames: new Map(oa?.companies.map((c) => [c.slug, c.name])),
             now: Date.now(),
@@ -125,6 +140,48 @@ export function MyProgress({
       current = false;
     };
   }, [retry]);
+  // The notes tab's search: every word must appear; results replace the first page.
+  const [noteQuery, setNoteQuery] = useState('');
+  const [noteHits, setNoteHits] = useState<NotePage | null>(null);
+  const [noteError, setNoteError] = useState('');
+  const words = noteQuery.trim().split(/\s+/).filter(Boolean).slice(0, 6);
+  useEffect(() => {
+    const q = noteQuery.trim();
+    setNoteError('');
+    if (!q) {
+      setNoteHits(null);
+      return;
+    }
+    let current = true;
+    const timer = setTimeout(() => {
+      api<NotePage>(`oj/notes?${new URLSearchParams({ q })}`)
+        .then((page) => {
+          if (current) setNoteHits(page);
+        })
+        .catch((reason: Error) => {
+          if (current) setNoteError(reason.message);
+        });
+    }, 300);
+    return () => {
+      current = false;
+      clearTimeout(timer);
+    };
+  }, [noteQuery]);
+  const notePage = noteHits ?? data?.notes;
+  async function moreNotes() {
+    if (!notePage?.nextCursor) return;
+    const q = noteQuery.trim();
+    try {
+      const page = await api<NotePage>(
+        `oj/notes?${new URLSearchParams({ ...(q ? { q } : {}), cursor: notePage.nextCursor })}`,
+      );
+      const merged = { ...page, items: [...notePage.items, ...page.items] };
+      if (q) setNoteHits(merged);
+      else setData((d) => d && { ...d, notes: merged });
+    } catch (reason) {
+      setNoteError((reason as Error).message);
+    }
+  }
 
   const summaries = new Map(boot.problems.map((p) => [p.id, p]));
   const byId = new Map((data?.history ?? []).map((item) => [item.problemId, item]));
@@ -152,17 +209,13 @@ export function MyProgress({
         : [],
     [data, boot.problems, personId, bought, boot.purchasedFreezes],
   );
-  const noted = (data?.notes ?? []).flatMap((n) => {
-    const id = problemOf(n.target);
-    return id ? [{ id, at: n.updatedAt }] : [];
-  });
   const counts: Record<Tab, number> = {
     history: data?.history.length ?? 0,
     mistakes: mistakes.length,
     review: due.length,
     starred: starredIds.size,
     redo: marked('redo').length,
-    notes: noted.length,
+    notes: data?.notes.total ?? 0,
     badges: badges.filter((b) => b.earned).length,
   };
   const date = (time: number) =>
@@ -181,8 +234,11 @@ export function MyProgress({
       source(id)
     ];
 
-  /** One problem row; `detail` is the tab's own line under the title. */
-  function row(id: string, detail: string[], list: string[]) {
+  /**
+   * One problem row; `detail` is the tab's own line under the title. A note row adds its
+   * snippet; a submission note opens the problem's Submissions tab.
+   */
+  function row(id: string, detail: string[], list: string[], note?: { snippet: ReactNode; tab?: string; key: string }) {
     const summary = summaries.get(id);
     const item = byId.get(id);
     const progress = item?.firstAcAt
@@ -196,9 +252,10 @@ export function MyProgress({
       not_started: t('未提交', 'Not submitted'),
     }[progress];
     const stop = item?.stop ? STOP_NAMES[item.stop] : undefined;
-    const href = `/?${new URLSearchParams({ view: 'problem', problem: id })}`;
+    const extra = note?.tab ? { tab: note.tab } : {};
+    const href = `/?${new URLSearchParams({ view: 'problem', problem: id, ...extra })}`;
     return (
-      <li key={id}>
+      <li key={note?.key ?? id}>
         <a
           className="study-row progress-row"
           href={href}
@@ -209,7 +266,7 @@ export function MyProgress({
               return;
             event.preventDefault();
             rememberProblemSequence(list);
-            navigate('problem', { problem: id });
+            navigate('problem', { problem: id, ...extra });
           }}
         >
           <span className="study-progress" data-progress={progress} title={label}>
@@ -237,6 +294,7 @@ export function MyProgress({
               {stop && <span className="progress-stop">{t(...stop)}</span>}
               {[sourceName(id), ...detail].join(' · ')}
             </span>
+            {note && <span className="progress-snippet">{note.snippet}</span>}
           </span>
           <span
             className="study-level"
@@ -370,25 +428,112 @@ export function MyProgress({
         }),
         ['今天没有到期的复习。通过的题会在 3、7、21、60 天后回来找你。', 'Nothing due today. Solved problems come back after 3, 7, 21 and 60 days.'],
       );
-    const entries = tab === 'notes' ? noted : marked(tab === 'starred' ? 'star' : 'redo');
+    if (tab === 'notes') return notesPanel();
     return list(
-      entries.map(({ id, at }) => {
+      marked(tab === 'starred' ? 'star' : 'redo').map(({ id, at }) => {
         const item = byId.get(id);
         return {
           id,
           detail: [
             item ? verdict(item.lastStatus) : t('还没提交', 'Not submitted yet'),
-            tab === 'notes'
-              ? t(`笔记 ${date(at)} 更新`, `Note updated ${date(at)}`)
-              : t(`${date(at)} 标记`, `Marked ${date(at)}`),
+            t(`${date(at)} 标记`, `Marked ${date(at)}`),
           ],
         };
       }),
       tab === 'starred'
         ? ['在题目页标题旁点星标，题目会收进这里。', 'Star a problem next to its title and it lands here.']
-        : tab === 'redo'
-          ? ['在题目页点「稍后重做」，题目会排进这里。', 'Mark a problem “Redo later” and it queues up here.']
-          : ['在题目页的「笔记」标签写下思路，题目会出现在这里。', 'Write in a problem’s Notes tab and it shows up here.'],
+        : ['在题目页点「稍后重做」，题目会排进这里。', 'Mark a problem “Redo later” and it queues up here.'],
+    );
+  }
+
+  /** Problem, written-answer and submission notes, searchable by every word. */
+  function notesPanel() {
+    const page = notePage!;
+    const ids = page.items.flatMap((n) => problemOf(n.target) ?? n.problemId ?? []);
+    const updated = (n: Note) => t(`笔记 ${date(n.updatedAt)} 更新`, `Note updated ${date(n.updatedAt)}`);
+    const rows = page.items.map((n) => {
+      const snippet = highlight(n.snippet, words);
+      const id = problemOf(n.target) ?? n.problemId;
+      if (id) {
+        const item = byId.get(id);
+        return row(
+          id,
+          n.problemId
+            ? [t('提交笔记', 'Submission note'), updated(n)]
+            : [item ? verdict(item.lastStatus) : t('还没提交', 'Not submitted yet'), updated(n)],
+          ids,
+          { snippet, key: n.target, ...(n.problemId ? { tab: 'history' } : {}) },
+        );
+      }
+      // A written answer (content:<type>/<slug>), or a note whose submission is gone.
+      const content = /^content:(\w+)\/(.+)$/.exec(n.target);
+      const name = n.title ? (english ? n.title.title : (n.title.titleZh ?? n.title.title)) : content?.[2] ?? t('提交笔记', 'Submission note');
+      const main = (
+        <span className="study-row-main">
+          <strong>{name}</strong>
+          <span className="study-row-secondary progress-detail">
+            {[content ? t('题库作答', 'Written answer') : t('提交已删除', 'Submission removed'), updated(n)].join(' · ')}
+          </span>
+          <span className="progress-snippet">{snippet}</span>
+        </span>
+      );
+      return (
+        <li key={n.target}>
+          {content ? (
+            <a
+              className="study-row progress-row"
+              href={`/?${new URLSearchParams({ view: 'content', type: content[1], slug: content[2] })}`}
+              onClick={(event) => {
+                if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                event.preventDefault();
+                navigate('content', { type: content[1], slug: content[2] });
+              }}
+            >
+              {main}
+            </a>
+          ) : (
+            <div className="study-row progress-row">{main}</div>
+          )}
+        </li>
+      );
+    });
+    return (
+      <>
+        <div className="study-filters progress-filters">
+          <label>
+            {t('搜索笔记', 'Search notes')}
+            <input
+              type="search"
+              value={noteQuery}
+              onChange={(e) => setNoteQuery(e.target.value)}
+              placeholder={t('笔记里的词，空格分隔', 'Words in your notes')}
+            />
+          </label>
+          <output className="progress-filter-count">
+            {t(`${page.total} 条笔记`, `${page.total} note${page.total === 1 ? '' : 's'}`)}
+          </output>
+        </div>
+        {noteError && (
+          <p className="study-state" role="alert">
+            {t(noteError, englishMessage(noteError))}
+          </p>
+        )}
+        {rows.length ? (
+          <ul className="study-list progress-list">{rows}</ul>
+        ) : (
+          list(
+            [],
+            words.length
+              ? ['没有笔记同时包含这些词。', 'No note has all of these words.']
+              : ['在题目页的「笔记」标签写下思路，题目会出现在这里。', 'Write in a problem’s Notes tab and it shows up here.'],
+          )
+        )}
+        {page.nextCursor && (
+          <Button variant="outline" onClick={() => void moreNotes()}>
+            {t('加载更多笔记', 'Load more notes')}
+          </Button>
+        )}
+      </>
     );
   }
 

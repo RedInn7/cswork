@@ -476,6 +476,7 @@ export function SubmissionCodeDialog({
   language,
   settings,
   restore,
+  note,
 }: {
   submission: OJSubmission | null;
   close: () => void;
@@ -483,6 +484,8 @@ export function SubmissionCodeDialog({
   language: Language;
   settings: EditorSettings;
   restore: (submission: OJSubmission) => void;
+  /** The learner's note on this submission (components/submission-note.tsx). */
+  note?: ReactNode;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -545,6 +548,7 @@ export function SubmissionCodeDialog({
                 {t('恢复到编辑器', 'Restore to editor')}
               </Button>
             </div>
+            {note}
             {view === 'result' ? (
               <div className="cs-history-result">
                 <SubmissionResult submission={submission} />
