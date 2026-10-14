@@ -50,6 +50,11 @@ export function useHintLadder(
   return { shown, setShown, failed, openedAt };
 }
 
+// ponytail: the timer is not per round, so a long reading kept from an earlier round opens
+// hint 2 early; a paused or short one no longer holds it shut. Per-round timers would fix both.
+const secondsOn = (userId: string, problemId: string, openedAt: number) =>
+  Math.max(timerSeconds(userId, problemId) ?? 0, (Date.now() - openedAt) / 1000);
+
 /**
  * Line 500's three hints, opened one at a time: hint 1 any time, hint 2 after a failed
  * formal submission or 10 minutes on the problem, hint 3 after two failures. A locked
@@ -72,15 +77,12 @@ export function HintLadder({
   const [confirm, setConfirm] = useState(false);
   // Confirmed: focus goes to the hint it opened; cancelled: back to "Show anyway".
   const confirmed = useRef(false);
-  // The problem timer's reading when it ran, otherwise time since this page opened.
+  // The longer of the problem timer's reading and the time since this page opened.
   const [seconds, setSeconds] = useState(0);
   const unlocked = hintsUnlocked(failed, seconds);
   useEffect(() => {
     if (unlocked >= 2) return;
-    const read = () =>
-      setSeconds(
-        timerSeconds(userId, problemId) ?? (Date.now() - openedAt) / 1000,
-      );
+    const read = () => setSeconds(secondsOn(userId, problemId, openedAt));
     read();
     const id = setInterval(read, 15_000);
     return () => clearInterval(id);

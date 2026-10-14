@@ -31,30 +31,29 @@ test('hints open one at a time, unlock on failures or time, and similar problems
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   t.mock.timers.enable({ apis: ['Date', 'setInterval'], now: 1_700_000_000_000 });
   const { createRoot } = await import('react-dom/client');
-  const { HintLadder } = await import('../components/hint-ladder.tsx');
+  const { HintLadder, useHintLadder } = await import('../components/hint-ladder.tsx');
   const { SimilarProblems } = await import('../components/similar-problems.tsx');
   const hints = { zh: ['观察一', '不变量二', '步骤三'], en: ['Look one', 'Invariant two', 'Steps three'] };
+  // The workspace keeps the ladder's memory; the ladder itself mounts only with the statement.
+  function Workspace({ submission = null, failedIds, mounted = true, ...props }) {
+    const ladder = useHintLadder(submission, failedIds);
+    return mounted
+      ? createElement(HintLadder, { problemId: 'lc-1', userId: 'u1', hints, english: true, ladder, ...props })
+      : null;
+  }
   const root = createRoot(document.getElementById('root'));
-  const render = (props = {}) =>
-    act(async () =>
-      root.render(
-        createElement(HintLadder, {
-          problemId: 'lc-1',
-          userId: 'u1',
-          hints,
-          failed: 0,
-          submission: null,
-          english: true,
-          ...props,
-        }),
-      ),
-    );
+  const render = (props = {}) => act(async () => root.render(createElement(Workspace, props)));
   const $ = (selector) => document.querySelector(selector);
   const shown = () => document.querySelectorAll('.cs-hint-ladder-list li').length;
   const button = (text) =>
     [...document.querySelectorAll('button')].find((b) => b.textContent.includes(text));
   const click = (text) => act(async () => button(text).click());
   try {
+    // A paused timer reading from an earlier attempt counts, but cannot hold hint 2 shut.
+    localStorage.setItem(
+      'cswork:timer:u1:lc-1',
+      JSON.stringify({ mode: 'up', minutes: 15, elapsed: 360_000, startedAt: null }),
+    );
     await render();
     assert.equal(shown(), 0);
     // Hint 1 is open from the start; showing it moves focus onto it.
@@ -63,9 +62,9 @@ test('hints open one at a time, unlock on failures or time, and similar problems
     assert.equal(document.activeElement === $('.cs-hint-ladder-list li'), true);
     assert.match($('.cs-hint-ladder-list').textContent, /Hint 1 · Observation.*Look one/);
     assert.deepEqual(beacons.at(-1), { name: 'hint_open', params: { problem_id: 'lc-1', level: 1 } });
-    // Hint 2 says what opens it; ten minutes on the page (no timer ran) opens it.
+    // Hint 2 says what opens it; ten minutes on the page opens it.
     assert.equal(button('Show next hint') === undefined, true);
-    assert.match($('.cs-route-hint-locked').textContent, /Hint 2: .*failed submission or 10 minutes.*10 min to go/);
+    assert.match($('.cs-route-hint-locked').textContent, /Hint 2: .*failed submission or 10 minutes.*4 min to go/);
     await act(async () => t.mock.timers.tick(600_000));
     assert.equal(button('Show next hint') !== undefined, true);
     // A failed live verdict counts once however often it re-renders; two open hint 3.
@@ -75,11 +74,17 @@ test('hints open one at a time, unlock on failures or time, and similar problems
     await click('Show next hint');
     assert.equal(shown(), 2);
     assert.match($('.cs-route-hint-locked').textContent, /Hint 3: .*1 more to go/);
+    // Switching tabs unmounts the ladder; a failure that lands meanwhile still counts,
+    // and the shown hints stay shown.
+    await render({ submission: failed, mounted: false });
+    await render({ submission: { ...failed, id: 's2' }, mounted: false });
     await render({ submission: { ...failed, id: 's2' } });
+    assert.equal(shown(), 2);
     await click('Show next hint');
     assert.equal(shown(), 3);
     assert.equal(button('Show next hint') === undefined, true);
     assert.equal($('.cs-route-hint-locked') === null, true);
+    assert.equal(beacons.filter((b) => b.name === 'hint_open').length, 3);
 
     // A fresh page: the problem timer's reading counts, and a locked hint can be shown after a confirm.
     await act(async () => root.unmount());
@@ -88,25 +93,17 @@ test('hints open one at a time, unlock on failures or time, and similar problems
       JSON.stringify({ mode: 'up', minutes: 15, elapsed: 600_000, startedAt: null }),
     );
     const again = createRoot(document.getElementById('root'));
-    const mount = (props) =>
-      act(async () =>
-        again.render(
-          createElement(HintLadder, {
-            problemId: 'lc-2',
-            userId: 'u1',
-            hints,
-            failed: 0,
-            submission: null,
-            english: false,
-            ...props,
-          }),
-        ),
-      );
-    await mount();
+    // Left mid-judge and came back: the restored verdict is already among the server's ids.
+    const restored = { id: 's9', mode: 'judge', status: 'wrong_answer' };
+    await act(async () =>
+      again.render(
+        createElement(Workspace, { problemId: 'lc-2', english: false, failedIds: ['s9'], submission: restored }),
+      ),
+    );
     await click('显示下一条提示');
     await click('显示下一条提示');
     assert.equal(shown(), 2);
-    assert.match($('.cs-route-hint-locked').textContent, /提示 3：两次提交未通过后解锁（还差 2 次）/);
+    assert.match($('.cs-route-hint-locked').textContent, /提示 3：两次提交未通过后解锁（还差 1 次）/);
     await click('仍要查看');
     assert.equal($('[role="alertdialog"]') !== null, true);
     await click('查看提示');
