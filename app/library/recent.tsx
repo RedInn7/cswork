@@ -38,7 +38,7 @@ export async function recentMetadata() {
 
 export async function RecentView() {
   const zh = (await requestLocale()) === 'zh';
-  const recent = await recentAdditions(Date.now(), DAYS);
+  const recent = await recentAdditions(undefined, DAYS);
   const libraryTotal = Object.values(recent.libraryCounts).reduce((a, b) => a + b, 0);
   const day = (iso: string | null) => (iso ? iso.slice(0, 10) : '');
   return (

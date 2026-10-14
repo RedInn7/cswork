@@ -107,7 +107,7 @@ async function searchSite(query: string, zh: boolean, signal: AbortSignal) {
       .map((p) => ({
         group: 'problems' as const,
         key: text(p.id),
-        title: `${p.number}. ${pick(p.titleZh, p.titleEn)}`,
+        title: `${String(p.number)}. ${pick(p.titleZh, p.titleEn)}`,
         meta: text(p.difficulty),
         href: `/?view=problem&problem=${encodeURIComponent(text(p.judgeProblemId))}`,
       }));
@@ -117,7 +117,7 @@ async function searchSite(query: string, zh: boolean, signal: AbortSignal) {
       group: 'oa' as const,
       key: text(p.id),
       title: text(p.title),
-      meta: `${text(p.companyName)} #${p.number}`,
+      meta: `${text(p.companyName)} #${String(p.number)}`,
       href: oaProblemPath(text(p.companySlug), text(p.id)),
     })),
   );
@@ -189,8 +189,8 @@ function Palette({ ai }: { ai: boolean }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [context, setContext] = useState('');
-  const [hits, setHits] = useState<PaletteHit[]>([]);
-  const [searching, setSearching] = useState(false);
+  const [found, setHits] = useState<PaletteHit[]>([]);
+  const [loading, setSearching] = useState(false);
   const [active, setActive] = useState(0);
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [asking, setAsking] = useState(false);
@@ -233,16 +233,12 @@ function Palette({ ai }: { ai: boolean }) {
   const q = query.trim();
   const searchable = q.length >= 2 || /[㐀-鿿]/.test(q);
   useEffect(() => {
-    if (!open || !searchable) {
-      setHits([]);
-      setSearching(false);
-      return;
-    }
+    if (!open || !searchable) return;
     const controller = new AbortController();
-    setSearching(true);
-    // Topics and companies match locally; the rest after a pause in typing.
+    // After a pause in typing; the previous query's rows stay until the new ones arrive.
     const timer = setTimeout(() => {
-      searchSite(q, zh, controller.signal)
+      setSearching(true);
+      void searchSite(q, zh, controller.signal)
         .then((found) => {
           if (controller.signal.aborted) return;
           setHits(mergeHits(found));
@@ -258,6 +254,9 @@ function Palette({ ai }: { ai: boolean }) {
     };
   }, [q, zh, open, searchable]);
 
+  // Too short to search: nothing listed, whatever the last search found.
+  const hits = searchable ? found : [];
+  const searching = searchable && loading;
   const canAsk = ai && (searchable || !!context);
   const rows = hits.length + (canAsk ? 1 : 0);
   // With selected text, the question is about it: the ask row comes first.
@@ -271,7 +270,7 @@ function Palette({ ai }: { ai: boolean }) {
     setError('');
     setAnswer(null);
     try {
-      setAnswer(await ojRequest<Answer>('ai/ask', { question, locale: zh ? 'zh' : 'en', ...(context && { context }) }));
+      setAnswer(await ojRequest<Answer>('ai/ask', { question, locale: zh ? 'zh' : 'en', ...(context ? { context } : {}) }));
     } catch (caught) {
       const failure = caught as Error & { status?: number | string };
       if (failure.status === 401) {
@@ -314,10 +313,13 @@ function Palette({ ai }: { ai: boolean }) {
   };
 
   const askRow = canAsk && (
-    <li
+    // Keyboard use goes through the combobox input (aria-activedescendant), as for every option.
+    // oxlint-disable-next-line jsx-a11y/click-events-have-key-events
+    <div
       key="ask"
       id={optionId(askIndex)}
       role="option"
+      tabIndex={-1}
       aria-selected={active === askIndex}
       className="cmdk-ask"
       onMouseEnter={() => setActive(askIndex)}
@@ -333,10 +335,12 @@ function Palette({ ai }: { ai: boolean }) {
           : t(`问 AI：「${q}」`, `Ask AI: “${q}”`)}
       </span>
       <span className="cmdk-meta">{t('基于站内内容回答', 'Answers from CSWork pages')}</span>
-    </li>
+    </div>
   );
   let index = context && canAsk ? 1 : 0;
   return (
+    // A click on the backdrop closes it, as Esc does; keyboard users have Esc.
+    // oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
     <dialog
       ref={dialog}
       className="cmdk"
@@ -418,22 +422,22 @@ function Palette({ ai }: { ai: boolean }) {
               </section>
             )}
           </div>
-          <ul id={`${id}-list`} role="listbox" className="cmdk-list" aria-label={t('搜索结果', 'Results')}>
+          <div id={`${id}-list`} role="listbox" className="cmdk-list" aria-label={t('搜索结果', 'Results')}>
             {context && askRow}
             {GROUPS.map((group) => {
               const rowsOf = hits.filter((h) => h.group === group);
               if (!rowsOf.length) return null;
               return (
-                <li key={group} role="presentation" className="cmdk-group" data-group={group}>
+                <div key={group} className="cmdk-group" data-group={group}>
                   <p id={`${id}-${group}`} className="cmdk-group-name" aria-hidden="true">
                     {GROUP_NAMES[group][zh ? 0 : 1]}
                   </p>
-                  <ul role="group" aria-labelledby={`${id}-${group}`}>
+                  <div role="group" aria-labelledby={`${id}-${group}`}>
                     {rowsOf.map((hit) => {
                       const i = index++;
                       return (
-                        <li key={hit.key} role="presentation">
-                          <a
+                        <a
+                          key={hit.key}
                             id={optionId(i)}
                             role="option"
                             aria-selected={active === i}
@@ -446,15 +450,14 @@ function Palette({ ai }: { ai: boolean }) {
                             {hit.meta && <span className="cmdk-meta">{hit.meta}</span>}
                             <CornerDownLeft size={13} className="cmdk-enter" aria-hidden="true" />
                           </a>
-                        </li>
                       );
                     })}
-                  </ul>
-                </li>
+                  </div>
+                </div>
               );
             })}
             {!context && askRow}
-          </ul>
+          </div>
           {canAsk && !answer && (
             <p className="cmdk-fine cmdk-ask-note">
               {t(
@@ -496,6 +499,7 @@ export function PaletteButton({ className = '' }: { className?: string }) {
   // The server can't know the platform: ⌘K until the browser says otherwise.
   const [mod, setMod] = useState('⌘');
   useEffect(() => {
+    // oxlint-disable-next-line react/react-compiler -- the platform is known only after hydration.
     if (!/Mac|iP/.test(navigator.platform)) setMod('Ctrl ');
   }, []);
   return (
@@ -524,6 +528,16 @@ export function SelectionAsk({ children, className }: { children: ReactNode; cla
     setSpot({ x: rect.left + rect.width / 2, y: rect.bottom, text: text.slice(0, 1500) });
   }, []);
   useEffect(() => {
+    const node = box.current;
+    if (!node || !ask) return;
+    node.addEventListener('mouseup', measure);
+    node.addEventListener('keyup', measure);
+    return () => {
+      node.removeEventListener('mouseup', measure);
+      node.removeEventListener('keyup', measure);
+    };
+  }, [ask, measure]);
+  useEffect(() => {
     if (!spot) return;
     const clear = () => {
       if (window.getSelection()?.isCollapsed ?? true) setSpot(null);
@@ -539,7 +553,7 @@ export function SelectionAsk({ children, className }: { children: ReactNode; cla
   const style = useMemo(() => (spot ? { left: `${spot.x}px`, top: `${spot.y + 8}px` } : undefined), [spot]);
   if (!ask) return <div className={className}>{children}</div>;
   return (
-    <div ref={box} className={className} onMouseUp={measure} onKeyUp={measure}>
+    <div ref={box} className={className}>
       {children}
       {spot && (
         <button

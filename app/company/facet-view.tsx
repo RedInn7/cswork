@@ -68,7 +68,7 @@ export async function FacetView({ page }: { page: FacetPage }) {
   // The SPA filters by one library spelling: the facet's and the company's most used ones.
   const filter = {
     [facet.kind === 'role' ? 'role' : 'category']: facet.value,
-    ...(company?.library[0] && { company: company.library[0] }),
+    ...(company?.library[0] ? { company: company.library[0] } : {}),
   };
   const items = [
     ...experiences.map((e) => ({ name: e.title, path: publicLibraryPath(e.type, e.slug) })),

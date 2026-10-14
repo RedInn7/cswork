@@ -57,13 +57,13 @@ const { AI_DAILY_LIMITS, SYSTEM } = await import('../lib/server/ai-tutor');
 const me: Person = { id: 'ask-me', name: 'Me', email: 'ask@example.test', role: 'student', verified: true };
 type Sent = { url: string; body: { model: string; system: string; messages: { content: string }[] } };
 let sent: Sent[] = [];
-let replyText = 'Chaining keeps a list per bucket [1]. An LRU pairs a map with a list [3]. See also [9].';
+const replyText = 'Chaining keeps a list per bucket [1]. An LRU pairs a map with a list [3]. See also [9].';
 const realFetch = globalThis.fetch;
 beforeEach(() => {
   sent = [];
   process.env.ANTHROPIC_API_KEY = 'test-key';
   globalThis.fetch = (async (url: string, init: RequestInit) => {
-    sent.push({ url: String(url), body: JSON.parse(String(init.body)) });
+    sent.push({ url: String(url), body: JSON.parse(init.body as string) });
     return Response.json({ stop_reason: 'end_turn', content: [{ type: 'text', text: replyText }], usage: { input_tokens: 500, output_tokens: 40 } });
   }) as typeof fetch;
 });
