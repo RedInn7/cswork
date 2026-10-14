@@ -228,6 +228,17 @@ const EN: Record<string, string> = {
   不能举报自己的投稿: "You can't report your own submission",
   请写明不通过的原因: 'Please tell the author why it was rejected',
   '正文的引用、列表或强调嵌套太深': 'The post nests quotes, lists or emphasis too deeply',
+  // Study groups (lib/server/study-groups.ts)
+  学习小组不存在: 'Study group not found',
+  学习小组接口不存在: 'Study group endpoint not found',
+  '每人最多创建 3 个学习小组': 'You can create at most 3 study groups',
+  '最多加入 10 个学习小组': 'You can be in at most 10 study groups',
+  '小组已满（最多 50 人）': 'This group is full (50 members max)',
+  邀请码无效: 'Invalid invite code',
+  这个昵称在小组里已被使用: 'Someone in this group already uses that name',
+  '组长不能退出，可以解散小组': "The owner can't leave. Disband the group instead",
+  只有组长可以管理小组: 'Only the group owner can manage the group',
+  成员不存在: 'Member not found',
   故事已达上限: "You've reached the limit for stories",
   // Community solutions (lib/server/solution-posts.ts)
   题解不存在: 'Solution not found',
