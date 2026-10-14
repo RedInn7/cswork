@@ -44,6 +44,7 @@ import {
   RotateCcw,
   Send,
   Settings2,
+  SquareTerminal,
   Terminal,
   Trash2,
   X,
@@ -85,6 +86,7 @@ import { CodeEditor } from './editor';
 import { ProblemTimer, formatClock, stopTimer } from './problem-timer';
 import { ACM_IO_TEMPLATES } from '@/lib/acm-io-templates';
 import { useIdlePrecompile } from '@/hooks/use-idle-precompile';
+import { encodeShare } from '@/lib/playground-share';
 import { StatementMarkdown } from './statement-markdown';
 import { LeetCodeSamples } from './leetcode-samples';
 import { leetcodePublicSample } from '@/lib/leetcode-public-samples';
@@ -1092,6 +1094,32 @@ function Workspace({
       ]);
     }
   }
+  /** This code and its stdin in a /playground tab (a #c= share link; no problem attached). */
+  async function openPlayground() {
+    if (language === 'sql') return;
+    // Opened inside the click so it isn't blocked as a popup; the link follows once encoded.
+    const tab = window.open('about:blank', '_blank');
+    const value = await encodeShare({
+      language,
+      code,
+      stdin: inputMode === 'custom' ? stdin : (exampleCase ?? ''),
+    });
+    if (!value) {
+      tab?.close();
+      setError(
+        t(
+          '代码太长，放不进 Playground 链接（压缩后上限 32 KB）。',
+          'The code is too long for a Playground link (32 KB compressed).',
+        ),
+      );
+      return;
+    }
+    const url = `/playground#c=${value}`;
+    if (tab) {
+      tab.opener = null;
+      tab.location.href = url;
+    } else location.href = url;
+  }
   function downloadCode() {
     const url = URL.createObjectURL(
       new Blob([code], { type: 'text/plain;charset=utf-8' }),
@@ -1863,6 +1891,18 @@ function Workspace({
           >
             <Download size={15} />
           </button>
+          {codingMode === 'acm' && language !== 'sql' && (
+            <button
+              aria-label={t('在 Playground 打开', 'Open in Playground')}
+              title={t(
+                '在 Playground 打开：带上代码和当前输入，可改可分享，不算提交',
+                'Open in Playground with this code and input: edit and share freely, never a submission',
+              )}
+              onClick={() => void openPlayground()}
+            >
+              <SquareTerminal size={15} />
+            </button>
+          )}
           {codingMode === 'acm' && language !== 'sql' && (
             <select
               className="cs-io-templates"
