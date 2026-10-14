@@ -39,7 +39,9 @@ export const AI_CODE_CHARS = 20_000;
 const STATEMENT_CHARS = 12_000;
 const QUESTION_CHARS = 1000;
 const SELECTION_CHARS = 600;
-const CASE_CHARS = 2000;
+// A hand-checkable test (the prompt asks for at most 20 lines), not a channel for prose or code.
+const CASE_CHARS = 600;
+const CASE_LINES = 20;
 const FAILURE_CHARS = 1500;
 // Latest fast model for the short, frequent replies, latest balanced model where accuracy
 // carries the reply; AI_TUTOR_HINT_MODEL / AI_TUTOR_REVIEW_MODEL override each for a rollout.
@@ -419,8 +421,9 @@ export function lastFailure(userId: string, problemId: string) {
 /**
  * What one test input looks like in the console's custom-case box, and a check that a
  * suggested input is one: ACM is raw stdin; LeetCode mode is one JSON value per line, one
- * line per parameter of the template's method, or two lines (operations, arguments) for a
- * design problem. A problem with its own input notes keeps those notes and the JSON check.
+ * line per parameter of the template's method, two lines (operations, arguments) for a
+ * design problem, or one level-order tree line for a Codec problem. A problem with its own
+ * input notes keeps those notes and the JSON check.
  */
 export function caseFormat(problemId: string, codingMode: 'leetcode' | 'acm') {
   if (codingMode === 'acm')
@@ -431,10 +434,29 @@ export function caseFormat(problemId: string, codingMode: 'leetcode' | 'acm') {
   const contract = leetcodeContract(problemId);
   if (!contract) throw new HttpError(400, '这道题没有 LeetCode 模式');
   const help = contract.customInputHelp?.en;
-  const design = !/^class Solution\b/m.test(contract.pythonTemplate);
+  // The console and worker take a Codec problem's tree as one level-order line (oj-worker.ts).
+  if (['lc-297', 'lc-449'].includes(problemId))
+    return {
+      describe: 'One line: the tree as a JSON level-order array, e.g. [1,2,3,null,4].',
+      parse(text: string) {
+        const lines = text
+          .split('\n')
+          .map((line) => line.trim())
+          .filter(Boolean);
+        try {
+          return lines.length === 1 && Array.isArray(JSON.parse(lines[0])) ? lines[0] : null;
+        } catch {
+          return null;
+        }
+      },
+    };
+  const solution = /^class Solution\b/m.exec(contract.pythonTemplate);
+  const design = !solution;
   let params: string[] = [];
-  if (!design) {
-    let args = /def\s+\w+\(\s*self\s*,?([^)]*)\)/.exec(contract.pythonTemplate)?.[1] ?? '';
+  if (solution) {
+    // From `class Solution` on: ListNode/TreeNode/MountainArray stubs above it have their own defs.
+    const method = contract.pythonTemplate.slice(solution.index);
+    let args = /def\s+\w+\(\s*self\s*,?([^)]*)\)/.exec(method)?.[1] ?? '';
     while (/\[[^[\]]*\]/.test(args)) args = args.replace(/\[[^[\]]*\]/g, '');
     params = args
       .split(',')
@@ -490,7 +512,17 @@ const CASES_SCHEMA = {
     additionalProperties: false,
   },
 };
-/** The model's JSON, kept only where the input parses in the box's format: at most five, no repeats. */
+// Inputs are shown verbatim, so anything shaped like source code is dropped: the model may
+// have been talked into smuggling a solution there. ponytail: keyword heuristic, so a word list
+// containing "return" loses that case; tighten per problem if it ever matters.
+const CODE_LIKE =
+  /#include|\bdef\s+\w+\s*\(|\bclass\s+\w+|\bfunc\s+\w*\s*\(|\breturn\b|\bimport\s|\b(?:for|while|if)\s*\(|\bfor\b.*\bin\b|=>|[;:]\s*$/m;
+const caseData = (input: string) =>
+  input.length <= CASE_CHARS &&
+  input.trimEnd().split('\n').length <= CASE_LINES &&
+  /^[\x20-\x7e\t\n\r]*$/.test(input) &&
+  !CODE_LIKE.test(input);
+/** The model's JSON, kept only where the input is plain data in the box's format: at most five, no repeats. */
 export function parseCases(text: string, parse: (input: string) => string | null) {
   let raw: unknown;
   try {
@@ -502,7 +534,7 @@ export function parseCases(text: string, parse: (input: string) => string | null
   const list = (raw as { cases?: unknown })?.cases;
   for (const item of Array.isArray(list) ? list : []) {
     const { input, why } = (item ?? {}) as { input?: unknown; why?: unknown };
-    if (typeof input !== 'string' || typeof why !== 'string' || input.length > CASE_CHARS) continue;
+    if (typeof input !== 'string' || typeof why !== 'string' || !caseData(input)) continue;
     const value = parse(input);
     if (value === null || cases.some((c) => c.input === value)) continue;
     cases.push({ input: value, why: tidyReply(why, 'tests').slice(0, 200) });

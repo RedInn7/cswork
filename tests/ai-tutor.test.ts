@@ -15,7 +15,9 @@ process.env.METRICS_DATABASE_PATH = resolve(dir, 'metrics.sqlite');
 const { sqlite } = await import('../db/sqlite');
 const { saveProblemDraft, publishProblemDraft } = await import('../lib/server/oj-problems');
 const { handleOj } = await import('../lib/server/oj-api');
-const { aiEnabled, tidyReply, AI_DAILY_LIMITS, AI_KINDS, SYSTEM, CHAT_SOLVED } = await import('../lib/server/ai-tutor');
+const { aiEnabled, tidyReply, caseFormat, parseCases, AI_DAILY_LIMITS, AI_KINDS, SYSTEM, CHAT_SOLVED } = await import(
+  '../lib/server/ai-tutor'
+);
 
 const me: Person = { id: 'ai-me', name: 'Me', email: 'ai@example.test', role: 'student', verified: true };
 const other: Person = { ...me, id: 'ai-other', email: 'ai-other@example.test' };
@@ -447,6 +449,40 @@ void test('tests: JSON cases checked against the box format, at most five, never
   reply = cases([{ input: '[1]', why: 'Wrong shape.' }]);
   assert.equal(await status(learner, 'tests', ask()), 503);
   assert.equal(used(learner.id, 'tests'), 4);
+});
+
+void test('tests: the box format comes from the Solution method, and a Codec tree is one line', () => {
+  // ListNode/TreeNode stubs above `class Solution` have their own __init__ defs.
+  const list = caseFormat('lc-206', 'leetcode');
+  assert.equal(list.describe.includes('1 line(s), in parameter order: head.'), true);
+  assert.equal(list.parse('[1,2,3]'), '[1,2,3]');
+  const tree = caseFormat('lc-104', 'leetcode');
+  assert.equal(tree.describe.includes('in parameter order: root.'), true);
+  assert.equal(tree.parse('[3,9,20,null,null,15,7]'), '[3,9,20,null,null,15,7]');
+  assert.equal(caseFormat('lc-21', 'leetcode').describe.includes('list1, list2.'), true);
+  for (const id of ['lc-297', 'lc-449']) {
+    const codec = caseFormat(id, 'leetcode');
+    assert.equal(codec.describe.startsWith('One line'), true);
+    assert.equal(codec.parse(' [1,2,3,null,4] \n'), '[1,2,3,null,4]');
+    assert.equal(codec.parse('["Codec","roundTrip"]\n[[],[[1]]]'), null);
+    assert.equal(codec.parse('{"a":1}'), null);
+  }
+});
+
+void test('tests: an input shaped like code, prose or a long dump is dropped', () => {
+  const acm = caseFormat('lc-1', 'acm').parse;
+  const kept = (input: string) => parseCases(JSON.stringify({ cases: [{ input, why: 'x' }] }), acm).length === 1;
+  assert.equal(kept('4\n2 7 11 15\n9'), true);
+  assert.equal(kept('["a==b","b!=a"]'), true);
+  assert.equal(kept('"()[]{}"'), true);
+  assert.equal(kept('def twoSum(self, nums, target):\n    seen = {}'), false);
+  assert.equal(kept('for i, x in enumerate(nums)'), false);
+  assert.equal(kept('#include <bits/stdc++.h>'), false);
+  assert.equal(kept('int main() { return 0; }'), false);
+  assert.equal(kept('func twoSum(nums []int) []int'), false);
+  assert.equal(kept('用哈希表'), false);
+  assert.equal(kept('1 '.repeat(301)), false);
+  assert.equal(kept(Array.from({ length: 21 }, (_, i) => String(i)).join('\n')), false);
 });
 
 void test('debug: verdict and public data only; a hidden failing case gives its verdict alone', async () => {
