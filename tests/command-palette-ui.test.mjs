@@ -1,0 +1,139 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { readFileSync } from 'node:fs';
+import { register } from 'node:module';
+import { JSDOM } from 'jsdom';
+import { createElement, act } from 'react';
+
+register(
+  `data:text/javascript,${encodeURIComponent(
+    `export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};return n(u,c);}`,
+  )}`,
+  import.meta.url,
+);
+
+const dom = new JSDOM('<!doctype html><html lang="en"><body><div id="root"></div></body></html>', { url: 'https://cswork.test/' });
+for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'CustomEvent', 'KeyboardEvent', 'PopStateEvent', 'localStorage', 'navigator', 'location', 'history', 'getSelection'])
+  Object.defineProperty(globalThis, name, { configurable: true, value: name === 'getSelection' ? dom.window.getSelection.bind(dom.window) : dom.window[name] });
+dom.window.scrollTo = () => {};
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+const { createRoot } = await import('react-dom/client');
+const palette = await import('../components/command-palette.tsx');
+const { CommandPalette, SelectionAsk, openCommandPalette, topicHits, companyHits, mergeHits } = palette;
+
+test('local matches: topics in both languages, companies by prefix, a capped and ordered list', () => {
+  assert.equal(topicHits('two pointers', false).some((h) => h.href === '/topics/two-pointers-windows'), true);
+  assert.equal(topicHits('双指针', true)[0].title, '双指针滑窗');
+  assert.deepEqual(topicHits('  ', false), []);
+  const companies = [{ slug: 'jpmorgan-chase', name: 'JPMorgan Chase' }, { slug: 'amazon', name: 'Amazon' }, { slug: 'samazon', name: 'Samazon' }];
+  assert.deepEqual(companyHits('ama', companies).map((h) => h.href), ['/company/amazon', '/company/samazon']);
+  const hit = (group, n) => ({ group, key: `${group}${n}`, title: `${group} ${n}`, href: '/' });
+  const merged = mergeHits({ content: [hit('content', 1)], problems: Array.from({ length: 8 }, (_, i) => hit('problems', i)) });
+  assert.equal(merged.length, 6, 'five per group');
+  assert.equal(merged[0].group === 'problems' && merged.at(-1).group === 'content', true);
+});
+
+test('the workspace search button and the lecture page use the palette', () => {
+  const academy = readFileSync(new URL('../components/academy.tsx', import.meta.url), 'utf8');
+  assert.equal(academy.includes('onClick={() => openCommandPalette()}'), true);
+  assert.equal(academy.includes("api<SearchResult[]>"), false, 'the old lesson-only dialog is gone');
+  assert.equal(readFileSync(new URL('../components/learning.tsx', import.meta.url), 'utf8').includes('<SelectionAsk>'), true);
+  const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
+  assert.equal(layout.includes('<CommandPalette ai={aiEnabled()}>{children}</CommandPalette>'), true);
+});
+
+const calls = [];
+globalThis.fetch = async (url, init = {}) => {
+  const u = String(url);
+  calls.push({ url: u, body: init.body ? JSON.parse(init.body) : null });
+  if (u.startsWith('/api/oj/library?collection=all')) return Response.json({ error: '请先登录' }, { status: 401 });
+  if (u.startsWith('/api/oj/library?q=')) return Response.json({ items: [{ id: 'lc-1', number: 1, titleZh: '两数之和', titleEn: 'Two Sum', difficulty: '简单', judgeProblemId: 'lc-1' }, { id: 'lc-2', number: 2, titleEn: 'Not judgeable', judgeProblemId: null }] });
+  if (u.startsWith('/api/oj/oa-library')) return Response.json({ items: [{ id: 'oa-acme-1', companySlug: 'acme', companyName: 'Acme', number: 1, title: 'Two Towers' }] });
+  if (u.startsWith('/api/content/list')) return Response.json({ items: [{ type: 'concept', slug: 'two-pointers', title: 'Two Pointers', partial: false }, { type: 'experience', slug: 'draft', title: 'Two rounds', partial: true, company: { name: 'Acme' } }] });
+  if (u.startsWith('/api/oj/reports/companies')) return Response.json({ items: [{ slug: 'two-sigma', name: 'Two Sigma' }] });
+  if (u === '/api/oj/ai/ask')
+    return Response.json({ text: 'Move both ends inward [1].', sources: [{ n: 1, title: 'Two Pointers', url: '/library/concept/two-pointers', type: 'concept' }], remaining: 9 });
+  return Response.json({ error: 'nope' }, { status: 404 });
+};
+const wait = (ms) => act(async () => new Promise((r) => setTimeout(r, ms)));
+const press = (key, extra = {}) =>
+  act(async () => {
+    (document.activeElement ?? window).dispatchEvent(new dom.window.KeyboardEvent('keydown', { key, bubbles: true, ...extra }));
+  });
+async function type(value) {
+  const input = document.querySelector('.cmdk-bar input');
+  const setter = Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype, 'value').set;
+  await act(async () => {
+    setter.call(input, value);
+    input.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
+  });
+  await wait(300);
+}
+const options = () => [...document.querySelectorAll('[role="option"]')];
+
+test('⌘K: merged results, keyboard selection, same-tab workspace navigation, Ask AI with sources', async () => {
+  const root = createRoot(document.getElementById('root'));
+  await act(async () => root.render(createElement(CommandPalette, { ai: true }, createElement(SelectionAsk, null, createElement('p', null, 'Lecture text')))));
+  const dialog = document.querySelector('dialog.cmdk');
+  assert.equal(dialog.hasAttribute('open'), false);
+  await act(async () => window.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'k', ctrlKey: true })));
+  assert.equal(dialog.hasAttribute('open'), true);
+  const input = document.querySelector('.cmdk-bar input');
+  assert.equal(input.getAttribute('role'), 'combobox');
+
+  await type('two');
+  // Signed out: the full bank answers 401, so the curated line is searched and lessons are skipped.
+  assert.equal(calls.some((c) => c.url.startsWith('/api/oj/library?q=two')), true);
+  await type('tw');
+  await type('two');
+  const after = calls.filter((c) => c.url.startsWith('/api/oj/library?collection=all') || c.url.startsWith('/api/search'));
+  assert.equal(after.length, 2, 'once signed out is known, members-only searches stop');
+  const rows = options();
+  const titles = rows.map((o) => o.textContent);
+  assert.equal(titles[0].startsWith('1. Two Sum'), true);
+  assert.equal(titles.some((x) => x.includes('Not judgeable')), false, 'only judgeable problems');
+  assert.equal(titles.some((x) => x.includes('Two Towers')), true);
+  assert.equal(titles.some((x) => x.includes('Two Pointers') && x.includes('Template')), true, 'a Line 500 topic');
+  assert.equal(titles.some((x) => x.includes('Two Sigma')), true, 'a company page');
+  assert.equal(rows.at(-1).classList.contains('cmdk-ask'), true, 'Ask AI is the last row');
+  assert.equal(document.querySelector('.cmdk-ask-note').textContent.includes('Anthropic'), true);
+  const hrefs = rows.map((o) => o.getAttribute('href'));
+  assert.equal(hrefs.includes('/oa/acme/oa-acme-1') && hrefs.includes('/library/concept/two-pointers'), true);
+  assert.equal(hrefs.includes('/?view=content&type=experience&slug=draft'), true, 'partial pages open in the workspace');
+  assert.equal(rows[0].getAttribute('aria-selected'), 'true');
+  assert.equal(input.getAttribute('aria-activedescendant'), rows[0].id);
+
+  await press('ArrowDown');
+  assert.equal(options()[1].getAttribute('aria-selected'), 'true');
+  await press('ArrowUp');
+  await press('Enter');
+  assert.equal(location.search, '?view=problem&problem=lc-1', 'workspace links stay in the tab');
+  assert.equal(dialog.hasAttribute('open'), false);
+
+  // Selected lecture text opens the palette as context, Ask AI first.
+  await act(async () => openCommandPalette({ context: 'two pointers move inward' }));
+  assert.equal(document.querySelector('.cmdk-context q').textContent, 'two pointers move inward');
+  assert.equal(options()[0].classList.contains('cmdk-ask'), true);
+  await press('Enter');
+  await wait(50);
+  const ask = calls.find((c) => c.url === '/api/oj/ai/ask');
+  assert.deepEqual(ask.body, { question: 'two', locale: 'en', context: 'two pointers move inward' });
+  const answer = document.querySelector('.cmdk-answer');
+  assert.equal(answer.textContent.includes('Move both ends inward'), true);
+  assert.equal(document.querySelector('.cmdk-sources a').getAttribute('href'), '/library/concept/two-pointers');
+  assert.equal(answer.textContent.includes('9 left today'), true);
+  await act(async () => root.unmount());
+});
+
+test('without AI there is no ask row and selections stay plain', async () => {
+  const host = document.createElement('div');
+  document.body.append(host);
+  const root = createRoot(host);
+  await act(async () => root.render(createElement(CommandPalette, { ai: false }, createElement(SelectionAsk, { className: 'prose' }, 'Body'))));
+  assert.equal(host.querySelector('.prose').textContent, 'Body');
+  await act(async () => openCommandPalette());
+  await type('two');
+  assert.equal(document.querySelector('.cmdk-ask') === null, true);
+  assert.equal(document.querySelector('.cmdk-ask-note') === null, true);
+  await act(async () => root.unmount());
+});

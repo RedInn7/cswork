@@ -143,6 +143,10 @@ export function PrivacyDocument() {
                 Anthropic，用于生成回复；不发送邮箱、姓名或账户标识。平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不使用 AI 助教就不会发送。
               </p>
               <p>
+                在搜索框（⌘K）里点「问 AI」时，服务器会把你的问题、你选中的页面文字（如有）和站内匹配到的几段公开内容发送给
+                Anthropic，用于生成带出处的回答；同样不发送邮箱、姓名或账户标识，也只记录调用次数和用量。只搜索不提问不会发送。
+              </p>
+              <p>
                 平台会为持续提供课程、处理教学反馈、对账及故障恢复保留必要资料和备份，目前没有对所有账户及学习记录统一设置自动删除期限。业务数据与备份的清理时间可能不同；收到删除请求后，会确认涉及的资料、处理范围及需要保留的记录。
               </p>
             </section>
@@ -390,6 +394,14 @@ export function PrivacyDocument() {
                 identifiers are not sent. The platform records only how many
                 calls you make each day and their usage, never what was sent
                 or the AI's reply. Nothing is sent unless you use the tutor.
+              </p>
+              <p>
+                When you choose Ask AI in the search box (⌘K), the server sends
+                your question, any page text you selected and a few matching
+                public CSWork pages to Anthropic to write an answer that cites
+                them. Again no email, name or account identifier is sent, and
+                only call counts and usage are recorded. Searching without
+                asking sends nothing.
               </p>
               <p>
                 The platform retains necessary data and backups to keep

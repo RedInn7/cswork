@@ -1,5 +1,6 @@
 import './library.css';
 import Link from 'next/link';
+import { PaletteButton } from '@/components/command-palette';
 import { Suspense } from 'react';
 import { LibraryPageView } from './page-view';
 
@@ -14,6 +15,7 @@ export default function LibraryLayout({
         <Link className="public-library-brand" href="/" prefetch={false}>
           cswork<span> / library</span>
         </Link>
+        <PaletteButton className="public-library-search" />
         <Link href="/?view=problems" prefetch={false}>
           Open practice workspace <span aria-hidden="true">↗</span>
         </Link>

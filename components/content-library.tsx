@@ -16,6 +16,7 @@ import { StoryPicker } from './story-bank';
 import { MemberPost, SafeMarkdown, type MemberInfo } from './experience-report';
 import '@/app/redesign.css';
 import '@/app/content-library.css';
+import { SelectionAsk } from './command-palette';
 
 type Facet = { value: string; label: string; n: number };
 type Facets = {
@@ -781,7 +782,9 @@ export function ContentDetail({
               </div>
             )}
             <article className="rd-card ct-body rd-reveal" style={{ '--i': 2 } as React.CSSProperties}>
-              <SafeMarkdown body={gated ? gated.question : localized(locale, item.body, item.extra.bodyZh)} math={!!item.extra.math} />
+              <SelectionAsk>
+                <SafeMarkdown body={gated ? gated.question : localized(locale, item.body, item.extra.bodyZh)} math={!!item.extra.math} />
+              </SelectionAsk>
               {gated?.hints && (
                 <details className="ct-hints">
                   <summary>{t('提示', 'Hints')}</summary>
