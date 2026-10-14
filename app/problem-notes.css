@@ -99,6 +99,46 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+/* A local draft that lost to a newer saved note: the learner picks which to keep. */
+.cs-notes-conflict {
+  display: grid;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, #ffb23f 45%, var(--cs-border));
+  border-left: 3px solid #ffb23f;
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--cs-text);
+}
+.cs-notes-conflict p {
+  margin: 0;
+}
+.cs-notes-conflict summary {
+  cursor: pointer;
+  color: var(--cs-muted);
+}
+.cs-notes-conflict pre {
+  max-height: 160px;
+  margin: 6px 0 0;
+  overflow: auto;
+  white-space: pre-wrap;
+  font: 12px/1.6 var(--font-mono, ui-monospace, monospace);
+  color: var(--cs-muted);
+}
+.cs-notes-conflict-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+.cs-notes-conflict button {
+  color: var(--cs-blue);
+  font-weight: 600;
+}
+.cs-notes-conflict button:focus-visible,
+.cs-notes-conflict summary:focus-visible {
+  outline: 2px solid var(--cs-blue);
+  outline-offset: 2px;
+}
 .cs-notes-size {
   flex: none;
   font-variant-numeric: tabular-nums;

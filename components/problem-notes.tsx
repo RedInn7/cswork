@@ -20,19 +20,26 @@ type NoteState =
 const bytes = (text: string) => new TextEncoder().encode(text).length;
 const draftKey = (userId: string, target: string) =>
   `cswork:note-draft:${userId}:${target}`;
-function readDraft(key: string) {
+/** `base` is the server's updatedAt the draft was written over (null: no note yet). */
+type Draft = { body: string; base: number | null };
+function readDraft(key: string): Draft | null {
   try {
-    return localStorage.getItem(key);
+    const draft = JSON.parse(localStorage.getItem(key) ?? 'null');
+    return typeof draft?.body === 'string'
+      ? { body: draft.body, base: typeof draft.base === 'number' ? draft.base : null }
+      : null;
   } catch {
     return null;
   }
 }
-function writeDraft(key: string, body: string | null) {
+function writeDraft(key: string, draft: Draft | null) {
   try {
-    if (body === null) localStorage.removeItem(key);
-    else localStorage.setItem(key, body);
+    if (draft === null) localStorage.removeItem(key);
+    else localStorage.setItem(key, JSON.stringify(draft));
   } catch {}
 }
+const stamp = (value: unknown) => (typeof value === 'number' ? value : null);
+/** Saves the note and returns the server's new updatedAt. */
 async function putNote(target: string, body: string) {
   const response = await fetch(
     `/api/oj/notes?target=${encodeURIComponent(target)}`,
@@ -42,10 +49,10 @@ async function putNote(target: string, body: string) {
       body: JSON.stringify({ body }),
     },
   );
-  if (!response.ok) {
-    const result = await response.json().catch(() => null);
+  const result = await response.json().catch(() => null);
+  if (!response.ok)
     throw new Error(typeof result?.error === 'string' ? result.error : '');
-  }
+  return stamp(result?.updatedAt);
 }
 
 export type ProblemNote = ReturnType<typeof useProblemNote>;
@@ -53,7 +60,8 @@ export type ProblemNote = ReturnType<typeof useProblemNote>;
 /**
  * The learner's private note on one problem. Saves `delay` ms after typing stops,
  * one request at a time and always the newest text. A failed save keeps a local
- * draft, which wins over the server copy and is sent again on the next visit.
+ * draft, sent again on the next visit if the server copy is still the one it was
+ * written over; if the note changed elsewhere since, the learner picks which to keep.
  * `userId` null (guests, a running mock exam) turns it off.
  */
 export function useProblemNote(
@@ -67,9 +75,14 @@ export function useProblemNote(
   const [state, setState] = useState<NoteState>('loading');
   const [error, setError] = useState('');
   const [reload, setReload] = useState(0);
+  // A local draft that lost to a newer server copy, until the learner chooses.
+  const [conflict, setConflict] = useState<string | null>(null);
   // What the learner typed last and what the server holds; equal means saved.
   const latest = useRef('');
   const sent = useRef('');
+  const base = useRef<number | null>(null);
+  const keep = (body: string | null) =>
+    writeDraft(key, body === null ? null : { body, base: base.current });
   const busy = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const unsaved = () => sent.current !== latest.current;
@@ -83,14 +96,14 @@ export function useProblemNote(
       while (sendable()) {
         const body = latest.current;
         setState('saving');
-        await putNote(target, body);
+        base.current = await putNote(target, body);
         sent.current = body;
       }
-      writeDraft(key, unsaved() ? latest.current : null);
+      keep(unsaved() ? latest.current : null);
       setError('');
       setState(unsaved() ? 'too-long' : 'saved');
     } catch (reason) {
-      writeDraft(key, latest.current);
+      keep(latest.current);
       setError((reason as Error).message);
       setState('unsaved');
     } finally {
@@ -101,13 +114,22 @@ export function useProblemNote(
   useEffect(() => {
     if (!userId) return;
     let current = true;
-    api<{ body?: unknown }>(`oj/notes?target=${encodeURIComponent(target)}`)
+    api<{ body?: unknown; updatedAt?: unknown }>(
+      `oj/notes?target=${encodeURIComponent(target)}`,
+    )
       .then((result) => {
         if (!current) return;
         const server = typeof result.body === 'string' ? result.body : '';
+        base.current = stamp(result.updatedAt);
+        sent.current = latest.current = server;
         const draft = readDraft(key);
-        sent.current = server;
-        latest.current = draft ?? server;
+        let lost: string | null = null;
+        // Already saved (the request outlived the tab), or nothing to restore.
+        if (!draft || draft.body === server) keep(null);
+        else if (draft.base === base.current) latest.current = draft.body;
+        // Never overwrite a note changed elsewhere since the draft was written.
+        else lost = draft.body;
+        setConflict(lost);
         setText(latest.current);
         setState(sendable() || !unsaved() ? 'idle' : 'too-long');
         if (sendable()) void flush();
@@ -126,18 +148,18 @@ export function useProblemNote(
   useEffect(() => {
     if (!userId) return;
     // Closing the tab cannot wait for a request; the draft is sent on the next visit.
-    const keep = () => {
-      if (unsaved()) writeDraft(key, latest.current);
+    const stash = () => {
+      if (unsaved()) keep(latest.current);
     };
-    window.addEventListener('pagehide', keep);
+    window.addEventListener('pagehide', stash);
     return () => {
-      window.removeEventListener('pagehide', keep);
+      window.removeEventListener('pagehide', stash);
       clearTimeout(timer.current);
       // Leaving the problem: save now instead of after the pause.
-      if (unsaved()) writeDraft(key, latest.current);
+      stash();
       if (sendable()) void flush();
     };
-    // oxlint-disable-next-line react-hooks/exhaustive-deps -- unsaved, sendable and flush read refs only.
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- stash, sendable and flush read refs only.
   }, [userId, key]);
 
   function edit(value: string) {
@@ -152,6 +174,17 @@ export function useProblemNote(
     text,
     state,
     error,
+    conflict,
+    /** Resolve a conflict: send this device's draft, or drop it for the server copy. */
+    resolve(useDraft: boolean) {
+      if (conflict === null) return;
+      setConflict(null);
+      if (!useDraft) return keep(null);
+      edit(conflict);
+      keep(conflict);
+      clearTimeout(timer.current);
+      if (sendable()) void flush();
+    },
     has: state !== 'loading' && state !== 'load-failed' && !!text.trim(),
     edit,
     retry() {
@@ -251,10 +284,33 @@ export function ProblemNotes({
           </button>
         </fieldset>
       </header>
+      {note.conflict !== null && (
+        <div className="cs-notes-conflict" role="alert">
+          <p>
+            {t(
+              '这台设备上有一份没保存的旧版本，但这条笔记之后在别处改过了。下面显示的是最新保存的内容。',
+              'This device has an older unsaved version, but the note was changed elsewhere since. The latest saved note is shown below.',
+            )}
+          </p>
+          <details>
+            <summary>{t('查看这台设备上的版本', "Show this device's version")}</summary>
+            <pre>{note.conflict}</pre>
+          </details>
+          <div className="cs-notes-conflict-actions">
+            <button type="button" onClick={() => note.resolve(true)}>
+              {t('改用这台设备的版本', "Use this device's version")}
+            </button>
+            <button type="button" onClick={() => note.resolve(false)}>
+              {t('丢弃它', 'Discard it')}
+            </button>
+          </div>
+        </div>
+      )}
       {!preview ? (
         <textarea
           className="cs-notes-input"
           aria-label={t('笔记内容', 'Note')}
+          readOnly={note.conflict !== null}
           value={note.text}
           onChange={(event) => note.edit(event.target.value)}
           placeholder={t(
