@@ -121,6 +121,20 @@ test('the bank sorts and filters by rating, list and solved month, and browses b
     await change(labelled('Solved in'), '');
     params = lastParams(requests);
     assert.equal(['ratingMin', 'list', 'solved', 'tz'].some((key) => params.has(key)), false);
+    // Without a month picker (Safari, Firefox) the box is text: a half-typed month stays and
+    // filters nothing until it is whole. The latest month is this local one.
+    const month = labelled('Solved in');
+    const now = new Date();
+    assert.equal(month.getAttribute('max'), `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`);
+    // React re-assigns `type` on every render, so pin jsdom's text box under it.
+    month.setAttribute('type', 'text');
+    Object.defineProperty(month, 'type', { get: () => 'text', set() {} });
+    await change(month, '2026-0');
+    assert.equal(month.value === '2026-0', true);
+    assert.equal(lastParams(requests).has('solved'), false);
+    await change(month, '2026-08');
+    assert.equal(lastParams(requests).get('solved'), '2026-08');
+    await change(month, '');
     // A stop's own "sort by rating" toggle.
     const stop = document.querySelector('.route-stop input[value="hash-counting"]');
     await act(async () => stop.click());

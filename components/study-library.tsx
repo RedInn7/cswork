@@ -172,6 +172,9 @@ const SORTS = ['frequency', 'number', 'difficulty', 'rating', 'acceptance'];
 /** Rating bands for the filter, as ratingMin-ratingMax (an open end is empty). */
 const BANDS = ['0-1199', '1200-1399', '1400-1599', '1600-1899', '1900-2099', '2100-2399', '2400-'];
 
+/** This local month as YYYY-MM, the month box's value format. */
+const thisMonth = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+
 export function StudyLibrary({
   navigate,
   availableProblemIds,
@@ -224,7 +227,10 @@ export function StudyLibrary({
   const [band, setBand] = useState('');
   const [list, setList] = useState(() => urlParam('list').slice(0, 40));
   const [lists, setLists] = useState<{ id: string; title: string }[]>([]);
-  const [solvedMonth, setSolvedMonth] = useState('');
+  // What the month box holds; a browser without a month picker types it, so only a whole
+  // YYYY-MM filters.
+  const [monthInput, setMonthInput] = useState('');
+  const solvedMonth = /^\d{4}-\d{2}$/.test(monthInput) ? monthInput : '';
   // ?browse=contests: the bank by weekly contest instead of the line.
   const [browse, setBrowse] = useState(() => (urlParam('browse') === 'contests' ? 'contests' : 'line'));
   useEffect(() => {
@@ -1465,10 +1471,12 @@ export function StudyLibrary({
             {t('通过月份', 'Solved in')}
             <input
               type="month"
-              value={solvedMonth}
-              max={new Date().toISOString().slice(0, 7)}
+              value={monthInput}
+              max={thisMonth()}
+              pattern="\d{4}-\d{2}"
+              placeholder="YYYY-MM"
               onChange={(event) => {
-                setSolvedMonth(/^\d{4}-\d{2}$/.test(event.target.value) ? event.target.value : '');
+                setMonthInput(event.target.value);
                 setPage(1);
               }}
             />
@@ -1623,7 +1631,7 @@ export function StudyLibrary({
               setCompany('');
               setBand('');
               setList('');
-              setSolvedMonth('');
+              setMonthInput('');
               setPage(1);
             }}
           >
