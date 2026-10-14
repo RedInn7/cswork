@@ -30,6 +30,9 @@ writeFileSync(join(parsed, 'interview-questions.jsonl'), lines([
 ]));
 writeFileSync(join(parsed, 'experiences.jsonl'), lines([
   item({ id: 'ex-amazon-oa', type: 'experience', slug: 'amazon-oa', title: 'Amazon SDE OA', body: 'Two questions: [LRU](https://prachub.com/coding-questions/lru), [plans](https://prachub.com/pricing). ![chart](https://ik.imagekit.io/x/a.png) ![gone](https://ik.imagekit.io/x/b.png) Code `arr[i](/x)` stays. [Guide](https://PracHub.com/interview-guide/google-swe "Google") https://prachub.com/companies/airbnb/x ![v](https://ik.imagekit.io/x/a.png?tr=w-100) [same](/interview-questions/lru) [SWE](/positions/software-engineer) [all](https://prachub.com/questions)', company: { slug: 'amazon', name: 'Amazon' }, relations: [{ kind: 'question', slug: 'lru' }, { kind: 'question', slug: 'missing' }], extra: { result: 'Offer' } }),
+  item({ id: 'ex-uber-onsite', type: 'experience', slug: 'uber-onsite', title: 'Uber onsite', body: 'Four rounds.', company: { slug: 'uber', name: 'Uber' }, publishedAt: '2026-08-01', extra: { result: 'Rejected', rounds: ['Online Assessment', 'Onsite'], date: '2026-03-13', dateBasis: 'interview' } }),
+  // The report's date is not the interview's; no outcome is no outcome.
+  item({ id: 'ex-uber-screen', type: 'experience', slug: 'uber-screen', title: 'Uber screen', body: 'One round.', company: { slug: 'uber', name: 'Uber' }, publishedAt: '2026-08-02', extra: { result: null, rounds: ['Technical Screen'], date: '2026-07-01', dateBasis: 'source_report' } }),
 ]));
 writeFileSync(join(parsed, 'courses.jsonl'), lines([
   item({ id: 'co-sd', type: 'course', slug: 'sd', title: 'System design basics', body: 'Course intro.' }),
@@ -160,4 +163,36 @@ void test('detail resolves relations and points duplicates at our own problem', 
   const stats = await get('stats');
   assert.equal(stats.counts.coding_question, 1);
   assert.equal(stats.companies, 3);
+});
+
+void test('experiences carry outcome, rounds and interview date; outcome filter and facet', async () => {
+  type Row = { slug: string; result?: string | null; rounds?: string[]; interviewDate?: string | null };
+  const list = await get('list?type=experience');
+  const bySlug = new Map<string, Row>(list.items.map((i: Row) => [i.slug, i]));
+  assert.deepEqual(
+    [bySlug.get('uber-onsite')?.result, bySlug.get('uber-onsite')?.rounds, bySlug.get('uber-onsite')?.interviewDate],
+    ['Rejected', ['Online Assessment', 'Onsite'], '2026-03-13'],
+  );
+  // A report date is not shown as the interview date; a missing outcome stays missing.
+  assert.deepEqual([bySlug.get('uber-screen')?.result, bySlug.get('uber-screen')?.interviewDate], [null, null]);
+  assert.deepEqual([bySlug.get('amazon-oa')?.result, bySlug.get('amazon-oa')?.rounds], ['Offer', []]);
+  // Counts of reports per outcome for the filter menu (no rates).
+  assert.deepEqual(
+    list.facets.results.map((f: { value: string; n: number }) => [f.value, f.n]).sort(),
+    [['Offer', 1], ['Rejected', 1]],
+  );
+  assert.deepEqual((await get('list?type=experience&result=Offer')).items.map((i: Row) => i.slug), ['amazon-oa']);
+  assert.equal((await get('list?type=experience&result=Offer&company=uber')).total, 0);
+  assert.equal((await get('list?type=experience&result=Withdrew')).total, 0);
+  // Searching keeps the facts too.
+  assert.equal((await get('list?type=experience&q=rounds')).items[0].result, 'Rejected');
+  // Questions have neither the facet nor the fields.
+  const questions = await get('list?type=questions');
+  assert.deepEqual(questions.facets.results, []);
+  assert.equal('result' in questions.items[0], false);
+  const detail = await get('item?type=experience&slug=uber-onsite');
+  assert.deepEqual([detail.result, detail.rounds, detail.interviewDate], ['Rejected', ['Online Assessment', 'Onsite'], '2026-03-13']);
+  // No judgeable problem or mock for Uber in an empty judge: no practice card.
+  assert.equal(detail.companyPractice, null);
+  assert.equal((await get('item?type=article&slug=sum')).companyPractice, null);
 });

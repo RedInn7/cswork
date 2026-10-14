@@ -63,6 +63,18 @@ export function listLibrary(params: URLSearchParams, userId?: string) {
     ? listClassicLibrary(classic, userId)
     : listStudyLibrary(params, userId);
 }
+
+/** These problems' summaries in the given order (company pages); unknown ids are skipped. */
+export function studyLibrarySummaries(ids: readonly string[]) {
+  if (!ids.length) return [];
+  const rows = sqlite()
+    .prepare(
+      `SELECT ${columns} FROM study_library l WHERE l.id IN (SELECT value FROM json_each(?))`,
+    )
+    .all(JSON.stringify(ids)) as LibraryRow[];
+  const byId = new Map(rows.map((row) => [row.id, summary(row)]));
+  return ids.flatMap((id) => byId.get(id) ?? []);
+}
 export function listStudyLibrary(params: URLSearchParams, userId?: string) {
   const collection = params.get('collection');
   if (!collection || collection === LING_CURATED_ID)
@@ -184,6 +196,13 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
                   ? item[status]
                   : false)),
   );
+  // sort=frequency: the chosen company's most reported problems first. The sort is
+  // stable, so equal counts keep the line's order.
+  if (company && params.get('sort') === 'frequency') {
+    const reports = (item: (typeof all)[number]) =>
+      item.companies.find((c) => c.slug === company)?.count ?? 0;
+    filtered.sort((a, b) => reports(b) - reports(a));
+  }
   const page = Math.max(
     1,
     Math.min(10000, Number.parseInt(params.get('page') || '1', 10) || 1),
@@ -215,7 +234,7 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
       companies: [...item.companies]
         .sort((a, b) => Number(b.slug === company) - Number(a.slug === company))
         .slice(0, 2)
-        .map(({ slug, name }) => ({ slug, name })),
+        .map(({ slug, name, count, last }) => ({ slug, name, count, last })),
     })),
     total: filtered.length,
     page,

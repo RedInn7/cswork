@@ -124,8 +124,8 @@ void test('only complete, listed, nonduplicate public material is reachable and 
   add({
     slug: 'company-question',
     type: 'interview_question',
-    company_slug: 'acme',
-    company_name: 'Acme',
+    company_slug: 'facebook',
+    company_name: 'Facebook',
     extra: '{"math":true}',
     updated_at: '2026-10-02',
   });
@@ -183,7 +183,8 @@ void test('only complete, listed, nonduplicate public material is reachable and 
   assert.throws(() => publicLibraryEntries(0, 50001), RangeError);
   assert.throws(() => publicLibraryEntries(-1), RangeError);
   assert.throws(() => publicLibraryEntries(0, 0), RangeError);
-  process.env.HIDDEN_COMPANIES = ' ACME ,invalid!';
+  // Hiding an employer hides its library spellings too (facebook under meta).
+  process.env.HIDDEN_COMPANIES = ' META ,invalid!';
   assert.equal(
     publicLibraryItem('interview_question', 'company-question'),
     null,
@@ -229,7 +230,7 @@ void test('count cache reuses warm counts and invalidates on library replacement
     } finally {
       time.mock.restore();
     }
-    process.env.HIDDEN_COMPANIES = 'acme';
+    process.env.HIDDEN_COMPANIES = 'meta';
     assert.equal(publicLibraryCount(), 25);
     assert.equal(counts, 5);
     const replacement = join(folder, 'replacement.sqlite');

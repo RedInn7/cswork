@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ArrowRight, BookOpen, Building2, ChevronDown, Search, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Building2, ChevronDown, Search, Trophy, X } from 'lucide-react';
 import { api } from '@/lib/types';
 import { track } from '@/lib/analytics';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
+import { RESULTS, ROUND_LABELS } from '@/lib/experience';
 import { companyLogos } from '@/lib/oa-company-brands';
 import type { Navigate } from './learning';
 import { OaMarkdown } from './oa-library';
@@ -20,6 +21,8 @@ type Facets = {
   categories: Facet[];
   difficulties: Facet[];
   rounds: Facet[];
+  /** Experiences: self-reported outcomes. */
+  results?: Facet[];
   total: number;
 };
 export type ContentSummary = {
@@ -40,6 +43,10 @@ export type ContentSummary = {
   titleZh?: string | null;
   summaryZh?: string | null;
   level?: 'core' | 'advanced' | null;
+  /** Experiences only: self-reported outcome, rounds, and the interview date when the source gives it. */
+  result?: string | null;
+  rounds?: string[];
+  interviewDate?: string | null;
 };
 /** Experiences and concepts summarise with their opening lines; the page doesn't print them twice. */
 const flat = (s: string) => s.replace(/[^\p{L}\p{N}]+/gu, ' ').trim().toLowerCase();
@@ -67,6 +74,18 @@ type Relation = {
   title: string;
   company_name: string | null;
   difficulty: string | null;
+  /** A judge problem the related question can be practised on. */
+  problem?: string | null;
+};
+/** "Practise this company" (lib/server/company-hub.ts companyPractice). */
+type CompanyPractice = {
+  slug: string;
+  name: string;
+  oaReady: number;
+  /** Mock OA preset with a deep enough pool. */
+  mock: string | null;
+  top: { id: string; number: number; titleZh: string; titleEn: string; count: number }[];
+  hub: boolean;
 };
 type Detail = ContentSummary & {
   body: string;
@@ -85,6 +104,8 @@ type Detail = ContentSummary & {
   dupOf: { kind: 'oa' | 'library' | 'prachub'; id: string; title?: string; problem?: string } | null;
   /** A judgeable LeetCode problem this coding question maps to. */
   practice?: string | null;
+  /** Experiences and interview questions: practice for their company. */
+  companyPractice?: CompanyPractice | null;
 };
 
 /**
@@ -177,11 +198,24 @@ function CompanyMark({ company }: { company: { slug: string; name: string } }) {
   );
 }
 
+/** Self-reported outcomes as [zh, en] labels (filter menu and badges). */
+const RESULT_NAMES: Record<string, [string, string]> = Object.fromEntries(
+  Object.entries(RESULTS).map(([value, r]) => [value, [r.zh, r.en] as [string, string]]),
+);
+
 export function ContentMeta({ item }: { item: ContentSummary }) {
   const t = useT();
+  // Experiences: outcome badge (none when the report gives none), the rounds in order, the interview month.
+  const result = item.result && Object.hasOwn(RESULTS, item.result) ? RESULTS[item.result] : null;
+  const rounds = item.rounds?.map((r) => labelOf(t, ROUND_LABELS, r) ?? r) ?? [];
   return (
     <div className="ct-meta">
       {item.company && <CompanyMark company={item.company} />}
+      {result && (
+        <span className="rd-badge ct-result" data-tone={result.tone}>
+          {t(result.zh, result.en)}
+        </span>
+      )}
       {item.difficulty && (
         <span className={`ct-diff is-${item.difficulty}`}>
           <span className="ct-diff-dot" aria-hidden="true" />
@@ -193,11 +227,22 @@ export function ContentMeta({ item }: { item: ContentSummary }) {
           {item.level === 'advanced' ? t('拓展', 'Advanced') : t('核心', 'Core')}
         </span>
       )}
-      {[item.role, item.round, item.seniority].filter(Boolean).map((label) => (
+      {[item.role, rounds.length ? null : item.round, item.seniority].filter(Boolean).map((label) => (
         <span key={label} className="ct-meta-text">
           {label}
         </span>
       ))}
+      {!!rounds.length && (
+        <span className="ct-meta-text">
+          <span aria-hidden="true">{rounds.join(' → ')}</span>
+          <span className="sr-only">{t(`轮次：${rounds.join('、')}`, `Rounds: ${rounds.join(', ')}`)}</span>
+        </span>
+      )}
+      {item.interviewDate && (
+        <span className="ct-meta-text">
+          {t(`面试于 ${item.interviewDate.slice(0, 7)}`, `Interviewed ${item.interviewDate.slice(0, 7)}`)}
+        </span>
+      )}
     </div>
   );
 }
@@ -237,7 +282,8 @@ export function ContentCard({
         </span>
         <span className="ct-date">
           {labelOf(t, TYPE_NAMES, item.type)}
-          {item.publishedAt ? ` · ${item.publishedAt.slice(0, 10)}` : ''}
+          {/* An experience is dated by its interview (in the meta), not by when it was collected. */}
+          {item.publishedAt && item.type !== 'experience' ? ` · ${item.publishedAt.slice(0, 10)}` : ''}
         </span>
       </div>
     </a>
@@ -266,7 +312,7 @@ function FacetSelect({
         <option value="">{label}</option>
         {all.map((o) => (
           <option key={o.value} value={o.value}>
-            {labelOf(t, DIFFICULTY, o.value) ?? o.label}
+            {labelOf(t, DIFFICULTY, o.value) ?? labelOf(t, RESULT_NAMES, o.value) ?? o.label}
             {o.n ? ` · ${o.n}` : ''}
           </option>
         ))}
@@ -276,7 +322,7 @@ function FacetSelect({
   );
 }
 
-const FILTERS = ['type', 'kind', 'company', 'role', 'category', 'difficulty', 'round', 'q', 'page'] as const;
+const FILTERS = ['type', 'kind', 'company', 'role', 'category', 'difficulty', 'round', 'result', 'q', 'page'] as const;
 /** Each list's last filters, search and page, so an item's back link returns to the same list. */
 const lastList: Record<string, Record<string, string>> = {};
 
@@ -366,7 +412,7 @@ export function ContentList({
                   key={value}
                   type="button"
                   aria-pressed={type === value}
-                  onClick={() => apply({ type: value, kind: '', company: '', role: '', category: '', difficulty: '', round: '' })}
+                  onClick={() => apply({ type: value, kind: '', company: '', role: '', category: '', difficulty: '', round: '', result: '' })}
                 >
                   {t(zh, en)}
                 </button>
@@ -404,6 +450,19 @@ export function ContentList({
             <FacetSelect label={t('类别', 'Category')} value={filters.category || ''} options={data.facets.categories} onChange={(v) => apply({ category: v })} />
             <FacetSelect label={t('难度', 'Difficulty')} value={filters.difficulty || ''} options={data.facets.difficulties} onChange={(v) => apply({ difficulty: v })} />
             <FacetSelect label={t('轮次', 'Round')} value={filters.round || ''} options={data.facets.rounds} onChange={(v) => apply({ round: v })} />
+            {!!data.facets.results?.length && (
+              <>
+                <FacetSelect label={t('结果', 'Outcome')} value={filters.result || ''} options={data.facets.results} onChange={(v) => apply({ result: v })} />
+                <button
+                  type="button"
+                  className={`rd-chip ${filters.result === 'Offer' ? 'is-set' : ''}`}
+                  aria-pressed={filters.result === 'Offer'}
+                  onClick={() => apply({ result: filters.result === 'Offer' ? '' : 'Offer' })}
+                >
+                  <Trophy size={13} aria-hidden="true" /> {t('只看拿到 Offer', 'Offers only')}
+                </button>
+              </>
+            )}
           </div>
         )}
 
@@ -463,6 +522,86 @@ export function ContentList({
   );
 }
 
+/** Same-tab SPA navigation for plain left clicks; modified clicks open the link as usual. */
+const spaClick = (go: () => void) => (event: React.MouseEvent) => {
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  go();
+};
+
+/**
+ * "Practise this company" ticket on experiences and interview questions: the company's judgeable OA
+ * problems, a timed mock and its three most reported LeetCode problems this visitor can open.
+ */
+function PracticeCard({
+  practice,
+  navigate,
+  problemIds,
+}: {
+  practice: CompanyPractice;
+  navigate: Navigate;
+  problemIds: string[];
+}) {
+  const t = useT();
+  const locale = useLocale();
+  const top = practice.top.filter((p) => problemIds.includes(p.id));
+  if (!practice.oaReady && !practice.mock && !top.length) return null;
+  const oa = { library: 'oa', company: practice.slug };
+  return (
+    <section className="ct-practice rd-reveal" aria-labelledby="ct-practice-title" style={{ '--i': 3 } as React.CSSProperties}>
+      <div className="ct-practice-head">
+        <p className="ct-practice-eyebrow">{t('练这家公司', 'Practise this company')}</p>
+        <h2 id="ct-practice-title">{practice.name}</h2>
+        {practice.hub && (
+          <a href={`/company/${encodeURIComponent(practice.slug)}`}>
+            {t('公司主页', 'Company page')} <ArrowRight size={13} aria-hidden="true" />
+          </a>
+        )}
+      </div>
+      {(practice.oaReady > 0 || practice.mock) && (
+        <div className="ct-practice-row">
+          {practice.oaReady > 0 && (
+            <a className="ct-practice-oa" href={`/?${new URLSearchParams({ view: 'problems', ...oa })}`} onClick={spaClick(() => navigate('problems', oa))}>
+              <strong>{practice.oaReady}</strong>
+              <span>{t('道 OA 真题可在线判题', practice.oaReady === 1 ? 'judge-ready OA problem' : 'judge-ready OA problems')}</span>
+            </a>
+          )}
+          {practice.mock && (
+            <a
+              className="ct-practice-cta"
+              href={`/?view=mock&company=${encodeURIComponent(practice.mock)}`}
+              onClick={spaClick(() => navigate('mock', { company: practice.mock! }))}
+            >
+              {t('开始限时模拟 OA', 'Start a timed mock OA')} <ArrowRight size={14} aria-hidden="true" />
+            </a>
+          )}
+        </div>
+      )}
+      {!!top.length && (
+        <>
+          <h3 className="ct-practice-sub">{t('高频 LeetCode 题', 'Most reported LeetCode problems')}</h3>
+          <ol className="ct-practice-lc">
+            {top.map((p) => (
+              <li key={p.id}>
+                <a href={`/?view=problem&problem=${encodeURIComponent(p.id)}`} onClick={spaClick(() => navigate('problem', { problem: p.id }))}>
+                  <span className="ct-practice-num">LC {p.number}</span>
+                  <span className="ct-practice-title">{locale === 'zh' ? p.titleZh || p.titleEn : p.titleEn || p.titleZh}</span>
+                  <span className="ct-practice-freq" aria-hidden="true">
+                    ×{p.count}
+                  </span>
+                  <span className="sr-only">
+                    {t(`（${p.count} 次面经报告）`, ` (${p.count} ${p.count === 1 ? 'report' : 'reports'})`)}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </>
+      )}
+    </section>
+  );
+}
+
 export function ContentDetail({
   params,
   navigate,
@@ -493,6 +632,9 @@ export function ContentDetail({
   // The mapped LeetCode problem, unless the duplicate callout below already links one.
   const practice =
     item?.practice && problemIds.includes(item.practice) && !(dup && dup.kind !== 'prachub') ? item.practice : null;
+  // Related questions this visitor can practise come first (the sort is stable).
+  const canPractise = (rel: Relation) => !!rel.problem && problemIds.includes(rel.problem);
+  const relations = [...(item?.relations ?? [])].sort((a, b) => Number(canPractise(b)) - Number(canPractise(a)));
   const section = contentSection(params.type);
   const back = () =>
     navigate(section, lastList[section] ?? (section === 'resources' ? { type: params.type } : {}));
@@ -593,6 +735,9 @@ export function ContentDetail({
             <article className="rd-card ct-body rd-reveal" style={{ '--i': 2 } as React.CSSProperties}>
               <OaMarkdown body={localized(locale, item.body, item.extra.bodyZh)} math={!!item.extra.math} />
             </article>
+            {item.companyPractice && (
+              <PracticeCard practice={item.companyPractice} navigate={navigate} problemIds={problemIds} />
+            )}
             {!!item.extra.faq?.length && (
               <section className="ct-section">
                 <h2>{t('常见问题', 'FAQ')}</h2>
@@ -604,11 +749,11 @@ export function ContentDetail({
                 ))}
               </section>
             )}
-            {!!item.relations.length && (
+            {!!relations.length && (
               <section className="ct-section">
                 <h2>{t('相关内容', 'Related content')}</h2>
                 <div className="ct-related">
-                  {item.relations.map((rel) => (
+                  {relations.map((rel) => (
                     <button
                       key={`${rel.type}:${rel.slug}`}
                       type="button"
@@ -617,6 +762,7 @@ export function ContentDetail({
                     >
                       <span className="rd-badge">{labelOf(t, TYPE_NAMES, rel.type) || rel.type}</span>
                       <span>{rel.title}</span>
+                      {canPractise(rel) && <span className="rd-badge is-brand ct-related-judge">{t('可在线判题', 'Judge-ready')}</span>}
                     </button>
                   ))}
                 </div>

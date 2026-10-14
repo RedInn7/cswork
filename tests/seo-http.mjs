@@ -14,8 +14,8 @@ const entry = resolve('dist/standalone/server.js');
 const contentPath = join(dir, 'content.sqlite');
 const db = new Database(contentPath);
 db.exec(`CREATE TABLE items (
-  type TEXT, slug TEXT, title TEXT, summary TEXT, company_name TEXT,
-  updated_at TEXT, published_at TEXT, body TEXT, extra TEXT DEFAULT '{}',
+  type TEXT, slug TEXT, title TEXT, summary TEXT, company_slug TEXT, company_name TEXT,
+  role TEXT, round TEXT, difficulty TEXT, updated_at TEXT, published_at TEXT, body TEXT, extra TEXT DEFAULT '{}',
   listed INTEGER DEFAULT 1, partial INTEGER DEFAULT 0, dup_of TEXT
 );`);
 const insert = db.prepare(

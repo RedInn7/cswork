@@ -2,7 +2,9 @@ import Database from 'better-sqlite3';
 import { existsSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { lcIdBySource } from '@/lib/company-tags';
+import { experienceColumns, experienceFacts, experienceFactsOf } from '@/lib/experience';
 import type { Person } from './auth';
+import { companyPractice } from './company-hub';
 import { setting } from './env';
 import { HttpError, json, limitReader } from './http';
 import { mockCompanies, mockPool, mockSet } from './mock-interview';
@@ -69,6 +71,8 @@ const row = (r: Record<string, unknown>) => ({
   tags: JSON.parse((r.tags as string) || '[]'),
   publishedAt: r.published_at,
   partial: !!r.partial,
+  // Experiences: self-reported outcome, rounds and interview date (lib/experience.ts).
+  ...(r.type === 'experience' ? experienceFacts(r) : {}),
 });
 /**
  * FTS5 query from free text: each word quoted and AND-ed. Only words of 3+ characters are
@@ -98,6 +102,8 @@ function facets(db: Database.Database, types: readonly ItemType[]) {
       categories: group('category'),
       difficulties: group('difficulty'),
       rounds: group('round'),
+      // Self-reported outcomes of experiences; a filter, not a pass rate (most reports have none).
+      results: types.includes('experience') ? group(`json_extract(extra,'$.result')`, 10) : [],
       total: (db.prepare(`SELECT COUNT(*) AS n FROM items WHERE ${where}`).get(...types) as { n: number }).n,
       // The company menu is capped; this is the real count.
       companyTotal: (db.prepare(`SELECT COUNT(DISTINCT company_slug) AS n FROM items WHERE ${where}`).get(...types) as { n: number }).n,
@@ -124,6 +130,11 @@ function list(db: Database.Database, params: URLSearchParams) {
       args.push(value.slice(0, 120));
     }
   }
+  const result = params.get('result');
+  if (result) {
+    where.push(`json_extract(i.extra,'$.result') = ?`);
+    args.push(result.slice(0, 40));
+  }
   const text = (params.get('q') || '').trim().slice(0, 120);
   // The index does not segment Chinese, so Chinese searches match titles, summaries and the
   // Chinese text of tutorials by substring instead; every word has to appear.
@@ -141,7 +152,7 @@ function list(db: Database.Database, params: URLSearchParams) {
   }
   const page = Math.min(2000, Math.max(1, Math.floor(Number(params.get('page'))) || 1));
   const offset = (page - 1) * PAGE;
-  const columns = SUMMARY.split(',').map((c) => `i.${c}`).join(',');
+  const columns = `${SUMMARY.split(',').map((c) => `i.${c}`).join(',')},${experienceColumns('i.')}`;
   let total: number;
   let items: Record<string, unknown>[];
   if (q) {
@@ -194,17 +205,26 @@ function item(db: Database.Database, params: URLSearchParams) {
       const target = Object.hasOwn(kinds, rel.kind)
         ? (db
             // Unlisted duplicates still resolve: their page points at the kept copy.
-            .prepare(`SELECT type,slug,title,company_name,difficulty FROM items WHERE type IN (${kinds[rel.kind].map(() => '?').join(',')}) AND slug=?`)
+            .prepare(`SELECT type,slug,title,company_name,difficulty,json_extract(dup_of,'$.problem') AS problem FROM items WHERE type IN (${kinds[rel.kind].map(() => '?').join(',')}) AND slug=?`)
             .get(...kinds[rel.kind], rel.slug) as Record<string, unknown> | undefined)
         : undefined;
-      return target ? { kind: rel.kind, ...target } : null;
+      // `problem`: the judge problem a related question can be practised on, if any.
+      return target
+        ? {
+            kind: rel.kind,
+            ...target,
+            problem: target.problem ?? (target.type === 'coding_question' ? lcIdBySource.get(target.slug as string) : null) ?? null,
+          }
+        : null;
     })
     .filter(Boolean);
+  const extra = JSON.parse(found.extra as string);
   return {
     ...row(found),
+    ...(found.type === 'experience' ? experienceFactsOf(extra) : {}),
     body: found.body,
     updatedAt: found.updated_at,
-    extra: JSON.parse(found.extra as string),
+    extra,
     relations,
     dupOf: found.dup_of ? JSON.parse(found.dup_of as string) : null,
     /** The judgeable LeetCode problem this coding question maps to (company-lc-map). */
@@ -236,7 +256,15 @@ export async function handleContent(request: Request, p: Person | null, path: st
     throw new HttpError(404, '内容库尚未发布');
   }
   if (action === 'list') return json(list(db, params));
-  if (action === 'item') return json(item(db, params));
+  if (action === 'item') {
+    const found = item(db, params);
+    // Experiences and interview questions point at practice for their company.
+    const practice =
+      found.type === 'experience' || found.type === 'interview_question'
+        ? await companyPractice(db, found.company?.slug as string | undefined)
+        : null;
+    return json({ ...found, companyPractice: practice });
+  }
   if (action === 'stats') return json(stats(db));
   // Mock interviews: a drawn set, and the companies to draw from.
   if (action === 'mock') return json(mockSet(db, params));
