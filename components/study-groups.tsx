@@ -37,8 +37,8 @@ type Member = {
   days: number[];
   week: number;
   goal: number | null;
-  /** The cohort: which of today's problems are done, and how many of the plan. */
-  camp?: { today: boolean[]; done: number } | null;
+  /** The cohort: how many of today's problems are done (which ones on the reader's own row), and of the plan. */
+  camp?: { today: number; done: number; mine?: boolean[] } | null;
 };
 export type GroupDetail = {
   id: string;

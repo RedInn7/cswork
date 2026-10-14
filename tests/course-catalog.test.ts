@@ -8,6 +8,7 @@ import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
+// @ts-expect-error -- jsdom ships no types; the .mjs UI tests use it untyped too.
 import { JSDOM } from 'jsdom';
 
 const folder = mkdtempSync(join(tmpdir(), 'cswork-course-catalog-'));

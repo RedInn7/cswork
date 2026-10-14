@@ -116,9 +116,9 @@ void test('the owner sets a cohort; members see day N, today’s slice and who f
   ])
     assert.equal(await status(owner, 'POST', `groups/${group.id}/camp`, bad), 400, JSON.stringify(bad));
   // Day 2 of a two-a-day plan: problems 3 and 4.
-  const [, , third, fourth] = numbers;
+  const [first, , third, fourth] = numbers as [number, number, number, number];
   solve(amy.id, third);
-  solve(amy.id, numbers[0]);
+  solve(amy.id, first);
   solve(owner.id, fourth, now - 5 * DAY); // Before day 1: does not count.
   const set = await ok(owner, 'POST', `groups/${group.id}/camp?tz=0`, { plan: 'blind-75', perDay: 2, startDate: yesterday });
   const camp = set.camp!;
