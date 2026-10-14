@@ -102,7 +102,9 @@ test('classic lists show groups and progress, link external problems out and swi
     await render(false);
     assert.ok(requests[0].endsWith('/api/oj/library?collection=blind-75'));
     assert.ok(!document.querySelector('.route-stops'), 'no metro line');
-    const headings = [...document.querySelectorAll('.classic-group h3')].map((h) => h.textContent);
+    assert.equal(document.querySelectorAll('h1').length, 1);
+    assert.ok(document.querySelector('.classic-board h1').textContent.includes('Blind 75'));
+    const headings = [...document.querySelectorAll('.classic-group h2')].map((h) => h.textContent);
     assert.deepEqual(
       headings.map((h) => h.split(/\d/)[0]),
       ['Array', 'Linked List'],
@@ -139,6 +141,15 @@ test('classic lists show groups and progress, link external problems out and swi
     assert.equal(sessionStorage.getItem('cswork:problem-library'), 'blind-75');
     await click(document.querySelector('a.study-row'));
     assert.deepEqual(navigations.at(-1), ['problem', { problem: 'lc-1' }]);
+
+    // A failed background refresh keeps the list on screen.
+    globalThis.fetch = async () => Response.json({ error: 'busy' }, { status: 429 });
+    await act(async () => {
+      window.dispatchEvent(new Event('focus'));
+      await new Promise((r) => setTimeout(r, 10));
+    });
+    assert.ok(!document.querySelector('.classic-list [role="alert"]'));
+    assert.equal(document.querySelectorAll('a.study-row').length, 3);
 
     // The picker shows the current list and switches to another.
     const picker = document.querySelector('.algorithm-library-lists select');

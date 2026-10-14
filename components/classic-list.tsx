@@ -61,9 +61,12 @@ export function ClassicList({
     let current = true;
     api<ClassicView>(`oj/library?${new URLSearchParams({ collection: slug })}`)
       .then((result) => {
-        if (current) setData(result);
+        if (!current) return;
+        setData(result);
+        setError('');
       })
       .catch((reason: Error) => {
+        // A failed background refresh keeps the list already on screen.
         if (current) setError(reason.message);
       });
     return () => {
@@ -105,7 +108,8 @@ export function ClassicList({
     <section className="study-library study-bank classic-list" lang={english ? 'en' : 'zh'}>
       <div className="classic-board">
         <p className="classic-kicker">{t('经典题单 · 对照', 'Classic list · Mapped')}</p>
-        <h2>{english ? list.nameEn : list.nameZh}</h2>
+        {/* The page's only h1: the bank's own heading is skipped for classic lists. */}
+        <h1>{english ? list.nameEn : list.nameZh}</h1>
         <p className="classic-lead">
           {t(
             '按题号对照到本站题库：能在本站判题的直接提交，其余标为站外，去力扣练习。由 cswork 对照整理，并非官方题单。',
@@ -173,7 +177,7 @@ export function ClassicList({
           </div>
         )}
       </div>
-      {error ? (
+      {error && !data ? (
         <div className="study-state" role="alert">
           <p>{t(error, englishMessage(error))}</p>
           <Button
@@ -195,7 +199,7 @@ export function ClassicList({
             className="classic-group"
             aria-labelledby={`classic-group-${index}`}
           >
-            <h3 className="route-heading" id={`classic-group-${index}`}>
+            <h2 className="route-heading" id={`classic-group-${index}`}>
               <span className="route-heading-name">{english ? group.nameEn : group.nameZh}</span>
               <span className="route-count">
                 {signedIn ? (
@@ -207,7 +211,7 @@ export function ClassicList({
                   t(`本站可判 ${group.ready} / ${group.total}`, `${group.ready} of ${group.total} judgeable`)
                 )}
               </span>
-            </h3>
+            </h2>
             <div className="study-list">
               {group.items.map((item) => {
                 const level = levelOf(item.difficulty);
