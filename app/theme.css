@@ -194,6 +194,37 @@
   .dark .algorithm-demo .algorithm-demo-node.is-blocked text {
     fill: #ffb4b4;
   }
+  /*
+   * /roadmap's graph (app/roadmap/roadmap.css): the generator keeps saturated fills, so the
+   * brand green and amber lift here, and a done stop's number turns dark on the light green.
+   */
+  .dark .route-graph-edge {
+    stroke: #52605a;
+  }
+  .dark .route-graph-ring,
+  .dark .route-graph-edge[data-met] {
+    stroke: #48cba1;
+  }
+  .dark .route-graph-node[data-state='done'] .route-graph-track {
+    fill: #48cba1;
+    stroke: #48cba1;
+  }
+  .dark .route-graph-node[data-state='done'] .route-graph-code {
+    fill: #061a14;
+  }
+  .dark .route-graph-node[data-state='ready'] .route-graph-track {
+    stroke: #f2af48;
+  }
+  .dark .roadmap-legend li[data-state='done']::before {
+    border-color: #48cba1;
+    background: #48cba1;
+  }
+  .dark .roadmap-legend li[data-state='active']::before {
+    border-color: #48cba1 #48cba1 #2f3833 #2f3833;
+  }
+  .dark .roadmap-legend li[data-state='ready']::before {
+    border-color: #f2af48;
+  }
 
   /* Native controls, scrollbars and the selection follow the page. */
   .dark ::selection {
