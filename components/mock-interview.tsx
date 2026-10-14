@@ -507,12 +507,30 @@ function Session({
     // Fetched once; a re-roll replaces the set in place.
   }, [data, initial]);
   const storeKey = `${mode}:${key}`;
-  const [run, setRun] = useState<Run>(() => ({ ...fresh(mode), ...read<Record<string, Run>>(RUNS, {})[storeKey] }));
+  const [run, setRun] = useState<Run>(() => {
+    const saved = read<Record<string, Run & { at?: number }>>(RUNS, {})[storeKey];
+    if (!saved) return fresh(mode);
+    // A clock left running stops where the page last saved it, so time away doesn't count; it resumes paused.
+    const { at, ...r } = saved;
+    return { ...fresh(mode), ...commit(r, at), since: null };
+  });
   useEffect(() => {
-    const all = read<Record<string, Run & { at: number }>>(RUNS, {});
-    all[storeKey] = { ...run, at: Date.now() };
-    // Only the latest sittings are kept.
-    write(RUNS, Object.fromEntries(Object.entries(all).sort((a, b) => b[1].at - a[1].at).slice(0, 30)));
+    const save = () => {
+      const all = read<Record<string, Run & { at: number }>>(RUNS, {});
+      all[storeKey] = { ...run, at: Date.now() };
+      // Only the latest sittings are kept.
+      write(RUNS, Object.fromEntries(Object.entries(all).sort((a, b) => b[1].at - a[1].at).slice(0, 30)));
+    };
+    save();
+    // Leaving (closing, reloading, hiding the tab, another view) saves again, so `at` is when the clock was last seen.
+    const hide = () => document.visibilityState === 'hidden' && save();
+    window.addEventListener('pagehide', save);
+    document.addEventListener('visibilitychange', hide);
+    return () => {
+      window.removeEventListener('pagehide', save);
+      document.removeEventListener('visibilitychange', hide);
+      save();
+    };
   }, [run, storeKey]);
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
