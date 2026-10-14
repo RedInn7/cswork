@@ -69,12 +69,12 @@
 .classic-list:lang(zh) .classic-kicker {
   letter-spacing: 0.08em;
 }
-.classic-board h2 {
+.classic-board h1 {
   margin: 0;
   font: 750 26px/1.15 var(--font-route);
   letter-spacing: -0.02em;
 }
-.classic-list:lang(zh) .classic-board h2 {
+.classic-list:lang(zh) .classic-board h1 {
   font-weight: 650;
   letter-spacing: 0;
 }
@@ -152,8 +152,9 @@
 .classic-group + .classic-group {
   margin-top: 10px;
 }
-/* Title and tags; no stage pips or company slot here. */
-.classic-list .study-row-main {
+/* Title and tags; no stage pips or company slot here. Chained so it beats
+   study-library.css's .study-bank .study-row-main whatever loads last. */
+.study-bank.classic-list .study-row-main {
   grid-template-columns: minmax(0, 1fr) auto;
 }
 .classic-tags {
@@ -201,14 +202,14 @@
   .classic-board {
     padding: 16px;
   }
-  .classic-board h2 {
+  .classic-board h1 {
     font-size: 22px;
   }
   .classic-meter .route-cta {
     margin-left: 0;
   }
   /* Tags drop under the title on phones. */
-  .classic-list .study-row-main {
+  .study-bank.classic-list .study-row-main {
     grid-template-columns: minmax(0, 1fr);
   }
   .classic-tags {
