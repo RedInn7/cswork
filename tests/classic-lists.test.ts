@@ -6,13 +6,17 @@ import { resolve } from 'node:path';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import {
+  bookProblemUrl,
   classicList,
   classicListAppHref,
   classicLists,
+  groupEntries,
   leetcodeUrl,
   levelOf,
   problemAppHref,
   problemTitle,
+  refLabel,
+  sourceUrl,
 } from '../lib/classic-lists';
 import { curatedByNumber, curatedEntries } from '../lib/ling-curated';
 import { SITEMAP_STATIC_ENTRIES, sitemapLibraryRange } from '../lib/seo';
@@ -69,26 +73,145 @@ const list = {
   ],
 };
 
-void test('the data file holds the four mapped lists as numbers and groups only', () => {
+void test('the data file holds the mapped lists as numbers and groups only', () => {
   assert.deepEqual(
     classicLists.map((l) => l.slug).sort(),
-    ['blind-75', 'grind-75', 'leetcode-hot-100', 'top-interview-150'],
+    [
+      'blind-75',
+      'cracking-the-coding-interview',
+      'grind-75',
+      'leetcode-75',
+      'leetcode-hot-100',
+      'sword-offer',
+      'top-interview-150',
+    ],
   );
-  for (const l of classicLists) {
+  for (const l of classicLists.filter((list) => !list.refLabel)) {
     assert.deepEqual(Object.keys(l).sort(), ['groups', 'nameEn', 'nameZh', 'slug', 'source']);
     assert.ok(l.nameZh && l.nameEn, l.slug);
-    assert.equal(new URL(l.source).protocol, 'https:', l.slug);
+    assert.equal(new URL(sourceUrl(l)).protocol, 'https:', l.slug);
     assert.ok(l.groups.length > 0, l.slug);
-    const numbers = l.groups.flatMap((g) => g.numbers);
+    const numbers = l.groups.flatMap((g) => g.numbers!);
     assert.ok(numbers.every((n) => Number.isInteger(n) && n > 0), l.slug);
     // A list may file one problem under two groups (Blind 75 has 23 in Linked List and Heap).
-    for (const g of l.groups) assert.equal(new Set(g.numbers).size, g.numbers.length, `${l.slug} repeats a number in a group`);
+    for (const g of l.groups) assert.equal(new Set(g.numbers).size, g.numbers!.length, `${l.slug} repeats a number in a group`);
     assert.ok(new Set(numbers).size >= numbers.length - 2, `${l.slug} repeats too many numbers`);
-    for (const g of l.groups) assert.ok(g.nameZh && g.nameEn && g.numbers.length, l.slug);
+    for (const g of l.groups) assert.ok(g.nameZh && g.nameEn && g.numbers!.length, l.slug);
+  }
+  // LeetCode 75: 75 numbers in 22 groups, the same on leetcode.com and leetcode.cn.
+  const l75 = classicList('leetcode-75')!;
+  assert.equal(l75.groups.length, 22);
+  assert.equal(new Set(l75.groups.flatMap((g) => g.numbers)).size, 75);
+  assert.deepEqual(l75.groups[0].numbers, [1768, 1071, 1431, 605, 345, 151, 238, 334, 443]);
+  // The source link is the URL alone, not the note on how the list was read.
+  for (const l of classicLists) {
+    assert.doesNotMatch(sourceUrl(l), /\s/, l.slug);
+    assert.equal(new URL(sourceUrl(l)).href, sourceUrl(l), l.slug);
   }
   assert.equal(classicList('blind-75')?.nameEn, 'Blind 75');
   assert.equal(classicList('ling-selected-500'), undefined);
   assert.equal(classicList(null), undefined);
+});
+
+void test('book lists hold every book problem, in book order, with its LeetCode twin when there is one', () => {
+  const offer = classicList('sword-offer')!;
+  const cci = classicList('cracking-the-coding-interview')!;
+  for (const [list, count, chapters, suffix] of [
+    [offer, 75, 6, /-lcof$/],
+    [cci, 109, 9, /-lcci$/],
+  ] as const) {
+    assert.deepEqual(Object.keys(list).sort(), ['groups', 'nameEn', 'nameZh', 'refLabel', 'slug', 'source']);
+    assert.equal(list.groups.length, chapters);
+    const refs = list.groups.flatMap((g) => g.refs!);
+    assert.equal(refs.length, count);
+    assert.equal(new Set(refs.map((r) => r.ref)).size, count, `${list.slug} repeats a book number`);
+    assert.equal(new Set(refs.map((r) => r.slug)).size, count, `${list.slug} repeats a slug`);
+    for (const r of refs) {
+      assert.match(r.slug, suffix);
+      assert.ok(r.lc === null || (Number.isInteger(r.lc) && r.lc > 0), r.ref);
+    }
+    for (const g of list.groups) assert.ok(g.nameZh && g.nameEn && g.refs!.length && !g.numbers, list.slug);
+  }
+  // Book order and chapters: 剑指 Offer 03 opens chapter 2, 68-II closes chapter 7.
+  const offerRefs = offer.groups.flatMap((g) => g.refs!);
+  assert.equal(offerRefs[0].ref, '03');
+  assert.equal(offerRefs.at(-1)!.ref, '68-II');
+  assert.deepEqual(offer.groups.map((g) => g.refs!.length), [14, 10, 14, 14, 20, 3]);
+  // Twins come from leetcode.cn's own notes (07 is main-site 105) or a side-by-side reading;
+  // 03 (any duplicate in 0..n-1) has none and stays a leetcode.cn link.
+  const offerRef = (ref: string) => offerRefs.find((r) => r.ref === ref)!;
+  assert.equal(offerRef('07').lc, 105);
+  assert.equal(offerRef('07').slug, 'zhong-jian-er-cha-shu-lcof');
+  assert.equal(offerRef('03').lc, null);
+  assert.equal(offerRef('68-II').lc, 236);
+  // 53-I matches 34 "except for the return value": not the same problem.
+  assert.equal(offerRef('53-I').lc, null);
+  const cciRef = (ref: string) => cci.groups.flatMap((g) => g.refs!).find((r) => r.ref === ref)!;
+  assert.equal(cciRef('16.25').lc, 146);
+  assert.equal(cciRef('01.01').lc, null);
+  assert.deepEqual(
+    cci.groups.map((g) => g.nameEn.split(' · ')[0]),
+    ['01', '02', '03', '04', '05', '08', '10', '16', '17'].map((c) => `Chapter ${Number(c)}`),
+  );
+  // Labels and links.
+  assert.equal(refLabel(offer, '07', false), '剑指 Offer 07');
+  assert.equal(refLabel(cci, '01.02', true), 'CtCI 01.02');
+  assert.equal(refLabel(classicList('blind-75')!, '07', true), '');
+  assert.equal(bookProblemUrl('zhong-jian-er-cha-shu-lcof'), 'https://leetcode.cn/problems/zhong-jian-er-cha-shu-lcof/');
+  assert.equal(bookProblemUrl('../x'), 'https://leetcode.cn/problemset/');
+  assert.deepEqual(groupEntries({ nameZh: '', nameEn: '', numbers: [1] }), [{ number: 1, ref: null, refSlug: null }]);
+  assert.equal(problemTitle({ number: null, titleZh: '', titleEn: '' }, false), '力扣中国站原题');
+});
+
+void test('a book list counts each book problem; problems sharing one twin share its judge and progress', () => {
+  const book = {
+    slug: 'book',
+    nameZh: '书',
+    nameEn: 'Book',
+    source: 'https://example.com/book',
+    refLabel: { zh: '书', en: 'Book' },
+    groups: [
+      {
+        nameZh: '一',
+        nameEn: 'One',
+        refs: [
+          { ref: '1', lc: onLine, slug: 'one-lcof' },
+          { ref: '2', lc: null, slug: 'two-lcof' },
+          { ref: '3', lc: missing, slug: 'three-lcof' },
+        ],
+      },
+      { nameZh: '二', nameEn: 'Two', refs: [{ ref: '4', lc: onLine, slug: 'four-lcof' }] },
+    ],
+  };
+  const view = listClassicLibrary(book, 'dave');
+  const items = view.groups.flatMap((g) => g.items);
+  assert.deepEqual(
+    items.map((i) => [i.ref, i.number, i.external, i.judgeProblemId, i.refSlug]),
+    [
+      ['1', onLine, false, `lc-${onLine}`, 'one-lcof'],
+      ['2', null, true, null, 'two-lcof'],
+      ['3', missing, true, null, 'three-lcof'],
+      ['4', onLine, false, `lc-${onLine}`, 'four-lcof'],
+    ],
+  );
+  assert.equal(items[1].stop, null);
+  assert.ok(items[0].stop);
+  assert.deepEqual(
+    [view.collection.total, view.collection.mapped, view.collection.ready, view.collection.solved],
+    [4, 3, 2, 0],
+  );
+  assert.deepEqual(view.sequence, [`lc-${onLine}`]);
+  sqlite()
+    .prepare(
+      `INSERT INTO submissions(id,user_id,problem_id,language,code,status,total,created_at,updated_at,mode,practice_round_id) VALUES('d1','dave',?,'python','','accepted',1,1,1,'judge',?)`,
+    )
+    .run(`lc-${onLine}`, practiceRoundState('dave').activeRoundId);
+  const solved = listClassicLibrary(book, 'dave');
+  assert.deepEqual([solved.collection.solved, solved.groups[0].solved, solved.groups[1].solved], [2, 1, 1]);
+  assert.equal(solved.nextProblemId, null);
+  // LeetCode lists keep counting numbers: every number has a twin, itself.
+  const plain = listClassicLibrary(list);
+  assert.equal(plain.collection.mapped, plain.collection.total);
 });
 
 void test('groups keep their order; problems not judgeable here are external and out of progress', () => {
