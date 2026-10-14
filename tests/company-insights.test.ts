@@ -45,6 +45,7 @@ migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') });
 const { loadStudyLibrary } = await import('../scripts/load-study-library.mjs');
 const { topProblems, recentAdditions } = await import('../lib/server/company-insights');
 const { companyTagIndex } = await import('../lib/company-tags');
+const { reportCompanies } = await import('../lib/server/learner-cloud');
 const { createOaLibrary } = await import('../lib/server/oa-library');
 const { companyStats, lastQuarters } = await import('../lib/server/company-stats');
 after(() => {
@@ -82,6 +83,11 @@ void test('Top 100: map reports plus recent learner reports, companies ranked, h
   const amazon = lc3.companies.find((c) => c.slug === 'amazon')!;
   assert.equal(amazon.n > 3, true, 'map and learner reports for one company add up');
   assert.equal(lc3.companies.some((c) => c.slug === 'hush'), false);
+  assert.equal(amazon.hub, true);
+  // Only employers with a company page get a link.
+  const hubs = new Set(reportCompanies().map((c) => c.slug));
+  assert.equal(top.every((p) => p.companies.every((c) => c.hub === hubs.has(c.slug))), true);
+  assert.equal(top.some((p) => p.companies.some((c) => !c.hub)), true, 'map employers without a page are named only');
   assert.equal(lc3.companies.every((c, i, all) => i === 0 || all[i - 1].n >= c.n), true);
   assert.equal(top.every((p, i, all) => i === 0 || all[i - 1].score >= p.score), true);
   assert.equal(topProblems(1, NOW).length, 1);
@@ -109,6 +115,9 @@ void test('recently added: public pages, approved member posts and newly judgeab
   assert.deepEqual(recent.library.map((i) => i.path), ['/library/experience/experience-1', '/library/interview_question/interview-question-2']);
   assert.deepEqual(recent.libraryCounts, { experience: 1, interview_question: 1 });
   assert.deepEqual(recent.members.map((m) => m.title), ['Amazon SDE loop']);
+  assert.equal(recent.membersTotal, 1);
+  const { recentMemberExperiences } = await import('../lib/server/experience-submissions');
+  assert.deepEqual(recentMemberExperiences(NOW - 30 * DAY, 0), { items: [], total: 1 }, 'counted in full, not only the shown ones');
   assert.deepEqual(recent.oa.map((o) => [o.id, o.company]), [['oa-amazon-1', 'Amazon']]);
   assert.equal(recent.oaTotal, 1);
 });

@@ -30,8 +30,8 @@ export type TopProblem = {
   learnerReports: number;
   /** Latest report month, YYYY-MM. */
   last: string;
-  /** Employers by reports, most first. */
-  companies: { slug: string; name: string; n: number }[];
+  /** Employers by reports, most first; `hub` when /company/<slug> exists. */
+  companies: { slug: string; name: string; n: number; hub: boolean }[];
 };
 
 /**
@@ -59,6 +59,7 @@ export function topProblems(max = 100, now = Date.now(), hidden: ReadonlySet<str
       if (t.last.slice(0, 7) > e.last) e.last = t.last.slice(0, 7);
     }
   }
+  // Employers with a company page; the rest are named without a link.
   const names = new Map(reportCompanies().map((c) => [c.slug, c.name]));
   const reports = sqlite()
     .prepare(
@@ -90,7 +91,9 @@ export function topProblems(max = 100, now = Date.now(), hidden: ReadonlySet<str
             score: e.score,
             learnerReports: e.learner,
             last: e.last,
-            companies: [...e.companies.values()].sort((a, b) => b.n - a.n || a.name.localeCompare(b.name)),
+            companies: [...e.companies.values()]
+              .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name))
+              .map((c) => ({ ...c, hub: names.has(employerSlug(c.slug)) })),
           },
         ]
       : [];
@@ -126,6 +129,7 @@ export async function recentAdditions(
   const counts = Object.fromEntries(
     db ? (db.prepare(`SELECT type, COUNT(*) AS n FROM items WHERE ${where} GROUP BY type`).all(...args) as { type: string; n: number }[]).map((r) => [r.type, r.n]) : [],
   ) as Record<string, number>;
+  const members = recentMemberExperiences(since, 20);
   const oa = [...(ready ?? (await oaReadyProblems()))]
     .filter(([, meta]) => meta.firstAt >= since)
     .sort((a, b) => b[1].firstAt - a[1].firstAt)
@@ -139,7 +143,8 @@ export async function recentAdditions(
     since: new Date(since).toISOString(),
     library: items.map((r) => ({ ...r, path: publicLibraryPath(r.type, r.slug) })),
     libraryCounts: counts,
-    members: recentMemberExperiences(since, 20),
+    members: members.items,
+    membersTotal: members.total,
     oa: oa.slice(0, 40),
     oaTotal: oa.length,
   };

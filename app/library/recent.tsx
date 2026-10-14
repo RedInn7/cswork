@@ -48,8 +48,8 @@ export async function RecentView() {
         <h1>{title(zh)}</h1>
         <p>
           {zh
-            ? `自 ${day(recent.since)} 起：内容库 ${libraryTotal} 篇、学员面经 ${recent.members.length} 篇、新上线 OA 真题 ${recent.oaTotal} 道。`
-            : `Since ${day(recent.since)}: ${libraryTotal} library pages, ${recent.members.length} member experiences and ${recent.oaTotal} new judgeable OA problems.`}
+            ? `自 ${day(recent.since)} 起：内容库 ${libraryTotal} 篇、学员面经 ${recent.membersTotal} 篇、新上线 OA 真题 ${recent.oaTotal} 道。`
+            : `Since ${day(recent.since)}: ${libraryTotal} library pages, ${recent.membersTotal} member experiences and ${recent.oaTotal} new judgeable OA problems.`}
         </p>
       </div>
       <nav className="public-library-filters" aria-label={zh ? '内容库分类' : 'Library topics'}>

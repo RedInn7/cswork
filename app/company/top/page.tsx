@@ -88,11 +88,17 @@ export default async function TopProblemsPage() {
                 )}
                 <p className="top-companies">
                   <span className="sr-only">{zh ? '考过的公司：' : 'Asked by: '}</span>
-                  {p.companies.slice(0, SHOWN_COMPANIES).map((c) => (
-                    <a key={c.slug} href={companyHubPath(c.slug)}>
-                      {c.name} <b>{c.n}</b>
-                    </a>
-                  ))}
+                  {p.companies.slice(0, SHOWN_COMPANIES).map((c) =>
+                    c.hub ? (
+                      <a key={c.slug} href={companyHubPath(c.slug)}>
+                        {c.name} <b>{c.n}</b>
+                      </a>
+                    ) : (
+                      <span key={c.slug} className="top-company">
+                        {c.name} <b>{c.n}</b>
+                      </span>
+                    ),
+                  )}
                   {more > 0 && <span className="top-more">{zh ? `另 ${more} 家` : `+${more} more`}</span>}
                   {!!p.learnerReports && (
                     <span className="top-learners">{zh ? `含学员上报 ${p.learnerReports} 次` : `incl. ${p.learnerReports} learner ${p.learnerReports === 1 ? 'report' : 'reports'}`}</span>
