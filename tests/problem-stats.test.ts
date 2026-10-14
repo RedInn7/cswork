@@ -83,3 +83,14 @@ test('taken-down companies have no stats', () => {
   });
   assert.equal(problemStats('oa-amazon-1', 'python', 10).beats, 100);
 });
+
+test('fractional milliseconds: ties and sub-ms gaps are not counted as slower', () => {
+  // 29 C++ people at 1.00..1.28 ms (go-judge reports ns), this run's own best 1.30 ms.
+  for (let i = 0; i < MIN_SAMPLE - 1; i++)
+    submit(`c${i}`, 'lc-fast', 'accepted', (1 + i / 100) / 1000, { language: 'cpp' });
+  submit('me', 'lc-fast', 'accepted', 0.0013, { language: 'cpp' });
+  assert.equal(problemStats('lc-fast', 'cpp', 0.0013 * 1000).beats, 0, 'slowest beats nobody');
+  // 1.28 ms ties c28 and is faster only than me: 1 of 30.
+  assert.equal(problemStats('lc-fast', 'cpp', 1.28).beats, 3);
+  assert.equal(problemStats('lc-fast', 'cpp', 0.5).beats, 100);
+});

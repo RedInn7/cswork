@@ -20,7 +20,7 @@ type Entry = {
   at: number;
   attempted: number;
   accepted: number;
-  /** Per language, each person's best accepted runtime in ms. */
+  /** Per language, each person's best accepted runtime in whole microseconds. */
   best: Map<string, number[]>;
 };
 // ponytail: whole-entry cache per problem, cleared past 5000 problems; the catalogue is ~3k.
@@ -50,7 +50,7 @@ function load(problemId: string, now: number): Entry {
   const best = new Map<string, number[]>();
   for (const row of rows) {
     const list = best.get(row.language) ?? [];
-    list.push(row.best * 1000);
+    list.push(micros(row.best * 1000));
     best.set(row.language, list);
   }
   if (cache.size >= 5000) cache.clear();
@@ -58,6 +58,10 @@ function load(problemId: string, now: number): Entry {
   cache.set(problemId, entry);
   return entry;
 }
+
+// Judge timings are fractional ms (ns / 1e6): compare both sides at one precision, so a
+// tie (this run against its own best) never counts as slower.
+const micros = (ms: number) => Math.round(ms * 1000);
 
 export function problemStats(
   problemId: string,
@@ -77,7 +81,8 @@ export function problemStats(
     beats:
       best.length >= MIN_SAMPLE && runtimeMs !== null && runtimeMs >= 0
         ? Math.floor(
-            (100 * best.filter((ms) => ms > runtimeMs).length) / best.length,
+            (100 * best.filter((us) => us > micros(runtimeMs)).length) /
+              best.length,
           )
         : null,
   };
