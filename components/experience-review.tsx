@@ -2,8 +2,16 @@
 import { useEffect, useState } from 'react';
 import { RefreshCw } from 'lucide-react';
 import { api } from '@/lib/types';
-import { useT } from '@/lib/i18n';
-import { RESULTS, ROUND_LABELS } from '@/lib/experience';
+import { useLocale, useT } from '@/lib/i18n';
+import {
+  EMPLOYMENT,
+  RESULTS,
+  ROUND_LABELS,
+  seasonLabel,
+  SENTIMENTS,
+  SOURCES,
+  type MemberDetails,
+} from '@/lib/experience';
 import { SafeMarkdown } from './experience-report';
 import { Button } from './ui/button';
 import '@/app/experience-submissions.css';
@@ -25,6 +33,7 @@ type Item = {
   reasons: string[];
   shown: boolean;
   member: { handle: string | null };
+  details?: MemberDetails;
 };
 type Queue = { pending: Item[]; flagged: Item[]; approved: Item[] };
 
@@ -92,6 +101,7 @@ export function ExperienceReview() {
 
 function ReviewCard({ item, onQueue }: { item: Item; onQueue: (queue: Queue) => void }) {
   const t = useT();
+  const zh = useLocale() !== 'en';
   const [note, setNote] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -109,6 +119,21 @@ function ReviewCard({ item, onQueue }: { item: Item; onQueue: (queue: Queue) => 
   const result = item.result && Object.hasOwn(RESULTS, item.result) ? RESULTS[item.result] : null;
   const rounds = item.rounds.map((r) => (Object.hasOwn(ROUND_LABELS, r) ? t(...ROUND_LABELS[r]) : r));
   const pending = item.status === 'pending';
+  // The optional facts publish with the post, so the reviewer sees them all (location is free text).
+  const d = item.details;
+  const label = (map: Readonly<Record<string, [string, string]>>, value: string) =>
+    Object.hasOwn(map, value) ? t(...map[value]) : value;
+  const facts = d
+    ? [
+        d.employment && label(EMPLOYMENT, d.employment),
+        d.season && seasonLabel(d.season, zh),
+        d.channel && label(SOURCES, d.channel),
+        d.location && t(`地点：${d.location}`, `Location: ${d.location}`),
+        d.difficulty && t(`难度 ${d.difficulty}/5`, `Difficulty ${d.difficulty}/5`),
+        d.sentiment && label(SENTIMENTS, d.sentiment),
+        d.durationWeeks !== null && t(`流程 ${d.durationWeeks} 周`, `${d.durationWeeks}-week process`),
+      ].filter((x): x is string => !!x)
+    : [];
   return (
     <li className="xs-card">
       <h3>{item.title}</h3>
@@ -121,6 +146,13 @@ function ReviewCard({ item, onQueue }: { item: Item; onQueue: (queue: Queue) => 
         <span>{item.member.handle ? `@${item.member.handle}` : t('未公开主页', 'No public handle')}</span>
         <span>{new Date(item.createdAt).toLocaleString()}</span>
       </p>
+      {!!facts.length && (
+        <p className="xs-card-meta xs-card-facts">
+          {facts.map((fact) => (
+            <span key={fact}>{fact}</span>
+          ))}
+        </p>
+      )}
       {!item.shown && (
         <p className="xs-flags">
           {t('这家公司已隐藏或没有公司主页，通过后也不会公开。', 'This company is hidden or has no company page, so approving will not publish it.')}

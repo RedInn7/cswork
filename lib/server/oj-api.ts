@@ -22,6 +22,7 @@ import { handleDrafts, handleLearnerCloud, handleMockHistory } from './learner-c
 import { handleSolutionPosts } from './solution-posts';
 import { handleExperienceSubmissions } from './experience-submissions';
 import { handleStudyGroups } from './study-groups';
+import { handleFollows } from './follows';
 import { handleApiTokens } from './api-tokens';
 import { dailyProblem } from './daily-problem';
 import { curatedHint } from '@/lib/ling-curated';
@@ -103,6 +104,7 @@ export async function handleOj(
     return handleLearnerCloud(request, p, path);
   if (resource === 'experiences') return handleExperienceSubmissions(request, p, path.slice(1));
   if (resource === 'groups') return handleStudyGroups(request, p, path);
+  if (resource === 'follows') return handleFollows(request, p, path.slice(1));
   if (request.method === 'GET' && resource === 'speedrun' && !id)
     return handleSpeedrun(request, p);
   if (request.method === 'GET' && resource === 'problems' && id && !action) {
@@ -172,8 +174,9 @@ export async function handleOj(
     await limitReader(request, p, 'judge-feed-read', 120);
     return json(judgeFeed(p, url.searchParams));
   }
-  requirePerson(p);
+  // Threads, answers and comments read signed out; the handler checks the rest.
   if (resource === 'posts' || resource === 'post-comments') return handleSolutionPosts(request, p, path);
+  requirePerson(p);
   if (resource === 'tokens') return handleApiTokens(request, p, path.slice(1));
   if (resource === 'cloud' && id === 'drafts' && !operation)
     return handleDrafts(request, p, action);

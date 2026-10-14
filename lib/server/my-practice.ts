@@ -9,8 +9,9 @@ import { boundedText, HttpError, json, limit } from './http';
 const MAX_ROWS = 5000;
 // The story list returns every body (up to NOTE_MAX_BYTES each), so stories get a cap of their own.
 const MAX_STORIES = 200;
-// story:<id> holds one STAR story as JSON (components/story-bank.tsx).
-const target = z.string().regex(/^(?:problem|content|story):[\w./-]{1,200}$/);
+// story:<id> holds one STAR story as JSON (components/story-bank.tsx); list:<id> starred is a
+// saved public list, written through /api/oj/lists/<id>/star (which checks the list) only.
+const target = z.string().regex(/^(?:problem|content|story|list):[\w./-]{1,200}$/);
 // up/down: the problem's vote, one per learner (setting one clears the other).
 const mark = z.enum(['star', 'redo', 'up', 'down']);
 const VOTE = { up: 'down', down: 'up' } as const;
@@ -177,6 +178,7 @@ export async function handleMyPractice(
       .parse(await readJson(request, 1000));
     const vote = d.mark === 'up' || d.mark === 'down';
     if (vote && !d.target.startsWith('problem:')) throw new HttpError(400, '只能给题目投票');
+    if (d.target.startsWith('list:')) throw new HttpError(400, '请在题单页收藏');
     if (!d.on)
       db.prepare('DELETE FROM user_marks WHERE user_id=? AND target=? AND mark=?').run(
         p.id,

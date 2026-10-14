@@ -17,6 +17,7 @@ import {
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
 import { BadgeWall, progressBadges } from './achievements';
 import { MockCloudHistory } from './mock-cloud-history';
+import { FollowBoard } from './follow-board';
 import { MyExperienceSubmissions } from './experience-submissions';
 import { LevelPicks } from './level-picks';
 import { PointsPanel } from './points-panel';
@@ -479,6 +480,7 @@ export function MyProgress({
       </div>
       {boot.person && <PointsPanel english={english} onChange={(s) => setBought(s.freezes.purchased)} />}
       {boot.person && <MockCloudHistory userId={boot.person.id} navigate={navigate} english={english} />}
+      {boot.person && <FollowBoard english={english} />}
       {boot.person && <MyExperienceSubmissions english={english} navigate={navigate} open={initialTab === 'share'} />}
     </section>
   );

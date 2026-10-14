@@ -1,6 +1,7 @@
 import '../lists/lists.css';
 import './u.css';
 import Link from 'next/link';
+import { JoinCommunity } from '../discuss/community-link';
 import { requestLocale } from '@/lib/server/locale';
 
 /** Learner pages (/u/<handle>, /u/lists/<id>): the classic lists' Line 500 shell. */
@@ -26,6 +27,13 @@ export default async function LearnerLayout({ children }: { children: React.Reac
         <Link href="/mock-oa" prefetch={false}>
           {zh ? '模拟 OA' : 'Mock OA'}
         </Link>
+        <Link href="/lists/community" prefetch={false}>
+          {zh ? '题单广场' : 'Community lists'}
+        </Link>
+        <Link href="/discuss" prefetch={false}>
+          {zh ? '讨论区' : 'Discuss'}
+        </Link>
+        <JoinCommunity zh={zh} />
         <Link href="/privacy" prefetch={false}>
           {zh ? '隐私说明' : 'Privacy'}
         </Link>

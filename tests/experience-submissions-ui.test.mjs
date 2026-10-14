@@ -76,7 +76,7 @@ test('sharing an experience: the form posts ordered rounds and split questions, 
     assert.equal(document.querySelector('.xs-status').getAttribute('data-status'), 'rejected');
     const form = document.querySelector('form.xs-form');
     assert.ok(form !== null, 'tab=share opens the form');
-    assert.equal(form.querySelectorAll('select option').length, 3);
+    assert.equal(form.querySelector('select').querySelectorAll('option').length, 3, 'the company menu');
     await act(async () => {
       set(form.querySelector('select'), 'uber');
       set(form.querySelector('input[list]'), 'Software Engineer');
@@ -127,7 +127,8 @@ test('the review queue: rejecting needs a note, approving posts the decision', a
     interviewDate: '2026-09-01', body: 'Body with <script>alert(1)</script> text', questions: ['Two sum'], status, note: '',
     createdAt: 1, flags: 0, reasons: [], shown: true, member: { handle: null }, ...extra,
   });
-  const queue = { pending: [item('P1', 'pending')], flagged: [item('F1', 'approved', { flags: 3, reasons: ['nda: leaked'] })], approved: [] };
+  const details = { difficulty: 4, sentiment: 'neg', channel: 'referral', employment: 'intern', season: '2026-summer', location: 'WeChat abc123', durationWeeks: null, verified: true };
+  const queue = { pending: [item('P1', 'pending', { details })], flagged: [item('F1', 'approved', { flags: 3, reasons: ['nda: leaked'] })], approved: [] };
   const { calls, restore } = stub({
     'GET oj/experiences/review': queue,
     'POST oj/experiences/P1/review': { pending: [], flagged: queue.flagged, approved: [item('P1', 'approved')] },
@@ -137,6 +138,9 @@ test('the review queue: rejecting needs a note, approving posts the decision', a
     assert.equal(document.querySelectorAll('.xs-card').length, 2);
     assert.ok(document.querySelector('script') === null, 'raw HTML in a post stays text');
     assert.ok(document.querySelector('.xs-flags').textContent.includes('nda: leaked'));
+    const facts = document.querySelector('.xs-card-facts')?.textContent ?? '';
+    assert.ok(facts.includes('Location: WeChat abc123') && facts.includes('Referral') && facts.includes('Difficulty 4/5'), facts);
+    assert.ok(document.querySelectorAll('.xs-card-facts').length === 1, 'a post without facts shows no row');
     assert.equal(button('Reject').disabled, true);
     await act(async () => set(document.querySelector('.xs-card textarea'), 'Too short'));
     assert.equal(button('Reject').disabled, false);

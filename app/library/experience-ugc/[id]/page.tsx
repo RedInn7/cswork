@@ -3,9 +3,11 @@ import { headers } from 'next/headers';
 import { cache } from 'react';
 import Link from 'next/link';
 import '../../../experience-submissions.css';
+import '../../../discuss.css';
 import { PublicLibraryMarkdown } from '../../markdown';
+import { PostsPreview } from '../../../discuss/parts';
 import { ReportExperience } from '@/components/experience-report';
-import { RESULTS, ROUND_LABELS } from '@/lib/experience';
+import { EMPLOYMENT, RESULTS, ROUND_LABELS, seasonLabel, SENTIMENTS, SOURCES } from '@/lib/experience';
 import { companyHubPath } from '@/lib/oa-company-brands';
 import { seoMetadata } from '@/lib/seo';
 import { person } from '@/lib/server/auth';
@@ -49,6 +51,19 @@ export default async function MemberExperiencePage({ params }: Props) {
   const { member } = item;
   const result = item.result ? RESULTS[item.result] : null;
   const rounds = item.rounds.map((r) => (Object.hasOwn(ROUND_LABELS, r) ? ROUND_LABELS[r][zh ? 0 : 1] : r));
+  const d = item.details;
+  const label = (map: Readonly<Record<string, [string, string]>>, value: string | null) =>
+    value && Object.hasOwn(map, value) ? map[value][zh ? 0 : 1] : null;
+  // The optional facts the author gave, in reading order.
+  const details = [
+    label(EMPLOYMENT, d.employment),
+    d.season && seasonLabel(d.season, zh),
+    label(SOURCES, d.channel),
+    d.location,
+    d.difficulty && (zh ? `难度 ${d.difficulty}/5` : `Difficulty ${d.difficulty}/5`),
+    label(SENTIMENTS, d.sentiment),
+    d.durationWeeks !== null && (zh ? `流程 ${d.durationWeeks} 周` : `${d.durationWeeks}-week process`),
+  ].filter((x): x is string => !!x);
   return (
     <article className="public-library-article" lang={zh ? 'zh-CN' : 'en'}>
       <nav className="public-library-breadcrumb" aria-label={zh ? '导航路径' : 'Breadcrumb'}>
@@ -74,6 +89,14 @@ export default async function MemberExperiencePage({ params }: Props) {
           {!!rounds.length && <span>{rounds.join(' → ')}</span>}
           {item.interviewDate && (
             <span>{zh ? `面试于 ${item.interviewDate.slice(0, 7)}` : `Interviewed ${item.interviewDate.slice(0, 7)}`}</span>
+          )}
+          {details.map((fact) => (
+            <span key={fact}>{fact}</span>
+          ))}
+          {d.verified && (
+            <span className="xs-verified" title={zh ? '作者的邮箱已验证，不代表身份核验' : "The author's email is verified; not an identity check"}>
+              {zh ? '已验证邮箱' : 'Verified email'}
+            </span>
           )}
         </p>
         <p className="xs-byline">
@@ -111,6 +134,14 @@ export default async function MemberExperiencePage({ params }: Props) {
             ))}
           </ol>
         </section>
+      )}
+      {member.public && (
+        <PostsPreview
+          target={`exp:member.${member.id}`}
+          zh={zh}
+          title={zh ? '评论' : 'Comments'}
+          appHref={`/?${new URLSearchParams({ view: 'content', type: 'experience', slug: `member.${member.id}` })}`}
+        />
       )}
       <aside className="public-library-next">
         <h2>{zh ? `准备 ${item.company.name} 的面试` : `Preparing for ${item.company.name}?`}</h2>

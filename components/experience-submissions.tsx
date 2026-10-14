@@ -2,7 +2,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { PenLine, X } from 'lucide-react';
 import { api } from '@/lib/types';
-import { MEMBER_BODY, RESULTS, ROUND_LABELS } from '@/lib/experience';
+import {
+  EMPLOYMENT,
+  MEMBER_BODY,
+  RESULTS,
+  ROUND_LABELS,
+  SEASON_NAMES,
+  seasonLabel,
+  SENTIMENTS,
+  SOURCES,
+} from '@/lib/experience';
 import type { Navigate } from './learning';
 import '@/app/learner-cloud.css';
 import '@/app/experience-submissions.css';
@@ -160,6 +169,14 @@ type Form = {
   body: string;
   questions: string;
   agree: boolean;
+  // Optional structured facts; '' means not given.
+  difficulty: string;
+  sentiment: string;
+  channel: string;
+  employment: string;
+  season: string;
+  location: string;
+  weeks: string;
 };
 
 function ExperienceForm({
@@ -176,7 +193,10 @@ function ExperienceForm({
   const [now] = useState(() => Date.now());
   const [form, setForm] = useState<Form>(() => ({
     company: '', title: '', role: '', rounds: [], result: '', month: localMonth(now), body: '', questions: '', agree: false,
+    difficulty: '', sentiment: '', channel: '', employment: '', season: '', location: '', weeks: '',
   }));
+  const year = new Date(now).getFullYear();
+  const seasons = [year + 1, year, year - 1, year - 2].flatMap((y) => Object.keys(SEASON_NAMES).map((term) => `${y}-${term}`));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   useEffect(() => {
@@ -201,10 +221,18 @@ function ExperienceForm({
     setBusy(true);
     setError('');
     try {
+      const { difficulty, sentiment, channel, employment, season, location, weeks, ...rest } = form;
       const created = await api<{ member: { id: string }; slug: string; title: string; company: Mine['company'] }>(
         'oj/experiences',
         {
-          ...form,
+          ...rest,
+          difficulty: difficulty ? Number(difficulty) : null,
+          sentiment: sentiment || null,
+          channel: channel || null,
+          employment: employment || null,
+          season: season || null,
+          location: location.trim() || null,
+          durationWeeks: weeks === '' ? null : Number(weeks),
           title: form.title.trim(),
           role: form.role.trim(),
           // Rounds go in the order they happen.
@@ -324,6 +352,92 @@ function ExperienceForm({
             </label>
           ),
         )}
+      </fieldset>
+      <fieldset className="xs-group xs-details">
+        <legend>
+          {t('更多信息', 'More details')}{' '}
+          <small className="xs-hint">{t('都可以不填，用于筛选和公司统计', 'all optional; used for filters and company stats')}</small>
+        </legend>
+        <div className="xs-row">
+          <label className="xs-field">
+            <span>{t('全职 / 实习', 'Full-time / intern')}</span>
+            <select value={form.employment} onChange={(e) => set({ employment: e.target.value })}>
+              <option value="">{t('不填', 'Not given')}</option>
+              {Object.entries(EMPLOYMENT).map(([value, [zh, en]]) => (
+                <option key={value} value={value}>
+                  {t(zh, en)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="xs-field">
+            <span>{t('招聘季', 'Season')}</span>
+            <select value={form.season} onChange={(e) => set({ season: e.target.value })}>
+              <option value="">{t('不填', 'Not given')}</option>
+              {seasons.map((value) => (
+                <option key={value} value={value}>
+                  {seasonLabel(value, !english)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="xs-field">
+            <span>{t('渠道', 'How you applied')}</span>
+            <select value={form.channel} onChange={(e) => set({ channel: e.target.value })}>
+              <option value="">{t('不填', 'Not given')}</option>
+              {Object.entries(SOURCES).map(([value, [zh, en]]) => (
+                <option key={value} value={value}>
+                  {t(zh, en)}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div className="xs-row">
+          <label className="xs-field">
+            <span>{t('难度（1 最易，5 最难）', 'Difficulty (1 easiest, 5 hardest)')}</span>
+            <select value={form.difficulty} onChange={(e) => set({ difficulty: e.target.value })}>
+              <option value="">{t('不填', 'Not given')}</option>
+              {['1', '2', '3', '4', '5'].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="xs-field">
+            <span>{t('面试体验', 'How it felt')}</span>
+            <select value={form.sentiment} onChange={(e) => set({ sentiment: e.target.value })}>
+              <option value="">{t('不填', 'Not given')}</option>
+              {Object.entries(SENTIMENTS).map(([value, [zh, en]]) => (
+                <option key={value} value={value}>
+                  {t(zh, en)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="xs-field">
+            <span>{t('流程时长（周）', 'Process length (weeks)')}</span>
+            <input
+              type="number"
+              min={0}
+              max={104}
+              step={1}
+              inputMode="numeric"
+              value={form.weeks}
+              onChange={(e) => set({ weeks: e.target.value })}
+            />
+          </label>
+        </div>
+        <label className="xs-field">
+          <span>{t('地点', 'Location')}</span>
+          <input
+            maxLength={80}
+            value={form.location}
+            onChange={(e) => set({ location: e.target.value })}
+            placeholder={t('例如：Seattle / 远程', 'e.g. Seattle, or Remote')}
+          />
+        </label>
       </fieldset>
       <label className="xs-field">
         <span>

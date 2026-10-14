@@ -1,7 +1,18 @@
 import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
-import { experienceFacts, MEMBER_BODY, RESULTS, ROUND_LABELS } from '@/lib/experience';
+import {
+  EMPLOYMENT,
+  experienceFacts,
+  MEMBER_BODY,
+  RESULTS,
+  ROUND_LABELS,
+  SEASON,
+  SENTIMENTS,
+  SOURCES,
+  MEMBER_FILTERS,
+  type MemberDetails,
+} from '@/lib/experience';
 import { employerSlug } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
 import { companyPractice } from './company-hub';
@@ -97,8 +108,9 @@ export function markdownDepth(text: string) {
   }
   return deepest;
 }
-const ROUNDS = Object.keys(ROUND_LABELS) as [string, ...string[]];
-const OUTCOMES = Object.keys(RESULTS) as [string, ...string[]];
+const keys = (map: object) => Object.keys(map) as [string, ...string[]];
+const ROUNDS = keys(ROUND_LABELS);
+const OUTCOMES = keys(RESULTS);
 const submission = z
   .object({
     company: z.string().regex(/^[a-z0-9-]{1,80}$/),
@@ -109,6 +121,17 @@ const submission = z
     month: z.string().regex(/^\d{4}-(?:0[1-9]|1[0-2])$/),
     body: field(BODY_MIN, BODY_MAX),
     questions: z.array(field(3, 300)).max(20).default([]),
+    // Optional structured facts (lib/experience.ts); the list filters and company stats use them.
+    difficulty: z.number().int().min(1).max(5).nullable().default(null),
+    sentiment: z.enum(keys(SENTIMENTS)).nullable().default(null),
+    channel: z.enum(keys(SOURCES)).nullable().default(null),
+    employment: z.enum(keys(EMPLOYMENT)).nullable().default(null),
+    season: z.string().regex(SEASON).nullable().default(null),
+    location: field(0, 80)
+      .nullable()
+      .default(null)
+      .transform((s) => s || null),
+    durationWeeks: z.number().int().min(0).max(104).nullable().default(null),
     // The author confirms it is their own interview and that it shares nothing under NDA.
     agree: z.literal(true),
   })
@@ -129,10 +152,20 @@ type Row = {
   review_note: string;
   reviewed_at: number | null;
   created_at: number;
+  difficulty?: number | null;
+  sentiment?: string | null;
+  channel?: string | null;
+  employment?: string | null;
+  season?: string | null;
+  location?: string | null;
+  duration_weeks?: number | null;
   handle?: string | null;
+  verified?: number | null;
   flags?: number;
 };
-const HANDLE = `(SELECT u.handle FROM user_profiles u WHERE u.user_id=s.user_id AND u.visible=1) AS handle`;
+const HANDLE = `(SELECT u.handle FROM user_profiles u WHERE u.user_id=s.user_id AND u.visible=1) AS handle,
+  (SELECT a.email_verified FROM "user" a WHERE a.id=s.user_id) AS verified`;
+const DETAILS = 's.difficulty,s.sentiment,s.channel,s.employment,s.season,s.location,s.duration_weeks';
 const FLAGS = `(SELECT COUNT(*) FROM experience_flags f WHERE f.submission_id=s.id)`;
 const PUBLIC = `s.status='approved' AND ${FLAGS}<${FLAGS_HIDE}`;
 
@@ -171,9 +204,20 @@ function summaryOf(r: Row, names: Map<string, string>) {
     // The month is all a member gives; the 1st only makes it a date (pages show the month).
     ...experienceFacts({ result: r.result, rounds, interview_date: `${r.interview_month}-01` }),
     member: { handle: r.handle ?? null },
+    details: detailsOf(r),
   };
 }
 export type MemberSummary = ReturnType<typeof summaryOf>;
+const detailsOf = (r: Row): MemberDetails => ({
+  difficulty: r.difficulty ?? null,
+  sentiment: r.sentiment ?? null,
+  channel: r.channel ?? null,
+  employment: r.employment ?? null,
+  season: r.season ?? null,
+  location: r.location ?? null,
+  durationWeeks: r.duration_weeks ?? null,
+  verified: !!r.verified,
+});
 
 // ---------------------------------------------------------------- merging into lists
 
@@ -206,6 +250,13 @@ export function memberExperiences(params: URLSearchParams) {
     where.push('s.result=?');
     args.push(result.slice(0, 40));
   }
+  for (const key of MEMBER_FILTERS) {
+    const value = params.get(key);
+    if (value) {
+      where.push(`s.${key}=?`);
+      args.push(value.slice(0, 40));
+    }
+  }
   // Every word has to appear in the title, body or role.
   for (const word of (params.get('q') || '').trim().slice(0, 120).split(/\s+/).filter(Boolean).slice(0, 6)) {
     const like = `%${word.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
@@ -218,7 +269,7 @@ export function memberExperiences(params: URLSearchParams) {
     sqlite()
       .prepare(
         `SELECT s.id,s.company_slug,s.title,s.role,s.rounds,s.result,s.interview_month,s.reviewed_at,
-          substr(s.body,1,600) AS body,${HANDLE}
+          substr(s.body,1,600) AS body,${DETAILS},${HANDLE}
         FROM experience_submissions s WHERE ${where.join(' AND ')}
         ORDER BY ${fresh ? 's.reviewed_at DESC' : 's.interview_month DESC, s.reviewed_at DESC'}, s.id LIMIT ${MERGE_MAX}`,
       )
@@ -277,6 +328,70 @@ export function mergePage<T, M>(
   }
   return out;
 }
+
+/** Values the member-only filters can take, with counts, over the public posts. */
+export function memberFacets() {
+  const names = companyNames();
+  const db = sqlite();
+  const shown = `${PUBLIC} AND s.company_slug IN (SELECT value FROM json_each(?))`;
+  const companies = JSON.stringify([...names.keys()]);
+  return Object.fromEntries(
+    MEMBER_FILTERS.map((key) => [
+      key,
+      db
+        .prepare(
+          `SELECT s.${key} AS value,s.${key} AS label,COUNT(*) AS n FROM experience_submissions s
+          WHERE ${shown} AND s.${key} IS NOT NULL GROUP BY s.${key} ORDER BY n DESC,value LIMIT 20`,
+        )
+        .all(companies),
+    ]),
+  ) as Record<(typeof MEMBER_FILTERS)[number], { value: string; label: string; n: number }[]>;
+}
+
+/** Below this many public member posts with a fact, a company page shows no aggregate of it. */
+export const STATS_MIN = 5;
+/**
+ * A company's member posts at a glance: average difficulty, sentiment and channel shares, and the
+ * median process length, each over the posts that give it and only from STATS_MIN of them.
+ */
+export function memberExperienceStats(company: string) {
+  if (!companyNames().has(company)) return null;
+  const rows = sqlite()
+    .prepare(
+      `SELECT s.difficulty,s.sentiment,s.channel,s.duration_weeks FROM experience_submissions s
+      WHERE s.company_slug=? AND ${PUBLIC}`,
+    )
+    .all(company) as Pick<Row, 'difficulty' | 'sentiment' | 'channel' | 'duration_weeks'>[];
+  const values = <T>(pick: (r: (typeof rows)[number]) => T | null | undefined) =>
+    rows.flatMap((r) => {
+      const v = pick(r);
+      return v === null || v === undefined ? [] : [v];
+    });
+  const shares = (list: string[]) =>
+    list.length < STATS_MIN
+      ? null
+      : {
+          n: list.length,
+          rows: [...list.reduce((m, v) => m.set(v, (m.get(v) ?? 0) + 1), new Map<string, number>())]
+            .map(([value, n]) => ({ value, n }))
+            .sort((a, b) => b.n - a.n || a.value.localeCompare(b.value)),
+        };
+  const difficulty = values((r) => r.difficulty);
+  const weeks = values((r) => r.duration_weeks).sort((a, b) => a - b);
+  const median = weeks.length % 2 ? weeks[(weeks.length - 1) / 2] : (weeks[weeks.length / 2 - 1] + weeks[weeks.length / 2]) / 2;
+  const stats = {
+    posts: rows.length,
+    difficulty:
+      difficulty.length < STATS_MIN
+        ? null
+        : { n: difficulty.length, average: difficulty.reduce((a, b) => a + b, 0) / difficulty.length },
+    sentiment: shares(values((r) => r.sentiment)),
+    channel: shares(values((r) => r.channel)),
+    weeks: weeks.length < STATS_MIN ? null : { n: weeks.length, median },
+  };
+  return stats.difficulty || stats.sentiment || stats.channel || stats.weeks ? stats : null;
+}
+export type MemberStats = NonNullable<ReturnType<typeof memberExperienceStats>>;
 
 /** A company page's newest approved posts. */
 export function companyMemberExperiences(company: string, max = 6) {
@@ -398,8 +513,9 @@ export async function submitExperience(p: Person, input: unknown, now = Date.now
   await limit(p, 'experience-submit', PER_DAY, 86400);
   const id = randomBytes(9).toString('base64url');
   db.prepare(
-    `INSERT INTO experience_submissions(id,user_id,company_slug,title,role,rounds,result,interview_month,body,questions,created_at)
-    VALUES(?,?,?,?,?,?,?,?,?,?,?)`,
+    `INSERT INTO experience_submissions(id,user_id,company_slug,title,role,rounds,result,interview_month,body,questions,
+      difficulty,sentiment,channel,employment,season,location,duration_weeks,created_at)
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
   ).run(
     id,
     p.id,
@@ -411,6 +527,13 @@ export async function submitExperience(p: Person, input: unknown, now = Date.now
     d.month,
     d.body,
     JSON.stringify(d.questions),
+    d.difficulty,
+    d.sentiment,
+    d.channel,
+    d.employment,
+    d.season,
+    d.location,
+    d.durationWeeks,
     now,
   );
   return readMember(id, p)!;

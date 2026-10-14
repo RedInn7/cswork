@@ -6,7 +6,16 @@ import { api } from '@/lib/types';
 import { track } from '@/lib/analytics';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
-import { RESULTS, ROUND_LABELS } from '@/lib/experience';
+import {
+  EMPLOYMENT,
+  RESULTS,
+  ROUND_LABELS,
+  seasonLabel,
+  SENTIMENTS,
+  SOURCES,
+  MEMBER_FILTERS,
+  type MemberDetails,
+} from '@/lib/experience';
 import { companyLogos } from '@/lib/oa-company-brands';
 import type { Navigate } from './learning';
 import { OaMarkdown } from './oa-library';
@@ -14,6 +23,7 @@ import { kindOf, splitBody, type BodyParts } from '@/lib/mock-interview';
 import { TryFirst } from './try-first';
 import { StoryPicker } from './story-bank';
 import { MemberPost, SafeMarkdown, type MemberInfo } from './experience-report';
+import { CommunityPosts } from './discuss-board';
 import '@/app/redesign.css';
 import '@/app/content-library.css';
 
@@ -53,6 +63,8 @@ export type ContentSummary = {
   interviewDate?: string | null;
   /** A member's own experience (lib/server/experience-submissions.ts); its slug is member.<id>. */
   member?: { handle: string | null };
+  /** Member experiences: the optional structured facts. */
+  details?: MemberDetails;
 };
 /** Experiences and concepts summarise with their opening lines; the page doesn't print them twice. */
 const flat = (s: string) => s.replace(/[^\p{L}\p{N}]+/gu, ' ').trim().toLowerCase();
@@ -72,6 +84,10 @@ type ListPage = {
   page: number;
   pageSize: number;
   facets: Facets | null;
+  /** Experiences: values of the filters only member posts carry. */
+  memberFacets?: Record<(typeof MEMBER_FILTERS)[number], Facet[]> | null;
+  /** A member-only filter is on: imported experiences are left out. */
+  memberOnly?: boolean;
 };
 type Relation = {
   kind: string;
@@ -252,7 +268,37 @@ export function ContentMeta({ item }: { item: ContentSummary }) {
           {t(`面试于 ${item.interviewDate.slice(0, 7)}`, `Interviewed ${item.interviewDate.slice(0, 7)}`)}
         </span>
       )}
+      {item.details && <DetailsMeta details={item.details} />}
     </div>
+  );
+}
+
+/** A member post's structured facts, the ones it gives. */
+function DetailsMeta({ details: d }: { details: MemberDetails }) {
+  const t = useT();
+  const english = useLocale() === 'en';
+  const facts = [
+    d.employment && labelOf(t, EMPLOYMENT, d.employment),
+    d.season && seasonLabel(d.season, !english),
+    d.channel && labelOf(t, SOURCES, d.channel),
+    d.location,
+    d.difficulty && t(`难度 ${d.difficulty}/5`, `Difficulty ${d.difficulty}/5`),
+    d.sentiment && labelOf(t, SENTIMENTS, d.sentiment),
+    d.durationWeeks !== null && t(`流程 ${d.durationWeeks} 周`, `${d.durationWeeks}-week process`),
+  ].filter((x): x is string => !!x);
+  return (
+    <>
+      {facts.map((fact) => (
+        <span key={fact} className="ct-meta-text">
+          {fact}
+        </span>
+      ))}
+      {d.verified && (
+        <span className="rd-badge ct-verified" title={t('作者的邮箱已验证，不代表身份核验', "The author's email is verified; not an identity check")}>
+          {t('已验证邮箱', 'Verified email')}
+        </span>
+      )}
+    </>
   );
 }
 
@@ -331,7 +377,18 @@ function FacetSelect({
   );
 }
 
-const FILTERS = ['type', 'kind', 'company', 'role', 'category', 'difficulty', 'round', 'result', 'sort', 'q', 'page'] as const;
+const FILTERS = [
+  'type', 'kind', 'company', 'role', 'category', 'difficulty', 'round', 'result', 'sort', 'q', 'page',
+  ...MEMBER_FILTERS,
+] as const;
+/** The offer channel of the discussion board, next to "Offers only". */
+const OFFER_STORIES = '/?view=discuss&channel=offer';
+/** Labels for the member-only filters' values, [zh, en] per value or a function for seasons. */
+const MEMBER_FILTER_LABELS: Record<(typeof MEMBER_FILTERS)[number], [string, string, Record<string, [string, string]> | null]> = {
+  employment: ['全职 / 实习', 'Full-time / intern', EMPLOYMENT],
+  season: ['招聘季', 'Season', null],
+  channel: ['渠道', 'Channel', SOURCES],
+};
 /** Each list's last filters, search and page, so an item's back link returns to the same list. */
 const lastList: Record<string, Record<string, string>> = {};
 
@@ -345,6 +402,7 @@ export function ContentList({
   navigate: Navigate;
 }) {
   const t = useT();
+  const zh = useLocale() === 'zh';
   const meta = CONTENT_SECTIONS[section];
   const type = params.type && meta.tabs.some(([tab]) => tab === params.type) ? params.type : meta.tabs[0][0];
   const filters = useMemo(() => {
@@ -476,8 +534,32 @@ export function ContentList({
                 >
                   <Trophy size={13} aria-hidden="true" /> {t('只看拿到 Offer', 'Offers only')}
                 </button>
+                <a
+                  className="rd-chip ct-chip-link"
+                  href={OFFER_STORIES}
+                  onClick={spaClick(() => navigate('discuss', { channel: 'offer' }))}
+                >
+                  {t('上岸故事讨论', 'Offer stories')} <ArrowRight size={12} aria-hidden="true" />
+                </a>
               </>
             )}
+            {data.memberFacets &&
+              MEMBER_FILTERS.map((key) => {
+                const [nameZh, nameEn, labels] = MEMBER_FILTER_LABELS[key];
+                const options = (data.memberFacets?.[key] ?? []).map((o) => ({
+                  ...o,
+                  label: key === 'season' ? seasonLabel(o.value, zh) : (labels && labelOf(t, labels, o.value)) || o.value,
+                }));
+                return (
+                  <FacetSelect
+                    key={key}
+                    label={t(`${nameZh}（仅学员投稿）`, `${nameEn} (members' posts)`)}
+                    value={filters[key] || ''}
+                    options={options}
+                    onChange={(v) => apply({ [key]: v })}
+                  />
+                );
+              })}
             {type === 'experience' && (
               // Experiences list by when they happened; newly shared ones on request.
               <label className={`rd-chip ${filters.sort ? 'is-set' : ''}`}>
@@ -496,6 +578,14 @@ export function ContentList({
           <div className="js-error" role="alert">
             {t(error, englishMessage(error))}
           </div>
+        )}
+        {data?.memberOnly && (
+          <output className="ct-member-note">
+            {t(
+              '仅显示学员投稿：导入的面经没有全职/实习、招聘季和渠道这些字段。',
+              'Showing members’ posts only: imported experiences have no employment, season or channel.',
+            )}
+          </output>
         )}
         {!data ? (
           <div className="ct-list" aria-busy="true">
@@ -790,6 +880,11 @@ export function ContentDetail({
               )}
             </article>
             {item.member && <MemberPost member={item.member} questions={item.questions ?? []} />}
+            {/* Others' answers wait, like the reference answer, until the learner has tried. */}
+            {((item.type === 'experience' && (!item.member || item.member.public)) ||
+              (item.type === 'interview_question' && (!gated || open))) && (
+              <CommunityPosts key={key} type={item.type} slug={item.slug} signedIn={!!userId} />
+            )}
             {behavioral && (
               <StoryPicker
                 userId={userId}
