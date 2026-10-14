@@ -27,6 +27,7 @@ import {
   ChevronRight,
   Dices,
   Timer,
+  Zap,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -103,6 +104,9 @@ const MockInterview = lazy(() =>
 const MockOa = lazy(() =>
   import('./mock-oa').then((m) => ({ default: m.MockOa }), loadFailed),
 );
+const Speedrun = lazy(() =>
+  import('./speedrun').then((m) => ({ default: m.Speedrun }), loadFailed),
+);
 const OwnerMetrics = lazy(() =>
   import('./owner-metrics').then((m) => ({ default: m.OwnerMetrics }), loadFailed),
 );
@@ -110,6 +114,7 @@ const OwnerMetrics = lazy(() =>
 // [icon, zh label, en label, view]
 const nav: [LucideIcon, string, string, string][] = [
   [Code2, '算法题库', 'Problem Bank', 'problems'],
+  [Zap, '题型快练', 'Pattern Speedrun', 'speedrun'],
   [Timer, '模拟 OA', 'Mock OA', 'mock'],
   [Activity, '评测状态', 'Status', 'status'],
   [MessagesSquare, '面试题', 'Interview Questions', 'questions'],
@@ -331,7 +336,7 @@ export function Academy() {
       !boot.person &&
       ![
         'courses', 'knowledge', 'problems', 'problem', 'status',
-        'questions', 'experiences', 'resources', 'content', 'mock-interview', 'mock',
+        'questions', 'experiences', 'resources', 'content', 'mock-interview', 'mock', 'speedrun',
       ].includes(view)
     )
       return (
@@ -405,6 +410,8 @@ export function Academy() {
         return (
           <MockOa key={boot.person?.id || 'guest'} boot={boot} params={params} navigate={navigate} />
         );
+      case 'speedrun':
+        return <Speedrun key={boot.person?.id || 'guest'} boot={boot} navigate={navigate} />;
       case 'status':
         return <JudgeStatus boot={boot} params={params} navigate={navigate} />;
       case 'questions':
