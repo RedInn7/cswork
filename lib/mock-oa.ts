@@ -91,6 +91,21 @@ export function topicDistribution(lists: readonly (readonly string[])[]) {
     .map(([slug, weight]) => ({ slug, weight, share: weight / total }))
     .sort((a, b) => b.weight - a.weight || a.slug.localeCompare(b.slug));
 }
+/**
+ * Whole percentages of non-negative parts that add up to exactly 100 (largest
+ * remainder), so rounded shares never total 99 or 101. All zero gives all zero.
+ */
+export function wholePercents(parts: readonly number[]) {
+  const total = parts.reduce((a, b) => a + b, 0);
+  if (!(total > 0)) return parts.map(() => 0);
+  const exact = parts.map((v) => (v * 100) / total);
+  const whole = exact.map(Math.floor);
+  const order = exact
+    .map((_, i) => i)
+    .sort((a, b) => exact[b] - whole[b] - (exact[a] - whole[a]) || a - b);
+  for (const i of order.slice(0, 100 - whole.reduce((a, b) => a + b, 0))) whole[i]++;
+  return whole;
+}
 // ponytail: a perfect topic match (affinity 1) is 3× as likely as no overlap; raise
 // this to lean harder on the company's topics.
 const AFFINITY = 2;

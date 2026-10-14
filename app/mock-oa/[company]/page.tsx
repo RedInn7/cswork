@@ -6,7 +6,7 @@ import { requestLocale } from '@/lib/server/locale';
 import { shownMockPresets, type MockPreset } from '@/lib/server/mock-oa-presets';
 import { mockPoolSizes } from '@/lib/server/mock-oa';
 import { companyLogos } from '@/lib/oa-company-brands';
-import { SLOTS } from '@/lib/mock-oa';
+import { SLOTS, wholePercents } from '@/lib/mock-oa';
 import { stopHref, topicName } from '@/lib/route-stops';
 import { oaTopicProfile } from '@/lib/server/oa-topics';
 
@@ -74,12 +74,16 @@ export default async function MockOaCompany({ params }: Props) {
   const logo = Object.hasOwn(companyLogos, p.slug) ? companyLogos[p.slug] : null;
   const profile = oaTopicProfile(p.aliases);
   const measured = profile.count >= MEASURABLE;
-  // Measured: share of the topic labels (top 8). Otherwise: the reported topics' relative weight.
+  // Measured: share of the topic labels (top 8), rounded over all topics so they total
+  // 100%. Otherwise: the reported topics' relative weight.
+  const shares = wholePercents(profile.topics.map((t) => t.weight));
   const bars = measured
-    ? profile.topics.slice(0, 8).map((t) => ({ slug: t.slug, value: t.share }))
-    : p.topics.map((t) => ({ slug: t.slug, value: t.weight }));
+    ? profile.topics
+        .slice(0, 8)
+        .map((t, i) => ({ slug: t.slug, value: t.share, label: `${shares[i]}%` }))
+    : p.topics.map((t) => ({ slug: t.slug, value: t.weight, label: t.weight.toFixed(2) }));
   const top = Math.max(...bars.map((b) => b.value), 0) || 1;
-  const percent = (value: number) => `${Math.round(value * 100)}%`;
+  const mix = wholePercents(SLOTS.map((s) => profile.difficulty[s]));
   const chartCaption = measured
     ? zh
       ? `基于本站 ${profile.count} 道 ${p.name} OA 真题的专题标注（AI 辅助估计）`
@@ -168,7 +172,7 @@ export default async function MockOaCompany({ params }: Props) {
           <figure className="mock-public-chart">
             <figcaption>{chartCaption}</figcaption>
             <ol className="mock-public-bars">
-              {bars.map(({ slug, value }) => {
+              {bars.map(({ slug, value, label }) => {
                 const href = stopHref(slug),
                   name = topicName(slug, zh);
                 return (
@@ -178,7 +182,7 @@ export default async function MockOaCompany({ params }: Props) {
                     </span>
                     <span className="mock-public-bar" aria-hidden="true" />
                     <span className="mock-public-bar-value">
-                      {measured ? percent(value) : value.toFixed(2)}
+                      {label}
                     </span>
                   </li>
                 );
@@ -200,9 +204,9 @@ export default async function MockOaCompany({ params }: Props) {
                   ))}
                 </div>
                 <ul>
-                  {SLOTS.map((s) => (
+                  {SLOTS.map((s, i) => (
                     <li key={s} data-level={s}>
-                      {LEVEL[s][zh ? 0 : 1]} {percent(profile.difficulty[s] / profile.count)}
+                      {LEVEL[s][zh ? 0 : 1]} {mix[i]}%
                     </li>
                   ))}
                 </ul>

@@ -17,6 +17,7 @@ import {
   summarizeAttempts,
   topicAffinity,
   topicDistribution,
+  wholePercents,
   type MockSession,
   type PoolItem,
 } from '../lib/mock-oa';
@@ -200,6 +201,19 @@ test("a report labels a question by its LeetCode or explicit package difficulty,
   assert.deepEqual(reportLevel('oa-x-1', '困难', 'medium', 'easy'), { level: 'hard', estimated: false });
   assert.deepEqual(reportLevel('oa-x-1', '中等', null, 'easy'), { level: 'easy', estimated: false });
   assert.deepEqual(reportLevel('lc-2', undefined, 'easy', undefined), { level: 'medium', estimated: false });
+});
+
+test('whole percentages always total 100 by the largest remainder', () => {
+  assert.deepEqual(wholePercents([1, 1, 1]), [34, 33, 33]);
+  // Amazon's estimated mix (75/254/71): 19/64/18 = 101% when each is rounded alone.
+  assert.deepEqual(wholePercents([75, 254, 71]), [19, 63, 18]);
+  assert.deepEqual(wholePercents([0, 0]), [0, 0]);
+  for (const aliases of [['openai'], ['ebay'], ['amazon'], ['doordash'], ['uber']]) {
+    const profile = oaTopicProfile(aliases);
+    const sum = (list: number[]) => list.reduce((a, b) => a + b, 0);
+    assert.equal(sum(wholePercents(profile.topics.map((t) => t.weight))), 100, aliases[0]);
+    assert.equal(sum(wholePercents(Object.values(profile.difficulty))), 100, aliases[0]);
+  }
 });
 
 test('scoring: passed fraction per question, or a weighted 200–600 GCA estimate', () => {
