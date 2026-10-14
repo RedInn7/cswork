@@ -25,6 +25,38 @@ test('topic tags start hidden and the keymap starts default; junk falls back', a
   assert.equal(readEditorSettings('u').keymap, 'default');
 });
 
+test('the editor follows the site theme until the reader picks one', async () => {
+  const store = new Map<string, string>();
+  Object.defineProperty(globalThis, 'localStorage', {
+    configurable: true,
+    value: {
+      getItem: (key: string) => store.get(key) ?? null,
+      setItem: (key: string, value: string) => store.set(key, value),
+    },
+  });
+  let dark = true;
+  Object.defineProperty(globalThis, 'document', {
+    configurable: true,
+    value: { documentElement: { classList: { contains: () => dark } } },
+  });
+  const { readEditorSettings, writeEditorSettings } = await import(
+    '../lib/editor-settings'
+  );
+  try {
+    // Saving an unrelated setting on a dark site doesn't pin the editor dark.
+    writeEditorSettings('u', { ...readEditorSettings('u'), fontSize: 16 });
+    dark = false;
+    assert.equal(readEditorSettings('u').theme, 'light');
+    assert.equal(readEditorSettings('u').fontSize, 16);
+    // A real pick sticks, through later saves and site switches.
+    writeEditorSettings('u', { ...readEditorSettings('u'), theme: 'dark' });
+    writeEditorSettings('u', { ...readEditorSettings('u'), hideTags: false });
+    assert.equal(readEditorSettings('u').theme, 'dark');
+  } finally {
+    Reflect.deleteProperty(globalThis, 'document');
+  }
+});
+
 test('vendored monaco-vim imports the Monaco build the editor already loads', () => {
   const vim = readFileSync(
     new URL('../components/vendor/monaco-vim/index.js', import.meta.url),

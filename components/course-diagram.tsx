@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from './ui/dialog';
 import { useT } from '@/lib/i18n';
+import { currentTheme } from '@/lib/theme-script';
 import '@/app/diagrams.css';
 
 // English for the fallback labels of courseDiagramLabel(); accTitle text is course content.
@@ -29,7 +30,7 @@ let mermaidModule: Promise<(typeof import('mermaid'))['default']> | undefined;
 function loadMermaid() {
   mermaidModule ??= import('mermaid')
     .then(({ default: mermaid }) => {
-      mermaid.initialize(courseDiagramConfig());
+      mermaid.initialize(courseDiagramConfig(currentTheme()));
       return mermaid;
     })
     .catch((error: unknown) => {

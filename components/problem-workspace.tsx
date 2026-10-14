@@ -112,8 +112,8 @@ import {
   languageFiles,
   readEditorDraft,
   readEditorSettings,
-  settingsKey,
   writeEditorDraft,
+  writeEditorSettings,
   type EditorSettings,
 } from '@/lib/editor-settings';
 import {
@@ -1003,7 +1003,7 @@ function Workspace({
   function changeSettings(next: EditorSettings) {
     setSettings(next);
     try {
-      localStorage.setItem(settingsKey(userId), JSON.stringify(next));
+      writeEditorSettings(userId, next);
     } catch {
       setSaveError([
         '无法保存编辑器偏好，请检查浏览器存储设置。',
