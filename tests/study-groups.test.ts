@@ -137,6 +137,17 @@ void test('owner moderation: goal, remove, rotate, leave and disband', async () 
   assert.equal(goal.goal?.stop, 'hash-counting');
   assert.equal(goal.goal?.stopTotal, 19);
   assert.ok(goal.members.every((m) => m.goal === 0));
+  // Renaming through the edit form (which resends the goal) keeps the goal's date.
+  sqlite().prepare('UPDATE study_groups SET goal_set_at=1 WHERE id=?').run(made.id);
+  const renamed = await ok(owner, 'POST', `groups/${made.id}`, {
+    name: 'Mods 2',
+    goalText: 'Finish hashing by Sunday',
+    goalStop: 'hash-counting',
+  });
+  assert.equal(renamed.name, 'Mods 2');
+  assert.equal(renamed.goal?.setAt, 1);
+  const reset = await ok(owner, 'POST', `groups/${made.id}`, { goalText: 'Finish hashing by Sunday', goalStop: '' });
+  assert.ok((reset.goal?.setAt ?? 0) > 1, 'a changed goal is dated now');
 
   // Members rename themselves, but not into someone else's name.
   assert.equal(await status(bob, 'POST', `groups/${made.id}/me`, { displayName: 'boss' }), 409);

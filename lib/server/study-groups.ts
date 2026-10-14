@@ -344,7 +344,9 @@ export async function handleStudyGroups(request: Request, p: Person | null, path
     })
     .strict()
     .parse(await readJson(request, 2000));
-  const goalChanged = d.goalText !== undefined || d.goalStop !== undefined;
+  // The edit form sends every field: renaming the group must not make an old goal "this week's".
+  const goalChanged =
+    (d.goalText !== undefined && d.goalText !== row.goal_text) || (d.goalStop !== undefined && d.goalStop !== row.goal_stop);
   db.prepare(
     `UPDATE study_groups SET name=COALESCE(?,name),goal_text=COALESCE(?,goal_text),goal_stop=COALESCE(?,goal_stop),
       goal_set_at=CASE WHEN ? THEN ? ELSE goal_set_at END,updated_at=? WHERE id=?`,
