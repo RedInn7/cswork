@@ -31,7 +31,7 @@ export function SqlTrack({
   const available = new Set(availableProblemIds);
   // ponytail: the bootstrap's ~26 weeks of accepted runs; older solves show as unsolved.
   const solved = new Set(activity.map((item) => item.problem_id));
-  const problems = new Map(track.problems.map((item) => [item.id, item]));
+  const problems = new Map(track.problems.map((item) => [item.id, item] as const));
   const groups = track.groups
     .map((group) => ({ ...group, ids: group.ids.filter((id) => available.has(id)) }))
     .filter((group) => group.ids.length);

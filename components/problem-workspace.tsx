@@ -1412,7 +1412,7 @@ function Workspace({
               )}
               {codingMode === 'acm' && (
                 <>
-                  {/* SQL track statements are Markdown: schema blocks and column tables. */}
+                  {/* SQL track statements are Markdown: a schema block and a column list. */}
                   {!sourceBody &&
                     (sqlTrack ? (
                       <StatementMarkdown body={statement.description} />

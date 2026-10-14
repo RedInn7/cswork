@@ -209,7 +209,7 @@ test('the worker engine runs SQL through the harness and the exact checker', asy
     }
     const pkg = packages[3];
     const wrong = (await compile('sql', PROBLEMS[3].wrong[0], signal)).program;
-    const verdicts = [];
+    const verdicts: boolean[] = [];
     for (const c of pkg.cases) {
       const output = await run(wrong, c.input, pkg.problem, signal);
       verdicts.push(matchesOutput(output.files?.stdout || '', c.expectedOutput, 'exact', c.input));
