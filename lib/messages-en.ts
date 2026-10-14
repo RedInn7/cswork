@@ -213,6 +213,7 @@ const EN: Record<string, string> = {
   无效的进度标记: 'Invalid progress marker',
   判题接口不存在: 'Judge endpoint not found',
   笔记或标记已达上限: "You've reached the limit for notes or marks",
+  故事已达上限: "You've reached the limit for stories",
   '代码最多 64 KiB': 'Code can be at most 64 KiB',
   代码不能包含空字符: 'Code cannot contain null characters',
   '代码和自定义输入分别最多 64 KiB': 'Code and custom input are limited to 64 KiB each',
