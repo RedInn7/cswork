@@ -209,3 +209,10 @@ void test('only the author withdraws a post; daily and pending caps hold', async
   ugc.submitExperience(writer, post(), later);
   assert.throws(() => ugc.submitExperience(writer, post(), later + 1), { status: 409 });
 });
+
+void test('emails are masked in linear time', () => {
+  assert.equal(ugc.redactEmails('mail a.b+c@mail.example.co.uk or x@y.io.'), 'mail [email] or [email].');
+  const started = performance.now();
+  for (const text of ['a'.repeat(20000), `a@${'b'.repeat(20000)}`, '@a'.repeat(10000), 'a.'.repeat(10000)]) ugc.redactEmails(text);
+  assert.ok(performance.now() - started < 50);
+});

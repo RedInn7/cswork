@@ -37,8 +37,13 @@ export const memberExperiencePath = (id: string) => `/library/experience-ugc/${i
 // Control characters other than tabs and newlines never belong in a post.
 // oxlint-disable-next-line no-control-regex -- Matching control characters is the point.
 const clean = (s: string) => s.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, '');
-/** Addresses typed into a post are masked: no one's email is published. */
-export const redactEmails = (s: string) => s.replace(/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g, '[email]');
+/**
+ * Addresses typed into a post are masked: no one's email is published. Bounded parts and the
+ * lookbehind keep it linear: an unbounded `[\w.+-]+@` rescans the rest of a long word from
+ * every letter (20k letters took 250ms).
+ */
+export const redactEmails = (s: string) =>
+  s.replace(/(?<![\w.+-])[\w.+-]{1,64}@[\w-]{1,63}(?:\.[\w-]{1,63})+/g, '[email]');
 const field = (min: number, max: number) =>
   z
     .string()
@@ -102,7 +107,8 @@ function summaryOf(r: Row, names: Map<string, string>) {
     type: 'experience',
     slug: memberSlug(r.id),
     title: r.title,
-    summary: publicLibraryDescription({ title: r.title, summary: null, body: r.body }),
+    // The opening is all a summary needs, and caps the description's regexes on hostile text.
+    summary: publicLibraryDescription({ title: r.title, summary: null, body: r.body.slice(0, 600) }),
     titleZh: null,
     summaryZh: null,
     level: null,
@@ -164,7 +170,9 @@ export function memberExperiences(params: URLSearchParams) {
   return (
     sqlite()
       .prepare(
-        `SELECT s.*,${HANDLE} FROM experience_submissions s WHERE ${where.join(' AND ')}
+        `SELECT s.id,s.company_slug,s.title,s.role,s.rounds,s.result,s.interview_month,s.reviewed_at,
+          substr(s.body,1,600) AS body,${HANDLE}
+        FROM experience_submissions s WHERE ${where.join(' AND ')}
         ORDER BY ${fresh ? 's.reviewed_at DESC' : 's.interview_month DESC, s.reviewed_at DESC'}, s.id LIMIT ${MERGE_MAX}`,
       )
       .all(...args) as Row[]
@@ -172,7 +180,10 @@ export function memberExperiences(params: URLSearchParams) {
     .filter((r) => names.has(r.company_slug))
     .map((r) => ({
       key: fresh ? new Date(r.reviewed_at ?? 0).toISOString() : `${r.interview_month}-31`,
-      item: summaryOf(r, names),
+      // Built only for the posts mergePage puts on the page.
+      get item() {
+        return summaryOf(r, names);
+      },
     }));
 }
 
