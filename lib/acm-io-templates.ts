@@ -20,8 +20,8 @@ export const ACM_IO_TEMPLATES: AcmIoTemplate[] = [
     id: 'single',
     title: { zh: '单组输入', en: 'Single test case' },
     note: {
-      zh: '只有一组数据，读完直接输出。按「空白分隔的记号」读（split / cin >> / Fscan），换行和多余空格都不影响。示例：输出 a + b。',
-      en: 'One test case: read it, print the answer. Reading whitespace-separated tokens (split / cin >> / Fscan) ignores line breaks and extra spaces. Example: print a + b.',
+      zh: '只有一组数据，读完直接输出。按「空白分隔的记号」读（split / cin >> / Fscan / Java 的 next()），换行和多余空格都不影响。示例：输出 a + b。',
+      en: "One test case: read it, print the answer. Reading whitespace-separated tokens (split / cin >> / Fscan / Java's next()) ignores line breaks and extra spaces. Example: print a + b.",
     },
     sample: { input: '3 5\n', output: '8\n' },
     code: {
@@ -53,11 +53,18 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st = new StringTokenizer("");
+
+    // Next whitespace-separated token; line breaks don't matter.
+    static String next() throws IOException {
+        while (!st.hasMoreTokens()) st = new StringTokenizer(br.readLine());
+        return st.nextToken();
+    }
+
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        long a = Long.parseLong(st.nextToken());
-        long b = Long.parseLong(st.nextToken());
+        long a = Long.parseLong(next());
+        long b = Long.parseLong(next());
         System.out.println(a + b);
     }
 }
@@ -373,12 +380,19 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st = new StringTokenizer("");
+
+    // Next whitespace-separated token; line breaks don't matter.
+    static String next() throws IOException {
+        while (!st.hasMoreTokens()) st = new StringTokenizer(br.readLine());
+        return st.nextToken();
+    }
+
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine().trim());
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(next());
         long[] nums = new long[n];
-        for (int i = 0; i < n; i++) nums[i] = Long.parseLong(st.nextToken());
+        for (int i = 0; i < n; i++) nums[i] = Long.parseLong(next());
         long sum = 0;
         for (long x : nums) sum += x;
         System.out.println(sum);
@@ -674,17 +688,23 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st = new StringTokenizer("");
+
+    // Next whitespace-separated token; line breaks don't matter.
+    static String next() throws IOException {
+        while (!st.hasMoreTokens()) st = new StringTokenizer(br.readLine());
+        return st.nextToken();
+    }
+
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+        int n = Integer.parseInt(next());
+        int m = Integer.parseInt(next());
         List<List<Integer>> adj = new ArrayList<>();
         for (int i = 0; i <= n; i++) adj.add(new ArrayList<>());
         for (int i = 0; i < m; i++) {
-            st = new StringTokenizer(br.readLine());
-            int u = Integer.parseInt(st.nextToken());
-            int v = Integer.parseInt(st.nextToken());
+            int u = Integer.parseInt(next());
+            int v = Integer.parseInt(next());
             adj.get(u).add(v);
             adj.get(v).add(u);
         }
@@ -987,12 +1007,19 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static StringTokenizer st = new StringTokenizer("");
+
+    // Next whitespace-separated token; line breaks don't matter.
+    static String next() throws IOException {
+        while (!st.hasMoreTokens()) st = new StringTokenizer(br.readLine());
+        return st.nextToken();
+    }
+
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine().trim());
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        int n = Integer.parseInt(next());
         String[] nums = new String[n];
-        for (int i = 0; i < n; i++) nums[i] = st.nextToken();
+        for (int i = 0; i < n; i++) nums[i] = next();
         StringJoiner out = new StringJoiner(" ");
         for (int i = n - 1; i >= 0; i--) out.add(nums[i]);
         System.out.println(out);

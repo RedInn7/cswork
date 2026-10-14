@@ -35,6 +35,8 @@ const exec = ([command, ...args]: string[], cwd: string, input = '') =>
   spawnSync(command, args, { cwd, input, encoding: 'utf8', timeout: 120_000 });
 const available = (language: Language) =>
   exec(toolchains[language].probe, tmpdir()).status === 0;
+// Token-based in every language, so one token per line must give the same answer.
+const anyLayout = new Set(['single', 'array', 'graph', 'join', 'fast']);
 
 void test('every template is bilingual, complete and uniquely named', () => {
   assert.equal(ACM_IO_TEMPLATES.length, 12);
@@ -61,9 +63,14 @@ for (const language of Object.keys(toolchains) as Language[]) {
           const built = exec(build, dir);
           assert.equal(built.status, 0, `${item.id}: ${built.stderr}`);
         }
-        const result = exec(run, dir, item.sample.input);
-        assert.equal(result.status, 0, `${item.id}: ${result.stderr}`);
-        assert.equal(result.stdout, item.sample.output, item.id);
+        const inputs = [item.sample.input];
+        if (anyLayout.has(item.id))
+          inputs.push(`${item.sample.input.trim().split(/\s+/).join('\n')}\n`);
+        for (const input of inputs) {
+          const result = exec(run, dir, input);
+          assert.equal(result.status, 0, `${item.id}: ${result.stderr}`);
+          assert.equal(result.stdout, item.sample.output, item.id);
+        }
       } finally {
         rmSync(dir, { recursive: true, force: true });
       }
