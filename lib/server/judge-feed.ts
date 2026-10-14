@@ -4,6 +4,7 @@ import { visibleCourseSql } from './course-visibility';
 import { setting, shownOaSql } from './env';
 import { HttpError } from './http';
 import { oaLibrary } from './oa-library';
+import { canonicalCompany } from '@/lib/oa-company-brands';
 
 /**
  * Public judge status board (like vjudge.net/status): formal submissions only, metadata
@@ -54,7 +55,7 @@ function oaCompany(problemId: string) {
   companies ??= new Map(
     oaLibrary().list(new URLSearchParams()).companies.map((c) => [c.slug, c.name]),
   );
-  const slug = problemId.replace(/^oa-/, '').replace(/-\d+$/, '');
+  const slug = canonicalCompany(problemId.replace(/^oa-/, '').replace(/-\d+$/, ''));
   return { slug, name: companies.get(slug) || slug };
 }
 
