@@ -43,6 +43,8 @@ const load = cache(async (slug: string, id: string) => {
     company,
     judged,
     statement,
+    // Catalog text and translations are English; verified packages are Chinese.
+    statementLang: !judged || english ? 'en' : 'zh-CN',
     locale,
     name,
     previous: siblings[at - 1],
@@ -66,8 +68,8 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function OaProblemPage({ params }: Props) {
   const { company: slug, id } = await params;
-  const { item, company, judged, statement, locale, name, previous, next } =
-    await load(slug, id);
+  const page = await load(slug, id);
+  const { item, company, judged, statement, statementLang, locale, name } = page;
   const zh = locale === 'zh';
   return (
     <article className="public-library-article oa-public-problem">
@@ -112,29 +114,29 @@ export default async function OaProblemPage({ params }: Props) {
           )}
         </p>
         {(judged || company.slug !== OTHER_COMPANY) && (
-        <div className="oa-public-actions">
-          {judged && (
-            <a
-              className="oa-public-cta"
-              href={`/?${new URLSearchParams({ view: 'problem', problem: item.id })}`}
-            >
-              {zh ? '在线判题' : 'Run & submit'}
-            </a>
-          )}
-          {company.slug !== OTHER_COMPANY && (
-            <a
-              className={judged ? 'oa-public-cta is-quiet' : 'oa-public-cta'}
-              href={`/mock-oa/${company.slug}`}
-            >
-              {zh ? `模拟 ${name} OA` : `Mock ${name} OA`}
-            </a>
-          )}
-        </div>
+          <div className="oa-public-actions">
+            {judged && (
+              <a
+                className="oa-public-cta"
+                href={`/?${new URLSearchParams({ view: 'problem', problem: item.id })}`}
+              >
+                {zh ? '在线判题' : 'Run & submit'}
+              </a>
+            )}
+            {company.slug !== OTHER_COMPANY && (
+              <a
+                className={judged ? 'oa-public-cta is-quiet' : 'oa-public-cta'}
+                href={`/mock-oa/${company.slug}`}
+              >
+                {zh ? `模拟 ${name} OA` : `Mock ${name} OA`}
+              </a>
+            )}
+          </div>
         )}
       </header>
       {statement.trim() ? (
         // Server twin of the OA reader's OaMarkdown: same link and image policy, no client code.
-        <div className="public-library-prose">
+        <div className="public-library-prose" lang={statementLang}>
           <PublicLibraryMarkdown body={statement} math={false} />
         </div>
       ) : (
@@ -142,20 +144,20 @@ export default async function OaProblemPage({ params }: Props) {
           {zh ? '原站未提供独立题面。' : 'The source has no standalone statement.'}
         </p>
       )}
-      {(previous || next) && (
+      {(page.previous || page.next) && (
         <nav className="oa-public-pager" aria-label={zh ? `更多 ${name} OA 题` : `More ${name} OA problems`}>
-          {previous ? (
-            <a rel="prev" href={oaProblemPath(previous.companySlug, previous.id)}>
+          {page.previous ? (
+            <a rel="prev" href={oaProblemPath(company.slug, page.previous.id)}>
               <span>{zh ? '← 上一题' : '← Previous'}</span>
-              {previous.title}
+              {page.previous.title}
             </a>
           ) : (
             <span />
           )}
-          {next && (
-            <a rel="next" href={oaProblemPath(next.companySlug, next.id)}>
+          {page.next && (
+            <a rel="next" href={oaProblemPath(company.slug, page.next.id)}>
               <span>{zh ? '下一题 →' : 'Next →'}</span>
-              {next.title}
+              {page.next.title}
             </a>
           )}
         </nav>

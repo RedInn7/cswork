@@ -41,7 +41,7 @@ export default async function OaIndex() {
         <p className="public-library-eyebrow">
           {zh ? 'OA 真题 · 在线判题' : 'ONLINE ASSESSMENTS · JUDGED ONLINE'}
         </p>
-        <h1>{zh ? '按公司刷 OA 真题。' : 'Company OA questions, by company.'}</h1>
+        <h1>{zh ? '按公司刷 OA 真题。' : 'Real OA questions, company by company.'}</h1>
         <p>{lead}</p>
       </div>
       <dl className="oa-public-stats">
