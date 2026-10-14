@@ -28,9 +28,15 @@ test('hints and reviews: quota counts, earlier hints sent back, errors, safe Mar
   const { createRoot } = await import('react-dom/client');
   const { useAiTutor, AiTutor } = await import('../components/ai-tutor.tsx');
   const calls = [];
+  const usage = [];
   let answer = (kind, n) => Response.json({ kind, text: `Nudge ${n}: what if **two** values match?`, remaining: 10 - n, limit: 10 });
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url, init = {}) => {
+    // Calls left today: the buttons start from the server's count, not the default quota.
+    if (String(url).endsWith('/ai/usage')) {
+      usage.push(init.method);
+      return Response.json({ hint: 10, review: 5 });
+    }
     calls.push({ url: String(url), body: JSON.parse(init.body) });
     return answer(calls.at(-1).body && String(url).endsWith('/review') ? 'review' : 'hint', calls.length);
   };
@@ -55,6 +61,12 @@ test('hints and reviews: quota counts, earlier hints sent back, errors, safe Mar
     });
   try {
     await render();
+    assert.deepEqual(usage, ['GET']);
+    // The live region is in place before the first reply, so that reply is announced.
+    assert.equal(document.querySelector('.cs-ai-tutor [aria-live="polite"]') !== null, true);
+    assert.equal(document.querySelector('.cs-ai-tutor-replies') === null, true);
+    // Where the learner's code goes is said up front.
+    assert.equal(document.querySelector('.cs-ai-tutor-head').textContent.includes('sent to Anthropic'), true);
     let [hint, review] = buttons();
     assert.equal(hint.textContent.includes('Give me a hint'), true);
     assert.equal(hint.textContent.includes('10 left today'), true);
@@ -80,11 +92,19 @@ test('hints and reviews: quota counts, earlier hints sent back, errors, safe Mar
     assert.equal(buttons()[0].textContent.includes('Another hint'), true);
     assert.equal(buttons()[0].textContent.includes('9 left today'), true);
 
-    // The next hint builds on the first; raw HTML in a reply stays text.
-    answer = () => Response.json({ kind: 'hint', text: 'Look at <img src=x onerror="alert(1)"> the loop.', remaining: 8, limit: 10 });
+    // The next hint builds on the first; raw HTML stays text; no image or link in any Markdown form.
+    answer = () =>
+      Response.json({
+        kind: 'hint',
+        text: 'Look at <img src=x onerror="alert(1)"> the loop ![x][1] [docs][1] https://evil.test/a <https://evil.test/b>.\n\n[1]: https://evil.test/p.png',
+        remaining: 8,
+        limit: 10,
+      });
     await click(buttons()[0]);
     assert.deepEqual(calls[1].body.previous, ['Nudge 1: what if **two** values match?']);
     assert.equal(document.querySelector('.cs-ai-tutor img') === null, true);
+    assert.equal(document.querySelector('.cs-ai-tutor a') === null, true);
+    assert.equal(document.querySelector('.cs-ai-tutor-replies').textContent.includes('docs'), true);
     assert.equal(document.querySelector('.cs-ai-tutor-replies').textContent.includes('Hint 2'), true);
 
     // Out of quota: the server's message, and the button closes for today.

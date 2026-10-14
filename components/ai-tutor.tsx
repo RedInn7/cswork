@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { LoaderCircle, MessageCircleQuestion, ScanSearch } from 'lucide-react';
 import { StatementMarkdown } from './statement-markdown';
 import { ojRequest } from '@/lib/oj-client';
@@ -11,8 +11,6 @@ import '@/app/ai-tutor.css';
 type Kind = 'hint' | 'review';
 type Reply = { id: number; kind: Kind; text: string };
 type Answer = { kind: Kind; text: string; remaining: number; limit: number };
-// The server's daily quotas (lib/server/ai-tutor.ts), shown before the first call.
-const DAILY = { hint: 10, review: 5 };
 
 /**
  * The tutor's memory, kept by the workspace like the hint ladder's: switching tabs unmounts
@@ -23,8 +21,19 @@ export function useAiTutor(problemId: string) {
   const [replies, setReplies] = useState<Reply[]>([]);
   const [busy, setBusy] = useState<Kind | null>(null);
   const [error, setError] = useState('');
+  // Calls left today, from the server; unknown (no number shown) until it answers.
   const [left, setLeft] = useState<Record<Kind, number | null>>({ hint: null, review: null });
   const next = useRef(0);
+  const loaded = useRef(false);
+  const load = useCallback(() => {
+    if (loaded.current) return;
+    loaded.current = true;
+    ojRequest<Record<Kind, number>>('ai/usage').then(
+      // A call that answered first already knows better.
+      (fresh) => setLeft((counts) => ({ hint: counts.hint ?? fresh.hint, review: counts.review ?? fresh.review })),
+      () => {},
+    );
+  }, []);
   const ask = useCallback(
     async (
       kind: Kind,
@@ -63,7 +72,7 @@ export function useAiTutor(problemId: string) {
     },
     [problemId, replies],
   );
-  return { replies, busy, error, left, ask };
+  return { replies, busy, error, left, ask, load };
 }
 
 /**
@@ -71,7 +80,7 @@ export function useAiTutor(problemId: string) {
  * shows it only when the server has AI configured, for a signed-in learner, outside a mock OA.
  */
 export function AiTutor({
-  tutor: { replies, busy, error, left, ask },
+  tutor: { replies, busy, error, left, ask, load },
   language,
   codingMode,
   code,
@@ -89,9 +98,11 @@ export function AiTutor({
   const t = (zh: string, en: string) => (english ? en : zh);
   const context = { language, codingMode, code, english };
   const hints = replies.filter((r) => r.kind === 'hint').length;
+  useEffect(load, [load]);
   const count = (kind: Kind) => {
-    const n = left[kind] ?? DAILY[kind];
-    return english ? `${n} left today` : `今天还剩 ${n} 次`;
+    const n = left[kind];
+    if (n === null) return null;
+    return <span className="cs-ai-tutor-count">{english ? `${n} left today` : `今天还剩 ${n} 次`}</span>;
   };
   return (
     <section
@@ -105,8 +116,8 @@ export function AiTutor({
         <span className="cs-ai-tutor-badge">Beta</span>
         <p>
           {t(
-            '提示只给方向、不给代码；点评讲复杂度、边界情况和代码风格。AI 也会出错。',
-            'Hints point the way without code; reviews cover complexity, edge cases and style. AI can be wrong.',
+            '提示只给方向、不给代码；点评讲复杂度、边界情况和代码风格。你的代码、题面和最近一次判题结果会发送给 Anthropic 生成回复，不含邮箱和姓名。AI 也会出错。',
+            'Hints point the way without code; reviews cover complexity, edge cases and style. Your code, the problem and your last verdict are sent to Anthropic to write the reply, never your email or name. AI can be wrong.',
           )}
         </p>
       </header>
@@ -118,23 +129,26 @@ export function AiTutor({
           )}
         </p>
       )}
-      {replies.length > 0 && (
-        <ol className="cs-ai-tutor-replies" aria-live="polite">
-          {replies.map((reply) => {
-            const n = replies.filter((r) => r.kind === 'hint' && r.id <= reply.id).length;
-            return (
-              <li key={reply.id} data-kind={reply.kind}>
-                <span className="cs-ai-tutor-label">
-                  {reply.kind === 'hint'
-                    ? t(`提示 ${n}`, `Hint ${n}`)
-                    : t('代码点评', 'Code review')}
-                </span>
-                <StatementMarkdown body={reply.text} className="cs-statement-markdown cs-ai-tutor-text" />
-              </li>
-            );
-          })}
-        </ol>
-      )}
+      {/* Always mounted, so a screen reader announces the first reply too. */}
+      <div aria-live="polite">
+        {replies.length > 0 && (
+          <ol className="cs-ai-tutor-replies">
+            {replies.map((reply) => {
+              const n = replies.filter((r) => r.kind === 'hint' && r.id <= reply.id).length;
+              return (
+                <li key={reply.id} data-kind={reply.kind}>
+                  <span className="cs-ai-tutor-label">
+                    {reply.kind === 'hint'
+                      ? t(`提示 ${n}`, `Hint ${n}`)
+                      : t('代码点评', 'Code review')}
+                  </span>
+                  <StatementMarkdown body={reply.text} className="cs-statement-markdown cs-ai-tutor-text" plain />
+                </li>
+              );
+            })}
+          </ol>
+        )}
+      </div>
       {error && (
         <p className="cs-ai-tutor-error" role="alert">
           {error}
@@ -156,7 +170,7 @@ export function AiTutor({
             : hints
               ? t('再给一个提示', 'Another hint')
               : t('给我一个提示', 'Give me a hint')}
-          <span className="cs-ai-tutor-count">{count('hint')}</span>
+          {count('hint')}
         </button>
         <button
           type="button"
@@ -174,7 +188,7 @@ export function AiTutor({
             : accepted
               ? t('点评这份通过的代码', 'Review my accepted code')
               : t('点评我的代码', 'Review my code')}
-          <span className="cs-ai-tutor-count">{count('review')}</span>
+          {count('review')}
         </button>
       </div>
     </section>
