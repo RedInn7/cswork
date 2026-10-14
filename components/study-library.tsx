@@ -162,6 +162,14 @@ export function StudyLibrary({
   const listRequest = useRef(0);
   // ?section=<stop> opens on that stop (links from the mock OA topics).
   const [section, setSection] = useState(stopFromUrl);
+  // Kept in the URL, so going back or reloading reopens the stop chosen since.
+  useEffect(() => {
+    if (typeof location === 'undefined') return;
+    const url = new URL(location.href);
+    if (section) url.searchParams.set('section', section);
+    else url.searchParams.delete('section');
+    if (url.href !== location.href) history.replaceState(history.state, '', url);
+  }, [section]);
   const [stage, setStage] = useState('');
   const [status, setStatus] = useState('');
   const [difficulty, setDifficulty] = useState('');
