@@ -25,9 +25,6 @@
   text-transform: uppercase;
   color: var(--route-amber);
 }
-.study-bank:lang(zh) .route-plan-kicker {
-  letter-spacing: 0.2em;
-}
 .route-plan-title {
   margin: 0;
   font: 650 16px/1.4 var(--font-route);
@@ -104,10 +101,12 @@
 .route-plan-fields {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-items: start;
   gap: 10px 14px;
 }
 .route-plan-fields label {
   display: grid;
+  align-content: start;
   gap: 4px;
   min-width: 0;
   font-size: 12px;
@@ -122,8 +121,10 @@
   color: var(--route-white-3);
 }
 .study-bank .route-plan-form :is(input, select) {
+  box-sizing: border-box;
   min-block-size: 36px;
   inline-size: 100%;
+  margin: 0;
   padding: 6px 8px;
   border: 1px solid var(--route-slate);
   border-radius: 7px;
@@ -132,6 +133,10 @@
   font: 500 14px/1.2 var(--font-route);
   font-variant-numeric: tabular-nums;
   color-scheme: dark;
+}
+.study-bank .route-plan-form select {
+  max-width: none;
+  padding-right: 24px;
 }
 .route-plan-error {
   margin: 0;
@@ -224,7 +229,7 @@ a.route-plan-tag:hover {
 .route-punches {
   flex-wrap: wrap;
 }
-.study-route[data-folded] .route-plan {
+.study-route[data-folded] :is(.route-plan, .route-plan-entry) {
   display: none;
 }
 
