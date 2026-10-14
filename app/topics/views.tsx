@@ -2,6 +2,7 @@
 import { SITE_NAME, SITE_URL, breadcrumbJsonLd } from '@/lib/seo';
 import { TEMPLATE_LANGS, line500Path, topicPath } from '@/lib/route-templates';
 import { CodeBlock } from './code-block';
+import { RatingBadge } from '@/components/rating-badge';
 import { TOPIC_GROUPS, TOPIC_STOPS, type TopicStop } from './stops';
 
 export const INDEX_COPY = {
@@ -165,6 +166,19 @@ export function TopicView({ stop, zh }: { stop: TopicStop; zh: boolean }) {
             {zh ? stop.pattern.zh : stop.pattern.en}{' '}
             <span className="topics-complexity">{zh ? stop.complexity.zh : stop.complexity.en}</span>
           </p>
+          {stop.ratings && (
+            <p className="topics-ratings">
+              {t('周赛难度分', 'Contest ratings')} <RatingBadge rating={stop.ratings.min} english={!zh} />–
+              <RatingBadge rating={stop.ratings.max} english={!zh} />
+              {t('· 中位', '· median')} <RatingBadge rating={stop.ratings.median} english={!zh} />
+              <small>
+                {t(
+                  `（${stop.ratings.count}/${stop.problems} 道题有 zerotrac 周赛分）`,
+                  `(${stop.ratings.count} of ${stop.problems} problems rated by zerotrac)`,
+                )}
+              </small>
+            </p>
+          )}
         </div>
         <a className="topics-cta" href={line500Path(stop.slug)}>
           {/* ponytail: the Line 500 list does not read ?section= yet, so the label points at the stop number instead of promising a filter. */}

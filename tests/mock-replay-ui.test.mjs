@@ -1,0 +1,188 @@
+import assert from 'node:assert/strict';
+import { mock, test } from 'node:test';
+import { register } from 'node:module';
+import { JSDOM } from 'jsdom';
+import { createElement, act, useState } from 'react';
+
+register(
+  `data:text/javascript,${encodeURIComponent(
+    `export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};return n(u,c);}`,
+  )}`,
+  import.meta.url,
+);
+
+const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
+for (const name of ['window', 'document', 'HTMLElement', 'HTMLInputElement', 'Element', 'Node', 'Event', 'localStorage', 'navigator'])
+  Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+
+/** IndexedDB in memory: one store, requests answered on the microtask queue. */
+const stored = new Map();
+const request = (run) => {
+  const r = {};
+  queueMicrotask(() => {
+    r.result = run();
+    r.onsuccess?.();
+  });
+  return r;
+};
+const store = {
+  get: (k) => request(() => stored.get(k)),
+  put: (v, k) => request(() => stored.set(k, v)),
+  delete: (k) => request(() => stored.delete(k)),
+  getAllKeys: () => request(() => [...stored.keys()]),
+};
+const db = { createObjectStore() {}, close() {}, transaction: () => ({ objectStore: () => store }) };
+globalThis.indexedDB = {
+  open: () => {
+    const r = {};
+    queueMicrotask(() => {
+      r.result = db;
+      r.onupgradeneeded?.();
+      r.onsuccess?.();
+    });
+    return r;
+  },
+};
+
+const { createRoot } = await import('react-dom/client');
+const { MockReplay, useReplayRecorder } = await import('../components/mock-replay.tsx');
+const { loadSession, pruneTracks, trackKey } = await import('../lib/mock-replay.ts');
+const { mockStorageKey } = await import('../lib/mock-oa.ts');
+
+const flush = async () => {
+  for (let i = 0; i < 30; i++) await new Promise((r) => setImmediate(r));
+};
+
+test('recording a running exam, then replaying it on the report', async () => {
+  mock.timers.enable({ apis: ['setInterval', 'Date'], now: 1_000_000 });
+  const start = Date.now();
+  const session = { id: 's1', ids: ['p1', 'p2'], minutes: 60, startedAt: start, skew: 0, slots: ['easy', 'hard'], createdAt: start };
+  let setCode, onResult;
+  function Recorder({ running }) {
+    const [code, set] = useState('a');
+    setCode = set;
+    onResult = useReplayRecorder(running ? session : null, 'p1', code);
+    return null;
+  }
+  const root = createRoot(document.getElementById('root'));
+  try {
+    await act(async () => root.render(createElement(Recorder, { running: true })));
+    await act(flush);
+    await act(async () => setCode('ab'));
+    await act(async () => mock.timers.tick(2000));
+    await act(flush);
+    // Unchanged for a while: nothing new is stored.
+    await act(async () => mock.timers.tick(4000));
+    const result = { problem_id: 'p1', id: 'sub-0001-aaaa-bbbb', created_at: start + 2500, mode: 'judge', status: 'wrong_answer', passed: 1, total: 3 };
+    await act(async () => onResult.current(result));
+    await act(async () => onResult.current(result));
+    // A run from before the exam (recovered on load) is not part of it.
+    await act(async () => onResult.current({ ...result, id: 'old-run', created_at: start - 60_000 }));
+    await act(async () => setCode('abc'));
+    // The exam ends (hand-in): the last edit is kept as it stops.
+    await act(async () => root.render(createElement(Recorder, { running: false })));
+    await act(flush);
+    const [p1, p2] = await loadSession('s1', ['p1', 'p2']);
+    assert.equal(p2, null);
+    assert.deepEqual(p1.opens, [0]);
+    assert.deepEqual(p1.frames.map((f) => f[3]), ['a', 'b', 'c']);
+    assert.deepEqual(p1.frames.map((f) => f[0]), [0, 2000, 6000]);
+    assert.equal(p1.events.length, 1);
+    assert.equal(p1.events[0].t, 2500);
+    assert.equal(p1.events[0].status, 'wrong_answer');
+    assert.equal(stored.get(trackKey('s1', 'p1')) instanceof ArrayBuffer, true);
+
+    // The report, ten minutes after the start.
+    const finished = { ...session, finishedAt: start + 10 * 60_000 };
+    await act(async () => root.render(createElement(MockReplay, { session: finished, title: (id) => `Title ${id}` })));
+    await act(flush);
+    const $ = (s) => document.querySelector(s);
+    assert.equal($('#mock-replay-title').textContent, 'Code replay');
+    const marks = [...document.querySelectorAll('.mock-replay-marks button')];
+    assert.equal(marks.length, 1);
+    assert.equal(marks[0].dataset.tone, 'fail');
+    assert.equal(marks[0].getAttribute('aria-label').includes('Q1 · Submit'), true);
+    assert.equal($('.mock-replay-code code').textContent, 'a');
+    assert.equal($('.mock-replay-code figcaption').textContent.includes('Title p1'), true);
+    // Q2 has nothing recorded.
+    const qs = [...document.querySelectorAll('.mock-replay-qs button')];
+    assert.equal(qs[2].disabled, true);
+    // Seek to the submission.
+    await act(async () => marks[0].dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true })));
+    assert.equal($('.mock-replay-code code').textContent, 'ab');
+    assert.equal($('.mock-replay-track input').value, '2500');
+    // Play at 4x (the default): one second of play covers four of the exam.
+    const play = $('.mock-replay-play');
+    await act(async () => play.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true })));
+    assert.equal(play.getAttribute('aria-label'), 'Pause');
+    await act(async () => mock.timers.tick(1000));
+    assert.equal($('.mock-replay-track input').value, '6500');
+    assert.equal($('.mock-replay-code code').textContent, 'abc');
+    const speeds = [...document.querySelectorAll('.mock-replay-speeds button')];
+    assert.deepEqual(speeds.map((b) => b.getAttribute('aria-pressed')), ['false', 'true', 'false']);
+    // The time split: all ten minutes on Q1, with the quiet stretch after 0:06 listed.
+    const times = [...document.querySelectorAll('.mock-replay-time')].map((n) => n.textContent);
+    assert.deepEqual(times, ['10:00', '00:00']);
+    const pauses = [...document.querySelectorAll('.mock-replay-pauses li')].map((n) => n.textContent);
+    assert.equal(pauses.length, 1);
+    assert.equal(pauses[0].startsWith('00:06–10:00'), true);
+  } finally {
+    await act(async () => root.unmount());
+    mock.timers.reset();
+  }
+});
+
+test('a track over its size cap stops recording, and the report says so', async () => {
+  const { randomBytes } = await import('node:crypto');
+  mock.timers.enable({ apis: ['setInterval', 'Date'], now: 2_000_000 });
+  const start = Date.now();
+  // Two questions share REPLAY_BYTES: each track may take half.
+  const session = { id: 's-full', ids: ['p1', 'p2'], minutes: 60, startedAt: start, skew: 0, slots: ['easy', 'hard'], createdAt: start };
+  let setCode;
+  function Recorder({ running }) {
+    const [code, set] = useState('a');
+    setCode = set;
+    useReplayRecorder(running ? session : null, 'p1', code);
+    return null;
+  }
+  const until = async (done) => {
+    for (let i = 0; i < 200 && !(await done()); i++) await new Promise((r) => setTimeout(r, 20));
+  };
+  const saved = async () => (await loadSession('s-full', ['p1']))[0];
+  const root = createRoot(document.getElementById('root'));
+  try {
+    await act(async () => root.render(createElement(Recorder, { running: true })));
+    await act(() => until(async () => (await saved())?.frames.length === 1));
+    // A paste too big to keep, even gzipped.
+    await act(async () => setCode(randomBytes(1_600_000).toString('base64')));
+    await act(async () => mock.timers.tick(2000));
+    await act(() => until(async () => (await saved())?.full === true));
+    const track = await saved();
+    assert.equal(track.full, true);
+    assert.deepEqual(track.frames.map((f) => f[3]), ['a']);
+    // Remounted (another question and back): nothing more is recorded.
+    await act(async () => root.render(createElement(Recorder, { running: false })));
+    await act(async () => root.render(createElement(Recorder, { running: true })));
+    await act(async () => setCode('b'));
+    await act(async () => mock.timers.tick(2000));
+    await act(flush);
+    assert.deepEqual((await saved()).opens, [0]);
+    await act(async () => root.render(createElement(MockReplay, { session: { ...session, finishedAt: start + 60_000 }, title: (id) => id })));
+    await act(() => until(async () => !!document.querySelector('.mock-replay-code figcaption')));
+    assert.equal(document.querySelector('.mock-replay-code figcaption').textContent.includes('size cap'), true);
+  } finally {
+    await act(async () => root.unmount());
+    mock.timers.reset();
+  }
+});
+
+test('a session that left every history on this browser loses its replay', async () => {
+  stored.set(trackKey('kept', 'p1'), 'x');
+  stored.set(trackKey('gone', 'p1'), 'x');
+  localStorage.setItem(mockStorageKey('someone'), JSON.stringify({ active: null, history: [{ id: 'kept', ids: ['p1'], slots: ['easy'], minutes: 30, createdAt: 1, skew: 0 }] }));
+  await pruneTracks();
+  assert.equal(stored.has(trackKey('kept', 'p1')), true);
+  assert.equal(stored.has(trackKey('gone', 'p1')), false);
+  assert.equal(stored.has(trackKey('s1', 'p1')), false);
+});

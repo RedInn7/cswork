@@ -74,12 +74,18 @@ jobs:
       - run: node --import tsx --test tests/daily-problem.test.ts tests/achievements.test.ts tests/practice-loop-ui.test.mjs
       - run: node --import tsx --test tests/learner-cloud.test.ts tests/learner-cloud-ui.test.mjs
       - run: node --import tsx --test tests/ai-tutor.test.ts tests/ai-tutor-ui.test.mjs
+      - run: node --import tsx --test tests/workspace-plus-ui.test.mjs
+      - run: node --import tsx --test tests/ai-interviewer.test.ts tests/mock-ai-interview-ui.test.mjs tests/mock-replay.test.ts tests/mock-replay-ui.test.mjs
       - run: node --import tsx --test tests/solution-posts.test.ts tests/solution-posts-ui.test.mjs
       - run: node --import tsx --test tests/experience-submissions.test.ts tests/experience-submissions-ui.test.mjs
       - run: node --import tsx --test tests/study-groups.test.ts tests/study-groups-ui.test.mjs
+      - run: node --import tsx --test tests/community.test.ts tests/community-ui.test.mjs
       - run: node --import tsx --test tests/api-tokens.test.ts tests/mcp-server.test.mjs tests/mcp-ui.test.mjs
+      - run: node --import tsx --test tests/lc-ratings.test.ts tests/points.test.ts tests/practice-ratings-ui.test.mjs
       - run: node --import tsx --test tests/story-bank.test.ts tests/interview-prep-ui.test.mjs
       - run: node --import tsx --test tests/study-plan.test.ts tests/study-plan-ui.test.mjs
+      - run: node --import tsx --test tests/editor-format.test.ts tests/user-drafts.test.ts tests/playground.test.ts tests/playground-ui.test.mjs tests/workspace-sync-ui.test.mjs
+      - run: node --import tsx --test tests/ai-ask.test.ts tests/command-palette-ui.test.mjs tests/seo-facets.test.ts tests/company-insights.test.ts
       - run: node --test --test-concurrency=1 tests/oa-import.test.mjs
       - run: node --import tsx --test --test-concurrency=1 tests/oa-library.test.ts tests/oa-library-ui.test.mjs
       - run: node --import tsx --test tests/judge-status-ui.test.mjs

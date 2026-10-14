@@ -14,6 +14,7 @@ void test('language providers discard stale/cancelled results and isolate docume
       ) => providers.set(language, provider),
       registerHoverProvider() {},
       registerSignatureHelpProvider() {},
+      registerDocumentFormattingEditProvider() {},
       CompletionItemKind: { Text: 18, Function: 1 },
       CompletionItemInsertTextRule: { InsertAsSnippet: 4, KeepWhitespace: 1 },
     },

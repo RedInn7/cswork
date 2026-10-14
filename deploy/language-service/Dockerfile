@@ -5,10 +5,13 @@ RUN go install golang.org/x/tools/gopls@v0.21.1
 FROM debian:trixie-slim
 ARG PYRIGHT_VERSION=1.1.411
 ARG JDTLS_ARCHIVE=jdt-language-server-1.55.0-202601131729.tar.gz
+# Python formatting: the broker pipes the document through `ruff format -` (pinned).
+ARG RUFF_VERSION=0.13.0
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      ca-certificates curl nodejs npm python3 clangd-19 g++ openjdk-21-jdk-headless \
+      ca-certificates curl nodejs npm python3 python3-pip clangd-19 g++ openjdk-21-jdk-headless \
     && npm install --global --omit=dev pyright@${PYRIGHT_VERSION} \
     && npm cache clean --force \
+    && python3 -m pip install --no-cache-dir --break-system-packages --root-user-action=ignore ruff==${RUFF_VERSION} \
     && mkdir -p /opt/jdtls /workspace \
     && curl --fail --location --retry 3 "https://download.eclipse.org/jdtls/milestones/1.55.0/${JDTLS_ARCHIVE}" -o /tmp/jdtls.tar.gz \
     && tar -xzf /tmp/jdtls.tar.gz -C /opt/jdtls \

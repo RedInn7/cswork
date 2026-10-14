@@ -5,6 +5,8 @@ import './globals.css';
 import './theme.css';
 import { THEME_SCRIPT } from '@/lib/theme-script';
 import { Analytics } from '@/components/analytics';
+import { CommandPalette } from '@/components/command-palette';
+import { aiEnabled } from '@/lib/server/ai-tutor';
 import { measurementId } from '@/lib/analytics';
 import { SEO_HOME, seoMetadata } from '@/lib/seo';
 // In the reader's language from the first byte, so the tab title doesn't flash either.
@@ -26,7 +28,10 @@ export default async function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body>
-        <LocaleProvider locale={locale}>{children}</LocaleProvider>
+        <LocaleProvider locale={locale}>
+          {/* ⌘K search on every page; "Ask AI" only when the server has a key. */}
+          <CommandPalette ai={aiEnabled()}>{children}</CommandPalette>
+        </LocaleProvider>
         {/* Google Analytics loads only after the visitor opts in (components/analytics.tsx). */}
         <Analytics id={measurementId(process.env.GA_MEASUREMENT_ID)} />
       </body>

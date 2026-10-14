@@ -16,7 +16,9 @@ const requestSchema = documentSchema
   .extend({
     code: z.string().max(65536),
     version: z.number().int().positive().max(2147483647),
-    action: z.enum(['completion', 'hover', 'signature', 'diagnostics']),
+    action: z.enum(['completion', 'hover', 'signature', 'diagnostics', 'format']),
+    // Format Document only: the editor's indent (gopls always uses gofmt's tabs).
+    tabSize: z.union([z.literal(2), z.literal(4)]).optional(),
     position: z
       .object({
         line: z.number().int().nonnegative(),
@@ -100,8 +102,10 @@ export async function handleEditorIntelligence(
       throw new HttpError(400, '本题不支持该语言');
     if (Buffer.byteLength(d.code, 'utf8') > 65536)
       throw new HttpError(413, '代码超过 64 KiB');
-    if (d.action !== 'diagnostics' && !d.position)
+    if (d.action !== 'diagnostics' && d.action !== 'format' && !d.position)
       throw new HttpError(400, '缺少光标位置');
+    if (d.tabSize !== undefined && d.action !== 'format')
+      throw new HttpError(400, '无效的补全请求');
     if (d.position) {
       const lines = d.code.split(/\r\n|\r|\n/);
       if (
@@ -150,10 +154,14 @@ export async function handleEditorIntelligence(
     );
     if (!response.ok) {
       await response.body?.cancel();
+      if (response.status === 503 && (data as { action?: string }).action === 'format')
+        throw new HttpError(503, '格式化暂不可用，请稍后重试');
       if (response.status === 429 || response.status === 503)
         throw new HttpError(503, '补全服务暂忙，继续输入或重新触发即可重试');
       if (response.status === 409)
         throw new HttpError(409, '代码已更新，请重新触发补全');
+      if (response.status === 422)
+        throw new HttpError(422, '无法格式化：请先修正语法错误');
       throw new HttpError(502, '补全服务暂不可用，代码仍可运行和提交');
     }
     return json(await readBroker(response));

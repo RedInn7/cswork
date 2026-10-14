@@ -34,6 +34,7 @@ export function progressBadges({
   userId,
   now,
   companyNames = new Map(),
+  bought = [],
 }: {
   sections: readonly Section[];
   history: readonly PracticeHistoryItem[];
@@ -42,6 +43,8 @@ export function progressBadges({
   now: number;
   /** Employer slug -> name, as the OA library lists them. */
   companyNames?: ReadonlyMap<string, string>;
+  /** Streak freezes bought with points (bootstrap purchasedFreezes), as on the calendar. */
+  bought?: readonly number[];
 }) {
   const solved = new Set(history.flatMap((item) => (item.firstAcAt ? [item.problemId] : [])));
   const perStop = new Map<string, number>();
@@ -70,7 +73,7 @@ export function progressBadges({
   const weeks = Math.max(26, Math.ceil((now - first) / WEEK) + 2);
   return achievements({
     stops: sections.map((s) => ({ ...s, solved: Math.max(s.solved, perStop.get(s.slug) ?? 0) })),
-    bestStreak: practiceStats(acActivity, new Date(now).toDateString(), false, [], weeks).best,
+    bestStreak: practiceStats(acActivity, new Date(now).toDateString(), false, [], weeks, bought).best,
     acTimes: acActivity.map((a) => a.created_at),
     companies: [...companies.values()],
     perfectMock:
@@ -206,11 +209,14 @@ export function AcceptedExtras({
   problemId,
   acceptedAt,
   activity = [],
+  bought,
   english,
 }: {
   problemId: string;
   acceptedAt: number;
   activity?: readonly Activity[];
+  /** Streak freezes bought with points. */
+  bought?: readonly number[];
   english: boolean;
 }) {
   const t: T = (zh, en) => (english ? en : zh);
@@ -218,11 +224,14 @@ export function AcceptedExtras({
   const { streakUnlocks, after, rescued, repeat } = useMemo(() => {
     const day = new Date(now).toDateString();
     const prior = activity.filter((a) => a.created_at < acceptedAt);
-    const before = practiceStats(prior, day, english);
+    const before = practiceStats(prior, day, english, [], undefined, bought);
     const after = practiceStats(
       [...prior, { problem_id: problemId, created_at: Math.min(acceptedAt, now) }],
       day,
       english,
+      [],
+      undefined,
+      bought,
     );
     const streakBadges = (best: number) =>
       achievements({ stops: [], bestStreak: best, acTimes: [], companies: [], perfectMock: false });
@@ -236,7 +245,7 @@ export function AcceptedExtras({
       rescued: before.rescue && !after.rescue,
       repeat: prior.some((a) => a.problem_id === problemId),
     };
-  }, [activity, problemId, acceptedAt, now, english]);
+  }, [activity, problemId, acceptedAt, now, english, bought]);
   // Keyed by the AC, so a later AC never shows an earlier one's stop.
   const key = `${problemId}@${acceptedAt}`;
   const [found, setFound] = useState<{ key: string; badges: Badge[] } | null>(null);

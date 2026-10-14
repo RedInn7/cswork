@@ -88,6 +88,10 @@ void test('posts: write, list by votes or date, edit and delete only your own', 
   assert.equal(first.post.mine, true);
   assert.ok(first.post.body.includes('<script>'), 'stored as typed; the client renders without raw HTML');
   const second = await ok<Detail>(other, 'POST', 'posts', { problemId: 'oa-amazon-1', title: 'Hash map', body: 'O(n)' });
+  // One language's posts (the AC dialog's histogram links here); an unknown language is a 400.
+  assert.deepEqual((await ok<List>(other, 'GET', 'posts?problem=oa-amazon-1&language=python')).items.map((p) => p.id), [first.post.id]);
+  assert.equal((await ok<List>(other, 'GET', 'posts?problem=oa-amazon-1&language=')).items.length, 2);
+  assert.equal(await status(other, 'GET', 'posts?problem=oa-amazon-1&language=ruby'), 400);
   const serialized = JSON.stringify(await ok(me, 'GET', 'posts?problem=oa-amazon-1'));
   assert.ok(!serialized.includes('@example.test'), 'no email in the list');
   assert.ok(!serialized.includes('posts-other'), 'no user ids in the list');

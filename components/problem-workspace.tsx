@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback, type CSSProperties } from 'react';
 import {
   Group,
   Panel,
@@ -11,10 +11,12 @@ import {
   nextUnsolved,
   problemNeighbors,
   problemSequence,
+  randomPickQuery,
   rememberProblemSequence,
 } from '@/lib/problem-sequence';
 import { practiceStats, type Activity } from './practice-calendar';
 import { AcceptedExtras } from './achievements';
+import { RatingBadge } from './rating-badge';
 import { localDay, readTodayTarget } from '@/lib/study-plan';
 import {
   ArrowLeft,
@@ -23,6 +25,9 @@ import {
   Check,
   CircleCheck,
   Copy,
+  Expand,
+  Shrink,
+  Shuffle,
   Tag,
   ChevronRight,
   ChevronDown,
@@ -44,6 +49,7 @@ import {
   RotateCcw,
   Send,
   Settings2,
+  SquareTerminal,
   Terminal,
   Trash2,
   X,
@@ -55,7 +61,8 @@ import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-
 import { AskedReport, communityProblem } from './problem-community';
 import { SolutionPosts, SolutionsTab } from './solution-posts';
 import { HintLadder, useHintLadder } from './hint-ladder';
-import { AiTutor, useAiTutor } from './ai-tutor';
+import { AiCaseIdeas, AiComplexity, AiTutor, AskAiSelection, useAiTutor, type AiContext } from './ai-tutor';
+import { ProblemMeta } from './problem-meta';
 import { SimilarProblems } from './similar-problems';
 import {
   ExamAcceptedDialog,
@@ -63,6 +70,7 @@ import {
   MockExamDone,
   useMockExam,
 } from './mock-exam-bar';
+import { useReplayRecorder } from './mock-replay';
 import { reportWindow } from '@/lib/mock-oa';
 import {
   Dialog,
@@ -85,6 +93,7 @@ import { CodeEditor } from './editor';
 import { ProblemTimer, formatClock, stopTimer } from './problem-timer';
 import { ACM_IO_TEMPLATES } from '@/lib/acm-io-templates';
 import { useIdlePrecompile } from '@/hooks/use-idle-precompile';
+import { encodeShare } from '@/lib/playground-share';
 import { StatementMarkdown } from './statement-markdown';
 import { LeetCodeSamples } from './leetcode-samples';
 import { leetcodePublicSample } from '@/lib/leetcode-public-samples';
@@ -110,11 +119,14 @@ import type { Boot } from '@/lib/types';
 import {
   defaultEditorSettings,
   draftStorageKey,
+  flushCloudDrafts,
   languageFiles,
+  readCloudDraft,
   readEditorDraft,
   readEditorSettings,
   writeEditorDraft,
   writeEditorSettings,
+  type CloudDraftTarget,
   type EditorSettings,
 } from '@/lib/editor-settings';
 import {
@@ -133,7 +145,10 @@ import { track } from '@/lib/analytics';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import '@/app/editor.css';
+import '@/app/lc-rating.css';
 import '@/app/workbench-tools.css';
+import '@/app/workspace-panels.css';
+import '@/app/workspace-sync.css';
 
 type WorkspaceProps = {
   problem: ProblemSummary;
@@ -144,6 +159,7 @@ type WorkspaceProps = {
   /** ?mock=<session id>: the problem is a question of a timed mock OA. */
   mock?: string;
 };
+type MaxPanel = 'statement' | 'code' | 'console';
 type ReplaceRequest = {
   code: string;
   language: Language;
@@ -195,7 +211,27 @@ const safeLayoutStorage = {
   },
 };
 
+/** "5 分钟前" / "5 minutes ago" for the cross-device restore notice. */
+function draftAge(at: number, locale: 'zh' | 'en') {
+  const minutes = Math.max(1, Math.round((Date.now() - at) / 60000));
+  const format = new Intl.RelativeTimeFormat(locale === 'zh' ? 'zh-CN' : 'en');
+  return minutes < 60
+    ? format.format(-minutes, 'minute')
+    : minutes < 1440
+      ? format.format(-Math.round(minutes / 60), 'hour')
+      : format.format(-Math.round(minutes / 1440), 'day');
+}
+
 const MAX_CASES = 5;
+// A run or submission the learner can ask the AI tutor about.
+const FAILED_VERDICTS = new Set([
+  'wrong_answer',
+  'time_limit',
+  'memory_limit',
+  'output_limit',
+  'runtime_error',
+  'compile_error',
+]);
 function readCases(key: string): string[] {
   try {
     const value: unknown = JSON.parse(localStorage.getItem(key) || 'null');
@@ -338,6 +374,7 @@ function Workspace({
         ? t('语言服务待启动', 'Language service not started')
         : say(intelligence.message);
   const suggest = useRef<(() => void) | null>(null);
+  const format = useRef<(() => void) | null>(null);
   const runButton = useRef<HTMLButtonElement>(null);
   const [leftTab, setLeftTab] = useState<
     'statement' | 'history' | 'editorial' | 'notes' | 'solutions'
@@ -384,6 +421,34 @@ function Workspace({
   );
   const consolePanel = usePanelRef();
   const [consoleCollapsed, setConsoleCollapsed] = useState(false);
+  // One panel fills the workspace (its title bar's button or a double-click; the button
+  // again or Esc restores). CSS hides the others, so the saved layout stays untouched.
+  const [maximized, setMaximized] = useState<MaxPanel | null>(null);
+  const consoleWasCollapsed = useRef(false);
+  function maximize(panel: MaxPanel | null) {
+    if (maximized === 'console' && panel !== 'console' && consoleWasCollapsed.current) {
+      consoleWasCollapsed.current = false;
+      consolePanel.current?.collapse();
+    }
+    if (panel === 'console' && consolePanel.current?.isCollapsed()) {
+      consoleWasCollapsed.current = true;
+      consolePanel.current.expand();
+    }
+    setMaximized(panel);
+  }
+  const toggleMaximized = (panel: MaxPanel) => maximize(maximized === panel ? null : panel);
+  useEffect(() => {
+    if (!maximized) return;
+    const restore = (event: KeyboardEvent) => {
+      // Esc belongs to the editor (Vim, suggestions) and to dialogs first.
+      const target = event.target as Element | null;
+      if (event.key !== 'Escape' || event.defaultPrevented || target?.closest?.('.monaco-editor, [role="dialog"]'))
+        return;
+      maximize(null);
+    };
+    document.addEventListener('keydown', restore);
+    return () => document.removeEventListener('keydown', restore);
+  });
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [shortcutOpen, setShortcutOpen] = useState(false);
   const [replaceRequest, setReplaceRequest] = useState<ReplaceRequest | null>(
@@ -447,6 +512,24 @@ function Workspace({
   const hintLadder = useHintLadder(submission, problem.failedSubmissionIds);
   // AI hints and review: kept here so a tab switch does not drop the replies.
   const aiTutor = useAiTutor(initialProblem.id);
+  // The solutions tab's language filter, set from the AC dialog's histogram.
+  const [solutionsLanguage, setSolutionsLanguage] = useState('');
+  const prose = useRef<HTMLDivElement>(null);
+  // The tutor's extras; SQL track problems have no AI (lib/server/ai-tutor.ts takes code languages).
+  const aiOn = !!boot.services?.ai && !!boot.person && !examMode && language !== 'sql';
+  const aiContext: AiContext = { language, codingMode, code, english: uiEnglish };
+  // A running mock OA records this question for the report's code replay (this browser only).
+  const recordReplay = useReplayRecorder(
+    exam?.running && ready ? exam.session : null,
+    initialProblem.id,
+    code,
+  );
+  useEffect(() => {
+    if (!submission || activeStatuses.has(submission.status) || submission.status === 'cancelled') return;
+    // The POST acknowledgement may already say accepted but has no test details.
+    if (submission.status === 'accepted' && submission.total <= 0) return;
+    recordReplay.current(submission);
+  }, [submission, recordReplay]);
   const [success, setSuccess] = useState<OJSubmission | null>(null);
   const [solveSeconds, setSolveSeconds] = useState<number | null>(null);
   const announcedSuccess = useRef<string | null>(null);
@@ -459,7 +542,15 @@ function Workspace({
   const [loadingSubmission, setLoadingSubmission] = useState<string | null>(
     null,
   );
-  const draft = useRef({ key: '', code: starters.python });
+  const draft = useRef<{ key: string; code: string; cloud?: CloudDraftTarget }>({
+    key: '',
+    code: starters.python,
+  });
+  // Signed in and not a mock question: drafts also live on the server, across devices.
+  const cloudSync = !!boot.person && !mock;
+  const cloudFor = (next: Language, mode: CodingMode) =>
+    cloudSync ? { problemId: draftId, language: next, codingMode: mode } : undefined;
+  const [restored, setRestored] = useState<{ previous: string; at: number } | null>(null);
   const draftDirty = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const alive = useRef(false);
@@ -561,6 +652,35 @@ function Workspace({
     storage: safeLayoutStorage,
   });
 
+  const panelNames: Record<MaxPanel, [string, string]> = {
+    statement: ['题面', 'the statement'],
+    code: ['代码', 'the code'],
+    console: ['控制台', 'the console'],
+  };
+  const maxButton = (panel: MaxPanel) => {
+    if (narrow) return null;
+    const label =
+      maximized === panel
+        ? t('还原面板布局', 'Restore the panels')
+        : t(`最大化${panelNames[panel][0]}`, `Maximize ${panelNames[panel][1]}`);
+    return (
+      <button
+        type="button"
+        className="cs-panel-max"
+        aria-label={label}
+        title={`${label}${t('（双击标题栏也可以，Esc 还原）', ' (or double-click the title bar; Esc restores)')}`}
+        onClick={() => toggleMaximized(panel)}
+      >
+        {maximized === panel ? <Shrink size={14} /> : <Expand size={14} />}
+      </button>
+    );
+  };
+  // Double-clicking a title bar (its tabs included, its other controls not) toggles it too.
+  const maxOnDoubleClick = (panel: MaxPanel) => (event: { target: EventTarget }) => {
+    if (narrow || (event.target as Element).closest('button:not([role="tab"]), select, input, textarea, a')) return;
+    toggleMaximized(panel);
+  };
+
   function showConsole(tab: 'input' | 'result') {
     setBottomTab(tab);
     consolePanel.current?.expand();
@@ -575,7 +695,7 @@ function Workspace({
     if (!draft.current.key || !draftDirty.current) return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     try {
-      writeEditorDraft(draft.current.key, draft.current.code);
+      writeEditorDraft(draft.current.key, draft.current.code, draft.current.cloud);
       draftDirty.current = false;
       if (notify && alive.current) {
         setSaveStatus(['草稿已保存到此浏览器', 'Draft saved in this browser']);
@@ -629,6 +749,7 @@ function Workspace({
       draft.current = {
         key: draftStorageKey(userId, draftId, chosen, initialMode),
         code: stored.code,
+        cloud: cloudFor(chosen, initialMode),
       };
       setLanguage(chosen);
       setCode(stored.code);
@@ -644,6 +765,7 @@ function Workspace({
       draft.current = {
         key: draftStorageKey(userId, draftId, chosen, initialMode),
         code: template(chosen),
+        cloud: cloudFor(chosen, initialMode),
       };
       setLanguage(chosen);
       setCode(template(chosen));
@@ -653,7 +775,10 @@ function Workspace({
       ]);
     }
     setReady(true);
-    const save = () => persistDraft();
+    const save = () => {
+      persistDraft();
+      flushCloudDrafts();
+    };
     window.addEventListener('pagehide', save);
     const visibility = () => {
       if (document.visibilityState === 'hidden') save();
@@ -668,7 +793,47 @@ function Workspace({
       window.removeEventListener('pagehide', save);
       document.removeEventListener('visibilitychange', visibility);
     };
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- cloudFor only reads cloudSync and draftId, both fixed for this workspace.
   }, [userId, draftId, persistDraft, loadedProblem]);
+
+  // A newer copy from another device replaces the draft unless it was edited since opening; undo puts it back.
+  useEffect(() => {
+    const target = draft.current.cloud;
+    if (!ready || !target) return;
+    const key = draft.current.key;
+    const controller = new AbortController();
+    readCloudDraft(target, controller.signal).then(
+      (cloud) => {
+        if (
+          !cloud ||
+          draft.current.key !== key ||
+          draftDirty.current ||
+          cloud.code === draft.current.code
+        )
+          return;
+        let local = 0;
+        try {
+          local = readEditorDraft(userId, draftId, target.language, target.codingMode).updatedAt;
+        } catch {
+          /* Unreadable here: the server copy is the one to show. */
+        }
+        if (cloud.updatedAt <= local) return;
+        const previous = draft.current.code;
+        draft.current.code = cloud.code;
+        setCode(cloud.code);
+        try {
+          localStorage.setItem(key, JSON.stringify(cloud));
+        } catch {
+          /* Still shown for this visit. */
+        }
+        setRestored({ previous, at: cloud.updatedAt });
+      },
+      () => {
+        /* Offline or signed out elsewhere: the local draft stands. */
+      },
+    );
+    return () => controller.abort();
+  }, [ready, language, codingMode, userId, draftId]);
 
   useEffect(() => {
     const query = window.matchMedia('(max-width: 900px)');
@@ -903,6 +1068,7 @@ function Workspace({
     draft.current.code = next;
     draftDirty.current = true;
     setCode(next);
+    setRestored(null);
     setSaveStatus(['正在保存草稿…', 'Saving draft…']);
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => persistDraft(), 350);
@@ -999,9 +1165,11 @@ function Workspace({
     draft.current = {
       key: draftStorageKey(userId, draftId, next, mode),
       code: override ?? nextCode,
+      cloud: cloudFor(next, mode),
     };
     draftDirty.current = override !== undefined;
     setLanguage(next);
+    setRestored(null);
     // The other mode has its own saved cases (casesKey).
     if (mode !== codingMode) setInputMode('sample');
     setCodingMode(mode);
@@ -1020,6 +1188,32 @@ function Workspace({
       ]);
     }
   }
+  /** This code and its stdin in a /playground tab (a #c= share link; no problem attached). */
+  async function openPlayground() {
+    if (language === 'sql') return;
+    // Opened inside the click so it isn't blocked as a popup; the link follows once encoded.
+    const tab = window.open('about:blank', '_blank');
+    const value = await encodeShare({
+      language,
+      code,
+      stdin: inputMode === 'custom' ? stdin : (exampleCase ?? ''),
+    });
+    if (!value) {
+      tab?.close();
+      setError(
+        t(
+          '代码太长，放不进 Playground 链接（压缩后上限 32 KB）。',
+          'The code is too long for a Playground link (32 KB compressed).',
+        ),
+      );
+      return;
+    }
+    const url = `/playground#c=${value}`;
+    if (tab) {
+      tab.opener = null;
+      tab.location.href = url;
+    } else location.href = url;
+  }
   function downloadCode() {
     const url = URL.createObjectURL(
       new Blob([code], { type: 'text/plain;charset=utf-8' }),
@@ -1029,6 +1223,34 @@ function Workspace({
     anchor.download = `${problem.id}-${codingMode}-${editorFile}`;
     anchor.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  const [shuffling, setShuffling] = useState(false);
+  /** A random unsolved problem under the bank's last filters (unsolved ones if none). */
+  async function shuffle() {
+    setShuffling(true);
+    try {
+      // The draw may land on this very problem; a couple more tries usually move on.
+      for (let tries = 0; tries < 3; tries++) {
+        const page = await ojRequest<{ random?: string | null; sequence?: string[] }>(
+          `library?${randomPickQuery()}`,
+        );
+        if (!page.random) break;
+        if (page.random === problem.id) continue;
+        rememberProblemSequence(page.sequence ?? [page.random]);
+        navigate('problem', { problem: page.random });
+        return;
+      }
+      setError(
+        t(
+          '题库当前筛选下没有其他未通过的题目。',
+          "No other unsolved problem matches the problem bank's filters.",
+        ),
+      );
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setShuffling(false);
+    }
   }
   async function submit(mode: 'run' | 'judge') {
     if (disabled || busyRef.current) return;
@@ -1231,6 +1453,7 @@ function Workspace({
         className="cs-pane-tabs"
         role="tablist"
         aria-label={uiEnglish ? 'Problem information' : '题目资料'}
+        onDoubleClick={maxOnDoubleClick('statement')}
       >
         <button
           role="tab"
@@ -1273,6 +1496,7 @@ function Workspace({
           <SolutionsTab active={leftTab === 'solutions'} onSelect={() => setLeftTab('solutions')} english={uiEnglish} />
         )}
       </div>
+      {maxButton('statement')}
       <div className="cs-statement-scroll">
         {problem.id.startsWith('oa-') && (
           <OaCompanyBadge
@@ -1286,7 +1510,14 @@ function Workspace({
         ) : leftTab === 'editorial' ? (
           <OaEditorial key={problem.id} problemId={problem.id} />
         ) : leftTab === 'solutions' && boot.person && !examMode ? (
-          <SolutionPosts key={problem.id} problemId={problem.id} english={uiEnglish} code={code} language={language} />
+          <SolutionPosts
+            key={`${problem.id}:${solutionsLanguage}`}
+            problemId={problem.id}
+            english={uiEnglish}
+            code={code}
+            language={language}
+            only={solutionsLanguage}
+          />
         ) : leftTab === 'statement' ? (
           <>
             <div className="cs-statement-heading">
@@ -1328,6 +1559,8 @@ function Workspace({
                     ]
                   : problem.difficulty}
               </span>
+              {/* Contest rating (zerotrac); kept out of a mock like the company tags. */}
+              {!examMode && <RatingBadge rating={problem.rating} english={uiEnglish} />}
               {!examMode && topics.length > 0 && (
                 <button
                   className="cs-statement-pill"
@@ -1386,6 +1619,15 @@ function Workspace({
                 <option value="zh">中文</option>
                 <option value="en">English</option>
               </select>
+              {/* Acceptance, votes and sharing: none of them during a mock OA. */}
+              {!examMode && (
+                <ProblemMeta
+                  problemId={problem.id}
+                  title={statement.title}
+                  english={uiEnglish}
+                  signedIn={!!boot.person}
+                />
+              )}
             </div>
             {/* Company reports are a hint too: never during a mock. */}
             {!examMode && !!problem.companies?.length && (
@@ -1408,7 +1650,7 @@ function Workspace({
                 )}
               </output>
             )}
-            <div className="cs-problem-prose">
+            <div className="cs-problem-prose" ref={prose}>
               {problemLoading}
               {sourceBody && (
                 <>
@@ -1572,8 +1814,8 @@ function Workspace({
                 english={uiEnglish}
               />
             )}
-            {/* Off unless the server has AI configured; never during a mock OA. */}
-            {boot.services?.ai && !!boot.person && !examMode && (
+            {/* Off unless the server has AI configured; never during a mock OA or on SQL problems. */}
+            {aiOn && (
               <AiTutor
                 tutor={aiTutor}
                 language={language}
@@ -1581,6 +1823,18 @@ function Workspace({
                 code={code}
                 english={uiEnglish}
                 accepted={submission?.mode === 'judge' && submission.status === 'accepted'}
+                failed={!!submission && FAILED_VERDICTS.has(submission.status)}
+              />
+            )}
+            {aiOn && (
+              <AskAiSelection
+                container={prose}
+                english={uiEnglish}
+                disabled={aiTutor.busy !== null}
+                onAsk={(selection) => {
+                  void aiTutor.ask('explain', aiContext, { selection });
+                  document.getElementById('ai-tutor-title')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }}
               />
             )}
             {!!problem.similar?.length && !examMode && (
@@ -1700,7 +1954,7 @@ function Workspace({
 
   const workbench = (
     <section className="cs-workbench" data-theme={settings.theme}>
-      <div className="cs-code-caption">
+      <div className="cs-code-caption" onDoubleClick={maxOnDoubleClick('code')}>
         <Code2 size={15} />
         <strong>{t('代码', 'Code')}</strong>
         <span>{editorFile}</span>
@@ -1740,6 +1994,7 @@ function Workspace({
                 : '提交'}
           </Button>
         </div>
+        {maxButton('code')}
       </div>
       <div className="cs-editor-toolbar">
         <div className="cs-editor-controls">
@@ -1791,6 +2046,18 @@ function Workspace({
           >
             <Download size={15} />
           </button>
+          {codingMode === 'acm' && language !== 'sql' && (
+            <button
+              aria-label={t('在 Playground 打开', 'Open in Playground')}
+              title={t(
+                '在 Playground 打开：带上代码和当前输入，可改可分享，不算提交',
+                'Open in Playground with this code and input: edit and share freely, never a submission',
+              )}
+              onClick={() => void openPlayground()}
+            >
+              <SquareTerminal size={15} />
+            </button>
+          )}
           {codingMode === 'acm' && language !== 'sql' && (
             <select
               className="cs-io-templates"
@@ -1851,8 +2118,41 @@ function Workspace({
           >
             {t('触发补全', 'Autocomplete')}
           </button>
+          {language !== 'sql' && (
+            <button
+              title={t(
+                '用语言服务格式化代码（Shift + Alt + F）',
+                'Format the code with the language service (Shift + Alt + F)',
+              )}
+              className="cs-suggest-trigger"
+              disabled={!ready || intelligence.state === 'unavailable'}
+              onClick={() => format.current?.()}
+            >
+              {t('格式化', 'Format')}
+            </button>
+          )}
         </div>
       </div>
+      {restored && (
+        <output className="cs-draft-restored">
+          <span>
+            {t(
+              `已从另一台设备恢复（${draftAge(restored.at, 'zh')}）`,
+              `Restored from another device (${draftAge(restored.at, 'en')})`,
+            )}
+          </span>
+          <button type="button" onClick={() => updateCode(restored.previous)}>
+            {t('撤销', 'Undo')}
+          </button>
+          <button
+            type="button"
+            aria-label={t('关闭提示', 'Dismiss')}
+            onClick={() => setRestored(null)}
+          >
+            <X size={13} />
+          </button>
+        </output>
+      )}
       <Group
         orientation="vertical"
         className="cs-code-console"
@@ -1870,6 +2170,9 @@ function Workspace({
                   onIntelligenceStatus={setIntelligence}
                   onSuggestReady={(action) => {
                     suggest.current = action;
+                  }}
+                  onFormatReady={(action) => {
+                    format.current = action;
                   }}
                   onChange={updateCode}
                   path={`cswork://draft/${encodeURIComponent(userId)}/${problem.id}/${codingMode}/${editorFile}`}
@@ -1933,7 +2236,7 @@ function Workspace({
           <section
             className={`cs-console ${consoleCollapsed ? 'is-collapsed' : ''}`}
           >
-            <div className="cs-console-header">
+            <div className="cs-console-header" onDoubleClick={maxOnDoubleClick('console')}>
               <div
                 className="cs-pane-tabs"
                 role="tablist"
@@ -1987,6 +2290,7 @@ function Workspace({
                   <ChevronDown size={16} />
                 )}
               </button>
+              {maxButton('console')}
             </div>
             <div className="cs-console-scroll" hidden={consoleCollapsed}>
               {bottomTab === 'input' ? (
@@ -2199,6 +2503,13 @@ function Workspace({
                           ` Run tries the selected case and shows your program output; cases stay in this browser (up to ${MAX_CASES}). Submit runs all test cases.`,
                         )}
                       </p>
+                      {aiOn && (
+                        <AiCaseIdeas
+                          tutor={aiTutor}
+                          context={aiContext}
+                          onAdd={(input) => addCase(input)}
+                        />
+                      )}
                     </>
                   )}
                 </>
@@ -2357,6 +2668,18 @@ function Workspace({
               </button>
             </div>
           )}
+          {!examMode && (
+            <button
+              className="cs-top-button"
+              aria-label={t('随机一题', 'Random problem')}
+              title={t('随机一道未通过的题，沿用题库的筛选', "A random unsolved problem, with the problem bank's filters")}
+              disabled={shuffling}
+              onClick={() => void shuffle()}
+            >
+              {shuffling ? <LoaderCircle size={15} className="cs-spin" /> : <Shuffle size={15} />}
+              <span>{t('随机一题', 'Random')}</span>
+            </button>
+          )}
           <button
             className="cs-top-button"
             aria-label={t('报告题目问题 / 提问', 'Report a problem / Ask')}
@@ -2431,12 +2754,25 @@ function Workspace({
               ? success.runtime * 1000
               : null)
           }
+          memoryKb={success.memoryKb ?? success.memory ?? null}
           seconds={solveSeconds}
           activity={boot.activity}
+          bought={boot.purchasedFreezes}
           fallbackNext={neighbors.next}
           english={uiEnglish}
           navigate={navigate}
           onClose={() => setSuccess(null)}
+          openSolutions={
+            boot.person && communityProblem(problem.id)
+              ? (only) => {
+                  setSuccess(null);
+                  setSolutionsLanguage(only);
+                  setLeftTab('solutions');
+                  setMobilePane('statement');
+                }
+              : undefined
+          }
+          ai={aiOn ? { tutor: aiTutor, context: aiContext } : undefined}
         />
       )}
       {problemError &&
@@ -2503,7 +2839,7 @@ function Workspace({
           </button>
         </div>
       )}
-      <div className="cs-workspace-body">
+      <div className="cs-workspace-body" data-maximized={(!narrow && maximized) || undefined}>
         {narrow ? (
           <div className="cs-mobile-body">
             {mobilePane === 'statement' ? description : workbench}
@@ -2574,6 +2910,7 @@ function Workspace({
                 ),
               ],
               [t('参数提示', 'Parameter hints'), 'Ctrl / ⌘ + Shift + Space'],
+              [t('格式化代码', 'Format code'), 'Shift + Alt / ⌥ + F'],
               [t('查找', 'Find'), 'Ctrl / ⌘ + F'],
               [t('命令面板', 'Command palette'), 'F1'],
               [t('注释 / 取消注释', 'Toggle comment'), 'Ctrl / ⌘ + /'],
@@ -2677,10 +3014,111 @@ function Workspace({
 
 type NextStop = { id: string; sequence?: string[] } | null;
 /** GET problem-stats: lib/server/problem-stats.ts. */
+type Histogram = { edges: number[]; counts: number[] };
 type Standing = {
   acceptance: { attempted: number; accepted: number } | null;
   beats: number | null;
+  beatsMemory?: number | null;
+  histogram?: { runtime: Histogram | null; memory: Histogram | null } | null;
 };
+type Metric = 'runtime' | 'memory';
+/** The bucket holding `value`: edges are ascending, the last bucket includes its upper edge. */
+export function bucketOf(edges: number[], value: number) {
+  const last = edges.length - 2;
+  for (let i = 0; i < last; i++) if (value < edges[i + 1]) return i;
+  return last;
+}
+const metricValue = (metric: Metric, value: number) =>
+  metric === 'runtime'
+    ? `${value < 10 ? Number(value.toFixed(2)) : Math.round(value)} ms`
+    : value >= 1024
+      ? `${(value / 1024).toFixed(1)} MB`
+      : `${Math.round(value)} KB`;
+
+/**
+ * Everyone's best runtime or memory in this language as a pure-CSS bar chart, the
+ * learner's bucket lit, with its Beats %. Counts only (no bucket of fewer than three
+ * people, see problem-stats); a bar opens the solutions in this language, never anyone's
+ * submitted code.
+ */
+function Distribution({
+  standing,
+  runtimeMs,
+  memoryKb,
+  languageName,
+  english,
+  onBar,
+}: {
+  standing: Standing;
+  runtimeMs: number | null;
+  memoryKb: number | null;
+  languageName: string;
+  english: boolean;
+  onBar?: () => void;
+}) {
+  const t = (zh: string, en: string) => (english ? en : zh);
+  const [pick, setPick] = useState<Metric>('runtime');
+  const shapes = standing.histogram;
+  if (!shapes) return null;
+  const metric: Metric = shapes[pick] ? pick : pick === 'runtime' ? 'memory' : 'runtime';
+  const shape = shapes[metric];
+  if (!shape) return null;
+  const mine = metric === 'runtime' ? runtimeMs : memoryKb;
+  const at = mine === null ? -1 : bucketOf(shape.edges, mine);
+  const tallest = Math.max(...shape.counts);
+  const beats = (metric === 'runtime' ? standing.beats : standing.beatsMemory) ?? null;
+  const name = { runtime: t('运行时间', 'Runtime'), memory: t('内存', 'Memory') };
+  return (
+    <figure className="cs-perf" aria-label={t(`${languageName} 通过者的${name[metric]}分布`, `${name[metric]} of everyone who solved it in ${languageName}`)}>
+      <div className="cs-perf-head">
+        <div className="cs-perf-toggle" role="group" aria-label={t('分布指标', 'Distribution')}>
+          {(['runtime', 'memory'] as const).map((item) => (
+            <button
+              key={item}
+              type="button"
+              aria-pressed={metric === item}
+              disabled={!shapes[item]}
+              onClick={() => setPick(item)}
+            >
+              {name[item]}
+            </button>
+          ))}
+        </div>
+        {beats !== null && (
+          <strong className="cs-perf-beats">
+            {t(`击败 ${beats}%`, `Beats ${beats}%`)}
+          </strong>
+        )}
+      </div>
+      <ol className="cs-perf-bars">
+        {shape.counts.map((count, i) => {
+          const range = `${metricValue(metric, shape.edges[i])} – ${metricValue(metric, shape.edges[i + 1])}`;
+          const label = t(
+            `${range}：${count} 人${i === at ? '，你在这里' : ''}`,
+            `${range}: ${count} ${count === 1 ? 'person' : 'people'}${i === at ? ', you are here' : ''}`,
+          );
+          return (
+            <li key={i} data-mine={i === at || undefined}>
+              <button
+                type="button"
+                style={{ '--cs-bar': `${count ? Math.max(6, (100 * count) / tallest) : 0}%` } as CSSProperties}
+                aria-label={onBar ? `${label}${t('。查看题解', '. Show solutions')}` : label}
+                title={label}
+                disabled={!onBar}
+                onClick={onBar}
+              />
+            </li>
+          );
+        })}
+      </ol>
+      <figcaption className="cs-perf-axis">
+        <span>{metricValue(metric, shape.edges[0])}</span>
+        {onBar && <span>{t(`点柱子看 ${languageName} 题解`, `Tap a bar for ${languageName} solutions`)}</span>}
+        <span>{metricValue(metric, shape.edges.at(-1)!)}</span>
+      </figcaption>
+    </figure>
+  );
+}
 
 /** Back to the list the learner came from: the OA library, a classic list, or the bank. */
 const backTo = (problemId: string, library?: string) =>
@@ -2746,22 +3184,33 @@ function AcceptedDialog({
   acceptedAt,
   language,
   runtimeMs,
+  memoryKb,
   seconds,
   activity,
+  bought,
   fallbackNext,
   english,
   navigate,
   onClose,
+  openSolutions,
+  ai,
 }: {
   problemId: string;
   language: string;
   runtimeMs: number | null;
+  memoryKb: number | null;
+  /** Opens the solutions tab filtered to one language ('' for all). */
+  openSolutions?: (language: string) => void;
+  /** The AI tutor, when on: "analyse complexity" joins the dialog. */
+  ai?: { tutor: ReturnType<typeof useAiTutor>; context: AiContext };
   line: boolean;
   /** The classic list the problem was opened from; its order wins over Line 500's. */
   library?: string;
   acceptedAt: number;
   seconds: number | null;
   activity?: Activity[];
+  /** Streak freezes bought with points (bootstrap purchasedFreezes). */
+  bought?: number[];
   fallbackNext?: string;
   english: boolean;
   navigate: WorkspaceProps['navigate'];
@@ -2792,8 +3241,11 @@ function AcceptedDialog({
         ],
         new Date(now).toDateString(),
         english,
+        [],
+        undefined,
+        bought,
       ),
-    [activity, problemId, acceptedAt, now, english],
+    [activity, problemId, acceptedAt, now, english, bought],
   );
   // Aggregates only (lib/server/problem-stats.ts); null below its sample floors.
   const [standing, setStanding] = useState<Partial<Standing> | null>(null);
@@ -2802,6 +3254,7 @@ function AcceptedDialog({
     const query = new URLSearchParams({ language });
     // Unrounded: C++/Go runs crowd 1-5 ms, and rounding would pass slower runs as faster.
     if (runtimeMs != null) query.set('runtimeMs', String(runtimeMs));
+    if (memoryKb != null) query.set('memoryKb', String(memoryKb));
     ojRequest<Standing>(
       `problem-stats/${encodeURIComponent(problemId)}?${query}`,
       undefined,
@@ -2810,7 +3263,7 @@ function AcceptedDialog({
       /* A nicety: the dialog never waits on or fails with it. */
     });
     return () => controller.abort();
-  }, [problemId, language, runtimeMs]);
+  }, [problemId, language, runtimeMs, memoryKb]);
   const acceptance = standing?.acceptance;
   const beats = standing?.beats ?? null;
   const languageName =
@@ -2890,7 +3343,27 @@ function AcceptedDialog({
               )}
             </p>
           )}
-          <AcceptedExtras problemId={problemId} acceptedAt={acceptedAt} activity={activity} english={english} />
+          {standing?.histogram && (
+            <Distribution
+              standing={standing as Standing}
+              runtimeMs={runtimeMs}
+              memoryKb={memoryKb}
+              languageName={languageName}
+              english={english}
+              onBar={
+                openSolutions &&
+                (() => openSolutions(['python', 'cpp', 'java', 'go'].includes(language) ? language : ''))
+              }
+            />
+          )}
+          {ai && <AiComplexity tutor={ai.tutor} context={ai.context} />}
+          <AcceptedExtras
+            problemId={problemId}
+            acceptedAt={acceptedAt}
+            activity={activity}
+            bought={bought}
+            english={english}
+          />
           <Button
             ref={primary}
             size="lg"

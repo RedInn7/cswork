@@ -131,7 +131,11 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
     assert.match(document.body.textContent, /When is your OA\?/);
     assert.equal(document.querySelector('.route-today-count').textContent, '0 / 5');
     assert.equal(document.querySelector('.route-target select').value, '5');
-    assert.ok(requests.every((url) => url.includes('oj/library?')), 'no plan requests yet');
+    // The bank also reads the learner's own lists once, for its list filter.
+    assert.ok(
+      requests.every((url) => url.includes('oj/library?') || url.endsWith('oj/lists')),
+      'no plan requests yet',
+    );
 
     await act(async () => button('Plan my sprint').click());
     await settle();

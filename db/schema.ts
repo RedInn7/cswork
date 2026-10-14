@@ -21,6 +21,9 @@ export * from './solution-posts-schema';
 export * from './experience-submissions-schema';
 export * from './study-groups-schema';
 export * from './api-tokens-schema';
+export * from './user-drafts-schema';
+export * from './points-schema';
+export * from './user-follows-schema';
 import { practiceRounds } from './practice-round-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),

@@ -60,6 +60,8 @@ export type CodeEditorProps = {
   problemId?: string;
   onIntelligenceStatus?: (status: IntelligenceStatus) => void;
   onSuggestReady?: (suggest: (() => void) | null) => void;
+  /** Format Document through the language service; null while unmounted or for SQL. */
+  onFormatReady?: (format: (() => void) | null) => void;
 };
 export function CodeEditor({
   value,
@@ -75,6 +77,7 @@ export function CodeEditor({
   problemId,
   onIntelligenceStatus,
   onSuggestReady,
+  onFormatReady,
 }: CodeEditorProps) {
   const t = useT();
   const { runtime, error, retry } = useMonacoRuntime();
@@ -145,12 +148,17 @@ export function CodeEditor({
     const model = editor.getModel();
     if (!readOnly && problemId && model) {
       // SQL has no language server: Monaco highlights it, word completion fills in names.
-      if (language !== 'sql')
+      if (language !== 'sql') {
         actions.push(
           attachIntelligence(monaco, model, problemId, language, (status) =>
             onIntelligenceStatus?.(status),
           ),
         );
+        onFormatReady?.(() => {
+          editor.focus();
+          void editor.getAction('editor.action.formatDocument')?.run();
+        });
+      }
       onSuggestReady?.(() => {
         editor.focus();
         editor.trigger('cswork', 'editor.action.triggerSuggest', {});
@@ -159,6 +167,7 @@ export function CodeEditor({
     cleanup.current = () => {
       actions.forEach((action) => action.dispose());
       onSuggestReady?.(null);
+      onFormatReady?.(null);
     };
   };
   const options: EditorProps['options'] = {

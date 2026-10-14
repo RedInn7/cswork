@@ -1,7 +1,7 @@
 'use client';
 
 import { Fragment, useEffect, useRef, useState } from 'react';
-import { rememberProblemSequence } from '@/lib/problem-sequence';
+import { rememberLibraryQuery, rememberProblemSequence } from '@/lib/problem-sequence';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
 import { StudyPlan, useStudyPlan, type PlanTodo } from './study-plan';
 import { RouteLine } from './route-line';
@@ -37,6 +37,8 @@ import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { LeetcodeSyncPanel } from './leetcode-sync-panel';
 import { CompanyMarks } from './company-tags';
+import { RatingBadge } from './rating-badge';
+import { ContestGrid } from './contest-grid';
 import { LEETCODE_SYNC_AVAILABLE } from '@/lib/leetcode-sync-types';
 import type { Navigate } from './learning';
 
@@ -51,6 +53,10 @@ type LibraryItem = {
   caseStatus: 'unverified' | 'missing' | 'verified';
   caseCount: number;
   judgeProblemId: string | null;
+  /** Contest rating (zerotrac), null outside rated contests. */
+  rating?: number | null;
+  /** Accepted share in %, sent only while sorting by it. */
+  acceptance?: number;
   solved?: boolean;
   solvedLocally?: boolean;
   importedSources?: string[];
@@ -162,6 +168,12 @@ const urlParam = (key: string) =>
   typeof location === 'undefined'
     ? ''
     : new URLSearchParams(location.search).get(key) || '';
+const SORTS = ['frequency', 'number', 'difficulty', 'rating', 'acceptance'];
+/** Rating bands for the filter, as ratingMin-ratingMax (an open end is empty). */
+const BANDS = ['0-1199', '1200-1399', '1400-1599', '1600-1899', '1900-2099', '2100-2399', '2400-'];
+
+/** This local month as YYYY-MM, the month box's value format. */
+const thisMonth = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 
 export function StudyLibrary({
   navigate,
@@ -170,10 +182,13 @@ export function StudyLibrary({
   signedIn = false,
   userId,
   daily,
+  purchasedFreezes,
 }: {
   navigate: Navigate;
   availableProblemIds: string[];
   activity?: { problem_id: string; created_at: number }[];
+  /** Streak freezes bought with points, from the bootstrap. */
+  purchasedFreezes?: number[];
   /** Today's problem from the bootstrap. */
   daily?: DailyProblem | null;
   signedIn?: boolean;
@@ -204,11 +219,41 @@ export function StudyLibrary({
   const [status, setStatus] = useState('');
   // Company pages link here with ?company=<slug>&sort=frequency.
   const [company, setCompany] = useState(() => urlParam('company').slice(0, 80));
-  const [sort, setSort] = useState(() =>
-    urlParam('sort') === 'frequency' ? 'frequency' : '',
-  );
+  const [sort, setSort] = useState(() => (SORTS.includes(urlParam('sort')) ? urlParam('sort') : ''));
+  const [dir, setDir] = useState<string>(() => (urlParam('dir') === 'desc' ? 'desc' : 'asc'));
   // Report counts belong to one company: without a filter the line keeps its order.
-  const order = company ? sort : '';
+  const order = sort === 'frequency' && !company ? '' : sort;
+  // A rating band, one of the learner's lists (or a public one linked here), a solved month.
+  const [band, setBand] = useState('');
+  const [list, setList] = useState(() => urlParam('list').slice(0, 40));
+  const [lists, setLists] = useState<{ id: string; title: string }[]>([]);
+  // What the month box holds; a browser without a month picker types it, so only a whole
+  // YYYY-MM filters.
+  const [monthInput, setMonthInput] = useState('');
+  const solvedMonth = /^\d{4}-\d{2}$/.test(monthInput) ? monthInput : '';
+  // ?browse=contests: the bank by weekly contest instead of the line.
+  const [browse, setBrowse] = useState(() => (urlParam('browse') === 'contests' ? 'contests' : 'line'));
+  useEffect(() => {
+    if (typeof location === 'undefined') return;
+    const url = new URL(location.href);
+    if (browse === 'contests') url.searchParams.set('browse', 'contests');
+    else url.searchParams.delete('browse');
+    if (url.href !== location.href) history.replaceState(history.state, '', url);
+  }, [browse]);
+  useEffect(() => {
+    if (!signedIn) return;
+    let current = true;
+    api<{ items: { id: string; title: string }[] }>('oj/lists').then(
+      (result) => {
+        if (current)
+          setLists(result.items.filter((l) => typeof l.id === 'string' && typeof l.title === 'string'));
+      },
+      () => {},
+    );
+    return () => {
+      current = false;
+    };
+  }, [signedIn]);
   const [difficulty, setDifficulty] = useState('');
   const [page, setPage] = useState(1);
   const [data, setData] = useState<LibraryPage | null>(null);
@@ -228,7 +273,7 @@ export function StudyLibrary({
   const [copyMessage, setCopyMessage] = useState('');
   const detailHeading = useRef<HTMLHeadingElement>(null);
   const t = (zh: string, en: string) => (english ? en : zh);
-  const stats = usePracticeStats(activity, english, daily?.done);
+  const stats = usePracticeStats(activity, english, daily?.done, purchasedFreezes);
   // The daily streak's "now"; shown only after mount (with stats), so SSR never reads it.
   const [openedAt] = useState(Date.now);
   // Per-device preferences: a folded line and the sprint plan, whose daily
@@ -369,6 +414,25 @@ export function StudyLibrary({
     }, 3000);
     return () => window.clearInterval(timer);
   }, [data, roundBusy, page, search, difficulty, section, stage, status, company]);
+  const [ratingMin, ratingMax] = band ? band.split('-') : ['', ''];
+  // The list request; the page compares it with the response's to spot stale rows.
+  const listQuery = new URLSearchParams({
+    q: search,
+    difficulty,
+    page: String(page),
+    collection,
+    section,
+    stage,
+    status,
+    company,
+    sort: order,
+    ...(!!order && order !== 'frequency' && { dir }),
+    ...(!!ratingMin && { ratingMin }),
+    ...(!!ratingMax && { ratingMax }),
+    ...(!!list && { list }),
+    // Months are the learner's own: the server reads them in this browser's zone.
+    ...(!!solvedMonth && { solved: solvedMonth, tz: String(new Date().getTimezoneOffset()) }),
+  }).toString();
   useEffect(() => {
     if (roundBusy) return;
     let current = true;
@@ -379,22 +443,12 @@ export function StudyLibrary({
         setError('');
       }
     });
-    const params = new URLSearchParams({
-      q: search,
-      difficulty,
-      page: String(page),
-      collection,
-      section,
-      stage,
-      status,
-      company,
-      sort: order,
-    });
-    api<LibraryPage>(`oj/library?${params}`)
+    api<LibraryPage>(`oj/library?${listQuery}`)
       .then((result) => {
         if (current && request === listRequest.current) {
           setData(result);
-          setDataQuery(params.toString());
+          setDataQuery(listQuery);
+          rememberLibraryQuery(new URLSearchParams(listQuery));
         }
       })
       .catch((reason: Error) => {
@@ -407,19 +461,7 @@ export function StudyLibrary({
     return () => {
       current = false;
     };
-  }, [
-    search,
-    difficulty,
-    page,
-    retry,
-    collection,
-    section,
-    stage,
-    status,
-    company,
-    order,
-    roundBusy,
-  ]);
+  }, [listQuery, retry, roundBusy]);
   useEffect(() => {
     let current = true;
     queueMicrotask(() => {
@@ -672,18 +714,9 @@ export function StudyLibrary({
   );
   // The server only returns rounds to their owner, so a round also proves sign-in.
   const member = signedIn || !!data?.currentRound;
-  // Must match the list request's parameters exactly, in the same order.
-  const currentQuery = new URLSearchParams({
-    q: search,
-    difficulty,
-    page: String(page),
-    collection,
-    section,
-    stage,
-    status,
-    company,
-    sort: order,
-  }).toString();
+  const currentQuery = listQuery;
+  // Any order but the line's (or a company's report count, grouped as before) drops the stop headings.
+  const lineOrder = !order || order === 'frequency';
   // next, nextProblemId and sequence span the whole line, so a previous
   // filter's response still holds them; only its rows are stale while loading.
   const stale = loading && dataQuery !== currentQuery;
@@ -1232,6 +1265,28 @@ export function StudyLibrary({
           onChanged={() => setRetry((value) => value + 1)}
         />
       )}
+      {member && (
+        <div className="study-browse" role="group" aria-label={t('浏览方式', 'Browse by')}>
+          <button type="button" aria-pressed={browse === 'line'} onClick={() => setBrowse('line')}>
+            {t('按线路', 'By line')}
+          </button>
+          <button type="button" aria-pressed={browse === 'contests'} onClick={() => setBrowse('contests')}>
+            {t('按周赛', 'By contest')}
+          </button>
+        </div>
+      )}
+      {member && browse === 'contests' ? (
+        <ContestGrid
+          english={english}
+          onOpen={(problem) => {
+            if (problem.caseStatus === 'verified' && problem.judgeProblemId)
+              navigate('problem', { problem: problem.judgeProblemId });
+            else setSelected(problem.id);
+          }}
+        />
+      ) : (
+        // The line view; its children keep the indentation they had before the contest view.
+        <>
       <fieldset className="study-filters" disabled={roundBusy}>
         <legend className="sr-only">{t('筛选题目', 'Filter problems')}</legend>
         <div className="study-search">
@@ -1332,23 +1387,6 @@ export function StudyLibrary({
             </select>
           </label>
         )}
-        {company && (
-          <label>
-            {t('排序', 'Order')}
-            <select
-              value={sort}
-              onChange={(event) => {
-                setSort(event.target.value);
-                setPage(1);
-              }}
-            >
-              <option value="">{t('线路顺序', 'Line order')}</option>
-              <option value="frequency">
-                {t('该公司报告次数', 'Most reported here')}
-              </option>
-            </select>
-          </label>
-        )}
         <button
           type="button"
           className="study-pick-one"
@@ -1357,6 +1395,94 @@ export function StudyLibrary({
         >
           <Shuffle size={15} aria-hidden="true" /> {t('随机一题', 'Pick one')}
         </button>
+      </fieldset>
+      <fieldset className="study-sorts" disabled={roundBusy}>
+        <legend className="sr-only">{t('排序与更多筛选', 'Order and more filters')}</legend>
+        <label>
+          {t('排序', 'Order')}
+          <select
+            value={!order ? '' : order === 'frequency' ? 'frequency' : `${order}:${dir}`}
+            onChange={(event) => {
+              const [value, way = 'asc'] = event.target.value.split(':');
+              setSort(value);
+              setDir(way);
+              setPage(1);
+            }}
+          >
+            <option value="">{t('线路顺序', 'Line order')}</option>
+            {company && (
+              <option value="frequency">
+                {t('该公司报告次数', 'Most reported here')}
+              </option>
+            )}
+            <option value="rating:asc">{t('难度分 低→高', 'Rating, low to high')}</option>
+            <option value="rating:desc">{t('难度分 高→低', 'Rating, high to low')}</option>
+            <option value="difficulty:asc">{t('难度 易→难', 'Difficulty, easy first')}</option>
+            <option value="difficulty:desc">{t('难度 难→易', 'Difficulty, hard first')}</option>
+            <option value="acceptance:desc">{t('通过率 高→低', 'Acceptance, high to low')}</option>
+            <option value="acceptance:asc">{t('通过率 低→高', 'Acceptance, low to high')}</option>
+            <option value="number:asc">{t('题号 小→大', 'Number, ascending')}</option>
+            <option value="number:desc">{t('题号 大→小', 'Number, descending')}</option>
+          </select>
+        </label>
+        <label>
+          {t('难度分', 'Rating')}
+          <select
+            value={band}
+            onChange={(event) => {
+              setBand(event.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="">{t('不限', 'Any')}</option>
+            {BANDS.map((value) => {
+              const [from, to] = value.split('-');
+              return (
+                <option key={value} value={value}>
+                  {from === '0' ? `< ${Number(to) + 1}` : to ? `${from}–${to}` : `≥ ${from}`}
+                </option>
+              );
+            })}
+          </select>
+        </label>
+        {member && (lists.length > 0 || !!list) && (
+          <label>
+            {t('我的题单', 'My lists')}
+            <select
+              value={list}
+              onChange={(event) => {
+                setList(event.target.value);
+                setPage(1);
+              }}
+            >
+              <option value="">{t('全部', 'All')}</option>
+              {list && !lists.some((l) => l.id === list) && (
+                <option value={list}>{t('链接里的题单', 'The linked list')}</option>
+              )}
+              {lists.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.title}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+        {member && (
+          <label>
+            {t('通过月份', 'Solved in')}
+            <input
+              type="month"
+              value={monthInput}
+              max={thisMonth()}
+              pattern="\d{4}-\d{2}"
+              placeholder="YYYY-MM"
+              onChange={(event) => {
+                setMonthInput(event.target.value);
+                setPage(1);
+              }}
+            />
+          </label>
+        )}
       </fieldset>
       <p className="study-pick-message" role="status">
         {pickMessage}
@@ -1430,6 +1556,18 @@ export function StudyLibrary({
                   </Button>
                 ) : null;
               })()}
+            <button
+              type="button"
+              className="route-rating-sort"
+              aria-pressed={order === 'rating'}
+              onClick={() => {
+                setSort(order === 'rating' ? '' : 'rating');
+                setDir('asc');
+                setPage(1);
+              }}
+            >
+              {t('按难度分排序', 'Sort by rating')}
+            </button>
             <Button
               variant="outline"
               onClick={() => {
@@ -1448,12 +1586,12 @@ export function StudyLibrary({
           ? t('正在查找题目…', 'Finding problems…')
           : error
             ? t('暂时无法加载', 'Unable to load right now')
-            : !search && !difficulty && !stage && !status && !section && !company
+            : !search && !difficulty && !stage && !status && !section && !company && !band && !list && !solvedMonth
               ? t(
                   `全线共 ${data?.total || 0} 道题`,
                   `${data?.total || 0} problems on the line`,
                 )
-              : section && !search && !difficulty && !stage && !status && !company
+              : section && !search && !difficulty && !stage && !status && !company && !band && !list && !solvedMonth
                 ? t(
                     `本站 ${data?.total || 0} 道题`,
                     `${data?.total || 0} problems at this stop`,
@@ -1492,6 +1630,9 @@ export function StudyLibrary({
               setStage('');
               setStatus('');
               setCompany('');
+              setBand('');
+              setList('');
+              setMonthInput('');
               setPage(1);
             }}
           >
@@ -1504,7 +1645,7 @@ export function StudyLibrary({
             {data.items.map((item, index) => {
               const slug = item.selection?.sectionSlug;
               const stop =
-                !section && slug && slug !== data.items[index - 1]?.selection?.sectionSlug
+                lineOrder && !section && slug && slug !== data.items[index - 1]?.selection?.sectionSlug
                   ? stops.find((candidate) => candidate.slug === slug)
                   : undefined;
               const isNext =
@@ -1633,8 +1774,14 @@ export function StudyLibrary({
                         )}
                       </strong>
                       {pips(item.selection?.stage)}
+                      <RatingBadge rating={item.rating} english={english} />
                       {!!item.companies?.length && (
                         <CompanyMarks companies={item.companies} english={english} />
+                      )}
+                      {item.acceptance !== undefined && (
+                        <small className="study-acceptance">
+                          {t(`通过率 ${item.acceptance}%`, `${item.acceptance}% accepted`)}
+                        </small>
                       )}
                       {!!item.importedSources?.length && (
                         <small>
@@ -1691,6 +1838,8 @@ export function StudyLibrary({
               <ChevronRight size={16} />
             </Button>
           </nav>
+        </>
+      )}
         </>
       )}
     </section>

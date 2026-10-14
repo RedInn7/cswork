@@ -5,6 +5,7 @@ import { promisify } from 'node:util';
 import { pathToFileURL } from 'node:url';
 import {
   createMessageConnection,
+  ResponseError,
   StreamMessageReader,
   StreamMessageWriter,
 } from 'vscode-jsonrpc/node.js';
@@ -18,9 +19,45 @@ import {
   validateRequest,
   safeResult,
   safeDiagnostics,
+  pythonFormatArguments,
+  wholeDocumentEdit,
 } from './protocol.mjs';
 
 const exec = promisify(execFile);
+const DOCKER_ENV = {
+  PATH: process.env.PATH || '/usr/bin:/bin',
+  DOCKER_HOST: 'unix:///var/run/docker.sock',
+};
+/** Run a docker command with `input` on stdin; resolves stdout, rejects on a non-zero exit. */
+function pipe(args, input, { timeout = 10000, maxBuffer = 262144 } = {}) {
+  return new Promise((resolve, reject) => {
+    const child = spawn('docker', args, {
+      stdio: ['pipe', 'pipe', 'ignore'],
+      env: DOCKER_ENV,
+    });
+    const chunks = [];
+    let size = 0;
+    const timer = setTimeout(() => child.kill('SIGKILL'), timeout);
+    child.stdout.on('data', (chunk) => {
+      size += chunk.length;
+      if (size > maxBuffer) child.kill('SIGKILL');
+      else chunks.push(chunk);
+    });
+    child.once('error', reject);
+    child.once('close', (code) => {
+      clearTimeout(timer);
+      if (code === 0 && size <= maxBuffer)
+        resolve(Buffer.concat(chunks).toString('utf8'));
+      // ruff exits 2 on code it can't parse; anything else (an image without ruff: 126/127,
+      // a kill on timeout or output size) is the service's fault, not the learner's.
+      else if (code === 2)
+        reject(new BrokerError(422, 'Formatting failed; fix syntax errors and retry'));
+      else reject(new BrokerError(503, 'Formatter unavailable; retry shortly'));
+    });
+    child.stdin.on('error', () => {});
+    child.stdin.end(input);
+  });
+}
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const SETTINGS = {
   python: {
@@ -229,6 +266,7 @@ export class LanguageSession {
               },
             },
             publishDiagnostics: { versionSupport: true },
+            formatting: { dynamicRegistration: false },
           },
         },
         initializationOptions:
@@ -293,7 +331,9 @@ export class LanguageSession {
         );
       }
       let result = null;
-      if (body.action === 'diagnostics') {
+      if (body.action === 'format') {
+        result = await this.format(body.tabSize ?? 4);
+      } else if (body.action === 'diagnostics') {
         // Diagnostics are asynchronous. The client can poll; never reuse markers from an older edit.
         for (
           let i = 0;
@@ -328,6 +368,33 @@ export class LanguageSession {
       this.pending--;
       this.lastUsed = Date.now();
     });
+  }
+
+  /** Whole-document text edits; a formatter's refusal (syntax errors) keeps the session. */
+  async format(tabSize) {
+    if (this.language === 'python')
+      return wholeDocumentEdit(
+        this.code,
+        await pipe(pythonFormatArguments(this.name, tabSize), this.code),
+      );
+    const answer = await this.timed(
+      this.connection
+        .sendRequest(ACTIONS.format, {
+          textDocument: { uri: this.uri },
+          options: { tabSize, insertSpaces: true },
+        })
+        .then(
+          (value) => ({ value }),
+          (error) => ({ error }),
+        ),
+      15000,
+    );
+    // Only the server's own error reply is about the code; a closed or dropped connection is an outage.
+    if (answer.error && (this.dead || !(answer.error instanceof ResponseError)))
+      throw new BrokerError(503, 'Formatter unavailable; retry shortly');
+    if (answer.error)
+      throw new BrokerError(422, 'Formatting failed; fix syntax errors and retry');
+    return answer.value;
   }
 
   close() {

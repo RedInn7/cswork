@@ -14,13 +14,16 @@ import { handleMockOa } from './mock-oa';
 import { handleSpeedrun } from './speedrun';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
-import { handleMyPractice } from './my-practice';
-import { handleAiTutor } from './ai-tutor';
+import { handleMyPractice, problemVote } from './my-practice';
+import { handleAiTutor, isAiRoute } from './ai-tutor';
+import { handleAiInterview } from './ai-interviewer';
+import { handleAiAsk } from './ai-ask';
 import { problemStats } from './problem-stats';
-import { handleLearnerCloud, handleMockHistory } from './learner-cloud';
+import { handleDrafts, handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { handleSolutionPosts } from './solution-posts';
 import { handleExperienceSubmissions } from './experience-submissions';
 import { handleStudyGroups } from './study-groups';
+import { handleFollows } from './follows';
 import { handleApiTokens } from './api-tokens';
 import { dailyProblem } from './daily-problem';
 import { curatedHint } from '@/lib/ling-curated';
@@ -29,10 +32,13 @@ import { hiddenCompanies } from './env';
 import {
   getStudyLibrary,
   getStudySourceStatement,
+  levelPicks,
   lingHints,
   listLibrary,
   similarProblems,
 } from './study-library';
+import { lcRating } from './lc-ratings';
+import { awardAccepted, handlePoints } from './points';
 import { classicList } from '@/lib/classic-lists';
 import { requireCourseOwner } from './course-visibility';
 import {
@@ -56,17 +62,34 @@ import {
   OJ_MAX_IMPORT_BYTES,
 } from './oj-problems';
 import {
+  createPlaygroundRun,
   createSubmission,
   submissionDetail,
   waitForSubmission,
   settleSubmission,
   submissionHistory,
+  submissionRow,
   failedJudgeIds,
   cancelSubmission,
   ojStatus,
   MAX_CODE_BYTES,
   MAX_STDIN_BYTES,
 } from './oj-submissions';
+/**
+ * Points for an accepted formal submission whenever its verdict reaches a client (submit,
+ * watch or detail): idempotent, so every path may call it; a failure never costs the verdict.
+ * Kept here, not in oj-submissions, so the judge worker bundle stays free of it.
+ */
+async function withPoints<T extends { id: string; status: string; mode: string }>(detail: T) {
+  if (detail.status === 'accepted' && detail.mode === 'judge') {
+    const row = submissionRow(detail.id);
+    if (row)
+      await awardAccepted(row).catch((error: unknown) =>
+        console.error('points', error instanceof Error ? error.name : 'unknown'),
+      );
+  }
+  return detail;
+}
 export async function handleOj(
   request: Request,
   p: Person | null,
@@ -82,6 +105,7 @@ export async function handleOj(
     return handleLearnerCloud(request, p, path);
   if (resource === 'experiences') return handleExperienceSubmissions(request, p, path.slice(1));
   if (resource === 'groups') return handleStudyGroups(request, p, path);
+  if (resource === 'follows') return handleFollows(request, p, path.slice(1));
   if (request.method === 'GET' && resource === 'speedrun' && !id)
     return handleSpeedrun(request, p);
   if (request.method === 'GET' && resource === 'problems' && id && !action) {
@@ -111,6 +135,8 @@ export async function handleOj(
       leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
       sourceStatement: getStudySourceStatement(id),
       curatedHint: hint,
+      // Contest rating (zerotrac), null outside rated contests.
+      rating: lcRating(id),
       companies: tags.get(id) ?? [],
       hintEarned: failed.length > 0,
       // Ids, not a count: the client unions them with live verdicts so none counts twice.
@@ -149,21 +175,33 @@ export async function handleOj(
     await limitReader(request, p, 'judge-feed-read', 120);
     return json(judgeFeed(p, url.searchParams));
   }
-  requirePerson(p);
+  // Threads, answers and comments read signed out; the handler checks the rest.
   if (resource === 'posts' || resource === 'post-comments') return handleSolutionPosts(request, p, path);
+  requirePerson(p);
   if (resource === 'tokens') return handleApiTokens(request, p, path.slice(1));
+  if (resource === 'cloud' && id === 'drafts' && !operation)
+    return handleDrafts(request, p, action);
   if (resource === 'leetcode-sync')
     return handleLeetcodeSync(request, p, path.slice(1));
   if (!id && (resource === 'history' || resource === 'notes' || resource === 'marks'))
     return handleMyPractice(request, p, resource);
-  if (resource === 'ai' && (id === 'hint' || id === 'review' || id === 'usage') && !action)
+  if (resource === 'ai' && id && isAiRoute(id) && !action)
     return handleAiTutor(request, p, id);
+  if (resource === 'ai' && (id === 'interview' || id === 'interview-report') && !action)
+    return handleAiInterview(request, p, id);
+  // Questions answered from the site's own pages (lib/server/ai-ask.ts).
+  if (resource === 'ai' && id === 'ask' && !action) return handleAiAsk(request, p);
+  if (resource === 'points' && !action) return handlePoints(request, p, id);
   if (request.method === 'GET') {
     if (resource === 'library') {
       await limit(p, 'library-read', 120);
       return json(
         id ? getStudyLibrary(id) : listLibrary(url.searchParams, p.id),
       );
+    }
+    if (resource === 'recommend' && !id) {
+      await limit(p, 'library-read', 120);
+      return json(levelPicks(p.id));
     }
     if (resource === 'practice-rounds' && !id) {
       await limit(p, 'library-read', 120);
@@ -176,25 +214,29 @@ export async function handleOj(
       if (!/^[\w-]{1,100}$/.test(id) || !(await canSeeProblem(p, id)))
         throw new HttpError(404, '题目不存在');
       const runtime = Number(url.searchParams.get('runtimeMs') ?? NaN);
-      return json(
-        problemStats(
+      const memory = Number(url.searchParams.get('memoryKb') ?? NaN);
+      return json({
+        ...problemStats(
           id,
           url.searchParams.get('language'),
           Number.isFinite(runtime) ? runtime : null,
+          Number.isFinite(memory) ? memory : null,
         ),
-      );
+        // The viewer's own vote, outside the shared cache.
+        vote: problemVote(p.id, id),
+      });
     }
     if (resource === 'submissions') {
       if (id && url.searchParams.get('wait') === '1') {
         await limit(p, 'oj-watch', 360);
         const after = url.searchParams.get('after') || '';
         if (after.length > 160) throw new HttpError(400, '无效的进度标记');
-        return json(await waitForSubmission(p, id, after, request.signal));
+        return json(await withPoints(await waitForSubmission(p, id, after, request.signal)));
       }
       await limit(p, 'oj-read', 240);
       return json(
         id
-          ? await submissionDetail(p, id)
+          ? await withPoints(await submissionDetail(p, id))
           : submissionHistory(
               p,
               url.searchParams.get('problemId'),
@@ -238,6 +280,18 @@ export async function handleOj(
   }
   if (resource === 'submissions' && id && action === 'cancel')
     return json(await cancelSubmission(p, id));
+  if (resource === 'playground' && id === 'run' && !action) {
+    let data: unknown;
+    try {
+      data = JSON.parse(await boundedText(request, 800000));
+    } catch (e) {
+      if (e instanceof HttpError) throw e;
+      throw new HttpError(400, '无效的 JSON');
+    }
+    // Same owner-checked detail and watch protocol as a custom-input run.
+    const created = await createPlaygroundRun(p, data);
+    return json(await settleSubmission(p, created.id, request.signal), 201);
+  }
   if (resource === 'submissions' && !id) {
     let data: unknown;
     try {
@@ -251,7 +305,7 @@ export async function handleOj(
     // idempotent replays, after briefly waiting for a fast verdict. Clients
     // watch slower ones without a detail GET; hidden case inputs/outputs never
     // enter the response.
-    return json(await settleSubmission(p, created.id, request.signal), 201);
+    return json(await withPoints(await settleSubmission(p, created.id, request.signal)), 201);
   }
   if (resource === 'admin' && id === 'problems') {
     requireTeacher(p);

@@ -7,6 +7,7 @@ import {
   xmlResponse,
 } from '@/lib/seo';
 import { companyHubPaths } from '@/lib/server/company-hub';
+import { facetPaths } from '@/lib/server/seo-facets';
 import { library } from '@/lib/server/content-library';
 import { oaLibrary } from '@/lib/server/oa-library';
 import { oaReadyProblems } from '@/lib/server/oa-judge';
@@ -32,6 +33,8 @@ export async function GET(
   // Company pages: a few hundred URLs.
   if (rawPage === 'company')
     return xmlResponse(sitemapXml(sitemapChunks(companyHubPaths(library()))[0]));
+  // Role and category landing pages with enough items (lib/server/seo-facets.ts): about a thousand.
+  if (rawPage === 'facets') return xmlResponse(sitemapXml(sitemapChunks(facetPaths(library()))[0] ?? []));
   if (!/^[1-9]\d{0,6}$/.test(rawPage))
     return new Response('Not found', { status: 404 });
   const page = Number(rawPage);

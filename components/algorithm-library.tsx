@@ -79,6 +79,7 @@ export function AlgorithmLibrary(props: {
   collection?: string;
   activity: { problem_id: string; created_at: number }[];
   daily?: import('@/lib/daily-problem').DailyProblem | null;
+  purchasedFreezes?: number[];
   signedIn: boolean;
   userId?: string | null;
 }) {

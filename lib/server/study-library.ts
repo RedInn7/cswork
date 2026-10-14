@@ -9,6 +9,10 @@ import { oaDifficulty, oaTopic } from './oa-topics';
 import { ensurePracticeRound, practiceRoundState } from './practice-rounds';
 import { studyProgress } from './practice-progress';
 import { problemMarks } from './my-practice';
+import { lcRatingOf, RATINGS_SQL_JSON } from './lc-ratings';
+import { acceptanceIndex } from './problem-stats';
+import { readList } from './learner-cloud';
+import { median, pickAtLevel, solveChance, START_LEVEL } from '@/lib/lc-rating';
 import {
   curatedByNumber,
   curatedEntries,
@@ -58,10 +62,46 @@ function summary(row: LibraryRow) {
         : 'missing',
     caseCount: row.case_count,
     judgeProblemId: row.ready ? row.judge_problem_id : null,
+    /** Contest rating (zerotrac), null for problems never in a rated contest. */
+    rating: lcRatingOf(row.number)?.rating ?? null,
   };
+}
+const DIFFICULTY_RANK: Record<string, number> = { 简单: 1, easy: 1, 中等: 2, medium: 2, 困难: 3, hard: 3 };
+/** ratingMin / ratingMax: whole numbers 0–4000; anything else is no bound. */
+function ratingBound(params: URLSearchParams, key: string) {
+  const n = Number(params.get(key) || NaN);
+  return Number.isInteger(n) && n >= 0 && n <= 4000 ? n : null;
+}
+/**
+ * solved=YYYY or YYYY-MM as [from, to) in ms, in the viewer's zone: tz is minutes as
+ * Date#getTimezoneOffset gives them (default Beijing, -480).
+ */
+export function solvedPeriod(value: string, tz: string | null) {
+  const m = /^(\d{4})(?:-(0[1-9]|1[0-2]))?$/.exec(value);
+  if (!m) throw new HttpError(400, '无效的日期');
+  const offset = tz && /^-?\d{1,3}$/.test(tz) && Math.abs(Number(tz)) <= 840 ? Number(tz) : -480;
+  const year = Number(m[1]);
+  const month = m[2] ? Number(m[2]) - 1 : 0;
+  const end = m[2] ? Date.UTC(year, month + 1, 1) : Date.UTC(year + 1, 0, 1);
+  return [Date.UTC(year, month, 1) + offset * 60000, end + offset * 60000] as const;
+}
+/** Problems the user got accepted (formal submissions, any round) inside the period. */
+function solvedBetween(userId: string, [from, to]: readonly [number, number]) {
+  return new Set(
+    sqlite()
+      .prepare(
+        "SELECT DISTINCT problem_id FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted' AND created_at>=? AND created_at<?",
+      )
+      .pluck()
+      .all(userId, from, to) as string[],
+  );
 }
 /** The list API: a classic list by its slug, otherwise Line 500 or the whole bank. */
 export function listLibrary(params: URLSearchParams, userId?: string) {
+  if (params.get('view') === 'contests') {
+    if (!userId) throw new HttpError(401, '请先登录');
+    return listContests(params, userId);
+  }
   const classic = classicList(params.get('collection'));
   return classic
     ? listClassicLibrary(classic, userId)
@@ -110,18 +150,43 @@ export function listStudyLibrary(params: URLSearchParams, userId?: string) {
     where.push('l.difficulty=?');
     values.push(difficulty);
   }
+  const ratingMin = ratingBound(params, 'ratingMin');
+  const ratingMax = ratingBound(params, 'ratingMax');
+  if (ratingMin !== null) {
+    where.push('r.rating>=?');
+    values.push(ratingMin);
+  }
+  if (ratingMax !== null) {
+    where.push('r.rating<=?');
+    values.push(ratingMax);
+  }
   const clause = where.length ? ` WHERE ${where.join(' AND ')}` : '';
+  // A materialized CTE gets an automatic index, so the join is not a scan per row.
+  const rated = `WITH r AS MATERIALIZED (SELECT CAST(key AS INTEGER) AS number,value AS rating FROM json_each(?))`;
+  const from = `study_library l LEFT JOIN r ON r.number=l.number`;
+  const dir = params.get('dir') === 'desc' ? 'DESC' : 'ASC';
+  const sort = params.get('sort');
+  // Unrated (or unknown difficulty) rows last either way; ties in number order.
+  const order =
+    sort === 'rating'
+      ? `r.rating IS NULL,r.rating ${dir},l.number`
+      : sort === 'difficulty'
+        ? `level IS NULL,level ${dir},l.number`
+        : `l.number ${sort === 'number' ? dir : 'ASC'}`;
+  const level = `CASE lower(l.difficulty) ${Object.entries(DIFFICULTY_RANK)
+    .map(([name, n]) => `WHEN '${name}' THEN ${n}`)
+    .join(' ')} END AS level`;
   const total = (
     db
-      .prepare(`SELECT COUNT(*) AS n FROM study_library l${clause}`)
-      .get(...values) as { n: number }
+      .prepare(`${rated} SELECT COUNT(*) AS n FROM ${from}${clause}`)
+      .get(RATINGS_SQL_JSON, ...values) as { n: number }
   ).n;
   const items = (
     db
       .prepare(
-        `SELECT ${columns} FROM study_library l${clause} ORDER BY l.number LIMIT 30 OFFSET ?`,
+        `${rated} SELECT ${columns},${level} FROM ${from}${clause} ORDER BY ${order} LIMIT 30 OFFSET ?`,
       )
-      .all(...values, (page - 1) * 30) as LibraryRow[]
+      .all(RATINGS_SQL_JSON, ...values, (page - 1) * 30) as LibraryRow[]
   ).map(summary);
   const topics = (
     db
@@ -176,6 +241,20 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
   const stage = params.get('stage') || '';
   const status = params.get('status') || '';
   const company = (params.get('company') || '').slice(0, 80);
+  const ratingMin = ratingBound(params, 'ratingMin');
+  const ratingMax = ratingBound(params, 'ratingMax');
+  // list=<id>: the reader's own list or anyone's public one; others read as missing.
+  const listId = params.get('list');
+  const listed = listId ? readList(listId, userId ?? null) : null;
+  if (listId && !listed) throw new HttpError(404, '题单不存在');
+  const inList = listed && new Set(listed.items.map((entry) => entry.problemId));
+  // solved=YYYY[-MM]: accepted in that period; nothing for guests.
+  const solvedParam = params.get('solved');
+  const solvedIn = solvedParam
+    ? userId
+      ? solvedBetween(userId, solvedPeriod(solvedParam, params.get('tz')))
+      : new Set<string>()
+    : null;
   const filtered = all.filter(
     (item) =>
       (!q ||
@@ -187,6 +266,10 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
       (!difficulty || item.difficulty === difficulty) &&
       (!stage || item.selection.stage === stage) &&
       (!company || item.companies.some((c) => c.slug === company)) &&
+      (ratingMin === null || (item.rating !== null && item.rating >= ratingMin)) &&
+      (ratingMax === null || (item.rating !== null && item.rating <= ratingMax)) &&
+      (!inList || inList.has(item.id) || (!!item.judgeProblemId && inList.has(item.judgeProblemId))) &&
+      (!solvedIn || solvedIn.has(item.judgeProblemId ?? item.id)) &&
       (!status ||
         (status === 'solved'
           ? item.solved
@@ -202,10 +285,32 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
   );
   // sort=frequency: the chosen company's most reported problems first. The sort is
   // stable, so equal counts keep the line's order.
-  if (company && params.get('sort') === 'frequency') {
+  const sort = params.get('sort') || '';
+  if (company && sort === 'frequency') {
     const reports = (item: (typeof all)[number]) =>
       item.companies.find((c) => c.slug === company)?.count ?? 0;
     filtered.sort((a, b) => reports(b) - reports(a));
+  }
+  // number / difficulty / rating / acceptance, either way (dir=asc|desc); problems without
+  // a value (unrated, too few people for a share) stay last, in line order.
+  const shares = sort === 'acceptance' ? acceptanceIndex() : null;
+  const sortKey: ((item: (typeof all)[number]) => number | null) | null =
+    sort === 'number'
+      ? (item) => item.number
+      : sort === 'difficulty'
+        ? (item) => DIFFICULTY_RANK[item.difficulty.toLowerCase()] ?? null
+        : sort === 'rating'
+          ? (item) => item.rating
+          : shares
+            ? (item) => shares.get(item.judgeProblemId ?? item.id) ?? null
+            : null;
+  if (sortKey) {
+    const sign = params.get('dir') === 'desc' ? -1 : 1;
+    filtered.sort((a, b) => {
+      const x = sortKey(a);
+      const y = sortKey(b);
+      return x === null || y === null ? Number(x === null) - Number(y === null) : sign * (x - y);
+    });
   }
   const page = Math.max(
     1,
@@ -242,6 +347,10 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
     }),
     items: filtered.slice((page - 1) * 30, page * 30).map((item) => ({
       ...item,
+      // Shown on the rows while sorting by it: an aggregate above problem-stats' floor.
+      ...(shares?.has(item.judgeProblemId ?? item.id) && {
+        acceptance: Math.round(100 * shares.get(item.judgeProblemId ?? item.id)!),
+      }),
       // Two marks per row; the filtered company leads so a row shows why it matched.
       companies: [...item.companies]
         .sort((a, b) => Number(b.slug === company) - Number(a.slug === company))
@@ -314,6 +423,99 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
         };
       }),
     },
+  };
+}
+/** Library rows of every problem in a rated contest. */
+const ratedRows = () =>
+  sqlite()
+    .prepare(
+      `SELECT ${columns} FROM study_library l WHERE l.number IN (SELECT CAST(key AS INTEGER) FROM json_each(?))`,
+    )
+    .all(RATINGS_SQL_JSON) as LibraryRow[];
+
+/**
+ * view=contests: the bank by weekly / biweekly contest, newest first (a contest's highest
+ * problem number stands in for its date), 20 contests a page, with this round's progress.
+ */
+export function listContests(params: URLSearchParams, userId: string) {
+  const progress = studyProgress(userId, practiceRoundState(userId).activeRoundId);
+  const cell = (row: LibraryRow) => {
+    const { rating, q } = lcRatingOf(row.number)!;
+    const state = progress.get(row.id);
+    return {
+      ...summary(row),
+      rating,
+      q,
+      solved: !!state?.solved,
+      progressStatus: (state?.solved ? 'solved' : state?.attempted ? 'attempted' : 'not_started') as
+        | 'solved'
+        | 'attempted'
+        | 'not_started',
+    };
+  };
+  const contests = new Map<string, { code: string; newest: number; problems: ReturnType<typeof cell>[] }>();
+  for (const row of ratedRows()) {
+    const code = lcRatingOf(row.number)!.contest;
+    const entry = contests.get(code) ?? { code, newest: 0, problems: [] };
+    entry.problems.push(cell(row));
+    entry.newest = Math.max(entry.newest, row.number);
+    contests.set(code, entry);
+  }
+  const sorted = [...contests.values()].sort((a, b) => b.newest - a.newest);
+  const page = Math.max(1, Math.min(1000, Number.parseInt(params.get('page') || '1', 10) || 1));
+  return {
+    contests: sorted.slice((page - 1) * 20, page * 20).map(({ code, problems }) => ({
+      code,
+      problems: problems.sort((a, b) => a.q - b.q),
+    })),
+    total: sorted.length,
+    page,
+    pageSize: 20,
+  };
+}
+
+/**
+ * "Problems at your level": the level is the median rating of the user's latest 30 rated
+ * ACs here (START_LEVEL before any), and each tier offers 3 unsolved judgeable problems
+ * with the Elo chance of solving them. ponytail: imported LeetCode history does not set the
+ * level; it only marks problems solved.
+ */
+export function levelPicks(userId: string) {
+  const accepted = sqlite()
+    .prepare(
+      "SELECT problem_id FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted' AND problem_id LIKE 'lc-%' GROUP BY problem_id ORDER BY MAX(created_at) DESC",
+    )
+    .pluck()
+    .all(userId) as string[];
+  const ratings = accepted.flatMap((id) => {
+    const rating = lcRatingOf(Number(id.slice(3)))?.rating;
+    return rating ? [rating] : [];
+  });
+  const recent = ratings.slice(0, 30);
+  const level = median(recent) ?? START_LEVEL;
+  const done = new Set(accepted);
+  const progress = studyProgress(userId, practiceRoundState(userId).activeRoundId);
+  const candidates = ratedRows().flatMap((row) =>
+    row.ready && row.judge_problem_id && !done.has(row.judge_problem_id) && !progress.get(row.id)?.solved
+      ? [
+          {
+            id: row.judge_problem_id,
+            number: row.number,
+            titleZh: row.title_zh,
+            titleEn: row.title_en,
+            difficulty: row.difficulty,
+            rating: lcRatingOf(row.number)!.rating,
+          },
+        ]
+      : [],
+  );
+  return {
+    level,
+    samples: recent.length,
+    tiers: pickAtLevel(candidates, level).map((tier) => ({
+      ...tier,
+      items: tier.items.map((item) => ({ ...item, chance: Math.round(100 * solveChance(item.rating, level)) })),
+    })),
   };
 }
 const stopCodes = new Map(

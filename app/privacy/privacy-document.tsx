@@ -65,6 +65,9 @@ export function PrivacyDocument() {
                 为缩短运行和提交的等待时间，登录后编辑 C++、Java 或 Go
                 代码并停止输入片刻，平台可能将最新草稿发送到服务器预编译。预编译只准备可执行程序，不自动运行测试，也不产生提交记录或学习成绩。预编译请求处理后或到期时会从任务队列移除，编译结果仅作短期缓存。
               </p>
+              <p>
+                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行：每次运行的代码和输入同样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，只是不出现在提交列表、统计和学习进度中；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。
+              </p>
             </section>
 
             <section aria-labelledby="privacy-leetcode">
@@ -139,8 +142,15 @@ export function PrivacyDocument() {
                 除提供服务所需的教师和运维访问外，第三方登录、邮件和支付功能会与相应服务商交换完成这些功能所需的资料。课程中的外部图片或视频链接也可能让浏览器向对应资源服务商发出请求。
               </p>
               <p>
-                在题目页使用 AI 助教（提示或代码点评）时，服务器会把这道题的题面、你当前的代码和你在这道题上最近一次判题结果发送给
-                Anthropic，用于生成回复；不发送邮箱、姓名或账户标识。平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不使用 AI 助教就不会发送。
+                在题目页使用 AI 助教（提示、代码点评、追问、边界用例、失败调试、复杂度分析或解释选中的题面文字）时，服务器会把这道题的题面、你当前的代码和你在这道题上最近一次判题结果发送给
+                Anthropic，用于生成回复；追问时还会发送本页最近几轮问答，调试时还会发送你自己能看到的失败信息（判题结果、报错和公开样例或自定义输入的输入输出，不含隐藏测试数据），解释题面时只发送题面和你选中的文字、不发送代码。不发送邮箱、姓名或账户标识。平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不使用 AI 助教就不会发送。
+              </p>
+              <p>
+                使用模拟面试的 AI 面试官时，服务器会把这道题的题面和面试官参考资料、你这一题的对话、计时和代码框里的代码发送给 Anthropic，用于生成面试官的回复和结束时的评估；同样不发送邮箱、姓名或账户标识，平台不保存对话和评估，它们只存在你的浏览器里。语音输入使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；不点语音输入就不会录音。模拟 OA 的代码回放只保存在你的浏览器里，不会上传。
+              </p>
+              <p>
+                在搜索框（⌘K）里点「问 AI」时，服务器会把你的问题、你选中的页面文字（如有）和站内匹配到的几段公开内容发送给
+                Anthropic，用于生成带出处的回答；同样不发送邮箱、姓名或账户标识，也只记录调用次数和用量。只搜索不提问不会发送。
               </p>
               <p>
                 平台会为持续提供课程、处理教学反馈、对账及故障恢复保留必要资料和备份，目前没有对所有账户及学习记录统一设置自动删除期限。业务数据与备份的清理时间可能不同；收到删除请求后，会确认涉及的资料、处理范围及需要保留的记录。
@@ -256,6 +266,20 @@ export function PrivacyDocument() {
                 are removed from the job queue after they are processed or when
                 they expire, and compiled results are cached only for a short
                 time.
+              </p>
+              <p>
+                When you are signed in, your code drafts on problems are saved
+                to the server about 3 seconds after you stop typing, so you can
+                continue on another device. Each account keeps up to 2,000
+                drafts; the least recently edited go first. Drafts of mock OA
+                questions stay in the current browser only. Runs in the code
+                playground (/playground) execute in the isolated environment
+                like custom-input runs, and like them each run&apos;s code and
+                input are kept with your run records, which you and the
+                teachers who manage your learning can view under their
+                permissions; they never appear in your submission list,
+                statistics or progress. A share link carries the code after
+                the # in the address, which the server does not store.
               </p>
             </section>
 
@@ -383,13 +407,43 @@ export function PrivacyDocument() {
                 send requests to the corresponding resource providers.
               </p>
               <p>
-                When you use the AI tutor on a problem page (a hint or a code
-                review), the server sends that problem's statement, your
+                When you use the AI tutor on a problem page (a hint, a code
+                review, a question, edge-case ideas, debugging help, a
+                complexity check or an explanation of selected statement
+                text), the server sends that problem's statement, your
                 current code and your latest verdict on that problem to
-                Anthropic to write the reply. Your email, name and account
-                identifiers are not sent. The platform records only how many
-                calls you make each day and their usage, never what was sent
-                or the AI's reply. Nothing is sent unless you use the tutor.
+                Anthropic to write the reply. A question also sends the last
+                few questions and answers on the page; debugging also sends
+                the failure details you can see yourself (the verdict, error
+                messages, and the input and output of a public example or
+                your custom input, never hidden test data); an explanation
+                sends only the statement and the text you selected, not your
+                code. Your email, name and account identifiers are not sent.
+                The platform records only how many calls you make each day
+                and their usage, never what was sent or the AI's reply.
+                Nothing is sent unless you use the tutor.
+              </p>
+              <p>
+                When you use the AI interviewer in a mock interview, the server
+                sends the question, its interviewer notes, your conversation on
+                that question, the clock and the code in the code box to
+                Anthropic to write the interviewer&apos;s replies and the final
+                report. Your email, name and account identifiers are not sent,
+                and the platform keeps neither the conversation nor the report:
+                they live in your browser. Dictation uses your browser&apos;s own
+                speech recognition; some browsers (Chrome, for example) send the
+                audio to the browser maker&apos;s servers to turn it into text,
+                without going through this platform, and nothing is recorded
+                unless you press dictate. Mock OA code replays stay in your
+                browser and are never uploaded.
+              </p>
+              <p>
+                When you choose Ask AI in the search box (⌘K), the server sends
+                your question, any page text you selected and a few matching
+                public CSWork pages to Anthropic to write an answer that cites
+                them. Again no email, name or account identifier is sent, and
+                only call counts and usage are recorded. Searching without
+                asking sends nothing.
               </p>
               <p>
                 The platform retains necessary data and backups to keep

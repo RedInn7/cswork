@@ -1,8 +1,9 @@
-import { RESULTS, ROUND_LABELS } from '@/lib/experience';
+import { RESULTS, ROUND_LABELS, SENTIMENTS, SOURCES } from '@/lib/experience';
 import type { CompanyStats, Share } from '@/lib/server/company-stats';
+import type { MemberStats } from '@/lib/server/experience-submissions';
 
 /** Question categories in the content library, [zh, en]. */
-const CATEGORIES: Record<string, [string, string]> = {
+export const CATEGORIES: Record<string, [string, string]> = {
   'Coding & Algorithms': ['编程与算法', 'Coding & algorithms'],
   'Behavioral & Leadership': ['行为与领导力', 'Behavioral & leadership'],
   'System Design': ['系统设计', 'System design'],
@@ -118,6 +119,49 @@ export function CompanyStatsCard({ stats, locale }: { stats: CompanyStats; local
             <Bars rows={s.categories} of={s.questions} name={(v) => label(CATEGORIES, v, zh)} zh={zh} />
           </div>
         )}
+        {s.trend && (
+          <div className="company-stats-panel is-wide">
+            <h3>{zh ? '题型趋势' : 'Trend by quarter'}</h3>
+            <p className="company-stats-note">
+              {zh
+                ? '每季度的面经篇数和各类面试题数（面经按面试日期，题目按收录日期）'
+                : 'Experiences and questions per quarter (experiences by interview date, questions by posting date)'}
+            </p>
+            <table className="company-stats-trend">
+              <caption className="sr-only">{zh ? '最近六个季度的面经与题目数量' : 'Experiences and questions over the last six quarters'}</caption>
+              <thead>
+                <tr>
+                  <td />
+                  {s.trend.quarters.map((q) => (
+                    <th scope="col" key={q}>
+                      {`${q.slice(5)} ’${q.slice(2, 4)}`}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {s.trend.series.map((row, index) => {
+                  const max = Math.max(1, ...row.counts);
+                  return (
+                    <tr key={row.value} data-series={row.value === 'experience' ? 'experience' : index}>
+                      <th scope="row" title={row.value}>
+                        {row.value === 'experience' ? (zh ? '面经' : 'Experiences') : label(CATEGORIES, row.value, zh)}
+                      </th>
+                      {row.counts.map((n, i) => (
+                        <td key={s.trend!.quarters[i]}>
+                          <span className="company-stats-col" aria-hidden="true">
+                            <span style={{ height: `${(n / max) * 100}%` }} />
+                          </span>
+                          <span className="company-stats-col-n">{n}</span>
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
         {!!s.roles.length && (
           <div className="company-stats-panel is-wide">
             <h3>{zh ? '岗位' : 'Roles'}</h3>
@@ -128,6 +172,82 @@ export function CompanyStatsCard({ stats, locale }: { stats: CompanyStats; local
                 </li>
               ))}
             </ul>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+const SENTIMENT_TONES: Record<string, string> = { pos: 'good', neutral: 'neutral', neg: 'bad' };
+
+/**
+ * What members' own posts about an employer add up to (lib/server/experience-submissions.ts):
+ * average difficulty, how the process felt, how they applied and how long it took. Each figure
+ * needs five posts that give it; the server leaves out the rest.
+ */
+export function MemberStatsCard({ stats, locale }: { stats: MemberStats; locale: 'zh' | 'en' }) {
+  const zh = locale === 'zh';
+  const s = stats;
+  return (
+    <section className="company-stats is-members" aria-labelledby="member-stats-title">
+      <header className="company-stats-head">
+        <h2 id="member-stats-title">{zh ? '学员投稿怎么说' : 'What members report'}</h2>
+        <p>
+          {zh
+            ? `${s.posts} 篇学员投稿，只代表作者自述`
+            : `${s.posts} member ${s.posts === 1 ? 'post' : 'posts'}, as their authors tell it`}
+        </p>
+      </header>
+      <dl className="company-stats-figures">
+        <div>
+          <dt>{zh ? '学员面经' : 'Member posts'}</dt>
+          <dd>{s.posts}</dd>
+        </div>
+        {s.difficulty && (
+          <div>
+            <dt>{zh ? `平均难度（${s.difficulty.n} 篇打分）` : `Average difficulty (${s.difficulty.n} rated)`}</dt>
+            <dd>
+              {s.difficulty.average.toFixed(1)}
+              <small> / 5</small>
+            </dd>
+          </div>
+        )}
+        {s.weeks && (
+          <div>
+            <dt>{zh ? `流程时长中位数（${s.weeks.n} 篇）` : `Median process (${s.weeks.n} posts)`}</dt>
+            <dd>
+              {s.weeks.median}
+              <small>{zh ? ' 周' : s.weeks.median === 1 ? ' week' : ' weeks'}</small>
+            </dd>
+          </div>
+        )}
+      </dl>
+      <div className="company-stats-grid">
+        {s.sentiment && (
+          <div className="company-stats-panel">
+            <h3>{zh ? '面试体验' : 'How it felt'}</h3>
+            <p className="company-stats-note">{zh ? `${s.sentiment.n} 篇给出了体验` : `${s.sentiment.n} posts say`}</p>
+            <div className="company-stats-stack" aria-hidden="true">
+              {s.sentiment.rows.map((r) => (
+                <span key={r.value} data-tone={SENTIMENT_TONES[r.value]} style={{ width: width(r.n, s.sentiment!.n) }} />
+              ))}
+            </div>
+            <ul className="company-stats-legend">
+              {s.sentiment.rows.map((r) => (
+                <li key={r.value} data-tone={SENTIMENT_TONES[r.value]}>
+                  {label(SENTIMENTS, r.value, zh)} <b>{pct(r.n, s.sentiment!.n)}</b>
+                  <span className="sr-only">{zh ? `（${r.n} 篇）` : ` (${r.n})`}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {s.channel && (
+          <div className="company-stats-panel is-amber">
+            <h3>{zh ? '投递渠道' : 'How they applied'}</h3>
+            <p className="company-stats-note">{zh ? `${s.channel.n} 篇给出了渠道` : `${s.channel.n} posts say`}</p>
+            <Bars rows={s.channel.rows} of={s.channel.n} name={(v) => label(SOURCES, v, zh)} zh={zh} />
           </div>
         )}
       </div>

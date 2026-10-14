@@ -30,6 +30,7 @@ import {
 import { KnowledgeExercises } from './knowledge-exercises';
 import '@/app/knowledge-exercises.css';
 import '@/app/study-library.css';
+import '@/app/lc-rating.css';
 import '@/app/oa-library.css';
 import {
   Dialog,
@@ -38,6 +39,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from './ui/dialog';
+import { SelectionAsk } from './command-palette';
 export type Navigate = (view: string, extra?: Record<string, string>) => void;
 export function CourseList({
   boot,
@@ -636,7 +638,10 @@ export function LessonReader({
               )}
             </TabsList>
             <TabsContent value="handout">
-              <LessonMarkdown body={lesson.body || ''} lecture />
+              {/* Selecting handout text offers "Ask AI" about it (components/command-palette.tsx). */}
+              <SelectionAsk>
+                <LessonMarkdown body={lesson.body || ''} lecture />
+              </SelectionAsk>
               {interviewChapter && (
                 <KnowledgeExercises
                   lessonId={id}
@@ -940,6 +945,7 @@ export function ProblemList({
       availableProblemIds={boot.problems.map((problem) => problem.id)}
       activity={boot.activity || []}
       daily={boot.daily}
+      purchasedFreezes={boot.purchasedFreezes}
       signedIn={!!boot.person}
       userId={boot.person?.id}
     />

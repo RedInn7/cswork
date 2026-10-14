@@ -60,7 +60,11 @@ export const userLists = sqliteTable(
     createdAt: integer('created_at').notNull(),
     updatedAt: integer('updated_at').notNull(),
   },
-  (t) => [index('user_lists_owner').on(t.ownerId, t.updatedAt)],
+  (t) => [
+    index('user_lists_owner').on(t.ownerId, t.updatedAt),
+    index('user_lists_fork').on(t.forkedFrom),
+    index('user_lists_public').on(t.visibility, t.updatedAt),
+  ],
 );
 export const userListItems = sqliteTable(
   'user_list_items',

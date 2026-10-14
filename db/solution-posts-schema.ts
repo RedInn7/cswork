@@ -6,7 +6,8 @@ import {
   primaryKey,
 } from 'drizzle-orm/sqlite-core';
 
-// Community solutions per problem (lib/server/solution-posts.ts). No foreign keys:
+// Community posts (lib/server/solution-posts.ts). problem_id is the target: a judge problem id,
+// discuss:<channel>, exp:<experience slug> or q:<interview question slug>. No foreign keys:
 // release.sh only applies additive SQL. Removing is a runtime flag, never a DELETE of
 // the text: hidden 0 shown, 1 removed by its author, 2 hidden by a moderator.
 export const solutionPosts = sqliteTable(
@@ -18,6 +19,8 @@ export const solutionPosts = sqliteTable(
     title: text('title').notNull(),
     body: text('body').notNull(),
     language: text('language').notNull().default(''),
+    // A company slug on a discussion thread, a Line 500 stop slug (technique) on a solution.
+    tag: text('tag').notNull().default(''),
     hidden: integer('hidden').notNull().default(0),
     createdAt: integer('created_at').notNull(),
     updatedAt: integer('updated_at').notNull(),
@@ -26,6 +29,7 @@ export const solutionPosts = sqliteTable(
     index('solution_posts_problem').on(t.problemId, t.hidden, t.createdAt),
     index('solution_posts_user_time').on(t.userId, t.createdAt),
     index('solution_posts_time').on(t.createdAt),
+    index('solution_posts_tag').on(t.problemId, t.tag, t.createdAt),
   ],
 );
 export const postComments = sqliteTable(
@@ -54,7 +58,7 @@ export const postVotes = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.postId, t.userId] })],
 );
-/** target: post:<id> or comment:<id>; one report per learner; cleared when a moderator acts. */
+/** target: post:<id> or comment:<id>; one report per learner; reason set to "cleared" when a moderator acts. */
 export const postReports = sqliteTable(
   'post_reports',
   {

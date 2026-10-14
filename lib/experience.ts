@@ -62,3 +62,46 @@ export const experienceFactsOf = (extra: Record<string, unknown> | null | undefi
 
 /** A member-written experience's body length in characters (lib/server/experience-submissions.ts). */
 export const MEMBER_BODY = { min: 80, max: 20000 } as const;
+
+/** Optional structured facts a member gives with an experience, [zh, en] labels. */
+export const SENTIMENTS: Readonly<Record<string, [string, string]>> = {
+  pos: ['体验好', 'Positive'],
+  neutral: ['一般', 'Neutral'],
+  neg: ['体验差', 'Negative'],
+};
+export const SOURCES: Readonly<Record<string, [string, string]>> = {
+  referral: ['内推', 'Referral'],
+  online: ['网申', 'Applied online'],
+  campus: ['校招 / 招聘会', 'Campus / career fair'],
+  recruiter: ['猎头 / HR 联系', 'Recruiter reached out'],
+  other: ['其他', 'Other'],
+};
+export const EMPLOYMENT: Readonly<Record<string, [string, string]>> = {
+  fulltime: ['全职', 'Full-time'],
+  intern: ['实习', 'Internship'],
+};
+export const SEASON_NAMES: Readonly<Record<string, [string, string]>> = {
+  spring: ['春招', 'Spring'],
+  summer: ['暑期', 'Summer'],
+  fall: ['秋招', 'Fall'],
+  winter: ['冬季', 'Winter'],
+};
+/** A hiring season, e.g. 2026-fall. */
+export const SEASON = /^(\d{4})-(spring|summer|fall|winter)$/;
+export const seasonLabel = (season: string, zh: boolean) => {
+  const m = SEASON.exec(season);
+  return m ? `${m[1]} ${SEASON_NAMES[m[2]][zh ? 0 : 1]}` : season;
+};
+export type MemberDetails = {
+  difficulty: number | null;
+  sentiment: string | null;
+  channel: string | null;
+  employment: string | null;
+  season: string | null;
+  location: string | null;
+  durationWeeks: number | null;
+  /** The author's address was verified (no identity check beyond that). */
+  verified: boolean;
+};
+/** Filters only member posts carry: imported experiences have none of these. */
+export const MEMBER_FILTERS = ['employment', 'season', 'channel'] as const;

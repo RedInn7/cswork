@@ -31,6 +31,10 @@ function publicUrl(path: string): string {
   return url.toString();
 }
 
+/** A problem's workspace on the public origin, for the share button; never the request host. */
+export const problemShareUrl = (problemId: string) =>
+  publicUrl(`/?${new URLSearchParams({ view: 'problem', problem: problemId })}`);
+
 export function seoMetadata({
   title,
   description,
@@ -96,6 +100,42 @@ export function breadcrumbJsonLd(trail: { name: string; path: string }[]) {
   }).replace(/</g, '\\u003c');
 }
 
+/** schema.org ItemList of a landing page's entries, for an inline ld+json script (`<` escaped). */
+export function itemListJsonLd(name: string, items: { name: string; path: string }[]) {
+  return JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name,
+    numberOfItems: items.length,
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      url: publicUrl(item.path),
+    })),
+  }).replace(/</g, '\\u003c');
+}
+
+/** Role / category landing pages, alone or for one company (lib/server/seo-facets.ts). */
+export function facetPageTitle(
+  locale: keyof typeof SEO_HOME,
+  kind: 'role' | 'cat',
+  name: string,
+  company?: string,
+) {
+  const zh = locale === 'zh';
+  const who = company ? `${company} ` : '';
+  const title =
+    kind === 'role'
+      ? zh
+        ? `${who}${name} 面试题与面经`
+        : `${who}${name} Interview Questions & Experiences`
+      : zh
+        ? `${who}${name} 面试题`
+        : `${who}${name} Interview Questions`;
+  return `${title} | ${SITE_NAME}`;
+}
+
 export type SitemapEntry = { path: string; updatedAt?: string | null };
 const XML_START = '<?xml version="1.0" encoding="UTF-8"?>';
 const XML_NAMESPACE = 'http://www.sitemaps.org/schemas/sitemap/0.9';
@@ -111,7 +151,10 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/mock-interview' },
   { path: '/privacy' },
   { path: '/lists' },
+  { path: '/company/top' },
   ...classicLists.map((list) => ({ path: `/lists/${list.slug}` })),
+  { path: '/lists/community' },
+  { path: '/discuss' },
   { path: '/topics' },
   ...ROUTE_SECTIONS.flatMap((s) => s.slugs.map((slug) => ({ path: `/topics/${slug}` }))),
 ];

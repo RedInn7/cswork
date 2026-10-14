@@ -1,5 +1,6 @@
 /** General-purpose languages: ACM/LeetCode programs, templates and the language service. */
-export type CodeLanguage = 'python' | 'go' | 'java' | 'cpp';
+export const CODE_LANGUAGES = ['python', 'go', 'java', 'cpp'] as const;
+export type CodeLanguage = (typeof CODE_LANGUAGES)[number];
 /** 'sql' is only for SQL track problems (lib/server/sql-judge.ts). */
 export type Language = CodeLanguage | 'sql';
 export const languages: { id: Language; name: string }[] = [

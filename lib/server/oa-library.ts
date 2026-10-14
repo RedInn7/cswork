@@ -20,7 +20,7 @@ import {
   oaReadyProblems,
   oaVerifiedStatement,
 } from './oa-judge';
-import { oaDifficulty, oaTopic, type OaTopic } from './oa-topics';
+import { oaDifficulty, oaDifficultySlot, oaTopic, type OaTopic } from './oa-topics';
 
 const slug = z
   .string()
@@ -249,6 +249,7 @@ export function createOaLibrary(
         addedAt = new Map(),
         now = Date.now(),
         random = Math.random,
+        difficultyOf = (id: string) => oaDifficultySlot(id),
       }: {
         /** The visitor's judge submissions per problem. */
         progress?: ReadonlyMap<string, 'solved' | 'attempted'>;
@@ -256,6 +257,8 @@ export function createOaLibrary(
         addedAt?: ReadonlyMap<string, number>;
         now?: number;
         random?: () => number;
+        /** The level each problem shows (a package's, else the AI estimate): ?difficulty=. */
+        difficultyOf?: (id: string) => string | undefined;
       } = {},
     ) {
       const query = (params.get('q') || '')
@@ -276,6 +279,9 @@ export function createOaLibrary(
       const topic = Object.hasOwn(TOPIC_NAMES, topicParam) ? topicParam : '';
       // todo = not solved yet (as on Line 500); unknown values filter nothing.
       const status = ['solved', 'attempted', 'todo'].find((s) => s === params.get('status'));
+      // easy / medium / hard, estimates included; unknown values filter nothing. Only judgeable
+      // problems show a level (the rest read "statement only"), so only they match one.
+      const difficulty = ['easy', 'medium', 'hard'].find((d) => d === params.get('difficulty'));
       const matched = shown.items.filter(
         (item) =>
           (params.get('ready') !== '1' || ready.has(item.id)) &&
@@ -284,6 +290,7 @@ export function createOaLibrary(
               ? progress.get(item.id) !== 'solved'
               : progress.get(item.id) === status)) &&
           (!company || employer(item).slug === company) &&
+          (!difficulty || (ready.has(item.id) && difficultyOf(item.id) === difficulty)) &&
           (!query ||
             // Other is also found by the name the UI shows for it.
             `${item.id} ${item.title} ${item.companyName} ${item.number}${employer(item).slug === OTHER_COMPANY ? ` ${oaCompanyName(OTHER_COMPANY, '', 'zh')} other` : ''}`
@@ -417,6 +424,7 @@ export async function handleOaLibrary(
   const page = data.list(new URL(request.url).searchParams, ready, {
     progress,
     addedAt: new Map([...problems].map(([key, meta]) => [key, meta.firstAt])),
+    difficultyOf: (id) => oaDifficultySlot(id, problems.get(id)?.difficulty),
   });
   const marks = person ? problemMarks(person.id) : new Map<string, Set<string>>();
   return json({

@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, primaryKey, index } from 'drizzle-orm/sqlite-core';
 
 /**
  * AI tutor calls per UTC day (YYYY-MM-DD), learner and kind (hint | review), from
@@ -15,5 +15,6 @@ export const aiUsage = sqliteTable(
     inputTokens: integer('input_tokens').notNull().default(0),
     outputTokens: integer('output_tokens').notNull().default(0),
   },
-  (t) => [primaryKey({ columns: [t.day, t.userId, t.kind] })],
+  // By user: a points buyer's bonus left reads all of their days (lib/server/ai-tutor.ts aiBonusLeft).
+  (t) => [primaryKey({ columns: [t.day, t.userId, t.kind] }), index('ai_usage_user').on(t.userId)],
 );

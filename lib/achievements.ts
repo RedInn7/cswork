@@ -40,6 +40,38 @@ export function bestYearDays(times: readonly number[]) {
   return Math.max(0, ...[...years.values()].map((days) => days.size));
 }
 
+/**
+ * The longest run of local days with an AC, where one empty day between two AC days is bridged
+ * by a streak freeze (up to `freezes` a calendar month), as practiceStats' `best` counts it but
+ * over all of time. For server pages, which cannot import the client calendar.
+ */
+export function longestStreak(times: readonly number[], freezes = 2) {
+  const DAY = 86400000;
+  // Local noon of each AC day, so whole-day steps stay clear of daylight-saving edges.
+  const noon = (time: number) => {
+    const d = new Date(time);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12).getTime();
+  };
+  const days = [...new Set(times.map(noon))].sort((a, b) => a - b);
+  const used = new Map<string, number>();
+  let best = 0,
+    run = 0,
+    last = -Infinity;
+  for (const day of days) {
+    const gap = Math.round((day - last) / DAY);
+    const gapDay = new Date(day - DAY);
+    const month = `${gapDay.getFullYear()}-${gapDay.getMonth()}`;
+    if (gap === 1) run++;
+    else if (gap === 2 && (used.get(month) ?? 0) < freezes) {
+      used.set(month, (used.get(month) ?? 0) + 1);
+      run++;
+    } else run = 1;
+    best = Math.max(best, run);
+    last = day;
+  }
+  return best;
+}
+
 const reached = (have: number, need: number): [number, number] => [Math.min(have, need), need];
 
 /** Every badge, earned or not, in wall order. */

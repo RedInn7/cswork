@@ -1,9 +1,11 @@
 import '../library/library.css';
 import '../oa/oa.css';
 import './company.css';
+import './landing.css';
 import '../company-stats.css';
 import '../experience-submissions.css';
 import Link from 'next/link';
+import { PaletteButton } from '@/components/command-palette';
 import { Suspense } from 'react';
 import { LibraryPageView } from '../library/page-view';
 import { requestLocale } from '@/lib/server/locale';
@@ -21,6 +23,7 @@ export default async function CompanyLayout({
         <Link className="public-library-brand" href="/" prefetch={false}>
           cswork<span> / {zh ? '公司' : 'companies'}</span>
         </Link>
+        <PaletteButton className="public-library-search" />
         <Link href="/?view=experiences" prefetch={false}>
           {zh ? '打开练习工作台' : 'Open practice workspace'}{' '}
           <span aria-hidden="true">↗</span>
@@ -30,6 +33,9 @@ export default async function CompanyLayout({
         {children}
       </main>
       <footer className="public-library-footer">
+        <Link href="/company/top" prefetch={false}>
+          {zh ? '全站高频 Top 100' : 'Top 100 problems'}
+        </Link>
         <Link href="/oa" prefetch={false}>
           {zh ? '全部公司 OA' : 'All company OAs'}
         </Link>

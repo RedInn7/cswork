@@ -38,7 +38,12 @@ type Detail = Summary & {
   items: { problemId: string; addedAt: number }[];
   mine: boolean;
   owner: string | null;
+  /** Saves and copies of the list, and whether this reader saved it. */
+  stars?: number;
+  forks?: number;
+  starred?: boolean;
 };
+type Starred = Summary & { owner: string | null };
 const plain = (e: React.MouseEvent) => !(e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey);
 const LEVELS: Record<string, string> = { 简单: 'Easy', 中等: 'Medium', 困难: 'Hard' };
 
@@ -67,6 +72,7 @@ export function MyLists({
 
 function ListIndex({ navigate, t, english }: { navigate: Navigate; t: T; english: boolean }) {
   const [lists, setLists] = useState<Summary[] | null>(null);
+  const [starred, setStarred] = useState<Starred[]>([]);
   const [error, setError] = useState('');
   const [title, setTitle] = useState('');
   const [busy, setBusy] = useState(false);
@@ -75,6 +81,11 @@ function ListIndex({ navigate, t, english }: { navigate: Navigate; t: T; english
     api<{ items: Summary[] }>('oj/lists').then(
       (r) => live && setLists(r.items),
       (e: Error) => live && setError(e.message),
+    );
+    // Saved lists are extra: the index still shows when they cannot load.
+    api<{ items: Starred[] }>('oj/lists/starred').then(
+      (r) => live && setStarred(Array.isArray(r.items) ? r.items : []),
+      () => {},
     );
     return () => {
       live = false;
@@ -201,6 +212,46 @@ function ListIndex({ navigate, t, english }: { navigate: Navigate; t: T; english
           </div>
         )
       )}
+      <section className="cloud-starred" aria-labelledby="cloud-starred-title">
+        <div className="cloud-head">
+          <h2 id="cloud-starred-title">{t('我收藏的题单', 'Lists I saved')}</h2>
+          <a href="/lists/community">
+            {t('逛逛题单广场', 'Browse community lists')} <ArrowRight size={13} aria-hidden="true" />
+          </a>
+        </div>
+        {starred.length ? (
+          <ul className="study-list progress-list cloud-list-rows">
+            {starred.map((l) => (
+              <li key={l.id}>
+                <a
+                  className="study-row progress-row"
+                  href={`/?view=lists&list=${l.id}`}
+                  onClick={(e) => {
+                    if (!plain(e)) return;
+                    e.preventDefault();
+                    navigate('lists', { list: l.id });
+                  }}
+                >
+                  <span className="cloud-vis" data-public>
+                    <Star size={16} aria-hidden="true" />
+                  </span>
+                  <span className="study-row-main">
+                    <strong>{l.title}</strong>
+                    <span className="study-row-secondary">
+                      {[l.owner ? `@${l.owner}` : t('学习者', 'A learner'), t(`${l.count} 题`, `${l.count} problem${l.count === 1 ? '' : 's'}`)].join(' · ')}
+                    </span>
+                  </span>
+                  <ArrowRight size={15} aria-hidden="true" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="cloud-starred-empty">
+            {t('在别人的公开题单页点「收藏」，它会出现在这里。', 'Save someone’s public list from its page and it shows up here.')}
+          </p>
+        )}
+      </section>
     </>
   );
 }
@@ -375,19 +426,38 @@ function ListDetail({
               </button>
             </>
           ) : (
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() =>
-                void run(async () => {
-                  const copy = await api<Detail>(`oj/lists/${list.id}/fork`, {});
-                  navigate('lists', { list: copy.id });
-                })
-              }
-            >
-              <GitFork size={14} aria-hidden="true" />
-              {t('复制到我的题单', 'Copy to my lists')}
-            </button>
+            <>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() =>
+                  void run(async () => {
+                    const copy = await api<Detail>(`oj/lists/${list.id}/fork`, {});
+                    navigate('lists', { list: copy.id });
+                  })
+                }
+              >
+                <GitFork size={14} aria-hidden="true" />
+                {t('复制到我的题单', 'Copy to my lists')}
+              </button>
+              <button
+                type="button"
+                className="is-quiet"
+                aria-pressed={!!list.starred}
+                disabled={busy}
+                onClick={() =>
+                  void run(async () => setList(await api<Detail>(`oj/lists/${list.id}/star`, { on: !list.starred })))
+                }
+              >
+                <Star size={14} aria-hidden="true" fill={list.starred ? 'currentColor' : 'none'} />
+                {list.starred ? t('已收藏', 'Saved') : t('收藏', 'Save')}
+              </button>
+            </>
+          )}
+          {list.visibility === 'public' && (
+            <span className="cloud-counts">
+              {t(`${list.stars ?? 0} 收藏 · ${list.forks ?? 0} 复制`, `${list.stars ?? 0} saves · ${list.forks ?? 0} copies`)}
+            </span>
           )}
         </div>
         {list.mine && list.visibility === 'public' && (

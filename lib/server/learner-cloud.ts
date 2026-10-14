@@ -1,6 +1,8 @@
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
+import { achievements, longestStreak } from '@/lib/achievements';
+import { isChannel, REPORT_CLEARED, REPORTS_HIDE } from '@/lib/community';
 import { curatedByNumber, curatedEntries } from '@/lib/ling-curated';
 import { reportWindow, slotOf, type MockSession, type Slot } from '@/lib/mock-oa';
 import { canonicalCompany, employerSlug, OTHER_COMPANY } from '@/lib/oa-company-brands';
@@ -320,17 +322,37 @@ function ownerHandle(ownerId: string) {
     )?.handle ?? null
   );
 }
+/**
+ * Saves (user_marks star on list:<id>) and copies of a list, by verified accounts only, each
+ * account once and never the owner: forking needs no verification, so one account forking
+ * its own list again and again must not climb the plaza.
+ */
+const VERIFIED = (col: string) => `EXISTS(SELECT 1 FROM "user" u WHERE u.id=${col} AND u.email_verified=1)`;
+const STARS = (list: string) =>
+  `(SELECT COUNT(*) FROM user_marks m WHERE m.target='list:'||${list} AND m.mark='star' AND ${VERIFIED('m.user_id')})`;
+const FORKS = (list: string) =>
+  `(SELECT COUNT(DISTINCT f.owner_id) FROM user_lists f WHERE f.forked_from=${list} AND ${VERIFIED('f.owner_id')}
+    AND f.owner_id<>(SELECT o.owner_id FROM user_lists o WHERE o.id=${list}))`;
 /** A list as its page shows it; null when missing or private to someone else. */
 export function readList(id: string, userId: string | null) {
   try {
     const row = readableList(id, userId);
     const items = listItems(id);
+    const counts = sqlite()
+      .prepare(
+        `SELECT ${STARS('@id')} AS stars,${FORKS('@id')} AS forks,
+        EXISTS(SELECT 1 FROM user_marks WHERE user_id=@me AND target='list:'||@id AND mark='star') AS starred`,
+      )
+      .get({ id, me: userId ?? '' }) as { stars: number; forks: number; starred: number };
     return {
       ...summary({ ...row, count: items.length }),
       items,
       mine: row.owner_id === userId,
       owner: ownerHandle(row.owner_id),
       forkedFrom: row.forked_from,
+      stars: counts.stars,
+      forks: counts.forks,
+      starred: !!counts.starred,
     };
   } catch (error) {
     if (error instanceof HttpError && error.status === 404) return null;
@@ -375,10 +397,71 @@ function addItems(id: string, problems: readonly string[]) {
   })();
 }
 
+/** Lists the learner saved: public ones (or their own), newest save first. */
+export function starredLists(userId: string) {
+  return (
+    sqlite()
+      .prepare(
+        `SELECT l.*,${count()},pr.handle AS owner FROM user_marks m JOIN user_lists l ON l.id=substr(m.target,6)
+        LEFT JOIN user_profiles pr ON pr.user_id=l.owner_id AND pr.visible=1
+        WHERE m.user_id=? AND m.mark='star' AND m.target LIKE 'list:%' AND (l.visibility='public' OR l.owner_id=?)
+        ORDER BY m.created_at DESC LIMIT ${LIST_MAX}`,
+      )
+      .all(userId, userId) as (ListRow & { count: number; owner: string | null })[]
+  ).map((r) => ({ ...summary(r), owner: r.owner }));
+}
+
+const PLAZA_PAGE = 30;
+export type PlazaList = {
+  id: string;
+  title: string;
+  description: string;
+  owner: string | null;
+  count: number;
+  stars: number;
+  forks: number;
+  updatedAt: number;
+};
+/**
+ * /lists/community: public lists with at least one problem anyone can open, hot first (saves
+ * plus twice the copies, over the list's age in days plus two) or newest, searched by title.
+ * ponytail: scores every public list per request; cache the order if the plaza grows large.
+ */
+export function communityLists(input: { sort?: string; q?: string; page?: number }, now = Date.now()) {
+  const q = (input.q ?? '').trim().slice(0, 80);
+  const page = Math.min(Math.max(1, Math.floor(input.page ?? 1) || 1), 200);
+  const order =
+    input.sort === 'new'
+      ? 'updatedAt DESC'
+      : `(stars + 2 * forks) * 1.0 / ((@now - createdAt) / ${DAY}.0 + 2) DESC, updatedAt DESC`;
+  const rows = sqlite()
+    .prepare(
+      `SELECT id,title,description,owner,count,stars,forks,updatedAt FROM (
+        SELECT l.id,l.title,substr(l.description,1,200) AS description,l.created_at AS createdAt,
+          l.updated_at AS updatedAt,pr.handle AS owner,${count()},${STARS('l.id')} AS stars,${FORKS('l.id')} AS forks
+        FROM user_lists l LEFT JOIN user_profiles pr ON pr.user_id=l.owner_id AND pr.visible=1
+        WHERE l.visibility='public'${q ? " AND l.title LIKE @like ESCAPE '\\'" : ''}
+      ) WHERE count>0 ORDER BY ${order}, id LIMIT ${PLAZA_PAGE + 1} OFFSET @offset`,
+    )
+    .all({ now, like: `%${q.replace(/[\\%_]/g, (c) => `\\${c}`)}%`, offset: (page - 1) * PLAZA_PAGE }) as PlazaList[];
+  return {
+    q,
+    sort: input.sort === 'new' ? 'new' : 'hot',
+    page,
+    items: rows.slice(0, PLAZA_PAGE),
+    more: rows.length > PLAZA_PAGE,
+  };
+}
+
 async function handleLists(request: Request, p: Person | null, id?: string, action?: string) {
   const db = sqlite();
   const params = new URL(request.url).searchParams;
   if (request.method === 'GET') {
+    if (id === 'starred' && !action) {
+      requirePerson(p);
+      await limit(p, 'lists-read', 120);
+      return json({ items: starredLists(p.id) });
+    }
     // A public list reads signed out; the learner's own index needs the account.
     if (id) {
       await limitReader(request, p, 'lists-read', 120);
@@ -410,6 +493,17 @@ async function handleLists(request: Request, p: Person | null, id?: string, acti
     const created = newList(p, d);
     if (keep.length) addItems(created, keep);
     return json(readList(created, p.id), 201);
+  }
+  if (action === 'star') {
+    const { on } = z.object({ on: z.boolean() }).strict().parse(await readJson(request, 200));
+    const list = readableList(id, p.id);
+    if (list.owner_id === p.id) throw new HttpError(400, '不能收藏自己的题单');
+    if (on)
+      db.prepare(
+        "INSERT INTO user_marks(user_id,target,mark,created_at) VALUES(?,?,'star',?) ON CONFLICT DO NOTHING",
+      ).run(p.id, `list:${list.id}`, Date.now());
+    else db.prepare("DELETE FROM user_marks WHERE user_id=? AND target=? AND mark='star'").run(p.id, `list:${list.id}`);
+    return json(readList(list.id, p.id));
   }
   if (action === 'fork') {
     const source = readableList(id, p.id);
@@ -590,10 +684,47 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
   const lists = (
     db
       .prepare(
-        `SELECT id,title FROM user_lists WHERE owner_id=? AND visibility='public' ORDER BY updated_at DESC LIMIT 20`,
+        `SELECT id,title,${STARS('user_lists.id')} AS stars FROM user_lists WHERE owner_id=? AND visibility='public'
+        ORDER BY updated_at DESC LIMIT 20`,
       )
-      .all(profile.user_id) as { id: string; title: string }[]
+      .all(profile.user_id) as { id: string; title: string; stars: number }[]
   ).map((l) => ({ ...l, count: listItems(l.id).filter((i) => catalogue.has(i.problemId)).length }));
+  const listStars = db
+    .prepare(`SELECT COUNT(*) FROM user_marks m WHERE m.mark='star' AND ${VERIFIED('m.user_id')} AND m.target IN
+      (SELECT 'list:'||id FROM user_lists WHERE owner_id=? AND visibility='public')`)
+    .pluck()
+    .get(profile.user_id) as number;
+  // Distinct problems accepted per language.
+  const byLanguage = new Map<string, number>();
+  for (const r of db
+    .prepare(
+      `SELECT DISTINCT problem_id AS id,language FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'`,
+    )
+    .all(profile.user_id) as { id: string; language: string }[])
+    if (shown(r.id)) byLanguage.set(r.language, (byLanguage.get(r.language) ?? 0) + 1);
+  const hidden = hiddenCompanies();
+  // Posts anyone can open: solutions on public problems and threads; reported-down ones stay out.
+  const posts = (
+    db
+      .prepare(
+        `SELECT sp.id,sp.problem_id AS target,sp.title,sp.tag,sp.created_at AS createdAt,
+          (SELECT COUNT(*) FROM post_votes v WHERE v.post_id=sp.id) AS votes
+        FROM solution_posts sp WHERE sp.user_id=? AND sp.hidden=0
+          AND (SELECT COUNT(*) FROM post_reports r WHERE r.target='post:'||sp.id AND r.reason<>'${REPORT_CLEARED}')<${REPORTS_HIDE}
+        ORDER BY sp.created_at DESC LIMIT 500`,
+      )
+      .all(profile.user_id) as { id: string; target: string; title: string; tag: string; createdAt: number; votes: number }[]
+  ).filter((post) =>
+    post.target.startsWith('discuss:') ? isChannel(post.target.slice(8)) && !hidden.has(post.tag) : shown(post.target),
+  );
+  const follows = db
+    .prepare(
+      `SELECT (SELECT COUNT(*) FROM user_follows f JOIN user_profiles p ON p.user_id=f.follower_id AND p.visible=1
+          WHERE f.followee_id=@me) AS followers,
+        (SELECT COUNT(*) FROM user_follows f JOIN user_profiles p ON p.user_id=f.followee_id AND p.visible=1
+          WHERE f.follower_id=@me) AS following`,
+    )
+    .get({ me: profile.user_id }) as { followers: number; following: number };
   return {
     handle: profile.handle,
     bio: profile.bio,
@@ -606,7 +737,55 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     activity,
     recent: solved.slice(0, 10).map((s) => ({ id: s.id, at: s.at - (s.at % HOUR) })),
     lists,
+    listStars,
+    languages: [...byLanguage].map(([language, n]) => ({ language, n })).sort((a, b) => b.n - a.n),
+    badges: profileBadges(profile.user_id, catalogue, stops),
+    posts: {
+      items: posts.slice(0, 10).map((post) => ({
+        id: post.id,
+        target: post.target,
+        title: post.title,
+        votes: post.votes,
+        createdAt: post.createdAt - (post.createdAt % HOUR),
+      })),
+      total: posts.length,
+      votes: posts.reduce((sum, post) => sum + post.votes, 0),
+    },
+    followers: follows.followers,
+    following: follows.following,
   };
+}
+
+/**
+ * The badges a profile has earned, from the same inputs as My progress: Line 500 stops, every AC
+ * (shown problems only), OA companies of the public catalogue and the stored mock OAs. Days and
+ * streaks fall on the server's local dates, which may differ from the learner's by one near midnight.
+ */
+function profileBadges(userId: string, catalogue: PublicCatalogue, stops: ReadonlyMap<string, number>) {
+  const ac = (
+    sqlite()
+      .prepare(`SELECT problem_id AS id,created_at AS at FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'`)
+      .all(userId) as { id: string; at: number }[]
+  ).filter((s) => catalogue.has(s.id));
+  const solved = new Set(ac.map((s) => s.id));
+  const names = new Map(reportCompanies().map((c) => [c.slug, c.name]));
+  const companies = new Map<string, { slug: string; name: string; solved: number; total: number }>();
+  for (const id of catalogue.keys()) {
+    const raw = /^oa-(.+)-\d+$/.exec(id)?.[1];
+    if (!raw) continue;
+    const slug = canonicalCompany(raw);
+    const entry = companies.get(slug) ?? { slug, name: names.get(slug) ?? slug, solved: 0, total: 0 };
+    entry.total++;
+    if (solved.has(id)) entry.solved++;
+    companies.set(slug, entry);
+  }
+  return achievements({
+    stops: [...STOP_TOTALS].map(([slug, total]) => ({ slug, total, solved: stops.get(slug) ?? 0 })),
+    bestStreak: longestStreak(ac.map((s) => s.at)),
+    acTimes: ac.map((s) => s.at),
+    companies: [...companies.values()],
+    perfectMock: mockHistory(userId, 1000).some((m) => !!m.result && m.result.score >= m.result.max),
+  }).flatMap((b) => (b.earned ? [{ id: b.id, group: b.group, zh: b.zh, en: b.en }] : []));
 }
 
 // ---------------------------------------------------------------- "I was asked this"
@@ -725,6 +904,77 @@ async function handleReports(request: Request, p: Person | null, action?: string
     ON CONFLICT(user_id,problem_id,asked_month) DO UPDATE SET company=excluded.company,round=excluded.round`,
   ).run(randomUUID(), p.id, d.problemId, company, d.round ?? '', d.month, now);
   return json(problemReportSummary(d.problemId, p.id, now));
+}
+
+// ---------------------------------------------------------------- editor drafts
+
+/** Per learner: past this many drafts the least recently edited ones go. */
+export const DRAFT_ROWS = 2000;
+const DRAFT_BYTES = 65536;
+const draftKey = z
+  .object({
+    language: z.enum(['python', 'go', 'java', 'cpp', 'sql']),
+    mode: z.enum(['acm', 'leetcode']),
+  })
+  .strict();
+const draftInput = z
+  .object({
+    code: z.string(),
+    updatedAt: z.number().int().positive(),
+    // The browser's clock when it sent this: updatedAt is then re-based on the server's.
+    sentAt: z.number().int().positive().optional(),
+  })
+  .strict();
+
+/**
+ * GET/PUT /api/oj/cloud/drafts/<problemId>?language=&mode=: the signed-in learner's own
+ * draft, keyed by their id from the session (never the request). A PUT older than the
+ * stored copy is ignored, so a stale tab can't overwrite a newer device's edit. Times are
+ * kept on the server's clock (an edit's age by the browser's clock, taken from the server's
+ * now), and a GET returns that now, so a device whose clock is off still compares rightly.
+ */
+export async function handleDrafts(request: Request, p: Person, problem?: string) {
+  if (!problem || !/^[\w-]{1,100}$/.test(problem)) throw new HttpError(404, '接口不存在');
+  const url = new URL(request.url);
+  const key = draftKey.parse({
+    language: url.searchParams.get('language'),
+    mode: url.searchParams.get('mode'),
+  });
+  const db = sqlite();
+  if (request.method === 'GET') {
+    await limit(p, 'draft-read', 120);
+    const row = db
+      .prepare(
+        'SELECT code,updated_at AS updatedAt FROM user_drafts WHERE user_id=? AND problem_id=? AND language=? AND coding_mode=?',
+      )
+      .get(p.id, problem, key.language, key.mode) as { code: string; updatedAt: number } | undefined;
+    return json({ draft: row ?? null, now: Date.now() });
+  }
+  if (request.method !== 'PUT') throw new HttpError(404, '接口不存在');
+  await limit(p, 'draft-write', 60);
+  const d = draftInput.parse(await readJson(request, 400000));
+  if (Buffer.byteLength(d.code) > DRAFT_BYTES) throw new HttpError(413, '代码超过 64 KiB');
+  if (d.code.includes('\0')) throw new HttpError(400, '内容不能包含空字符');
+  const now = Date.now();
+  const updatedAt =
+    d.sentAt === undefined
+      ? // An older tab without sentAt: a clock running ahead could otherwise pin this copy as newest.
+        Math.min(d.updatedAt, now)
+      : Math.max(1, now - Math.max(0, d.sentAt - d.updatedAt));
+  const saved = db.transaction(() => {
+    const { changes } = db.prepare(
+      `INSERT INTO user_drafts(user_id,problem_id,language,coding_mode,code,updated_at) VALUES(?,?,?,?,?,?)
+      ON CONFLICT(user_id,problem_id,language,coding_mode) DO UPDATE SET code=excluded.code,updated_at=excluded.updated_at
+      WHERE excluded.updated_at>=user_drafts.updated_at`,
+    ).run(p.id, problem, key.language, key.mode, d.code, updatedAt);
+    db.prepare(
+      `DELETE FROM user_drafts WHERE rowid IN (SELECT rowid FROM user_drafts WHERE user_id=?
+      ORDER BY updated_at DESC LIMIT -1 OFFSET ?)`,
+    ).run(p.id, DRAFT_ROWS);
+    return changes > 0;
+  })();
+  // false: a newer copy from another device is already there and stays.
+  return json({ saved });
 }
 
 /** /api/oj/{lists,profile,reports}/…: public list and report reads work signed out. */

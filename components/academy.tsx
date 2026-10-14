@@ -13,6 +13,7 @@ import {
   BarChart3,
   Library,
   MessagesSquare,
+  MessageCircle,
   ScrollText,
   BookOpen,
   Code2,
@@ -24,7 +25,6 @@ import {
   Search,
   Settings,
   Inbox,
-  ChevronRight,
   Dices,
   BookUser,
   Timer,
@@ -57,7 +57,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
+import { openCommandPalette, PaletteKey } from './command-palette';
 import {
   api,
   bootIdentity,
@@ -119,6 +119,9 @@ const MyLists = lazy(() =>
 const StudyGroups = lazy(() =>
   import('./study-groups').then((m) => ({ default: m.StudyGroups }), loadFailed),
 );
+const DiscussBoard = lazy(() =>
+  import('./discuss-board').then((m) => ({ default: m.DiscussBoard }), loadFailed),
+);
 const Speedrun = lazy(() =>
   import('./speedrun').then((m) => ({ default: m.Speedrun }), loadFailed),
 );
@@ -139,6 +142,7 @@ const nav: [LucideIcon, string, string, string][] = [
   [Dices, '模拟面试', 'Mock Interview', 'mock-interview'],
   [BookUser, 'STAR 故事库', 'Story Bank', 'stories'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
+  [MessageCircle, '讨论区', 'Discuss', 'discuss'],
   [Library, '学习资料', 'Resources', 'resources'],
   [BookOpen, '我的课程', 'My Courses', 'courses'],
   [BookOpen, '算法知识点', 'Algorithm Concepts', 'knowledge'],
@@ -155,7 +159,6 @@ const initial: Boot = {
   notifications: [],
   services: {},
 };
-type SearchResult = { id: string; title: string; snippet: string };
 function pageView() {
   const p = new URLSearchParams(location.search),
     view = p.get('view') || 'problems',
@@ -182,10 +185,6 @@ export function Academy() {
     [ticketContext, setTicketContext] = useState<Record<string, string> | null>(
       null,
     ),
-    [search, setSearch] = useState(false),
-    [query, setQuery] = useState(''),
-    [results, setResults] = useState<SearchResult[]>([]),
-    [searching, setSearching] = useState(false),
     [notificationOpen, setNotificationOpen] = useState(false);
   const refresh = useCallback(async () => {
     const next = await api<Boot>('bootstrap');
@@ -261,29 +260,6 @@ export function Academy() {
     window.scrollTo({ top: 0, behavior: 'instant' });
     window.dispatchEvent(new Event('cswork:analytics-navigation'));
   }, []);
-  useEffect(() => {
-    if (!search || !query.trim()) {
-      return;
-    }
-    let cancelled = false;
-    const timer = setTimeout(async () => {
-      setSearching(true);
-      try {
-        const found = await api<SearchResult[]>(
-          'search?q=' + encodeURIComponent(query),
-        );
-        if (!cancelled) setResults(found);
-      } catch (e) {
-        if (!cancelled) setError((e as Error).message);
-      } finally {
-        if (!cancelled) setSearching(false);
-      }
-    }, 300);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [query, search]);
   const bootRef = useRef(boot);
   useLayoutEffect(() => {
     bootRef.current = boot;
@@ -356,6 +332,7 @@ export function Academy() {
       ![
         'courses', 'knowledge', 'problems', 'problem', 'status',
         'questions', 'experiences', 'resources', 'content', 'mock-interview', 'mock', 'speedrun',
+        'discuss',
       ].includes(view)
     )
       return (
@@ -446,6 +423,8 @@ export function Academy() {
         return <MyLists key={boot.person?.id} boot={boot} navigate={navigate} list={params.list} />;
       case 'group':
         return <StudyGroups key={boot.person?.id} navigate={navigate} params={params} />;
+      case 'discuss':
+        return <DiscussBoard key={boot.person?.id || 'guest'} params={params} navigate={navigate} signedIn={!!boot.person} />;
       case 'questions':
       case 'experiences':
       case 'resources':
@@ -457,6 +436,7 @@ export function Academy() {
             navigate={navigate}
             problemIds={boot.problems.map((p) => p.id)}
             userId={boot.person?.id ?? null}
+            ai={!!boot.services?.ai && !!boot.person}
           />
         );
       case 'content':
@@ -637,13 +617,11 @@ export function Academy() {
             <span>{heading}</span>
           </div>
           <div className="topbar-actions">
-            <button
-              className="search-shortcut"
-              onClick={() => (boot.person ? setSearch(true) : setLogin(true))}
-            >
+            {/* The site-wide ⌘K palette (components/command-palette.tsx) covers lessons too. */}
+            <button className="search-shortcut" onClick={() => openCommandPalette()}>
               <Search size={15} />
-              <span>{t('搜索课程内容', 'Search course content')}</span>
-              <kbd>{t('搜索', 'Search')}</kbd>
+              <span>{t('搜索全站', 'Search CSWork')}</span>
+              <PaletteKey />
             </button>
             <Button
               variant="ghost"
@@ -748,6 +726,9 @@ export function Academy() {
             {t('公开面试资料', 'Interview resources')}
           </Link>
           <Link prefetch={false} href="/mcp" className="underline underline-offset-4">{t('在 AI 编辑器里练题', 'Practice from your AI editor')}</Link>
+          <Link prefetch={false} href="/discuss" className="underline underline-offset-4">
+            {t('讨论区', 'Discussion board')}
+          </Link>
           <Link prefetch={false} href="/privacy" className="underline underline-offset-4">
             {t('隐私说明', 'Privacy')}
           </Link>
@@ -765,50 +746,6 @@ export function Academy() {
         onCreated={(id) => navigate('tickets', { ticket: id })}
         boot={boot}
       />
-      <Dialog open={search} onOpenChange={setSearch}>
-        <DialogContent className="wide-dialog">
-          <DialogHeader>
-            <DialogTitle>{t('搜索课程内容', 'Search course content')}</DialogTitle>
-            <DialogDescription>
-              {t(
-                '搜索讲义中的知识点，直接回到对应章节。',
-                'Search the handouts and jump straight to the matching lesson.',
-              )}
-            </DialogDescription>
-          </DialogHeader>
-          <Input
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setResults([]);
-              setSearching(false);
-            }}
-            aria-label={t('搜索课程内容', 'Search course content')}
-            placeholder={t('试试：幂等、库存、JWT…', 'Try: idempotency, inventory, JWT…')}
-          />
-          <div className="search-results">
-            {searching ? (
-              <p>{t('正在搜索…', 'Searching…')}</p>
-            ) : (
-              results.map((r) => (
-                <button
-                  key={r.id}
-                  onClick={() => {
-                    setSearch(false);
-                    navigate('lesson', { lesson: r.id });
-                  }}
-                >
-                  <FileSearchTitle title={r.title} />
-                  <p>{r.snippet}</p>
-                </button>
-              ))
-            )}
-            {query && !searching && !results.length && (
-              <p className="muted">{t('没有找到匹配内容。', 'No matches found.')}</p>
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
       <Dialog open={notificationOpen} onOpenChange={setNotificationOpen}>
         <DialogContent className="wide-dialog">
           <DialogHeader>
@@ -830,15 +767,6 @@ export function Academy() {
         </DialogContent>
       </Dialog>
     </SidebarProvider>
-  );
-}
-function FileSearchTitle({ title }: { title: string }) {
-  return (
-    <strong>
-      <BookOpen size={16} />
-      {title}
-      <ChevronRight size={15} />
-    </strong>
   );
 }
 function CloseMobileNavigation({ view }: { view: string }) {
