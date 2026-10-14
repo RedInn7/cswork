@@ -28,6 +28,29 @@ const LEVELS = [
 ] as const;
 
 /**
+ * The ladder's memory, kept by the workspace: switching to the history tab or to the editor
+ * pane on a narrow screen unmounts the ladder, and it must not forget what was shown or failed.
+ */
+export function useHintLadder(
+  submission: OJSubmission | null,
+  /** The round's failed formal submissions when the problem loaded (the server's ids, up to 2). */
+  loadedIds: string[] = [],
+) {
+  const [shown, setShown] = useState(0);
+  const [liveIds, setLiveIds] = useState<string[]>([]);
+  const [openedAt] = useState(() => Date.now());
+  useEffect(() => {
+    if (submission && hintUnlocked([submission]))
+      setLiveIds((ids) =>
+        ids.includes(submission.id) ? ids : [...ids, submission.id],
+      );
+  }, [submission]);
+  // A verdict restored after leaving mid-judge is already among the server's ids: count it once.
+  const failed = new Set([...loadedIds, ...liveIds]).size;
+  return { shown, setShown, failed, openedAt };
+}
+
+/**
  * Line 500's three hints, opened one at a time: hint 1 any time, hint 2 after a failed
  * formal submission or 10 minutes on the problem, hint 3 after two failures. A locked
  * hint says what opens it and can still be shown after a confirm.
@@ -36,36 +59,20 @@ export function HintLadder({
   problemId,
   userId,
   hints,
-  failed: loadedFailed,
-  submission,
+  ladder: { shown, setShown, failed, openedAt },
   english,
 }: {
   problemId: string;
   userId: string;
   hints: { zh: string[]; en: string[] };
-  /** Failed formal submissions this round when the problem loaded. */
-  failed: number;
-  /** The live verdict: a failure seen here counts too. */
-  submission: OJSubmission | null;
+  ladder: ReturnType<typeof useHintLadder>;
   english: boolean;
 }) {
   const list = hints[english ? 'en' : 'zh'];
-  const [shown, setShown] = useState(0);
   const [confirm, setConfirm] = useState(false);
   // Confirmed: focus goes to the hint it opened; cancelled: back to "Show anyway".
   const confirmed = useRef(false);
-  // ponytail: a reload mid-judge can count that verdict twice (hint 3 one failure early);
-  // exact needs the failed ids from the server.
-  const [liveFailed, setLiveFailed] = useState<string[]>([]);
-  useEffect(() => {
-    if (submission && hintUnlocked([submission]))
-      setLiveFailed((ids) =>
-        ids.includes(submission.id) ? ids : [...ids, submission.id],
-      );
-  }, [submission]);
-  const failed = loadedFailed + liveFailed.length;
   // The problem timer's reading when it ran, otherwise time since this page opened.
-  const [openedAt] = useState(() => Date.now());
   const [seconds, setSeconds] = useState(0);
   const unlocked = hintsUnlocked(failed, seconds);
   useEffect(() => {

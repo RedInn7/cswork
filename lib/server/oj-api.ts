@@ -49,7 +49,7 @@ import {
   waitForSubmission,
   settleSubmission,
   submissionHistory,
-  failedJudgeCount,
+  failedJudgeIds,
   cancelSubmission,
   ojStatus,
   MAX_CODE_BYTES,
@@ -84,7 +84,7 @@ export async function handleOj(
     const hint = curatedHint(id);
     const tags = companyTagIndex(hiddenCompanies());
     // Per round like Solved, over all history rather than the first page; 2 opens hint 3.
-    const failed = hint && p ? failedJudgeCount(p.id, id, round?.id) : 0;
+    const failed = hint && p ? failedJudgeIds(p.id, id, round?.id) : [];
     return json({
       ...problem,
       codingModes: templates ? ['leetcode', 'acm'] : ['acm'],
@@ -93,8 +93,9 @@ export async function handleOj(
       sourceStatement: getStudySourceStatement(id),
       curatedHint: hint,
       companies: tags.get(id) ?? [],
-      hintEarned: failed > 0,
-      failedSubmissions: failed,
+      hintEarned: failed.length > 0,
+      // Ids, not a count: the client unions them with live verdicts so none counts twice.
+      failedSubmissionIds: failed,
       // Observation, invariant, steps: the client opens them one at a time (components/hint-ladder.tsx).
       lingHints: lingHints(id),
       // A nicety under the statement: it never fails the problem itself.

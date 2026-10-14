@@ -159,7 +159,7 @@ void test('GET problems/:id serves the three hints, the round failure count and 
   assert.equal(body.lingHints.en.length, 3);
   // The statement's own hints field is left alone.
   assert.deepEqual(body.hints, []);
-  assert.equal(body.failedSubmissions, 0);
+  assert.equal(body.failedSubmissionIds.length, 0);
   assert.equal(body.hintEarned, false);
   // Neighbours in the stop first, then a company pick; lc-27 is not related.
   assert.deepEqual(
@@ -180,16 +180,16 @@ void test('GET problems/:id serves the three hints, the round failure count and 
   add('lc-49', 'accepted');
   add('lc-1', 'time_limit');
   body = await get('lc-1');
-  assert.equal(body.failedSubmissions, 1);
+  assert.equal(body.failedSubmissionIds.length, 1);
   assert.equal(body.hintEarned, true);
   assert.equal(body.similar.find((s: { id: string }) => s.id === 'lc-49').solved, true);
   add('lc-1', 'wrong_answer');
   add('lc-1', 'runtime_error');
   body = await get('lc-1');
-  assert.equal(body.failedSubmissions, 2);
+  assert.equal(body.failedSubmissionIds.length, 2);
 
   // Off Line 500 there is nothing to hint.
   body = await get('lc-999901');
   assert.equal(body.lingHints, null);
-  assert.equal(body.failedSubmissions, 0);
+  assert.equal(body.failedSubmissionIds.length, 0);
 });

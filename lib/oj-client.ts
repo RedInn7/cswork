@@ -29,8 +29,8 @@ export type OJProblem = Problem & {
   companies?: CompanyTag[];
   /** A failed formal submission in the current practice round. */
   hintEarned?: boolean;
-  /** Failed formal submissions this round, counted up to 2. */
-  failedSubmissions?: number;
+  /** Failed formal submissions this round, up to 2 ids. */
+  failedSubmissionIds?: string[];
   /** Line 500's three progressive hints: observation, invariant, steps. */
   lingHints?: { zh: string[]; en: string[] } | null;
   similar?: SimilarProblem[];

@@ -45,7 +45,7 @@ import {
 import { Button } from './ui/button';
 import { OaCompanyBadge, OaEditorial } from './oa-library';
 import { CompanyTags } from './company-tags';
-import { HintLadder } from './hint-ladder';
+import { HintLadder, useHintLadder } from './hint-ladder';
 import { SimilarProblems } from './similar-problems';
 import {
   ExamAcceptedDialog,
@@ -399,6 +399,7 @@ function Workspace({
     if (problem.hintEarned || hintUnlocked(submission ? [submission] : []))
       setRouteHint((state) => (state === 'locked' ? 'earned' : state));
   }, [problem.hintEarned, submission]);
+  const hintLadder = useHintLadder(submission, problem.failedSubmissionIds);
   const [success, setSuccess] = useState<OJSubmission | null>(null);
   const [solveSeconds, setSolveSeconds] = useState<number | null>(null);
   const announcedSuccess = useRef<string | null>(null);
@@ -1435,8 +1436,7 @@ function Workspace({
                 problemId={problem.id}
                 userId={userId}
                 hints={problem.lingHints}
-                failed={problem.failedSubmissions ?? 0}
-                submission={submission}
+                ladder={hintLadder}
                 english={uiEnglish}
               />
             )}
