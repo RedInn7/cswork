@@ -56,7 +56,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { openCommandPalette } from './command-palette';
+import { openCommandPalette, PaletteKey } from './command-palette';
 import {
   api,
   bootIdentity,
@@ -612,7 +612,7 @@ export function Academy() {
             <button className="search-shortcut" onClick={() => openCommandPalette()}>
               <Search size={15} />
               <span>{t('搜索全站', 'Search CSWork')}</span>
-              <kbd>⌘K</kbd>
+              <PaletteKey />
             </button>
             <Button
               variant="ghost"

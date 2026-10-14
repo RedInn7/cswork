@@ -36,6 +36,7 @@ test('local matches: topics in both languages, companies by prefix, a capped and
 test('the workspace search button and the lecture page use the palette', () => {
   const academy = readFileSync(new URL('../components/academy.tsx', import.meta.url), 'utf8');
   assert.equal(academy.includes('onClick={() => openCommandPalette()}'), true);
+  assert.equal(academy.includes('<PaletteKey />') && !academy.includes('<kbd>⌘K</kbd>'), true, 'Ctrl K off Apple devices');
   assert.equal(academy.includes("api<SearchResult[]>"), false, 'the old lesson-only dialog is gone');
   assert.equal(readFileSync(new URL('../components/learning.tsx', import.meta.url), 'utf8').includes('<SelectionAsk>'), true);
   const layout = readFileSync(new URL('../app/layout.tsx', import.meta.url), 'utf8');
@@ -43,6 +44,7 @@ test('the workspace search button and the lecture page use the palette', () => {
 });
 
 const calls = [];
+let gate = null;
 globalThis.fetch = async (url, init = {}) => {
   const u = String(url);
   calls.push({ url: u, body: init.body ? JSON.parse(init.body) : null });
@@ -51,6 +53,7 @@ globalThis.fetch = async (url, init = {}) => {
   if (u.startsWith('/api/oj/oa-library')) return Response.json({ items: [{ id: 'oa-acme-1', companySlug: 'acme', companyName: 'Acme', number: 1, title: 'Two Towers' }] });
   if (u.startsWith('/api/content/list')) return Response.json({ items: [{ type: 'concept', slug: 'two-pointers', title: 'Two Pointers', partial: false }, { type: 'experience', slug: 'draft', title: 'Two rounds', partial: true, company: { name: 'Acme' } }] });
   if (u.startsWith('/api/oj/reports/companies')) return Response.json({ items: [{ slug: 'two-sigma', name: 'Two Sigma' }] });
+  if (u === '/api/oj/ai/ask') await gate;
   if (u === '/api/oj/ai/ask')
     return Response.json({ text: 'Move both ends inward [1].', sources: [{ n: 1, title: 'Two Pointers', url: '/library/concept/two-pointers', type: 'concept' }], remaining: 9 });
   return Response.json({ error: 'nope' }, { status: 404 });
@@ -130,6 +133,22 @@ test('⌘K: merged results, keyboard selection, same-tab workspace navigation, A
   assert.equal(answer.textContent.includes('Move both ends inward'), true);
   assert.equal(document.querySelector('.cmdk-sources a').getAttribute('href'), '/library/concept/two-pointers');
   assert.equal(answer.textContent.includes('9 left today'), true);
+
+  // One question at a time: Enter again while it is in flight sends nothing more.
+  const asks = () => calls.filter((c) => c.url === '/api/oj/ai/ask');
+  let release;
+  gate = new Promise((r) => (release = r));
+  await type('x');
+  await press('Enter');
+  assert.equal(options()[0].getAttribute('aria-disabled'), 'true');
+  await press('Enter');
+  assert.equal(asks().length, 2);
+  // Under 2 characters, the selection is asked about with the default question.
+  assert.equal(asks()[1].body.question, 'What does this passage mean?');
+  release();
+  await wait(50);
+  assert.equal(options()[0].hasAttribute('aria-disabled'), false);
+  assert.equal(input.getAttribute('maxlength'), '500');
   await act(async () => root.unmount());
 });
 

@@ -196,6 +196,8 @@ function Palette({ ai }: { ai: boolean }) {
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [asking, setAsking] = useState(false);
   const [error, setError] = useState('');
+  // Only the latest question's reply shows; a new selection or a reset voids the one in flight.
+  const ticket = useRef(0);
 
   useEffect(() => {
     const key = (event: KeyboardEvent) => {
@@ -208,6 +210,8 @@ function Palette({ ai }: { ai: boolean }) {
     };
     const show = (event: Event) => {
       setContext(((event as CustomEvent<{ context?: string }>).detail?.context ?? '').trim().slice(0, 1500));
+      ticket.current++;
+      setAsking(false);
       setAnswer(null);
       setError('');
       setOpen(true);
@@ -260,7 +264,8 @@ function Palette({ ai }: { ai: boolean }) {
   // Too short to search: nothing listed, whatever the last search found.
   const hits = searchable ? found : [];
   const searching = searchable && loading;
-  const canAsk = ai && (searchable || !!context);
+  // The server takes questions of 2–500 characters; a shorter one about a selection asks the default.
+  const canAsk = ai && (q.length >= 2 || !!context);
   const rows = hits.length + (canAsk ? 1 : 0);
   // With selected text, the question is about it: the ask row comes first.
   const askIndex = canAsk ? (context ? 0 : hits.length) : -1;
@@ -268,13 +273,18 @@ function Palette({ ai }: { ai: boolean }) {
   const optionId = (index: number) => `${id}-option-${index}`;
 
   const askAi = async () => {
-    const question = q || t('这段内容讲的是什么？', 'What does this passage mean?');
+    // Each ask spends quota: one at a time.
+    if (asking) return;
+    const mine = ++ticket.current;
+    const question = q.length >= 2 ? q : t('这段内容讲的是什么？', 'What does this passage mean?');
     setAsking(true);
     setError('');
     setAnswer(null);
     try {
-      setAnswer(await ojRequest<Answer>('ai/ask', { question, locale: zh ? 'zh' : 'en', ...(context ? { context } : {}) }));
+      const reply = await ojRequest<Answer>('ai/ask', { question, locale: zh ? 'zh' : 'en', ...(context ? { context } : {}) });
+      if (mine === ticket.current) setAnswer(reply);
     } catch (caught) {
+      if (mine !== ticket.current) return;
       const failure = caught as Error & { status?: number | string };
       if (failure.status === 401) {
         setError(t('登录后才能问 AI。', 'Sign in to ask the AI.'));
@@ -288,7 +298,7 @@ function Palette({ ai }: { ai: boolean }) {
               : englishMessage(failure.message),
         );
     } finally {
-      setAsking(false);
+      if (mine === ticket.current) setAsking(false);
     }
   };
   const choose = (index: number) => {
@@ -324,6 +334,7 @@ function Palette({ ai }: { ai: boolean }) {
       role="option"
       tabIndex={-1}
       aria-selected={active === askIndex}
+      aria-disabled={asking || undefined}
       className="cmdk-ask"
       onMouseEnter={() => setActive(askIndex)}
       onMouseDown={(event) => event.preventDefault()}
@@ -371,6 +382,7 @@ function Palette({ ai }: { ai: boolean }) {
                   : t('搜索题目、OA、专题、公司…', 'Search problems, OA, topics, companies…')
               }
               value={query}
+              maxLength={500}
               onChange={(event) => setQuery(event.target.value)}
               onKeyDown={onKeyDown}
             />
@@ -497,19 +509,24 @@ function Palette({ ai }: { ai: boolean }) {
 }
 
 /** A header button that opens the palette, with its shortcut. */
-export function PaletteButton({ className = '' }: { className?: string }) {
-  const zh = useLocale() === 'zh';
+/** The palette's shortcut as this platform types it: ⌘K on Apple devices, Ctrl K elsewhere. */
+export function PaletteKey() {
   // The server can't know the platform: ⌘K until the browser says otherwise.
   const [mod, setMod] = useState('⌘');
   useEffect(() => {
     // oxlint-disable-next-line react/react-compiler -- the platform is known only after hydration.
     if (!/Mac|iP/.test(navigator.platform)) setMod('Ctrl ');
   }, []);
+  return <kbd aria-hidden="true">{mod}K</kbd>;
+}
+
+export function PaletteButton({ className = '' }: { className?: string }) {
+  const zh = useLocale() === 'zh';
   return (
     <button type="button" className={`cmdk-trigger ${className}`} onClick={() => openCommandPalette()}>
       <Search size={14} aria-hidden="true" />
       <span>{zh ? '搜索' : 'Search'}</span>
-      <kbd aria-hidden="true">{mod}K</kbd>
+      <PaletteKey />
     </button>
   );
 }
