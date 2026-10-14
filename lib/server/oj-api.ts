@@ -16,6 +16,7 @@ import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
 import { handleMyPractice, problemVote } from './my-practice';
 import { handleAiTutor, isAiRoute } from './ai-tutor';
+import { handleAiInterview } from './ai-interviewer';
 import { problemStats } from './problem-stats';
 import { handleDrafts, handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { handleSolutionPosts } from './solution-posts';
@@ -182,6 +183,8 @@ export async function handleOj(
     return handleMyPractice(request, p, resource);
   if (resource === 'ai' && id && isAiRoute(id) && !action)
     return handleAiTutor(request, p, id);
+  if (resource === 'ai' && (id === 'interview' || id === 'interview-report') && !action)
+    return handleAiInterview(request, p, id);
   if (resource === 'points' && !action) return handlePoints(request, p, id);
   if (request.method === 'GET') {
     if (resource === 'library') {

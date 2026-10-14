@@ -457,6 +457,7 @@ export function Academy() {
             navigate={navigate}
             problemIds={boot.problems.map((p) => p.id)}
             userId={boot.person?.id ?? null}
+            ai={!!boot.services?.ai && !!boot.person}
           />
         );
       case 'content':

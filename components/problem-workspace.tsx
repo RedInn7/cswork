@@ -70,6 +70,7 @@ import {
   MockExamDone,
   useMockExam,
 } from './mock-exam-bar';
+import { useReplayRecorder } from './mock-replay';
 import { reportWindow } from '@/lib/mock-oa';
 import {
   Dialog,
@@ -517,6 +518,18 @@ function Workspace({
   // The tutor's extras; SQL track problems have no AI (lib/server/ai-tutor.ts takes code languages).
   const aiOn = !!boot.services?.ai && !!boot.person && !examMode && language !== 'sql';
   const aiContext: AiContext = { language, codingMode, code, english: uiEnglish };
+  // A running mock OA records this question for the report's code replay (this browser only).
+  const recordReplay = useReplayRecorder(
+    exam?.running && ready ? exam.session : null,
+    initialProblem.id,
+    code,
+  );
+  useEffect(() => {
+    if (!submission || activeStatuses.has(submission.status) || submission.status === 'cancelled') return;
+    // The POST acknowledgement may already say accepted but has no test details.
+    if (submission.status === 'accepted' && submission.total <= 0) return;
+    recordReplay.current(submission);
+  }, [submission, recordReplay]);
   const [success, setSuccess] = useState<OJSubmission | null>(null);
   const [solveSeconds, setSolveSeconds] = useState<number | null>(null);
   const announcedSuccess = useRef<string | null>(null);

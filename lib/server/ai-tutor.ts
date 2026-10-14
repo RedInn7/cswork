@@ -58,7 +58,7 @@ const MAX_TOKENS: Record<AiKind, number> = {
   complexity: 1024,
   explain: 1024,
 };
-const REPLY_CHARS: Record<AiKind, number> = {
+export const REPLY_CHARS: Record<AiKind, number> = {
   hint: 1200,
   review: 4000,
   chat: 2400,
@@ -191,14 +191,32 @@ const QUOTA_MESSAGES: Record<AiKind, string> = {
 };
 
 export const aiEnabled = () => !!setting('ANTHROPIC_API_KEY');
-const today = () => new Date().toISOString().slice(0, 10);
-// 0 is a valid budget: it pauses the tutor for everyone.
-function budget() {
-  const raw = setting('AI_TUTOR_DAILY_BUDGET').trim();
+export const today = () => new Date().toISOString().slice(0, 10);
+/** A site budget from the environment, `fallback` when unset or invalid; 0 is valid and pauses the feature for everyone. */
+export function dailyBudget(name: string, fallback: number) {
+  const raw = setting(name).trim();
   const n = raw ? Number(raw) : NaN;
-  return Number.isFinite(n) && n >= 0 ? n : DEFAULT_BUDGET;
+  return Number.isFinite(n) && n >= 0 ? n : fallback;
 }
-const usedToday = (userId: string, kind: AiKind, day: string) =>
+/**
+ * The ai_usage rows one site budget counts (`calls`, a fixed SQL condition on kind), the budget,
+ * and what a learner sees once it is spent. The AI interviewer (lib/server/ai-interviewer.ts)
+ * keeps its rows, all 'iv-…', under a pool of its own, so neither feature spends the other's.
+ */
+export type Pool = {
+  calls: string;
+  budget: () => number;
+  spent: string;
+  /** Calls bought with points this learner may still use today, past a kind's daily limit. */
+  bonus?: (userId: string, day: string) => number;
+};
+const TUTOR: Pool = {
+  calls: "kind NOT LIKE 'iv-%'",
+  budget: () => dailyBudget('AI_TUTOR_DAILY_BUDGET', DEFAULT_BUDGET),
+  spent: 'AI 助教今天的额度已用完，明天再来',
+  bonus: aiBonusLeft,
+};
+const usedToday = (userId: string, kind: string, day: string) =>
   (sqlite()
     .prepare('SELECT count FROM ai_usage WHERE day=? AND user_id=? AND kind=?')
     .pluck()
@@ -234,22 +252,29 @@ export function aiBonusLeft(userId: string, day?: string) {
   return Math.max(0, Math.min(left, AI_BONUS_PER_DAY - overToday));
 }
 
-/** Takes one call from the learner's quota (or bought calls past it) and the site budget; returns calls left today. */
-function reserve(userId: string, kind: AiKind, day: string) {
+/**
+ * Takes one from the learner's daily `kind` quota (`max` a day, then the pool's bought calls if
+ * it has any; `spentMessage` once both are used up) and from the pool's site budget; returns how
+ * many of the `max` are left today.
+ */
+export function takeQuota(userId: string, kind: string, day: string, max: number, spentMessage: string, pool = TUTOR) {
   const db = sqlite();
   return db.transaction(() => {
-    const spent = db.prepare('SELECT COALESCE(SUM(count),0) FROM ai_usage WHERE day=?').pluck().get(day) as number;
-    if (spent >= budget()) throw new HttpError(503, 'AI 助教今天的额度已用完，明天再来');
+    const spent = db.prepare(`SELECT COALESCE(SUM(count),0) FROM ai_usage WHERE day=? AND ${pool.calls}`).pluck().get(day) as number;
+    if (spent >= pool.budget()) throw new HttpError(503, pool.spent);
     const used = usedToday(userId, kind, day);
-    if (used >= AI_DAILY_LIMITS[kind] && !aiBonusLeft(userId, day)) throw new HttpError(429, QUOTA_MESSAGES[kind]);
+    if (used >= max && !pool.bonus?.(userId, day)) throw new HttpError(429, spentMessage);
     db.prepare(
       'INSERT INTO ai_usage(day,user_id,kind,count) VALUES(?,?,?,1) ON CONFLICT(day,user_id,kind) DO UPDATE SET count=count+1',
     ).run(day, userId, kind);
-    return Math.max(0, AI_DAILY_LIMITS[kind] - used - 1);
+    return Math.max(0, max - used - 1);
   })();
 }
+/** Takes one call from the learner's quota (or bought calls past it) and the site budget; returns calls left today. */
+const reserve = (userId: string, kind: AiKind, day: string) =>
+  takeQuota(userId, kind, day, AI_DAILY_LIMITS[kind], QUOTA_MESSAGES[kind]);
 /** Adds the call's tokens; a call the API cannot have billed (refund) hands its quota back. */
-function settle(userId: string, kind: AiKind, day: string, refund: boolean, tokens: { in: number; out: number }) {
+export function settle(userId: string, kind: string, day: string, refund: boolean, tokens: { in: number; out: number }) {
   sqlite()
     .prepare(
       'UPDATE ai_usage SET count=count-?,input_tokens=input_tokens+?,output_tokens=output_tokens+? WHERE day=? AND user_id=? AND kind=?',
@@ -575,11 +600,9 @@ export function parseCases(text: string, parse: (input: string) => string | null
 }
 
 type Message = { role: 'user' | 'assistant'; content: string };
-function callClaude(kind: AiKind, system: string, messages: Message[], signal: AbortSignal) {
-  const model =
-    setting(FAST.has(kind) ? 'AI_TUTOR_HINT_MODEL' : 'AI_TUTOR_REVIEW_MODEL') ||
-    MODELS[FAST.has(kind) ? 'fast' : 'balanced'];
-  const fallback = FALLBACK_MODELS.has(model);
+/** POST /v1/messages with the server's key; models that have one get the server-side refusal fallback. */
+export function anthropicFetch(body: { model: string } & Record<string, unknown>, signal: AbortSignal) {
+  const fallback = FALLBACK_MODELS.has(body.model);
   return fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -588,17 +611,25 @@ function callClaude(kind: AiKind, system: string, messages: Message[], signal: A
       'anthropic-version': '2023-06-01',
       ...(fallback ? { 'anthropic-beta': 'server-side-fallback-2026-07-01' } : {}),
     },
-    body: JSON.stringify({
-      model,
+    body: JSON.stringify({ ...body, ...(fallback ? { fallbacks: 'default' } : {}) }),
+    signal,
+  });
+}
+
+function callClaude(kind: AiKind, system: string, messages: Message[], signal: AbortSignal) {
+  return anthropicFetch(
+    {
+      model:
+        setting(FAST.has(kind) ? 'AI_TUTOR_HINT_MODEL' : 'AI_TUTOR_REVIEW_MODEL') ||
+        MODELS[FAST.has(kind) ? 'fast' : 'balanced'],
       max_tokens: MAX_TOKENS[kind],
       // Low effort: a short reply that should arrive in seconds. Test cases come back as JSON.
       output_config: { effort: 'low', ...(kind === 'tests' ? { format: CASES_SCHEMA } : {}) },
       system,
       messages,
-      ...(fallback ? { fallbacks: 'default' } : {}),
-    }),
+    },
     signal,
-  });
+  );
 }
 
 const ASK: Record<Exclude<AiKind, 'chat'>, string> = {

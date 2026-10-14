@@ -52,6 +52,8 @@ import {
   type Slot,
 } from '@/lib/mock-oa';
 import { syncMockHistory, uploadMocks } from '@/lib/mock-cloud';
+import { pruneTracks } from '@/lib/mock-replay';
+import { MockReplay } from './mock-replay';
 import '@/app/mock-oa.css';
 
 type Preset = {
@@ -233,6 +235,8 @@ export function MockOa({
     writeMockState(userId, state);
     // oxlint-disable-next-line react/react-compiler -- persists the state read at mount, not later edits (save() writes those).
   }, [userId]);
+  // Code replays of mocks that have left every history on this browser go too.
+  useEffect(() => void pruneTracks(), []);
   const [presets, setPresets] = useState<Presets | null>(null);
   const [presetsError, setPresetsError] = useState('');
   const [presetsTry, setPresetsTry] = useState(0);
@@ -1293,6 +1297,13 @@ function MockReport({
           </button>
         </div>
       </section>
+      <MockReplay
+        session={session}
+        title={(id) => {
+          const summary = titles.get(id);
+          return summary ? problemTitle(summary, locale) : id;
+        }}
+      />
     </>
   );
 }
