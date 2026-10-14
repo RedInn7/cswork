@@ -52,14 +52,31 @@ export type Feedback = {
   verdict: VerdictId | null;
   strengths: string;
   improvements: string;
-  /** Per question, in the set's order. */
-  questions: { rating: number | null; note: string }[];
+  /** Per question, in the set's order. `tag` is questionTag of the question rated ('' when unknown). */
+  questions: { rating: number | null; note: string; tag: string }[];
 };
+
+/**
+ * A 4-character fingerprint of a question id (FNV-1a, base36). The same seed draws other questions
+ * once the bank changes, so each rating carries the tag of the question it was given for.
+ */
+export function questionTag(id: string) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 0x01000193);
+  return ((h >>> 0) % 36 ** 4).toString(36).padStart(4, '0');
+}
+
+/** Whether the feedback was written for the set in this query (its `set` and `rr`). */
+export const forSet = (f: Feedback, query: Record<string, string>) =>
+  f.seed === query.set && f.rerolls.join('.') === (query.rr ?? '');
 
 const VERSION = 1;
 /** The longest `#fb=` value written or read, so the whole link stays shareable in chat apps. */
 export const MAX_FEEDBACK = 2048;
-/** Wire format: short keys, empty fields left out. k is the rubric in RUBRIC order, 0 = unscored. */
+/**
+ * Wire format: short keys, empty fields left out. k is the rubric in RUBRIC order, 0 = unscored;
+ * each q is [rating (0 = unscored), tag, note] with trailing empties left out.
+ */
 type Wire = { v: number; s: string; r?: number[]; k?: number[]; o?: string; g?: string; i?: string; q?: (number | string)[][] };
 
 const toBase64Url = (text: string) => {
@@ -84,7 +101,8 @@ function toWire(f: Feedback, cap: number): Wire {
   if (f.verdict) w.o = f.verdict;
   if (f.strengths) w.g = cut(f.strengths);
   if (f.improvements) w.i = cut(f.improvements);
-  if (f.questions.length) w.q = f.questions.map((q) => (q.note ? [q.rating ?? 0, cut(q.note)] : [q.rating ?? 0]));
+  if (f.questions.length)
+    w.q = f.questions.map((q) => (q.note ? [q.rating ?? 0, q.tag, cut(q.note)] : q.tag ? [q.rating ?? 0, q.tag] : [q.rating ?? 0]));
   return w;
 }
 
@@ -139,7 +157,10 @@ export function decodeFeedback(value: string | null | undefined): Feedback | nul
     improvements: text(w.i),
     questions: list(w.q)
       .slice(0, 16)
-      .map((q) => ({ rating: score(list(q)[0]), note: text(list(q)[1]) })),
+      .map((q) => {
+        const [rating, tag, note] = list(q);
+        return { rating: score(rating), note: text(note), tag: typeof tag === 'string' && /^[0-9a-z]{4}$/.test(tag) ? tag : '' };
+      }),
   };
 }
 
