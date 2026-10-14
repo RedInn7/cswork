@@ -125,6 +125,39 @@ export const companyAliases: Readonly<Record<string, string>> = {
 };
 export const canonicalCompany = (slug: string) =>
   Object.hasOwn(companyAliases, slug) ? companyAliases[slug] : slug;
+/**
+ * Content library (and LeetCode map) spellings of an employer known here under another slug.
+ * Kept apart from companyAliases: these are not OA catalog slugs and must never fold catalog companies.
+ */
+export const libraryCompanyAliases: Readonly<Record<string, string>> = {
+  bytedance: 'tiktok',
+  snap: 'snapchat',
+  facebook: 'meta',
+  'meta-platforms': 'meta',
+  'amazon-web-services': 'amazon',
+  akunacapital: 'akuna-capital',
+  arista: 'arista-networks',
+  deshaw: 'the-d-e-shaw-group',
+  'further-ai': 'furtherai',
+  generalmotors: 'general-motors',
+  'j-p-morgan': 'jpmorgan-chase',
+  'jp-morgan-chase': 'jpmorgan-chase',
+  'jpmorgan-chase-and': 'jpmorgan-chase',
+  jpmorganchase: 'jpmorgan-chase',
+  purestorage: 'pure-storage',
+  servicenow: 'service-now',
+  sigmacomputing: 'sigma-computing',
+  squarepoint: 'square-point',
+  'walmart-labs': 'walmart',
+  'walmart-global-tech': 'walmart',
+};
+/** The one slug an employer goes by across OA, the content library and the LeetCode map. */
+export const employerSlug = (slug: string) =>
+  canonicalCompany(
+    Object.hasOwn(libraryCompanyAliases, slug) ? libraryCompanyAliases[slug] : slug,
+  );
+/** Company hub page (/company/<employer>): OA, frequent LeetCode, experiences and questions. */
+export const companyHubPath = (slug: string) => `/company/${employerSlug(slug)}`;
 /** The catalog files problems it cannot attribute under "unknown": shown as Other, listed last. */
 export const OTHER_COMPANY = 'unknown';
 export const oaCompanyName = (slug: string, name: string, locale: 'zh' | 'en') =>

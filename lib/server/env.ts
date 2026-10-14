@@ -1,5 +1,9 @@
 import { queries } from '@/db/sqlite';
-import { companyAliases } from '@/lib/oa-company-brands';
+import {
+  companyAliases,
+  employerSlug,
+  libraryCompanyAliases,
+} from '@/lib/oa-company-brands';
 export function setting(key: string): string {
   return process.env[key] || '';
 }
@@ -18,9 +22,11 @@ export function hiddenCompanies(): Set<string> {
       .map((slug) => slug.trim().toLowerCase())
       .filter((slug) => /^[a-z0-9-]{1,80}$/.test(slug)),
   );
-  // Hiding a company hides the catalog slugs merged into it (lib/oa-company-brands.ts).
+  // Hiding a company hides the catalog and library slugs merged into it (lib/oa-company-brands.ts).
   for (const [alias, slug] of Object.entries(companyAliases))
     if (hidden.has(slug)) hidden.add(alias);
+  for (const alias of Object.keys(libraryCompanyAliases))
+    if (hidden.has(employerSlug(alias))) hidden.add(alias);
   return hidden;
 }
 /** ` AND <column> NOT LIKE 'oa-<slug>-%'` for every hidden company (slugs are validated above). */
