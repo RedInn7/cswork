@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
-  ArrowRight, Bot, Check, ChevronLeft, ChevronRight, Code2, Copy, Dices, ExternalLink, Eye, Flag,
+  ArrowRight, BookOpen, Bot, Check, ChevronLeft, ChevronRight, Code2, Copy, Dices, ExternalLink, Eye, Flag,
   History as HistoryIcon, Lightbulb, Link2, LoaderCircle, MessageSquareText, Mic, Minus, Pause, Play, Plus, Printer,
   RotateCcw, Save, Send, ShieldAlert, Shuffle, Users, Volume2,
 } from 'lucide-react';
@@ -997,13 +997,20 @@ function QuestionCard({ slot, problemIds, showSource }: { slot: DrawnSlot; probl
       </div>
     );
   const judge = item.problem && problemIds.includes(item.problem) ? item.problem : null;
+  const design = slot.kind === 'design';
   return (
     <article className="rd-card mi-question">
       <SlotBadges slot={slot} />
       <h2>{item.title}</h2>
       <OaMarkdown body={item.question} math={item.math} />
-      {(judge || showSource) && (
+      {(judge || showSource || design) && (
         <div className="mi-question-foot mi-noprint">
+          {design && (
+            <a className="rd-button is-quiet" href="/system-design/framework" target="_blank" rel="noopener">
+              <BookOpen size={14} aria-hidden="true" /> {t('系统设计课：答题框架', 'System design course: the framework')}{' '}
+              <ExternalLink size={12} aria-hidden="true" />
+            </a>
+          )}
           {judge && (
             <a className="rd-button" href={`/?view=problem&problem=${encodeURIComponent(judge)}`} target="_blank" rel="noopener">
               <Code2 size={14} aria-hidden="true" /> {t('在线写代码', 'Write & run code here')} <ExternalLink size={12} aria-hidden="true" />

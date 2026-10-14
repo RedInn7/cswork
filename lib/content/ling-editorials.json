@@ -1,0 +1,42 @@
+{
+  "lc-1": {
+    "approaches": [
+      {
+        "nameZh": "暴力枚举",
+        "nameEn": "Brute force",
+        "ideaZh": "枚举每一对下标 `i < j`，检查 `nums[i] + nums[j]` 是否等于 `target`。题目保证恰好有一组答案，找到就返回。",
+        "ideaEn": "Try every pair of indices `i < j` and check whether `nums[i] + nums[j]` equals `target`. Exactly one pair works, so return it as soon as it turns up.",
+        "time": "O(n^2)",
+        "space": "O(1)",
+        "python": "class Solution:\n    def twoSum(self, nums: List[int], target: int) -> List[int]:\n        n = len(nums)\n        for i in range(n):\n            for j in range(i + 1, n):\n                if nums[i] + nums[j] == target:\n                    return [i, j]\n        return []\n",
+        "cpp": "class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        int n = nums.size();\n        for (int i = 0; i < n; ++i)\n            for (int j = i + 1; j < n; ++j)\n                if (nums[i] + nums[j] == target) return {i, j};\n        return {};\n    }\n};\n"
+      },
+      {
+        "nameZh": "哈希表，边查边存",
+        "nameEn": "Hash map, look up then store",
+        "ideaZh": "从左到右扫描，把每个数当成答案里靠右的那个：它的搭档必须是 `target - x`。用哈希表记下已经扫过的值和下标，先查搭档，查不到再存当前数，这样不会让一个数和自己配对。",
+        "ideaEn": "Scan left to right and treat each number as the right half of the answer: its partner must be `target - x`. Keep a hash map from the values seen so far to their indices. Look the partner up first and store the current number only afterwards, so no number pairs with itself.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "python": "class Solution:\n    def twoSum(self, nums: List[int], target: int) -> List[int]:\n        seen = {}\n        for j, x in enumerate(nums):\n            if target - x in seen:\n                return [seen[target - x], j]\n            seen[x] = j\n        return []\n",
+        "cpp": "class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        unordered_map<int, int> seen;\n        for (int j = 0; j < (int) nums.size(); ++j) {\n            auto it = seen.find(target - nums[j]);\n            if (it != seen.end()) return {it->second, j};\n            seen[nums[j]] = j;\n        }\n        return {};\n    }\n};\n"
+      }
+    ],
+    "verified": false
+  },
+  "lc-20": {
+    "approaches": [
+      {
+        "nameZh": "栈匹配",
+        "nameEn": "Stack matching",
+        "ideaZh": "左括号入栈；遇到右括号时，栈顶必须是与它配对的左括号，否则无效。扫描结束后栈必须为空。",
+        "ideaEn": "Push every opening bracket. A closing bracket must match the opening bracket on top of the stack, or the string is invalid. At the end the stack must be empty.",
+        "time": "O(n)",
+        "space": "O(n)",
+        "python": "class Solution:\n    def isValid(self, s: str) -> bool:\n        pairs = {')': '(', ']': '[', '}': '{'}\n        stack = []\n        for c in s:\n            if c in pairs:\n                if not stack or stack.pop() != pairs[c]:\n                    return False\n            else:\n                stack.append(c)\n        return not stack\n",
+        "cpp": "class Solution {\npublic:\n    bool isValid(string s) {\n        string stack;\n        for (char c : s) {\n            if (c == '(' || c == '[' || c == '{') {\n                stack.push_back(c);\n                continue;\n            }\n            char open = c == ')' ? '(' : c == ']' ? '[' : '{';\n            if (stack.empty() || stack.back() != open) return false;\n            stack.pop_back();\n        }\n        return stack.empty();\n    }\n};\n"
+      }
+    ],
+    "verified": false
+  }
+}

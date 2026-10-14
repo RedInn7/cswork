@@ -32,6 +32,7 @@ import {
   ListChecks,
   UsersRound,
   Zap,
+  Network,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -140,6 +141,8 @@ const nav: [LucideIcon, string, string, string][] = [
   [UsersRound, '学习小组', 'Study groups', 'group'],
   [MessagesSquare, '面试题', 'Interview Questions', 'questions'],
   [Dices, '模拟面试', 'Mock Interview', 'mock-interview'],
+  // A path, not a view: the public course page (app/system-design).
+  [Network, '系统设计课', 'System Design', '/system-design'],
   [BookUser, 'STAR 故事库', 'Story Bank', 'stories'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
   [MessageCircle, '讨论区', 'Discuss', 'discuss'],
@@ -557,7 +560,16 @@ export function Academy() {
                       (view === 'problem' &&
                         key === (params.mock ? 'mock' : 'problems'))
                     }
-                    onClick={() => navigate(key)}
+                    render={
+                      key.startsWith('/')
+                        ? ({ children, ...props }) => (
+                            <a {...props} href={key}>
+                              {children}
+                            </a>
+                          )
+                        : undefined
+                    }
+                    onClick={key.startsWith('/') ? undefined : () => navigate(key)}
                   >
                     <Icon size={18} />
                     <span>{t(zh, en)}</span>

@@ -38,6 +38,7 @@ import {
   similarProblems,
 } from './study-library';
 import { lcRating } from './lc-ratings';
+import { lingEditorial } from './ling-editorials';
 import { awardAccepted, handlePoints } from './points';
 import { classicList } from '@/lib/classic-lists';
 import { requireCourseOwner } from './course-visibility';
@@ -143,6 +144,11 @@ export async function handleOj(
       failedSubmissionIds: failed,
       // Observation, invariant, steps: the client opens them one at a time (components/hint-ladder.tsx).
       lingHints: lingHints(id),
+      // Line 500 editorial, sent with the problem like lingHints. The lock (until solved or confirmed)
+      // and hiding it in a mock OA are client-side only: the server can't see the exam state, so a
+      // learner reading the raw response in a custom mock OA with lc- problems still sees the code.
+      // ponytail: move it to GET problems/<id>/editorial, fetched after the confirm, if that matters.
+      lingEditorial: lingEditorial(id),
       // A nicety under the statement: it never fails the problem itself.
       similar: await similarProblems(id, p?.id, tags).catch(() => []),
       practiceRound: round,

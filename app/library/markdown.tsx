@@ -35,7 +35,8 @@ export function PublicLibraryMarkdown({
       components={{
         h1: ({ children }) => <h2>{children}</h2>,
         a: ({ node, href, children }) =>
-          href?.startsWith('/?view=') ? (
+          // In-app views and the system design course's own chapters.
+          href?.startsWith('/?view=') || /^\/system-design(?:\/[a-z0-9-]+)?$/.test(href ?? '') ? (
             <a href={href}>{children}</a>
           ) : safeLink(href) ? (
             <a href={safeLink(href)} rel={ugc ? 'ugc nofollow noopener noreferrer' : 'noopener noreferrer'}>

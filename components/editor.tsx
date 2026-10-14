@@ -261,12 +261,15 @@ export function CodeDiff({
   originalLanguage,
   language,
   settings,
+  ariaLabel,
 }: {
   original: string;
   modified: string;
   originalLanguage: Language;
   language: Language;
   settings: EditorSettings;
+  /** What the two sides are; defaults to a past submission against the draft. */
+  ariaLabel?: string;
 }) {
   const t = useT();
   const { runtime, error, retry } = useMonacoRuntime();
@@ -281,10 +284,12 @@ export function CodeDiff({
     wordWrap: settings.wordWrap ? 'on' : 'off',
     minimap: { enabled: false },
     scrollBeyondLastLine: false,
-    ariaLabel: t(
-      '历史提交与当前草稿的差异',
-      'Differences between the submission and your current draft',
-    ),
+    ariaLabel:
+      ariaLabel ??
+      t(
+        '历史提交与当前草稿的差异',
+        'Differences between the submission and your current draft',
+      ),
   };
   return (
     <div className="cs-editor-host cs-diff-host" data-theme={settings.theme}>
