@@ -401,3 +401,85 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* New this week: a navy departures strip that opens to the newest problems. */
+.oa-public-fresh {
+  margin: 28px 0 0;
+  border-radius: 14px;
+  background: var(--oa-navy);
+  color: #f3f6f4;
+  overflow: hidden;
+}
+.oa-public-fresh > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  cursor: pointer;
+  font-weight: 650;
+  list-style: none;
+}
+.oa-public-fresh > summary::-webkit-details-marker {
+  display: none;
+}
+.oa-public-fresh > summary::after {
+  content: '▾';
+  margin-left: auto;
+  color: var(--oa-amber);
+  transition: transform 160ms ease;
+}
+.oa-public-fresh[open] > summary::after {
+  transform: rotate(180deg);
+}
+.oa-public-fresh > summary:focus-visible {
+  outline: 2px solid var(--oa-amber);
+  outline-offset: -2px;
+}
+.oa-public-fresh-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--oa-amber);
+  box-shadow: 0 0 0 3px rgb(255 178 63 / 0.25);
+}
+.oa-public-fresh .oa-public-list {
+  margin: 0 12px;
+  border-top-color: rgb(255 255 255 / 0.12);
+}
+.oa-public-fresh .oa-public-list a {
+  border-bottom-color: rgb(255 255 255 / 0.12);
+  color: #f3f6f4;
+}
+.oa-public-fresh .oa-public-list a:hover {
+  background: rgb(255 255 255 / 0.06);
+}
+.oa-public-fresh .oa-public-list a:hover .oa-public-title {
+  color: var(--oa-amber);
+}
+.oa-public-fresh .oa-public-number {
+  color: rgb(243 246 244 / 0.6);
+}
+.oa-public-fresh .oa-public-chip {
+  background: rgb(255 178 63 / 0.16);
+  color: var(--oa-amber);
+  font-family: var(--oa-num);
+  font-variant-numeric: tabular-nums;
+}
+.oa-public-fresh-more {
+  margin: 0;
+  padding: 12px 18px 16px;
+  font-size: 14px;
+}
+.oa-public-fresh-more a {
+  color: var(--oa-amber);
+  font-weight: 600;
+}
+@media (max-width: 600px) {
+  .oa-public-fresh .oa-public-list a {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+  .oa-public-fresh .oa-public-list .oa-public-chip {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
