@@ -604,13 +604,14 @@
   gap: 6px;
   font-weight: 600;
 }
-.oa-pick-message:empty {
-  display: none;
-}
 .oa-pick-message {
   margin: 8px 0 0;
   color: var(--muted-foreground);
   font-size: 13px;
+}
+/* A live region stays rendered (screen readers skip one that appears with its text); empty, it takes no space. */
+.oa-pick-message:empty {
+  margin: 0;
 }
 .oa-row .oa-title small.oa-added {
   background: color-mix(in oklab, #ffb23f 18%, var(--card));
