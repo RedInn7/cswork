@@ -14,8 +14,8 @@ import { handleMockOa } from './mock-oa';
 import { handleSpeedrun } from './speedrun';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
-import { handleMyPractice } from './my-practice';
-import { handleAiTutor } from './ai-tutor';
+import { handleMyPractice, problemVote } from './my-practice';
+import { handleAiTutor, isAiRoute } from './ai-tutor';
 import { problemStats } from './problem-stats';
 import { handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { handleSolutionPosts } from './solution-posts';
@@ -156,7 +156,7 @@ export async function handleOj(
     return handleLeetcodeSync(request, p, path.slice(1));
   if (!id && (resource === 'history' || resource === 'notes' || resource === 'marks'))
     return handleMyPractice(request, p, resource);
-  if (resource === 'ai' && (id === 'hint' || id === 'review' || id === 'usage') && !action)
+  if (resource === 'ai' && id && isAiRoute(id) && !action)
     return handleAiTutor(request, p, id);
   if (request.method === 'GET') {
     if (resource === 'library') {
@@ -176,13 +176,17 @@ export async function handleOj(
       if (!/^[\w-]{1,100}$/.test(id) || !(await canSeeProblem(p, id)))
         throw new HttpError(404, '题目不存在');
       const runtime = Number(url.searchParams.get('runtimeMs') ?? NaN);
-      return json(
-        problemStats(
+      const memory = Number(url.searchParams.get('memoryKb') ?? NaN);
+      return json({
+        ...problemStats(
           id,
           url.searchParams.get('language'),
           Number.isFinite(runtime) ? runtime : null,
+          Number.isFinite(memory) ? memory : null,
         ),
-      );
+        // The viewer's own vote, outside the shared cache.
+        vote: problemVote(p.id, id),
+      });
     }
     if (resource === 'submissions') {
       if (id && url.searchParams.get('wait') === '1') {

@@ -4,6 +4,8 @@ import {
   nextUnsolved,
   problemNeighbors,
   problemSequence,
+  randomPickQuery,
+  rememberLibraryQuery,
   rememberProblemSequence,
 } from '../lib/problem-sequence';
 
@@ -45,4 +47,22 @@ void test('a classic list is remembered with its sequence and cleared by other l
   rememberProblemSequence(ids);
   assert.equal(problemNeighbors('b').library, undefined);
   Reflect.deleteProperty(globalThis, 'sessionStorage');
+});
+
+void test("the shuffle draws under the bank's last filters, else unsolved problems", () => {
+  const store = new Map<string, string>();
+  Object.defineProperty(globalThis, 'sessionStorage', {
+    configurable: true,
+    value: { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => store.set(k, v) },
+  });
+  assert.equal(randomPickQuery(), 'status=todo&random=1');
+  rememberLibraryQuery(new URLSearchParams({ q: '', difficulty: '中等', page: '3', status: 'redo' }));
+  assert.equal(randomPickQuery(), new URLSearchParams({ q: '', difficulty: '中等', status: 'redo', random: '1' }).toString());
+  Object.defineProperty(globalThis, 'sessionStorage', {
+    configurable: true,
+    get() {
+      throw new Error('blocked');
+    },
+  });
+  assert.equal(randomPickQuery(), 'status=todo&random=1');
 });

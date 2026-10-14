@@ -15,7 +15,9 @@ process.env.METRICS_DATABASE_PATH = resolve(dir, 'metrics.sqlite');
 const { sqlite } = await import('../db/sqlite');
 const { saveProblemDraft, publishProblemDraft } = await import('../lib/server/oj-problems');
 const { handleOj } = await import('../lib/server/oj-api');
-const { aiEnabled, tidyReply, AI_DAILY_LIMITS, SYSTEM } = await import('../lib/server/ai-tutor');
+const { aiEnabled, tidyReply, caseFormat, parseCases, AI_DAILY_LIMITS, AI_KINDS, SYSTEM, CHAT_SOLVED } = await import(
+  '../lib/server/ai-tutor'
+);
 
 const me: Person = { id: 'ai-me', name: 'Me', email: 'ai@example.test', role: 'student', verified: true };
 const other: Person = { ...me, id: 'ai-other', email: 'ai-other@example.test' };
@@ -94,6 +96,7 @@ function fixture(id: string): OjProblemPackage {
   };
 }
 
+let version = '';
 before(async () => {
   const db = sqlite();
   migrate(drizzle(db), { migrationsFolder: resolve('drizzle') });
@@ -103,9 +106,9 @@ before(async () => {
   ).run();
   const saved = await saveProblemDraft(teacher, fixture('lc-1'), null);
   await publishProblemDraft(teacher, 'lc-1', saved.draft!.revision);
-  const { version } = db.prepare('SELECT current_version_id AS version FROM oj_problems WHERE id=?').get('lc-1') as {
+  ({ version } = db.prepare('SELECT current_version_id AS version FROM oj_problems WHERE id=?').get('lc-1') as {
     version: string;
-  };
+  });
   // A library problem: free for verified accounts, with the full statement in the source payload.
   db.prepare(
     `INSERT INTO study_library(id,number,slug,title_zh,title_en,difficulty,topics_json,payload_json,content_hash,
@@ -275,9 +278,10 @@ void test('per-learner daily limit, then the site-wide daily budget', async () =
 void test('usage: calls left today, so the buttons start from the real count', async () => {
   const learner: Person = { ...me, id: 'ai-usage', email: 'ai-usage@example.test' };
   const left = async () => (await (await call(learner, 'usage', null, 'GET')).json()) as Record<string, number>;
-  assert.deepEqual(await left(), { hint: AI_DAILY_LIMITS.hint, review: AI_DAILY_LIMITS.review });
+  assert.deepEqual(await left(), AI_DAILY_LIMITS);
+  assert.deepEqual(Object.keys(AI_DAILY_LIMITS).sort(), [...AI_KINDS].sort());
   assert.equal(await status(learner, 'hint', ask()), 200);
-  assert.deepEqual(await left(), { hint: AI_DAILY_LIMITS.hint - 1, review: AI_DAILY_LIMITS.review });
+  assert.deepEqual(await left(), { ...AI_DAILY_LIMITS, hint: AI_DAILY_LIMITS.hint - 1 });
   assert.equal(await status(learner, 'usage', ask()), 404);
   delete process.env.ANTHROPIC_API_KEY;
   assert.equal(await status(learner, 'usage', null, 'GET'), 404);
@@ -352,4 +356,193 @@ void test('tidyReply: no way around the code caps', () => {
   const review = tidyReply([block(3), block(3), block(3)].join('\nand\n'), 'review');
   assert.equal(review.split('a = 1').length - 1, 6);
   assert.equal(tidyReply([block(4), block(3)].join('\n'), 'review').split('a = 1').length - 1, 4);
+});
+
+const body = async (response: Response) => (await response.json()) as Record<string, unknown>;
+const userTurns = () => sent[0].body.messages as { role: string; content: string }[];
+
+void test('chat: the conversation goes back as turns; no code and no solution before an AC', async () => {
+  const learner: Person = { ...me, id: 'ai-chat', email: 'ai-chat@example.test' };
+  reply = ok('Ask yourself what a hash map remembers.\n```python\nseen = {}\n```');
+  const history = [
+    { role: 'assistant', text: 'A stray first answer is dropped.' },
+    { role: 'user', text: 'Why is my loop slow?' },
+    { role: 'assistant', text: 'Count how many pairs it checks.' },
+  ];
+  const response = await call(learner, 'chat', ask({ question: 'Can I do better than n squared?', history }));
+  assert.equal(response.status, 200);
+  const answer = await body(response);
+  assert.equal(answer.kind, 'chat');
+  assert.equal(String(answer.text).includes('```'), false, 'no code before an AC');
+  assert.equal(answer.remaining, AI_DAILY_LIMITS.chat - 1);
+  const [{ body: request }] = sent;
+  assert.equal(request.model, 'claude-haiku-5-5');
+  assert.equal(request.system, SYSTEM.chat);
+  assert.equal(SYSTEM.chat.includes('Never write code'), true);
+  const turns = userTurns();
+  assert.deepEqual(
+    turns.map((t) => t.role),
+    ['user', 'assistant', 'user'],
+  );
+  // The problem, code and verdict ride on the first user turn; the new question comes last.
+  assert.equal(turns[0].content.includes('STATEMENT-MARKER') && turns[0].content.includes('MY-CODE-MARKER'), true);
+  assert.equal(turns[0].content.includes('Why is my loop slow?'), true);
+  assert.equal(turns[0].content.includes('Reply in English throughout.'), true);
+  assert.equal(turns[2].content, 'Can I do better than n squared?');
+  assert.equal(JSON.stringify(turns).includes('HIDDEN-CASE-INPUT'), false);
+  // Shape limits: a question is required, at most 16 earlier turns.
+  assert.equal(await status(learner, 'chat', ask()), 400);
+  assert.equal(await status(learner, 'chat', ask({ question: '  ' })), 400);
+  const long = Array.from({ length: 17 }, (_, i) => ({ role: i % 2 ? 'assistant' : 'user', text: 'x' }));
+  assert.equal(await status(learner, 'chat', ask({ question: 'q', history: long })), 400);
+  assert.equal(await status(learner, 'chat', ask({ question: 'q', history: [{ role: 'system', text: 'x' }] })), 400);
+});
+
+void test('chat after an AC: the solution is open, short snippets survive', async () => {
+  const learner: Person = { ...me, id: 'ai-chat-ac', email: 'ai-chat-ac@example.test' };
+  sqlite()
+    .prepare(
+      `INSERT INTO submissions(id,user_id,problem_id,language,code,status,passed,total,mode,created_at,updated_at)
+      VALUES('ai-chat-ac1',?,'lc-1','python','x','accepted',2,2,'judge',10,10)`,
+    )
+    .run(learner.id);
+  reply = ok('Use a map:\n```python\nseen = {}\n```');
+  const answer = await body(await call(learner, 'chat', ask({ question: 'What is the optimal approach?' })));
+  assert.equal(String(answer.text).includes('seen = {}'), true);
+  assert.equal(sent[0].body.system, CHAT_SOLVED);
+});
+
+void test('tests: JSON cases checked against the box format, at most five, never code', async () => {
+  const learner: Person = { ...me, id: 'ai-tests', email: 'ai-tests@example.test' };
+  const cases = (list: { input: string; why: string }[]) => ok(JSON.stringify({ cases: list }));
+  // LeetCode mode for Two Sum: one JSON value per line, two lines (nums, target).
+  reply = cases([
+    { input: '[3,3]\n6', why: 'Duplicates that sum to the target.' },
+    { input: '[3,3]\n6', why: 'A repeat is dropped.' },
+    { input: '[1,2]', why: 'One line is not two parameters.' },
+    { input: 'nums = [1]\ntarget = 1', why: 'Not JSON.' },
+    { input: '  [-1,-2,-3]  \n\n-5\n', why: 'Negatives; blank lines and spaces are tidied.' },
+  ]);
+  const response = await call(learner, 'tests', ask());
+  assert.equal(response.status, 200);
+  const answer = (await response.json()) as { cases: { input: string; why: string }[]; remaining: number };
+  assert.deepEqual(
+    answer.cases.map((c) => c.input),
+    ['[3,3]\n6', '[-1,-2,-3]\n-5'],
+  );
+  assert.equal(answer.remaining, AI_DAILY_LIMITS.tests - 1);
+  const [{ body: request }] = sent;
+  assert.equal(request.model, 'claude-sonnet-5-5');
+  const config = request.output_config as { format?: { type: string } };
+  assert.equal(config.format?.type, 'json_schema');
+  const prompt = userTurns()[0].content;
+  assert.equal(prompt.includes('2 line(s), in parameter order: nums, target'), true);
+  assert.equal(prompt.includes('HIDDEN-CASE-INPUT'), false);
+  // ACM: raw stdin, any non-empty text; nothing usable is a failed (but spent) call.
+  sent = [];
+  reply = cases([{ input: '3\n1 2 3', why: 'Small.' }]);
+  const acm = (await body(await call(learner, 'tests', ask({ codingMode: 'acm' })))) as { cases: { input: string }[] };
+  assert.deepEqual(acm.cases, [{ input: '3\n1 2 3\n', why: 'Small.' }]);
+  assert.equal(userTurns()[0].content.includes('The complete standard input'), true);
+  reply = ok('not json');
+  assert.equal(await status(learner, 'tests', ask()), 503);
+  reply = cases([{ input: '[1]', why: 'Wrong shape.' }]);
+  assert.equal(await status(learner, 'tests', ask()), 503);
+  assert.equal(used(learner.id, 'tests'), 4);
+});
+
+void test('tests: the box format comes from the Solution method, and a Codec tree is one line', () => {
+  // ListNode/TreeNode stubs above `class Solution` have their own __init__ defs.
+  const list = caseFormat('lc-206', 'leetcode');
+  assert.equal(list.describe.includes('1 line(s), in parameter order: head.'), true);
+  assert.equal(list.parse('[1,2,3]'), '[1,2,3]');
+  const tree = caseFormat('lc-104', 'leetcode');
+  assert.equal(tree.describe.includes('in parameter order: root.'), true);
+  assert.equal(tree.parse('[3,9,20,null,null,15,7]'), '[3,9,20,null,null,15,7]');
+  assert.equal(caseFormat('lc-21', 'leetcode').describe.includes('list1, list2.'), true);
+  for (const id of ['lc-297', 'lc-449']) {
+    const codec = caseFormat(id, 'leetcode');
+    assert.equal(codec.describe.startsWith('One line'), true);
+    assert.equal(codec.parse(' [1,2,3,null,4] \n'), '[1,2,3,null,4]');
+    assert.equal(codec.parse('["Codec","roundTrip"]\n[[],[[1]]]'), null);
+    assert.equal(codec.parse('{"a":1}'), null);
+  }
+});
+
+void test('tests: an input shaped like code, prose or a long dump is dropped', () => {
+  const acm = caseFormat('lc-1', 'acm').parse;
+  const kept = (input: string) => parseCases(JSON.stringify({ cases: [{ input, why: 'x' }] }), acm).length === 1;
+  assert.equal(kept('4\n2 7 11 15\n9'), true);
+  assert.equal(kept('["a==b","b!=a"]'), true);
+  assert.equal(kept('"()[]{}"'), true);
+  assert.equal(kept('def twoSum(self, nums, target):\n    seen = {}'), false);
+  assert.equal(kept('for i, x in enumerate(nums)'), false);
+  assert.equal(kept('#include <bits/stdc++.h>'), false);
+  assert.equal(kept('int main() { return 0; }'), false);
+  assert.equal(kept('func twoSum(nums []int) []int'), false);
+  assert.equal(kept('用哈希表'), false);
+  assert.equal(kept('1 '.repeat(301)), false);
+  assert.equal(kept(Array.from({ length: 21 }, (_, i) => String(i)).join('\n')), false);
+});
+
+void test('debug: verdict and public data only; a hidden failing case gives its verdict alone', async () => {
+  const learner: Person = { ...me, id: 'ai-debug', email: 'ai-debug@example.test' };
+  const db = sqlite();
+  // Nothing failed yet: no call.
+  assert.equal(await status(learner, 'debug', ask()), 409);
+  const insert = db.prepare(
+    `INSERT INTO submissions(id,user_id,problem_id,language,code,status,passed,total,mode,created_at,updated_at,problem_version_id,custom_input,message)
+    VALUES(?,?,'lc-1','python','x',?,?,2,?,?,?,?,?,?)`,
+  );
+  const result = db.prepare(
+    'INSERT INTO oj_results(submission_id,ordinal,status,runtime_ms,memory_kb,stdout,stderr,hidden) VALUES(?,?,?,1,1,?,?,?)',
+  );
+  // A formal submission that fails on the hidden case (whose output the judge did capture).
+  insert.run('ai-d1', learner.id, 'wrong_answer', 1, 'judge', 20, 20, version, null, null);
+  result.run('ai-d1', 0, 'accepted', '1\n', '', 0);
+  result.run('ai-d1', 1, 'wrong_answer', 'HIDDEN-STDOUT', '', 1);
+  reply = ok('Look at `range(n)` when the list is empty.');
+  const answer = await body(await call(learner, 'debug', ask()));
+  assert.equal(String(answer.text).includes('range(n)'), true);
+  let prompt = userTurns()[0].content;
+  assert.equal(prompt.includes('<failure>'), true);
+  assert.equal(prompt.includes('Wrong answer, 1/2'), true);
+  assert.equal(prompt.includes('is hidden'), true);
+  assert.equal(/HIDDEN-CASE-INPUT|HIDDEN-OUT|HIDDEN-STDOUT/.test(prompt), false);
+  assert.equal(sent[0].body.system, SYSTEM.debug);
+  // A run on the learner's own input: that input and the program's output go along.
+  sent = [];
+  insert.run('ai-d2', learner.id, 'runtime_error', 0, 'run', 21, 21, version, 'MY-STDIN\n', null);
+  result.run('ai-d2', 0, 'runtime_error', 'partial', 'IndexError: list index out of range', 0);
+  await call(learner, 'debug', ask());
+  prompt = userTurns()[0].content;
+  assert.equal(prompt.includes('custom input') && prompt.includes('MY-STDIN') && prompt.includes('IndexError'), true);
+  assert.equal(prompt.includes('Expected output'), false);
+});
+
+void test('complexity only after an AC; explain sends the selection, not the code', async () => {
+  const learner: Person = { ...me, id: 'ai-cx', email: 'ai-cx@example.test' };
+  assert.equal(await status(learner, 'complexity', ask()), 409);
+  assert.equal(sent.length, 0);
+  sqlite()
+    .prepare(
+      `INSERT INTO submissions(id,user_id,problem_id,language,code,status,passed,total,mode,created_at,updated_at)
+      VALUES('ai-cx1',?,'lc-1','python','x','accepted',2,2,'judge',30,30)`,
+    )
+    .run(learner.id);
+  reply = ok('**Time** O(n).\n**Space** O(n).\n**Best possible** O(n) time, already reached.');
+  const answer = await body(await call(learner, 'complexity', ask()));
+  assert.equal(String(answer.text).includes('**Best possible**'), true);
+  assert.equal(sent[0].body.system, SYSTEM.complexity);
+  assert.equal(await status(learner, 'complexity', ask({ code: ' ' })), 400);
+  sent = [];
+  reply = ok('It means every index is used at most once.');
+  assert.equal(await status(learner, 'explain', ask()), 400);
+  const explained = await body(await call(learner, 'explain', ask({ selection: 'you may not use the same element twice' })));
+  assert.equal(explained.kind, 'explain');
+  const prompt = userTurns()[0].content;
+  assert.equal(prompt.includes('<selection>\nyou may not use the same element twice'), true);
+  assert.equal(prompt.includes('MY-CODE-MARKER'), false);
+  assert.equal(sent[0].body.model, 'claude-haiku-5-5');
+  assert.equal(await status(learner, 'explain', ask({ selection: 'x'.repeat(601) })), 400);
 });

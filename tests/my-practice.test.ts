@@ -163,6 +163,25 @@ void test('marks toggle per learner and drive the Line 500 starred/redo filters'
   assert.equal(listed('redo').total, 1);
 });
 
+void test('a problem vote is up or down, never both, and only on a problem', async () => {
+  type Marks = { items: { mark: string }[] };
+  const vote = (m: string, on = true, target = 'problem:lc-2') => ok(me, 'POST', 'marks', { target, mark: m, on });
+  const marks = async () =>
+    (await ok<Marks>(me, 'GET', 'marks?target=problem:lc-2')).items.map((i) => i.mark).sort();
+  await vote('star');
+  await vote('up');
+  assert.deepEqual(await marks(), ['star', 'up']);
+  await vote('down');
+  assert.deepEqual(await marks(), ['down', 'star'], 'down replaces up; the star stays');
+  await vote('down', false);
+  assert.deepEqual(await marks(), ['star']);
+  assert.equal(await status(me, 'POST', 'marks', { target: 'content:x/y', mark: 'up', on: true }), 400);
+  const { problemVote } = await import('../lib/server/my-practice');
+  await vote('up');
+  assert.equal(problemVote(me.id, 'lc-2'), 'up');
+  assert.equal(problemVote(other.id, 'lc-2'), null);
+});
+
 void test('reviews climb the 3/7/21/60-day ladder by distinct AC days', () => {
   assert.deepEqual(REVIEW_LADDER, [3, 7, 21, 60]);
   const noon = new Date(2026, 9, 1, 12).getTime();

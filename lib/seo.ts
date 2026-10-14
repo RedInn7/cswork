@@ -31,6 +31,10 @@ function publicUrl(path: string): string {
   return url.toString();
 }
 
+/** A problem's workspace on the public origin, for the share button; never the request host. */
+export const problemShareUrl = (problemId: string) =>
+  publicUrl(`/?${new URLSearchParams({ view: 'problem', problem: problemId })}`);
+
 export function seoMetadata({
   title,
   description,

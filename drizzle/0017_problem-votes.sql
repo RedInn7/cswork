@@ -1,0 +1,1 @@
+CREATE INDEX `user_marks_target_mark` ON `user_marks` (`target`,`mark`);

@@ -139,8 +139,8 @@ export function PrivacyDocument() {
                 除提供服务所需的教师和运维访问外，第三方登录、邮件和支付功能会与相应服务商交换完成这些功能所需的资料。课程中的外部图片或视频链接也可能让浏览器向对应资源服务商发出请求。
               </p>
               <p>
-                在题目页使用 AI 助教（提示或代码点评）时，服务器会把这道题的题面、你当前的代码和你在这道题上最近一次判题结果发送给
-                Anthropic，用于生成回复；不发送邮箱、姓名或账户标识。平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不使用 AI 助教就不会发送。
+                在题目页使用 AI 助教（提示、代码点评、追问、边界用例、失败调试、复杂度分析或解释选中的题面文字）时，服务器会把这道题的题面、你当前的代码和你在这道题上最近一次判题结果发送给
+                Anthropic，用于生成回复；追问时还会发送本页最近几轮问答，调试时还会发送你自己能看到的失败信息（判题结果、报错和公开样例或自定义输入的输入输出，不含隐藏测试数据），解释题面时只发送题面和你选中的文字、不发送代码。不发送邮箱、姓名或账户标识。平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不使用 AI 助教就不会发送。
               </p>
               <p>
                 平台会为持续提供课程、处理教学反馈、对账及故障恢复保留必要资料和备份，目前没有对所有账户及学习记录统一设置自动删除期限。业务数据与备份的清理时间可能不同；收到删除请求后，会确认涉及的资料、处理范围及需要保留的记录。
@@ -383,13 +383,21 @@ export function PrivacyDocument() {
                 send requests to the corresponding resource providers.
               </p>
               <p>
-                When you use the AI tutor on a problem page (a hint or a code
-                review), the server sends that problem's statement, your
+                When you use the AI tutor on a problem page (a hint, a code
+                review, a question, edge-case ideas, debugging help, a
+                complexity check or an explanation of selected statement
+                text), the server sends that problem's statement, your
                 current code and your latest verdict on that problem to
-                Anthropic to write the reply. Your email, name and account
-                identifiers are not sent. The platform records only how many
-                calls you make each day and their usage, never what was sent
-                or the AI's reply. Nothing is sent unless you use the tutor.
+                Anthropic to write the reply. A question also sends the last
+                few questions and answers on the page; debugging also sends
+                the failure details you can see yourself (the verdict, error
+                messages, and the input and output of a public example or
+                your custom input, never hidden test data); an explanation
+                sends only the statement and the text you selected, not your
+                code. Your email, name and account identifiers are not sent.
+                The platform records only how many calls you make each day
+                and their usage, never what was sent or the AI's reply.
+                Nothing is sent unless you use the tutor.
               </p>
               <p>
                 The platform retains necessary data and backups to keep

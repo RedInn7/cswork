@@ -159,6 +159,15 @@
   :where([data-theme='dark'] img[src^='/company-logos/']:not(:is(.oa-company-logo, .mock-logo, .mock-public-logo) > img)) {
     padding: 1px;
     border-radius: 3px;
+  /* The AC dialog's runtime/memory bars (app/workspace-panels.css): at least 3:1 on its dark banner. */
+  .dark .cs-perf-bars button {
+    background: #6b7b75;
+  }
+  .dark .cs-perf-bars button:not(:disabled):hover {
+    background: #8a9a94;
+  }
+  .dark .cs-perf-bars > li[data-mine] button {
+    background: #3fb26a;
   }
 
   /* Native controls, scrollbars and the selection follow the page. */

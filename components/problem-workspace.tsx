@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback, type CSSProperties } from 'react';
 import {
   Group,
   Panel,
@@ -11,6 +11,7 @@ import {
   nextUnsolved,
   problemNeighbors,
   problemSequence,
+  randomPickQuery,
   rememberProblemSequence,
 } from '@/lib/problem-sequence';
 import { practiceStats, type Activity } from './practice-calendar';
@@ -23,6 +24,9 @@ import {
   Check,
   CircleCheck,
   Copy,
+  Expand,
+  Shrink,
+  Shuffle,
   Tag,
   ChevronRight,
   ChevronDown,
@@ -55,7 +59,8 @@ import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-
 import { AskedReport, communityProblem } from './problem-community';
 import { SolutionPosts, SolutionsTab } from './solution-posts';
 import { HintLadder, useHintLadder } from './hint-ladder';
-import { AiTutor, useAiTutor } from './ai-tutor';
+import { AiCaseIdeas, AiComplexity, AiTutor, AskAiSelection, useAiTutor, type AiContext } from './ai-tutor';
+import { ProblemMeta } from './problem-meta';
 import { SimilarProblems } from './similar-problems';
 import {
   ExamAcceptedDialog,
@@ -134,6 +139,7 @@ import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import '@/app/editor.css';
 import '@/app/workbench-tools.css';
+import '@/app/workspace-panels.css';
 
 type WorkspaceProps = {
   problem: ProblemSummary;
@@ -144,6 +150,7 @@ type WorkspaceProps = {
   /** ?mock=<session id>: the problem is a question of a timed mock OA. */
   mock?: string;
 };
+type MaxPanel = 'statement' | 'code' | 'console';
 type ReplaceRequest = {
   code: string;
   language: Language;
@@ -196,6 +203,15 @@ const safeLayoutStorage = {
 };
 
 const MAX_CASES = 5;
+// A run or submission the learner can ask the AI tutor about.
+const FAILED_VERDICTS = new Set([
+  'wrong_answer',
+  'time_limit',
+  'memory_limit',
+  'output_limit',
+  'runtime_error',
+  'compile_error',
+]);
 function readCases(key: string): string[] {
   try {
     const value: unknown = JSON.parse(localStorage.getItem(key) || 'null');
@@ -384,6 +400,34 @@ function Workspace({
   );
   const consolePanel = usePanelRef();
   const [consoleCollapsed, setConsoleCollapsed] = useState(false);
+  // One panel fills the workspace (its title bar's button or a double-click; the button
+  // again or Esc restores). CSS hides the others, so the saved layout stays untouched.
+  const [maximized, setMaximized] = useState<MaxPanel | null>(null);
+  const consoleWasCollapsed = useRef(false);
+  function maximize(panel: MaxPanel | null) {
+    if (maximized === 'console' && panel !== 'console' && consoleWasCollapsed.current) {
+      consoleWasCollapsed.current = false;
+      consolePanel.current?.collapse();
+    }
+    if (panel === 'console' && consolePanel.current?.isCollapsed()) {
+      consoleWasCollapsed.current = true;
+      consolePanel.current.expand();
+    }
+    setMaximized(panel);
+  }
+  const toggleMaximized = (panel: MaxPanel) => maximize(maximized === panel ? null : panel);
+  useEffect(() => {
+    if (!maximized) return;
+    const restore = (event: KeyboardEvent) => {
+      // Esc belongs to the editor (Vim, suggestions) and to dialogs first.
+      const target = event.target as Element | null;
+      if (event.key !== 'Escape' || event.defaultPrevented || target?.closest?.('.monaco-editor, [role="dialog"]'))
+        return;
+      maximize(null);
+    };
+    document.addEventListener('keydown', restore);
+    return () => document.removeEventListener('keydown', restore);
+  });
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [shortcutOpen, setShortcutOpen] = useState(false);
   const [replaceRequest, setReplaceRequest] = useState<ReplaceRequest | null>(
@@ -447,6 +491,12 @@ function Workspace({
   const hintLadder = useHintLadder(submission, problem.failedSubmissionIds);
   // AI hints and review: kept here so a tab switch does not drop the replies.
   const aiTutor = useAiTutor(initialProblem.id);
+  // The solutions tab's language filter, set from the AC dialog's histogram.
+  const [solutionsLanguage, setSolutionsLanguage] = useState('');
+  const prose = useRef<HTMLDivElement>(null);
+  // The tutor's extras; SQL track problems have no AI (lib/server/ai-tutor.ts takes code languages).
+  const aiOn = !!boot.services?.ai && !!boot.person && !examMode && language !== 'sql';
+  const aiContext: AiContext = { language, codingMode, code, english: uiEnglish };
   const [success, setSuccess] = useState<OJSubmission | null>(null);
   const [solveSeconds, setSolveSeconds] = useState<number | null>(null);
   const announcedSuccess = useRef<string | null>(null);
@@ -560,6 +610,35 @@ function Workspace({
     panelIds: ['code', 'console'],
     storage: safeLayoutStorage,
   });
+
+  const panelNames: Record<MaxPanel, [string, string]> = {
+    statement: ['题面', 'the statement'],
+    code: ['代码', 'the code'],
+    console: ['控制台', 'the console'],
+  };
+  const maxButton = (panel: MaxPanel) => {
+    if (narrow) return null;
+    const label =
+      maximized === panel
+        ? t('还原面板布局', 'Restore the panels')
+        : t(`最大化${panelNames[panel][0]}`, `Maximize ${panelNames[panel][1]}`);
+    return (
+      <button
+        type="button"
+        className="cs-panel-max"
+        aria-label={label}
+        title={`${label}${t('（双击标题栏也可以，Esc 还原）', ' (or double-click the title bar; Esc restores)')}`}
+        onClick={() => toggleMaximized(panel)}
+      >
+        {maximized === panel ? <Shrink size={14} /> : <Expand size={14} />}
+      </button>
+    );
+  };
+  // Double-clicking a title bar (its tabs included, its other controls not) toggles it too.
+  const maxOnDoubleClick = (panel: MaxPanel) => (event: { target: EventTarget }) => {
+    if (narrow || (event.target as Element).closest('button:not([role="tab"]), select, input, textarea, a')) return;
+    toggleMaximized(panel);
+  };
 
   function showConsole(tab: 'input' | 'result') {
     setBottomTab(tab);
@@ -1030,6 +1109,34 @@ function Workspace({
     anchor.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
+  const [shuffling, setShuffling] = useState(false);
+  /** A random unsolved problem under the bank's last filters (unsolved ones if none). */
+  async function shuffle() {
+    setShuffling(true);
+    try {
+      // The draw may land on this very problem; a couple more tries usually move on.
+      for (let tries = 0; tries < 3; tries++) {
+        const page = await ojRequest<{ random?: string | null; sequence?: string[] }>(
+          `library?${randomPickQuery()}`,
+        );
+        if (!page.random) break;
+        if (page.random === problem.id) continue;
+        rememberProblemSequence(page.sequence ?? [page.random]);
+        navigate('problem', { problem: page.random });
+        return;
+      }
+      setError(
+        t(
+          '题库当前筛选下没有其他未通过的题目。',
+          "No other unsolved problem matches the problem bank's filters.",
+        ),
+      );
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setShuffling(false);
+    }
+  }
   async function submit(mode: 'run' | 'judge') {
     if (disabled || busyRef.current) return;
     if (
@@ -1231,6 +1338,7 @@ function Workspace({
         className="cs-pane-tabs"
         role="tablist"
         aria-label={uiEnglish ? 'Problem information' : '题目资料'}
+        onDoubleClick={maxOnDoubleClick('statement')}
       >
         <button
           role="tab"
@@ -1273,6 +1381,7 @@ function Workspace({
           <SolutionsTab active={leftTab === 'solutions'} onSelect={() => setLeftTab('solutions')} english={uiEnglish} />
         )}
       </div>
+      {maxButton('statement')}
       <div className="cs-statement-scroll">
         {problem.id.startsWith('oa-') && (
           <OaCompanyBadge
@@ -1286,7 +1395,14 @@ function Workspace({
         ) : leftTab === 'editorial' ? (
           <OaEditorial key={problem.id} problemId={problem.id} />
         ) : leftTab === 'solutions' && boot.person && !examMode ? (
-          <SolutionPosts key={problem.id} problemId={problem.id} english={uiEnglish} code={code} language={language} />
+          <SolutionPosts
+            key={`${problem.id}:${solutionsLanguage}`}
+            problemId={problem.id}
+            english={uiEnglish}
+            code={code}
+            language={language}
+            only={solutionsLanguage}
+          />
         ) : leftTab === 'statement' ? (
           <>
             <div className="cs-statement-heading">
@@ -1386,6 +1502,15 @@ function Workspace({
                 <option value="zh">中文</option>
                 <option value="en">English</option>
               </select>
+              {/* Acceptance, votes and sharing: none of them during a mock OA. */}
+              {!examMode && (
+                <ProblemMeta
+                  problemId={problem.id}
+                  title={statement.title}
+                  english={uiEnglish}
+                  signedIn={!!boot.person}
+                />
+              )}
             </div>
             {/* Company reports are a hint too: never during a mock. */}
             {!examMode && !!problem.companies?.length && (
@@ -1408,7 +1533,7 @@ function Workspace({
                 )}
               </output>
             )}
-            <div className="cs-problem-prose">
+            <div className="cs-problem-prose" ref={prose}>
               {problemLoading}
               {sourceBody && (
                 <>
@@ -1572,8 +1697,8 @@ function Workspace({
                 english={uiEnglish}
               />
             )}
-            {/* Off unless the server has AI configured; never during a mock OA. */}
-            {boot.services?.ai && !!boot.person && !examMode && (
+            {/* Off unless the server has AI configured; never during a mock OA or on SQL problems. */}
+            {aiOn && (
               <AiTutor
                 tutor={aiTutor}
                 language={language}
@@ -1581,6 +1706,18 @@ function Workspace({
                 code={code}
                 english={uiEnglish}
                 accepted={submission?.mode === 'judge' && submission.status === 'accepted'}
+                failed={!!submission && FAILED_VERDICTS.has(submission.status)}
+              />
+            )}
+            {aiOn && (
+              <AskAiSelection
+                container={prose}
+                english={uiEnglish}
+                disabled={aiTutor.busy !== null}
+                onAsk={(selection) => {
+                  void aiTutor.ask('explain', aiContext, { selection });
+                  document.getElementById('ai-tutor-title')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }}
               />
             )}
             {!!problem.similar?.length && !examMode && (
@@ -1700,7 +1837,7 @@ function Workspace({
 
   const workbench = (
     <section className="cs-workbench" data-theme={settings.theme}>
-      <div className="cs-code-caption">
+      <div className="cs-code-caption" onDoubleClick={maxOnDoubleClick('code')}>
         <Code2 size={15} />
         <strong>{t('代码', 'Code')}</strong>
         <span>{editorFile}</span>
@@ -1740,6 +1877,7 @@ function Workspace({
                 : '提交'}
           </Button>
         </div>
+        {maxButton('code')}
       </div>
       <div className="cs-editor-toolbar">
         <div className="cs-editor-controls">
@@ -1933,7 +2071,7 @@ function Workspace({
           <section
             className={`cs-console ${consoleCollapsed ? 'is-collapsed' : ''}`}
           >
-            <div className="cs-console-header">
+            <div className="cs-console-header" onDoubleClick={maxOnDoubleClick('console')}>
               <div
                 className="cs-pane-tabs"
                 role="tablist"
@@ -1987,6 +2125,7 @@ function Workspace({
                   <ChevronDown size={16} />
                 )}
               </button>
+              {maxButton('console')}
             </div>
             <div className="cs-console-scroll" hidden={consoleCollapsed}>
               {bottomTab === 'input' ? (
@@ -2199,6 +2338,13 @@ function Workspace({
                           ` Run tries the selected case and shows your program output; cases stay in this browser (up to ${MAX_CASES}). Submit runs all test cases.`,
                         )}
                       </p>
+                      {aiOn && (
+                        <AiCaseIdeas
+                          tutor={aiTutor}
+                          context={aiContext}
+                          onAdd={(input) => addCase(input)}
+                        />
+                      )}
                     </>
                   )}
                 </>
@@ -2357,6 +2503,18 @@ function Workspace({
               </button>
             </div>
           )}
+          {!examMode && (
+            <button
+              className="cs-top-button"
+              aria-label={t('随机一题', 'Random problem')}
+              title={t('随机一道未通过的题，沿用题库的筛选', "A random unsolved problem, with the problem bank's filters")}
+              disabled={shuffling}
+              onClick={() => void shuffle()}
+            >
+              {shuffling ? <LoaderCircle size={15} className="cs-spin" /> : <Shuffle size={15} />}
+              <span>{t('随机一题', 'Random')}</span>
+            </button>
+          )}
           <button
             className="cs-top-button"
             aria-label={t('报告题目问题 / 提问', 'Report a problem / Ask')}
@@ -2431,12 +2589,24 @@ function Workspace({
               ? success.runtime * 1000
               : null)
           }
+          memoryKb={success.memoryKb ?? success.memory ?? null}
           seconds={solveSeconds}
           activity={boot.activity}
           fallbackNext={neighbors.next}
           english={uiEnglish}
           navigate={navigate}
           onClose={() => setSuccess(null)}
+          openSolutions={
+            boot.person && communityProblem(problem.id)
+              ? (only) => {
+                  setSuccess(null);
+                  setSolutionsLanguage(only);
+                  setLeftTab('solutions');
+                  setMobilePane('statement');
+                }
+              : undefined
+          }
+          ai={aiOn ? { tutor: aiTutor, context: aiContext } : undefined}
         />
       )}
       {problemError &&
@@ -2503,7 +2673,7 @@ function Workspace({
           </button>
         </div>
       )}
-      <div className="cs-workspace-body">
+      <div className="cs-workspace-body" data-maximized={(!narrow && maximized) || undefined}>
         {narrow ? (
           <div className="cs-mobile-body">
             {mobilePane === 'statement' ? description : workbench}
@@ -2677,10 +2847,111 @@ function Workspace({
 
 type NextStop = { id: string; sequence?: string[] } | null;
 /** GET problem-stats: lib/server/problem-stats.ts. */
+type Histogram = { edges: number[]; counts: number[] };
 type Standing = {
   acceptance: { attempted: number; accepted: number } | null;
   beats: number | null;
+  beatsMemory?: number | null;
+  histogram?: { runtime: Histogram | null; memory: Histogram | null } | null;
 };
+type Metric = 'runtime' | 'memory';
+/** The bucket holding `value`: edges are ascending, the last bucket includes its upper edge. */
+export function bucketOf(edges: number[], value: number) {
+  const last = edges.length - 2;
+  for (let i = 0; i < last; i++) if (value < edges[i + 1]) return i;
+  return last;
+}
+const metricValue = (metric: Metric, value: number) =>
+  metric === 'runtime'
+    ? `${value < 10 ? Number(value.toFixed(2)) : Math.round(value)} ms`
+    : value >= 1024
+      ? `${(value / 1024).toFixed(1)} MB`
+      : `${Math.round(value)} KB`;
+
+/**
+ * Everyone's best runtime or memory in this language as a pure-CSS bar chart, the
+ * learner's bucket lit, with its Beats %. Counts only (no bucket of fewer than three
+ * people, see problem-stats); a bar opens the solutions in this language, never anyone's
+ * submitted code.
+ */
+function Distribution({
+  standing,
+  runtimeMs,
+  memoryKb,
+  languageName,
+  english,
+  onBar,
+}: {
+  standing: Standing;
+  runtimeMs: number | null;
+  memoryKb: number | null;
+  languageName: string;
+  english: boolean;
+  onBar?: () => void;
+}) {
+  const t = (zh: string, en: string) => (english ? en : zh);
+  const [pick, setPick] = useState<Metric>('runtime');
+  const shapes = standing.histogram;
+  if (!shapes) return null;
+  const metric: Metric = shapes[pick] ? pick : pick === 'runtime' ? 'memory' : 'runtime';
+  const shape = shapes[metric];
+  if (!shape) return null;
+  const mine = metric === 'runtime' ? runtimeMs : memoryKb;
+  const at = mine === null ? -1 : bucketOf(shape.edges, mine);
+  const tallest = Math.max(...shape.counts);
+  const beats = (metric === 'runtime' ? standing.beats : standing.beatsMemory) ?? null;
+  const name = { runtime: t('运行时间', 'Runtime'), memory: t('内存', 'Memory') };
+  return (
+    <figure className="cs-perf" aria-label={t(`${languageName} 通过者的${name[metric]}分布`, `${name[metric]} of everyone who solved it in ${languageName}`)}>
+      <div className="cs-perf-head">
+        <div className="cs-perf-toggle" role="group" aria-label={t('分布指标', 'Distribution')}>
+          {(['runtime', 'memory'] as const).map((item) => (
+            <button
+              key={item}
+              type="button"
+              aria-pressed={metric === item}
+              disabled={!shapes[item]}
+              onClick={() => setPick(item)}
+            >
+              {name[item]}
+            </button>
+          ))}
+        </div>
+        {beats !== null && (
+          <strong className="cs-perf-beats">
+            {t(`击败 ${beats}%`, `Beats ${beats}%`)}
+          </strong>
+        )}
+      </div>
+      <ol className="cs-perf-bars">
+        {shape.counts.map((count, i) => {
+          const range = `${metricValue(metric, shape.edges[i])} – ${metricValue(metric, shape.edges[i + 1])}`;
+          const label = t(
+            `${range}：${count} 人${i === at ? '，你在这里' : ''}`,
+            `${range}: ${count} ${count === 1 ? 'person' : 'people'}${i === at ? ', you are here' : ''}`,
+          );
+          return (
+            <li key={i} data-mine={i === at || undefined}>
+              <button
+                type="button"
+                style={{ '--cs-bar': `${count ? Math.max(6, (100 * count) / tallest) : 0}%` } as CSSProperties}
+                aria-label={onBar ? `${label}${t('。查看题解', '. Show solutions')}` : label}
+                title={label}
+                disabled={!onBar}
+                onClick={onBar}
+              />
+            </li>
+          );
+        })}
+      </ol>
+      <figcaption className="cs-perf-axis">
+        <span>{metricValue(metric, shape.edges[0])}</span>
+        {onBar && <span>{t(`点柱子看 ${languageName} 题解`, `Tap a bar for ${languageName} solutions`)}</span>}
+        <span>{metricValue(metric, shape.edges.at(-1)!)}</span>
+      </figcaption>
+    </figure>
+  );
+}
 
 /** Back to the list the learner came from: the OA library, a classic list, or the bank. */
 const backTo = (problemId: string, library?: string) =>
@@ -2746,16 +3017,24 @@ function AcceptedDialog({
   acceptedAt,
   language,
   runtimeMs,
+  memoryKb,
   seconds,
   activity,
   fallbackNext,
   english,
   navigate,
   onClose,
+  openSolutions,
+  ai,
 }: {
   problemId: string;
   language: string;
   runtimeMs: number | null;
+  memoryKb: number | null;
+  /** Opens the solutions tab filtered to one language ('' for all). */
+  openSolutions?: (language: string) => void;
+  /** The AI tutor, when on: "analyse complexity" joins the dialog. */
+  ai?: { tutor: ReturnType<typeof useAiTutor>; context: AiContext };
   line: boolean;
   /** The classic list the problem was opened from; its order wins over Line 500's. */
   library?: string;
@@ -2802,6 +3081,7 @@ function AcceptedDialog({
     const query = new URLSearchParams({ language });
     // Unrounded: C++/Go runs crowd 1-5 ms, and rounding would pass slower runs as faster.
     if (runtimeMs != null) query.set('runtimeMs', String(runtimeMs));
+    if (memoryKb != null) query.set('memoryKb', String(memoryKb));
     ojRequest<Standing>(
       `problem-stats/${encodeURIComponent(problemId)}?${query}`,
       undefined,
@@ -2810,7 +3090,7 @@ function AcceptedDialog({
       /* A nicety: the dialog never waits on or fails with it. */
     });
     return () => controller.abort();
-  }, [problemId, language, runtimeMs]);
+  }, [problemId, language, runtimeMs, memoryKb]);
   const acceptance = standing?.acceptance;
   const beats = standing?.beats ?? null;
   const languageName =
@@ -2890,6 +3170,20 @@ function AcceptedDialog({
               )}
             </p>
           )}
+          {standing?.histogram && (
+            <Distribution
+              standing={standing as Standing}
+              runtimeMs={runtimeMs}
+              memoryKb={memoryKb}
+              languageName={languageName}
+              english={english}
+              onBar={
+                openSolutions &&
+                (() => openSolutions(['python', 'cpp', 'java', 'go'].includes(language) ? language : ''))
+              }
+            />
+          )}
+          {ai && <AiComplexity tutor={ai.tutor} context={ai.context} />}
           <AcceptedExtras problemId={problemId} acceptedAt={acceptedAt} activity={activity} english={english} />
           <Button
             ref={primary}
