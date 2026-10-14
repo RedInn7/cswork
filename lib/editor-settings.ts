@@ -119,8 +119,62 @@ export function readEditorDraft(
   return { code: previous ?? template, updatedAt: 0 };
 }
 
-export function writeEditorDraft(key: string, code: string): EditorDraft {
+/** Where a signed-in draft also lives on the server (user_drafts, lib/server/learner-cloud.ts). */
+export type CloudDraftTarget = {
+  problemId: string;
+  language: Language;
+  codingMode: CodingMode;
+};
+export const CLOUD_DRAFT_DELAY_MS = 3000;
+const uploads = new Map<
+  string,
+  { timer: ReturnType<typeof setTimeout>; send: (keepalive?: boolean) => void }
+>();
+export function cloudDraftUrl({ problemId, language, codingMode }: CloudDraftTarget) {
+  return `/api/oj/cloud/drafts/${encodeURIComponent(problemId)}?${new URLSearchParams({ language, mode: codingMode })}`;
+}
+/** The newest local version goes up once typing has paused; a failed upload leaves the local draft. */
+function queueCloudDraft(key: string, target: CloudDraftTarget, draft: EditorDraft) {
+  clearTimeout(uploads.get(key)?.timer);
+  const send = (keepalive = false) => {
+    uploads.delete(key);
+    void fetch(cloudDraftUrl(target), {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(draft),
+      keepalive,
+    }).catch(() => {});
+  };
+  uploads.set(key, { timer: setTimeout(send, CLOUD_DRAFT_DELAY_MS), send });
+}
+/** Sends waiting uploads now: the tab is being hidden or closed. */
+export function flushCloudDrafts() {
+  for (const { timer, send } of uploads.values()) {
+    clearTimeout(timer);
+    send(true);
+  }
+}
+export async function readCloudDraft(
+  target: CloudDraftTarget,
+  signal?: AbortSignal,
+): Promise<EditorDraft | null> {
+  const response = await fetch(cloudDraftUrl(target), { signal });
+  if (!response.ok) return null;
+  const { draft } = (await response.json()) as { draft?: EditorDraft | null };
+  return draft && typeof draft.code === 'string' && Number.isFinite(draft.updatedAt)
+    ? draft
+    : null;
+}
+
+/** Saves in this browser and, given a cloud target (signed in), uploads 3 s later. */
+export function writeEditorDraft(
+  key: string,
+  code: string,
+  cloud?: CloudDraftTarget,
+): EditorDraft {
   const draft = { code, updatedAt: Date.now() };
+  // Queued first: an unavailable localStorage makes the server copy the only one.
+  if (cloud) queueCloudDraft(key, cloud, draft);
   localStorage.setItem(key, JSON.stringify(draft));
   return draft;
 }

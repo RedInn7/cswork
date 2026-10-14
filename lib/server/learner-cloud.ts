@@ -727,6 +727,64 @@ async function handleReports(request: Request, p: Person | null, action?: string
   return json(problemReportSummary(d.problemId, p.id, now));
 }
 
+// ---------------------------------------------------------------- editor drafts
+
+/** Per learner: past this many drafts the least recently edited ones go. */
+export const DRAFT_ROWS = 2000;
+const DRAFT_BYTES = 65536;
+const draftKey = z
+  .object({
+    language: z.enum(['python', 'go', 'java', 'cpp', 'sql']),
+    mode: z.enum(['acm', 'leetcode']),
+  })
+  .strict();
+const draftInput = z
+  .object({ code: z.string(), updatedAt: z.number().int().positive() })
+  .strict();
+
+/**
+ * GET/PUT /api/oj/cloud/drafts/<problemId>?language=&mode=: the signed-in learner's own
+ * draft, keyed by their id from the session (never the request). A PUT older than the
+ * stored copy is ignored, so a stale tab can't overwrite a newer device's edit.
+ */
+export async function handleDrafts(request: Request, p: Person, problem?: string) {
+  if (!problem || !/^[\w-]{1,100}$/.test(problem)) throw new HttpError(404, '接口不存在');
+  const url = new URL(request.url);
+  const key = draftKey.parse({
+    language: url.searchParams.get('language'),
+    mode: url.searchParams.get('mode'),
+  });
+  const db = sqlite();
+  if (request.method === 'GET') {
+    await limit(p, 'draft-read', 120);
+    const row = db
+      .prepare(
+        'SELECT code,updated_at AS updatedAt FROM user_drafts WHERE user_id=? AND problem_id=? AND language=? AND coding_mode=?',
+      )
+      .get(p.id, problem, key.language, key.mode) as { code: string; updatedAt: number } | undefined;
+    return json({ draft: row ?? null });
+  }
+  if (request.method !== 'PUT') throw new HttpError(404, '接口不存在');
+  await limit(p, 'draft-write', 60);
+  const d = draftInput.parse(await readJson(request, 400000));
+  if (Buffer.byteLength(d.code) > DRAFT_BYTES) throw new HttpError(413, '代码超过 64 KiB');
+  if (d.code.includes('\0')) throw new HttpError(400, '内容不能包含空字符');
+  // A clock running ahead could otherwise pin this copy as newest forever.
+  const updatedAt = Math.min(d.updatedAt, Date.now());
+  db.transaction(() => {
+    db.prepare(
+      `INSERT INTO user_drafts(user_id,problem_id,language,coding_mode,code,updated_at) VALUES(?,?,?,?,?,?)
+      ON CONFLICT(user_id,problem_id,language,coding_mode) DO UPDATE SET code=excluded.code,updated_at=excluded.updated_at
+      WHERE excluded.updated_at>=user_drafts.updated_at`,
+    ).run(p.id, problem, key.language, key.mode, d.code, updatedAt);
+    db.prepare(
+      `DELETE FROM user_drafts WHERE rowid IN (SELECT rowid FROM user_drafts WHERE user_id=?
+      ORDER BY updated_at DESC LIMIT -1 OFFSET ?)`,
+    ).run(p.id, DRAFT_ROWS);
+  })();
+  return json({ saved: true });
+}
+
 /** /api/oj/{lists,profile,reports}/…: public list and report reads work signed out. */
 export async function handleLearnerCloud(request: Request, p: Person | null, path: string[]) {
   const [resource, id, action, extra] = path;

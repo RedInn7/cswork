@@ -17,7 +17,7 @@ import { handleLeetcodeSync } from './leetcode-sync';
 import { handleMyPractice } from './my-practice';
 import { handleAiTutor } from './ai-tutor';
 import { problemStats } from './problem-stats';
-import { handleLearnerCloud, handleMockHistory } from './learner-cloud';
+import { handleDrafts, handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { handleSolutionPosts } from './solution-posts';
 import { handleExperienceSubmissions } from './experience-submissions';
 import { handleStudyGroups } from './study-groups';
@@ -152,6 +152,8 @@ export async function handleOj(
   requirePerson(p);
   if (resource === 'posts' || resource === 'post-comments') return handleSolutionPosts(request, p, path);
   if (resource === 'tokens') return handleApiTokens(request, p, path.slice(1));
+  if (resource === 'cloud' && id === 'drafts' && !operation)
+    return handleDrafts(request, p, action);
   if (resource === 'leetcode-sync')
     return handleLeetcodeSync(request, p, path.slice(1));
   if (!id && (resource === 'history' || resource === 'notes' || resource === 'marks'))

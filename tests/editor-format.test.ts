@@ -18,14 +18,14 @@ const format = {
   action: 'format',
 };
 
-test('format is a whole-document action with an optional 2/4 tab size', () => {
+void test('format is a whole-document action with an optional 2/4 tab size', () => {
   assert.doesNotThrow(() => validateRequest(format));
   assert.doesNotThrow(() => validateRequest({ ...format, tabSize: 2 }));
   for (const patch of [{ tabSize: 3 }, { tabSize: '4' }, { action: 'hover', tabSize: 4 }])
     assert.throws(() => validateRequest({ ...format, ...patch }));
 });
 
-test('formatter answers cross the bridge as plain text edits only', () => {
+void test('formatter answers cross the bridge as plain text edits only', () => {
   const edit = {
     range: { start: { line: 0, character: 0 }, end: { line: 1, character: 13 } },
     newText: 'func main() {}',
@@ -42,7 +42,7 @@ test('formatter answers cross the bridge as plain text edits only', () => {
   ]);
 });
 
-test('ruff runs inside the session container on stdin, and unchanged code needs no edit', () => {
+void test('ruff runs inside the session container on stdin, and unchanged code needs no edit', () => {
   const args = pythonFormatArguments('cswork-lsp-fixed', 2);
   assert.deepEqual(args.slice(0, 5), ['exec', '--interactive', '--user', '10001:10001', 'cswork-lsp-fixed']);
   assert.equal(args.at(-1), '-');
@@ -57,7 +57,7 @@ test('ruff runs inside the session container on stdin, and unchanged code needs 
   ]);
 });
 
-test('a formatter refusing broken code answers 422 and keeps the session', async () => {
+void test('a formatter refusing broken code answers 422 and keeps the session', async () => {
   let closed = false;
   const session = {
     language: 'go',
