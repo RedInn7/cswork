@@ -78,3 +78,41 @@ void test('the server source takes judgeable pools, names the company and finds 
   assert.deepEqual(oa.done, [even, odd]);
   assert.equal(dailyStreak(oa.done, even), 2);
 });
+
+void test('/daily shows an OA statement in public and only the title and stop for LeetCode', async () => {
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { DailyView } = await import('../app/daily/view');
+  const oa = renderToStaticMarkup(
+    createElement(DailyView, {
+      zh: false,
+      statement: 'Ship **every** parcel.',
+      statementLang: 'en',
+      daily: {
+        date: '2026-10-14', id: 'oa-amazon-7', kind: 'oa', title: '仓库调度', titleEn: 'Warehouse Dispatch',
+        difficulty: '中等', company: { slug: 'amazon', name: 'Amazon' }, done: [],
+      },
+    }),
+  );
+  assert.match(oa, /<h1>Warehouse Dispatch<\/h1>/);
+  assert.match(oa, /<strong>every<\/strong>/);
+  assert.match(oa, /href="\/\?view=problem&amp;problem=oa-amazon-7"/);
+  assert.match(oa, /href="\/oa\/amazon\/oa-amazon-7"/);
+  assert.match(oa, /data-level="medium">Medium/);
+  assert.equal((oa.match(/<h1/g) ?? []).length, 1);
+  const lc = renderToStaticMarkup(
+    createElement(DailyView, {
+      zh: true,
+      daily: {
+        date: '2026-10-13', id: 'lc-35', kind: 'lc', title: '搜索插入位置', difficulty: '简单',
+        stop: 'binary-search', done: [],
+      },
+    }),
+  );
+  assert.match(lc, /500 路 · 06/);
+  assert.match(lc, /二分查找/);
+  assert.match(lc, /href="\/topics\/binary-search"/);
+  assert.match(lc, /href="\/\?view=problems&amp;section=binary-search"/);
+  assert.match(lc, /登录后在练习工作台查看/);
+  assert.match(renderToStaticMarkup(createElement(DailyView, { zh: false, daily: null })), /isn’t ready yet/);
+});
