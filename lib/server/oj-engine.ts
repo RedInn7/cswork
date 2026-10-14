@@ -10,8 +10,9 @@ import { stringStructureCheckerId } from '@/lib/oj-string-contract';
 import { matchesStringStructure } from '@/lib/oj-string-structures';
 import { semanticCheckerId } from '@/lib/oj-semantic-contract';
 import { matchesSemantic } from '@/lib/oj-semantic-checkers';
-import type { Language } from '@/lib/problems';
+import type { CodeLanguage, Language } from '@/lib/problems';
 import { javaCommand, LEETCODE_SUPPORT } from './leetcode-mode';
+import { SQL_HARNESS } from './sql-judge';
 import {
   asciiTokens,
   parseIntegerRowCollection,
@@ -59,7 +60,7 @@ export type CompiledProgram = {
   leetcodeInput?: boolean;
 };
 export class EngineFailure extends Error {}
-const sourceNames: Record<Language, string> = {
+const sourceNames: Record<CodeLanguage, string> = {
   cpp: 'main.cpp',
   python: 'main.py',
   java: 'Main.java',
@@ -263,6 +264,12 @@ export async function compile(
   source: string,
   signal: AbortSignal,
 ) {
+  // SQL has nothing to build: the trusted harness runs the query as data (see run).
+  if (language === 'sql') {
+    const result: EngineResult = { status: 'Accepted' };
+    const program: CompiledProgram = { language, source, cache: {} };
+    return { result, program };
+  }
   // LeetCode-mode Python carries the support runtime; ACM Python runs as plain source.
   const bytecode = language === 'python' && source.includes(LEETCODE_SUPPORT);
   // Python's bytecode is optional (see PYTHON_BYTECODE); the others must exist.
@@ -273,7 +280,7 @@ export async function compile(
         ? 'main.jar'
         : 'main';
   const text = language === 'cpp' ? withStdcxxPch(source) : source;
-  const commands: Record<Language, string[]> = {
+  const commands: Record<CodeLanguage, string[]> = {
     cpp: source.includes('// CSWORK_CPP_JSON_RUNTIME_V1')
       ? [
           '/bin/sh',
@@ -363,6 +370,25 @@ export async function run(
   signal: AbortSignal,
 ) {
   const memoryBytes = spec.memoryLimit * 1024;
+  if (program.language === 'sql')
+    return execute(
+      {
+        ...limits(
+          input,
+          spec.timeLimit,
+          Math.max(3, spec.timeLimit * 3),
+          memoryBytes,
+          spec.outputLimit * 1024,
+        ),
+        // -S: the harness needs only the standard library's sqlite3.
+        args: ['/usr/bin/python3', '-I', '-S', 'judge.py'],
+        copyIn: {
+          'judge.py': { content: SQL_HARNESS },
+          'query.sql': { content: program.source },
+        },
+      },
+      signal,
+    );
   const script = program.bridgeSource
     ? program.bridgeBytecode
       ? 'bridge.pyc'

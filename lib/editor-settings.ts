@@ -130,4 +130,5 @@ export const languageFiles: Record<Language, string> = {
   go: 'main.go',
   java: 'Main.java',
   cpp: 'main.cpp',
+  sql: 'query.sql',
 };

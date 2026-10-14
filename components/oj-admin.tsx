@@ -1536,25 +1536,31 @@ export function OjAdmin({
                     <div className="oj-admin-language-options">
                       <strong>{t('开放编程语言', 'Allowed languages')}</strong>
                       <div>
-                        {languages.map((language) => (
-                          <label key={language.id}>
-                            <input
-                              type="checkbox"
-                              checked={spec.languages.includes(language.id)}
-                              onChange={(e) =>
-                                updateSpec(
-                                  'languages',
-                                  e.target.checked
-                                    ? [...spec.languages, language.id]
-                                    : spec.languages.filter(
-                                        (id) => id !== language.id,
-                                      ),
-                                )
-                              }
-                            />
-                            {language.name}
-                          </label>
-                        ))}
+                        {languages
+                          // SQL is the SQL track's own language (sql- problems only).
+                          .filter(
+                            (language) =>
+                              (language.id === 'sql') === spec.id.startsWith('sql-'),
+                          )
+                          .map((language) => (
+                            <label key={language.id}>
+                              <input
+                                type="checkbox"
+                                checked={spec.languages.includes(language.id)}
+                                onChange={(e) =>
+                                  updateSpec(
+                                    'languages',
+                                    e.target.checked
+                                      ? [...spec.languages, language.id]
+                                      : spec.languages.filter(
+                                          (id) => id !== language.id,
+                                        ),
+                                  )
+                                }
+                              />
+                              {language.name}
+                            </label>
+                          ))}
                       </div>
                     </div>
                     <p className="oj-admin-muted">

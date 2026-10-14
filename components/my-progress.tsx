@@ -48,8 +48,14 @@ const TABS: [Tab, string, string][] = [
 const DAY = 86400000;
 const problemOf = (target: string) =>
   target.startsWith('problem:') ? target.slice(8) : null;
-const source = (id: string): 'lc' | 'oa' | 'course' =>
-  id.startsWith('lc-') ? 'lc' : id.startsWith('oa-') ? 'oa' : 'course';
+const source = (id: string): 'lc' | 'oa' | 'sql' | 'course' =>
+  id.startsWith('lc-')
+    ? 'lc'
+    : id.startsWith('oa-')
+      ? 'oa'
+      : id.startsWith('sql-')
+        ? 'sql'
+        : 'course';
 
 /** ?view=progress: practice history, mistakes, reviews due today, and the learner's marks and notes. */
 export function MyProgress({
@@ -165,7 +171,9 @@ export function MyProgress({
   const tried = (item: PracticeHistoryItem) =>
     t(`提交 ${item.attempts} 次`, `${item.attempts} submission${item.attempts > 1 ? 's' : ''}`);
   const sourceName = (id: string) =>
-    ({ lc: 'LeetCode', oa: 'OA', course: t('课程练习', 'Course') })[source(id)];
+    ({ lc: 'LeetCode', oa: 'OA', sql: t('SQL 专项', 'SQL track'), course: t('课程练习', 'Course') })[
+      source(id)
+    ];
 
   /** One problem row; `detail` is the tab's own line under the title. */
   function row(id: string, detail: string[], list: string[]) {
