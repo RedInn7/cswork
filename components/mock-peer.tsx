@@ -137,7 +137,7 @@ export function MockPeer({ navigate, params }: { navigate: Navigate; params: Rec
       setBusy(false);
     }
   }
-  const now = Date.now();
+  const [now] = useState(() => Date.now());
   const upcoming = state?.pairs.filter((p) => p.status === 'scheduled' && p.slot * HOUR + minutesOf(p.kind) * 60000 > now) ?? [];
   const past = state?.pairs.filter((p) => !upcoming.includes(p)) ?? [];
   return (
@@ -171,7 +171,7 @@ export function MockPeer({ navigate, params }: { navigate: Navigate; params: Rec
               </section>
             )}
             {state.paused ? (
-              <section className="rd-card peer-paused" role="status">
+              <section className="rd-card peer-paused">
                 <Flag size={16} aria-hidden="true" />
                 <p>
                   {t(
@@ -181,7 +181,7 @@ export function MockPeer({ navigate, params }: { navigate: Navigate; params: Rec
                 </p>
               </section>
             ) : state.request && !state.request.expired ? (
-              <Waiting request={state.request} t={t} english={english} busy={busy} cancel={() => void run('oj/peer/cancel', {})} />
+              <Waiting request={state.request} now={now} t={t} english={english} busy={busy} cancel={() => void run('oj/peer/cancel', {})} />
             ) : (
               <RequestForm t={t} english={english} busy={busy} submit={(body) => run('oj/peer', body)} expired={!!state.request} />
             )}
@@ -208,18 +208,20 @@ export function MockPeer({ navigate, params }: { navigate: Navigate; params: Rec
 
 function Waiting({
   request,
+  now,
   t,
   english,
   busy,
   cancel,
 }: {
   request: NonNullable<PeerState['request']>;
+  now: number;
   t: T;
   english: boolean;
   busy: boolean;
   cancel: () => void;
 }) {
-  const ahead = request.slots.filter((s) => s * HOUR > Date.now());
+  const ahead = request.slots.filter((s) => s * HOUR > now);
   return (
     <section className="mi-board peer-waiting rd-reveal" aria-labelledby="peer-waiting-title">
       <div className="mi-board-controls">
@@ -289,7 +291,7 @@ function RequestForm({
     >
       <div className="mi-board-controls">
         {expired && (
-          <p className="peer-note" role="status">
+          <p className="peer-note">
             {t('上次选的时段都过去了，重新选几个吧。', 'All the hours you picked last time have passed. Pick some new ones.')}
           </p>
         )}
@@ -381,7 +383,7 @@ function RequestForm({
         </p>
         <label className="peer-name">
           <span>{t('给同伴看的昵称', 'The name your partner sees')}</span>
-          <input value={name} maxLength={24} required onChange={(e) => setName(e.target.value)} autoComplete="nickname" />
+          <input value={name} maxLength={24} required onChange={(e) => setName(e.target.value)} />
         </label>
         <button type="submit" className="mi-cta" disabled={busy || !name.trim() || !picked.length}>
           <Users size={17} aria-hidden="true" />
@@ -411,10 +413,11 @@ function PairCard({
   run: (path: string, body: unknown) => Promise<boolean>;
   navigate: Navigate;
 }) {
-  const [link, setLink] = useState(pair.meetUrl);
+  // The typed link until it is saved; then the session's own again.
+  const [draft, setDraft] = useState<string | null>(null);
+  const link = draft ?? pair.meetUrl;
   const [confirm, setConfirm] = useState<Confirm>(null);
   const card = useRef<HTMLElement>(null);
-  useEffect(() => setLink(pair.meetUrl), [pair.meetUrl]);
   // A notification's link (&pair=) brings its session into view once.
   useEffect(() => {
     if (focus) card.current?.scrollIntoView?.({ block: 'center' });
@@ -481,7 +484,7 @@ function PairCard({
           className="peer-link"
           onSubmit={(e) => {
             e.preventDefault();
-            if (linkOk) void run(`oj/peer/${pair.id}/link`, { url: link.trim() });
+            if (linkOk) void run(`oj/peer/${pair.id}/link`, { url: link.trim() }).then((ok) => ok && setDraft(null));
           }}
         >
           <label>
@@ -492,7 +495,7 @@ function PairCard({
               maxLength={500}
               placeholder="https://meet.google.com/…"
               aria-invalid={!linkOk || undefined}
-              onChange={(e) => setLink(e.target.value)}
+              onChange={(e) => setDraft(e.target.value)}
             />
           </label>
           <button type="submit" className="rd-button is-quiet" disabled={busy || !linkOk || link.trim() === pair.meetUrl}>

@@ -90,7 +90,7 @@ export function setCamp(groupId: string, input: unknown, now = Date.now()) {
     ])
     .parse(input);
   const db = sqlite();
-  if (!d.plan) db.prepare('DELETE FROM study_group_camps WHERE group_id=?').run(groupId);
+  if (!('perDay' in d)) db.prepare('DELETE FROM study_group_camps WHERE group_id=?').run(groupId);
   else
     db.prepare(
       `INSERT INTO study_group_camps(group_id,plan,per_day,start_date,updated_at) VALUES(?,?,?,?,?)

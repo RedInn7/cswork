@@ -47,7 +47,7 @@ export default async function NewsletterPage({ searchParams }: Props) {
         </p>
         {notice && (
           <p className="newsletter-notice" role="status">
-            {t(...NOTICES[notice])}
+            {t(NOTICES[notice][0], NOTICES[notice][1])}
           </p>
         )}
         <NewsletterToggle />
