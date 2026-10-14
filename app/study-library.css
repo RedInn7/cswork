@@ -1634,3 +1634,46 @@
     min-width: calc(var(--n) * 24px);
   }
 }
+
+/* Pick one: a navy ticket button at the end of the filter bar. */
+.study-filters .study-pick-one {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 9px;
+  background: var(--route-navy, #0e1a2b);
+  color: var(--route-amber, #ffb23f);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.study-filters .study-pick-one:hover {
+  background: var(--route-slate, #2b3a50);
+}
+.study-filters .study-pick-one:focus-visible {
+  outline: 2px solid #327b76;
+  outline-offset: 3px;
+}
+.study-filters .study-pick-one:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+.study-pick-message {
+  margin: 8px 2px 0;
+  color: #66717c;
+  font-size: 13px;
+}
+.study-pick-message:empty {
+  display: none;
+}
+@media (max-width: 600px) {
+  .study-filters .study-pick-one {
+    justify-content: center;
+    width: 100%;
+    min-height: 44px;
+  }
+}

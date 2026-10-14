@@ -231,7 +231,15 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
       entry.count++;
       companyCounts.set(slug, entry);
     }
+  // random=1, "Pick one": an unsolved problem judgeable here, under the filters.
+  const pool =
+    params.get('random') === '1'
+      ? filtered.filter((item) => item.caseStatus === 'verified' && item.judgeProblemId && !item.solved)
+      : [];
   return {
+    ...(params.get('random') === '1' && {
+      random: pool.length ? pool[Math.floor(Math.random() * pool.length)].judgeProblemId : null,
+    }),
     items: filtered.slice((page - 1) * 30, page * 30).map((item) => ({
       ...item,
       // Two marks per row; the filtered company leads so a row shows why it matched.
