@@ -29,6 +29,18 @@ export type OJProblem = Problem & {
   companies?: CompanyTag[];
   /** A failed formal submission in the current practice round. */
   hintEarned?: boolean;
+  /** Failed formal submissions this round, up to 2 ids. */
+  failedSubmissionIds?: string[];
+  /** Line 500's three progressive hints: observation, invariant, steps. */
+  lingHints?: { zh: string[]; en: string[] } | null;
+  similar?: SimilarProblem[];
+};
+export type SimilarProblem = {
+  id: string;
+  title: string;
+  titleEn?: string;
+  difficulty: string;
+  solved: boolean;
 };
 export type OJCase = {
   ordinal: number;
@@ -104,6 +116,11 @@ const failedVerdicts = new Set([
 /** A formal submission that failed on the learner's code (not the judge) earns the hint. */
 export const hintUnlocked = (items: Pick<OJSubmission, 'mode' | 'status'>[]) =>
   items.some((item) => item.mode === 'judge' && failedVerdicts.has(item.status));
+/** Time on a problem that opens hint 2 without a failed submission. */
+export const HINT_WAIT_SECONDS = 600;
+/** Line 500 hints open: 1 always, 2 after a failed formal submission or 10 minutes, 3 after two failures. */
+export const hintsUnlocked = (failed: number, seconds: number) =>
+  failed >= 2 ? 3 : failed >= 1 || seconds >= HINT_WAIT_SECONDS ? 2 : 1;
 /** The problem's community solutions on leetcode.cn (zh) or leetcode.com (en). */
 export function leetcodeSolutionsUrl(source: string | undefined, english: boolean) {
   const slug = /^https:\/\/leetcode\.(?:cn|com)\/problems\/([a-z0-9-]+)/.exec(

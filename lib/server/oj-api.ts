@@ -21,7 +21,9 @@ import { hiddenCompanies } from './env';
 import {
   getStudyLibrary,
   getStudySourceStatement,
+  lingHints,
   listLibrary,
+  similarProblems,
 } from './study-library';
 import { classicList } from '@/lib/classic-lists';
 import { requireCourseOwner } from './course-visibility';
@@ -50,7 +52,7 @@ import {
   waitForSubmission,
   settleSubmission,
   submissionHistory,
-  hintEarned,
+  failedJudgeIds,
   cancelSubmission,
   ojStatus,
   MAX_CODE_BYTES,
@@ -85,6 +87,9 @@ export async function handleOj(
     const round =
       p && isSelectedProblem(id) ? practiceRoundState(p.id).currentRound : null;
     const hint = curatedHint(id);
+    const tags = companyTagIndex(hiddenCompanies());
+    // Per round like Solved, over all history rather than the first page; 2 opens hint 3.
+    const failed = hint && p ? failedJudgeIds(p.id, id, round?.id) : [];
     return json({
       ...problem,
       codingModes: templates ? ['leetcode', 'acm'] : ['acm'],
@@ -92,9 +97,14 @@ export async function handleOj(
       leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
       sourceStatement: getStudySourceStatement(id),
       curatedHint: hint,
-      companies: companyTagIndex(hiddenCompanies()).get(id) ?? [],
-      // Per round like Solved, over all history rather than the first page.
-      hintEarned: hint && p ? hintEarned(p.id, id, round?.id) : false,
+      companies: tags.get(id) ?? [],
+      hintEarned: failed.length > 0,
+      // Ids, not a count: the client unions them with live verdicts so none counts twice.
+      failedSubmissionIds: failed,
+      // Observation, invariant, steps: the client opens them one at a time (components/hint-ladder.tsx).
+      lingHints: lingHints(id),
+      // A nicety under the statement: it never fails the problem itself.
+      similar: await similarProblems(id, p?.id, tags).catch(() => []),
       practiceRound: round,
       maxCodeBytes: MAX_CODE_BYTES,
       maxStdinBytes: MAX_STDIN_BYTES,
