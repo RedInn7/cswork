@@ -195,7 +195,8 @@ export function PythonDebugger({ code, stdin: firstInput, mode, template = '', o
   const step = steps[index];
   const last = steps.length - 1;
   const atEnd = !!trace && index === last;
-  const failedLine = atEnd && trace?.error?.line === step?.line;
+  const errorLine = trace?.error?.line ?? null;
+  const failedLine = atEnd && errorLine === step?.line;
   useEffect(() => {
     if (!view) return;
     const { editor, monaco, decorations } = view;
@@ -216,9 +217,11 @@ export function PythonDebugger({ code, stdin: firstInput, mode, template = '', o
             }),
           ]
         : []),
+      // A syntax error never runs a step: mark its line instead.
+      ...(!step && errorLine ? [at(errorLine, { isWholeLine: true, className: 'pydbg-line-error' })] : []),
     ]);
     if (step) editor.revealLineInCenterIfOutsideViewport(step.line);
-  }, [view, breakpoints, step, failedLine]);
+  }, [view, breakpoints, step, failedLine, errorLine]);
 
   const go = (move: Move) => trace && setIndex((i) => moveTo(trace.steps, i, move, breakpoints));
   const keys = (event: KeyboardEvent) => {

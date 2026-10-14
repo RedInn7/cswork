@@ -247,3 +247,21 @@ test("a runtime that can't download shows an alert, and Retry starts over", asyn
     await act(async () => root.unmount());
   }
 });
+
+test('a syntax error marks its line and leaves nothing to step through', async () => {
+  open();
+  gate.release();
+  const root = await mount({ language: 'python', code: 'x = 1\ny = (\n', stdin: '', mode: 'acm' });
+  try {
+    await click('Debug');
+    await settle(400);
+    assert.equal(status().includes('Line 2: SyntaxError'), true);
+    assert.equal(button('Continue').disabled, true);
+    assert.equal(
+      globalThis.__monaco.decorations.some((d) => d.range.startLineNumber === 2 && d.options.className === 'pydbg-line-error'),
+      true,
+    );
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
