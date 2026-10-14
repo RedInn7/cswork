@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight, Check, ChevronLeft, ChevronRight, Code2, Copy, Dices, ExternalLink, Eye, Flag,
-  History as HistoryIcon, Lightbulb, Minus, Pause, Play, Plus, Printer, RotateCcw, ShieldAlert, Shuffle, Users,
+  History as HistoryIcon, Lightbulb, Link2, MessageSquareText, Minus, Pause, Play, Plus, Printer, RotateCcw, Save,
+  ShieldAlert, Shuffle, Users,
 } from 'lucide-react';
 import { api } from '@/lib/types';
 import { track } from '@/lib/analytics';
@@ -15,6 +16,9 @@ import {
   CUSTOM_NAME, KINDS, ROLES, ROUNDS, SMALL_BANK, TEMPLATES, newSeed, resolveTemplate,
   type KindId, type Text,
 } from '@/lib/mock-interview';
+import {
+  RUBRIC, VERDICTS, decodeFeedback, encodeFeedback, forSet, questionTag, rubricAverage, type Feedback, type RubricId,
+} from '@/lib/mock-interview-feedback';
 import type { Navigate } from './learning';
 import { OaMarkdown } from './oa-library';
 import '@/app/redesign.css';
@@ -52,7 +56,11 @@ type Run = {
   ratings: Record<number, number>;
   shown: Record<number, { hint?: boolean; answer?: boolean }>;
   verdict?: string;
+  /** Before the strengths / improvements split; shown as the strengths. */
   summary?: string;
+  rubric?: Partial<Record<RubricId, number>>;
+  strengths?: string;
+  improvements?: string;
   /** Start and finish were counted for this sitting (saved, so a reload or a review doesn't count again). */
   started?: boolean;
   finished?: boolean;
@@ -63,6 +71,8 @@ type Past = {
   company: string | null;
   at: number;
   items: { id: string; title: string; kind: KindId; seconds: number; minutes: number; rating: number | null }[];
+  /** An interviewer's feedback saved with this set: the `#fb=` value. */
+  feedback?: string;
 };
 
 const SET_KEYS = ['template', 'company', 'role', 'round', 'mix', 'min', 'set', 'rr'] as const;
@@ -71,12 +81,6 @@ const RUNS = 'cswork:mock-interview:runs',
   AVOID = 'cswork:mock-interview:avoid-seen';
 const RATINGS: Text[] = [['卡住了', 'Stuck'], ['有思路', 'Partial'], ['基本答好', 'Solid'], ['很完整', 'Nailed it']];
 const SCORES: Text[] = [['不足', 'Weak'], ['一般', 'Mixed'], ['良好', 'Good'], ['出色', 'Excellent']];
-const VERDICTS: [string, Text][] = [
-  ['strong-no', ['明确不通过', 'Strong no hire']],
-  ['no', ['倾向不通过', 'Lean no hire']],
-  ['yes', ['倾向通过', 'Lean hire']],
-  ['strong-yes', ['强烈推荐', 'Strong hire']],
-];
 
 const pick = (params: Record<string, string>) => {
   const out: Record<string, string> = {};
@@ -103,8 +107,10 @@ function read<T>(key: string, fallback: T): T {
 function write(key: string, value: unknown) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
+    return true;
   } catch {
-    /* Not saved; the page keeps working. */
+    // Not saved; the page keeps working.
+    return false;
   }
 }
 const pastSessions = () => {
@@ -437,6 +443,11 @@ function Setup({ params, navigate }: { params: Record<string, string>; navigate:
                   <button type="button" className="mi-history-row" onClick={() => navigate('mock-interview', p.query)}>
                     <time dateTime={new Date(p.at).toISOString()}>{new Date(p.at).toLocaleDateString()}</time>
                     <strong>
+                      {p.feedback && (
+                        <span className="mi-history-fb">
+                          <MessageSquareText size={12} aria-hidden="true" /> {t('有反馈', 'Feedback')}
+                        </span>
+                      )}
                       {p.company ? `${p.company} · ` : ''}
                       {t(...p.name)}
                     </strong>
@@ -551,6 +562,18 @@ function Session({
     setRun((r) => ({ ...r, started: true }));
     track('mock_interview_start', { company: query.company || 'any', template: query.template, mode });
   }, [data, run.phase, run.started, query, mode]);
+  // Feedback from the interviewer's link (#fb=…, never sent to the server), else one saved with this set.
+  const [hash, setHash] = useState(() => location.hash);
+  useEffect(() => {
+    const read = () => setHash(location.hash);
+    window.addEventListener('hashchange', read);
+    return () => window.removeEventListener('hashchange', read);
+  }, []);
+  const [saved, setSaved] = useState(() => pastSessions().find((p) => new URLSearchParams(p.query).toString() === key) ?? null);
+  const savedFeedback = saved?.feedback ?? null;
+  const linked = new URLSearchParams(hash.slice(1)).get('fb');
+  const fromLink = useMemo(() => decodeFeedback(linked), [linked]);
+  const fromHistory = useMemo(() => decodeFeedback(savedFeedback), [savedFeedback]);
 
   if (error)
     return (
@@ -585,18 +608,17 @@ function Session({
       setData(set);
       setQuery(next);
       // Replace, not push: the address always reproduces the set on screen.
-      window.history.replaceState(null, '', '/?' + new URLSearchParams({ view: 'mock-interview', ...next }));
+      window.history.replaceState(null, '', '/?' + new URLSearchParams({ view: 'mock-interview', ...next }) + location.hash);
     } catch (e) {
       setRollError((e as Error).message);
     } finally {
       setRolling(null);
     }
   };
-  const finish = () => {
-    const done = { ...commit(run), since: null, phase: 'done' as const, finished: true };
-    setRun(done);
-    if (!run.finished) track('mock_interview_finish', { company: query.company || 'any', template: query.template, mode });
-    if (mode !== 'solo') return;
+  /** Saves this set to the history, keeping what an earlier save of it had; null when storage is blocked. */
+  const remember = (change: (old: Past | undefined) => Partial<Past>, rating: (i: number) => number | null, elapsed: number[]) => {
+    const past = pastSessions();
+    const old = past.find((p) => new URLSearchParams(p.query).toString() === key);
     const entry: Past = {
       query,
       name: data.template.name,
@@ -604,17 +626,53 @@ function Session({
       at: Date.now(),
       items: data.slots.flatMap((s, i) =>
         s.item
-          ? [{ id: s.item.id, title: s.item.title, kind: s.kind, seconds: Math.round(done.elapsed[i] ?? 0), minutes: s.minutes, rating: done.ratings[i] ?? null }]
+          ? [{ id: s.item.id, title: s.item.title, kind: s.kind, seconds: Math.round(elapsed[i] ?? 0), minutes: s.minutes, rating: rating(i) }]
           : [],
       ),
+      feedback: old?.feedback,
+      ...change(old),
     };
-    write(HISTORY, [entry, ...pastSessions().filter((p) => new URLSearchParams(p.query).toString() !== key)].slice(0, 30));
+    return write(HISTORY, [entry, ...past.filter((p) => p !== old)].slice(0, 30)) ? entry : null;
   };
+  const finish = () => {
+    const done = { ...commit(run), since: null, phase: 'done' as const, finished: true };
+    setRun(done);
+    if (!run.finished) track('mock_interview_finish', { company: query.company || 'any', template: query.template, mode });
+    if (mode === 'solo') remember(() => ({}), (i) => done.ratings[i] ?? null, done.elapsed);
+  };
+  const feedback = fromLink ?? fromHistory;
+  const value = fromLink ? linked : savedFeedback;
+  const saveFeedback = () => {
+    // Feedback for another set never lands on this one's history entry.
+    if (!feedback || !value || !forSet(feedback, query)) return false;
+    // A set practiced here keeps its own ratings and time; otherwise the interviewer's ratings stand in,
+    // each only on the question it was given for.
+    const rating = (i: number) => {
+      const q = feedback.questions[i];
+      const id = data.slots[i]?.item?.id;
+      return q && id && (!q.tag || q.tag === questionTag(id)) ? q.rating : null;
+    };
+    const entry = remember((old) => ({ ...old, at: Date.now(), feedback: value }), rating, run.elapsed);
+    if (entry) setSaved(entry);
+    return !!entry;
+  };
+  const card =
+    mode !== 'interviewer' && (feedback || linked) ? (
+      <FeedbackCard
+        data={data}
+        query={query}
+        feedback={feedback}
+        broken={!!linked && !fromLink}
+        saved={!!value && value === savedFeedback}
+        onSave={saveFeedback}
+        known={saved?.items ?? []}
+      />
+    ) : null;
 
   const props = { data, query, mode, run, setRun, now, problemIds, navigate, finish };
   if (mode === 'interviewer') return <InterviewerSheet {...props} />;
-  if (run.phase === 'plan') return <Plan {...props} reroll={reroll} rolling={rolling} rollError={rollError} />;
-  if (run.phase === 'done') return <Summary {...props} />;
+  if (run.phase === 'plan') return <Plan {...props} card={card} locked={!!feedback} reroll={reroll} rolling={rolling} rollError={rollError} />;
+  if (run.phase === 'done') return <Summary {...props} card={card} />;
   return <Runner {...props} />;
 }
 type SessionProps = {
@@ -694,14 +752,23 @@ function Plan({
   data,
   query,
   setRun,
+  card,
+  locked,
   reroll,
   rolling,
   rollError,
-}: SessionProps & { reroll: (i: number) => void; rolling: number | null; rollError: string }) {
+}: SessionProps & { card: React.ReactNode; locked: boolean; reroll: (i: number) => void; rolling: number | null; rollError: string }) {
   const t = useT();
+  // `locked` while feedback is on screen: a re-roll would put its scores beside questions they weren't given for.
   return (
     <>
       <SetHead data={data} query={query} mode="solo" />
+      {card}
+      {locked && (
+        <p className="mi-muted mi-reroll-off" id="mi-reroll-off">
+          {t('带着面试官反馈时不能换题，免得评分对不上题目。', 'Re-rolling is off while this feedback is open, so each score stays with its question.')}
+        </p>
+      )}
       {rollError && (
         <div className="js-error" role="alert">
           {t(`没换成，这套题没变：${rollError}`, `Couldn't re-roll; the set is unchanged. ${englishMessage(rollError)}`)}
@@ -721,7 +788,8 @@ function Plan({
             <button
               type="button"
               className="rd-button is-quiet mi-reroll"
-              disabled={rolling !== null || slot.pool < 2}
+              disabled={locked || rolling !== null || slot.pool < 2}
+              aria-describedby={locked ? 'mi-reroll-off' : undefined}
               onClick={() => reroll(i)}
               aria-label={t(`第 ${i + 1} 题换一题`, `Re-roll question ${i + 1}`)}
             >
@@ -923,11 +991,26 @@ function Guide({ item }: { item: Item }) {
   );
 }
 
-function Rating({ value, onChange, labels, name }: { value: number | undefined; onChange: (n: number) => void; labels: Text[]; name: string }) {
+function Rating({
+  value,
+  onChange,
+  labels,
+  name,
+  hint,
+}: {
+  value: number | undefined;
+  onChange: (n: number) => void;
+  labels: Text[];
+  name: string;
+  hint?: string;
+}) {
   const t = useT();
   return (
     <fieldset className="mi-rating">
-      <legend>{name}</legend>
+      <legend>
+        {name}
+        {hint && <small>{hint}</small>}
+      </legend>
       {labels.map((label, i) => (
         <label key={i} data-n={i + 1}>
           <input type="radio" name={name} checked={value === i + 1} onChange={() => onChange(i + 1)} />
@@ -936,6 +1019,21 @@ function Rating({ value, onChange, labels, name }: { value: number | undefined; 
         </label>
       ))}
     </fieldset>
+  );
+}
+
+/** A 1–4 score as four bars, with its words for screen readers and print. */
+function Pips({ n, label }: { n: number; label: string }) {
+  return (
+    <span className="mi-pips" data-n={n}>
+      <span aria-hidden="true">
+        <i />
+        <i />
+        <i />
+        <i />
+      </span>
+      {label}
+    </span>
   );
 }
 
@@ -1048,7 +1146,7 @@ function Runner({ data, query, mode, run, setRun, now, problemIds, finish }: Ses
   );
 }
 
-function Summary({ data, query, mode, run, setRun, navigate }: SessionProps) {
+function Summary({ data, query, mode, run, setRun, navigate, card }: SessionProps & { card: React.ReactNode }) {
   const t = useT();
   const rated = data.slots.map((_, i) => run.ratings[i]).filter(Boolean) as number[];
   const total = data.slots.reduce((sum, _, i) => sum + (run.elapsed[i] ?? 0), 0);
@@ -1056,6 +1154,7 @@ function Summary({ data, query, mode, run, setRun, navigate }: SessionProps) {
   return (
     <>
       <SetHead data={data} query={query} mode={mode} />
+      {card}
       <section className="mi-board mi-summary-board rd-reveal" style={{ '--i': 1 } as React.CSSProperties}>
         <div>
           <p className="mi-ticket-kicker">{t('用时', 'Time')}</p>
@@ -1098,19 +1197,7 @@ function Summary({ data, query, mode, run, setRun, navigate }: SessionProps) {
                   </td>
                   {mode === 'solo' && (
                     <td>
-                      {run.ratings[i] ? (
-                        <span className="mi-pips" data-n={run.ratings[i]}>
-                          <span aria-hidden="true">
-                            <i />
-                            <i />
-                            <i />
-                            <i />
-                          </span>
-                          {t(...RATINGS[run.ratings[i] - 1])}
-                        </span>
-                      ) : (
-                        '—'
-                      )}
+                      {run.ratings[i] ? <Pips n={run.ratings[i]} label={t(...RATINGS[run.ratings[i] - 1])} /> : '—'}
                     </td>
                   )}
                 </tr>
@@ -1213,6 +1300,18 @@ function InterviewerSheet({ data, query, run, setRun, now, problemIds, finish }:
       ))}
       <section className="rd-card mi-verdict">
         <h2>{t('总体评价', 'Overall')}</h2>
+        <div className="mi-rubric">
+          {RUBRIC.map((r) => (
+            <Rating
+              key={r.id}
+              name={t(...r.name)}
+              hint={t(...r.hint)}
+              labels={SCORES}
+              value={run.rubric?.[r.id]}
+              onChange={(n) => setRun((x) => ({ ...x, rubric: { ...x.rubric, [r.id]: n } }))}
+            />
+          ))}
+        </div>
         <fieldset className="mi-rating mi-verdicts">
           <legend>{t('录用建议', 'Hiring recommendation')}</legend>
           {VERDICTS.map(([id, label]) => (
@@ -1222,11 +1321,19 @@ function InterviewerSheet({ data, query, run, setRun, now, problemIds, finish }:
             </label>
           ))}
         </fieldset>
-        <Notes label={t('给候选人的反馈', 'Feedback for the candidate')} value={run.summary ?? ''} onChange={(v) => setRun((r) => ({ ...r, summary: v }))} />
+        <div className="mi-feedback-notes">
+          <Notes
+            label={t('做得好的地方', 'Strengths')}
+            value={run.strengths ?? run.summary ?? ''}
+            onChange={(v) => setRun((r) => ({ ...r, strengths: v }))}
+          />
+          <Notes label={t('可以改进的地方', 'To improve')} value={run.improvements ?? ''} onChange={(v) => setRun((r) => ({ ...r, improvements: v }))} />
+        </div>
         <button type="button" className="mi-cta mi-noprint" onClick={finish} disabled={run.phase === 'done'}>
           <Check size={15} aria-hidden="true" /> {run.phase === 'done' ? t('已完成', 'Done') : t('完成面试', 'Finish the interview')}
         </button>
       </section>
+      <FeedbackLink data={data} query={query} run={run} />
     </div>
   );
 }
@@ -1244,5 +1351,243 @@ function CopyCandidate({ query }: { query: Record<string, string> }) {
       {copied ? <Check size={14} /> : <Copy size={14} />}
       {copied ? t('已复制候选人链接', 'Candidate link copied') : t('复制候选人链接', 'Copy the candidate link')}
     </button>
+  );
+}
+
+/** The interviewer's scores and notes, packed into a link for the candidate. */
+export function FeedbackLink({ data, query, run }: Pick<SessionProps, 'data' | 'query' | 'run'>) {
+  const t = useT();
+  const [withNotes, setWithNotes] = useState(true);
+  const [shown, setShown] = useState(false);
+  const [copied, setCopied] = useState<{ link: string; ok: boolean } | null>(null);
+  const made = useMemo(
+    () =>
+      encodeFeedback({
+        seed: query.set,
+        rerolls: query.rr ? query.rr.split('.').map(Number) : [],
+        rubric: run.rubric ?? {},
+        verdict: VERDICTS.find(([id]) => id === run.verdict)?.[0] ?? null,
+        strengths: run.strengths ?? run.summary ?? '',
+        improvements: run.improvements ?? '',
+        questions: data.slots.map((slot, i) => ({
+          rating: run.ratings[i] ?? null,
+          note: withNotes ? (run.notes[i] ?? '') : '',
+          tag: slot.item ? questionTag(slot.item.id) : '',
+        })),
+      }),
+    [data, query, run, withNotes],
+  );
+  const link = made ? `${shareLink(query, 'solo')}#fb=${made.value}` : '';
+  const create = async () => {
+    setShown(true);
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopied({ link, ok: true });
+    } catch {
+      setCopied({ link, ok: false });
+    }
+  };
+  return (
+    <section className="rd-card mi-fb-send mi-noprint" aria-labelledby="mi-fb-send-title">
+      <h2 id="mi-fb-send-title">
+        <MessageSquareText size={17} aria-hidden="true" /> {t('把反馈发给候选人', 'Send the feedback to the candidate')}
+      </h2>
+      <p>
+        {t(
+          '评分、录用建议和文字反馈都编在链接 # 后面那一段里：浏览器不会把它发给服务器，我们也不存。',
+          'Scores, the recommendation and your notes are packed into the part of the link after the #. Browsers never send that part to the server, and we keep no copy.',
+        )}
+      </p>
+      <label className="mi-fb-check">
+        <input type="checkbox" checked={withNotes} onChange={(e) => setWithNotes(e.target.checked)} />
+        {t('附上每道题的面试记录', 'Include my notes for each question')}
+      </label>
+      <div className="mi-fb-send-row">
+        <button type="button" className="mi-cta" disabled={!made} onClick={create}>
+          <Link2 size={16} aria-hidden="true" /> {shown ? t('复制反馈链接', 'Copy the feedback link') : t('生成反馈链接', 'Create feedback link')}
+        </button>
+        <p role="status" className="mi-fb-status">
+          {!copied
+            ? ''
+            : copied.link !== link
+              ? t('复制后又改过评分，记得重新复制。', 'You changed the sheet after copying; copy the link again.')
+              : copied.ok
+                ? t('已复制。发给候选人就行。', 'Copied. Send it to the candidate.')
+                : t('浏览器没让复制，请从下面的框里手动复制。', "Your browser blocked copying; copy it from the box below.")}
+        </p>
+      </div>
+      {shown && (
+        <div className="mi-link">
+          <label>
+            <span>
+              {t(
+                '反馈链接（打开后能看参考答案，面试结束后再发）',
+                'Feedback link (opens solo practice with the answer key; send it after the interview)',
+              )}
+            </span>
+            <input readOnly value={link} onFocus={(e) => e.target.select()} />
+          </label>
+        </div>
+      )}
+      {made?.truncated && (
+        <p className="mi-fb-cut">
+          {t('有的文字太长，链接里截短了（结尾带 …）。', 'Some notes were too long for a link and are shortened (they end in …).')}
+        </p>
+      )}
+    </section>
+  );
+}
+
+/** What the candidate sees when they open the interviewer's feedback link. */
+export function FeedbackCard({
+  data,
+  query,
+  feedback,
+  broken,
+  saved,
+  onSave,
+  known = [],
+}: {
+  data: MockSet;
+  query: Record<string, string>;
+  feedback: Feedback | null;
+  broken: boolean;
+  saved: boolean;
+  onSave: () => boolean;
+  /** Questions saved with this set in the history: the titles as they were when the feedback was saved. */
+  known?: { id: string; title: string }[];
+}) {
+  const t = useT();
+  const [failed, setFailed] = useState(false);
+  const brokenNote = t(
+    '这个反馈链接不完整或已损坏，可能复制时被截断了。请面试官重新发一次。',
+    'This feedback link is incomplete or damaged; it may have been cut off when copied. Ask your interviewer to send it again.',
+  );
+  if (!feedback)
+    return (
+      <p className="mi-alert" role="alert">
+        <ShieldAlert size={16} aria-hidden="true" />
+        {brokenNote}
+      </p>
+    );
+  const average = rubricAverage(feedback.rubric);
+  const verdict = VERDICTS.find(([id]) => id === feedback.verdict);
+  const sameSet = forSet(feedback, query);
+  // Ratings line up by position, but a changed bank draws other questions from the same seed: each
+  // rating names its question by tag, and one that's moved is shown by the title it was given for.
+  const titles = [...known, ...data.slots.flatMap((s) => (s.item ? [s.item] : []))];
+  return (
+    <section className="mi-fb rd-reveal" style={{ '--i': 1 } as React.CSSProperties} aria-labelledby="mi-fb-kicker mi-fb-title">
+      <div className="mi-fb-board">
+        <div className="mi-fb-head">
+          <p className="mi-ticket-kicker" id="mi-fb-kicker">
+            {t('面试官反馈', 'Interviewer feedback')}
+          </p>
+          <h2 id="mi-fb-title">
+            {verdict ? (
+              <span className="mi-fb-verdict" data-verdict={verdict[0]}>
+                {t(...verdict[1])}
+              </span>
+            ) : (
+              t('没有给录用建议', 'No hiring recommendation')
+            )}
+          </h2>
+          <p className="mi-fb-private">
+            {t('只在你的链接里，没有经过服务器。', 'Carried in your link only; it never went through our server.')}
+          </p>
+        </div>
+        <p className="mi-fb-average">
+          <span className="mi-led-small">{average ? average.toFixed(1) : '—'}</span>
+          <small>/4</small>
+          <span>{t('五项平均', 'Rubric average')}</span>
+        </p>
+      </div>
+      <div className="mi-fb-body">
+        {broken && <p className="mi-fb-cut" role="alert">{brokenNote}</p>}
+        {!sameSet && (
+          <p className="mi-fb-cut">
+            {t(
+              '这份反馈是给另一套题写的，题目可能对不上，也存不进这套题的记录。',
+              "This feedback was written for a different set: the questions may not line up, and it can't be saved with this one.",
+            )}
+          </p>
+        )}
+        <dl className="mi-fb-rubric">
+          {RUBRIC.map((r) => {
+            const n = feedback.rubric[r.id];
+            return (
+              <div key={r.id}>
+                <dt>{t(...r.name)}</dt>
+                <dd>{n ? <Pips n={n} label={`${n} · ${t(...SCORES[n - 1])}`} /> : <span className="mi-muted">{t('未评', 'Not scored')}</span>}</dd>
+              </div>
+            );
+          })}
+        </dl>
+        {(feedback.strengths || feedback.improvements) && (
+          <div className="mi-fb-notes">
+            {feedback.strengths && (
+              <section data-tone="good">
+                <h3>{t('做得好的地方', 'Strengths')}</h3>
+                <p>{feedback.strengths}</p>
+              </section>
+            )}
+            {feedback.improvements && (
+              <section data-tone="next">
+                <h3>{t('可以改进的地方', 'To improve')}</h3>
+                <p>{feedback.improvements}</p>
+              </section>
+            )}
+          </div>
+        )}
+        {!!feedback.questions.length && (
+          <section>
+            <h3 className="mi-fb-sub">{t('逐题评分', 'Question by question')}</h3>
+            <ol className="mi-fb-qs">
+              {feedback.questions.map((q, i) => {
+                const drawn = data.slots[i];
+                // An untagged rating can't be checked, so it takes the slot as is.
+                const slot = !q.tag || (drawn?.item && questionTag(drawn.item.id) === q.tag) ? drawn : undefined;
+                const title = slot ? slot.item?.title : titles.find((x) => questionTag(x.id) === q.tag)?.title;
+                return (
+                  <li key={i}>
+                    <span className="mi-fb-no" aria-hidden="true">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <div>
+                      {slot && <span className="mi-table-kind">{t(...(slot.name ?? KINDS[slot.kind].name))}</span>}
+                      <p className="mi-fb-q">{title ?? t(`第 ${i + 1} 题`, `Question ${i + 1}`)}</p>
+                      {!slot && (
+                        <p className="mi-muted mi-fb-moved">
+                          {title
+                            ? t('这一题现在抽到的是别的题，评分和记录是给上面这道题的。', 'This slot now draws another question; the score and notes are for the one above.')
+                            : t('题库更新过，这一题对不上了：评分和记录是给原来那道题的。', 'The bank has changed since; the score and notes are for the question originally drawn here.')}
+                        </p>
+                      )}
+                      {q.note && <p className="mi-fb-q-note">{q.note}</p>}
+                    </div>
+                    {q.rating ? <Pips n={q.rating} label={t(...SCORES[q.rating - 1])} /> : <span className="mi-muted">{t('未评', 'Not scored')}</span>}
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+        )}
+        {sameSet && (
+          <div className="mi-fb-actions">
+            <button type="button" className="rd-button" onClick={() => setFailed(!onSave())}>
+              {saved ? <Check size={14} aria-hidden="true" /> : <Save size={14} aria-hidden="true" />}
+              {saved ? t('已存进模拟记录', 'Saved to my sessions') : t('存进我的模拟记录', 'Save to my sessions')}
+            </button>
+            <p role="status" className="mi-fb-status">
+              {saved
+                ? t('存在这台设备上，在「最近的模拟」里能找回。', 'Kept on this device; find it under Recent sessions.')
+                : failed
+                  ? t('没存上：这个浏览器不让网页存本地数据。', "Couldn't save: this browser blocks local storage.")
+                  : ''}
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
   );
 }
