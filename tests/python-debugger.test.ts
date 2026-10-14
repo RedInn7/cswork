@@ -13,7 +13,7 @@ import {
   TRACER_SOURCE,
   workerSource,
   type DebugRequest,
-} from '../lib/python-debugger.ts';
+} from '../lib/python-debugger';
 
 /** The tracer on this machine's CPython: what Pyodide runs, minus the browser. */
 function trace(request: Partial<DebugRequest>) {
