@@ -36,6 +36,8 @@ export type PlanDay = {
   minutes: number;
   /** The last week before the OA: target-company problems first. */
   sprint: boolean;
+  /** Today only: problems of the plan already solved today, still part of its goal. */
+  done?: number;
   /** 1 or 2 on a mock OA day, which has no other problems. */
   mock?: number;
   oa?: boolean;
@@ -47,6 +49,7 @@ export type Plan = {
   expired: boolean;
   todo: number;
   avgMinutes: number;
+  /** Today's pace (the line's, or the sprint's in the last week), as of this morning. */
   daily: number;
   /** Today through the OA day, or OPEN_DAYS without a date. */
   days: PlanDay[];
@@ -70,6 +73,8 @@ export const MAX_DAYS = 365;
 export const OPEN_DAYS = 28;
 export const DAILY_TARGETS = [1, 2, 3, 5];
 export const LEGACY_TARGET_KEY = 'cswork:practice:daily-target';
+/** {date, n}: today's target as the bank page set it, read by the workspace's AC dialog. */
+export const TODAY_TARGET_KEY = 'cswork:practice:today-target';
 export const planStorageKey = (userId?: string | null) =>
   `cswork:plan:v1:${userId || 'guest'}`;
 export const DEFAULT_GOAL: PlanGoal = {
@@ -141,13 +146,22 @@ export function normalizeGoal(raw: unknown): PlanGoal {
 
 /**
  * The saved goal: this account's, else one made before signing in, else a new one
- * that keeps the old "n a day" picker value.
+ * that keeps the old "n a day" picker value. A guest plan moves to the first account
+ * that signs in here, once, so later accounts on this browser start fresh.
  */
-export function loadGoal(storage: Pick<Storage, 'getItem'>, userId?: string | null) {
+export function loadGoal(
+  storage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>,
+  userId?: string | null,
+) {
   try {
-    const saved =
-      storage.getItem(planStorageKey(userId)) ??
-      (userId ? storage.getItem(planStorageKey()) : null);
+    let saved = storage.getItem(planStorageKey(userId));
+    if (saved === null && userId) {
+      saved = storage.getItem(planStorageKey());
+      if (saved !== null) {
+        storage.setItem(planStorageKey(userId), saved);
+        storage.removeItem(planStorageKey());
+      }
+    }
     if (saved) return normalizeGoal(JSON.parse(saved));
     return normalizeGoal({
       ...DEFAULT_GOAL,
@@ -155,6 +169,22 @@ export function loadGoal(storage: Pick<Storage, 'getItem'>, userId?: string | nu
     });
   } catch {
     return DEFAULT_GOAL;
+  }
+}
+
+/** Today's target from TODAY_TARGET_KEY (0 on a mock OA or OA day), else the old "n a day". */
+export function readTodayTarget(storage: Pick<Storage, 'getItem'>, today: string) {
+  try {
+    const saved = JSON.parse(storage.getItem(TODAY_TARGET_KEY) ?? 'null') as {
+      date?: unknown;
+      n?: unknown;
+    } | null;
+    if (saved?.date === today && Number.isInteger(saved.n) && (saved.n as number) >= 0 && (saved.n as number) <= 99)
+      return saved.n as number;
+    const legacy = Number(storage.getItem(LEGACY_TARGET_KEY));
+    return DAILY_TARGETS.includes(legacy) ? legacy : DEFAULT_GOAL.dailyTarget;
+  } catch {
+    return DEFAULT_GOAL.dailyTarget;
   }
 }
 
@@ -175,36 +205,39 @@ export const oaDateInRange = (date: string, today: string) =>
 
 /**
  * Todo = the line's unsolved problems from goal.startStop on (in sequence), then
- * the target company's unsolved OA problems. With D days to the OA:
- * daily = min(ceil(todo / (D - 7)), weekly budget / average minutes), at least 1.
- * The last 7 days take company problems first (the line once they run out) and
- * hold two mock OAs, at D-5 and D-2 (one when fewer than 3 days are left).
- * Without a date (or a past or > 365-day one) the budget sets the pace.
+ * the target company's unsolved OA problems. With D days to the OA, the days
+ * before the last week ride the line only:
+ * daily = min(ceil(line / (D - 7)), weekly budget / average minutes), at least 1.
+ * The last 7 days hold two mock OAs, at D-5 and D-2 (one when fewer than 3 days
+ * are left), and save the company's problems for the rest, ceil(company / those
+ * days) a day within the budget; the line fills in once they run out.
+ * Without a date (or a past or > 365-day one) the budget sets the pace, line first.
+ * `done` counts the problems of each kind solved earlier today: paces count from
+ * this morning, so working off today's problems does not lower today's goal.
  */
 export function buildPlan({
   goal,
   today,
   line,
   company = [],
+  done = {},
 }: {
   goal: PlanGoal;
   today: string;
   line: readonly PlanProblem[];
   company?: readonly PlanProblem[];
+  done?: { line?: number; company?: number };
 }): Plan {
   const d = goal.oaDate && isDay(goal.oaDate) ? daysBetween(today, goal.oaDate) : null;
   const daysLeft = d !== null && d >= 0 && d <= MAX_DAYS ? d : null;
   const queue = line.filter((p) => (p.stop ?? 0) >= goal.startStop);
   const todo = queue.length + company.length;
+  // ponytail: the average leaves out today's solved problems (their difficulty is
+  // not sent), so the budget can shift by one when they differ a lot from the rest.
   const avgMinutes = todo
     ? [...queue, ...company].reduce((sum, p) => sum + minutesFor(p.difficulty), 0) / todo
     : MINUTES.medium;
   const budget = Math.max(1, Math.floor((goal.weeklyHours * 60) / 7 / avgMinutes));
-  const daily = !todo
-    ? 0
-    : daysLeft === null
-      ? budget
-      : Math.min(Math.ceil(todo / Math.max(1, daysLeft - SPRINT_DAYS)), budget);
   const sprintFrom = daysLeft === null ? Infinity : Math.max(0, daysLeft - SPRINT_DAYS);
   const sprintDays = daysLeft === null ? 0 : daysLeft - sprintFrom;
   const mockDays = sprintDays
@@ -212,12 +245,20 @@ export function buildPlan({
         (k) => sprintFrom + k,
       )
     : [];
+  const doneToday = (done.line ?? 0) + (done.company ?? 0);
+  const lineLeft = queue.length + (done.line ?? 0);
+  const companyLeft = company.length + (done.company ?? 0);
+  const pace = (left: number, days: number) =>
+    left ? Math.min(Math.ceil(left / Math.max(1, days)), budget) : 0;
+  const linePace =
+    daysLeft === null
+      ? lineLeft + companyLeft
+        ? budget
+        : 0
+      : pace(lineLeft, daysLeft - SPRINT_DAYS);
+  const companyPace = pace(companyLeft, sprintDays - mockDays.length);
   let l = 0,
     c = 0;
-  const next = (companyFirst: boolean) =>
-    companyFirst
-      ? (company[c++] ?? queue[l++])
-      : (queue[l++] ?? company[c++]);
   const days: PlanDay[] = [];
   for (let i = 0; i < (daysLeft === null ? OPEN_DAYS : daysLeft + 1); i++) {
     const date = addDays(today, i);
@@ -231,16 +272,30 @@ export function buildPlan({
       days.push({ date, problems: [], minutes: goal.company?.minutes ?? 90, sprint, mock });
       continue;
     }
+    // A sprint day goes to the company while its problems last (today: while any
+    // were left this morning).
+    const companyDay = sprint && (i ? c < company.length : companyLeft > 0);
+    const next = () =>
+      companyDay
+        ? (company[c++] ?? queue[l++])
+        : daysLeft === null
+          ? (queue[l++] ?? company[c++])
+          : queue[l++];
     const problems: PlanProblem[] = [];
-    for (let k = 0; k < daily; k++) {
-      if (l >= queue.length && c >= company.length) break; // Nothing left to plan.
-      problems.push(next(sprint)!);
+    const solved = i ? 0 : doneToday;
+    for (let k = solved; k < (companyDay ? companyPace : linePace); k++) {
+      const problem = next();
+      if (!problem) break; // Nothing left to plan.
+      problems.push(problem);
     }
     days.push({
       date,
       problems,
-      minutes: problems.reduce((sum, p) => sum + minutesFor(p.difficulty), 0),
+      minutes: Math.round(
+        problems.reduce((sum, p) => sum + minutesFor(p.difficulty), 0) + solved * avgMinutes,
+      ),
       sprint,
+      ...(solved ? { done: solved } : {}),
     });
   }
   return {
@@ -248,7 +303,7 @@ export function buildPlan({
     expired: d !== null && d < 0,
     todo,
     avgMinutes,
-    daily,
+    daily: sprintFrom === 0 && companyLeft ? companyPace : linePace,
     days,
   };
 }
@@ -274,7 +329,7 @@ export function planWeeks(days: readonly PlanDay[]): PlanWeek[] {
     }
     week.end = day.date;
     week.days.push(day);
-    week.problems += day.problems.length;
+    week.problems += day.problems.length + (day.done ?? 0);
     week.minutes += day.minutes;
     week.mocks += day.mock ? 1 : 0;
     week.sprint ||= day.sprint;
@@ -312,8 +367,9 @@ const utcStamp = (now: Date) =>
   now.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 
 /**
- * The plan as an iCalendar file: one daily practice series (floating local time,
- * so it rings at `time` wherever the learner is), the mock OA days and the OA day.
+ * The plan as an iCalendar file: daily practice series before and in the sprint
+ * (floating local time, so they ring at `time` wherever the learner is), the mock
+ * OA days and the OA day.
  * UIDs are fixed, so importing an updated plan replaces the old events.
  */
 export function planIcs({
@@ -354,29 +410,41 @@ export function planIcs({
       'END:VALARM',
       'END:VEVENT',
     );
-  const practice = plan.days.filter((day) => day.problems.length);
-  if (practice.length) {
+  const company = goal.company;
+  // One series before the sprint and one in it: their paces differ.
+  for (const sprint of [false, true]) {
+    const practice = plan.days.filter((day) => day.sprint === sprint && day.problems.length);
+    if (!practice.length) continue;
     const first = practice[0].date,
       last = practice.at(-1)!.date;
     const skip = plan.days.filter(
-      (day) => day.date > first && day.date < last && !day.problems.length,
+      (day) => day.date > first && day.date < last && !practice.includes(day),
     );
-    const summary = t(
-      `CSWork 今日行程：${plan.daily} 题`,
-      `CSWork daily trip: ${plan.daily} ${plan.daily === 1 ? 'problem' : 'problems'}`,
-    );
+    // ponytail: a series names its first day's count; the run's last days can
+    // hold fewer, or the line's pace once the company's problems run out.
+    const n = practice[0].problems.length + (practice[0].done ?? 0);
+    const minutes = Math.round(n * plan.avgMinutes);
+    const summary = sprint
+      ? t(
+          `CSWork 冲刺：${n} 题${company ? ` · ${company.name}` : ''}`,
+          `CSWork sprint: ${n} ${n === 1 ? 'problem' : 'problems'}${company ? ` · ${company.name}` : ''}`,
+        )
+      : t(
+          `CSWork 今日行程：${n} 题`,
+          `CSWork daily trip: ${n} ${n === 1 ? 'problem' : 'problems'}`,
+        );
     event(
-      'practice',
+      sprint ? 'sprint' : 'practice',
       [
         `DTSTART:${at(first)}`,
-        `DURATION:PT${Math.max(15, Math.round(plan.daily * plan.avgMinutes))}M`,
+        `DURATION:PT${Math.max(15, minutes)}M`,
         `RRULE:FREQ=DAILY;COUNT=${daysBetween(first, last) + 1}`,
         ...(skip.length ? [`EXDATE:${skip.map((day) => at(day.date)).join(',')}`] : []),
         `SUMMARY:${escapeText(summary)}`,
         `DESCRIPTION:${escapeText(
           t(
-            `按冲刺计划每天 ${plan.daily} 题，约 ${Math.round(plan.daily * plan.avgMinutes)} 分钟。`,
-            `Your sprint plan: ${plan.daily} a day, about ${Math.round(plan.daily * plan.avgMinutes)} minutes.`,
+            `按冲刺计划每天 ${n} 题，约 ${minutes} 分钟。`,
+            `Your sprint plan: ${n} a day, about ${minutes} minutes.`,
           ),
         )}`,
         `URL:${origin}/?view=problems`,
@@ -385,7 +453,6 @@ export function planIcs({
       summary,
     );
   }
-  const company = goal.company;
   for (const day of plan.days)
     if (day.mock) {
       const summary = t(

@@ -12,6 +12,7 @@ import {
   planIcs,
   planStorageKey,
   planWeeks,
+  readTodayTarget,
   suggestStartStop,
   type PlanGoal,
   type PlanProblem,
@@ -70,15 +71,16 @@ void test('the daily count spreads the todo over D-7 days, within the weekly bud
   assert.equal(buildPlan({ goal: goal({ weeklyHours: 1 }), today, line: line(9) }).daily, 1);
 });
 
-void test('the last week takes company problems first and holds two mock OAs', () => {
+void test('the last week saves the company problems for itself and holds two mock OAs', () => {
   const plan = buildPlan({
     goal: goal({ oaDate: addDays(today, 37), weeklyHours: 14, company: amazon }),
     today,
     line: line(50),
     company: oa(10),
   });
-  // todo 60 over 30 days.
+  // The line alone over the 30 days before the sprint: ceil(50 / 30) = 2.
   assert.equal(plan.daily, 2);
+  assert.equal(plan.todo, 60);
   const sprint = plan.days.filter((day) => day.sprint && !day.oa);
   assert.equal(sprint.length, 7);
   assert.equal(sprint[0].date, addDays(today, 30));
@@ -92,13 +94,43 @@ void test('the last week takes company problems first and holds two mock OAs', (
     'mocks at D-5 and D-2',
   );
   assert.ok(plan.days.filter((day) => day.mock).every((day) => !day.problems.length));
-  // 30 main days × 2 = the whole line (50) and then 10 company problems; the
-  // line comes first before the sprint.
   assert.deepEqual(ids(plan.days[0].problems), ['lc-1', 'lc-2']);
-  assert.deepEqual(ids(plan.days[25].problems), ['oa-amazon-1', 'oa-amazon-2']);
-  assert.ok(sprint.every((day) => !day.problems.length), 'ahead of schedule: nothing left');
+  assert.deepEqual(ids(plan.days[24].problems), ['lc-49', 'lc-50']);
+  assert.ok(
+    plan.days.slice(0, 30).every((day) => day.problems.every((p) => p.id.startsWith('lc-'))),
+    'no company problem before the sprint',
+  );
+  assert.ok(plan.days.slice(25, 30).every((day) => !day.problems.length), 'ahead of the line');
+  // 10 company problems over the sprint's 5 practice days: 2 a day, nothing else.
+  assert.deepEqual(
+    sprint.map((day) => ids(day.problems)),
+    [
+      ['oa-amazon-1', 'oa-amazon-2'],
+      ['oa-amazon-3', 'oa-amazon-4'],
+      [],
+      ['oa-amazon-5', 'oa-amazon-6'],
+      ['oa-amazon-7', 'oa-amazon-8'],
+      [],
+      ['oa-amazon-9', 'oa-amazon-10'],
+    ],
+  );
 
-  // A tight plan leaves company problems for the sprint, line problems after them.
+  // OA in 60 days, 20 left on the line, 10 Amazon problems, 10 h a week.
+  const roomy = buildPlan({
+    goal: goal({ oaDate: addDays(today, 60), weeklyHours: 10, company: amazon }),
+    today,
+    line: line(20),
+    company: oa(10),
+  });
+  assert.equal(roomy.daily, 1);
+  const firstOa = roomy.days.findIndex((day) => day.problems.some((p) => p.id.startsWith('oa-')));
+  assert.equal(firstOa, 53, 'the first company problem waits for the sprint');
+  assert.equal(
+    roomy.days.filter((day) => day.sprint).flatMap((day) => day.problems).length,
+    10,
+  );
+
+  // A tight plan: the company's pace in the sprint, the line once they run out.
   const tight = buildPlan({
     goal: goal({ oaDate: addDays(today, 10), weeklyHours: 7, company: amazon }),
     today,
@@ -107,9 +139,46 @@ void test('the last week takes company problems first and holds two mock OAs', (
   });
   assert.equal(tight.daily, 2, 'budget-bound');
   assert.deepEqual(ids(tight.days[0].problems), ['lc-1', 'lc-2']);
-  assert.deepEqual(ids(tight.days[3].problems), ['oa-amazon-1', 'oa-amazon-2']);
-  assert.deepEqual(ids(tight.days[4].problems), ['oa-amazon-3', 'lc-7']);
   assert.equal(tight.days[3].sprint, true);
+  assert.deepEqual(ids(tight.days[3].problems), ['oa-amazon-1']);
+  assert.deepEqual(ids(tight.days[4].problems), ['oa-amazon-2']);
+  assert.deepEqual(ids(tight.days[6].problems), ['oa-amazon-3']);
+  assert.deepEqual(ids(tight.days[7].problems), ['lc-7', 'lc-8']);
+});
+
+void test('solving today\'s problems keeps today\'s goal and this week\'s plan', () => {
+  // D = 17 (10 days before the sprint), 14 h a week, 21 left: 3 a day.
+  const plan = (left: number, solved: number) =>
+    buildPlan({
+      goal: goal({ oaDate: addDays(today, 17), weeklyHours: 14 }),
+      today,
+      line: line(21).slice(21 - left),
+      done: { line: solved },
+    });
+  const morning = plan(21, 0);
+  assert.equal(morning.daily, 3);
+  assert.equal(planWeeks(morning.days)[0].problems, 15, 'Wednesday to Sunday');
+  for (const solved of [1, 3, 4]) {
+    const later = plan(21 - solved, solved);
+    assert.equal(later.daily, 3, `${solved} solved: still 3`);
+    assert.equal(later.days[0].done, solved);
+    assert.equal(later.days[0].problems.length, Math.max(0, 3 - solved));
+    assert.equal(planWeeks(later.days)[0].problems, solved > 3 ? 16 : 15);
+  }
+  assert.deepEqual(ids(plan(20, 1).days[0].problems), ['lc-2', 'lc-3']);
+
+  // In the sprint, company problems solved today count the same way.
+  const sprint = buildPlan({
+    goal: goal({ oaDate: addDays(today, 7), weeklyHours: 14, company: amazon }),
+    today,
+    line: line(5),
+    company: oa(8),
+    done: { company: 2 },
+  });
+  assert.equal(sprint.daily, 2, '10 over 5 practice days');
+  assert.deepEqual(sprint.days[0].problems, []);
+  assert.equal(sprint.days[0].done, 2);
+  assert.deepEqual(ids(sprint.days[1].problems), ['oa-amazon-1', 'oa-amazon-2']);
 });
 
 void test('OA today, soon, past and too far', () => {
@@ -220,7 +289,14 @@ void test('LeetCode experience suggests a later stop', () => {
 
 void test('goals load from this account, a guest plan or the old daily target', () => {
   const store = (entries: Record<string, string>) => ({
+    entries,
     getItem: (key: string) => entries[key] ?? null,
+    setItem: (key: string, value: string) => {
+      entries[key] = value;
+    },
+    removeItem: (key: string) => {
+      delete entries[key];
+    },
   });
   assert.equal(planStorageKey('u1'), 'cswork:plan:v1:u1');
   assert.equal(planStorageKey(null), 'cswork:plan:v1:guest');
@@ -230,11 +306,16 @@ void test('goals load from this account, a guest plan or the old daily target', 
   assert.equal(loadGoal(store({ 'cswork:practice:daily-target': '4' })).dailyTarget, 3);
   const saved = JSON.stringify(goal({ oaDate: '2026-11-01', company: amazon }));
   assert.equal(loadGoal(store({ 'cswork:plan:v1:u1': saved }), 'u1').oaDate, '2026-11-01');
+  const shared = store({ 'cswork:plan:v1:guest': saved });
   assert.equal(
-    loadGoal(store({ 'cswork:plan:v1:guest': saved }), 'u1').company?.slug,
+    loadGoal(shared, 'u1').company?.slug,
     'amazon',
     'a plan made before signing in carries over',
   );
+  assert.equal(shared.entries['cswork:plan:v1:u1'], saved);
+  assert.equal('cswork:plan:v1:guest' in shared.entries, false, 'once');
+  assert.equal(loadGoal(shared, 'u2').status, 'new', 'the next account starts fresh');
+  assert.equal(loadGoal(shared, 'u1').company?.slug, 'amazon');
   assert.equal(loadGoal(store({ 'cswork:plan:v1:u2': saved }), 'u1').status, 'new');
   assert.deepEqual(loadGoal(store({ 'cswork:plan:v1:guest': '{oops' })), DEFAULT_GOAL);
   assert.deepEqual(
@@ -242,6 +323,8 @@ void test('goals load from this account, a guest plan or the old daily target', 
       getItem() {
         throw new Error('blocked');
       },
+      setItem() {},
+      removeItem() {},
     }),
     DEFAULT_GOAL,
   );
@@ -256,6 +339,37 @@ void test('goals load from this account, a guest plan or the old daily target', 
   assert.deepEqual(cleaned, DEFAULT_GOAL);
   assert.equal(isDay('2026-02-28'), true);
   assert.equal(isDay('2026-2-28'), false);
+});
+
+void test('today\'s target for the AC dialog: the bank page\'s, else the old "n a day"', () => {
+  const read = (entries: Record<string, string>) =>
+    readTodayTarget({ getItem: (key) => entries[key] ?? null }, today);
+  const set = (date: string, n: unknown) => JSON.stringify({ date, n });
+  assert.equal(read({}), 3);
+  assert.equal(read({ 'cswork:practice:daily-target': '5' }), 5);
+  assert.equal(
+    read({ 'cswork:practice:today-target': set(today, 7), 'cswork:practice:daily-target': '5' }),
+    7,
+  );
+  assert.equal(read({ 'cswork:practice:today-target': set(today, 0) }), 0, 'a mock OA day');
+  assert.equal(
+    read({ 'cswork:practice:today-target': set(addDays(today, -1), 7), 'cswork:practice:daily-target': '2' }),
+    2,
+    'yesterday\'s target is stale',
+  );
+  assert.equal(read({ 'cswork:practice:today-target': set(today, 1.5) }), 3);
+  assert.equal(read({ 'cswork:practice:today-target': '{oops' }), 3);
+  assert.equal(
+    readTodayTarget(
+      {
+        getItem() {
+          throw new Error('blocked');
+        },
+      },
+      today,
+    ),
+    3,
+  );
 });
 
 const unfold = (ics: string) => ics.replace(/\r\n /g, '');
@@ -279,23 +393,28 @@ void test('the .ics is RFC 5545: CRLF, folded at 75 octets, escaped, stable UIDs
   assert.equal(rows[0], 'BEGIN:VCALENDAR');
   assert.ok(rows.includes('VERSION:2.0'));
   assert.ok(rows.some((row) => row.startsWith('PRODID:')));
-  assert.equal(rows.filter((row) => row === 'BEGIN:VEVENT').length, 4);
-  assert.equal(rows.filter((row) => row === 'END:VEVENT').length, 4);
+  assert.equal(rows.filter((row) => row === 'BEGIN:VEVENT').length, 5);
+  assert.equal(rows.filter((row) => row === 'END:VEVENT').length, 5);
   assert.deepEqual(
     rows.filter((row) => row.startsWith('UID:')),
     [
       'UID:cswork-plan-practice@cswork.org',
+      'UID:cswork-plan-sprint@cswork.org',
       'UID:cswork-plan-mock-1@cswork.org',
       'UID:cswork-plan-mock-2@cswork.org',
       'UID:cswork-plan-oa@cswork.org',
     ],
   );
   assert.ok(rows.every((row) => !row.startsWith('DTSTAMP:') || row === 'DTSTAMP:20261014T030405Z'));
-  // Practice: today 20:00 local, daily until the day before the OA, mock days excluded.
+  // The line: today 20:00 local through the day before the sprint, 4 a day.
   assert.ok(rows.includes('DTSTART:20261014T200000'));
-  assert.ok(rows.includes('RRULE:FREQ=DAILY;COUNT=12'), rows.join('\n'));
-  assert.ok(rows.includes('EXDATE:20261021T200000,20261024T200000'));
+  assert.ok(rows.includes('RRULE:FREQ=DAILY;COUNT=5'), rows.join('\n'));
   assert.ok(rows.includes('SUMMARY:CSWork 今日行程：4 题'));
+  // The sprint: 4 company problems over 5 practice days, mock days excluded.
+  assert.ok(rows.includes('DTSTART:20261019T200000'));
+  assert.ok(rows.includes('RRULE:FREQ=DAILY;COUNT=7'));
+  assert.ok(rows.includes('EXDATE:20261021T200000,20261024T200000'));
+  assert.ok(rows.includes(`SUMMARY:CSWork 冲刺：1 题 · Amazon\\, Inc\\; 亚马逊 ${'超长的公司名称'.repeat(6)}`));
   assert.ok(rows.includes('URL:https://cswork.test/?view=problems'));
   assert.ok(rows.includes('URL:https://cswork.test/mock-oa/amazon'));
   assert.ok(rows.includes('DURATION:PT90M'));
