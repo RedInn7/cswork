@@ -225,6 +225,38 @@ a.route-plan-tag:hover {
   background: rgb(255 178 63 / 0.14);
 }
 
+/* Group the list by week, stop or difficulty (remembered per browser). */
+.route-plan-view {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 6px 0 2px;
+}
+.route-plan-view label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--route-white-3);
+}
+.route-plan-view select {
+  min-block-size: 30px;
+  padding: 2px 22px 2px 8px;
+  border: 1px solid var(--route-slate);
+  border-radius: 7px;
+  background-color: var(--route-navy);
+  color: var(--route-white);
+  font: 500 13px/1.2 var(--font-route);
+  color-scheme: dark;
+}
+.route-plan-view select:focus-visible {
+  outline: 2px solid var(--route-white);
+  outline-offset: 2px;
+}
+.route-plan-weeks ol[data-group] li {
+  grid-template-columns: minmax(8em, 14em) minmax(0, 1fr);
+}
+
 /* A plan of many problems a day: the punch card wraps instead of overflowing. */
 .route-punches {
   flex-wrap: wrap;
@@ -369,6 +401,17 @@ a.route-plan-tag:hover {
   }
   .dark a.route-plan-tag:hover {
     background: #ffb23f24;
+  }
+  .dark .route-plan-view label {
+    color: var(--route-white-3);
+  }
+  .dark .route-plan-view select {
+    border: 1px solid var(--route-slate);
+    background-color: var(--route-navy);
+    color: var(--route-white);
+  }
+  .dark .route-plan-view select:focus-visible {
+    outline: 2px solid var(--route-white);
   }
   .dark .route-today-rest {
     color: var(--route-white);

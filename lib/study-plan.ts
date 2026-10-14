@@ -342,6 +342,56 @@ export function planWeeks(days: readonly PlanDay[]): PlanWeek[] {
 }
 
 // RFC 5545 text: escape, then fold to 75 octets with CRLF + space.
+/** The plan's week list can group by week (planWeeks), stop or difficulty; this browser remembers. */
+export type PlanGroupBy = 'week' | 'topic' | 'difficulty';
+export type PlanOrder = 'plan' | 'difficulty';
+export const PLAN_VIEW_KEY = 'cswork:plan:view';
+const LEVELS = ['easy', 'medium', 'hard'] as const;
+export type PlanGroup = {
+  key: string;
+  /** The stop (topic grouping); null for OA problems, which have none. */
+  stop: number | null;
+  level: (typeof LEVELS)[number] | null;
+  problems: number;
+  minutes: number;
+  first: string;
+  last: string;
+};
+/**
+ * The plan's problems by stop or by difficulty, with their count, minutes and first and
+ * last day. Stops come in plan order, or easiest first (mean level, ties in plan order);
+ * difficulty groups always run easy → hard.
+ */
+export function planGroups(days: readonly PlanDay[], by: 'topic' | 'difficulty', order: PlanOrder = 'plan') {
+  const groups = new Map<string, PlanGroup>();
+  // Sum of level indices per group, for the mean.
+  const levels = new Map<string, number>();
+  for (const day of days)
+    for (const problem of day.problems) {
+      const level = slotOf(problem.difficulty?.toLowerCase()) ?? 'medium';
+      const key = by === 'difficulty' ? level : String(problem.stop ?? 'oa');
+      const group = groups.get(key) ?? {
+        key,
+        stop: by === 'topic' ? (problem.stop ?? null) : null,
+        level: by === 'difficulty' ? level : null,
+        problems: 0,
+        minutes: 0,
+        first: day.date,
+        last: day.date,
+      };
+      group.problems++;
+      group.minutes += minutesFor(problem.difficulty);
+      group.last = day.date;
+      levels.set(key, (levels.get(key) ?? 0) + LEVELS.indexOf(level));
+      groups.set(key, group);
+    }
+  const list = [...groups.values()];
+  if (by === 'difficulty') list.sort((a, b) => LEVELS.indexOf(a.level!) - LEVELS.indexOf(b.level!));
+  else if (order === 'difficulty')
+    list.sort((a, b) => levels.get(a.key)! / a.problems - levels.get(b.key)! / b.problems);
+  return list;
+}
+
 const escapeText = (text: string) =>
   text.replace(/[\\;,]/g, '\\$&').replace(/\r?\n/g, '\\n');
 function fold(line: string) {
