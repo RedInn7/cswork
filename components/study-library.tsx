@@ -18,6 +18,7 @@ import {
   Copy,
   ExternalLink,
   Search,
+  Star,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -46,6 +47,9 @@ type LibraryItem = {
   importedSources?: string[];
   progressStatus?: 'solved' | 'attempted' | 'not_started';
   judging?: boolean;
+  /** The signed-in learner's own marks. */
+  starred?: boolean;
+  redo?: boolean;
   /** Up to two companies that asked it, for the row marks. */
   companies?: { slug: string; name: string }[];
   selection?: {
@@ -1140,6 +1144,8 @@ export function StudyLibrary({
                   {t('已尝试 · 未通过', 'Attempted · Not solved')}
                 </option>
                 <option value="not_started">{t('未开始', 'Not started')}</option>
+                <option value="starred">{t('已收藏', 'Starred')}</option>
+                <option value="redo">{t('待重做', 'To redo')}</option>
               </>
             )}
             <option value="ready">{t('可站内判题', 'Ready to submit')}</option>
@@ -1423,6 +1429,14 @@ export function StudyLibrary({
                         )}
                         <span className="study-number">{item.number}.</span>{' '}
                         {title(item, english)}
+                        {item.starred && (
+                          <Star
+                            className="study-star"
+                            size={14}
+                            role="img"
+                            aria-label={t('已收藏', 'Starred')}
+                          />
+                        )}
                       </strong>
                       {pips(item.selection?.stage)}
                       {!!item.companies?.length && (

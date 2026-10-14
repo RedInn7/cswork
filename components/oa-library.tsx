@@ -15,6 +15,7 @@ import {
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
+import { Star } from 'lucide-react';
 
 /** Text remains the accessible identity; the logo is only a visual aid. */
 export function CompanyIdentity({
@@ -68,6 +69,7 @@ type Item = {
   difficulty?: string;
   tags?: string[];
   progress?: 'solved' | 'attempted';
+  starred?: boolean;
 };
 const difficultyLevels: Record<string, string> = {
   简单: 'easy',
@@ -798,7 +800,17 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                         </span>
                         <span className="oa-number">#{item.number}</span>
                         <span className="oa-title">
-                          <strong>{item.title}</strong>
+                          <strong>
+                            {item.title}
+                            {item.starred && (
+                              <Star
+                                className="study-star"
+                                size={14}
+                                role="img"
+                                aria-label={t('已收藏', 'Starred')}
+                              />
+                            )}
+                          </strong>
                           {[
                             ...new Set([
                               // Only unusual languages (SQL, Bash…) tell the reader something.
