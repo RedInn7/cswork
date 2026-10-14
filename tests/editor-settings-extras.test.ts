@@ -13,7 +13,7 @@ test('topic tags start hidden and the keymap starts default; junk falls back', a
     },
   });
   const { readEditorSettings, settingsKey } = await import(
-    '../lib/editor-settings.ts'
+    '../lib/editor-settings'
   );
   assert.equal(readEditorSettings('u').hideTags, true);
   assert.equal(readEditorSettings('u').keymap, 'default');

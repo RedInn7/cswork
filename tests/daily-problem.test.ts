@@ -1,3 +1,4 @@
+import type { ProblemSummary } from '../lib/problems';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import {
@@ -54,7 +55,7 @@ void test('the server source takes judgeable pools, names the company and finds 
     { id: 'lc-99999', title: 'Off the line', difficulty: '简单', tags: [] },
     { id: 'oa-amazon-1', title: 'Amazon OA', difficulty: '中等', tags: [] },
     { id: 'oa-nobody-1', title: 'Not hot', difficulty: '中等', tags: [] },
-  ];
+  ] satisfies ProblemSummary[];
   const source = dailySource(summaries, [{ name: 'Amazon', aliases: ['amazon'] }]);
   const odd = Date.UTC(2026, 9, 13, 4); // 2026-10-13 in Beijing
   const even = odd + DAY;
