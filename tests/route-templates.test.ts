@@ -950,7 +950,8 @@ void test('every Line 500 stop has a complete bilingual template, in route order
       assert(cjk.test(text.zh), `${t.slug}: zh text should be Chinese`);
       assert(text.en.trim() && !cjk.test(text.en), `${t.slug}: en text should be English`);
     }
-    assert(/O\(/.test(t.complexity), t.slug);
+    assert(/O\(/.test(t.complexity.zh) && /O\(/.test(t.complexity.en), t.slug);
+    assert(!cjk.test(t.complexity.en), `${t.slug}: en complexity should be English`);
     for (const [lang] of TEMPLATE_LANGS) {
       assert(t.code[lang].trim().length > 0, `${t.slug} ${lang}`);
       assert(!t.code[lang].includes('"fmt"'), `${t.slug}: the Go harness imports fmt`);

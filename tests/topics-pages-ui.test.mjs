@@ -57,6 +57,9 @@ test('a stop page shows points, pitfalls, four languages with one open, and link
     const cta = doc.querySelector('a.topics-cta');
     assert.ok(cta.getAttribute('href') === '/?view=problems&section=binary-search');
     assert.ok(cta.textContent.includes(String(stop.problems)));
+    // The complexity badge is in the page language, not English on the zh page.
+    const badge = doc.querySelector('.topics-complexity').textContent;
+    assert.ok(badge === (zh ? stop.complexity.zh : stop.complexity.en));
     assert.ok(doc.querySelector('a[rel="prev"]').getAttribute('href') === '/topics/prefix-intervals');
     assert.ok(doc.querySelector('a[rel="next"]').getAttribute('href') === '/topics/stacks-heaps');
     assert.ok(doc.querySelector('[aria-current="page"]') !== null);

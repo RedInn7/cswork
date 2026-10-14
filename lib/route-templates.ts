@@ -9,7 +9,7 @@ export type TemplateLang = 'python' | 'cpp' | 'java' | 'go';
 export type RouteTemplate = {
   slug: string;
   pattern: Bilingual;
-  complexity: string;
+  complexity: Bilingual;
   points: Bilingual[];
   pitfalls: Bilingual[];
   code: Record<TemplateLang, string>;

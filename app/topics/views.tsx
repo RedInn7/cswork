@@ -97,8 +97,8 @@ export function topicCopy(stop: TopicStop, zh: boolean) {
       ? `${title}代码模板：Python / C++ / Java / Go | ${SITE_NAME}`
       : `${title}: Code Templates in Python, C++, Java & Go | ${SITE_NAME}`,
     description: zh
-      ? `「${stop.title}」代码模板速查：${stop.pattern.zh}（${stop.complexity}）。3 条要点、3 个易错点，附 Python、C++、Java、Go 四种可运行模板，配合 500 路第 ${stop.no} 站的 ${stop.problems} 道题练习。`
-      : `${stop.titleEn} cheat sheet: ${stop.pattern.en} (${stop.complexity}). Three key points, three common pitfalls and a runnable template in Python, C++, Java and Go, to practise with the ${stop.problems} problems at stop ${stop.no} of Line 500.`,
+      ? `「${stop.title}」代码模板速查：${stop.pattern.zh}（${stop.complexity.zh}）。3 条要点、3 个易错点，附 Python、C++、Java、Go 四种可运行模板，配合 500 路第 ${stop.no} 站的 ${stop.problems} 道题练习。`
+      : `${stop.titleEn} cheat sheet: ${stop.pattern.en} (${stop.complexity.en}). Three key points, three common pitfalls and a runnable template in Python, C++, Java and Go, to practise with the ${stop.problems} problems at stop ${stop.no} of Line 500.`,
   };
 }
 
@@ -159,9 +159,7 @@ export function TopicView({ stop, zh }: { stop: TopicStop; zh: boolean }) {
           <h1>{title}</h1>
           <p className="topics-sign-pattern">
             {zh ? stop.pattern.zh : stop.pattern.en}{' '}
-            <span className="topics-complexity" translate="no">
-              {stop.complexity}
-            </span>
+            <span className="topics-complexity">{zh ? stop.complexity.zh : stop.complexity.en}</span>
           </p>
         </div>
         <a className="topics-cta" href={line500Path(stop.slug)}>

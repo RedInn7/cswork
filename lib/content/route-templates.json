@@ -5,7 +5,10 @@
       "zh": "读写双指针原地压缩",
       "en": "Read/write pointers for in-place compaction"
     },
-    "complexity": "O(n) time · O(1) space",
+    "complexity": {
+      "zh": "时间 O(n) · 空间 O(1)",
+      "en": "O(n) time · O(1) space"
+    },
     "points": [
       {
         "zh": "写指针 w 左边是已经确定保留的结果；读指针只往前扫，两个指针都只走一遍。",
@@ -47,7 +50,10 @@
       "zh": "边扫边查的哈希表",
       "en": "One-pass hash map lookup"
     },
-    "complexity": "O(n) time · O(n) space",
+    "complexity": {
+      "zh": "时间 O(n) · 空间 O(n)",
+      "en": "O(n) time · O(n) space"
+    },
     "points": [
       {
         "zh": "先查补数、再存自己：一遍扫描就能找到「之前出现过」的配对，也不会把同一个元素用两次。",
@@ -89,7 +95,10 @@
       "zh": "KMP 前缀函数匹配",
       "en": "KMP prefix function"
     },
-    "complexity": "O(n + m) time · O(m) space",
+    "complexity": {
+      "zh": "时间 O(n + m) · 空间 O(m)",
+      "en": "O(n + m) time · O(m) space"
+    },
     "points": [
       {
         "zh": "pi[i] 是 pat[0..i] 中「既是真前缀又是真后缀」的最长长度；失配时 j 退回 pi[j-1]，文本指针从不回头。",
@@ -131,7 +140,10 @@
       "zh": "可变长度滑动窗口",
       "en": "Variable-size sliding window"
     },
-    "complexity": "O(n) time · O(Σ) space",
+    "complexity": {
+      "zh": "时间 O(n) · 空间 O(Σ)",
+      "en": "O(n) time · O(Σ) space"
+    },
     "points": [
       {
         "zh": "右端每步前进一格，左端只在窗口不合法时收缩；两个指针都只前进，总共 O(n)。",
@@ -173,7 +185,10 @@
       "zh": "前缀和 + 哈希计数",
       "en": "Prefix sums with a hash count"
     },
-    "complexity": "O(n) time · O(n) space",
+    "complexity": {
+      "zh": "时间 O(n) · 空间 O(n)",
+      "en": "O(n) time · O(n) space"
+    },
     "points": [
       {
         "zh": "区间和等于两个前缀和之差：sum(l..r) = pre[r+1] - pre[l]；前缀数组多开一位，pre[0] = 0。",
@@ -215,7 +230,10 @@
       "zh": "左闭右开区间找「第一个为真」",
       "en": "First true on a half-open range"
     },
-    "complexity": "O(log n) checks",
+    "complexity": {
+      "zh": "O(log n) 次判定",
+      "en": "O(log n) checks"
+    },
     "points": [
       {
         "zh": "先把问题改写成单调的判定 ok(x)：前面全是假、后面全是真，然后二分找第一个真。",
@@ -257,7 +275,10 @@
       "zh": "单调栈：下一个更大元素",
       "en": "Monotonic stack: next greater element"
     },
-    "complexity": "O(n) time · O(n) space",
+    "complexity": {
+      "zh": "时间 O(n) · 空间 O(n)",
+      "en": "O(n) time · O(n) space"
+    },
     "points": [
       {
         "zh": "栈里存下标而不是值：既能取到值，也能算距离（比如「还要等几天才升温」）。",
@@ -299,7 +320,10 @@
       "zh": "按结束时间排序选区间",
       "en": "Sort by end time, keep what fits"
     },
-    "complexity": "O(n log n) time",
+    "complexity": {
+      "zh": "时间 O(n log n)",
+      "en": "O(n log n) time"
+    },
     "points": [
       {
         "zh": "总是选结束最早的区间，给后面留的空间最多。交换论证：任何最优解的第一个区间都能换成它而不变差。",
@@ -341,7 +365,10 @@
       "zh": "反转链表 + 快慢指针",
       "en": "Reverse in place, fast and slow pointers"
     },
-    "complexity": "O(n) time · O(1) space",
+    "complexity": {
+      "zh": "时间 O(n) · 空间 O(1)",
+      "en": "O(n) time · O(1) space"
+    },
     "points": [
       {
         "zh": "改指针之前先存下 next。反转只有三步：存 next、指回前驱、整体前移。",
@@ -383,7 +410,10 @@
       "zh": "按层 BFS",
       "en": "Level-order BFS"
     },
-    "complexity": "O(n) time · O(width) space",
+    "complexity": {
+      "zh": "时间 O(n) · 空间 O(最大层宽)",
+      "en": "O(n) time · O(width) space"
+    },
     "points": [
       {
         "zh": "每一轮先记下队列长度，正好处理这么多个结点，层与层就分开了。",
@@ -425,7 +455,10 @@
       "zh": "后序返回单边贡献，全局记录拐弯路径",
       "en": "Return the one-sided gain, record the bent path globally"
     },
-    "complexity": "O(n) time · O(h) stack",
+    "complexity": {
+      "zh": "时间 O(n) · 递归栈 O(h)",
+      "en": "O(n) time · O(h) stack"
+    },
     "points": [
       {
         "zh": "递归函数返回「从当前结点往下走的最好单边路径」，因为要继续往上接的路径只能选一边。",
@@ -467,7 +500,10 @@
       "zh": "前序定根，中序分左右",
       "en": "Preorder picks the root, inorder splits the sides"
     },
-    "complexity": "O(n) time · O(n) space",
+    "complexity": {
+      "zh": "时间 O(n) · 空间 O(n)",
+      "en": "O(n) time · O(n) space"
+    },
     "points": [
       {
         "zh": "前序的第一个值是根；在中序里找到它，左边是左子树，右边是右子树。",
@@ -509,7 +545,10 @@
       "zh": "迭代中序：按顺序走 BST",
       "en": "Iterative inorder walks a BST in sorted order"
     },
-    "complexity": "O(h + k) time · O(h) space",
+    "complexity": {
+      "zh": "时间 O(h + k) · 空间 O(h)",
+      "en": "O(h + k) time · O(h) space"
+    },
     "points": [
       {
         "zh": "BST 的中序遍历是升序的：第 k 小、验证 BST、找前驱后继，都能转成中序问题。",
@@ -551,7 +590,10 @@
       "zh": "多源 BFS，一步扩一圈",
       "en": "Multi-source BFS, one ring per step"
     },
-    "complexity": "O(rows × cols)",
+    "complexity": {
+      "zh": "O(行数 × 列数)",
+      "en": "O(rows × cols)"
+    },
     "points": [
       {
         "zh": "所有起点一开始就一起入队，相当于从一个虚拟的超级源点出发；BFS 的层数就是最短距离。",
@@ -593,7 +635,10 @@
       "zh": "并查集：路径压缩 + 按大小合并",
       "en": "Union-find with path compression and union by size"
     },
-    "complexity": "≈ O(α(n)) per operation",
+    "complexity": {
+      "zh": "每次操作约 O(α(n))",
+      "en": "≈ O(α(n)) per operation"
+    },
     "points": [
       {
         "zh": "find 时做路径压缩，union 时把小树挂到大树下；两者一起用，单次操作几乎是常数时间。",
@@ -635,7 +680,10 @@
       "zh": "Kahn 算法：入度为 0 的先出队",
       "en": "Kahn's algorithm: dequeue zero in-degree nodes"
     },
-    "complexity": "O(V + E)",
+    "complexity": {
+      "zh": "O(V + E)",
+      "en": "O(V + E)"
+    },
     "points": [
       {
         "zh": "入度为 0 的点没有未完成的前置依赖，可以先放；放下之后把它指向的点入度减一。",
@@ -677,7 +725,10 @@
       "zh": "Dijkstra：堆 + 懒删除",
       "en": "Dijkstra with a heap and lazy deletion"
     },
-    "complexity": "O((V + E) log V)",
+    "complexity": {
+      "zh": "O((V + E) log V)",
+      "en": "O((V + E) log V)"
+    },
     "points": [
       {
         "zh": "每次从堆里取出当前距离最小的点，它的距离就确定了；前提是所有边权非负。",
@@ -719,7 +770,10 @@
       "zh": "Kruskal：按边权排序 + 并查集",
       "en": "Kruskal: sort the edges, join with union-find"
     },
-    "complexity": "O(E log E)",
+    "complexity": {
+      "zh": "O(E log E)",
+      "en": "O(E log E)"
+    },
     "points": [
       {
         "zh": "按边权从小到大看每条边：能连起两个不同连通块就选，否则跳过（选了会成环）。",
@@ -761,7 +815,10 @@
       "zh": "选择、递归、撤销；同层跳过重复",
       "en": "Choose, recurse, undo; skip duplicates on the same level"
     },
-    "complexity": "O(n · 2^n)",
+    "complexity": {
+      "zh": "O(n · 2^n)",
+      "en": "O(n · 2^n)"
+    },
     "points": [
       {
         "zh": "模板只有三步：做选择、递归、撤销选择；path 是整个搜索共用的一份。",
@@ -803,7 +860,10 @@
       "zh": "按切分点回溯 + 回文预处理",
       "en": "Backtrack over cut points with a palindrome table"
     },
-    "complexity": "O(n · 2^n)",
+    "complexity": {
+      "zh": "O(n · 2^n)",
+      "en": "O(n · 2^n)"
+    },
     "points": [
       {
         "zh": "回溯的每一层决定「下一段切到哪里」，start 走到 n 就得到一种完整的切法。",
@@ -845,7 +905,10 @@
       "zh": "N 皇后：按列和两条对角线剪枝",
       "en": "N-Queens: prune by column and both diagonals"
     },
-    "complexity": "O(n!) worst case",
+    "complexity": {
+      "zh": "最坏 O(n!)",
+      "en": "O(n!) worst case"
+    },
     "points": [
       {
         "zh": "每行只放一个皇后，搜索树只在列上分叉；列、主对角线 r-c、副对角线 r+c 各用一个数组标记。",
@@ -887,7 +950,10 @@
       "zh": "一维 DP + 滚动变量",
       "en": "1-D DP with rolling variables"
     },
-    "complexity": "O(n) time · O(1) space",
+    "complexity": {
+      "zh": "时间 O(n) · 空间 O(1)",
+      "en": "O(n) time · O(1) space"
+    },
     "points": [
       {
         "zh": "先用一句话定义状态，比如 dp[i] = 只看前 i 个元素时的最优值；状态说清楚了，转移通常就出来了。",
@@ -929,7 +995,10 @@
       "zh": "网格 DP 压成一行",
       "en": "Grid DP compressed to one row"
     },
-    "complexity": "O(rows × cols) time · O(cols) space",
+    "complexity": {
+      "zh": "时间 O(行数 × 列数) · 空间 O(列数)",
+      "en": "O(rows × cols) time · O(cols) space"
+    },
     "points": [
       {
         "zh": "dp[r][c] 只依赖上方和左方，按行从左到右填，一行数组就够：更新前 dp[c] 是上方，dp[c-1] 是左方。",
@@ -971,7 +1040,10 @@
       "zh": "0/1 背包倒序，完全背包正序",
       "en": "0/1 knapsack backwards, unbounded forwards"
     },
-    "complexity": "O(n × target)",
+    "complexity": {
+      "zh": "O(n × target)",
+      "en": "O(n × target)"
+    },
     "points": [
       {
         "zh": "0/1 背包倒序遍历容量，保证 dp[s-x] 还是「没用过 x」的旧值；完全背包正序遍历，允许同一件物品重复使用。",
@@ -1013,7 +1085,10 @@
       "zh": "LIS：tails 数组 + 二分",
       "en": "LIS with a tails array and binary search"
     },
-    "complexity": "O(n log n)",
+    "complexity": {
+      "zh": "O(n log n)",
+      "en": "O(n log n)"
+    },
     "points": [
       {
         "zh": "tails[k] 是长度为 k+1 的递增子序列可能的最小结尾；它本身是递增的，所以可以二分。",
@@ -1055,7 +1130,10 @@
       "zh": "双串 DP：dp[i][j] 看两个前缀",
       "en": "Two-string DP over prefixes"
     },
-    "complexity": "O(m × n)",
+    "complexity": {
+      "zh": "O(m × n)",
+      "en": "O(m × n)"
+    },
     "points": [
       {
         "zh": "dp[i][j] 定义在前缀上：a 的前 i 个字符和 b 的前 j 个字符；多开一行一列表示空串。",
@@ -1097,7 +1175,10 @@
       "zh": "区间 DP：左端点倒序枚举",
       "en": "Interval DP with the left end running backwards"
     },
-    "complexity": "O(n²)",
+    "complexity": {
+      "zh": "O(n²)",
+      "en": "O(n²)"
+    },
     "points": [
       {
         "zh": "dp[i][j] 只依赖更短的区间 dp[i+1][*] 和 dp[*][j-1]，所以 i 倒序、j 正序填表。",
@@ -1139,7 +1220,10 @@
       "zh": "以 i 结尾的状态：同时记最大和最小",
       "en": "Ending-at-i states: track both max and min"
     },
-    "complexity": "O(n) time · O(1) space",
+    "complexity": {
+      "zh": "时间 O(n) · 空间 O(1)",
+      "en": "O(n) time · O(1) space"
+    },
     "points": [
       {
         "zh": "状态定义成「以 i 结尾」，连续子数组的转移就只有两种：接在前一段后面，或者从 i 重新开始。",
@@ -1181,7 +1265,10 @@
       "zh": "持有 / 冷却 / 空仓三状态",
       "en": "Three states: holding, cooling down, free"
     },
-    "complexity": "O(n) time · O(1) space",
+    "complexity": {
+      "zh": "时间 O(n) · 空间 O(1)",
+      "en": "O(n) time · O(1) space"
+    },
     "points": [
       {
         "zh": "先写清楚每天结束时可能处于哪几种状态，再写「昨天的哪种状态 + 今天的什么动作」能到达它。",
@@ -1223,7 +1310,10 @@
       "zh": "按结束时间排序 + 二分找上一个兼容任务",
       "en": "Sort by end, binary search the last compatible job"
     },
-    "complexity": "O(n log n)",
+    "complexity": {
+      "zh": "O(n log n)",
+      "en": "O(n log n)"
+    },
     "points": [
       {
         "zh": "按结束时间排序后，dp[i] = 前 i 个任务的最优值；第 i 个任务要么不选，要么接在最后一个不冲突的任务后面。",
@@ -1265,7 +1355,10 @@
       "zh": "树形 DP：每个结点返回（选，不选）",
       "en": "Tree DP: each node returns (take, skip)"
     },
-    "complexity": "O(n)",
+    "complexity": {
+      "zh": "O(n)",
+      "en": "O(n)"
+    },
     "points": [
       {
         "zh": "树形 DP 用后序遍历：先拿到左右子树的结果，再算当前结点，每个结点返回一个小元组。",
@@ -1307,7 +1400,10 @@
       "zh": "惰性迭代器：hasNext 负责前进",
       "en": "Lazy iterator: hasNext does the advancing"
     },
-    "complexity": "O(1) amortised per call",
+    "complexity": {
+      "zh": "每次调用均摊 O(1)",
+      "en": "O(1) amortised per call"
+    },
     "points": [
       {
         "zh": "把「跳过空行、走到下一个有效元素」放进 hasNext，next 只负责取值；这样连续调用多次 hasNext 也没有副作用。",
@@ -1349,7 +1445,10 @@
       "zh": "LRU：哈希表 + 双向链表",
       "en": "LRU: hash map plus doubly linked list"
     },
-    "complexity": "O(1) get and put",
+    "complexity": {
+      "zh": "get 与 put 均为 O(1)",
+      "en": "O(1) get and put"
+    },
     "points": [
       {
         "zh": "哈希表负责 O(1) 找到结点，双向链表负责 O(1) 把结点移到头部、删除尾部。",
@@ -1391,7 +1490,10 @@
       "zh": "字典树：结点存孩子和计数",
       "en": "Trie nodes hold children and counts"
     },
-    "complexity": "O(length) per operation",
+    "complexity": {
+      "zh": "每次操作 O(单词长度)",
+      "en": "O(length) per operation"
+    },
     "points": [
       {
         "zh": "每个结点代表一个前缀；插入和查询都是顺着字符往下走，耗时只和单词长度有关。",
@@ -1433,7 +1535,10 @@
       "zh": "位运算小工具与快速幂",
       "en": "Bit tricks and fast power"
     },
-    "complexity": "O(log n)",
+    "complexity": {
+      "zh": "O(log n)",
+      "en": "O(log n)"
+    },
     "points": [
       {
         "zh": "x & (x-1) 去掉最低位的 1，x & -x 取出最低位的 1；异或满足 a ^ a = 0，可以找出只出现一次的数。",
