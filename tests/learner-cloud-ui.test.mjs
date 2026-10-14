@@ -43,7 +43,7 @@ const { createRoot } = await import('react-dom/client');
 const { mergeMockHistory, unsyncedMocks } = await import('../lib/mock-cloud.ts');
 const { ProfileView, PublicListView } = await import('../app/u/views.tsx');
 const { MyLists } = await import('../components/my-lists.tsx');
-const { AskedReport } = await import('../components/problem-community.tsx');
+const { AskedReport, communityProblem } = await import('../components/problem-community.tsx');
 const { PublicProfileSettings } = await import('../components/public-profile-settings.tsx');
 
 const wait = (ms = 5) =>
@@ -122,6 +122,8 @@ test('the profile and public list pages render without names, with links and a h
     assert.ok(doc.querySelector('a[href="/?view=problems&section=hash-counting"]') !== null);
     // The grid fills in after mount (the reader's time zone); the server sends empty cells.
     assert.equal(doc.querySelectorAll('.learner-heatmap-grid span').length, 26 * 7);
+    // Recent dates too: the server's UTC day could disagree with the reader's heatmap.
+    assert.ok([...doc.querySelectorAll('.learner-rows time')].every((t) => t.textContent === ''));
     assert.ok(
       [...doc.querySelectorAll('section[aria-labelledby]')].every((s) => doc.getElementById(s.getAttribute('aria-labelledby')) !== null),
     );
@@ -204,19 +206,20 @@ test('my lists: create one, open it, remove a problem as the owner, copy someone
     root = await mount(createElement(MyLists, { boot, navigate, list: detail.id }));
     assert.equal(document.querySelector('h1').textContent, 'Warm-up');
     assert.ok(document.querySelector('.cloud-meter').getAttribute('aria-label') === '1 of 2 solved');
+    assert.ok(document.querySelector('.cloud-meter').getAttribute('role') === 'img', 'the label is announced');
     assert.ok(document.querySelector('.cloud-share input').value.endsWith('/u/lists/AbCdEfGhIjKl'));
     assert.equal(document.querySelectorAll('.cloud-item').length, 2);
     await act(async () => document.querySelector('button[aria-label="Remove Two Sum from the list"]').click());
     await wait();
     assert.deepEqual(posts.at(-1), [`oj/lists/${detail.id}/items`, { problemId: 'lc-1', on: false }]);
     assert.equal(document.querySelectorAll('.cloud-item').length, 1);
-    assert.equal(button('Copy to my lists'), undefined, 'owners do not fork their own list');
+    assert.ok(!button('Copy to my lists'), 'owners do not fork their own list');
     await act(async () => root.unmount());
 
     detail = { ...detail, mine: false, owner: 'line-rider' };
     root = await mount(createElement(MyLists, { boot, navigate, list: detail.id }));
     assert.equal(document.querySelectorAll('.cloud-remove').length, 0);
-    assert.equal(document.querySelector('.cloud-share'), null);
+    assert.ok(!document.querySelector('.cloud-share'));
     assert.ok(document.querySelector('.route-kicker').textContent.includes('@line-rider'));
     await act(async () => button('Copy to my lists').click());
     await wait();
@@ -267,6 +270,33 @@ test('"I was asked this" shows the recent count and sends a month, company and r
   } finally {
     globalThis.fetch = original;
   }
+});
+
+test('signed out, the asked badge still counts and a click asks to sign in; course exercises get neither', async () => {
+  const original = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    const path = String(url).replace('/api/', '');
+    if (path === 'oj/reports?problem=lc-1')
+      return Response.json({ problemId: 'lc-1', months: 6, total: 2, last: '2026-10', companies: [], mine: [] });
+    throw new Error(`unexpected ${path}`);
+  };
+  let asked = 0;
+  const onAuth = () => asked++;
+  window.addEventListener('cswork:auth-required', onAuth);
+  try {
+    const root = await mount(createElement(AskedReport, { problemId: 'lc-1', english: false, signedIn: false }));
+    const trigger = document.querySelector('.cs-asked');
+    assert.ok(trigger.getAttribute('aria-label') === '我面试被问到过（最近被问 2 次）');
+    await act(async () => trigger.click());
+    assert.equal(asked, 1);
+    assert.ok(!document.querySelector('.cloud-asked-form'), 'no form until signed in');
+    await act(async () => root.unmount());
+  } finally {
+    window.removeEventListener('cswork:auth-required', onAuth);
+    globalThis.fetch = original;
+  }
+  assert.ok(communityProblem('lc-1') && communityProblem('oa-amazon-1'));
+  assert.ok(!communityProblem('watch-intervals') && !communityProblem('lc-1x'));
 });
 
 test('the public profile card is off until switched on and saves a lowercase handle', async () => {

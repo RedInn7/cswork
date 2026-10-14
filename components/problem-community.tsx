@@ -21,7 +21,13 @@ const ROUNDS: [string, string, string][] = [
   ['phone', '电面', 'Phone screen'],
   ['onsite', 'VO / 现场', 'Onsite / VO'],
 ];
-const monthOf = (time: number) => new Date(time).toISOString().slice(0, 7);
+/** The reader's own month (the server accepts a day ahead of UTC for this). */
+const monthOf = (time: number) => {
+  const d = new Date(time);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+};
+/** OA and LeetCode problems only: course exercises never go into lists or reports. */
+export const communityProblem = (id: string) => /^(?:oa-[a-z0-9-]+|lc-\d+)$/.test(id);
 /** Answers are shown only when they have the summary's shape. */
 const isSummary = (s: Partial<ReportSummary> | null | undefined): s is ReportSummary =>
   typeof s?.total === 'number' && Array.isArray(s.companies) && Array.isArray(s.mine);
@@ -66,12 +72,18 @@ export function ListMenu({ problemId, english }: { problemId: string; english: b
     setBusy(true);
     setError('');
     try {
-      const made = await api<{ id: string; title: string; visibility: string; items: unknown[] }>('oj/lists', {
+      const made = await api<{ id: string; title: string; visibility: string; items: { problemId: string }[] }>('oj/lists', {
         title: title.trim(),
         problemIds: [problemId],
       });
       setLists((all) => [
-        { id: made.id, title: made.title, visibility: made.visibility, count: made.items.length, has: true },
+        {
+          id: made.id,
+          title: made.title,
+          visibility: made.visibility,
+          count: made.items.length,
+          has: made.items.some((i) => i.problemId === problemId),
+        },
         ...(all ?? []),
       ]);
       setTitle('');
@@ -149,7 +161,16 @@ export function askedLabel(total: number, t: T) {
  * "I was asked this": the recent count on the star row, and a short form (company,
  * round, month). Reporters are never shown; the learner sees and can withdraw their own.
  */
-export function AskedReport({ problemId, english }: { problemId: string; english: boolean }) {
+export function AskedReport({
+  problemId,
+  english,
+  signedIn = true,
+}: {
+  problemId: string;
+  english: boolean;
+  /** Signed out: the count still shows, and a click asks to sign in. */
+  signedIn?: boolean;
+}) {
   const t: T = (zh, en) => (english ? en : zh);
   // An OA problem preselects its own employer.
   const oaCompany = /^oa-(.+)-\d+$/.exec(problemId)?.[1];
@@ -205,6 +226,28 @@ export function AskedReport({ problemId, english }: { problemId: string; english
     return r ? t(r[1], r[2]) : value;
   };
   const [now] = useState(() => Date.now());
+  const ariaLabel = label
+    ? t(`我面试被问到过（${label}）`, `I was asked this (${label})`)
+    : t('我面试被问到过', 'I was asked this');
+  const badge = (
+    <>
+      <MessageSquareQuote size={16} aria-hidden="true" />
+      {label && <span aria-hidden="true">{summary!.total}</span>}
+    </>
+  );
+  if (!signedIn)
+    return (
+      <button
+        type="button"
+        className="cs-asked"
+        data-count={summary?.total || undefined}
+        aria-label={ariaLabel}
+        title={t('我面试被问到过', 'I was asked this')}
+        onClick={() => window.dispatchEvent(new Event('cswork:auth-required'))}
+      >
+        {badge}
+      </button>
+    );
   return (
     <Popover
       open={open}
@@ -216,15 +259,10 @@ export function AskedReport({ problemId, english }: { problemId: string; english
       <PopoverTrigger
         className="cs-asked"
         data-count={summary?.total || undefined}
-        aria-label={
-          label
-            ? t(`我面试被问到过（${label}）`, `I was asked this (${label})`)
-            : t('我面试被问到过', 'I was asked this')
-        }
+        aria-label={ariaLabel}
         title={t('我面试被问到过', 'I was asked this')}
       >
-        <MessageSquareQuote size={16} aria-hidden="true" />
-        {label && <span aria-hidden="true">{summary!.total}</span>}
+        {badge}
       </PopoverTrigger>
       <PopoverContent align="end" className="cloud-pop cloud-asked">
         <PopoverTitle className="cloud-pop-title">{t('我面试被问到过', 'I was asked this')}</PopoverTitle>

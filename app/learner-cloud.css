@@ -24,9 +24,13 @@
   background: var(--cs-surface-soft, #f8f9fb);
   color: var(--cs-text, #1d252d);
 }
+/* Workspace tokens for the text, so the dark editor theme keeps it readable; amber like the star. */
 .cs-asked[data-count] {
-  color: #8a5a12;
-  background: #fff4e0;
+  color: var(--cs-text, #1d252d);
+  background: color-mix(in srgb, #ffb23f 18%, transparent);
+}
+.cs-asked[data-count] svg {
+  color: #e8971c;
 }
 .cs-asked:focus-visible {
   outline: 2px solid var(--cs-blue, #2563eb);

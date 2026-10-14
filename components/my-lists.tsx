@@ -19,9 +19,12 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import type { Navigate } from './learning';
+import { communityProblem } from './problem-community';
 import '@/app/learner-cloud.css';
 
 type T = (zh: string, en: string) => string;
+/** The server's cap on problems per list. */
+const LIST_ITEMS = 500;
 type Summary = {
   id: string;
   title: string;
@@ -92,12 +95,18 @@ function ListIndex({ navigate, t, english }: { navigate: Navigate; t: T; english
   async function fromStarred() {
     try {
       const { items } = await api<{ items: { target: string }[] }>('oj/marks?mark=star');
-      const ids = items.flatMap((m) => (m.target.startsWith('problem:') ? [m.target.slice(8)] : []));
+      const ids = items.flatMap((m) =>
+        m.target.startsWith('problem:') && communityProblem(m.target.slice(8)) ? [m.target.slice(8)] : [],
+      );
       if (!ids.length) {
         setError(t('还没有收藏的题。在题目页点星标收藏。', 'Nothing starred yet. Star problems on their pages first.'));
         return;
       }
-      await create(ids, t('我的收藏', 'My starred'));
+      // A list holds 500 problems; the name says when the stars did not all fit.
+      await create(
+        ids.slice(0, LIST_ITEMS),
+        ids.length > LIST_ITEMS ? t('我的收藏（前 500 道）', 'My starred (first 500)') : t('我的收藏', 'My starred'),
+      );
     } catch (e) {
       setError((e as Error).message);
     }
@@ -327,7 +336,7 @@ function ListDetail({
             {list.description && <p>{list.description}</p>}
           </>
         )}
-        <div className="cloud-meter" aria-label={t(`已通过 ${solved} / ${ids.length}`, `${solved} of ${ids.length} solved`)}>
+        <div className="cloud-meter" role="img" aria-label={t(`已通过 ${solved} / ${ids.length}`, `${solved} of ${ids.length} solved`)}>
           <span aria-hidden="true">
             <b>{solved}</b> / {ids.length}
           </span>
