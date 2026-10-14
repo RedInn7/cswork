@@ -1011,6 +1011,7 @@ export function topoSortTrace(edges: [string, string][] = TOPO_EDGES, t: Tr = zh
 /** Top-k with a min-heap of size k: the root is always the k-th largest seen so far. */
 export function heapTrace(stream = [5, 2, 9, 1, 7, 8, 3], k = 3, t: Tr = zhText): DemoTrace {
   if (!Number.isInteger(k) || k < 1 || k > stream.length) throw new Error('Invalid heap demo input');
+  const kth = `${k}${[11, 12, 13].includes(k % 100) ? 'th' : (['th', 'st', 'nd', 'rd'][k % 10] ?? 'th')}`;
   const heap: number[] = [],
     frames: DemoFrame[] = [];
   let next = 0;
@@ -1091,14 +1092,14 @@ export function heapTrace(stream = [5, 2, 9, 1, 7, 8, 3], k = 3, t: Tr = zhText)
   frame(
     t(
       `数据流读完。堆里是前 ${k} 大的数，堆顶 ${heap[0]} 就是第 ${k} 大。`,
-      `Stream finished. The heap holds the top ${k}; its root ${heap[0]} is the ${k}-th largest.`,
+      `Stream finished. The heap holds the top ${k}; its root ${heap[0]} is the ${kth} largest.`,
     ),
     [],
     true,
   );
   return {
     title: t('堆 · 数据流中的第 k 大', 'Heap · k-th largest in a stream'),
-    question: t(`数据流 ${stream.join(', ')}，求第 ${k} 大`, `Stream ${stream.join(', ')}: find the ${k}-th largest`),
+    question: t(`数据流 ${stream.join(', ')}，求第 ${k} 大`, `Stream ${stream.join(', ')}: find the ${kth} largest`),
     invariant: t(
       '堆里始终是目前读到的最大的 k 个数；每次进出堆都是 O(log k)。',
       'The heap always holds the k largest numbers read so far; each push or pop costs O(log k).',
