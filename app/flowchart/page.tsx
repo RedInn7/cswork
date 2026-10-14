@@ -15,7 +15,7 @@ const copy = {
     description: `Stuck on which technique a coding problem needs? Answer up to ${count} yes-or-no questions about the input and the ask, and land on the matching topic of Ling’s Curated 500 with a one-line reason, its problems and a tutorial.`,
     kicker: 'PATTERN FINDER · DECISION TREE',
     h1: 'Not sure which pattern a problem needs? Answer yes or no.',
-    lead: `Start from the shape of the input, then what the problem asks for. Each answer rules out a family of techniques; after a few questions you arrive at one of the 35 stops on Ling’s Curated 500, with the reason it fits, the problems to practise and a tutorial to read. Treat it as a first guess, not a rule: some problems combine two patterns.`,
+    lead: 'Start with the shape of the input, then what the problem asks for. A few answers later you reach one of the 35 stops on Ling’s Curated 500: why it fits, its problems and a tutorial. It is a first guess, not a rule; some problems mix two patterns.',
     practise: 'Open the problem list',
   },
   zh: {
@@ -23,7 +23,7 @@ const copy = {
     description: `读完题不知道用什么方法？回答最多 ${count} 个关于输入和问法的是非题，就能定位到灵神题单精选里对应的专题，附一句理由、对应题目和算法教程。`,
     kicker: '解题思路 · 决策树',
     h1: '读完题不知道用什么方法？回答几个是或否。',
-    lead: '先看输入长什么样，再看题目问什么。每个回答排除一类方法，几步之后就会落到灵神题单精选 35 个专题中的一站：告诉你为什么是它、去哪里刷题、读哪篇教程。它给的是第一猜测，不是定理：有些题要组合两种方法。',
+    lead: '先看输入长什么样，再看题目问什么。几个回答之后，你会落到灵神题单精选 35 个专题中的一站：为什么是它、去哪刷题、读哪篇教程。这只是第一猜测，不是定理，有些题要组合两种方法。',
     practise: '打开题单',
   },
 };
