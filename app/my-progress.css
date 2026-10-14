@@ -1,0 +1,208 @@
+/* ?view=progress: the learner's own platform on Line 500. The board reuses the
+   car-display tokens (.algorithm-library) and the amber LED calendar
+   (.route-habit); the lists reuse the bank's rows. */
+.my-progress {
+  font-family: var(--font-route);
+  container: progress / inline-size;
+}
+.my-progress:lang(zh) {
+  letter-spacing: 0;
+}
+.progress-board {
+  display: grid;
+  grid-template-areas: 'main' 'habit';
+  margin: 8px 0 18px;
+  color: var(--route-white);
+  border-radius: 14px;
+  background: var(--route-dots), var(--route-navy);
+  font-synthesis-weight: none;
+  overflow: hidden;
+}
+@container progress (min-width: 860px) {
+  .progress-board {
+    grid-template-columns: minmax(0, 1fr) 356px;
+    grid-template-areas: 'main habit';
+  }
+}
+.progress-board-main {
+  grid-area: main;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 18px 22px;
+  min-width: 0;
+  /* The line runs under the heading like a platform edge. */
+  background: linear-gradient(var(--route-line), var(--route-line)) 22px calc(100% - 16px) / 56px 4px
+    no-repeat;
+}
+.progress-board-main h1 {
+  margin: 0 0 10px;
+  font: 700 26px/1.2 var(--font-route);
+  color: var(--route-white);
+}
+.my-progress:lang(zh) .progress-board-main h1 {
+  font-weight: 600;
+}
+.progress-board .route-kicker {
+  margin: 0;
+}
+.progress-meters {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: start;
+  gap: 4px 28px;
+  margin: 0 0 22px;
+}
+.progress-meters div {
+  display: grid;
+  gap: 4px;
+}
+.progress-meters dt {
+  order: 2;
+  font-size: 12px;
+  color: var(--route-white-3);
+}
+.progress-meters dd {
+  margin: 0;
+  font: 800 30px/1 var(--font-route);
+  font-variant-numeric: tabular-nums;
+  color: var(--route-white);
+}
+.progress-meters .route-led {
+  font-size: 30px;
+}
+.progress-board .route-habit {
+  border-left: 1px solid var(--route-led-off);
+}
+@container progress (max-width: 859px) {
+  .progress-board .route-habit {
+    border-left: 0;
+    border-top: 1px solid var(--route-led-off);
+  }
+}
+@container progress (max-width: 480px) {
+  .progress-meters {
+    grid-template-columns: repeat(2, auto);
+    gap: 12px 28px;
+  }
+}
+
+/* Tabs: destination plates; the active one lit amber. */
+.progress-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+  padding: 4px;
+  border-radius: 12px;
+  background: #eef2f6;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.progress-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  padding: 8px 14px;
+  border-radius: 9px;
+  font: 600 13px/1.2 var(--font-route);
+  color: #4c5a6a;
+  white-space: nowrap;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.progress-tabs button:hover {
+  background: #e1e7ee;
+  color: #1d252d;
+}
+.progress-tabs button[aria-selected='true'] {
+  background: var(--route-navy);
+  color: var(--route-white);
+  box-shadow: inset 0 -3px 0 var(--route-amber);
+}
+.progress-tabs button:focus-visible,
+.progress-row:focus-visible {
+  outline: 2px solid #327b76;
+  outline-offset: 2px;
+}
+.progress-count {
+  min-width: 1.6em;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgb(14 26 43 / 0.08);
+  font: 700 11px/1.5 var(--font-route);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.progress-count:empty {
+  display: none;
+}
+.progress-tabs button[aria-selected='true'] .progress-count {
+  background: var(--route-amber);
+  color: var(--route-navy);
+}
+
+.progress-filters {
+  margin-bottom: 12px;
+}
+.progress-filter-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: #74808a;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rows are links (open in a new tab works); the stripe follows list items. */
+.progress-list {
+  margin: 0;
+  list-style: none;
+}
+.progress-row {
+  color: inherit;
+  text-decoration: none;
+}
+.progress-list > li > .progress-row {
+  background: transparent;
+}
+.progress-list > li:nth-child(odd) > .progress-row {
+  background: #f7f8f9;
+}
+.progress-list > li > .progress-row:hover {
+  background: #e9f1ef;
+}
+.progress-detail {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+}
+.progress-stop {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--route-ac);
+  font-weight: 600;
+}
+.progress-stop::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border: 2px solid var(--route-line);
+  border-radius: 50%;
+  background: #fff;
+}
+.progress-empty p {
+  max-width: 34em;
+  margin: 0;
+  text-align: center;
+  color: #66717c;
+  font-size: 13px;
+  line-height: 1.8;
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress-tabs button {
+    transition: none;
+  }
+}

@@ -73,6 +73,7 @@ test('curated practice UI preserves language and round history, deduplicates cli
             (index === 1 && pendingVerdict === 'accepted')),
         judging: index === 1 && pendingVerdict === 'queued',
         companies: index === 1 ? [{ slug: 'meta', name: 'Meta' }] : [],
+        starred: index === 1,
       }),
     ),
     total: 3,
@@ -176,6 +177,9 @@ test('curated practice UI preserves language and round history, deduplicates cli
       rows[1].querySelector('.study-companies .sr-only').textContent,
       'Asked at: Meta',
     );
+    assert.ok(!!rows[1].querySelector('.study-star'), 'a starred row shows its star');
+    assert.match(rows[1].querySelector('.study-row-main strong').textContent, /\(starred\)/);
+    assert.ok(!rows[0].querySelector('.study-star'));
     // The company filter is sent, and the list request still matches currentQuery.
     await select(document.querySelector('option[value="meta"]').parentElement, 'meta');
     assert.equal(

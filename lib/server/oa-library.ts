@@ -14,6 +14,7 @@ import type { SitemapEntry } from '@/lib/seo';
 import type { Person } from './auth';
 import { hiddenCompanies } from './env';
 import { HttpError, json, limitReader, requirePerson, rows } from './http';
+import { problemMarks } from './my-practice';
 import {
   oaJudgeRegistry,
   oaReadyProblems,
@@ -376,6 +377,7 @@ export async function handleOaLibrary(
         ).map((r) => [r.problem_id, r.solved ? 'solved' : 'attempted'])
       : [],
   );
+  const marks = person ? problemMarks(person.id) : new Map<string, Set<string>>();
   return json({
     ...page,
     items: page.items.map((item) => {
@@ -391,6 +393,7 @@ export async function handleOaLibrary(
             .slice(0, 3),
         }),
         ...(progress.has(item.id) && { progress: progress.get(item.id) }),
+        ...(marks.get(item.id)?.has('star') && { starred: true }),
       };
     }),
   });

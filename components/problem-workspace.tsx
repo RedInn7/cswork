@@ -45,6 +45,7 @@ import {
 import { Button } from './ui/button';
 import { OaCompanyBadge, OaEditorial } from './oa-library';
 import { CompanyTags } from './company-tags';
+import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-notes';
 import {
   ExamAcceptedDialog,
   MockExamBar,
@@ -307,8 +308,13 @@ function Workspace({
       : say(intelligence.message);
   const suggest = useRef<(() => void) | null>(null);
   const runButton = useRef<HTMLButtonElement>(null);
-  const [leftTab, setLeftTab] = useState<'statement' | 'history' | 'editorial'>(
-    'statement',
+  const [leftTab, setLeftTab] = useState<
+    'statement' | 'history' | 'editorial' | 'notes'
+  >('statement');
+  // Private to an account, and closed during a mock exam like the editorial.
+  const note = useProblemNote(
+    boot.person && !examMode ? userId : null,
+    initialProblem.id,
   );
   const [bottomTab, setBottomTab] = useState<'input' | 'result'>('input');
   const [inputMode, setInputMode] = useState<'sample' | 'custom'>('sample');
@@ -1153,6 +1159,14 @@ function Workspace({
           <History size={15} />
           {uiEnglish ? 'Submissions' : '提交记录'}
         </button>
+        {note.enabled && (
+          <NotesTab
+            note={note}
+            active={leftTab === 'notes'}
+            onSelect={() => setLeftTab('notes')}
+            english={uiEnglish}
+          />
+        )}
         {problem.id.startsWith('oa-') && !examMode && (
           <button
             role="tab"
@@ -1173,7 +1187,9 @@ function Workspace({
             english={uiEnglish}
           />
         )}
-        {leftTab === 'editorial' ? (
+        {leftTab === 'notes' && note.enabled ? (
+          <ProblemNotes note={note} english={uiEnglish} />
+        ) : leftTab === 'editorial' ? (
           <OaEditorial key={problem.id} problemId={problem.id} />
         ) : leftTab === 'statement' ? (
           <>
@@ -1184,6 +1200,9 @@ function Workspace({
                   : ''}
                 {statement.title}
               </h2>
+              {note.enabled && (
+                <ProblemMarks problemId={problem.id} english={uiEnglish} />
+              )}
               {shownHistory.some(
                 (item) =>
                   item.mode === 'judge' &&
