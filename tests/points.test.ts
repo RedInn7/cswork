@@ -285,3 +285,20 @@ void test('a bought freeze adds one to its month on the calendar', () => {
   assert.equal(withOne.streak, 2);
   assert.equal(withOne.freezesLeft, 0);
 });
+
+void test('a bought freeze goes to the gap it was bought for, not an older one', () => {
+  // October: the free two cover the 2nd and 5th; the 9th stays a gap. 10th–19th solved, the
+  // 20th missed, and on the 21st a freeze is bought to rescue it.
+  const day = (d: number) => new Date(2026, 9, d, 12).getTime();
+  const solved = [1, 3, 4, 6, 7, 8, ...Array.from({ length: 10 }, (_, i) => 10 + i)];
+  const activity = solved.map((d) => ({ problem_id: `p${d}`, created_at: day(d) }));
+  const stamp = new Date(2026, 9, 21).toDateString();
+  const before = practiceStats(activity, stamp, true, [], undefined, [day(21)]);
+  assert.equal(before.rescue, true);
+  assert.equal(before.streak, 10);
+  assert.equal(before.freezesLeft, 1);
+  assert.equal(before.cells.some((c) => c.frozen && new Date(c.time).getDate() === 9), false);
+  const after = practiceStats([...activity, { problem_id: 'p21', created_at: day(21) }], stamp, true, [], undefined, [day(21)]);
+  assert.equal(after.streak, 11);
+  assert.equal(after.freezesLeft, 0);
+});
