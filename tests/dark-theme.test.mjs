@@ -9,14 +9,17 @@ import postcss from 'postcss';
 import {
   END,
   START,
+  contexts,
   contrast,
   lightText,
   manualKeys,
   parseColor,
   prefixSelector,
+  oklchToRgb,
   REFERENCE_SURFACE,
   rgbToOklch,
   themedFiles,
+  themeOptions,
   withDarkBlock,
 } from '../scripts/dark-theme.mjs';
 import { THEME_COOKIE, THEME_KEY, THEME_SCRIPT } from '../lib/theme-script.ts';
@@ -155,14 +158,15 @@ const SKIPPED = (node) => {
 };
 
 test('every stylesheet carries an up-to-date dark block covering its background and text colours', () => {
-  const manual = manualKeys(read('app/theme.css'));
+  const options = themeOptions(root);
+  const { manual } = options;
   const files = themedFiles(root);
   assert.ok(files.length >= 30);
   assert.ok(files.includes('app/globals.css') && files.includes('app/study-library.css'));
   for (const file of files) {
     const css = read(file);
     // Fresh: regenerating changes nothing (run `node scripts/dark-theme.mjs` after colour edits).
-    assert.ok(withDarkBlock(css, { manual, from: file }) === css, `${file}: dark block is stale`);
+    assert.ok(withDarkBlock(css, { ...options, from: file }) === css, `${file}: dark block is stale`);
     const [light, block = ''] = css.split(START);
     const covered = new Set(manualKeys(block.replace(END, '')));
     for (const key of manual) covered.add(key);
@@ -286,4 +290,164 @@ test('text on a fill that turns light in dark mode keeps 4.5:1', () => {
     }
   }
   assert.ok(fills >= 8, `checked ${fills} fills`);
+});
+
+// ------------------------------------------- every dark text colour on the surface behind it
+
+/** Stylesheets a module imports together: a page's tokens can live in a companion sheet. */
+function companions() {
+  const together = new Map();
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(path.join(root, dir), { withFileTypes: true })) {
+      const rel = path.posix.join(dir, entry.name);
+      if (entry.isDirectory()) walk(rel);
+      else if (/\.tsx?$/.test(entry.name)) {
+        const sheets = [...read(rel).matchAll(/^import ['"]([^'"]+\.css)['"]/gm)].map(([, spec]) =>
+          spec.startsWith('@/') ? spec.slice(2) : path.posix.join(path.posix.dirname(rel), spec),
+        );
+        for (const a of sheets) for (const b of sheets) if (a !== b) together.set(a, new Set([...(together.get(a) ?? []), b]));
+      }
+    }
+  };
+  walk('app');
+  walk('components');
+  return together;
+}
+
+const LITERAL = /#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch)\([^()]*\)|(?<![\w-])(?:white|black)(?![\w-])/g;
+const DARK_RULE = /^\s*(\.dark|:root\.dark|html\.dark)(?![\w-])/;
+const WORKBENCH_DARK = /\[data-theme=['"]?dark/;
+const norm = (sel) => sel.trim().replace(/\s+/g, ' ');
+const unprefix = (sel) => norm(sel).replace(/^\.dark /, '');
+const topLevel = (value, sep = ',') => {
+  const out = [''];
+  let depth = 0;
+  for (const ch of value) {
+    if (ch === '(') depth++;
+    if (ch === ')') depth--;
+    if (ch === sep && !depth) out.push('');
+    else out[out.length - 1] += ch;
+  }
+  return out.map((part) => part.trim());
+};
+const toLab = ({ L, C, H }) => [L, C * Math.cos((H * Math.PI) / 180), C * Math.sin((H * Math.PI) / 180)];
+const over = (top, under) => top.rgb.map((v, i) => v * top.alpha + under[i] * (1 - top.alpha));
+
+/** A resolved colour value → {rgb, alpha}; null for images, keywords and unknowns. */
+function colourOf(value, lookup, depth = 0) {
+  if (!value || depth > 12) return null;
+  let v = value.trim();
+  if (/var\(/.test(v)) {
+    const m = /var\((--[\w-]+)\s*(?:,\s*((?:[^()]|\([^()]*\))*))?\)/.exec(v);
+    const next = lookup(m[1]) ?? m[2];
+    return next === undefined ? null : colourOf(v.replace(m[0], next), lookup, depth + 1);
+  }
+  // A background's base colour is its last layer, unless a gradient above it paints solid
+  // colour (a navy dot inside a green ring): then where the text sits is unknown.
+  const layers = topLevel(v);
+  if (layers.slice(0, -1).some((layer) => (layer.match(LITERAL) ?? []).some((c) => parseColor(c)?.alpha >= 0.35)))
+    return null;
+  v = layers.at(-1);
+  if (v === 'transparent' || v === 'none') return { rgb: [0, 0, 0], alpha: 0 };
+  const mix = /^color-mix\(in [\w-]+(?: \w+ hue)?,\s*(.*)\)$/s.exec(v);
+  if (mix) {
+    const parts = topLevel(mix[1]).map((part) => {
+      const [, c, p] = /^(.*?)(?:\s+([\d.]+)%)?$/s.exec(part);
+      return { c: colourOf(c, lookup, depth + 1), p: p === undefined ? undefined : p / 100 };
+    });
+    if (parts.length !== 2 || parts.some((x) => !x.c)) return null;
+    const [a, b] = parts;
+    const pa = a.p ?? (b.p === undefined ? 0.5 : 1 - b.p);
+    if (b.c.alpha === 0) return { rgb: a.c.rgb, alpha: a.c.alpha * pa };
+    if (a.c.alpha === 0) return { rgb: b.c.rgb, alpha: b.c.alpha * (1 - pa) };
+    const [la, lb] = [toLab(rgbToOklch(a.c.rgb)), toLab(rgbToOklch(b.c.rgb))];
+    const [L, A, B] = la.map((x, i) => x * pa + lb[i] * (1 - pa));
+    const H = ((Math.atan2(B, A) * 180) / Math.PI + 360) % 360;
+    return { rgb: oklchToRgb({ L, C: Math.hypot(A, B), H }), alpha: a.c.alpha * pa + b.c.alpha * (1 - pa) };
+  }
+  return parseColor(v);
+}
+
+test('every dark text colour clears 4.5:1 on the surface behind it', () => {
+  const sheets = themedFiles(root);
+  const theme = postcss.parse(read('app/theme.css'));
+  const together = companions();
+  // Custom properties per sheet: generated dark values, light values, and the editor's own
+  // data-theme='dark' scope (which keeps its hand-set values).
+  const vars = new Map();
+  const define = (map, d) => map.has(d.prop) || map.set(d.prop, d.value);
+  for (const file of [...sheets, 'app/theme.css']) {
+    const [light, block = ''] = read(file).split(START);
+    const v = { dark: new Map(), light: new Map(), scoped: new Map(), root: new Map() };
+    postcss.parse(block.replace(END, '')).walkDecls(/^--/, (d) =>
+      (WORKBENCH_DARK.test(d.parent.selector) ? v.scoped : v.dark).set(d.prop, d.value),
+    );
+    postcss.parse(light).walkDecls(/^--/, (d) => {
+      const sel = d.parent.selector ?? '';
+      if (WORKBENCH_DARK.test(sel)) define(v.scoped, d);
+      else if (file === 'app/theme.css' && /^:root\.dark$/.test(sel)) define(v.root, d);
+      else if (DARK_RULE.test(sel)) v.dark.set(d.prop, d.value);
+      else define(v.light, d);
+    });
+    vars.set(file, v);
+  }
+  const themeVars = vars.get('app/theme.css');
+  const lookupFor = (file, workbench) => {
+    const own = vars.get(file);
+    const near = [...(together.get(file) ?? [])].map((f) => vars.get(f)).filter(Boolean);
+    const chain = [
+      ...(workbench ? [own, ...near].map((v) => v.scoped) : []),
+      own.dark,
+      themeVars.dark,
+      own.light,
+      ...near.flatMap((v) => [v.dark, v.light]),
+      themeVars.root,
+      ...[...vars.values()].flatMap((v) => [v.dark, v.light]),
+    ];
+    return (name) => chain.find((map) => map.has(name))?.get(name);
+  };
+
+  // Every dark rule's text (each rule, in every file and @media), and backgrounds by selector
+  // (app/theme.css last, so it wins) for rules that set colour without a background.
+  const text = [];
+  const fill = new Map();
+  const grounds = new Map();
+  for (const file of [...sheets, 'app/theme.css']) {
+    const css = read(file);
+    const ast = file === 'app/theme.css' ? theme : postcss.parse((css.split(START)[1] ?? '').replace(END, ''));
+    ast.walkRules((rule) => {
+      if (rule.parent?.type === 'atrule' && /keyframes/.test(rule.parent.name)) return;
+      const get = (prop) => rule.nodes.findLast((n) => n.type === 'decl' && n.prop === prop)?.value;
+      const fg = get('color');
+      const bg = get('background') ?? get('background-color');
+      for (const sel of rule.selectors.filter((s) => DARK_RULE.test(s))) {
+        const lookup = lookupFor(file, WORKBENCH_DARK.test(sel));
+        const key = norm(sel);
+        const c = bg === undefined ? undefined : colourOf(bg, lookup);
+        if (fg) text.push({ sel: key, file, value: fg, lookup, own: c });
+        if (bg === undefined) continue;
+        fill.set(key, c);
+        const bare = unprefix(sel);
+        if (c?.alpha >= 0.99 && !bare.includes(':')) grounds.set(contexts(bare).self[0], c.rgb);
+      }
+    });
+  }
+
+  const card = parseColor(themeVars.root.get('--card')).rgb;
+  const failures = [];
+  let pairs = 0;
+  for (const { sel, file, value, lookup, own: declared } of text) {
+    const fg = colourOf(value, lookup);
+    if (!fg || fg.alpha < 0.05) continue;
+    const own = declared === undefined ? fill.get(sel) : declared;
+    if (own === null) continue; // an image or gradient: nothing to measure against
+    const { self, above } = contexts(unprefix(sel));
+    const ground = [...self, ...above].map((c) => grounds.get(c)).find(Boolean) ?? card;
+    const bg = own && own.alpha > 0 ? over(own, ground) : ground;
+    const ratio = contrast(fg.alpha < 1 ? over(fg, bg) : fg.rgb, bg);
+    pairs++;
+    if (ratio < 4.5) failures.push(`${ratio.toFixed(2)} ${file} ${sel} (${value})`);
+  }
+  assert.ok(pairs >= 1000, `checked ${pairs} pairs`);
+  assert.equal(failures.length, 0, `dark text under 4.5:1:\n  ${failures.join('\n  ')}`);
 });
