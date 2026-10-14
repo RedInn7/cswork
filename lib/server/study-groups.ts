@@ -7,6 +7,7 @@ import type { Person } from './auth';
 import { shownOaSql } from './env';
 import { HttpError, json, limit, requirePerson } from './http';
 import { readJson } from './my-practice';
+import { campDetail, setCamp } from './group-camp';
 
 /**
  * Study groups (db/study-groups-schema.ts): a member sees the group's name, goal, invite code
@@ -29,7 +30,7 @@ const CODE = /^[A-HJ-NP-Z2-9]{8}$/;
  * Hangul fillers and braille blank that are letters/symbols but render as nothing), and with
  * at least one visible character when not empty.
  */
-const plain = (max: number, min = 1) =>
+export const plain = (max: number, min = 1) =>
   z
     .string()
     .trim()
@@ -133,6 +134,7 @@ export function groupDetail(id: string, p: Person, tz = 0, now = Date.now()) {
         ).map((r) => [r.u, r.n])
       : [],
   );
+  const camp = campDetail(row.id, shift, today);
   const members = (
     db
       .prepare(
@@ -148,6 +150,7 @@ export function groupDetail(id: string, p: Person, tz = 0, now = Date.now()) {
     days: days.get(m.user_id) ?? Array(HISTORY_DAYS).fill(0),
     week: week.get(m.user_id) ?? 0,
     goal: stop ? (goal.get(m.user_id) ?? 0) : null,
+    camp: camp ? camp.member(m.user_id) : null,
   }));
   return {
     id: row.id,
@@ -159,6 +162,7 @@ export function groupDetail(id: string, p: Person, tz = 0, now = Date.now()) {
       row.goal_text || stop
         ? { text: row.goal_text, stop: stop || null, stopTotal: stopIds.length, setAt: row.goal_set_at }
         : null,
+    camp: camp?.info ?? null,
     max: GROUP_MAX,
     createdAt: row.created_at,
     members,
@@ -321,6 +325,7 @@ export async function handleStudyGroups(request: Request, p: Person | null, path
   if (action === 'delete') {
     db.transaction(() => {
       db.prepare('DELETE FROM study_group_members WHERE group_id=?').run(row.id);
+      db.prepare('DELETE FROM study_group_camps WHERE group_id=?').run(row.id);
       db.prepare('DELETE FROM study_groups WHERE id=?').run(row.id);
     })();
     return json({ id: row.id, deleted: true });
@@ -332,6 +337,10 @@ export async function handleStudyGroups(request: Request, p: Person | null, path
     db.prepare('DELETE FROM study_group_members WHERE group_id=? AND user_id=?').run(row.id, target.user_id);
     // The removed member knows the code: a fresh one keeps them from rejoining straight away.
     rotate(row.id);
+    return json(groupDetail(row.id, p, tz()));
+  }
+  if (action === 'camp') {
+    setCamp(row.id, await readJson(request, 1000));
     return json(groupDetail(row.id, p, tz()));
   }
   if (action === 'rotate') {
