@@ -26,6 +26,7 @@ CREATE TABLE `mock_match_requests` (
 	`level` text NOT NULL,
 	`slots_json` text NOT NULL,
 	`tz` integer DEFAULT 0 NOT NULL,
+	`locale` text DEFAULT 'en' NOT NULL,
 	`status` text DEFAULT 'open' NOT NULL,
 	`pair_id` text,
 	`created_at` integer NOT NULL,

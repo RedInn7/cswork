@@ -15,6 +15,8 @@ export const mockMatchRequests = sqliteTable(
     slotsJson: text('slots_json').notNull(),
     /** Date#getTimezoneOffset minutes, for the times in this learner's notifications. */
     tz: integer('tz').notNull().default(0),
+    /** zh or en: the language of this learner's notifications. */
+    locale: text('locale').notNull().default('en'),
     status: text('status').notNull().default('open'),
     pairId: text('pair_id'),
     createdAt: integer('created_at').notNull(),
