@@ -152,6 +152,10 @@ export function PrivacyDocument() {
                 在搜索框（⌘K）里点「问 AI」时，服务器会把你的问题、你选中的页面文字（如有）和站内匹配到的几段公开内容发送给
                 Anthropic，用于生成带出处的回答；同样不发送邮箱、姓名或账户标识，也只记录调用次数和用量。只搜索不提问不会发送。
               </p>
+              <p id="privacy-resume">
+                在「简历 AI 点评」页（/career/resume）提交时，服务器会把你粘贴的简历文字、目标岗位和职位描述（如有）发送给
+                Anthropic，用于生成点评；不发送你的邮箱或账户标识。简历里本身写着的姓名、电话等信息会随文字一起发送，提交前可以先删掉。平台不保存简历文字和点评结果，只记录每天的调用次数和用量；点评只显示在你当前的浏览器页面里。不提交就不会发送。
+              </p>
               <p>
                 平台会为持续提供课程、处理教学反馈、对账及故障恢复保留必要资料和备份，目前没有对所有账户及学习记录统一设置自动删除期限。业务数据与备份的清理时间可能不同；收到删除请求后，会确认涉及的资料、处理范围及需要保留的记录。
               </p>
@@ -444,6 +448,17 @@ export function PrivacyDocument() {
                 them. Again no email, name or account identifier is sent, and
                 only call counts and usage are recorded. Searching without
                 asking sends nothing.
+              </p>
+              <p id="privacy-resume">
+                When you submit on the AI resume review page (/career/resume),
+                the server sends the resume text you pasted, the target role and
+                any job description to Anthropic to write the review. Your email
+                and account identifier are not sent, but anything written in the
+                resume itself (such as your name or phone number) goes with the
+                text, so remove it first if you prefer. The platform does not
+                store the resume text or the review; it records only daily call
+                counts and usage, and the review exists only on your open page.
+                Nothing is sent unless you submit.
               </p>
               <p>
                 The platform retains necessary data and backups to keep

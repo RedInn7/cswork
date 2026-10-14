@@ -18,6 +18,7 @@ import { handleMyPractice, problemVote } from './my-practice';
 import { handleAiTutor, isAiRoute } from './ai-tutor';
 import { handleAiInterview } from './ai-interviewer';
 import { handleAiAsk } from './ai-ask';
+import { handleAiResume } from './ai-resume';
 import { problemStats } from './problem-stats';
 import { handleDrafts, handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { handleSolutionPosts } from './solution-posts';
@@ -193,6 +194,8 @@ export async function handleOj(
     return handleAiInterview(request, p, id);
   // Questions answered from the site's own pages (lib/server/ai-ask.ts).
   if (resource === 'ai' && id === 'ask' && !action) return handleAiAsk(request, p);
+  // The resume review on /career/resume (lib/server/ai-resume.ts).
+  if (resource === 'ai' && id === 'resume' && !action) return handleAiResume(request, p);
   if (resource === 'points' && !action) return handlePoints(request, p, id);
   if (request.method === 'GET') {
     if (resource === 'library') {

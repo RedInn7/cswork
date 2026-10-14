@@ -297,6 +297,10 @@ const EN: Record<string, string> = {
   '今天的 AI 调试次数已用完，明天再来': "You've used today's AI debugging help. Come back tomorrow",
   '今天的 AI 复杂度分析次数已用完，明天再来': "You've used today's AI complexity checks. Come back tomorrow",
   '今天的 AI 解释次数已用完，明天再来': "You've used today's AI explanations. Come back tomorrow",
+  // Resume review (lib/server/ai-resume.ts)
+  '今天的简历点评次数已用完，明天再来': "You've used today's resume reviews. Come back tomorrow",
+  '请粘贴完整的简历文字（至少 80 个字符）': 'Paste your whole resume as text (at least 80 characters)',
+  '简历过长，最多读取 12000 个字符': 'The resume is too long; the review reads at most 12,000 characters',
   '这道题没有 LeetCode 模式': "This problem has no LeetCode mode",
   请先输入问题: 'Type a question first',
   请先在题面里选中一段文字: 'Select some text in the statement first',
