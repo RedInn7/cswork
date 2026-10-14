@@ -48,8 +48,8 @@ export function ApiTokenSettings() {
       </h2>
       <p className="muted">
         {t(
-          '访问令牌让 Claude Code、Cursor 等 MCP 客户端替你读题、运行和提交代码、查看结果；不能读笔记、改账号或管理令牌。',
-          'An access token lets Claude Code, Cursor and other MCP clients read problems, run and submit code and see results for you. It cannot read your notes, change your account or manage tokens.',
+          '访问令牌让 Claude Code、Cursor 等 MCP 客户端替你读题、运行和提交代码、查看结果；不能读笔记、改账号或管理令牌。改密码或退出其他设备时，所有令牌会一并吊销。',
+          'An access token lets Claude Code, Cursor and other MCP clients read problems, run and submit code and see results for you. It cannot read your notes, change your account or manage tokens. Changing your password or signing out other devices revokes every token.',
         )}{' '}
         <a href="/mcp" className="underline underline-offset-4">
           {t('配置说明', 'Setup guide')}

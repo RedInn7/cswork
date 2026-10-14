@@ -779,7 +779,9 @@ export function AccountView({
     [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
     [message, setMessage] = useState(''),
-    [loading, setLoading] = useState(true);
+    [loading, setLoading] = useState(true),
+    // Bumped when the server revokes every access token: the list remounts and reloads.
+    [tokensKey, setTokensKey] = useState(0);
   const p = boot.person!;
   const loadSecurity = useCallback(async () => {
     const [a, s, c] = await Promise.all([
@@ -953,7 +955,7 @@ export function AccountView({
         </section>
       </div>
       <PublicProfileSettings />
-      <ApiTokenSettings />
+      <ApiTokenSettings key={tokensKey} />
       <section className="form-card commerce-account-card">
         <h2>
           <KeyRound size={19} />
@@ -982,11 +984,12 @@ export function AccountView({
                   setCurrentPassword('');
                   setPassword('');
                   setConfirm('');
+                  setTokensKey((k) => k + 1);
                   await loadSecurity();
                 },
                 t(
-                  '密码已更新，其他设备已退出登录。',
-                  'Password updated. Other devices have been signed out.',
+                  '密码已更新，其他设备已退出登录，访问令牌也已吊销。',
+                  'Password updated. Other devices have been signed out and access tokens revoked.',
                 ),
               );
             }}
@@ -1081,9 +1084,13 @@ export function AccountView({
               void run(
                 async () => {
                   check((await authClient.revokeOtherSessions()).error);
+                  setTokensKey((k) => k + 1);
                   await loadSecurity();
                 },
-                t('其他设备已退出登录。', 'Other devices have been signed out.'),
+                t(
+                  '其他设备已退出登录，访问令牌也已吊销。',
+                  'Other devices have been signed out and access tokens revoked.',
+                ),
               )
             }
           >

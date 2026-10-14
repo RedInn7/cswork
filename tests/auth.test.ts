@@ -71,6 +71,16 @@ after(async () => {
   );
   rmSync(directory, { recursive: true, force: true });
 });
+// A personal access token of the test learner, and whether it still works.
+function addToken(id: string) {
+  const user = sqlite().prepare('SELECT id FROM "user" WHERE email=?').get(email) as { id: string };
+  sqlite()
+    .prepare('INSERT INTO api_tokens(id,user_id,name,token_hash,created_at) VALUES(?,?,?,?,0)')
+    .run(id, user.id, id, `hash-${id}`);
+}
+const tokenLive = (id: string) =>
+  (sqlite().prepare('SELECT revoked_at FROM api_tokens WHERE id=?').get(id) as { revoked_at: number | null })
+    .revoked_at === null;
 let firstCookie = '',
   secondCookie = '';
 const email = 'student@example.test';
@@ -166,6 +176,7 @@ test('OTP recovery creates password, distinguishes mail purpose and revokes all 
   const signed = await request('sign-in/email-otp', { email, otp: lastCode() });
   secondCookie = cookies(signed);
   assert.equal(signed.status, 200);
+  addToken('pat-reset');
   const sent = await request('email-otp/request-password-reset', { email });
   assert.equal(sent.status, 200);
   assert.equal(mail.at(-1)?.subject, 'Reset your cswork password');
@@ -175,6 +186,7 @@ test('OTP recovery creates password, distinguishes mail purpose and revokes all 
     password: 'a-very-long-new-password',
   });
   assert.equal(reset.status, 200);
+  assert.equal(tokenLive('pat-reset'), false);
   for (const cookie of [firstCookie, secondCookie])
     assert.equal(
       await person(
@@ -217,6 +229,7 @@ test('native profile, identity and session endpoints work for the signed-in user
   const sessions = await request('list-sessions', undefined, firstCookie);
   assert.equal(sessions.status, 200);
   assert.equal((await sessions.json()).length, 1);
+  addToken('pat-change');
   assert.equal(
     (
       await request(
@@ -231,20 +244,22 @@ test('native profile, identity and session endpoints work for the signed-in user
     ).status,
     400,
   );
-  assert.equal(
-    (
-      await request(
-        'change-password',
-        {
-          currentPassword: 'a-very-long-new-password',
-          newPassword: 'second-long-new-password',
-          revokeOtherSessions: true,
-        },
-        firstCookie,
-      )
-    ).status,
-    200,
+  // A failed change keeps the tokens; a successful one ends them with the other sessions.
+  assert.equal(tokenLive('pat-change'), true);
+  const changed = await request(
+    'change-password',
+    {
+      currentPassword: 'a-very-long-new-password',
+      newPassword: 'second-long-new-password',
+      revokeOtherSessions: true,
+    },
+    firstCookie,
   );
+  assert.equal(changed.status, 200);
+  assert.equal(tokenLive('pat-change'), false);
+  addToken('pat-others');
+  assert.equal((await request('revoke-other-sessions', {}, cookies(changed))).status, 200);
+  assert.equal(tokenLive('pat-others'), false);
 });
 test('email verification purpose and missing provider are explicit', async () => {
   await sendAuthOTP({ email, otp: '123456', type: 'email-verification' });

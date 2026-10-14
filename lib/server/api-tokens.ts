@@ -83,6 +83,13 @@ export async function tokenCaller(request: Request, path: string[]) {
   return p;
 }
 
+/** Password changes and resets and "sign out other devices" end every token too (auth.ts). */
+export function revokeUserTokens(userId: string) {
+  sqlite()
+    .prepare('UPDATE api_tokens SET revoked_at=? WHERE user_id=? AND revoked_at IS NULL')
+    .run(Date.now(), userId);
+}
+
 /** GET/POST oj/tokens and POST oj/tokens/:id/revoke: the signed-in learner's own tokens. */
 export async function handleApiTokens(request: Request, p: Person, path: string[]) {
   const [id, action, ...rest] = path;
