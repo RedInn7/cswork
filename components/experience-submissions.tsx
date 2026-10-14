@@ -229,7 +229,8 @@ function ExperienceForm({
       setBusy(false);
     }
   }
-  const earliest = localMonth(new Date(now).setFullYear(new Date(now).getFullYear() - 3));
+  // The server's window: this month and the 35 before it.
+  const earliest = localMonth(new Date(new Date(now).getFullYear(), new Date(now).getMonth() - 35, 1).getTime());
   return (
     <form className="xs-form" onSubmit={submit} aria-labelledby="xs-form-title">
       <div className="xs-form-head">

@@ -376,12 +376,12 @@ export function mySubmissions(userId: string) {
   }));
 }
 
-export function submitExperience(p: Person, input: unknown, now = Date.now()) {
+export async function submitExperience(p: Person, input: unknown, now = Date.now()) {
   requireVerified(p);
   const d = submission.parse(input);
   if (markdownDepth(d.body) > DEPTH_MAX) throw new HttpError(400, '正文的引用、列表或强调嵌套太深');
-  // This month (a day ahead for time zones) back to three years ago.
-  if (d.month > monthKey(now + DAY) || d.month < recentSince(now, 36)) throw new HttpError(400, '面试月份无效');
+  // This month back to 36 months, counting this one (a day either way for time zones).
+  if (d.month > monthKey(now + DAY) || d.month < recentSince(now - DAY, 36)) throw new HttpError(400, '面试月份无效');
   const company = employerSlug(d.company);
   if (!companyNames().has(company)) throw new HttpError(400, '没有这家公司');
   const db = sqlite();
@@ -393,6 +393,8 @@ export function submitExperience(p: Person, input: unknown, now = Date.now()) {
     .get(now - DAY, p.id) as { today: number; pending: number };
   if (counts.today >= PER_DAY) throw new HttpError(429, '今天的投稿次数已达上限');
   if (counts.pending >= PENDING_MAX) throw new HttpError(409, '待审核的投稿太多，请等审核后再投');
+  // Withdrawing deletes the row, so the count above alone would reset; this one keeps counting.
+  await limit(p, 'experience-submit', PER_DAY, 86400);
   const id = randomBytes(9).toString('base64url');
   db.prepare(
     `INSERT INTO experience_submissions(id,user_id,company_slug,title,role,rounds,result,interview_month,body,questions,created_at)
@@ -517,7 +519,7 @@ export async function handleExperienceSubmissions(request: Request, p: Person | 
   }
   if (request.method !== 'POST') throw new HttpError(404, '接口不存在');
   await limit(p, 'experience-write', 20);
-  if (!id) return json(submitExperience(p, await readJson(request, 100000)), 201);
+  if (!id) return json(await submitExperience(p, await readJson(request, 100000)), 201);
   if (!ID.test(id)) throw new HttpError(404, '内容不存在');
   if (action === 'withdraw') return json(withdraw(p, id));
   if (action === 'flag') return json(flag(p, id, await readJson(request, 4000)));

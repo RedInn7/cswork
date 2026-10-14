@@ -198,17 +198,41 @@ void test('reports from three readers take a post down until a teacher approves 
   assert.deepEqual([mine.data.items[0].status, mine.data.items[0].note], ['rejected', 'Covered by an NDA']);
 });
 
-void test('only the author withdraws a post; daily and pending caps hold', async () => {
+void test('only the author withdraws a post; daily and pending caps hold, withdrawn or not', async () => {
   assert.equal((await call(readers[0], 'POST', `oj/experiences/${id}/withdraw`, {})).status, 404);
   assert.equal((await call(me, 'POST', `oj/experiences/${id}/withdraw`, {})).status, 200);
   assert.equal(ugc.readMember(id, me), null);
   const writer = readers[1];
-  for (let i = 0; i < 3; i++) assert.equal((await call(writer, 'POST', 'oj/experiences', post())).status, 201);
+  const ids: string[] = [];
+  for (let i = 0; i < 3; i++) {
+    const created = await call(writer, 'POST', 'oj/experiences', post());
+    assert.equal(created.status, 201);
+    ids.push(created.data.member.id);
+  }
   assert.equal((await call(writer, 'POST', 'oj/experiences', post())).status, 429);
-  const later = Date.now() + 2 * 86400000;
-  ugc.submitExperience(writer, post(), later);
-  ugc.submitExperience(writer, post(), later);
-  assert.throws(() => ugc.submitExperience(writer, post(), later + 1), { status: 409 });
+  // Withdrawing deletes the posts but doesn't hand the day's quota back.
+  for (const w of ids) assert.equal((await call(writer, 'POST', `oj/experiences/${w}/withdraw`, {})).status, 200);
+  assert.equal((await call(writer, 'POST', 'oj/experiences', post())).status, 429);
+  // Five posts waiting for review are the most anyone has.
+  const author = readers[2];
+  for (let i = 0; i < 5; i++)
+    sqlite()
+      .prepare(
+        `INSERT INTO experience_submissions(id,user_id,company_slug,title,role,interview_month,body,created_at)
+        VALUES(?,?,'amazon','Old post','SWE',?,'Body',?)`,
+      )
+      .run(`waiting-${i}-xxx`.slice(0, 12), author.id, month, Date.now() - 3 * 86400000);
+  await assert.rejects(ugc.submitExperience(author, post()), { status: 409 });
+});
+
+void test('the interview month runs from 35 months back to this one, a day either way', async () => {
+  const p: Person = { ...me, id: 'ugc-months' };
+  const now = Date.UTC(2026, 9, 14, 12);
+  await assert.rejects(ugc.submitExperience(p, post({ month: '2023-10' }), now), { status: 400 });
+  await assert.rejects(ugc.submitExperience(p, post({ month: '2026-11' }), now), { status: 400 });
+  assert.equal((await ugc.submitExperience(p, post({ month: '2023-11' }), now)).interviewDate, '2023-11-01');
+  // Late on the 1st (UTC) it's still the last day of the month before somewhere.
+  assert.ok(await ugc.submitExperience(p, post({ month: '2023-10' }), Date.UTC(2026, 9, 1, 2)));
 });
 
 void test('markdownDepth catches nesting that overflows the renderer and passes ordinary posts', () => {
