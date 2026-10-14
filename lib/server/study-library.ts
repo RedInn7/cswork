@@ -569,6 +569,8 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
   const progress = userId
     ? studyProgress(userId, practiceRoundState(userId).activeRoundId)
     : new Map();
+  // Ticked by hand on the list (solved elsewhere): user_marks problem:lc-<n> done.
+  const marks = userId ? problemMarks(userId) : new Map<string, Set<string>>();
   const item = ({ number, ref, refSlug }: ClassicEntry) => {
     const row = number === null ? undefined : rows.get(number);
     // summary() only exposes the judge id of a problem that is judgeable now.
@@ -606,6 +608,7 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
           ? 'attempted'
           : 'not_started') as 'solved' | 'attempted' | 'not_started',
       judging: !!state?.pending,
+      done: number !== null && !!marks.get(`lc-${number}`)?.has('done'),
     };
   };
   const groups = list.groups.map((group, index) => {

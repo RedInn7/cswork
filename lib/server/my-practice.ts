@@ -9,6 +9,8 @@ import { boundedText, HttpError, json, limit } from './http';
 const MAX_ROWS = 5000;
 // The story list returns every body (up to NOTE_MAX_BYTES each), so stories get a cap of their own.
 const MAX_STORIES = 200;
+// One batch of marks: a list's worth of ticks (the longest classic list has 150).
+const MAX_BATCH = 500;
 // story:<id> holds one STAR story as JSON (components/story-bank.tsx); list:<id> starred is a
 // saved public list, written through /api/oj/lists/<id>/star (which checks the list) only.
 // sd:<chapter> holds a system design chapter's quiz answers as JSON (app/system-design/quiz.tsx).
@@ -95,7 +97,7 @@ function full(table: 'user_notes' | 'user_marks', userId: string) {
   if (n >= MAX_ROWS) throw new HttpError(409, '笔记或标记已达上限');
 }
 
-/** GET history; GET/PUT notes; GET/POST marks. Private to the signed-in learner. */
+/** GET history; GET/PUT notes; GET/POST marks (POST { targets } adds many). Private to the signed-in learner. */
 export async function handleMyPractice(
   request: Request,
   p: Person,
@@ -175,10 +177,31 @@ export async function handleMyPractice(
   }
   if (resource === 'marks' && request.method === 'POST') {
     await limit(p, 'mark-write', 60);
-    const d = z
-      .object({ target, mark, on: z.boolean() })
-      .strict()
-      .parse(await readJson(request, 1000));
+    const body = await readJson(request, 32_000);
+    // { targets }: a guest's "done" ticks moving into the account, all or none.
+    if (body && typeof body === 'object' && 'targets' in body) {
+      const batch = z
+        .object({
+          targets: z.array(target.refine((key) => key.startsWith('problem:'))).min(1).max(MAX_BATCH),
+          mark: z.literal('done'),
+        })
+        .strict()
+        .parse(body);
+      const keys = [...new Set(batch.targets)];
+      const now = Date.now();
+      const insert = db.prepare(
+        'INSERT INTO user_marks(user_id,target,mark,created_at) VALUES(?,?,?,?) ON CONFLICT DO NOTHING',
+      );
+      const added = db.transaction(() => {
+        const { n } = db
+          .prepare('SELECT COUNT(*) AS n FROM user_marks WHERE user_id=?')
+          .get(p.id) as { n: number };
+        if (n + keys.length > MAX_ROWS) throw new HttpError(409, '笔记或标记已达上限');
+        return keys.reduce((sum, key) => sum + insert.run(p.id, key, batch.mark, now).changes, 0);
+      })();
+      return json({ mark: batch.mark, added });
+    }
+    const d = z.object({ target, mark, on: z.boolean() }).strict().parse(body);
     const vote = d.mark === 'up' || d.mark === 'down';
     if (vote && !d.target.startsWith('problem:')) throw new HttpError(400, '只能给题目投票');
     if (d.target.startsWith('list:')) throw new HttpError(400, '请在题单页收藏');
