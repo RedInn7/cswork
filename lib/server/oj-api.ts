@@ -15,6 +15,7 @@ import { handleSpeedrun } from './speedrun';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
 import { handleMyPractice } from './my-practice';
+import { handleAiTutor } from './ai-tutor';
 import { problemStats } from './problem-stats';
 import { handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { curatedHint } from '@/lib/ling-curated';
@@ -141,6 +142,8 @@ export async function handleOj(
     return handleLeetcodeSync(request, p, path.slice(1));
   if (!id && (resource === 'history' || resource === 'notes' || resource === 'marks'))
     return handleMyPractice(request, p, resource);
+  if (resource === 'ai' && (id === 'hint' || id === 'review') && !action)
+    return handleAiTutor(request, p, id);
   if (request.method === 'GET') {
     if (resource === 'library') {
       await limit(p, 'library-read', 120);
