@@ -46,7 +46,10 @@ db.pragma('foreign_keys = ON');
 db.pragma('busy_timeout = 5000');
 const prefix = `platform-${randomUUID().slice(0, 12)}`;
 const courseId = `${prefix}-course`,
-  lessonId = `${prefix}-lesson`;
+  lessonId = `${prefix}-lesson`,
+  // The course's first published lesson is its free preview; this one sorts first, so
+  // lessonId keeps needing a grant.
+  previewId = `${prefix}-a-preview`;
 const studentEmail = `${prefix}.student@example.test`;
 const users = new Set(),
   sessions = new Set(),
@@ -295,6 +298,13 @@ try {
       position: 90000,
     },
   });
+  db.prepare(
+    "INSERT INTO lessons(id,course_id,title,summary,section,position,body,version,published,updated_at) VALUES(?,?,'Preview','Free preview','Integration',0,'# Free preview','1.0.0',1,?)",
+  ).run(previewId, courseId, Date.now());
+  check(
+    (await req(`lessons/${previewId}`, { user: outsider })).body === '# Free preview',
+    'The first lesson is a free preview for any signed-in account',
+  );
   let live = await req(`lessons/${lessonId}`, { user: student });
   check(
     live.body === payload.body && live.version === '1.0.0',
@@ -754,6 +764,7 @@ try {
     db.prepare('DELETE FROM revisions WHERE lesson_id=?').run(lessonId);
     db.prepare('DELETE FROM lms_lesson_drafts WHERE lesson_id=?').run(lessonId);
     db.prepare('DELETE FROM lessons WHERE id=?').run(lessonId);
+    db.prepare('DELETE FROM lessons WHERE id=?').run(previewId);
     db.prepare('DELETE FROM lms_grant_requests WHERE key LIKE ?').run(
       prefix + ':%',
     );
