@@ -82,6 +82,8 @@ type Past = {
   items: { id: string; title: string; kind: KindId; seconds: number; minutes: number; rating: number | null }[];
   /** An interviewer's feedback saved with this set: the `#fb=` value. */
   feedback?: string;
+  /** The AI interviewer's report on this set, whole: the same encoding, never cut to fit a link. */
+  aiFeedback?: string;
 };
 
 const SET_KEYS = ['template', 'company', 'role', 'round', 'mix', 'min', 'set', 'rr'] as const;
@@ -154,7 +156,8 @@ export function MockInterview({
         <ModeTabs navigate={navigate} />
         {query.set ? (
           <Session
-            key={`${key}:${params.as ?? ''}`}
+            // Another account is another sitting (an AI interview's transcript is kept per account).
+            key={`${key}:${params.as ?? ''}:${userId ?? ''}`}
             query={query}
             mode={modeOf(params.as, ai)}
             navigate={navigate}
@@ -467,10 +470,10 @@ function Setup({ params, navigate }: { params: Record<string, string>; navigate:
                   <button type="button" className="mi-history-row" onClick={() => navigate('mock-interview', p.query)}>
                     <time dateTime={new Date(p.at).toISOString()}>{new Date(p.at).toLocaleDateString()}</time>
                     <strong>
-                      {p.feedback && (
+                      {(p.feedback || p.aiFeedback) && (
                         <span className="mi-history-fb">
                           <MessageSquareText size={12} aria-hidden="true" />{' '}
-                          {decodeFeedback(p.feedback)?.ai ? t('AI 评估', 'AI report') : t('有反馈', 'Feedback')}
+                          {p.feedback && !decodeFeedback(p.feedback)?.ai ? t('有反馈', 'Feedback') : t('AI 评估', 'AI report')}
                         </span>
                       )}
                       {p.company ? `${p.company} · ` : ''}
@@ -553,7 +556,8 @@ function Session({
     };
     // Fetched once; a re-roll replaces the set in place.
   }, [data, initial, questionsOnly]);
-  const storeKey = `${mode}:${key}`;
+  // An AI interview's transcript is the learner's own: another account on this browser never sees it.
+  const storeKey = mode === 'ai' ? `ai:${userId ?? ''}:${key}` : `${mode}:${key}`;
   const [run, setRun] = useState<Run>(() => {
     const saved = read<Record<string, Run & { at?: number }>>(RUNS, {})[storeKey];
     if (!saved) return fresh(mode);
@@ -604,6 +608,8 @@ function Session({
   const linked = new URLSearchParams(hash.slice(1)).get('fb');
   const fromLink = useMemo(() => decodeFeedback(linked), [linked]);
   const fromHistory = useMemo(() => decodeFeedback(savedFeedback), [savedFeedback]);
+  const savedAi = saved?.aiFeedback ?? null;
+  const fromAi = useMemo(() => decodeFeedback(savedAi, Infinity), [savedAi]);
 
   if (error)
     return (
@@ -660,6 +666,7 @@ function Session({
           : [],
       ),
       feedback: old?.feedback,
+      aiFeedback: old?.aiFeedback,
       ...change(old),
     };
     return write(HISTORY, [entry, ...past.filter((p) => p !== old)].slice(0, 30)) ? entry : null;
@@ -670,9 +677,13 @@ function Session({
     if (!run.finished) track('mock_interview_finish', { company: query.company || 'any', template: query.template, mode });
     if (mode === 'solo') remember(() => ({}), (i) => done.ratings[i] ?? null, done.elapsed);
   };
-  const feedback = fromLink ?? fromHistory;
-  const value = fromLink ? linked : savedFeedback;
+  // The AI's report is kept apart from a person's feedback; an AI interview shows only its own.
+  const own = mode === 'ai' ? fromAi : (fromHistory ?? fromAi);
+  const feedback = fromLink ?? own;
+  const value = fromLink ? linked : null;
   const saveFeedback = () => {
+    // What the history already has stays as it is.
+    if (!fromLink) return !!own;
     // Feedback for another set never lands on this one's history entry.
     if (!feedback || !value || !forSet(feedback, query)) return false;
     // A set practiced here keeps its own ratings and time; otherwise the interviewer's ratings stand in,
@@ -693,16 +704,19 @@ function Session({
         query={query}
         feedback={feedback}
         broken={!!linked && !fromLink}
-        saved={!!value && value === savedFeedback}
+        saved={fromLink ? linked === savedFeedback : !!own}
         onSave={saveFeedback}
         known={saved?.items ?? []}
       />
     ) : null;
 
-  /** The AI's report, kept with this set in the history like an interviewer's feedback link. */
+  /**
+   * The AI's whole report, kept with this set in the history beside (never over) an interviewer's
+   * feedback; this sitting's time and the AI's ratings replace an earlier save's.
+   */
   const saveReport = (value: string, report: Feedback) => {
     const entry = remember(
-      (old) => ({ ...old, at: Date.now(), feedback: value }),
+      () => ({ aiFeedback: value }),
       (i) => report.questions[i]?.rating ?? null,
       commit(run).elapsed,
     );
@@ -712,7 +726,8 @@ function Session({
   if (mode === 'interviewer') return <InterviewerSheet {...props} />;
   if (mode === 'ai' && run.phase !== 'done') return <AiRunner {...props} onReport={saveReport} />;
   if (run.phase === 'plan') return <Plan {...props} card={card} locked={!!feedback} reroll={reroll} rolling={rolling} rollError={rollError} />;
-  if (run.phase === 'done') return <Summary {...props} card={card} report={mode === 'ai' ? savedFeedback : null} />;
+  // Shared as a link, the report may have to be cut to fit; the card above shows it whole.
+  if (run.phase === 'done') return <Summary {...props} card={card} report={mode === 'ai' && fromAi ? encodeFeedback(fromAi) : null} />;
   return <Runner {...props} />;
 }
 type SessionProps = {
@@ -1344,7 +1359,8 @@ function AiRunner({
     const text = draft.trim();
     if (!text || busy || !left || !item) return;
     const index = run.index;
-    const history: Turn[] = [...chat, { role: 'candidate', text }];
+    // A message left unanswered (the page closed while waiting) is dropped: the transcript stays in turns.
+    const history: Turn[] = [...(chat.at(-1)?.role === 'candidate' ? chat.slice(0, -1) : chat), { role: 'candidate', text }];
     const elapsedSec = Math.round(spent(run, index, Date.now()));
     // Talking to the interviewer starts the clock.
     setRun((r) => ({ ...(r.since === null ? { ...r, since: Date.now() } : r), chat: { ...r.chat, [index]: history } }));
@@ -1406,7 +1422,8 @@ function AiRunner({
           itemIds: data.slots.map((s) => s.item?.id ?? null),
         },
       );
-      const made = encodeFeedback(feedback);
+      // Kept whole on this device; only a shared link is cut to fit.
+      const made = encodeFeedback(feedback, Infinity);
       if (made) onReport(made.value, feedback);
       finish();
     } catch (caught) {
@@ -1574,7 +1591,7 @@ function Summary({
   navigate,
   card,
   report,
-}: SessionProps & { card: React.ReactNode; report?: string | null }) {
+}: SessionProps & { card: React.ReactNode; report?: { value: string; truncated: boolean } | null }) {
   const t = useT();
   const [copied, setCopied] = useState<boolean | null>(null);
   const rated = data.slots.map((_, i) => run.ratings[i]).filter(Boolean) as number[];
@@ -1649,7 +1666,7 @@ function Summary({
             type="button"
             className="rd-button is-quiet"
             onClick={() =>
-              navigator.clipboard.writeText(`${shareLink(query, 'solo')}#fb=${report}`).then(
+              navigator.clipboard.writeText(`${shareLink(query, 'solo')}#fb=${report.value}`).then(
                 () => setCopied(true),
                 () => setCopied(false),
               )
@@ -1662,6 +1679,11 @@ function Summary({
         {copied === false && (
           <span role="status" className="mi-muted">
             {t('浏览器没让复制。', 'Your browser blocked copying.')}
+          </span>
+        )}
+        {report?.truncated && (
+          <span className="mi-muted mi-report-cut">
+            {t('评估太长，链接里是节选（截短的地方结尾带 …）。', 'The report is too long for a link: the link holds an excerpt (cut texts end in …).')}
           </span>
         )}
         <button

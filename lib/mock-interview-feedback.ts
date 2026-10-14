@@ -130,9 +130,12 @@ export function encodeFeedback(f: Feedback, max = MAX_FEEDBACK): { value: string
   return { value: at(lo), truncated: true };
 }
 
-/** Feedback from a `#fb=` value; null when missing, oversized, malformed, or another version. */
-export function decodeFeedback(value: string | null | undefined): Feedback | null {
-  if (!value || value.length > MAX_FEEDBACK || !/^[\w-]+$/.test(value)) return null;
+/**
+ * Feedback from a `#fb=` value; null when missing, oversized, malformed, or another version.
+ * `max` is raised only for a value this device wrote itself (an AI report kept whole).
+ */
+export function decodeFeedback(value: string | null | undefined, max = MAX_FEEDBACK): Feedback | null {
+  if (!value || value.length > max || !/^[\w-]+$/.test(value)) return null;
   let w: Record<string, unknown>;
   try {
     w = JSON.parse(fromBase64Url(value)) as Record<string, unknown>;
