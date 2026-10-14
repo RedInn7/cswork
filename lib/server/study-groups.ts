@@ -243,6 +243,18 @@ function join(p: Person, input: unknown) {
   return row.id;
 }
 
+function rotate(group: string) {
+  // ponytail: 32^8 codes, so a clash is a retry away; the UNIQUE index is the real guard.
+  for (let tries = 0; ; tries++) {
+    try {
+      sqlite().prepare('UPDATE study_groups SET invite_code=?,updated_at=? WHERE id=?').run(newCode(), Date.now(), group);
+      return;
+    } catch (error) {
+      if ((error as { code?: string }).code !== 'SQLITE_CONSTRAINT_UNIQUE' || tries > 3) throw error;
+    }
+  }
+}
+
 function memberByKey(group: string, key: unknown) {
   const users = sqlite()
     .prepare('SELECT user_id,role FROM study_group_members WHERE group_id=?')
@@ -318,18 +330,12 @@ export async function handleStudyGroups(request: Request, p: Person | null, path
     const target = memberByKey(row.id, d.member);
     if (target.role === 'owner') throw new HttpError(409, '组长不能退出，可以解散小组');
     db.prepare('DELETE FROM study_group_members WHERE group_id=? AND user_id=?').run(row.id, target.user_id);
+    // The removed member knows the code: a fresh one keeps them from rejoining straight away.
+    rotate(row.id);
     return json(groupDetail(row.id, p, tz()));
   }
   if (action === 'rotate') {
-    // ponytail: 32^8 codes, so a clash is a retry away; the UNIQUE index is the real guard.
-    for (let tries = 0; ; tries++) {
-      try {
-        db.prepare('UPDATE study_groups SET invite_code=?,updated_at=? WHERE id=?').run(newCode(), Date.now(), row.id);
-        break;
-      } catch (error) {
-        if ((error as { code?: string }).code !== 'SQLITE_CONSTRAINT_UNIQUE' || tries > 3) throw error;
-      }
-    }
+    rotate(row.id);
     return json(groupDetail(row.id, p, tz()));
   }
   if (action) throw new HttpError(404, '学习小组接口不存在');

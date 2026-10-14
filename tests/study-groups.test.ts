@@ -160,13 +160,16 @@ void test('owner moderation: goal, remove, rotate, leave and disband', async () 
     409,
   );
   const after = await ok(owner, 'POST', `groups/${made.id}/remove`, { member: bobKey });
-  assert.deepEqual(after.members.map((m) => m.name), ['Boss', 'Amy']);
+  assert.deepEqual(after.members.map((m) => m.name).sort(), ['Amy', 'Boss']);
   assert.equal(await status(bob, 'GET', `groups/${made.id}`), 404);
+  // Removing changes the code, so the removed member cannot walk straight back in.
+  assert.notEqual(after.inviteCode, made.inviteCode);
+  assert.equal(await status(bob, 'POST', 'groups/join', { code: made.inviteCode, displayName: 'Bob' }), 404);
 
   // A rotated code shuts the old link.
   const rotated = await ok(owner, 'POST', `groups/${made.id}/rotate`, {});
-  assert.notEqual(rotated.inviteCode, made.inviteCode);
-  assert.equal(await status(bob, 'POST', 'groups/join', { code: made.inviteCode, displayName: 'Bob' }), 404);
+  assert.notEqual(rotated.inviteCode, after.inviteCode);
+  assert.equal(await status(bob, 'POST', 'groups/join', { code: after.inviteCode, displayName: 'Bob' }), 404);
 
   assert.equal(await status(owner, 'POST', `groups/${made.id}/leave`, {}), 409);
   await ok(amy, 'POST', `groups/${made.id}/leave`, {});

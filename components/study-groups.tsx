@@ -767,7 +767,7 @@ function GroupPage({ id, navigate, t, english }: { id: string; navigate: Navigat
                 ? t('所有成员都会被移出，邀请链接失效。大家的提交记录不受影响。', 'Everyone is removed and the invite link stops working. Nobody’s submissions are affected.')
                 : confirm?.kind === 'leave'
                   ? t('组员将不再看到你的打卡。之后可以用邀请链接重新加入。', 'Members will stop seeing your check-ins. You can rejoin with an invite link.')
-                  : t('对方可以用邀请链接重新加入；想挡住的话，再换一个邀请码。', 'They could rejoin with the invite link; change the invite code to keep them out.')}
+                  : t('邀请码会随之更换，对方不能再用旧链接加入；记得把新链接发给还没加入的人。', 'The invite code changes too, so they cannot rejoin with the old link; share the new one with anyone still to join.')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
