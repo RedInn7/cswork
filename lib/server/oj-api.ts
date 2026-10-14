@@ -15,6 +15,7 @@ import { handleSpeedrun } from './speedrun';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
 import { handleMyPractice } from './my-practice';
+import { handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { curatedHint } from '@/lib/ling-curated';
 import { companyTagIndex } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
@@ -67,7 +68,10 @@ export async function handleOj(
     [resource, id, action, operation] = path;
   if (resource === 'oa-library')
     return handleOaLibrary(request, p, path.slice(1));
+  if (resource === 'mock-oa' && id === 'history' && !action) return handleMockHistory(request, p);
   if (resource === 'mock-oa') return handleMockOa(request, p, path.slice(1));
+  if (resource === 'lists' || resource === 'profile' || resource === 'reports')
+    return handleLearnerCloud(request, p, path);
   if (request.method === 'GET' && resource === 'speedrun' && !id)
     return handleSpeedrun(request, p);
   if (request.method === 'GET' && resource === 'problems' && id && !action) {
