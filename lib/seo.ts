@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { classicLists } from './classic-lists';
 
 // Public URLs must not follow request hosts or private deployment configuration.
 export const SITE_URL = 'https://cswork.org';
@@ -101,6 +102,8 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/acm-io' },
   { path: '/mock-interview' },
   { path: '/privacy' },
+  { path: '/lists' },
+  ...classicLists.map((list) => ({ path: `/lists/${list.slug}` })),
 ];
 /** `statics`: entries written before the library on page 1 (static pages plus the mock OA pages). */
 export function sitemapPageCount(

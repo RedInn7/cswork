@@ -212,9 +212,9 @@ function Workspace({
   // In the exam the Submissions tab lists only this exam's attempts.
   const examFrom = exam?.running ? reportWindow(exam.session).from : 0;
   const [problem, setProblem] = useState(() => summaryProblem(initialProblem));
-  const [neighbors, setNeighbors] = useState<{ prev?: string; next?: string }>(
-    {},
-  );
+  const [neighbors, setNeighbors] = useState<
+    ReturnType<typeof problemNeighbors>
+  >({});
   // Client-only: the sequence lives in sessionStorage, written by the list the learner came from.
   useEffect(() => setNeighbors(problemNeighbors(problem.id)), [problem.id]);
   const [codingMode, setCodingMode] = useState<CodingMode>('leetcode');
@@ -2085,10 +2085,7 @@ function Workspace({
               className="cs-back"
               aria-label={t('返回题库', 'Back to problems')}
               onClick={() =>
-                navigate(
-                  'problems',
-                  problem.id.startsWith('oa-') ? { library: 'oa' } : undefined,
-                )
+                navigate('problems', backTo(problem.id, neighbors.library))
               }
             >
               <ArrowLeft size={18} />
@@ -2200,6 +2197,7 @@ function Workspace({
         <AcceptedDialog
           problemId={problem.id}
           line={!!problem.practiceRound}
+          library={neighbors.library}
           acceptedAt={success.created_at}
           seconds={solveSeconds}
           activity={boot.activity}
@@ -2447,20 +2445,29 @@ function Workspace({
 
 type NextStop = { id: string; sequence?: string[] } | null;
 
+/** Back to the list the learner came from: the OA library, a classic list, or the bank. */
+const backTo = (problemId: string, library?: string) =>
+  problemId.startsWith('oa-')
+    ? { library: 'oa' }
+    : library
+      ? { library }
+      : undefined;
+
 /**
- * Line 500: the server's next stop across the line. OA: the company's next
- * unsolved judgeable problem. undefined for any other problem.
+ * A collection (a classic list or Line 500): the server's next unsolved
+ * problem in it. OA: the company's next unsolved judgeable problem.
+ * undefined for any other problem.
  */
 async function findNextProblem(
   problemId: string,
-  line: boolean,
+  collection: string | undefined,
   signal: AbortSignal,
 ): Promise<NextStop | undefined> {
-  if (line) {
+  if (collection) {
     const page = await ojRequest<{
       nextProblemId: string | null;
       sequence: string[];
-    }>('library?collection=ling-selected-500', undefined, signal);
+    }>(`library?${new URLSearchParams({ collection })}`, undefined, signal);
     return page.nextProblemId && page.nextProblemId !== problemId
       ? { id: page.nextProblemId, sequence: page.sequence }
       : null;
@@ -2498,6 +2505,7 @@ async function findNextProblem(
 function AcceptedDialog({
   problemId,
   line,
+  library,
   acceptedAt,
   seconds,
   activity,
@@ -2508,6 +2516,8 @@ function AcceptedDialog({
 }: {
   problemId: string;
   line: boolean;
+  /** The classic list the problem was opened from; its order wins over Line 500's. */
+  library?: string;
   acceptedAt: number;
   seconds: number | null;
   activity?: Activity[];
@@ -2548,22 +2558,22 @@ function AcceptedDialog({
   useEffect(() => {
     const controller = new AbortController();
     const fallback = fallbackNext ? { id: fallbackNext } : null;
-    findNextProblem(problemId, line, controller.signal).then(
+    findNextProblem(
+      problemId,
+      library ?? (line ? 'ling-selected-500' : undefined),
+      controller.signal,
+    ).then(
       (found) => setNext(found === undefined ? fallback : found),
       () => {
         if (!controller.signal.aborted) setNext(fallback);
       },
     );
     return () => controller.abort();
-  }, [problemId, line, fallbackNext]);
+  }, [problemId, line, library, fallbackNext]);
   const go = () => {
     if (next === 'loading') return;
-    if (!next)
-      return navigate(
-        'problems',
-        problemId.startsWith('oa-') ? { library: 'oa' } : undefined,
-      );
-    if (next.sequence) rememberProblemSequence(next.sequence);
+    if (!next) return navigate('problems', backTo(problemId, library));
+    if (next.sequence) rememberProblemSequence(next.sequence, library);
     navigate('problem', { problem: next.id });
   };
   return (
