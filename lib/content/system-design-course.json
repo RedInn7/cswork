@@ -1,0 +1,172 @@
+{
+  "chapters": [
+    {
+      "slug": "framework",
+      "titleZh": "答题框架：45 分钟的七个步骤",
+      "titleEn": "The framework: seven steps in 45 minutes",
+      "bodyZh": "系统设计面试没有标准答案。面试官想看的是：你能不能在 45 分钟里把一个模糊的需求变成能落地的设计，并且说清每一个取舍。按下面七步走，时间就不会花在错的地方。\n\n## 1. 澄清需求（约 5 分钟）\n\n- **功能需求**：只挑 3 个核心功能，其余的明确说“这次不做”。\n- **非功能需求**：规模（DAU、QPS）、延迟、可用性、一致性。读多写少，还是写多读少？\n- 把结论写在白板一角，后面的每个决定都回头对照它。\n\n## 2. 容量估算（约 3 分钟）\n\n只算会影响设计的数：峰值 QPS、存储量、带宽。数量级对就够了。例如 1 亿 DAU、每人每天 10 次请求，平均约 1e9 / 86,400 ≈ 1.2 万 QPS，峰值按 2–3 倍算。\n\n## 3. 核心实体\n\n列出系统里的名词（用户、短链、点击……）以及它们之间的关系。这是后面 API 和数据模型的骨架。\n\n## 4. API\n\n为每个核心功能写一个接口：方法、路径、参数、返回值，顺带说清鉴权和分页。\n\n## 5. 高层设计\n\n画出从客户端到存储的完整路径：负载均衡 → 无状态服务 → 缓存 → 数据库。先让每个功能都跑得通，再谈优化。\n\n## 6. 深挖\n\n挑 1–2 个最难的点深入：热点、扩容、一致性、故障恢复。面试官最常在这里追问，主动指出瓶颈比被问出来好得多。\n\n## 7. 权衡与总结\n\n说清你放弃了什么、为什么：用最终一致换可用性，用缓存换内存成本。最后用两三句话复述整个设计。\n\n> 常见失分：一上来就画架构图；在估算上花十分钟；只讲一种方案，不讲取舍。\n\n下一章用[短链服务](/system-design/url-shortener)把这七步完整走一遍。\n",
+      "bodyEn": "There is no single right answer in a system design interview. The interviewer wants to see whether you can turn a vague prompt into a design that would actually work in 45 minutes, and explain every trade-off on the way. Follow these seven steps and your time goes where it counts.\n\n## 1. Clarify requirements (about 5 minutes)\n\n- **Functional**: pick the three core features and say out loud which ones are out of scope.\n- **Non-functional**: scale (DAU, QPS), latency, availability, consistency. Is it read-heavy or write-heavy?\n- Write the answers in a corner of the board and check every later decision against them.\n\n## 2. Estimate capacity (about 3 minutes)\n\nOnly compute numbers that change the design: peak QPS, storage, bandwidth. The order of magnitude is enough. With 100 million DAU making 10 requests a day, the average is 1e9 / 86,400 ≈ 12,000 QPS; plan for a peak two to three times higher.\n\n## 3. Core entities\n\nList the nouns in the system (users, short links, clicks…) and how they relate. They are the skeleton of the API and the data model.\n\n## 4. API\n\nWrite one endpoint per core feature: method, path, parameters and response. Mention authentication and pagination while you are there.\n\n## 5. High-level design\n\nDraw the whole path from client to storage: load balancer → stateless services → cache → database. Make every feature work end to end before you optimise anything.\n\n## 6. Deep dives\n\nGo deep on the one or two hardest parts: hot keys, scaling, consistency, failure recovery. This is where follow-up questions land, and naming a bottleneck yourself beats having it pointed out.\n\n## 7. Trade-offs and wrap-up\n\nSay what you gave up and why: eventual consistency for availability, memory for latency. Close with a two- or three-sentence summary of the design.\n\n> Common ways to lose points: drawing boxes before asking a single question, spending ten minutes on arithmetic, presenting one option without its trade-offs.\n\nThe next chapter walks a [URL shortener](/system-design/url-shortener) through all seven steps.\n",
+      "quiz": [
+        {
+          "qZh": "面试一开始，最先应该做什么？",
+          "qEn": "What should you do first in a system design interview?",
+          "choices": [
+            {
+              "zh": "画出高层架构图",
+              "en": "Draw the high-level architecture"
+            },
+            {
+              "zh": "澄清功能和非功能需求",
+              "en": "Clarify functional and non-functional requirements"
+            },
+            {
+              "zh": "选定数据库",
+              "en": "Pick a database"
+            },
+            {
+              "zh": "估算存储量",
+              "en": "Estimate storage"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "需求决定了后面每一个取舍。没澄清就画图，很可能是在解决一个错误的问题。",
+          "whyEn": "Requirements drive every later trade-off. Drawing boxes first risks solving the wrong problem."
+        },
+        {
+          "qZh": "1 亿 DAU、每人每天 10 次请求，平均 QPS 大约是多少？",
+          "qEn": "100 million DAU make 10 requests each a day. Roughly what is the average QPS?",
+          "choices": [
+            {
+              "zh": "约 1,200",
+              "en": "About 1,200"
+            },
+            {
+              "zh": "约 12,000",
+              "en": "About 12,000"
+            },
+            {
+              "zh": "约 120,000",
+              "en": "About 120,000"
+            },
+            {
+              "zh": "约 1,200,000",
+              "en": "About 1,200,000"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "1e9 / 86,400 ≈ 11,574，约 1.2 万；峰值再乘 2–3。",
+          "whyEn": "1e9 / 86,400 ≈ 11,574, so about 12,000; multiply by two or three for the peak."
+        },
+        {
+          "qZh": "深挖阶段，哪种做法最好？",
+          "qEn": "Which is the best approach to the deep-dive phase?",
+          "choices": [
+            {
+              "zh": "等面试官提问再说",
+              "en": "Wait for the interviewer to ask"
+            },
+            {
+              "zh": "主动指出瓶颈，给出方案和取舍",
+              "en": "Name the bottleneck yourself and offer options with trade-offs"
+            },
+            {
+              "zh": "把每个组件都讲一遍",
+              "en": "Walk through every component in equal depth"
+            },
+            {
+              "zh": "只讲自己最熟悉的技术",
+              "en": "Talk only about the technology you know best"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "主动指出瓶颈说明你看得出系统哪里会先坏，这正是面试官想考察的。",
+          "whyEn": "Spotting where the system breaks first is exactly what the interviewer is probing for."
+        }
+      ]
+    },
+    {
+      "slug": "url-shortener",
+      "titleZh": "案例：短链服务",
+      "titleEn": "Case study: a URL shortener",
+      "bodyZh": "短链服务把一个长 URL 映射成 `https://short.example/abc123` 这样的短码，访问短码时跳转回原地址。它读远多于写，是练习“读多写少”和“唯一 ID 生成”的经典题。\n\n## 需求\n\n- 功能：创建短链（可选自定义别名和过期时间）；访问短链时跳转。\n- 非功能：跳转延迟低（p99 < 50 ms）、高可用；短码不能被轻易按顺序枚举。\n- 规模假设：每天新建 1 亿条，读写比 100 : 1。\n\n## 估算\n\n- 写：1e8 / 86,400 ≈ 1,200 QPS；读：约 12 万 QPS。\n- 存储：每条约 500 字节，5 年约 1e8 × 365 × 5 × 500 B ≈ 91 TB。\n- 短码长度：62 进制 7 位有 62⁷ ≈ 3.5 万亿种取值，5 年 1,825 亿条绰绰有余。\n\n## API\n\n- `POST /urls {longUrl, alias?, expiresAt?}` → `{shortUrl}`\n- `GET /{code}` → `302`，`Location: longUrl`\n\n## 高层设计\n\n客户端 → 负载均衡 → 无状态应用服务 → 缓存（如 Redis）→ 键值存储（code → longUrl）。跳转先查缓存，未命中再查库并回填缓存。\n\n## 深挖：短码怎么生成\n\n| 方案 | 做法 | 问题 |\n| --- | --- | --- |\n| 哈希截断 | 对长 URL 做哈希，取前 7 位 | 会冲突，需要检测并重试 |\n| 自增计数器 + 62 进制 | 全局计数器编码成短码 | 短码可预测；单个计数器是瓶颈 |\n| 号段分配 | 每台服务器批量领取一段 ID，在本地发号 | 需要一个协调服务，但吞吐高、不冲突 |\n\n号段分配是常见的最终答案。再对 ID 做一次可逆的混淆，短码就不容易被顺序枚举。\n\n## 权衡\n\n- `301` 会被浏览器缓存，能减轻负载，但之后的点击统计不到；需要点击分析就用 `302`。\n- 键值存储天然水平扩展，比关系库更合适；自定义别名要做唯一性检查。\n",
+      "bodyEn": "A URL shortener maps a long URL to a short code such as `https://short.example/abc123` and redirects anyone who opens the code. Reads far outnumber writes, which makes it the classic exercise in read-heavy design and unique ID generation.\n\n## Requirements\n\n- Functional: create a short link (optionally with a custom alias and an expiry); redirect when it is opened.\n- Non-functional: fast redirects (p99 under 50 ms), high availability, codes that cannot simply be enumerated in order.\n- Scale assumptions: 100 million new links a day, a 100 : 1 read-to-write ratio.\n\n## Estimates\n\n- Writes: 1e8 / 86,400 ≈ 1,200 QPS; reads: about 120,000 QPS.\n- Storage: about 500 bytes per link, so five years is 1e8 × 365 × 5 × 500 B ≈ 91 TB.\n- Code length: 7 base-62 characters give 62⁷ ≈ 3.5 trillion values, far more than five years' 182.5 billion links.\n\n## API\n\n- `POST /urls {longUrl, alias?, expiresAt?}` → `{shortUrl}`\n- `GET /{code}` → `302` with `Location: longUrl`\n\n## High-level design\n\nClient → load balancer → stateless app servers → cache (Redis, say) → key-value store (code → longUrl). A redirect reads the cache first and on a miss reads the store and fills the cache.\n\n## Deep dive: generating codes\n\n| Approach | How | Problem |\n| --- | --- | --- |\n| Truncated hash | Hash the long URL, keep 7 characters | Collisions; detect and retry |\n| Counter + base 62 | Encode a global counter | Predictable codes; one counter is a bottleneck |\n| ID ranges | Each server leases a block of IDs and hands them out locally | Needs a coordinator, but fast and collision-free |\n\nID ranges are the usual final answer. Run each ID through a reversible scramble and the codes no longer reveal their order.\n\n## Trade-offs\n\n- Browsers cache a `301`, which saves load but hides later clicks; use `302` when you need click analytics.\n- A key-value store scales out naturally and fits better than a relational database; custom aliases need a uniqueness check.\n",
+      "quiz": [
+        {
+          "qZh": "62 进制、7 位的短码大约有多少种取值？",
+          "qEn": "About how many values do 7 base-62 characters give?",
+          "choices": [
+            {
+              "zh": "约 3.5 亿",
+              "en": "About 350 million"
+            },
+            {
+              "zh": "约 3.5 万亿",
+              "en": "About 3.5 trillion"
+            },
+            {
+              "zh": "约 6,200 万",
+              "en": "About 62 million"
+            },
+            {
+              "zh": "约 7 万",
+              "en": "About 70,000"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "62⁷ = 3,521,614,606,208，约 3.5 万亿。",
+          "whyEn": "62⁷ = 3,521,614,606,208, about 3.5 trillion."
+        },
+        {
+          "qZh": "需要统计每一次点击时，跳转应该返回哪个状态码？",
+          "qEn": "Which status code should a redirect return when every click must be counted?",
+          "choices": [
+            {
+              "zh": "301",
+              "en": "301"
+            },
+            {
+              "zh": "302",
+              "en": "302"
+            },
+            {
+              "zh": "404",
+              "en": "404"
+            },
+            {
+              "zh": "200，再用页面里的 JavaScript 跳转",
+              "en": "200 with a JavaScript redirect in the page"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "301 是永久重定向，浏览器会缓存它，之后的访问不再经过服务，也就统计不到。",
+          "whyEn": "A 301 is permanent, so browsers cache it and later visits never reach the service to be counted."
+        },
+        {
+          "qZh": "用“哈希长 URL 取前 7 位”生成短码，主要问题是什么？",
+          "qEn": "What is the main problem with taking the first 7 characters of a hash of the long URL?",
+          "choices": [
+            {
+              "zh": "计算太慢",
+              "en": "It is too slow to compute"
+            },
+            {
+              "zh": "不同的长 URL 可能得到相同的短码",
+              "en": "Different long URLs can get the same code"
+            },
+            {
+              "zh": "短码太长",
+              "en": "The codes are too long"
+            },
+            {
+              "zh": "无法支持 HTTPS",
+              "en": "It cannot support HTTPS"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "截断后的哈希空间变小，冲突无法避免，必须检测冲突并重试。",
+          "whyEn": "Truncating shrinks the hash space, so collisions are unavoidable and must be detected and retried."
+        }
+      ]
+    }
+  ]
+}
