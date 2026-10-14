@@ -56,6 +56,7 @@ import {
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { OaCompanyBadge, OaEditorial } from './oa-library';
+import { LingEditorial } from './ling-editorial';
 import { CompanyTags } from './company-tags';
 import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-notes';
 import { AskedReport, communityProblem } from './problem-community';
@@ -461,6 +462,8 @@ function Workspace({
   const [historyError, setHistoryError] = useState('');
   const [historyRevision, setHistoryRevision] = useState(0);
   const shownHistory = history.filter((item) => item.created_at >= examFrom);
+  // The Line 500 editorial opens once the problem is passed, or after a confirm kept until reload.
+  const [editorialAsked, setEditorialAsked] = useState(false);
   const [problemError, setProblemError] = useState('');
   const [problemRevision, setProblemRevision] = useState(0);
   useEffect(() => {
@@ -1481,7 +1484,7 @@ function Workspace({
             english={uiEnglish}
           />
         )}
-        {problem.id.startsWith('oa-') && !examMode && (
+        {(problem.id.startsWith('oa-') || !!problem.lingEditorial) && !examMode && (
           <button
             role="tab"
             className={leftTab === 'editorial' ? 'active' : ''}
@@ -1507,6 +1510,20 @@ function Workspace({
         )}
         {leftTab === 'notes' && note.enabled ? (
           <ProblemNotes note={note} english={uiEnglish} />
+        ) : leftTab === 'editorial' && problem.lingEditorial && !examMode ? (
+          <LingEditorial
+            key={problem.id}
+            editorial={problem.lingEditorial}
+            english={uiEnglish}
+            unlocked={
+              editorialAsked ||
+              shownHistory.some((item) => item.mode === 'judge' && item.status === 'accepted')
+            }
+            onUnlock={() => setEditorialAsked(true)}
+            code={code}
+            language={language}
+            settings={settings}
+          />
         ) : leftTab === 'editorial' ? (
           <OaEditorial key={problem.id} problemId={problem.id} />
         ) : leftTab === 'solutions' && boot.person && !examMode ? (
