@@ -25,6 +25,9 @@ export default function LibraryLayout({
         <Link href="/library" prefetch={false}>
           Browse the library
         </Link>
+        <Link href="/topics" prefetch={false}>
+          Code templates
+        </Link>
         <Link href="/privacy" prefetch={false}>
           Privacy
         </Link>
