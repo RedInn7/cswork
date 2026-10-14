@@ -1,6 +1,7 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import {
+  Bug,
   Check,
   Clock3,
   Copy,
@@ -54,10 +55,13 @@ export function CopyBlock({
   label,
   value,
   truncated,
+  action,
 }: {
   label: string;
   value: string;
   truncated?: boolean;
+  /** Shown beside the copy button. */
+  action?: ReactNode;
 }) {
   const t = useT();
   const [copied, setCopied] = useState(false);
@@ -71,6 +75,7 @@ export function CopyBlock({
     <div className="cs-output-block">
       <div>
         <span>{label}</span>
+        {action}
         <button
           aria-label={t(`复制${label}`, `Copy ${label.toLowerCase()}`)}
           title={t(`复制${label}`, `Copy ${label.toLowerCase()}`)}
@@ -113,14 +118,20 @@ export function SubmissionResult({
   cancel,
   cancelling,
   inspect,
+  onUseInput,
+  maxStdinBytes = 65536,
 }: {
   submission: OJSubmission;
   cancel?: () => void;
   cancelling?: boolean;
   inspect?: () => void;
+  /** Loads the failing case into custom input; the workspace passes it in ACM mode only. */
+  onUseInput?: (input: string) => void;
+  maxStdinBytes?: number;
 }) {
   const t = useT();
   const locale = useLocale();
+  const debugNoteId = useId();
   const cases = submission.cases || [];
   const firstFailure = cases.findIndex((item) =>
     [
@@ -158,6 +169,26 @@ export function SubmissionResult({
       ? submission.firstFailure
       : undefined;
   const output = diagnostic || current;
+  // LeetCode test files use the private driver transport, not the JSON-per-line
+  // custom input (lib/server/leetcode-mode.ts), so only ACM cases replay as-is.
+  const debugInput =
+    onUseInput && diagnostic && submission.codingMode !== 'leetcode'
+      ? diagnostic.stdin
+      : undefined;
+  const debugBlocked =
+    debugInput === undefined
+      ? null
+      : diagnostic?.truncated?.stdin
+        ? t(
+            '这个用例太长，只保存了一部分，无法原样调试。',
+            "This case was too long to keep in full, so it can't be replayed.",
+          )
+        : new TextEncoder().encode(debugInput).byteLength > maxStdinBytes
+          ? t(
+              `这个用例超过自定义输入上限 ${Math.floor(maxStdinBytes / 1024)} KB。`,
+              `This case exceeds the ${Math.floor(maxStdinBytes / 1024)} KB custom input limit.`,
+            )
+          : null;
   const completedCases = cases.filter(
     (item) => !activeStatuses.has(item.status) && item.status !== 'skipped',
   ).length;
@@ -355,7 +386,30 @@ export function SubmissionResult({
                       label={t('输入', 'Input')}
                       value={output.stdin}
                       truncated={diagnostic?.truncated?.stdin}
+                      action={
+                        debugInput !== undefined && (
+                          <button
+                            type="button"
+                            className="cs-case-debug"
+                            aria-disabled={debugBlocked ? true : undefined}
+                            aria-describedby={
+                              debugBlocked ? debugNoteId : undefined
+                            }
+                            onClick={() => {
+                              if (!debugBlocked) onUseInput?.(debugInput);
+                            }}
+                          >
+                            <Bug size={13} />
+                            {t('用这个用例调试', 'Debug with this case')}
+                          </button>
+                        )
+                      }
                     />
+                  )}
+                  {debugBlocked && (
+                    <p className="cs-case-debug-note" id={debugNoteId}>
+                      {debugBlocked}
+                    </p>
                   )}
                   {output.expected !== undefined && (
                     <CopyBlock

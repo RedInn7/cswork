@@ -266,6 +266,15 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       document.querySelector('.cs-workspace-header .cs-editor-run-actions'),
       null,
     );
+    assert.equal(
+      document.querySelector('.cs-workspace-header .cs-timer') !== null,
+      true,
+    );
+    // Input templates are for ACM stdin programs only.
+    assert.equal(
+      document.querySelector('[aria-label="Use an input template"]') === null,
+      true,
+    );
     assert.equal(editor().value, templates.python);
     assert.match(
       document.querySelector('.cs-sample-pair').textContent,
@@ -469,12 +478,29 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       null,
       'dismissed feedback must not replay',
     );
+    // A problem timer that ran puts its reading in the dialog and judge_accept.
+    const timerKey = 'cswork:timer:student:lc-1';
+    localStorage.setItem(
+      timerKey,
+      JSON.stringify({
+        mode: 'up',
+        minutes: 15,
+        elapsed: 754_000,
+        startedAt: null,
+      }),
+    );
+    const accepts = [];
+    window.gtag = (command, name, params) =>
+      name === 'judge_accept' && accepts.push(params);
     acknowledgement = 'accepted';
     await click(button('Submit'));
     assert.match(
       document.querySelector('.cs-accepted-banner').textContent,
-      /Accepted/,
+      /Accepted.*Solved in 12:34/,
     );
+    assert.equal(accepts.length === 1 && accepts[0].seconds === 754, true);
+    delete window.gtag;
+    localStorage.removeItem(timerKey);
     assert.equal(progressEvents, 2);
     await click(
       document.querySelector('[aria-label="Dismiss success message"]'),
@@ -602,6 +628,8 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     assert.ok(document.querySelector('.cs-statement-heading'));
     // Booleans, not elements: a failing diff of a jsdom node exhausts the heap.
     assert.equal(document.querySelector('.cs-route-hint') === null, true);
+    // The exam bar's clock replaces the problem timer.
+    assert.equal(document.querySelector('.cs-timer') === null, true);
     assert.equal(document.querySelector('.cs-company-tags') === null, true, 'no company hints in a mock');
     localStorage.removeItem(examKey);
     delete problem.hintEarned;
@@ -633,6 +661,20 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     await renderAcm('acm-en');
     await settle();
     assert.equal(editor().value, englishStarters.python);
+    // Templates are whole programs: an untouched starter is swapped, edits ask first.
+    const { ACM_IO_TEMPLATES } = await import('../lib/acm-io-templates.ts');
+    const [single, eof] = ACM_IO_TEMPLATES;
+    await choose('Use an input template', 'eof');
+    assert.equal(editor().value === eof.code.python, true);
+    await edit('# mine');
+    await choose('Use an input template', 'single');
+    assert.equal(editor().value === '# mine', true);
+    assert.match(
+      document.querySelector('[role="alertdialog"]').textContent,
+      /Switch to the "Single test case" template\?/,
+    );
+    await click(button('Replace'));
+    assert.equal(editor().value === single.code.python, true);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

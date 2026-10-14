@@ -1,0 +1,155 @@
+/* /acm-io: on the public library's shell and palette. */
+.acm-io pre {
+  max-width: 100%;
+  margin: 0;
+  overflow-x: auto;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  tab-size: 4;
+}
+.acm-io [lang='en'] {
+  color: #54695f;
+}
+.acm-io .public-library-intro > p[lang='en'] {
+  margin-top: 10px;
+  font-size: 16px;
+}
+.acm-io-toc ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 8px;
+  margin: 0 0 56px;
+  padding: 0;
+  list-style: none;
+  counter-reset: shape;
+}
+.acm-io-toc li {
+  counter-increment: shape;
+}
+.public-library .acm-io-toc a {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 2px 8px;
+  height: 100%;
+  padding: 12px 14px;
+  border: 1px solid #dce5df;
+  border-radius: 10px;
+  background: #fff;
+  color: #152c24;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.acm-io-toc a::before {
+  content: counter(shape, decimal-leading-zero);
+  grid-row: span 2;
+  color: #087158;
+  font: 600 12px/1.9 'SFMono-Regular', Consolas, monospace;
+}
+.acm-io-toc a span {
+  font-size: 12px;
+  font-weight: 400;
+}
+.public-library .acm-io-toc a:hover {
+  border-color: #087158;
+  text-decoration: none;
+}
+.acm-io-shape {
+  max-width: 860px;
+  padding: 36px 0 8px;
+  border-top: 1px solid #dce5df;
+  scroll-margin-top: 16px;
+}
+.acm-io-shape h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 0 0 14px;
+  font-size: 24px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.acm-io-shape h2 small {
+  display: block;
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.acm-io-index {
+  color: #087158;
+  font: 600 15px 'SFMono-Regular', Consolas, monospace;
+}
+.acm-io-shape > p {
+  margin: 0 0 8px;
+  line-height: 1.8;
+}
+.acm-io-shape > p.acm-io-en {
+  margin-bottom: 18px;
+  font-size: 15px;
+}
+.acm-io-sample {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.acm-io-sample figure {
+  margin: 0;
+  min-width: 0;
+  border-radius: 8px;
+  background: #13241e;
+  overflow: hidden;
+}
+.acm-io-sample figcaption {
+  padding: 8px 14px 0;
+  color: #8fb3a3;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.acm-io-sample pre {
+  padding: 6px 14px 12px;
+  color: #e6f2ec;
+}
+.acm-io-shape details {
+  margin-bottom: 8px;
+  border: 1px solid #dce5df;
+  border-radius: 8px;
+  background: #fff;
+}
+.acm-io-shape summary {
+  padding: 9px 14px;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.acm-io-shape summary:focus-visible {
+  outline: 2px solid #087158;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+.acm-io-shape details pre {
+  padding: 14px 16px 16px;
+  border-top: 1px solid #dce5df;
+  background: #f3f7f4;
+  color: #152c24;
+}
+.acm-io-cta {
+  max-width: 860px;
+  margin: 36px 0 0;
+  padding-top: 28px;
+  border-top: 1px solid #dce5df;
+  line-height: 1.8;
+}
+@media (max-width: 600px) {
+  .acm-io-sample {
+    grid-template-columns: 1fr;
+  }
+  .acm-io-shape h2 {
+    font-size: 21px;
+  }
+  .acm-io pre {
+    font-size: 12px;
+  }
+}

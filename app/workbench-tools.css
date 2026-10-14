@@ -1,0 +1,150 @@
+/* Workbench extras: input templates, failing-case debug, problem timer. */
+.cs-workspace .cs-editor-controls > select.cs-io-templates {
+  margin-right: 0;
+  min-width: 0;
+  max-width: 128px;
+}
+.cs-workspace .cs-editor-controls > select.cs-io-templates:hover {
+  color: var(--primary);
+}
+.cs-output-block > div > .cs-case-debug {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 6px 0 auto;
+  padding: 2px 7px;
+  border-radius: 5px;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 550;
+}
+.cs-output-block > div > .cs-case-debug[aria-disabled='true'] {
+  color: #94a0b3;
+  cursor: not-allowed;
+}
+.cs-output-block > div > .cs-case-debug[aria-disabled='true']:hover {
+  background: transparent;
+}
+.cs-case-debug-note {
+  margin: -6px 0 12px;
+  color: #9d4b32;
+  font-size: 11px;
+}
+.cs-workspace[data-theme='dark'] .cs-output-block > div > .cs-case-debug {
+  color: var(--cs-blue);
+}
+.cs-workspace[data-theme='dark'] .cs-case-debug-note {
+  color: #f0a58a;
+}
+.cs-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  margin-right: 6px;
+  padding-right: 8px;
+  border-right: 1px solid var(--border);
+}
+.cs-timer-clock {
+  min-width: 46px;
+  padding: 0 2px;
+  color: #67758a;
+  font:
+    600 12px/1 'SFMono-Regular',
+    Consolas,
+    monospace;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.cs-timer-minutes {
+  border: 0;
+  background: transparent;
+  color: #67758a;
+  font-size: 11px;
+  padding: 4px 2px;
+}
+.cs-timer.is-overdue .cs-timer-clock,
+.cs-timer.is-overdue .cs-timer-mode {
+  color: #dc2626;
+}
+.cs-timer-toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 60;
+  pointer-events: none;
+}
+.cs-timer-toast > p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: min(360px, calc(100vw - 40px));
+  margin: 0;
+  padding: 10px 8px 10px 14px;
+  border: 1px solid #fecaca;
+  border-left: 3px solid #dc2626;
+  border-radius: 9px;
+  background: #fff;
+  color: #7f1d1d;
+  font-size: 13px;
+  line-height: 1.45;
+  box-shadow: 0 12px 32px rgb(15 23 42 / 0.16);
+  pointer-events: auto;
+  animation: cs-timer-toast-in 180ms ease-out;
+}
+.cs-timer-toast > p > svg {
+  flex-shrink: 0;
+  color: #dc2626;
+}
+.cs-timer-toast button {
+  flex-shrink: 0;
+  padding: 3px;
+  border-radius: 4px;
+  color: inherit;
+}
+.cs-timer-toast button:hover {
+  background: #fee2e2;
+}
+@keyframes cs-timer-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs-timer-toast > p {
+    animation: none;
+  }
+}
+.cs-workspace[data-theme='dark'] .cs-timer-clock,
+.cs-workspace[data-theme='dark'] .cs-timer-minutes {
+  color: var(--cs-text);
+}
+.cs-workspace[data-theme='dark'] .cs-timer-minutes {
+  background: var(--cs-canvas);
+}
+.cs-workspace[data-theme='dark'] .cs-timer.is-overdue .cs-timer-clock,
+.cs-workspace[data-theme='dark'] .cs-timer.is-overdue .cs-timer-mode {
+  color: #f87171;
+}
+.cs-workspace[data-theme='dark'] .cs-timer-toast > p {
+  background: #2a1517;
+  border-color: #7f1d1d;
+  border-left-color: #f87171;
+  color: #fecaca;
+}
+.cs-workspace[data-theme='dark'] .cs-timer-toast button:hover {
+  background: #3d1d20;
+}
+@media (max-width: 540px) {
+  .cs-timer {
+    margin-right: 2px;
+    padding-right: 4px;
+  }
+  /* Tighter, but the mode switch stays: it is the only way into countdown. */
+  .cs-workspace-navigation .cs-timer > .cs-top-button {
+    padding: 6px;
+  }
+  .cs-timer-clock {
+    min-width: 40px;
+  }
+}

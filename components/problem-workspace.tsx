@@ -70,6 +70,8 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { CodeEditor } from './editor';
+import { ProblemTimer, formatClock, stopTimer } from './problem-timer';
+import { ACM_IO_TEMPLATES } from '@/lib/acm-io-templates';
 import { useIdlePrecompile } from '@/hooks/use-idle-precompile';
 import { StatementMarkdown } from './statement-markdown';
 import { LeetCodeSamples } from './leetcode-samples';
@@ -118,6 +120,7 @@ import { track } from '@/lib/analytics';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import '@/app/editor.css';
+import '@/app/workbench-tools.css';
 
 type WorkspaceProps = {
   problem: ProblemSummary;
@@ -303,6 +306,7 @@ function Workspace({
       ? t('语言服务待启动', 'Language service not started')
       : say(intelligence.message);
   const suggest = useRef<(() => void) | null>(null);
+  const runButton = useRef<HTMLButtonElement>(null);
   const [leftTab, setLeftTab] = useState<'statement' | 'history' | 'editorial'>(
     'statement',
   );
@@ -394,6 +398,7 @@ function Workspace({
       setRouteHint((state) => (state === 'locked' ? 'earned' : state));
   }, [problem.hintEarned, submission]);
   const [success, setSuccess] = useState<OJSubmission | null>(null);
+  const [solveSeconds, setSolveSeconds] = useState<number | null>(null);
   const announcedSuccess = useRef<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [cancelling, setCancelling] = useState(false);
@@ -708,6 +713,14 @@ function Workspace({
     } catch {
       /* Feedback still works when browser storage is unavailable. */
     }
+    // The exam clock replaces the problem timer during a mock OA; an AC stops it.
+    const seconds = examMode ? null : stopTimer(userId, initialProblem.id);
+    track('judge_accept', {
+      problem_id: initialProblem.id,
+      language: submission.language,
+      seconds,
+    });
+    setSolveSeconds(seconds);
     setSuccess(submission);
     setHistory((items) => [
       submission,
@@ -829,6 +842,36 @@ function Workspace({
     setSaveStatus(['正在保存草稿…', 'Saving draft…']);
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => persistDraft(), 350);
+  }
+  function debugWithCase(input: string) {
+    setInputMode('custom');
+    setStdin(input);
+    showConsole('input');
+    // Run stays mounted across console tabs; focus it before this button unmounts.
+    runButton.current?.focus();
+    track('fail_case_debug', {
+      problem_id: problem.id,
+      language,
+      verdict: submission?.status,
+    });
+  }
+  function applyIoTemplate(id: string) {
+    const template = ACM_IO_TEMPLATES.find((item) => item.id === id);
+    const text = template?.code[language];
+    if (!template || !text || text === code) return;
+    // Templates are whole programs (main, class Main, package main): splicing one
+    // into edited code can't compile, so it replaces the draft, after a confirm.
+    if (isStarter(code, language)) updateCode(text);
+    else
+      setReplaceRequest({
+        language,
+        codingMode,
+        code: text,
+        title: t(
+          `换成「${template.title.zh}」模板？`,
+          `Switch to the "${template.title.en}" template?`,
+        ),
+      });
   }
   function templateFor(next: Language, mode: CodingMode) {
     return mode === 'leetcode'
@@ -1501,6 +1544,7 @@ function Workspace({
         <span>{editorFile}</span>
         <div className="cs-editor-run-actions">
           <Button
+            ref={runButton}
             variant="ghost"
             disabled={
               disabled || (inputMode === 'custom' && stdinBytes > maxStdinBytes)
@@ -1583,6 +1627,32 @@ function Workspace({
           >
             <Download size={15} />
           </button>
+          {codingMode === 'acm' && (
+            <select
+              className="cs-io-templates"
+              aria-label={t('使用输入模板', 'Use an input template')}
+              title={t(
+                '常见输入形态的完整读写程序，会替换当前代码（改过的代码先确认）',
+                'A whole read/write program for a common input shape. It replaces your code (edited code asks first)',
+              )}
+              value=""
+              disabled={!ready}
+              onChange={(event) => applyIoTemplate(event.target.value)}
+            >
+              <option value="" disabled>
+                {t('输入模板', 'Input templates')}
+              </option>
+              {ACM_IO_TEMPLATES.map((item) => (
+                <option
+                  key={item.id}
+                  value={item.id}
+                  title={t(item.note.zh, item.note.en)}
+                >
+                  {t(item.title.zh, item.title.en)}
+                </option>
+              ))}
+            </select>
+          )}
           <button
             aria-label={t('重置为语言模板', 'Reset to template')}
             title={t('重置为语言模板', 'Reset to template')}
@@ -1907,6 +1977,8 @@ function Workspace({
                   cancel={cancel}
                   cancelling={cancelling}
                   inspect={() => inspect(submission)}
+                  onUseInput={codingMode === 'acm' ? debugWithCase : undefined}
+                  maxStdinBytes={maxStdinBytes}
                 />
               ) : (
                 <div className="cs-empty compact">
@@ -2069,6 +2141,13 @@ function Workspace({
               <span>{t('相关课程', 'Related course')}</span>
             </button>
           )}
+          {!examMode && (
+            <ProblemTimer
+              userId={userId}
+              problemId={problem.id}
+              difficulty={problem.difficulty}
+            />
+          )}
           <button
             className="cs-top-button"
             aria-label={
@@ -2102,6 +2181,7 @@ function Workspace({
           problemId={problem.id}
           line={!!problem.practiceRound}
           acceptedAt={success.created_at}
+          seconds={solveSeconds}
           activity={boot.activity}
           fallbackNext={neighbors.next}
           english={uiEnglish}
@@ -2399,6 +2479,7 @@ function AcceptedDialog({
   problemId,
   line,
   acceptedAt,
+  seconds,
   activity,
   fallbackNext,
   english,
@@ -2408,6 +2489,7 @@ function AcceptedDialog({
   problemId: string;
   line: boolean;
   acceptedAt: number;
+  seconds: number | null;
   activity?: Activity[];
   fallbackNext?: string;
   english: boolean;
@@ -2484,6 +2566,11 @@ function AcceptedDialog({
               `今日 ${stats.today} / ${target} · 连续 ${stats.streak} 天`,
               `Today ${stats.today} / ${target} · ${stats.streak}-day streak`,
             )}
+            {seconds != null &&
+              t(
+                ` · 本题用时 ${formatClock(seconds)}`,
+                ` · Solved in ${formatClock(seconds)}`,
+              )}
           </DialogDescription>
           <Button
             ref={primary}

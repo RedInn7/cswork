@@ -161,3 +161,104 @@ test('judge renders live stages, selects first failure once, preserves privacy a
     delete globalThis.IS_REACT_ACT_ENVIRONMENT;
   }
 });
+
+test('a failed ACM submission offers its first failing case as custom input', async () => {
+  const dom = new JSDOM('<div id="root"></div>', {
+    url: 'https://cswork.test/',
+  });
+  const descriptors = new Map();
+  for (const name of [
+    'window',
+    'document',
+    'HTMLElement',
+    'Element',
+    'Node',
+    'Event',
+    'MouseEvent',
+    'navigator',
+    'localStorage',
+  ]) {
+    descriptors.set(name, Object.getOwnPropertyDescriptor(globalThis, name));
+    Object.defineProperty(globalThis, name, {
+      configurable: true,
+      value: dom.window[name],
+    });
+  }
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const { createRoot } = await import('react-dom/client');
+  const { SubmissionResult } = await import('../components/oj-results.tsx');
+  const root = createRoot(document.getElementById('root'));
+  const used = [];
+  const failure = {
+    ordinal: 0,
+    status: 'wrong_answer',
+    stdin: '1 2\n',
+    expected: '3',
+    stdout: '4',
+    stderr: '',
+    truncated: {},
+  };
+  const base = {
+    id: 'f1',
+    problem_id: 'p1',
+    language: 'cpp',
+    codingMode: 'acm',
+    mode: 'judge',
+    status: 'wrong_answer',
+    passed: 0,
+    total: 1,
+    created_at: 1,
+    cases: [{ ordinal: 0, status: 'wrong_answer', hidden: true }],
+    firstFailure: failure,
+  };
+  const render = (submission, props = {}) =>
+    act(async () =>
+      root.render(
+        createElement(SubmissionResult, {
+          submission,
+          onUseInput: (input) => used.push(input),
+          ...props,
+        }),
+      ),
+    );
+  const debug = () => document.querySelector('.cs-case-debug');
+  try {
+    await render(base);
+    // Booleans, not elements: a failing diff of a jsdom node exhausts the heap.
+    assert.equal(debug() !== null, true);
+    assert.equal(debug().hasAttribute('aria-disabled'), false);
+    await act(async () => debug().click());
+    assert.deepEqual(used, ['1 2\n']);
+    // A truncated case cannot be replayed: the button stays, disabled with the reason.
+    await render({
+      ...base,
+      id: 'f2',
+      firstFailure: { ...failure, truncated: { stdin: true } },
+    });
+    assert.equal(debug().getAttribute('aria-disabled'), 'true');
+    const note = document.getElementById(
+      debug().getAttribute('aria-describedby'),
+    );
+    assert.match(note.textContent, /too long|太长/);
+    await act(async () => debug().click());
+    assert.equal(used.length, 1);
+    await render({ ...base, id: 'f3' }, { maxStdinBytes: 2 });
+    assert.equal(debug().getAttribute('aria-disabled'), 'true');
+    // LeetCode test files use the driver transport, not the custom input format.
+    await render({ ...base, id: 'f4', codingMode: 'leetcode' });
+    assert.equal(debug() === null, true);
+    // Runs and the history dialog (no handler) never offer it.
+    await render({ ...base, id: 'f5', mode: 'run' });
+    assert.equal(debug() === null, true);
+    await render({ ...base, id: 'f6' }, { onUseInput: undefined });
+    assert.equal(debug() === null, true);
+  } finally {
+    await act(async () => root.unmount());
+    dom.window.close();
+    for (const [name, descriptor] of descriptors) {
+      if (descriptor) Object.defineProperty(globalThis, name, descriptor);
+      else delete globalThis[name];
+    }
+    delete globalThis.IS_REACT_ACT_ENVIRONMENT;
+  }
+});

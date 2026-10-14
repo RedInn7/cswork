@@ -39,6 +39,10 @@ const EVENTS: Record<string, Record<string, Kind>> = {
     duration_ms: MS, server_ms: MS, queue_ms: MS,
   },
   judge_error: { mode: 'text', problem_id: 'text', stage: 'text', status: 'text' },
+  // A failed submission's first case loaded into custom input (components/oj-results.tsx).
+  fail_case_debug: { problem_id: 'text', language: 'text', verdict: 'text' },
+  // seconds: the learner's own problem timer, when it ran (components/problem-timer.tsx).
+  judge_accept: { problem_id: 'text', language: 'text', seconds: [0, 86_400] },
   language_switch: { locale: 'text' },
   mock_interview_start: { company: 'tag', template: 'tag', mode: 'tag' },
   mock_interview_finish: { company: 'tag', template: 'tag', mode: 'tag' },

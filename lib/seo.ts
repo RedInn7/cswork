@@ -98,6 +98,7 @@ export const SITEMAP_URL_LIMIT = 45_000;
 export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/' },
   { path: '/library' },
+  { path: '/acm-io' },
   { path: '/mock-interview' },
   { path: '/privacy' },
 ];
