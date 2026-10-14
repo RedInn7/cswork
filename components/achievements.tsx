@@ -216,7 +216,9 @@ export function AcceptedExtras({
     const streakBadges = (best: number) =>
       achievements({ stops: [], bestStreak: best, acTimes: [], companies: [], perfectMock: false });
     return {
-      streakUnlocks: newlyEarned(streakBadges(before.streak), streakBadges(after.streak)).filter(
+      // The wall counts the best run, so a rebuilt streak never re-unlocks a milestone.
+      // ponytail: best inside the 183-day activity window; an older run is not seen here.
+      streakUnlocks: newlyEarned(streakBadges(before.best), streakBadges(after.best)).filter(
         (b) => b.group === 'streak',
       ),
       after,
@@ -233,16 +235,24 @@ export function AcceptedExtras({
     if (!number || repeat) return;
     let current = true;
     type Page = {
-      items: { id: string; judgeProblemId: string | null; selection?: { sectionSlug: string } | null }[];
+      items: {
+        id: string;
+        judgeProblemId: string | null;
+        importedSources?: string[];
+        selection?: { sectionSlug: string } | null;
+      }[];
       collection?: { solved: number; total: number; sections: Section[] };
     };
     api<Page>(`oj/library?${new URLSearchParams({ collection: 'ling-selected-500', q: number })}`)
       .then((page) => {
-        const slug = page.items.find((i) => i.judgeProblemId === problemId || i.id === problemId)
-          ?.selection?.sectionSlug;
+        const item = page.items.find((i) => i.judgeProblemId === problemId || i.id === problemId);
+        const slug = item?.selection?.sectionSlug;
         const stop = page.collection?.sections.find((s) => s.slug === slug);
-        if (!current || !stop || !page.collection) return;
+        // A LeetCode import already counted it in this round, so the stop was complete before.
+        if (!current || !stop || !page.collection || item?.importedSources?.length) return;
         // A first AC that leaves its stop complete is the one that completed it.
+        // ponytail: "first" means within the 183-day activity window; oj/history's firstAcAt
+        // would cover older ACs at the cost of another request.
         const earned = achievements({
           stops: page.collection.sections,
           bestStreak: 0,

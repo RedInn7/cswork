@@ -139,3 +139,25 @@ test('the Accepted dialog line names a stop this AC cleared, a streak milestone 
     await act(async () => root.unmount());
   }
 });
+
+test('no unlock for a stop a LeetCode import already cleared, or a streak milestone the best run already holds', async () => {
+  const now = Date.now();
+  // 30 days in a row two months ago, then six to yesterday: today makes seven again.
+  const days = [...Array.from({ length: 30 }, (_, k) => 31 + k), ...Array.from({ length: 6 }, (_, k) => k + 1)];
+  const activity = days.map((d) => ({ problem_id: `lc-${100 + d}`, created_at: now - d * DAY }));
+  globalThis.fetch = async () =>
+    Response.json({
+      items: [{ id: 'lc-35', judgeProblemId: 'lc-35', importedSources: ['us'], selection: { sectionSlug: 'binary-search' } }],
+      collection: { solved: 5, total: 5, sections: [{ slug: 'binary-search', solved: 5, total: 5 }] },
+    });
+  const root = createRoot(document.getElementById('root'));
+  try {
+    await act(async () =>
+      root.render(createElement(AcceptedExtras, { problemId: 'lc-35', acceptedAt: now, activity, english: true })),
+    );
+    await settle();
+    assert.equal(document.querySelector('.cs-accepted-unlock') === null, true);
+    assert.equal(document.querySelector('.cs-accepted-freeze') !== null, true);
+  } finally {
+    await act(async () => root.unmount());
+  }
