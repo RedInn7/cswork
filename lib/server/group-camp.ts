@@ -6,7 +6,8 @@ import { listClassicLibrary } from './study-library';
 /**
  * A study group's cohort (db/group-camp-schema.ts): from its start date the group works through
  * a classic list, `perDay` judgeable problems a day in list order. The plan is group content, so
- * members see today's problems and, per member, which of them they have solved since day 1.
+ * members see today's problems and, per member, counts only: how many of today's they have
+ * solved since day 1 and how many of the whole plan. Which ones goes to the reader alone.
  */
 const DAY = 86400000;
 export const PER_DAY_MAX = 10;
@@ -31,8 +32,9 @@ export function campTasks(plan: string) {
 /**
  * The cohort as the reader sees it on local day `today` (days since the epoch, shifted by
  * `shift` ms like groupDetail): day N (below 1 before the start, past `days` once done),
- * today's slice, and per member user id which of today's problems are solved since day 1 and
- * how many of the whole plan. Null when the group has no cohort.
+ * today's slice, and per member user id how many of today's problems are solved since day 1
+ * and how many of the whole plan, plus which of today's for the reader (`self`) only. Null
+ * when the group has no cohort.
  */
 export function campDetail(groupId: string, shift: number, today: number) {
   const db = sqlite();
@@ -65,15 +67,22 @@ export function campDetail(groupId: string, shift: number, today: number) {
       total: all.length,
       tasks: slice,
     },
-    member: (user: string) => ({
-      today: slice.map((t) => !!solved.get(user)?.has(t.id)),
-      done: solved.get(user)?.size ?? 0,
-    }),
+    member: (user: string, self: boolean) => {
+      const mine = slice.map((t) => !!solved.get(user)?.has(t.id));
+      return { today: mine.filter(Boolean).length, done: solved.get(user)?.size ?? 0, ...(self ? { mine } : {}) };
+    },
   };
 }
 
-/** Sets (or with plan '' removes) the group's cohort; the start must lie within 60 days of now. */
+/**
+ * Sets (or with plan '' removes) the group's cohort. A new start must lie within 60 days of now;
+ * keeping the stored one is always fine, so a long plan can still be adjusted on day 70.
+ */
 export function setCamp(groupId: string, input: unknown, now = Date.now()) {
+  const db = sqlite();
+  const stored = db.prepare('SELECT start_date FROM study_group_camps WHERE group_id=?').pluck().get(groupId) as
+    | string
+    | undefined;
   const d = z
     .union([
       z.object({ plan: z.literal('') }).strict(),
@@ -84,12 +93,11 @@ export function setCamp(groupId: string, input: unknown, now = Date.now()) {
           startDate: z
             .string()
             .regex(/^\d{4}-\d{2}-\d{2}$/)
-            .refine((date) => Math.abs(dayIndex(date) - Math.floor(now / DAY)) <= START_RANGE_DAYS),
+            .refine((date) => date === stored || Math.abs(dayIndex(date) - Math.floor(now / DAY)) <= START_RANGE_DAYS),
         })
         .strict(),
     ])
     .parse(input);
-  const db = sqlite();
   if (!('perDay' in d)) db.prepare('DELETE FROM study_group_camps WHERE group_id=?').run(groupId);
   else
     db.prepare(

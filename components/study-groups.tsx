@@ -93,8 +93,8 @@ function Privacy({ t }: { t: T }) {
   return (
     <p className="group-privacy">
       {t(
-        '隐私：组员只能看到你在本组填的昵称、每天通过的题数、连续天数和本周通过数；看不到你的邮箱、账号名、代码或具体做了哪些题。随时可以退出。',
-        'Privacy: members see only the name you use in this group, how many problems you solve each day, your streak and this week’s count. Never your email, account name, code or which problems. You can leave any time.',
+        '隐私：组员只能看到你在本组填的昵称、每天通过的题数、连续天数和本周通过数，开营后还有营期任务的完成数；看不到你的邮箱、账号名、代码或具体做了哪些题。随时可以退出。',
+        'Privacy: members see only the name you use in this group, how many problems you solve each day, your streak and this week’s count, plus how many cohort tasks you’ve done once a cohort starts. Never your email, account name, code or which problems. You can leave any time.',
       )}
     </p>
   );

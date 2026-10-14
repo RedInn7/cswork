@@ -150,7 +150,7 @@ export function groupDetail(id: string, p: Person, tz = 0, now = Date.now()) {
     days: days.get(m.user_id) ?? Array(HISTORY_DAYS).fill(0),
     week: week.get(m.user_id) ?? 0,
     goal: stop ? (goal.get(m.user_id) ?? 0) : null,
-    camp: camp ? camp.member(m.user_id) : null,
+    camp: camp ? camp.member(m.user_id, m.user_id === p.id) : null,
   }));
   return {
     id: row.id,

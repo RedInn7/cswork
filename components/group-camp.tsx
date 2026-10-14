@@ -21,7 +21,8 @@ type Member = {
   me: boolean;
   streak: number;
   today: number;
-  camp?: { today: boolean[]; done: number } | null;
+  /** Counts for everyone; `mine` (which of today's) only on the reader's own row. */
+  camp?: { today: number; done: number; mine?: boolean[] } | null;
 };
 const localDate = (time = Date.now()) => {
   const d = new Date(time);
@@ -290,15 +291,23 @@ export function CampPanel({
                     <span className="group-name">{m.name}</span>
                     {m.me && <span className="group-you">{t('我', 'you')}</span>}
                   </th>
-                  {camp.tasks.map((task, i) => {
-                    const done = !!m.camp?.today[i];
-                    return (
-                      <td key={task.id}>
-                        <span className="group-led" data-level={done ? 4 : 0} aria-hidden="true" />
-                        <span className="sr-only">{done ? t('已完成', 'done') : t('未完成', 'not yet')}</span>
-                      </td>
-                    );
-                  })}
+                  {m.camp?.mine ? (
+                    camp.tasks.map((task, i) => {
+                      const done = !!m.camp?.mine?.[i];
+                      return (
+                        <td key={task.id}>
+                          <span className="group-led" data-level={done ? 4 : 0} aria-hidden="true" />
+                          <span className="sr-only">{done ? t('已完成', 'done') : t('未完成', 'not yet')}</span>
+                        </td>
+                      );
+                    })
+                  ) : (
+                    // Others: how many of today's, never which (the group privacy promise).
+                    <td colSpan={camp.tasks.length} className="group-num" data-done={(m.camp?.today ?? 0) >= camp.tasks.length || undefined}>
+                      {m.camp?.today ?? 0}/{camp.tasks.length}
+                      <span className="sr-only">{t(' 道今日任务已完成', ' of today’s done')}</span>
+                    </td>
+                  )}
                   <td className="group-num" data-done={(m.camp?.done ?? 0) >= camp.total || undefined}>
                     {m.camp?.done ?? 0}/{camp.total}
                   </td>

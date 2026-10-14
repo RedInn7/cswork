@@ -204,8 +204,8 @@ const camp = {
   ],
 };
 const members = [
-  { key: 'k1', name: 'Cap', me: true, streak: 5, today: 2, camp: { today: [true, false], done: 3 } },
-  { key: 'k2', name: 'Amy', me: false, streak: 1, today: 0, camp: { today: [false, false], done: 0 } },
+  { key: 'k1', name: 'Cap', me: true, streak: 5, today: 2, camp: { today: 1, done: 3, mine: [true, false] } },
+  { key: 'k2', name: 'Amy', me: false, streak: 1, today: 0, camp: { today: 2, done: 4 } },
 ];
 
 test('check-in card: the facts, drawn on a 2D canvas or reported unsupported', () => {
@@ -255,6 +255,9 @@ test('cohort panel: day N, today’s done grid, and the owner’s settings', asy
     ['4', '0'],
   );
   assert.ok(rows[0].querySelector('.group-num').textContent === '3/75');
+  // Another member's row: a count of today's tasks, never which ones.
+  assert.equal(rows[1].querySelectorAll('.group-led').length, 0);
+  assert.ok(rows[1].querySelector('td[colspan="2"]').textContent.startsWith('2/2'));
   await act(async () => button('Edit cohort').click());
   const date = document.querySelector('.group-camp-form input[type="date"]');
   assert.ok(date.value === '2026-10-13');

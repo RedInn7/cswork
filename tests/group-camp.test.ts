@@ -29,7 +29,7 @@ type Camp = {
   total: number;
   tasks: { id: string; number: number; titleEn: string }[];
 };
-type Detail = { id: string; camp: Camp | null; members: { name: string; camp: { today: boolean[]; done: number } | null }[] };
+type Detail = { id: string; camp: Camp | null; members: { name: string; camp: { today: number; done: number; mine?: boolean[] } | null }[] };
 function call(p: Person, method: string, path: string, body?: unknown) {
   const url = new URL(`https://cswork.test/api/oj/${path}`);
   return handleOj(
@@ -131,10 +131,19 @@ void test('the owner sets a cohort; members see day N, today’s slice and who f
     [third, fourth],
   );
   const byName = new Map(set.members.map((m) => [m.name, m.camp!]));
-  assert.deepEqual(byName.get('Amy'), { today: [true, false], done: 2 });
-  assert.deepEqual(byName.get('Cap'), { today: [false, false], done: 0 });
+  // Others get counts only; which of today's problems goes to the reader alone.
+  assert.deepEqual(byName.get('Amy'), { today: 1, done: 2 });
+  assert.deepEqual(byName.get('Cap'), { today: 0, done: 0, mine: [false, false] });
   // Everyone in the group reads the same plan.
-  assert.equal((await ok(amy, 'GET', `groups/${group.id}?tz=0`)).camp?.day, 2);
+  const amyView = await ok(amy, 'GET', `groups/${group.id}?tz=0`);
+  assert.equal(amyView.camp?.day, 2);
+  assert.deepEqual(new Map(amyView.members.map((m) => [m.name, m.camp!])).get('Amy'), { today: 1, done: 2, mine: [true, false] });
+  assert.deepEqual(new Map(amyView.members.map((m) => [m.name, m.camp!])).get('Cap'), { today: 0, done: 0 });
+  // A start more than 60 days back stays valid when kept: the owner can still adjust day 70.
+  sqlite().prepare('UPDATE study_group_camps SET start_date=? WHERE group_id=?').run(date(now - 69 * DAY), group.id);
+  const adjusted = await ok(owner, 'POST', `groups/${group.id}/camp?tz=0`, { plan: 'blind-75', perDay: 1, startDate: date(now - 69 * DAY) });
+  assert.equal(adjusted.camp!.day, 70);
+  assert.equal(await status(owner, 'POST', `groups/${group.id}/camp`, { plan: 'blind-75', perDay: 1, startDate: date(now - 68 * DAY) }), 400);
   // Before the start: no slice yet; after the last day: none either.
   const later = await ok(owner, 'POST', `groups/${group.id}/camp?tz=0`, { plan: 'blind-75', perDay: 2, startDate: date(now + 3 * DAY) });
   assert.equal(later.camp!.day, -2);
