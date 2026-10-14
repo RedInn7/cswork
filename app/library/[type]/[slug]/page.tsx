@@ -4,6 +4,7 @@ import Link from 'next/link';
 import 'katex/dist/katex.min.css';
 import { PublicLibraryMarkdown } from '../../markdown';
 import { seoMetadata } from '@/lib/seo';
+import { lcIdBySource } from '@/lib/company-tags';
 import {
   PUBLIC_LIBRARY_TYPES,
   publicLibraryItem,
@@ -36,6 +37,9 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function PublicLibraryDetail({ params }: Props) {
   const item = await load(params);
+  // A coding question with a judgeable LeetCode match links straight to it.
+  const practice =
+    item.type === 'coding_question' ? lcIdBySource.get(item.slug) : undefined;
   return (
     <article className="public-library-article">
       <nav className="public-library-breadcrumb" aria-label="Breadcrumb">
@@ -60,13 +64,26 @@ export default async function PublicLibraryDetail({ params }: Props) {
       <div className="public-library-prose">
         <PublicLibraryMarkdown body={item.body} math={item.math} />
       </div>
-      <aside className="public-library-next">
-        <h2>Put what you learned into practice.</h2>
-        <p>Work through coding problems in the cswork practice workspace.</p>
-        <Link href="/?view=problems" prefetch={false}>
-          Explore the problem bank →
-        </Link>
-      </aside>
+      {practice ? (
+        <aside className="public-library-next">
+          <h2>Practice this problem here.</h2>
+          <p lang="zh">在 CSWork 上在线写代码、提交评测。</p>
+          <Link
+            href={`/?view=problem&problem=${encodeURIComponent(practice)}`}
+            prefetch={false}
+          >
+            Write code for LeetCode {practice.slice(3)} →
+          </Link>
+        </aside>
+      ) : (
+        <aside className="public-library-next">
+          <h2>Put what you learned into practice.</h2>
+          <p>Work through coding problems in the cswork practice workspace.</p>
+          <Link href="/?view=problems" prefetch={false}>
+            Explore the problem bank →
+          </Link>
+        </aside>
+      )}
     </article>
   );
 }
