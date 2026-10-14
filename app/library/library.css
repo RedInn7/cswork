@@ -241,6 +241,109 @@
   margin-bottom: 16px;
   line-height: 1.7;
 }
+/* Experience facts: a self-reported outcome is a label, never a rate. */
+.public-library-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin: -8px 0 18px;
+  color: #60766c;
+  font-size: 14px;
+}
+.public-library-facts [data-tone] {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #eaf0eb;
+  font-size: 12px;
+  font-weight: 650;
+}
+.public-library-facts [data-tone='good'] {
+  background: #dff3ea;
+  color: #0b6b4f;
+}
+.public-library-facts [data-tone='bad'] {
+  background: #fbe3e7;
+  color: #a62a40;
+}
+/* Practise this company: the Line 500 ticket (navy, signal amber, line green). */
+.public-library-practice {
+  margin: 48px 0 0;
+  padding: 26px 28px;
+  border-radius: 16px;
+  color: #eef3f8;
+  background:
+    radial-gradient(rgb(238 243 248 / 0.05) 1px, transparent 1.5px) 0 0 / 8px 8px,
+    #0e1a2b;
+}
+.public-library .public-library-practice a {
+  color: #eef3f8;
+}
+.public-library .public-library-practice a:focus-visible {
+  outline-color: #ffb23f;
+}
+.public-library-practice-eyebrow {
+  margin: 0 0 6px;
+  color: #ffb23f;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+.public-library-practice h2 {
+  margin: 0 0 6px;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 650;
+}
+.public-library-practice > p[lang] {
+  margin: 0 0 18px;
+  color: #c7d2e0;
+  font-size: 14px;
+}
+.public-library-practice-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  margin-bottom: 18px;
+}
+.public-library-practice-row strong {
+  margin-right: 4px;
+  color: #2ebd85;
+  font-size: 28px;
+  font-variant-numeric: tabular-nums;
+}
+.public-library .public-library-practice a.public-library-practice-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 9px;
+  background: #ffb23f;
+  color: #0e1a2b;
+  font-weight: 700;
+  text-decoration: none;
+}
+.public-library-practice-lc {
+  margin: 0 0 18px;
+  padding: 14px 0 0;
+  border-top: 2px dashed rgb(238 243 248 / 0.16);
+  list-style: none;
+}
+.public-library-practice-lc li {
+  padding: 5px 0;
+}
+.public-library-practice-lc span {
+  margin-right: 8px;
+  color: #8fa1b5;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.public-library-practice-lc small {
+  margin-left: 6px;
+  color: #ffb23f;
+  font-size: 12px;
+}
 @media (max-width: 600px) {
   .public-library {
     padding: 0 18px;
@@ -265,5 +368,10 @@
   .public-library-intro > p:last-child,
   .public-library-summary {
     font-size: 16px;
+  }
+}
+@media (max-width: 600px) {
+  .public-library-practice {
+    padding: 22px 18px;
   }
 }
