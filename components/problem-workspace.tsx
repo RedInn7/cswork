@@ -43,6 +43,13 @@ import {
 import { Button } from './ui/button';
 import { OaCompanyBadge, OaEditorial } from './oa-library';
 import {
+  ExamAcceptedDialog,
+  MockExamBar,
+  MockExamDone,
+  useMockExam,
+} from './mock-exam-bar';
+import { reportWindow } from '@/lib/mock-oa';
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -113,6 +120,8 @@ type WorkspaceProps = {
   navigate: (view: string, extra?: Record<string, string>) => void;
   ask: (context: Record<string, string>) => void;
   refresh: () => Promise<void>;
+  /** ?mock=<session id>: the problem is a question of a timed mock OA. */
+  mock?: string;
 };
 type ReplaceRequest = {
   code: string;
@@ -180,8 +189,18 @@ function Workspace({
   navigate,
   ask,
   refresh,
+  mock,
 }: WorkspaceProps) {
   const userId = boot.person?.id || 'guest';
+  // A running mock OA hides solutions, hints and the way to other problems.
+  const exam = useMockExam(mock, userId, initialProblem.id);
+  const examMode = !!exam?.running;
+  // A mock question starts from the template, not this browser's earlier draft of it.
+  const [draftId] = useState(() =>
+    exam ? `${initialProblem.id}:mock:${exam.session.id}` : initialProblem.id,
+  );
+  // In the exam the Submissions tab lists only this exam's attempts.
+  const examFrom = exam?.running ? reportWindow(exam.session).from : 0;
   const [problem, setProblem] = useState(() => summaryProblem(initialProblem));
   const [neighbors, setNeighbors] = useState<{ prev?: string; next?: string }>(
     {},
@@ -310,6 +329,7 @@ function Workspace({
   const [historyLoading, setHistoryLoading] = useState(false);
   const [historyError, setHistoryError] = useState('');
   const [historyRevision, setHistoryRevision] = useState(0);
+  const shownHistory = history.filter((item) => item.created_at >= examFrom);
   const [problemError, setProblemError] = useState('');
   const [problemRevision, setProblemRevision] = useState(0);
   useEffect(() => {
@@ -509,7 +529,7 @@ function Workspace({
         chosen = storedLanguage as Language;
       const stored = readEditorDraft(
         userId,
-        initialProblem.id,
+        draftId,
         chosen,
         initialMode,
         template(chosen),
@@ -518,7 +538,7 @@ function Workspace({
       if (initialMode === 'acm' && isStarter(stored.code, chosen))
         stored.code = template(chosen);
       draft.current = {
-        key: draftStorageKey(userId, initialProblem.id, chosen, initialMode),
+        key: draftStorageKey(userId, draftId, chosen, initialMode),
         code: stored.code,
       };
       setLanguage(chosen);
@@ -533,7 +553,7 @@ function Workspace({
       );
     } catch {
       draft.current = {
-        key: draftStorageKey(userId, initialProblem.id, chosen, initialMode),
+        key: draftStorageKey(userId, draftId, chosen, initialMode),
         code: template(chosen),
       };
       setLanguage(chosen);
@@ -559,7 +579,7 @@ function Workspace({
       window.removeEventListener('pagehide', save);
       document.removeEventListener('visibilitychange', visibility);
     };
-  }, [userId, initialProblem.id, persistDraft, loadedProblem]);
+  }, [userId, draftId, persistDraft, loadedProblem]);
 
   useEffect(() => {
     const query = window.matchMedia('(max-width: 900px)');
@@ -805,7 +825,7 @@ function Workspace({
     try {
       nextCode = readEditorDraft(
         userId,
-        problem.id,
+        draftId,
         next,
         mode,
         templateFor(next, mode),
@@ -820,7 +840,7 @@ function Workspace({
       ]);
     }
     draft.current = {
-      key: draftStorageKey(userId, problem.id, next, mode),
+      key: draftStorageKey(userId, draftId, next, mode),
       code: override ?? nextCode,
     };
     draftDirty.current = override !== undefined;
@@ -1070,7 +1090,7 @@ function Workspace({
           <History size={15} />
           {uiEnglish ? 'Submissions' : '提交记录'}
         </button>
-        {problem.id.startsWith('oa-') && (
+        {problem.id.startsWith('oa-') && !examMode && (
           <button
             role="tab"
             className={leftTab === 'editorial' ? 'active' : ''}
@@ -1101,7 +1121,7 @@ function Workspace({
                   : ''}
                 {statement.title}
               </h2>
-              {history.some(
+              {shownHistory.some(
                 (item) =>
                   item.mode === 'judge' &&
                   item.status === 'accepted' &&
@@ -1125,20 +1145,21 @@ function Workspace({
                     ]
                   : problem.difficulty}
               </span>
-              {problem.tags.some(
-                (tag) => !/灵神|题单|leetcode|来源/i.test(tag),
-              ) && (
-                <button
-                  className="cs-statement-pill"
-                  aria-expanded={topicsOpen}
-                  aria-controls="problem-topics"
-                  onClick={() => setTopicsOpen((open) => !open)}
-                >
-                  <Tag size={15} />
-                  {uiEnglish ? 'Topics' : '主题'}
-                </button>
-              )}
-              {!sourceBody && statement.hints.length > 0 && (
+              {!examMode &&
+                problem.tags.some(
+                  (tag) => !/灵神|题单|leetcode|来源/i.test(tag),
+                ) && (
+                  <button
+                    className="cs-statement-pill"
+                    aria-expanded={topicsOpen}
+                    aria-controls="problem-topics"
+                    onClick={() => setTopicsOpen((open) => !open)}
+                  >
+                    <Tag size={15} />
+                    {uiEnglish ? 'Topics' : '主题'}
+                  </button>
+                )}
+              {!examMode && !sourceBody && statement.hints.length > 0 && (
                 <button
                   className="cs-statement-pill"
                   aria-expanded={hintsOpen}
@@ -1174,7 +1195,7 @@ function Workspace({
                 <option value="en">English</option>
               </select>
             </div>
-            {topicsOpen && (
+            {!examMode && topicsOpen && (
               <div className="cs-statement-topics" id="problem-topics">
                 {problem.tags
                   .filter((tag) => !/灵神|题单|leetcode|来源/i.test(tag))
@@ -1244,7 +1265,7 @@ function Workspace({
                 </>
               )}
             </div>
-            {!sourceBody && hintsOpen && statement.hints.length > 0 && (
+            {!examMode && !sourceBody && hintsOpen && statement.hints.length > 0 && (
               <div className="cs-hints" id="problem-hints">
                 <div>
                   <Lightbulb size={17} />
@@ -1280,9 +1301,13 @@ function Workspace({
           <div className="cs-history-pane">
             <div className="cs-history-heading">
               <span>
-                {uiEnglish
-                  ? 'All rounds: submissions and runs'
-                  : '所有轮次的提交与测试运行'}
+                {examMode
+                  ? uiEnglish
+                    ? 'This exam: submissions and runs'
+                    : '本场考试的提交与测试运行'
+                  : uiEnglish
+                    ? 'All rounds: submissions and runs'
+                    : '所有轮次的提交与测试运行'}
               </span>
               <button
                 title={t('刷新提交记录', 'Refresh submissions')}
@@ -1301,7 +1326,7 @@ function Workspace({
                 </button>
               </div>
             )}
-            {!history.length && !historyLoading && (
+            {!shownHistory.length && !historyLoading && (
               <div className="cs-empty">
                 <History size={26} />
                 <h3>{uiEnglish ? 'No submissions yet' : '还没有提交记录'}</h3>
@@ -1312,7 +1337,7 @@ function Workspace({
                 </p>
               </div>
             )}
-            {history.map((item) => (
+            {shownHistory.map((item) => (
               <div key={item.id} className="cs-history-row">
                 <button onClick={() => inspect(item)}>
                   <Verdict submission={item} />
@@ -1362,7 +1387,8 @@ function Workspace({
                 {t('正在加载…', 'Loading…')}
               </div>
             )}
-            {historyCursor && (
+            {/* Once an attempt from before the exam is hidden, older pages hold none of this exam's. */}
+            {historyCursor && shownHistory.length === history.length && (
               <Button
                 variant="outline"
                 className="cs-load-more"
@@ -1859,20 +1885,34 @@ function Workspace({
       className={`cs-workspace ${expanded ? 'expanded' : ''}`}
       data-theme={settings.theme}
     >
+      {exam &&
+        (examMode ? (
+          <MockExamBar
+            session={exam.session}
+            userId={userId}
+            problemId={problem.id}
+            submissions={boot.submissions}
+            navigate={navigate}
+          />
+        ) : (
+          <MockExamDone session={exam.session} navigate={navigate} />
+        ))}
       <div className="cs-workspace-header">
         <div className="cs-workspace-heading">
-          <button
-            className="cs-back"
-            aria-label={t('返回题库', 'Back to problems')}
-            onClick={() =>
-              navigate(
-                'problems',
-                problem.id.startsWith('oa-') ? { library: 'oa' } : undefined,
-              )
-            }
-          >
-            <ArrowLeft size={18} />
-          </button>
+          {!examMode && (
+            <button
+              className="cs-back"
+              aria-label={t('返回题库', 'Back to problems')}
+              onClick={() =>
+                navigate(
+                  'problems',
+                  problem.id.startsWith('oa-') ? { library: 'oa' } : undefined,
+                )
+              }
+            >
+              <ArrowLeft size={18} />
+            </button>
+          )}
           <div>
             <span className="cs-workspace-eyebrow">
               cswork / {uiEnglish ? 'Problems' : '题库'}
@@ -1884,7 +1924,7 @@ function Workspace({
           </div>
         </div>
         <div className="cs-workspace-navigation">
-          {(neighbors.prev || neighbors.next) && (
+          {!examMode && (neighbors.prev || neighbors.next) && (
             <div className="cs-problem-steps">
               <button
                 className="cs-top-button"
@@ -1929,7 +1969,7 @@ function Workspace({
             <MessageSquare size={15} />
             <span>{t('报告题目问题 / 提问', 'Report a problem / Ask')}</span>
           </button>
-          {courseVisible && (
+          {courseVisible && !examMode && (
             <button
               className="cs-top-button"
               aria-label={t('相关课程', 'Related course')}
@@ -1958,7 +1998,17 @@ function Workspace({
           </button>
         </div>
       </div>
-      {success && (
+      {success && exam && examMode && (
+        <ExamAcceptedDialog
+          session={exam.session}
+          problemId={problem.id}
+          submissions={boot.submissions}
+          userId={userId}
+          navigate={navigate}
+          onClose={() => setSuccess(null)}
+        />
+      )}
+      {success && !examMode && (
         <AcceptedDialog
           problemId={problem.id}
           line={!!problem.practiceRound}

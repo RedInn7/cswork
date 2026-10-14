@@ -11,6 +11,7 @@ import {
   publicLibraryEntries,
   publicLibraryPath,
 } from '@/lib/server/public-library';
+import { mockOaPaths } from '@/lib/server/mock-oa-presets';
 
 export async function GET(
   _request: Request,
@@ -20,15 +21,16 @@ export async function GET(
   if (!/^[1-9]\d{0,6}$/.test(rawPage))
     return new Response('Not found', { status: 404 });
   const page = Number(rawPage);
-  if (page > sitemapPageCount(publicLibraryCount()))
+  const statics = [...SITEMAP_STATIC_ENTRIES, ...mockOaPaths()];
+  if (page > sitemapPageCount(publicLibraryCount(), statics.length))
     return new Response('Not found', { status: 404 });
-  const { offset, limit } = sitemapLibraryRange(page);
+  const { offset, limit } = sitemapLibraryRange(page, statics.length);
   const entries = publicLibraryEntries(offset, limit).map((entry) => ({
     path: publicLibraryPath(entry.type, entry.slug),
     updatedAt: entry.updatedAt,
   }));
   const chunks = sitemapChunks([
-    ...(page === 1 ? SITEMAP_STATIC_ENTRIES : []),
+    ...(page === 1 ? statics : []),
     ...entries,
   ]);
   // Public slugs are ASCII and limited to 300 characters. A 45,000-item batch

@@ -244,6 +244,12 @@ const EN: Record<string, string> = {
   'OA 题目不存在': 'OA problem not found',
   'OA 接口不存在': 'OA endpoint not found',
   未知公司: 'Unknown company',
+  // Timed mock OA (lib/server/mock-oa.ts)
+  '模拟 OA 接口不存在': 'Mock OA endpoint not found',
+  '没有这家公司的模拟 OA': "There's no mock OA for this company",
+  '这家公司的可判题还不够，换一家公司或减少题量':
+    "There aren't enough judgeable problems for this mock yet. Pick another company or fewer questions",
+  模拟考试参数无效: 'Invalid mock exam parameters',
   '这道题的题解和测试数据正在校验，暂未开放':
     "This problem's solution and test data are being verified and aren't available yet",
   '这道题的题解正在校验，暂未开放': "This problem's solution is being verified and isn't available yet",
