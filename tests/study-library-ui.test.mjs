@@ -72,12 +72,14 @@ test('curated practice UI preserves language and round history, deduplicates cli
           (progressStatus === 'solved' ||
             (index === 1 && pendingVerdict === 'accepted')),
         judging: index === 1 && pendingVerdict === 'queued',
+        companies: index === 1 ? [{ slug: 'meta', name: 'Meta' }] : [],
       }),
     ),
     total: 3,
     page: 1,
     pageSize: 30,
     topics: [],
+    companies: [{ slug: 'meta', name: 'Meta', count: 1 }],
     collection: {
       id: 'ling-selected-500',
       total: 500,
@@ -170,7 +172,19 @@ test('curated practice UI preserves language and round history, deduplicates cli
       rows[2].querySelector('.study-row-main').title,
       `3. ${longTitleEn}`,
     );
-    await act(async () => rows[0].click());
+    assert.equal(
+      rows[1].querySelector('.study-companies .sr-only').textContent,
+      'Asked at: Meta',
+    );
+    // The company filter is sent, and the list request still matches currentQuery.
+    await select(document.querySelector('option[value="meta"]').parentElement, 'meta');
+    assert.equal(
+      new URL(requests.at(-1), 'https://cswork.test').searchParams.get('company'),
+      'meta',
+    );
+    assert.equal(document.querySelectorAll('.study-row').length, 3);
+    await select(document.querySelector('option[value="meta"]').parentElement, '');
+    await act(async () => document.querySelectorAll('.study-row')[0].click());
     assert.deepEqual(navigations, [['problem', { problem: 'lc-1' }]]);
     const beforeRefresh = requests.length;
     await act(async () =>
