@@ -85,12 +85,19 @@ export const contestSources = {
   rated: () => ratedJudgeable(),
 };
 
-/** Coding problems a room may hold, hidden companies left out, with their summaries. */
-async function judgeable() {
-  const list = await contestSources.summaries();
+async function buildJudgeable(from: Promise<ProblemSummary[]>) {
+  const list = await from;
   const byId = new Map(list.map((p) => [p.id, p]));
   const catalogue = mockCatalogue(list);
   return { byId, catalogue, ids: new Set(mockPool(catalogue, null, 'mixed').map((item) => item.id)) };
+}
+// Rebuilt only when the summaries snapshot changes: room pages poll every few seconds.
+let judgeableCache: { from: Promise<ProblemSummary[]>; value: ReturnType<typeof buildJudgeable> } | null = null;
+/** Coding problems a room may hold, hidden companies left out, with their summaries. */
+function judgeable() {
+  const from = contestSources.summaries();
+  if (judgeableCache?.from !== from) judgeableCache = { from, value: buildJudgeable(from) };
+  return judgeableCache.value;
 }
 const hiddenOa = (id: string, hidden: ReadonlySet<string>) =>
   [...hidden].some((slug) => id.startsWith(`oa-${slug}-`));
@@ -121,9 +128,10 @@ export function ensureWeekly(now = Date.now()) {
         .all(RECENT_WEEKLIES) as string[]
     ).flatMap((ids) => JSON.parse(ids) as string[]),
   );
-  const ids = drawWeekly(contestSources.rated(), week, used);
+  // A secret seed: a week number would let anyone work the set out from the public pool.
+  const ids = drawWeekly(contestSources.rated(), randomInt(2 ** 31), used);
   if (!ids) return null;
-  // Two first visitors draw the same set; the second insert is a no-op.
+  // Two first visitors may draw different sets: the first insert wins, the second is a no-op.
   db.prepare(
     `INSERT OR IGNORE INTO contest_rooms(id,owner_id,title,kind,problem_ids_json,starts_at,duration_min,visibility,created_at)
     VALUES(?,NULL,?,'weekly',?,?,?,'public',?)`,
@@ -266,7 +274,9 @@ export async function roomView(id: string, p: Person | null, now = Date.now()) {
   const ids = await roomProblems(row, found);
   const { byId } = found;
   const end = endOf(row);
-  const phase = now < row.starts_at ? 'upcoming' : now < end ? 'running' : 'ended';
+  // A duel starts when the second entrant arrives (enter()), so the owner gets no head start.
+  const waiting = row.kind === 'duel' && entrantCount(row.id) < ROOM_CAP.duel;
+  const phase = waiting || now < row.starts_at ? 'upcoming' : now < end ? 'running' : 'ended';
   const board = phase === 'upcoming' ? null : roomStandings(row, ids, now);
   const ratings =
     row.kind === 'weekly' && row.rated_at
@@ -309,6 +319,7 @@ export async function roomView(id: string, p: Person | null, now = Date.now()) {
     durationMin: row.duration_min,
     endsAt: end,
     phase,
+    waiting,
     now,
     entrants,
     cap,
@@ -465,7 +476,11 @@ async function createRoom(p: Person, input: unknown, now = Date.now()) {
 /** Compared in JS: SQLite lower() folds ASCII only. */
 const fold = (s: string) => s.normalize('NFKC').toLowerCase();
 
-/** Joins live until the window ends, then as a virtual run from now. Idempotent. */
+/**
+ * Joins live before the start; from the start on, as a virtual run timed from now and never
+ * rated, so nobody can solve first and enter once it went well. A duel's second entrant
+ * starts it: the clock (re)starts now unless it was set later. Idempotent.
+ */
 function enter(row: RoomRow, p: Person, name: string, now = Date.now()) {
   requireVerified(p);
   const db = sqlite();
@@ -475,9 +490,12 @@ function enter(row: RoomRow, p: Person, name: string, now = Date.now()) {
     const cap = ROOM_CAP[row.kind];
     if (cap && names.length >= cap) throw new HttpError(409, '房间已满');
     if (names.some((n) => fold(n) === fold(name))) throw new HttpError(409, '这个昵称在本场已被使用');
+    const startsDuel = row.kind === 'duel' && names.length === cap - 1;
+    if (startsDuel)
+      db.prepare('UPDATE contest_rooms SET starts_at=MAX(starts_at,?) WHERE id=?').run(now, row.id);
     db.prepare(
       'INSERT INTO contest_entries(room_id,user_id,display_name,joined_at,virtual_start) VALUES(?,?,?,?,?)',
-    ).run(row.id, p.id, name, now, now >= endOf(row) ? now : null);
+    ).run(row.id, p.id, name, now, startsDuel || now < row.starts_at ? null : now);
   })();
   return row.id;
 }

@@ -194,6 +194,25 @@ void test('Elo: the winner gains, the loser drops, a lone entrant stays, the wei
   assert.ok(ratingWeight(1) < ratingWeight(0));
 });
 
+void test('Elo: a tie counts as the middle of its places, so nobody tied at the bottom gains', () => {
+  // 3, 2 and 1 solved, then seven who solved nothing, all tied 4th on the board.
+  const ten = [1, 2, 3, 4, 4, 4, 4, 4, 4, 4].map((rank) => ({ rating: 1500, contests: 0, rank }));
+  const after = eloRatings(ten);
+  assert.ok(after.slice(3).every((r) => r < 1500), after.join(' '));
+  assert.ok(after[0] > after[1] && after[1] > after[2] && after[2] > 1500);
+  // The geometric mean leaves a small upward drift (LeetCode's does too); the tie bug made it +525.
+  const drift = after.reduce((sum, r) => sum + r - 1500, 0);
+  assert.ok(drift < 150, String(drift));
+  // Two equals who both solved nothing stay put.
+  assert.deepEqual(
+    eloRatings([
+      { rating: 1500, contests: 0, rank: 1 },
+      { rating: 1500, contests: 0, rank: 1 },
+    ]),
+    [1500, 1500],
+  );
+});
+
 void test('bands carry our own names', () => {
   assert.equal(contestBand(1500).key, 'local');
   assert.equal(contestBand(1399).key, 'depot');
@@ -308,6 +327,29 @@ void test('a finished weekly is rated once, after the grace period, for entrants
   assert.ok(late.problems?.length === 4);
 });
 
+void test('joining a weekly once it has started is a virtual run: earlier solves never count, never rated', async () => {
+  const week = WEEK + 1,
+    id = weeklyId(week);
+  assert.equal(contests.ensureWeekly(weeklyStart(week) - DAY)?.id, id);
+  const honest = person('c-honest'),
+    sneaky = person('c-sneaky');
+  assert.equal((await ok(honest, 'POST', `contests/${id}/join`, { displayName: 'Honest' })).me?.virtual, false);
+  // The contest is now 80 minutes in.
+  const start = Date.now() - 80 * MIN;
+  sqlite().prepare('UPDATE contest_rooms SET starts_at=? WHERE id=?').run(start, id);
+  const ids = (await roomView(id, honest)).problems!.map((p) => p.id);
+  submit(honest.id, ids[0], 'wrong_answer', start + 30 * MIN);
+  // Solved on the plain problem pages without entering, then entered once it went well.
+  for (const [i, pid] of ids.entries()) submit(sneaky.id, pid, 'accepted', start + (5 + i) * MIN);
+  const entered = await ok(sneaky, 'POST', `contests/${id}/join`, { displayName: 'Sneaky' });
+  assert.equal(entered.me?.virtual, true);
+  assert.equal(entered.standings!.live.some((r) => r.name === 'Sneaky'), false);
+  assert.equal(entered.standings!.virtual.find((r) => r.name === 'Sneaky')?.solved, 0);
+  await settleWeeklies(start + 90 * MIN + RATE_GRACE);
+  const rated = sqlite().prepare('SELECT user_id FROM contest_ratings WHERE room_id=?').pluck().all(id);
+  assert.deepEqual(rated, [honest.id]);
+});
+
 void test('private rooms: picked, drawn or replayed problems, invite codes, duel cap, nothing to strangers', async () => {
   const startsAt = Date.now();
   assert.equal(
@@ -335,6 +377,7 @@ void test('private rooms: picked, drawn or replayed problems, invite codes, duel
   assert.equal(preview.title, 'Friday mashup');
   const joined = await ok(stranger, 'POST', 'contests/join', { code: picked.inviteCode!.toLowerCase(), displayName: 'Stan' });
   assert.equal(joined.me?.name, 'Stan');
+  assert.equal(joined.me?.virtual, false, 'before the start: live');
   assert.equal(joined.entrants, 2);
 
   const replay = await ok(bob, 'POST', 'contests', {
@@ -346,12 +389,23 @@ void test('private rooms: picked, drawn or replayed problems, invite codes, duel
     replay: 'w300',
   });
   sqlite().prepare('UPDATE contest_rooms SET starts_at=? WHERE id=?').run(startsAt - 10 * MIN, replay.id);
+  // Alone in a duel: no clock and no questions, however long ago it was set to start.
+  const alone = await roomView(replay.id, bob);
+  assert.equal(alone.phase, 'upcoming');
+  assert.equal(alone.waiting, true);
+  assert.equal(alone.problems, null);
+  // The opponent starts it: both race live from that moment.
+  const started = await ok(cat, 'POST', 'contests/join', { code: replay.inviteCode, displayName: 'Cat' });
+  assert.equal(started.phase, 'running');
+  assert.equal(started.me?.virtual, false);
+  assert.ok(started.startsAt >= startsAt);
   const live = await roomView(replay.id, bob);
+  assert.equal(live.waiting, false);
+  assert.equal(live.me?.start, started.startsAt);
   assert.deepEqual(
     live.problems?.map((p) => p.id),
     ['lc-2325', 'lc-2326', 'lc-2327', 'lc-2328'],
   );
-  await ok(cat, 'POST', 'contests/join', { code: replay.inviteCode, displayName: 'Cat' });
   assert.equal(await status(dan, 'POST', 'contests/join', { code: replay.inviteCode, displayName: 'Dan' }), 409);
 
   const drawn = await ok(cat, 'POST', 'contests', {
@@ -365,6 +419,8 @@ void test('private rooms: picked, drawn or replayed problems, invite codes, duel
   const view = await roomView(drawn.id, cat);
   assert.equal(view.problems?.length, 3);
   assert.ok(view.problems!.every((p) => p.id.startsWith('lc-')));
+  // A mashup that has started: friends joining now run it virtually.
+  assert.equal((await ok(amy, 'POST', 'contests/join', { code: view.inviteCode, displayName: 'Amy' })).me?.virtual, true);
 
   // The picker never offers a hidden company's problem.
   const found = await ok<{ items: { id: string }[] }>(amy, 'GET', 'contests/search?q=1');

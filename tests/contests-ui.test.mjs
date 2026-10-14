@@ -138,7 +138,31 @@ test('a running room: the board, the clock, and questions that open in the conte
   }
 });
 
-test('the public weekly: enter with a name; after the end, upsolve links and a virtual table', async () => {
+test('the public weekly: enter before the start; once it runs, joining is virtual; then upsolve links', async () => {
+  const upcoming = room({
+    id: 'weekly-9',
+    kind: 'weekly',
+    week: 9,
+    visibility: 'public',
+    phase: 'upcoming',
+    startsAt: now + 60 * MIN,
+    endsAt: now + 150 * MIN,
+    inviteCode: null,
+    owner: false,
+    me: null,
+    canJoin: true,
+    problems: null,
+    standings: null,
+  });
+  const api0 = serve(() => Response.json(upcoming));
+  try {
+    const root = await mount(createElement(RoomLive, { initial: upcoming, fallbackStart: '' }));
+    assert.ok(button('Enter the contest') !== undefined);
+    assert.ok(document.querySelector('[role="timer"]') !== null);
+    await act(async () => root.unmount());
+  } finally {
+    api0.restore();
+  }
   const weekly = room({
     id: 'weekly-9',
     kind: 'weekly',
@@ -155,7 +179,7 @@ test('the public weekly: enter with a name; after the end, upsolve links and a v
   });
   const api = serve((path, body) =>
     path === 'oj/contests/weekly-9/join' && body
-      ? Response.json({ ...weekly, me: { name: body.displayName, virtual: false, start: weekly.startsAt, end: weekly.endsAt }, canJoin: false, problems: room().problems })
+      ? Response.json({ ...weekly, me: { name: body.displayName, virtual: true, start: now, end: now + 60 * MIN }, canJoin: false, problems: room().problems })
       : Response.json(weekly),
   );
   try {
@@ -165,10 +189,12 @@ test('the public weekly: enter with a name; after the end, upsolve links and a v
     const input = document.querySelector('.contest-join input');
     assert.ok(input.value === 'Captain');
     await act(async () => type(input, 'Amy'));
-    await act(async () => button('Enter the contest').click());
+    assert.ok(button('Enter the contest') === undefined, 'it has started: no live entry');
+    await act(async () => button('Run it virtually').click());
     await wait();
     assert.deepEqual(api.posts.at(-1), ['oj/contests/weekly-9/join', { displayName: 'Amy' }]);
-    assert.ok(document.querySelector('.contest-me').textContent.includes('Amy'));
+    assert.ok(document.querySelector('.contest-me').textContent.includes('“Amy”'));
+    assert.ok(document.querySelector('.contest-me').textContent.includes('virtually'));
     assert.ok(document.querySelectorAll('.contest-problems li').length === 2);
     await act(async () => root.unmount());
   } finally {
@@ -202,6 +228,19 @@ test('the public weekly: enter with a name; after the end, upsolve links and a v
     await act(async () => root.unmount());
   } finally {
     api2.restore();
+  }
+});
+
+test('a duel waits for its opponent: no clock, no questions', async () => {
+  const waiting = room({ kind: 'duel', cap: 2, entrants: 1, phase: 'upcoming', waiting: true, problems: null, standings: null });
+  const api = serve(() => Response.json(waiting));
+  try {
+    const root = await mount(createElement(RoomLive, { initial: waiting, fallbackStart: '' }));
+    assert.ok(document.querySelector('.contest-hidden-note').textContent.includes('when your opponent joins'));
+    assert.ok(document.querySelector('[role="timer"]') === null, 'its set start has passed: nothing to count down');
+    await act(async () => root.unmount());
+  } finally {
+    api.restore();
   }
 });
 
@@ -249,6 +288,7 @@ test('the rating curve: one point per weekly over the bands, said in words', () 
   assert.ok(body.querySelector('svg').getAttribute('aria-label') === 'Rating 1580 after 3 weeklies, peak 1610');
   assert.ok(body.querySelector('polyline').getAttribute('points').split(' ').length === 3);
   assert.ok(body.querySelectorAll('circle').length === 3);
+  assert.ok(!body.querySelector('svg').hasAttribute('preserveAspectRatio'), 'scaled evenly: round dots on a phone');
   assert.ok(body.querySelector('figcaption').textContent.includes('Local'));
   assert.ok(renderToStaticMarkup(createElement(RatingCurve, { points: [], zh: true })) === '');
   assert.ok(renderToStaticMarkup(createElement(BandChip, { rating: 1900, zh: true })).includes('直达'));

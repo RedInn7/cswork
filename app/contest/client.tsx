@@ -218,8 +218,10 @@ function Board({
 }
 
 /**
- * /contest/<id>: the room, polled every 10 seconds while anything can still change, and once
- * more as soon as the start, the end or the reader's own virtual run is reached.
+ * /contest/<id>: the room, polled every 10 seconds while anything can still change (every
+ * minute before the start, when only the entrant count moves), and once more as soon as the
+ * start, the end or the reader's own virtual run is reached. A waiting duel polls every 10
+ * seconds for its opponent.
  */
 export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallbackStart: string }) {
   const t = useT();
@@ -240,13 +242,14 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
     view.phase !== 'ended' ||
     view.now < myEnd + 60000 ||
     (view.kind === 'weekly' && !view.rated && view.now < view.endsAt + RATE_GRACE + 600000);
+  const every = view.phase === 'upcoming' && !view.waiting ? 60000 : 10000;
   useEffect(() => {
     if (!active) return;
     const tick = () => {
       if (document.visibilityState === 'visible')
         refresh().catch((e: Error) => setError(e.message));
     };
-    const timer = setInterval(tick, 10000);
+    const timer = setInterval(tick, every);
     document.addEventListener('visibilitychange', tick);
     // The moment the board changes phase (start, end, the reader's own end), not 10 s later.
     const next = [view.startsAt, view.endsAt, myEnd].filter((at) => at > view.now).sort((a, b) => a - b)[0];
@@ -256,13 +259,15 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
       clearTimeout(edge);
       document.removeEventListener('visibilitychange', tick);
     };
-  }, [active, refresh, view.startsAt, view.endsAt, view.now, myEnd]);
+  }, [active, every, refresh, view.startsAt, view.endsAt, view.now, myEnd]);
 
   const mine = view.me && view.now >= view.me.start && view.now < view.me.end;
   const title = view.week ? (zh ? `CSWork 周赛 第 ${view.week} 期` : `CSWork Weekly #${view.week}`) : view.title;
   const clock =
     view.phase === 'upcoming'
-      ? { to: view.startsAt, label: t('距开赛', 'Starts in') }
+      ? view.startsAt > view.now
+        ? { to: view.startsAt, label: t('距开赛', 'Starts in') }
+        : null
       : mine && view.me!.virtual
         ? { to: view.me!.end, label: t('虚拟赛剩余', 'Your virtual run ends in') }
         : view.phase === 'running'
@@ -315,9 +320,9 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
             submit={join}
             t={t}
             label={
-              view.phase === 'ended'
-                ? t(`虚拟参赛（从现在起 ${view.durationMin} 分钟）`, `Run it virtually (${view.durationMin} min from now)`)
-                : t('报名参赛', 'Enter the contest')
+              view.phase === 'upcoming'
+                ? t('报名参赛', 'Enter the contest')
+                : t(`虚拟参赛（从现在起 ${view.durationMin} 分钟）`, `Run it virtually (${view.durationMin} min from now)`)
             }
           />
         ) : (
@@ -373,9 +378,11 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
         </section>
       ) : (
         <p className="contest-hidden-note">
-          {view.phase === 'upcoming'
-            ? t('题目在开赛时公布。', 'Questions appear when the contest starts.')
-            : t('报名后即可看到题目。', 'Enter to see the questions.')}
+          {view.waiting
+            ? t('对手加入后开赛，题目同时公布。', 'The duel starts, and its questions appear, when your opponent joins.')
+            : view.phase === 'upcoming'
+              ? t('题目在开赛时公布。', 'Questions appear when the contest starts.')
+              : t('报名后即可看到题目。', 'Enter to see the questions.')}
         </p>
       )}
 
@@ -413,10 +420,13 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
           </li>
           <li>
             {t(
-              '开赛后结束前报名照常计时；结束后加入是虚拟参赛，从加入时起计时，单独排名。',
-              'Entering during the contest counts from its start; joining after the end is a virtual run on your own clock, ranked separately.',
+              '开赛前报名是实时参赛；开赛后加入是虚拟参赛，从加入时起计时，单独排名，不计 rating。',
+              'Enter before the start to race live; joining once it has started is a virtual run on your own clock, ranked separately and unrated.',
             )}
           </li>
+          {view.kind === 'duel' && (
+            <li>{t('对战在第二个人加入时开始计时。', 'A duel’s clock starts when the second player joins.')}</li>
+          )}
           {view.kind === 'weekly' && (
             <li>
               {t(
@@ -706,6 +716,14 @@ export function CreateRoom({
           </label>
         )}
       </div>
+      <p className="contest-hidden-note">
+        {kind === 'duel'
+          ? t('对战在对手加入时开始计时。', 'A duel’s clock starts when your opponent joins.')
+          : t(
+              '开赛后才加入的人走虚拟参赛、单独排名；想和朋友同场比，就定时开赛。',
+              'Anyone joining after the start runs it virtually, ranked separately: to race friends together, schedule the start.',
+            )}
+      </p>
       <button className="lists-public-cta" type="submit" disabled={busy || (source === 'pick' && !picked.length)}>
         {t('开房间', 'Open the room')}
       </button>
