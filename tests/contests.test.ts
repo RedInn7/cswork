@@ -330,7 +330,7 @@ void test('a finished weekly is rated once, after the grace period, for entrants
 void test('joining a weekly once it has started is a virtual run: earlier solves never count, never rated', async () => {
   const week = WEEK + 1,
     id = weeklyId(week);
-  assert.equal(contests.ensureWeekly(weeklyStart(week) - DAY)?.id, id);
+  assert.equal(contests.ensureWeekly(weeklyStart(week) - DAY).weekly?.id, id);
   const honest = person('c-honest'),
     sneaky = person('c-sneaky');
   assert.equal((await ok(honest, 'POST', `contests/${id}/join`, { displayName: 'Honest' })).me?.virtual, false);

@@ -278,6 +278,10 @@ const EN: Record<string, string> = {
   这个昵称在本场已被使用: 'Someone in this contest already uses that name',
   '这道题在你正在进行的比赛里，题解、讨论和 AI 助教赛后开放':
     "This problem is in a contest you're taking. Its editorial, solutions and AI tutor open once your contest ends",
+  题目不在这场比赛里: "That problem isn't in this contest",
+  '比赛结束 15 分钟后才能看代码': 'Shared code opens 15 minutes after the contest ends',
+  // Ranked duels (lib/server/duels.ts)
+  '可判的题目不够，暂时无法匹配': 'Not enough judgeable problems to match you right now',
   // Community solutions (lib/server/solution-posts.ts)
   题解不存在: 'Solution not found',
   评论不存在: 'Comment not found',
