@@ -237,6 +237,17 @@
   white-space: pre;
   tab-size: 4;
 }
+/* A line that differs from the other side: actual against expected (or the reference). */
+.cs-output-block pre .cs-line {
+  display: block;
+  min-height: 1.65em;
+}
+.cs-output-block pre .is-diff {
+  margin: 0 -12px;
+  padding: 0 12px;
+  background: rgb(220 38 38 / 0.1);
+  box-shadow: inset 3px 0 #dc2626;
+}
 .cs-output-block > small {
   display: block;
   padding: 4px 12px;
@@ -1967,6 +1978,10 @@ button.cs-statement-pill[aria-expanded='true'] {
   }
   .dark .cs-output-block pre {
     color: #c2cfe7;
+  }
+  .dark .cs-output-block pre .is-diff {
+    background: #dc26261a;
+    box-shadow: inset 3px 0 #dc2626;
   }
   .dark .cs-output-block > small {
     color: #f9ab93;

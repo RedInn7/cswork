@@ -14,3 +14,17 @@ export function splitFields(raw: string, n: number): string[] | null {
 }
 
 export const joinFields = (fields: string[]) => fields.join('\n');
+
+/** 0-based lines where two outputs differ, ignoring trailing spaces and trailing blank lines. */
+export function diffLines(actual: string, expected: string) {
+  const lines = (text: string) =>
+    text
+      .replace(/\s+$/, '')
+      .split('\n')
+      .map((line) => line.trimEnd());
+  const a = lines(actual);
+  const b = lines(expected);
+  const differ = new Set<number>();
+  for (let i = 0; i < Math.max(a.length, b.length); i++) if (a[i] !== b[i]) differ.add(i);
+  return differ;
+}
