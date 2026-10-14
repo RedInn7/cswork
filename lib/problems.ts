@@ -1,9 +1,13 @@
-export type Language = 'python' | 'go' | 'java' | 'cpp';
+/** General-purpose languages: ACM/LeetCode programs, templates and the language service. */
+export type CodeLanguage = 'python' | 'go' | 'java' | 'cpp';
+/** 'sql' is only for SQL track problems (lib/server/sql-judge.ts). */
+export type Language = CodeLanguage | 'sql';
 export const languages: { id: Language; name: string }[] = [
   { id: 'python', name: 'Python 3' },
   { id: 'go', name: 'Go' },
   { id: 'java', name: 'Java' },
   { id: 'cpp', name: 'C++' },
+  { id: 'sql', name: 'SQL (SQLite)' },
 ];
 export const starters: Record<Language, string> = {
   python:
@@ -11,6 +15,7 @@ export const starters: Record<Language, string> = {
   go: 'package main\n\nimport (\n    "bufio"\n    "fmt"\n    "os"\n)\n\nfunc main() {\n    in := bufio.NewReader(os.Stdin)\n    var n int\n    fmt.Fscan(in, &n)\n    // 在这里实现你的解法\n}\n',
   java: 'import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner in = new Scanner(System.in);\n        // 在这里实现你的解法\n    }\n}\n',
   cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    // 在这里实现你的解法\n    return 0;\n}\n',
+  sql: '-- SQLite 方言：写一条 SELECT 查询（可以用 WITH 开头）\nSELECT 1;\n',
 };
 /** Same programs as `starters`, with comments in English for the English statement view. */
 export const englishStarters: Record<Language, string> = {
@@ -19,6 +24,7 @@ export const englishStarters: Record<Language, string> = {
   go: 'package main\n\nimport (\n    "bufio"\n    "fmt"\n    "os"\n)\n\nfunc main() {\n    in := bufio.NewReader(os.Stdin)\n    var n int\n    fmt.Fscan(in, &n)\n    // Write your solution here\n}\n',
   java: 'import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner in = new Scanner(System.in);\n        // Write your solution here\n    }\n}\n',
   cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    // Write your solution here\n    return 0;\n}\n',
+  sql: '-- SQLite dialect: write one SELECT query (it may start with WITH)\nSELECT 1;\n',
 };
 export const starterTemplates = { zh: starters, en: englishStarters } as const;
 export type ProblemStatement = {

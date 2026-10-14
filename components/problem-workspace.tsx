@@ -312,6 +312,7 @@ function Workspace({
           cpp: 'solution.cpp',
           java: 'Solution.java',
           go: 'solution.go',
+          sql: 'query.sql',
         }[language]
       : languageFiles[language];
   const [code, setCode] = useState(starters.python);
@@ -938,7 +939,7 @@ function Workspace({
   }
   function applyIoTemplate(id: string) {
     const template = ACM_IO_TEMPLATES.find((item) => item.id === id);
-    const text = template?.code[language];
+    const text = language === 'sql' ? undefined : template?.code[language];
     if (!template || !text || text === code) return;
     // Templates are whole programs (main, class Main, package main): splicing one
     // into edited code can't compile, so it replaces the draft, after a confirm.

@@ -3,7 +3,7 @@ import './acm-io.css';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { ACM_IO_TEMPLATES } from '@/lib/acm-io-templates';
-import type { Language } from '@/lib/problems';
+import type { CodeLanguage } from '@/lib/problems';
 import { SITE_URL, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
 import { LibraryPageView } from '../library/page-view';
 
@@ -13,7 +13,7 @@ const description =
 const descriptionEn =
   'Stdin/stdout templates for ACM-style problems and OAs in C++, Python, Java and Go: EOF loops, T test cases, arrays, matrices, grids, graphs, whole lines and fast I/O, each with a runnable sample.';
 // C++ first: most ACM-mode readers write it.
-const LANGUAGES: [Language, string][] = [
+const LANGUAGES: [CodeLanguage, string][] = [
   ['cpp', 'C++'],
   ['python', 'Python 3'],
   ['java', 'Java'],

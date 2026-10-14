@@ -327,9 +327,9 @@ export const ojImportSchema = z
         complexDesignId: z.number().int().optional(),
         stringStructureId: z.number().int().optional(),
         languages: z
-          .array(z.enum(['python', 'go', 'java', 'cpp']))
+          .array(z.enum(['python', 'go', 'java', 'cpp', 'sql']))
           .min(1)
-          .max(4),
+          .max(5),
       })
       .strict(),
     cases: z.array(testcase).min(1).max(OJ_MAX_CASES),

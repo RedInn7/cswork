@@ -12,7 +12,7 @@ import { andUnlisted } from './judge-feed';
 export const MIN_PEOPLE = 20;
 export const MIN_SAMPLE = 30;
 const TTL = 10 * 60_000;
-const LANGUAGES = new Set(['python', 'go', 'java', 'cpp']);
+const LANGUAGES = new Set(['python', 'go', 'java', 'cpp', 'sql']);
 // Settled verdicts; queued/running work and cancelled or broken jobs are no attempt.
 const UNSETTLED = `('pending','queued','compiling','running','cancelled','system_error')`;
 
