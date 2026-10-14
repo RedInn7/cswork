@@ -196,9 +196,27 @@ void test('daily counts follow the reader time zone; the week, hidden companies 
   submit(lead.id, 'lc-128', 'accepted', bj(11, 12)); // Sunday: last week
   const beijing = groupDetail(made.id, lead, -480, now).members[0];
   assert.equal(beijing.days.length, HISTORY_DAYS);
-  assert.deepEqual(beijing.days.slice(-4), [1, 0, 2, 1]);
-  assert.equal(beijing.week, 2, 'distinct problems since Monday, hidden and course problems left out');
+  assert.deepEqual(beijing.days.slice(-4), [1, 0, 2, 2]);
+  assert.equal(beijing.week, 3, 'distinct problems since Monday, course ones counted as on the own calendar, hidden ones not');
   assert.equal(beijing.goal, 2, 'lc-1 and lc-128 are on the hashing stop');
-  // In UTC the 01:00 Beijing AC is still yesterday.
-  assert.deepEqual(groupDetail(made.id, lead, 0, now).members[0].days.slice(-2), [2, 0]);
+  // In UTC the 01:00 and 03:00 Beijing ACs are still yesterday.
+  assert.deepEqual(groupDetail(made.id, lead, 0, now).members[0].days.slice(-2), [3, 0]);
+});
+
+void test('time zones count in whole hours, so sweeping tz cannot time an AC to the minute', () => {
+  const lead = person('g-sweep');
+  const id = 'Sweep0000001';
+  sqlite()
+    .prepare(`INSERT INTO study_groups(id,name,owner_id,invite_code,created_at,updated_at) VALUES(?,?,?,?,0,0)`)
+    .run(id, 'Sweep', lead.id, 'SWEEPAAA');
+  sqlite()
+    .prepare(`INSERT INTO study_group_members(group_id,user_id,display_name,role,joined_at) VALUES(?,?,?,'owner',0)`)
+    .run(id, lead.id, 'Sweeper');
+  const now = Date.UTC(2026, 9, 14, 12);
+  submit(lead.id, 'lc-1', 'accepted', Date.UTC(2026, 9, 14, 10, 37));
+  const at = (tz: number) => groupDetail(id, lead, tz, now).members[0].days.slice(-2).join();
+  // Minute-exact boundaries would put 10:37 UTC past midnight at tz=-803 (UTC+13:23).
+  assert.equal(at(-803), at(-780));
+  assert.equal(at(-809), at(-780));
+  assert.notEqual(at(-840), at(-780), 'a real hour still moves the day');
 });

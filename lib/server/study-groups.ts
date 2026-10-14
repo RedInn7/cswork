@@ -88,12 +88,16 @@ function managed(id: string, p: Person) {
 export function groupDetail(id: string, p: Person, tz = 0, now = Date.now()) {
   const { row, role } = readable(id, p);
   const db = sqlite();
-  const shift = tz * 60000;
+  // Whole hours, like the public profile heatmap: sweeping tz minute by minute would otherwise
+  // find the minute each member's AC crossed midnight. A :30 zone may shift a midnight AC a day.
+  const shift = Math.round(tz / 60) * 3600000;
   const today = Math.floor((now - shift) / DAY);
   const first = today - HISTORY_DAYS + 1;
   const monday = today - ((today + 3) % 7); // 1970-01-01 was a Thursday.
+  // Every accepted judge run, as the member's own calendar counts them (boot.activity), less
+  // hidden companies' OA problems.
   const accepted = `FROM submissions WHERE user_id IN (SELECT user_id FROM study_group_members WHERE group_id=?)
-    AND mode='judge' AND status='accepted' AND (problem_id LIKE 'lc-%' OR problem_id LIKE 'oa-%')${shownOaSql('problem_id')}`;
+    AND mode='judge' AND status='accepted'${shownOaSql('problem_id')}`;
   const days = new Map<string, number[]>();
   for (const r of db
     .prepare(
