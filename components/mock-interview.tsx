@@ -1006,7 +1006,7 @@ function QuestionCard({ slot, problemIds, showSource }: { slot: DrawnSlot; probl
       {(judge || showSource || design) && (
         <div className="mi-question-foot mi-noprint">
           {design && (
-            <a className="rd-button is-quiet" href="/system-design" target="_blank" rel="noopener">
+            <a className="rd-button is-quiet" href="/system-design/framework" target="_blank" rel="noopener">
               <BookOpen size={14} aria-hidden="true" /> {t('系统设计课：答题框架', 'System design course: the framework')}{' '}
               <ExternalLink size={12} aria-hidden="true" />
             </a>

@@ -142,7 +142,9 @@ export function SdQuiz({ slug, quiz, zh }: { slug: string; quiz: SdQuestion[]; z
                       <li key={j}>
                         <button
                           type="button"
-                          disabled={where === 'loading' || done}
+                          // Answered: aria-disabled, not disabled, so the focused pick keeps focus.
+                          disabled={where === 'loading'}
+                          aria-disabled={done || undefined}
                           aria-pressed={pick === j}
                           data-state={state}
                           onClick={() => choose(i, j)}
