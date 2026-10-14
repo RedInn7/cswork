@@ -2,9 +2,9 @@ import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { beijingDate } from '@/lib/daily-problem';
-import { aiBonusLeft, aiEnabled, AI_PACK_USES } from './ai-tutor';
+import { aiBonusLeft, aiEnabled, AI_BONUS_PER_DAY, AI_PACK_USES } from './ai-tutor';
 import type { Person } from './auth';
-import { dailyProblem } from './daily-problem';
+import { dailyIdOn } from './daily-problem';
 import { HttpError, json, limit } from './http';
 import { readJson } from './my-practice';
 
@@ -121,8 +121,8 @@ export async function awardAccepted(
     .get(s.user_id, s.problem_id);
   if (first === s.id)
     total += award(s.user_id, 'first-ac', s.problem_id, POINTS.firstAc, now, POINTS.firstAcCap);
-  const daily = await dailyProblem().catch(() => null);
-  if (daily && daily.id === s.problem_id && daily.date === day)
+  // The AC's own day's problem: a verdict read just past Beijing midnight still pays.
+  if ((await dailyIdOn(day, now).catch(() => null)) === s.problem_id)
     total += award(s.user_id, 'daily', day, POINTS.daily, now);
   if (newDay) {
     const run = streakTo(s.user_id, day);
@@ -202,7 +202,7 @@ function summary(userId: string, now = Date.now()) {
       // For the calendar right after a purchase, before the bootstrap refreshes.
       purchased: bought,
     },
-    ai: aiEnabled() ? { bonus: aiBonusLeft(userId), packUses: AI_PACK_USES } : null,
+    ai: aiEnabled() ? { bonus: aiBonusLeft(userId), packUses: AI_PACK_USES, perDay: AI_BONUS_PER_DAY } : null,
   };
 }
 

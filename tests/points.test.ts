@@ -19,7 +19,7 @@ const points = await import('../lib/server/points');
 const { saveProblemDraft, publishProblemDraft } = await import('../lib/server/oj-problems');
 const { handleOj } = await import('../lib/server/oj-api');
 const { dailyProblem } = await import('../lib/server/daily-problem');
-const { aiBonusLeft, AI_DAILY_LIMITS } = await import('../lib/server/ai-tutor');
+const { aiBonusLeft, AI_BONUS_PER_DAY, AI_DAILY_LIMITS } = await import('../lib/server/ai-tutor');
 const { beijingDate } = await import('../lib/daily-problem');
 const { practiceStats } = await import('../components/practice-calendar');
 
@@ -142,6 +142,13 @@ void test('an AC pays the day, the first AC of a problem, the daily problem and 
   assert.ok(ledger('streak-user').some((row) => row.reason === 'streak' && row.ref === beijingDate(now)));
 });
 
+void test('the daily problem pays on its own day when the verdict is read just past Beijing midnight', async () => {
+  const midnight = Date.parse(`${beijingDate(Date.now())}T00:00:00+08:00`);
+  const late = accepted('midnight-user', 'lc-1', midnight - 10_000);
+  assert.equal(await points.awardAccepted(late, midnight + 5000), 10 + 5 + 20);
+  assert.ok(ledger('midnight-user').some((row) => row.reason === 'daily' && row.ref === beijingDate(late.created_at)));
+});
+
 void test('first ACs stop paying past 100 a day, and a capped-out problem never pays later', async () => {
   const now = Date.now();
   let got = 0;
@@ -234,6 +241,19 @@ void test('redeem: freezes cost 100, 3 a month; AI packs cost 50 for 5 calls pas
     .run(AI_DAILY_LIMITS.hint + 2);
   assert.equal(aiBonusLeft('buyer'), 8);
   assert.equal(((await call(buyer, ['ai', 'usage'])) as { bonus: number }).bonus, 8);
+  // However many are banked, at most AI_BONUS_PER_DAY bought calls a day.
+  points.award('buyer', 'grant', 'test-2', 200);
+  for (let i = 0; i < 4; i++) await call(buyer, ['points', 'redeem'], { item: 'ai' });
+  assert.equal(aiBonusLeft('buyer'), 28);
+  const day = new Date().toISOString().slice(0, 10);
+  sqlite()
+    .prepare("INSERT INTO ai_usage(day,user_id,kind,count) VALUES(?,'buyer','review',?)")
+    .run(day, AI_DAILY_LIMITS.review + AI_BONUS_PER_DAY);
+  assert.equal(aiBonusLeft('buyer'), 28 - AI_BONUS_PER_DAY, 'the rest stays banked');
+  assert.equal(aiBonusLeft('buyer', day), 0);
+  assert.equal(((await call(buyer, ['ai', 'usage'])) as { bonus: number }).bonus, 0);
+  const review = call(buyer, ['ai', 'review'], { problemId: 'lc-1', language: 'python', code: 'print(1)' });
+  assert.equal(await status(review), 429);
   delete process.env.ANTHROPIC_API_KEY;
 });
 
@@ -243,7 +263,8 @@ void test('the ledger API hides voters and report ids, and an AC pays through th
   points.award('api-user', 'upvote', 'post-1:secret-voter', 2);
   await call(me, ['submissions', sub.id]);
   const view = (await call(me, ['points'])) as { balance: number; ledger: { reason: string; ref?: string }[] };
-  assert.equal(view.balance, 2 + 10 + 5);
+  // Yesterday's AC of yesterday's daily problem (the only one) still pays its +20.
+  assert.equal(view.balance, 2 + 10 + 5 + 20);
   assert.equal(JSON.stringify(view).includes('secret-voter'), false);
   assert.ok(view.ledger.some((row) => row.reason === 'first-ac' && row.ref === 'lc-1'));
   // Someone else's submission: a teacher may read it, but the points go to its owner.
