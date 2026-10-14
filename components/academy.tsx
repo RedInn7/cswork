@@ -93,6 +93,7 @@ import Link from 'next/link';
 import { CheckoutFeedback } from './checkout-feedback';
 import { EnrollmentClaim } from './enrollment';
 import { NotificationsPane } from './lms-notifications';
+import { ThemeToggle } from './theme-toggle';
 import '@/app/lms.css';
 import {
   INTERVIEW_COURSE_ID,
@@ -650,6 +651,7 @@ export function Academy() {
               <Languages size={16} />
               {locale === 'zh' ? 'EN' : '中文'}
             </Button>
+            <ThemeToggle />
             <Button
               size="icon"
               variant="ghost"
