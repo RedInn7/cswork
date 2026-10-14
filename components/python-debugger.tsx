@@ -1,0 +1,449 @@
+'use client';
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import {
+  ArrowDownToLine,
+  ChevronsLeft,
+  FastForward,
+  LoaderCircle,
+  Play,
+  Redo2,
+  StepBack,
+} from 'lucide-react';
+import { CodeEditor, type CodeEditorProps } from './editor';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from './ui/dialog';
+import { useT } from '@/lib/i18n';
+import type { CodingMode } from '@/lib/coding-mode';
+import {
+  changedNames,
+  entryMethod,
+  LIMITS,
+  moveTo,
+  parseTrace,
+  PYODIDE_MB,
+  PYODIDE_VERSION,
+  stackAt,
+  stdoutAt,
+  workerSource,
+  type HarnessNote,
+  type Move,
+  type Trace,
+} from '@/lib/python-debugger';
+
+type Mount = NonNullable<CodeEditorProps['onEditorMount']>;
+type Editor = Parameters<Mount>[0];
+type Monaco = Parameters<Mount>[1];
+type View = { editor: Editor; monaco: Monaco; decorations: ReturnType<Editor['createDecorationsCollection']> };
+type Pair = [string, string];
+
+// ponytail: one Blob URL per page, never revoked; a worker per open debugger.
+let workerUrl: string | undefined;
+function startWorker() {
+  workerUrl ??= URL.createObjectURL(new Blob([workerSource()], { type: 'text/javascript' }));
+  return new Worker(workerUrl);
+}
+
+const NOTES: Record<HarnessNote['code'], Pair> = {
+  json: [
+    '输入的每一行要是一个 JSON 值（例如 [2,7,11,15]），所以没有调用 Solution，代码按标准输入跑了一遍。',
+    'Each input line must be one JSON value (e.g. [2,7,11,15]), so Solution was not called; the code ran with the input as plain stdin.',
+  ],
+  entry: [
+    '没找到要调用的方法（Solution 类，或设计题第一行里的类），代码按标准输入跑了一遍：可以在代码末尾自己调用函数。',
+    'No method to call (a Solution class, or the class named first in a design problem), so the code ran with plain stdin: call your function at the end yourself.',
+  ],
+  arity: ['参数个数不对：每行一个，依次是 ', 'Wrong number of arguments: one per line, in order: '],
+  tree: ['树参数要是 JSON 层序数组，例如 [3,9,20,null,null,15,7]。', 'A tree argument must be a JSON level-order array, e.g. [3,9,20,null,null,15,7].'],
+  list: ['链表参数要是 JSON 数组，例如 [1,2,3]。', 'A linked-list argument must be a JSON array, e.g. [1,2,3].'],
+};
+
+/** Hard stop for runs the tracer's clock can't see (one long C call such as sum(range(10**10))). */
+const GRACE_MS = 5000;
+
+export type PythonDebuggerProps = {
+  code: string;
+  stdin: string;
+  mode: CodingMode;
+  /** LeetCode mode: the problem's Python template, naming the method to call. */
+  template?: string;
+  onClose: () => void;
+};
+
+/**
+ * Runs the learner's Python once under a tracer (Pyodide in a Web Worker, loaded from the
+ * CDN on first open), then replays the recorded steps: no judge resources involved.
+ */
+export function PythonDebugger({ code, stdin: firstInput, mode, template = '', onClose }: PythonDebuggerProps) {
+  const t = useT();
+  const [source] = useState(code);
+  const entry = useMemo(() => (mode === 'leetcode' ? entryMethod(template) : ''), [mode, template]);
+  const [stdin, setStdin] = useState(firstInput);
+  const [phase, setPhase] = useState<'loading' | 'running' | 'done' | 'failed'>('loading');
+  const [failure, setFailure] = useState<Pair | null>(null);
+  const [trace, setTrace] = useState<Trace | null>(null);
+  const [index, setIndex] = useState(0);
+  const [breakpoints, setBreakpoints] = useState<ReadonlySet<number>>(() => new Set());
+  const [view, setView] = useState<View | null>(null);
+  const worker = useRef<Worker | null>(null);
+  const loaded = useRef(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const marks = useRef(breakpoints);
+  marks.current = breakpoints;
+
+  const stop = () => {
+    clearTimeout(timer.current);
+    worker.current?.terminate();
+    worker.current = null;
+    loaded.current = false;
+  };
+  const fail = (message: Pair) => {
+    stop();
+    setFailure(message);
+    setPhase('failed');
+  };
+  const run = (input: string) => {
+    clearTimeout(timer.current);
+    setFailure(null);
+    setPhase(loaded.current ? 'running' : 'loading');
+    let current: Worker;
+    try {
+      current = worker.current ??= startWorker();
+    } catch {
+      fail(['这个浏览器不能启动 Web Worker，调试器用不了。', "This browser can't start a Web Worker, so the debugger can't run."]);
+      return;
+    }
+    current.onmessage = (event: MessageEvent<{ type: string; json?: string; message?: string }>) => {
+      const data = event.data;
+      if (data.type === 'loaded') {
+        loaded.current = true;
+        setPhase('running');
+        timer.current = setTimeout(
+          () =>
+            fail([
+              '运行太久，已强制停止（可能卡在一次很长的内置函数调用里，追踪器的计时看不到它）。',
+              'The run took too long and was stopped (likely one long built-in call the tracer cannot time).',
+            ]),
+          LIMITS.maxMs + GRACE_MS,
+        );
+      } else if (data.type === 'trace' && typeof data.json === 'string') {
+        clearTimeout(timer.current);
+        const next = parseTrace(data.json);
+        setTrace(next);
+        // Like starting a debugger: run to the first breakpoint, if any.
+        setIndex(marks.current.size ? moveTo(next.steps, -1, 'continue', marks.current) : 0);
+        setPhase('done');
+      } else
+        fail(
+          loaded.current
+            ? ['调试器内部出错：' + (data.message ?? ''), 'The debugger failed: ' + (data.message ?? '')]
+            : [
+                '没能下载 Python 运行时（cdn.jsdelivr.net），检查网络后重试。',
+                "Couldn't download the Python runtime (cdn.jsdelivr.net). Check your connection and retry.",
+              ],
+        );
+    };
+    current.onerror = () =>
+      fail(['没能启动 Python 运行时，检查网络后重试。', "Couldn't start the Python runtime. Check your connection and retry."]);
+    current.postMessage({ code: source, stdin: input, mode, entry, ...LIMITS });
+  };
+  // Opening the debugger is what downloads Pyodide; closing it frees the worker's memory.
+  useEffect(() => {
+    run(firstInput);
+    return stop;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const toggle = useCallback(
+    (line: number) =>
+      setBreakpoints((previous) => {
+        const next = new Set(previous);
+        if (!next.delete(line)) next.add(line);
+        return next;
+      }),
+    [],
+  );
+  const label = t('调试中的代码（只读）：点击行号或按 F9 设断点', 'Code being debugged (read-only): click a line number or press F9 for a breakpoint');
+  const mount = useCallback<Mount>(
+    (editor, monaco) => {
+      editor.updateOptions({ glyphMargin: true, ariaLabel: label });
+      const decorations = editor.createDecorationsCollection();
+      const gutter = [monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN, monaco.editor.MouseTargetType.GUTTER_LINE_NUMBERS];
+      const subscriptions = [
+        editor.onMouseDown((event) => {
+          const line = event.target.position?.lineNumber;
+          if (line && gutter.includes(event.target.type)) toggle(line);
+        }),
+        editor.addAction({
+          id: 'cswork.debug.breakpoint',
+          label: t('切换断点', 'Toggle breakpoint'),
+          keybindings: [monaco.KeyCode.F9],
+          run: () => {
+            const line = editor.getPosition()?.lineNumber;
+            if (line) toggle(line);
+          },
+        }),
+      ];
+      setView({ editor, monaco, decorations });
+      return () => {
+        subscriptions.forEach((item) => item.dispose());
+        setView(null);
+      };
+    },
+    [toggle, label, t],
+  );
+
+  const steps = trace?.steps ?? [];
+  const step = steps[index];
+  const last = steps.length - 1;
+  const atEnd = !!trace && index === last;
+  const failedLine = atEnd && trace?.error?.line === step?.line;
+  useEffect(() => {
+    if (!view) return;
+    const { editor, monaco, decorations } = view;
+    const at = (line: number, options: Parameters<typeof decorations.set>[0][number]['options']) => ({
+      range: new monaco.Range(line, 1, line, 1),
+      options,
+    });
+    decorations.set([
+      ...[...breakpoints]
+        .filter((line) => line !== step?.line)
+        .map((line) => at(line, { glyphMarginClassName: 'pydbg-glyph-break' })),
+      ...(step
+        ? [
+            at(step.line, {
+              isWholeLine: true,
+              className: failedLine ? 'pydbg-line-error' : step.kind === 'return' ? 'pydbg-line-return' : 'pydbg-line-current',
+              glyphMarginClassName: breakpoints.has(step.line) ? 'pydbg-glyph-here pydbg-glyph-break' : 'pydbg-glyph-here',
+            }),
+          ]
+        : []),
+    ]);
+    if (step) editor.revealLineInCenterIfOutsideViewport(step.line);
+  }, [view, breakpoints, step, failedLine]);
+
+  const go = (move: Move) => trace && setIndex((i) => moveTo(trace.steps, i, move, breakpoints));
+  const keys = (event: KeyboardEvent) => {
+    const move = ({ F5: 'continue', F10: 'over', F11: 'into' } as Record<string, Move>)[event.key];
+    if (!move || !steps.length) return;
+    event.preventDefault();
+    go(move);
+  };
+  const changed = useMemo(() => changedNames(steps, index), [steps, index]);
+  const stack = useMemo(() => stackAt(steps, index), [steps, index]);
+  const busy = phase === 'loading' || phase === 'running';
+  const named = (func: string) => (func === '<module>' ? t('主程序', 'main') : func);
+  const controls: [Move, Pair, string, typeof Play, boolean][] = [
+    ['first', ['重置', 'Reset'], '', ChevronsLeft, index === 0],
+    ['back', ['后退', 'Back'], '', StepBack, index === 0],
+    ['into', ['进入', 'Step into'], 'F11', ArrowDownToLine, index >= last],
+    ['over', ['跳过', 'Step over'], 'F10', Redo2, index >= last],
+    ['continue', ['继续', 'Continue'], 'F5', FastForward, index >= last],
+  ];
+
+  return (
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="pydbg" onKeyDown={keys}>
+        <header className="pydbg-head">
+          <DialogTitle>
+            {t('逐行调试', 'Step debugger')}
+            <span>Python 3.13 · Pyodide {PYODIDE_VERSION}</span>
+          </DialogTitle>
+          <DialogDescription>
+            {mode === 'leetcode'
+              ? t(
+                  `LeetCode 模式：输入每行一个 JSON 参数，调用 Solution.${entry || '…'}()，树和链表按数组转换；设计题第一行是操作、第二行是参数。环形链表、Codec 等特殊格式按普通数组处理，可能和判题不同。`,
+                  `LeetCode mode: one JSON argument per input line, passed to Solution.${entry || '…'}(); trees and linked lists are built from arrays. Design problems: operations on line 1, arguments on line 2. Special formats (cycles, Codec) are read as plain arrays and may differ from the judge.`,
+                )
+              : t('ACM 模式：程序从标准输入读取下面的输入。', 'ACM mode: the program reads the input below from stdin.')}
+          </DialogDescription>
+        </header>
+        <div className="pydbg-status" aria-live="polite">
+          {phase === 'loading' ? (
+            <p>
+              <LoaderCircle size={14} className="cs-spin" />
+              {t(
+                `正在下载 Python 运行时（约 ${PYODIDE_MB} MB，来自 jsDelivr；只有第一次需要，之后浏览器会缓存）…`,
+                `Downloading the Python runtime (about ${PYODIDE_MB} MB from jsDelivr; only the first time, then your browser caches it)…`,
+              )}
+              <progress aria-label={t('下载进度', 'Download progress')} />
+            </p>
+          ) : phase === 'running' ? (
+            <p>
+              <LoaderCircle size={14} className="cs-spin" />
+              {t('正在运行并记录每一步…', 'Running and recording every step…')}
+            </p>
+          ) : phase === 'failed' ? (
+            <p className="pydbg-failed" role="alert">
+              {failure && t(...failure)}
+              <button type="button" onClick={() => run(stdin)}>
+                {t('重试', 'Retry')}
+              </button>
+            </p>
+          ) : (
+            trace && (
+              <p>
+                <strong>{t(`共 ${steps.length} 步`, `${steps.length} steps`)}</strong>
+                {trace.stopped &&
+                  ' · ' +
+                    (trace.stopped === 'steps'
+                      ? t(`到了 ${LIMITS.maxSteps} 步上限，只记录了前面这些`, `Stopped at the ${LIMITS.maxSteps}-step limit`)
+                      : t(`到了 ${LIMITS.maxMs / 1000} 秒上限，只记录了前面这些`, `Stopped at the ${LIMITS.maxMs / 1000}-second limit`))}
+                {trace.error && (
+                  <span className="pydbg-error-text">
+                    {' · '}
+                    {trace.error.line ? t(`第 ${trace.error.line} 行：`, `Line ${trace.error.line}: `) : ''}
+                    {trace.error.type}
+                    {trace.error.message && `: ${trace.error.message}`}
+                  </span>
+                )}
+                {trace.note && (
+                  <span className="pydbg-note">
+                    {t(...NOTES[trace.note.code])}
+                    {trace.note.code === 'arity' && `(${trace.note.detail})`}
+                  </span>
+                )}
+              </p>
+            )
+          )}
+        </div>
+        <div className="pydbg-body">
+          <div className="pydbg-code">
+            <CodeEditor
+              value={source}
+              language="python"
+              onChange={() => {}}
+              readOnly
+              path="cswork://debugger/main.py"
+              onEditorMount={mount}
+            />
+          </div>
+          <div className="pydbg-side">
+            <div className="pydbg-controls" role="toolbar" aria-label={t('调试控制', 'Debugger controls')}>
+              {controls.map(([move, name, key, Icon, off]) => (
+                <button
+                  key={move}
+                  type="button"
+                  disabled={!steps.length || off}
+                  title={key ? `${t(...name)} (${key})` : t(...name)}
+                  onClick={() => go(move)}
+                >
+                  <Icon size={14} aria-hidden="true" />
+                  {t(...name)}
+                </button>
+              ))}
+            </div>
+            <div className="pydbg-timeline">
+              <Depths trace={trace} index={index} breakpoints={breakpoints} />
+              <input
+                type="range"
+                min={0}
+                max={Math.max(0, last)}
+                value={index}
+                disabled={!steps.length}
+                aria-label={t('回放位置', 'Replay position')}
+                aria-valuetext={step ? t(`第 ${index + 1} 步，第 ${step.line} 行`, `Step ${index + 1}, line ${step.line}`) : undefined}
+                onChange={(event) => setIndex(Number(event.target.value))}
+              />
+              <p className="pydbg-where">
+                {step
+                  ? t(
+                      `第 ${index + 1} / ${steps.length} 步 · 第 ${step.line} 行 · ${named(step.func)}${step.kind === 'return' ? ' · 返回' : ''}`,
+                      `Step ${index + 1} / ${steps.length} · line ${step.line} · ${named(step.func)}${step.kind === 'return' ? ' · return' : ''}`,
+                    )
+                  : t('还没有可回放的步骤', 'Nothing to replay yet')}
+              </p>
+            </div>
+            <section className="pydbg-panel" aria-labelledby="pydbg-vars">
+              <h3 id="pydbg-vars">{t('变量', 'Variables')}</h3>
+              {step && (step.vars.length || step.kind === 'return') ? (
+                <table>
+                  <tbody>
+                    {step.vars.map(([name, value]) => (
+                      <tr key={name} className={changed.has(name) ? 'changed' : undefined}>
+                        <th scope="row">
+                          {name}
+                          {changed.has(name) && <span className="sr-only">{t('（刚变化）', ' (just changed)')}</span>}
+                        </th>
+                        <td>{value}</td>
+                      </tr>
+                    ))}
+                    {step.kind === 'return' && step.func !== '<module>' && (
+                      <tr className="pydbg-return">
+                        <th scope="row">{t('返回值', 'Returns')}</th>
+                        <td>{step.ret}</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              ) : (
+                <p className="pydbg-empty">{t('这一步没有局部变量', 'No local variables at this step')}</p>
+              )}
+            </section>
+            <section className="pydbg-panel" aria-labelledby="pydbg-stack">
+              <h3 id="pydbg-stack">{t('调用栈', 'Call stack')}</h3>
+              <ol className="pydbg-stack">
+                {stack.map((frame, i) => (
+                  <li key={i} aria-current={i === 0 ? 'step' : undefined}>
+                    <span>{named(frame.func)}</span>
+                    <small>{t(`第 ${frame.line} 行`, `line ${frame.line}`)}</small>
+                  </li>
+                ))}
+              </ol>
+            </section>
+            <section className="pydbg-panel" aria-labelledby="pydbg-out">
+              <h3 id="pydbg-out">{t('到这一步的输出', 'Output so far')}</h3>
+              <pre className="pydbg-stdout">{trace ? stdoutAt(trace, index) : ''}</pre>
+              {atEnd && trace?.outputCut && (
+                <p className="pydbg-empty">{t('输出超过 64 KB，后面的没有记录。', 'Output past 64 KB was not kept.')}</p>
+              )}
+              {atEnd && trace?.result != null && (
+                <p className="pydbg-result">
+                  {t('返回值：', 'Returned: ')}
+                  <code>{trace.result}</code>
+                </p>
+              )}
+            </section>
+            <details className="pydbg-panel pydbg-input">
+              <summary>{t('换个输入再跑', 'Run with other input')}</summary>
+              <textarea
+                value={stdin}
+                spellCheck={false}
+                aria-label={mode === 'leetcode' ? t('函数参数，每行一个 JSON', 'Arguments, one JSON value per line') : t('标准输入', 'Stdin')}
+                onChange={(event) => setStdin(event.target.value)}
+              />
+              <button type="button" disabled={busy} onClick={() => run(stdin)}>
+                <Play size={13} aria-hidden="true" />
+                {t('重新运行', 'Run again')}
+              </button>
+            </details>
+          </div>
+        </div>
+        <p className="pydbg-foot">
+          {t(
+            `点击行号或按 F9 设断点；F10 跳过、F11 进入、F5 继续。代码只在你的浏览器里运行，不占判题资源，最多记录 ${LIMITS.maxSteps} 步或 ${LIMITS.maxMs / 1000} 秒。`,
+            `Click a line number or press F9 for a breakpoint; F10 steps over, F11 steps into, F5 continues. Your code runs only in this browser, never on the judge, for up to ${LIMITS.maxSteps} steps or ${LIMITS.maxMs / 1000} s.`,
+          )}
+        </p>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/** Call depth over time: recursion shows as peaks, breakpoint hits as ticks. Decorative; the slider is the control. */
+function Depths({ trace, index, breakpoints }: { trace: Trace | null; index: number; breakpoints: ReadonlySet<number> }) {
+  const steps = trace?.steps ?? [];
+  if (steps.length < 2) return null;
+  const top = Math.max(1, ...steps.map((step) => step.depth));
+  const x = (i: number) => (i / (steps.length - 1)) * 100;
+  const y = (depth: number) => 22 - (depth / top) * 18;
+  return (
+    <svg className="pydbg-depths" viewBox="0 0 100 24" preserveAspectRatio="none" aria-hidden="true">
+      <polyline points={steps.map((step, i) => `${x(i)},${y(step.depth)}`).join(' ')} />
+      {steps.map((step, i) =>
+        step.kind === 'line' && breakpoints.has(step.line) ? (
+          <line key={i} className="pydbg-hit" x1={x(i)} x2={x(i)} y1={0} y2={24} />
+        ) : null,
+      )}
+      <line className="pydbg-now" x1={x(index)} x2={x(index)} y1={0} y2={24} />
+    </svg>
+  );
+}
