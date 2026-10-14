@@ -510,7 +510,12 @@ function PairCard({
         </form>
       )}
       {pair.reportedMe && (
-        <p className="peer-hint">{t('对方报告你没有出席这场面试。', 'Your partner reported that you missed this session.')}</p>
+        <p className="peer-hint">
+          {t(
+            '对方报告你没有出席这场面试。如果其实是对方没来，也可以报告对方；互相报告的场次不计入暂停。',
+            'Your partner reported that you missed this session. If they were the one missing, report them too: sessions reported both ways don’t count toward a pause.',
+          )}
+        </p>
       )}
       <div className="peer-actions">
         {scheduled && (

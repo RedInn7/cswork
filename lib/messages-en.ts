@@ -256,6 +256,7 @@ const EN: Record<string, string> = {
   对方报告你没有出席模拟面试: 'Your partner reported that you missed the mock interview',
   对方: 'Partner',
   '你被报告爽约两次，匹配已暂停 90 天': 'Two partners reported you missing, so matching is paused for 90 days',
+  '一周内取消了 3 场已匹配的面试，暂时不能匹配': 'You cancelled 3 matched sessions this week, so matching is paused for now',
   你已经有一个在等待匹配的请求: 'You already have a request waiting for a partner',
   '已经约了 3 场，先完成再约': 'You already have 3 sessions booked. Finish one before booking more',
   '请至少选一个未来 7 天内的时段': 'Pick at least one time slot in the next 7 days',

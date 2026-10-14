@@ -13,7 +13,9 @@ import { plain } from './study-groups';
  * template and level; the oldest open request of the same template and level that shares a
  * future slot becomes the partner. Each pair runs two rounds of the template, each side the
  * candidate once, on the mock interview's candidate/interviewer links. Partners see only the
- * name typed for matching. Two no-show reports from different partners in 90 days pause matching.
+ * name typed for matching. Two no-show reports from different partners in 90 days pause matching;
+ * a report the reported side answered with its own does not count. Cancelling a matched session
+ * puts the partner's request back in the queue, and three cancels in a week pause the canceller.
  */
 const HOUR = 3600000;
 const DAY = 24 * HOUR;
@@ -24,6 +26,8 @@ const NO_SHOW_WINDOW = 90 * DAY;
 /** No-shows can be reported from 10 minutes after the start until a week later. */
 const REPORT_FROM = 10 * 60000;
 const REPORT_UNTIL = 7 * DAY;
+export const CANCEL_LIMIT = 3;
+const CANCEL_WINDOW = 7 * DAY;
 
 type RequestRow = {
   id: string;
@@ -59,16 +63,26 @@ const hourNow = (now: number) => Math.floor(now / HOUR);
 /** Slots still bookable at `now`. */
 const open = (slots: readonly number[], now: number) => slots.filter((s) => s >= hourNow(now) + LEAD_HOURS);
 
-/** Distinct partners who reported `user` missing in the last 90 days. */
+/**
+ * Distinct partners who reported `user` missing in the last 90 days, leaving out sessions where
+ * `user` reported them too: two throwaway accounts cannot pause someone who was there and said so.
+ */
 export function noShows(user: string, now = Date.now()) {
   return (
     sqlite()
       .prepare(
         `SELECT COUNT(DISTINCT CASE WHEN a_user=? THEN b_user ELSE a_user END) AS n FROM mock_match_pairs
-        WHERE (a_user=? AND a_no_show_at>?) OR (b_user=? AND b_no_show_at>?)`,
+        WHERE (a_user=? AND a_no_show_at>? AND b_no_show_at IS NULL) OR (b_user=? AND b_no_show_at>? AND a_no_show_at IS NULL)`,
       )
       .get(user, user, now - NO_SHOW_WINDOW, user, now - NO_SHOW_WINDOW) as { n: number }
   ).n;
+}
+/** Matched sessions `user` cancelled in the last week (their request is cancelled with its pair). */
+export function cancels(user: string, now = Date.now()) {
+  return sqlite()
+    .prepare(`SELECT COUNT(*) FROM mock_match_requests WHERE user_id=? AND status='cancelled' AND pair_id IS NOT NULL AND updated_at>?`)
+    .pluck()
+    .get(user, now - CANCEL_WINDOW) as number;
 }
 /** Hours with a scheduled session for `user`. */
 function busy(user: string, now: number) {
@@ -135,6 +149,7 @@ export function requestMatch(
   return db.transaction(() => {
     if (noShows(p.id, now) >= NO_SHOW_LIMIT)
       throw new HttpError(403, '你被报告爽约两次，匹配已暂停 90 天');
+    if (cancels(p.id, now) >= CANCEL_LIMIT) throw new HttpError(403, '一周内取消了 3 场已匹配的面试，暂时不能匹配');
     const waiting = db
       .prepare(`SELECT slots_json FROM mock_match_requests WHERE user_id=? AND status='open'`)
       .get(p.id) as Pick<RequestRow, 'slots_json'> | undefined;
@@ -322,7 +337,19 @@ export async function handleMockPeer(request: Request, p: Person | null, path: s
   }
   if (action === 'cancel') {
     if (!canCancel) throw new HttpError(409, '这场模拟面试已开始或已取消');
-    db.prepare(`UPDATE mock_match_pairs SET status='cancelled',updated_at=? WHERE id=? AND status='scheduled'`).run(now, pair.id);
+    db.transaction(() => {
+      db.prepare(`UPDATE mock_match_pairs SET status='cancelled',updated_at=? WHERE id=? AND status='scheduled'`).run(now, pair.id);
+      // Counts against the canceller (cancels()), never the partner.
+      db.prepare(`UPDATE mock_match_requests SET status='cancelled',updated_at=? WHERE pair_id=? AND user_id=?`).run(now, pair.id, p.id);
+      // The partner's request goes back to its old place in the queue while it has hours ahead and
+      // they have not asked again since. ponytail: it matches the next request filed, not one already waiting.
+      const theirs = db
+        .prepare(`SELECT id,slots_json FROM mock_match_requests WHERE pair_id=? AND user_id=? AND status='matched'`)
+        .get(pair.id, partner.user) as Pick<RequestRow, 'id' | 'slots_json'> | undefined;
+      const waiting = db.prepare(`SELECT 1 FROM mock_match_requests WHERE user_id=? AND status='open'`).get(partner.user);
+      if (theirs && !waiting && open(JSON.parse(theirs.slots_json) as number[], now).length)
+        db.prepare(`UPDATE mock_match_requests SET status='open',pair_id=NULL,updated_at=? WHERE id=?`).run(now, theirs.id);
+    })();
     tell(partner, '同伴模拟面试已取消', pair, myName, now);
     return json(peerState(p.id, now));
   }

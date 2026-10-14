@@ -11,7 +11,7 @@ const dir = mkdtempSync(resolve(tmpdir(), 'cswork-mock-peer-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
-const { localSlot, noShows, requestMatch } = await import('../lib/server/mock-peer');
+const { cancels, localSlot, noShows, requestMatch } = await import('../lib/server/mock-peer');
 const { meetingUrl } = await import('../lib/mock-peer');
 
 const HOUR = 3600000;
@@ -158,6 +158,38 @@ void test('only the two partners touch a pair; links must be meeting links', asy
   assert.equal(cancelled.pairs[0].status, 'cancelled');
   assert.equal(inbox(dan.id).at(-1)?.title, '同伴模拟面试已取消');
   assert.equal(await status(dan, 'POST', `peer/${pair.id}/cancel`, {}), 409);
+  // Dan's request is back in the queue with its hours; the cancel counts against Eve alone.
+  assert.equal((await ok(dan, 'GET', 'peer')).request?.kind, 'behavioral');
+  assert.equal((await ok(eve, 'GET', 'peer')).request, null);
+  assert.equal(cancels(eve.id), 1);
+  assert.equal(cancels(dan.id), 0);
+});
+
+void test('three cancels in a week pause the canceller; the victim keeps its place each time', async () => {
+  const vic = person('p-vic');
+  const troll = person('p-troll');
+  await ok(vic, 'POST', 'peer', ask('Vic', [hour + 70, hour + 71], { kind: 'onsite' }));
+  for (let i = 0; i < 3; i++) {
+    const pair = (await ok(troll, 'POST', 'peer', ask('T', [hour + 70], { kind: 'onsite' }))).pairs.find((p) => p.status === 'scheduled')!;
+    await ok(troll, 'POST', `peer/${pair.id}/cancel`, {});
+    assert.ok((await ok(vic, 'GET', 'peer')).request);
+  }
+  assert.equal(await status(troll, 'POST', 'peer', ask('T', [hour + 70], { kind: 'onsite' })), 403);
+});
+
+void test('a no-show report answered with one the other way counts for neither side', async () => {
+  const now = Date.now();
+  const [sam, sock] = [person('p-sam'), person('p-sock')];
+  requestMatch(sam, ask('Sam', [hour + 80], { kind: 'onsite', level: 'senior' }), 'en', now);
+  const pairId = requestMatch(sock, ask('Sock', [hour + 80], { kind: 'onsite', level: 'senior' }), 'en', now)!;
+  assert.ok(pairId);
+  sqlite().prepare('UPDATE mock_match_pairs SET slot=? WHERE id=?').run(Math.floor((now - 20 * 60000) / HOUR), pairId);
+  await ok(sock, 'POST', `peer/${pairId}/no-show`, {});
+  assert.equal(noShows(sam.id), 1);
+  assert.equal((await ok(sam, 'GET', 'peer')).pairs.find((p) => p.id === pairId)!.canReport, true);
+  await ok(sam, 'POST', `peer/${pairId}/no-show`, {});
+  assert.equal(noShows(sam.id), 0);
+  assert.equal(noShows(sock.id), 0);
 });
 
 void test('two no-show reports from different partners pause matching', async () => {
