@@ -281,6 +281,17 @@ export function MockOa({
   return (
     <div className="algorithm-library mock-oa">
       <LibrarySwitch section="mock" navigate={navigate} />
+      <a
+        className="mock-crosslink"
+        href="/?view=mock-interview"
+        onClick={(e) => {
+          if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          e.preventDefault();
+          navigate('mock-interview');
+        }}
+      >
+        {t('还要练面试？一键抽一套模拟面试题', 'Practising interviews too? Draw a mock interview set')}
+      </a>
       {storageFailed && (
         <p className="mock-note" role="alert">
           {t(
