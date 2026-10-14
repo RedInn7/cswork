@@ -148,6 +148,16 @@ export function assignStory(stories: readonly Story[], storyId: string | null, q
   return changed;
 }
 
+/**
+ * The editor's story with its question links as stored now: links made elsewhere since `base` (a question
+ * page picking it) are kept, and the ones unlinked in the editor dropped. `stored` null: not saved yet.
+ */
+export function keepLinks(edited: Story, base: Story, stored: Story | null): Story {
+  if (!stored) return edited;
+  const unlinked = new Set(base.questions.map((q) => q.key).filter((key) => !edited.questions.some((q) => q.key === key)));
+  return { ...edited, questions: stored.questions.filter((q) => !unlinked.has(q.key)) };
+}
+
 export const competencyName = (id: string, english: boolean) => {
   const c = COMPETENCIES.find((x) => x.id === id);
   return c ? c.name[english ? 1 : 0] : id;

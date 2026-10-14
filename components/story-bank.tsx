@@ -1,10 +1,10 @@
 'use client';
-import { useEffect, useId, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { BookUser, Download, ExternalLink, Plus, Trash2, X } from 'lucide-react';
 import { api } from '@/lib/types';
 import { useLocale, useT } from '@/lib/i18n';
 import {
-  COMPETENCIES, STAR, STAR_NAMES, assignStory, blankStory, competenciesFor, competencyName, parseStory,
+  COMPETENCIES, STAR, STAR_NAMES, assignStory, blankStory, competenciesFor, competencyName, keepLinks, parseStory,
   rankStories, speakingSeconds, storiesMarkdown, storyBody, storyTarget, wordCount,
   type Story, type StoryQuestion,
 } from '@/lib/story-bank';
@@ -12,7 +12,15 @@ import { putNote } from './problem-notes';
 import '@/app/redesign.css';
 import '@/app/interview-prep.css';
 
-/** The learner's stories, stored as their notes (`story:<id>`, JSON); null while loading. */
+const fetchStories = () =>
+  api<{ items: { target: string; body: string; updatedAt: number }[] }>('oj/notes?prefix=story%3A').then((r) =>
+    r.items.flatMap((i) => parseStory(i.target, i.body, i.updatedAt) ?? []),
+  );
+
+/**
+ * The learner's stories, stored as their notes (`story:<id>`, JSON); null while loading. Fetched again
+ * when the tab comes back (the story bank opens in another one); a change is built on `latest()`.
+ */
 function useStories(userId: string | null) {
   const [stories, setStories] = useState<Story[] | null>(null);
   const [error, setError] = useState('');
@@ -20,21 +28,31 @@ function useStories(userId: string | null) {
   useEffect(() => {
     if (!userId) return;
     let current = true;
-    api<{ items: { target: string; body: string; updatedAt: number }[] }>('oj/notes?prefix=story%3A')
-      .then((r) => {
-        if (current) setStories(r.items.flatMap((i) => parseStory(i.target, i.body, i.updatedAt) ?? []));
-      })
+    fetchStories()
+      .then((list) => current && setStories(list))
       .catch((e: Error) => current && setError(e.message));
     return () => {
       current = false;
     };
   }, [userId, reload]);
+  useEffect(() => {
+    if (!userId) return;
+    const back = () => document.visibilityState === 'visible' && setReload((n) => n + 1);
+    document.addEventListener('visibilitychange', back);
+    return () => document.removeEventListener('visibilitychange', back);
+  }, [userId]);
   return {
     stories,
     error,
     retry: () => {
       setError('');
       setReload((n) => n + 1);
+    },
+    // ponytail: read-then-write, not compare-and-swap; two tabs saving the same story in the same instant still race.
+    latest: async () => {
+      const list = await fetchStories();
+      setStories(list);
+      return list;
     },
     save: async (story: Story) => {
       const updatedAt = await putNote(storyTarget(story.id), storyBody(story));
@@ -60,7 +78,7 @@ export function StoryPicker({ userId, question, text }: { userId: string | null;
   const t = useT();
   const english = useLocale() === 'en';
   const id = useId();
-  const { stories, error, retry, save } = useStories(userId);
+  const { stories, error, retry, latest, save } = useStories(userId);
   const [busy, setBusy] = useState(false);
   const [saveError, setSaveError] = useState('');
   const wanted = useMemo(() => competenciesFor(text), [text]);
@@ -73,7 +91,8 @@ export function StoryPicker({ userId, question, text }: { userId: string | null;
     setBusy(true);
     setSaveError('');
     try {
-      for (const story of assignStory(stories ?? [], storyId || null, question)) await save(story);
+      // Built on the stories as stored now: one edited in the story bank tab since is not overwritten.
+      for (const story of assignStory(await latest(), storyId || null, question)) await save(story);
     } catch (e) {
       setSaveError((e as Error).message);
     } finally {
@@ -171,6 +190,10 @@ export function StoryBank({ userId }: { userId: string }) {
   const english = locale === 'en';
   const bank = useStories(userId);
   const [draft, setDraft] = useState<Story | null>(null);
+  // The open editor has changes not saved yet (set by StoryEditor).
+  const unsaved = useRef(false);
+  const discard = () =>
+    !unsaved.current || confirm(t('有没保存的修改，确定放弃吗？', 'You have unsaved changes. Discard them?'));
   const stories = bank.stories;
   const covered = new Set(stories?.flatMap((s) => s.competencies));
   const lps = COMPETENCIES.filter((c) => c.lp);
@@ -181,6 +204,7 @@ export function StoryBank({ userId }: { userId: string }) {
     URL.revokeObjectURL(url);
   }
   const open = (story: Story) => {
+    if (draft && draft.id !== story.id && !discard()) return;
     setDraft(story);
     requestAnimationFrame(() => {
       document.getElementById('ip-editor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -233,12 +257,17 @@ export function StoryBank({ userId }: { userId: string }) {
             key={draft.id}
             story={draft}
             english={english}
-            onSave={bank.save}
+            onDirty={(dirty) => {
+              unsaved.current = dirty;
+            }}
+            onSave={async (story, base) =>
+              bank.save(keepLinks(story, base, (await bank.latest()).find((s) => s.id === story.id) ?? null))
+            }
             onDelete={async (id) => {
               await bank.remove(id);
               setDraft(null);
             }}
-            onClose={() => setDraft(null)}
+            onClose={() => discard() && setDraft(null)}
             isNew={!stories?.some((s) => s.id === draft.id)}
           />
         )}
@@ -326,6 +355,7 @@ function StoryEditor({
   story,
   english,
   isNew,
+  onDirty,
   onSave,
   onDelete,
   onClose,
@@ -333,7 +363,10 @@ function StoryEditor({
   story: Story;
   english: boolean;
   isNew: boolean;
-  onSave: (story: Story) => Promise<Story>;
+  /** Whether the form has changes not saved yet; false once it closes. */
+  onDirty: (dirty: boolean) => void;
+  /** `base`: the story as last saved here, to tell links made elsewhere from ones unlinked here. */
+  onSave: (story: Story, base: Story) => Promise<Story>;
   onDelete: (id: string) => Promise<void>;
   onClose: () => void;
 }) {
@@ -343,6 +376,10 @@ function StoryEditor({
   const [state, setState] = useState<'idle' | 'saving' | 'saved'>('idle');
   const [error, setError] = useState('');
   const dirty = storyBody(form) !== storyBody(saved);
+  useEffect(() => {
+    onDirty(dirty);
+    return () => onDirty(false);
+  }, [dirty, onDirty]);
   const set = (patch: Partial<Story>) => {
     setForm((f) => ({ ...f, ...patch }));
     setState('idle');
@@ -354,18 +391,15 @@ function StoryEditor({
     setState('saving');
     setError('');
     try {
-      const next = await onSave(form);
+      const next = await onSave(form, saved);
       setSaved(next);
+      setForm((f) => ({ ...f, questions: next.questions }));
       setState('saved');
     } catch (e) {
       setError((e as Error).message);
       setState('idle');
     }
   }
-  const close = () => {
-    if (dirty && !confirm(t('有没保存的修改，确定关闭吗？', 'You have unsaved changes. Close anyway?'))) return;
-    onClose();
-  };
   const groups = [
     [t('常见主题', 'Common themes'), COMPETENCIES.filter((c) => !c.lp)],
     ['Amazon Leadership Principles', COMPETENCIES.filter((c) => c.lp)],
@@ -377,7 +411,7 @@ function StoryEditor({
       }} aria-labelledby="ip-editor-h">
       <header className="ip-editor-head">
         <h2 id="ip-editor-h">{isNew ? t('新故事', 'New story') : t('编辑故事', 'Edit story')}</h2>
-        <button type="button" className="ip-icon" onClick={close} aria-label={t('关闭编辑器', 'Close the editor')}>
+        <button type="button" className="ip-icon" onClick={onClose} aria-label={t('关闭编辑器', 'Close the editor')}>
           <X size={16} aria-hidden="true" />
         </button>
       </header>
@@ -466,7 +500,7 @@ function StoryEditor({
         <button type="submit" className="rd-button" disabled={state === 'saving' || (!dirty && !isNew)}>
           {state === 'saving' ? t('正在保存…', 'Saving…') : t('保存', 'Save')}
         </button>
-        <button type="button" className="rd-button is-quiet" onClick={close}>
+        <button type="button" className="rd-button is-quiet" onClick={onClose}>
           {t('关闭', 'Close')}
         </button>
         <output className="ip-editor-state">{state === 'saved' && !dirty ? t('已保存', 'Saved') : ''}</output>
