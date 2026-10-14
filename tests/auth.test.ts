@@ -6,8 +6,10 @@ import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
+import Database from 'better-sqlite3';
 const directory = mkdtempSync(resolve(tmpdir(), 'cswork-auth-'));
 process.env.DATABASE_PATH = resolve(directory, 'auth.sqlite');
+process.env.METRICS_DATABASE_PATH = resolve(directory, 'metrics.sqlite');
 process.env.APP_URL = 'http://localhost:4317';
 process.env.BETTER_AUTH_SECRET =
   'isolated-auth-test-secret-at-least-thirty-two';
@@ -102,6 +104,21 @@ test('OTP registration verifies mailbox, stores hashed OTP and rejects replay', 
   assert.equal(who?.email, email);
   assert.equal(who?.verified, true);
   assert.equal(who?.role, 'student');
+  // Sign-ups and sign-ins are recorded server-side, for every method.
+  const metrics = new Database(process.env.METRICS_DATABASE_PATH!, {
+    readonly: true,
+  });
+  assert.deepEqual(
+    metrics
+      .prepare('SELECT name,vid,params FROM events WHERE user_id=? ORDER BY id')
+      .raw()
+      .all(who?.id),
+    [
+      ['sign_up', 'server', '{"method":"email"}'],
+      ['login', 'server', '{"method":"email"}'],
+    ],
+  );
+  metrics.close();
   const replay = await request('sign-in/email-otp', { email, otp });
   assert.notEqual(replay.status, 200);
 });

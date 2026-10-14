@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { beacon, track } from '../lib/analytics';
+import { beacon, pageView, referrerHost, track } from '../lib/analytics';
 
 /** Installs browser globals for one test and restores Node's afterwards. */
 function browser(globals: Record<string, unknown>) {
@@ -122,5 +122,64 @@ void test('blocked gtag, storage and beacon still reach the dashboard without th
   } finally {
     restore();
     globalThis.fetch = original;
+  }
+});
+
+void test('the first page view of a visit says where it came from, host only', () => {
+  assert.equal(
+    referrerHost('https://www.google.com/search?q=private', 'cswork.org'),
+    'google.com',
+  );
+  assert.equal(
+    referrerHost('https://blog.example/post?token=x', 'cswork.org'),
+    'other',
+  );
+  assert.equal(referrerHost('https://cswork.org/library', 'cswork.org'), '');
+  assert.equal(referrerHost('', 'cswork.org'), '');
+  const sent: string[] = [],
+    session = new Map<string, string>();
+  const location = {
+    host: 'cswork.org',
+    pathname: '/library',
+    search: '?utm_source=Reddit&utm_campaign=launch&email=a@b.c',
+  };
+  const restore = browser({
+    window: {},
+    location,
+    document: {
+      referrer: 'https://old.reddit.com/r/cscareerquestions/comments/abc',
+    },
+    navigator: {
+      sendBeacon: (_url: string, body: string) => sent.push(body) > 0,
+    },
+    localStorage: { getItem: () => 'visitor-0001', setItem() {} },
+    sessionStorage: {
+      getItem: (key: string) => session.get(key) ?? null,
+      setItem: (key: string, value: string) => void session.set(key, value),
+    },
+  });
+  try {
+    pageView({ view: 'library' });
+    pageView({ view: 'library' }); // StrictMode's second run: same URL, not repeated
+    location.pathname = '/library/guide/acme';
+    location.search = '';
+    pageView({ view: 'library', type: 'guide', slug: 'acme' });
+    assert.deepEqual(
+      sent.map((body) => JSON.parse(body).events[0].params),
+      [
+        {
+          view: 'library',
+          ref: 'reddit.com',
+          utm_source: 'Reddit',
+          utm_campaign: 'launch',
+        },
+        { view: 'library', type: 'guide', slug: 'acme' },
+      ],
+    );
+    // The rest of the tab session (a reload, the page after an OAuth round
+    // trip) is the same visit.
+    assert.equal(session.get('cswork:visit'), '1');
+  } finally {
+    restore();
   }
 });

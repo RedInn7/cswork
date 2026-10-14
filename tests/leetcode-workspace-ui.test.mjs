@@ -127,6 +127,16 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     leetcodeTemplates: undefined,
     sourceStatement: undefined,
   };
+  // Bootstrap's catalogue entry: the statement arrives with problems/:id.
+  const summary = ({ id, title, translations, difficulty, tags, lessonId, courseId }) => ({
+    id,
+    title,
+    titleEn: translations.en.title,
+    difficulty,
+    tags,
+    lessonId,
+    courseId,
+  });
   const originalFetch = globalThis.fetch;
   let outcome = 'accepted';
   let acknowledgement = 'queued';
@@ -137,6 +147,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
   let releasePost;
   let failWatch = false;
   let watchReads = 0;
+  let statusReads = 0;
   let failDetailOnce = false;
   let submitted = 0;
   let progressEvents = 0;
@@ -157,9 +168,11 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
         id: `fresh-${++submitted}`,
         mode: body.mode,
         status: outcome,
-        startedAt: 41,
-        finishedAt: 101,
+        // The Accepted dialog counts this AC on its own day.
+        created_at: Date.now(),
       };
+      freshSubmission.startedAt = freshSubmission.created_at + 40;
+      freshSubmission.finishedAt = freshSubmission.created_at + 100;
       return Response.json({ id: freshSubmission.id, status: acknowledgement });
     }
     if (url.includes('/submissions/fresh-')) {
@@ -185,7 +198,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     if (url.includes('/submissions/old-acm')) return Response.json(historical);
     if (url.includes('/submissions'))
       return Response.json({ items: [historical], nextCursor: null });
-    if (url.includes('/status'))
+    if (url.includes('/status') && ++statusReads)
       return Response.json({ available: true, languageVersions: {} });
     return Response.json(
       url.includes('/problems/acm-1') ? acmProblem : problem,
@@ -229,7 +242,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     await act(async () =>
       root.render(
         createElement(ProblemWorkspace, {
-          problem,
+          problem: summary(problem),
           boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
           navigate(path) {
             navigations.push(path);
@@ -240,6 +253,8 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       ),
     );
     await settle();
+    // A hidden tab (jsdom's default) skips judge health polls.
+    assert.equal(statusReads, 0);
     assert.ok(button('Run').closest('.cs-code-caption'));
     assert.ok(button('Submit').closest('.cs-code-caption'));
     assert.equal(
@@ -330,6 +345,10 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       configurable: true,
       get: () => 'visible',
     });
+    // Becoming visible checks judge health at once.
+    await act(async () => document.dispatchEvent(new Event('visibilitychange')));
+    await settle();
+    assert.equal(statusReads, 1);
     globalThis.requestAnimationFrame = (callback) => setTimeout(callback, 0);
     globalThis.cancelAnimationFrame = (frame) => clearTimeout(frame);
     await click(button('Run'));
@@ -412,9 +431,10 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     );
     assert.equal(progressEvents, 1);
     assert.ok(watchReads > 0, 'active submission uses the watch endpoint');
+    // This AC counts today before the bootstrap refresh; with no list to follow, go back.
     assert.equal(
       document.querySelector('.cs-accepted-banner').textContent.trim(),
-      'Accepted',
+      'AcceptedToday 1 / 3 · 1-day streakBack to problems',
     );
     await click(
       document.querySelector('[aria-label="Dismiss success message"]'),
@@ -476,7 +496,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       root.render(
         createElement(ProblemWorkspace, {
           key: 'reloaded',
-          problem,
+          problem: summary(problem),
           boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
           navigate() {},
           ask() {},
@@ -504,7 +524,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
         root.render(
           createElement(ProblemWorkspace, {
             key,
-            problem: acmProblem,
+            problem: summary(acmProblem),
             boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
             navigate() {},
             ask() {},

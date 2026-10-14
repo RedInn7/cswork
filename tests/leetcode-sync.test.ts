@@ -10,10 +10,11 @@ import type {
   LeetcodePage,
   LeetcodeProvider,
 } from '../lib/server/leetcode-provider';
+import { LEETCODE_SYNC_AVAILABLE } from '../lib/leetcode-sync-types';
 const dir = mkdtempSync(resolve(tmpdir(), 'leetcode-sync-test-'));
 process.env.DATABASE_PATH = resolve(dir, 'db.sqlite');
 const { sqlite } = await import('../db/sqlite');
-const { changeLeetcodeSync, leetcodeSyncState } =
+const { changeLeetcodeSync, handleLeetcodeSync, leetcodeSyncState } =
   await import('../lib/server/leetcode-sync');
 const { createLeetcodeProvider } =
   await import('../lib/server/leetcode-provider');
@@ -378,4 +379,40 @@ void test('invalid credential control characters never reach the upstream', asyn
     ),
   );
   assert.equal(called, false);
+});
+void test('disabled sync refuses before LeetCode and creates no run', {
+  skip: LEETCODE_SYNC_AVAILABLE,
+}, async () => {
+  const user = 'sync-disabled',
+    realFetch = globalThis.fetch;
+  let fetched = false;
+  globalThis.fetch = async () => {
+    fetched = true;
+    throw new Error('Upstream must not be contacted');
+  };
+  try {
+    await assert.rejects(
+      handleLeetcodeSync(
+        new Request('http://local/api/oj/leetcode-sync', {
+          method: 'POST',
+          body: JSON.stringify(start(round(user))),
+        }),
+        { id: user } as Parameters<typeof handleLeetcodeSync>[1],
+        [],
+      ),
+      (e: { status?: number; message?: string }) =>
+        e.status === 503 && /暂不可用/.test(e.message || ''),
+    );
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+  assert.equal(fetched, false);
+  assert.equal(
+    (
+      sqlite()
+        .prepare('SELECT COUNT(*) AS n FROM leetcode_sync_runs WHERE user_id=?')
+        .get(user) as { n: number }
+    ).n,
+    0,
+  );
 });

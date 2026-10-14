@@ -19,9 +19,10 @@ import {
   limit,
 } from './http';
 import { seed } from './seed';
-import { ensureOjSeed, listPublishedProblems } from './oj-problems';
+import { canSeeProblem, ensureOjSeed, listProblemSummaries } from './oj-problems';
 import { handleContent } from './content-library';
 import { handleMetrics } from './metrics';
+import { health } from './health';
 import { handleOj } from './oj-api';
 import { judgeReady, submit, result } from './judge';
 import { playback } from './video';
@@ -85,7 +86,7 @@ function services() {
     ),
   };
 }
-/** `lite` skips the problem catalogue (~3MB) for the client's periodic refresh. */
+/** `lite` skips the problem catalogue for the client's periodic refresh. */
 export async function bootstrap(p: Person | null, lite = false) {
   const cs = await rows<Course & { revision: number; position: number }>(
     `SELECT id,title,summary,version,published,revision,position FROM courses ${p?.role === 'teacher' ? '' : 'WHERE published=1'} ORDER BY position,id`,
@@ -106,7 +107,7 @@ export async function bootstrap(p: Person | null, lite = false) {
       p,
     ),
     courseAccess: cs.filter((c) => c.has_access).map((c) => c.id),
-    problems: lite ? undefined : await listPublishedProblems(p),
+    problems: lite ? undefined : await listProblemSummaries(p),
     progress: p
       ? await rows('SELECT * FROM progress WHERE user_id=?', p.id)
       : [],
@@ -151,6 +152,10 @@ export async function handle(request: Request) {
       const { webhook } = await import('./payments');
       return await webhook(request);
     }
+    // Cheap unauthenticated probe: before seeding and session lookup.
+    // vinext answers HEAD through GET with request.method still 'HEAD'.
+    if (resource === 'health' && ['GET', 'HEAD'].includes(request.method))
+      return health();
     if (request.method !== 'GET') sameOrigin(request);
     if (resource === 'metrics')
       // Analytics beacons and the owner summary need only the session, not the seed checks below.
@@ -363,6 +368,7 @@ export async function handle(request: Request) {
             lessonId: id.optional(),
             courseId: id.optional(),
             submissionId: id.optional(),
+            problemId: id.optional(),
             videoPosition: z.number().min(0).max(86400).optional(),
             videoAssetId: id.optional(),
           })
@@ -393,6 +399,8 @@ export async function handle(request: Request) {
           );
           if (!s || s.user_id !== p.id) throw new HttpError(404, '提交不存在');
         }
+        if (d.problemId && !(await canSeeProblem(p, d.problemId)))
+          throw new HttpError(404, '题目不存在');
         const tid = crypto.randomUUID();
         db.prepare(
           'INSERT INTO tickets(id,user_id,title,body,lesson_id,course_id,submission_id,video_position,video_asset_id,status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -400,7 +408,11 @@ export async function handle(request: Request) {
           .bind(
             tid,
             p.id,
-            d.title,
+            // ponytail: tickets has no problem_id column; the title tag serves
+            // lists, search and per-problem counts until one is worth a migration.
+            d.problemId
+              ? `[${d.problemId}] ${d.title}`.slice(0, 180)
+              : d.title,
             d.body,
             d.lessonId || null,
             d.courseId || null,

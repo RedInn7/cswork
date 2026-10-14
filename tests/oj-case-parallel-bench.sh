@@ -53,7 +53,7 @@ const compileArgs = {
 const memLimitKb = 256 * 1024, heap = Math.max(8, Math.floor((memLimitKb / 1024) * 0.6));
 const runArgs = {
   cpp: ['main'],
-  java: ['/usr/bin/java', `-Xmx${heap}m`, '-Xss256k', '-XX:ReservedCodeCacheSize=32m', '-XX:MaxMetaspaceSize=64m', '-XX:ActiveProcessorCount=1', '-cp', 'main.jar', 'Main'],
+  java: ['/usr/bin/java', `-Xmx${heap}m`, '-Xss64m', '-XX:ReservedCodeCacheSize=32m', '-XX:MaxMetaspaceSize=64m', '-XX:ActiveProcessorCount=1', '-cp', 'main.jar', 'Main'],
   python: ['/usr/bin/python3', '-I', 'main.py'],
 };
 const inputs = Array.from({ length: CASES }, (_, k) => {

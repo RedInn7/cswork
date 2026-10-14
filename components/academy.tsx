@@ -1,5 +1,7 @@
 'use client';
 import {
+  lazy,
+  Suspense,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -61,23 +63,23 @@ import {
   ProblemList,
   ProblemWorkspace,
   Empty,
+  loadFailed,
   type Navigate,
 } from './learning';
 import { JudgeStatus } from './judge-status';
 import { setLocale, useLocale, useT } from '@/lib/i18n';
-import { beacon, track } from '@/lib/analytics';
+import { pageView as beaconPageView, track } from '@/lib/analytics';
 import { englishMessage } from '@/lib/messages-en';
 import { ContentDetail, ContentList, contentSection } from './content-library';
 import { WorkspaceIntro } from './workspace-intro';
-import { SEO_HOME } from '@/lib/seo';
+import { workspaceTitle } from '@/lib/seo';
+import { problemTitle } from '@/lib/problems';
 import {
   TicketComposer,
   TicketView,
   ReviewsView,
   ReleasesView,
 } from './support';
-import { TeacherView } from './teacher';
-import { OwnerMetrics } from './owner-metrics';
 import { LoginDialog, AccountView } from './account';
 import { registerAcademyTools } from '@/lib/webmcp';
 import Link from 'next/link';
@@ -89,6 +91,13 @@ import {
   INTERVIEW_COURSE_ID,
   isKnowledgeLesson,
 } from '@/lib/interview-curriculum';
+// Teacher-only screens load on first visit instead of shipping in the main chunk.
+const TeacherView = lazy(() =>
+  import('./teacher').then((m) => ({ default: m.TeacherView }), loadFailed),
+);
+const OwnerMetrics = lazy(() =>
+  import('./owner-metrics').then((m) => ({ default: m.OwnerMetrics }), loadFailed),
+);
 // Practice is the product's centre: the problem bank leads and is the landing view.
 // [icon, zh label, en label, view]
 const nav: [LucideIcon, string, string, string][] = [
@@ -113,17 +122,12 @@ const initial: Boot = {
   services: {},
 };
 type SearchResult = { id: string; title: string; snippet: string };
-// One page_view per URL change: StrictMode's second effect run doesn't repeat it.
-let lastPageView = '';
 function pageView() {
-  const url = location.pathname + location.search;
-  if (url === lastPageView) return;
-  lastPageView = url;
   const p = new URLSearchParams(location.search),
     view = p.get('view') || 'problems',
     content = view === 'content';
   // Owner dashboard only: GA4 counts these pushState page views itself.
-  beacon('page_view', {
+  beaconPageView({
     view,
     type: content ? p.get('type') : null,
     slug: content ? p.get('slug') : null,
@@ -134,7 +138,6 @@ export function Academy() {
     t = useT();
   useEffect(() => {
     document.documentElement.lang = locale === 'zh' ? 'zh-CN' : 'en';
-    document.title = SEO_HOME[locale].title;
   }, [locale]);
   const [boot, setBoot] = useState<Boot>(initial),
     [loading, setLoading] = useState(true),
@@ -159,7 +162,7 @@ export function Academy() {
   const personId = boot.person?.id,
     identity = bootIdentity(boot);
   // Periodic and post-submission refreshes only need personal data; the problem
-  // catalogue (~3MB) stays from the full load unless the identity changed.
+  // catalogue stays from the full load unless the identity changed.
   const refreshLite = useCallback(async () => {
     const next = await api<Boot>('bootstrap?lite=1');
     if (bootIdentity(next) !== identity) return refresh();
@@ -272,6 +275,34 @@ export function Academy() {
   // The server omits teaching courses hidden from this account (owner-only mode).
   const coursesHidden =
     !loading && !boot.courses.some((c) => c.id !== INTERVIEW_COURSE_ID);
+  const heading =
+    (current && t(current[1], current[2])) ||
+    (
+      {
+        lesson: isKnowledgeLesson(params.lesson)
+          ? t('算法知识点', 'Algorithm Concepts')
+          : t('课程学习', 'Course'),
+        problem: t('算法题库', 'Problem Bank'),
+        reviews: t('代码评审', 'Code reviews'),
+        releases: t('课程更新', 'Course updates'),
+        teacher: t('教师工作台', 'Teacher dashboard'),
+        metrics: t('运营数据', 'Analytics'),
+        account: t('账号设置', 'Account settings'),
+      } as Record<string, string>
+    )[view] ||
+    t('算法题库', 'Problem Bank');
+  // The bare landing keeps the server's home title; other views name themselves.
+  const pageName = !params.view
+    ? undefined
+    : view === 'problem' &&
+        selectedProblem &&
+        // OA English statements only arrive with the detail fetch; don't title an English tab in Chinese.
+        (locale === 'zh' || selectedProblem.titleEn)
+      ? problemTitle(selectedProblem, locale)
+      : heading;
+  useEffect(() => {
+    document.title = workspaceTitle(locale, pageName);
+  }, [locale, pageName]);
   function content() {
     if (loading) return <output className="page-loading">{t('正在加载…', 'Loading…')}</output>;
     if (error && !boot.courses.length)
@@ -536,23 +567,7 @@ export function Academy() {
         <header className="topbar">
           <div className="flex items-center gap-3">
             <SidebarTrigger />
-            <span>
-              {(current && t(current[1], current[2])) ||
-                (
-                  {
-                    lesson: isKnowledgeLesson(params.lesson)
-                      ? t('算法知识点', 'Algorithm Concepts')
-                      : t('课程学习', 'Course'),
-                    problem: t('算法题库', 'Problem Bank'),
-                    reviews: t('代码评审', 'Code reviews'),
-                    releases: t('课程更新', 'Course updates'),
-                    teacher: t('教师工作台', 'Teacher dashboard'),
-                    metrics: t('运营数据', 'Analytics'),
-                    account: t('账号设置', 'Account settings'),
-                  } as Record<string, string>
-                )[view] ||
-                t('算法题库', 'Problem Bank')}
-            </span>
+            <span>{heading}</span>
           </div>
           <div className="topbar-actions">
             <button
@@ -654,13 +669,17 @@ export function Academy() {
             ) : (
               <WorkspaceIntro />
             ))}
-          {content()}
+          <Suspense
+            fallback={<output className="page-loading">{t('正在加载…', 'Loading…')}</output>}
+          >
+            {content()}
+          </Suspense>
         </main>
         <footer className="flex flex-wrap gap-5 px-6 pb-6 text-xs text-muted-foreground">
           <Link prefetch={false} href="/library" className="underline underline-offset-4">
             {t('公开面试资料', 'Interview resources')}
           </Link>
-          <Link href="/privacy" className="underline underline-offset-4">
+          <Link prefetch={false} href="/privacy" className="underline underline-offset-4">
             {t('隐私说明', 'Privacy')}
           </Link>
         </footer>

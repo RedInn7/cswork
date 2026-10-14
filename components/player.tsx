@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
+// The player module is lazy-loaded, so these 46KB of styles stay out of the site-wide CSS.
 import 'video.js/dist/video-js.css';
 import '@/app/media.css';
 

@@ -16,6 +16,11 @@ export const SEO_HOME = {
   },
 };
 
+/** Browser tab title for a workspace view; no name means the landing page. */
+export function workspaceTitle(locale: keyof typeof SEO_HOME, name?: string) {
+  return name ? `${name} · ${SITE_NAME}` : SEO_HOME[locale].title;
+}
+
 function publicUrl(path: string): string {
   const url = new URL(path, SITE_URL);
   if (url.origin !== SITE_URL)

@@ -55,6 +55,22 @@ export type Problem = {
   timeLimit: number;
   memoryLimit: number;
 };
+/** Bootstrap's catalogue entry: no statement, the workspace loads it from `oj/problems/:id`. */
+export type ProblemSummary = Pick<Problem, 'id' | 'title' | 'difficulty' | 'tags'> & {
+  titleEn?: string;
+  lessonId?: string;
+  courseId?: string;
+  freeJudge?: boolean;
+};
+/** The title in the page language, from a full problem or a bootstrap summary. */
+export function problemTitle(problem: Problem | ProblemSummary, locale: ProblemLocale) {
+  if (locale !== 'en') return problem.title;
+  return (
+    ('titleEn' in problem && problem.titleEn) ||
+    ('translations' in problem && problem.translations?.en?.title) ||
+    problem.title
+  );
+}
 export const problems: Problem[] = [
   {
     id: 'watch-intervals',

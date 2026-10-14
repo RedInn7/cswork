@@ -1,6 +1,6 @@
 import { readLocale } from './i18n';
 import { englishMessage } from './messages-en';
-import type { Problem } from './problems';
+import type { ProblemSummary } from './problems';
 export type Person = {
   id: string;
   name: string;
@@ -74,7 +74,7 @@ export type Boot = {
   courses: Course[];
   /** Courses this person holds a grant for, even when course content is hidden. */
   courseAccess?: string[];
-  problems: Problem[];
+  problems: ProblemSummary[];
   progress: Progress[];
   submissions: Submission[];
   activity?: { problem_id: string; created_at: number }[];

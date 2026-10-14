@@ -26,6 +26,7 @@ import { api } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { LeetcodeSyncPanel } from './leetcode-sync-panel';
+import { LEETCODE_SYNC_AVAILABLE } from '@/lib/leetcode-sync-types';
 import type { Navigate } from './learning';
 
 type LibraryItem = {
@@ -962,10 +963,22 @@ export function StudyLibrary({
                     <Button
                       variant="outline"
                       aria-expanded={syncOpen}
+                      disabled={!LEETCODE_SYNC_AVAILABLE}
+                      aria-describedby={
+                        LEETCODE_SYNC_AVAILABLE ? undefined : 'leetcode-sync-off'
+                      }
                       onClick={() => setSyncOpen((open) => !open)}
                     >
                       {t('同步 LeetCode', 'Sync LeetCode')}
                     </Button>
+                    {!LEETCODE_SYNC_AVAILABLE && (
+                      <span id="leetcode-sync-off" className="route-ready">
+                        {t(
+                          '同步暂不可用：LeetCode 接口有变化，正在适配。',
+                          "Sync is temporarily unavailable: LeetCode changed its API and we're adapting.",
+                        )}
+                      </span>
+                    )}
                     {data.collection && (
                       <span className="route-ready">
                         {t(

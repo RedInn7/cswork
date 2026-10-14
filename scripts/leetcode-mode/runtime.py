@@ -1,8 +1,10 @@
 """Authored LeetCode invocation and native transport. Runs inside go-judge only."""
+import functools
 import json
 import sys
 import subprocess
 from contextlib import redirect_stdout
+from types import CodeType, GeneratorType, TracebackType
 from pathlib import Path
 import tree_codec as trees
 import linked_codec as lists
@@ -13,7 +15,148 @@ from result_contract import validate_result, format_result
 from complex_design_semantics import CLASSES
 
 
+def _lru_cache_wrapper(user_function, maxsize, typed, info):
+    """functools.lru_cache/cache without C frames between recursive calls.
+
+    Since 3.12 each call through the C wrapper also spends CPython's fixed C
+    recursion budget, so memoized recursion fails near depth 3300 whatever
+    sys.setrecursionlimit says. Python-to-Python calls do not, leaving only the
+    recursion limit and memory. Per call this costs about 1.3x the C wrapper,
+    bounded too (a dict keeps LRU order, oldest first); typed about 2x.
+    """
+    cache = {}
+    get = cache.get
+    pop = cache.pop
+    miss = object()
+    hits = misses = 0
+
+    if maxsize is None and not typed:
+        def wrapper(*args, **kwds):
+            nonlocal hits, misses
+            key = (*args, miss, *kwds.items()) if kwds else args
+            result = get(key, miss)
+            if result is miss:
+                misses += 1
+                result = cache[key] = user_function(*args, **kwds)
+            else:
+                hits += 1
+            return result
+    else:
+        def wrapper(*args, **kwds):
+            nonlocal hits, misses
+            key = (*args, miss, *kwds.items()) if kwds else args
+            if typed:
+                key += (*map(type, args), *map(type, kwds.values()))
+            result = pop(key, miss)
+            if result is miss:
+                misses += 1
+                result = user_function(*args, **kwds)
+                if maxsize != 0:
+                    # The call may have cached this key already; only a new key evicts.
+                    if maxsize is not None and key not in cache and len(cache) >= maxsize:
+                        del cache[next(iter(cache))]
+                    cache[key] = result
+            else:
+                hits += 1
+                cache[key] = result  # now the most recently used
+            return result
+
+    def cache_clear():
+        nonlocal hits, misses
+        cache.clear()
+        hits = misses = 0
+
+    wrapper.cache_info = lambda: info(hits, misses, maxsize, len(cache))
+    wrapper.cache_clear = cache_clear
+    return wrapper
+
+
+def _drain(builtin):
+    # Drains a generator argument in Python: built-ins iterating it from C would
+    # spend the same C budget once per level, as in max(dfs(c) for c in node.children).
+    def call(*args, **kwds):
+        if args and type(args[0]) is GeneratorType:
+            args = ([value for value in args[0]], *args[1:])
+        return builtin(*args, **kwds)
+    return call
+
+
+def _any(iterable):
+    if type(iterable) is not GeneratorType:
+        return any(iterable)
+    for value in iterable:
+        if value:
+            return True
+    return False
+
+
+def _all(iterable):
+    if type(iterable) is not GeneratorType:
+        return all(iterable)
+    for value in iterable:
+        if not value:
+            return False
+    return True
+
+
+_CONSUMERS = {'min': _drain(min), 'max': _drain(max), 'sum': _drain(sum), 'any': _any, 'all': _all}
+# Harness frames that sit between recursive learner calls.
+_HIDDEN = {code for function in (_lru_cache_wrapper, _drain) for code in function.__code__.co_consts
+           if type(code) is CodeType} | {_any.__code__, _all.__code__}
+
+
+def _generator_consumers(code):
+    """Consumer built-ins to drain in Python, only when the learner writes generators."""
+    codes, index = [code], 0
+    while index < len(codes):
+        codes += [c for c in codes[index].co_consts if type(c) is CodeType]
+        index += 1
+    if not any(c.co_flags & 0x20 for c in codes):  # inspect.CO_GENERATOR
+        return ()
+    return _CONSUMERS.keys() & {name for c in codes for name in c.co_names}
+
+
+def _excepthook(kind, value, tb):
+    """The default report minus harness frames, so recursion folds into
+    "[Previous line repeated N more times]" again. Only the innermost frames are
+    formatted: 10^6 of them take 20+ s and, unfolded, overflow the 64 KiB stderr
+    collector, so a deep failure would read as a time or output limit."""
+    import traceback
+    pending, seen, omitted = [value], set(), 0
+    while pending:
+        error = pending.pop()
+        if error is None or id(error) in seen:
+            continue
+        seen.add(id(error))
+        kept = []
+        frame = error.__traceback__
+        while frame is not None:
+            if frame.tb_frame.f_code not in _HIDDEN:
+                kept.append(frame)
+            frame = frame.tb_next
+        if error is value:
+            omitted = len(kept) - 50
+        frame = None  # rebuilt, not relinked: setting tb_next walks the rest of the chain
+        for entry in reversed(kept[-50:]):
+            frame = TracebackType(frame, entry.tb_frame, entry.tb_lasti, entry.tb_lineno)
+        error.__traceback__ = frame
+        pending += error.__cause__, error.__context__
+    lines = traceback.format_exception(kind, value, value.__traceback__)
+    header = 'Traceback (most recent call last):\n'
+    if omitted > 0 and header in lines:
+        at = len(lines) - lines[::-1].index(header)  # the last one is this exception's
+        lines.insert(at, f'  ... {omitted} outer frames omitted ...\n')
+    sys.stderr.write(''.join(lines))
+
+
 def install(spec, scope):
+    # functools.lru_cache looks this up when it decorates, so @cache, @lru_cache
+    # and the learner's own `from functools import ...` all get it.
+    functools._lru_cache_wrapper = _lru_cache_wrapper
+    sys.excepthook = _excepthook
+    # install() runs from the main module, whose code already holds the learner's.
+    for name in _generator_consumers(sys._getframe(1).f_code):
+        scope[name] = _CONSUMERS[name]
     scope.update(TreeNode=trees.TreeNode, ListNode=lists.ListNode,
                  Interval=auxiliary.Interval, MountainArray=auxiliary.MountainArray)
     if spec.get('specialId'):

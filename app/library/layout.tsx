@@ -1,5 +1,7 @@
 import './library.css';
 import Link from 'next/link';
+import { Suspense } from 'react';
+import { LibraryPageView } from './page-view';
 
 export default function LibraryLayout({
   children,
@@ -27,6 +29,10 @@ export default function LibraryLayout({
           Privacy
         </Link>
       </footer>
+      {/* useSearchParams: no static-render bailout for the rest of the layout. */}
+      <Suspense fallback={null}>
+        <LibraryPageView />
+      </Suspense>
     </div>
   );
 }

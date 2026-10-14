@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import {
   Group,
   Panel,
@@ -7,7 +7,12 @@ import {
   useDefaultLayout,
   usePanelRef,
 } from 'react-resizable-panels';
-import { problemNeighbors } from '@/lib/problem-sequence';
+import {
+  nextUnsolved,
+  problemNeighbors,
+  rememberProblemSequence,
+} from '@/lib/problem-sequence';
+import { practiceStats, type Activity } from './practice-calendar';
 import {
   ArrowLeft,
   BookOpen,
@@ -73,7 +78,8 @@ import {
   problemStatement,
   type ProblemLocale,
   type Language,
-  type Problem,
+  type ProblemStatement,
+  type ProblemSummary,
 } from '@/lib/problems';
 import type { Boot } from '@/lib/types';
 import {
@@ -102,7 +108,7 @@ import { englishMessage } from '@/lib/messages-en';
 import '@/app/editor.css';
 
 type WorkspaceProps = {
-  problem: Problem;
+  problem: ProblemSummary;
   boot: Boot;
   navigate: (view: string, extra?: Record<string, string>) => void;
   ask: (context: Record<string, string>) => void;
@@ -114,6 +120,25 @@ type ReplaceRequest = {
   title: string;
   codingMode: CodingMode;
 };
+const blankStatement = (title: string): ProblemStatement => ({
+  title,
+  description: '',
+  input: '',
+  output: '',
+  explanation: '',
+  hints: [],
+});
+/** The catalogue entry until `problems/:id` answers: header fields only, no statement. */
+const summaryProblem = (p: ProblemSummary): OJProblem => ({
+  ...blankStatement(p.title),
+  sampleIn: '',
+  sampleOut: '',
+  lessonId: '',
+  timeLimit: 0,
+  memoryLimit: 0,
+  ...p,
+  translations: p.titleEn ? { en: blankStatement(p.titleEn) } : undefined,
+});
 /** An untouched ACM starter in either language can be swapped for the current one. */
 function isStarter(code: string, language: Language) {
   return Object.values(starterTemplates).some((set) => set[language] === code);
@@ -157,7 +182,7 @@ function Workspace({
   refresh,
 }: WorkspaceProps) {
   const userId = boot.person?.id || 'guest';
-  const [problem, setProblem] = useState<OJProblem>(initialProblem);
+  const [problem, setProblem] = useState(() => summaryProblem(initialProblem));
   const [neighbors, setNeighbors] = useState<{ prev?: string; next?: string }>(
     {},
   );
@@ -290,13 +315,20 @@ function Workspace({
   useEffect(() => {
     if (userId === 'guest') return;
     const controller = new AbortController();
-    let timer: ReturnType<typeof setTimeout>;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let busy = false;
     async function health() {
+      clearTimeout(timer);
+      // Hidden tabs stop polling; becoming visible refreshes at once.
+      if (busy || document.visibilityState !== 'visible') return;
+      busy = true;
+      let available = false;
       try {
         const status = await ojRequest<{
           available: boolean;
           languageVersions: Partial<Record<Language, string>>;
         }>('status', undefined, controller.signal);
+        available = status.available;
         if (!controller.signal.aborted)
           setProblem((previous) => ({
             ...previous,
@@ -306,13 +338,18 @@ function Workspace({
       } catch {
         /* A transient network failure does not discard the current editor state. */
       } finally {
-        if (!controller.signal.aborted) timer = setTimeout(health, 15000);
+        busy = false;
+        // A healthy judge rarely flips; recheck sooner while it is down or unreachable.
+        if (!controller.signal.aborted)
+          timer = setTimeout(health, available ? 60000 : 15000);
       }
     }
     void health();
+    document.addEventListener('visibilitychange', health);
     return () => {
       controller.abort();
       clearTimeout(timer);
+      document.removeEventListener('visibilitychange', health);
     };
   }, [userId]);
   const [submission, setSubmission] = useState<OJSubmission | null>(null);
@@ -356,6 +393,13 @@ function Workspace({
         },
       ];
   const sample = samples[sampleIndex] || samples[0];
+  // Bootstrap carries no statements; this stands in until `problems/:id` answers.
+  const problemLoading = !loadedProblem && !problemError && (
+    <div className="cs-loading" role="status">
+      <LoaderCircle size={18} className="cs-spin" />
+      {t('正在加载题目…', 'Loading the problem…')}
+    </div>
+  );
   const languageOptions = languages.filter(
     (item) => !problem.languages || problem.languages.includes(item.id),
   );
@@ -374,6 +418,10 @@ function Workspace({
           (course.id === problem.courseId ||
             course.lessons.some((lesson) => lesson.id === problem.lessonId)),
       ));
+  // The server only sends courses this viewer may see (canSeeCourse).
+  const courseVisible = boot.courses.some((course) =>
+    course.lessons.some((lesson) => lesson.id === problem.lessonId),
+  );
   const disabled =
     !ready ||
     recovering ||
@@ -1146,6 +1194,7 @@ function Workspace({
               </output>
             )}
             <div className="cs-problem-prose">
+              {problemLoading}
               {sourceBody && (
                 <>
                   <StatementMarkdown body={sourceBody} />
@@ -1619,51 +1668,70 @@ function Workspace({
                     )}
                   </div>
                   {inputMode === 'sample' ? (
-                    <>
-                      <div className="cs-input-toolbar">
-                        {samples.length > 1 && (
-                          <select
-                            aria-label={t('查看公开样例', 'Choose an example')}
-                            value={sampleIndex}
-                            onChange={(event) =>
-                              setSampleIndex(Number(event.target.value))
-                            }
-                          >
-                            {samples.map((item, index) => (
-                              <option key={item.name} value={index}>
-                                {t(item.name, `Example ${index + 1}`)}
-                              </option>
-                            ))}
-                          </select>
-                        )}
-                        <span>
-                          {t(
-                            `运行时检查全部 ${samples.length} 个公开样例`,
-                            samples.length === 1
-                              ? 'Run checks the public example'
-                              : `Run checks all ${samples.length} public examples`,
-                          )}
-                        </span>
-                      </div>
-                      {codingMode === 'leetcode' ? (
-                        <LeetCodeSamples
-                          problemId={problem.id}
-                          sample={sample}
-                          english={uiEnglish}
-                        />
-                      ) : (
-                        <div className="cs-sample-pair">
-                          <CopyBlock
-                            label={t('标准输入', 'Stdin')}
-                            value={sample.input}
-                          />
-                          <CopyBlock
-                            label={t('期望输出', 'Expected output')}
-                            value={sample.expectedOutput}
-                          />
+                    !loadedProblem ? (
+                      problemLoading || (
+                        <div className="cs-loading" role="status">
+                          {boot.person
+                            ? t(
+                                '题目加载失败，样例暂不可用。',
+                                "The problem didn't load, so the examples aren't available.",
+                              )
+                            : t(
+                                '登录后可查看样例。',
+                                'Sign in to see the examples.',
+                              )}
                         </div>
-                      )}
-                    </>
+                      )
+                    ) : (
+                      <>
+                        <div className="cs-input-toolbar">
+                          {samples.length > 1 && (
+                            <select
+                              aria-label={t(
+                                '查看公开样例',
+                                'Choose an example',
+                              )}
+                              value={sampleIndex}
+                              onChange={(event) =>
+                                setSampleIndex(Number(event.target.value))
+                              }
+                            >
+                              {samples.map((item, index) => (
+                                <option key={item.name} value={index}>
+                                  {t(item.name, `Example ${index + 1}`)}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                          <span>
+                            {t(
+                              `运行时检查全部 ${samples.length} 个公开样例`,
+                              samples.length === 1
+                                ? 'Run checks the public example'
+                                : `Run checks all ${samples.length} public examples`,
+                            )}
+                          </span>
+                        </div>
+                        {codingMode === 'leetcode' ? (
+                          <LeetCodeSamples
+                            problemId={problem.id}
+                            sample={sample}
+                            english={uiEnglish}
+                          />
+                        ) : (
+                          <div className="cs-sample-pair">
+                            <CopyBlock
+                              label={t('标准输入', 'Stdin')}
+                              value={sample.input}
+                            />
+                            <CopyBlock
+                              label={t('期望输出', 'Expected output')}
+                              value={sample.expectedOutput}
+                            />
+                          </div>
+                        )}
+                      </>
+                    )
                   ) : (
                     <>
                       <textarea
@@ -1848,27 +1916,30 @@ function Workspace({
           )}
           <button
             className="cs-top-button"
-            aria-label={t('向老师提问', 'Ask a teacher')}
-            title={t('向老师提问', 'Ask a teacher')}
+            aria-label={t('报告题目问题 / 提问', 'Report a problem / Ask')}
+            title={t('报告题目问题 / 提问', 'Report a problem / Ask')}
             onClick={() =>
+              // No lessonId: the problem's course may be hidden (owner-only mode).
               ask({
-                lessonId: problem.lessonId,
+                problemId: problem.id,
                 ...(submission ? { submissionId: submission.id } : {}),
               })
             }
           >
             <MessageSquare size={15} />
-            <span>{t('向老师提问', 'Ask a teacher')}</span>
+            <span>{t('报告题目问题 / 提问', 'Report a problem / Ask')}</span>
           </button>
-          <button
-            className="cs-top-button"
-            aria-label={t('相关课程', 'Related course')}
-            title={t('相关课程', 'Related course')}
-            onClick={() => navigate('lesson', { lesson: problem.lessonId })}
-          >
-            <BookOpen size={15} />
-            <span>{t('相关课程', 'Related course')}</span>
-          </button>
+          {courseVisible && (
+            <button
+              className="cs-top-button"
+              aria-label={t('相关课程', 'Related course')}
+              title={t('相关课程', 'Related course')}
+              onClick={() => navigate('lesson', { lesson: problem.lessonId })}
+            >
+              <BookOpen size={15} />
+              <span>{t('相关课程', 'Related course')}</span>
+            </button>
+          )}
           <button
             className="cs-top-button"
             aria-label={
@@ -1888,31 +1959,16 @@ function Workspace({
         </div>
       </div>
       {success && (
-        <Dialog
-          open
-          onOpenChange={(open) => {
-            if (!open) setSuccess(null);
-          }}
-        >
-          <DialogContent
-            className="cs-accepted-dialog"
-            showCloseButton={false}
-            aria-describedby={undefined}
-          >
-            <div className="cs-accepted-banner">
-              <DialogTitle className="cs-accepted-title">Accepted</DialogTitle>
-              <button
-                className="cs-accepted-dismiss"
-                aria-label={
-                  uiEnglish ? 'Dismiss success message' : '收起通过提示'
-                }
-                onClick={() => setSuccess(null)}
-              >
-                <X size={18} />
-              </button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <AcceptedDialog
+          problemId={problem.id}
+          line={!!problem.practiceRound}
+          acceptedAt={success.created_at}
+          activity={boot.activity}
+          fallbackNext={neighbors.next}
+          english={uiEnglish}
+          navigate={navigate}
+          onClose={() => setSuccess(null)}
+        />
       )}
       {problemError &&
         (boot.person ? (
@@ -2119,6 +2175,173 @@ function Workspace({
         }}
       />
     </div>
+  );
+}
+
+type NextStop = { id: string; sequence?: string[] } | null;
+
+/**
+ * Line 500: the server's next stop across the line. OA: the company's next
+ * unsolved judgeable problem. undefined for any other problem.
+ */
+async function findNextProblem(
+  problemId: string,
+  line: boolean,
+  signal: AbortSignal,
+): Promise<NextStop | undefined> {
+  if (line) {
+    const page = await ojRequest<{
+      nextProblemId: string | null;
+      sequence: string[];
+    }>('library?collection=ling-selected-500', undefined, signal);
+    return page.nextProblemId && page.nextProblemId !== problemId
+      ? { id: page.nextProblemId, sequence: page.sequence }
+      : null;
+  }
+  const company = /^oa-(.+)-\d+$/.exec(problemId)?.[1];
+  if (!company) return undefined;
+  const ids: string[] = [];
+  const solved = new Set<string>();
+  // ponytail: pages load until an unsolved problem follows this one; the largest company (~390) is ~13 pages.
+  for (let page = 1; ; page++) {
+    const result = await ojRequest<{
+      items: { id: string; progress?: string }[];
+      total: number;
+      pageSize: number;
+    }>(
+      `oa-library?${new URLSearchParams({ company, ready: '1', page: String(page) })}`,
+      undefined,
+      signal,
+    );
+    for (const item of result.items) {
+      ids.push(item.id);
+      if (item.progress === 'solved') solved.add(item.id);
+    }
+    const at = ids.indexOf(problemId);
+    if (
+      (at >= 0 && ids.slice(at + 1).some((id) => !solved.has(id))) ||
+      page * result.pageSize >= result.total
+    )
+      break;
+  }
+  const id = nextUnsolved(ids, problemId, solved);
+  return id ? { id, sequence: ids } : null;
+}
+
+function AcceptedDialog({
+  problemId,
+  line,
+  acceptedAt,
+  activity,
+  fallbackNext,
+  english,
+  navigate,
+  onClose,
+}: {
+  problemId: string;
+  line: boolean;
+  acceptedAt: number;
+  activity?: Activity[];
+  fallbackNext?: string;
+  english: boolean;
+  navigate: WorkspaceProps['navigate'];
+  onClose: () => void;
+}) {
+  const t = (zh: string, en: string) => (english ? en : zh);
+  const primary = useRef<HTMLButtonElement>(null);
+  const [target] = useState(() => {
+    try {
+      const saved = Number(
+        localStorage.getItem('cswork:practice:daily-target'),
+      );
+      return [1, 2, 3, 5].includes(saved) ? saved : 3;
+    } catch {
+      return 3;
+    }
+  });
+  // Opened only in the browser, so the local day is safe to read here. The
+  // bootstrap refresh may not include this AC yet; a problem counts once a day.
+  // Count it on its server day like the activity feed; min() keeps a slow
+  // client clock from pushing it into tomorrow.
+  const [now] = useState(Date.now);
+  const stats = useMemo(
+    () =>
+      practiceStats(
+        [
+          ...(activity ?? []),
+          { problem_id: problemId, created_at: Math.min(acceptedAt, now) },
+        ],
+        new Date(now).toDateString(),
+        english,
+      ),
+    [activity, problemId, acceptedAt, now, english],
+  );
+  const [next, setNext] = useState<NextStop | 'loading'>('loading');
+  useEffect(() => {
+    const controller = new AbortController();
+    const fallback = fallbackNext ? { id: fallbackNext } : null;
+    findNextProblem(problemId, line, controller.signal).then(
+      (found) => setNext(found === undefined ? fallback : found),
+      () => {
+        if (!controller.signal.aborted) setNext(fallback);
+      },
+    );
+    return () => controller.abort();
+  }, [problemId, line, fallbackNext]);
+  const go = () => {
+    if (next === 'loading') return;
+    if (!next)
+      return navigate(
+        'problems',
+        problemId.startsWith('oa-') ? { library: 'oa' } : undefined,
+      );
+    if (next.sequence) rememberProblemSequence(next.sequence);
+    navigate('problem', { problem: next.id });
+  };
+  return (
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <DialogContent
+        className="cs-accepted-dialog"
+        showCloseButton={false}
+        initialFocus={primary}
+      >
+        <div className="cs-accepted-banner">
+          <DialogTitle className="cs-accepted-title">Accepted</DialogTitle>
+          <DialogDescription className="cs-accepted-stats">
+            {t(
+              `今日 ${stats.today} / ${target} · 连续 ${stats.streak} 天`,
+              `Today ${stats.today} / ${target} · ${stats.streak}-day streak`,
+            )}
+          </DialogDescription>
+          <Button
+            ref={primary}
+            size="lg"
+            className="cs-accepted-next"
+            disabled={next === 'loading'}
+            focusableWhenDisabled
+            onClick={go}
+          >
+            {next === 'loading' ? <LoaderCircle className="cs-spin" /> : null}
+            {next === null
+              ? t('返回题库', 'Back to problems')
+              : t('下一题', 'Next problem')}
+            {next !== 'loading' && next !== null ? <ChevronRight /> : null}
+          </Button>
+          <button
+            className="cs-accepted-dismiss"
+            aria-label={english ? 'Dismiss success message' : '收起通过提示'}
+            onClick={onClose}
+          >
+            <X size={18} />
+          </button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 

@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { ojImportSchema, OJ_MAX_IMPORT_BYTES } from '@/lib/oj-types';
-import { problems } from '@/lib/problems';
+import { problems, type ProblemSummary } from '@/lib/problems';
+import { cleanOaStatement } from '@/lib/oa-verified-statement';
 import type {
   OjProblemPackage,
   OjProblemSpec,
@@ -252,7 +253,11 @@ export async function getJudgeProblem(p: Person, problemId: string) {
 }
 
 async function publicProblem(version: VersionRow): Promise<OjPublicProblem> {
-  const spec = JSON.parse(version.spec_json) as OjProblemSpec;
+  const parsed = JSON.parse(version.spec_json) as OjProblemSpec;
+  // OA packages keep provenance notes under their checksum; readers get the display copy.
+  const spec = version.problem_id.startsWith('oa-')
+    ? cleanOaStatement(parsed)
+    : parsed;
   // This query deliberately never loads hidden inputs or outputs into public serialization.
   const samples = await rows<{
     name: string;
@@ -318,6 +323,23 @@ export async function listPublishedProblems(
   );
 }
 
+/** Bootstrap ships list and navigation fields only; statements (~3MB in all) load per problem. */
+export async function listProblemSummaries(p: Person | null) {
+  return (await listPublishedProblems(p)).map(problemSummary);
+}
+export function problemSummary(p: OjPublicProblem): ProblemSummary {
+  return {
+    id: p.id,
+    title: p.title,
+    titleEn: p.translations?.en?.title,
+    difficulty: p.difficulty,
+    tags: p.tags,
+    lessonId: p.lessonId || undefined,
+    courseId: p.courseId,
+    freeJudge: p.freeJudge,
+  };
+}
+
 /** OA statements are public: anyone may read them; running and submitting need a verified account. */
 export async function getPublicOaProblem(problemId: string) {
   if (!problemId.startsWith('oa-')) throw new HttpError(404, '题目不存在或尚未发布');
@@ -334,6 +356,15 @@ export async function getPublicOaProblem(problemId: string) {
   if (!v) throw new HttpError(404, '题目版本不存在');
   assertOaVersionReady(problemId, v.checksum, v.spec_json);
   return { ...(await cachedPublicProblem(v)), freeJudge: true };
+}
+
+/** Catalogue visibility for one problem; hidden and missing look the same. */
+export async function canSeeProblem(p: Person, problemId: string) {
+  const pr = await one<GatedRow>(
+    `SELECT p.course_id,${freeJudge} AS free FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}${shownOaSql('p.id')}`,
+    problemId,
+  );
+  return !!pr && (!!pr.free || canSeeCourse(p, pr.course_id));
 }
 
 export async function getPublishedProblem(p: Person, problemId: string) {

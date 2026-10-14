@@ -289,6 +289,8 @@ const EN: Record<string, string> = {
     'The connection to LeetCode failed or timed out. Resume syncing later',
   'LeetCode 账号接口格式发生变化，已停止同步': "LeetCode's account API changed. Sync stopped",
   '无法确认 LeetCode 账号身份': "Couldn't verify your LeetCode account",
+  'LeetCode 同步暂不可用：LeetCode 接口有变化，正在适配':
+    "LeetCode sync is temporarily unavailable: LeetCode changed its API and we're adapting",
   'LeetCode 提交接口格式发生变化，未导入本页记录':
     "LeetCode's submissions API changed. Records on this page were not imported",
   'LeetCode 分页标记异常，未将不完整记录标记为完成':

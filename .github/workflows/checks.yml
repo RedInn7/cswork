@@ -52,6 +52,9 @@ jobs:
       - run: node --check deploy/oj-queue-control.cjs
       - run: npx tsx --test tests/oj-i18n.test.ts tests/study-library.test.ts tests/ling-curated.test.ts tests/practice-stats.test.ts tests/messages-en.test.ts
       - run: npx tsx --test tests/practice-round-migration.test.ts
+      - run: node --import tsx --test tests/oj-deep-recursion.test.ts tests/auth-route.test.ts tests/problem-sequence.test.ts tests/health.test.ts tests/metrics-funnel.test.ts tests/bootstrap-catalogue.test.ts
+      - run: node --import tsx --test tests/lazy-load-failed-ui.test.mjs tests/owner-metrics-ui.test.mjs
+      - run: node --test tests/monitor-watch.test.mjs
       - run: node --import tsx --test tests/leetcode-sync.test.ts tests/leetcode-practice-progress.test.ts
       - run: node --import tsx --test tests/leetcode-sync-ui.test.mjs
       - run: node --import tsx --test tests/study-library-ui.test.mjs

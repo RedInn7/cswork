@@ -8,7 +8,9 @@ async function handle(request: Request) {
   try {
     if (request.method === 'POST') sameOrigin(request);
     return await auth().handler(request);
-  } catch {
+  } catch (e) {
+    if (e instanceof HttpError) return fail(e, request);
+    console.error('Auth failure', e instanceof Error ? e.message : 'unknown');
     return fail(
       new HttpError(503, '登录暂时不可用，请检查配置或稍后重试'),
       request,
