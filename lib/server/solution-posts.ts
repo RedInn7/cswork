@@ -110,7 +110,7 @@ async function readPost(p: Person, postId: string) {
     row &&
     (row.hidden === SHOWN || (row.hidden === MODERATED && row.mine) || canModerate(p)) &&
     (await publicProblem(p, row.problemId));
-  if (!visible) throw new HttpError(404, '题解不存在');
+  if (!row || !visible) throw new HttpError(404, '题解不存在');
   const comments = (
     db
       .prepare(
