@@ -156,7 +156,8 @@ export const purchasedFreezes = (userId: string, since = Date.now() - 400 * DAY)
     .pluck()
     .all(userId, since) as number[];
 
-function redeem(userId: string, item: 'freeze' | 'ai', now = Date.now()) {
+/** Spends points on a streak freeze (3 a month) or an AI pack; returns the new summary. */
+export function spend(userId: string, item: 'freeze' | 'ai', now = Date.now()) {
   const db = sqlite();
   db.transaction(() => {
     if (balance(userId) < PRICES[item]) throw new HttpError(409, '积分不足');
@@ -214,7 +215,7 @@ export async function handlePoints(request: Request, p: Person, action?: string)
   if (request.method === 'POST' && action === 'redeem') {
     await limit(p, 'points-redeem', 20);
     const { item } = z.object({ item: z.enum(['freeze', 'ai']) }).strict().parse(await readJson(request, 200));
-    return json(redeem(p.id, item));
+    return json(spend(p.id, item));
   }
   throw new HttpError(404, '接口不存在');
 }
