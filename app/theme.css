@@ -110,6 +110,49 @@
     background: transparent;
   }
 
+  /*
+   * AI tutor on a light editor theme: the teal and error tokens are tuned for a light
+   * surface (3.4:1 here), so the site's dark mode takes the dark editor theme's set.
+   */
+  .dark .cs-ai-tutor {
+    --cs-ai: #5cc8b8;
+    --cs-ai-ink: #10151d;
+    --cs-ai-error: #fbbf24;
+  }
+
+  /* The mock interview's company picker opens a native list: system colours, not the navy board's. */
+  .dark .mi-board select option {
+    background: var(--popover);
+    color: var(--popover-foreground);
+  }
+
+  /* Hued initials tiles: the hue rides in a var, so the generator cannot re-step them. */
+  .dark .oa-company-logo:has(.oa-company-initials),
+  .dark .oa-public .oa-company-logo:has(.oa-company-initials) {
+    background: oklch(0.32 0.06 var(--oa-hue, 250));
+  }
+  .dark .oa-company-initials,
+  .dark .oa-public .oa-company-initials {
+    color: oklch(0.86 0.09 var(--oa-hue, 250));
+  }
+
+  /*
+   * Company logos are drawn for a light tile (most ship as black monochrome marks), so a
+   * logo keeps a light plate on dark surfaces, the editor's dark theme included.
+   */
+  .dark .oa-company-logo:has(> img),
+  .dark .oa-public .oa-company-logo:has(> img),
+  .dark .mock-logo:has(> img),
+  .dark .mock-public-logo:has(> img) {
+    border-color: transparent;
+    background: #eef2f0;
+  }
+  [data-theme='dark'] img[src^='/company-logos/']:not(:is(.oa-company-logo, .mock-logo, .mock-public-logo) > img) {
+    padding: 1px;
+    border-radius: 3px;
+    background: #eef2f0;
+  }
+
   /* Native controls, scrollbars and the selection follow the page. */
   .dark ::selection {
     background: color-mix(in oklab, var(--primary) 35%, transparent);
