@@ -107,6 +107,9 @@ const TeacherView = lazy(() =>
 const MockInterview = lazy(() =>
   import('./mock-interview').then((m) => ({ default: m.MockInterview }), loadFailed),
 );
+const MockPeer = lazy(() =>
+  import('./mock-peer').then((m) => ({ default: m.MockPeer }), loadFailed),
+);
 const MockOa = lazy(() =>
   import('./mock-oa').then((m) => ({ default: m.MockOa }), loadFailed),
 );
@@ -277,7 +280,7 @@ export function Academy() {
   }
   const selectedProblem = boot.problems.find((p) => p.id === params.problem),
     // An opened library item belongs to its list's menu entry.
-    navView = view === 'content' ? contentSection(params.type) : view,
+    navView = view === 'content' ? contentSection(params.type) : view === 'mock-peer' ? 'mock-interview' : view,
     current = nav.find((n) => n[3] === navView),
     unread =
       boot.unreadNotifications ??
@@ -406,6 +409,8 @@ export function Academy() {
         return (
           <MockOa key={boot.person?.id || 'guest'} boot={boot} params={params} navigate={navigate} />
         );
+      case 'mock-peer':
+        return <MockPeer key={boot.person?.id} navigate={navigate} params={params} />;
       case 'speedrun':
         return <Speedrun key={boot.person?.id || 'guest'} boot={boot} navigate={navigate} />;
       case 'status':
