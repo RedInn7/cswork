@@ -69,14 +69,16 @@
   box-shadow: 0 0 12px rgb(46 189 133 / 0.5);
 }
 .badge-stop-name {
+  display: -webkit-box;
   max-width: 100%;
   overflow: hidden;
   font-size: 11px;
   line-height: 1.3;
   color: var(--route-white-3);
   text-align: center;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 .badge-stops li[data-earned] .badge-stop-name {
   color: var(--route-white);
@@ -120,12 +122,10 @@
   font-variant-numeric: tabular-nums;
 }
 .badge-medal-name {
-  overflow: hidden;
   font-size: 13px;
   font-weight: 600;
+  line-height: 1.3;
   color: #27343e;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .badge-medal-state {
   font-size: 12px;

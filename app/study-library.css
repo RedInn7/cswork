@@ -939,6 +939,7 @@
   align-items: center;
   gap: 3px;
   margin-inline-end: auto;
+  padding-inline-end: 10px;
 }
 .route-freeze {
   display: flex;
@@ -1720,6 +1721,15 @@
   }
   .route-ticket .study-pips {
     display: none;
+  }
+  /* The daily ticket's button shares the second row with its meta line. */
+  .route-daily .route-daily-go {
+    grid-area: 2 / 3;
+    justify-self: end;
+  }
+  .route-daily .route-daily-meta {
+    grid-area: 2 / 1 / 3 / 3;
+    align-self: center;
   }
   .study-bank .route-cta {
     inline-size: 100%;
