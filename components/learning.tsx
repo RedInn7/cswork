@@ -30,6 +30,7 @@ import {
 import { KnowledgeExercises } from './knowledge-exercises';
 import '@/app/knowledge-exercises.css';
 import '@/app/study-library.css';
+import '@/app/lc-rating.css';
 import '@/app/oa-library.css';
 import {
   Dialog,

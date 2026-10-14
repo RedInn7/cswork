@@ -180,6 +180,7 @@ function redeem(userId: string, item: 'freeze' | 'ai', now = Date.now()) {
 const SHOWN_REF = new Set(['ac-day', 'daily', 'first-ac', 'streak']);
 function summary(userId: string, now = Date.now()) {
   const month = beijingDate(now).slice(0, 7);
+  const bought = purchasedFreezes(userId);
   const ledger = (
     sqlite()
       .prepare(
@@ -193,8 +194,10 @@ function summary(userId: string, now = Date.now()) {
     prices: PRICES,
     rules: POINTS,
     freezes: {
-      boughtThisMonth: purchasedFreezes(userId).filter((t) => beijingDate(t).startsWith(month)).length,
+      boughtThisMonth: bought.filter((t) => beijingDate(t).startsWith(month)).length,
       monthlyMax: FREEZES_PER_MONTH_BUYABLE,
+      // For the calendar right after a purchase, before the bootstrap refreshes.
+      purchased: bought,
     },
     ai: aiEnabled() ? { bonus: aiBonusLeft(userId), packUses: AI_PACK_USES } : null,
   };

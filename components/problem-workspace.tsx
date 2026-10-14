@@ -15,6 +15,7 @@ import {
 } from '@/lib/problem-sequence';
 import { practiceStats, type Activity } from './practice-calendar';
 import { AcceptedExtras } from './achievements';
+import { RatingBadge } from './rating-badge';
 import { localDay, readTodayTarget } from '@/lib/study-plan';
 import {
   ArrowLeft,
@@ -133,6 +134,7 @@ import { track } from '@/lib/analytics';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import '@/app/editor.css';
+import '@/app/lc-rating.css';
 import '@/app/workbench-tools.css';
 
 type WorkspaceProps = {
@@ -1328,6 +1330,8 @@ function Workspace({
                     ]
                   : problem.difficulty}
               </span>
+              {/* Contest rating (zerotrac); kept out of a mock like the company tags. */}
+              {!examMode && <RatingBadge rating={problem.rating} english={uiEnglish} />}
               {!examMode && topics.length > 0 && (
                 <button
                   className="cs-statement-pill"

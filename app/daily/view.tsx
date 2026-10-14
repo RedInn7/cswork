@@ -3,6 +3,7 @@ import { oaProblemPath } from '@/lib/oa-company-brands';
 import { ROUTE_SECTIONS, stopHref, topicName } from '@/lib/route-stops';
 import { PublicLibraryMarkdown } from '../library/markdown';
 import { OaCompanyMark } from '../oa/parts';
+import { LevelPicks } from '@/components/level-picks';
 
 const LEVELS: Record<string, [level: string, zh: string, en: string]> = {
   简单: ['easy', '简单', 'Easy'],
@@ -127,6 +128,8 @@ export function DailyView({
               : 'A new problem at midnight Beijing time, the same for everyone: odd dates ride Line 500, even dates bring a hot company’s OA. Solve it that day and your practice calendar shows a star; daily-problem streaks are counted on their own.'}
           </p>
         </article>
+        {/* Signed in only: the panel asks the API and stays empty for guests. */}
+        <LevelPicks english={!zh} />
       </main>
       <footer className="public-library-footer">
         <a href="/topics">
