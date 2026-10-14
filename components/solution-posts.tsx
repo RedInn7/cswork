@@ -912,6 +912,13 @@ const REASONS: Record<string, [string, string]> = {
   other: ['其他', 'Other'],
 };
 
+/** What a post is, by its target, [zh, en]. */
+const POST_KINDS: Record<TargetKind, [string, string]> = {
+  problem: ['题解', 'Solution'],
+  discuss: ['讨论帖', 'Thread'],
+  q: ['回答', 'Answer'],
+  exp: ['面经评论', 'Experience comment'],
+};
 /** Where a moderator reads a post in place: its problem, its thread page or its library item. */
 function targetHref(target: string, postId: string) {
   const kind = targetKind(target);
@@ -959,7 +966,9 @@ export function PostModeration() {
   const row = (item: QueueItem) => (
     <li key={`${item.kind}:${item.id}`} className="post-mod-item" data-hidden={item.hidden || undefined}>
       <p className="post-mod-meta">
-        <span className="cs-post-lang">{item.kind === 'post' ? t('题解', 'Solution') : t('评论', 'Comment')}</span>
+        <span className="cs-post-lang">
+          {item.kind === 'comment' ? t('评论', 'Comment') : t(...POST_KINDS[targetKind(item.problemId)])}
+        </span>
         <a href={targetHref(item.problemId, item.postId)}>{item.problemId}</a>
         <span>{item.author || t('学员', 'Learner')}</span>
         <span>{day(item.createdAt, english)}</span>
@@ -1001,12 +1010,12 @@ export function PostModeration() {
     </li>
   );
   return (
-    <section className="post-mod" aria-label={t('题解审核', 'Solution moderation')}>
+    <section className="post-mod" aria-label={t('社区审核', 'Community moderation')}>
       <div className="lms-toolbar">
         <p className="muted">
           {t(
-            '被举报的题解和评论排在前面。隐藏后只有作者自己能看到，可以随时恢复。',
-            'Reported solutions and comments come first. Hidden items stay visible to their author only, and can be restored.',
+            '被举报的题解、讨论帖、回答和评论排在前面；三人举报的会先自动隐藏。隐藏后只有作者自己能看到，可以随时恢复。',
+            'Reported solutions, threads, answers and comments come first; three reports hide one until you act. Hidden items stay visible to their author only, and can be restored.',
           )}
         </p>
         <Button variant="outline" onClick={() => setReload((n) => n + 1)}>

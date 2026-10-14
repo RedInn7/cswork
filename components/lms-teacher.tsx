@@ -70,7 +70,7 @@ export function TeacherView({
           <TabsTrigger value="problems">
             {t('题库管理', 'Problem admin')}
           </TabsTrigger>
-          <TabsTrigger value="posts">{t('题解审核', 'Solutions')}</TabsTrigger>
+          <TabsTrigger value="posts">{t('社区审核', 'Community')}</TabsTrigger>
           <TabsTrigger value="commerce">
             {t('订单与售卖', 'Orders & sales')}
           </TabsTrigger>

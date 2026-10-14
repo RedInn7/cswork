@@ -881,7 +881,8 @@ export function ContentDetail({
             </article>
             {item.member && <MemberPost member={item.member} questions={item.questions ?? []} />}
             {/* Others' answers wait, like the reference answer, until the learner has tried. */}
-            {(item.type === 'experience' || (item.type === 'interview_question' && (!gated || open))) && (
+            {((item.type === 'experience' && (!item.member || item.member.public)) ||
+              (item.type === 'interview_question' && (!gated || open))) && (
               <CommunityPosts key={key} type={item.type} slug={item.slug} signedIn={!!userId} />
             )}
             {behavioral && (
