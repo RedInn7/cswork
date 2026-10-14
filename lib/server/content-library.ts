@@ -192,6 +192,7 @@ function list(db: Database.Database, params: URLSearchParams) {
         : (db
             .prepare(`SELECT ${columns} FROM items i WHERE ${where.join(' AND ')} ORDER BY ${order} LIMIT ${limit} OFFSET ${skip}`)
             .all(...args) as Record<string, unknown>[]);
+    // ponytail: every matching key per request (~4k experiences, a few ms); cache per filter if it shows in profiles.
     keys = () =>
       db
         .prepare(`SELECT ${byDate ? date : 'i.published_at'} FROM items i WHERE ${where.join(' AND ')}`)
