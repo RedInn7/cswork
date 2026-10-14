@@ -48,6 +48,7 @@ import {
   MockExamDone,
   useMockExam,
 } from './mock-exam-bar';
+import { reportWindow } from '@/lib/mock-oa';
 import {
   Dialog,
   DialogContent,
@@ -194,6 +195,12 @@ function Workspace({
   // A running mock OA hides solutions, hints and the way to other problems.
   const exam = useMockExam(mock, userId, initialProblem.id);
   const examMode = !!exam?.running;
+  // A mock question starts from the template, not this browser's earlier draft of it.
+  const [draftId] = useState(() =>
+    exam ? `${initialProblem.id}:mock:${exam.session.id}` : initialProblem.id,
+  );
+  // In the exam the Submissions tab lists only this exam's attempts.
+  const examFrom = exam?.running ? reportWindow(exam.session).from : 0;
   const [problem, setProblem] = useState(() => summaryProblem(initialProblem));
   const [neighbors, setNeighbors] = useState<{ prev?: string; next?: string }>(
     {},
@@ -322,6 +329,7 @@ function Workspace({
   const [historyLoading, setHistoryLoading] = useState(false);
   const [historyError, setHistoryError] = useState('');
   const [historyRevision, setHistoryRevision] = useState(0);
+  const shownHistory = history.filter((item) => item.created_at >= examFrom);
   const [problemError, setProblemError] = useState('');
   const [problemRevision, setProblemRevision] = useState(0);
   useEffect(() => {
@@ -521,7 +529,7 @@ function Workspace({
         chosen = storedLanguage as Language;
       const stored = readEditorDraft(
         userId,
-        initialProblem.id,
+        draftId,
         chosen,
         initialMode,
         template(chosen),
@@ -530,7 +538,7 @@ function Workspace({
       if (initialMode === 'acm' && isStarter(stored.code, chosen))
         stored.code = template(chosen);
       draft.current = {
-        key: draftStorageKey(userId, initialProblem.id, chosen, initialMode),
+        key: draftStorageKey(userId, draftId, chosen, initialMode),
         code: stored.code,
       };
       setLanguage(chosen);
@@ -545,7 +553,7 @@ function Workspace({
       );
     } catch {
       draft.current = {
-        key: draftStorageKey(userId, initialProblem.id, chosen, initialMode),
+        key: draftStorageKey(userId, draftId, chosen, initialMode),
         code: template(chosen),
       };
       setLanguage(chosen);
@@ -571,7 +579,7 @@ function Workspace({
       window.removeEventListener('pagehide', save);
       document.removeEventListener('visibilitychange', visibility);
     };
-  }, [userId, initialProblem.id, persistDraft, loadedProblem]);
+  }, [userId, draftId, persistDraft, loadedProblem]);
 
   useEffect(() => {
     const query = window.matchMedia('(max-width: 900px)');
@@ -817,7 +825,7 @@ function Workspace({
     try {
       nextCode = readEditorDraft(
         userId,
-        problem.id,
+        draftId,
         next,
         mode,
         templateFor(next, mode),
@@ -832,7 +840,7 @@ function Workspace({
       ]);
     }
     draft.current = {
-      key: draftStorageKey(userId, problem.id, next, mode),
+      key: draftStorageKey(userId, draftId, next, mode),
       code: override ?? nextCode,
     };
     draftDirty.current = override !== undefined;
@@ -1113,7 +1121,7 @@ function Workspace({
                   : ''}
                 {statement.title}
               </h2>
-              {history.some(
+              {shownHistory.some(
                 (item) =>
                   item.mode === 'judge' &&
                   item.status === 'accepted' &&
@@ -1293,9 +1301,13 @@ function Workspace({
           <div className="cs-history-pane">
             <div className="cs-history-heading">
               <span>
-                {uiEnglish
-                  ? 'All rounds: submissions and runs'
-                  : '所有轮次的提交与测试运行'}
+                {examMode
+                  ? uiEnglish
+                    ? 'This exam: submissions and runs'
+                    : '本场考试的提交与测试运行'
+                  : uiEnglish
+                    ? 'All rounds: submissions and runs'
+                    : '所有轮次的提交与测试运行'}
               </span>
               <button
                 title={t('刷新提交记录', 'Refresh submissions')}
@@ -1314,7 +1326,7 @@ function Workspace({
                 </button>
               </div>
             )}
-            {!history.length && !historyLoading && (
+            {!shownHistory.length && !historyLoading && (
               <div className="cs-empty">
                 <History size={26} />
                 <h3>{uiEnglish ? 'No submissions yet' : '还没有提交记录'}</h3>
@@ -1325,7 +1337,7 @@ function Workspace({
                 </p>
               </div>
             )}
-            {history.map((item) => (
+            {shownHistory.map((item) => (
               <div key={item.id} className="cs-history-row">
                 <button onClick={() => inspect(item)}>
                   <Verdict submission={item} />
@@ -1375,7 +1387,8 @@ function Workspace({
                 {t('正在加载…', 'Loading…')}
               </div>
             )}
-            {historyCursor && (
+            {/* Once an attempt from before the exam is hidden, older pages hold none of this exam's. */}
+            {historyCursor && shownHistory.length === history.length && (
               <Button
                 variant="outline"
                 className="cs-load-more"
