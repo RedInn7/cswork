@@ -127,12 +127,12 @@ export async function mockPresetsWithPools() {
   const names = catalogNames();
   const others = [...new Set([...cat.oa.keys(), ...lcMap.keys()])]
     .filter((slug) => !taken.has(slug) && !hidden.has(slug))
-    .map((slug) => ({
-      slug,
-      name: names.get(slug) ?? slug,
-      pool: mockPool(cat, [slug], 'mixed').length,
-    }))
-    .filter((c) => c.pool > 0)
+    .map((slug) => {
+      const oa = mockPool(cat, [slug], 'oa').length,
+        lc = mockPool(cat, [slug], 'lc').length;
+      return { slug, name: names.get(slug) ?? slug, pool: { oa, lc, total: oa + lc } };
+    })
+    .filter((c) => c.pool.total > 0)
     .sort((a, b) => a.name.localeCompare(b.name));
   return {
     updated: MOCK_PRESETS_UPDATED,

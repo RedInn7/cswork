@@ -68,7 +68,7 @@ type Preset = {
 };
 type Presets = {
   companies: Preset[];
-  others: { slug: string; name: string; pool: number }[];
+  others: { slug: string; name: string; pool: Preset['pool'] }[];
   all: { oa: number; lc: number };
 };
 type Drawn = {
@@ -688,14 +688,11 @@ function CustomMock({
   const [minutes, setMinutes] = useState(90);
   const [level, setLevel] = useState<'ladder' | Slot>('ladder');
   const [source, setSource] = useState<MockSource>('mixed');
-  const preset = presets.companies.find((c) => c.slug === company);
-  const other = presets.others.find((c) => c.slug === company);
-  // Custom mocks of another company draw from its OA and mapped LeetCode problems together.
-  const pool = preset
-    ? { mixed: preset.pool.total, oa: preset.pool.oa, lc: preset.pool.lc }[source]
-    : other
-      ? other.pool
-      : { mixed: presets.all.oa + presets.all.lc, ...presets.all }[source];
+  const counts = [...presets.companies, ...presets.others].find((c) => c.slug === company)?.pool ?? {
+    ...presets.all,
+    total: presets.all.oa + presets.all.lc,
+  };
+  const pool = { mixed: counts.total, oa: counts.oa, lc: counts.lc }[source];
   const radio = <T extends string | number>(
     name: string,
     value: T,
