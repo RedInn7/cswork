@@ -331,7 +331,8 @@ export function darkBlock(css, { manual = new Set(), from } = {}) {
   root.walkRules((rule) => {
     const bgs = rule.nodes.filter((n) => n.type === 'decl' && BG_PROPS.test(n.prop));
     const cls = bgs.map((d) => bgClass(d.value, vars)).filter(Boolean).at(-1);
-    if (cls) for (const sel of rule.selectors) grounds.set(groundKey(sel), cls);
+    // Only resting states paint the ground: `.x:hover` / `:has(:checked)` must not stand in for `.x`.
+    if (cls) for (const sel of rule.selectors) if (!sel.includes(':')) grounds.set(groundKey(sel), cls);
   });
 
   const out = postcss.root();
