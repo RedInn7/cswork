@@ -17,6 +17,7 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import type { Navigate } from './learning';
+import { CampPanel, type Camp } from './group-camp';
 import '@/app/learner-cloud.css';
 import '@/app/study-groups.css';
 
@@ -36,6 +37,8 @@ type Member = {
   days: number[];
   week: number;
   goal: number | null;
+  /** The cohort: which of today's problems are done, and how many of the plan. */
+  camp?: { today: boolean[]; done: number } | null;
 };
 export type GroupDetail = {
   id: string;
@@ -43,6 +46,7 @@ export type GroupDetail = {
   role: 'owner' | 'member' | null;
   inviteCode: string | null;
   goal: { text: string; stop: string | null; stopTotal: number; setAt: number | null } | null;
+  camp?: Camp | null;
   max: number;
   createdAt: number;
   members: Member[];
@@ -641,6 +645,18 @@ function GroupPage({ id, navigate, t, english }: { id: string; navigate: Navigat
           ))}
       </header>
       <ErrorLine error={error} t={t} />
+
+      <CampPanel
+        camp={group.camp ?? null}
+        members={board}
+        group={group.name}
+        manage={manage}
+        member={!!group.role}
+        busy={busy}
+        save={(body) => post('/camp', body)}
+        t={t}
+        english={english}
+      />
 
       <section className="group-panel" aria-labelledby="group-checkins">
         <h2 id="group-checkins">{t('近 14 天打卡', 'Check-ins, last 14 days')}</h2>
