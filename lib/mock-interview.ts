@@ -180,7 +180,15 @@ function random(seed: string) {
 }
 export const newSeed = () => Math.random().toString(36).slice(2, 10);
 
-export type PoolItem = { id: string; company: string | null; role: string | null; category: string | null; round: string | null };
+export type PoolItem = {
+  id: string;
+  company: string | null;
+  role: string | null;
+  category: string | null;
+  round: string | null;
+  /** The judge problem it maps to: two companies' versions of one problem never share a set. */
+  problem?: string | null;
+};
 export type DrawOptions = {
   seed: string;
   company?: string | null;
@@ -197,8 +205,8 @@ export type DrawnSlot<T> = Slot & { item: T | null; similar: boolean; pool: numb
 /**
  * Each kind gets one queue: its questions shuffled by the seed, then ordered best match first
  * (the company's questions, the role's, the round's) so other companies only fill in. Slots take
- * the queue in turn; a re-roll takes the next question no slot holds. Deterministic: a share link
- * carrying seed + rerolls reproduces the set.
+ * the queue in turn, and a re-roll the next question, skipping any a slot holds (or its problem).
+ * Deterministic: a share link carrying seed + rerolls reproduces the set.
  */
 export function drawSet<T extends PoolItem>(pool: readonly T[], template: Template, o: DrawOptions) {
   const companies = o.company ? companyGroup(o.company) : null;
@@ -230,18 +238,16 @@ export function drawSet<T extends PoolItem>(pool: readonly T[], template: Templa
   };
   const slots = template.slots.filter((s) => !s.optional || queue(s.kind).length);
   const cursor = new Map<KindId, number>();
-  const picks: (T | null)[] = slots.map((s) => {
-    const n = cursor.get(s.kind) ?? 0;
-    cursor.set(s.kind, n + 1);
-    return queue(s.kind)[n] ?? null;
-  });
+  const picks: (T | null)[] = slots.map(() => null);
+  const taken = (c: T) => picks.includes(c) || (!!c.problem && picks.some((p) => p?.problem === c.problem));
+  /** Moves a slot to the next free question in its queue; false (and unchanged) when none is left. */
   const reroll = (index: number) => {
     const { kind } = slots[index],
       q = queue(kind),
       n = cursor.get(kind) ?? 0;
     for (let k = 0; k < q.length; k++) {
       const candidate = q[(n + k) % q.length];
-      if (!picks.includes(candidate)) {
+      if (!taken(candidate)) {
         picks[index] = candidate;
         cursor.set(kind, n + k + 1);
         return true;
@@ -249,6 +255,7 @@ export function drawSet<T extends PoolItem>(pool: readonly T[], template: Templa
     }
     return false;
   };
+  slots.forEach((_, index) => reroll(index));
   const rerolls = (o.rerolls ?? []).filter((i) => Number.isInteger(i) && i >= 0 && i < slots.length && reroll(i));
   const skip = new Set(o.exclude);
   slots.forEach((s, index) => {

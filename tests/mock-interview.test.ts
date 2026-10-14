@@ -85,6 +85,26 @@ void test('a seed reproduces its set; re-rolls and exclusions replay from seed +
   assert.deepEqual([ids(tiny), tiny.rerolls], [['only'], []]);
 });
 
+void test('two versions of one judge problem never share a set', () => {
+  const twins: PoolItem[] = [
+    { ...q('lru-a', 'meta', CODING), problem: 'lc-146' },
+    { ...q('lru-b', 'tiktok', CODING), problem: 'lc-146' },
+    { ...q('lru-c', 'meta', CODING), problem: 'lc-146' },
+    { ...q('sum', 'meta', CODING), problem: 'lc-1' },
+    ...Array.from({ length: 6 }, (_, i) => q(`uber-${i}`, 'uber', CODING)),
+  ];
+  for (const seed of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']) {
+    for (const rerolls of [[], [0], [1, 0, 2, 1, 0]]) {
+      const set = drawSet(twins, custom('coding.3'), { seed, company: 'meta', rerolls });
+      const picked = ids(set),
+        lru = picked.filter((id) => id?.startsWith('lru-')).length;
+      // Meta's own LRU and Two Sum first, then another company fills the slot the second LRU would take.
+      assert.ok(rerolls.length ? lru <= 1 : lru === 1 && picked.includes('sum'), `${seed} ${rerolls}: ${picked}`);
+      assert.ok(picked.every(Boolean) && new Set(picked).size === 3, `${seed} ${rerolls}`);
+    }
+  }
+});
+
 void test('optional slots need a bank; counts merge aliases', () => {
   const onsite = drawSet(pool, resolveTemplate('onsite')!, { seed: 'o' });
   assert.ok(!onsite.slots.some((s) => s.kind === 'design'));
