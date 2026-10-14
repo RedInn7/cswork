@@ -22,6 +22,36 @@ export type SdChapter = {
 /** The system design course (lib/content/system-design-course.json), in reading order. */
 export const sdChapters = (course as { chapters: SdChapter[] }).chapters;
 export const sdChapter = (slug: string) => sdChapters.find((chapter) => chapter.slug === slug);
+/** The index's parts: each runs from its first chapter up to the next part's. */
+export const sdParts = [
+  { from: 'framework', zh: '系统设计：框架与案例', en: 'System design: framework and cases' },
+  { from: 'ood-interview-approach', zh: '面向对象设计（LLD）', en: 'Object-oriented design (LLD)' },
+  { from: 'concurrency-primitives', zh: '并发编程', en: 'Concurrency' },
+  { from: 'ml-design-framework', zh: 'ML 系统设计', en: 'ML system design' },
+].map((part, i, parts) => {
+  const at = (slug: string) => sdChapters.findIndex((chapter) => chapter.slug === slug);
+  const next = parts[i + 1];
+  return { ...part, chapters: sdChapters.slice(at(part.from), next ? at(next.from) : undefined) };
+});
+// Design exercises: the chapter page asks for the learner's own design before its walkthrough.
+export const sdCases = new Set([
+  'url-shortener',
+  'rate-limiter',
+  'news-feed',
+  'chat-messaging',
+  'ride-sharing',
+  'notification-system',
+  'video-streaming',
+  'web-crawler',
+  'distributed-kv-store',
+  'payment-ledger',
+  'search-autocomplete',
+  'ticket-booking',
+  'recsys-ranking',
+  'search-ranking',
+  'ads-ctr',
+  'fraud-detection',
+]);
 export const sdPath = (slug?: string) => (slug ? `/system-design/${slug}` : '/system-design');
 /** Sitemap entries: the course index and every chapter. */
 export const systemDesignPaths = () => [
