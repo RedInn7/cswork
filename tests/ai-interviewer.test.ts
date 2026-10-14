@@ -16,7 +16,8 @@ process.env.BETTER_AUTH_SECRET = 'x'.repeat(40);
 process.env.HIDDEN_COMPANIES = 'secretco';
 const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
-const { INTERVIEW_LIMITS, issueTicket, validTicket } = await import('../lib/server/ai-interviewer');
+const { HISTORY_CHARS, INTERVIEW_LIMITS, REPORT_CHARS, issueTicket, validTicket } = await import('../lib/server/ai-interviewer');
+const { takeQuota, today } = await import('../lib/server/ai-tutor');
 const { AI_TURNS, reportFeedback } = await import('../lib/mock-ai-interview');
 const { decodeFeedback, encodeFeedback, questionTag } = await import('../lib/mock-interview-feedback');
 
@@ -32,7 +33,7 @@ const ok = (text: string) => () =>
   Response.json({
     stop_reason: 'end_turn',
     content: [{ type: 'thinking', thinking: '' }, { type: 'text', text }],
-    usage: { input_tokens: 900, output_tokens: 60 },
+    usage: { input_tokens: 900, cache_creation_input_tokens: 50, cache_read_input_tokens: 4000, output_tokens: 60 },
   });
 
 async function call(p: Person, action: string, body: unknown) {
@@ -107,8 +108,10 @@ void test('the first message opens an interview: the notes stay on the server, t
   // An interviewer never writes code: the hint rules strip it.
   assert.equal(String(body.text).includes('return 0'), false);
   assert.equal(String(body.text).startsWith('Good question.'), true);
-  assert.equal(used(me.id, 'interview'), 1);
-  assert.equal(used(me.id, 'interview-call'), 1);
+  assert.equal(used(me.id, 'iv-session'), 1);
+  assert.equal(used(me.id, 'iv-call'), 1);
+  // Cache writes count as input: what the learner's daily token cap reads.
+  assert.equal(sqlite().prepare("SELECT input_tokens FROM ai_usage WHERE kind='iv-call'").pluck().get(), 950);
   const [{ headers, body: request }] = sent;
   assert.equal(request.model, 'claude-opus-5-5');
   assert.equal(request.fallbacks, 'default');
@@ -135,7 +138,7 @@ void test('later turns carry the ticket: no second interview, and a ticket only 
   const { status, body } = await call(me, 'interview', turn({ ticket, history, locale: 'zh' }));
   assert.equal(status, 200);
   assert.equal('interviewsLeft' in body, false);
-  assert.equal(used(me.id, 'interview'), 0);
+  assert.equal(used(me.id, 'iv-session'), 0);
   const request = sent[0].body;
   assert.equal(String(request.system).includes('Simplified Chinese'), true);
   const roles = (request.messages as { role: string }[]).map((m) => m.role);
@@ -146,10 +149,19 @@ void test('later turns carry the ticket: no second interview, and a ticket only 
   assert.equal(sent.length, 1);
 });
 
+const alternate = (n: number, candidate: string, interviewer = 'Go on.') =>
+  Array.from({ length: 2 * n - 1 }, (_, i) => (i % 2 ? { role: 'interviewer', text: interviewer } : { role: 'candidate', text: candidate }));
+
 void test('bad transcripts and questions outside the pool are refused before any call', async () => {
-  const many = Array.from({ length: AI_TURNS + 1 }, () => ({ role: 'candidate', text: 'hi' }));
-  assert.equal((await call(me, 'interview', turn({ history: many }))).status, 409);
+  assert.equal((await call(me, 'interview', turn({ history: alternate(AI_TURNS + 1, 'hi') }))).status, 400);
   assert.equal((await call(me, 'interview', turn({ history: [] }))).status, 400);
+  // Strictly in turns, and the interviewer's lines no longer than this server writes them.
+  const twice = [{ role: 'candidate', text: 'a' }, { role: 'candidate', text: 'b' }];
+  assert.equal((await call(me, 'interview', turn({ history: twice }))).status, 400);
+  assert.equal((await call(me, 'interview', turn({ history: alternate(2, 'hi', 'x'.repeat(1300)) }))).status, 400);
+  // A transcript over the cap, of messages each within theirs.
+  const long = await call(me, 'interview', turn({ history: alternate(Math.ceil(HISTORY_CHARS / 2000) + 1, '长'.repeat(2000)) }));
+  assert.equal(long.status, 413);
   assert.equal(
     (await call(me, 'interview', turn({ history: [{ role: 'candidate', text: 'a' }, { role: 'interviewer', text: 'b' }] }))).status,
     400,
@@ -158,20 +170,72 @@ void test('bad transcripts and questions outside the pool are refused before any
   for (const itemId of ['cq-partial', 'cq-hidden', 'nope'])
     assert.equal((await call(me, 'interview', turn({ itemId }))).status, 404, itemId);
   assert.equal(sent.length, 0);
-  assert.equal(used(me.id, 'interview-call'), 0);
+  assert.equal(used(me.id, 'iv-call'), 0);
 });
 
-void test('three interviews a day; a refused fourth hands its call back, and an unbilled failure hands both back', async () => {
+void test('three interviews a day; a refused fourth hands its call back, and a first turn that comes to nothing hands back the interview', async () => {
   for (let i = 0; i < INTERVIEW_LIMITS.interviews; i++) assert.equal((await call(me, 'interview', turn())).status, 200);
   const fourth = await call(me, 'interview', turn());
   assert.equal(fourth.status, 429);
   assert.equal(fourth.body.error, '今天的 AI 模拟面试次数已用完，明天再来');
-  assert.equal(used(me.id, 'interview-call'), INTERVIEW_LIMITS.interviews);
+  assert.equal(used(me.id, 'iv-call'), INTERVIEW_LIMITS.interviews);
   sqlite().prepare('DELETE FROM ai_usage').run();
   reply = () => new Response('{}', { status: 500 });
   assert.equal((await call(me, 'interview', turn())).status, 503);
-  assert.equal(used(me.id, 'interview'), 0);
-  assert.equal(used(me.id, 'interview-call'), 0);
+  assert.equal(used(me.id, 'iv-session'), 0);
+  assert.equal(used(me.id, 'iv-call'), 0);
+  // Billed but unusable (only code, then empty): no ticket comes back, so the interview does.
+  for (const text of ['```python\nreturn 0\n```', '']) {
+    reply = ok(text);
+    const failed = await call(me, 'interview', turn());
+    assert.equal(failed.status, 503);
+    assert.equal('ticket' in failed.body, false);
+  }
+  assert.equal(used(me.id, 'iv-session'), 0);
+  assert.equal(used(me.id, 'iv-call'), 2);
+  reply = ok('Fine.');
+  assert.equal((await call(me, 'interview', turn())).body.interviewsLeft, INTERVIEW_LIMITS.interviews - 1);
+});
+
+void test('a ticket answers AI_TURNS messages, however its history is trimmed; failures cost no turn', async () => {
+  const ticket = issueTicket(me.id, 'abc123');
+  reply = () => new Response('{}', { status: 500 });
+  assert.equal((await call(me, 'interview', turn({ ticket }))).status, 503);
+  reply = ok('Fine.');
+  for (let i = 0; i < AI_TURNS; i++) {
+    sqlite().prepare('DELETE FROM limits').run();
+    assert.equal((await call(me, 'interview', turn({ ticket }))).status, 200, `turn ${i + 1}`);
+  }
+  sqlite().prepare('DELETE FROM limits').run();
+  const over = await call(me, 'interview', turn({ ticket }));
+  assert.equal(over.status, 429);
+  assert.equal(over.body.error, '这场面试的对话轮数已用完');
+  assert.equal(sent.length, AI_TURNS + 1);
+  // Only the calls that reached the API are spent.
+  assert.equal(used(me.id, 'iv-call'), AI_TURNS);
+});
+
+void test("a learner's input tokens and the interviewer's own site budget cap the calls; the tutor's budget is apart", async () => {
+  const day = today();
+  sqlite()
+    .prepare("INSERT INTO ai_usage(day,user_id,kind,count,input_tokens) VALUES(?,?,'iv-call',1,?)")
+    .run(day, me.id, INTERVIEW_LIMITS.tokens);
+  const capped = await call(me, 'interview', turn());
+  assert.equal(capped.status, 429);
+  assert.equal(used(me.id, 'iv-session'), 0);
+  assert.equal(used(me.id, 'iv-call'), 1);
+  process.env.AI_INTERVIEW_DAILY_BUDGET = '1';
+  const spent = await call(other, 'interview', turn());
+  assert.equal(spent.status, 503);
+  assert.equal(spent.body.error, 'AI 面试官今天的额度已用完，明天再来');
+  assert.equal(used(other.id, 'iv-call'), 0);
+  // Interviewer rows (calls, interviews, tickets) never spend the tutor's budget.
+  process.env.AI_TUTOR_DAILY_BUDGET = '1';
+  sqlite().prepare("INSERT INTO ai_usage(day,user_id,kind,count) VALUES(?,?,'iv-session',3),(?,?,'iv-t:abc',9)").run(day, me.id, day, me.id);
+  assert.equal(takeQuota(other.id, 'hint', day, 10, 'spent'), 9);
+  delete process.env.AI_INTERVIEW_DAILY_BUDGET;
+  delete process.env.AI_TUTOR_DAILY_BUDGET;
+  assert.equal(sent.length, 0);
 });
 
 void test('the report: ticket required, JSON schema output, one entry per question, AI feedback that survives a link', async () => {
@@ -183,6 +247,13 @@ void test('the report: ticket required, JSON schema output, one entry per questi
     (await call(me, 'interview-report', { seed: 'abc123', ticket, locale: 'en', questions: [q('iq-bq', [])] })).status,
     400,
   );
+  const huge = [q('cq-sum', alternate(3, 'x')), ...Array.from({ length: 4 }, () => ({ ...q('cq-sum', []), code: 'y'.repeat(REPORT_CHARS / 4) }))];
+  assert.equal((await call(me, 'interview-report', { seed: 'abc123', ticket, locale: 'en', questions: huge })).status, 413);
+  assert.equal(sent.length, 0);
+  // A reply that came back but could not be used is a spent call; the ticket keeps its report.
+  reply = ok('not json');
+  assert.equal((await call(me, 'interview-report', { seed: 'abc123', ticket, locale: 'en', questions })).status, 503);
+  assert.equal(used(me.id, 'iv-call'), 1);
   reply = ok(
     JSON.stringify({
       rubric: { communication: 3, problem: 2, coding: 4, testing: null, complexity: 1 },
@@ -198,7 +269,7 @@ void test('the report: ticket required, JSON schema output, one entry per questi
   assert.equal(report.questions.length, 2);
   assert.equal(report.questions[1].rating, null);
   assert.equal(report.rubric.testing, null);
-  const request = sent[0].body as { output_config: { format: { type: string } }; messages: { content: string }[] };
+  const request = sent[1].body as { output_config: { format: { type: string } }; messages: { content: string }[] };
   assert.equal(request.output_config.format.type, 'json_schema');
   assert.equal(request.messages[0].content.includes('Candidate: I add them.'), true);
   assert.equal(request.messages[0].content.includes('SOLUTION-MARKER'), true);
@@ -211,8 +282,10 @@ void test('the report: ticket required, JSON schema output, one entry per questi
   assert.equal(decoded.questions[0].rating, 3);
   // Feedback a person wrote has no flag.
   assert.equal('ai' in decodeFeedback(encodeFeedback({ ...feedback, ai: false })!.value)!, false);
-  reply = ok('not json');
-  assert.equal((await call(me, 'interview-report', { seed: 'abc123', ticket, locale: 'en', questions })).status, 503);
-  // A reply that came back but could not be used is still a spent call.
-  assert.equal(used(me.id, 'interview-call'), 2);
+  // One report per interview.
+  const again = await call(me, 'interview-report', { seed: 'abc123', ticket, locale: 'en', questions });
+  assert.equal(again.status, 409);
+  assert.equal(again.body.error, '这场面试已经生成过评估');
+  assert.equal(used(me.id, 'iv-call'), 2);
+  assert.equal(sent.length, 2);
 });

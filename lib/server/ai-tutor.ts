@@ -26,7 +26,7 @@ const STATEMENT_CHARS = 12_000;
 const MODELS: Record<AiKind, string> = { hint: 'claude-haiku-5-5', review: 'claude-sonnet-5-5' };
 // Thinking counts toward max_tokens, so the caps leave room for it; REPLY_CHARS caps what is shown.
 const MAX_TOKENS: Record<AiKind, number> = { hint: 1024, review: 2048 };
-const REPLY_CHARS: Record<AiKind, number> = { hint: 1200, review: 4000 };
+export const REPLY_CHARS: Record<AiKind, number> = { hint: 1200, review: 4000 };
 // Code a reply may show: none in a hint; in a review at most two blocks of four lines, six in all.
 const CODE_CAPS: Record<AiKind, { blocks: number; lines: number; total: number; spans: number; spanChars: number }> = {
   hint: { blocks: 0, lines: 0, total: 0, spans: 4, spanChars: 40 },
@@ -75,12 +75,23 @@ const input = z
 
 export const aiEnabled = () => !!setting('ANTHROPIC_API_KEY');
 export const today = () => new Date().toISOString().slice(0, 10);
-// 0 is a valid budget: it pauses the tutor for everyone.
-function budget() {
-  const raw = setting('AI_TUTOR_DAILY_BUDGET').trim();
+/** A site budget from the environment, `fallback` when unset or invalid; 0 is valid and pauses the feature for everyone. */
+export function dailyBudget(name: string, fallback: number) {
+  const raw = setting(name).trim();
   const n = raw ? Number(raw) : NaN;
-  return Number.isFinite(n) && n >= 0 ? n : DEFAULT_BUDGET;
+  return Number.isFinite(n) && n >= 0 ? n : fallback;
 }
+/**
+ * The ai_usage rows one site budget counts (`calls`, a fixed SQL condition on kind), the budget,
+ * and what a learner sees once it is spent. The AI interviewer (lib/server/ai-interviewer.ts)
+ * keeps its rows, all 'iv-…', under a pool of its own, so neither feature spends the other's.
+ */
+export type Pool = { calls: string; budget: () => number; spent: string };
+const TUTOR: Pool = {
+  calls: "kind NOT LIKE 'iv-%'",
+  budget: () => dailyBudget('AI_TUTOR_DAILY_BUDGET', DEFAULT_BUDGET),
+  spent: 'AI 助教今天的额度已用完，明天再来',
+};
 const usedToday = (userId: string, kind: string, day: string) =>
   (sqlite()
     .prepare('SELECT count FROM ai_usage WHERE day=? AND user_id=? AND kind=?')
@@ -89,14 +100,13 @@ const usedToday = (userId: string, kind: string, day: string) =>
 
 /**
  * Takes one from the learner's daily `kind` quota (`max` a day; `spentMessage` once used up)
- * and from the site budget; returns how many are left today. Other AI features
- * (lib/server/ai-interviewer.ts) keep their own kinds in the same table and budget.
+ * and from the pool's site budget; returns how many are left today.
  */
-export function takeQuota(userId: string, kind: string, day: string, max: number, spentMessage: string) {
+export function takeQuota(userId: string, kind: string, day: string, max: number, spentMessage: string, pool = TUTOR) {
   const db = sqlite();
   return db.transaction(() => {
-    const spent = db.prepare('SELECT COALESCE(SUM(count),0) FROM ai_usage WHERE day=?').pluck().get(day) as number;
-    if (spent >= budget()) throw new HttpError(503, 'AI 助教今天的额度已用完，明天再来');
+    const spent = db.prepare(`SELECT COALESCE(SUM(count),0) FROM ai_usage WHERE day=? AND ${pool.calls}`).pluck().get(day) as number;
+    if (spent >= pool.budget()) throw new HttpError(503, pool.spent);
     const used = usedToday(userId, kind, day);
     if (used >= max) throw new HttpError(429, spentMessage);
     db.prepare(

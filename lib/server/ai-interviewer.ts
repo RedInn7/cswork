@@ -3,8 +3,11 @@ import { z } from 'zod';
 import { KINDS, kindOf, splitBody, type KindId } from '@/lib/mock-interview';
 import { RUBRIC, VERDICTS } from '@/lib/mock-interview-feedback';
 import { AI_MESSAGE_CHARS, AI_TURNS, type AiReport } from '@/lib/mock-ai-interview';
+import { sqlite } from '@/db/sqlite';
 import type { Person } from './auth';
-import { AI_CODE_CHARS, aiEnabled, anthropicFetch, settle, takeQuota, tidyReply, today } from './ai-tutor';
+import {
+  AI_CODE_CHARS, REPLY_CHARS, aiEnabled, anthropicFetch, dailyBudget, settle, takeQuota, tidyReply, today, type Pool,
+} from './ai-tutor';
 import { library } from './content-library';
 import { setting } from './env';
 import { HttpError, json, limit } from './http';
@@ -17,12 +20,32 @@ import { readJson } from './my-practice';
  * carries the question's transcript; the question, hints, follow-ups, rubric and reference
  * answer are read here from the content library and never leave the server. An interview
  * starts with the first message of its set: that takes one of the day's interviews and returns
- * a signed ticket the later turns and the report must carry. Every call to Anthropic also takes
- * one from a daily call quota, so a client that forges its history still stops there. Quotas,
- * budget, fetch and reply tidying are the AI tutor's (lib/server/ai-tutor.ts).
+ * a signed ticket the later turns and the report must carry; the server counts each ticket's
+ * answered turns (AI_TURNS) and its one report. Every call to Anthropic also takes one from a
+ * daily call quota and the interviewer's own site budget, a learner's input tokens are capped
+ * a day, and a transcript is capped in characters, so a forged history stops there. Quotas, fetch
+ * and reply tidying are the AI tutor's (lib/server/ai-tutor.ts). ai_usage kinds: 'iv-call' (calls),
+ * 'iv-session' (interviews), 'iv-t:' / 'iv-r:' + the ticket's MAC (its turns and report).
  */
-// A day's calls: each interview's messages and report, with room for a couple of retries.
-export const INTERVIEW_LIMITS = { interviews: 3, calls: 3 * (AI_TURNS + 3) };
+export const INTERVIEW_LIMITS = {
+  interviews: 3,
+  // Each interview's messages and report, with room for a few failed calls.
+  calls: 3 * (AI_TURNS + 3),
+  // Input tokens a day, uncached plus cache writes (reads cost a twentieth): about five full interviews.
+  tokens: 1_500_000,
+};
+// Characters of one question's transcript, and of every transcript and code a report reads.
+export const HISTORY_CHARS = 24_000;
+export const REPORT_CHARS = 60_000;
+const CALL = 'iv-call',
+  SESSION = 'iv-session';
+// Calls per UTC day across all learners, apart from the tutor's; AI_INTERVIEW_DAILY_BUDGET overrides it.
+const POOL: Pool = {
+  calls: `kind='${CALL}'`,
+  budget: () => dailyBudget('AI_INTERVIEW_DAILY_BUDGET', 300),
+  spent: 'AI 面试官今天的额度已用完，明天再来',
+};
+const NONE = { in: 0, out: 0 };
 // One model for the conversation and the report; AI_INTERVIEW_MODEL overrides it for a rollout.
 const MODEL = 'claude-opus-5-5';
 const UPSTREAM_MS = 25_000;
@@ -51,9 +74,14 @@ export function validTicket(ticket: string, userId: string, seed: string, now = 
   return want.length === got.length && timingSafeEqual(want, got);
 }
 
+const said = <R extends string>(role: R, max: number) =>
+  z.object({ role: z.literal(role), text: z.string().trim().min(1).max(max) }).strict();
+// Strictly in turns, the candidate first; the interviewer's lines are this server's replies (tidyReply's cap).
 const turns = z
-  .array(z.object({ role: z.enum(['candidate', 'interviewer']), text: z.string().trim().min(1).max(AI_MESSAGE_CHARS) }).strict())
-  .max(AI_TURNS * 2);
+  .array(z.union([said('candidate', AI_MESSAGE_CHARS), said('interviewer', REPLY_CHARS.hint + 1)]))
+  .max(AI_TURNS * 2)
+  .refine((h) => h.every((t, i) => t.role === (i % 2 ? 'interviewer' : 'candidate')));
+const chars = (history: { text: string }[]) => history.reduce((n, t) => n + t.text.length, 0);
 const question = {
   itemId: z.string().regex(/^[\w-]{1,160}$/),
   minutes: z.number().int().min(1).max(240),
@@ -151,12 +179,13 @@ const codeBlock = (q: Question, code: string) =>
 type Upstream = {
   stop_reason?: string;
   content?: { type: string; text?: string }[];
-  usage?: { input_tokens?: number; output_tokens?: number };
+  usage?: { input_tokens?: number; output_tokens?: number; cache_creation_input_tokens?: number };
 };
 /**
  * One call, counted on the day's call quota; refunded only when the API cannot have billed it
  * (an error status or no connection), as the tutor does. `read` turns the reply into the result:
- * a failure there is a spent call.
+ * a failure there is a spent call. A call that came to nothing runs `release`, which hands back
+ * the ticket's turn or report (and a first turn's interview), so a retry takes no other.
  */
 async function ask<T>(
   p: Person,
@@ -165,7 +194,7 @@ async function ask<T>(
   body: { model: string } & Record<string, unknown>,
   signal: AbortSignal,
   read: (text: string, reply: Upstream) => T,
-  opened: boolean,
+  release: () => void,
 ): Promise<T> {
   let outcome = 'error';
   let refund = false;
@@ -182,7 +211,8 @@ async function ask<T>(
       throw new HttpError(503, UNAVAILABLE);
     }
     const reply = (await response.json()) as Upstream;
-    tokens = { in: reply.usage?.input_tokens ?? 0, out: reply.usage?.output_tokens ?? 0 };
+    const usage = reply.usage ?? {};
+    tokens = { in: (usage.input_tokens ?? 0) + (usage.cache_creation_input_tokens ?? 0), out: usage.output_tokens ?? 0 };
     if (reply.stop_reason === 'refusal') {
       outcome = 'refusal';
       throw new HttpError(422, 'AI 面试官无法回答这个请求');
@@ -199,35 +229,70 @@ async function ask<T>(
     console.error('AI interviewer upstream', error instanceof Error ? error.name : 'unknown');
     throw new HttpError(503, UNAVAILABLE);
   } finally {
-    settle(p.id, 'interview-call', day, refund, tokens);
-    // A first turn that never reached the API gives the interview back too.
-    if (refund && opened) settle(p.id, 'interview', day, true, { in: 0, out: 0 });
+    settle(p.id, CALL, day, refund, tokens);
+    if (outcome !== 'ok') release();
     record('ai_tutor', p.id, { kind: action, outcome, input_tokens: tokens.in, output_tokens: tokens.out });
   }
 }
 const model = () => setting('AI_INTERVIEW_MODEL') || MODEL;
 const spentCalls = '今天的 AI 面试对话轮数已用完，明天再来';
+/** Takes the day's call, after the learner's input tokens; `undo` hands back what was taken before it. */
+function takeCall(p: Person, day: string, undo: () => void) {
+  const used = sqlite()
+    .prepare('SELECT input_tokens FROM ai_usage WHERE day=? AND user_id=? AND kind=?')
+    .pluck()
+    .get(day, p.id, CALL) as number | undefined;
+  try {
+    if ((used ?? 0) >= INTERVIEW_LIMITS.tokens) throw new HttpError(429, spentCalls);
+    takeQuota(p.id, CALL, day, INTERVIEW_LIMITS.calls, spentCalls, POOL);
+  } catch (error) {
+    undo();
+    throw error;
+  }
+}
+/**
+ * One use of a ticket, `t` an answered turn (AI_TURNS in all) or `r` its one report, counted on
+ * the day it was issued so midnight doesn't reset it. Returns the give-back.
+ */
+function useTicket(userId: string, ticket: string, use: 't' | 'r') {
+  const [at, mac] = ticket.split('.');
+  const day = new Date(Number(at) - TICKET_MS).toISOString().slice(0, 10);
+  const kind = `iv-${use}:${mac.slice(0, 16)}`;
+  const taken = sqlite()
+    .prepare(
+      'INSERT INTO ai_usage(day,user_id,kind,count) VALUES(?,?,?,1) ON CONFLICT(day,user_id,kind) DO UPDATE SET count=count+1 WHERE count<?',
+    )
+    .run(day, userId, kind, use === 't' ? AI_TURNS : 1).changes;
+  if (!taken) throw use === 't' ? new HttpError(429, '这场面试的对话轮数已用完') : new HttpError(409, '这场面试已经生成过评估');
+  return () => settle(userId, kind, day, true, NONE);
+}
 
 async function turn(request: Request, p: Person) {
   const data = turnInput.parse(await readJson(request, 600_000));
-  const last = data.history.at(-1);
-  if (!last || last.role !== 'candidate' || data.history[0].role !== 'candidate')
-    throw new HttpError(400, '无效的请求内容');
-  if (candidateCount(data.history) > AI_TURNS) throw new HttpError(409, '这场面试的对话轮数已用完');
+  // In turns (the schema), so it ends with the candidate's new message: at most AI_TURNS of theirs.
+  if (data.history.at(-1)?.role !== 'candidate') throw new HttpError(400, '无效的请求内容');
+  if (chars(data.history) > HISTORY_CHARS) throw new HttpError(413, '这道题的对话太长了，请换下一题或结束面试');
   if (data.ticket && !validTicket(data.ticket, p.id, data.seed)) throw new HttpError(409, '这场 AI 面试已失效，请重新开始');
   const q = loadQuestion(data.itemId);
   const day = today();
-  takeQuota(p.id, 'interview-call', day, INTERVIEW_LIMITS.calls, spentCalls);
   let ticket = data.ticket;
   let interviewsLeft: number | undefined;
+  let release = ticket ? useTicket(p.id, ticket, 't') : () => {};
+  takeCall(p, day, release);
   if (!ticket) {
     try {
-      interviewsLeft = takeQuota(p.id, 'interview', day, INTERVIEW_LIMITS.interviews, '今天的 AI 模拟面试次数已用完，明天再来');
+      interviewsLeft = takeQuota(p.id, SESSION, day, INTERVIEW_LIMITS.interviews, '今天的 AI 模拟面试次数已用完，明天再来', POOL);
     } catch (error) {
-      settle(p.id, 'interview-call', day, true, { in: 0, out: 0 });
+      settle(p.id, CALL, day, true, NONE);
       throw error;
     }
     ticket = issueTicket(p.id, data.seed);
+    const giveBack = useTicket(p.id, ticket, 't');
+    // A first turn that comes to nothing gives the interview back: the client retries without a ticket.
+    release = () => {
+      giveBack();
+      settle(p.id, SESSION, day, true, NONE);
+    };
   }
   const en = data.locale === 'en';
   const text = await ask(
@@ -252,7 +317,7 @@ async function turn(request: Request, p: Person) {
       if (!tidy) throw new HttpError(503, UNAVAILABLE);
       return tidy;
     },
-    !data.ticket,
+    release,
   );
   return json({ text, ticket, ...(interviewsLeft === undefined ? {} : { interviewsLeft }) });
 }
@@ -311,9 +376,12 @@ async function report(request: Request, p: Person) {
   const asked = data.questions.reduce((n, q) => n + candidateCount(q.history), 0);
   if (!asked) throw new HttpError(400, '还没有可以评估的对话');
   if (asked > AI_TURNS) throw new HttpError(409, '这场面试的对话轮数已用完');
+  if (data.questions.reduce((n, q) => n + chars(q.history) + q.code.length, 0) > REPORT_CHARS)
+    throw new HttpError(413, '对话太长，无法生成评估');
   const questions = data.questions.map((q) => ({ ...q, question: loadQuestion(q.itemId) }));
   const day = today();
-  takeQuota(p.id, 'interview-call', day, INTERVIEW_LIMITS.calls, spentCalls);
+  const release = useTicket(p.id, data.ticket, 'r');
+  takeCall(p, day, release);
   const en = data.locale === 'en';
   const user = questions
     .map(({ question: q, history, code, elapsedSec, minutes }, i) => {
@@ -366,7 +434,7 @@ ${transcript}
       };
       return out;
     },
-    false,
+    release,
   );
   return json({ report: result });
 }
