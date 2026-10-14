@@ -333,3 +333,173 @@ button.ct-card:focus-visible {
     transform: none;
   }
 }
+
+/* Experience outcome: self-reported, so a plain label; never shown as a rate. */
+.ct-result[data-tone='good'] {
+  background: var(--rd-brand-soft);
+  color: var(--rd-brand-ink);
+}
+.ct-result[data-tone='bad'] {
+  background: color-mix(in oklch, var(--rd-red) 10%, transparent);
+  color: oklch(0.505 0.213 27.518);
+}
+.ct-related-judge {
+  margin-left: auto;
+}
+
+/*
+ * "Practise this company": a Line 500 ticket (navy panel, signal amber call to action,
+ * line green numerals) inside the zinc library page.
+ */
+@font-face {
+  /* Same file and range as app/study-library.css, which this view may not load. */
+  font-family: 'Overpass';
+  src: url('/fonts/overpass-latin-var.woff2') format('woff2');
+  font-weight: 400 800;
+  font-display: swap;
+  unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-2019,
+    U+201C-201D, U+2026;
+}
+.ct-practice {
+  --ct-navy: #0e1a2b;
+  --ct-amber: #ffb23f;
+  --ct-line: #2ebd85;
+  --ct-num: 'Overpass', 'PingFang SC', 'Microsoft YaHei UI', sans-serif;
+  margin-top: 16px;
+  padding: 20px 22px;
+  border-radius: var(--rd-radius);
+  color: #eef3f8;
+  background:
+    radial-gradient(rgb(238 243 248 / 0.05) 1px, transparent 1.5px) 0 0 / 8px 8px,
+    var(--ct-navy);
+}
+.ct-practice a {
+  color: inherit;
+  text-decoration: none;
+}
+.ct-practice a:focus-visible {
+  outline: 2px solid var(--ct-amber);
+  outline-offset: 3px;
+}
+.ct-practice-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+}
+.ct-practice-eyebrow {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--ct-amber);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.ct-practice h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 800;
+}
+.ct-practice-head a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  color: #c7d2e0;
+  font-size: 13px;
+}
+.ct-practice-head a:hover {
+  color: #fff;
+}
+.ct-practice-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 22px;
+  margin-top: 14px;
+}
+.ct-practice-oa {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+  color: #c7d2e0;
+}
+.ct-practice-oa strong {
+  font-family: var(--ct-num);
+  font-size: 30px;
+  font-weight: 750;
+  line-height: 1;
+  color: var(--ct-line);
+  font-variant-numeric: tabular-nums;
+}
+.ct-practice-oa:hover span {
+  color: #fff;
+  text-decoration: underline;
+}
+.ct-practice a.ct-practice-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 9px;
+  background: var(--ct-amber);
+  color: var(--ct-navy);
+  font-size: 13px;
+  font-weight: 700;
+}
+.ct-practice a.ct-practice-cta:hover {
+  background: #ffc466;
+}
+.ct-practice-sub {
+  margin: 16px 0 6px;
+  padding-top: 14px;
+  border-top: 2px dashed rgb(238 243 248 / 0.16);
+  color: #8fa1b5;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.ct-practice-lc {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ct-practice-lc a {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 7px 8px;
+  margin: 0 -8px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.ct-practice-lc a:hover {
+  background: rgb(238 243 248 / 0.07);
+}
+.ct-practice-num,
+.ct-practice-freq {
+  font-family: var(--ct-num);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.ct-practice-num {
+  color: #8fa1b5;
+}
+.ct-practice-title {
+  overflow-wrap: anywhere;
+}
+.ct-practice-freq {
+  color: var(--ct-amber);
+}
+@media (max-width: 760px) {
+  .ct-practice {
+    padding: 18px 16px;
+  }
+  .ct-practice-head a {
+    margin-left: 0;
+  }
+}
