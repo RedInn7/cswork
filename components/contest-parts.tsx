@@ -57,7 +57,7 @@ export function RatingCurve({
     : `Rating ${current} after ${points.length} weekl${points.length === 1 ? 'y' : 'ies'}, peak ${peak}`;
   return (
     <figure className="rating-curve">
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label} preserveAspectRatio="none">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label}>
         {CONTEST_BANDS.map((band, i) => {
           const top = Math.min(hi, CONTEST_BANDS[i + 1]?.from ?? Infinity);
           const bottom = Math.max(lo, band.from);
