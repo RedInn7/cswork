@@ -212,6 +212,11 @@ const EN: Record<string, string> = {
     'The draft matches the published version. Nothing to publish',
   无效的进度标记: 'Invalid progress marker',
   判题接口不存在: 'Judge endpoint not found',
+  // Personal access tokens for MCP clients (lib/server/api-tokens.ts)
+  访问令牌不能调用这个接口: "Access tokens can't call this endpoint",
+  访问令牌无效或已吊销: 'The access token is invalid or revoked',
+  访问令牌不存在: 'Access token not found',
+  '最多保留 10 个访问令牌，请先吊销不用的': 'You can keep at most 10 access tokens. Revoke one you no longer use first',
   笔记或标记已达上限: "You've reached the limit for notes or marks",
   // Lists, public profile and asked reports (lib/server/learner-cloud.ts)
   题单不存在: 'List not found',

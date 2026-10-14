@@ -17,6 +17,8 @@ import { handleLeetcodeSync } from './leetcode-sync';
 import { handleMyPractice } from './my-practice';
 import { problemStats } from './problem-stats';
 import { handleLearnerCloud, handleMockHistory } from './learner-cloud';
+import { handleApiTokens } from './api-tokens';
+import { dailyProblem } from './daily-problem';
 import { curatedHint } from '@/lib/ling-curated';
 import { companyTagIndex } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
@@ -131,12 +133,18 @@ export async function handleOj(
     await limitReader(request, p, 'library-read', 120);
     return json(listLibrary(url.searchParams, p?.id));
   }
+  if (request.method === 'GET' && resource === 'daily' && !id) {
+    // Today's problem for MCP clients; the site gets it from the bootstrap.
+    await limitReader(request, p, 'library-read', 120);
+    return json({ daily: await dailyProblem() });
+  }
   if (request.method === 'GET' && resource === 'feed' && !id) {
     // Public judge status board: submission metadata only, rate limited per client.
     await limitReader(request, p, 'judge-feed-read', 120);
     return json(judgeFeed(p, url.searchParams));
   }
   requirePerson(p);
+  if (resource === 'tokens') return handleApiTokens(request, p, path.slice(1));
   if (resource === 'leetcode-sync')
     return handleLeetcodeSync(request, p, path.slice(1));
   if (!id && (resource === 'history' || resource === 'notes' || resource === 'marks'))
