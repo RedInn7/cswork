@@ -293,6 +293,9 @@ export async function mockReport(p: Person, params: URLSearchParams) {
   );
   const items = ids.map((id) => ({
     id,
+    // An OA problem's estimate (what the draw placed it by): a slot can hold a
+    // different difficulty when its company had none to fit it.
+    estimate: oaTopic(id)?.d ?? null,
     // First-AC times count from the real start, not the slack-widened window.
     ...summarizeAttempts(
       found.filter((s) => s.problem_id === id),

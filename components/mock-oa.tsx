@@ -40,8 +40,8 @@ import {
   LADDER,
   mockClock,
   readMockState,
+  reportLevel,
   reportWindow,
-  slotOf,
   watchMockState,
   writeMockState,
   type MockSession,
@@ -111,6 +111,8 @@ type Report = {
     best: QuestionResult | null;
     firstAcceptedMs: number | null;
     pending: boolean;
+    /** An OA problem's estimated difficulty (lib/content/oa-topics.json). */
+    estimate?: Slot | null;
   }[];
   score: { value: number; min: number; max: number; per: number[]; estimate: boolean };
   pending: boolean;
@@ -1223,14 +1225,18 @@ function MockReport({
             const item = data?.items.find((i) => i.id === id);
             const summary = titles.get(id);
             const [state, label] = item ? resultLabel(item, t) : ['todo', '—'];
+            const { level, estimated } = reportLevel(id, summary?.difficulty, item?.estimate, session.slots[index]);
             return (
               <li key={id} data-state={state}>
                 <span className="mock-q">Q{index + 1}</span>
                 <span className="mock-result-title">
                   <strong>{summary ? problemTitle(summary, locale) : id}</strong>
                   <small>
-                    {/* An OA problem was drawn into its slot by its estimate; the package label is a default. */}
-                    {t(...LEVEL_NAME[slotOf(id.startsWith('lc-') ? summary?.difficulty : null) ?? session.slots[index] ?? 'medium'])}
+                    <span title={estimated ? t('AI 估计的难度', 'AI-estimated difficulty') : undefined}>
+                      {estimated && <span aria-hidden="true">≈</span>}
+                      {estimated && <span className="sr-only">{t('估计', 'Estimated ')}</span>}
+                      {t(...LEVEL_NAME[level])}
+                    </span>
                     {item
                       ? t(` · 提交 ${item.attempts} 次`, ` · ${item.attempts} submission${item.attempts === 1 ? '' : 's'}`)
                       : ''}

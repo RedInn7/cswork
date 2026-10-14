@@ -9,6 +9,7 @@ import {
   mockExamFor,
   parseMockState,
   questionStates,
+  reportLevel,
   reportWindow,
   scoreMock,
   seededRandom,
@@ -190,6 +191,15 @@ test('pools join OA companies and mapped LeetCode problems, never hidden compani
   const tiktok = shownMockPresets(new Set(['bytedance'])).find((c) => c.slug === 'tiktok')!;
   assert.deepEqual(tiktok.aliases, ['tiktok']);
   assert.ok(mockOaPaths().some((p) => p.path === '/mock-oa/tiktok'));
+});
+
+test("a report labels a question by its LeetCode or explicit package difficulty, else the OA estimate, else the slot", () => {
+  assert.deepEqual(reportLevel('lc-1', '简单', null, 'hard'), { level: 'easy', estimated: false });
+  // A hard slot that only a medium problem could fill (capital-one, ebay).
+  assert.deepEqual(reportLevel('oa-capital-one-1', '中等', 'medium', 'hard'), { level: 'medium', estimated: true });
+  assert.deepEqual(reportLevel('oa-x-1', '困难', 'medium', 'easy'), { level: 'hard', estimated: false });
+  assert.deepEqual(reportLevel('oa-x-1', '中等', null, 'easy'), { level: 'easy', estimated: false });
+  assert.deepEqual(reportLevel('lc-2', undefined, 'easy', undefined), { level: 'medium', estimated: false });
 });
 
 test('scoring: passed fraction per question, or a weighted 200–600 GCA estimate', () => {

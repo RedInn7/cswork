@@ -17,6 +17,25 @@ export function slotOf(difficulty?: string | null): Slot | null {
   return value ?? (SLOTS.includes(difficulty as Slot) ? (difficulty as Slot) : null);
 }
 
+/**
+ * The difficulty a score report shows for a question, as the OA library does: a
+ * LeetCode label, or an OA package's explicit 简单/困难, stands; otherwise the OA
+ * estimate (a slot can hold another difficulty when the company had none to fit
+ * it), else the slot it was drawn into.
+ */
+export function reportLevel(
+  id: string,
+  packaged: string | null | undefined,
+  estimate: Slot | null | undefined,
+  slot: Slot | undefined,
+): { level: Slot; estimated: boolean } {
+  const label = slotOf(packaged);
+  if (label && (id.startsWith('lc-') || label !== 'medium'))
+    return { level: label, estimated: false };
+  if (estimate && !id.startsWith('lc-')) return { level: estimate, estimated: true };
+  return { level: slot ?? 'medium', estimated: false };
+}
+
 /** Default difficulty ladder for a custom mock of n questions. */
 export const LADDER: Record<number, Slot[]> = {
   1: ['medium'],
