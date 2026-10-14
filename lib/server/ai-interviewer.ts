@@ -21,6 +21,7 @@ import { readJson } from './my-practice';
  * one from a daily call quota, so a client that forges its history still stops there. Quotas,
  * budget, fetch and reply tidying are the AI tutor's (lib/server/ai-tutor.ts).
  */
+// A day's calls: each interview's messages and report, with room for a couple of retries.
 export const INTERVIEW_LIMITS = { interviews: 3, calls: 3 * (AI_TURNS + 3) };
 // One model for the conversation and the report; AI_INTERVIEW_MODEL overrides it for a rollout.
 const MODEL = 'claude-opus-5-5';

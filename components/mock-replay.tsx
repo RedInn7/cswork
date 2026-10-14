@@ -33,6 +33,7 @@ export function useReplayRecorder(session: MockSession | null, problemId: string
   useEffect(() => {
     if (!session?.startedAt || !session.ids.includes(problemId)) return;
     const start = session.startedAt,
+      skew = session.skew,
       end = start + session.minutes * 60_000,
       key = trackKey(session.id, problemId),
       cap = Math.floor(REPLAY_BYTES / session.ids.length);
@@ -71,7 +72,8 @@ export function useReplayRecorder(session: MockSession | null, problemId: string
     });
     onResult.current = (s) => {
       if (!track || track.full || s.problem_id !== problemId) return;
-      const t = s.created_at - session.skew - start;
+      // Submissions carry server time.
+      const t = s.created_at - skew - start;
       // Older than the exam (a recovered earlier run), or already recorded.
       if (t < -5000 || track.events.some((e) => e.id === s.id.slice(0, 12))) return;
       track.events.push({ t: Math.max(0, t), mode: s.mode, status: s.status, passed: s.passed, total: s.total, id: s.id.slice(0, 12) });
