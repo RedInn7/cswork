@@ -709,11 +709,11 @@ const DRIVERS: Record<string, Driver> = {
       one.has_next()
       print(one.next())`,
     cpp: r`
-      vector<vector<int>> rows{{1, 2}, {3}, {}, {4}}, empty{{}, {}}, single{{}, {5}};
-      Flatten2D it(rows);
+      Flatten2D it({{1, 2}, {3}, {}, {4}});  // built from a temporary: the iterator must own its rows
       vector<int> out;
       while (it.hasNext()) out.push_back(it.next());
       show(out);
+      vector<vector<int>> empty{{}, {}}, single{{}, {5}};
       cout << Flatten2D(empty).hasNext() << "\n";
       Flatten2D one(single);
       one.hasNext();

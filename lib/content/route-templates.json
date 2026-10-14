@@ -352,8 +352,8 @@
         "en": "When the head may be removed or replaced, start from a dummy node that points at head and return dummy.next."
       },
       {
-        "zh": "快指针一次两步、慢指针一次一步：找中点、判环、找倒数第 k 个结点都用它。",
-        "en": "Fast pointer two steps, slow pointer one: this finds the middle, detects a cycle and locates the k-th node from the end."
+        "zh": "快指针一次两步、慢指针一次一步，用来找中点和判环；找倒数第 k 个结点则让前指针先走 k 步，再和后指针同速前进。",
+        "en": "A fast pointer taking two steps per slow step finds the middle and detects a cycle; for the k-th node from the end, move a lead pointer k steps first, then advance both at the same speed."
       }
     ],
     "pitfalls": [
@@ -1338,7 +1338,7 @@
     ],
     "code": {
       "python": "class Flatten2D:\n    \"\"\"Iterates a list of lists in order, skipping empty rows.\"\"\"\n\n    def __init__(self, rows: list[list[int]]):\n        self.rows, self.r, self.c = rows, 0, 0\n\n    def has_next(self) -> bool:\n        while self.r < len(self.rows) and self.c == len(self.rows[self.r]):\n            self.r, self.c = self.r + 1, 0  # skip finished and empty rows\n        return self.r < len(self.rows)\n\n    def next(self) -> int:\n        if not self.has_next():\n            raise StopIteration\n        self.c += 1\n        return self.rows[self.r][self.c - 1]",
-      "cpp": "// Iterates a vector of vectors in order, skipping empty rows.\nclass Flatten2D {\n    const vector<vector<int>>& rows;\n    size_t r = 0, c = 0;\n\npublic:\n    Flatten2D(const vector<vector<int>>& rows) : rows(rows) {}\n\n    bool hasNext() {\n        while (r < rows.size() && c == rows[r].size()) r++, c = 0;  // skip finished and empty rows\n        return r < rows.size();\n    }\n\n    int next() {\n        if (!hasNext()) throw out_of_range(\"no more elements\");\n        return rows[r][c++];\n    }\n};",
+      "cpp": "// Iterates a vector of vectors in order, skipping empty rows.\nclass Flatten2D {\n    vector<vector<int>> rows;  // own a copy: a temporary argument would dangle\n    size_t r = 0, c = 0;\n\npublic:\n    Flatten2D(vector<vector<int>> rows) : rows(std::move(rows)) {}\n\n    bool hasNext() {\n        while (r < rows.size() && c == rows[r].size()) r++, c = 0;  // skip finished and empty rows\n        return r < rows.size();\n    }\n\n    int next() {\n        if (!hasNext()) throw out_of_range(\"no more elements\");\n        return rows[r][c++];\n    }\n};",
       "java": "// Iterates a list of lists in order, skipping empty rows.\nclass Flatten2D implements Iterator<Integer> {\n    private final List<List<Integer>> rows;\n    private int r = 0, c = 0;\n\n    Flatten2D(List<List<Integer>> rows) {\n        this.rows = rows;\n    }\n\n    @Override\n    public boolean hasNext() {\n        while (r < rows.size() && c == rows.get(r).size()) { // skip finished and empty rows\n            r++;\n            c = 0;\n        }\n        return r < rows.size();\n    }\n\n    @Override\n    public Integer next() {\n        if (!hasNext()) throw new NoSuchElementException();\n        return rows.get(r).get(c++);\n    }\n}",
       "go": "// Flatten2D iterates a slice of slices in order, skipping empty rows.\ntype Flatten2D struct {\n\trows [][]int\n\tr, c int\n}\n\nfunc (it *Flatten2D) HasNext() bool {\n\tfor it.r < len(it.rows) && it.c == len(it.rows[it.r]) {\n\t\tit.r, it.c = it.r+1, 0 // skip finished and empty rows\n\t}\n\treturn it.r < len(it.rows)\n}\n\nfunc (it *Flatten2D) Next() int {\n\tif !it.HasNext() {\n\t\tpanic(\"no more elements\")\n\t}\n\tit.c++\n\treturn it.rows[it.r][it.c-1]\n}"
     }
