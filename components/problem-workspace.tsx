@@ -370,11 +370,11 @@ function Workspace({
     };
   }, [userId]);
   const [submission, setSubmission] = useState<OJSubmission | null>(null);
-  // History only gains accepted runs live, so the current verdict counts too; once lit, it stays.
+  // The server counts this round's history; the live verdict counts too. Once lit, it stays.
   useEffect(() => {
-    if (hintUnlocked(submission ? [submission, ...history] : history))
+    if (problem.hintEarned || hintUnlocked(submission ? [submission] : []))
       setRouteHint((state) => (state === 'locked' ? 'earned' : state));
-  }, [submission, history]);
+  }, [problem.hintEarned, submission]);
   const [success, setSuccess] = useState<OJSubmission | null>(null);
   const announcedSuccess = useRef<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -2218,8 +2218,8 @@ function Workspace({
             </AlertDialogTitle>
             <AlertDialogDescription>
               {t(
-                '你还没有未通过的提交。先自己想出来的思路，面试时更记得住。',
-                "You haven't had a failed submission yet. An idea you reach yourself is the one you remember in the interview.",
+                '这一轮你在这道题上还没有未通过的提交。先自己想出来的思路，面试时更记得住。',
+                "You haven't had a failed submission on this problem this round. An idea you reach yourself is the one you remember in the interview.",
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>

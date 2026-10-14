@@ -542,6 +542,25 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       document.querySelector('.cs-route-hint a').href,
       'https://leetcode.cn/problems/two-sum/solutions/',
     );
+    // An earlier failure the server counted lights it on load, collapsed.
+    problem.hintEarned = true;
+    await act(async () =>
+      root.render(
+        createElement(ProblemWorkspace, {
+          key: 'earned',
+          problem: summary(problem),
+          boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
+          navigate() {},
+          ask() {},
+          refresh: async () => {},
+        }),
+      ),
+    );
+    await settle();
+    assert.equal(
+      document.querySelector('.cs-route-hint[data-lit] details').open,
+      false,
+    );
     // Exam mode never shows hints.
     await act(async () =>
       root.render(
@@ -559,6 +578,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     await settle();
     assert.ok(document.querySelector('.cs-statement-heading'));
     assert.equal(document.querySelector('.cs-route-hint'), null);
+    delete problem.hintEarned;
     // ACM starters follow the statement language; untouched ones switch with it.
     const { starters, englishStarters } = await import('../lib/problems.ts');
     const renderAcm = (key) =>

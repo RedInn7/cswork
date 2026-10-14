@@ -24,6 +24,8 @@ export type OJProblem = Problem & {
     attribution: string;
   } | null;
   curatedHint?: { zh: string; en: string } | null;
+  /** A failed formal submission in the current practice round. */
+  hintEarned?: boolean;
 };
 export type OJCase = {
   ordinal: number;

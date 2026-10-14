@@ -44,6 +44,7 @@ import {
   waitForSubmission,
   settleSubmission,
   submissionHistory,
+  hintEarned,
   cancelSubmission,
   ojStatus,
   MAX_CODE_BYTES,
@@ -72,15 +73,19 @@ export async function handleOj(
     const english = oa && !problem.translations?.en ? oaEnglishStatement(id) : undefined;
     if (english) problem.translations = { ...problem.translations, en: english };
     const templates = leetcodeTemplates(id);
+    const round =
+      p && isSelectedProblem(id) ? practiceRoundState(p.id).currentRound : null;
+    const hint = curatedHint(id);
     return json({
       ...problem,
       codingModes: templates ? ['leetcode', 'acm'] : ['acm'],
       leetcodeTemplates: templates,
       leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
       sourceStatement: getStudySourceStatement(id),
-      curatedHint: curatedHint(id),
-      practiceRound:
-        p && isSelectedProblem(id) ? practiceRoundState(p.id).currentRound : null,
+      curatedHint: hint,
+      // Per round like Solved, over all history rather than the first page.
+      hintEarned: hint && p ? hintEarned(p.id, id, round?.id) : false,
+      practiceRound: round,
       maxCodeBytes: MAX_CODE_BYTES,
       maxStdinBytes: MAX_STDIN_BYTES,
       judgeAvailable: ojStatus().available,
