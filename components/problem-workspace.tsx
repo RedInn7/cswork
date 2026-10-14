@@ -25,11 +25,13 @@ import {
   ChevronUp,
   Code2,
   Download,
+  ExternalLink,
   FileText,
   History,
   Keyboard,
   Lightbulb,
   LoaderCircle,
+  Lock,
   Maximize2,
   MessageSquare,
   Minimize2,
@@ -102,6 +104,8 @@ import {
 import {
   activeStatuses,
   cancelOJ,
+  hintUnlocked,
+  leetcodeSolutionsUrl,
   ojRequest,
   submitOJ,
   type OJProblem,
@@ -264,6 +268,10 @@ function Workspace({
       : problem.sourceStatement.descriptionZh ||
         problem.sourceStatement.descriptionEn
     : '';
+  const solutionsUrl = leetcodeSolutionsUrl(
+    problem.sourceStatement?.sourceUrl || problem.sourceStatement?.sourceEnUrl,
+    uiEnglish,
+  );
   const [settings, setSettings] = useState<EditorSettings>(
     defaultEditorSettings,
   );
@@ -305,6 +313,12 @@ function Workspace({
   const [hintCount, setHintCount] = useState(0);
   const [topicsOpen, setTopicsOpen] = useState(false);
   const [hintsOpen, setHintsOpen] = useState(false);
+  // Line 500 hint: earned by a failed formal submission, or shown on request after a confirm.
+  const [routeHint, setRouteHint] = useState<'locked' | 'earned' | 'asked'>(
+    'locked',
+  );
+  const [routeHintConfirm, setRouteHintConfirm] = useState(false);
+  const routeHintSummary = useRef<HTMLElement>(null);
   const [narrow, setNarrow] = useState(false);
   const [mobilePane, setMobilePane] = useState<'statement' | 'editor'>(
     'statement',
@@ -373,6 +387,11 @@ function Workspace({
     };
   }, [userId]);
   const [submission, setSubmission] = useState<OJSubmission | null>(null);
+  // The server counts this round's history; the live verdict counts too. Once lit, it stays.
+  useEffect(() => {
+    if (problem.hintEarned || hintUnlocked(submission ? [submission] : []))
+      setRouteHint((state) => (state === 'locked' ? 'earned' : state));
+  }, [problem.hintEarned, submission]);
   const [success, setSuccess] = useState<OJSubmission | null>(null);
   const announcedSuccess = useRef<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -1296,6 +1315,71 @@ function Workspace({
                 </button>
               </div>
             )}
+            {problem.curatedHint && !examMode && (
+              <section
+                className="cs-route-hint"
+                data-lit={routeHint === 'locked' ? undefined : ''}
+                aria-labelledby="route-hint-title"
+              >
+                <div className="cs-route-hint-head">
+                  <span className="cs-route-hint-lamp" aria-hidden="true" />
+                  <strong id="route-hint-title">
+                    {uiEnglish ? 'Hint' : '思路提示'}
+                  </strong>
+                  <span
+                    className="cs-route-hint-roundel"
+                    title={uiEnglish ? 'Line 500' : '500 路'}
+                  >
+                    500
+                  </span>
+                </div>
+                <div aria-live="polite">
+                  {routeHint !== 'locked' ? (
+                    <details
+                      className="cs-route-hint-body"
+                      open={routeHint === 'asked' || undefined}
+                    >
+                      <summary ref={routeHintSummary}>
+                        {uiEnglish ? 'Show the approach' : '展开思路'}
+                        <ChevronDown size={14} aria-hidden="true" />
+                      </summary>
+                      {/* Both languages: the English names the patterns interviews use. */}
+                      <p lang={uiEnglish ? 'en' : 'zh'}>
+                        {problem.curatedHint[uiEnglish ? 'en' : 'zh']}
+                      </p>
+                      <p
+                        className="cs-route-hint-alt"
+                        lang={uiEnglish ? 'zh' : 'en'}
+                      >
+                        {problem.curatedHint[uiEnglish ? 'zh' : 'en']}
+                      </p>
+                      {solutionsUrl && (
+                        <a
+                          href={solutionsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {uiEnglish ? 'Solutions on LeetCode' : 'LeetCode 题解'}
+                          <ExternalLink size={13} aria-hidden="true" />
+                        </a>
+                      )}
+                    </details>
+                  ) : (
+                    <div className="cs-route-hint-locked">
+                      <Lock size={14} aria-hidden="true" />
+                      <p>
+                        {uiEnglish
+                          ? 'Unlocks after your first failed submission. Give it a real try first.'
+                          : '第一次提交未通过后解锁，先自己认真试一次。'}
+                      </p>
+                      <button onClick={() => setRouteHintConfirm(true)}>
+                        {uiEnglish ? 'Show anyway' : '仍要查看'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
           </>
         ) : (
           <div className="cs-history-pane">
@@ -2171,6 +2255,34 @@ function Workspace({
           </div>
         </DialogContent>
       </Dialog>
+      <AlertDialog open={routeHintConfirm} onOpenChange={setRouteHintConfirm}>
+        <AlertDialogContent
+          finalFocus={() => routeHintSummary.current || true}
+        >
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t('现在查看思路提示？', 'Show the hint now?')}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t(
+                '这一轮你在这道题上还没有未通过的提交。先自己想出来的思路，面试时更记得住。',
+                "You haven't had a failed submission on this problem this round. An idea you reach yourself is the one you remember in the interview.",
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('再想想', 'Keep trying')}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setRouteHint('asked');
+                setRouteHintConfirm(false);
+              }}
+            >
+              {t('查看提示', 'Show hint')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <AlertDialog
         open={!!replaceRequest}
         onOpenChange={(open) => {

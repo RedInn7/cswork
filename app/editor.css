@@ -282,6 +282,148 @@
   color: #7a8596;
   font-size: 11px;
 }
+/* Line 500 hint: a station signal that stays dark until the learner has tried once. */
+.cs-route-hint {
+  --cs-signal: #ffb23f;
+  margin-top: 28px;
+  padding: 13px 16px 14px;
+  border: 1px solid var(--cs-border);
+  border-left: 3px solid var(--cs-border);
+  border-radius: 9px;
+  background: var(--cs-surface-soft);
+  color: var(--cs-text);
+  transition: border-color 0.4s ease;
+}
+.cs-route-hint[data-lit] {
+  border-left-color: var(--cs-signal);
+}
+.cs-route-hint-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+}
+.cs-route-hint-lamp {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--cs-border);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.08);
+}
+.cs-route-hint[data-lit] .cs-route-hint-lamp {
+  background: var(--cs-signal);
+  box-shadow: 0 0 0 3px rgb(255 178 63 / 0.22);
+  animation: cs-signal-on 0.9s ease-out;
+}
+@keyframes cs-signal-on {
+  from {
+    box-shadow: 0 0 0 9px rgb(255 178 63 / 0);
+  }
+  35% {
+    box-shadow: 0 0 0 6px rgb(255 178 63 / 0.35);
+  }
+}
+/* The Line 500 roundel from the problem bank, at badge size. */
+.cs-route-hint-roundel {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-left: auto;
+  border: 2px solid #2ebd85;
+  border-radius: 50%;
+  background: #0e1a2b;
+  color: #eef3f8;
+  font: 800 9px/1 'Overpass', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.cs-route-hint-locked {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 10px;
+  color: var(--cs-muted);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+.cs-route-hint-locked > svg {
+  flex: none;
+}
+.cs-route-hint-locked > p {
+  margin: 0;
+}
+.cs-route-hint-locked > button {
+  flex: none;
+  margin-left: auto;
+  padding: 4px 11px;
+  border: 1px solid var(--cs-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--cs-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+.cs-route-hint-locked > button:hover {
+  background: var(--cs-border);
+}
+.cs-route-hint-body > summary {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  margin-top: 10px;
+  color: var(--cs-muted);
+  font-size: 12.5px;
+  cursor: pointer;
+  list-style: none;
+}
+.cs-route-hint-body > summary::-webkit-details-marker {
+  display: none;
+}
+.cs-route-hint-body > summary:hover {
+  color: var(--cs-text);
+}
+.cs-route-hint-body > summary:focus-visible,
+.cs-route-hint-body > a:focus-visible {
+  outline: 2px solid #7597f0;
+  outline-offset: 3px;
+}
+.cs-route-hint-body[open] > summary > svg {
+  transform: rotate(180deg);
+}
+.cs-route-hint-body > p {
+  margin: 12px 0 0;
+  font-size: 13.5px;
+  line-height: 1.75;
+}
+.cs-route-hint-body > p.cs-route-hint-alt {
+  margin-top: 6px;
+  padding-left: 10px;
+  border-left: 2px solid var(--cs-border);
+  color: var(--cs-muted);
+  font-size: 12.5px;
+}
+.cs-route-hint-body > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 12px;
+  color: var(--cs-blue);
+  font-size: 12.5px;
+  text-underline-offset: 3px;
+}
+@media (max-width: 900px) {
+  .cs-route-hint-locked {
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs-route-hint,
+  .cs-route-hint[data-lit] .cs-route-hint-lamp {
+    transition: none;
+    animation: none;
+  }
+}
 .cs-course-link {
   display: flex;
   align-items: center;
