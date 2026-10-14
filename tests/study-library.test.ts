@@ -214,10 +214,17 @@ void test('verification expires when the source snapshot or published judge vers
       ],
     ],
   );
+  // Pick one: a judgeable unsolved problem under the filters; null when the filters leave none.
+  const pick = (query: string) =>
+    (listStudyLibrary(new URLSearchParams(query)) as { random?: string | null }).random;
+  assert.equal(pick('random=1'), 'lc-3');
+  assert.equal(pick('random=1&difficulty=困难'), null);
+  assert.equal(pick(''), undefined);
   db.prepare(
     "UPDATE oj_problems SET current_version_id='v2' WHERE id='lc-3'",
   ).run();
   assert.equal(getStudyLibrary('lc-3').judgeProblemId, null);
+  assert.equal(pick('random=1'), null, 'no longer judgeable');
   db.prepare(
     "UPDATE study_library SET verified_hash=content_hash || ':v2' WHERE id='lc-3'",
   ).run();

@@ -1,5 +1,5 @@
 import { cache } from 'react';
-import { oaCompanyName, oaCompanyPath } from '@/lib/oa-company-brands';
+import { oaCompanyName, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
 import { breadcrumbJsonLd, oaPageTitle, seoMetadata } from '@/lib/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { oaReadyProblems } from '@/lib/server/oa-judge';
@@ -8,14 +8,21 @@ import { OaCompanyMark } from './parts';
 
 const load = cache(async () => {
   const locale = await requestLocale();
-  const companies = oaLibrary().companies(new Set((await oaReadyProblems()).keys()));
+  const problems = await oaReadyProblems();
+  const readySet = new Set(problems.keys());
+  const companies = oaLibrary().companies(readySet);
+  // Newest judgeable problems: this week's, or the last few when none went online this week.
+  const newest = oaLibrary().list(new URLSearchParams('sort=new&ready=1'), readySet, {
+    addedAt: new Map([...problems].map(([id, meta]) => [id, meta.firstAt])),
+  });
+  const fresh = newest.items.slice(0, newest.newThisWeek || 8);
   const total = companies.reduce((sum, c) => sum + c.count, 0);
   const ready = companies.reduce((sum, c) => sum + c.ready, 0);
   const lead =
     locale === 'zh'
       ? `收录 ${companies.length} 家公司的 ${total} 道 OA 真题，其中 ${ready} 道可以在线运行样例、提交评测，支持 Python、Java、C++ 和 Go。`
       : `${total} online assessment questions from ${companies.length} companies. ${ready} of them run and judge online in Python, Java, C++ and Go.`;
-  return { locale, companies, total, ready, lead };
+  return { locale, companies, total, ready, lead, fresh, week: newest.newThisWeek };
 });
 
 export async function generateMetadata() {
@@ -24,7 +31,7 @@ export async function generateMetadata() {
 }
 
 export default async function OaIndex() {
-  const { locale, companies, total, ready, lead } = await load();
+  const { locale, companies, total, ready, lead, fresh, week } = await load();
   const zh = locale === 'zh';
   return (
     <>
@@ -58,6 +65,46 @@ export default async function OaIndex() {
           <dd>{companies.length}</dd>
         </div>
       </dl>
+      {!!fresh.length && (
+        <details className="oa-public-fresh">
+          <summary>
+            <span className="oa-public-fresh-dot" aria-hidden="true" />
+            {week
+              ? zh
+                ? `本周新增 ${week} 道可在线判题的 OA 题`
+                : `${week} judge-ready OA ${week === 1 ? 'problem' : 'problems'} added this week`
+              : zh
+                ? '最近上新'
+                : 'Recently added'}
+          </summary>
+          <ol className="oa-public-list">
+            {fresh.map((item) => {
+              const day = item.addedAt ? new Date(item.addedAt).toISOString().slice(0, 10) : '';
+              return (
+                <li key={item.id}>
+                  <a href={oaProblemPath(item.companySlug, item.id)}>
+                    <span className="oa-public-number">#{item.number}</span>
+                    <span className="oa-public-title">
+                      {oaCompanyName(item.companySlug, item.companyName, locale)} · {item.title}
+                    </span>
+                    {day && (
+                      <time className="oa-public-chip" dateTime={day}>
+                        {zh ? `${day.slice(5)} 上线` : `Added ${day}`}
+                      </time>
+                    )}
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
+          <p className="oa-public-fresh-more">
+            <a href="/?view=problems&library=oa&sort=new">
+              {zh ? '在练习工作台按上线时间查看全部' : 'See all, newest first, in the workspace'}{' '}
+              <span aria-hidden="true">→</span>
+            </a>
+          </p>
+        </details>
+      )}
       <h2 className="oa-public-section">{zh ? '选择公司' : 'Choose a company'}</h2>
       <ul className="oa-public-companies">
         {companies.map((company, index) => {

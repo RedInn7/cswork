@@ -5,7 +5,9 @@ import { cache } from 'react';
 import { RESULTS, ROUND_LABELS, type ExperienceFacts } from '@/lib/experience';
 import { companyHubPath, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
 import { breadcrumbJsonLd, companyPageTitle, seoMetadata } from '@/lib/seo';
+import { CompanyStatsCard } from '@/components/company-stats-card';
 import { companyHub } from '@/lib/server/company-hub';
+import { companyStats } from '@/lib/server/company-stats';
 import { library } from '@/lib/server/content-library';
 import { requestLocale } from '@/lib/server/locale';
 import { oaReadyProblems } from '@/lib/server/oa-judge';
@@ -29,7 +31,7 @@ const load = cache(async (slug: string) => {
   const lead = zh
     ? `${name} 面试准备：${parts.join('、')}${hub.leetcode.length ? '，以及面经里出现最多的 LeetCode 题' : ''}。在 CSWork 在线写代码、提交评测，或来一场限时模拟。`
     : `Prepare for ${name}: ${parts.join(', ')}${hub.leetcode.length ? ', and the LeetCode problems candidates report most' : ''}. Code and submit online on CSWork, or take a timed mock.`;
-  return { ...hub, ready, locale, lead };
+  return { ...hub, stats: companyStats(library(), hub.company.library), ready, locale, lead };
 });
 
 export async function generateMetadata({ params }: Props) {
@@ -89,7 +91,7 @@ function SectionHead({ id, title, count, all, zh }: { id: string; title: string;
 }
 
 export default async function CompanyPage({ params }: Props) {
-  const { company, oa, leetcode, experiences, questions, mockOa, mockInterview, ready, locale, lead } = await load(
+  const { company, oa, leetcode, experiences, questions, mockOa, mockInterview, stats, ready, locale, lead } = await load(
     (await params).slug,
   );
   const zh = locale === 'zh';
@@ -153,6 +155,7 @@ export default async function CompanyPage({ params }: Props) {
           </ol>
         </nav>
       )}
+      {stats && <CompanyStatsCard stats={stats} locale={locale} />}
 
       {!!oa.length && (
         <section className="company-hub-section" aria-labelledby="oa">

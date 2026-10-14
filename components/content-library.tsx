@@ -322,7 +322,7 @@ function FacetSelect({
   );
 }
 
-const FILTERS = ['type', 'kind', 'company', 'role', 'category', 'difficulty', 'round', 'result', 'q', 'page'] as const;
+const FILTERS = ['type', 'kind', 'company', 'role', 'category', 'difficulty', 'round', 'result', 'sort', 'q', 'page'] as const;
 /** Each list's last filters, search and page, so an item's back link returns to the same list. */
 const lastList: Record<string, Record<string, string>> = {};
 
@@ -463,6 +463,17 @@ export function ContentList({
                 </button>
               </>
             )}
+            {type === 'experience' && (
+              // Experiences list by when they happened; newly shared ones on request.
+              <label className={`rd-chip ${filters.sort ? 'is-set' : ''}`}>
+                <span className="sr-only">{t('排序', 'Order')}</span>
+                <select value={filters.sort === 'new' ? 'new' : ''} onChange={(e) => apply({ sort: e.target.value })}>
+                  <option value="">{t('按面试/发帖时间', 'By interview or post date')}</option>
+                  <option value="new">{t('按发布时间', 'Newly shared')}</option>
+                </select>
+                <ChevronDown size={13} className="rd-chip-caret" aria-hidden="true" />
+              </label>
+            )}
           </div>
         )}
 
@@ -488,7 +499,10 @@ export function ContentList({
                 ? t('，按相关度排序', ', sorted by relevance')
                 : type === 'algorithm'
                   ? t('，核心专题在前', ', core topics first')
-                  : t('，最新的在前', ', newest first')}
+                  : type === 'experience' && filters.sort !== 'new'
+                    ? // Two thirds of reports give only the post's date, so say so rather than "interview date".
+                      t('，按面试时间（没有则按原帖时间），最近的在前', ", most recent first (interview date, else the original post's)")
+                    : t('，最新的在前', ', newest first')}
             </div>
             <div className="ct-list">
               {data.items.map((item) => (

@@ -555,3 +555,84 @@
     font-size: 12px;
   }
 }
+
+/* "New this week": a departure-board line that opens the newest-first list. */
+.oa-library button.oa-new-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  width: 100%;
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in oklab, #ffb23f 45%, var(--border));
+  border-radius: 10px;
+  background: color-mix(in oklab, #ffb23f 10%, var(--card));
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+}
+.oa-library button.oa-new-banner:hover {
+  background: color-mix(in oklab, #ffb23f 18%, var(--card));
+}
+.oa-new-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffb23f;
+  box-shadow: 0 0 0 3px color-mix(in oklab, #ffb23f 30%, transparent);
+}
+.oa-new-cta {
+  margin-left: auto;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  font-weight: 500;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .oa-new-dot {
+    animation: oa-new-pulse 2.4s ease-in-out infinite;
+  }
+}
+@keyframes oa-new-pulse {
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in oklab, #ffb23f 0%, transparent);
+  }
+}
+.oa-library button.oa-pick-one {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+.oa-pick-message {
+  margin: 8px 0 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+}
+/* A live region stays rendered (screen readers skip one that appears with its text); empty, it takes no space. */
+.oa-pick-message:empty {
+  margin: 0;
+}
+.oa-row .oa-title small.oa-added {
+  background: color-mix(in oklab, #ffb23f 18%, var(--card));
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 600px) {
+  .oa-library .oa-status-filter,
+  .oa-library .oa-sort-filter {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+  }
+  .oa-library .oa-status-filter select,
+  .oa-library .oa-sort-filter select {
+    min-height: 44px;
+    font-size: 16px;
+  }
+  .oa-library button.oa-pick-one {
+    justify-content: center;
+    min-height: 44px;
+  }
+}

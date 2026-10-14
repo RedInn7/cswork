@@ -114,13 +114,14 @@ export async function oaReadyProblems() {
     difficulty: string | null;
     tags: string | null;
     created_at: number;
+    first_at: number;
   }>(
-    `SELECT p.id,v.checksum,v.created_at,json_extract(v.spec_json,'$.id') AS spec_id,json_extract(v.spec_json,'$.difficulty') AS difficulty,json_extract(v.spec_json,'$.tags') AS tags FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id AND v.problem_id=p.id WHERE p.published=1 AND p.id LIKE 'oa-%'${shownOaSql('p.id')}`,
+    `SELECT p.id,v.checksum,v.created_at,(SELECT MIN(created_at) FROM oj_problem_versions WHERE problem_id=p.id) AS first_at,json_extract(v.spec_json,'$.id') AS spec_id,json_extract(v.spec_json,'$.difficulty') AS difficulty,json_extract(v.spec_json,'$.tags') AS tags FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id AND v.problem_id=p.id WHERE p.published=1 AND p.id LIKE 'oa-%'${shownOaSql('p.id')}`,
   );
   const trusted = oaJudgeRegistry();
   const ready = new Map<
     string,
-    { difficulty?: string; tags: string[]; updatedAt: number }
+    { difficulty?: string; tags: string[]; updatedAt: number; firstAt: number }
   >();
   for (const v of versions)
     if (v.spec_id === v.id && trusted.isCurrent(v.id, v.checksum))
@@ -129,6 +130,8 @@ export async function oaReadyProblems() {
         tags: v.tags ? (JSON.parse(v.tags) as string[]) : [],
         // Publish time of the live version: the sitemap's lastmod for its OA page.
         updatedAt: v.created_at,
+        // First version's time: when the problem went online ("new this week").
+        firstAt: v.first_at,
       });
   return ready;
 }

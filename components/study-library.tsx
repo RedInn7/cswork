@@ -26,6 +26,7 @@ import {
   Copy,
   ExternalLink,
   Search,
+  Shuffle,
   Star,
 } from 'lucide-react';
 import { Button } from './ui/button';
@@ -215,6 +216,8 @@ export function StudyLibrary({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [retry, setRetry] = useState(0);
+  const [picking, setPicking] = useState(false);
+  const [pickMessage, setPickMessage] = useState('');
   const [selected, setSelected] = useState<string | null>(null);
   const [detail, setDetail] = useState<LibraryDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -726,6 +729,31 @@ export function StudyLibrary({
       planStart ? sequence.slice(Math.max(0, sequence.indexOf(id))) : sequence,
     );
     navigate('problem', { problem: id });
+  };
+  // "Pick one": the server draws an unsolved judgeable problem under the current filters.
+  const pickOne = async () => {
+    setPicking(true);
+    setPickMessage('');
+    try {
+      const { random } = await api<{ random?: string | null }>(
+        `oj/library?${currentQuery}&random=1`,
+      );
+      if (random) {
+        // Previous/next and "back to list" follow this line, not the last list opened.
+        rememberProblemSequence(data?.sequence ?? [random]);
+        navigate('problem', { problem: random });
+      } else
+        setPickMessage(
+          t(
+            '当前筛选下没有未通过的可判题目。',
+            'No unsolved judgeable problem matches these filters.',
+          ),
+        );
+    } catch (reason) {
+      setPickMessage((reason as Error).message);
+    } finally {
+      setPicking(false);
+    }
   };
   const selectStop = (slug: string) => {
     setSection(slug);
@@ -1321,7 +1349,18 @@ export function StudyLibrary({
             </select>
           </label>
         )}
+        <button
+          type="button"
+          className="study-pick-one"
+          disabled={picking}
+          onClick={pickOne}
+        >
+          <Shuffle size={15} aria-hidden="true" /> {t('随机一题', 'Pick one')}
+        </button>
       </fieldset>
+      <p className="study-pick-message" role="status">
+        {pickMessage}
+      </p>
       {selectedStop && (
         <div className="route-selected">
           <span className="route-code">{selectedStop.code}</span>

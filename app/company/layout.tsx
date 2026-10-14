@@ -1,6 +1,7 @@
 import '../library/library.css';
 import '../oa/oa.css';
 import './company.css';
+import '../company-stats.css';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { LibraryPageView } from '../library/page-view';
