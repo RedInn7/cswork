@@ -158,6 +158,8 @@ const EN: Record<string, string> = {
   内容不存在: 'Content not found',
   内容库尚未发布: 'The content library is not published yet',
   未知题单: 'Unknown problem list',
+  未知的面试模板: 'Unknown interview template',
+  抽题编号无效: 'Invalid set number',
 
   // Code completion
   '智能补全暂未开放，代码仍可运行和提交':

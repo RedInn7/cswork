@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import type { Person } from './auth';
 import { setting } from './env';
 import { HttpError, json, limitReader } from './http';
+import { mockCompanies, mockSet } from './mock-interview';
 
 /**
  * Read-only interview content library (questions, experiences, guides, concepts,
@@ -22,7 +23,8 @@ const PAGE = 20;
 const SUMMARY = `type,slug,title,summary,title_zh,summary_zh,level,company_slug,company_name,role,category,difficulty,round,seniority,tags,published_at,partial`;
 
 let handle: { db: Database.Database; mtime: number; checked: number } | null = null;
-function library() {
+/** The library's read-only handle (null before it is published); server pages share it. */
+export function library() {
   const path = setting('CONTENT_DATABASE_PATH') || resolve('data/content.sqlite');
   const now = Date.now();
   if (handle && now - handle.checked < 30_000) return handle.db;
@@ -233,5 +235,8 @@ export async function handleContent(request: Request, p: Person | null, path: st
   if (action === 'list') return json(list(db, params));
   if (action === 'item') return json(item(db, params));
   if (action === 'stats') return json(stats(db));
+  // Mock interviews: a drawn set, and the companies to draw from.
+  if (action === 'mock') return json(mockSet(db, params));
+  if (action === 'mock-companies') return json({ companies: mockCompanies(db) });
   throw new HttpError(404, '接口不存在');
 }
