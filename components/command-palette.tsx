@@ -51,6 +51,7 @@ const TYPE_NAMES: Record<string, [string, string]> = {
   cheatsheet: ['速查表', 'Cheatsheet'],
   algorithm: ['算法教程', 'Tutorial'],
 };
+const LEVELS_EN: Record<string, string> = { 简单: 'Easy', 中等: 'Medium', 困难: 'Hard' };
 const has = (text: string, q: string) => text.toLocaleLowerCase().includes(q);
 
 /** Line 500 topics whose name (either language) or slug contains the query. */
@@ -108,7 +109,7 @@ async function searchSite(query: string, zh: boolean, signal: AbortSignal) {
         group: 'problems' as const,
         key: text(p.id),
         title: `${String(p.number)}. ${pick(p.titleZh, p.titleEn)}`,
-        meta: text(p.difficulty),
+        meta: zh ? text(p.difficulty) : (LEVELS_EN[text(p.difficulty)] ?? text(p.difficulty)),
         href: `/?view=problem&problem=${encodeURIComponent(text(p.judgeProblemId))}`,
       }));
   })();

@@ -32,8 +32,10 @@ function describe(page: FacetPage, zh: boolean) {
     facet.experiences && (zh ? `${facet.experiences} 篇面经` : `${facet.experiences} interview ${facet.experiences === 1 ? 'experience' : 'experiences'}`),
   ].filter(Boolean);
   const scope = company ? `${company.name} ` : '';
+  // A Latin name keeps a space before the Chinese that follows it.
+  const gap = /[A-Za-z0-9)]$/.test(name) ? ' ' : '';
   return zh
-    ? `${scope}${name}${facet.kind === 'role' ? '岗位' : '类'}面试准备：${parts.join('、')}，来自候选人真实面试。在 CSWork 阅读、练习、模拟。`
+    ? `${scope}${name}${gap}${facet.kind === 'role' ? '岗位' : '类'}面试准备：${parts.join('、')}，来自候选人真实面试。在 CSWork 阅读、练习、模拟。`
     : `Prepare for ${scope}${name}${facet.kind === 'role' ? ' interviews' : ' questions'}: ${parts.join(' and ')} from real interviews. Read, practise and mock them on CSWork.`;
 }
 
