@@ -56,6 +56,7 @@ import {
   OJ_MAX_IMPORT_BYTES,
 } from './oj-problems';
 import {
+  createPlaygroundRun,
   createSubmission,
   submissionDetail,
   waitForSubmission,
@@ -240,6 +241,18 @@ export async function handleOj(
   }
   if (resource === 'submissions' && id && action === 'cancel')
     return json(await cancelSubmission(p, id));
+  if (resource === 'playground' && id === 'run' && !action) {
+    let data: unknown;
+    try {
+      data = JSON.parse(await boundedText(request, 800000));
+    } catch (e) {
+      if (e instanceof HttpError) throw e;
+      throw new HttpError(400, '无效的 JSON');
+    }
+    // Same owner-checked detail and watch protocol as a custom-input run.
+    const created = await createPlaygroundRun(p, data);
+    return json(await settleSubmission(p, created.id, request.signal), 201);
+  }
   if (resource === 'submissions' && !id) {
     let data: unknown;
     try {

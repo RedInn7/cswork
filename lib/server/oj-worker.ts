@@ -18,7 +18,7 @@ import {
   type PrecompileDraft,
   PRECOMPILE_TIMEOUT_MS,
 } from './oj-precompile';
-import type { OjProblemSpec } from '@/lib/oj-types';
+import type { OjJudgeSnapshot, OjProblemSpec } from '@/lib/oj-types';
 import { createOutboxDispatcher, OJ_DISPATCH_INTERVAL_MS } from './oj-dispatch';
 import { leetcodeSource, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import { Queue, Worker, type Job } from 'bullmq';
@@ -32,7 +32,12 @@ import {
   exclusiveSubmission,
   SubmissionAdmission,
 } from './oj-worker-policy';
-import { ACTIVE, submissionRow, type SubmissionRow } from './oj-submissions';
+import {
+  ACTIVE,
+  PLAYGROUND_SPEC,
+  submissionRow,
+  type SubmissionRow,
+} from './oj-submissions';
 import {
   run,
   cleanup,
@@ -142,9 +147,11 @@ async function judge(job: Job<{ submissionId: string }>) {
   }, 400);
   let releaseAdmission: (() => void) | undefined;
   let releaseForeground: (() => void) | undefined;
+  // A playground run has no version (so no budget row) and small fixed limits.
   const exclusive =
-    !budget ||
-    exclusiveSubmission(budget.bytes, budget.memoryLimit, budget.outputLimit);
+    row.mode !== 'playground' &&
+    (!budget ||
+      exclusiveSubmission(budget.bytes, budget.memoryLimit, budget.outputLimit));
   try {
     releaseAdmission = await admission.acquire(exclusive, waiting.signal);
     // A precompile of this exact program finishes into the cache it then hits.
@@ -222,13 +229,17 @@ async function judgeSubmission(
   let invalidateBridge = false;
   let terminalFailureCommitted = false;
   try {
-    const snapshot = await loadJudgeSnapshot(claimed.problem_version_id!);
+    const snapshot: Pick<OjJudgeSnapshot, 'spec' | 'cases'> =
+      claimed.mode === 'playground'
+        ? { spec: PLAYGROUND_SPEC, cases: [] }
+        : await loadJudgeSnapshot(claimed.problem_version_id!);
     assertSnapshotBudget(snapshot.cases);
-    const caseCount =
-      claimed.mode === 'run' && claimed.custom_input !== null
-        ? 1
-        : snapshot.cases.filter((c) => claimed.mode === 'judge' || !c.hidden)
-            .length;
+    // Runs on the learner's own input: custom-input runs and playground runs.
+    const ownInput = claimed.mode !== 'judge' && claimed.custom_input !== null;
+    const caseCount = ownInput
+      ? 1
+      : snapshot.cases.filter((c) => claimed.mode === 'judge' || !c.hidden)
+          .length;
     // Respect the published per-case budget, including valid long problem sets.
     const totalSeconds =
       80 + caseCount * Math.max(3, snapshot.spec.timeLimit * 3);
@@ -304,18 +315,17 @@ async function judgeSubmission(
       status: 'running',
       compile_output: (compiled.result.files?.stderr || '').slice(0, 65536),
     });
-    const cases =
-      claimed.mode === 'run' && claimed.custom_input !== null
-        ? [
-            {
-              ordinal: 0,
-              input: claimed.custom_input,
-              expectedOutput: null,
-              hidden: false,
-              weight: 1,
-            },
-          ]
-        : snapshot.cases.filter((c) => claimed.mode === 'judge' || !c.hidden);
+    const cases = ownInput
+      ? [
+          {
+            ordinal: 0,
+            input: claimed.custom_input ?? '',
+            expectedOutput: null,
+            hidden: false,
+            weight: 1,
+          },
+        ]
+      : snapshot.cases.filter((c) => claimed.mode === 'judge' || !c.hidden);
     if (
       program.leetcodeInput &&
       ['lc-297', 'lc-449'].includes(snapshot.spec.id)
@@ -403,7 +413,7 @@ async function judgeSubmission(
           attempt,
           ordinal: c.ordinal,
           status:
-            claimed.mode === 'run' &&
+            claimed.mode !== 'judge' &&
             c.expectedOutput === null &&
             status === 'accepted'
               ? 'finished'
@@ -440,7 +450,7 @@ async function judgeSubmission(
     current(id, attempt, controller.signal);
     update(id, attempt, {
       status:
-        claimed.mode === 'run' && overall === 'accepted' ? 'finished' : overall,
+        claimed.mode !== 'judge' && overall === 'accepted' ? 'finished' : overall,
       finished_at: Date.now(),
     });
   } catch (error) {
