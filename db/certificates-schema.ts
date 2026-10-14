@@ -1,0 +1,17 @@
+import { sqliteTable, text, integer, uniqueIndex } from 'drizzle-orm/sqlite-core';
+
+/**
+ * Course completion certificates (lib/server/certificates.ts): issued once per learner and
+ * course when every published lesson is completed. The id is the random verification code
+ * printed on /certificate/<id>; nothing else about the learner is stored here.
+ */
+export const certificates = sqliteTable(
+  'certificates',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id').notNull(),
+    courseId: text('course_id').notNull(),
+    issuedAt: integer('issued_at').notNull(),
+  },
+  (t) => [uniqueIndex('certificates_user_course').on(t.userId, t.courseId)],
+);

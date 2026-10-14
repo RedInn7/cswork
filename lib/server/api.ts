@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { getKnowledgeProgress } from './knowledge-progress';
-import type { Course, Lesson } from '@/lib/types';
+import type { Course, Lesson, Progress } from '@/lib/types';
 import type { TicketRow } from './lms-records';
 import { person, type Person } from './auth';
 import { database, setting } from './env';
@@ -53,6 +53,7 @@ import { dailyProblem } from './daily-problem';
 import { purchasedFreezes } from './points';
 import { aiEnabled } from './ai-tutor';
 import { tokenCaller } from './api-tokens';
+import { certificatesFor, finishedCourses } from './certificates';
 const id = z.string().min(1).max(100),
   short = z.string().trim().min(1).max(180),
   long = z.string().trim().min(1).max(12000);
@@ -95,7 +96,7 @@ function services() {
 /** `lite` skips the problem catalogue for the client's periodic refresh. */
 export async function bootstrap(p: Person | null, lite = false) {
   const cs = await rows<Course & { revision: number; position: number }>(
-    `SELECT id,title,summary,version,published,revision,position FROM courses ${p?.role === 'teacher' ? '' : 'WHERE published=1'} ORDER BY position,id`,
+    `SELECT id,title,summary,version,published,revision,position,category,level FROM courses ${p?.role === 'teacher' ? '' : 'WHERE published=1'} ORDER BY position,id`,
   );
   for (const c of cs) {
     c.has_access = p ? await allowed(p, c.id) : false;
@@ -103,6 +104,9 @@ export async function bootstrap(p: Person | null, lite = false) {
       `SELECT ${lessonSelect} FROM lessons WHERE course_id=? ${p?.role === 'teacher' ? '' : 'AND published=1'} ORDER BY position,id`,
       c.id,
     );
+    // The first published lesson of a published course is a free preview (lms-common previewLessonId).
+    const first = c.published ? c.lessons.find((l) => l.published) : undefined;
+    if (first) first.preview = true;
   }
   const boot = {
     person: p,
@@ -150,8 +154,13 @@ export async function bootstrap(p: Person | null, lite = false) {
       : 0,
     services: services(),
   };
-  // Today's problem for everyone; a failure never blocks the bootstrap.
-  return { ...boot, daily: await dailyProblem(boot.activity).catch(() => null) };
+  return {
+    ...boot,
+    // Every published lesson of a course this learner holds is complete: its certificate.
+    certificates: p ? certificatesFor(p.id, finishedCourses(boot.courses, boot.progress as Progress[])) : [],
+    // Today's problem for everyone; a failure never blocks the bootstrap.
+    daily: await dailyProblem(boot.activity).catch(() => null),
+  };
 }
 export async function handle(request: Request) {
   try {
@@ -215,7 +224,8 @@ export async function handle(request: Request) {
         return await downloadAttachment(attachment.id, attachment.name);
       }
       if (resource === 'lessons' && resourceId) {
-        const l = await lessonFor(p, resourceId);
+        // The free preview lesson opens without the course (and so does its Stream video).
+        const l = await lessonFor(p, resourceId, true);
         if (action === 'video') {
           if (!l.stream_uid) throw new HttpError(404, '视频尚未发布');
           await limit(p, 'video', 12);
@@ -348,7 +358,8 @@ export async function handle(request: Request) {
           videoAssetId: id.nullable().optional(),
         })
         .parse(data);
-      const lesson = await lessonFor(p, d.lessonId);
+      // Reading progress (notes, bookmarks, completion) also works on the free preview lesson.
+      const lesson = await lessonFor(p, d.lessonId, true);
       if (
         d.videoAssetId &&
         !(JSON.parse(lesson.video_asset_ids || '[]') as string[]).includes(

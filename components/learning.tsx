@@ -40,6 +40,12 @@ import {
   DialogDescription,
 } from './ui/dialog';
 import { SelectionAsk } from './command-palette';
+import {
+  COURSE_CATEGORIES,
+  COURSE_LEVELS,
+  catalogLabel,
+  filterCourses,
+} from '@/lib/course-catalog';
 export type Navigate = (view: string, extra?: Record<string, string>) => void;
 export function CourseList({
   boot,
@@ -60,7 +66,17 @@ export function CourseList({
     count = (n: number, zh: string, en: string) =>
       `${n} ${t(zh, n === 1 ? en : en + 's')}`;
   const [busy, setBusy] = useState(false),
-    [error, setError] = useState('');
+    [error, setError] = useState(''),
+    [filter, setFilter] = useState({ category: '', level: '' });
+  const listed = boot.courses.filter((c) =>
+    knowledge ? c.id === INTERVIEW_COURSE_ID : c.id !== INTERVIEW_COURSE_ID,
+  );
+  // Only the categories and levels some course has: no filter that always comes up empty.
+  const facets = [
+    ['category', t('分类', 'Category'), COURSE_CATEGORIES],
+    ['level', t('级别', 'Level'), COURSE_LEVELS],
+  ] as const;
+  const shown = filterCourses(listed, filter);
   return (
     <>
       <Heading
@@ -79,16 +95,48 @@ export function CourseList({
             : t('课程讲义、视频与配套练习。', 'Course handouts, videos and exercises.')
         }
       />
-      {boot.courses
-        .filter((c) =>
-          knowledge
-            ? c.id === INTERVIEW_COURSE_ID
-            : c.id !== INTERVIEW_COURSE_ID,
-        )
+      {!knowledge &&
+        listed.some((c) => c.category || c.level) && (
+          <div className="course-filters">
+            {facets.map(([key, label, options]) => {
+              const present = options.filter(([value]) => listed.some((c) => c[key] === value));
+              return (
+                present.length > 0 && (
+                  <div className="course-filter-group" role="group" aria-label={label} key={key}>
+                    <span aria-hidden="true">{label}</span>
+                    {[['', t('全部', 'All')] as const, ...present.map(([value, zh, en]) => [value, t(zh, en)] as const)].map(
+                      ([value, text]) => (
+                        <button
+                          type="button"
+                          key={value || 'all'}
+                          className="course-filter-chip"
+                          aria-pressed={filter[key] === value}
+                          onClick={() => setFilter((f) => ({ ...f, [key]: value }))}
+                        >
+                          {text}
+                        </button>
+                      ),
+                    )}
+                  </div>
+                )
+              );
+            })}
+          </div>
+        )}
+      {!knowledge && listed.length > 0 && !shown.length && (
+        <div className="quiet-empty course-filter-empty">
+          <p>{t('没有符合筛选条件的课程。', 'No course matches these filters.')}</p>
+          <Button variant="outline" onClick={() => setFilter({ category: '', level: '' })}>
+            {t('清除筛选', 'Clear filters')}
+          </Button>
+        </div>
+      )}
+      {shown
         .map((c) => {
           const done = c.lessons.filter((l) =>
             boot.progress.some((p) => p.lesson_id === l.id && p.completed),
           ).length;
+          const certificate = boot.certificates?.find((x) => x.courseId === c.id);
           return (
             <section className="course-detail" key={c.id}>
               <div className="course-detail-head">
@@ -98,6 +146,14 @@ export function CourseList({
                       ? t('SDE · 算法知识', 'SDE · Algorithms')
                       : t('SDE · 系列课程', 'SDE · Course series')}
                   </span>
+                  {[c.category, c.level].map(
+                    (value) =>
+                      catalogLabel(value, locale === 'zh') && (
+                        <span className="course-badge" key={value}>
+                          {catalogLabel(value, locale === 'zh')}
+                        </span>
+                      ),
+                  )}
                   <h2>{c.title}</h2>
                   <p>{c.summary}</p>
                   <div className="course-meta">
@@ -137,6 +193,12 @@ export function CourseList({
                           c.lessons.length ? (done / c.lessons.length) * 100 : 0
                         }
                       />
+                      {certificate && (
+                        <a className="course-certificate-link" href={`/certificate/${certificate.id}`}>
+                          {t('查看结业证书', 'View your certificate')}
+                          <ArrowRight size={14} aria-hidden="true" />
+                        </a>
+                      )}
                     </>
                   ) : (
                     <>
@@ -247,12 +309,14 @@ export function CourseList({
                           const complete = boot.progress.some(
                             (p) => p.lesson_id === l.id && p.completed,
                           );
+                          // The free preview lesson opens for any signed-in account.
+                          const open = c.has_access || (!!l.preview && !!boot.person);
                           return (
                             <button
                               className="lesson-row"
                               key={l.id}
                               onClick={() =>
-                                c.has_access
+                                open
                                   ? navigate('lesson', { lesson: l.id })
                                   : boot.person
                                     ? ask({
@@ -284,6 +348,9 @@ export function CourseList({
                                 <strong>{l.title}</strong>
                                 <small>{l.summary}</small>
                               </span>
+                              {l.preview && !c.has_access && (
+                                <span className="preview-label">{t('免费试读', 'Free preview')}</span>
+                              )}
                               <span className="resource-label">
                                 <FileText size={13} />
                                 {t('讲义', 'Handout')}
@@ -306,7 +373,7 @@ export function CourseList({
                                   {t('练习', 'Practice')}
                                 </span>
                               )}
-                              {c.has_access ? (
+                              {c.has_access || l.preview ? (
                                 <ChevronRight size={16} />
                               ) : (
                                 <Lock size={15} />
@@ -610,6 +677,21 @@ export function LessonReader({
           />
         </Button>
       </div>
+      {/* Without the course, the only lesson that loads is its free preview. */}
+      {course && !course.has_access && (
+        <div className="preview-notice" role="note">
+          <strong>{t('免费试读', 'Free preview')}</strong>
+          <span>
+            {t(
+              `这是「${course.title}」的试读章节，开通课程后可以学习全部 ${all.length} 课。`,
+              `This is the free preview of "${course.title}". Unlock the course to take all ${all.length} lessons.`,
+            )}
+          </span>
+          <Button variant="outline" size="sm" onClick={() => navigate(interviewChapter ? 'knowledge' : 'courses')}>
+            {t('查看课程', 'See the course')}
+          </Button>
+        </div>
+      )}
       <div className="learning-layout">
         <section className="reader-card">
           <Tabs value={tab} onValueChange={(value) => setTab(String(value))}>

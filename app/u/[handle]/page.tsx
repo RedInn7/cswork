@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { cache } from 'react';
 import { seoMetadata } from '@/lib/seo';
 import { publicCatalogue, publicProfile } from '@/lib/server/learner-cloud';
+import { profileCertificates } from '@/lib/server/certificates';
 import { requestLocale } from '@/lib/server/locale';
 import { ProfileView } from '../views';
 
@@ -13,7 +14,7 @@ const load = cache(async (handle: string) => {
   const catalogue = await publicCatalogue();
   const profile = publicProfile(handle.toLowerCase(), catalogue);
   if (!profile) notFound();
-  return { profile, catalogue, zh: (await requestLocale()) === 'zh' };
+  return { profile, catalogue, certificates: profileCertificates(profile.handle), zh: (await requestLocale()) === 'zh' };
 });
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
