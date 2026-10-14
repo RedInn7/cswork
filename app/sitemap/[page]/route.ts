@@ -6,6 +6,8 @@ import {
   sitemapXml,
   xmlResponse,
 } from '@/lib/seo';
+import { companyHubPaths } from '@/lib/server/company-hub';
+import { library } from '@/lib/server/content-library';
 import { oaLibrary } from '@/lib/server/oa-library';
 import { oaReadyProblems } from '@/lib/server/oa-judge';
 import {
@@ -27,6 +29,9 @@ export async function GET(
         sitemapChunks(oaLibrary().sitemapEntries(await oaReadyProblems()))[0],
       ),
     );
+  // Company pages: a few hundred URLs.
+  if (rawPage === 'company')
+    return xmlResponse(sitemapXml(sitemapChunks(companyHubPaths(library()))[0]));
   if (!/^[1-9]\d{0,6}$/.test(rawPage))
     return new Response('Not found', { status: 404 });
   const page = Number(rawPage);

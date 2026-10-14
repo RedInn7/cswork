@@ -146,3 +146,12 @@ void test('practice: judgeable most-reported problems, nothing for a company wit
   assert.equal(await companyPractice(db, 'acme'), null);
   assert.equal(await companyPractice(db, null), null);
 });
+
+void test('company page titles and paths use the employer slug', async () => {
+  const { companyPageTitle } = await import('../lib/seo');
+  const { companyHubPath } = await import('../lib/oa-company-brands');
+  assert.equal(companyPageTitle('zh', 'Amazon'), 'Amazon 面试题、OA 真题与面经 | CSWork');
+  assert.equal(companyPageTitle('en', 'Amazon'), 'Amazon Interview Questions, OA & Experiences | CSWork');
+  assert.equal(companyHubPath('j-p-morgan'), '/company/jpmorgan-chase');
+  assert.equal(companyHubPath('amazon-mern'), '/company/amazon');
+});

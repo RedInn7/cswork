@@ -76,6 +76,10 @@ export function oaPageTitle(
   return `${name} | ${SITE_NAME}`;
 }
 
+/** Company page title (/company/<slug>). */
+export const companyPageTitle = (locale: keyof typeof SEO_HOME, company: string) =>
+  `${locale === 'zh' ? `${company} 面试题、OA 真题与面经` : `${company} Interview Questions, OA & Experiences`} | ${SITE_NAME}`;
+
 /** schema.org BreadcrumbList for an inline ld+json script (`<` escaped). */
 export function breadcrumbJsonLd(trail: { name: string; path: string }[]) {
   return JSON.stringify({

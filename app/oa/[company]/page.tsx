@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import {
   OTHER_COMPANY,
+  companyHubPath,
   oaCompanyName,
   oaCompanyPath,
   oaProblemPath,
@@ -98,6 +99,12 @@ export default async function OaCompanyPage({ params }: Props) {
         >
           {zh ? '在练习工作台中筛选' : 'Open in the workspace'}
         </a>
+        {/* Every employer with OA problems has a company page. */}
+        {company.slug !== OTHER_COMPANY && (
+          <Link className="oa-public-cta is-quiet" href={companyHubPath(company.slug)} prefetch={false}>
+            {zh ? `${name} 面经、面试题与高频题` : `${name} interview prep`}
+          </Link>
+        )}
       </div>
       <ol className="oa-public-list" aria-label={zh ? `${name} OA 题目` : `${name} OA problems`}>
         {items.map((item) => (
