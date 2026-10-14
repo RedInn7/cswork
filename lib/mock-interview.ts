@@ -289,6 +289,14 @@ export function companyCounts(pool: readonly (PoolItem & { companyName?: string 
     .sort((a, b) => b.n - a.n || a.slug.localeCompare(b.slug));
 }
 
+/** "Coding 12 · Behavioral 5" in English: the largest kinds first. */
+export const kindSummary = (kinds: Partial<Record<KindId, number>>, limit = 3) =>
+  (Object.entries(kinds) as [KindId, number][])
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([kind, n]) => `${KINDS[kind].name[1]} ${n}`)
+    .join(' · ');
+
 export type BodyParts = {
   /** What the candidate sees. */
   question: string;

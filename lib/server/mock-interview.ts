@@ -142,3 +142,6 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
     }),
   };
 }
+
+/** Companies with enough questions for their own landing page. */
+export const landingCompanies = (db: Database.Database) => mockCompanies(db).filter((c) => c.n >= 5);
