@@ -52,6 +52,17 @@ function summary(row: LibraryRow) {
     judgeProblemId: row.ready ? row.judge_problem_id : null,
   };
 }
+/** These problems' summaries in the given order (company pages); unknown ids are skipped. */
+export function studyLibrarySummaries(ids: readonly string[]) {
+  if (!ids.length) return [];
+  const rows = sqlite()
+    .prepare(
+      `SELECT ${columns} FROM study_library l WHERE l.id IN (SELECT value FROM json_each(?))`,
+    )
+    .all(JSON.stringify(ids)) as LibraryRow[];
+  const byId = new Map(rows.map((row) => [row.id, summary(row)]));
+  return ids.flatMap((id) => byId.get(id) ?? []);
+}
 export function listStudyLibrary(params: URLSearchParams, userId?: string) {
   const collection = params.get('collection');
   if (!collection || collection === LING_CURATED_ID)
