@@ -40,8 +40,8 @@ import {
   mockClock,
   readMockState,
   reportWindow,
-  settleMockState,
   slotOf,
+  watchMockState,
   writeMockState,
   type MockSession,
   type MockSource,
@@ -193,10 +193,16 @@ export function MockOa({
   const userId = boot.person?.id || 'guest';
   const [state, setState] = useState<MockState>(() => readMockState(userId));
   const [storageFailed, setStorageFailed] = useState(false);
-  const save = (next: MockState) => {
+  /** Changes the stored state as it is now (another tab may have written since); null when not saved. */
+  const save = (change: (latest: MockState) => MockState) => {
+    const next = change(readMockState(userId));
     setState(next);
-    if (!writeMockState(userId, next)) setStorageFailed(true);
+    if (writeMockState(userId, next)) return next;
+    setStorageFailed(true);
+    return null;
   };
+  // Another tab's draw, start or hand-in shows up here too.
+  useEffect(() => watchMockState(userId, () => setState(readMockState(userId))), [userId]);
   // Persist what reading settled: a mock whose time ran out while away is now history.
   // Once per mount (keyed by user): the first render's settled state.
   useEffect(() => {
@@ -228,8 +234,8 @@ export function MockOa({
       setError(t('请先验证邮箱，验证后才能提交代码和参加模拟。', 'Verify your email first: submitting code and taking mocks need it.'));
       return;
     }
-    // A mock whose time ran out on this page goes to the history first.
-    const current = settleMockState(state, Date.now());
+    // Read fresh: a mock whose time ran out, or one started in another tab, counts.
+    const current = readMockState(userId);
     const live = !!current.active?.startedAt;
     if (live && !confirmed) {
       setReplace({ key, request });
@@ -257,9 +263,10 @@ export function MockOa({
         createdAt: now,
       };
       // A replaced running mock is handed in as it stands; an unstarted draw is just dropped.
-      const base =
-        live && current.active ? archiveMock(current, finishMock(current.active, now)) : current;
-      save({ ...base, active: session });
+      save((latest) => ({
+        ...(latest.active?.startedAt ? archiveMock(latest, finishMock(latest.active, now)) : latest),
+        active: session,
+      }));
       navigate('mock', { session: session.id });
     } catch (e) {
       const message = (e as Error).message;
@@ -277,8 +284,8 @@ export function MockOa({
       {storageFailed && (
         <p className="mock-note" role="alert">
           {t(
-            '浏览器存储不可用：本场模拟刷新后无法恢复，成绩也不会记录。',
-            "Browser storage is unavailable: this mock won't survive a refresh and its result won't be kept.",
+            '浏览器存储不可用，模拟无法开始，成绩也不会记录。请退出无痕模式或清理网站数据后再试。',
+            "Browser storage is unavailable, so a mock can't start and results won't be kept. Leave private browsing or clear site data, then try again.",
           )}
         </p>
       )}
@@ -300,11 +307,10 @@ export function MockOa({
           navigate={navigate}
           onResult={(result) => {
             // In place: an older report keeps its spot in the history.
-            const latest = readMockState(userId);
-            save({
+            save((latest) => ({
               ...latest,
               history: latest.history.map((h) => (h.id === report.id ? { ...h, result } : h)),
-            });
+            }));
           }}
           again={() => draw('again', drawRequest(report))}
           busy={busy === 'again'}
@@ -319,12 +325,23 @@ export function MockOa({
           busy={busy === 'redraw'}
           redraw={() => draw('redraw', drawRequest(briefing))}
           cancel={() => {
-            save({ ...state, active: null });
+            save((latest) =>
+              latest.active?.id === briefing.id && !latest.active.startedAt
+                ? { ...latest, active: null }
+                : latest,
+            );
             navigate('mock');
           }}
           start={() => {
             const started = { ...briefing, startedAt: Date.now() };
-            save({ ...state, active: started });
+            const saved = save((latest) =>
+              // Started, replaced or cancelled in another tab: keep what that tab wrote.
+              latest.active?.id === briefing.id && !latest.active.startedAt
+                ? { ...latest, active: started }
+                : latest,
+            );
+            // Without storage the workspace could not find the exam: do not start one.
+            if (saved?.active !== started) return;
             track('mock_start', {
               company: started.preset ? started.company : 'custom',
               questions: started.ids.length,
@@ -347,11 +364,13 @@ export function MockOa({
           busy={busy}
           draw={draw}
           navigate={navigate}
-          handIn={() => {
-            if (!state.active) return;
-            const done = finishMock(state.active, Date.now());
-            save(archiveMock(state, done));
-            navigate('mock', { report: done.id });
+          handIn={(id) => {
+            save((latest) =>
+              latest.active?.id === id && latest.active.startedAt
+                ? archiveMock(latest, finishMock(latest.active, Date.now()))
+                : latest,
+            );
+            navigate('mock', { report: id });
           }}
         />
       )}
@@ -414,7 +433,7 @@ function LiveStrip({
 }: {
   session: MockSession;
   navigate: Navigate;
-  handIn: () => void;
+  handIn: (id: string) => void;
 }) {
   const t = useT();
   const [now, setNow] = useState(Date.now);
@@ -429,7 +448,7 @@ function LiveStrip({
         <span className="mock-live-tag">{t('时间到', "Time's up")}</span>
         <strong>{session.name || t('自定义模拟', 'Custom mock')}</strong>
         <span className="mock-live-actions">
-          <button type="button" className="mock-cta" onClick={handIn}>
+          <button type="button" className="mock-cta" onClick={() => handIn(session.id)}>
             {t('查看成绩单', 'See the report')}
             <ArrowRight size={16} />
           </button>
@@ -467,7 +486,7 @@ function LiveStrip({
           <ArrowRight size={16} />
         </button>
         {running && (
-          <button type="button" className="mock-ghost" onClick={handIn}>
+          <button type="button" className="mock-ghost" onClick={() => handIn(session.id)}>
             <Flag size={14} />
             {t('交卷', 'Hand in')}
           </button>
@@ -496,7 +515,7 @@ function MockLanding({
   busy: string | null;
   draw: (key: string, request: DrawRequest) => void;
   navigate: Navigate;
-  handIn: () => void;
+  handIn: (id: string) => void;
 }) {
   const t = useT(),
     zh = useLocale() === 'zh';
