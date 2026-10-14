@@ -803,12 +803,10 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                           <strong>
                             {item.title}
                             {item.starred && (
-                              <Star
-                                className="study-star"
-                                size={14}
-                                role="img"
-                                aria-label={t('已收藏', 'Starred')}
-                              />
+                              <>
+                                <Star className="study-star" size={14} aria-hidden="true" />
+                                <span className="sr-only">{t('（已收藏）', ' (starred)')}</span>
+                              </>
                             )}
                           </strong>
                           {[

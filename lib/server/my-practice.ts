@@ -56,7 +56,7 @@ export function problemMarks(userId: string) {
     .all(userId) as { target: string; mark: string }[];
   for (const row of rows) {
     const id = row.target.slice('problem:'.length);
-    marks.set(id, (marks.get(id) ?? new Set()).add(row.mark));
+    marks.set(id, (marks.get(id) ?? new Set<string>()).add(row.mark));
   }
   return marks;
 }
