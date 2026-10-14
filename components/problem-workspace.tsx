@@ -41,8 +41,10 @@ import {
   Lightbulb,
   LoaderCircle,
   Lock,
+  Maximize,
   Maximize2,
   MessageSquare,
+  Minimize,
   Minimize2,
   Play,
   Plus,
@@ -432,6 +434,15 @@ function Workspace({
     'statement',
   );
   const [expanded, setExpanded] = useState(true);
+  // Browser full screen, stacking with focus mode; null where it's unavailable (iPhone Safari).
+  const [fullscreen, setFullscreen] = useState<boolean | null>(null);
+  useEffect(() => {
+    if (!document.fullscreenEnabled) return;
+    const sync = () => setFullscreen(!!document.fullscreenElement);
+    sync();
+    document.addEventListener('fullscreenchange', sync);
+    return () => document.removeEventListener('fullscreenchange', sync);
+  }, []);
   // Focus mode hides the top bar (and its sign-in button), so the notice carries the one entry.
   const signIn = expanded && !boot.person && (
     <button onClick={() => window.dispatchEvent(new Event('cswork:auth-required'))}>
@@ -2776,6 +2787,23 @@ function Workspace({
           >
             {expanded ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
           </button>
+          {fullscreen !== null && (
+            <button
+              className="cs-top-button"
+              aria-pressed={fullscreen}
+              aria-label={t('浏览器全屏', 'Full screen')}
+              title={t('浏览器全屏', 'Full screen')}
+              onClick={() =>
+                void (
+                  fullscreen
+                    ? document.exitFullscreen()
+                    : document.documentElement.requestFullscreen()
+                ).catch(() => {})
+              }
+            >
+              {fullscreen ? <Minimize size={17} /> : <Maximize size={17} />}
+            </button>
+          )}
         </div>
       </div>
       {success && exam && examMode && (
@@ -3560,8 +3588,8 @@ function SettingsDialog({
               {t('键位', 'Keybindings')}
               <small>
                 {t(
-                  'Vim 模式下 :w 保存草稿',
-                  'In Vim mode, :w saves the draft',
+                  'Vim 模式下 :w 保存草稿；Emacs 模式下 C-s 是搜索，草稿照常自动保存',
+                  'In Vim mode, :w saves the draft. In Emacs mode, C-s searches; drafts still save on their own',
                 )}
               </small>
             </span>
@@ -3576,6 +3604,7 @@ function SettingsDialog({
             >
               <option value="default">{t('默认', 'Default')}</option>
               <option value="vim">Vim</option>
+              <option value="emacs">Emacs</option>
             </select>
           </label>
           <label>

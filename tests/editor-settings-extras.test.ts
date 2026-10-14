@@ -22,6 +22,8 @@ test('topic tags start hidden and the keymap starts default; junk falls back', a
   assert.equal(readEditorSettings('u').keymap, 'vim');
   store.set(settingsKey('u'), JSON.stringify({ hideTags: 0, keymap: 'emacs' }));
   assert.equal(readEditorSettings('u').hideTags, true);
+  assert.equal(readEditorSettings('u').keymap, 'emacs');
+  store.set(settingsKey('u'), JSON.stringify({ keymap: 'sublime' }));
   assert.equal(readEditorSettings('u').keymap, 'default');
 });
 
@@ -88,4 +90,19 @@ test('vendored monaco-vim imports the Monaco build the editor already loads', ()
         `${specifier} exports ${name}`,
       );
   }
+});
+
+test('vendored monaco-emacs shares that Monaco build and needs no lodash', () => {
+  const emacs = readFileSync(
+    new URL('../components/vendor/monaco-emacs/index.js', import.meta.url),
+    'utf8',
+  );
+  const specifiers = new Set(
+    [...emacs.matchAll(/^import .* from "([^"]+)";$/gm)].map((m) => m[1]),
+  );
+  assert.deepEqual([...specifiers], ['monaco-editor/editor/editor.api.js']);
+  assert.equal(/require\(|lodash/.test(emacs.replace(/^\/\/.*$/gm, '')), false);
+  // The editor names Emacs's context key so the site's Ctrl+S yields to isearch.
+  const editor = readFileSync(new URL('../components/editor.tsx', import.meta.url), 'utf8');
+  assert.match(editor, /keybindingContext: '!cswork\.emacs'/);
 });

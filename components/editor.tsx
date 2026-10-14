@@ -10,6 +10,7 @@ import type { IntelligenceStatus } from '@/lib/editor-intelligence';
 import { useT } from '@/lib/i18n';
 import { attachIntelligence } from './monaco-intelligence';
 import type { VimAdapter } from './vendor/monaco-vim/index.js';
+import type { EmacsExtension } from './vendor/monaco-emacs/index.js';
 import {
   defaultEditorSettings,
   type EditorSettings,
@@ -93,6 +94,9 @@ export function CodeEditor({
   );
   const vimStatus = useRef<HTMLDivElement>(null);
   const vim = !readOnly && settings.keymap === 'vim';
+  const emacs = !readOnly && settings.keymap === 'emacs';
+  // Emacs owns C-s (isearch); drafts save themselves, so the site's Ctrl+S steps aside.
+  const emacsKey = useRef<{ set(value: boolean): void } | null>(null);
   useEffect(() => {
     if (!vim || !instance) return;
     let active = true;
@@ -117,9 +121,41 @@ export function CodeEditor({
       }
     };
   }, [vim, instance]);
+  useEffect(() => {
+    emacsKey.current?.set(emacs);
+    if (!emacs || !instance) return;
+    let active = true;
+    let extension: EmacsExtension | undefined;
+    // Its own chunk too; the status bar shows a pending prefix such as C-x.
+    import('./vendor/monaco-emacs/index.js').then(
+      ({ EmacsExtension }) => {
+        if (!active) return;
+        extension = new EmacsExtension(instance);
+        extension.start();
+        const show = (state: string) => {
+          if (vimStatus.current) vimStatus.current.textContent = state;
+        };
+        show('Emacs');
+        extension.onDidChangeKey((state) => show(state || 'Emacs'));
+      },
+      () => {
+        /* The default keymap keeps working when the Emacs chunk can't load. */
+      },
+    );
+    return () => {
+      active = false;
+      if (vimStatus.current) vimStatus.current.textContent = '';
+      try {
+        extension?.dispose();
+      } catch {
+        /* On unmount Monaco may already have disposed the editor. */
+      }
+    };
+  }, [emacs, instance]);
   const mounted: OnMount = (editor, monaco) => {
     cleanup.current?.();
     setInstance(editor);
+    emacsKey.current = editor.createContextKey('cswork.emacs', emacs);
     const actions = [
       editor.addAction({
         id: 'cswork.run',
@@ -139,6 +175,7 @@ export function CodeEditor({
         id: 'cswork.save',
         label: t('保存草稿', 'Save draft'),
         keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+        keybindingContext: '!cswork.emacs',
         run: () => callbacks.current.onSave?.(),
       }),
       editor.onDidChangeCursorPosition((event) => {
@@ -210,7 +247,7 @@ export function CodeEditor({
     <div className="cs-editor-host" data-theme={settings.theme}>
       {runtime ? (
         <runtime.Editor
-          height={vim ? 'calc(100% - 24px)' : '100%'}
+          height={vim || emacs ? 'calc(100% - 24px)' : '100%'}
           width="100%"
           language={language}
           value={value}
@@ -248,8 +285,8 @@ export function CodeEditor({
           {t('正在加载代码编辑器…', 'Loading the code editor…')}
         </div>
       )}
-      {/* monaco-vim fills this bar (mode, pending keys, the : command line). */}
-      {runtime && vim && (
+      {/* monaco-vim fills this bar (mode, pending keys, the : command line); Emacs, its prefix. */}
+      {runtime && (vim || emacs) && (
         <div ref={vimStatus} className="cs-vim-status" />
       )}
     </div>
