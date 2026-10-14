@@ -127,23 +127,28 @@ test('every reference, alternative and wrong query reruns on every dataset to th
   const built = buildSqlTrack();
   assert.equal(built.packages, readFileSync(PACKAGES_FILE, 'utf8'), 'rerun scripts/sql-track/build.ts');
   assert.equal(built.manifest, readFileSync(MANIFEST_FILE, 'utf8'), 'rerun scripts/sql-track/build.ts');
-  assert.equal(built.report.length, 20);
+  assert.equal(built.report.length, 50);
 });
 
-test('the packages are 20 valid, bilingual, SQL-only judge packages', () => {
-  assert.equal(packages.length, 20);
+test('the packages are 50 valid, bilingual, SQL-only judge packages', () => {
+  assert.equal(packages.length, 50);
   const manifest = JSON.parse(readFileSync(MANIFEST_FILE, 'utf8')) as {
     groups: { ids: string[]; zh: string; en: string }[];
     problems: { id: string }[];
   };
+  // Every problem sits in exactly one topic group, in id order within it; ids stay
+  // sql-01… in package order, so problems added later join their topic at the end.
   const grouped = manifest.groups.flatMap((group) => group.ids);
   assert.deepEqual(
-    grouped,
+    [...grouped].sort(),
     packages.map((p) => p.problem.id),
   );
+  for (const group of manifest.groups) assert.deepEqual(group.ids, [...group.ids].sort(), group.zh);
+  assert.equal(manifest.groups.length, 7);
+  assert.ok(manifest.groups.every((group) => group.ids.length >= 3));
   assert.deepEqual(
     manifest.problems.map((p) => p.id),
-    grouped,
+    packages.map((p) => p.problem.id),
   );
   packages.forEach((pkg, index) => {
     const parsed = ojImportSchema.parse(pkg);
@@ -253,13 +258,13 @@ test('the release publisher publishes once, then skips unchanged packages; SQL p
     });
   const first = publish();
   assert.equal(first.status, 0, first.stderr);
-  assert.equal(first.stdout.match(/"published"/g)?.length, 20);
+  assert.equal(first.stdout.match(/"published"/g)?.length, 50);
   const again = publish();
   assert.equal(again.status, 0, again.stderr);
-  assert.equal(again.stdout.match(/"unchanged"/g)?.length, 20);
+  assert.equal(again.stdout.match(/"unchanged"/g)?.length, 50);
   // Like OA problems: listed for everyone, judged for any verified account.
   const listed = (await listPublishedProblems(null)).filter((p) => p.id.startsWith('sql-'));
-  assert.equal(listed.length, 20);
+  assert.equal(listed.length, 50);
   assert.ok(listed.every((p) => p.freeJudge && p.languages.join() === 'sql'));
   const snapshot = await getJudgeProblem(student, 'sql-01');
   assert.equal(snapshot.cases.length, packages[0].cases.length);
