@@ -23,12 +23,11 @@ function speedrunPool(): SpeedrunPoolItem[] {
 }
 
 /** GET /api/oj/speedrun: one round. Titles and reasons are public (the Line 500 list shows
- * them); statement excerpts follow the statement gate for free problems (verified or teacher). */
+ * them); statement excerpts need an account, like the Line 500 detail (GET /api/oj/library/<id>). */
 export async function handleSpeedrun(request: Request, p: Person | null) {
   await limitReader(request, p, 'speedrun-read', 60);
-  const members = !!p && (p.verified || p.role === 'teacher');
   const questions = speedrunRound(speedrunPool()).map((q) => {
-    const source = members ? getStudySourceStatement(q.id) : null;
+    const source = p ? getStudySourceStatement(q.id) : null;
     return source
       ? {
           ...q,

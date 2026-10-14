@@ -76,12 +76,12 @@ void test('guests get titles, answers and reasons for judgeable problems only, n
   assert.equal(questions.some((q) => 'excerptZh' in q || 'excerptEn' in q), false);
 });
 
-void test('verified members get the first statement paragraph; unverified accounts do not', async () => {
+void test('signed-in accounts get the first statement paragraph, verified or not, as the Line 500 detail does', async () => {
   const member = await round(person(true));
   const three = member.questions.find((q) => q.id === 'lc-3')!;
   assert.equal(three.excerptZh, '第 3 题的首段。');
   assert.equal(three.excerptEn, 'Opening of 3.');
   assert.equal(JSON.stringify(member).includes('/private/solution.py'), false);
   const fresh = await round(person(false));
-  assert.equal(fresh.questions.some((q) => 'excerptEn' in q), false);
+  assert.equal(fresh.questions.find((q) => q.id === 'lc-1')?.excerptEn === 'Opening of 1.', true);
 });
