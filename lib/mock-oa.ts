@@ -1,7 +1,8 @@
 /**
  * Timed mock OA: the draw, the score and the exam clock. Pure and shared by the
  * API (lib/server/mock-oa.ts) and the browser (components/mock-oa.tsx); the
- * session lives only in this browser's localStorage (v1: no cross-device history).
+ * session lives in this browser's localStorage, and finished ones also sync to the
+ * account (lib/mock-cloud.ts, lib/server/learner-cloud.ts).
  */
 export type Slot = 'easy' | 'medium' | 'hard';
 export type Scoring = 'tests' | 'gca';

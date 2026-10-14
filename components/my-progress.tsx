@@ -15,6 +15,7 @@ import {
   type PracticeHistoryItem,
 } from '@/lib/practice-review';
 import { PracticeCalendar, usePracticeStats } from './practice-calendar';
+import { MockCloudHistory } from './mock-cloud-history';
 import { Button } from './ui/button';
 import type { Navigate } from './learning';
 import '@/app/my-progress.css';
@@ -431,6 +432,7 @@ export function MyProgress({
           panel()
         )}
       </div>
+      {boot.person && <MockCloudHistory userId={boot.person.id} navigate={navigate} english={english} />}
     </section>
   );
 }
