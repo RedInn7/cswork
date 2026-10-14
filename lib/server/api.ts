@@ -49,6 +49,7 @@ import {
 import { grantCourse, revokeGrant, dashboard } from './lms-roster';
 import { lessonEditor, saveLessonDraft, publishLesson } from './lms-courses';
 import { uploadAttachment, downloadAttachment } from './files';
+import { dailyProblem } from './daily-problem';
 const id = z.string().min(1).max(100),
   short = z.string().trim().min(1).max(180),
   long = z.string().trim().min(1).max(12000);
@@ -98,7 +99,7 @@ export async function bootstrap(p: Person | null, lite = false) {
       c.id,
     );
   }
-  return {
+  const boot = {
     person: p,
     // Owner-only mode returns no course content to anyone else; course grants are
     // still listed so access to other course features stays explicit.
@@ -142,6 +143,8 @@ export async function bootstrap(p: Person | null, lite = false) {
       : 0,
     services: services(),
   };
+  // Today's problem for everyone; a failure never blocks the bootstrap.
+  return { ...boot, daily: await dailyProblem(boot.activity).catch(() => null) };
 }
 export async function handle(request: Request) {
   try {

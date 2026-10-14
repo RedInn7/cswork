@@ -1,6 +1,7 @@
 import { readLocale } from './i18n';
 import { englishMessage } from './messages-en';
 import type { ProblemSummary } from './problems';
+import type { DailyProblem } from './daily-problem';
 export type Person = {
   id: string;
   name: string;
@@ -78,6 +79,8 @@ export type Boot = {
   progress: Progress[];
   submissions: Submission[];
   activity?: { problem_id: string; created_at: number }[];
+  /** Today's problem, the same for everyone (lib/daily-problem.ts). */
+  daily?: DailyProblem | null;
   notifications: Notification[];
   unreadNotifications?: number;
   services: Record<string, boolean>;
