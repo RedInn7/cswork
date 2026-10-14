@@ -19,8 +19,9 @@ import { hiddenCompanies } from './env';
 import {
   getStudyLibrary,
   getStudySourceStatement,
-  listStudyLibrary,
+  listLibrary,
 } from './study-library';
+import { classicList } from '@/lib/classic-lists';
 import { requireCourseOwner } from './course-visibility';
 import {
   boundedText,
@@ -101,12 +102,14 @@ export async function handleOj(
     request.method === 'GET' &&
     resource === 'library' &&
     !id &&
-    // Signed out, only the curated landing list is open; the full catalogue stays for members.
-    (p || ['', 'ling-selected-500'].includes(url.searchParams.get('collection') || ''))
+    // Signed out, only the curated landing list and the classic lists are open; the full catalogue stays for members.
+    (p ||
+      ['', 'ling-selected-500'].includes(url.searchParams.get('collection') || '') ||
+      !!classicList(url.searchParams.get('collection')))
   ) {
     // The landing problem list is browsable signed out; statements still need an account.
     await limitReader(request, p, 'library-read', 120);
-    return json(listStudyLibrary(url.searchParams, p?.id));
+    return json(listLibrary(url.searchParams, p?.id));
   }
   if (request.method === 'GET' && resource === 'feed' && !id) {
     // Public judge status board: submission metadata only, rate limited per client.
@@ -120,7 +123,7 @@ export async function handleOj(
     if (resource === 'library') {
       await limit(p, 'library-read', 120);
       return json(
-        id ? getStudyLibrary(id) : listStudyLibrary(url.searchParams, p.id),
+        id ? getStudyLibrary(id) : listLibrary(url.searchParams, p.id),
       );
     }
     if (resource === 'practice-rounds' && !id) {
