@@ -52,6 +52,8 @@ const EVENTS: Record<string, Record<string, Kind>> = {
     company: 'tag', questions: [1, 4], score: [0, 600], max: [0, 600],
     solved: [0, 4], reason: 'text',
   },
+  // Pattern speedrun (components/speedrun.tsx): correct answers out of 10.
+  speedrun_finish: { score: [0, 10] },
   // sign_up and login are recorded server-side by the auth hooks (record below), for every
   // sign-in method; the client's copies (email only) still go to GA4 but are dropped here.
 };
