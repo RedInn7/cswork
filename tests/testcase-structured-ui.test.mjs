@@ -72,6 +72,7 @@ test('a custom case reference output: pending, unavailable, and no line diff whe
     assert.equal(document.querySelectorAll('.is-diff').length, 0);
     await show({ reference: { status: 'done', output: '[0,1]\n' }, checker: 'exact' });
     assert.equal(document.querySelectorAll('.is-diff').length, 2, 'both sides mark line 1');
+    assert.equal(document.querySelectorAll('.cs-line').length, 2, 'the trailing newline adds no blank row');
     assert.match(document.querySelector('.is-diff .sr-only').textContent, /line 1 differs/);
     // No reference prop: the plain custom run, as before.
     await show({ checker: 'exact' });

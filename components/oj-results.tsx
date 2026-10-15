@@ -107,7 +107,7 @@ export function CopyBlock({
         {!value
           ? t('（空）', '(empty)')
           : diff?.size
-            ? value.split('\n').map((line, index) => (
+            ? value.replace(/\r?\n$/, '').split('\n').map((line, index) => (
                 <span key={index} className={diff.has(index) ? 'cs-line is-diff' : 'cs-line'}>
                   {line || ' '}
                   {diff.has(index) && (
