@@ -37,7 +37,9 @@ import { badgeName, badgeSql, badgeTarget } from './work-verify';
  * show by their public handle or a masked name (never the account name, which is often a real
  * one). Bodies are Markdown the client renders without raw HTML. An anonymous post (only where
  * anonymousAllowed) shows other readers no author at all, nor do its author's comments under it;
- * its author and the moderation queue still see who wrote it. Comments nest one level (parent_id):
+ * its author and the moderation queue still see who wrote it. Under an anonymous interview report
+ * (`exp:member.<id>`) its author writes anonymously throughout: their posts go up anonymous and
+ * their comments read as the anonymous OP's. Comments nest one level (parent_id):
  * a reply to a reply goes under the same top-level comment. Replies, @mentions and upvotes leave
  * in-app notices (lib/server/notify.ts).
  */
@@ -194,6 +196,17 @@ const hiddenTags = () => {
   return slugs.length ? ` AND sp.tag NOT IN (${slugs.map((s) => `'${s}'`).join(',')})` : '';
 };
 const ITEM = /^[\w-]{1,300}$/;
+/** Who wrote the anonymous interview report a target (`exp:member.<id>`) discusses, else ''. */
+function anonymousReporter(target: string) {
+  const id = targetKind(target) === 'exp' ? memberIdOf(target.slice(4)) : null;
+  if (!id) return '';
+  return (
+    (sqlite()
+      .prepare('SELECT user_id FROM experience_submissions WHERE id=? AND anonymous=1')
+      .pluck()
+      .get(id) as string | undefined) ?? ''
+  );
+}
 /**
  * Whether a target is open to posts: a published problem the reader may see, a known channel or
  * system design chapter, or an experience or interview question the library (or an approved
@@ -370,12 +383,15 @@ async function readPost(p: Person | null, postId: string) {
     (await visibleTarget(p, row.problemId));
   if (!row || !visible) throw new HttpError(404, '题解不存在');
   refuseDuringContest(p, row.problemId);
-  // An anonymous post's author stays anonymous in their own comments under it (marked op).
+  // An anonymous post's author stays anonymous in their own comments under it (marked op), as an
+  // anonymous report's author does in every comment under the report.
+  const reporter = anonymousReporter(row.problemId);
   const rows = (
     db
       .prepare(
         `SELECT c.id,c.parent_id AS parentId,c.body,c.created_at AS createdAt,COALESCE(u.name,'') AS author,pr.handle,
-          c.user_id=@me AS mine,c.user_id=sp.user_id AS op,sp.anonymous=1 AND c.user_id=sp.user_id AS anonymous,
+          c.user_id=@me AS mine,c.user_id IN (sp.user_id,@reporter) AS op,
+          (sp.anonymous=1 AND c.user_id=sp.user_id) OR c.user_id=@reporter AS anonymous,
           (SELECT COUNT(*) FROM comment_votes v WHERE v.comment_id=c.id) AS votes,
           EXISTS(SELECT 1 FROM comment_votes v WHERE v.comment_id=c.id AND v.user_id=@me) AS voted,
           ${reputationSql('c.user_id')} AS reputation
@@ -384,7 +400,7 @@ async function readPost(p: Person | null, postId: string) {
         WHERE c.post_id=@id AND c.hidden=${SHOWN} AND (c.user_id=@me OR NOT ${reportedDown("'comment:'||c.id")})
         ORDER BY votes DESC,c.created_at,c.id LIMIT 500`,
       )
-      .all({ me, id: postId }) as {
+      .all({ me, id: postId, reporter }) as {
       id: string;
       parentId: string | null;
       body: string;
@@ -464,13 +480,13 @@ function mentioned(text: string) {
 /**
  * Notices for a new post or comment: `to` (replies) first, then the @mentioned; one each, never to
  * the writer or anyone blocking them, none on a reported-down post. Anonymous writing (an anonymous
- * post's author on it) names no one, mentions no one and skips the block check, so no notice's
+ * post's author on it, an anonymous report's author under it) names no one, mentions no one and skips the block check, so no notice's
  * presence or absence tells its author apart. A judge problem's notice carries no excerpt to a
  * recipient it is in a running contest for.
  */
 function notifyWrite(p: Person, post: OpenPost, to: { userId: string; title: string }[], text: string, now: number) {
   if (post.down) return;
-  const anonymous = !!post.anonymous && post.userId === p.id;
+  const anonymous = (!!post.anonymous && post.userId === p.id) || anonymousReporter(post.problemId) === p.id;
   const from = anonymous ? '' : `${nameOf(p.id)}: `;
   const problem = targetKind(post.problemId) === 'problem';
   const blocks = sqlite().prepare('SELECT 1 FROM dm_blocks WHERE user_id=? AND blocked_id=?');
@@ -655,16 +671,18 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
     if (!validTag(d.problemId, d.tag)) throw new HttpError(400, '标签无效');
     if (d.anonymous && !anonymousAllowed(d.problemId)) throw new HttpError(400, '这里不能匿名发帖');
     const title = titleOf(d.problemId, d);
+    // An anonymous report's author posts under it anonymously, ticked or not (as their comments read).
+    const anonymous = d.anonymous || anonymousReporter(d.problemId) === p.id ? 1 : 0;
     underCap('solution_posts', p, POSTS_PER_DAY, '今天发布的帖子已达上限');
     const postId = randomUUID();
     db.transaction(() => {
       db.prepare(
         `INSERT INTO solution_posts(id,problem_id,user_id,title,body,language,tag,hidden,anonymous,created_at,updated_at)
         VALUES(?,?,?,?,?,?,?,${SHOWN},?,?,?)`,
-      ).run(postId, d.problemId, p.id, title, d.body, d.language, d.tag, d.anonymous ? 1 : 0, now, now);
+      ).run(postId, d.problemId, p.id, title, d.body, d.language, d.tag, anonymous, now, now);
       savePoll(postId, d.problemId, d.poll, now);
     })();
-    const post = { id: postId, problemId: d.problemId, userId: p.id, title, anonymous: d.anonymous ? 1 : 0, down: 0 };
+    const post = { id: postId, problemId: d.problemId, userId: p.id, title, anonymous, down: 0 };
     notifyWrite(p, post, [], `${title}\n${d.body}`, now);
     return json(await readPost(p, postId), 201);
   }

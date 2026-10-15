@@ -313,3 +313,40 @@ void test("a judge problem's notices carry no excerpt into the recipient's runni
   await ok(bob, 'POST', `posts/${post.id}/comments`, { body: 'Or a heap' });
   assert.equal(notices(ada.id).at(-1)!.body, '@bob-b: Or a heap');
 });
+
+void test("an anonymous interview report's author writes anonymously, as its OP, in its discussion", async () => {
+  sqlite()
+    .prepare(
+      `INSERT INTO experience_submissions(id,user_id,company_slug,title,role,interview_month,body,status,anonymous,created_at)
+      VALUES('dvAnonReport',?,'amazon','Amazon loop','SWE','2026-09','Four rounds','approved',1,1)`,
+    )
+    .run(bob.id);
+  const problemId = 'exp:member.dvAnonReport';
+  sqlite().prepare('DELETE FROM notifications').run();
+  const asked = (await ok<Detail>(ada, 'POST', 'posts', { problemId, title: '', body: 'Which team?' })).post;
+  // Answering a reader's thread under it: no name or reputation, marked OP, and its notice names no
+  // one, mentions no one and skips the block check, as an anonymous post's author's would.
+  sqlite().prepare('INSERT INTO dm_blocks(user_id,blocked_id,created_at) VALUES(?,?,1)').run(ada.id, bob.id);
+  await ok(bob, 'POST', `posts/${asked.id}/comments`, { body: 'Ads infra, cc @ada' });
+  sqlite().prepare('DELETE FROM dm_blocks WHERE user_id=?').run(ada.id);
+  assert.deepEqual(notices(ada.id, 'reply').map((n) => n.body), ['Ads infra, cc @ada']);
+  assert.deepEqual(notices(ada.id, 'mention'), []);
+  // Its own post there goes up anonymous though the box was left unticked, so it stays off the
+  // profile and its upvotes out of the reputation.
+  const own = (await ok<Detail>(bob, 'POST', 'posts', { problemId, title: '', body: 'More details on round 2' })).post;
+  assert.equal(own.anonymous, true);
+  const reputation = publicProfile('bob-b', new Map())!.reputation;
+  await ok(ada, 'POST', `posts/${own.id}/vote`, { on: true });
+  const profile = publicProfile('bob-b', new Map())!;
+  assert.equal(profile.reputation, reputation);
+  assert.ok(!profile.posts.items.some((p) => p.id === own.id));
+  for (const reader of [ada, null]) {
+    const listed = await ok<List>(reader, 'GET', `posts?problem=${problemId}&sort=new`);
+    const detail = await ok<Detail>(reader, 'GET', `posts/${asked.id}`);
+    const json = JSON.stringify([listed, detail]);
+    for (const leak of ['bob-b', bob.id, 'Name dv-bob', 'Na***']) assert.ok(!json.includes(leak), leak);
+    assert.deepEqual([listed.items.find((p) => p.id === own.id)!.author, listed.items.length], ['', 2]);
+    const answer = detail.comments.find((c) => c.body === 'Ads infra, cc @ada')!;
+    assert.deepEqual([answer.author, answer.op, answer.anonymous, answer.reputation], ['', true, true, null]);
+  }
+});
