@@ -112,9 +112,13 @@ void test('a list badge per classic list with judgeable problems', () => {
     { slug: 'empty', zh: '空', en: 'Empty', solved: 0, total: 0 },
   ];
   assert.deepEqual(earned({ lists }), ['list:blind-75']);
-  // Judgeable problems only, once 80% of a list is judged here; book lists are left out.
+  // Judgeable problems only, once 80% of a list is judged here. A book list counts its twins and
+  // its own rewrites (bk-…); while those are unpublished it falls short and is left out.
   const all = classicListProgress(new Set(['lc-1']), () => true);
-  assert.ok(!all.some((l) => l.slug === 'sword-offer' || l.slug === 'cracking-the-coding-interview'));
+  // 75 book problems, two of which share one LeetCode twin.
+  assert.equal(all.find((l) => l.slug === 'sword-offer')?.total, 74);
+  const twinsOnly = classicListProgress(new Set(), (id) => id.startsWith('lc-'));
+  assert.ok(!twinsOnly.some((l) => l.slug === 'sword-offer' || l.slug === 'cracking-the-coding-interview'));
   assert.deepEqual(all.find((l) => l.slug === 'leetcode-hot-100'), {
     slug: 'leetcode-hot-100',
     zh: 'LeetCode 热题 100',

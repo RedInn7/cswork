@@ -188,10 +188,17 @@ export function ClassicList({
           : t('未开始', 'Not started');
 
   // Done = solved here or ticked by hand, over the problems with a LeetCode number (a
-  // number listed twice counts once); book problems without a twin cannot be tracked.
+  // number listed twice counts once) and the book problems judged here as their own bk- ids.
   const count = (items: ClassicItem[]) => {
-    const rows = [...new Map(items.flatMap((item) => (item.number ? [[item.number, item] as const] : []))).values()];
-    const manual = rows.filter((item) => !item.solved && ticks.has(item.number!)).length;
+    const rows = [
+      ...new Map(
+        items.flatMap((item) => {
+          const key = item.number ?? item.judgeProblemId;
+          return key ? [[key, item] as const] : [];
+        }),
+      ).values(),
+    ];
+    const manual = rows.filter((item) => !item.solved && !!item.number && ticks.has(item.number)).length;
     return { total: rows.length, done: rows.filter((item) => item.solved).length + manual, manual };
   };
   const progress = count(data?.groups.flatMap((group) => group.items) ?? []);
@@ -208,6 +215,11 @@ export function ClassicList({
             '按题号对照到本站题库：能在本站判题的直接提交，其余标为站外，去力扣练习。由 cswork 对照整理，并非官方题单。',
             'Mapped to this bank by problem number: judgeable problems are submitted here, the rest are marked external and practiced on LeetCode. Mapped by cswork; not the official list.',
           )}{' '}
+          {list.refLabel &&
+            t(
+              '没有力扣主站对应题的书中题目，由 cswork 重写题面、自编测试数据，直接在本站判题。',
+              'Book problems without a LeetCode twin are rewritten by cswork, with our own statements and tests, and judged here.',
+            )}{' '}
           <a href={sourceUrl(list)} target="_blank" rel="noopener noreferrer">
             {t('原题单', 'Original list')}
             <ExternalLink size={12} aria-hidden="true" />
@@ -407,7 +419,8 @@ export function ClassicList({
                   </a>
                 );
                 const name = `${item.ref ? refLabel(list, item.ref, english) : `${item.number}.`} ${problemTitle(item, english)}`;
-                // Every row is a tick box and a link, so the zebra stripes stay regular.
+                // Every row is a tick box and a link, so the zebra stripes stay regular. A book
+                // problem judged here as CSWork's rewrite keeps its leetcode.cn page as a reference.
                 return (
                   <div key={item.ref ?? item.number} className="classic-row">
                     {item.number ? (
@@ -423,6 +436,21 @@ export function ClassicList({
                       <span className="classic-tick" />
                     )}
                     {link}
+                    {item.refSlug && item.number === null && item.judgeProblemId && (
+                      <a
+                        className="classic-source"
+                        href={bookProblemUrl(item.refSlug)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={t('力扣中国站上的原题，仅供参考', 'The original on leetcode.cn, for reference')}
+                      >
+                        {t('原题', 'Original')}
+                        <ExternalLink size={12} aria-hidden="true" />
+                        <span className="sr-only">
+                          {t(`：${name}（在新窗口打开）`, `: ${name} (opens in a new tab)`)}
+                        </span>
+                      </a>
+                    )}
                   </div>
                 );
               })}
