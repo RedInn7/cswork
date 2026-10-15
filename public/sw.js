@@ -5,13 +5,15 @@
 // are the same for everyone. Everything else (API, RSC, POST) passes straight through.
 const VERSION = 1;
 const CACHE = `cswork-v${VERSION}`;
+// The offline page and its stylesheets live apart, so trimming build files never drops them.
+const OFFLINE_CACHE = `cswork-offline-v${VERSION}`;
 const OFFLINE = '/offline';
 // ponytail: a flat cap on stored build files, oldest out first; old deploys' files age away.
 const MAX_FILES = 300;
 
 /** The offline page and its stylesheets, so it still looks like the site with no network. */
 async function cacheOffline() {
-  const cache = await caches.open(CACHE);
+  const cache = await caches.open(OFFLINE_CACHE);
   if (await cache.match(OFFLINE)) return;
   const response = await fetch(OFFLINE, { cache: 'no-store' });
   if (!response.ok) return;
@@ -29,21 +31,20 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))))
+      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE && key !== OFFLINE_CACHE).map((key) => caches.delete(key))))
       .then(() => self.clients.claim()),
   );
 });
 
 async function buildFile(request) {
-  const cache = await caches.open(CACHE);
-  const hit = await cache.match(request);
+  const hit = await caches.match(request);
   if (hit) return hit;
+  const cache = await caches.open(CACHE);
   const response = await fetch(request);
   if (response.ok && response.type === 'basic') {
     await cache.put(request, response.clone());
     const keys = await cache.keys();
-    const files = keys.filter((key) => new URL(key.url).pathname !== OFFLINE);
-    await Promise.all(files.slice(0, Math.max(0, files.length - MAX_FILES)).map((key) => cache.delete(key)));
+    await Promise.all(keys.slice(0, Math.max(0, keys.length - MAX_FILES)).map((key) => cache.delete(key)));
   }
   return response;
 }

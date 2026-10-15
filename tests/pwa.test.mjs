@@ -81,7 +81,11 @@ function worker() {
     await Promise.all(waits);
     return response;
   };
-  const cached = () => [...(caches.stores.get('cswork-v1')?.keys() ?? [])].map((u) => new URL(u).pathname).sort();
+  const cached = () =>
+    ['cswork-v1', 'cswork-offline-v1']
+      .flatMap((name) => [...(caches.stores.get(name)?.keys() ?? [])])
+      .map((u) => new URL(u).pathname)
+      .sort();
   return { net, caches, lifecycle, request, cached };
 }
 
@@ -90,8 +94,20 @@ test('install keeps the offline page and its stylesheet; activate drops older ve
   sw.caches.stores.set('cswork-v0', new Map([[`${ORIGIN}/old`, new Response('x')]]));
   await sw.lifecycle('install');
   assert.deepEqual(sw.cached(), ['/_next/static/css/app-1a2b.css', '/offline']);
+  await sw.request('/_next/static/chunks/main-9f8e.js');
   await sw.lifecycle('activate');
-  assert.deepEqual([...sw.caches.stores.keys()], ['cswork-v1']);
+  assert.deepEqual([...sw.caches.stores.keys()].sort(), ['cswork-offline-v1', 'cswork-v1']);
+});
+
+test('trimming old build files never drops the offline page or its stylesheet', async () => {
+  const sw = worker();
+  await sw.lifecycle('install');
+  for (let i = 0; i < 301; i++) await sw.request(`/_next/static/chunks/c${i}.js`);
+  assert.equal(sw.caches.stores.get('cswork-v1').size, 300);
+  sw.net.online = false;
+  const css = await sw.request('/_next/static/css/app-1a2b.css');
+  assert.equal(await css.text(), 'body of /_next/static/css/app-1a2b.css');
+  assert.match(await (await sw.request('/u/someone', { mode: 'navigate' })).text(), /app-1a2b\.css/);
 });
 
 test('pages are never stored: online they come from the network, offline the fallback page', async () => {
