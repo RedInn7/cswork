@@ -1,11 +1,14 @@
 'use client';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CalendarPlus, Check, Clock3, Flag, Link2, Users, Video, X } from 'lucide-react';
+import { CalendarPlus, Check, Clock3, Flag, Link2, Users, Video, X, Zap } from 'lucide-react';
 import { api } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { TEMPLATES } from '@/lib/mock-interview';
-import { LEAD_HOURS, LEVELS, LEVEL_NAMES, SLOTS_MAX, WINDOW_HOURS, meetingUrl, type Level } from '@/lib/mock-peer';
+import {
+  FOCUS_MAX, INSTANT_MINUTES, LEAD_HOURS, LEVELS, LEVEL_NAMES, SLOTS_MAX, WINDOW_HOURS, meetingUrl, type Level,
+} from '@/lib/mock-peer';
+import { STOP_NAMES } from '@/lib/route-stops';
 import type { Navigate } from './learning';
 import { ModeTabs } from './mock-modes';
 import {
@@ -40,7 +43,16 @@ export type PeerPair = {
   canCancel: boolean;
 };
 export type PeerState = {
-  request: { displayName: string; kind: string; level: string; slots: number[]; expired: boolean } | null;
+  request: {
+    displayName: string;
+    kind: string;
+    level: string;
+    slots: number[];
+    /** "Practice now": it lapses INSTANT_MINUTES after createdAt. */
+    instant: boolean;
+    expired: boolean;
+    createdAt: number;
+  } | null;
   pairs: PeerPair[];
   paused: boolean;
 };
@@ -137,6 +149,13 @@ export function MockPeer({ navigate, params }: { navigate: Navigate; params: Rec
       setBusy(false);
     }
   }
+  // An instant request is matched by someone else's: look again until it is, or it lapses.
+  const instantWaiting = !!state?.request?.instant && !state.request.expired;
+  useEffect(() => {
+    if (!instantWaiting) return;
+    const timer = setInterval(() => api<PeerState>('oj/peer').then(setState, () => {}), 10_000);
+    return () => clearInterval(timer);
+  }, [instantWaiting]);
   const [now] = useState(() => Date.now());
   const upcoming = state?.pairs.filter((p) => p.status === 'scheduled' && p.slot * HOUR + minutesOf(p.kind) * 60000 > now) ?? [];
   const past = state?.pairs.filter((p) => !upcoming.includes(p)) ?? [];
@@ -183,7 +202,13 @@ export function MockPeer({ navigate, params }: { navigate: Navigate; params: Rec
             ) : state.request && !state.request.expired ? (
               <Waiting request={state.request} now={now} t={t} english={english} busy={busy} cancel={() => void run('oj/peer/cancel', {})} />
             ) : (
-              <RequestForm t={t} english={english} busy={busy} submit={(body) => run('oj/peer', body)} expired={!!state.request} />
+              <RequestForm
+                t={t}
+                english={english}
+                busy={busy}
+                submit={(body) => run('oj/peer', body)}
+                lapsed={state.request ? (state.request.instant ? 'instant' : 'slots') : null}
+              />
             )}
             {past.length > 0 && (
               <section className="peer-section" aria-labelledby="peer-past">
@@ -222,6 +247,13 @@ function Waiting({
   cancel: () => void;
 }) {
   const ahead = request.slots.filter((s) => s * HOUR > now);
+  const [tick, setTick] = useState(() => Date.now());
+  useEffect(() => {
+    if (!request.instant) return;
+    const timer = setInterval(() => setTick(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [request.instant]);
+  const left = Math.max(0, Math.ceil((request.createdAt + INSTANT_MINUTES * 60000 - tick) / 1000));
   return (
     <section className="mi-board peer-waiting rd-reveal" aria-labelledby="peer-waiting-title">
       <div className="mi-board-controls">
@@ -232,17 +264,33 @@ function Waiting({
           {t(...(templateOf(request.kind)?.name ?? [request.kind, request.kind]))} ·{' '}
           {t(...(LEVEL_NAMES[request.level as Level] ?? [request.level, request.level]))}
         </h2>
-        <p className="peer-sub">
-          {t(
-            '有人选了同样的类型、级别和重叠的时段，就会自动配对，并在站内消息里通知你。',
-            'As soon as someone picks the same type and level with an overlapping hour, you’re paired and notified in your messages.',
-          )}
-        </p>
-        <ul className="peer-chips" aria-label={t('你选的时段', 'Your hours')}>
-          {ahead.map((s) => (
-            <li key={s}>{when(s, english)}</li>
-          ))}
-        </ul>
+        {request.instant ? (
+          <>
+            <p className="peer-sub">
+              {t(
+                `${INSTANT_MINUTES} 分钟内有人也点了「现在就练」（同样的类型和级别），就会马上配对，这个页面会自动刷新。`,
+                `If someone else picks Practice now with the same type and level in the next ${INSTANT_MINUTES} minutes, you’re paired at once; this page refreshes itself.`,
+              )}
+            </p>
+            <p className="peer-countdown" role="timer" aria-label={t('匹配剩余时间', 'Time left to match')}>
+              {pad(Math.floor(left / 60))}:{pad(left % 60)}
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="peer-sub">
+              {t(
+                '有人选了同样的类型、级别和重叠的时段，就会自动配对，并在站内消息里通知你。',
+                'As soon as someone picks the same type and level with an overlapping hour, you’re paired and notified in your messages.',
+              )}
+            </p>
+            <ul className="peer-chips" aria-label={t('你选的时段', 'Your hours')}>
+              {ahead.map((s) => (
+                <li key={s}>{when(s, english)}</li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
       <div className="mi-ticket peer-ticket">
         <p className="mi-ticket-kicker">{t('昵称', 'Your name')}</p>
@@ -261,18 +309,34 @@ function RequestForm({
   english,
   busy,
   submit,
-  expired,
+  lapsed,
 }: {
   t: T;
   english: boolean;
   busy: boolean;
   submit: (body: unknown) => Promise<boolean>;
-  expired: boolean;
+  /** The last request lapsed: its hours passed, or an instant one found nobody in time. */
+  lapsed: 'slots' | 'instant' | null;
 }) {
   const [name, setName] = useState('');
   const [kind, setKind] = useState('phone');
   const [level, setLevel] = useState<Level>('new-grad');
   const [picked, setPicked] = useState<number[]>([]);
+  const [remind, setRemind] = useState(true);
+  const [companies, setCompanies] = useState<string[]>([]);
+  const [topics, setTopics] = useState<string[]>([]);
+  // Target companies to pick from (the report form's list), fetched when the focus section opens.
+  const [known, setKnown] = useState<{ slug: string; name: string }[] | null>(null);
+  const body = (instant: boolean) => ({
+    displayName: name.trim(),
+    kind,
+    level,
+    slots: instant ? [] : picked,
+    tz: new Date().getTimezoneOffset(),
+    remind,
+    instant,
+    focus: { companies, topics },
+  });
   const [now] = useState(() => Date.now());
   const grid = useMemo(() => slotGrid(now, english), [now, english]);
   const full = picked.length >= SLOTS_MAX;
@@ -284,15 +348,18 @@ function RequestForm({
       aria-label={t('预约同伴面试', 'Book a peer interview')}
       onSubmit={(e) => {
         e.preventDefault();
-        void submit({ displayName: name.trim(), kind, level, slots: picked, tz: new Date().getTimezoneOffset() }).then(
-          (ok) => ok && setPicked([]),
-        );
+        void submit(body(false)).then((ok) => ok && setPicked([]));
       }}
     >
       <div className="mi-board-controls">
-        {expired && (
+        {lapsed && (
           <p className="peer-note">
-            {t('上次选的时段都过去了，重新选几个吧。', 'All the hours you picked last time have passed. Pick some new ones.')}
+            {lapsed === 'instant'
+              ? t(
+                  `${INSTANT_MINUTES} 分钟内没有配上。可以再试一次，或者预约几个时段。`,
+                  `Nobody matched within ${INSTANT_MINUTES} minutes. Try again, or book some hours.`,
+                )
+              : t('上次选的时段都过去了，重新选几个吧。', 'All the hours you picked last time have passed. Pick some new ones.')}
           </p>
         )}
         <fieldset className="mi-field">
@@ -367,6 +434,76 @@ function RequestForm({
             </table>
           </div>
         </fieldset>
+        <details
+          className="peer-focus"
+          onToggle={(e) => {
+            if (!e.currentTarget.open || known) return;
+            api<{ items: { slug: string; name: string }[] }>('oj/reports/companies').then(
+              (r) => setKnown(r.items),
+              () => setKnown([]),
+            );
+          }}
+        >
+          <summary className="mi-field-label">
+            <b>04</b> {t('优先匹配（可选）', 'Match me first with (optional)')}
+          </summary>
+          <p className="peer-sub">
+            {t(
+              `最多 ${FOCUS_MAX} 家目标公司、${FOCUS_MAX} 个想练的话题。有交集的同学优先配对，没有也照样能配上。`,
+              `Up to ${FOCUS_MAX} target companies and ${FOCUS_MAX} topics. People who share them are matched first; you still match without them.`,
+            )}
+          </p>
+          <label className="mi-field">
+            <span className="mi-field-label">{t('目标公司', 'Target companies')}</span>
+            <select
+              value=""
+              disabled={!known || companies.length >= FOCUS_MAX}
+              onChange={(e) => e.target.value && setCompanies([...companies, e.target.value])}
+            >
+              <option value="">{known ? t('加一家公司…', 'Add a company…') : t('正在加载…', 'Loading…')}</option>
+              {known
+                ?.filter((c) => !companies.includes(c.slug))
+                .map((c) => (
+                  <option key={c.slug} value={c.slug}>
+                    {c.name}
+                  </option>
+                ))}
+            </select>
+          </label>
+          {companies.length > 0 && (
+            <div className="mi-seg" role="group" aria-label={t('已选公司', 'Companies picked')}>
+              {companies.map((slug) => {
+                const label = known?.find((c) => c.slug === slug)?.name ?? slug;
+                return (
+                  <button
+                    key={slug}
+                    type="button"
+                    aria-label={t(`移除 ${label}`, `Remove ${label}`)}
+                    onClick={() => setCompanies(companies.filter((c) => c !== slug))}
+                  >
+                    {label} <X size={12} aria-hidden="true" />
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          <div className="mi-seg peer-topics" role="group" aria-label={t('话题', 'Topics')}>
+            {Object.entries(STOP_NAMES).map(([slug, [zh, en]]) => {
+              const on = topics.includes(slug);
+              return (
+                <button
+                  key={slug}
+                  type="button"
+                  aria-pressed={on}
+                  disabled={!on && topics.length >= FOCUS_MAX}
+                  onClick={() => setTopics(on ? topics.filter((x) => x !== slug) : [...topics, slug])}
+                >
+                  {t(zh, en)}
+                </button>
+              );
+            })}
+          </div>
+        </details>
       </div>
       <div className="mi-ticket peer-ticket">
         <p className="mi-ticket-kicker">{t('一场两轮', 'Two rounds')}</p>
@@ -385,9 +522,17 @@ function RequestForm({
           <span>{t('给同伴看的昵称', 'The name your partner sees')}</span>
           <input value={name} maxLength={24} required onChange={(e) => setName(e.target.value)} />
         </label>
+        <label className="peer-remind">
+          <input type="checkbox" checked={remind} onChange={(e) => setRemind(e.target.checked)} />
+          {t('开始前一天和一小时发邮件提醒我', 'Email reminders a day and an hour before')}
+        </label>
         <button type="submit" className="mi-cta" disabled={busy || !name.trim() || !picked.length}>
           <Users size={17} aria-hidden="true" />
           {busy ? t('正在匹配…', 'Matching…') : t('帮我找同伴', 'Find me a partner')}
+        </button>
+        <button type="button" className="rd-button is-quiet peer-now" disabled={busy || !name.trim()} onClick={() => void submit(body(true))}>
+          <Zap size={15} aria-hidden="true" />
+          {t(`现在就练（${INSTANT_MINUTES} 分钟内匹配）`, `Practice now (match within ${INSTANT_MINUTES} min)`)}
         </button>
       </div>
     </form>

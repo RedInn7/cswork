@@ -260,6 +260,7 @@ const EN: Record<string, string> = {
   '一周内取消了 3 场已匹配的面试，暂时不能匹配': 'You cancelled 3 matched sessions this week, so matching is paused for now',
   你已经有一个在等待匹配的请求: 'You already have a request waiting for a partner',
   '已经约了 3 场，先完成再约': 'You already have 3 sessions booked. Finish one before booking more',
+  这个小时你已经约了一场模拟面试: 'You already have a mock interview booked this hour',
   '请至少选一个未来 7 天内的时段': 'Pick at least one time slot in the next 7 days',
   这场模拟面试不存在: 'Mock interview not found',
   这场模拟面试已结束或已取消: 'This mock interview is over or was cancelled',
