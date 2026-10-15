@@ -152,11 +152,11 @@ export function PublicProfileSettings() {
             onChange={(e) => setForm({ ...form, showContest: e.target.checked })}
           />
           <span>
-            {t('显示周赛 rating 曲线和比赛徽章', 'Show my weekly contest rating and contest badges')}
+            {t('显示周赛和入门赛 rating、1v1 排位战绩和比赛徽章', 'Show my weekly and starter ratings, ranked 1v1 record and contest badges')}
             <small>
               {t(
-                '曲线带每期的名次和 rating，别人能据此在公开计分板上认出你的比赛昵称。',
-                'The curve carries each weekly’s rank and rating, which lets others find your contest name on the public scoreboards.',
+                '曲线带每场周赛和入门赛的名次和 rating，别人能据此在公开计分板上认出你的比赛昵称；排位战绩是对战 rating 和胜负平场数。',
+                'The curve carries your rank and rating in each weekly and starter, which lets others find your contest name on the public scoreboards; the ranked 1v1 record is your duel rating and wins, losses and draws.',
               )}
             </small>
           </span>
