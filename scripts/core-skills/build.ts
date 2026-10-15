@@ -59,6 +59,24 @@ export const PROBLEMS: Problem[] = [
     difficulty: '中等',
     summary: { zh: '环形缓冲区上的两端进出与随机访问', en: 'Both ends and random access on a ring buffer' },
   },
+  {
+    slug: 'hash-map',
+    group: 'hash-heap',
+    difficulty: '中等',
+    summary: { zh: '拉链法、负载因子与扩容重哈希', en: 'Separate chaining, load factor and rehashing' },
+  },
+  {
+    slug: 'min-heap',
+    group: 'hash-heap',
+    difficulty: '中等',
+    summary: { zh: '上浮、下沉与 Floyd 建堆', en: 'Sift up, sift down and Floyd heap construction' },
+  },
+  {
+    slug: 'lru-cache',
+    group: 'hash-heap',
+    difficulty: '中等',
+    summary: { zh: '哈希表加双向链表的 O(1) 淘汰', en: 'O(1) eviction with a hash map and a doubly linked list' },
+  },
 ];
 
 const EXT: Record<CodeLanguage, string> = { python: 'py', cpp: 'cpp', java: 'java', go: 'go' };
