@@ -111,7 +111,8 @@ const room = (extra = {}) => ({
   },
   winner: null,
   rated: false,
-  me: { name: 'Amy', virtual: false, start: now - 10 * MIN, end: now + 50 * MIN },
+  following: null,
+  me: { name: 'Amy', virtual: false, share: false, start: now - 10 * MIN, end: now + 50 * MIN },
   canJoin: false,
   suggestedName: '',
   ...extra,
@@ -134,6 +135,7 @@ test('a running room: the board, the clock, and questions that open in the conte
     assert.ok([...document.querySelectorAll('tbody tr')][1].querySelector('.contest-cell').textContent.startsWith('-3'));
     assert.ok(document.querySelector('.contest-invite code').textContent === 'ABCD2345');
     assert.ok(document.querySelectorAll('caption').length === 1, 'no virtual table without virtual entrants');
+    assert.ok(document.querySelector('.contest-follow') === null, 'a mashup has no follow filter');
     await act(async () => root.unmount());
   } finally {
     api.restore();

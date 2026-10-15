@@ -457,7 +457,7 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
                 : ''}
             </small>
           </h2>
-          {view.following !== null && view.kind !== 'duel' && (
+          {view.following !== null && (
             <label className="contest-inline contest-follow">
               <input
                 type="checkbox"
@@ -468,7 +468,7 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
                   refresh(on).catch((err: Error) => setError(err.message));
                 }}
               />
-              <span>{t('只看我关注的人（对方主页需展示比赛记录）', 'Only people I follow (whose profile shows contests)')}</span>
+              <span>{t('实时榜只看我关注的人（对方主页需展示比赛记录）', 'Live board: only people I follow (whose profile shows contests)')}</span>
             </label>
           )}
           {view.standings.live.length ? (
@@ -490,7 +490,6 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
               count={view.problemCount}
               caption={t('虚拟参赛（各自计时，不计 rating）', 'Virtual (own clocks, unrated)')}
               rated={false}
-              overall={!!view.following}
               onCode={onCode}
               t={t}
             />

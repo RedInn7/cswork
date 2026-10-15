@@ -24,9 +24,8 @@ const dir = mkdtempSync(resolve(tmpdir(), 'cswork-contest-tiers-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
-const { contestSources, ensureWeekly, roomView, settleWeeklies, sharedCode, ratingHistory, RATE_GRACE } = await import(
-  '../lib/server/contests'
-);
+const { contestSources, enter, ensureWeekly, insertRoom, roomView, settleWeeklies, sharedCode, ratingHistory, RATE_GRACE } =
+  await import('../lib/server/contests');
 
 const MIN = 60000;
 const DAY = 86400000;
@@ -179,18 +178,25 @@ void test('the starter is drawn with the weekly, never sharing a problem, and Di
   );
 });
 
-void test('only the people I follow: those whose profile shows contests, ranks stay overall', async () => {
+void test('only the people I follow: rated live rows of a weekly or starter, ranks stay overall', async () => {
+  const stan = person('t-stan');
   for (const [p, handle, showContest] of [
-    [pro, 'pro-racer', false],
+    [pro, 'pro-racer', true],
     [mid, 'mid-racer', true],
+    [stan, 'stan-racer', false],
   ] as const)
     assert.equal((await call(p, 'POST', 'profile', { handle, visible: true, showContest })).status, 200);
-  for (const handle of ['pro-racer', 'mid-racer'])
+  for (const handle of ['pro-racer', 'mid-racer', 'stan-racer'])
     assert.equal((await call(amy, 'POST', 'follows', { handle, on: true })).status, 200);
+  // A virtual run nobody follows: no profile ever shows that table, so it stays whole.
+  sqlite()
+    .prepare('INSERT INTO contest_entries(room_id,user_id,display_name,joined_at,virtual_start) VALUES(?,?,?,?,?)')
+    .run(ID, 't-vee', 'Vee', S + 10 * MIN, S + 10 * MIN);
   const all = await roomView(ID, amy, S + 30 * MIN);
   assert.equal(all.following, false);
   const mine = await roomView(ID, amy, S + 30 * MIN, true);
   assert.equal(mine.following, true);
+  // Pro shows contests but raced the starter unrated: no point on their curve ties the name.
   assert.deepEqual(
     mine.standings!.live.map((r) => [r.name, r.rank]),
     [
@@ -198,8 +204,26 @@ void test('only the people I follow: those whose profile shows contests, ranks s
       ['Amy', 3],
     ],
   );
+  assert.deepEqual(mine.standings!.virtual.map((r) => r.name), ['Vee']);
+  // Before the rating: live entrants racing rated.
+  const ratedAt = sqlite().prepare('SELECT rated_at FROM contest_rooms WHERE id=?').pluck().get(ID);
+  sqlite().prepare('UPDATE contest_rooms SET rated_at=NULL WHERE id=?').run(ID);
+  assert.deepEqual((await roomView(ID, amy, S + 30 * MIN, true)).standings!.live.map((r) => r.name), ['Mid', 'Amy']);
+  sqlite().prepare('UPDATE contest_rooms SET rated_at=? WHERE id=?').run(ratedAt, ID);
   assert.equal((await roomView(ID, null, S + 30 * MIN, true)).following, null);
   assert.equal((await roomView(ID, null, S + 30 * MIN, true)).standings!.live.length, 3);
+  // A mashup is never on a profile: the filter is ignored.
+  const t0 = Date.now();
+  const mashup = insertRoom(
+    { owner: amy.id, title: 'M', kind: 'mashup', ids: ['lc-1'], startsAt: t0 + MIN, durationMin: 60 },
+    { userId: amy.id, name: 'Amy', share: false },
+    t0,
+  );
+  enter(mashup, mid, 'Mid', t0);
+  enter(mashup, stan, 'Stan', t0);
+  const room = await roomView(mashup.id, amy, t0 + 10 * MIN, true);
+  assert.equal(room.following, null);
+  assert.equal(room.standings!.live.length, 3);
 });
 
 void test('shared code: opt-in, first AC in the window, RATE_GRACE after the end, never mid-contest', async () => {

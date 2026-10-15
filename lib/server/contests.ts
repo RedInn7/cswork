@@ -354,9 +354,11 @@ function card(row: RoomRow & { entrants?: number }) {
 /**
  * A room as its reader may see it. Problems: never before the start; during the live window to
  * entrants; after it to anyone who can open the room. Standings from the start, in two tables
- * (live, virtual), top BOARD_ROWS plus the reader's own row; `following` keeps only the reader
- * and the people they follow whose profile shows contests (so a nickname is tied to a handle only
- * where the profile already ties it), ranks staying overall.
+ * (live, virtual), top BOARD_ROWS plus the reader's own row. `following` (weekly and starter
+ * only, ignored elsewhere) keeps the live table to the reader and the people they follow whose
+ * profile shows contests, and of those only rows the profile's curve already ties to the handle: a
+ * rating row once rated, a live entrant racing rated before that. Ranks stay overall; the virtual
+ * table, never on a profile, stays whole.
  */
 export async function roomView(id: string, p: Person | null, now = Date.now(), following = false) {
   if (roomWeek(id) !== null) await settleWeeklies(now);
@@ -393,8 +395,9 @@ export async function roomView(id: string, p: Person | null, now = Date.now(), f
     ).map((r) => [r.user_id, r]),
   );
   const prior = row.kind === 'starter' && board ? priorRatings(row) : null;
+  const unrated = (s: Standing) => !!prior && !s.virtual && outOfStarter(row, prior, s.userId);
   const follows =
-    following && p
+    following && p && isRatedKind(row.kind)
       ? new Set(
           db
             .prepare(
@@ -419,9 +422,10 @@ export async function roomView(id: string, p: Person | null, now = Date.now(), f
           .all(row.id, row.starts_at, row.duration_min * MINUTE, now) as string[],
       )
     : null;
+  const followed = (s: Standing) =>
+    s.userId === p?.id || (!!follows?.has(s.userId) && (row.rated_at ? ratings.has(s.userId) : !unrated(s)));
   const shown = (list: Standing[]) =>
     list
-      .filter((s) => !follows || s.userId === p?.id || follows.has(s.userId))
       .filter((s, i) => i < BOARD_ROWS || s.userId === p?.id)
       .map((s) => {
         const rating = ratings.get(s.userId);
@@ -435,7 +439,7 @@ export async function roomView(id: string, p: Person | null, now = Date.now(), f
           me: s.userId === p?.id,
           rating: rating ? { before: rating.before, after: rating.after } : null,
           /** A starter entrant racing unrated (rated STARTER_RATED_BELOW or more before it). */
-          unrated: !!prior && !s.virtual && outOfStarter(row, prior, s.userId),
+          unrated: unrated(s),
           shared: !!sharing?.has(s.userId),
         };
       });
@@ -467,9 +471,9 @@ export async function roomView(id: string, p: Person | null, now = Date.now(), f
             return { id: pid, title: s?.title ?? pid, titleEn: s?.titleEn ?? null, difficulty: s?.difficulty ?? null, rating: lcRating(pid) };
           })
         : null,
-    standings: board ? { live: shown(board.live), virtual: shown(board.virtual) } : null,
-    /** Null signed out; else whether the boards keep only the people the reader follows. */
-    following: p ? following : null,
+    standings: board ? { live: shown(follows ? board.live.filter(followed) : board.live), virtual: shown(board.virtual) } : null,
+    /** Null signed out or in a mashup or duel; else whether the live table keeps only the people the reader follows. */
+    following: p && isRatedKind(row.kind) ? following : null,
     codeOpen,
     winner: row.kind === 'duel' && board ? (duelWinner(board.live)?.name ?? null) : null,
     rated: !!row.rated_at,
