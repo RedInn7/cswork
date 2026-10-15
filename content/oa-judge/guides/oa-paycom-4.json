@@ -1,0 +1,19 @@
+{
+  "id": "oa-paycom-4",
+  "packageChecksum": "1de4e427b8c9e9fc8aa5d39de994caa7f229d79ccf0b1c8f2c800f25f7fa9435",
+  "sourceContentHash": "0914f3ff727b5a1d7c59ec0a7c7d4c48bd6eb6f4e30d4a1718894cd06f5f832d",
+  "editorialSha256": "25dc6d572e8e925ba740917f195dddf3542907bd7cf2c110aae3272e89e09aa7",
+  "hints": {
+    "zh": [
+      "原函数只看输入的奇偶：奇数返回 0，偶数返回 1。连续调用两次，第二次的输入就是第一次的返回值。",
+      "分两种情况推演：初值为奇数时第一次得 0，0 是偶数，第二次得 1；初值为偶数时第一次得 1，1 是奇数，第二次得 0。",
+      "读入 i，按原题顺序调用两次该函数后输出结果，等价于奇数输出 1、偶数输出 0。判断奇偶时注意负数：取余结果不为 0 就算奇数，不要写成余数等于 1。"
+    ],
+    "en": [
+      "The original function looks only at parity: it returns 0 for odd input and 1 for even input. Calling it twice feeds the first return value into the second call.",
+      "Work through both cases: an odd start gives 0 on the first call, 0 is even, so the second call gives 1; an even start gives 1 first, 1 is odd, so the second call gives 0.",
+      "Read i, call the function twice in the original order and print the result, which amounts to 1 for odd and 0 for even. Watch negative inputs when testing parity: treat a non-zero remainder as odd rather than checking for a remainder of exactly 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCall f twice, strictly in the original order. f returns 0 for odd numbers and 1 for even numbers. After two consecutive calls, an odd initial value gives 1 and an even initial value gives 0.\n\n## Correctness\n\nIf the initial value is odd, the first call returns 0, and the second call maps the even 0 to 1; if the initial value is even, the first call returns 1, and the second call maps the odd 1 to 0. So the result equals the indicator of the initial value's parity.\n\n## Complexity\n\nTime and extra space are both O(1). This site only turns the original fixed i=3 into an input parameter; the function body and the number of calls are unchanged."
+}

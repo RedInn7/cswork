@@ -1,0 +1,21 @@
+{
+  "id": "oa-oracle-2",
+  "packageChecksum": "e809548b5d2f4f6a74417f311895aa803e47a96a463ef1acb0634a299dfe40a0",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // balance = unmatched '('; missing = ')' that had nothing to match.\n    long long balance = 0, missing = 0;\n    for (char c : s) {\n        if (c == '(') balance++;\n        else if (balance) balance--;\n        else missing++;\n    }\n    cout << missing + balance << \"\\n\";\n}\n",
+      "sha256": "3f53b3a2d617f0e09d294f2018548a6291e40db50ad9f0650afa8e4d8b6c8ec3"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes()).trim();\n        // balance = unmatched '('; missing = ')' that had nothing to match.\n        long balance = 0, missing = 0;\n        for (int i = 0; i < s.length(); i++) {\n            if (s.charAt(i) == '(') balance++;\n            else if (balance > 0) balance--;\n            else missing++;\n        }\n        System.out.println(missing + balance);\n    }\n}\n",
+      "sha256": "03c219f909179aedf775221e86a3ca174591cb7bb8256327954ec62d84a89d1a"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tvar s string\n\tfmt.Fscan(bufio.NewReader(os.Stdin), &s)\n\t// balance = unmatched '('; missing = ')' that had nothing to match.\n\tbalance, missing := 0, 0\n\tfor _, c := range s {\n\t\tif c == '(' {\n\t\t\tbalance++\n\t\t} else if balance > 0 {\n\t\t\tbalance--\n\t\t} else {\n\t\t\tmissing++\n\t\t}\n\t}\n\tfmt.Println(missing + balance)\n}\n",
+      "sha256": "625ea0849d8a28ac72ca7fb2c5d154466f468b7809e41b8fa47ab307b37eff9e"
+    }
+  ]
+}

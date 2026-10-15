@@ -1,0 +1,19 @@
+{
+  "id": "oa-oracle-8",
+  "packageChecksum": "6f7a6ac6d8426ec3fda8fe5465f56bb717e4be5099ac77af31f55e21e81b3920",
+  "sourceContentHash": "834cac774bccd52d2eeed441ae20208f06704fdc5ab72fa15b9a043e2128e7c4",
+  "editorialSha256": "fcc5d0e6d957ec3c346ead88afbebdf37e25287627f902e30554015a210f6805",
+  "hints": {
+    "zh": [
+      "字符要按 Unicode 码点计数：一个表情这类非 BMP 字符在 JSON 里可能写成两个 \\u 转义（代理对），但它只算一个字符。",
+      "先把输入的 JSON 字符串完整解码成码点序列，取最后一个码点、一个空格、倒数第二个码点拼成新串，再按题目规定的规范 ASCII JSON 格式重新编码。",
+      "解码时处理 \\\" \\\\ \\/ \\b \\f \\n \\r \\t 和 \\uXXXX，高代理后面紧跟低代理时合并成一个码点。编码时双引号和反斜线加反斜线转义，五个常用控制字符用短转义，其余可打印 ASCII 原样输出，其他字符一律用小写四位 \\uXXXX，非 BMP 字符拆成小写的代理对，两侧保留双引号。"
+    ],
+    "en": [
+      "Count characters as Unicode code points: a non-BMP character such as an emoji may be written in JSON as two \\u escapes (a surrogate pair), but it is a single character.",
+      "Decode the input JSON string completely into code points, build the new string from the last code point, a space, and the second-to-last code point, then encode it in the canonical ASCII JSON form the problem specifies.",
+      "When decoding, handle \\\" \\\\ \\/ \\b \\f \\n \\r \\t and \\uXXXX, merging a high surrogate immediately followed by a low surrogate into one code point. When encoding, escape double quotes and backslashes with a backslash, use the short escapes for the five common control characters, output other printable ASCII as is, write every other character as a lowercase four-digit \\uXXXX, split non-BMP characters into a lowercase surrogate pair, and keep the surrounding double quotes."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTake the last character and the second-to-last character, join them with a space, and output the unique ASCII JSON encoding.\n\n## Proof of correctness\n\nPython string indexing counts Unicode code points, so -1 and -2 are exactly the two required characters. After inserting one space, JSON escaping changes only the representation, not the resulting string.\n\n## Complexity\n\nO(n) input time and space, output length O(1)."
+}

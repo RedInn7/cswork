@@ -1,0 +1,21 @@
+{
+  "id": "oa-paycom-6",
+  "packageChecksum": "433e507168c8fffd594dfa1d91c815cd7760d231c485b389f0d07a23bd7d2ab2",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long a, b;\n    cin >> a >> b;\n    // Only a zero divisor throws: catch prints first, finally always prints.\n    vector<string> trace;\n    if (b == 0) trace.push_back(\"Exception\");\n    trace.push_back(\"Finally\");\n    for (size_t i = 0; i < trace.size(); i++) cout << (i ? \" \" : \"\") << trace[i];\n    cout << \"\\n\";\n}\n",
+      "sha256": "f37820381e6d12aefc9cd3e46477bcc154720575c51f5d27214bc99330e2d56e"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt(), b = sc.nextInt();\n        StringBuilder trace = new StringBuilder();\n        // The original try/catch/finally: only a zero divisor throws.\n        try {\n            int c = a / b;\n        } catch (ArithmeticException e) {\n            trace.append(\"Exception \");\n        } finally {\n            trace.append(\"Finally\");\n        }\n        System.out.println(trace);\n    }\n}\n",
+      "sha256": "f3b695f47adc21de54f4b6613b4c2b13f6cb27c6b0c408a37c7abf40b8ba7d96"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar a, b int64\n\tfmt.Scan(&a, &b)\n\t// Only a zero divisor throws: catch prints first, finally always prints.\n\tif b == 0 {\n\t\tfmt.Print(\"Exception \")\n\t}\n\tfmt.Println(\"Finally\")\n\t_ = a\n}\n",
+      "sha256": "b1d51c9eb6f7a0b696c86a565def1ea431be01b8f98100917bf9ea7066457643"
+    }
+  ]
+}

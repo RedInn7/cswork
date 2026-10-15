@@ -1,0 +1,21 @@
+{
+  "id": "oa-openai-5",
+  "packageChecksum": "529d83730347579503aa6fdce450e47fb996b4ef2015d928eac6becf27f62864",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n, m = int(data[0]), int(data[1])\n    # lim[a] = smallest b over forbidden pairs (a, b) with a < b.\n    lim = [n + 1] * (n + 2)\n    for i in range(m):\n        a, b = int(data[2 + 2 * i]), int(data[3 + 2 * i])\n        if a > b:\n            a, b = b, a\n        if b < lim[a]:\n            lim[a] = b\n    # Scan l from n down to 1; R is the suffix minimum of lim, the first invalid right end.\n    ans = 0\n    right = n + 1\n    for left in range(n, 0, -1):\n        if lim[left] < right:\n            right = lim[left]\n        ans += right - left\n    print(ans)\n\n\nmain()\n",
+      "sha256": "a8a9e164ec272cbe47d73ca06f4a56a816d67fbf21cd02ef2eaf52f0d0ff87b7"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static int nextInt() {\n        while (buf[pos] <= ' ') pos++;\n        int r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), m = nextInt();\n        // lim[a] = smallest b over forbidden pairs (a, b) with a < b.\n        int[] lim = new int[n + 2];\n        java.util.Arrays.fill(lim, n + 1);\n        for (int i = 0; i < m; i++) {\n            int a = nextInt(), b = nextInt();\n            if (a > b) {\n                int t = a;\n                a = b;\n                b = t;\n            }\n            lim[a] = Math.min(lim[a], b);\n        }\n        // Scan l from n down to 1; right is the suffix minimum of lim, the first invalid right end.\n        long ans = 0;\n        int right = n + 1;\n        for (int l = n; l >= 1; l--) {\n            right = Math.min(right, lim[l]);\n            ans += right - l;\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "2755e92b48b8390241cb246e719268a3357cbbb228a6f51284459427138c917c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\tpos := 0\n\tnextInt := func() int {\n\t\tfor data[pos] <= ' ' {\n\t\t\tpos++\n\t\t}\n\t\tr := 0\n\t\tfor pos < len(data) && data[pos] > ' ' {\n\t\t\tr = r*10 + int(data[pos]-'0')\n\t\t\tpos++\n\t\t}\n\t\treturn r\n\t}\n\tn, m := nextInt(), nextInt()\n\t// lim[a] = smallest b over forbidden pairs (a, b) with a < b.\n\tlim := make([]int, n+2)\n\tfor i := range lim {\n\t\tlim[i] = n + 1\n\t}\n\tfor i := 0; i < m; i++ {\n\t\ta, b := nextInt(), nextInt()\n\t\tif a > b {\n\t\t\ta, b = b, a\n\t\t}\n\t\tlim[a] = min(lim[a], b)\n\t}\n\t// Scan l from n down to 1; right is the suffix minimum of lim, the first invalid right end.\n\tvar ans int64\n\tright := n + 1\n\tfor l := n; l >= 1; l-- {\n\t\tright = min(right, lim[l])\n\t\tans += int64(right - l)\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "21effb8e26a4dd62c62bc4d11e11b427fbbac16df35b77d0341a27d4ac76cb3a"
+    }
+  ]
+}

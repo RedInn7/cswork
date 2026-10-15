@@ -1,0 +1,19 @@
+{
+  "id": "oa-openai-5",
+  "packageChecksum": "529d83730347579503aa6fdce450e47fb996b4ef2015d928eac6becf27f62864",
+  "sourceContentHash": "e44c370d7aac014fef423fc5462c2527ff13eb204fc2b600e55b2d8a679ef957",
+  "editorialSha256": "bc0b8a3fa9950840f74e6e444b5b6ca0ff2757a7117300f1ad5bc391cc1268f4",
+  "hints": {
+    "zh": [
+      "把每个禁止对整理成 a<b。连续段 [l,r] 不合法，当且仅当存在某个禁止对满足 l ≤ a 且 b ≤ r。",
+      "固定左端 l，合法性随 r 增大只会变差，阈值是所有 a ≥ l 的禁止对里最小的 b，记为 lim(l)（没有则为 n+1）；r 只要小于它就都合法，所以以 l 为左端的合法段有 lim(l)-l 个。",
+      "先对每个 a 记录与它配对的最小 b。从 l=n 倒着扫到 1，用后缀最小值维护 lim(l)，每步把 lim(l)-l 加进答案。答案最多约 2×10^10，必须用 64 位整数；重复和反向的禁止对整理后自然合并。"
+    ],
+    "en": [
+      "Normalize each forbidden pair to a<b. A segment [l,r] is invalid exactly when some forbidden pair has l <= a and b <= r.",
+      "For a fixed left end l, validity only gets worse as r grows, and the threshold is the smallest b among forbidden pairs with a >= l, call it lim(l) (n+1 if there is none). Every r below it is valid, so l is the left end of lim(l)-l valid segments.",
+      "First record, for each a, the smallest b paired with it. Scan l from n down to 1, keeping lim(l) as a suffix minimum, and add lim(l)-l to the answer at each step. The answer can reach about 2x10^10, so a 64-bit integer is required; duplicate and reversed pairs merge naturally after normalizing."
+    ]
+  },
+  "explanationEn": "## Problem\n\nCount the segments of consecutive integers [l,r] (length >= 1) within 1..n that do not contain both numbers of any forbidden pair.\n\n## Approach\n\nNormalize each forbidden pair to a<b. The segment [l,r] is invalid if and only if some forbidden pair has l<=a and b<=r. For a fixed l, a valid r must be less than lim(l)=min{b : forbidden pair with a>=l} (n+1 if there is none), and every r with r<lim(l) is valid, so the number of valid segments with left end l is lim(l)-l. Scanning from n down to 1, lim(l) is just a suffix minimum.\n\n## Correctness\n\nThe segment [l,r] contains the forbidden pair (a,b) <=> l<=a<b<=r. For a fixed l, validity only gets worse as r grows, and the threshold is exactly the smallest b among all forbidden pairs with a>=l. Summing over every l gives the answer.\n\n## Complexity\n\nO(n+m). The answer is at most n(n+1)/2, about 2x10^10, so a 64-bit integer is used.\n\n## Independent verification\n\nThe oracle enumerates every [l,r] and checks each forbidden pair directly for both numbers lying in the segment (O(n^2 m), small inputs only), without using the suffix minimum. All sets of forbidden pairs for n=1..5 are enumerated exhaustively (with pairs given in random order), and the reference program is actually run on each. The wrong solutions cover handling only pairs with a<b, an off-by-one right end, not counting single-element segments, and 32-bit counting."
+}

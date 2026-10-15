@@ -1,0 +1,19 @@
+{
+  "id": "oa-nvidia-6",
+  "packageChecksum": "92547d5f46842bed4a64446dad4617217ff617a95f682b3710e7e16909af0e26",
+  "sourceContentHash": "92d76fefc524169d315c0b6dc23e5d7c44ad624c4c136cf6aa77702412dd153b",
+  "editorialSha256": "f3a7ead9c16a1f9e5361a0eff7eeee3391c1b8559d4c9179dfb9e97befc6cb28",
+  "hints": {
+    "zh": [
+      "字符可以在所有字符串之间任意交换，所以只关心全部字符的总体计数，每个字符串的长度则固定不变。",
+      "长度为 L 的回文需要 floor(L/2) 对相同字符，奇数长度的中心放什么都行。于是全局能凑出的相同字符对数就是预算，每个字符串的成本是 floor(L/2)，收益都是 1。",
+      "统计 26 个字母的总出现次数，把每个字母的次数除以 2 下取整再相加得到对数预算。把每个字符串的 floor(长度/2) 排序，从小到大依次扣预算，扣不动就停，扣成功的个数就是答案。"
+    ],
+    "en": [
+      "Characters can be swapped freely across all strings, so only the overall character counts matter, while each string's length stays fixed.",
+      "A palindrome of length L needs floor(L/2) pairs of equal characters, and the center of an odd-length string can hold anything. So the number of equal-character pairs available overall is a budget, each string costs floor(L/2), and each completed string is worth 1.",
+      "Count the 26 letters over all strings and sum floor(count/2) to get the pair budget. Sort the values floor(length/2) of the strings and spend the budget on them from smallest to largest, stopping at the first one that does not fit; the number paid for is the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the pairs of equal characters that the whole character pool can provide, and spend that budget on the strings' demands floor(length/2) in ascending order.\n\n## Correctness\n\nSwaps can realize any arrangement of the character pool. Each palindrome needs floor(length/2) pairs of equal characters, and the center of an odd-length string can take any leftover character. Once the pairs are chosen, the remaining characters are always enough to fill all centers and all unselected strings, breaking leftover pairs if necessary. So the pair budget is the only constraint. Every string is worth the same, and an exchange argument shows that taking the smallest demands first maximizes the count.\n\n## Complexity\n\nTime O(total characters + N log N), extra space O(N+26)."
+}

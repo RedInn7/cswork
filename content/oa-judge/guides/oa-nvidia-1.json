@@ -1,0 +1,19 @@
+{
+  "id": "oa-nvidia-1",
+  "packageChecksum": "6e24b0f66307a2f70a61526f9ef95cd25b72fa9c7bcf266278f1435306ac6315",
+  "sourceContentHash": "94022a83366e0df0e9fd9c9c8ecd84fb9e9ec418e24a5ae04ae70e2a4fb68af5",
+  "editorialSha256": "998d797660afaa729472e23e2f13a33c6e224c4e7703a09adb199b08781db054",
+  "hints": {
+    "zh": [
+      "把所有 pref 加起来，每个原元素恰好被加了 N-1 次（只有它自己那一项漏掉它）。",
+      "所以原数组总和 T 等于 pref 之和除以 N-1，而 pref[i] 正是 T 减去 a[i]，反过来 a[i] = T - pref[i]。",
+      "读入后求 pref 的总和（最多约 10^14，用 64 位整数），除以 N-1 得到 T（题目保证能整除），然后按原顺序输出每个 T - pref[i]。"
+    ],
+    "en": [
+      "Add up all the pref values: every original element is counted exactly N-1 times, since only its own entry leaves it out.",
+      "So the total T of the original array is sum(pref) divided by N-1, and since pref[i] is T minus a[i], we get a[i] = T - pref[i].",
+      "Read the input, sum pref in a 64-bit integer (it can reach about 10^14), divide by N-1 to get T (the division is guaranteed to be exact), then output T - pref[i] for each index in the original order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEach original element is counted N-1 times, so the total is T = sum(pref)/(N-1), and each answer is T-pref[i].\n\n## Correctness\n\nAdding up all the equations determines T uniquely, and subtracting term by term recovers the array uniquely; substituting back verifies the original equations. The independent small-input check instead derives the first element from p[0]-p[i]=a[i]-a[0], then directly recomputes each sum that excludes the element itself and verifies it.\n\n## Complexity\n\nTime O(N), O(1) besides input and output."
+}

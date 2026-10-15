@@ -1,0 +1,19 @@
+{
+  "id": "oa-paycom-2",
+  "packageChecksum": "0f2d7aa41703581d23c904820419503e842d8ca751b0ea74636e0410e869ea7c",
+  "sourceContentHash": "9ad732f093c19bb947fea59cc500b76fe531f5daae99200899be9e49b295438d",
+  "editorialSha256": "db829720aa500e68ee4cd1ea00c569b3055332f186bcdebda0f01935f028f45e",
+  "hints": {
+    "zh": [
+      "每次用较大的数减去较小的数，两数的最大公约数保持不变；过程在两数相等时停止，此时这个相等值就是两数的公因数中最大的那个。",
+      "所以算法的结果就是 gcd(a,b)。逐次相减在两数悬殊时太慢（例如 10^9 和 1），而连续减去同一个数若干次正好等于取余，可以批量完成。",
+      "用欧几里得算法：当 b 不为 0 时，把 (a,b) 替换为 (b, a mod b)；b 变成 0 时输出 a。这一结果与原伪代码终止时 x=y 的值相同。"
+    ],
+    "en": [
+      "Subtracting the smaller number from the larger keeps the greatest common divisor unchanged; the process stops when the two numbers are equal, and that common value is then their greatest common divisor.",
+      "So the algorithm's result is gcd(a,b). Subtracting one step at a time is too slow when the numbers are far apart (say 10^9 and 1), but subtracting the same number repeatedly is exactly a remainder, which batches those steps.",
+      "Use the Euclidean algorithm: while b is not 0, replace (a,b) with (b, a mod b); when b becomes 0, print a. This equals the value x=y at which the original pseudocode stops."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSubtracting the smaller number from the larger one each time does not change the greatest common divisor of the two numbers; when the process ends the two numbers are equal, and that value is exactly the greatest common divisor. The implementation does not need to subtract step by step: Euclid's remainder iteration gives the same result.\n\n## Correctness\n\nFor a>=b>0, gcd(a,b)=gcd(a-b,b)=gcd(a mod b,b). So batching the subtraction steps into a remainder does not change the final common divisor. The remainder iteration strictly shrinks the second number at each step and eventually reaches 0; the other number at that point is the equal value at which the original pseudocode terminates.\n\n## Complexity\n\nTime O(log(min(a,b))), extra space O(1). This site generalizes the fixed example to positive integer inputs, avoiding a constant-output problem with only one fixed answer."
+}

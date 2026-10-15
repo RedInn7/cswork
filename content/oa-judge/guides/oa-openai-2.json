@@ -1,0 +1,19 @@
+{
+  "id": "oa-openai-2",
+  "packageChecksum": "514bec746190ce754388e9a3d122a96fc785cadff6513261bae66b4c663ebbdf",
+  "sourceContentHash": "e9d37e8bde4659e7327d4963b67a139143a4210ed0e93867683157501a6eda06",
+  "editorialSha256": "989ac6f6178b8ab5abe12370f4dc3ad70698adc0746fea3be5fdb7f92b38241d",
+  "hints": {
+    "zh": [
+      "区间 [l,r] 不合法，当且仅当存在冲突对 a<b 同时满足 l ≤ a 且 b ≤ r；方向和重复都不影响这个判定。",
+      "固定右端 r，所有 b ≤ r 的冲突对中较小端点的最大值记为 M，那么合法的左端恰好是 l > M。随着 r 增大 M 只会变大，可以边扫边维护。",
+      "把每对冲突端点排成 a<b，用数组记录每个 b 对应的最大 a。从 1 到 n 扫描右端 r：令左界 left = max(left, 该数组在 r 处的值 + 1)，把 r-left+1 加入答案。答案最大约 2×10^10，用 64 位整数。"
+    ],
+    "en": [
+      "An interval [l,r] is invalid exactly when some conflicting pair a<b has l <= a and b <= r; direction and duplicates do not change this test.",
+      "For a fixed right end r, let M be the largest smaller endpoint among conflicts with b <= r; the valid left ends are exactly l > M. M only grows as r increases, so it can be maintained during a single scan.",
+      "Normalize each pair to a<b and store, for each b, the largest a paired with it. Scan the right end r from 1 to n: set left = max(left, that stored value at r plus 1) and add r-left+1 to the answer. The answer can reach about 2x10^10, so use a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nNormalize each pair's endpoints to a<b and record the largest a for each b. When scanning the right end r, the left end must be at least the maximum smaller endpoint of all conflicts seen so far, plus one. Accumulate the number of possible left ends.\n\n## Correctness\n\nThe interval [l,r] is invalid if and only if there is a conflict a<b<=r with l<=a. So the valid left ends are exactly those with l>max(a), and that maximum can be maintained as r advances. Each interval is counted once, by its unique right end.\n\n## Complexity\n\nTime O(n+m), space O(n)."
+}

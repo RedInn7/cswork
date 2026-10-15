@@ -1,0 +1,19 @@
+{
+  "id": "oa-nvidia-2",
+  "packageChecksum": "0a6d330652c85baeced5f806fc7afc3521b786b20df5c97257a3f75d55e78bb1",
+  "sourceContentHash": "c22fcb57f4c6d7f1a8112c1e1631964477f1c6e3de2aae1fe14ce73cdcc46a51",
+  "editorialSha256": "d370773fb7e6a4cdb4c4d7d853f09c1b0ed263fddf2e688e512f4df4f8c9135d",
+  "hints": {
+    "zh": [
+      "子数组和可以写成两个前缀和之差：右端为 r、左端前缀下标为 l 时和为 p[r]-p[l]，长度至少 K 等价于 l ≤ r-K。",
+      "固定右端 r，要让和最大，就要从 p[0..r-K] 里减去最小的那个前缀和；随着 r 右移，可选前缀只会多一个，最小值可以顺手维护。",
+      "先算前缀和 p[0..N]。r 从 K 扫到 N：先用 p[r-K] 更新最小前缀，再用 p[r] 减最小前缀更新答案。答案初值设成负无穷，因为全是负数时结果也可能是负的，空数组不合法。"
+    ],
+    "en": [
+      "A subarray sum is a difference of prefix sums: with right end r and left prefix index l it is p[r]-p[l], and a length of at least K means l <= r-K.",
+      "For a fixed right end r, the best sum subtracts the smallest prefix among p[0..r-K]. As r moves right, exactly one more prefix becomes available, so the minimum can be maintained on the fly.",
+      "Compute prefix sums p[0..N]. Scan r from K to N: first update the running minimum with p[r-K], then update the answer with p[r] minus that minimum. Start the answer at negative infinity, since with all-negative input the result is negative and the empty subarray is not allowed."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the right end r, and subtract from the prefix sum the minimum prefix sum among indices <= r-K.\n\n## Correctness\n\nAll valid left ends for a fixed right end correspond exactly to prefix indices 0..r-K; subtracting the minimum prefix gives the best value for that right end, and enumerating right ends gives the global optimum.\n\n## Complexity\n\nTime O(N), space O(N)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-nvidia-1",
+  "packageChecksum": "6e24b0f66307a2f70a61526f9ef95cd25b72fa9c7bcf266278f1435306ac6315",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> p(n);\n    long long sum = 0;\n    for (auto &v : p) cin >> v, sum += v;\n    // Every element is counted n-1 times in sum(pref).\n    long long total = sum / (n - 1);\n    string out;\n    for (int i = 0; i < n; i++) {\n        if (i) out += ' ';\n        out += to_string(total - p[i]);\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "b5197e6c8a077810fdc41dfeb238c25b58951426ea0e16ff37a351e879ee9335"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong();\n        long[] p = new long[n];\n        long sum = 0;\n        for (int i = 0; i < n; i++) sum += p[i] = nextLong();\n        // Every element is counted n-1 times in sum(pref).\n        long total = sum / (n - 1);\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            if (i > 0) sb.append(' ');\n            sb.append(total - p[i]);\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "3708637bc82d30094101f6b34c85d14a61fb0c9445c6aa7e163a50e6aec1c861"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\tp := make([]int64, n)\n\tvar sum int64\n\tfor i := range p {\n\t\tfmt.Fscan(in, &p[i])\n\t\tsum += p[i]\n\t}\n\t// Every element is counted n-1 times in sum(pref).\n\ttotal := sum / int64(n-1)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor i, v := range p {\n\t\tif i > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(strconv.FormatInt(total-v, 10))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "d5a2fb5906e1876962dd42da2d2d7b9ca0c45fb4cf1eed91f06c1edf146cc432"
+    }
+  ]
+}

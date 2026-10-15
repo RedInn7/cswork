@@ -1,0 +1,21 @@
+{
+  "id": "oa-openai-2",
+  "packageChecksum": "514bec746190ce754388e9a3d122a96fc785cadff6513261bae66b4c663ebbdf",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, m;\n    cin >> n >> m;\n    // forbidden[b] = largest a < b that conflicts with b.\n    vector<int> forbidden(n + 1, 0);\n    for (int i = 0; i < m; i++) {\n        int a, b;\n        cin >> a >> b;\n        if (a > b) swap(a, b);\n        forbidden[b] = max(forbidden[b], a);\n    }\n    long long left = 1, answer = 0;\n    for (int right = 1; right <= n; right++) {\n        left = max(left, (long long)forbidden[right] + 1);\n        answer += right - left + 1;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "09db714ff86788d83a972da1104bdcefe6845713cbd1044728b1f2dbf4d14c7e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static int nextInt() {\n        while (buf[pos] <= ' ') pos++;\n        int r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), m = nextInt();\n        // forbidden[b] = largest a < b that conflicts with b.\n        int[] forbidden = new int[n + 1];\n        for (int i = 0; i < m; i++) {\n            int a = nextInt(), b = nextInt();\n            if (a > b) {\n                int t = a;\n                a = b;\n                b = t;\n            }\n            forbidden[b] = Math.max(forbidden[b], a);\n        }\n        long left = 1, answer = 0;\n        for (int right = 1; right <= n; right++) {\n            left = Math.max(left, forbidden[right] + 1);\n            answer += right - left + 1;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "5e8c8f5d7922ce8031867e6b93839f6329d9284ba1994c7ca8c34f0b77a08639"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\tpos := 0\n\tnextInt := func() int {\n\t\tfor data[pos] <= ' ' {\n\t\t\tpos++\n\t\t}\n\t\tr := 0\n\t\tfor pos < len(data) && data[pos] > ' ' {\n\t\t\tr = r*10 + int(data[pos]-'0')\n\t\t\tpos++\n\t\t}\n\t\treturn r\n\t}\n\tn, m := nextInt(), nextInt()\n\t// forbidden[b] = largest a < b that conflicts with b.\n\tforbidden := make([]int, n+1)\n\tfor i := 0; i < m; i++ {\n\t\ta, b := nextInt(), nextInt()\n\t\tif a > b {\n\t\t\ta, b = b, a\n\t\t}\n\t\tforbidden[b] = max(forbidden[b], a)\n\t}\n\tleft, answer := 1, int64(0)\n\tfor right := 1; right <= n; right++ {\n\t\tleft = max(left, forbidden[right]+1)\n\t\tanswer += int64(right - left + 1)\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "8bd8dc9108504e13c82bee10cc358b7fdb8be3f7693f6df2bb4dce0b3739157d"
+    }
+  ]
+}

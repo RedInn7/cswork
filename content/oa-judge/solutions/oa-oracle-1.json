@@ -1,0 +1,21 @@
+{
+  "id": "oa-oracle-1",
+  "packageChecksum": "3add536424b82307d557f172dbd505067f0ea01e6ef5fd43973e1c2046630955",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n// Scales a decimal with at most 8 fractional digits to an exact integer count of 1e-8 units.\nlong long scaled(const string &s) {\n    size_t dot = s.find('.');\n    string whole = s.substr(0, dot), frac = dot == string::npos ? \"\" : s.substr(dot + 1);\n    frac = (frac + \"00000000\").substr(0, 8);\n    return stoll(whole) * 100000000LL + stoll(frac);\n}\n\nint main() {\n    string a, b;\n    cin >> a >> b;\n    cout << (scaled(a) + scaled(b)) / 100000000LL << \"\\n\";\n}\n",
+      "sha256": "c4ff2f519ec11d0c3a4d6935abcdf1bc2f956373480adc67c01402f7f111172c"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    // Scales a decimal with at most 8 fractional digits to an exact integer count of 1e-8 units.\n    static long scaled(String s) {\n        int dot = s.indexOf('.');\n        String whole = dot < 0 ? s : s.substring(0, dot), frac = dot < 0 ? \"\" : s.substring(dot + 1);\n        frac = (frac + \"00000000\").substring(0, 8);\n        return Long.parseLong(whole) * 100000000L + Long.parseLong(frac);\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String a = sc.next(), b = sc.next();\n        System.out.println((scaled(a) + scaled(b)) / 100000000L);\n    }\n}\n",
+      "sha256": "8ab0fd2196fe3e6395d58a3e92890380860f667e7b74eb06642d6e57a322dcdd"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strconv\"\n\t\"strings\"\n)\n\n// scaled turns a decimal with at most 8 fractional digits into an exact count of 1e-8 units.\nfunc scaled(s string) int64 {\n\twhole, frac, _ := strings.Cut(s, \".\")\n\tfrac = (frac + \"00000000\")[:8]\n\tw, _ := strconv.ParseInt(whole, 10, 64)\n\tf, _ := strconv.ParseInt(frac, 10, 64)\n\treturn w*100000000 + f\n}\n\nfunc main() {\n\tvar a, b string\n\tfmt.Scan(&a, &b)\n\tfmt.Println((scaled(a) + scaled(b)) / 100000000)\n}\n",
+      "sha256": "58001c71ab9a2644be3e1049cf5234df56ff8c9c3ca271b86c060e35c0bbe206"
+    }
+  ]
+}

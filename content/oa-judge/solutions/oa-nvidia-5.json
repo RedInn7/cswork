@@ -1,0 +1,21 @@
+{
+  "id": "oa-nvidia-5",
+  "packageChecksum": "713e537b26c5132bdeed8dd02cc0eb0e104aa62d8066b0927512fc1399de0aab",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // Lower the first non-'a' character in the first half; the center never helps.\n    for (size_t i = 0; i < s.size() / 2; i++) {\n        if (s[i] != 'a') {\n            s[i] = 'a';\n            cout << s << \"\\n\";\n            return 0;\n        }\n    }\n    cout << \"IMPOSSIBLE\\n\";\n}\n",
+      "sha256": "1f75e7d418cc6efdd6efccce2eac0f72ad6a83fa177d172e0d8adad85a22fc20"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        char[] s = new String(System.in.readAllBytes()).trim().toCharArray();\n        // Lower the first non-'a' character in the first half; the center never helps.\n        for (int i = 0; i < s.length / 2; i++) {\n            if (s[i] != 'a') {\n                s[i] = 'a';\n                System.out.println(new String(s));\n                return;\n            }\n        }\n        System.out.println(\"IMPOSSIBLE\");\n    }\n}\n",
+      "sha256": "05bf8e96a0ebbe19e4785e013833e131b9e90e2855813a8b33079ea9234fd256"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tvar str string\n\tfmt.Fscan(bufio.NewReader(os.Stdin), &str)\n\ts := []byte(str)\n\t// Lower the first non-'a' character in the first half; the center never helps.\n\tfor i := 0; i < len(s)/2; i++ {\n\t\tif s[i] != 'a' {\n\t\t\ts[i] = 'a'\n\t\t\tfmt.Println(string(s))\n\t\t\treturn\n\t\t}\n\t}\n\tfmt.Println(\"IMPOSSIBLE\")\n}\n",
+      "sha256": "32bfb94d693e8dc0f0db0539ec0eb67fad145653bb09326a6ec56bd4964d18f9"
+    }
+  ]
+}

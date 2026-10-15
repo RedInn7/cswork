@@ -1,0 +1,19 @@
+{
+  "id": "oa-openai-7",
+  "packageChecksum": "da80eccd1735be5a94b0ae0109d698a628a7159f599465e17fa513afe8849e12",
+  "sourceContentHash": "9688d97a03aa88a1615fc9778011efe9d59297bfb718c03cba13635761f6e3af",
+  "editorialSha256": "33e54f5afd9a2f560b5171c71776d4a61cfccdd69f6c67191ab312b46fd102fc",
+  "hints": {
+    "zh": [
+      "一个健康格当天会不会被感染，只取决于当天开始时它周围 8 格中的感染数是否达到 T；而感染数只会增加，所以只需在邻居新被感染时更新计数，不必每天重扫整张网格。",
+      "按天分层做多源 BFS：先为每格统计初始感染邻居数，找出第 1 天就达到阈值的健康格作为第一层；处理某一层时，新感染格把 8 个邻居的计数加一，刚达到阈值的健康格进入下一层，不能当天继续传播。",
+      "初始化计数后，把计数 ≥ T 的健康格标记为待感染并放进当前层（T=0 时所有健康格都在第一层）。只要当前层非空就把天数加一，逐个把格子设为感染并给邻居计数加一，邻居若是未标记的健康格且计数达到 T 就标记并放入下一层。队列为空时的天数即答案，初始就稳定则为 0。"
+    ],
+    "en": [
+      "Whether a healthy cell gets infected on a given day depends only on whether its 8 neighbours held at least T infected cells at the start of that day. Infected counts only grow, so update a count when a neighbour newly becomes infected instead of rescanning the grid every day.",
+      "Run a multi-source BFS in layers by day: first count each cell's initially infected neighbours and take the healthy cells already at the threshold as layer 1. While processing a layer, each newly infected cell adds one to its 8 neighbours' counts, and healthy cells that just reached the threshold go to the next layer, not spreading further that same day.",
+      "After initializing the counts, mark every healthy cell with count >= T as pending and put it in the current layer (when T=0 every healthy cell is in layer 1). While the current layer is non-empty, add one day, set each of its cells to infected and increment its neighbours' counts; a neighbour that is an unmarked healthy cell and reaches T is marked and added to the next layer. The day count when the queue empties is the answer, 0 if the grid starts stable."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep, for every cell, the number of its infected neighbours. First find the cells that will be infected on day 1; after that, process the queue of newly infected cells layer by layer. When a cell becomes infected it notifies only its at most 8 neighbours, and the next layer is processed on the following day. When T=0, every healthy cell enters layer 1.\n\n## Correctness\n\nThe initial counts are exactly the infected neighbours on day 0. While processing layer d, only the infections new on that day are added to the neighbours' counts; a healthy cell that reaches the threshold is marked as pending right away but can only enter layer d+1, so infection never spreads further on the same day. Each cell is queued once, the first time it reaches the threshold, so nothing is missed or repeated. When the queue is empty, no healthy cell can still reach the threshold, and the number of the last non-empty layer is the answer. Immune cells are never queued and never add to any count.\n\n## Complexity\n\nTime O(nm), space O(nm)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-nvidia-2",
+  "packageChecksum": "0a6d330652c85baeced5f806fc7afc3521b786b20df5c97257a3f75d55e78bb1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, k;\n    cin >> n >> k;\n    vector<long long> p(n + 1, 0);\n    for (int i = 1; i <= n; i++) {\n        long long v;\n        cin >> v;\n        p[i] = p[i - 1] + v;\n    }\n    // For right end r, subtract the smallest prefix p[0..r-k].\n    long long minimum = 0, answer = LLONG_MIN;\n    for (int r = k; r <= n; r++) {\n        minimum = min(minimum, p[r - k]);\n        answer = max(answer, p[r] - minimum);\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "2b84e6bd8494586a168447c93f833496219bb8581f6a77984903326c584a21a1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong(), k = (int) nextLong();\n        long[] p = new long[n + 1];\n        for (int i = 1; i <= n; i++) p[i] = p[i - 1] + nextLong();\n        // For right end r, subtract the smallest prefix p[0..r-k].\n        long minimum = 0, answer = Long.MIN_VALUE;\n        for (int r = k; r <= n; r++) {\n            minimum = Math.min(minimum, p[r - k]);\n            answer = Math.max(answer, p[r] - minimum);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "cef2461130baa6e01540aed0151733b7d7aeb2c02611903a14f49d700aaa942b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n, k int\n\tfmt.Fscan(in, &n, &k)\n\tp := make([]int64, n+1)\n\tfor i := 1; i <= n; i++ {\n\t\tvar v int64\n\t\tfmt.Fscan(in, &v)\n\t\tp[i] = p[i-1] + v\n\t}\n\t// For right end r, subtract the smallest prefix p[0..r-k].\n\tvar minimum int64\n\tvar answer int64 = math.MinInt64\n\tfor r := k; r <= n; r++ {\n\t\tminimum = min(minimum, p[r-k])\n\t\tanswer = max(answer, p[r]-minimum)\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "7015f9865bad7b9eea77ec7516aa5eb01adc817905a7cfbaca0c3376420abd7d"
+    }
+  ]
+}

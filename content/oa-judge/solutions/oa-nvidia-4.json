@@ -1,0 +1,21 @@
+{
+  "id": "oa-nvidia-4",
+  "packageChecksum": "996fda50a4d162b4752bda14de8a60e872ba6c9d6cb3eb991fcc8a49bd78eff6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    long long total = 0;\n    for (auto &v : a) cin >> v, total += v;\n    long long left = 0, answer = 0;\n    // Split after index i for i in 0..n-2: left part non-empty, right part non-empty.\n    for (int i = 0; i + 1 < n; i++) {\n        left += a[i];\n        if (left > total - left) answer++;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "d9401bb557335f130946e8e83bee1615f68ca4a46617ac845ea3ca61b0431adb"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong();\n        long[] a = new long[n];\n        long total = 0;\n        for (int i = 0; i < n; i++) total += a[i] = nextLong();\n        long left = 0, answer = 0;\n        // Split after index i for i in 0..n-2: left part non-empty, right part non-empty.\n        for (int i = 0; i + 1 < n; i++) {\n            left += a[i];\n            if (left > total - left) answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "2bbb063957855c49eb8ecb02e0e6ae5a8b086254a1ad2ed1373143a046168db1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\ta := make([]int64, n)\n\tvar total int64\n\tfor i := range a {\n\t\tfmt.Fscan(in, &a[i])\n\t\ttotal += a[i]\n\t}\n\tvar left, answer int64\n\t// Split after index i for i in 0..n-2: left part non-empty, right part non-empty.\n\tfor i := 0; i+1 < n; i++ {\n\t\tleft += a[i]\n\t\tif left > total-left {\n\t\t\tanswer++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "e28baf8c3ad1e7847e17bca68f501b3a625c49ad69bcbfd322b8503497baf62f"
+    }
+  ]
+}

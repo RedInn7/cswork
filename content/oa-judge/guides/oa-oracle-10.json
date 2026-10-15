@@ -1,0 +1,19 @@
+{
+  "id": "oa-oracle-10",
+  "packageChecksum": "6d6db52f86d653f36cb936a6ebb8cf1fd5639ff9320550a1df86157d97b7ef7c",
+  "sourceContentHash": "e6ffc6f8887e8f04d1cf47125b9d610619f3c0a0166606f6effde09bc88b7e94",
+  "editorialSha256": "8b85cca701c829de4f00b9949441954c51e26f6776e5c32e39da6adcd87a33ba",
+  "hints": {
+    "zh": [
+      "不论怎么排列，从最小值所在位置走到最大值所在位置，沿途相邻差的绝对值之和至少是最大值减最小值。",
+      "所以答案不可能小于 max-min；而把数组按非递减顺序排好时，相邻差之和逐项相消恰好等于 max-min，达到了这个下界。",
+      "不需要真的排序，也不必输出排列：一遍扫描求出最大值和最小值，输出二者之差即可。"
+    ],
+    "en": [
+      "However the array is arranged, walking from the position of the minimum to the position of the maximum, the absolute differences along the way sum to at least max minus min.",
+      "So the answer cannot be below max-min, and arranging the array in non-decreasing order makes the adjacent differences telescope to exactly max-min, which reaches that bound.",
+      "No sorting or arrangement output is needed: one pass finds the maximum and minimum, and their difference is the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe answer is the maximum minus the minimum, which takes a single scan.\n\n## Proof of correctness\n\nIn any arrangement, the sum of absolute differences along the path between the minimum and the maximum is at least their difference, so the total is not less than max-min. Arranging in non-decreasing order makes the differences telescope to exactly max-min, reaching the lower bound.\n\n## Complexity\n\nO(n) time; the reference reads the input in O(n) space, which streaming can reduce to O(1)."
+}

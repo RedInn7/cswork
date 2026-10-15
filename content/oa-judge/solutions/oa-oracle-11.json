@@ -1,0 +1,21 @@
+{
+  "id": "oa-oracle-11",
+  "packageChecksum": "cbc6fffd9b66f66dd00c1c67d6b76033930d287dd878633c3a58e0b49481cc12",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    priority_queue<long long, vector<long long>, greater<long long>> heap;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        heap.push(v);\n    }\n    // Huffman-style: always merge the two smallest values.\n    long long answer = 0;\n    while (heap.size() > 1) {\n        long long a = heap.top();\n        heap.pop();\n        long long b = heap.top();\n        heap.pop();\n        answer += a + b;\n        heap.push(a + b);\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "9471a542e8d85d989505a0e060eb48ac578b0496da5b5f2e8258c0fb85eba4a1"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        PriorityQueue<Long> heap = new PriorityQueue<>();\n        for (int i = 0; i < n; i++) heap.add(sc.nextLong());\n        // Huffman-style: always merge the two smallest values.\n        long answer = 0;\n        while (heap.size() > 1) {\n            long total = heap.poll() + heap.poll();\n            answer += total;\n            heap.add(total);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "e73a43471ea1849a9262a5cc503ec96c4a9562f286f1d5803b22e39901c374fe"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"container/heap\"\n\t\"fmt\"\n\t\"os\"\n)\n\ntype minHeap []int64\n\nfunc (h minHeap) Len() int           { return len(h) }\nfunc (h minHeap) Less(i, j int) bool { return h[i] < h[j] }\nfunc (h minHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\nfunc (h *minHeap) Push(x any)        { *h = append(*h, x.(int64)) }\nfunc (h *minHeap) Pop() any {\n\told := *h\n\tv := old[len(old)-1]\n\t*h = old[:len(old)-1]\n\treturn v\n}\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\th := make(minHeap, n)\n\tfor i := range h {\n\t\tfmt.Fscan(in, &h[i])\n\t}\n\theap.Init(&h)\n\t// Huffman-style: always merge the two smallest values.\n\tvar answer int64\n\tfor h.Len() > 1 {\n\t\ttotal := heap.Pop(&h).(int64) + heap.Pop(&h).(int64)\n\t\tanswer += total\n\t\theap.Push(&h, total)\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "9b42b0b17b3a7d368d6aaf7c3cbc149eddf7923557af8bf0026d7f10f20e4df5"
+    }
+  ]
+}

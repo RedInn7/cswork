@@ -1,0 +1,19 @@
+{
+  "id": "oa-optiver-4",
+  "packageChecksum": "d7ffff62f89572e792eb25d70b95154456ed986da482dc4f9c036bc0f38bdae2",
+  "sourceContentHash": "fd993dfcbdc2c2e675db0da837ce0284e7f6effce7e725cf11a92d6527eac98d",
+  "editorialSha256": "b4cbdbc6a2f737abaddb49fe69e79ce8e96797399fa99bd1827ad5e2c1007949",
+  "hints": {
+    "zh": [
+      "窗口由当前最大时间戳决定：只统计时间戳大于最大值减 3600 的日志，而日志可能乱序到达、logId 可能重复，所以要按（时间戳，接收序号）这个唯一的键来排序。",
+      "用一棵支持按排名查询的平衡树（例如带子树大小的 treap）按（时间戳，接收序号）存所有日志：窗口在排序后正好是一段连续排名区间，左端是时间戳 ≤ 最大值-3600 的日志数，右端是全部日志数。",
+      "RECORD 时以递增的接收序号作为第二关键字插入，并更新最大时间戳。查询时用两次排名查询得到区间 [left,right)：COUNT 输出 right-left；GET_LOGS 取区间最后至多 m 个，即排名 max(left,right-m) 到 right，按中序遍历顺序用逗号连接输出（没有就输出空行）。还没有日志时窗口为空。"
+    ],
+    "en": [
+      "The window is set by the current maximum timestamp: only logs with timestamp greater than the maximum minus 3600 count. Logs may arrive out of order and logId values may repeat, so sort by the unique key (timestamp, receiving order).",
+      "Store all logs in a balanced tree that supports rank queries, such as a treap with subtree sizes, keyed by (timestamp, receiving order). In sorted order the window is one contiguous rank range: its left end is the number of logs with timestamp <= maximum-3600, and its right end is the total number of logs.",
+      "On RECORD, insert with an increasing receiving number as the second key and update the maximum timestamp. On a query, two rank queries give the range [left,right): COUNT prints right-left; GET_LOGS takes the last at most m items of the range, ranks max(left,right-m) to right, and prints their logId values joined by commas in in-order sequence (an empty line if there are none). With no logs yet, the window is empty."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain an order-statistic treap sorted by `(timestamp, receiving number)`, and keep the current maximum timestamp. Each log is inserted with a unique receiving number, so logs with equal timestamps are still ordered by arrival. Let `cutoff=maxTimestamp-3600`: rank queries give the number of logs with `timestamp<=cutoff` and the number with `timestamp<=maxTimestamp`, and their difference is the window count. GET_LOGS takes the last m items from the rank range of the window and outputs them in in-order sequence.\n\n## Correctness\n\nThe treap keys are ordered lexicographically by timestamp and receiving number, so the in-order traversal matches the order required by the problem. `rank_less(cutoff+1,0)` computes the length of the prefix with timestamps not greater than cutoff, which excludes exactly the logs at least 3600 seconds older; `rank_less(maxTimestamp+1,0)` reaches up to the newest timestamp. The rank range between them is exactly the strict one-hour window. COUNT returns the length of that range; GET_LOGS takes at most the last m items of it, so it gives the newest m logs in the window, in ascending order.\n\n## Complexity\n\nEach insertion and rank query takes expected O(log q); outputting GET_LOGS additionally takes O(min(m, number of logs in the window)). Space O(q)."
+}

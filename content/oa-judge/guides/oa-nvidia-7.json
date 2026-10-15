@@ -1,0 +1,19 @@
+{
+  "id": "oa-nvidia-7",
+  "packageChecksum": "b2352a44fa908f3c86708d8710963a65534da0632abcb5ff6f785aa76d15db60",
+  "sourceContentHash": "9dfe3f929165f1dc53291f88f3cef0a09eba60afb8071eb68d982603e342a927",
+  "editorialSha256": "a068d8045ef2301d18fecb8b861a32d0fbc55c77341ea238d1ee1b7736e05ff4",
+  "hints": {
+    "zh": [
+      "路径按点分成若干个键，只需从根开始一段一段往下走；任何一步当前值不是对象（包括数组）或者没有这个键，整条路径就不存在。",
+      "维护当前值，处理完前 i 段后它正好是前 i 段路径指向的值。走到最后一段后直接输出当前值本身（可能是对象、数组、字符串、数字、布尔或 null），而不是它的真假。",
+      "第一行解析成 JSON，第二行去掉行尾换行后按点切分。逐个键检查：当前值是对象且包含该键就进入，否则输出 null 结束。全部走完后把当前值序列化成 JSON 输出；评测接受任意键顺序和空白，所以也可以直接原样输出原文中该值对应的那一段文本。"
+    ],
+    "en": [
+      "Split the path on dots into keys and walk down from the root one key at a time; if at any step the current value is not an object (arrays included) or lacks the key, the whole path does not exist.",
+      "Keep a current value: after processing the first i keys, it is exactly the value the first i path segments point to. After the last key, output the current value itself, which may be an object, array, string, number, boolean or null, not its truthiness.",
+      "Parse the first line as JSON, strip the trailing newline from the second line and split it on dots. For each key: if the current value is an object containing it, step into it; otherwise print null and stop. After all keys, serialize the current value as JSON. The checker accepts any key order and whitespace, so printing the raw text span of that value from the input also works."
+    ]
+  },
+  "explanationEn": "## Approach\n\nStarting from the root, look up the dictionary key for each segment in turn; on failure return null immediately, on success serialize the current value.\n\n## Correctness\n\nAfter processing the first i segments, the current value is exactly the value the path prefix points to. If the next key cannot be accessed in an object, the full path does not exist; otherwise the invariant keeps holding. After the last segment the value itself is returned, not its truthiness. The independent oracle enumerates every path reachable through dictionary keys together with its value, then looks the path up in that table.\n\n## Complexity\n\nParsing and output take O(B) time, the lookup takes expected O(path characters), and space is O(B), where B is the number of input and output bytes."
+}

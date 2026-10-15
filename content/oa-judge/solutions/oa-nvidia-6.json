@@ -1,0 +1,21 @@
+{
+  "id": "oa-nvidia-6",
+  "packageChecksum": "92547d5f46842bed4a64446dad4617217ff617a95f682b3710e7e16909af0e26",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    long long cnt[26] = {0};\n    vector<int> need;\n    string s;\n    while (cin >> s) {\n        for (char c : s) cnt[c - 'a']++;\n        need.push_back((int)s.size() / 2);\n    }\n    // Pairs of equal characters are the only budget; spend it on the cheapest strings first.\n    long long pairs = 0;\n    for (long long c : cnt) pairs += c / 2;\n    sort(need.begin(), need.end());\n    long long answer = 0;\n    for (int x : need) {\n        if (x > pairs) break;\n        pairs -= x;\n        answer++;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "f1efb3281bdcf9ec39912b0c589eb0fdde82cb5739d686f3628c32d62a707bf7"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        byte[] buf = System.in.readAllBytes();\n        int pos = 0, len = buf.length;\n        while (buf[pos] <= ' ') pos++;\n        while (pos < len && buf[pos] > ' ') pos++;\n        long[] cnt = new long[26];\n        int[] need = new int[16];\n        int m = 0;\n        while (true) {\n            while (pos < len && buf[pos] <= ' ') pos++;\n            if (pos >= len) break;\n            int start = pos;\n            while (pos < len && buf[pos] > ' ') cnt[buf[pos++] - 'a']++;\n            if (m == need.length) need = Arrays.copyOf(need, m * 2);\n            need[m++] = (pos - start) / 2;\n        }\n        // Pairs of equal characters are the only budget; spend it on the cheapest strings first.\n        long pairs = 0;\n        for (long c : cnt) pairs += c / 2;\n        Arrays.sort(need, 0, m);\n        long answer = 0;\n        for (int i = 0; i < m; i++) {\n            if (need[i] > pairs) break;\n            pairs -= need[i];\n            answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "4e55528e6a950d36b1c2d4086fa7f993f1623533298e0fff6c0ea06fda9a8d84"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<21), 1<<21)\n\tsc.Split(bufio.ScanWords)\n\tsc.Scan()\n\tvar cnt [26]int64\n\tneed := []int{}\n\tfor sc.Scan() {\n\t\ts := sc.Bytes()\n\t\tfor _, c := range s {\n\t\t\tcnt[c-'a']++\n\t\t}\n\t\tneed = append(need, len(s)/2)\n\t}\n\t// Pairs of equal characters are the only budget; spend it on the cheapest strings first.\n\tvar pairs int64\n\tfor _, c := range cnt {\n\t\tpairs += c / 2\n\t}\n\tsort.Ints(need)\n\tanswer := 0\n\tfor _, x := range need {\n\t\tif int64(x) > pairs {\n\t\t\tbreak\n\t\t}\n\t\tpairs -= int64(x)\n\t\tanswer++\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "3d5d47745243becb7e75f7524cc3d1efff195491b8c227e3ca2382fafa0279af"
+    }
+  ]
+}

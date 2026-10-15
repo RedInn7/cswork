@@ -1,0 +1,21 @@
+{
+  "id": "oa-palantir-1",
+  "packageChecksum": "8e80678cf0c6f688ddf78bc3adac0536ec9f078fcfea28b4cf4ab8d220befdb2",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // Parity of each position is fixed; each parity class can be fully rearranged.\n    string odd, even;\n    for (char c : s) ((c - '0') % 2 ? odd : even) += c;\n    sort(odd.rbegin(), odd.rend());\n    sort(even.rbegin(), even.rend());\n    size_t i = 0, j = 0;\n    for (char &c : s) c = (c - '0') % 2 ? odd[i++] : even[j++];\n    cout << s << \"\\n\";\n}\n",
+      "sha256": "cf7d4d9dae8459291c978d60e97a07470cf48d30ecaa07de4ada606f35f106bd"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        char[] s = new String(System.in.readAllBytes()).trim().toCharArray();\n        // Parity of each position is fixed; each parity class can be fully rearranged.\n        char[] odd = new char[s.length], even = new char[s.length];\n        int no = 0, ne = 0;\n        for (char c : s) {\n            if ((c - '0') % 2 == 1) odd[no++] = c;\n            else even[ne++] = c;\n        }\n        Arrays.sort(odd, 0, no);\n        Arrays.sort(even, 0, ne);\n        // Sorted ascending, so take from the back for descending order.\n        for (int k = 0; k < s.length; k++) s[k] = (s[k] - '0') % 2 == 1 ? odd[--no] : even[--ne];\n        System.out.print(new String(s) + \"\\n\");\n    }\n}\n",
+      "sha256": "f8a23e041dd99405728375ad2536c2644aa439daa70262c05d7b848ffb496037"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n)\n\nfunc main() {\n\tvar str string\n\tfmt.Fscan(bufio.NewReader(os.Stdin), &str)\n\ts := []byte(str)\n\t// Parity of each position is fixed; each parity class can be fully rearranged.\n\tvar odd, even []byte\n\tfor _, c := range s {\n\t\tif (c-'0')%2 == 1 {\n\t\t\todd = append(odd, c)\n\t\t} else {\n\t\t\teven = append(even, c)\n\t\t}\n\t}\n\tdesc := func(b []byte) { sort.Slice(b, func(i, j int) bool { return b[i] > b[j] }) }\n\tdesc(odd)\n\tdesc(even)\n\ti, j := 0, 0\n\tfor k, c := range s {\n\t\tif (c-'0')%2 == 1 {\n\t\t\ts[k] = odd[i]\n\t\t\ti++\n\t\t} else {\n\t\t\ts[k] = even[j]\n\t\t\tj++\n\t\t}\n\t}\n\tfmt.Println(string(s))\n}\n",
+      "sha256": "e959128a336bb206da9e7b18e8967909721b145209622919bbdc23ecdadc052a"
+    }
+  ]
+}

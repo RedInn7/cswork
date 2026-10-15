@@ -1,0 +1,19 @@
+{
+  "id": "oa-palantir-1",
+  "packageChecksum": "8e80678cf0c6f688ddf78bc3adac0536ec9f078fcfea28b4cf4ab8d220befdb2",
+  "sourceContentHash": "13961744dc09a9297b155c683170449c85310d0d9e7404d7fed035c37db26b7d",
+  "editorialSha256": "4c9acd1e35dde44d16d852fe2ece491ffe84f35eb286e72390986f90dce7e712",
+  "hints": {
+    "zh": [
+      "相邻交换只发生在奇偶性相同的两个数字之间，所以每个位置上数字的奇偶性永远不会改变。",
+      "在同一奇偶类内部，借助相邻交换可以把这些数字任意重排（中间隔着的另一类数字不影响它们的相对移动），因此奇数位置集合和偶数位置集合可以分别自由排列。",
+      "把所有奇数数字和所有偶数数字分别取出并降序排序，再从左到右扫描原串：原位置是奇数就填入下一个最大的奇数数字，是偶数就填入下一个最大的偶数数字，输出得到的字符串。"
+    ],
+    "en": [
+      "An adjacent swap only exchanges two digits of the same parity, so the parity of the digit at each position never changes.",
+      "Within one parity class, adjacent swaps can rearrange those digits in any order (digits of the other class in between do not block their relative movement), so the odd positions and the even positions can each be permuted freely.",
+      "Take out all odd digits and all even digits, sort each group in descending order, then scan the original string from left to right: an odd position gets the next largest odd digit and an even position the next largest even digit. Print the resulting string."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA single adjacent swap only exchanges digits of the same parity, so the parity at each position is fixed; within one parity subsequence, adjacent swaps can produce any rearrangement. Sort the odd digits and the even digits each in descending order, then fill them back in according to the parity of each position of the original string.\n\n## Correctness\n\nDigits of different parity can never be swapped, so each position can only end up with a digit of the same parity as that position. Digits of the same parity can be swapped arbitrarily within their subsequence. To make the result lexicographically largest, each parity subsequence should be placed into its positions in descending order, so the algorithm produces the largest of all valid results.\n\n## Complexity\n\nSorting takes O(n log n) time, and space is O(n)."
+}

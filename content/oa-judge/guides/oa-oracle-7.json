@@ -1,0 +1,19 @@
+{
+  "id": "oa-oracle-7",
+  "packageChecksum": "b77d14c0bea2e44d36181d31b1daae4f359fa7c8fce3232894a4b4ecb41d1ff1",
+  "sourceContentHash": "f398330eab1d1597a55cce4a520012079ed7a06c27edfe4c0c44eb6519eeb92e",
+  "editorialSha256": "c1c41d417f8531fdd2ce7824a571ba6720a45b78594b08cedb62a61957a24dcc",
+  "hints": {
+    "zh": [
+      "2 的非负整数次幂在二进制里恰好只有一个 1，而 0 不是 2 的任何次幂。",
+      "对正整数 v，v-1 会把最低位的 1 变成 0、把它下面的 0 都变成 1；如果 v 只有一个 1，v 与 v-1 按位与的结果就是 0，否则高位的 1 还会留下。",
+      "对每个数判断 v>0 且 v&(v-1)==0，成立输出 1，否则输出 0，按输入顺序用空格分隔。"
+    ],
+    "en": [
+      "A non-negative integer power of 2 has exactly one 1 bit in binary, and 0 is not a power of 2.",
+      "For a positive integer v, v-1 turns the lowest 1 bit into 0 and every bit below it into 1. If v has a single 1 bit, v AND (v-1) is 0; otherwise a higher 1 bit survives.",
+      "For each number test v>0 and v&(v-1)==0; print 1 if it holds and 0 otherwise, in input order separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA positive integer has exactly one 1 bit if and only if v&(v-1)=0; exclude 0 first.\n\n## Proof of correctness\n\n2^k has exactly one 1 bit in binary; subtracting 1 makes all lower bits 1, so the bitwise AND is 0. If there are at least two 1 bits, subtracting 1 clears only the lowest one, a higher 1 bit remains, and the AND is non-zero. 0 is not a power of 2 and must be excluded separately.\n\n## Complexity\n\nO(n) time, O(n) output space."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-oracle-10",
+  "packageChecksum": "6d6db52f86d653f36cb936a6ebb8cf1fd5639ff9320550a1df86157d97b7ef7c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    long long lo = LLONG_MAX, hi = LLONG_MIN, v;\n    for (int i = 0; i < n; i++) cin >> v, lo = min(lo, v), hi = max(hi, v);\n    // Sorted order telescopes to max - min, which is also a lower bound.\n    cout << hi - lo << \"\\n\";\n}\n",
+      "sha256": "71cb44d45581c9c76f7eab2f7885165d29ab9362808d3561018dc0f1cd230803"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong();\n        long lo = Long.MAX_VALUE, hi = Long.MIN_VALUE;\n        for (int i = 0; i < n; i++) {\n            long v = nextLong();\n            lo = Math.min(lo, v);\n            hi = Math.max(hi, v);\n        }\n        // Sorted order telescopes to max - min, which is also a lower bound.\n        System.out.println(hi - lo);\n    }\n}\n",
+      "sha256": "bae6526fa7b14ccbecbe93a42c6155dd648ee62aee4f7bc5c5bcd54f3f026bee"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\tvar lo, hi int64 = math.MaxInt64, math.MinInt64\n\tfor i := 0; i < n; i++ {\n\t\tvar v int64\n\t\tfmt.Fscan(in, &v)\n\t\tlo, hi = min(lo, v), max(hi, v)\n\t}\n\t// Sorted order telescopes to max - min, which is also a lower bound.\n\tfmt.Println(hi - lo)\n}\n",
+      "sha256": "307832432e136f3e7dbce5edc693a3dd0d605513b09cfbe17bd9e9bcdfc0a855"
+    }
+  ]
+}

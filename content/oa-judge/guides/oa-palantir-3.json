@@ -1,0 +1,19 @@
+{
+  "id": "oa-palantir-3",
+  "packageChecksum": "6b2db7b031874c5f3077ca2513ea5a91a757de4e64c7ef7d0b779cfe2bdde9a4",
+  "sourceContentHash": "4f0bc648c3f799727188e082782de2e7d167d573b6c468218be28749eff0fb1a",
+  "editorialSha256": "e76b448c5c88189d3b86f410d6f8231e077829b814b374e8484bc8ebacefb73d",
+  "hints": {
+    "zh": [
+      "各个单词互相独立；一个单词里，问题只出在连续相同字符组成的段上，长度为 L 的段至少要替换 floor(L/2) 个字符。",
+      "从左到右贪心：当前字符和上一个保留的字符相同时就替换当前字符，并把它当作一个与两边都不同的新字母，这样它不会再和下一个原字符冲突。",
+      "对每个单词，记录上一个保留字符（初始为空）和替换次数。逐字符扫描：若与上一个保留字符相同就计数加一，并把上一个保留字符置空；否则把它设为当前字符。按输入顺序输出各单词的次数，空格分隔。"
+    ],
+    "en": [
+      "Words are independent. Within a word, trouble only comes from runs of equal characters, and a run of length L needs at least floor(L/2) replacements.",
+      "Go left to right greedily: when the current character equals the last kept character, replace the current one and treat it as a fresh letter different from both neighbours, so it cannot clash with the next original character either.",
+      "For each word, track the last kept character (initially none) and a replacement count. Scan the characters: if one equals the last kept character, increment the count and reset the last kept character to none; otherwise set it to the current character. Print the counts in input order, separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan each word from left to right. If the current character equals the previous kept character, one of them must be replaced; replace the current one, and make it no longer form a repeat with the next original character. Otherwise keep the current character.\n\n## Correctness\n\nEach run of L consecutive equal characters needs at least floor(L/2) replacements, because one replacement can break at most one pair of adjacent repeats, and keeping every other character while replacing the rest reaches that bound exactly. The greedy replaces the current character at every adjacent clash, which counts exactly once for every two characters of each run, and it never affects later runs of different characters, so it reaches the global minimum.\n\n## Complexity\n\nWith L characters in total, time O(L) and extra space O(1) (output excluded)."
+}
