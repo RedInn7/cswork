@@ -20,6 +20,8 @@ import { pushEndpoint, pushReady, pushTo } from './web-push';
  * of a weekly or starter also get a notice and push an hour before it starts. Each notice has a
  * deterministic id: writing it is the claim, so no tick, restart or second worker sends twice.
  * The judge worker runs this every 10 minutes (lib/server/oj-worker.ts) and must run with TZ=UTC.
+ * ponytail: tz is the offset when last saved (the card re-saves it when opened elsewhere); a
+ * daylight saving change moves the hour until then. Store an IANA zone if that matters.
  */
 const MINUTE = 60000;
 const HOUR = 60 * MINUTE;
@@ -27,7 +29,7 @@ const DAY = 24 * HOUR;
 // Resend's limit is about 2 requests a second, shared with sign-in mails (lib/server/peer-reminders.ts).
 const GAP_MS = 500;
 /** Push devices per learner; subscribing another drops the oldest. */
-export const DEVICES_MAX = 10;
+const DEVICES_MAX = 10;
 
 type Prefs = {
   user_id: string;
@@ -51,7 +53,7 @@ const fresh = (id: string) => !sqlite().prepare('SELECT 1 FROM notifications WHE
  * time by the learner's offset makes dueReviews' and practiceStats' local days theirs, so the
  * counts match their progress page (streak freezes included).
  */
-export function digestFor(r: Prefs, now: number): ReminderDigest | null {
+function digestFor(r: Prefs, now: number): ReminderDigest | null {
   const db = sqlite();
   const shift = r.tz * MINUTE;
   const local = now - shift;

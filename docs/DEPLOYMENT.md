@@ -49,6 +49,8 @@ sudo /opt/cswork/runtime/node --env-file=/etc/cswork/cswork.env scripts/create-a
 
 启用 OJ 后，Web 配置只保留 `OJ_ENABLED=true`，不向 Web 进程提供 `GO_JUDGE_TOKEN` 或 `REDIS_URL`。`cswork-oj-worker.service` 额外加载 root 保护的 `/etc/cswork/oj.env`，与应用共享 cswork 的 SQLite/outbox，使用独立 Redis 和默认队列 `cswork-judge-v1`。生产只运行一个 worker 服务，同时处理一个提交；每个提交最多并行两个独立测试点，大内存题仍串行。不要同时手工启动另一份生产 worker。
 
+worker 每 10 分钟还发提醒：同伴互面邮件、学习提醒（站内消息、Web Push、可选邮件，每人每天一条）和关注公司的新 OA 题汇总（北京时间 9 点后）。学习提醒按用户时区平移时间来算“本地的一天”，所以 unit 里固定 `TZ=UTC`。Web Push 需要在 `cswork.env`（Web 和 worker 都读）里配 `VAPID_PUBLIC_KEY`、`VAPID_PRIVATE_KEY`、`VAPID_SUBJECT`，生成方法见 `.env.example`；三项缺一时推送整体关闭，其余提醒照常。密钥对生成后不要更换，换了之后已有的浏览器订阅全部失效。
+
 发布时安装器先停止旧 worker，再切换 `/srv/cswork/current`。除 Web 健康检查外，还要求新 worker 产生本次启动之后的健康心跳；任一检查失败，恢复旧应用软链接并在旧版本包含 worker 时重新启动它。回滚实现见 [应用安装器](../deploy/install.sh)，服务约束见 [worker unit](../deploy/cswork-oj-worker.service)。回滚应用不会撤销数据库迁移；恢复数据须使用迁移前备份。
 
 隔离验收使用 `localhost:4318`、独立 staging SQLite、临时老师与学员、`cswork-oj-test-` 前缀队列。完整 [OJ E2E 脚本](../tests/oj-integration.mjs) 要求 `TEST_WORKER_ENTRY` 指向构建后的 worker，由脚本自行启动并清理；不得改用生产数据库或队列。实际测试证据见 [验收记录](VALIDATION.md)。
