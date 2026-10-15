@@ -1,1 +1,1840 @@
-{"courses":[]}
+{
+  "courses": [
+    {
+      "slug": "big-o",
+      "titleZh": "Big-O 与数据结构速成课",
+      "titleEn": "Big-O and Data Structures Crash Course",
+      "summaryZh": "面向零基础的 10 节速成课：先学会估算复杂度，再依次掌握数组、链表、栈、队列、哈希表、树、堆和图，最后是排序、二分和递归回溯。每节有小测验和 3 道 Line 500 练习题。",
+      "summaryEn": "Ten short lessons for complete beginners: learn to estimate complexity, then arrays, linked lists, stacks, queues, hash tables, trees, heaps and graphs, and finally sorting, binary search, recursion and backtracking. Each lesson ends with a quiz and three Line 500 practice problems.",
+      "chapters": [
+        {
+          "slug": "complexity",
+          "titleZh": "复杂度与 Big-O",
+          "titleEn": "Complexity and Big-O",
+          "bodyZh": "写完代码，面试官几乎一定会追问：“时间复杂度和空间复杂度是多少？”Big-O 描述的是**输入规模 n 变大时，运行时间（或内存）增长得有多快**，不是某台机器上跑了多少毫秒。\n\n## 数操作，不数秒\n\n看一段找最大值的代码：\n\n```python\ndef largest(nums):\n    best = nums[0]\n    for x in nums:      # 循环 n 次\n        if x > best:    # 每次只做常数量的工作\n            best = x\n    return best\n```\n\n循环 n 次，每次常数时间，总工作量和 n 成正比，记作 **O(n)**。化简时记住两条：\n\n- **去掉常数系数**：3n + 5 记作 O(n)。常数取决于机器和语言，Big-O 只看增长趋势。\n- **只留最高阶**：n² + n 记作 O(n²)。n 很大时，低阶项可以忽略。\n\n## 常见的复杂度等级\n\n| 记号 | 名称 | 典型例子 | n = 10⁶ 时的大约操作数 |\n|---|---|---|---|\n| O(1) | 常数 | 按下标取数组元素、哈希表查找（平均） | 1 |\n| O(log n) | 对数 | 二分查找 | 20 |\n| O(n) | 线性 | 遍历一遍数组 | 10⁶ |\n| O(n log n) | 线性对数 | 归并排序、Python 的 `sorted` | 2×10⁷ |\n| O(n²) | 平方 | 两层循环枚举所有数对 | 10¹² |\n| O(2ⁿ) | 指数 | 枚举所有子集 | 天文数字 |\n\n一个实用的估算：判题机一秒大约能做 10⁷～10⁸ 次简单操作，Python 慢一些，按 10⁷ 估比较稳。题目给 n ≤ 10⁵ 时，O(n²) 是 10¹⁰ 次，必然超时；O(n log n) 约 1.7×10⁶ 次，很安全。**先看数据范围，再选算法。**\n\n## 别只数循环的层数\n\n```python\ni = 1\nwhile i < n:\n    i *= 2      # 每次翻倍：只循环约 log₂ n 次\n```\n\n判断复杂度要看**循环体实际执行了多少次**。反过来，两层循环也不一定是 O(n²)：如果内层的指针只往前走、从不回退（双指针、滑动窗口），两层加起来总共只走 O(n) 步。\n\n## 空间复杂度\n\n空间复杂度统计**额外**用掉的内存，一般不算输入本身。新建一个和输入一样长的列表是 O(n)；递归深度为 d 的函数，调用栈要占 O(d)。\n\n## 最坏、平均与均摊\n\n- **最坏情况**：面试里不特别说明时，默认指它。线性查找最坏要看完全部 n 个元素。\n- **平均情况**：哈希表查找平均 O(1)，但如果所有键都冲突，会退化成 O(n)。\n- **均摊**：Python 的 `list.append` 偶尔要扩容并把元素整体搬到新内存，那一次是 O(n)；但容量按比例增长，搬迁成本摊到每次 append 上仍是 O(1)。\n\n## 例子：两数之和\n\n在数组里找和为 target 的两个下标。暴力做法枚举所有数对，O(n²)：\n\n```python\ndef two_sum(nums, target):\n    for i in range(len(nums)):\n        for j in range(i + 1, len(nums)):\n            if nums[i] + nums[j] == target:\n                return [i, j]\n```\n\n换个角度：遍历到 x 时，只需要知道“前面出现过 target - x 吗”。用字典记下见过的值和下标，每次查询平均 O(1)，整体变成 O(n) 时间、O(n) 空间。**用空间换时间**是最常见的优化方向，哈希表一课会细讲。\n\n## 小结\n\n- Big-O 描述增长趋势：去常数，留最高阶。\n- 先看数据范围：n ≤ 10⁵ 时，目标是 O(n log n) 或更好。\n- 复杂度看循环的实际次数；回答时把时间和空间都说清楚。",
+          "bodyEn": "After you finish coding, the interviewer will almost always ask: \"What are the time and space complexities?\" Big-O describes **how fast the running time (or memory) grows as the input size n grows**. It is not how many milliseconds the code took on some machine.\n\n## Count operations, not seconds\n\nHere is a function that finds the largest number:\n\n```python\ndef largest(nums):\n    best = nums[0]\n    for x in nums:      # runs n times\n        if x > best:    # constant work each time\n            best = x\n    return best\n```\n\nThe loop runs n times and does a constant amount of work each time, so the total work is proportional to n. We write **O(n)**. Two rules simplify any expression:\n\n- **Drop constant factors**: 3n + 5 is O(n). Constants depend on the machine and the language; Big-O only cares about the trend.\n- **Keep the highest-order term**: n² + n is O(n²). For large n the smaller terms stop mattering.\n\n## Common complexity classes\n\n| Notation | Name | Typical example | Rough operations at n = 10⁶ |\n|---|---|---|---|\n| O(1) | Constant | Array access by index, hash lookup (average) | 1 |\n| O(log n) | Logarithmic | Binary search | 20 |\n| O(n) | Linear | One pass over an array | 10⁶ |\n| O(n log n) | Linearithmic | Merge sort, Python's `sorted` | 2×10⁷ |\n| O(n²) | Quadratic | Two nested loops over all pairs | 10¹² |\n| O(2ⁿ) | Exponential | Enumerating every subset | astronomical |\n\nA practical rule of thumb: a judge does roughly 10⁷ to 10⁸ simple operations per second, and Python is slower, so 10⁷ is a safe estimate. When a problem says n ≤ 10⁵, an O(n²) solution needs 10¹⁰ operations and will time out, while O(n log n) needs about 1.7×10⁶ and is comfortable. **Read the constraints first, then pick the algorithm.**\n\n## Don't just count nested loops\n\n```python\ni = 1\nwhile i < n:\n    i *= 2      # doubles each time: about log₂ n iterations\n```\n\nComplexity depends on **how many times the loop body actually runs**. The reverse also holds: two nested loops are not always O(n²). If the inner pointer only moves forward and never resets (two pointers, sliding window), both loops together take only O(n) steps.\n\n## Space complexity\n\nSpace complexity counts the **extra** memory you use, usually not the input itself. Building a new list as long as the input is O(n). A recursive function that goes d calls deep uses O(d) stack space.\n\n## Worst case, average case, amortized\n\n- **Worst case** is what interviewers mean unless they say otherwise. Linear search may have to look at all n elements.\n- **Average case**: a hash table lookup is O(1) on average, but it degrades to O(n) if every key collides.\n- **Amortized**: Python's `list.append` occasionally has to grow and copy every element to new memory, which costs O(n) that one time. Because capacity grows proportionally, the copying cost spread over all appends is still O(1) each.\n\n## Example: Two Sum\n\nFind two indices whose values add up to target. Brute force tries every pair, O(n²):\n\n```python\ndef two_sum(nums, target):\n    for i in range(len(nums)):\n        for j in range(i + 1, len(nums)):\n            if nums[i] + nums[j] == target:\n                return [i, j]\n```\n\nLook at it differently: when you reach x, all you need to know is \"have I seen target - x before?\" A dictionary of seen values and their indices answers that in O(1) on average, so the whole thing becomes O(n) time and O(n) space. **Trading space for time** is the most common optimization, and the hash table chapter covers it in depth.\n\n## Recap\n\n- Big-O describes the growth trend: drop constants, keep the highest-order term.\n- Check the constraints: with n ≤ 10⁵, aim for O(n log n) or better.\n- Count how many times loops really run, and always state both time and space.",
+          "quiz": [
+            {
+              "qZh": "下面这段代码的时间复杂度是多少？i = 1; while i < n: i *= 2",
+              "qEn": "What is the time complexity of this code? i = 1; while i < n: i *= 2",
+              "choices": [
+                {
+                  "zh": "O(log n)",
+                  "en": "O(log n)"
+                },
+                {
+                  "zh": "O(n)",
+                  "en": "O(n)"
+                },
+                {
+                  "zh": "O(n log n)",
+                  "en": "O(n log n)"
+                },
+                {
+                  "zh": "O(√n)",
+                  "en": "O(√n)"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "i 每次翻倍，大约 log₂ n 次后就不小于 n，所以循环只执行 O(log n) 次。",
+              "whyEn": "i doubles every iteration, so it reaches n after about log₂ n steps: the loop runs O(log n) times."
+            },
+            {
+              "qZh": "题目给出 n ≤ 10⁵，哪种复杂度的做法最有把握在 1 秒内通过？",
+              "qEn": "With n ≤ 10⁵, which complexity is most likely to pass within one second?",
+              "choices": [
+                {
+                  "zh": "O(n²)",
+                  "en": "O(n²)"
+                },
+                {
+                  "zh": "O(n log n)",
+                  "en": "O(n log n)"
+                },
+                {
+                  "zh": "O(n² log n)",
+                  "en": "O(n² log n)"
+                },
+                {
+                  "zh": "O(2ⁿ)",
+                  "en": "O(2ⁿ)"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "n log n 约 1.7×10⁶ 次操作；n² 已经是 10¹⁰ 次，远超每秒 10⁷～10⁸ 次的预算。",
+              "whyEn": "n log n is about 1.7×10⁶ operations; n² is already 10¹⁰, far over a budget of 10⁷ to 10⁸ per second."
+            },
+            {
+              "qZh": "为什么说 Python 的 list.append 是均摊 O(1)？",
+              "qEn": "Why is Python's list.append amortized O(1)?",
+              "choices": [
+                {
+                  "zh": "Python 列表其实是链表，追加只需改一个指针",
+                  "en": "Python lists are linked lists, so appending only changes one pointer"
+                },
+                {
+                  "zh": "列表创建时就分配了足够大的固定空间，从不扩容",
+                  "en": "A list reserves a large fixed block when created and never grows"
+                },
+                {
+                  "zh": "容量按比例增长，偶尔的整体搬迁摊到每次追加上是常数",
+                  "en": "Capacity grows proportionally, so the occasional full copy averages out to a constant per append"
+                },
+                {
+                  "zh": "解释器把 append 编译成了一条单独的机器指令",
+                  "en": "The interpreter compiles append into a single machine instruction"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "CPython 的列表是动态数组。扩容时要复制全部元素，但扩容按比例进行，所以很少发生，平均到每次 append 仍是 O(1)。",
+              "whyEn": "CPython lists are dynamic arrays. Growing copies every element, but growth is proportional, so it is rare and each append is O(1) on average."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1",
+              "zh": "两数之和",
+              "en": "Two Sum"
+            },
+            {
+              "id": "lc-169",
+              "zh": "多数元素",
+              "en": "Majority Element"
+            },
+            {
+              "id": "lc-448",
+              "zh": "找到所有数组中消失的数字",
+              "en": "Find All Numbers Disappeared in an Array"
+            }
+          ]
+        },
+        {
+          "slug": "arrays-linked-lists",
+          "titleZh": "数组与链表",
+          "titleEn": "Arrays and Linked Lists",
+          "bodyZh": "数组和链表是最基础的两种线性结构。它们存的都是一串元素，区别在于**元素在内存里怎么放**，而这决定了各种操作的快慢。\n\n## 数组：连续的一块内存\n\n数组的元素紧挨着存放。知道起始地址和下标，就能直接算出元素的位置，所以**按下标访问是 O(1)**。代价是：在中间插入或删除时，后面的元素都要挪一位，是 O(n)。\n\nPython 的 `list` 就是动态数组：\n\n| 操作 | 复杂度 |\n|---|---|\n| `a[i]`、`a[i] = x` | O(1) |\n| `a.append(x)`、`a.pop()`（末尾） | 均摊 O(1) |\n| `a.insert(0, x)`、`a.pop(0)` | O(n) |\n| `x in a` | O(n) |\n\n## 链表：用指针串起来的结点\n\n链表的每个结点存一个值和指向下一个结点的指针，结点可以散落在内存各处：\n\n```mermaid\nflowchart LR\n  accTitle: 单链表：每个结点指向下一个\n  head[\"head\"] --> n1[\"1\"] --> n2[\"2\"] --> n3[\"3\"] --> none[\"None\"]\n```\n\n```python\nclass ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n```\n\n- 已经拿到某个结点时，在它后面插入或删除只需改指针：**O(1)**。\n- 想访问第 k 个结点，只能从头一个个走过去：**O(k)**，没有随机访问。\n\n| | 数组 | 链表 |\n|---|---|---|\n| 按下标访问 | O(1) | O(n) |\n| 头部插入 | O(n) | O(1) |\n| 已知位置插入/删除 | O(n) | O(1) |\n| 额外空间 | 少 | 每个结点多一个指针 |\n\n## 链表题的三个基本功\n\n**1. 反转链表。** 用三个变量逐个调转指针方向：\n\n```python\ndef reverse(head):\n    prev = None\n    while head:\n        nxt = head.next    # 先记住下一个结点\n        head.next = prev   # 调转指针\n        prev, head = head, nxt\n    return prev\n```\n\n**2. 快慢指针。** 慢指针每次走一步，快指针走两步。快指针走到末尾时，慢指针正好在中间；如果链表有环，两个指针迟早相遇。\n\n```python\ndef middle(head):\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n    return slow   # 偶数个结点时返回第二个中间结点\n```\n\n**3. 哑结点（dummy）。** 需要删除或改动头结点时，先在最前面接一个假结点，最后返回 `dummy.next`，可以少写很多“头结点特殊处理”的分支。\n\n## 常见错误\n\n- 改 `head.next` 之前没有先保存下一个结点，链表就断了。\n- 循环条件写成 `while fast.next`，链表为空时会报错；要先判断 `fast`。\n- 题目要求原地修改数组时，不要新建列表再返回。\n\n## 小结\n\n数组胜在随机访问，链表胜在已知位置的插入删除。面试里的链表题主要考指针操作，画图把每一步的指向写出来，比在脑子里想可靠得多。",
+          "bodyEn": "Arrays and linked lists are the two basic linear structures. Both hold a sequence of elements; the difference is **how the elements sit in memory**, and that decides which operations are fast.\n\n## Arrays: one contiguous block\n\nArray elements sit next to each other. From the start address and an index you can compute where any element is, so **access by index is O(1)**. The price: inserting or deleting in the middle shifts every later element by one, which is O(n).\n\nPython's `list` is a dynamic array:\n\n| Operation | Complexity |\n|---|---|\n| `a[i]`, `a[i] = x` | O(1) |\n| `a.append(x)`, `a.pop()` (at the end) | amortized O(1) |\n| `a.insert(0, x)`, `a.pop(0)` | O(n) |\n| `x in a` | O(n) |\n\n## Linked lists: nodes joined by pointers\n\nEach node of a linked list stores a value and a pointer to the next node, and the nodes can live anywhere in memory:\n\n```mermaid\nflowchart LR\n  accTitle: A singly linked list: each node points to the next\n  head[\"head\"] --> n1[\"1\"] --> n2[\"2\"] --> n3[\"3\"] --> none[\"None\"]\n```\n\n```python\nclass ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n```\n\n- Once you hold a node, inserting or deleting right after it only rewires pointers: **O(1)**.\n- To reach the k-th node you have to walk from the head: **O(k)**. There is no random access.\n\n| | Array | Linked list |\n|---|---|---|\n| Access by index | O(1) | O(n) |\n| Insert at the front | O(n) | O(1) |\n| Insert/delete at a known position | O(n) | O(1) |\n| Extra space | little | one pointer per node |\n\n## Three linked-list basics\n\n**1. Reverse a list.** Flip the pointers one node at a time with three variables:\n\n```python\ndef reverse(head):\n    prev = None\n    while head:\n        nxt = head.next    # remember the next node first\n        head.next = prev   # flip the pointer\n        prev, head = head, nxt\n    return prev\n```\n\n**2. Fast and slow pointers.** The slow pointer moves one step, the fast one two. When the fast pointer reaches the end, the slow one is in the middle; if the list has a cycle, the two eventually meet.\n\n```python\ndef middle(head):\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n    return slow   # with an even count, the second middle node\n```\n\n**3. A dummy node.** When the head itself may be removed or changed, put a fake node in front and return `dummy.next` at the end. It removes most of the special cases for the head.\n\n## Common mistakes\n\n- Changing `head.next` before saving the next node breaks the list.\n- Writing `while fast.next` crashes on an empty list; check `fast` first.\n- When a problem asks you to modify an array in place, don't build a new list and return it.\n\n## Recap\n\nArrays win at random access; linked lists win at inserting and deleting where you already are. Linked-list interview questions are mostly about pointer handling: drawing each step on paper is far more reliable than keeping it in your head.",
+          "quiz": [
+            {
+              "qZh": "对长度为 n 的 Python 列表执行 a.insert(0, x)，时间复杂度是多少？",
+              "qEn": "What is the time complexity of a.insert(0, x) on a Python list of length n?",
+              "choices": [
+                {
+                  "zh": "O(1)",
+                  "en": "O(1)"
+                },
+                {
+                  "zh": "O(log n)",
+                  "en": "O(log n)"
+                },
+                {
+                  "zh": "均摊 O(1)",
+                  "en": "Amortized O(1)"
+                },
+                {
+                  "zh": "O(n)",
+                  "en": "O(n)"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "Python 列表是连续的动态数组，在开头插入要把全部 n 个元素往后挪一位。",
+              "whyEn": "A Python list is a contiguous dynamic array, so inserting at the front shifts all n elements."
+            },
+            {
+              "qZh": "单链表中已经拿到结点 p，删除 p 后面的那个结点需要多少时间？",
+              "qEn": "In a singly linked list you already hold node p. How long does deleting the node after p take?",
+              "choices": [
+                {
+                  "zh": "O(1)，让 p.next 指向下下个结点即可",
+                  "en": "O(1), point p.next at the node after it"
+                },
+                {
+                  "zh": "O(n)，要先从头找到它",
+                  "en": "O(n), you must find it from the head first"
+                },
+                {
+                  "zh": "O(log n)，要二分定位",
+                  "en": "O(log n), it needs a binary search"
+                },
+                {
+                  "zh": "取决于链表里有多少个结点",
+                  "en": "It depends on how many nodes the list has"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "要删的结点就是 p.next，执行 p.next = p.next.next 只改一个指针，与链表长度无关。",
+              "whyEn": "The node to delete is p.next; p.next = p.next.next changes one pointer regardless of the list length."
+            },
+            {
+              "qZh": "快慢指针找中点：慢指针每次走一步，快指针每次走两步。快指针走到末尾时，慢指针在哪？",
+              "qEn": "Finding the middle with fast and slow pointers: slow moves one step, fast moves two. Where is slow when fast reaches the end?",
+              "choices": [
+                {
+                  "zh": "还在头结点",
+                  "en": "Still at the head"
+                },
+                {
+                  "zh": "在中间位置",
+                  "en": "In the middle"
+                },
+                {
+                  "zh": "在末尾",
+                  "en": "At the end"
+                },
+                {
+                  "zh": "在倒数第二个结点",
+                  "en": "At the second-to-last node"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "快指针的速度是慢指针的两倍，快指针走完全程时，慢指针刚好走了一半。",
+              "whyEn": "The fast pointer moves twice as fast, so when it has covered the whole list the slow one has covered half."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-283",
+              "zh": "移动零",
+              "en": "Move Zeroes"
+            },
+            {
+              "id": "lc-206",
+              "zh": "反转链表",
+              "en": "Reverse Linked List"
+            },
+            {
+              "id": "lc-876",
+              "zh": "链表的中间结点",
+              "en": "Middle of the Linked List"
+            }
+          ]
+        },
+        {
+          "slug": "stacks-queues",
+          "titleZh": "栈和队列",
+          "titleEn": "Stacks and Queues",
+          "bodyZh": "栈和队列都是“只能从特定位置进出”的序列，规则限制越多，用起来反而越不容易出错。\n\n## 栈：后进先出（LIFO）\n\n栈像一摞盘子，只能在顶上放、从顶上拿。Python 直接用 `list` 当栈：\n\n```python\nstack = []\nstack.append(1)    # 入栈，O(1)\nstack.append(2)\ntop = stack[-1]    # 看栈顶，O(1)\nstack.pop()        # 出栈，返回 2，O(1)\n```\n\n**什么时候想到栈？** 当“最近出现的东西最先被处理”时：括号匹配、撤销操作、函数调用栈、深度优先搜索，以及后面会学的单调栈。\n\n### 例子：有效的括号\n\n遇到左括号就入栈；遇到右括号，它必须和**最近一个还没配对的左括号**匹配，也就是栈顶：\n\n```python\ndef is_valid(s):\n    pairs = {')': '(', ']': '[', '}': '{'}\n    stack = []\n    for ch in s:\n        if ch in pairs:\n            if not stack or stack.pop() != pairs[ch]:\n                return False\n        else:\n            stack.append(ch)\n    return not stack   # 最后不能剩下没配对的左括号\n```\n\n每个字符最多入栈、出栈各一次，时间 O(n)，空间 O(n)。\n\n## 队列：先进先出（FIFO）\n\n队列像排队，从队尾进、从队头出。**不要用 `list.pop(0)` 当出队**：它要把后面的元素全部前移，是 O(n)。用 `collections.deque`，两端操作都是 O(1)：\n\n```python\nfrom collections import deque\n\nqueue = deque()\nqueue.append('a')     # 入队\nqueue.append('b')\nfirst = queue.popleft()   # 出队，返回 'a'\n```\n\n**什么时候想到队列？** 按到达顺序处理任务、广度优先搜索（BFS）、按层遍历树。\n\n## 用两个栈实现队列\n\n这是常见的面试题：一个栈 `inbox` 负责入队；出队时如果 `outbox` 为空，就把 `inbox` 的元素全部倒过去，顺序正好反过来。\n\n```python\nclass MyQueue:\n    def __init__(self):\n        self.inbox, self.outbox = [], []\n\n    def push(self, x):\n        self.inbox.append(x)\n\n    def peek(self):\n        if not self.outbox:\n            while self.inbox:\n                self.outbox.append(self.inbox.pop())\n        return self.outbox[-1]\n\n    def pop(self):\n        self.peek()\n        return self.outbox.pop()\n\n    def empty(self):\n        return not self.inbox and not self.outbox\n```\n\n单次 `pop` 可能要倒腾很多元素，但**每个元素一生只会从 inbox 搬到 outbox 一次**，所以均摊下来每个操作都是 O(1)。\n\n## 小结\n\n| 结构 | 规则 | Python 写法 | 典型用途 |\n|---|---|---|---|\n| 栈 | 后进先出 | `list` 的 `append` / `pop` | 括号匹配、DFS、撤销 |\n| 队列 | 先进先出 | `deque` 的 `append` / `popleft` | BFS、按顺序处理 |\n\n看到题目里有“配对”“嵌套”“最近的”这类字眼，先想栈；看到“按层”“最短步数”“先来先处理”，先想队列。",
+          "bodyEn": "Stacks and queues are sequences you can only enter and leave at specific ends. The extra rules make them harder to misuse, not easier.\n\n## Stacks: last in, first out (LIFO)\n\nA stack is like a pile of plates: you put on top and take from the top. In Python a plain `list` is a stack:\n\n```python\nstack = []\nstack.append(1)    # push, O(1)\nstack.append(2)\ntop = stack[-1]    # peek, O(1)\nstack.pop()        # pop, returns 2, O(1)\n```\n\n**When does a stack fit?** Whenever the most recent thing must be handled first: matching brackets, undo, the function call stack, depth-first search, and the monotonic stack you will meet later.\n\n### Example: valid parentheses\n\nPush every opening bracket. A closing bracket must match **the most recent opening bracket that is still unmatched**, which is exactly the top of the stack:\n\n```python\ndef is_valid(s):\n    pairs = {')': '(', ']': '[', '}': '{'}\n    stack = []\n    for ch in s:\n        if ch in pairs:\n            if not stack or stack.pop() != pairs[ch]:\n                return False\n        else:\n            stack.append(ch)\n    return not stack   # no unmatched opening brackets may remain\n```\n\nEach character is pushed and popped at most once: O(n) time, O(n) space.\n\n## Queues: first in, first out (FIFO)\n\nA queue is a line: join at the back, leave from the front. **Don't dequeue with `list.pop(0)`**: it shifts every remaining element forward, which is O(n). Use `collections.deque`, where both ends are O(1):\n\n```python\nfrom collections import deque\n\nqueue = deque()\nqueue.append('a')         # enqueue\nqueue.append('b')\nfirst = queue.popleft()   # dequeue, returns 'a'\n```\n\n**When does a queue fit?** Processing tasks in arrival order, breadth-first search (BFS), and walking a tree level by level.\n\n## A queue from two stacks\n\nA classic interview question: the `inbox` stack takes every push. To dequeue, if `outbox` is empty, pour everything from `inbox` into it, which reverses the order.\n\n```python\nclass MyQueue:\n    def __init__(self):\n        self.inbox, self.outbox = [], []\n\n    def push(self, x):\n        self.inbox.append(x)\n\n    def peek(self):\n        if not self.outbox:\n            while self.inbox:\n                self.outbox.append(self.inbox.pop())\n        return self.outbox[-1]\n\n    def pop(self):\n        self.peek()\n        return self.outbox.pop()\n\n    def empty(self):\n        return not self.inbox and not self.outbox\n```\n\nA single `pop` may move many elements, but **each element moves from inbox to outbox only once in its lifetime**, so every operation is O(1) amortized.\n\n## Recap\n\n| Structure | Rule | In Python | Typical use |\n|---|---|---|---|\n| Stack | last in, first out | `list` with `append` / `pop` | brackets, DFS, undo |\n| Queue | first in, first out | `deque` with `append` / `popleft` | BFS, in-order processing |\n\nWords like \"matching\", \"nested\" or \"most recent\" suggest a stack; \"level by level\", \"fewest steps\" or \"first come, first served\" suggest a queue.",
+          "quiz": [
+            {
+              "qZh": "用 Python 写 BFS 时，出队应该用哪个操作？",
+              "qEn": "When writing BFS in Python, which operation should dequeue?",
+              "choices": [
+                {
+                  "zh": "list.pop()",
+                  "en": "list.pop()"
+                },
+                {
+                  "zh": "list.pop(0)",
+                  "en": "list.pop(0)"
+                },
+                {
+                  "zh": "deque.popleft()",
+                  "en": "deque.popleft()"
+                },
+                {
+                  "zh": "list.remove(list[0])",
+                  "en": "list.remove(list[0])"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "deque 的 popleft 是 O(1)；list.pop(0) 要把后面的元素全部前移，是 O(n)；list.pop() 从末尾取，顺序就成了栈。",
+              "whyEn": "deque.popleft is O(1); list.pop(0) shifts every other element, O(n); list.pop() takes from the end, which makes it a stack."
+            },
+            {
+              "qZh": "括号匹配为什么适合用栈？",
+              "qEn": "Why is a stack the right tool for matching brackets?",
+              "choices": [
+                {
+                  "zh": "栈能自动把括号排好序",
+                  "en": "A stack sorts the brackets automatically"
+                },
+                {
+                  "zh": "栈的查找速度比列表快",
+                  "en": "A stack searches faster than a list"
+                },
+                {
+                  "zh": "栈可以统计每种括号出现的次数",
+                  "en": "A stack counts how often each bracket appears"
+                },
+                {
+                  "zh": "右括号总是和最近一个未配对的左括号配对",
+                  "en": "A closing bracket always pairs with the most recent unmatched opening one"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "括号是嵌套的：最后打开的必须最先关闭，这正是后进先出。",
+              "whyEn": "Brackets nest: the last one opened must close first, which is exactly last in, first out."
+            },
+            {
+              "qZh": "用两个栈实现队列，为什么每个操作是均摊 O(1)？",
+              "qEn": "In a queue built from two stacks, why is every operation amortized O(1)?",
+              "choices": [
+                {
+                  "zh": "因为每个元素最多从 inbox 搬到 outbox 一次",
+                  "en": "Because each element moves from inbox to outbox at most once"
+                },
+                {
+                  "zh": "因为两个栈各自只存一半元素",
+                  "en": "Because each stack only holds half of the elements"
+                },
+                {
+                  "zh": "因为 Python 的 list.pop() 是 O(1)，所以不需要搬运",
+                  "en": "Because list.pop() is O(1), so nothing ever has to move"
+                },
+                {
+                  "zh": "因为出队时只搬运一个元素",
+                  "en": "Because a dequeue moves only one element"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "一次出队可能搬运很多元素，但每个元素一生只被搬一次，总搬运量不超过入队的次数。",
+              "whyEn": "One dequeue may move many elements, but each element is moved once in its life, so total moves never exceed the number of pushes."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-20",
+              "zh": "有效的括号",
+              "en": "Valid Parentheses"
+            },
+            {
+              "id": "lc-232",
+              "zh": "用栈实现队列",
+              "en": "Implement Queue using Stacks"
+            },
+            {
+              "id": "lc-1047",
+              "zh": "删除字符串中的所有相邻重复项",
+              "en": "Remove All Adjacent Duplicates In String"
+            }
+          ]
+        },
+        {
+          "slug": "hash-tables",
+          "titleZh": "哈希表",
+          "titleEn": "Hash Tables",
+          "bodyZh": "哈希表能在平均 O(1) 时间内完成“插入、删除、查找”，是面试里最常用的提速工具。Python 的 `dict` 和 `set` 都是哈希表。\n\n## 它是怎么做到 O(1) 的\n\n哈希表底层是一个数组。存一个键时，先用**哈希函数**把键算成一个整数，再对数组长度取模，得到它该放的位置：\n\n```\n位置 = hash(key) % 数组长度\n```\n\n查找时用同样的方法算出位置，直接去那里找，不用扫描整个表。\n\n**冲突**：两个不同的键可能算出同一个位置。常见的解决办法有两种：每个位置挂一个链表（拉链法），或者往后找下一个空位（开放寻址，CPython 的 dict 用的是这种思路的变体）。只要元素填得不太满，冲突很少，平均仍是 O(1)。表快满时，哈希表会扩容并重新放置所有元素，这和列表扩容一样，均摊下来不影响 O(1)。\n\n**最坏情况**：如果所有键都冲突到同一处，查找退化成 O(n)。日常做题不用担心，但面试时说出“平均 O(1)，最坏 O(n)”会更严谨。\n\n## 键必须是可哈希的\n\n只有**不可变**的对象才能当字典的键或放进集合：`int`、`str`、`tuple`（元素也都不可变时）都可以，`list`、`dict`、`set` 不行。想用一个列表当键时，先转成元组：\n\n```python\nseen = set()\nseen.add((1, 2))       # 可以\n# seen.add([1, 2])     # TypeError: unhashable type: 'list'\n```\n\n## 四种常见用法\n\n**1. 查“见过没有”**：用 `set`，`x in seen` 平均 O(1)，而对列表做 `x in lst` 是 O(n)。\n\n**2. 计数**：\n\n```python\ncount = {}\nfor ch in \"banana\":\n    count[ch] = count.get(ch, 0) + 1\n# {'b': 1, 'a': 3, 'n': 2}\n```\n\n**3. 值到下标的映射**：两数之和的标准解法。\n\n```python\ndef two_sum(nums, target):\n    seen = {}                       # 值 -> 下标\n    for i, x in enumerate(nums):\n        if target - x in seen:      # 先查\n            return [seen[target - x], i]\n        seen[x] = i                 # 后存\n```\n\n先查再存，保证不会把同一个元素和它自己配成一对。\n\n**4. 按“特征”分组**：把具有相同特征的元素放进同一个桶，比如字母异位词排序后相同，就用排序后的字符串当键。\n\n## 例子：存在重复元素 II\n\n判断是否存在两个相等的数，下标差不超过 k。用字典记住每个值**最近一次**出现的下标：\n\n```python\ndef contains_nearby_duplicate(nums, k):\n    last = {}\n    for i, x in enumerate(nums):\n        if x in last and i - last[x] <= k:\n            return True\n        last[x] = i\n    return False\n```\n\n时间 O(n)，空间 O(n)。\n\n## 小结\n\n- dict / set 的查找、插入、删除平均 O(1)，最坏 O(n)。\n- 键要可哈希：列表先转元组。\n- 看到“是否存在”“出现几次”“配对”“分组”，先想哈希表。",
+          "bodyEn": "A hash table inserts, deletes and looks up in O(1) on average, which makes it the most common speed-up in interviews. Python's `dict` and `set` are both hash tables.\n\n## How it gets to O(1)\n\nUnderneath, a hash table is an array. To store a key, a **hash function** turns the key into an integer, and taking it modulo the array length gives the slot:\n\n```\nslot = hash(key) % array_length\n```\n\nA lookup computes the same slot and goes straight there instead of scanning the table.\n\n**Collisions**: two different keys can land in the same slot. The two usual fixes are a small list per slot (chaining) or probing for the next free slot (open addressing; CPython's dict uses a variant of this). As long as the table isn't too full, collisions are rare and operations stay O(1) on average. When it fills up, the table grows and re-places every element; like list growth, that cost is amortized away.\n\n**Worst case**: if every key collides into one place, a lookup degrades to O(n). You won't hit this in practice problems, but saying \"O(1) on average, O(n) worst case\" in an interview is more precise.\n\n## Keys must be hashable\n\nOnly **immutable** objects can be dictionary keys or set members: `int`, `str` and `tuple` (of immutable items) work; `list`, `dict` and `set` don't. To use a list as a key, convert it to a tuple:\n\n```python\nseen = set()\nseen.add((1, 2))       # fine\n# seen.add([1, 2])     # TypeError: unhashable type: 'list'\n```\n\n## Four everyday uses\n\n**1. \"Have I seen it?\"**: use a `set`. `x in seen` is O(1) on average, while `x in lst` on a list is O(n).\n\n**2. Counting**:\n\n```python\ncount = {}\nfor ch in \"banana\":\n    count[ch] = count.get(ch, 0) + 1\n# {'b': 1, 'a': 3, 'n': 2}\n```\n\n**3. Value-to-index maps**: the standard Two Sum solution.\n\n```python\ndef two_sum(nums, target):\n    seen = {}                       # value -> index\n    for i, x in enumerate(nums):\n        if target - x in seen:      # look up first\n            return [seen[target - x], i]\n        seen[x] = i                 # then store\n```\n\nLooking up before storing guarantees an element is never paired with itself.\n\n**4. Grouping by a signature**: put elements that share a feature into the same bucket. Anagrams, for example, are equal once sorted, so the sorted string is the key.\n\n## Example: Contains Duplicate II\n\nDecide whether two equal numbers sit at most k indices apart. Remember the **most recent** index of each value:\n\n```python\ndef contains_nearby_duplicate(nums, k):\n    last = {}\n    for i, x in enumerate(nums):\n        if x in last and i - last[x] <= k:\n            return True\n        last[x] = i\n    return False\n```\n\nO(n) time, O(n) space.\n\n## Recap\n\n- dict and set operations are O(1) on average and O(n) in the worst case.\n- Keys must be hashable: turn lists into tuples.\n- \"Does it exist\", \"how many times\", \"find the pair\" and \"group these\" all point to a hash table.",
+          "quiz": [
+            {
+              "qZh": "哈希表查找的平均时间复杂度和最坏时间复杂度分别是？",
+              "qEn": "What are the average and worst-case lookup times of a hash table?",
+              "choices": [
+                {
+                  "zh": "平均 O(log n)，最坏 O(n)",
+                  "en": "O(log n) average, O(n) worst"
+                },
+                {
+                  "zh": "平均 O(1)，最坏 O(n)",
+                  "en": "O(1) average, O(n) worst"
+                },
+                {
+                  "zh": "平均 O(1)，最坏 O(1)",
+                  "en": "O(1) average, O(1) worst"
+                },
+                {
+                  "zh": "平均 O(n)，最坏 O(n²)",
+                  "en": "O(n) average, O(n²) worst"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "不冲突时直接定位到槽位，平均 O(1)；所有键都冲突到同一处时要逐个比较，最坏 O(n)。",
+              "whyEn": "Without collisions a key goes straight to its slot, O(1) on average; if every key collides, lookups compare one by one, O(n)."
+            },
+            {
+              "qZh": "下面哪个可以作为 Python 字典的键？",
+              "qEn": "Which of these can be a Python dictionary key?",
+              "choices": [
+                {
+                  "zh": "列表 [1, 2]",
+                  "en": "the list [1, 2]"
+                },
+                {
+                  "zh": "集合 {1, 2}",
+                  "en": "the set {1, 2}"
+                },
+                {
+                  "zh": "元组 (1, 2)",
+                  "en": "the tuple (1, 2)"
+                },
+                {
+                  "zh": "字典 {1: 2}",
+                  "en": "the dict {1: 2}"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "键必须可哈希，也就是不可变。元组可以；列表、集合、字典都是可变的，会报 unhashable type。",
+              "whyEn": "Keys must be hashable, which means immutable. A tuple works; lists, sets and dicts are mutable and raise unhashable type."
+            },
+            {
+              "qZh": "两数之和的哈希解法里，为什么先查 target - x，再把 x 存进字典？",
+              "qEn": "In the hash solution to Two Sum, why look up target - x before storing x?",
+              "choices": [
+                {
+                  "zh": "先存会让字典变大，查找变慢",
+                  "en": "Storing first makes the dict bigger and slower"
+                },
+                {
+                  "zh": "这样返回的下标才是从小到大",
+                  "en": "So the returned indices are in increasing order"
+                },
+                {
+                  "zh": "Python 字典不允许先存后查",
+                  "en": "Python dicts do not allow storing before looking up"
+                },
+                {
+                  "zh": "避免把同一个元素和它自己配成一对",
+                  "en": "To avoid pairing an element with itself"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "如果 x 恰好是 target 的一半，先存再查会找到 x 自己，返回同一个下标两次。",
+              "whyEn": "If x is exactly half of target, storing first would find x itself and return the same index twice."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-219",
+              "zh": "存在重复元素 II",
+              "en": "Contains Duplicate II"
+            },
+            {
+              "id": "lc-409",
+              "zh": "最长回文串",
+              "en": "Longest Palindrome"
+            },
+            {
+              "id": "lc-350",
+              "zh": "两个数组的交集 II",
+              "en": "Intersection of Two Arrays II"
+            }
+          ]
+        },
+        {
+          "slug": "trees",
+          "titleZh": "树与遍历",
+          "titleEn": "Trees and Traversal",
+          "bodyZh": "树是有层次的结构：一个**根**结点，每个结点下面挂着若干**子结点**，没有子结点的叫**叶子**。面试里最常见的是**二叉树**，每个结点最多两个孩子。\n\n```mermaid\nflowchart TD\n  accTitle: 一棵二叉搜索树，根是 4\n  n4((4)) --> n2((2))\n  n4 --> n6((6))\n  n2 --> n1((1))\n  n2 --> n3((3))\n  n6 --> n5((5))\n  n6 --> n7((7))\n```\n\n```python\nclass TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val, self.left, self.right = val, left, right\n```\n\n几个术语：结点的**深度**是从根到它经过的边数；树的**高度**是最深的叶子的深度。上图有 7 个结点，高度为 2。\n\n## 深度优先遍历（DFS）\n\n按“访问根”的时机不同，分三种顺序。以上图为例：\n\n| 顺序 | 规则 | 结果 |\n|---|---|---|\n| 前序 | 根 → 左 → 右 | 4 2 1 3 6 5 7 |\n| 中序 | 左 → 根 → 右 | 1 2 3 4 5 6 7 |\n| 后序 | 左 → 右 → 根 | 1 3 2 5 7 6 4 |\n\n递归写法几乎就是规则本身：\n\n```python\ndef inorder(root, out):\n    if root is None:\n        return\n    inorder(root.left, out)\n    out.append(root.val)      # 挪到前面就是前序，挪到最后就是后序\n    inorder(root.right, out)\n```\n\n很多树的题都可以用“**相信递归**”的思路：假设函数对左右子树已经算对了，只考虑怎么用两个子结果拼出当前结点的答案。比如最大深度：\n\n```python\ndef max_depth(root):\n    if root is None:\n        return 0\n    return 1 + max(max_depth(root.left), max_depth(root.right))\n```\n\n翻转二叉树也一样：交换左右孩子，再分别翻转两棵子树。\n\n## 广度优先遍历（BFS）：一层一层走\n\n用队列按层访问。每轮先记下当前队列长度，就能把同一层的结点分到一组：\n\n```python\nfrom collections import deque\n\ndef level_order(root):\n    if root is None:\n        return []\n    levels, queue = [], deque([root])\n    while queue:\n        level = []\n        for _ in range(len(queue)):    # 只处理当前这一层\n            node = queue.popleft()\n            level.append(node.val)\n            if node.left:\n                queue.append(node.left)\n            if node.right:\n                queue.append(node.right)\n        levels.append(level)\n    return levels\n```\n\n上图的结果是 `[[4], [2, 6], [1, 3, 5, 7]]`。\n\n## 二叉搜索树（BST）\n\nBST 满足：每个结点左子树的值都比它小，右子树的值都比它大。所以**中序遍历 BST 得到升序序列**。查找时每一步都能丢掉一半子树，树平衡时是 O(log n)；但如果数据按顺序插入，树会退化成一条链，变成 O(n)。\n\n## 复杂度\n\n遍历每个结点一次，时间 O(n)。递归的额外空间是调用栈的深度 O(h)，h 是树高：平衡树约 log n，退化成链时是 n。BFS 的队列最多同时装下一整层的结点。\n\n## 小结\n\n- 三种 DFS 顺序只差在“什么时候访问根”。\n- 树的递归题：想清楚空结点返回什么，以及怎么合并左右子树的结果。\n- 要按层处理、或求离根最近的某个结点，用 BFS。",
+          "bodyEn": "A tree is a hierarchy: one **root** node, each node has some **children** below it, and nodes without children are **leaves**. Interviews mostly use **binary trees**, where each node has at most two children.\n\n```mermaid\nflowchart TD\n  accTitle: A binary search tree rooted at 4\n  n4((4)) --> n2((2))\n  n4 --> n6((6))\n  n2 --> n1((1))\n  n2 --> n3((3))\n  n6 --> n5((5))\n  n6 --> n7((7))\n```\n\n```python\nclass TreeNode:\n    def __init__(self, val=0, left=None, right=None):\n        self.val, self.left, self.right = val, left, right\n```\n\nSome terms: a node's **depth** is the number of edges from the root to it; a tree's **height** is the depth of its deepest leaf. The tree above has 7 nodes and height 2.\n\n## Depth-first traversal (DFS)\n\nThe three orders differ only in when the root is visited. For the tree above:\n\n| Order | Rule | Result |\n|---|---|---|\n| Preorder | root → left → right | 4 2 1 3 6 5 7 |\n| Inorder | left → root → right | 1 2 3 4 5 6 7 |\n| Postorder | left → right → root | 1 3 2 5 7 6 4 |\n\nThe recursive code is almost the rule itself:\n\n```python\ndef inorder(root, out):\n    if root is None:\n        return\n    inorder(root.left, out)\n    out.append(root.val)      # move it first for preorder, last for postorder\n    inorder(root.right, out)\n```\n\nMany tree problems yield to **trusting the recursion**: assume the function already returns the right answer for the left and right subtrees, and only decide how to combine those two results at the current node. Maximum depth, for example:\n\n```python\ndef max_depth(root):\n    if root is None:\n        return 0\n    return 1 + max(max_depth(root.left), max_depth(root.right))\n```\n\nInverting a tree works the same way: swap the two children, then invert each subtree.\n\n## Breadth-first traversal (BFS): level by level\n\nA queue visits nodes level by level. Recording the queue length at the start of each round groups the nodes of one level together:\n\n```python\nfrom collections import deque\n\ndef level_order(root):\n    if root is None:\n        return []\n    levels, queue = [], deque([root])\n    while queue:\n        level = []\n        for _ in range(len(queue)):    # only this level's nodes\n            node = queue.popleft()\n            level.append(node.val)\n            if node.left:\n                queue.append(node.left)\n            if node.right:\n                queue.append(node.right)\n        levels.append(level)\n    return levels\n```\n\nFor the tree above it returns `[[4], [2, 6], [1, 3, 5, 7]]`.\n\n## Binary search trees (BST)\n\nIn a BST every value in a node's left subtree is smaller than the node and every value in its right subtree is larger. So **an inorder traversal of a BST is sorted**. A search discards one subtree at each step: O(log n) when the tree is balanced, but if values are inserted in sorted order the tree degenerates into a chain and search becomes O(n).\n\n## Complexity\n\nTraversal visits each node once: O(n) time. Recursion uses stack space equal to the depth, O(h) for height h: about log n for a balanced tree, n for a chain. A BFS queue holds at most one full level at a time.\n\n## Recap\n\n- The three DFS orders differ only in when the root is visited.\n- For recursive tree problems, decide what an empty node returns and how to combine the two subtree results.\n- To work level by level, or to find the node closest to the root, use BFS.",
+          "quiz": [
+            {
+              "qZh": "对一棵二叉搜索树做中序遍历，得到的序列有什么特点？",
+              "qEn": "What is special about the inorder traversal of a binary search tree?",
+              "choices": [
+                {
+                  "zh": "序列是升序的",
+                  "en": "The values come out in increasing order"
+                },
+                {
+                  "zh": "第一个元素一定是根",
+                  "en": "The first element is always the root"
+                },
+                {
+                  "zh": "序列是降序的",
+                  "en": "The values come out in decreasing order"
+                },
+                {
+                  "zh": "序列按层从上到下排列",
+                  "en": "The values are grouped level by level"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "中序是“左、根、右”，而 BST 的左子树都比根小、右子树都比根大，所以输出从小到大。",
+              "whyEn": "Inorder is left, root, right, and in a BST the left side is smaller and the right side larger than the root, so values come out ascending."
+            },
+            {
+              "qZh": "递归遍历一棵有 n 个结点、高度为 h 的二叉树，额外空间是多少？",
+              "qEn": "Recursively traversing a binary tree with n nodes and height h uses how much extra space?",
+              "choices": [
+                {
+                  "zh": "总是 O(1)",
+                  "en": "Always O(1)"
+                },
+                {
+                  "zh": "O(h)，取决于树高",
+                  "en": "O(h), depending on the height"
+                },
+                {
+                  "zh": "总是 O(log n)",
+                  "en": "Always O(log n)"
+                },
+                {
+                  "zh": "O(n²)",
+                  "en": "O(n²)"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "额外空间来自调用栈，最深同时有 h 层调用。平衡树 h 约为 log n，链状树 h 等于 n。",
+              "whyEn": "The extra space is the call stack, at most h calls deep. A balanced tree has h around log n; a chain has h equal to n."
+            },
+            {
+              "qZh": "按层遍历二叉树（BFS）通常用什么数据结构？",
+              "qEn": "Which data structure does a level-order (BFS) traversal of a tree usually use?",
+              "choices": [
+                {
+                  "zh": "栈",
+                  "en": "A stack"
+                },
+                {
+                  "zh": "哈希表",
+                  "en": "A hash table"
+                },
+                {
+                  "zh": "队列",
+                  "en": "A queue"
+                },
+                {
+                  "zh": "堆",
+                  "en": "A heap"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "先发现的结点先处理，正好是先进先出；用栈的话就变成了深度优先。",
+              "whyEn": "Nodes found first are processed first, which is first in, first out; a stack would turn it into depth-first."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-94",
+              "zh": "二叉树的中序遍历",
+              "en": "Binary Tree Inorder Traversal"
+            },
+            {
+              "id": "lc-104",
+              "zh": "二叉树的最大深度",
+              "en": "Maximum Depth of Binary Tree"
+            },
+            {
+              "id": "lc-226",
+              "zh": "翻转二叉树",
+              "en": "Invert Binary Tree"
+            }
+          ]
+        },
+        {
+          "slug": "heaps",
+          "titleZh": "堆",
+          "titleEn": "Heaps",
+          "bodyZh": "堆专门回答一个问题：**当前最小（或最大）的元素是谁？**它能在 O(1) 时间看到最小值，在 O(log n) 时间取出最小值或放进新元素。\n\n## 结构：用数组存的完全二叉树\n\n**最小堆**满足：每个结点都不大于它的孩子，所以根就是最小值。堆是一棵**完全二叉树**（除最后一层外都填满，最后一层从左往右填），因此可以直接存在数组里，不需要指针：下标 i 的孩子在 `2i + 1` 和 `2i + 2`，父结点在 `(i - 1) // 2`。\n\n数组 `[1, 3, 2, 7, 4, 5]` 对应的树：\n\n```mermaid\nflowchart TD\n  accTitle: 数组 1 3 2 7 4 5 表示的最小堆\n  a((1)) --> b((3))\n  a --> c((2))\n  b --> d((7))\n  b --> e((4))\n  c --> f((5))\n```\n\n注意堆**只保证父子之间的大小关系**，兄弟之间没有顺序，所以堆不是排好序的数组。\n\n## 两个核心操作\n\n- **插入**：放到数组末尾，再和父结点比较，比父结点小就交换，一路往上“冒泡”。最多走树高 O(log n) 步。\n- **弹出最小值**：取走根，把最后一个元素挪到根的位置，再和较小的孩子比较、往下“下沉”。同样 O(log n)。\n\n把一个任意数组整理成堆（heapify）只需要 O(n)，比逐个插入的 O(n log n) 更快。\n\n## Python 的 heapq\n\n`heapq` 直接在普通列表上操作，提供的是**最小堆**：\n\n```python\nimport heapq\n\nnums = [5, 1, 8, 3]\nheapq.heapify(nums)          # O(n)，nums 现在满足堆性质\nheapq.heappush(nums, 2)      # O(log n)\nsmallest = heapq.heappop(nums)   # 返回 1，O(log n)\npeek = nums[0]                   # 看最小值，O(1)\n```\n\n需要**最大堆**时，常用的办法是存相反数：\n\n```python\ndef last_stone_weight(stones):\n    heap = [-s for s in stones]   # 取负数，最小堆就成了最大堆\n    heapq.heapify(heap)\n    while len(heap) > 1:\n        a = -heapq.heappop(heap)  # 最重的\n        b = -heapq.heappop(heap)  # 第二重的\n        if a != b:\n            heapq.heappush(heap, -(a - b))\n    return -heap[0] if heap else 0\n```\n\n## 经典套路：Top K\n\n从 n 个数里找最大的 k 个，不必全排序。维护一个**大小为 k 的最小堆**：堆里始终是“目前最大的 k 个”，堆顶是其中最小的，也就是第 k 大。新来的数比堆顶大就替换进去。\n\n```python\nclass KthLargest:\n    def __init__(self, k, nums):\n        self.k, self.heap = k, []\n        for x in nums:\n            self.add(x)\n\n    def add(self, val):\n        heapq.heappush(self.heap, val)\n        if len(self.heap) > self.k:\n            heapq.heappop(self.heap)   # 把第 k+1 大的扔掉\n        return self.heap[0]\n```\n\n每个数进出堆一次，时间 O(n log k)，空间 O(k)。k 远小于 n 时，比排序的 O(n log n) 划算。\n\n## 小结\n\n| 操作 | 复杂度 |\n|---|---|\n| 看最小值 `heap[0]` | O(1) |\n| `heappush` / `heappop` | O(log n) |\n| `heapify` | O(n) |\n\n看到“第 k 大”“前 k 个”“每次取当前最小/最大”“合并多个有序序列”，就想到堆。",
+          "bodyEn": "A heap answers one question fast: **which element is currently the smallest (or largest)?** It shows the minimum in O(1) and removes it or adds a new element in O(log n).\n\n## Structure: a complete binary tree in an array\n\nA **min-heap** keeps every node no larger than its children, so the root is the minimum. A heap is a **complete binary tree** (every level full except the last, which fills left to right), so it fits in a plain array with no pointers: the children of index i are at `2i + 1` and `2i + 2`, and its parent is at `(i - 1) // 2`.\n\nThe array `[1, 3, 2, 7, 4, 5]` is this tree:\n\n```mermaid\nflowchart TD\n  accTitle: The min-heap stored as the array 1 3 2 7 4 5\n  a((1)) --> b((3))\n  a --> c((2))\n  b --> d((7))\n  b --> e((4))\n  c --> f((5))\n```\n\nA heap **only orders parents against children**; siblings have no order, so a heap is not a sorted array.\n\n## The two core operations\n\n- **Push**: append at the end, then compare with the parent and swap while it is smaller, bubbling up. At most the tree height, O(log n) steps.\n- **Pop the minimum**: take the root, move the last element into its place, then swap it down with its smaller child. Also O(log n).\n\nTurning an arbitrary array into a heap (heapify) takes O(n), faster than n pushes at O(n log n).\n\n## Python's heapq\n\n`heapq` works on ordinary lists and gives you a **min-heap**:\n\n```python\nimport heapq\n\nnums = [5, 1, 8, 3]\nheapq.heapify(nums)              # O(n); nums now satisfies the heap property\nheapq.heappush(nums, 2)          # O(log n)\nsmallest = heapq.heappop(nums)   # returns 1, O(log n)\npeek = nums[0]                   # the minimum, O(1)\n```\n\nFor a **max-heap**, the usual trick is to store negated values:\n\n```python\ndef last_stone_weight(stones):\n    heap = [-s for s in stones]   # negate: the min-heap now acts as a max-heap\n    heapq.heapify(heap)\n    while len(heap) > 1:\n        a = -heapq.heappop(heap)  # heaviest\n        b = -heapq.heappop(heap)  # second heaviest\n        if a != b:\n            heapq.heappush(heap, -(a - b))\n    return -heap[0] if heap else 0\n```\n\n## The classic pattern: top k\n\nTo find the k largest of n numbers you don't need a full sort. Keep a **min-heap of size k**: it always holds the k largest so far, and its top is the smallest of them, the k-th largest. A new number bigger than the top replaces it.\n\n```python\nclass KthLargest:\n    def __init__(self, k, nums):\n        self.k, self.heap = k, []\n        for x in nums:\n            self.add(x)\n\n    def add(self, val):\n        heapq.heappush(self.heap, val)\n        if len(self.heap) > self.k:\n            heapq.heappop(self.heap)   # drop the (k+1)-th largest\n        return self.heap[0]\n```\n\nEach number enters and leaves the heap once: O(n log k) time, O(k) space. When k is much smaller than n, that beats sorting at O(n log n).\n\n## Recap\n\n| Operation | Complexity |\n|---|---|\n| Peek the minimum `heap[0]` | O(1) |\n| `heappush` / `heappop` | O(log n) |\n| `heapify` | O(n) |\n\n\"k-th largest\", \"top k\", \"repeatedly take the current smallest or largest\" and \"merge several sorted sequences\" all point to a heap.",
+          "quiz": [
+            {
+              "qZh": "向一个有 n 个元素的二叉堆插入一个元素，时间复杂度是多少？",
+              "qEn": "What is the time complexity of inserting into a binary heap of n elements?",
+              "choices": [
+                {
+                  "zh": "O(1)",
+                  "en": "O(1)"
+                },
+                {
+                  "zh": "O(n)",
+                  "en": "O(n)"
+                },
+                {
+                  "zh": "O(n log n)",
+                  "en": "O(n log n)"
+                },
+                {
+                  "zh": "O(log n)",
+                  "en": "O(log n)"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "新元素从末尾往上冒泡，最多走树高那么多步，完全二叉树的高度是 O(log n)。",
+              "whyEn": "The new element bubbles up from the end, at most the height of the tree, and a complete binary tree has height O(log n)."
+            },
+            {
+              "qZh": "Python 的 heapq 提供的是哪种堆？需要最大堆时常怎么做？",
+              "qEn": "What kind of heap does Python's heapq provide, and how do you usually get a max-heap?",
+              "choices": [
+                {
+                  "zh": "最小堆；把相反数放进去",
+                  "en": "A min-heap; push negated values"
+                },
+                {
+                  "zh": "最大堆；把相反数放进去",
+                  "en": "A max-heap; push negated values"
+                },
+                {
+                  "zh": "最小堆；改用 sorted 每次重新排序",
+                  "en": "A min-heap; re-sort with sorted every time"
+                },
+                {
+                  "zh": "最大堆；不需要任何处理",
+                  "en": "A max-heap; nothing extra is needed"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "heapq 的 heappush/heappop 维护的是最小堆。存 -x 后，最小的 -x 对应最大的 x。",
+              "whyEn": "heapq's heappush and heappop maintain a min-heap. Storing -x makes the smallest -x correspond to the largest x."
+            },
+            {
+              "qZh": "从 n 个数里找最大的 k 个，维护一个大小为 k 的最小堆，时间复杂度是多少？",
+              "qEn": "Finding the k largest of n numbers with a size-k min-heap takes how long?",
+              "choices": [
+                {
+                  "zh": "O(n log n + k)",
+                  "en": "O(n log n + k)"
+                },
+                {
+                  "zh": "O(n log k)",
+                  "en": "O(n log k)"
+                },
+                {
+                  "zh": "O(n²)",
+                  "en": "O(n²)"
+                },
+                {
+                  "zh": "O(k²)",
+                  "en": "O(k²)"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "每个数最多做一次 push 和一次 pop，堆的大小不超过 k + 1，每次 O(log k)，共 O(n log k)。",
+              "whyEn": "Each number does at most one push and one pop on a heap of at most k + 1 elements, O(log k) each: O(n log k) total."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1046",
+              "zh": "最后一块石头的重量",
+              "en": "Last Stone Weight"
+            },
+            {
+              "id": "lc-703",
+              "zh": "数据流中的第 K 大元素",
+              "en": "Kth Largest Element in a Stream"
+            },
+            {
+              "id": "lc-215",
+              "zh": "数组中的第K个最大元素",
+              "en": "Kth Largest Element in an Array"
+            }
+          ]
+        },
+        {
+          "slug": "graphs",
+          "titleZh": "图的表示与 BFS/DFS",
+          "titleEn": "Graphs: Representation, BFS and DFS",
+          "bodyZh": "图由**顶点**和连接顶点的**边**组成。社交网络、地图、课程的先修关系、迷宫，都可以看成图。树其实是一种特殊的图：连通且没有环。\n\n```mermaid\nflowchart LR\n  accTitle: 有 5 个顶点的无向图\n  n0((0)) --- n1((1))\n  n0 --- n2((2))\n  n1 --- n3((3))\n  n2 --- n3\n  n3 --- n4((4))\n```\n\n边可以有方向（有向图，比如“A 关注了 B”），也可以带权重（比如道路的长度）。\n\n## 怎么存一个图\n\n| 方式 | 做法 | 空间 | 适合 |\n|---|---|---|---|\n| 邻接表 | 每个顶点存一份邻居列表 | O(V + E) | 大多数题目，尤其是稀疏图 |\n| 邻接矩阵 | V×V 的表格，`m[u][v]` 表示有没有边 | O(V²) | 顶点少、需要 O(1) 判断两点是否相连 |\n\n题目一般给边列表，先建邻接表：\n\n```python\nfrom collections import defaultdict\n\ndef build(edges):\n    graph = defaultdict(list)\n    for u, v in edges:\n        graph[u].append(v)\n        graph[v].append(u)    # 无向图：两个方向都要加\n    return graph\n```\n\n## 广度优先搜索（BFS）\n\n从起点出发，先访问所有距离为 1 的点，再访问距离为 2 的点……用队列实现。因为是一圈一圈往外扩，**在边没有权重时，BFS 第一次到达某个点用的就是最少的边数**。\n\n```python\nfrom collections import deque\n\ndef bfs_distance(graph, start):\n    dist = {start: 0}\n    queue = deque([start])\n    while queue:\n        u = queue.popleft()\n        for v in graph[u]:\n            if v not in dist:          # 入队时就记下，防止重复入队\n                dist[v] = dist[u] + 1\n                queue.append(v)\n    return dist\n```\n\n上图从 0 出发，得到的距离是 0→0、1→1、2→1、3→2、4→3。\n\n## 深度优先搜索（DFS）\n\n沿着一条路一直走到底，走不通再回头。递归写起来最短，适合判断连通性、数连通块、找路径：\n\n```python\ndef has_path(graph, source, target):\n    seen = set()\n    def dfs(u):\n        if u == target:\n            return True\n        seen.add(u)\n        return any(v not in seen and dfs(v) for v in graph[u])\n    return dfs(source)\n```\n\n图比较大时，Python 的递归深度上限（默认约 1000 层）可能不够，可以改用显式的栈，或者直接用 BFS。\n\n## 网格就是图\n\n二维网格里，每个格子是一个顶点，和上下左右四个格子相邻。图像渲染（flood fill）就是从一个格子出发，把相连的同色格子都染成新颜色：\n\n```python\ndef flood_fill(image, sr, sc, color):\n    old = image[sr][sc]\n    if old == color:           # 不判断的话会反复染同一个格子\n        return image\n    rows, cols = len(image), len(image[0])\n    def dfs(r, c):\n        if 0 <= r < rows and 0 <= c < cols and image[r][c] == old:\n            image[r][c] = color\n            for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):\n                dfs(r + dr, c + dc)\n    dfs(sr, sc)\n    return image\n```\n\n## 复杂度与常见错误\n\nBFS 和 DFS 都让每个顶点、每条边各处理常数次，时间 O(V + E)，网格上就是 O(行数 × 列数)。\n\n- 忘记记录访问过的点，在有环的图里会死循环。\n- BFS 在出队时才标记，同一个点会被多次放进队列。\n- 无向图只加了一个方向的边。",
+          "bodyEn": "A graph is a set of **vertices** joined by **edges**. Social networks, maps, course prerequisites and mazes are all graphs. A tree is a special graph: connected and without cycles.\n\n```mermaid\nflowchart LR\n  accTitle: An undirected graph with 5 vertices\n  n0((0)) --- n1((1))\n  n0 --- n2((2))\n  n1 --- n3((3))\n  n2 --- n3\n  n3 --- n4((4))\n```\n\nEdges can have a direction (a directed graph, like \"A follows B\") and a weight (like the length of a road).\n\n## Storing a graph\n\n| Representation | What it is | Space | Good for |\n|---|---|---|---|\n| Adjacency list | a list of neighbours per vertex | O(V + E) | most problems, especially sparse graphs |\n| Adjacency matrix | a V×V table, `m[u][v]` says whether an edge exists | O(V²) | few vertices, O(1) \"are these connected?\" |\n\nProblems usually give an edge list; build the adjacency list first:\n\n```python\nfrom collections import defaultdict\n\ndef build(edges):\n    graph = defaultdict(list)\n    for u, v in edges:\n        graph[u].append(v)\n        graph[v].append(u)    # undirected: add both directions\n    return graph\n```\n\n## Breadth-first search (BFS)\n\nStart at the source, visit everything one edge away, then everything two edges away, and so on, using a queue. Because it expands ring by ring, **on an unweighted graph BFS reaches each vertex first by a path with the fewest edges**.\n\n```python\nfrom collections import deque\n\ndef bfs_distance(graph, start):\n    dist = {start: 0}\n    queue = deque([start])\n    while queue:\n        u = queue.popleft()\n        for v in graph[u]:\n            if v not in dist:          # record on enqueue so nothing is queued twice\n                dist[v] = dist[u] + 1\n                queue.append(v)\n    return dist\n```\n\nFrom 0 in the graph above, the distances are 0→0, 1→1, 2→1, 3→2, 4→3.\n\n## Depth-first search (DFS)\n\nFollow one path as far as it goes and back up when stuck. The recursive version is the shortest to write and suits connectivity, counting components and finding a path:\n\n```python\ndef has_path(graph, source, target):\n    seen = set()\n    def dfs(u):\n        if u == target:\n            return True\n        seen.add(u)\n        return any(v not in seen and dfs(v) for v in graph[u])\n    return dfs(source)\n```\n\nOn large graphs Python's recursion limit (about 1000 frames by default) may not be enough; use an explicit stack, or BFS.\n\n## A grid is a graph\n\nIn a 2D grid each cell is a vertex adjacent to the four cells around it. Flood fill starts at one cell and recolours every connected cell of the same colour:\n\n```python\ndef flood_fill(image, sr, sc, color):\n    old = image[sr][sc]\n    if old == color:           # without this check the same cells are painted forever\n        return image\n    rows, cols = len(image), len(image[0])\n    def dfs(r, c):\n        if 0 <= r < rows and 0 <= c < cols and image[r][c] == old:\n            image[r][c] = color\n            for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):\n                dfs(r + dr, c + dc)\n    dfs(sr, sc)\n    return image\n```\n\n## Complexity and common mistakes\n\nBFS and DFS handle every vertex and every edge a constant number of times: O(V + E), which on a grid is O(rows × columns).\n\n- Forgetting to record visited vertices loops forever on a graph with cycles.\n- Marking in BFS only when dequeuing lets the same vertex be queued many times.\n- Adding only one direction of an undirected edge.",
+          "quiz": [
+            {
+              "qZh": "一个有 V 个顶点、E 条边的稀疏图，用邻接表存储需要多少空间？",
+              "qEn": "How much space does an adjacency list need for a sparse graph with V vertices and E edges?",
+              "choices": [
+                {
+                  "zh": "O(V²)",
+                  "en": "O(V²)"
+                },
+                {
+                  "zh": "O(E²)",
+                  "en": "O(E²)"
+                },
+                {
+                  "zh": "O(V + E)",
+                  "en": "O(V + E)"
+                },
+                {
+                  "zh": "O(V² + E)",
+                  "en": "O(V² + E)"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "每个顶点一个列表，每条边在列表里出现一次（无向图两次），合计 O(V + E)。邻接矩阵才是 O(V²)。",
+              "whyEn": "One list per vertex, and each edge appears once (twice if undirected): O(V + E). The adjacency matrix is the O(V²) one."
+            },
+            {
+              "qZh": "在无权图中求两点之间最少经过几条边，应该用哪种搜索？",
+              "qEn": "Which search finds the fewest edges between two vertices of an unweighted graph?",
+              "choices": [
+                {
+                  "zh": "DFS",
+                  "en": "DFS"
+                },
+                {
+                  "zh": "二分查找",
+                  "en": "Binary search"
+                },
+                {
+                  "zh": "先对顶点排序",
+                  "en": "Sorting the vertices first"
+                },
+                {
+                  "zh": "BFS",
+                  "en": "BFS"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "BFS 按距离一层层向外扩，第一次到达目标时走的就是最短路径；DFS 先到达的路径不一定最短。",
+              "whyEn": "BFS expands one distance at a time, so the first time it reaches the target is along a shortest path; DFS may arrive by a longer one first."
+            },
+            {
+              "qZh": "BFS 时为什么要在入队时就标记已访问，而不是出队时？",
+              "qEn": "Why does BFS mark a vertex as visited when enqueuing it rather than when dequeuing?",
+              "choices": [
+                {
+                  "zh": "防止同一个顶点被多次放进队列",
+                  "en": "So the same vertex is not put in the queue several times"
+                },
+                {
+                  "zh": "出队时标记会让结果变成 DFS 的顺序",
+                  "en": "Marking on dequeue turns the order into DFS order"
+                },
+                {
+                  "zh": "入队时标记可以省掉队列",
+                  "en": "Marking on enqueue removes the need for a queue"
+                },
+                {
+                  "zh": "Python 的 deque 只允许在入队时修改数据",
+                  "en": "Python's deque only allows changes when enqueuing"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "如果等出队才标记，一个顶点在被处理前可能被好几个邻居重复加入队列，浪费时间，最坏会让队列膨胀。",
+              "whyEn": "If you wait until dequeuing, several neighbours can queue the same vertex before it is processed, wasting time and bloating the queue."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-733",
+              "zh": "图像渲染",
+              "en": "Flood Fill"
+            },
+            {
+              "id": "lc-463",
+              "zh": "岛屿的周长",
+              "en": "Island Perimeter"
+            },
+            {
+              "id": "lc-1971",
+              "zh": "寻找图中是否存在路径",
+              "en": "Find if Path Exists in Graph"
+            }
+          ]
+        },
+        {
+          "slug": "sorting",
+          "titleZh": "排序",
+          "titleEn": "Sorting",
+          "bodyZh": "排序本身很少直接考，但**排好序之后，很多问题会变简单**：可以用双指针、可以二分查找、相同的元素会挨在一起、贪心也有了顺序。\n\n## 常见排序算法一览\n\n| 算法 | 平均 | 最坏 | 额外空间 | 稳定 |\n|---|---|---|---|---|\n| 冒泡 / 插入排序 | O(n²) | O(n²) | O(1) | 是 |\n| 归并排序 | O(n log n) | O(n log n) | O(n) | 是 |\n| 快速排序 | O(n log n) | O(n²) | O(log n)（递归栈） | 否 |\n| 堆排序 | O(n log n) | O(n log n) | O(1) | 否 |\n| 计数排序 | O(n + k) | O(n + k) | O(k) | 可以做到 |\n\n- **稳定**指相等的元素排序后保持原来的相对顺序。按多个条件排序时，稳定性很重要。\n- 只靠“比较两个元素大小”的排序，最坏情况下至少需要 **Ω(n log n)** 次比较，所以 O(n log n) 已经是这类算法的极限。计数排序不比较大小，在值域 k 不大时可以更快。\n- 快速排序每次选一个**基准**把数组分成两半。如果基准总是选到最大或最小值，每次只分出一个元素，就退化成 O(n²)；随机选基准可以避免。\n\n## 归并排序：分而治之\n\n把数组分成两半，分别排好，再把两个有序数组合并：\n\n```python\ndef merge_sort(a):\n    if len(a) <= 1:\n        return a\n    mid = len(a) // 2\n    left, right = merge_sort(a[:mid]), merge_sort(a[mid:])\n    merged, i, j = [], 0, 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:        # 用 <= 才能保证稳定\n            merged.append(left[i])\n            i += 1\n        else:\n            merged.append(right[j])\n            j += 1\n    return merged + left[i:] + right[j:]\n```\n\n一共 log n 层，每层合并的总工作量是 O(n)，合计 O(n log n)。\n\n## 合并两个有序数组：从后往前\n\n题目要求把 `nums2` 合并进 `nums1`（`nums1` 末尾留好了空位）。从前往后放会覆盖还没处理的数；**从后往前**放较大的那个就不会：\n\n```python\ndef merge(nums1, m, nums2, n):\n    i, j, k = m - 1, n - 1, m + n - 1\n    while j >= 0:\n        if i >= 0 and nums1[i] > nums2[j]:\n            nums1[k] = nums1[i]\n            i -= 1\n        else:\n            nums1[k] = nums2[j]\n            j -= 1\n        k -= 1\n```\n\n## 在 Python 里排序\n\n面试中直接用内置排序就好，它是 Timsort，**稳定**，最坏 O(n log n)：\n\n```python\nnums = [3, 1, 2]\nsorted(nums)            # 返回新列表 [1, 2, 3]，nums 不变\nnums.sort()             # 原地排序，返回 None\nwords = ['bb', 'a', 'ccc']\nwords.sort(key=len)     # 按长度：['a', 'bb', 'ccc']\n```\n\n`key` 的更多用法在 Python 速成课的排序一课里讲。\n\n## 排序之后常见的下一步\n\n- **双指针**：有序数组的平方，左右两端绝对值大的那个平方最大，从两端往中间填。\n- **贪心**：分发饼干，把孩子的胃口和饼干都排序，用最小的够用的饼干满足胃口最小的孩子。\n- **合并区间、去重、找相邻差值**：相关的元素排序后都挨在一起。\n\n排序本身是 O(n log n)，所以“先排序”这一步通常决定了整体复杂度的下限。",
+          "bodyEn": "Sorting is rarely asked on its own, but **many problems get easier once the data is sorted**: you can use two pointers or binary search, equal elements end up next to each other, and greedy choices get an order to follow.\n\n## Common sorting algorithms\n\n| Algorithm | Average | Worst | Extra space | Stable |\n|---|---|---|---|---|\n| Bubble / insertion sort | O(n²) | O(n²) | O(1) | yes |\n| Merge sort | O(n log n) | O(n log n) | O(n) | yes |\n| Quicksort | O(n log n) | O(n²) | O(log n) (recursion) | no |\n| Heapsort | O(n log n) | O(n log n) | O(1) | no |\n| Counting sort | O(n + k) | O(n + k) | O(k) | can be |\n\n- **Stable** means equal elements keep their original relative order. It matters when you sort by several criteria.\n- A sort that only compares pairs of elements needs at least **Ω(n log n)** comparisons in the worst case, so O(n log n) is the best such an algorithm can do. Counting sort doesn't compare, and is faster when the value range k is small.\n- Quicksort splits the array around a **pivot**. If the pivot is always the largest or smallest value, each split peels off one element and it degrades to O(n²); a random pivot avoids that.\n\n## Merge sort: divide and conquer\n\nSplit the array in half, sort each half, then merge the two sorted halves:\n\n```python\ndef merge_sort(a):\n    if len(a) <= 1:\n        return a\n    mid = len(a) // 2\n    left, right = merge_sort(a[:mid]), merge_sort(a[mid:])\n    merged, i, j = [], 0, 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:        # <= keeps it stable\n            merged.append(left[i])\n            i += 1\n        else:\n            merged.append(right[j])\n            j += 1\n    return merged + left[i:] + right[j:]\n```\n\nThere are log n levels and merging costs O(n) per level: O(n log n) in total.\n\n## Merging two sorted arrays: back to front\n\nThe task is to merge `nums2` into `nums1`, which has empty slots at its end. Filling from the front would overwrite numbers not yet handled; filling **from the back** with the larger of the two never does:\n\n```python\ndef merge(nums1, m, nums2, n):\n    i, j, k = m - 1, n - 1, m + n - 1\n    while j >= 0:\n        if i >= 0 and nums1[i] > nums2[j]:\n            nums1[k] = nums1[i]\n            i -= 1\n        else:\n            nums1[k] = nums2[j]\n            j -= 1\n        k -= 1\n```\n\n## Sorting in Python\n\nIn an interview, use the built-in sort. It is Timsort: **stable**, O(n log n) in the worst case:\n\n```python\nnums = [3, 1, 2]\nsorted(nums)            # a new list [1, 2, 3]; nums is unchanged\nnums.sort()             # sorts in place and returns None\nwords = ['bb', 'a', 'ccc']\nwords.sort(key=len)     # by length: ['a', 'bb', 'ccc']\n```\n\nThe Python crash course's sorting chapter covers `key` in depth.\n\n## What usually comes after sorting\n\n- **Two pointers**: in Squares of a Sorted Array the largest square comes from one of the two ends, so fill the result from both ends inward.\n- **Greedy**: in Assign Cookies, sort both greed factors and cookies, and give the smallest cookie that is big enough to the least greedy child.\n- **Merging intervals, removing duplicates, adjacent differences**: related elements sit next to each other after sorting.\n\nSorting itself costs O(n log n), so a \"sort first\" step usually sets the floor for the whole solution.",
+          "quiz": [
+            {
+              "qZh": "只通过比较元素大小来排序的算法，最坏情况下的时间下界是多少？",
+              "qEn": "What is the worst-case lower bound for any sort that only compares elements?",
+              "choices": [
+                {
+                  "zh": "Ω(n)",
+                  "en": "Ω(n)"
+                },
+                {
+                  "zh": "Ω(n log n)",
+                  "en": "Ω(n log n)"
+                },
+                {
+                  "zh": "Ω(log n)",
+                  "en": "Ω(log n)"
+                },
+                {
+                  "zh": "Ω(n² log n)",
+                  "en": "Ω(n² log n)"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "n 个元素有 n! 种排列，每次比较最多把可能性减半，至少要 log₂(n!) ≈ n log n 次比较。",
+              "whyEn": "There are n! orderings and each comparison at most halves the possibilities, so at least log₂(n!) ≈ n log n comparisons are needed."
+            },
+            {
+              "qZh": "“稳定排序”指的是什么？",
+              "qEn": "What does it mean for a sort to be stable?",
+              "choices": [
+                {
+                  "zh": "无论输入是什么样，运行时间和比较次数都完全一样",
+                  "en": "It always takes the same time and the same number of comparisons"
+                },
+                {
+                  "zh": "排序过程中不使用额外内存",
+                  "en": "It uses no extra memory while sorting"
+                },
+                {
+                  "zh": "相等的元素排序后保持原来的相对顺序",
+                  "en": "Equal elements keep their original relative order"
+                },
+                {
+                  "zh": "多次运行得到的结果都相同",
+                  "en": "Running it twice gives the same result"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "稳定性只关心值相等的元素：排序前谁在前，排序后谁还在前。",
+              "whyEn": "Stability is only about equal elements: whichever came first before sorting still comes first after."
+            },
+            {
+              "qZh": "快速排序在什么情况下会退化到 O(n²)？",
+              "qEn": "When does quicksort degrade to O(n²)?",
+              "choices": [
+                {
+                  "zh": "数组里有负数时",
+                  "en": "When the array has negative numbers"
+                },
+                {
+                  "zh": "数组长度是奇数时",
+                  "en": "When the array length is odd"
+                },
+                {
+                  "zh": "用递归而不是循环来实现，并且数组长度超过一万时",
+                  "en": "When it is written recursively instead of with loops and the input is large"
+                },
+                {
+                  "zh": "每次选的基准都是当前区间的最大或最小值",
+                  "en": "When every pivot is the largest or smallest value in its range"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "基准是极值时，每次划分只分出一个元素，需要 n 层，每层 O(n)，合计 O(n²)。随机选基准能让这种情况极少发生。",
+              "whyEn": "With an extreme pivot each partition removes one element, giving n levels of O(n) work: O(n²). A random pivot makes this very unlikely."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-88",
+              "zh": "合并两个有序数组",
+              "en": "Merge Sorted Array"
+            },
+            {
+              "id": "lc-977",
+              "zh": "有序数组的平方",
+              "en": "Squares of a Sorted Array"
+            },
+            {
+              "id": "lc-455",
+              "zh": "分发饼干",
+              "en": "Assign Cookies"
+            }
+          ]
+        },
+        {
+          "slug": "binary-search",
+          "titleZh": "二分查找",
+          "titleEn": "Binary Search",
+          "bodyZh": "二分查找每一步都把搜索范围砍掉一半，所以在 10⁶ 个元素里找一个数，最多只要比较 20 次左右。它的前提是：**范围内的元素有序，或者某个条件随位置单调变化**。\n\n## 一个不容易写错的模板\n\n二分最常出错的是边界：`<` 还是 `<=`，`mid` 还是 `mid + 1`，什么时候会死循环。推荐记住一个固定的写法：**找第一个满足条件的位置**。\n\n```python\ndef lower_bound(nums, target):\n    \"\"\"第一个 >= target 的下标；都比 target 小时返回 len(nums)。\"\"\"\n    lo, hi = 0, len(nums)        # 答案一定在 [lo, hi] 里\n    while lo < hi:               # 区间里还有不止一个候选\n        mid = (lo + hi) // 2\n        if nums[mid] < target:\n            lo = mid + 1         # mid 不满足，答案在它右边\n        else:\n            hi = mid             # mid 满足，可能就是答案，保留它\n    return lo\n```\n\n为什么不会死循环：`lo < hi` 时，`mid` 总是严格小于 `hi`，所以两个分支都会让区间变小。\n\n这个函数正好就是“搜索插入位置”的答案：target 存在时返回它的下标，不存在时返回它应该插入的位置。\n\n想找**最后一个**满足条件的位置，可以找“第一个不满足的位置”再减一，比如“最后一个 <= target 的位置”就是“第一个 > target 的位置”减一。\n\n## Python 的 bisect\n\n标准库已经实现了这两个函数：\n\n```python\nfrom bisect import bisect_left, bisect_right\n\na = [1, 2, 2, 2, 5]\nbisect_left(a, 2)    # 1：第一个 >= 2 的位置\nbisect_right(a, 2)   # 4：第一个 > 2 的位置\n```\n\n两者相减就是 2 出现的次数。\n\n## 二分答案\n\n有时候数组并不是直接给出的，但**答案的可行性是单调的**：如果 x 可行，比 x 小（或大）的值也都可行。这时可以对答案本身二分。\n\n求 x 的平方根（向下取整）：要找最大的 m 使 m² ≤ x。m 越大越难满足，可行性是单调的：\n\n```python\ndef my_sqrt(x):\n    lo, hi = 0, x\n    while lo < hi:\n        mid = (lo + hi + 1) // 2   # 向上取整\n        if mid * mid <= x:\n            lo = mid               # mid 可行，答案至少是 mid\n        else:\n            hi = mid - 1\n    return lo\n```\n\n这里找的是“最后一个满足条件的值”，更新写成 `lo = mid`，所以 `mid` 必须向上取整；否则当 `hi = lo + 1` 时，`mid` 一直等于 `lo`，循环停不下来。\n\n## 常见错误\n\n- 数组根本没有序，或者条件不单调，却用了二分。\n- `lo = mid` 搭配向下取整的 `mid`，造成死循环。\n- 返回前没有检查答案是否真的满足题意，比如 `lower_bound` 返回 `len(nums)` 或者那个位置的值不等于 target。\n\n## 小结\n\n二分的关键不是背代码，而是先说清楚两件事：**我要找的是哪个位置**，以及**用什么条件判断 mid 在答案的哪一边**。",
+          "bodyEn": "Binary search halves the search range at every step, so finding a value among 10⁶ elements takes about 20 comparisons. It requires one thing: **the elements are sorted, or some condition changes monotonically with position**.\n\n## A template that is hard to get wrong\n\nThe usual bugs are at the boundaries: `<` or `<=`, `mid` or `mid + 1`, and infinite loops. Memorise one fixed shape: **find the first position that satisfies a condition**.\n\n```python\ndef lower_bound(nums, target):\n    \"\"\"First index with nums[i] >= target; len(nums) if every value is smaller.\"\"\"\n    lo, hi = 0, len(nums)        # the answer is always in [lo, hi]\n    while lo < hi:               # more than one candidate left\n        mid = (lo + hi) // 2\n        if nums[mid] < target:\n            lo = mid + 1         # mid fails, the answer is to its right\n        else:\n            hi = mid             # mid works and may be the answer: keep it\n    return lo\n```\n\nWhy it terminates: while `lo < hi`, `mid` is strictly less than `hi`, so both branches shrink the range.\n\nThis function is exactly Search Insert Position: it returns target's index when present and its insertion point when not.\n\nTo find the **last** position that satisfies a condition, find the first position that doesn't and subtract one. \"Last index with value <= target\" is \"first index with value > target\" minus one.\n\n## Python's bisect\n\nThe standard library already has both:\n\n```python\nfrom bisect import bisect_left, bisect_right\n\na = [1, 2, 2, 2, 5]\nbisect_left(a, 2)    # 1: first index with a value >= 2\nbisect_right(a, 2)   # 4: first index with a value > 2\n```\n\nTheir difference is how many times 2 appears.\n\n## Binary search on the answer\n\nSometimes there is no array, but **whether an answer is feasible is monotonic**: if x works, every smaller (or larger) value works too. Then you can binary search the answer itself.\n\nInteger square root: find the largest m with m² ≤ x. Larger m is harder to satisfy, so feasibility is monotonic:\n\n```python\ndef my_sqrt(x):\n    lo, hi = 0, x\n    while lo < hi:\n        mid = (lo + hi + 1) // 2   # round up\n        if mid * mid <= x:\n            lo = mid               # mid works: the answer is at least mid\n        else:\n            hi = mid - 1\n    return lo\n```\n\nThis searches for the *last* value that works and updates with `lo = mid`, so `mid` must round up. Otherwise, when `hi = lo + 1`, `mid` stays equal to `lo` and the loop never ends.\n\n## Common mistakes\n\n- Using binary search when the data is not sorted or the condition is not monotonic.\n- Pairing `lo = mid` with a rounded-down `mid`, which loops forever.\n- Not checking the result before returning it, e.g. `lower_bound` returning `len(nums)` or a position whose value isn't target.\n\n## Recap\n\nThe key to binary search is not memorising code but stating two things first: **which position am I looking for**, and **which test tells me on which side of the answer mid lies**.",
+          "quiz": [
+            {
+              "qZh": "在长度为 10⁶ 的有序数组上做二分查找，最多大约需要比较多少次？",
+              "qEn": "Binary search on a sorted array of 10⁶ elements needs at most about how many comparisons?",
+              "choices": [
+                {
+                  "zh": "约 20 次",
+                  "en": "About 20"
+                },
+                {
+                  "zh": "约 1000 次",
+                  "en": "About 1,000"
+                },
+                {
+                  "zh": "约 50 万次",
+                  "en": "About 500,000"
+                },
+                {
+                  "zh": "约 100 万次",
+                  "en": "About 1,000,000"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "每次把范围减半，2²⁰ ≈ 10⁶，所以大约 20 次。",
+              "whyEn": "Each step halves the range and 2²⁰ ≈ 10⁶, so about 20."
+            },
+            {
+              "qZh": "模板 lo, hi = 0, len(nums); while lo < hi: mid = (lo + hi) // 2 中，当 nums[mid] >= target 时应该怎么更新？",
+              "qEn": "In the template lo, hi = 0, len(nums); while lo < hi: mid = (lo + hi) // 2, how do you update when nums[mid] >= target?",
+              "choices": [
+                {
+                  "zh": "lo = mid + 1",
+                  "en": "lo = mid + 1"
+                },
+                {
+                  "zh": "hi = mid",
+                  "en": "hi = mid"
+                },
+                {
+                  "zh": "hi = mid - 1",
+                  "en": "hi = mid - 1"
+                },
+                {
+                  "zh": "lo = mid",
+                  "en": "lo = mid"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "mid 满足条件，可能就是第一个满足的位置，所以要保留它：hi = mid。",
+              "whyEn": "mid satisfies the condition and may be the first such position, so keep it: hi = mid."
+            },
+            {
+              "qZh": "什么情况下可以对“答案”做二分？",
+              "qEn": "When can you binary search on the answer itself?",
+              "choices": [
+                {
+                  "zh": "答案一定是偶数时",
+                  "en": "When the answer is always even"
+                },
+                {
+                  "zh": "题目给出的数组已经排好序时",
+                  "en": "When the input array is already sorted"
+                },
+                {
+                  "zh": "答案是否可行随取值单调变化时",
+                  "en": "When feasibility changes monotonically with the value"
+                },
+                {
+                  "zh": "答案的取值范围小于 1000 时",
+                  "en": "When the answer is below 1,000"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "只要“x 可行”能推出“比 x 小（或大）的都可行”，就能用二分找到可行与不可行的分界点。",
+              "whyEn": "As long as \"x works\" implies every smaller (or larger) value works, binary search can find the boundary between feasible and infeasible."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-35",
+              "zh": "搜索插入位置",
+              "en": "Search Insert Position"
+            },
+            {
+              "id": "lc-69",
+              "zh": "x 的平方根",
+              "en": "Sqrt(x)"
+            },
+            {
+              "id": "lc-852",
+              "zh": "山脉数组的峰顶索引",
+              "en": "Peak Index in a Mountain Array"
+            }
+          ]
+        },
+        {
+          "slug": "recursion-backtracking",
+          "titleZh": "递归与回溯入门",
+          "titleEn": "Recursion and Backtracking",
+          "bodyZh": "递归是函数调用自己。写好递归只需要想清楚两件事：\n\n1. **基本情况**：最小的问题直接给出答案，递归在这里停下。\n2. **递归关系**：怎么用更小问题的答案，拼出当前问题的答案。\n\n然后“相信”递归调用会返回正确结果，不要试图在脑子里展开每一层。\n\n## 例子：斐波那契与重复计算\n\n```python\ndef fib(n):\n    if n < 2:              # 基本情况\n        return n\n    return fib(n - 1) + fib(n - 2)\n```\n\n这段代码是对的，但很慢。画出 fib(4) 的调用树就能看出问题：\n\n```mermaid\nflowchart TD\n  accTitle: fib(4) 的调用树，fib(2) 被算了两次\n  a[\"fib(4)\"] --> b[\"fib(3)\"]\n  a --> c[\"fib(2)\"]\n  b --> d[\"fib(2)\"]\n  b --> e[\"fib(1)\"]\n  c --> f[\"fib(1)\"]\n  c --> g[\"fib(0)\"]\n  d --> h[\"fib(1)\"]\n  d --> i[\"fib(0)\"]\n```\n\n同样的子问题被反复计算，调用次数随 n 指数增长。加上**记忆化**，每个 n 只算一次，就变成 O(n)：\n\n```python\nfrom functools import cache\n\n@cache\ndef fib(n):\n    if n < 2:\n        return n\n    return fib(n - 1) + fib(n - 2)\n```\n\n这就是动态规划的起点。\n\n## 调用栈\n\n每次函数调用都会在**调用栈**上占一层，直到返回才释放。递归深度为 d，就占 O(d) 的栈空间。Python 默认只允许约 1000 层，超过会抛出 `RecursionError`。深度可能很大时（比如一条很长的链表），要改成循环。\n\n## 回溯：选、递归、撤销\n\n回溯用来**枚举所有可能的方案**：子集、排列、组合、填数独。它沿着决策树往下走，每一步做一个选择，走到底就记录答案，然后撤销选择、尝试下一个。\n\n求一个数组的所有子集：\n\n```python\ndef subsets(nums):\n    result, path = [], []\n    def backtrack(start):\n        result.append(path[:])          # 记录当前方案（必须拷贝）\n        for i in range(start, len(nums)):\n            path.append(nums[i])        # 选\n            backtrack(i + 1)            # 递归：只往后选，避免重复\n            path.pop()                  # 撤销\n    backtrack(0)\n    return result\n```\n\n`subsets([1, 2, 3])` 返回 `[[], [1], [1, 2], [1, 2, 3], [1, 3], [2], [2, 3], [3]]`，共 2³ = 8 个。\n\n为什么要写 `path[:]`？`path` 在整个过程中是同一个列表，之后还会被修改。直接 `append(path)` 的话，`result` 里存的全是这同一个列表的引用，最后它们都会变成空列表。\n\n## 复杂度与剪枝\n\nn 个元素有 2ⁿ 个子集、n! 个排列，回溯的运行时间至少和方案数一样多，所以只适合 n 比较小（通常 n ≤ 20）的题目。**剪枝**指提前发现某条路不可能产生答案时，直接不往下走，比如组合总和里当前和已经超过目标。\n\n## 小结\n\n- 递归 = 基本情况 + 递归关系；重复子问题用 `@cache`。\n- 回溯 = 选、递归、撤销；记录答案时拷贝。\n- 看到“列出所有”“所有可能的组合/排列”，先想回溯。",
+          "bodyEn": "Recursion is a function calling itself. Writing it well comes down to two things:\n\n1. **The base case**: the smallest problem is answered directly, and the recursion stops there.\n2. **The recurrence**: how the answers to smaller problems combine into this one.\n\nThen trust that the recursive calls return correct answers, instead of unrolling every level in your head.\n\n## Example: Fibonacci and repeated work\n\n```python\ndef fib(n):\n    if n < 2:              # base case\n        return n\n    return fib(n - 1) + fib(n - 2)\n```\n\nThis is correct but slow. The call tree for fib(4) shows why:\n\n```mermaid\nflowchart TD\n  accTitle: The call tree of fib(4): fib(2) is computed twice\n  a[\"fib(4)\"] --> b[\"fib(3)\"]\n  a --> c[\"fib(2)\"]\n  b --> d[\"fib(2)\"]\n  b --> e[\"fib(1)\"]\n  c --> f[\"fib(1)\"]\n  c --> g[\"fib(0)\"]\n  d --> h[\"fib(1)\"]\n  d --> i[\"fib(0)\"]\n```\n\nThe same subproblems are solved again and again, and the number of calls grows exponentially with n. With **memoization** each n is computed once, which makes it O(n):\n\n```python\nfrom functools import cache\n\n@cache\ndef fib(n):\n    if n < 2:\n        return n\n    return fib(n - 1) + fib(n - 2)\n```\n\nThis is where dynamic programming begins.\n\n## The call stack\n\nEach call takes a frame on the **call stack** until it returns. Recursion d calls deep uses O(d) stack space. Python allows only about 1000 frames by default and raises `RecursionError` beyond that. When the depth can be large (a very long linked list, say), use a loop instead.\n\n## Backtracking: choose, recurse, undo\n\nBacktracking **enumerates every possible solution**: subsets, permutations, combinations, a Sudoku grid. It walks down a decision tree making one choice per step, records a solution when it gets to the end, then undoes the choice and tries the next one.\n\nAll subsets of an array:\n\n```python\ndef subsets(nums):\n    result, path = [], []\n    def backtrack(start):\n        result.append(path[:])          # record this solution (must copy)\n        for i in range(start, len(nums)):\n            path.append(nums[i])        # choose\n            backtrack(i + 1)            # recurse: only pick later items, no repeats\n            path.pop()                  # undo\n    backtrack(0)\n    return result\n```\n\n`subsets([1, 2, 3])` returns `[[], [1], [1, 2], [1, 2, 3], [1, 3], [2], [2, 3], [3]]`: 2³ = 8 subsets.\n\nWhy `path[:]`? `path` is one list for the whole search and keeps changing. With `append(path)`, `result` would hold eight references to that same list, all empty by the end.\n\n## Complexity and pruning\n\nn elements have 2ⁿ subsets and n! permutations, and backtracking takes at least as long as the number of solutions, so it only suits small n (usually n ≤ 20). **Pruning** means abandoning a branch as soon as it cannot lead to a solution, for example when the running sum in Combination Sum already exceeds the target.\n\n## Recap\n\n- Recursion = base case + recurrence; use `@cache` for repeated subproblems.\n- Backtracking = choose, recurse, undo; copy when you record a solution.\n- \"List all\" or \"every possible combination or permutation\" suggests backtracking.",
+          "quiz": [
+            {
+              "qZh": "不加记忆化的递归 fib(n)，时间复杂度大约是？",
+              "qEn": "Without memoization, recursive fib(n) takes roughly how long?",
+              "choices": [
+                {
+                  "zh": "O(n)",
+                  "en": "O(n)"
+                },
+                {
+                  "zh": "O(n²)",
+                  "en": "O(n²)"
+                },
+                {
+                  "zh": "O(log n)",
+                  "en": "O(log n)"
+                },
+                {
+                  "zh": "O(2ⁿ)",
+                  "en": "O(2ⁿ)"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "每次调用分出两个子调用，大量子问题被重复计算，调用次数随 n 指数增长。",
+              "whyEn": "Every call branches into two and the same subproblems are recomputed, so the number of calls grows exponentially in n."
+            },
+            {
+              "qZh": "回溯求子集时，为什么要写 result.append(path[:]) 而不是 result.append(path)？",
+              "qEn": "In the subsets backtracking, why write result.append(path[:]) instead of result.append(path)?",
+              "choices": [
+                {
+                  "zh": "path 之后还会被修改，不拷贝的话结果里全是同一个列表",
+                  "en": "path keeps changing, so without a copy every entry is the same list"
+                },
+                {
+                  "zh": "path[:] 会把子集自动排好序",
+                  "en": "path[:] sorts the subset automatically"
+                },
+                {
+                  "zh": "直接 append(path) 会抛出异常",
+                  "en": "append(path) raises an exception"
+                },
+                {
+                  "zh": "path[:] 比 path 占用更少的内存",
+                  "en": "path[:] uses less memory than path"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "append(path) 存的是引用。回溯结束时 path 已被撤销成空列表，result 里的每一项也都跟着变成空的。",
+              "whyEn": "append(path) stores a reference. By the end path has been undone to an empty list, and every entry in result shows that."
+            },
+            {
+              "qZh": "每个递归函数都必须有什么，才不会无限递归下去？",
+              "qEn": "What must every recursive function have so that it does not recurse forever?",
+              "choices": [
+                {
+                  "zh": "一个记录调用次数的全局变量",
+                  "en": "A global variable that counts the calls"
+                },
+                {
+                  "zh": "基本情况（递归的出口）",
+                  "en": "A base case where the recursion stops"
+                },
+                {
+                  "zh": "外层再套一个 while 循环",
+                  "en": "A while loop around the recursive call"
+                },
+                {
+                  "zh": "@cache 装饰器",
+                  "en": "The @cache decorator"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "基本情况直接返回结果、不再调用自己。每次递归都要让问题朝基本情况靠近。",
+              "whyEn": "The base case returns without calling itself again, and every recursive call must move the problem closer to it."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-509",
+              "zh": "斐波那契数",
+              "en": "Fibonacci Number"
+            },
+            {
+              "id": "lc-257",
+              "zh": "二叉树的所有路径",
+              "en": "Binary Tree Paths"
+            },
+            {
+              "id": "lc-78",
+              "zh": "子集",
+              "en": "Subsets"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "python",
+      "titleZh": "Python 面试速成课",
+      "titleEn": "Python for Coding Interviews",
+      "summaryZh": "8 节课讲清用 Python 刷题、面试最常用的工具和最容易踩的坑：内置容器的复杂度、collections、heapq、bisect、排序的 key、字符串、递归深度与缓存。每节有小测验和 3 道练习题。",
+      "summaryEn": "Eight lessons on the Python tools you use most in coding interviews and the traps that catch people: the cost of built-in containers, collections, heapq, bisect, sort keys, strings, recursion depth and caching. Each lesson ends with a quiz and three practice problems.",
+      "chapters": [
+        {
+          "slug": "containers",
+          "titleZh": "列表、字典与集合",
+          "titleEn": "Lists, Dicts and Sets",
+          "bodyZh": "Python 写算法题的优势是代码短，但前提是清楚每个内置容器的操作有多快。写出 O(n²) 而不自知，最常见的原因就是在循环里用了一个“看起来是 O(1)、其实是 O(n)”的操作。\n\n## list：动态数组\n\n| 操作 | 复杂度 | 说明 |\n|---|---|---|\n| `a[i]`、`a[i] = x`、`len(a)` | O(1) | |\n| `a.append(x)`、`a.pop()` | 均摊 O(1) | 只动末尾 |\n| `a.pop(0)`、`a.insert(0, x)` | O(n) | 要整体挪动元素 |\n| `x in a`、`a.index(x)`、`a.count(x)` | O(n) | 线性扫描 |\n| `a[i:j]` | O(j - i) | 切片会**复制**一份 |\n| `a.sort()` | O(n log n) | |\n\n几个常用写法：\n\n```python\nnums = [3, 1, 4, 1, 5]\nsquares = [x * x for x in nums]            # 列表推导式\nevens = [x for x in nums if x % 2 == 0]\nfor i, x in enumerate(nums):               # 同时要下标和值\n    pass\nfor a, b in zip(nums, nums[1:]):           # 相邻两个元素\n    pass\nnums[::-1]                                  # 反转后的新列表\n```\n\n## dict：键值映射\n\n查找、插入、删除平均都是 O(1)。从 Python 3.7 起，字典**保持插入顺序**。\n\n```python\nage = {'ann': 30}\nage['bob'] = 25                 # 插入或更新\nage.get('cat', 0)               # 键不存在时返回默认值，不会报错\n'ann' in age                    # O(1) 判断键是否存在\nfor name, years in age.items(): # 同时遍历键和值\n    pass\n```\n\n直接读一个不存在的键（`age['cat']`）会抛出 `KeyError`，所以计数时常写 `d[k] = d.get(k, 0) + 1`，或者用下一课的 `Counter` / `defaultdict`。\n\n## set：只有键的哈希表\n\n```python\nseen = set()\nseen.add(3)\n3 in seen          # O(1)\na, b = {1, 2, 3}, {2, 3, 4}\na & b              # 交集 {2, 3}\na | b              # 并集 {1, 2, 3, 4}\na - b              # 差集 {1}\n```\n\n**判断“在不在”时，用 set 而不是 list。**下面两段代码只差一个字，复杂度却差了一个量级：\n\n```python\ndef has_duplicate_slow(nums):\n    seen = []\n    for x in nums:\n        if x in seen:      # list：每次 O(n)，整体 O(n²)\n            return True\n        seen.append(x)\n    return False\n\ndef has_duplicate(nums):\n    seen = set()\n    for x in nums:\n        if x in seen:      # set：每次平均 O(1)，整体 O(n)\n            return True\n        seen.add(x)\n    return False\n```\n\n## tuple：不可变的列表\n\n元组一旦创建就不能修改，因此可以哈希，能当字典的键、放进集合。需要用“一组值”当键时（比如坐标 `(r, c)`、排序后的字符组成），就用元组。\n\n## 原地修改与交换\n\n```python\ns = list(\"hello\")\ni, j = 0, len(s) - 1\nwhile i < j:\n    s[i], s[j] = s[j], s[i]    # 一行交换，不需要临时变量\n    i, j = i + 1, j - 1\n```\n\n题目要求“原地修改”时，要改传进来的那个列表本身，而不是让变量指向一个新列表，下一课和“常见坑”一课会再提到。",
+          "bodyEn": "Python makes algorithm code short, but only if you know how fast each built-in container is. The most common way to write O(n²) without noticing is to call something inside a loop that looks O(1) and is really O(n).\n\n## list: a dynamic array\n\n| Operation | Complexity | Notes |\n|---|---|---|\n| `a[i]`, `a[i] = x`, `len(a)` | O(1) | |\n| `a.append(x)`, `a.pop()` | amortized O(1) | the end only |\n| `a.pop(0)`, `a.insert(0, x)` | O(n) | shifts elements |\n| `x in a`, `a.index(x)`, `a.count(x)` | O(n) | linear scan |\n| `a[i:j]` | O(j - i) | a slice is a **copy** |\n| `a.sort()` | O(n log n) | |\n\nEveryday idioms:\n\n```python\nnums = [3, 1, 4, 1, 5]\nsquares = [x * x for x in nums]            # list comprehension\nevens = [x for x in nums if x % 2 == 0]\nfor i, x in enumerate(nums):               # index and value together\n    pass\nfor a, b in zip(nums, nums[1:]):           # adjacent pairs\n    pass\nnums[::-1]                                  # a reversed copy\n```\n\n## dict: key-value mapping\n\nLookup, insert and delete are O(1) on average. Since Python 3.7, dicts **keep insertion order**.\n\n```python\nage = {'ann': 30}\nage['bob'] = 25                 # insert or update\nage.get('cat', 0)               # default instead of an error for a missing key\n'ann' in age                    # O(1) key check\nfor name, years in age.items(): # keys and values together\n    pass\n```\n\nReading a missing key directly (`age['cat']`) raises `KeyError`, which is why counting is often written `d[k] = d.get(k, 0) + 1`, or with `Counter` / `defaultdict` from the next chapter.\n\n## set: a hash table of keys\n\n```python\nseen = set()\nseen.add(3)\n3 in seen          # O(1)\na, b = {1, 2, 3}, {2, 3, 4}\na & b              # intersection {2, 3}\na | b              # union {1, 2, 3, 4}\na - b              # difference {1}\n```\n\n**To test membership, use a set, not a list.** These two functions differ by one word and by an order of magnitude:\n\n```python\ndef has_duplicate_slow(nums):\n    seen = []\n    for x in nums:\n        if x in seen:      # list: O(n) each time, O(n²) overall\n            return True\n        seen.append(x)\n    return False\n\ndef has_duplicate(nums):\n    seen = set()\n    for x in nums:\n        if x in seen:      # set: O(1) on average, O(n) overall\n            return True\n        seen.add(x)\n    return False\n```\n\n## tuple: an immutable list\n\nA tuple can't change after it is created, so it is hashable and can be a dict key or a set member. When the key is a group of values (a coordinate `(r, c)`, the sorted letters of a word), use a tuple.\n\n## In-place changes and swaps\n\n```python\ns = list(\"hello\")\ni, j = 0, len(s) - 1\nwhile i < j:\n    s[i], s[j] = s[j], s[i]    # swap in one line, no temporary variable\n    i, j = i + 1, j - 1\n```\n\nWhen a problem says \"modify in place\", change the list you were given rather than pointing a variable at a new list; the pitfalls chapter comes back to this.",
+          "quiz": [
+            {
+              "qZh": "在一个循环里对 list 做 x in seen 判断，seen 最终有 n 个元素，整体复杂度大约是？",
+              "qEn": "Inside a loop you test x in seen against a list that grows to n elements. What is the overall complexity?",
+              "choices": [
+                {
+                  "zh": "O(n)",
+                  "en": "O(n)"
+                },
+                {
+                  "zh": "O(n log n)",
+                  "en": "O(n log n)"
+                },
+                {
+                  "zh": "O(n²)",
+                  "en": "O(n²)"
+                },
+                {
+                  "zh": "O(log n)",
+                  "en": "O(log n)"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "对 list 做 in 是线性扫描，每次 O(n)，循环 n 次就是 O(n²)；换成 set 每次平均 O(1)。",
+              "whyEn": "in on a list scans linearly, O(n) per test, so n tests cost O(n²); a set makes each test O(1) on average."
+            },
+            {
+              "qZh": "从 Python 3.7 起，遍历一个 dict 时，键的顺序是？",
+              "qEn": "Since Python 3.7, in what order does iterating over a dict yield its keys?",
+              "choices": [
+                {
+                  "zh": "按键从小到大排序",
+                  "en": "Sorted by key"
+                },
+                {
+                  "zh": "随机，每次运行都可能不同",
+                  "en": "Random, possibly different each run"
+                },
+                {
+                  "zh": "按哈希值大小",
+                  "en": "By hash value"
+                },
+                {
+                  "zh": "按插入的先后顺序",
+                  "en": "In insertion order"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "3.7 起语言规范保证字典保持插入顺序。",
+              "whyEn": "Since 3.7 the language guarantees that dicts preserve insertion order."
+            },
+            {
+              "qZh": "切片 a[i:j] 的时间复杂度是多少？",
+              "qEn": "What is the time complexity of the slice a[i:j]?",
+              "choices": [
+                {
+                  "zh": "O(j - i)，因为会复制元素",
+                  "en": "O(j - i), because it copies the elements"
+                },
+                {
+                  "zh": "O(1)，切片只是原列表的一个视图",
+                  "en": "O(1), a slice is only a view of the original list"
+                },
+                {
+                  "zh": "O(log n)",
+                  "en": "O(log n)"
+                },
+                {
+                  "zh": "O(n²)",
+                  "en": "O(n²)"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "列表切片会新建一个列表并复制 j - i 个元素。在循环里反复切片，很容易多出一个 O(n) 因子。",
+              "whyEn": "A list slice builds a new list and copies j - i elements. Slicing inside a loop easily adds a hidden factor of n."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1",
+              "zh": "两数之和",
+              "en": "Two Sum"
+            },
+            {
+              "id": "lc-219",
+              "zh": "存在重复元素 II",
+              "en": "Contains Duplicate II"
+            },
+            {
+              "id": "lc-344",
+              "zh": "反转字符串",
+              "en": "Reverse String"
+            }
+          ]
+        },
+        {
+          "slug": "collections",
+          "titleZh": "collections 模块",
+          "titleEn": "The collections Module",
+          "bodyZh": "`collections` 里有三个工具几乎每场 Python 面试都用得上：`Counter`、`defaultdict` 和 `deque`。它们能把好几行样板代码压成一行，也更不容易出错。\n\n## Counter：计数\n\n```python\nfrom collections import Counter\n\nc = Counter(\"banana\")       # Counter({'a': 3, 'n': 2, 'b': 1})\nc['a']                      # 3\nc['z']                      # 0：缺失的键返回 0，不会报错\nc.most_common(2)            # [('a', 3), ('n', 2)]\n```\n\n两个 Counter 可以直接做运算：\n\n```python\na, b = Counter([1, 2, 2, 1]), Counter([2, 2])\na & b        # 交集取较小的次数：Counter({2: 2})\na + b        # 次数相加\na - b        # 相减，只保留正数\nlist((a & b).elements())   # [2, 2]\n```\n\n“两个数组的交集 II”用 `&` 一行就能写完。判断两个字符串是不是字母异位词：`Counter(s) == Counter(t)`。\n\n**最长回文串**：每种字符可以成对地放在两边，出现奇数次的字符里还能挑一个放在正中间：\n\n```python\ndef longest_palindrome(s):\n    pairs = sum(n // 2 * 2 for n in Counter(s).values())\n    return pairs + 1 if pairs < len(s) else pairs\n```\n\n## defaultdict：自带默认值的字典\n\n访问不存在的键时，`defaultdict` 会先用工厂函数创建一个默认值：\n\n```python\nfrom collections import defaultdict\n\ngraph = defaultdict(list)\ngraph['a'].append('b')      # 不用先写 graph['a'] = []\ncount = defaultdict(int)\ncount['x'] += 1             # 默认值 0\n```\n\n**字母异位词分组**：排序后相同的单词放进同一组：\n\n```python\ndef group_anagrams(words):\n    groups = defaultdict(list)\n    for w in words:\n        groups[''.join(sorted(w))].append(w)\n    return list(groups.values())\n```\n\n注意：只是**读取**一个不存在的键也会把它插进字典。遍历字典的同时读取新键会触发 “dictionary changed size during iteration”；只想判断时用 `k in d`。\n\n## deque：双端队列\n\n两端的插入和删除都是 O(1)：\n\n```python\nfrom collections import deque\n\nq = deque([1, 2, 3])\nq.append(4)         # 右端加\nq.appendleft(0)     # 左端加\nq.pop()             # 右端取\nq.popleft()         # 左端取\nwindow = deque(maxlen=3)   # 满了以后再 append，会自动挤掉最左边的元素\n```\n\nBFS 的队列、滑动窗口里的单调队列都用它。但 `deque` 不适合按下标访问中间的元素，`q[i]` 在中间位置是 O(n)。\n\n## namedtuple：带名字的元组（了解即可）\n\n```python\nfrom collections import namedtuple\n\nPoint = namedtuple('Point', 'x y')\np = Point(1, 2)\np.x + p.y           # 3，仍然是元组，可以哈希、可以比较\n```\n\n## 怎么选\n\n| 需求 | 工具 |\n|---|---|\n| 统计次数、比较两组的组成 | `Counter` |\n| 建邻接表、按键分组 | `defaultdict(list)` |\n| 两端进出、BFS 队列 | `deque` |",
+          "bodyEn": "Three tools from `collections` show up in nearly every Python interview: `Counter`, `defaultdict` and `deque`. They squeeze several lines of boilerplate into one and leave less room for mistakes.\n\n## Counter: counting\n\n```python\nfrom collections import Counter\n\nc = Counter(\"banana\")       # Counter({'a': 3, 'n': 2, 'b': 1})\nc['a']                      # 3\nc['z']                      # 0: a missing key reads as 0, no error\nc.most_common(2)            # [('a', 3), ('n', 2)]\n```\n\nCounters support arithmetic:\n\n```python\na, b = Counter([1, 2, 2, 1]), Counter([2, 2])\na & b        # intersection keeps the smaller count: Counter({2: 2})\na + b        # add counts\na - b        # subtract, keeping only positive counts\nlist((a & b).elements())   # [2, 2]\n```\n\nIntersection of Two Arrays II is one `&`. Two strings are anagrams exactly when `Counter(s) == Counter(t)`.\n\n**Longest Palindrome**: every character can be placed in pairs on both sides, and one character with an odd count can sit in the middle:\n\n```python\ndef longest_palindrome(s):\n    pairs = sum(n // 2 * 2 for n in Counter(s).values())\n    return pairs + 1 if pairs < len(s) else pairs\n```\n\n## defaultdict: a dict with a default\n\nWhen you access a missing key, `defaultdict` first creates a value with its factory:\n\n```python\nfrom collections import defaultdict\n\ngraph = defaultdict(list)\ngraph['a'].append('b')      # no need for graph['a'] = [] first\ncount = defaultdict(int)\ncount['x'] += 1             # starts at 0\n```\n\n**Group Anagrams**: words that are equal once sorted go in the same group:\n\n```python\ndef group_anagrams(words):\n    groups = defaultdict(list)\n    for w in words:\n        groups[''.join(sorted(w))].append(w)\n    return list(groups.values())\n```\n\nCareful: merely **reading** a missing key inserts it. Reading new keys while iterating over the dict raises \"dictionary changed size during iteration\"; use `k in d` when you only want to check.\n\n## deque: a double-ended queue\n\nInsertions and removals at both ends are O(1):\n\n```python\nfrom collections import deque\n\nq = deque([1, 2, 3])\nq.append(4)         # add on the right\nq.appendleft(0)     # add on the left\nq.pop()             # take from the right\nq.popleft()         # take from the left\nwindow = deque(maxlen=3)   # once full, append pushes out the leftmost item\n```\n\nIt is the queue for BFS and the monotonic queue in sliding-window problems. It is not for random access, though: `q[i]` in the middle is O(n).\n\n## namedtuple: a tuple with names (good to know)\n\n```python\nfrom collections import namedtuple\n\nPoint = namedtuple('Point', 'x y')\np = Point(1, 2)\np.x + p.y           # 3; still a tuple, so hashable and comparable\n```\n\n## Which one\n\n| Need | Tool |\n|---|---|\n| Counting, comparing the make-up of two groups | `Counter` |\n| Adjacency lists, grouping by key | `defaultdict(list)` |\n| Both ends, BFS queues | `deque` |",
+          "quiz": [
+            {
+              "qZh": "c = Counter(\"banana\") 之后，c[\"z\"] 的结果是？",
+              "qEn": "After c = Counter(\"banana\"), what is c[\"z\"]?",
+              "choices": [
+                {
+                  "zh": "抛出 KeyError",
+                  "en": "It raises KeyError"
+                },
+                {
+                  "zh": "0",
+                  "en": "0"
+                },
+                {
+                  "zh": "None",
+                  "en": "None"
+                },
+                {
+                  "zh": "-1",
+                  "en": "-1"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "Counter 对缺失的键返回 0，而且只是读取时不会把键插进去。",
+              "whyEn": "Counter returns 0 for a missing key, and reading it does not insert it."
+            },
+            {
+              "qZh": "Counter([1, 2, 2, 1]) & Counter([2, 2]) 的结果是？",
+              "qEn": "What is Counter([1, 2, 2, 1]) & Counter([2, 2])?",
+              "choices": [
+                {
+                  "zh": "Counter({1: 2, 2: 4})",
+                  "en": "Counter({1: 2, 2: 4})"
+                },
+                {
+                  "zh": "Counter({1: 2})",
+                  "en": "Counter({1: 2})"
+                },
+                {
+                  "zh": "Counter({2: 2})",
+                  "en": "Counter({2: 2})"
+                },
+                {
+                  "zh": "Counter({1: 2, 2: 2})",
+                  "en": "Counter({1: 2, 2: 2})"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "& 是交集，每个键取两边次数的较小值：1 在右边出现 0 次被去掉，2 取 min(2, 2) = 2。",
+              "whyEn": "& is the intersection, keeping the smaller count per key: 1 appears 0 times on the right and drops out, 2 keeps min(2, 2) = 2."
+            },
+            {
+              "qZh": "关于 deque，下面哪个说法是正确的？",
+              "qEn": "Which statement about deque is true?",
+              "choices": [
+                {
+                  "zh": "q[i] 访问任意位置都是 O(1)",
+                  "en": "q[i] is O(1) for any index, even in the middle"
+                },
+                {
+                  "zh": "deque 只能从右端添加元素",
+                  "en": "A deque can only add on the right"
+                },
+                {
+                  "zh": "deque 会自动保持元素有序",
+                  "en": "A deque keeps its elements sorted"
+                },
+                {
+                  "zh": "两端增删都是 O(1)",
+                  "en": "Adding or removing at either end is O(1)"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "deque 两端操作都是 O(1)，这正是它比 list 更适合当队列的原因；访问中间位置则是 O(n)。",
+              "whyEn": "Both ends of a deque are O(1), which is why it beats a list as a queue; access in the middle is O(n)."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-409",
+              "zh": "最长回文串",
+              "en": "Longest Palindrome"
+            },
+            {
+              "id": "lc-350",
+              "zh": "两个数组的交集 II",
+              "en": "Intersection of Two Arrays II"
+            },
+            {
+              "id": "lc-49",
+              "zh": "字母异位词分组",
+              "en": "Group Anagrams"
+            }
+          ]
+        },
+        {
+          "slug": "heapq",
+          "titleZh": "heapq：优先队列",
+          "titleEn": "heapq: Priority Queues",
+          "bodyZh": "`heapq` 在普通列表上维护一个**最小堆**，是 Python 里实现优先队列的标准方式。堆的原理见“Big-O 与数据结构速成课”的堆一课，这里只讲用法和坑。\n\n## 基本操作\n\n```python\nimport heapq\n\nh = []\nheapq.heappush(h, 5)\nheapq.heappush(h, 1)\nheapq.heappush(h, 3)\nh[0]                    # 1：最小值永远在下标 0，O(1)\nheapq.heappop(h)        # 1，O(log n)\n\nnums = [5, 2, 8, 1]\nheapq.heapify(nums)     # 原地建堆，O(n)\n```\n\n两个合并操作：\n\n- `heapq.heappushpop(h, x)`：先放 x 再弹出最小值，比分两步快。\n- `heapq.heapreplace(h, x)`：先弹出最小值再放 x，堆的大小不变。\n\n还有现成的 Top K：`heapq.nlargest(k, nums)`、`heapq.nsmallest(k, nums, key=...)`。\n\n## 最大堆：存相反数\n\nheapq 的这些函数只维护最小堆。要每次取最大值，就把相反数放进去，取出来再取反：\n\n```python\nh = []\nfor x in [3, 1, 4]:\n    heapq.heappush(h, -x)\n-heapq.heappop(h)       # 4\n```\n\n## 用元组表示优先级\n\n堆里放元组时，按元组的字典序比较：先比第一个元素，相等再比第二个。\n\n```python\ntasks = []\nheapq.heappush(tasks, (2, 'write'))\nheapq.heappush(tasks, (1, 'read'))\nheapq.heappop(tasks)     # (1, 'read')\n```\n\n**坑**：如果优先级相等，Python 会接着比较第二个元素。要是第二个元素是不能比较的对象（比如链表结点 `ListNode`），就会抛出 `TypeError`。解决办法是在中间插一个**唯一的序号**：\n\n```python\nfrom itertools import count\n\ntie = count()\nheapq.heappush(h, (node.val, next(tie), node))   # 值相等时比较序号，永远不会比到 node\n```\n\n合并 k 个有序链表就是这样写的。\n\n## 例子：第 K 大的元素\n\n维护大小为 k 的最小堆，堆顶就是第 k 大：\n\n```python\ndef find_kth_largest(nums, k):\n    h = nums[:k]\n    heapq.heapify(h)\n    for x in nums[k:]:\n        if x > h[0]:\n            heapq.heapreplace(h, x)   # 弹出最小的，放入 x\n    return h[0]\n```\n\n时间 O(n log k)。也可以直接写 `heapq.nlargest(k, nums)[-1]`。\n\n## 常见错误\n\n- 以为 `h` 整体是有序的，直接用 `h[1]` 当第二小。堆只保证 `h[0]` 最小。\n- 对一个普通列表直接 `heappop`，忘了先 `heapify`。\n- 在堆里存了可变对象，事后又修改了它的值，堆的顺序就被破坏了。",
+          "bodyEn": "`heapq` maintains a **min-heap** inside an ordinary list and is the standard priority queue in Python. How heaps work is covered in the Big-O course's heap chapter; this one is about usage and pitfalls.\n\n## The basics\n\n```python\nimport heapq\n\nh = []\nheapq.heappush(h, 5)\nheapq.heappush(h, 1)\nheapq.heappush(h, 3)\nh[0]                    # 1: the minimum is always at index 0, O(1)\nheapq.heappop(h)        # 1, O(log n)\n\nnums = [5, 2, 8, 1]\nheapq.heapify(nums)     # builds the heap in place, O(n)\n```\n\nTwo combined operations:\n\n- `heapq.heappushpop(h, x)`: push x, then pop the minimum; faster than two calls.\n- `heapq.heapreplace(h, x)`: pop the minimum, then push x; the size stays the same.\n\nTop k is built in too: `heapq.nlargest(k, nums)` and `heapq.nsmallest(k, nums, key=...)`.\n\n## A max-heap: store negatives\n\nThese heapq functions maintain a min-heap. To take the maximum each time, push negated values and negate again when popping:\n\n```python\nh = []\nfor x in [3, 1, 4]:\n    heapq.heappush(h, -x)\n-heapq.heappop(h)       # 4\n```\n\n## Tuples as priorities\n\nTuples in a heap compare lexicographically: the first element, then the second on a tie.\n\n```python\ntasks = []\nheapq.heappush(tasks, (2, 'write'))\nheapq.heappush(tasks, (1, 'read'))\nheapq.heappop(tasks)     # (1, 'read')\n```\n\n**The trap**: when priorities tie, Python compares the second elements. If those are objects that can't be compared (a `ListNode`, say), you get a `TypeError`. Put a **unique counter** in between:\n\n```python\nfrom itertools import count\n\ntie = count()\nheapq.heappush(h, (node.val, next(tie), node))   # ties compare the counter, never the node\n```\n\nThat is how Merge k Sorted Lists is usually written.\n\n## Example: the k-th largest element\n\nKeep a min-heap of size k; its top is the k-th largest:\n\n```python\ndef find_kth_largest(nums, k):\n    h = nums[:k]\n    heapq.heapify(h)\n    for x in nums[k:]:\n        if x > h[0]:\n            heapq.heapreplace(h, x)   # pop the smallest, push x\n    return h[0]\n```\n\nO(n log k) time. `heapq.nlargest(k, nums)[-1]` also works.\n\n## Common mistakes\n\n- Treating `h` as sorted and reading `h[1]` as the second smallest. A heap only guarantees that `h[0]` is the smallest.\n- Calling `heappop` on a plain list without `heapify` first.\n- Storing mutable objects in the heap and changing them afterwards, which breaks the heap order.",
+          "quiz": [
+            {
+              "qZh": "h 是一个用 heapq 维护的堆，下面哪个说法一定成立？",
+              "qEn": "h is a heap maintained with heapq. Which statement always holds?",
+              "choices": [
+                {
+                  "zh": "h[0] 是最小的元素",
+                  "en": "h[0] is the smallest element"
+                },
+                {
+                  "zh": "h 整体是从小到大排好序的",
+                  "en": "h is sorted in increasing order"
+                },
+                {
+                  "zh": "h[1] 是第二小的元素",
+                  "en": "h[1] is the second smallest element"
+                },
+                {
+                  "zh": "h[-1] 是最大的元素",
+                  "en": "h[-1] is the largest element"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "堆只保证每个父结点不大于孩子，所以只有 h[0] 一定是最小值，其他位置没有整体顺序。",
+              "whyEn": "A heap only keeps each parent no larger than its children, so only h[0] is guaranteed to be the minimum."
+            },
+            {
+              "qZh": "往堆里放 (val, node) 这样的元组时，什么情况会抛出 TypeError？",
+              "qEn": "When pushing tuples like (val, node) into a heap, when does a TypeError occur?",
+              "choices": [
+                {
+                  "zh": "val 是负数时",
+                  "en": "When val is negative"
+                },
+                {
+                  "zh": "val 相等且 node 不可比较时",
+                  "en": "When vals tie and nodes are not comparable"
+                },
+                {
+                  "zh": "堆里的元素超过 1000 个、需要扩容时",
+                  "en": "When the heap grows past 1000 items and must resize"
+                },
+                {
+                  "zh": "没有先调用 heapify 时",
+                  "en": "When heapify was not called first"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "元组按字典序比较，val 相等时会去比较 node。在中间加一个唯一序号可以避免比到 node。",
+              "whyEn": "Tuples compare element by element, so a tie on val compares the nodes. A unique counter in between prevents that."
+            },
+            {
+              "qZh": "想要每次取出最大值，用 heapq 最常见的写法是？",
+              "qEn": "What is the usual way to pop the maximum each time with heapq?",
+              "choices": [
+                {
+                  "zh": "每次 heappop 后调用 reverse",
+                  "en": "Call reverse after every heappop"
+                },
+                {
+                  "zh": "先把列表排序，再 heapify",
+                  "en": "Sort the list, then heapify it"
+                },
+                {
+                  "zh": "放入 -x，取出后再取反",
+                  "en": "Push -x and negate what you pop"
+                },
+                {
+                  "zh": "用 heappop(h, reverse=True)",
+                  "en": "Call heappop(h, reverse=True)"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "最小堆里最小的 -x 就是最大的 x。heappop 没有 reverse 参数。",
+              "whyEn": "The smallest -x in a min-heap is the largest x. heappop has no reverse parameter."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1046",
+              "zh": "最后一块石头的重量",
+              "en": "Last Stone Weight"
+            },
+            {
+              "id": "lc-703",
+              "zh": "数据流中的第 K 大元素",
+              "en": "Kth Largest Element in a Stream"
+            },
+            {
+              "id": "lc-215",
+              "zh": "数组中的第K个最大元素",
+              "en": "Kth Largest Element in an Array"
+            }
+          ]
+        },
+        {
+          "slug": "bisect",
+          "titleZh": "bisect：在有序列表上二分",
+          "titleEn": "bisect: Binary Search on Sorted Lists",
+          "bodyZh": "`bisect` 模块帮你在**有序**列表上做二分查找，省去手写边界条件。二分的原理见“Big-O 与数据结构速成课”的二分一课。\n\n## bisect_left 和 bisect_right\n\n两者都返回“把 x 插进去后列表仍然有序”的位置，区别在于遇到相等元素时插在哪一边：\n\n```python\nfrom bisect import bisect_left, bisect_right\n\na = [1, 2, 2, 2, 5]\nbisect_left(a, 2)    # 1：第一个 >= 2 的位置\nbisect_right(a, 2)   # 4：第一个 > 2 的位置\nbisect_left(a, 3)    # 4：3 不存在，返回它该插入的位置\n```\n\n由此可以组合出很多常用查询：\n\n| 想知道 | 写法 |\n|---|---|\n| x 是否存在 | `i = bisect_left(a, x); i < len(a) and a[i] == x` |\n| x 出现几次 | `bisect_right(a, x) - bisect_left(a, x)` |\n| 小于 x 的有几个 | `bisect_left(a, x)` |\n| 不超过 x 的有几个 | `bisect_right(a, x)` |\n| 落在 [lo, hi] 区间里的有几个 | `bisect_right(a, hi) - bisect_left(a, lo)` |\n\n## insort：插入并保持有序\n\n`insort(a, x)` 先二分找位置（O(log n)），再插入。但插入本身要挪动元素，**整体是 O(n)**。频繁插入、数据量又大时，它并不比别的办法快。\n\n## 例子：咒语和药水\n\n每个咒语强度为 s，药水强度为 p，当 s × p ≥ success 时算成功。对每个咒语，问有多少瓶药水能成功。把药水排序后，需要的药水强度至少是 ⌈success / s⌉，用 `bisect_left` 找到第一瓶够强的：\n\n```python\nfrom bisect import bisect_left\n\ndef successful_pairs(spells, potions, success):\n    potions.sort()\n    n = len(potions)\n    return [n - bisect_left(potions, (success + s - 1) // s) for s in spells]\n```\n\n`(success + s - 1) // s` 是整数的向上取整，避免了浮点数误差。排序 O(m log m)，每个咒语 O(log m)。\n\n## key 参数：在“虚拟数组”上二分\n\n从 Python 3.10 起，bisect 的函数支持 `key` 参数，比较前先对元素调用 key。配合 `range`，可以在一个不存在的数组上二分答案。\n\n求 x 的平方根（向下取整）：要找最大的 m 使 m² ≤ x，也就是“第一个 m² > x 的位置”减一：\n\n```python\nfrom bisect import bisect_right\n\ndef my_sqrt(x):\n    return bisect_right(range(x + 1), x, key=lambda m: m * m) - 1\n```\n\n`range` 支持 O(1) 的下标访问，所以这仍然是 O(log x)，而且不会真的创建一个大列表。\n\n## 注意\n\n- 列表必须已经按同样的规则排好序，否则结果没有意义。\n- 用了 `key` 时，要查找的值要和 key 的结果比较，而不是和原始元素比较：上面传入的是 `x`，比较对象是 `m * m`。",
+          "bodyEn": "The `bisect` module binary-searches a **sorted** list for you, so you don't have to hand-write the boundary conditions. The Big-O course's binary search chapter covers how it works.\n\n## bisect_left and bisect_right\n\nBoth return the position where x could be inserted while keeping the list sorted; they differ in which side of equal elements they pick:\n\n```python\nfrom bisect import bisect_left, bisect_right\n\na = [1, 2, 2, 2, 5]\nbisect_left(a, 2)    # 1: first index with a value >= 2\nbisect_right(a, 2)   # 4: first index with a value > 2\nbisect_left(a, 3)    # 4: 3 is absent, so its insertion point\n```\n\nThey combine into most of the queries you need:\n\n| To know | Write |\n|---|---|\n| whether x exists | `i = bisect_left(a, x); i < len(a) and a[i] == x` |\n| how often x appears | `bisect_right(a, x) - bisect_left(a, x)` |\n| how many values are < x | `bisect_left(a, x)` |\n| how many values are <= x | `bisect_right(a, x)` |\n| how many fall in [lo, hi] | `bisect_right(a, hi) - bisect_left(a, lo)` |\n\n## insort: insert and stay sorted\n\n`insort(a, x)` binary-searches the position (O(log n)) and then inserts. The insertion shifts elements, so **the whole call is O(n)**. With many inserts into a large list it is not a shortcut.\n\n## Example: spells and potions\n\nA spell of strength s and a potion of strength p succeed when s × p ≥ success. For each spell, count the potions that succeed. After sorting the potions, a potion needs strength at least ⌈success / s⌉, and `bisect_left` finds the first one strong enough:\n\n```python\nfrom bisect import bisect_left\n\ndef successful_pairs(spells, potions, success):\n    potions.sort()\n    n = len(potions)\n    return [n - bisect_left(potions, (success + s - 1) // s) for s in spells]\n```\n\n`(success + s - 1) // s` is integer ceiling division, which avoids floating-point error. Sorting is O(m log m) and each spell is O(log m).\n\n## The key parameter: searching a virtual array\n\nSince Python 3.10, the bisect functions accept `key`, applied to elements before comparing. With `range`, you can binary search an array that doesn't exist.\n\nInteger square root: find the largest m with m² ≤ x, which is \"the first m with m² > x\" minus one:\n\n```python\nfrom bisect import bisect_right\n\ndef my_sqrt(x):\n    return bisect_right(range(x + 1), x, key=lambda m: m * m) - 1\n```\n\n`range` supports O(1) indexing, so this is still O(log x) and never builds a large list.\n\n## Watch out\n\n- The list must already be sorted by the same rule, or the results mean nothing.\n- With `key`, the value you search for is compared against key results, not raw elements: above we pass `x` and it is compared with `m * m`.",
+          "quiz": [
+            {
+              "qZh": "a = [1, 2, 2, 2, 5]，bisect_right(a, 2) 返回多少？",
+              "qEn": "With a = [1, 2, 2, 2, 5], what does bisect_right(a, 2) return?",
+              "choices": [
+                {
+                  "zh": "1",
+                  "en": "1"
+                },
+                {
+                  "zh": "3",
+                  "en": "3"
+                },
+                {
+                  "zh": "2",
+                  "en": "2"
+                },
+                {
+                  "zh": "4",
+                  "en": "4"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "bisect_right 返回第一个大于 2 的位置，也就是 5 所在的下标 4。",
+              "whyEn": "bisect_right returns the first index whose value is greater than 2, which is the index of 5: 4."
+            },
+            {
+              "qZh": "在有序列表 a 中，统计落在闭区间 [lo, hi] 里的元素个数，应该怎么写？",
+              "qEn": "How do you count the elements of a sorted list a that fall in the closed range [lo, hi]?",
+              "choices": [
+                {
+                  "zh": "bisect_right(a, hi) - bisect_left(a, lo)",
+                  "en": "bisect_right(a, hi) - bisect_left(a, lo)"
+                },
+                {
+                  "zh": "bisect_left(a, hi) - bisect_left(a, lo)",
+                  "en": "bisect_left(a, hi) - bisect_left(a, lo)"
+                },
+                {
+                  "zh": "bisect_right(a, hi) - bisect_right(a, lo)",
+                  "en": "bisect_right(a, hi) - bisect_right(a, lo)"
+                },
+                {
+                  "zh": "bisect_left(a, hi) - bisect_right(a, lo)",
+                  "en": "bisect_left(a, hi) - bisect_right(a, lo)"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "bisect_right(a, hi) 是不超过 hi 的个数，bisect_left(a, lo) 是小于 lo 的个数，相减就是 [lo, hi] 里的个数。",
+              "whyEn": "bisect_right(a, hi) counts values <= hi and bisect_left(a, lo) counts values < lo; their difference counts [lo, hi]."
+            },
+            {
+              "qZh": "insort(a, x) 的整体时间复杂度是多少？",
+              "qEn": "What is the overall time complexity of insort(a, x)?",
+              "choices": [
+                {
+                  "zh": "O(log n)，因为用了二分",
+                  "en": "O(log n), because it uses binary search"
+                },
+                {
+                  "zh": "O(n)，因为插入要挪动元素",
+                  "en": "O(n), because inserting shifts elements"
+                },
+                {
+                  "zh": "O(1)",
+                  "en": "O(1)"
+                },
+                {
+                  "zh": "O(n log n)，因为要重新排序",
+                  "en": "O(n log n), because it re-sorts"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "找位置是 O(log n)，但 list.insert 要把后面的元素逐个后移，是 O(n)。",
+              "whyEn": "Finding the spot is O(log n), but list.insert shifts the later elements, which is O(n)."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-35",
+              "zh": "搜索插入位置",
+              "en": "Search Insert Position"
+            },
+            {
+              "id": "lc-69",
+              "zh": "x 的平方根",
+              "en": "Sqrt(x)"
+            },
+            {
+              "id": "lc-2300",
+              "zh": "咒语和药水的成功对数",
+              "en": "Successful Pairs of Spells and Potions"
+            }
+          ]
+        },
+        {
+          "slug": "sorting-keys",
+          "titleZh": "排序与 key 函数",
+          "titleEn": "Sorting and Key Functions",
+          "bodyZh": "Python 的内置排序是 Timsort：最坏 O(n log n)，并且是**稳定**的。面试时基本不用自己写排序，要掌握的是怎么告诉它“按什么排”。\n\n## sorted 与 list.sort\n\n```python\nnums = [3, 1, 2]\nnew = sorted(nums)      # 返回新列表，nums 不变\nnums.sort()             # 原地排序，返回 None\n```\n\n经典错误：`nums = nums.sort()`，结果 `nums` 变成了 `None`。`sorted` 可以用于任何可迭代对象（字符串、字典、生成器），`.sort()` 只有列表有。\n\n## key：按什么排\n\n`key` 是一个函数，排序时比较的是 `key(元素)`，而不是元素本身：\n\n```python\nwords = ['banana', 'Apple', 'cherry']\nsorted(words, key=len)              # 按长度\nsorted(words, key=str.lower)        # 忽略大小写\npoints = [(1, 5), (3, 2), (2, 8)]\nsorted(points, key=lambda p: p[1])  # 按第二个坐标\n```\n\n`reverse=True` 把顺序整体倒过来。\n\n## 多个条件\n\n**方法一：key 返回元组。**元组按字典序比较，先比第一项，相等再比第二项。数值条件想要降序，就取负数：\n\n```python\ncounts = {'a': 3, 'b': 1, 'c': 3}\n# 次数多的在前；次数相同按字母升序\nsorted(counts, key=lambda w: (-counts[w], w))   # ['a', 'c', 'b']\n```\n\n**方法二：利用稳定性分两次排。**先按次要条件排，再按主要条件排；主要条件相同的元素，会保留上一轮排出的顺序。字符串没法直接取负数时，这个办法很好用：\n\n```python\npeople = [('bob', 25), ('ann', 30), ('cat', 25)]\npeople.sort(key=lambda p: p[0], reverse=True)   # 次要：名字降序\npeople.sort(key=lambda p: p[1])                 # 主要：年龄升序\n# [('cat', 25), ('bob', 25), ('ann', 30)]\n```\n\n## 例子：合并区间\n\n按起点排序后，重叠的区间一定相邻：\n\n```python\ndef merge(intervals):\n    intervals.sort(key=lambda iv: iv[0])\n    merged = []\n    for start, end in intervals:\n        if merged and start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)   # 与上一个重叠：延长它\n        else:\n            merged.append([start, end])\n    return merged\n```\n\n## 比较两个元素才能决定顺序时：cmp_to_key\n\n有些顺序没法写成“每个元素算一个 key”，只能比较两个元素。比如“最大数”：把数字拼成最大的字符串，a 应该排在 b 前面，当且仅当 `a + b > b + a`。用 `functools.cmp_to_key` 把比较函数转成 key。比较函数返回负数表示 a 在前：\n\n```python\nfrom functools import cmp_to_key\n\ndef largest_number(nums):\n    strs = [str(x) for x in nums]\n    strs.sort(key=cmp_to_key(lambda a, b: (b + a > a + b) - (b + a < a + b)))\n    return '0' if strs[0] == '0' else ''.join(strs)\n\nlargest_number([3, 30, 34, 5, 9])   # '9534330'\n```\n\n最后的判断处理全是 0 的情况，否则会返回 `'00'`。\n\n## 小结\n\n- `sorted` 返回新列表，`.sort()` 原地排序并返回 `None`。\n- 多条件排序：key 返回元组，数值降序取负；或者利用稳定性分两次排。\n- 只能两两比较时，用 `cmp_to_key`。",
+          "bodyEn": "Python's built-in sort is Timsort: O(n log n) worst case and **stable**. In interviews you almost never write a sort yourself; what matters is telling it what to sort by.\n\n## sorted versus list.sort\n\n```python\nnums = [3, 1, 2]\nnew = sorted(nums)      # a new list; nums is unchanged\nnums.sort()             # sorts in place and returns None\n```\n\nThe classic bug: `nums = nums.sort()` leaves `nums` as `None`. `sorted` takes any iterable (strings, dicts, generators); only lists have `.sort()`.\n\n## key: what to sort by\n\n`key` is a function, and the sort compares `key(element)` instead of the elements themselves:\n\n```python\nwords = ['banana', 'Apple', 'cherry']\nsorted(words, key=len)              # by length\nsorted(words, key=str.lower)        # ignoring case\npoints = [(1, 5), (3, 2), (2, 8)]\nsorted(points, key=lambda p: p[1])  # by the second coordinate\n```\n\n`reverse=True` reverses the whole order.\n\n## Several criteria\n\n**Option one: return a tuple from key.** Tuples compare item by item, so the second item breaks ties in the first. For a descending numeric criterion, negate it:\n\n```python\ncounts = {'a': 3, 'b': 1, 'c': 3}\n# higher counts first; equal counts alphabetically\nsorted(counts, key=lambda w: (-counts[w], w))   # ['a', 'c', 'b']\n```\n\n**Option two: sort twice and rely on stability.** Sort by the secondary criterion first, then by the primary one; elements that tie on the primary keep the order from the first pass. This helps when a criterion, like a string, can't be negated:\n\n```python\npeople = [('bob', 25), ('ann', 30), ('cat', 25)]\npeople.sort(key=lambda p: p[0], reverse=True)   # secondary: name, descending\npeople.sort(key=lambda p: p[1])                 # primary: age, ascending\n# [('cat', 25), ('bob', 25), ('ann', 30)]\n```\n\n## Example: Merge Intervals\n\nAfter sorting by start, overlapping intervals are adjacent:\n\n```python\ndef merge(intervals):\n    intervals.sort(key=lambda iv: iv[0])\n    merged = []\n    for start, end in intervals:\n        if merged and start <= merged[-1][1]:\n            merged[-1][1] = max(merged[-1][1], end)   # overlaps the last one: extend it\n        else:\n            merged.append([start, end])\n    return merged\n```\n\n## When only a pairwise comparison decides: cmp_to_key\n\nSome orders can't be expressed as one key per element; you can only compare two elements. In Largest Number, the digits must form the biggest string, and a goes before b exactly when `a + b > b + a`. `functools.cmp_to_key` turns a comparison function into a key; returning a negative number means a goes first:\n\n```python\nfrom functools import cmp_to_key\n\ndef largest_number(nums):\n    strs = [str(x) for x in nums]\n    strs.sort(key=cmp_to_key(lambda a, b: (b + a > a + b) - (b + a < a + b)))\n    return '0' if strs[0] == '0' else ''.join(strs)\n\nlargest_number([3, 30, 34, 5, 9])   # '9534330'\n```\n\nThe last line handles an input of all zeros, which would otherwise return `'00'`.\n\n## Recap\n\n- `sorted` returns a new list; `.sort()` sorts in place and returns `None`.\n- Several criteria: return a tuple from key and negate numbers for descending order, or sort twice relying on stability.\n- When only a pairwise comparison works, use `cmp_to_key`.",
+          "quiz": [
+            {
+              "qZh": "执行 nums = [3, 1, 2]; nums = nums.sort() 之后，nums 是什么？",
+              "qEn": "After nums = [3, 1, 2]; nums = nums.sort(), what is nums?",
+              "choices": [
+                {
+                  "zh": "[1, 2, 3]",
+                  "en": "[1, 2, 3]"
+                },
+                {
+                  "zh": "[3, 1, 2]",
+                  "en": "[3, 1, 2]"
+                },
+                {
+                  "zh": "None",
+                  "en": "None"
+                },
+                {
+                  "zh": "抛出异常",
+                  "en": "An exception is raised"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "list.sort() 原地排序并返回 None，赋值后 nums 就指向了 None。",
+              "whyEn": "list.sort() sorts in place and returns None, so the assignment points nums at None."
+            },
+            {
+              "qZh": "想按次数从多到少排序，次数相同时按单词升序，key 应该怎么写？",
+              "qEn": "To sort by count descending and then by word ascending, what key do you use?",
+              "choices": [
+                {
+                  "zh": "key=lambda w: (counts[w], w)",
+                  "en": "key=lambda w: (counts[w], w)"
+                },
+                {
+                  "zh": "key=lambda w: (-counts[w], -w)",
+                  "en": "key=lambda w: (-counts[w], -w)"
+                },
+                {
+                  "zh": "key=lambda w: (w, -counts[w])",
+                  "en": "key=lambda w: (w, -counts[w])"
+                },
+                {
+                  "zh": "key=lambda w: (-counts[w], w)",
+                  "en": "key=lambda w: (-counts[w], w)"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "元组先比次数，取负数实现降序；次数相同再比单词本身，升序。字符串不能取负数。",
+              "whyEn": "The tuple compares counts first, negated for descending order, then the word itself ascending. A string cannot be negated."
+            },
+            {
+              "qZh": "Python 的排序是稳定的，这有什么用？",
+              "qEn": "Python's sort is stable. Why does that help?",
+              "choices": [
+                {
+                  "zh": "能分两次排序，实现多条件排序",
+                  "en": "Sorting twice can sort by two criteria"
+                },
+                {
+                  "zh": "稳定排序比不稳定排序更快",
+                  "en": "Stable sorts are faster than unstable ones"
+                },
+                {
+                  "zh": "稳定排序不需要额外内存",
+                  "en": "Stable sorts need no extra memory"
+                },
+                {
+                  "zh": "稳定排序可以对不可比较的元素排序",
+                  "en": "Stable sorts can order elements that cannot be compared"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "第二次排序时，主要条件相同的元素保留第一次排出的相对顺序，相当于按两个条件排了序。",
+              "whyEn": "In the second pass, elements that tie on the primary criterion keep the order from the first pass, so the result is sorted by both."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-977",
+              "zh": "有序数组的平方",
+              "en": "Squares of a Sorted Array"
+            },
+            {
+              "id": "lc-56",
+              "zh": "合并区间",
+              "en": "Merge Intervals"
+            },
+            {
+              "id": "lc-179",
+              "zh": "最大数",
+              "en": "Largest Number"
+            }
+          ]
+        },
+        {
+          "slug": "strings",
+          "titleZh": "字符串处理",
+          "titleEn": "Working with Strings",
+          "bodyZh": "字符串题在面试里非常多。Python 的字符串方法很丰富，但有一个前提要先记住：**字符串是不可变的**。\n\n## 不可变意味着什么\n\n```python\ns = \"hello\"\n# s[0] = 'H'          # TypeError：不能修改字符串中的字符\ns = 'H' + s[1:]       # 只能新建一个字符串\n```\n\n每次“修改”其实都在创建新字符串。所以在循环里反复用 `+` 拼接，最坏会退化成 O(n²)。CPython 有时能把 `s += t` 优化成原地扩展，但这是实现细节，不能依赖。标准写法是先把片段放进列表，最后 `''.join(...)` 一次拼好：\n\n```python\nparts = []\nfor word in ['a', 'b', 'c']:\n    parts.append(word.upper())\nresult = ''.join(parts)     # 'ABC'，总共 O(n)\n```\n\n需要逐个修改字符时（反转、交换），先 `list(s)` 转成列表，改完再 `join` 回去。\n\n## 常用方法\n\n```python\ns = \"  Hello, World  \"\ns.strip()               # 'Hello, World'：去掉两端空白\ns.lower(), s.upper()\n\"a,b,,c\".split(',')     # ['a', 'b', '', 'c']\n\"a  b\".split()          # ['a', 'b']：不带参数时按任意空白切分，并丢掉空串\n'-'.join(['x', 'y'])    # 'x-y'\n\"abc\"[::-1]             # 'cba'\n\"leetcode\".find(\"code\") # 4；找不到返回 -1\n\"abc\".startswith(\"ab\")  # True\n'7'.isdigit(), 'a'.isalpha(), 'a1'.isalnum()\n```\n\n## 字符和数字\n\n```python\nord('a')                 # 97\nchr(97)                  # 'a'\nord('c') - ord('a')      # 2：字母在字母表里的位置\n```\n\n只有 26 个小写字母时，可以用长度为 26 的列表计数，比字典更省：\n\n```python\ndef letter_counts(s):\n    counts = [0] * 26\n    for ch in s:\n        counts[ord(ch) - ord('a')] += 1\n    return counts\n```\n\n## 双指针\n\n判断回文、反转字符串、反转元音字母，都是左右两个指针往中间走：\n\n```python\ndef is_palindrome(s):\n    \"\"\"只看字母和数字，忽略大小写。\"\"\"\n    i, j = 0, len(s) - 1\n    while i < j:\n        if not s[i].isalnum():\n            i += 1\n        elif not s[j].isalnum():\n            j -= 1\n        elif s[i].lower() != s[j].lower():\n            return False\n        else:\n            i, j = i + 1, j - 1\n    return True\n```\n\n这样不需要先建一个清理过的新字符串，额外空间 O(1)。\n\n## 子串查找\n\n`haystack.find(needle)` 或 `needle in haystack` 就能找子串。面试官如果要求自己实现，最直接的做法是逐个起点比较，O(n·m)；更快的有 KMP 算法，O(n + m)，可以作为进阶了解。\n\n## 小结\n\n- 字符串不可变：拼接用 `''.join`，逐字修改先转 `list`。\n- `split()` 不带参数会按任意空白切分并丢掉空串。\n- 回文、反转这类题先想双指针。",
+          "bodyEn": "String questions are everywhere in interviews. Python has plenty of string methods, but one fact comes first: **strings are immutable**.\n\n## What immutability means\n\n```python\ns = \"hello\"\n# s[0] = 'H'          # TypeError: you can't change a character\ns = 'H' + s[1:]       # you can only build a new string\n```\n\nEvery \"change\" creates a new string, so concatenating with `+` in a loop can degrade to O(n²). CPython sometimes extends `s += t` in place, but that is an implementation detail you can't rely on. The standard pattern collects pieces in a list and joins once at the end:\n\n```python\nparts = []\nfor word in ['a', 'b', 'c']:\n    parts.append(word.upper())\nresult = ''.join(parts)     # 'ABC', O(n) in total\n```\n\nWhen you need to change characters one by one (reversing, swapping), convert with `list(s)` first and `join` back afterwards.\n\n## Everyday methods\n\n```python\ns = \"  Hello, World  \"\ns.strip()               # 'Hello, World': trims whitespace at both ends\ns.lower(), s.upper()\n\"a,b,,c\".split(',')     # ['a', 'b', '', 'c']\n\"a  b\".split()          # ['a', 'b']: no argument splits on any whitespace and drops empties\n'-'.join(['x', 'y'])    # 'x-y'\n\"abc\"[::-1]             # 'cba'\n\"leetcode\".find(\"code\") # 4; -1 when absent\n\"abc\".startswith(\"ab\")  # True\n'7'.isdigit(), 'a'.isalpha(), 'a1'.isalnum()\n```\n\n## Characters and numbers\n\n```python\nord('a')                 # 97\nchr(97)                  # 'a'\nord('c') - ord('a')      # 2: the letter's position in the alphabet\n```\n\nWith only 26 lowercase letters, a list of 26 counts is leaner than a dict:\n\n```python\ndef letter_counts(s):\n    counts = [0] * 26\n    for ch in s:\n        counts[ord(ch) - ord('a')] += 1\n    return counts\n```\n\n## Two pointers\n\nChecking a palindrome, reversing a string and reversing its vowels all move a left and a right pointer toward the middle:\n\n```python\ndef is_palindrome(s):\n    \"\"\"Letters and digits only, ignoring case.\"\"\"\n    i, j = 0, len(s) - 1\n    while i < j:\n        if not s[i].isalnum():\n            i += 1\n        elif not s[j].isalnum():\n            j -= 1\n        elif s[i].lower() != s[j].lower():\n            return False\n        else:\n            i, j = i + 1, j - 1\n    return True\n```\n\nNo cleaned-up copy of the string is needed, so the extra space is O(1).\n\n## Finding a substring\n\n`haystack.find(needle)` or `needle in haystack` finds a substring. If the interviewer wants you to implement it, the direct approach compares from every starting point, O(n·m); the KMP algorithm does it in O(n + m) and is worth knowing as a next step.\n\n## Recap\n\n- Strings are immutable: join with `''.join`, and convert to a `list` to edit characters.\n- `split()` with no argument splits on any whitespace and drops empty strings.\n- For palindromes and reversals, think two pointers first.",
+          "quiz": [
+            {
+              "qZh": "在循环里把 n 个片段用 s = s + piece 逐个拼起来，最坏情况的复杂度是多少？",
+              "qEn": "Concatenating n pieces in a loop with s = s + piece costs what in the worst case?",
+              "choices": [
+                {
+                  "zh": "O(n)",
+                  "en": "O(n)"
+                },
+                {
+                  "zh": "O(n²)",
+                  "en": "O(n²)"
+                },
+                {
+                  "zh": "O(log n)",
+                  "en": "O(log n)"
+                },
+                {
+                  "zh": "O(1)",
+                  "en": "O(1)"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "字符串不可变，每次拼接都可能复制已有的全部内容，累计 O(n²)。用 ''.join 只复制一次，是 O(n)。",
+              "whyEn": "Strings are immutable, so each concatenation may copy everything so far, O(n²) in total. ''.join copies once, O(n)."
+            },
+            {
+              "qZh": "\"a  b\".split() 的结果是？（中间有两个空格）",
+              "qEn": "What is \"a  b\".split()? (There are two spaces in the middle.)",
+              "choices": [
+                {
+                  "zh": "['a', '', 'b']",
+                  "en": "['a', '', 'b']"
+                },
+                {
+                  "zh": "['a  b']",
+                  "en": "['a  b']"
+                },
+                {
+                  "zh": "['a', 'b']",
+                  "en": "['a', 'b']"
+                },
+                {
+                  "zh": "['a', ' ', 'b']",
+                  "en": "['a', ' ', 'b']"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "不带参数的 split 按任意长度的空白切分，并丢掉空字符串；split(\" \") 才会得到中间的空串。",
+              "whyEn": "split with no argument splits on runs of whitespace and drops empty strings; split(\" \") would keep the empty one."
+            },
+            {
+              "qZh": "为什么要先 list(s) 再修改字符？",
+              "qEn": "Why convert with list(s) before changing characters?",
+              "choices": [
+                {
+                  "zh": "列表的下标访问比字符串快一倍，转换后整体更快",
+                  "en": "List indexing is twice as fast as string indexing, so it runs faster"
+                },
+                {
+                  "zh": "字符串最长只能有 1000 个字符",
+                  "en": "Strings are limited to 1,000 characters"
+                },
+                {
+                  "zh": "不转换的话 join 会报错",
+                  "en": "join fails unless you convert first"
+                },
+                {
+                  "zh": "字符串不可变，不能对 s[i] 赋值",
+                  "en": "Strings are immutable, so you cannot assign to s[i]"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "对字符串下标赋值会抛出 TypeError。列表可以原地修改，改完再用 join 拼回字符串。",
+              "whyEn": "Assigning to a string index raises TypeError. A list can be edited in place and joined back afterwards."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-125",
+              "zh": "验证回文串",
+              "en": "Valid Palindrome"
+            },
+            {
+              "id": "lc-345",
+              "zh": "反转字符串中的元音字母",
+              "en": "Reverse Vowels of a String"
+            },
+            {
+              "id": "lc-28",
+              "zh": "找出字符串中第一个匹配项的下标",
+              "en": "Find the Index of the First Occurrence in a String"
+            }
+          ]
+        },
+        {
+          "slug": "recursion-cache",
+          "titleZh": "递归深度与 lru_cache",
+          "titleEn": "Recursion Depth and lru_cache",
+          "bodyZh": "递归和记忆化在 Python 里写起来很短，但有两个 Python 特有的问题要提前知道：**递归深度上限**和**缓存的作用范围**。\n\n## 递归深度上限\n\nPython 默认只允许约 1000 层递归，超过就抛出 `RecursionError`：\n\n```python\nimport sys\nsys.getrecursionlimit()      # 通常是 1000\n```\n\n一棵退化成链的二叉树、一条长链表、一个 10⁵ 格的网格，递归都可能超过这个深度。两种办法：\n\n1. **调大上限**：`sys.setrecursionlimit(10**6)`。能解决不少问题，但递归太深仍然可能耗尽进程的栈而直接崩溃，所以不是万能的。\n2. **改成迭代**：用显式的栈或队列代替调用栈。数据规模大时，这是更稳的写法。\n\n## 用 functools.cache 记忆化\n\n`@cache`（Python 3.9+）等价于 `@lru_cache(maxsize=None)`：把每组参数的返回值存起来，下次同样的参数直接返回。\n\n**爬楼梯**：每次爬 1 或 2 级，到第 n 级有几种走法？\n\n```python\nfrom functools import cache\n\nclass Solution:\n    def climbStairs(self, n: int) -> int:\n        @cache\n        def ways(i):\n            if i <= 1:\n                return 1\n            return ways(i - 1) + ways(i - 2)\n        return ways(n)\n```\n\n不加 `@cache` 是指数级；加上之后每个 i 只算一次，O(n)。\n\n## 使用缓存的三个注意点\n\n**1. 参数必须可哈希。**缓存以参数为键，列表、字典不能当参数传进被缓存的函数。需要的话转成元组，或者干脆只传下标。\n\n**2. 把被缓存的函数定义在方法里面。**上面的 `ways` 写在 `climbStairs` 内部，每次调用方法都会得到一个全新的缓存。如果把一个依赖输入数据的缓存函数写在模块顶层，判题时多组测试会共用同一份缓存，前一组的结果可能被错用到后一组。\n\n**3. 缓存本身占内存。**状态很多时（比如二维状态 10⁶ 个以上），带缓存的递归可能比递推慢、也更占内存。\n\n## 自顶向下与自底向上\n\n记忆化递归是**自顶向下**：从要求的答案出发，需要什么再算什么。也可以**自底向上**递推，从最小的状态开始填表，没有递归深度的问题，还常常能把空间压到 O(1)。\n\n**使用最小花费爬楼梯**：`cost[i]` 是踩上第 i 级的花费，可以从第 0 或第 1 级开始，求到达楼顶的最小花费：\n\n```python\ndef min_cost_climbing_stairs(cost):\n    a = b = 0      # 到达第 i-2 级、第 i-1 级的最小花费\n    for i in range(2, len(cost) + 1):\n        a, b = b, min(b + cost[i - 1], a + cost[i - 2])\n    return b\n```\n\n`min_cost_climbing_stairs([10, 15, 20])` 返回 15：从第 1 级出发，花 15 直接跨两级到楼顶。\n\n## 小结\n\n- 递归深度默认约 1000：深度可能很大时，改用迭代。\n- `@cache` 的参数要可哈希；依赖输入的缓存函数定义在方法内部。\n- 状态多或深度大时，考虑自底向上递推。",
+          "bodyEn": "Recursion and memoization are short to write in Python, but two Python-specific issues are worth knowing in advance: **the recursion depth limit** and **how long a cache lives**.\n\n## The recursion limit\n\nBy default Python allows about 1000 levels of recursion and raises `RecursionError` beyond that:\n\n```python\nimport sys\nsys.getrecursionlimit()      # usually 1000\n```\n\nA binary tree that degenerates into a chain, a long linked list, or a grid of 10⁵ cells can all recurse deeper than that. Two fixes:\n\n1. **Raise the limit**: `sys.setrecursionlimit(10**6)`. It solves many cases, but very deep recursion can still exhaust the process stack and crash outright, so it is not a cure-all.\n2. **Go iterative**: replace the call stack with an explicit stack or queue. For large inputs this is the safer choice.\n\n## Memoizing with functools.cache\n\n`@cache` (Python 3.9+) is the same as `@lru_cache(maxsize=None)`: it stores the result for each set of arguments and returns it directly next time.\n\n**Climbing Stairs**: you climb 1 or 2 steps at a time; how many ways are there to reach step n?\n\n```python\nfrom functools import cache\n\nclass Solution:\n    def climbStairs(self, n: int) -> int:\n        @cache\n        def ways(i):\n            if i <= 1:\n                return 1\n            return ways(i - 1) + ways(i - 2)\n        return ways(n)\n```\n\nWithout `@cache` this is exponential; with it each i is computed once, O(n).\n\n## Three things to watch with caches\n\n**1. Arguments must be hashable.** The cache is keyed by the arguments, so lists and dicts can't be passed to a cached function. Convert them to tuples, or pass only indices.\n\n**2. Define the cached function inside the method.** `ways` above lives inside `climbStairs`, so every call of the method gets a fresh cache. A cached function at module level that depends on the input would be shared by every test case the judge runs, and results from one case could leak into the next.\n\n**3. The cache costs memory.** With many states (say over 10⁶ two-dimensional states), cached recursion can be slower and hungrier than an iterative table.\n\n## Top-down versus bottom-up\n\nMemoized recursion is **top-down**: start from the answer you want and compute what it needs. You can also go **bottom-up**, filling in states from the smallest; there is no recursion depth to worry about, and space often shrinks to O(1).\n\n**Min Cost Climbing Stairs**: `cost[i]` is paid when you step on stair i, you may start at stair 0 or 1, and you want the cheapest way to the top:\n\n```python\ndef min_cost_climbing_stairs(cost):\n    a = b = 0      # cheapest cost to reach stair i-2 and stair i-1\n    for i in range(2, len(cost) + 1):\n        a, b = b, min(b + cost[i - 1], a + cost[i - 2])\n    return b\n```\n\n`min_cost_climbing_stairs([10, 15, 20])` returns 15: start on stair 1, pay 15, and jump two stairs to the top.\n\n## Recap\n\n- The default recursion limit is about 1000: go iterative when depth can be large.\n- `@cache` arguments must be hashable; define input-dependent cached functions inside the method.\n- With many states or great depth, consider a bottom-up table.",
+          "quiz": [
+            {
+              "qZh": "Python 默认的递归深度上限大约是多少？",
+              "qEn": "Roughly what is Python's default recursion limit?",
+              "choices": [
+                {
+                  "zh": "1000 层",
+                  "en": "1,000 frames"
+                },
+                {
+                  "zh": "100 层",
+                  "en": "100 frames"
+                },
+                {
+                  "zh": "10 万层",
+                  "en": "100,000 frames"
+                },
+                {
+                  "zh": "没有上限",
+                  "en": "There is no limit"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "sys.getrecursionlimit() 默认返回 1000，超过会抛出 RecursionError。",
+              "whyEn": "sys.getrecursionlimit() returns 1000 by default, and exceeding it raises RecursionError."
+            },
+            {
+              "qZh": "下面哪种参数不能直接传给用 @cache 装饰的函数？",
+              "qEn": "Which argument cannot be passed directly to a function decorated with @cache?",
+              "choices": [
+                {
+                  "zh": "整数 5",
+                  "en": "the integer 5"
+                },
+                {
+                  "zh": "列表 [1, 2]",
+                  "en": "the list [1, 2]"
+                },
+                {
+                  "zh": "字符串 \"abc\"",
+                  "en": "the string \"abc\""
+                },
+                {
+                  "zh": "元组 (1, 2)",
+                  "en": "the tuple (1, 2)"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "缓存用参数做字典的键，参数必须可哈希。列表可变、不可哈希，会抛出 TypeError。",
+              "whyEn": "The cache uses the arguments as a dict key, so they must be hashable. A list is mutable and raises TypeError."
+            },
+            {
+              "qZh": "为什么把依赖输入数据的缓存函数定义在方法内部，而不是模块顶层？",
+              "qEn": "Why define an input-dependent cached function inside the method rather than at module level?",
+              "choices": [
+                {
+                  "zh": "定义在内部的函数运行得更快",
+                  "en": "Functions defined inside run faster"
+                },
+                {
+                  "zh": "模块顶层的函数不能使用 @cache 装饰器，会直接报错",
+                  "en": "@cache cannot decorate a module-level function and raises an error"
+                },
+                {
+                  "zh": "每次调用都有新缓存，测试用例之间不串用",
+                  "en": "Each call gets a fresh cache, so test cases never share results"
+                },
+                {
+                  "zh": "定义在内部可以绕过递归深度上限",
+                  "en": "Defining it inside avoids the recursion limit"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "模块顶层的缓存在整个进程里一直存在，判题时多组测试会共用它；如果函数还依赖当前的输入数据，就会返回上一组的结果。",
+              "whyEn": "A module-level cache lives for the whole process and is shared by every test case; if the function also depends on the current input, it returns stale results."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-70",
+              "zh": "爬楼梯",
+              "en": "Climbing Stairs"
+            },
+            {
+              "id": "lc-746",
+              "zh": "使用最小花费爬楼梯",
+              "en": "Min Cost Climbing Stairs"
+            },
+            {
+              "id": "lc-104",
+              "zh": "二叉树的最大深度",
+              "en": "Maximum Depth of Binary Tree"
+            }
+          ]
+        },
+        {
+          "slug": "pitfalls",
+          "titleZh": "Python 常见坑",
+          "titleEn": "Common Python Pitfalls",
+          "bodyZh": "这些问题不会报错，却会让答案悄悄出错，而且在面试的紧张气氛里很难排查。提前认识它们，比事后调试省事得多。\n\n## 1. 用乘法创建二维列表\n\n```python\ngrid = [[0] * 3] * 2\ngrid[0][0] = 1\nprint(grid)        # [[1, 0, 0], [1, 0, 0]]：两行一起变了\n```\n\n外层的 `* 2` 复制的是**同一个内层列表的引用**。正确写法：\n\n```python\ngrid = [[0] * 3 for _ in range(2)]\n```\n\n`[0] * 3` 本身没问题，因为整数不可变。\n\n## 2. 可变的默认参数\n\n```python\ndef add(x, acc=[]):     # 默认值只在定义函数时创建一次\n    acc.append(x)\n    return acc\n\nadd(1)   # [1]\nadd(2)   # [1, 2]：上一次的结果还在\n```\n\n改成 `acc=None`，在函数里写 `if acc is None: acc = []`。\n\n## 3. 拷贝：引用、浅拷贝、深拷贝\n\n```python\na = [[1, 2], [3]]\nb = a              # 同一个对象\nc = a[:]           # 浅拷贝：新的外层列表，内层仍然共享\nc[0].append(9)     # a 也变成 [[1, 2, 9], [3]]\n\nimport copy\nd = copy.deepcopy(a)   # 深拷贝：内外都是新的\n```\n\n回溯记录答案时写 `path[:]` 就是为了拿到一份当时的快照。\n\n## 4. 原地修改，还是指向新列表\n\n题目要求“原地修改 nums1”时：\n\n```python\ndef merge(nums1, m, nums2, n):\n    nums1 = sorted(nums1[:m] + nums2)     # 错：只是让局部变量指向了新列表\n    nums1[:] = sorted(nums1[:m] + nums2)  # 对：改写调用者传进来的那个列表\n```\n\n## 5. 遍历时修改列表\n\n```python\nnums = [1, 2, 2, 3]\nfor x in nums:\n    if x == 2:\n        nums.remove(x)   # 删除后元素前移，下一个 2 被跳过\nprint(nums)              # [1, 2, 3]\n```\n\n改成生成新列表 `[x for x in nums if x != 2]`，或者用读写双指针原地覆盖，这也是“移除元素”“移动零”的标准做法：\n\n```python\ndef remove_element(nums, val):\n    k = 0                    # 下一个保留元素要写入的位置\n    for x in nums:\n        if x != val:\n            nums[k] = x\n            k += 1\n    return k\n```\n\n## 6. 整数除法和取模的方向\n\n```python\n7 // 2      # 3\n-7 // 2     # -4：// 向负无穷取整，不是向 0\nint(-7 / 2) # -3：向 0 取整（只适合不大的数，/ 会先变成浮点数）\n-7 % 3      # 2：结果的符号跟除数一致\n```\n\n从 C++ / Java 翻译过来的代码，碰到负数时要特别小心。\n\n## 7. 浮点数比较\n\n```python\n0.1 + 0.2 == 0.3    # False\n```\n\n能用整数就用整数，比如比较 a/b 和 c/d 时改成比较 a×d 和 c×b（b、d 为正时）。Python 的整数没有溢出，乘大数也不怕。不过题目若要求模拟 32 位整数溢出，就要自己判断范围。\n\n## 8. is 和 ==\n\n`==` 比较值，`is` 比较是不是同一个对象。判断 `None` 时用 `is None`；比较数字和字符串一律用 `==`。小整数和部分字符串碰巧会被复用，`is` 偶尔“看起来对”，但不可依赖。\n\n## 小结\n\n二维列表用推导式创建；默认参数不用可变对象；记录快照要拷贝；原地修改用切片赋值；不在遍历时增删元素；负数的 `//` 和 `%` 向负无穷取整。",
+          "bodyEn": "These bugs raise no error; they quietly produce wrong answers, and under interview pressure they are hard to track down. Knowing them in advance is far cheaper than debugging them live.\n\n## 1. Building a 2D list with multiplication\n\n```python\ngrid = [[0] * 3] * 2\ngrid[0][0] = 1\nprint(grid)        # [[1, 0, 0], [1, 0, 0]]: both rows changed\n```\n\nThe outer `* 2` copies **references to the same inner list**. Write instead:\n\n```python\ngrid = [[0] * 3 for _ in range(2)]\n```\n\n`[0] * 3` on its own is fine, because integers are immutable.\n\n## 2. Mutable default arguments\n\n```python\ndef add(x, acc=[]):     # the default is created once, when the function is defined\n    acc.append(x)\n    return acc\n\nadd(1)   # [1]\nadd(2)   # [1, 2]: the previous result is still there\n```\n\nUse `acc=None` and write `if acc is None: acc = []` inside the function.\n\n## 3. Copies: reference, shallow, deep\n\n```python\na = [[1, 2], [3]]\nb = a              # the same object\nc = a[:]           # shallow copy: a new outer list, shared inner lists\nc[0].append(9)     # a becomes [[1, 2, 9], [3]] as well\n\nimport copy\nd = copy.deepcopy(a)   # deep copy: everything is new\n```\n\nWriting `path[:]` when recording a backtracking answer is how you take a snapshot of that moment.\n\n## 4. In place, or a new list?\n\nWhen a problem says \"modify nums1 in place\":\n\n```python\ndef merge(nums1, m, nums2, n):\n    nums1 = sorted(nums1[:m] + nums2)     # wrong: only rebinds the local name\n    nums1[:] = sorted(nums1[:m] + nums2)  # right: rewrites the caller's list\n```\n\n## 5. Changing a list while iterating over it\n\n```python\nnums = [1, 2, 2, 3]\nfor x in nums:\n    if x == 2:\n        nums.remove(x)   # later elements shift left and the next 2 is skipped\nprint(nums)              # [1, 2, 3]\n```\n\nBuild a new list with `[x for x in nums if x != 2]`, or overwrite in place with a read pointer and a write pointer, the standard approach for Remove Element and Move Zeroes:\n\n```python\ndef remove_element(nums, val):\n    k = 0                    # where the next kept element goes\n    for x in nums:\n        if x != val:\n            nums[k] = x\n            k += 1\n    return k\n```\n\n## 6. Which way integer division rounds\n\n```python\n7 // 2      # 3\n-7 // 2     # -4: // rounds toward negative infinity, not toward 0\nint(-7 / 2) # -3: rounds toward 0 (fine for small numbers; / goes through a float)\n-7 % 3      # 2: the result takes the sign of the divisor\n```\n\nBe careful with negative numbers when translating code from C++ or Java.\n\n## 7. Comparing floats\n\n```python\n0.1 + 0.2 == 0.3    # False\n```\n\nStay with integers when you can: to compare a/b with c/d, compare a×d with c×b (for positive b and d). Python integers never overflow, so large products are safe. If a problem asks you to emulate 32-bit overflow, though, you must check the range yourself.\n\n## 8. is versus ==\n\n`==` compares values; `is` asks whether two names are the same object. Use `is None` for None, and `==` for numbers and strings. Small integers and some strings happen to be reused, so `is` sometimes appears to work, but you can't rely on it.\n\n## Recap\n\nBuild 2D lists with a comprehension; never use a mutable default; copy when you take a snapshot; use slice assignment to modify in place; don't add or remove while iterating; and remember that `//` and `%` round toward negative infinity.",
+          "quiz": [
+            {
+              "qZh": "grid = [[0] * 3] * 2; grid[0][0] = 1 之后，grid 是什么？",
+              "qEn": "After grid = [[0] * 3] * 2; grid[0][0] = 1, what is grid?",
+              "choices": [
+                {
+                  "zh": "[[1, 0, 0], [0, 0, 0]]",
+                  "en": "[[1, 0, 0], [0, 0, 0]]"
+                },
+                {
+                  "zh": "[[1, 1, 1], [0, 0, 0]]",
+                  "en": "[[1, 1, 1], [0, 0, 0]]"
+                },
+                {
+                  "zh": "抛出 TypeError",
+                  "en": "A TypeError is raised"
+                },
+                {
+                  "zh": "[[1, 0, 0], [1, 0, 0]]",
+                  "en": "[[1, 0, 0], [1, 0, 0]]"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "外层乘法复制的是同一个内层列表的引用，两行其实是同一个对象，改一行两行都变。",
+              "whyEn": "The outer multiplication copies references to one inner list, so both rows are the same object and change together."
+            },
+            {
+              "qZh": "-7 // 2 的结果是？",
+              "qEn": "What is -7 // 2?",
+              "choices": [
+                {
+                  "zh": "-4",
+                  "en": "-4"
+                },
+                {
+                  "zh": "-3",
+                  "en": "-3"
+                },
+                {
+                  "zh": "-3.5",
+                  "en": "-3.5"
+                },
+                {
+                  "zh": "3",
+                  "en": "3"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "Python 的 // 向负无穷取整，-3.5 向下取整是 -4。想向 0 取整可以用 int(-7 / 2)。",
+              "whyEn": "Python's // rounds toward negative infinity, so -3.5 becomes -4. int(-7 / 2) rounds toward zero."
+            },
+            {
+              "qZh": "题目要求原地修改 nums1，下面哪种写法是对的？",
+              "qEn": "A problem asks you to modify nums1 in place. Which line does that?",
+              "choices": [
+                {
+                  "zh": "nums1 = list(sorted(nums1[:m] + nums2))",
+                  "en": "nums1 = list(sorted(nums1[:m] + nums2))"
+                },
+                {
+                  "zh": "nums1[:] = sorted(nums1[:m] + nums2)",
+                  "en": "nums1[:] = sorted(nums1[:m] + nums2)"
+                },
+                {
+                  "zh": "return sorted(nums1[:m] + nums2)",
+                  "en": "return sorted(nums1[:m] + nums2)"
+                },
+                {
+                  "zh": "nums1.copy().sort()",
+                  "en": "nums1.copy().sort()"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "切片赋值改写的是调用者传入的那个列表对象；直接赋值只是让局部变量指向一个新列表。",
+              "whyEn": "Slice assignment rewrites the caller's list object; plain assignment only points the local name at a new list."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-27",
+              "zh": "移除元素",
+              "en": "Remove Element"
+            },
+            {
+              "id": "lc-88",
+              "zh": "合并两个有序数组",
+              "en": "Merge Sorted Array"
+            },
+            {
+              "id": "lc-283",
+              "zh": "移动零",
+              "en": "Move Zeroes"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
