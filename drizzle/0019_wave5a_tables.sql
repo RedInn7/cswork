@@ -34,7 +34,7 @@ CREATE INDEX `ai_interview_scores_kind` ON `ai_interview_scores` (`kind`,`create
 ALTER TABLE `user_profiles` ADD `featured_badge` text;--> statement-breakpoint
 ALTER TABLE `mock_match_pairs` ADD `reminded_day_at` integer;--> statement-breakpoint
 ALTER TABLE `mock_match_pairs` ADD `reminded_hour_at` integer;--> statement-breakpoint
-ALTER TABLE `mock_match_requests` ADD `remind` integer DEFAULT 1 NOT NULL;--> statement-breakpoint
+ALTER TABLE `mock_match_requests` ADD `remind` integer DEFAULT 0 NOT NULL;--> statement-breakpoint
 ALTER TABLE `mock_match_requests` ADD `focus_json` text DEFAULT '{}' NOT NULL;--> statement-breakpoint
 ALTER TABLE `mock_match_requests` ADD `instant` integer DEFAULT 0 NOT NULL;--> statement-breakpoint
 ALTER TABLE `contest_entries` ADD `share_code` integer DEFAULT 0 NOT NULL;
