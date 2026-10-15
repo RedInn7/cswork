@@ -319,6 +319,12 @@ const EN: Record<string, string> = {
   今天发布的帖子已达上限: "You've reached today's limit for posts",
   请填写标题: 'Please add a title',
   标签无效: 'Unknown tag',
+  // Discussion v2: anonymous posts, replies, comment votes and their notices
+  这里不能匿名发帖: "You can't post anonymously here",
+  不能给自己的评论点赞: "You can't upvote your own comment",
+  有人回复了你的帖子: 'New reply to your post',
+  有人回复了你的评论: 'New reply to your comment',
+  有人在讨论中提到了你: 'You were mentioned in a discussion',
   // Thread polls (lib/server/solution-posts.ts)
   只有讨论帖可以发起投票: 'Only discussion threads can have a poll',
   投票截止时间要晚于现在: 'The poll must close in the future',
@@ -556,12 +562,16 @@ const PATTERNS: [RegExp, (...m: string[]) => string][] = [
   [/^题目文件最多 (\d+(?:\.\d+)?) MiB$/, (n) => `The problem file can be at most ${n} MiB`],
   [/^课程更新：([\s\S]+)$/, (title) => `Course update: ${title}`],
   [/^服务暂时不可用（(\d+)）$/, (status) => `Service temporarily unavailable (${status})`],
+<<<<<<< HEAD
   // POST problems/<id>/expected (lib/testcase-fields.ts checkConstraints)
   [
     /^超出题目约束：(\S+) (长度|节点数|的值) (\S+ [<>] \S+)$/,
     (name, what, rest) =>
       `Outside the problem's constraints: ${name} ${what === '的值' ? 'value' : what === '节点数' ? 'node count' : 'length'} ${rest}`,
   ],
+=======
+  [/^(\d+) 人赞了你的帖子$/, (n) => `${n} ${n === '1' ? 'person' : 'people'} upvoted your post`],
+>>>>>>> feat/wave6a-g3-20261015
 ];
 
 export function englishMessage(message: string) {

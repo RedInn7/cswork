@@ -136,7 +136,8 @@ export default async function DiscussPage({ searchParams }: Props) {
                       {names.get(post.tag)}
                     </span>
                   )}
-                  <span>{post.author || t('学员', 'Learner')}</span>
+                  {post.pinned && <span className="discuss-chip">{t('精选', 'Featured')}</span>}
+                  <span>{post.anonymous ? t('匿名用户', 'Anonymous') : post.author || t('学员', 'Learner')}</span>
                   <span>{day(post.createdAt, zh)}</span>
                   <span>{t(`${post.votes} 赞`, `${post.votes} ${post.votes === 1 ? 'upvote' : 'upvotes'}`)}</span>
                   <span>{t(`${post.comments} 回复`, `${post.comments} ${post.comments === 1 ? 'reply' : 'replies'}`)}</span>

@@ -32,6 +32,8 @@ type Item = {
   flags: number;
   reasons: string[];
   shown: boolean;
+  /** Published without the handle (only this queue shows it). */
+  anonymous?: boolean;
   member: { handle: string | null };
   details?: MemberDetails;
 };
@@ -144,6 +146,7 @@ function ReviewCard({ item, onQueue }: { item: Item; onQueue: (queue: Queue) => 
         {result && <span>{t(result.zh, result.en)}</span>}
         {item.interviewDate && <span>{t(`面试于 ${item.interviewDate.slice(0, 7)}`, `Interviewed ${item.interviewDate.slice(0, 7)}`)}</span>}
         <span>{item.member.handle ? `@${item.member.handle}` : t('未公开主页', 'No public handle')}</span>
+        {item.anonymous && <span>{t('匿名发布', 'Posted anonymously')}</span>}
         <span>{new Date(item.createdAt).toLocaleString()}</span>
       </p>
       {!!facts.length && (

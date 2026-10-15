@@ -59,6 +59,9 @@ export function PrivacyDocument() {
                 你在社区发布的题解、讨论帖、回答和评论（包括系统设计章节下的讨论）以公开主页名或打码后的昵称显示。收藏的帖子只有你自己能看到，帖子上只显示被收藏的总次数。参与讨论帖里的投票时，平台记录你的账号选了哪几项，用来保证每个账号只投一次；结果只显示每个选项的票数和投票人数，不公开谁投了什么。
               </p>
               <p>
+                在面经讨论、求职、上岸故事频道，以及面经评论、面试题回答和系统设计章节下发帖时，可以选择匿名发布；面经投稿也可以匿名。匿名内容对其他人不显示主页名、昵称、员工徽章和声望，你在自己匿名帖下的回复同样显示为匿名，也不会出现在你的公开主页上；平台仍记录作者，你自己和负责审核的老师能看到是谁发的，点赞照常给你积分，但不计入公开的声望。声望是你的帖子被点赞、面经通过审核所得积分的合计（不含匿名内容），只在公开主页名旁边和主页上显示。别人回复你的帖子或评论、用 @主页名 提到你（只认已公开的主页名）、赞了你的帖子时，你会收到站内通知，内容是对方的主页名或打码后的昵称和一行摘要；同一帖子一天内的点赞合并成一条。你屏蔽的人回复或提到你，不会通知你。匿名作者的通知不显示名字，它 @ 别人不发通知，它在自己匿名帖下回复你时不论屏蔽与否都会通知你，这样有没有通知都推断不出作者是谁。题目在你正在进行的比赛或认证考试里时，关于它题解讨论的通知不带摘要。这些通知不发邮件。
+              </p>
+              <p>
                 参加比赛时，计分板只显示你报名时填写的比赛昵称；周赛、入门赛和 1v1 排位的 rating 与胜负记录保存在你的账号里，只有你在公开主页上打开「展示比赛记录」后才会出现在主页上。排位匹配期间，平台暂存你的比赛昵称、对战 rating 和排队时间，匹配成功或取消时删除，离开页面后最迟 20 分钟内删除。报名时可以选择「赛后公开我的 AC 代码」（默认不勾选）：勾选后，比赛结束 15 分钟起，能打开该场比赛的登录用户可以看到你在比赛时间内每题首次通过的代码；之后随时可以在比赛页关掉，关掉后不再向任何人展示。计分板的「只看关注」只列出主页展示比赛记录的人。
               </p>
               <p>
@@ -283,6 +286,31 @@ export function PrivacyDocument() {
                 records which options your account chose, so each account votes
                 once; results show only each option’s count and the number of
                 voters, never who voted for what.
+              </p>
+              <p>
+                You may post anonymously in the Interviews, Careers and Offers
+                channels, under interview experiences and questions and in a
+                system design chapter’s discussion, and you may submit an
+                interview experience anonymously. Others then see no handle,
+                name, employee badge or reputation, your replies under your own
+                anonymous post show as anonymous too, and it stays off your
+                public profile. The platform still records you as the author:
+                you and the reviewing instructors can see it is yours, and
+                upvotes still earn you points, though not public reputation.
+                Reputation is the points your posts’ upvotes and approved
+                interview reports earned (anonymous ones left out), shown only
+                beside your public handle and on your profile. When someone
+                replies to your post or comment, mentions you by @handle (only
+                visible handles count) or upvotes your post, you get an on-site
+                notification with their handle or masked name and a one-line
+                excerpt; a day’s upvotes on one post merge into one. Replies and
+                mentions from someone you blocked don’t notify you. An anonymous
+                author’s notifications carry no name, its @mentions notify no
+                one, and its replies to you under its own post notify you even
+                if you blocked them, so whether a notification arrives never
+                hints at who wrote it. While a problem is in your running
+                contest or certification exam, notifications about its
+                solutions carry no excerpt. No email is sent for these.
               </p>
               <p>
                 In contests, scoreboards show only the contest name you enter

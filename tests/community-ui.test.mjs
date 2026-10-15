@@ -138,7 +138,7 @@ test('answers and comments: no title of their own; solutions filter and tag by t
     assert.equal($('.cs-post-row-title') === null, true, 'an answer reads by its excerpt');
     assert.equal(button('写我的回答') !== undefined, true);
     await act(async () => button('写我的回答').click());
-    assert.equal($('.cs-post-editor input') === null, true, 'no title field');
+    assert.equal($('.cs-post-editor input:not([type="checkbox"])') === null, true, 'no title field');
     assert.equal($('.cs-post-editor select') === null, true, 'no language or tag');
     await act(async () => set($('.cs-post-editor textarea'), 'Situation: a launch slipped.'));
     await act(async () => $('.cs-post-editor').requestSubmit());
