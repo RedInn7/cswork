@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-27",
+  "packageChecksum": "f4fe08385fdda329ff6db30080cd4808bf1912c59d0ddca2186a5d359d45158a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; long long armor; cin >> n >> armor;\n    long long total = 0, mx = 0;\n    for (int i = 0; i < n; i++) { long long v; cin >> v; total += v; mx = max(mx, v); }\n    cout << total - min(armor, mx) + 1 << \"\\n\";\n}\n",
+      "sha256": "3a9ae95881a4f270897e47664ed14aa29af346d1df803023a11cd9b928b757e8"
+    },
+    {
+      "language": "java",
+      "code": "public class Main {\n    public static void main(String[] args) throws Exception {\n        FastReader r = new FastReader();\n        int n = r.nextInt();\n        long armor = r.nextLong(), total = 0, max = 0;\n        for (int i = 0; i < n; i++) { long v = r.nextLong(); total += v; max = Math.max(max, v); }\n        System.out.println(total - Math.min(armor, max) + 1);\n    }\n}\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "ac70419b2f2b8f5baaea82cf6018e674f45e43f6c4ef6ad625ac3b2be3b777f1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tn, armor := readInt(), readInt()\n\ttotal, mx := 0, 0\n\tfor i := 0; i < n; i++ {\n\t\tv := readInt()\n\t\ttotal += v\n\t\tmx = max(mx, v)\n\t}\n\tfmt.Println(total - min(armor, mx) + 1)\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "26dbfc9c0feba24ed0f707634cd08f955f454c2290f14ef5edee236ae86c40fe"
+    }
+  ]
+}

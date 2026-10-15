@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-268",
+  "packageChecksum": "ffc77dee1e098b74057a9482c9fe98cbee90a2e5ee930fbded6b9d74b39eefb5",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; long long limit; cin >> n >> limit;\n    vector<long long> remain(n), sec(n);\n    for (auto &x : remain) { cin >> x; x = limit - x; }\n    for (auto &x : sec) cin >> x;\n    sort(remain.begin(), remain.end());\n    sort(sec.begin(), sec.end());\n    int j = 0;\n    for (long long cap : remain) if (j < n && sec[j] <= cap) j++;\n    cout << j << \"\\n\";\n}\n",
+      "sha256": "b1bc66eaf8a318b198eb245d4970ecc977b3b8585b72a43932d18dcaef21b202"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        FastReader r = new FastReader();\n        int n = r.nextInt();\n        long limit = r.nextLong();\n        long[] remain = new long[n], sec = new long[n];\n        for (int i = 0; i < n; i++) remain[i] = limit - r.nextLong();\n        for (int i = 0; i < n; i++) sec[i] = r.nextLong();\n        Arrays.sort(remain);\n        Arrays.sort(sec);\n        int j = 0;\n        for (long cap : remain) if (j < n && sec[j] <= cap) j++;\n        System.out.println(j);\n    }\n}\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "147b1d9b63f146140b1852298447dd54301126e18a284c3573b447e57e2f9ae5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"slices\"\n)\n\nfunc main() {\n\tn, limit := readInt(), readInt()\n\tremain := make([]int, n)\n\tsec := make([]int, n)\n\tfor i := range remain {\n\t\tremain[i] = limit - readInt()\n\t}\n\tfor i := range sec {\n\t\tsec[i] = readInt()\n\t}\n\tslices.Sort(remain)\n\tslices.Sort(sec)\n\tj := 0\n\tfor _, c := range remain {\n\t\tif j < n && sec[j] <= c {\n\t\t\tj++\n\t\t}\n\t}\n\tfmt.Println(j)\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "6347ef006b5eb57eadde3742a5a20b2cd01f7356944c79199c027bcd33d5aa04"
+    }
+  ]
+}

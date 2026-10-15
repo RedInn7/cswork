@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-283",
+  "packageChecksum": "c0b15f1ec0452bb954c521008a9934a2c6c75d8a15ce4b119be5b32f61b6d4de",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    string pwd, target; cin >> pwd >> target;\n    long long cost[26], have[26] = {}, need[26] = {};\n    for (auto &x : cost) cin >> x;\n    for (char c : pwd) have[c - 'a']++;\n    for (char c : target) need[c - 'a']++;\n    long long ans = LLONG_MAX;\n    for (int c = 0; c < 26; c++)\n        if (need[c]) ans = min(ans, max(0LL, have[c] - need[c] + 1) * cost[c]);\n    cout << ans << \"\\n\";\n}\n",
+      "sha256": "927e73f7c992ed2693051296257c71b6d1df50ab556fe5a33fbb4914d6b83dbb"
+    },
+    {
+      "language": "java",
+      "code": "public class Main {\n    public static void main(String[] args) throws Exception {\n        FastReader r = new FastReader();\n        String pwd = r.next(), target = r.next();\n        long[] cost = new long[26], have = new long[26], need = new long[26];\n        for (int i = 0; i < 26; i++) cost[i] = r.nextLong();\n        for (int i = 0; i < pwd.length(); i++) have[pwd.charAt(i) - 'a']++;\n        for (int i = 0; i < target.length(); i++) need[target.charAt(i) - 'a']++;\n        long ans = Long.MAX_VALUE;\n        for (int c = 0; c < 26; c++)\n            if (need[c] > 0) ans = Math.min(ans, Math.max(0, have[c] - need[c] + 1) * cost[c]);\n        System.out.println(ans);\n    }\n}\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "93fd3f952ff3a71e88eed76acea21c85975808c8ab4a302b60720d792a5080ae"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tpwd, target := readToken(), readToken()\n\tvar cost, have, need [26]int\n\tfor i := range cost {\n\t\tcost[i] = readInt()\n\t}\n\tfor i := 0; i < len(pwd); i++ {\n\t\thave[pwd[i]-'a']++\n\t}\n\tfor i := 0; i < len(target); i++ {\n\t\tneed[target[i]-'a']++\n\t}\n\tans := -1\n\tfor c := 0; c < 26; c++ {\n\t\tif need[c] > 0 {\n\t\t\tv := max(0, have[c]-need[c]+1) * cost[c]\n\t\t\tif ans < 0 || v < ans {\n\t\t\t\tans = v\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "b7433928ff2209ce01d7f33b01cfffccba9d4c8990df97cce02bdc81eb28c7c8"
+    }
+  ]
+}

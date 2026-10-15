@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-275",
+  "packageChecksum": "d272698ac20a4d10826e203bcda5ca9b9d750a5402354f8065a1cd5d855ff353",
+  "sourceContentHash": "fd00a4c05064e2dcb710d524d8bbb423dd259da85e62eb2fdeb597916ff501fc",
+  "editorialSha256": "566f93b2ef2f6b7cb55d167928423b92d1304f9ec483af1b345130cbabc63951",
+  "hints": {
+    "zh": [
+      "删除只会让剩下的序列变短，最长递增子序列不会变长。所以“删 t 次后是否仍满足要求”随 t 单调：某个 t 不行，之后的都不行。",
+      "单调性意味着可以二分最大的可行删除次数。判定某个 t 时，跳过删除时刻不超过 t 的位置，对剩余元素求最长严格递增子序列的长度，再和 minOrder 比较。",
+      "先记录每个原下标是第几次被删除的；判定函数用耐心排序求 LIS（维护每种长度递增子序列的最小末尾，用二分查找替换）；如果 t=0 都不可行就输出 −1；否则在 0 到 n 之间二分出最大的可行 t 并输出。"
+    ],
+    "en": [
+      "Removing elements only shortens the remaining sequence, so its longest increasing subsequence never grows. Whether t removals still meet the requirement is therefore monotone: once some t fails, every larger t fails too.",
+      "Monotonicity lets you binary search the largest feasible number of removals. To test a given t, skip every position whose removal time is at most t, compute the length of the longest strictly increasing subsequence of what remains, and compare it with minOrder.",
+      "Record for each original index the step at which it is removed; the test computes the LIS with patience sorting, keeping the smallest tail of an increasing subsequence of each length and replacing by binary search; if even t=0 fails, print −1; otherwise binary search the largest feasible t between 0 and n and print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord the removal time of each original index. For a given number of removals t, filter out the removed positions and compute the LIS length with patience sorting; feasibility is monotonically non-increasing in t, so check t=0 first, then binary search for the largest feasible t.\n\n## Proof of correctness\n\nRemoving elements only shrinks the set of subsequences, so if some t is infeasible, every later t is infeasible as well. In patience sorting, tails[l] is the smallest last value of an increasing subsequence of length l+1 in the scanned prefix; replacing by binary search preserves this invariant, so the length of tails is exactly the LIS. An exact test plus binary search over a monotone boundary gives the maximum number of removals; an infeasible start returns −1 separately, as this site's protocol specifies.\n\n## Complexity\n\nTime O(n log²n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-267",
+  "packageChecksum": "3cc5326c77d50ca7464edde4017bfa9eb3bb224116270fc73567d317d485e680",
+  "sourceContentHash": "dbebbb64fa77cd94a6b756c1bdd4a0d6e9909c36ec4ac9e88cecf38c28f96b3e",
+  "editorialSha256": "a7448953b6ec6af08359465061dc0c38ebce22c82f2eb097c41cf05979a9a2c4",
+  "hints": {
+    "zh": [
+      "一个城市只可能被两类单位保护：本城留下不动的单位，以及右边相邻城市左移过来的单位。所以当右边那座城市的单位做完决定后，这座城市有没有被保护就确定了。",
+      "从左到右做 DP，状态只记“前一座城市有没有单位留驻”。处理当前城市时枚举它的单位是留下还是左移，此时前一座城市的保护情况已经确定，可以立刻按“有留驻或有左移者”结算一次它的人口。",
+      "初始状态为“前一城无留驻、值为 0”；对每座城市，若有单位且不是首城，就可选择留下或左移，否则只能不动；新状态是“本城是否有留驻”，得分加上前一城被覆盖时的人口；处理完所有城市后，给“末城有留驻”的状态补上末城人口，取最大值输出。"
+    ],
+    "en": [
+      "A city can be protected by only two kinds of units: one that stays in that city, and one that moves left from the next city. So once the next city's unit has decided, whether this city is protected is fixed.",
+      "Run a DP from left to right whose only state is whether the previous city has a unit staying there. For the current city, try its unit staying or moving left; at that point the previous city's protection is settled, so add its population once if it has a staying unit or receives one from the right.",
+      "Start with the state \"previous city has no staying unit, value 0\"; for each city, if it has a unit and is not the first city, it may stay or move left, otherwise it does not move; the new state is whether this city keeps a unit, and the score adds the previous city's population when it is covered; after the last city, add the last city's population to the state where it keeps a unit, and print the maximum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRun a DP from left to right that keeps two states: whether the previous city has a unit staying there. Once you decide whether the current unit stays or moves left, the final coverage of the previous city is fixed, so settle its population; finally settle the last city.\n\n## Proof of correctness\n\nA city can only be protected by a unit staying in it and by a unit moving left from the city to its right. When the city to the right is processed, both decisions are known and never change afterwards, so the population can be counted once immediately as a logical OR. The state stores the staying information of the only city still waiting to be settled, and every legal decision of the current unit is enumerated, so the optimum is found without omissions or double counting.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input."
+}

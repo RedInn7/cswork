@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-269",
+  "packageChecksum": "a1e81d958e9d21914a823af16ee50c8f03326207bf3645f3c07e34de1f1e560f",
+  "sourceContentHash": "a667408e7057f3e61fc84f29ad87f7473ceed344b509846d5c5076b6ba0b25a6",
+  "editorialSha256": "c59f83f79f09f9b38f94991cc355c7c0f7edfbd2d1587478d5c1531ad9cc236f",
+  "hints": {
+    "zh": [
+      "转移操作不会改变 inv1 的总量 S，而且只要最终每个位置都非负，任何同总和的数组都能一步步转移得到。所以真正的约束只有一条：匹配上的那些位置，目标值之和不能超过 S，多出来的量要放到没匹配的位置上。",
+      "如果 S 恰好等于 inv2 的总和，就能全部匹配。否则至少要留一个位置吸收差额，最多只能匹配 n−1 个；在这个上限之内，想让个数最多，就应该优先匹配目标值小的位置。",
+      "先求两个数组的和，相等就输出 n；否则对 inv2 的值做 1..10000 的计数桶，从小到大遍历每个值 v，每次取 min(该值的个数, 剩余预算整除 v, n−1−已匹配数) 个，扣掉对应预算并累加；输出累计个数。"
+    ],
+    "en": [
+      "Transfers never change the total S of inv1, and any non-negative array with the same total can be reached step by step. So the only real constraint is that the target values of the matched positions sum to at most S, with the remainder placed on unmatched positions.",
+      "If S equals the total of inv2, every position can be matched. Otherwise at least one position must absorb the difference, so at most n−1 can match; within that cap, to match as many as possible, prefer positions with small target values.",
+      "Compute both sums and print n if they are equal; otherwise build count buckets of inv2 over 1..10000, go through the values v from small to large, and each time take min(count of v, remaining budget divided by v and rounded down, n−1 minus the matches so far), subtract their cost from the budget and add them to the count; print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe total inventory S never changes. If it equals the target sum, every position can be matched; otherwise go through target values from smallest to largest and use the budget S to match as many positions as possible, but at most n−1. Implement it with counting buckets over the value range 10000.\n\n## Proof of correctness\n\nAny non-negative array with the same sum as the original inventory can be obtained by transferring from surplus positions to deficit positions, with each supplying position keeping a valid positive balance at every step. Matching a set of targets needs at least the sum of their values in inventory, so choosing the smallest values gives the largest count. If the totals differ, not every position can match, and at least one position must be left to absorb the remainder; if that position were also equal, either the match count could be increased or all the totals would be equal, contradicting the premise. So the budget bound is achievable.\n\n## Complexity\n\nTime O(n+10000), space O(10000) excluding the input."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-269",
+  "packageChecksum": "a1e81d958e9d21914a823af16ee50c8f03326207bf3645f3c07e34de1f1e560f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; cin >> n;\n    long long budget = 0, target = 0;\n    vector<long long> counts(10001, 0);\n    for (int i = 0; i < n; i++) { long long v; cin >> v; budget += v; }\n    for (int i = 0; i < n; i++) { int v; cin >> v; target += v; counts[v]++; }\n    if (budget == target) { cout << n << \"\\n\"; return 0; }\n    long long ans = 0;\n    for (long long value = 1; value <= 10000; value++) {\n        long long taken = min({counts[value], budget / value, (long long)n - 1 - ans});\n        ans += taken;\n        budget -= value * taken;\n    }\n    cout << ans << \"\\n\";\n}\n",
+      "sha256": "320624cd4adb7b769cfdbee868ed51344f0f7867e7b575a5683c7bf1b72761cf"
+    },
+    {
+      "language": "java",
+      "code": "public class Main {\n    public static void main(String[] args) throws Exception {\n        FastReader r = new FastReader();\n        int n = r.nextInt();\n        long budget = 0, target = 0;\n        long[] counts = new long[10001];\n        for (int i = 0; i < n; i++) budget += r.nextLong();\n        for (int i = 0; i < n; i++) { int v = r.nextInt(); target += v; counts[v]++; }\n        if (budget == target) { System.out.println(n); return; }\n        long ans = 0;\n        for (long value = 1; value <= 10000; value++) {\n            long taken = Math.min(counts[(int) value], Math.min(budget / value, n - 1 - ans));\n            ans += taken;\n            budget -= value * taken;\n        }\n        System.out.println(ans);\n    }\n}\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "beca1d8840f1bda2b730145f93858dfb900b24ee1ac0a6b13f067788736522df"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tn := readInt()\n\tbudget, target := 0, 0\n\tcounts := make([]int, 10001)\n\tfor i := 0; i < n; i++ {\n\t\tbudget += readInt()\n\t}\n\tfor i := 0; i < n; i++ {\n\t\tv := readInt()\n\t\ttarget += v\n\t\tcounts[v]++\n\t}\n\tif budget == target {\n\t\tfmt.Println(n)\n\t\treturn\n\t}\n\tans := 0\n\tfor value := 1; value <= 10000; value++ {\n\t\ttaken := min(counts[value], budget/value, n-1-ans)\n\t\tans += taken\n\t\tbudget -= value * taken\n\t}\n\tfmt.Println(ans)\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "19c3773264d45acae6ecf4e3d8b0242dfaee09b940735619e2c48b4990682937"
+    }
+  ]
+}

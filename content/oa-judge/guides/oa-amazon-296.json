@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-296",
+  "packageChecksum": "9290d79fe4ee2af0cc1efec8982d2684daa8936987b9f4f5c0df30dc2d52413c",
+  "sourceContentHash": "a30f40164b153c1ab2ce6679b04151ac89dae4f84ee9d24a5b8d020089982752",
+  "editorialSha256": "40c2f1c584c3d354c571bb21c84370173ae369825e884e385f88560b69080e5b",
+  "hints": {
+    "zh": [
+      "设初始时所有长度为 k 的窗口里，1 最少的窗口有 q 个 1。无论怎么操作，第 t 次操作前最多只删掉了 t−1 个 1，所以前 q 次操作的费用至少依次是 q、q−1、…、1，之后每次至少付 1。",
+      "这个下界能达到：先反复选那个 1 最少的窗口，把它清空，正好付 q+(q−1)+…+1；之后从这段全 0 的窗口向两边一格一格滑动，每遇到一个新的 1，窗口里只有它一个 1，付 1 删掉。总费用是 T+q(q−1)/2，T 为 1 的总数。",
+      "统计 1 的总数 T；用滑动窗口求出所有长度为 k 的窗口中 1 的最少个数 q；输出 T+q×(q−1)/2，用 64 位整数。全为 0 时结果自然是 0。"
+    ],
+    "en": [
+      "Let q be the fewest 1s in any initial window of length k. However you operate, before the t-th operation at most t−1 ones have been removed, so the first q operations cost at least q, q−1, …, 1 in turn, and every later operation costs at least 1.",
+      "This bound is reachable: first keep choosing the window with the fewest 1s until it is clear, paying exactly q+(q−1)+…+1; then slide outward from that all-zero window one cell at a time, so each newly met 1 is the only 1 in its window and costs 1 to remove. The total is T+q(q−1)/2, where T is the number of 1s.",
+      "Count the total number of 1s, T; use a sliding window to find the minimum number q of 1s over all windows of length k; print T+q×(q−1)/2 as a 64-bit integer. An all-zero array naturally gives 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet T be the total number of 1s, and use a sliding window to find the minimum number q of 1s in any initial window of length k; return T+q(q−1)/2.\n\n## Proof of correctness\n\nEvery initial window has at least q ones, and before the t-th operation at most t−1 have been removed, so the first q operations cost at least q,q−1,…,1, and every removal after that costs at least 1. Choosing the window with the fewest ones first and clearing it continuously pays exactly that triangular sum. Once a zero stretch of length k exists, extend it left and right one cell at a time; each newly reached 1 can be removed at cost 1 in a window whose other k−1 cells are already cleared, so the lower bound is reached. The fixed window length does not shrink at the edges of the array.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input; the answer uses 64 bits."
+}

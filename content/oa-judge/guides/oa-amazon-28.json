@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-28",
+  "packageChecksum": "662fa401e2be0f7f367ffb2b95c54cb1feb83d17c444e315a71cbb93017ef270",
+  "sourceContentHash": "4a0b2a377b282e9e90b11ba625be3c255ac9d601843c6645ce26b293affa97c5",
+  "editorialSha256": "501d889cbadba3473e81e6840059df7466533848ef46297caee7c24c17caae29",
+  "hints": {
+    "zh": [
+      "权重 i 随位置递增，大的值应该放在后面。如果较大的值排在权重较小的位置，交换后总和会增加两个正差的乘积，所以最优排列按数值非降。",
+      "相同数值之间互换不改变总和，只影响字典序；要让字典序最小，就让同值元素的下标从小到大排列。",
+      "把下标按（数值，下标）升序排序，依次输出这些下标（从 1 开始编号）。"
+    ],
+    "en": [
+      "The weight i grows with the position, so larger values belong later. If a larger value sits at a smaller weight, swapping increases the sum by the product of two positive differences, so the optimal permutation has non-decreasing values.",
+      "Swapping equal values does not change the sum and only affects the lexicographic order; to make it smallest, list equal values in increasing index order.",
+      "Sort the indices by (value, index) in ascending order and print them, numbered from 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nOrder the indices by element value in ascending order; for equal values, order them by original index in ascending order.\n\n## Proof of correctness\n\nIf a larger value is at a position with smaller weight, swapping them gains the product of two positive differences, so an optimal permutation has non-decreasing values. Equal values can be swapped freely without changing the sum, and ascending indices give the lexicographically smallest arrangement.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

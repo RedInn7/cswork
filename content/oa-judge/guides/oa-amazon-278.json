@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-278",
+  "packageChecksum": "f95ed9d07d5fe4fb5660acdabe84a9b3e5dac7ddbe0b2531710778077344a0e9",
+  "sourceContentHash": "7e1898557a850bc265095c4f921accd82b9136b16d22fb8c6bb24d0772bc59cb",
+  "editorialSha256": "91e972f705fbbe484bfa6f949b85630b2e2b5ed42698e0cca2e685f9129c8acc",
+  "hints": {
+    "zh": [
+      "想让某种速度的人连成一段，就要把这段范围里所有不同速度的人删掉。删除代价等于“这段原始长度减去其中同速人数”，与其他速度怎么安排无关。",
+      "所以可以按速度分别处理：取出该速度的全部出现位置 p，选连续的一段 p[l..r]，代价是 p[r]−p[l]−(r−l)。代价随右端扩张不减、随左端收缩不增，正适合双指针。",
+      "按下标顺序收集每种速度的位置；对每个位置数组，右指针逐个前进，当 p[r]−p[l]−(r−l)>k 时左指针右移；每一步用 r−l+1 更新答案；所有速度中取最大值输出。"
+    ],
+    "en": [
+      "To make the people of one speed contiguous, you must remove everyone of a different speed inside that stretch. The removal cost is the stretch's original length minus the number of same-speed people in it, regardless of the other speeds.",
+      "So handle each speed separately: take all positions p where it occurs and choose a consecutive run p[l..r]; the cost is p[r]−p[l]−(r−l). The cost never decreases as the right end grows and never increases as the left end shrinks, which suits two pointers.",
+      "Collect each speed's positions in index order; on each position array, advance the right pointer one step at a time and move the left pointer right while p[r]−p[l]−(r−l) > k; update the answer with r−l+1 at each step; print the maximum over all speeds."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCollect the positions p of each speed separately. Run two pointers over that position array, keeping p[r]−p[l]−(r−l)≤k, and update the same-speed count r−l+1.\n\n## Proof of correctness\n\nDeleting every person of a different speed between p[l] and p[r] costs exactly the original length minus the number of same-speed people. Keeping more people of that speed never increases the deletion cost, so every optimal segment corresponds to some window of consecutive occurrence positions. The cost never decreases as the window extends to the right and never increases as it shrinks from the left, so two pointers enumerate the earliest valid left end for every right end and obtain the maximum count.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

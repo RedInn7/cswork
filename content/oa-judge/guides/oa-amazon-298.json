@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-298",
+  "packageChecksum": "e34011a671963a62226d6138300e7b8cd6fff85264231333c0fe73175d872b3a",
+  "sourceContentHash": "3b1a34c5a549da3ac0e848a366a40a8f2807492f92003fc175a6a1db3f9e3bea",
+  "editorialSha256": "ce3ded63c082c6ce268bc5ace502f8c09f39373468756c6c480c0aaef27e6f5e",
+  "hints": {
+    "zh": [
+      "已有元素不能删也不能动，所以 finalList 的每个元素要么匹配 initialList 里的某个原有元素，要么靠插入得到；而 0 和负数不能插入，必须匹配原有元素。插入次数等于 n 减去匹配个数，所以要最大化“包含全部非正目标”的公共子序列长度。",
+      "把目标值映射到它在 finalList 中的下标，问题就变成在 initialList 对应的下标序列里找严格递增子序列；额外约束是不能跳过非正目标：匹配下标 q 时，前一个匹配下标必须不小于 q 之前最后一个非正目标的下标 b（可以正好是 b），b 不存在时可以从空开始。用区间最大值线段树按下标维护“以该下标结尾的最长匹配长度”。",
+      "预处理 before[q]，即 q 之前最后一个非正目标的下标；按顺序扫描 initialList，跳过不在目标中的值；查询 [max(0,b), q) 上的最大值，b 不存在时再与 0 取较大，结果为负说明没有合法前驱就跳过，否则把位置 q 提高到“最大值+1”；最后查询从最后一个非正目标（没有则从 0）到末尾的最大值，存在则输出 n 减去它，否则输出 −1。"
+    ],
+    "en": [
+      "Existing elements cannot be deleted or moved, so each element of finalList either matches some original element of initialList or is inserted; zeros and negatives cannot be inserted and must match original elements. The number of insertions is n minus the number matched, so maximize the length of a common subsequence that contains every non-positive target.",
+      "Map each target value to its index in finalList; the task becomes finding a strictly increasing subsequence in the index sequence of initialList, with the extra rule that no non-positive target may be skipped: when matching index q, the previous matched index must be at least b, the index of the last non-positive target before q (it may be b itself), and when there is no such b the match may start fresh. A range-maximum segment tree over target indices keeps the longest match ending at each index.",
+      "Precompute before[q], the index of the last non-positive target before q; scan initialList in order and skip values not in the target; query the maximum on [max(0,b), q), also allowing 0 when b does not exist; a negative result means no valid predecessor, so skip it, otherwise raise position q to that maximum plus 1; finally query the maximum from the last non-positive target (or from 0 if there is none) to the end, and print n minus it if it exists, otherwise −1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMap target values to indices. Every non-positive target is a forced matching anchor. Scan initial for its matched indices q; let b be the index of the last non-positive target before q, so the best predecessor can only lie in [b,q); query the range maximum with a tree and apply chmax at q. When b does not exist, the empty predecessor 0 is allowed. Finally take the largest matching length among the states at the last anchor and after it; if one exists, the answer is n minus it, otherwise −1.\n\n## Proof of correctness\n\nIn any feasible plan, the original elements that are matched form a subsequence of the target that includes every non-positive element, since those cannot be inserted; the remaining positive elements can be inserted exactly, so the cost is the target length minus the number matched. When processing position q, the predecessor must come after the last forced anchor b or be b itself, otherwise an element that cannot be inserted would be skipped; and any such valid predecessor already includes all earlier anchors, so linking q is valid. Updating in the order of initial ensures no initial element is used twice, and excluding q from the range keeps the target indices strictly increasing. By induction this gives the optimal length over all valid common subsequences, and requiring at the end that the last anchor is included gives the fewest insertions; having no valid final state means no matching contains all anchors, so the task cannot be completed by inserting only positive numbers.\n\n## Complexity\n\nTime O((m+n)log n), space O(n+m)."
+}

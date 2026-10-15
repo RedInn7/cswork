@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-3",
+  "packageChecksum": "8355c410f2493d3a45df8f6758da4c71d818da315542901ea15af95ce1b3fe04",
+  "sourceContentHash": "4f0756cf991a8c2f4d911e81138e28ee4e93c2d51f48316c49a78922f41cd68e",
+  "editorialSha256": "dc57227262138e6bfa24cf3923d7b5c96183a33f970044d31549016e391d3db8",
+  "hints": {
+    "zh": [
+      "一个自足子串左端的字符，不能在左端之前再出现，否则那次出现就落在子串外面了。所以合法的左端一定是某个字符的首次出现位置，最多只有 26 个候选。",
+      "固定左端后向右扫描，维护目前见过的字符的最右出现位置。如果遇到某个字符的首次出现在左端之前，再往右扩也补救不了，停止；如果扫描位置正好等于这个最右位置，当前区间就包含了其中每个字符的全部出现，是一个自足子串。",
+      "先求每个字符的首次和末次出现位置；对每个出现过的字符，以它的首次位置为左端向右扫描，维护 end 为见过字符末次位置的最大值，遇到首次位置早于左端的字符就跳出；每当扫描位置等于 end 且长度小于整串长度时更新答案；没有合法子串则输出 0。"
+    ],
+    "en": [
+      "In a self-contained substring, the character at the left end cannot occur again before the left end, or that occurrence would fall outside. So a valid left end must be the first occurrence of some character, which leaves at most 26 candidates.",
+      "Fix a left end and scan right, keeping the rightmost occurrence of every character seen so far. If you meet a character whose first occurrence is before the left end, no further extension can fix it, so stop; whenever the scan position equals that rightmost occurrence, the range contains every occurrence of its characters and is self-contained.",
+      "Compute the first and last occurrence of each character; for each character that occurs, use its first occurrence as the left end and scan right, keeping end as the largest last occurrence seen, and break on a character whose first occurrence is before the left end; whenever the scan position equals end and the length is less than the whole string, update the answer; print 0 if nothing qualifies."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA valid left end must be the first occurrence of some character, so there are at most 26 of them. Scan right from each one, maintaining the rightmost occurrence of the characters seen so far; stop as soon as you meet a character whose first occurrence is before the left end.\n\n## Proof of correctness\n\nIf the left-end character also appears further left, the range cannot be self-contained. If the scan finds a character that appears before the left end, no further extension can fix it; otherwise, once the scan reaches the last occurrence of every current character, the range contains exactly all of their occurrences. Every possible left end and right end is enumerated, and the whole string is excluded, so no solution is missed.\n\n## Complexity\n\nTime O(26n), space O(26)."
+}

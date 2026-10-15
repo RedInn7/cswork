@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-301",
+  "packageChecksum": "e6a7fac4a0fbcf2ca627445cbc478cf48a4ea120f35bd7e8d4e3a7f1b8e34ec9",
+  "sourceContentHash": "626244f79237da282b589bec87fc0e1735e2ee327984c02967f23e646353be2b",
+  "editorialSha256": "eca93293f7882108e0d7824fbc2b2c02246acf7e5db185102bf07a189693f2f6",
+  "hints": {
+    "zh": [
+      "处理完一个任务后，刚用过的那台处理器的上次类型就是这个任务的类型 p，真正未知的只有另一台的上次类型 j（或者它还没用过）。所以状态只需要 j，共 m+1 种。",
+      "下一个任务类型 t 到来时只有两种选择。继续用刚才那台：所有状态都加上同一笔费用（p 等于 t 时是 short[t]，否则是 long[t]），可以用一个全局偏移量表示而不必改数组；换到另一台：只有 j 等于 t 的状态付 short[t]，其余付 long[t]，而换完之后“另一台”的类型变成 p，所以所有换机方案都汇入同一个状态 p。",
+      "用 dp[j]+offset 表示真实费用，初始只有 j=0（另一台未用）为 0；对每个任务 t，先算换机的最优值 offset+min(dp[t]+short[t], 除 t 以外的最小 dp+long[t])，再按是否同类型给 offset 加上费用，然后用“换机最优值 − 新 offset”去降低 dp[p]；为了 O(1) 求“除 t 以外的最小值”，维护下标不同的最小和次小两项，状态值只降不升，每次单点更新时同步维护它们；最后答案是最小值加 offset。不要假设 short≤long。"
+    ],
+    "en": [
+      "After a task is handled, the processor just used has last type p, the task's type; the only unknown is the other processor's last type j, or that it is still unused. So the state is just j, with m+1 possibilities.",
+      "When the next task of type t arrives there are only two choices. Staying on the same processor adds the same amount to every state (short[t] when p equals t, otherwise long[t]), which a global offset can represent without touching the array. Switching to the other processor costs short[t] only for the state where j equals t and long[t] for every other state, and afterwards the other processor's type is p, so all switching options flow into the single state p.",
+      "Let dp[j]+offset be the real cost, starting with only j=0 (other processor unused) at 0; for each task t, first compute the best switch value, offset + min(dp[t]+short[t], smallest dp at an index other than t + long[t]), then add the same-processor cost to offset, and use the best switch value minus the new offset to lower dp[p]; to get the minimum excluding t in O(1), maintain the smallest and second smallest entries at distinct indices, which only ever decrease, updating them on each single-point change; the answer is that minimum plus offset. Do not assume short ≤ long."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter handling the previous type p, state j records the last type of the other processor, and dp[j]+offset is the actual cost. Continuing on the same processor adds the same cost to every state; the best result of switching processors is min(dp[t]+short[t],min(j≠t)dp[j]+long[t])+ the old offset, and only state p is updated. Maintain the minimums at two different indices, with support for decreasing a single point.\n\n## Proof of correctness\n\nEach step can only continue on the same processor or switch. When continuing, the last type is p, so the cost is the same for every j and can be expressed by the offset; when switching, the old standby becomes active and the old active processor becomes the standby with type p, so all switches flow into the same state. A matching type t can only pay short, and only the others pay long; excluding t avoids inventing a cold start when short is larger. State values only decrease, so the minimum and second minimum can be maintained in constant time; by induction every state always holds its true optimum. The global minimum at the end is the answer.\n\n## Complexity\n\nTime O(n+m), space O(m+n) including the input."
+}

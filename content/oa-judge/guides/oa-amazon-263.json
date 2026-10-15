@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-263",
+  "packageChecksum": "6e526a6e136bf5a94c8d451b8a4032fe8ff4354a366bc7f1fe79526742e6a4d7",
+  "sourceContentHash": "b9938b94fa296f7bd548418bd5af3c24b525615963e3ab4ff7aa9c60fd1ee56e",
+  "editorialSha256": "424ee994e58548a1e6b3ee4cb02dd24345d16d3b21a7eb3d6a106a2b828d5a79",
+  "hints": {
+    "zh": [
+      "阈值为 t 的机器在活跃数达到 t 之前不会被暂停，而一旦达到 t，同组剩下的机器（包括还没激活的）就全部作废。所以每个阈值组最多只能贡献 t 台机器的页数。",
+      "各组的上界互不干扰：按阈值从小到大依次激活各组选中的机器，低阈值的机器会在更高阈值组开始之前就被暂停清走，不会占用活跃名额。因此答案就是每组页数最大的 min(t, 组大小) 台之和。",
+      "按 threshold 分组；每组内把 pages 降序排列，取前 min(t, 组大小) 个累加；把所有组的结果相加输出。总和可达 2×10^14，需要 64 位整数。"
+    ],
+    "en": [
+      "A printer with threshold t is not paused until the active count reaches t, and once it does, every remaining printer of that group, including idle ones, is gone. So each threshold group can contribute the pages of at most t printers.",
+      "The group bounds do not interfere: activate the chosen printers group by group in increasing threshold order, and the lower-threshold printers are paused and cleared before a higher group starts, so they never take up active slots. The answer is the sum, over groups, of the largest min(t, group size) page counts.",
+      "Group printers by threshold; within each group sort pages in descending order and add the first min(t, group size) of them; add up all groups and print. The total can reach 2×10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGroup by threshold=t, take only the largest min(t, group size) pages in each group, then sum them.\n\n## Proof of correctness\n\nPrinters in the threshold-t group are not paused before the active count reaches t, so once the t-th printer of the group is activated, every other printer of the group becomes invalid; at most t can be taken. Activating the chosen printers of each group in increasing threshold order reaches this bound: if, when t is first reached, an older printer with a lower threshold were still active, it should already have been paused at an earlier count of at most t−1, a contradiction. So older groups never occupy slots and trigger t before this group is filled. Taking the largest page counts in each group reaches the sum of the per-group bounds.\n\n## Complexity\n\nTime O(n log n), space O(n); the answer uses 64 bits."
+}

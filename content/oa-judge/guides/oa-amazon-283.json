@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-283",
+  "packageChecksum": "c0b15f1ec0452bb954c521008a9934a2c6c75d8a15ce4b119be5b32f61b6d4de",
+  "sourceContentHash": "c4c09be976893781af8ae9ba95c2dc03192eacefba24c3302d8da8b680f8250a",
+  "editorialSha256": "4e1073498d6b0367c94a78fe957d86e276143eb526a196fa9501f8671e3da076",
+  "hints": {
+    "zh": [
+      "只要剩余密码里每个目标字母的个数都不少于 target 的需求，就总能重排出包含 target 的串。所以要做的是让至少一种目标字母“不够用”。",
+      "让一种字母不够就足够了。对每个目标字母 c，把它删到比需求少 1 个，需要删 max(0, pwd 中个数 − target 中个数 + 1) 个，费用是这个数乘以 cost[c]；在所有目标字母里挑最便宜的方案。",
+      "统计 pwd 和 target 的字母频次；读入 26 个费用；对 target 中出现的每个字母计算所需删除数乘对应费用，取最小值输出，结果用 64 位整数。"
+    ],
+    "en": [
+      "As long as every target letter appears in the remaining password at least as often as target needs it, some rearrangement contains target. So the goal is to make at least one target letter run short.",
+      "Making a single letter run short is enough. For each target letter c, deleting it down to one fewer than needed takes max(0, count in pwd − count in target + 1) deletions, costing that number times cost[c]; choose the cheapest letter.",
+      "Count the letters of pwd and target; read the 26 costs; for each letter that appears in target, multiply the required deletions by its cost, and print the minimum as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount both strings. For each target letter c, deleting max(0,countPwd[c]−countTarget[c]+1) copies leaves too few of it; take the minimum required cost over all letters.\n\n## Proof of correctness\n\nSome rearrangement contains the target if and only if every target letter has enough copies. To break this condition, at least one letter must fall short of its demand, and for that letter the stated number of deletions is required; so every valid plan costs at least one of the candidates. Deleting only the letter with the cheapest candidate is enough to make the target impossible forever, reaching the lower bound.\n\n## Complexity\n\nTime O(|pwd|+|target|+26), auxiliary space O(26); the cost uses 64 bits."
+}

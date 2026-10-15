@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-29",
+  "packageChecksum": "764bbb4f3103e47daaec79808c9cffe4a3703fa63d0ea528b69de2cbbfbb79fb",
+  "sourceContentHash": "0b90f6f843369be7af1f12ed7a52047321d4863c3585629b3956840b4a6362c7",
+  "editorialSha256": "51f885e5540a804e4c185f8734100a445b661b3007e6e57c784a0165bc6bf7a4",
+  "hints": {
+    "zh": [
+      "加入 A、B 两个枢纽，再加上固定的枢纽 n，每个仓库都连到右侧最近的枢纽，于是仓库恰好被分成三段：[1,A]、[A+1,B]、[B+1,n]，每段都连到段尾那个枢纽。",
+      "同一段里每个仓库的成本是“段尾容量 − 自身容量”，整段之和就是“段长 × 段尾容量 − 段内容量和”。段内容量和用前缀和 O(1) 求出，每个查询就是三段之和。",
+      "预处理容量的前缀和；对每个查询，依次以 A、B、n 作为段尾，起点接在上一段末尾之后，累加 段长×段尾容量 − 前缀和之差；按查询顺序输出结果，用 64 位整数。"
+    ],
+    "en": [
+      "With hubs A and B added, plus the fixed hub n, every warehouse connects to the nearest hub on its right, so the warehouses split into exactly three segments, [1,A], [A+1,B] and [B+1,n], each connecting to the hub at its end.",
+      "Within a segment each warehouse costs (end capacity − its own capacity), so a segment totals (segment length × end capacity − sum of capacities in the segment). The capacity sum comes from prefix sums in O(1), and each query is the sum of three segments.",
+      "Precompute prefix sums of the capacities; for each query, use A, B and n in turn as the segment end, starting right after the previous segment, and add length × end capacity − the difference of prefix sums; print the results in query order, using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse prefix sums to compute the three segments that connect to A, B and n separately; each segment costs segment length × hub capacity − the sum of capacities in the segment.\n\n## Proof of correctness\n\nThe nearest hub to the right splits the warehouses exactly into [1,A], [A+1,B] and [B+1,n], and every warehouse in a segment uses the same hub, so summing the per-warehouse costs gives the formula. Queries are independent of each other.\n\n## Complexity\n\nTime O(n+q), space O(n+q)."
+}

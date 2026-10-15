@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-280",
+  "packageChecksum": "043e1b73eba6487189462da32013977e25a33a7cd51df78a26a8ea23f1919690",
+  "sourceContentHash": "56f04a24704a19f7932463630b6e17656ab7bc726addcb80cdfaabb1a5de5adf",
+  "editorialSha256": "1701e691462503171ba6c0eb6bd39740fa12abb7092cec0824de9e9d828a101f",
+  "hints": {
+    "zh": [
+      "字符可以从任意位置挑、任意重排，所以位置和顺序都不重要，只有每种字母的数量重要。",
+      "取 q 次目标词，t 中每种字母都要提供 q 倍的需求量，因此 q 不能超过 s 中该字母个数除以 t 中需求量（向下取整）；这些上界中的最小值就能达到。",
+      "分别统计 s 和 t 的 26 个字母频次；对 t 中出现的每个字母计算 s 中个数整除 t 中个数，取最小值输出。"
+    ],
+    "en": [
+      "Characters can be picked from anywhere and rearranged freely, so positions and order do not matter; only the count of each letter does.",
+      "Taking the target q times requires q times the demand of every letter in t, so q cannot exceed the count of that letter in s divided by its demand in t, rounded down; the minimum of these bounds is achievable.",
+      "Count the 26 letters of s and of t; for each letter that appears in t, divide its count in s by its count in t, rounding down, and print the minimum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the characters of s and t separately. The answer is the minimum, over every character that appears in t, of how many times it can be supplied, countS//countT.\n\n## Proof of correctness\n\nTaking q copies requires q times the demand of every target letter, so each frequency ratio is an upper bound. If q does not exceed any bound, every letter has enough copies to distribute among the q copies, and arbitrary rearrangement lets each copy form the target independently, so the minimum bound is exactly achievable.\n\n## Complexity\n\nTime O(|s|+|t|), auxiliary space O(26)."
+}

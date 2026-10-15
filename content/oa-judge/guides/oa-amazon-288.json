@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-288",
+  "packageChecksum": "e00ba9f9c02dd77e8c326ea06cb528865d24731ccb290f4c3863b8e3f7c4352c",
+  "sourceContentHash": "cc8ae56144ca70f711c9b4ef619030d1bd334f8f03e8452fd4221fbf54304dd1",
+  "editorialSha256": "568c25138cfd1250b89c2665e32d4d76f1206e9e1db3589021fff79167b461c0",
+  "hints": {
+    "zh": [
+      "收走编号 v 的时候，扫描正停在 v 所在的位置。下一个要收的 v+1 如果在它右边，这一轮还能接着收；如果在左边，这一轮已经错过它了。",
+      "所以每出现一次“v+1 的位置在 v 的左边”，就必须恰好多开一轮，其余情况都不用换轮。答案就是 1 加上这种情况出现的次数。",
+      "建数组 pos[v] 记录编号 v 在序列中的下标；遍历 v=1..n−1，统计 pos[v+1]<pos[v] 的次数，加 1 后输出。"
+    ],
+    "en": [
+      "When number v is collected, the scan is sitting at v's position. If the next number v+1 lies to its right, it can be collected in the same pass; if it lies to the left, this pass has already missed it.",
+      "So each time v+1's position is to the left of v's, exactly one more pass is needed, and nothing else forces a new pass. The answer is 1 plus the number of such cases.",
+      "Build pos[v], the index of number v in the sequence; for v = 1..n−1, count how many times pos[v+1] < pos[v], then print that count plus 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord the original position pos of each number; the answer is 1 plus the number of times pos[v+1]<pos[v].\n\n## Proof of correctness\n\nWhen v is collected, the scan is at pos[v]. If pos[v+1] is further right, it can still be collected in this pass; if it is further left, this pass has already missed it, and exactly one more pass must be started. Carrying out these necessary pass changes in order is also sufficient, so the count is exact.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

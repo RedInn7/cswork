@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-299",
+  "packageChecksum": "efe79cac8579261cc4dd343d9f61fea374936ef84e2c2b3ae50c8e2e703ec2a4",
+  "sourceContentHash": "cab28b7a14532d2169f117da3f9138d647bca4ca30d0a473b319db29433bb2cf",
+  "editorialSha256": "855b3b851a0b3a155a3662302c1ac892adfff904be433c95760ad275b84a349e",
+  "hints": {
+    "zh": [
+      "每个逆序对恰好在它右边那个字符被放进合并串时产生一次。所以逐个追加字符时，新增的逆序数就是“已放入的字符中严格比它大的个数”，这既包括原串内部的逆序，也包括跨串的逆序。",
+      "已放入的字符只取决于两个串各用了多少：前 i 个和前 j 个。设 dp[i][j] 为合并第一个串前 i 个和第二个串前 j 个字符的最少逆序数，下一个字符要么来自第一个串、要么来自第二个串，代价是两个已用前缀中严格更大的字符数之和。",
+      "对两个串分别预处理：对每个字母 c 和每个前缀长度，记录前缀中严格大于 c 的字符个数；dp 第 0 行只用第二个串逐个累加；之后每个 dp[i][j] 取“由 dp[i−1][j] 追加第一个串的下一个字符”和“由 dp[i][j−1] 追加第二个串的下一个字符”中的较小者，增量都查预处理表；用滚动数组只保留一行，输出 dp[n][m]。"
+    ],
+    "en": [
+      "Each inversion is created exactly once, when its right-hand character is appended to the merged string. So when appending characters one by one, the new inversions equal the number of already placed characters strictly greater than it, which covers inversions inside each original string as well as across them.",
+      "The placed characters depend only on how much of each string has been used: the first i and the first j. Let dp[i][j] be the fewest inversions when merging the first i characters of the first string with the first j of the second; the next character comes from one string or the other, and its cost is the total number of strictly greater characters in the two used prefixes.",
+      "Precompute for each string, for every letter c and every prefix length, how many characters in the prefix are strictly greater than c; fill row 0 of dp using the second string alone; then each dp[i][j] is the smaller of appending the first string's next character to dp[i−1][j] and appending the second string's next character to dp[i][j−1], with each increment read from the tables; keep a single rolling row and print dp[n][m]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each letter, precompute for both strings the number of strictly greater characters in every prefix. dp[i][j] is the minimum number of inversions after merging the first i and j characters; appending the next character of either string adds the total number of strictly greater characters in the two used prefixes. Solve it with rolling rows.\n\n## Proof of correctness\n\nEach inversion pair is counted exactly once, when its right character is appended. So the cost accumulated step by step for any merge order is exactly the total number of inversions, both inside the original strings and across them. The last character must come from the end of one of the two prefixes; removing it gives the corresponding optimal predecessor subproblem, so the transitions exhaust all valid merges without changing either string's internal order.\n\n## Complexity\n\nTime O(nm+26(n+m)), space O(n+m) (the alphabet size 26 is a constant)."
+}

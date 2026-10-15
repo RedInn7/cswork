@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-287",
+  "packageChecksum": "fe971d9e7eb358cda1d9e7cdd54265be96fe57344253bfeee9dd0598498df493",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    sort(a.begin(), a.end());\n    int f = 0;\n    for (int i = 0; i < n;) { int j = i; while (j < n && a[j] == a[i]) j++; f = max(f, j - i); i = j; }\n    cout << max(f, (n + 1) / 2) << \"\\n\";\n}\n",
+      "sha256": "58d688492ff79a2ab353c3c2c80a3d9231b5d13023040a6fbfac10cb44992e3a"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        FastReader r = new FastReader();\n        int n = r.nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = r.nextLong();\n        Arrays.sort(a);\n        int f = 0;\n        for (int i = 0; i < n;) { int j = i; while (j < n && a[j] == a[i]) j++; f = Math.max(f, j - i); i = j; }\n        System.out.println(Math.max(f, (n + 1) / 2));\n    }\n}\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "b2c776e9f91135310a6b211359e0d1e5b3722da89e2510ccdafba456e1422e6a"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"slices\"\n)\n\nfunc main() {\n\tn := readInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\tslices.Sort(a)\n\tf := 0\n\tfor i := 0; i < n; {\n\t\tj := i\n\t\tfor j < n && a[j] == a[i] {\n\t\t\tj++\n\t\t}\n\t\tf = max(f, j-i)\n\t\ti = j\n\t}\n\tfmt.Println(max(f, (n+1)/2))\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "f14512b21c42c7a4c577874778dd7f04cab83db0ef9b87f1c68c3d2933209368"
+    }
+  ]
+}

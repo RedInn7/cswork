@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-302",
+  "packageChecksum": "a644c96722ac843de99ecaf2da24ee5ee73e4eea5c039fbcd2be9f49744da3f3",
+  "sourceContentHash": "767cff1d2f6cd4d641bf130fbe82a6c4847da1d78d42eec4c036bba758ac9d28",
+  "editorialSha256": "f36642e31e2c8f6c529d733bcf81b0b07b902ef98a0bbd9f145b4e2f3b68ea71",
+  "hints": {
+    "zh": [
+      "固定中心商户的区间 [l, r] 后，其他商户能留下当且仅当和它相交；不相交的区间只有两类：在 l 之前就结束的，以及在 r 之后才开始的，这两类互不重叠。",
+      "所以以 [l, r] 为中心能保留的商户数 =（起点 ≤ r 的个数）−（终点 < l 的个数），中心自己也被计入其中。把每个商户都当一次中心，取最大值，用 n 减去它就是最少删除数。",
+      "把全部起点和全部终点分别排序；对每个区间 [l, r]，二分查找起点中 ≤ r 的个数和终点中 < l 的个数，二者之差就是保留数；取最大保留数，输出 n 减去它。"
+    ],
+    "en": [
+      "Once the center merchant's interval [l, r] is fixed, another merchant can stay exactly when its interval intersects it; the non-intersecting intervals are of only two kinds, those ending before l and those starting after r, and the two kinds never overlap.",
+      "So the number of merchants kept with [l, r] as the center is (number of starts ≤ r) − (number of ends < l), which counts the center itself. Try every merchant as the center, take the maximum, and n minus it is the fewest deletions.",
+      "Sort all starts and all ends separately; for each interval [l, r], binary search the number of starts ≤ r and the number of ends < l, whose difference is the number kept; take the largest number kept and print n minus it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort all starts and all ends separately. The number of merchants a center [l,r] can keep is the number of starts ≤r minus the number of ends <l; maximize this count and subtract it from n.\n\n## Proof of correctness\n\nThe non-intersecting intervals are exactly those that end before l on the left or start after r on the right, and the two kinds are mutually exclusive, so the formula counts the intersecting ones exactly. With the center fixed, every intersecting merchant can be kept, and every non-intersecting one must be deleted. Trying each original merchant as the center covers every valid remaining set, so the maximum number kept gives the fewest deletions.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-281",
+  "packageChecksum": "6eeb9534c2effc382246a79835244ba36ccb938198aaf5138b5cfcb37794a08f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; cin >> n;\n    vector<int> login(n), delta(100002, 0);\n    for (auto &x : login) cin >> x;\n    for (int i = 0; i < n; i++) { int b; cin >> b; delta[login[i]]++; delta[b + 1]--; }\n    long long cur = 0, best = 0, count = 0;\n    for (int day = 0; day <= 100000; day++) {\n        cur += delta[day];\n        if (cur > best) { best = cur; count = 1; }\n        else if (cur == best) count++;\n    }\n    cout << count << \"\\n\";\n}\n",
+      "sha256": "813cafa44b238794349d2e319d991c0f698d4413d6042ce14bed60f43ee31054"
+    },
+    {
+      "language": "java",
+      "code": "public class Main {\n    public static void main(String[] args) throws Exception {\n        FastReader r = new FastReader();\n        int n = r.nextInt();\n        int[] login = new int[n], delta = new int[100002];\n        for (int i = 0; i < n; i++) login[i] = r.nextInt();\n        for (int i = 0; i < n; i++) { delta[login[i]]++; delta[r.nextInt() + 1]--; }\n        long cur = 0, best = 0, count = 0;\n        for (int day = 0; day <= 100000; day++) {\n            cur += delta[day];\n            if (cur > best) { best = cur; count = 1; }\n            else if (cur == best) count++;\n        }\n        System.out.println(count);\n    }\n}\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "141bc99f30155ae649b4fcbb7713c3cfc5543df0615ae03416849ae22d5d3133"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tn := readInt()\n\tlogin := make([]int, n)\n\tdelta := make([]int, 100002)\n\tfor i := range login {\n\t\tlogin[i] = readInt()\n\t}\n\tfor i := 0; i < n; i++ {\n\t\tdelta[login[i]]++\n\t\tdelta[readInt()+1]--\n\t}\n\tcur, best, count := 0, 0, 0\n\tfor day := 0; day <= 100000; day++ {\n\t\tcur += delta[day]\n\t\tif cur > best {\n\t\t\tbest, count = cur, 1\n\t\t} else if cur == best {\n\t\t\tcount++\n\t\t}\n\t}\n\tfmt.Println(count)\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "4fb86cc4c8420c90f442720cfc75f6e9a66713d23574226a791aa604631fd8ef"
+    }
+  ]
+}

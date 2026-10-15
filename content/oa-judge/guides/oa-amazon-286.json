@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-286",
+  "packageChecksum": "7b7d126c8c1a432bb10fbb9a0faa33f19a79b9124c569e824ca732fe1369c5a2",
+  "sourceContentHash": "55384361f60adf5158fd2301f40ad5347fb4d12fb2e1480246bc4853fcf463e5",
+  "editorialSha256": "cc8ebcea5d83b1d032026564caedc624de8cd70036633da959c1ad4f9a097435",
+  "hints": {
+    "zh": [
+      "每一对 i<j 都要计入：01 贡献 x，10 贡献 y。如果 x>y，把串反转后 01 与 10 互换，相当于交换 x 和 y，所以可以假设 x≤y。",
+      "在 x≤y 时，若两个问号依次填成 1、0，把它们改成 0、1 不会让总代价变大。因此存在一种最优解：问号从左到右先全填 0、再全填 1，只需要枚举这个分界点。",
+      "必要时反转串并交换 x、y；先把所有问号填 1，算出完整代价，并记下全串 0 和 1 的个数；从左往右扫描，维护左右两侧 0、1 的个数，每遇到一个问号就把它改成 0，代价变化为 左侧1数×y − 左侧0数×x + 右侧1数×x − 右侧0数×y，记录所有分界中的最小代价；比较时用 64 位精确值，最后再对 10^9+7 取模输出。"
+    ],
+    "en": [
+      "Every pair i<j counts: 01 contributes x and 10 contributes y. If x>y, reversing the string turns 01 into 10 and vice versa, which is the same as swapping x and y, so you may assume x ≤ y.",
+      "With x ≤ y, if two question marks are filled 1 then 0, changing them to 0 then 1 never increases the total cost. So some optimal solution fills the marks with all 0s first and then all 1s from left to right, and you only need to try every split point.",
+      "Reverse the string and swap x and y if needed; fill every mark with 1, compute the full cost, and note the total counts of 0s and 1s; scan from left to right keeping the counts of 0s and 1s on each side, and at each mark change it to 0, which changes the cost by (left ones × y) − (left zeros × x) + (right ones × x) − (right zeros × y); keep the minimum over all split points, comparing exact 64-bit values, and only at the end print it modulo 10^9+7."
+    ]
+  },
+  "explanationEn": "## Approach\n\nReversing the string and swapping x/y lets you assume x≤y. Then some optimal solution sets the wildcards to 0 first and 1 afterward. Start with every ! set to 1, scan and change them to 0 one at a time, compute each change in the full cost from the counts of 0/1 on the left and right, take the minimum over all split points, and apply the modulus at the end.\n\n## Proof of correctness\n\nWhen x≤y, swapping an inverted 1, 0 pair of wildcards into 0, 1 leaves the total contribution of pairs outside the range unchanged; the change contributed by these two positions and every position between them is a non-negative multiple of x−y, so the total cost does not increase. Repeating such swaps gives the single-split form. Changing a 1 at some position to 0 changes the cost by left1*y−left0*x+right1*x−right0*y, which counts all and only the pairs involving that position. The scan covers every single-split form, so it finds the global optimum rather than a local one.\n\n## Complexity\n\nTime O(n), space O(n); costs are compared exactly in 64 bits before taking the modulus."
+}

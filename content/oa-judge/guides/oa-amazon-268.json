@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-268",
+  "packageChecksum": "ffc77dee1e098b74057a9482c9fe98cbee90a2e5ee930fbded6b9d74b39eefb5",
+  "sourceContentHash": "2ec2f25791fe947bc10d7b0f6392b7b5f845a40995397684f0694477369cdc1b",
+  "editorialSha256": "8ad0959147d4df7d42c2ab9a6150906552220815ae3e1048aa00c99d78f91446",
+  "hints": {
+    "zh": [
+      "主任务每天都必须做，所以每天能留给次任务的时间就是 limit 减去当天主任务的时长。问题变成：把次任务和这些“剩余容量”一一匹配，任务长度不能超过容量，最多能配成几对。",
+      "用最小的容量去试最短的任务：如果最短的都装不下，这个容量就没有用；如果装得下，就让它们配对，交换论证可以说明这样不会让结果变差。",
+      "算出每天的剩余容量并升序排序，次任务也升序排序；用一个指针指向最短的未安排任务，按容量从小到大遍历，当前任务长度不超过容量就配对并把指针后移；最后指针的位置就是答案。"
+    ],
+    "en": [
+      "The primary task is required every day, so the time left for a secondary task on each day is limit minus that day's primary duration. The question becomes how many secondary tasks can be matched one-to-one with these leftover capacities, each task no longer than its capacity.",
+      "Try the smallest capacity against the shortest task: if even the shortest task does not fit, that capacity is useless; if it fits, pair them, and an exchange argument shows this never makes the result worse.",
+      "Compute each day's leftover capacity and sort ascending, and sort the secondary tasks ascending; keep a pointer to the shortest unscheduled task, walk the capacities from small to large, and whenever the current task fits, pair it and advance the pointer; the final pointer position is the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort each day's remaining time in ascending order and the secondary tasks in ascending order. Repeatedly match the shortest unscheduled secondary task with the smallest remaining time that can hold it.\n\n## Proof of correctness\n\nIf the smallest remaining time cannot hold the shortest task, it cannot hold any task, so skipping it loses nothing. If it can, some optimal matching pairs the two: if each is matched to something else, swapping still lets the larger remaining time hold the longer task; if only one of them is matched, it can be replaced directly. So this pair can be fixed and the rest solved recursively, giving the maximum number of matches.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

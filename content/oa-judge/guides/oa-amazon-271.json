@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-271",
+  "packageChecksum": "4c391da73ecb9f57537ab06327db1e8162e1b235800d56c6f0cb68fcdbdc79ec",
+  "sourceContentHash": "cb33ae949fb4d6f4b7512a984dac5182624d0d71cc25e46467bb462fe798ae60",
+  "editorialSha256": "924370c74d4f0a54b715f185d1fba378c077a8a4330c3b561109a7025a2bd942",
+  "hints": {
+    "zh": [
+      "位置权重 i 从左到右递增。如果一个较大的值排在一个较小的值前面，交换两者会让总和增加“位置差 × 数值差”，所以最优排列中的数值必须非降。",
+      "数值非降之后，不同数值之间的先后顺序就完全确定了；只有相同数值之间可以互换而不改变总和。为了字典序最小，同值元素的下标应从小到大排列。",
+      "把原下标按（数值，下标）升序排序，依次输出“下标加 1”。数值可以为负，排序规则不变。"
+    ],
+    "en": [
+      "The position weight i increases from left to right. If a larger value sits before a smaller one, swapping them increases the sum by (position difference) × (value difference), so in an optimal permutation the values must be non-decreasing.",
+      "Once the values are non-decreasing, the relative order of different values is fully determined; only equal values can be swapped without changing the sum. For the lexicographically smallest answer, equal values should appear in increasing index order.",
+      "Sort the original indices by (value, index) in ascending order and print each index plus 1. Values can be negative; the ordering rule stays the same."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the original indices by (data[i],i) in ascending order and output the one-based indices.\n\n## Proof of correctness\n\nIf a larger value is in a smaller position and a smaller value in a larger position, swapping them increases the sum by the position difference times the value difference, so a maximum sum requires non-decreasing values. The relative order of groups with different values is therefore unique; swapping equal values does not change the gain, so arranging each group by increasing original index gives the lexicographically smallest permutation.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}
