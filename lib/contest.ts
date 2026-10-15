@@ -1,8 +1,9 @@
 /**
- * Contest rooms, the weekly and the starter: their schedules and draws, ICPC standings, Elo-style
- * ratings, ranked duel ratings and rating bands. Pure and client-safe; lib/server/contests.ts
- * feeds it rows.
+ * Contest rooms, the weekly and the starter: their schedules, calendar and draws, ICPC standings,
+ * Elo-style ratings, ranked duel ratings and rating bands. Pure and client-safe;
+ * lib/server/contests.ts feeds it rows.
  */
+import { calendar, escapeText, utcStamp, vevent } from './ics';
 import type { RatingBand } from './lc-rating';
 import { seededRandom } from './mock-oa';
 
@@ -95,6 +96,32 @@ export function drawWeekly(
   }
   return picked;
 }
+
+type IcsContest = { id: string; start: number; minutes: number; title: string; url: string; recurring?: boolean };
+/**
+ * Contests as an .ics file, each reminded 30 minutes before. `recurring` repeats it every week
+ * from `start`: Beijing time has no daylight saving, so a fixed UTC start stays on its local hour.
+ * `name` titles a subscribed calendar.
+ */
+export const contestIcs = (contests: readonly IcsContest[], name?: string, now = Date.now()) =>
+  calendar(
+    ['VERSION:2.0', 'PRODID:-//CSWork//Contests//EN', 'CALSCALE:GREGORIAN', ...(name ? [`X-WR-CALNAME:${escapeText(name)}`] : [])],
+    contests.map((c) =>
+      vevent(
+        `cswork-${c.id}@cswork`,
+        now,
+        [
+          `DTSTART:${utcStamp(c.start)}`,
+          `DTEND:${utcStamp(c.start + c.minutes * MINUTE)}`,
+          ...(c.recurring ? ['RRULE:FREQ=WEEKLY'] : []),
+          `SUMMARY:${escapeText(c.title)}`,
+          `DESCRIPTION:${escapeText(c.url)}`,
+          `URL:${c.url}`,
+        ],
+        { trigger: '-PT30M', note: c.title },
+      ),
+    ),
+  );
 
 /** Room kinds as [zh, en]. */
 export const CONTEST_KINDS = {
