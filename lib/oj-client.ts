@@ -50,6 +50,8 @@ export type OJProblem = Problem & {
   failedSubmissionIds?: string[];
   /** Line 500's three progressive hints: observation, invariant, steps. */
   lingHints?: { zh: string[]; en: string[] } | null;
+  /** An OA guide's three hints: observation, approach, steps (replacing the package's own hints). */
+  oaHints?: { zh: string[]; en: string[] } | null;
   /**
    * Whether a Line 500 editorial exists (null: none) and its code passed the judge. The editorial
    * is GET problems/<id>/editorial (components/ling-editorial.tsx), once solved or after a confirm.

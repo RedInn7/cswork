@@ -20,7 +20,7 @@ import { currentDrills, handleOaLibrary } from './oa-library';
 import { handleMockOa } from './mock-oa';
 import { handleSkillTests } from './skill-tests';
 import { handleSpeedrun } from './speedrun';
-import { oaEnglishStatement } from './oa-judge';
+import { oaEnglishStatement, oaGuide } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
 import { handleMyPractice, problemVote, readJson } from './my-practice';
 import { handleAiTutor, isAiRoute } from './ai-tutor';
@@ -165,14 +165,18 @@ export async function handleOj(
     // In this learner's running contest the hints stay server-side, like the editorial.
     const live = p ? inRunningContest(p.id, id) : false;
     const hint = live ? null : curatedHint(id);
+    // An OA guide's three hints (content/oa-judge/guides): open to everyone, signed out too,
+    // except inside the learner's running contest or exam. They replace the package's own hint.
+    const guide = oa ? oaGuide(id) : undefined;
+    const ladder = live ? null : (lingHints(id) ?? guide?.hints ?? null);
     const tags = companyTagIndex(hiddenCompanies());
     const dated = sourceDates();
-    // Per round like Solved, over all history rather than the first page; 2 opens hint 3.
-    const failed = hint && p ? failedJudgeIds(p.id, id, round?.id) : [];
+    // Per round like Solved, over all history rather than the first page; failures open the ladder's hints.
+    const failed = (hint || ladder) && p ? failedJudgeIds(p.id, id, round?.id) : [];
     return json({
       ...problem,
       // The package's own hints too, in every language; copies, never the cached problem.
-      ...(live && {
+      ...((live || guide) && {
         hints: [],
         translations:
           problem.translations &&
@@ -196,6 +200,8 @@ export async function handleOj(
       failedSubmissionIds: failed,
       // Observation, invariant, steps: the client opens them one at a time (components/hint-ladder.tsx).
       lingHints: live ? null : lingHints(id),
+      // An OA guide's ladder: observation, approach, steps (the same component as lingHints).
+      oaHints: live ? null : (guide?.hints ?? null),
       // Whether a Line 500 editorial exists (null: none) and its code passed the judge. The editorial
       // itself is GET problems/<id>/editorial, fetched once the learner unlocks it.
       lingEditorialVerified: lingEditorial(id)?.verified ?? null,
