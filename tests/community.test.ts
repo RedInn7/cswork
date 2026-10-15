@@ -140,6 +140,8 @@ void test('threads: channels read signed out, writes need a verified account and
   const tagged = await ok(me, 'POST', 'oj/posts', { ...thread, tag: 'amazon' });
   assert.equal(tagged.post.tag, 'amazon');
   await ok(others[0], 'POST', 'oj/posts', { problemId: 'discuss:algo', title: 'Monotonic stack', body: 'Template?' });
+  // Back-to-back posts can share a millisecond (then the uuid decides); make the career one older.
+  sqlite().prepare('UPDATE solution_posts SET created_at=created_at-1000 WHERE id=?').run(tagged.post.id);
   const career = await ok(null, 'GET', 'oj/posts?problem=discuss:career&tag=amazon');
   assert.deepEqual(career.items.map((p: { title: string }) => p.title), ['Amazon referral timeline?']);
   assert.equal(career.items[0].author, 'Ad***', 'masked for guests');
