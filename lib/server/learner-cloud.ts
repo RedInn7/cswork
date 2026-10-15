@@ -6,6 +6,7 @@ import { classicListProgress } from '@/lib/classic-lists';
 import { isChannel, REPORT_CLEARED, REPORTS_HIDE } from '@/lib/community';
 import { curatedByNumber, curatedEntries } from '@/lib/ling-curated';
 import { reportWindow, slotOf, type MockSession, type Slot } from '@/lib/mock-oa';
+import { LANGUAGE_IDS } from '@/lib/problems';
 import { canonicalCompany, employerSlug, OTHER_COMPANY } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
 import { companyDirectory, hasHub } from './company-hub';
@@ -979,7 +980,7 @@ export const DRAFT_ROWS = 2000;
 const DRAFT_BYTES = 65536;
 const draftKey = z
   .object({
-    language: z.enum(['python', 'go', 'java', 'cpp', 'sql']),
+    language: z.enum(LANGUAGE_IDS),
     mode: z.enum(['acm', 'leetcode']),
   })
   .strict();
