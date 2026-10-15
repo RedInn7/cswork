@@ -9,7 +9,7 @@ import { runningContestProblems } from './contests';
 import { hiddenCompanies } from './env';
 import { HttpError, json, limit } from './http';
 import { readJson } from './my-practice';
-import { projectReport } from './oj-submissions';
+import { projectReport, projectTooLarge } from './oj-submissions';
 import { publicLibraryPath } from './public-library';
 
 /**
@@ -116,7 +116,8 @@ export function pairContext(
     (a, b) => Number(b === active) - Number(a === active) || Number(a.startsWith('tests/')) - Number(b.startsWith('tests/')) || (a < b ? -1 : 1),
   );
   const blocks = [`<task>\n${clip(readme, README_CHARS)}\n</task>`, `<last_test_run>\n${run}\n</last_test_run>`];
-  let left = budget - blocks.join('\n').length;
+  // Every name is reserved up front, so the files left out are named within the budget too.
+  let left = budget - blocks.join('\n').length - `\n<files_not_shown>${order.join(', ')}</files_not_shown>`.length;
   const omitted: string[] = [];
   for (const path of order) {
     const head = `<file path="${path}">\n`,
@@ -146,6 +147,8 @@ export async function handleAiPair(request: Request, p: Person) {
   if (!aiEnabled() || request.method !== 'POST') throw new HttpError(404, '接口不存在');
   await limit(p, 'ai-tutor', 6);
   const data = input.parse(await readJson(request, PROJECT_MAX_BYTES * 2 + 100_000));
+  // A run's limits: the list of files not shown stays short.
+  if (projectTooLarge(data.files)) throw new HttpError(413, '项目最多 30 个文件，合计 256 KiB');
   // A code-writing assistant must not be a way around a running contest's closed tutor.
   if (runningContestProblems(p.id).size) throw new HttpError(403, '比赛进行中，AI 结对暂停，赛后开放');
   const task = aiTask(data.task);

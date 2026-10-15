@@ -219,6 +219,11 @@ const projectSchema = z
     idempotencyKey: z.string().regex(/^[a-zA-Z0-9_-]{16,100}$/),
   })
   .strict();
+/** Over a project's limits (files, bytes in all): runs and the AI pair refuse it with a 413. */
+export function projectTooLarge(files: Record<string, string>) {
+  const texts = Object.values(files);
+  return texts.length > PROJECT_MAX_FILES || texts.reduce((n, text) => n + Buffer.byteLength(text), 0) > PROJECT_MAX_BYTES;
+}
 /**
  * An AI-assisted round run (/ai-assisted/<task>): the learner's src/ and tests/ against the
  * task's public and hidden suites (lib/server/ai-tasks.ts). `code` holds the files as JSON
@@ -230,11 +235,7 @@ export async function createProjectRun(p: Person, value: unknown) {
   const task = aiTask(d.task);
   if (!task) throw new HttpError(404, '练习任务不存在');
   const files = Object.entries(d.files).sort(([a], [b]) => (a < b ? -1 : 1));
-  if (
-    !files.length ||
-    files.length > PROJECT_MAX_FILES ||
-    files.reduce((n, [, text]) => n + Buffer.byteLength(text), 0) > PROJECT_MAX_BYTES
-  )
+  if (!files.length || projectTooLarge(d.files))
     throw new HttpError(413, '项目最多 30 个文件，合计 256 KiB');
   if (files.some(([, text]) => text.includes('\0')))
     throw new HttpError(400, '内容不能包含空字符');
