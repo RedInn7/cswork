@@ -106,3 +106,20 @@ void test(
     assert.equal(build.status, 0, build.stderr);
   },
 );
+
+void test(
+  'a signature type shadowed locally or named in a literal is still defined',
+  { skip },
+  () => {
+    const add = (extra: string) => `${extra}
+func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode { return &ListNode{Val: l1.Val + l2.Val} }`;
+    for (const extra of [
+      'func digits() int { type ListNode struct{ d []int }; return len(ListNode{}.d) }',
+      'const doc = `type ListNode struct { Val int }`',
+      'var doc = "type ListNode struct {"',
+    ]) {
+      const { build } = judge('lc-2', add(extra));
+      assert.equal(build.status, 0, `${extra}\n${build.stderr}`);
+    }
+  },
+);

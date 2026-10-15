@@ -10,6 +10,20 @@ const definitions: Record<string, string> = {
 };
 const clean = (source: string) =>
   source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+/** Package-level text only: no comments, literals, or `{...}` bodies (a local type may shadow X). */
+function packageLevel(source: string) {
+  let depth = 0;
+  let top = '';
+  for (const ch of source.replace(
+    /\/\*[\s\S]*?\*\/|\/\/[^\n]*|`[^`]*`|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'/g,
+    ' ',
+  )) {
+    if (ch === '}') depth--;
+    if (depth === 0) top += ch;
+    if (ch === '{') depth++;
+  }
+  return top;
+}
 /** The template's own definitions of the types its signature uses. */
 function helpers(snippet: string) {
   return Object.entries(definitions)
@@ -27,6 +41,7 @@ function helpers(snippet: string) {
  * package-level definition (our template ships one) or ours.
  */
 function platform(signature: string, code: string) {
+  const top = packageLevel(code);
   return Object.entries(definitions)
     .map(([name, definition]) => {
       const own = `cswPlatform${name}`;
@@ -34,7 +49,7 @@ function platform(signature: string, code: string) {
         return definition.replace(new RegExp(`\\b${name}\\b`, 'g'), own);
       // ponytail: a grouped `type ( X ... )` is not seen and reports X redeclared.
       const alias = `type ${own} = ${name}`;
-      return new RegExp(`\\btype\\s+${name}\\b`).test(clean(code))
+      return new RegExp(`\\btype\\s+${name}\\b`).test(top)
         ? alias
         : `${definition}\n${alias}`;
     })
