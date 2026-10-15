@@ -105,13 +105,13 @@ export function GuideIndexView({ zh }: { zh: boolean }) {
           ))}
         </ol>
       </section>
-      <aside className="guide-review-cta">
+      <aside className="guide-review-cta" aria-label={c.reviewCta}>
         <p>{c.review}</p>
         <a href="/career/resume">
           {c.reviewCta} <span aria-hidden="true">→</span>
         </a>
       </aside>
-      <aside className="guide-review-cta">
+      <aside className="guide-review-cta" aria-label={c.visaCta}>
         <p>{c.visa}</p>
         <a href="/career/visa-timeline">
           {c.visaCta} <span aria-hidden="true">→</span>

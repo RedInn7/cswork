@@ -66,6 +66,9 @@ test('the index lists every chapter, the season and the resume review, in both l
     assert.equal(doc.querySelectorAll('.guide-season li').length, SEASON.length);
     assert.ok(doc.querySelector('.guide-review-cta a').getAttribute('href') === '/career/resume');
     assert.ok(doc.querySelector('.guide-review-cta a[href="/career/visa-timeline"]') !== null);
+    // Two complementary landmarks, each named in the page's language.
+    const asides = [...doc.querySelectorAll('aside')].map((a) => a.getAttribute('aria-label'));
+    assert.deepEqual(asides, zh ? ['试试简历 AI 点评', '身份时间线计算器'] : ['Try the AI resume review', 'Visa timeline calculator']);
     const [crumbs, list] = [...doc.querySelectorAll('script[type="application/ld+json"]')].map((s) => JSON.parse(s.textContent));
     assert.equal(crumbs['@type'], 'BreadcrumbList');
     assert.equal(list.itemListElement.length, 8);
