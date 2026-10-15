@@ -27,14 +27,18 @@ export const SITE_CARD: OgCard = {
   lines: ['编程题、OA 真题、面经与系统设计', 'Coding practice, company OAs, interview experiences and system design'],
 };
 
-let loaded: { covered: Set<string>; regular: Buffer; bold: Buffer } | null = null;
+type Font = { name: string; data: Buffer; weight: 400 | 700; style: 'normal' };
+// One `fonts` array for the process: satori caches the parsed fonts per array object.
+let loaded: { covered: Set<string>; fonts: Font[] } | null = null;
 function fonts() {
   const dir = join(process.cwd(), 'public/fonts');
-  loaded ??= {
-    covered: new Set(readFileSync(join(dir, 'noto-sans-sc-og.txt'), 'utf8')),
-    regular: readFileSync(join(dir, 'noto-sans-sc-og-400.otf')),
-    bold: readFileSync(join(dir, 'noto-sans-sc-og-700.otf')),
-  };
+  const font = (weight: 400 | 700): Font => ({
+    name: 'Noto Sans SC',
+    data: readFileSync(join(dir, `noto-sans-sc-og-${weight}.otf`)),
+    weight,
+    style: 'normal',
+  });
+  loaded ??= { covered: new Set(readFileSync(join(dir, 'noto-sans-sc-og.txt'), 'utf8')), fonts: [font(400), font(700)] };
   return loaded;
 }
 
@@ -60,7 +64,6 @@ const MUTED = '#b7c3d0';
 /** The PNG for `card` (null: the site card); a day in shared caches. */
 export function ogImage(card: OgCard | null = null) {
   const c = drawableCard(card);
-  const { regular, bold } = fonts();
   const stats = c.stats ?? [];
   return new ImageResponse(
     (
@@ -109,10 +112,7 @@ export function ogImage(card: OgCard | null = null) {
     ),
     {
       ...OG_SIZE,
-      fonts: [
-        { name: 'Noto Sans SC', data: regular, weight: 400, style: 'normal' },
-        { name: 'Noto Sans SC', data: bold, weight: 700, style: 'normal' },
-      ],
+      fonts: fonts().fonts,
       headers: { 'Cache-Control': 'public, max-age=86400' },
     },
   );
@@ -149,11 +149,12 @@ type Cert = { id: string; course: string; issuedAt: number; skill: boolean; name
 export function certificateOg(zh: Cert, en: Cert): OgCard {
   const fallback = en.handle ? `@${en.handle}` : 'A CSWork learner';
   const course = fit(zh.course, fit(en.course, 'A CSWork course', 30), 30);
-  const english = fit(en.course, '', 60);
+  // From the raw titles: one course table title is both, and a cut heading must not repeat in full.
+  const english = zh.course !== en.course && drawable(zh.course) ? fit(en.course, '', 60) : '';
   return {
     kicker: zh.skill ? '技能认证 · Skill certification' : '结业证书 · Certificate of completion',
     title: course,
-    lines: [...(english && english !== course ? [english] : []), fit(zh.name, fallback)],
+    lines: [...(english ? [english] : []), fit(zh.name, fallback)],
     stats: [
       ['签发 Issued', day(zh.issuedAt)],
       ['编号 ID', zh.id],

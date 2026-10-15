@@ -167,6 +167,11 @@ void test('a certificate card names the holder only in glyphs the subset has, el
   // Not listed on the profile, so no handle either.
   assert.deepEqual(kana.lines, ['System Design Interview Course', 'A CSWork learner']);
   assert.equal(card.drawableCard(kana), kana);
+  // A course table title is both titles: a long one is cut once in the heading, never repeated in full below.
+  const long = { ...certificateById('AnnCert000000001', false)!, course: 'Distributed Systems Engineering for Interviews' };
+  const one = card.certificateOg(long, long);
+  assert.equal(one.title, 'Distributed Systems Engineeri…');
+  assert.deepEqual(one.lines, ['张三']);
   assert.equal(certificateOwner('AnnCert000000001'), 'u-ann');
   assert.equal(certificateOwner('nope'), undefined);
 });
