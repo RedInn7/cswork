@@ -14,8 +14,9 @@ import { library } from './content-library';
 import { setting } from './env';
 import { HttpError, json, limit } from './http';
 import { record } from './metrics';
-import { lldQuestion, mockPool, roleplayQuestion } from './mock-interview';
+import { lldQuestion, mockPool } from './mock-interview';
 import { readJson } from './my-practice';
+import { roleplayQuestion } from './roleplay-scenarios';
 
 /**
  * The AI interviewer of a mock interview (components/mock-interview.tsx, `as=ai`). Each turn

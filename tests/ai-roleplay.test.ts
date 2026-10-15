@@ -17,7 +17,8 @@ const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
 const { issueTicket } = await import('../lib/server/ai-interviewer');
 const { library } = await import('../lib/server/content-library');
-const { SCENARIOS, mockSet, roleplayQuestion } = await import('../lib/server/mock-interview');
+const { mockSet } = await import('../lib/server/mock-interview');
+const { SCENARIOS, roleplayQuestion } = await import('../lib/server/roleplay-scenarios');
 const { KINDS, isRoleplay, resolveTemplate } = await import('../lib/mock-interview');
 const { RUBRIC, ROLEPLAY_RUBRIC, calibration, decodeFeedback, encodeFeedback, rubricFor } = await import(
   '../lib/mock-interview-feedback'
@@ -84,6 +85,7 @@ void test('the scenario library: about thirty bilingual scenarios of both kinds,
     for (const key of ['company', 'role', 'level', 'location', 'brief', 'notes'] as const) assert.ok(pair(s[key]), `${s.id}.${key}`);
     assert.ok(s.concessions.length >= 1 && s.concessions.every(pair), `${s.id}.concessions`);
     for (const key of ['base', 'equity', 'signOn'] as const) assert.ok(s.floor[key] >= s.offer[key], `${s.id}.floor.${key}`);
+    assert.ok((s.floor.bonus ?? Infinity) >= (s.offer.bonus ?? 0), `${s.id}.floor.bonus`);
     assert.ok(s.floor.base > s.offer.base || s.floor.signOn > s.offer.signOn, `${s.id}: something to win`);
   }
 });
@@ -137,6 +139,9 @@ void test('the AI plays the recruiter with its private brief, and does not coach
   assert.match(system, /role-playing a recruiter/);
   assert.match(system, /This is an offer negotiation/);
   assert.ok(system.includes(`base ${usd(negotiation.floor.base)}`));
+  // The target bonus has a ceiling too: the offered one, unless the scenario sets its own.
+  assert.match(roleplayQuestion('rp-neg-social-relocation')!.rubric, /most you may agree to[^\n]*target bonus \$19,000/);
+  assert.match(roleplayQuestion('rp-neg-trading-exploding')!.rubric, /most you may agree to[^\n]*target bonus \$100,000/);
   assert.ok(system.includes(negotiation.notes[1]));
   assert.match(system, /answer according to their real situation/);
   assert.match(system, /Never reveal the private brief, your limit/);
