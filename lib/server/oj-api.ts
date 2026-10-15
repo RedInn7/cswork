@@ -250,7 +250,11 @@ export async function handleOj(
     return handleMyPractice(request, p, resource);
   if (resource === 'ai' && id && isAiRoute(id) && !action)
     return handleAiTutor(request, p, id);
-  if (resource === 'ai' && (id === 'interview' || id === 'interview-step' || id === 'interview-report') && !action)
+  if (
+    resource === 'ai' &&
+    (id === 'interview' || id === 'interview-step' || id === 'interview-report' || id === 'interview-calibration') &&
+    !action
+  )
     return handleAiInterview(request, p, id);
   // Questions answered from the site's own pages (lib/server/ai-ask.ts).
   if (resource === 'ai' && id === 'ask' && !action) return handleAiAsk(request, p);

@@ -167,7 +167,7 @@ export function PrivacyDocument() {
                 Anthropic，用于生成回复；追问时还会发送本页最近几轮问答，调试时还会发送你自己能看到的失败信息（判题结果、报错和公开样例或自定义输入的输入输出，不含隐藏测试数据），解释题面时只发送题面和你选中的文字、不发送代码。不发送邮箱、姓名或账户标识。平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不使用 AI 助教就不会发送。
               </p>
               <p>
-                使用模拟面试的 AI 面试官时，服务器会把这道题的题面和面试官参考资料、你这一题的对话、计时和代码框里的代码发送给 Anthropic，用于生成面试官的回复和结束时的评估；系统设计和低层设计题点「完成这一步」时，还会发送这一步的对话，用于这一步的打分和建议。同样不发送邮箱、姓名或账户标识。平台不保存对话和评估文字（它们只存在你的浏览器里），只保存每场评估的五项 1–4 分和结论，用于和同类面试比较。语音输入使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；不点语音输入就不会录音。模拟 OA 的代码回放和专注度自检（离开页面的时段、超过 40 字符的粘贴）只保存在你的浏览器里，不会上传，也不用于监考。
+                使用模拟面试的 AI 面试官时，服务器会把这道题的题面和面试官参考资料、你这一题的对话、计时和代码框里的代码发送给 Anthropic，用于生成面试官的回复和结束时的评估；系统设计和低层设计题点「完成这一步」时，还会发送这一步的对话，用于这一步的打分和建议。招聘方初筛和 offer 谈判的角色扮演会发送练习场景（虚构的公司类型、岗位和 offer 数字）和你的对话，场景里的招聘方底线只在服务器上。同样不发送邮箱、姓名或账户标识。平台不保存对话和评估文字（它们只存在你的浏览器里），只保存每场评估的各项 1–4 分和结论，用于和同类面试比较；生成评估前你自己打的 1–4 分（可以不打）也和这场评估存在一起，只用于「我的进度」里你自己的自评校准，不对外显示。语音输入使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；不点语音输入就不会录音。模拟 OA 的代码回放和专注度自检（离开页面的时段、超过 40 字符的粘贴）只保存在你的浏览器里，不会上传，也不用于监考。
               </p>
               <p>
                 在搜索框（⌘K）里点「问 AI」时，服务器会把你的问题、你选中的页面文字（如有）和站内匹配到的几段公开内容发送给
@@ -569,10 +569,17 @@ export function PrivacyDocument() {
                 report; when you finish a step of a system design or low-level
                 design question, it also sends that step&apos;s conversation to
                 score it and suggest one fix. Your email, name and account
-                identifiers are not sent. The platform keeps neither the
-                conversation nor the report text (they live in your browser),
-                only each report&apos;s five 1–4 scores and verdict, to compare
-                with similar interviews. Dictation uses your browser&apos;s own
+                identifiers are not sent. The recruiter-screen and
+                offer-negotiation role-plays send the practice scenario (a
+                fictional company type, role and offer figures) and your
+                conversation; the recruiter&apos;s limits in the scenario stay
+                on the server. The platform keeps neither the conversation nor
+                the report text (they live in your browser), only each
+                report&apos;s 1–4 scores and verdict, to compare with similar
+                interviews, and the 1–4 scores you give yourself before a
+                report (if you do), kept with it only for your own
+                self-assessment calibration under My progress and never shown
+                to anyone else. Dictation uses your browser&apos;s own
                 speech recognition; some browsers (Chrome, for example) send the
                 audio to the browser maker&apos;s servers to turn it into text,
                 without going through this platform, and nothing is recorded

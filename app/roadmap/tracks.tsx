@@ -6,7 +6,7 @@ import { RouteGraph, type StopProgress } from '@/components/route-graph';
 import { ojRequest } from '@/lib/oj-client';
 import type { RouteSectionInput } from '@/lib/route-stops';
 
-export type SdPart = 'framework' | 'blocks' | 'cases' | 'lld' | 'concurrency' | 'ml';
+export type SdPart = 'framework' | 'blocks' | 'cases' | 'lld' | 'concurrency' | 'ml' | 'tech' | 'patterns';
 const PARTS: [SdPart, string, string][] = [
   ['framework', '答题框架', 'Framework'],
   ['blocks', '基本构件', 'Building blocks'],
@@ -14,7 +14,11 @@ const PARTS: [SdPart, string, string][] = [
   ['lld', '面向对象设计（LLD）', 'Low-level design'],
   ['concurrency', '并发', 'Concurrency'],
   ['ml', 'ML 系统设计', 'ML system design'],
+  ['tech', '关键技术（选读）', 'Key technologies (optional)'],
+  ['patterns', '通用设计模式（选读）', 'Patterns (optional)'],
 ];
+// Outside the certificate (lib/server/system-design-course.ts sdRequired), so outside the read count.
+const OPTIONAL: SdPart[] = ['tech', 'patterns'];
 type Link = { title: string; href: string };
 
 /**
@@ -58,7 +62,8 @@ export function RoadmapTracks({
       .catch(() => {});
     return () => controller.abort();
   }, []);
-  const readCount = sd.filter((chapter) => read.has(`sd:${chapter.slug}`)).length;
+  const required = sd.filter((chapter) => !OPTIONAL.includes(chapter.part));
+  const readCount = required.filter((chapter) => read.has(`sd:${chapter.slug}`)).length;
   return (
     <div className="roadmap-tracks">
       <section className="roadmap-track" aria-labelledby="roadmap-coding">
@@ -92,7 +97,7 @@ export function RoadmapTracks({
         </h2>
         <p className="roadmap-lead">
           {member
-            ? t(`已读 ${readCount} / ${sd.length} 章。`, `${readCount} of ${sd.length} chapters read.`)
+            ? t(`必修已读 ${readCount} / ${required.length} 章。`, `${readCount} of ${required.length} required chapters read.`)
             : t('先学答题框架和基本构件，再做案例，然后是面向对象设计和并发，最后是 ML 系统设计。', 'Start with the framework and building blocks, then the case studies, then low-level design and concurrency, and finally ML system design.')}
         </p>
         <ol className="roadmap-parts">

@@ -69,6 +69,9 @@ test('progress page lists history, mistakes, reviews due today and the learner m
   const featured = [];
   globalThis.fetch = async (url, init = {}) => {
     if (url.endsWith('/oj/history')) return Response.json({ items: history });
+    // Two self-rated AI interviews: off by one, then spot on.
+    if (url.endsWith('/oj/ai/interview-calibration'))
+      return Response.json({ calibration: { sessions: [{ gap: 1, bias: 1 }, { gap: 0, bias: 0 }], gap: 0.5, bias: 0.5 } });
     // Every daily problem of February 2026, from the points ledger.
     if (url.endsWith('/oj/points/daily'))
       return Response.json({ days: Array.from({ length: 28 }, (_, i) => `2026-02-${String(i + 1).padStart(2, '0')}`) });
@@ -155,6 +158,10 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     );
     await settle();
     assert.equal(document.querySelector('h1').textContent, 'My progress');
+    // Self-assessment calibration: the mean gap, which way it leans, and the trend.
+    const calibration = document.getElementById('calibration-title').parentElement.textContent;
+    assert.match(calibration, /Last 2 AI interviews, mean gap 0\.5 points · You overrate: 0\.5 above the interviewer/);
+    assert.match(calibration, /Gap per interview, oldest first: 1\.0 → 0\.0/);
     assert.deepEqual(
       [...document.querySelectorAll('[role="tab"] .progress-count')].map((n) => n.textContent),
       ['2', '2', '1', '1', '1', '1', '2'],

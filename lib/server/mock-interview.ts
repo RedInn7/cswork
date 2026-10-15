@@ -5,6 +5,7 @@ import {
   companyCounts,
   companyGroup,
   drawSet,
+  isRoleplay,
   leadershipPrinciples,
   newSeed,
   resolveTemplate,
@@ -14,6 +15,7 @@ import {
 import { lcIdBySource } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
 import { HttpError } from './http';
+import { SCENARIOS, roleplayQuestion } from './roleplay-scenarios';
 import { sdChapter } from './system-design-course';
 
 /**
@@ -89,6 +91,13 @@ const lldPool = (): PoolRow[] =>
       : [];
   });
 
+const roleplayPool = (): PoolRow[] =>
+  SCENARIOS.map((s) => ({
+    id: `rp-${s.id}`, type: 'roleplay', slug: s.id, title: roleplayQuestion(`rp-${s.id}`)!.title, company: null,
+    companyName: null, role: null, category: KINDS[s.kind].categories[0], round: null, difficulty: null, listed: false,
+    problem: null,
+  }));
+
 const counts = new WeakMap<Database.Database, ReturnType<typeof companyCounts>>();
 export function mockCompanies(db: Database.Database) {
   if (!counts.has(db)) counts.set(db, companyCounts(mockPool(db)));
@@ -105,8 +114,10 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
   if (!/^[a-z0-9]{1,24}$/i.test(seed)) throw new HttpError(400, '抽题编号无效');
   const company = /^[a-z0-9-]{1,80}$/.test(params.get('company') || '') ? params.get('company') : null;
   const round = params.get('round');
+  // AI-only questions join the pool only for their own templates.
   const lld = template.slots.some((s) => s.kind === 'lld');
-  const drawn = drawSet(lld ? [...mockPool(db), ...lldPool()] : mockPool(db), template, {
+  const roleplay = template.slots.some((s) => isRoleplay(s.kind));
+  const drawn = drawSet([...mockPool(db), ...(lld ? lldPool() : []), ...(roleplay ? roleplayPool() : [])], template, {
     seed,
     company,
     role: params.get('role'),
@@ -133,10 +144,12 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
       if (!item) return { ...slot, item: null };
       const row = bodies.get(item.id);
       const parts = splitBody(row?.body ?? '');
-      // An LLD question's reference never leaves the server (lib/server/ai-interviewer.ts reads it).
+      // An LLD question's reference and a role-play's limits never leave the server (lib/server/ai-interviewer.ts reads them).
       const course = item.type === 'course_chapter';
+      const play = item.type === 'roleplay' ? roleplayQuestion(item.id) : null;
       if (course) parts.question = lldQuestion(item.id)?.question ?? '';
-      if (questionOnly || course) Object.assign(parts, { hints: '', followUps: '', rubric: '', solution: '' });
+      if (play) parts.question = play.question;
+      if (questionOnly || course || play) Object.assign(parts, { hints: '', followUps: '', rubric: '', solution: '' });
       return {
         ...slot,
         item: {
@@ -152,6 +165,7 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
           listed: item.listed,
           problem: item.problem,
           math: !!(JSON.parse(row?.extra || '{}') as { math?: boolean }).math,
+          ...(play ? { titleZh: play.titleZh, questionZh: play.questionZh } : {}),
           principles:
             item.company && amazon.includes(item.company) ? leadershipPrinciples(`${item.title}\n${parts.question}`).slice(0, 3) : [],
           ...parts,
