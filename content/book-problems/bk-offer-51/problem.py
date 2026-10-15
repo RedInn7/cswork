@@ -48,7 +48,7 @@ def fmt(a):
 def cases(r):
     out = [fmt([9, 2, 6, 1]), fmt([3, 2, 2]), fmt([1]), fmt([1, 2, 3, 4]), fmt([4, 3, 2, 1]), fmt([5, 5, 5, 5]),
            fmt([-1, -2, 10**9, -10**9])]
-    for n, v in [(10, 3), (1000, 10**9), (5000, 10), (20000, 10**6)]:
+    for n, v in [(10, 3), (1000, 10**9), (5000, 10), (100000, 10**5)]:
         out.append(fmt([r.randint(-v, v) for _ in range(n)]))
     # 7000 copies each of 9 down to 0: 45 * 7000^2 inversions, past 2^31.
     out.append(fmt([d for d in range(9, -1, -1) for _ in range(7000)]))

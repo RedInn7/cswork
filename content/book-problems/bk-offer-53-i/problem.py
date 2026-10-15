@@ -36,7 +36,7 @@ def fmt(a, qs):
 def cases(r):
     out = [fmt([2, 4, 4, 4, 6, 9], [4, 5, 9, 2]), fmt([1], [1, 0, 2]), fmt([2, 2, 2], [2, 1, 3]),
            fmt([-5, -5, 0, 3, 3, 3], [-5, 3, 0, -6, 4])]
-    for n, q, v in [(10, 10, 5), (1000, 1000, 100), (20000, 20000, 1000), (3000, 3000, 10**9)]:
+    for n, q, v in [(10, 10, 5), (1000, 1000, 100), (3000, 3000, 10**9), (100000, 100000, 1000)]:
         a = sorted(r.randint(-v, v) for _ in range(n))
         qs = [r.choice(a) if r.random() < 0.7 else r.randint(-v - 2, v + 2) for _ in range(q)]
         out.append(fmt(a, qs))

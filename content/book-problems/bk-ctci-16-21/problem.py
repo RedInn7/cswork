@@ -42,7 +42,7 @@ def fmt(a, b):
 def cases(r):
     out = [fmt([7, 5, 2], [3, 8, 5]), fmt([1, 2, 3], [4, 1]), fmt([5], [5]), fmt([1, 1], [2, 2]),
            fmt([3, 9], [1, 2, 5]), fmt([-5, 7, 2], [0, -1])]
-    for n, m, v in [(10, 10, 10), (1000, 800, 1000), (20000, 20000, 100000), (5000, 5000, 30)]:
+    for n, m, v in [(10, 10, 10), (1000, 800, 1000), (5000, 5000, 30)]:
         a = [r.randint(-v, v) for _ in range(n)]
         b = [r.randint(-v, v) for _ in range(m)]
         out.append(fmt(a, b))
@@ -50,4 +50,11 @@ def cases(r):
         a[0] += 2 * r.randint(-3, 3) - (sum(a) - sum(b))
         if abs(a[0]) <= 100000:
             out.append(fmt(a, b))
+    # n = m = 10^5 and no swap works (an even a minus an odd b never equals the even half), so
+    # checking pair by pair has to try all 10^10.
+    a = [2 * r.randrange(50001) for _ in range(100000)]
+    b = [2 * r.randrange(50000) + 1 for _ in range(100000)]
+    if (sum(a) - sum(b)) // 2 % 2:
+        b[0] += 2 if b[0] < 99999 else -2
+    out.append(fmt(a, b))
     return out

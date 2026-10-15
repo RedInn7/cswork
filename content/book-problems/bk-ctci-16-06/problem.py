@@ -49,7 +49,9 @@ def cases(r):
     lo, hi = -2**31, 2**31 - 1
     out = [fmt([40, 7, 25, 13], [31, 2, 50, 19]), fmt([hi], [lo]), fmt([5], [5]), fmt([1, 2, 3], [10]),
            fmt([lo, hi], [0]), fmt([-1, 2**31 - 2], [hi - 3, lo + 2])]
-    for n, m, v in [(10, 10, 100), (1000, 50, 10**9), (10000, 10000, 2**31 - 1), (100, 100, 2**31 - 1)]:
+    for n, m, v in [(10, 10, 100), (1000, 50, 10**9), (100, 100, 2**31 - 1)]:
         out.append(fmt([r.randint(-v, min(v, hi)) for _ in range(n)], [r.randint(-v, min(v, hi)) for _ in range(m)]))
     out.append(fmt([r.randint(2**30, hi) for _ in range(50)], [r.randint(lo, -2**30) for _ in range(50)]))
+    # n = m = 10^5: even against odd, so no pair differs by 0 and a pair-by-pair scan cannot stop early.
+    out.append(fmt([2 * r.randrange(50000) for _ in range(100000)], [2 * r.randrange(50000) + 1 for _ in range(100000)]))
     return out

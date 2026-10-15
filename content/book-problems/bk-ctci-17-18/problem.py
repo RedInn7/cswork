@@ -58,4 +58,8 @@ def cases(r):
             small = [big[5], big[n // 2], big[-5]]
             small = list(dict.fromkeys(small))
         out.append(fmt(big, small))
+    # n = m = 10^5: big is a permutation, so only the whole array holds all of small and a
+    # scan from every start runs to the end.
+    big = r.sample(range(1, 100001), 100000)
+    out.append(fmt(big, r.sample(big, 100000)))
     return out

@@ -59,6 +59,9 @@ def ops(r, q, v):
 def cases(r):
     out = ['8\npush 4\npush 6\npush 3\nmax\npop\nmax\npop\nmax\n', '2\npop\nmax\n',
            '7\npush 5\npush 5\npop\nmax\npop\nmax\npop\n', '6\npush 3\npush 1\npush 2\npop\nmax\npop\n']
-    for q, v in [(30, 5), (300, 3), (5000, 1000), (20000, 10**9), (20000, 4)]:
+    for q, v in [(30, 5), (300, 3), (5000, 10**9), (20000, 4)]:
         out.append(ops(r, q, v))
+    # q = 10^5 with a long queue: 40000 pushes, then max twice as often as pop.
+    lines = [f'push {r.randint(1, 1000)}' for _ in range(40000)] + [r.choice(('max', 'max', 'pop')) for _ in range(60000)]
+    out.append('100000\n' + '\n'.join(lines) + '\n')
     return out
