@@ -101,6 +101,24 @@ export const PROBLEMS: Problem[] = [
     difficulty: '简单',
     summary: { zh: '计数、前缀和与稳定回填', en: 'Counts, prefix sums and a stable placement pass' },
   },
+  {
+    slug: 'kmp',
+    group: 'sort-search',
+    difficulty: '中等',
+    summary: { zh: '前缀函数与不回退的线性匹配', en: 'The prefix function and linear matching that never backs up' },
+  },
+  {
+    slug: 'grid-bfs',
+    group: 'graph',
+    difficulty: '简单',
+    summary: { zh: '队列逐层扩展求最少步数', en: 'Fewest steps by expanding layer by layer from a queue' },
+  },
+  {
+    slug: 'topological-sort',
+    group: 'graph',
+    difficulty: '中等',
+    summary: { zh: 'Kahn 算法、最小堆与判环', en: "Kahn's algorithm, a min-heap and cycle detection" },
+  },
 ];
 
 const EXT: Record<CodeLanguage, string> = { python: 'py', cpp: 'cpp', java: 'java', go: 'go' };
