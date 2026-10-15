@@ -281,6 +281,13 @@ test('trees, lists and grids are drawn from a custom case and from printed tree 
     assert.equal(graphs.length, 3);
     assert.equal(graphs[0].getAttribute('aria-label'), 'Graph: 1; 2; 3');
     assert.equal(document.querySelectorAll('.cs-structure-grid td').length, 4);
+    // A sample case's stdin is the private transport: a one-parameter `[board]` line splits
+    // into one field but is not the board, so without ranCase nothing is drawn.
+    const sample = { ...submission, cases: [{ ...submission.cases[0], stdin: '[[["X"]]]\n' }] };
+    await act(async () =>
+      root.render(createElement(SubmissionResult, { submission: sample, checker: 'exact', params: [{ name: 'board', type: 'character[][]' }] })),
+    );
+    assert.equal(document.querySelectorAll('figure').length, 0);
     // Without parameters (ACM mode, the playground) nothing is drawn.
     await show({ reference: { status: 'done', output: '4\n1 null 2 3\n' } });
     assert.equal(document.querySelectorAll('figure').length, 0);

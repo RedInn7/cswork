@@ -226,9 +226,10 @@ export function SubmissionResult({
     !diagnostic?.truncated?.stdout
       ? diffLines(output.stdout, expectedText)
       : undefined;
-  // Test files use the private transport: only a JSON-per-line custom case splits into fields.
+  // Test files use the private transport, which a one-parameter problem can still split
+  // wrongly (`[board]`): only a custom case's JSON-per-line stdin splits into fields.
   const inputs =
-    params && output?.stdin !== undefined
+    params && ranCase !== undefined && output?.stdin !== undefined
       ? splitFields(output.stdin, params.length)
           ?.map((field, i) => ({ ...params[i], value: fieldValue(field) }))
           .filter((field) => drawable(field.type))
