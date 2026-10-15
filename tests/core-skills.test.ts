@@ -88,11 +88,11 @@ test('the packages are valid, bilingual, four-language packages with a starter p
 });
 
 test('statements split into the description, input, output, explanation and plain-text hints', () => {
-  const parsed = parseStatement('# Title\n\nBody `code`.\n\n## Input\n\nn `x`\n\n## Output\n\nA `b`\n\n## Explanation\n\nWhy\n\n## Hints\n\n- one `h`\n- two\n', 't');
+  const parsed = parseStatement('# Title\n\nBody `code`.\n\n## Input\n\nn **distinct** `x`\n\n## Output\n\nA `b`\n\n## Explanation\n\nWhy\n\n## Hints\n\n- one `h`\n- two\n', 't');
   assert.deepEqual(parsed, {
     title: 'Title',
     description: 'Body `code`.',
-    input: 'n x',
+    input: 'n distinct x',
     output: 'A `b`',
     explanation: 'Why',
     hints: ['one h', 'two'],

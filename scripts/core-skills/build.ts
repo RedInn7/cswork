@@ -224,7 +224,7 @@ export function parseStatement(text: string, where: string) {
   const title = /^# (.+)\n/.exec(parts[0] ?? '')?.[1]?.trim();
   if (parts.length !== 5 || !title) throw new Error(`${where}: needs # title and 4 ## sections`);
   // Input, explanation and hints render as plain text; description and output are Markdown.
-  const plain = (value: string) => value.trim().replaceAll('`', '');
+  const plain = (value: string) => value.trim().replaceAll('`', '').replace(/\*\*(.+?)\*\*/g, '$1');
   const hints = parts[4]
     .split('\n')
     .filter((line) => line.startsWith('- '))

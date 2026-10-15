@@ -26,7 +26,7 @@ push x / pop / top / size / build k a1 a2 … ak / dump
 
 ## Explanation
 
-Pushing 5 3 8 1: 1 lands at index 3, is less than its parent 3 and swaps up to index 1, then is less than the top 3 and swaps to index 0, giving [1, 3, 8, 5]. pop returns 1 and moves 5 to the top to sift down: of its children 3 and 8, 3 is smaller and less than 5, so they swap, giving [3, 5, 8]. build 5 9 4 7 1 2 places [9, 4, 7, 1, 2] and sifts down from index 1: of 4's children 1 and 2, 1 is the smallest, so they swap, giving [9, 1, 7, 4, 2]. Then index 0: 9 swaps with the smaller child 1 and keeps sinking, swapping with 2, the smaller of its new children 4 and 2, giving [1, 2, 7, 4, 9].
+Pushing 5 3 8 1: 1 lands at index 3, is less than its parent 5 and swaps up to index 1, then is less than the top 3 and swaps to index 0, giving [1, 3, 8, 5]. pop returns 1 and moves 5 to the top to sift down: of its children 3 and 8, 3 is smaller and less than 5, so they swap, giving [3, 5, 8]. build 5 9 4 7 1 2 places [9, 4, 7, 1, 2] and sifts down from index 1: of 4's children 1 and 2, 1 is the smallest, so they swap, giving [9, 1, 7, 4, 2]. Then index 0: 9 swaps with the smaller child 1 and keeps sinking, swapping with 2, the smaller of its new children 4 and 2, giving [1, 2, 7, 4, 9].
 
 ## Hints
 
