@@ -175,6 +175,7 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: guidePath() },
   ...GUIDE_CHAPTERS.map((chapter) => ({ path: guidePath(chapter.slug) })),
   { path: '/career/resume' },
+  { path: '/career/resume/builder' },
   { path: '/career/visa-timeline' },
   { path: '/ai-assisted' },
   ...AI_TASK_SLUGS.map((slug) => ({ path: `/ai-assisted/${slug}` })),
