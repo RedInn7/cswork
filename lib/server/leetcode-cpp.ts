@@ -32,7 +32,6 @@ export function getLeetCodeCppRuntime(): string {
 function context(problemId: number, snippet?: string, source?: string) {
   const raw = asset('context.hpp');
   const used = snippet === undefined ? null : cleanSnippet(snippet);
-  const declared = source === undefined ? '' : topLevelCode(source);
   const definitions = [
     ...raw.matchAll(/^(?:struct|class) (\w+) \{[\s\S]*?^};/gm),
   ]
@@ -41,8 +40,9 @@ function context(problemId: number, snippet?: string, source?: string) {
     )
     .filter(
       (match) =>
+        !source ||
         !new RegExp(`\\b(?:struct|class)\\s+${match[1]}\\s*\\{`).test(
-          declared,
+          cleanSnippet(source),
         ),
     )
     .map((match) => {
@@ -57,26 +57,6 @@ function context(problemId: number, snippet?: string, source?: string) {
       return `#ifndef ${guard}\n#define ${guard}\n${definition}\n#endif`;
     });
   return `#if __has_include("/usr/local/include/cswork/stdc++.hpp")\n#include "/usr/local/include/cswork/stdc++.hpp"\n#else\n#include <bits/stdc++.h>\n#endif\nusing namespace std;\n${definitions.join('\n')}\n`;
-}
-
-/**
- * Source text outside every brace pair, comments and string/char literals blanked. Only these
- * declarations replace a platform type: one nested in a class or function shadows it (C++ and
- * Go scoping), while the harness runtime still builds inputs from the platform type's fields.
- */
-export function topLevelCode(source: string) {
-  // ponytail: no raw-string R"(...)" support; a brace inside one shifts the depth.
-  const code = source
-    .replace(/(?<=\d)'(?=\d)/g, '') // C++14 digit separators
-    .replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`[^`]*`/g, ' ');
-  let depth = 0;
-  let top = '';
-  for (const c of code) {
-    if (c === '}') depth = Math.max(0, depth - 1);
-    if (depth === 0) top += c;
-    if (c === '{') depth++;
-  }
-  return top;
 }
 
 function cleanSnippet(snippet: string) {
