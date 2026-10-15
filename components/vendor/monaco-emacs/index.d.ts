@@ -8,3 +8,8 @@ export class EmacsExtension {
   /** The pending prefix (C-x, C-u 4) after each key, '' once a command ran. */
   onDidChangeKey(listener: (state: string) => void): { dispose(): void };
 }
+/** Binds a key sequence such as 'C-x C-s' in every Emacs editor; the command's key is cancelled. */
+export function registerGlobalCommand(
+  key: string,
+  command: { description: string; run(editor: editor.IStandaloneCodeEditor): void },
+): void;

@@ -3746,8 +3746,8 @@ function SettingsDialog({
               {t('键位', 'Keybindings')}
               <small>
                 {t(
-                  'Vim 模式下 :w 保存草稿；Emacs 模式下 C-s 是搜索，草稿照常自动保存',
-                  'In Vim mode, :w saves the draft. In Emacs mode, C-s searches; drafts still save on their own',
+                  'Vim 模式下 :w 保存草稿；Emacs 模式下 C-s 是搜索，C-x C-s 保存草稿',
+                  'In Vim mode, :w saves the draft. In Emacs mode, C-s searches and C-x C-s saves the draft',
                 )}
               </small>
             </span>

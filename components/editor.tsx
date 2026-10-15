@@ -95,7 +95,7 @@ export function CodeEditor({
   const vimStatus = useRef<HTMLDivElement>(null);
   const vim = !readOnly && settings.keymap === 'vim';
   const emacs = !readOnly && settings.keymap === 'emacs';
-  // Emacs owns C-s (isearch); drafts save themselves, so the site's Ctrl+S steps aside.
+  // Emacs owns C-s (isearch), so off Apple devices the site's Ctrl+S steps aside and C-x C-s saves.
   const emacsKey = useRef<{ set(value: boolean): void } | null>(null);
   useEffect(() => {
     if (!vim || !instance) return;
@@ -128,8 +128,13 @@ export function CodeEditor({
     let extension: EmacsExtension | undefined;
     // Its own chunk too; the status bar shows a pending prefix such as C-x.
     import('./vendor/monaco-emacs/index.js').then(
-      ({ EmacsExtension }) => {
+      ({ EmacsExtension, registerGlobalCommand }) => {
         if (!active) return;
+        // The command table is shared, so it saves whichever editor received the keys.
+        registerGlobalCommand('C-x C-s', {
+          description: 'save',
+          run: (editor) => void editor.getAction('cswork.save')?.run(),
+        });
         extension = new EmacsExtension(instance);
         extension.start();
         const show = (state: string) => {
@@ -175,7 +180,10 @@ export function CodeEditor({
         id: 'cswork.save',
         label: t('保存草稿', 'Save draft'),
         keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
-        keybindingContext: '!cswork.emacs',
+        // On Apple devices this is Cmd+S, which Emacs leaves alone.
+        keybindingContext: /Mac|iP/.test(navigator.platform)
+          ? undefined
+          : '!cswork.emacs',
         run: () => callbacks.current.onSave?.(),
       }),
       editor.onDidChangeCursorPosition((event) => {
