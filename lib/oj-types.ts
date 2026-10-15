@@ -464,17 +464,17 @@ export const ojImportSchema = z
         message:
           'SQL 题只能用 sql- 题号、仅 SQL 语言、exact 校验并放在 gomall/00-overview / SQL problems need a sql- id, SQL only, the exact checker and gomall/00-overview',
       });
-    // core- problems are the free, publicly listed Core Skills track, so like
-    // the SQL track they stay in its home lesson.
+    // core- (Core Skills) and bk- (book) problems are free, publicly listed
+    // tracks (lib/free-tracks.ts), so like the SQL track they stay in its home lesson.
     if (
-      data.problem.id.startsWith('core-') &&
+      /^(core|bk)-/.test(data.problem.id) &&
       (data.problem.courseId !== 'gomall' || data.problem.lessonId !== '00-overview')
     )
       ctx.addIssue({
         code: 'custom',
         path: ['problem', 'id'],
         message:
-          'core- 题号只能用于 gomall/00-overview 里的 Core Skills 题 / core- ids are for Core Skills problems in gomall/00-overview',
+          'core- / bk- 题号只能用于 gomall/00-overview 里的 Core Skills 题和书题 / core- and bk- ids are for Core Skills and book problems in gomall/00-overview',
       });
     // pd- problems are the SQL track's pandas versions, judged by PANDAS_HARNESS
     // (lib/server/sql-judge.ts): the same rules, plus room for a python that
@@ -490,6 +490,8 @@ export const ojImportSchema = z
         data.problem.courseId === 'gomall' &&
         data.problem.lessonId === '00-overview' &&
         data.problem.timeLimit >= 3 &&
+        // The worker takes timeLimits.pandas over timeLimit (lib/server/oj-worker.ts).
+        (data.problem.timeLimits?.pandas ?? 3) >= 3 &&
         data.problem.memoryLimit >= 262144
       )
     )

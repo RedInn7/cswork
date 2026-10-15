@@ -150,6 +150,9 @@ test('the packages are the SQL packages as 50 valid pandas-only problems', () =>
   assert.equal(variant({ checker: 'tokens' }), false);
   assert.equal(variant({ courseId: 'private-course' }), false);
   assert.equal(variant({ timeLimit: 2 }), false);
+  // The worker runs pandas under timeLimits.pandas when set, so the 3 s floor holds there too.
+  assert.equal(variant({ timeLimits: { pandas: 1 } }), false);
+  assert.equal(variant({ timeLimits: { pandas: 4 } }), true);
   assert.equal(variant({ memoryLimit: 131072 }), false);
 });
 

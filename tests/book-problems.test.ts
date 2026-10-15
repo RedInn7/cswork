@@ -7,7 +7,7 @@ import { resolve } from 'node:path';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
-import type { OjProblemPackage } from '../lib/oj-types';
+import { ojImportSchema, type OjProblemPackage } from '../lib/oj-types';
 
 const dir = mkdtempSync(resolve(tmpdir(), 'cswork-book-problems-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
@@ -70,6 +70,12 @@ test('packages pass the import schema: bilingual, four languages, samples and hi
     assert.ok(cases.filter((c) => c.hidden).length >= 3, problem.id);
     assert.ok(cases.every((c) => c.expectedOutput.endsWith('\n') && c.input.endsWith('\n')), problem.id);
   }
+  // bk- is a free, public track: like core-, its ids stay in the home lesson.
+  const variant = (problem: object) =>
+    ojImportSchema.safeParse({ ...packages[0], problem: { ...packages[0].problem, ...problem } }).success;
+  assert.equal(variant({}), true);
+  assert.equal(variant({ courseId: 'algo-101' }), false);
+  assert.equal(variant({ lessonId: 'lesson-2' }), false);
 });
 
 test('statement files: a title, four sections and "- " hints', () => {
