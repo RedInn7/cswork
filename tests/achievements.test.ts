@@ -112,17 +112,19 @@ void test('a list badge per classic list with judgeable problems', () => {
     { slug: 'empty', zh: '空', en: 'Empty', solved: 0, total: 0 },
   ];
   assert.deepEqual(earned({ lists }), ['list:blind-75']);
-  // Only judgeable problems count, and the book lists (mostly unjudgeable here) are left out.
-  const progress = classicListProgress(new Set(['lc-1']), (id) => id === 'lc-1' || id === 'lc-2');
-  assert.ok(progress.length > 0 && progress.every((l) => l.total <= 2 && l.solved <= 1));
-  assert.ok(!progress.some((l) => l.slug === 'sword-offer' || l.slug === 'cracking-the-coding-interview'));
-  assert.deepEqual(progress.find((l) => l.slug === 'leetcode-hot-100'), {
+  // Judgeable problems only, once 80% of a list is judged here; book lists are left out.
+  const all = classicListProgress(new Set(['lc-1']), () => true);
+  assert.ok(!all.some((l) => l.slug === 'sword-offer' || l.slug === 'cracking-the-coding-interview'));
+  assert.deepEqual(all.find((l) => l.slug === 'leetcode-hot-100'), {
     slug: 'leetcode-hot-100',
     zh: 'LeetCode 热题 100',
     en: 'LeetCode Top 100 Liked',
-    total: 2,
+    total: 100,
     solved: 1,
   });
+  const most = classicListProgress(new Set(), (id) => Number(id.slice(3)) !== 1);
+  assert.equal(most.find((l) => l.slug === 'leetcode-hot-100')?.total, 99);
+  assert.deepEqual(classicListProgress(new Set(['lc-1']), (id) => id === 'lc-1'), [], 'one judged problem clears no list');
   assert.deepEqual(
     achievements({ ...base, lists }).filter((b) => b.group === 'list').map((b) => b.id),
     ['list:blind-75', 'list:grind-75'],

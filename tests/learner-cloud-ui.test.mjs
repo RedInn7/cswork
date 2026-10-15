@@ -127,7 +127,14 @@ test('the profile and public list pages render without names, with links and a h
     assert.ok(
       [...doc.querySelectorAll('section[aria-labelledby]')].every((s) => doc.getElementById(s.getAttribute('aria-labelledby')) !== null),
     );
+    assert.equal(doc.querySelector('.learner-featured'), null, 'no featured badge chosen');
   }
+  const featured = { id: 'domain:line', group: 'domain', zh: '算法 2 星', en: 'Algorithms · 2 stars' };
+  const chip = new JSDOM(
+    renderToStaticMarkup(createElement(ProfileView, { profile: { ...profile, featured }, catalogue, zh: false })),
+  ).window.document.querySelector('.learner-featured');
+  assert.equal(chip.textContent, '★Featured badge: Algorithms · 2 stars');
+  assert.equal(chip.getAttribute('data-group'), 'domain');
   const list = {
     id: 'AbCdEfGhIjKl',
     title: 'Warm-up',
@@ -320,8 +327,55 @@ test('the public profile card is off until switched on and saves a lowercase han
     await act(async () => visible.click());
     await act(async () => document.querySelector('form.cloud-profile-form').requestSubmit());
     await wait();
-    assert.deepEqual(posts, [{ handle: 'line-rider', visible: true, indexable: false, showContest: false, bio: '' }]);
+    assert.deepEqual(posts, [
+      { handle: 'line-rider', visible: true, indexable: false, showContest: false, bio: '', featuredBadge: null },
+    ]);
     assert.ok(document.querySelector('a[href="/u/line-rider"]') !== null);
+    // No earned badges: no picker.
+    assert.equal(document.querySelector('select'), null);
+    await act(async () => root.unmount());
+  } finally {
+    globalThis.fetch = original;
+  }
+});
+
+test('the profile card features one earned badge, and a contest one only with the curve shown', async () => {
+  const posts = [];
+  const original = globalThis.fetch;
+  const saved = { handle: 'line-rider', visible: true, indexable: false, showContest: true, bio: '', featuredBadge: null };
+  globalThis.fetch = async (url, init = {}) => {
+    if (!init.body)
+      return Response.json({
+        profile: saved,
+        badges: [
+          { id: 'daily:2026-02', zh: '2026 年 2 月每日一题全勤', en: 'Daily problem every day, Feb 2026' },
+          { id: 'contest:first', zh: '首次发车', en: 'First departure' },
+        ],
+      });
+    const body = JSON.parse(init.body);
+    posts.push(body);
+    return Response.json({ profile: body });
+  };
+  try {
+    const root = await mount(createElement(PublicProfileSettings));
+    const select = document.querySelector('select');
+    assert.deepEqual([...select.options].map((o) => o.value), ['', 'daily:2026-02', 'contest:first']);
+    const choose = (value) =>
+      act(async () => {
+        select.value = value;
+        select.dispatchEvent(new window.Event('change', { bubbles: true }));
+      });
+    await choose('daily:2026-02');
+    await act(async () => document.querySelector('form.cloud-profile-form').requestSubmit());
+    await wait();
+    assert.equal(posts.at(-1).featuredBadge, 'daily:2026-02');
+    // Hiding the contest curve takes a featured contest badge down with it.
+    await choose('contest:first');
+    const showContest = document.querySelectorAll('.cloud-check input')[2];
+    await act(async () => showContest.click());
+    await act(async () => document.querySelector('form.cloud-profile-form').requestSubmit());
+    await wait();
+    assert.deepEqual([posts.at(-1).showContest, posts.at(-1).featuredBadge], [false, null]);
     await act(async () => root.unmount());
   } finally {
     globalThis.fetch = original;

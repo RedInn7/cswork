@@ -53,7 +53,7 @@ export function PrivacyDocument() {
                 为支持续播、练习和教学，平台保存课程权限、视频播放位置、完成进度、笔记与收藏，以及你提交的代码、判题结果、作业链接和评审记录。课程更新与工单回复也会产生站内通知及已读记录。
               </p>
               <p>
-                登录后，交卷的模拟 OA 成绩、自建题单和「我面试被问到过」报告也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，不显示昵称和邮箱。面试报告只以人数汇总展示，不公开报告人。
+                登录后，交卷的模拟 OA 成绩、自建题单和「我面试被问到过」报告也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。面试报告只以人数汇总展示，不公开报告人。
               </p>
               <p>
                 工单会保存你填写的问题、回复、附件，以及主动关联的课时、视频位置或提交记录。工单、作业和个人提交记录按账户权限提供给你及负责教学管理的老师查看，不作为面向其他学员的公开讨论内容。老师会使用这些资料答疑、评审作业、管理授权和跟进学习问题。
@@ -241,8 +241,9 @@ export function PrivacyDocument() {
                 stored with your account. Lists are private until you make one
                 public, after which anyone with the link can view and copy it.
                 The public profile is off by default; when on, it shows only the
-                handle and bio you chose and your practice statistics, never
-                your name or email. Interview reports are shown only as counts
+                handle and bio you chose, your practice statistics and the
+                badges they earn (including daily-problem months, and one badge
+                you may feature beside your handle), never your name or email. Interview reports are shown only as counts
                 of people; reporters are never named.
               </p>
               <p>

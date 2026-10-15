@@ -37,14 +37,17 @@ export const groupEntries = (group: ClassicList['groups'][number]): ClassicEntry
 
 /**
  * Each LeetCode list's judgeable problems (`judgeable` says which lc-<n> ids this site judges) and
- * how many are in `solved`: the list badges. ponytail: book lists are left out while most of their
- * problems have no judge here; add them once book problems get ids of their own.
+ * how many are in `solved`: the list badges. A list counts once 80% of it is judged here, so a few
+ * problems missing from the bank don't block it and a list mostly judged elsewhere isn't "cleared".
+ * ponytail: book lists are left out while most of their problems have no judge here; add them once
+ * book problems get ids of their own.
  */
 export function classicListProgress(solved: ReadonlySet<string>, judgeable: (id: string) => boolean) {
   return classicLists.flatMap((list) => {
     if (list.refLabel) return [];
-    const ids = [...new Set(list.groups.flatMap((g) => g.numbers ?? []))].map((n) => `lc-${n}`).filter(judgeable);
-    return ids.length
+    const all = [...new Set(list.groups.flatMap((g) => g.numbers ?? []))].map((n) => `lc-${n}`);
+    const ids = all.filter(judgeable);
+    return ids.length && ids.length >= 0.8 * all.length
       ? [{ slug: list.slug, zh: list.nameZh, en: list.nameEn, total: ids.length, solved: ids.filter((id) => solved.has(id)).length }]
       : [];
   });
