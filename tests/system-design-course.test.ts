@@ -12,9 +12,10 @@ const dir = mkdtempSync(resolve(tmpdir(), 'cswork-sd-course-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
-const { sdChapter, sdChapters, sdPath, sdSummary, systemDesignPaths } = await import(
+const { sdCases, sdChapter, sdChapters, sdParts, sdPath, sdSummary, systemDesignPaths } = await import(
   '../lib/server/system-design-course'
 );
+const { DIAGRAM_MAX_LENGTH } = await import('../lib/course-diagram');
 
 const CHAPTER = ['bodyEn', 'bodyZh', 'quiz', 'slug', 'titleEn', 'titleZh'];
 const QUESTION = ['answer', 'choices', 'qEn', 'qZh', 'whyEn', 'whyZh'];
@@ -79,6 +80,67 @@ void test('the loader finds chapters by slug and lists the course pages for the 
   );
 });
 
+void test('the index parts cover every chapter once, in order, ending with ML system design', () => {
+  assert.equal(sdParts[0].chapters[0], sdChapters[0]);
+  assert.deepEqual(
+    sdParts.flatMap((part) => part.chapters),
+    sdChapters,
+  );
+  assert.ok(sdParts.every((part) => part.chapters[0]?.slug === part.from));
+  assert.deepEqual(
+    sdParts.at(-1)?.chapters.map((chapter) => chapter.slug),
+    ['ml-design-framework', 'recsys-ranking', 'search-ranking', 'ads-ctr', 'fraud-detection'],
+  );
+});
+
+void test('every case chapter grades answers and sets level expectations in both languages', () => {
+  assert.equal(sdCases.size, 16);
+  const missing: string[] = [];
+  for (const slug of sdCases) {
+    const chapter = sdChapter(slug);
+    if (!chapter) {
+      missing.push(`${slug}: no such chapter`);
+      continue;
+    }
+    for (const [key, grades, levels] of [
+      ['bodyZh', /^## \d+\. 回答分级$/m, /^## \d+\. 不同级别的期望$/m],
+      ['bodyEn', /^## \d+\. Bad \/ Good \/ Great$/m, /^## \d+\. Level Expectations$/m],
+    ] as const) {
+      const body = chapter[key];
+      if (!grades.test(body) || !levels.test(body)) missing.push(`${slug}.${key}: sections`);
+      for (const grade of ['**Bad**', '**Good**', '**Great**'])
+        if (!body.includes(grade)) missing.push(`${slug}.${key}: ${grade}`);
+      for (const level of ['Mid', 'Senior', 'Staff'])
+        if (!new RegExp(`^\\| ${level}[ （(]`, 'm').test(body)) missing.push(`${slug}.${key}: ${level}`);
+    }
+  }
+  assert.deepEqual(missing, []);
+});
+
+void test('diagrams are mermaid within the renderer limit, and quizzes give nothing away', () => {
+  for (const chapter of sdChapters)
+    for (const body of [chapter.bodyZh, chapter.bodyEn])
+      for (const [, source] of body.matchAll(/^```mermaid\n([\s\S]*?)^```/gm))
+        assert.ok(source.length <= DIAGRAM_MAX_LENGTH, chapter.slug);
+  // The answer sits in every position about as often, and is not a tell by being the longest.
+  const questions = sdChapters.flatMap((chapter) => chapter.quiz);
+  const at = [0, 0, 0, 0];
+  let longest = 0;
+  for (const question of questions) {
+    at[question.answer]++;
+    for (const lang of ['zh', 'en'] as const) {
+      const lengths = question.choices.map((choice) => choice[lang].length);
+      const top = Math.max(...lengths);
+      if (lengths[question.answer] === top && lengths.filter((n) => n === top).length === 1) longest++;
+    }
+  }
+  assert.ok(Math.max(...at) <= questions.length * 0.4, `answer positions ${at}`);
+  assert.ok(longest <= questions.length * 2 * 0.3, `the answer is the longest choice ${longest} times`);
+  for (const chapter of sdChapters)
+    if (chapter.quiz.length >= 5)
+      assert.ok(new Set(chapter.quiz.map((q) => q.answer)).size >= 3, `${chapter.slug}: answers spread out`);
+});
+
 void test('a summary is the first paragraph as plain text, cut with an ellipsis', () => {
   assert.equal(
     sdSummary('## Heading\n\nSee the [framework](/system-design/framework) and `code`.\n\nMore.'),
@@ -108,6 +170,22 @@ before(() => migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') }
 after(() => {
   sqlite().close();
   rmSync(dir, { recursive: true, force: true });
+});
+
+void test('a chapter is marked read as sd:<slug>, and its design draft is the note sd:<slug>/draft', async () => {
+  const mark = { target: 'sd:url-shortener', mark: 'read', on: true };
+  assert.equal((await call(me, 'POST', 'marks', mark)).status, 200);
+  const read = (await (await call(me, 'GET', 'marks?mark=read')).json()) as { items: { target: string }[] };
+  assert.deepEqual(read.items.map((item) => item.target), ['sd:url-shortener']);
+  await call(me, 'POST', 'marks', { ...mark, on: false });
+  assert.deepEqual(((await (await call(me, 'GET', 'marks?mark=read')).json()) as { items: unknown[] }).items, []);
+  const draft = 'notes?target=sd:url-shortener/draft';
+  assert.equal((await call(me, 'PUT', draft, { body: 'Requirements: shorten, redirect' })).status, 200);
+  assert.equal(
+    ((await (await call(me, 'GET', draft)).json()) as { body: string }).body,
+    'Requirements: shorten, redirect',
+  );
+  await call(me, 'PUT', draft, { body: '' });
 });
 
 void test('quiz answers are a private note on sd:<slug>, removed when emptied', async () => {
