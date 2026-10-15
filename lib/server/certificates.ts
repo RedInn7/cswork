@@ -3,7 +3,7 @@ import { sqlite } from '@/db/sqlite';
 import { SKILL_TESTS } from '@/lib/skill-tests';
 import { beginnerCourses } from './beginner-courses';
 import { canSeeCourse } from './course-visibility';
-import { sdChapters, sdOptional } from './system-design-course';
+import { sdRequired } from './system-design-course';
 
 /**
  * Course completion certificates. bootstrap() issues one the first time it sees every
@@ -27,7 +27,7 @@ export const SELF_PACED = [
     zh: '系统设计面试课',
     en: 'System Design Interview Course',
     // The key-technology and pattern chapters are optional: adding them never raises the bar.
-    targets: sdChapters.filter((c) => !sdOptional(c.slug)).map((c) => `sd:${c.slug}`),
+    targets: sdRequired.map((slug) => `sd:${slug}`),
   },
   ...beginnerCourses.map((c) => ({
     id: `sd:${c.slug}`,

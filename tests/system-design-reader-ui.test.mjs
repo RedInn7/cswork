@@ -72,8 +72,8 @@ test('the index groups chapters into parts; a chapter renders its table of conte
     '面向对象设计（LLD）',
     '并发编程',
     'ML 系统设计',
-    '关键技术',
-    '通用设计模式',
+    '关键技术（选读）',
+    '通用设计模式（选读）',
   ]);
   assert.deepEqual(
     [...parts[3].querySelectorAll('.sd-sheets a')].map((a) => a.getAttribute('href')),

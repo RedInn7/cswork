@@ -1,6 +1,6 @@
 import { SITE_NAME, breadcrumbJsonLd, itemListJsonLd, seoMetadata } from '@/lib/seo';
 import { requestLocale } from '@/lib/server/locale';
-import { sdChapters, sdParts, sdPath, sdSummary } from '@/lib/server/system-design-course';
+import { sdChapters, sdParts, sdPath, sdRequired, sdSummary } from '@/lib/server/system-design-course';
 import { SdReadCheck, SdReadCount } from './reader';
 
 const COPY = {
@@ -59,7 +59,7 @@ export default async function SystemDesignIndex() {
         <p className="public-library-eyebrow">{c.eyebrow}</p>
         <h1>{c.heading}</h1>
         <p>{c.description}</p>
-        <SdReadCount slugs={sdChapters.map((chapter) => chapter.slug)} />
+        <SdReadCount slugs={sdRequired} />
       </div>
       {sdParts.map((part) => (
         <section key={part.from} className="sd-part" aria-labelledby={`sd-part-${part.from}`}>

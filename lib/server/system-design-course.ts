@@ -21,8 +21,8 @@ export type SdChapter = {
 
 /** The system design course (lib/content/system-design-course.json), in reading order. */
 export const sdChapters = (course as { chapters: SdChapter[] }).chapters;
-/** The key-technology and pattern chapters: optional reading, outside the certificate's required set. */
-export const sdOptional = (slug: string) => slug.startsWith('tech-') || slug.startsWith('pattern-');
+/** The certificate's chapters and the progress bar's: all but the optional key-technology and pattern reading. */
+export const sdRequired = sdChapters.map((chapter) => chapter.slug).filter((slug) => !/^(tech|pattern)-/.test(slug));
 export const sdChapter = (slug: string) => sdChapters.find((chapter) => chapter.slug === slug);
 /** The index's parts: each runs from its first chapter up to the next part's. */
 export const sdParts = [
@@ -31,8 +31,8 @@ export const sdParts = [
   { from: 'concurrency-primitives', zh: '并发编程', en: 'Concurrency' },
   { from: 'ml-design-framework', zh: 'ML 系统设计', en: 'ML system design' },
   // Optional reading: not design exercises (sdCases) and not required for the certificate.
-  { from: 'tech-kafka', zh: '关键技术', en: 'Key technologies' },
-  { from: 'pattern-real-time-updates', zh: '通用设计模式', en: 'Patterns' },
+  { from: 'tech-kafka', zh: '关键技术（选读）', en: 'Key technologies (optional)' },
+  { from: 'pattern-real-time-updates', zh: '通用设计模式（选读）', en: 'Patterns (optional)' },
 ].map((part, i, parts) => {
   const at = (slug: string) => sdChapters.findIndex((chapter) => chapter.slug === slug);
   const next = parts[i + 1];
