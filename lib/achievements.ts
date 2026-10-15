@@ -185,7 +185,7 @@ const DOMAIN_NAMES: Record<keyof Domains, [string, string]> = {
 };
 /** One badge per domain: earned at the first star, its progress toward the next (or the last). */
 export function domainBadges(domains: Domains): Badge[] {
-  return (Object.keys(DOMAIN_STARS) as (keyof Domains)[]).map((key) => {
+  return (Object.keys(DOMAIN_STARS) as (keyof Domains)[]).map((key): Badge => {
     const steps = DOMAIN_STARS[key];
     const stars = steps.filter((n) => domains[key] >= n).length;
     const [zh, en] = DOMAIN_NAMES[key];

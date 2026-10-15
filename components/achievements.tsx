@@ -117,7 +117,7 @@ function Medal({ badge, t, index, feature }: { badge: Badge; t: T; index: number
           type="button"
           className="badge-feature"
           aria-pressed={on}
-          onClick={() => feature.onFeature(on ? null : badge.id)}
+          onClick={() => feature?.onFeature(on ? null : badge.id)}
         >
           {on ? t('主页展示中', 'On your profile') : t('设为展示', 'Feature')}
         </button>

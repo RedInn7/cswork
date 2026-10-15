@@ -37,6 +37,7 @@ export function VisaTimeline({ zh }: { zh: boolean }) {
   // Read after mount: storage and the local date differ from the server's render.
   const [today, setToday] = useState<string | null>(null);
   useEffect(() => {
+    // oxlint-disable-next-line react/react-compiler -- Hydrate from browser storage after SSR.
     setInput(read());
     setToday(localToday());
   }, []);
@@ -52,7 +53,9 @@ export function VisaTimeline({ zh }: { zh: boolean }) {
     setInput({});
     try {
       localStorage.removeItem(KEY);
-    } catch {}
+    } catch {
+      // Nothing was saved where storage is blocked.
+    }
   };
   const events = today ? visaTimeline(input, today) : [];
   const next = today ? nextDeadline(events, today) : null;
@@ -118,7 +121,7 @@ export function VisaTimeline({ zh }: { zh: boolean }) {
           {t('你的时间线', 'Your timeline')}
         </h2>
         {next && (
-          <p className="visa-next" role="status">
+          <output className="visa-next">
             {next.event.severity === 'deadline'
               ? t(`距离下一个截止日还有 ${next.days} 天：`, `${next.days} ${next.days === 1 ? 'day' : 'days'} to the next deadline: `)
               : t(`距离下一个日期还有 ${next.days} 天：`, `${next.days} ${next.days === 1 ? 'day' : 'days'} to the next date: `)}
@@ -126,7 +129,7 @@ export function VisaTimeline({ zh }: { zh: boolean }) {
             {t('（', ' (')}
             <time dateTime={next.event.date}>{next.event.date}</time>
             {t('）', ')')}
-          </p>
+          </output>
         )}
         {events.length ? (
           <ol className="visa-events">

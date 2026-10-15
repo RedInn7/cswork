@@ -11,6 +11,10 @@ const shift = (month: string, back: number) => {
   const [y, m] = month.split('-').map(Number);
   return new Date(Date.UTC(y, m - 1 - back, 1)).toISOString().slice(0, 7);
 };
+/** Blanks before the 1st in a Monday-first week. */
+const lead = (y: number, m: number) => (new Date(Date.UTC(y, m - 1, 1)).getUTCDay() + 6) % 7;
+const monthName = (y: number, m: number) =>
+  new Date(Date.UTC(y, m - 1, 15)).toLocaleString('en', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 
 /**
  * One Beijing month of daily problems, from the points ledger (GET oj/points/daily) like the
@@ -42,11 +46,7 @@ export function DailyMonth({ english }: { english: boolean }) {
   const total = monthDays(month);
   const dates = Array.from({ length: total }, (_, i) => `${month}-${String(i + 1).padStart(2, '0')}`);
   const done = dates.filter((d) => days.has(d)).length;
-  // Monday first: blanks before the 1st.
-  const lead = (new Date(Date.UTC(y, m - 1, 1)).getUTCDay() + 6) % 7;
-  const title = english
-    ? new Date(Date.UTC(y, m - 1, 15)).toLocaleString('en', { month: 'long', year: 'numeric', timeZone: 'UTC' })
-    : `${y} 年 ${m} 月`;
+  const title = english ? monthName(y, m) : `${y} 年 ${m} 月`;
   return (
     <section className="daily-month" aria-label={t('每日一题月历', 'Daily problem calendar')}>
       <header className="daily-month-head">
@@ -72,7 +72,7 @@ export function DailyMonth({ english }: { english: boolean }) {
             {d}
           </li>
         ))}
-        {Array.from({ length: lead }, (_, i) => (
+        {Array.from({ length: lead(y, m) }, (_, i) => (
           <li key={`b${i}`} aria-hidden="true" />
         ))}
         {dates.map((date, i) => {
