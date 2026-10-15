@@ -321,7 +321,7 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
   const showCode = async (question: number, name: string) => {
     try {
       const problem = view.problems![question].id;
-      const found = await api<{ items: Shared[] }>(`oj/contests/${encodeURIComponent(id)}/code?${new URLSearchParams({ problem })}`);
+      const found = await api<{ items: Shared[] }>(`oj/contests/${encodeURIComponent(id)}/code?${new URLSearchParams({ problem, name })}`);
       setCode({ question, name, items: found.items });
     } catch (e) {
       setError((e as Error).message);

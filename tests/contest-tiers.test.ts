@@ -232,6 +232,27 @@ void test('shared code: opt-in, first AC in the window, RATE_GRACE after the end
     .run(ID, late.id, 'Late', end + 20 * MIN, end + 20 * MIN);
   assert.equal((await roomView(ID, late, end + 30 * MIN)).codeOpen, false);
   await assert.rejects(sharedCode(ID, ids[0], late, end + 30 * MIN), { status: 403 });
+  // Signed out: no code links, the endpoint wants an account.
+  const signedOut = await roomView(ID, null, end + RATE_GRACE);
+  assert.equal(signedOut.codeOpen, false);
+  assert.ok(signedOut.standings!.live.every((r) => !r.shared));
+  // The picked sharer comes first, inside the 50 the panel lists.
+  assert.deepEqual(
+    (await sharedCode(ID, ids[0], amy, end + RATE_GRACE, 'Amy')).items.map((i) => i.name),
+    ['Amy', 'Pro'],
+  );
+  // A sharer still racing a virtual run: their code waits for their own window to end.
+  const vic = person('t-vic');
+  sqlite()
+    .prepare('INSERT INTO contest_entries(room_id,user_id,display_name,joined_at,virtual_start,share_code) VALUES(?,?,?,?,?,1)')
+    .run(ID, vic.id, 'Vic', end + 40 * MIN, end + 40 * MIN);
+  submit(vic.id, ids[0], 'accepted', end + 45 * MIN, 'vic');
+  const names = async (at: number) => (await sharedCode(ID, ids[0], amy, at)).items.map((i) => i.name);
+  const vicShared = async (at: number) => (await roomView(ID, amy, at)).standings!.virtual.find((r) => r.name === 'Vic')!.shared;
+  assert.deepEqual(await names(end + 50 * MIN), ['Pro', 'Amy']);
+  assert.equal(await vicShared(end + 50 * MIN), false);
+  assert.deepEqual(await names(end + 100 * MIN), ['Pro', 'Amy', 'Vic']);
+  assert.equal(await vicShared(end + 100 * MIN), true);
   // The endpoint: an account, a problem id.
   assert.equal(await status(null, 'GET', `contests/${ID}/code?problem=${ids[0]}`), 401);
   assert.equal(await status(amy, 'GET', `contests/${ID}/code?problem=x`), 400);

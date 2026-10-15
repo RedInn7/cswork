@@ -337,7 +337,7 @@ test('a starter: unrated rows marked, the board narrowed to people I follow, sha
     assert.ok(document.querySelectorAll('.contest-code-link').length === 2);
     await act(async () => document.querySelector('.contest-code-link').click());
     await wait();
-    assert.ok(api.calls.some((p) => p === 'oj/contests/starter-9/code?problem=lc-1'));
+    assert.ok(api.calls.some((p) => p === 'oj/contests/starter-9/code?problem=lc-1&name=Pro'));
     assert.ok(document.querySelector('.contest-code pre').textContent === 'print(1)');
     assert.ok(document.querySelector('.contest-code details').open);
     assert.ok(document.activeElement === document.querySelector('#contest-code'), 'focus moves to the code');

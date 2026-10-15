@@ -408,10 +408,16 @@ export async function roomView(id: string, p: Person | null, now = Date.now(), f
   const own = entry
     ? entryWindow({ startsAt: row.starts_at, durationMin: row.duration_min }, { virtualStart: entry.virtual_start })
     : null;
-  // Shared code opens with the ratings, and never while the reader's own run of the room goes on.
-  const codeOpen = phase === 'ended' && now >= end + RATE_GRACE && !(own && now < own.end);
+  // Shared code opens to accounts with the ratings, and never while the reader's own run of the
+  // room goes on; a sharer's code once their own window is over.
+  const codeOpen = !!p && phase === 'ended' && now >= end + RATE_GRACE && !(own && now < own.end);
   const sharing = codeOpen
-    ? new Set(db.prepare('SELECT user_id FROM contest_entries WHERE room_id=? AND share_code=1').pluck().all(row.id) as string[])
+    ? new Set(
+        db
+          .prepare('SELECT user_id FROM contest_entries WHERE room_id=? AND share_code=1 AND COALESCE(virtual_start,?)+?<=?')
+          .pluck()
+          .all(row.id, row.starts_at, row.duration_min * MINUTE, now) as string[],
+      )
     : null;
   const shown = (list: Standing[]) =>
     list
@@ -681,11 +687,12 @@ async function search(q: string) {
 
 /**
  * Accepted code entrants chose to share (share_code), for one of the room's problems: each
- * sharer's first AC inside their own window, live entrants first. Opens to accounts that can
- * open the room RATE_GRACE after it ends, never while the problem is in a contest running for
- * the reader (a virtual run of this very room included).
+ * sharer's first AC inside their own window, once that window is over; `name` (the sharer the
+ * reader picked) first, then live entrants. Opens to accounts that can open the room RATE_GRACE
+ * after it ends, never while the problem is in a contest running for the reader (a virtual run
+ * of this very room included).
  */
-export async function sharedCode(id: string, problem: string, p: Person, now = Date.now()) {
+export async function sharedCode(id: string, problem: string, p: Person, now = Date.now(), name = '') {
   const { row } = readable(id, p);
   if (!(await roomProblems(row)).includes(problem)) throw new HttpError(404, '题目不在这场比赛里');
   if (now < endOf(row) + RATE_GRACE) throw new HttpError(403, '比赛结束 15 分钟后才能看代码');
@@ -698,10 +705,10 @@ export async function sharedCode(id: string, problem: string, p: Person, now = D
       FROM contest_entries e JOIN submissions s ON s.user_id=e.user_id
       WHERE e.room_id=@room AND e.share_code=1 AND s.problem_id=@problem AND s.mode='judge' AND s.status='accepted'
         AND s.created_at>=COALESCE(e.virtual_start,@start) AND s.created_at<=COALESCE(e.virtual_start,@start)+@ms
-        AND s.created_at<=@now
-      GROUP BY e.user_id ORDER BY virtual,at,name LIMIT 50`,
+        AND COALESCE(e.virtual_start,@start)+@ms<=@now
+      GROUP BY e.user_id ORDER BY e.display_name=@name DESC,virtual,at,name LIMIT 50`,
     )
-    .all({ room: row.id, problem, start: row.starts_at, ms: row.duration_min * MINUTE, now }) as {
+    .all({ room: row.id, problem, start: row.starts_at, ms: row.duration_min * MINUTE, now, name }) as {
     name: string;
     virtual: number;
     language: string;
@@ -769,7 +776,7 @@ export async function handleContests(request: Request, p: Person | null, path: s
     if (action === 'code') {
       requirePerson(p);
       await limit(p, 'contest-code', 30);
-      return json(await sharedCode(id, problemId.parse(params.get('problem')), p));
+      return json(await sharedCode(id, problemId.parse(params.get('problem')), p, Date.now(), params.get('name') ?? ''));
     }
     if (action) throw new HttpError(404, '比赛接口不存在');
     return json(await roomView(id, p, Date.now(), params.get('following') === '1'));
