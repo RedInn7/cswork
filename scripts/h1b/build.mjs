@@ -118,8 +118,13 @@ export function matcher(aliases) {
   };
 }
 
-/** `tables`: [{file, rows}] → the h1b-sponsors.json object (latest `years` fiscal years). */
-export function build(tables, aliases, { updated, years = FISCAL_YEARS } = {}) {
+/**
+ * `tables`: [{file, rows}] → the h1b-sponsors.json object (latest `years` fiscal years).
+ * @param {{ file: string, rows: string[][] }[]} tables
+ * @param {Record<string, string[]>} aliases
+ * @param {{ updated?: string | null, years?: number }} [options]
+ */
+export function build(tables, aliases, { updated = null, years = FISCAL_YEARS } = {}) {
   const match = matcher(aliases);
   const seen = new Map();
   const all = tables.flatMap(({ file, rows }) => {

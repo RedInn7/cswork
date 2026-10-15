@@ -44,7 +44,7 @@ void test('both column layouts parse; the six new categories fold into new and c
 });
 
 void test('the build sums matched employers per year, fills missing years and keeps no tax IDs', () => {
-  const out = build(tables(), aliases, { updated: '2026-10-15' });
+  const out = build(tables(), aliases, { updated: '2026-10-15' }) as H1bData;
   assert.deepEqual(out.fiscalYears, [2022, 2024]);
   assert.deepEqual(Object.keys(out.companies), ['amazon', 'google', 'mathworks']);
   assert.deepEqual(out.companies.google.years, [
