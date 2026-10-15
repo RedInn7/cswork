@@ -1296,14 +1296,19 @@ function MockBriefing({
         </li>
         <li>
           <Info size={16} aria-hidden="true" />
-          {mcq
+          {mcq && extra
             ? t(
-                `模拟编程和选择题部分（选择题是本站原创题，按真实 OA 的考点出），不含摄像头监考。`,
-                'The coding and MCQ parts are simulated (the MCQs are original, on the topics the real OA covers); there is no camera proctoring.',
+                `模拟编程和选择题部分（选择题是本站原创题，按真实 OA 的考点出）。真实 OA 编程之外还有：${extra}；其中只模拟了选择题，不含摄像头监考。`,
+                `The coding and MCQ parts are simulated (the MCQs are original, on the topics the real OA covers). Besides coding, the real OA has: ${extra}; only its MCQs are simulated here, and there is no camera proctoring.`,
               )
-            : extra
-              ? t(`只模拟编程部分；${extra}不在本模拟内。`, `Only the coding part is simulated; not included: ${extra}.`)
-              : t('只模拟编程部分，不含摄像头监考。', 'Only the coding part is simulated; there is no camera proctoring.')}
+            : mcq
+              ? t(
+                  `模拟编程和选择题部分（选择题是本站原创题，按真实 OA 的考点出），不含摄像头监考。`,
+                  'The coding and MCQ parts are simulated (the MCQs are original, on the topics the real OA covers); there is no camera proctoring.',
+                )
+              : extra
+                ? t(`只模拟编程部分；${extra}不在本模拟内。`, `Only the coding part is simulated; not included: ${extra}.`)
+                : t('只模拟编程部分，不含摄像头监考。', 'Only the coding part is simulated; there is no camera proctoring.')}
         </li>
       </ul>
       {missing && (

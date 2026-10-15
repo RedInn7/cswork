@@ -153,6 +153,8 @@ test('mock OA check-in: a preset with an MCQ section offers it (on by default); 
   const toggle = document.querySelector('.mock-mcq-toggle input');
   assert.equal(toggle?.checked, true);
   assert.match(document.querySelector('.mock-mcq-toggle').textContent, /Include the MCQ section: 10 questions \/ 15 min/);
+  // The rules still name what besides the MCQs is not simulated.
+  assert.match(document.querySelector('.mock-briefing').textContent, /Besides coding, the real OA has: New-grad version adds ~10 multithreading/);
   await act(async () => button('Start the clock').click());
   await settle();
   const active = JSON.parse(localStorage.getItem('cswork:mock:v1:guest')).active;
