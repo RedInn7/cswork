@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { build, matcher, normalizeName, parseCsv, readTable, records } from '../scripts/h1b/build.mjs';
-import { approvalRate, H1B, h1bCompany, h1bRanking, type H1bData } from '../lib/server/h1b';
+import { approvalRate, H1B, h1bCompany, h1bPaths, h1bRanking, type H1bData } from '../lib/server/h1b';
 import { H1bPanel } from '../app/company/h1b';
 
 const fixture = (name: string) => readFileSync(new URL(`../fixtures/h1b/${name}`, import.meta.url));
@@ -94,6 +94,9 @@ void test('the ranking lists shown companies by the latest new-employment approv
   assert.equal(approvalRate(900, 100), 0.9);
   assert.equal(approvalRate(0, 0), null);
   assert.equal(h1bCompany('toString', sample), null);
+  // The sitemap lists the (noindex while empty) ranking page only once it has data.
+  assert.deepEqual(h1bPaths(sample), [{ path: '/career/h1b', updatedAt: '2026-10-15' }]);
+  assert.deepEqual(h1bPaths({ ...sample, fiscalYears: [], companies: {} }), []);
 });
 
 void test('the company panel shows each year, the rate, the caveat and the source; nothing without data', () => {

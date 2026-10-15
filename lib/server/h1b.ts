@@ -19,6 +19,9 @@ export const H1B = data as H1bData;
 export const approvalRate = (approved: number, denied: number) =>
   approved + denied ? approved / (approved + denied) : null;
 
+/** The ranking page for the sitemap, only once there is data (an empty page is noindex). */
+export const h1bPaths = (d = H1B) => (d.fiscalYears.length ? [{ path: '/career/h1b', updatedAt: d.updated }] : []);
+
 export const h1bCompany = (slug: string, d = H1B) => (Object.hasOwn(d.companies, slug) ? d.companies[slug] : null);
 
 /** Shown companies (`names`: slug → name) by new-employment approvals in the latest fiscal year. */
