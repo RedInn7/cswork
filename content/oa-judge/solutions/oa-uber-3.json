@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-3",
+  "packageChecksum": "92031b9fa05fe99fbe0a216fa2d8e422ff199e4ca38d7a049ad0950f6f83f1a4",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int answer = 0;\n    for (size_t i = 1; i < s.size(); i++)\n        if (tolower(s[i]) != tolower(s[i - 1])) answer++;\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "0153a59bba040df3e8767808acf519e4e355034267148058fcbf243e30442ddc"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        String s = new Scanner(System.in).next().toLowerCase();\n        int answer = 0;\n        for (int i = 1; i < s.length(); i++) if (s.charAt(i) != s.charAt(i - 1)) answer++;\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "2c52cd9392242607a9bd393a3ae37159c997b25d32cf1a0eb4dac415f28a84aa"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"strings\"\n)\n\nfunc main() {\n\tvar s string\n\tfmt.Scan(&s)\n\ts = strings.ToLower(s)\n\tanswer := 0\n\tfor i := 1; i < len(s); i++ {\n\t\tif s[i] != s[i-1] {\n\t\t\tanswer++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "1b7fd7b2ec2e12f9fee1bad77c0e19384867b643aaa24fb7fa3d199894d2e41a"
+    }
+  ]
+}

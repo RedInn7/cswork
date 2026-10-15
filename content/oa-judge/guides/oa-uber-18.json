@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-18",
+  "packageChecksum": "7cdc95107bb32ac545283b3a6646806b19d06b44ae0a5ea04f9b3ee64bc5112d",
+  "sourceContentHash": "4de00d21a4bd189af6a05df097dd58cec328bf9d77f123a2afc7416b8ba763f5",
+  "editorialSha256": "45b93c79f9ed6cce3d72889d70c6fdf70350cf3153da37a4a385ae351d9af2d1",
+  "hints": {
+    "zh": [
+      "排列里没有重复值。值 1 到 k 恰好构成一个连续子数组，等价于它们的 k 个位置正好填满某一段连续区间，也就是最大位置与最小位置之间恰好容纳 k 格。",
+      "先记录每个值所在的位置，然后按 k 从 1 到 n 依次加入值 k 的位置，同时维护已加入位置的最小值和最大值，判断跨度是否等于 k。",
+      "用 pos 数组记录每个值的下标；left 初始为 n、right 初始为 −1；k 从 1 到 n，用 pos[k] 更新 left 和 right，若 right−left+1 等于 k 则第 k 个字符为 1，否则为 0；最后输出拼好的字符串。"
+    ],
+    "en": [
+      "A permutation has no repeated values. Values 1..k form one contiguous subarray exactly when their k positions fill a contiguous range, that is, when the span from the smallest to the largest position holds exactly k cells.",
+      "Record each value's position, then add the positions of values 1, 2, ..., n in order while keeping the minimum and maximum position added so far, and check whether the span equals k.",
+      "Store pos[value] = index. Start with left = n and right = -1. For k from 1 to n, update left and right with pos[k]; the k-th character is 1 if right - left + 1 equals k and 0 otherwise. Print the resulting string."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFind the position of each value, add 1..k in order while maintaining the leftmost and rightmost positions; the values are contiguous exactly when the span of the two positions is k.\n\n## Correctness\n\nA permutation has no duplicates, so there are k distinct positions. If exactly k cells fit between the largest and smallest positions, no position in between is missing; conversely, any k contiguous cells must have span k, so the condition is necessary and sufficient.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

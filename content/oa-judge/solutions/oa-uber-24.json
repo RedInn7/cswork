@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-24",
+  "packageChecksum": "b3efd0b5152409858f50c93315c20005626924b65c79389c4fcfd611d2eb7db9",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<string> a(n);\n    for (auto &s : a) cin >> s;\n    vector<int> resolved(n, -1), path;\n    for (int i = 0; i < n; i++) {\n        path.clear();\n        int v = i;\n        // follow references until a resolved entry, then fill the whole path\n        while (resolved[v] < 0) {\n            path.push_back(v);\n            if (a[v][0] != '!') { resolved[v] = a[v].back() - '1'; break; }\n            v = stoi(a[v].substr(1)) - 1;\n        }\n        for (int w : path) resolved[w] = resolved[v];\n    }\n    long long counts[3] = {0, 0, 0};\n    for (int r : resolved) counts[r]++;\n    cout << counts[0] << \" \" << counts[1] << \" \" << counts[2] << \"\\n\";\n}\n",
+      "sha256": "3a4e339b7e087d340689d479cad314c53b56855da5bb801bcb9c57e3855f3754"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in), 1 << 16);\n        StringTokenizer st = new StringTokenizer(\"\");\n        List<String> tokens = new ArrayList<>();\n        String line;\n        while ((line = br.readLine()) != null) {\n            st = new StringTokenizer(line);\n            while (st.hasMoreTokens()) tokens.add(st.nextToken());\n        }\n        int n = Integer.parseInt(tokens.get(0));\n        String[] a = tokens.subList(1, 1 + n).toArray(new String[0]);\n        int[] resolved = new int[n], path = new int[n];\n        Arrays.fill(resolved, -1);\n        for (int i = 0; i < n; i++) {\n            int len = 0, v = i;\n            // follow references until a resolved entry, then fill the whole path\n            while (resolved[v] < 0) {\n                path[len++] = v;\n                if (a[v].charAt(0) != '!') { resolved[v] = a[v].charAt(a[v].length() - 1) - '1'; break; }\n                v = Integer.parseInt(a[v].substring(1)) - 1;\n            }\n            for (int k = 0; k < len; k++) resolved[path[k]] = resolved[v];\n        }\n        long[] counts = new long[3];\n        for (int r : resolved) counts[r]++;\n        System.out.println(counts[0] + \" \" + counts[1] + \" \" + counts[2]);\n    }\n}\n",
+      "sha256": "360984fc5e191b0b5fb9164ec7dde4d2ca8c667d2e7cd3654d28359bd4a05e9d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<20)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\ta := make([]string, n)\n\tfor i := range a {\n\t\tfmt.Fscan(in, &a[i])\n\t}\n\tresolved := make([]int, n)\n\tfor i := range resolved {\n\t\tresolved[i] = -1\n\t}\n\tvar path []int\n\tfor i := 0; i < n; i++ {\n\t\tpath = path[:0]\n\t\tv := i\n\t\t// follow references until a resolved entry, then fill the whole path\n\t\tfor resolved[v] < 0 {\n\t\t\tpath = append(path, v)\n\t\t\tif a[v][0] != '!' {\n\t\t\t\tresolved[v] = int(a[v][len(a[v])-1] - '1')\n\t\t\t\tbreak\n\t\t\t}\n\t\t\tj, _ := strconv.Atoi(a[v][1:])\n\t\t\tv = j - 1\n\t\t}\n\t\tfor _, w := range path {\n\t\t\tresolved[w] = resolved[v]\n\t\t}\n\t}\n\tvar counts [3]int\n\tfor _, r := range resolved {\n\t\tcounts[r]++\n\t}\n\tfmt.Println(counts[0], counts[1], counts[2])\n}\n",
+      "sha256": "2600f208d95ba3f22503085a057a7840dd84d0a1031c6765205d2b1c737303e7"
+    }
+  ]
+}

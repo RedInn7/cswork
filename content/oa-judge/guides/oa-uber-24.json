@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-24",
+  "packageChecksum": "b3efd0b5152409858f50c93315c20005626924b65c79389c4fcfd611d2eb7db9",
+  "sourceContentHash": "9458b7e6aa563355f55d8f1508a621a29275c39d5ce624c4e052e22b1a3251d5",
+  "editorialSha256": "b23c0ced03fb4aee79e4d5d1b11528aa88f6ced5dd20302a39664115d89345f0",
+  "hints": {
+    "zh": [
+      "引用不会改变最终执行的命令：一个 !j 最终执行什么，完全由第 j 条记录最终执行什么决定。题目保证没有环，每条引用链都会落到某个真正的命令上。",
+      "沿着引用链一路追踪，直到遇到实际命令或已经解析过的记录，然后把这条路径上经过的所有位置都记成同一个结果。这样每个位置只会被完整追踪一次。",
+      "resolved 数组初始全为 −1；对每个位置 i 从它出发，未解析时把当前位置记入路径，若是 cmdK 就把它解析为 K 并停止，否则跳到被引用的位置继续；停下后把路径上所有位置都设为终点的结果；最后统计三类命令的数量并输出。"
+    ],
+    "en": [
+      "A reference never changes the command that finally runs: what !j executes is exactly what entry j finally executes. There are no cycles, so every reference chain ends at a real command.",
+      "Follow the reference chain until you reach a real command or an entry that is already resolved, then mark every position on that path with the same result. This way each position is traced in full only once.",
+      "Start with resolved filled with -1. For each position i, walk from it: while the current entry is unresolved, add it to the path; if it is cmdK, resolve it to K and stop; otherwise jump to the referenced entry. Then set every position on the path to the result at the end of the walk. Finally count the three commands and print the counts."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFollow the reference chain until a result that is already resolved, then mark every position on the path with that result. Finally add up the command category of each position.\n\n## Correctness\n\nThere are no cycles and every chain reaches an actual command, so the tracing always terminates. A reference does not change the final command, so filling back along the path is correct. Memoization ensures each position appears in an unresolved path at most once.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

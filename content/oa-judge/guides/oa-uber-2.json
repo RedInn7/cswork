@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-2",
+  "packageChecksum": "783288387def3a3a136b5e7fd465b969da7a78e05f053a279fd79fa2b7686e9d",
+  "sourceContentHash": "8326209a9fbc07d2fce06da210a822d01f5a95335c7f5042009739726dc2d20a",
+  "editorialSha256": "ad8b2e28199f306f790e1d06eca7700cbff76296b0b873660a5339a462e81677",
+  "hints": {
+    "zh": [
+      "每次查询只是问半开区间 [x−size, x) 里有没有障碍，相当于统计区间内已放置障碍的数量是否为 0。坐标范围很大，但会被放置障碍的坐标只来自插入操作。",
+      "先读完全部操作，把所有插入坐标排序去重做离散化，再用树状数组记录每个坐标是否已放置障碍。查询时用二分把区间两端换成排名，比较两个前缀和是否相等。",
+      "离线收集所有插入坐标并排序去重；按原顺序处理操作：插入时若该坐标未放置过，就在其排名处给树状数组加 1；查询时用 lower_bound 求 x 的排名作为右端、求 x−size 的排名作为左端，两段前缀和相等则记 1，否则记 0；最后输出拼接的 01 串。"
+    ],
+    "en": [
+      "Each query only asks whether the half-open range [x - size, x) contains an obstacle, that is, whether the number of placed obstacles in it is 0. Coordinates are large, but obstacles can only appear at coordinates that occur in insert operations.",
+      "Read all operations first, sort and deduplicate the inserted coordinates to compress them, and keep a Fenwick tree marking which coordinates hold an obstacle. For a query, binary search both ends of the range into ranks and compare the two prefix sums.",
+      "Collect every inserted coordinate offline, then sort and deduplicate them. Process the operations in order: for an insert whose coordinate is not placed yet, add 1 at its rank in the Fenwick tree. For a query, use lower_bound on x for the right end and on x - size for the left end; record 1 if the two prefix sums are equal, else 0. Print the resulting 01 string."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRead all inserted coordinates in advance and compress them, and use a Fenwick tree to record whether each one has been inserted. Use binary search to get the ranks of the left and right boundaries, and query the number of obstacles in the range.\n\n## Correctness\n\nA Fenwick prefix sum counts the set coordinates before a given rank. The right end uses lower_bound to exclude x, and the left end likewise uses lower_bound to include x−size; their difference is 0 exactly when there is no obstacle.\n\n## Complexity\n\nTime O(q log q), space O(q)."
+}

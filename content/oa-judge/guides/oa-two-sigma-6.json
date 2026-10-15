@@ -1,0 +1,19 @@
+{
+  "id": "oa-two-sigma-6",
+  "packageChecksum": "2dc826546cb96ee87c5e41ecec434be612f1474f9b6982acd1169d7ae4879d53",
+  "sourceContentHash": "1099b34a71ea64b055c456f2e095223e2fd1aba4017cba75344b7fd1a20be117",
+  "editorialSha256": "8f90f01179fd00da00a32cac977077368ed8a732188f83b692f974556af5a93c",
+  "hints": {
+    "zh": [
+      "剪断一条父子边后，一块恰好是子节点的整棵子树，另一块是其余所有节点；所以只要知道每个子树的流量总和，差值就是 |总量−2×子树和|。",
+      "题目保证父节点编号严格小于子节点，因此按编号从大到小处理时，一个节点的所有后代都已经处理完，可以直接把子树和累加到父节点上，无需递归。",
+      "sub 初始为各节点自身流量；i 从 n−1 递减到 1，把 sub[i] 加到 sub[parent[i]] 上；total 等于 sub[0]；再枚举每个非根节点 i，取 |total−2×sub[i]| 的最小值并输出。"
+    ],
+    "en": [
+      "Cutting one parent-child edge leaves one part that is exactly the child's whole subtree and another part with all other nodes. So once you know every subtree's total inflow, the difference is |total - 2 * subtree sum|.",
+      "Parents always have smaller ids than their children, so when nodes are processed from the largest id down, all descendants of a node are already done. You can add each subtree sum straight into its parent without recursion.",
+      "Start sub as each node's own inflow. For i from n - 1 down to 1, add sub[i] to sub[parent[i]]. Let total = sub[0]. Then go over every non-root node i, take the minimum of |total - 2 * sub[i]|, and print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSince parent ids are strictly smaller, add each subtree's inflow to its parent in decreasing id order, then go over the non-root nodes as the subtree being cut off.\n\n## Proof of correctness\n\nWhen nodes are processed in reverse order, all of a node's descendants have already been accumulated, so the exact subtree total inflow is obtained. After cutting the edge between that node and its parent, the two parts are its subtree and the remaining nodes, and the inflow difference is |total−2*sub|. Every cuttable edge corresponds uniquely to one non-root node, so taking the minimum misses nothing.\n\n## Complexity\n\nO(n) time and O(n) space, with no risk from recursion depth."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-15",
+  "packageChecksum": "9396b06144d4cd1c4df726cb415efbdf2b6c098dcc837ac404388026c57a42b6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    vector<char> prime(max(n, 2), 1);\n    for (int p = 2; p < n; p++)\n        if (prime[p])\n            for (long long m = (long long)p * p; m < n; m += p) prime[m] = 0;\n    vector<int> steps = {1};\n    for (int p = 3; p < n; p += 10) if (prime[p]) steps.push_back(p); // primes ending in 3\n    vector<long long> dp(n, LLONG_MIN);\n    dp[0] = 0;\n    for (int i = 1; i < n; i++) {\n        long long best = LLONG_MIN;\n        for (int s : steps) if (s <= i) best = max(best, dp[i - s]);\n        dp[i] = a[i] + best;\n    }\n    cout << dp[n - 1] << \"\\n\";\n}\n",
+      "sha256": "4603c7cd6e6041d9d0179c0ed8d9f594d2be193f2ec53d7a5ed1871ba9dac270"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        boolean[] composite = new boolean[Math.max(n, 2)];\n        for (int p = 2; p < n; p++)\n            if (!composite[p])\n                for (long m = (long) p * p; m < n; m += p) composite[(int) m] = true;\n        List<Integer> steps = new ArrayList<>();\n        steps.add(1);\n        for (int p = 3; p < n; p += 10) if (!composite[p]) steps.add(p); // primes ending in 3\n        long[] dp = new long[n];\n        for (int i = 1; i < n; i++) {\n            long best = Long.MIN_VALUE;\n            for (int s : steps) if (s <= i) best = Math.max(best, dp[i - s]);\n            dp[i] = a[i] + best;\n        }\n        System.out.println(dp[n - 1]);\n    }\n}\n",
+      "sha256": "c9f1ebc30f3cb52e16111a915f56ce34ef6602057293723679a32892e494e88c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn := readInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\tcomposite := make([]bool, max(n, 2))\n\tfor p := 2; p < n; p++ {\n\t\tif !composite[p] {\n\t\t\tfor m := p * p; m < n; m += p {\n\t\t\t\tcomposite[m] = true\n\t\t\t}\n\t\t}\n\t}\n\tsteps := []int{1}\n\tfor p := 3; p < n; p += 10 { // primes ending in 3\n\t\tif !composite[p] {\n\t\t\tsteps = append(steps, p)\n\t\t}\n\t}\n\tdp := make([]int, n)\n\tfor i := 1; i < n; i++ {\n\t\tbest := math.MinInt64\n\t\tfor _, s := range steps {\n\t\t\tif s <= i {\n\t\t\t\tbest = max(best, dp[i-s])\n\t\t\t}\n\t\t}\n\t\tdp[i] = a[i] + best\n\t}\n\tfmt.Println(dp[n-1])\n}\n",
+      "sha256": "9fe3ce926a5027467b519a9e3d88e22ca3ce11d8edf3d5d518b1166acdd708b0"
+    }
+  ]
+}

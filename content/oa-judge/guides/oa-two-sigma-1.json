@@ -1,0 +1,19 @@
+{
+  "id": "oa-two-sigma-1",
+  "packageChecksum": "7a0ab8912d9e69aaf7514c838839f72b0df59fe892110ca911ee93903887a55d",
+  "sourceContentHash": "3b2586b3a0b70a0034ab6bb6df60e1fe65d1c4af2e4f8cb28934767c2afa594c",
+  "editorialSha256": "53348ae578a060a89f7652bda7e2672af91d1c4d338b6a2768a99a478ac73192",
+  "hints": {
+    "zh": [
+      "串联流水线的吞吐量等于所有服务里的最小值，所以想让吞吐至少为 T，就必须让每个服务都至少达到 T；各服务需要的扩容次数互不影响，可以分别算再相加。目标越高花费越多，具有单调性。",
+      "二分答案 T：对每个服务算出达到 T 所需的最少扩容次数乘以单价，累加后与预算比较。任一 tp 为 0 时吞吐永远是 0；上界可以取每个服务独占全部预算时能达到的吞吐的最小值。",
+      "若有 tp 为 0 直接输出 0；下界取 tp 的最小值，上界取所有 tp[i]×(1+budget/cost[i]) 的最小值；二分中点 T，对每个服务需要 ceil(T/tp)−1 次（不小于 0），累加费用一旦超出预算就提前判失败；可行则抬高下界，否则降低上界，最后输出下界。"
+    ],
+    "en": [
+      "A serial pipeline's throughput is the minimum over all services, so reaching throughput at least T requires every service to reach T. The scale-ups each service needs are independent and can be added up. A higher target never costs less, so feasibility is monotone.",
+      "Binary search on T: for each service compute the fewest scale-ups needed to reach T times its unit cost, add these up and compare with the budget. If any tp is 0, the throughput is always 0. An upper bound is the smallest throughput any single service could reach if it took the whole budget.",
+      "If some tp is 0, print 0. Otherwise use the minimum tp as the lower bound and the minimum of tp[i] * (1 + budget / cost[i]) as the upper bound. For a midpoint T, service i needs max(0, ceil(T / tp[i]) - 1) scale-ups; add up the costs and stop early once the budget is exceeded. If feasible, raise the lower bound, otherwise lower the upper bound; print the final lower bound."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search on the target throughput T, compute for each service the minimum scale-up cost needed to reach T, and sum them; if any tp is 0, output 0 directly.\n\n## Proof of correctness\n\nEvery service must reach T, and each one needs at least max(0,ceil(T/tp)−1) scale-ups; these counts add up independently to the minimum total cost, so the check is necessary and sufficient. Raising T never lowers the cost, so binary search applies. The throughput any single service could reach while taking the whole budget gives a global upper bound, and the minimum of these bounds is used.\n\n## Complexity\n\nO(n log(upper bound)) time and O(n) space; the answer can be as large as about 10^18, and the cost accumulation can stop as soon as it exceeds the budget."
+}

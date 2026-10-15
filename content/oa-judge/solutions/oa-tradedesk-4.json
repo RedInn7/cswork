@@ -1,0 +1,21 @@
+{
+  "id": "oa-tradedesk-4",
+  "packageChecksum": "e7fc8984b6283341858b1a09df4e1272519e7f4b48775661ad6e9d365faffc51",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, threshold;\n    cin >> n >> threshold;\n    int streak = 0;\n    for (int i = 0; i < n; i++) {\n        int v;\n        cin >> v;\n        streak = v > threshold ? streak + 1 : 0;\n        if (streak == 3) {\n            cout << i - 2 << \"\\n\";\n            return 0;\n        }\n    }\n    cout << -1 << \"\\n\";\n}\n",
+      "sha256": "3997c59a385af9bc621e556b6dafbc67734dfaee0002a41704ef0f8328dfe912"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt(), threshold = sc.nextInt();\n        int streak = 0;\n        for (int i = 0; i < n; i++) {\n            int v = sc.nextInt();\n            streak = v > threshold ? streak + 1 : 0;\n            if (streak == 3) {\n                System.out.println(i - 2);\n                return;\n            }\n        }\n        System.out.println(-1);\n    }\n}\n",
+      "sha256": "f51aeba2b69e38581e1aa0ed90155b25c33c04b194c96d87ea88dba5c39cee62"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n, threshold int\n\tfmt.Fscan(in, &n, &threshold)\n\tstreak := 0\n\tfor i := 0; i < n; i++ {\n\t\tvar v int\n\t\tfmt.Fscan(in, &v)\n\t\tif v > threshold {\n\t\t\tstreak++\n\t\t} else {\n\t\t\tstreak = 0\n\t\t}\n\t\tif streak == 3 {\n\t\t\tfmt.Println(i - 2)\n\t\t\treturn\n\t\t}\n\t}\n\tfmt.Println(-1)\n}\n",
+      "sha256": "bf88bae43f036f7f4a525a69bc02cc44aadd1239e6edd372c7d2dea80d307648"
+    }
+  ]
+}

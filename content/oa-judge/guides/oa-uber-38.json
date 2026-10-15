@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-38",
+  "packageChecksum": "4845e630f1e69fd4fb4bf8544727d59c20fde1ea79866f6158b7b06cca403a80",
+  "sourceContentHash": "3b9b6c5bf5e981fd89d9dd4f5153fff72488c80b3a78e47cc2f1270193f53ac6",
+  "editorialSha256": "523cabf32c9d0ff30ba984f2a4bba7a0e0afed94394a2090e4687b9167fd5a26",
+  "hints": {
+    "zh": [
+      "排名规则只有两个关键字：积分 3×胜+平，积分相同时比较净胜球（进球减失球），都按从高到低。两者都相同时题目不规定先后，任意顺序都算对。",
+      "按（积分降序，净胜球降序）对球队排序，取前两名即可；下标只用来在完全并列时确定一个合法的代表顺序。",
+      "读入四行数据，算出每队积分和净胜球；把下标按积分降序、净胜球降序、下标升序排序；输出排序后的前两个下标，注意积分可能超过 32 位整数范围。"
+    ],
+    "en": [
+      "The ranking uses only two keys: points 3 * wins + draws, and on equal points the goal difference (goals scored minus goals conceded), both from high to low. When both are equal, the statement fixes no order, and any order is accepted.",
+      "Sort the teams by (points descending, goal difference descending) and take the first two; the index only picks one valid order among teams that are completely tied.",
+      "Read the four lines and compute each team's points and goal difference. Sort the indices by points descending, then goal difference descending, then index ascending. Print the first two indices, keeping in mind that points can exceed the 32-bit range."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the teams by points and goal difference in descending order, use the index only to pick one deterministic valid representative among ties, and take the first two.\n\n## Correctness\n\nThe sort keys are exactly the ranking rules of the problem, so the first and second teams are each no worse than every team not yet chosen; any order among identical keys conforms to the problem.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

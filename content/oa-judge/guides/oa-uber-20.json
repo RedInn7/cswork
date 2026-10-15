@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-20",
+  "packageChecksum": "2af6a1b9d843aa3efce3779149bd4d80ac3c0597d8eef47b2f8f7c2afe12facb",
+  "sourceContentHash": "368bf541a7c63e33a5f33177739c8c8ae8153ed059f5d87d65b791ef4c947f99",
+  "editorialSha256": "bc73cf9a28b0ccb68af0ea89bec645080bbdee45b5e82dec57a2b47b861dcce9",
+  "hints": {
+    "zh": [
+      "把 HH:MM 换算成从午夜开始的分钟数，问题就变成在一组整数里找严格小于当前分钟的最大值。恰好在当前时刻发车的班次不算已发出，也不需要跨到前一天。",
+      "转换所有发车时间后扫描一遍，只考虑严格小于当前分钟的班次，取其中最大的一个；它就是最近发出的一班，经过的分钟数就是两者之差。",
+      "把当前时间和每个发车时间都换算为 小时×60+分钟；last 初始为 −1，遍历发车分钟，凡是严格小于当前分钟的就用它更新 last 的最大值；若 last 仍为 −1 输出 −1，否则输出当前分钟减 last。"
+    ],
+    "en": [
+      "Convert HH:MM into minutes since midnight, and the task becomes finding the largest value strictly below the current minute. A bus leaving exactly at the current time has not departed yet, and there is no wrap-around to the previous day.",
+      "After converting all departures, scan them once and consider only those strictly earlier than the current minute; the largest of them is the most recent bus, and the elapsed time is the difference.",
+      "Convert the current time and every departure to hours * 60 + minutes. Start with last = -1 and, for every departure strictly smaller than the current minute, update last with the maximum. If last is still -1, print -1; otherwise print the current minute minus last."
+    ]
+  },
+  "explanationEn": "## Approach\n\nConvert to minutes since midnight, take the largest departure minute strictly less than the current minute, and subtract.\n\n## Correctness\n\nThe strict less-than condition exactly excludes buses that have not departed yet. Among the departed buses, the largest departure time gives the smallest elapsed time, which is the most recent bus.\n\n## Complexity\n\nTime O(n), extra space O(1) apart from the input."
+}

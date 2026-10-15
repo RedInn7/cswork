@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-10",
+  "packageChecksum": "4821b6c86999e3a524177f52ebb76323e741cb89d5f3c076324dc71a1b673479",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstring canon(const string &s) {\n    size_t p = s.find_first_not_of('0');\n    return p == string::npos ? \"0\" : s.substr(p);\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    unordered_map<string, long long> counts;\n    string s;\n    for (int i = 0; i < n; i++) { cin >> s; counts[canon(s)]++; }\n    cin >> s;\n    string target = canon(s);\n    long long answer = 0;\n    for (size_t i = 1; i < target.size(); i++) {\n        string a = target.substr(0, i), b = target.substr(i);\n        auto ia = counts.find(a), ib = counts.find(b);\n        if (ia == counts.end() || ib == counts.end()) continue;\n        // the same value cannot reuse the same index\n        answer += ia->second * (ib->second - (a == b ? 1 : 0));\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "1d2e59f2f7a34b44ee215eb96b075bc62d7ba240ae83137af3f1a889294ad6cd"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static String canon(String s) {\n        int p = 0;\n        while (p < s.length() - 1 && s.charAt(p) == '0') p++;\n        return s.substring(p);\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringBuilder all = new StringBuilder();\n        String line;\n        while ((line = br.readLine()) != null) all.append(line).append(' ');\n        StringTokenizer st = new StringTokenizer(all.toString());\n        int n = Integer.parseInt(st.nextToken());\n        HashMap<String, Long> counts = new HashMap<>();\n        for (int i = 0; i < n; i++) counts.merge(canon(st.nextToken()), 1L, Long::sum);\n        String target = canon(st.nextToken());\n        long answer = 0;\n        for (int i = 1; i < target.length(); i++) {\n            String a = target.substring(0, i), b = target.substring(i);\n            long left = counts.getOrDefault(a, 0L), right = counts.getOrDefault(b, 0L);\n            // the same value cannot reuse the same index\n            if (left > 0 && right > 0) answer += left * (right - (a.equals(b) ? 1 : 0));\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "72472c8f7a45f2c82f8509141fddf254b8847a5d7f20b90b58a137d2b42fcb0d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc canon(s string) string {\n\tt := strings.TrimLeft(s, \"0\")\n\tif t == \"\" {\n\t\treturn \"0\"\n\t}\n\treturn t\n}\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\tcounts := make(map[string]int, n)\n\tfor i := 0; i < n; i++ {\n\t\tvar s string\n\t\tfmt.Fscan(in, &s)\n\t\tcounts[canon(s)]++\n\t}\n\tvar s string\n\tfmt.Fscan(in, &s)\n\ttarget := canon(s)\n\tanswer := 0\n\tfor i := 1; i < len(target); i++ {\n\t\ta, b := target[:i], target[i:]\n\t\tright := counts[b]\n\t\tif a == b {\n\t\t\tright-- // the same value cannot reuse the same index\n\t\t}\n\t\tif counts[a] > 0 && right > 0 {\n\t\t\tanswer += counts[a] * right\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "0261fd22a99ecd624a70ed87f3f3f6b1d01605237e1abebf008dda855fb39ece"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-28",
+  "packageChecksum": "9597a422056e29b52656a06be13a6a6ed59e67341a39f8d0f751d3f1d775fb65",
+  "sourceContentHash": "10ad1d667453bbdd11e30d7071d3dfd099622685333b367a2bee874cb489268a",
+  "editorialSha256": "ecfe97a49704df8464826291e0ab5232ff77ff361a8225f123a68245a4af89ae",
+  "hints": {
+    "zh": [
+      "路线按行从下往上推进。在同一行里，路线要么只用一个抓点，要么先用一个再用另一个（两个抓点横向距离不超过 w）；换到上一行时高度差为 1，距离限制等价于横向距离的平方不超过 w²−1。每类转移都是某个横向窗口内的求和。",
+      "维护“进入本行时落在每个抓点的路线数”。先做一次半径为 w 的窗口求和，得到“本行最后抓点在每个位置的路线数”（包含不横移的情况）；再做一次半径为 ⌊√(w²−1)⌋ 的窗口求和，得到进入上一行时的路线数。窗口求和都用前缀和。",
+      "radius 取 w²−1 的整数平方根；最底行的初始值为：是 X 的位置为 1，否则为 0；从最底行往上，对当前行用前缀和计算每个 X 位置在半径 w 内的和得到 finished，非 X 位置为 0；若不是最顶行，再对上一行用半径 radius 做同样的窗口求和得到新的 incoming；全部计算都对 998244353 取模，最后输出顶行 finished 之和。"
+    ],
+    "en": [
+      "Routes move up row by row. Within a row a route either uses one hold, or a first hold and then a different last hold at horizontal distance at most w. Moving up one row raises the height by 1, so the distance limit becomes: the squared horizontal distance is at most w^2 - 1. Every transition is a sum over a horizontal window.",
+      "Keep, for each hold, the number of routes that enter the current row there. A window sum with radius w gives the number of routes whose last hold in this row is at each position, including routes with no sideways move. A second window sum with radius floor(sqrt(w^2 - 1)) gives the counts entering the row above. Do the window sums with prefix sums.",
+      "Let radius be the integer square root of w^2 - 1. The bottom row starts with 1 at every X and 0 elsewhere. Going upward, compute finished for the current row as the prefix-sum window total within radius w at every X position and 0 at other positions; if this is not the top row, compute the new incoming for the row above with the same window sum using radius. Do everything modulo 998244353 and finally print the sum of finished for the top row."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess the rows from bottom to top. The number of paths entering a row is turned, through a horizontal window sum of radius w, into the number of paths ending at each last hold of the row (including no sideways move). Moving up to the next row, the horizontal distance is at most isqrt(w²−1), and another window sum is applied. Both kinds of windows use prefix sums.\n\n## Correctness\n\nWithin a row, every valid route either has only a last hold, or has a unique first hold and a different last hold; the horizontal window counts each of these cases once. Adjacent rows differ in height by 1, so the distance constraint is equivalent to the squared horizontal distance being at most w²−1. The layer-by-layer transitions combine exactly all valid routes and only those.\n\n## Complexity\n\nTime O(nm), and O(m) space apart from the input grid."
+}

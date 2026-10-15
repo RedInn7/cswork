@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-31",
+  "packageChecksum": "78e9efb0110fb1389daa86d17550cc05f2460817eebde69192f216b0453106e0",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, q;\n    cin >> n >> q;\n    unordered_set<long long> houses;\n    houses.reserve(2 * n + 1);\n    vector<long long> xs(n);\n    for (auto &x : xs) { cin >> x; houses.insert(x); }\n    // a block starts at every house without a left neighbor\n    long long segments = 0;\n    for (long long x : xs) if (!houses.count(x - 1)) segments++;\n    string out;\n    for (int i = 0; i < q; i++) {\n        long long v;\n        cin >> v;\n        int left = houses.count(v - 1), right = houses.count(v + 1);\n        segments += left + right - 1; // split (+1), shrink (0) or vanish (-1)\n        houses.erase(v);\n        out += to_string(segments);\n        out += '\\n';\n    }\n    fwrite(out.data(), 1, out.size(), stdout);\n}\n",
+      "sha256": "b0ef71be626a82d69bc1f331a91624cdf71eb1a99df7f4197568a289e9a4cc3b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), q = nextInt();\n        HashSet<Long> houses = new HashSet<>(4 * n + 4);\n        long[] xs = new long[n];\n        for (int i = 0; i < n; i++) { xs[i] = nextLong(); houses.add(xs[i]); }\n        // a block starts at every house without a left neighbor\n        long segments = 0;\n        for (long x : xs) if (!houses.contains(x - 1)) segments++;\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < q; i++) {\n            long v = nextLong();\n            int left = houses.contains(v - 1) ? 1 : 0, right = houses.contains(v + 1) ? 1 : 0;\n            segments += left + right - 1; // split (+1), shrink (0) or vanish (-1)\n            houses.remove(v);\n            sb.append(segments).append('\\n');\n        }\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "3735ee185d8c273be95fffb184d1c4d47015c49af6ee37a9ae3fb78f90cc9d53"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn, q := readInt(), readInt()\n\thouses := make(map[int]bool, n)\n\txs := make([]int, n)\n\tfor i := range xs {\n\t\txs[i] = readInt()\n\t\thouses[xs[i]] = true\n\t}\n\t// a block starts at every house without a left neighbor\n\tsegments := 0\n\tfor _, x := range xs {\n\t\tif !houses[x-1] {\n\t\t\tsegments++\n\t\t}\n\t}\n\tw := bufio.NewWriterSize(os.Stdout, 1<<20)\n\tdefer w.Flush()\n\tfor i := 0; i < q; i++ {\n\t\tv := readInt()\n\t\t// split (+1), shrink (0) or vanish (-1)\n\t\tif houses[v-1] {\n\t\t\tsegments++\n\t\t}\n\t\tif houses[v+1] {\n\t\t\tsegments++\n\t\t}\n\t\tsegments--\n\t\tdelete(houses, v)\n\t\tw.WriteString(strconv.Itoa(segments))\n\t\tw.WriteByte('\\n')\n\t}\n}\n",
+      "sha256": "f9ad12aa41b915773499be19663874007cdfad28ff26d53455e79973ce6e7fd5"
+    }
+  ]
+}

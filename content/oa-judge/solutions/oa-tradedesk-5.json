@@ -1,0 +1,21 @@
+{
+  "id": "oa-tradedesk-5",
+  "packageChecksum": "630b29964d44b183c41eee97a7c19faf8ba3ee980e856da610da87aebe01d563",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, m, journeys;\n    cin >> n >> m >> journeys;\n    vector<long long> c2d(n), d2c(m);\n    for (auto &x : c2d) cin >> x;\n    for (auto &x : d2c) cin >> x;\n    long long t = 0;\n    int a = 0, b = 0;\n    for (int j = 0; j < journeys; j++) {\n        while (a < n && c2d[a] < t) a++;\n        if (a == n) { cout << -1 << \"\\n\"; return 0; }\n        t = c2d[a++] + 100;\n        while (b < m && d2c[b] < t) b++;\n        if (b == m) { cout << -1 << \"\\n\"; return 0; }\n        t = d2c[b++] + 100;\n    }\n    cout << t << \"\\n\";\n}\n",
+      "sha256": "feac113c2bcb8b5e3f5a35fea72870dfc319ea85a19a8f76f8d3364e03f3fa9c"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), m = nextInt(), journeys = nextInt();\n        long[] c2d = new long[n], d2c = new long[m];\n        for (int i = 0; i < n; i++) c2d[i] = nextLong();\n        for (int i = 0; i < m; i++) d2c[i] = nextLong();\n        long t = 0;\n        int a = 0, b = 0;\n        for (int j = 0; j < journeys; j++) {\n            while (a < n && c2d[a] < t) a++;\n            if (a == n) { System.out.println(-1); return; }\n            t = c2d[a++] + 100;\n            while (b < m && d2c[b] < t) b++;\n            if (b == m) { System.out.println(-1); return; }\n            t = d2c[b++] + 100;\n        }\n        System.out.println(t);\n    }\n}\n",
+      "sha256": "4e2e5aabd25b6e557cfa280551092b34a34f07d672e86ca62f1528dcd26e89e8"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn, m, journeys := readInt(), readInt(), readInt()\n\tc2d := make([]int, n)\n\td2c := make([]int, m)\n\tfor i := range c2d {\n\t\tc2d[i] = readInt()\n\t}\n\tfor i := range d2c {\n\t\td2c[i] = readInt()\n\t}\n\tt, a, b := 0, 0, 0\n\tfor j := 0; j < journeys; j++ {\n\t\tfor a < n && c2d[a] < t {\n\t\t\ta++\n\t\t}\n\t\tif a == n {\n\t\t\tfmt.Println(-1)\n\t\t\treturn\n\t\t}\n\t\tt = c2d[a] + 100\n\t\ta++\n\t\tfor b < m && d2c[b] < t {\n\t\t\tb++\n\t\t}\n\t\tif b == m {\n\t\t\tfmt.Println(-1)\n\t\t\treturn\n\t\t}\n\t\tt = d2c[b] + 100\n\t\tb++\n\t}\n\tfmt.Println(t)\n}\n",
+      "sha256": "8bd88205e06168761028fdb58d090ad9781c0037373c587940d1aee54c9f87fa"
+    }
+  ]
+}

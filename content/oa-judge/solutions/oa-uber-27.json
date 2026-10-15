@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-27",
+  "packageChecksum": "ab682bc26dc028b20973866a79d651221d20809f09c4f08928047423613fd25b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long n, m, magic, mod;\n    cin >> n >> m >> magic >> mod;\n    auto flower = [&](long long i, long long j) { return (i + j * magic) % mod % 2 == 1; };\n    vector<long long> rows(n, 0), cols(m, 0);\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < m; j++)\n            if (flower(i, j)) { rows[i]++; cols[j]++; }\n    // every L shape has a unique corner cell\n    long long answer = 0;\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < m; j++)\n            if (flower(i, j)) answer += (rows[i] - 1) * (cols[j] - 1);\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "6bceead73bc8c4835ac7edb3bcb8c336053d03678a74e6a1ff0fa8d5f9381efd"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt(), m = sc.nextInt();\n        long magic = sc.nextLong(), mod = sc.nextLong();\n        boolean[][] flower = new boolean[n][m];\n        long[] rows = new long[n], cols = new long[m];\n        for (int i = 0; i < n; i++)\n            for (int j = 0; j < m; j++)\n                if ((i + j * magic) % mod % 2 == 1) { flower[i][j] = true; rows[i]++; cols[j]++; }\n        // every L shape has a unique corner cell\n        long answer = 0;\n        for (int i = 0; i < n; i++)\n            for (int j = 0; j < m; j++)\n                if (flower[i][j]) answer += (rows[i] - 1) * (cols[j] - 1);\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "522344ce01f613f0d085e52ac3e72684397a52818860f0253cd54010323e5042"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar n, m, magic, mod int\n\tfmt.Scan(&n, &m, &magic, &mod)\n\tflower := func(i, j int) bool { return (i+j*magic)%mod%2 == 1 }\n\trows := make([]int, n)\n\tcols := make([]int, m)\n\tfor i := 0; i < n; i++ {\n\t\tfor j := 0; j < m; j++ {\n\t\t\tif flower(i, j) {\n\t\t\t\trows[i]++\n\t\t\t\tcols[j]++\n\t\t\t}\n\t\t}\n\t}\n\t// every L shape has a unique corner cell\n\tanswer := 0\n\tfor i := 0; i < n; i++ {\n\t\tfor j := 0; j < m; j++ {\n\t\t\tif flower(i, j) {\n\t\t\t\tanswer += (rows[i] - 1) * (cols[j] - 1)\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "3464d53fc68a82648ac76ee25ac9cdd5f4e6b68abfd0b62b2ffee0e8646b75ce"
+    }
+  ]
+}

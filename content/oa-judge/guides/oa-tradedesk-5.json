@@ -1,0 +1,19 @@
+{
+  "id": "oa-tradedesk-5",
+  "packageChecksum": "630b29964d44b183c41eee97a7c19faf8ba3ee980e856da610da87aebe01d563",
+  "sourceContentHash": "9dc700907325e644f5ac3c0c96e0343b3bd07b3dddaeb3a34820406ec71142b1",
+  "editorialSha256": "7f8ca4ab73ade6600ad91c3b81e5d6ccb17f86781a937c60c970ba4242e6c354",
+  "hints": {
+    "zh": [
+      "每一段航程都只能坐不早于当前时刻出发的最早一班，选择是唯一确定的；而且两条时刻表都已升序、当前时刻只增不减，被跳过的航班以后也永远坐不上。",
+      "从时刻 0 开始逐段模拟往返：去程和回程各用一个指针，跳过所有早于当前时刻的航班，乘坐指针停下的那一班，到达时间为出发时间加 100。",
+      "去程指针、回程指针都从 0 开始，time=0；每次往返先把去程指针移过所有早于 time 的班次，若越界输出 −1，否则 time 设为该班出发时刻加 100 并让指针后移一位；回程同理；完成全部往返后输出 time。"
+    ],
+    "en": [
+      "Each leg must take the earliest flight that departs no earlier than the current time, so every choice is forced. Both timetables are sorted and the current time only grows, so a flight skipped once can never be taken later.",
+      "Simulate the round trips starting at time 0. Keep one pointer per direction, skip every flight that departs before the current time, take the flight the pointer stops at, and arrive 100 minutes after its departure.",
+      "Start both pointers at 0 and time = 0. For each round trip, move the outbound pointer past flights that depart before time; if it runs off the end, print -1; otherwise set time to that departure plus 100 and advance the pointer. Do the same for the return leg. After all round trips, print time."
+    ]
+  },
+  "explanationEn": "## Approach\n\nStarting from time 0, make the planned round trips one by one. For the C→D direction, advance a pointer past every flight that departs earlier than the current time, take the first flight that departs no earlier than the current time, and add 100 to get the arrival time; then choose the D→C flight the same way. Departure times in both directions are increasing, so one pointer per direction is enough. If either direction runs out of flights, output -1.\n\n## Correctness\n\nEach leg's departure timetable is already sorted in ascending order. The flights the pointer skips all depart before the arrival time and cannot be taken; the first flight where the pointer stops is exactly the earliest of all flights that can be taken. Taking it by definition increases the current time to its departure plus 100, and then the next leg is processed, so simulating leg by leg always chooses the flight the problem requires. If there is no candidate flight, the planned trips cannot continue and -1 is returned; when all of them are completed, the current time is the final arrival time.\n\n## Complexity\n\nLet the numbers of flights in the two directions be n and m, and the number of round trips be k. Each pointer only moves forward, never backward, so the total time is O(n+m+k) with O(1) extra space."
+}

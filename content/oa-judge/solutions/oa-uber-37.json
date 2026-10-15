@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-37",
+  "packageChecksum": "093d2029fcf78b3cbbed2be62c23844584bf0c034a646e483482d3ac85e47cf6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    long long k;\n    cin >> n >> k;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    // shortest window with sum >= k; every shorter window is below k\n    int left = 0, shortest = n + 1;\n    long long total = 0;\n    for (int right = 0; right < n; right++) {\n        total += a[right];\n        while (total >= k) {\n            shortest = min(shortest, right - left + 1);\n            total -= a[left++];\n        }\n    }\n    cout << shortest - 1 << \"\\n\";\n}\n",
+      "sha256": "10d1ce59777928b11721afb88b6ea0d984dcccc81362e0d1f8e10fde27455024"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long k = nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        // shortest window with sum >= k; every shorter window is below k\n        int left = 0, shortest = n + 1;\n        long total = 0;\n        for (int right = 0; right < n; right++) {\n            total += a[right];\n            while (total >= k) {\n                shortest = Math.min(shortest, right - left + 1);\n                total -= a[left++];\n            }\n        }\n        System.out.println(shortest - 1);\n    }\n}\n",
+      "sha256": "92bbcf5a0793d959a3e2a13ef7d9332a86ca87b9ba022274b65e43940ab697ec"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn, k := readInt(), readInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\t// shortest window with sum >= k; every shorter window is below k\n\tleft, shortest, total := 0, n+1, 0\n\tfor right := 0; right < n; right++ {\n\t\ttotal += a[right]\n\t\tfor total >= k {\n\t\t\tshortest = min(shortest, right-left+1)\n\t\t\ttotal -= a[left]\n\t\t\tleft++\n\t\t}\n\t}\n\tfmt.Println(shortest - 1)\n}\n",
+      "sha256": "9993e694d94124bb40b5d31c72a1e1009e337b7d7160286e35f1f2c94ff3b570"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-twilio-1",
+  "packageChecksum": "97fe75d5fbacbcec9fdc57d4c7794aa949c5710368c79b307563a5faeb17dece",
+  "sourceContentHash": "bb856490739e9b0be808a23d74f7030503b561a98814756002719c83b0dee6a0",
+  "editorialSha256": "75a4c8ef1278e124229b3b42a6df4355f0c6035f672d9facc653cd124ef4e71c",
+  "hints": {
+    "zh": [
+      "在一个区间里，某个标签出现 c 次就能组成 c/2 向下取整组，不同标签互不影响，答案是各标签贡献之和。真正的难点是查询多、区间长，不能每次重新扫描。",
+      "用 Mo 算法离线处理：把查询按左端点分块、块内按右端点排序，相邻查询之间只移动左右端点。加入或删除一个元素时，答案的变化只取决于该标签原来出现次数的奇偶。",
+      "把标签离散化；块长取约 n/√q，按（左端点所在块，右端点）排序，奇数块右端点倒序；维护 freq 和 groups，加入标签时原次数为奇数则 groups 加 1，删除时删除前次数为偶数则 groups 减 1；四个方向移动端点到目标区间后记录 groups，最后按输入顺序输出。"
+    ],
+    "en": [
+      "Inside a range, a label that occurs c times forms floor(c/2) groups, and different labels never interact, so the answer is the sum over labels. The real difficulty is that there are many long queries, so rescanning each range is too slow.",
+      "Process the queries offline with Mo's algorithm: split left ends into blocks, sort by block and then by right end, and only move the two ends between consecutive queries. When you add or remove one element, the change in the answer depends only on the parity of that label's previous count.",
+      "Compress the labels. Use a block size of about n / sqrt(q) and sort queries by (block of the left end, right end), with right ends reversed in odd blocks. Keep freq and groups: when adding a label whose old count is odd, increase groups by 1; when removing a label whose count before removal is even, decrease groups by 1. Move the ends in all four directions to the target range, store groups, and finally print the answers in input order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf a label occurs c times in a range, it forms floor(c/2) groups, and the total answer is the sum of all labels' contributions. Scanning the range for every query, or iterating over all labels for every query, can both reach O(nq). Use Mo's algorithm: sort the ranges and only move endpoints between adjacent queries.\n\nMaintain freq[v] and groups=Σfloor(freq[v]/2). When v is added, one new group appears only if the old frequency is odd; when v is removed, one group disappears only if the old frequency is even. Sort right ends in alternating order across left blocks to reduce back-and-forth movement.\n\n## Correctness\n\nDifferent labels do not affect each other; for label v, at most floor(c/2) disjoint pairs can be formed. The change from adding one v is floor((c+1)/2)-floor(c/2), which is 1 only when c is odd. The change from removing one v is floor((c-1)/2)-floor(c/2), which is -1 only when the old c is even. Therefore after every endpoint move, groups equals the answer for the current range. Mo's algorithm moves the window to each query's range, so the results are correct.\n\n## Complexity\n\nThe block length is about n/sqrt(q). Sorting is O(q log q); endpoint movement is O(n sqrt(q)+qn/B), each move costs expected O(1), and the space is O(n+q).\n\n## Source and site protocol\n\nThe fixed OAMaster statement specifies same-label pairs, two cables per group, each cable in at most one group, independent range queries, and n,q≤100000, tag≤10^9. This site uses 1-based closed ranges; the input is n, q, the label array and q pairs of endpoints, and the output is q answers."
+}

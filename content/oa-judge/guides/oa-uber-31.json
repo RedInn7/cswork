@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-31",
+  "packageChecksum": "78e9efb0110fb1389daa86d17550cc05f2460817eebde69192f216b0453106e0",
+  "sourceContentHash": "9106166598c82496f3fe02bb8903052a715b845310d2e104b11f0c61f4ff572e",
+  "editorialSha256": "a48db812a588f3a287bb23e3c1f1bd0030071c0f36795f2f0b5c57f1dda4af5f",
+  "hints": {
+    "zh": [
+      "拆掉一座房子只会影响它所在的那个街区，其他街区保持不变；变化只取决于它左右两侧紧挨的位置上还有没有房子。",
+      "用集合保存现存房屋。两侧都有房子时一个街区被拆成两个，街区数加 1；两侧都没有时这个孤立街区消失，减 1；只有一侧有时街区数不变。初始街区数等于没有左邻居的房子数量。",
+      "把所有坐标放进集合，初始街区数为左边紧邻位置不在集合中的房子个数；对每次拆除的坐标 v，令 left 表示 v−1 是否在集合中、right 表示 v+1 是否在集合中（是为 1，否为 0），街区数加上 left+right−1，再从集合中删除 v，输出当前街区数。"
+    ],
+    "en": [
+      "Demolishing a house only affects the block containing it; all other blocks stay the same. The change depends only on whether the positions immediately to its left and right still hold houses.",
+      "Keep the remaining houses in a set. If both neighbors exist, one block splits into two and the count goes up by 1; if neither exists, an isolated block disappears and the count goes down by 1; if exactly one exists, the count is unchanged. The initial count is the number of houses without a left neighbor.",
+      "Put all coordinates in a set. The initial block count is the number of houses whose left neighbor position is not in the set. For each demolished coordinate v, let left be 1 if v - 1 is in the set and 0 otherwise, and right likewise for v + 1; add left + right - 1 to the count, remove v from the set, and print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a set to check whether there are houses to the left and right of the removed position. If both sides have houses, one block splits into two, adding 1; if neither does, the isolated block disappears, subtracting 1; if only one side does, the count is unchanged.\n\n## Correctness\n\nOnly the block containing the removed house can change; all other blocks stay the same. Whether the left and right neighbors exist covers all three cases exhaustively, so updating by left+right−1 is correct. Initially, every house without a left neighbor represents exactly one block.\n\n## Complexity\n\nExpected time O(n+q), space O(n)."
+}

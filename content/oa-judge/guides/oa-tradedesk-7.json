@@ -1,0 +1,19 @@
+{
+  "id": "oa-tradedesk-7",
+  "packageChecksum": "75c9f2f44af7008858d111d4379b0cf79277f07aeffeae59ff13416ffb3e1b1b",
+  "sourceContentHash": "180af4f5457dc969ba962fd04129d9044d453803a8dca1103427f3f7e60bab28",
+  "editorialSha256": "edef00d182ff0394d30c8faa17e6899d9c79b7a15e577ec4a3d99293d2028e52",
+  "hints": {
+    "zh": [
+      "柜台一次只服务一人、先到先检，所以每个人开始检查的时刻只取决于他的到达时刻和前一个人完成的时刻。",
+      "按到达顺序维护柜台下一次空闲的时刻：每个人的开始时刻取到达时刻与该空闲时刻中较大的一个，完成时刻再加 300 秒。",
+      "finish 初始为 0；按输入顺序遍历到达时刻 arrival，令 finish 等于 max(finish, arrival) 加 300；遍历结束后的 finish 就是最后一人检完的时刻，直接输出。"
+    ],
+    "en": [
+      "The counter serves one person at a time in arrival order, so the moment a person's check starts depends only on their arrival time and the moment the previous person finishes.",
+      "Walk through the arrivals in order and keep the time at which the counter becomes free. Each person starts at the later of their arrival and that free time, and finishes 300 seconds after starting.",
+      "Set finish = 0. For each arrival time in input order, set finish = max(finish, arrival) + 300. After the loop, finish is the time the last participant is done; print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the time at which the counter becomes free, following the arrival order. Each participant's start time is the larger of their arrival time and the previous participant's finish time, and the finish time is that plus 300 seconds.\n\n## Proof of correctness\n\nParticipants arrive in non-decreasing order and the counter is FIFO. If the counter is already free, the participant starts on arrival; otherwise they can only wait for the previous participant to finish. Therefore the recurrence gives exactly each participant's earliest, and actual, finish time, and the last step of the recurrence is the answer.\n\n## Complexity\n\nO(n) time and O(1) extra space."
+}

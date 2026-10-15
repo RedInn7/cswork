@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-25",
+  "packageChecksum": "2d193e21742bbb2c029bfd86d6518b698508eb3a686e06a4049e40a84a173d85",
+  "sourceContentHash": "f72c8437bcf840a510884a5541ca95ea13d5b9cc4490dff21e6e107e53a2bee1",
+  "editorialSha256": "c30d801ecbed76005815d7b089c8ddf18f5936ba6e96993e126799933d650280",
+  "hints": {
+    "zh": [
+      "A 为正，函数在区间上严格凸，只有一个最小点。比较区间内两个三分点的函数值，就能判断最小点不在哪一侧，从而排除约三分之一的区间。",
+      "在 [left, right] 上做三分搜索：取两个三分点 x<y，若 f(x)<f(y) 就把右端收缩到 y，否则把左端移到 x。迭代足够多轮后区间远小于 10^-6，取中点再四舍五入到六位小数。关键是比较要足够精确，普通双精度在大数值相减时会出错，需要高精度或精确的整数比较。",
+      "每个查询把 left、right 用高精度数表示（例如 60 位有效数字的十进制数，或乘以 10^15 的定点整数）；循环 160 次，令 x、y 分别为区间的三分之一点和三分之二点，f(x)<f(y) 时令 right=y，否则令 left=x；对 x<y，f(x)<f(y) 等价于 A(x+y)+B>0，可以用这个式子做精确比较；结束后取 (left+right)/2 按四舍五入保留六位小数输出。"
+    ],
+    "en": [
+      "Since A is positive, the function is strictly convex on the interval and has a single minimum point. Comparing the function at two interior points tells you which side cannot contain the minimum, so about a third of the interval can be discarded.",
+      "Run a ternary search on [left, right]: take two points x < y; if f(x) < f(y), move the right end to y, otherwise move the left end to x. After enough rounds the interval is far smaller than 10^-6; take its midpoint and round to six decimals. The comparison must be precise: plain doubles go wrong when large values cancel, so use high precision or an exact integer comparison.",
+      "For each query, hold left and right in high precision, for example 60-digit decimals or fixed-point integers scaled by 10^15. Repeat 160 times: let x and y be the points at one third and two thirds of the interval; if f(x) < f(y), set right = y, otherwise set left = x. For x < y, f(x) < f(y) is equivalent to A(x + y) + B > 0, which allows an exact comparison. Finally print (left + right) / 2 rounded half up to six decimals."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRun a ternary search with high-precision Decimal, narrowing the interval that contains the minimum point using function evaluations only, and finally round to six decimal places.\n\n## Correctness\n\nA>0 guarantees strict convexity; comparing the function values at the two ternary points excludes the side away from the minimum point, and the length of the interval containing the minimum point shrinks to 2/3 each round. After 160 rounds, the initial interval of at most 2×10⁶ is far smaller than 10⁻⁶; at an exact midpoint either rounding is valid, and high precision prevents floating-point cancellation from affecting the comparisons.\n\n## Complexity\n\nTime O(q·160), and O(1) space apart from input and output; Decimal uses a fixed precision of 60 digits."
+}

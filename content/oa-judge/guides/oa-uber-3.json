@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-3",
+  "packageChecksum": "92031b9fa05fe99fbe0a216fa2d8e422ff199e4ca38d7a049ad0950f6f83f1a4",
+  "sourceContentHash": "62c19caec11091819e47e87540cfcd28ba7b78aee2239614a33be55a3382dcd9",
+  "editorialSha256": "21dc890ea4c575184dd7f47f2dba4b7f56e5b9719e03813cb55022e8fc7da9aa",
+  "hints": {
+    "zh": [
+      "忽略大小写后，每一次换字母都恰好对应相邻两个字符不同的一个位置。",
+      "把相邻两个字符都转成小写再比较，只要不同就计数一次，从头到尾扫描一遍即可。",
+      "读入字符串 s，答案为 0；对 i 从 1 到长度减 1，若 s[i] 与 s[i−1] 转成小写后不同则答案加 1；输出答案。"
+    ],
+    "en": [
+      "Ignoring case, every letter change corresponds to exactly one position where two adjacent characters differ.",
+      "Compare each pair of adjacent characters in lowercase and count one whenever they differ; a single scan from start to end does it.",
+      "Read the string s and start the answer at 0. For i from 1 to length - 1, add 1 if the lowercase forms of s[i] and s[i - 1] differ. Print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the lowercase forms of adjacent characters and add 1 whenever they differ.\n\n## Correctness\n\nEach change of letter between key presses corresponds to exactly one adjacent position with different characters, so counting position by position neither repeats nor misses anything.\n\n## Complexity\n\nTime O(n), extra space O(1)."
+}

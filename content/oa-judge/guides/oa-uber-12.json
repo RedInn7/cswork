@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-12",
+  "packageChecksum": "305994e60085c64a1332c13c0090fb8e7a61e514f443940b6025397a73427f96",
+  "sourceContentHash": "d0e9ebd38208e070eda799d8c5facea29f46ed96649b5a16d655546541e9bc17",
+  "editorialSha256": "e4aaa8501b08186a741f48948f319c93f4b5533dd97d2be97220b8ad8f624ca9",
+  "hints": {
+    "zh": [
+      "反复把一个数替换成各位数字之和，最后得到的是它的数根。一个数和它的各位数字之和模 9 同余，所以不必真的一遍遍模拟。",
+      "正整数的数根可以直接用 1+(x−1) mod 9 算出，0 的数根是 0。算出每个数的数根后统计 0 到 9 的出现次数，再挑次数最多、次数相同时数字更大的那个。",
+      "开一个长度为 10 的计数数组；对每个数，若为 0 则计入 0，否则计入 1+(x−1) mod 9；从 0 到 9 依次比较，次数更多或次数相同但数字更大时更新答案；输出答案。"
+    ],
+    "en": [
+      "Repeatedly replacing a number with the sum of its digits ends at its digital root. A number is congruent to its digit sum modulo 9, so there is no need to simulate the process.",
+      "The digital root of a positive integer x is 1 + (x - 1) mod 9, and the digital root of 0 is 0. Count how often each digit 0..9 appears as a root, then pick the most frequent, preferring the larger digit on ties.",
+      "Use a count array of size 10. For each number, count 0 if it is 0, otherwise count 1 + (x - 1) mod 9. Go through the digits 0 to 9 and update the answer when a digit has a higher count, or the same count and a larger value. Print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe digital root of a positive integer is 1+(x−1)%9, and 0 maps to 0 separately. Count the frequencies of the ten results, then compare by count and by digit.\n\n## Correctness\n\nA decimal number is congruent modulo 9 to the sum of its digits, and repeated reduction keeps this congruence; a positive number ends up in 1..9, which is uniquely given by the formula above, and 0 stays 0. Comparing by maximum frequency and then by the larger digit implements the requirement.\n\n## Complexity\n\nTime O(n), extra space O(10)."
+}

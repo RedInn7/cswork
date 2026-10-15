@@ -1,0 +1,21 @@
+{
+  "id": "oa-two-sigma-6",
+  "packageChecksum": "2dc826546cb96ee87c5e41ecec434be612f1474f9b6982acd1169d7ae4879d53",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<int> parent(n);\n    vector<long long> sub(n);\n    for (auto &x : parent) cin >> x;\n    for (auto &x : sub) cin >> x;\n    // parents have smaller ids, so reverse order finishes every subtree before its parent\n    for (int i = n - 1; i > 0; i--) sub[parent[i]] += sub[i];\n    long long best = LLONG_MAX;\n    for (int i = 1; i < n; i++) best = min(best, llabs(sub[0] - 2 * sub[i]));\n    cout << best << \"\\n\";\n}\n",
+      "sha256": "674e1ec507e48dd5c78d54a7b0d5234ff3cc1a7c82dac424e73bfb99af01260b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        int[] parent = new int[n];\n        long[] sub = new long[n];\n        for (int i = 0; i < n; i++) parent[i] = nextInt();\n        for (int i = 0; i < n; i++) sub[i] = nextLong();\n        // parents have smaller ids, so reverse order finishes every subtree before its parent\n        for (int i = n - 1; i > 0; i--) sub[parent[i]] += sub[i];\n        long best = Long.MAX_VALUE;\n        for (int i = 1; i < n; i++) best = Math.min(best, Math.abs(sub[0] - 2 * sub[i]));\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "3c607e70d6997e35b319dd0cef9a8ea922be519be26e47b5b8b778e910eb6cc1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn := readInt()\n\tparent := make([]int, n)\n\tsub := make([]int, n)\n\tfor i := range parent {\n\t\tparent[i] = readInt()\n\t}\n\tfor i := range sub {\n\t\tsub[i] = readInt()\n\t}\n\t// parents have smaller ids, so reverse order finishes every subtree before its parent\n\tfor i := n - 1; i > 0; i-- {\n\t\tsub[parent[i]] += sub[i]\n\t}\n\tbest := -1\n\tfor i := 1; i < n; i++ {\n\t\td := sub[0] - 2*sub[i]\n\t\tif d < 0 {\n\t\t\td = -d\n\t\t}\n\t\tif best < 0 || d < best {\n\t\t\tbest = d\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "6bcd873a50d2cc407ddcd207c42f1910c9de8971e54668b16bfd1183a8aac6e9"
+    }
+  ]
+}

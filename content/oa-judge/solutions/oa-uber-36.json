@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-36",
+  "packageChecksum": "c8078de7fdb76b5e4fa703a57314eabb082f8d8a38277e11d1cdab64ed1815e3",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, m;\n    cin >> n >> m;\n    // every non-empty decimal prefix of every number in arr1\n    unordered_set<string> prefixes;\n    prefixes.reserve(20 * n + 1);\n    string s;\n    for (int i = 0; i < n; i++) {\n        cin >> s;\n        for (size_t end = 1; end <= s.size(); end++) prefixes.insert(s.substr(0, end));\n    }\n    size_t answer = 0;\n    for (int i = 0; i < m; i++) {\n        cin >> s;\n        for (size_t end = 1; end <= s.size(); end++) {\n            if (!prefixes.count(s.substr(0, end))) break;\n            answer = max(answer, end);\n        }\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "7a7c0db8d7632c009d9e1202ada4c8fcd4a682a34afda959ea6fe48b79c11df4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in), 1 << 16);\n        StringTokenizer st = new StringTokenizer(\"\");\n        List<String> tokens = new ArrayList<>();\n        String line;\n        while ((line = br.readLine()) != null) {\n            st = new StringTokenizer(line);\n            while (st.hasMoreTokens()) tokens.add(st.nextToken());\n        }\n        int n = Integer.parseInt(tokens.get(0)), m = Integer.parseInt(tokens.get(1));\n        // every non-empty decimal prefix of every number in arr1\n        HashSet<String> prefixes = new HashSet<>();\n        for (int i = 0; i < n; i++) {\n            String s = tokens.get(2 + i);\n            for (int end = 1; end <= s.length(); end++) prefixes.add(s.substring(0, end));\n        }\n        int answer = 0;\n        for (int i = 0; i < m; i++) {\n            String s = tokens.get(2 + n + i);\n            for (int end = 1; end <= s.length(); end++) {\n                if (!prefixes.contains(s.substring(0, end))) break;\n                answer = Math.max(answer, end);\n            }\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "df2aca1d344aeec29e16b2b1c85afc330033f69095272ee52030665ffbdc0e5f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<20)\n\tvar n, m int\n\tfmt.Fscan(in, &n, &m)\n\t// every non-empty decimal prefix of every number in arr1\n\tprefixes := make(map[string]bool, 10*n)\n\tfor i := 0; i < n; i++ {\n\t\tvar s string\n\t\tfmt.Fscan(in, &s)\n\t\tfor end := 1; end <= len(s); end++ {\n\t\t\tprefixes[s[:end]] = true\n\t\t}\n\t}\n\tanswer := 0\n\tfor i := 0; i < m; i++ {\n\t\tvar s string\n\t\tfmt.Fscan(in, &s)\n\t\tfor end := 1; end <= len(s); end++ {\n\t\t\tif !prefixes[s[:end]] {\n\t\t\t\tbreak\n\t\t\t}\n\t\t\tanswer = max(answer, end)\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "b76fa6cedf14e9b591515500a5d33f5ba35f3148bec652ecb864b40bb3de482a"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-twilio-2",
+  "packageChecksum": "1252fdf544fa1071810c97f0c0e57ad329868ce0c6e9549f2735307733fa21e8",
+  "sourceContentHash": "c67592ace101f8ff89a9ecba6ad42753e88cd5aeb25862d7f92406496270bcce",
+  "editorialSha256": "36157dc6bc1ff8fe4e6e02cbcf60b695f061d36e3aa01b3bc5f106154b90a6b0",
+  "hints": {
+    "zh": [
+      "答案只和数值的大小关系有关，与原数组的位置无关：本质是在同一个多重集合里，用一个元素去严格压过另一个元素，数一数最多能配成多少对。",
+      "把数组排序后贪心：让每个元素去压当前还没被压过的最小元素。用最小的可行对象配对，不会浪费更大的元素。",
+      "排序数组 a，指针 i 指向尚未被压过的最小元素，初始为 0；从小到大遍历每个元素 z，若 z 严格大于 a[i]，配对数加一并让 i 右移；遍历结束后 i 就是最大的位置数，输出它。"
+    ],
+    "en": [
+      "The answer depends only on the relative order of values, not on positions in the original array: within one multiset, each element may strictly beat another one, and you want the maximum number of such pairs.",
+      "Sort the array and match greedily: let each element beat the smallest element that has not been beaten yet. Using the smallest feasible target never wastes a larger element.",
+      "Sort the array a and keep a pointer i, starting at 0, to the smallest element not yet beaten. Go through every element z in ascending order; if z is strictly greater than a[i], count a match and move i right. After the loop, i is the maximum number of positions; print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the array and greedily match each element with the smallest feasible strictly smaller element.\n\n## Proof of correctness\n\nMatching with the smallest feasible element never wastes a larger element, so the greedy maximizes the number of matched pairs.\n\n## Complexity\n\nO(n log n) time, O(n) space."
+}

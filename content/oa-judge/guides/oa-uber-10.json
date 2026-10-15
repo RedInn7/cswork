@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-10",
+  "packageChecksum": "4821b6c86999e3a524177f52ebb76323e741cb89d5f3c076324dc71a1b673479",
+  "sourceContentHash": "e2b5f0adf298951c9b688b563b26cfff0c828e0748c2ba9425fdbb49602ca1ee",
+  "editorialSha256": "e3d53bda5737e077ab5951ee9f511d3d5271664bf4a2353d71046c2587af603b",
+  "hints": {
+    "zh": [
+      "拼接结果等于 accessCode，说明它在某个位置被切成了两段，前一段是第一个片段的十进制串，后一段是第二个片段的十进制串；每个合法有序对恰好对应唯一的一个切分点。",
+      "先统计每种数值的出现次数，再枚举目标串所有切分点，把左右两段各自的出现次数相乘。两段相同时要扣掉同一个下标自己和自己配对的情况。",
+      "用字典统计每个片段标准十进制串的出现次数；对目标串的每个切分位置 i（1 到长度减 1），取左段 a 和右段 b，答案加上 a 的次数乘以 b 的次数，若 a 与 b 相同则改为乘以（b 的次数减 1）；最后输出答案。"
+    ],
+    "en": [
+      "If the concatenation equals accessCode, the code is cut at some position into two parts: the first is the decimal string of the first fragment and the second is that of the second fragment. Each valid ordered pair corresponds to exactly one cut position.",
+      "Count how many times each value appears, then try every cut position of the target and multiply the counts of the two parts. When both parts are the same string, exclude pairing an index with itself.",
+      "Count the canonical decimal string of every fragment in a dictionary. For each cut position i from 1 to length - 1, take the left part a and the right part b and add count(a) * count(b) to the answer, using count(b) - 1 instead when a equals b. Print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the frequency of each integer's canonical decimal string, enumerate every split point of the target string, and multiply the frequencies of the two parts; when the two parts are the same, subtract the case of using the same index twice.\n\n## Correctness\n\nEvery valid concatenation has a unique split point, and each of the two parts must appear among the fragments. With different values any two indices can be paired, and with the same value there are c(c−1) ordered pairs, so counting over split points is complete and has no duplicates.\n\n## Complexity\n\nTime O(n+target length²), space O(n)."
+}

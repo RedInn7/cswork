@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-22",
+  "packageChecksum": "e845aa784c6afa7faa636bffc3985083202be16a63210b6b1723f18707fbd6b1",
+  "sourceContentHash": "db20909f346602ca43b2149a67b23e8f746b6d72599f93db1a80379a4203d22f",
+  "editorialSha256": "4678c5d078d7315d6f54298cf0275880f2101e61c698df68554ebb41161c11d7",
+  "hints": {
+    "zh": [
+      "每一步之后都要把生命值截断到 [0,100]，截断会丢掉超出的部分，所以结果和变化的顺序有关，不能先把所有变化加起来再截断。",
+      "直接按顺序模拟：每次先加上变化量，再截断到 0 到 100 之间。",
+      "读入 n 和初始值 health；对每个变化量 c，令 health 等于 max(0, min(100, health+c))；处理完所有变化后输出 health，n 为 0 时就输出初始值。"
+    ],
+    "en": [
+      "After every step the health is clamped to [0, 100], and clamping throws away the excess, so the result depends on the order of changes. You cannot sum all the changes first and clamp once.",
+      "Simulate in order: add each change, then clamp the result to the range 0..100.",
+      "Read n and the initial health. For each change c, set health = max(0, min(100, health + c)). After all changes, print health; when n is 0 this is just the initial value."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSimulate in order, adding first and then clamping at each step.\n\n## Correctness\n\nBy induction, every update is exactly what the statement describes; the changes cannot be summed first, because intermediate clamping discards the overflowing part.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input."
+}

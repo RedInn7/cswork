@@ -1,0 +1,19 @@
+{
+  "id": "oa-two-sigma-5",
+  "packageChecksum": "a83743d45027c622702d2e41334d2cbc3a87130d622489465f94fee066241653",
+  "sourceContentHash": "112b947757a130b81d3b280563a997d7b7d8a1b0ef06cbb0e7c9e17b3f822da8",
+  "editorialSha256": "25a6c1f9a4c035b2aa38b46b9c8ee8094c4278d39d1548c9a8fdbee0eccd8daa",
+  "hints": {
+    "zh": [
+      "把点按 x 排序后，每个查询只落在唯一的一段上：两点之间用这一段插值，左侧用第一段延长，右侧用最后一段延长。难点在精度，外推的结果可能非常大，浮点数无法保证 10^-6 的绝对误差。",
+      "所有输入最多 6 位小数，乘以 10^6 就能精确变成整数。用二分找到所在段，再用整数（必要时用 128 位或大整数）精确计算插值的有理数结果，最后用整数除法舍入到 6 位小数。",
+      "把每个坐标解析成乘以 10^6 的整数；按 x 排序；对查询 x 二分出最后一个不大于 x 的点，并把段号夹到 0..n−2；分子取 ya×(xb−xa)+(yb−ya)×(x−xa)，分母取 xb−xa；对分子的绝对值做带余除法并四舍五入，再按整数部分和 6 位小数输出，结果为 0 时不带负号。"
+    ],
+    "en": [
+      "After sorting the points by x, each query falls on exactly one segment: interpolate inside it, extend the first segment to the left, and extend the last segment to the right. The difficulty is precision: extrapolated values can be huge, and floating point cannot guarantee an absolute error of 10^-6.",
+      "Every input has at most 6 decimal places, so multiplying by 10^6 turns it into an exact integer. Binary search for the segment, compute the rational interpolation result exactly with integers (128-bit or big integers where needed), and round to 6 decimals with integer division.",
+      "Parse every coordinate as an integer scaled by 10^6 and sort the points by x. For a query x, binary search the last point with x not greater than the query and clamp the segment index into 0..n-2. Take the numerator ya * (xb - xa) + (yb - ya) * (x - xa) and the denominator xb - xa; divide the absolute value of the numerator with remainder, round half up, and print the integer part and 6 decimals, without a minus sign when the result is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMultiply the input by 10^6 to convert it exactly to integers, sort by x, binary search the segment for each query, and compute the exact rational number. Round the result to 6 decimal places with integer division, without going through double.\n\n## Proof of correctness\n\nEvery query of the polyline corresponds to a unique adjacent segment, and queries outside are handled by the first and last segments, so the binary search selects the right segment. The integer scaling and rational expression are exactly equivalent to ya+(yb−ya)(x−xa)/(xb−xa), with no rounding error. The final rounding to the 10^-6 grid has an error of at most 0.5×10^-6, which meets the acceptance criterion. Precision is kept even when extrapolation approaches 4×10^18.\n\n## Complexity\n\nO((n+q)log n) time and O(n+q) space; the exact integers have a bounded number of digits within the fixed resource limits."
+}

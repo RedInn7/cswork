@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-41",
+  "packageChecksum": "bfaf43701da19d741b46c8e6ebc5ff33772838b8e57323229213b736136fc56b",
+  "sourceContentHash": "7d8534e248a017671818bee9a07cb136f2be1966eb389766f274478ca21c997b",
+  "editorialSha256": "85b5a4f32f832391fcca77859c5f3ca56c1a9afd50247fa9618a188b14d468bf",
+  "hints": {
+    "zh": [
+      "每一项只依赖两个词：当前词的首字母和下一个词的末字母。最后一项的下一个词要回到第一个词，只有一个词时它的下一个词就是它自己。",
+      "直接遍历，下一个词的下标取 (i+1) mod n，把当前词的首字母和下一个词的末字母依次拼起来作为一行输出。",
+      "读入 n 和 n 个单词；对 i 从 0 到 n−1，取 words[i] 的第一个字符，再取 words[(i+1) mod n] 的最后一个字符，二者拼成一行输出；为了速度可以先把所有行拼到缓冲区再一次性输出。"
+    ],
+    "en": [
+      "Each item depends on just two words: the first letter of the current word and the last letter of the next word. For the last item the next word wraps around to the first word, and with a single word, the next word is the word itself.",
+      "Iterate directly, using (i + 1) mod n as the index of the next word, and output the current word's first letter followed by the next word's last letter on one line.",
+      "Read n and the n words. For i from 0 to n - 1, take the first character of words[i] and the last character of words[(i + 1) mod n], and output them together as one line. For speed, collect all lines in a buffer and write them out once."
+    ]
+  },
+  "explanationEn": "## Problem\n\nGiven an array words of n strings, output an array of the same length: item i is formed from the first letter of words[i] and the last letter of the next word words[i+1]; for the last item, the next word wraps around to words[0].\n\n## Approach\n\nIterate directly, taking (i+1) mod n as the index of the next word.\n\n## Correctness\n\nEach item is built by definition. In the example's last item \"bt\", the t can only come from the last letter of \"cat\", which shows that the last item wraps around to the first word; when n=1 the next word is the word itself.\n\n## Complexity\n\nO(n).\n\n## Independent verification\n\nThe oracle generates the answer in Python by rotating words left by one position and pairing it item by item with the original array, without using modulo indices. All arrays of length 1..5 made from 3 candidate words were enumerated exhaustively, and the reference program was actually run on each one. The wrong solutions cover not wrapping around, missing the last item, taking the first letter of the next word, and reversing the order of the two letters."
+}
