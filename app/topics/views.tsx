@@ -68,6 +68,14 @@ export function TopicsIndexView({ zh }: { zh: boolean }) {
             : 'How the 35 stops build on each other, plus the system design and behavioral tracks.'}
         </span>
       </a>
+      <a className="topics-roadmap" href="/core-skills">
+        <strong>{zh ? 'Core Skills：手写数据结构与算法' : 'Core Skills: data structures by hand'}</strong>
+        <span>
+          {zh
+            ? '21 道题，不调库亲手实现哈希表、堆、LRU、排序、最短路、并查集、线段树等，四种语言都能判题。'
+            : '21 problems: build hash maps, heaps, an LRU cache, sorts, shortest paths, union-find, segment trees and more without libraries, judged in four languages.'}
+        </span>
+      </a>
       <div className="topics-map">
         {TOPIC_GROUPS.map((group, g) => (
           <section className="topics-group" key={group.en} aria-labelledby={`topics-group-${g}`}>

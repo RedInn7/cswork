@@ -198,9 +198,9 @@ const summaryProblem = (p: ProblemSummary): OJProblem => ({
   ...p,
   translations: p.titleEn ? { en: blankStatement(p.titleEn) } : undefined,
 });
-/** An untouched ACM starter in either language can be swapped for the current one. */
-function isStarter(code: string, language: Language) {
-  return Object.values(starterTemplates).some((set) => set[language] === code);
+/** An untouched ACM starter in either language, or the problem's own, can be swapped for the current one. */
+function isStarter(code: string, language: Language, own?: OJProblem['starters']) {
+  return own?.[language] === code || Object.values(starterTemplates).some((set) => set[language] === code);
 }
 /** Analytics calls the formal judge "submit", like its button. */
 const judgeMode = (mode: string) => (mode === 'judge' ? 'submit' : 'run');
@@ -357,7 +357,8 @@ function Workspace({
   const statementLocaleRef = useRef(statementLocale);
   statementLocaleRef.current = statementLocale;
   const statement = problemStatement(problem, statementLocale);
-  const sqlTrack = problem.id.startsWith('sql-');
+  // SQL track and Core Skills statements are Markdown: schema blocks, operation lists.
+  const markdownStatement = /^(sql|core)-/.test(problem.id);
   const english = statementLocale === 'en' && !!problem.translations?.en;
   // Labels that followed an English statement still do; otherwise the site language decides.
   const uiEnglish = english || locale === 'en';
@@ -830,7 +831,8 @@ function Workspace({
     const template = (lang: Language) =>
       initialMode === 'leetcode'
         ? loadedProblem.leetcodeTemplates?.[lang] || ''
-        : starterTemplates[statementLocaleRef.current][lang];
+        : loadedProblem.starters?.[lang] ||
+          starterTemplates[statementLocaleRef.current][lang];
     try {
       const storedLanguage = localStorage.getItem(
         `cswork:editor:language:${userId}`,
@@ -848,7 +850,10 @@ function Workspace({
         template(chosen),
       );
       // A saved but untouched starter follows the current statement language.
-      if (initialMode === 'acm' && isStarter(stored.code, chosen))
+      if (
+        initialMode === 'acm' &&
+        isStarter(stored.code, chosen, loadedProblem.starters)
+      )
         stored.code = template(chosen);
       draft.current = {
         key: draftStorageKey(userId, draftId, chosen, initialMode),
@@ -1225,7 +1230,7 @@ function Workspace({
     if (!template || !text || text === code) return;
     // Templates are whole programs (main, class Main, package main): splicing one
     // into edited code can't compile, so it replaces the draft, after a confirm.
-    if (isStarter(code, language)) updateCode(text);
+    if (isStarter(code, language, problem.starters)) updateCode(text);
     else
       setReplaceRequest({
         language,
@@ -1240,7 +1245,7 @@ function Workspace({
   function templateFor(next: Language, mode: CodingMode) {
     return mode === 'leetcode'
       ? problem.leetcodeTemplates?.[next] || ''
-      : starterTemplates[statementLocale][next];
+      : problem.starters?.[next] || starterTemplates[statementLocale][next];
   }
   function switchLanguage(
     next: Language,
@@ -1257,7 +1262,7 @@ function Workspace({
         mode,
         templateFor(next, mode),
       ).code;
-      if (mode === 'acm' && isStarter(nextCode, next))
+      if (mode === 'acm' && isStarter(nextCode, next, problem.starters))
         nextCode = templateFor(next, mode);
       localStorage.setItem(`cswork:editor:language:${userId}`, next);
     } catch {
@@ -1759,9 +1764,12 @@ function Workspace({
                   // Untouched starter comments follow the statement language; edited code never changes.
                   if (
                     codingMode === 'acm' &&
-                    isStarter(draft.current.code, language)
+                    isStarter(draft.current.code, language, problem.starters)
                   )
-                    updateCode(starterTemplates[next][language]);
+                    updateCode(
+                      problem.starters?.[language] ||
+                        starterTemplates[next][language],
+                    );
                   setHintCount(0);
                   setHintsOpen(false);
                 }}
@@ -1814,9 +1822,8 @@ function Workspace({
               )}
               {codingMode === 'acm' && (
                 <>
-                  {/* SQL track statements are Markdown: a schema block and a column list. */}
                   {!sourceBody &&
-                    (sqlTrack ? (
+                    (markdownStatement ? (
                       <StatementMarkdown body={statement.description} />
                     ) : (
                       <p style={{ whiteSpace: 'pre-wrap' }}>
@@ -1826,7 +1833,7 @@ function Workspace({
                   <h3>{uiEnglish ? 'Input' : '输入格式'}</h3>
                   <p style={{ whiteSpace: 'pre-wrap' }}>{statement.input}</p>
                   <h3>{uiEnglish ? 'Output' : '输出格式'}</h3>
-                  {sqlTrack ? (
+                  {markdownStatement ? (
                     <StatementMarkdown body={statement.output} />
                   ) : (
                     <p style={{ whiteSpace: 'pre-wrap' }}>{statement.output}</p>
@@ -2209,7 +2216,10 @@ function Workspace({
               <SquareTerminal size={15} />
             </button>
           )}
-          {codingMode === 'acm' && language !== 'sql' && (
+          {/* A problem's own starter carries a fixed driver that already reads the input. */}
+          {codingMode === 'acm' &&
+            language !== 'sql' &&
+            !problem.starters?.[language] && (
             <select
               className="cs-io-templates"
               aria-label={t('使用输入模板', 'Use an input template')}
@@ -3504,16 +3514,17 @@ function AcceptedDialog({
   const beats = standing?.beats ?? null;
   const languageName =
     languages.find((item) => item.id === language)?.name ?? language;
+  const staticTrack = library === 'sql' || library === 'core';
   const [next, setNext] = useState<NextStop | 'loading'>(() => {
-    if (library !== 'sql') return 'loading';
-    // The SQL track is a static list with no server collection: its next
-    // unsolved problem, in the order its page remembered.
+    if (!staticTrack) return 'loading';
+    // The SQL and Core Skills tracks are static lists with no server collection:
+    // the next unsolved problem, in the order the track's page remembered.
     const solved = new Set(activity?.map((item) => item.problem_id));
     const id = nextUnsolved(problemSequence(), problemId, solved);
     return id ? { id } : null;
   });
   useEffect(() => {
-    if (library === 'sql') return;
+    if (staticTrack) return;
     const controller = new AbortController();
     const fallback = fallbackNext ? { id: fallbackNext } : null;
     findNextProblem(
@@ -3527,7 +3538,7 @@ function AcceptedDialog({
       },
     );
     return () => controller.abort();
-  }, [problemId, line, library, fallbackNext]);
+  }, [problemId, line, library, staticTrack, fallbackNext]);
   const go = () => {
     if (next === 'loading') return;
     if (!next) return navigate('problems', backTo(problemId, library));

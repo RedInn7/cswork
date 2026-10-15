@@ -4,17 +4,18 @@ import { StudyLibrary } from './study-library';
 import { OaLibrary } from './oa-library';
 import { ClassicList } from './classic-list';
 import { SqlTrack } from './sql-track';
+import { CoreSkills } from './core-skills';
 import { classicList, classicLists } from '@/lib/classic-lists';
 import type { Navigate } from './learning';
 import { useT } from '@/lib/i18n';
 
-/** Problem bank sections: Ling's list, OA problems, the timed mock OA, the SQL track and the classic lists. */
+/** Problem bank sections: Ling's list, OA problems, the timed mock OA, the SQL and Core Skills tracks and the classic lists. */
 export function LibrarySwitch({
   section,
   navigate,
   list = '',
 }: {
-  section: 'leetcode' | 'oa' | 'mock' | 'sql' | 'classic';
+  section: 'leetcode' | 'oa' | 'mock' | 'sql' | 'core' | 'classic';
   navigate: Navigate;
   /** The classic list shown, when section is 'classic'. */
   list?: string;
@@ -51,6 +52,13 @@ export function LibrarySwitch({
       >
         {t('SQL 专项', 'SQL track')} <span>SQLite</span>
       </button>
+      <button
+        type="button"
+        aria-pressed={section === 'core'}
+        onClick={() => navigate('problems', { library: 'core' })}
+      >
+        Core Skills <span>{t('手写实现', 'By hand')}</span>
+      </button>
       <label className="algorithm-library-lists" data-active={!!list || undefined}>
         <span>{t('经典题单', 'Classic lists')}</span>
         <select
@@ -85,7 +93,15 @@ export function AlgorithmLibrary(props: {
 }) {
   const list = classicList(props.collection)?.slug;
   const section =
-    props.collection === 'oa' ? 'oa' : props.collection === 'sql' ? 'sql' : list ? 'classic' : 'leetcode';
+    props.collection === 'oa'
+      ? 'oa'
+      : props.collection === 'sql'
+        ? 'sql'
+        : props.collection === 'core'
+          ? 'core'
+          : list
+            ? 'classic'
+            : 'leetcode';
   return (
     <div className="algorithm-library">
       <LibrarySwitch section={section} navigate={props.navigate} list={list} />
@@ -93,6 +109,13 @@ export function AlgorithmLibrary(props: {
         <OaLibrary navigate={props.navigate} />
       ) : section === 'sql' ? (
         <SqlTrack
+          navigate={props.navigate}
+          availableProblemIds={props.availableProblemIds}
+          activity={props.activity}
+          signedIn={props.signedIn}
+        />
+      ) : section === 'core' ? (
+        <CoreSkills
           navigate={props.navigate}
           availableProblemIds={props.availableProblemIds}
           activity={props.activity}

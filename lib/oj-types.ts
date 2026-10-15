@@ -98,6 +98,8 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
   /** CPU seconds per test case for some languages, in place of timeLimit (lib/server/oj-worker.ts). */
   timeLimits?: Partial<Record<Language, number>>;
   languages: Language[];
+  /** ACM starter programs that replace the generic ones, e.g. a skeleton above a fixed driver (Core Skills). */
+  starters?: Partial<Record<Language, string>>;
 };
 
 export type OjImportedCase = {
@@ -128,6 +130,7 @@ export type OjPublicProblem = Problem & {
   totalWeight: number;
   /** OA/library problems judge free for verified accounts; course exercises need the course. */
   freeJudge?: boolean;
+  starters?: OjProblemSpec['starters'];
 };
 
 export type OjJudgeCase = OjImportedCase & { id: string; ordinal: number };
@@ -338,6 +341,9 @@ export const ojImportSchema = z
           .array(z.enum(['python', 'go', 'java', 'cpp', 'sql']))
           .min(1)
           .max(5),
+        starters: z
+          .partialRecord(z.enum(['python', 'go', 'java', 'cpp']), z.string().max(20000))
+          .optional(),
       })
       .strict(),
     cases: z.array(testcase).min(1).max(OJ_MAX_CASES),
@@ -457,6 +463,18 @@ export const ojImportSchema = z
         path: ['problem', 'languages'],
         message:
           'SQL 题只能用 sql- 题号、仅 SQL 语言、exact 校验并放在 gomall/00-overview / SQL problems need a sql- id, SQL only, the exact checker and gomall/00-overview',
+      });
+    // core- problems are the free, publicly listed Core Skills track, so like
+    // the SQL track they stay in its home lesson.
+    if (
+      data.problem.id.startsWith('core-') &&
+      (data.problem.courseId !== 'gomall' || data.problem.lessonId !== '00-overview')
+    )
+      ctx.addIssue({
+        code: 'custom',
+        path: ['problem', 'id'],
+        message:
+          'core- 题号只能用于 gomall/00-overview 里的 Core Skills 题 / core- ids are for Core Skills problems in gomall/00-overview',
       });
     if (new Set(data.cases.map((c) => c.name)).size !== data.cases.length)
       ctx.addIssue({
