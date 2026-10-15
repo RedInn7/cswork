@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { mock, test } from 'node:test';
 import { register } from 'node:module';
 import { JSDOM } from 'jsdom';
 import { createElement, act } from 'react';
@@ -32,7 +32,7 @@ for (const name of [
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] ?? dom.window.MouseEvent });
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import('react-dom/client');
-const { DuelQueue, RoomLive } = await import('../app/contest/client.tsx');
+const { ContestCalendar, DuelQueue, RoomLive } = await import('../app/contest/client.tsx');
 const { ContestBar } = await import('../components/contest-bar.tsx');
 const { RatingCurve, BandChip } = await import('../components/contest-parts.tsx');
 
@@ -265,6 +265,40 @@ test('once my own run is over, the room holds my code replay, shown only where t
     await act(async () => root.unmount());
   } finally {
     api.restore();
+  }
+});
+
+test('the lobby calendar: each add button names its contest; copying says so, or hands over the address', async () => {
+  const feed = 'https://cswork.test/contest/calendar.ics';
+  const setClipboard = (value) => Object.defineProperty(navigator, 'clipboard', { configurable: true, value });
+  const root = await mount(createElement(ContestCalendar, { room: { id: 'starter-9', start: now + MIN, minutes: 60, title: 'CSWork Starter #9' }, feed }));
+  try {
+    assert.equal(button('Add to calendar').getAttribute('aria-label'), 'Add to calendar: CSWork Starter #9');
+    const status = document.querySelector('.contest-calendar [role="status"]');
+    // No clipboard: the address, selected, to copy by hand.
+    setClipboard(undefined);
+    await act(async () => button('Copy calendar link').click());
+    const input = document.querySelector('.contest-calendar input');
+    assert.equal(input.value, feed);
+    assert.equal(document.activeElement, input);
+    assert.equal(status.textContent, '');
+    // Copied: said in the live region for 2 seconds.
+    mock.timers.enable({ apis: ['setTimeout'] });
+    setClipboard({ writeText: async () => {} });
+    await act(async () => button('Copy calendar link').click());
+    assert.equal(status.textContent, 'Copied');
+    assert.equal(document.querySelector('.contest-calendar input'), null);
+    await act(async () => mock.timers.tick(2000));
+    assert.equal(status.textContent, '');
+    mock.timers.reset();
+    // Refused: the address again.
+    setClipboard({ writeText: () => Promise.reject(new Error('denied')) });
+    await act(async () => button('Copy calendar link').click());
+    assert.equal(document.querySelector('.contest-calendar input').value, feed);
+  } finally {
+    mock.timers.reset();
+    delete navigator.clipboard;
+    await act(async () => root.unmount());
   }
 });
 

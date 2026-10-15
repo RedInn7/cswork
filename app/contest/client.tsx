@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type Fo
 import { CONTEST_KINDS, contestIcs, isRatedKind, RATE_GRACE, weeklyTitle } from '@/lib/contest';
 import { contestName } from '@/lib/lc-rating';
 import { formatClock } from '@/lib/mock-oa';
-import { contestReplay } from '@/lib/mock-replay';
+import { contestReplay, pruneTracks } from '@/lib/mock-replay';
 import { useLocale, useT } from '@/lib/i18n';
 import { api } from '@/lib/types';
 import type { RoomView } from '@/lib/server/contests';
@@ -145,7 +145,16 @@ type CalendarRoom = { id: string; start: number; minutes: number; title: string 
  */
 export function ContestCalendar({ room, feed }: { room?: CalendarRoom; feed?: string }) {
   const t = useT();
-  const [copied, setCopied] = useState(false);
+  // Copied: said for 2 seconds; failed (no clipboard, or refused): the address to copy by hand.
+  const [copied, setCopied] = useState<'' | 'yes' | 'no'>('');
+  const copy = (text: string) => {
+    const done = (ok: boolean) => {
+      setCopied(ok ? 'yes' : 'no');
+      if (ok) setTimeout(() => setCopied((c) => (c === 'yes' ? '' : c)), 2000);
+    };
+    if (navigator.clipboard) void navigator.clipboard.writeText(text).then(() => done(true), () => done(false));
+    else done(false);
+  };
   const add = (contest: CalendarRoom) => {
     const ics = contestIcs([{ ...contest, url: `${location.origin}/contest/${encodeURIComponent(contest.id)}` }]);
     try {
@@ -159,16 +168,26 @@ export function ContestCalendar({ room, feed }: { room?: CalendarRoom; feed?: st
   return (
     <p className="contest-calendar">
       {room && (
-        <button type="button" onClick={() => add(room)}>
+        <button type="button" onClick={() => add(room)} aria-label={`${t('加入日历', 'Add to calendar')}: ${room.title}`}>
           {t('加入日历', 'Add to calendar')}
         </button>
       )}
       {feed && (
         <>
           <a href={feed.replace(/^https?:/, 'webcal:')}>{t('订阅比赛日历', 'Subscribe to the contest calendar')}</a>
-          <button type="button" onClick={() => void navigator.clipboard?.writeText(feed).then(() => setCopied(true), () => {})}>
-            {copied ? t('已复制', 'Copied') : t('复制日历链接', 'Copy calendar link')}
+          <button type="button" onClick={() => copy(feed)}>
+            {t('复制日历链接', 'Copy calendar link')}
           </button>
+          <span role="status">{copied === 'yes' ? t('已复制', 'Copied') : ''}</span>
+          {copied === 'no' && (
+            <input
+              readOnly
+              autoFocus
+              value={feed}
+              aria-label={t('日历链接', 'Calendar link')}
+              onFocus={(e) => e.currentTarget.select()}
+            />
+          )}
         </>
       )}
     </p>
@@ -186,15 +205,18 @@ function ContestReplay({
   problems: NonNullable<RoomView['problems']>;
 }) {
   const zh = useLocale() === 'zh';
+  const t = useT();
   // A room's questions and an entrant's window never change once shown.
   const [session] = useState(() => contestReplay(room, me, problems.map((p) => p.id)));
+  // Contest pages prune too, for readers who never open a mock (this run is on the kept list).
+  useEffect(() => void pruneTracks(), []);
   const title = (id: string) => {
     const p = problems.find((x) => x.id === id);
     return p ? (zh ? p.title : p.titleEn || p.title) : id;
   };
   return (
     <div className="contest-replay">
-      <MockReplay session={session} title={title} />
+      <MockReplay session={session} title={title} heading={t('我的代码回放', 'My code replay')} level={2} />
     </div>
   );
 }
