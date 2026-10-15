@@ -112,7 +112,7 @@ test('course stars: the average from enough ratings, and a learner who started r
     return Response.json(rating);
   };
   const { createRoot } = await import('react-dom/client');
-  const { CourseRating, RatingSummary } = await import('../components/course-rating.tsx');
+  const { CourseRating, RATING_SAVE_DELAY, RatingSummary } = await import('../components/course-rating.tsx');
   const root = createRoot(document.getElementById('root'));
   await act(async () => root.render(createElement(CourseRating, { courseId: 'sd:big-o', zh: false })));
   await settle();
@@ -121,11 +121,17 @@ test('course stars: the average from enough ratings, and a learner who started r
   assert.equal(summary.getAttribute('aria-label'), '4.2 out of 5 stars from 7 ratings');
   assert.equal(summary.textContent, '★4.2 (7)');
   const radios = [...document.querySelectorAll('.course-rating-stars input[type="radio"]')];
-  assert.deepEqual(radios.map((r) => r.value), ['5', '4', '3', '2', '1']);
+  // In reading order, so screen readers and arrow keys go the way the stars are drawn.
+  assert.deepEqual(radios.map((r) => r.value), ['1', '2', '3', '4', '5']);
   assert.equal(document.querySelector('.course-rating-stars legend').textContent, 'Rate this course');
-  await act(async () => radios[1].click());
+  // Arrowing from 5 down to 4 checks both on the way; only the pick it stops on is saved.
+  await act(async () => radios[4].click());
+  await act(async () => radios[3].click());
+  assert.equal(calls.length, 1, 'nothing saved while the pick is moving');
+  assert.equal(document.querySelector('.course-rating-stars input[value="4"]').checked, true);
+  await act(async () => new Promise((r) => setTimeout(r, RATING_SAVE_DELAY + 50)));
   await settle();
-  assert.deepEqual(calls.at(-1), ['POST', '/api/course-ratings', { course: 'sd:big-o', stars: 4 }]);
+  assert.deepEqual(calls.slice(1), [['POST', '/api/course-ratings', { course: 'sd:big-o', stars: 4 }]]);
   assert.equal(document.querySelector('.course-rating-stars input[value="4"]').checked, true);
   assert.equal(document.querySelector('.course-rating-status').textContent, 'Rating saved');
   assert.equal(document.querySelector('.course-rating-stars legend').textContent, 'Your rating');

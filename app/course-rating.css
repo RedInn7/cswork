@@ -13,8 +13,6 @@
 }
 .course-rating-stars {
   display: inline-flex;
-  flex-direction: row-reverse;
-  justify-content: flex-end;
   align-items: center;
   gap: 2px;
   margin: 0;
@@ -47,18 +45,18 @@
   opacity: 0;
   cursor: pointer;
 }
-/* An outline star, filled for the checked one and every lower one (later in the DOM, earlier on
-   screen); hovering previews. The shape carries the state, not only the colour. */
+/* An outline star, filled for the checked one and every one before it; hovering previews. The
+   shape carries the state, not only the colour. */
 .course-rating-glyph::before {
   content: '\2606';
 }
 .course-rating-star:has(input:checked) .course-rating-glyph::before,
-.course-rating-star:has(input:checked) ~ .course-rating-star .course-rating-glyph::before,
-.course-rating-stars:hover .course-rating-star:hover .course-rating-glyph::before,
-.course-rating-stars:hover .course-rating-star:hover ~ .course-rating-star .course-rating-glyph::before {
+.course-rating-star:has(~ .course-rating-star input:checked) .course-rating-glyph::before,
+.course-rating-star:hover .course-rating-glyph::before,
+.course-rating-star:has(~ .course-rating-star:hover) .course-rating-glyph::before {
   content: '\2605';
 }
-.course-rating-stars:hover .course-rating-star:not(:hover, :hover ~ .course-rating-star) .course-rating-glyph::before {
+.course-rating-stars:hover .course-rating-star:hover ~ .course-rating-star .course-rating-glyph::before {
   content: '\2606';
 }
 .course-rating-star:has(input:focus-visible) {
