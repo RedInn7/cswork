@@ -32,6 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${title} · cswork`,
       description: zh ? `${title}：题目、计分板与赛后补题。` : `${title}: questions, scoreboard and upsolving.`,
       path: `/contest/${view.id}`,
+      image: `/contest/${view.id}/opengraph-image`,
     }),
     // Rooms are private; only the weekly and the starter are pages worth finding.
     ...(view.visibility === 'public' ? {} : { robots: { index: false, follow: false } }),

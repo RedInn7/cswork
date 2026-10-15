@@ -31,6 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ? `@${profile.handle} 在 CSWork 通过了 ${total} 道题。${profile.bio}`
         : `@${profile.handle} has solved ${total} problems on CSWork. ${profile.bio}`,
       path: `/u/${profile.handle}`,
+      image: `/u/${profile.handle}/opengraph-image`,
     }),
     // Personal pages stay out of search unless the learner opted in.
     ...(profile.indexable ? {} : { robots: { index: false, follow: false } }),

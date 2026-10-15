@@ -920,6 +920,27 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
   };
 }
 
+/**
+ * The share card's numbers (app/u/[handle]/opengraph-image), or null when the page would 404:
+ * solved by difficulty, the longest streak of AC days and, with contests shown, the latest rating.
+ */
+export function profileCard(handle: string, catalogue: PublicCatalogue) {
+  const profile = visibleProfile(handle);
+  if (!profile) return null;
+  const shown = shownIn(catalogue);
+  const ac = (
+    sqlite()
+      .prepare(`SELECT problem_id AS id,created_at AS at FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'`)
+      .all(profile.user_id) as { id: string; at: number }[]
+  ).filter((s) => shown(s.id));
+  return {
+    handle: profile.handle,
+    solved: tally(new Set(ac.map((s) => s.id)), catalogue).solved,
+    streak: longestStreak(ac.map((s) => s.at)),
+    rating: profile.show_contest ? (ratingHistory(profile.user_id).at(-1)?.after ?? null) : null,
+  };
+}
+
 /** Widest time zone offsets (UTC−12 to UTC+14): a reader's local year lies inside the padded UTC one. */
 const YEAR_PAD = 14 * HOUR;
 /**

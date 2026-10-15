@@ -138,6 +138,10 @@ export function certificateById(id: string, zh = true) {
   return cert ? { ...cert, lessons: EXTERNAL.get(cert.courseId)?.lessons ?? cert.lessons } : null;
 }
 
+/** Who holds certificate `id` (its page shows the holder the add-to-LinkedIn link). */
+export const certificateOwner = (id: string) =>
+  sqlite().prepare('SELECT user_id FROM certificates WHERE id=?').pluck().get(id) as string | undefined;
+
 /** Certificates the learner chose to list on a visible public profile, newest first. */
 export function profileCertificates(handle: string, zh = true) {
   return (
