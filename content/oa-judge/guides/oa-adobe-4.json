@@ -1,0 +1,19 @@
+{
+  "id": "oa-adobe-4",
+  "packageChecksum": "e85f6be227a35e340f9583e77e6d7c44a65c115f5a45c6c90d8ba1b8674dfb56",
+  "sourceContentHash": "f63a2e9737fc0aff1526fc6f1a29b34f31250f79776f7b4338bc39c8e383a88a",
+  "editorialSha256": "a85074de097e1b690110698ab1383ed056d0f3da7cdf9201c025147bc22dda2d",
+  "hints": {
+    "zh": [
+      "每组恰好 k 个元素，所以首先 n 必须能被 k 整除，组数是 n/k；同一个值在一组里最多出现一次。",
+      "一个值出现的次数如果超过组数 n/k，就必然有一组放了两个它；反过来只要每个值都不超过组数，把相同值轮流分到不同组就能凑满每一组。",
+      "检查 n%k==0；统计每个值的出现次数并取最大值；若最大出现次数≤n/k 输出 Yes，否则输出 No。子序列只要求保持原下标顺序，分好组后按下标排序即可，不需要真的构造。"
+    ],
+    "en": [
+      "Every group has exactly k elements, so n must be divisible by k and there are n/k groups; a value can appear at most once inside one group.",
+      "If some value occurs more often than the n/k groups, two copies must land in the same group. Conversely, if no value exceeds the number of groups, dealing equal values round-robin into different groups fills every group exactly.",
+      "Check n % k == 0; count occurrences of each value and take the maximum; print Yes if the maximum is at most n/k, otherwise No. Subsequences only need the original index order, so after grouping you would just sort each group by index; no construction is needed."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCheck that n is divisible by k and that no value occurs more often than the number of groups n/k.\n\n## Proof of correctness\n\nNecessity: every group has length k and a value can appear at most once per group. Sufficiency: process the occurrences grouped by value and deal them round-robin into the n/k groups; since no value exceeds the number of groups, no group gets a duplicate; the total is k times the number of groups, so after the round-robin every group has exactly k items. Sorting each group by original index gives a valid subsequence, so the condition is sufficient.\n\n## Complexity\n\nO(n) expected time, O(number of distinct values) space."
+}

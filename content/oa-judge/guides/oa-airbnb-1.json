@@ -1,0 +1,19 @@
+{
+  "id": "oa-airbnb-1",
+  "packageChecksum": "140b1474a73bbbe87e45739177570add13b273b2c7f3f40dd66d000f74c4e660",
+  "sourceContentHash": "73acbc84232f8d7fbc04533e9582dacdb6784e29700a397f1196b4db28c89bec",
+  "editorialSha256": "c635d7152656197175d139cf9d2b5fdf286b808dabbdb66f549985beaadaa44c",
+  "hints": {
+    "zh": [
+      "所有元素都是正整数，固定右端点时，合法的左端点构成一个后缀：左端越往右，乘积越小。",
+      "用滑动窗口维护以当前右端点结尾、乘积不超过 k 的最长窗口；加入右端后，若乘积超过 k 就不断从左端移出元素。",
+      "维护 product、left 和计数；每加入 a[right] 就把 product 乘上它；当 left≤right 且 product>k 时除以 a[left] 并右移 left；然后计数加上 right−left+1；答案最大约 1.25×10^11，用 64 位整数。"
+    ],
+    "en": [
+      "All elements are positive integers, so for a fixed right end the valid left ends form a suffix: the further right the left end, the smaller the product.",
+      "Use a sliding window that keeps the longest window ending at the current right end with product at most k; after adding the right element, keep removing elements from the left while the product exceeds k.",
+      "Keep product, left and a counter; multiply product by a[right] for each new element; while left <= right and product > k, divide by a[left] and advance left; then add right - left + 1 to the counter. The answer can reach about 1.25 * 10^11, so use a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a sliding window over positive numbers: after adding the right end, shrink the left end until the product is <= k, then add the current window length.\n\n## Proof of correctness\n\nAll elements are at least 1, so for a fixed right end the valid starting points form a suffix. Shrinking stops at the earliest valid start, so the window length is exactly the number of valid subarrays ending at that right end, and summing counts each subarray exactly once.\n\n## Complexity\n\nO(n) time and O(1) space besides the input; the answer can reach 125000250000, so use 64-bit integers."
+}

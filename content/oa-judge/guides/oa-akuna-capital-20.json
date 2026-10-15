@@ -1,0 +1,19 @@
+{
+  "id": "oa-akuna-capital-20",
+  "packageChecksum": "0ac4371794e857492876a486279faf71ab509a3a5cf109366782317647b3893b",
+  "sourceContentHash": "729f5cfe3c44aa8a825ecb9b9d4a23893a8c8350798b4f0775caf74925b6c8d9",
+  "editorialSha256": "041d3e97a4fd1befd5176e071a01022ce8271ee594dc9336226ff00faa88a304",
+  "hints": {
+    "zh": [
+      "会议可以任意挑选和重排，只关心每一步之后的累计值都严格大于 0。直觉上，先参加提升大的会议，后面才有余量承受减分。",
+      "把数值从大到小排序后依次加入：交换相邻的“小在前、大在后”只会让前缀和不降，所以存在按非增序排列的最优方案。一旦某个值加入后累计值≤0，后面的值都不比它大，就不可能再延长。",
+      "排序为降序；维护累计和与计数；依次取值，若累计和加上它≤0 就停止，否则累加并计数加一；输出计数。数值和可达 10^14，用 64 位整数。"
+    ],
+    "en": [
+      "Meetings can be chosen and reordered freely; all that matters is that the running total stays strictly positive after every step. Intuitively, attend the big boosts first so there is room to absorb the drops later.",
+      "Add values from largest to smallest: swapping an adjacent pair with the smaller one first never lowers a prefix sum, so an optimal plan in non-increasing order exists. Once adding a value makes the total <= 0, every later value is no larger, so the plan cannot be extended.",
+      "Sort in descending order; keep a running total and a counter; take values one by one, stop when the total plus the value would be <= 0, otherwise add it and count it; print the counter. Sums can reach 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by effectiveness from largest to smallest and add meetings in that order; keep a meeting as long as the new running index is still strictly greater than 0, otherwise no later value can rescue that prefix.\n\n## Proof of correctness\n\nFor any feasible schedule of length k, swap an adjacent smaller value x and larger value y: in the order x, y the first prefix is lower, and swapping to y, x does not lower either running sum at these two positions. So there is an optimal feasible prefix in non-increasing order. When scanning in descending order, if adding the current value leaves the index not greater than 0, all remaining values are no larger than it, and no complete prefix containing them can stay positive either, so stop. The prefix produced by the scan is feasible and cannot be extended further.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

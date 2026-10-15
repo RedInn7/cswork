@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-101",
+  "packageChecksum": "5709a88140c9b1594b4ce468b50a407d4dc8ad75b445a3e25b670575e2a7684f",
+  "sourceContentHash": "fc5442e922516e125c4bd89da5be9f8500aa06b8a11e59910323863c9e10cd47",
+  "editorialSha256": "bd0adf7c7e66bd4b59cd3afaeae2369049e88079f2a9b076e3dc3b3745b80fad",
+  "hints": {
+    "zh": [
+      "不需要真的拼接出 beautiful 数组（长度可能达到 n·m）：拼接结果里每个原下标出现的次数，等于覆盖它的区间个数。",
+      "用差分数组求出每个下标的出现次数；出现次数为 0 的就是未使用位置。问题变成：对每个未使用的值，求所有严格更小的值的出现次数之和。",
+      "把（值，出现次数）按值排序，按相同值分组：先用当前累计的“更小值出现次数之和”乘上该组中未使用位置的个数加入答案，再把整组的出现次数加入累计；同值必须整组先查询后加入，保证只统计严格更小的值；结果可达约 10^15，用 64 位整数。"
+    ],
+    "en": [
+      "There is no need to build the beautiful array (its length can reach n*m): the number of times an original index appears in the concatenation equals the number of intervals covering it.",
+      "Use a difference array to get every index's multiplicity; an index with multiplicity 0 is an unused position. The task becomes: for each unused value, sum the multiplicities of all strictly smaller values.",
+      "Sort the pairs (value, multiplicity) by value and process groups of equal values: first add the running total of smaller multiplicities times the number of unused positions in the group, then add the group's multiplicities to the running total. Query a whole equal-value group before adding it so only strictly smaller values count; the result can reach about 10^15, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a difference array to get how many times each original index appears in the concatenated array. Sort by value and merge equal values into groups, accumulating the weighted counts of smaller values; each unused position contributes the current prefix weight.\n\n## Proof of correctness\n\nThe multiplicity of each index in the concatenation equals the number of intervals covering it. Querying each group of equal values before adding it counts only strictly smaller values; a coverage count of 0 is exactly an unused position, so the weighted prefix sum equals what the explicit concatenation would give.\n\n## Complexity\n\nTime O(n log n + m), space O(n); there is no need to build the concatenated array, whose length can be nm."
+}

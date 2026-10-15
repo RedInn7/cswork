@@ -1,0 +1,21 @@
+{
+  "id": "oa-akuna-capital-1",
+  "packageChecksum": "dbd4173a0353a31b0cce252c48f345f5847280ff243c73d383f4b99920439782",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n, minComps, need;\n    cin >> n >> minComps >> need;\n    // Close a network as soon as the current run meets both the size and the speed requirement.\n    long long count = 0, length = 0, total = 0;\n    for (long long i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        length++;\n        total += v;\n        if (length >= minComps && total >= need) {\n            count++;\n            length = total = 0;\n        }\n    }\n    cout << count << \"\\n\";\n}\n",
+      "sha256": "ee294ef7d18eee61f54d1a13b39ebe727065f304108598fe08c1dc8fccfc1fa0"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        long n = nextLong(), minComps = nextLong(), need = nextLong();\n        // Close a network as soon as the current run meets both the size and the speed requirement.\n        long count = 0, length = 0, total = 0;\n        for (long i = 0; i < n; i++) {\n            length++;\n            total += nextLong();\n            if (length >= minComps && total >= need) {\n                count++;\n                length = total = 0;\n            }\n        }\n        System.out.println(count);\n    }\n}\n",
+      "sha256": "2dd9cd52d2b7bc62f34e7786b0917c1f2003e8d6dd9398398ce3eb81a313550a"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn, minComps, need := nextInt(), nextInt(), nextInt()\n\t// Close a network as soon as the current run meets both the size and the speed requirement.\n\tcount, length, total := 0, int64(0), int64(0)\n\tfor i := int64(0); i < n; i++ {\n\t\tlength++\n\t\ttotal += nextInt()\n\t\tif length >= minComps && total >= need {\n\t\t\tcount++\n\t\t\tlength, total = 0, 0\n\t\t}\n\t}\n\tfmt.Println(count)\n}\n",
+      "sha256": "3b795574e1319298501c1daae53d1cca1693cda295c74408fba4bd83bf0146ea"
+    }
+  ]
+}

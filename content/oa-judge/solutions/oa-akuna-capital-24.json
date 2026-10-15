@@ -1,0 +1,21 @@
+{
+  "id": "oa-akuna-capital-24",
+  "packageChecksum": "461e4f5f643776b1187922f05447a1630e9c846966484fec96a039e308dc94b8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long rows, cols, ir, ic, fr, fc;\n    cin >> rows >> cols >> ir >> ic >> fr >> fc;\n    vector<long long> cr(rows - 1), cc(cols - 1);\n    for (auto &v : cr) cin >> v;\n    for (auto &v : cc) cin >> v;\n    // Each row edge and each column edge between start and target is crossed exactly once.\n    long long total = 0;\n    for (long long i = min(ir, fr); i < max(ir, fr); i++) total += cr[i];\n    for (long long j = min(ic, fc); j < max(ic, fc); j++) total += cc[j];\n    cout << total << \"\\n\";\n}\n",
+      "sha256": "62dae00105deb8b247cf13b524d2301fd0798e8e75e359e647c40dcd24c23bbf"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int rows = (int) nextLong(), cols = (int) nextLong();\n        int ir = (int) nextLong(), ic = (int) nextLong(), fr = (int) nextLong(), fc = (int) nextLong();\n        long[] cr = new long[rows - 1], cc = new long[cols - 1];\n        for (int i = 0; i < rows - 1; i++) cr[i] = nextLong();\n        for (int j = 0; j < cols - 1; j++) cc[j] = nextLong();\n        // Each row edge and each column edge between start and target is crossed exactly once.\n        long total = 0;\n        for (int i = Math.min(ir, fr); i < Math.max(ir, fr); i++) total += cr[i];\n        for (int j = Math.min(ic, fc); j < Math.max(ic, fc); j++) total += cc[j];\n        System.out.println(total);\n    }\n}\n",
+      "sha256": "d3d0b16cc50227f7a9c65b42fb02471db0177f2cd1f9ef677c01e1c4d7c1f821"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\trows, cols := int(nextInt()), int(nextInt())\n\tir, ic, fr, fc := int(nextInt()), int(nextInt()), int(nextInt()), int(nextInt())\n\tcr, cc := make([]int64, rows-1), make([]int64, cols-1)\n\tfor i := range cr {\n\t\tcr[i] = nextInt()\n\t}\n\tfor j := range cc {\n\t\tcc[j] = nextInt()\n\t}\n\t// Each row edge and each column edge between start and target is crossed exactly once.\n\ttotal := int64(0)\n\tfor i := min(ir, fr); i < max(ir, fr); i++ {\n\t\ttotal += cr[i]\n\t}\n\tfor j := min(ic, fc); j < max(ic, fc); j++ {\n\t\ttotal += cc[j]\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "6dd1cc1b703ee3ea5b090646a1601df70f706ce89a190ef35f9b13a7224ebfc4"
+    }
+  ]
+}

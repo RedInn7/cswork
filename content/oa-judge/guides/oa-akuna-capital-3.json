@@ -1,0 +1,19 @@
+{
+  "id": "oa-akuna-capital-3",
+  "packageChecksum": "f0ccbba8bccfb0dbb3d79be8b6efec3385a0d034d3e42eb6e9402fa13f5ddec8",
+  "sourceContentHash": "88ca2421d8659dabab35d3c32142875eefafec3e090b7cc339c39113c8093d4f",
+  "editorialSha256": "307600008db914fa6a7cdd2c43a567851a014e1e3bd7fc7507e3b95b1a6c1625",
+  "hints": {
+    "zh": [
+      "发布必须按 plannedDate 非递减的顺序进行，所以先排序；之后只需决定每个更新选哪个日期，并且日期不能早于前一个更新。",
+      "对当前更新，最早可行的日期是两个候选中不早于当前日的较小者。因为 alternateDate≤plannedDate，而计划日已排序，即使备用日已过，计划日也一定不早于当前日。每一步都选最早可行日期不会推迟后面的任何更新。",
+      "把（plannedDate，alternateDate）按计划日排序（相同时再按备用日）；day 初始为 0；依次处理：若 alternate≥day 则 day=alternate，否则 day=planned；最后输出 day。"
+    ],
+    "en": [
+      "Releases must follow non-decreasing plannedDate, so sort first; after that you only decide which date each update uses, and it cannot be earlier than the previous update.",
+      "For the current update the earliest feasible date is the smaller of the two candidates that is not before the current day. Since alternateDate <= plannedDate and planned dates are sorted, the planned date is never before the current day even when the alternate date has passed. Taking the earliest feasible date each time never delays any later update.",
+      "Sort the pairs (plannedDate, alternateDate) by planned date (then by alternate date); start with day = 0; for each pair, if alternate >= day set day = alternate, otherwise day = planned; print day at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by planned date and keep the current earliest available day. If the alternate date is not earlier than the current day, choose it; otherwise you can only wait until the planned date.\n\n## Correctness\n\nOnce the planned order is fixed, the earliest legal release date of the current update can only be the earliest of its two possible dates that is not before the previous day. Since alternateDate <= plannedDate, if the alternate date has already passed, the planned date is still not before the current day: every date chosen earlier is at most its own planned date, and the planned dates are sorted. Choosing the earliest legal date for each item cannot delay any later feasible date, so the final completion day is minimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

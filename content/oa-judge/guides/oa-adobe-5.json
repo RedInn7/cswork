@@ -1,0 +1,19 @@
+{
+  "id": "oa-adobe-5",
+  "packageChecksum": "efaabf0b0c905266b9408fd6f72025adf7631c279e702b10d572d76b22396c30",
+  "sourceContentHash": "d7ec44fd6e0d8cef99d50adc8c13f16294b4bede649cbdb0c2fa5bf38d0ccd00",
+  "editorialSha256": "9405856f0c75898f223a7694ce9a7c29672752db614b7bcaccc14adaa66baf21",
+  "hints": {
+    "zh": [
+      "每次替换一个字符相当于在图上走一条边，求最少替换次数就是无权图最短路，用 BFS。注意长度不同的词永远无法互相到达，起点和终点相同时答案为 0。",
+      "两个等长词只在一个位置不同，等价于删掉该位置后剩下的文本相同。按（删除位置，剩余文本）把词分桶，同桶的词两两相邻，不用枚举 26 个字母，也能处理任意 Unicode 字符。",
+      "先处理特殊情况：起点等于终点输出 0；终点不在词表或长度不同输出 −1。把与起点等长的词和起点放进集合并分桶；从起点 BFS，弹出一个词时枚举每个删除位置，取出对应的桶（取出后删除，每桶只展开一次），遇到终点就输出当前距离加一，否则把未访问的词入队；队列空了输出 −1。按码点而不是字节或 UTF-16 单元处理字符。"
+    ],
+    "en": [
+      "Replacing one character is one edge in a graph, so the minimum number of replacements is a shortest path in an unweighted graph: use BFS. Words of different lengths can never reach each other, and when start and target are equal the answer is 0.",
+      "Two words of the same length differ in exactly one position if and only if they are equal after deleting that position. Bucket words by (deleted position, remaining text): words in one bucket are pairwise adjacent, which avoids trying every letter and works for arbitrary Unicode characters.",
+      "Handle special cases first: start equal to target gives 0; a target missing from the list or of another length gives -1. Put the start word and all words of its length in a set and build the buckets; BFS from the start: for a popped word, go over every deleted position and take out its bucket (remove it so each bucket is expanded once); if the target is in it, print the current distance plus one, otherwise enqueue unvisited words; if the queue empties, print -1. Treat characters as code points, not bytes or UTF-16 units."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBucket words of the same length by (deleted position, text after deletion), and during BFS expand each bucket only once; the bucket uses a structural key instead of treating some ordinary character as the only wildcard.\n\n## Proof of correctness\n\nTwo words of the same length differ in exactly one position if and only if the corresponding deleted position and remaining text are equal. So bucket edges cover exactly the single-replacement steps. The first time BFS reaches a word it uses the fewest edges, and once a bucket is expanded at its earliest distance all of its members are reachable, so expanding it again could not be better.\n\n## Complexity\n\nO(nL^2) construction time and O(nL^2) space for string buckets, with L <= 20; each bucket is expanded at most once."
+}

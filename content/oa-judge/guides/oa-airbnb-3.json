@@ -1,0 +1,19 @@
+{
+  "id": "oa-airbnb-3",
+  "packageChecksum": "7f58cefb8162d43a5a69d0791645ae4837257925122245459f8515fcb06cb1eb",
+  "sourceContentHash": "395493a3af345432eb50037ae86de5e79c24d9ce1d6690784b4a61d0460b0c13",
+  "editorialSha256": "3bbc259afb25a7e0efb1925f7707a27abf65968c1e929ff192a7aa82e2f79320",
+  "hints": {
+    "zh": [
+      "每一跳不论跨几格代价都是 1，所以这是无权图上的最短路，用 BFS。一跳只能沿一个方向走 1..k 格，途经的格子都必须为空。",
+      "从当前格向四个方向逐格扫描，最多 k 格，遇到障碍或越界就停止该方向；途中未访问的空格距离为当前距离加一。已访问的空格不是障碍，扫描要继续越过它。",
+      "起点或终点是障碍直接输出 −1；dist 全设为 −1，起点为 0 入队；出队一个格子后对四个方向 step=1..k 扫描：越界或遇墙即 break，未访问则设距离并入队；最后输出终点的 dist（不可达即 −1，1×1 空网格为 0）。"
+    ],
+    "en": [
+      "Every jump costs 1 no matter how many cells it spans, so this is a shortest path in an unweighted graph: use BFS. A jump moves 1..k cells along one direction, and every cell on the way must be empty.",
+      "From the current cell scan each of the four directions cell by cell, up to k cells, stopping at a wall or the border; unvisited empty cells on the way get the current distance plus one. A visited empty cell is not a wall, so keep scanning past it.",
+      "If the start or target is blocked, print -1; set all distances to -1, give the start 0 and enqueue it; for each dequeued cell scan the four directions with step = 1..k: break at the border or a wall, and set the distance and enqueue when unvisited; finally print the target's distance (-1 if unreachable, 0 for an empty 1x1 grid)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRun BFS over empty cells. Each time, scan up to k cells in each of the four directions and stop at a wall; a visited empty cell is not an obstacle, so keep scanning to positions further away.\n\n## Proof of correctness\n\nEvery legal jump is an edge of unit weight. The ray scan enumerates exactly the legal edges and only those, and BFS reaches each cell for the first time with the fewest steps, so the target's distance is correct.\n\n## Complexity\n\nO(nmk) time and O(nm) space, at most about 4 million ray checks."
+}

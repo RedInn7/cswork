@@ -1,0 +1,19 @@
+{
+  "id": "oa-alarm-1",
+  "packageChecksum": "9c4f6b97415d7e01fa4914f2fc35ea4ed6a405fe10ad352ccc8288fb689c2833",
+  "sourceContentHash": "d550bfe721f56812ec8c04084a851aec6b710c19d8968c794182d0ce923180f2",
+  "editorialSha256": "3d8c82d5302be3f528dc05a75d099325d1333cd86a840879497eeeee390d3db6",
+  "hints": {
+    "zh": [
+      "填满前 k 行恰好需要 1+2+…+k=k(k+1)/2 枚硬币，所以答案就是满足 k(k+1)/2≤n 的最大非负整数 k。",
+      "三角数随 k 单调递增，可以对 k 二分；为避免浮点误差，判断时直接用整数乘法计算 k(k+1)/2。",
+      "对每个 n：先令 hi=1 并不断翻倍直到 hi(hi+1)/2>n，lo=0；在 lo+1<hi 时取 mid，若 mid(mid+1)/2≤n 则 lo=mid，否则 hi=mid；lo 即答案；所有结果按顺序空格分隔输出。"
+    ],
+    "en": [
+      "Filling the first k rows takes exactly 1 + 2 + ... + k = k(k+1)/2 coins, so the answer is the largest non-negative integer k with k(k+1)/2 <= n.",
+      "Triangular numbers grow with k, so binary search k; to avoid floating-point rounding, compute k(k+1)/2 with integer multiplication in the test.",
+      "For each n: start with hi = 1 and double it until hi(hi+1)/2 > n, with lo = 0; while lo + 1 < hi take mid, set lo = mid if mid(mid+1)/2 <= n, otherwise hi = mid; lo is the answer. Print all results in order, space-separated."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each n, find the largest k with 1 + 2 + ... + k = k(k+1)/2 <= n. Binary search k, using integer multiplication in the test to avoid floating-point rounding.\n\n## Proof of correctness\n\nFilling k rows uses exactly k(k+1)/2 coins, so the number of rows that can be filled is exactly the largest non-negative integer satisfying this inequality. Binary searching the monotone triangular numbers determines each result uniquely.\n\n## Complexity\n\nWith N the array length: time O(N log C), space O(N), where C = max(coins)."
+}

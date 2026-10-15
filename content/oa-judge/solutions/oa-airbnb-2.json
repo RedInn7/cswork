@@ -1,0 +1,21 @@
+{
+  "id": "oa-airbnb-2",
+  "packageChecksum": "bc44823ef07c386f8cb777c1c4dfc2914794374e6cac3ba9e9fb144c4202514e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &v : a) cin >> v;\n    long long hours;\n    cin >> hours;\n    if (hours < n) {  // every pile needs at least one unit of time\n        cout << -1 << \"\\n\";\n        return 0;\n    }\n    // Binary search the smallest speed whose total of ceil(a / speed) fits in the deadline.\n    long long lo = 1, hi = *max_element(a.begin(), a.end());\n    while (lo < hi) {\n        long long mid = (lo + hi) / 2, total = 0;\n        for (long long v : a) total += (v + mid - 1) / mid;\n        if (total <= hours) hi = mid;\n        else lo = mid + 1;\n    }\n    cout << lo << \"\\n\";\n}\n",
+      "sha256": "eb618762436c5da2f6fa51a8f2d21119c815cbf1f2b10e00e61403b16f1df03f"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        long[] a = new long[n];\n        long hi = 1;\n        for (int i = 0; i < n; i++) {\n            a[i] = nextLong();\n            hi = Math.max(hi, a[i]);\n        }\n        long hours = nextLong();\n        if (hours < n) { // every pile needs at least one unit of time\n            System.out.println(-1);\n            return;\n        }\n        // Binary search the smallest speed whose total of ceil(a / speed) fits in the deadline.\n        long lo = 1;\n        while (lo < hi) {\n            long mid = (lo + hi) / 2, total = 0;\n            for (long v : a) total += (v + mid - 1) / mid;\n            if (total <= hours) hi = mid;\n            else lo = mid + 1;\n        }\n        System.out.println(lo);\n    }\n}\n",
+      "sha256": "c65cea0e568b453a6fef25aeebdd94d88e6d8aa3e20fb7e7ce84638bbaf35535"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\thi := int64(1)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t\thi = max(hi, a[i])\n\t}\n\thours := nextInt()\n\tif hours < int64(n) { // every pile needs at least one unit of time\n\t\tfmt.Println(-1)\n\t\treturn\n\t}\n\t// Binary search the smallest speed whose total of ceil(a / speed) fits in the deadline.\n\tlo := int64(1)\n\tfor lo < hi {\n\t\tmid, total := (lo+hi)/2, int64(0)\n\t\tfor _, v := range a {\n\t\t\ttotal += (v + mid - 1) / mid\n\t\t}\n\t\tif total <= hours {\n\t\t\thi = mid\n\t\t} else {\n\t\t\tlo = mid + 1\n\t\t}\n\t}\n\tfmt.Println(lo)\n}\n",
+      "sha256": "1dc79c0d108872603329d0df07fd44ca4ceb1668e4619c09b454bd612816be0e"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-akuna-capital-20",
+  "packageChecksum": "0ac4371794e857492876a486279faf71ab509a3a5cf109366782317647b3893b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &v : a) cin >> v;\n    sort(a.rbegin(), a.rend());\n    // Take meetings from the largest value while the running index stays strictly positive.\n    long long total = 0, count = 0;\n    for (long long v : a) {\n        if (total + v <= 0) break;\n        total += v;\n        count++;\n    }\n    cout << count << \"\\n\";\n}\n",
+      "sha256": "43a8b9c196fa80f82155d2c7c911ff89cbbfbcb9ddfbe5e64e84a7199cb2abf3"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        // Take meetings from the largest value while the running index stays strictly positive.\n        long total = 0, count = 0;\n        for (int i = n - 1; i >= 0; i--) {\n            if (total + a[i] <= 0) break;\n            total += a[i];\n            count++;\n        }\n        System.out.println(count);\n    }\n}\n",
+      "sha256": "9bde7760c02284bd6e945de50573b69f211b8731b0ccf793e2ec94b7f6cc37c3"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tslices.Sort(a)\n\t// Take meetings from the largest value while the running index stays strictly positive.\n\ttotal, count := int64(0), 0\n\tfor i := n - 1; i >= 0; i-- {\n\t\tif total+a[i] <= 0 {\n\t\t\tbreak\n\t\t}\n\t\ttotal += a[i]\n\t\tcount++\n\t}\n\tfmt.Println(count)\n}\n",
+      "sha256": "0aa7bc026ccc2c5ebe92feafe660b2d5384258f4926abbe7a2bf1746e1abe866"
+    }
+  ]
+}

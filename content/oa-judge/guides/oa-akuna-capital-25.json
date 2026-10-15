@@ -1,0 +1,19 @@
+{
+  "id": "oa-akuna-capital-25",
+  "packageChecksum": "49d419d24978cfb11e7fbe27e7e7d9fac305931781e0f46e0edd4a9a8078cdb6",
+  "sourceContentHash": "8994c9f25a2b4931090877c3abfc69169fb3e15941c84538d5fed61d2bb09c92",
+  "editorialSha256": "4d646d17c25eb79bee41a31bc80824004c8d87726b1632582d0637eff62f9fec",
+  "hints": {
+    "zh": [
+      "把单词拆成若干段连续相同的字母。不同段之间本来就不相邻相同，冲突只出现在段内部。",
+      "长度为 L 的段里有 floor(L/2) 对互不重叠的相邻位置，每对至少要改一个，所以至少要改 floor(L/2) 次；隔一个改一个、换成与两侧都不同的字母就能达到这个下界。",
+      "对每个单词从左到右找出每一段的长度 L，累加 floor(L/2)；每个单词的结果按输入顺序空格分隔输出。总字符可达 10^7，要用快速读入并逐字符扫描。"
+    ],
+    "en": [
+      "Split each word into maximal runs of equal letters. Different runs never form equal neighbours, so conflicts only happen inside a run.",
+      "A run of length L contains floor(L/2) disjoint pairs of adjacent positions, and each pair needs at least one change, so at least floor(L/2) changes are needed; changing every second letter to one that differs from both neighbours reaches this bound.",
+      "For each word, scan from left to right to find each run length L and add floor(L/2); print the result for every word in input order, space-separated. The total input can reach 10^7 characters, so read it quickly and scan character by character."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit the word into maximal runs of the same character. A run of length L needs at least one replacement for every two characters, floor(L/2) in total; runs are independent of each other, so add the results.\n\n## Proof of correctness\n\nA run of L equal characters contains floor(L/2) disjoint pairs of adjacent positions, and each pair needs at least one position changed, so floor(L/2) is a lower bound. Replacing every second position while avoiding the characters on both sides reaches the bound; 26 letters are enough to choose from, and run boundaries do not introduce new conflicts. Adding over the runs gives the optimum.\n\n## Full range and complexity\n\nThe full range of 100 words of 100000 characters each is kept, so the total can reach 10000000 characters. Total time O(S), extra algorithm space O(1); splitting the actual input into lines takes another O(S). The largest standard input is 10000104 bytes, under 32 MiB; the domain is not reduced because of the input budget.\n\n## Independent verification\n\nSmall cases use a minimum-replacement DP over 26 letters; large cases are cross-checked with pairing of disjoint adjacent conflicts and closed-form expectations, and two real 100 x 100000 cases are in the official package."
+}

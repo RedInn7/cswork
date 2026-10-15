@@ -1,0 +1,21 @@
+{
+  "id": "oa-adobe-4",
+  "packageChecksum": "e85f6be227a35e340f9583e77e6d7c44a65c115f5a45c6c90d8ba1b8674dfb56",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, k;\n    cin >> n >> k;\n    vector<int> freq(100001, 0);\n    int most = 0;\n    for (int i = 0; i < n; i++) {\n        int v;\n        cin >> v;\n        most = max(most, ++freq[v]);\n    }\n    // Feasible iff k divides n and no value appears more often than the n/k groups.\n    cout << (n % k == 0 && most <= n / k ? \"Yes\" : \"No\") << \"\\n\";\n}\n",
+      "sha256": "d82c1b27cecea06924af18cef686a2af8322f3de3e0ca9e9ee9e02bf42c9161b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static int nextInt() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        int r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), k = nextInt();\n        int[] freq = new int[100001];\n        int most = 0;\n        for (int i = 0; i < n; i++) most = Math.max(most, ++freq[nextInt()]);\n        // Feasible iff k divides n and no value appears more often than the n/k groups.\n        System.out.println(n % k == 0 && most <= n / k ? \"Yes\" : \"No\");\n    }\n}\n",
+      "sha256": "3cdda3c3de0856e51889cd34d1aa795c6ec2a264ecfd5c590876270562fe89a7"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tr := 0\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn, k := nextInt(), nextInt()\n\tfreq := make([]int, 100001)\n\tmost := 0\n\tfor i := 0; i < n; i++ {\n\t\tv := nextInt()\n\t\tfreq[v]++\n\t\tmost = max(most, freq[v])\n\t}\n\t// Feasible iff k divides n and no value appears more often than the n/k groups.\n\tif n%k == 0 && most <= n/k {\n\t\tfmt.Println(\"Yes\")\n\t} else {\n\t\tfmt.Println(\"No\")\n\t}\n}\n",
+      "sha256": "ece8a44971530d9862110dd1b9d5eb538de47dc3c887c55f690cf0ba6495448c"
+    }
+  ]
+}

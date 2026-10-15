@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-108",
+  "packageChecksum": "9cbd44f01372b69c7f723904a3913d764dbf08233de2411566f87f22a26854e2",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &v : a) cin >> v;\n    // Package i can be picked by day min(i+1, n-i): add packages by deadline, keep the best `day` in a min-heap.\n    priority_queue<long long, vector<long long>, greater<long long>> heap;\n    for (int day = 1; day <= (n + 1) / 2; day++) {\n        heap.push(a[day - 1]);\n        if (day - 1 != n - day) heap.push(a[n - day]);\n        while ((int)heap.size() > day) heap.pop();\n    }\n    long long total = 0;\n    while (!heap.empty()) {\n        total += heap.top();\n        heap.pop();\n    }\n    cout << total << \"\\n\";\n}\n",
+      "sha256": "d11d03590b910f2ba98629c027fdcc6a6b8d1e2678cd88349a5dc315aa8e3548"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        // Package i can be picked by day min(i+1, n-i): add packages by deadline, keep the best `day` in a min-heap.\n        PriorityQueue<Long> heap = new PriorityQueue<>();\n        for (int day = 1; day <= (n + 1) / 2; day++) {\n            heap.add(a[day - 1]);\n            if (day - 1 != n - day) heap.add(a[n - day]);\n            while (heap.size() > day) heap.poll();\n        }\n        long total = 0;\n        for (long v : heap) total += v;\n        System.out.println(total);\n    }\n}\n",
+      "sha256": "5ed7ebfd4ed65ed978096af3f32dc4a1debc63d51b5258567d054f1c7695931e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"container/heap\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\ntype minHeap []int64\n\nfunc (h minHeap) Len() int           { return len(h) }\nfunc (h minHeap) Less(i, j int) bool { return h[i] < h[j] }\nfunc (h minHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\nfunc (h *minHeap) Push(x any)        { *h = append(*h, x.(int64)) }\nfunc (h *minHeap) Pop() any {\n\told := *h\n\tx := old[len(old)-1]\n\t*h = old[:len(old)-1]\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\t// Package i can be picked by day min(i+1, n-i): add packages by deadline, keep the best `day` in a min-heap.\n\th := &minHeap{}\n\tfor day := 1; day <= (n+1)/2; day++ {\n\t\theap.Push(h, a[day-1])\n\t\tif day-1 != n-day {\n\t\t\theap.Push(h, a[n-day])\n\t\t}\n\t\tfor h.Len() > day {\n\t\t\theap.Pop(h)\n\t\t}\n\t}\n\ttotal := int64(0)\n\tfor _, v := range *h {\n\t\ttotal += v\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "7f4234bcbda5b936b5fc29fe847599c2608c2443584f93e5c7c2ebe2995c9c2c"
+    }
+  ]
+}

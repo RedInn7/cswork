@@ -1,0 +1,21 @@
+{
+  "id": "oa-akuna-capital-5",
+  "packageChecksum": "db73e6e3d7cae59d2d3fb5076c3603ef4d34ef0b04f4a8481b7cec673a360f74",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // Each zero run of length z is crossed once by each of the a ones before it: a * (z + 1).\n    long long ones = 0, cost = 0;\n    size_t i = 0;\n    while (i < s.size()) {\n        if (s[i] == '1') {\n            ones++;\n            i++;\n            continue;\n        }\n        size_t end = i;\n        while (end < s.size() && s[end] == '0') end++;\n        cost += ones * (long long)(end - i + 1);\n        i = end;\n    }\n    cout << cost << \"\\n\";\n}\n",
+      "sha256": "1723bca099854d6907aa1f0f528e7e2ca7f794ae1d34ffd55e5e255d30349eec"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes()).trim();\n        // Each zero run of length z is crossed once by each of the a ones before it: a * (z + 1).\n        long ones = 0, cost = 0;\n        int i = 0, n = s.length();\n        while (i < n) {\n            if (s.charAt(i) == '1') {\n                ones++;\n                i++;\n                continue;\n            }\n            int end = i;\n            while (end < n && s.charAt(end) == '0') end++;\n            cost += ones * (end - i + 1);\n            i = end;\n        }\n        System.out.println(cost);\n    }\n}\n",
+      "sha256": "90204d21b08b25ae00382e4a30d414e770ab85f33883b3b20e23bd85df03de1f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\ts := bytes.TrimSpace(data)\n\t// Each zero run of length z is crossed once by each of the a ones before it: a * (z + 1).\n\tones, cost := int64(0), int64(0)\n\tfor i := 0; i < len(s); {\n\t\tif s[i] == '1' {\n\t\t\tones++\n\t\t\ti++\n\t\t\tcontinue\n\t\t}\n\t\tend := i\n\t\tfor end < len(s) && s[end] == '0' {\n\t\t\tend++\n\t\t}\n\t\tcost += ones * int64(end-i+1)\n\t\ti = end\n\t}\n\tfmt.Println(cost)\n}\n",
+      "sha256": "9ba1b7779a5e1ce583bd97d59bb9453b69b94197114b55b9e415970b19d16fc8"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-akuna-capital-19",
+  "packageChecksum": "99191dbb97da2667e4881e17b760fd9fbb1db9e54c78c0769f5af0fc6371d0b3",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    map<long long, long long> c;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        c[v]++;\n    }\n    // best[t] = count[t] + best[t + 1] when runtime t + 1 exists, scanning from the largest runtime.\n    map<long long, long long> dp;\n    long long answer = 0;\n    for (auto it = c.rbegin(); it != c.rend(); ++it) {\n        auto next = dp.find(it->first + 1);\n        long long value = it->second + (next != dp.end() ? next->second : 0);\n        dp[it->first] = value;\n        answer = max(answer, value);\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "f84408b1acad5076d4f4ca7f55b7636781223a9387f04f1f672406ea49b9ab4b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        // Scan distinct runtimes from the largest: best[t] = count[t] + best[t + 1] when t + 1 exists.\n        long answer = 0, nextValue = Long.MIN_VALUE, nextBest = 0;\n        for (int j = n - 1; j >= 0;) {\n            int i = j;\n            while (i >= 0 && a[i] == a[j]) i--;\n            long best = (j - i) + (nextValue == a[j] + 1 ? nextBest : 0);\n            answer = Math.max(answer, best);\n            nextValue = a[j];\n            nextBest = best;\n            j = i;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "d5f545c0c9f95f3c137bfa47f30e9c77a70392011aa0a000781b11a466c8d64f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tslices.Sort(a)\n\t// Scan distinct runtimes from the largest: best[t] = count[t] + best[t+1] when t+1 exists.\n\tanswer, nextBest := int64(0), int64(0)\n\tnextValue := int64(-1)\n\tfor j := n - 1; j >= 0; {\n\t\ti := j\n\t\tfor i >= 0 && a[i] == a[j] {\n\t\t\ti--\n\t\t}\n\t\tbest := int64(j - i)\n\t\tif nextValue == a[j]+1 {\n\t\t\tbest += nextBest\n\t\t}\n\t\tanswer = max(answer, best)\n\t\tnextValue, nextBest = a[j], best\n\t\tj = i\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "8876ef2ff547ae075136b5ef89d0c70ac505ee59f10115293b91cbac96d8b638"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-akuna-capital-5",
+  "packageChecksum": "db73e6e3d7cae59d2d3fb5076c3603ef4d34ef0b04f4a8481b7cec673a360f74",
+  "sourceContentHash": "1a19525d6fc2f992e4c3dc903798550ed64e37cc7ba779e94cd43e08d6101c56",
+  "editorialSha256": "abbaf8cf837697e03e1a9a05225e2483a4ad12c5b2376ccc58fb689072d06b12",
+  "hints": {
+    "zh": [
+      "每个 1 最终都要跨过它右边的每一个 0，所以总移动距离是固定的（等于逆序对数），要让费用最大，就要让操作次数尽可能多。",
+      "一次操作必须跨过一整段相邻的 0。对某段长度为 z 的 0，它左边的 a 个 1 每个最多跨它一次，所以这段最多带来 a 次操作，贡献 a×z 的距离和 a 的基础费用，合计 a×(z+1)，而且可以安排到上界。",
+      "从左往右扫描并记录已遇到的 1 的个数 a；每遇到一段连续 0，求长度 z，把 a×(z+1) 加入答案；已经是 0…01…1 时答案为 0；结果可达约 2.5×10^9，用 64 位整数。"
+    ],
+    "en": [
+      "Every 1 must eventually pass every 0 to its right, so the total distance moved is fixed (the number of inversions); to maximize the cost you must maximize the number of operations.",
+      "An operation must cross a whole run of adjacent zeros. For a run of z zeros, each of the a ones to its left crosses it at most once, so the run allows at most a operations, contributing a * z of distance and a of base fees, a * (z + 1) in total, and the bound can be reached.",
+      "Scan from left to right counting the ones seen so far as a; at each run of zeros find its length z and add a * (z + 1) to the answer; a string already of the form 0...01...1 gives 0. The result can reach about 2.5 * 10^9, so use a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit the string into runs of zeros. For each run, let a be the number of ones before it and z its length; the run contributes a * z cells of movement and allows a separate moves of the ones before it, adding a in base fees, for a total contribution of a * (z + 1).\n\n## Correctness\n\nEach 1 forms an inversion with every 0 to its right that must be removed, so the total movement distance is fixed at the total number of inversions. An operation must cross a complete run of adjacent zeros; for a given run, each of the a ones before it can cross it at most once, so the run produces at most a operations. Scheduling, run by run from right to left, every preceding 1 to cross the run reaches this bound, and moves for different runs can be arranged one after another. So the maximum number of operations is the sum of a over the runs, and the maximum total cost is the fixed distance plus the maximum number of operations, that is Σa(z + 1).\n\n## Complexity\n\nTime O(n), space O(1)."
+}

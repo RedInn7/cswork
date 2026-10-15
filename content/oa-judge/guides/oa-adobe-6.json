@@ -1,0 +1,19 @@
+{
+  "id": "oa-adobe-6",
+  "packageChecksum": "cd539c8b6cd347a9a28e420e52fbdc4654ae883994693135cf6afdefab28dcf9",
+  "sourceContentHash": "43f446f1fc2c21fcff0e4735a0422473f7d2801bb7f5623031da01886cbb5de2",
+  "editorialSha256": "596d24b4f673189385467d3dba0df7a36692e24bd10ea0352b94544a44048a1c",
+  "hints": {
+    "zh": [
+      "轮数越多越容易完成，可行性对轮数单调，所以可以二分轮数 t。关键是给定 t 时如何判断能否完成。",
+      "t 轮里每个未完成的任务至少每轮都获得 y 秒；被选为主任务时额外多得 x−y 秒。于是每个任务需要的主任务次数是 ceil(max(0, time−t·y)/(x−y))，总次数不能超过 t。",
+      "上界取每个任务都靠主任务完成的次数之和 Σceil(time/x)；二分 t，对每个任务计算所需主任务次数并累加，超过 t 就提前停止；可行则缩小上界否则增大下界。计算 t·y 时注意溢出，可先判断 t·y 是否已经不小于 time。答案可能达到 10^14，需要 64 位整数。"
+    ],
+    "en": [
+      "More rounds can only help, so feasibility is monotone in the number of rounds and you can binary search the round count t. The key question is how to test a given t.",
+      "Over t rounds every unfinished task gets at least y seconds per round, and being the main task adds x - y extra seconds. So a task needs ceil(max(0, time - t*y) / (x - y)) main slots, and the total must not exceed t.",
+      "Use the sum of ceil(time / x) as an upper bound (every task finished by main slots alone); binary search t, add up the main slots each task needs and stop early once the sum exceeds t; shrink the upper bound when feasible, otherwise raise the lower bound. Watch for overflow in t*y: first check whether t*y already reaches time. The answer can reach 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search the number of rounds t. Each task first gets the baseline service t*y, and the rest needs ceil((time - t*y) / (x - y)) main-task slots; check whether the total is <= t.\n\n## Proof of correctness\n\nAny schedule of t rounds has only t main-task slots, so a total demand <= t is necessary. When it holds, give each task the slots it needs; if a task finishes early, handing its remaining slots to any still unfinished task only adds service and cannot prevent completion. So the test is sufficient, and feasibility is monotone in t. Processing every task with main slots only gives a finite upper bound, which also works when y = 0.\n\n## Complexity\n\nO(n log answer) time and O(n) input space; the answer can reach 10^14."
+}

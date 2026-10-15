@@ -1,0 +1,19 @@
+{
+  "id": "oa-akuna-capital-1",
+  "packageChecksum": "dbd4173a0353a31b0cce252c48f345f5847280ff243c73d383f4b99920439782",
+  "sourceContentHash": "53f11c43e73e90b5aefc2a0ec23de044252339221ad54a88c96d028b44f3e8a9",
+  "editorialSha256": "52bcc35330e23391e0f3860a637d09873f343816b55c4e0ac98ef79f182e4da8",
+  "hints": {
+    "zh": [
+      "速度非负，从某个起点开始向右扩展，最早同时满足台数和速度要求的那个位置，就是以该起点开局的最短合格段的终点。",
+      "贪心：从左往右累加当前段，一旦长度≥minComps 且速度和≥speedThreshold 就立即成网、清零重新开始。越早结束，留给后面的电脑越多。",
+      "维护当前段的长度和速度和；每读一台电脑长度加一、速度和加上它；当两个条件同时满足时网络数加一并把长度和速度和清零；扫描结束输出网络数。速度和可达约 2×10^14，用 64 位整数。"
+    ],
+    "en": [
+      "Speeds are non-negative, so if you extend to the right from a starting point, the first position where both the size and the speed requirements hold ends the shortest qualifying segment from that start.",
+      "Greedy: accumulate the current segment from left to right and, as soon as its length is >= minComps and its speed sum is >= speedThreshold, form a network and start over. Finishing earlier leaves more computers for later networks.",
+      "Track the current segment's length and speed sum; for each computer add one to the length and its speed to the sum; when both conditions hold, count a network and reset both to zero; print the count at the end. The speed sum can reach about 2 * 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAccumulate the computers not yet used from left to right; as soon as the current contiguous segment first satisfies both the length and the speed requirement, make it a network right away and continue scanning.\n\n## Correctness\n\nNon-negative speeds guarantee that, from a given start, the first (shortest) qualifying segment ends no later than any qualifying segment containing that start. For the first network of any optimal partition, skip the unused computers before its start and replace it by the shortest qualifying segment starting at the current point; this does not delay its end, so it does not reduce the number of networks available afterwards. Induction on the remaining suffix shows the greedy is optimal.\n\n## Complexity\n\nTime O(n), extra space O(1)."
+}

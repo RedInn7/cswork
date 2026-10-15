@@ -1,0 +1,21 @@
+{
+  "id": "oa-adobe-2",
+  "packageChecksum": "5d97a4b8abbb5ee0216090e59f8832d6cd62562fd6ae8f274fc6e4c0cc5b5414",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n, k;\n    cin >> n >> k;\n    vector<long long> buckets(101, 0);\n    for (long long i = 0; i < n; i++) {\n        int v;\n        cin >> v;\n        buckets[v]++;\n    }\n    // Rank of a score = 1 + players with a strictly higher score; score 0 is never promoted.\n    long long higher = 0, answer = 0;\n    for (int score = 100; score >= 1; score--) {\n        if (higher + 1 <= k) answer += buckets[score];\n        higher += buckets[score];\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "da251427028f1bbb35acd349cfb086130e9b5055853a3499dbeda14a392613b8"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        long n = nextLong(), k = nextLong();\n        long[] buckets = new long[101];\n        for (long i = 0; i < n; i++) buckets[(int) nextLong()]++;\n        // Rank of a score = 1 + players with a strictly higher score; score 0 is never promoted.\n        long higher = 0, answer = 0;\n        for (int score = 100; score >= 1; score--) {\n            if (higher + 1 <= k) answer += buckets[score];\n            higher += buckets[score];\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "a542b30e63e6c83c338a41ae6fcedc0fa0b8f1e4c1553bdc11b1cbad0e805daa"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn, k := nextInt(), nextInt()\n\tvar buckets [101]int64\n\tfor i := int64(0); i < n; i++ {\n\t\tbuckets[nextInt()]++\n\t}\n\t// Rank of a score = 1 + players with a strictly higher score; score 0 is never promoted.\n\thigher, answer := int64(0), int64(0)\n\tfor score := 100; score >= 1; score-- {\n\t\tif higher+1 <= k {\n\t\t\tanswer += buckets[score]\n\t\t}\n\t\thigher += buckets[score]\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "0b29e41c84f8cb6a0a85cfbc4b2ba2d9d8650b3cd0485846bc654b598eda3e26"
+    }
+  ]
+}

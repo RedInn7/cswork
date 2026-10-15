@@ -1,0 +1,19 @@
+{
+  "id": "oa-akuna-capital-9",
+  "packageChecksum": "2adc659c52e19982b4809b89221910866f665df34ec8f91aa05d4fe155d6e2d7",
+  "sourceContentHash": "f77bc23be69890818e7ca17f966f2a2448823eeb6cfcad1c7e466eda6d3ba1aa",
+  "editorialSha256": "36f65b1084eb65483fa2e91883a6bd24cf9d5a5d04f39e05456c54ecbe736504",
+  "hints": {
+    "zh": [
+      "对每个左侧元素 a[j]，不论它比 a[i] 大还是小，规则给出的贡献都恰好是 a[i]−a[j]，相等时为 0。",
+      "于是 counter[i]=Σ_{j<i}(a[i]−a[j])=i×a[i]−(前 i 个元素之和)，只需维护前缀和即可 O(1) 求出每个位置。",
+      "从左到右遍历，维护 prefix 为已经扫过元素之和；对位置 i（从 0 开始）输出 i×a[i]−prefix，然后把 a[i] 加入 prefix；结果可达约 2×10^14，用 64 位整数；按原顺序空格分隔输出。"
+    ],
+    "en": [
+      "For every earlier element a[j], whether it is larger or smaller than a[i], the rule contributes exactly a[i] - a[j], which is 0 when they are equal.",
+      "So counter[i] = Σ over j < i of (a[i] - a[j]) = i * a[i] - (sum of the first i elements), and a running prefix sum gives each position in O(1).",
+      "Scan from left to right keeping prefix as the sum of the elements seen so far; for position i (0-based) output i * a[i] - prefix, then add a[i] to prefix. Values can reach about 2 * 10^14, so use 64-bit integers; print the results space-separated in the original order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor any earlier element a[j], its contribution is exactly a[i] - a[j] (0 when equal). Therefore counter[i] = i * a[i] - prefix sum.\n\n## Correctness\n\nIf a[j] > a[i], the rule contributes -|a[j] - a[i]| = a[i] - a[j]; if a[j] < a[i], it contributes |a[j] - a[i]| = a[i] - a[j]; when they are equal both are 0. Summing over j = 0..i-1 gives i * a[i] - Σa[j], and a running prefix sum outputs it exactly.\n\n## Complexity\n\nTime O(n), space O(n) (counting the output)."
+}

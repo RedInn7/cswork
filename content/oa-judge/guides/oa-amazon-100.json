@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-100",
+  "packageChecksum": "e22ed69ce303b8a92ffec5678e7995b0ae4bcabfa21633fc922703f34851bba4",
+  "sourceContentHash": "877ec8d7732aed7c503bbe5f4d2fef3fa190adfb49185841f9beff96d21c396b",
+  "editorialSha256": "1077e4a087afa58d34e9ee8ffb66a09b80c2325950ada9d1dd52f34fb29040fc",
+  "hints": {
+    "zh": [
+      "能购买第 v 卷的前提是已拥有所有更小的卷，所以已拥有的卷永远是 1..next−1 这样一个前缀，next 是最小的未购卷号。",
+      "每天到货后只需检查 next 是否已到货：到货就买下并继续看 next+1，直到遇到第一个还没到货的卷；没到货则更大的卷都不能买。",
+      "用布尔数组记录到货情况，next 从 1 开始；每天把当天卷号标记为到货，记下 start=next，然后 while next≤n 且已到货就 next++；若 start<next 输出 start..next−1，否则输出 −1；每卷最多被指针经过一次。"
+    ],
+    "en": [
+      "You can buy volume v only after owning every smaller volume, so the owned volumes always form a prefix 1..next-1, where next is the smallest volume not bought yet.",
+      "After each day's arrival you only need to check whether next has arrived: if so, buy it and look at next + 1, until the first volume that has not arrived; if not, no larger volume can be bought.",
+      "Keep a boolean array of arrivals and next starting at 1; each day mark that day's volume as arrived, remember start = next, then increase next while next <= n and it has arrived; if start < next print start..next-1, otherwise print -1. The pointer passes each volume at most once."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA boolean array records which volumes have arrived, and next keeps the smallest volume not yet bought. Each day, after marking the new volume, buy consecutively from next all volumes that have arrived.\n\n## Proof of correctness\n\nThe volumes owned are always 1..next-1. If next has not arrived, every larger volume lacks a prerequisite and cannot be bought; if next has arrived it should be bought and the scan continues until the first missing volume. The pointer passes each volume once.\n\n## Complexity\n\nTime O(n), space O(n) (including the output)."
+}

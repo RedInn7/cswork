@@ -1,0 +1,21 @@
+{
+  "id": "oa-akuna-capital-2",
+  "packageChecksum": "5ba4db16e755501b447a8daf66448182f3b451b6927dfe61a34c48b82a14c07f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n), left(n), right(n);\n    for (auto &v : a) cin >> v;\n    // Best non-empty subarray sum inside every prefix and every suffix (Kadane both ways).\n    long long cur = a[0], best = a[0];\n    left[0] = best;\n    for (int i = 1; i < n; i++) {\n        cur = max(a[i], cur + a[i]);\n        best = max(best, cur);\n        left[i] = best;\n    }\n    cur = best = a[n - 1];\n    right[n - 1] = best;\n    for (int i = n - 2; i >= 0; i--) {\n        cur = max(a[i], cur + a[i]);\n        best = max(best, cur);\n        right[i] = best;\n    }\n    long long answer = LLONG_MIN;\n    for (int i = 0; i + 1 < n; i++) answer = max(answer, left[i] + right[i + 1]);\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "bb7dceebd91ce417fdb6542e99fdb01be8b2804e487a472f72ca7ed10e746801"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        long[] a = new long[n], left = new long[n], right = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        // Best non-empty subarray sum inside every prefix and every suffix (Kadane both ways).\n        long cur = a[0], best = a[0];\n        left[0] = best;\n        for (int i = 1; i < n; i++) {\n            cur = Math.max(a[i], cur + a[i]);\n            best = Math.max(best, cur);\n            left[i] = best;\n        }\n        cur = best = a[n - 1];\n        right[n - 1] = best;\n        for (int i = n - 2; i >= 0; i--) {\n            cur = Math.max(a[i], cur + a[i]);\n            best = Math.max(best, cur);\n            right[i] = best;\n        }\n        long answer = Long.MIN_VALUE;\n        for (int i = 0; i + 1 < n; i++) answer = Math.max(answer, left[i] + right[i + 1]);\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "75ac83158d4a9443a2b48983b2326e4f18546c20ad5b7f4a6b697ca9b878ee9c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"math\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\ta, left, right := make([]int64, n), make([]int64, n), make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\t// Best non-empty subarray sum inside every prefix and every suffix (Kadane both ways).\n\tcur, best := a[0], a[0]\n\tleft[0] = best\n\tfor i := 1; i < n; i++ {\n\t\tcur = max(a[i], cur+a[i])\n\t\tbest = max(best, cur)\n\t\tleft[i] = best\n\t}\n\tcur, best = a[n-1], a[n-1]\n\tright[n-1] = best\n\tfor i := n - 2; i >= 0; i-- {\n\t\tcur = max(a[i], cur+a[i])\n\t\tbest = max(best, cur)\n\t\tright[i] = best\n\t}\n\tanswer := int64(math.MinInt64)\n\tfor i := 0; i+1 < n; i++ {\n\t\tanswer = max(answer, left[i]+right[i+1])\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "4b0ede580dab47a9b1ae617f787c8649ab8ed16ebf2dbbb38885120a641a7ec0"
+    }
+  ]
+}

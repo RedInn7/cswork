@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-107",
+  "packageChecksum": "b3e2d1a73d11746e83fae45e470c2ae3fb6f5b174d7b473154890bfc5db27ff5",
+  "sourceContentHash": "66029a4121fabe31964103babe5bc1e7c38fe5b4564f8e11edbcb6d60260a389",
+  "editorialSha256": "fd07aa19eb0f9d01e6a1db3204e7c07ff098b8403c5a567fdb20eddf925c0d6d",
+  "hints": {
+    "zh": [
+      "车辆位置非递减，只能向右走，所以每辆车会停在它右侧（含同位置）最近的那座加油站。加了两座站后，车辆被分成三段，每段对应同一座站。",
+      "每段的总距离等于“车辆数×站位置−这些车位置之和”，用前缀和 O(1) 求出。注意和加油站同位置的车要原地加油，所以要先把下标扩展到相同坐标的最右端。",
+      "预处理前缀和，以及 end[j]：与第 j 辆车同坐标的最后一辆车的下标加一；每个查询取 A=end[a−1]、B=end[b−1]，答案为 A·p[A−1]+(B−A)·p[B−1]+(n−B)·p[n−1]−总位置和；结果可达约 2×10^14，用 64 位整数，按查询顺序输出。"
+    ],
+    "en": [
+      "Positions are non-decreasing and cars only move right, so each car stops at the nearest station to its right (including its own position). With the two added stations the cars split into three segments, each going to one station.",
+      "The distance of a segment is (number of cars) * (station position) - (sum of their positions), which prefix sums give in O(1). Cars at the same position as a station refuel in place, so first extend each index to the last car sharing its coordinate.",
+      "Precompute prefix sums and end[j]: one past the index of the last car with the same coordinate as car j; for each query let A = end[a-1] and B = end[b-1]; the answer is A*p[A-1] + (B-A)*p[B-1] + (n-B)*p[n-1] - (sum of all positions). Results can reach about 2 * 10^14, so use 64-bit integers; print the answers in query order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrecompute, for each position, the rightmost end A, B of equal coordinates, and use prefix sums to split the cars into [0, A), [A, B) and [B, n), which go to the two added stations and the last station respectively; each segment's distance is count * station position - sum of positions in the range.\n\n## Proof of correctness\n\nExtending to the rightmost car with the same coordinate first guarantees that all cars at that coordinate refuel in place and are not wrongly sent to the next station. Sorted order guarantees that, after extension, each segment's assigned station is the nearest station ahead of it. The three segments cover all cars without overlap, and prefix sums give the totals exactly.\n\n## Complexity\n\nPreprocessing O(n), O(1) per query, space O(n + q)."
+}

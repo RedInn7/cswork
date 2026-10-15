@@ -1,0 +1,19 @@
+{
+  "id": "oa-akuna-capital-24",
+  "packageChecksum": "461e4f5f643776b1187922f05447a1630e9c846966484fec96a039e308dc94b8",
+  "sourceContentHash": "dc47e4e8f09862a89334b96052e38777304b325febc083f198db783cd4606020",
+  "editorialSha256": "88b693d5cb566f39e67cc596bd4acf4ca4ad21f7acb9d472d5d865af4ac09735",
+  "hints": {
+    "zh": [
+      "网格没有障碍，行方向的移动和列方向的移动互不影响，可以分开计算代价。",
+      "从 initR 到 finalR，中间的每条行间边都至少要跨一次，多跨只会多花非负代价；列方向同理。所以答案是两段代价之和。",
+      "读入行间代价和列间代价；把下标区间 [min(initR,finalR), max(initR,finalR)) 内的行代价相加，再把 [min(initC,finalC), max(initC,finalC)) 内的列代价相加；两者之和即答案，用 64 位整数。"
+    ],
+    "en": [
+      "The grid has no obstacles, so vertical and horizontal moves do not affect each other and their costs can be computed separately.",
+      "Going from initR to finalR crosses every row edge in between at least once, and extra crossings only add non-negative cost; columns work the same way. So the answer is the sum of the two parts.",
+      "Read the row-edge costs and the column-edge costs; add the row costs with indices in [min(initR, finalR), max(initR, finalR)) and the column costs with indices in [min(initC, finalC), max(initC, finalC)); their sum is the answer, kept in a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA change of row coordinate must cross all row edges between initR and finalR, and likewise for columns; compute the cost of each of the two ranges and add them.\n\n## Correctness\n\nEach vertical move changes the row coordinate by one, so any legal path from initR to finalR must cross every intermediate row edge at least once; it crosses each an odd number of times, and extra round trips have non-negative cost. Moving directly between adjacent coordinates crosses each edge exactly once, reaching the lower bound for row edges. Columns work the same way, and the two directions can be done one after the other independently, so the sum of the two costs is the global minimum.\n\n## Complexity\n\nTime O(|finalR - initR| + |finalC - initC|), extra space O(1) (not counting the input)."
+}

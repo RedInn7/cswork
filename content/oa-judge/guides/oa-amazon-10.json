@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-10",
+  "packageChecksum": "47fe4d10e1a8fcbfcb58cd5c2ad38fc2e978a26f86d34497bf55edc4d9fbf470",
+  "sourceContentHash": "fc122016ac600a669bcc16d30e1db23a5e1c6ea67fbee9caf19637ce00f0ae13",
+  "editorialSha256": "c4c5aa45e76c1fa5773f6e3345bbc16ab4267af2fa8182075dca8c1ddcfa3560",
+  "hints": {
+    "zh": [
+      "每一轮把相邻两位相加，这正是帕斯卡三角的递推：最后剩下的两位分别是原数组前 n−1 位和后 n−1 位以二项式系数 C(n−2,i) 为权的加权和（模 10）。",
+      "n 可达 10^5，不能直接算二项式系数。模 10 可以拆成模 2 和模 5：两者都是素数，用 Lucas 定理逐位计算，再用中国剩余定理合成 0..9 中唯一的余数。",
+      "令 N=n−2；对每个 i，模 2 的系数为 1 当且仅当 i 的二进制位是 N 的子集；模 5 的系数是 N 和 i 的五进制各位的小组合数之积（某位 i 大于 N 则为 0）；取与模 2 结果奇偶一致的 c 或 c+5 作为模 10 系数；分别累加 c·a[i] 与 c·a[i+1] 模 10，输出这两位数字（保留前导零）。"
+    ],
+    "en": [
+      "Adding adjacent digits each round is exactly Pascal's triangle recurrence: the final two digits are the sums of the first n-1 and the last n-1 digits weighted by the binomial coefficients C(n-2, i), modulo 10.",
+      "n can reach 10^5, so the binomial coefficients cannot be computed directly. Split modulo 10 into modulo 2 and modulo 5: both are primes, so Lucas' theorem gives each digit by digit, and the Chinese remainder theorem combines them into the unique residue in 0..9.",
+      "Let N = n - 2; for each i, the coefficient mod 2 is 1 exactly when the bits of i are a subset of the bits of N; mod 5 it is the product of the small binomials of the base-5 digits of N and i (0 if some digit of i exceeds N's); take c or c + 5, whichever matches the parity of the mod 2 value, as the coefficient mod 10; accumulate c*a[i] and c*a[i+1] modulo 10 and print the two digits (keeping a leading zero)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe two final digits are the weighted sums of two adjacent windows of the digits, weighted by the binomial coefficients of row n-2. Compute these coefficients mod 2 and mod 5 with Lucas' theorem and combine them into the residue mod 10.\n\n## Proof of correctness\n\nEach round of adding neighbours follows Pascal's recurrence, so the final weights are C(n-2, i). For a prime p, decomposing the generating function (1 + x)^N in base p modulo p gives Lucas' digit-by-digit product formula. The residues mod 2 and mod 5 determine a unique residue mod 10, so computing term by term recovers the final two digits.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

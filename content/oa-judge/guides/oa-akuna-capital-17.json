@@ -1,0 +1,19 @@
+{
+  "id": "oa-akuna-capital-17",
+  "packageChecksum": "a84b694d04404a505c43494656551923d84f76cea7b836223ddd2f31bbfd50d1",
+  "sourceContentHash": "0e27fc5d248b1be55f826b591a4f448572a52555c60b0e5fd7b758a4fe180a67",
+  "editorialSha256": "06e9e1e20d4bee780f669c47532912a2c1c57f5b1c01d10fa2c1cbd70686caa4",
+  "hints": {
+    "zh": [
+      "任何合法子串都包含连续的 k 个 1；把它首个 1 之前和最后一个 1 之后的字符去掉，仍然合法且更短。",
+      "所以最短的候选一定恰好从某个 1 开始、在它之后第 k 个 1 结束。只要枚举所有“连续 k 个 1”的窗口即可。",
+      "记录所有 1 的下标；对每个 i，取从第 i 个 1 到第 i+k−1 个 1 的子串；先比较长度，长度相同比较字典序，保留最小者；输出它。题面保证 1 的个数至少为 k。"
+    ],
+    "en": [
+      "Every valid substring contains k consecutive ones; trimming the characters before its first one and after its last one keeps it valid and makes it shorter.",
+      "So the shortest candidates start exactly at some one and end at the k-th one from there; it is enough to enumerate every window of k consecutive ones.",
+      "Record the indices of all ones; for each i take the substring from the i-th one to the (i+k-1)-th one; compare first by length and then lexicographically, keeping the smallest; print it. The statement guarantees there are at least k ones."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate every group of k consecutive ones by their indices in the string, take the shortest substring covering those ones, and compare by length and then lexicographically.\n\n## Correctness\n\nEvery valid substring contains some k consecutive ones; removing the characters before its first one and after its last one keeps it valid and makes it shorter, so the shortest candidates start exactly at some first one and end at the k-th one. Going through every window of k consecutive ones covers all shortest candidates, and taking the minimum by length and then lexicographic order is correct.\n\n## Complexity\n\nLet the string length be n and the number of ones q. Time O(q), space O(n) (storing the positions of the ones and the answer)."
+}
