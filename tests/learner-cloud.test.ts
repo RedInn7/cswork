@@ -181,7 +181,7 @@ void test('the public profile is off by default, names nobody and counts only pu
     // A course exercise a guest could open still never counts on a profile.
     ['course-x', { difficulty: '简单' }],
   ]);
-  assert.deepEqual(await ok(me, 'GET', 'profile'), { profile: null });
+  assert.deepEqual(await ok(me, 'GET', 'profile'), { profile: null, badges: [] });
   assert.equal(await status(me, 'POST', 'profile', { handle: 'lists', visible: true }), 400, 'reserved');
   assert.equal(await status(me, 'POST', 'profile', { handle: 'a', visible: true }), 400);
   const saved = await ok<{ profile: { handle: string; visible: boolean; indexable: boolean } }>(me, 'POST', 'profile', {
@@ -190,7 +190,14 @@ void test('the public profile is off by default, names nobody and counts only pu
     indexable: true,
     bio: 'grinding',
   });
-  assert.deepEqual(saved.profile, { handle: 'line-rider', visible: false, indexable: false, showContest: false, bio: 'grinding' });
+  assert.deepEqual(saved.profile, {
+    handle: 'line-rider',
+    visible: false,
+    indexable: false,
+    showContest: false,
+    bio: 'grinding',
+    featuredBadge: null,
+  });
   assert.equal(publicProfile('line-rider', catalogue), null, 'not public until switched on');
   assert.equal(await status(other, 'POST', 'profile', { handle: 'line-rider', visible: true }), 409);
   assert.equal(await status(fresh, 'POST', 'profile', { handle: 'fresh-one', visible: true }), 403, 'verify first');
@@ -209,6 +216,37 @@ void test('the public profile is off by default, names nobody and counts only pu
   assert.equal(JSON.stringify(page).includes('me@example.test'), false);
   assert.equal(JSON.stringify(page).includes('cloud-me'), false, 'no user id either');
   assert.equal(publicProfile('nobody-here', catalogue), null);
+});
+
+void test('a featured badge must be earned to save, stays until changed, and drops off once lost', async () => {
+  const db = sqlite();
+  // Every daily problem of February 2026, from the points ledger: the month badge.
+  for (let d = 1; d <= 28; d++)
+    db.prepare(
+      "INSERT INTO point_ledger(id,user_id,delta,reason,ref_id,created_at) VALUES(?,?,20,'daily',?,1)",
+    ).run(`feat-${d}`, other.id, `2026-02-${String(d).padStart(2, '0')}`);
+  const profile = { handle: 'month-rider', visible: true };
+  const first = await ok<{ badges: { id: string }[] }>(other, 'POST', 'profile', profile);
+  assert.ok(first.badges.some((b) => b.id === 'daily:2026-02'), 'a save sends the picker its badges');
+  const mine = await ok<{ badges: { id: string }[] }>(other, 'GET', 'profile');
+  assert.ok(mine.badges.some((b) => b.id === 'daily:2026-02'));
+  assert.equal(await status(other, 'POST', 'profile', { ...profile, featuredBadge: 'daily:2026-03' }), 400);
+  assert.equal(await status(other, 'POST', 'profile', { ...profile, featuredBadge: 'domain:line' }), 400);
+  await ok(other, 'POST', 'profile', { ...profile, featuredBadge: 'daily:2026-02' });
+  // A save without the field keeps it.
+  const kept = await ok<{ profile: { featuredBadge: string | null } }>(other, 'POST', 'profile', { ...profile, bio: 'daily' });
+  assert.equal(kept.profile.featuredBadge, 'daily:2026-02');
+  const catalogue = new Map([['lc-1', { difficulty: '简单' }]]);
+  assert.deepEqual(publicProfile('month-rider', catalogue)?.featured, {
+    id: 'daily:2026-02',
+    group: 'daily',
+    zh: '2026 年 2 月每日一题全勤',
+    en: 'Daily problem every day, Feb 2026',
+  });
+  db.prepare("DELETE FROM point_ledger WHERE id='feat-28'").run();
+  assert.equal(publicProfile('month-rider', catalogue)?.featured, null, 'no longer earned');
+  const cleared = await ok<{ profile: { featuredBadge: string | null } }>(other, 'POST', 'profile', { ...profile, featuredBadge: null });
+  assert.equal(cleared.profile.featuredBadge, null);
 });
 
 void test('asked reports: verified learners, one per problem and month, counted by people over six months', async () => {

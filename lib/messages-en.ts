@@ -231,6 +231,7 @@ const EN: Record<string, string> = {
   题单数量已达上限: "You've reached the limit for lists",
   '题单最多 500 道题': 'A list can hold at most 500 problems',
   这个主页名已被占用: 'That handle is taken',
+  这枚徽章还没有获得: 'You haven’t earned that badge yet',
   面试月份无效: 'Invalid interview month',
   没有这家公司: 'Unknown company',
   今天的报告次数已达上限: "You've reached today's limit for reports",

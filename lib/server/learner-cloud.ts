@@ -2,6 +2,7 @@ import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { achievements, longestStreak } from '@/lib/achievements';
+import { classicListProgress } from '@/lib/classic-lists';
 import { isChannel, REPORT_CLEARED, REPORTS_HIDE } from '@/lib/community';
 import { curatedByNumber, curatedEntries } from '@/lib/ling-curated';
 import { reportWindow, slotOf, type MockSession, type Slot } from '@/lib/mock-oa';
@@ -15,6 +16,7 @@ import { HttpError, json, limit, limitReader, requirePerson } from './http';
 import { mockReport } from './mock-oa';
 import { readJson } from './my-practice';
 import { canSeeProblem, listProblemSummaries } from './oj-problems';
+import { dailyDays } from './points';
 import { visibleTarget } from './solution-posts';
 
 /**
@@ -578,6 +580,8 @@ const profileInput = z
     indexable: z.boolean().default(false),
     showContest: z.boolean().default(false),
     bio: z.string().trim().max(160).default(''),
+    // Absent keeps the current one; null takes it down.
+    featuredBadge: z.string().max(200).nullable().optional(),
   })
   .strict();
 type ProfileRow = {
@@ -587,40 +591,70 @@ type ProfileRow = {
   indexable: number;
   show_contest: number;
   bio: string;
+  featured_badge: string | null;
 };
 function myProfile(userId: string) {
   const r = sqlite()
     .prepare('SELECT * FROM user_profiles WHERE user_id=?')
     .get(userId) as ProfileRow | undefined;
   return r
-    ? { handle: r.handle, visible: !!r.visible, indexable: !!r.indexable, showContest: !!r.show_contest, bio: r.bio }
+    ? {
+        handle: r.handle,
+        visible: !!r.visible,
+        indexable: !!r.indexable,
+        showContest: !!r.show_contest,
+        bio: r.bio,
+        featuredBadge: r.featured_badge,
+      }
     : null;
+}
+/** The badges this learner may feature: those their public page would show (contest ones when shown). */
+async function featurable(userId: string, showContest: boolean) {
+  return profileBadges(userId, await publicCatalogue(), showContest ? ratingHistory(userId) : []);
 }
 async function handleProfile(request: Request, p: Person) {
   if (request.method === 'GET') {
     await limit(p, 'profile-read', 60);
-    return json({ profile: myProfile(p.id) });
+    const profile = myProfile(p.id);
+    return json({ profile, badges: profile ? await featurable(p.id, profile.showContest) : [] });
   }
   if (request.method !== 'POST') throw new HttpError(404, '接口不存在');
   await limit(p, 'profile-write', 20);
   const d = profileInput.parse(await readJson(request, 2000));
   if (d.visible) requireVerified(p);
+  const featured = d.featuredBadge === undefined ? (myProfile(p.id)?.featuredBadge ?? null) : d.featuredBadge;
+  // Checked on every save: a badge given up since (or a contest one with the curve hidden) is refused.
+  // Sent back too, so a first save or a shown curve fills the picker without a reload.
+  const badges = await featurable(p.id, d.visible && d.showContest);
+  if (featured && !badges.some((b) => b.id === featured))
+    throw new HttpError(400, '这枚徽章还没有获得');
   const now = Date.now();
   try {
     sqlite()
       .prepare(
-        `INSERT INTO user_profiles(user_id,handle,visible,indexable,show_contest,bio,created_at,updated_at)
-        VALUES(?,?,?,?,?,?,?,?)
+        `INSERT INTO user_profiles(user_id,handle,visible,indexable,show_contest,bio,featured_badge,created_at,updated_at)
+        VALUES(?,?,?,?,?,?,?,?,?)
         ON CONFLICT(user_id) DO UPDATE SET handle=excluded.handle,visible=excluded.visible,
-          indexable=excluded.indexable,show_contest=excluded.show_contest,bio=excluded.bio,updated_at=excluded.updated_at`,
+          indexable=excluded.indexable,show_contest=excluded.show_contest,bio=excluded.bio,
+          featured_badge=excluded.featured_badge,updated_at=excluded.updated_at`,
       )
-      .run(p.id, d.handle, +d.visible, +(d.visible && d.indexable), +(d.visible && d.showContest), d.bio, now, now);
+      .run(
+        p.id,
+        d.handle,
+        +d.visible,
+        +(d.visible && d.indexable),
+        +(d.visible && d.showContest),
+        d.bio,
+        featured,
+        now,
+        now,
+      );
   } catch (error) {
     if ((error as { code?: string }).code === 'SQLITE_CONSTRAINT_UNIQUE')
       throw new HttpError(409, '这个主页名已被占用');
     throw error;
   }
-  return json({ profile: myProfile(p.id) });
+  return json({ profile: myProfile(p.id), badges });
 }
 
 /** What /u/<handle> needs from the catalogue: the published problems anyone can open. */
@@ -735,6 +769,7 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
   // Opt-in: each weekly's rank and rating match one row of that weekly's public scoreboard.
   const contest = profile.show_contest ? ratingHistory(profile.user_id) : [];
   const duel = profile.show_contest ? duelRecord(profile.user_id) : null;
+  const badges = profileBadges(profile.user_id, catalogue, contest);
   return {
     handle: profile.handle,
     bio: profile.bio,
@@ -753,8 +788,9 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     contest: contest.map(({ week, kind, after, rank, entrants }) => ({ week, kind, after, rank, entrants })),
     // Ranked duels (lib/server/duels.ts), under the same opt-in; null before the first.
     duel: duel?.played ? duel : null,
-    // The contest badges are the weekly's (lib/achievements.ts): starters don't count toward them.
-    badges: profileBadges(profile.user_id, catalogue, stops, contest.filter((c) => c.kind === 'weekly')),
+    badges,
+    // Shown while still earned: a badge lost since (a hidden contest curve) just disappears.
+    featured: badges.find((b) => b.id === profile.featured_badge) ?? null,
     posts: {
       items: posts.slice(0, 10).map((post) => ({
         id: post.id,
@@ -773,21 +809,23 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
 
 /**
  * The badges a profile has earned, from the same inputs as My progress: Line 500 stops, every AC
- * (shown problems only), OA companies of the public catalogue and the stored mock OAs. Days and
- * streaks fall on the server's local dates, which may differ from the learner's by one near midnight.
+ * (shown problems only), OA companies of the public catalogue, the stored mock OAs, the daily
+ * problems in the points ledger, classic lists and solved counts per domain. Days and streaks fall
+ * on the server's local dates, which may differ from the learner's by one near midnight.
  */
-function profileBadges(
-  userId: string,
-  catalogue: PublicCatalogue,
-  stops: ReadonlyMap<string, number>,
-  contest: ReturnType<typeof ratingHistory> = [],
-) {
+function profileBadges(userId: string, catalogue: PublicCatalogue, contest: ReturnType<typeof ratingHistory> = []) {
   const ac = (
     sqlite()
       .prepare(`SELECT problem_id AS id,created_at AS at FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'`)
       .all(userId) as { id: string; at: number }[]
   ).filter((s) => catalogue.has(s.id));
   const solved = new Set(ac.map((s) => s.id));
+  const stops = new Map<string, number>();
+  for (const id of solved) {
+    const stop = curatedByNumber.get(Number(/^lc-(\d+)$/.exec(id)?.[1]))?.sectionSlug;
+    if (stop) stops.set(stop, (stops.get(stop) ?? 0) + 1);
+  }
+  const count = (prefix: string) => [...solved].filter((id) => id.startsWith(prefix)).length;
   const names = new Map(reportCompanies().map((c) => [c.slug, c.name]));
   const companies = new Map<string, { slug: string; name: string; solved: number; total: number }>();
   for (const id of catalogue.keys()) {
@@ -805,7 +843,11 @@ function profileBadges(
     acTimes: ac.map((s) => s.at),
     companies: [...companies.values()],
     perfectMock: mockHistory(userId, 1000).some((m) => !!m.result && m.result.score >= m.result.max),
-    contests: contest,
+    // The contest badges are the weekly's (lib/achievements.ts): starters don't count toward them.
+    contests: contest.filter((c) => c.kind === 'weekly'),
+    dailyDays: dailyDays(userId),
+    lists: classicListProgress(solved, (id) => catalogue.has(id)),
+    domains: { line: [...stops.values()].reduce((a, b) => a + b, 0), sql: count('sql-'), oa: count('oa-') },
   }).flatMap((b) => (b.earned ? [{ id: b.id, group: b.group, zh: b.zh, en: b.en }] : []));
 }
 

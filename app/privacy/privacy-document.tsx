@@ -53,7 +53,7 @@ export function PrivacyDocument() {
                 为支持续播、练习和教学，平台保存课程权限、视频播放位置、完成进度、笔记与收藏，以及你提交的代码、判题结果、作业链接和评审记录。课程更新与工单回复也会产生站内通知及已读记录。
               </p>
               <p>
-                登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，以及给面经和面试题的点赞也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，不显示昵称和邮箱。面试报告和点赞只以人数汇总展示，不公开报告人和点赞人。
+                登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，以及给面经和面试题的点赞也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。面试报告和点赞只以人数汇总展示，不公开报告人和点赞人。
               </p>
               <p>
                 参加比赛时，计分板只显示你报名时填写的比赛昵称；周赛、入门赛和 1v1 排位的 rating 与胜负记录保存在你的账号里，只有你在公开主页上打开「展示比赛记录」后才会出现在主页上。排位匹配期间，平台暂存你的比赛昵称、对战 rating 和排队时间，匹配成功或取消时删除，离开页面后最迟 20 分钟内删除。报名时可以选择「赛后公开我的 AC 代码」（默认不勾选）：勾选后，比赛结束 15 分钟起，能打开该场比赛的登录用户可以看到你在比赛时间内每题首次通过的代码。计分板的「只看关注」只列出主页展示比赛记录的人。
@@ -107,7 +107,10 @@ export function PrivacyDocument() {
                 地址、设备或浏览器信息与有效期，用于账号安全和查看已登录设备；服务器也会产生访问、错误和管理操作记录，以排查故障和限制滥用。
               </p>
               <p>
-                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。
+                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传。
+              </p>
+              <p>
+                把网站安装到主屏后，浏览器会缓存离线提示页和网站自身的脚本、样式等构建文件，不缓存任何页面内容和个人数据；在账号设置里退出登录时，这些缓存会一并清空。
               </p>
               <p>
                 平台自己的服务器会记录基本的使用事件（访问的页面、来源网站的域名和推广链接里的 utm 标签、站内搜索词、登录方式、判题耗时与出错情况），用于运营统计。这部分统计不经过 Google，也不受下方 Google Analytics 选项的影响：浏览器本地存储里会保存一个随机生成的匿名访客编号，用来统计访客数；登录时事件会关联到你的账号。我们不记录 IP 地址和设备标识，这些记录保留 120 天。
@@ -243,9 +246,11 @@ export function PrivacyDocument() {
                 account. Lists are private until you make one
                 public, after which anyone with the link can view and copy it.
                 The public profile is off by default; when on, it shows only the
-                handle and bio you chose and your practice statistics, never
-                your name or email. Interview reports and upvotes are shown only
-                as counts of people; reporters and voters are never named.
+                handle and bio you chose, your practice statistics and the
+                badges they earn (including daily-problem months, and one badge
+                you may feature beside your handle), never your name or email.
+                Interview reports and upvotes are shown only as counts of
+                people; reporters and voters are never named.
               </p>
               <p>
                 In contests, scoreboards show only the contest name you enter
@@ -375,7 +380,14 @@ export function PrivacyDocument() {
                 browser. Signing out does not automatically clear all
                 local drafts. On a shared device, you can clear this site’s
                 stored data in your browser; this also clears local content that
-                has not been submitted yet.
+                has not been submitted yet. Dates you enter in the visa timeline
+                stay in the current browser and are never uploaded.
+              </p>
+              <p>
+                If you install the site to your home screen, the browser caches
+                the offline page and the site&apos;s own build files (scripts,
+                styles); it caches no page content and no personal data, and
+                signing out in account settings empties these caches.
               </p>
               <p>
                 The platform&apos;s own server records basic usage events (pages

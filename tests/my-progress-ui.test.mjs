@@ -65,8 +65,19 @@ test('progress page lists history, mistakes, reviews due today and the learner m
   ];
   const searches = [];
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = async (url) => {
+  const profile = { handle: 'me', visible: true, indexable: false, showContest: false, bio: '', featuredBadge: null };
+  const featured = [];
+  globalThis.fetch = async (url, init = {}) => {
     if (url.endsWith('/oj/history')) return Response.json({ items: history });
+    // Every daily problem of February 2026, from the points ledger.
+    if (url.endsWith('/oj/points/daily'))
+      return Response.json({ days: Array.from({ length: 28 }, (_, i) => `2026-02-${String(i + 1).padStart(2, '0')}`) });
+    if (url.endsWith('/oj/profile') && init.method === 'POST') {
+      const body = JSON.parse(init.body);
+      featured.push(body.featuredBadge);
+      return Response.json({ profile: body });
+    }
+    if (url.endsWith('/oj/profile')) return Response.json({ profile, badges: [{ id: 'daily:2026-02' }] });
     if (url.endsWith('/oj/marks'))
       return Response.json({
         items: [
@@ -146,8 +157,8 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     assert.equal(document.querySelector('h1').textContent, 'My progress');
     assert.deepEqual(
       [...document.querySelectorAll('[role="tab"] .progress-count')].map((n) => n.textContent),
-      ['2', '2', '1', '1', '1', '1', '1'],
-      'history, mistakes, due, starred (problems only), redo, notes, badges earned',
+      ['2', '2', '1', '1', '1', '1', '2'],
+      'history, mistakes, due, starred (problems only), redo, notes, badges earned (a stop and a month)',
     );
     assert.deepEqual(titles(), ['Acme OA', '1. Two Sum']);
     assert.ok(!!document.querySelector('.progress-row .study-star'), 'starred rows show the star');
@@ -219,10 +230,27 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     assert.match(stops[0].textContent, /1 of 2 solved/);
     assert.match(stops[1].textContent, /Hashing, cleared/);
     assert.match(document.querySelector('.badge-board-head p').textContent, /1 of 2 stops cleared/);
-    const medals = [...document.querySelectorAll('.badge-medal')].map((m) => m.textContent);
+    const section = (id) => document.getElementById(id).parentElement;
+    const medals = [...section('badge-milestone-title').querySelectorAll('.badge-medal')].map((m) => m.textContent);
     assert.deepEqual(medals.slice(0, 3), ['77-day streak1 / 7', '3030-day streak1 / 30', '100100-day streak1 / 100']);
-    assert.equal(medals.length, 6, 'three streaks, two active-day counts and the perfect mock');
-    assert.match(document.querySelector('.badge-empty').textContent, /3\+ problems/);
+    assert.equal(medals.length, 9, 'three streaks, two active-day counts, the perfect mock and three domain stars');
+    // Line 500 counts the stops' solves: 2 of the 10 for its first star.
+    assert.equal(medals[6], 'Algorithms stars2 / 10');
+    assert.match(section('badge-company-title').querySelector('.badge-empty').textContent, /3\+ problems/);
+    assert.match(section('badge-list-title').querySelector('.badge-empty').textContent, /Blind 75/);
+    // The month badge, featurable because the public page would show it.
+    const month = section('badge-daily-title').querySelector('.badge-medal');
+    assert.match(month.textContent, /Daily problem every day, Feb 2026Unlocked/);
+    const feature = month.querySelector('.badge-feature');
+    assert.equal(feature.getAttribute('aria-pressed'), 'false');
+    assert.equal(section('badge-milestone-title').querySelector('.badge-feature'), null, 'nothing unearned');
+    await act(async () => feature.click());
+    await settle();
+    assert.deepEqual(featured, ['daily:2026-02']);
+    assert.equal(month.querySelector('.badge-feature').getAttribute('aria-pressed'), 'true');
+    await act(async () => month.querySelector('.badge-feature').click());
+    await settle();
+    assert.deepEqual(featured, ['daily:2026-02', null]);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

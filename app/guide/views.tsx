@@ -17,6 +17,8 @@ export const GUIDE_COPY = {
     chapters: '章节',
     review: '把简历贴进来，看看成果量化、动词和关键词还缺什么。',
     reviewCta: '试试简历 AI 点评',
+    visa: '国际学生：按项目结束日和 OPT 日期，排出 OPT、STEM OPT 和 H-1B 的窗口与截止日。',
+    visaCta: '身份时间线计算器',
     crumb: '求职指南',
   },
   en: {
@@ -31,6 +33,8 @@ export const GUIDE_COPY = {
     chapters: 'Chapters',
     review: 'Paste your resume to see what it lacks in impact, verbs and keywords.',
     reviewCta: 'Try the AI resume review',
+    visa: 'International students: lay out your OPT, STEM OPT and H-1B windows and deadlines from your own dates.',
+    visaCta: 'Visa timeline calculator',
     crumb: 'Career guide',
   },
 };
@@ -105,6 +109,12 @@ export function GuideIndexView({ zh }: { zh: boolean }) {
         <p>{c.review}</p>
         <a href="/career/resume">
           {c.reviewCta} <span aria-hidden="true">→</span>
+        </a>
+      </aside>
+      <aside className="guide-review-cta">
+        <p>{c.visa}</p>
+        <a href="/career/visa-timeline">
+          {c.visaCta} <span aria-hidden="true">→</span>
         </a>
       </aside>
     </>

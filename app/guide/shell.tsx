@@ -15,6 +15,9 @@ export function GuideShell({ zh, children }: { zh: boolean; children: React.Reac
           <Link href="/career/resume" prefetch={false}>
             {zh ? '简历 AI 点评' : 'AI resume review'}
           </Link>
+          <Link href="/career/visa-timeline" prefetch={false}>
+            {zh ? '身份时间线' : 'Visa timeline'}
+          </Link>
         </nav>
       </header>
       <main className="mock-public-main" id="main-content">

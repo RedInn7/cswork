@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
+import { monthDays } from '@/lib/achievements';
 import { beijingDate } from '@/lib/daily-problem';
 import { aiBonusLeft, aiEnabled, AI_BONUS_PER_DAY, AI_PACK_USES } from './ai-tutor';
 import type { Person } from './auth';
@@ -24,6 +25,9 @@ export const POINTS = {
   firstAcCap: 100,
   /** Every 7th day in a row with an AC. */
   streak: 50,
+  /** A Beijing month's dailyMonthDays-th daily problem, and again when every day of it is done. */
+  dailyMonth: 100,
+  dailyMonthDays: 25,
   streakDays: 7,
   /** An interview report approved; taken back if it is withdrawn, rejected or reported down. */
   experience: 100,
@@ -100,6 +104,28 @@ function streakTo(userId: string, day: string) {
   return n;
 }
 
+/**
+ * Beijing dates whose daily problem the learner solved on its day, oldest first, from `since`
+ * (a date or month prefix). The ledger is the record: days from before points began are not in it.
+ */
+export const dailyDays = (userId: string, since = '') =>
+  sqlite()
+    .prepare("SELECT ref_id FROM point_ledger WHERE user_id=? AND reason='daily' AND ref_id>=? ORDER BY ref_id")
+    .pluck()
+    .all(userId, since) as string[];
+
+/** The month bonuses after a daily problem on `day`: its 25th day, then the whole month. */
+function awardDailyMonth(userId: string, day: string, now: number) {
+  const month = day.slice(0, 7);
+  const done = dailyDays(userId, month).filter((d) => d.startsWith(month)).length;
+  let total = 0;
+  if (done >= POINTS.dailyMonthDays)
+    total += award(userId, 'daily-month', `${month}:${POINTS.dailyMonthDays}`, POINTS.dailyMonth, now);
+  if (done >= monthDays(month))
+    total += award(userId, 'daily-month', `${month}:all`, POINTS.dailyMonth, now);
+  return total;
+}
+
 /** ACs older than this earn nothing when their verdict is read: history from before points never pays. */
 export const AWARD_WINDOW = 2 * DAY;
 /** Points for one accepted formal submission; safe to call again for the same one. */
@@ -122,8 +148,11 @@ export async function awardAccepted(
   if (first === s.id)
     total += award(s.user_id, 'first-ac', s.problem_id, POINTS.firstAc, now, POINTS.firstAcCap);
   // The AC's own day's problem: a verdict read just past Beijing midnight still pays.
-  if ((await dailyIdOn(day, now).catch(() => null)) === s.problem_id)
-    total += award(s.user_id, 'daily', day, POINTS.daily, now);
+  if ((await dailyIdOn(day, now).catch(() => null)) === s.problem_id) {
+    const paid = award(s.user_id, 'daily', day, POINTS.daily, now);
+    total += paid;
+    if (paid) total += awardDailyMonth(s.user_id, day, now);
+  }
   if (newDay) {
     const run = streakTo(s.user_id, day);
     if (run && run % POINTS.streakDays === 0) total += award(s.user_id, 'streak', day, POINTS.streak, now);
@@ -180,7 +209,7 @@ export function spend(userId: string, item: 'freeze' | 'ai', now = Date.now()) {
 }
 
 // Refs shown back to the owner: dates and problem ids. Voters and report ids stay server-side.
-const SHOWN_REF = new Set(['ac-day', 'daily', 'first-ac', 'streak']);
+const SHOWN_REF = new Set(['ac-day', 'daily', 'daily-month', 'first-ac', 'streak']);
 function summary(userId: string, now = Date.now()) {
   const month = beijingDate(now).slice(0, 7);
   const bought = purchasedFreezes(userId);
@@ -206,11 +235,18 @@ function summary(userId: string, now = Date.now()) {
   };
 }
 
-/** GET oj/points: balance, recent ledger, prices; POST oj/points/redeem {item}. */
+/**
+ * GET oj/points: balance, recent ledger, prices; GET oj/points/daily: every daily problem solved
+ * (the month calendar and the month badges, which stay once won); POST oj/points/redeem {item}.
+ */
 export async function handlePoints(request: Request, p: Person, action?: string) {
   if (request.method === 'GET' && !action) {
     await limit(p, 'oj-read', 240);
     return json(summary(p.id));
+  }
+  if (request.method === 'GET' && action === 'daily') {
+    await limit(p, 'oj-read', 240);
+    return json({ days: dailyDays(p.id) });
   }
   if (request.method === 'POST' && action === 'redeem') {
     await limit(p, 'points-redeem', 20);

@@ -38,6 +38,13 @@ export function ProfileView({
       <section className="lists-public-hero learner-hero">
         <p className="lists-public-kicker">{t('学习者主页', 'Learner profile')}</p>
         <h1>@{profile.handle}</h1>
+        {profile.featured && (
+          <div className="learner-featured" data-group={profile.featured.group}>
+            <span aria-hidden="true">★</span>
+            <span className="sr-only">{t('展示的徽章：', 'Featured badge: ')}</span>
+            {zh ? profile.featured.zh : profile.featured.en}
+          </div>
+        )}
         {profile.bio && <p>{profile.bio}</p>}
         <div className="learner-social">
           <FollowButton handle={profile.handle} zh={zh} followers={profile.followers ?? 0}>

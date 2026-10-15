@@ -22,7 +22,7 @@ const { SITEMAP_STATIC_ENTRIES } = await import('../lib/seo.ts');
 
 const render = (element) => new JSDOM(`<main>${renderToStaticMarkup(element)}</main>`).window.document;
 const CJK = /[一-鿿]/;
-const SITE_LINKS = new Set(['/?view=stories', '/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/resume']);
+const SITE_LINKS = new Set(['/?view=stories', '/?view=mock', '/acm-io', '/flowchart', '/topics', '/mock-interview', '/career/resume', '/career/visa-timeline']);
 
 test('every chapter has a body in both languages, with matching sections and live site links', () => {
   assert.equal(GUIDE_CHAPTERS.length, 8);
@@ -65,6 +65,7 @@ test('the index lists every chapter, the season and the resume review, in both l
     assert.ok(links.every((a) => a.querySelector('.guide-no').getAttribute('aria-hidden') === 'true'));
     assert.equal(doc.querySelectorAll('.guide-season li').length, SEASON.length);
     assert.ok(doc.querySelector('.guide-review-cta a').getAttribute('href') === '/career/resume');
+    assert.ok(doc.querySelector('.guide-review-cta a[href="/career/visa-timeline"]') !== null);
     const [crumbs, list] = [...doc.querySelectorAll('script[type="application/ld+json"]')].map((s) => JSON.parse(s.textContent));
     assert.equal(crumbs['@type'], 'BreadcrumbList');
     assert.equal(list.itemListElement.length, 8);
@@ -97,7 +98,7 @@ test('a chapter renders its body with labelled scroll regions, a table of conten
 
 test('the sitemap lists the guide and the resume review', () => {
   const paths = new Set(SITEMAP_STATIC_ENTRIES.map((e) => e.path));
-  for (const path of ['/guide', '/career/resume', ...GUIDE_CHAPTERS.map((c) => `/guide/${c.slug}`)]) assert.ok(paths.has(path), path);
+  for (const path of ['/guide', '/career/resume', '/career/visa-timeline', ...GUIDE_CHAPTERS.map((c) => `/guide/${c.slug}`)]) assert.ok(paths.has(path), path);
 });
 
 test('the resume form waits for enough text, sends it once, and shows the review', async () => {

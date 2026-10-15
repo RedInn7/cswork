@@ -80,7 +80,8 @@ export const userListItems = sqliteTable(
 /**
  * Opt-in public page /u/<handle>: off by default, never shows the name or email. show_contest:
  * the weekly rating curve and contest badges, a second opt-in because each weekly's rank ties
- * the page to a contest name on the public scoreboards.
+ * the page to a contest name on the public scoreboards. featured_badge: a badge id (lib/achievements.ts)
+ * shown beside the handle while it is still earned.
  */
 export const userProfiles = sqliteTable('user_profiles', {
   userId: text('user_id').primaryKey(),
@@ -89,6 +90,7 @@ export const userProfiles = sqliteTable('user_profiles', {
   indexable: integer('indexable').notNull().default(0),
   showContest: integer('show_contest').notNull().default(0),
   bio: text('bio').notNull().default(''),
+  featuredBadge: text('featured_badge'),
   createdAt: integer('created_at').notNull(),
   updatedAt: integer('updated_at').notNull(),
 });

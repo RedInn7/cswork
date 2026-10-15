@@ -146,6 +146,29 @@
   color: #8a5a00;
   font-weight: 600;
 }
+.badge-feature {
+  grid-column: 2;
+  justify-self: start;
+  margin-top: 6px;
+  padding: 3px 10px;
+  border: 1px solid #c9d2dc;
+  border-radius: 999px;
+  background: #fff;
+  color: #27343e;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.badge-feature[aria-pressed='true'] {
+  border-color: var(--route-amber);
+  background: var(--route-amber);
+  color: var(--route-navy);
+}
+.badge-feature:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
 .badge-empty {
   margin: 0;
   font-size: 13px;
@@ -260,6 +283,19 @@
   }
   .dark .badge-medal[data-earned] .badge-medal-state {
     color: #e6b97e;
+  }
+  .dark .badge-feature {
+    border: 1px solid #30373f;
+    background: #191919;
+    color: #cbd9e4;
+  }
+  .dark .badge-feature[aria-pressed='true'] {
+    border-color: var(--route-amber);
+    background: var(--route-amber);
+    color: var(--route-navy);
+  }
+  .dark .badge-feature:focus-visible {
+    outline: 2px solid currentColor;
   }
   .dark .badge-empty {
     color: #b5bfc9;

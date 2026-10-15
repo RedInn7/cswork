@@ -6,9 +6,18 @@ import { useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { NativeSelect, NativeSelectOption } from './ui/native-select';
 import '@/app/learner-cloud.css';
 
-type Profile = { handle: string; visible: boolean; indexable: boolean; showContest: boolean; bio: string };
+type Profile = {
+  handle: string;
+  visible: boolean;
+  indexable: boolean;
+  showContest: boolean;
+  bio: string;
+  featuredBadge: string | null;
+};
+type Earned = { id: string; zh: string; en: string };
 const HANDLE = '^[a-z0-9][a-z0-9\\-]{1,28}[a-z0-9]$';
 
 /** Account settings: the opt-in public page /u/<handle>. Off until the learner turns it on. */
@@ -16,18 +25,33 @@ export function PublicProfileSettings() {
   const t = useT();
   const id = useId();
   const [saved, setSaved] = useState<Profile | null>(null);
-  const [form, setForm] = useState<Profile>({ handle: '', visible: false, indexable: false, showContest: false, bio: '' });
+  const [form, setForm] = useState<Profile>({
+    handle: '',
+    visible: false,
+    indexable: false,
+    showContest: false,
+    bio: '',
+    featuredBadge: null,
+  });
+  // Badges the page would show, from the server: the ones that may be featured.
+  const [badges, setBadges] = useState<Earned[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   useEffect(() => {
     let live = true;
-    api<{ profile: Profile | null }>('oj/profile').then(
-      ({ profile }) => {
+    api<{ profile: Profile | null; badges?: Earned[] }>('oj/profile').then(
+      ({ profile, badges }) => {
         if (!live) return;
         setSaved(profile);
-        if (profile) setForm(profile);
+        // A featured badge no longer earned would be refused on the next save: let it go.
+        if (profile)
+          setForm({
+            ...profile,
+            featuredBadge: badges?.some((b) => b.id === profile.featuredBadge) ? profile.featuredBadge : null,
+          });
+        setBadges(badges ?? []);
         setLoaded(true);
       },
       (e: Error) => live && setError(e.message),
@@ -56,15 +80,19 @@ export function PublicProfileSettings() {
           setBusy(true);
           setError('');
           setMessage('');
-          api<{ profile: Profile }>('oj/profile', {
+          api<{ profile: Profile; badges?: Earned[] }>('oj/profile', {
             ...form,
             handle: form.handle.trim().toLowerCase(),
             indexable: form.visible && form.indexable,
             showContest: form.visible && form.showContest,
+            // A contest badge goes with the hidden curve.
+            featuredBadge:
+              form.featuredBadge?.startsWith('contest:') && !(form.visible && form.showContest) ? null : form.featuredBadge,
           })
-            .then(({ profile }) => {
+            .then(({ profile, badges }) => {
               setSaved(profile);
               setForm(profile);
+              setBadges(badges ?? []);
               setMessage(profile.visible ? t('主页已公开。', 'Your profile is public.') : t('已保存，主页未公开。', 'Saved. Your profile is not public.'));
             }, (reason: Error) => setError(reason.message))
             .finally(() => setBusy(false));
@@ -133,6 +161,23 @@ export function PublicProfileSettings() {
             </small>
           </span>
         </label>
+        {badges.length > 0 && (
+          <>
+            <label htmlFor={`${id}-featured`}>{t('主页名旁展示的徽章（可选）', 'Badge beside your handle (optional)')}</label>
+            <NativeSelect
+              id={`${id}-featured`}
+              value={form.featuredBadge ?? ''}
+              onChange={(e) => setForm({ ...form, featuredBadge: e.target.value || null })}
+            >
+              <NativeSelectOption value="">{t('不展示', 'None')}</NativeSelectOption>
+              {badges.map((b) => (
+                <NativeSelectOption key={b.id} value={b.id}>
+                  {t(b.zh, b.en)}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
+          </>
+        )}
         <Button variant="outline" disabled={busy || !loaded || !form.handle.trim()}>
           {t('保存公开主页设置', 'Save profile settings')}
         </Button>

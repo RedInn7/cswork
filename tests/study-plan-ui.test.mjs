@@ -72,6 +72,8 @@ test('the sprint plan card saves a goal that drives today’s trip', async () =>
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (input) => {
     const url = typeof input === 'string' ? input : input.url;
+    // The daily problem month beside the calendar reads the points ledger once.
+    if (url.endsWith('oj/points/daily')) return Response.json({ days: [] });
     requests.push(url);
     if (url.includes('mock-oa/presets'))
       return Response.json({

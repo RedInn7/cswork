@@ -19,6 +19,7 @@ const REASONS: Record<string, [string, string]> = {
   'ac-day': ['当天首次通过', 'First AC of the day'],
   'first-ac': ['首次通过一道题', 'First AC of a problem'],
   daily: ['每日一题', 'Daily problem'],
+  'daily-month': ['每日一题月度奖励', 'Daily problem month bonus'],
   streak: ['连续打卡 7 天', '7-day streak'],
   experience: ['面经投稿', 'Interview report'],
   upvote: ['题解获赞', 'Upvote on your solution'],
@@ -87,6 +88,12 @@ export function PointsPanel({ english, onChange }: { english: boolean; onChange?
         <ul className="points-rules">
           <li>{t(`当天首次 AC +${rules.acDay}`, `First AC of the day +${rules.acDay}`)}</li>
           <li>{t(`每日一题 +${rules.daily}`, `Daily problem +${rules.daily}`)}</li>
+          <li>
+            {t(
+              `每日一题当月满 ${rules.dailyMonthDays} 天 +${rules.dailyMonth}，整月全勤再 +${rules.dailyMonth}`,
+              `${rules.dailyMonthDays} daily problems in a month +${rules.dailyMonth}, every day of it +${rules.dailyMonth} more`,
+            )}
+          </li>
           <li>
             {t(
               `新题首次 AC +${rules.firstAc}（每天最多 ${rules.firstAcCap}）`,

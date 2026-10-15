@@ -42,6 +42,7 @@ import { ApiTokenSettings } from './api-tokens';
 import '@/app/commerce.css';
 import { GiftBlock, RedeemGift } from './course-gift';
 import { NewsletterToggle } from './newsletter-toggle';
+import { clearOfflineCaches } from './sw-register';
 
 // English labels for the shared (Chinese) status maps in lib/commerce-types.
 export const orderStatusEn: Record<OrderStatus, string> = {
@@ -1163,6 +1164,7 @@ export function AccountView({
           onClick={() =>
             void run(async () => {
               check((await authClient.signOut()).error);
+              await clearOfflineCaches();
               await refresh();
             })
           }

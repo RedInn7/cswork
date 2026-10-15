@@ -1,7 +1,17 @@
 // Achievement badges, all computed from practice data (no table). Client-safe.
 import { STOP_NAMES } from './route-stops';
 
-export type BadgeGroup = 'stop' | 'line' | 'streak' | 'days' | 'company' | 'mock' | 'contest';
+export type BadgeGroup =
+  | 'stop'
+  | 'line'
+  | 'streak'
+  | 'days'
+  | 'company'
+  | 'mock'
+  | 'contest'
+  | 'daily'
+  | 'list'
+  | 'domain';
 export type Badge = {
   id: string;
   group: BadgeGroup;
@@ -23,7 +33,14 @@ export type AchievementInput = {
   perfectMock: boolean;
   /** Rated weekly contests (lib/server/contests.ts); the contest badges appear only when given. */
   contests?: readonly ContestResult[];
+  /** Beijing dates whose daily problem was solved on its day (the points ledger); month badges. */
+  dailyDays?: readonly string[];
+  /** Classic lists (lib/classic-lists.ts classicListProgress), judgeable problems only. */
+  lists?: readonly { slug: string; zh: string; en: string; solved: number; total: number }[];
+  /** Distinct problems solved: Line 500 (its stops), the SQL track (sql-) and company OAs (oa-). */
+  domains?: Domains;
 };
+export type Domains = { line: number; sql: number; oa: number };
 /** One rated weekly: live rank among `entrants`, rating after it, problems solved of `total`. */
 export type ContestResult = { rank: number; entrants: number; after: number; solved: number; total: number };
 
@@ -139,8 +156,81 @@ export function achievements(input: AchievementInput): Badge[] {
     earned: input.perfectMock,
     progress: [Number(input.perfectMock), 1],
   });
+  if (input.domains) badges.push(...domainBadges(input.domains));
+  if (input.dailyDays) badges.push(...monthBadges(input.dailyDays));
+  for (const list of input.lists ?? [])
+    if (list.total > 0)
+      badges.push({
+        id: `list:${list.slug}`,
+        group: 'list',
+        zh: `${list.zh}通关`,
+        en: `${list.en} cleared`,
+        earned: list.solved >= list.total,
+        progress: reached(list.solved, list.total),
+      });
   if (input.contests) badges.push(...contestBadges(input.contests));
   return badges;
+}
+
+/** Solved counts for 1 to 5 stars in each domain. */
+export const DOMAIN_STARS: Record<keyof Domains, readonly number[]> = {
+  line: [10, 50, 150, 300, 500],
+  sql: [5, 15, 30, 40, 50],
+  oa: [5, 20, 50, 100, 200],
+};
+const DOMAIN_NAMES: Record<keyof Domains, [string, string]> = {
+  line: ['算法', 'Algorithms'],
+  sql: ['SQL', 'SQL'],
+  oa: ['公司 OA', 'Company OA'],
+};
+/** One badge per domain: earned at the first star, its progress toward the next (or the last). */
+export function domainBadges(domains: Domains): Badge[] {
+  return (Object.keys(DOMAIN_STARS) as (keyof Domains)[]).map((key): Badge => {
+    const steps = DOMAIN_STARS[key];
+    const stars = steps.filter((n) => domains[key] >= n).length;
+    const [zh, en] = DOMAIN_NAMES[key];
+    return {
+      id: `domain:${key}`,
+      group: 'domain',
+      zh: stars ? `${zh} ${stars} 星` : `${zh}星级`,
+      en: stars ? `${en} · ${stars} ${stars === 1 ? 'star' : 'stars'}` : `${en} stars`,
+      earned: stars > 0,
+      progress: reached(domains[key], steps[Math.min(stars, steps.length - 1)]),
+    };
+  });
+}
+
+/** Days in a YYYY-MM month. */
+export const monthDays = (month: string) => {
+  const [y, m] = month.split('-').map(Number);
+  return new Date(Date.UTC(y, m, 0)).getUTCDate();
+};
+/**
+ * A daily problem every day of a Beijing month, newest first: every month won stays, and the
+ * latest 12 months with any daily problem show their progress.
+ */
+export function monthBadges(days: readonly string[]): Badge[] {
+  const months = new Map<string, number>();
+  for (const day of new Set(days)) months.set(day.slice(0, 7), (months.get(day.slice(0, 7)) ?? 0) + 1);
+  const recent = new Set([...months.keys()].sort().slice(-12));
+  return [...months]
+    .sort(([a], [b]) => b.localeCompare(a))
+    .flatMap(([month, n]) => {
+      const need = monthDays(month);
+      if (n < need && !recent.has(month)) return [];
+      const [y, m] = month.split('-').map(Number);
+      const en = new Date(Date.UTC(y, m - 1, 15)).toLocaleString('en', { month: 'short', timeZone: 'UTC' });
+      return [
+        {
+          id: `daily:${month}`,
+          group: 'daily' as const,
+          zh: `${y} 年 ${m} 月每日一题全勤`,
+          en: `Daily problem every day, ${en} ${y}`,
+          earned: n >= need,
+          progress: reached(n, need),
+        },
+      ];
+    });
 }
 
 export const CONTEST_REGULAR = 10;

@@ -113,6 +113,8 @@ test('curated practice UI preserves language and round history, deduplicates cli
       } else activeRoundId = request.roundId;
       return Response.json(roundState());
     }
+    // The daily problem month beside the calendar reads the points ledger once.
+    if (url.endsWith('/oj/points/daily')) return Response.json({ days: [] });
     requests.push(url);
     if (new URL(url, 'https://cswork.test').searchParams.get('random') === '1')
       return Response.json({ ...page(), random: pickResult });

@@ -45,7 +45,10 @@ type Data = {
   companyNames: Map<string, string>;
   /** Read once per load, so every tab agrees on "today". */
   now: number;
+  /** Daily problems solved on their day, for the month badges; absent when the ledger failed. */
+  dailyDays?: string[];
 };
+type Profile = { handle: string; visible: boolean; indexable: boolean; showContest: boolean; bio: string; featuredBadge: string | null };
 type Tab = 'history' | 'mistakes' | 'review' | 'starred' | 'redo' | 'notes' | 'badges';
 const TABS: [Tab, string, string][] = [
   ['history', '练习历史', 'History'],
@@ -96,6 +99,9 @@ export function MyProgress({
   const [origin, setOrigin] = useState('');
   const [result, setResult] = useState('');
   const [period, setPeriod] = useState('');
+  // The public profile, when there is one: earned badges can be featured on it.
+  const [profile, setProfile] = useState<{ value: Profile; featurable: Set<string> } | null>(null);
+  const [featureError, setFeatureError] = useState('');
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   // A freeze bought below counts on the calendar at once, before the bootstrap refreshes.
   const [bought, setBought] = useState<number[] | null>(null);
@@ -121,17 +127,21 @@ export function MyProgress({
         'oj/library?collection=ling-selected-500',
       ).catch(() => null),
       api<{ companies: { slug: string; name: string }[] }>('oj/oa-library').catch(() => null),
+      api<{ days: string[] }>('oj/points/daily').catch(() => null),
+      api<{ profile: Profile | null; badges: { id: string }[] }>('oj/profile').catch(() => null),
     ])
-      .then(([history, marks, notes, line, oa]) => {
-        if (current)
-          setData({
-            history: history.items,
-            marks: marks.items,
-            notes,
-            sections: line?.collection?.sections ?? [],
-            companyNames: new Map(oa?.companies.map((c) => [c.slug, c.name])),
-            now: Date.now(),
-          });
+      .then(([history, marks, notes, line, oa, daily, mine]) => {
+        if (!current) return;
+        setData({
+          history: history.items,
+          marks: marks.items,
+          notes,
+          sections: line?.collection?.sections ?? [],
+          companyNames: new Map(oa?.companies.map((c) => [c.slug, c.name])),
+          now: Date.now(),
+          dailyDays: daily?.days,
+        });
+        setProfile(mine?.profile ? { value: mine.profile, featurable: new Set(mine.badges.map((b) => b.id)) } : null);
       })
       .catch((reason: Error) => {
         if (current) setError(reason.message);
@@ -205,10 +215,22 @@ export function MyProgress({
             now: data.now,
             companyNames: data.companyNames,
             bought: bought ?? boot.purchasedFreezes,
+            dailyDays: data.dailyDays,
           })
         : [],
     [data, boot.problems, personId, bought, boot.purchasedFreezes],
   );
+  const feature = profile && {
+    featured: profile.value.featuredBadge,
+    featurable: profile.featurable,
+    onFeature: (id: string | null) => {
+      setFeatureError('');
+      api<{ profile: Profile }>('oj/profile', { ...profile.value, featuredBadge: id }).then(
+        (saved) => setProfile({ ...profile, value: saved.profile }),
+        (reason: Error) => setFeatureError(reason.message),
+      );
+    },
+  };
   const counts: Record<Tab, number> = {
     history: data?.history.length ?? 0,
     mistakes: mistakes.length,
@@ -337,7 +359,17 @@ export function MyProgress({
 
   function panel() {
     if (!data) return null;
-    if (tab === 'badges') return <BadgeWall badges={badges} english={english} />;
+    if (tab === 'badges')
+      return (
+        <>
+          {featureError && (
+            <p role="alert" className="notice error">
+              {t(featureError, englishMessage(featureError))}
+            </p>
+          )}
+          <BadgeWall badges={badges} english={english} feature={feature ?? undefined} />
+        </>
+      );
     if (tab === 'history') {
       const since = period ? data.now - Number(period) * DAY : 0;
       const shown = data.history.filter(
