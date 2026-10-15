@@ -57,6 +57,13 @@ before(() => {
   }
   // Bank rows that are not judgeable keep a judge id but no verified hash.
   db.prepare('UPDATE study_library SET judge_problem_id=id WHERE number=?').run(unready);
+  // A twinless book problem published as its own bk- problem (content/book-problems).
+  db.prepare(
+    `INSERT INTO oj_problems(id,course_id,lesson_id,current_version_id,published,created_at,updated_at) VALUES('bk-five','gomall','00-overview','v-five',1,1,1)`,
+  ).run();
+  db.prepare(
+    `INSERT INTO oj_problem_versions(id,problem_id,revision,spec_json,checksum,created_by,created_at) VALUES('v-five','bk-five',1,?,'hash','teacher',1)`,
+  ).run(JSON.stringify({ title: '五', difficulty: '中等', translations: { en: { title: 'Five' } } }));
 });
 after(() => {
   sqlite().close();
@@ -160,11 +167,11 @@ void test('book lists hold every book problem, in book order, with its LeetCode 
   assert.equal(refLabel(classicList('blind-75')!, '07', true), '');
   assert.equal(bookProblemUrl('zhong-jian-er-cha-shu-lcof'), 'https://leetcode.cn/problems/zhong-jian-er-cha-shu-lcof/');
   assert.equal(bookProblemUrl('../x'), 'https://leetcode.cn/problemset/');
-  assert.deepEqual(groupEntries({ nameZh: '', nameEn: '', numbers: [1] }), [{ number: 1, ref: null, refSlug: null }]);
+  assert.deepEqual(groupEntries({ nameZh: '', nameEn: '', numbers: [1] }), [{ number: 1, ref: null, refSlug: null, judge: null }]);
   assert.equal(problemTitle({ number: null, titleZh: '', titleEn: '' }, false), '力扣中国站原题');
 });
 
-void test('a book list counts each book problem; problems sharing one twin share its judge and progress', () => {
+void test('a book list counts each book problem; problems sharing one twin share its judge and progress; rewrites judge as their own', () => {
   const book = {
     slug: 'book',
     nameZh: '书',
@@ -177,8 +184,9 @@ void test('a book list counts each book problem; problems sharing one twin share
         nameEn: 'One',
         refs: [
           { ref: '1', lc: onLine, slug: 'one-lcof' },
-          { ref: '2', lc: null, slug: 'two-lcof' },
+          { ref: '2', lc: null, slug: 'two-lcof', judge: 'bk-unpublished' },
           { ref: '3', lc: missing, slug: 'three-lcof' },
+          { ref: '5', lc: null, slug: 'five-lcof', judge: 'bk-five' },
         ],
       },
       { nameZh: '二', nameEn: 'Two', refs: [{ ref: '4', lc: onLine, slug: 'four-lcof' }] },
@@ -190,18 +198,21 @@ void test('a book list counts each book problem; problems sharing one twin share
     items.map((i) => [i.ref, i.number, i.external, i.judgeProblemId, i.refSlug]),
     [
       ['1', onLine, false, `lc-${onLine}`, 'one-lcof'],
+      // Its rewrite is not published yet: still the leetcode.cn page.
       ['2', null, true, null, 'two-lcof'],
       ['3', missing, true, null, 'three-lcof'],
+      ['5', null, false, 'bk-five', 'five-lcof'],
       ['4', onLine, false, `lc-${onLine}`, 'four-lcof'],
     ],
   );
+  assert.deepEqual([items[3].titleZh, items[3].titleEn, items[3].difficulty], ['五', 'Five', '中等']);
   assert.equal(items[1].stop, null);
   assert.ok(items[0].stop);
   assert.deepEqual(
     [view.collection.total, view.collection.mapped, view.collection.ready, view.collection.solved],
-    [4, 3, 2, 0],
+    [5, 3, 3, 0],
   );
-  assert.deepEqual(view.sequence, [`lc-${onLine}`]);
+  assert.deepEqual(view.sequence, [`lc-${onLine}`, 'bk-five']);
   sqlite()
     .prepare(
       `INSERT INTO submissions(id,user_id,problem_id,language,code,status,total,created_at,updated_at,mode,practice_round_id) VALUES('d1','dave',?,'python','','accepted',1,1,1,'judge',?)`,
@@ -209,7 +220,21 @@ void test('a book list counts each book problem; problems sharing one twin share
     .run(`lc-${onLine}`, practiceRoundState('dave').activeRoundId);
   const solved = listClassicLibrary(book, 'dave');
   assert.deepEqual([solved.collection.solved, solved.groups[0].solved, solved.groups[1].solved], [2, 1, 1]);
-  assert.equal(solved.nextProblemId, null);
+  assert.equal(solved.nextProblemId, 'bk-five');
+  // A rewrite counts by its own id, in any practice round.
+  sqlite()
+    .prepare(
+      `INSERT INTO submissions(id,user_id,problem_id,language,code,status,total,created_at,updated_at,mode) VALUES('d2','dave','bk-five','python','','wrong_answer',1,1,1,'judge')`,
+    )
+    .run();
+  assert.equal(listClassicLibrary(book, 'dave').groups[0].items[3].progressStatus, 'attempted');
+  sqlite()
+    .prepare(
+      `INSERT INTO submissions(id,user_id,problem_id,language,code,status,total,created_at,updated_at,mode) VALUES('d3','dave','bk-five','python','','accepted',1,2,2,'judge')`,
+    )
+    .run();
+  const all = listClassicLibrary(book, 'dave');
+  assert.deepEqual([all.collection.solved, all.groups[0].solved, all.nextProblemId], [3, 2, null]);
   // LeetCode lists keep counting numbers: every number has a twin, itself.
   const plain = listClassicLibrary(list);
   assert.equal(plain.collection.mapped, plain.collection.total);

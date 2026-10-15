@@ -17,36 +17,42 @@ export type ClassicList = {
   /**
    * A LeetCode list's groups hold problem numbers. A book list's groups hold its
    * own problems in book order instead: the book number, the main-site LeetCode
-   * twin (null when there is none) and the slug of its page on leetcode.cn.
+   * twin (null when there is none), the slug of its page on leetcode.cn and, for
+   * a problem without a twin, CSWork's own rewrite judged here (content/book-problems).
    */
   groups: {
     nameZh: string;
     nameEn: string;
     numbers?: number[];
-    refs?: { ref: string; lc: number | null; slug: string }[];
+    refs?: { ref: string; lc: number | null; slug: string; judge?: string }[];
   }[];
 };
 export const classicLists = lists as ClassicList[];
 export const classicList = (slug: string | null | undefined) =>
   classicLists.find((list) => list.slug === slug);
 
-/** One row: a LeetCode number, a book problem, or a book problem and its twin. */
-export type ClassicEntry = { number: number | null; ref: string | null; refSlug: string | null };
+/**
+ * One row: a LeetCode number, a book problem, or a book problem and its twin. `judge` is a
+ * twinless book problem's own judge id (bk-…); its leetcode.cn page stays a reference link.
+ */
+export type ClassicEntry = { number: number | null; ref: string | null; refSlug: string | null; judge: string | null };
 export const groupEntries = (group: ClassicList['groups'][number]): ClassicEntry[] =>
-  group.refs?.map(({ ref, lc, slug }) => ({ number: lc, ref, refSlug: slug })) ??
-  (group.numbers ?? []).map((number) => ({ number, ref: null, refSlug: null }));
+  group.refs?.map(({ ref, lc, slug, judge }) => ({ number: lc, ref, refSlug: slug, judge: judge ?? null })) ??
+  (group.numbers ?? []).map((number) => ({ number, ref: null, refSlug: null, judge: null }));
 
 /**
- * Each LeetCode list's judgeable problems (`judgeable` says which lc-<n> ids this site judges) and
- * how many are in `solved`: the list badges. A list counts once 80% of it is judged here, so a few
- * problems missing from the bank don't block it and a list mostly judged elsewhere isn't "cleared".
- * ponytail: book lists are left out while most of their problems have no judge here; add them once
- * book problems get ids of their own.
+ * Each list's judgeable problems (`judgeable` says which ids this site judges: lc-<n>, and bk-… for
+ * a book problem without a twin) and how many are in `solved`: the list badges. A list counts once
+ * 80% of it is judged here, so a few problems missing from the bank don't block it and a list mostly
+ * judged elsewhere isn't "cleared".
  */
 export function classicListProgress(solved: ReadonlySet<string>, judgeable: (id: string) => boolean) {
   return classicLists.flatMap((list) => {
-    if (list.refLabel) return [];
-    const all = [...new Set(list.groups.flatMap((g) => g.numbers ?? []))].map((n) => `lc-${n}`);
+    const all = [
+      ...new Set(
+        list.groups.flatMap(groupEntries).map(({ number, judge, ref }) => (number ? `lc-${number}` : (judge ?? `ref:${ref}`))),
+      ),
+    ];
     const ids = all.filter(judgeable);
     return ids.length && ids.length >= 0.8 * all.length
       ? [{ slug: list.slug, zh: list.nameZh, en: list.nameEn, total: ids.length, solved: ids.filter((id) => solved.has(id)).length }]

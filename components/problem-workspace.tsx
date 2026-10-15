@@ -98,6 +98,7 @@ import { CodeEditor } from './editor';
 import { DebugButton } from './python-debugger-button';
 import { ProblemTimer, formatClock, stopTimer } from './problem-timer';
 import { ACM_IO_TEMPLATES } from '@/lib/acm-io-templates';
+import { isFreeTrack } from '@/lib/free-tracks';
 import { useIdlePrecompile } from '@/hooks/use-idle-precompile';
 import { encodeShare } from '@/lib/playground-share';
 import { StatementMarkdown } from './statement-markdown';
@@ -719,10 +720,11 @@ function Workspace({
           (course.id === problem.courseId ||
             course.lessons.some((lesson) => lesson.id === problem.lessonId)),
       ));
-  // The server only sends courses this viewer may see (canSeeCourse).
-  const courseVisible = boot.courses.some((course) =>
-    course.lessons.some((lesson) => lesson.id === problem.lessonId),
-  );
+  // The server only sends courses this viewer may see (canSeeCourse). Free tracks (SQL, book
+  // problems) only borrow a lesson id, so they have no related course.
+  const courseVisible =
+    !isFreeTrack(problem.id) &&
+    boot.courses.some((course) => course.lessons.some((lesson) => lesson.id === problem.lessonId));
   const disabled =
     !ready ||
     recovering ||

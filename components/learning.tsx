@@ -28,6 +28,7 @@ import {
   isKnowledgeLesson,
 } from '@/lib/interview-curriculum';
 import { KnowledgeExercises } from './knowledge-exercises';
+import { isFreeTrack } from '@/lib/free-tracks';
 import '@/app/knowledge-exercises.css';
 import '@/app/study-library.css';
 import '@/app/daily-month.css';
@@ -401,7 +402,8 @@ export function CourseList({
                               )}
                               {boot.problems.some(
                                 (p) =>
-                                  p.lessonId === l.id ||
+                                  // Free tracks (SQL, book problems) only borrow a lesson id.
+                                  (p.lessonId === l.id && !isFreeTrack(p.id)) ||
                                   interviewCatalog
                                     .find((chapter) => chapter.id === l.id)
                                     ?.homeworkProblemIds.includes(p.id),
@@ -671,7 +673,7 @@ export function LessonReader({
     interviewChapter = interviewCatalog.find((chapter) => chapter.id === id),
     related = boot.problems.filter(
       (p) =>
-        p.lessonId === id ||
+        (p.lessonId === id && !isFreeTrack(p.id)) ||
         interviewChapter?.homeworkProblemIds.includes(p.id),
     ),
     next = all[all.findIndex((l) => l.id === id) + 1],

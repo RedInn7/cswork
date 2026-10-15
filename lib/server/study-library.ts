@@ -556,9 +556,45 @@ const stopCodes = new Map(
 );
 
 /**
+ * A book list's twinless problems judged here (content/book-problems): the published
+ * ones' titles, and a learner's judge verdicts on them (any round: they are not in Line 500).
+ */
+function bookProblems(ids: string[], userId?: string) {
+  const db = sqlite();
+  const published = new Map(
+    (
+      db
+        .prepare(
+          `SELECT p.id,json_extract(v.spec_json,'$.title') AS titleZh,
+             json_extract(v.spec_json,'$.translations.en.title') AS titleEn,
+             json_extract(v.spec_json,'$.difficulty') AS difficulty
+           FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id
+           WHERE p.published=1 AND p.id IN (SELECT value FROM json_each(?))`,
+        )
+        .all(JSON.stringify(ids)) as { id: string; titleZh: string; titleEn: string | null; difficulty: string }[]
+    ).map((row) => [row.id, row]),
+  );
+  const progress = new Map(
+    (userId && published.size
+      ? (db
+          .prepare(
+            `SELECT problem_id AS id,MAX(status='accepted') AS solved,
+               MAX(status IN ('pending','submitting','queued','compiling','running','judging','processing')) AS pending
+             FROM submissions WHERE user_id=? AND mode='judge' AND problem_id IN (SELECT value FROM json_each(?))
+             GROUP BY problem_id`,
+          )
+          .all(userId, JSON.stringify([...published.keys()])) as { id: string; solved: number; pending: number }[])
+      : []
+    ).map((row) => [row.id, { solved: !!row.solved, attempted: true, pending: !!row.pending }]),
+  );
+  return { published, progress };
+}
+
+/**
  * A classic list in its own groups and order. Problems not judgeable here are
  * external: listed with a LeetCode link, left out of progress and the sequence.
- * A book list's problem without a LeetCode twin is external too (number null).
+ * A book list's problem without a LeetCode twin (number null) is judged as its
+ * own bk- problem once published, and external until then.
  */
 export function listClassicLibrary(list: ClassicList, userId?: string) {
   const entries = list.groups.map(groupEntries);
@@ -580,11 +616,13 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
     : new Map();
   // Ticked by hand on the list (solved elsewhere): user_marks problem:lc-<n> done.
   const marks = userId ? problemMarks(userId) : new Map<string, Set<string>>();
-  const item = ({ number, ref, refSlug }: ClassicEntry) => {
+  const books = bookProblems(entries.flat().flatMap((entry) => entry.judge ?? []), userId);
+  const item = ({ number, ref, refSlug, judge }: ClassicEntry) => {
+    const book = judge ? books.published.get(judge) : undefined;
     const row = number === null ? undefined : rows.get(number);
     // summary() only exposes the judge id of a problem that is judgeable now.
-    const judgeProblemId = row?.judgeProblemId ?? null;
-    const state = judgeProblemId ? progress.get(row!.id) : undefined;
+    const judgeProblemId = book?.id ?? row?.judgeProblemId ?? null;
+    const state = book ? books.progress.get(book.id) : judgeProblemId ? progress.get(row!.id) : undefined;
     const selection = number === null ? undefined : curatedByNumber.get(number);
     const [stopZh, stopEn] =
       selection && Object.hasOwn(STOP_NAMES, selection.sectionSlug)
@@ -596,9 +634,9 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
       ref,
       refSlug,
       slug: row?.slug ?? '',
-      titleZh: row?.titleZh ?? '',
-      titleEn: row?.titleEn ?? '',
-      difficulty: row?.difficulty ?? '',
+      titleZh: book?.titleZh ?? row?.titleZh ?? '',
+      titleEn: book?.titleEn ?? row?.titleEn ?? '',
+      difficulty: book?.difficulty ?? row?.difficulty ?? '',
       // What a short study plan keeps first: foundation stage, then lower rating.
       stage: selection ? CURATED_STAGES.indexOf(selection.stage) : null,
       rating: row?.rating == null ? null : Math.round(row.rating),

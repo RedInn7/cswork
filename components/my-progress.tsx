@@ -69,16 +69,9 @@ function highlight(text: string, words: string[]) {
   // split() with one capture group puts the matches at the odd indices.
   return text.split(pattern).map((part, i) => (i % 2 ? <mark key={i}>{part}</mark> : part));
 }
-const source = (id: string): 'lc' | 'oa' | 'sql' | 'core' | 'course' =>
-  id.startsWith('lc-')
-    ? 'lc'
-    : id.startsWith('oa-')
-      ? 'oa'
-      : id.startsWith('sql-')
-        ? 'sql'
-        : id.startsWith('core-')
-          ? 'core'
-          : 'course';
+const SOURCES = ['lc', 'oa', 'sql', 'core', 'bk'] as const;
+const source = (id: string): (typeof SOURCES)[number] | 'course' =>
+  SOURCES.find((prefix) => id.startsWith(`${prefix}-`)) ?? 'course';
 
 /** ?view=progress: practice history, mistakes, reviews due today, and the learner's marks and notes. */
 export function MyProgress({
@@ -254,7 +247,7 @@ export function MyProgress({
   const tried = (item: PracticeHistoryItem) =>
     t(`提交 ${item.attempts} 次`, `${item.attempts} submission${item.attempts > 1 ? 's' : ''}`);
   const sourceName = (id: string) =>
-    ({ lc: 'LeetCode', oa: 'OA', sql: t('SQL 专项', 'SQL track'), core: 'Core Skills', course: t('课程练习', 'Course') })[
+    ({ lc: 'LeetCode', oa: 'OA', sql: t('SQL 专项', 'SQL track'), core: 'Core Skills', bk: t('书中题目', 'Book problem'), course: t('课程练习', 'Course') })[
       source(id)
     ];
 
