@@ -16,7 +16,9 @@ target="/srv/cswork/releases/$release"
 test ! -e "$target"
 old_runner="cswork-oj-sandbox-rollback-${release:0:12}"
 ! docker inspect "$old_runner" >/dev/null 2>&1
-docker image inspect cswork-go-judge:1.12.3-seccomp-capacity4 >/dev/null
+# Only after oj-pandas-release.sh succeeded: the running runner is the verified pandas image.
+[[ $(docker inspect -f '{{.Image}}' cswork-oj-sandbox) == $(docker image inspect -f '{{.Id}}' cswork-go-judge:1.12.3-seccomp-capacity4-pandas) ]] ||
+  { echo 'The runner is not the verified pandas image; run deploy/oj-pandas-release.sh first'; exit 1; }
 test "$(docker inspect -f '{{.State.Running}}' cswork-oj-sandbox)" = true
 test "$(df --output=avail -B1 /srv/cswork | tail -1)" -gt 1073741824
 # Separate copy, not hardlinks: replacing the worker cannot alter the rollback release.
@@ -54,6 +56,8 @@ complete=false
 finish() {
   code=$?
   trap - EXIT
+  # A dropped SSH session or Ctrl-C must not stop a rollback or the queue resume halfway.
+  trap '' HUP INT TERM
   set +e
   recovery_failed=false
   if [[ "$complete" != true && "$worker_touched" == true ]]; then
@@ -97,7 +101,8 @@ set -a
 source /etc/cswork/oj.env
 set +a
 export ES_AUTH_TOKEN="$GO_JUDGE_TOKEN"
-# Same security, network and resource settings as the reviewed compose service.
+# Same security, network and resource settings as the reviewed compose service
+# (tests/oj-runner-swap.test.mjs keeps this, oj-pandas-release.sh and compose.yaml equal).
 docker run -d --name cswork-oj-sandbox --restart unless-stopped \
   --label com.docker.compose.project=cswork-oj --label com.docker.compose.service=sandbox \
   --label com.docker.compose.container-number=1 --label com.docker.compose.oneoff=False \
@@ -107,13 +112,13 @@ docker run -d --name cswork-oj-sandbox --restart unless-stopped \
   --cgroupns private --cap-add SYS_ADMIN --cap-drop NET_RAW \
   --security-opt apparmor=unconfined --security-opt systempaths=unconfined \
   --security-opt no-new-privileges:true --security-opt seccomp=/srv/cswork/oj/docker-seccomp.json \
-  -p 127.0.0.1:5050:5050 -e ES_AUTH_TOKEN -e GOMAXPROCS=3 -e GOMEMLIMIT=512MiB \
-  -e OJ_RUNNER_PARALLELISM=4 --memory 4g --memory-swap 4g --cpus 3 \
+  -p 127.0.0.1:5050:5050 -e ES_AUTH_TOKEN -e GOMAXPROCS="${OJ_RUNNER_GOMAXPROCS:-3}" -e GOMEMLIMIT=512MiB \
+  -e OJ_RUNNER_PARALLELISM="${OJ_RUNNER_PARALLELISM:-4}" --memory 6g --memory-swap 6g --cpus "${OJ_RUNNER_CPUS:-4}" --cpu-shares 512 \
   --pids-limit 512 --shm-size 512m --tmpfs /tmp:rw,nosuid,nodev,size=768m \
   --log-driver json-file --log-opt max-size=10m --log-opt max-file=3 \
   --health-cmd '/usr/bin/python3 -c '\''import os,urllib.request;urllib.request.urlopen(urllib.request.Request("http://127.0.0.1:5050/version",headers={"Authorization":"Bearer "+os.environ["ES_AUTH_TOKEN"]}),timeout=3).close()'\''' \
   --health-interval 15s --health-timeout 5s --health-retries 3 --health-start-period 20s \
-  cswork-go-judge:1.12.3-seccomp-capacity4 >/dev/null
+  cswork-go-judge:1.12.3-seccomp-capacity4-pandas >/dev/null
 ready=false
 for attempt in {1..30}; do
   if [[ $(docker inspect -f '{{.State.Health.Status}}' cswork-oj-sandbox) == healthy ]]; then ready=true; break; fi

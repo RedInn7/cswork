@@ -8,6 +8,7 @@
 # checks pandas in the sandbox and records it in OJ_LANGUAGE_VERSIONS) and
 # restart the worker: the problems appear. Rolling back the image, rerunning
 # verify-runtime.py and restarting the worker hides them again.
+# deploy/oj-pandas-release.sh does all of this, with automatic rollback.
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 RUN apt-get update && apt-get install -y --no-install-recommends python3-pandas \
