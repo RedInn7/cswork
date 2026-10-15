@@ -254,7 +254,9 @@ async function judgeSubmission(
       }
       update(id, attempt, { status: 'running' });
       const { files } = JSON.parse(claimed.code) as { files: Record<string, string> };
-      const [visible, hidden] = await runProject(files, task.hidden, controller.signal);
+      const [visible, hidden] = await runProject(files, task.hidden, controller.signal, (signal) =>
+        caseSlots.acquire(signal),
+      );
       const verdict = projectVerdict(visible, hidden, task.hiddenTotal);
       db.transaction(() => {
         current(id, attempt, controller.signal);

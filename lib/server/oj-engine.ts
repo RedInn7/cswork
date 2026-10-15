@@ -480,14 +480,16 @@ export type ProjectRun = {
 /**
  * A project's two suites, each in its own sandbox: `files` (the learner's src/ and tests/)
  * with tests/, then the learner's src/ with the task's hidden suite. Hidden tests never share a
- * sandbox with anything the learner gets to read back.
+ * sandbox with anything the learner gets to read back. `slot` holds a runner slot per sandbox.
  */
 export async function runProject(
   files: Record<string, string>,
   hidden: Record<string, string>,
   signal: AbortSignal,
+  slot: (signal: AbortSignal) => Promise<() => void> = async () => () => {},
 ) {
   const suite = async (start: string, copy: Record<string, string>): Promise<ProjectRun> => {
+    const release = await slot(signal);
     const result = await execute(
       {
         ...limits('', PROJECT_SECONDS, PROJECT_SECONDS * 2, 268435456, 65536),
@@ -498,7 +500,7 @@ export async function runProject(
         },
       },
       signal,
-    );
+    ).finally(release);
     let report: ProjectRun['report'] = null;
     try {
       const value = JSON.parse(result.files?.stdout?.trim().split('\n').at(-1) || 'null');
