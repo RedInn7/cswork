@@ -27,20 +27,20 @@ export function fold(line: string) {
 export const utcStamp = (at: Date | number) =>
   new Date(at).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 
-/** One VEVENT: UID and DTSTAMP, then `fields`, then a display alarm when `alarm` is given. */
-export const vevent = (
-  uid: string,
-  now: Date | number,
-  fields: string[],
-  alarm?: { trigger: string; note: string },
-) => [
+type Alarm = { trigger: string; note: string };
+/** One VEVENT: UID and DTSTAMP, then `fields`, then a display alarm for each `alarm` given. */
+export const vevent = (uid: string, now: Date | number, fields: string[], alarm?: Alarm | Alarm[]) => [
   'BEGIN:VEVENT',
   `UID:${uid}`,
   `DTSTAMP:${utcStamp(now)}`,
   ...fields,
-  ...(alarm
-    ? ['BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${escapeText(alarm.note)}`, `TRIGGER:${alarm.trigger}`, 'END:VALARM']
-    : []),
+  ...(alarm ? [alarm].flat() : []).flatMap((a) => [
+    'BEGIN:VALARM',
+    'ACTION:DISPLAY',
+    `DESCRIPTION:${escapeText(a.note)}`,
+    `TRIGGER:${a.trigger}`,
+    'END:VALARM',
+  ]),
   'END:VEVENT',
 ];
 

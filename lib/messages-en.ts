@@ -339,6 +339,9 @@ const EN: Record<string, string> = {
   主页不存在: 'Profile not found',
   不能关注自己: "You can't follow yourself",
   关注人数已达上限: "You're following as many people as you can",
+  // Application tracker (lib/server/applications.ts)
+  投递记录已达上限: "You've reached the limit for tracked applications",
+  投递记录不存在: 'Application not found',
   今天的评论已达上限: "You've reached today's limit for comments",
   今天的举报次数已达上限: "You've reached today's limit for reports",
   '代码最多 64 KiB': 'Code can be at most 64 KiB',

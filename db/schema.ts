@@ -37,6 +37,7 @@ export * from './community-schema';
 export * from './skill-tests-schema';
 export * from './course-ratings-schema';
 export * from './discuss-v2-schema';
+export * from './applications-schema';
 import { practiceRounds } from './practice-round-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),

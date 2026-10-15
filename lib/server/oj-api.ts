@@ -37,6 +37,7 @@ import { handleStudyGroups } from './study-groups';
 import { handleMockPeer } from './mock-peer';
 import { handleNewsletter } from './newsletter';
 import { handleFollows } from './follows';
+import { handleApplications } from './applications';
 import { handleDirectMessages } from './direct-messages';
 import { handleWorkVerify } from './work-verify';
 import { sourceDates } from './company-insights';
@@ -133,6 +134,7 @@ export async function handleOj(
   if (resource === 'peer') return handleMockPeer(request, p, path.slice(1));
   if (resource === 'newsletter') return handleNewsletter(request, p, path.slice(1));
   if (resource === 'follows') return handleFollows(request, p, path.slice(1));
+  if (resource === 'applications') return handleApplications(request, p, path.slice(1));
   if (resource === 'dm') return handleDirectMessages(request, p, path.slice(1));
   if (resource === 'work') return handleWorkVerify(request, p, path.slice(1));
   // The weekly, standings and the rating board read signed out; the handler checks the rest.
