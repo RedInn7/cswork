@@ -6,8 +6,16 @@
  */
 import type { Text } from './mock-interview';
 
-export type RubricId = 'communication' | 'problem' | 'coding' | 'testing' | 'complexity';
-/** Scored 1–4 each, in this order on the wire. */
+export type RubricId =
+  | 'communication'
+  | 'problem'
+  | 'coding'
+  | 'testing'
+  | 'complexity'
+  | 'motivation'
+  | 'anchoring'
+  | 'leverage';
+/** Scored 1–4 each, in this order on the wire: a new dimension goes at the end, or old links read shifted. */
 export const RUBRIC: { id: RubricId; name: Text; hint: Text }[] = [
   {
     id: 'communication',
@@ -34,7 +42,27 @@ export const RUBRIC: { id: RubricId; name: Text; hint: Text }[] = [
     name: ['复杂度', 'Complexity'],
     hint: ['说得出时间、空间复杂度，讲得清取舍。', 'States time and space cost and explains the trade-offs.'],
   },
+  // The role-plays' own (recruiter screen, offer negotiation): ROLEPLAY_RUBRIC.
+  {
+    id: 'motivation',
+    name: ['动机与匹配', 'Motivation & fit'],
+    hint: ['讲得清为什么是这家公司、这个岗位，经历和岗位对得上。', 'Says why this company and this role, and ties their experience to it.'],
+  },
+  {
+    id: 'anchoring',
+    name: ['锚定', 'Anchoring'],
+    hint: ['不先报数；要报时给有依据的区间，不被对方的数字带着走。', "Doesn't name a number first; when they must, gives a researched range and isn't pulled by the other side's figure."],
+  },
+  {
+    id: 'leverage',
+    name: ['筹码', 'Leverage'],
+    hint: ['用好竞争 offer 和时间线，截止期限前稳住，要到实际的让步。', 'Uses competing offers and timelines, holds steady under a deadline, and wins real concessions.'],
+  },
 ];
+/** What a role-play is scored on; every other interview is scored on the first five. */
+export const ROLEPLAY_RUBRIC: RubricId[] = ['communication', 'motivation', 'anchoring', 'leverage'];
+export const rubricFor = (roleplay: boolean): RubricId[] =>
+  roleplay ? ROLEPLAY_RUBRIC : RUBRIC.slice(0, 5).map((r) => r.id);
 
 export type VerdictId = 'strong-no' | 'no' | 'yes' | 'strong-yes';
 export const VERDICTS: [VerdictId, Text][] = [
@@ -99,7 +127,12 @@ function toWire(f: Feedback, cap: number): Wire {
   };
   const w: Wire = { v: VERSION, s: f.seed };
   if (f.rerolls.length) w.r = f.rerolls;
-  if (RUBRIC.some((r) => f.rubric[r.id])) w.k = RUBRIC.map((r) => f.rubric[r.id] ?? 0);
+  // Trailing zeros left out: a five-dimension report keeps its old length.
+  if (RUBRIC.some((r) => f.rubric[r.id])) {
+    const k = RUBRIC.map((r) => f.rubric[r.id] ?? 0);
+    while (k.length && !k.at(-1)) k.pop();
+    w.k = k;
+  }
   if (f.verdict) w.o = f.verdict;
   if (f.strengths) w.g = cut(f.strengths);
   if (f.improvements) w.i = cut(f.improvements);
@@ -175,4 +208,24 @@ export function decodeFeedback(value: string | null | undefined, max = MAX_FEEDB
 export function rubricAverage(rubric: Feedback['rubric']) {
   const scores = RUBRIC.map((r) => rubric[r.id]).filter((n): n is number => !!n);
   return scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : null;
+}
+
+export type Scores = Partial<Record<RubricId, number | null>>;
+/**
+ * Self-assessment against the interviewer's scores, oldest first: per interview, the mean gap
+ * |self − interviewer| over the dimensions both scored and its signed mean (positive = rated
+ * themselves higher). Null when no interview has a dimension both scored.
+ */
+export function calibration(rows: { self: Scores; ai: Scores }[]) {
+  const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
+  const sessions = rows.flatMap(({ self, ai }) => {
+    const diffs = RUBRIC.flatMap(({ id }) => {
+      const a = self[id],
+        b = ai[id];
+      return typeof a === 'number' && typeof b === 'number' ? [a - b] : [];
+    });
+    return diffs.length ? [{ gap: mean(diffs.map(Math.abs)), bias: mean(diffs) }] : [];
+  });
+  if (!sessions.length) return null;
+  return { sessions, gap: mean(sessions.map((s) => s.gap)), bias: mean(sessions.map((s) => s.bias)) };
 }

@@ -1,15 +1,18 @@
 import type Database from 'better-sqlite3';
+import scenarios from '@/lib/content/roleplay-scenarios.json';
 import {
   KINDS,
   ROUNDS,
   companyCounts,
   companyGroup,
   drawSet,
+  isRoleplay,
   leadershipPrinciples,
   newSeed,
   resolveTemplate,
   splitBody,
   type PoolItem,
+  type Text,
 } from '@/lib/mock-interview';
 import { lcIdBySource } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
@@ -89,6 +92,77 @@ const lldPool = (): PoolRow[] =>
       : [];
   });
 
+type Money = { base: number; bonus?: number; equity: number; signOn: number };
+type Scenario = {
+  id: string;
+  kind: 'recruiter' | 'negotiation';
+  company: Text;
+  role: Text;
+  level: Text;
+  location: Text;
+  /** What the candidate knows. */
+  brief: Text;
+  /** The planned offer: the written offer of a negotiation; a recruiter screen's stays hidden. */
+  offer: Money;
+  /** The company's walk-away point, the most it will pay; with concessions and notes, server-only. */
+  floor: Money;
+  concessions: Text[];
+  notes: Text;
+};
+export const SCENARIOS = (scenarios as { scenarios: Scenario[] }).scenarios;
+const usd = (n: number) => `$${n.toLocaleString('en-US')}`;
+const offerTable = (o: Money, zh: boolean) =>
+  (zh
+    ? ['| 项目 | 金额 |', '|---|---|', `| 年薪 base | ${usd(o.base)} |`, `| 年度目标奖金 | ${usd(o.bonus ?? 0)} |`, `| 四年股票 | ${usd(o.equity)} |`, `| 签字费 | ${usd(o.signOn)} |`]
+    : ['| Item | Amount |', '|---|---|', `| Base salary | ${usd(o.base)} |`, `| Annual target bonus | ${usd(o.bonus ?? 0)} |`, `| Stock over 4 years | ${usd(o.equity)} |`, `| Sign-on bonus | ${usd(o.signOn)} |`]
+  ).join('\n');
+/**
+ * A role-play by id (`rp-<scenario>`), or null. The candidate's part (question, in both languages)
+ * has the setting, the brief and a negotiation's written offer; the floor, the concessions and the
+ * notes go to the AI as its rubric only and never leave the server.
+ */
+export function roleplayQuestion(id: string) {
+  const s = id.startsWith('rp-') ? SCENARIOS.find((x) => x.id === id.slice(3)) : undefined;
+  if (!s) return null;
+  const negotiation = s.kind === 'negotiation';
+  const part = (zh: boolean) => {
+    const i = zh ? 0 : 1;
+    return [
+      zh
+        ? `**公司**：${s.company[0]}\n\n**岗位**：${s.role[0]}（${s.level[0]}）\n\n**地点**：${s.location[0]}`
+        : `**Company:** ${s.company[1]}\n\n**Role:** ${s.role[1]} (${s.level[1]})\n\n**Location:** ${s.location[1]}`,
+      s.brief[i],
+      negotiation ? `${zh ? '**书面 offer**' : '**The written offer**'}\n\n${offerTable(s.offer, zh)}` : '',
+      zh
+        ? '工作许可和签证问题请按你自己的真实情况回答。'
+        : 'Answer questions about work authorization and visas according to your own real situation.',
+    ]
+      .filter(Boolean)
+      .join('\n\n');
+  };
+  const limits = [
+    `Planned offer: ${offerTable(s.offer, false).split('\n').slice(2).join(' ')}`,
+    `Your limit, the most you may agree to (never state it): base ${usd(s.floor.base)}, stock ${usd(s.floor.equity)}, sign-on ${usd(s.floor.signOn)}.`,
+    `Concessions you may trade: ${s.concessions.map((c) => c[1]).join('; ')}.`,
+    `Facts and tactics: ${s.notes[1]}`,
+  ].join('\n');
+  return {
+    id,
+    kind: s.kind,
+    title: `${s.role[1]} · ${s.level[1]}`,
+    titleZh: `${s.role[0]} · ${s.level[0]}`,
+    question: part(false),
+    questionZh: part(true),
+    rubric: limits,
+  };
+}
+const roleplayPool = (): PoolRow[] =>
+  SCENARIOS.map((s) => ({
+    id: `rp-${s.id}`, type: 'roleplay', slug: s.id, title: roleplayQuestion(`rp-${s.id}`)!.title, company: null,
+    companyName: null, role: null, category: KINDS[s.kind].categories[0], round: null, difficulty: null, listed: false,
+    problem: null,
+  }));
+
 const counts = new WeakMap<Database.Database, ReturnType<typeof companyCounts>>();
 export function mockCompanies(db: Database.Database) {
   if (!counts.has(db)) counts.set(db, companyCounts(mockPool(db)));
@@ -105,8 +179,10 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
   if (!/^[a-z0-9]{1,24}$/i.test(seed)) throw new HttpError(400, '抽题编号无效');
   const company = /^[a-z0-9-]{1,80}$/.test(params.get('company') || '') ? params.get('company') : null;
   const round = params.get('round');
+  // AI-only questions join the pool only for their own templates.
   const lld = template.slots.some((s) => s.kind === 'lld');
-  const drawn = drawSet(lld ? [...mockPool(db), ...lldPool()] : mockPool(db), template, {
+  const roleplay = template.slots.some((s) => isRoleplay(s.kind));
+  const drawn = drawSet([...mockPool(db), ...(lld ? lldPool() : []), ...(roleplay ? roleplayPool() : [])], template, {
     seed,
     company,
     role: params.get('role'),
@@ -133,10 +209,12 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
       if (!item) return { ...slot, item: null };
       const row = bodies.get(item.id);
       const parts = splitBody(row?.body ?? '');
-      // An LLD question's reference never leaves the server (lib/server/ai-interviewer.ts reads it).
+      // An LLD question's reference and a role-play's limits never leave the server (lib/server/ai-interviewer.ts reads them).
       const course = item.type === 'course_chapter';
+      const play = item.type === 'roleplay' ? roleplayQuestion(item.id) : null;
       if (course) parts.question = lldQuestion(item.id)?.question ?? '';
-      if (questionOnly || course) Object.assign(parts, { hints: '', followUps: '', rubric: '', solution: '' });
+      if (play) parts.question = play.question;
+      if (questionOnly || course || play) Object.assign(parts, { hints: '', followUps: '', rubric: '', solution: '' });
       return {
         ...slot,
         item: {
@@ -152,6 +230,7 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
           listed: item.listed,
           problem: item.problem,
           math: !!(JSON.parse(row?.extra || '{}') as { math?: boolean }).math,
+          ...(play ? { titleZh: play.titleZh, questionZh: play.questionZh } : {}),
           principles:
             item.company && amazon.includes(item.company) ? leadershipPrinciples(`${item.title}\n${parts.question}`).slice(0, 3) : [],
           ...parts,

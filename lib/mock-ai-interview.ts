@@ -51,7 +51,7 @@ export const candidateTurns = (chats: readonly (readonly Turn[] | undefined)[]) 
 
 /** The report the server returns: 1–4 scores, null where the interview showed nothing to score. */
 export type AiReport = {
-  rubric: Record<RubricId, number | null>;
+  rubric: Partial<Record<RubricId, number | null>>;
   verdict: VerdictId | null;
   strengths: string;
   improvements: string;

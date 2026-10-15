@@ -1,0 +1,1 @@
+ALTER TABLE `ai_interview_scores` ADD `self_json` text;
