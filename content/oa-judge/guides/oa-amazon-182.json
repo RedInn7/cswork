@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-182",
+  "packageChecksum": "b288c1a4041393c3f64ec085f147027b8cb91fc67382dbaeb5ce640308c5cf07",
+  "sourceContentHash": "18d408d3f1fe8da56c8bcdf4a81f7adb55dcb44683bc2d4ef489918a8c82a443",
+  "editorialSha256": "37ae16cfb37df083d438f03218dc48aef1b40025330a9de9c810829d201e68d6",
+  "hints": {
+    "zh": [
+      "n最多5000，直接模拟所有轮次大约需要n²/2，也就是一千多万次加法，时间足够，不需要组合数之类的技巧。",
+      "每一轮把第i项替换成第i项与第i+1项之和的个位，可以在同一个数组里从左往右原地覆盖，因为本轮写入第i项之后不会再读取它。",
+      "当有效长度len大于2时：对i从0到len−2，令a[i]等于a[i]与a[i+1]之和对10取余，然后len减1；最后把a[0]和a[1]作为两个数字字符输出，保留前导0。"
+    ],
+    "en": [
+      "n is at most 5000, so simulating every round directly takes about n^2/2, a bit over ten million additions, which is fast enough; no combinatorial tricks are needed.",
+      "Each round replaces item i with the last digit of item i plus item i+1, which can be done in place from left to right in one array, because once item i is written this round, it is not read again.",
+      "While the effective length len is greater than 2: for i from 0 to len-2 set a[i] to (a[i] + a[i+1]) mod 10, then decrease len. Finally print a[0] and a[1] as two digit characters, keeping a leading 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUpdate in place, moving forward, with the sums of adjacent elements modulo 10; each round shortens the effective length by one, until it is 2.\n\n## Proof of correctness\n\nIn round r, each item by definition equals the sum of two adjacent items of the previous round modulo 10. Writing forward overwrites only the left item, which has already been used, and does not change the right item that is read next, so by induction every row is correct.\n\n## Complexity\n\nTime O(n^2), space O(n)."
+}

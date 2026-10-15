@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-156",
+  "packageChecksum": "b1228a839508952f14c147741887bd4087142dca632db9367fc17fb9c2a01d07",
+  "sourceContentHash": "b3a142f4eb18e71c906f760d6d6969759f0881ce1a192ec82ff9bd1f64e5377e",
+  "editorialSha256": "45810428fe36021f5ed0b477a756fa20dc82dffba6956f61cc57c0b8e25c796d",
+  "hints": {
+    "zh": [
+      "严格更大的串一定有一个第一次变大的位置，它之前的前缀原样保留，所以这段前缀本身必须没有相邻重复；变化的位置越靠右，结果越小。",
+      "从右往左枚举变化位置i（要求前缀s[0..i−1]合法），在i处放比s[i]大且不等于s[i−1]的最小字母；之后的每个位置放与前一个字符不同的最小字母，也就是a和b交替，总能补完。找到的第一个候选就是答案。",
+      "预处理valid[i]表示长度为i的前缀是否没有相邻重复；i从n−1递减到0，跳过valid[i]为假的位置；在比s[i]大的字母中找第一个不等于s[i−1]的字母c，找到就输出s[0..i−1]加上c，再逐位补齐：前一个字符不是a就放a，否则放b。所有位置都失败时输出-1。"
+    ],
+    "en": [
+      "A strictly greater string has a first position where it differs (upwards); everything before it is kept as is, so that prefix must itself have no equal neighbours. The later that position, the smaller the result.",
+      "Try the changed position i from right to left (the prefix s[0..i-1] must be valid), put at i the smallest letter above s[i] that differs from s[i-1], and fill every later position with the smallest letter different from its predecessor, which alternates a and b and always works. The first candidate found is the answer.",
+      "Precompute valid[i]: the prefix of length i has no equal neighbours. For i from n-1 down to 0, skip positions where valid[i] is false; among the letters above s[i], take the first c that differs from s[i-1]; if one exists, print s[0..i-1] followed by c and then fill each remaining position with a unless the previous character is a, in which case use b. If every position fails, print -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord whether each prefix is valid (no equal adjacent characters). Enumerate the first changed position from right to left, try the smallest valid character larger than the original one, then greedily fill the suffix with a or b.\n\n## Proof of correctness\n\nA strictly greater string has a unique first changed position, and the prefix before it must be kept and must be valid; the later the change, the smaller the string lexicographically. With the position fixed, choose the smallest usable character; then for every remaining position the smallest character different from the previous one suffices, and with 26 letters the suffix can always be completed. Therefore the first candidate found is optimal.\n\n## Complexity\n\nTime O(26n), space O(n)."
+}

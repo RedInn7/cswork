@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-183",
+  "packageChecksum": "964167cb0772221894c12f76a7b386a2d460bb6f94721c6036bb9ee8033e99e9",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int n = s.size();\n    // best: rightmost position of the smallest character in the suffix; left: the earliest\n    // position with a smaller character after it, right: that character's rightmost position.\n    int best = n - 1, left = -1, right = -1;\n    for (int i = n - 2; i >= 0; i--) {\n        if (s[i] > s[best]) {\n            left = i;\n            right = best;\n        } else if (s[i] < s[best]) {\n            best = i;\n        }\n    }\n    if (left < 0) {\n        cout << s << \"\\n\";\n        return 0;\n    }\n    cout << s.substr(0, left) << s[right] << s.substr(left, right - left) << s.substr(right + 1) << \"\\n\";\n}\n",
+      "sha256": "56b234654388cc571204469d384a47ec918c095885fb9b35a17eed97ae06767f"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    private static final InputStream IN = System.in;\n    private static final byte[] BUF = new byte[1 << 16];\n    private static int len = 0, ptr = 0;\n\n    private static int read() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    private static int skipSpaces() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        return c;\n    }\n\n    private static String next() throws IOException {\n        int c = skipSpaces();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        int n = s.length();\n        // best: rightmost position of the smallest character in the suffix; left: the earliest\n        // position with a smaller character after it, right: that character's rightmost position.\n        int best = n - 1, left = -1, right = -1;\n        for (int i = n - 2; i >= 0; i--) {\n            if (s.charAt(i) > s.charAt(best)) {\n                left = i;\n                right = best;\n            } else if (s.charAt(i) < s.charAt(best)) {\n                best = i;\n            }\n        }\n        if (left < 0) {\n            System.out.println(s);\n            return;\n        }\n        System.out.println(s.substring(0, left) + s.charAt(right) + s.substring(left, right) + s.substring(right + 1));\n    }\n}\n",
+      "sha256": "8ca95756dc9e5fc4490abb0c04bee991f11dc20fb2586bf2ab6b9e4abcc2432c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\n// next returns the next whitespace-separated token of the input.\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := next()\n\tn := len(s)\n\t// best: rightmost position of the smallest character in the suffix; left: the earliest\n\t// position with a smaller character after it, right: that character's rightmost position.\n\tbest, left, right := n-1, -1, -1\n\tfor i := n - 2; i >= 0; i-- {\n\t\tif s[i] > s[best] {\n\t\t\tleft, right = i, best\n\t\t} else if s[i] < s[best] {\n\t\t\tbest = i\n\t\t}\n\t}\n\tout := make([]byte, 0, n+1)\n\tif left < 0 {\n\t\tout = append(out, s...)\n\t} else {\n\t\tout = append(out, s[:left]...)\n\t\tout = append(out, s[right])\n\t\tout = append(out, s[left:right]...)\n\t\tout = append(out, s[right+1:]...)\n\t}\n\tos.Stdout.Write(append(out, '\\n'))\n}\n",
+      "sha256": "49f9f5ef0d27c1c9d95e311b1e20178c3447a96a30033e5cfc24acb376cf47ac"
+    }
+  ]
+}

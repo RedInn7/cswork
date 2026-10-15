@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-172",
+  "packageChecksum": "1cf9e2f46f05a6bd413be2c95c98ac4869c0924f0b9549eac154ca992dd7431e",
+  "sourceContentHash": "cb089365375066d96586927c01c955151c687f8a2d33f91ebee6ecfba6bed07b",
+  "editorialSha256": "9934a45376b8847df4c1274c5b0f23bad487779629ef2ff77485e9c6ed618c2b",
+  "hints": {
+    "zh": [
+      "把两组点放在数轴上配对：如果两条配对交叉（小的配大的、大的配小的），把它们换成同序配对不会让总距离变大。",
+      "把服务器坐标和数据中心坐标分别排序，第i小的服务器配第i小的数据中心，就是最优方案。",
+      "两组坐标各自升序排序，对每个i累加a[i]与b[i]之差的绝对值，输出总和。总和可达约10^14，用64位整数。"
+    ],
+    "en": [
+      "Picture both groups on a number line: if two pairings cross (small with large and large with small), switching them to same-order pairings never increases the total distance.",
+      "Sort the server coordinates and the center coordinates separately and pair the i-th smallest server with the i-th smallest center; that is optimal.",
+      "Sort both lists ascending, add |a[i] - b[i]| for every i and print the sum. It can reach about 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort both coordinate lists, pair them in the same order, and add up the absolute differences.\n\n## Proof of correctness\n\nIf the two groups have x<=y and u<=v, the crossed cost |x-v|+|y-u| is no less than the same-order cost |x-u|+|y-v|. Repeatedly removing crossings yields the sorted same-order plan without increasing the cost, so it is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

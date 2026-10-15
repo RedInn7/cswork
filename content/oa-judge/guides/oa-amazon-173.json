@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-173",
+  "packageChecksum": "2edabcc79c3db67917bfdd95acc3fd7c6000a3f1f684e1636daeae8b670ae116",
+  "sourceContentHash": "4f3f82e70f2aabadcc09e04be67643ba9054d5acccefa9dde5c2f981925ed98a",
+  "editorialSha256": "4d610154d4475f849f369716e2f5ccd35b869d4f6a99f7f1d0e7aef983538cdc",
+  "hints": {
+    "zh": [
+      "在一段单调（不增或不减）的连续元素里，首尾之差的绝对值就等于各相邻差绝对值之和，所以单调段的内部点都可以删掉。",
+      "先把连续相等的值合并成一个；如果只剩一个值，答案就是1。否则必须保留首尾以及所有由升转降或由降转升的转折点，其余元素都能删掉。",
+      "去掉相邻重复后得到序列b；若长度为1输出1；否则答案从2开始，对每个内部位置i，若b[i]−b[i−1]与b[i+1]−b[i]符号相反就加1，最后输出答案。"
+    ],
+    "en": [
+      "Inside a monotone run (non-increasing or non-decreasing), the absolute difference between its ends equals the sum of its adjacent absolute differences, so the inner points of a monotone run can all be deleted.",
+      "First merge runs of equal values into one; if a single value remains, the answer is 1. Otherwise the two ends and every point where a rise turns into a fall or a fall into a rise must stay, and everything else can go.",
+      "Remove adjacent duplicates to get b; if its length is 1 print 1; otherwise start the answer at 2 and add 1 for every inner position i where b[i] - b[i-1] and b[i+1] - b[i] have opposite signs; print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRemove consecutive equal values. If only one value remains the answer is 1; otherwise keep the first and last elements and every point where a strict rise turns into a fall or the other way round.\n\n## Proof of correctness\n\nWithin a monotone run, the difference of the endpoints equals the sum of all adjacent differences, so deleting interior points does not change the target. Skipping a strict turning point makes the triangle inequality strict, losing part of the sum, and no other deletion can make up for it, so every turning point must be kept; when the total variation is non-zero, the first and last extreme values must each be kept as well.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

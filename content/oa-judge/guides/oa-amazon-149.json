@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-149",
+  "packageChecksum": "3d6d368f287baa4dbcacd12a828fb9fd138d8c21006b22f1e05465d2be3cc75a",
+  "sourceContentHash": "a7910a70edf53da05751fb6c90981ca0226d0ad1e7a68a294e1553cebe2ba79a",
+  "editorialSha256": "5530330a93de517b3341623b34e215b8a5c0cde7b73cc9eb080a7b004f98d314",
+  "hints": {
+    "zh": [
+      "条件只涉及相邻两天的大小关系：某天左边连续window步都是前一天不小于后一天，右边连续window步都是前一天不大于后一天。这种连续满足的步数可以预先算好。",
+      "从左往右算出以每天结尾的非递增连续步数，从右往左算出以每天开头的非递减连续步数；两个步数都至少为window的日子就是理想日。",
+      "left[0]=0，若a[i-1]≥a[i]则left[i]=left[i-1]+1，否则为0；right[n-1]=0，若a[i]≤a[i+1]则right[i]=right[i+1]+1，否则为0；按下标升序输出所有left[i]≥window且right[i]≥window的i+1。两侧天数不够时步数自然不足，不用单独判断边界。"
+    ],
+    "en": [
+      "The condition only compares neighbouring days: the window steps before the day must each go from a day to a day that is not larger, and the window steps after it must each go to a day that is not smaller. Lengths of such unbroken runs can be computed in advance.",
+      "Scan left to right for the number of non-increasing steps ending at each day, and right to left for the number of non-decreasing steps starting at each day; a day is ideal exactly when both numbers are at least window.",
+      "left[0] = 0 and left[i] = left[i-1] + 1 when a[i-1] >= a[i], else 0; right[n-1] = 0 and right[i] = right[i+1] + 1 when a[i] <= a[i+1], else 0; print, in increasing order, every i+1 with left[i] >= window and right[i] >= window. A day too close to either end simply has too few steps, so no separate boundary check is needed."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA left scan computes, for each point, the length of the non-increasing run ending there; a right scan computes the length of the non-decreasing run starting there. A day qualifies when both contain at least window adjacent relations.\n\n## Proof of correctness\n\nThe two run lengths exactly encode the pairwise order relations over the full window on the left and on the right. The index boundaries are also reflected through the lengths, so the intersection of the two conditions is exactly the set of all ideal days by definition.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

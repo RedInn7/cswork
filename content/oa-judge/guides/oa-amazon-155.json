@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-155",
+  "packageChecksum": "5824022a6097077ad57a5789d8adfc2664c1674dbed5e28ba36e638f8d7e11a2",
+  "sourceContentHash": "ab25f044a61fc60f933171b6d82dc68b010fd01df2f131e658d2cfde858e37f3",
+  "editorialSha256": "f81450dc0e2c8e352d3ba61019d57791f45d229dd72719009affafb7ac7ff36f",
+  "hints": {
+    "zh": [
+      "子串里的每个字符都不能在子串外出现，所以子串的第一个字符必须位于它在整串中的首次出现位置；左端点最多只有26种可能。",
+      "固定左端点后向右扩展：一旦遇到首次出现位置在左端点之前的字符，这个左端点就不可能再合法，停止；否则记录已包含字符的最后出现位置的最大值，右端到达这个位置时就得到一个闭合的合法子串。",
+      "先求每个字母的首次和末次出现下标；对每个首次出现位置left，令end=left，right从left向右：若该字符首次出现位置小于left则停止；end更新为它与该字符末次出现位置的较大者；若right≥end且长度right−left+1小于n，就用这个长度更新答案。全部枚举完输出最大值，没有则为0。"
+    ],
+    "en": [
+      "No character of the substring may appear outside it, so the substring must start at the first occurrence of its first character; there are at most 26 possible left ends.",
+      "Fix a left end and extend to the right: once you meet a character whose first occurrence lies before the left end, this left end can never work, so stop; otherwise track the furthest last occurrence among the characters included so far, and whenever the right end reaches it you have a closed valid substring.",
+      "Record each letter's first and last index. For each first-occurrence index left, set end = left and move right from left: stop if the character's first occurrence is before left; raise end to that character's last occurrence; if right >= end and the length right - left + 1 is less than n, update the answer with that length. After all left ends, print the maximum, or 0 if there was none."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe left end can only be the first occurrence of some character, so there are at most 26 choices. Scan to the right from each of them and stop when a character whose first occurrence is earlier than the left end appears; maintain the furthest last occurrence of the characters seen, and when the right end covers all of them a closed segment is obtained. Exclude the whole string and take the maximum.\n\n## Proof of correctness\n\nThe character at a valid left end cannot appear outside, so the left end must be its first occurrence. If the scan includes a character that appeared earlier, this left end cannot become valid however far it is extended. Otherwise it suffices that the last occurrences of all included characters fall inside the segment, i.e. that the right end reaches their largest last position; this condition is necessary and sufficient. Enumerating all possible left ends and right ends and taking the maximum misses no solution.\n\n## Complexity\n\nTime O(26n), space O(n) including the input, auxiliary O(26)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-171",
+  "packageChecksum": "6d3958bfa4759d6a7d545540f59ef7ce298f7d866fa2dcda4c8e3ed0ec69a33f",
+  "sourceContentHash": "0253cc27a67520cebb63ec53538734f1f52ec37b92fb75e79c2bb722008bc5ef",
+  "editorialSha256": "8a3c0359b22d2f69a552c035555a2d1795639254d3d50dcb1f7b5156df5d8f68",
+  "hints": {
+    "zh": [
+      "每章需要被选中的次数是固定的：页数除以p向上取整。问题变成用最少的长度为k的连续窗口，让每章都被覆盖足够多次。",
+      "从左到右贪心：处理到某章时如果已有的覆盖次数不够，就把缺少的次数全部放在包含这一章且最靠右的窗口上，即从min(i,n−k)开始的窗口，这样对后面的章节帮助最大。",
+      "用差分数组记录覆盖在哪一章失效：维护当前生效的覆盖次数active，处理第i章时先减去在i失效的数量；need为页数除以p向上取整，若need大于active，差额delta计入答案，active加上delta，并在下标min(i,n−k)+k处记下这delta次覆盖失效。答案可能很大，用64位整数。"
+    ],
+    "en": [
+      "Each chapter must be chosen a fixed number of times: its pages divided by p, rounded up. The task becomes covering every chapter often enough with as few length-k windows as possible.",
+      "Go greedily from left to right: when a chapter is short of coverage, put all the missing coverings on the rightmost window that still contains it, the one starting at min(i, n-k), since that helps the later chapters most.",
+      "Use a difference array for where coverings expire: keep the number of active coverings, and at chapter i first subtract those expiring at i; let need be pages divided by p rounded up, and if need > active, add the difference delta to the answer and to active, and record that delta coverings expire at index min(i, n-k) + k. The answer can be large, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEach chapter needs ceil(pages/p) coverings. Scan from left to right; when the coverage is insufficient, choose the valid window of k chapters that covers it and lies as far right as possible, and add the missing amount in one batch.\n\n## Proof of correctness\n\nThe shortfall of the leftmost unsatisfied chapter is a number of coverings that any plan must provide. Moving those coverings to the rightmost valid window that still contains it does not affect the completion of the chapters already processed and helps the unprocessed chapters as much as possible, so it is no worse. A difference array records when coverings expire, so they are applied in batches instead of simulating day by day.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

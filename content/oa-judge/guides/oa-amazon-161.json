@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-161",
+  "packageChecksum": "8ce2395da5382bb6f04bfae453e1bdbcd95de2e00e9b398bf52434d54f6cbe3d",
+  "sourceContentHash": "085d50240d4032f209e0c53f8d14379d55e25a8a5524b49da50be4c0042ccec4",
+  "editorialSha256": "c3a48a70d43ef50fc58864a4057eea93e1e4a13cd2a528d4b1bf1a3b03cef484",
+  "hints": {
+    "zh": [
+      "每科真正需要补的题数是max(0, needed−answered)，与其他科目无关；想让通过的科目尽量多，就应该先挑缺口小的科目。",
+      "把所有缺口升序排序，从最小的开始依次支付，直到剩下的q不够支付下一个缺口为止，已经支付的科目数就是答案。",
+      "计算每科缺口max(0,needed[i]−answered[i])并升序排序；依次遍历：若缺口大于q就停止，否则q减去缺口、答案加1。已经达标的科目缺口为0，会被自然计入。"
+    ],
+    "en": [
+      "A subject really needs max(0, needed - answered) more answers, independent of the other subjects; to pass as many subjects as possible, prefer the ones with the smallest gap.",
+      "Sort all gaps ascending and pay for them from the smallest, until what is left of q cannot cover the next gap; the number of subjects paid for is the answer.",
+      "Compute each gap max(0, needed[i] - answered[i]) and sort ascending; go through them: stop when a gap exceeds q, otherwise subtract it from q and count one more subject. Subjects already passing have gap 0 and are counted automatically."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute each subject's non-negative shortfall, sort them in ascending order, and pay for the cheapest subjects first.\n\n## Proof of correctness\n\nAny choice of t subjects needs at least the sum of the t smallest shortfalls, and choosing those subjects meets this lower bound exactly. Adding subjects one by one until the next would exceed q gives the maximum number of subjects that can pass; subjects with zero shortfall are counted automatically.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

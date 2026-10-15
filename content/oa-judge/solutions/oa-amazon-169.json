@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-169",
+  "packageChecksum": "bf1755de766416887732ad612870d05f439c1512f5544122bca3c7bd3a0da1b1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto& v : a) cin >> v;\n    sort(a.begin(), a.end());\n    // Each weight with count c needs ceil(c / 3) trips; a count of 1 is impossible.\n    long long trips = 0;\n    for (int i = 0, j; i < n; i = j) {\n        for (j = i; j < n && a[j] == a[i]; j++) {}\n        int c = j - i;\n        if (c == 1) {\n            cout << -1 << \"\\n\";\n            return 0;\n        }\n        trips += (c + 2) / 3;\n    }\n    cout << trips << \"\\n\";\n}\n",
+      "sha256": "4fc9713c431ff97aee525202c6058789ff18a09302fedf31b9b3adafb8577669"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static final InputStream IN = System.in;\n    private static final byte[] BUF = new byte[1 << 16];\n    private static int len = 0, ptr = 0;\n\n    private static int read() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    private static int skipSpaces() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        return c;\n    }\n\n    private static long nextLong() throws IOException {\n        int c = skipSpaces();\n        boolean negative = c == '-';\n        if (negative) c = read();\n        long value = 0;\n        while (c >= '0' && c <= '9') {\n            value = value * 10 + (c - '0');\n            c = read();\n        }\n        return negative ? -value : value;\n    }\n\n    private static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        // Each weight with count c needs ceil(c / 3) trips; a count of 1 is impossible.\n        long trips = 0;\n        for (int i = 0, j; i < n; i = j) {\n            for (j = i; j < n && a[j] == a[i]; j++) {}\n            int c = j - i;\n            if (c == 1) {\n                System.out.println(-1);\n                return;\n            }\n            trips += (c + 2) / 3;\n        }\n        System.out.println(trips);\n    }\n}\n",
+      "sha256": "23295b0747b48f6b734cfffae46522823ea017b1c70efb6dc5a2397155913790"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\n// next returns the next whitespace-separated token of the input.\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\ttoken := next()\n\tnegative := len(token) > 0 && token[0] == '-'\n\tif negative {\n\t\ttoken = token[1:]\n\t}\n\tvalue := 0\n\tfor _, c := range token {\n\t\tvalue = value*10 + int(c-'0')\n\t}\n\tif negative {\n\t\treturn -value\n\t}\n\treturn value\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tslices.Sort(a)\n\t// Each weight with count c needs ceil(c / 3) trips; a count of 1 is impossible.\n\ttrips := 0\n\tfor i := 0; i < n; {\n\t\tj := i\n\t\tfor j < n && a[j] == a[i] {\n\t\t\tj++\n\t\t}\n\t\tc := j - i\n\t\tif c == 1 {\n\t\t\tos.Stdout.WriteString(\"-1\\n\")\n\t\t\treturn\n\t\t}\n\t\ttrips += (c + 2) / 3\n\t\ti = j\n\t}\n\tos.Stdout.WriteString(strconv.Itoa(trips) + \"\\n\")\n}\n",
+      "sha256": "6fbc7218a6eb0adee984cf001e60c89db8a1f5107c80e5bcc5bf028fbb504cc6"
+    }
+  ]
+}

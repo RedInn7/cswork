@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-159",
+  "packageChecksum": "68d225475cb43b919b2d5f3ae269aa5b387b77d68ae6b07122306aeb6f340083",
+  "sourceContentHash": "9fa5132ca774c6f551f686fccfd1820678f717912718397b8a5007a2c6653fd1",
+  "editorialSha256": "fbeac1c4da7c939696cda509fbbba8b3bc65e3f94585552b464926af44c381d5",
+  "hints": {
+    "zh": [
+      "前缀是一个字符一个字符扩展出来的，每加一个字符只改变一个字母的次数；字母只有26个，每个前缀都可以直接检查谁是最高频。",
+      "维护26个字母的当前次数，以及每个字母成为最高频的累计次数；每加入一个字符后求出当前的最大次数，给所有次数等于它的字母（包括并列的）各加1。",
+      "遍历字符串：对应字母的次数加1；求26个次数中的最大值top；对每个次数等于top的字母，其累计值加1。遍历结束后输出26个累计值中的最大值。"
+    ],
+    "en": [
+      "Prefixes grow one character at a time, and each new character changes the count of just one letter; with only 26 letters you can check every prefix directly for who is most frequent.",
+      "Keep the current count of each of the 26 letters and how many times each letter has been most frequent; after adding a character, find the current maximum count and add 1 to every letter whose count equals it, ties included.",
+      "Walk the string: increase the count of the current letter; let top be the largest of the 26 counts; add 1 to the tally of every letter whose count equals top. At the end print the largest of the 26 tallies."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the 26 frequencies and the accumulated counts; each time a character is added, add one to every character tied for the highest frequency.\n\n## Proof of correctness\n\nThe loop processes exactly all non-empty prefixes, and the frequencies equal the true counts in that prefix; checking one by one which counts equal the maximum implements exactly the definition with ties, and the result is the maximum of the accumulated counts.\n\n## Complexity\n\nTime O(26n), auxiliary space O(26)."
+}

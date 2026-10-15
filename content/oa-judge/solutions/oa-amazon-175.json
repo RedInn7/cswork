@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-175",
+  "packageChecksum": "4ec4a145987a4f2acbfaebbc1d3c3a3ffe97e0aee5705139687bc14f74b52fce",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    long long gap;\n    cin >> s >> gap;\n    long long counts[26] = {0};\n    for (char c : s) counts[c - 'a']++;\n    long long f = *max_element(counts, counts + 26), c = count(counts, counts + 26, f);\n    // f - 1 full rounds of length gap + 1, then the c most frequent types once more.\n    cout << max((long long)s.size(), (f - 1) * (gap + 1) + c) << \"\\n\";\n}\n",
+      "sha256": "3810e9728dc83719b6e7399a214b3968f8ede37a55ccf9c9e5b77107f3e9169d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    private static final InputStream IN = System.in;\n    private static final byte[] BUF = new byte[1 << 16];\n    private static int len = 0, ptr = 0;\n\n    private static int read() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    private static int skipSpaces() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        return c;\n    }\n\n    private static String next() throws IOException {\n        int c = skipSpaces();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    private static long nextLong() throws IOException {\n        int c = skipSpaces();\n        boolean negative = c == '-';\n        if (negative) c = read();\n        long value = 0;\n        while (c >= '0' && c <= '9') {\n            value = value * 10 + (c - '0');\n            c = read();\n        }\n        return negative ? -value : value;\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        long gap = nextLong();\n        long[] counts = new long[26];\n        for (int i = 0; i < s.length(); i++) counts[s.charAt(i) - 'a']++;\n        long f = 0, c = 0;\n        for (long v : counts) f = Math.max(f, v);\n        for (long v : counts) if (v == f) c++;\n        // f - 1 full rounds of length gap + 1, then the c most frequent types once more.\n        System.out.println(Math.max(s.length(), (f - 1) * (gap + 1) + c));\n    }\n}\n",
+      "sha256": "34e9f5154087dac7d79356d6dbb011b37f4614a20f71f7ec8f7c8cc2a032370c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\n// next returns the next whitespace-separated token of the input.\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\ttoken := next()\n\tnegative := len(token) > 0 && token[0] == '-'\n\tif negative {\n\t\ttoken = token[1:]\n\t}\n\tvalue := 0\n\tfor _, c := range token {\n\t\tvalue = value*10 + int(c-'0')\n\t}\n\tif negative {\n\t\treturn -value\n\t}\n\treturn value\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := next()\n\tgap := nextInt()\n\tvar counts [26]int\n\tfor _, ch := range s {\n\t\tcounts[ch-'a']++\n\t}\n\tf := slices.Max(counts[:])\n\tc := 0\n\tfor _, v := range counts {\n\t\tif v == f {\n\t\t\tc++\n\t\t}\n\t}\n\t// f - 1 full rounds of length gap + 1, then the c most frequent types once more.\n\tos.Stdout.WriteString(strconv.Itoa(max(len(s), (f-1)*(gap+1)+c)) + \"\\n\")\n}\n",
+      "sha256": "d45b5c60b593be35cf55e8c4b4663b35d5ac37f2309c5acd6279a4fb62cf3c88"
+    }
+  ]
+}

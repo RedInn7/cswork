@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-16",
+  "packageChecksum": "b39def9cbdf042ad65b57177d026044b7353f9afa40153f924759b56e7576861",
+  "sourceContentHash": "953b3e20a4845cd537061822d0e4038bf033b002fd8693837836e04767a4539f",
+  "editorialSha256": "b65c8a2b9b53d069849f9305de31b02325b0cf70c71644889b2d5945a7011ab9",
+  "hints": {
+    "zh": [
+      "价格最多2000，目标总价T最多4000，完全可以枚举T。固定T之后，价格x只能和价格T−x配对，不同的价格对之间互不干扰。",
+      "对每个T：价格恰为T的商品各自单独成包；价格x小于T−x时两组能配出min(cnt[x],cnt[T−x])包；x等于T−x时同价配对，能配出cnt[x]除以2包。把它们加起来，对所有T取最大值。",
+      "先统计每个价格的出现次数cnt；T从1枚举到最大价格的两倍：包数先取cnt[T]，再对x从max(1,T−最大价格)到min(最大价格,(T−1)/2)累加min(cnt[x],cnt[T−x])，若T为偶数再加上cnt[T/2]除以2；用它更新答案。总计算量约为值域的平方，足够快。"
+    ],
+    "en": [
+      "Prices are at most 2000, so the target T is at most 4000 and can simply be enumerated. With T fixed, price x can only pair with price T-x, and different price pairs do not interfere.",
+      "For each T: every item priced exactly T is a bundle by itself; prices x < T-x give min(cnt[x], cnt[T-x]) bundles; when x = T-x, items of that price pair up among themselves for cnt[x]/2 bundles. Add these up and take the best T.",
+      "Count each price into cnt. For T from 1 to twice the maximum price: start with cnt[T], add min(cnt[x], cnt[T-x]) for x from max(1, T - max) to min(max, (T-1)/2), and if T is even add cnt[T/2]/2; update the answer. The work is about the square of the value range, which is fast enough."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate T = 1..2max(cost), counting the single-item bundles priced T. For each pair of distinct complementary prices take the smaller frequency; for equal prices take half the frequency.\n\n## Proof of correctness\n\nOnce T is fixed, a price can only be paired with its unique complementary price, and different pairs share no items. Prices are positive, so a single item priced T cannot take part in a two-item bundle of total T. Therefore the maximum number of bundles of each group can be taken independently and summed, and then T is enumerated.\n\n## Complexity\n\nTime O(n+V^2), space O(V), V<=2000."
+}

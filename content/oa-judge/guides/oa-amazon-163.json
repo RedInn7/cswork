@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-163",
+  "packageChecksum": "c01224ec9e3444cb66e8ebe0ebbe7eec8dae616bf120845e6c3a3f95751d94de",
+  "sourceContentHash": "c0554f29a064fe740a58b27f9ca176b03f18a7b61c7a02492c88ee0dbb91248f",
+  "editorialSha256": "895d7dc2f996bf3964db1f253106c4efddbc5fa35356f3b4c4ebaab9faf9d872",
+  "hints": {
+    "zh": [
+      "能组成k批时，总可以把批大小改成1、2、……、k，所以k批至少需要k(k+1)/2件；同时每批每种品类最多1件，又限制了数量特别多的品类不能被充分利用。",
+      "把数量升序排序，逐个加入品类并累计总件数；当前已有g批时，只要累计总件数不少于(g+1)(g+2)/2，就能多组成一批。每加入一个品类最多让批数加1，这个上限正好处理了每批每类最多一件的限制。",
+      "数量升序排序，total=0，groups=0；对每个数量v：total加上v，若total不少于(groups+1)(groups+2)/2，则groups加1。最后输出groups。total可能很大，用64位整数。"
+    ],
+    "en": [
+      "If k batches are possible, their sizes can always be changed to 1, 2, ..., k, so k batches need at least k(k+1)/2 items; at the same time each batch takes at most one item per category, which limits how much a very large category can help.",
+      "Sort the quantities ascending and add the categories one at a time, keeping the running total of items; with g batches so far, one more batch is possible as soon as the total reaches (g+1)(g+2)/2. Each new category raises the batch count by at most one, and that cap is exactly what handles the one-item-per-category rule.",
+      "Sort the quantities ascending, with total = 0 and groups = 0; for each quantity v add v to total, and if total >= (groups+1)(groups+2)/2 increase groups by one. Print groups at the end. The total can be large, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess the quantities in ascending order, accumulating the available items. If the triangular total demand of the next batch can be paid, add 1 batch; each added category increases the number of batches by at most 1.\n\n## Proof of correctness\n\nIf k batches are feasible, the batch sizes can be shrunk to 1..k. For this staircase demand, the matching condition on category capacities is: for every t<=k, the truncated capacity sum sum(min(a_i,t)) is at least t(2k-t+1)/2, the requirement of the last t batches. When capacities are scanned in ascending order, the optimal batch count of the processed categories increases by at most 1; the new capacity is no less than the previous ones, so apart from the total-item condition the truncated conditions are guaranteed by the previous round's feasibility and the sorting. Therefore one more batch is possible exactly when the cumulative item count reaches (k+1)(k+2)/2, and impossible otherwise.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

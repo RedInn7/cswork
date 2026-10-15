@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-177",
+  "packageChecksum": "bf5499a3905a56b89717fd3d6ab77110d9f3b79f057514d897256645e71db24a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, k;\n    cin >> n >> k;\n    vector<long long> a(n);\n    for (auto& v : a) cin >> v;\n    sort(a.begin(), a.end());\n    // Each window of k consecutive apples: walk to its nearer end, then across it.\n    long long answer = LLONG_MAX;\n    for (int i = 0; i + k <= n; i++)\n        answer = min(answer, a[i + k - 1] - a[i] + min(llabs(a[i]), llabs(a[i + k - 1])));\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "76e6b187368a764de66b2f2515d0ceb470c802fb72ea41c7792038cb31775ddb"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    private static final InputStream IN = System.in;\n    private static final byte[] BUF = new byte[1 << 16];\n    private static int len = 0, ptr = 0;\n\n    private static int read() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    private static int skipSpaces() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        return c;\n    }\n\n    private static long nextLong() throws IOException {\n        int c = skipSpaces();\n        boolean negative = c == '-';\n        if (negative) c = read();\n        long value = 0;\n        while (c >= '0' && c <= '9') {\n            value = value * 10 + (c - '0');\n            c = read();\n        }\n        return negative ? -value : value;\n    }\n\n    private static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), k = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        // Each window of k consecutive apples: walk to its nearer end, then across it.\n        long answer = Long.MAX_VALUE;\n        for (int i = 0; i + k <= n; i++)\n            answer = Math.min(answer, a[i + k - 1] - a[i] + Math.min(Math.abs(a[i]), Math.abs(a[i + k - 1])));\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "10abc9fecc947c9e1e02f986f3957f06e20020b0c1af9ce4679120020e83cd79"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\n// next returns the next whitespace-separated token of the input.\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\ttoken := next()\n\tnegative := len(token) > 0 && token[0] == '-'\n\tif negative {\n\t\ttoken = token[1:]\n\t}\n\tvalue := 0\n\tfor _, c := range token {\n\t\tvalue = value*10 + int(c-'0')\n\t}\n\tif negative {\n\t\treturn -value\n\t}\n\treturn value\n}\n\nfunc abs(x int) int {\n\tif x < 0 {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, k := nextInt(), nextInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tslices.Sort(a)\n\t// Each window of k consecutive apples: walk to its nearer end, then across it.\n\tanswer := -1\n\tfor i := 0; i+k <= n; i++ {\n\t\tcost := a[i+k-1] - a[i] + min(abs(a[i]), abs(a[i+k-1]))\n\t\tif answer < 0 || cost < answer {\n\t\t\tanswer = cost\n\t\t}\n\t}\n\tos.Stdout.WriteString(strconv.Itoa(answer) + \"\\n\")\n}\n",
+      "sha256": "2a771a0926dcd63fb68bb7601adf233de1a7e0bd3234a2a2ba2e6e8ad7455600"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-162",
+  "packageChecksum": "3e00bdacbd89f92ad8308b89a5ae48b3ac2069ec554df35d8cd3c9448a98343b",
+  "sourceContentHash": "4ab61042e41c5631f69f21bcc535219b55d47f8d466f86938b3fd0ef2b1a694d",
+  "editorialSha256": "5e1bf3d91539c7dd119ad19f0756649382323b82f44f96a14ccae2a9febe10a9",
+  "hints": {
+    "zh": [
+      "按子数组的末项分组计数：以下标i结尾的子数组是平衡的，当且仅当它的起点不晚于i左边最近的严格更大元素的位置。",
+      "用单调栈（从栈底到栈顶严格递减）求每个位置左边最近的严格更大元素的下标p；以i结尾的平衡子数组个数就是p+1（下标从0开始），找不到则为0。",
+      "从左到右处理a[i]：弹出栈顶所有值不大于a[i]的下标；若栈非空，答案加上栈顶下标加1；再把i压栈。总数最多约为n的平方的一半，要用64位整数。"
+    ],
+    "en": [
+      "Count by the last element: a subarray ending at index i is balanced exactly when it starts no later than the nearest strictly greater element to the left of i.",
+      "A monotonic stack (strictly decreasing from bottom to top) gives, for each position, the index p of the nearest strictly greater element on its left; the balanced subarrays ending at i number p+1 (0-based), or 0 when there is none.",
+      "Process a[i] from left to right: pop every index whose value is <= a[i]; if the stack is not empty, add its top index plus 1 to the answer; push i. The total can reach about n^2/2, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain a monotonically decreasing stack of indices to find, for each last item, the position p of the nearest strictly greater value on its left; that last item contributes p+1 starting points.\n\n## Proof of correctness\n\nA subarray contains an element larger than its last item only when its start is no later than the nearest greater position; there are exactly p+1 such starts. Popping the elements not greater than the current value does not affect later nearest-greater queries. Counting grouped by the last item counts every subarray exactly once.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

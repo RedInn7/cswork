@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-179",
+  "packageChecksum": "abf15f9bed5c17cdc75078678b55e4b257a82dc8b918c534f33eb220d083d8ba",
+  "sourceContentHash": "de3ad8f27a9406d906883bba13433b0f4e510c22a5b7912b9793847e5242cf27",
+  "editorialSha256": "05d3e5c8f7d9a7695af1ff1f80328075771b872033d405d58379aa733950eabd",
+  "hints": {
+    "zh": [
+      "所有商品串等长w，拼接结果会把history的一段切成p个长度为w的词；只要这p个词作为多重集合恰好等于商品集合，就是一个合法起点。",
+      "按起点对w取余分成w组，每组内按整词滑动窗口：遇到不是商品的词就清空窗口，从下一个词重新开始；加入某个词后若它的次数超过目标次数，就从左边逐词移出直到不超；窗口内词数等于p时计数加1。",
+      "先统计每种商品串的目标次数；对offset从0到w−1，令left=offset，right从offset开始每次跳w：取出history中从right开始、长度为w的词，若它不在目标中就清空计数、窗口词数归零，并令left=right+w；否则该词次数加1、窗口词数加1，然后在该词次数超标时移出left处的词并让left加w；窗口词数等于p时答案加1。"
+    ],
+    "en": [
+      "All products have the same length w, so a concatenation cuts a stretch of history into p words of length w; a start position is valid exactly when those p words, as a multiset, equal the products.",
+      "Split start positions into w classes by their remainder modulo w and slide a window of whole words within each class: an unknown word empties the window, which restarts after it; after adding a word whose count now exceeds its target, drop words from the left until it no longer does; whenever the window holds p words, count one.",
+      "Count each product's target multiplicity. For offset from 0 to w-1, set left = offset and step right from offset by w: take the length-w word of history starting at right; if it is not a product, clear the counts and the word total and set left = right + w; otherwise add one to its count and to the word total, then, while its count exceeds the target, remove the word at left and advance left by w; when the word total equals p, add one to the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each remainder of the word length, maintain a sliding window that moves by whole words: reset it when an unrelated word appears, shrink its left end when some word is in excess, and count when the number of words in the window equals p.\n\n## Proof of correctness\n\nPartitioning start positions by their remainder modulo the word length covers every possible position. The window always contains only target words, none more often than in the target, so when its word count reaches p it equals the target multiset exactly. Shrinking only removes a surplus prefix that cannot belong to a valid full window, and every valid start is counted exactly once.\n\n## Complexity\n\nTime O(|history| * word length + total product length), space O(total product length + |history|)."
+}

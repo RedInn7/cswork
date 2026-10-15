@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-157",
+  "packageChecksum": "f7d47dd1986ebe4a0da82cba4dfb3953307e6cdcbc6feca2007cc70ebef89097",
+  "sourceContentHash": "5982f1052b486ff74ea32191bf1c9381131d5a8a9a16d4f9b110a90c8bfe668d",
+  "editorialSha256": "4e120af3c0b74b79849b30633cf95a14a94c33fbaabe3fc198bec82229f33144",
+  "hints": {
+    "zh": [
+      "原串的最低前缀余额决定至少要补多少个左括号，总余额再决定至少要补多少个右括号；除此之外多补的括号必须一左一右成对出现，整体才能平衡。",
+      "必补的部分：左括号和右括号各按评分从高到低取所需的个数。剩下的左、右括号也各自按评分降序排列，第j个额外左括号与第j个额外右括号组成一对，只要这一对的评分和为正就加入。",
+      "扫描原串得到总余额balance和最低前缀余额low，必补左括号数L=−low（low不大于0），必补右括号数R=L+balance；把kit的评分按括号类型分成两组并各自降序排序；答案先加上左组前L个和右组前R个；然后从两组各自的下一个开始成对相加，和不大于0就停止。总和需要64位整数。"
+    ],
+    "en": [
+      "The lowest prefix balance of the original string fixes how many opening brackets must be added, and the total balance then fixes how many closing ones; anything added beyond that has to come as one opening plus one closing bracket to stay balanced.",
+      "For the mandatory part, take the required number of opening and closing brackets with the highest ratings. Sort the remaining opening and closing brackets by rating, descending, pair the j-th extra opening bracket with the j-th extra closing one, and add a pair only while its rating sum is positive.",
+      "Scan the original string for the total balance and the lowest prefix balance low; the mandatory counts are L = -low (low <= 0) opening and R = L + balance closing brackets. Split the kit's ratings by bracket type and sort each group descending; add the first L of the opening group and the first R of the closing group; then add pairs starting right after those, stopping at the first pair whose sum is <= 0. Use 64-bit integers for the total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst compute how many opening and closing brackets must be added; for each kind, sort the ratings in descending order and take the required number. After that, extra choices must come in opening-closing pairs; add pairs one by one while their gain is positive.\n\n## Proof of correctness\n\nLet the minimum prefix balance of the original string be m and its total balance b. Any plan must add at least L=max(0,-m) opening brackets and R=L+b closing brackets; putting all the opening ones at the front and all the closing ones at the end achieves this. The numbers of extra brackets of the two kinds are equal. For a fixed number of choices, taking the highest ratings is optimal, and the gains of successive pairs are non-increasing, so it suffices to take the pairs with positive gain.\n\n## Complexity\n\nTime O(n + m log m), space O(n + m)."
+}

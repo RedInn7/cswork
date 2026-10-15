@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-180",
+  "packageChecksum": "d558a64c915a0e798a85a51f8561a66afc947e3afbe274bf3ae161766a69162f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // 1 (the original) plus the number of index pairs whose characters differ.\n    long long seen[26] = {0}, answer = 1;\n    for (size_t i = 0; i < s.size(); i++) {\n        int c = s[i] - 'a';\n        answer += (long long)i - seen[c];\n        seen[c]++;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "d8674425006583b221200a4dc13942cb9b6984823c2bce940050c6b02989bbc9"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    private static final InputStream IN = System.in;\n    private static final byte[] BUF = new byte[1 << 16];\n    private static int len = 0, ptr = 0;\n\n    private static int read() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    private static int skipSpaces() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        return c;\n    }\n\n    private static String next() throws IOException {\n        int c = skipSpaces();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        // 1 (the original) plus the number of index pairs whose characters differ.\n        long[] seen = new long[26];\n        long answer = 1;\n        for (int i = 0; i < s.length(); i++) {\n            int c = s.charAt(i) - 'a';\n            answer += i - seen[c];\n            seen[c]++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "fd6db1663c4cf0aa6ad70b4502a3afd3687484e6659bd3ab02f9946c8917051d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\n// next returns the next whitespace-separated token of the input.\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\t// 1 (the original) plus the number of index pairs whose characters differ.\n\tvar seen [26]int\n\tanswer := 1\n\tfor i, ch := range next() {\n\t\tanswer += i - seen[ch-'a']\n\t\tseen[ch-'a']++\n\t}\n\tos.Stdout.WriteString(strconv.Itoa(answer) + \"\\n\")\n}\n",
+      "sha256": "212df42885b4788ec2e78865e215815eb6966cb0a1b7d50ad6d029c4db7a09b1"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-151",
+  "packageChecksum": "251b3b38593f23738d233bb6b566cec56c6c53335be9018b4b52bb0302519929",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, k;\n    cin >> n >> k;\n    // Residue class r of the index takes increasing low values when r is even, decreasing high values when odd.\n    vector<int> result(n);\n    int low = 1, high = n;\n    for (int residue = 0; residue < k; residue++)\n        for (int index = residue; index < n; index += k)\n            result[index] = residue % 2 == 0 ? low++ : high--;\n    string out;\n    for (int i = 0; i < n; i++) {\n        if (i) out += ' ';\n        out += to_string(result[i]);\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "7e3134ac983b1f03c5eee7f5b33376f903da9051f433164193953d1f95354937"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    private static final InputStream IN = System.in;\n    private static final byte[] BUF = new byte[1 << 16];\n    private static int len = 0, ptr = 0;\n\n    private static int read() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    private static int skipSpaces() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        return c;\n    }\n\n    private static long nextLong() throws IOException {\n        int c = skipSpaces();\n        boolean negative = c == '-';\n        if (negative) c = read();\n        long value = 0;\n        while (c >= '0' && c <= '9') {\n            value = value * 10 + (c - '0');\n            c = read();\n        }\n        return negative ? -value : value;\n    }\n\n    private static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), k = nextInt();\n        // Residue class r of the index takes increasing low values when r is even, decreasing high values when odd.\n        int[] result = new int[n];\n        int low = 1, high = n;\n        for (int residue = 0; residue < k; residue++)\n            for (int index = residue; index < n; index += k)\n                result[index] = residue % 2 == 0 ? low++ : high--;\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            if (i > 0) out.append(' ');\n            out.append(result[i]);\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "a261b82ece6da547a8b6bf151e0c35e2ffcc9b379fcf63b36bab9167091049a1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\n// next returns the next whitespace-separated token of the input.\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\ttoken := next()\n\tnegative := len(token) > 0 && token[0] == '-'\n\tif negative {\n\t\ttoken = token[1:]\n\t}\n\tvalue := 0\n\tfor _, c := range token {\n\t\tvalue = value*10 + int(c-'0')\n\t}\n\tif negative {\n\t\treturn -value\n\t}\n\treturn value\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, k := nextInt(), nextInt()\n\t// Residue class r of the index takes increasing low values when r is even, decreasing high values when odd.\n\tresult := make([]int, n)\n\tlow, high := 1, n\n\tfor residue := 0; residue < k; residue++ {\n\t\tfor index := residue; index < n; index += k {\n\t\t\tif residue%2 == 0 {\n\t\t\t\tresult[index] = low\n\t\t\t\tlow++\n\t\t\t} else {\n\t\t\t\tresult[index] = high\n\t\t\t\thigh--\n\t\t\t}\n\t\t}\n\t}\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor i, v := range result {\n\t\tif i > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(strconv.Itoa(v))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "d8492878140866800fda3ea2fa062a77d9596199bd55cbed29b1a30fa11fe173"
+    }
+  ]
+}
