@@ -22,11 +22,17 @@ import { track } from '@/lib/analytics';
 import { stopDemos } from '@/lib/route-stops';
 import '@/app/problem-aids.css';
 
-const LEVELS = [
+const LEVELS: readonly (readonly [string, string])[] = [
   ['观察', 'Observation'],
   ['关键不变量', 'Key invariant'],
   ['步骤', 'Steps'],
-] as const;
+];
+/** An OA guide's ladder (GET problems' oaHints): its middle hint is the approach. */
+export const OA_LEVELS: readonly (readonly [string, string])[] = [
+  ['观察', 'Observation'],
+  ['思路', 'Approach'],
+  ['步骤', 'Steps'],
+];
 
 /**
  * The ladder's memory, kept by the workspace: switching to the history tab or to the editor
@@ -57,7 +63,7 @@ const secondsOn = (userId: string, problemId: string, openedAt: number) =>
   Math.max(timerSeconds(userId, problemId) ?? 0, (Date.now() - openedAt) / 1000);
 
 /**
- * Line 500's three hints, opened one at a time: hint 1 any time, hint 2 after a failed
+ * Three hints (Line 500's, or an OA guide's), opened one at a time: hint 1 any time, hint 2 after a failed
  * formal submission or 10 minutes on the problem, hint 3 after two failures. A locked
  * hint says what opens it and can still be shown after a confirm.
  */
@@ -68,6 +74,7 @@ export function HintLadder({
   ladder: { shown, setShown, failed, openedAt },
   english,
   stop,
+  levels = LEVELS,
 }: {
   problemId: string;
   userId: string;
@@ -76,6 +83,8 @@ export function HintLadder({
   english: boolean;
   /** The problem's Line 500 stop: its /topics page may animate the pattern. */
   stop?: string | null;
+  /** Each hint's name, Chinese and English; Line 500's by default. */
+  levels?: readonly (readonly [string, string])[];
 }) {
   const list = hints[english ? 'en' : 'zh'];
   const [confirm, setConfirm] = useState(false);
@@ -120,7 +129,7 @@ export function HintLadder({
           {english ? 'Step-by-step hints' : '分级提示'}
         </strong>
         <span className="cs-hint-ladder-lamps" aria-hidden="true">
-          {LEVELS.map((_, i) => (
+          {levels.map((_, i) => (
             <i
               key={i}
               data-state={
@@ -130,7 +139,7 @@ export function HintLadder({
           ))}
         </span>
         <span className="cs-hint-ladder-count">
-          {shown}/{LEVELS.length}
+          {shown}/{levels.length}
         </span>
       </div>
       <ol id="hint-ladder-list" className="cs-hint-ladder-list">
@@ -146,15 +155,15 @@ export function HintLadder({
             <div>
               <strong>
                 {english
-                  ? `Hint ${i + 1} · ${LEVELS[i][1]}`
-                  : `提示 ${i + 1} · ${LEVELS[i][0]}`}
+                  ? `Hint ${i + 1} · ${levels[i][1]}`
+                  : `提示 ${i + 1} · ${levels[i][0]}`}
               </strong>
               <p lang={english ? 'en' : 'zh'}>{hint}</p>
             </div>
           </li>
         ))}
       </ol>
-      {next <= LEVELS.length &&
+      {next <= levels.length &&
         (next <= unlocked ? (
           <button
             className="cs-hint-ladder-next"

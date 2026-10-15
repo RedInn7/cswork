@@ -64,7 +64,7 @@ import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-
 import { SubmissionNote } from './submission-note';
 import { AskedReport, communityProblem } from './problem-community';
 import { SolutionPosts, SolutionsTab } from './solution-posts';
-import { HintLadder, useHintLadder } from './hint-ladder';
+import { HintLadder, OA_LEVELS, useHintLadder } from './hint-ladder';
 import { AiCaseIdeas, AiComplexity, AiTutor, AskAiSelection, useAiTutor, type AiContext } from './ai-tutor';
 import { ProblemMeta } from './problem-meta';
 import { SimilarProblems } from './similar-problems';
@@ -1750,8 +1750,8 @@ function Workspace({
             settings={settings}
             discussion={!!boot.person && communityProblem(problem.id)}
           />
-        ) : leftTab === 'editorial' ? (
-          <OaEditorial key={problem.id} problemId={problem.id} />
+        ) : leftTab === 'editorial' && !examMode ? (
+          <OaEditorial key={`editorial:${problem.id}`} problemId={problem.id} english={uiEnglish} language={language} />
         ) : leftTab === 'solutions' && boot.person && !examMode ? (
           <SolutionPosts
             key={`${problem.id}:${solutionsLanguage}`}
@@ -1820,7 +1820,7 @@ function Workspace({
                   {uiEnglish ? 'Topics' : '主题'}
                 </button>
               )}
-              {!examMode && !sourceBody && statement.hints.length > 0 && (
+              {!examMode && !sourceBody && !problem.oaHints && statement.hints.length > 0 && (
                 <button
                   className="cs-statement-pill"
                   aria-expanded={hintsOpen}
@@ -1947,7 +1947,7 @@ function Workspace({
                 </>
               )}
             </div>
-            {!examMode && !sourceBody && hintsOpen && statement.hints.length > 0 && (
+            {!examMode && !sourceBody && !problem.oaHints && hintsOpen && statement.hints.length > 0 && (
               <div className="cs-hints" id="problem-hints">
                 <div>
                   <Lightbulb size={17} />
@@ -2051,6 +2051,17 @@ function Workspace({
                 ladder={hintLadder}
                 english={uiEnglish}
                 stop={problem.stop}
+              />
+            )}
+            {/* An OA guide's ladder; the server dropped the package's own hints for it. */}
+            {problem.oaHints && !examMode && (
+              <HintLadder
+                problemId={problem.id}
+                userId={userId}
+                hints={problem.oaHints}
+                ladder={hintLadder}
+                english={uiEnglish}
+                levels={OA_LEVELS}
               />
             )}
             {/* Off unless the server has AI configured; never during a mock OA or on SQL problems. */}
