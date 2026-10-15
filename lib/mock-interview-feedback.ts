@@ -71,6 +71,13 @@ export const VERDICTS: [VerdictId, Text][] = [
   ['yes', ['倾向通过', 'Lean hire']],
   ['strong-yes', ['强烈推荐', 'Strong hire']],
 ];
+/** The same ids on a role-play's report, where the verdict rates the conversation, not a hire. */
+export const ROLEPLAY_VERDICTS: [VerdictId, Text][] = [
+  ['strong-no', ['处理得差', 'Handled poorly']],
+  ['no', ['有待加强', 'Needs work']],
+  ['yes', ['处理得不错', 'Handled well']],
+  ['strong-yes', ['处理得出色', 'Handled very well']],
+];
 
 export type Feedback = {
   /** The set it was written for: its seed and re-rolls, as in the link's `set` and `rr`. */

@@ -17,7 +17,7 @@ import {
   type KindId, type Text,
 } from '@/lib/mock-interview';
 import {
-  RUBRIC, VERDICTS, decodeFeedback, encodeFeedback, forSet, questionTag, rubricAverage, rubricFor, type Feedback,
+  ROLEPLAY_VERDICTS, RUBRIC, VERDICTS, decodeFeedback, encodeFeedback, forSet, questionTag, rubricAverage, rubricFor, type Feedback,
   type RubricId,
 } from '@/lib/mock-interview-feedback';
 import {
@@ -95,7 +95,7 @@ type Past = {
   name: Text;
   company: string | null;
   at: number;
-  items: { id: string; title: string; kind: KindId; seconds: number; minutes: number; rating: number | null }[];
+  items: { id: string; title: string; titleZh?: string; kind: KindId; seconds: number; minutes: number; rating: number | null }[];
   /** An interviewer's feedback saved with this set: the `#fb=` value. */
   feedback?: string;
   /** The AI interviewer's report on this set, whole: the same encoding, never cut to fit a link. */
@@ -669,7 +669,7 @@ function Session({
       at: Date.now(),
       items: data.slots.flatMap((s, i) =>
         s.item
-          ? [{ id: s.item.id, title: s.item.title, kind: s.kind, seconds: Math.round(elapsed[i] ?? 0), minutes: s.minutes, rating: rating(i) }]
+          ? [{ id: s.item.id, title: s.item.title, titleZh: s.item.titleZh, kind: s.kind, seconds: Math.round(elapsed[i] ?? 0), minutes: s.minutes, rating: rating(i) }]
           : [],
       ),
       feedback: old?.feedback,
@@ -1800,7 +1800,7 @@ function AiExtras({ data, run, peers }: { data: MockSet; run: Run; peers?: Peers
         <div key={i}>
           <h2>
             {t(`第 ${i + 1} 题分步得分`, `Question ${i + 1}, step by step`)}
-            <small> · {slot.item?.title}</small>
+            <small> · {slot.item && t(slot.item.titleZh ?? slot.item.title, slot.item.title)}</small>
           </h2>
           <ol className="mi-guide-scores">
             {done.map((d) => {
@@ -1873,7 +1873,7 @@ function Summary({
                   <td>{i + 1}</td>
                   <td>
                     <span className="mi-table-kind">{t(...KINDS[slot.kind].name)}</span>
-                    {slot.item?.title ?? '—'}
+                    {slot.item ? t(slot.item.titleZh ?? slot.item.title, slot.item.title) : '—'}
                   </td>
                   <td data-over={seconds > slot.minutes * 60 || undefined}>
                     {clock(seconds)} / {slot.minutes}′
@@ -2167,7 +2167,7 @@ export function FeedbackCard({
   saved: boolean;
   onSave: () => boolean;
   /** Questions saved with this set in the history: the titles as they were when the feedback was saved. */
-  known?: { id: string; title: string }[];
+  known?: { id: string; title: string; titleZh?: string }[];
   /** The learner's self-assessment before an AI report, shown beside each score. */
   self?: Partial<Record<RubricId, number>>;
 }) {
@@ -2185,9 +2185,10 @@ export function FeedbackCard({
       </p>
     );
   const average = rubricAverage(feedback.rubric);
-  const verdict = VERDICTS.find(([id]) => id === feedback.verdict);
+  const roleplay = data.slots.some((s) => isRoleplay(s.kind));
+  const verdict = (roleplay ? ROLEPLAY_VERDICTS : VERDICTS).find(([id]) => id === feedback.verdict);
   // The dimensions this set is scored on, and any other a report scored.
-  const dims = rubricFor(data.slots.some((s) => isRoleplay(s.kind)));
+  const dims = rubricFor(roleplay);
   const sameSet = forSet(feedback, query);
   // Ratings line up by position, but a changed bank draws other questions from the same seed: each
   // rating names its question by tag, and one that's moved is shown by the title it was given for.
@@ -2204,6 +2205,8 @@ export function FeedbackCard({
               <span className="mi-fb-verdict" data-verdict={verdict[0]}>
                 {t(...verdict[1])}
               </span>
+            ) : roleplay ? (
+              t('没有总体评价', 'No overall rating')
             ) : (
               t('没有给录用建议', 'No hiring recommendation')
             )}
@@ -2272,7 +2275,8 @@ export function FeedbackCard({
                 const drawn = data.slots[i];
                 // An untagged rating can't be checked, so it takes the slot as is.
                 const slot = !q.tag || (drawn?.item && questionTag(drawn.item.id) === q.tag) ? drawn : undefined;
-                const title = slot ? slot.item?.title : titles.find((x) => questionTag(x.id) === q.tag)?.title;
+                const named = slot ? slot.item : titles.find((x) => questionTag(x.id) === q.tag);
+                const title = named ? t(named.titleZh ?? named.title, named.title) : undefined;
                 return (
                   <li key={i}>
                     <span className="mi-fb-no" aria-hidden="true">

@@ -18,6 +18,7 @@ for (const name of ['window', 'document', 'HTMLElement', 'HTMLTextAreaElement', 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import('react-dom/client');
 const { MockInterview } = await import('../components/mock-interview.tsx');
+const { setLocale } = await import('../lib/i18n.ts');
 
 const set = {
   seed: 'k3x9q2ab',
@@ -110,7 +111,16 @@ test('a negotiation role-play: rate yourself before the report, then see your sc
     [...document.querySelectorAll('.mi-fb-self')].map((dd) => dd.textContent),
     ['You: 4 · Interviewer: 3 · Gap +1', 'You: 2 · Interviewer: 4 · Gap -2'],
   );
+  // The verdict rates the conversation, not a hire.
+  assert.equal($('.mi-fb-verdict').textContent, 'Handled well');
+  assert.equal($('.mi-fb-q').textContent, 'Backend Software Engineer · New grad');
   const [saved] = JSON.parse(localStorage.getItem('cswork:mock-interview:history'));
   assert.deepEqual(saved.aiSelf, { communication: 4, anchoring: 2 });
+  assert.equal(saved.items[0].titleZh, '后端软件工程师 · 新毕业生');
+  // In Chinese, the report and the summary use the role-play's Chinese title.
+  await act2(() => setLocale('zh'));
+  assert.equal($('.mi-fb-verdict').textContent, '处理得不错');
+  assert.equal($('.mi-fb-q').textContent, '后端软件工程师 · 新毕业生');
+  assert.match($('.mi-table tbody').textContent, /后端软件工程师 · 新毕业生/);
   await act(async () => root.unmount());
 });
