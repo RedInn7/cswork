@@ -285,3 +285,29 @@ void test('emails are masked in linear time', () => {
   for (const text of ['a'.repeat(20000), `a@${'b'.repeat(20000)}`, '@a'.repeat(10000), 'a.'.repeat(10000)]) ugc.redactEmails(text);
   assert.ok(performance.now() - started < 50);
 });
+
+void test('an anonymous post names no one in any public read; the review queue still does', async () => {
+  const author: Person = { ...me, id: 'ugc-anon', email: 'anon@example.test' };
+  sqlite()
+    .prepare(`INSERT INTO user_profiles(user_id,handle,visible,indexable,bio,created_at,updated_at) VALUES(?,?,1,0,'',1,1)`)
+    .run(author.id, 'anon-handle');
+  const created = await call(author, 'POST', 'oj/experiences', post({ anonymous: true, title: 'Anonymous Amazon loop' }));
+  assert.equal(created.status, 201);
+  const anon = created.data.member.id as string;
+  const queue = await call(teacher, 'GET', 'oj/experiences/review');
+  const pending = queue.data.pending.find((i: { id: string }) => i.id === anon);
+  assert.deepEqual([pending.member.handle, pending.anonymous], ['anon-handle', true]);
+  await call(teacher, 'POST', `oj/experiences/${anon}/review`, { status: 'approved' });
+  const reads = [
+    ugc.readMember(anon, null),
+    ugc.readMember(anon, author),
+    (await call(null, 'GET', `content/item?type=experience&slug=member.${anon}`)).data,
+    (await list()).items.find((i) => i.slug === `member.${anon}`),
+    ugc.companyMemberExperiences('amazon', 50).items.find((i) => i.slug === `member.${anon}`),
+    ugc.recentMemberExperiences(0, 50).items.find((i) => i.slug === `member.${anon}`),
+  ];
+  for (const read of reads) {
+    assert.ok(read, 'listed');
+    assert.ok(!JSON.stringify(read).includes('anon-handle'));
+  }
+});

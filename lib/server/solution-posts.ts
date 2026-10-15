@@ -23,7 +23,7 @@ import { maskName } from './judge-feed';
 import { publicProblem, reportCompanies, requireVerified } from './learner-cloud';
 import { readJson } from './my-practice';
 import { notify } from './notify';
-import { awardUpvote, reputationSql } from './points';
+import { awardUpvote } from './points';
 import { sdChapter } from './system-design-course';
 import { badgeName, badgeSql, badgeTarget } from './work-verify';
 
@@ -93,6 +93,18 @@ const postInput = z
 const commentInput = z.object({ body: text(1000), parentId: id.optional() }).strict();
 export const reportReason = z.enum(['spam', 'offensive', 'wrong', 'other']);
 const reportInput = z.object({ reason: reportReason }).strict();
+
+/**
+ * Answer reputation, an SQL expression for the author in `user`: what upvotes on their posts and
+ * approved interview reports paid, less what anonymous ones paid, so the number moving never ties
+ * an anonymous post to a profile. Upvote refs are `<post id>:<voter>`, report refs `<id>#<n>`.
+ */
+export const reputationSql = (user: string) => `((SELECT COALESCE(SUM(l.delta),0) FROM point_ledger l
+    WHERE l.user_id=${user} AND l.reason IN ('upvote','experience'))
+  - (SELECT COALESCE(SUM(l.delta),0) FROM solution_posts a JOIN point_ledger l ON l.user_id=a.user_id
+    AND l.reason='upvote' AND l.ref_id>a.id||':' AND l.ref_id<a.id||';' WHERE a.user_id=${user} AND a.anonymous=1)
+  - (SELECT COALESCE(SUM(l.delta),0) FROM experience_submissions a JOIN point_ledger l ON l.user_id=a.user_id
+    AND l.reason='experience' AND l.ref_id>a.id||'#' AND l.ref_id<a.id||'$' WHERE a.user_id=${user} AND a.anonymous=1))`;
 
 // Saves (stars) count from verified accounts only, like a list's (learner-cloud's VERIFIED; it
 // imports this module, so the check is inline).

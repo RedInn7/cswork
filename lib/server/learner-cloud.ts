@@ -17,8 +17,8 @@ import { HttpError, json, limit, limitReader, requirePerson } from './http';
 import { mockReport } from './mock-oa';
 import { readJson } from './my-practice';
 import { canSeeProblem, listProblemSummaries } from './oj-problems';
-import { dailyDays, reputationSql } from './points';
-import { visibleTarget } from './solution-posts';
+import { dailyDays } from './points';
+import { reputationSql, visibleTarget } from './solution-posts';
 import { badgeName, badgeSql, badgeTarget } from './work-verify';
 
 /**
@@ -791,7 +791,7 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     recent: solved.slice(0, 10).map((s) => ({ id: s.id, at: s.at - (s.at % HOUR) })),
     lists,
     listStars,
-    // Answer reputation (points.ts reputationSql): upvotes on posts and approved interview reports.
+    // Answer reputation (solution-posts reputationSql): upvotes on posts and approved interview reports.
     reputation: db.prepare(`SELECT ${reputationSql('@u')}`).pluck().get({ u: profile.user_id }) as number,
     languages: [...byLanguage].map(([language, n]) => ({ language, n })).sort((a, b) => b.n - a.n),
     // Rated weeklies and starters, oldest first (lib/server/contests.ts): the curve and the contest badges.
