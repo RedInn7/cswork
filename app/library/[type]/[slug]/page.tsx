@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import Link from 'next/link';
@@ -9,6 +10,8 @@ import { SelectionAsk } from '@/components/command-palette';
 import { AskedReport } from '@/components/problem-community';
 import { seoMetadata } from '@/lib/seo';
 import { lcIdBySource } from '@/lib/company-tags';
+import { person } from '@/lib/server/auth';
+import { origin } from '@/lib/server/env';
 import { RESULTS, ROUND_LABELS, type ExperienceFacts } from '@/lib/experience';
 import { companyHubPath } from '@/lib/oa-company-brands';
 import { companyPractice, type CompanyPractice } from '@/lib/server/company-hub';
@@ -109,6 +112,10 @@ export default async function PublicLibraryDetail({ params }: Props) {
     item.type === 'coding_question' ? lcIdBySource.get(item.slug) : undefined;
   // Reports need a problem the judge can open: a mapped one not judge-ready yet takes none.
   const judged = practice && studyLibrarySummaries([practice])[0]?.judgeProblemId;
+  const asked = item.type === 'interview_question' || !!judged;
+  // Guests get the count and a sign-in prompt, not a form the API turns away.
+  const signedIn =
+    asked && !!(await person(new Request(origin(), { headers: await headers() })).catch(() => null));
   // Experiences and interview questions point at practice for their company.
   const company =
     item.type === 'experience' || item.type === 'interview_question'
@@ -133,9 +140,9 @@ export default async function PublicLibraryDetail({ params }: Props) {
         <h1>{item.title}</h1>
         {item.facts && <Facts facts={item.facts} />}
         {/* "I was asked this": a question as q:<slug>, a coding question as the judge problem it maps to. */}
-        {(item.type === 'interview_question' || judged) && (
+        {asked && (
           <div className="public-library-asked">
-            <AskedReport problemId={judged || `q:${item.slug}`} english labelled />
+            <AskedReport problemId={judged || `q:${item.slug}`} english signedIn={signedIn} labelled />
           </div>
         )}
         {item.summary && (
