@@ -19,6 +19,8 @@ import { handleAiTutor, isAiRoute } from './ai-tutor';
 import { handleAiInterview } from './ai-interviewer';
 import { handleAiAsk } from './ai-ask';
 import { handleAiResume } from './ai-resume';
+import { handleAiPair } from './ai-rounds';
+import { PROJECT_MAX_BYTES } from '@/lib/ai-coding';
 import { problemStats } from './problem-stats';
 import { handleDrafts, handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { handleSolutionPosts } from './solution-posts';
@@ -71,6 +73,7 @@ import {
 } from './oj-problems';
 import {
   createPlaygroundRun,
+  createProjectRun,
   createReferenceRun,
   createSubmission,
   submissionDetail,
@@ -229,6 +232,8 @@ export async function handleOj(
   if (resource === 'ai' && id === 'ask' && !action) return handleAiAsk(request, p);
   // The resume review on /career/resume (lib/server/ai-resume.ts).
   if (resource === 'ai' && id === 'resume' && !action) return handleAiResume(request, p);
+  // The AI pair of the AI-assisted round (lib/server/ai-rounds.ts).
+  if (resource === 'ai' && id === 'pair' && !action) return handleAiPair(request, p);
   if (resource === 'points' && !action) return handlePoints(request, p, id);
   if (request.method === 'GET') {
     if (resource === 'library') {
@@ -339,6 +344,11 @@ export async function handleOj(
     }
     // Same owner-checked detail and watch protocol as a custom-input run.
     const created = await createPlaygroundRun(p, data);
+    return json(await settleSubmission(p, created.id, request.signal), 201);
+  }
+  if (resource === 'ai-assisted' && id === 'run' && !action) {
+    // An AI-assisted round run: the playground's watch protocol, its report on the detail.
+    const created = await createProjectRun(p, await readJson(request, PROJECT_MAX_BYTES * 2 + 10_000));
     return json(await settleSubmission(p, created.id, request.signal), 201);
   }
   if (resource === 'submissions' && !id) {
