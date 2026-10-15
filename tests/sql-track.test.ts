@@ -1,6 +1,7 @@
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { createServer, type Server } from 'node:http';
 import { tmpdir } from 'node:os';
@@ -251,9 +252,10 @@ test('the worker engine runs SQL through the harness and the exact checker', asy
 });
 
 test('the release publisher publishes once, then skips unchanged packages; SQL problems judge free', async () => {
+  const report = join(dir, 'rest-sandbox-report.json');
   const publish = () =>
     spawnSync(process.execPath, ['--import', 'tsx', 'scripts/publish-sql-track.ts', 'teacher@sql.test'], {
-      env: { ...process.env, ADMIN_EMAILS: 'teacher@sql.test' },
+      env: { ...process.env, ADMIN_EMAILS: 'teacher@sql.test', REST_API_REPORT: report },
       encoding: 'utf8',
     });
   const first = publish();
@@ -261,9 +263,21 @@ test('the release publisher publishes once, then skips unchanged packages; SQL p
   // The SQL packages and their pandas versions (tests/pandas-track.test.ts).
   assert.equal(first.stdout.match(/"id":"sql-\d\d","status":"published"/g)?.length, 50);
   assert.equal(first.stdout.match(/"published"/g)?.length, 100);
+  // The REST API problems (tests/oa-rest-fixtures.test.ts) wait for go-judge's own run of them.
+  const rest = JSON.parse(readFileSync('content/rest-api/packages.json', 'utf8')) as OjProblemPackage[];
+  assert.equal(first.stdout.match(/"id":"rest-\d\d","status":"unverified"/g)?.length, rest.length);
+  const sha256 = (pkg: OjProblemPackage) => createHash('sha256').update(JSON.stringify(pkg)).digest('hex');
+  const verified = rest.map((pkg) => ({ id: pkg.problem.id, packageSha256: sha256(pkg) }));
+  writeFileSync(report, JSON.stringify({ engine: 'go-judge', allPassed: true, problems: verified.slice(1) }));
   const again = publish();
   assert.equal(again.status, 0, again.stderr);
   assert.equal(again.stdout.match(/"unchanged"/g)?.length, 100);
+  assert.equal(again.stdout.match(/"id":"rest-\d\d","status":"published"/g)?.length, rest.length - 1);
+  assert.match(again.stdout, new RegExp(`"id":"${rest[0].problem.id}","status":"unverified"`));
+  writeFileSync(report, JSON.stringify({ engine: 'go-judge', allPassed: false, problems: verified }));
+  const partial = publish();
+  assert.notEqual(partial.status, 0);
+  assert.match(partial.stderr, /Incomplete REST API sandbox report/);
   // Like OA problems: listed for everyone, judged for any verified account.
   const listed = (await listPublishedProblems(null)).filter((p) => p.id.startsWith('sql-'));
   assert.equal(listed.length, 50);

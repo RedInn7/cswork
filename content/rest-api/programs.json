@@ -1,0 +1,80 @@
+{
+  "rest-01": {
+    "reference": "import requests\n\nURL = 'https://data.cswork.test/api/orders'\n\n\ndef matching(status, low):\n    count = total = 0\n    page, pages = 1, 1\n    while page <= pages:\n        body = requests.get(URL, params={'status': status, 'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for order in body['data']:\n            if order['amount_cents'] >= low:\n                count += 1\n                total += order['amount_cents']\n        page += 1\n    return count, total\n\n\nstatus, low = input().split()\nprint(*matching(status, int(low)))\n",
+    "mutants": [
+      {
+        "name": "strictly-greater",
+        "code": "import requests\n\nURL = 'https://data.cswork.test/api/orders'\n\n\ndef matching(status, low):\n    count = total = 0\n    page, pages = 1, 1\n    while page <= pages:\n        body = requests.get(URL, params={'status': status, 'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for order in body['data']:\n            if order['amount_cents'] > low:\n                count += 1\n                total += order['amount_cents']\n        page += 1\n    return count, total\n\n\nstatus, low = input().split()\nprint(*matching(status, int(low)))\n"
+      },
+      {
+        "name": "skips-last-page",
+        "code": "import requests\n\nURL = 'https://data.cswork.test/api/orders'\n\n\ndef matching(status, low):\n    count = total = 0\n    page, pages = 1, 1\n    while page < max(2, pages):\n        body = requests.get(URL, params={'status': status, 'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for order in body['data']:\n            if order['amount_cents'] >= low:\n                count += 1\n                total += order['amount_cents']\n        page += 1\n    return count, total\n\n\nstatus, low = input().split()\nprint(*matching(status, int(low)))\n"
+      }
+    ]
+  },
+  "rest-02": {
+    "reference": "import requests\n\nURL = 'https://data.cswork.test/api/transactions'\n\n\ndef monthly_net(month):\n    net, page, pages = {}, 1, 1\n    while page <= pages:\n        body = requests.get(URL, params={'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for row in body['data']:\n            if row['date'].startswith(month + '-'):\n                sign = 1 if row['type'] == 'credit' else -1\n                net[row['user']] = net.get(row['user'], 0) + sign * row['amount']\n        page += 1\n    return net\n\n\nmonth, k = input().split()\ntop = sorted(monthly_net(month).items(), key=lambda item: (-item[1], item[0]))[:int(k)]\nprint(len(top))\nfor user, value in top:\n    print(user, value)\n",
+    "mutants": [
+      {
+        "name": "debits-added",
+        "code": "import requests\n\nURL = 'https://data.cswork.test/api/transactions'\n\n\ndef monthly_net(month):\n    net, page, pages = {}, 1, 1\n    while page <= pages:\n        body = requests.get(URL, params={'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for row in body['data']:\n            if row['date'].startswith(month + '-'):\n                sign = 1\n                net[row['user']] = net.get(row['user'], 0) + sign * row['amount']\n        page += 1\n    return net\n\n\nmonth, k = input().split()\ntop = sorted(monthly_net(month).items(), key=lambda item: (-item[1], item[0]))[:int(k)]\nprint(len(top))\nfor user, value in top:\n    print(user, value)\n"
+      },
+      {
+        "name": "unsorted-ties",
+        "code": "import requests\n\nURL = 'https://data.cswork.test/api/transactions'\n\n\ndef monthly_net(month):\n    net, page, pages = {}, 1, 1\n    while page <= pages:\n        body = requests.get(URL, params={'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for row in body['data']:\n            if row['date'].startswith(month + '-'):\n                sign = 1 if row['type'] == 'credit' else -1\n                net[row['user']] = net.get(row['user'], 0) + sign * row['amount']\n        page += 1\n    return net\n\n\nmonth, k = input().split()\ntop = sorted(monthly_net(month).items(), key=lambda item: -item[1])[:int(k)]\nprint(len(top))\nfor user, value in top:\n    print(user, value)\n"
+      }
+    ]
+  },
+  "rest-03": {
+    "reference": "import requests\n\nBASE = 'https://data.cswork.test/api'\n\n\ndef richest(team, k):\n    found, page, pages = [], 1, 1\n    while page <= pages:\n        body = requests.get(BASE + '/users', params={'team': team, 'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for user in body['data']:\n            if user['active']:\n                account = requests.get(f\"{BASE}/accounts/{user['id']}\", timeout=10).json()\n                found.append((user['name'], account['balance']))\n        page += 1\n    return sorted(found, key=lambda pair: (-pair[1], pair[0]))[:k]\n\n\nteam, k = input().split()\ntop = richest(team, int(k))\nprint(len(top))\nfor name, balance in top:\n    print(name, balance)\n",
+    "mutants": [
+      {
+        "name": "counts-inactive",
+        "code": "import requests\n\nBASE = 'https://data.cswork.test/api'\n\n\ndef richest(team, k):\n    found, page, pages = [], 1, 1\n    while page <= pages:\n        body = requests.get(BASE + '/users', params={'team': team, 'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for user in body['data']:\n            if True:\n                account = requests.get(f\"{BASE}/accounts/{user['id']}\", timeout=10).json()\n                found.append((user['name'], account['balance']))\n        page += 1\n    return sorted(found, key=lambda pair: (-pair[1], pair[0]))[:k]\n\n\nteam, k = input().split()\ntop = richest(team, int(k))\nprint(len(top))\nfor name, balance in top:\n    print(name, balance)\n"
+      },
+      {
+        "name": "ties-by-id",
+        "code": "import requests\n\nBASE = 'https://data.cswork.test/api'\n\n\ndef richest(team, k):\n    found, page, pages = [], 1, 1\n    while page <= pages:\n        body = requests.get(BASE + '/users', params={'team': team, 'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for user in body['data']:\n            if user['active']:\n                account = requests.get(f\"{BASE}/accounts/{user['id']}\", timeout=10).json()\n                found.append((user['name'], account['balance']))\n        page += 1\n    return sorted(found, key=lambda pair: -pair[1])[:k]\n\n\nteam, k = input().split()\ntop = richest(team, int(k))\nprint(len(top))\nfor name, balance in top:\n    print(name, balance)\n"
+      }
+    ]
+  },
+  "rest-04": {
+    "reference": "import requests\n\nURL = 'https://data.cswork.test/api/articles'\n\n\ndef articles(author, low):\n    kept, page, pages = [], 1, 1\n    while page <= pages:\n        body = requests.get(URL, params={'author': author, 'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for article in body['data']:\n            title = article['title'] or article['story_title']\n            comments = article['num_comments'] or 0\n            if title and comments >= low:\n                kept.append((title, comments, article['published']))\n        page += 1\n    return kept\n\n\nauthor, low = input().split()\nkept = articles(author, int(low))\nprint(len(kept))\nprint(sum(comments for _, comments, _ in kept))\nif kept:\n    print(min(kept, key=lambda item: (-item[1], item[2], item[0]))[0])\n",
+    "mutants": [
+      {
+        "name": "floor-page-count",
+        "code": "import requests\n\nURL = 'https://data.cswork.test/api/articles'\n\n\ndef articles(author, low):\n    kept, page, pages = [], 1, 1\n    while page <= pages:\n        body = requests.get(URL, params={'author': author, 'page': page}, timeout=10).json()\n        pages = body['total'] // body['per_page']\n        for article in body['data']:\n            title = article['title'] or article['story_title']\n            comments = article['num_comments'] or 0\n            if title and comments >= low:\n                kept.append((title, comments, article['published']))\n        page += 1\n    return kept\n\n\nauthor, low = input().split()\nkept = articles(author, int(low))\nprint(len(kept))\nprint(sum(comments for _, comments, _ in kept))\nif kept:\n    print(min(kept, key=lambda item: (-item[1], item[2], item[0]))[0])\n"
+      },
+      {
+        "name": "ignores-story-title",
+        "code": "import requests\n\nURL = 'https://data.cswork.test/api/articles'\n\n\ndef articles(author, low):\n    kept, page, pages = [], 1, 1\n    while page <= pages:\n        body = requests.get(URL, params={'author': author, 'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for article in body['data']:\n            title = article['title']\n            comments = article['num_comments'] or 0\n            if title and comments >= low:\n                kept.append((title, comments, article['published']))\n        page += 1\n    return kept\n\n\nauthor, low = input().split()\nkept = articles(author, int(low))\nprint(len(kept))\nprint(sum(comments for _, comments, _ in kept))\nif kept:\n    print(min(kept, key=lambda item: (-item[1], item[2], item[0]))[0])\n"
+      }
+    ]
+  },
+  "rest-05": {
+    "reference": "import requests\n\nURL = 'https://data.cswork.test/api/events'\n\n\ndef window(kind, lo, hi):\n    counts, cursor = {}, None\n    while True:\n        params = {'type': kind} if cursor is None else {'type': kind, 'cursor': cursor}\n        body = requests.get(URL, params=params, timeout=10).json()\n        for event in body['data']:\n            if lo <= event['ts'] <= hi:\n                counts[event['user']] = counts.get(event['user'], 0) + 1\n        cursor = body['next_cursor']\n        if cursor is None:\n            return counts\n\n\nkind, lo, hi = input().split()\ncounts = window(kind, int(lo), int(hi))\nprint(len(counts))\nprint(min(counts.items(), key=lambda item: (-item[1], item[0]))[0] if counts else '-')\n",
+    "mutants": [
+      {
+        "name": "first-page-only",
+        "code": "import requests\n\nURL = 'https://data.cswork.test/api/events'\n\n\ndef window(kind, lo, hi):\n    counts, cursor = {}, None\n    while True:\n        params = {'type': kind} if cursor is None else {'type': kind, 'cursor': cursor}\n        body = requests.get(URL, params=params, timeout=10).json()\n        for event in body['data']:\n            if lo <= event['ts'] <= hi:\n                counts[event['user']] = counts.get(event['user'], 0) + 1\n        cursor = None\n        if cursor is None:\n            return counts\n\n\nkind, lo, hi = input().split()\ncounts = window(kind, int(lo), int(hi))\nprint(len(counts))\nprint(min(counts.items(), key=lambda item: (-item[1], item[0]))[0] if counts else '-')\n"
+      },
+      {
+        "name": "exclusive-end",
+        "code": "import requests\n\nURL = 'https://data.cswork.test/api/events'\n\n\ndef window(kind, lo, hi):\n    counts, cursor = {}, None\n    while True:\n        params = {'type': kind} if cursor is None else {'type': kind, 'cursor': cursor}\n        body = requests.get(URL, params=params, timeout=10).json()\n        for event in body['data']:\n            if lo <= event['ts'] < hi:\n                counts[event['user']] = counts.get(event['user'], 0) + 1\n        cursor = body['next_cursor']\n        if cursor is None:\n            return counts\n\n\nkind, lo, hi = input().split()\ncounts = window(kind, int(lo), int(hi))\nprint(len(counts))\nprint(min(counts.items(), key=lambda item: (-item[1], item[0]))[0] if counts else '-')\n"
+      }
+    ]
+  },
+  "rest-06": {
+    "reference": "import requests\n\nBASE = 'https://data.cswork.test/api'\n\n\ndef team_of(agent_id, cache):\n    if agent_id is None:\n        return 'unassigned'\n    if agent_id not in cache:\n        response = requests.get(f'{BASE}/agents/{agent_id}', timeout=10)\n        cache[agent_id] = response.json()['team'] if response.status_code == 200 else 'unassigned'\n    return cache[agent_id]\n\n\ndef by_team(priorities, status):\n    counts, cache, page, pages = {}, {}, 1, 1\n    while page <= pages:\n        body = requests.get(BASE + '/tickets', params={'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for ticket in body['data']:\n            if ticket['priority'] in priorities and status in ('any', ticket['status']):\n                team = team_of(ticket['assignee'], cache)\n                counts[team] = counts.get(team, 0) + 1\n        page += 1\n    return sorted(counts.items(), key=lambda item: (-item[1], item[0]))\n\n\npriorities = set(input().strip().split(','))\nstatus = input().strip()\nrows = by_team(priorities, status)\nprint(len(rows))\nfor team, count in rows:\n    print(team, count)\n",
+    "mutants": [
+      {
+        "name": "drops-deleted-agents",
+        "code": "import requests\n\nBASE = 'https://data.cswork.test/api'\n\n\ndef team_of(agent_id, cache):\n    if agent_id is None:\n        return 'unassigned'\n    if agent_id not in cache:\n        response = requests.get(f'{BASE}/agents/{agent_id}', timeout=10)\n        cache[agent_id] = response.json()['team'] if response.status_code == 200 else 'unassigned'\n    return cache[agent_id]\n\n\ndef by_team(priorities, status):\n    counts, cache, page, pages = {}, {}, 1, 1\n    while page <= pages:\n        body = requests.get(BASE + '/tickets', params={'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for ticket in body['data']:\n            if ticket['priority'] in priorities and status in ('any', ticket['status']):\n                team = team_of(ticket['assignee'], cache)\n                if team != 'unassigned' or ticket['assignee'] is None:\n                    counts[team] = counts.get(team, 0) + 1\n        page += 1\n    return sorted(counts.items(), key=lambda item: (-item[1], item[0]))\n\n\npriorities = set(input().strip().split(','))\nstatus = input().strip()\nrows = by_team(priorities, status)\nprint(len(rows))\nfor team, count in rows:\n    print(team, count)\n"
+      },
+      {
+        "name": "sorted-by-team",
+        "code": "import requests\n\nBASE = 'https://data.cswork.test/api'\n\n\ndef team_of(agent_id, cache):\n    if agent_id is None:\n        return 'unassigned'\n    if agent_id not in cache:\n        response = requests.get(f'{BASE}/agents/{agent_id}', timeout=10)\n        cache[agent_id] = response.json()['team'] if response.status_code == 200 else 'unassigned'\n    return cache[agent_id]\n\n\ndef by_team(priorities, status):\n    counts, cache, page, pages = {}, {}, 1, 1\n    while page <= pages:\n        body = requests.get(BASE + '/tickets', params={'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for ticket in body['data']:\n            if ticket['priority'] in priorities and status in ('any', ticket['status']):\n                team = team_of(ticket['assignee'], cache)\n                counts[team] = counts.get(team, 0) + 1\n        page += 1\n    return sorted(counts.items(), key=lambda item: item[0])\n\n\npriorities = set(input().strip().split(','))\nstatus = input().strip()\nrows = by_team(priorities, status)\nprint(len(rows))\nfor team, count in rows:\n    print(team, count)\n"
+      }
+    ]
+  }
+}

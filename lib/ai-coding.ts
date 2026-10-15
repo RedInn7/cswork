@@ -15,6 +15,19 @@ export const PROJECT_RUNS_PER_HOUR = 30;
 /** The problem_id a task's runs carry; no oj_problems row has it. */
 export const projectProblemId = (slug: string) => `ai-${slug}`;
 
+/**
+ * CodeSignal ICA-style practice (/oa/ica): one Python project in four gated levels, content/ica/<slug>/,
+ * judged like an AI-assisted run. A level unlocks once the one before it has an accepted run.
+ */
+export const ICA_TASK_SLUGS = ['bank-ledger', 'kv-ttl-backup', 'file-store'] as const;
+export const ICA_LEVELS = 4;
+/** An ICA level's runs; the judge runs the hidden tests of levels 1..level (lib/server/ai-tasks.ts). */
+export const icaProblemId = (slug: string, level: number) => `ai-ica-${slug}-l${level}`;
+export function parseIcaProblemId(id: string) {
+  const match = /^ai-ica-([a-z0-9-]+)-l([1-9])$/.exec(id);
+  return match ? { slug: match[1], level: Number(match[2]) } : null;
+}
+
 export type ProjectFailure = { name: string; message: string };
 /**
  * A finished run as its learner sees it: the public suite's failures by name, the hidden

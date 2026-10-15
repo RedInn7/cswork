@@ -11,8 +11,11 @@ import { leetcodeContract, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import type { CodingMode } from '@/lib/coding-mode';
 import type { OjProblemSpec } from '@/lib/oj-types';
 import { boundedFeedback, FEEDBACK_BYTES } from './oj-case-store';
-import { aiTask } from './ai-tasks';
+import { aiTask, icaTask } from './ai-tasks';
+import { icaPassed, icaUnlocked } from './ica';
 import {
+  ICA_LEVELS,
+  icaProblemId,
   PROJECT_MAX_BYTES,
   PROJECT_MAX_FILES,
   PROJECT_PATH,
@@ -219,7 +222,9 @@ export async function createPlaygroundRun(p: Person, value: unknown) {
 }
 const projectSchema = z
   .object({
-    task: z.string().regex(/^[a-z0-9-]{1,60}$/),
+    // An AI-assisted task, or "ica:<slug>" with the ICA level to judge.
+    task: z.string().regex(/^(?:ica:)?[a-z0-9-]{1,60}$/),
+    level: z.number().int().min(1).max(ICA_LEVELS).optional(),
     files: z.record(z.string().regex(PROJECT_PATH), z.string().max(PROJECT_MAX_BYTES)),
     idempotencyKey: z.string().regex(/^[a-zA-Z0-9_-]{16,100}$/),
   })
@@ -237,7 +242,9 @@ export function projectTooLarge(files: Record<string, string>) {
  */
 export async function createProjectRun(p: Person, value: unknown) {
   const d = projectSchema.parse(value);
-  const task = aiTask(d.task);
+  const ica = d.task.startsWith('ica:');
+  if (ica !== (d.level !== undefined)) throw new HttpError(400, '无效的请求内容');
+  const task = ica ? icaTask(d.task.slice(4)) : aiTask(d.task);
   if (!task) throw new HttpError(404, '练习任务不存在');
   const files = Object.entries(d.files).sort(([a], [b]) => (a < b ? -1 : 1));
   if (!files.length || projectTooLarge(d.files))
@@ -246,7 +253,10 @@ export async function createProjectRun(p: Person, value: unknown) {
     throw new HttpError(400, '内容不能包含空字符');
   if (p.role !== 'teacher' && !p.verified)
     throw new HttpError(403, '请先验证邮箱，再运行和提交代码');
-  const problemId = projectProblemId(task.slug);
+  // An ICA level opens once the one before it passed (lib/server/ica.ts).
+  if (ica && d.level! > icaUnlocked(icaPassed(p.id, task.slug)))
+    throw new HttpError(403, '请先通过上一关');
+  const problemId = ica ? icaProblemId(task.slug, d.level!) : projectProblemId(task.slug);
   const code = JSON.stringify({ files: Object.fromEntries(files) });
   const hash = createHash('sha256').update(JSON.stringify([problemId, code])).digest('hex');
   const prior = priorRequest(p.id, d.idempotencyKey, hash);

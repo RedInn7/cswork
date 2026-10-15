@@ -1,0 +1,2982 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-oracle-6",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "REST API：折扣价",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Oracle",
+      "REST API",
+      "HTTP",
+      "JSON"
+    ],
+    "description": "给定商品条码，请求库存接口，求商品打折后的价格。\n\n```text\nGET https://data.cswork.test/api/inventory?barcode=<barcode>\n```\n\n返回一个 JSON 对象，`page`、`per_page`、`total`、`total_pages` 与本题无关；`data` 要么是空数组（条码不存在），要么恰好含一个商品：\n\n```json\n{\"page\": 1, \"per_page\": 10, \"total\": 1, \"total_pages\": 1,\n \"data\": [{\"barcode\": \"74002314\", \"item\": \"Copper Kettle\", \"category\": \"kitchen\", \"price\": 3705, \"discount\": 20, \"available\": 1}]}\n```\n\n其中 `price` 是原价（正整数），`discount` 是折扣百分比（0 到 100 的整数）。折后价为 `price - discount / 100 × price`，四舍五入到整数，恰好是 .5 时向上取整（例如 2.5 → 3）。条码不存在时输出 -1。\n\n评测环境没有外网：接口返回的是题目自带的固定数据。Python 里的 `requests.get` 和 `urllib.request.urlopen` 由评测机直接应答，数据之外的地址返回 HTTP 404 和一段 JSON 错误信息。本题只支持 Python。",
+    "input": "一行条码：8 位数字组成的字符串，可能以 0 开头，必须原样作为查询参数。",
+    "output": "输出折后价（整数）；条码不存在输出 -1。",
+    "explanation": "样例 1：price=3705、discount=20，折后 2964。样例 2：条码不存在，data 为空。样例 3：折后价恰好是 x.5，向上取整。",
+    "hints": [
+      "用整数算：price × (100 − discount) 再加 50 后整除 100，就是“.5 向上”的四舍五入。",
+      "Python 的 round() 对 .5 取最近的偶数，和题目的舍入规则不同。",
+      "条码按字符串传，别转成整数：前导零会丢。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 64,
+    "checker": "tokens",
+    "languages": [
+      "python"
+    ],
+    "httpFixtures": {
+      "GET /api/inventory?barcode=74002314": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "74002314",
+            "item": "Copper Kettle",
+            "category": "kitchen",
+            "price": 3705,
+            "discount": 20,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=33770009": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "33770009",
+            "item": "Hollow Circuit",
+            "category": "audio",
+            "price": 3181,
+            "discount": 67,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=37038204": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "37038204",
+            "item": "Paper Lantern",
+            "category": "audio",
+            "price": 1095,
+            "discount": 44,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=20008762": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "20008762",
+            "item": "Bright Station",
+            "category": "kitchen",
+            "price": 210,
+            "discount": 82,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=13807837": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "13807837",
+            "item": "Glass Archive",
+            "category": "audio",
+            "price": 301,
+            "discount": 59,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=36221400": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "36221400",
+            "item": "Salt Tide",
+            "category": "books",
+            "price": 3159,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=69770430": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "69770430",
+            "item": "Northern Engine",
+            "category": "office",
+            "price": 9539,
+            "discount": 38,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=86439260": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "86439260",
+            "item": "Distant Station",
+            "category": "audio",
+            "price": 6913,
+            "discount": 0,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=31655001": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "31655001",
+            "item": "Silent Archive",
+            "category": "audio",
+            "price": 9445,
+            "discount": 11,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00455112": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00455112",
+            "item": "Iron Meridian",
+            "category": "office",
+            "price": 1931,
+            "discount": 72,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=97035543": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "97035543",
+            "item": "Broken Frontier",
+            "category": "garden",
+            "price": 6895,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=60228028": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "60228028",
+            "item": "Velvet Tide",
+            "category": "kitchen",
+            "price": 7113,
+            "discount": 90,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=92297526": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "92297526",
+            "item": "Distant Atlas",
+            "category": "kitchen",
+            "price": 6861,
+            "discount": 2,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=80991604": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "80991604",
+            "item": "Hidden Circuit",
+            "category": "kitchen",
+            "price": 3535,
+            "discount": 65,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=10147319": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "10147319",
+            "item": "Iron Meridian",
+            "category": "garden",
+            "price": 8920,
+            "discount": 0,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=28793291": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "28793291",
+            "item": "Salt Engine",
+            "category": "outdoor",
+            "price": 81,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=40060482": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "40060482",
+            "item": "Copper Garden",
+            "category": "garden",
+            "price": 4253,
+            "discount": 8,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=75194546": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "75194546",
+            "item": "Hollow Atlas",
+            "category": "books",
+            "price": 1517,
+            "discount": 36,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00925912": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00925912",
+            "item": "Wild Engine",
+            "category": "books",
+            "price": 2086,
+            "discount": 10,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=53272425": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "53272425",
+            "item": "Crimson Ledger",
+            "category": "garden",
+            "price": 5130,
+            "discount": 6,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=10599663": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "10599663",
+            "item": "Distant Archive",
+            "category": "outdoor",
+            "price": 7079,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=77713689": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "77713689",
+            "item": "Hidden Garden",
+            "category": "toys",
+            "price": 3445,
+            "discount": 100,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=18036693": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "18036693",
+            "item": "Paper Kingdom",
+            "category": "audio",
+            "price": 7740,
+            "discount": 70,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=81002217": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "81002217",
+            "item": "Paper Kingdom",
+            "category": "kitchen",
+            "price": 659,
+            "discount": 2,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=88973782": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "88973782",
+            "item": "Northern Station",
+            "category": "office",
+            "price": 6041,
+            "discount": 94,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=63345626": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "63345626",
+            "item": "Glass Ledger",
+            "category": "outdoor",
+            "price": 6643,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=72851969": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "72851969",
+            "item": "Silent Parade",
+            "category": "garden",
+            "price": 6182,
+            "discount": 57,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00920642": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00920642",
+            "item": "Glass Orchard",
+            "category": "kitchen",
+            "price": 6296,
+            "discount": 32,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=60913860": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "60913860",
+            "item": "Hidden Circuit",
+            "category": "audio",
+            "price": 6003,
+            "discount": 100,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=26570899": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "26570899",
+            "item": "Hollow Signal",
+            "category": "audio",
+            "price": 9055,
+            "discount": 84,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=84570319": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "84570319",
+            "item": "Northern Frontier",
+            "category": "books",
+            "price": 1219,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=28370175": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "28370175",
+            "item": "Silent Garden",
+            "category": "office",
+            "price": 8923,
+            "discount": 32,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=83823139": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "83823139",
+            "item": "Broken Frontier",
+            "category": "books",
+            "price": 2457,
+            "discount": 47,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=19162840": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "19162840",
+            "item": "Bright Lantern",
+            "category": "toys",
+            "price": 4421,
+            "discount": 85,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00645086": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00645086",
+            "item": "Quiet Parade",
+            "category": "outdoor",
+            "price": 1681,
+            "discount": 56,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=81560142": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "81560142",
+            "item": "Iron Mirror",
+            "category": "outdoor",
+            "price": 475,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00304436": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00304436",
+            "item": "Distant Engine",
+            "category": "books",
+            "price": 2954,
+            "discount": 93,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=74097064": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "74097064",
+            "item": "Broken Engine",
+            "category": "outdoor",
+            "price": 8583,
+            "discount": 67,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=49596269": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "49596269",
+            "item": "Velvet Orchard",
+            "category": "toys",
+            "price": 2559,
+            "discount": 70,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=93570891": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "93570891",
+            "item": "Hidden Ledger",
+            "category": "garden",
+            "price": 7063,
+            "discount": 67,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=78518302": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "78518302",
+            "item": "Bright Engine",
+            "category": "books",
+            "price": 5917,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=84862105": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "84862105",
+            "item": "Bright Harbor",
+            "category": "books",
+            "price": 7502,
+            "discount": 88,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=51537227": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "51537227",
+            "item": "Hidden Canyon",
+            "category": "outdoor",
+            "price": 4389,
+            "discount": 100,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=81026102": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "81026102",
+            "item": "Velvet Canyon",
+            "category": "garden",
+            "price": 6585,
+            "discount": 68,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=06006531": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "06006531",
+            "item": "Copper Canyon",
+            "category": "kitchen",
+            "price": 829,
+            "discount": 75,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00349957": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00349957",
+            "item": "Northern Circuit",
+            "category": "office",
+            "price": 6817,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=15846996": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "15846996",
+            "item": "Bright Lantern",
+            "category": "outdoor",
+            "price": 455,
+            "discount": 58,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=85781592": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "85781592",
+            "item": "Wild Kingdom",
+            "category": "toys",
+            "price": 5890,
+            "discount": 24,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=32141798": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "32141798",
+            "item": "Glass Archive",
+            "category": "office",
+            "price": 1239,
+            "discount": 20,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=65591370": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "65591370",
+            "item": "Hidden Atlas",
+            "category": "garden",
+            "price": 584,
+            "discount": 100,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=25800911": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "25800911",
+            "item": "Hollow Atlas",
+            "category": "books",
+            "price": 4585,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=21303174": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "21303174",
+            "item": "Copper Archive",
+            "category": "toys",
+            "price": 925,
+            "discount": 41,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=46333056": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "46333056",
+            "item": "Quiet Mirror",
+            "category": "office",
+            "price": 9893,
+            "discount": 15,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=91036454": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "91036454",
+            "item": "Wild Kingdom",
+            "category": "toys",
+            "price": 8648,
+            "discount": 97,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00490538": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00490538",
+            "item": "Iron Signal",
+            "category": "audio",
+            "price": 4524,
+            "discount": 88,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=18071366": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "18071366",
+            "item": "Iron Canyon",
+            "category": "toys",
+            "price": 6649,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=47955120": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "47955120",
+            "item": "Crimson Parade",
+            "category": "garden",
+            "price": 2985,
+            "discount": 100,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=99614289": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "99614289",
+            "item": "Distant Canyon",
+            "category": "audio",
+            "price": 8370,
+            "discount": 0,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=23407982": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "23407982",
+            "item": "Copper Meridian",
+            "category": "toys",
+            "price": 3825,
+            "discount": 35,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=42859935": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "42859935",
+            "item": "Hidden Ledger",
+            "category": "garden",
+            "price": 237,
+            "discount": 24,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=45362595": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "45362595",
+            "item": "Paper Atlas",
+            "category": "toys",
+            "price": 1071,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=13174455": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "13174455",
+            "item": "Silent Tide",
+            "category": "office",
+            "price": 8120,
+            "discount": 11,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=47397290": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "47397290",
+            "item": "Crimson Ledger",
+            "category": "outdoor",
+            "price": 9784,
+            "discount": 82,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00788663": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00788663",
+            "item": "Salt Kingdom",
+            "category": "outdoor",
+            "price": 9919,
+            "discount": 100,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=29472127": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "29472127",
+            "item": "Glass Ledger",
+            "category": "kitchen",
+            "price": 1688,
+            "discount": 36,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=78111968": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "78111968",
+            "item": "Northern Mirror",
+            "category": "office",
+            "price": 7355,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=39287919": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "39287919",
+            "item": "Copper Kingdom",
+            "category": "office",
+            "price": 6637,
+            "discount": 28,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=64702396": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "64702396",
+            "item": "Quiet Frontier",
+            "category": "toys",
+            "price": 8997,
+            "discount": 77,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=08189517": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "08189517",
+            "item": "Paper Frontier",
+            "category": "kitchen",
+            "price": 7259,
+            "discount": 64,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=09943022": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "09943022",
+            "item": "Velvet Engine",
+            "category": "kitchen",
+            "price": 4931,
+            "discount": 15,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=96096323": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "96096323",
+            "item": "Northern Engine",
+            "category": "toys",
+            "price": 5929,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=51093136": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "51093136",
+            "item": "Silent Atlas",
+            "category": "outdoor",
+            "price": 5322,
+            "discount": 38,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00162845": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00162845",
+            "item": "Bright Meridian",
+            "category": "outdoor",
+            "price": 2118,
+            "discount": 6,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=51545805": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "51545805",
+            "item": "Iron Canyon",
+            "category": "toys",
+            "price": 8842,
+            "discount": 13,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=16478794": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "16478794",
+            "item": "Copper Harbor",
+            "category": "audio",
+            "price": 9831,
+            "discount": 84,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=68045635": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "68045635",
+            "item": "Hollow Harbor",
+            "category": "books",
+            "price": 5809,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=77890987": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "77890987",
+            "item": "Hollow Engine",
+            "category": "outdoor",
+            "price": 1927,
+            "discount": 15,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=25533858": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "25533858",
+            "item": "Northern Orchard",
+            "category": "books",
+            "price": 6445,
+            "discount": 100,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=15613576": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "15613576",
+            "item": "Paper Ledger",
+            "category": "kitchen",
+            "price": 9437,
+            "discount": 73,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=07240058": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "07240058",
+            "item": "Iron Ledger",
+            "category": "garden",
+            "price": 6421,
+            "discount": 77,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=04151285": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "04151285",
+            "item": "Electric Station",
+            "category": "office",
+            "price": 2469,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00826483": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00826483",
+            "item": "Velvet Ledger",
+            "category": "outdoor",
+            "price": 5075,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=83697205": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "83697205",
+            "item": "Electric Garden",
+            "category": "books",
+            "price": 9421,
+            "discount": 67,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=97812229": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "97812229",
+            "item": "Copper Orchard",
+            "category": "office",
+            "price": 576,
+            "discount": 60,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=11920339": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "11920339",
+            "item": "Golden Circuit",
+            "category": "books",
+            "price": 4483,
+            "discount": 100,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=87524776": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "87524776",
+            "item": "Quiet Station",
+            "category": "office",
+            "price": 747,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=90285893": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "90285893",
+            "item": "Northern Mirror",
+            "category": "books",
+            "price": 2549,
+            "discount": 6,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=29747695": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "29747695",
+            "item": "Bright Parade",
+            "category": "outdoor",
+            "price": 4029,
+            "discount": 29,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=69441653": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "69441653",
+            "item": "Golden Station",
+            "category": "books",
+            "price": 3172,
+            "discount": 7,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=13319190": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "13319190",
+            "item": "Salt Harbor",
+            "category": "audio",
+            "price": 5707,
+            "discount": 8,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00316859": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00316859",
+            "item": "Quiet Meridian",
+            "category": "garden",
+            "price": 233,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=31234884": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "31234884",
+            "item": "Bright Canyon",
+            "category": "toys",
+            "price": 9577,
+            "discount": 0,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=81130752": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "81130752",
+            "item": "Copper Harbor",
+            "category": "garden",
+            "price": 5679,
+            "discount": 55,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=80320037": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "80320037",
+            "item": "Salt Harbor",
+            "category": "office",
+            "price": 3541,
+            "discount": 61,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=10590802": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "10590802",
+            "item": "Golden Ledger",
+            "category": "books",
+            "price": 2742,
+            "discount": 41,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=05370006": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "05370006",
+            "item": "Salt Archive",
+            "category": "office",
+            "price": 899,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=50152476": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "50152476",
+            "item": "Distant Mirror",
+            "category": "garden",
+            "price": 7245,
+            "discount": 32,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=51610824": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "51610824",
+            "item": "Golden Tide",
+            "category": "office",
+            "price": 6511,
+            "discount": 58,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=29414736": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "29414736",
+            "item": "Wild Atlas",
+            "category": "outdoor",
+            "price": 8760,
+            "discount": 0,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00950766": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00950766",
+            "item": "Northern Atlas",
+            "category": "kitchen",
+            "price": 5427,
+            "discount": 55,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=01641443": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "01641443",
+            "item": "Wild Garden",
+            "category": "office",
+            "price": 7697,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=04129100": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "04129100",
+            "item": "Golden Kingdom",
+            "category": "books",
+            "price": 9727,
+            "discount": 0,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=99492452": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "99492452",
+            "item": "Hidden Station",
+            "category": "office",
+            "price": 9024,
+            "discount": 14,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=35992359": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "35992359",
+            "item": "Velvet Garden",
+            "category": "outdoor",
+            "price": 9931,
+            "discount": 18,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=17374522": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "17374522",
+            "item": "Quiet Garden",
+            "category": "toys",
+            "price": 5474,
+            "discount": 65,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=74559227": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "74559227",
+            "item": "Northern Mirror",
+            "category": "kitchen",
+            "price": 5325,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=27112682": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "27112682",
+            "item": "Salt Circuit",
+            "category": "kitchen",
+            "price": 1232,
+            "discount": 97,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=09425221": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "09425221",
+            "item": "Glass Mirror",
+            "category": "audio",
+            "price": 8919,
+            "discount": 100,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00267328": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00267328",
+            "item": "Broken Harbor",
+            "category": "outdoor",
+            "price": 3477,
+            "discount": 5,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=48364350": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "48364350",
+            "item": "Hidden Parade",
+            "category": "outdoor",
+            "price": 8040,
+            "discount": 7,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=09958505": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "09958505",
+            "item": "Velvet Lantern",
+            "category": "kitchen",
+            "price": 7829,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=96057346": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "96057346",
+            "item": "Velvet Orchard",
+            "category": "garden",
+            "price": 5666,
+            "discount": 61,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=27392507": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "27392507",
+            "item": "Electric Ledger",
+            "category": "books",
+            "price": 4750,
+            "discount": 100,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=21981134": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "21981134",
+            "item": "Northern Meridian",
+            "category": "garden",
+            "price": 8457,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=09901591": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "09901591",
+            "item": "Paper Signal",
+            "category": "kitchen",
+            "price": 1750,
+            "discount": 28,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=85281910": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "85281910",
+            "item": "Copper Canyon",
+            "category": "office",
+            "price": 3497,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=61008831": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "61008831",
+            "item": "Velvet Atlas",
+            "category": "toys",
+            "price": 2676,
+            "discount": 20,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00283320": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00283320",
+            "item": "Crimson Circuit",
+            "category": "books",
+            "price": 6987,
+            "discount": 2,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=48827029": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "48827029",
+            "item": "Wild Tide",
+            "category": "garden",
+            "price": 4248,
+            "discount": 3,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=65637963": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "65637963",
+            "item": "Crimson Canyon",
+            "category": "audio",
+            "price": 2056,
+            "discount": 0,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=32083352": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "32083352",
+            "item": "Silent Circuit",
+            "category": "books",
+            "price": 2753,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=92877536": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "92877536",
+            "item": "Electric Circuit",
+            "category": "outdoor",
+            "price": 4081,
+            "discount": 23,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=93572606": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "93572606",
+            "item": "Broken Orchard",
+            "category": "garden",
+            "price": 4573,
+            "discount": 75,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=04055049": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "04055049",
+            "item": "Velvet Kingdom",
+            "category": "kitchen",
+            "price": 7637,
+            "discount": 90,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=53021293": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "53021293",
+            "item": "Broken Station",
+            "category": "audio",
+            "price": 6414,
+            "discount": 49,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=05726182": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "05726182",
+            "item": "Hidden Station",
+            "category": "outdoor",
+            "price": 2021,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00325713": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00325713",
+            "item": "Salt Circuit",
+            "category": "garden",
+            "price": 3400,
+            "discount": 0,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=67178317": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "67178317",
+            "item": "Paper Archive",
+            "category": "toys",
+            "price": 566,
+            "discount": 72,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=69939605": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "69939605",
+            "item": "Hollow Canyon",
+            "category": "audio",
+            "price": 7713,
+            "discount": 27,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=19692090": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "19692090",
+            "item": "Iron Archive",
+            "category": "outdoor",
+            "price": 5683,
+            "discount": 32,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=59280545": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "59280545",
+            "item": "Bright Atlas",
+            "category": "audio",
+            "price": 777,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=73546521": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "73546521",
+            "item": "Iron Harbor",
+            "category": "audio",
+            "price": 3281,
+            "discount": 8,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=91541114": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "91541114",
+            "item": "Distant Canyon",
+            "category": "outdoor",
+            "price": 6896,
+            "discount": 66,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=38187599": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "38187599",
+            "item": "Glass Frontier",
+            "category": "books",
+            "price": 7559,
+            "discount": 0,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=87048421": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "87048421",
+            "item": "Salt Canyon",
+            "category": "toys",
+            "price": 7352,
+            "discount": 41,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00412051": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00412051",
+            "item": "Hollow Orchard",
+            "category": "books",
+            "price": 7043,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=86521191": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "86521191",
+            "item": "Copper Tide",
+            "category": "toys",
+            "price": 7929,
+            "discount": 44,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=01591779": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "01591779",
+            "item": "Silent Signal",
+            "category": "kitchen",
+            "price": 7642,
+            "discount": 66,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=11029750": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "11029750",
+            "item": "Hollow Harbor",
+            "category": "office",
+            "price": 330,
+            "discount": 87,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=80217485": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "80217485",
+            "item": "Glass Orchard",
+            "category": "garden",
+            "price": 2977,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=19706722": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "19706722",
+            "item": "Electric Ledger",
+            "category": "audio",
+            "price": 3489,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=56003246": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "56003246",
+            "item": "Salt Canyon",
+            "category": "toys",
+            "price": 724,
+            "discount": 26,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=17632913": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "17632913",
+            "item": "Hidden Kingdom",
+            "category": "outdoor",
+            "price": 7743,
+            "discount": 25,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=62584626": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "62584626",
+            "item": "Glass Orchard",
+            "category": "kitchen",
+            "price": 7993,
+            "discount": 0,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00579896": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00579896",
+            "item": "Crimson Mirror",
+            "category": "audio",
+            "price": 5325,
+            "discount": 74,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=54703083": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "54703083",
+            "item": "Hidden Parade",
+            "category": "audio",
+            "price": 2519,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=89247714": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "89247714",
+            "item": "Broken Atlas",
+            "category": "books",
+            "price": 2198,
+            "discount": 39,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=58757616": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "58757616",
+            "item": "Distant Circuit",
+            "category": "kitchen",
+            "price": 3500,
+            "discount": 0,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=35032570": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "35032570",
+            "item": "Northern Signal",
+            "category": "garden",
+            "price": 2763,
+            "discount": 76,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=04010419": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "04010419",
+            "item": "Bright Archive",
+            "category": "toys",
+            "price": 4247,
+            "discount": 18,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=31083716": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "31083716",
+            "item": "Iron Tide",
+            "category": "office",
+            "price": 5569,
+            "discount": 50,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=46913549": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "46913549",
+            "item": "Electric Station",
+            "category": "garden",
+            "price": 5021,
+            "discount": 27,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=37842274": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "37842274",
+            "item": "Silent Parade",
+            "category": "kitchen",
+            "price": 5824,
+            "discount": 5,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00898180": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "00898180",
+            "item": "Northern Canyon",
+            "category": "books",
+            "price": 8953,
+            "discount": 68,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=86400737": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "86400737",
+            "item": "Hidden Orchard",
+            "category": "kitchen",
+            "price": 3402,
+            "discount": 0,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=12876438": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "12876438",
+            "item": "Crimson Parade",
+            "category": "audio",
+            "price": 1781,
+            "discount": 50,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=04011124": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "04011124",
+            "item": "Iron Harbor",
+            "category": "toys",
+            "price": 7976,
+            "discount": 71,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=78927134": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "78927134",
+            "item": "Copper Ledger",
+            "category": "toys",
+            "price": 9145,
+            "discount": 0,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=47571275": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "47571275",
+            "item": "Paper Parade",
+            "category": "toys",
+            "price": 3029,
+            "discount": 76,
+            "available": 0
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=83487165": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "barcode": "83487165",
+            "item": "Velvet Station",
+            "category": "kitchen",
+            "price": 895,
+            "discount": 31,
+            "available": 1
+          }
+        ]
+      },
+      "GET /api/inventory?barcode=00000000": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=99999999": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=7400231": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=740023140": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=71776227": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=12775991": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=79753877": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=75558345": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=61896982": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=34719238": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=23293025": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=79072255": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=08670272": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=25091295": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=41561813": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=37647704": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=33975066": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=71256194": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=40581692": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=93140570": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=05076048": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=88450612": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=39709246": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=25010698": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=73872522": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=55462179": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=56388098": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=27929745": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=63051766": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/inventory?barcode=24343603": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "74002314\n",
+      "expectedOutput": "2964\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "00000000\n",
+      "expectedOutput": "-1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "28793291\n",
+      "expectedOutput": "41\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 1",
+      "input": "78518302\n",
+      "expectedOutput": "2959\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 2",
+      "input": "00349957\n",
+      "expectedOutput": "3409\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 3",
+      "input": "25800911\n",
+      "expectedOutput": "2293\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 4",
+      "input": "18071366\n",
+      "expectedOutput": "3325\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 5",
+      "input": "96096323\n",
+      "expectedOutput": "2965\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 6",
+      "input": "00455112\n",
+      "expectedOutput": "541\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 7",
+      "input": "00925912\n",
+      "expectedOutput": "1877\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 8",
+      "input": "00920642\n",
+      "expectedOutput": "4281\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 9",
+      "input": "00645086\n",
+      "expectedOutput": "740\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 10",
+      "input": "00304436\n",
+      "expectedOutput": "207\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 11",
+      "input": "99999999\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 12",
+      "input": "7400231\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 13",
+      "input": "740023140\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 14",
+      "input": "71776227\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 15",
+      "input": "12775991\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 16",
+      "input": "29747695\n",
+      "expectedOutput": "2861\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 17",
+      "input": "93570891\n",
+      "expectedOutput": "2331\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 18",
+      "input": "91036454\n",
+      "expectedOutput": "259\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 19",
+      "input": "31234884\n",
+      "expectedOutput": "9577\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 20",
+      "input": "72851969\n",
+      "expectedOutput": "2658\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 21",
+      "input": "17632913\n",
+      "expectedOutput": "5807\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 22",
+      "input": "10599663\n",
+      "expectedOutput": "3540\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,881 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-rippling-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "REST API：某时期的剧集",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Rippling",
+      "REST API",
+      "分页",
+      "JSON"
+    ],
+    "description": "剧集接口分页返回全部剧集，每页 10 条：\n\n```text\nGET https://data.cswork.test/api/tvseries?page=<页码>\n```\n\n```json\n{\"page\": 1, \"per_page\": 10, \"total\": 87, \"total_pages\": 9,\n \"data\": [{\"name\": \"Copper Atlas\", \"runtime_of_series\": \"(2011-2019)\", \"genre\": \"Drama\", \"imdb_rating\": 8.1}, ...]}\n```\n\n页码从 1 开始，需要一直取到第 `total_pages` 页。`runtime_of_series` 只有三种写法：\n\n- `(A-B)`：A 年开播、B 年完结；\n- `(A)`：A 年开播并在同一年完结；\n- `(A- )`：A 年开播，仍在播出。\n\n给定 `start_year` 和 `end_year`，找出所有开播年不晚于 `start_year` 的剧集，并且：\n\n- 若 `end_year = -1`，剧集必须仍在播出；\n- 否则剧集必须已完结，且完结年不晚于 `end_year`。\n\n结果按名称的字典序排序（逐字符比较 Unicode 码点，大写字母排在小写字母前）。\n\n评测环境没有外网：接口返回的是题目自带的固定数据。Python 里的 `requests.get` 和 `urllib.request.urlopen` 由评测机直接应答，数据之外的地址返回 HTTP 404 和一段 JSON 错误信息。本题只支持 Python。",
+    "input": "一行两个整数 start_year end_year：1980 ≤ start_year ≤ 2030；end_year = -1 或 1980 ≤ end_year ≤ 2030。",
+    "output": "第一行输出符合条件的剧集数 k，随后 k 行按字典序各输出一个剧名（原样，可能含空格）。",
+    "explanation": "样例 1：2000 年或之前开播、2010 年或之前完结的剧集。样例 2：2015 年或之前开播、至今仍在播出的剧集。样例 3：只算 1990 年或之前开播、1995 年或之前完结的剧集。",
+    "hints": [
+      "先请求第 1 页拿到 total_pages，再把剩下的页依次取完；最后一页可能不满 10 条。",
+      "用正则取出 runtime_of_series 里的四位年份：只有一个年份且带“-”才是仍在播出。",
+      "Python 的 sorted() 按码点比较字符串，正是题目要求的顺序。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 64,
+    "checker": "exact",
+    "languages": [
+      "python"
+    ],
+    "httpFixtures": {
+      "GET /api/tvseries?page=1": {
+        "page": 1,
+        "per_page": 10,
+        "total": 87,
+        "total_pages": 9,
+        "data": [
+          {
+            "name": "Canyon of Hollow Days",
+            "runtime_of_series": "(2006)",
+            "genre": "Crime",
+            "imdb_rating": 8.3
+          },
+          {
+            "name": "Canyon of Salt Days",
+            "runtime_of_series": "(1985-1991)",
+            "genre": "Comedy",
+            "imdb_rating": 5.7
+          },
+          {
+            "name": "The Bright Garden",
+            "runtime_of_series": "(2017-2020)",
+            "genre": "Documentary",
+            "imdb_rating": 6.5
+          },
+          {
+            "name": "Hollow Engine",
+            "runtime_of_series": "(1993)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 7.4
+          },
+          {
+            "name": "Copper Canyons",
+            "runtime_of_series": "(2013)",
+            "genre": "Drama",
+            "imdb_rating": 6.9
+          },
+          {
+            "name": "The Hollow Signal",
+            "runtime_of_series": "(2006- )",
+            "genre": "Sci-Fi",
+            "imdb_rating": 8.1
+          },
+          {
+            "name": "Silent Orchard",
+            "runtime_of_series": "(1997-2004)",
+            "genre": "Crime",
+            "imdb_rating": 6.3
+          },
+          {
+            "name": "The Silent Lantern",
+            "runtime_of_series": "(2022-2026)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 9.2
+          },
+          {
+            "name": "The Copper Tide",
+            "runtime_of_series": "(2000-2001)",
+            "genre": "Drama",
+            "imdb_rating": 6
+          },
+          {
+            "name": "Hollow Orchards",
+            "runtime_of_series": "(1986-1997)",
+            "genre": "Crime",
+            "imdb_rating": 9
+          }
+        ]
+      },
+      "GET /api/tvseries": {
+        "page": 1,
+        "per_page": 10,
+        "total": 87,
+        "total_pages": 9,
+        "data": [
+          {
+            "name": "Canyon of Hollow Days",
+            "runtime_of_series": "(2006)",
+            "genre": "Crime",
+            "imdb_rating": 8.3
+          },
+          {
+            "name": "Canyon of Salt Days",
+            "runtime_of_series": "(1985-1991)",
+            "genre": "Comedy",
+            "imdb_rating": 5.7
+          },
+          {
+            "name": "The Bright Garden",
+            "runtime_of_series": "(2017-2020)",
+            "genre": "Documentary",
+            "imdb_rating": 6.5
+          },
+          {
+            "name": "Hollow Engine",
+            "runtime_of_series": "(1993)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 7.4
+          },
+          {
+            "name": "Copper Canyons",
+            "runtime_of_series": "(2013)",
+            "genre": "Drama",
+            "imdb_rating": 6.9
+          },
+          {
+            "name": "The Hollow Signal",
+            "runtime_of_series": "(2006- )",
+            "genre": "Sci-Fi",
+            "imdb_rating": 8.1
+          },
+          {
+            "name": "Silent Orchard",
+            "runtime_of_series": "(1997-2004)",
+            "genre": "Crime",
+            "imdb_rating": 6.3
+          },
+          {
+            "name": "The Silent Lantern",
+            "runtime_of_series": "(2022-2026)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 9.2
+          },
+          {
+            "name": "The Copper Tide",
+            "runtime_of_series": "(2000-2001)",
+            "genre": "Drama",
+            "imdb_rating": 6
+          },
+          {
+            "name": "Hollow Orchards",
+            "runtime_of_series": "(1986-1997)",
+            "genre": "Crime",
+            "imdb_rating": 9
+          }
+        ]
+      },
+      "GET /api/tvseries?page=2": {
+        "page": 2,
+        "per_page": 10,
+        "total": 87,
+        "total_pages": 9,
+        "data": [
+          {
+            "name": "Harbor of Hollow Days",
+            "runtime_of_series": "(1998)",
+            "genre": "Comedy",
+            "imdb_rating": 5.9
+          },
+          {
+            "name": "Salt Engines",
+            "runtime_of_series": "(2013-2022)",
+            "genre": "Documentary",
+            "imdb_rating": 8.9
+          },
+          {
+            "name": "Iron Frontiers",
+            "runtime_of_series": "(2012)",
+            "genre": "Drama",
+            "imdb_rating": 6.7
+          },
+          {
+            "name": "Electric Mirror",
+            "runtime_of_series": "(1985)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 8.3
+          },
+          {
+            "name": "Iron Archive",
+            "runtime_of_series": "(1991-1994)",
+            "genre": "Crime",
+            "imdb_rating": 8.1
+          },
+          {
+            "name": "Meridian of Copper Days",
+            "runtime_of_series": "(2018)",
+            "genre": "Drama",
+            "imdb_rating": 7.3
+          },
+          {
+            "name": "Distant Engine",
+            "runtime_of_series": "(2005-2007)",
+            "genre": "Drama",
+            "imdb_rating": 7.6
+          },
+          {
+            "name": "Bright Archive",
+            "runtime_of_series": "(2016-2022)",
+            "genre": "Documentary",
+            "imdb_rating": 5.5
+          },
+          {
+            "name": "The Hidden Garden",
+            "runtime_of_series": "(2003-2013)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 6
+          },
+          {
+            "name": "Tide of Silent Days",
+            "runtime_of_series": "(2004- )",
+            "genre": "Sci-Fi",
+            "imdb_rating": 9.3
+          }
+        ]
+      },
+      "GET /api/tvseries?page=3": {
+        "page": 3,
+        "per_page": 10,
+        "total": 87,
+        "total_pages": 9,
+        "data": [
+          {
+            "name": "Hidden Kingdoms",
+            "runtime_of_series": "(2010- )",
+            "genre": "Sci-Fi",
+            "imdb_rating": 8.7
+          },
+          {
+            "name": "Circuit of Distant Days",
+            "runtime_of_series": "(2006-2011)",
+            "genre": "Drama",
+            "imdb_rating": 6.6
+          },
+          {
+            "name": "Northern Stations",
+            "runtime_of_series": "(2024-2026)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 7.6
+          },
+          {
+            "name": "Station of Velvet Days",
+            "runtime_of_series": "(1996-2001)",
+            "genre": "Crime",
+            "imdb_rating": 8.6
+          },
+          {
+            "name": "The Crimson Engine",
+            "runtime_of_series": "(2006-2007)",
+            "genre": "Documentary",
+            "imdb_rating": 7.4
+          },
+          {
+            "name": "Bright Signal",
+            "runtime_of_series": "(1993-1996)",
+            "genre": "Documentary",
+            "imdb_rating": 7
+          },
+          {
+            "name": "Atlas of Paper Days",
+            "runtime_of_series": "(2016-2018)",
+            "genre": "Documentary",
+            "imdb_rating": 8.1
+          },
+          {
+            "name": "Wild Engines",
+            "runtime_of_series": "(2005-2015)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 7.9
+          },
+          {
+            "name": "Bright Kingdoms",
+            "runtime_of_series": "(2021-2026)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 8.4
+          },
+          {
+            "name": "Kingdom of Golden Days",
+            "runtime_of_series": "(2019-2022)",
+            "genre": "Comedy",
+            "imdb_rating": 7.9
+          }
+        ]
+      },
+      "GET /api/tvseries?page=4": {
+        "page": 4,
+        "per_page": 10,
+        "total": 87,
+        "total_pages": 9,
+        "data": [
+          {
+            "name": "Electric Canyons",
+            "runtime_of_series": "(2016- )",
+            "genre": "Comedy",
+            "imdb_rating": 5.5
+          },
+          {
+            "name": "The Hollow Circuit",
+            "runtime_of_series": "(2016- )",
+            "genre": "Drama",
+            "imdb_rating": 7.3
+          },
+          {
+            "name": "Northern Kingdoms",
+            "runtime_of_series": "(2023-2025)",
+            "genre": "Documentary",
+            "imdb_rating": 8.1
+          },
+          {
+            "name": "Velvet Kingdom",
+            "runtime_of_series": "(2009- )",
+            "genre": "Sci-Fi",
+            "imdb_rating": 6.8
+          },
+          {
+            "name": "Canyon of Wild Days",
+            "runtime_of_series": "(1993- )",
+            "genre": "Sci-Fi",
+            "imdb_rating": 7.7
+          },
+          {
+            "name": "The Hidden Station",
+            "runtime_of_series": "(1993-1994)",
+            "genre": "Comedy",
+            "imdb_rating": 6.4
+          },
+          {
+            "name": "Northern Lantern",
+            "runtime_of_series": "(1993-1997)",
+            "genre": "Crime",
+            "imdb_rating": 8.4
+          },
+          {
+            "name": "Harbor of Silent Days",
+            "runtime_of_series": "(1991)",
+            "genre": "Crime",
+            "imdb_rating": 6.3
+          },
+          {
+            "name": "Engine of Northern Days",
+            "runtime_of_series": "(2015- )",
+            "genre": "Sci-Fi",
+            "imdb_rating": 8.4
+          },
+          {
+            "name": "Crimson Engine",
+            "runtime_of_series": "(2006- )",
+            "genre": "Comedy",
+            "imdb_rating": 6.1
+          }
+        ]
+      },
+      "GET /api/tvseries?page=5": {
+        "page": 5,
+        "per_page": 10,
+        "total": 87,
+        "total_pages": 9,
+        "data": [
+          {
+            "name": "Lantern of Salt Days",
+            "runtime_of_series": "(2004-2005)",
+            "genre": "Crime",
+            "imdb_rating": 7.5
+          },
+          {
+            "name": "The Northern Engine",
+            "runtime_of_series": "(1989- )",
+            "genre": "Drama",
+            "imdb_rating": 7.8
+          },
+          {
+            "name": "eLearning Hour",
+            "runtime_of_series": "(1996-2004)",
+            "genre": "Documentary",
+            "imdb_rating": 5.6
+          },
+          {
+            "name": "Quiet Orchard",
+            "runtime_of_series": "(2022- )",
+            "genre": "Sci-Fi",
+            "imdb_rating": 5.5
+          },
+          {
+            "name": "Engine of Quiet Days",
+            "runtime_of_series": "(1987- )",
+            "genre": "Drama",
+            "imdb_rating": 8.1
+          },
+          {
+            "name": "Lantern of Golden Days",
+            "runtime_of_series": "(2015- )",
+            "genre": "Crime",
+            "imdb_rating": 6
+          },
+          {
+            "name": "Engine of Distant Days",
+            "runtime_of_series": "(2008- )",
+            "genre": "Documentary",
+            "imdb_rating": 9
+          },
+          {
+            "name": "Quiet Station",
+            "runtime_of_series": "(1993-1996)",
+            "genre": "Crime",
+            "imdb_rating": 8.7
+          },
+          {
+            "name": "The Electric Lantern",
+            "runtime_of_series": "(1991- )",
+            "genre": "Comedy",
+            "imdb_rating": 6
+          },
+          {
+            "name": "Tide of Paper Days",
+            "runtime_of_series": "(1988-1995)",
+            "genre": "Comedy",
+            "imdb_rating": 5.5
+          }
+        ]
+      },
+      "GET /api/tvseries?page=6": {
+        "page": 6,
+        "per_page": 10,
+        "total": 87,
+        "total_pages": 9,
+        "data": [
+          {
+            "name": "The Hollow Tide",
+            "runtime_of_series": "(1998- )",
+            "genre": "Crime",
+            "imdb_rating": 8.3
+          },
+          {
+            "name": "the quiet garden",
+            "runtime_of_series": "(1991-1996)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 7.1
+          },
+          {
+            "name": "The Hidden Circuit",
+            "runtime_of_series": "(2020- )",
+            "genre": "Sci-Fi",
+            "imdb_rating": 8.9
+          },
+          {
+            "name": "The Salt Archive",
+            "runtime_of_series": "(1987-1991)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 8
+          },
+          {
+            "name": "Velvet Mirror",
+            "runtime_of_series": "(1989-1993)",
+            "genre": "Crime",
+            "imdb_rating": 8.7
+          },
+          {
+            "name": "Distant Harbors",
+            "runtime_of_series": "(2009-2010)",
+            "genre": "Documentary",
+            "imdb_rating": 7.4
+          },
+          {
+            "name": "Kingdom of Distant Days",
+            "runtime_of_series": "(1991- )",
+            "genre": "Comedy",
+            "imdb_rating": 5.6
+          },
+          {
+            "name": "Velvet Station",
+            "runtime_of_series": "(1991- )",
+            "genre": "Documentary",
+            "imdb_rating": 7.7
+          },
+          {
+            "name": "Electric Station",
+            "runtime_of_series": "(2004-2012)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 7.2
+          },
+          {
+            "name": "iCity Nights",
+            "runtime_of_series": "(2011-2016)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 8.1
+          }
+        ]
+      },
+      "GET /api/tvseries?page=7": {
+        "page": 7,
+        "per_page": 10,
+        "total": 87,
+        "total_pages": 9,
+        "data": [
+          {
+            "name": "Paper Stations",
+            "runtime_of_series": "(2023-2026)",
+            "genre": "Comedy",
+            "imdb_rating": 7.5
+          },
+          {
+            "name": "Quiet Parade",
+            "runtime_of_series": "(2021- )",
+            "genre": "Sci-Fi",
+            "imdb_rating": 5.5
+          },
+          {
+            "name": "Golden Lanterns",
+            "runtime_of_series": "(2006- )",
+            "genre": "Comedy",
+            "imdb_rating": 8.3
+          },
+          {
+            "name": "Northern Canyon",
+            "runtime_of_series": "(1986- )",
+            "genre": "Drama",
+            "imdb_rating": 7.6
+          },
+          {
+            "name": "Northern Archive",
+            "runtime_of_series": "(2015-2024)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 6.5
+          },
+          {
+            "name": "Hollow Atlas",
+            "runtime_of_series": "(1998-2001)",
+            "genre": "Documentary",
+            "imdb_rating": 8.7
+          },
+          {
+            "name": "Northern Kingdom",
+            "runtime_of_series": "(1994- )",
+            "genre": "Crime",
+            "imdb_rating": 7.5
+          },
+          {
+            "name": "The Electric Garden",
+            "runtime_of_series": "(2020- )",
+            "genre": "Documentary",
+            "imdb_rating": 6.4
+          },
+          {
+            "name": "Atlas of Quiet Days",
+            "runtime_of_series": "(2004- )",
+            "genre": "Comedy",
+            "imdb_rating": 6.2
+          },
+          {
+            "name": "Glass Parade",
+            "runtime_of_series": "(2023- )",
+            "genre": "Crime",
+            "imdb_rating": 6.2
+          }
+        ]
+      },
+      "GET /api/tvseries?page=8": {
+        "page": 8,
+        "per_page": 10,
+        "total": 87,
+        "total_pages": 9,
+        "data": [
+          {
+            "name": "The Quiet Lantern",
+            "runtime_of_series": "(2021-2026)",
+            "genre": "Comedy",
+            "imdb_rating": 6.4
+          },
+          {
+            "name": "Salt Ledgers",
+            "runtime_of_series": "(2014- )",
+            "genre": "Comedy",
+            "imdb_rating": 6.1
+          },
+          {
+            "name": "Parade of Hidden Days",
+            "runtime_of_series": "(1996-2003)",
+            "genre": "Comedy",
+            "imdb_rating": 6.6
+          },
+          {
+            "name": "Canyon of Silent Days",
+            "runtime_of_series": "(2003)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 7.3
+          },
+          {
+            "name": "The Glass Garden",
+            "runtime_of_series": "(1996-2006)",
+            "genre": "Sci-Fi",
+            "imdb_rating": 6.4
+          },
+          {
+            "name": "Hidden Archives",
+            "runtime_of_series": "(2000-2004)",
+            "genre": "Crime",
+            "imdb_rating": 9.3
+          },
+          {
+            "name": "Engine of Broken Days",
+            "runtime_of_series": "(2015-2023)",
+            "genre": "Documentary",
+            "imdb_rating": 8.7
+          },
+          {
+            "name": "Broken Orchards",
+            "runtime_of_series": "(2024-2026)",
+            "genre": "Comedy",
+            "imdb_rating": 9.2
+          },
+          {
+            "name": "Bright Engine",
+            "runtime_of_series": "(1987- )",
+            "genre": "Crime",
+            "imdb_rating": 8.8
+          },
+          {
+            "name": "Paper Ledgers",
+            "runtime_of_series": "(2021- )",
+            "genre": "Sci-Fi",
+            "imdb_rating": 8.6
+          }
+        ]
+      },
+      "GET /api/tvseries?page=9": {
+        "page": 9,
+        "per_page": 10,
+        "total": 87,
+        "total_pages": 9,
+        "data": [
+          {
+            "name": "Hollow Kingdoms",
+            "runtime_of_series": "(1989- )",
+            "genre": "Documentary",
+            "imdb_rating": 6.2
+          },
+          {
+            "name": "Signal of Salt Days",
+            "runtime_of_series": "(2009- )",
+            "genre": "Crime",
+            "imdb_rating": 6.8
+          },
+          {
+            "name": "Garden of Electric Days",
+            "runtime_of_series": "(2019- )",
+            "genre": "Crime",
+            "imdb_rating": 6.7
+          },
+          {
+            "name": "Archive of Broken Days",
+            "runtime_of_series": "(2017-2026)",
+            "genre": "Drama",
+            "imdb_rating": 6
+          },
+          {
+            "name": "Circuit of Bright Days",
+            "runtime_of_series": "(1988- )",
+            "genre": "Documentary",
+            "imdb_rating": 8.2
+          },
+          {
+            "name": "Zero Hour",
+            "runtime_of_series": "(2024-2026)",
+            "genre": "Documentary",
+            "imdb_rating": 6.9
+          },
+          {
+            "name": "The Glass Kingdom",
+            "runtime_of_series": "(1994- )",
+            "genre": "Crime",
+            "imdb_rating": 9
+          }
+        ]
+      },
+      "GET /api/tvseries?page=10": {
+        "page": 10,
+        "per_page": 10,
+        "total": 87,
+        "total_pages": 9,
+        "data": []
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "2000 2010\n",
+      "expectedOutput": "23\nBright Signal\nCanyon of Salt Days\nElectric Mirror\nHarbor of Hollow Days\nHarbor of Silent Days\nHidden Archives\nHollow Atlas\nHollow Engine\nHollow Orchards\nIron Archive\nNorthern Lantern\nParade of Hidden Days\nQuiet Station\nSilent Orchard\nStation of Velvet Days\nThe Copper Tide\nThe Glass Garden\nThe Hidden Station\nThe Salt Archive\nTide of Paper Days\nVelvet Mirror\neLearning Hour\nthe quiet garden\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "2015 -1\n",
+      "expectedOutput": "25\nAtlas of Quiet Days\nBright Engine\nCanyon of Wild Days\nCircuit of Bright Days\nCrimson Engine\nEngine of Distant Days\nEngine of Northern Days\nEngine of Quiet Days\nGolden Lanterns\nHidden Kingdoms\nHollow Kingdoms\nKingdom of Distant Days\nLantern of Golden Days\nNorthern Canyon\nNorthern Kingdom\nSalt Ledgers\nSignal of Salt Days\nThe Electric Lantern\nThe Glass Kingdom\nThe Hollow Signal\nThe Hollow Tide\nThe Northern Engine\nTide of Silent Days\nVelvet Kingdom\nVelvet Station\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "1990 1995\n",
+      "expectedOutput": "5\nCanyon of Salt Days\nElectric Mirror\nThe Salt Archive\nTide of Paper Days\nVelvet Mirror\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 1",
+      "input": "2026 -1\n",
+      "expectedOutput": "34\nAtlas of Quiet Days\nBright Engine\nCanyon of Wild Days\nCircuit of Bright Days\nCrimson Engine\nElectric Canyons\nEngine of Distant Days\nEngine of Northern Days\nEngine of Quiet Days\nGarden of Electric Days\nGlass Parade\nGolden Lanterns\nHidden Kingdoms\nHollow Kingdoms\nKingdom of Distant Days\nLantern of Golden Days\nNorthern Canyon\nNorthern Kingdom\nPaper Ledgers\nQuiet Orchard\nQuiet Parade\nSalt Ledgers\nSignal of Salt Days\nThe Electric Garden\nThe Electric Lantern\nThe Glass Kingdom\nThe Hidden Circuit\nThe Hollow Circuit\nThe Hollow Signal\nThe Hollow Tide\nThe Northern Engine\nTide of Silent Days\nVelvet Kingdom\nVelvet Station\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 2",
+      "input": "2026 2026\n",
+      "expectedOutput": "53\nArchive of Broken Days\nAtlas of Paper Days\nBright Archive\nBright Kingdoms\nBright Signal\nBroken Orchards\nCanyon of Hollow Days\nCanyon of Salt Days\nCanyon of Silent Days\nCircuit of Distant Days\nCopper Canyons\nDistant Engine\nDistant Harbors\nElectric Mirror\nElectric Station\nEngine of Broken Days\nHarbor of Hollow Days\nHarbor of Silent Days\nHidden Archives\nHollow Atlas\nHollow Engine\nHollow Orchards\nIron Archive\nIron Frontiers\nKingdom of Golden Days\nLantern of Salt Days\nMeridian of Copper Days\nNorthern Archive\nNorthern Kingdoms\nNorthern Lantern\nNorthern Stations\nPaper Stations\nParade of Hidden Days\nQuiet Station\nSalt Engines\nSilent Orchard\nStation of Velvet Days\nThe Bright Garden\nThe Copper Tide\nThe Crimson Engine\nThe Glass Garden\nThe Hidden Garden\nThe Hidden Station\nThe Quiet Lantern\nThe Salt Archive\nThe Silent Lantern\nTide of Paper Days\nVelvet Mirror\nWild Engines\nZero Hour\neLearning Hour\niCity Nights\nthe quiet garden\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 3",
+      "input": "1984 -1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 4",
+      "input": "1985 2000\n",
+      "expectedOutput": "2\nCanyon of Salt Days\nElectric Mirror\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 5",
+      "input": "2024 2025\n",
+      "expectedOutput": "45\nAtlas of Paper Days\nBright Archive\nBright Signal\nCanyon of Hollow Days\nCanyon of Salt Days\nCanyon of Silent Days\nCircuit of Distant Days\nCopper Canyons\nDistant Engine\nDistant Harbors\nElectric Mirror\nElectric Station\nEngine of Broken Days\nHarbor of Hollow Days\nHarbor of Silent Days\nHidden Archives\nHollow Atlas\nHollow Engine\nHollow Orchards\nIron Archive\nIron Frontiers\nKingdom of Golden Days\nLantern of Salt Days\nMeridian of Copper Days\nNorthern Archive\nNorthern Kingdoms\nNorthern Lantern\nParade of Hidden Days\nQuiet Station\nSalt Engines\nSilent Orchard\nStation of Velvet Days\nThe Bright Garden\nThe Copper Tide\nThe Crimson Engine\nThe Glass Garden\nThe Hidden Garden\nThe Hidden Station\nThe Salt Archive\nTide of Paper Days\nVelvet Mirror\nWild Engines\neLearning Hour\niCity Nights\nthe quiet garden\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 6",
+      "input": "2010 2005\n",
+      "expectedOutput": "24\nBright Signal\nCanyon of Salt Days\nCanyon of Silent Days\nElectric Mirror\nHarbor of Hollow Days\nHarbor of Silent Days\nHidden Archives\nHollow Atlas\nHollow Engine\nHollow Orchards\nIron Archive\nLantern of Salt Days\nNorthern Lantern\nParade of Hidden Days\nQuiet Station\nSilent Orchard\nStation of Velvet Days\nThe Copper Tide\nThe Hidden Station\nThe Salt Archive\nTide of Paper Days\nVelvet Mirror\neLearning Hour\nthe quiet garden\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 7",
+      "input": "1985 1985\n",
+      "expectedOutput": "1\nElectric Mirror\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 8",
+      "input": "1991 1991\n",
+      "expectedOutput": "4\nCanyon of Salt Days\nElectric Mirror\nHarbor of Silent Days\nThe Salt Archive\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 9",
+      "input": "1993 1993\n",
+      "expectedOutput": "6\nCanyon of Salt Days\nElectric Mirror\nHarbor of Silent Days\nHollow Engine\nThe Salt Archive\nVelvet Mirror\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 10",
+      "input": "1998 1998\n",
+      "expectedOutput": "15\nBright Signal\nCanyon of Salt Days\nElectric Mirror\nHarbor of Hollow Days\nHarbor of Silent Days\nHollow Engine\nHollow Orchards\nIron Archive\nNorthern Lantern\nQuiet Station\nThe Hidden Station\nThe Salt Archive\nTide of Paper Days\nVelvet Mirror\nthe quiet garden\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 11",
+      "input": "1993 2005\n",
+      "expectedOutput": "14\nBright Signal\nCanyon of Salt Days\nElectric Mirror\nHarbor of Silent Days\nHollow Engine\nHollow Orchards\nIron Archive\nNorthern Lantern\nQuiet Station\nThe Hidden Station\nThe Salt Archive\nTide of Paper Days\nVelvet Mirror\nthe quiet garden\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 12",
+      "input": "2026 1990\n",
+      "expectedOutput": "1\nElectric Mirror\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 13",
+      "input": "1989 -1\n",
+      "expectedOutput": "6\nBright Engine\nCircuit of Bright Days\nEngine of Quiet Days\nHollow Kingdoms\nNorthern Canyon\nThe Northern Engine\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 14",
+      "input": "1987 -1\n",
+      "expectedOutput": "3\nBright Engine\nEngine of Quiet Days\nNorthern Canyon\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 15",
+      "input": "2007 1987\n",
+      "expectedOutput": "1\nElectric Mirror\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 16",
+      "input": "1990 2023\n",
+      "expectedOutput": "6\nCanyon of Salt Days\nElectric Mirror\nHollow Orchards\nThe Salt Archive\nTide of Paper Days\nVelvet Mirror\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 17",
+      "input": "2008 1991\n",
+      "expectedOutput": "4\nCanyon of Salt Days\nElectric Mirror\nHarbor of Silent Days\nThe Salt Archive\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 18",
+      "input": "1993 -1\n",
+      "expectedOutput": "10\nBright Engine\nCanyon of Wild Days\nCircuit of Bright Days\nEngine of Quiet Days\nHollow Kingdoms\nKingdom of Distant Days\nNorthern Canyon\nThe Electric Lantern\nThe Northern Engine\nVelvet Station\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 19",
+      "input": "2022 -1\n",
+      "expectedOutput": "33\nAtlas of Quiet Days\nBright Engine\nCanyon of Wild Days\nCircuit of Bright Days\nCrimson Engine\nElectric Canyons\nEngine of Distant Days\nEngine of Northern Days\nEngine of Quiet Days\nGarden of Electric Days\nGolden Lanterns\nHidden Kingdoms\nHollow Kingdoms\nKingdom of Distant Days\nLantern of Golden Days\nNorthern Canyon\nNorthern Kingdom\nPaper Ledgers\nQuiet Orchard\nQuiet Parade\nSalt Ledgers\nSignal of Salt Days\nThe Electric Garden\nThe Electric Lantern\nThe Glass Kingdom\nThe Hidden Circuit\nThe Hollow Circuit\nThe Hollow Signal\nThe Hollow Tide\nThe Northern Engine\nTide of Silent Days\nVelvet Kingdom\nVelvet Station\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 20",
+      "input": "1997 -1\n",
+      "expectedOutput": "12\nBright Engine\nCanyon of Wild Days\nCircuit of Bright Days\nEngine of Quiet Days\nHollow Kingdoms\nKingdom of Distant Days\nNorthern Canyon\nNorthern Kingdom\nThe Electric Lantern\nThe Glass Kingdom\nThe Northern Engine\nVelvet Station\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 21",
+      "input": "1990 -1\n",
+      "expectedOutput": "6\nBright Engine\nCircuit of Bright Days\nEngine of Quiet Days\nHollow Kingdoms\nNorthern Canyon\nThe Northern Engine\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 22",
+      "input": "2022 2026\n",
+      "expectedOutput": "48\nArchive of Broken Days\nAtlas of Paper Days\nBright Archive\nBright Kingdoms\nBright Signal\nCanyon of Hollow Days\nCanyon of Salt Days\nCanyon of Silent Days\nCircuit of Distant Days\nCopper Canyons\nDistant Engine\nDistant Harbors\nElectric Mirror\nElectric Station\nEngine of Broken Days\nHarbor of Hollow Days\nHarbor of Silent Days\nHidden Archives\nHollow Atlas\nHollow Engine\nHollow Orchards\nIron Archive\nIron Frontiers\nKingdom of Golden Days\nLantern of Salt Days\nMeridian of Copper Days\nNorthern Archive\nNorthern Lantern\nParade of Hidden Days\nQuiet Station\nSalt Engines\nSilent Orchard\nStation of Velvet Days\nThe Bright Garden\nThe Copper Tide\nThe Crimson Engine\nThe Glass Garden\nThe Hidden Garden\nThe Hidden Station\nThe Quiet Lantern\nThe Salt Archive\nThe Silent Lantern\nTide of Paper Days\nVelvet Mirror\nWild Engines\neLearning Hour\niCity Nights\nthe quiet garden\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

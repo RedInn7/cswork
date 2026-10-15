@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-palantir-2",
+  "title": "REST API：国家区号",
+  "explanation": "## 思路\n\n用国家名做查询参数请求一次接口；`data` 非空且 `callingCodes` 非空时输出 `+` 加最后一个区号、空格、电话号码，否则输出 -1。\n\n## 正确性证明\n\n接口按名称精确匹配，至多返回一条记录，因此一次请求即可确定该国的全部区号。题目规定多个区号时取下标最大者，即数组最后一个元素；没有记录或区号数组为空时都没有可用区号，按规定输出 -1。电话号码原样拼接，不做任何变换。\n\n## 复杂度\n\n一次请求，O(L) 时间与空间，L 为输出长度。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import json\nimport urllib.parse\nimport urllib.request\n\n\ndef phone_number(country, number):\n    url = 'https://data.cswork.test/api/countries?' + urllib.parse.urlencode({'name': country})\n    with urllib.request.urlopen(url, timeout=10) as response:\n        body = json.load(response)\n    codes = body['data'][0]['callingCodes'] if body['data'] else []\n    return '+' + codes[-1] + ' ' + number if codes else '-1'\n\n\ncountry = input().strip()\nnumber = input().strip()\nprint(phone_number(country, number))\n"
+    }
+  ]
+}

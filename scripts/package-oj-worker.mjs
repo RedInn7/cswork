@@ -18,12 +18,13 @@ cpSync('scripts/leetcode-mode', 'dist/standalone/scripts/leetcode-mode', {
 cpSync('deploy/oj/cpp-json-v1', 'dist/standalone/deploy/oj/cpp-json-v1', {
   recursive: true,
 });
-// AI-assisted round projects (lib/server/ai-tasks.ts), read by the site and the judge; the
-// reference solutions are for tests only.
-cpSync('content/ai-coding', 'dist/standalone/content/ai-coding', {
-  recursive: true,
-  filter: (source) => !source.split('/').includes('solution'),
-});
+// AI-assisted round projects and ICA sets (lib/server/ai-tasks.ts), read by the site and the
+// judge; the reference solutions are for tests only.
+for (const folder of ['content/ai-coding', 'content/ica'])
+  cpSync(folder, `dist/standalone/${folder}`, {
+    recursive: true,
+    filter: (source) => !source.split('/').includes('solution'),
+  });
 // Bundle JavaScript with Vite; preserve BullMQ's Lua files and its exact locked dependency tree.
 function copyPackage(name, from, destination, ancestors = new Set()) {
   const require = createRequire(join(from, 'package.json'));

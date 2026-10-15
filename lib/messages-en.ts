@@ -385,6 +385,7 @@ const EN: Record<string, string> = {
   '简历过长，最多读取 12000 个字符': 'The resume is too long; the review reads at most 12,000 characters',
   // AI-assisted round (lib/server/ai-rounds.ts, createProjectRun)
   练习任务不存在: 'Practice task not found',
+  请先通过上一关: 'Pass the previous level first',
   '项目最多 30 个文件，合计 256 KiB': 'A project is limited to 30 files and 256 KiB in all',
   '今天的 AI 结对次数已用完，明天再来': "You've used today's AI pair requests. Come back tomorrow",
   'AI 结对今天的额度已用完，明天再来': 'The AI pair is out of credit for today. Come back tomorrow',

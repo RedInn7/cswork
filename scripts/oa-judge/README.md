@@ -77,3 +77,5 @@ node --import tsx scripts/publish-oa-judge.ts --batch google-next TEACHER_EMAIL
 ## 调试与代码评审练习
 
 `node scripts/oa-judge/build-drills.mjs` 把 `mutants/` 里与 registry Python 解相差 1–3 行（行数相同、忽略行尾空白）的变异体生成 `drills.json`（私有服务端资产，由 `scripts/package-oa-library.mjs` 打包，不进 public）。变异体的英文名来自 `drill-names-en.json`（中文名 → 英文，LLM 翻译）；新增的名称补进这个文件后重跑脚本。registry 或 mutants 变动后必须重跑，`tests/oa-drills.test.ts` 会检查 `drills.json` 是否最新。
+
+`python3 scripts/rest-api/build.py` 生成 REST API 题：原先因依赖外部实时接口而 blocked 的 Oracle #6、Palantir #2、Rippling #3 进入候选批次 `rest-api-next`，题包带 `httpFixtures`（原创固定 JSON，键为 `GET <path>?<排序后的 query>`，见 `lib/http-fixtures.mjs`），判题和 `verify-oa-judge.mjs` 都用内联 `-c` 引导代码给 Python 注入离线的 `requests` / `urlopen`。同一脚本还生成 6 道原创 `rest-` 题（`content/rest-api/`，由 `publish-sql-track.ts` 发布）；它们同样要在真实 GoJudge 上跑过：`GO_JUDGE_URL=… GO_JUDGE_TOKEN=… node scripts/rest-api/verify-sandbox.mjs` 让每道题的参考解通过全部用例、每个错误程序至少错一条，并写出 `content/rest-api/sandbox-report.json`。报告提交后，发布脚本只发布校验和在报告里的题包，其余记为 `unverified` 跳过；题包一改就要重跑。三道 OA 题只做了本地子进程验证，仍需 `node scripts/verify-oa-judge.mjs --candidate-batch rest-api-next` 跑真实 GoJudge 后再晋级；英文翻译要等进入 registry 后再加。
