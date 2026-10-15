@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-7",
+  "packageChecksum": "29fc93130439ead67109e8d5189fad60680f72ed1febd3901936c7fe8c115b7e",
+  "sourceContentHash": "8da4f650709a3bb1a093fbb79ed6f0c670bb054d9f83782f608940ae3b9c7497",
+  "editorialSha256": "3f863e376eb2e3f47bcc28edd31e4383794c3996c58523d3fdc4b39b973ae4e1",
+  "hints": {
+    "zh": [
+      "线程不会过期，也没有时间窗口：任何时刻能否服务一个请求，只取决于此前累计新增的线程数减去已经成功处理的请求数。",
+      "按顺序模拟并维护当前可用线程数：正数事件增加可用线程，请求到来时有可用线程就消耗一个，否则这个请求被丢弃。",
+      "可用数和丢弃数都从 0 开始；遍历事件：值大于 0 时可用数加上该值；值为 −1 时若可用数大于 0 则减 1，否则丢弃数加 1；最后输出丢弃数。"
+    ],
+    "en": [
+      "Threads never expire and there is no time window: whether a request is served depends only on the threads added so far minus the requests already served.",
+      "Simulate in order with a count of available threads: a positive event adds threads, and a request consumes one thread if any is available, otherwise it is dropped.",
+      "Start with zero available threads and zero drops; for each event, a positive value adds to the available count, and a −1 decrements the available count if it is positive or otherwise increments the drop count; print the drop count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTrack the number of available threads in order; when a request arrives, decrement it if a thread is available, otherwise count a drop.\n\n## Proof of correctness\n\nAfter processing any prefix, the available count is exactly the threads added minus the successful requests; deciding whether the next request succeeds by whether this count is zero matches the original rule exactly, so by induction the drop count is correct.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."
+}

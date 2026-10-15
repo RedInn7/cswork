@@ -1,0 +1,19 @@
+{
+  "id": "oa-linkedin-4",
+  "packageChecksum": "7b19450f790e73e090df75cf926895de04c96dc47c27c384d808dd1a746b6928",
+  "sourceContentHash": "9b456fb737c9c32e5c298c2a8d91307fe5c3514923b8477c355795907bff9bc0",
+  "editorialSha256": "e1709308d51a55a5ede99d376916f04e978ee94824268189d76ad89a5a611913",
+  "hints": {
+    "zh": [
+      "* 恰好代表一个任意字符，所以模式长度是固定的；以星号为界，模式分成前段、一个任意字符和后段，三者在文本中的相对位置也是固定的。",
+      "分别用 KMP 标出前段和后段在文本中的所有出现位置；起点 i 能匹配整个模式，当且仅当前段出现在 i、后段出现在 i+k+1（k 为星号下标），并且文本剩余长度足够。",
+      "没有星号时直接用 KMP 找第一次出现（空模式在 0 处匹配）；有星号时得到两个出现标记数组，空段视为处处出现；从小到大枚举满足“起点 + 模式长度 ≤ 文本长度”的起点 i，第一个两段都匹配的 i 就是答案，否则输出 −1。"
+    ],
+    "en": [
+      "The * stands for exactly one arbitrary character, so the pattern has a fixed length; the asterisk splits it into a prefix, one free character, and a suffix whose relative positions in the text are fixed too.",
+      "Mark every occurrence of the prefix and of the suffix in the text with KMP; start i matches the whole pattern exactly when the prefix occurs at i, the suffix occurs at i+k+1 (k is the asterisk's index), and enough text remains.",
+      "Without an asterisk, run KMP once and report the first occurrence (an empty pattern matches at 0); with one, build the two occurrence tables, treating an empty part as occurring everywhere, try starts i in increasing order while i plus the pattern length fits in the text, and print the first i where both parts match, or −1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit the pattern at the asterisk into two parts, mark the occurrences of each part with KMP, then check both parts at each starting point; with no asterisk, run KMP only once.\n\n## Proof of correctness\n\nKMP marks all and only the actual matching starting points. With an asterisk, the positions occupied by the first part, one arbitrary character, and the second part are fixed and do not overlap; the whole pattern matches if and only if both parts match and the total length fits. Checking starting points in increasing order, the first success is the earliest.\n\n## Complexity\n\nO(|s|+|p|) time and O(|s|+|p|) space."
+}

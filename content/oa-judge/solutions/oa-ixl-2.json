@@ -1,0 +1,21 @@
+{
+  "id": "oa-ixl-2",
+  "packageChecksum": "287c51dc725db6fa41bffa3de7ed2fe52317ae39998420abc3f9978e4d8278f4",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long q;\n    cin >> q;\n    long long minR = LLONG_MAX, minC = LLONG_MAX;\n    for (long long i = 0; i < q; i++) {\n        long long r, c;\n        cin >> r >> c;\n        minR = min(minR, r);\n        minC = min(minC, c);\n    }\n    // Every operation covers [1..r]x[1..c]; the cells covered by all operations hold the maximum.\n    cout << minR * minC << \"\\n\";\n}\n",
+      "sha256": "1deae5fa45393a3b1b96ea93ef7b3760bd37286877360d181df4ab53e73a68ee"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        long q = next();\n        long minR = Long.MAX_VALUE, minC = Long.MAX_VALUE;\n        for (long i = 0; i < q; i++) {\n            minR = Math.min(minR, next());\n            minC = Math.min(minC, next());\n        }\n        // Every operation covers [1..r]x[1..c]; the cells covered by all operations hold the maximum.\n        System.out.println(minR * minC);\n    }\n}\n",
+      "sha256": "350dc3036d14a3561a1dff096c3248bd5011d6c572b8e8925d38ce2b2ef0fab1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"math\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tq := next()\n\tminR, minC := int64(math.MaxInt64), int64(math.MaxInt64)\n\tfor i := int64(0); i < q; i++ {\n\t\tminR = min(minR, next())\n\t\tminC = min(minC, next())\n\t}\n\t// Every operation covers [1..r]x[1..c]; the cells covered by all operations hold the maximum.\n\tfmt.Println(minR * minC)\n}\n",
+      "sha256": "9273de812e0b7a2adf8d0439d99ecb1b1cc9130ee1366ca60a46be125765904c"
+    }
+  ]
+}

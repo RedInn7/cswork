@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-16",
+  "packageChecksum": "4f721bb87a09d710af2d3f577889ff5a500e5e7b3c05c1b67fac0095a2c5a1b1",
+  "sourceContentHash": "04983dd33e87032c34eec6fd85f45297ae2c91d1cbb35b4aa453bba99d32b30c",
+  "editorialSha256": "a7f149a0149e27e08c450b1e65faf899fe34fb2990ec24b94c8ac5497988fc79",
+  "hints": {
+    "zh": [
+      "每行只需判断是否以固定前缀“# ”或“## ”开头；以“## ”开头的行第二个字符是 #，不会被误判成章。标题内容（包括空格和控制字符）都要原样保留。",
+      "顺序扫描并维护章号和节号：遇到章时章号加 1、节号清零；遇到节时节号加 1。每个条目由编号加上去掉固定前缀后的标题组成。",
+      "先解析 JSON 字符串数组（处理 \\uXXXX、代理对以及常见转义）；按规则生成“章号. 标题”或“章号.节号. 标题”；最后输出单行 JSON：逗号后一个空格，非 ASCII 字符原样输出，只转义双引号、反斜杠和 U+0000..U+001F 的控制字符，没有条目时输出 []。"
+    ],
+    "en": [
+      "Each line only needs a check for the fixed prefix \"# \" or \"## \"; a line starting with \"## \" has # as its second character, so it is never mistaken for a chapter. The rest of the title, including spaces and control characters, must be kept as is.",
+      "Scan in order with a chapter number and a section number: a chapter increments the chapter number and resets the section number; a section increments the section number. Each entry is the number followed by the title with its fixed prefix removed.",
+      "Parse the JSON array of strings (handle \\uXXXX, surrogate pairs, and the usual escapes); build \"chapter. title\" or \"chapter.section. title\" entries; then print one line of JSON with a single space after each comma, non-ASCII characters written directly, and only double quotes, backslashes, and U+0000..U+001F escaped; print [] when there are no entries."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan in order while maintaining the chapter and section numbers: on a chapter, increment the chapter number and reset the section number; on a section, increment the section number.\n\n## Proof of correctness\n\nAfter scanning any prefix, the chapter number equals the number of chapter headings in it, and the section number equals the number of sections after the last chapter. Both updates preserve this invariant, and slicing off the fixed prefix does not modify any title character, so every formatted entry is correct.\n\n## Complexity\n\nO(total characters) time and O(characters in the table of contents) space."
+}

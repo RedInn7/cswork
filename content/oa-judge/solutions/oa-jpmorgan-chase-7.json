@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-7",
+  "packageChecksum": "29fc93130439ead67109e8d5189fad60680f72ed1febd3901936c7fe8c115b7e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    long long freeThreads = 0, lost = 0;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        if (v > 0) freeThreads += v;\n        else if (freeThreads) freeThreads--;\n        else lost++;\n    }\n    cout << lost << \"\\n\";\n}\n",
+      "sha256": "e39bf8530dd08ed936718bcb22e8edb17a75c278a81e3d3d4fbea4df92fd1091"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) next();\n        long freeThreads = 0, lost = 0;\n        for (int i = 0; i < n; i++) {\n            long v = next();\n            if (v > 0) freeThreads += v;\n            else if (freeThreads > 0) freeThreads--;\n            else lost++;\n        }\n        System.out.println(lost);\n    }\n}\n",
+      "sha256": "f43ef884ca689e3e5e4051c8c982ab9e7aa805580b9bf8681ea61be93375b2cb"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(next())\n\tvar freeThreads, lost int64\n\tfor i := 0; i < n; i++ {\n\t\tv := next()\n\t\tif v > 0 {\n\t\t\tfreeThreads += v\n\t\t} else if freeThreads > 0 {\n\t\t\tfreeThreads--\n\t\t} else {\n\t\t\tlost++\n\t\t}\n\t}\n\tfmt.Println(lost)\n}\n",
+      "sha256": "acb01380b20f40e7d36eed62ec3d60db857e6445231ff710ee55e10a9835680b"
+    }
+  ]
+}

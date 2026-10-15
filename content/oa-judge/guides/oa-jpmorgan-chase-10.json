@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-10",
+  "packageChecksum": "9e046f3a12f9f2caf4de2c468c4d10156746c6f4b6868b25d0ee6a8c59b5b917",
+  "sourceContentHash": "37840f7141eb0b2df4569609432d84375e78b5d8e0391bdb4e26ee86bc23d201",
+  "editorialSha256": "0434cf13c94c273b82e0293d4d0c05fcdedae9744fe9d36f9fab6ee4618f71d0",
+  "hints": {
+    "zh": [
+      "一个方案完全由 a 人队的数量 x 决定：剩下的 p − a·x 人必须恰好分成若干个 b 人队。",
+      "枚举 x 从 0 到 p/a，若剩余人数能被 b 整除就得到一个合法方案，队数为 x 加上剩余人数除以 b，在所有方案中取最小。",
+      "把最优值初始化为不可能达到的 p+1；对每个 x 计算剩余人数 rest，rest 能被 b 整除时用 x + rest/b 更新；枚举结束后若仍为 p+1 则输出 −1。"
+    ],
+    "en": [
+      "A plan is fully determined by the number x of a-person teams: the remaining p − a·x people must split exactly into b-person teams.",
+      "Enumerate x from 0 to p/a; whenever the remaining people are divisible by b, you get a valid plan with x plus remaining/b teams. Take the minimum over all plans.",
+      "Initialize the best value to the impossible p+1; for each x compute rest = p − a·x and, if b divides rest, update with x + rest/b; if the best is still p+1 at the end, print −1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the number of a-person teams; if the remaining people are divisible by b, that forms a valid plan. Take the plan with the fewest teams.\n\n## Proof of correctness\n\nThe number of a-person teams in any valid plan must lie within the enumerated range; once it is fixed, the number of b-person teams is uniquely determined by the remaining people, and the divisibility check is a necessary and sufficient condition for validity. Taking the minimum over all valid plans gives the optimum; if there is no candidate, there is no solution.\n\n## Complexity\n\nO(p/a+1) time and O(1) extra space."
+}

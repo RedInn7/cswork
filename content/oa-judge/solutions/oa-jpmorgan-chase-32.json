@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-32",
+  "packageChecksum": "442ee430fb18ee0d97929fa975e272098ba65b512be9cdebdbf7e8b09cfd77c6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long n;\n    string s;\n    cin >> n;\n    if (n) cin >> s;\n    // Each change of the effective bit (starting from 0) needs one suffix flip.\n    char current = '0';\n    long long answer = 0;\n    for (char c : s)\n        if (c != current) answer++, current = c;\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "738085fff9205833b961906143976f9c5490fe3843b1830b881ec9e5e519f38d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String[] lines = new String(System.in.readAllBytes()).split(\"\\r?\\n\", -1);\n        String s = Long.parseLong(lines[0].trim()) != 0 ? lines[1] : \"\";\n        // Each change of the effective bit (starting from 0) needs one suffix flip.\n        char current = '0';\n        long answer = 0;\n        for (int i = 0; i < s.length(); i++)\n            if (s.charAt(i) != current) {\n                answer++;\n                current = s.charAt(i);\n            }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "af0dcfd7706dff06a3c7bb6633d88536a5444f9fd2c1be165ac5cf8cda97cde5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\tlines := strings.Split(string(raw), \"\\n\")\n\ts := \"\"\n\tif strings.TrimSpace(lines[0]) != \"0\" {\n\t\ts = strings.TrimSuffix(lines[1], \"\\r\")\n\t}\n\t// Each change of the effective bit (starting from 0) needs one suffix flip.\n\tcurrent := byte('0')\n\tanswer := 0\n\tfor i := 0; i < len(s); i++ {\n\t\tif s[i] != current {\n\t\t\tanswer++\n\t\t\tcurrent = s[i]\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "14d32b2cd0e7b74b140de721b788826be11ea62fca28358bf930b2bdffb708f5"
+    }
+  ]
+}

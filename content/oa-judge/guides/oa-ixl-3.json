@@ -1,0 +1,19 @@
+{
+  "id": "oa-ixl-3",
+  "packageChecksum": "3ec2e20050369c2790f40d7cc73a32ff541ce1f41a3eb03af4c45514ade4a961",
+  "sourceContentHash": "0db9adc4e3a9e02a87c6897f66e0b7a7ee7fb36f35e86334117f007bce2b334d",
+  "editorialSha256": "4e008fb0876bfdeb9a999f998cba76999d8e61678c34f955f02d7ad55be807b1",
+  "hints": {
+    "zh": [
+      "能否成为异位词只看两串中每个字母出现的次数，与顺序无关；两串长度不同时，无论怎么替换都不可能成为异位词。",
+      "统计两串 26 个字母的频次差：一串里多出来的字母必须被替换成另一串多出来的字母，每次替换恰好消掉一个多余和一个缺口。",
+      "长度不同直接输出 −1；否则对每个字母求两串频次差的绝对值并求和，结果除以 2 就是最少替换数。读入时注意单独一行“-”表示空串。"
+    ],
+    "en": [
+      "Whether two strings are anagrams depends only on how many times each letter appears, not on order; if the lengths differ, no replacement can make them anagrams.",
+      "Compare the 26 letter counts of the two strings: every surplus letter in one string must be replaced by a letter the other string has in surplus, and each replacement fixes exactly one surplus and one shortage.",
+      "If the lengths differ, output −1; otherwise sum the absolute differences of the letter counts over all 26 letters and divide by 2. When reading, a line containing only - means an empty string."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each pair of lowercase strings, find the minimum number of characters to replace on either side to make them anagrams; return −1 if the lengths differ.\n\n## Proof of correctness\n\nThe construction corresponds one-to-one with the definition in the statement; every input position/operation is handled exactly as defined, so nothing is missed and nothing is counted twice.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+}

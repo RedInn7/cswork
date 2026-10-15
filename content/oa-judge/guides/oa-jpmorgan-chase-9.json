@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-9",
+  "packageChecksum": "eb2c3e0f5cafe9be1fdd9844565477e33ce09b02c966834259cbfa47506410df",
+  "sourceContentHash": "3ac13ef30665bc2dd4b5dbd242f27f08b5dbcf7aee82134948172a55f9c4d8aa",
+  "editorialSha256": "1c6baa3d0d5d7f8e0c0df76278b8f5373fee79f6ff8c23f3584cb6eed2280c46",
+  "hints": {
+    "zh": [
+      "一个信号要通过所有过滤器，必须同时不小于每个下界、不大于每个上界。",
+      "所有闭区间的交集仍是一个闭区间：下界取所有下界的最大值，上界取所有上界的最小值；只需统计落在这个区间里的信号。",
+      "读入频率后遍历 m 个过滤器，求出下界最大值 left 和上界最小值 right；再遍历所有频率，统计满足 left ≤ f ≤ right 的个数（重复频率分别计数）并输出。"
+    ],
+    "en": [
+      "A signal passes every filter exactly when it is at least every lower bound and at most every upper bound.",
+      "The intersection of closed intervals is again a closed interval, from the largest lower bound to the smallest upper bound; just count the signals inside it.",
+      "After reading the frequencies, scan the m filters for left = max lower bound and right = min upper bound; then count the frequencies with left ≤ f ≤ right (repeated frequencies count separately) and print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe intersection's lower bound is the maximum of all lower bounds and its upper bound is the minimum of all upper bounds; count the signals that fall inside it.\n\n## Proof of correctness\n\nA signal passes every filter if and only if it is no less than every lower bound and no greater than every upper bound, which is equivalent to lying in the closed range from the largest lower bound to the smallest upper bound; counting item by item keeps repeated signals.\n\n## Complexity\n\nO(n+m) time and O(n+m) space for parsing."
+}

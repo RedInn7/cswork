@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-20",
+  "packageChecksum": "d36efe3970b1a9c4a2ee7c6ea9729d7d5d17f3c82d2348c8f8735c56f02a5593",
+  "sourceContentHash": "7d6ea1db997a6f16e22349b25cbbac345c8c95541fe5d4b283a4b3aa172fda42",
+  "editorialSha256": "24268b8590a5dad7db774310631f509600b655a3c76131524cc4c2387aa6ed3d",
+  "hints": {
+    "zh": [
+      "按起点排序后，能与当前合并段重叠的区间一定紧跟在它后面；只在同一端点接触也算重叠，但相邻的不同整数端点不算。",
+      "按起点排序后维护最后一个合并段：新区间的起点不超过该段终点就延伸终点，否则开始一个新段。",
+      "把区间按（起点，终点）排序后依次处理：起点 ≤ 当前段终点时，终点取两者较大值；否则把新区间作为新段加入。先输出段数，再逐行输出每段的两个端点。"
+    ],
+    "en": [
+      "After sorting by start, any interval that can overlap the current merged segment comes right after it; touching at the same endpoint counts as overlapping, but adjacent different integers do not.",
+      "Sort by start and keep the last merged segment: if the new interval starts no later than the segment's end, extend the end; otherwise begin a new segment.",
+      "Sort intervals by (start, end) and process them in order: when start ≤ the current segment's end, set the end to the larger of the two; otherwise append the interval as a new segment. Print the number of segments, then one line with the two endpoints of each."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by start and maintain the last merged segment; if the new start does not exceed its end, extend it, otherwise start a new segment.\n\n## Proof of correctness\n\nAfter sorting, an interval that starts later than the current right end does not overlap the current segment, and later intervals start even later and cannot connect to it either, so the segment can be finalized. If they intersect, their union is exactly described by the smaller left end and the larger right end. By induction, the segments output so far are pairwise disjoint and exactly cover the processed intervals, so the final result is correct.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

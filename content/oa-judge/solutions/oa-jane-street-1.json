@@ -1,0 +1,21 @@
+{
+  "id": "oa-jane-street-1",
+  "packageChecksum": "3d82238576b2a22bff75d5ea99b0339fb30ca2b5ad52ca0c4bf2326f123344a0",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    stringstream ss;\n    ss << cin.rdbuf();\n    string s = ss.str();\n    while (!s.empty() && s.back() == '\\n') s.pop_back();\n    string st;\n    for (char c : s) {\n        if (!st.empty()) {\n            char t = st.back();\n            if ((t == 'A' && c == 'B') || (t == 'B' && c == 'A') || (t == 'C' && c == 'D') || (t == 'D' && c == 'C')) {\n                st.pop_back();\n                continue;\n            }\n        }\n        st.push_back(c);\n    }\n    cout << st << \"\\n\";\n}\n",
+      "sha256": "93e7e2dd580b0f054652200ea9fe07162a8d591c75054e1af72d559e62aa73e2"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        byte[] s = System.in.readAllBytes();\n        int n = s.length;\n        while (n > 0 && s[n - 1] == '\\n') n--;\n        byte[] st = new byte[n];\n        int top = 0;\n        for (int i = 0; i < n; i++) {\n            byte c = s[i];\n            if (top > 0) {\n                byte t = st[top - 1];\n                if ((t == 'A' && c == 'B') || (t == 'B' && c == 'A') || (t == 'C' && c == 'D') || (t == 'D' && c == 'C')) {\n                    top--;\n                    continue;\n                }\n            }\n            st[top++] = c;\n        }\n        BufferedOutputStream out = new BufferedOutputStream(System.out);\n        out.write(st, 0, top);\n        out.write('\\n');\n        out.flush();\n    }\n}\n",
+      "sha256": "0bc88bc27c5451d938e278f793a24c92fb3c80ac75282941dd67f33e66214e41"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\ts, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := len(s)\n\tfor n > 0 && s[n-1] == '\\n' {\n\t\tn--\n\t}\n\tst := make([]byte, 0, n+1)\n\tfor _, c := range s[:n] {\n\t\tif k := len(st); k > 0 {\n\t\t\tt := st[k-1]\n\t\t\tif (t == 'A' && c == 'B') || (t == 'B' && c == 'A') || (t == 'C' && c == 'D') || (t == 'D' && c == 'C') {\n\t\t\t\tst = st[:k-1]\n\t\t\t\tcontinue\n\t\t\t}\n\t\t}\n\t\tst = append(st, c)\n\t}\n\tst = append(st, '\\n')\n\tos.Stdout.Write(st)\n}\n",
+      "sha256": "0ef82aa357a3eb71f69b1c58bf44ddf557f4c0010d5a6b03a6eff210c42f5181"
+    }
+  ]
+}

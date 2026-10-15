@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-21",
+  "packageChecksum": "9cff335a58f1ce2720e464fdc902325a03afce461a761723980e786d12777e9c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string line, s;\n    getline(cin, line);\n    getline(cin, s);\n    // Only the stack length matters: a B cancels any surviving character before it.\n    long long left = 0;\n    for (char c : s) {\n        if (c == '\\r') continue;\n        left = (c == 'B' && left) ? left - 1 : left + 1;\n    }\n    cout << left << \"\\n\";\n}\n",
+      "sha256": "98f231e2f1165833bdfc70857a82dc88ba6830657558498a40f6381d8086762c"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes()).split(\"\\r?\\n\", -1)[1];\n        // Only the stack length matters: a B cancels any surviving character before it.\n        long left = 0;\n        for (int i = 0; i < s.length(); i++) left = (s.charAt(i) == 'B' && left > 0) ? left - 1 : left + 1;\n        System.out.println(left);\n    }\n}\n",
+      "sha256": "d57bfedbc44848763cacf81fa4b2023e96c540cf6b5dc21b815aa0012544bad5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\ts := strings.TrimSuffix(strings.Split(string(raw), \"\\n\")[1], \"\\r\")\n\t// Only the stack length matters: a B cancels any surviving character before it.\n\tleft := 0\n\tfor i := 0; i < len(s); i++ {\n\t\tif s[i] == 'B' && left > 0 {\n\t\t\tleft--\n\t\t} else {\n\t\t\tleft++\n\t\t}\n\t}\n\tfmt.Println(left)\n}\n",
+      "sha256": "c9e1e4ec24b6607188f2d4c46966492a366c465e3113dbca6ff3e7044913dcbe"
+    }
+  ]
+}

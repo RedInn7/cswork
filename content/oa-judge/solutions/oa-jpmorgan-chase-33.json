@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-33",
+  "packageChecksum": "3f78d10fb4b3f65cbc6cbecebf1df9bc7cc1bc67ed177f63d4afb12fdc4707af",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<int> a(n);\n    for (auto &x : a) cin >> x;\n    // Value v belongs at index n-v; a cycle of length L needs L-1 swaps.\n    vector<char> seen(n, 0);\n    long long answer = 0;\n    for (int start = 0; start < n; start++) {\n        if (seen[start]) continue;\n        int v = start, length = 0;\n        while (!seen[v]) seen[v] = 1, length++, v = n - a[v];\n        answer += length - 1;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "72b4a6cdd33d03714aac837c41ad03058a0c60b05e935bbe28ce056f50b2326a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) next();\n        int[] a = new int[n];\n        for (int i = 0; i < n; i++) a[i] = (int) next();\n        // Value v belongs at index n-v; a cycle of length L needs L-1 swaps.\n        boolean[] seen = new boolean[n];\n        long answer = 0;\n        for (int start = 0; start < n; start++) {\n            if (seen[start]) continue;\n            int v = start, length = 0;\n            while (!seen[v]) {\n                seen[v] = true;\n                length++;\n                v = n - a[v];\n            }\n            answer += length - 1;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "b7c1967453f885a08d96a2aec83e9805540158364971eb168157270ee7340d6e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(next())\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = int(next())\n\t}\n\t// Value v belongs at index n-v; a cycle of length L needs L-1 swaps.\n\tseen := make([]bool, n)\n\tanswer := 0\n\tfor start := 0; start < n; start++ {\n\t\tif seen[start] {\n\t\t\tcontinue\n\t\t}\n\t\tv, length := start, 0\n\t\tfor !seen[v] {\n\t\t\tseen[v] = true\n\t\t\tlength++\n\t\t\tv = n - a[v]\n\t\t}\n\t\tanswer += length - 1\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "8211caa120432b5ed6b3cb841e36950183f6a183e671d20c6181c2a830d35054"
+    }
+  ]
+}

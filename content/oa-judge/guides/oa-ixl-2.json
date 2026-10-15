@@ -1,0 +1,19 @@
+{
+  "id": "oa-ixl-2",
+  "packageChecksum": "287c51dc725db6fa41bffa3de7ed2fe52317ae39998420abc3f9978e4d8278f4",
+  "sourceContentHash": "8172d274a0a56ae6e5f8c496aa57f4aa0f75939dc609f0b335fe2f448b0a2adc",
+  "editorialSha256": "62592f9d7b2ca6ad6c12f8da02af63e0e24185ff65a39c73c4f13fb8d628785c",
+  "hints": {
+    "zh": [
+      "每个操作的矩形都包含左下角，一个格子的值等于覆盖它的操作数；最大值就是 q，当且仅当这个格子被所有操作同时覆盖。",
+      "被所有矩形同时覆盖的区域本身也是一个以左下角为顶点的矩形，它的两条边长分别由所有 r 的最小值和所有 c 的最小值决定。",
+      "读入 q 组 (r, c)，分别维护 r 的最小值和 c 的最小值，输出两者乘积；乘积可达 10^18，要用 64 位整数。"
+    ],
+    "en": [
+      "Every operation's rectangle contains the bottom-left corner, and a cell's value equals the number of operations covering it; the maximum is q, reached exactly by the cells covered by every operation.",
+      "The region covered by all rectangles at once is itself a rectangle anchored at the bottom-left corner; its two side lengths are the minimum of all r and the minimum of all c.",
+      "Read the q pairs (r, c), keep the minimum r and the minimum c, and print their product; the product can reach 10^18, so use a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEach operation adds 1 to the rectangle from the bottom-left corner to (r,c); find the number of cells that end up holding the maximum value.\n\n## Proof of correctness\n\nThe construction corresponds one-to-one with the definition in the statement; every input position/operation is handled exactly as defined, so nothing is missed and nothing is counted twice.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+}

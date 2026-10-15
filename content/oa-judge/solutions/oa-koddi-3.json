@@ -1,0 +1,21 @@
+{
+  "id": "oa-koddi-3",
+  "packageChecksum": "87ece2381aed5c6620b128f73333a92998ed9d0fa7feec0ba622c6a9bc83fb4b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    int middle = n / 2;\n    long long inside[3] = {0}, outside[3] = {0};\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < n; j++) {\n            int v;\n            cin >> v;\n            bool onShape = (i <= middle && (j == i || j == n - 1 - i)) || (i >= middle && j == middle);\n            (onShape ? inside : outside)[v]++;\n        }\n    // Try all six ordered pairs (shape value a, background value b), a != b.\n    long long kept = 0;\n    for (int a = 0; a < 3; a++)\n        for (int b = 0; b < 3; b++)\n            if (a != b) kept = max(kept, inside[a] + outside[b]);\n    cout << (long long)n * n - kept << \"\\n\";\n}\n",
+      "sha256": "8812fdca34175daca2f0a7ba4d59a881d657489f3e74b4ba13cd9aa70e0c5cb4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) next();\n        int middle = n / 2;\n        long[] inside = new long[3], outside = new long[3];\n        for (int i = 0; i < n; i++)\n            for (int j = 0; j < n; j++) {\n                int v = (int) next();\n                boolean onShape = (i <= middle && (j == i || j == n - 1 - i)) || (i >= middle && j == middle);\n                (onShape ? inside : outside)[v]++;\n            }\n        // Try all six ordered pairs (shape value a, background value b), a != b.\n        long kept = 0;\n        for (int a = 0; a < 3; a++)\n            for (int b = 0; b < 3; b++)\n                if (a != b) kept = Math.max(kept, inside[a] + outside[b]);\n        System.out.println((long) n * n - kept);\n    }\n}\n",
+      "sha256": "2dc77f6731a42c11753c9634a3d2c95fd60a5a65fa16899e1fb50b8c992476d9"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(next())\n\tmiddle := n / 2\n\tvar inside, outside [3]int\n\tfor i := 0; i < n; i++ {\n\t\tfor j := 0; j < n; j++ {\n\t\t\tv := next()\n\t\t\tif (i <= middle && (j == i || j == n-1-i)) || (i >= middle && j == middle) {\n\t\t\t\tinside[v]++\n\t\t\t} else {\n\t\t\t\toutside[v]++\n\t\t\t}\n\t\t}\n\t}\n\t// Try all six ordered pairs (shape value a, background value b), a != b.\n\tkept := 0\n\tfor a := 0; a < 3; a++ {\n\t\tfor b := 0; b < 3; b++ {\n\t\t\tif a != b {\n\t\t\t\tkept = max(kept, inside[a]+outside[b])\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(n*n - kept)\n}\n",
+      "sha256": "54b528297f70d509cdfb8bb40703bb79b1230db912b1810e6ab9e2d43be7ae17"
+    }
+  ]
+}

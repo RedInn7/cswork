@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-4",
+  "packageChecksum": "493d63cc9b5695a0c0f9b255846d41f36bebb4d033f81e6b2fc0b17393d95f52",
+  "sourceContentHash": "25f4c679b918eeda2906f372858a13ed85898e6488dfbf0671eac71ff8c92c10",
+  "editorialSha256": "8634f7203b77b17494b5906c2e6797da9c149ab2d72ba71d6995aac72b071355",
+  "hints": {
+    "zh": [
+      "枢轴本身不计入两侧，所以在下标 i 处：左侧和是 i 之前的前缀和，右侧和是总和减去这个前缀和再减去 a[i]。",
+      "先求总和，再从左到右维护当前下标之前的前缀和，逐个检查左右是否相等即可，不需要任何重排。",
+      "left 从 0 开始；对每个 i 检查 left 是否等于 total − left − a[i]，成立就输出 i；否则把 a[i] 加到 left 上继续。元素都是正数，枢轴至多一个，题目保证存在。"
+    ],
+    "en": [
+      "The pivot belongs to neither side, so at index i the left sum is the prefix sum before i and the right sum is the total minus that prefix sum minus a[i].",
+      "Compute the total once, then walk from the left keeping the prefix sum before the current index and check whether both sides are equal; no reordering is involved.",
+      "Start with left = 0; for each i check whether left equals total − left − a[i] and print i if so; otherwise add a[i] to left and continue. All elements are positive, so there is at most one pivot, and one is guaranteed to exist."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the total sum and the prefix sum before the current index, and check left=total−left−a[i].\n\n## Proof of correctness\n\nWhen the scan reaches i, left is exactly the sum on the left side, and the total minus left and the current item is exactly the sum on the right side, so the check is necessary and sufficient. Because all elements are positive, left minus right strictly increases with the index, so there is at most one pivot; since a solution is guaranteed, it can be returned.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."
+}

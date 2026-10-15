@@ -1,0 +1,19 @@
+{
+  "id": "oa-juspay-1",
+  "packageChecksum": "d4901015fd6e553078fb4606883bf206bdc10ebe64c427d6a98ba072c952dc66",
+  "sourceContentHash": "acf7d0f9a3830f8d772574bc18cd53eab0d01835e7e76435122e0762af50e4d0",
+  "editorialSha256": "df4f6f229315b3033942423e1e02e809caa5452e4802d322408059b062b98a8b",
+  "hints": {
+    "zh": [
+      "每个格子至多一个出口，这是一张函数图：从任一点出发沿出口一直走，要么走到 −1 停下，要么最终进入某个环。",
+      "逐个起点沿唯一后继往前走，记录当前路径上每个节点的位置；如果走回当前路径上的某个节点，就切出了一个新环；如果走到已经处理过的节点，后面不会再有新环。",
+      "对每个未处理的起点：一边走一边记录节点在路径中的下标，直到遇到 −1、已处理节点或当前路径上的节点；若是最后一种，把路径中从该节点下标到末尾的节点编号求和并更新最大值；然后把整条路径标记为已处理。没有环时输出 −1，和可达约 2·10^10，用 64 位整数。"
+    ],
+    "en": [
+      "Every cell has at most one exit, so this is a functional graph: walking along exits from any cell either stops at −1 or eventually enters a cycle.",
+      "Walk from each starting cell along its unique successor, remembering the position of every node on the current path; returning to a node on the current path cuts out a new cycle, while reaching an already processed node can never reveal a new one.",
+      "For each unprocessed start, walk and record each node's index in the path until you hit −1, a processed node, or a node on the current path; in the last case, sum the node numbers from that node's index to the end of the path and update the maximum; then mark the whole path processed. Print −1 if there is no cycle; sums can reach about 2·10^10, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFrom each starting point, follow the unique successor, recording the position of each node on the current path; when you reach a node already on the current path, compute the node sum of the new cycle. After the full walk, mark the path as processed.\n\n## Proof of correctness\n\nEvery node of the functional graph has out-degree at most 1. A repeated node on the current path cuts out exactly one directed cycle; walks that run into paths already finished cannot discover new cycles. Every node enters a working path only once, so every cycle is checked exactly once and the maximum is taken.\n\n## Complexity\n\nO(N) time and O(N) space."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-19",
+  "packageChecksum": "0cddca6e1b4ff44f6beb69d700f6fdcc85c805616263aef14ef9af52de5369f6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    long long dx = 0, dy = 0;\n    for (char c : s) {\n        if (c == 'R') dx++;\n        else if (c == 'L') dx--;\n        else if (c == 'U') dy++;\n        else if (c == 'D') dy--;\n    }\n    // Only the Manhattan distance to the endpoint must stay; every other move can go.\n    cout << (long long)s.size() - llabs(dx) - llabs(dy) << \"\\n\";\n}\n",
+      "sha256": "9c28b9134e5355a3664bb55c17895c0dbd197d2832bf9d37bbbe7830a510acaf"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes()).strip();\n        long dx = 0, dy = 0;\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            if (c == 'R') dx++;\n            else if (c == 'L') dx--;\n            else if (c == 'U') dy++;\n            else if (c == 'D') dy--;\n        }\n        // Only the Manhattan distance to the endpoint must stay; every other move can go.\n        System.out.println(s.length() - Math.abs(dx) - Math.abs(dy));\n    }\n}\n",
+      "sha256": "a2a1cdd756e07340cdb86fdbf7dc3cc57ada03cdd92ff1a682fd0b157eb7a9af"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"bytes\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc abs(x int) int {\n\tif x < 0 {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\traw, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\ts := bytes.TrimSpace(raw)\n\tdx, dy := 0, 0\n\tfor _, c := range s {\n\t\tswitch c {\n\t\tcase 'R':\n\t\t\tdx++\n\t\tcase 'L':\n\t\t\tdx--\n\t\tcase 'U':\n\t\t\tdy++\n\t\tcase 'D':\n\t\t\tdy--\n\t\t}\n\t}\n\t// Only the Manhattan distance to the endpoint must stay; every other move can go.\n\tfmt.Println(len(s) - abs(dx) - abs(dy))\n}\n",
+      "sha256": "1223d7334328b6ce9866b589d5fc3739c8edb7e29f4ce8fc11ac49f289a98922"
+    }
+  ]
+}

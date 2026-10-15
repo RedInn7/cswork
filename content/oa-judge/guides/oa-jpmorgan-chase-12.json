@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-12",
+  "packageChecksum": "6a137c63b114030a64712537106604d83a80986696c435cd9b254bca059b1675",
+  "sourceContentHash": "8a1d053691b454122d60b35473ca4f9b49c5d48d3a47f6acb18294c84e05d364",
+  "editorialSha256": "ee0da4027ecfe6f8d5488d659e23a3b20149d35ac17080cca2a7cd9afcc0bfc7",
+  "hints": {
+    "zh": [
+      "配对只看大小关系，与原来的位置无关，可以先把两个数组排序；如果某个 a 连最小的未配对 b 都赢不了，它就赢不了任何 b。",
+      "贪心：用当前最小的可用 a 去匹配最小的未配对 b，能严格大于就配成一对，否则直接舍弃这个 a。",
+      "两数组都升序排序，用指针 j 指向 b 中第一个未配对的元素；按顺序遍历 a，若当前 a 严格大于 b[j] 则 j 加 1；遍历结束时 j 就是最大配对数。"
+    ],
+    "en": [
+      "Pairing depends only on values, not on positions, so both arrays can be sorted first; an a that cannot beat the smallest unmatched b cannot beat any b.",
+      "Greedy: match the smallest available a against the smallest unmatched b; if it is strictly greater, pair them, otherwise discard that a.",
+      "Sort both arrays ascending and keep a pointer j to the first unmatched b; walk through a in order and advance j whenever the current a is strictly greater than b[j]; at the end j is the maximum number of pairs."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort both arrays in ascending order and match the smallest available a against the smallest available b; if a is not large enough, skip that a.\n\n## Proof of correctness\n\nIf the smallest a cannot beat the smallest b, it cannot beat any remaining b and can be discarded. If it can, some optimal solution contains this pair: if each was originally paired with another element, after swapping, the other, larger a can still beat the b that was originally matched with the current a; in the remaining cases a direct replacement does not reduce the count. By induction the greedy is optimal.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

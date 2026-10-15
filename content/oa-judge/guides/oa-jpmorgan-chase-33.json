@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-33",
+  "packageChecksum": "3f78d10fb4b3f65cbc6cbecebf1df9bc7cc1bc67ed177f63d4afb12fdc4707af",
+  "sourceContentHash": "3b0f7d93f6ad46db4e6f2ec5ca043044707c9922f08cc36c783eb7053dbac15c",
+  "editorialSha256": "d902cbbef18618b42a30c26836997aa23cb078719fa5593b016eb23912986dfd",
+  "hints": {
+    "zh": [
+      "输入是 1..n 的排列，降序排列后值 v 的位置是唯一确定的：0 基下标 n − v。",
+      "把“位置 i 上的值应该去的位置”看成一个置换，它可以分解成若干个环；一次交换最多把一个环拆成两个，长度为 L 的环至少要 L − 1 次交换，而且可以恰好做到。",
+      "用访问标记遍历每个未访问的位置，沿着 i → n − a[i] 走完整个环并记录长度 L，答案累加 L − 1；所有环的贡献之和就是最少交换次数。"
+    ],
+    "en": [
+      "The input is a permutation of 1..n, so in descending order the position of value v is fixed: 0-based index n − v.",
+      "Treat \"where the value at position i must go\" as a permutation; it splits into cycles. One swap splits at most one cycle into two, so a cycle of length L needs at least L − 1 swaps, and that many always suffice.",
+      "Use visited flags; from each unvisited position follow i → n − a[i] around its cycle, measure its length L, and add L − 1 to the answer; the sum over all cycles is the minimum number of swaps."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe target position of value v is n−v. Walk every cycle of this position mapping; each cycle of length L contributes L−1.\n\n## Proof of correctness\n\nOne swap splits at most one permutation cycle into two, and in the end every position is on its own, so a cycle of length L needs at least L−1 swaps; fixing one position in the cycle and swapping it with the others in turn achieves this. All cycles are independent, so the total is optimal.\n\n## Complexity\n\nO(n) time and O(n) space."
+}

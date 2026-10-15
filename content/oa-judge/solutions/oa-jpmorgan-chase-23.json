@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-23",
+  "packageChecksum": "169face47e01d5e39d5fae3fa7011ca9d3016b180013ec1ec8458b6eea506e5d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    string out;\n    for (int i = 0; i < n; i++) {\n        unsigned long long v;\n        cin >> v;\n        // One doubling per bit after the leading one, one +1 per set bit.\n        int ops = v ? (63 - __builtin_clzll(v)) + __builtin_popcountll(v) : 0;\n        out += to_string(ops) + \"\\n\";\n    }\n    cout << out;\n}\n",
+      "sha256": "cb807d8e1cc316103e74b6ca226324c2e24c9f78cab9ca9842f4790152c046f0"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) next();\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            long v = next();\n            // One doubling per bit after the leading one, one +1 per set bit.\n            int ops = v == 0 ? 0 : (63 - Long.numberOfLeadingZeros(v)) + Long.bitCount(v);\n            out.append(ops).append('\\n');\n        }\n        System.out.print(out);\n    }\n}\n",
+      "sha256": "44004bdc7b26941ebd1168f82967645560e1aa4ce919578ade04e8acb2230fd5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"math/bits\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(next())\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor i := 0; i < n; i++ {\n\t\tv := uint64(next())\n\t\t// One doubling per bit after the leading one, one +1 per set bit.\n\t\tops := 0\n\t\tif v != 0 {\n\t\t\tops = bits.Len64(v) - 1 + bits.OnesCount64(v)\n\t\t}\n\t\tw.WriteString(strconv.Itoa(ops) + \"\\n\")\n\t}\n}\n",
+      "sha256": "ab20212e1031b822c0f9e0f22628b21129d97dcd62986562f7c9c2b3a98bc23c"
+    }
+  ]
+}

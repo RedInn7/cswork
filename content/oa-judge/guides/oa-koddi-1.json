@@ -1,0 +1,19 @@
+{
+  "id": "oa-koddi-1",
+  "packageChecksum": "eabcbd44c1e27189468a8a8e30ba65c9df9a6fc8d50d88c9907c0e0b1dbef1a9",
+  "sourceContentHash": "aabdd05da914ce83b29ae5f4754110f3f23b0ccb4c1d9097bb5ff5c7438e9310",
+  "editorialSha256": "314329703085193c018304d15693e114a9bc72da92304d901e5c5ea37c977bf0",
+  "hints": {
+    "zh": [
+      "单词之间可能隔着多个空格，文本也可能为空；先把每个单词正确切出来，再逐个判断。",
+      "按空白切分得到单词，比较每个单词的首字母和末字母，比较前统一转成小写。",
+      "遍历切分结果，统计“小写首字母等于小写末字母”的单词个数（只有一个字母的单词也算）；空文本没有单词，输出 0。"
+    ],
+    "en": [
+      "Words may be separated by several spaces and the text may be empty; split out each word correctly first, then check them one by one.",
+      "Split on whitespace to get the words and compare each word's first and last letters after converting both to lowercase.",
+      "Count the words whose lowercase first letter equals their lowercase last letter (a one-letter word qualifies); empty text has no words, so the answer is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit the text into words on whitespace and compare each word's first and last letters after lowercasing.\n\n## Proof of correctness\n\nEach token produced by the split corresponds to exactly one word; a case-insensitive comparison of its first and last characters is equivalent to the statement, and summing the truth values gives the required count.\n\n## Complexity\n\nO(L) time and O(L) space (for storing the tokens).\n\n## Source and additions\n\nhttps://oamaster.com/docs/companies/koddi#1-count-words-starting-and-ending-with-same-letter; the statement, the case rule, and the empty-string example are explicit; this site adds the line-based input protocol."
+}

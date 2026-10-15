@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-27",
+  "packageChecksum": "921bd9dfe89a939951bd5be358097d2679047f3c3ead77bbed44089eb21e3d2f",
+  "sourceContentHash": "618390ee9bc5482ce8cb032a40ef3397688623441bdee502c0ddfd9e2877489f",
+  "editorialSha256": "d371e32f77b756752f5843f737cd043debbfbd2db3898f60471796531531a7d2",
+  "hints": {
+    "zh": [
+      "一个字符是否只出现一次取决于它在整个字符串中的出现次数，必须先看完全串才能判断。",
+      "扫描两遍：第一遍统计 26 个字母的频次，第二遍从左到右找第一个频次为 1 的字符。",
+      "用 26 个计数器统计频次；再按下标顺序检查，遇到频次为 1 的位置立即输出它的 1 基下标（下标加 1）；一个都没有则输出 −1。"
+    ],
+    "en": [
+      "Whether a character appears only once depends on its count in the whole string, so you must see the entire string before deciding.",
+      "Make two passes: the first counts the 26 letters, the second goes left to right looking for the first character whose count is 1.",
+      "Count with 26 counters; then check positions in order and print the 1-based index (index plus 1) of the first character whose count is 1; if there is none, print −1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst count the frequencies of the 26 letters, then scan from left to right for the first position whose frequency is 1.\n\n## Proof of correctness\n\nThe count gives each character's exact number of occurrences in the whole string, and a frequency of 1 is exactly equivalent to being unique. The second pass goes in increasing position order, so the first position that qualifies is the earliest unique character; if none is found after the full pass, there is no answer.\n\n## Complexity\n\nO(n) time and O(26) extra space."
+}

@@ -1,0 +1,16 @@
+{
+  "id": "oa-ixl-1",
+  "packageChecksum": "6c95d096c9243b086cfa5cc39822524dfb05a15de6f5ed03d3221128937f8e13",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n;\n    cin >> n;\n    map<long long, long long> freq;\n    long long largest = 0;\n    for (long long i = 0; i < n; i++) {\n        long long c;\n        cin >> c;\n        freq[c]++;\n        largest = max(largest, c);\n    }\n    long long best = n * (largest + 1);\n    // No packet count above largest+1 can improve: each type then needs k-c more cards,\n    // and the total strictly increases with k.\n    for (long long k = 2; k <= largest + 1; k++) {\n        long long added = 0;\n        for (auto &[count, f] : freq) added += f * ((k - count % k) % k);\n        best = min(best, added);\n    }\n    cout << best << \"\\n\";\n}\n",
+      "sha256": "3e58b7a96906d36cc5f7b430260128df5efb7854b97a255069747df054d7114a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) next();\n        TreeMap<Long, Long> freq = new TreeMap<>();\n        long largest = 0;\n        for (int i = 0; i < n; i++) {\n            long c = next();\n            freq.merge(c, 1L, Long::sum);\n            largest = Math.max(largest, c);\n        }\n        long[] counts = new long[freq.size()], mult = new long[freq.size()];\n        int t = 0;\n        for (Map.Entry<Long, Long> e : freq.entrySet()) {\n            counts[t] = e.getKey();\n            mult[t++] = e.getValue();\n        }\n        long best = n * (largest + 1);\n        // No packet count above largest+1 can improve: each type then needs k-c more cards,\n        // and the total strictly increases with k.\n        for (long k = 2; k <= largest + 1; k++) {\n            long added = 0;\n            for (int i = 0; i < t; i++) added += mult[i] * ((k - counts[i] % k) % k);\n            best = Math.min(best, added);\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "2912eae9ae6aaf9aa1b3477812ee1ae1cdf010c6b86eca55e64a8edb540ae2b7"
+    }
+  ]
+}

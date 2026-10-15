@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-35",
+  "packageChecksum": "3517f9450b75aa05798ea4026bd21e8dd12728dcc92e3c707fb19c37a0b2e535",
+  "sourceContentHash": "5e6758b521b25a1b1628d4d8ff2458c47139fc9501b4902d7340322414dcc87e",
+  "editorialSha256": "025420ae64bd329e07a7f6c1e1d1f407af337df198f4d3c66bf7a2be8587d093",
+  "hints": {
+    "zh": [
+      "端点可达 10^18，不能逐个检查；改为计算 F(x)，即 [0, x] 内各位数字互不相同的数的个数，答案就是 F(end) − F(start − 1)。",
+      "用数位 DP 计算 F(x)：从高位到低位逐位填数字，状态记录当前位置、已用数字的集合、是否已经开始（前导零不占用数字）、是否仍紧贴上界。",
+      "对状态（位置，掩码，是否开始，是否贴上界）做记忆化；每一位枚举 0 到当前上限：尚未开始且填 0 时保持未开始、不占用数字；否则该数字不能已在掩码中，填入后标记已开始；走到末尾计 1（始终未开始的路径代表数字 0）。start = 0 时 F(−1) = 0。"
+    ],
+    "en": [
+      "The endpoints can reach 10^18, so checking numbers one by one is impossible; instead compute F(x), the count of numbers in [0, x] whose digits are all different, and answer F(end) − F(start − 1).",
+      "Compute F(x) with digit DP: fill digits from the most significant position, with a state made of the position, the set of digits used, whether the number has started (leading zeros use no digit), and whether it is still tight against the bound.",
+      "Memoize on (position, mask, started, tight); at each position try digits from 0 to the current limit: a 0 before the number starts keeps it unstarted and uses no digit; any other choice needs a digit not yet in the mask and marks the number as started; reaching the end counts 1 (the path that never starts is the number 0). For start = 0, F(−1) = 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse digit DP to count the valid numbers not exceeding a bound, then compute F(end)−F(start−1). The state is the position, the mask of used digits, whether the number has started, and whether it is tight against the bound; leading zeros do not use up a digit.\n\n## Proof of correctness\n\nEvery non-negative integer corresponds to a unique zero-padded representation of the same length. Zeros before the number starts are only placeholders; after it starts, every digit must not already appear in the mask, so the transitions generate exactly all representations with distinct digits, each exactly once. The path that never starts represents 0. The tight state guarantees the bound is not exceeded; each path that reaches the end is counted, and subtracting prefix counts gives the answer for the closed range.\n\n## Complexity\n\nO(log U·1024·10) time and O(log U·1024) space, without scanning the range number by number."
+}

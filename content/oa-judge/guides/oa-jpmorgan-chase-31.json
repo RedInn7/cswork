@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-31",
+  "packageChecksum": "c6de1d9a9e71c6fc5c4418a2c687a36c1a0dd5179753570e7b73d589530b134a",
+  "sourceContentHash": "888f47d7e840b8e2b0ec18de681fc6f8d4e87a93458d3f179302ec7c8290434d",
+  "editorialSha256": "7caee07120a8a638356c7a4ee3ce2fc4d942ef479553e3a2a054448d6335b814",
+  "hints": {
+    "zh": [
+      "整个合并过程可以看成一棵二叉树，每个原始数对总成本的贡献是“它自己 × 所在叶子的深度”；要让总成本最小，越小的数应该放得越深。",
+      "这正是哈夫曼编码：每次合并当前最小的两个数，把它们的和放回去，重复到只剩一个数。",
+      "把所有数放进最小堆；当堆中多于一个元素时，弹出两个最小值，把它们的和计入成本，再把和压回堆；最后输出累计成本（用 64 位整数）。"
+    ],
+    "en": [
+      "The whole merging process is a binary tree in which each original number contributes itself times the depth of its leaf; to minimize the total, smaller numbers should sit deeper.",
+      "This is exactly Huffman coding: always merge the two smallest current numbers, put their sum back, and repeat until one number is left.",
+      "Put all numbers in a min-heap; while it holds more than one element, pop the two smallest, add their sum to the cost, and push the sum back; print the accumulated cost as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRepeatedly pop the two smallest items from a min-heap, add their sum to the total, and push the sum back.\n\n## Proof of correctness\n\nThe merging process is a binary tree in which each original value contributes itself times its leaf depth. The two smallest weights can be placed as a pair of sibling leaves at the deepest level: swapping them with larger weights does not increase the total cost. Contracting this pair of leaves into one with the sum as its weight turns the optimal problem into one smaller by one, plus the fixed cost of this merge; by induction, greedily merging the two smallest items is optimal.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

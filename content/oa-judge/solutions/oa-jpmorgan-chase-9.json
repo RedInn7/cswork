@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-9",
+  "packageChecksum": "eb2c3e0f5cafe9be1fdd9844565477e33ce09b02c966834259cbfa47506410df",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, m;\n    cin >> n >> m;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    // The intersection of all filters is [max lower, min upper].\n    long long left = LLONG_MIN, right = LLONG_MAX;\n    for (int i = 0; i < m; i++) {\n        long long lo, hi;\n        cin >> lo >> hi;\n        left = max(left, lo);\n        right = min(right, hi);\n    }\n    long long count = 0;\n    for (long long f : a) count += left <= f && f <= right;\n    cout << count << \"\\n\";\n}\n",
+      "sha256": "7ab6a6ec05e711f3ef3114097685dd3a13ca186fdc9f18a723abf0a090d5619f"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) next(), m = (int) next();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = next();\n        // The intersection of all filters is [max lower, min upper].\n        long left = Long.MIN_VALUE, right = Long.MAX_VALUE;\n        for (int i = 0; i < m; i++) {\n            left = Math.max(left, next());\n            right = Math.min(right, next());\n        }\n        long count = 0;\n        for (long f : a) if (left <= f && f <= right) count++;\n        System.out.println(count);\n    }\n}\n",
+      "sha256": "dc238d843bdc0809feb241c89550b0d88c8936f36b77e8d55689623de18983f1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"math\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn, m := int(next()), int(next())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = next()\n\t}\n\t// The intersection of all filters is [max lower, min upper].\n\tleft, right := int64(math.MinInt64), int64(math.MaxInt64)\n\tfor i := 0; i < m; i++ {\n\t\tleft = max(left, next())\n\t\tright = min(right, next())\n\t}\n\tcount := 0\n\tfor _, f := range a {\n\t\tif left <= f && f <= right {\n\t\t\tcount++\n\t\t}\n\t}\n\tfmt.Println(count)\n}\n",
+      "sha256": "82b8ee445b73ac47b33bd095c3e79f4735c260b5a894be7995d9ab168a465aa4"
+    }
+  ]
+}

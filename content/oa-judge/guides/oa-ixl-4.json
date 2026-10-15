@@ -1,0 +1,19 @@
+{
+  "id": "oa-ixl-4",
+  "packageChecksum": "d2451d741f726ce7199da5c71601717fa70fc52f116157c75af5879777e8c3d6",
+  "sourceContentHash": "c3384c06d8372df69895ecc588cfb59e8a14c6262f744a9cdec10fe1b54eeda3",
+  "editorialSha256": "7cf13f3d933033a7962be98dbc6934ecd77d9b00081fc930fbac5e9128467794",
+  "hints": {
+    "zh": [
+      "孔的高只取决于横栏，宽只取决于竖栏，两个方向可以分开处理；连续移除 k 根栏会把 k+1 个格子连成一片。",
+      "把移除的横栏编号排序，找出最长的连续整数段；竖栏同理。最大孔的面积就是两段长度各加 1 之后的乘积。",
+      "分别对两组编号排序；扫描时若当前编号等于前一个加 1，当前段长加 1，否则重置为 1，并记录最大段长 runH、runV；输出 (runH+1)×(runV+1)，用 64 位整数。"
+    ],
+    "en": [
+      "A hole's height depends only on the horizontal bars and its width only on the vertical bars, so the two directions are independent; removing k consecutive bars merges k+1 cells.",
+      "Sort the removed horizontal bar indices and find the longest run of consecutive integers; do the same for the vertical bars. The largest hole's area is the product of the two run lengths, each plus 1.",
+      "Sort both index lists; while scanning, extend the current run when an index equals the previous one plus 1 and reset it to 1 otherwise, keeping the longest runs runH and runV; print (runH+1)×(runV+1) as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFind the longest consecutive run of removed horizontal bars and of removed vertical bars separately; the side length of the largest hole is the length of the consecutive run plus 1.\n\n## Proof of correctness\n\nThe construction corresponds one-to-one with the definition in the statement; every input position/operation is handled exactly as defined, so nothing is missed and nothing is counted twice.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+}

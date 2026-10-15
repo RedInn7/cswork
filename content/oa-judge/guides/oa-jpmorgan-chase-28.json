@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-28",
+  "packageChecksum": "70b63d25e79e01c3772aaa54a5c121dd9f28b2493b3eb07f364f08cd24791026",
+  "sourceContentHash": "7bc379e7159ca3eaac42ad880f0a5148479aefa287d357f003caf4745937274c",
+  "editorialSha256": "546c5e219ea4a090465afbc499003a4e1ef8a2e5bd974be556328feb8215c62a",
+  "hints": {
+    "zh": [
+      "每种商品提供一条价格链：初始库存、库存 − 1、……、1。收入最大就是每次都卖当前所有商品中最高的价格，这样选出的价格天然是各条价格链的前缀。",
+      "把库存降序排序，最高的若干种库存会一起往下降：从最高层开始，前 width 种商品同时从当前高度降到下一种的高度，每降一层卖出 width 件、价格相同。m 可达 10^9，不能逐件模拟。",
+      "总库存 < m 时输出 −1；否则排序后在末尾补 0，对 i = 0..n−1 令 width = i+1，本层最多可卖 (a[i] − a[i+1])·width 件，实际卖 take = min(m, 该数量)；完整层数 levels = take / width，余数 rest = take % width；收入加上 width 乘以从 a[i] 递减 levels 项的等差和，再加 rest·(a[i] − levels)；m 减去 take，为 0 时停止。先算 width·levels 再乘，避免 64 位溢出。"
+    ],
+    "en": [
+      "Each product offers a price chain: its initial stock, stock − 1, ..., 1. Maximum revenue means always selling at the highest price currently available, and the prices chosen this way are automatically prefixes of the chains.",
+      "Sort the stock in descending order; the highest several stocks then drop together. Starting from the top, the first width products fall from the current height to the next product's height, and each level sells width items at the same price. m can reach 10^9, so never simulate item by item.",
+      "Print −1 if the total stock is < m. Otherwise append a 0 after sorting; for i = 0..n−1 let width = i+1, at most (a[i] − a[i+1])·width items can be sold on this layer, and take = min(m, that amount); full levels = take / width and rest = take % width; add width times the arithmetic sum of levels prices counting down from a[i], plus rest·(a[i] − levels); subtract take from m and stop at 0. Multiply width·levels first to stay within 64 bits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the stock in descending order and lower the several highest stocks together to the next level; when there are not enough customers to sell off a full level, use division to compute the number of full levels lowered and the leftover sales, and accumulate with arithmetic-series sums.\n\n## Proof of correctness\n\nEach product provides a price chain decreasing from its initial stock down to 1. If a sales plan chooses a smaller available price without choosing a larger available one, switching to the latter does not reduce revenue, and the chosen prices remain prefixes of the price chains, so the plan stays feasible. Therefore taking the highest prices one after another is optimal. The layered algorithm sells equal highest prices in batches, which is equivalent to this greedy; the arithmetic-series sum only speeds up the computation and does not change the chosen prices.\n\n## Complexity\n\nO(n log n) time and O(n) space, without looping over m one item at a time."
+}

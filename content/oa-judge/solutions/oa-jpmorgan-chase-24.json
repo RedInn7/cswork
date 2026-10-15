@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-24",
+  "packageChecksum": "e0418095fa0e3bd1a7fca5c3d3e02571db6cf1c1c93d640a361f7592703e3936",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    long long best = LLONG_MAX;\n    // The final parities alternate starting from even (first=0) or odd (first=1).\n    for (int first = 0; first < 2; first++) {\n        long long cost = 0;\n        for (int i = 0; i < n; i++) {\n            long long v = a[i], target = first ^ (i & 1);\n            while (v % 2 != target) v /= 2, cost++;\n        }\n        best = min(best, cost);\n    }\n    cout << best << \"\\n\";\n}\n",
+      "sha256": "f632328c5e7c62941ca39ec2619f27e8685db57a884822de235041045a614d11"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) next();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = next();\n        long best = Long.MAX_VALUE;\n        // The final parities alternate starting from even (first=0) or odd (first=1).\n        for (int first = 0; first < 2; first++) {\n            long cost = 0;\n            for (int i = 0; i < n; i++) {\n                long v = a[i], target = first ^ (i & 1);\n                while (v % 2 != target) {\n                    v /= 2;\n                    cost++;\n                }\n            }\n            best = Math.min(best, cost);\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "0580fbda107bd230c1369bd4f6b9899ac3f4450ee01a0beab85b68679bb38700"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"math\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(next())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = next()\n\t}\n\tbest := int64(math.MaxInt64)\n\t// The final parities alternate starting from even (first=0) or odd (first=1).\n\tfor first := 0; first < 2; first++ {\n\t\tvar cost int64\n\t\tfor i, v := range a {\n\t\t\ttarget := int64(first ^ (i & 1))\n\t\t\tfor v%2 != target {\n\t\t\t\tv /= 2\n\t\t\t\tcost++\n\t\t\t}\n\t\t}\n\t\tbest = min(best, cost)\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "29bdb6ee10068abc5740fef90092b50ff61e2e3a4540b4bbc60ad4af5773765a"
+    }
+  ]
+}

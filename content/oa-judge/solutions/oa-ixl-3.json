@@ -1,0 +1,21 @@
+{
+  "id": "oa-ixl-3",
+  "packageChecksum": "3ec2e20050369c2790f40d7cc73a32ff541ce1f41a3eb03af4c45514ade4a961",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    vector<string> z;\n    string line;\n    while (getline(cin, line)) {\n        if (!line.empty() && line.back() == '\\r') line.pop_back();\n        z.push_back(line);\n    }\n    int q = stoi(z[0]);\n    size_t p = 1;\n    string out;\n    for (int t = 0; t < q; t++) {\n        istringstream header(z[p]);\n        long long la, lb;\n        header >> la >> lb;\n        string a = z[p + 1], b = z[p + 2];\n        p += 3;\n        if (a == \"-\") a = \"\";\n        if (b == \"-\") b = \"\";\n        if (la != lb) {\n            out += \"-1\\n\";\n            continue;\n        }\n        int ca[26] = {0}, cb[26] = {0};\n        for (char c : a) ca[c - 'a']++;\n        for (char c : b) cb[c - 'a']++;\n        long long diff = 0;\n        for (int i = 0; i < 26; i++) diff += abs(ca[i] - cb[i]);\n        out += to_string(diff / 2) + \"\\n\";\n    }\n    cout << out;\n}\n",
+      "sha256": "97db042215452b53b4acb509cfafae87349437cf0cd47add4c9bc5ec3f47404e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.nio.charset.StandardCharsets;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String[] z = new String(System.in.readAllBytes(), StandardCharsets.UTF_8).split(\"\\r?\\n\", -1);\n        int q = Integer.parseInt(z[0].trim());\n        int p = 1;\n        StringBuilder out = new StringBuilder();\n        for (int t = 0; t < q; t++) {\n            String[] header = z[p].trim().split(\"\\\\s+\");\n            long la = Long.parseLong(header[0]), lb = Long.parseLong(header[1]);\n            String a = z[p + 1], b = z[p + 2];\n            p += 3;\n            if (a.equals(\"-\")) a = \"\";\n            if (b.equals(\"-\")) b = \"\";\n            if (la != lb) {\n                out.append(\"-1\\n\");\n                continue;\n            }\n            int[] ca = new int[26], cb = new int[26];\n            for (int i = 0; i < a.length(); i++) ca[a.charAt(i) - 'a']++;\n            for (int i = 0; i < b.length(); i++) cb[b.charAt(i) - 'a']++;\n            long diff = 0;\n            for (int i = 0; i < 26; i++) diff += Math.abs(ca[i] - cb[i]);\n            out.append(diff / 2).append('\\n');\n        }\n        System.out.print(out);\n    }\n}\n",
+      "sha256": "1538a5210b60311375df54951f98e16e90fee149234f3694440a832d7213f34c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(bufio.NewReader(os.Stdin))\n\tz := strings.Split(string(raw), \"\\n\")\n\tfor i := range z {\n\t\tz[i] = strings.TrimSuffix(z[i], \"\\r\")\n\t}\n\tq, _ := strconv.Atoi(strings.TrimSpace(z[0]))\n\tp := 1\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor t := 0; t < q; t++ {\n\t\theader := strings.Fields(z[p])\n\t\ta, b := z[p+1], z[p+2]\n\t\tp += 3\n\t\tif a == \"-\" {\n\t\t\ta = \"\"\n\t\t}\n\t\tif b == \"-\" {\n\t\t\tb = \"\"\n\t\t}\n\t\tla, _ := strconv.Atoi(header[0])\n\t\tlb, _ := strconv.Atoi(header[1])\n\t\tif la != lb {\n\t\t\tw.WriteString(\"-1\\n\")\n\t\t\tcontinue\n\t\t}\n\t\tvar ca, cb [26]int\n\t\tfor i := 0; i < len(a); i++ {\n\t\t\tca[a[i]-'a']++\n\t\t}\n\t\tfor i := 0; i < len(b); i++ {\n\t\t\tcb[b[i]-'a']++\n\t\t}\n\t\tdiff := 0\n\t\tfor i := 0; i < 26; i++ {\n\t\t\tif ca[i] > cb[i] {\n\t\t\t\tdiff += ca[i] - cb[i]\n\t\t\t} else {\n\t\t\t\tdiff += cb[i] - ca[i]\n\t\t\t}\n\t\t}\n\t\tw.WriteString(strconv.Itoa(diff/2) + \"\\n\")\n\t}\n}\n",
+      "sha256": "aab89ecdc318172452033e52c38620b34764d30affd05da0759536e97a2deefc"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-jpmorgan-chase-6",
+  "packageChecksum": "f51dc1259e91c5ed2f5f012f98277ee5660c69b9413643b0af7fc1ffab3cff80",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    string out;\n    for (int i = 0; i < n; i++) {\n        long long w;\n        cin >> w;\n        // Odd totals are impossible; otherwise any 0..w/4 four-wheelers fixes the two-wheelers.\n        out += to_string(w % 2 ? 0 : w / 4 + 1) + \"\\n\";\n    }\n    cout << out;\n}\n",
+      "sha256": "2e59b1ba41c3464369337e09149a83516dab13cbc7baf1790ee7702ea7f0b64d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long next() {\n        while (buf[pos] != '-' && (buf[pos] < '0' || buf[pos] > '9')) pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long x = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') x = x * 10 + (buf[pos++] - '0');\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) next();\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            long w = next();\n            // Odd totals are impossible; otherwise any 0..w/4 four-wheelers fixes the two-wheelers.\n            out.append(w % 2 != 0 ? 0 : w / 4 + 1).append('\\n');\n        }\n        System.out.print(out);\n    }\n}\n",
+      "sha256": "e18f7762a19d380e3b46211cb373efbdd78468aaf69c2b0912be7c38724116f1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() int64 {\n\tfor data[pos] != '-' && (data[pos] < '0' || data[pos] > '9') {\n\t\tpos++\n\t}\n\tneg := data[pos] == '-'\n\tif neg {\n\t\tpos++\n\t}\n\tvar x int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tx = x*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(next())\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor i := 0; i < n; i++ {\n\t\twheels := next()\n\t\t// Odd totals are impossible; otherwise any 0..w/4 four-wheelers fixes the two-wheelers.\n\t\tvar ways int64\n\t\tif wheels%2 == 0 {\n\t\t\tways = wheels/4 + 1\n\t\t}\n\t\tw.WriteString(strconv.FormatInt(ways, 10) + \"\\n\")\n\t}\n}\n",
+      "sha256": "51bdf64b4f67d4c3dfecb6654aea6146d8db5d8f521d9e0d83762775ca014ffc"
+    }
+  ]
+}

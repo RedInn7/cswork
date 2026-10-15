@@ -1,0 +1,21 @@
+{
+  "id": "oa-linkedin-6",
+  "packageChecksum": "9bc46d300f8d3cb8db39eb1437c9793375ea342a7c6f98fd09f63aff01f1fb12",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    vector<string> words(n);\n    for (auto &w : words) cin >> w;\n    stable_sort(words.begin(), words.end(), [](const string &x, const string &y) { return x.size() < y.size(); });\n    // best[w] = longest chain ending at w; every predecessor is w with one letter deleted.\n    unordered_map<string, int> best;\n    int answer = 0;\n    for (const string &w : words) {\n        int value = 0;\n        for (size_t i = 0; i < w.size(); i++) {\n            auto it = best.find(w.substr(0, i) + w.substr(i + 1));\n            if (it != best.end()) value = max(value, it->second);\n        }\n        best[w] = value + 1;\n        answer = max(answer, value + 1);\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "107054f3251e64190c9c1f4e9a915bb7c7f26171971757e9bd6e5f0694e41227"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        String[] words = new String[n];\n        for (int i = 0; i < n; i++) words[i] = sc.next();\n        Arrays.sort(words, Comparator.comparingInt(String::length));\n        // best[w] = longest chain ending at w; every predecessor is w with one letter deleted.\n        Map<String, Integer> best = new HashMap<>();\n        int answer = 0;\n        for (String w : words) {\n            int value = 0;\n            for (int i = 0; i < w.length(); i++)\n                value = Math.max(value, best.getOrDefault(w.substring(0, i) + w.substring(i + 1), 0));\n            best.put(w, value + 1);\n            answer = Math.max(answer, value + 1);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "50280a7b321838acef9caa4a65e1f6b29a45caf5736da84e48f7cad658ec0066"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\twords := make([]string, n)\n\tfor i := range words {\n\t\tfmt.Fscan(in, &words[i])\n\t}\n\tsort.SliceStable(words, func(i, j int) bool { return len(words[i]) < len(words[j]) })\n\t// best[w] = longest chain ending at w; every predecessor is w with one letter deleted.\n\tbest := map[string]int{}\n\tanswer := 0\n\tfor _, w := range words {\n\t\tvalue := 0\n\t\tfor i := 0; i < len(w); i++ {\n\t\t\tvalue = max(value, best[w[:i]+w[i+1:]])\n\t\t}\n\t\tbest[w] = value + 1\n\t\tanswer = max(answer, value+1)\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "fecf442c515f2ef0cb60e1c11cbb058c331dcf8e40bda4d3284bb2863bd17f18"
+    }
+  ]
+}
