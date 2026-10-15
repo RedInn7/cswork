@@ -136,6 +136,8 @@ test('a running room: the board, the clock, and questions that open in the conte
     assert.ok(document.querySelector('.contest-invite code').textContent === 'ABCD2345');
     assert.ok(document.querySelectorAll('caption').length === 1, 'no virtual table without virtual entrants');
     assert.ok(document.querySelector('.contest-follow') === null, 'a mashup has no follow filter');
+    assert.ok(button('Add to calendar') === undefined, 'it has started');
+    assert.ok(document.querySelector('.contest-replay') === null, 'no replay while the run goes on');
     await act(async () => root.unmount());
   } finally {
     api.restore();
@@ -163,6 +165,23 @@ test('the public weekly: enter before the start; once it runs, joining is virtua
     const root = await mount(createElement(RoomLive, { initial: upcoming, fallbackStart: '' }));
     assert.ok(button('Enter the contest') !== undefined);
     assert.ok(document.querySelector('[role="timer"]') !== null);
+    // Add to calendar: an .ics of this one contest, made in the browser.
+    const made = [];
+    const createObjectURL = URL.createObjectURL;
+    URL.createObjectURL = (blob) => (made.push(blob), 'blob:ics');
+    try {
+      await act(async () => button('Add to calendar').click());
+    } finally {
+      URL.createObjectURL = createObjectURL;
+    }
+    assert.equal(made.length, 1);
+    assert.equal(made[0].type, 'text/calendar');
+    const ics = await made[0].text();
+    assert.match(ics, /UID:cswork-weekly-9@cswork/);
+    assert.match(ics, /SUMMARY:CSWork Weekly #9\r\n/);
+    assert.match(ics, /URL:https:\/\/cswork.test\/contest\/weekly-9\r\n/);
+    assert.match(ics, /TRIGGER:-PT30M/);
+    assert.equal(ics.includes('RRULE'), false);
     await act(async () => root.unmount());
   } finally {
     api0.restore();
@@ -235,6 +254,20 @@ test('the public weekly: enter before the start; once it runs, joining is virtua
   }
 });
 
+test('once my own run is over, the room holds my code replay, shown only where this browser recorded one', async () => {
+  const over = room({ phase: 'ended', startsAt: now - 90 * MIN, endsAt: now - 30 * MIN, me: { name: 'Amy', virtual: false, share: false, start: now - 90 * MIN, end: now - 30 * MIN } });
+  const api = serve(() => Response.json(over));
+  try {
+    const root = await mount(createElement(RoomLive, { initial: over, fallbackStart: '' }));
+    assert.ok(document.querySelector('.contest-replay') !== null);
+    // No IndexedDB here, so nothing recorded: no replay deck.
+    assert.ok(document.querySelector('#mock-replay-title') === null);
+    await act(async () => root.unmount());
+  } finally {
+    api.restore();
+  }
+});
+
 test('a duel waits for its opponent: no clock, no questions', async () => {
   const waiting = room({ kind: 'duel', cap: 2, entrants: 1, phase: 'upcoming', waiting: true, problems: null, standings: null });
   const api = serve(() => Response.json(waiting));
@@ -242,6 +275,7 @@ test('a duel waits for its opponent: no clock, no questions', async () => {
     const root = await mount(createElement(RoomLive, { initial: waiting, fallbackStart: '' }));
     assert.ok(document.querySelector('.contest-hidden-note').textContent.includes('when your opponent joins'));
     assert.ok(document.querySelector('[role="timer"]') === null, 'its set start has passed: nothing to count down');
+    assert.ok(button('Add to calendar') === undefined, 'no start to put in a calendar');
     await act(async () => root.unmount());
   } finally {
     api.restore();

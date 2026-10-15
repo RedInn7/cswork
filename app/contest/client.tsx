@@ -1,14 +1,17 @@
 'use client';
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from 'react';
-import { CONTEST_KINDS, isRatedKind, RATE_GRACE, weeklyTitle } from '@/lib/contest';
+import { CONTEST_KINDS, contestIcs, isRatedKind, RATE_GRACE, weeklyTitle } from '@/lib/contest';
 import { contestName } from '@/lib/lc-rating';
 import { formatClock } from '@/lib/mock-oa';
+import { contestReplay } from '@/lib/mock-replay';
 import { useLocale, useT } from '@/lib/i18n';
 import { api } from '@/lib/types';
 import type { RoomView } from '@/lib/server/contests';
 import type { DuelQueueState } from '@/lib/server/duels';
 import { penaltyText } from '@/components/contest-parts';
+import { MockReplay } from '@/components/mock-replay';
 import { RatingBadge } from '@/components/rating-badge';
+import '@/app/mock-oa.css';
 
 type T = (zh: string, en: string) => string;
 const everySecond = (tick: () => void) => {
@@ -132,6 +135,67 @@ function ShareCode({ checked, onChange, t }: { checked: boolean; onChange: (on: 
       <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
       <span>{t('赛后公开我的 AC 代码', 'Show my accepted code after the contest')}</span>
     </label>
+  );
+}
+
+type CalendarRoom = { id: string; start: number; minutes: number; title: string };
+/**
+ * The contest calendar: `room` adds that one contest (an .ics made here); `feed` subscribes to the
+ * weekly and the starter (webcal://), or copies the address for a calendar that takes a URL.
+ */
+export function ContestCalendar({ room, feed }: { room?: CalendarRoom; feed?: string }) {
+  const t = useT();
+  const [copied, setCopied] = useState(false);
+  const add = (contest: CalendarRoom) => {
+    const ics = contestIcs([{ ...contest, url: `${location.origin}/contest/${encodeURIComponent(contest.id)}` }]);
+    try {
+      const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+      Object.assign(document.createElement('a'), { href: url, download: `cswork-${contest.id}.ics` }).click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch {
+      // No Blob URLs here (an old browser or a sandbox): nothing to download.
+    }
+  };
+  return (
+    <p className="contest-calendar">
+      {room && (
+        <button type="button" onClick={() => add(room)}>
+          {t('加入日历', 'Add to calendar')}
+        </button>
+      )}
+      {feed && (
+        <>
+          <a href={feed.replace(/^https?:/, 'webcal:')}>{t('订阅比赛日历', 'Subscribe to the contest calendar')}</a>
+          <button type="button" onClick={() => void navigator.clipboard?.writeText(feed).then(() => setCopied(true), () => {})}>
+            {copied ? t('已复制', 'Copied') : t('复制日历链接', 'Copy calendar link')}
+          </button>
+        </>
+      )}
+    </p>
+  );
+}
+
+/** The reader's own code replay of a run that is over, from this browser's recording; nothing without one. */
+function ContestReplay({
+  room,
+  me,
+  problems,
+}: {
+  room: string;
+  me: NonNullable<RoomView['me']>;
+  problems: NonNullable<RoomView['problems']>;
+}) {
+  const zh = useLocale() === 'zh';
+  // A room's questions and an entrant's window never change once shown.
+  const [session] = useState(() => contestReplay(room, me, problems.map((p) => p.id)));
+  const title = (id: string) => {
+    const p = problems.find((x) => x.id === id);
+    return p ? (zh ? p.title : p.titleEn || p.title) : id;
+  };
+  return (
+    <div className="contest-replay">
+      <MockReplay session={session} title={title} />
+    </div>
   );
 }
 
@@ -368,6 +432,9 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
           </div>
         </dl>
         {clock && <Countdown to={clock.to} skew={skew} label={clock.label} />}
+        {view.phase === 'upcoming' && !view.waiting && view.startsAt > view.now && (
+          <ContestCalendar room={{ id, start: view.startsAt, minutes: view.durationMin, title }} />
+        )}
         {view.me ? (
           <>
             <p className="contest-me">
@@ -503,6 +570,10 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
             />
           )}
         </section>
+      )}
+
+      {view.me && view.problems && view.now >= view.me.end && (
+        <ContestReplay room={id} me={view.me} problems={view.problems} />
       )}
 
       {code && (
