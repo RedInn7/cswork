@@ -258,7 +258,7 @@ test('the editorial stays locked until solved or confirmed, is fetched only then
     assert.equal(document.querySelectorAll('pre[data-diff]').length, 0);
 
     await render({ unlocked: true, english: false, verified: true });
-    assert.ok(document.querySelector('.cs-ling-verified').textContent.includes('代码已通过本题全部测试'));
+    assert.ok(document.querySelector('.cs-ling-verified').textContent.includes('Python 代码已通过本题全部测试，C++、Java、Go 已通过公开样例'));
     assert.ok(document.querySelector('.cs-ling-approaches h3').textContent.includes(editorial.approaches[0].nameZh));
     assert.equal(fetched.length, 1, 'fetched once');
 

@@ -95,7 +95,7 @@ export function LingEditorial({
         {verified ? (
           <span className="cs-ling-verified">
             <BadgeCheck size={14} aria-hidden="true" />
-            {t('代码已通过本题全部测试', 'Code passes every test of this problem')}
+            {t('Python 代码已通过本题全部测试，C++、Java、Go 已通过公开样例', 'Python passes every test; C++, Java and Go pass the public samples')}
           </span>
         ) : (
           <span className="cs-ling-unverified">
