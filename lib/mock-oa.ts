@@ -287,8 +287,11 @@ export type MockSession = {
   finishedAt?: number;
   reason?: 'manual' | 'timeout';
   result?: { score: number; max: number; solved: number; estimate: boolean };
-  /** A skill certification exam (lib/skill-tests.ts): the server keeps its clock and score. */
-  cert?: { test: string };
+  /**
+   * A skill certification exam (lib/skill-tests.ts): the server keeps its clock and score, and
+   * counts only submissions in `language` when it is set.
+   */
+  cert?: { test: string; language?: string | null };
 };
 export type MockState = { active: MockSession | null; history: MockSession[] };
 export const MOCK_HISTORY = 30;
@@ -359,19 +362,21 @@ export function settleMockState(state: MockState, now: number): MockState {
   return archiveMock(state, finishMock(a, now, 'timeout'));
 }
 
-/** Submissions in the exam window: per question todo / tried / ac. */
+/** Submissions in the exam window (in the exam's language, if any): per question todo / tried / ac. */
 export function questionStates(
   s: MockSession,
-  submissions: readonly { problem_id: string; status: string; created_at: number }[],
+  submissions: readonly { problem_id: string; status: string; created_at: number; language?: string }[],
 ) {
   const { from, to } = reportWindow(s);
+  const language = s.cert?.language;
   return s.ids.map((id) => {
     const mine = submissions.filter(
       (x) =>
         x.problem_id === id &&
         x.created_at >= from &&
         x.created_at <= to &&
-        x.status !== 'cancelled',
+        x.status !== 'cancelled' &&
+        (!language || x.language === language),
     );
     return mine.some((x) => x.status === 'accepted')
       ? ('ac' as const)
@@ -434,6 +439,14 @@ export function findMock(state: MockState, id: string | undefined) {
   return state.active?.id === id
     ? state.active
     : (state.history.find((s) => s.id === id) ?? null);
+}
+/** A skill exam's `cert`, read before settling: an expired one leaves `active` without a trace. */
+export function mockCert(userId: string, id: string) {
+  try {
+    return findMock(parseMockState(localStorage.getItem(mockStorageKey(userId))), id)?.cert;
+  } catch {
+    return undefined;
+  }
 }
 /** Calls back when another tab writes this user's mocks; returns the unsubscribe. */
 export function watchMockState(userId: string, onChange: () => void) {

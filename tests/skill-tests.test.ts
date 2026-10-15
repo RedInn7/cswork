@@ -9,7 +9,7 @@ import { resolve } from 'node:path';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
-import { archiveMock, mockClock, mockDeadline, type MockSession } from '../lib/mock-oa';
+import { archiveMock, mockClock, mockDeadline, questionStates, type MockSession } from '../lib/mock-oa';
 import { skillScore, skillSession, skillTest } from '../lib/skill-tests';
 
 const dir = mkdtempSync(resolve(tmpdir(), 'cswork-skill-tests-'));
@@ -93,9 +93,18 @@ void test('a running attempt becomes the workspace exam session on the server cl
   const attempt = { id: 'x', test: 'python', ids: ['lc-1', 'lc-2'], language: 'python', startedAt: 1_000_000, deadline: 1_000_000 + 45 * MIN, finishedAt: null, score: null, max: null, passed: null };
   // This browser's clock runs 5 seconds behind the server's.
   const session = skillSession(attempt, skillTest('python')!, 1_060_000, 1_055_000, false);
-  assert.deepEqual([session.name, session.platform, session.minutes, session.cert], ['Python', 'Python', 45, { test: 'python' }]);
+  assert.deepEqual([session.name, session.platform, session.minutes, session.cert], ['Python', 'Python', 45, { test: 'python', language: 'python' }]);
   assert.equal(mockDeadline(session) + session.skew, attempt.deadline);
   assert.equal(mockClock(session, 1_055_000).phase, 'running');
+  // The exam bar counts what the server scores: a C++ AC does not solve a question.
+  const at = attempt.startedAt + MIN;
+  assert.deepEqual(
+    questionStates(session, [
+      { problem_id: 'lc-1', status: 'accepted', created_at: at, language: 'cpp' },
+      { problem_id: 'lc-2', status: 'accepted', created_at: at, language: 'python' },
+    ]),
+    ['todo', 'ac'],
+  );
   const mock = { ...session, id: 'm', cert: undefined } as MockSession;
   const archived = archiveMock({ active: session, history: [mock] }, session);
   assert.deepEqual(archived, { active: null, history: [mock] });

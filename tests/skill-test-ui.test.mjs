@@ -116,7 +116,7 @@ test('signed in: cooldowns, past results, certificates, and starting an exam int
   assert.deepEqual(calls.at(-1), ['POST /api/oj/skills/problem-solving-basic/start', {}]);
   const state = JSON.parse(localStorage.getItem('cswork:mock:v1:u1'));
   assert.equal(state.active.id, 'att-1');
-  assert.deepEqual(state.active.cert, { test: 'problem-solving-basic' });
+  assert.deepEqual(state.active.cert, { test: 'problem-solving-basic', language: null });
   assert.deepEqual(state.active.ids, ['lc-20', 'lc-15']);
   assert.equal(state.active.minutes, 60);
   assert.equal(state.active.startedAt + state.active.skew, T, 'the server start, in this browser clock');
@@ -158,4 +158,45 @@ test('the exam bar hands a skill exam in to the server, keeping it out of the mo
   assert.deepEqual(calls.map(([key]) => key), ['POST /api/oj/skills/sql/finish']);
   assert.deepEqual(JSON.parse(localStorage.getItem('cswork:mock:v1:u3')), { active: null, history: [] });
   assert.ok(navigations.some((message) => /navigation/i.test(message)), 'back to /certify');
+});
+
+test('time running out on the exam bar hands a skill exam in, though settling already dropped it', async () => {
+  const navigations = useDom('https://cswork.test/?view=problem&problem=sql-01&mock=att-4');
+  const calls = api({ 'POST /api/oj/skills/sql/finish': { attempt: {}, now: T } });
+  const { createRoot } = await import('react-dom/client');
+  const { MockExamBar } = await import('../components/mock-exam-bar.tsx');
+  const startedAt = Date.now() - 45 * MIN - 1;
+  const session = { id: 'att-4', company: null, name: 'SQL', platform: null, preset: false, scoring: 'tests', source: 'mixed', slots: ['easy'], ids: ['sql-01'], minutes: 45, skew: 0, createdAt: startedAt, startedAt, cert: { test: 'sql', language: null } };
+  localStorage.setItem('cswork:mock:v1:u4', JSON.stringify({ active: session, history: [] }));
+  const views = [];
+  const root = createRoot(document.getElementById('root'));
+  await act(async () => root.render(createElement(MockExamBar, { session, userId: 'u4', problemId: 'sql-01', submissions: [], navigate: (view) => views.push(view) })));
+  await act(async () => new Promise((r) => setTimeout(r, 10)));
+  assert.deepEqual(views, [], 'no missing mock report');
+  assert.deepEqual(calls.map(([key]) => key), ['POST /api/oj/skills/sql/finish']);
+  assert.ok(navigations.some((message) => /navigation/i.test(message)), 'on to /certify');
+  await act(async () => root.unmount());
+});
+
+test('a Python exam counts only Python: a C++ AC neither solves the question nor offers to finish', async () => {
+  useDom('https://cswork.test/?view=problem&problem=lc-2&mock=att-5');
+  globalThis.requestAnimationFrame ??= (cb) => setTimeout(cb, 0);
+  globalThis.cancelAnimationFrame ??= (id) => clearTimeout(id);
+  const { createRoot } = await import('react-dom/client');
+  const { ExamAcceptedDialog } = await import('../components/mock-exam-bar.tsx');
+  const startedAt = Date.now() - 10 * MIN;
+  const session = { id: 'att-5', company: null, name: 'Python', platform: 'Python', preset: false, scoring: 'tests', source: 'lc', slots: ['easy', 'medium'], ids: ['lc-1', 'lc-2'], minutes: 45, skew: 0, createdAt: startedAt, startedAt, cert: { test: 'python', language: 'python' } };
+  const submissions = [
+    { problem_id: 'lc-1', status: 'accepted', created_at: startedAt + MIN, language: 'python' },
+    { problem_id: 'lc-2', status: 'accepted', created_at: startedAt + 2 * MIN, language: 'cpp' },
+  ];
+  const root = createRoot(document.getElementById('root'));
+  const render = (language) =>
+    act(async () => root.render(createElement(ExamAcceptedDialog, { session, problemId: 'lc-2', language, submissions, userId: 'u5', navigate() {}, onClose() {} })));
+  await render('cpp');
+  assert.match(document.querySelector('.cs-accepted-stats').textContent, /Only Python 3 submissions count.*1 of 2/);
+  assert.equal(document.querySelector('.cs-accepted-next').textContent, 'Keep going');
+  await render('python');
+  assert.equal(document.querySelector('.cs-accepted-next').textContent, 'All solved: finish');
+  await act(async () => root.unmount());
 });

@@ -38,6 +38,7 @@ import {
   finishMock,
   formatClock,
   LADDER,
+  mockCert,
   mockClock,
   readMockState,
   reportLevel,
@@ -414,7 +415,8 @@ export function MockOa({
           draw={draw}
           navigate={navigate}
           handIn={(id) => {
-            const cert = findMock(readMockState(userId), id)?.cert;
+            // Before settling, which drops a skill exam whose time ran out.
+            const cert = mockCert(userId, id);
             save((latest) =>
               latest.active?.id === id && latest.active.startedAt
                 ? archiveMock(latest, finishMock(latest.active, Date.now()))

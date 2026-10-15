@@ -116,6 +116,6 @@ export function skillSession(a: SkillAttempt, test: SkillTest, serverNow: number
     skew,
     createdAt: a.startedAt - skew,
     startedAt: a.startedAt - skew,
-    cert: { test: test.id },
+    cert: { test: test.id, language: test.language },
   };
 }

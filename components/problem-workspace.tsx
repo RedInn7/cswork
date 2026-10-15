@@ -2970,6 +2970,7 @@ function Workspace({
         <ExamAcceptedDialog
           session={exam.session}
           problemId={problem.id}
+          language={success.language}
           submissions={boot.submissions ?? []}
           userId={userId}
           navigate={navigate}
