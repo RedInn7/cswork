@@ -1,5 +1,7 @@
 // cswork's authored, dependency-free JSON graph transport. User programs run only in go-judge.
 namespace cswork {
+// Only the judge's types, never a learner's type of the same name.
+using cswork_platform::TreeNode; using cswork_platform::ListNode; using cswork_platform::Node; using cswork_platform::Interval; using cswork_platform::MountainArray;
 struct Graph;
 template<class T> struct Convert;
 struct Graph {

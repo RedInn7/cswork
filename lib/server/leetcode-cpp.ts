@@ -29,34 +29,29 @@ export function getLeetCodeCppRuntime(): string {
   return getLeetCodeCppJsonRuntime() + asset('runtime.hpp');
 }
 
-function context(problemId: number, snippet?: string, source?: string) {
-  const raw = asset('context.hpp');
-  const used = snippet === undefined ? null : cleanSnippet(snippet);
-  const definitions = [
-    ...raw.matchAll(/^(?:struct|class) (\w+) \{[\s\S]*?^};/gm),
-  ]
-    .filter(
-      (match) => used === null || new RegExp(`\\b${match[1]}\\b`).test(used),
-    )
-    .filter(
-      (match) =>
-        !source ||
-        !new RegExp(`\\b(?:struct|class)\\s+${match[1]}\\s*\\{`).test(
-          cleanSnippet(source),
-        ),
-    )
-    .map((match) => {
-      let definition = match[0];
-      if (problemId === 430 && match[1] === 'Node') {
-        definition = definition.replace(
-          'Node(int v,Node* l,Node* r,Node* n):val(v),left(l),right(r),next(n){}',
-          'Node(int v,Node* p,Node* n,Node* c):val(v),next(n),prev(p),child(c){}',
-        );
-      }
-      const guard = `CSWORK_LEETCODE_${match[1].toUpperCase()}`;
-      return `#ifndef ${guard}\n#define ${guard}\n${definition}\n#endif`;
-    });
-  return `#if __has_include("/usr/local/include/cswork/stdc++.hpp")\n#include "/usr/local/include/cswork/stdc++.hpp"\n#else\n#include <bits/stdc++.h>\n#endif\nusing namespace std;\n${definitions.join('\n')}\n`;
+// The runtime uses only cswork_platform::X. Like LeetCode, X is declared at
+// global scope only when the official signature uses it; every other name is
+// the learner's, at any scope.
+function context(problemId: number, snippet: string) {
+  const used = cleanSnippet(snippet);
+  const global: string[] = [];
+  const platform: string[] = [];
+  for (const [definition, name] of asset('context.hpp').matchAll(
+    /^(?:struct|class) (\w+) \{[\s\S]*?^};/gm,
+  )) {
+    const own =
+      problemId === 430 && name === 'Node'
+        ? definition.replace(
+            'Node(int v,Node* l,Node* r,Node* n):val(v),left(l),right(r),next(n){}',
+            'Node(int v,Node* p,Node* n,Node* c):val(v),next(n),prev(p),child(c){}',
+          )
+        : definition;
+    if (new RegExp(`\\b${name}\\b`).test(used)) {
+      global.push(own);
+      platform.push(`using ::${name};`);
+    } else platform.push(own);
+  }
+  return `#if __has_include("/usr/local/include/cswork/stdc++.hpp")\n#include "/usr/local/include/cswork/stdc++.hpp"\n#else\n#include <bits/stdc++.h>\n#endif\nusing namespace std;\n${global.join('\n')}\nnamespace cswork_platform {\n${platform.join('\n')}\n}\n`;
 }
 
 function cleanSnippet(snippet: string) {
@@ -65,9 +60,7 @@ function cleanSnippet(snippet: string) {
 
 // Restrict the lighter transport to a complete, ordinary official interface.
 // Anything we do not recognize keeps the general graph transport.
-function usesValueOnlyInterface(snippet: string, source: string) {
-  const platformType = /\b(?:TreeNode|ListNode|Node|Interval|MountainArray)\b/;
-  if (platformType.test(cleanSnippet(source))) return false;
+function usesValueOnlyInterface(snippet: string) {
   const clean = cleanSnippet(snippet).trim();
   const method =
     /^class\s+Solution\s*\{\s*public:\s*([\w\s:<>,&]+?)\s+\w+\s*\(([^()]*)\)\s*\{\s*\}\s*};$/.exec(
@@ -95,9 +88,9 @@ function usesValueOnlyInterface(snippet: string, source: string) {
   }
 }
 
-function runtimeFor(snippet: string, source: string) {
+function runtimeFor(snippet: string) {
   const runtime = asset('runtime.hpp');
-  if (!usesValueOnlyInterface(snippet, source)) return runtime;
+  if (!usesValueOnlyInterface(snippet)) return runtime;
   const start = runtime.indexOf('void Graph::load(const Json& input){');
   const end = runtime.indexOf('template<class T> struct Method;', start);
   if (start < 0 || end < 0) return runtime;
@@ -210,12 +203,12 @@ export function buildLeetCodeCpp(
     }
     answer = {result, request.at("args")};`;
   }
-  return `${context(problemId, undefined, source)}
+  return `${context(problemId, snippet)}
 ${getLeetCodeCppJsonRuntime()}
 #line 1 "solution.cpp"
 ${source}
 #line 1 "cswork-driver.cpp"
-${runtimeFor(snippet, source)}
+${runtimeFor(snippet)}
 int main() {
   try {
     ios::sync_with_stdio(false);
