@@ -83,7 +83,8 @@ export default async function ThreadPage({ params }: Props) {
             {post.poll.options.map((option, i) => (
               <li key={i}>
                 {option}
-                {post.poll?.counts && ` · ${t(`${post.poll.counts[i]} 票`, `${post.poll.counts[i]} votes`)}`}
+                {post.poll?.counts &&
+                  ` · ${t(`${post.poll.counts[i]} 票`, `${post.poll.counts[i]} ${post.poll.counts[i] === 1 ? 'vote' : 'votes'}`)}`}
               </li>
             ))}
           </ul>
