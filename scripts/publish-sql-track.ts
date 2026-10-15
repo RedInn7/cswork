@@ -1,6 +1,7 @@
 /**
  * Offline teacher publication of the SQL track: content/sql-track/packages.json
- * and its pandas versions, pandas-packages.json, which CI rebuilds and checks
+ * and its pandas versions, pandas-packages.json (plus the REST API problems,
+ * content/rest-api/packages.json), which CI rebuilds and checks
  * query by query and solution by solution (tests/sql-track.test.ts,
  * tests/pandas-track.test.ts). Unchanged packages are skipped, so release.sh
  * runs this on every release. The pd- problems stay hidden until the judge
@@ -46,13 +47,15 @@ const prepared = (
   [
     ['content/sql-track/packages.json', /^sql-\d{2}$/, 'sql'],
     ['content/sql-track/pandas-packages.json', /^pd-\d{2}$/, 'pandas'],
+    // REST API problems on offline HTTP fixtures (scripts/rest-api/build.py, tests/oa-rest-fixtures.test.ts).
+    ['content/rest-api/packages.json', /^rest-\d{2}$/, 'python'],
   ] as const
 ).flatMap(([file, id, language]) =>
   (JSON.parse(readFileSync(file, 'utf8')) as unknown[]).map((raw) => {
     const payload = validateProblemPackage(raw);
     assert.match(payload.problem.id, id);
     assert.deepEqual(payload.problem.languages, [language]);
-    assert.equal(payload.problem.checker, 'exact');
+    assert.ok(language === 'python' ? payload.problem.httpFixtures : payload.problem.checker === 'exact');
     return payload;
   }),
 );

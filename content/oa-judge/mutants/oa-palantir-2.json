@@ -1,0 +1,10 @@
+[
+  {
+    "name": "取第一个区号",
+    "code": "import json\nimport urllib.parse\nimport urllib.request\n\n\ndef phone_number(country, number):\n    url = 'https://data.cswork.test/api/countries?' + urllib.parse.urlencode({'name': country})\n    with urllib.request.urlopen(url, timeout=10) as response:\n        body = json.load(response)\n    codes = body['data'][0]['callingCodes'] if body['data'] else []\n    return '+' + codes[0] + ' ' + number if codes else '-1'\n\n\ncountry = input().strip()\nnumber = input().strip()\nprint(phone_number(country, number))\n"
+  },
+  {
+    "name": "区号为空仍拼接",
+    "code": "import json\nimport urllib.parse\nimport urllib.request\n\n\ndef phone_number(country, number):\n    url = 'https://data.cswork.test/api/countries?' + urllib.parse.urlencode({'name': country})\n    with urllib.request.urlopen(url, timeout=10) as response:\n        body = json.load(response)\n    codes = body['data'][0]['callingCodes'] if body['data'] else []\n    return ('+' + codes[-1] + ' ' + number) if codes else ('+ ' + number if body['data'] else '-1')\n\n\ncountry = input().strip()\nnumber = input().strip()\nprint(phone_number(country, number))\n"
+  }
+]

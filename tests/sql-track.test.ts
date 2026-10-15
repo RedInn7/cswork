@@ -258,12 +258,12 @@ test('the release publisher publishes once, then skips unchanged packages; SQL p
     });
   const first = publish();
   assert.equal(first.status, 0, first.stderr);
-  // The SQL packages and their pandas versions (tests/pandas-track.test.ts).
+  // The SQL packages, their pandas versions (tests/pandas-track.test.ts) and the REST API problems (tests/oa-rest-fixtures.test.ts).
   assert.equal(first.stdout.match(/"id":"sql-\d\d","status":"published"/g)?.length, 50);
-  assert.equal(first.stdout.match(/"published"/g)?.length, 100);
+  assert.equal(first.stdout.match(/"published"/g)?.length, 106);
   const again = publish();
   assert.equal(again.status, 0, again.stderr);
-  assert.equal(again.stdout.match(/"unchanged"/g)?.length, 100);
+  assert.equal(again.stdout.match(/"unchanged"/g)?.length, 106);
   // Like OA problems: listed for everyone, judged for any verified account.
   const listed = (await listPublishedProblems(null)).filter((p) => p.id.startsWith('sql-'));
   assert.equal(listed.length, 50);

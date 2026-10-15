@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Python round 银行家舍入",
+    "code": "import requests\n\n\ndef discounted_price(barcode):\n    body = requests.get('https://data.cswork.test/api/inventory', params={'barcode': barcode}, timeout=10).json()\n    if not body['data']:\n        return -1\n    item = body['data'][0]\n    # price * (1 - discount / 100), half up, in exact integers: no float, no banker's rounding.\n    return round(item['price'] - item['discount'] / 100 * item['price'])\n\n\nprint(discounted_price(input().strip()))\n"
+  },
+  {
+    "name": "截断小数",
+    "code": "import requests\n\n\ndef discounted_price(barcode):\n    body = requests.get('https://data.cswork.test/api/inventory', params={'barcode': barcode}, timeout=10).json()\n    if not body['data']:\n        return -1\n    item = body['data'][0]\n    # price * (1 - discount / 100), half up, in exact integers: no float, no banker's rounding.\n    return int(item['price'] * (100 - item['discount']) / 100)\n\n\nprint(discounted_price(input().strip()))\n"
+  },
+  {
+    "name": "条码转整数丢前导零",
+    "code": "import requests\n\n\ndef discounted_price(barcode):\n    body = requests.get('https://data.cswork.test/api/inventory', params={'barcode': int(barcode)}, timeout=10).json()\n    if not body.get('data'):\n        return -1\n    item = body['data'][0]\n    # price * (1 - discount / 100), half up, in exact integers: no float, no banker's rounding.\n    return (item['price'] * (100 - item['discount']) + 50) // 100\n\n\nprint(discounted_price(input().strip()))\n"
+  }
+]

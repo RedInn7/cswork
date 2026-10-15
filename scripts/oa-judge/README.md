@@ -73,3 +73,5 @@ node --import tsx scripts/publish-oa-judge.ts --batch google-next TEACHER_EMAIL
 沙箱验证支持 `tokens` 和 `exact`，语义必须与生产一致；不允许把异常退出的错误程序算作有效反例。元数据、代码、输入输出或对照文件变更后，必须重新生成并验证相应批次报告，不能手工改报告指纹。
 
 发布前执行 `node scripts/oa-judge/coverage.mjs`，统计表同时校验真实文件哈希、通过数量、独立输入数量与全部错误程序名称。`sandbox_verified` 只表示报告有效，是否线上可提交仍由已发布数据库版本与 registry 校验值共同决定。
+
+`python3 scripts/rest-api/build.py` 生成 REST API 题：原先因依赖外部实时接口而 blocked 的 Oracle #6、Palantir #2、Rippling #3 进入候选批次 `rest-api-next`，题包带 `httpFixtures`（原创固定 JSON，键为 `GET <path>?<排序后的 query>`，见 `lib/http-fixtures.mjs`），判题和 `verify-oa-judge.mjs` 都用内联 `-c` 引导代码给 Python 注入离线的 `requests` / `urlopen`。同一脚本还生成 6 道原创 `rest-` 题（`content/rest-api/`，由 `publish-sql-track.ts` 发布）。三道 OA 题只做了本地子进程验证，仍需 `node scripts/verify-oa-judge.mjs --candidate-batch rest-api-next` 跑真实 GoJudge 后再晋级；英文翻译要等进入 registry 后再加。
