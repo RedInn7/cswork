@@ -114,10 +114,12 @@ import {
   type ReferenceOutput,
 } from './oj-results';
 import {
+  isTrackLanguage,
   languages,
   starters,
   starterTemplates,
   problemStatement,
+  trackLanguageOf,
   type ProblemLocale,
   type Language,
   type ProblemStatement,
@@ -357,7 +359,7 @@ function Workspace({
   const statementLocaleRef = useRef(statementLocale);
   statementLocaleRef.current = statementLocale;
   const statement = problemStatement(problem, statementLocale);
-  const sqlTrack = problem.id.startsWith('sql-');
+  const sqlTrack = !!trackLanguageOf(problem.id);
   const english = statementLocale === 'en' && !!problem.translations?.en;
   // Labels that followed an English statement still do; otherwise the site language decides.
   const uiEnglish = english || locale === 'en';
@@ -403,7 +405,9 @@ function Workspace({
   const intelligenceText =
     language === 'sql'
       ? t('SQLite 方言 · 一条 SELECT', 'SQLite dialect · one SELECT')
-      : intelligence.state === 'idle'
+      : language === 'pandas'
+        ? t('Pandas · solve(tables) 返回 DataFrame', 'Pandas · solve(tables) returns a DataFrame')
+        : intelligence.state === 'idle'
         ? t('语言服务待启动', 'Language service not started')
         : say(intelligence.message);
   const suggest = useRef<(() => void) | null>(null);
@@ -591,7 +595,7 @@ function Workspace({
   const [solutionsLanguage, setSolutionsLanguage] = useState('');
   const prose = useRef<HTMLDivElement>(null);
   // The tutor's extras; SQL track problems have no AI (lib/server/ai-tutor.ts takes code languages).
-  const aiOn = !!boot.services?.ai && !!boot.person && !examMode && language !== 'sql';
+  const aiOn = !!boot.services?.ai && !!boot.person && !examMode && !isTrackLanguage(language);
   const aiContext: AiContext = { language, codingMode, code, english: uiEnglish };
   // A running mock OA records this question for the report's code replay (this browser only).
   const recordReplay = useReplayRecorder(
@@ -736,7 +740,7 @@ function Workspace({
       !!loadedProblem &&
       !disabled &&
       problem.judgeAvailable === true &&
-      language !== 'sql' && // nothing to compile
+      !isTrackLanguage(language) && // nothing to compile
       (!problem.codingModes || problem.codingModes.includes(codingMode)),
     userId,
     problemId: problem.id,
@@ -1221,7 +1225,7 @@ function Workspace({
   }
   function applyIoTemplate(id: string) {
     const template = ACM_IO_TEMPLATES.find((item) => item.id === id);
-    const text = language === 'sql' ? undefined : template?.code[language];
+    const text = isTrackLanguage(language) ? undefined : template?.code[language];
     if (!template || !text || text === code) return;
     // Templates are whole programs (main, class Main, package main): splicing one
     // into edited code can't compile, so it replaces the draft, after a confirm.
@@ -1294,7 +1298,7 @@ function Workspace({
   }
   /** This code and its stdin in a /playground tab (a #c= share link; no problem attached). */
   async function openPlayground() {
-    if (language === 'sql') return;
+    if (isTrackLanguage(language)) return;
     // Opened inside the click so it isn't blocked as a popup; the link follows once encoded.
     const tab = window.open('about:blank', '_blank');
     const value = await encodeShare({
@@ -2047,7 +2051,7 @@ function Workspace({
                         : '测试运行'
                       : `${item.passed} / ${item.total} ${uiEnglish ? 'passed' : '通过'}`}{' '}
                     · {item.language}
-                    {item.language !== 'sql' &&
+                    {!isTrackLanguage(item.language) &&
                       ` · ${item.codingMode === 'leetcode' ? 'LeetCode' : 'ACM'}`}
                     {item.practiceRoundNumber
                       ? ` · ${uiEnglish ? 'Round ' + item.practiceRoundNumber : '第 ' + item.practiceRoundNumber + ' 轮'}`
@@ -2149,7 +2153,7 @@ function Workspace({
       </div>
       <div className="cs-editor-toolbar">
         <div className="cs-editor-controls">
-          {language !== 'sql' && (
+          {!isTrackLanguage(language) && (
             <select
               aria-label={t('提交模式', 'Submission mode')}
               value={codingMode}
@@ -2197,7 +2201,7 @@ function Workspace({
           >
             <Download size={15} />
           </button>
-          {codingMode === 'acm' && language !== 'sql' && (
+          {codingMode === 'acm' && !isTrackLanguage(language) && (
             <button
               aria-label={t('在 Playground 打开', 'Open in Playground')}
               title={t(
@@ -2209,7 +2213,7 @@ function Workspace({
               <SquareTerminal size={15} />
             </button>
           )}
-          {codingMode === 'acm' && language !== 'sql' && (
+          {codingMode === 'acm' && !isTrackLanguage(language) && (
             <select
               className="cs-io-templates"
               aria-label={t('使用输入模板', 'Use an input template')}
@@ -2269,7 +2273,7 @@ function Workspace({
           >
             {t('触发补全', 'Autocomplete')}
           </button>
-          {language !== 'sql' && (
+          {!isTrackLanguage(language) && (
             <button
               title={t(
                 '用语言服务格式化代码（Shift + Alt + F）',
@@ -2461,7 +2465,7 @@ function Workspace({
                         {t('自定义输入', 'Custom input')}
                       </button>
                     </div>
-                    {language !== 'sql' && (
+                    {!isTrackLanguage(language) && (
                       <DebugButton
                         language={language}
                         code={code}

@@ -9,7 +9,8 @@ export type CodeLanguage = (typeof CODE_LANGUAGES)[number];
  */
 export const LANGUAGE_IDS = [...CODE_LANGUAGES, 'sql', 'pandas'] as const;
 export type Language = (typeof LANGUAGE_IDS)[number];
-export const isTrackLanguage = (language: string) => language === 'sql' || language === 'pandas';
+export const isTrackLanguage = (language: string): language is 'sql' | 'pandas' =>
+  language === 'sql' || language === 'pandas';
 /** The language a sql- or pd- problem is limited to; undefined for every other problem. */
 export const trackLanguageOf = (problemId: string): Language | undefined =>
   problemId.startsWith('sql-') ? 'sql' : problemId.startsWith('pd-') ? 'pandas' : undefined;

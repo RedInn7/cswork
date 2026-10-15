@@ -5,7 +5,7 @@ import type {
   DiffEditorProps,
   OnMount,
 } from '@monaco-editor/react';
-import type { Language } from '@/lib/problems';
+import { isTrackLanguage, type Language } from '@/lib/problems';
 import type { IntelligenceStatus } from '@/lib/editor-intelligence';
 import { useT } from '@/lib/i18n';
 import { attachIntelligence } from './monaco-intelligence';
@@ -17,6 +17,8 @@ import {
 } from '@/lib/editor-settings';
 import { currentTheme } from '@/lib/theme-script';
 
+/** Monaco's grammar for a language: a pandas solution is Python. */
+const monacoLanguage = (language: Language) => (language === 'pandas' ? 'python' : language);
 type Runtime = typeof import('./monaco-client');
 let runtimePromise: Promise<Runtime> | undefined;
 function loadRuntime() {
@@ -61,7 +63,7 @@ export type CodeEditorProps = {
   problemId?: string;
   onIntelligenceStatus?: (status: IntelligenceStatus) => void;
   onSuggestReady?: (suggest: (() => void) | null) => void;
-  /** Format Document through the language service; null while unmounted or for SQL. */
+  /** Format Document through the language service; null while unmounted or for SQL / pandas. */
   onFormatReady?: (format: (() => void) | null) => void;
   /** The mounted Monaco editor, for decorations and gutter clicks; may return a disposer. */
   onEditorMount?: (...args: Parameters<OnMount>) => void | (() => void);
@@ -195,8 +197,9 @@ export function CodeEditor({
     ];
     const model = editor.getModel();
     if (!readOnly && problemId && model) {
-      // SQL has no language server: Monaco highlights it, word completion fills in names.
-      if (language !== 'sql') {
+      // The SQL track's languages get no language server (the Python one has no pandas
+      // stubs): Monaco highlights them and word completion fills in names.
+      if (!isTrackLanguage(language)) {
         actions.push(
           attachIntelligence(monaco, model, problemId, language, (status) =>
             onIntelligenceStatus?.(status),
@@ -249,7 +252,7 @@ export function CodeEditor({
     quickSuggestionsDelay: 250,
     suggestOnTriggerCharacters: true,
     parameterHints: { enabled: true },
-    wordBasedSuggestions: problemId && language !== 'sql' ? 'off' : 'currentDocument',
+    wordBasedSuggestions: problemId && !isTrackLanguage(language) ? 'off' : 'currentDocument',
   };
   return (
     <div className="cs-editor-host" data-theme={settings.theme}>
@@ -257,7 +260,7 @@ export function CodeEditor({
         <runtime.Editor
           height={vim || emacs ? 'calc(100% - 24px)' : '100%'}
           width="100%"
-          language={language}
+          language={monacoLanguage(language)}
           value={value}
           path={path}
           theme={`cswork-${settings.theme}`}
@@ -343,8 +346,8 @@ export function CodeDiff({
           height="100%"
           original={original}
           modified={modified}
-          originalLanguage={originalLanguage}
-          modifiedLanguage={language}
+          originalLanguage={monacoLanguage(originalLanguage)}
+          modifiedLanguage={monacoLanguage(language)}
           theme={`cswork-${settings.theme}`}
           options={options}
           onMount={(editor) => {

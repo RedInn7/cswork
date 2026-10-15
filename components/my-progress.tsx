@@ -5,7 +5,7 @@ import { api, type Boot } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { verdictNames } from '@/lib/oj-client';
-import { problemTitle } from '@/lib/problems';
+import { problemTitle, trackLanguageOf } from '@/lib/problems';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
 import { STOP_NAMES } from '@/lib/route-stops';
 import {
@@ -74,7 +74,7 @@ const source = (id: string): 'lc' | 'oa' | 'sql' | 'course' =>
     ? 'lc'
     : id.startsWith('oa-')
       ? 'oa'
-      : id.startsWith('sql-')
+      : trackLanguageOf(id)
         ? 'sql'
         : 'course';
 
