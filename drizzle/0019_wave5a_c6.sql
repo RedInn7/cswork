@@ -1,1 +1,0 @@
-ALTER TABLE `user_profiles` ADD `featured_badge` text;
