@@ -116,7 +116,7 @@ test('the release publisher publishes once, then skips unchanged packages; Core 
   const listed = (await listPublishedProblems(null)).filter((p) => p.id.startsWith('core-'));
   assert.equal(listed.length, packages.length);
   assert.ok(listed.every((p) => p.freeJudge));
-  const problem = (await getPublishedProblem(student, packages[0].problem.id)) as { starters?: unknown };
+  const problem = await getPublishedProblem(student, packages[0].problem.id);
   assert.deepEqual(problem.starters, packages[0].problem.starters);
   const submission = (language: string, key: string) =>
     createSubmission(student, {

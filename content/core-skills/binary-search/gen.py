@@ -11,7 +11,7 @@ def text(a, queries):
 def case(n, q, spread):
     """Sorted values with duplicates; queries hit values, gaps and both ends."""
     a = sorted(rng.randint(-spread, spread) for _ in range(n))
-    queries = [rng.choice(a) if rng.random() < 0.5 else rng.randint(-spread - 2, spread + 2) for _ in range(q)]
+    queries = [rng.choice(a) if rng.random() < 0.5 else max(-10**9, min(10**9, rng.randint(-spread - 2, spread + 2))) for _ in range(q)]
     return text(a, queries)
 
 

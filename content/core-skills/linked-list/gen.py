@@ -9,7 +9,8 @@ def text(ops):
 
 
 def mixed(q, slow_budget, prints, limit):
-    """Random valid operations with at most slow_budget O(n) ones, prints of them included."""
+    """Random valid operations with at most slow_budget O(n) ones, prints of them included, plus a final print."""
+    slow_budget, prints = slow_budget - 1, prints - 1
     ops, values = [], []
     while len(ops) < q:
         r = rng.random()

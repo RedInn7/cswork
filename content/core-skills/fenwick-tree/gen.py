@@ -15,7 +15,7 @@ def case(n, q, limit, zeros=0.0):
         r = rng.random()
         if r < 0.35:
             i = rng.randint(1, n)
-            x = rng.randint(-a[i - 1], limit)
+            x = rng.randint(-min(a[i - 1], limit), limit)
             a[i - 1] += x
             total += x
             ops.append(f"add {i} {x}")

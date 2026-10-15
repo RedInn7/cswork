@@ -205,7 +205,7 @@ function compile(language: CodeLanguage, source: string) {
         : language === 'java'
           ? exec('javac', ['--release', '17', '-encoding', 'UTF-8', 'Main.java'], dir)
           : exec('go', ['build', '-gcflags=-lang=go1.18', '-o', 'main', 'main.go'], dir);
-  const [command, args] =
+  const [command, args]: [string, string[]] =
     language === 'python'
       ? ['python3', ['-I', 'main.py']]
       : language === 'java'
@@ -213,7 +213,7 @@ function compile(language: CodeLanguage, source: string) {
         : [join(dir, 'main'), []];
   return {
     built,
-    run: (input: string) => exec(command as string, args as string[], dir, input),
+    run: (input: string) => exec(command, args, dir, input),
     close: () => rmSync(dir, { recursive: true, force: true }),
   };
 }

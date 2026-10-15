@@ -130,6 +130,7 @@ export type OjPublicProblem = Problem & {
   totalWeight: number;
   /** OA/library problems judge free for verified accounts; course exercises need the course. */
   freeJudge?: boolean;
+  starters?: OjProblemSpec['starters'];
 };
 
 export type OjJudgeCase = OjImportedCase & { id: string; ordinal: number };
