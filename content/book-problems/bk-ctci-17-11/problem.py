@@ -55,8 +55,8 @@ def fmt(words, qs):
 
 
 def cases(r):
-    text = 'i am a student from a university in a city'.split()
-    out = [fmt(text, [('a', 'student'), ('a', 'city'), ('i', 'city')]), fmt(['x', 'y'], [('y', 'x')]),
+    text = 'the red fox saw the old dog near the red barn'.split()
+    out = [fmt(text, [('the', 'red'), ('fox', 'barn'), ('dog', 'the')]), fmt(['x', 'y'], [('y', 'x')]),
            fmt(['b', 'a', 'a', 'a', 'b'], [('a', 'b'), ('b', 'a')])]
     for n, vocab, q in [(20, 5, 10), (2000, 30, 50), (40000, 200, 100)]:
         pool = [''.join(r.choice('abcdefgh') for _ in range(r.randint(1, 4))) for _ in range(vocab)]

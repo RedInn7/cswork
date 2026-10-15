@@ -9,9 +9,9 @@
 t 行，每行输出 true 或 false。
 
 ## 样例说明
-abba 和 dogcatcatdog：a = dog，b = cat，匹配。
-abba 和 dogcatcatfish：两端的 a 必须相同，不匹配。
-abba 和 dogdogdogdog：a = dogdog、b 为空串，匹配。
+abab 和 redbluredblu：a = red，b = blu，匹配。
+abba 和 redbluyelred：中间两段 b 必须相同，blu 和 yel 不同，其他切法也对不上，不匹配。
+aba 和 xyxyxy：a 为空串、b = xyxyxy，匹配。
 aabbb 和 xxxxx：只能 a = b = x，但 a、b 不能相同，所以不匹配。
 
 ## 提示

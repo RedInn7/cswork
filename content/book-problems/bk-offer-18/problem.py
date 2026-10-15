@@ -32,7 +32,7 @@ def fmt(values, v):
 
 
 def cases(r):
-    out = [fmt([4, 5, 1, 9], 5), fmt([4, 5, 1, 9], 4), fmt([7], 7), fmt([1, 2], 2), fmt([-3, 0, 3], 3)]
+    out = [fmt([6, 2, 8, 3], 8), fmt([6, 2, 8, 3], 6), fmt([7], 7), fmt([1, 2], 2), fmt([-3, 0, 3], 3)]
     for n in [5, 50, 1000]:
         values = r.sample(range(-10**9, 10**9), n)
         for v in (values[0], r.choice(values), values[-1]):

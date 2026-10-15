@@ -14,7 +14,7 @@ Each of the next q lines is one operation, with 1 ≤ v ≤ 10^9.
 One line for each peek and isEmpty.
 
 ## Sample explanation
-Sample 1 pushes 3, 1 and 2; the top is the smallest, 1. After pop removes 1, the top is 2.
+Sample 1 pushes 7, 4 and 9; the top is the smallest, 4. After pop removes 4, the top is 7 and the stack is not empty.
 
 ## Hints
 - The book's way: to push v, move the main stack's top elements smaller than v onto a helper stack, put v down, then move them back, so the main stack always increases from top to bottom.

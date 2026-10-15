@@ -10,7 +10,7 @@ The third line holds the q query values x, each with absolute value at most 10^9
 q lines; line i answers query i.
 
 ## Sample explanation
-In the array 5 7 7 8 8 10, 8 appears 2 times, 6 never, 10 once and 7 twice.
+In the array 2 4 4 4 6 9, 4 appears 3 times, 5 never, and 9 and 2 once each.
 
 ## Hints
 - Two binary searches: the first position not less than x and the first position greater than x; their difference is the count. Each query costs O(log n).

@@ -9,7 +9,7 @@ The second line holds t integers n (0 ≤ n ≤ 10^9).
 t lines, the answer to each query.
 
 ## Sample explanation
-From 0 to 25, the digit 2 appears in 2, 12, 20, 21, 22 (twice), 23, 24 and 25: 9 times in all.
+From 0 to 32, the digit 2 appears in 2, 12, 20 to 29 (10 times in the tens place, plus the units of 22) and 32: 2 + 10 + 1 + 1 = 14 times in all.
 
 ## Hints
 - Work digit position by digit position: split n into the part above position k, the digit at k and the part below. Whether that digit is below 2, equal to 2 or above 2 tells how many 2s appear at that position.

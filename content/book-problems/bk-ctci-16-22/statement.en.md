@@ -11,8 +11,8 @@ One integer K (0 ≤ K ≤ 12000).
 The rectangle, one string per row from top to bottom.
 
 ## Sample explanation
-For K = 0 the ant has not moved: the rectangle is its own cell, facing right, so the output is R.
-For K = 2: the first step paints the start black, turns to face down and moves down; the second paints that cell black, turns to face left and moves left. The rectangle has two rows and two columns: _X on top and LX below.
+For K = 1: the start is white, so the ant paints it black, turns to face down and moves down. The rectangle has two rows and one column: X on top and the ant facing down, D, below.
+For K = 3 the ant paints two more cells, turns right twice more to face up and ends on the cell left of the start: UX on top and XX below.
 
 ## Hints
 - Keep the black cells in a hash set and simulate; track the smallest and largest row and column over the black cells and the ant, then draw.

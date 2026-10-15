@@ -8,7 +8,7 @@
 一行，找到的单词，或者 none。
 
 ## 样例说明
-样例 1 中 dogwalker 由 dog 和 walker 拼成，长 9，是最长的；catsdog 也能拼成，但更短。
+样例 1 中 sunflowerseed 可以由 sun、flower、seed（或 sunflower、seed）拼成，长 13，是最长的；sunflower、sunrise、flowerseed 也能拼成，但更短。
 样例 2 中没有任何单词能由其他单词拼成。
 
 ## 提示

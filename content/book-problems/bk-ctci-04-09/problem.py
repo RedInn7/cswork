@@ -52,7 +52,7 @@ def count(node):
 
 
 def cases(r):
-    out = ['2 1 3\n', '5 3 8 null 4 7 9\n', '7\n', '1 null 2 null 3\n', '10 9 null 8\n', '4 2 6 1 3 5 7\n',
+    out = ['6 4 9\n', '5 3 8 null 4 7 9\n', '7\n', '1 null 2 null 3\n', '10 9 null 8\n', '4 2 6 1 3 5 7\n',
            '9 5 20 3 null 12 30\n']
     while len(out) < 14:
         n = r.randint(5, 12)

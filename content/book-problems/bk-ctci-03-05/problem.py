@@ -52,7 +52,7 @@ def ops(r, q, v):
 
 
 def cases(r):
-    out = ['7\npush 3\npush 1\npush 2\npeek\npop\npeek\nisEmpty\n', '4\npop\npeek\nisEmpty\npop\n',
+    out = ['7\npush 7\npush 4\npush 9\npeek\npop\npeek\nisEmpty\n', '4\npop\npeek\nisEmpty\npop\n',
            '6\npush 5\npush 5\npop\npeek\npop\npeek\n']
     # The hidden cases stay small enough for the mistakes' list scans.
     for q, v in [(30, 10), (300, 3), (3000, 10**9), (6000, 100)]:

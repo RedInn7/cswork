@@ -9,7 +9,7 @@ One line: a string of 1 to 60 digits (it may start with 0).
 One integer: the number of readings.
 
 ## Sample explanation
-12258 has 5 readings: 1 2 2 5 8 → bccfi, 1 22 5 8 → bwfi, 1 2 25 8 → bczi, 12 2 5 8 → mcfi and 12 25 8 → mzi.
+21426 has 3 readings: 2 1 4 2 6 → cbecg, 21 4 2 6 → vecg and 2 14 2 6 → cocg. Neither 42 nor 26 is a piece, being above 25.
 506 has one: 5 0 6, since neither 50 nor 06 is a piece.
 
 ## Hints

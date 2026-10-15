@@ -10,7 +10,7 @@ Each of the next t lines holds two integers a and b (1 ≤ a, b ≤ 10^9).
 t lines, each the product of a and b.
 
 ## Sample explanation
-1 × 10 = 10, 3 × 4 = 12 and 10^9 × 10^9 = 10^18.
+6 × 7 = 42, 13 × 1 = 13 and 10^9 × 10^9 = 10^18.
 
 ## Hints
 - Products reach 10^18, so use 64-bit integers and widen before multiplying.

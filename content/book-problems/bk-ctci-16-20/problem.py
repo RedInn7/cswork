@@ -41,7 +41,7 @@ def fmt(num, words):
 
 def cases(r):
     table = {c: d for d, letters in KEYS.items() for c in letters}
-    out = [fmt('8733', ['tree', 'used', 'tea', 'treed']), fmt('2', ['a', 'b', 'd', 'ab']), fmt('79', ['sz', 'pw', 'qy', 'rx', 'sy']),
+    out = [fmt('4663', ['good', 'home', 'gone', 'hood', 'goods', 'hope']), fmt('2', ['a', 'b', 'd', 'ab']), fmt('79', ['sz', 'pw', 'qy', 'rx', 'sy']),
            fmt('9999', ['zzzz', 'wxyz', 'wxy', 'zzzzz']), fmt('7777', ['pqrs', 'ssss', 'pppp', 'abcd'])]
     for n, length in [(50, 3), (1000, 5), (10000, 7)]:
         words = [''.join(r.choice('psvyzaemtw') for _ in range(r.randint(1, length + 2))) for _ in range(n)]

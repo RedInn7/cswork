@@ -9,7 +9,7 @@ Each of the next n lines holds two integers h and w, a height and a weight (1 â‰
 One integer: the most people in one tower.
 
 ## Sample explanation
-In sample 1 all 6 people fit, top to bottom: (56,90), (60,95), (65,100), (68,110), (70,150), (75,190).
+In sample 1 all 5 people fit, top to bottom: (150,45), (155,50), (160,52), (165,60), (170,70).
 In sample 2 the two people of height 2 have the same height and cannot stack, so at most 2 people fit.
 
 ## Hints

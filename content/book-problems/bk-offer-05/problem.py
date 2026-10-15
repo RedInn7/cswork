@@ -22,7 +22,7 @@ def wrong_runs_merged(s):
 
 
 def cases(r):
-    out = ['we are happy.\n', ' to  be, or not\n', 'NoSpacesAtAll\n', ' \n', '   \n', 'end with space \n', 'a b c d e f\n']
+    out = ['see you at 9.\n', ' to  be, or not\n', 'NoSpacesAtAll\n', ' \n', '   \n', 'end with space \n', 'a b c d e f\n']
     alphabet = 'abcXYZ019.,!?-'
     for n, p in [(30, 0.3), (200, 0.5), (1000, 0.1), (10000, 0.3), (10000, 0.9)]:
         out.append(''.join(' ' if r.random() < p else r.choice(alphabet) for _ in range(n)) + '\n')

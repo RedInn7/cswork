@@ -10,7 +10,7 @@ The second line holds n integers, each with absolute value at most 10^9.
 One line with the n values of the lexicographically smallest alternating arrangement.
 
 ## Sample explanation
-Sample 1, 5 3 1 2 3, can become 1 3 2 5 3, 2 3 1 5 3 and others; the smallest is 1 3 2 5 3.
+Sample 1, 4 8 2 6 6 1, can become 1 4 2 6 6 8, 2 6 1 8 4 6 and others; the smallest is 1 4 2 6 6 8.
 Sample 2 has two numbers, the smaller one first.
 
 ## Hints

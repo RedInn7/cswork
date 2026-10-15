@@ -22,7 +22,7 @@ def wrong_ignores_case(s):
 
 
 def cases(r):
-    out = ['qqe\n', 'AaA\n', 'z\n', 'aaaa\n', 'ab\n', 'aabb\n', 'bBaA\n', 'aaaaabbbb\n']
+    out = ['xxy\n', 'BbB\n', 'z\n', 'aaaa\n', 'ab\n', 'aabb\n', 'bBaA\n', 'aaaaabbbb\n']
     for n, pool in [(5, 'abc'), (6, 'aAb'), (7, 'abcd'), (8, 'aabbcC'), (9, 'aaabbc')]:
         out.append(''.join(r.choice(pool) for _ in range(n)) + '\n')
     return out

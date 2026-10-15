@@ -9,8 +9,8 @@ The second line holds t integers, each between -2^31 and 2^31 - 1.
 t lines, each the longest run of ones for the corresponding integer.
 
 ## Sample explanation
-1775 is 11011101111 in binary; changing the 0 between the second and third runs gives a run of 8 ones.
-7 is 0…0111; changing bit 3 gives 4.
+3567 is 110111101111 in binary; changing the 0 in the middle joins the two runs of 4 ones into a run of 9.
+11 is 0…01011; changing bit 2 gives 4.
 -1 has all 32 bits set and needs no flip: the answer is 32.
 
 ## Hints

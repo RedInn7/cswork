@@ -34,4 +34,4 @@ def wrong_ordered(s):
 
 
 def cases(r):
-    return [f'{n}\n' for n in [5, 10, 0, 1, 4, 25, 26, 100, 1000, 30000, 1000000, r.randint(10**5, 10**6)]]
+    return [f'{n}\n' for n in [11, 15, 0, 1, 4, 25, 26, 100, 1000, 30000, 1000000, r.randint(10**5, 10**6)]]

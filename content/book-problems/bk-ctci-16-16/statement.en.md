@@ -9,7 +9,7 @@ The second line holds n integers, each with absolute value at most 10^9.
 One line with two integers m and n.
 
 ## Sample explanation
-In sample 1, sorting 7 10 11 7 12 6 7 at indices 3 to 9 sorts the whole array, and no shorter range does.
+In sample 1, sorting 9 5 8 4 at indices 2 to 5 sorts the whole array, and no shorter range does.
 Sample 2 is already sorted.
 
 ## Hints

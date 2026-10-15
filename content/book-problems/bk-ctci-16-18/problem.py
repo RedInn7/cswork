@@ -61,7 +61,7 @@ def fmt(ps):
 
 
 def cases(r):
-    out = [fmt([('abba', 'dogcatcatdog'), ('abba', 'dogcatcatfish'), ('abba', 'dogdogdogdog'), ('aabbb', 'xxxxx')]),
+    out = [fmt([('abab', 'redbluredblu'), ('abba', 'redbluyelred'), ('aba', 'xyxyxy'), ('aabbb', 'xxxxx')]),
            fmt([('a', 'x'), ('b', 'xyz'), ('ab', 'x'), ('aa', 'xyz'), ('ababb', 'xxxxx'), ('bbba', 'xxxxxxy'), ('abab', 'xyxy'),
                 ('aaaa', 'xyxyxyxy'), ('aba', 'xyx'), ('abba', 'xyyx'), ('baab', 'zzzz'), ('aabb', 'xyz')])]
     for t, n in [(20, 8), (20, 60), (10, 1000)]:

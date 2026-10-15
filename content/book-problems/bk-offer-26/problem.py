@@ -80,7 +80,7 @@ def case(a, b):
 
 
 def cases(r):
-    out = ['3 4 5 1 2\n4 1\n', '3 4 null 1\n3 1\n', '1\n1\n', '1 2 3\n3 1\n', '1 2\n1 null 2\n', '2 2 2 2\n2 2 2 2 2\n']
+    out = ['8 6 9 2 7 null 3\n6 2\n', '5 1 null 4\n5 4\n', '1\n1\n', '1 2 3\n3 1\n', '1 2\n1 null 2\n', '2 2 2 2\n2 2 2 2 2\n']
     for n, v, keep in [(8, 2, 0.5), (30, 3, 0.7), (200, 3, 0.8), (2000, 4, 0.9), (10000, 3, 0.85)]:
         a = random_tree(r, n, lambda: r.randint(-v, v))
         for _ in range(2):

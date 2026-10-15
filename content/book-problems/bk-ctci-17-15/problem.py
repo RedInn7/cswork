@@ -44,12 +44,12 @@ def fmt(ws):
 
 
 def cases(r):
-    out = [fmt(['cat', 'banana', 'dog', 'nana', 'walk', 'walker', 'dogwalker', 'cats', 'catsdog']), fmt(['ab', 'cd', 'abx']),
+    out = [fmt(['sun', 'flower', 'sunflower', 'rise', 'sunrise', 'seed', 'flowerseed', 'sunflowerseed', 'riser']), fmt(['ab', 'cd', 'abx']),
            fmt(['a']), fmt(['a', 'aa', 'aaa']), fmt(['ab', 'ba', 'abba', 'baab']), fmt(['x', 'y', 'xy', 'yx', 'xyz'])]
     for n, base in [(10, 3), (60, 8), (200, 20)]:
         parts = sorted({''.join(r.choice('abc') for _ in range(r.randint(1, 3))) for _ in range(base)})
         ws = set(parts)
         while len(ws) < n:
             ws.add(''.join(r.choice(parts) for _ in range(r.randint(1, 6)))[:100] + (r.choice('d') if r.random() < 0.3 else ''))
-        out.append(fmt(sorted(ws, key=lambda w: r.random())))
+        out.append(fmt(r.sample(sorted(ws), len(ws))))
     return out

@@ -56,7 +56,7 @@ def ops(r, q, v):
 
 
 def cases(r):
-    out = ['7\npush 1\npush 2\nmax\npop\nmax\npop\nmax\n', '2\npop\nmax\n',
+    out = ['8\npush 4\npush 6\npush 3\nmax\npop\nmax\npop\nmax\n', '2\npop\nmax\n',
            '7\npush 5\npush 5\npop\nmax\npop\nmax\npop\n', '6\npush 3\npush 1\npush 2\npop\nmax\npop\n']
     for q, v in [(30, 5), (300, 3), (5000, 1000), (20000, 10**9), (20000, 4)]:
         out.append(ops(r, q, v))

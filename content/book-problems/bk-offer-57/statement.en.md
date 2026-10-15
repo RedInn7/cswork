@@ -9,8 +9,8 @@ The second line holds n integers in non-decreasing order, each from 1 to 10^6.
 One line with a b when a pair exists, otherwise -1.
 
 ## Sample explanation
-In sample 1, 2 + 7 = 9 and 4 + 5 = 9; the one with the smallest a is 2 7.
-In sample 2, making 6 needs two 3s, but the array has only one, so the answer is -1.
+In sample 1, 4 + 10 = 14 and 6 + 8 = 14; the one with the smallest a is 4 10.
+In sample 2, making 10 needs two 5s, but the array has only one, and no other pair works, so the answer is -1.
 
 ## Hints
 - Two pointers, one from each end: move the right one left when the sum is too large, the left one right when it is too small. The first pair found this way has the smallest a.

@@ -33,7 +33,7 @@ def fmt(a, x):
 
 
 def cases(r):
-    out = [fmt([1, 4, 3, 2, 5, 2], 3), fmt([2, 1], 2), fmt([5], 1), fmt([5], 9), fmt([3, 3, 3], 3), fmt([9, 8, 1, 2], 5)]
+    out = [fmt([6, 1, 5, 9, 2, 5, 3], 5), fmt([2, 1], 2), fmt([5], 1), fmt([5], 9), fmt([3, 3, 3], 3), fmt([9, 8, 1, 2], 5)]
     for n, v in [(10, 10), (1000, 1000), (20000, 10**9), (5000, 5)]:
         a = [r.randint(-v, v) for _ in range(n)]
         out.append(fmt(a, r.choice(a)))

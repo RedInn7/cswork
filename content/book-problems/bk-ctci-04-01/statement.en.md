@@ -10,7 +10,7 @@ The last line holds two integers s and t.
 Print true if t is reachable from s, otherwise false.
 
 ## Sample explanation
-Sample 1 has the edges 0→1, 0→2, 1→2, 1→2 (repeated) and 2→0; from 0 the edge 0→2 reaches 2, so the answer is true.
+Sample 1 has the edges 0→1, 1→2, 1→2 (repeated), 3→3 (a self-loop) and 2→0; from 0 the path 0→1→2 reaches 2, so the answer is true.
 Sample 2 has only the edge 1→0, which points the other way, so 1 cannot be reached from 0.
 
 ## Hints

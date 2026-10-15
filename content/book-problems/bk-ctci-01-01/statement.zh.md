@@ -9,7 +9,7 @@
 t 行，每行输出 true 或 false：字符互不相同时输出 true。
 
 ## 样例说明
-leetcode 里 e 出现了三次，所以是 false；abc 和 aA1! 的字符都不重复，都是 true。
+banana 里 a 和 n 都重复了，所以是 false；xyz 和 aA1! 的字符都不重复，都是 true。
 
 ## 提示
 - 用一个大小为 128 的布尔数组记录见过的字符，见到重复就停。

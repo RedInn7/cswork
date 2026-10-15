@@ -9,7 +9,7 @@ The second line holds a string of length at least L made of letters, digits, pun
 One line: the content after the replacement.
 
 ## Sample explanation
-In sample 1 the second line is "Mr John Smith" followed by 4 spare spaces; the true length is 13 and the result is Mr%20John%20Smith.
+In sample 1 the second line is "go to the zoo" followed by 6 spare spaces; the true length is 13 and the result is go%20to%20the%20zoo.
 In sample 2 the content is "a b ", and its last space is content too, so it is replaced.
 
 ## Hints

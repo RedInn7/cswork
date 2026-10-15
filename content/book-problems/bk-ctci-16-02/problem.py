@@ -37,7 +37,7 @@ def fmt(book, qs):
 
 
 def cases(r):
-    out = [fmt('i have an apple you have a pen pineapple pen'.split(), ['you', 'have', 'an', 'apple', 'pen', 'ap']),
+    out = [fmt('the sun and the moon and the stars shine on the sea'.split(), ['the', 'and', 'sun', 'star', 'on', 'moonlight']),
            fmt(['a'], ['a', 'b']), fmt(['aa', 'a', 'aaa'], ['a', 'aa', 'aaa', 'aaaa'])]
     for n, q, letters, longest in [(20, 10, 'ab', 3), (1000, 500, 'abc', 4), (20000, 10000, 'abcdefgh', 5)]:
         vocab = [''.join(r.choice(letters) for _ in range(r.randint(1, longest))) for _ in range(max(5, n // 20))]

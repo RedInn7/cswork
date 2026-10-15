@@ -9,7 +9,7 @@ The second line holds n integers from 0 to 10^9.
 One line with k integers in increasing order; an empty line when k is 0.
 
 ## Sample explanation
-In sample 1 the 4 smallest are 1, 2, 3 and 4.
+In sample 1 the 3 smallest are 1, 5 and 5 (5 appears twice).
 In sample 2, k = 0 and nothing is picked.
 
 ## Hints

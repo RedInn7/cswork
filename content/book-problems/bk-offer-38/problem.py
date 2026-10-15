@@ -26,7 +26,7 @@ def wrong_input_order(s):
 
 
 def cases(r):
-    out = ['abc\n', 'aab\n', 'z\n', 'zz\n', 'ba\n', 'aaaaaaaa\n', 'cbaa\n', 'aabbccdd\n', 'dcbahgfe\n']
+    out = ['cab\n', 'xyx\n', 'z\n', 'zz\n', 'ba\n', 'aaaaaaaa\n', 'cbaa\n', 'aabbccdd\n', 'dcbahgfe\n']
     for n in (3, 5, 6, 7, 8):
         out.append(''.join(r.choice('abcd'[:max(2, n // 2)]) for _ in range(n)) + '\n')
     return out

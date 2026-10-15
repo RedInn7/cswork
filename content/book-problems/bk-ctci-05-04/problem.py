@@ -52,7 +52,7 @@ def fmt(qs):
 
 
 def cases(r):
-    out = [fmt([2, 1, TOP]), fmt([3, 5, 6, 7, 2**30, 2**30 + 1, TOP - 1, 0b1011, 0b10011, 0b110, 0b1000, 0b111000])]
+    out = [fmt([6, 4, TOP]), fmt([3, 5, 6, 7, 2**30, 2**30 + 1, TOP - 1, 0b1011, 0b10011, 0b110, 0b1000, 0b111000])]
     for t in (20, 1000, 10000):
         out.append(fmt([r.randint(1, TOP) if k % 2 else r.randint(1, 2**12) for k in range(t)]))
     return out

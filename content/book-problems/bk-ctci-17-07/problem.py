@@ -54,14 +54,14 @@ def fmt(names, pairs):
 
 
 def cases(r):
-    out = [fmt([('John', 15), ('Jon', 12), ('Chris', 13), ('Kris', 4), ('Johnny', 2), ('Mary', 19)],
-               [('Jon', 'John'), ('Johnny', 'Jon'), ('Kris', 'Chris')]),
+    out = [fmt([('Ana', 7), ('Anna', 5), ('Hanna', 3), ('Bo', 9), ('Beau', 2), ('Lin', 6)],
+               [('Anna', 'Hanna'), ('Ana', 'Anna'), ('Beau', 'Bo')]),
            fmt([('Ann', 1)], []), fmt([('b', 1), ('a', 2), ('c', 3)], [('c', 'b'), ('b', 'a')]),
            fmt([('Zed', 5), ('Amy', 0)], [('Zed', 'Amy'), ('Amy', 'Zed')])]
     for n, m in [(10, 6), (300, 250), (5000, 4000)]:
         names = set()
         while len(names) < n:
             names.add(''.join(r.choice('AEIKMOSTaeikmost') for _ in range(r.randint(1, 6))))
-        names = list(names)
+        names = sorted(names)
         out.append(fmt([(x, r.randint(0, 10000)) for x in names], [tuple(r.sample(names, 2)) for _ in range(m)]))
     return out

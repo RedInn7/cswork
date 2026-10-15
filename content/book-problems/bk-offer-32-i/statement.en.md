@@ -9,7 +9,7 @@ Line i of the next n lines holds three integers v, l and r: node i has value v (
 One line with the n values in level order, separated by spaces.
 
 ## Sample explanation
-In sample 1 the root is node 2 (value 3); its left child is node 1 (value 9) and its right child node 4 (value 20), whose children are node 3 (value 15) and node 5 (value 7). Level by level that reads 3 9 20 15 7.
+In sample 1 the root is node 2 (value 4); its left child is node 1 (value 2) and its right child node 4 (value 7), whose children are node 3 (value 5) and node 5 (value 1). Level by level that reads 4 2 7 5 1.
 
 ## Hints
 - Use a queue: start with the root; take the front node, print it, and append its left and right children.

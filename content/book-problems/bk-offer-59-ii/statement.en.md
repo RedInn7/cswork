@@ -13,7 +13,7 @@ Each of the next q lines is push x (1 ≤ x ≤ 10^9), pop or max.
 One line for each pop and each max.
 
 ## Sample explanation
-Sample 1 pushes 1 and 2, so the maximum is 2; after popping 1 it is still 2; popping 2 empties the queue and max prints -1.
+Sample 1 pushes 4, 6 and 3, so the maximum is 6; after popping 4 it is still 6; popping 6 leaves only 3, which becomes the maximum.
 
 ## Hints
 - Keep a second double-ended queue whose values never increase from front to back: before pushing x onto it, drop the values at its back that are smaller than x. Its front is the maximum.

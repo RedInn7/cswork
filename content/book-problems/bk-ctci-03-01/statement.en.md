@@ -13,7 +13,7 @@ Each of the next q lines is one operation, with 0 ≤ s ≤ 2 and 0 ≤ v ≤ 10
 One line for each pop, peek and empty.
 
 ## Sample explanation
-In sample 1 every stack holds 1 element, so the second push 0 2 is ignored and pop 0 returns 1; stack 0 is then empty and the next pop gives -1. Stack 1 never received anything, so empty 1 is true.
+In sample 1 each stack holds at most 2 elements: stack 1 is full after 4 and 9, so push 1 6 is ignored. peek 1 sees 9; pops then return 9 and 4, and the next pop finds the stack empty and prints -1. Stack 0 never received anything, so empty 0 is true.
 
 ## Hints
 - Split the array into three slices, slice s being [s·c, (s+1)·c), and keep a size for each stack.

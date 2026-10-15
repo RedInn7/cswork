@@ -9,7 +9,7 @@ Each of the next t lines holds a string of 1 to 100 visible ASCII characters, co
 t lines, each true or false: true when no character repeats.
 
 ## Sample explanation
-leetcode has three e's, so it is false; abc and aA1! repeat nothing, so both are true.
+banana repeats a and n, so it is false; xyz and aA1! repeat nothing, so both are true.
 
 ## Hints
 - Keep a boolean array of size 128 for the characters seen and stop at the first repeat.

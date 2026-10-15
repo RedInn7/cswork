@@ -9,7 +9,7 @@ The second line holds n integers, the values from head to tail, each with absolu
 One line: the values from head to tail after removing repeats, separated by spaces.
 
 ## Sample explanation
-In sample 1 the second 3 and the second 1 are repeats; removing them leaves 1 2 3.
+In sample 1 the later two 4s and the second 7 are repeats; removing them leaves 4 7 9.
 In sample 2 every value is the same and only the first node remains.
 
 ## Hints

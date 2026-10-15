@@ -9,9 +9,9 @@ Each case takes two lines: the pattern (length 1 to 1000) and value (lowercase l
 t lines, each true or false.
 
 ## Sample explanation
-abba with dogcatcatdog: a = dog and b = cat match.
-abba with dogcatcatfish: the a at both ends must be equal, so no match.
-abba with dogdogdogdog: a = dogdog and an empty b match.
+abab with redbluredblu: a = red and b = blu match.
+abba with redbluyelred: the two b pieces in the middle must agree, and blu differs from yel; no other cut works either, so no match.
+aba with xyxyxy: an empty a and b = xyxyxy match.
 aabbb with xxxxx: only a = b = x would work, and a and b must differ, so no match.
 
 ## Hints

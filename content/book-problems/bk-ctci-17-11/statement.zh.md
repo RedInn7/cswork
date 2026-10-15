@@ -9,7 +9,7 @@
 q 行，每行是对应询问的最近距离。
 
 ## 样例说明
-样例 1 的文章是 i am a student from a university in a city。a 出现在下标 2、5、8，student 在下标 3，最近距离是 1；a 与 city（下标 9）的最近距离也是 1；i 与 city 相距 9。
+样例 1 的文章是 the red fox saw the old dog near the red barn。the 出现在下标 0、4、8，red 在下标 1、9，最近距离是 1；fox 在 2、barn 在 10，相距 8；dog 在 6，离它最近的 the 在 4 或 8，距离 2。
 
 ## 提示
 - 预处理每个单词出现的所有下标（天然有序）。询问时用两个指针在两个有序列表上同时前进，每次比较当前两个下标的差，再移动较小的那个，时间是两个列表长度之和。

@@ -9,7 +9,7 @@ The second line holds n integers and the third m integers, all between -2^31 and
 One integer: the smallest absolute difference.
 
 ## Sample explanation
-In sample 1, 11 and 8 differ by 3 and no pair is closer.
+In sample 1, 7 and 2 differ by 5 and no pair is closer.
 In sample 2 the two numbers differ by 2^32 - 1 = 4294967295.
 
 ## Hints

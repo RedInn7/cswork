@@ -9,7 +9,7 @@ The second line holds t integers k (1 ≤ k ≤ 2000).
 t lines, the k-th number for each query. Every answer fits in a 64-bit signed integer.
 
 ## Sample explanation
-The sequence starts 1, 3, 5, 7, 9, 15, 21, 25, 27, 35, so the 5th is 9 and the 10th is 35.
+The sequence starts 1, 3, 5, 7, 9, 15, 21, 25, 27, 35, 45, 49, so the 6th is 15, the 12th is 49 and the 1st is 1.
 
 ## Hints
 - Three pointers: every new number is an earlier one times 3, 5 or 7. Keep a pointer for each factor, take the smallest of the three candidates, and advance every pointer that produced it so repeats vanish (15 = 3×5 = 5×3).

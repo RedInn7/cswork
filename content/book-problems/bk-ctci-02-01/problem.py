@@ -29,7 +29,7 @@ def fmt(a):
 
 
 def cases(r):
-    out = [fmt([1, 2, 3, 3, 2, 1]), fmt([1, 1, 1, 1]), fmt([5]), fmt([1, 2, 1, 2]), fmt([3, 3, 4]), fmt([-1, 0, -1, 7])]
+    out = [fmt([4, 7, 4, 9, 7, 4]), fmt([5, 5, 5]), fmt([5]), fmt([1, 2, 1, 2]), fmt([3, 3, 4]), fmt([-1, 0, -1, 7])]
     for n, v in [(10, 5), (1000, 100), (8000, 10**9), (20000, 3000)]:
         out.append(fmt([r.randint(-v, v) for _ in range(n)]))
     return out

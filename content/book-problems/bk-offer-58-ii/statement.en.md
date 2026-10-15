@@ -9,7 +9,7 @@ The second line holds an integer k (0 ≤ k ≤ 10^9).
 One line: the string after the moves.
 
 ## Sample explanation
-Sample 1 moves ab behind cdefg, giving cdefgab.
+Sample 1 moves hel behind lo123, giving lo123hel.
 In sample 2 the length is 5, so 7 moves act like 2.
 
 ## Hints

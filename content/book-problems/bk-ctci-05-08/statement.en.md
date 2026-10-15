@@ -9,7 +9,7 @@ One line with five integers length, w, x1, x2 and y: 1 ≤ length ≤ 1000, w is
 One line with length integers separated by spaces.
 
 ## Sample explanation
-In sample 1, length = 1 and w = 32; lighting pixels 30 and 31 of row 0 sets the two lowest bits, which gives 3.
+In sample 1, length = 1 and w = 32; lighting pixels 28 to 31 of row 0 sets the four lowest bits, which gives 15.
 In sample 2, length = 3 and w = 96, so row 0 spans three integers; lighting pixels 0 and 1 sets the top two bits of the first integer, -1073741824 as a signed integer.
 
 ## Hints

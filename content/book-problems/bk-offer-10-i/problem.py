@@ -39,7 +39,7 @@ def wrong_no_mod_int64(s):
 
 
 def cases(r):
-    out = ['4\n2 5 0 50\n', '1\n0\n', '1\n1\n', '3\n44 45 46\n', '5\n100 1000 10000 99999 100000\n']
+    out = ['4\n7 11 0 50\n', '1\n0\n', '1\n1\n', '3\n44 45 46\n', '5\n100 1000 10000 99999 100000\n']
     for t, hi in [(10, 50), (100, 1000), (1000, 100000)]:
         qs = [r.randint(0, hi) for _ in range(t)]
         out.append(f'{t}\n{" ".join(map(str, qs))}\n')

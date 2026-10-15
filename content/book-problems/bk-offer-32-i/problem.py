@@ -58,7 +58,7 @@ def table(r, n, shape):
 
 
 def cases(r):
-    out = ['5 2\n9 0 0\n3 1 4\n15 0 0\n20 3 5\n7 0 0\n', '1 1\n-4 0 0\n', '3 3\n2 0 0\n1 0 0\n0 2 1\n',
+    out = ['5 2\n2 0 0\n4 1 4\n5 0 0\n7 3 5\n1 0 0\n', '1 1\n-4 0 0\n', '3 3\n2 0 0\n1 0 0\n0 2 1\n',
            '3 1\n1 0 2\n2 0 3\n3 0 0\n']
     for n, shape in [(7, 'full'), (10, 'random'), (300, 'left'), (1000, 'random'), (8000, 'random'), (4095, 'full')]:
         out.append(table(r, n, shape))

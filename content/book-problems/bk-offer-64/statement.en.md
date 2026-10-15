@@ -10,7 +10,7 @@ The second line holds t integers n (1 ≤ n ≤ 10^9).
 t lines, the sum for each query.
 
 ## Sample explanation
-1 + 2 + 3 = 6 and 1 + 2 + … + 9 = 45.
+1 + 2 + 3 + 4 = 10 and 1 + 2 + … + 12 = 78.
 
 ## Hints
 - The formula is n(n+1)/2. With n up to 10^9 the result is about 5×10^17, so use 64-bit integers and widen before multiplying.

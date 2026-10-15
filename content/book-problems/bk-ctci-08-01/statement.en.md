@@ -9,8 +9,8 @@ The second line holds t integers n (1 ≤ n ≤ 1000000).
 t lines, the answer to each query.
 
 ## Sample explanation
-For n = 3 there are 4 ways: 1+1+1, 1+2, 2+1 and 3.
-For n = 5 there are 13.
+For n = 4 there are 7 ways: 1+1+1+1, 1+1+2, 1+2+1, 2+1+1, 2+2, 1+3 and 3+1.
+For n = 6 there are 24; for n = 1 and 2 there are 1 and 2.
 
 ## Hints
 - The last move covers 1, 2 or 3 steps, so f(n) = f(n-1) + f(n-2) + f(n-3) with f(1) = 1, f(2) = 2 and f(3) = 4; or set f(0) = 1, standing on the floor being one way.

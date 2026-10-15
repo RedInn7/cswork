@@ -10,7 +10,7 @@ Each of the next r lines holds a string of c characters 0 and 1, where 1 is an o
 One line: the smallest route, or -1. When start and goal coincide (1 by 1, no obstacle), print an empty line.
 
 ## Sample explanation
-In sample 1 the middle of the second row is blocked. Going down first still leads to the goal: DDRR is the smallest route.
+In sample 1 the first two cells of the third row are blocked. After one step down the next step down hits an obstacle, so the robot goes right; at the third cell of the second row the cell below is free, so it goes down and then right to the goal: DRRDR is the smallest route.
 In sample 2 the goal is walled in and cannot be reached.
 
 ## Hints

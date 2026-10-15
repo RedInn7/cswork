@@ -40,7 +40,7 @@ def case(root, k):
 
 
 def cases(r):
-    out = ['5 3 6 2 4 null null 1\n3\n', '1\n1\n', '2 1 3\n1\n', '2 1 3\n3\n']
+    out = ['7 4 10 2 5 null 12\n2\n', '1\n1\n', '2 1 3\n1\n', '2 1 3\n3\n']
     for n in (5, 50, 1000):
         root = bst(r.sample(range(-10**9, 10**9), n))
         for k in (1, r.randint(1, n), n):

@@ -30,7 +30,7 @@ def fmt(values, k):
 
 
 def cases(r):
-    out = [fmt([1, 2, 3, 4, 5], 2), fmt([8], 1), fmt([4, 6], 2), fmt([4, 6], 1), fmt([1, 2, 3], 3)]
+    out = [fmt([7, 2, 9, 4], 3), fmt([8], 1), fmt([4, 6], 2), fmt([4, 6], 1), fmt([1, 2, 3], 3)]
     for n in (7, 300, 2000):
         values = r.sample(range(-10**9, 10**9), n)
         for k in (1, r.randint(2, n - 1), n):

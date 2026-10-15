@@ -8,7 +8,7 @@ One line: a string of 1 to 100000 lowercase letters.
 The first letter that appears once; if every letter appears more than once, print none.
 
 ## Sample explanation
-In sample 1, a appears twice and b once, so the answer is b.
+In sample 1, p and q appear twice each and r once, so the answer is r.
 In sample 2 every letter appears twice.
 
 ## Hints

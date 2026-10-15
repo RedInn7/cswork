@@ -11,7 +11,7 @@
 q 行，每行是对应询问单词出现的次数。
 
 ## 样例说明
-样例 1 中 you 出现 1 次，have 出现 2 次，an 出现 1 次，apple 出现 1 次（pineapple 里包含的 apple 不算），pen 出现 2 次，ap 出现 0 次。
+样例 1 中 the 出现 4 次，and 出现 2 次，sun 出现 1 次，star 出现 0 次（stars 不算），on 出现 1 次（moon 里包含的 on 不算），moonlight 出现 0 次。
 
 ## 提示
 - 预处理时用哈希表统计每个单词的次数，每次询问 O(1) 查表。

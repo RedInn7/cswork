@@ -30,7 +30,7 @@ def case(text, spare):
 
 
 def cases(r):
-    out = [case('Mr John Smith', 4), case('a b ', 2), case(' ', 2), case('nospace', 0), case('  x', 4),
+    out = [case('go to the zoo', 6), case('a b ', 2), case(' ', 2), case('nospace', 0), case('  x', 4),
            case('end ', 0), case('a  b', 6)]
     alphabet = 'abcXYZ09.,-'
     for n, p in [(20, 0.3), (500, 0.5), (100000, 0.2)]:

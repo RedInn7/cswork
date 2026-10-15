@@ -49,7 +49,7 @@ def ops(r, c, q, p_push):
 
 
 def cases(r):
-    out = ['1 6\npush 0 1\npush 0 2\npop 0\npop 0\nempty 1\npeek 2\n',
+    out = ['2 8\npush 1 4\npush 1 9\npush 1 6\npeek 1\npop 1\npop 1\npop 1\nempty 0\n',
            '2 9\npush 1 5\npush 1 6\npush 1 7\npeek 1\npop 1\npop 1\npop 1\nempty 1\nempty 0\n']
     for c, q, p in [(1, 20, 0.6), (3, 200, 0.7), (5, 3000, 0.75), (1000, 10000, 0.6), (20, 8000, 0.8)]:
         out.append(ops(r, c, q, p))

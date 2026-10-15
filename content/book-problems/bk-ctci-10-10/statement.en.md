@@ -11,7 +11,7 @@ Each of the next q lines is track x or rank x (0 ≤ x ≤ 50000).
 One line for each rank.
 
 ## Sample explanation
-Sample 1 records 5, 1, 4, 4, 5, 9, 7, 13 and 3. rank 1 counts only the 1; rank 3 counts 1 and 3; rank 4 counts 1, 3, 4 and 4.
+Sample 1 records 8, 3, 8 and 1. rank 3 counts 1 and 3; rank 8 counts all four. After recording 6, rank 7 counts 1, 3 and 6; rank 0 counts nothing; rank 10 counts all 5.
 
 ## Hints
 - Scanning everything at each rank is O(q^2), too slow. The values are small enough for a Fenwick tree over values: track adds one at a point and rank is a prefix sum.

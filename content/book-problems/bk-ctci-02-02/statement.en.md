@@ -9,7 +9,7 @@ The second line holds n integers, the values from head to tail, each with absolu
 One integer: the value of the k-th node from the end.
 
 ## Sample explanation
-In the list 1 → 2 → 3 → 4 → 5 the 2nd node from the end holds 4.
+In the list 7 → 2 → 9 → 4 the 3rd node from the end holds 2.
 
 ## Hints
 - Without knowing the length, let one pointer go k steps first, then advance both together; when the leading pointer runs off the end, the trailing one sits on the k-th node from the end.

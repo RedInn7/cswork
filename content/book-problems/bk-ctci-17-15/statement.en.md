@@ -8,7 +8,7 @@ The first line holds an integer n (1 ≤ n ≤ 200) and the second line n distin
 One line: the word, or none.
 
 ## Sample explanation
-In sample 1, dogwalker is dog plus walker, 9 letters, the longest; catsdog can be built too but is shorter.
+In sample 1, sunflowerseed is sun plus flower plus seed (or sunflower plus seed), 13 letters, the longest; sunflower, sunrise and flowerseed can be built too but are shorter.
 In sample 2 no word can be built from others.
 
 ## Hints

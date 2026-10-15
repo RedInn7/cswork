@@ -8,7 +8,7 @@ One line of length 1 to 10000 made of letters, digits, punctuation and spaces. I
 One line: the text after the replacement.
 
 ## Sample explanation
-Sample 1 has two spaces, each becoming %20.
+Sample 1 has three spaces, each becoming %20.
 Sample 2 starts with a space and has two spaces in a row; each one is replaced separately, which gives %20%20.
 
 ## Hints

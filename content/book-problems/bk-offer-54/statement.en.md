@@ -9,7 +9,7 @@ The second line holds an integer k (1 ≤ k ≤ the number of nodes).
 One integer: the k-th largest value.
 
 ## Sample explanation
-In sample 1 the values from largest to smallest are 6, 5, 4, 3, 2, 1, so the 3rd largest is 4.
+In sample 1 the values from largest to smallest are 12, 10, 7, 5, 4, 2, so the 2nd largest is 10.
 
 ## Hints
 - An inorder walk (left, node, right) visits values in increasing order; walking right, node, left visits them in decreasing order, and you can stop at the k-th.

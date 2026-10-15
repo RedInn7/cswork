@@ -10,7 +10,7 @@ The first line holds d, the number of levels.
 Each of the next d lines starts with k, the number of nodes on that level, followed by the k values from left to right, separated by spaces.
 
 ## Sample explanation
-In sample 1 the root is node 1 (value 1); the second level holds 2 and 3, the third 4, 5 and 7, and the fourth 8.
+In sample 1 the root is node 1 (value 10); the second level holds 20 and 30, the third 40, 50 and 60, and the fourth 70.
 
 ## Hints
 - Breadth-first by levels: at each round note the queue's current length; that many nodes form one level.

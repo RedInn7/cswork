@@ -10,8 +10,8 @@ Every coordinate has absolute value at most 10^6, and a segment's two endpoints 
 Print 0 when there is no common point. Otherwise print one line 2 x y, where 2 says two numbers follow and x y is the point. Answers within 10^-5 of the reference are accepted (relative error for coordinates above 1 in absolute value).
 
 ## Sample explanation
-In sample 1, (0,0)-(1,0) and (1,1)-(0,-1) cross at (0.5, 0).
-In sample 2, both segments lie on the line y = x and overlap from (1,1) to (2,2); the point with the smallest x is (1,1).
+In sample 1, (0,0)-(4,2) and (0,3)-(3,0) cross at (2, 1).
+In sample 2, both segments lie on the line y = 2 and overlap from (3,2) to (5,2); the point with the smallest x is (3,2).
 
 ## Hints
 - Solve with cross products: write the point as P1 + t(P2 - P1) = P3 + u(P4 - P3); it lies on both segments only when both t and u are in [0, 1], not merely on the extended lines.

@@ -9,8 +9,8 @@ The first line holds k, the number of distinct arrangements.
 Each of the next k lines holds one arrangement, in increasing lexicographic order of ASCII codes (upper case before lower case).
 
 ## Sample explanation
-qqe has 3 distinct arrangements: eqq, qeq and qqe.
-AaA has 3: AAa, AaA and aAA.
+xxy has 3 distinct arrangements: xxy, xyx and yxx.
+BbB has 3: BBb, BbB and bBB.
 
 ## Hints
 - Sort first; while backtracking, do not try the same letter twice at one position: skip a letter equal to the previous one when the previous one is not in use on this path.

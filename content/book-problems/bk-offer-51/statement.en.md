@@ -9,7 +9,7 @@ The second line holds n integers, each with absolute value at most 10^9.
 One integer: the number of inversions.
 
 ## Sample explanation
-In sample 1 the array 7 5 6 4 has the inversions (7,5), (7,6), (7,4), (5,4) and (6,4): 5 in all.
+In sample 1 the array 9 2 6 1 has the inversions (9,2), (9,6), (9,1), (2,1) and (6,1): 5 in all.
 In sample 2 the array 3 2 2 pairs 3 with each of the two 2s; the two equal 2s do not count, so the answer is 2.
 
 ## Hints

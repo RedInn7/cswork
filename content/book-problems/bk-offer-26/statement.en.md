@@ -9,8 +9,8 @@ Two lines describing tree A and then tree B. Each tree lists its values in level
 Print true if B is a substructure of A, otherwise false.
 
 ## Sample explanation
-In sample 1, the root of A has left child 4 whose children are 1 and 2, which holds B (root 4 with left child 1), so the answer is true; the extra child 2 does not matter.
-In sample 2, B's root 3 can only sit on A's root, whose left child is 4 rather than the 1 that B needs, so the answer is false.
+In sample 1 the root 8 of A has left child 6, whose children are 2 and 7. B is a root 6 with left child 2, which fits on the 6 in A, so the answer is true; the extra child 7 does not matter.
+In sample 2, B's root 5 can only sit on A's root, whose left child is 1 rather than the 4 that B needs, so the answer is false.
 
 ## Hints
 - Two levels of recursion: the outer one tries every node of A as a starting point, the inner one walks A and B together from there.

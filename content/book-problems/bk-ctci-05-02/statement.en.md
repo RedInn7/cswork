@@ -8,8 +8,8 @@ One line: a decimal x such as 0.625, with 0 < x < 1, at most 32 digits after the
 The binary expansion of x (at most 32 digits after the point, no trailing zeros), or ERROR.
 
 ## Sample explanation
-0.625 = 1/2 + 1/8, which is 0.101 in binary.
-0.1 in binary repeats forever, 0.0001100110011…, so the answer is ERROR.
+0.8125 = 1/2 + 1/4 + 1/16, which is 0.1101 in binary.
+0.3 in binary repeats forever, 0.0100110011…, so the answer is ERROR.
 
 ## Hints
 - Multiply by 2 repeatedly: if the integer part becomes 1, write 1 and subtract it, otherwise write 0, until nothing is left; more than 32 digits means failure.

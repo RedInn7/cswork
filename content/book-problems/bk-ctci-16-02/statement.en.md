@@ -11,7 +11,7 @@ The fourth line holds the q lowercase query words. Every word has 1 to 10 letter
 q lines, each the count for the corresponding query.
 
 ## Sample explanation
-In sample 1, you appears once, have twice, an once, apple once (the apple inside pineapple does not count), pen twice and ap never.
+In sample 1, the appears 4 times, and twice, sun once, star never (stars does not count), on once (the on inside moon does not count) and moonlight never.
 
 ## Hints
 - Count every word once in a hash map; each query is then an O(1) lookup.

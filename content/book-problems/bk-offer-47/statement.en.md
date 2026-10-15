@@ -9,7 +9,7 @@ Each of the next m lines holds n integers, the coins on each cell, between 0 and
 One integer: the most coins you can collect.
 
 ## Sample explanation
-In sample 1 the route 1 → 3 → 5 → 2 → 1 collects 12 coins, and no route collects more.
+In sample 1 the route 2 → 3 → 9 → 2 → 5 collects 21 coins, and no route collects more.
 
 ## Hints
 - The best total on arrival at a cell is its coins plus the larger best total of the cell above and the cell to the left. The first row and column have a single way in and accumulate along it.

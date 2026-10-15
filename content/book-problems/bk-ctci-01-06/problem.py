@@ -27,7 +27,7 @@ def wrong_not_longer(s):
 
 
 def cases(r):
-    out = ['aabcccccaaa\n', 'abbccd\n', 'a\n', 'aa\n', 'aaa\n', 'aabb\n', 'aAaA\n', 'aaaaaaaaaaaab\n', 'abbbbbbbbbbbbbbbbbbbc\n',
+    out = ['xxxyzzzzzz\n', 'aabcdd\n', 'a\n', 'aa\n', 'aaa\n', 'aabb\n', 'aAaA\n', 'aaaaaaaaaaaab\n', 'abbbbbbbbbbbbbbbbbbbc\n',
            'aaabbb\n', 'aabbcc\n']
     for n in (30, 1000, 50000):
         w = []

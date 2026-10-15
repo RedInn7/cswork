@@ -41,7 +41,7 @@ def fmt(a):
 
 
 def cases(r):
-    out = [fmt([0, 1, 3]), fmt([0, 1, 2, 3]), fmt([1]), fmt([0]), fmt([1, 2, 3]), fmt([0, 2])]
+    out = [fmt([0, 1, 2, 4, 5]), fmt([0, 1, 2]), fmt([1]), fmt([0]), fmt([1, 2, 3]), fmt([0, 2])]
     for n, gap in [(10, 0), (100, 100), (1000, None), (1000, 1000), (30000, None), (30000, 30000)]:
         gap = r.randint(1, n - 1) if gap is None else gap
         out.append(fmt([v for v in range(n + 1) if v != gap]))

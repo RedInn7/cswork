@@ -11,7 +11,7 @@ The first line holds k, the number of matching words.
 The second line lists those k words in word-list order, separated by spaces; it is empty when k is 0.
 
 ## Sample explanation
-8733 matches tree and used from the list: t is on 8, r on 7, e on 3; u on 8, s on 7, e and d on 3. tea has only three letters and does not match.
+4663 matches good, home, gone and hood from the list: g and h are on 4, o, m and n on 6, d and e on 3. goods has one letter too many and hope's p is on 7, so neither matches.
 
 ## Hints
 - Build a letter-to-digit table, translate every word into digits and compare with num.

@@ -9,7 +9,7 @@ The second line holds n integers, the values from head to tail, each with absolu
 One line with the n values of the rearranged list from head to tail, separated by spaces.
 
 ## Sample explanation
-With x = 3 the nodes below 3 are 1, 2, 2 in order and the rest 4, 3, 5, so the result is 1 2 2 4 3 5. A node equal to 3 belongs to the second part.
+With x = 5 the nodes below 5 are 1, 2, 3 in order and the rest 6, 5, 9, 5, so the result is 1 2 3 6 5 9 5. A node equal to 5 belongs to the second part.
 
 ## Hints
 - Build two new lists (each with a sentinel head), append every node to the tail of one of them while walking the original, then join them.

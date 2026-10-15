@@ -10,7 +10,7 @@ Each board starts with a line holding N (1 ≤ N ≤ 100), followed by N lines o
 t lines, the verdict for each board.
 
 ## Sample explanation
-On the first board O fills the diagonal from top-left to bottom-right.
+On the first board X fills the diagonal from top-left to bottom-right.
 The second board is full with no line, so it is a Draw.
 The third has empty cells and no winner: Pending.
 

@@ -65,7 +65,7 @@ def plant(r, n, mark, kind):
 
 
 def cases(r):
-    out = [fmt([['O.X', '.OX', 'X.O'], ['OOX', 'XXO', 'OXO'], ['OOX', 'XXO', 'OX.']]),
+    out = [fmt([['XOO', '.XO', '..X'], ['XOX', 'XOO', 'OXX'], ['X.O', 'OX.', '...']]),
            fmt([['X'], ['.'], ['..X', '.X.', 'X..'], ['XO', 'OX'], ['XO', 'OO']])]
     for n in (3, 4, 10, 100):
         bs = [random_board(r, n, 0.9) for _ in range(3)]

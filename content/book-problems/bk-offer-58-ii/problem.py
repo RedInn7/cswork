@@ -27,7 +27,7 @@ def wrong_no_modulo(s):
 
 
 def cases(r):
-    out = ['abcdefg\n2\n', 'abcde\n7\n', 'x\n0\n', 'x\n1000000000\n', 'ab\n1\n', 'lrloseumgh\n6\n', 'abc\n3\n',
+    out = ['hello123\n3\n', 'abcde\n7\n', 'x\n0\n', 'x\n1000000000\n', 'ab\n1\n', 'mnopqrstuv\n6\n', 'abc\n3\n',
            'abc\n0\n']
     letters = 'abcdefghijklmnopqrstuvwxyzABC0123456789'
     for n in (10, 100, 10000):

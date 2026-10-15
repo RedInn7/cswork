@@ -62,7 +62,7 @@ def edit(r, w, letters):
 
 
 def cases(r):
-    out = [fmt([('pale', 'pal'), ('pales', 'pale'), ('pale', 'bale'), ('pale', 'bake')]),
+    out = [fmt([('stone', 'tone'), ('ring', 'rings'), ('rope', 'robe'), ('rope', 'rapt')]),
            fmt([('a', 'a'), ('a', 'b'), ('a', 'ab'), ('ab', 'ba'), ('abc', 'acb'), ('abc', 'a'), ('teacher', 'taches'),
                 ('horse', 'hose'), ('abcd', 'abdc'), ('x', 'xyz')])]
     for t, n, letters in [(50, 6, 'ab'), (300, 30, 'abc'), (1000, 200, 'abcdefghijklmnopqrstuvwxyz')]:

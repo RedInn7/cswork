@@ -1,6 +1,6 @@
 # How Far the Robot Vacuum Goes
 A floor has m rows and n columns, cells (0, 0) to (m-1, n-1). A robot vacuum starts at (0, 0) and moves one cell up, down, left or right at a time without leaving the floor.
-Some cells are off limits: the robot cannot enter a cell whose row digit sum plus column digit sum is greater than k. For k = 18, cell (35, 37) is allowed because 3+5+3+7 = 18, and (35, 38) is not because 3+5+3+8 = 19.
+Some cells are off limits: the robot cannot enter a cell whose row digit sum plus column digit sum is greater than k. For k = 10, cell (23, 41) is allowed because 2+3+4+1 = 10, and (23, 42) is not because 2+3+4+2 = 11.
 How many cells can the robot reach, the start included?
 
 ## Input
@@ -10,7 +10,7 @@ One line with three integers m, n and k (1 ≤ m, n ≤ 300, 0 ≤ k ≤ 40).
 One integer: the number of reachable cells.
 
 ## Sample explanation
-Sample 1 is 2 rows by 3 columns with k = 1: (0, 0), (0, 1) and (1, 0) have digit sums at most 1 and are reachable, 3 cells in all.
+Sample 1 is 3 rows by 4 columns with k = 2: the cells with digit sums at most 2 are (0,0), (0,1), (0,2), (1,0), (1,1) and (2,0), all connected: 6 cells.
 In sample 2, k = 0 and the robot stays at the start.
 
 ## Hints

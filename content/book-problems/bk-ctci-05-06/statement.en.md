@@ -9,8 +9,8 @@ Each of the next t lines holds two integers A and B between -2^31 and 2^31 - 1.
 t lines, each the number of bits to change.
 
 ## Sample explanation
-29 (11101) and 15 (01111) differ in two bits, so the answer is 2.
--1 has all 32 bits set and 0 none, so 32 bits change.
+22 (10110) and 9 (01001) differ in all five low bits, so the answer is 5.
+-1 has all 32 bits set and 0 none, so 32 bits change. Two equal numbers need no change.
 
 ## Hints
 - In A XOR B the set bits are exactly the differing bits; count them.

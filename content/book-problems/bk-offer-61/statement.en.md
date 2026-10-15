@@ -10,7 +10,7 @@ Each of the next t lines holds 5 integers from 0 to 13, one hand (at most two jo
 t lines, each true or false.
 
 ## Sample explanation
-1 2 3 4 5 is a straight as it stands; 0 0 1 2 5 uses the two jokers as 3 and 4; 1 2 2 4 5 has two 2s and cannot be one; in 0 1 2 3 7 the span from 1 to 7 is too wide for one joker.
+9 10 11 12 13 is a straight as it stands; 0 3 0 6 7 uses the two jokers as 4 and 5; 4 5 5 6 7 has two 5s and cannot be one; in 0 2 3 4 8 the span from 2 to 8 is too wide for one joker.
 
 ## Hints
 - Ignoring jokers, the remaining cards must have no repeats and their maximum minus minimum must be less than 5.

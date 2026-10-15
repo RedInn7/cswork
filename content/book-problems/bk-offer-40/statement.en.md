@@ -9,7 +9,7 @@ The second line holds n integers, each with absolute value at most 10^9.
 One line with k integers in increasing order, separated by spaces.
 
 ## Sample explanation
-In sample 1 the two smallest numbers are 1 and 2.
+In sample 1 the two smallest numbers are 3 and 4.
 In sample 2, 0 appears twice, so the three smallest are 0 0 3.
 
 ## Hints

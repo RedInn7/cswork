@@ -38,7 +38,7 @@ def fmt(items):
 
 def cases(r):
     visible = [chr(c) for c in range(33, 127)]
-    out = [fmt(['leetcode', 'abc', 'aA1!']), fmt(['a', 'aa', 'abca', 'abcdefghijklmnopqrstuvwxyz', 'aA', '!~', 'zyxwz'])]
+    out = [fmt(['banana', 'xyz', 'aA1!']), fmt(['a', 'aa', 'abca', 'abcdefghijklmnopqrstuvwxyz', 'aA', '!~', 'zyxwz'])]
     for t, n in [(20, 5), (200, 30), (1000, 60)]:
         items = []
         for k in range(t):

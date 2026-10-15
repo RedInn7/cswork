@@ -9,7 +9,7 @@ The third line holds an integer q (1 ≤ q ≤ 100), followed by q lines each wi
 q lines, the smallest distance for each query.
 
 ## Sample explanation
-Sample 1's text is i am a student from a university in a city. a is at indices 2, 5 and 8 and student at 3, so their distance is 1; a and city (index 9) are also 1 apart; i and city are 9 apart.
+Sample 1's text is the red fox saw the old dog near the red barn. the is at indices 0, 4 and 8 and red at 1 and 9, so their distance is 1; fox (2) and barn (10) are 8 apart; dog is at 6, and the nearest the is at 4 or 8: distance 2.
 
 ## Hints
 - Record every index of each word (already sorted). For a query, walk two pointers along the two sorted lists, compare the current indices and advance the smaller one; the cost is the sum of the two lengths.

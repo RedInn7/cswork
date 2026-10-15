@@ -9,8 +9,8 @@ Two lines, each with three integers x, y and size describing a square (-1000 ≤
 One line: 4 x1 y1 x2 y2, where 4 says four numbers follow and (x1, y1), (x2, y2) are the two farthest points. Answers within 10^-5 of the reference are accepted (relative error above 1 in absolute value).
 
 ## Sample explanation
-In sample 1 the centres are (1, 1) and (2, 1), the line is y = 1, and the farthest points are (0, 1) and (3, 1).
-In sample 2 both centres are (1, 1), so the line is x = 1, meeting the square at (1, 0) and (1, 2).
+In sample 1 the centres are (2, 2) and (5, 2), the line is y = 2, and the farthest points are (1, 2) and (6, 2).
+In sample 2 both centres are (5, 5), so the line is x = 5; the points (5, 3) and (5, 7) on the larger square are farthest apart.
 
 ## Hints
 - A line with slope of absolute value at most 1 crosses a square's left and right sides; a steeper one crosses the top and bottom. Treat the vertical line on its own.

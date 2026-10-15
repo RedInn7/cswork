@@ -9,7 +9,7 @@ Each of the next t lines holds two lowercase strings a and b separated by a spac
 t lines, each true or false.
 
 ## Sample explanation
-Deleting e from pale gives pal: true. pales and pale differ by one s: true. Replacing p in pale with b gives bale: true. pale and bake need two replacements: false.
+Deleting s from stone gives tone: true. ring and rings differ by one s: true. Replacing p in rope with b gives robe: true. rope and rapt need two replacements: false.
 
 ## Hints
 - A length difference above 1 never works. With equal lengths, count the positions that differ; with lengths one apart, walk both strings with two pointers and let the longer one skip one character.

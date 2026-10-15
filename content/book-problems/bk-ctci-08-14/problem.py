@@ -67,7 +67,7 @@ def wrong_cache_without_result(s):
 
 
 def cases(r):
-    out = ['1^0|0|1\n0\n', '0&0&0&1^1|0\n1\n', '1\n1\n', '1\n0\n', '0|1\n1\n', '1^1\n1\n', '1&1&1&1\n1\n']
+    out = ['0&1|0^1\n1\n', '0^1&1|0&1\n0\n', '1\n1\n', '1\n0\n', '0|1\n1\n', '1^1\n1\n', '1&1&1&1\n1\n']
     for n in (4, 7, 12, 18, 20, 20):
         expr = r.choice('01') + ''.join(r.choice('&|^') + r.choice('01') for _ in range(n - 1))
         for want in (0, 1):

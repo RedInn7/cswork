@@ -43,4 +43,4 @@ def wrong_flip_before_turn(s):
 
 
 def cases(r):
-    return [f'{k}\n' for k in [0, 2, 1, 3, 5, 11, 100, 1000, 9977, 10000, 11000, 12000, r.randint(2000, 9000)]]
+    return [f'{k}\n' for k in [1, 3, 0, 2, 5, 11, 100, 1000, 9977, 10000, 11000, 12000, r.randint(2000, 9000)]]

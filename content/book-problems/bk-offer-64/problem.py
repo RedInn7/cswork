@@ -31,7 +31,7 @@ def fmt(qs):
 
 
 def cases(r):
-    out = [fmt([3, 9]), fmt([1]), fmt([1000000000]), fmt([65535, 65536, 46340, 46341])]
+    out = [fmt([4, 12]), fmt([1]), fmt([1000000000]), fmt([65535, 65536, 46340, 46341])]
     for t, hi in [(10, 100), (1000, 10**5), (8000, 10**9)]:
         out.append(fmt([r.randint(1, hi) for _ in range(t)]))
     return out

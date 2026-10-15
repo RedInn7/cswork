@@ -9,8 +9,8 @@ The second line holds n strictly increasing integers between 0 and n.
 One integer: the missing number.
 
 ## Sample explanation
-Sample 1 is 0 1 3, missing 2.
-Sample 2 is 0 1 2 3, missing the last number, 4.
+Sample 1 is 0 1 2 4 5, missing 3.
+Sample 2 is 0 1 2, missing the last number, 3.
 
 ## Hints
 - Before the gap every value equals its index; from the gap on, every value is one more. Binary search for the first index whose value differs, in O(log n).

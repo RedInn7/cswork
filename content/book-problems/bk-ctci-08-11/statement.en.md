@@ -8,9 +8,8 @@ One integer n (0 ≤ n ≤ 1000000).
 One integer: the number of ways modulo 1000000007.
 
 ## Sample explanation
-5 cents can be made 2 ways: one nickel or five pennies.
-10 cents can be made 4 ways: 10, 5+5, 5+1×5 and 1×10.
-For n = 0 there is one way: no coins at all.
+11 cents can be made 4 ways: 11 pennies; a nickel and 6 pennies; two nickels and a penny; a dime and a penny.
+15 cents can be made 6 ways. For n = 0 there is one way: no coins at all.
 
 ## Hints
 - Unbounded knapsack: loop over coin values outside and amounts upward inside, dp[j] += dp[j - coin]. Swapping the two loops counts ordered sequences instead.

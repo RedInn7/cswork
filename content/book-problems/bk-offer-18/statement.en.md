@@ -10,8 +10,8 @@ The third line holds an integer v, the value of some node.
 One line: the remaining values from head to tail, separated by spaces. If the list becomes empty, print an empty line.
 
 ## Sample explanation
-Sample 1 removes the node holding 5, so 4 now links straight to 1.
-Sample 2 removes the head.
+Sample 1 removes the node holding 8, so 2 now links straight to 3.
+Sample 2 removes the head, 6.
 
 ## Hints
 - Removing a node means pointing its predecessor at its successor.

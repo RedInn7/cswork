@@ -1,5 +1,5 @@
 # Parenthesise a Boolean Expression
-An expression alternates 0s and 1s with the operators & (and), | (or) and ^ (xor), such as 1^0|0|1. Different parenthesisations evaluate the operators in different orders and may give different values. Given the desired result (0 or 1), count the parenthesisations that make the expression equal to it.
+An expression alternates 0s and 1s with the operators & (and), | (or) and ^ (xor), such as 1&0|1^0. Different parenthesisations evaluate the operators in different orders and may give different values. Given the desired result (0 or 1), count the parenthesisations that make the expression equal to it.
 A parenthesisation fully brackets the expression, fixing which operator is applied when; two of them differ if their order of operations differs.
 
 ## Input
@@ -10,8 +10,8 @@ The second line holds the integer result (0 or 1).
 One integer: the number of parenthesisations that give result.
 
 ## Sample explanation
-1^0|0|1 gives 0 in two ways: 1^((0|0)|1) and 1^(0|(0|1)).
-0&0&0&1^1|0 gives 1 in 10 ways.
+0&1|0^1 gives 1 in three ways: ((0&1)|0)^1, (0&(1|0))^1 and (0&1)|(0^1); the other two, 0&((1|0)^1) and 0&(1|(0^1)), give 0.
+0^1&1|0&1 gives 1 however it is bracketed, so the count for 0 is 0.
 
 ## Hints
 - Interval DP: t[i][j] and f[i][j] count the ways for the subexpression s[i..j] to give 1 and 0. Try every operator k as the last one applied and combine both sides' counts by the truth table of &, | or ^.

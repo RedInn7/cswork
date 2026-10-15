@@ -41,7 +41,7 @@ def fmt(a):
 
 
 def cases(r):
-    out = [fmt([5, 3, 1, 2, 3]), fmt([9, 4]), fmt([7]), fmt([1, 1, 1]), fmt([3, 2, 1]), fmt([1, 2, 3, 4, 5, 6])]
+    out = [fmt([4, 8, 2, 6, 6, 1]), fmt([9, 4]), fmt([7]), fmt([1, 1, 1]), fmt([3, 2, 1]), fmt([1, 2, 3, 4, 5, 6])]
     for n, v in [(9, 5), (100, 10**9), (1000, 3), (20000, 10**9)]:
         out.append(fmt([r.randint(-v, v) for _ in range(n)]))
     return out

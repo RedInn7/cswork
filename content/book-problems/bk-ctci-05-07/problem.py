@@ -27,7 +27,7 @@ def fmt(qs):
 
 
 def cases(r):
-    out = [fmt([2, 3, 5]), fmt([0, 1, 2**30 - 1, 2**29, 0x15555555, 0x2AAAAAAA, 6, 9])]
+    out = [fmt([10, 6, 12]), fmt([0, 1, 2**30 - 1, 2**29, 0x15555555, 0x2AAAAAAA, 6, 9])]
     for t in (20, 1000, 10000):
         out.append(fmt([r.randrange(2**30) for _ in range(t)]))
     return out

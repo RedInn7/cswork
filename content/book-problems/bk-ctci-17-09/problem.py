@@ -48,7 +48,7 @@ def fmt(qs):
 
 
 def cases(r):
-    out = [fmt([5, 10, 1]), fmt([1, 2, 3, 4, 6, 7, 2000, 1999])]
+    out = [fmt([6, 12, 1]), fmt([1, 2, 3, 4, 6, 7, 2000, 1999])]
     for t, hi in [(20, 50), (1000, 2000)]:
         out.append(fmt([r.randint(1, hi) for _ in range(t)]))
     return out

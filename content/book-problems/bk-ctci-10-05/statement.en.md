@@ -10,8 +10,8 @@ The third line holds the lowercase word to find.
 One integer: the word's position, or -1.
 
 ## Sample explanation
-In sample 1, ball is at position 4 (counting from 0).
-In sample 2 the list has no ta.
+In sample 1, cow is at position 6 (counting from 0, gaps included).
+In sample 2 the list has no dog.
 
 ## Hints
 - When binary search lands on a gap, step outward (or to one side) to the nearest word and compare that word with the target.

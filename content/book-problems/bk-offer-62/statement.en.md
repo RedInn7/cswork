@@ -10,8 +10,8 @@ Each of the next t lines holds two integers n and m (1 ≤ n ≤ 100000, 1 ≤ m
 t lines, the number of the last person for each case.
 
 ## Sample explanation
-For n = 5 and m = 3 people leave in the order 2, 0, 4, 1, and 3 is left.
-For n = 10 and m = 17 the last one is 2.
+For n = 6 and m = 4 people leave in the order 3, 1, 0, 2, 5, and 4 is left.
+For n = 7 and m = 10 the last one is 4 as well.
 
 ## Hints
 - Simulating the removals counts m steps around the circle each time, which is too slow.

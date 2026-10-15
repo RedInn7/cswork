@@ -9,7 +9,7 @@
 t 行，每行输出 true 或 false。
 
 ## 样例说明
-pale 删掉 e 就是 pal，true；pales 和 pale 差一个 s，true；pale 把 p 换成 b 就是 bale，true；pale 和 bake 要换两个字符，false。
+stone 删掉 s 就是 tone，true；ring 和 rings 差一个 s，true；rope 把 p 换成 b 就是 robe，true；rope 和 rapt 要换两个字符，false。
 
 ## 提示
 - 长度差超过 1 一定不行。长度相同时数对应位置不同字符的个数；长度差 1 时，用两个指针同时走，允许较长的那个跳过一个字符。

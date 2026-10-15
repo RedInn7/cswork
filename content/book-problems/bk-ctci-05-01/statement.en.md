@@ -9,7 +9,7 @@ Each of the next t lines holds four integers N, M, i and j (0 â‰¤ N < 2^31, 0 â‰
 t lines, each the new N in decimal.
 
 ## Sample explanation
-First case: N = 10000000000 (binary), M = 10011, i = 2, j = 6; the result is 10001001100, which is 1100 in decimal.
+First case: N = 1000000000 in binary (512), M = 101, i = 1, j = 3; the result is 1000001010, which is 522 in decimal.
 Second case: N = 0b11111, M = 0, i = 1, j = 3; bits 1 to 3 are cleared, giving 0b10001 = 17.
 
 ## Hints

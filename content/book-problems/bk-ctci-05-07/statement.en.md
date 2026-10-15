@@ -9,9 +9,9 @@ The second line holds t integers num (0 ≤ num < 2^30).
 t lines, each the number after the swap.
 
 ## Sample explanation
-2 is 10; swapping bits 0 and 1 gives 01, which is 1.
-3 is 11 and stays the same.
-5 is 0101 and becomes 1010, which is 10.
+10 is 1010; swapping each pair gives 0101, which is 5.
+6 is 0110 and becomes 1001, which is 9.
+12 is 1100; each pair holds equal bits, so it stays the same.
 
 ## Hints
 - Take the odd bits with the mask 0xAAAAAAAA and the even bits with 0x55555555; shift the first right by one and the second left by one, then OR them.

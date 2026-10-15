@@ -9,8 +9,8 @@ The second line holds n integers from 1 to 10^9.
 One integer: the majority element or -1.
 
 ## Sample explanation
-In sample 1, 5 occurs 5 times, more than half of 9.
-In sample 2, 3 occurs 2 times, exactly half of 4 and not more, so there is no majority element.
+In sample 1, 8 occurs 4 times, more than half of 7.
+In sample 2, 4 occurs 2 times, exactly half of 4 and not more, and so does 6, so there is no majority element.
 
 ## Hints
 - Boyer-Moore voting: keep a candidate and a count, add one for an equal value, subtract one otherwise, and switch candidates at zero. The surviving candidate is only a possible majority; scan again to confirm it really occurs more than half the time.

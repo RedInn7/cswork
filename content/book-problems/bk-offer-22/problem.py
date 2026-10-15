@@ -31,7 +31,7 @@ def fmt(values, k):
 
 
 def cases(r):
-    out = [fmt([1, 2, 3, 4, 5], 2), fmt([9], 1), fmt([3, 1], 2), fmt([3, 1], 1), fmt([5, 6, 7, 8], 4)]
+    out = [fmt([3, 8, 1, 6, 4], 3), fmt([9], 1), fmt([3, 1], 2), fmt([3, 1], 1), fmt([5, 6, 7, 8], 4)]
     for n in [6, 100, 1000]:
         values = [r.randint(-10**9, 10**9) for _ in range(n)]
         for k in (1, r.randint(1, n), n):

@@ -27,7 +27,7 @@ def fmt(a):
 
 
 def cases(r):
-    out = [fmt([3, 30, 34, 5, 9]), fmt([1, 0, 2, 0]), fmt([10, 2]), fmt([0]), fmt([121, 12]), fmt([12, 121]),
+    out = [fmt([7, 70, 75, 2, 8]), fmt([1, 0, 2, 0]), fmt([10, 2]), fmt([0]), fmt([121, 12]), fmt([12, 121]),
            fmt([824, 8247]), fmt([0, 0, 0]), fmt([1000000000, 1, 10, 100])]
     for n, pool in [(10, [1, 10, 100, 11, 110, 101]), (50, list(range(0, 40))), (1000, None), (20000, None)]:
         a = [r.choice(pool) if pool else r.choice([r.randint(0, 10**9), r.randint(0, 99), r.randint(0, 999)])

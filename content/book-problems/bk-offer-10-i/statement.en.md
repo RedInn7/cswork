@@ -10,7 +10,7 @@ The second line holds t integers n (0 ≤ n ≤ 100000).
 t lines; line i answers query i.
 
 ## Sample explanation
-The sequence starts 0, 1, 1, 2, 3, 5, 8, 13, …, so F(2) = 1 and F(5) = 5.
+The sequence starts 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, …, so F(7) = 13, F(11) = 89 and F(0) = 0.
 F(50) = 12586269025, which is 586268941 modulo 1000000007.
 
 ## Hints

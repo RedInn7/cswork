@@ -39,7 +39,7 @@ def decimal(f):
 
 
 def cases(r):
-    out = ['0.625\n', '0.1\n', '0.5\n', '0.75\n', '0.2\n', '0.999\n', decimal(Fraction(1, 2**32)) + '\n',
+    out = ['0.8125\n', '0.3\n', '0.5\n', '0.75\n', '0.2\n', '0.999\n', decimal(Fraction(1, 2**32)) + '\n',
            decimal(Fraction(2**32 - 1, 2**32)) + '\n', decimal(Fraction(1, 2**31)) + '\n', decimal(Fraction(3, 2**30)) + '\n',
            decimal(Fraction(5, 2**33)) + '\n', '0.3333\n', '0.0625\n']
     for _ in range(8):

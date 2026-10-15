@@ -9,8 +9,8 @@ The second line holds t integers num (1 ≤ num ≤ 2^31 - 1).
 t lines, each with two integers: the larger neighbour, then the smaller one.
 
 ## Sample explanation
-2 is 10 with a single one: the next larger is 4 (100) and the next smaller is 1 (1).
-1 is already the smallest positive integer with one 1, so the smaller neighbour is -1.
+6 is 110 with two ones: the next larger is 9 (1001) and the next smaller is 5 (101).
+4 is 100: the larger neighbour is 8 (1000) and the smaller 2 (10).
 2^31 - 1 has 31 ones; nothing larger fits the range and nothing smaller exists, so -1 -1.
 
 ## Hints

@@ -10,7 +10,7 @@ Each of the next t lines holds two integers a and b between -2^31 and 2^31 - 1.
 t lines, the larger number of each pair.
 
 ## Sample explanation
-The larger of 1 and 2 is 2.
+The larger of 7 and -3 is 7.
 2147483647 minus -2147483648 overflows 32 bits, so the difference's sign bit gives the wrong verdict; the answer is 2147483647.
 
 ## Hints

@@ -38,7 +38,7 @@ def fmt(ps):
 
 def cases(r):
     lo, hi = -2**31, 2**31 - 1
-    out = [fmt([(1, 2), (hi, lo)]), fmt([(0, 0), (-5, -5), (lo, hi), (hi, -1), (-1, hi), (lo, 1), (7, -3)])]
+    out = [fmt([(7, -3), (hi, lo)]), fmt([(0, 0), (-5, -5), (lo, hi), (hi, -1), (-1, hi), (lo, 1), (7, -3)])]
     for t, v in [(20, 100), (1000, 10**9), (8000, hi)]:
         out.append(fmt([(r.randint(-v, min(v, hi)), r.randint(-v, min(v, hi))) for _ in range(t)]))
     return out

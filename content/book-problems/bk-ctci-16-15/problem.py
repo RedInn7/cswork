@@ -48,7 +48,7 @@ def fmt(ps):
 
 def cases(r):
     word = lambda: ''.join(r.choice('RYGB') for _ in range(4))
-    out = [fmt([('RGBY', 'GGRR')]), fmt([('RRRR', 'RRRR'), ('RGBY', 'YBGR'), ('RRGG', 'GGRR'), ('YYYY', 'BBBB'),
+    out = [fmt([('BYYR', 'YBRR')]), fmt([('RRRR', 'RRRR'), ('RGBY', 'YBGR'), ('RRGG', 'GGRR'), ('YYYY', 'BBBB'),
                                          ('RYYB', 'YRRY')])]
     for t in (20, 1000, 10000):
         out.append(fmt([(word(), word()) for _ in range(t)]))

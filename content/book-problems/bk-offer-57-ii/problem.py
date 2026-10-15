@@ -34,5 +34,5 @@ def wrong_by_length(s):
 
 
 def cases(r):
-    return [f'{t}\n' for t in [9, 4, 15, 1, 2, 3, 5, 8, 1024, 100000, 99999, 65536, 3 * 5 * 7 * 11 * 13]] + [
+    return [f'{t}\n' for t in [21, 4, 18, 1, 2, 3, 5, 8, 1024, 100000, 99999, 65536, 3 * 5 * 7 * 11 * 13]] + [
         f'{r.randint(1, 100000)}\n' for _ in range(4)]
