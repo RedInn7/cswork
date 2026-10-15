@@ -109,7 +109,8 @@ type Scenario = {
   concessions: Text[];
   notes: Text;
 };
-export const SCENARIOS = (scenarios as { scenarios: Scenario[] }).scenarios;
+// Via unknown: the JSON infers string[] where Scenario has [zh, en] pairs and literal kinds.
+export const SCENARIOS = (scenarios as unknown as { scenarios: Scenario[] }).scenarios;
 const usd = (n: number) => `$${n.toLocaleString('en-US')}`;
 const offerTable = (o: Money, zh: boolean) =>
   (zh
