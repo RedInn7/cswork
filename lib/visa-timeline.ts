@@ -53,7 +53,7 @@ export type VisaInput = {
   stem?: boolean;
   optStart?: string;
   optEnd?: string;
-  /** A STEM OPT extension is filed or approved. */
+  /** A STEM OPT extension is filed or approved, so the degree is STEM too. */
   stemFiled?: boolean;
   /** The registration year (March) in which the H-1B was selected, if any. */
   h1bSelected?: number;
@@ -140,10 +140,13 @@ export function visaTimeline(input: VisaInput, today: string): VisaEvent[] {
         'If the STEM OPT application is still pending, the automatic extension of work authorization ends by this day',
       );
   }
-  // Registrations inside the work authorization: OPT, plus 24 months of STEM where it applies.
-  const authEnd = optEnd && input.stem ? addMonths(optEnd, 24) : optEnd;
+  // Registrations inside the work authorization: OPT, plus 24 months of STEM where it applies
+  // (a filed or approved extension means a STEM degree, ticked or not).
+  const authEnd = optEnd && (input.stem || input.stemFiled) ? addMonths(optEnd, 24) : optEnd;
   const from = optStart ?? end;
-  const selected = Number.isInteger(input.h1bSelected) ? input.h1bSelected! : undefined;
+  // The input's own 2000–2100, so a year still being typed ("2", "20") places nothing.
+  const h1b = input.h1bSelected;
+  const selected = Number.isInteger(h1b) && h1b! >= 2000 && h1b! <= 2100 ? h1b : undefined;
   const years = new Set<number>(selected ? [selected] : []);
   // Without any F-1 date there is no window to place registrations in.
   if (from)

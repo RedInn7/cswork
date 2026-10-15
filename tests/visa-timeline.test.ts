@@ -61,11 +61,18 @@ void test('H-1B registrations inside the work authorization, October starts and 
   const stem = visaTimeline({ stem: true, optStart: '2027-07-01', optEnd: '2028-06-30' }, '2027-06-01');
   assert.deepEqual(on(stem, 'h1b-registration'), ['2028-03-01', '2029-03-01', '2030-03-01']);
   assert.deepEqual(on(stem, 'cap-gap'), ['2030-06-30']);
+  // A filed or approved extension counts as STEM even with the degree box left unticked.
+  const filed = visaTimeline({ stemFiled: true, optStart: '2027-07-01', optEnd: '2028-06-30' }, '2027-06-01');
+  assert.deepEqual(on(filed, 'h1b-registration'), on(stem, 'h1b-registration'));
+  assert.deepEqual(on(filed, 'cap-gap'), ['2030-06-30']);
   // Selected in 2029: filing from April 1, and no later registrations.
   const picked = visaTimeline({ stem: true, optStart: '2027-07-01', optEnd: '2028-06-30', h1bSelected: 2029 }, '2027-06-01');
   assert.deepEqual(on(picked, 'h1b-registration'), ['2028-03-01']);
   assert.deepEqual(on(picked, 'h1b-file'), ['2029-04-01']);
   assert.deepEqual(on(picked, 'h1b-start'), ['2028-10-01', '2029-10-01']);
+  // A year still being typed ("2", "202") is no year: the registrations stay as without one.
+  for (const h1bSelected of [2, 202])
+    assert.deepEqual(visaTimeline({ stem: true, optStart: '2027-07-01', optEnd: '2028-06-30', h1bSelected }, '2027-06-01'), stem);
 });
 
 void test('green card stages count the days passed; the next deadline skips the past', () => {
