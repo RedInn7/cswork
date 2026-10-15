@@ -11,14 +11,16 @@ const definitions: Record<string, string> = {
   MountainArray:
     'class MountainArray { int[] values; int calls; public int get(int i){if(++calls>100)throw new IllegalStateException("MountainArray.get exceeds 100 calls");return values[i];} public int length(){return values.length;} }',
 };
-function helpers(source: string, relevantOnly = false) {
+// Like LeetCode, only the types the official signature uses; the runtime is
+// reflective and names none, so every other name belongs to the learner.
+function helpers(source: string, signature: string) {
   const clean = source
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/[^\n]*/g, '');
   return Object.entries(definitions)
     .filter(
       ([name]) =>
-        (!relevantOnly || new RegExp(`\\b${name}\\b`).test(source)) &&
+        new RegExp(`\\b${name}\\b`).test(signature) &&
         !new RegExp(`\\b(?:class|interface)\\s+${name}\\b`).test(clean),
     )
     .map(([, code]) => code)
@@ -28,15 +30,15 @@ export function getLeetCodeJavaTemplate(
   _problemId: number,
   snippet: string,
 ): string {
-  return `import java.util.*;\nimport java.math.*;\n\n${snippet.replace(/\bpublic\s+class\s+/g, 'class ')}\n\n${helpers(snippet, true)}\n`;
+  return `import java.util.*;\nimport java.math.*;\n\n${snippet.replace(/\bpublic\s+class\s+/g, 'class ')}\n\n${helpers(snippet, snippet)}\n`;
 }
 export function buildLeetCodeJava(
   _problemId: number,
   source: string,
-  _snippet: string,
+  snippet: string,
 ): string {
   const code = source
     .replace(/^\s*package\s+[^;]+;/m, '')
     .replace(/\bpublic\s+class\s+/g, 'class ');
-  return `import java.util.*;\nimport java.math.*;\n${code}\n${helpers(code)}\n${readFileSync(join(process.cwd(), 'scripts/leetcode-mode/java/runtime.java'), 'utf8')}\npublic class Main { public static void main(String[] a) throws Exception { CsworkRuntime.main(a); } }\n`;
+  return `import java.util.*;\nimport java.math.*;\n${code}\n${helpers(code, snippet)}\n${readFileSync(join(process.cwd(), 'scripts/leetcode-mode/java/runtime.java'), 'utf8')}\npublic class Main { public static void main(String[] a) throws Exception { CsworkRuntime.main(a); } }\n`;
 }
