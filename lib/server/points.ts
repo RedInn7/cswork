@@ -236,8 +236,8 @@ function summary(userId: string, now = Date.now()) {
 }
 
 /**
- * GET oj/points: balance, recent ledger, prices; GET oj/points/daily: the daily problems solved
- * over the last 13 months (the month calendar); POST oj/points/redeem {item}.
+ * GET oj/points: balance, recent ledger, prices; GET oj/points/daily: every daily problem solved
+ * (the month calendar and the month badges, which stay once won); POST oj/points/redeem {item}.
  */
 export async function handlePoints(request: Request, p: Person, action?: string) {
   if (request.method === 'GET' && !action) {
@@ -246,7 +246,7 @@ export async function handlePoints(request: Request, p: Person, action?: string)
   }
   if (request.method === 'GET' && action === 'daily') {
     await limit(p, 'oj-read', 240);
-    return json({ days: dailyDays(p.id, beijingDate(Date.now() - 400 * DAY).slice(0, 7)) });
+    return json({ days: dailyDays(p.id) });
   }
   if (request.method === 'POST' && action === 'redeem') {
     await limit(p, 'points-redeem', 20);

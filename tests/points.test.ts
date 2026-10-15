@@ -169,8 +169,11 @@ void test("a month's 25th daily problem pays 100, every day of it 100 more, and 
   // 24 days only: no bonus yet.
   fill('month-24', others.slice(0, 23));
   assert.equal(await points.awardAccepted(accepted('month-24', 'lc-1', now), now), 10 + 5 + 20);
+  // Years back too: the badge wall keeps every month won.
+  fill('month-all', ['2020-01-05']);
   const { days } = (await call(person('month-all'), ['points', 'daily'])) as { days: string[] };
-  assert.equal(days.length, others.length + 1);
+  assert.equal(days.length, others.length + 2);
+  assert.equal(days[0], '2020-01-05');
   assert.ok(days.includes(today) && days.every((d, i) => !i || days[i - 1] < d));
   // The ledger shows the month bonus with its ref.
   const summary = (await call(person('month-all'), ['points'])) as { ledger: { reason: string; ref?: string }[] };
