@@ -165,6 +165,10 @@ export function PrivacyDocument() {
                 在「简历 AI 点评」页（/career/resume）提交时，服务器会把你粘贴的简历文字、目标岗位和职位描述（如有）发送给
                 Anthropic，用于生成点评；不发送你的邮箱或账户标识。简历里本身写着的姓名、电话等信息会随文字一起发送，提交前可以先删掉。平台不保存简历文字和点评结果，只记录每天的调用次数和用量；点评只显示在你当前的浏览器页面里。不提交就不会发送。
               </p>
+              <p id="privacy-ai-round">
+                在「AI 辅助编程轮」练习（/ai-assisted）里点「运行测试」时，项目的全部文件会交给隔离环境运行公开测试和隐藏测试；这些文件和测试结果像代码沙盒的运行一样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，不出现在提交列表、统计、积分和学习进度中。编辑中的文件只保存在当前浏览器。使用 AI 结对时，服务器会把这道练习的说明、你当前的文件（总量有上限，超出的只发送文件名）、最近几轮对话和你上一次运行的公开测试结果（隐藏测试只有通过数量）发送给
+                Anthropic，用于生成回复；不发送邮箱、姓名或账户标识，平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不提问就不会发送。
+              </p>
               <p>
                 平台会为持续提供课程、处理教学反馈、对账及故障恢复保留必要资料和备份，目前没有对所有账户及学习记录统一设置自动删除期限。业务数据与备份的清理时间可能不同；收到删除请求后，会确认涉及的资料、处理范围及需要保留的记录。
               </p>
@@ -523,6 +527,22 @@ export function PrivacyDocument() {
                 store the resume text or the review; it records only daily call
                 counts and usage, and the review exists only on your open page.
                 Nothing is sent unless you submit.
+              </p>
+              <p id="privacy-ai-round">
+                When you run the tests of an AI-assisted round project
+                (/ai-assisted), every file of the project goes to the isolated
+                environment to run the public and hidden tests. Like playground
+                runs, the files and results are kept in your run records, which
+                you and the instructors who manage teaching can view under their
+                permissions; they never appear in your submissions, statistics,
+                points or progress. Files you are editing stay in your browser.
+                When you use the AI pair, the server sends the project's brief,
+                your current files (up to a size cap; beyond it only file names),
+                the last few turns of the conversation and your last run's public
+                test results (hidden tests as counts only) to Anthropic to write a
+                reply. No email, name or account identifier is sent; the platform
+                records only daily call counts and usage, never what was sent or
+                the AI's reply. Nothing is sent unless you ask.
               </p>
               <p>
                 The platform retains necessary data and backups to keep
