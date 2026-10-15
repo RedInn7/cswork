@@ -44,6 +44,9 @@ export type Course = {
   /** Catalog filters (lib/course-catalog.ts); '' when unset. */
   category?: string;
   level?: string;
+  /** Star ratings (lib/server/course-ratings.ts): the average is null under 5 ratings. */
+  rating_avg?: number | null;
+  rating_count?: number;
 };
 export type Progress = {
   lesson_id: string;

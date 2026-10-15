@@ -170,6 +170,7 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/career/visa-timeline' },
   { path: '/ai-assisted' },
   ...AI_TASK_SLUGS.map((slug) => ({ path: `/ai-assisted/${slug}` })),
+  { path: '/certify' },
 ];
 /** `statics`: entries written before the library on page 1 (static pages plus the mock OA pages). */
 export function sitemapPageCount(

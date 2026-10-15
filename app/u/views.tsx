@@ -251,7 +251,7 @@ export function ProfileView({
       {!!certificates.length && (
         <section aria-labelledby="learner-certificates">
           <h2 id="learner-certificates" className="lists-public-h2">
-            {t('结业证书', 'Certificates')}
+            {t('证书', 'Certificates')}
           </h2>
           <ul className="lists-public-board">
             {certificates.map((c) => (

@@ -34,6 +34,8 @@ import {
   UsersRound,
   Zap,
   Network,
+  GraduationCap,
+  Award,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -153,6 +155,8 @@ const nav: [LucideIcon, string, string, string][] = [
   [Dices, '模拟面试', 'Mock Interview', 'mock-interview'],
   // A path, not a view: the public course page (app/system-design).
   [Network, '系统设计课', 'System Design', '/system-design'],
+  [GraduationCap, '入门速成课', 'Beginner Courses', '/learn'],
+  [Award, '技能认证', 'Certification', '/certify'],
   [BookUser, 'STAR 故事库', 'Story Bank', 'stories'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
   [MessageCircle, '讨论区', 'Discuss', 'discuss'],

@@ -11,6 +11,7 @@ import { judgeFeed } from './judge-feed';
 import { requestPrecompile } from './oj-precompile';
 import { handleOaLibrary } from './oa-library';
 import { handleMockOa } from './mock-oa';
+import { handleSkillTests } from './skill-tests';
 import { handleSpeedrun } from './speedrun';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
@@ -117,6 +118,7 @@ export async function handleOj(
     return handleOaLibrary(request, p, path.slice(1));
   if (resource === 'mock-oa' && id === 'history' && !action) return handleMockHistory(request, p);
   if (resource === 'mock-oa') return handleMockOa(request, p, path.slice(1));
+  if (resource === 'skills') return handleSkillTests(request, p, path.slice(1));
   if (resource === 'lists' || resource === 'profile' || resource === 'reports')
     return handleLearnerCloud(request, p, path);
   if (resource === 'experiences') return handleExperienceSubmissions(request, p, path.slice(1));
