@@ -129,3 +129,4 @@ systemctl start cswork-oj-worker.service
 wait_for_health "$started" || { echo 'Candidate application health check failed'; exit 1; }
 complete=true
 echo "Application release healthy: $release; rollback retained: $base"
+bash "$source_dir/deploy/prune-releases.sh" "$previous" || true
