@@ -270,3 +270,49 @@ test('the walkthrough opens after a draft or a skip, stays open next time, and o
     dom.window.close();
   }
 });
+
+test("a guest's draft stays on this device and goes to the account after signing in", async () => {
+  const dom = useDom();
+  const { createRoot } = await import('react-dom/client');
+  const { SdTryFirst } = await import('../app/system-design/reader.tsx');
+  const original = globalThis.fetch;
+  marksApi(null);
+  const root = createRoot(document.getElementById('root'));
+  const render = (userId) =>
+    act(async () => root.render(createElement(SdTryFirst, { key: String(userId), slug: 'url-shortener', userId }, 'body')));
+  const box = () => document.querySelector('.ip-try-input');
+  try {
+    await render(null);
+    await settle();
+    assert.ok(document.querySelector('.ip-try-head p').textContent.includes('Kept on this device only'));
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(dom.window.HTMLTextAreaElement.prototype, 'value').set.call(box(), 'Requirements: shorten');
+      box().dispatchEvent(new dom.window.Event('input', { bubbles: true }));
+    });
+    assert.equal(localStorage.getItem('cswork:sd-draft:url-shortener'), 'Requirements: shorten');
+
+    // A reload keeps it, and a drafted chapter opens.
+    await act(async () => root.render(createElement('div')));
+    await render(null);
+    await settle();
+    assert.equal(box().value, 'Requirements: shorten');
+    assert.equal(document.querySelector('.sd-walkthrough').hasAttribute('inert'), false);
+
+    // Signed in (a full page load): the account has no draft yet, so this one is saved to it.
+    await act(async () => root.render(createElement('div')));
+    const calls = marksApi(new Set());
+    await render('me');
+    await settle();
+    assert.deepEqual(
+      calls.find(([method]) => method === 'PUT'),
+      ['PUT', '/api/oj/notes?target=sd%3Aurl-shortener%2Fdraft', { body: 'Requirements: shorten' }],
+    );
+    assert.equal(box().value, 'Requirements: shorten');
+    assert.equal(localStorage.getItem('cswork:sd-draft:url-shortener'), null);
+    assert.equal(localStorage.getItem('cswork:note-draft:me:sd:url-shortener/draft'), null, 'saved, so no local copy is left');
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = original;
+    dom.window.close();
+  }
+});

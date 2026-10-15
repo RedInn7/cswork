@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } fro
 import { Check } from 'lucide-react';
 import { useT } from '@/lib/i18n';
 import { ApiError, api } from '@/lib/types';
+import { stashNoteDraft } from '@/components/problem-notes';
 import { TryFirst } from '@/components/try-first';
 import '@/app/redesign.css';
 
@@ -117,21 +118,28 @@ export function SdMarkRead({ slug, slugs }: { slug: string; slugs: string[] }) {
 }
 
 const openKey = (slug: string) => `cswork:sd-open:${slug}`;
+const draftKey = (slug: string) => `cswork:sd-draft:${slug}`;
 
 /**
  * A case chapter's walkthrough waits behind "design it yourself first" (components/try-first.tsx,
  * the private note `sd:<slug>/draft`). It stays in the page, faded and inert, until the learner
  * writes something or skips; a chapter drafted, read or opened before opens straight away, and so
- * does a link to one of its sections.
+ * does a link to one of its sections. A guest's draft is kept on this device and goes to their note
+ * once they sign in (the page reloads, so TryFirst cannot carry it over itself).
  */
 export function SdTryFirst({ slug, userId, children }: { slug: string; userId: string | null; children: ReactNode }) {
   const t = useT();
   const marked = useRead().slugs.has(slug);
   const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState('');
   const body = useRef<HTMLDivElement>(null);
   useEffect(() => {
     try {
-      if (localStorage.getItem(openKey(slug))) setOpen(true);
+      const kept = localStorage.getItem(draftKey(slug)) ?? '';
+      if (localStorage.getItem(openKey(slug)) || kept.trim()) setOpen(true);
+      if (!userId) setDraft(kept);
+      // Runs before the note's load answers, which then saves it or offers it beside a saved one.
+      else if (kept && stashNoteDraft(userId, `sd:${slug}/draft`, kept)) localStorage.removeItem(draftKey(slug));
     } catch {}
     const follow = () => {
       let id = '';
@@ -146,7 +154,7 @@ export function SdTryFirst({ slug, userId, children }: { slug: string; userId: s
     follow();
     window.addEventListener('hashchange', follow);
     return () => window.removeEventListener('hashchange', follow);
-  }, [slug]);
+  }, [slug, userId]);
   const shown = open || marked;
   return (
     <>
@@ -163,6 +171,16 @@ export function SdTryFirst({ slug, userId, children }: { slug: string; userId: s
           target={`sd:${slug}/draft`}
           revealed={shown}
           revealOnLoad
+          local={{
+            value: draft,
+            onChange: (value) => {
+              setDraft(value);
+              try {
+                if (value) localStorage.setItem(draftKey(slug), value);
+                else localStorage.removeItem(draftKey(slug));
+              } catch {}
+            },
+          }}
           onReveal={(asked) => {
             setOpen(true);
             try {
