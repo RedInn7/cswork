@@ -492,10 +492,10 @@ export async function runProject(
       {
         ...limits('', PROJECT_SECONDS, PROJECT_SECONDS * 2, 268435456, 65536),
         args: ['/usr/bin/python3', '-I', 'cswork_tests.py', start],
-        copyIn: Object.fromEntries([
-          ...Object.entries(copy).map(([path, content]) => [path, { content }]),
-          ['cswork_tests.py', { content: PROJECT_HARNESS }],
-        ]),
+        copyIn: {
+          ...Object.fromEntries(Object.entries(copy).map(([path, content]) => [path, { content }] as const)),
+          'cswork_tests.py': { content: PROJECT_HARNESS },
+        },
       },
       signal,
     );

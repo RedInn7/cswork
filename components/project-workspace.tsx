@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FilePlus2, LoaderCircle, Play, RotateCcw, Send, X } from 'lucide-react';
 import { CodeEditor } from '@/components/editor';
 import { StatementMarkdown } from '@/components/statement-markdown';
@@ -24,7 +24,7 @@ function readSaved(task: string, starter: Record<string, string>): Saved {
   try {
     const value = JSON.parse(localStorage.getItem(storageKey(task)) || 'null') as Partial<Saved> | null;
     const files = value?.files;
-    if (files && typeof files === 'object' && Object.entries(files).every(([p, t]) => PROJECT_PATH.test(p) && typeof t === 'string')) {
+    if (value && files && typeof files === 'object' && Object.entries(files).every(([p, t]) => PROJECT_PATH.test(p) && typeof t === 'string')) {
       // Starting files come back if a stored copy lacks one.
       const merged = { ...starter, ...files };
       const open = (Array.isArray(value.open) ? value.open : []).filter((p): p is string => typeof p === 'string' && p in merged);
@@ -76,6 +76,7 @@ export function ProjectWorkspace({
   const request = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    // oxlint-disable-next-line react/react-compiler -- Hydrate from browser storage after SSR.
     setSaved(readSaved(task, starter));
     return () => request.current?.abort();
   }, [task, starter]);
@@ -117,7 +118,7 @@ export function ProjectWorkspace({
     : newPath in files
       ? t('已有同名文件', 'That file already exists')
       : '';
-  function add(event: FormEvent) {
+  function add(event: { preventDefault(): void }) {
     event.preventDefault();
     if (pathError || paths.length >= PROJECT_MAX_FILES) return;
     setSaved((value) => value && { files: { ...value.files, [newPath]: '' }, open: [...value.open, newPath], active: newPath });
@@ -267,7 +268,7 @@ export function ProjectWorkspace({
       </nav>
 
       <div className="ai-round-editor">
-        <div className="ai-round-tabs" aria-label={t('已打开的文件', 'Open files')} role="group">
+        <fieldset className="ai-round-tabs" aria-label={t('已打开的文件', 'Open files')}>
           {open.map((path) => (
             <span key={path} className="ai-round-tab" data-active={path === active || undefined}>
               <button type="button" aria-pressed={path === active} onClick={() => select(path)}>
@@ -280,7 +281,7 @@ export function ProjectWorkspace({
               )}
             </span>
           ))}
-        </div>
+        </fieldset>
         <div className="ai-round-code">
           <CodeEditor
             value={files[active] ?? ''}
@@ -302,6 +303,7 @@ export function ProjectWorkspace({
               {t('运行测试', 'Run tests')}
             </Button>
           ) : (
+            // oxlint-disable-next-line next/no-html-link-for-pages -- the SPA's account view, as on /playground.
             <a className="ai-round-signin" href="/?view=account">
               {t('登录后运行', 'Sign in to run')}
             </a>
@@ -314,14 +316,14 @@ export function ProjectWorkspace({
           <h2 id="ai-round-results-title">{t('测试结果', 'Test results')}</h2>
           {run ? (
             <>
-              <p className="ai-round-status" data-status={run.status} role="status">
+              <output className="ai-round-status" data-status={run.status}>
                 {t(...label)}
                 {activeStatuses.has(run.status) && (
                   <button type="button" onClick={cancel} disabled={cancelling}>
                     {t('取消', 'Cancel')}
                   </button>
                 )}
-              </p>
+              </output>
               {report && (
                 <>
                   <dl className="ai-round-counts">
@@ -417,7 +419,7 @@ export function ProjectWorkspace({
                   placeholder={t('例如：test_reserve 为什么失败？', 'For example: why does test_reserve fail?')}
                   onChange={(event) => setQuestion(event.target.value)}
                   onKeyDown={(event) => {
-                    if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) ask(event);
+                    if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) void ask(event);
                   }}
                 />
                 <Button type="submit" size="sm" disabled={asking || !question.trim()}>
@@ -425,9 +427,7 @@ export function ProjectWorkspace({
                   {t('发送', 'Send')}
                 </Button>
               </form>
-              <p className="sr-only" role="status">
-                {asking ? t('AI 正在回复', 'The AI is replying') : ''}
-              </p>
+              <output className="sr-only">{asking ? t('AI 正在回复', 'The AI is replying') : ''}</output>
               {pairError && (
                 <p className="ai-round-error" role="alert">
                   {pairError}
