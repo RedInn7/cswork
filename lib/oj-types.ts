@@ -106,6 +106,11 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
    * (lib/http-fixtures.mjs). Judge-only: publicProblem and cleanOaStatement drop it.
    */
   httpFixtures?: Record<string, unknown>;
+  /**
+   * The httpFixtures keys the visible cases may request (scripts/rest-api/build.py). Sample and
+   * custom-input runs print back to the learner, so they get only these (oj-engine runSpec).
+   */
+  visibleFixtureKeys?: string[];
 };
 
 export type OjImportedCase = {
@@ -355,6 +360,7 @@ export const ojImportSchema = z
         httpFixtures: z
           .record(z.string().max(2000).regex(HTTP_FIXTURE_KEY), z.json())
           .optional(),
+        visibleFixtureKeys: z.array(z.string().max(2000)).max(20000).optional(),
       })
       .strict(),
     cases: z.array(testcase).min(1).max(OJ_MAX_CASES),
@@ -526,6 +532,14 @@ export const ojImportSchema = z
         path: ['problem', 'httpFixtures'],
         message:
           'HTTP 桩只能用于 oa- / rest- 题、仅 Python，且不超过 512 KB / HTTP fixtures need an oa- or rest- id, Python only and at most 512 KB',
+      });
+    const visible = data.problem.visibleFixtureKeys;
+    if (fixtures ? !visible?.every((key) => Object.hasOwn(fixtures, key)) : visible)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['problem', 'visibleFixtureKeys'],
+        message:
+          '可见用例的 HTTP 桩键必须给出，且都在 httpFixtures 里 / visibleFixtureKeys must be given and all be httpFixtures keys',
       });
     if (data.problem.id.startsWith('rest-') && !fixtures)
       ctx.addIssue({

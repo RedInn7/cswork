@@ -25,7 +25,7 @@ from concurrent.futures import ThreadPoolExecutor
 from fractions import Fraction
 from math import floor
 from pathlib import Path
-from urllib.parse import urlencode
+from urllib.parse import parse_qsl, urlencode
 
 ROOT = Path(__file__).resolve().parents[2]
 OA = ROOT / 'content/oa-judge'
@@ -36,6 +36,9 @@ HOST = 'https://data.cswork.test'
 BOOT = subprocess.check_output(
     ['node', '-e', "import('./lib/http-fixtures.mjs').then(m=>process.stdout.write(m.HTTP_FIXTURE_BOOTSTRAP))"],
     cwd=ROOT, text=True)
+# The bootstrap, also naming every key a program requests on stderr (visible_keys).
+TRACE = BOOT.replace('    key = _key(url, params)\n', "    key = _key(url, params)\n    print('TRACE', key, file=sys.stderr)\n", 1)
+assert TRACE != BOOT
 OFFLINE_ZH = ('评测环境没有外网：接口返回的是题目自带的固定数据。Python 里的 `requests.get` 和 '
               '`urllib.request.urlopen` 由评测机直接应答，数据之外的地址返回 HTTP 404 和一段 JSON 错误信息。本题只支持 Python。')
 OFFLINE_EN = ('The judge has no internet access: the API answers from a fixed data set that ships with the problem. '
@@ -72,18 +75,18 @@ def one_or_none(path, row, **query):
                                  'total_pages': int(row is not None), 'data': [row] if row else []}}
 
 
-def run_all(program, fixtures, inputs):
-    """Outputs of `program` on every input, each in a fresh interpreter like the judge's sandbox."""
+def run_all(program, fixtures, inputs, boot=BOOT):
+    """(stdout, stderr) of `program` on every input, each in a fresh interpreter like the judge's sandbox."""
     with tempfile.TemporaryDirectory(prefix='cswork-rest-') as box:
         Path(box, 'main.py').write_text(program)
         Path(box, 'cswork_fixtures.json').write_text(json.dumps(fixtures))
 
         def one(raw):
-            done = subprocess.run(['python3', '-I', '-c', BOOT, 'main.py'], cwd=box, input=raw,
+            done = subprocess.run(['python3', '-I', '-c', boot, 'main.py'], cwd=box, input=raw,
                                   capture_output=True, text=True, timeout=30)
             if done.returncode:
                 raise RuntimeError(f'exit {done.returncode} on {raw!r}: {done.stderr[-800:]}')
-            return done.stdout
+            return done.stdout, done.stderr
 
         with ThreadPoolExecutor(4) as pool:
             return list(pool.map(one, inputs))
@@ -1094,17 +1097,33 @@ def cases_of(p):
 def check(p, cases):
     """The reference matches the independent expectations everywhere; every incorrect program exits normally and is caught."""
     inputs = [c['input'] for c in cases] + p.get('oracle', [])
-    got = run_all(p['reference'], p['fixtures'], inputs)
+    got = [out for out, _ in run_all(p['reference'], p['fixtures'], inputs)]
     want = [c['expectedOutput'] for c in cases] + [p['expected'](raw) for raw in p.get('oracle', [])]
     for raw, a, b in zip(inputs, got, want):
         assert a == b, f"{p['id']} reference on {raw!r}: {a!r} != {b!r}"
     kills = []
     for mutant in p['mutants']:
-        outs = run_all(mutant['code'], p['fixtures'], [c['input'] for c in cases])
+        outs = [out for out, _ in run_all(mutant['code'], p['fixtures'], [c['input'] for c in cases])]
         rejected = [i for i, (c, out) in enumerate(zip(cases, outs)) if not same(out, c['expectedOutput'], p['checker'])]
         assert rejected, f"{p['id']}: surviving mutant {mutant['name']}"
         kills.append({'name': mutant['name'], 'rejectedByCases': rejected, 'normalExitCases': len(cases)})
     return kills
+
+
+def visible_keys(p, cases):
+    """The fixtures sample and custom-input runs get (lib/server/oj-engine.ts runSpec): every key the
+    reference or an incorrect program requests on the visible cases, widened to the whole listing it
+    pages through (either page-1 spelling, any page, the empty page after the last, every cursor)."""
+    public = [c['input'] for c in cases if not c['hidden']]
+    asked = {line[6:] for code in [p['reference'], *(m['code'] for m in p['mutants'])]
+             for _, err in run_all(code, p['fixtures'], public, TRACE) for line in err.splitlines() if line.startswith('TRACE ')}
+
+    def listing(k):
+        path, _, query = k.partition('?')
+        return path, tuple(pair for pair in parse_qsl(query, keep_blank_values=True) if pair[0] not in ('page', 'cursor'))
+
+    wanted = {listing(k) for k in asked if k in p['fixtures']}
+    return sorted(k for k in p['fixtures'] if listing(k) in wanted)
 
 
 def same(actual, expected, checker):
@@ -1121,7 +1140,7 @@ def package(p, cases):
         'tags': p['tags'], 'description': pick(p['description']), 'input': pick(p['input']), 'output': pick(p['output']),
         'explanation': pick(p['explanation']), 'hints': p['hints'] if zh else p['hints'][0],
         'timeLimit': 2, 'memoryLimit': 262144, 'outputLimit': 64, 'checker': p['checker'], 'languages': ['python'],
-        'httpFixtures': p['fixtures'],
+        'httpFixtures': p['fixtures'], 'visibleFixtureKeys': visible_keys(p, cases),
     }
     script = ("const {ojImportSchema}=require('./lib/oj-types.ts');let s='';process.stdin.setEncoding('utf8');"
               "process.stdin.on('data',c=>s+=c);process.stdin.on('end',()=>process.stdout.write(JSON.stringify(ojImportSchema.parse(JSON.parse(s)))));")

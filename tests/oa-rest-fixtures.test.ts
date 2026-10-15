@@ -1,9 +1,12 @@
 // REST API problems (lib/http-fixtures.mjs): the offline requests/urlopen stubs (run for real
 // when python3 is here), the engine command, the package rules, fixtures that never leave the
-// server, and every rest- / REST OA package's reference and incorrect programs.
+// server (sample runs get the visible cases' only), the /oa/ica link that waits for publication,
+// and every rest- / REST OA package's reference and incorrect programs.
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { createRequire, register } from 'node:module';
+import { pathToFileURL } from 'node:url';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -12,13 +15,26 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
 import type { OjProblemPackage } from '../lib/oj-types';
 
+// /oa/ica renders here: its stylesheets load as nothing, next/headers and next/link are stubbed (English).
+const react = JSON.stringify(pathToFileURL(createRequire(import.meta.url).resolve('react')).href);
+register(
+  `data:text/javascript,${encodeURIComponent(`const mocks={
+  'next/headers':'export const cookies=async()=>({get:()=>undefined});export const headers=async()=>new Headers();',
+  'next/link':'import {createElement} from ${react.replaceAll("'", "\\'")};export default function Link({href,prefetch,...rest}){return createElement("a",{href,...rest});}'};
+export async function resolve(s,c,n){if(mocks[s])return {url:'mock:'+s,shortCircuit:true};return n(s,c);}
+export async function load(u,c,n){
+  if(u.startsWith('mock:'))return {format:'module',source:mocks[u.slice(5)],shortCircuit:true};
+  if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};
+  return n(u,c);}`)}`,
+  import.meta.url,
+);
 const dir = mkdtempSync(join(tmpdir(), 'cswork-rest-'));
 process.env.DATABASE_PATH = join(dir, 'app.sqlite');
 process.env.OJ_ENABLED = 'true';
 const { sqlite } = await import('../db/sqlite');
 const { ojImportSchema } = await import('../lib/oj-types');
 const { HTTP_FIXTURE_BOOTSTRAP, HTTP_FIXTURES_FILE } = await import('../lib/http-fixtures.mjs');
-const { run } = await import('../lib/server/oj-engine');
+const { run, runSpec } = await import('../lib/server/oj-engine');
 const { cleanOaStatement } = await import('../lib/oa-verified-statement');
 const { saveProblemDraft, publishProblemDraft, listPublishedProblems, getPublishedProblem, loadJudgeSnapshot } = await import(
   '../lib/server/oj-problems'
@@ -31,6 +47,7 @@ const programs = JSON.parse(readFileSync('content/rest-api/programs.json', 'utf8
   { reference: string; mutants: { name: string; code: string }[] }
 >;
 const OA_REST = ['oa-oracle-6', 'oa-palantir-2', 'oa-rippling-3'];
+const oaPackage = (id: string) => JSON.parse(readFileSync(`content/oa-judge/packages/${id}.json`, 'utf8')) as OjProblemPackage;
 const python = spawnSync('python3', ['--version']).status === 0;
 const teacher: Person = { id: 'rest-teacher', name: 'Teacher', email: 'teacher@rest.test', role: 'teacher', verified: true };
 const student: Person = { id: 'rest-student', name: 'Student', email: 'student@rest.test', role: 'student', verified: true };
@@ -47,6 +64,13 @@ after(() => {
   sqlite().close();
   rmSync(dir, { recursive: true, force: true });
 });
+
+/** The /oa/ica page's links to the REST API track. */
+async function icaRestLinks() {
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { default: IcaIndex } = await import('../app/oa/ica/page');
+  return [...renderToStaticMarkup(await IcaIndex()).matchAll(/href="([^"]*problem=rest-[^"]*)"/g)].map((m) => m[1]);
+}
 
 /** A program's stdout under the judge's bootstrap, beside the given fixtures, as the sandbox runs it. */
 function stubbed(program: string, fixtures: unknown, input = '') {
@@ -144,6 +168,46 @@ void test('the engine runs Python through the bootstrap only when the problem ha
   }
 });
 
+void test('sample and custom-input runs get only the visible cases\' fixtures; judge and drill runs get them all', async () => {
+  const realFetch = globalThis.fetch;
+  let sent: Record<string, { content?: string }> = {};
+  globalThis.fetch = (async (_url: string, init: RequestInit) => {
+    sent = JSON.parse(init.body as string).cmd[0].copyIn;
+    return Response.json([{ status: 'Accepted', exitStatus: 0, files: { stdout: '', stderr: '' } }]);
+  }) as typeof fetch;
+  const sandboxKeys = async (spec: OjProblemPackage['problem']) => {
+    await run({ language: 'python', source: 'print(1)', cache: {} }, '', spec, AbortSignal.timeout(5000));
+    return Object.keys(JSON.parse(sent[HTTP_FIXTURES_FILE].content!) as object).sort();
+  };
+  try {
+    let hiddenOnly = 0;
+    for (const { problem } of [...packages, ...OA_REST.map(oaPackage)]) {
+      const all = Object.keys(problem.httpFixtures!).sort();
+      const visible = new Set(problem.visibleFixtureKeys);
+      const sample = await sandboxKeys(runSpec(problem, false));
+      assert.deepEqual(sample, [...visible].sort(), problem.id);
+      assert.ok(sample.every((key) => visible.has(key)), `${problem.id}: a hidden-only fixture reached a sample run`);
+      hiddenOnly += all.length - sample.length;
+      assert.deepEqual(await sandboxKeys(runSpec(problem, true)), all, problem.id);
+    }
+    assert.ok(hiddenOnly > 0);
+    // rest-01's samples ask for paid / refunded / cancelled orders; shipped and pending are hidden cases' only.
+    const rest01 = runSpec(packages.find((p) => p.problem.id === 'rest-01')!.problem, false);
+    assert.ok(Object.keys(rest01.httpFixtures!).some((key) => key.includes('status=paid')));
+    assert.equal(Object.keys(rest01.httpFixtures!).some((key) => /status=(shipped|pending)/.test(key)), false);
+    // OA packages keyed by input: a sample run never sees a hidden case's barcode.
+    const oracle = oaPackage('oa-oracle-6');
+    const sampleKeys = new Set(Object.keys(runSpec(oracle.problem, false).httpFixtures!));
+    for (const c of oracle.cases) {
+      const key = `GET /api/inventory?barcode=${c.input.trim()}`;
+      assert.ok(key in oracle.problem.httpFixtures!, c.name);
+      assert.equal(sampleKeys.has(key), !c.hidden, c.name);
+    }
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
+
 void test('fixtures need a rest- or oa- id, Python only, GET keys and at most 512 KB; rest- needs them', () => {
   const base = packages[0];
   const variant = (problem: object) => ojImportSchema.safeParse({ ...base, problem: { ...base.problem, ...problem } }).success;
@@ -157,6 +221,8 @@ void test('fixtures need a rest- or oa- id, Python only, GET keys and at most 51
   assert.equal(variant({ httpFixtures: {} }), false);
   assert.equal(variant({ httpFixtures: { 'GET /api/big': 'x'.repeat(512 * 1024) } }), false);
   assert.equal(variant({ httpFixtures: undefined }), false);
+  assert.equal(variant({ visibleFixtureKeys: undefined }), false);
+  assert.equal(variant({ visibleFixtureKeys: ['GET /api/not-a-fixture'] }), false);
   assert.equal(variant({ courseId: 'private-course' }), false);
   for (const pkg of packages) {
     const { problem } = ojImportSchema.parse(pkg);
@@ -170,6 +236,10 @@ void test('fixtures need a rest- or oa- id, Python only, GET keys and at most 51
     assert.deepEqual(pkg.problem.languages, ['python']);
     assert.ok(Object.keys(pkg.problem.httpFixtures ?? {}).length > 0, id);
   }
+});
+
+void test('/oa/ica links to the REST API track only once rest-01 is published', async () => {
+  assert.deepEqual(await icaRestLinks(), []);
 });
 
 void test('published fixtures stay out of the catalogue, the statement and OA display copy; the judge snapshot keeps them', async () => {
@@ -196,13 +266,14 @@ void test('published fixtures stay out of the catalogue, the statement and OA di
   const oa = JSON.parse(readFileSync('content/oa-judge/packages/oa-oracle-6.json', 'utf8')).problem;
   assert.equal('httpFixtures' in cleanOaStatement(oa), false);
   assert.ok(cleanOaStatement(oa).description.includes('/api/inventory'));
+  assert.deepEqual(await icaRestLinks(), ['/?view=problem&amp;problem=rest-01']);
 });
 
 void test('every reference passes its cases through the stubs; every incorrect program exits normally and fails one', { skip: !python && 'python3 missing' }, () => {
   const sets = [
     ...packages.map((pkg) => ({ pkg, ...programs[pkg.problem.id] })),
     ...OA_REST.map((id) => ({
-      pkg: JSON.parse(readFileSync(`content/oa-judge/packages/${id}.json`, 'utf8')) as OjProblemPackage,
+      pkg: oaPackage(id),
       reference: readFileSync(`content/oa-judge/references/${id}.py`, 'utf8'),
       mutants: JSON.parse(readFileSync(`content/oa-judge/mutants/${id}.json`, 'utf8')) as { name: string; code: string }[],
     })),
@@ -211,15 +282,18 @@ void test('every reference passes its cases through the stubs; every incorrect p
     checker === 'exact' ? actual === expected : actual.split(/\s+/).join(' ').trim() === expected.split(/\s+/).join(' ').trim();
   for (const { pkg, reference, mutants } of sets) {
     const { id, checker, httpFixtures } = pkg.problem;
+    // Visible cases run with what a sample run gets, so a sample run answers them as the judge does.
+    const sample = runSpec(pkg.problem, false).httpFixtures;
+    const fixtures = (c: { hidden: boolean }) => (c.hidden ? httpFixtures : sample);
     assert.ok(reference && mutants.length >= 2, id);
     for (const c of pkg.cases) {
-      const out = stubbed(reference, httpFixtures, c.input);
+      const out = stubbed(reference, fixtures(c), c.input);
       assert.equal(out.code, 0, `${id} ${c.name}: ${out.stderr}`);
       assert.ok(same(out.stdout, c.expectedOutput, checker), `${id} ${c.name}: ${out.stdout} != ${c.expectedOutput}`);
     }
     for (const mutant of mutants) {
       const caught = pkg.cases.some((c) => {
-        const out = stubbed(mutant.code, httpFixtures, c.input);
+        const out = stubbed(mutant.code, fixtures(c), c.input);
         assert.equal(out.code, 0, `${id} ${mutant.name} must exit normally: ${out.stderr}`);
         return !same(out.stdout, c.expectedOutput, checker);
       });

@@ -46,6 +46,7 @@ import {
 } from './oj-submissions';
 import {
   run,
+  runSpec,
   cleanup,
   compileBridge,
   engineHealth,
@@ -295,7 +296,7 @@ async function judgeSubmission(
     const snapshot = {
       ...loaded,
       spec: {
-        ...loaded.spec,
+        ...runSpec(loaded.spec, formal),
         timeLimit:
           loaded.spec.timeLimits?.[claimed.language] ??
           loaded.spec.timeLimit,

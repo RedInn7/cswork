@@ -364,6 +364,22 @@ export async function compile(
   }
   return { result, program };
 }
+/**
+ * The spec a submission's cases run under. Judge and drill runs keep every fixture: hidden cases
+ * read them and only verdicts come back. Every other run (samples, custom input) prints its stdout
+ * to the learner, so it gets only the fixtures the visible cases request (visibleFixtureKeys);
+ * the rest of the map, hidden cases' inputs and data, never enters that sandbox.
+ */
+export function runSpec(spec: OjProblemSpec, formal: boolean): OjProblemSpec {
+  if (formal || !spec.httpFixtures) return spec;
+  const visible = new Set(spec.visibleFixtureKeys);
+  return {
+    ...spec,
+    httpFixtures: Object.fromEntries(
+      Object.entries(spec.httpFixtures).filter(([key]) => visible.has(key)),
+    ),
+  };
+}
 export async function run(
   program: CompiledProgram,
   input: string,

@@ -17,11 +17,18 @@ const programs = JSON.parse(readFileSync('content/rest-api/programs.json', 'utf8
 const sandbox = createReferenceSandbox({ url: process.env.GO_JUDGE_URL || 'http://127.0.0.1:5050', token: process.env.GO_JUDGE_TOKEN });
 assert(packages.length > 0);
 
+// Sample runs get only the visible cases' fixtures (lib/server/oj-engine.ts runSpec), so visible cases run that way here.
+const sampleSpec = (problem) => ({
+  ...problem,
+  httpFixtures: Object.fromEntries(problem.visibleFixtureKeys.map((key) => [key, problem.httpFixtures[key]])),
+});
+
 /** The first case the program gets wrong, or null; a crash or a nonzero exit throws. */
 const firstWrong = (code, { problem, cases }, label) =>
   sandbox.withProgram({ language: 'python', code }, async (run) => {
+    const sample = sampleSpec(problem);
     for (const test of cases) {
-      const result = await run(test.input, problem);
+      const result = await run(test.input, test.hidden ? problem : sample);
       assertNormalExit(result, label);
       if (!matchesOaOutput(result.files?.stdout || '', test.expectedOutput, problem.checker, test.input)) return test;
     }
