@@ -80,7 +80,7 @@ type Run = {
   guide?: Record<number, Guide>;
 };
 /** A finished step, with the AI's feedback unless it was skipped (or the interview's feedback ran out). */
-type GuideDone = { step: string } & Partial<StepFeedback>;
+type GuideDone = { step: string; skipped?: boolean } & Partial<StepFeedback>;
 type Guide = { from: number; at: number; done: GuideDone[] };
 /** How each rubric dimension compares with other learners' best interview of the same template. */
 type Peers = { n: number; above: Partial<Record<RubricId, number>> };
@@ -1435,9 +1435,11 @@ function AiRunner({
     const advance = (done: GuideDone) =>
       setRun((r) => {
         const g = r.guide?.[index] ?? { from: 0, at: 0, done: [] };
-        return { ...r, guide: { ...r.guide, [index]: { from: (r.chat?.[index] ?? []).length, at: elapsedSec, done: [...g.done, done] } } };
+        // On a turn boundary: a message left unanswered is dropped by the next send.
+        const len = (r.chat?.[index] ?? []).length;
+        return { ...r, guide: { ...r.guide, [index]: { from: len - (len % 2), at: elapsedSec, done: [...g.done, done] } } };
       });
-    if (skip || !answered || !run.ticket || stepsUsed >= AI_STEPS) return advance({ step: current.id });
+    if (skip || !answered || !run.ticket || stepsUsed >= AI_STEPS) return advance({ step: current.id, ...(skip ? { skipped: true } : {}) });
     setBusy('step');
     setError('');
     try {
@@ -1766,7 +1768,7 @@ function AiExtras({ data, run, peers }: { data: MockSet; run: Run; peers?: Peers
               return (
                 <li key={d.step}>
                   <strong>{step ? t(...step.name) : d.step}</strong>
-                  <span>{d.keep === undefined ? t('跳过', 'Skipped') : stepScores(d, t) || '—'}</span>
+                  <span>{d.keep !== undefined ? stepScores(d, t) || '—' : d.skipped ? t('跳过', 'Skipped') : t('未打分', 'Not scored')}</span>
                   {d.fix && <small>{d.fix}</small>}
                 </li>
               );

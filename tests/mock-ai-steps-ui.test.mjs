@@ -112,6 +112,48 @@ test('a system design question steps through its guide, with feedback per step a
   }
 });
 
+test('a step after a reload with an unanswered message starts on a turn; unscored steps are not called skipped', async () => {
+  localStorage.clear();
+  calls = [];
+  const params = { view: 'mock-interview', template: 'onsite', set: 'g7q2stp1', role: 'swe', as: 'ai' };
+  const mount = async () => {
+    const root = createRoot(document.getElementById('root'));
+    await act2(() => root.render(createElement(MockInterview, { params, navigate() {}, problemIds: [], userId: 'u1', ai: true })));
+    return root;
+  };
+  let root = await mount();
+  try {
+    await send('How many users?', 'Ten million.');
+    // The page closed while waiting for a reply: the saved transcript ends on the candidate.
+    await act(async () => root.unmount());
+    const runs = JSON.parse(localStorage.getItem('cswork:mock-interview:runs'));
+    runs['ai:u1:template=onsite&role=swe&set=g7q2stp1'].chat[0].push({ role: 'candidate', text: 'And peak QPS?' });
+    localStorage.setItem('cswork:mock-interview:runs', JSON.stringify(runs));
+    root = await mount();
+    await click(button('Skip'));
+    await send('User, Post, Follow.', 'And the feed?');
+    answer = () => Response.json({ feedback: { scores: { problem: 3 }, keep: 'Short list.', fix: 'Add Media.' } });
+    await click(button('Finish this step'));
+    assert.deepEqual(calls.at(-1).body.history, [
+      { role: 'candidate', text: 'User, Post, Follow.' },
+      { role: 'interviewer', text: 'And the feed?' },
+    ]);
+    // The ticket lapses: the API step is finished without feedback.
+    await send('POST /posts', 'Go on.');
+    answer = () => Response.json({ error: 'expired' }, { status: 409 });
+    await type($('#mi-ai-input'), 'GET /feed');
+    await act2(() => $('.mi-ai-compose').dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true })));
+    const before = calls.length;
+    await click(button('Finish this step'));
+    assert.equal(calls.length, before);
+    await click([...document.querySelectorAll('.mi-steps .mi-cta')].at(-1));
+    const rows = [...document.querySelectorAll('.mi-guide-scores li')].map((li) => li.textContent);
+    assert.deepEqual(rows, ['RequirementsSkipped', 'Core entitiesProblem solving 3/4Add Media.', 'APINot scored']);
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
+
 test('the LLD template is offered with the AI interviewer only, and never in a custom mix', async () => {
   const root = createRoot(document.getElementById('root'));
   const names = () => [...document.querySelectorAll('.mi-template strong')].map((n) => n.textContent);
