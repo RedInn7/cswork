@@ -119,6 +119,18 @@ export const PROBLEMS: Problem[] = [
     difficulty: '中等',
     summary: { zh: 'Kahn 算法、最小堆与判环', en: "Kahn's algorithm, a min-heap and cycle detection" },
   },
+  {
+    slug: 'dijkstra',
+    group: 'graph',
+    difficulty: '中等',
+    summary: { zh: '最小堆与懒删除的单源最短路', en: 'Single-source shortest paths with a heap and lazy deletion' },
+  },
+  {
+    slug: 'bellman-ford',
+    group: 'graph',
+    difficulty: '中等',
+    summary: { zh: '负权边、n - 1 轮松弛与负环检测', en: 'Negative weights, n - 1 relaxation rounds and negative cycles' },
+  },
 ];
 
 const EXT: Record<CodeLanguage, string> = { python: 'py', cpp: 'cpp', java: 'java', go: 'go' };
