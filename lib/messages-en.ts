@@ -282,6 +282,7 @@ const EN: Record<string, string> = {
     "This problem is in a contest you're taking. Its editorial, solutions and AI tutor open once your contest ends",
   题目不在这场比赛里: "That problem isn't in this contest",
   '比赛结束 15 分钟后才能看代码': 'Shared code opens 15 minutes after the contest ends',
+  你没有报名这场比赛: "You haven't entered this contest",
   // Ranked duels (lib/server/duels.ts)
   '可判的题目不够，暂时无法匹配': 'Not enough judgeable problems to match you right now',
   // Community solutions (lib/server/solution-posts.ts)

@@ -328,8 +328,8 @@ function readable(id: string, p: Person | null) {
   const entry =
     row && p
       ? (db
-          .prepare('SELECT user_id,display_name,joined_at,virtual_start FROM contest_entries WHERE room_id=? AND user_id=?')
-          .get(row.id, p.id) as EntryRow | undefined)
+          .prepare('SELECT user_id,display_name,joined_at,virtual_start,share_code FROM contest_entries WHERE room_id=? AND user_id=?')
+          .get(row.id, p.id) as (EntryRow & { share_code: number }) | undefined)
       : undefined;
   if (!row || (row.visibility !== 'public' && !entry && p?.role !== 'teacher')) throw new HttpError(404, '比赛不存在');
   return { row, entry };
@@ -477,7 +477,7 @@ export async function roomView(id: string, p: Person | null, now = Date.now(), f
     codeOpen,
     winner: row.kind === 'duel' && board ? (duelWinner(board.live)?.name ?? null) : null,
     rated: !!row.rated_at,
-    me: entry && own ? { name: entry.display_name, virtual: entry.virtual_start !== null, ...own } : null,
+    me: entry && own ? { name: entry.display_name, virtual: entry.virtual_start !== null, share: !!entry.share_code, ...own } : null,
     canJoin: !!p && !entry && row.visibility === 'public' && (cap === null || entrants < cap),
     // The name the reader last raced under, to prefill the join form.
     suggestedName:
@@ -803,6 +803,14 @@ export async function handleContests(request: Request, p: Person | null, path: s
     if (row.visibility !== 'public') throw new HttpError(404, '比赛不存在');
     const d = z.object({ displayName, shareCode: z.boolean().default(false) }).strict().parse(await readJson(request, 1000));
     return json(await roomView(enter(row, p, d.displayName, Date.now(), d.shareCode), p));
+  }
+  // An entrant turns sharing their accepted code on or off, any time.
+  if (action === 'share') {
+    const { row, entry } = readable(id, p);
+    if (!entry) throw new HttpError(404, '你没有报名这场比赛');
+    const { on } = z.object({ on: z.boolean() }).strict().parse(await readJson(request, 200));
+    sqlite().prepare('UPDATE contest_entries SET share_code=? WHERE room_id=? AND user_id=?').run(+on, row.id, p.id);
+    return json({ on });
   }
   throw new HttpError(404, '比赛接口不存在');
 }

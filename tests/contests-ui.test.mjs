@@ -358,9 +358,14 @@ test('a starter: unrated rows marked, the board narrowed to people I follow, sha
   }
 });
 
-test('entering can opt in to sharing code', async () => {
+test('entering can opt in to sharing code, and an entrant can turn it off again', async () => {
   const upcoming = room({ id: 'weekly-9', kind: 'weekly', week: 9, visibility: 'public', phase: 'upcoming', startsAt: now + 60 * MIN, endsAt: now + 150 * MIN, me: null, canJoin: true, problems: null, standings: null, inviteCode: null, owner: false, suggestedName: 'Amy' });
-  const api = serve((path, body) => Response.json(body ? { ...upcoming, me: { name: 'Amy', virtual: false, start: upcoming.startsAt, end: upcoming.endsAt }, canJoin: false } : upcoming));
+  let share = null;
+  const api = serve((path, body) => {
+    if (path === 'oj/contests/weekly-9/join') share = body.shareCode;
+    if (path === 'oj/contests/weekly-9/share') return Response.json({ on: (share = body.on) });
+    return Response.json(share === null ? upcoming : { ...upcoming, me: { name: 'Amy', virtual: false, share, start: upcoming.startsAt, end: upcoming.endsAt }, canJoin: false });
+  });
   try {
     const root = await mount(createElement(RoomLive, { initial: upcoming, fallbackStart: '' }));
     const share = [...document.querySelectorAll('.contest-join input[type="checkbox"]')];
@@ -369,6 +374,13 @@ test('entering can opt in to sharing code', async () => {
     await act(async () => button('Enter the contest').click());
     await wait();
     assert.deepEqual(api.posts.at(-1), ['oj/contests/weekly-9/join', { displayName: 'Amy', shareCode: true }]);
+    const toggle = () => document.querySelector('.contest-hero input[type="checkbox"]');
+    assert.ok(toggle().checked, 'in, sharing on');
+    await act(async () => toggle().click());
+    await wait();
+    assert.deepEqual(api.posts.at(-1), ['oj/contests/weekly-9/share', { on: false }]);
+    assert.ok(api.calls.at(-1) === 'oj/contests/weekly-9', 'reread after the change');
+    assert.ok(!toggle().checked, 'withdrawn');
     await act(async () => root.unmount());
   } finally {
     api.restore();

@@ -1,5 +1,5 @@
 // The starter (Wednesday, easier, Div. 3 rating rule), boards filtered to the people one follows,
-// and opt-in shared code after a room is over.
+// and opt-in (and withdrawable) shared code after a room is over.
 import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync } from 'node:fs';
@@ -277,6 +277,15 @@ void test('shared code: opt-in, first AC in the window, RATE_GRACE after the end
   assert.equal(await vicShared(end + 50 * MIN), false);
   assert.deepEqual(await names(end + 100 * MIN), ['Pro', 'Amy', 'Vic']);
   assert.equal(await vicShared(end + 100 * MIN), true);
+  // An entrant can withdraw sharing any time: gone from the panel and the board.
+  assert.equal((await roomView(ID, pro, end + 100 * MIN)).me?.share, true);
+  assert.equal(await status(null, 'POST', `contests/${ID}/share`, { on: false }), 401);
+  assert.equal(await status(person('t-nobody'), 'POST', `contests/${ID}/share`, { on: false }), 404);
+  assert.equal(await status(pro, 'POST', `contests/${ID}/share`, { on: 'no' }), 400);
+  assert.equal(await status(pro, 'POST', `contests/${ID}/share`, { on: false }), 200);
+  assert.equal((await roomView(ID, pro, end + 100 * MIN)).me?.share, false);
+  assert.deepEqual(await names(end + 100 * MIN), ['Amy', 'Vic']);
+  assert.equal((await roomView(ID, amy, end + 100 * MIN)).standings!.live.find((r) => r.name === 'Pro')!.shared, false);
   // The endpoint: an account, a problem id.
   assert.equal(await status(null, 'GET', `contests/${ID}/code?problem=${ids[0]}`), 401);
   assert.equal(await status(amy, 'GET', `contests/${ID}/code?problem=x`), 400);

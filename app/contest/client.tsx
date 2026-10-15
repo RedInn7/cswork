@@ -317,6 +317,11 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
         : view.phase === 'running'
           ? { to: view.endsAt, label: t('距结束', 'Ends in') }
           : null;
+  // Sharing can be turned off (or on) any time; the refresh keeps the follow filter.
+  const setShare = (on: boolean) =>
+    api(`oj/contests/${encodeURIComponent(id)}/share`, { on })
+      .then(() => refresh())
+      .catch((e: Error) => setError(e.message));
   const join = async (displayName: string, shareCode: boolean) => {
     setView(await api<RoomView>(`oj/contests/${encodeURIComponent(id)}/join`, { displayName, shareCode }));
   };
@@ -364,11 +369,14 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
         </dl>
         {clock && <Countdown to={clock.to} skew={skew} label={clock.label} />}
         {view.me ? (
-          <p className="contest-me">
-            {view.me.virtual
-              ? t(`你以「${view.me.name}」虚拟参赛，计时从你加入时开始。`, `You're running this virtually as “${view.me.name}”, timed from when you joined.`)
-              : t(`你已以「${view.me.name}」报名。`, `You're in as “${view.me.name}”.`)}
-          </p>
+          <>
+            <p className="contest-me">
+              {view.me.virtual
+                ? t(`你以「${view.me.name}」虚拟参赛，计时从你加入时开始。`, `You're running this virtually as “${view.me.name}”, timed from when you joined.`)
+                : t(`你已以「${view.me.name}」报名。`, `You're in as “${view.me.name}”.`)}
+            </p>
+            <ShareCode checked={view.me.share} onChange={setShare} t={t} />
+          </>
         ) : view.canJoin ? (
           <NameForm
             suggested={view.suggestedName}
@@ -576,8 +584,8 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
           )}
           <li>
             {t(
-              '报名时可选赛后公开自己的 AC 代码；比赛结束 15 分钟后，登录的人能在计分板上点「看代码」。',
-              'When entering you can choose to show your accepted code afterwards; 15 minutes after the end, signed-in readers open it from the scoreboard.',
+              '报名时可选赛后公开自己的 AC 代码，之后随时可在本页关掉；比赛结束 15 分钟后，登录的人能在计分板上点「看代码」。',
+              'When entering you can choose to show your accepted code afterwards, and turn it off here any time; 15 minutes after the end, signed-in readers open it from the scoreboard.',
             )}
           </li>
         </ul>
