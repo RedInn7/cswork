@@ -128,6 +128,10 @@ export default async function SystemDesignChapter({ params }: Props) {
             </a>
           )}
         </nav>
+        {/* Follow-up once posts-plus adds the 'sd' target kind (lib/community.ts targetKind; until then
+            sd:<slug> reads as a problem id, locked and 404): the chapter discussion goes here,
+            <SolutionPosts problemId={`sd:${chapter.slug}`} english={!zh} signedIn={!!userId} />,
+            with viewerId() asked on every chapter, not only cases. */}
       </article>
       <aside className="sd-aside" aria-label={t('课程导航', 'Course navigation')}>
         {toc.length > 1 && (
