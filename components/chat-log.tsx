@@ -30,8 +30,6 @@ export function useChat<T extends { items: ChatItem[] }>(path: string) {
   }, []);
   useEffect(() => {
     let live = true;
-    latest.current = null;
-    setData(null);
     const load = (merge: boolean) => {
       const at = merge ? latest.current?.items.at(-1)?.createdAt : undefined;
       api<T>(at ? `${path}${path.includes('?') ? '&' : '?'}after=${at}` : path).then(

@@ -71,13 +71,13 @@ export function Messages({ params, navigate }: { params: Record<string, string>;
       ) : params.to || params.post ? (
         <FirstMessage to={params.to} post={params.post} back={inbox} navigate={navigate} t={t} english={english} />
       ) : (
-        <InboxList navigate={navigate} t={t} english={english} />
+        <InboxList navigate={navigate} t={t} />
       )}
     </section>
   );
 }
 
-function InboxList({ navigate, t, english }: { navigate: Navigate; t: T; english: boolean }) {
+function InboxList({ navigate, t }: { navigate: Navigate; t: T }) {
   const [data, setData] = useState<Inbox | null>(null);
   const [error, setError] = useState('');
   useEffect(() => {

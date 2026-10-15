@@ -108,7 +108,7 @@ export async function handleWorkVerify(request: Request, p: Person | null, path:
   if (action === 'verify') {
     requireVerified(p);
     const { email } = z
-      .object({ email: z.string().trim().toLowerCase().max(254).email() })
+      .object({ email: z.string().trim().toLowerCase().pipe(z.email().max(254)) })
       .strict()
       .parse(await readJson(request, 1000));
     if (FREE_MAIL.has(domainOf(email))) throw new HttpError(400, '个人邮箱不能验证员工身份，请用公司邮箱');
