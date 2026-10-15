@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-19",
+  "packageChecksum": "a1a6c573cfcb9b1c4a2b93088d1afc85f5880dc4c6db3ede43759a2da32757fa",
+  "sourceContentHash": "a33c00dd87bd2f15a0a839c90609230505cec1e60304983d61efffd6a83b1e83",
+  "editorialSha256": "8c06fff16ab424c7567ab057345f1f9fecc9a8940d011687ae26305487a876a0",
+  "hints": {
+    "zh": [
+      "选中一个类型就要拿走它的全部服务器，所以真正的决策单位是“类型”，每个类型的价值就是它全部健康值之和。",
+      "健康值都为正，类型之间没有其他约束；如果选了某类却放弃了总和更大的另一类，交换后不会更差。所以应选总和最大的若干类。",
+      "按类型编号累加健康值；把各类总和降序排序，取前 m 个相加（类型不足 m 个就全取）；用 64 位整数输出。"
+    ],
+    "en": [
+      "Choosing a type takes all of its servers, so the real decision unit is the type, and a type's value is the sum of all its health values.",
+      "Health values are positive and types do not constrain each other; if you took a type but skipped another with a larger total, swapping them is never worse. So take the types with the largest totals.",
+      "Accumulate health per type id; sort the type totals in descending order and add the first m (all of them if there are fewer than m types); print the 64-bit sum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSum the health values per type, sort the type totals in descending order and take the first m types.\n\n## Proof of correctness\n\nEach type is either taken completely or not at all, there are no other constraints between types, and health values are positive. If a selected type had a smaller total than an unselected one, swapping them would not make things worse. So one can always take the at most m types with the largest totals.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-218",
+  "packageChecksum": "547e84b6c74982b0a48809109c976bd724907fc48ba4e91f7bb5d8d0329da8c1",
+  "sourceContentHash": "634e3b449316b1502015bdfd24c3c730b52945a1dcdf80dbdc605275e8a14470",
+  "editorialSha256": "b1e36aedde983e44ce8bf5865e0d29b1b180e1206fc07b78baed26d8a088d53f",
+  "hints": {
+    "zh": [
+      "想一次操作就把数组归零，被选区间的异或必须为 0，而且区间要覆盖所有非零元素；区间外全是 0，所以区间异或就等于全数组异或。",
+      "两次操作总能完成：先把整段赋为全数组异或 x，此时数组是偶数个 x，再对整段操作一次，偶数个相同值的异或为 0。",
+      "扫描一遍：若全部为 0 输出 0；否则求全数组异或，为 0 输出 1，不为 0 输出 2。"
+    ],
+    "en": [
+      "To zero the array in one operation, the chosen range must cover every nonzero element and have XOR 0; everything outside it is 0, so its XOR equals the XOR of the whole array.",
+      "Two operations always suffice: first assign the whole array its total XOR x, which leaves an even number of copies of x, then operate on the whole array again; an even number of equal values XOR to 0.",
+      "Scan once: if every element is 0 print 0; otherwise compute the total XOR and print 1 if it is 0, or 2 if it is not."
+    ]
+  },
+  "explanationEn": "## Approach\n\nReturn 0 if the array is all zeros; otherwise return 1 if the XOR of the whole array is 0, and 2 in every other case.\n\n## Proof of correctness\n\nA single zeroing operation must cover every nonzero element, and everything outside its range is 0, so its XOR equals the total XOR. When the total XOR is nonzero one operation is impossible; assigning the total XOR to the whole even-length array and then operating on the whole array again makes an even number of equal values XOR to 0, so two operations always work.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) (excluding the input)."
+}

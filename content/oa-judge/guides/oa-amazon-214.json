@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-214",
+  "packageChecksum": "536ef096428574447eb1faf0fc2af6128d34b30e5f558a9cc56dd1cb0633948c",
+  "sourceContentHash": "b52115469185fa15e1fd828043b6eb29394d3f5b26e9623d076667977a80c0bd",
+  "editorialSha256": "f3da6531e74a43de48f498784f4a1bf895be013202ab424912b3b76112424a31",
+  "hints": {
+    "zh": [
+      "取货数从左到右严格递增，所以区间的右端点取得最多；固定右端后，把右端取满不会让左边变差。",
+      "右端取满后向左推：每堆能取的最大值是 min(本堆容量, 右边一堆的取数 − 1)；每一步都取到这个上限，对更左边的约束最宽松。",
+      "n≤5000，可以 O(n²)：对每个右端 r，令 limit=a[r]+1、total=0；从 r 向左，limit=min(a[l], limit−1)，limit≤0 就停，否则 total+=limit；用 total 更新答案（64 位）。"
+    ],
+    "en": [
+      "Picks strictly increase from left to right, so the right end takes the most; with the right end fixed, taking it in full never makes the left side worse.",
+      "After taking the right end in full, go left: the most a pile can give is min(its capacity, the right neighbour's pick - 1); taking that maximum at every step leaves the loosest constraint for piles further left.",
+      "n <= 5000, so O(n^2) is fine: for each right end r, set limit = a[r] + 1 and total = 0; walking left from r, limit = min(a[l], limit - 1), stop when limit <= 0, otherwise total += limit; update the answer with total (64-bit)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the right end and take it in full; going left, take min(this pile's capacity, the right neighbour's pick - 1) each time, stop when this becomes 0, and record the largest running total.\n\n## Proof of correctness\n\nWith the right end fixed, taking more from the rightmost pile only loosens the constraints on the left, so some optimal plan takes it in full. Once the pick to the right is fixed, the largest valid pick for the current pile is min(capacity, right pick - 1), and a larger current pick never hurts feasibility further left; backward induction gives the termwise largest plan. Extending further left only adds positive numbers and increases the total, and after reaching 0 no pile further left can take a positive amount. Enumerating all right ends covers the global optimum.\n\n## Complexity\n\nTime O(n^2), space O(n); the answer can reach about 5*10^12, so 64-bit integers are needed."
+}

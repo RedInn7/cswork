@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-198",
+  "packageChecksum": "e9e1a5a2b47941b75eb0a6ea8edbd83ec04e0f7e72a3c710cca4c339a30e5ef7",
+  "sourceContentHash": "ea607bc240029a157993e04976e1b1088a6fa6ac2b3791a7b4585a3c34a47e83",
+  "editorialSha256": "ae88c9e25023690be5b1aaf3dc417ebfbbc99107c41b1831d48f9a5f57034c79",
+  "hints": {
+    "zh": [
+      "第 i 天的两部分都包含第 i 天：前缀是第 1..i 天之和，后缀是第 i..n 天之和；后缀可以用总和减去前 i−1 天之和得到。",
+      "答案就是所有“到当天为止的前缀和”与“从当天开始的后缀和”中的最大值，一次扫描就能同时得到两者。",
+      "先求总和 total；prefix=0；对每天的 v：先用 total−prefix（从当天开始的后缀）更新答案，再 prefix+=v，并用 prefix（到当天为止的前缀）更新答案。答案可能为负，初值要取极小值；用 64 位。"
+    ],
+    "en": [
+      "Both parts for day i include day i: the prefix is the sum of days 1..i and the suffix the sum of days i..n; the suffix equals the total minus the sum of the first i-1 days.",
+      "The answer is simply the maximum over all prefixes ending at some day and all suffixes starting at some day, and one scan yields both.",
+      "Compute total first; prefix = 0; for each day's v: update the answer with total - prefix (the suffix starting today), then prefix += v and update the answer with prefix (the prefix ending today). The answer can be negative, so start from a very small value; use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute the total first, then maintain the prefix day by day. The current suffix is the total minus the previous prefix; compare both the current prefix and that suffix.\n\n## Proof of correctness\n\nWhen the loop reaches day i, the previous prefix is exactly the sum of days 1..i-1, so the total minus it is the suffix that includes day i; adding the current change gives the prefix that includes day i. Every day is checked, so all valid candidates are covered with nothing missed or repeated.\n\n## Complexity\n\nTime O(n), space O(n) including the input, O(1) auxiliary."
+}

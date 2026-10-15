@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-189",
+  "packageChecksum": "cd01f7d56bfd20107299b0036f7c999aa367beb9d7eca5853f0308f2b7fd2f07",
+  "sourceContentHash": "2288507a3270ddc065e18fdb8163af300bf8856d77da129f45d0a970c900ab43",
+  "editorialSha256": "d959ed5511498506bb710c9ff71b9e349b23260252534458d0779a43a79b8d88",
+  "hints": {
+    "zh": [
+      "子数组和除以 k 的余数在 0..k−1 之间，所以子数组长度必须小于 k；在这个前提下，“余数等于长度”可以改写成关于前缀和的同余式。",
+      "设 S 为前缀和，区间 (l, r] 合法 ⇔ r−l<k 且 (S[r]−r) mod k = (S[l]−l) mod k。于是每个前缀只对应一个键，问题变成统计下标距离小于 k 的相同键对。",
+      "维护 key=(key+a[r]−1) mod k；频率表初始含前缀 0 的键 0；对 r=1..n：若 r≥k，把前缀 r−k 的键计数减 1（再用它长度就达到 k）；答案加上当前键的计数，再把当前键计数加 1。答案用 64 位。"
+    ],
+    "en": [
+      "The remainder of a sum modulo k lies in 0..k-1, so the subarray length must be less than k; under that condition, remainder equals length can be rewritten as a congruence between prefix sums.",
+      "With prefix sums S, the subarray (l, r] is valid if and only if r - l < k and (S[r] - r) mod k = (S[l] - l) mod k. Each prefix then has a single key, and the task becomes counting equal-key pairs whose indices are less than k apart.",
+      "Maintain key = (key + a[r] - 1) mod k; the frequency table starts with key 0 for prefix 0; for r = 1..n: if r >= k, decrement the count of prefix r-k's key (it would give length k); add the current key's count to the answer, then increment it. Use a 64-bit answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDefine the key (S[i]-i) mod k from the prefix sums S. A valid subarray needs equal keys at its two ends and a length strictly less than k; count it with a frequency table of earlier prefixes restricted by length.\n\n## Proof of correctness\n\nThe subarray sum mod k equals its length if and only if the length is less than k and S[r]-r is congruent to S[l]-l modulo k. While scanning r, remove prefix r-k and earlier ones; querying the number of equal keys then counts exactly all valid left ends. Grouping by right end counts every subarray once, with nothing missed.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

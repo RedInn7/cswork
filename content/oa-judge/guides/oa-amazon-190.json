@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-190",
+  "packageChecksum": "ea6850dba3362404d01df91be10e73ae3e07c50f40a50c050e8055798f98079f",
+  "sourceContentHash": "b9754e3bde123e5333db1093b993f6256e9c77dd4914703e13e2b2a469819290",
+  "editorialSha256": "5656db73a9233e1b6562defcaac94122310bae3ec45b661f792e0aa4d2773852",
+  "hints": {
+    "zh": [
+      "固定右端时，左端越靠右窗口越短，不同数只会更少或不变；但左端太靠右会丢掉某个目标值。所以对每个右端，最好的左端是仍同时包含两个目标的最右位置。",
+      "用双指针滑动窗口，维护窗口内每个值的出现次数和不同值个数。每加入一个右端，只要窗口同时含 u 和 v，就记录当前不同数并收缩左端。",
+      "值域大可先离散化；u 或 v 不在数组中直接输出 0。遍历右端：加入 a[r]（计数由 0 变 1 时不同数加 1）；当 u、v 计数都大于 0 时，用不同数更新答案，再移出 a[left] 并让 left 加 1（计数归零时不同数减 1）。从未更新答案则输出 0；u=v 时同样适用，结果为 1。"
+    ],
+    "en": [
+      "For a fixed right end, moving the left end right makes the window shorter, so the distinct count can only stay or drop; but moving it too far loses a target. So for each right end, the best left end is the rightmost one that still contains both targets.",
+      "Use a two-pointer sliding window that keeps the count of each value and the number of distinct values. After adding each right end, as long as the window contains both u and v, record the distinct count and shrink from the left.",
+      "Compress values if needed; if u or v does not occur in the array, print 0. For each right end: add a[r] (distinct += 1 when its count goes from 0 to 1); while both u and v have positive counts, update the answer with the distinct count, then remove a[left] and advance left (distinct -= 1 when a count reaches 0). If the answer was never updated, print 0; the case u = v works the same way and gives 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTwo pointers with window frequencies: whenever the window contains both targets, record its number of distinct values and keep shrinking the left end until it no longer contains both.\n\n## Proof of correctness\n\nAfter adding a right end, every left end that has not been checked yet and is feasible gets checked one by one. A shorter window with the same right end never has more distinct values; once the window becomes infeasible, left ends further right are infeasible too. A left end that was removed earlier can only keep or increase its distinct count as the right end extends, so it cannot beat the value already recorded; therefore the smallest recorded value is the global optimum.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

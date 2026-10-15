@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-196",
+  "packageChecksum": "90233b1c342087c5b83a0cf9cfbe2b5075a2d1549b50e512daadd4c1f5537105",
+  "sourceContentHash": "86de9e49ed9e2d33b699f32086cb9a27968abf147007945ad2b2355408b35471",
+  "editorialSha256": "4639130f1440ab0a1f11cff0c290505a2d09b85388f0e491139527d3c9509f20",
+  "hints": {
+    "zh": [
+      "每轮移除剩余的最高和最低经验，等价于排序后首尾向中间配对；经验相同的人仍是不同的人，排序时都保留。",
+      "两组平均值相同 ⇔ 两数和相同，因此只需统计不同的“首尾和”个数，也避免了浮点误差。",
+      "排序后对 i<n/2 计算 a[i]+a[n−1−i]，用集合或排序去重统计不同值的个数并输出；经验可以为 0，不影响做法。"
+    ],
+    "en": [
+      "Removing the highest and lowest remaining experience each round is the same as sorting and pairing from both ends inward; people with equal experience are still separate people, so keep every value when sorting.",
+      "Two pairs have the same average if and only if they have the same sum, so just count the distinct end-pair sums, which also avoids floating-point error.",
+      "After sorting, compute a[i] + a[n-1-i] for i < n/2, count the distinct values with a set or by sorting and deduplicating, and print the count; experience may be 0, which changes nothing."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort, pair the two ends, and count the distinct pair sums, without any floating-point division.\n\n## Proof of correctness\n\nAfter sorting, the two ends are exactly the extremes of each round, and removing them leaves the inner part sorted. Two averages are equal if and only if the two sums are equal, so the size of the set of sums is the answer.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

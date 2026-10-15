@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-208",
+  "packageChecksum": "c002b19617825fef363554ecc696b93b5b6b0b9497a8d9412b8bc4439fcb5d37",
+  "sourceContentHash": "c779e07dde5d969ecdfc36a0050bec8af42c8e2fc9acae2b9144abc63573f0ae",
+  "editorialSha256": "7cfed0953356ae51c748bc572de029deedc7f51e4da1aa88947f3934018ce3e1",
+  "hints": {
+    "zh": [
+      "稳定性由“最小 availability”和“reliability 总和”两部分决定；固定最小 availability 的阈值后，所有不低于阈值的服务器都应该选上，因为 reliability 都是正数。",
+      "所以只需把每个服务器的 availability 当作阈值试一遍；按 availability 降序扫描时，不低于当前阈值的服务器正好是已经扫描过的那些。",
+      "按 availability 降序排序；累计 reliability 之和 total，每步用 availability×total 更新最大值（最大约 10^17，用 64 位）；先求出完整的最大值，最后才对 1000000007 取模。"
+    ],
+    "en": [
+      "Stability is the minimum availability times the reliability sum; once a threshold for the minimum availability is fixed, every server at or above it should be taken, because reliabilities are positive.",
+      "So it is enough to try each server's availability as the threshold; when scanning in decreasing availability, the servers at or above the current threshold are exactly those scanned so far.",
+      "Sort by availability descending; keep the running reliability sum total and update the maximum with availability * total at every step (up to about 10^17, so use 64-bit); find the full maximum first and take it modulo 1000000007 only at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess servers in decreasing availability, accumulating reliability, and compare the current availability times the accumulated sum.\n\n## Proof of correctness\n\nWith the minimum availability fixed as a threshold, every server at or above the threshold can be added, and positive reliability means adding one never decreases the stability. The minimum availability of some optimal subset is an actual value; once the scan has processed all members at that value, it has a candidate at least as good. Every candidate is itself feasible, so the largest candidate is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n), with 64-bit products."
+}

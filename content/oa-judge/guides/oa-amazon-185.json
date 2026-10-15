@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-185",
+  "packageChecksum": "7e012b0b1393099d3a1425cd371852122b9ecb466f9909efdd72788f83449347",
+  "sourceContentHash": "c20aed1dd16f5a285208d8993824e66a5b67ae7404c2cb8365fb8156d974565d",
+  "editorialSha256": "4f110fec24bcf5a117f2b401b2cdbe84fd6ace1b770d68f6c288f51392d6941c",
+  "hints": {
+    "zh": [
+      "无论怎么切，整个数组的首元素和末元素都各贡献一次；每多切一刀，切口两侧的两个元素就额外各贡献一次。",
+      "总费用 = a[0]+a[n−1] 再加上所选 p−1 个切口的相邻和 a[i]+a[i+1]。切口之间互不影响，所以最小费用取最小的 p−1 个相邻和，最大费用取最大的 p−1 个。",
+      "算出 n−1 个相邻和并排序；base=a[0]+a[n−1]；最小费用 = base + 前 p−1 个之和，最大费用 = base + 后 p−1 个之和；p=1 时两者都是 base（n=1 时 base 正好是该元素的两倍）；全程用 64 位整数。"
+    ],
+    "en": [
+      "However you split, the first and last elements of the whole array each contribute once; every extra cut makes the two elements on both sides of the cut contribute once more.",
+      "Total cost = a[0]+a[n-1] plus the adjacent sums a[i]+a[i+1] of the p-1 chosen cuts. Cuts do not affect each other, so the minimum uses the p-1 smallest adjacent sums and the maximum the p-1 largest.",
+      "Compute the n-1 adjacent sums and sort them; base = a[0]+a[n-1]; minimum = base + the first p-1 sums, maximum = base + the last p-1 sums; for p = 1 both equal base (for n = 1, base is exactly twice the element); use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEvery split pays for the first and last elements; each cut between i and i+1 adds a[i]+a[i+1]. Choose the smallest or the largest p-1 adjacent sums.\n\n## Proof of correctness\n\nThe first-plus-last contributions of all segments decompose into the first and last elements of the whole array plus the elements on both sides of each cut; the cuts are chosen independently and there are exactly p-1 of them. Minimizing and maximizing this independent sum picks the smallest and the largest adjacent sums respectively, and the valid split built from those cuts attains the bound.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

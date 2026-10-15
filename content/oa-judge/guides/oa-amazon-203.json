@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-203",
+  "packageChecksum": "138f700128e0ac7460ea23837629b36ecb10ba237ad618b903fa5e57b1386a2d",
+  "sourceContentHash": "79ea0d4b5e2fcc7482b4137bf85f165324a1875fa5f9f2f32368537d426c4d91",
+  "editorialSha256": "375f9f28854b0a012e6af6234452e4803c144ea7fe841dcb4d26953bf70a293c",
+  "hints": {
+    "zh": [
+      "按重数计算的公共字符数只和两串的字母频次有关：每个字母贡献两串中该字母频次的较小值。",
+      "n 只有 1000，直接枚举所有下标对即可；只要预先算好每个串的 26 个字母频次，每对只需 26 次比较。",
+      "预处理每个串的字母频次；双重循环枚举 j<i，若长度差不大于当前答案就跳过；累加各字母较小频次，一旦超过 K 就提前停止；合法时更新答案。答案初值 −1，没有合法对就输出 −1。"
+    ],
+    "en": [
+      "The common count with multiplicity depends only on letter frequencies: each letter contributes the smaller of its two frequencies.",
+      "n is only 1000, so enumerate every pair of indices directly; with each string's 26 letter frequencies precomputed, a pair needs just 26 comparisons.",
+      "Precompute each string's letter frequencies; loop over j < i, skipping pairs whose length difference is not larger than the current answer; add up the smaller frequencies and stop early once the sum exceeds K; update the answer for valid pairs. Start the answer at -1 and print -1 if no pair is valid."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrecompute the 26 letter frequencies of every string, enumerate pairs of different strings, and update the largest length difference whenever the common multiplicity qualifies.\n\n## Proof of correctness\n\nEach letter can be matched at most as many times as the smaller of its frequencies in the two strings, and different letters are independent, so the sum of the smaller frequencies is exactly the number of common features. Enumerating every pair of different indices covers all choices, the largest qualifying value is taken, and when no valid pair is found the answer is -1 per this site's convention.\n\n## Complexity\n\nTime O(total characters + 26n^2), space O(26n)."
+}

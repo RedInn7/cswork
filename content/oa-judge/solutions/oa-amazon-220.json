@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-220",
+  "packageChecksum": "1574c6867d70191962bb20730d4bd473c0145adc19cb26a6f54454a43251e20b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    sort(a.begin(), a.end());\n    // Keep a bulb when it is at least the sum of the kept ones; the rest go to the end.\n    long long total = 0;\n    int kept = 0;\n    for (long long v : a)\n        if (v >= total) total += v, kept++;\n    cout << n - kept << '\\n';\n}\n",
+      "sha256": "7c76cf439e320fe161ed3890195700af23acd4a6dcc4f2e7569f1850bd5b96e1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        // Keep a bulb when it is at least the sum of the kept ones; the rest go to the end.\n        long total = 0;\n        int kept = 0;\n        for (long v : a)\n            if (v >= total) {\n                total += v;\n                kept++;\n            }\n        System.out.println(n - kept);\n    }\n}\n",
+      "sha256": "376efb983881ccea5ae8ad45c69ae3beb5451b827be2bd8f65f1abc35c2cc809"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tslices.Sort(a)\n\t// Keep a bulb when it is at least the sum of the kept ones; the rest go to the end.\n\tvar total int64\n\tkept := 0\n\tfor _, v := range a {\n\t\tif v >= total {\n\t\t\ttotal += v\n\t\t\tkept++\n\t\t}\n\t}\n\tfmt.Println(n - kept)\n}\n\nvar data []byte\nvar pos int\n\nfunc skipSpace() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextToken() []byte {\n\tskipSpace()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tskipSpace()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "e7fb6801b5f57bbca1ae0235cd953207c711b8ec5fe59a90855264872fe34daa"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-191",
+  "packageChecksum": "fb3b23126e033cccc7677567f52b5e4e668d9afe41971dc936c69c0ab7bfc5cb",
+  "sourceContentHash": "6cedc763851a443641548fa9e9e26136a9fb3c3ddbd3b0b92b02540a276b7736",
+  "editorialSha256": "4756ba7b92d73ca2783265e1676f08153325f7c68074d7c9e033574fc4dbfee9",
+  "hints": {
+    "zh": [
+      "拼接后的数组可能非常长，但它只由原数组元素组成：每个原下标在拼接数组中出现的次数，正是覆盖它的区间个数。",
+      "用差分算出每个下标的覆盖次数 w[i]。只有 w=0 的下标计分，其美丽度等于所有值严格小于它的下标的 w 之和。",
+      "差分加前缀和得到 w；按值排序下标，相同值成组处理：组内先对每个 w=0 的下标把“已累计的权重”加进答案，再把整组的 w 之和加入累计权重；答案用 64 位。"
+    ],
+    "en": [
+      "The concatenated array can be huge, but it consists only of original elements: the number of times an original index appears in it is exactly the number of intervals covering that index.",
+      "Use a difference array to get each index's coverage count w[i]. Only indices with w = 0 are scored, and the beauty of such an index is the sum of w over all indices with a strictly smaller value.",
+      "Get w with a difference array and prefix sums; sort indices by value and process equal values as a group: first add the accumulated weight to the answer for every index with w = 0 in the group, then add the group's total w to the accumulated weight; use a 64-bit answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a difference array to get each index's coverage count and use it as that element's weight. Sort by value and group equal values; each uncovered element contributes the accumulated weight of all strictly smaller values.\n\n## Proof of correctness\n\nEvery occurrence of an interval contributes each index inside it once, so the difference-array counts are exactly the multiplicities in the concatenated array, and a count of 0 marks exactly the indices that are scored. Processing values in groups and querying before adding a group's weight excludes equal values, so the computation is exact and never expands the huge concatenated array.\n\n## Complexity\n\nTime O(n log n + m), space O(n)."
+}

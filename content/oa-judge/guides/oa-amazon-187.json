@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-187",
+  "packageChecksum": "ca6a3b81239f64368b0a42333643371dc1869d3e3553f56673e766389f7f19fb",
+  "sourceContentHash": "550c9e433874d6af58d6b816b0ce8e199b7bf7198bef6a5023aeaee4bf7c5009",
+  "editorialSha256": "8c943341226f7e10f37b525df94d0e854bfb4b3844f9a2beacc334efdd176d35",
+  "hints": {
+    "zh": [
+      "一个注册名属于哪个真实姓名，只取决于它所含各字母的个数；真实姓名之间互不为重排，所以每个注册名至多对应一个真实姓名。",
+      "给每个名字一个与字母顺序无关的“签名”（例如把字母排序后的串），统计所有注册名签名的出现次数，再看每个真实姓名的签名被注册了几次。",
+      "对 m 个注册名计算签名并计数（哈希表，或把签名排序后用二分求个数）；遍历真实姓名，把签名次数大于 1 的收集起来；按字典序排序后用空格连接输出，没有则输出 None。"
+    ],
+    "en": [
+      "Which real name a registration belongs to depends only on how many of each letter it contains; real names are not rearrangements of each other, so each registration matches at most one real name.",
+      "Give every name an order-independent signature (for example its letters sorted), count how often each signature appears among the registrations, then look up how many times each real name's signature was registered.",
+      "Compute and count the signatures of the m registrations (a hash map, or sort the signatures and count with binary search); collect the real names whose signature count is greater than 1; sort them lexicographically and print them space-separated, or None if there are none."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse the sorted characters of a name as its signature, count the signatures of all registrations, then keep the real names whose signature count is greater than 1 and sort them.\n\n## Proof of correctness\n\nTwo strings are rearrangements of each other if and only if every character has the same frequency, and the sorted string characterizes exactly that equivalence class. Real names have distinct signatures, so counting signatures gives each person's total number of accounts; filtering and sorting then meets the output requirements.\n\n## Complexity\n\nTime O((n+m)L log L + n log n * L), space O((n+m)L), with L <= 10."
+}

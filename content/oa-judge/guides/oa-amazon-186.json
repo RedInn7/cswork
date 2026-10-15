@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-186",
+  "packageChecksum": "244970ffd1021abb16c04ccf757b05be70cbeff063a53d7268545c6dbf88f660",
+  "sourceContentHash": "9a33bd33471040dc8c19a6898d4a47fc990b3151096943313c368ead2785cd31",
+  "editorialSha256": "19925c93e4e60186215064ecf2ba9764220c75afbf72616dd8cca3779263e9f0",
+  "hints": {
+    "zh": [
+      "不要逐个枚举子串，而是固定右端点：考虑“以当前位置结尾的所有子串的不同字符数之和”在右端右移一格时如何变化。",
+      "把字符 c 放在位置 i 上时，只有起点在 c 上一次出现位置 j 之后的子串原来不含 c，它们的不同字符数各加 1；更早起点的子串已含 c，不变。所以这个结尾和增加 i−j。",
+      "last[c] 初始为 −1；tail 表示以当前位置结尾的子串的不同字符数之和；对每个位置 i：tail += i − last[c]，last[c]=i，answer += tail；最后输出 answer（用 64 位整数）。"
+    ],
+    "en": [
+      "Instead of enumerating substrings, fix the right end: look at how the sum of distinct counts over all substrings ending at the current position changes when the right end moves by one.",
+      "When character c is placed at position i, only substrings starting after the previous occurrence j of c lacked c before; each of them gains 1 distinct character, while earlier starts already contain c. So the ending sum grows by i - j.",
+      "Set last[c] = -1 initially; tail is the sum of distinct counts over substrings ending at the current position; for each position i: tail += i - last[c], last[c] = i, answer += tail; print answer (64-bit)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the sum of distinct-character counts over all substrings ending at the current position. If the new character last appeared at j, it adds i-j to that sum; add the sum to the answer at every step.\n\n## Proof of correctness\n\nWhen character c is appended, only the substrings whose start is after the previous occurrence of c did not contain c before, and there are exactly i-j of them; substrings with earlier starts already contain c and their counts do not change. Hence the ending sum is maintained correctly, and summing it over the different right ends covers every substring.\n\n## Complexity\n\nTime O(n), auxiliary space O(26)."
+}

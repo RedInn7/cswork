@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-199",
+  "packageChecksum": "899298adfa35ad955f7cdab287a460988ed1d0348386b1be70c906ec6d5a143a",
+  "sourceContentHash": "da86a7a625d050e38d890d027c463ad951793f1998f82d717349b2e1e1c4fbf5",
+  "editorialSha256": "a4418fefc72e0cc122e5720279f66adbafc6ff77d76d23ddae8aaeab1edc5300",
+  "hints": {
+    "zh": [
+      "交替子串在每个位置上的字符只由下标奇偶决定，所以它一定与全局模板 0101… 或 1010… 之一在这一段上完全一致。",
+      "固定一个模板，把一段改成交替所需的翻转次数，就是该段内与模板不一致的位置数；问题变成“不一致数不超过 k 的最长窗口”。",
+      "对两种模板各做一次滑动窗口：右端加入时若 s[r] 与 (r+start)%2 不同则 bad 加 1；当 bad>k 时移出左端（它不一致则 bad 减 1）并让 left 加 1；每步用 r−left+1 更新答案。"
+    ],
+    "en": [
+      "In an alternating substring, the character at each position is determined by the index parity, so the substring agrees completely with one of the global templates 0101... or 1010... on that range.",
+      "With a template fixed, the number of flips needed to make a range alternating is the number of positions in it that differ from the template; the task becomes the longest window with at most k mismatches.",
+      "Run a sliding window once per template: when the right end enters, bad += 1 if s[r] differs from (r + start) % 2; while bad > k, remove the left end (bad -= 1 if it was a mismatch) and advance left; update the answer with r - left + 1 at every step."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMatch against the global templates 0101... and 1010... separately, and use a sliding window that keeps the number of mismatched positions in the window at most k.\n\n## Proof of correctness\n\nEvery alternating substring agrees with one of these two global templates, and the cost of creating it is exactly the number of mismatches. For a fixed template, enlarging the window never decreases the cost, and when the budget is exceeded the left end shrinks; the two pointers find the longest feasible window for every right end, and the larger result of the two templates is the answer.\n\n## Complexity\n\nTime O(n), auxiliary space O(1)."
+}

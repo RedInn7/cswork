@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-200",
+  "packageChecksum": "f41cbd213d94fb6e35f345ae4f74e1a8b8e907c5dbf7b0d5e47ba4b7a2d40301",
+  "sourceContentHash": "86d964f8ee3b617f6861c44abf3dcdba732e24430b47e18e222d45e375143137",
+  "editorialSha256": "862718125996be79badb265a5555de5f179852d0a9940990e0a36e0604eac6b0",
+  "hints": {
+    "zh": [
+      "想让一个窗口全变成 1，窗口内每段连续的 0 都要被翻奇数次、每段 1 被翻偶数次；想一想一次区间翻转最多能“解决”几段 0。",
+      "看各位置被翻次数的奇偶串：r 段 0 对应 2r 个变化边界，而一次区间翻转只能产生 2 个边界，所以至少要 r 次；把每段 0 单独翻一次正好 r 次。于是窗口可行 ⇔ 其中 0 的段数不超过 k。",
+      "滑动窗口：右端是某段 0 的开头（s[r]=0 且 r=0 或 s[r−1]=1）时段数加 1；段数大于 k 时，若左端是窗口内某段 0 的最后一个 0（s[left]=0 且 left=r 或 s[left+1]=1）则段数减 1，然后 left 加 1；每步用窗口长度更新答案。"
+    ],
+    "en": [
+      "To turn a whole window into 1s, every run of 0s inside it must be flipped an odd number of times and every run of 1s an even number; think about how many runs of 0s one range flip can fix.",
+      "Look at the parity string of flip counts: r runs of 0s give 2r change boundaries, and one range flip creates only 2, so at least r flips are needed; flipping each 0-run separately uses exactly r. So a window is feasible if and only if it contains at most k runs of 0s.",
+      "Sliding window: when the right end starts a run of 0s (s[r] = 0 and r = 0 or s[r-1] = 1), runs += 1; while runs > k, if the left end is the last 0 of a run inside the window (s[left] = 0 and left = r or s[left+1] = 1), runs -= 1, then advance left; update the answer with the window length at every step."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a sliding window that counts the runs of 0s inside it, keep that count at most k and maximize the length. Flipping each run of 0s once on its own turns it entirely into 1s.\n\n## Proof of correctness\n\nIntersect every flip interval with the target window and pad with 0 outside the window; the required flip-parity string is then 1 exactly on the original runs of 0s. If there are r runs of 0s, this parity string has 2r change boundaries; one interval XOR can contribute only 2 boundaries, so at least r operations are needed, and overlapping operations cannot beat this lower bound. Flipping each run of 0s separately attains it exactly. The number of 0 runs never decreases as the right end extends, so the sliding window keeps it at most k and finds the longest valid window for every right end.\n\n## Complexity\n\nTime O(n), auxiliary space O(1)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-207",
+  "packageChecksum": "0f8cdf3bdd66f2cddd09db7bcc2e6e389097eee1b32cf19b93e202829b3c1e16",
+  "sourceContentHash": "fca64163c878e2fb1ba11e0e761b1ecf5b9990ef185ecad85c832094128dcbcf",
+  "editorialSha256": "79baae51779c02d99d86b0631355b22e57e6885ddd6c6d12bc5c30797dad799c",
+  "hints": {
+    "zh": [
+      "把专业 1 记作 +1、专业 0 记作 −1，区间内两类人数相等 ⇔ 区间内这些 ±1 之和为 0 ⇔ 两端的人数差前缀相等。",
+      "固定右端时，区间技能和 = 当前技能前缀 − 左端技能前缀；要让它最大，就要在人数差相同的历史前缀里找技能前缀最小的那个。技能可能为负，所以不能只记最早出现的位置。",
+      "用数组（下标偏移 n）或哈希表记录每个人数差对应的最小技能前缀，初始只有人数差 0 对应 0；逐人更新人数差和技能前缀：若该人数差出现过，用 total−最小值更新答案并更新最小值，否则直接记录。答案初值 0（允许不选人），用 64 位。"
+    ],
+    "en": [
+      "Count expertise 1 as +1 and 0 as -1; a range has equal numbers of both types exactly when these values sum to 0 over it, that is, when the count-difference prefixes at its two ends are equal.",
+      "With the right end fixed, the range's skill sum is the current skill prefix minus the left end's skill prefix; to maximize it, find the smallest skill prefix among earlier prefixes with the same count difference. Skills can be negative, so remembering only the earliest position is not enough.",
+      "Use an array offset by n (or a hash map) holding the smallest skill prefix for each count difference, starting with difference 0 mapped to 0; for each employee update the difference and the skill prefix: if the difference was seen, update the answer with total minus the stored minimum and then the minimum, otherwise store total. Start the answer at 0 (choosing nobody is allowed) and use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount expertise 1 as +1 and 0 as -1 and maintain the prefix count difference. For each count difference, store the minimum skill prefix sum, and update the answer with the current skill sum minus that minimum.\n\n## Proof of correctness\n\nEqual count-difference prefixes at the two ends mean exactly that the range has equal numbers of both types. With the right end fixed its skill prefix is fixed, so subtracting the smallest earlier skill prefix with the same count difference gives the largest range sum, and no other earlier point can do better. The initial answer 0 covers the empty team; because skills can be negative, storing only the earliest index would not be enough.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

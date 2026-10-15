@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-212",
+  "packageChecksum": "5a04bbfd9e81d954acece1fb414aca7c98c3c13d4ccafb074b8a325ee280479c",
+  "sourceContentHash": "b8b1bee939e006545709e955131cf8d33cd648df160aa0f8550e2af4c8c4e067",
+  "editorialSha256": "b33721a9507defe1ba0143a8233358132c81c98c114d656e0432298f3ec14f46",
+  "hints": {
+    "zh": [
+      "选定增量 x≠0 后，区间内只有值为 v=k−x 的元素会变成 k，而区间内原本等于 k 的元素会失去。所以对固定的 v，区间收益 = 区间内 v 的个数 − 区间内 k 的个数。",
+      "对每个 v 都是一个最大子段和问题：v 记 +1、k 记 −1、其他记 0。最优段可以取首尾都是 v，所以只在 v 出现时更新，中间的 k 用“到目前为止 k 的个数之差”一次性扣除。",
+      "遍历数组，cnt 为目前 k 的个数；遇到 v≠k 时：若 v 出现过，gain=max(1, 上次的 gain−(cnt−上次的 cnt)+1)，否则 gain=1；记录 v 的 (gain, cnt)，用 gain 更新 best。答案 = cnt+best（best 初值 0 表示不操作）。"
+    ],
+    "en": [
+      "Once a nonzero increment x is chosen, only elements equal to v = k - x inside the range become k, and the range's original k values are lost. So for a fixed v, the gain of a range is the number of v in it minus the number of k in it.",
+      "For each v this is a maximum-subarray problem: v counts +1, k counts -1, everything else 0. An optimal segment can start and end at a v, so update only when v appears, and deduct the k values in between at once via the difference of running k counts.",
+      "Scan the array with cnt = number of k so far; for v != k: if v was seen, gain = max(1, previous gain - (cnt - previous cnt) + 1), otherwise gain = 1; store (gain, cnt) for v and update best. The answer is cnt + best (best starts at 0, meaning no operation)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf some v != k is turned into k, every v in the window gains +1, every original k loses 1 (counts -1), and other values count 0. For each v keep the best segment gain at its last occurrence and the running count of k at that time; deduct the k values in between lazily via the count difference, and restart as in Kadane's algorithm.\n\n## Proof of correctness\n\nA fixed nonzero increment turns only the unique value v = k-x into k and makes the original k values disappear, so the net gain definition is exact. An optimal segment with positive gain can start and end at a v, and between two v's only the k values cost points. When a new v is processed, choosing between restarting at 1 and extending the previous best gain minus the k values in between plus 1 is exactly Kadane's transition for that v. Each v is updated only at its occurrences, n visits in total, and the largest net gain plus the original number of k values is the answer.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

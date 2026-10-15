@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-204",
+  "packageChecksum": "add8fc5d667fede94309855b5b69cedf8f69343bd450d493c104019c9b2e919d",
+  "sourceContentHash": "f67de95919a740907f0cc60720d72b0b28a3d76509aa1f20ce207210e4dfbcea",
+  "editorialSha256": "5002d7fcf9fb1a636e6fafde8479ecb2b7b05395610a67b17548c2e1d162fc83",
+  "hints": {
+    "zh": [
+      "要让严格胜出的对数最多，每个后端最好被“刚好能胜过它”的前端拿下，不要浪费质量很高的前端。",
+      "两组都排序后从小到大考虑前端：如果它连最小的未匹配后端都赢不了，那它谁也赢不了，直接丢弃；否则让它与最小的未匹配后端配对。",
+      "排序 a、b；指针 j=0；按升序遍历 a 中每个 v：若 j<n 且 v>b[j]，则 j 加 1；最后 j 就是答案。"
+    ],
+    "en": [
+      "To maximize the number of strict wins, each back end should be taken by a front end that just barely beats it, without wasting high-quality front ends.",
+      "Sort both groups and consider front ends from small to large: one that cannot beat the smallest unmatched back end cannot beat any, so drop it; otherwise pair it with the smallest unmatched back end.",
+      "Sort a and b; j = 0; for each v of a in ascending order: if j < n and v > b[j], increment j; j is the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort both groups, and each time use the smallest front end that beats the current smallest back end to form a pair.\n\n## Proof of correctness\n\nA front end too small to beat the current smallest back end cannot beat any remaining back end, so it can be discarded. When it can win, the pairs of some optimal solution can be exchanged so that these two are paired without reducing the number of successful pairs; repeating this gives an optimum.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

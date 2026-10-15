@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-194",
+  "packageChecksum": "d7d9482955dcf0d61deab623feeb0adbba20a2e4da4bddf3764b66681148d545",
+  "sourceContentHash": "0a39138b44d7c00a70e6602c90707f2b239078c8188b9255a3d7d17cc25469a8",
+  "editorialSha256": "e2c9d10794189d0bf275fcb848e8b01a5c587915a80ef0b1ddb9c13ca3c75874",
+  "hints": {
+    "zh": [
+      "floor(n/k) 只有 O(√n) 种不同取值，而且同一个商对应的分母 k 是一段连续区间；题目要求 x<n，只有 k=1 会产生 n 本身。",
+      "整除分块：当前分母 k 的商 q=n/k，在分母 k..n/q 范围内保持不变；把 q 累加一次后直接跳到 n/q+1，就不会重复计入同一个商。",
+      "answer=0，k 从 2 开始；当 k≤n 时：q=n/k，answer+=q，k=n/q+1。k 超过 n 后商都是 0，不影响和。n 可达 10^10，全程用 64 位整数。"
+    ],
+    "en": [
+      "floor(n/k) takes only O(sqrt(n)) distinct values, and the denominators giving the same quotient form a contiguous range; since x < n is required, only k = 1 produces n itself.",
+      "Divide into quotient blocks: for the current denominator k, q = n/k stays the same for all denominators k..n/q; add q once and jump straight to n/q + 1 so the same quotient is never counted twice.",
+      "answer = 0, start with k = 2; while k <= n: q = n/k, answer += q, k = n/q + 1. Once k exceeds n all quotients are 0 and do not change the sum. n can reach 10^10, so use 64-bit integers throughout."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDivide the denominators into quotient blocks starting from k = 2. The current quotient q = n//k stays the same for denominators k..n//q; add q once and jump to the next block.\n\n## Proof of correctness\n\nThe largest denominator giving quotient q is floor(n/q), so jumping over that range avoids repeated quotients exactly without missing any later, smaller quotient. Starting from 2 excludes denominator 1, the only one that produces n; once the denominator exceeds n every quotient is 0 and need not be added. There are only O(sqrt(n)) distinct positive quotients.\n\n## Complexity\n\nTime O(sqrt(n)), auxiliary space O(1)."
+}

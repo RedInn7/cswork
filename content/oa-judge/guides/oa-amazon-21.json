@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-21",
+  "packageChecksum": "abc1cc3b8d5e835a7f9a72dc0394148ff81fae6a0e9be41d930c76ee92e6fa01",
+  "sourceContentHash": "f313ed2c107695985c5ba72568fba6defa550bd00f86a1f44d653aef054d7b46",
+  "editorialSha256": "c7a61f9213cb29bf1db2169268ec361571539663ed59b3072a604e389e89edf9",
+  "hints": {
+    "zh": [
+      "下标 i、i+p、i+2p… 模 p 同余；把第一串按下标模 p 拆成若干条链，每个起点取出的 m 个字符就是某条链上连续的 m 个字符。",
+      "能否构成第二串的排列只看字母频次是否相同，所以在每条链上维护长度为 m 的滑动窗口频次，并与目标频次比较。",
+      "统计第二串 26 个字母的频次；对每个余数 r<min(p,n) 沿链遍历：加入新字符，窗口超过 m 时移出 m 步之前的字符，窗口满 m 且频次数组相等时答案加 1。总复杂度 O(26n)。"
+    ],
+    "en": [
+      "The indices i, i+p, i+2p, ... are all congruent modulo p; split the first string into chains by index mod p, and the m characters taken from any start are m consecutive characters of one chain.",
+      "Whether they form a permutation of the second string depends only on equal letter frequencies, so keep a length-m sliding window of frequencies on each chain and compare it with the target frequencies.",
+      "Count the 26 letter frequencies of the second string; for each residue r < min(p, n), walk its chain: add the new character, remove the one m steps back once the window exceeds m, and add 1 to the answer when the window holds m characters and the frequency arrays are equal. Total O(26n)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit the indices into chains by index mod p; on each chain keep a sliding window of length m with character frequencies and compare it with the target frequencies.\n\n## Proof of correctness\n\nEach valid start corresponds to exactly one complete window on one residue chain, and the frequencies are equal if and only if the characters can be rearranged into the target string. Each window is counted once, so the answer has no duplicates or omissions.\n\n## Complexity\n\nTime O(26n), space O(n + 26)."
+}

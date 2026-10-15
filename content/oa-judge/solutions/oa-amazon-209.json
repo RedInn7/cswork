@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-209",
+  "packageChecksum": "a3c8d0f46783269e01d5dd3bf2c769a26a834eb05da08f90f9f857b3de7aa5da",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    long long h;\n    cin >> n >> h;\n    vector<long long> cap(n), opt(n);\n    for (auto &x : cap) cin >> x, x = h - x;  // room left beside each mandatory task\n    for (auto &x : opt) cin >> x;\n    sort(cap.begin(), cap.end());\n    sort(opt.begin(), opt.end());\n    // Smallest optional task goes to the smallest capacity that holds it.\n    int j = 0;\n    for (long long c : cap)\n        if (j < n && opt[j] <= c) j++;\n    cout << j << '\\n';\n}\n",
+      "sha256": "d84033195cc3d5f82deb4125941629261bb865a517d62a63bd1693ca3198347d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long h = nextLong();\n        long[] cap = new long[n], opt = new long[n];\n        for (int i = 0; i < n; i++) cap[i] = h - nextLong(); // room left beside each mandatory task\n        for (int i = 0; i < n; i++) opt[i] = nextLong();\n        Arrays.sort(cap);\n        Arrays.sort(opt);\n        // Smallest optional task goes to the smallest capacity that holds it.\n        int j = 0;\n        for (long c : cap)\n            if (j < n && opt[j] <= c) j++;\n        System.out.println(j);\n    }\n}\n",
+      "sha256": "54ed476e6873a806d373fbd4d10cf37e2d868765d8febd0b3c743f01b9fc1818"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, h := int(nextInt()), nextInt()\n\tcapacity, optional := make([]int64, n), make([]int64, n)\n\tfor i := range capacity {\n\t\tcapacity[i] = h - nextInt() // room left beside each mandatory task\n\t}\n\tfor i := range optional {\n\t\toptional[i] = nextInt()\n\t}\n\tslices.Sort(capacity)\n\tslices.Sort(optional)\n\t// Smallest optional task goes to the smallest capacity that holds it.\n\tj := 0\n\tfor _, c := range capacity {\n\t\tif j < n && optional[j] <= c {\n\t\t\tj++\n\t\t}\n\t}\n\tfmt.Println(j)\n}\n\nvar data []byte\nvar pos int\n\nfunc skipSpace() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextToken() []byte {\n\tskipSpace()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tskipSpace()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "5b8a984b6829c74d34555d9a985f588a210b5074104d6d3f48a4a62ff6a87363"
+    }
+  ]
+}

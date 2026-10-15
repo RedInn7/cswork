@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-219",
+  "packageChecksum": "3576233bf240a258a526bc6789dd63270f7210c0942c73912663fe465ca964ed",
+  "sourceContentHash": "fda85f325cc8808e1e8a8fcdcd4d51e83cdb4430d2f5ba349e6a494969f2c991",
+  "editorialSha256": "eb72ac2d8123032d52245f00c252856aa633cd3f08ccd2c9cc39f556cdc896a5",
+  "hints": {
+    "zh": [
+      "中间元素的顺序无所谓，只需把最轻的移到开头、最重的移到末尾；一次相邻交换一般只能让其中一个靠近目标一步。",
+      "唯一能“一次推进两个”的情况是最轻和最重直接相邻交换，这只在最轻位于最重右侧时会发生，而且只发生一次。",
+      "找到最轻的下标 l 和最重的下标 r；答案 = l + (n−1−r)，若 l>r 再减 1。"
+    ],
+    "en": [
+      "The middle order does not matter; you only need the lightest block at the front and the heaviest at the end, and one adjacent swap usually moves only one of them one step toward its target.",
+      "The only swap that advances both at once swaps the lightest and heaviest directly, which happens only when the lightest is to the right of the heaviest, and only once.",
+      "Find the index l of the lightest and r of the heaviest; the answer is l + (n - 1 - r), minus 1 if l > r."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe index l of the lightest block plus the distance n-1-r of the heaviest from the end; if l > r the two would cross, so subtract 1.\n\n## Proof of correctness\n\nEach adjacent swap moves at most one extreme one step toward its target, except a direct swap of the two extremes, which reduces both distances at once. Exactly one such joint move is possible when their order is reversed, and none otherwise. Moving the lightest to the front first and then the heaviest to the end attains this lower bound.\n\n## Complexity\n\nTime O(n), space O(n) including the input."
+}

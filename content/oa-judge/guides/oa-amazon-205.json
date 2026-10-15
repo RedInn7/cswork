@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-205",
+  "packageChecksum": "09030ea87a42fa4eb8d6f997c4326e7904ff134dcc1350784a86e4d4470291d2",
+  "sourceContentHash": "2faaaa2f4e2fa77eefc6224f0b43ada82fd74e407891a609817afc9d4d0359ef",
+  "editorialSha256": "882e74cd193d228aef7affda9a9a46ba544adabd17a705e0d127d364942a5252",
+  "hints": {
+    "zh": [
+      "保留的后缀一旦确定，执行过程就是确定的：按顺序把程序塞进当前时隙，塞不下就开新时隙。关键看所需时隙数随删除的前缀变多是否单调。",
+      "删掉更多前缀不会让所需时隙数增加，所以“可行的起点”构成一个后缀区间，可以对起点二分。",
+      "写 valid(start)：slots=1、used=0，依次处理 time[i]：若 used+time[i]>k 则 slots 加 1、used 清零，再 used+=time[i]；slots>m 时返回不可行。二分出最小的可行起点 lo（lo=n 表示空后缀），输出 n−lo。"
+    ],
+    "en": [
+      "Once the kept suffix is fixed, execution is deterministic: put programs into the current slot in order and open a new slot when one does not fit. The key question is whether the number of slots is monotone as more of the prefix is deleted.",
+      "Deleting more of the prefix never increases the number of slots needed, so the feasible starts form a suffix of positions and you can binary search the start.",
+      "Write valid(start): slots = 1, used = 0; for each time[i]: if used + time[i] > k, slots += 1 and used = 0; then used += time[i]; return false once slots > m. Binary search the smallest feasible start lo (lo = n means the empty suffix) and print n - lo."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search the start of the suffix, counting the slots needed with the left-to-right procedure the problem defines. Deleting more of the prefix never increases the minimum number of slots.\n\n## Proof of correctness\n\nFor a fixed start, the greedy that fills the current slot as much as possible ends its first segment no earlier than any other valid segmentation; by induction over segments it uses the minimum number of segments. After deleting a prefix, the remaining segments of a valid segmentation can still be used, and the greedy only uses fewer, so feasible starts are monotone (they form a suffix); binary search finds the earliest feasible start, which gives the longest program suffix.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-221",
+  "packageChecksum": "eac4bd03b54856431c64823bfb4cbd944ad03583ae0495380e3adf89b8683580",
+  "sourceContentHash": "0800d20cbc096835be3428a7c56bc59496f50f805b1e6ea75985ab20dfc3b8a8",
+  "editorialSha256": "e2a6452c712e1e8d9119d1acb6bf3aec397747a8cd73f3a3caf583b2fabc9c8a",
+  "hints": {
+    "zh": [
+      "只能加 1，所以先算每个位置还差多少：d[i]=target[i]−source[i]；前缀操作给左边若干位置加 1，后缀操作给右边若干位置加 1。",
+      "若 d[i]>d[i+1]，这个下降只能靠恰好止于 i 的前缀操作来补，至少需要 d[i]−d[i+1] 次，而每次前缀操作都会给 d[0] 计入 1。设所有下降之和为 D，则必须 d[0]≥D；满足时剩余需求可以用后缀操作补齐。",
+      "计算 d 和 D=Σmax(0, d[i]−d[i+1])；若 d[0]<D 输出 −1，否则输出 d[n−1]+D。全程使用 64 位整数。"
+    ],
+    "en": [
+      "Only +1 is allowed, so first compute how much each position still needs: d[i] = target[i] - source[i]; a prefix operation adds 1 to some left part and a suffix operation to some right part.",
+      "If d[i] > d[i+1], that drop can only be covered by prefix operations ending exactly at i, at least d[i] - d[i+1] of them, and every prefix operation also counts toward d[0]. With D the sum of all drops, d[0] >= D is necessary; when it holds, the remaining demand can be completed by suffix operations.",
+      "Compute d and D = sum of max(0, d[i] - d[i+1]); print -1 if d[0] < D, otherwise print d[n-1] + D. Use 64-bit integers throughout."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet d = target - source and let D be the sum of all adjacent drops. If d[0] < D there is no solution; otherwise the answer is d[n-1] + D.\n\n## Proof of correctness\n\nEach adjacent drop d[i] - d[i+1] > 0 can only be produced by prefix operations that end at i, so at least D such operations are needed, and every one of them also adds to the first element; hence d[0] >= D is necessary. After placing prefixes for all drops, the remaining demand is non-negative and non-decreasing, and suffix operations can supply it by its increments; the total count is D + d[n-1]. Using any extra prefixes and suffixes that cancel each other only increases the count, so the lower bound is attained.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

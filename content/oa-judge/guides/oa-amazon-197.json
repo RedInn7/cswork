@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-197",
+  "packageChecksum": "ec3666c310db6a6dd7b91398fbcd96913c3624488bb3d18b67887ce41d61e0f1",
+  "sourceContentHash": "02b0b0ec611d28378e01e8b58201f8d40aae96232feabb74d8dc024faabf3c92",
+  "editorialSha256": "41302df03a385de6386db5589ea2ea8c087b3ee784e09bcab34c8f6d87e0b87b",
+  "hints": {
+    "zh": [
+      "题目保证每次移动时 from 上有数据、to 上没有数据，所以“当前被占用的位置”始终互不相同，一次移动只是删掉一个位置、加入一个位置。",
+      "不需要追踪哪条数据去了哪里，只维护当前被占用位置的集合即可。",
+      "用哈希集合（或有序集合）存初始位置；对每条 from to：删除 from、插入 to；最后把集合元素升序排序，空格分隔输出。"
+    ],
+    "en": [
+      "Every move is guaranteed to start at an occupied position and end at an empty one, so the occupied positions are always distinct, and a move simply deletes one position and inserts another.",
+      "You do not need to track which piece of data went where; maintaining the set of occupied positions is enough.",
+      "Store the initial positions in a hash set (or an ordered set); for each from/to pair, delete from and insert to; finally sort the set's elements ascending and print them space-separated."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep the current positions in a set; for each move delete from and insert to, then sort at the end.\n\n## Proof of correctness\n\nThe initial set is exactly the set of real positions. Each valid move changes only the two given positions, so deleting and inserting keeps the set equal to the real state; by induction, sorting after all operations gives the required result.\n\n## Complexity\n\nExpected time O(m + n log n), space O(n)."
+}

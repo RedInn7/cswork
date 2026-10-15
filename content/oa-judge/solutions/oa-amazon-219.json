@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-219",
+  "packageChecksum": "3576233bf240a258a526bc6789dd63270f7210c0942c73912663fe465ca964ed",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    long long l = min_element(a.begin(), a.end()) - a.begin();\n    long long r = max_element(a.begin(), a.end()) - a.begin();\n    // If the lightest is right of the heaviest, one swap moves both at once.\n    cout << l + (n - 1 - r) - (l > r ? 1 : 0) << '\\n';\n}\n",
+      "sha256": "8c28a5b90978c51e6aba05e66f1bed22bd9e08dd1041e93359833b7c4cb488e0"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        int l = 0, r = 0;\n        for (int i = 0; i < n; i++) {\n            a[i] = nextLong();\n            if (a[i] < a[l]) l = i;\n            if (a[i] > a[r]) r = i;\n        }\n        // If the lightest is right of the heaviest, one swap moves both at once.\n        System.out.println((long) l + (n - 1 - r) - (l > r ? 1 : 0));\n    }\n}\n",
+      "sha256": "16c940cf5019d063f127c542225cb8dec18582cd53df7119bd45c0d88829d681"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tl, r := 0, 0\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t\tif a[i] < a[l] {\n\t\t\tl = i\n\t\t}\n\t\tif a[i] > a[r] {\n\t\t\tr = i\n\t\t}\n\t}\n\t// If the lightest is right of the heaviest, one swap moves both at once.\n\tanswer := l + (n - 1 - r)\n\tif l > r {\n\t\tanswer--\n\t}\n\tfmt.Println(answer)\n}\n\nvar data []byte\nvar pos int\n\nfunc skipSpace() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextToken() []byte {\n\tskipSpace()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tskipSpace()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "6abd7c758371d88136fdf2f1f4d2a980e96a107fe866a06ae183a13c878070c1"
+    }
+  ]
+}

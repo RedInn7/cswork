@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-223",
+  "packageChecksum": "e14a6289553973f66ea61561ae461a80b4c268e29ad17fa4b3e1e97b38620c79",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long n, gap;\n    string s;\n    cin >> n >> s >> gap;\n    long long cnt[26] = {0};\n    for (char c : s) cnt[c - 'a']++;\n    long long f = *max_element(cnt, cnt + 26), c = count(cnt, cnt + 26, f);\n    // Lower bounds: all requests, and f-1 full rounds of length gap+1 plus the c most frequent regions.\n    cout << max((long long)s.size(), (f - 1) * (gap + 1) + c) << '\\n';\n}\n",
+      "sha256": "d90e0136d4cd863f677f9ec783ce5bece9c37d972ba95ff3b2cb0b404bcb06fb"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        long n = nextLong();\n        String s = next();\n        long gap = nextLong();\n        long[] cnt = new long[26];\n        for (int i = 0; i < s.length(); i++) cnt[s.charAt(i) - 'a']++;\n        long f = 0, c = 0;\n        for (long v : cnt) f = Math.max(f, v);\n        for (long v : cnt) if (v == f) c++;\n        // Lower bounds: all requests, and f-1 full rounds of length gap+1 plus the c most frequent regions.\n        System.out.println(Math.max(s.length(), (f - 1) * (gap + 1) + c));\n    }\n}\n",
+      "sha256": "27fd150ee6e3361699dd580b7c4e378027b4405cca73888456360e15d2e12eb9"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tnextInt()\n\ts := nextToken()\n\tgap := nextInt()\n\tvar cnt [26]int64\n\tfor _, ch := range s {\n\t\tcnt[ch-'a']++\n\t}\n\tf := slices.Max(cnt[:])\n\tvar c int64\n\tfor _, v := range cnt {\n\t\tif v == f {\n\t\t\tc++\n\t\t}\n\t}\n\t// Lower bounds: all requests, and f-1 full rounds of length gap+1 plus the c most frequent regions.\n\tfmt.Println(max(int64(len(s)), (f-1)*(gap+1)+c))\n}\n\nvar data []byte\nvar pos int\n\nfunc skipSpace() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextToken() []byte {\n\tskipSpace()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tskipSpace()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "a2a2bfe902b9f902917dd88b696d0d30a202382a06c2d47271d4a61326a794c0"
+    }
+  ]
+}

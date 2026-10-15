@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-194",
+  "packageChecksum": "d7d9482955dcf0d61deab623feeb0adbba20a2e4da4bddf3764b66681148d545",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long n;\n    cin >> n;\n    // Quotient blocks: q = n / k is constant for k in [k, n / q]; start at k = 2 to exclude n itself.\n    long long answer = 0;\n    for (long long k = 2; k <= n;) {\n        long long q = n / k;\n        answer += q;\n        k = n / q + 1;\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "31d59804bbcd2ffb4c897c348583d472a06cdaf0683d6e8f29a95a9d241e59f0"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        long n = nextLong();\n        // Quotient blocks: q = n / k is constant for k in [k, n / q]; start at k = 2 to exclude n itself.\n        long answer = 0;\n        for (long k = 2; k <= n;) {\n            long q = n / k;\n            answer += q;\n            k = n / q + 1;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "89dcd56394fafa40ae0c6bec1f2e68cdc85dda8c42a644624d23433a7bae8bce"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\t// Quotient blocks: q = n / k is constant for k in [k, n / q]; start at k = 2 to exclude n itself.\n\tvar answer int64\n\tfor k := int64(2); k <= n; {\n\t\tq := n / k\n\t\tanswer += q\n\t\tk = n/q + 1\n\t}\n\tfmt.Println(answer)\n}\n\nvar data []byte\nvar pos int\n\nfunc skipSpace() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextToken() []byte {\n\tskipSpace()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tskipSpace()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "bce45f7353535d7341e1cff1e33f03ee10077c1a62babf396e562a0426c696ea"
+    }
+  ]
+}
