@@ -297,7 +297,10 @@
   border-radius: 0;
   background: none;
   box-shadow: none;
-  overflow-x: auto;
+  /* A skewed tree is as tall as it is deep (a 150-node chain draws ~6000px): scroll inside the
+     box instead of pushing Expected / Your output off-screen. */
+  max-height: 480px;
+  overflow: auto;
   font-size: 12px;
 }
 .algorithm-demo.cs-structure .algorithm-demo-graph {
