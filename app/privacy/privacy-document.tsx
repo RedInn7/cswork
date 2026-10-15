@@ -29,7 +29,7 @@ export function PrivacyDocument() {
               cswork
               是提供课程、视频、编程练习与教学反馈的学习平台。这份说明介绍平台当前如何处理你的资料，以及你可以如何联系我们。
             </p>
-            <p className="privacy-updated">更新于 2026 年 10 月 14 日</p>
+            <p className="privacy-updated">更新于 2026 年 10 月 15 日</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">账户与第三方登录</h2>
@@ -57,6 +57,9 @@ export function PrivacyDocument() {
               </p>
               <p>
                 你在社区发布的题解、讨论帖、回答和评论（包括系统设计章节下的讨论）以公开主页名或打码后的昵称显示。收藏的帖子只有你自己能看到，帖子上只显示被收藏的总次数。参与讨论帖里的投票时，平台记录你的账号选了哪几项，用来保证每个账号只投一次；结果只显示每个选项的票数和投票人数，不公开谁投了什么。
+              </p>
+              <p>
+                在面经讨论、求职、上岸故事频道，以及面经评论、面试题回答和系统设计章节下发帖时，可以选择匿名发布；面经投稿也可以匿名。匿名内容对其他人不显示主页名、昵称、员工徽章和声望，你在自己匿名帖下的回复同样显示为匿名，也不会出现在你的公开主页上；平台仍记录作者，你自己和负责审核的老师能看到是谁发的，点赞照常给你积分，但不计入公开的声望。声望是你的帖子被点赞、面经通过审核所得积分的合计（不含匿名内容），只在公开主页名旁边和主页上显示。别人回复你的帖子或评论、用 @主页名 提到你（只认已公开的主页名，屏蔽了对方就不会收到）、赞了你的帖子时，你会收到站内通知，内容是对方的主页名或打码后的昵称（匿名作者不显示）和一行摘要；同一帖子一天内的点赞合并成一条。这些通知不发邮件。
               </p>
               <p>
                 参加比赛时，计分板只显示你报名时填写的比赛昵称；周赛、入门赛和 1v1 排位的 rating 与胜负记录保存在你的账号里，只有你在公开主页上打开「展示比赛记录」后才会出现在主页上。排位匹配期间，平台暂存你的比赛昵称、对战 rating 和排队时间，匹配成功或取消时删除，离开页面后最迟 20 分钟内删除。报名时可以选择「赛后公开我的 AC 代码」（默认不勾选）：勾选后，比赛结束 15 分钟起，能打开该场比赛的登录用户可以看到你在比赛时间内每题首次通过的代码；之后随时可以在比赛页关掉，关掉后不再向任何人展示。计分板的「只看关注」只列出主页展示比赛记录的人。
@@ -212,7 +215,7 @@ export function PrivacyDocument() {
               practice, and teaching feedback. This notice explains how the
               platform currently handles your data and how you can contact us.
             </p>
-            <p className="privacy-updated">Updated October 14, 2026</p>
+            <p className="privacy-updated">Updated October 15, 2026</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">Accounts and third-party sign-in</h2>
@@ -283,6 +286,26 @@ export function PrivacyDocument() {
                 records which options your account chose, so each account votes
                 once; results show only each option’s count and the number of
                 voters, never who voted for what.
+              </p>
+              <p>
+                You may post anonymously in the Interviews, Careers and Offers
+                channels, under interview experiences and questions and in a
+                system design chapter’s discussion, and you may submit an
+                interview experience anonymously. Others then see no handle,
+                name, employee badge or reputation, your replies under your own
+                anonymous post show as anonymous too, and it stays off your
+                public profile. The platform still records you as the author:
+                you and the reviewing instructors can see it is yours, and
+                upvotes still earn you points, though not public reputation.
+                Reputation is the points your posts’ upvotes and approved
+                interview reports earned (anonymous ones left out), shown only
+                beside your public handle and on your profile. When someone
+                replies to your post or comment, mentions you by @handle (only
+                visible handles count, and not if you blocked them) or upvotes
+                your post, you get an on-site notification with their handle or
+                masked name (none for an anonymous author) and a one-line
+                excerpt; a day’s upvotes on one post merge into one. No email
+                is sent for these.
               </p>
               <p>
                 In contests, scoreboards show only the contest name you enter

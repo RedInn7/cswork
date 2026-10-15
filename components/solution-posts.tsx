@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
-import { targetKind, threadPath, type TargetKind } from '@/lib/community';
+import { anonymousAllowed, postHref, targetKind, threadPath, type TargetKind } from '@/lib/community';
 import { STOP_NAMES } from '@/lib/route-stops';
 import { StatementMarkdown } from './statement-markdown';
 import { Report } from './chat-log';
@@ -56,6 +56,12 @@ export type PostSummary = {
   employer?: string | null;
   /** A referral thread by a verified employee of its company: it takes referral requests. */
   referral?: boolean;
+  /** Posted anonymously: author is '' to everyone but its author. */
+  anonymous?: boolean;
+  /** Featured by a moderator: listed first. */
+  pinned?: boolean;
+  /** The author's answer reputation, beside a public handle only. */
+  reputation?: number | null;
 };
 /** A thread's poll; counts arrive once this reader has voted or it has closed. */
 export type Poll = {
@@ -68,8 +74,23 @@ export type Poll = {
   mine: number[];
   counts: number[] | null;
 };
-type Comment = { id: string; body: string; createdAt: number; author: string; mine: boolean };
-type Detail = { post: PostSummary & { body: string; poll?: Poll | null }; comments: Comment[] };
+type Comment = {
+  id: string;
+  /** Set on a reply: its top-level comment, which comes right before it. */
+  parentId?: string | null;
+  body: string;
+  createdAt: number;
+  author: string;
+  mine: boolean;
+  votes?: number;
+  voted?: boolean;
+  /** Written by the post's author (anonymous too, on an anonymous post). */
+  op?: boolean;
+  anonymous?: boolean;
+  reputation?: number | null;
+};
+/** `moderator`: the reader may feature (pin) the post. */
+type Detail = { post: PostSummary & { body: string; poll?: Poll | null }; comments: Comment[]; moderator?: boolean };
 /** `next`: the saved list's raw offset (it can drop rows it no longer shows). */
 type Page = { solved: boolean; items: PostSummary[]; more: boolean; next?: number };
 type Confirm = { title: string; description: string; action: string; run: () => void };
@@ -197,10 +218,32 @@ const authRequired = () => {
 function Badges({ post, t }: { post: PostSummary; t: T }) {
   return (
     <>
+      {post.pinned && (
+        <span className="cs-post-badge" data-pinned>
+          {t('精选', 'Featured')}
+        </span>
+      )}
       {post.employer && (
         <span className="cs-post-badge">{t(`已验证 · ${post.employer} 员工`, `Verified · ${post.employer} employee`)}</span>
       )}
       {post.referral && <span className="cs-post-badge" data-referral>{t('可内推', 'Gives referrals')}</span>}
+    </>
+  );
+}
+/**
+ * Who wrote a post or comment: "Anonymous" on an anonymous one (its author sees their own name,
+ * marked), with the author's reputation beside a public handle.
+ */
+function Author({ who, t, as: Tag = 'span' }: { who: Comment | PostSummary; t: T; as?: 'span' | 'strong' }) {
+  return (
+    <>
+      <Tag>{who.anonymous && !who.mine ? t('匿名用户', 'Anonymous') : who.author || t('学员', 'Learner')}</Tag>
+      {who.anonymous && who.mine && <span>{t('（匿名发布）', '(posted anonymously)')}</span>}
+      {who.reputation != null && (
+        <span title={t('帖子被点赞、面经通过审核所得的积分', 'Points from upvoted posts and approved interview reports')}>
+          {t(`声望 ${who.reputation}`, `${who.reputation} rep`)}
+        </span>
+      )}
     </>
   );
 }
@@ -487,7 +530,7 @@ export function SolutionPosts({
                   {post.excerpt && <span className="cs-post-row-excerpt">{plainExcerpt(post.excerpt)}</span>}
                   <span className="cs-post-row-meta">
                     {saved && <span className="cs-post-lang">{t(...POST_KINDS[postKind])}</span>}
-                    <span>{post.author || t('学员', 'Learner')}</span>
+                    <Author who={post} t={t} />
                     <Badges post={post} t={t} />
                     <span>{day(post.createdAt, english)}</span>
                     {post.language && <span className="cs-post-lang">{langName(post.language)}</span>}
@@ -556,6 +599,9 @@ function PostView({
   const [detail, setDetail] = useState<Detail | null>(null);
   const [error, setError] = useState('');
   const [comment, setComment] = useState('');
+  // The comment a reply box is open under, and what is typed in it.
+  const [replyTo, setReplyTo] = useState<Comment | null>(null);
+  const [reply, setReply] = useState('');
   const [busy, setBusy] = useState(false);
   useEffect(() => {
     let live = true;
@@ -610,19 +656,48 @@ function PostView({
       setError((e as Error).message);
     }
   }
-  async function send(event: FormEvent) {
+  // A reply to a reply goes under the same top-level comment (replies nest one level).
+  async function send(event: FormEvent, parent?: Comment) {
     event.preventDefault();
     if (!signedIn) return authRequired();
-    if (!comment.trim()) return;
+    const body = parent ? reply : comment;
+    if (!body.trim()) return;
     setBusy(true);
     setError('');
     try {
-      setDetail(await api<Detail>(`oj/posts/${post.id}/comments`, { body: comment }));
-      setComment('');
+      setDetail(
+        await api<Detail>(`oj/posts/${post.id}/comments`, {
+          body,
+          ...(parent && { parentId: parent.parentId || parent.id }),
+        }),
+      );
+      if (parent) {
+        setReply('');
+        setReplyTo(null);
+      } else setComment('');
     } catch (e) {
       setError((e as Error).message);
     } finally {
       setBusy(false);
+    }
+  }
+  async function voteComment(c: Comment) {
+    if (!signedIn) return authRequired();
+    setError('');
+    try {
+      const r = await api<{ votes: number; voted: boolean }>(`oj/post-comments/${c.id}/vote`, { on: !c.voted });
+      setDetail((d) => d && { ...d, comments: d.comments.map((x) => (x.id === c.id ? { ...x, ...r } : x)) });
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
+  async function pin() {
+    setError('');
+    try {
+      const r = await api<{ pinned: boolean }>(`oj/posts/${post.id}/${post.pinned ? 'unpin' : 'pin'}`, {});
+      setDetail((d) => d && { ...d, post: { ...d.post, pinned: r.pinned } });
+    } catch (e) {
+      setError((e as Error).message);
     }
   }
   const remove = (path: string, then: () => void) => async () => {
@@ -644,7 +719,7 @@ function PostView({
       )}
       {(postKind === 'problem' || postKind === 'discuss') && <h3 className="cs-post-title">{post.title}</h3>}
       <p className="cs-post-meta">
-        <span>{post.author || t('学员', 'Learner')}</span>
+        <Author who={post} t={t} />
         <Badges post={post} t={t} />
         <span>{day(post.createdAt, english)}</span>
         {post.updatedAt > post.createdAt + 60000 && <span>{t('已编辑', 'edited')}</span>}
@@ -713,6 +788,11 @@ function PostView({
         ) : (
           signedIn && <Report path={`oj/posts/${post.id}/report`} english={english} />
         )}
+        {detail.moderator && (
+          <button type="button" className="cs-post-act" aria-pressed={!!post.pinned} onClick={() => void pin()}>
+            {post.pinned ? t('取消精选', 'Unfeature') : t('设为精选', 'Feature')}
+          </button>
+        )}
         {post.referral && !post.mine && (
           <a
             className="cs-post-act cs-post-refer"
@@ -740,10 +820,33 @@ function PostView({
         {!!detail.comments.length && (
           <ul>
             {detail.comments.map((c) => (
-              <li key={c.id}>
+              <li key={c.id} data-reply={c.parentId ? '' : undefined}>
                 <div className="cs-comment-meta">
-                  <strong>{c.author || t('学员', 'Learner')}</strong>
+                  <Author who={c} t={t} as="strong" />
+                  {c.op && <span className="cs-post-lang">{t('楼主', 'OP')}</span>}
                   <span>{day(c.createdAt, english)}</span>
+                  <button
+                    type="button"
+                    className="cs-post-act"
+                    data-vote
+                    aria-pressed={!!c.voted}
+                    disabled={c.mine}
+                    aria-label={t(`点赞，${c.votes ?? 0} 人赞过`, `Upvote, ${c.votes ?? 0} so far`)}
+                    onClick={() => void voteComment(c)}
+                  >
+                    <ThumbsUp size={13} aria-hidden="true" />
+                    {c.votes ?? 0}
+                  </button>
+                  {post.hidden !== MODERATED && (
+                    <button
+                      type="button"
+                      className="cs-post-act"
+                      aria-expanded={replyTo?.id === c.id}
+                      onClick={() => (signedIn ? setReplyTo(replyTo?.id === c.id ? null : c) : authRequired())}
+                    >
+                      {t('回复', 'Reply')}
+                    </button>
+                  )}
                   {c.mine ? (
                     <button
                       type="button"
@@ -768,6 +871,22 @@ function PostView({
                   )}
                 </div>
                 <p className="cs-comment-body">{c.body}</p>
+                {replyTo?.id === c.id && (
+                  <form className="cs-comment-form" onSubmit={(e) => void send(e, c)}>
+                    <textarea
+                      value={reply}
+                      onChange={(e) => setReply(e.target.value)}
+                      maxLength={COMMENT_MAX}
+                      rows={2}
+                      autoFocus
+                      aria-label={t('写回复', 'Write a reply')}
+                      placeholder={t('回复这条评论……', 'Reply to this comment…')}
+                    />
+                    <button type="submit" disabled={busy || !reply.trim()}>
+                      {t('发表回复', 'Reply')}
+                    </button>
+                  </form>
+                )}
               </li>
             ))}
           </ul>
@@ -971,6 +1090,9 @@ function PostEditor({
   const pollLocked = !!initial?.poll?.voters;
   const editPoll = (change: Partial<NonNullable<typeof poll>>) => setPoll((p) => p && { ...p, ...change });
   const [preview, setPreview] = useState(false);
+  // Chosen once, when posting: switching later would tie the post back to its author.
+  const [anonymous, setAnonymous] = useState(false);
+  const canHide = !initial && anonymousAllowed(problemId);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   async function save(event: FormEvent) {
@@ -990,7 +1112,7 @@ function PostEditor({
       };
       const saved = initial
         ? await api<Detail>(`oj/posts/${initial.id}/edit`, data)
-        : await api<Detail>('oj/posts', { ...data, problemId });
+        : await api<Detail>('oj/posts', { ...data, problemId, ...(canHide && anonymous && { anonymous }) });
       onSaved(saved.post.id);
     } catch (e) {
       setError((e as Error).message);
@@ -1184,6 +1306,15 @@ function PostEditor({
           )}
         </fieldset>
       )}
+      {canHide && (
+        <label className="cs-poll-check">
+          <input type="checkbox" checked={anonymous} onChange={(e) => setAnonymous(e.target.checked)} />
+          {t(
+            '匿名发布：其他人看不到你的主页名、昵称和声望，你在帖子下的回复也显示为匿名；发布后不能改。',
+            'Post anonymously: others see no handle, name or reputation, and your replies under it stay anonymous too. This can’t be changed later.',
+          )}
+        </label>
+      )}
       {error && (
         <p className="cs-posts-error" role="alert">
           {error}
@@ -1239,16 +1370,6 @@ const POST_KINDS: Record<TargetKind, [string, string]> = {
   exp: ['面经评论', 'Experience comment'],
   sd: ['章节讨论', 'Chapter discussion'],
 };
-/** Where a moderator reads a post in place: its problem, its thread page or its library item. */
-function targetHref(target: string, postId: string) {
-  const kind = targetKind(target);
-  const key = target.slice(target.indexOf(':') + 1);
-  if (kind === 'discuss') return `/?view=discuss&channel=${encodeURIComponent(key)}&post=${encodeURIComponent(postId)}`;
-  if (kind === 'q' || kind === 'exp')
-    return `/?${new URLSearchParams({ view: 'content', type: kind === 'q' ? 'interview_question' : 'experience', slug: key })}`;
-  if (kind === 'sd') return `/system-design/${encodeURIComponent(key)}`;
-  return `/?view=problem&problem=${encodeURIComponent(target)}`;
-}
 
 /** The teacher view's tab: reported posts and comments first, then the latest; hide, restore or dismiss. */
 export function PostModeration() {
@@ -1299,7 +1420,7 @@ export function PostModeration() {
         {item.kind === 'gmsg' ? (
           <a href={`/?view=group&id=${encodeURIComponent(item.postId)}`}>{item.title}</a>
         ) : (
-          item.kind !== 'dm' && <a href={targetHref(item.problemId, item.postId)}>{item.problemId}</a>
+          item.kind !== 'dm' && <a href={postHref(item.problemId, item.postId)}>{item.problemId}</a>
         )}
         <span>{item.author || t('学员', 'Learner')}</span>
         <span>{day(item.createdAt, english)}</span>

@@ -60,7 +60,9 @@ export default async function ThreadPage({ params }: Props) {
       <header className="discuss-thread-head">
         <h1>{post.title}</h1>
         <p className="discuss-row-meta">
-          <span>{post.author || t('学员', 'Learner')}</span>
+          <span>{post.anonymous ? t('匿名用户', 'Anonymous') : post.author || t('学员', 'Learner')}</span>
+          {post.reputation != null && <span>{t(`声望 ${post.reputation}`, `${post.reputation} rep`)}</span>}
+          {post.pinned && <span className="discuss-chip">{t('精选', 'Featured')}</span>}
           {post.employer && (
             <span className="discuss-chip">{t(`已验证 · ${post.employer} 员工`, `Verified · ${post.employer} employee`)}</span>
           )}
@@ -113,10 +115,12 @@ export default async function ThreadPage({ params }: Props) {
         {comments.length ? (
           <ol className="discuss-replies">
             {comments.map((c) => (
-              <li key={c.id}>
+              <li key={c.id} data-reply={c.parentId ? '' : undefined}>
                 <p className="discuss-row-meta">
-                  <strong>{c.author || t('学员', 'Learner')}</strong>
+                  <strong>{c.anonymous ? t('匿名用户', 'Anonymous') : c.author || t('学员', 'Learner')}</strong>
+                  {c.op && <span>{t('楼主', 'OP')}</span>}
                   <span>{day(c.createdAt, zh)}</span>
+                  {!!c.votes && <span>{t(`${c.votes} 赞`, `${c.votes} ${c.votes === 1 ? 'upvote' : 'upvotes'}`)}</span>}
                 </p>
                 {/* Replies are plain text, as in the app. */}
                 <p className="discuss-reply-body">{c.body}</p>
