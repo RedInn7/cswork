@@ -3397,6 +3397,801 @@
           "whyEn": "A negative balance is owed tokens; later callers owe more and wait longer, enforcing the rate without a separate wait queue. The cost: if a caller is cancelled after reserving, that quota is wasted."
         }
       ]
+    },
+    {
+      "slug": "ml-design-framework",
+      "titleZh": "ML 系统设计框架",
+      "titleEn": "ML System Design Framework",
+      "bodyZh": "ML 系统设计面试（常见于机器学习工程师岗位）同样是 45–60 分钟、一句话的题目，比如“设计视频首页推荐”“设计支付欺诈检测”。和传统系统设计相比，面试官更关心：你能不能把业务目标翻译成可以训练的 ML 任务，标签从哪里来，用什么特征，怎么离线和线上评估，模型上线以后怎么提供服务、怎么发现它变差。\n\n基础设施仍然重要，但通常只占一部分时间。架构图画得再漂亮，标签定义错了，整个系统也是在优化错误的目标。\n\n## 1. 六个步骤与时间分配\n\n| 步骤 | 时间 | 产出 |\n|---|---|---|\n| 1. 需求与业务目标 | ~5 分钟 | 业务指标、规模、延迟、范围 |\n| 2. 问题形式化 | ~5 分钟 | ML 任务类型、标签定义、输入输出 |\n| 3. 数据与特征 | ~10 分钟 | 数据来源、样本构造、特征列表 |\n| 4. 模型 | ~10 分钟 | 基线和主模型，以及选择理由 |\n| 5. 训练与评估 | ~8 分钟 | 数据切分、离线指标、A/B 方案 |\n| 6. 服务与监控 | ~7 分钟 | 在线推理链路、监控、重训与兜底 |\n\n```mermaid\nflowchart LR\n  accTitle: ML 系统设计的六个步骤\n  goal[\"需求与业务目标\"] --> frame[\"问题形式化\"] --> data[\"数据与特征\"] --> model[\"模型\"] --> evalx[\"训练与评估\"] --> serve[\"服务与监控\"]\n  serve -->|\"线上数据和新标签\"| data\n```\n\n最后一条回边是 ML 系统和普通服务最大的不同：模型上线后产生的数据，会成为下一版模型的训练数据。\n\n## 2. 需求与业务目标\n\n先问清楚“成功”是什么意思。以视频推荐为例：\n\n- **业务目标**：提升用户的长期活跃和满意度，而不是单纯多几次点击\n- **规模**：日活、候选物品数量、每秒请求数\n- **延迟**：推荐接口 p99 在 200 ms 以内，留给模型的可能只有几十毫秒\n- **约束**：新用户和新物品（冷启动）、内容安全、隐私、地区合规\n- **范围**：说明不做什么，比如不设计视频上传和转码\n\n业务指标往往无法直接优化（“30 天留存”要等 30 天才知道），所以要找一个**代理目标**，比如“这次推荐被点开并观看超过 30 秒的概率”。主动说出代理目标和业务目标之间的差距：只优化点击率，模型会学会推标题党。\n\n## 3. 问题形式化\n\n把业务问题翻译成 ML 任务：\n\n| 任务类型 | 例子 | 输出 |\n|---|---|---|\n| 二分类 | 点击预估、欺诈检测 | 概率 |\n| 回归 | 到达时间、观看时长 | 数值 |\n| 排序 | 搜索结果、推荐列表 | 物品的相对顺序 |\n| 多任务 | 同时预测点击、时长、点赞 | 多个输出加权组合 |\n\n**标签定义要具体**：“正样本 = 曝光后 10 分钟内点击，且观看超过 30 秒”；“负样本 = 曝光但没有点击”。同时说明标签什么时候到达：点击几分钟内就有，购买转化可能晚几天，欺诈的拒付要等一到三个月。\n\n也要能说出什么时候**不该用 ML**：规则已经足够好、没有可用的标签、或者每个决定都必须能完整解释。\n\n## 4. 数据与特征\n\n**数据来源**：曝光和点击日志、用户和物品的属性表、人工标注、第三方数据。\n\n**样本构造**：\n- 只有被展示过的物品才有反馈，这是**选择偏差**；排在前面的结果天然点击更多，这是**位置偏差**\n- 正负样本极不均衡时（欺诈约 0.1%），可以对负样本降采样，但预测概率要校正回来\n\n**特征分四类**：用户特征、物品特征、上下文特征（时间、设备、位置）、交叉特征（比如用户对这个类目的历史点击率）。高基数的 ID 用 embedding 或哈希分桶。\n\n两个最常见的失分点：\n\n1. **数据泄漏**：特征必须按事件发生那一刻的状态计算（point-in-time），不能用到之后才知道的信息\n2. **训练与服务不一致**（train-serve skew）：训练时用离线 SQL 算特征，线上用另一套代码算，结果对不上。解决办法是用特征平台共享特征定义，或者在线上请求时把特征值记进日志，直接拿来训练\n\n## 5. 模型\n\n**先给基线**：热门榜、规则、逻辑回归或 GBDT。基线帮你确认数据和评估链路是通的，也给后面的复杂模型一个比较对象。\n\n然后按数据量和问题选主模型：\n\n- 表格类特征、样本在千万级以内：GBDT 往往就很强，训练快、好解释\n- 海量稀疏特征和 ID：深度模型（embedding 加特征交叉层），可以做多任务\n- 候选集巨大的推荐和搜索：多阶段漏斗，先用便宜的模型召回一千个左右，再用重模型精排\n\n每个选择都说清代价：延迟、训练成本、可解释性、需要多少数据。\n\n## 6. 训练与评估\n\n**数据切分按时间**：用前几周训练，后一周验证。随机切分会把未来的信息泄漏进训练集，离线指标虚高。\n\n**离线指标**：\n\n| 场景 | 指标 |\n|---|---|\n| 分类（样本均衡） | AUC、log loss |\n| 分类（正样本极少） | PR-AUC、固定误报率下的召回 |\n| 排序 | NDCG@k、MRR |\n| 召回 | Recall@k |\n| 概率要被下游直接使用 | 校准：预测均值与实际比例之比接近 1 |\n\n**线上评估**：A/B 测试才是最终裁判。定一个主指标（比如人均观看时长）和几个护栏指标（延迟、投诉率、收入）。实验至少覆盖一两个完整的周，避开新奇效应。离线指标涨了、线上没涨很常见，原因通常是代理目标与业务目标不一致，或者训练与服务不一致。\n\n## 7. 服务与监控\n\n**在线还是批量**：输入能提前知道、几小时的延迟可以接受（每日推荐邮件），就离线批量算好存起来；依赖实时上下文（当前搜索词、刚看完的视频），就在线推理。\n\n**在线链路**：请求 → 召回候选 → 从在线特征库取特征 → 模型服务打分 → 业务规则重排 → 返回，并把曝光和当时的特征记进日志。给每一段分配延迟预算。\n\n**上线方式**：影子模式（只打分不生效）→ 小流量灰度 → A/B → 全量，保留一键回滚。\n\n**监控**：\n- 输入特征的分布漂移、缺失率\n- 预测分数的分布\n- 标签到达后的真实效果（往往有延迟）\n- 系统指标：延迟、超时率\n\n**兜底**：模型服务超时或特征缺失时，退回热门榜或规则，不能让整个功能挂掉。重训节奏按数据变化速度定：广告可能每小时更新，推荐每天，风控每周。\n\n## 8. 常见的坑\n\n- 没定义标签和基线，开口就上深度模型\n- 时间相关的数据随机切分\n- 只讲离线指标，没有 A/B 方案\n- 忽略训练与服务不一致、特征新鲜度\n- 忽略反馈闭环：模型只能从自己展示过的结果里学习\n- 没有监控，也没有兜底\n\n## 9. 面试节奏建议\n\n目标和形式化控制在 10 分钟内，这一步定错，后面全错；数据和特征通常是最能拉开差距的部分，值得多花时间；模型部分讲清基线和取舍即可，不必背论文；最后留几分钟讲上线、监控和兜底，很多候选人在这里没时间而丢分。",
+      "bodyEn": "ML system design interviews (common for machine learning engineer roles) are also 45-60 minutes and one sentence long: \"design the video home feed\", \"design payment fraud detection\". Compared with classic system design, the interviewer cares more about whether you can turn a business goal into a trainable ML task, where the labels come from, which features you use, how you evaluate offline and online, and how the model is served and watched once it ships.\n\nInfrastructure still matters, but it is only part of the time. A beautiful architecture that optimizes the wrong label is still the wrong system.\n\n## 1. Six Steps and Their Time\n\n| Step | Time | Output |\n|---|---|---|\n| 1. Requirements and business goal | ~5 min | Business metric, scale, latency, scope |\n| 2. Problem framing | ~5 min | ML task type, label definition, inputs and outputs |\n| 3. Data and features | ~10 min | Data sources, how examples are built, feature list |\n| 4. Model | ~10 min | A baseline, the main model, and why |\n| 5. Training and evaluation | ~8 min | Data splits, offline metrics, A/B plan |\n| 6. Serving and monitoring | ~7 min | Online inference path, monitoring, retraining and fallback |\n\n```mermaid\nflowchart LR\n  accTitle: The six steps of ML system design\n  goal[\"Requirements and goal\"] --> frame[\"Problem framing\"] --> data[\"Data and features\"] --> model[\"Model\"] --> evalx[\"Training and evaluation\"] --> serve[\"Serving and monitoring\"]\n  serve -->|\"live data and new labels\"| data\n```\n\nThe back edge is what sets ML systems apart: the data a model produces in production becomes the training data for its next version.\n\n## 2. Requirements and Business Goal\n\nAsk what success means. For video recommendations:\n\n- **Business goal**: long-term engagement and satisfaction, not just more clicks\n- **Scale**: DAU, number of candidate items, requests per second\n- **Latency**: the recommendation API under 200 ms at p99, leaving the model perhaps tens of ms\n- **Constraints**: new users and new items (cold start), safety, privacy, regional rules\n- **Scope**: say what you won't design, such as upload and transcoding\n\nBusiness metrics are rarely optimizable directly (30-day retention takes 30 days to observe), so pick a **proxy objective**, such as \"the probability this recommendation is opened and watched for more than 30 seconds\". Say out loud how the proxy can drift from the goal: optimize clicks alone and the model learns clickbait.\n\n## 3. Problem Framing\n\nTranslate the business problem into an ML task:\n\n| Task type | Example | Output |\n|---|---|---|\n| Binary classification | Click prediction, fraud | Probability |\n| Regression | Arrival time, watch time | Number |\n| Ranking | Search results, feeds | Relative order of items |\n| Multi-task | Click, watch time and like together | Several outputs combined with weights |\n\n**Define labels precisely**: \"positive = clicked within 10 minutes of the impression and watched for more than 30 seconds\"; \"negative = shown but not clicked\". Also say when labels arrive: clicks within minutes, purchases within days, fraud chargebacks after one to three months.\n\nKnow when **not** to use ML: rules already work, there are no usable labels, or every decision must be fully explainable.\n\n## 4. Data and Features\n\n**Sources**: impression and click logs, user and item tables, human labels, third-party data.\n\n**Building examples**:\n- Only items that were shown get feedback (**selection bias**); top positions get more clicks whatever they hold (**position bias**)\n- With extreme imbalance (fraud is about 0.1%), you can downsample negatives, but predicted probabilities must be corrected back\n\n**Four kinds of features**: user, item, context (time, device, location) and cross features (such as this user's past click rate on this category). High-cardinality IDs become embeddings or hashed buckets.\n\nThe two most common ways to lose points:\n\n1. **Leakage**: features must be computed as of the moment of the event (point-in-time), never with information that arrived later\n2. **Train-serve skew**: training computes features with offline SQL, serving with different code, and the values disagree. Share feature definitions through a feature store, or log feature values at serving time and train on those\n\n## 5. Model\n\n**Start with a baseline**: popularity, rules, logistic regression or GBDT. It proves the data and evaluation pipeline work and gives the bigger model something to beat.\n\nThen pick the main model by data and problem:\n\n- Tabular features, up to tens of millions of examples: GBDT is often strong, fast to train and explainable\n- Massive sparse features and IDs: deep models (embeddings plus feature-interaction layers), possibly multi-task\n- Huge candidate sets in recommendation and search: a multi-stage funnel where a cheap model retrieves about a thousand candidates and a heavy model ranks them\n\nName the cost of each choice: latency, training cost, interpretability, data required.\n\n## 6. Training and Evaluation\n\n**Split by time**: train on earlier weeks, validate on the next one. A random split leaks the future into training and inflates offline metrics.\n\n**Offline metrics**:\n\n| Situation | Metric |\n|---|---|\n| Classification, balanced | AUC, log loss |\n| Classification, very rare positives | PR-AUC, recall at a fixed false-positive rate |\n| Ranking | NDCG@k, MRR |\n| Retrieval | Recall@k |\n| Probabilities used downstream as values | Calibration: mean prediction over actual rate near 1 |\n\n**Online**: the A/B test is the final judge. Pick one primary metric (watch time per user) and a few guardrails (latency, complaints, revenue). Run at least one or two full weeks to get past novelty effects. Offline gains with no online gain are common; the usual causes are a proxy that drifted from the goal, or train-serve skew.\n\n## 7. Serving and Monitoring\n\n**Online or batch**: if inputs are known ahead and hours of staleness are fine (a daily recommendation email), precompute in batch and store the results; if predictions depend on live context (the current query, the video just watched), infer online.\n\n**Online path**: request → retrieve candidates → fetch features from the online store → score on the model server → re-rank with business rules → respond, logging impressions with their features. Give each stage a latency budget.\n\n**Rollout**: shadow mode (score without acting) → small canary → A/B → full traffic, with one-click rollback.\n\n**Monitoring**:\n- Feature distribution drift and missing rates\n- The distribution of predicted scores\n- Real performance once labels arrive (often late)\n- System metrics: latency, timeouts\n\n**Fallback**: if the model server times out or features are missing, fall back to popularity or rules; never take the whole feature down. Retrain as fast as the data changes: ads perhaps hourly, recommendations daily, fraud weekly.\n\n## 8. Common Mistakes\n\n- A deep model before any label definition or baseline\n- Random splits on time-dependent data\n- Offline metrics only, no A/B plan\n- Ignoring train-serve skew and feature freshness\n- Ignoring the feedback loop: the model only learns from what it chose to show\n- No monitoring and no fallback\n\n## 9. Pacing\n\nKeep the goal and framing under 10 minutes; get them wrong and everything after is wrong. Data and features usually separate candidates the most, so spend time there. For the model, a baseline and clear trade-offs beat reciting papers. Save a few minutes for rollout, monitoring and fallback, where many candidates run out of time.",
+      "quiz": [
+        {
+          "qZh": "训练点击率模型时，为什么要按时间切分训练集和验证集，而不是随机切分？",
+          "qEn": "Why split a click model's data into training and validation by time rather than at random?",
+          "choices": [
+            {
+              "zh": "随机切分后验证集太小，AUC 的置信区间会宽得没法用",
+              "en": "A random split leaves the validation set too small for a stable AUC"
+            },
+            {
+              "zh": "时间切分能让训练集和验证集的正样本比例完全相同",
+              "en": "A time split makes the positive rate identical in both sets"
+            },
+            {
+              "zh": "随机切分会把验证期之后的信息带进训练，离线指标偏高",
+              "en": "A random split leaks later information into training and inflates metrics"
+            },
+            {
+              "zh": "按时间切分能减少特征数量，让模型收敛得更快",
+              "en": "A time split cuts the feature count, so the model converges noticeably faster"
+            }
+          ],
+          "answer": 2,
+          "whyZh": "用户行为和物品热度都随时间变化。随机切分时，同一个用户“未来”的行为可能出现在训练集里，特征也可能用到验证期才产生的统计量，模型等于提前看到了答案。线上模型永远只能用过去预测未来，离线评估也要这样切。",
+          "whyEn": "User behavior and item popularity change over time. With a random split, a user's future behavior can sit in the training set and features can use statistics from the validation period, so the model has already seen the answers. In production a model only ever predicts the future from the past; offline evaluation should be split the same way."
+        },
+        {
+          "qZh": "欺诈交易只占 0.1%。下面哪个离线指标最能反映模型的实际价值？",
+          "qEn": "Fraud is 0.1% of transactions. Which offline metric best reflects the model's real value?",
+          "choices": [
+            {
+              "zh": "准确率，因为它直接统计了判对的交易占比",
+              "en": "Accuracy, since it counts the share of transactions judged correctly"
+            },
+            {
+              "zh": "PR-AUC，或固定误报率下的召回",
+              "en": "PR-AUC, or recall at a fixed false-positive rate"
+            },
+            {
+              "zh": "预测概率与标签之间的均方误差",
+              "en": "Mean squared error between scores and labels"
+            },
+            {
+              "zh": "训练集上的 log loss，因为它对概率最敏感",
+              "en": "Training-set log loss, as it is most sensitive to probabilities"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "全部预测为正常交易就有 99.9% 的准确率，但一笔欺诈也没抓到。PR-AUC 关注正样本上的精确率和召回，不会被海量负样本冲淡；业务上更直接的问题是“在可接受的误拒率下能抓住多少欺诈”。训练集上的指标说明不了泛化能力。",
+          "whyEn": "Calling everything legitimate scores 99.9% accuracy and catches no fraud. PR-AUC looks at precision and recall on the positives and isn't diluted by the flood of negatives; the business question is how much fraud you catch at an acceptable false-decline rate. Training-set metrics say nothing about generalization."
+        },
+        {
+          "qZh": "什么是训练与服务不一致（train-serve skew），常见的解决办法是什么？",
+          "qEn": "What is train-serve skew, and what is the usual fix?",
+          "choices": [
+            {
+              "zh": "线上和训练用了不同的模型版本，每次发版都要全量重训",
+              "en": "Serving runs another model version, so retrain fully on every release"
+            },
+            {
+              "zh": "训练数据比线上数据多，应该对训练集降采样",
+              "en": "Training has more data than serving, so downsample the training set"
+            },
+            {
+              "zh": "线上流量太大，需要给模型服务多加机器",
+              "en": "Serving traffic is too high, so add machines to the model server"
+            },
+            {
+              "zh": "同一特征线上线下算法不同；共享定义或记录线上值",
+              "en": "Offline and online compute a feature differently; share or log it"
+            }
+          ],
+          "answer": 3,
+          "whyZh": "典型例子：训练用离线 SQL 统计“过去 7 天点击数”，线上用另一段代码从缓存里算，时间窗口和去重规则稍有不同，模型在线上看到的分布就和训练时不一样。特征平台让两边共用同一份定义；更彻底的做法是在线上请求时把实际用到的特征值记进日志，直接拿来训练。",
+          "whyEn": "A typical case: training computes clicks in the last 7 days with offline SQL while serving computes it from a cache with slightly different windows or dedup rules, so the model sees a different distribution online than in training. A feature store shares one definition between the two; the stronger fix is logging the feature values actually used at serving time and training on them."
+        },
+        {
+          "qZh": "视频推荐只优化点击率，最可能出现什么问题？",
+          "qEn": "What is the most likely problem if video recommendations optimize click-through alone?",
+          "choices": [
+            {
+              "zh": "标题党被推上来，用户点开就走，留存下降",
+              "en": "Clickbait rises; users open and leave, and retention drops"
+            },
+            {
+              "zh": "模型参数会越来越多，线上推理的延迟超出预算",
+              "en": "The model grows too many parameters and blows its latency budget"
+            },
+            {
+              "zh": "点击率无法离线计算，只能靠线上 A/B 测试来评估",
+              "en": "CTR can't be computed offline, only measured in online A/B tests"
+            },
+            {
+              "zh": "新视频的点击率永远是零，所以永远不会被推荐",
+              "en": "New videos always have zero CTR, so they are never recommended"
+            }
+          ],
+          "answer": 0,
+          "whyZh": "点击只是代理目标。模型会发现能骗来点击的内容，但用户看几秒就离开，满意度和留存反而下降。常见做法是把观看时长、完播、点赞、“不感兴趣”等多个目标一起建模，再按业务目标加权。",
+          "whyEn": "Clicks are only a proxy. The model finds content that baits clicks, users leave after a few seconds, and satisfaction and retention fall. The usual fix is to model watch time, completion, likes and not-interested feedback together and weight them toward the business goal."
+        },
+        {
+          "qZh": "下面哪种场景最适合离线批量预测，而不是在线实时推理？",
+          "qEn": "Which of these suits offline batch prediction rather than online inference?",
+          "choices": [
+            {
+              "zh": "根据用户刚输入的搜索词对商品排序",
+              "en": "Ranking products for the search query the user has just typed"
+            },
+            {
+              "zh": "支付时判断这笔交易是不是欺诈",
+              "en": "Deciding at checkout whether a payment is fraud"
+            },
+            {
+              "zh": "根据刚看完的视频推荐下一个",
+              "en": "Recommending the next video after the one just watched"
+            },
+            {
+              "zh": "每天早上发出的个性化推荐邮件",
+              "en": "The personalized recommendation email sent every morning"
+            }
+          ],
+          "answer": 3,
+          "whyZh": "邮件的输入（用户画像、候选内容）提前就知道，发送前几小时算好结果完全可以接受，批量计算更省钱，也不受在线延迟限制。另外三个场景都依赖请求那一刻的上下文，只能在线推理。",
+          "whyEn": "The email's inputs (user profile, candidate content) are known in advance and results computed hours ahead are fine; batch is cheaper and free of online latency limits. The other three depend on context that exists only at request time, so they need online inference."
+        },
+        {
+          "qZh": "新模型离线 AUC 明显提升，但 A/B 测试里主指标没有变化。最应该先查什么？",
+          "qEn": "A new model clearly improves offline AUC, but the A/B test shows no change in the primary metric. What should you check first?",
+          "choices": [
+            {
+              "zh": "A/B 平台一定出了故障，应该换一个平台重做实验",
+              "en": "The A/B platform must be broken; rerun the whole test on another one"
+            },
+            {
+              "zh": "离线和线上是否一致：特征 skew，或代理目标偏了",
+              "en": "Whether offline and online agree: feature skew, or a drifting proxy"
+            },
+            {
+              "zh": "模型一定过拟合了，应该删掉一半特征再训练",
+              "en": "The model must overfit; drop half the features and retrain"
+            },
+            {
+              "zh": "应该把 AUC 换成准确率，再重新评估一遍",
+              "en": "Swap AUC for accuracy and evaluate everything again"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "离线涨、线上平是常见现象。先排查两类原因：线上拿到的特征和训练时不一样（skew、缺失、延迟），或者 AUC 衡量的代理目标本身和线上主指标关系不大。直接怀疑实验平台或者盲目删特征，都不是第一步。",
+          "whyEn": "Offline gains with flat online results are common. Check two causes first: serving features that differ from training (skew, missing values, lag), or an AUC that measures a proxy only loosely tied to the online metric. Blaming the platform or dropping features blindly is not the first step."
+        }
+      ]
+    },
+    {
+      "slug": "recsys-ranking",
+      "titleZh": "ML 案例 1：推荐排序（视频首页）",
+      "titleEn": "ML Case 1: Recommendation Ranking (Video Home Feed)",
+      "bodyZh": "推荐是 ML 系统设计里最常见的题。“设计视频 App 的首页推荐”听起来是一个模型，实际上是一条**多阶段漏斗**：在 200 毫秒内，从几千万个视频里挑出用户最可能看完、最不会反感的二十几个。面试官主要看三点：漏斗每一层为什么这样设计，优化目标和标签怎么定，以及怎么避免系统只会推它推过的东西。\n\n## 1. 需求澄清\n\n**功能需求**\n- 用户每次打开首页，返回一屏个性化视频，可以下拉刷新\n- 新用户、新视频也要能被推荐（冷启动）\n- 过滤已看过、已屏蔽和违规的内容\n\n**非功能需求**\n- 规模：1 亿日活，候选视频约 5000 万；平均约 1.2 万 QPS，峰值约 3 万\n- 延迟：推荐接口 p99 < 200 ms\n- 新鲜度：新上传的视频几小时内就有机会被推荐\n- 多样性：同一个创作者、同一个话题不要刷屏\n\n**业务目标**：提升用户的长期满意度和活跃（人均观看时长、次日回访），而不是单纯的点击率。\n\n## 2. 问题形式化\n\n没有哪个重模型能在 200 ms 内给 5000 万个视频打分，所以拆成三层：\n\n```mermaid\nflowchart LR\n  accTitle: 推荐漏斗：召回、精排、重排\n  pool[(\"候选池：约 5000 万\")] --> recall[\"多路召回：约 1000\"]\n  recall --> rank[\"精排模型：打分后取前 100\"]\n  rank --> rerank[\"重排：多样性、新鲜度、业务规则\"]\n  rerank --> feed[\"首页一屏：约 20\"]\n```\n\n精排模型做**多任务预测**：点击概率 P(click)、点击后的预期观看时长、点赞概率、“不感兴趣”概率。最终的排序分数是加权组合，例如：\n\n```\nscore = P(click) × E[观看时长 | click] + w1 × P(like) − w2 × P(不感兴趣)\n```\n\n权重不是拍脑袋定的，而是通过线上实验调出来，让人均观看时长和留存最好。只优化点击率，会把标题党推上来。\n\n## 3. 数据与特征\n\n**样本来自曝光日志**：每次展示记录用户、视频、位置、时间，以及之后的点击、观看时长、点赞、分享、跳过和“不感兴趣”。\n\n**标签**：点击后观看超过 30 秒（或完播率超过一定比例）记为正样本；曝光后没有点击记为负样本。观看时长作为回归目标单独训练。\n\n**特征**：\n\n| 类别 | 例子 |\n|---|---|\n| 用户 | 观看历史的 embedding、偏好话题、语言、活跃度 |\n| 视频 | 话题、创作者、时长、上传时间、近 1 小时 / 1 天的点击率和完播率 |\n| 上下文 | 时间、设备、网络类型 |\n| 交叉 | 用户对这个创作者 / 话题的历史点击率，与本次会话里刚看过的视频的相似度 |\n\n**实时特征**：本次会话最近看过的几个视频，通过 Kafka 流式写入在线特征库，几秒内就能用上。\n\n**两个偏差要主动处理**：\n\n- **位置偏差**：排在第一位的视频天然点击多。训练时把位置作为特征（或单独的浅层网络）输入，线上打分时统一设成同一个位置，让模型学到与位置无关的兴趣\n- **选择偏差与反馈闭环**：模型只能从自己展示过的视频里得到反馈，没推过的视频永远没有数据。留出一小部分流量（比如 1%~5%）做探索，展示模型不那么确定的内容\n\n所有特征都按曝光那一刻的值记录，避免用到“未来”的统计量。\n\n## 4. 模型\n\n**召回（多路并行）**：\n- **双塔模型**：用户塔和视频塔各输出一个向量，用内积表示匹配程度。视频向量离线算好，放进 ANN 索引（如 HNSW）；请求时只算一次用户向量，几毫秒内找出最近的几百个。训练用 batch 内负样本，并对热门视频做采样校正，否则模型只会推热门\n- **协同过滤**：看过 A 的人也看了 B\n- **订阅**：关注的创作者发布的新视频\n- **热门与新视频**：保证新鲜度，也给冷启动内容机会\n\n**精排**：先用 GBDT 或逻辑回归做基线；主模型是深度多任务网络，ID 类特征做 embedding，共享底层、每个任务一个输出头（如 MMoE）。\n\n**重排**：去掉已看过和违规的内容；按创作者、话题打散，避免连续出现同类；给新视频适当加权。\n\n**冷启动**：\n- 新用户：按地区和语言的热门内容，加上注册时选的兴趣，前几次会话加大探索比例\n- 新视频：用标题、封面、音频的内容 embedding 映射进双塔的视频向量空间，再分配少量探索流量收集真实反馈\n\n## 5. 训练与评估\n\n**离线**（按时间切分）：\n- 召回：Recall@k，用户后来真正看了的视频有没有出现在召回结果里\n- 精排：每个任务的 AUC、观看时长的误差；在历史会话上算 NDCG@k\n- 校准：预测点击率与实际点击率之比接近 1，加权组合时各项才有可比性\n\n**线上 A/B**：\n- 主指标：人均观看时长、次日 / 7 日回访\n- 护栏指标：接口延迟、“不感兴趣”比例、举报率、创作者覆盖度\n- 至少跑一到两周，覆盖周末，避开新奇效应\n\n## 6. 服务与监控\n\n一次请求：Feed API 并行调用各路召回 → 合并去重 → 批量从在线特征库取用户和视频特征 → 精排模型批量打分 → 重排 → 返回，同时把曝光和当时的特征写入日志，作为下一轮的训练样本。\n\n延迟预算大致是：召回 40 ms、取特征 20 ms、精排 60 ms、重排 10 ms，剩下的留给网络和序列化。\n\n- 视频向量和 ANN 索引每天重建，新视频增量插入\n- 模型每天重训，或做增量训练，保证新视频的 embedding 及时更新\n- 监控：特征缺失率和分布漂移、预测分数分布、各类用户的点击率和观看时长、召回结果为空的比例\n- 兜底：精排超时就按召回分数或热门榜返回，首页不能白屏\n\n## 7. 回答分级\n\n**漏斗与召回**\n\n- **Bad**：一个模型给所有视频打分，或者只有一路召回。\n- **Good**：召回、精排、重排三层，说清每层的候选量和延迟；召回用双塔加 ANN，再配协同过滤和热门。\n- **Great**：讲清双塔训练的负样本和热门校正、ANN 索引怎么更新、每一路召回各自解决什么问题，以及新视频怎么进入向量空间。\n\n**目标与标签**\n\n- **Bad**：只预测点击率。\n- **Good**：多任务预测点击、时长、点赞和负反馈，再加权组合；标签有明确的观看时长门槛。\n- **Great**：说明权重由线上实验确定，解释点击和长期满意度之间的差距；处理位置偏差，所有特征按曝光时刻记录。\n\n**评估与反馈闭环**\n\n- **Bad**：只报离线 AUC。\n- **Good**：召回看 Recall@k，精排看 AUC 和 NDCG，线上用观看时长和留存做 A/B，并设置护栏指标。\n- **Great**：指出反馈闭环和选择偏差，留出探索流量；讨论多样性和创作者生态；给出精排超时时的兜底。\n\n## 8. 不同级别的期望\n\n| 级别 | 期望 |\n|---|---|\n| Mid（L4） | 在提示下给出召回加精排的结构、合理的标签和特征，知道离线指标和 A/B 测试 |\n| Senior（L5） | 主动设计多路召回和多任务精排，处理位置偏差和冷启动，给出延迟预算和线上指标 |\n| Staff（L6+） | 从长期满意度出发定目标，处理反馈闭环和探索，讨论创作者生态与多样性、重训节奏、监控和兜底 |",
+      "bodyEn": "Recommendation is the most common ML design question. \"Design the home feed of a video app\" sounds like one model, but it is a **multi-stage funnel** that picks, within 200 ms and out of tens of millions of videos, the twenty or so a user is most likely to finish and least likely to resent. Interviewers look for three things: why each stage of the funnel is built the way it is, how the objective and labels are defined, and how the system avoids recommending only what it already recommended.\n\n## 1. Requirements\n\n**Functional**\n- Each time the user opens the app, return a screen of personalized videos; pull to refresh\n- New users and new videos get recommended too (cold start)\n- Filter videos already watched, blocked or against policy\n\n**Non-functional**\n- Scale: 100M DAU, ~50M candidate videos; ~12K QPS on average, ~30K at peak\n- Latency: p99 under 200 ms for the recommendation API\n- Freshness: a new upload gets a chance within hours\n- Diversity: no single creator or topic floods the feed\n\n**Business goal**: long-term satisfaction and engagement (watch time per user, next-day return), not raw click-through.\n\n## 2. Problem Framing\n\nNo heavy model can score 50M videos in 200 ms, so the work splits into three stages:\n\n```mermaid\nflowchart LR\n  accTitle: The recommendation funnel: retrieval, ranking, re-ranking\n  pool[(\"Candidate pool: ~50M\")] --> recall[\"Multi-source retrieval: ~1,000\"]\n  recall --> rank[\"Ranking model: keeps the top 100\"]\n  rank --> rerank[\"Re-ranking: diversity, freshness, rules\"]\n  rerank --> feed[\"One screen: ~20\"]\n```\n\nThe ranker does **multi-task prediction**: P(click), expected watch time given a click, P(like) and P(not interested). The final score is a weighted combination, for example:\n\n```\nscore = P(click) × E[watch time | click] + w1 × P(like) − w2 × P(not interested)\n```\n\nThe weights are not guessed; online experiments tune them for watch time and retention. Optimize clicks alone and clickbait rises.\n\n## 3. Data and Features\n\n**Examples come from impression logs**: every impression records user, video, position and time, then whether it was clicked, how long it was watched, and likes, shares, skips and \"not interested\".\n\n**Labels**: a click followed by 30+ seconds of watching (or a completion ratio above some bar) is positive; an impression without a click is negative. Watch time is trained as a separate regression target.\n\n**Features**:\n\n| Kind | Examples |\n|---|---|\n| User | Embedding of watch history, favorite topics, language, activity level |\n| Video | Topic, creator, length, upload time, CTR and completion over the last hour and day |\n| Context | Time, device, network type |\n| Cross | User's past CTR on this creator or topic, similarity to videos watched earlier in the session |\n\n**Real-time features**: the last few videos watched in this session stream through Kafka into the online feature store and are usable within seconds.\n\n**Two biases to handle unprompted**:\n\n- **Position bias**: the first slot gets more clicks whatever it holds. Feed position to the model in training (as a feature or a small separate tower) and fix it to one value when serving, so the model learns interest independent of position\n- **Selection bias and the feedback loop**: the model only gets feedback on videos it showed, so videos it never shows never get data. Reserve a small slice of traffic (say 1-5%) for exploration, showing content the model is less sure about\n\nLog every feature as it was at impression time so no \"future\" statistics leak in.\n\n## 4. Model\n\n**Retrieval (several sources in parallel)**:\n- **Two-tower model**: a user tower and a video tower each output a vector, and their dot product scores the match. Video vectors are computed offline into an ANN index (such as HNSW); each request computes one user vector and finds the nearest few hundred in milliseconds. Train with in-batch negatives and correct the sampling for popularity, or the model only learns to recommend hits\n- **Collaborative filtering**: people who watched A also watched B\n- **Subscriptions**: new videos from followed creators\n- **Trending and new**: keeps the feed fresh and gives cold content a chance\n\n**Ranking**: a GBDT or logistic regression baseline first; the main model is a deep multi-task network with embeddings for ID features, a shared bottom and one head per task (MMoE, for example).\n\n**Re-ranking**: drop watched and policy-violating videos; spread creators and topics so similar items don't run together; give new videos a modest boost.\n\n**Cold start**:\n- New user: popular content for their region and language plus interests picked at sign-up, with more exploration in the first sessions\n- New video: map content embeddings (title, thumbnail, audio) into the two-tower video space, then give it a little exploration traffic to collect real feedback\n\n## 5. Training and Evaluation\n\n**Offline** (time-based split):\n- Retrieval: Recall@k, whether the videos a user went on to watch appear among the retrieved candidates\n- Ranking: AUC per task, watch-time error, NDCG@k on logged sessions\n- Calibration: predicted over actual CTR near 1, so the weighted terms are comparable\n\n**Online A/B**:\n- Primary: watch time per user, next-day and 7-day return\n- Guardrails: API latency, \"not interested\" rate, reports, creator coverage\n- Run at least one to two weeks, covering weekends and getting past novelty effects\n\n## 6. Serving and Monitoring\n\nA request: the feed API calls the retrieval sources in parallel → merge and dedupe → batch-fetch user and video features from the online store → score in batch on the ranker → re-rank → respond, logging impressions with their features as the next round of training data.\n\nA rough latency budget: retrieval 40 ms, features 20 ms, ranking 60 ms, re-ranking 10 ms, the rest for network and serialization.\n\n- Rebuild video vectors and the ANN index daily, inserting new videos incrementally\n- Retrain daily or incrementally so new videos' embeddings stay current\n- Monitor feature missing rates and drift, the score distribution, CTR and watch time by user segment, and the share of empty retrievals\n- Fallback: if ranking times out, serve by retrieval score or popularity; the feed must never be blank\n\n## 7. Bad / Good / Great\n\n**Funnel and retrieval**\n\n- **Bad**: One model scores every video, or a single retrieval source.\n- **Good**: Retrieval, ranking and re-ranking with candidate counts and latency per stage; two-tower plus ANN for retrieval, with collaborative filtering and trending alongside.\n- **Great**: Explains two-tower negatives and popularity correction, how the ANN index is refreshed, what each retrieval source is for, and how new videos enter the vector space.\n\n**Objective and labels**\n\n- **Bad**: Predicts clicks only.\n- **Good**: Multi-task prediction of click, watch time, like and negative feedback, combined with weights; labels have a clear watch-time bar.\n- **Great**: Sets the weights by online experiment and explains the gap between clicks and long-term satisfaction; handles position bias and logs features at impression time.\n\n**Evaluation and the feedback loop**\n\n- **Bad**: Reports offline AUC only.\n- **Good**: Recall@k for retrieval, AUC and NDCG for ranking, an A/B test on watch time and retention with guardrails.\n- **Great**: Names the feedback loop and selection bias and reserves exploration traffic; discusses diversity and the creator ecosystem; has a fallback for ranking timeouts.\n\n## 8. Level Expectations\n\n| Level | Expectation |\n|---|---|\n| Mid (L4) | With some prompting, a retrieval-plus-ranking design with sensible labels and features; knows offline metrics and A/B tests |\n| Senior (L5) | Designs multi-source retrieval and multi-task ranking unprompted, handles position bias and cold start, gives a latency budget and online metrics |\n| Staff (L6+) | Sets the objective from long-term satisfaction, handles the feedback loop and exploration, and covers creator health and diversity, retraining cadence, monitoring and fallback |",
+      "quiz": [
+        {
+          "qZh": "为什么推荐系统要拆成召回和精排两层？",
+          "qEn": "Why is a recommender split into retrieval and ranking?",
+          "choices": [
+            {
+              "zh": "召回模型比精排更准，精排这一层只负责做多样性",
+              "en": "Retrieval is the accurate stage; ranking exists only to add diversity"
+            },
+            {
+              "zh": "两层共用一份训练数据，可以省下一半的存储",
+              "en": "Both stages share one training set, which halves the storage"
+            },
+            {
+              "zh": "精排模型只能处理之前已经被点击过的视频",
+              "en": "The ranking model can only handle videos that were clicked before"
+            },
+            {
+              "zh": "重模型来不及给几千万个候选打分，要先粗筛",
+              "en": "A heavy model can't score tens of millions in time, so narrow them first"
+            }
+          ],
+          "answer": 3,
+          "whyZh": "精排模型有几百个特征、好几层网络，给一个视频打分要几十微秒到毫秒级，5000 万个视频全部打分在时间和算力上都不现实。召回用双塔向量检索、协同过滤这类便宜的方法，在几十毫秒内把候选缩到一千个左右，精排再细排。",
+          "whyEn": "The ranking model has hundreds of features and several layers, costing tens of microseconds to milliseconds per video, so scoring 50M videos per request is out of the question. Retrieval uses cheap methods (two-tower vector search, collaborative filtering) to cut candidates to about a thousand in tens of ms, and the ranker orders those."
+        },
+        {
+          "qZh": "双塔召回模型在服务时最大的优势是什么？",
+          "qEn": "What is the main serving advantage of a two-tower retrieval model?",
+          "choices": [
+            {
+              "zh": "视频向量能离线建 ANN 索引，请求时只算用户向量",
+              "en": "Item vectors are indexed offline; a request computes only the user vector"
+            },
+            {
+              "zh": "两个塔之间能学到用户和视频之间任意复杂的特征交叉",
+              "en": "The towers learn arbitrarily complex feature interactions between users and videos"
+            },
+            {
+              "zh": "双塔模型只用正样本就能训练，完全不需要负样本",
+              "en": "It trains on positives alone and never needs negative examples"
+            },
+            {
+              "zh": "双塔的内积天然就是校准好的点击概率，可直接排序",
+              "en": "Its dot product is a calibrated click probability, ready to rank"
+            }
+          ],
+          "answer": 0,
+          "whyZh": "用户塔和视频塔互不依赖，视频向量可以提前算好建索引，查询就是一次近邻搜索。代价也正在这里：两侧只在最后做一次内积，学不到细粒度的特征交叉，所以召回之后还需要精排。双塔一般用 batch 内负样本训练，输出也不是校准好的概率。",
+          "whyEn": "The towers are independent, so item vectors are computed ahead and indexed, and a query is one nearest-neighbor search. That is also the cost: the sides meet only in a final dot product and can't learn fine-grained feature interactions, which is why ranking follows retrieval. Two-tower models usually train with in-batch negatives, and their scores are not calibrated probabilities."
+        },
+        {
+          "qZh": "处理位置偏差的常见做法是？",
+          "qEn": "What is a common way to handle position bias?",
+          "choices": [
+            {
+              "zh": "训练时只保留排在第一位的曝光样本，其余全部丢掉",
+              "en": "Keep only first-slot impressions for training and drop the rest"
+            },
+            {
+              "zh": "把所有点击样本的权重统一乘以 0.5，抵消位置影响",
+              "en": "Halve the weight of every click to cancel out position effects"
+            },
+            {
+              "zh": "训练时把位置当特征，线上打分时固定成同一个值",
+              "en": "Train with position as a feature; fix it to one value when serving"
+            },
+            {
+              "zh": "线上随机打乱每个用户的排序结果，消除位置差异",
+              "en": "Shuffle every user's list at serving time to erase position effects"
+            }
+          ],
+          "answer": 2,
+          "whyZh": "位置特征让模型把“因为排得靠前才被点”的部分解释掉，剩下的才是用户真实的兴趣。线上统一设成同一个位置，各视频的分数就在同一个基准下比较。随机打乱全部结果代价太大，通常只在一小部分流量上做，用来估计位置的影响。",
+          "whyEn": "The position feature lets the model attribute clicked-because-it-was-on-top to position, leaving the user's real interest in the rest. Fixing it at serving time compares every video on the same footing. Shuffling everything is far too costly; it is done on a small slice of traffic only, to estimate position effects."
+        },
+        {
+          "qZh": "一个刚上传、还没有任何互动数据的视频，怎么让它有机会被推荐？",
+          "qEn": "How does a just-uploaded video with no interactions get a chance to be recommended?",
+          "choices": [
+            {
+              "zh": "等它在别的渠道攒够 1000 次点击，再放进候选池",
+              "en": "Wait until it gathers 1,000 clicks on other surfaces, then add it to the pool"
+            },
+            {
+              "zh": "内容 embedding 进向量空间，加少量探索流量",
+              "en": "Embed its content in the item space; add a little exploration traffic"
+            },
+            {
+              "zh": "直接把它排在所有用户首页的第一位，让数据尽快积累",
+              "en": "Put it first on every home feed so data piles up quickly"
+            },
+            {
+              "zh": "把同一创作者上一个视频的点击率当作它的训练标签",
+              "en": "Use the creator's previous video's CTR as its training label"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "新视频没有互动数据，协同过滤和 ID embedding 都无从学起。基于内容的 embedding 能把它放到相似视频附近，召回就有机会找到它；再分配少量探索流量收集真实反馈，模型很快就能学到它的表现。全量置顶会严重伤害体验，等别处攒够点击又太慢。",
+          "whyEn": "A new video has no interactions, so collaborative filtering and ID embeddings have nothing to learn from. A content embedding places it near similar videos so retrieval can find it; a little exploration traffic then collects real feedback the model learns from quickly. Pinning it everywhere ruins the experience, and waiting for clicks elsewhere is too slow."
+        },
+        {
+          "qZh": "为什么要留出一小部分流量做探索？",
+          "qEn": "Why reserve a small slice of traffic for exploration?",
+          "choices": [
+            {
+              "zh": "打破反馈闭环，收集模型平时不会展示的内容的数据",
+              "en": "It breaks the feedback loop and gathers data the model would never see"
+            },
+            {
+              "zh": "探索流量点击率通常更高，能直接提升广告收入",
+              "en": "Exploration traffic usually clicks better, which lifts ad revenue directly"
+            },
+            {
+              "zh": "用这部分流量测试推荐服务在高负载下的延迟",
+              "en": "It load-tests the recommendation service's latency under stress"
+            },
+            {
+              "zh": "让新用户看到完全随机的结果，以保护他们的隐私",
+              "en": "New users get fully random feeds, which protects their privacy"
+            }
+          ],
+          "answer": 0,
+          "whyZh": "模型只能从自己展示过的结果里学习：没推过的内容永远没有反馈，模型对它的低估也就永远得不到纠正。探索会牺牲一点短期指标，换来更完整的训练数据，以及对新内容和小众兴趣的发现。",
+          "whyEn": "The model learns only from what it showed. Content it never shows gets no feedback, so its underestimate is never corrected. Exploration gives up a little short-term performance for fuller training data and for discovering new content and niche interests."
+        },
+        {
+          "qZh": "排序分数是多个任务预测值的加权和。这些权重通常怎么确定？",
+          "qEn": "The ranking score is a weighted sum of several task predictions. How are the weights usually set?",
+          "choices": [
+            {
+              "zh": "所有任务的权重设成相等，这样对各个目标最公平",
+              "en": "Give every task the same weight, which is fairest to each objective"
+            },
+            {
+              "zh": "只看离线 AUC 最高的那个任务，其他任务权重设为 0",
+              "en": "Keep only the task with the best offline AUC and zero the others"
+            },
+            {
+              "zh": "用线上实验调权重，让观看时长和留存等主指标最好",
+              "en": "Tune them in online experiments against the primary metric"
+            },
+            {
+              "zh": "按每个任务训练样本的数量，成比例地分配权重",
+              "en": "Split the weights in proportion to each task's training examples"
+            }
+          ],
+          "answer": 2,
+          "whyZh": "各任务的预测单位和量级不同，离线指标也回答不了“多 1% 的点赞值多少秒观看时长”。这类取舍只能通过线上实验比较几组权重对主指标和护栏指标的影响来决定，并随产品目标调整。",
+          "whyEn": "The tasks predict different things on different scales, and no offline metric says how much watch time an extra 1% of likes is worth. That trade-off is settled by comparing weight sets in online experiments against the primary metric and guardrails, and it moves with product goals."
+        }
+      ]
+    },
+    {
+      "slug": "search-ranking",
+      "titleZh": "ML 案例 2：电商搜索排序",
+      "titleEn": "ML Case 2: E-commerce Search Ranking",
+      "bodyZh": "搜索排序和推荐很像，都是从海量物品里挑出一个有序列表，但多了一个硬约束：**结果必须和查询词相关**。用户搜“跑步鞋”，排第一的却是销量最高的电饭煲，模型再懂用户也没用。这道题考的是检索和排序怎么分工，怎么从点击日志里提取可靠的相关性信号，以及怎么评估一个排序。\n\n## 1. 需求澄清\n\n**功能需求**\n- 用户输入查询词，返回按相关性和购买可能性排序的商品列表，支持翻页\n- 处理拼写错误、同义词和长尾查询\n\n**非功能需求**\n- 规模：1 亿件商品；峰值 5 万 QPS\n- 延迟：端到端 p99 < 300 ms，其中排序阶段约 50 ms\n- 价格和库存变化后，几分钟内反映到搜索结果里\n\n**业务目标**：提升每次搜索带来的成交（转化率、成交额），同时守住相关性，用户搜不到想要的东西会直接离开。广告混排不在本题范围内。\n\n## 2. 问题形式化\n\n```mermaid\nflowchart LR\n  accTitle: 搜索排序的两阶段流程\n  query[\"查询词\"] --> qu[\"查询理解：纠错、同义词、类目预测\"]\n  qu --> lexical[\"倒排索引召回（BM25）\"]\n  qu --> semantic[\"向量召回（语义匹配）\"]\n  lexical --> merge[\"合并去重：约 1000\"]\n  semantic --> merge\n  merge --> ltr[\"学习排序（LTR）：取前 50\"]\n  ltr --> page[\"结果页\"]\n```\n\n排序部分是**学习排序**（learning to rank），有三种建模方式：\n\n| 方式 | 做法 | 特点 |\n|---|---|---|\n| Pointwise | 给每个（查询，商品）预测一个相关分或点击概率 | 简单，但不直接优化顺序 |\n| Pairwise | 学习“A 应该排在 B 前面” | 更贴近排序，RankNet 是代表 |\n| Listwise | 直接优化整个列表的指标（如 NDCG） | 和评估指标一致；LambdaMART 用按 NDCG 变化加权的成对梯度来近似 |\n\nLambdaMART（GBDT 实现）是很强的基线：训练快，适合表格特征，还能看特征重要性。\n\n## 3. 数据与特征\n\n**标签有两个来源**：\n\n- **人工相关性标注**：抽样一批查询，请标注员给每个结果打 0~4 分。无偏但昂贵，规模有限，主要用来评估，也可以训练专门的相关性模型\n- **用户行为日志**：点击、加购、购买。量大、及时，按强度分级，比如购买 > 加购 > 点击 > 展示未点击\n\n**行为日志有位置偏差**：排在前面的商品点击多，不全是因为更相关。常见处理：\n\n- **跳过前面（skip-above）**：用户点了第 5 个、跳过了第 1~4 个，就认为第 5 个比前面几个更相关，生成成对样本\n- **逆倾向加权**：先估计每个位置被看到的概率（可以在少量流量上随机交换相邻结果来估计），再用它给点击样本加权\n\n**特征**：\n\n| 类别 | 例子 |\n|---|---|\n| 查询 | 长度、预测的类目、查询热度 |\n| 商品 | 标题、类目、价格、评分、近 30 天销量、上架时间 |\n| 查询-商品 | 标题和描述上的 BM25 分数、查询向量与商品向量的相似度、类目是否匹配、该查询下这个商品的历史点击率（加平滑） |\n| 用户与上下文 | 品牌偏好、价格带偏好、所在地区（配送） |\n\n**长尾查询**：大部分不同的查询词都很少出现，查询-商品级别的历史统计几乎是空的。这时要依赖内容相关性特征和语义向量；统计特征要做平滑（例如加先验的贝叶斯平均），防止几次偶然点击带来噪声。\n\n## 4. 模型\n\n1. **基线**：BM25 分数加销量，手调权重\n2. **主模型**：LambdaMART，几百个特征，直接优化 NDCG\n3. **语义召回**：双塔（bi-encoder）把查询和商品编码成向量，解决“词不同、意思相同”的问题，比如“跑鞋”和“运动鞋”\n4. **精细相关性**：交叉编码器（cross-encoder，把查询和商品标题拼在一起输入 Transformer）最准，但每一对都要跑一次大模型，只用于前 50 个结果，或者蒸馏成小模型\n\n**查询理解**同样关键：拼写纠错、同义词扩展、类目预测（“苹果”是水果还是手机）都发生在召回之前。召回阶段丢掉的商品，排序再好也救不回来。\n\n## 5. 训练与评估\n\n**离线**：\n- 人工标注集上的 NDCG@10，这是发版前的关卡\n- 召回阶段的 Recall@1000：相关商品有没有进入候选\n- 日志上去偏后的点击指标作为补充\n\n**线上**：\n- 主指标：每次搜索的转化率、每次搜索的成交额\n- 护栏：零结果率、查询改写率（用户马上换一个词重搜，说明不满意）、延迟\n- **交错实验（interleaving）**：把两个排序器的结果交替合并成一个列表给同一个用户，看点击落在哪一边。它比 A/B 灵敏得多，需要的流量少，适合快速筛选候选模型，最后再用 A/B 确认业务指标\n\n## 6. 服务与监控\n\n一次搜索：查询理解 → 并行查询倒排索引的各个分片（scatter-gather）和向量索引 → 每个分片先用轻量模型粗排，返回各自的前几百个 → 聚合层合并成约 1000 个 → 取特征 → LambdaMART 精排 → 前 50 个可选地再用小型交叉编码器重排 → 返回。\n\n- 商品特征大多存在索引里，查询-商品特征在线计算\n- 价格和库存走增量更新，几分钟内生效；更换向量模型后要重建向量索引\n- 热门查询的结果可以短时间缓存，带个性化的部分单独处理\n- 监控：零结果率、各位置的点击率、查询分布的季节性变化；每次发版前在人工标注集上跑一遍 NDCG，防止相关性回退\n\n## 7. 回答分级\n\n**检索与排序的分工**\n\n- **Bad**：只用关键词匹配加销量排序，或者用一个大模型给全部商品打分。\n- **Good**：倒排索引加向量召回，合并后用 LambdaMART 精排；能说出 pointwise、pairwise、listwise 的区别。\n- **Great**：分片上先粗排、聚合层再精排；交叉编码器只用于前几十个结果；把查询理解放在召回之前，说明召回丢掉的商品排序救不回来。\n\n**标签与偏差**\n\n- **Bad**：直接把点击当作相关性标签。\n- **Good**：区分人工标注和行为日志，按购买、加购、点击分级。\n- **Great**：处理位置偏差（skip-above、逆倾向加权），讲清怎么估计位置倾向；长尾查询依赖内容特征，统计特征做平滑。\n\n**评估**\n\n- **Bad**：只看点击率。\n- **Good**：离线用标注集上的 NDCG@10，线上 A/B 看转化率和零结果率。\n- **Great**：用交错实验快速比较排序器，再用 A/B 确认业务指标；把查询改写率当作不满意的信号；发版前用标注集防止相关性回退。\n\n## 8. 不同级别的期望\n\n| 级别 | 期望 |\n|---|---|\n| Mid（L4） | 在提示下给出召回加排序的结构，知道用 NDCG 评估，能列出主要特征 |\n| Senior（L5） | 讲清学习排序的几种方式、行为日志的位置偏差和处理办法，给出离线和线上的评估方案 |\n| Staff（L6+） | 从相关性和成交的平衡出发，覆盖查询理解、语义召回、交叉编码器的成本取舍、交错实验和发版关卡 |",
+      "bodyEn": "Search ranking resembles recommendation, an ordered list picked from a huge catalog, with one hard constraint added: **results must be relevant to the query**. If someone searches for running shoes and the top hit is the best-selling rice cooker, no amount of personalization saves it. The question tests how retrieval and ranking divide the work, how to pull reliable relevance signals out of click logs, and how to evaluate a ranking.\n\n## 1. Requirements\n\n**Functional**\n- Given a query, return products ranked by relevance and likelihood of purchase, with pagination\n- Handle misspellings, synonyms and long-tail queries\n\n**Non-functional**\n- Scale: 100M products; 50K QPS at peak\n- Latency: end-to-end p99 under 300 ms, about 50 ms of it for ranking\n- Price and stock changes show up in results within minutes\n\n**Business goal**: more purchases per search (conversion, revenue) while holding relevance; users who can't find what they want leave. Blending in ads is out of scope.\n\n## 2. Problem Framing\n\n```mermaid\nflowchart LR\n  accTitle: Two-stage search ranking\n  query[\"Query\"] --> qu[\"Query understanding: spelling, synonyms, category\"]\n  qu --> lexical[\"Inverted-index retrieval (BM25)\"]\n  qu --> semantic[\"Vector retrieval (semantic)\"]\n  lexical --> merge[\"Merge and dedupe: ~1,000\"]\n  semantic --> merge\n  merge --> ltr[\"Learning to rank: top 50\"]\n  ltr --> page[\"Results page\"]\n```\n\nRanking is **learning to rank**, in three formulations:\n\n| Approach | Idea | Notes |\n|---|---|---|\n| Pointwise | Predict a relevance grade or click probability for each (query, product) | Simple, but doesn't optimize order directly |\n| Pairwise | Learn that A should rank above B | Closer to ranking; RankNet is the classic |\n| Listwise | Optimize a list metric such as NDCG | Matches the evaluation metric; LambdaMART approximates it with pairwise gradients weighted by the change in NDCG |\n\nLambdaMART (a GBDT) is a very strong baseline: fast to train, good with tabular features, and its feature importances are readable.\n\n## 3. Data and Features\n\n**Labels come from two places**:\n\n- **Human relevance judgments**: sample queries and have raters grade each result 0-4. Unbiased but expensive and limited, so mostly used for evaluation, and sometimes to train a dedicated relevance model\n- **Behavior logs**: clicks, add-to-cart, purchases. Plentiful and current; grade them by strength, e.g. purchase > add-to-cart > click > shown but skipped\n\n**Behavior logs have position bias**: top results get more clicks, not only because they are more relevant. Common fixes:\n\n- **Skip-above**: if the user clicked result 5 and skipped 1-4, treat 5 as preferred over those and produce pairwise examples\n- **Inverse propensity weighting**: estimate how likely each position is to be seen (for example by randomly swapping adjacent results on a sliver of traffic), then weight clicks by it\n\n**Features**:\n\n| Kind | Examples |\n|---|---|\n| Query | Length, predicted category, query popularity |\n| Product | Title, category, price, rating, 30-day sales, listing age |\n| Query-product | BM25 on title and description, query-product embedding similarity, category match, this product's historical CTR for this query (smoothed) |\n| User and context | Brand and price-band affinity, region (for shipping) |\n\n**Long-tail queries**: most distinct queries are rare, so query-product statistics are nearly empty. Lean on content relevance features and semantic vectors, and smooth statistical features (for example a Bayesian average with a prior) so a few chance clicks don't add noise.\n\n## 4. Model\n\n1. **Baseline**: BM25 plus sales, with hand-tuned weights\n2. **Main model**: LambdaMART on hundreds of features, optimizing NDCG directly\n3. **Semantic retrieval**: a two-tower bi-encoder embeds queries and products so different words with the same meaning match, such as trainers and sneakers\n4. **Fine relevance**: a cross-encoder (query and title fed together into a Transformer) is the most accurate but runs a large model per pair, so it reranks only the top 50 or is distilled into a small model\n\n**Query understanding** matters just as much: spelling correction, synonym expansion and category prediction (apple the fruit or the phone) all happen before retrieval. Ranking cannot rescue a product that retrieval dropped.\n\n## 5. Training and Evaluation\n\n**Offline**:\n- NDCG@10 on the human-judged set, the gate before any release\n- Recall@1000 for retrieval: did the relevant products make the candidate set?\n- Debiased click metrics on logs as a supplement\n\n**Online**:\n- Primary: conversion per search, revenue per search\n- Guardrails: zero-result rate, query reformulation rate (an immediate new query signals dissatisfaction), latency\n- **Interleaving**: merge two rankers' results alternately into one list for the same user and see which side gets the clicks. It is far more sensitive than A/B and needs much less traffic, so it suits screening candidates; confirm business metrics with an A/B test at the end\n\n## 6. Serving and Monitoring\n\nA search: query understanding → scatter-gather across inverted-index shards and the vector index in parallel → each shard ranks cheaply and returns its top few hundred → the aggregator merges about 1,000 → features → LambdaMART → optionally a small cross-encoder over the top 50 → respond.\n\n- Product features mostly live in the index; query-product features are computed online\n- Price and stock update incrementally within minutes; a new embedding model means rebuilding the vector index\n- Popular queries can be cached briefly; personalized parts are handled separately\n- Monitor zero-result rate, CTR by position and seasonal shifts in the query mix; run NDCG on the judged set before every release to catch relevance regressions\n\n## 7. Bad / Good / Great\n\n**Retrieval versus ranking**\n\n- **Bad**: Keyword match plus sales, or one large model scoring the whole catalog.\n- **Good**: Inverted-index and vector retrieval merged, then LambdaMART; can explain pointwise, pairwise and listwise.\n- **Great**: Cheap ranking on shards and heavier ranking at the aggregator; a cross-encoder only on the top few dozen; query understanding before retrieval, because ranking can't rescue what retrieval dropped.\n\n**Labels and bias**\n\n- **Bad**: Uses clicks directly as relevance labels.\n- **Good**: Separates human judgments from behavior logs and grades purchase, add-to-cart and click.\n- **Great**: Handles position bias (skip-above, inverse propensity weighting) and explains how propensities are estimated; leans on content features for long-tail queries and smooths statistics.\n\n**Evaluation**\n\n- **Bad**: Looks at CTR only.\n- **Good**: NDCG@10 on a judged set offline, A/B on conversion and zero-result rate online.\n- **Great**: Screens rankers quickly with interleaving and confirms with A/B; treats reformulation as dissatisfaction; gates releases on the judged set.\n\n## 8. Level Expectations\n\n| Level | Expectation |\n|---|---|\n| Mid (L4) | With some prompting, a retrieval-plus-ranking design evaluated with NDCG, with the main features listed |\n| Senior (L5) | Explains the learning-to-rank formulations, position bias in logs and its fixes, and an offline and online evaluation plan |\n| Staff (L6+) | Balances relevance against revenue and covers query understanding, semantic retrieval, cross-encoder cost, interleaving and release gates |",
+      "quiz": [
+        {
+          "qZh": "用户点击了第 5 个结果，跳过了第 1~4 个。按 skip-above 的思路，可以得到什么训练信号？",
+          "qEn": "A user clicked result 5 and skipped results 1-4. Following skip-above, what training signal do you get?",
+          "choices": [
+            {
+              "zh": "第 1~4 个结果都是负样本，以后对这个查询不再展示",
+              "en": "Results 1-4 are negatives and are never shown for this query again"
+            },
+            {
+              "zh": "对这个查询，第 5 个比前 4 个更相关",
+              "en": "For this query, result 5 beats results 1-4"
+            },
+            {
+              "zh": "第 5 个结果的人工相关分应该直接设为满分 4 分",
+              "en": "Result 5 should get the top human relevance grade of 4"
+            },
+            {
+              "zh": "这次搜索的点击有噪声，整条记录应该丢掉",
+              "en": "This session's clicks are noise, so drop the whole record"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "用户大概率看过了前 4 个结果才点第 5 个，所以可以推断“第 5 个比被跳过的那几个更相关”，生成成对偏好样本。它只是相对比较，不能说明前 4 个完全不相关，也推不出绝对的相关分。",
+          "whyEn": "The user very likely saw results 1-4 before clicking 5, so you can infer that 5 is preferred over the skipped ones and create pairwise preferences. It is only a relative judgment: it doesn't make 1-4 irrelevant or give an absolute grade."
+        },
+        {
+          "qZh": "人工相关性标注在搜索系统里最主要的用途是？",
+          "qEn": "What are human relevance judgments mainly used for in a search system?",
+          "choices": [
+            {
+              "zh": "完全替代点击日志，成为唯一的训练数据来源",
+              "en": "To replace click logs as the only source of training data"
+            },
+            {
+              "zh": "由标注员实时调整每个查询词下的排序结果",
+              "en": "Annotators adjust each query's ranking in real time"
+            },
+            {
+              "zh": "用来计算每个商品的销量和评分等统计特征",
+              "en": "To compute each product's sales and rating features"
+            },
+            {
+              "zh": "作为无偏的评估集，衡量并守住相关性",
+              "en": "An unbiased test set that measures and guards relevance"
+            }
+          ],
+          "answer": 3,
+          "whyZh": "标注没有位置偏差，结果可信，但成本高、规模小，跟不上查询和商品的变化，所以很少单独用来训练主模型。它最适合做发版前的评估关卡：新模型在标注集上的 NDCG 不能回退。",
+          "whyEn": "Human labels have no position bias and can be trusted, but they are expensive and few, and they can't keep up with new queries and products, so they rarely train the main model alone. They work best as a release gate: a new model's NDCG on the judged set must not regress."
+        },
+        {
+          "qZh": "LambdaMART 和普通的 pointwise 回归相比，关键区别是什么？",
+          "qEn": "What is the key difference between LambdaMART and plain pointwise regression?",
+          "choices": [
+            {
+              "zh": "用按 NDCG 变化加权的成对梯度，直接优化排序",
+              "en": "Pairwise gradients weighted by NDCG change optimize order"
+            },
+            {
+              "zh": "它是一个深度神经网络，所以效果一定比 GBDT 好",
+              "en": "It is a deep neural network, so it always beats any GBDT model"
+            },
+            {
+              "zh": "它不需要任何特征，只看查询词本身的文本",
+              "en": "It needs no features and reads only the query text"
+            },
+            {
+              "zh": "它只能处理二分类问题，没法直接用来排序",
+              "en": "It handles only binary classification and can't rank"
+            }
+          ],
+          "answer": 0,
+          "whyZh": "Pointwise 把每个结果独立地拟合一个分数，排第 1 和排第 50 的误差同等对待。LambdaMART 是 GBDT，训练时对每一对结果计算梯度，并按交换它们会让 NDCG 变化多少来加权，所以更关注列表头部的顺序。",
+          "whyEn": "Pointwise fits each result's score independently, so an error at rank 1 counts the same as at rank 50. LambdaMART is a GBDT that computes gradients for pairs and weights each by how much swapping them would change NDCG, so it focuses on the top of the list."
+        },
+        {
+          "qZh": "交叉编码器（cross-encoder）最准，为什么通常只用在前几十个结果上？",
+          "qEn": "A cross-encoder is the most accurate. Why is it usually applied only to the top few dozen results?",
+          "choices": [
+            {
+              "zh": "交叉编码器只支持英文查询，中文需要单独的模型",
+              "en": "It supports English only; Chinese needs a separate model"
+            },
+            {
+              "zh": "候选越多它越不准，几十个以上效果会明显下降",
+              "en": "It gets less accurate with more candidates, noticeably past a few dozen"
+            },
+            {
+              "zh": "每一对查询和商品都要跑一次大模型，太贵",
+              "en": "Every query-product pair needs a full model pass, which is costly"
+            },
+            {
+              "zh": "它只能输出类别标签，无法给出可排序的分数",
+              "en": "It outputs class labels, not scores you can sort"
+            }
+          ],
+          "answer": 2,
+          "whyZh": "交叉编码器把查询和商品拼在一起输入 Transformer，两边的每个词都能互相注意，所以最准；但它无法像双塔那样提前算好商品向量，每个候选都要完整推理一次。1000 个候选全跑会远超 50 ms 的预算，所以只用于前几十个，或者蒸馏成小模型。",
+          "whyEn": "A cross-encoder feeds query and product together into a Transformer so every token attends to the other side, which is why it is most accurate; but unlike a two-tower model it can't precompute product vectors, so every candidate needs a full pass. Running 1,000 would blow far past the 50 ms budget, so it reranks only the top few dozen or is distilled into a small model."
+        },
+        {
+          "qZh": "交错实验（interleaving）相比普通 A/B 测试的主要优势是？",
+          "qEn": "What is the main advantage of interleaving over a regular A/B test?",
+          "choices": [
+            {
+              "zh": "完全不需要真实用户参与，离线就能跑完",
+              "en": "It needs no real users and runs entirely offline"
+            },
+            {
+              "zh": "能直接测量出新排序器对长期留存的影响",
+              "en": "It directly measures a ranker's effect on long-term retention"
+            },
+            {
+              "zh": "可以完全替代 A/B 测试，以后不用再看业务指标",
+              "en": "It replaces A/B tests, so business metrics no longer matter"
+            },
+            {
+              "zh": "同一个用户同时比较两个排序器，灵敏、省流量",
+              "en": "One user sees both rankers at once: sensitive and cheap"
+            }
+          ],
+          "answer": 3,
+          "whyZh": "交错实验把两个排序器的结果交替合并成一个列表，看用户的点击偏向哪一边。用户之间的差异被抵消了，所以用少得多的流量就能分出优劣。但它只回答“哪个排序更受偏好”，看不到转化、成交这类业务指标，最后仍要用 A/B 确认。",
+          "whyEn": "Interleaving merges two rankers' results into one list and sees which side the user's clicks favor. Differences between users cancel out, so far less traffic separates the rankers. It only answers which ranking is preferred, not conversion or revenue, so an A/B test still confirms the winner."
+        },
+        {
+          "qZh": "对于很少出现的长尾查询，哪类特征最可靠？",
+          "qEn": "For rare long-tail queries, which features are most reliable?",
+          "choices": [
+            {
+              "zh": "这个查询下每个商品的历史点击率，不做平滑",
+              "en": "Raw historical CTR of each product under this query, unsmoothed"
+            },
+            {
+              "zh": "BM25、向量相似度等内容相关性特征",
+              "en": "Content relevance features like BM25 and vector similarity"
+            },
+            {
+              "zh": "这个用户过去一年里总共搜索了多少次",
+              "en": "How many searches the user made over the past year"
+            },
+            {
+              "zh": "结果页的加载时间和图片大小等页面特征",
+              "en": "Page features such as load time and image size"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "长尾查询只出现过几次，查询-商品级别的点击统计要么为空，要么由一两次偶然点击决定，噪声极大。内容相关性特征不依赖历史行为，对任何查询都能算；统计特征如果要用，需要加先验做平滑。",
+          "whyEn": "A long-tail query has appeared only a few times, so query-product click stats are empty or decided by one or two chance clicks. Content relevance features don't depend on history and work for any query; statistical features, if used, need a prior to smooth them."
+        }
+      ]
+    },
+    {
+      "slug": "ads-ctr",
+      "titleZh": "ML 案例 3：广告点击率预估",
+      "titleEn": "ML Case 3: Ad Click-Through Rate Prediction",
+      "bodyZh": "在广告系统里，模型预测的点击率（pCTR）不只用来排序，还**直接决定钱**：按点击计费的广告按“出价 × pCTR”排名，扣费也和 pCTR 有关。所以这道题和推荐最大的不同是：**预测值必须校准**，0.02 就得真的意味着 2% 的点击概率。另外，数据量极大、正样本极少、广告和用户兴趣变化很快，模型需要频繁更新。\n\n## 1. 需求澄清\n\n**功能需求**\n- 每次广告请求，对通过定向筛选的候选广告预测点击概率\n- 预测结果用于竞价排序、计费和预算控制\n- 新广告上线后，尽快得到合理的预估\n\n**非功能需求**\n- 规模：峰值 50 万次广告请求/秒，每次给几百个候选打分，即每秒上亿次预测\n- 延迟：打分阶段 10~20 ms\n- 校准：整体和各个分群（广告主、版位、设备）上，预测点击数与实际点击数接近\n- 模型新鲜度：小时级甚至分钟级更新\n\n## 2. 问题形式化\n\n二分类：给定（用户，广告，上下文），预测这次展示在归因窗口内被点击的概率。\n\n**为什么校准这么重要**：按点击计费（CPC）的广告，排序依据是 eCPM = 出价 × pCTR × 1000。如果模型系统性地高估某类广告的点击率，这类广告会赢下本不该赢的竞价，平台少赚钱，广告主也投不出效果。在广义第二价格（GSP）拍卖里，扣费还取决于下一名的 eCPM 与自己 pCTR 的比值，预测偏差会直接变成扣费偏差。推荐排序只关心相对顺序，广告还要求绝对值准确。\n\n```mermaid\nflowchart LR\n  accTitle: 广告请求的打分与竞价流程\n  req[\"广告请求\"] --> target[\"定向检索：候选数千\"]\n  target --> pre[\"轻量模型粗筛：约 300\"]\n  pre --> ctr[\"pCTR 模型\"]\n  ctr --> auction[\"竞价：按出价 × pCTR 排序\"]\n  auction --> pacing[\"预算与频控检查\"]\n  pacing --> show[\"展示并记录曝光\"]\n  show --> join[\"曝光与点击流式拼接\"]\n  join --> train[\"训练样本\"]\n  train -.->|\"增量更新\"| ctr\n```\n\n## 3. 数据与特征\n\n**样本**：每天几十亿次曝光，点击率约 1%，正样本极少。\n\n**负样本降采样**：保留全部正样本，负样本按比例 w（比如 10%）随机保留，训练快很多。但模型学到的是采样后的分布，输出要校正回去：\n\n```\nq = p / (p + (1 − p) / w)\n```\n\n其中 p 是模型在采样数据上的输出，q 是校正后的真实点击率估计。\n\n**特征**：\n\n| 类别 | 例子 |\n|---|---|\n| 用户 | 兴趣标签、近期行为、设备、地区 |\n| 广告 | 广告主、广告计划、创意、类目、落地页 |\n| 上下文 | 版位、页面内容、时间、网络 |\n| 交叉 | 用户 × 广告类目、版位 × 创意尺寸 |\n| 历史统计 | 广告、广告主、版位在近 1 天 / 7 天的点击率 |\n\n高基数 ID（广告 ID、用户 ID）用哈希分桶或 embedding。历史点击率要**平滑**：(点击 + α) / (曝光 + α + β)，否则一个只曝光了 3 次、碰巧被点了 1 次的新广告会得到 33% 的点击率。所有统计特征都只能用曝光时刻之前的数据。\n\n**标签的时间窗口**：点击通常发生在曝光后几分钟内。曝光日志和点击日志用曝光 ID 做流式拼接，等待窗口（比如 30 分钟）内没有点击就记为负样本。窗口越长，迟到点击被误标为负样本的情况越少，但训练数据也越晚到达。转化（购买、下载）可能晚几天，预测转化率时这个问题更突出。\n\n## 4. 模型\n\n1. **基线**：逻辑回归加人工特征交叉。配合 FTRL 这类在线学习算法，可以在海量稀疏特征上逐条更新，长期是业界主力\n2. **GBDT + LR**：把树的叶子节点当作新特征，再交给逻辑回归，自动学到特征组合\n3. **深度模型**：embedding 加特征交叉层（FM、DeepFM、DCN 一类），对稀疏 ID 和高阶交叉更强\n\n**持续训练**：广告上下线、预算变化、节假日，数据分布每小时都在变。常见做法是每天用较长的窗口全量训练一次，再用最新数据每小时（或流式）增量更新。新广告冷启动依赖广告主、类目、创意内容这类泛化特征。\n\n## 5. 训练与评估\n\n**离线**（用前几天训练，后一天验证）：\n- **Log loss**：主指标，对概率的绝对值敏感\n- **归一化熵（NE）**：log loss 除以“永远预测平均点击率”时的 log loss。NE < 1 说明比这个基线好，越小越好；它不受整体点击率高低的影响，方便跨时间比较\n- **AUC**：只衡量排序能力\n- **校准比**：预测点击总数 / 实际点击总数，整体和每个分群都应接近 1\n\n**线上 A/B**：\n- 主指标：千次展示收入（RPM）\n- 护栏：点击率、广告主的转化成本、用户体验（广告隐藏率、页面停留时长）\n- 注意实验组之间会争抢同一批广告主的预算，结果可能有偏，必要时按广告主或预算拆分实验\n\n## 6. 服务与监控\n\n- 用户特征在请求开始时取一次，所有候选广告共用；广告特征常驻内存\n- 轻量模型先砍掉大部分候选，重模型只给几百个打分\n- 曝光和点击拼接成样本后进入流式训练，新模型验证通过后热更新\n\n**监控**：\n- 每小时按分群检查校准比，偏离超过阈值（比如 ±10%）自动告警，必要时回滚到上一个模型\n- 特征缺失率：上游日志延迟时，统计特征会大面积缺失\n- 预测点击率与实际点击率的分布\n- 异常流量：机器人点击会污染标签，进入训练前先过滤无效流量\n\n## 7. 回答分级\n\n**目标与校准**\n\n- **Bad**：当作普通排序题，只看 AUC。\n- **Good**：说明 pCTR 进入 eCPM 和扣费，所以必须校准；用 log loss 和校准比评估。\n- **Great**：讲清 GSP 扣费和 pCTR 的关系，按分群监控校准；负样本降采样后用公式校正概率。\n\n**数据与特征**\n\n- **Bad**：直接用原始点击率作特征，不考虑小样本噪声和数据穿越。\n- **Good**：用户、广告、上下文、交叉特征齐全；高基数 ID 用哈希或 embedding；历史点击率做平滑。\n- **Great**：设计曝光和点击的流式拼接与等待窗口，讨论迟到点击和数据新鲜度的取舍；提到转化类目标的延迟反馈。\n\n**训练与上线**\n\n- **Bad**：每周离线训练一次就上线。\n- **Good**：每天全量训练加小时级增量更新，A/B 看收入和用户体验。\n- **Great**：在线学习、校准监控与自动回滚、无效流量过滤；指出实验组之间争抢预算带来的偏差。\n\n## 8. 不同级别的期望\n\n| 级别 | 期望 |\n|---|---|\n| Mid（L4） | 在提示下给出二分类建模、主要特征和 log loss / AUC 评估，知道样本极不均衡 |\n| Senior（L5） | 主动说明校准的必要性，处理负样本降采样的校正、统计特征平滑、样本拼接和持续训练 |\n| Staff（L6+） | 把模型放进整个竞价系统里讨论：扣费、预算、广告主效果、实验偏差、监控与回滚，以及新鲜度和成本的取舍 |",
+      "bodyEn": "In an ad system the predicted click-through rate (pCTR) does more than rank: it **decides money**. Cost-per-click ads are ranked by bid × pCTR, and the price charged depends on pCTR too. That is the biggest difference from recommendation: **predictions must be calibrated**, so 0.02 has to really mean a 2% chance of a click. Add enormous data, very rare positives, and ads and interests that change fast, and the model needs frequent updates.\n\n## 1. Requirements\n\n**Functional**\n- For each ad request, predict the click probability of every candidate that passed targeting\n- Predictions drive auction ranking, pricing and budget pacing\n- New ads get reasonable predictions quickly\n\n**Non-functional**\n- Scale: 500K ad requests/s at peak with a few hundred candidates each, so over 100M predictions/s\n- Latency: 10-20 ms for scoring\n- Calibration: predicted and actual clicks close overall and per segment (advertiser, placement, device)\n- Freshness: updates hourly or even every few minutes\n\n## 2. Problem Framing\n\nBinary classification: given (user, ad, context), predict the probability that this impression is clicked within the attribution window.\n\n**Why calibration matters so much**: CPC ads are ranked by eCPM = bid × pCTR × 1000. If the model systematically overestimates one kind of ad, those ads win auctions they shouldn't; the platform earns less and advertisers get worse results. In a generalized second-price (GSP) auction the price charged also depends on the next ad's eCPM divided by your own pCTR, so a prediction error becomes a pricing error. Recommendation only needs relative order; ads need the absolute value right.\n\n```mermaid\nflowchart LR\n  accTitle: Scoring and auction for an ad request\n  req[\"Ad request\"] --> target[\"Targeting: thousands of candidates\"]\n  target --> pre[\"Light pre-ranking: ~300\"]\n  pre --> ctr[\"pCTR model\"]\n  ctr --> auction[\"Auction: rank by bid × pCTR\"]\n  auction --> pacing[\"Budget and frequency checks\"]\n  pacing --> show[\"Serve and log the impression\"]\n  show --> join[\"Stream-join impressions and clicks\"]\n  join --> train[\"Training examples\"]\n  train -.->|\"incremental updates\"| ctr\n```\n\n## 3. Data and Features\n\n**Examples**: billions of impressions a day at about 1% CTR, so positives are rare.\n\n**Negative downsampling**: keep every positive and a random fraction w of negatives (say 10%); training gets much faster. The model then learns the sampled distribution, so correct its output:\n\n```\nq = p / (p + (1 − p) / w)\n```\n\nwhere p is the model's output on sampled data and q the corrected estimate of the real click rate.\n\n**Features**:\n\n| Kind | Examples |\n|---|---|\n| User | Interest segments, recent behavior, device, region |\n| Ad | Advertiser, campaign, creative, category, landing page |\n| Context | Placement, page content, time, network |\n| Cross | User × ad category, placement × creative size |\n| Historical stats | CTR of the ad, advertiser and placement over the last day and week |\n\nHigh-cardinality IDs (ad ID, user ID) are hashed into buckets or embedded. **Smooth** historical CTRs as (clicks + α) / (impressions + α + β); otherwise a new ad with one lucky click in three impressions gets a 33% CTR. Every statistic may only use data from before the impression.\n\n**The label window**: clicks usually come within minutes of the impression. Impression and click logs are joined in a stream on impression ID, and no click within the wait window (say 30 minutes) means a negative. A longer window mislabels fewer late clicks as negatives but delivers training data later. Conversions (purchases, installs) can take days, which makes this much harder for conversion-rate models.\n\n## 4. Model\n\n1. **Baseline**: logistic regression with hand-made feature crosses. With an online learner such as FTRL it updates per example over huge sparse feature sets, and it was the industry workhorse for years\n2. **GBDT + LR**: tree leaves become new features for logistic regression, learning feature combinations automatically\n3. **Deep models**: embeddings plus feature-interaction layers (FM, DeepFM, DCN and similar), stronger on sparse IDs and higher-order crosses\n\n**Continuous training**: ads launch and stop, budgets change, holidays come, and the distribution shifts by the hour. A common setup trains once a day on a long window, then updates hourly (or in a stream) on the newest data. New ads start cold and rely on general features: advertiser, category, creative content.\n\n## 5. Training and Evaluation\n\n**Offline** (train on earlier days, validate on the next):\n- **Log loss**: the main metric, sensitive to absolute probabilities\n- **Normalized entropy (NE)**: log loss divided by the log loss of always predicting the average CTR. NE < 1 beats that baseline and lower is better; it doesn't move just because overall CTR moved, so days compare fairly\n- **AUC**: ranking quality only\n- **Calibration ratio**: total predicted clicks / total actual clicks, near 1 overall and per segment\n\n**Online A/B**:\n- Primary: revenue per thousand impressions (RPM)\n- Guardrails: CTR, advertisers' cost per conversion, user experience (ad hide rate, time on page)\n- Experiment arms compete for the same advertisers' budgets, which can bias results; split experiments by advertiser or budget when it matters\n\n## 6. Serving and Monitoring\n\n- User features are fetched once per request and shared by all candidates; ad features stay in memory\n- A light model drops most candidates, and the heavy model scores a few hundred\n- Joined impressions and clicks flow into streaming training, and a new model is hot-swapped once it validates\n\n**Monitoring**:\n- Calibration ratio per segment every hour; past a threshold (say ±10%) alert, and roll back to the previous model if needed\n- Feature missing rates: when upstream logs lag, statistical features go missing en masse\n- Predicted and actual CTR distributions\n- Invalid traffic: bot clicks poison labels, so filter invalid traffic before training\n\n## 7. Bad / Good / Great\n\n**Objective and calibration**\n\n- **Bad**: Treats it as a generic ranking problem and watches AUC only.\n- **Good**: Explains that pCTR enters eCPM and pricing, so it must be calibrated; evaluates with log loss and the calibration ratio.\n- **Great**: Explains how GSP pricing uses pCTR, monitors calibration per segment, and corrects probabilities after negative downsampling.\n\n**Data and features**\n\n- **Bad**: Uses raw CTRs as features, ignoring small-sample noise and leakage.\n- **Good**: User, ad, context and cross features; hashing or embeddings for high-cardinality IDs; smoothed historical CTRs.\n- **Great**: Designs the streaming impression-click join and its wait window, weighing late clicks against freshness; raises delayed feedback for conversion objectives.\n\n**Training and rollout**\n\n- **Bad**: Trains offline once a week and ships.\n- **Good**: Daily full training plus hourly incremental updates; A/B on revenue and user experience.\n- **Great**: Online learning, calibration monitoring with automatic rollback, invalid-traffic filtering; notes the bias from arms competing for budget.\n\n## 8. Level Expectations\n\n| Level | Expectation |\n|---|---|\n| Mid (L4) | With some prompting, a binary classifier with the main features, evaluated with log loss or AUC; knows positives are rare |\n| Senior (L5) | Explains why calibration is required and handles the downsampling correction, smoothed statistics, the impression-click join and continuous training |\n| Staff (L6+) | Places the model in the whole auction: pricing, budgets, advertiser outcomes, experiment bias, monitoring and rollback, and the trade-off between freshness and cost |",
+      "quiz": [
+        {
+          "qZh": "为什么广告点击率预估比推荐排序更强调校准？",
+          "qEn": "Why does ad click prediction care more about calibration than recommendation ranking does?",
+          "choices": [
+            {
+              "zh": "pCTR 进入 eCPM 和扣费，数值不准就会算错钱",
+              "en": "pCTR feeds eCPM and pricing, so wrong values mean wrong money"
+            },
+            {
+              "zh": "广告模型的 AUC 总比推荐低，要靠校准补回来",
+              "en": "Ads models always score lower AUC, and calibration makes up for it"
+            },
+            {
+              "zh": "校准过的模型训练收敛更快，能更早上线",
+              "en": "A calibrated model converges faster and ships sooner"
+            },
+            {
+              "zh": "推荐系统从不输出概率，所以也谈不上校准",
+              "en": "Recommenders never output probabilities, so calibration doesn't apply"
+            }
+          ],
+          "answer": 0,
+          "whyZh": "推荐只关心候选之间的相对顺序，整体高估 10% 不影响结果。广告的 eCPM = 出价 × pCTR，不同出价的广告之间比较的是绝对值；GSP 的扣费也用到 pCTR。某类广告被高估，就会赢下不该赢的竞价，并被错误扣费。",
+          "whyEn": "Recommendations care only about relative order, so a uniform 10% overestimate changes nothing. Ads compare eCPM = bid × pCTR across ads with different bids, which uses absolute values, and GSP pricing uses pCTR too. Overestimate one kind of ad and it wins auctions it shouldn't and is charged the wrong amount."
+        },
+        {
+          "qZh": "负样本按 w = 0.1 降采样后，模型输出 p = 0.05。校正后的真实点击率约为多少？",
+          "qEn": "With negatives downsampled at w = 0.1, the model outputs p = 0.05. What is the corrected click rate, roughly?",
+          "choices": [
+            {
+              "zh": "约 5%",
+              "en": "About 5%"
+            },
+            {
+              "zh": "约 50%",
+              "en": "About 50%"
+            },
+            {
+              "zh": "约 0.52%",
+              "en": "About 0.52%"
+            },
+            {
+              "zh": "约 0.05%",
+              "en": "About 0.05%"
+            }
+          ],
+          "answer": 2,
+          "whyZh": "q = p / (p + (1 − p) / w) = 0.05 / (0.05 + 0.95 / 0.1) = 0.05 / 9.55 ≈ 0.52%。负样本只保留了十分之一，模型看到的点击比例被放大了约 10 倍，校正就是把这部分放大还原。",
+          "whyEn": "q = p / (p + (1 − p) / w) = 0.05 / (0.05 + 0.95 / 0.1) = 0.05 / 9.55 ≈ 0.52%. Keeping one negative in ten inflates the click rate the model sees about tenfold; the correction undoes it."
+        },
+        {
+          "qZh": "归一化熵（NE）小于 1 说明什么？",
+          "qEn": "What does a normalized entropy (NE) below 1 mean?",
+          "choices": [
+            {
+              "zh": "模型的 AUC 已经低于 0.5，不如随机猜",
+              "en": "The model's AUC is under 0.5, worse than guessing"
+            },
+            {
+              "zh": "模型比永远预测平均点击率的基线更好",
+              "en": "It beats always predicting the average CTR"
+            },
+            {
+              "zh": "模型输出的预测值全部小于 1，没有越界",
+              "en": "Every prediction is below 1, so none is out of range"
+            },
+            {
+              "zh": "训练集的点击率比验证集低，存在分布漂移",
+              "en": "Training CTR is below validation CTR, a sign of drift"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "NE = 模型的 log loss / 永远预测背景点击率时的 log loss。等于 1 表示模型没比“每次都猜平均值”多学到什么，越小越好。除以背景熵之后，点击率整体升降不会让指标跟着变，便于跨天、跨版位比较。",
+          "whyEn": "NE = the model's log loss / the log loss of always predicting the background CTR. NE = 1 means it learned nothing beyond guessing the average; lower is better. Dividing by the background entropy keeps the metric from moving just because overall CTR moved, so days and placements compare fairly."
+        },
+        {
+          "qZh": "一个新广告只曝光了 3 次、被点击 1 次。把它的历史点击率作为特征时应该怎么处理？",
+          "qEn": "A new ad has 3 impressions and 1 click. How should its historical CTR be used as a feature?",
+          "choices": [
+            {
+              "zh": "直接用 33%，数据是真实发生的，不该修改",
+              "en": "Use 33% as is; it really happened and shouldn't be changed"
+            },
+            {
+              "zh": "先下线这个广告，等它在别处攒够数据再投放",
+              "en": "Pull the ad until it has enough data from elsewhere"
+            },
+            {
+              "zh": "曝光次数太少，直接把它的点击率设为 0",
+              "en": "Too few impressions, so set its CTR to 0"
+            },
+            {
+              "zh": "用先验做平滑，把小样本拉向类目均值",
+              "en": "Smooth with a prior: (clicks + α) / (imps + α + β)"
+            }
+          ],
+          "answer": 3,
+          "whyZh": "3 次曝光里的 1 次点击几乎全是偶然，33% 远高于真实水平。贝叶斯平滑用一个先验（比如同类目的平均点击率）把小样本拉向均值，曝光越多，越接近它自己的真实统计。设为 0 或下线，都会让新广告永远没有机会。",
+          "whyEn": "One click in three impressions is mostly chance, and 33% is far above reality. Bayesian smoothing pulls small samples toward a prior (say the category average), and the more impressions an ad gets, the closer it moves to its own stats. Zeroing it or pulling it means a new ad never gets a chance."
+        },
+        {
+          "qZh": "曝光和点击做流式拼接时，等待窗口设得越长，会怎样？",
+          "qEn": "When impressions and clicks are joined in a stream, what does a longer wait window do?",
+          "choices": [
+            {
+              "zh": "训练数据到得更早，但标签的准确度更差",
+              "en": "Training data arrives sooner but with worse labels"
+            },
+            {
+              "zh": "没有影响，等待窗口只是一个存储层的参数",
+              "en": "Nothing changes; the window is only a setting in the storage layer"
+            },
+            {
+              "zh": "迟到点击误标成负样本的更少，但数据到得更晚",
+              "en": "Fewer late clicks become false negatives, but data lands later"
+            },
+            {
+              "zh": "正样本比例一定会下降，需要重新采样",
+              "en": "The positive share always falls and needs resampling"
+            }
+          ],
+          "answer": 2,
+          "whyZh": "窗口内没等到点击的曝光会被当作负样本。窗口长，迟到的点击能被正确记成正样本；代价是每条样本都要多等一会儿才能进入训练，模型的新鲜度下降。这是标签准确和数据时效之间的取舍。",
+          "whyEn": "An impression with no click inside the window becomes a negative. A longer window lets late clicks count as positives, but every example waits longer before training, so the model is less fresh. It is a trade-off between label accuracy and timeliness."
+        },
+        {
+          "qZh": "为什么广告点击率模型通常要小时级甚至流式更新？",
+          "qEn": "Why are ad click models usually updated hourly or even in a stream?",
+          "choices": [
+            {
+              "zh": "广告频繁上下线，兴趣变化快，模型很快过时",
+              "en": "Ads churn and interests shift, so models go stale fast"
+            },
+            {
+              "zh": "模型文件太大，必须按小时拆成多个小文件发布",
+              "en": "The model file is too big and has to ship as hourly chunks"
+            },
+            {
+              "zh": "广告监管规定，模型每小时必须更换一次",
+              "en": "Ad regulations require swapping the model every hour"
+            },
+            {
+              "zh": "只要更新得更频繁，离线 AUC 就一定会更高",
+              "en": "More frequent updates always raise offline AUC"
+            }
+          ],
+          "answer": 0,
+          "whyZh": "新广告和新计划每天大量上线，预算耗尽的广告下线，节假日和热点事件让用户兴趣在几小时内变化。几天前训练的模型对新广告一无所知，对旧广告的估计也会偏。增量或在线学习让模型跟上分布变化；更新频率仍要权衡计算成本和稳定性。",
+          "whyEn": "New ads and campaigns launch constantly, ads that exhaust budgets go dark, and holidays or news shift interests within hours. A model trained days ago knows nothing of new ads and misjudges old ones. Incremental or online learning keeps up with the shift; update frequency still trades off compute cost and stability."
+        }
+      ]
+    },
+    {
+      "slug": "fraud-detection",
+      "titleZh": "ML 案例 4：支付欺诈检测",
+      "titleEn": "ML Case 4: Payment Fraud Detection",
+      "bodyZh": "欺诈检测要在一笔支付的授权流程里，用几十毫秒判断它是不是盗刷。它和推荐、广告有三点明显不同：**错误的代价不对称**（漏掉一笔欺诈和误拒一个正常用户，损失完全不同），**标签要等几周甚至几个月**，以及**对手会主动适应你的模型**。\n\n## 1. 需求澄清\n\n**功能需求**\n- 对每笔交易实时给出决定：通过、要求额外验证（短信验证码、3-D Secure）、拒绝\n- 可疑交易进入人工审核队列\n- 给审核员和用户提供可以解释的拒绝原因\n\n**非功能需求**\n- 规模：峰值 5000 笔/秒\n- 延迟：风控决策在 100 ms 以内（它在支付授权的关键路径上）\n- 高可用：风控挂了，不能让所有支付都失败\n\n**代价不对称**：\n- 漏过欺诈：损失交易金额，加上拒付手续费\n- 误拒正常交易：损失这笔收入，用户可能从此流失\n- 人工审核：审核员的成本和延迟\n\n## 2. 问题形式化\n\n二分类，预测 P(欺诈 | 交易)。但最终输出的是**决策**，不是概率：\n\n| 分数区间 | 决策 |\n|---|---|\n| 低 | 直接通过 |\n| 中 | 额外验证或人工审核 |\n| 高 | 拒绝 |\n\n阈值按期望成本选，而不是固定为 0.5：一笔 5000 元的交易和一笔 20 元的交易，欺诈概率相同，处理方式也应该不同。阈值还可以按金额区间、商户类别分别设定。\n\n**规则加模型**：已知的模式和合规要求（黑名单、单卡频次上限）用规则，生效快、好解释；模型负责从复杂特征里泛化。出现新的攻击时，先用规则止血，等模型重训后学会。\n\n```mermaid\nflowchart LR\n  accTitle: 支付风控的实时决策链路\n  auth[\"支付授权请求\"] --> feat[\"取特征：频次计数、设备、图特征\"]\n  feat --> rules[\"规则引擎：黑名单、硬限制\"]\n  rules --> model[\"模型打分\"]\n  model --> policy[\"决策策略：按金额和成本选阈值\"]\n  policy --> approve[\"通过\"]\n  policy --> challenge[\"额外验证或人工审核\"]\n  policy --> decline[\"拒绝\"]\n  challenge --> outcome[\"验证与审核结果\"]\n  outcome --> labels[\"标签：审核结果、拒付、用户举报\"]\n  approve -.->|\"30~90 天后的拒付\"| labels\n```\n\n## 3. 数据与特征\n\n**标签来源**：持卡人发起的拒付（chargeback，通常在交易后 30~90 天才到）、人工审核结论、用户举报。标签有两个麻烦：\n\n- **延迟**：最近几周的交易，大部分标签还没“成熟”\n- **选择偏差**：被拒绝的交易永远不知道它到底是不是欺诈，模型拒得越多，训练数据里越缺这一块\n\n**特征**：\n\n| 类别 | 例子 |\n|---|---|\n| 交易 | 金额、币种、商户类别（MCC）、线上还是线下、时间 |\n| 频次（velocity） | 这张卡过去 1 小时 / 24 小时的交易笔数和金额、涉及的商户数和设备数 |\n| 设备与网络 | 设备指纹、IP 归属地与账单地址的距离、是否使用代理或 VPN |\n| 行为偏离 | 金额相对这张卡历史水平的偏离程度、是否首次在这个商户消费 |\n| 关系图 | 与其他账户共用的设备、卡、邮箱、地址；所在连通分量里已知欺诈账户的比例 |\n\n**频次特征**用流式计算（滑动窗口计数器）实时维护在在线特征库里；训练时必须按每笔交易发生时刻的值回放，不能用当天汇总后的数，否则就是数据穿越。**图特征**计算量大，通常定期离线计算后写入 KV 存储，用来识别团伙作案。\n\n欺诈只占约 0.1%，可以对正常交易降采样，或者给欺诈样本加权，但评估必须在真实分布上做。\n\n## 4. 模型\n\n1. **基线**：规则加逻辑回归\n2. **主模型**：GBDT（XGBoost、LightGBM）。表格特征上效果好，能处理缺失值，推理快，还能用 SHAP 给出每笔交易的主要原因，方便审核和解释拒绝\n3. **补充**：图模型离线识别欺诈团伙；无监督的异常检测（比如孤立森林）发现还没有标签的新型攻击\n\n最后由决策层把规则、模型分数和金额组合起来，按成本选择阈值。\n\n## 5. 训练与评估\n\n**按时间切分，并且只用标签已经成熟的数据**：比如用 4 个月前到 1 个月前的数据训练。最近一个月的标签还在陆续到达，不能当作“没有欺诈”。\n\n**离线指标**：\n- PR-AUC\n- 固定误拒率（比如 0.5%）下的召回\n- 按金额加权的召回：抓住的欺诈金额占全部欺诈金额的比例\n- 总期望损失：在选定的阈值下，漏过的欺诈损失 + 误拒成本 + 审核成本\n\n**处理选择偏差**：对一小部分本该被拒绝的低金额交易改为“额外验证”，验证是否通过就是标签，用它估计被拒交易里真实的欺诈比例。\n\n**上线**：先跑影子模式（只打分不生效），对比新旧模型的决策差异；再在一小部分流量上做冠军-挑战者（champion-challenger）实验。拒付率是滞后指标，短期先看误拒率、审核队列长度和用户投诉。\n\n## 6. 服务与监控\n\n- 频次计数器放在内存存储或流处理的状态里，每笔交易实时更新\n- 模型和特征服务都设超时；超时或故障时**退回只用规则的保守策略**，既不能让所有支付失败，也不能全部放行\n- 每次拒绝都记录原因代码（来自规则或 SHAP），用于审核和用户申诉\n\n**监控与对抗**：\n- 分数分布和特征分布的漂移；某个特征突然大面积缺失\n- 每天的拒绝率、验证通过率、审核队列积压\n- 欺诈者会不断调整手法，模型效果会随时间衰减，通常每周重训；出现新攻击时先用规则快速封堵\n\n## 7. 回答分级\n\n**目标与决策**\n\n- **Bad**：输出一个阈值为 0.5 的分类结果，用准确率评估。\n- **Good**：通过、验证、拒绝三档决策；用 PR-AUC 和固定误拒率下的召回评估。\n- **Great**：按期望成本和交易金额选阈值；讲清规则和模型的分工；给出拒绝原因代码。\n\n**标签与特征**\n\n- **Bad**：把最近的交易都当作有标签的数据，用当天汇总的统计量做特征。\n- **Good**：知道拒付标签有延迟，只用成熟的标签训练；设计频次、设备和行为偏离特征。\n- **Great**：频次特征流式维护，并按交易时刻回放；用图特征识别团伙；指出被拒交易没有标签的选择偏差，并用小比例的验证流量来估计。\n\n**上线与对抗**\n\n- **Bad**：离线 AUC 涨了就全量上线，没有兜底。\n- **Good**：影子模式加冠军-挑战者实验，监控拒绝率和漂移。\n- **Great**：故障时退回规则的保守策略；规则快速止血，模型定期重训；按金额加权评估真实损失。\n\n## 8. 不同级别的期望\n\n| 级别 | 期望 |\n|---|---|\n| Mid（L4） | 在提示下给出二分类建模、主要特征和适合不均衡数据的指标，知道要实时决策 |\n| Senior（L5） | 主动处理标签延迟、频次特征的时刻正确性、按成本选阈值，以及影子模式上线 |\n| Staff（L6+） | 讨论对抗性和选择偏差、规则与模型的分工、故障兜底、可解释性与合规，以及误拒对用户和收入的长期影响 |",
+      "bodyEn": "Fraud detection has to decide, inside a payment's authorization flow and within tens of milliseconds, whether the payment is stolen-card fraud. It differs from recommendation and ads in three ways: **errors cost different amounts** (missing a fraud and declining a good customer are very different losses), **labels take weeks or months to arrive**, and **the adversary adapts to your model**.\n\n## 1. Requirements\n\n**Functional**\n- Decide every transaction in real time: approve, step up (one-time code, 3-D Secure), or decline\n- Send suspicious transactions to a manual review queue\n- Give reviewers and customers an explainable reason for declines\n\n**Non-functional**\n- Scale: 5,000 transactions/s at peak\n- Latency: a decision within 100 ms (it sits on the authorization's critical path)\n- High availability: a failing fraud system must not fail every payment\n\n**Asymmetric costs**:\n- Missed fraud: the transaction amount plus chargeback fees\n- False decline: that revenue, and possibly the customer for good\n- Manual review: analyst cost and delay\n\n## 2. Problem Framing\n\nBinary classification, P(fraud | transaction). But the output is a **decision**, not a probability:\n\n| Score band | Decision |\n|---|---|\n| Low | Approve |\n| Middle | Step up or manual review |\n| High | Decline |\n\nPick thresholds by expected cost, not a fixed 0.5: a $5,000 transaction and a $20 one with the same fraud probability deserve different handling. Thresholds can also differ by amount band and merchant category.\n\n**Rules plus a model**: known patterns and compliance requirements (blocklists, per-card velocity caps) are rules, quick to deploy and easy to explain; the model generalizes from complex features. When a new attack appears, rules stop the bleeding until retraining teaches the model.\n\n```mermaid\nflowchart LR\n  accTitle: Real-time payment fraud decisions\n  auth[\"Authorization request\"] --> feat[\"Features: velocity counters, device, graph\"]\n  feat --> rules[\"Rules engine: blocklists, hard limits\"]\n  rules --> model[\"Model score\"]\n  model --> policy[\"Decision policy: thresholds by amount and cost\"]\n  policy --> approve[\"Approve\"]\n  policy --> challenge[\"Step up or manual review\"]\n  policy --> decline[\"Decline\"]\n  challenge --> outcome[\"Verification and review outcomes\"]\n  outcome --> labels[\"Labels: reviews, chargebacks, reports\"]\n  approve -.->|\"chargebacks 30-90 days later\"| labels\n```\n\n## 3. Data and Features\n\n**Label sources**: cardholder chargebacks (usually 30-90 days after the transaction), manual review outcomes, customer reports. Two problems:\n\n- **Delay**: most labels for the last few weeks haven't matured yet\n- **Selection bias**: a declined transaction never reveals whether it was fraud, and the more the model declines, the more of that region goes missing from training data\n\n**Features**:\n\n| Kind | Examples |\n|---|---|\n| Transaction | Amount, currency, merchant category (MCC), card-present or online, time |\n| Velocity | This card's count and sum over the last hour and day, distinct merchants, distinct devices |\n| Device and network | Device fingerprint, distance between IP location and billing address, proxy or VPN |\n| Behavioral deviation | Amount relative to the card's history, first purchase at this merchant |\n| Graph | Devices, cards, emails and addresses shared with other accounts; share of known fraud in the connected component |\n\n**Velocity features** are maintained in real time by streaming aggregation (sliding-window counters) in the online feature store. For training they must be replayed as of each transaction's time, not taken from end-of-day totals, or the future leaks in. **Graph features** are expensive, usually computed offline on a schedule and written to a KV store, and they expose fraud rings.\n\nFraud is about 0.1% of transactions. Downsample legitimate ones or weight fraud examples, but evaluate on the real distribution.\n\n## 4. Model\n\n1. **Baseline**: rules plus logistic regression\n2. **Main model**: GBDT (XGBoost, LightGBM). Strong on tabular features, handles missing values, fast at inference, and SHAP gives each transaction's top reasons for reviewers and decline explanations\n3. **Supplements**: graph models offline to find fraud rings; unsupervised anomaly detection (isolation forests, say) for new attacks that have no labels yet\n\nA decision layer then combines rules, the model score and the amount, with thresholds chosen by cost.\n\n## 5. Training and Evaluation\n\n**Split by time and train only on matured labels**: for example, train on data from four months ago to one month ago. Last month's labels are still arriving and must not be treated as no fraud.\n\n**Offline metrics**:\n- PR-AUC\n- Recall at a fixed false-decline rate (say 0.5%)\n- Amount-weighted recall: the share of fraud dollars caught\n- Total expected loss at the chosen thresholds: missed fraud + false declines + review cost\n\n**Handling selection bias**: for a small share of low-amount transactions that would be declined, step up instead; whether verification passes is the label, and it estimates the true fraud rate among declines.\n\n**Rollout**: shadow mode first (score without acting) to compare old and new decisions, then a champion-challenger test on a slice of traffic. Chargeback rate lags, so in the short term watch the false-decline rate, review queue length and complaints.\n\n## 6. Serving and Monitoring\n\n- Velocity counters live in an in-memory store or stream-processor state, updated per transaction\n- The model and feature services have timeouts; on a timeout or failure, **fall back to a conservative rules-only policy**, never failing every payment and never approving everything\n- Every decline records reason codes (from rules or SHAP) for review and customer appeals\n\n**Monitoring and adversaries**:\n- Drift in score and feature distributions; a feature suddenly missing at scale\n- Daily decline rate, step-up pass rate, review backlog\n- Fraudsters keep changing tactics, so a model decays over time; retrain weekly as a rule, and block new attacks with rules first\n\n## 7. Bad / Good / Great\n\n**Objective and decisions**\n\n- **Bad**: A classifier with a 0.5 threshold, evaluated by accuracy.\n- **Good**: Approve, step up, decline; evaluated with PR-AUC and recall at a fixed false-decline rate.\n- **Great**: Thresholds by expected cost and amount; a clear split between rules and the model; reason codes for declines.\n\n**Labels and features**\n\n- **Bad**: Treats recent transactions as labeled and uses end-of-day totals as features.\n- **Good**: Knows chargebacks lag and trains on matured labels; designs velocity, device and behavioral-deviation features.\n- **Great**: Streams velocity features and replays them as of transaction time; uses graph features against rings; names the selection bias of unlabeled declines and estimates it with a small step-up slice.\n\n**Rollout and adversaries**\n\n- **Bad**: Ships fully once offline AUC rises, with no fallback.\n- **Good**: Shadow mode and champion-challenger, monitoring decline rate and drift.\n- **Great**: Falls back to conservative rules on failure; rules for fast response and scheduled retraining for the model; evaluates real loss weighted by amount.\n\n## 8. Level Expectations\n\n| Level | Expectation |\n|---|---|\n| Mid (L4) | With some prompting, a binary classifier with the main features and metrics suited to imbalance; knows the decision is real-time |\n| Senior (L5) | Handles label delay, point-in-time velocity features, cost-based thresholds and shadow-mode rollout unprompted |\n| Staff (L6+) | Discusses adversaries and selection bias, the split between rules and models, failure fallback, explainability and compliance, and the long-term cost of false declines to customers and revenue |",
+      "quiz": [
+        {
+          "qZh": "为什么欺诈检测的阈值不应该固定为 0.5？",
+          "qEn": "Why shouldn't a fraud model's threshold be fixed at 0.5?",
+          "choices": [
+            {
+              "zh": "0.5 只适用于深度学习模型的输出",
+              "en": "A 0.5 cutoff only suits deep learning outputs"
+            },
+            {
+              "zh": "阈值设得越低，模型的整体准确率就越高",
+              "en": "The lower the threshold, the higher the overall accuracy of the model"
+            },
+            {
+              "zh": "欺诈交易的预测概率永远不会超过 0.5",
+              "en": "Predicted fraud probability never goes above 0.5"
+            },
+            {
+              "zh": "漏判和误拒代价不同且随金额变化，要按成本选",
+              "en": "Misses and false declines cost different amounts; pick by cost"
+            }
+          ],
+          "answer": 3,
+          "whyZh": "漏过一笔 5000 元的盗刷，损失是交易金额加拒付手续费；误拒一笔 20 元的正常交易，损失是这笔收入和用户体验。同样的欺诈概率，金额不同，最优决策也不同。按期望成本选阈值，再配合“额外验证”这一中间档，比一刀切的 0.5 更合理。",
+          "whyEn": "Missing a $5,000 fraud costs the amount plus chargeback fees; falsely declining a $20 purchase costs that revenue and some goodwill. At the same fraud probability the best decision depends on the amount. Choosing thresholds by expected cost, with a step-up middle band, beats a flat 0.5."
+        },
+        {
+          "qZh": "训练模型时，最近一个月的交易应该怎么处理？",
+          "qEn": "How should last month's transactions be treated when training?",
+          "choices": [
+            {
+              "zh": "全部当作正常交易加入训练，因为还没有人举报",
+              "en": "Train on them as legitimate, since nobody has reported them"
+            },
+            {
+              "zh": "标签没成熟，拒付还在路上，不能当负样本",
+              "en": "Labels aren't mature yet, so they can't count as negatives"
+            },
+            {
+              "zh": "只保留其中金额最大的交易，其余全部丢弃",
+              "en": "Keep only the largest transactions and drop the rest"
+            },
+            {
+              "zh": "每条复制三份，加大最新数据在训练里的权重",
+              "en": "Copy each three times to weight recent data more"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "拒付通常在交易后 30~90 天才到。最近一个月里的很多欺诈交易，此刻看起来还是“正常”的，把它们当负样本，等于告诉模型这些模式是安全的。常见做法是让训练窗口截止到标签成熟的时间点，或者只对成熟部分计算损失。",
+          "whyEn": "Chargebacks arrive 30-90 days after the transaction, so much of last month's fraud still looks legitimate today. Training on it as negative tells the model those patterns are safe. The usual fix is to end the training window where labels have matured, or compute the loss only on the matured part."
+        },
+        {
+          "qZh": "“这张卡过去 1 小时的交易笔数”这类频次特征，训练时最容易犯什么错？",
+          "qEn": "What is the easiest mistake with a velocity feature such as this card's transactions in the last hour?",
+          "choices": [
+            {
+              "zh": "用了事后汇总的值，而不是交易当时的值",
+              "en": "Using end-of-day totals, not the count at that moment"
+            },
+            {
+              "zh": "1 小时的窗口太短了，应该一律改成 1 年",
+              "en": "A one-hour window is too short; always use a full year"
+            },
+            {
+              "zh": "频次特征和欺诈没有关系，加了也没有作用",
+              "en": "Velocity has nothing to do with fraud and adds nothing"
+            },
+            {
+              "zh": "频次特征只适用于线下刷卡，线上交易用不了",
+              "en": "Velocity only works for card-present, not online payments"
+            }
+          ],
+          "answer": 0,
+          "whyZh": "线上打分时只能看到这笔交易之前的计数；如果训练时用的是当天结束后汇总的数，就包含了这笔交易之后发生的交易（比如盗刷者紧接着又刷了十笔），模型离线表现很好，上线就失效。训练样本要按交易时刻回放特征，或者直接记录线上实际用到的值。",
+          "whyEn": "At serving time only the count before this transaction exists. Training on an end-of-day total includes transactions that came after (say the fraudster's next ten swipes), so the model looks great offline and fails in production. Replay features as of each transaction's time, or log the values actually used online."
+        },
+        {
+          "qZh": "被模型拒绝的交易没有真实标签，这会导致什么问题？怎么缓解？",
+          "qEn": "Declined transactions have no true label. What problem does that cause, and how is it eased?",
+          "choices": [
+            {
+              "zh": "没有问题，被模型拒绝的交易一定是欺诈",
+              "en": "Nothing; anything the model declines is certainly fraud"
+            },
+            {
+              "zh": "训练数据会变少，所以应该把拒绝率降到 0",
+              "en": "Training data shrinks, so the decline rate should go to zero"
+            },
+            {
+              "zh": "选择偏差：用少量低额交易改做验证来估计",
+              "en": "Selection bias: step up a few low-amount declines to measure it"
+            },
+            {
+              "zh": "把被拒交易全部当作正常交易，加入下一轮训练",
+              "en": "Feed every declined transaction into the next training run as legitimate"
+            }
+          ],
+          "answer": 2,
+          "whyZh": "模型拒绝的交易永远观察不到结局，训练数据里就缺了“模型认为可疑”的那一块，新模型的评估也会有偏。把一小部分低金额、本该拒绝的交易改为额外验证，验证是否通过就提供了标签，可以估计被拒交易里真正的欺诈比例，代价可控。",
+          "whyEn": "Declined transactions never show their outcome, so the data lacks exactly the region the model finds suspicious, and evaluating new models is biased. Stepping up a small share of low-amount would-be declines yields labels from whether verification passes, estimating the true fraud rate among declines at a bounded cost."
+        },
+        {
+          "qZh": "风控模型服务超时了，支付流程应该怎么办？",
+          "qEn": "The fraud model service times out. What should the payment flow do?",
+          "choices": [
+            {
+              "zh": "所有支付一律拒绝，宁可错杀也要保证安全",
+              "en": "Decline every payment; better safe than sorry"
+            },
+            {
+              "zh": "退回只用规则的保守策略继续决策",
+              "en": "Fall back to a conservative rules-only policy"
+            },
+            {
+              "zh": "所有支付一律放行，优先保证用户的支付体验",
+              "en": "Approve every payment so the checkout experience comes first"
+            },
+            {
+              "zh": "让用户在页面上等待，直到模型恢复后再支付",
+              "en": "Hold the user on the page until the model is back"
+            }
+          ],
+          "answer": 1,
+          "whyZh": "风控在支付的关键路径上：全部拒绝会让业务停摆，全部放行会被攻击者利用，让用户长时间等待也不现实。正确的做法是设置超时，超时就用规则引擎和金额阈值做保守决策（比如大额要求额外验证），等模型恢复后再切回。",
+          "whyEn": "Fraud scoring sits on the payment's critical path. Declining everything stops the business, approving everything invites attackers, and long waits are not an option. Set a timeout and fall back to the rules engine with amount thresholds (step up large payments, say), switching back once the model recovers."
+        },
+        {
+          "qZh": "为什么欺诈模型需要定期重训，还要配合能快速上线的规则？",
+          "qEn": "Why does a fraud model need regular retraining alongside rules that ship quickly?",
+          "choices": [
+            {
+              "zh": "模型文件存久了会损坏，需要定期重新生成",
+              "en": "Stored model files corrupt over time and must be regenerated"
+            },
+            {
+              "zh": "只要重训得足够频繁，模型就永远不会出错",
+              "en": "Retrain often enough and the model never makes mistakes"
+            },
+            {
+              "zh": "规则总是比模型准，模型只是用来做展示的",
+              "en": "Rules are always more accurate; the model is just for show"
+            },
+            {
+              "zh": "欺诈者会绕开模型；规则能快速止血",
+              "en": "Fraudsters adapt, models decay, and rules react fast"
+            }
+          ],
+          "answer": 3,
+          "whyZh": "欺诈是对抗场景：攻击者会试探哪些交易能通过，然后换卡段、换商户、换设备。模型学到的模式会逐渐失效，需要用新标签定期重训。但重训和验证要几天，新攻击爆发时先用规则（封设备、限频次）止血，等模型学会之后再撤掉临时规则。",
+          "whyEn": "Fraud is adversarial: attackers probe what gets through, then switch card ranges, merchants and devices. Learned patterns fade, so the model is retrained on new labels regularly. Retraining and validation take days, though, so a new attack is stopped first with rules (block devices, cap velocity), retired once the model has learned it."
+        }
+      ]
     }
   ]
 }
