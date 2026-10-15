@@ -9,7 +9,8 @@ import { resolve } from 'node:path';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
-import { skillScore, skillTest } from '../lib/skill-tests';
+import { archiveMock, mockClock, mockDeadline, type MockSession } from '../lib/mock-oa';
+import { skillScore, skillSession, skillTest } from '../lib/skill-tests';
 
 const dir = mkdtempSync(resolve(tmpdir(), 'cswork-skill-tests-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
@@ -86,6 +87,19 @@ void test('scoring: 70% overall and 40% on every question to pass', () => {
   assert.equal(skillScore([ac, { passed: 3, total: 10, accepted: false }]).passed, false, 'one question under 40%');
   assert.equal(skillScore([half, half]).passed, false, '50% overall');
   assert.equal(skillScore([]).passed, false);
+});
+
+void test('a running attempt becomes the workspace exam session on the server clock, kept out of mock history', () => {
+  const attempt = { id: 'x', test: 'python', ids: ['lc-1', 'lc-2'], language: 'python', startedAt: 1_000_000, deadline: 1_000_000 + 45 * MIN, finishedAt: null, score: null, max: null, passed: null };
+  // This browser's clock runs 5 seconds behind the server's.
+  const session = skillSession(attempt, skillTest('python')!, 1_060_000, 1_055_000, false);
+  assert.deepEqual([session.name, session.platform, session.minutes, session.cert], ['Python', 'Python', 45, { test: 'python' }]);
+  assert.equal(mockDeadline(session) + session.skew, attempt.deadline);
+  assert.equal(mockClock(session, 1_055_000).phase, 'running');
+  const mock = { ...session, id: 'm', cert: undefined } as MockSession;
+  const archived = archiveMock({ active: session, history: [mock] }, session);
+  assert.deepEqual(archived, { active: null, history: [mock] });
+  assert.deepEqual(archiveMock({ active: mock, history: [] }, mock).history, [mock]);
 });
 
 void test('the draw skips solved problems, stays in the band, and the exam gates its problems', async () => {
