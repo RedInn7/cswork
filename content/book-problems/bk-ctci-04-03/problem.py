@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['二叉树', '广度优先搜索']
 SAMPLES = 1
+MAX_N = 10000
 
 
 def parse(s):

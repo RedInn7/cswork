@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['排序', '贪心']
 SAMPLES = 2
+MAX_N = 20000
 
 
 def values(s):

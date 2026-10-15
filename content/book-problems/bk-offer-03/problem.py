@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['数组', '哈希表']
 SAMPLES = 2
+MAX_N = 100000
 
 
 def solve(s):

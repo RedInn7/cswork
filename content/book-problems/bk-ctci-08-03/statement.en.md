@@ -2,7 +2,7 @@
 Given an integer array a sorted in non-decreasing order (values may repeat), indexed from 0, an index i is magic when a[i] = i. Print the smallest magic index, or -1 if there is none.
 
 ## Input
-The first line holds an integer n (1 ≤ n ≤ 100000).
+The first line holds an integer n (1 ≤ n ≤ 20000).
 The second line holds n integers in non-decreasing order, each with absolute value at most 10^9.
 
 ## Output

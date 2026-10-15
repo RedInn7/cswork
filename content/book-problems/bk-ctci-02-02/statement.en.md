@@ -2,7 +2,7 @@
 Given a singly linked list and a positive integer k, print the value of the k-th node from the end. The tail is the 1st from the end.
 
 ## Input
-The first line holds two integers n and k (1 ≤ k ≤ n ≤ 100000).
+The first line holds two integers n and k (1 ≤ k ≤ n ≤ 20000).
 The second line holds n integers, the values from head to tail, each with absolute value at most 10^9.
 
 ## Output

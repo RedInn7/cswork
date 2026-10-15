@@ -3,7 +3,7 @@ Rearrange an integer array so that all odd numbers come first and all even numbe
 Negative numbers have a parity too: -3 is odd and -4 is even.
 
 ## Input
-The first line holds an integer n (1 ≤ n ≤ 100000).
+The first line holds an integer n (1 ≤ n ≤ 20000).
 The second line holds n integers, each with absolute value at most 10^9.
 
 ## Output

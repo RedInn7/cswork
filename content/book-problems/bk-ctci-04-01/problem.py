@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['图', '广度优先搜索']
 SAMPLES = 2
+MAX_N = (10000, 10000)
 
 
 def parse(s):

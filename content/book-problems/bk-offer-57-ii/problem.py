@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['滑动窗口', '数学']
 SAMPLES = 2
+MAX_N = 100000
 
 
 def runs(t, shortest=2):

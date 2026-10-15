@@ -3,6 +3,7 @@ import heapq
 LEVEL = '中等'
 TAGS = ['栈', '堆', '设计']
 SAMPLES = 1
+MAX_N = 6000
 
 
 def run(s, largest=False, pop_latest=False):

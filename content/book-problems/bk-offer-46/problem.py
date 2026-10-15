@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['动态规划', '字符串']
 SAMPLES = 2
+MAX_N = 60
 
 
 def count(d, piece):
@@ -22,6 +23,10 @@ def wrong_leading_zero_pairs(s):
 def wrong_twenty_six(s):
     # Lets 26 be a piece.
     return count(s.strip(), lambda p: p[0] != '0' and p <= '26')
+
+
+def size(s):
+    return len(s.split()[0])
 
 
 def cases(r):

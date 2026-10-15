@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['字符串']
 SAMPLES = 2
+MAX_N = 10000
 
 
 def line(s):
@@ -19,6 +20,10 @@ def wrong_trimmed(s):
 def wrong_runs_merged(s):
     # Splits on whitespace and joins the words, so a run of spaces becomes one %20.
     return '%20'.join(line(s).split())
+
+
+def size(s):
+    return len(s.rstrip('\n'))
 
 
 def cases(r):

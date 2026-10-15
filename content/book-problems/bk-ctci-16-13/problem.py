@@ -3,6 +3,7 @@ from fractions import Fraction
 LEVEL = '中等'
 TAGS = ['几何', '数学']
 SAMPLES = 2
+MAX_N = 1000
 CHECKER = 'float-array'
 
 
@@ -49,6 +50,10 @@ def wrong_order_by_y(s):
 
 def fmt(a, b):
     return f'{a[0]} {a[1]} {a[2]}\n{b[0]} {b[1]} {b[2]}\n'
+
+
+def size(s):
+    return max(abs(int(v)) for v in s.split())
 
 
 def cases(r):

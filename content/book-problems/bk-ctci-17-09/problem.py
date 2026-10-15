@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['动态规划', '数学', '堆']
 SAMPLES = 1
+MAX_N = (1000, 2000)
 
 
 def sequence(k, dedup=True):
@@ -45,6 +46,11 @@ def wrong_skips_one(s):
 
 def fmt(qs):
     return f'{len(qs)}\n{" ".join(map(str, qs))}\n'
+
+
+def size(s):
+    t, *rest = map(int, s.split())
+    return t, max(rest)
 
 
 def cases(r):

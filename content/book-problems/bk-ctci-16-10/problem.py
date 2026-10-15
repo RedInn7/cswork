@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['差分数组', '数组']
 SAMPLES = 2
+MAX_N = 20000
 
 
 def best_year(s, inclusive=True, latest=False):

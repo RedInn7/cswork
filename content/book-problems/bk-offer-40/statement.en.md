@@ -2,7 +2,7 @@
 Given n integers and a positive integer k, find the k smallest of them and print them in increasing order. Equal values count separately: if 1 appears twice, both copies may be in the answer.
 
 ## Input
-The first line holds two integers n and k (1 ≤ k ≤ n ≤ 100000).
+The first line holds two integers n and k (1 ≤ k ≤ n ≤ 20000).
 The second line holds n integers, each with absolute value at most 10^9.
 
 ## Output

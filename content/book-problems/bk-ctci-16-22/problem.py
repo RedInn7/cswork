@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['模拟', '哈希表']
 SAMPLES = 2
+MAX_N = 12000
 # Clockwise from right: (row step, column step) and the letter for each heading.
 HEADINGS = [((0, 1), 'R'), ((1, 0), 'D'), ((0, -1), 'L'), ((-1, 0), 'U')]
 

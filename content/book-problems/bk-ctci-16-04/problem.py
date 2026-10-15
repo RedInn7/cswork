@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['数组', '矩阵', '模拟']
 SAMPLES = 1
+MAX_N = (100, 100)
 
 
 def boards(s):
@@ -64,6 +65,15 @@ def plant(r, n, mark, kind):
     return [''.join(row) for row in b]
 
 
+def size(s):
+    v = s.split()
+    sides, i = [], 1
+    for _ in range(int(v[0])):
+        sides.append(int(v[i]))
+        i += sides[-1] + 1
+    return int(v[0]), max(sides)
+
+
 def cases(r):
     out = [fmt([['XOO', '.XO', '..X'], ['XOX', 'XOO', 'OXX'], ['X.O', 'OX.', '...']]),
            fmt([['X'], ['.'], ['..X', '.X.', 'X..'], ['XO', '.X'], ['XO', 'OO']])]
@@ -73,4 +83,5 @@ def cases(r):
         # A full board with no line: a draw.
         bs.append([''.join('XO'[(i // 2 + j) % 2] for j in range(n)) for i in range(n)])
         out.append(fmt(bs))
+    out.append(fmt([random_board(r, r.randint(1, 5), 0.9) for _ in range(100)]))  # t = 100
     return out

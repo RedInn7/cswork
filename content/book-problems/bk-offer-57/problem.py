@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['双指针', '二分查找']
 SAMPLES = 2
+MAX_N = 100000
 
 
 def parse(s):

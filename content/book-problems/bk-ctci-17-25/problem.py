@@ -1,6 +1,7 @@
 LEVEL = '困难'
 TAGS = ['回溯', '字典树']
 SAMPLES = 2
+MAX_N = 200
 
 
 def words_of(s):

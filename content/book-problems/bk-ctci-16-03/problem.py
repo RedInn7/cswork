@@ -3,6 +3,7 @@ from fractions import Fraction
 LEVEL = '困难'
 TAGS = ['几何', '数学']
 SAMPLES = 2
+MAX_N = 1000000
 CHECKER = 'float-array'
 
 
@@ -55,6 +56,10 @@ def wrong_parallel_means_apart(s):
 
 def fmt(a, b, c, d):
     return f'{a[0]} {a[1]} {b[0]} {b[1]}\n{c[0]} {c[1]} {d[0]} {d[1]}\n'
+
+
+def size(s):
+    return max(abs(int(v)) for v in s.split())
 
 
 def cases(r):

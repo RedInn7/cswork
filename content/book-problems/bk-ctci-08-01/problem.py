@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['动态规划']
 SAMPLES = 1
+MAX_N = (1000, 1000000)
 MOD = 1000000007
 
 
@@ -37,6 +38,11 @@ def wrong_floor_is_zero(s):
 
 def fmt(qs):
     return f'{len(qs)}\n{" ".join(map(str, qs))}\n'
+
+
+def size(s):
+    t, *rest = map(int, s.split())
+    return t, max(rest)
 
 
 def cases(r):

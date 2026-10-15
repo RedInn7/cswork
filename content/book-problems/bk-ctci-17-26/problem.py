@@ -3,6 +3,7 @@ from math import gcd
 LEVEL = '困难'
 TAGS = ['哈希表', '倒排索引', '数学']
 SAMPLES = 1
+MAX_N = (500, 500, 50000)
 
 
 def docs(s):
@@ -54,9 +55,19 @@ def fmt(ds):
     return f'{len(ds)}\n' + ''.join(' '.join(map(str, [len(d)] + d)) + '\n' for d in ds)
 
 
+def size(s):
+    v = list(map(int, s.split()))
+    counts, i = [], 1
+    for _ in range(v[0]):
+        counts.append(v[i])
+        i += v[i] + 1
+    return v[0], max(counts), sum(counts)
+
+
 def cases(r):
     out = [fmt([[1, 2, 3], [2, 3, 4, 5], [3, 9], [7]]), fmt([[5]]), fmt([[1, 2], [2, 1]]), fmt([[1], [2], [3]]),
            fmt([[0, 100000], [100000], [0]])]
     for n, k, v in [(8, 5, 20), (100, 30, 500), (500, 60, 100000), (300, 10, 200)]:
         out.append(fmt([r.sample(range(v + 1), r.randint(1, k)) for _ in range(n)]))
+    out.append(fmt([r.sample(range(2001), 500) for _ in range(100)]))  # k = 500, 50000 in all
     return out

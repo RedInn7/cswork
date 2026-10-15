@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['数学', '字符串']
 SAMPLES = 2
+MAX_N = 5
 
 
 def solve(s):

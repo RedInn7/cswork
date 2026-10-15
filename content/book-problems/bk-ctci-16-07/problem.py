@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['位运算', '数学']
 SAMPLES = 1
+MAX_N = 8000
 
 
 def wrap(x):

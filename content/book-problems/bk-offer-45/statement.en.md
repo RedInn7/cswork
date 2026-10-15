@@ -2,7 +2,7 @@
 Given some non-negative integers, write all of them end to end as one digit string, each exactly once in any order. Print the lexicographically smallest string you can build (every result has the same length, so this is also the smallest value). Keep leading zeros.
 
 ## Input
-The first line holds an integer n (1 ≤ n ≤ 100000).
+The first line holds an integer n (1 ≤ n ≤ 20000).
 The second line holds n integers, each between 0 and 10^9.
 
 ## Output

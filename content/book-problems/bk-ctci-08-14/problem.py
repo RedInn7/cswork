@@ -3,6 +3,7 @@ from functools import lru_cache
 LEVEL = '中等'
 TAGS = ['动态规划', '记忆化搜索']
 SAMPLES = 2
+MAX_N = 39
 
 
 def parse(s):
@@ -64,6 +65,10 @@ def wrong_cache_without_result(s):
         memo[i, j] = res
         return res
     return str(go(0, len(expr) - 1, want))
+
+
+def size(s):
+    return len(s.split()[0])
 
 
 def cases(r):

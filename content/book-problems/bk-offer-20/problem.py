@@ -3,6 +3,7 @@ import re
 LEVEL = '中等'
 TAGS = ['字符串', '状态机']
 SAMPLES = 1
+MAX_N = (1000, 40)
 NUMBER = re.compile(r'[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)([eE][+-]?[0-9]+)?')
 
 
@@ -39,6 +40,11 @@ def fmt(items):
     return f'{len(items)}\n' + '\n'.join(items) + '\n'
 
 
+def size(s):
+    t, *rest = s.split()
+    return int(t), max(map(len, rest))
+
+
 def cases(r):
     sample = ['-7', '2.5e10', '+.8', '46.', '1E+3', '007', '3e', '9x', '4.5.6', '-+2', '6e1.5', '+.']
     edge = ['.1', '7.', '-.5e-3', '+.e1', '.e1', 'e9', 'inf', '-Infinity', 'nan', 'NaN', '1_000', '1e', '1E+', '+',
@@ -52,4 +58,7 @@ def cases(r):
             x = ''.join(r.choice(pieces) for _ in range(r.randint(1, 6)))[:40]
             items.append(x or '0')
         out.append(fmt(items))
+    # The longest strings, 40 characters.
+    out.append(fmt(['1' * 40, '-' + '9' * 39, '+' + '0' * 20 + '.' + '5' * 18, '3.' + '1' * 35 + 'e+1', '7' * 38 + 'e-',
+                    '.' + '2' * 39, '4' * 20 + 'e' + '4' * 19, '6' * 20 + '.' + '6' * 18 + '.', '1' * 39 + 'x', 'e' + '5' * 39]))
     return out

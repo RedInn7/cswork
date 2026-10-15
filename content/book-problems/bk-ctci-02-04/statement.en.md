@@ -2,7 +2,7 @@
 Given a singly linked list and a pivot x, rearrange the list so that every node with a value less than x comes first and every node with a value greater than or equal to x comes after them. Both parts keep their nodes' original order.
 
 ## Input
-The first line holds two integers n and x (1 ≤ n ≤ 100000, |x| ≤ 10^9).
+The first line holds two integers n and x (1 ≤ n ≤ 20000, |x| ≤ 10^9).
 The second line holds n integers, the values from head to tail, each with absolute value at most 10^9.
 
 ## Output

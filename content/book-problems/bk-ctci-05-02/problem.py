@@ -3,6 +3,7 @@ from fractions import Fraction
 LEVEL = '中等'
 TAGS = ['位运算', '数学']
 SAMPLES = 2
+MAX_N = 40
 
 
 def binary(s, limit):
@@ -38,6 +39,10 @@ def decimal(f):
     return '0.' + digits
 
 
+def size(s):
+    return len(s.split()[0]) - 2  # digits after "0."
+
+
 def cases(r):
     out = ['0.8125\n', '0.3\n', '0.5\n', '0.75\n', '0.2\n', '0.999\n', decimal(Fraction(1, 2**32)) + '\n',
            decimal(Fraction(2**32 - 1, 2**32)) + '\n', decimal(Fraction(1, 2**31)) + '\n', decimal(Fraction(3, 2**30)) + '\n',
@@ -45,4 +50,5 @@ def cases(r):
     for _ in range(8):
         b = r.randint(1, 34)
         out.append(decimal(Fraction(2 * r.randrange(2 ** (b - 1)) + 1, 2 ** b)) + '\n')
+    out.append(decimal(Fraction(2 * r.randrange(2**39) + 1, 2**40)) + '\n')  # 40 digits
     return out

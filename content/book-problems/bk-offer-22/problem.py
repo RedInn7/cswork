@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['链表', '双指针']
 SAMPLES = 1
+MAX_N = 15000
 
 
 def parse(s):

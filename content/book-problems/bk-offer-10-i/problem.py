@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['动态规划', '数学']
 SAMPLES = 1
+MAX_N = (1000, 100000)
 MOD = 1000000007
 
 
@@ -36,6 +37,11 @@ def wrong_no_mod_int64(s):
         f.append(x - (1 << 64) if x >= 1 << 63 else x)
     # C++ % keeps the dividend's sign.
     return '\n'.join(str(abs(f[n]) % MOD * (1 if f[n] >= 0 else -1)) for n in qs)
+
+
+def size(s):
+    t, *rest = map(int, s.split())
+    return t, max(rest)
 
 
 def cases(r):

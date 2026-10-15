@@ -3,6 +3,7 @@ from collections import deque
 LEVEL = '中等'
 TAGS = ['队列', '单调队列', '设计']
 SAMPLES = 1
+MAX_N = 100000
 
 
 def run(s, drop_equal=False, sticky_max=False):

@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['动态规划', '概率']
 SAMPLES = 2
+MAX_N = 11
 CHECKER = 'float-array'
 
 

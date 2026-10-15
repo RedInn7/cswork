@@ -1,6 +1,7 @@
 LEVEL = '困难'
 TAGS = ['数学', '数位统计']
 SAMPLES = 1
+MAX_N = 10000
 
 
 def twos(n, d=2):

@@ -3,6 +3,7 @@ from collections import deque
 LEVEL = '中等'
 TAGS = ['广度优先搜索', '字符串']
 SAMPLES = 2
+MAX_N = 5000
 LETTERS = 'abcdefghijklmnopqrstuvwxyz'
 
 
@@ -86,6 +87,10 @@ def fmt(begin, end, ws):
     return f'{begin} {end}\n{len(ws)}\n{" ".join(ws)}\n'
 
 
+def size(s):
+    return int(s.split()[2])
+
+
 def cases(r):
     out = [fmt('lead', 'gold', ['lean', 'load', 'loan', 'goad', 'gold', 'goal', 'toad', 'lend']),
            fmt('lead', 'gold', ['lean', 'load', 'goad', 'goal']), fmt('a', 'c', ['a', 'b', 'c']), fmt('ab', 'cd', ['ad', 'cb', 'cd']),
@@ -97,4 +102,13 @@ def cases(r):
         if end == begin:
             end = words[0] if words[0] != begin else words[1]
         out.append(fmt(begin, end, r.sample(words, len(words))))
+    # n = 5000 words.
+    words = set()
+    while len(words) < 5000:
+        words.add(''.join(r.choice('abcdef') for _ in range(5)))
+    words = sorted(words)
+    begin = words[0]
+    while begin in words:
+        begin = ''.join(r.choice('abcdef') for _ in range(5))
+    out.append(fmt(begin, r.choice(words), r.sample(words, len(words))))
     return out

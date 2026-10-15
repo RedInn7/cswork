@@ -3,7 +3,7 @@ A singly linked list in memory has n nodes numbered 0 to n-1. Each node stores a
 Print the values from the tail node back to the head node.
 
 ## Input
-The first line holds two integers n and h (1 ≤ n ≤ 100000, 0 ≤ h < n): the node count and the head's number.
+The first line holds two integers n and h (1 ≤ n ≤ 15000, 0 ≤ h < n): the node count and the head's number.
 Each of the next n lines (the i-th, counting from 0) holds two integers v and nx: node i has value v (-10^9 ≤ v ≤ 10^9) and its next node is nx (-1 means none).
 Following nx from the head visits all n nodes, each exactly once.
 

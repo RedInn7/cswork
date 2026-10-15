@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['位运算']
 SAMPLES = 1
+MAX_N = 10000
 TOP = 2**31 - 1
 
 

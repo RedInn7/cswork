@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['二分查找', '数组']
 SAMPLES = 2
+MAX_N = 20000
 
 
 def parse(s):

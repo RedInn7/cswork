@@ -3,6 +3,7 @@ from itertools import permutations
 LEVEL = '中等'
 TAGS = ['回溯', '字符串']
 SAMPLES = 2
+MAX_N = 8
 
 
 def solve(s):
@@ -23,6 +24,10 @@ def wrong_input_order(s):
             seen.add(w)
             out.append(w)
     return '\n'.join(out)
+
+
+def size(s):
+    return len(s.split()[0])
 
 
 def cases(r):

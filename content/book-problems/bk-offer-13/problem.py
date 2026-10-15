@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['广度优先搜索', '矩阵']
 SAMPLES = 2
+MAX_N = (300, 300, 40)
 
 
 def digits(x):

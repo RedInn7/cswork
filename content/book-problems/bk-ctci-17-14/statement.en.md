@@ -2,7 +2,7 @@
 Given n integers and a non-negative integer k, find the k smallest of them and print them in increasing order. Repeated values count separately. k may be 0.
 
 ## Input
-The first line holds two integers n and k (1 ≤ n ≤ 100000, 0 ≤ k ≤ n).
+The first line holds two integers n and k (1 ≤ n ≤ 20000, 0 ≤ k ≤ n).
 The second line holds n integers from 0 to 10^9.
 
 ## Output

@@ -2,7 +2,7 @@
 Given a directed graph with nodes 0 to n-1, possibly with repeated edges and self-loops, decide whether node t can be reached from node s by following edges in their direction. A node reaches itself.
 
 ## Input
-The first line holds two integers n and m (1 ≤ n ≤ 100000, 0 ≤ m ≤ 100000).
+The first line holds two integers n and m (1 ≤ n ≤ 10000, 0 ≤ m ≤ 10000).
 Each of the next m lines holds two integers u and v: an edge from u to v.
 The last line holds two integers s and t.
 

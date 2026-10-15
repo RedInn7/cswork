@@ -2,7 +2,7 @@
 An r by c plot stores a height on each cell; cells of height 0 are water. Water cells connect up, down, left, right and along the four diagonals, and connected water forms a pond whose size is its number of cells. Print the sizes of all ponds in increasing order.
 
 ## Input
-The first line holds two integers r and c (1 ≤ r, c ≤ 500).
+The first line holds two integers r and c (1 ≤ r, c ≤ 300).
 Each of the next r lines holds c integers from 0 to 9.
 
 ## Output

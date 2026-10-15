@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['栈', '设计']
 SAMPLES = 1
+MAX_N = (1000, 10000)
 
 
 def run(s, remove_empty=True, zero_cap_check=True):

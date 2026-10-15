@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['位运算']
 SAMPLES = 1
+MAX_N = 10000
 
 
 def pairs(s):

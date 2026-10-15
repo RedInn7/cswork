@@ -3,6 +3,7 @@ from trees import bst, chain, dump, parse
 LEVEL = '简单'
 TAGS = ['二叉搜索树', '深度优先搜索']
 SAMPLES = 1
+MAX_N = 10000
 
 
 def descending(s):
@@ -37,6 +38,10 @@ def wrong_zero_based(s):
 
 def case(root, k):
     return f'{dump(root)}\n{k}\n'
+
+
+def size(s):
+    return sum(v != 'null' for v in s.split('\n')[0].split())
 
 
 def cases(r):

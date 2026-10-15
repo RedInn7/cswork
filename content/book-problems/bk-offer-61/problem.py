@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['排序', '哈希表']
 SAMPLES = 1
+MAX_N = 10000
 
 
 def hands(s):

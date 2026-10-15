@@ -3,6 +3,7 @@ from bisect import bisect_left, bisect_right
 LEVEL = '中等'
 TAGS = ['动态规划', '二分查找', '排序']
 SAMPLES = 2
+MAX_N = 100000
 
 
 def people(s):

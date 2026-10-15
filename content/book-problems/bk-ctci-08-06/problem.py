@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['递归']
 SAMPLES = 2
+MAX_N = 15
 
 
 def hanoi(n, a, b, c, out):

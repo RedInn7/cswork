@@ -3,6 +3,7 @@ from trees import bst
 LEVEL = '中等'
 TAGS = ['二叉搜索树', '递归', '单调栈']
 SAMPLES = 1
+MAX_N = (10, 2000)
 
 
 def sequences(s):
@@ -62,6 +63,15 @@ def postorder(root):
 
 def fmt(seqs):
     return f'{len(seqs)}\n' + ''.join(f'{len(q)}\n{" ".join(map(str, q))}\n' for q in seqs)
+
+
+def size(s):
+    v = s.split()
+    lengths, i = [], 1
+    for _ in range(int(v[0])):
+        lengths.append(int(v[i]))
+        i += lengths[-1] + 1
+    return int(v[0]), max(lengths)
 
 
 def cases(r):

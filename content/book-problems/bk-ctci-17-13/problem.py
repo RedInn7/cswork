@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['动态规划', '字典树', '字符串']
 SAMPLES = 2
+MAX_N = (150, 1000)
 
 
 def parse(s):
@@ -49,12 +50,20 @@ def fmt(words, t):
     return f'{len(words)}\n{" ".join(words)}\n{t}\n'
 
 
+def size(s):
+    v = s.split()
+    return int(v[0]), len(v[int(v[0]) + 1])
+
+
 def cases(r):
     out = [fmt(['the', 'cat', 'sat', 'on', 'mat', 'at'], 'thecatsatonthemat'), fmt(['fox', 'quick'], 'brownfox'),
            fmt(['a'], 'b'), fmt(['ab', 'abc', 'cd'], 'abcd'), fmt(['a', 'aab'], 'aab'), fmt(['abcd', 'ab', 'cde'], 'abcde'),
            fmt(['x' * 100], 'x' * 1000)]
     for n, sentence in [(10, 50), (60, 400), (150, 1000)]:
-        words = sorted({''.join(r.choice('abc') for _ in range(r.randint(1, 5))) for _ in range(n)})
+        words = set()
+        while len(words) < n:
+            words.add(''.join(r.choice('abc') for _ in range(r.randint(1, 5))))
+        words = sorted(words)
         t = ''
         while len(t) < sentence:
             t += r.choice(words) if r.random() < 0.8 else r.choice('abcd')

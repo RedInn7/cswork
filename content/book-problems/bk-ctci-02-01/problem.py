@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['链表', '哈希表']
 SAMPLES = 2
+MAX_N = 20000
 
 
 def values(s):

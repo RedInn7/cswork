@@ -5,6 +5,7 @@ from trees import bst, dump, parse
 LEVEL = '困难'
 TAGS = ['二叉搜索树', '回溯']
 SAMPLES = 2
+MAX_N = 12
 
 
 def weave(a, b):
@@ -49,6 +50,10 @@ def count(node):
     a, na = count(node.left)
     b, nb = count(node.right)
     return a * b * comb(na + nb, na), na + nb + 1
+
+
+def size(s):
+    return sum(v != 'null' for v in s.split())
 
 
 def cases(r):

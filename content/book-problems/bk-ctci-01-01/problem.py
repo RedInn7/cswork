@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['字符串', '哈希表', '位运算']
 SAMPLES = 1
+MAX_N = (1000, 100)
 
 
 def strings(s):
@@ -36,6 +37,11 @@ def fmt(items):
     return f'{len(items)}\n' + '\n'.join(items) + '\n'
 
 
+def size(s):
+    t, *rest = s.split()
+    return int(t), max(map(len, rest))
+
+
 def cases(r):
     visible = [chr(c) for c in range(33, 127)]
     out = [fmt(['banana', 'xyz', 'aA1!']), fmt(['a', 'aa', 'abca', 'abcdefghijklmnopqrstuvwxyz', 'aA', '!~', 'zyxwz'])]
@@ -49,4 +55,6 @@ def cases(r):
             items.append(''.join(w))
         out.append(fmt(items))
     out.append(fmt([''.join(visible[k:k + 50]) for k in range(0, 45)]))
+    # The longest strings: all 94 visible characters once, then 100 (a repeat is certain).
+    out.append(fmt([''.join(r.sample(visible, 94)), ''.join(r.choices(visible, k=100)), ''.join(r.sample(visible, 94)) + 'abcdef']))
     return out

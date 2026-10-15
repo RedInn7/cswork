@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['动态规划', '回溯', '矩阵']
 SAMPLES = 2
+MAX_N = (100, 100)
 
 
 def parse(s):

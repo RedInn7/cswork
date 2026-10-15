@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['字符串', '动态规划', '哈希表']
 SAMPLES = 2
+MAX_N = 200
 
 
 def words_of(s):

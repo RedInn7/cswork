@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['字符串']
 SAMPLES = 2
+MAX_N = 10000
 
 
 def parse(s):
@@ -24,6 +25,10 @@ def wrong_no_modulo(s):
     # Slices with k as given: past the end that leaves the string unchanged.
     t, k = parse(s)
     return t[k:] + t[:k]
+
+
+def size(s):
+    return len(s.split()[0])
 
 
 def cases(r):

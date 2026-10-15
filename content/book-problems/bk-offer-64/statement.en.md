@@ -3,7 +3,7 @@ For each query, a positive integer n, print 1 + 2 + … + n.
 In the book this problem also forbids multiplication, division, loops and conditionals. That is not enforced here, but you can take it on, for instance by ending a recursion with a short-circuiting logical operator.
 
 ## Input
-The first line holds an integer t (1 ≤ t ≤ 100000).
+The first line holds an integer t (1 ≤ t ≤ 8000).
 The second line holds t integers n (1 ≤ n ≤ 10^9).
 
 ## Output

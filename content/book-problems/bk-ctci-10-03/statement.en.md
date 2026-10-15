@@ -2,7 +2,7 @@
 An array sorted in non-decreasing order was cut at some point and its two parts swapped (possibly with no cut), so 1 2 3 4 5 5 might become 4 5 5 1 2 3. Values may repeat. Given target, print the index of its first occurrence (from 0), or -1 if it is absent.
 
 ## Input
-The first line holds two integers n and target (1 ≤ n ≤ 100000, |target| ≤ 10^9).
+The first line holds two integers n and target (1 ≤ n ≤ 20000, |target| ≤ 10^9).
 The second line holds the n rotated values, each with absolute value at most 10^9.
 
 ## Output

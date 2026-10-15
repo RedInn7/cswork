@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['并查集', '哈希表']
 SAMPLES = 1
+MAX_N = (5000, 5000)
 
 
 def parse(s):
@@ -53,12 +54,17 @@ def fmt(names, pairs):
             + ''.join(f'{a} {b}\n' for a, b in pairs))
 
 
+def size(s):
+    v = s.split()
+    return int(v[0]), int(v[2 * int(v[0]) + 1])
+
+
 def cases(r):
     out = [fmt([('Ana', 7), ('Anna', 5), ('Hanna', 3), ('Bo', 9), ('Beau', 2), ('Lin', 6)],
                [('Anna', 'Hanna'), ('Ana', 'Anna'), ('Beau', 'Bo')]),
            fmt([('Ann', 1)], []), fmt([('b', 1), ('a', 2), ('c', 3)], [('c', 'b'), ('b', 'a')]),
            fmt([('Zed', 5), ('Amy', 0)], [('Zed', 'Amy'), ('Amy', 'Zed')])]
-    for n, m in [(10, 6), (300, 250), (5000, 4000)]:
+    for n, m in [(10, 6), (300, 250), (5000, 5000)]:
         names = set()
         while len(names) < n:
             names.add(''.join(r.choice('AEIKMOSTaeikmost') for _ in range(r.randint(1, 6))))

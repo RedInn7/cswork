@@ -2,7 +2,7 @@
 Given the birth and death years of n people, all between 1900 and 2000, find the year when the most people were alive. A person counts as alive in both the birth year and the death year. If several years tie, print the earliest.
 
 ## Input
-The first line holds an integer n (1 ≤ n ≤ 100000).
+The first line holds an integer n (1 ≤ n ≤ 20000).
 Each of the next n lines holds two integers birth and death (1900 ≤ birth ≤ death ≤ 2000).
 
 ## Output

@@ -2,7 +2,7 @@
 Exactly one of the n+1 integers 0 to n is missing; the other n are given in increasing order. Find the missing one.
 
 ## Input
-The first line holds an integer n (1 ≤ n ≤ 100000).
+The first line holds an integer n (1 ≤ n ≤ 30000).
 The second line holds n strictly increasing integers between 0 and n.
 
 ## Output

@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['哈希表', '前缀和']
 SAMPLES = 2
+MAX_N = 100000
 
 
 def longest(t, keep_first=True, rightmost=False):
@@ -30,6 +31,10 @@ def wrong_rightmost(s):
 def wrong_last_position(s):
     # Overwrites each prefix sum's position, so it measures from the latest one.
     return longest(s.strip(), keep_first=False)
+
+
+def size(s):
+    return len(s.split()[0])
 
 
 def cases(r):

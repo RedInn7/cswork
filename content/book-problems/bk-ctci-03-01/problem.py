@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['栈', '数组', '设计']
 SAMPLES = 1
+MAX_N = (1000, 10000)
 
 
 def run(s, capacity_check=True, shared=False):

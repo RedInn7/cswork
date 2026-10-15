@@ -3,6 +3,7 @@ from collections import Counter
 LEVEL = '简单'
 TAGS = ['哈希表', '字符串']
 SAMPLES = 2
+MAX_N = 100000
 
 
 def solve(s):
@@ -21,6 +22,10 @@ def wrong_only_looks_ahead(s):
     # Takes the first letter that does not occur again later.
     s = s.strip()
     return next((c for i, c in enumerate(s) if s.find(c, i + 1) == -1), 'none')
+
+
+def size(s):
+    return len(s.split()[0])
 
 
 def cases(r):

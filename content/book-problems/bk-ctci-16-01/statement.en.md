@@ -3,7 +3,7 @@ The book's problem: swap two variables without a temporary. The usual tricks are
 Given an integer array of length n and q operations, operation k names two positions i and j (counting from 1) whose values are swapped. Apply all operations in order and print the array. i and j may be equal.
 
 ## Input
-The first line holds two integers n and q (1 ≤ n, q ≤ 100000).
+The first line holds two integers n and q (1 ≤ n, q ≤ 8000).
 The second line holds n integers from 0 to 10^9.
 Each of the next q lines holds two integers i and j (1 ≤ i, j ≤ n).
 

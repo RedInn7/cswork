@@ -3,6 +3,7 @@ from math import gcd
 LEVEL = '中等'
 TAGS = ['几何', '哈希表', '数学']
 SAMPLES = 2
+MAX_N = 300
 
 
 def points(s):

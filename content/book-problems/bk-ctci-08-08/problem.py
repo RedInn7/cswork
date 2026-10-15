@@ -3,6 +3,7 @@ from itertools import permutations
 LEVEL = '中等'
 TAGS = ['回溯', '字符串']
 SAMPLES = 2
+MAX_N = 9
 
 
 def show(words):
@@ -19,6 +20,10 @@ def wrong_keeps_repeats(s):
 
 def wrong_ignores_case(s):
     return show(sorted({''.join(p) for p in permutations(s.strip())}, key=lambda w: (w.lower(), w)))
+
+
+def size(s):
+    return len(s.split()[0])
 
 
 def cases(r):

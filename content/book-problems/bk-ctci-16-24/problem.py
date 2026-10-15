@@ -3,6 +3,7 @@ from collections import Counter
 LEVEL = '中等'
 TAGS = ['哈希表', '双指针', '排序']
 SAMPLES = 2
+MAX_N = 100000
 
 
 def parse(s):

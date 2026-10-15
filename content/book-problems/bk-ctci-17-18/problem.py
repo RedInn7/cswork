@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['滑动窗口', '哈希表']
 SAMPLES = 2
+MAX_N = (100000, 100000)
 
 
 def parse(s):

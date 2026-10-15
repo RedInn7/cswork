@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['数组', '双指针', '排序']
 SAMPLES = 2
+MAX_N = 20000
 
 
 def values(s):

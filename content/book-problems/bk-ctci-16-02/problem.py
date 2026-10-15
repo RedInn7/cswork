@@ -3,6 +3,7 @@ from collections import Counter
 LEVEL = '中等'
 TAGS = ['哈希表', '设计']
 SAMPLES = 1
+MAX_N = (100000, 100000)
 
 
 def parse(s):
@@ -34,6 +35,11 @@ def wrong_prefixes(s):
 
 def fmt(book, qs):
     return f'{len(book)}\n{" ".join(book)}\n{len(qs)}\n{" ".join(qs)}\n'
+
+
+def size(s):
+    v = s.split()
+    return int(v[0]), int(v[int(v[0]) + 1])
 
 
 def cases(r):

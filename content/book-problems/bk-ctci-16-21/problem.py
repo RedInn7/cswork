@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['哈希表', '数学']
 SAMPLES = 2
+MAX_N = (100000, 100000)
 
 
 def parse(s):

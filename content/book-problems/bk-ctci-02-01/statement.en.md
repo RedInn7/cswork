@@ -2,7 +2,7 @@
 Given an unsorted singly linked list, remove repeated values: keep only the first node holding each value and leave the other nodes in their order. Print the resulting list.
 
 ## Input
-The first line holds an integer n (1 ≤ n ≤ 100000).
+The first line holds an integer n (1 ≤ n ≤ 20000).
 The second line holds n integers, the values from head to tail, each with absolute value at most 10^9.
 
 ## Output

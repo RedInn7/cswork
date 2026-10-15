@@ -2,7 +2,7 @@
 A binary tree has n nodes numbered 1 to n. Print the node values from top to bottom, and from left to right within each level.
 
 ## Input
-The first line holds two integers n and root (1 ≤ n ≤ 100000, 1 ≤ root ≤ n): the node count and the root's number.
+The first line holds two integers n and root (1 ≤ n ≤ 8000, 1 ≤ root ≤ n): the node count and the root's number.
 Line i of the next n lines holds three integers v, l and r: node i has value v (absolute value at most 10^9), left child l and right child r, with 0 meaning no child. The input forms a binary tree rooted at root.
 
 ## Output

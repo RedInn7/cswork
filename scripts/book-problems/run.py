@@ -2,10 +2,12 @@
 
 problem.py defines solve(stdin) -> stdout (the reference), cases(rng) -> stdin texts
 (the first SAMPLES are public, the rest hidden; edge cases and the largest size included)
-and at least two wrong_*(stdin) functions: common mistakes. Every wrong solution must
-fail some hidden case (an exception, or an output the judge's checker rejects: another
-token sequence, or with CHECKER = 'float-array' a number off by more than 1e-5), else
-this exits 1.
+and at least two wrong_*(stdin) functions: common mistakes. MAX_N is the statement's size
+bound (a tuple for several) and size(stdin) measures a case, by default by its leading
+integers. No case may exceed a bound, some hidden case must reach each, and every wrong
+solution must fail some hidden case (an exception, or an output the judge's checker
+rejects: another token sequence, or with CHECKER = 'float-array' a number off by more
+than 1e-5), else this exits 1.
 Prints the cases, the reference outputs and how many hidden cases each mistake fails.
 
   python3 -I -S -B scripts/book-problems/run.py content/book-problems/<id>
@@ -45,6 +47,15 @@ def main(folder):
     samples = problem.SAMPLES
     if not 1 <= samples < len(inputs):
         sys.exit(f'{name}: need 1..{len(inputs) - 1} samples')
+    # A bound the tests never reach lets a slower algorithm pass: test it or state less.
+    limits = problem.MAX_N if isinstance(problem.MAX_N, tuple) else (problem.MAX_N,)
+    measure = getattr(problem, 'size', lambda text: tuple(int(v) for v in text.split()[: len(limits)]))
+    sizes = [size if isinstance(size, tuple) else (size,) for size in map(measure, inputs)]
+    for k, limit in enumerate(limits):
+        if any(size[k] > limit for size in sizes):
+            sys.exit(f'{name}: a case exceeds bound {k + 1} of MAX_N, {limit}')
+        if all(size[k] < limit for size in sizes[samples:]):
+            sys.exit(f'{name}: no hidden case reaches bound {k + 1} of MAX_N, {limit}')
     expected, slowest = [], 0.0
     for text in inputs:
         start = time.perf_counter()
@@ -55,6 +66,9 @@ def main(folder):
     if len(wrong) < 2:
         sys.exit(f'{name}: need at least two wrong_* solutions')
     checker = getattr(problem, 'CHECKER', 'tokens')
+    # lib/oj-finite-floats.mjs takes an expected -1 as an exact sentinel: -0.9999999 would fail.
+    if checker == 'float-array' and any(float(v) == -1 for out in expected for v in out.split()[1:]):
+        sys.exit(f'{name}: an expected value is -1, which the float checker matches exactly')
     kills = {}
     for key in wrong:
         failed = 0

@@ -2,7 +2,7 @@
 Given a text of words (numbered 0, 1, 2, … in order) and several queries, each naming two different words, answer how close their nearest occurrences are: the smallest absolute difference of their indices.
 
 ## Input
-The first line holds an integer n (2 ≤ n ≤ 100000) and the second the n lowercase words.
+The first line holds an integer n (2 ≤ n ≤ 40000) and the second the n lowercase words.
 The third line holds an integer q (1 ≤ q ≤ 100), followed by q lines each with two different words, both present in the text.
 
 ## Output

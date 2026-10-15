@@ -7,7 +7,7 @@ dequeueCat: adopt the cat that arrived first.
 For each adoption print "id k" of the adopted animal, or -1 -1 when none fits.
 
 ## Input
-The first line holds an integer q (1 ≤ q ≤ 100000).
+The first line holds an integer q (1 ≤ q ≤ 8000).
 Each of the next q lines is one operation, with 0 ≤ id ≤ 10^9 and k equal to 0 or 1.
 
 ## Output

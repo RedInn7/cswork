@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['动态规划', '矩阵']
 SAMPLES = 2
+MAX_N = 150
 
 
 def grid(s):

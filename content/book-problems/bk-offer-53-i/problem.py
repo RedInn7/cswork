@@ -3,6 +3,7 @@ from bisect import bisect_left, bisect_right
 LEVEL = '简单'
 TAGS = ['二分查找', '数组']
 SAMPLES = 1
+MAX_N = (100000, 100000)
 
 
 def parse(s):

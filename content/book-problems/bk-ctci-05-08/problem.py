@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['位运算', '数组']
 SAMPLES = 2
+MAX_N = 1000
 
 
 def draw(s, low_bit_first=False, signed=True):

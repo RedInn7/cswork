@@ -3,6 +3,7 @@ from collections import Counter
 LEVEL = '中等'
 TAGS = ['字符串', '双指针']
 SAMPLES = 1
+MAX_N = (1000, 1000)
 
 
 def pairs(s):
@@ -61,6 +62,11 @@ def edit(r, w, letters):
     return w[:k] + r.choice(letters) + w[k + 1:]
 
 
+def size(s):
+    t, *rest = s.split()
+    return int(t), max(map(len, rest))
+
+
 def cases(r):
     out = [fmt([('stone', 'tone'), ('ring', 'rings'), ('rope', 'robe'), ('rope', 'rapt')]),
            fmt([('a', 'a'), ('a', 'b'), ('a', 'ab'), ('ab', 'ba'), ('abc', 'acb'), ('abc', 'a'), ('teacher', 'taches'),
@@ -76,4 +82,11 @@ def cases(r):
                 b = a[1:] + a[0]
             ps.append((a, b))
         out.append(fmt(ps))
+    # The longest strings, 1000 letters on both sides.
+    ps = []
+    for k in range(12):
+        a = ''.join(r.choice('abc') for _ in range(1000))
+        b = edit(r, a, 'abc') if k % 3 else a
+        ps.append((a, b) if len(b) <= 1000 else (b[:1000], a))
+    out.append(fmt(ps))
     return out

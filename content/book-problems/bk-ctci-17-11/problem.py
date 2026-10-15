@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['双指针', '哈希表', '字符串']
 SAMPLES = 1
+MAX_N = (40000, 100)
 
 
 def parse(s):
@@ -52,6 +53,11 @@ def wrong_one_direction(s):
 
 def fmt(words, qs):
     return f'{len(words)}\n{" ".join(words)}\n{len(qs)}\n' + ''.join(f'{x} {y}\n' for x, y in qs)
+
+
+def size(s):
+    v = s.split()
+    return int(v[0]), int(v[int(v[0]) + 1])
 
 
 def cases(r):

@@ -1,6 +1,7 @@
 LEVEL = '困难'
 TAGS = ['动态规划', '排序']
 SAMPLES = 2
+MAX_N = 1000
 
 
 def boxes(s):

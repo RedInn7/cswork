@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['递归', '位运算', '数学']
 SAMPLES = 1
+MAX_N = 10000
 
 
 def pairs(s):

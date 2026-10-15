@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['哈希表', '字符串']
 SAMPLES = 1
+MAX_N = (10, 10000)
 KEYS = {'2': 'abc', '3': 'def', '4': 'ghi', '5': 'jkl', '6': 'mno', '7': 'pqrs', '8': 'tuv', '9': 'wxyz'}
 THREE = {'2': 'abc', '3': 'def', '4': 'ghi', '5': 'jkl', '6': 'mno', '7': 'pqr', '8': 'stu', '9': 'vwx'}
 
@@ -39,6 +40,11 @@ def fmt(num, words):
     return f'{num}\n{len(words)}\n{" ".join(words)}\n'
 
 
+def size(s):
+    v = s.split()
+    return len(v[0]), int(v[1])
+
+
 def cases(r):
     table = {c: d for d, letters in KEYS.items() for c in letters}
     out = [fmt('4663', ['good', 'home', 'gone', 'hood', 'goods', 'hope']), fmt('2', ['a', 'b', 'd', 'ab']), fmt('79', ['sz', 'pw', 'qy', 'rx', 'sy']),
@@ -47,4 +53,7 @@ def cases(r):
         words = [''.join(r.choice('psvyzaemtw') for _ in range(r.randint(1, length + 2))) for _ in range(n)]
         num = digits(r.choice(words), KEYS)
         out.append(fmt(num[:10], words))
+    # A 10-digit number.
+    words = [''.join(r.choice('psvyzaemtw') for _ in range(r.randint(8, 10))) for _ in range(2000)]
+    out.append(fmt(digits(next(w for w in words if len(w) == 10), KEYS), words))
     return out

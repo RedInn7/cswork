@@ -7,7 +7,7 @@ isEmpty: print true when empty, otherwise false.
 The book asks you to sort using just one extra stack; that is not enforced here.
 
 ## Input
-The first line holds an integer q (1 ≤ q ≤ 100000).
+The first line holds an integer q (1 ≤ q ≤ 6000).
 Each of the next q lines is one operation, with 1 ≤ v ≤ 10^9.
 
 ## Output

@@ -1,6 +1,7 @@
 LEVEL = '困难'
 TAGS = ['数学', '位运算']
 SAMPLES = 2
+MAX_N = 50000
 
 
 def parse(s):

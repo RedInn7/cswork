@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['双指针', '排序']
 SAMPLES = 2
+MAX_N = (100000, 100000)
 
 
 def parse(s):

@@ -2,7 +2,7 @@
 Exactly two of the integers 1 to N are missing; the other N-2 are given in some order. Find the two missing numbers.
 
 ## Input
-The first line holds an integer N (3 ≤ N ≤ 100000).
+The first line holds an integer N (3 ≤ N ≤ 50000).
 The second line holds N-2 distinct integers between 1 and N.
 
 ## Output

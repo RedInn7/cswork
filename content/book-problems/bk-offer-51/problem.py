@@ -1,6 +1,7 @@
 LEVEL = '困难'
 TAGS = ['归并排序', '树状数组']
 SAMPLES = 2
+MAX_N = 100000
 
 
 def parse(s):

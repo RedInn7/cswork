@@ -6,7 +6,7 @@ popAt i: take the top plate off pile i and print it, or -1 if there is no pile i
 A pile that becomes empty is removed at once, and the piles to its right shift down by one. cap may be 0, in which case nothing can be stacked.
 
 ## Input
-The first line holds two integers cap and q (0 ≤ cap ≤ 1000, 1 ≤ q ≤ 100000).
+The first line holds two integers cap and q (0 ≤ cap ≤ 1000, 1 ≤ q ≤ 10000).
 Each of the next q lines is one operation, with 0 ≤ v ≤ 10^9 and 0 ≤ i ≤ 10^5.
 
 ## Output

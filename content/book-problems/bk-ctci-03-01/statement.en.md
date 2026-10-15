@@ -6,7 +6,7 @@ peek s: print the top of stack s without removing it, or -1 if it is empty;
 empty s: print true if stack s is empty, otherwise false.
 
 ## Input
-The first line holds two integers c and q (1 ≤ c ≤ 1000, 1 ≤ q ≤ 100000).
+The first line holds two integers c and q (1 ≤ c ≤ 1000, 1 ≤ q ≤ 10000).
 Each of the next q lines is one operation, with 0 ≤ s ≤ 2 and 0 ≤ v ≤ 10^9.
 
 ## Output

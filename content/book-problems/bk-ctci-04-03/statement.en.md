@@ -2,7 +2,7 @@
 A binary tree has n nodes numbered 1 to n. List the values on every level from left to right, starting with the root's level.
 
 ## Input
-The first line holds two integers n and root (1 ≤ n ≤ 100000, 1 ≤ root ≤ n).
+The first line holds two integers n and root (1 ≤ n ≤ 10000, 1 ≤ root ≤ n).
 Line i of the next n lines holds three integers v, l and r: node i has value v (absolute value at most 10^9), left child l and right child r, with 0 for no child.
 
 ## Output

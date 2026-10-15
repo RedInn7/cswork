@@ -3,6 +3,7 @@ import heapq
 LEVEL = '中等'
 TAGS = ['快速选择', '堆', '排序']
 SAMPLES = 2
+MAX_N = 20000
 
 
 def parse(s):

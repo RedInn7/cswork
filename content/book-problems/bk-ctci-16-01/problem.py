@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['位运算', '数组']
 SAMPLES = 1
+MAX_N = (8000, 8000)
 
 
 def parse(s):

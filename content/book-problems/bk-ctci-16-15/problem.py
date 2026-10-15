@@ -3,6 +3,7 @@ from collections import Counter
 LEVEL = '简单'
 TAGS = ['哈希表', '字符串']
 SAMPLES = 1
+MAX_N = 10000
 
 
 def pairs(s):

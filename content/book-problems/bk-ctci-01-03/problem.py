@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['字符串']
 SAMPLES = 2
+MAX_N = 100000
 
 
 def parse(s):

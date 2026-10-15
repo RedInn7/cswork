@@ -3,6 +3,7 @@ from trees import Node, dump, parse, random_tree
 LEVEL = '中等'
 TAGS = ['二叉树', '深度优先搜索']
 SAMPLES = 2
+MAX_N = (10000, 1000)
 
 
 def nodes(root):
@@ -79,6 +80,10 @@ def case(a, b):
     return f'{dump(a)}\n{dump(b)}\n'
 
 
+def size(s):
+    return tuple(sum(v != 'null' for v in line.split()) for line in s.split('\n')[:2])
+
+
 def cases(r):
     out = ['8 6 9 2 7 null 3\n6 2\n', '5 1 null 4\n5 4\n', '1\n1\n', '1 2 3\n3 1\n', '1 2\n1 null 2\n', '2 2 2 2\n2 2 2 2 2\n']
     for n, v, keep in [(8, 2, 0.5), (30, 3, 0.7), (200, 3, 0.8), (2000, 4, 0.9), (10000, 3, 0.85)]:
@@ -96,5 +101,10 @@ def cases(r):
     b = prune(r, big, 0.97)
     out.append(case(a, b))
     nodes(b)[-1].val += 7
+    out.append(case(a, b))
+    # B at its largest, 1000 nodes, hanging below a leaf of A.
+    b = random_tree(r, 1000, lambda: r.randint(-2, 2))
+    a = random_tree(r, 3000, lambda: r.randint(-2, 2))
+    next(x for x in nodes(a) if x.left is None).left = b
     out.append(case(a, b))
     return out

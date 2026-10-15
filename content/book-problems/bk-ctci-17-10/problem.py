@@ -1,6 +1,7 @@
 LEVEL = '简单'
 TAGS = ['数组', '摩尔投票']
 SAMPLES = 2
+MAX_N = 100000
 
 
 def values(s):

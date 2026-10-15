@@ -1,6 +1,7 @@
 LEVEL = '困难'
 TAGS = ['动态规划', '前缀和', '矩阵']
 SAMPLES = 2
+MAX_N = (100, 100)
 
 
 def matrix(s):

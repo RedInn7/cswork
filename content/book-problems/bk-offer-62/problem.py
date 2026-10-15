@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['数学', '递推']
 SAMPLES = 1
+MAX_N = (10, 100000, 1000000)
 
 
 def pairs(s):
@@ -30,6 +31,11 @@ def wrong_fixed_modulus(s):
 
 def fmt(ps):
     return f'{len(ps)}\n' + ''.join(f'{n} {m}\n' for n, m in ps)
+
+
+def size(s):
+    v = list(map(int, s.split()))
+    return v[0], max(v[1::2]), max(v[2::2])
 
 
 def cases(r):

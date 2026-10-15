@@ -3,7 +3,7 @@ Rearrange an integer array so that it starts with a valley and valleys and peaks
 Many arrangements usually qualify; print the lexicographically smallest one.
 
 ## Input
-The first line holds an integer n (1 ≤ n ≤ 100000).
+The first line holds an integer n (1 ≤ n ≤ 20000).
 The second line holds n integers, each with absolute value at most 10^9.
 
 ## Output

@@ -3,7 +3,7 @@ For each pair of 32-bit signed integers a and b, print the larger one.
 The book forbids if-else and every comparison operator; the usual idea picks by the sign bit of a - b. That is not enforced here, but beware: a - b itself can overflow 32 bits, and then its sign bit lies.
 
 ## Input
-The first line holds an integer t (1 ≤ t ≤ 100000).
+The first line holds an integer t (1 ≤ t ≤ 8000).
 Each of the next t lines holds two integers a and b between -2^31 and 2^31 - 1.
 
 ## Output

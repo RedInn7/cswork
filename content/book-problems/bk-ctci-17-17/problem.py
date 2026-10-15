@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['字典树', '字符串']
 SAMPLES = 1
+MAX_N = (1000, 1000, 100000)
 
 
 def parse(s):
@@ -38,6 +39,11 @@ def fmt(big, smalls):
     return f'{big}\n{len(smalls)}\n{" ".join(smalls)}\n'
 
 
+def size(s):
+    v = s.split()
+    return len(v[0]), int(v[1]), sum(map(len, v[2:]))
+
+
 def cases(r):
     out = [fmt('abracadabra', ['abra', 'a', 'cad', 'x', 'bra']), fmt('aaaa', ['aa', 'a', 'aaaa', 'aaaaa']), fmt('z', ['z']),
            fmt('ababab', ['abab', 'bab', 'ba'])]
@@ -52,4 +58,9 @@ def cases(r):
             else:
                 smalls.append(''.join(r.choice(letters) for _ in range(r.randint(1, 8))))
         out.append(fmt(big, smalls))
+    # Total length at its largest: 1000 short strings of 100 letters.
+    big = ''.join(r.choice('ab') for _ in range(1000))
+    smalls = [big[i:i + 100] if r.random() < 0.7 else ''.join(r.choice('ab') for _ in range(100))
+              for i in (r.randrange(901) for _ in range(1000))]
+    out.append(fmt(big, smalls))
     return out

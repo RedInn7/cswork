@@ -3,6 +3,7 @@ from collections import deque
 LEVEL = '简单'
 TAGS = ['队列', '设计']
 SAMPLES = 1
+MAX_N = 8000
 
 
 def run(s, dogs_first=False, by_id=False):

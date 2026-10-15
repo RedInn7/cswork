@@ -1,6 +1,7 @@
 LEVEL = '中等'
 TAGS = ['字符串', '枚举']
 SAMPLES = 1
+MAX_N = (20, 1000)
 
 
 def pairs(s):
@@ -58,6 +59,11 @@ def wrong_no_empty(s):
 
 def fmt(ps):
     return f'{len(ps)}\n' + ''.join(f'{p}\n{v}\n' for p, v in ps)
+
+
+def size(s):
+    t, *rest = s.split()
+    return int(t), max(map(len, rest))
 
 
 def cases(r):
