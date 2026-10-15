@@ -148,6 +148,70 @@
 .classic-meter .route-cta {
   margin-left: auto;
 }
+.classic-count .classic-manual {
+  color: var(--route-amber);
+}
+/* Which LeetCode site external rows open: two pressed-state buttons on the board. */
+.classic-site {
+  display: inline-flex;
+  justify-self: start;
+  border: 1px solid var(--route-slate);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.classic-site button {
+  min-height: 30px;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  color: var(--route-white-2);
+  font: 600 12px/1 var(--font-route);
+  cursor: pointer;
+}
+.classic-site button[aria-pressed='true'] {
+  background: var(--route-amber);
+  color: var(--route-navy);
+}
+.classic-site button:focus-visible {
+  outline: 2px solid var(--route-white);
+  outline-offset: -3px;
+}
+.classic-tick-error {
+  margin: 0;
+  font-size: 12px;
+  color: #ffb4b4;
+}
+/* A row: the hand tick, then the problem's link. The stripes move from the link to the row. */
+.classic-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  border-radius: 9px;
+}
+.classic-row:nth-of-type(odd) {
+  background: #f7f8f9;
+}
+.study-bank.classic-list .classic-row > .study-row:not(:hover, :focus-visible) {
+  background: transparent;
+}
+.classic-tick {
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+  padding-left: 8px;
+  cursor: pointer;
+}
+.classic-tick input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #087158;
+  cursor: pointer;
+}
+.classic-tick input:focus-visible {
+  outline: 2px solid #087158;
+  outline-offset: 2px;
+}
 
 .classic-group + .classic-group {
   margin-top: 10px;
@@ -297,6 +361,39 @@
   }
   .dark .classic-progress::-moz-progress-bar {
     background: var(--route-line);
+  }
+  .dark .classic-count .classic-manual {
+    color: var(--route-amber);
+  }
+  .dark .classic-site {
+    border: 1px solid var(--route-slate);
+  }
+  .dark .classic-site button {
+    border: 0;
+    background: transparent;
+    color: var(--route-white-2);
+  }
+  .dark .classic-site button[aria-pressed='true'] {
+    background: var(--route-amber);
+    color: var(--route-navy);
+  }
+  .dark .classic-site button:focus-visible {
+    outline: 2px solid var(--route-white);
+  }
+  .dark .classic-tick-error {
+    color: #f8b8b7;
+  }
+  .dark .classic-row:nth-of-type(odd) {
+    background: #151616;
+  }
+  .dark .study-bank.classic-list .classic-row > .study-row:not(:hover, :focus-visible) {
+    background: transparent;
+  }
+  .dark .classic-tick input {
+    accent-color: #087158;
+  }
+  .dark .classic-tick input:focus-visible {
+    outline: 2px solid #8ed5bc;
   }
   .dark .classic-stop {
     color: #c1cfdd;

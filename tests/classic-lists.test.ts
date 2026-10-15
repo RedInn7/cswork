@@ -18,6 +18,7 @@ import {
   refLabel,
   sourceUrl,
 } from '../lib/classic-lists';
+import { readLcSite, saveLcSite } from '../lib/lc-site';
 import { curatedByNumber, curatedEntries } from '../lib/ling-curated';
 import { SITEMAP_STATIC_ENTRIES, sitemapLibraryRange } from '../lib/seo';
 
@@ -296,6 +297,26 @@ void test('public page helpers: LeetCode links by locale, app links, levels and 
   // No known slug (or an unsafe one): search by number.
   assert.equal(leetcodeUrl(42, '', true), 'https://leetcode.com/problemset/?search=42');
   assert.equal(leetcodeUrl(42, '../x', false), 'https://leetcode.cn/problemset/?search=42');
+  // The site the reader chose (lib/lc-site.ts) wins over the language.
+  assert.equal(leetcodeUrl(1, 'two-sum', 'cn'), 'https://leetcode.cn/problems/two-sum/');
+  assert.equal(leetcodeUrl(1, 'two-sum', 'com'), 'https://leetcode.com/problems/two-sum/');
+  // Without storage (or blocked) the language decides; a saved choice wins; junk is ignored.
+  assert.equal(readLcSite(true), 'com');
+  assert.equal(readLcSite(false), 'cn');
+  const saved: Record<string, string> = {};
+  Object.defineProperty(globalThis, 'localStorage', {
+    configurable: true,
+    value: { getItem: (k: string) => saved[k] ?? null, setItem: (k: string, v: string) => (saved[k] = v) },
+  });
+  try {
+    saveLcSite('cn');
+    assert.equal(saved['cswork:lc-site'], 'cn');
+    assert.equal(readLcSite(true), 'cn');
+    saved['cswork:lc-site'] = 'jp';
+    assert.equal(readLcSite(true), 'com');
+  } finally {
+    delete (globalThis as { localStorage?: unknown }).localStorage;
+  }
   assert.equal(classicListAppHref('blind-75'), '/?view=problems&library=blind-75');
   assert.equal(problemAppHref('lc-1'), '/?view=problem&problem=lc-1');
   assert.deepEqual(levelOf('中等'), ['medium', '中等', 'Medium']);
