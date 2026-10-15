@@ -8,7 +8,7 @@ token sequence, or with CHECKER = 'float-array' a number off by more than 1e-5),
 this exits 1.
 Prints the cases, the reference outputs and how many hidden cases each mistake fails.
 
-  python3 -I -S scripts/book-problems/run.py content/book-problems/<id>
+  python3 -I -S -B scripts/book-problems/run.py content/book-problems/<id>
 """
 import importlib.util
 import json

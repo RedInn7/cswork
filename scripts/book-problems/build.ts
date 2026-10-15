@@ -64,7 +64,7 @@ export function buildBookProblems() {
   if (stray.length) throw new Error(`no classic list row judges ${stray.join(', ')}`);
   const packages = judges.map(({ id, ref, list }): OjProblemPackage => {
     const folder = join(ROOT, id);
-    const result = spawnSync('python3', ['-I', '-S', 'scripts/book-problems/run.py', folder], {
+    const result = spawnSync('python3', ['-I', '-S', '-B', 'scripts/book-problems/run.py', folder], {
       encoding: 'utf8',
       maxBuffer: 256 * 1024 * 1024,
       timeout: 300_000,
