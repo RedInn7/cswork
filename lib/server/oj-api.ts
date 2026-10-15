@@ -364,7 +364,7 @@ export async function handleOj(
     const params = leetcodeParams(id),
       bounds = leetcodeConstraints(id),
       d = data as { stdin?: unknown; codingMode?: unknown } | null;
-    if (params && bounds && (d?.codingMode ?? 'leetcode') === 'leetcode' && typeof d.stdin === 'string') {
+    if (params && bounds && (d?.codingMode ?? 'leetcode') === 'leetcode' && typeof d?.stdin === 'string') {
       const fields = splitFields(d.stdin, params.length);
       const broken = fields && checkConstraints(fields, params, bounds).find(Boolean);
       if (broken) throw new HttpError(422, broken[0]);

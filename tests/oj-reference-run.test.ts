@@ -173,6 +173,12 @@ void test('a LeetCode case outside the statement constraints gets a 422 naming t
   await cancelSubmission(me, acm.id);
 });
 
+void test('a JSON body of literal null is a 400, not a crash', async () => {
+  const { fail } = await import('../lib/server/http');
+  const response = await call(me, 'POST', 'problems/lc-1/expected', null).catch((error: unknown) => fail(error));
+  assert.equal(response.status, 400);
+});
+
 void test('the expected output needs a verified address and a verified editorial, and closes in a running contest', async () => {
   const body = { stdin: '[1,2]\n3', idempotencyKey: randomUUID() };
   assert.equal(await status({ ...me, id: 'ref-unverified', verified: false }, 'POST', 'problems/lc-1/expected', body), 403);
