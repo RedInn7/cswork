@@ -27,11 +27,13 @@ import { handleStudyGroups } from './study-groups';
 import { handleMockPeer } from './mock-peer';
 import { handleNewsletter } from './newsletter';
 import { handleFollows } from './follows';
+import { sourceDates } from './company-insights';
 import { handleContests, inRunningContest, refuseInContest } from './contests';
 import { handleApiTokens } from './api-tokens';
 import { dailyProblem } from './daily-problem';
 import { curatedByNumber, curatedHint } from '@/lib/ling-curated';
 import { companyTagIndex } from '@/lib/company-tags';
+import { windowCounts } from '@/lib/report-windows';
 import { hiddenCompanies } from './env';
 import {
   getStudyLibrary,
@@ -140,6 +142,7 @@ export async function handleOj(
     const live = p ? inRunningContest(p.id, id) : false;
     const hint = live ? null : curatedHint(id);
     const tags = companyTagIndex(hiddenCompanies());
+    const dated = sourceDates();
     // Per round like Solved, over all history rather than the first page; 2 opens hint 3.
     const failed = hint && p ? failedJudgeIds(p.id, id, round?.id) : [];
     return json({
@@ -152,7 +155,8 @@ export async function handleOj(
       curatedHint: hint,
       // Contest rating (zerotrac), null outside rated contests.
       rating: lcRating(id),
-      companies: tags.get(id) ?? [],
+      // Each company's reports by age; the report slugs stay on the server.
+      companies: (tags.get(id) ?? []).map(({ sources, ...tag }) => ({ ...tag, windows: windowCounts(sources, dated, Date.now()) })),
       hintEarned: failed.length > 0,
       // Ids, not a count: the client unions them with live verdicts so none counts twice.
       failedSubmissionIds: failed,

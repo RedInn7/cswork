@@ -337,6 +337,11 @@ void test('LeetCode submissions preserve raw code, isolate request identity and 
       ['aeonea', 1, '2025-09-06'],
     ],
   );
+  // Each company's reports by age instead of the report slugs, which stay on the server.
+  for (const c of supportedBody.companies as { count: number; windows: Record<string, number> }[]) {
+    assert.ok(!('sources' in c));
+    assert.equal(Object.values(c.windows).reduce((a, b) => a + b, 0), c.count);
+  }
   assert.match(
     supportedBody.leetcodeTemplates.python,
     /def twoSum\(self, nums: List\[int\], target: int\) -> List\[int\]:/,

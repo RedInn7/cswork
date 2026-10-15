@@ -15,9 +15,11 @@ const MAX_STORIES = 200;
 // sd:<chapter> holds a system design chapter's quiz answers as JSON (app/system-design/quiz.tsx).
 // sub:<submission id> is a note on one submission; q:<slug> is a content library question.
 const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q):[\w./-]{1,200}$/);
-// up/down: the problem's vote, one per learner (setting one clears the other).
-// done: ticked by hand (solved elsewhere); read: a chapter or page marked as read.
-const mark = z.enum(['star', 'redo', 'up', 'down', 'done', 'read']);
+// up/down: a problem's vote, one per learner (setting one clears the other); experiences and
+// interview questions take upvotes too. done: ticked by hand (solved elsewhere); read: a chapter
+// or page marked as read; curated: a teacher's pick of a library item.
+const mark = z.enum(['star', 'redo', 'up', 'down', 'done', 'read', 'curated']);
+const UPVOTED = /^content:(?:experience|interview_question)\//;
 const VOTE = { up: 'down', down: 'up' } as const;
 // The verdicts that count against the learner's code; judge faults and cancels do not.
 const FAILED = `'wrong_answer','compile_error','time_limit','memory_limit','output_limit','runtime_error'`;
@@ -260,7 +262,10 @@ export async function handleMyPractice(
       .strict()
       .parse(await readJson(request, 1000));
     const vote = d.mark === 'up' || d.mark === 'down';
-    if (vote && !d.target.startsWith('problem:')) throw new HttpError(400, '只能给题目投票');
+    if (vote && !d.target.startsWith('problem:') && !(d.mark === 'up' && UPVOTED.test(d.target)))
+      throw new HttpError(400, '只能给题目投票，或给面经和面试题点赞');
+    if (d.mark === 'curated' && (p.role !== 'teacher' || !d.target.startsWith('content:')))
+      throw new HttpError(403, '只有老师可以把内容设为精选');
     if (d.target.startsWith('list:')) throw new HttpError(400, '请在题单页收藏');
     if (!d.on)
       db.prepare('DELETE FROM user_marks WHERE user_id=? AND target=? AND mark=?').run(

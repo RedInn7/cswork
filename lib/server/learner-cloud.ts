@@ -15,6 +15,7 @@ import { HttpError, json, limit, limitReader, requirePerson } from './http';
 import { mockReport } from './mock-oa';
 import { readJson } from './my-practice';
 import { canSeeProblem, listProblemSummaries } from './oj-problems';
+import { visibleTarget } from './solution-posts';
 
 /**
  * Learner data that lives on the server (db/learner-cloud-schema.ts): finished mock OAs,
@@ -32,6 +33,8 @@ const REPORTS_PER_DAY = 20;
 export const REPORT_MONTHS = 6;
 
 const problemId = z.string().regex(/^(?:oa-[a-z0-9-]{1,180}|lc-\d{1,6})$/);
+/** What a learner can say they were asked: a judge problem, or a library interview question (q:<slug>). */
+const reported = z.union([problemId, z.string().regex(/^q:[\w-]{1,300}$/)]);
 const slug = z.string().regex(/^[a-z0-9-]{1,80}$/);
 const month = z.string().regex(/^\d{4}-(?:0[1-9]|1[0-2])$/);
 
@@ -328,7 +331,7 @@ function ownerHandle(ownerId: string) {
  * account once and never the owner: forking needs no verification, so one account forking
  * its own list again and again must not climb the plaza.
  */
-const VERIFIED = (col: string) => `EXISTS(SELECT 1 FROM "user" u WHERE u.id=${col} AND u.email_verified=1)`;
+export const VERIFIED = (col: string) => `EXISTS(SELECT 1 FROM "user" u WHERE u.id=${col} AND u.email_verified=1)`;
 const STARS = (list: string) =>
   `(SELECT COUNT(*) FROM user_marks m WHERE m.target='list:'||${list} AND m.mark='star' AND ${VERIFIED('m.user_id')})`;
 const FORKS = (list: string) =>
@@ -859,7 +862,7 @@ export function companyReports(company: string, now = Date.now(), max = 50) {
     sqlite()
       .prepare(
         `SELECT problem_id AS problemId,COUNT(DISTINCT user_id) AS n,MAX(asked_month) AS last
-        FROM problem_reports WHERE company=? AND asked_month>=? GROUP BY problem_id
+        FROM problem_reports WHERE company=? AND asked_month>=? AND problem_id NOT LIKE 'q:%' GROUP BY problem_id
         ORDER BY n DESC,last DESC,problem_id LIMIT ?`,
       )
       .all(company, recentSince(now), max) as { problemId: string; n: number; last: string }[]
@@ -872,8 +875,9 @@ async function handleReports(request: Request, p: Person | null, action?: string
     await limitReader(request, p, 'reports-read', 120);
     if (action === 'companies') return json({ items: reportCompanies() });
     if (action) throw new HttpError(404, '接口不存在');
-    const problem = problemId.parse(params.get('problem'));
-    if (hiddenProblem(problem)) throw new HttpError(404, '题目不存在或尚未发布');
+    const problem = reported.parse(params.get('problem'));
+    if (hiddenProblem(problem) || (problem.startsWith('q:') && !(await visibleTarget(p, problem))))
+      throw new HttpError(404, '题目不存在或尚未发布');
     return json(problemReportSummary(problem, p?.id ?? null));
   }
   requirePerson(p);
@@ -883,7 +887,7 @@ async function handleReports(request: Request, p: Person | null, action?: string
   const db = sqlite(),
     now = Date.now();
   if (action === 'withdraw') {
-    const d = z.object({ problemId, month }).strict().parse(await readJson(request, 1000));
+    const d = z.object({ problemId: reported, month }).strict().parse(await readJson(request, 1000));
     db.prepare('DELETE FROM problem_reports WHERE user_id=? AND problem_id=? AND asked_month=?').run(
       p.id,
       d.problemId,
@@ -894,7 +898,7 @@ async function handleReports(request: Request, p: Person | null, action?: string
   if (action) throw new HttpError(404, '接口不存在');
   const d = z
     .object({
-      problemId,
+      problemId: reported,
       company: slug.nullable().default(null),
       round: z.enum(ROUNDS).nullable().default(null),
       month,
@@ -904,7 +908,9 @@ async function handleReports(request: Request, p: Person | null, action?: string
   // This month (a day ahead for time zones) back to two years ago.
   if (d.month > monthKey(now + DAY) || d.month < recentSince(now, 24))
     throw new HttpError(400, '面试月份无效');
-  if (!(await publicProblem(p, d.problemId))) throw new HttpError(404, '题目不存在或尚未发布');
+  // A library question is visible like its answers are (lib/server/solution-posts.ts).
+  if (!(d.problemId.startsWith('q:') ? await visibleTarget(p, d.problemId) : await publicProblem(p, d.problemId)))
+    throw new HttpError(404, '题目不存在或尚未发布');
   const company = d.company ? employerSlug(d.company) : '';
   if (company && (company === OTHER_COMPANY || !reportCompanies().some((c) => c.slug === company)))
     throw new HttpError(400, '没有这家公司');

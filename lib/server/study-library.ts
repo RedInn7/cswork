@@ -1,6 +1,8 @@
 import { sqlite } from '@/db/sqlite';
 import { companyTagIndex, type CompanyTag } from '@/lib/company-tags';
+import { inWindow, reportWindow, windowCounts } from '@/lib/report-windows';
 import hintFile from '@/lib/content/ling-hints.json';
+import { sourceDates } from './company-insights';
 import { hiddenCompanies } from './env';
 import { HttpError, rows } from './http';
 import { oaLibrary } from './oa-library';
@@ -288,13 +290,20 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
                   ? item[status]
                   : false)),
   );
-  // sort=frequency: the chosen company's most reported problems first. The sort is
-  // stable, so equal counts keep the line's order.
+  // sort=frequency: the chosen company's most reported problems first, counting the reports of
+  // ?window=3m|6m|1y|2y only when given. The sort is stable, so equal counts keep the line's order.
   const sort = params.get('sort') || '';
   if (company && sort === 'frequency') {
-    const reports = (item: (typeof all)[number]) =>
-      item.companies.find((c) => c.slug === company)?.count ?? 0;
-    filtered.sort((a, b) => reports(b) - reports(a));
+    const period = reportWindow(params.get('window'));
+    const dated = period === 'all' ? null : sourceDates();
+    const now = Date.now();
+    const counts = new Map(
+      filtered.map((item) => {
+        const tag = item.companies.find((c) => c.slug === company);
+        return [item, !tag ? 0 : dated ? inWindow(windowCounts(tag.sources, dated, now), period) : tag.count];
+      }),
+    );
+    filtered.sort((a, b) => counts.get(b)! - counts.get(a)!);
   }
   // number / difficulty / rating / acceptance, either way (dir=asc|desc); problems without
   // a value (unrated, too few people for a share) stay last, in line order.

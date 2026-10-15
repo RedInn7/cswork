@@ -197,7 +197,12 @@ test('curated practice UI preserves language and round history, deduplicates cli
       'frequency',
     );
     assert.equal(document.querySelectorAll('.study-row').length, 3, 'the ranked page is not stale');
+    // Ranked by the reports of a recent window instead of all of them.
+    assert.equal(new URL(requests.at(-1), 'https://cswork.test').searchParams.has('window'), false);
+    await select(document.querySelector('option[value="3m"]').parentElement, '3m');
+    assert.equal(new URL(requests.at(-1), 'https://cswork.test').searchParams.get('window'), '3m');
     await select(document.querySelector('option[value="meta"]').parentElement, '');
+    assert.equal(new URL(requests.at(-1), 'https://cswork.test').searchParams.has('window'), false, 'no ranking, no window');
     assert.equal(
       new URL(requests.at(-1), 'https://cswork.test').searchParams.get('sort'),
       '',

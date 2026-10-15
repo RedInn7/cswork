@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import type { CompanyTag } from '@/lib/company-tags';
+import type { CompanyChip } from '@/lib/company-tags';
+import type { ReportWindows } from '@/lib/report-windows';
 import { companyInitials, companyLogos } from '@/lib/oa-company-brands';
 
 const SHOWN = 6;
@@ -11,6 +12,12 @@ const ROUND_ZH: Record<string, string> = {
   'Technical Screen': '技术电面',
   Onsite: '现场面',
 };
+/** A company's reports by age: [zh, en] and the buckets each part adds up. */
+const AGES: [string, string, (keyof ReportWindows)[]][] = [
+  ['近 6 月', '≤6 mo', ['m3', 'm6']],
+  ['6–12 月', '6–12 mo', ['y1']],
+  ['更早', 'older', ['y2', 'older']],
+];
 const logoOf = (slug: string) =>
   Object.hasOwn(companyLogos, slug) ? companyLogos[slug] : null;
 
@@ -21,7 +28,7 @@ function Logo({ slug, size }: { slug: string; size: number }) {
 }
 
 /** "Asked at" chips: interview reports that included this problem. */
-export function CompanyTags({ companies, english }: { companies: CompanyTag[]; english: boolean }) {
+export function CompanyTags({ companies, english }: { companies: CompanyChip[]; english: boolean }) {
   const [open, setOpen] = useState(false);
   const t = (zh: string, en: string) => (english ? en : zh);
   const label = t('面试出现过', 'Asked at');
@@ -33,10 +40,15 @@ export function CompanyTags({ companies, english }: { companies: CompanyTag[]; e
       </span>
       <ul aria-label={label}>
         {(open ? companies : companies.slice(0, SHOWN)).map((c) => {
-          const reports = t(
-            `${c.count} 次面经报告，最近 ${c.last}`,
-            `${c.count} ${c.count === 1 ? 'report' : 'reports'}, latest ${c.last}`,
-          );
+          const ages = AGES.flatMap(([zh, en, keys]) => {
+            const n = c.windows ? keys.reduce((sum, key) => sum + c.windows![key], 0) : 0;
+            return n ? [t(`${zh} ${n}`, `${en} ${n}`)] : [];
+          });
+          const reports =
+            t(
+              `${c.count} 次面经报告，最近 ${c.last}`,
+              `${c.count} ${c.count === 1 ? 'report' : 'reports'}, latest ${c.last}`,
+            ) + (ages.length ? t(`（${ages.join('，')}）`, ` (${ages.join(', ')})`) : '');
           return (
             <li
               key={c.slug}
@@ -54,6 +66,11 @@ export function CompanyTags({ companies, english }: { companies: CompanyTag[]; e
               <span className="cs-company-freq" aria-hidden="true">
                 ×{c.count} · {c.last.slice(0, 7)}
               </span>
+              {ages.map((age) => (
+                <span key={age} className="cs-company-age" aria-hidden="true">
+                  {age}
+                </span>
+              ))}
               <span className="sr-only">{t(`（${reports}）`, ` (${reports})`)}</span>
             </li>
           );

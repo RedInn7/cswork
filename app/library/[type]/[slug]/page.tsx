@@ -6,12 +6,14 @@ import { PublicLibraryMarkdown } from '../../markdown';
 import { PostsPreview } from '../../../discuss/parts';
 import '../../../discuss.css';
 import { SelectionAsk } from '@/components/command-palette';
+import { AskedReport } from '@/components/problem-community';
 import { seoMetadata } from '@/lib/seo';
 import { lcIdBySource } from '@/lib/company-tags';
 import { RESULTS, ROUND_LABELS, type ExperienceFacts } from '@/lib/experience';
 import { companyHubPath } from '@/lib/oa-company-brands';
 import { companyPractice, type CompanyPractice } from '@/lib/server/company-hub';
 import { library } from '@/lib/server/content-library';
+import { studyLibrarySummaries } from '@/lib/server/study-library';
 import {
   PUBLIC_LIBRARY_TYPES,
   publicLibraryItem,
@@ -105,6 +107,8 @@ export default async function PublicLibraryDetail({ params }: Props) {
   // A coding question with a judgeable LeetCode match links straight to it.
   const practice =
     item.type === 'coding_question' ? lcIdBySource.get(item.slug) : undefined;
+  // Reports need a problem the judge can open: a mapped one not judge-ready yet takes none.
+  const judged = practice && studyLibrarySummaries([practice])[0]?.judgeProblemId;
   // Experiences and interview questions point at practice for their company.
   const company =
     item.type === 'experience' || item.type === 'interview_question'
@@ -128,6 +132,12 @@ export default async function PublicLibraryDetail({ params }: Props) {
         </p>
         <h1>{item.title}</h1>
         {item.facts && <Facts facts={item.facts} />}
+        {/* "I was asked this": a question as q:<slug>, a coding question as the judge problem it maps to. */}
+        {(item.type === 'interview_question' || judged) && (
+          <div className="public-library-asked">
+            <AskedReport problemId={judged || `q:${item.slug}`} english labelled />
+          </div>
+        )}
         {item.summary && (
           <p className="public-library-summary">{item.summary}</p>
         )}
