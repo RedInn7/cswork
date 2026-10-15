@@ -86,7 +86,8 @@ async function match(p: Person, now: number) {
   return db.transaction(() => {
     db.prepare('DELETE FROM duel_queue WHERE seen_at<?').run(now - QUEUE_DROP);
     const me = db.prepare('SELECT * FROM duel_queue WHERE user_id=?').get(p.id) as QueueRow | undefined;
-    if (!me) return null;
+    // Matched by the opponent's request while judgeable() was awaited: that room.
+    if (!me) return activeDuel(p.id, now);
     const others = db
       .prepare('SELECT * FROM duel_queue WHERE user_id<>? AND seen_at>? ORDER BY created_at,user_id')
       .all(p.id, now - QUEUE_STALE) as QueueRow[];

@@ -234,3 +234,24 @@ void test('records read from a profile only where it shows contests', async () =
   const { publicProfile } = await import('../lib/server/learner-cloud');
   assert.equal(publicProfile('bob-duels', new Map())!.duel?.wins, 1);
 });
+
+void test('matched by the opponent while the poll awaits the problem list: matched, not idle', async () => {
+  const dan = person('d-dan');
+  const eve = person('d-eve');
+  assert.equal((await queue(dan, 'Dan')).state, 'waiting');
+  const summaries = contestSources.summaries;
+  const eves: Promise<Queue>[] = [];
+  // Eve's whole POST runs inside Dan's poll, between its activeDuel check and its match.
+  contestSources.summaries = async () => {
+    if (!eves.length) {
+      eves.push(queue(eve, 'Eve'));
+      assert.equal((await eves[0]).state, 'matched');
+    }
+    return summaries();
+  };
+  try {
+    assert.deepEqual(await poll(dan), await eves[0]);
+  } finally {
+    contestSources.summaries = summaries;
+  }
+});
