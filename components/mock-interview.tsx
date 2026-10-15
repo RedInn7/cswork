@@ -245,14 +245,15 @@ function Setup({ params, navigate, ai }: { params: Record<string, string>; navig
     if (round) query.round = round;
     if (template === 'custom') Object.assign(query, { mix: mixText, min: String(minutes) });
     // An AI-only set opens straight in the AI interview.
-    const aiOnly = chosen.slots.some((s) => KINDS[s.kind].aiOnly);
+    if (chosen.slots.some((s) => KINDS[s.kind].aiOnly)) query.as = 'ai';
     setDrawing(true);
     setError('');
     try {
       const set = await api<MockSet>(`content/mock?${apiQuery(query, avoid ? { exclude: seenIds().join(',') } : {})}`);
       if (set.rerolls.length) query.rr = set.rerolls.join('.');
+      // oxlint-disable-next-line react/react-compiler -- Set in this click handler, never during render.
       handoff = { key: new URLSearchParams(pick(query)).toString(), set };
-      navigate('mock-interview', aiOnly ? { ...query, as: 'ai' } : query);
+      navigate('mock-interview', query);
     } catch (e) {
       setError((e as Error).message);
       setDrawing(false);

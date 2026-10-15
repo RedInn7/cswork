@@ -180,7 +180,7 @@ export function MockReplay({ session, title }: { session: MockSession; title: (i
   const code = cursors[shown]?.(at) ?? '';
   const { perQuestion, pauses } = timeSummary(tracks, duration);
   const focus = focusSummary(tracks, duration);
-  const pos = (t: number) => `${duration ? (t / duration) * 100 : 0}%`;
+  const pos = (ms: number) => `${duration ? (ms / duration) * 100 : 0}%`;
   const label = (m: Marker) =>
     `Q${m.q + 1} · ${m.mode === 'run' ? t('运行', 'Run') : t('提交', 'Submit')} · ${t(...verdict(m.status, m.mode))}${
       m.total ? ` ${m.passed}/${m.total}` : ''

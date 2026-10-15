@@ -70,7 +70,7 @@ before(() => {
     null, 'Onsite', 0, 1, null, '{}', 'Compare TCP and UDP.\n\n## Solution\n\nReliability.');
   content.close();
   globalThis.fetch = (async (_url: string, init: RequestInit) => {
-    sent.push(JSON.parse(String(init.body)));
+    sent.push(JSON.parse(init.body as string));
     return reply();
   }) as typeof fetch;
 });
@@ -88,7 +88,7 @@ after(() => {
   rmSync(dir, { recursive: true, force: true });
 });
 
-test('guides: system design and LLD questions step through five parts; fundamentals and custom mixes do not', () => {
+void test('guides: system design and LLD questions step through five parts; fundamentals and custom mixes do not', () => {
   assert.deepEqual(guideFor('design', 'System Design')?.map((s) => s.id), ['requirements', 'entities', 'api', 'high-level', 'deep-dives']);
   assert.deepEqual(guideFor('lld', null)?.map((s) => s.id), ['clarify', 'classes', 'interfaces', 'code', 'extensibility']);
   assert.equal(guideFor('design', 'Software Engineering Fundamentals'), null);
@@ -100,7 +100,7 @@ test('guides: system design and LLD questions step through five parts; fundament
   assert.equal(resolveTemplate('custom', 'lld.1'), null);
 });
 
-test('a finished step gets scores on its own rubric dimensions, a keep and a fix, without code or the answer key', async () => {
+void test('a finished step gets scores on its own rubric dimensions, a keep and a fix, without code or the answer key', async () => {
   const { status, body } = await call('interview-step', step());
   assert.equal(status, 200);
   assert.deepEqual(body.feedback, {
@@ -120,7 +120,7 @@ test('a finished step gets scores on its own rubric dimensions, a keep and a fix
   assert.equal(sqlite().prepare("SELECT count FROM ai_usage WHERE kind='iv-call'").pluck().get(), 1);
 });
 
-test('steps are refused before any call: no ticket, no answer yet, not a guided question or step', async () => {
+void test('steps are refused before any call: no ticket, no answer yet, not a guided question or step', async () => {
   assert.equal((await call('interview-step', step({ ticket: 'bad.mac' }))).status, 409);
   assert.equal((await call('interview-step', step({ history: [] }))).status, 400);
   assert.equal((await call('interview-step', step({ itemId: 'iq-fund' }))).status, 400);
@@ -131,7 +131,7 @@ test('steps are refused before any call: no ticket, no answer yet, not a guided 
   assert.equal(sent.length, 0);
 });
 
-test(`a ticket gets ${AI_STEPS} step feedbacks; a failed call hands its step back`, async () => {
+void test(`a ticket gets ${AI_STEPS} step feedbacks; a failed call hands its step back`, async () => {
   const one = step({ ticket: ticket() });
   reply = () => new Response('{}', { status: 500 });
   assert.equal((await call('interview-step', one)).status, 503);
@@ -146,7 +146,7 @@ test(`a ticket gets ${AI_STEPS} step feedbacks; a failed call hands its step bac
   assert.equal(over.body.error, '这场面试的分步反馈次数已用完');
 });
 
-test('turns carry the current step to the interviewer', async () => {
+void test('turns carry the current step to the interviewer', async () => {
   reply = ok('Good. What is the read/write ratio?');
   const turn = { ...step(), history: [{ role: 'candidate', text: 'Let me ask about scale.' }] };
   assert.equal((await call('interview', turn)).status, 200);
@@ -154,7 +154,7 @@ test('turns carry the current step to the interviewer', async () => {
   assert.match(state, /current step: Requirements/);
 });
 
-test('LLD: the set carries a statement only, and the interviewer reads the course chapter and the code', async () => {
+void test('LLD: the set carries a statement only, and the interviewer reads the course chapter and the code', async () => {
   const set = mockSet(library()!, new URLSearchParams({ template: 'lld', seed: 'abc' }));
   const [slot] = set.slots;
   assert.equal(slot.kind, 'lld');
@@ -177,7 +177,7 @@ test('LLD: the set carries a statement only, and the interviewer reads the cours
   assert.equal((await call('interview', { ...turn, itemId: 'sd-framework' })).status, 404);
 });
 
-test('reports are kept as scores and compared with the best of each other learner, from 30 on', async () => {
+void test('reports are kept as scores and compared with the best of each other learner, from 30 on', async () => {
   const now = Date.now();
   const insert = sqlite().prepare('INSERT INTO ai_interview_scores(id,user_id,kind,level,scores_json,verdict,created_at) VALUES(?,?,?,?,?,?,?)');
   for (let i = 0; i < PEER_MIN - 1; i++)

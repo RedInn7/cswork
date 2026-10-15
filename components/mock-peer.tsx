@@ -471,7 +471,7 @@ function RequestForm({
             </select>
           </label>
           {companies.length > 0 && (
-            <div className="mi-seg" role="group" aria-label={t('已选公司', 'Companies picked')}>
+            <div className="mi-seg">
               {companies.map((slug) => {
                 const label = known?.find((c) => c.slug === slug)?.name ?? slug;
                 return (
@@ -487,7 +487,8 @@ function RequestForm({
               })}
             </div>
           )}
-          <div className="mi-seg peer-topics" role="group" aria-label={t('话题', 'Topics')}>
+          <fieldset className="mi-seg peer-topics">
+            <legend className="sr-only">{t('话题', 'Topics')}</legend>
             {Object.entries(STOP_NAMES).map(([slug, [zh, en]]) => {
               const on = topics.includes(slug);
               return (
@@ -502,7 +503,7 @@ function RequestForm({
                 </button>
               );
             })}
-          </div>
+          </fieldset>
         </details>
       </div>
       <div className="mi-ticket peer-ticket">

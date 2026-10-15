@@ -32,7 +32,7 @@ function mock(user: string, score: number, extra: { company?: string | null; pre
     .run(`m${n++}`, user, extra.company ?? null, extra.preset ?? 0, extra.source ?? 'mixed', JSON.stringify(extra.ids ?? ['lc-1', 'lc-2']), at, at, at, score, at);
 }
 
-test('a custom mock on chosen topics draws only from problems on one of them', () => {
+void test('a custom mock on chosen topics draws only from problems on one of them', () => {
   const pool = [
     { id: 'a', difficulty: 'easy' as const, loose: false, topics: ['dp-grid', 'binary-search'] },
     { id: 'b', difficulty: 'easy' as const, loose: false, topics: ['graph-topological'] },
@@ -43,7 +43,7 @@ test('a custom mock on chosen topics draws only from problems on one of them', (
   assert.equal(onTopics(pool).length, 3);
 });
 
-test('percentiles compare each learner once, at their best, within the scenario and 180 days', async () => {
+void test('percentiles compare each learner once, at their best, within the scenario and 180 days', async () => {
   const preset = { company: 'acme', preset: true, source: 'mixed' as const, questions: 2 };
   // Under PEER_MIN learners: no percentile at all.
   for (let i = 0; i < PEER_MIN - 1; i++) mock(`u${i}`, i * 10, { company: 'acme', preset: 1 });
@@ -77,7 +77,7 @@ test('percentiles compare each learner once, at their best, within the scenario 
   assert.equal((await mockReport(person, new URLSearchParams({ ...window, preset: '1', company: 'ACME!', source: 'mixed' }))).peers, null);
 });
 
-test('a problem may give some languages their own time limit, within the same bounds', () => {
+void test('a problem may give some languages their own time limit, within the same bounds', () => {
   const pkg = (timeLimits?: unknown) => ({
     schemaVersion: 1,
     problem: {
