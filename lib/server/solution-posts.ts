@@ -21,8 +21,9 @@ import { sdChapter } from './system-design-course';
  * target (lib/community.ts): a judge problem's solutions (signed in), a discussion channel's
  * threads, comments under an experience, answers to an interview question or a system design
  * chapter's discussion (those four read signed out). A thread may carry a poll
- * (db/post-polls-schema.ts); a reader saves a post as a star mark on post:<id>. Every read re-checks that the target is still visible (HIDDEN_COMPANIES, course
- * gates, the library), every author write names its author in the WHERE clause, and authors
+ * (db/post-polls-schema.ts); a reader saves a post as a star mark on post:<id>. Every read
+ * re-checks that the target is still visible (HIDDEN_COMPANIES, course gates, the library,
+ * the system design chapters), every author write names its author in the WHERE clause, and authors
  * show by their public handle or a masked name (never the account name, which is often a real
  * one). Bodies are Markdown the client renders without raw HTML.
  */
@@ -75,13 +76,16 @@ const postInput = z
 const commentInput = z.object({ body: text(1000) }).strict();
 const reportInput = z.object({ reason: z.enum(['spam', 'offensive', 'wrong', 'other']) }).strict();
 
+// Saves (stars) count from verified accounts only, like a list's (learner-cloud's VERIFIED; it
+// imports this module, so the check is inline).
 const POST = `SELECT sp.id,sp.problem_id AS problemId,sp.title,sp.language,sp.tag,sp.hidden,
   sp.created_at AS createdAt,sp.updated_at AS updatedAt,COALESCE(u.name,'') AS author,pr.handle,
   sp.user_id=@me AS mine,
   (SELECT COUNT(*) FROM post_votes v WHERE v.post_id=sp.id) AS votes,
   EXISTS(SELECT 1 FROM post_votes v WHERE v.post_id=sp.id AND v.user_id=@me) AS voted,
   (SELECT COUNT(*) FROM post_comments c WHERE c.post_id=sp.id AND c.hidden=0) AS comments,
-  (SELECT COUNT(*) FROM user_marks m WHERE m.target='post:'||sp.id AND m.mark='star') AS stars,
+  (SELECT COUNT(*) FROM user_marks m JOIN "user" su ON su.id=m.user_id AND su.email_verified=1
+    WHERE m.target='post:'||sp.id AND m.mark='star') AS stars,
   EXISTS(SELECT 1 FROM user_marks m WHERE m.target='post:'||sp.id AND m.mark='star' AND m.user_id=@me) AS starred`;
 const PROFILE = (col: string) => `LEFT JOIN user_profiles pr ON pr.user_id=${col} AND pr.visible=1`;
 const FROM_POST = `FROM solution_posts sp LEFT JOIN "user" u ON u.id=sp.user_id ${PROFILE('sp.user_id')}`;

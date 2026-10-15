@@ -92,8 +92,12 @@ void test('saved posts: counted on the post, listed across targets, only while s
   assert.equal((await call(null, 'GET', 'oj/posts?starred=1')).status, 401);
   for (const id of [solution.id, thread.id, tagged.id]) await star(ana, id);
   await star(bo, thread.id);
+  // An unverified account's save is kept for them but not counted.
+  sqlite().prepare('UPDATE "user" SET email_verified=0 WHERE id=?').run(fresh.id);
+  await star(fresh, thread.id);
   const read = await ok(ana, 'GET', `oj/posts/${thread.id}`);
   assert.deepEqual([read.post.stars, read.post.starred], [2, true]);
+  assert.equal((await ok(fresh, 'GET', `oj/posts/${thread.id}`)).post.starred, true);
   assert.equal((await ok(me, 'GET', `oj/posts/${thread.id}`)).post.starred, false);
   const listed = await ok(ana, 'GET', 'oj/posts?problem=discuss:algo');
   assert.deepEqual([listed.items[0].stars, listed.items[0].starred], [2, true]);
