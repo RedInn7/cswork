@@ -1,14 +1,26 @@
 /** General-purpose languages: ACM/LeetCode programs, templates and the language service. */
 export const CODE_LANGUAGES = ['python', 'go', 'java', 'cpp'] as const;
 export type CodeLanguage = (typeof CODE_LANGUAGES)[number];
-/** 'sql' is only for SQL track problems (lib/server/sql-judge.ts). */
-export type Language = CodeLanguage | 'sql';
+/**
+ * 'sql' and 'pandas' are the SQL track's own languages: 'sql' only on sql-
+ * problems and 'pandas' only on their pd- versions (lib/oj-types.ts). A trusted
+ * harness runs them (lib/server/sql-judge.ts), so they have no compile step,
+ * coding modes, language service, AI tutor or playground.
+ */
+export const LANGUAGE_IDS = [...CODE_LANGUAGES, 'sql', 'pandas'] as const;
+export type Language = (typeof LANGUAGE_IDS)[number];
+export const isTrackLanguage = (language: string): language is 'sql' | 'pandas' =>
+  language === 'sql' || language === 'pandas';
+/** The language a sql- or pd- problem is limited to; undefined for every other problem. */
+export const trackLanguageOf = (problemId: string): Language | undefined =>
+  problemId.startsWith('sql-') ? 'sql' : problemId.startsWith('pd-') ? 'pandas' : undefined;
 export const languages: { id: Language; name: string }[] = [
   { id: 'python', name: 'Python 3' },
   { id: 'go', name: 'Go' },
   { id: 'java', name: 'Java' },
   { id: 'cpp', name: 'C++' },
   { id: 'sql', name: 'SQL (SQLite)' },
+  { id: 'pandas', name: 'Pandas (Python)' },
 ];
 export const starters: Record<Language, string> = {
   python:
@@ -17,6 +29,8 @@ export const starters: Record<Language, string> = {
   java: 'import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner in = new Scanner(System.in);\n        // 在这里实现你的解法\n    }\n}\n',
   cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    // 在这里实现你的解法\n    return 0;\n}\n',
   sql: '-- SQLite 方言：写一条 SELECT 查询（可以用 WITH 开头）\nSELECT 1;\n',
+  pandas:
+    "import pandas as pd\n\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    # tables['表名'] 是那张表的 DataFrame，题面列出了各列和 dtype\n    # 在这里实现你的解法，返回结果 DataFrame\n    return pd.DataFrame()\n",
 };
 /** Same programs as `starters`, with comments in English for the English statement view. */
 export const englishStarters: Record<Language, string> = {
@@ -26,6 +40,8 @@ export const englishStarters: Record<Language, string> = {
   java: 'import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner in = new Scanner(System.in);\n        // Write your solution here\n    }\n}\n',
   cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    // Write your solution here\n    return 0;\n}\n',
   sql: '-- SQLite dialect: write one SELECT query (it may start with WITH)\nSELECT 1;\n',
+  pandas:
+    "import pandas as pd\n\n\ndef solve(tables: dict[str, pd.DataFrame]) -> pd.DataFrame:\n    # tables['table name'] is that table's DataFrame; the statement lists its columns and dtypes\n    # Write your solution here and return the result DataFrame\n    return pd.DataFrame()\n",
 };
 export const starterTemplates = { zh: starters, en: englishStarters } as const;
 export type ProblemStatement = {

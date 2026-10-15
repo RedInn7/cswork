@@ -1,0 +1,14 @@
+# Incremental upgrade of an existing verified runner for the SQL track's pandas
+# versions (pd- problems, PANDAS_HARNESS in lib/server/sql-judge.ts): Debian's
+# python3-pandas. Pass the installed image's immutable sha256 ID as BASE_IMAGE;
+# fresh installations get the same package from the main Dockerfile.
+# Rollout: the app hides pd- problems until the worker reports pandas, so it can
+# ship first. Build this, swap the sandbox as for Dockerfile.pch (keep the old
+# tag, wait for in-flight jobs, pause the worker), rerun verify-runtime.py (it
+# checks pandas in the sandbox and records it in OJ_LANGUAGE_VERSIONS) and
+# restart the worker: the problems appear. Rolling back the image, rerunning
+# verify-runtime.py and restarting the worker hides them again.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+RUN apt-get update && apt-get install -y --no-install-recommends python3-pandas \
+    && rm -rf /var/lib/apt/lists/*

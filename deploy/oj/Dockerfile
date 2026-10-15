@@ -14,7 +14,7 @@ RUN git apply --check /tmp/redact-startup-log.patch && git apply /tmp/redact-sta
 
 FROM debian:trixie-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      g++ python3 default-jdk-headless golang-go util-linux ca-certificates \
+      g++ python3 python3-pandas default-jdk-headless golang-go util-linux ca-certificates \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /opt /tmp/go-judge /dev/shm/go-judge \
     && chmod 1777 /tmp

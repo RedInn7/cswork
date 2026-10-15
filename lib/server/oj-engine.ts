@@ -12,7 +12,7 @@ import { semanticCheckerId } from '@/lib/oj-semantic-contract';
 import { matchesSemantic } from '@/lib/oj-semantic-checkers';
 import type { CodeLanguage, Language } from '@/lib/problems';
 import { javaCommand, LEETCODE_SUPPORT } from './leetcode-mode';
-import { SQL_HARNESS } from './sql-judge';
+import { PANDAS_HARNESS, SQL_HARNESS } from './sql-judge';
 import {
   asciiTokens,
   parseIntegerRowCollection,
@@ -264,8 +264,8 @@ export async function compile(
   source: string,
   signal: AbortSignal,
 ) {
-  // SQL has nothing to build: the trusted harness runs the query as data (see run).
-  if (language === 'sql') {
+  // SQL and pandas have nothing to build: a trusted harness runs the source (see run).
+  if (language === 'sql' || language === 'pandas') {
     const result: EngineResult = { status: 'Accepted' };
     const program: CompiledProgram = { language, source, cache: {} };
     return { result, program };
@@ -389,6 +389,29 @@ export async function run(
       },
       signal,
     );
+  if (program.language === 'pandas') {
+    const command = limits(
+      input,
+      spec.timeLimit,
+      Math.max(3, spec.timeLimit * 3),
+      memoryBytes,
+      spec.outputLimit * 1024,
+    );
+    return execute(
+      {
+        ...command,
+        // One BLAS / OpenMP thread: numpy's default pool would eat the process limit.
+        env: [...command.env, 'OPENBLAS_NUM_THREADS=1', 'OMP_NUM_THREADS=1'],
+        // No -S: pandas lives in the image's dist-packages.
+        args: ['/usr/bin/python3', '-I', 'judge.py'],
+        copyIn: {
+          'judge.py': { content: PANDAS_HARNESS },
+          'solution.py': { content: program.source },
+        },
+      },
+      signal,
+    );
+  }
   const script = program.bridgeSource
     ? program.bridgeBytecode
       ? 'bridge.pyc'

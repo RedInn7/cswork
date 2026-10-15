@@ -25,7 +25,7 @@ import { activeStatuses, verdict, type OJSubmission } from '@/lib/oj-client';
 import { type EditorSettings } from '@/lib/editor-settings';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
-import type { Language } from '@/lib/problems';
+import { isTrackLanguage, type Language } from '@/lib/problems';
 import { diffLines } from '@/lib/testcase-fields';
 
 /** The editorial's output on a custom case (POST problems/:id/expected). */
@@ -204,7 +204,7 @@ export function SubmissionResult({
       ? submission.firstFailure
       : undefined;
   const output = diagnostic || current;
-  // SQL has its own table diff; a set, float or semantic checker accepts other text too.
+  // SQL and pandas have their own table diff; a set, float or semantic checker accepts other text too.
   const comparable =
     ['python', 'cpp', 'java', 'go'].includes(submission.language) &&
     (checker === 'exact' || checker === 'tokens');
@@ -433,7 +433,7 @@ export function SubmissionResult({
                 </p>
               ) : (
                 <div className="cs-case-output">
-                  {submission.language === 'sql' &&
+                  {isTrackLanguage(submission.language) &&
                     output.expected !== undefined &&
                     output.stdout !== undefined &&
                     // A cut-off side can still parse and would misreport missing rows.
@@ -485,7 +485,7 @@ export function SubmissionResult({
                         value={reference.output}
                         diff={diff}
                       />
-                      {!comparable && submission.language !== 'sql' && (
+                      {!comparable && !isTrackLanguage(submission.language) && (
                         <p className="cs-console-note">
                           {t(
                             '这道题可能有多种正确答案，参考输出仅供对照。',

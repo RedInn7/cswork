@@ -5,7 +5,7 @@ import { api, type Boot } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { verdictNames } from '@/lib/oj-client';
-import { problemTitle } from '@/lib/problems';
+import { problemTitle, trackLanguageOf } from '@/lib/problems';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
 import { STOP_NAMES } from '@/lib/route-stops';
 import {
@@ -70,8 +70,9 @@ function highlight(text: string, words: string[]) {
   return text.split(pattern).map((part, i) => (i % 2 ? <mark key={i}>{part}</mark> : part));
 }
 const SOURCES = ['lc', 'oa', 'sql', 'core', 'bk'] as const;
+// pd- problems are the SQL track's pandas versions, so they count as 'sql'.
 const source = (id: string): (typeof SOURCES)[number] | 'course' =>
-  SOURCES.find((prefix) => id.startsWith(`${prefix}-`)) ?? 'course';
+  trackLanguageOf(id) ? 'sql' : (SOURCES.find((prefix) => id.startsWith(`${prefix}-`)) ?? 'course');
 
 /** ?view=progress: practice history, mistakes, reviews due today, and the learner's marks and notes. */
 export function MyProgress({

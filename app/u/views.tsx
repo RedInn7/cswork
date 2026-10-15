@@ -11,7 +11,7 @@ import { LocalDay, ProfileHeatmap } from './heatmap';
 import { BandChip, RatingCurve } from '@/components/contest-parts';
 
 /** Judge languages by their usual names; anything else as stored. */
-const LANGUAGE_NAMES: Record<string, string> = { python: 'Python', cpp: 'C++', java: 'Java', go: 'Go', sql: 'SQL' };
+const LANGUAGE_NAMES: Record<string, string> = { python: 'Python', cpp: 'C++', java: 'Java', go: 'Go', sql: 'SQL', pandas: 'Pandas' };
 
 /** /u/<handle>: a learner's opt-in page. Pure of request context, so tests render it directly. */
 export function ProfileView({

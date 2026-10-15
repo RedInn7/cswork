@@ -1,4 +1,5 @@
 import { sqlite } from '@/db/sqlite';
+import { LANGUAGE_IDS } from '@/lib/problems';
 import { shownOaSql } from './env';
 import { andUnlisted } from './judge-feed';
 
@@ -14,7 +15,7 @@ import { andUnlisted } from './judge-feed';
 export const MIN_PEOPLE = 20;
 export const MIN_SAMPLE = 30;
 const TTL = 10 * 60_000;
-const LANGUAGES = new Set(['python', 'go', 'java', 'cpp', 'sql']);
+const LANGUAGES = new Set<string>(LANGUAGE_IDS);
 // Settled verdicts; queued/running work and cancelled or broken jobs are no attempt.
 const UNSETTLED = `('pending','queued','compiling','running','cancelled','system_error')`;
 const BUCKETS = 20;

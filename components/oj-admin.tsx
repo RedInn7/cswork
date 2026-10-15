@@ -28,7 +28,7 @@ import {
 import { api, type Boot } from '@/lib/types';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
-import { languages, type ProblemStatement } from '@/lib/problems';
+import { isTrackLanguage, languages, trackLanguageOf, type ProblemStatement } from '@/lib/problems';
 import {
   ojImportSchema,
   OJ_MAX_IMPORT_BYTES,
@@ -1537,10 +1537,11 @@ export function OjAdmin({
                       <strong>{t('开放编程语言', 'Allowed languages')}</strong>
                       <div>
                         {languages
-                          // SQL is the SQL track's own language (sql- problems only).
+                          // SQL and pandas are the SQL track's own languages (sql- and pd- problems only).
                           .filter(
                             (language) =>
-                              (language.id === 'sql') === spec.id.startsWith('sql-'),
+                              (isTrackLanguage(language.id) ? language.id : undefined) ===
+                              trackLanguageOf(spec.id),
                           )
                           .map((language) => (
                             <label key={language.id}>

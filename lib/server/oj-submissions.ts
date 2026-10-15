@@ -2,7 +2,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
-import type { Language } from '@/lib/problems';
+import { LANGUAGE_IDS, type Language } from '@/lib/problems';
 import type { Person } from './auth';
 import { HttpError, limit } from './http';
 import { ensurePracticeRound, isSelectedProblem } from './practice-rounds';
@@ -68,7 +68,7 @@ export function judgeReady() {
 const inputSchema = z
   .object({
     problemId: z.string().min(1).max(80),
-    language: z.enum(['python', 'go', 'java', 'cpp', 'sql']),
+    language: z.enum(LANGUAGE_IDS),
     code: z.string().min(1).max(MAX_CODE_BYTES),
     mode: z.enum(['judge', 'run']).default('judge'),
     codingMode: z.enum(['leetcode', 'acm']).default('acm'),

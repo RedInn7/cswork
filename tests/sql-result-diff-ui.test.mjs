@@ -79,6 +79,10 @@ test('a failed SQL case shows the result diff; other languages and error output 
     assert.equal(!!document.querySelector('.cs-sql-diff'), false);
     assert.ok(document.body.textContent.includes('Your output'));
 
+    // The pandas versions print the same result form, so they get the same table.
+    await render(submission('pandas', 'columns: 2\n["Ava", 12000]\n["Dev", null]\n'));
+    assert.match(document.querySelector('.cs-sql-diff figcaption').textContent, /Expected 3 rows, got 2: 1 missing/);
+
     // An SQL error is not a result: no table.
     await render(submission('sql', 'SQL 错误 / SQL error: no such column: nope'));
     assert.equal(!!document.querySelector('.cs-sql-diff'), false);

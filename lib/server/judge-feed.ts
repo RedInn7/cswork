@@ -6,6 +6,7 @@ import { HttpError } from './http';
 import { oaLibrary } from './oa-library';
 import { canonicalCompany } from '@/lib/oa-company-brands';
 import { freeTrackSql, isFreeTrack } from '@/lib/free-tracks';
+import { LANGUAGE_IDS } from '@/lib/problems';
 
 /**
  * Public judge status board (like vjudge.net/status): formal submissions only, metadata
@@ -21,7 +22,7 @@ const RESULTS = new Set([
   'accepted', 'wrong_answer', 'time_limit', 'memory_limit', 'output_limit',
   'runtime_error', 'compile_error', 'system_error', 'cancelled', 'pending',
 ]);
-const LANGUAGES = new Set(['cpp', 'python', 'java', 'go', 'sql']);
+const LANGUAGES = new Set<string>(LANGUAGE_IDS);
 const libraryProblem = `s.problem_id IN (SELECT judge_problem_id FROM study_library WHERE judge_problem_id IS NOT NULL)`;
 
 /** OA, first-party tracks and library problems are public; course exercises follow course visibility. */

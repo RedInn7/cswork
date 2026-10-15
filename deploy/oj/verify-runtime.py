@@ -142,6 +142,20 @@ int main(){std::string input;std::getline(std::cin,input);auto value=cswork::Par
         accepted(version_result, f'{language} toolchain version available')
         outputs = version_result.get('files', {})
         language_versions[language] = (outputs.get('stdout') or outputs.get('stderr')).splitlines()[0]
+    # pandas (Dockerfile.pandas) is optional: without it the pd- problems stay hidden.
+    # Installed, it must work in the sandbox the way PANDAS_HARNESS uses it.
+    if run(['/usr/bin/python3', '-I', '-c', "import importlib.util, sys; sys.exit(importlib.util.find_spec('pandas') is None)"])['status'] == 'Accepted':
+        pandas_result = python('''import os
+os.environ['OPENBLAS_NUM_THREADS'] = os.environ['OMP_NUM_THREADS'] = '1'
+import sqlite3, pandas
+frame = pandas.read_sql_query('SELECT 1 AS x', sqlite3.connect(':memory:'), dtype={'x': 'Int64'})
+assert int(frame['x'].sum()) == 1
+print('pandas ' + pandas.__version__)
+''')
+        accepted(pandas_result, 'pandas imports and reads SQLite in the sandbox')
+        language_versions['pandas'] = pandas_result['files']['stdout'].splitlines()[0]
+    else:
+        print('SKIP pandas not installed: pd- problems stay hidden', flush=True)
     print('COMPILERS', json.dumps(language_versions), flush=True)
 
     accepted(python('''import os, pathlib, socket, ctypes

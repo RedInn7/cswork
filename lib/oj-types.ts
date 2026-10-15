@@ -32,7 +32,7 @@ import {
   parseIntegerRowCollection,
   type IntegerRowChecker,
 } from './oj-result-shapes';
-import type { Language, Problem } from './problems';
+import { LANGUAGE_IDS, type Language, type Problem } from './problems';
 import {
   OJ_MAX_CASE_BYTES,
   OJ_MAX_EXPECTED_BYTES,
@@ -286,7 +286,7 @@ export const ojImportSchema = z
         timeLimit: z.number().min(0.1).max(10),
         timeLimits: z
           .partialRecord(
-            z.enum(['python', 'go', 'java', 'cpp', 'sql']),
+            z.enum(LANGUAGE_IDS),
             z.number().min(0.1).max(10),
           )
           .optional(),
@@ -338,7 +338,7 @@ export const ojImportSchema = z
         complexDesignId: z.number().int().optional(),
         stringStructureId: z.number().int().optional(),
         languages: z
-          .array(z.enum(['python', 'go', 'java', 'cpp', 'sql']))
+          .array(z.enum(LANGUAGE_IDS))
           .min(1)
           .max(5),
         starters: z
@@ -475,6 +475,29 @@ export const ojImportSchema = z
         path: ['problem', 'id'],
         message:
           'core- 题号只能用于 gomall/00-overview 里的 Core Skills 题 / core- ids are for Core Skills problems in gomall/00-overview',
+      });
+    // pd- problems are the SQL track's pandas versions, judged by PANDAS_HARNESS
+    // (lib/server/sql-judge.ts): the same rules, plus room for a python that
+    // imports pandas for every test.
+    const pandasLanguage = data.problem.languages.includes('pandas');
+    if (
+      (pandasLanguage || data.problem.id.startsWith('pd-')) &&
+      !(
+        pandasLanguage &&
+        data.problem.languages.length === 1 &&
+        data.problem.id.startsWith('pd-') &&
+        data.problem.checker === 'exact' &&
+        data.problem.courseId === 'gomall' &&
+        data.problem.lessonId === '00-overview' &&
+        data.problem.timeLimit >= 3 &&
+        data.problem.memoryLimit >= 262144
+      )
+    )
+      ctx.addIssue({
+        code: 'custom',
+        path: ['problem', 'languages'],
+        message:
+          'Pandas 题只能用 pd- 题号、仅 Pandas 语言、exact 校验、放在 gomall/00-overview，时限至少 3 秒、内存至少 256 MB / Pandas problems need a pd- id, pandas only, the exact checker, gomall/00-overview, at least 3 s and 256 MB',
       });
     if (new Set(data.cases.map((c) => c.name)).size !== data.cases.length)
       ctx.addIssue({

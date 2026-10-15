@@ -81,6 +81,7 @@ const LANGUAGES: [string, string, string][] = [
   ['java', 'Java', 'Java'],
   ['go', 'Go', 'Go'],
   ['sql', 'SQL', 'SQL'],
+  ['pandas', 'Pandas', 'Pandas'],
 ];
 const FILTER_KEYS = ['result', 'language', 'problem', 'userOf', 'mine'] as const;
 const POLL_MS = 5000;

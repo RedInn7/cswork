@@ -89,9 +89,9 @@ for batch in "${pending[@]}"; do
 done
 left=$(as_cswork scripts/oa-judge/unpublished-batches.mjs) || die 'could not recheck OA batches'
 [[ -z "$left" ]] || die "still unpublished: $(tr '\n' ' ' <<<"$left")"
-# First-party SQL track: CI-verified packages; unchanged ones are skipped.
+# First-party SQL track and its pandas versions: CI-verified packages; unchanged ones are skipped.
 out=$(as_cswork --import tsx scripts/publish-sql-track.ts "$email") || die 'could not publish the SQL track'
-log "SQL track: $(grep -c '"published"' <<<"$out" || true) problem(s) published"
+log "SQL track (SQL and pandas): $(grep -c '"published"' <<<"$out" || true) problem(s) published"
 # First-party Core Skills track: CI reruns every language's solution; unchanged ones are skipped.
 out=$(as_cswork --import tsx scripts/publish-core-skills.ts "$email") || die 'could not publish the Core Skills track'
 log "Core Skills: $(grep -c '"published"' <<<"$out" || true) problem(s) published"
