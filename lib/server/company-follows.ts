@@ -1,5 +1,7 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { sqlite } from '@/db/sqlite';
-import { oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
+import { canonicalCompany, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
 import { notify } from './notify';
 import { oaReadyProblems } from './oa-judge';
 
@@ -25,17 +27,24 @@ export async function sendCompanyDigest(now = Date.now()) {
     .all(cutoff) as { user_id: string; company_slug: string; since: number }[];
   if (!due.length) return 0;
   const oldest = due.reduce((min, f) => Math.min(min, f.since), now);
-  // Loaded only once a day something is due: the catalog stays out of the worker otherwise.
-  const { oaLibrary } = await import('./oa-library');
-  const library = oaLibrary();
+  // The catalog read directly, as oaJudgeRegistry does: oa-library would pull the site's practice
+  // code into the worker, and the worker ships as one file, so no lazy import (tests/oj-capacity-release.test.mjs).
+  const catalog = JSON.parse(readFileSync(resolve('content/oa-master/catalog.json'), 'utf8')) as {
+    companies: { slug: string; name: string }[];
+    items: { id: string; companySlug: string }[];
+  };
+  const names = new Map(catalog.companies.map((c) => [c.slug, c.name]));
+  const companyOf = new Map(catalog.items.map((i) => [i.id, i.companySlug]));
   const added = new Map<string, { at: number; path: string; name: string }[]>();
+  // oaReadyProblems already leaves hidden companies out.
   for (const [id, { firstAt }] of await oaReadyProblems()) {
-    const found = firstAt >= oldest && firstAt < now ? library.problem(id) : undefined;
-    if (!found) continue;
-    const problem = { at: firstAt, path: oaProblemPath(found.item.companySlug, id), name: found.company.name };
-    const list = added.get(found.company.slug);
+    const source = companyOf.get(id);
+    if (!source || firstAt < oldest || firstAt >= now) continue;
+    const slug = canonicalCompany(source);
+    const problem = { at: firstAt, path: oaProblemPath(source, id), name: names.get(slug) ?? slug };
+    const list = added.get(slug);
     if (list) list.push(problem);
-    else added.set(found.company.slug, [problem]);
+    else added.set(slug, [problem]);
   }
   const byUser = Map.groupBy(due, (f) => f.user_id);
   const date = new Date(now + 8 * HOUR).toISOString().slice(0, 10);
