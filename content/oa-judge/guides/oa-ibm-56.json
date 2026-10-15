@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-56",
+  "packageChecksum": "5813adcb818a49436c659d76aa968d9b3249234bc11113f443f55bff04ff9495",
+  "sourceContentHash": "e11d87e54cf2ce0e94d9cb6419ffc32571a3f62be811109ebe8c5ff5f03676d4",
+  "editorialSha256": "86d37e44c94be869f027fe8ab50858bfaddae87948384fdbaa5505399afe88f2",
+  "hints": {
+    "zh": [
+      "把数排好序之后，两个不相邻的数之间至少隔着一个别的数，它们的差一定比中间任何一段相邻差都大。",
+      "所以最小绝对差只可能出现在排序后相邻的两个数之间：先找出所有相邻差中的最小值，再收集差恰好等于它的相邻对。",
+      "排序；扫描一遍相邻元素求最小差 d；再扫描一遍，把差等于 d 的相邻对按顺序记录（小数在前）；先输出数对个数，再逐行输出每一对，排序后的扫描顺序本身就满足题目要求的输出顺序。"
+    ],
+    "en": [
+      "After sorting, any two non-adjacent numbers have at least one other number between them, so their difference is larger than any single adjacent difference in between.",
+      "Therefore the minimum absolute difference can only occur between neighbours in sorted order: first find the smallest adjacent difference, then collect the adjacent pairs whose difference equals it.",
+      "Sort; scan the neighbours once to get the minimum difference d; scan again and record, in order, every adjacent pair whose difference is d (smaller number first); print the number of pairs and then one pair per line, since the scan order of the sorted array already matches the required output order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort, find the minimum difference between adjacent elements, then output all adjacent pairs whose difference equals it.\n\n## Proof of correctness\n\nBetween two non-adjacent numbers there is at least one other distinct value, so their difference is the sum of at least two positive adjacent differences and is strictly greater than either of them. Hence the minimum difference can only occur between adjacent items. Enumerating all adjacent pairs and filtering them gives every pair exactly once, and the order is naturally increasing.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

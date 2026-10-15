@@ -1,0 +1,19 @@
+{
+  "id": "oa-intuit-20",
+  "packageChecksum": "22372100626a6f8d6ef9fc4ed9409d40a107bddc8ab74e30c467b338eb50c876",
+  "sourceContentHash": "0da9533c085510b4d66f84cf8bef148a008754ad4d7a3039184195e3a864b3c4",
+  "editorialSha256": "654fb1dcd8a234e8a9137c270d6c80f46a8b796bfacd108520e7d18805ac12b7",
+  "hints": {
+    "zh": [
+      "同样大小的娃娃不能互相套，所以每一条嵌套链中每个尺寸最多出现一次；最后剩下的娃娃数就是链的条数。",
+      "出现次数最多的尺寸有 f 个，它们必须分属 f 条不同的链，所以至少剩 f 个；反过来把尺寸排序后轮流分配到 f 条链上，每条链尺寸严格递增，f 条链就够了。",
+      "统计每个尺寸出现的次数（哈希表或按值域计数），答案就是其中的最大次数，直接输出。"
+    ],
+    "en": [
+      "Dolls of the same size cannot nest, so each size appears at most once in any nesting chain; the number of dolls left at the end is the number of chains.",
+      "If the most frequent size occurs f times, those dolls must belong to f different chains, so at least f dolls remain; conversely, sorting the sizes and dealing them round-robin into f chains makes every chain strictly increasing, so f chains are enough.",
+      "Count how many times each size occurs (with a hash map or by counting over the value range); the answer is the largest count, printed directly."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the occurrences of each size; the answer is the maximum frequency.\n\n## Proof of correctness\n\nEach size appears at most once in each nesting chain, so the size with the most occurrences needs at least that many chains. Conversely, sort the sizes and assign them in turn by position to that many chains; sizes within the same chain strictly increase, and every doll can be placed into a chain.\n\n## Complexity\n\nTime O(N), space O(N)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-6",
+  "packageChecksum": "3167f8dd5890459bc7f3234ad12db6a65220f95399b7a76693ff4fed61f462eb",
+  "sourceContentHash": "c6c37a9fdf5808bb1260cef3db54c208aa1e719c49080a4b85364d6110750c87",
+  "editorialSha256": "92176d58dee11fe044b5e307f4ee8a6aea21b87c814c429823013a6340536a36",
+  "hints": {
+    "zh": [
+      "两个数组本身都已经非递减，所以每个数组当前最前面、还没用过的元素就是它剩余部分里的最小值。",
+      "不需要把 2n 个数重新排序：比较两个数组当前的头元素，较小的那个就是所有剩余元素中的最小值，可以直接放到结果里。",
+      "用两个下标分别指向 a 和 b 的头；两边都没用完时，若 a 的头不大于 b 的头就输出 a 的头并后移该下标，否则输出 b 的头并后移；一边用完后把另一边剩下的部分按原顺序追加；相等的值全部保留。"
+    ],
+    "en": [
+      "Both arrays are already non-decreasing, so the first unused element of each array is the minimum of what remains in that array.",
+      "There is no need to sort all 2n numbers again: compare the current heads of the two arrays; the smaller one is the minimum of all remaining elements and can go straight into the result.",
+      "Keep one index on the head of a and one on the head of b; while both have elements left, output a's head and advance it if it is not larger than b's head, otherwise output b's head and advance that index; when one side runs out, append the rest of the other side in order; equal values are all kept."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse two pointers: each step outputs the smaller of the two unprocessed heads, and after one array is used up, append the other array.\n\n## Proof of correctness\n\nThe head of each unprocessed array is that array's smallest remaining value, so the smaller of the two heads is the minimum of all remaining elements. Taking items out one at a time never drops a duplicate value, and induction gives a sorted merge.\n\n## Complexity\n\nTime O(n), output space O(n)."
+}

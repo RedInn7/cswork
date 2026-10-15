@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-62",
+  "packageChecksum": "15b06ca58a670c04ebfa84a72df670a5bf98b7d162d1fefa0f34a61fda7928ed",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long n;\n    cin >> n;\n    string s;\n    if (n > 0) cin >> s;\n    // Mismatches against 0101...; the other pattern needs n - d flips.\n    long long different = 0;\n    for (size_t i = 0; i < s.size(); i++) different += (s[i] - '0') != (int)(i & 1);\n    cout << min(different, n - different) << '\\n';\n}\n",
+      "sha256": "1c05ccfa13ffe171c8be7334a5b302276fc05dd38f54792ac2df9bcb6fbbf167"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        long n = nextLong();\n        String s = n > 0 ? next() : \"\";\n        // Mismatches against 0101...; the other pattern needs n - d flips.\n        long different = 0;\n        for (int i = 0; i < s.length(); i++) if (s.charAt(i) - '0' != (i & 1)) different++;\n        System.out.println(Math.min(different, n - different));\n    }\n}\n",
+      "sha256": "b8309d68ce496cab189fbf5844d72402ec026d872f47a5b12327fd8e93e58c60"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc nextToken() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\ts := \"\"\n\tif n > 0 {\n\t\ts = nextToken()\n\t}\n\t// Mismatches against 0101...; the other pattern needs n - d flips.\n\tvar different int64\n\tfor i := 0; i < len(s); i++ {\n\t\tif int(s[i]-'0') != i&1 {\n\t\t\tdifferent++\n\t\t}\n\t}\n\tfmt.Println(min(different, n-different))\n}\n",
+      "sha256": "1760b3f93cb3337a81e63459d53288d3bc6a8412494dfb6676c7e81fd164d674"
+    }
+  ]
+}

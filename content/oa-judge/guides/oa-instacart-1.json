@@ -1,0 +1,19 @@
+{
+  "id": "oa-instacart-1",
+  "packageChecksum": "a7e0b4a912ed1527f8997e72c3a6c871babca3f9c8ba5b0e94f23047012facea",
+  "sourceContentHash": "1e64ed14c085a6dbd0ec8311825d8ffec7fabbe419accbddccffa15f2505222a",
+  "editorialSha256": "fc46b31527e0afc00597ded1cc50b24c7ca34116a48a86d8367cba42f26d7314",
+  "hints": {
+    "zh": [
+      "每次染色只改变一个位置，而一个位置只参与它左右两条相邻边；其他相邻对是否同色完全不受影响。",
+      "维护当前颜色数组和同色相邻对的总数。更新某个位置前，先减去它与左右邻居的旧贡献；改色后，再加上它与左右邻居的新贡献。",
+      "颜色数组初始全为 0 表示未染色；对每个查询 (i,c)：若 a[i] 已染色，则对左右存在的邻居，颜色等于 a[i] 时各减一；令 a[i]=c；再对左右邻居，颜色等于 c 时各加一（未染色的邻居是 0，不会等于正的颜色值）；每次操作后输出当前总数，用空格分隔。"
+    ],
+    "en": [
+      "Each query recolors a single position, and a position belongs only to the two adjacent pairs on its left and right; every other adjacent pair is unaffected.",
+      "Keep the current color array and the total number of same-colored adjacent pairs. Before updating a position, subtract its old contribution with its left and right neighbours; after recoloring, add its new contribution.",
+      "Start with the color array all 0, meaning uncolored; for each query (i, c): if a[i] is already colored, subtract one for each existing neighbour whose color equals a[i]; set a[i] = c; then add one for each neighbour whose color equals c (an uncolored neighbour is 0 and never equals a positive color); print the current total after each operation, separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the array and the number of adjacent same-colored pairs. Before an update, undo the old contribution of that position with its left and right neighbours; after changing the color, add the new contribution.\n\n## Correctness\n\nAn update can only change the two edges adjacent to that position; after removing the old contribution and adding the new one, all other edges are unchanged, so the count stays correct.\n\n## Complexity\n\nO(q) time, O(length) space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-intuit-4",
+  "packageChecksum": "8c0e406b3218a3e93b62f672e253175d3d3a248a45aa46801cbb1400b6346d61",
+  "sourceContentHash": "690ff47920b14cea9d8e35b8069afda43e3eee2e6ef132a4117de40dd547f78f",
+  "editorialSha256": "15fba5137220fa8d0fff96e89628fc10bd018d4324d79d1c6be3026ada9dbf2d",
+  "hints": {
+    "zh": [
+      "每一行有 3 格，必须不是单色，所以合法的一行恰有 3³−3=24 种；只看行条件时网格数就是 24^n。剩下要处理的是“某一列从上到下全同色”这三个坏事件。",
+      "对三个列事件做容斥：固定一组 k 列要求各自全同色并指定它们的颜色，再数每行还有多少种选法——这些列颜色不全相同时每行有 3^(3−k) 种，同色时还要再排除剩余列也取这个颜色、导致整行单色的那一种。把各项合并即可得到关于 n 的封闭式。",
+      "合并后的答案为 24^n − 9·8^n + 9·2^n + 18·3^n − 24（可用 n=2 得 174 检验）；n 最大到 10^18，用快速幂对 1000000007 取模分别计算各项，相减后再加模数调整为非负数输出。"
+    ],
+    "en": [
+      "Each row has 3 cells and must not be monochromatic, so a valid row has exactly 3^3 - 3 = 24 choices; with only the row condition the number of grids is 24^n. What remains is handling the three bad events where some column is a single color from top to bottom.",
+      "Apply inclusion-exclusion over the three column events: fix a set of k columns that must each be monochromatic and assign their colors, then count the choices per row: if those columns do not all share one color each row has 3^(3-k) choices, and if they do, also exclude the one choice where the remaining columns take that same color and make the row monochromatic. Combining the terms gives a closed form in n.",
+      "The combined answer is 24^n - 9 * 8^n + 9 * 2^n + 18 * 3^n - 24 (check: n = 2 gives 174); n can be up to 10^18, so compute each power with fast modular exponentiation modulo 1000000007, combine the terms, and add the modulus as needed to print a non-negative result."
+    ]
+  },
+  "explanationEn": "## Counting and example correction\n\nEvery row must not be monochromatic, so a single row has 24 color arrangements. First count the grids in which every row is valid, then apply inclusion-exclusion over the three events \"some column is a single color from top to bottom\".\n\nFix a set of k columns that must be monochromatic and specify the colors of these columns: when the chosen columns do not all have the same color, each row has 3^(3-k) choices; when they share the same color, one more choice must be excluded, the one where the remaining columns also take that color. Substituting each group into the inclusion-exclusion and combining gives:\n\n`24^n - 9·8^n + 9·2^n + 18·3^n - 24`.\n\nFor n=2, 3 and 4, the results are 174, 9750 and 296490. The original rules explicitly require that no row and no column is monochromatic; enumerating all 3^(3n) grids directly (n≤4) and an independent six-event inclusion-exclusion both give the same results. Therefore the source's outputs 9758 for n=3 and 290490 for n=4 are numerical errors in the examples; the statement is unchanged, and only these two answers are corrected.\n\n## Correctness\n\nThe row restriction keeps only the 24 non-monochromatic rows, so each sequence of rows corresponds to exactly one grid satisfying the row condition. Inclusion-exclusion removes exactly the grids that contain at least one monochromatic column: for each grid, the total coefficient in the inclusion-exclusion sum, determined by its set of monochromatic columns, is 1 if that set is empty and 0 otherwise. The simplified formula therefore counts exactly the colorings that satisfy both the row and the column conditions.\n\n## Complexity\n\nUsing fast modular exponentiation for the powers of the constants, time O(log n), extra space O(1). The input range on this site is 1≤n≤10^18; the source gives no upper bound on n."
+}

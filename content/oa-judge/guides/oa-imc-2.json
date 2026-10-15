@@ -1,0 +1,19 @@
+{
+  "id": "oa-imc-2",
+  "packageChecksum": "853d5f14fd1c4b908d81a2499fb2cccf3876adfa597cdfee63174d3d0efe888f",
+  "sourceContentHash": "22ff8a90dc110d8e4378ce76071aed57a609ff50a1621401f324e3ff2ac32ca4",
+  "editorialSha256": "a7a45f8bac44ec59ae5270448b7635829808c62b29f8410c8299227a292855b3",
+  "hints": {
+    "zh": [
+      "通知在 p 的子树里按先序 DFS 传播，孩子按编号升序访问。先序遍历有一个关键性质：任意节点的子树在整条先序序列里是一段连续区间，而且该节点排在区间开头。",
+      "只需对整棵树做一次先序 DFS，记录每个节点在序列中的位置 tin 和子树大小 size；查询 (p,k) 的答案就是序列中下标 tin[p]+k−1 处的节点，前提是 k 不超过 size[p]。",
+      "按 v=1..n−1 的顺序把 v 加入 parent[v] 的孩子列表（自然升序）；用显式栈做迭代先序 DFS（逆序压入孩子，避免递归过深），进入节点时记下 tin 并追加到序列，离开时用当前序列长度减 tin 得到子树大小；每个查询若 1≤k≤size[p] 输出序列第 tin[p]+k−1 项，否则输出 -1，答案用空格分隔。"
+    ],
+    "en": [
+      "The notification spreads through p's subtree in preorder DFS order with children visited in ascending number. Preorder has a key property: the subtree of any node is one contiguous block of the whole preorder sequence, starting with that node.",
+      "One preorder DFS of the whole tree is enough: record each node's position tin in the sequence and its subtree size; the answer to (p, k) is the node at index tin[p] + k - 1, provided that k does not exceed size[p].",
+      "Add v to the child list of parent[v] for v = 1..n-1 in order (which keeps the lists ascending); run an iterative preorder DFS with an explicit stack (push children in reverse so deep trees do not overflow the call stack), record tin and append the node when entering it, and when leaving set its size to the current sequence length minus tin; for each query output sequence item tin[p] + k - 1 if 1 <= k <= size[p], otherwise -1, separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst build the children lists in ascending order of number, then run an iterative preorder DFS. Record the position tin at which each node enters the sequence; when leaving a node, its subtree size follows from the current sequence length. A query (p,k) corresponds to sequence index tin[p]+k−1, and that node is returned if k does not exceed the subtree size.\n\n## Proof of correctness\n\nPushing onto the stack in order guarantees that children are visited in ascending preorder. In a preorder DFS traversal the subtree of any node forms a contiguous range, so the k-th element of that range is exactly the k-th receiver the query asks for. The boundary check excludes exactly the values of k that go past the subtree.\n\n## Complexity\n\nBuilding the tree and traversing it take O(n), answering q queries takes O(q), space O(n+q).\n\n## Source note\n\nThe statement is compiled from a pinned OAMaster snapshot; the standard input/output protocol is this site's addition and does not claim that the original site provided it."
+}

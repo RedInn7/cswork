@@ -1,0 +1,19 @@
+{
+  "id": "oa-intuit-15",
+  "packageChecksum": "6dae7fae11de3ae017909cfd2e2a4ec069d135fb3908636721d960c77a629331",
+  "sourceContentHash": "8f68722d5cc334dd56677df70651073c6491bab1cae8c9acf39696c527937a3f",
+  "editorialSha256": "585f3700523dfd726cddde4a319c7b6c433ac5fd98168c822bdde2302e625e9f",
+  "hints": {
+    "zh": [
+      "成本只和每个字母的出现次数有关，与位置无关；某个字母出现 f 次时，再移除它一根，成本会下降 f²−(f−1)²=2f−1。",
+      "这个下降量随 f 增大而增大，所以每一步都应该从当前出现次数最多的字母上移除一根；若某一步移除了频次较低的字母，换成最高频字母不会让结果变差。",
+      "统计 26 个字母的频次，把非零频次放进最大堆；重复 min(M,N) 次：弹出最大频次 f，若 f>1 就把 f−1 放回堆中；最后把堆里所有频次的平方相加（用 64 位整数）输出。"
+    ],
+    "en": [
+      "The cost depends only on how many times each letter occurs, not on positions; when a letter occurs f times, removing one more of it lowers the cost by f^2 - (f-1)^2 = 2f - 1.",
+      "That drop grows with f, so every step should remove one candle of the letter that currently occurs most often; if some step removed a less frequent letter instead, switching to the most frequent one never makes the result worse.",
+      "Count the 26 letter frequencies and put the non-zero ones into a max-heap; repeat min(M, N) times: pop the largest frequency f and push f - 1 back if f > 1; finally print the sum of the squares of all frequencies left in the heap (in 64-bit integers)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRemoving one candle of the character with the currently highest frequency gives the largest marginal gain each time; there are always 26 letter kinds, and the heap simulation runs at most min(M,N) times.\n\n## Proof of correctness\n\nRemoving one more candle of a character with frequency f lowers the cost by f²−(f−1)²=2f−1. This marginal gain increases with f, so if some step removes a lower-frequency character instead of the current highest-frequency one, swapping that step's choice does not increase the cost. Repeating this greedy step simulates exactly the optimal sequence of at most M removals.\n\n## Complexity\n\nTime O(M log 26), space O(26)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-instacart-2",
+  "packageChecksum": "37d45a0257abe369968af87095dd630b57eb64c5fd42810366ed3815500d5ead",
+  "sourceContentHash": "97aedd8b8ff9919cb77c95c677ae8438dcb68445c85f6ac87dd81b2f4e07c68a",
+  "editorialSha256": "1dad40e7ed005060977efae2ea612a5180f5b9c5e7987a22ecd78a07a0b4bd72",
+  "hints": {
+    "zh": [
+      "鸟的行为完全确定：从起点出发，先向右找最近的木棍，再向左，再向右……每次取完回到起点，直到总长度至少为 100，所以直接模拟即可。",
+      "每一轮从起点沿当前方向逐格扫描，跳过长度为 0 的空位，遇到的第一个非空位置就是最近的木棍；取走后把它置为 0，保证以后不会重复取。",
+      "方向初始为 +1（向右）；当累计长度小于 100 时：从 bird+方向 开始一直沿该方向走到第一个非零位置，记录下标、累加长度（可能超过 32 位，用 64 位）、清零，然后方向取反；最后按顺序用空格输出所有下标。题目保证每个方向上总能找到木棍。"
+    ],
+    "en": [
+      "The bird's behaviour is fully determined: from the start it takes the nearest stick to the right, then to the left, then to the right again, returning to the start each time, until the total length is at least 100, so a direct simulation works.",
+      "Each round, scan cell by cell from the start in the current direction, skipping empty positions of length 0; the first non-empty position is the nearest stick. Set it to 0 after taking it so it is never taken twice.",
+      "Start with direction +1 (right); while the total is below 100: walk from bird + direction in that direction to the first non-zero position, record its index, add its length (which may exceed 32 bits, so use 64 bits), set it to zero, and flip the direction; finally print all indices in order, separated by spaces. The statement guarantees a stick always exists in the required direction."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFrom the start, scan linearly in the current direction to the nearest remaining stick, take it, add its length, and reverse the direction; stop once the total length reaches 100.\n\n## Correctness\n\nThe linear scan finds the nearest non-empty position in that direction; setting it to zero guarantees it is not taken again. Alternating directions matches the statement, and the loop condition makes the process stop right after the threshold is first reached.\n\n## Complexity\n\nO(n²) in the worst case; on this site n≤2000, with O(1) extra space."
+}

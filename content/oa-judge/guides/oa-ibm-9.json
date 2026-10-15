@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-9",
+  "packageChecksum": "13fb0ca935c69fcb32207308dd8bbbc39a58092bc5463174d31cb54cd6775ca2",
+  "sourceContentHash": "15b6bd93e8b800db529a76dd9f347927aa0374da3b4fc185f09d8af0e99749bf",
+  "editorialSha256": "8325f9c403230767a292a6318a33286caec33650a913a069a9ef5407aecac1c1",
+  "hints": {
+    "zh": [
+      "要删除的是值为偶数的节点，其余节点保持原顺序；删除头节点和删除中间节点如果分开处理会很麻烦。",
+      "在链表前加一个哨兵节点，并维护一个前驱指针：前驱的下一个节点若为偶数，就让前驱直接指向它的后继；若为奇数，就保留它并把前驱向前移动一步。",
+      "依次读入建表，哨兵指向第一个节点；前驱从哨兵出发，循环直到其后继为空：后继值为偶数（负数也按是否能被 2 整除判断）就跳过它，否则前驱前移；最后从哨兵的后继开始遍历，先输出剩余节点数，再在第二行输出各节点值，空链表时第二行为空。"
+    ],
+    "en": [
+      "The nodes to delete are the ones with even values, and the remaining nodes keep their order; handling the deletion of the head separately from deletions in the middle is clumsy.",
+      "Put a sentinel node before the list and keep a predecessor pointer: if the node after the predecessor is even, link the predecessor directly to that node's successor; if it is odd, keep it and move the predecessor forward one step.",
+      "Build the list from the input with the sentinel pointing at the first node; start the predecessor at the sentinel and loop until its successor is empty: skip the successor if its value is even (negative values are tested by divisibility by 2 as well), otherwise advance the predecessor; finally walk from the sentinel's successor, print the number of remaining nodes, then their values on the second line, which is empty for an empty list."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a sentinel node and a predecessor pointer: on an even node, link the predecessor to its successor; on an odd node, move the predecessor forward.\n\n## Proof of correctness\n\nThe nodes kept before the predecessor are all odd and in their original order. Each step either skips exactly one even node that must not be kept or confirms one odd node, so no node is missed, and at the end the list is exactly the target list.\n\n## Complexity\n\nTime O(n); building the input list takes O(n) space, and the deletion pass uses O(1) extra."
+}

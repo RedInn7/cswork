@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-62",
+  "packageChecksum": "15b06ca58a670c04ebfa84a72df670a5bf98b7d162d1fefa0f34a61fda7928ed",
+  "sourceContentHash": "bf64f917867d01ba8d464ff20ba68cfaf49ab53c64f05832e332e5d862646dcb",
+  "editorialSha256": "fe76c91a5fe31ecee609e5d4c1c0c1eb07108603ecca145c88eea7790f4fb481",
+  "hints": {
+    "zh": [
+      "相邻字符都不同的二进制串只有两种：以 0 开头的 0101… 和以 1 开头的 1010…，首位一旦确定，其余每一位都随之确定。",
+      "对一个固定的目标串，每个不一致的位置都必须翻转一次，所以代价就是错位数。而两个目标在每一位上恰好相反，若与 0101… 错位 d 处，与 1010… 就错位 n−d 处。",
+      "读入 n 和字符串（n=0 时没有字符串）；扫描每个下标 i，若该位数字不等于 i 的奇偶（i mod 2），就把 d 加一；输出 d 和 n−d 中的较小值，空串时两者都是 0。"
+    ],
+    "en": [
+      "There are only two binary strings whose neighbours all differ: 0101... starting with 0 and 1010... starting with 1; once the first bit is fixed, every other bit is fixed too.",
+      "For a fixed target string, every mismatched position must be flipped once, so the cost is the number of mismatches. The two targets are opposite at every position, so if the string mismatches 0101... in d places, it mismatches 1010... in n - d places.",
+      "Read n and the string (there is no string when n = 0); for each index i, increase d if the digit differs from i mod 2; print the smaller of d and n - d, which is 0 for the empty string."
+    ]
+  },
+  "explanationEn": "## Approach\n\nOnce the first bit of an alternating string is fixed, all other bits are determined. Count the number of mismatches d against 0101...; the number of mismatches against the other target is n−d.\n\n## Proof of correctness\n\nEvery mismatch needs at least one flip, and flipping them one by one achieves that, so the number of operations for a given target is exactly its number of mismatches. A non-empty alternating string has only these two forms, so the smaller of the two is the global optimum; for the empty string both are 0.\n\n## Complexity\n\nTime O(n), O(1) extra besides the input."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-intuit-12",
+  "packageChecksum": "6f55464ea7bedceb14a32b6dd0a6d3e96d1dd9afb3892f4e501f5c3c90608758",
+  "sourceContentHash": "6afc06e2797bbd3dbb2a8f07dca4fa8488cd46f1ec29007b2f57af1d3d5f0ede",
+  "editorialSha256": "45e1b4ba0a163a0d18f0359f7ffdaf86a1db0fee6b25c94828b0f0c73921c8fb",
+  "hints": {
+    "zh": [
+      "一个子数组要满足“类型互不相同”，长度不能超过 m；对每个长度 ℓ≤m，长度为 ℓ 的窗口有 n−ℓ+1 个，每个窗口至多贡献一个合格子数组，这给出了答案的上界。",
+      "如果序列中任意长度不超过 m 的窗口都互不相同，就能达到这个上界。按 1,2,…,m 循环排列正好满足：任意连续 m 个位置恰好是 m 种不同类型。",
+      "要在达到上界的同时字典序最小，每个位置都应选不在前 m−1 个位置中出现过的最小类型，这正好得到 1,2,…,m,1,2,… 的循环；直接输出第 i 个位置（从 0 开始）为 i mod m + 1，共 n 个数，用空格分隔。"
+    ],
+    "en": [
+      "A subarray whose types are all distinct cannot be longer than m; for each length l <= m there are n - l + 1 windows of that length, and each window contributes at most one qualifying subarray, which bounds the answer from above.",
+      "If every window of length at most m in the sequence has distinct types, the bound is reached. Cycling through 1, 2, ..., m does exactly that: any m consecutive positions contain all m different types.",
+      "To reach the bound and also be lexicographically smallest, each position should take the smallest type that does not appear among the previous m - 1 positions, which yields exactly the cycle 1, 2, ..., m, 1, 2, ...; print position i (0-based) as i mod m + 1, n numbers in total, separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nConstruct the sequence by cycling through 1,2,…,m.\n\n## Proof of correctness\n\nEach range of length at most m contributes at most one qualifying subarray, and a range longer than m cannot have all distinct types; the upper bound is Σ(n−ℓ+1) over ℓ=1..min(n,m). The cyclic sequence makes every window of length ≤m all distinct, reaching this bound. The lexicographically smallest construction must each time choose the smallest type that does not appear among the previous m−1 positions, so it is exactly the cycle 1,2,…,m.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) (not counting the output)."
+}

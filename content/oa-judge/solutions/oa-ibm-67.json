@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-67",
+  "packageChecksum": "f2d4670492ef10f7fe93cabe7bd7efeb93ac493fffff28361969735898f530bc",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, m;\n    cin >> n >> m;\n    int row = 0, column = 0;\n    for (int k = 0; k < m; k++) {\n        string command;\n        cin >> command;\n        int nr = row, nc = column;\n        if (command == \"UP\") nr--;\n        else if (command == \"DOWN\") nr++;\n        else if (command == \"LEFT\") nc--;\n        else nc++;\n        // Moves that would leave the grid are ignored.\n        if (0 <= nr && nr < n && 0 <= nc && nc < n) row = nr, column = nc;\n    }\n    cout << row * n + column << '\\n';\n}\n",
+      "sha256": "3bd3d555eb9a26c7dfe5d770631fd91a8400023a3ede3ad49edffe5d4619f3c1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), m = nextInt();\n        int row = 0, column = 0;\n        for (int k = 0; k < m; k++) {\n            String command = next();\n            int nr = row, nc = column;\n            switch (command) {\n                case \"UP\" -> nr--;\n                case \"DOWN\" -> nr++;\n                case \"LEFT\" -> nc--;\n                default -> nc++;\n            }\n            // Moves that would leave the grid are ignored.\n            if (0 <= nr && nr < n && 0 <= nc && nc < n) {\n                row = nr;\n                column = nc;\n            }\n        }\n        System.out.println(row * n + column);\n    }\n}\n",
+      "sha256": "38ca1124988ddff1b2947ed5054c904cc8e7ca9568ddc802f1501d9695040bfe"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc nextToken() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, m := int(nextInt()), int(nextInt())\n\trow, column := 0, 0\n\tfor k := 0; k < m; k++ {\n\t\tnr, nc := row, column\n\t\tswitch nextToken() {\n\t\tcase \"UP\":\n\t\t\tnr--\n\t\tcase \"DOWN\":\n\t\t\tnr++\n\t\tcase \"LEFT\":\n\t\t\tnc--\n\t\tdefault:\n\t\t\tnc++\n\t\t}\n\t\t// Moves that would leave the grid are ignored.\n\t\tif 0 <= nr && nr < n && 0 <= nc && nc < n {\n\t\t\trow, column = nr, nc\n\t\t}\n\t}\n\tfmt.Println(row*n + column)\n}\n",
+      "sha256": "efcc0bea939dc5026c206063274775deb0b3a823666f7df36bd81ab9b14d46f5"
+    }
+  ]
+}

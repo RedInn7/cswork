@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-58",
+  "packageChecksum": "f0acf490b9d9e0c67bdf7d389f898fd135ce41d7e2e93f01128ae8dfcc912e54",
+  "sourceContentHash": "ba84df1310090e25345d7b210c9227ba3a347fe68b62222e78bc38c3b1f09a0c",
+  "editorialSha256": "7c41e98a1a5f46a1d2245cc1c1cb8d17a1d0ccb07e32780385d7637b1e2c5b34",
+  "hints": {
+    "zh": [
+      "从左往右扫描时，只需要知道目前还有多少个左括号没有被匹配，具体是哪几个并不重要。",
+      "遇到右括号时，如果有未匹配的左括号就让它们配对；如果没有，这个右括号无论如何都要在它前面补一个左括号。扫描结束时剩下的每个未匹配左括号都要补一个右括号。",
+      "维护 left（未匹配的左括号数）和 missing（需要补的左括号数）：遇到左括号 left 加一；遇到右括号时若 left 大于 0 就减一，否则 missing 加一；最后输出 left 与 missing 之和。"
+    ],
+    "en": [
+      "While scanning from left to right, you only need to know how many left parentheses are still unmatched, not which ones.",
+      "When a right parenthesis arrives, match it with an unmatched left one if there is any; if there is none, a left parenthesis must be inserted before it no matter what. Every left parenthesis still unmatched at the end needs one inserted right parenthesis.",
+      "Keep left (unmatched left parentheses) and missing (left parentheses that must be inserted): on a left parenthesis increase left; on a right parenthesis decrease left if it is positive, otherwise increase missing; finally print left plus missing."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the number of unmatched left parentheses. On a right parenthesis, cancel it against a left one if there is any; otherwise insert one left parenthesis. At the end, insert right parentheses for the remaining left parentheses.\n\n## Proof of correctness\n\nEvery right parenthesis with no left parenthesis to match must get one inserted left parenthesis, and every remaining unmatched left parenthesis must get one inserted right parenthesis; these two parts form a necessary lower bound. Inserting left parentheses immediately during the scan and right parentheses at the end produces a balanced string and reaches exactly this lower bound.\n\n## Complexity\n\nTime O(n), space O(1)."
+}

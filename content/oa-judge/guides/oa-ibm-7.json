@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-7",
+  "packageChecksum": "d9ee3b087b156cf5cc8ff2e3cf42e2ba3eaab2319e4cd6620291e3648f284ba9",
+  "sourceContentHash": "abbfb22e6bc900d5b372d3a18361bb9c2aae98d57a4603916ca9fda48f7a5489",
+  "editorialSha256": "d7a06bd1d31a2c1b10ed3fb6d1cd3b41f5847e231e4b94ab25bf008a09b207f4",
+  "hints": {
+    "zh": [
+      "每个字符串是否符合条件（首尾都是元音）只与它自己有关，可以先给每个字符串标记 0 或 1。",
+      "每个查询问的是一段连续下标里 1 的个数，区间计数用前缀和：pre[i] 表示前 i 个字符串中符合条件的数量，区间 [l,r] 的答案就是 pre[r]−pre[l−1]。",
+      "逐个读字符串，首字符和末字符都属于 aeiou 时标记为 1（单字符元音也算），累加得到前缀和数组；每个查询形如 l-r，按连字符拆出 l 和 r，输出 pre[r]−pre[l−1]；所有答案用空格分隔。"
+    ],
+    "en": [
+      "Whether a string qualifies (both its first and last characters are vowels) depends only on that string, so each string can first be marked 0 or 1.",
+      "Each query asks for the number of 1s in a contiguous index range, which is a prefix-sum job: let pre[i] be the number of qualifying strings among the first i, then the answer for [l, r] is pre[r] - pre[l-1].",
+      "Read the strings one by one, mark a string 1 when both its first and last characters are in aeiou (a single vowel character counts), and accumulate the prefix-sum array; each query has the form l-r, so split it at the hyphen and print pre[r] - pre[l-1]; separate all answers with spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMark each string with 0/1, build prefix sums, and answer each query with a difference over the range.\n\n## Proof of correctness\n\nThe mark of a single string is equivalent to the definition; subtracting the prefix count before l from the prefix count up to r leaves exactly the qualifying items in the closed range.\n\n## Complexity\n\nTime O(total input characters + q), space O(n+q)."
+}

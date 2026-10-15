@@ -1,0 +1,21 @@
+{
+  "id": "oa-intuit-12",
+  "packageChecksum": "6f55464ea7bedceb14a32b6dd0a6d3e96d1dd9afb3892f4e501f5c3c90608758",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long n, m;\n    cin >> n >> m;\n    // Cycling 1..m makes every window of length <= m all-distinct and is lexicographically smallest.\n    string out;\n    for (long long i = 0; i < n; i++) {\n        if (i) out += ' ';\n        out += to_string(i % m + 1);\n    }\n    cout << out << '\\n';\n}\n",
+      "sha256": "c3016ede356756d330d51f0179c8ff74d4d9ba1f0fe9099cd89c84f9b84d6420"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        long n = nextLong(), m = nextLong();\n        // Cycling 1..m makes every window of length <= m all-distinct and is lexicographically smallest.\n        StringBuilder sb = new StringBuilder();\n        for (long i = 0; i < n; i++) {\n            if (i > 0) sb.append(' ');\n            sb.append(i % m + 1);\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "ba64bea7a6a70f747318cc8e82d871f2ba68e1900a1877d454d89ea27fd255a5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, m := nextInt(), nextInt()\n\t// Cycling 1..m makes every window of length <= m all-distinct and is lexicographically smallest.\n\tvar out []byte\n\tfor i := int64(0); i < n; i++ {\n\t\tif i > 0 {\n\t\t\tout = append(out, ' ')\n\t\t}\n\t\tout = strconv.AppendInt(out, i%m+1, 10)\n\t}\n\tout = append(out, '\\n')\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "361872d18c37098da639636ae5efaed3b9b5a2cb805c2bac2bc43cef72b71c53"
+    }
+  ]
+}

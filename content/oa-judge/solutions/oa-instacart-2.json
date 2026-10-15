@@ -1,0 +1,21 @@
+{
+  "id": "oa-instacart-2",
+  "packageChecksum": "37d45a0257abe369968af87095dd630b57eb64c5fd42810366ed3815500d5ead",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, b;\n    cin >> n >> b;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    long long total = 0;\n    int d = 1;  // first go right, then alternate\n    string out;\n    while (total < 100) {\n        int i = b + d;\n        while (a[i] == 0) i += d;  // nearest remaining stick in this direction\n        if (!out.empty()) out += ' ';\n        out += to_string(i);\n        total += a[i];\n        a[i] = 0;\n        d = -d;\n    }\n    cout << out << '\\n';\n}\n",
+      "sha256": "1c131cb55ec015a8e70a18571cf3afbb6bc3b8d58dd30158e7434d5d33c718fd"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), b = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        long total = 0;\n        int d = 1; // first go right, then alternate\n        StringBuilder sb = new StringBuilder();\n        while (total < 100) {\n            int i = b + d;\n            while (a[i] == 0) i += d; // nearest remaining stick in this direction\n            if (sb.length() > 0) sb.append(' ');\n            sb.append(i);\n            total += a[i];\n            a[i] = 0;\n            d = -d;\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "6d9254c592981c91fbcf87b4b6c9a85518b83f738fd70187f9e6d0cfae8d6c56"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, b := int(nextInt()), int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tvar total int64\n\td := 1 // first go right, then alternate\n\tvar out []byte\n\tfor total < 100 {\n\t\ti := b + d\n\t\tfor a[i] == 0 { // nearest remaining stick in this direction\n\t\t\ti += d\n\t\t}\n\t\tif len(out) > 0 {\n\t\t\tout = append(out, ' ')\n\t\t}\n\t\tout = strconv.AppendInt(out, int64(i), 10)\n\t\ttotal += a[i]\n\t\ta[i] = 0\n\t\td = -d\n\t}\n\tout = append(out, '\\n')\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "84f25e4a4b7a1ff833d59dc23b9db3e5a1831162faa0083990a073d85edd2c9d"
+    }
+  ]
+}
