@@ -19,8 +19,8 @@ export const mockMatchRequests = sqliteTable(
     locale: text('locale').notNull().default('en'),
     status: text('status').notNull().default('open'),
     pairId: text('pair_id'),
-    /** 1: email this learner a day and an hour before the session (lib/server/peer-reminders.ts). */
-    remind: integer('remind').notNull().default(1),
+    /** 1: email this learner a day and an hour before the session (lib/server/peer-reminders.ts). Default 0: rows booked before reminders existed never get mail; requestMatch always writes it. */
+    remind: integer('remind').notNull().default(0),
     /** {companies, topics} up to 3 each: partners sharing them are matched first. */
     focusJson: text('focus_json').notNull().default('{}'),
     /** 1: "practise now", matched only with other instant requests filed in the last 15 minutes. */
