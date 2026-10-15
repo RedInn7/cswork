@@ -210,7 +210,7 @@ test('signed out: no progress, and marking read asks to sign in', async () => {
 test('the walkthrough opens after a draft or a skip, stays open next time, and opens for a section link', async () => {
   const dom = useDom();
   const { createRoot } = await import('react-dom/client');
-  const { SdTryFirst } = await import('../app/system-design/reader.tsx');
+  const { SdMarkRead, SdTryFirst } = await import('../app/system-design/reader.tsx');
   const original = globalThis.fetch;
   marksApi(null);
   const root = createRoot(document.getElementById('root'));
@@ -256,14 +256,28 @@ test('the walkthrough opens after a draft or a skip, stays open next time, and o
     });
     assert.equal(closed(), false);
 
-    // A chapter the signed-in learner marked read is open.
+    // A chapter the signed-in learner marked read is open, and stays open once unticked.
     location.hash = '';
     localStorage.clear();
     await act(async () => root.render(createElement('div')));
     marksApi(new Set(['sd:news-feed']));
-    await render('news-feed', 'me');
+    await act(async () =>
+      root.render(
+        createElement(
+          Fragment,
+          null,
+          createElement(SdTryFirst, { slug: 'news-feed', userId: 'me' }, createElement('h2', null, 'API')),
+          createElement(SdMarkRead, { slug: 'news-feed', slugs }),
+        ),
+      ),
+    );
     await settle();
     assert.equal(closed(), false);
+    await act(async () => document.querySelector('.sd-read input').click());
+    await settle();
+    assert.equal(document.querySelector('.sd-read input').checked, false);
+    assert.equal(closed(), false);
+    assert.equal(localStorage.getItem('cswork:sd-open:news-feed'), '1');
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = original;

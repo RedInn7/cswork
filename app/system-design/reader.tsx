@@ -155,6 +155,14 @@ export function SdTryFirst({ slug, userId, children }: { slug: string; userId: s
     window.addEventListener('hashchange', follow);
     return () => window.removeEventListener('hashchange', follow);
   }, [slug, userId]);
+  // Once read, it stays open even if the mark is taken off (the checkbox sits below it).
+  useEffect(() => {
+    if (!marked) return;
+    setOpen(true);
+    try {
+      localStorage.setItem(openKey(slug), '1');
+    } catch {}
+  }, [marked, slug]);
   const shown = open || marked;
   return (
     <>
