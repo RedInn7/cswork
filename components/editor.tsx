@@ -49,6 +49,49 @@ function useMonacoRuntime() {
   }, [attempt]);
   return { runtime, error, retry: () => setAttempt((n) => n + 1) };
 }
+type MonacoEditor = Parameters<OnMount>[0];
+const SYMBOLS = ['(', ')', '[', ']', '{', '}', ':', ';', '=', '"', "'", '<', '>', '+', '-', '*', '/', '_', ',', '.'];
+/** Touch screens: the symbols a soft keyboard hides, in a row riding just above it. */
+function SymbolBar({ editor }: { editor: MonacoEditor }) {
+  const t = useT();
+  const [bottom, setBottom] = useState(0);
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+    // The keyboard covers what the layout viewport has and the visual one lacks.
+    const place = () =>
+      setBottom(Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop));
+    place();
+    viewport.addEventListener('resize', place);
+    viewport.addEventListener('scroll', place);
+    return () => {
+      viewport.removeEventListener('resize', place);
+      viewport.removeEventListener('scroll', place);
+    };
+  }, []);
+  // Through Monaco's own commands, so auto-closing brackets and indentation still apply.
+  const key = (label: string, run: () => void, name?: string) => (
+    <button
+      key={label}
+      type="button"
+      aria-label={name}
+      // Keeps focus (and the soft keyboard) in the editor.
+      onPointerDown={(event) => event.preventDefault()}
+      onClick={run}
+    >
+      {label}
+    </button>
+  );
+  return (
+    <div className="cs-symbol-bar" role="toolbar" aria-label={t('代码符号', 'Code symbols')} style={{ bottom }}>
+      {key('Tab', () => editor.trigger('keyboard', 'tab', null))}
+      {SYMBOLS.map((text) => key(text, () => editor.trigger('keyboard', 'type', { text })))}
+      {key('←', () => editor.trigger('keyboard', 'cursorLeft', null), t('光标左移', 'Cursor left'))}
+      {key('→', () => editor.trigger('keyboard', 'cursorRight', null), t('光标右移', 'Cursor right'))}
+      {key(t('撤销', 'Undo'), () => editor.trigger('keyboard', 'undo', null))}
+    </div>
+  );
+}
 export type CodeEditorProps = {
   value: string;
   language: Language;
@@ -91,9 +134,8 @@ export function CodeEditor({
   callbacks.current = { onRun, onSubmit, onSave, onCursor };
   const cleanup = useRef<(() => void) | null>(null);
   useEffect(() => () => cleanup.current?.(), []);
-  const [instance, setInstance] = useState<Parameters<OnMount>[0] | null>(
-    null,
-  );
+  const [instance, setInstance] = useState<MonacoEditor | null>(null);
+  const [keybar, setKeybar] = useState(false);
   const vimStatus = useRef<HTMLDivElement>(null);
   const vim = !readOnly && settings.keymap === 'vim';
   const emacs = !readOnly && settings.keymap === 'emacs';
@@ -195,6 +237,12 @@ export function CodeEditor({
         );
       }),
     ];
+    // Only touch screens track focus: desktops never render the symbol bar.
+    if (window.matchMedia?.('(pointer: coarse)').matches)
+      actions.push(
+        editor.onDidFocusEditorText(() => setKeybar(true)),
+        editor.onDidBlurEditorText(() => setKeybar(false)),
+      );
     const model = editor.getModel();
     if (!readOnly && problemId && model) {
       // The SQL track's languages get no language server (the Python one has no pandas
@@ -300,6 +348,7 @@ export function CodeEditor({
       {runtime && (vim || emacs) && (
         <div ref={vimStatus} className="cs-vim-status" />
       )}
+      {keybar && instance && !readOnly && !vim && <SymbolBar editor={instance} />}
     </div>
   );
 }
