@@ -56,7 +56,11 @@ export function toolchains() {
     python: tool(['python3.13', 'python3'], ['--version']),
     // Apple's g++ is clang without <bits/stdc++.h>: Homebrew GCC first.
     cpp: tool(['g++-14', 'g++'], ['--version']),
-    java: tool(['/opt/homebrew/opt/openjdk@21/bin/javac', 'javac'], ['-version']),
+    // Homebrew's openjdk@21, then a CI runner's JDK 21 (GitHub sets JAVA_HOME_21_X64), then PATH.
+    java: tool(
+      ['/opt/homebrew/opt/openjdk@21/bin/javac', process.env.JAVA_HOME_21_X64 && `${process.env.JAVA_HOME_21_X64}/bin/javac`, 'javac'].filter(Boolean),
+      ['-version'],
+    ),
     go: tool(['go'], ['version']),
   };
   return found;
