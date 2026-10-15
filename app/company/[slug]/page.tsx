@@ -98,7 +98,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
   const spelling = company.library[0] ?? company.slug;
   const stops = [
     oa.length && { id: 'oa', label: zh ? 'OA 真题' : 'OA', n: company.oa },
-    leetcode.length && { id: 'leetcode', label: zh ? '高频 LeetCode' : 'Top LeetCode', n: Math.min(leetcode.length, LC_SHOWN) },
+    leetcode.length && { id: 'leetcode', label: zh ? '高频 LeetCode' : 'Top LeetCode', n: ranked.length },
     experiences.length && { id: 'experiences', label: zh ? '面经' : 'Experiences', n: experienceTotal },
     questions.length && { id: 'questions', label: zh ? '面试题' : 'Questions', n: company.questions },
   ].filter((s): s is { id: string; label: string; n: number } => !!s);
