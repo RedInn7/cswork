@@ -63,6 +63,8 @@ export type LingEditorial = {
     space: string;
     python: string;
     cpp: string;
+    java: string;
+    go: string;
   }[];
   verified: boolean;
 };

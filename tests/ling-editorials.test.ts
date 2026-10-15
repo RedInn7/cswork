@@ -6,8 +6,8 @@ import editorials from '../lib/content/ling-editorials.json';
 import { curatedByNumber } from '../lib/ling-curated';
 import { lingEditorial } from '../lib/server/ling-editorials';
 
-const FIELDS = ['cpp', 'ideaEn', 'ideaZh', 'nameEn', 'nameZh', 'python', 'space', 'time'];
-// Room for a long DP idea or a verbose C++ solution; anything past this is a paste accident.
+const FIELDS = ['cpp', 'go', 'ideaEn', 'ideaZh', 'java', 'nameEn', 'nameZh', 'python', 'space', 'time'];
+// Room for a long DP idea or a verbose C++/Java/Go solution; anything past this is a paste accident.
 const MAX = { name: 60, idea: 1200, cost: 40, code: 6000 } as const;
 const BIG_O = String.raw`(?:[A-Za-z]+(?:/[A-Za-z]+)* )?O\([^()]*(?:\([^()]*\)[^()]*)*\)`;
 const COST = new RegExp(`^${BIG_O}(?:, ${BIG_O})*$`);
