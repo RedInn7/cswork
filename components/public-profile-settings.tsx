@@ -80,7 +80,7 @@ export function PublicProfileSettings() {
           setBusy(true);
           setError('');
           setMessage('');
-          api<{ profile: Profile }>('oj/profile', {
+          api<{ profile: Profile; badges?: Earned[] }>('oj/profile', {
             ...form,
             handle: form.handle.trim().toLowerCase(),
             indexable: form.visible && form.indexable,
@@ -89,9 +89,10 @@ export function PublicProfileSettings() {
             featuredBadge:
               form.featuredBadge?.startsWith('contest:') && !(form.visible && form.showContest) ? null : form.featuredBadge,
           })
-            .then(({ profile }) => {
+            .then(({ profile, badges }) => {
               setSaved(profile);
               setForm(profile);
+              setBadges(badges ?? []);
               setMessage(profile.visible ? t('主页已公开。', 'Your profile is public.') : t('已保存，主页未公开。', 'Saved. Your profile is not public.'));
             }, (reason: Error) => setError(reason.message))
             .finally(() => setBusy(false));

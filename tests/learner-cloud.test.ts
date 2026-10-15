@@ -226,7 +226,8 @@ void test('a featured badge must be earned to save, stays until changed, and dro
       "INSERT INTO point_ledger(id,user_id,delta,reason,ref_id,created_at) VALUES(?,?,20,'daily',?,1)",
     ).run(`feat-${d}`, other.id, `2026-02-${String(d).padStart(2, '0')}`);
   const profile = { handle: 'month-rider', visible: true };
-  await ok(other, 'POST', 'profile', profile);
+  const first = await ok<{ badges: { id: string }[] }>(other, 'POST', 'profile', profile);
+  assert.ok(first.badges.some((b) => b.id === 'daily:2026-02'), 'a save sends the picker its badges');
   const mine = await ok<{ badges: { id: string }[] }>(other, 'GET', 'profile');
   assert.ok(mine.badges.some((b) => b.id === 'daily:2026-02'));
   assert.equal(await status(other, 'POST', 'profile', { ...profile, featuredBadge: 'daily:2026-03' }), 400);

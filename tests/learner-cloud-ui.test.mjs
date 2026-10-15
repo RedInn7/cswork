@@ -312,13 +312,15 @@ test('the public profile card is off until switched on and saves a lowercase han
   globalThis.fetch = async (url, init = {}) => {
     const path = String(url).replace('/api/', '');
     if (path !== 'oj/profile') throw new Error(`unexpected ${path}`);
-    if (!init.body) return Response.json({ profile: null });
+    if (!init.body) return Response.json({ profile: null, badges: [] });
     const body = JSON.parse(init.body);
     posts.push(body);
-    return Response.json({ profile: body });
+    return Response.json({ profile: body, badges: [{ id: 'daily:2026-02', zh: '2026 年 2 月每日一题全勤', en: 'Daily problem every day, Feb 2026' }] });
   };
   try {
     const root = await mount(createElement(PublicProfileSettings));
+    // No page yet: no badges and no picker.
+    assert.equal(document.querySelector('select'), null);
     const [visible, indexable, showContest] = document.querySelectorAll('.cloud-check input');
     assert.equal(visible.checked, false);
     assert.equal(indexable.disabled, true, 'search indexing needs a public page first');
@@ -331,8 +333,8 @@ test('the public profile card is off until switched on and saves a lowercase han
       { handle: 'line-rider', visible: true, indexable: false, showContest: false, bio: '', featuredBadge: null },
     ]);
     assert.ok(document.querySelector('a[href="/u/line-rider"]') !== null);
-    // No earned badges: no picker.
-    assert.equal(document.querySelector('select'), null);
+    // The first save brings the earned badges, so the picker shows without a reload.
+    assert.deepEqual([...document.querySelector('select').options].map((o) => o.value), ['', 'daily:2026-02']);
     await act(async () => root.unmount());
   } finally {
     globalThis.fetch = original;
@@ -344,18 +346,15 @@ test('the profile card features one earned badge, and a contest one only with th
   const original = globalThis.fetch;
   // Featuring a badge given up since: the form lets it go rather than have the save refused.
   const saved = { handle: 'line-rider', visible: true, indexable: false, showContest: true, bio: '', featuredBadge: 'list:blind-75' };
+  const badges = [
+    { id: 'daily:2026-02', zh: '2026 年 2 月每日一题全勤', en: 'Daily problem every day, Feb 2026' },
+    { id: 'contest:first', zh: '首次发车', en: 'First departure' },
+  ];
   globalThis.fetch = async (url, init = {}) => {
-    if (!init.body)
-      return Response.json({
-        profile: saved,
-        badges: [
-          { id: 'daily:2026-02', zh: '2026 年 2 月每日一题全勤', en: 'Daily problem every day, Feb 2026' },
-          { id: 'contest:first', zh: '首次发车', en: 'First departure' },
-        ],
-      });
+    if (!init.body) return Response.json({ profile: saved, badges });
     const body = JSON.parse(init.body);
     posts.push(body);
-    return Response.json({ profile: body });
+    return Response.json({ profile: body, badges });
   };
   try {
     const root = await mount(createElement(PublicProfileSettings));

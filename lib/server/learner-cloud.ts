@@ -621,7 +621,9 @@ async function handleProfile(request: Request, p: Person) {
   if (d.visible) requireVerified(p);
   const featured = d.featuredBadge === undefined ? (myProfile(p.id)?.featuredBadge ?? null) : d.featuredBadge;
   // Checked on every save: a badge given up since (or a contest one with the curve hidden) is refused.
-  if (featured && !(await featurable(p.id, d.visible && d.showContest)).some((b) => b.id === featured))
+  // Sent back too, so a first save or a shown curve fills the picker without a reload.
+  const badges = await featurable(p.id, d.visible && d.showContest);
+  if (featured && !badges.some((b) => b.id === featured))
     throw new HttpError(400, '这枚徽章还没有获得');
   const now = Date.now();
   try {
@@ -649,7 +651,7 @@ async function handleProfile(request: Request, p: Person) {
       throw new HttpError(409, '这个主页名已被占用');
     throw error;
   }
-  return json({ profile: myProfile(p.id) });
+  return json({ profile: myProfile(p.id), badges });
 }
 
 /** What /u/<handle> needs from the catalogue: the published problems anyone can open. */
