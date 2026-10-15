@@ -172,10 +172,12 @@ void test('the first to solve everything wins; the duel is rated once, on its ow
 });
 
 void test('a duel nobody finishes is a draw once its window closes', async () => {
+  // Problems the first duel can never draw (amy solved lc-12, lc-99 is far off): Bob's accepted
+  // ones from it fall inside this window and would finish this duel for him.
   sqlite()
     .prepare(
       `INSERT INTO contest_rooms(id,owner_id,title,kind,problem_ids_json,starts_at,duration_min,visibility,created_at)
-      VALUES('draw1',NULL,'Ranked duel','duel','["lc-10","lc-11"]',?,30,'private',?)`,
+      VALUES('draw1',NULL,'Ranked duel','duel','["lc-12","lc-99"]',?,30,'private',?)`,
     )
     .run(Date.now() - 40 * MIN, Date.now() - 40 * MIN);
   const entry = sqlite().prepare(
@@ -183,7 +185,7 @@ void test('a duel nobody finishes is a draw once its window closes', async () =>
   );
   entry.run(bob.id, 'Bob', Date.now() - 40 * MIN);
   entry.run(cat.id, 'Cat', Date.now() - 40 * MIN);
-  submit(cat.id, 'lc-10', 'accepted', Date.now() - 35 * MIN);
+  submit(cat.id, 'lc-12', 'accepted', Date.now() - 35 * MIN);
   await settleDuels();
   const row = sqlite().prepare("SELECT * FROM duel_results WHERE room_id='draw1'").get() as {
     winner: string | null;
