@@ -134,7 +134,7 @@ void test('settings: opt-in, email needs a verified address, push needs VAPID an
   const amy = person('r-amy');
   addUser(amy);
   assert.equal((await call(null, 'GET', 'oj/notify')).status, 401);
-  assert.deepEqual((await call(amy, 'GET', 'oj/notify')).data, { prefs: null, push: null, mail: false, verified: true, devices: 0 });
+  assert.deepEqual((await call(amy, 'GET', 'oj/notify')).data, { prefs: null, push: null, mail: false, verified: true, endpoints: [] });
   assert.equal((await call(person('r-new', false), 'POST', 'oj/notify', prefs({ email: true }))).status, 403);
   assert.equal((await call(amy, 'POST', 'oj/notify', prefs({ hour: 24 }))).status, 400);
   assert.equal((await call(amy, 'POST', 'oj/notify', prefs({ extra: 1 }))).status, 400);
@@ -163,16 +163,18 @@ void test('settings: opt-in, email needs a verified address, push needs VAPID an
     const bob = person('r-bob');
     await subscribe(bob, 'https://fcm.googleapis.com/fcm/send/a10');
     assert.equal(endpoints().length, 9);
-    assert.equal((await call(bob, 'GET', 'oj/notify')).data.devices, 1);
+    assert.deepEqual((await call(bob, 'GET', 'oj/notify')).data.endpoints, ['https://fcm.googleapis.com/fcm/send/a10']);
     // Turning a device off removes only the caller's own.
     await call(amy, 'POST', 'oj/notify/subscription', { endpoint: 'https://fcm.googleapis.com/fcm/send/a10', on: false });
-    assert.equal((await call(bob, 'GET', 'oj/notify')).data.devices, 1);
+    assert.equal((await call(bob, 'GET', 'oj/notify')).data.endpoints.length, 1);
     await call(bob, 'POST', 'oj/notify/subscription', { endpoint: 'https://fcm.googleapis.com/fcm/send/a10', on: false });
-    assert.equal((await call(bob, 'GET', 'oj/notify')).data.devices, 0);
+    assert.deepEqual((await call(bob, 'GET', 'oj/notify')).data.endpoints, []);
+    assert.equal((await call(amy, 'GET', 'oj/notify')).data.endpoints.length, 9);
   });
-  // Off deletes the settings.
-  assert.equal((await call(amy, 'POST', 'oj/notify', { prefs: null })).data.prefs, null);
-  assert.equal(sqlite().prepare('SELECT COUNT(*) FROM push_subscriptions WHERE user_id=?').pluck().get(amy.id), 9);
+  // Off deletes the settings and every device's push address.
+  const off = (await call(amy, 'POST', 'oj/notify', { prefs: null })).data;
+  assert.deepEqual([off.prefs, off.endpoints], [null, []]);
+  assert.equal(sqlite().prepare('SELECT COUNT(*) FROM push_subscriptions WHERE user_id=?').pluck().get(amy.id), 0);
 });
 
 void test('the digest goes to learners whose local hour it is, once a local day, with reviews and the streak', async () => {
@@ -208,6 +210,8 @@ void test('the digest goes to learners whose local hour it is, once a local day,
       assert.equal(push.url, 'https://fcm.googleapis.com/fcm/send/cara');
       assert.equal(push.body, null);
       assert.match(push.headers.Authorization, new RegExp(`^vapid t=[\\w-]+\\.[\\w-]+\\.[\\w-]+, k=${VAPID_PUBLIC}$`));
+      // Dropped by the push service once pending would no longer find its notice.
+      assert.equal(push.headers.TTL, '3600');
       // One mail with a one-click unsubscribe.
       const [mail] = mails();
       const token = sqlite().prepare('SELECT token FROM notify_prefs WHERE user_id=?').pluck().get(cara.id) as string;
@@ -223,8 +227,12 @@ void test('the digest goes to learners whose local hour it is, once a local day,
       assert.equal(await sendLearnerReminders(NOW + 10 * 60000), 0);
       assert.equal(await sendLearnerReminders(NOW + 50 * 60000), 0);
       assert.equal(sent.length, 0);
-      // The service worker reads it back within the hour (the handler's own clock), in the learner's language.
+      // The service worker reads it back within the hour (the handler's own clock), in the learner's
+      // language: only the newest, so a contest notice pushed earlier never pops up again.
       sqlite().prepare('UPDATE notifications SET created_at=? WHERE id=?').run(Date.now(), `rem:2026-10-15:${cara.id}`);
+      sqlite()
+        .prepare("INSERT INTO notifications(id,user_id,kind,title,body,href,created_at) VALUES('r-earlier',?,'contest-start','比赛','x','/contest/x',?)")
+        .run(cara.id, Date.now() - 30 * 60000);
       assert.deepEqual((await call(cara, 'GET', 'oj/notify/pending')).data.items.map((i: { title: string }) => i.title), ['今日学习提醒']);
       // London's 20:00, and Beijing's next day: once each. Dan has only the daily problem.
       assert.equal(await sendLearnerReminders(NOW + 8 * HOUR), 1);

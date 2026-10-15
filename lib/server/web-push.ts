@@ -59,7 +59,8 @@ export async function pushTo(userId: string, now = Date.now()) {
         redirect: 'manual',
         signal: AbortSignal.timeout(8000),
         headers: {
-          TTL: '43200',
+          // As long as GET /api/oj/notify/pending looks back: a later push would find nothing to show.
+          TTL: '3600',
           Urgency: 'normal',
           Authorization: `vapid t=${vapidJwt(new URL(endpoint).origin, now)}, k=${setting('VAPID_PUBLIC_KEY')}`,
         },

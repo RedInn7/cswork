@@ -22,7 +22,7 @@ const { ReminderSettings } = await import('../components/reminder-settings.tsx')
 const { CompanyFollowButton, FollowedCompanies } = await import('../components/company-follow-button.tsx');
 
 const server = {
-  settings: { prefs: null, push: null, mail: true, verified: true, devices: 0 },
+  settings: { prefs: null, push: null, mail: true, verified: true, endpoints: [] },
   follows: { signedIn: true, items: [] },
 };
 const calls = [];
@@ -31,9 +31,14 @@ globalThis.fetch = async (url, init = {}) => {
   const body = init.body ? JSON.parse(init.body) : undefined;
   calls.push([key, body]);
   if (key === 'GET /api/oj/notify') return Response.json(server.settings);
-  if (key === 'POST /api/oj/notify') return Response.json((server.settings = { ...server.settings, prefs: body.prefs }));
-  if (key === 'POST /api/oj/notify/subscription')
-    return Response.json((server.settings = { ...server.settings, devices: server.settings.devices + (body.on ? 1 : -1) }));
+  // Off drops every device's push address.
+  if (key === 'POST /api/oj/notify')
+    return Response.json((server.settings = { ...server.settings, prefs: body.prefs, endpoints: body.prefs ? server.settings.endpoints : [] }));
+  if (key === 'POST /api/oj/notify/subscription') {
+    const endpoints = server.settings.endpoints.filter((e) => e !== body.endpoint);
+    if (body.on) endpoints.push(body.endpoint);
+    return Response.json((server.settings = { ...server.settings, endpoints }));
+  }
   if (key === 'GET /api/oj/follows/companies') return Response.json(server.follows);
   if (key === 'POST /api/oj/follows/companies') {
     const items = server.follows.items.filter((c) => c.slug !== body.slug);
@@ -87,7 +92,7 @@ test('reminders saved in another time zone are moved to this one on open; unveri
     push: null,
     mail: true,
     verified: false,
-    devices: 0,
+    endpoints: [],
   };
   calls.length = 0;
   await act(async () => root.render(createElement(ReminderSettings)));
@@ -98,14 +103,14 @@ test('reminders saved in another time zone are moved to this one on open; unveri
   await act(async () => root.render(createElement('div')));
 });
 
-test('push for this device: permission, subscribe with the VAPID key, and off again', async () => {
+test('push for this device: permission, subscribe with the VAPID key, off again, gone with reminders off', async () => {
   const tz = new Date().getTimezoneOffset();
   server.settings = {
     prefs: { review: true, streak: true, daily: false, contest: true, email: false, hour: 20, tz, locale: 'en' },
     push: 'BAEC',
     mail: false,
     verified: true,
-    devices: 0,
+    endpoints: [],
   };
   let options = null;
   let unsubscribed = 0;
@@ -135,6 +140,26 @@ test('push for this device: permission, subscribe with the VAPID key, and off ag
     await click(button('Turn push on for this device'));
     assert.deepEqual(calls, []);
     assert.match(document.querySelector('#reminders [role="alert"]').textContent, /Notifications are blocked/);
+    // Turning reminders off lets go of this browser's subscription too.
+    globalThis.Notification = { requestPermission: async () => 'granted' };
+    await click(button('Turn push on for this device'));
+    await click(button('Turn reminders off'));
+    assert.deepEqual(calls.at(-1), ['POST /api/oj/notify', { prefs: null }]);
+    assert.equal(unsubscribed, 2);
+    // A subscription the server no longer has (reminders turned off elsewhere) is not shown as on.
+    await act(async () => root.render(createElement('div')));
+    server.settings = {
+      ...server.settings,
+      prefs: { review: true, streak: true, daily: false, contest: true, email: false, hour: 20, tz, locale: 'en' },
+    };
+    registration.pushManager.getSubscription = async () => subscription;
+    Object.defineProperty(navigator, 'serviceWorker', {
+      configurable: true,
+      value: { getRegistration: async () => registration, register: async () => registration, ready: Promise.resolve(registration) },
+    });
+    await act(async () => root.render(createElement(ReminderSettings)));
+    await settle();
+    assert.ok(button('Turn push on for this device'));
   } finally {
     delete navigator.serviceWorker;
     delete window.PushManager;

@@ -208,14 +208,16 @@ function settings(p: Person) {
     push: pushReady() ? setting('VAPID_PUBLIC_KEY') : null,
     mail: mailReady(),
     verified: p.verified,
-    devices: db.prepare('SELECT COUNT(*) FROM push_subscriptions WHERE user_id=?').pluck().get(p.id) as number,
+    /** The devices with push on: a browser shows push on only when its own endpoint is here. */
+    endpoints: db.prepare('SELECT endpoint FROM push_subscriptions WHERE user_id=? ORDER BY created_at').pluck().all(p.id) as string[],
   };
 }
 
 /**
  * /api/oj/notify: GET the settings; POST {prefs} (null turns reminders off); POST subscription
  * {endpoint,on} for this device's push; GET pending, what the service worker shows for a push:
- * this learner's reminders from the last hour.
+ * this learner's newest reminder from the last hour. Each push follows one new notice, so an
+ * older one already shown (and maybe dismissed) never pops up again with the next push.
  */
 export async function handleNotify(request: Request, p: Person | null, path: string[]) {
   requirePerson(p);
@@ -230,7 +232,7 @@ export async function handleNotify(request: Request, p: Person | null, path: str
     const items = db
       .prepare(
         `SELECT id,title,body,href FROM notifications WHERE user_id=? AND kind IN ('reminder','contest-start') AND created_at>?
-        ORDER BY created_at DESC LIMIT 3`,
+        ORDER BY created_at DESC LIMIT 1`,
       )
       .all(p.id, Date.now() - HOUR) as { id: string; title: string; body: string; href: string }[];
     return json({ items: items.map((n) => ({ ...n, title: zh ? n.title : englishMessage(n.title) })) });
@@ -263,7 +265,12 @@ export async function handleNotify(request: Request, p: Person | null, path: str
   }
   if (action) throw new HttpError(404, '接口不存在');
   const { prefs } = z.object({ prefs: prefsSchema.nullable() }).strict().parse(input);
-  if (!prefs) db.prepare('DELETE FROM notify_prefs WHERE user_id=?').run(p.id);
+  if (!prefs)
+    // Off: the push addresses have nothing left to deliver, every device's goes too.
+    db.transaction(() => {
+      db.prepare('DELETE FROM notify_prefs WHERE user_id=?').run(p.id);
+      db.prepare('DELETE FROM push_subscriptions WHERE user_id=?').run(p.id);
+    })();
   else {
     if (prefs.email && !p.verified) throw new HttpError(403, '请先验证邮箱');
     db.prepare(

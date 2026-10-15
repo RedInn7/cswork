@@ -71,7 +71,7 @@ export function PrivacyDocument() {
                 预约同伴互面时，服务器保存你填写的昵称、面试类型、级别、可用时段、时区和语言，以及你选填的目标公司和话题；同伴只能看到昵称，匹配通知里会写出你们共同的公司和话题。开着「邮件提醒」时，开始前一天和前一小时会给你已验证的账户邮箱发提醒（经 Resend 发送），内容是面试类型、时间、同伴昵称和会议链接；预约时取消勾选就不会收到。
               </p>
               <p id="privacy-reminders">
-                学习提醒默认关闭。在账户页打开后，服务器保存你选的提醒内容（到期复习、连续打卡、每日一题、报名的周赛和入门赛）、每天的提醒时间、时区偏移和语言，每天最多一条，写进站内消息；报名的比赛开始前 1 小时还会再提醒一次。在某台设备上开启推送时，平台保存这台设备的浏览器给出的推送地址（属于 Google、Mozilla、Apple 或 Microsoft 的推送服务，每个账号最多 10 台设备）；推送本身不带任何内容，设备收到后再向本平台读取提醒文字，推送服务商看不到提醒写了什么。关闭这台设备的推送或退出登录时，这个地址随即删除。打开邮件提醒后，每天最多一封发到已验证的账户邮箱（经 Resend 发送），每封都能一键退订。关闭学习提醒会删除这些设置。关注的公司（最多 20 家）只有你自己能看到；它们有新面经通过审核或上线新的 OA 题时，你会收到站内消息，不发邮件，也不推送。
+                学习提醒默认关闭。在账户页打开后，服务器保存你选的提醒内容（到期复习、连续打卡、每日一题、报名的周赛和入门赛）、每天的提醒时间、时区偏移和语言，每天最多一条，写进站内消息；报名的比赛开始前 1 小时还会再提醒一次。在某台设备上开启推送时，平台保存这台设备的浏览器给出的推送地址（属于 Google、Mozilla、Apple 或 Microsoft 的推送服务，每个账号最多 10 台设备）；推送本身不带任何内容，设备收到后再向本平台读取提醒文字，推送服务商看不到提醒写了什么。关闭这台设备的推送或退出登录时，这个地址随即删除。打开邮件提醒后，每天最多一封发到已验证的账户邮箱（经 Resend 发送），每封都能一键退订。关闭学习提醒会删除这些设置和所有设备的推送地址。关注的公司（最多 20 家）只有你自己能看到；它们有新面经通过审核或上线新的 OA 题时，你会收到站内消息，不发邮件，也不推送。
               </p>
               <p id="privacy-tracker">
                 使用投递追踪（/career/tracker）时，平台在你的账号里保存你填写的公司、岗位、阶段、投递日期、OA 截止和面试时间、内推信息、职位链接和备注，每个账号最多 300 条。这些记录只有你自己能看到，不出现在公开主页、排行榜和任何统计里；删除一条就从服务器上删除。导出的 CSV 和 OA 截止日历文件在你的浏览器里生成，截止提醒由你自己的日历应用发出，平台不发送提醒。
@@ -393,7 +393,8 @@ export function PrivacyDocument() {
                 the address. With email reminders on, at most one email a day
                 goes to your verified account address (sent through Resend),
                 each with one-click unsubscribe. Turning reminders off deletes
-                these settings. The companies you follow (up to 20) are visible
+                these settings and every device’s push address. The
+                companies you follow (up to 20) are visible
                 only to you; a newly approved interview report or new OA
                 problem at one of them is a notification, never an email or
                 push.

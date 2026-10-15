@@ -19,7 +19,7 @@ type Prefs = {
   locale: 'zh' | 'en';
 };
 /** GET/POST /api/oj/notify (lib/server/reminders.ts); `push` is the VAPID key, null while push is off. */
-type Settings = { prefs: Prefs | null; push: string | null; mail: boolean; verified: boolean; devices: number };
+type Settings = { prefs: Prefs | null; push: string | null; mail: boolean; verified: boolean; endpoints: string[] };
 const KINDS = [
   ['review', '到期复习的题', 'Problems due for review'],
   ['streak', '连续打卡快断时', 'When a streak is about to break'],
@@ -53,11 +53,15 @@ export function ReminderSettings() {
     }
   }
   const save = (prefs: Prefs | null) =>
-    run(async () =>
+    run(async () => {
       setSettings(
         await api<Settings>('oj/notify', { prefs: prefs && { ...prefs, tz: new Date().getTimezoneOffset(), locale } }),
-      ),
-    );
+      );
+      // Off drops every device's push on the server; this browser lets go of its subscription too.
+      if (prefs || !device) return;
+      await device.unsubscribe();
+      setDevice(null);
+    });
   useEffect(() => {
     let live = true;
     api<Settings>('oj/notify').then(
@@ -96,6 +100,9 @@ export function ReminderSettings() {
       setDevice(null);
     });
   const prefs = settings?.prefs;
+  // Push is on here only while the server still has this browser's endpoint: turning reminders
+  // off elsewhere, a gone push service or another account subscribing this browser drops it.
+  const here = device && settings?.endpoints.includes(new URL(device.endpoint).href) ? device : null;
   return (
     <section className="form-card commerce-account-card" id="reminders" aria-labelledby={`${id}-title`}>
       <h2 id={`${id}-title`}>
@@ -163,10 +170,10 @@ export function ReminderSettings() {
             </span>
           </label>
           {settings.push && pushSupported() && device !== undefined ? (
-            device ? (
+            here ? (
               <p>
                 {t('这台设备已开启推送。', 'Push is on for this device.')}{' '}
-                <Button variant="ghost" disabled={busy} onClick={() => void pushOff(device)}>
+                <Button variant="ghost" disabled={busy} onClick={() => void pushOff(here)}>
                   {t('关闭本设备推送', 'Turn push off here')}
                 </Button>
               </p>
