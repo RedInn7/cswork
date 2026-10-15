@@ -29,6 +29,15 @@ export function diffLines(actual: string, expected: string) {
   return differ;
 }
 
+/** A field's JSON value; undefined when it doesn't parse. */
+export function fieldValue(text: string): unknown {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return undefined;
+  }
+}
+
 /** [Chinese, English]: lib code stays locale-free; the UI picks one with t(...). */
 export type Message = [zh: string, en: string];
 /** A parameter's [min, max] bounds read off the statement (lib/content/leetcode-constraints.json). */
@@ -132,13 +141,8 @@ export function checkConstraints(
 ): (Message | null)[] {
   return params.map(({ name, type }, i) => {
     const c = constraints[name];
-    let value: unknown;
-    try {
-      value = c && JSON.parse(fields[i] ?? '');
-    } catch {
-      return null;
-    }
-    if (!c) return null;
+    const value = c && fieldValue(fields[i] ?? '');
+    if (!c || value === undefined) return null;
     const nodes = type === 'TreeNode' || type === 'ListNode';
     const out = (what: Message, actual: number, [lo, hi]: number[]): Message | null =>
       actual > hi

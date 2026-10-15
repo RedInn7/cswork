@@ -104,6 +104,7 @@ test('LeetCode cases edit per parameter, run with the editorial beside them, and
       { name: 'nums', type: 'integer[]' },
       { name: 'target', type: 'integer' },
     ],
+    leetcodeConstraints: { nums: { len: [2, 10000] } },
     lingEditorialVerified: true,
     checker: 'tokens',
   };
@@ -199,6 +200,19 @@ test('LeetCode cases edit per parameter, run with the editorial beside them, and
     assert.match(document.body.textContent, /don't match the 2 parameters/);
     await type(document.getElementById('custom-case-input'), '[3,3]\n6');
     assert.equal(fields().length, 2);
+    // Hints under the field, never a gate: the type as the judge reads it, then the statement's bounds.
+    const issues = () => [...document.querySelectorAll('.cs-field-issue')].map((n) => n.textContent);
+    assert.deepEqual(issues(), []);
+    await type(fields()[0], '[3]');
+    assert.deepEqual(issues(), ["Outside the problem's constraints: nums length 1 < 2"]);
+    assert.equal(fields()[0].getAttribute('aria-invalid'), 'true');
+    assert.equal(document.getElementById(fields()[0].getAttribute('aria-describedby')).textContent, issues()[0]);
+    await type(fields()[1], '6.5');
+    assert.deepEqual(issues(), ["Outside the problem's constraints: nums length 1 < 2", 'Expected a value of type integer']);
+    await type(fields()[0], '[3,3]');
+    await type(fields()[1], '6');
+    assert.deepEqual(issues(), []);
+    assert.equal(button('Diagram'), undefined, 'no picture for flat arrays and numbers');
     // Run: the learner's run and the editorial's run on the same case.
     await click(button('Run'));
     await act(async () => new Promise((r) => setTimeout(r, 800)));
@@ -218,6 +232,143 @@ test('LeetCode cases edit per parameter, run with the editorial beside them, and
     assert.deepEqual(stored(), ['[3,3]\n6', '[2,7,11,15]\n9']);
     assert.match(document.querySelector('.cs-result-message[role="status"]').textContent, /Added failed example 1/);
     assert.equal(document.querySelectorAll('.is-diff').length, 2, 'the wrong line is marked');
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('trees, lists and grids are drawn from a custom case and from printed tree results', async () => {
+  const { createRoot } = await import('react-dom/client');
+  const { SubmissionResult } = await import('../components/oj-results.tsx');
+  const { treeGraph, listGraph, printedValues } = await import('../components/structure-view.tsx');
+  // x by in-order rank, y by depth: 1 -> right 2 -> left 3.
+  const tree = treeGraph([1, null, 2, 3]);
+  assert.deepEqual(
+    tree.nodes.map((n) => [n.label, n.x, n.y]),
+    [['1', 6, 6], ['2', 26, 19], ['3', 16, 32]],
+  );
+  assert.deepEqual(tree.edges, [{ from: '0', to: '1' }, { from: '1', to: '2' }]);
+  assert.equal(treeGraph([null, 1]), null);
+  assert.equal(treeGraph(Array.from({ length: 256 }, (_, i) => i)), null, 'over 255 nodes');
+  assert.deepEqual(listGraph([4, 5]).edges, [{ from: '0', to: '1', directed: true }]);
+  assert.deepEqual(printedValues('4\n1 null 2 3\n'), [1, null, 2, 3]);
+  assert.deepEqual(printedValues('0\n'), []);
+  assert.equal(printedValues('5\n'), null, 'an integer result is no tree');
+  const submission = {
+    id: 't1',
+    problem_id: 'lc-226',
+    language: 'python',
+    codingMode: 'leetcode',
+    mode: 'run',
+    status: 'finished',
+    passed: 0,
+    total: 1,
+    created_at: 1,
+    cases: [{ ordinal: 0, status: 'finished', hidden: false, stdin: '[1,null,2,3]\n[[1,0],[0,1]]', stdout: '3\n1 2 3\n', stderr: '' }],
+  };
+  const params = [
+    { name: 'root', type: 'TreeNode' },
+    { name: 'grid', type: 'integer[][]' },
+  ];
+  const root = createRoot(document.getElementById('root'));
+  const show = (props) => act(async () => root.render(createElement(SubmissionResult, { submission, ranCase: 1, checker: 'exact', ...props })));
+  const captions = () => [...document.querySelectorAll('figcaption')].map((n) => n.textContent);
+  try {
+    await show({ params, returnType: 'TreeNode', reference: { status: 'done', output: '4\n1 null 2 3\n' } });
+    assert.deepEqual(captions(), ['root', 'grid', 'Expected output', 'Your output']);
+    const graphs = [...document.querySelectorAll('svg.algorithm-demo-graph')];
+    assert.equal(graphs.length, 3);
+    assert.equal(graphs[0].getAttribute('aria-label'), 'Graph: 1; 2; 3');
+    assert.equal(document.querySelectorAll('.cs-structure-grid td').length, 4);
+    // Without parameters (ACM mode, the playground) nothing is drawn.
+    await show({ reference: { status: 'done', output: '4\n1 null 2 3\n' } });
+    assert.equal(document.querySelectorAll('figure').length, 0);
+    // A 41-row grid only says so; a 422 from the expected endpoint says why.
+    const tall = { ...submission, cases: [{ ...submission.cases[0], stdin: `[1]\n${JSON.stringify(Array.from({ length: 41 }, () => [0]))}` }] };
+    await act(async () =>
+      root.render(
+        createElement(SubmissionResult, {
+          submission: tall,
+          ranCase: 1,
+          params,
+          returnType: 'TreeNode',
+          reference: { status: 'failed', message: "Outside the problem's constraints: root node count 1 < 2" },
+        }),
+      ),
+    );
+    assert.match(document.body.textContent, /41 × 1 grid is over 40 rows or columns/);
+    assert.match(document.body.textContent, /root node count 1 < 2/);
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
+
+test('a tree parameter checks as the judge decodes it and draws on request', async () => {
+  const { createRoot } = await import('react-dom/client');
+  const { ProblemWorkspace } = await import('../components/problem-workspace.tsx');
+  const statement = { title: 'Depth', description: 'Depth.', input: 'In.', output: 'Out.', explanation: '', hints: [] };
+  const problem = {
+    id: 'lc-104',
+    courseId: 'gomall',
+    lessonId: 'lesson',
+    ...statement,
+    difficulty: '简单',
+    tags: [],
+    sampleIn: '1\n1\n',
+    sampleOut: '1\n',
+    samples: [{ name: '样例 1', input: '1\n1\n', expectedOutput: '1\n' }],
+    languages: ['python'],
+    translations: { en: statement },
+    codingModes: ['leetcode', 'acm'],
+    leetcodeTemplates: { python: 'class Solution:\n    pass\n' },
+    leetcodeParams: [{ name: 'root', type: 'TreeNode' }],
+    leetcodeReturnType: 'integer',
+    checker: 'exact',
+  };
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    if (url.includes('/submissions')) return Response.json({ items: [], nextCursor: null });
+    if (url.includes('/status')) return Response.json({ available: true, languageVersions: {} });
+    if (url.includes('/problem-stats/')) return Response.json({});
+    return Response.json(problem);
+  };
+  const root = createRoot(document.getElementById('root'));
+  const button = (text) => [...document.querySelectorAll('button')].find((n) => n.textContent.trim() === text);
+  const type = async (node, value) => {
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set.call(node, value);
+      node.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  };
+  try {
+    await act(async () =>
+      root.render(
+        createElement(ProblemWorkspace, {
+          problem: { id: 'lc-104', title: 'Depth', titleEn: 'Depth', difficulty: '简单', tags: [], lessonId: 'lesson', courseId: 'gomall' },
+          boot: { person: { id: 'student2', role: 'teacher', verified: true }, courses: [] },
+          navigate() {},
+          ask() {},
+          refresh: async () => {},
+        }),
+      ),
+    );
+    await settle();
+    await act(async () => button('Custom input').click());
+    await settle();
+    const input = () => document.querySelector('.cs-case-fields input');
+    const toggle = button('Diagram');
+    assert.equal(toggle.getAttribute('aria-label'), 'Diagram of root');
+    assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+    await type(input(), '[1,null,2,null,null]');
+    await act(async () => toggle.click());
+    assert.equal(toggle.getAttribute('aria-pressed'), 'true');
+    assert.equal(document.querySelector('.cs-case-field svg').getAttribute('aria-label'), 'Graph: 1; 2', 'trailing nulls are dropped, as the judge does');
+    await type(input(), '[null,1]');
+    assert.match(document.querySelector('.cs-field-issue').textContent, /null root/);
+    assert.equal(document.querySelector('.cs-case-field svg'), null, 'nothing drawn for a broken tree');
+    await type(input(), '[]');
+    assert.match(document.querySelector('.cs-case-field').textContent, /Empty tree/);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

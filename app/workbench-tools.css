@@ -249,11 +249,79 @@
   display: grid;
   gap: 8px;
 }
-.cs-case-fields > label {
+.cs-case-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 4px 8px;
+}
+.cs-case-field > label {
   display: grid;
   gap: 3px;
   color: #6b778a;
   font-size: 11px;
+}
+/* Below the field: its type or constraint hint, and its picture (components/structure-view.tsx). */
+.cs-case-field > :not(label):not(.cs-structure-toggle) {
+  grid-column: 1 / -1;
+}
+.cs-case-field > .cs-structure-toggle {
+  padding: 1px 7px;
+  border: 1px solid #dfe5ee;
+  border-radius: 6px;
+  background: #fff;
+  color: #5b6b82;
+  font-size: 11px;
+}
+.cs-case-field > .cs-structure-toggle[aria-pressed='true'] {
+  border-color: #c9d6ee;
+  background: #e8eef9;
+  color: #1f4fae;
+}
+.cs-field-issue {
+  margin: 0;
+  color: #b42318;
+  font-size: 11px;
+}
+.cs-case-fields input[aria-invalid='true'] {
+  border-color: #e8a29a;
+}
+.cs-structure {
+  margin: 4px 0 10px;
+  overflow-x: auto;
+}
+.algorithm-demo.cs-structure {
+  margin: 4px 0 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  overflow-x: auto;
+  font-size: 12px;
+}
+.algorithm-demo.cs-structure .algorithm-demo-graph {
+  max-width: none;
+  max-height: none;
+  margin: 0;
+}
+.cs-structure figcaption,
+.cs-structure-note {
+  margin: 0 0 4px;
+  color: #5b6b82;
+  font-size: 11px;
+}
+.cs-structure-grid {
+  border-collapse: collapse;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 12px;
+}
+.cs-structure-grid td {
+  min-width: 24px;
+  padding: 2px 6px;
+  border: 1px solid #dfe5ee;
+  color: #3d4b62;
+  text-align: center;
 }
 .cs-case-fields code {
   color: #3d4b62;
@@ -277,8 +345,26 @@
   background: #2b3851;
   color: var(--cs-blue);
 }
-.cs-workspace[data-theme='dark'] .cs-case-fields > label {
+.cs-workspace[data-theme='dark'] .cs-case-field > label,
+.cs-workspace[data-theme='dark'] .cs-structure figcaption,
+.cs-workspace[data-theme='dark'] .cs-structure-note {
   color: var(--cs-muted);
+}
+.cs-workspace[data-theme='dark'] .cs-case-field > .cs-structure-toggle {
+  border-color: var(--cs-border);
+  background: var(--cs-surface-soft);
+  color: var(--cs-muted);
+}
+.cs-workspace[data-theme='dark'] .cs-case-field > .cs-structure-toggle[aria-pressed='true'] {
+  background: #2b3851;
+  color: var(--cs-blue);
+}
+.cs-workspace[data-theme='dark'] .cs-field-issue {
+  color: #ff9e94;
+}
+.cs-workspace[data-theme='dark'] .cs-structure-grid td {
+  border-color: var(--cs-border);
+  color: var(--cs-text);
 }
 .cs-workspace[data-theme='dark'] .cs-case-fields code {
   color: var(--cs-text);
@@ -422,8 +508,37 @@
     background: #0e1117;
     color: var(--primary);
   }
-  .dark .cs-case-fields > label {
+  .dark .cs-case-field > label {
     color: #b1bcce;
+  }
+  .dark .cs-case-field > .cs-structure-toggle {
+    border: 1px solid #2b2f36;
+    background: #191919;
+    color: #b2c1d7;
+  }
+  .dark .cs-case-field > .cs-structure-toggle[aria-pressed='true'] {
+    border-color: #2b3548;
+    background: #0e1117;
+    color: #aac8fe;
+  }
+  .dark .cs-field-issue {
+    color: #fea99c;
+  }
+  .dark .cs-case-fields input[aria-invalid='true'] {
+    border-color: #e8a29a;
+  }
+  .dark .algorithm-demo.cs-structure {
+    border: 0;
+    background: none;
+    box-shadow: none;
+  }
+  .dark .cs-structure figcaption,
+  .dark .cs-structure-note {
+    color: #b2c1d7;
+  }
+  .dark .cs-structure-grid td {
+    border: 1px solid #2b2f36;
+    color: #bfcee5;
   }
   .dark .cs-case-fields code {
     color: #bfcee5;
@@ -440,8 +555,26 @@
     background: #2b3851;
     color: var(--cs-blue);
   }
-  .dark .cs-workspace[data-theme='dark'] .cs-case-fields > label {
+  .dark .cs-workspace[data-theme='dark'] .cs-case-field > label,
+  .dark .cs-workspace[data-theme='dark'] .cs-structure figcaption,
+  .dark .cs-workspace[data-theme='dark'] .cs-structure-note {
     color: var(--cs-muted);
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-case-field > .cs-structure-toggle {
+    border-color: var(--cs-border);
+    background: var(--cs-surface-soft);
+    color: var(--cs-muted);
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-case-field > .cs-structure-toggle[aria-pressed='true'] {
+    background: #2b3851;
+    color: var(--cs-blue);
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-field-issue {
+    color: #ff9e94;
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-structure-grid td {
+    border-color: var(--cs-border);
+    color: var(--cs-text);
   }
   .dark .cs-workspace[data-theme='dark'] .cs-case-fields code {
     color: var(--cs-text);
