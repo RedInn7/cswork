@@ -13,14 +13,15 @@ import { ojRequest } from '@/lib/oj-client';
 import { englishMessage } from '@/lib/messages-en';
 import { companyLogos } from '@/lib/oa-company-brands';
 import {
-  CUSTOM_NAME, KINDS, ROLES, ROUNDS, SMALL_BANK, TEMPLATES, newSeed, resolveTemplate,
+  CUSTOM_NAME, KINDS, LLD_TEMPLATE, ROLES, ROUNDS, SMALL_BANK, TEMPLATES, guideFor, newSeed, resolveTemplate,
   type KindId, type Text,
 } from '@/lib/mock-interview';
 import {
   RUBRIC, VERDICTS, decodeFeedback, encodeFeedback, forSet, questionTag, rubricAverage, type Feedback, type RubricId,
 } from '@/lib/mock-interview-feedback';
 import {
-  AI_MESSAGE_CHARS, AI_TURNS, candidateTurns, openerFor, reportFeedback, type AiReport, type Turn,
+  AI_MESSAGE_CHARS, AI_STEPS, AI_TURNS, candidateTurns, openerFor, reportFeedback, writesCode,
+  type AiReport, type StepFeedback, type Turn,
 } from '@/lib/mock-ai-interview';
 import type { Navigate } from './learning';
 import { ModeTabs } from './mock-modes';
@@ -39,6 +40,8 @@ type Item = {
   company: { slug: string; name: string } | null;
   role: string | null;
   round: string | null;
+  /** The library category: a System Design question gets the AI interviewer's guided steps. */
+  category: string | null;
   difficulty: string | null;
   problem: string | null;
   math: boolean;
@@ -73,7 +76,14 @@ type Run = {
   /** AI interviewer: each question's transcript, and the server's ticket for this interview. */
   chat?: Record<number, Turn[]>;
   ticket?: string;
+  /** A guided question's steps: where the current one began (transcript length, seconds) and those done. */
+  guide?: Record<number, Guide>;
 };
+/** A finished step, with the AI's feedback unless it was skipped (or the interview's feedback ran out). */
+type GuideDone = { step: string } & Partial<StepFeedback>;
+type Guide = { from: number; at: number; done: GuideDone[] };
+/** How each rubric dimension compares with other learners' best interview of the same template. */
+type Peers = { n: number; above: Partial<Record<RubricId, number>> };
 type Past = {
   query: Record<string, string>;
   name: Text;
@@ -84,6 +94,7 @@ type Past = {
   feedback?: string;
   /** The AI interviewer's report on this set, whole: the same encoding, never cut to fit a link. */
   aiFeedback?: string;
+  aiPeers?: Peers;
 };
 
 const SET_KEYS = ['template', 'company', 'role', 'round', 'mix', 'min', 'set', 'rr'] as const;
@@ -166,7 +177,7 @@ export function MockInterview({
             ai={ai}
           />
         ) : (
-          <Setup params={params} navigate={navigate} />
+          <Setup params={params} navigate={navigate} ai={ai} />
         )}
       </div>
     </div>
@@ -183,8 +194,10 @@ function CompanyLogo({ slug }: { slug: string }) {
 
 /* ------------------------------------------------------------------ setup */
 
-function Setup({ params, navigate }: { params: Record<string, string>; navigate: Navigate }) {
+function Setup({ params, navigate, ai }: { params: Record<string, string>; navigate: Navigate; ai: boolean }) {
   const t = useT();
+  // The LLD template is AI-only: offered when the AI interviewer is.
+  const templates = ai ? [...TEMPLATES, LLD_TEMPLATE] : TEMPLATES;
   const [companies, setCompanies] = useState<Company[] | null>(null);
   const [bank, setBank] = useState<number | null>(null);
   const [error, setError] = useState('');
@@ -198,7 +211,7 @@ function Setup({ params, navigate }: { params: Record<string, string>; navigate:
     };
   }, []);
   const [template, setTemplate] = useState(
-    params.template === 'custom' || TEMPLATES.some((x) => x.id === params.template) ? params.template : 'phone',
+    params.template === 'custom' || templates.some((x) => x.id === params.template) ? params.template : 'phone',
   );
   const [company, setCompany] = useState(params.company || '');
   const [role, setRole] = useState(params.role && Object.hasOwn(ROLES, params.role) ? params.role : '');
@@ -214,7 +227,8 @@ function Setup({ params, navigate }: { params: Record<string, string>; navigate:
   const [avoid, setAvoid] = useState(() => read(AVOID, true));
   const [drawing, setDrawing] = useState(false);
   const [past] = useState(pastSessions);
-  const mixText = (Object.keys(KINDS) as KindId[])
+  const mixable = (Object.keys(KINDS) as KindId[]).filter((k) => !KINDS[k].aiOnly);
+  const mixText = mixable
     .filter((k) => mix[k])
     .map((k) => `${k}.${mix[k]}`)
     .join('-');
@@ -230,13 +244,15 @@ function Setup({ params, navigate }: { params: Record<string, string>; navigate:
     if (role) query.role = role;
     if (round) query.round = round;
     if (template === 'custom') Object.assign(query, { mix: mixText, min: String(minutes) });
+    // An AI-only set opens straight in the AI interview.
+    const aiOnly = chosen.slots.some((s) => KINDS[s.kind].aiOnly);
     setDrawing(true);
     setError('');
     try {
       const set = await api<MockSet>(`content/mock?${apiQuery(query, avoid ? { exclude: seenIds().join(',') } : {})}`);
       if (set.rerolls.length) query.rr = set.rerolls.join('.');
       handoff = { key: new URLSearchParams(pick(query)).toString(), set };
-      navigate('mock-interview', query);
+      navigate('mock-interview', aiOnly ? { ...query, as: 'ai' } : query);
     } catch (e) {
       setError((e as Error).message);
       setDrawing(false);
@@ -265,7 +281,7 @@ function Setup({ params, navigate }: { params: Record<string, string>; navigate:
         </div>
         <div>
           <div className="rd-stat-label">{t('面试模板', 'Templates')}</div>
-          <div className="rd-stat-value">{TEMPLATES.length + 1}</div>
+          <div className="rd-stat-value">{templates.length + 1}</div>
         </div>
       </div>
       {error && (
@@ -367,7 +383,7 @@ function Setup({ params, navigate }: { params: Record<string, string>; navigate:
         <h2>{t('选择模板', 'Choose a template')}</h2>
         <fieldset className="mi-templates">
           <legend className="sr-only">{t('面试模板', 'Interview templates')}</legend>
-          {[...TEMPLATES, null].map((x) => {
+          {[...templates, null].map((x) => {
             const id = x?.id ?? 'custom';
             const slots = x?.slots ?? custom?.slots ?? [];
             const kinds = [...new Set(slots.map((s) => s.kind))];
@@ -400,7 +416,7 @@ function Setup({ params, navigate }: { params: Record<string, string>; navigate:
         </fieldset>
         {template === 'custom' && (
           <div className="rd-card mi-custom">
-            {(Object.keys(KINDS) as KindId[]).map((k) => (
+            {mixable.map((k) => (
               <div key={k} className="mi-counter">
                 <span>{t(...KINDS[k].name)}</span>
                 <button
@@ -647,6 +663,7 @@ function Session({
       ),
       feedback: old?.feedback,
       aiFeedback: old?.aiFeedback,
+      aiPeers: old?.aiPeers,
       ...change(old),
     };
     return write(HISTORY, [entry, ...past.filter((p) => p !== old)].slice(0, 30)) ? entry : null;
@@ -694,9 +711,9 @@ function Session({
    * The AI's whole report, kept with this set in the history beside (never over) an interviewer's
    * feedback; this sitting's time and the AI's ratings replace an earlier save's.
    */
-  const saveReport = (value: string, report: Feedback) => {
+  const saveReport = (value: string, report: Feedback, peers?: Peers) => {
     const entry = remember(
-      () => ({ aiFeedback: value }),
+      () => ({ aiFeedback: value, aiPeers: peers }),
       (i) => report.questions[i]?.rating ?? null,
       commit(run).elapsed,
     );
@@ -707,7 +724,15 @@ function Session({
   if (mode === 'ai' && run.phase !== 'done') return <AiRunner {...props} onReport={saveReport} />;
   if (run.phase === 'plan') return <Plan {...props} card={card} locked={!!feedback} reroll={reroll} rolling={rolling} rollError={rollError} />;
   // Shared as a link, the report may have to be cut to fit; the card above shows it whole.
-  if (run.phase === 'done') return <Summary {...props} card={card} report={mode === 'ai' && fromAi ? encodeFeedback(fromAi) : null} />;
+  if (run.phase === 'done')
+    return (
+      <Summary
+        {...props}
+        card={card}
+        report={mode === 'ai' && fromAi ? encodeFeedback(fromAi) : null}
+        peers={mode === 'ai' ? saved?.aiPeers : undefined}
+      />
+    );
   return <Runner {...props} />;
 }
 type SessionProps = {
@@ -800,6 +825,8 @@ function Plan({
   rollError,
 }: SessionProps & { card: React.ReactNode; locked: boolean; reroll: (i: number) => void; rolling: number | null; rollError: string }) {
   const t = useT();
+  // An AI-only set (LLD) has no answers for a person to read: no solo run, no pair links.
+  const aiOnly = data.slots.some((s) => KINDS[s.kind].aiOnly);
   // `locked` while feedback is on screen: a re-roll would put its scores beside questions they weren't given for.
   return (
     <>
@@ -841,23 +868,30 @@ function Plan({
         ))}
       </ol>
       <div className="mi-start rd-reveal" style={{ '--i': data.slots.length + 1 } as React.CSSProperties}>
-        <div className="rd-card mi-start-solo">
-          <h2>{t('自己练', 'Practice solo')}</h2>
-          <p className="mi-solo-total">
-            <span className="mi-led-small">{data.slots.reduce((sum, s) => sum + s.minutes, 0)}</span> {t('分钟', 'min')} ·{' '}
-            {t(`${data.slots.length} 题`, `${data.slots.length} questions`)}
+        {aiOnly && !ai && (
+          <p className="rd-card mi-muted">
+            {t('这套题只能和 AI 面试官一起练：登录后再打开。', 'This set is practiced with the AI interviewer only: sign in, then open it again.')}
           </p>
-          <p>
-            {t(
-              '一题一题来，每题按建议时间倒计时。答完再看面试官想听什么，给自己打分。',
-              'One question at a time on a countdown. Then see what interviewers look for and rate yourself.',
-            )}
-          </p>
-          <button type="button" className="mi-cta" onClick={() => setRun((r) => ({ ...r, phase: 'run', index: 0, since: Date.now() }))}>
-            <Play size={16} aria-hidden="true" /> {t('开始计时', 'Start the clock')}
-          </button>
-        </div>
-        <PairLinks query={query} />
+        )}
+        {!aiOnly && (
+          <div className="rd-card mi-start-solo">
+            <h2>{t('自己练', 'Practice solo')}</h2>
+            <p className="mi-solo-total">
+              <span className="mi-led-small">{data.slots.reduce((sum, s) => sum + s.minutes, 0)}</span> {t('分钟', 'min')} ·{' '}
+              {t(`${data.slots.length} 题`, `${data.slots.length} questions`)}
+            </p>
+            <p>
+              {t(
+                '一题一题来，每题按建议时间倒计时。答完再看面试官想听什么，给自己打分。',
+                'One question at a time on a countdown. Then see what interviewers look for and rate yourself.',
+              )}
+            </p>
+            <button type="button" className="mi-cta" onClick={() => setRun((r) => ({ ...r, phase: 'run', index: 0, since: Date.now() }))}>
+              <Play size={16} aria-hidden="true" /> {t('开始计时', 'Start the clock')}
+            </button>
+          </div>
+        )}
+        {!aiOnly && <PairLinks query={query} />}
         {ai && (
           <div className="mi-ai-start">
             <div>
@@ -1319,11 +1353,11 @@ function AiRunner({
   problemIds,
   finish,
   onReport,
-}: SessionProps & { onReport: (value: string, report: Feedback) => void }) {
+}: SessionProps & { onReport: (value: string, report: Feedback, peers?: Peers) => void }) {
   const t = useT();
   const locale = useLocale() === 'zh' ? 'zh' : 'en';
   const [draft, setDraft] = useState('');
-  const [busy, setBusy] = useState<'turn' | 'report' | null>(null);
+  const [busy, setBusy] = useState<'turn' | 'step' | 'report' | null>(null);
   const [error, setError] = useState('');
   const speech = useSpeech(locale, (text) => text && setDraft((d) => (d.trim() ? `${d.trimEnd()} ${text}` : text)));
   const log = useRef<HTMLOListElement>(null);
@@ -1337,8 +1371,14 @@ function AiRunner({
     if (log.current) log.current.scrollTop = log.current.scrollHeight;
   }, [chat.length, busy, run.index]);
   if (!slot) return null;
-  const code = slot.kind === 'coding' || slot.kind === 'sql';
+  const code = writesCode(slot.kind);
   const last = run.index === data.slots.length - 1;
+  // A guided question (system design, LLD): the step under way and the feedback so far.
+  const steps = item ? guideFor(slot.kind, item.category) : null;
+  const guide = run.guide?.[run.index] ?? { from: 0, at: 0, done: [] };
+  const current = steps?.[guide.done.length] ?? null;
+  const stepsUsed = Object.values(run.guide ?? {}).reduce((n, g) => n + g.done.filter((d) => d.keep !== undefined).length, 0);
+  const answered = chat.slice(guide.from).some((turn) => turn.role === 'candidate');
   const go = (index: number) => setRun((r) => ({ ...commit(r), index }));
   const say = (message: string) => (locale === 'en' ? englishMessage(message) : message);
 
@@ -1364,6 +1404,7 @@ function AiRunner({
         elapsedSec,
         code: code ? (run.notes[index] ?? '') : '',
         history,
+        ...(current ? { step: current.id } : {}),
       });
       setRun((r) => ({ ...r, ticket: answer.ticket, chat: { ...r.chat, [index]: [...history, { role: 'interviewer', text: answer.text }] } }));
       speech.say(answer.text);
@@ -1381,6 +1422,43 @@ function AiRunner({
       setBusy(null);
     }
   };
+  /**
+   * Closes the step under way: with the AI's feedback on what was said in it, or without when
+   * skipped, nothing was answered, or this interview's step feedback ran out. A failed call stays.
+   */
+  const finishStep = async (skip: boolean) => {
+    if (!current || !item || busy) return;
+    const index = run.index,
+      history = chat.slice(guide.from),
+      elapsedSec = Math.round(spent(run, index, Date.now()));
+    const advance = (done: GuideDone) =>
+      setRun((r) => {
+        const g = r.guide?.[index] ?? { from: 0, at: 0, done: [] };
+        return { ...r, guide: { ...r.guide, [index]: { from: (r.chat?.[index] ?? []).length, at: elapsedSec, done: [...g.done, done] } } };
+      });
+    if (skip || !answered || !run.ticket || stepsUsed >= AI_STEPS) return advance({ step: current.id });
+    setBusy('step');
+    setError('');
+    try {
+      const { feedback } = await ojRequest<{ feedback: StepFeedback }>('ai/interview-step', {
+        seed: query.set,
+        ticket: run.ticket,
+        locale,
+        itemId: item.id,
+        step: current.id,
+        minutes: slot.minutes,
+        elapsedSec,
+        code: code ? (run.notes[index] ?? '') : '',
+        history,
+      });
+      advance({ step: current.id, ...feedback });
+    } catch (caught) {
+      const failure = caught as Error & { status?: number | string };
+      setError(failure.status === 'timeout' ? say('AI 面试官响应超时，请稍后再试') : say(failure.message));
+    } finally {
+      setBusy(null);
+    }
+  };
   const end = async () => {
     if (!used || !run.ticket) return finish();
     setBusy('report');
@@ -1388,15 +1466,18 @@ function AiRunner({
     try {
       const elapsed = commit(run).elapsed;
       const asked = data.slots.flatMap((s, i) => (s.item ? [i] : []));
-      const { report } = await ojRequest<{ report: AiReport }>('ai/interview-report', {
+      const { report, peers } = await ojRequest<{ report: AiReport; peers?: Peers }>('ai/interview-report', {
         seed: query.set,
         ticket: run.ticket,
         locale,
+        // Kept with the scores so later reports of this template compare against it.
+        template: query.template,
+        ...(query.role ? { role: query.role } : {}),
         questions: asked.map((i) => ({
           itemId: data.slots[i].item!.id,
           minutes: data.slots[i].minutes,
           elapsedSec: Math.round(elapsed[i] ?? 0),
-          code: data.slots[i].kind === 'coding' || data.slots[i].kind === 'sql' ? (run.notes[i] ?? '') : '',
+          code: writesCode(data.slots[i].kind) ? (run.notes[i] ?? '') : '',
           history: run.chat?.[i] ?? [],
         })),
       });
@@ -1411,7 +1492,7 @@ function AiRunner({
       );
       // Kept whole on this device; only a shared link is cut to fit.
       const made = encodeFeedback(feedback, Infinity);
-      if (made) onReport(made.value, feedback);
+      if (made) onReport(made.value, feedback, peers);
       finish();
     } catch (caught) {
       const failure = caught as Error & { status?: number | string };
@@ -1439,6 +1520,54 @@ function AiRunner({
           onToggle={() => setRun((r) => (r.since === null ? { ...r, since: Date.now() } : { ...commit(r), since: null }))}
         />
       </section>
+      {steps && (
+        <section className="rd-card mi-guide" aria-labelledby="mi-guide-title">
+          <ol className="mi-guide-steps">
+            {steps.map((s, i) => (
+              <li
+                key={s.id}
+                data-state={i < guide.done.length ? 'done' : i === guide.done.length ? 'now' : 'todo'}
+                aria-current={i === guide.done.length ? 'step' : undefined}
+              >
+                <span aria-hidden="true">{i < guide.done.length ? <Check size={12} /> : i + 1}</span>
+                {t(...s.name)}
+              </li>
+            ))}
+          </ol>
+          {current ? (
+            <div className="mi-guide-now">
+              <p id="mi-guide-title">
+                <strong>{t(`第 ${guide.done.length + 1} 步：${current.name[0]}`, `Step ${guide.done.length + 1}: ${current.name[1]}`)}</strong>
+                <span className="mi-guide-clock">
+                  {clock(Math.max(0, spent(run, run.index, now) - guide.at))} / {current.minutes}′
+                </span>
+              </p>
+              <p>{t(...current.points)}</p>
+              <div className="mi-guide-actions">
+                <button type="button" className="mi-cta" disabled={!!busy || !answered} onClick={() => void finishStep(false)}>
+                  {busy === 'step' ? <LoaderCircle size={15} className="mi-spin" aria-hidden="true" /> : <Check size={15} aria-hidden="true" />}
+                  {busy === 'step' ? t('正在看这一步…', 'Reviewing this step…') : t('完成这一步', 'Finish this step')}
+                </button>
+                <button type="button" className="rd-button is-quiet" disabled={!!busy} onClick={() => void finishStep(true)}>
+                  {t('跳过', 'Skip')}
+                </button>
+                {stepsUsed >= AI_STEPS && (
+                  <span className="mi-muted">{t('这场的分步反馈用完了，之后的步骤不再打分。', 'This interview is out of step feedback; later steps go unscored.')}</span>
+                )}
+              </div>
+            </div>
+          ) : (
+            <p id="mi-guide-title" className="mi-guide-now">
+              {t('五步都走完了。有时间可以继续聊，或者进入下一题。', 'All five steps done. Keep talking if there is time, or move on.')}
+            </p>
+          )}
+          <div className="mi-guide-feedback" aria-live="polite">
+            {guide.done.at(-1)?.keep !== undefined && (
+              <StepCard n={guide.done.length} done={guide.done.at(-1)!} />
+            )}
+          </div>
+        </section>
+      )}
       <div className="mi-work">
         <div className="mi-work-main">
           <QuestionCard slot={slot} problemIds={problemIds} showSource={false} />
@@ -1569,6 +1698,85 @@ function AiRunner({
   );
 }
 
+/** "Problem solving 3/4 · Communication 4/4": a step's scores, the unscored left out. */
+function stepScores(done: GuideDone, t: (zh: string, en: string) => string) {
+  return RUBRIC.filter((r) => done.scores?.[r.id])
+    .map((r) => `${t(...r.name)} ${done.scores![r.id]}/4`)
+    .join(' · ');
+}
+function StepCard({ n, done }: { n: number; done: GuideDone }) {
+  const t = useT();
+  return (
+    <div className="mi-step-card">
+      <p className="mi-ticket-kicker">
+        {t(`第 ${n} 步反馈`, `Step ${n} feedback`)}
+        {stepScores(done, t) && <span> · {stepScores(done, t)}</span>}
+      </p>
+      {done.keep && (
+        <p>
+          <b>{t('做得好：', 'Keep: ')}</b>
+          {done.keep}
+        </p>
+      )}
+      {done.fix && (
+        <p>
+          <b>{t('要改进：', 'Fix: ')}</b>
+          {done.fix}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/** The AI interview's extras on the summary: each guided step's scores, and how the report compares. */
+function AiExtras({ data, run, peers }: { data: MockSet; run: Run; peers?: Peers }) {
+  const t = useT();
+  const guided = data.slots.flatMap((slot, i) => {
+    const steps = slot.item ? guideFor(slot.kind, slot.item.category) : null;
+    const done = run.guide?.[i]?.done ?? [];
+    return steps && done.length ? [{ i, slot, steps, done }] : [];
+  });
+  const dims = RUBRIC.filter((r) => peers?.above[r.id] !== undefined);
+  if (!guided.length && !dims.length) return null;
+  return (
+    <section className="rd-card mi-ai-extras">
+      {peers && dims.length > 0 && (
+        <>
+          <h2>{t(`和同类面试比（${peers.n} 人）`, `Against similar interviews (${peers.n} people)`)}</h2>
+          <ul className="mi-peers">
+            {dims.map((r) => (
+              <li key={r.id}>
+                <span>{t(...r.name)}</span>
+                <b>{t(`高于 ${peers.above[r.id]}% 的同类面试`, `above ${peers.above[r.id]}% of similar interviews`)}</b>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      {guided.map(({ i, slot, steps, done }) => (
+        <div key={i}>
+          <h2>
+            {t(`第 ${i + 1} 题分步得分`, `Question ${i + 1}, step by step`)}
+            <small> · {slot.item?.title}</small>
+          </h2>
+          <ol className="mi-guide-scores">
+            {done.map((d) => {
+              const step = steps.find((x) => x.id === d.step);
+              return (
+                <li key={d.step}>
+                  <strong>{step ? t(...step.name) : d.step}</strong>
+                  <span>{d.keep === undefined ? t('跳过', 'Skipped') : stepScores(d, t) || '—'}</span>
+                  {d.fix && <small>{d.fix}</small>}
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      ))}
+    </section>
+  );
+}
+
 function Summary({
   data,
   query,
@@ -1578,7 +1786,8 @@ function Summary({
   navigate,
   card,
   report,
-}: SessionProps & { card: React.ReactNode; report?: { value: string; truncated: boolean } | null }) {
+  peers,
+}: SessionProps & { card: React.ReactNode; report?: { value: string; truncated: boolean } | null; peers?: Peers }) {
   const t = useT();
   const [copied, setCopied] = useState<boolean | null>(null);
   const rated = data.slots.map((_, i) => run.ratings[i]).filter(Boolean) as number[];
@@ -1588,6 +1797,7 @@ function Summary({
     <>
       <SetHead data={data} query={query} mode={mode} />
       {card}
+      {mode === 'ai' && <AiExtras data={data} run={run} peers={peers} />}
       <section className="mi-board mi-summary-board rd-reveal" style={{ '--i': 1 } as React.CSSProperties}>
         <div>
           <p className="mi-ticket-kicker">{t('用时', 'Time')}</p>
