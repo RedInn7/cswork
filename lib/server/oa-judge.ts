@@ -63,6 +63,11 @@ export function createOaJudgeRegistry(
         (sourceContentHash === undefined || entry.sourceContentHash === sourceContentHash)
       );
     },
+    /** sha256 of the current entry's editorial: the guide's English editorial translates exactly this. */
+    editorialSha256(id: string) {
+      const entry = current(id);
+      return entry && createHash('sha256').update(entry.editorial).digest('hex');
+    },
     isReady(version: OaPublishedVersion) {
       const entry = current(version.id);
       if (!entry || entry.packageChecksum !== version.checksum) return false;
@@ -233,6 +238,7 @@ const guideSchema = z
     id: z.string(),
     packageChecksum: digest,
     sourceContentHash: digest,
+    editorialSha256: digest,
     hints: z.object({ zh: hintList, en: hintList }).strict(),
     explanationEn: z.string().trim().min(1).max(20000),
   })
@@ -278,20 +284,21 @@ function sidecar<T extends { id: string }>(
 /**
  * A problem's guide (content/oa-judge/guides/<id>.json): three hints in Chinese and English
  * (observation, approach, steps) and the editorial in English, kept beside the verified package
- * like translations. Served only while bound to the live package and its catalog source.
+ * like translations. Served only while bound to the live package and its catalog source; the
+ * English editorial only while the registry's editorial is still the one it translates.
  */
-export function oaGuide(id: string): z.infer<typeof guideSchema> | undefined {
+export function oaGuide(id: string): (Omit<z.infer<typeof guideSchema>, 'explanationEn'> & { explanationEn?: string }) | undefined {
   const guide = sidecar('guides', id, (value) => guideSchema.parse(value));
-  return guide && oaJudgeRegistry().isCurrent(id, guide.packageChecksum, guide.sourceContentHash)
-    ? guide
-    : undefined;
+  const registry = oaJudgeRegistry();
+  if (!guide || !registry.isCurrent(id, guide.packageChecksum, guide.sourceContentHash)) return undefined;
+  return registry.editorialSha256(id) === guide.editorialSha256 ? guide : { ...guide, explanationEn: undefined };
 }
 
 let passing: Set<string> | undefined;
 /**
- * Reference programs beyond the registry's own (content/oa-judge/solutions/<id>.json): only those a
- * solutions report (scripts/oa-judge/verify-solutions.mjs) saw pass every case of the live package,
- * their code unchanged since.
+ * Reference programs beyond the registry's own (content/oa-judge/solutions/<id>.json): only those
+ * whose latest solutions report result (scripts/oa-judge/verify-solutions.mjs) passed every case of
+ * the live package, their code unchanged since.
  */
 export function oaExtraPrograms(id: string): { language: string; code: string }[] {
   const extra = sidecar('solutions', id, (value) => programsSchema.parse(value));

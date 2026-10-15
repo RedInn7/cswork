@@ -6,6 +6,7 @@ import {
   readdirSync,
   statSync,
 } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { solutionReports } from '../lib/oa-solution-evidence.mjs';
 const source = resolve('content/oa-master/catalog.json');
@@ -38,7 +39,8 @@ if (existsSync(drillsSource)) {
   copyFileSync(drillsSource, resolve(registryTarget, 'drills.json'));
 }
 // English statements, guides (hint ladder, English editorial) and extra reference programs are
-// display-only sidecars: ship those bound to the current package (guides: and catalog source).
+// display-only sidecars: ship those bound to the current package (guides: and catalog source and
+// the editorial their English one translates).
 const entries = new Map(registry.items.map((item) => [item.id, item]));
 const shipped = {};
 for (const dir of ['translations', 'guides', 'solutions']) {
@@ -54,7 +56,10 @@ for (const dir of ['translations', 'guides', 'solutions']) {
     if (
       t.packageChecksum !== entry?.packageChecksum ||
       `${t.id}.json` !== file ||
-      (dir === 'guides' && t.sourceContentHash !== entry.sourceContentHash)
+      (dir === 'guides' &&
+        (t.sourceContentHash !== entry.sourceContentHash ||
+          t.editorialSha256 !==
+            createHash('sha256').update(entry.editorial).digest('hex')))
     )
       throw new Error(`Stale or misnamed OA ${dir} file: ${file}`);
     copyFileSync(resolve(source, file), resolve(target, file));

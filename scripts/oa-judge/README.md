@@ -84,9 +84,9 @@ node --import tsx scripts/publish-oa-judge.ts --batch google-next TEACHER_EMAIL
 
 这些都是题包旁的旁路文件，不改 `registry.json` 或 `batches/`（改了会让整批 `entrySha256` 失效、须重新沙箱验证）。
 
-- `guides/<id>.json`：`{ id, packageChecksum, sourceContentHash, hints: { zh: [3], en: [3] }, explanationEn }`。两个校验值抄 registry 条目；三条提示依次是观察、思路、步骤（界面已标出级别，正文不要再写"观察："之类前缀，不放代码）；`explanationEn` 是 registry 中文题解的英文版（Markdown）。有 guide 的题，`GET problems/<id>` 返回 `oaHints`，并去掉题包自带的 `hints` 和 `translations.en.hints`；比赛或认证考试进行中不返回。
+- `guides/<id>.json`：`{ id, packageChecksum, sourceContentHash, editorialSha256, hints: { zh: [3], en: [3] }, explanationEn }`。前两个校验值抄 registry 条目，`editorialSha256` 是该条目 `editorial` 的 sha256（registry 中文题解一改，英文题解就不再展示，`check-guides.mjs` 和打包都会报错，须同步更新 `explanationEn`）；三条提示依次是观察、思路、步骤（界面已标出级别，正文不要再写"观察："之类前缀，不放代码）；`explanationEn` 是 registry 中文题解的英文版（Markdown）。有 guide 的题，`GET problems/<id>` 返回 `oaHints`，并去掉题包自带的 `hints` 和 `translations.en.hints`；比赛或认证考试进行中不返回。
 - `solutions/<id>.json`：`{ id, packageChecksum, programs: [{ language, code, sha256 }] }`，只放 registry 已有语言之外的 python / cpp / java / go（registry 每题只有一份 Python 或 C++）。不要手写，用校验脚本的 `--save` 生成。
-- `reports/solutions-<chunk>.json`：校验记录。服务端只展示在某份报告里通过当前题包全部用例、且代码哈希未变的程序（`lib/oa-solution-evidence.mjs`）。
+- `reports/solutions-<chunk>.json`：校验记录。服务端只展示最新一条记录（按 `verifiedAt`，跨所有报告）通过当前题包全部用例、且代码哈希未变的程序（`lib/oa-solution-evidence.mjs`）；同一代码同一题包后来在任何块里失败，都会撤销之前的通过。
 
 ```sh
 # 单题单语言：按判题机的编译参数和时间/内存/输出限制跑完题包全部用例；全过才用 --save 写入 solutions/<id>.json

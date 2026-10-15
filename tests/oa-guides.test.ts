@@ -3,6 +3,8 @@
 // away inside the learner's running exam; the editorial gains English and the verified languages.
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -98,7 +100,7 @@ void test('the editorial adds the guide English and the verified languages; a ru
   assert.deepEqual((await get(['problems', GUIDED], null)).oaHints, guide.hints);
 });
 
-void test('only programs a report saw pass every case of that package count as verified', () => {
+void test('only programs whose latest report passed every case of that package count as verified', () => {
   const root = mkdtempSync(join(tmpdir(), 'cswork-oa-evidence-'));
   try {
     mkdirSync(join(root, 'reports'));
@@ -118,6 +120,32 @@ void test('only programs a report saw pass every case of that package count as v
     const keys = passingPrograms(root);
     assert.deepEqual([...keys], [programKey({ ...base, language: 'java' })]);
     assert.equal(keys.has(programKey({ ...base, language: 'java', packageChecksum: 'c'.repeat(64) })), false);
+    // A later run in another chunk decides: java now fails there, go now passes.
+    const at = (day: number) => `2026-10-${day}T00:00:00.000Z`;
+    writeFileSync(
+      join(root, 'reports', 'solutions-one.json'),
+      JSON.stringify({
+        results: [
+          { ...base, language: 'java', passed: 3, total: 3, verifiedAt: at(10) },
+          { ...base, language: 'go', passed: 2, total: 3, verifiedAt: at(10) },
+          { ...base, language: 'cpp', passed: 3, total: 3, verifiedAt: at(12) },
+        ],
+      }),
+    );
+    writeFileSync(
+      join(root, 'reports', 'solutions-two.json'),
+      JSON.stringify({
+        results: [
+          { ...base, language: 'java', passed: 2, total: 3, verifiedAt: at(11) },
+          { ...base, language: 'go', passed: 3, total: 3, verifiedAt: at(11) },
+          { ...base, language: 'cpp', passed: 0, total: 3, verifiedAt: at(11) },
+        ],
+      }),
+    );
+    assert.deepEqual(
+      [...passingPrograms(root)].sort(),
+      [programKey({ ...base, language: 'go' }), programKey({ ...base, language: 'cpp' })].sort(),
+    );
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -137,4 +165,29 @@ void test('a guide binds to the live package and the catalog source it was writt
   assert.equal(registry.isCurrent('oa-x-1', pkg, source), true);
   assert.equal(registry.isCurrent('oa-x-1', pkg, other), false);
   assert.equal(registry.isCurrent('oa-x-1', other, source), false);
+  // The English editorial is checked against the registry's own.
+  assert.equal(registry.editorialSha256('oa-x-1'), createHash('sha256').update('x').digest('hex'));
+  assert.equal(registry.editorialSha256('oa-x-2'), undefined);
+});
+
+void test('check-guides fails a guide whose English editorial translates an older registry editorial', () => {
+  const root = mkdtempSync(join(tmpdir(), 'cswork-oa-check-guides-'));
+  try {
+    const judge = join(root, 'content/oa-judge');
+    mkdirSync(join(judge, 'guides'), { recursive: true });
+    const entry = { id: GUIDED, sourceContentHash: guide.sourceContentHash, packageChecksum: guide.packageChecksum, editorial: '新的题解', authoredSolutions: [{ language: 'python', code: 'x' }] };
+    writeFileSync(join(judge, 'registry.json'), JSON.stringify({ schemaVersion: 1, items: [entry] }));
+    writeFileSync(join(judge, 'guides', `${GUIDED}.json`), JSON.stringify(guide));
+    const run = () => spawnSync(process.execPath, [resolve('scripts/oa-judge/check-guides.mjs')], { cwd: root, encoding: 'utf8' });
+    const stale = run();
+    assert.equal(stale.status, 1);
+    assert.match(stale.stdout, /stale editorialSha256/);
+    writeFileSync(
+      join(judge, 'guides', `${GUIDED}.json`),
+      JSON.stringify({ ...guide, editorialSha256: createHash('sha256').update(entry.editorial).digest('hex') }),
+    );
+    assert.equal(run().status, 0);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
