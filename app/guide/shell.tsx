@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { H1B } from '@/lib/server/h1b';
 
 /** The public shell of the career guide and the resume review: Line 500's navy board look. */
 export function GuideShell({ zh, children }: { zh: boolean; children: React.ReactNode }) {
@@ -17,6 +18,15 @@ export function GuideShell({ zh, children }: { zh: boolean; children: React.Reac
           </Link>
           <Link href="/career/visa-timeline" prefetch={false}>
             {zh ? '身份时间线' : 'Visa timeline'}
+          </Link>
+          {/* Hidden until scripts/h1b/build.mjs has filled the data, like the sitemap entry. */}
+          {H1B.fiscalYears.length > 0 && (
+            <Link href="/career/h1b" prefetch={false}>
+              {zh ? 'H-1B 担保' : 'H-1B sponsors'}
+            </Link>
+          )}
+          <Link href="/career/tracker" prefetch={false}>
+            {zh ? '投递追踪' : 'Application tracker'}
           </Link>
         </nav>
       </header>

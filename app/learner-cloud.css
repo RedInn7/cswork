@@ -549,6 +549,66 @@
   font-size: 13px;
   overflow-wrap: anywhere;
 }
+.year-recap select {
+  min-height: 28px;
+  border: 1px solid #d5dce4;
+  border-radius: 6px;
+  background: #fff;
+  color: #1d252d;
+  font-size: 13px;
+}
+.year-recap-meters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+  gap: 8px;
+  margin: 0;
+}
+.year-recap-meters div {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid #e1e6eb;
+  border-radius: 10px;
+  background: #fff;
+}
+.year-recap-meters dt {
+  order: 2;
+  color: #66717c;
+  font-size: 12px;
+}
+.year-recap-meters dd {
+  margin: 0;
+  color: #1d252d;
+  font: 700 18px/1.3 var(--font-route);
+  font-variant-numeric: tabular-nums;
+}
+.year-recap-stops {
+  margin: 8px 0 0;
+  color: #66717c;
+  font-size: 13px;
+}
+.cloud-profile-pair,
+.cloud-profile-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 12px;
+}
+.cloud-profile-pair > div,
+.cloud-profile-links > div {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.cloud-profile-links {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.cloud-profile-links legend {
+  margin-bottom: 6px;
+  padding: 0;
+  font-size: 14px;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .cs-asked {
@@ -852,6 +912,27 @@
   }
   .dark .cloud-check small {
     color: #afbac3;
+  }
+  .dark .year-recap select {
+    border: 1px solid #2e3339;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .year-recap-meters div {
+    border: 1px solid #2b2f33;
+    background: #191919;
+  }
+  .dark .year-recap-meters dt {
+    color: #b5bfc9;
+  }
+  .dark .year-recap-meters dd {
+    color: #d6dfe8;
+  }
+  .dark .year-recap-stops {
+    color: #b5bfc9;
+  }
+  .dark .cloud-profile-links {
+    border: 0;
   }
   .dark .cloud-starred-empty {
     color: #b5bfc9;

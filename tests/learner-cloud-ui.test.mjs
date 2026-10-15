@@ -336,7 +336,18 @@ test('the public profile card is off until switched on and saves a lowercase han
     await act(async () => document.querySelector('form.cloud-profile-form').requestSubmit());
     await wait();
     assert.deepEqual(posts, [
-      { handle: 'line-rider', visible: true, indexable: false, showContest: false, bio: '', featuredBadge: null },
+      {
+        handle: 'line-rider',
+        visible: true,
+        indexable: false,
+        showContest: false,
+        bio: '',
+        featuredBadge: null,
+        links: [],
+        school: '',
+        gradYear: null,
+        targetRole: '',
+      },
     ]);
     assert.ok(document.querySelector('a[href="/u/line-rider"]') !== null);
     // The first save brings the earned badges, so the picker shows without a reload.

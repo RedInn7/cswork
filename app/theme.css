@@ -237,6 +237,39 @@
     border-color: #f2af48;
   }
 
+  /*
+   * OA MCQs (app/oa-mcq.css): the navy submit button and picked filter would stay navy on
+   * the dark page (1.04:1) and read as unpicked / disabled, so they take the brand fill.
+   * The quiet buttons keep the generated surface, here so they still win over the fill.
+   */
+  .dark .oa-mcq-actions button,
+  .dark .oa-mcq-reset {
+    border: 1px solid var(--primary);
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .dark .oa-mcq-actions button.is-quiet,
+  .dark .oa-mcq-reset {
+    background: #191919;
+    color: #d6e4f9;
+  }
+  .dark .oa-mcq-filters button[aria-pressed='true'] {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  /* Same 1.04:1 navy-on-dark-page fill: the career guide's primary buttons (Add application,
+     Save, Review) take the brand fill; .is-quiet (more specific) keeps its generated surface. */
+  .dark .resume-actions button {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  /* The current school board on /contest/leaderboard: an amber outline, like the picked segment. */
+  .dark .contest-schools a[aria-current='page'] {
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+
   /* Native controls, scrollbars and the selection follow the page. */
   .dark ::selection {
     background: color-mix(in oklab, var(--primary) 35%, transparent);

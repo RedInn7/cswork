@@ -1,5 +1,12 @@
 import { z } from 'zod';
-import { leetcodeTemplates, leetcodeContract, leetcodeParams } from './leetcode-mode';
+import {
+  leetcodeTemplates,
+  leetcodeContract,
+  leetcodeParams,
+  leetcodeConstraints,
+  leetcodeReturnType,
+} from './leetcode-mode';
+import { checkConstraints, splitFields } from '@/lib/testcase-fields';
 import {
   changePracticeRound,
   practiceRoundState,
@@ -30,6 +37,7 @@ import { handleStudyGroups } from './study-groups';
 import { handleMockPeer } from './mock-peer';
 import { handleNewsletter } from './newsletter';
 import { handleFollows } from './follows';
+import { handleApplications } from './applications';
 import { handleDirectMessages } from './direct-messages';
 import { handleWorkVerify } from './work-verify';
 import { sourceDates } from './company-insights';
@@ -126,6 +134,7 @@ export async function handleOj(
   if (resource === 'peer') return handleMockPeer(request, p, path.slice(1));
   if (resource === 'newsletter') return handleNewsletter(request, p, path.slice(1));
   if (resource === 'follows') return handleFollows(request, p, path.slice(1));
+  if (resource === 'applications') return handleApplications(request, p, path.slice(1));
   if (resource === 'dm') return handleDirectMessages(request, p, path.slice(1));
   if (resource === 'work') return handleWorkVerify(request, p, path.slice(1));
   // The weekly, standings and the rating board read signed out; the handler checks the rest.
@@ -169,6 +178,9 @@ export async function handleOj(
       leetcodeTemplates: templates,
       leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
       leetcodeParams: leetcodeParams(id),
+      // What a run prints (a void in-place problem: its parameter), so trees and lists are drawn.
+      leetcodeReturnType: leetcodeReturnType(id),
+      leetcodeConstraints: leetcodeConstraints(id),
       sourceStatement: getStudySourceStatement(id),
       curatedHint: hint,
       // Contest rating (zerotrac), null outside rated contests.
@@ -240,7 +252,11 @@ export async function handleOj(
     return handleMyPractice(request, p, resource);
   if (resource === 'ai' && id && isAiRoute(id) && !action)
     return handleAiTutor(request, p, id);
-  if (resource === 'ai' && (id === 'interview' || id === 'interview-step' || id === 'interview-report') && !action)
+  if (
+    resource === 'ai' &&
+    (id === 'interview' || id === 'interview-step' || id === 'interview-report' || id === 'interview-calibration') &&
+    !action
+  )
     return handleAiInterview(request, p, id);
   // Questions answered from the site's own pages (lib/server/ai-ask.ts).
   if (resource === 'ai' && id === 'ask' && !action) return handleAiAsk(request, p);
@@ -344,6 +360,15 @@ export async function handleOj(
     if (!editorial?.verified) throw new HttpError(404, '这道题没有可用的参考解');
     refuseInContest(p, id);
     const data = await readJson(request, 200000);
+    // An input outside the statement's bounds would get a misleading "expected" output.
+    const params = leetcodeParams(id),
+      bounds = leetcodeConstraints(id),
+      d = data as { stdin?: unknown; codingMode?: unknown } | null;
+    if (params && bounds && (d?.codingMode ?? 'leetcode') === 'leetcode' && typeof d?.stdin === 'string') {
+      const fields = splitFields(d.stdin, params.length);
+      const broken = fields && checkConstraints(fields, params, bounds).find(Boolean);
+      if (broken) throw new HttpError(422, broken[0]);
+    }
     const created = await createReferenceRun(p, id, data, editorial.approaches.at(-1)!.python);
     // Watched like a run: GET submissions/<id>?wait=1; its code never comes back.
     return json(await settleSubmission(p, created.id, request.signal), 201);

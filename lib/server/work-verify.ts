@@ -1,7 +1,7 @@
 import { createHmac, randomInt, timingSafeEqual } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
-import { targetKind } from '@/lib/community';
+import { BADGE_CHANNELS, targetKind } from '@/lib/community';
 import domainsFile from '@/lib/content/company-domains.json';
 import type { Person } from './auth';
 import { setting } from './env';
@@ -61,7 +61,6 @@ export const badgeSql = (user: string, placement: Placement) =>
 // The posts badge shows on solutions and these channels only: in interview, offer or career talk,
 // on a company's OA problem, experience comments or answers it would read as "an employee of X is
 // interviewing". A profile that shows the badge lists only these posts too (learner-cloud publicProfile).
-const BADGE_CHANNELS = new Set(['discuss:algo', 'discuss:referral', 'discuss:site']);
 export const badgeTarget = (target: string) =>
   BADGE_CHANNELS.has(target) || (targetKind(target) === 'problem' && !target.startsWith('oa-'));
 /** A badge's company name while the company keeps its page: a hidden company's badge goes too. */

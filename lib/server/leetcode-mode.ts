@@ -1,5 +1,7 @@
 import { createHash } from 'node:crypto';
 import contracts from '@/lib/content/leetcode-contracts.json';
+import constraints from '@/lib/content/leetcode-constraints.json';
+import type { Constraint } from '@/lib/testcase-fields';
 import type { CodeLanguage, Language } from '@/lib/problems';
 import { buildLeetCodeCpp, getLeetCodeCppTemplate } from './leetcode-cpp';
 import { buildLeetCodeJava, getLeetCodeJavaTemplate } from './leetcode-java';
@@ -13,7 +15,15 @@ type Contract = {
   customInputHelp?: { zh: string; en: string } | null;
   nativeBridge: string;
   /** A design problem has classname and methods instead of params. */
-  signature: { params?: { name: string; type: string }[]; classname?: string };
+  signature: {
+    params?: { name: string; type: string }[];
+    classname?: string;
+    return?: { type: string };
+    /** A void in-place problem prints this parameter. */
+    output?: { paramindex: number };
+  };
+  /** The judge's own codec choices: identity-bearing nodes (specialId) print their own protocol. */
+  spec: { specialId?: number };
 };
 const problems = contracts.problems as Record<string, Contract>;
 /** Prefix of every LeetCode-mode Python program and native bridge. */
@@ -59,6 +69,22 @@ export function leetcodeParams(id: string) {
   if (!c?.signature.params || c.signature.classname || c.customInputHelp || ['lc-297', 'lc-449'].includes(id))
     return null;
   return c.signature.params.map(({ name, type }) => ({ name, type }));
+}
+
+/** Lengths and value ranges from the statement, checked against every judge case. */
+export function leetcodeConstraints(id: string) {
+  return (constraints as Record<string, Record<string, Constraint>>)[id] ?? null;
+}
+
+/**
+ * The type of what a run prints, so trees and lists can be drawn: a void in-place problem prints
+ * its parameter. null for special node protocols, whose output is node ids, not a structure.
+ */
+export function leetcodeReturnType(id: string) {
+  const c = leetcodeContract(id);
+  if (!c || c.spec.specialId) return null;
+  const { return: result, output, params } = c.signature;
+  return (result?.type === 'void' ? params?.[output?.paramindex ?? 0]?.type : result?.type) ?? null;
 }
 
 export function leetcodeTemplates(id: string) {

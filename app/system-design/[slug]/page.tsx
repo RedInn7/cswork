@@ -6,7 +6,7 @@ import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
 import { SolutionPosts } from '@/components/solution-posts';
-import { sdCases, sdChapter, sdChapters, sdParts, sdPath, sdSummary } from '@/lib/server/system-design-course';
+import { sdCases, sdChapter, sdChapters, sdParts, sdPath, sdRequired, sdSummary } from '@/lib/server/system-design-course';
 import { PublicLibraryMarkdown, markdownToc } from '../../library/markdown';
 import { SdQuiz } from '../quiz';
 import { SdMarkRead, SdReadCheck, SdTryFirst } from '../reader';
@@ -42,7 +42,6 @@ export default async function SystemDesignChapter({ params }: Props) {
   const title = (c: typeof chapter) => (zh ? c.titleZh : c.titleEn);
   const body = zh ? chapter.bodyZh : chapter.bodyEn;
   const toc = markdownToc(body);
-  const slugs = sdChapters.map((c) => c.slug);
   const userId = await viewerId();
   const tocList = (
     <ol>
@@ -107,7 +106,7 @@ export default async function SystemDesignChapter({ params }: Props) {
           prose
         )}
         {chapter.quiz.length > 0 && <SdQuiz slug={chapter.slug} quiz={chapter.quiz} zh={zh} />}
-        <SdMarkRead slug={chapter.slug} slugs={slugs} />
+        <SdMarkRead slug={chapter.slug} slugs={sdRequired} />
         <nav className="sd-pager" aria-label={t('章节导航', 'Chapters')}>
           {prev ? (
             <a href={sdPath(prev.slug)} rel="prev">

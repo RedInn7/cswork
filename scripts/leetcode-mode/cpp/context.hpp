@@ -32,10 +32,14 @@ public:
     Interval(int s,int e):start(s),end(e){}
 };
 class MountainArray {
+    // Private, and shared by every copy: a solution can neither read the array
+    // nor reset the budget by restoring a saved copy.
+    shared_ptr<const vector<int>> values=make_shared<const vector<int>>(); shared_ptr<int> calls=make_shared<int>(0);
 public:
-    vector<int> values; int calls=0;
-    int get(int index) { if(++calls>100) throw runtime_error("MountainArray.get exceeded 100 calls"); return values.at(index); }
-    int length() { return static_cast<int>(values.size()); }
+    MountainArray()=default;
+    explicit MountainArray(vector<int> v):values(make_shared<const vector<int>>(move(v))){}
+    int get(int index) { if(++*calls>100) throw runtime_error("MountainArray.get exceeded 100 calls"); return values->at(index); }
+    int length() { return static_cast<int>(values->size()); }
 };
 } // namespace cswork_platform
 #endif

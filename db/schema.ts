@@ -36,6 +36,8 @@ export * from './post-polls-schema';
 export * from './community-schema';
 export * from './skill-tests-schema';
 export * from './course-ratings-schema';
+export * from './discuss-v2-schema';
+export * from './applications-schema';
 import { practiceRounds } from './practice-round-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),
@@ -244,6 +246,8 @@ export const notifications = sqliteTable(
   {
     id: text('id').primaryKey(),
     userId: text('user_id').notNull(),
+    /** What raised it ('dm', 'mock-peer', …; '' for older rows); see lib/server/notify.ts. */
+    kind: text('kind').notNull().default(''),
     title: text('title').notNull(),
     body: text('body').notNull(),
     href: text('href').notNull(),

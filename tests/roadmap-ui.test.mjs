@@ -76,7 +76,7 @@ test('signed in, the tracks show topic progress and read chapters; signed out th
     requests.push(url);
     if (url.includes('/marks'))
       return signedIn
-        ? Response.json({ items: [{ target: 'sd:framework', mark: 'read', createdAt: 1 }] })
+        ? Response.json({ items: [{ target: 'sd:framework', mark: 'read', createdAt: 1 }, { target: 'sd:tech-kafka', mark: 'read', createdAt: 2 }] })
         : Response.json({ error: '请先登录' }, { status: 401 });
     return Response.json({ collection: { sections } });
   };
@@ -87,6 +87,7 @@ test('signed in, the tracks show topic progress and read chapters; signed out th
       { slug: 'framework', title: 'Framework', href: '/system-design/framework', part: 'framework' },
       { slug: 'url-shortener', title: 'URL Shortener', href: '/system-design/url-shortener', part: 'cases' },
       { slug: 'lld-elevator', title: 'Elevator', href: '/system-design/lld-elevator', part: 'lld' },
+      { slug: 'tech-kafka', title: 'Kafka', href: '/system-design/tech-kafka', part: 'tech' },
     ],
     guide: [{ title: 'Final rounds', summary: 'STAR stories', href: '/guide/onsite' }],
   };
@@ -107,12 +108,13 @@ test('signed in, the tracks show topic progress and read chapters; signed out th
     assert.equal(state('binary-tree'), 'later');
     assert.equal(document.querySelectorAll('.route-graph-ring').length, 2);
     assert.equal(document.querySelectorAll('.roadmap-legend li').length, 4);
-    assert.match(document.body.textContent, /1 of 3 chapters read\./);
+    // An optional chapter shows as read but stays out of the required count.
+    assert.match(document.body.textContent, /1 of 3 required chapters read\./);
     const read = [...document.querySelectorAll('.roadmap-parts li[data-read]')];
-    assert.deepEqual(read.map((li) => li.textContent), ['Framework (read)']);
+    assert.deepEqual(read.map((li) => li.textContent), ['Framework (read)', 'Kafka (read)']);
     assert.deepEqual(
       [...document.querySelectorAll('.roadmap-parts h3')].map((h) => h.textContent),
-      ['Framework', 'Case studies', 'Low-level design'],
+      ['Framework', 'Case studies', 'Low-level design', 'Key technologies (optional)'],
       'empty parts are left out',
     );
     assert.ok(document.querySelector('.roadmap-cards a[href="/?view=stories"]'));
@@ -149,10 +151,16 @@ test('every system design chapter lands in its course part, the ML chapters in t
   for (const slug of ['ood-interview-approach', 'solid-in-practice', 'lld-elevator']) assert.equal(part[slug], 'lld', slug);
   for (const slug of ['concurrency-primitives', 'bounded-blocking-queue', 'rate-limited-executor']) assert.equal(part[slug], 'concurrency', slug);
   assert.equal(part['url-shortener'], 'cases');
+  // The key-technology and pattern chapters are parts of their own, not case studies.
+  for (const chapter of sd)
+    if (/^(tech|pattern)-/.test(chapter.slug)) assert.equal(part[chapter.slug], chapter.slug.startsWith('tech-') ? 'tech' : 'patterns', chapter.slug);
   const doc = new JSDOM(renderToStaticMarkup(tracks)).window.document;
   assert.deepEqual(
     [...doc.querySelectorAll('.roadmap-parts h3')].map((h) => h.textContent),
-    ['Framework', 'Building blocks', 'Case studies', 'Low-level design', 'Concurrency', 'ML system design'],
+    [
+      'Framework', 'Building blocks', 'Case studies', 'Low-level design', 'Concurrency', 'ML system design',
+      'Key technologies (optional)', 'Patterns (optional)',
+    ],
   );
   assert.equal(doc.querySelectorAll('.roadmap-parts ol li').length, sd.length, 'no chapter is left out');
 });

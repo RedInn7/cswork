@@ -103,6 +103,7 @@ test('sharing an experience: the form posts ordered rounds and split questions, 
     assert.equal(posted.title, 'Uber onsite');
     assert.equal(posted.result, 'Offer');
     assert.equal(posted.agree, true);
+    assert.equal(posted.anonymous, false, 'named unless chosen');
     assert.ok(/^\d{4}-\d{2}$/.test(posted.month));
     assert.ok(document.querySelector('form.xs-form') === null, 'the form closes');
     const statuses = [...document.querySelectorAll('.xs-status')].map((s) => s.getAttribute('data-status'));

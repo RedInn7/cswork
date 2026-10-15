@@ -6,6 +6,13 @@ import { englishMessage } from '@/lib/messages-en';
 import type { Navigate } from './learning';
 import { Button } from './ui/button';
 import { CursorPagination, useCursorPage } from './lms-shared';
+/** The inbox's tabs: every notice, or one kind (lib/server/notify.ts). */
+const KINDS = [
+  ['', '全部', 'All'],
+  ['reply', '回复', 'Replies'],
+  ['mention', '@我', 'Mentions'],
+  ['like', '赞', 'Upvotes'],
+] as const;
 export function NotificationsPane({
   refresh,
   navigate,
@@ -16,7 +23,8 @@ export function NotificationsPane({
   close: () => void;
 }) {
   const t = useT();
-  const list = useCursorPage<Notification>('lms/notifications'),
+  const [kind, setKind] = useState<(typeof KINDS)[number][0]>('');
+  const list = useCursorPage<Notification>(`lms/notifications${kind && `?kind=${kind}`}`),
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false);
   const failure = error || list.error;
@@ -46,6 +54,18 @@ export function NotificationsPane({
           {t('全部标记已读', 'Mark all as read')}
         </Button>
       </div>
+      <div className="lms-toolbar">
+        {KINDS.map(([value, zh, en]) => (
+          <Button
+            key={value}
+            variant={kind === value ? 'secondary' : 'ghost'}
+            aria-pressed={kind === value}
+            onClick={() => setKind(value)}
+          >
+            {t(zh, en)}
+          </Button>
+        ))}
+      </div>
       {failure && (
         <p role="alert" className="error-text">
           {t(failure, englishMessage(failure))}{' '}
@@ -60,14 +80,14 @@ export function NotificationsPane({
           <button
             key={item.id}
             onClick={async () => {
-              const dest = Object.fromEntries(
-                new URL(item.href, location.origin).searchParams,
-              );
+              const url = new URL(item.href, location.origin);
               void api('notifications', { id: item.id })
                 .then(refresh)
                 .catch(() => {});
               close();
-              const { view, ...params } = dest;
+              // A page of its own (a system design chapter's discussion) rather than an app view.
+              if (url.pathname !== '/') return location.assign(url.pathname + url.search);
+              const { view, ...params } = Object.fromEntries(url.searchParams);
               navigate(view || 'problems', params);
             }}
           >

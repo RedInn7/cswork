@@ -19,6 +19,7 @@ import { BadgeWall, progressBadges } from './achievements';
 import { MockCloudHistory } from './mock-cloud-history';
 import { FollowBoard } from './follow-board';
 import { MyExperienceSubmissions } from './experience-submissions';
+import { YearRecapCard } from './year-recap-card';
 import { LevelPicks } from './level-picks';
 import { PointsPanel } from './points-panel';
 import { Button } from './ui/button';
@@ -74,6 +75,51 @@ const SOURCES = ['lc', 'oa', 'sql', 'core', 'bk'] as const;
 const source = (id: string): (typeof SOURCES)[number] | 'course' =>
   trackLanguageOf(id) ? 'sql' : (SOURCES.find((prefix) => id.startsWith(`${prefix}-`)) ?? 'course');
 
+type Calibration = { sessions: { gap: number; bias: number }[]; gap: number; bias: number };
+/**
+ * How the learner's self-assessment before an AI interview report compares with the report, over
+ * the last 10 self-rated interviews (GET oj/ai/interview-calibration). Nothing until there is one.
+ */
+function InterviewCalibration({ english }: { english: boolean }) {
+  const t = (zh: string, en: string) => (english ? en : zh);
+  const [data, setData] = useState<Calibration | null>(null);
+  useEffect(() => {
+    let live = true;
+    api<{ calibration: Calibration | null }>('oj/ai/interview-calibration')
+      .then((r) => live && setData(r.calibration))
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, []);
+  if (!data) return null;
+  const f = (x: number) => x.toFixed(1);
+  // Within a quarter point either way reads as calibrated.
+  const lean =
+    data.bias > 0.25
+      ? t(`偏高估：自评平均比面试官高 ${f(data.bias)} 分`, `You overrate: ${f(data.bias)} above the interviewer on average`)
+      : data.bias < -0.25
+        ? t(`偏低估：自评平均比面试官低 ${f(-data.bias)} 分`, `You underrate: ${f(-data.bias)} below the interviewer on average`)
+        : t('自评和面试官基本一致', "Your ratings match the interviewer's");
+  return (
+    <section className="cloud-mocks" aria-labelledby="calibration-title">
+      <div className="cloud-head">
+        <h2 id="calibration-title">{t('自评校准', 'Self-assessment calibration')}</h2>
+        <p>
+          {t(`最近 ${data.sessions.length} 次 AI 面试，平均差 `, `Last ${data.sessions.length} AI interviews, mean gap `)}
+          <b>{f(data.gap)}</b>
+          {t(' 分 · ', ' points · ')}
+          {lean}
+        </p>
+        <p>
+          {t('每次的平均差（从旧到新）：', 'Gap per interview, oldest first: ')}
+          {data.sessions.map((s) => f(s.gap)).join(' → ')}
+        </p>
+      </div>
+    </section>
+  );
+}
+
 /** ?view=progress: practice history, mistakes, reviews due today, and the learner's marks and notes. */
 export function MyProgress({
   boot,
@@ -96,7 +142,7 @@ export function MyProgress({
   const [result, setResult] = useState('');
   const [period, setPeriod] = useState('');
   // The public profile, when there is one: earned badges can be featured on it.
-  const [profile, setProfile] = useState<{ value: Profile; featurable: Set<string> } | null>(null);
+  const [profile, setProfile] = useState<{ value: Profile; featurable: Set<string>; recapYears: number[] } | null>(null);
   const [featureError, setFeatureError] = useState('');
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   // A freeze bought below counts on the calendar at once, before the bootstrap refreshes.
@@ -124,7 +170,7 @@ export function MyProgress({
       ).catch(() => null),
       api<{ companies: { slug: string; name: string }[] }>('oj/oa-library').catch(() => null),
       api<{ days: string[] }>('oj/points/daily').catch(() => null),
-      api<{ profile: Profile | null; badges: { id: string }[] }>('oj/profile').catch(() => null),
+      api<{ profile: Profile | null; badges: { id: string }[]; recapYears?: number[] }>('oj/profile').catch(() => null),
     ])
       .then(([history, marks, notes, line, oa, daily, mine]) => {
         if (!current) return;
@@ -137,7 +183,11 @@ export function MyProgress({
           now: Date.now(),
           dailyDays: daily?.days,
         });
-        setProfile(mine?.profile ? { value: mine.profile, featurable: new Set(mine.badges.map((b) => b.id)) } : null);
+        setProfile(
+          mine?.profile
+            ? { value: mine.profile, featurable: new Set(mine.badges.map((b) => b.id)), recapYears: mine.recapYears ?? [] }
+            : null,
+        );
       })
       .catch((reason: Error) => {
         if (current) setError(reason.message);
@@ -651,8 +701,18 @@ export function MyProgress({
           panel()
         )}
       </div>
+      {data && (
+        <YearRecapCard
+          history={data.history}
+          english={english}
+          handle={profile?.value.visible ? profile.value.handle : null}
+          publicYears={profile?.recapYears ?? []}
+          now={data.now}
+        />
+      )}
       {boot.person && <PointsPanel english={english} onChange={(s) => setBought(s.freezes.purchased)} />}
       {boot.person && <MockCloudHistory userId={boot.person.id} navigate={navigate} english={english} />}
+      {boot.person && <InterviewCalibration english={english} />}
       {boot.person && <FollowBoard english={english} />}
       {boot.person && <MyExperienceSubmissions english={english} navigate={navigate} open={initialTab === 'share'} />}
     </section>

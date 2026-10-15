@@ -168,6 +168,7 @@ type Form = {
   month: string;
   body: string;
   questions: string;
+  anonymous: boolean;
   agree: boolean;
   // Optional structured facts; '' means not given.
   difficulty: string;
@@ -192,7 +193,7 @@ function ExperienceForm({
   const [companies, setCompanies] = useState<{ slug: string; name: string }[]>([]);
   const [now] = useState(() => Date.now());
   const [form, setForm] = useState<Form>(() => ({
-    company: '', title: '', role: '', rounds: [], result: '', month: localMonth(now), body: '', questions: '', agree: false,
+    company: '', title: '', role: '', rounds: [], result: '', month: localMonth(now), body: '', questions: '', anonymous: false, agree: false,
     difficulty: '', sentiment: '', channel: '', employment: '', season: '', location: '', weeks: '',
   }));
   const year = new Date(now).getFullYear();
@@ -477,6 +478,15 @@ function ExperienceForm({
           {t(
             '这是我本人亲历的面试，内容不违反我签署的保密协议（NDA），不包含他人的个人信息。我同意 CSWork 在老师审核后公开展示；页面不会显示我的邮箱或姓名，只有开启公开主页时才显示主页名。我可以随时撤回。',
             'This is my own interview, it breaks no NDA I signed, and it names no one’s personal details. CSWork may publish it after a teacher reviews it; my email and name never appear (only my handle, if my public profile is on). I can withdraw it at any time.',
+          )}
+        </span>
+      </label>
+      <label className="xs-agree">
+        <input type="checkbox" checked={form.anonymous} onChange={(e) => set({ anonymous: e.target.checked })} />
+        <span>
+          {t(
+            '匿名发布：公开页面不显示我的主页名，也不计入主页声望，我在它评论区里的发言也一律匿名；老师审核时仍能看到是谁投的稿。',
+            'Post anonymously: the public page shows no handle, it adds nothing to my profile reputation, and whatever I post in its comments is anonymous too; reviewing teachers still see who sent it.',
           )}
         </span>
       </label>

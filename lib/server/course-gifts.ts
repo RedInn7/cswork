@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import type { Person } from './auth';
 import { HttpError, limit } from './http';
+import { notify as notice } from './notify';
 
 /**
  * Courses bought as gifts (db/course-gift-schema.ts). The checkout marks the order; once paid
@@ -42,11 +43,8 @@ export const isGift = (orderId: string) => !!giftRow(orderId);
 export const giftSql = (column: string, negate = false) =>
   ` AND ${negate ? 'NOT ' : ''}EXISTS(SELECT 1 FROM course_gifts g WHERE g.order_id=${column})`;
 
-function notify(user: string, title: string, body: string, now: number) {
-  sqlite()
-    .prepare('INSERT INTO notifications(id,user_id,title,body,href,created_at) VALUES(?,?,?,?,?,?)')
-    .run(randomBytes(16).toString('hex'), user, title, body, '/?view=account', now);
-}
+const notify = (userId: string, title: string, body: string, now: number) =>
+  notice({ userId, kind: 'course-gift', title, body, href: '/?view=account', now });
 const courseTitle = (courseId: string) =>
   (sqlite().prepare('SELECT title FROM courses WHERE id=?').get(courseId) as { title: string } | undefined)?.title ??
   courseId;

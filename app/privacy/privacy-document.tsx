@@ -29,7 +29,7 @@ export function PrivacyDocument() {
               cswork
               是提供课程、视频、编程练习与教学反馈的学习平台。这份说明介绍平台当前如何处理你的资料，以及你可以如何联系我们。
             </p>
-            <p className="privacy-updated">更新于 2026 年 10 月 14 日</p>
+            <p className="privacy-updated">更新于 2026 年 10 月 15 日</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">账户与第三方登录</h2>
@@ -53,10 +53,13 @@ export function PrivacyDocument() {
                 为支持续播、练习和教学，平台保存课程权限、视频播放位置、完成进度、笔记与收藏，以及你提交的代码、判题结果、作业链接和评审记录。课程更新与工单回复也会产生站内通知及已读记录。
               </p>
               <p>
-                登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，以及给面经和面试题的点赞也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。面试报告和点赞只以人数汇总展示，不公开报告人和点赞人。模拟 OA 成绩和 AI 面试评分还会匿名参与「超过多少人」的百分位统计，同一场景不足 20 人（AI 面试不足 30 人）时不显示。
+                登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，以及给面经和面试题的点赞也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。你还可以选填最多 4 个链接（个人网站、GitHub、LinkedIn、X，只接受 https）、学校、毕业年份和目标岗位，填了就显示在公开主页上；学校是自填的，不做核实。同时打开「展示比赛记录」后，你会出现在这所学校的比赛排行榜上（同校至少 3 人公开时才有这个榜，榜上注明学校未经验证，不被搜索引擎收录）。公开主页还会按年份显示热力图和年度回顾（通过题数、所到站点，打开比赛展示时还有当年参赛场数和 rating 变化），是否允许搜索引擎收录跟随主页的设置；别人可以把两到三个公开主页放在一起对比，对比页只显示各自主页上已有的统计，不列出具体题目，也不被搜索引擎收录；只有当你本人在对比之列、并且和其他每个人都互相关注时，才会额外显示大家共同通过的题数。面试报告和点赞只以人数汇总展示，不公开报告人和点赞人。模拟 OA 成绩和 AI 面试评分还会匿名参与「超过多少人」的百分位统计，同一场景不足 20 人（AI 面试不足 30 人）时不显示。
               </p>
               <p>
                 你在社区发布的题解、讨论帖、回答和评论（包括系统设计章节下的讨论）以公开主页名或打码后的昵称显示。收藏的帖子只有你自己能看到，帖子上只显示被收藏的总次数。参与讨论帖里的投票时，平台记录你的账号选了哪几项，用来保证每个账号只投一次；结果只显示每个选项的票数和投票人数，不公开谁投了什么。
+              </p>
+              <p>
+                在面经讨论、求职、上岸故事频道，以及面经评论、面试题回答和系统设计章节下发帖时，可以选择匿名发布；面经投稿也可以匿名。匿名内容对其他人不显示主页名、昵称、员工徽章和声望，也不会出现在你的公开主页上；你在自己匿名帖下的回复同样显示为匿名。匿名面经通过审核后，你在它评论区里发的帖子和评论（包括回复别人的评论）一律匿名发出，评论标为「楼主」。平台仍记录作者，你自己和负责审核的老师能看到是谁发的，点赞照常给你积分，但不计入公开的声望。声望是你的帖子被点赞、面经通过审核所得积分的合计（不含匿名内容），只在公开主页名旁边和主页上显示。别人回复你的帖子或评论、用 @主页名 提到你（只认已公开的主页名）时，你会收到站内通知，内容是对方的主页名或打码后的昵称和一行摘要。有人赞了你的帖子时，通知只写当天点赞的人数和帖子标题，不显示是谁点的赞；同一帖子一天内的点赞合并成一条。你屏蔽的人回复或提到你，不会通知你。匿名作者（包括在自己匿名面经下发言的投稿人）的通知不显示名字，它 @ 别人不发通知，它回复你时不论屏蔽与否都会通知你，这样有没有通知都推断不出作者是谁。题目在你正在进行的比赛或认证考试里时，关于它题解讨论的回复和 @ 通知不带摘要。这些通知不发邮件。
               </p>
               <p>
                 参加比赛时，计分板只显示你报名时填写的比赛昵称；周赛、入门赛和 1v1 排位的 rating 与胜负记录保存在你的账号里，只有你在公开主页上打开「展示比赛记录」后才会出现在主页上。排位匹配期间，平台暂存你的比赛昵称、对战 rating 和排队时间，匹配成功或取消时删除，离开页面后最迟 20 分钟内删除。报名时可以选择「赛后公开我的 AC 代码」（默认不勾选）：勾选后，比赛结束 15 分钟起，能打开该场比赛的登录用户可以看到你在比赛时间内每题首次通过的代码；之后随时可以在比赛页关掉，关掉后不再向任何人展示。计分板的「只看关注」只列出主页展示比赛记录的人。
@@ -66,6 +69,9 @@ export function PrivacyDocument() {
               </p>
               <p>
                 预约同伴互面时，服务器保存你填写的昵称、面试类型、级别、可用时段、时区和语言，以及你选填的目标公司和话题；同伴只能看到昵称，匹配通知里会写出你们共同的公司和话题。开着「邮件提醒」时，开始前一天和前一小时会给你已验证的账户邮箱发提醒（经 Resend 发送），内容是面试类型、时间、同伴昵称和会议链接；预约时取消勾选就不会收到。
+              </p>
+              <p id="privacy-tracker">
+                使用投递追踪（/career/tracker）时，平台在你的账号里保存你填写的公司、岗位、阶段、投递日期、OA 截止和面试时间、内推信息、职位链接和备注，每个账号最多 300 条。这些记录只有你自己能看到，不出现在公开主页、排行榜和任何统计里；删除一条就从服务器上删除。导出的 CSV 和 OA 截止日历文件在你的浏览器里生成，截止提醒由你自己的日历应用发出，平台不发送提醒。
               </p>
               <p>
                 学习小组的聊天消息只有本组成员能看到，显示你在本组填的昵称；消息保留 180 天后自动删除，小组解散时一并删除；小组里有消息被举报、尚未处理时，负责审核的老师可以打开这个小组的聊天查看上下文。私信只有对话双方能看到，只能在互相关注的人之间，或者从内推帖请求内推时开始；你可以设置谁能给你发起新对话，也可以屏蔽对方。私信保留 365 天后自动删除。新私信只产生站内通知，通知里只有对方的公开主页名或打码后的昵称，不含正文，也不发邮件。被举报的聊天消息和私信（只有被举报的那一条）会交给负责审核的老师查看和处理。
@@ -122,7 +128,7 @@ export function PrivacyDocument() {
                 地址、设备或浏览器信息与有效期，用于账号安全和查看已登录设备；服务器也会产生访问、错误和管理操作记录，以排查故障和限制滥用。
               </p>
               <p>
-                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传。
+                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传。OA 选择题练习（/oa/mcq）的作答记录和模拟 OA 选择题环节的作答也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。
               </p>
               <p>
                 把网站安装到主屏后，浏览器会缓存离线提示页和网站自身的脚本、样式等构建文件，不缓存任何页面内容和个人数据；在账号设置里退出登录时，这些缓存会一并清空。
@@ -167,7 +173,7 @@ export function PrivacyDocument() {
                 Anthropic，用于生成回复；追问时还会发送本页最近几轮问答，调试时还会发送你自己能看到的失败信息（判题结果、报错和公开样例或自定义输入的输入输出，不含隐藏测试数据），解释题面时只发送题面和你选中的文字、不发送代码。不发送邮箱、姓名或账户标识。平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不使用 AI 助教就不会发送。
               </p>
               <p>
-                使用模拟面试的 AI 面试官时，服务器会把这道题的题面和面试官参考资料、你这一题的对话、计时和代码框里的代码发送给 Anthropic，用于生成面试官的回复和结束时的评估；系统设计和低层设计题点「完成这一步」时，还会发送这一步的对话，用于这一步的打分和建议。同样不发送邮箱、姓名或账户标识。平台不保存对话和评估文字（它们只存在你的浏览器里），只保存每场评估的五项 1–4 分和结论，用于和同类面试比较。语音输入使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；不点语音输入就不会录音。模拟 OA 的代码回放和专注度自检（离开页面的时段、超过 40 字符的粘贴）只保存在你的浏览器里，不会上传，也不用于监考。
+                使用模拟面试的 AI 面试官时，服务器会把这道题的题面和面试官参考资料、你这一题的对话、计时和代码框里的代码发送给 Anthropic，用于生成面试官的回复和结束时的评估；系统设计和低层设计题点「完成这一步」时，还会发送这一步的对话，用于这一步的打分和建议。招聘方初筛和 offer 谈判的角色扮演会发送练习场景（虚构的公司类型、岗位和 offer 数字）和你的对话，场景里的招聘方底线只在服务器上。同样不发送邮箱、姓名或账户标识。平台不保存对话和评估文字（它们只存在你的浏览器里），只保存每场评估的各项 1–4 分和结论，用于和同类面试比较；生成评估前你自己打的 1–4 分（可以不打）也和这场评估存在一起，只用于「我的进度」里你自己的自评校准，不对外显示。语音输入使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；不点语音输入就不会录音。模拟 OA 的代码回放和专注度自检（离开页面的时段、超过 40 字符的粘贴）只保存在你的浏览器里，不会上传，也不用于监考。
               </p>
               <p>
                 在搜索框（⌘K）里点「问 AI」时，服务器会把你的问题、你选中的页面文字（如有）和站内匹配到的几段公开内容发送给
@@ -212,7 +218,7 @@ export function PrivacyDocument() {
               practice, and teaching feedback. This notice explains how the
               platform currently handles your data and how you can contact us.
             </p>
-            <p className="privacy-updated">Updated October 14, 2026</p>
+            <p className="privacy-updated">Updated October 15, 2026</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">Accounts and third-party sign-in</h2>
@@ -268,6 +274,20 @@ export function PrivacyDocument() {
                 handle and bio you chose, your practice statistics and the
                 badges they earn (including daily-problem months, and one badge
                 you may feature beside your handle), never your name or email.
+                You may also add up to four links (website, GitHub, LinkedIn,
+                X; https only), a school, a graduation year and a target role,
+                which then show on the profile; schools are self-reported and
+                never checked. With showing contests also on, you appear on your
+                school’s contest board (a school gets one once 3 learners show
+                it; the board says schools are unverified and stays out of
+                search). The profile also shows a heatmap per year and a year in
+                review (problems solved, stops reached and, with contests shown,
+                that year’s contests and rating change), indexed only if your
+                profile is. Anyone can put two or three public profiles side by
+                side: the comparison shows only the counts each profile already
+                shows, never which problems, and stays out of search. How many
+                problems all of them solved appears only to one of the people
+                compared who follows each of the others and is followed back.
                 Interview reports and upvotes are shown only as counts of
                 people; reporters and voters are never named. Mock OA scores and
                 AI interview scores also count, anonymously, toward the
@@ -283,6 +303,36 @@ export function PrivacyDocument() {
                 records which options your account chose, so each account votes
                 once; results show only each option’s count and the number of
                 voters, never who voted for what.
+              </p>
+              <p>
+                You may post anonymously in the Interviews, Careers and Offers
+                channels, under interview experiences and questions and in a
+                system design chapter’s discussion, and you may submit an
+                interview experience anonymously. Others then see no handle,
+                name, employee badge or reputation, it stays off your public
+                profile, and your replies under your own anonymous post show as
+                anonymous too. Once an anonymous interview report is approved,
+                everything you post in its comments, replies to others’
+                comments included, goes up anonymously, with your comments
+                marked OP. The platform still records you as the author:
+                you and the reviewing instructors can see it is yours, and
+                upvotes still earn you points, though not public reputation.
+                Reputation is the points your posts’ upvotes and approved
+                interview reports earned (anonymous ones left out), shown only
+                beside your public handle and on your profile. When someone
+                replies to your post or comment or mentions you by @handle (only
+                visible handles count), you get an on-site notification with
+                their handle or masked name and a one-line excerpt. When people
+                upvote your post, the notification gives only how many did so
+                that day and the post’s title, never who; a day’s upvotes on one
+                post merge into one. Replies and mentions from someone you
+                blocked don’t notify you. An anonymous author’s notifications
+                (an anonymous report’s author’s in its comments included) carry
+                no name, its @mentions notify no one, and its replies to you
+                notify you even if you blocked them, so whether a notification
+                arrives never hints at who wrote it. While a problem is in your
+                running contest or certification exam, reply and mention
+                notifications about its solutions carry no excerpt. No email is sent for these.
               </p>
               <p>
                 In contests, scoreboards show only the contest name you enter
@@ -324,6 +374,17 @@ export function PrivacyDocument() {
                 the session (sent through Resend) with the type, time, your
                 partner&apos;s name and the call link; untick it when booking to
                 get none.
+              </p>
+              <p id="privacy-tracker">
+                When you use the application tracker (/career/tracker), your
+                account keeps the company, role, stage, application date, OA
+                deadline and interview time, referral, job link and notes you
+                enter, up to 300 applications. Only you can see them: they never
+                appear on your public profile, on leaderboards or in any
+                statistics, and deleting one removes it from the server. The CSV
+                and the OA deadline calendar file are made in your browser, and
+                the reminders come from your own calendar app; the platform sends
+                none.
               </p>
               <p>
                 Study group chat messages are seen only by that group&apos;s
@@ -473,7 +534,10 @@ export function PrivacyDocument() {
                 local drafts. On a shared device, you can clear this site’s
                 stored data in your browser; this also clears local content that
                 has not been submitted yet. Dates you enter in the visa timeline
-                stay in the current browser and are never uploaded.
+                stay in the current browser and are never uploaded. So do your
+                answers on the OA multiple-choice practice page (/oa/mcq) and in
+                a mock OA&apos;s multiple-choice section: they are not uploaded and
+                do not sync to your account with mock OA results.
               </p>
               <p>
                 If you install the site to your home screen, the browser caches
@@ -566,10 +630,17 @@ export function PrivacyDocument() {
                 report; when you finish a step of a system design or low-level
                 design question, it also sends that step&apos;s conversation to
                 score it and suggest one fix. Your email, name and account
-                identifiers are not sent. The platform keeps neither the
-                conversation nor the report text (they live in your browser),
-                only each report&apos;s five 1–4 scores and verdict, to compare
-                with similar interviews. Dictation uses your browser&apos;s own
+                identifiers are not sent. The recruiter-screen and
+                offer-negotiation role-plays send the practice scenario (a
+                fictional company type, role and offer figures) and your
+                conversation; the recruiter&apos;s limits in the scenario stay
+                on the server. The platform keeps neither the conversation nor
+                the report text (they live in your browser), only each
+                report&apos;s 1–4 scores and verdict, to compare with similar
+                interviews, and the 1–4 scores you give yourself before a
+                report (if you do), kept with it only for your own
+                self-assessment calibration under My progress and never shown
+                to anyone else. Dictation uses your browser&apos;s own
                 speech recognition; some browsers (Chrome, for example) send the
                 audio to the browser maker&apos;s servers to turn it into text,
                 without going through this platform, and nothing is recorded

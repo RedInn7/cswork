@@ -4,10 +4,10 @@ import { sqlite } from '@/db/sqlite';
 import { REPORT_CLEARED, REPORTS_HIDE } from '@/lib/community';
 import type { Person } from './auth';
 import { HttpError, json, limit, requirePerson } from './http';
-import { maskName } from './judge-feed';
+import { notify } from './notify';
 import { HANDLE, requireVerified } from './learner-cloud';
 import { readJson } from './my-practice';
-import { fileReport, reportReason } from './solution-posts';
+import { fileReport, nameOf, reportReason } from './solution-posts';
 import { chatText } from './study-groups';
 import { badgeName, badgeSql } from './work-verify';
 
@@ -34,15 +34,6 @@ const otherSide = (thread: string, me: string) => {
   const [a, b] = thread.split('|');
   return a === me ? b : a;
 };
-/** As posts show people: the public handle if the profile is visible, else a masked name. */
-function nameOf(userId: string) {
-  const r = sqlite()
-    .prepare(
-      `SELECT u.name,pr.handle FROM "user" u LEFT JOIN user_profiles pr ON pr.user_id=u.id AND pr.visible=1 WHERE u.id=?`,
-    )
-    .get(userId) as { name: string; handle: string | null } | undefined;
-  return r?.handle ? `@${r.handle}` : maskName(r?.name ?? '');
-}
 const blocks = (from: string, to: string) =>
   !!sqlite().prepare('SELECT 1 FROM dm_blocks WHERE user_id=? AND blocked_id=?').get(from, to);
 const openTo = (userId: string) =>
@@ -56,7 +47,7 @@ function recipient(p: Person, d: { to?: string; post?: string }) {
     const post = db
       .prepare(
         `SELECT sp.user_id AS author,sp.tag FROM solution_posts sp WHERE sp.id=? AND sp.problem_id='discuss:referral'
-          AND sp.hidden=0 AND sp.tag<>'' AND ${badgeSql('sp.user_id', 'referrals')}=sp.tag
+          AND sp.hidden=0 AND sp.anonymous=0 AND sp.tag<>'' AND ${badgeSql('sp.user_id', 'referrals')}=sp.tag
           AND (SELECT COUNT(*) FROM post_reports r WHERE r.target='post:'||sp.id AND r.reason<>'${REPORT_CLEARED}')<${REPORTS_HIDE}`,
       )
       .get(d.post) as { author: string; tag: string } | undefined;
@@ -106,14 +97,14 @@ function send(p: Person, thread: string, to: string, body: string, post: string 
       'INSERT INTO direct_messages(id,thread,from_user,to_user,body,post_id,hidden,created_at) VALUES(?,?,?,?,?,?,0,?)',
     ).run(randomUUID(), thread, p.id, to, body, post, now);
     if (!ringing)
-      db.prepare('INSERT INTO notifications(id,user_id,title,body,href,created_at) VALUES(?,?,?,?,?,?)').run(
-        randomUUID(),
-        to,
-        post ? '你收到一条内推请求' : '你收到一条新私信',
-        nameOf(p.id),
-        `/?view=messages&thread=${threadKey(thread)}`,
+      notify({
+        userId: to,
+        kind: 'dm',
+        title: post ? '你收到一条内推请求' : '你收到一条新私信',
+        body: nameOf(p.id),
+        href: `/?view=messages&thread=${threadKey(thread)}`,
         now,
-      );
+      });
   })();
 }
 

@@ -23,6 +23,10 @@ export const solutionPosts = sqliteTable(
     // A company slug on a discussion thread, a Line 500 stop slug (technique) on a solution.
     tag: text('tag').notNull().default(''),
     hidden: integer('hidden').notNull().default(0),
+    // 1: other readers see no handle, badge or reputation; only discussion targets that carry no badge.
+    anonymous: integer('anonymous').notNull().default(0),
+    // 1: a moderator featured it; it lists first on its target.
+    pinned: integer('pinned').notNull().default(0),
     createdAt: integer('created_at').notNull(),
     updatedAt: integer('updated_at').notNull(),
   },
@@ -39,6 +43,8 @@ export const postComments = sqliteTable(
     id: text('id').primaryKey(),
     postId: text('post_id').notNull(),
     userId: text('user_id').notNull(),
+    // A reply's top-level comment on the same post (one level deep); null on a top-level comment.
+    parentId: text('parent_id'),
     body: text('body').notNull(),
     hidden: integer('hidden').notNull().default(0),
     createdAt: integer('created_at').notNull(),

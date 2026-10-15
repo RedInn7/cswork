@@ -13,11 +13,12 @@ import { ojRequest } from '@/lib/oj-client';
 import { englishMessage } from '@/lib/messages-en';
 import { companyLogos } from '@/lib/oa-company-brands';
 import {
-  CUSTOM_NAME, KINDS, LLD_TEMPLATE, ROLES, ROUNDS, SMALL_BANK, TEMPLATES, guideFor, newSeed, resolveTemplate,
+  AI_TEMPLATES, CUSTOM_NAME, KINDS, ROLES, ROUNDS, SMALL_BANK, TEMPLATES, guideFor, isRoleplay, newSeed, resolveTemplate,
   type KindId, type Text,
 } from '@/lib/mock-interview';
 import {
-  RUBRIC, VERDICTS, decodeFeedback, encodeFeedback, forSet, questionTag, rubricAverage, type Feedback, type RubricId,
+  ROLEPLAY_VERDICTS, RUBRIC, VERDICTS, decodeFeedback, encodeFeedback, forSet, questionTag, rubricAverage, rubricFor, type Feedback,
+  type RubricId,
 } from '@/lib/mock-interview-feedback';
 import {
   AI_MESSAGE_CHARS, AI_STEPS, AI_TURNS, candidateTurns, openerFor, reportFeedback, writesCode,
@@ -47,6 +48,9 @@ type Item = {
   math: boolean;
   principles: string[];
   question: string;
+  /** A role-play's own Chinese title and question; library questions have one language. */
+  titleZh?: string;
+  questionZh?: string;
   hints: string;
   followUps: string;
   rubric: string;
@@ -78,6 +82,8 @@ type Run = {
   ticket?: string;
   /** A guided question's steps: where the current one began (transcript length, seconds) and those done. */
   guide?: Record<number, Guide>;
+  /** AI interviewer: the learner's own 1–4 per dimension, sent with the report. */
+  self?: Partial<Record<RubricId, number>>;
 };
 /** A finished step, with the AI's feedback unless it was skipped (or the interview's feedback ran out). */
 type GuideDone = { step: string; skipped?: boolean } & Partial<StepFeedback>;
@@ -89,12 +95,14 @@ type Past = {
   name: Text;
   company: string | null;
   at: number;
-  items: { id: string; title: string; kind: KindId; seconds: number; minutes: number; rating: number | null }[];
+  items: { id: string; title: string; titleZh?: string; kind: KindId; seconds: number; minutes: number; rating: number | null }[];
   /** An interviewer's feedback saved with this set: the `#fb=` value. */
   feedback?: string;
   /** The AI interviewer's report on this set, whole: the same encoding, never cut to fit a link. */
   aiFeedback?: string;
   aiPeers?: Peers;
+  /** The self-assessment sent with that report. */
+  aiSelf?: Partial<Record<RubricId, number>>;
 };
 
 const SET_KEYS = ['template', 'company', 'role', 'round', 'mix', 'min', 'set', 'rr'] as const;
@@ -103,6 +111,8 @@ const RUNS = 'cswork:mock-interview:runs',
   AVOID = 'cswork:mock-interview:avoid-seen';
 const RATINGS: Text[] = [['卡住了', 'Stuck'], ['有思路', 'Partial'], ['基本答好', 'Solid'], ['很完整', 'Nailed it']];
 const SCORES: Text[] = [['不足', 'Weak'], ['一般', 'Mixed'], ['良好', 'Good'], ['出色', 'Excellent']];
+/** What a person scores on the interviewer's sheet: the role-plays' dimensions are the AI's alone. */
+const CORE = rubricFor(false);
 
 const pick = (params: Record<string, string>) => {
   const out: Record<string, string> = {};
@@ -196,8 +206,8 @@ function CompanyLogo({ slug }: { slug: string }) {
 
 function Setup({ params, navigate, ai }: { params: Record<string, string>; navigate: Navigate; ai: boolean }) {
   const t = useT();
-  // The LLD template is AI-only: offered when the AI interviewer is.
-  const templates = ai ? [...TEMPLATES, LLD_TEMPLATE] : TEMPLATES;
+  // The LLD and role-play templates are AI-only: offered when the AI interviewer is.
+  const templates = ai ? [...TEMPLATES, ...AI_TEMPLATES] : TEMPLATES;
   const [companies, setCompanies] = useState<Company[] | null>(null);
   const [bank, setBank] = useState<number | null>(null);
   const [error, setError] = useState('');
@@ -659,12 +669,13 @@ function Session({
       at: Date.now(),
       items: data.slots.flatMap((s, i) =>
         s.item
-          ? [{ id: s.item.id, title: s.item.title, kind: s.kind, seconds: Math.round(elapsed[i] ?? 0), minutes: s.minutes, rating: rating(i) }]
+          ? [{ id: s.item.id, title: s.item.title, titleZh: s.item.titleZh, kind: s.kind, seconds: Math.round(elapsed[i] ?? 0), minutes: s.minutes, rating: rating(i) }]
           : [],
       ),
       feedback: old?.feedback,
       aiFeedback: old?.aiFeedback,
       aiPeers: old?.aiPeers,
+      aiSelf: old?.aiSelf,
       ...change(old),
     };
     return write(HISTORY, [entry, ...past.filter((p) => p !== old)].slice(0, 30)) ? entry : null;
@@ -705,6 +716,7 @@ function Session({
         saved={fromLink ? linked === savedFeedback : !!own}
         onSave={saveFeedback}
         known={saved?.items ?? []}
+        self={mode === 'ai' && !fromLink ? saved?.aiSelf : undefined}
       />
     ) : null;
 
@@ -712,9 +724,9 @@ function Session({
    * The AI's whole report, kept with this set in the history beside (never over) an interviewer's
    * feedback; this sitting's time and the AI's ratings replace an earlier save's.
    */
-  const saveReport = (value: string, report: Feedback, peers?: Peers) => {
+  const saveReport = (value: string, report: Feedback, peers?: Peers, self?: Run['self']) => {
     const entry = remember(
-      () => ({ aiFeedback: value, aiPeers: peers }),
+      () => ({ aiFeedback: value, aiPeers: peers, aiSelf: self }),
       (i) => report.questions[i]?.rating ?? null,
       commit(run).elapsed,
     );
@@ -851,7 +863,7 @@ function Plan({
             </span>
             <div className="mi-plan-body">
               <SlotBadges slot={slot} />
-              <h3>{slot.item?.title ?? t('题库暂时没有这类题', 'No question of this kind yet')}</h3>
+              <h3>{slot.item ? t(slot.item.titleZh ?? slot.item.title, slot.item.title) : t('题库暂时没有这类题', 'No question of this kind yet')}</h3>
             </div>
             <span className="mi-plan-min">{slot.minutes}′</span>
             <button
@@ -1016,8 +1028,8 @@ function QuestionCard({ slot, problemIds, showSource }: { slot: DrawnSlot; probl
   return (
     <article className="rd-card mi-question">
       <SlotBadges slot={slot} />
-      <h2>{item.title}</h2>
-      <OaMarkdown body={item.question} math={item.math} />
+      <h2>{t(item.titleZh ?? item.title, item.title)}</h2>
+      <OaMarkdown body={t(item.questionZh ?? item.question, item.question)} math={item.math} />
       {(judge || showSource || design) && (
         <div className="mi-question-foot mi-noprint">
           {design && (
@@ -1354,7 +1366,7 @@ function AiRunner({
   problemIds,
   finish,
   onReport,
-}: SessionProps & { onReport: (value: string, report: Feedback, peers?: Peers) => void }) {
+}: SessionProps & { onReport: (value: string, report: Feedback, peers?: Peers, self?: Run['self']) => void }) {
   const t = useT();
   const locale = useLocale() === 'zh' ? 'zh' : 'en';
   const [draft, setDraft] = useState('');
@@ -1374,6 +1386,8 @@ function AiRunner({
   if (!slot) return null;
   const code = writesCode(slot.kind);
   const last = run.index === data.slots.length - 1;
+  // What the report scores, and so what the learner may rate themselves on first.
+  const dims = rubricFor(data.slots.some((s) => isRoleplay(s.kind)));
   // A guided question (system design, LLD): the step under way and the feedback so far.
   const steps = item ? guideFor(slot.kind, item.category) : null;
   const guide = run.guide?.[run.index] ?? { from: 0, at: 0, done: [] };
@@ -1469,6 +1483,8 @@ function AiRunner({
     try {
       const elapsed = commit(run).elapsed;
       const asked = data.slots.flatMap((s, i) => (s.item ? [i] : []));
+      // Only the dimensions this interview is scored on; none rated is a skipped self-assessment.
+      const self = Object.fromEntries(dims.flatMap((id) => (run.self?.[id] ? [[id, run.self[id]]] : [])));
       const { report, peers } = await ojRequest<{ report: AiReport; peers?: Peers }>('ai/interview-report', {
         seed: query.set,
         ticket: run.ticket,
@@ -1476,6 +1492,7 @@ function AiRunner({
         // Kept with the scores so later reports of this template compare against it.
         template: query.template,
         ...(query.role ? { role: query.role } : {}),
+        ...(Object.keys(self).length ? { self } : {}),
         questions: asked.map((i) => ({
           itemId: data.slots[i].item!.id,
           minutes: data.slots[i].minutes,
@@ -1495,7 +1512,7 @@ function AiRunner({
       );
       // Kept whole on this device; only a shared link is cut to fit.
       const made = encodeFeedback(feedback, Infinity);
-      if (made) onReport(made.value, feedback, peers);
+      if (made) onReport(made.value, feedback, peers, Object.keys(self).length ? self : undefined);
       finish();
     } catch (caught) {
       const failure = caught as Error & { status?: number | string };
@@ -1671,6 +1688,29 @@ function AiRunner({
           </aside>
         )}
       </div>
+      {last && !!used && (
+        <section className="rd-card mi-verdict mi-self" aria-labelledby="mi-self-title">
+          <h2 id="mi-self-title">{t('先给自己打分（可跳过）', 'Rate yourself first (optional)')}</h2>
+          <p className="mi-muted">
+            {t(
+              '按面试官会用的维度给自己打 1–4 分，报告里会并排显示你和面试官的分数。不打就直接生成评估。',
+              "Score yourself 1–4 on the interviewer's dimensions; the report shows yours beside the interviewer's. Leave it blank to skip.",
+            )}
+          </p>
+          <div className="mi-rubric">
+            {RUBRIC.filter((r) => dims.includes(r.id)).map((r) => (
+              <Rating
+                key={r.id}
+                name={t(...r.name)}
+                hint={t(...r.hint)}
+                labels={SCORES}
+                value={run.self?.[r.id]}
+                onChange={(n) => setRun((x) => ({ ...x, self: { ...x.self, [r.id]: n } }))}
+              />
+            ))}
+          </div>
+        </section>
+      )}
       <nav className="mi-steps" aria-label={t('换题', 'Questions')}>
         <button type="button" className="rd-button is-quiet" disabled={!run.index} onClick={() => go(run.index - 1)}>
           <ChevronLeft size={15} aria-hidden="true" /> {t('上一题', 'Previous')}
@@ -1760,7 +1800,7 @@ function AiExtras({ data, run, peers }: { data: MockSet; run: Run; peers?: Peers
         <div key={i}>
           <h2>
             {t(`第 ${i + 1} 题分步得分`, `Question ${i + 1}, step by step`)}
-            <small> · {slot.item?.title}</small>
+            <small> · {slot.item && t(slot.item.titleZh ?? slot.item.title, slot.item.title)}</small>
           </h2>
           <ol className="mi-guide-scores">
             {done.map((d) => {
@@ -1833,7 +1873,7 @@ function Summary({
                   <td>{i + 1}</td>
                   <td>
                     <span className="mi-table-kind">{t(...KINDS[slot.kind].name)}</span>
-                    {slot.item?.title ?? '—'}
+                    {slot.item ? t(slot.item.titleZh ?? slot.item.title, slot.item.title) : '—'}
                   </td>
                   <td data-over={seconds > slot.minutes * 60 || undefined}>
                     {clock(seconds)} / {slot.minutes}′
@@ -1972,7 +2012,7 @@ function InterviewerSheet({ data, query, run, setRun, now, problemIds, finish }:
       <section className="rd-card mi-verdict">
         <h2>{t('总体评价', 'Overall')}</h2>
         <div className="mi-rubric">
-          {RUBRIC.map((r) => (
+          {RUBRIC.filter((r) => CORE.includes(r.id)).map((r) => (
             <Rating
               key={r.id}
               name={t(...r.name)}
@@ -2118,6 +2158,7 @@ export function FeedbackCard({
   saved,
   onSave,
   known = [],
+  self,
 }: {
   data: MockSet;
   query: Record<string, string>;
@@ -2126,7 +2167,9 @@ export function FeedbackCard({
   saved: boolean;
   onSave: () => boolean;
   /** Questions saved with this set in the history: the titles as they were when the feedback was saved. */
-  known?: { id: string; title: string }[];
+  known?: { id: string; title: string; titleZh?: string }[];
+  /** The learner's self-assessment before an AI report, shown beside each score. */
+  self?: Partial<Record<RubricId, number>>;
 }) {
   const t = useT();
   const [failed, setFailed] = useState(false);
@@ -2142,7 +2185,10 @@ export function FeedbackCard({
       </p>
     );
   const average = rubricAverage(feedback.rubric);
-  const verdict = VERDICTS.find(([id]) => id === feedback.verdict);
+  const roleplay = data.slots.some((s) => isRoleplay(s.kind));
+  const verdict = (roleplay ? ROLEPLAY_VERDICTS : VERDICTS).find(([id]) => id === feedback.verdict);
+  // The dimensions this set is scored on, and any other a report scored.
+  const dims = rubricFor(roleplay);
   const sameSet = forSet(feedback, query);
   // Ratings line up by position, but a changed bank draws other questions from the same seed: each
   // rating names its question by tag, and one that's moved is shown by the title it was given for.
@@ -2159,6 +2205,8 @@ export function FeedbackCard({
               <span className="mi-fb-verdict" data-verdict={verdict[0]}>
                 {t(...verdict[1])}
               </span>
+            ) : roleplay ? (
+              t('没有总体评价', 'No overall rating')
             ) : (
               t('没有给录用建议', 'No hiring recommendation')
             )}
@@ -2172,7 +2220,7 @@ export function FeedbackCard({
         <p className="mi-fb-average">
           <span className="mi-led-small">{average ? average.toFixed(1) : '—'}</span>
           <small>/4</small>
-          <span>{t('五项平均', 'Rubric average')}</span>
+          <span>{t('各项平均', 'Rubric average')}</span>
         </p>
       </div>
       <div className="mi-fb-body">
@@ -2186,12 +2234,19 @@ export function FeedbackCard({
           </p>
         )}
         <dl className="mi-fb-rubric">
-          {RUBRIC.map((r) => {
+          {RUBRIC.filter((r) => dims.includes(r.id) || feedback.rubric[r.id]).map((r) => {
             const n = feedback.rubric[r.id];
+            const mine = self?.[r.id];
             return (
               <div key={r.id}>
                 <dt>{t(...r.name)}</dt>
                 <dd>{n ? <Pips n={n} label={`${n} · ${t(...SCORES[n - 1])}`} /> : <span className="mi-muted">{t('未评', 'Not scored')}</span>}</dd>
+                {mine && (
+                  <dd className="mi-fb-self">
+                    {t(`你的自评 ${mine}`, `You: ${mine}`)} · {t(`面试官 ${n ?? '—'}`, `Interviewer: ${n ?? '—'}`)}
+                    {n ? ` · ${t('差值', 'Gap')} ${mine - n > 0 ? '+' : ''}${mine - n}` : ''}
+                  </dd>
+                )}
               </div>
             );
           })}
@@ -2220,7 +2275,8 @@ export function FeedbackCard({
                 const drawn = data.slots[i];
                 // An untagged rating can't be checked, so it takes the slot as is.
                 const slot = !q.tag || (drawn?.item && questionTag(drawn.item.id) === q.tag) ? drawn : undefined;
-                const title = slot ? slot.item?.title : titles.find((x) => questionTag(x.id) === q.tag)?.title;
+                const named = slot ? slot.item : titles.find((x) => questionTag(x.id) === q.tag);
+                const title = named ? t(named.titleZh ?? named.title, named.title) : undefined;
                 return (
                   <li key={i}>
                     <span className="mi-fb-no" aria-hidden="true">

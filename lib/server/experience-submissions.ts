@@ -27,7 +27,8 @@ import type Database from 'better-sqlite3';
  * Interview experiences members write themselves (db/experience-submissions-schema.ts). A post
  * is public only after a teacher approves it; until then its author and teachers see it. Public
  * posts merge into the experiences list (content-library.ts) and company pages, marked as member
- * submissions, under the slug `member.<id>`. Authors are named only by an opted-in public handle.
+ * submissions, under the slug `member.<id>`. Authors are named only by an opted-in public handle,
+ * and an anonymous post by none (only teachers' review queue still shows whose it is).
  */
 const DAY = 86400000;
 // ponytail: flat caps; a reputation system can loosen them for trusted authors later.
@@ -132,6 +133,8 @@ const submission = z
       .default(null)
       .transform((s) => s || null),
     durationWeeks: z.number().int().min(0).max(104).nullable().default(null),
+    // Shown without the author's handle.
+    anonymous: z.boolean().default(false),
     // The author confirms it is their own interview and that it shares nothing under NDA.
     agree: z.literal(true),
   })
@@ -159,12 +162,16 @@ type Row = {
   season?: string | null;
   location?: string | null;
   duration_weeks?: number | null;
+  anonymous?: number;
   handle?: string | null;
   verified?: number | null;
   flags?: number;
 };
-const HANDLE = `(SELECT u.handle FROM user_profiles u WHERE u.user_id=s.user_id AND u.visible=1) AS handle,
+/** The author's public handle where `shown` holds; every public read leaves anonymous posts' out. */
+const handleSql = (shown: string) => `(SELECT u.handle FROM user_profiles u WHERE u.user_id=s.user_id AND u.visible=1
+    AND ${shown}) AS handle,
   (SELECT a.email_verified FROM "user" a WHERE a.id=s.user_id) AS verified`;
+const HANDLE = handleSql('s.anonymous=0');
 const DETAILS = 's.difficulty,s.sentiment,s.channel,s.employment,s.season,s.location,s.duration_weeks';
 const FLAGS = `(SELECT COUNT(*) FROM experience_flags f WHERE f.submission_id=s.id)`;
 const PUBLIC = `s.status='approved' AND ${FLAGS}<${FLAGS_HIDE}`;
@@ -542,8 +549,8 @@ export async function submitExperience(p: Person, input: unknown, now = Date.now
   const id = randomBytes(9).toString('base64url');
   db.prepare(
     `INSERT INTO experience_submissions(id,user_id,company_slug,title,role,rounds,result,interview_month,body,questions,
-      difficulty,sentiment,channel,employment,season,location,duration_weeks,created_at)
-    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      difficulty,sentiment,channel,employment,season,location,duration_weeks,anonymous,created_at)
+    VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
   ).run(
     id,
     p.id,
@@ -562,6 +569,7 @@ export async function submitExperience(p: Person, input: unknown, now = Date.now
     d.season,
     d.location,
     d.durationWeeks,
+    d.anonymous ? 1 : 0,
     now,
   );
   return readMember(id, p)!;
@@ -612,7 +620,7 @@ export function reviewQueue() {
     (
       db
         .prepare(
-          `SELECT s.*,${HANDLE},${FLAGS} AS flags,
+          `SELECT s.*,${handleSql('1')},${FLAGS} AS flags,
             (SELECT group_concat(f.reason || CASE WHEN f.note<>'' THEN ': ' || f.note ELSE '' END, char(10))
               FROM experience_flags f WHERE f.submission_id=s.id) AS reasons
           FROM experience_submissions s WHERE ${where} ORDER BY ${order} LIMIT 50`,
@@ -627,6 +635,8 @@ export function reviewQueue() {
       note: r.review_note,
       createdAt: r.created_at,
       flags: r.flags ?? 0,
+      // Published without the handle shown here.
+      anonymous: !!r.anonymous,
       reasons: r.reasons ? r.reasons.split('\n') : [],
       // A company hidden or without a page since: approving would not publish it.
       shown: names.has(r.company_slug),

@@ -319,6 +319,12 @@ const EN: Record<string, string> = {
   今天发布的帖子已达上限: "You've reached today's limit for posts",
   请填写标题: 'Please add a title',
   标签无效: 'Unknown tag',
+  // Discussion v2: anonymous posts, replies, comment votes and their notices
+  这里不能匿名发帖: "You can't post anonymously here",
+  不能给自己的评论点赞: "You can't upvote your own comment",
+  有人回复了你的帖子: 'New reply to your post',
+  有人回复了你的评论: 'New reply to your comment',
+  有人在讨论中提到了你: 'You were mentioned in a discussion',
   // Thread polls (lib/server/solution-posts.ts)
   只有讨论帖可以发起投票: 'Only discussion threads can have a poll',
   投票截止时间要晚于现在: 'The poll must close in the future',
@@ -333,6 +339,9 @@ const EN: Record<string, string> = {
   主页不存在: 'Profile not found',
   不能关注自己: "You can't follow yourself",
   关注人数已达上限: "You're following as many people as you can",
+  // Application tracker (lib/server/applications.ts)
+  投递记录已达上限: "You've reached the limit for tracked applications",
+  投递记录不存在: 'Application not found',
   今天的评论已达上限: "You've reached today's limit for comments",
   今天的举报次数已达上限: "You've reached today's limit for reports",
   '代码最多 64 KiB': 'Code can be at most 64 KiB',
@@ -556,6 +565,13 @@ const PATTERNS: [RegExp, (...m: string[]) => string][] = [
   [/^题目文件最多 (\d+(?:\.\d+)?) MiB$/, (n) => `The problem file can be at most ${n} MiB`],
   [/^课程更新：([\s\S]+)$/, (title) => `Course update: ${title}`],
   [/^服务暂时不可用（(\d+)）$/, (status) => `Service temporarily unavailable (${status})`],
+  // POST problems/<id>/expected (lib/testcase-fields.ts checkConstraints)
+  [
+    /^超出题目约束：(\S+) (长度|节点数|的值) (\S+ [<>] \S+)$/,
+    (name, what, rest) =>
+      `Outside the problem's constraints: ${name} ${what === '的值' ? 'value' : what === '节点数' ? 'node count' : 'length'} ${rest}`,
+  ],
+  [/^(\d+) 人赞了你的帖子$/, (n) => `${n} ${n === '1' ? 'person' : 'people'} upvoted your post`],
 ];
 
 export function englishMessage(message: string) {

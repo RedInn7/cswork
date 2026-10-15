@@ -17,8 +17,9 @@ import { HttpError, json, limit, limitReader, requirePerson } from './http';
 import { mockReport } from './mock-oa';
 import { readJson } from './my-practice';
 import { canSeeProblem, listProblemSummaries } from './oj-problems';
+import { mutualFollow } from './follows';
 import { dailyDays } from './points';
-import { visibleTarget } from './solution-posts';
+import { reputationSql, visibleTarget } from './solution-posts';
 import { badgeName, badgeSql, badgeTarget } from './work-verify';
 
 /**
@@ -321,7 +322,7 @@ function listItems(id: string) {
   ).filter((i) => !hiddenProblem(i.problemId, hidden));
 }
 /** The owner's handle when their public profile is on; nobody else is ever named. */
-function ownerHandle(ownerId: string) {
+export function ownerHandle(ownerId: string) {
   return (
     (
       sqlite()
@@ -566,10 +567,39 @@ async function handleLists(request: Request, p: Person | null, id?: string, acti
 // ---------------------------------------------------------------- public profile
 
 const RESERVED = new Set([
-  'admin', 'api', 'cswork', 'help', 'lists', 'me', 'owner', 'privacy', 'profile',
+  'admin', 'api', 'compare', 'cswork', 'help', 'lists', 'me', 'owner', 'privacy', 'profile',
   'root', 'settings', 'support', 'teacher', 'u', 'user', 'users',
 ]);
 export const HANDLE = /^[a-z0-9](?:[a-z0-9-]{1,28})[a-z0-9]$/;
+/** Each link kind but a personal website must point at its own site (or a subdomain of it). */
+const LINK_HOSTS: Record<string, readonly string[]> = {
+  github: ['github.com'],
+  linkedin: ['linkedin.com'],
+  x: ['x.com', 'twitter.com'],
+};
+/**
+ * https only, no credentials, and the right site; javascript: and plain http: never reach a page.
+ * The 200 cap is on the stored (percent-encoded) href, so a saved link always fits when sent back.
+ */
+function linkAllowed({ kind, url }: { kind: string; url: string }) {
+  if (!URL.canParse(url)) return false;
+  const { protocol, username, password, hostname, href } = new URL(url);
+  const hosts = LINK_HOSTS[kind];
+  return (
+    href.length <= 200 &&
+    protocol === 'https:' &&
+    !username &&
+    !password &&
+    (hosts ? hosts.some((h) => hostname === h || hostname.endsWith(`.${h}`)) : hostname.includes('.'))
+  );
+}
+const profileLink = z
+  .object({ kind: z.enum(['website', 'github', 'linkedin', 'x']), url: z.string().trim().max(200) })
+  .strict()
+  .refine(linkAllowed)
+  .transform((link) => ({ kind: link.kind, url: new URL(link.url).href }));
+/** The school board key: NFKC, lowercase, no punctuation, symbols or spaces ("M.I.T.", "ＭＩＴ" and "mit" meet). */
+export const schoolKey = (school: string) => school.normalize('NFKC').toLowerCase().replace(/[\p{P}\p{S}\s]/gu, '');
 const profileInput = z
   .object({
     handle: z
@@ -584,6 +614,11 @@ const profileInput = z
     bio: z.string().trim().max(160).default(''),
     // Absent keeps the current one; null takes it down.
     featuredBadge: z.string().max(200).nullable().optional(),
+    // Card fields: absent keeps what is saved, so an older settings page never clears them.
+    links: z.array(profileLink).max(4).optional(),
+    school: z.string().trim().max(80).optional(),
+    gradYear: z.number().int().min(1990).max(2040).nullable().optional(),
+    targetRole: z.string().trim().max(60).optional(),
   })
   .strict();
 type ProfileRow = {
@@ -594,7 +629,19 @@ type ProfileRow = {
   show_contest: number;
   bio: string;
   featured_badge: string | null;
+  links_json: string;
+  school: string;
+  grad_year: number | null;
+  target_role: string;
 };
+type ProfileLink = { kind: 'website' | 'github' | 'linkedin' | 'x'; url: string };
+/** The self-reported card: links, school, graduation year and target role. */
+const card = (r: ProfileRow) => ({
+  links: JSON.parse(r.links_json) as ProfileLink[],
+  school: r.school,
+  gradYear: r.grad_year,
+  targetRole: r.target_role,
+});
 function myProfile(userId: string) {
   const r = sqlite()
     .prepare('SELECT * FROM user_profiles WHERE user_id=?')
@@ -607,6 +654,7 @@ function myProfile(userId: string) {
         showContest: !!r.show_contest,
         bio: r.bio,
         featuredBadge: r.featured_badge,
+        ...card(r),
       }
     : null;
 }
@@ -618,13 +666,20 @@ async function handleProfile(request: Request, p: Person) {
   if (request.method === 'GET') {
     await limit(p, 'profile-read', 60);
     const profile = myProfile(p.id);
-    return json({ profile, badges: profile ? await featurable(p.id, profile.showContest) : [] });
+    return json({
+      profile,
+      badges: profile ? await featurable(p.id, profile.showContest) : [],
+      // The years /u/<handle>/recap/<year> serves (UTC, public problems only): My progress links only these.
+      recapYears: profile?.visible ? activeYears(p.id, shownIn(await publicCatalogue())) : [],
+    });
   }
   if (request.method !== 'POST') throw new HttpError(404, '接口不存在');
   await limit(p, 'profile-write', 20);
-  const d = profileInput.parse(await readJson(request, 2000));
+  const d = profileInput.parse(await readJson(request, 4000));
   if (d.visible) requireVerified(p);
-  const featured = d.featuredBadge === undefined ? (myProfile(p.id)?.featuredBadge ?? null) : d.featuredBadge;
+  const saved = myProfile(p.id);
+  const featured = d.featuredBadge === undefined ? (saved?.featuredBadge ?? null) : d.featuredBadge;
+  const school = d.school ?? saved?.school ?? '';
   // Checked on every save: a badge given up since (or a contest one with the curve hidden) is refused.
   // Sent back too, so a first save or a shown curve fills the picker without a reload.
   const badges = await featurable(p.id, d.visible && d.showContest);
@@ -634,11 +689,14 @@ async function handleProfile(request: Request, p: Person) {
   try {
     sqlite()
       .prepare(
-        `INSERT INTO user_profiles(user_id,handle,visible,indexable,show_contest,bio,featured_badge,created_at,updated_at)
-        VALUES(?,?,?,?,?,?,?,?,?)
+        `INSERT INTO user_profiles(user_id,handle,visible,indexable,show_contest,bio,featured_badge,links_json,school,
+          school_key,grad_year,target_role,created_at,updated_at)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         ON CONFLICT(user_id) DO UPDATE SET handle=excluded.handle,visible=excluded.visible,
           indexable=excluded.indexable,show_contest=excluded.show_contest,bio=excluded.bio,
-          featured_badge=excluded.featured_badge,updated_at=excluded.updated_at`,
+          featured_badge=excluded.featured_badge,links_json=excluded.links_json,school=excluded.school,
+          school_key=excluded.school_key,grad_year=excluded.grad_year,target_role=excluded.target_role,
+          updated_at=excluded.updated_at`,
       )
       .run(
         p.id,
@@ -648,6 +706,11 @@ async function handleProfile(request: Request, p: Person) {
         +(d.visible && d.showContest),
         d.bio,
         featured,
+        JSON.stringify(d.links ?? saved?.links ?? []),
+        school,
+        schoolKey(school),
+        d.gradYear === undefined ? (saved?.gradYear ?? null) : d.gradYear,
+        d.targetRole ?? saved?.targetRole ?? '',
         now,
         now,
       );
@@ -679,50 +742,87 @@ const STOP_TOTALS = curatedEntries.reduce(
   (m, e) => m.set(e.sectionSlug, (m.get(e.sectionSlug) ?? 0) + 1),
   new Map<string, number>(),
 );
+const stopOf = (id: string) => curatedByNumber.get(Number(/^lc-(\d+)$/.exec(id)?.[1]))?.sectionSlug;
+/** Only published OA and LeetCode problems a guest can open count on public pages. */
+const shownIn = (catalogue: PublicCatalogue) => (id: string) => problemId.safeParse(id).success && catalogue.has(id);
+const visibleProfile = (handle: string) =>
+  HANDLE.test(handle)
+    ? (sqlite().prepare('SELECT * FROM user_profiles WHERE handle=? AND visible=1').get(handle) as ProfileRow | undefined)
+    : undefined;
+/** Solved counts by difficulty and by Line 500 stop. */
+function tally(ids: Iterable<string>, catalogue: PublicCatalogue) {
+  const levels: Record<Slot, number> = { easy: 0, medium: 0, hard: 0 };
+  const stops = new Map<string, number>();
+  let total = 0;
+  for (const id of ids) {
+    total++;
+    const level = slotOf(catalogue.get(id)?.difficulty);
+    if (level) levels[level]++;
+    const stop = stopOf(id);
+    if (stop) stops.set(stop, (stops.get(stop) ?? 0) + 1);
+  }
+  return { solved: { total, ...levels }, stops };
+}
+/** Every shown problem with an AC, latest AC first. */
+function solvedList(userId: string, shown: (id: string) => boolean) {
+  return (
+    sqlite()
+      .prepare(
+        `SELECT problem_id AS id,MAX(created_at) AS at FROM submissions
+        WHERE user_id=? AND mode='judge' AND status='accepted' GROUP BY problem_id ORDER BY at DESC,problem_id`,
+      )
+      .all(userId) as { id: string; at: number }[]
+  ).filter((s) => shown(s.id));
+}
+/** UTC years with an AC on a shown problem, newest first: the profile's year picker. */
+function activeYears(userId: string, shown: (id: string) => boolean) {
+  const years = new Set<number>();
+  for (const r of sqlite()
+    .prepare(
+      `SELECT DISTINCT problem_id AS id,CAST(strftime('%Y',created_at/1000,'unixepoch') AS INTEGER) AS y FROM submissions
+      WHERE user_id=? AND mode='judge' AND status='accepted'`,
+    )
+    .all(userId) as { id: string; y: number }[])
+    if (shown(r.id)) years.add(r.y);
+  return [...years].sort((a, b) => b - a);
+}
+/**
+ * Heatmap buckets as the profile sends them: distinct problems per whole UTC hour, numbered
+ * opaquely in this response (no problem ids or exact times for guests).
+ */
+function activityBuckets(userId: string, shown: (id: string) => boolean, from: number, to: number, max: number) {
+  const ordinal = new Map<string, string>();
+  return (
+    sqlite()
+      .prepare(
+        `SELECT problem_id,created_at/${HOUR} AS hour FROM submissions WHERE user_id=? AND mode='judge'
+        AND status='accepted' AND created_at>=? AND created_at<? GROUP BY problem_id,hour ORDER BY hour DESC LIMIT ?`,
+      )
+      .all(userId, from, to, max) as { problem_id: string; hour: number }[]
+  ).flatMap((a) => {
+    if (!shown(a.problem_id)) return [];
+    if (!ordinal.has(a.problem_id)) ordinal.set(a.problem_id, String(ordinal.size));
+    return [{ problem_id: ordinal.get(a.problem_id)!, created_at: a.hour * HOUR }];
+  });
+}
 /**
  * A visible profile's page data, or null (hidden, missing and switched off look the same).
  * Only published OA and LeetCode problems in `catalogue` count: course exercises (maybe paid)
  * and hidden companies never show.
  */
 export function publicProfile(handle: string, catalogue: PublicCatalogue, now = Date.now()) {
-  if (!HANDLE.test(handle)) return null;
-  const shown = (id: string) => problemId.safeParse(id).success && catalogue.has(id);
+  const shown = shownIn(catalogue);
   const db = sqlite();
-  const profile = db
-    .prepare('SELECT * FROM user_profiles WHERE handle=? AND visible=1')
-    .get(handle) as ProfileRow | undefined;
+  const profile = visibleProfile(handle);
   if (!profile) return null;
-  const solved = (
-    db
-      .prepare(
-        `SELECT problem_id AS id,MAX(created_at) AS at FROM submissions
-        WHERE user_id=? AND mode='judge' AND status='accepted' GROUP BY problem_id ORDER BY at DESC,problem_id`,
-      )
-      .all(profile.user_id) as { id: string; at: number }[]
-  ).filter((s) => shown(s.id));
-  const levels: Record<Slot, number> = { easy: 0, medium: 0, hard: 0 };
-  const stops = new Map<string, number>();
-  for (const s of solved) {
-    const level = slotOf(catalogue.get(s.id)?.difficulty);
-    if (level) levels[level]++;
-    const stop = curatedByNumber.get(Number(/^lc-(\d+)$/.exec(s.id)?.[1]))?.sectionSlug;
-    if (stop) stops.set(stop, (stops.get(stop) ?? 0) + 1);
-  }
+  const solved = solvedList(profile.user_id, shown);
+  const { solved: counts, stops } = tally(
+    solved.map((s) => s.id),
+    catalogue,
+  );
   // The heatmap needs only "distinct problems per local day": whole UTC hours (a :30 time zone
   // may shift an AC near midnight by a day) and opaque problem numbers, nothing finer.
-  const ordinal = new Map<string, string>();
-  const activity = (
-    db
-      .prepare(
-        `SELECT problem_id,created_at/${HOUR} AS hour FROM submissions WHERE user_id=? AND mode='judge'
-        AND status='accepted' AND created_at>? GROUP BY problem_id,hour ORDER BY hour DESC LIMIT 5000`,
-      )
-      .all(profile.user_id, now - 183 * DAY) as { problem_id: string; hour: number }[]
-  ).flatMap((a) => {
-    if (!shown(a.problem_id)) return [];
-    if (!ordinal.has(a.problem_id)) ordinal.set(a.problem_id, String(ordinal.size));
-    return [{ problem_id: ordinal.get(a.problem_id)!, created_at: a.hour * HOUR }];
-  });
+  const activity = activityBuckets(profile.user_id, shown, now - 183 * DAY, Number.MAX_SAFE_INTEGER, 5000);
   // Counted like /u/lists/<id> shows them: only problems a guest can open.
   const lists = (
     db
@@ -748,14 +848,15 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
   const hidden = hiddenCompanies();
   // The verified employee badge, only if its owner switched it on for the profile.
   const employer = badgeName(db.prepare(`SELECT ${badgeSql('?', 'profile')}`).pluck().get(profile.user_id) as string | null);
-  // Posts anyone can open: solutions on public problems and threads; reported-down ones stay out.
-  // Beside the badge only posts that could carry it, never interview, career or offer talk or OA solutions.
+  // Posts anyone can open: solutions on public problems and threads; reported-down and anonymous
+  // ones stay out. Beside the badge only posts that could carry it, never interview, career or offer
+  // talk or OA solutions.
   const posts = (
     db
       .prepare(
         `SELECT sp.id,sp.problem_id AS target,sp.title,sp.tag,sp.created_at AS createdAt,
           (SELECT COUNT(*) FROM post_votes v WHERE v.post_id=sp.id) AS votes
-        FROM solution_posts sp WHERE sp.user_id=? AND sp.hidden=0
+        FROM solution_posts sp WHERE sp.user_id=? AND sp.hidden=0 AND sp.anonymous=0
           AND (SELECT COUNT(*) FROM post_reports r WHERE r.target='post:'||sp.id AND r.reason<>'${REPORT_CLEARED}')<${REPORTS_HIDE}
         ORDER BY sp.created_at DESC LIMIT 500`,
       )
@@ -780,16 +881,20 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
   return {
     handle: profile.handle,
     bio: profile.bio,
+    ...card(profile),
     indexable: !!profile.indexable,
-    solved: { total: solved.length, ...levels },
+    solved: counts,
     // Line order, only the stops reached.
     stops: [...STOP_TOTALS]
       .filter(([stop]) => stops.has(stop))
       .map(([stop, total]) => ({ slug: stop, solved: stops.get(stop)!, total })),
     activity,
+    years: activeYears(profile.user_id, shown),
     recent: solved.slice(0, 10).map((s) => ({ id: s.id, at: s.at - (s.at % HOUR) })),
     lists,
     listStars,
+    // Answer reputation (solution-posts reputationSql): upvotes on posts and approved interview reports.
+    reputation: db.prepare(`SELECT ${reputationSql('@u')}`).pluck().get({ u: profile.user_id }) as number,
     languages: [...byLanguage].map(([language, n]) => ({ language, n })).sort((a, b) => b.n - a.n),
     // Rated weeklies and starters, oldest first (lib/server/contests.ts): the curve and the contest badges.
     contest: contest.map(({ week, kind, after, rank, entrants }) => ({ week, kind, after, rank, entrants })),
@@ -815,6 +920,90 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
   };
 }
 
+/** Widest time zone offsets (UTC−12 to UTC+14): a reader's local year lies inside the padded UTC one. */
+const YEAR_PAD = 14 * HOUR;
+/**
+ * One year of a visible profile, or null: the heatmap buckets (padded so the reader's browser can
+ * cut its own local year out of them), distinct problems solved that UTC year by difficulty, the
+ * five Line 500 stops with most of them, and with contests shown the year's rated contests and the
+ * rating before the first and after the last.
+ */
+export function publicYear(handle: string, year: number, catalogue: PublicCatalogue, now = Date.now()) {
+  if (!Number.isInteger(year) || year < 2000 || year > new Date(now + YEAR_PAD).getUTCFullYear()) return null;
+  const profile = visibleProfile(handle);
+  if (!profile) return null;
+  const shown = shownIn(catalogue);
+  const from = Date.UTC(year, 0, 1);
+  const to = Date.UTC(year + 1, 0, 1);
+  const ids = (
+    sqlite()
+      .prepare(
+        `SELECT DISTINCT problem_id FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'
+        AND created_at>=? AND created_at<?`,
+      )
+      .pluck()
+      .all(profile.user_id, from, to) as string[]
+  ).filter(shown);
+  const { solved, stops } = tally(ids, catalogue);
+  const races = profile.show_contest ? ratingHistory(profile.user_id).filter((c) => c.at >= from && c.at < to) : [];
+  return {
+    handle: profile.handle,
+    indexable: !!profile.indexable,
+    year,
+    years: activeYears(profile.user_id, shown),
+    // ponytail: 20000 hour buckets is ~55 a day; a busier year loses its oldest cells.
+    activity: activityBuckets(profile.user_id, shown, from - YEAR_PAD, to + YEAR_PAD, 20000),
+    solved,
+    stops: [...stops]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .slice(0, 5)
+      .map(([slug, n]) => ({ slug, solved: n, total: STOP_TOTALS.get(slug)! })),
+    contest: races.length ? { contests: races.length, start: races[0].before, end: races.at(-1)!.after } : null,
+  };
+}
+
+/**
+ * Two or three visible profiles side by side, or null when any is hidden or missing: the solved
+ * counts and Line 500 stops each page already shows, plus how many problems all of them solved.
+ * Never which problems: a profile lists only its ten latest.
+ *
+ * That shared count is null unless the viewer is one of them and follows each of the others both
+ * ways: otherwise a throwaway account that accepts one problem and compares itself with someone
+ * learns whether they solved it.
+ */
+export function publicCompare(handles: readonly string[], catalogue: PublicCatalogue, viewerId: string | null = null) {
+  const unique = [...new Set(handles)];
+  if (unique.length < 2 || unique.length > 3) return null;
+  const shown = shownIn(catalogue);
+  const people: {
+    userId: string;
+    handle: string;
+    solved: ReturnType<typeof tally>['solved'];
+    stops: Record<string, number>;
+    ids: Set<string>;
+  }[] = [];
+  for (const handle of unique) {
+    const profile = visibleProfile(handle);
+    if (!profile) return null;
+    const ids = new Set(solvedList(profile.user_id, shown).map((s) => s.id));
+    const { solved, stops } = tally(ids, catalogue);
+    people.push({ userId: profile.user_id, handle: profile.handle, solved, stops: Object.fromEntries(stops), ids });
+  }
+  const [first, ...rest] = people;
+  const friends =
+    !!viewerId &&
+    people.some((p) => p.userId === viewerId) &&
+    people.every((p) => p.userId === viewerId || mutualFollow(viewerId, p.userId));
+  return {
+    people: people.map((p) => ({ handle: p.handle, solved: p.solved, stops: p.stops })),
+    common: friends ? [...first.ids].filter((id) => rest.every((p) => p.ids.has(id))).length : null,
+    // Line order, every stop anyone reached.
+    stops: [...STOP_TOTALS]
+      .filter(([slug]) => people.some((p) => p.stops[slug]))
+      .map(([slug, total]) => ({ slug, total })),
+  };
+}
+
 /**
  * The badges a profile has earned, from the same inputs as My progress: Line 500 stops, every AC
  * (shown problems only), OA companies of the public catalogue, the stored mock OAs, the daily
@@ -830,7 +1019,7 @@ function profileBadges(userId: string, catalogue: PublicCatalogue, contest: Retu
   const solved = new Set(ac.map((s) => s.id));
   const stops = new Map<string, number>();
   for (const id of solved) {
-    const stop = curatedByNumber.get(Number(/^lc-(\d+)$/.exec(id)?.[1]))?.sectionSlug;
+    const stop = stopOf(id);
     if (stop) stops.set(stop, (stops.get(stop) ?? 0) + 1);
   }
   const count = (prefix: string) => [...solved].filter((id) => id.startsWith(prefix)).length;

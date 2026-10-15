@@ -12,9 +12,9 @@ import { breadcrumbJsonLd, oaPageTitle, seoMetadata } from '@/lib/seo';
 import { requestLocale } from '@/lib/server/locale';
 import { oaReadyProblems } from '@/lib/server/oa-judge';
 import { oaLibrary } from '@/lib/server/oa-library';
-import { mockPresetFor } from '@/lib/server/mock-oa-presets';
+import { MOCK_PRESETS_UPDATED, mockPresetFor } from '@/lib/server/mock-oa-presets';
 import { oaDifficulty } from '@/lib/server/oa-topics';
-import { OaCompanyMark, OaDifficulty, oaTopicLine } from '../parts';
+import { OaCompanyMark, OaDifficulty, OaExamFormat, oaTopicLine } from '../parts';
 
 type Props = { params: Promise<{ company: string }> };
 const load = cache(async (slug: string) => {
@@ -46,10 +46,8 @@ export default async function OaCompanyPage({ params }: Props) {
     (await params).company,
   );
   const zh = locale === 'zh';
-  const mock =
-    company.slug !== OTHER_COMPANY && company.ready > 0
-      ? (mockPresetFor(company.slug)?.slug ?? null)
-      : null;
+  const preset = company.slug !== OTHER_COMPANY ? mockPresetFor(company.slug) : undefined;
+  const mock = company.ready > 0 ? (preset?.slug ?? null) : null;
   return (
     <>
       <script
@@ -81,6 +79,7 @@ export default async function OaCompanyPage({ params }: Props) {
           <p className="public-library-summary">{lead}</p>
         </div>
       </header>
+      {preset && <OaExamFormat preset={preset} updated={MOCK_PRESETS_UPDATED} zh={zh} />}
       <div className="oa-public-actions">
         {/* A mock needs a preset page and only draws judge-ready problems. */}
         {mock && (

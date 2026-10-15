@@ -434,6 +434,12 @@ export async function releasePage(p: Person, url: URL) {
 export async function notificationPage(p: Person, url: URL) {
   const args: SqlValue[] = [p.id],
     where = ['user_id=?'];
+  // ?kind=: the inbox's reply, @mention and upvote tabs (lib/server/notify.ts kinds).
+  const kind = url.searchParams.get('kind') ?? '';
+  if (['reply', 'mention', 'like'].includes(kind)) {
+    where.push('kind=?');
+    args.push(kind);
+  }
   const cursor = cursorFrom(url);
   if (cursor) {
     where.push('(created_at<? OR (created_at=? AND id<?))');

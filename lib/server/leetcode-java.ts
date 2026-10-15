@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { packageLevel } from './leetcode-go';
+import { packageLevel, upgradeLegacy } from './leetcode-go';
 const definitions: Record<string, string> = {
   TreeNode:
     'class TreeNode { int val; TreeNode left, right; TreeNode() {} TreeNode(int v) { val=v; } TreeNode(int v,TreeNode l,TreeNode r) {val=v;left=l;right=r;} }',
@@ -10,8 +10,13 @@ const definitions: Record<string, string> = {
   Interval:
     'class Interval { int start,end; Interval() {} Interval(int s,int e){start=s;end=e;} }',
   MountainArray:
-    'class MountainArray { int[] values; int calls; public int get(int i){if(++calls>100)throw new IllegalStateException("MountainArray.get exceeds 100 calls");return values[i];} public int length(){return values.length;} }',
+    // The judge builds it from closures holding the array and the call count:
+    // even an edited copy of this class has no field that exposes either.
+    'final class MountainArray { private final java.util.function.IntUnaryOperator read; private final java.util.function.IntSupplier size; MountainArray(java.util.function.IntUnaryOperator read, java.util.function.IntSupplier size){this.read=read;this.size=size;} public int get(int i){return read.applyAsInt(i);} public int length(){return size.getAsInt();} }',
 };
+// What the template shipped before the call budget moved into closures (40e7397d7).
+const legacyMountainArray =
+  'class MountainArray { int[] values; int calls; public int get(int i){if(++calls>100)throw new IllegalStateException("MountainArray.get exceeds 100 calls");return values[i];} public int length(){return values.length;} }';
 // Like LeetCode, only the types the official signature uses; the runtime is
 // reflective and names none, so every other name belongs to the learner.
 function helpers(source: string, signature: string) {
@@ -36,8 +41,12 @@ export function buildLeetCodeJava(
   source: string,
   snippet: string,
 ): string {
-  const code = source
-    .replace(/^\s*package\s+[^;]+;/m, '')
-    .replace(/\bpublic\s+class\s+/g, 'class ');
+  const code = upgradeLegacy(
+    source
+      .replace(/^\s*package\s+[^;]+;/m, '')
+      .replace(/\bpublic\s+class\s+/g, 'class '),
+    legacyMountainArray,
+    definitions.MountainArray,
+  );
   return `import java.util.*;\nimport java.math.*;\n${code}\n${helpers(code, snippet)}\n${readFileSync(join(process.cwd(), 'scripts/leetcode-mode/java/runtime.java'), 'utf8')}\npublic class Main { public static void main(String[] a) throws Exception { CsworkRuntime.main(a); } }\n`;
 }

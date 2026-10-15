@@ -135,7 +135,16 @@ func main() {
 		case "Interval":
 			o = &cswPlatformInterval{}
 		case "MountainArray":
-			o = &cswPlatformMountainArray{}
+			// The array and the call count exist only in these closures.
+			values := csdecode(n["fields"].(map[string]interface{})["values"], csreflect.TypeOf([]int{})).Interface().([]int)
+			calls := 0
+			o = &cswPlatformMountainArray{get_: func(i int) int {
+				calls++
+				if calls > 100 {
+					panic("MountainArray.get exceeds 100 calls")
+				}
+				return values[i]
+			}, length_: func() int { return len(values) }}
 		default:
 			panic("Unknown node")
 		}
@@ -144,6 +153,10 @@ func main() {
 		csnodes = append(csnodes, v)
 	}
 	for i, x := range ns {
+		// A learner struct may add a Values field; it must stay empty.
+		if x.(map[string]interface{})["type"] == "MountainArray" {
+			continue
+		}
 		for k, v := range x.(map[string]interface{})["fields"].(map[string]interface{}) {
 			f := csnodes[i].Elem().FieldByName(csstrings.ToUpper(k[:1]) + k[1:])
 			if f.IsValid() && f.CanSet() {
@@ -164,7 +177,7 @@ func main() {
 		fields := map[string]interface{}{}
 		for j := 0; j < o.NumField(); j++ {
 			name := o.Type().Field(j).Name
-			if name == "Calls" {
+			if o.Field(j).Kind() == csreflect.Func {
 				continue
 			}
 			fields[csstrings.ToLower(name[:1])+name[1:]] = csencode(o.Field(j))

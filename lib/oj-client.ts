@@ -1,6 +1,7 @@
 import type { Problem, Language } from './problems';
 import type { CodingMode } from './coding-mode';
 import type { CompanyChip } from './company-tags';
+import type { Constraint } from './testcase-fields';
 import { readLocale } from './i18n';
 
 export type OJProblem = Problem & {
@@ -22,6 +23,10 @@ export type OJProblem = Problem & {
   leetcodeInputHelp?: { zh: string; en: string } | null;
   /** LeetCode mode's parameters, one custom-case field each; null keeps the raw text. */
   leetcodeParams?: { name: string; type: string }[] | null;
+  /** The type a LeetCode-mode run prints (void in-place: the parameter); trees and lists are drawn. */
+  leetcodeReturnType?: string | null;
+  /** Each parameter's [min, max] length and value bounds from the statement; hints, never a gate. */
+  leetcodeConstraints?: Record<string, Constraint> | null;
   /** How outputs are compared; line-by-line diffs only make sense for exact and tokens. */
   checker?: string;
   practiceRound?: { id: string; number: number } | null;

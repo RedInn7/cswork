@@ -37,7 +37,7 @@ export async function PostsPreview({
           {posts.map((post) => (
             <li key={post.id}>
               <p className="discuss-preview-meta">
-                <span>{post.author || (zh ? '学员' : 'Learner')}</span>
+                <span>{post.anonymous ? (zh ? '匿名用户' : 'Anonymous') : post.author || (zh ? '学员' : 'Learner')}</span>
                 <span>{day(post.createdAt, zh)}</span>
                 <span>{zh ? `${post.votes} 赞` : `${post.votes} ${post.votes === 1 ? 'upvote' : 'upvotes'}`}</span>
               </p>

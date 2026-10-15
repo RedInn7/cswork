@@ -31,6 +31,8 @@ export const experienceSubmissions = sqliteTable(
     season: text('season'),
     location: text('location'),
     durationWeeks: integer('duration_weeks'),
+    // 1: shown without the author's handle (the author and teachers still know whose it is).
+    anonymous: integer('anonymous').notNull().default(0),
     status: text('status').notNull().default('pending'),
     reviewNote: text('review_note').notNull().default(''),
     reviewedBy: text('reviewed_by'),

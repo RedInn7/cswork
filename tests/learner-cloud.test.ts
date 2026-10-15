@@ -13,7 +13,7 @@ process.env.HIDDEN_COMPANIES = 'hiddenco';
 delete process.env.CONTENT_DATABASE_PATH;
 const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
-const { publicProfile, companyReports, recentSince, monthKey } = await import('../lib/server/learner-cloud');
+const { publicProfile, publicCatalogue, companyReports, recentSince, monthKey } = await import('../lib/server/learner-cloud');
 const { loadStudyLibrary } = await import('../scripts/load-study-library.mjs');
 
 const me: Person = { id: 'cloud-me', name: 'Me', email: 'me@example.test', role: 'student', verified: true };
@@ -181,7 +181,7 @@ void test('the public profile is off by default, names nobody and counts only pu
     // A course exercise a guest could open still never counts on a profile.
     ['course-x', { difficulty: '简单' }],
   ]);
-  assert.deepEqual(await ok(me, 'GET', 'profile'), { profile: null, badges: [] });
+  assert.deepEqual(await ok(me, 'GET', 'profile'), { profile: null, badges: [], recapYears: [] });
   assert.equal(await status(me, 'POST', 'profile', { handle: 'lists', visible: true }), 400, 'reserved');
   assert.equal(await status(me, 'POST', 'profile', { handle: 'a', visible: true }), 400);
   const saved = await ok<{ profile: { handle: string; visible: boolean; indexable: boolean } }>(me, 'POST', 'profile', {
@@ -197,6 +197,10 @@ void test('the public profile is off by default, names nobody and counts only pu
     showContest: false,
     bio: 'grinding',
     featuredBadge: null,
+    links: [],
+    school: '',
+    gradYear: null,
+    targetRole: '',
   });
   assert.equal(publicProfile('line-rider', catalogue), null, 'not public until switched on');
   assert.equal(await status(other, 'POST', 'profile', { handle: 'line-rider', visible: true }), 409);
@@ -216,6 +220,9 @@ void test('the public profile is off by default, names nobody and counts only pu
   assert.equal(JSON.stringify(page).includes('me@example.test'), false);
   assert.equal(JSON.stringify(page).includes('cloud-me'), false, 'no user id either');
   assert.equal(publicProfile('nobody-here', catalogue), null);
+  // My progress links a public recap only for the years that page serves (the same UTC, public-only count).
+  const mine = await ok<{ recapYears: number[] }>(me, 'GET', 'profile');
+  assert.deepEqual(mine.recapYears, publicProfile('line-rider', await publicCatalogue(), now)!.years);
 });
 
 void test('a featured badge must be earned to save, stays until changed, and drops off once lost', async () => {

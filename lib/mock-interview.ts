@@ -7,7 +7,17 @@ import type { RubricId } from './mock-interview-feedback';
 
 export type Text = [zh: string, en: string];
 
-export type KindId = 'coding' | 'behavioral' | 'design' | 'sql' | 'analytics' | 'stats' | 'ml' | 'lld';
+export type KindId =
+  | 'coding'
+  | 'behavioral'
+  | 'design'
+  | 'sql'
+  | 'analytics'
+  | 'stats'
+  | 'ml'
+  | 'lld'
+  | 'recruiter'
+  | 'negotiation';
 type Kind = {
   name: Text;
   /** Content library categories this slot draws from. */
@@ -44,7 +54,12 @@ export const KINDS: Record<KindId, Kind> = {
   stats: { name: ['统计与概率', 'Statistics & probability'], categories: ['Statistics & Math'], minutes: 12 },
   ml: { name: ['机器学习', 'Machine learning'], categories: ['Machine Learning'], minutes: 20 },
   lld: { name: ['低层设计（OOD）', 'Low-level design (OOD)'], categories: ['Low-Level Design'], minutes: 45, aiOnly: true },
+  // Role-plays over lib/content/roleplay-scenarios.json (lib/server/mock-interview.ts roleplayQuestion).
+  recruiter: { name: ['招聘方初筛', 'Recruiter screen'], categories: ['Recruiter Screen'], minutes: 20, aiOnly: true },
+  negotiation: { name: ['Offer 谈判', 'Offer negotiation'], categories: ['Offer Negotiation'], minutes: 20, aiOnly: true },
 };
+/** The AI plays the recruiter, not an interviewer, and scores ROLEPLAY_RUBRIC. */
+export const isRoleplay = (kind: KindId) => kind === 'recruiter' || kind === 'negotiation';
 /** Fewer questions than this and the slot says its bank is small. */
 export const SMALL_BANK = 30;
 export const kindOf = (category: string | null): KindId | null =>
@@ -158,6 +173,33 @@ export const LLD_TEMPLATE: Template = {
   round: null,
   slots: [{ kind: 'lld', minutes: 45 }],
 };
+/** The AI role-plays: one scenario each, the AI as the company's recruiter. */
+export const ROLEPLAY_TEMPLATES: Template[] = [
+  {
+    id: 'recruiter',
+    name: ['招聘方初筛', 'Recruiter screen'],
+    blurb: [
+      'AI 扮演招聘方打来的初筛电话：为什么选我们、讲一个项目、签证与担保、期望薪资、时间线。约 20 分钟，结束后才给反馈。',
+      'The AI plays a recruiter on a first call: why us, one project, work authorization and sponsorship, pay expectations, timeline. About 20 minutes; feedback only at the end.',
+    ],
+    role: null,
+    round: null,
+    slots: [{ kind: 'recruiter', minutes: 20 }],
+  },
+  {
+    id: 'negotiation',
+    name: ['Offer 谈判', 'Offer negotiation'],
+    blurb: [
+      'AI 扮演发 offer 的招聘方：先给书面 offer，再压价、问竞争 offer、设截止期限。约 20 分钟，看你能谈到多少。',
+      'The AI plays the recruiter with your written offer: it pushes back, asks about competing offers and sets an exploding deadline. About 20 minutes: see how far you get.',
+    ],
+    role: null,
+    round: null,
+    slots: [{ kind: 'negotiation', minutes: 20 }],
+  },
+];
+/** Templates only the AI interviewer runs, kept out of TEMPLATES (which peers and solo runs share). */
+export const AI_TEMPLATES: Template[] = [LLD_TEMPLATE, ...ROLEPLAY_TEMPLATES];
 export const CUSTOM_NAME: Text = ['自定义', 'Custom'];
 
 export type GuideStep = {
@@ -258,7 +300,7 @@ export const guideFor = (kind: KindId, category: string | null | undefined) =>
  * `minutes` (the total, shared out by each kind's suggested time). Null when invalid.
  */
 export function resolveTemplate(id: string | null, mix?: string | null, minutes?: string | number | null): Template | null {
-  if (id !== 'custom') return [...TEMPLATES, LLD_TEMPLATE].find((t) => t.id === id) ?? null;
+  if (id !== 'custom') return [...TEMPLATES, ...AI_TEMPLATES].find((t) => t.id === id) ?? null;
   const slots: Slot[] = [];
   for (const part of (mix || '').split('-')) {
     const [kind, count] = part.split('.');

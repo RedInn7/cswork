@@ -627,6 +627,29 @@
 .contest-band span {
   font-weight: 650;
 }
+.contest-schools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 14px;
+}
+.contest-schools a {
+  padding: 4px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.contest-schools a[aria-current='page'] {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: #eef3f8;
+}
+.contest-schools small {
+  color: inherit;
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
+}
 .contest-bands {
   display: flex;
   flex-wrap: wrap;
@@ -960,6 +983,17 @@
   .dark .contest-rules {
     border: 1px solid var(--rule);
     background: #191919;
+  }
+  .dark .contest-schools a {
+    border: 1px solid var(--rule);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .dark .contest-schools a[aria-current='page'] {
+    background: var(--navy);
+  }
+  .dark .contest-schools small {
+    color: inherit;
   }
   .dark .rating-curve {
     border: 1px solid var(--rule);

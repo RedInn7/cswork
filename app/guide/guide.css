@@ -627,6 +627,183 @@
   color: #5d6b78;
 }
 
+/* Application tracker (/career/tracker): the funnel on the navy board, then one column per stage. */
+.tracker {
+  display: grid;
+  gap: 22px;
+}
+.tracker-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #2b3a50;
+}
+.tracker-summary div {
+  padding: 14px 18px;
+  background: #0e1a2b;
+}
+.tracker-summary dt {
+  color: #b7c3d0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tracker-summary dd {
+  margin: 4px 0 0;
+  color: var(--guide-amber);
+  font-size: 28px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.resume-actions button.is-quiet {
+  border: 1px solid #c9d1da;
+  background: #ffffff;
+  color: #0e1a2b;
+}
+.resume-form select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #c9d1da;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1d252d;
+  font: inherit;
+  font-weight: 400;
+}
+.resume-form select:focus-visible,
+.tracker-card-actions :is(select, button):focus-visible {
+  outline: 2px solid #0d7a63;
+  outline-offset: 1px;
+}
+.tracker-notes {
+  grid-column: 1 / -1;
+}
+.tracker-board {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(200px, 1fr);
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+.tracker-column {
+  min-width: 0;
+  padding: 12px;
+  border-top: 4px solid #2ebd85;
+  border-radius: 12px;
+  background: #f4f6f8;
+}
+.tracker-column[data-stage='offer'] {
+  border-top-color: var(--guide-amber);
+}
+.tracker-column:is([data-stage='rejected'], [data-stage='withdrawn']) {
+  border-top-color: #8796a5;
+}
+.tracker-column h2 {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 10px;
+  color: #1d252d;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.tracker-column h2 span {
+  color: #5d6b78;
+  font-variant-numeric: tabular-nums;
+}
+.tracker-column ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tracker-card {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid #e1e6eb;
+  border-left: 4px solid #c9d1da;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1d252d;
+  font-size: 14px;
+}
+.tracker-card[data-due='soon'] {
+  border-left-color: #b42318;
+}
+.tracker-card p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.tracker-company {
+  font-weight: 800;
+}
+.tracker-role {
+  color: #5d6b78;
+  font-size: 13px;
+}
+.tracker-due {
+  color: #8a5a00;
+  font-size: 13px;
+  font-weight: 700;
+}
+.tracker-card[data-due='soon'] .tracker-due {
+  color: #b42318;
+}
+.tracker-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 13px;
+}
+.tracker-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.tracker-card-actions select,
+.tracker-card-actions button {
+  min-height: 32px;
+  padding: 4px 10px;
+  border: 1px solid #c9d1da;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0e1a2b;
+  font: inherit;
+  font-size: 13px;
+}
+.tracker-card-actions select {
+  flex: 1;
+  min-width: 0;
+}
+.tracker-card-actions button {
+  font-weight: 700;
+  cursor: pointer;
+}
+@media (max-width: 760px) {
+  .tracker-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* Narrow screens: the board becomes a list, stage by stage, empty stages left out. */
+  .tracker-board {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    overflow-x: visible;
+  }
+  .tracker-column[data-empty] {
+    display: none;
+  }
+}
+
 @media (max-width: 860px) {
   .guide-layout {
     grid-template-columns: minmax(0, 1fr);
@@ -844,8 +1021,6 @@
   }
   .dark .resume-actions button {
     border: 0;
-    background: #0e1a2b;
-    color: #ffffff;
   }
   .dark .resume-actions button:focus-visible {
     outline: 2px solid var(--guide-amber);
@@ -929,6 +1104,72 @@
   .dark .visa-rules small,
   .dark .visa-empty {
     color: #b5c2ce;
+  }
+  .dark .tracker-summary {
+    background: #2b3a50;
+  }
+  .dark .tracker-summary div {
+    background: #0e1a2b;
+  }
+  .dark .tracker-summary dt {
+    color: #b7c3d0;
+  }
+  .dark .tracker-summary dd {
+    color: var(--guide-amber);
+  }
+  .dark .resume-actions button.is-quiet {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #d6e4f9;
+  }
+  .dark .resume-form select {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .resume-form select:focus-visible,
+  .dark .tracker-card-actions :is(select, button):focus-visible {
+    outline: 2px solid #87d2bb;
+  }
+  .dark .tracker-column {
+    border-top: 4px solid #2ebd85;
+    background: #131416;
+  }
+  .dark .tracker-column[data-stage='offer'] {
+    border-top-color: var(--guide-amber);
+  }
+  .dark .tracker-column:is([data-stage='rejected'], [data-stage='withdrawn']) {
+    border-top-color: #8796a5;
+  }
+  .dark .tracker-column h2 {
+    color: #d6dfe8;
+  }
+  .dark .tracker-column h2 span {
+    color: #b5c2ce;
+  }
+  .dark .tracker-card {
+    border: 1px solid #2b2f33;
+    border-left: 4px solid #31383f;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .tracker-card[data-due='soon'] {
+    border-left-color: #b42318;
+  }
+  .dark .tracker-role {
+    color: #b5c2ce;
+  }
+  .dark .tracker-due {
+    color: #e6b97e;
+  }
+  .dark .tracker-card[data-due='soon'] .tracker-due {
+    color: #fea99c;
+  }
+  .dark .tracker-card-actions select,
+  .dark .tracker-card-actions button {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #d6e4f9;
   }
 }
 /* ── end dark theme ── */
