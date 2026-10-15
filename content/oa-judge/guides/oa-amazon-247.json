@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-247",
+  "packageChecksum": "744af1babad828b92f28b968746463e0951cef2635f73e185471297bbe80ca22",
+  "sourceContentHash": "ec30d99f712a9ec07521a55d9251dc61103bd19e0b2e7acb42a2294e5363fd75",
+  "editorialSha256": "c23a70b1ec4abb97594e65fedb403e827e3dcdc612fee4ed72e8be444fe30eba",
+  "hints": {
+    "zh": [
+      "括号里没有 * 也不嵌套，所以整个正则可以看成一串原子：单个字母、单个点或一段括号内容；每个原子要么恰好出现一次，要么带 * 重复任意次。",
+      "对每个查询按原子逐个推进 DP，记录查询的哪些前缀能被已处理的原子完整匹配；不带 * 的原子从上一层前进一个原子长度，带 * 的原子还能在同一层继续重复。",
+      "先把正则解析成 (片段, 是否带星) 的列表；查询为 - 时当作空串；dp[0] 为真；对每个非空原子，带星时新层先复制旧层，再按结束位置从小到大检查：起点可达且片段逐字符匹配（点匹配任意字母）就标记终点；不带星时只从旧层转移；空的 ()* 直接跳过；最后看查询全长是否可达。"
+    ],
+    "en": [
+      "Groups contain no * and no nesting, so the regex is a sequence of atoms: one letter, one dot, or a group's contents; each atom either appears exactly once or carries * and repeats any number of times.",
+      "For each query run a DP atom by atom, recording which prefixes of the query are fully matched by the atoms processed so far; an atom without * advances from the previous level by one atom length, while an atom with * can also keep repeating within the same level.",
+      "Parse the regex into a list of (piece, has star); treat a query of - as the empty string; set dp[0] true; for each non-empty atom, with a star start the new level as a copy of the old one, then check end positions in increasing order: if the start is reachable and the piece matches character by character (a dot matches any letter), mark the end; without a star transition only from the old level; skip an empty ()* entirely; finally check whether the full query length is reachable."
+    ]
+  },
+  "explanationEn": "## Approach\n\nParse letters or dots and group contents into atoms, each flagged with whether it has *. Run a DP atom by atom over the query prefixes that can be matched; an atom without * consumes exactly once, while an atom with * can consume zero times or consume once more from a shorter prefix at the same level. Skip an empty ()* directly.\n\n## Proof of correctness\n\nAt the start of the DP only the empty prefix is reachable. Without *, each new prefix comes uniquely from the previous level by matching the atom once; with *, it either inherits the old level with zero repetitions, or continues matching from the position one atom length shorter at the same level. Computing in increasing prefix length covers any number of repetitions without cycles. Repeating an empty atom does not change the string, so skipping it preserves the semantics. Finally, the full length is reachable if and only if the whole query matches.\n\n## Complexity\n\nTime O(regex length × total query length + q × regex length), space O(longest query length + regex length)."
+}

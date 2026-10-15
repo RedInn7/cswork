@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-254",
+  "packageChecksum": "40da33ddbbf32d3dd3f4c1fae136a88c7fa67ef8e216fcd448f193d74ea78b94",
+  "sourceContentHash": "08f5b40be351432ec2c275cc0fa2dee350c10e9aed7e0a2d3d8377e0544bc0b3",
+  "editorialSha256": "12bfc746857b395f03c12dfbb341f652e192c13c5883d7525c20f3edcb11c3fd",
+  "hints": {
+    "zh": [
+      "所有商品最终占据互不相同的整数尺寸；某个尺寸位置能放哪件商品，只要求它的原尺寸不超过该位置。商品每被往后推一格，代价就是它的单位成本。",
+      "从小到大扫描尺寸位置，每个位置只放一件：在原尺寸已不超过当前位置、还没放置的商品中，选单位成本最高的那件，把便宜的商品往后推。",
+      "按 (原尺寸, 成本) 排序；用最大堆存放当前可放的商品；堆空时把当前位置直接跳到下一件商品的原尺寸；把原尺寸不超过当前位置的商品全部入堆；弹出成本最高者，累加 (当前位置 − 原尺寸) × 成本，位置加一；直到所有商品放完，用 64 位整数累加。"
+    ],
+    "en": [
+      "In the end every product occupies a different integer size, and a product can be placed at a size position only if its original size does not exceed that position. Each step a product is pushed further costs its unit cost.",
+      "Scan the size positions from small to large and place exactly one product at each: among the unplaced products whose original size is already at most the current position, take the one with the highest unit cost, so the cheap products are the ones pushed further.",
+      "Sort by (original size, cost); keep the currently placeable products in a max-heap; when the heap is empty, jump the position straight to the next product's original size; push every product whose original size is at most the position; pop the highest-cost one, add (position - original size) times its cost, and advance the position by one; repeat until all products are placed, accumulating in 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by original size and scan the available coordinates, putting into a heap the products whose original size has been reached; each time, fix the one with the highest unit cost first; when the heap is empty, jump to the next original size.\n\n## Proof of correctness\n\nIf some coordinate could hold a product but is left empty, moving a future product that fits there earlier only saves cost. If a low-cost product is placed now while a placeable high-cost product is placed later, swapping the two keeps each at least its original size, and the cost changes by the gap times (low cost - high cost), which does not increase. Therefore there is an optimal assignment that agrees with the greedy choice at every step.\n\n## Complexity\n\nTime O(n log n), space O(n); the final cost uses 64-bit integers."
+}

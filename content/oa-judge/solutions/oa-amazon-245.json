@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-245",
+  "packageChecksum": "3d47f6b61eb860ccc3a05390491586c242da7dd5d9f18f8691c77cfec3aef35d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n), delta(n);\n    for (auto &x : a) cin >> x;\n    for (int i = 0; i < n; i++) {\n        long long b;\n        cin >> b;\n        delta[i] = a[i] - b;\n    }\n    // Pair (i, j) is a win iff delta[i] + delta[j] > 0; order does not matter for counting.\n    sort(delta.begin(), delta.end());\n    long long left = 0, right = n - 1, answer = 0;\n    while (left < right) {\n        if (delta[left] + delta[right] > 0) {\n            answer += right - left;\n            right--;\n        } else {\n            left++;\n        }\n    }\n    cout << answer % 1000000007 << \"\\n\";\n}\n",
+      "sha256": "51a6e7d09304cee4d5cd12a1667a7de15aeaf6234825178da8f46e1c0a8ca970"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int bufLen, bufPtr;\n\n    static int read() throws IOException {\n        if (bufPtr == bufLen) {\n            bufLen = System.in.read(BUF, 0, BUF.length);\n            bufPtr = 0;\n            if (bufLen <= 0) return -1;\n        }\n        return BUF[bufPtr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] delta = new long[n];\n        for (int i = 0; i < n; i++) delta[i] = nextLong();\n        for (int i = 0; i < n; i++) delta[i] -= nextLong();\n        // Pair (i, j) is a win iff delta[i] + delta[j] > 0; order does not matter for counting.\n        Arrays.sort(delta);\n        int left = 0, right = n - 1;\n        long answer = 0;\n        while (left < right) {\n            if (delta[left] + delta[right] > 0) {\n                answer += right - left;\n                right--;\n            } else {\n                left++;\n            }\n        }\n        System.out.println(answer % 1000000007L);\n    }\n}\n",
+      "sha256": "623893b50f3715786b3fb5afbf007b3d0f16c481f348c54444b0c4f8f74c4a5c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tdelta := make([]int64, n)\n\tfor i := range delta {\n\t\tdelta[i] = nextInt()\n\t}\n\tfor i := range delta {\n\t\tdelta[i] -= nextInt()\n\t}\n\t// Pair (i, j) is a win iff delta[i] + delta[j] > 0; order does not matter for counting.\n\tslices.Sort(delta)\n\tleft, right := 0, n-1\n\tvar answer int64\n\tfor left < right {\n\t\tif delta[left]+delta[right] > 0 {\n\t\t\tanswer += int64(right - left)\n\t\t\tright--\n\t\t} else {\n\t\t\tleft++\n\t\t}\n\t}\n\tfmt.Println(answer % 1000000007)\n}\n",
+      "sha256": "0ab0b7108f12cb057f7b0433af23f9dfaee09da9ff042a9feac854a2c486f76a"
+    }
+  ]
+}

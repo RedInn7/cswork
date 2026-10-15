@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-230",
+  "packageChecksum": "102126141062a93ccab400f9c8768f18d675ad44addfc5245dd943003d6eeda7",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    // Longest run of strictly rising (or falling) comparisons, skipping equal neighbours.\n    int direction = 0, run = 0, best = 1;\n    for (int i = 1; i < n; i++) {\n        if (a[i] == a[i - 1]) continue;\n        int sign = a[i] > a[i - 1] ? 1 : -1;\n        run = sign == direction ? run + 1 : 1;\n        direction = sign;\n        best = max(best, run + 1);\n    }\n    cout << best << \"\\n\";\n}\n",
+      "sha256": "fcfbf08d73988a07953384e9a0d7d3ceda304de34679a45a50d4212a39d22746"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int bufLen, bufPtr;\n\n    static int read() throws IOException {\n        if (bufPtr == bufLen) {\n            bufLen = System.in.read(BUF, 0, BUF.length);\n            bufPtr = 0;\n            if (bufLen <= 0) return -1;\n        }\n        return BUF[bufPtr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        // Longest run of strictly rising (or falling) comparisons, skipping equal neighbours.\n        int direction = 0, run = 0, best = 1;\n        for (int i = 1; i < n; i++) {\n            if (a[i] == a[i - 1]) continue;\n            int sign = a[i] > a[i - 1] ? 1 : -1;\n            run = sign == direction ? run + 1 : 1;\n            direction = sign;\n            best = Math.max(best, run + 1);\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "cebca22b3863dc6ebb2f2142cdff5c4d70050761f620ad105748124cbda0ee87"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\t// Longest run of strictly rising (or falling) comparisons, skipping equal neighbours.\n\tdirection, run, best := 0, 0, 1\n\tfor i := 1; i < n; i++ {\n\t\tif a[i] == a[i-1] {\n\t\t\tcontinue\n\t\t}\n\t\tsign := -1\n\t\tif a[i] > a[i-1] {\n\t\t\tsign = 1\n\t\t}\n\t\tif sign == direction {\n\t\t\trun++\n\t\t} else {\n\t\t\trun = 1\n\t\t}\n\t\tdirection = sign\n\t\tbest = max(best, run+1)\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "10a05a205edff63aedc190421dbb017fe11c18f00cf60809b322a6f3eae170d5"
+    }
+  ]
+}

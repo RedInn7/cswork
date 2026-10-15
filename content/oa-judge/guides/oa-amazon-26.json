@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-26",
+  "packageChecksum": "6f9a82590ad3c1cedbb89c9e9b1244aa95458f774dbe6f65f5aa5d2c2370121b",
+  "sourceContentHash": "e150e60c2e3b9b6d68e1af4268a2ee294b787c316f84f650532153d24975969d",
+  "editorialSha256": "b44b4fa0099b79d3be2a0fcde97de4ce5a4662934b92574055b68d1092653ae6",
+  "hints": {
+    "zh": [
+      "格子 (i,j) 的灰度可以拆成行和列两部分：行 i 的 1 数减 0 数，加上列 j 的 1 数减 0 数，两部分互不影响。",
+      "行部分为 2×行中 1 的个数 − m，列部分为 2×列中 1 的个数 − n；任意一行与任意一列都有交点，所以分别取最好的行和最好的列即可。",
+      "逐行读入，统计该行 1 的个数并更新最大值，同时累加每一列 1 的个数；答案为 2×(最大行 1 数 + 最大列 1 数) − n − m。"
+    ],
+    "en": [
+      "The grayness of cell (i,j) splits into a row part and a column part: the 1s minus 0s of row i plus the 1s minus 0s of column j, and the two parts do not interact.",
+      "The row part is 2 times the 1s in the row minus m, and the column part is 2 times the 1s in the column minus n; every row meets every column, so take the best row and the best column independently.",
+      "Read row by row, counting the 1s in each row to update the maximum while adding up the 1s of every column; the answer is 2*(max row ones + max column ones) - n - m."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the 1s in each row and in each column; the maximum grayness is 2×(max 1s in a row+max 1s in a column)−n−m.\n\n## Proof of correctness\n\nThe row contribution is 2rowOnes−m and the column contribution is 2colOnes−n. The best row and the best column can be chosen independently, and their intersection cell gets both maxima at once.\n\n## Complexity\n\nTime O(nm), space O(m)."
+}

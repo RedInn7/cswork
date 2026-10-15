@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-257",
+  "packageChecksum": "f180556509840a1364ba42814437888fea0fb82a3ff2199fb8bcf235e273e507",
+  "sourceContentHash": "21625fceae179edeb5aeb9632d8f7cb97c72c71cb4157cd6d480d8b65ff1780a",
+  "editorialSha256": "2c426826e800d2b8735bbd7610f385ec4d2b3d6e05a2181dbfe792e278a7c63b",
+  "hints": {
+    "zh": [
+      "星号以外的字符都不能改，所以星号前面的部分必须出现在文本开头，星号后面的部分必须出现在文本结尾。",
+      "开头和结尾这两段不能共用字符，因此还要求文本长度不小于两段长度之和；条件满足时，中间剩下的部分就是星号替换的内容。",
+      "对每对文本和模式，按星号位置把模式拆成前缀和后缀；检查长度条件、文本是否以前缀开头、是否以后缀结尾，三者同时成立输出 YES，否则输出 NO。"
+    ],
+    "en": [
+      "Characters other than the star cannot change, so the part before the star must appear at the start of the text and the part after it at the end.",
+      "Those two parts cannot share characters, so the text must also be at least as long as both parts together; when all this holds, whatever lies between them is what the star becomes.",
+      "For each text and pattern, split the pattern at the star into a prefix and a suffix; output YES if the length condition holds, the text starts with the prefix and ends with the suffix, otherwise NO."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit the pattern into the prefix before the star and the suffix after it; the text must be long enough to hold both parts, and its beginning and end must equal them respectively.\n\n## Proof of correctness\n\nThe characters outside the star must appear unchanged at the two ends of the text, and the two parts cannot overlap, so the condition is necessary. When it holds, taking all characters between the two parts (possibly none) as the star's replacement yields exactly the full text, so it is sufficient.\n\n## Complexity\n\nTime O(total number of input characters), space O(total number of input characters) including reading."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-259",
+  "packageChecksum": "f396f9e90f345e01491deefa0b668b5262eba278c3fb645d73bcfe69318b1d37",
+  "sourceContentHash": "27a35905e13bac0434099be4e9a74c2c5adee2ae35dd1def0fc0faab74890959",
+  "editorialSha256": "c0617b687abdb32589a28edf7c7049a55491ffcfc7eb43318e667a7adfaf3922",
+  "hints": {
+    "zh": [
+      "这是带权区间调度：按结束时间排好序后，选或不选当前区间只依赖于在它开始之前就已结束的那些区间。",
+      "设 dp[i] 为按结束时间排序后前 i 个区间的最大收益；当前区间要么不选，要么接在结束时间严格小于其开始时间的那段前缀之后（端点相同也算重叠）。",
+      "算出每个区间的结束 = start+duration 并按结束时间排序；对第 i 个区间，在前 i 个结束时间中二分第一个不小于其开始的位置 j，dp[i+1] = max(dp[i], dp[j]+收益)；输出 dp[n]，允许空选所以至少为 0；用 64 位整数。"
+    ],
+    "en": [
+      "This is weighted interval scheduling: once intervals are sorted by end time, taking or skipping the current one depends only on the intervals that end before it starts.",
+      "Let dp[i] be the best profit among the first i intervals by end time; the current interval is either skipped, or appended after the prefix whose end times are strictly less than its start (a shared endpoint counts as overlap).",
+      "Compute each end = start+duration and sort by end; for the i-th interval, binary search among the first i end times for the first one not less than its start, at position j, and set dp[i+1] = max(dp[i], dp[j]+profit); output dp[n], which is at least 0 since choosing nothing is allowed; use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by end time, with dp recording the best value over the first several intervals. For the current interval, binary search the prefix whose end times are strictly less than its start, and take the maximum of skipping it and appending it after that prefix.\n\n## Proof of correctness\n\nIf an optimal solution does not contain the current interval, it belongs to the previous prefix; if it does, all other chosen intervals must end before the current start, and the optimum of that prefix is compatible with it. The two cases cover every choice, and induction shows dp is correct. Equal endpoints intersect, so the comparison must be strictly less than.\n\n## Complexity\n\nTime O(n log n), space O(n); profit sums use 64-bit integers."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-224",
+  "packageChecksum": "470fd26b308bdbd07297ac7236aaa231c8ffee9a92f10337cb8be1a7d0311536",
+  "sourceContentHash": "9cd00c699f0d61b786e633639fd58e7cc09d1e89d9845bf7dddf3836ef3617f3",
+  "editorialSha256": "5d163fc852ec2ee2e00d5625d99b8c0fac7edb773f56291b1d095e8e10f7b226",
+  "hints": {
+    "zh": [
+      "路线不会绕满整个环：实际走过的边是一段覆盖全部目标的连续圆弧，问题变成环上哪一段可以不走。",
+      "把目标排序，看相邻目标之间的空隙（包括最后一个绕回第一个的那段）。从一端走到另一端只需走完除某一段空隙之外的全部弧长，删掉的空隙越大越好。",
+      "目标升序排列；绕回的空隙为第一个目标加 total 再减最后一个目标；逐对比较相邻目标之差，取所有空隙的最大值；答案为 total 减最大空隙。只有一个目标时空隙恰为 total，答案为 0。"
+    ],
+    "en": [
+      "The route never needs to go all the way around: the edges it actually walks form one contiguous arc covering every target, so the question becomes which part of the ring can be skipped.",
+      "Sort the targets and look at the gaps between adjacent targets, including the wrap-around gap from the last back to the first. Walking from one end to the other covers the whole ring except one gap, so the skipped gap should be as large as possible.",
+      "Sort the targets; the wrap-around gap is the first target plus total minus the last target; compare every pair of adjacent targets and take the largest gap overall; the answer is total minus that largest gap. With a single target the gap is exactly total and the answer is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the targets and compute the gaps between adjacent targets, including the wrap-around gap from the last back to the first; the answer is the ring length minus the largest gap.\n\n## Proof of correctness\n\nA route that goes all the way around the ring is never better than the route obtained by dropping one gap. If the route does not cover the whole ring, the set of edges it uses lies within some path that covers all targets, so the route is at least as long as that path. The part such a path can omit contains no targets, and the longest omittable part is exactly the largest arc between adjacent targets; walking the remaining path from one end to the other attains this lower bound.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

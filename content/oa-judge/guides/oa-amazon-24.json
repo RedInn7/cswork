@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-24",
+  "packageChecksum": "08120709d947318fe91cc243ddee78bb41d39ba8a6db5ea7377694e04337ba0e",
+  "sourceContentHash": "e0878e8e6742772885136c851333c0dbf6462558884c243bea4192c6cd802b9b",
+  "editorialSha256": "693731e0c2dc2bb60fa65f4e45344405ccf22c77044196dae5c9488ecf4a4d4c",
+  "hints": {
+    "zh": [
+      "同一行里如果选了较小的数却没选更大的数，换成更大的不会违反行上限，总和只增不减。",
+      "所以每行只需保留最大的 factor[i] 个数作为候选；候选集的任何子集都满足各行上限，问题变成在候选中选最大的 x 个。",
+      "逐行排序取前 factor[i] 大加入候选；候选数不足 x 就输出 -1；否则将候选降序排序取前 x 个求和（x=0 时为 0）。和可达 10^15，用 64 位整数。"
+    ],
+    "en": [
+      "If a row takes a smaller number while leaving a larger one, swapping to the larger one keeps the row limit and never lowers the total.",
+      "So each row only needs its factor[i] largest numbers as candidates; any subset of the candidates respects every row limit, and the task becomes picking the x largest candidates.",
+      "Sort each row and add its top factor[i] values to the candidates; if there are fewer than x candidates, output -1; otherwise sort the candidates in descending order and sum the first x (0 when x=0). The sum can reach 10^15, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep only the factor[i] largest elements of each row, then take the x largest among all candidates.\n\n## Proof of correctness\n\nIf some row selects a smaller element without selecting a larger one, swapping them keeps the row count unchanged and does not decrease the total. Therefore some optimal solution uses only the top factor[i] items of each row. The candidate set already respects every row's limit, so any subset of it is valid, and choosing the global x largest is optimal.\n\n## Complexity\n\nTime O(n² log(n²)), space O(n²)."
+}

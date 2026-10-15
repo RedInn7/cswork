@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-250",
+  "packageChecksum": "5126811f12038d06ab9e7531a32989fc2fa9755bf52ff743441db51d1bd309fd",
+  "sourceContentHash": "9ab365e99761961eedf30412be1f7c8bb2bd3ae7d4a99636aa70fab09e9d2345",
+  "editorialSha256": "a641dc9635e41dd17d34f54b234384dcb4699f72ff39582ac4fae9dbd4f931bc",
+  "hints": {
+    "zh": [
+      "最左元素可以任意丢弃，所以下一个加入结果的可以是当前剩余部分中的任意一件；为了字典序最大，下一项必须取剩余部分的最大值。",
+      "同样大的最大值有多个时选最靠左的，因为它留下的后缀包含选后面那个时留下的后缀；而后缀最大值不会超过当前值，非增条件自动满足。",
+      "从右往左预处理每个后缀最大值的最早下标（遇到大于等于当前最大的就更新）；从 i=0 开始，取该后缀最大值的下标 j，输出 a[j]，令 i=j+k+1，直到 i≥n；k 可达 10^9，下标用 64 位。"
+    ],
+    "en": [
+      "The leftmost item can always be discarded, so the next item added to the result can be any item of the remaining part; for the lexicographically largest result, it must be the maximum of the remaining part.",
+      "Among several equal maxima pick the leftmost, because the suffix it leaves contains the suffix left by picking a later one; and the next suffix maximum never exceeds the current value, so the non-increasing condition holds automatically.",
+      "Precompute from right to left the earliest index of the maximum of every suffix (update on greater-or-equal); starting at i=0, take that index j, output a[j], and set i=j+k+1 until i>=n; k can reach 10^9, so use 64-bit indices."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrecompute the earliest index of the maximum in each suffix. Each round, take that maximum and continue from its index+k+1.\n\n## Proof of correctness\n\nSince items can be discarded freely, any position of the suffix can become the next item, so the lexicographically best choice must take the maximum. Among several equal maxima, the suffix left after choosing the earliest one contains the suffix left after choosing a later one, and the latter can be simulated by discarding more, so the earliest is never worse. The next suffix maximum does not exceed the current maximum, so the non-increasing order holds automatically. Induction over the items proves optimality.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

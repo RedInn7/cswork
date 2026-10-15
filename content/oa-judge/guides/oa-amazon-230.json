@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-230",
+  "packageChecksum": "102126141062a93ccab400f9c8768f18d675ad44addfc5245dd943003d6eeda7",
+  "sourceContentHash": "0afb9fa38923d9247abe41734f0e21cadc83272238635802cc909d3132631e7b",
+  "editorialSha256": "23401649ec5c26bf5cbacdd0afc08e7c1dae5d1fb154f155adcad4b7d54971c1",
+  "hints": {
+    "zh": [
+      "相等的相邻需求必须用同一中心，可以把它们缩成一个点；剩下的相邻两天只有严格升或严格降两种关系。",
+      "连续 r 次同方向的比较需要 r+1 个互不相同的编号，这是下界；而给每天编号为“以它结尾的最长同向链的长度”，可以恰好达到这个下界。",
+      "扫描相邻两天，相等就跳过；记录上一次比较的方向和当前同向段的比较次数，方向相同则加一，否则重置为 1；答案为最大比较次数加 1，全部相等时为 1。"
+    ],
+    "en": [
+      "Adjacent equal demands must use the same center, so they can be contracted into one point; every remaining pair of adjacent days is either strictly rising or strictly falling.",
+      "A run of r comparisons in the same direction needs r+1 distinct numbers, which is a lower bound; numbering each day by the length of the longest same-direction chain ending at it attains exactly that bound.",
+      "Scan adjacent days and skip equal ones; keep the direction of the last comparison and the number of comparisons in the current same-direction run, adding one if the direction repeats and resetting to 1 otherwise; the answer is the largest count plus 1, or 1 if all demands are equal."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIgnore consecutive equal demands, find the maximum number of comparisons in a run that is strictly rising or strictly falling, and add 1.\n\n## Proof of correctness\n\nA chain of r comparisons in the same direction needs at least r+1 distinct numbers. After contracting equal positions into a single point, the adjacent comparisons form a directed path, and its longest directed path is exactly the longest same-direction run. Number each point by the number of vertices of the longest directed path ending at it: along the strictly increasing direction the numbers increase and the largest number does not exceed the lower bound, and the opposite direction works the same way, so the lower bound is attainable.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding the input."
+}

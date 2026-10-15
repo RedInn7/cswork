@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-256",
+  "packageChecksum": "a9aba177e00cf39b2cfbcbaee36747b57865c2c59c759ab85b1a49ea6f568021",
+  "sourceContentHash": "17f604f3da529a34de3b1f38d0458ee516d2a201413e3849034fb3d2090905ff",
+  "editorialSha256": "75ffb0c3d36c702613b8e5fb24e17dfbe89277e126cdc1ef83bf37c3ecf42fd8",
+  "hints": {
+    "zh": [
+      "某个值第一次和最后一次出现之间的所有位置，最终都必须和它是同一个值，所以这些位置上的值都要合并到一起。",
+      "把每个值的首末区间看成线段，互相重叠的线段连成块，每块最终必须合并成一种值；含 d 种值的块恰好需要 d−1 次操作。",
+      "先记录每个值最后出现的位置；从左往右扫描，维护当前块能延伸到的最远末位置，当前下标等于它时结束一个块；答案为不同值的个数减去块数。"
+    ],
+    "en": [
+      "Every position between the first and last occurrence of a value must end up holding the same value as it, so all values at those positions have to be merged together.",
+      "Treat each value's first-to-last range as a segment; overlapping segments chain into blocks, each block must end up as one value, and a block with d distinct values needs exactly d-1 operations.",
+      "Record each value's last occurrence; scan left to right keeping the farthest last position the current block reaches, and close a block when the index equals it; the answer is the number of distinct values minus the number of blocks."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord the last occurrence of each value and scan to get the maximum number of independent contiguous intervals; the answer is the original number of distinct values minus the number of independent intervals.\n\n## Proof of correctness\n\nAll positions between the first and last occurrence of a value must end up with the same value, so each connected block formed by mutually overlapping first-to-last intervals must be merged into one value. Scanning with the farthest last position finds exactly these blocks; a block containing d values needs at least d−1 merges, and replacing them one by one into the same value takes exactly d−1. Summing gives the number of distinct values minus the number of blocks.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

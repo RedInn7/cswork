@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-25",
+  "packageChecksum": "7586e2b1aac744fada33debb325a43aaa7f9503338977c8946ed5d634a3eaa75",
+  "sourceContentHash": "6f574f480feca3495d6beeaba286b1a816c7ea0fe951a538a27d59064f00f94b",
+  "editorialSha256": "3372208295df371470b1b2f4f7fb741263c074a25f48a7b21fa9f628b83451c7",
+  "hints": {
+    "zh": [
+      "已有包裹不能转移，所以最大负载至少是原来的最大值；总量固定，最大负载也至少是平均负载向上取整。",
+      "取这两个下界中较大的 M：每个人都还能补到 M，剩余总空间 nM − 原总量 不小于 extra，新包裹一定放得下。",
+      "累加原负载总和并记录最大值，总量加上 extra 后算出向上取整的平均值 (总量+n−1)/n，与原最大值取较大者输出；总量可达约 10^15，用 64 位整数。"
+    ],
+    "en": [
+      "Existing parcels cannot move, so the maximum load is at least the original maximum; with a fixed total, it is also at least the average load rounded up.",
+      "Take M as the larger of these two bounds: everyone can still be filled up to M, and the free space nM - original total is at least extra, so the new parcels always fit.",
+      "Sum the original loads and track the maximum, add extra to the total, compute the rounded-up average (total+n-1)/n, and output the larger of it and the original maximum; the total can reach about 10^15, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe answer is the larger of the original maximum load and the total number of parcels divided by n, rounded up.\n\n## Proof of correctness\n\nThe maximum cannot be lower than the original maximum load, nor lower than the average load rounded up. Taking M as the larger of the two, every initial value is ≤M and the remaining capacity nM−sum(a)≥extra; filling it parcel by parcel accommodates all the new parcels, so the lower bound is attainable.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input."
+}

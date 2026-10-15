@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-260",
+  "packageChecksum": "00dbb20f51397277400b986e38f2cc9a16dc7b91fbf180c545ddf750d1da11fc",
+  "sourceContentHash": "2efee63b87130ce7e88f8bf04f422358aa291200939ed0d433dbb1dd14601b1b",
+  "editorialSha256": "1e1b70a145d630ee4a3cdc74375a264966fa852473ee0e29e5f0d2da9d1a7ff9",
+  "hints": {
+    "zh": [
+      "要从全部 n² 个有序对（含 i=j）的和中取最大的 K 个求和；不能逐个枚举，但“和 ≥ T 的有序对有多少个”随 T 增大单调不增。",
+      "二分出第 K 大的对和 T：排序后对每个 i 用双指针确定使 a[i]+a[j]≥T 的 j 的范围，就能 O(n) 计数；再配合前缀和同时求出这些对的和。",
+      "在 [2×最小值, 2×最大值] 内二分最大的 T 使计数 ≥ K；然后对这个 T 求出计数 C 与总和 S，答案为 S − (C−K)×T。结果最大约 8×10^19，超出有符号 64 位，需要 128 位或大整数。"
+    ],
+    "en": [
+      "The task is to sum the K largest of all n^2 ordered pair sums (including i=j); enumerating them is too slow, but the number of ordered pairs with sum >= T never increases as T grows.",
+      "Binary search the K-th largest pair sum T: after sorting, two pointers give for each i the range of j with a[i]+a[j] >= T, so counting takes O(n), and prefix sums give the total of those pairs at the same time.",
+      "Binary search in [2*min, 2*max] for the largest T whose count is at least K; then compute the count C and total S for that T, and the answer is S - (C-K)*T. The result can reach about 8*10^19, beyond signed 64 bits, so use 128-bit or big integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search the K-th largest pair sum T. After sorting, use two pointers and prefix sums to get the count C and the total S of all pairs with sum ≥T; the result is S−(C−K)T.\n\n## Proof of correctness\n\nAs the pair-sum threshold grows, the number of qualifying ordered pairs does not increase. The largest integer threshold that still has at least K pairs is the K-th largest pair sum. All sums above it must be chosen, and those equal to it only need to fill up to K, so subtracting the surplus C−K copies of T from all sums ≥T gives exactly the sum of the top K. Counting all qualifying second servers for each first server in turn keeps the ordered identities and the self-pairs.\n\n## Complexity\n\nTime O(n log n+n log V), space O(n); V is the range of the capacity values."
+}

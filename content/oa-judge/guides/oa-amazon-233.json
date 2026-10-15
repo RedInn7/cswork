@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-233",
+  "packageChecksum": "962adf491bb095b8bb16f1da0769fd1b41cd372592fed8a5ed86573e9dca610a",
+  "sourceContentHash": "e3f609f9e2231cc703100fcc8968924f0e4ef3e0d8e47a2803e319363aee2228",
+  "editorialSha256": "62376641887d785263a6c75441e2dc6baa50eb12964659749870a02cf065063c",
+  "hints": {
+    "zh": [
+      "权重 1..n 递增：若较大的值放在较小权重的位置，交换两者收益会增加，所以最优排列中值必须按升序排列。",
+      "相等的值互换不改变收益；为了字典序最小，同值元素应按原下标从小到大排列。",
+      "把下标按 (值, 原下标) 升序排序，依次输出 1 基下标；输出的是原数组下标，不是值，也不是名次。"
+    ],
+    "en": [
+      "The weights 1..n increase: if a larger value sits at a smaller weight, swapping the two raises the gain, so in an optimal permutation the values must be in ascending order.",
+      "Swapping equal values does not change the gain; for the lexicographically smallest answer, equal values should appear in increasing order of original index.",
+      "Sort the indices by (value, original index) ascending and output them as 1-based indices; the output is original array indices, not values or ranks."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the original indices by (data[i], i) in ascending order and output them as 1-based indices.\n\n## Proof of correctness\n\nIf a larger value sits at a smaller weight, swapping the two increases the gain by (weight difference)*(value difference), so an optimal arrangement must have the values in ascending order. Swapping equal values does not change the gain, and placing them by ascending original index gives the lexicographically smallest permutation within each block of equal values.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

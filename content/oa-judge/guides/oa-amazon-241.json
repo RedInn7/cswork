@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-241",
+  "packageChecksum": "11593e972eb574c5768c556c3b1e225880de181902713e9a683aa687e9238ef2",
+  "sourceContentHash": "0add0706518b12545ffb7cfd2735eb6333512962aa62e8fa13a5d95fa6fc7fb9",
+  "editorialSha256": "925ed26d21389c53d096e03b5b4833b78db7f19d850a37fb5b7eb83b0050f39a",
+  "hints": {
+    "zh": [
+      "每台服务器的贡献只取决于它当前的 ID，所以只需要知道每个 ID 有多少台，而不必记录具体是哪几台。",
+      "维护 ID 的频次表和当前总和；把 r 全部改成 v 时，这 c 台的贡献各变化 v−r，频次整体从 r 搬到 v。",
+      "初始化频次和总和；对每一天，若 r≠v，取 c=频次[r]，将其清零，总和加上 (v−r)×c，频次[v] 加 c；无论是否变化都输出当天总和。"
+    ],
+    "en": [
+      "A server's contribution depends only on its current ID, so it is enough to know how many servers have each ID, not which ones.",
+      "Keep a frequency table of IDs and the current total; replacing every r with v changes each of those c servers by v-r and moves the whole count from r to v.",
+      "Initialize the frequencies and the total; for each day, if r != v, take c = freq[r], set it to 0, add (v-r)*c to the total and add c to freq[v]; output the total for every day whether or not it changed."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep the ID frequencies and the total. When r changes to v, move c=count[r] over, apply total+=(v−r)*c, and output the updated total.\n\n## Proof of correctness\n\nThe frequencies describe all servers exactly. An operation affects only the c servers whose ID is r, and each one's contribution changes by v−r. Moving these c identities to v leaves the other frequencies unchanged, and induction gives each day's state and total. When r=v the state simply stays the same.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

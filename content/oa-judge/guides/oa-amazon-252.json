@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-252",
+  "packageChecksum": "4936b10863dc7fe583577adb1b6ffb6022b338e03dd7fa093a8d5b49ef3f6572",
+  "sourceContentHash": "cd48450ecffbf8a5517091613e59c802b808f0a376fced008fdeca2ed6023cce",
+  "editorialSha256": "9f9ef437fae9cc5fca1c48c1acde58f30f3ea66212e983c3c7e69ae7a09a7c62",
+  "hints": {
+    "zh": [
+      "若字符 c 第一次出现在 f、最后一次出现在 l，把窗口 s[f..l−1] 右移一格变成 s[f+1..l]，只是拿掉一个 c 又加上一个 c，两者频次相同。",
+      "这两个窗口内容相同的唯一情况是 f..l 之间全是 c（同一个连续段）；反过来还能证明任何合法答案的长度都不超过某个跨不同段的字符的 last−first。",
+      "扫描时给连续同字符段编号，记录每个字符的首次、末次位置及其所在段号；对首末段号不同的字符取 last−first 的最大值，没有这样的字符输出 -1。"
+    ],
+    "en": [
+      "If character c first appears at f and last at l, shifting the window s[f..l-1] one step right to s[f+1..l] removes one c and adds one c, so the two windows have equal frequencies.",
+      "These two windows have identical contents only when f..l is all c (a single run); conversely, one can prove that any valid answer is at most last-first of some character spanning different runs.",
+      "While scanning, number the runs of equal characters and record each character's first and last positions together with their run numbers; take the maximum last-first over characters whose first and last runs differ, or output -1 if there is none."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord each character's first and last positions, and whether it appears in two different runs of identical characters. For each character c that appears in multiple runs, the candidate is last[c]−first[c]; take the maximum, and return −1 if there is no candidate.\n\n## Proof of correctness\n\nIf the characters between the first and last c are not all c, the two windows s[f:l] and s[f+1:l+1] differ only by removing one c and adding one c, so they have equal frequencies; if their contents were identical, all of f..l would be c, a contradiction, which gives the candidate as a lower bound. Conversely, for any valid A=s[i:i+L], B=s[j:j+L] with i<j, subtracting the equal frequencies shows that s[i:j] and s[i+L:j+L] have equal frequencies. Let c=s[i]; the right block must contain a c at some q≥i+L, so the global distance between the first and last c is ≥L. A cannot consist of a single repeated character, otherwise B, having equal frequencies, would be identical to A; the first-to-last range of c contains A, so c spans different runs and is a candidate. Every valid length is at most the largest candidate, and the lower bound is attained, so it is optimal.\n\n## Complexity\n\nTime O(n), auxiliary space O(26)."
+}

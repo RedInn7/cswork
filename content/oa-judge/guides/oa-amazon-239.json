@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-239",
+  "packageChecksum": "cd07179d41cac8bdb083cc78f8ed3968227a3ac4ce5de0c2e74113cdc3c1fbc0",
+  "sourceContentHash": "253e8ff3bc1d42a7d7475ced8e9a33b87af12c0477eedfb5072725bd25f633bc",
+  "editorialSha256": "ebf4f272e0bf5e92631afbabcda12a0577e9b29a7967576b25077750c3268635",
+  "hints": {
+    "zh": [
+      "答案与 s 一定有唯一的第一个不同位置 i：前 i 个字符原样保留，所以这段前缀本身必须没有相邻重复；i 越靠右，结果越小。",
+      "从右往左枚举 i，只考虑前缀合法的位置；在 i 处放比 s[i] 大且不等于前一个字符的最小字母，之后每一位放与前一位不同的最小字母，也就是 a、b 交替。",
+      "先算 valid[i] 表示长度为 i 的前缀是否合法；i 从 n−1 递减到 0，跳过不合法的；字母从 s[i]+1 试到 z，跳过等于 s[i−1] 的；找到后拼接前缀、该字母以及 a/b 交替的后缀并输出；全部失败输出 -1。"
+    ],
+    "en": [
+      "The answer has a unique first position i where it differs from s; the first i characters are kept as they are, so that prefix itself must have no adjacent repeats, and the further right i is, the smaller the result.",
+      "Enumerate i from right to left, considering only positions with a valid prefix; at i put the smallest letter greater than s[i] that differs from the previous character, then fill each later position with the smallest letter different from its predecessor, which alternates a and b.",
+      "Compute valid[i], whether the prefix of length i is valid; go from i=n-1 down to 0, skipping invalid ones; try letters from s[i]+1 to z, skipping one equal to s[i-1]; on success print the prefix, that letter and the alternating a/b suffix; if every attempt fails, print -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrecompute whether each prefix is free of adjacent repeats. Enumerate the first changed position from right to left, try the smallest valid larger character there, then greedily fill the smallest suffix with a or b.\n\n## Proof of correctness\n\nEvery strictly greater result has a unique first position where it differs, and the prefix it keeps must be valid; the further right that position is, the smaller the result. At that position choose the smallest usable larger character; after that, choosing at each position the smallest letter different from the previous one completes the string. The traversal order follows exactly the priority of the possible optima, so the first result found is the answer.\n\n## Complexity\n\nTime O(26n), space O(n)."
+}

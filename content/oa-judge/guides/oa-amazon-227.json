@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-227",
+  "packageChecksum": "3375dd6d75212267b17dabbba96e01182ad8fb2dafcbd70e2e40795bd8b72d89",
+  "sourceContentHash": "34909f80a6144fabbe7f7a0c8ade35bd662360ae6a03f2a0e628cc6f174057dc",
+  "editorialSha256": "19158a17dc797e4781f8946262e53a62783c3a5c7d84395c047d8f8d280c6281",
+  "hints": {
+    "zh": [
+      "相邻两个长度 k 的窗口只差首尾两个元素，所以所有窗口和相等等价于对所有合法 i 都有 a[i] = a[i+k]。",
+      "按下标模 k 分组，各组互不影响，每组最终必须全部相同。原本已全相同的组不用改；否则修改后的统一值必须是正整数，只能保留等于某个正值的那些位置。",
+      "k ≥ n 时直接输出 0；对每个余数 r 取出 r, r+k, r+2k, … 位置的元素；组内只有一种值就跳过；否则统计各正值的出现次数，答案加上组大小减最高正值频次（没有正值时频次为 0）。"
+    ],
+    "en": [
+      "Two adjacent windows of length k differ only in their first and last elements, so all window sums are equal exactly when a[i] = a[i+k] for every valid i.",
+      "Group the indices by index mod k; the groups are independent and each must end up constant. A group that is already constant needs no change; otherwise the common value after changes must be a positive integer, so only positions equal to one positive value can be kept.",
+      "If k >= n, output 0; for each remainder r take the elements at r, r+k, r+2k, ...; skip the group if it holds a single value; otherwise count the occurrences of each positive value and add the group size minus the highest positive frequency (0 when there is no positive value)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSubtracting adjacent windows gives a[i]=a[i+k]. Group the indices by index mod k: a group whose values are already all equal stays unchanged; any other group is unified to its most frequent positive value, or entirely changed to 1 if it has no positive value.\n\n## Proof of correctness\n\nAll windows having the same sum is equivalent to every group being constant, and different groups do not interfere. If a group needs no change, any original value can be kept; when a change is needed, the target can only be a positive integer, so at most the highest frequency of a positive value in that group can be kept. Every group reaches its lower bound, and summing gives the global optimum.\n\n## Complexity\n\nTime O(n+k), space O(n)."
+}

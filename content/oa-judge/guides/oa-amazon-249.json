@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-249",
+  "packageChecksum": "2cdca643560294c86df5879a1491c291796f8bd4806d9df6c1476e25582f2ddb",
+  "sourceContentHash": "6f8c2ce55caeee58bae07c97cd5d94032f72fd8b8eb53f133fb8215488f5bf62",
+  "editorialSha256": "b4a087d646269bb51b8a588c854945676aab598a39866cfe268c288a1a2bc278",
+  "hints": {
+    "zh": [
+      "窗口每次只移出一个元素、移入一个元素，适合维护一个按数值计数的结构，再在其中找第 k 小。",
+      "把数值离散化后用树状数组记录窗口内每个值的个数；第 k 小就是前缀计数首次达到 k 的位置，可以在树状数组上用二进制倍增以 O(log n) 找到。",
+      "排序去重得到值表，先把前 m 个元素加入树状数组；对每个窗口起点（第一个之后先删 a[start−1]、再加 a[start+m−1]），从不超过值个数的最大二的幂步长开始，若跳过去后的计数仍小于剩余目标就跳过去并扣除；最终位置的下一个值即答案，按窗口顺序输出。"
+    ],
+    "en": [
+      "Each slide removes one element and adds one, which suits a structure counting elements by value, in which the k-th smallest is then located.",
+      "Compress the values and keep, in a Fenwick tree, how many elements of each value are in the window; the k-th smallest is where the prefix count first reaches k, found by binary lifting on the tree in O(log n).",
+      "Sort and deduplicate the values, and insert the first m elements; for each window start (after the first, remove a[start-1] and add a[start+m-1]), start from the largest power of two not exceeding the number of values, and jump whenever the count after the jump is still below the remaining target, subtracting it; the value just after the final position is the answer, printed in window order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompress the values and maintain the frequency of each value in the current window with a Fenwick tree. Use binary lifting to find the position where the prefix frequency first reaches k; when sliding, remove the old element and add the new one.\n\n## Proof of correctness\n\nInitially the Fenwick tree holds exactly the frequencies of the first window, and one removal plus one insertion per step keeps this invariant. The compressed coordinate of the k-th smallest value is the coordinate where the cumulative frequency first reaches k; binary lifting finds the largest prefix whose cumulative count is still below k, so the next coordinate is exactly right. The frequencies of repeated elements count every occurrence.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-26",
+  "packageChecksum": "6f9a82590ad3c1cedbb89c9e9b1244aa95458f774dbe6f65f5aa5d2c2370121b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, m;\n    cin >> n >> m;\n    // Grayness = (2 * rowOnes - m) + (2 * colOnes - n); the best row and best column intersect.\n    vector<int> columns(m, 0);\n    int best = 0;\n    string row;\n    for (int r = 0; r < n; r++) {\n        cin >> row;\n        best = max(best, (int)count(row.begin(), row.end(), '1'));\n        for (int j = 0; j < m; j++) columns[j] += row[j] == '1';\n    }\n    cout << 2 * (best + *max_element(columns.begin(), columns.end())) - n - m << \"\\n\";\n}\n",
+      "sha256": "b88fde89a41c78ee9f8d9fea8bc4480dde947ef59c13b86914d9644efb0efc3d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int bufLen, bufPtr;\n\n    static int read() throws IOException {\n        if (bufPtr == bufLen) {\n            bufLen = System.in.read(BUF, 0, BUF.length);\n            bufPtr = 0;\n            if (bufLen <= 0) return -1;\n        }\n        return BUF[bufPtr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), m = nextInt();\n        // Grayness = (2 * rowOnes - m) + (2 * colOnes - n); the best row and best column intersect.\n        int[] columns = new int[m];\n        int best = 0;\n        for (int r = 0; r < n; r++) {\n            String row = next();\n            int ones = 0;\n            for (int j = 0; j < m; j++) {\n                if (row.charAt(j) == '1') {\n                    ones++;\n                    columns[j]++;\n                }\n            }\n            best = Math.max(best, ones);\n        }\n        int bestColumn = 0;\n        for (int v : columns) bestColumn = Math.max(bestColumn, v);\n        System.out.println(2 * (best + bestColumn) - n - m);\n    }\n}\n",
+      "sha256": "f96d0a85c762bd1ffc75ebe6eaa11fb593cc4ec2451ecc295e8e2611db24146c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc nextToken() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, m := int(nextInt()), int(nextInt())\n\t// Grayness = (2 * rowOnes - m) + (2 * colOnes - n); the best row and best column intersect.\n\tcolumns := make([]int, m)\n\tbest := 0\n\tfor r := 0; r < n; r++ {\n\t\trow := nextToken()\n\t\tones := 0\n\t\tfor j := 0; j < m; j++ {\n\t\t\tif row[j] == '1' {\n\t\t\t\tones++\n\t\t\t\tcolumns[j]++\n\t\t\t}\n\t\t}\n\t\tbest = max(best, ones)\n\t}\n\tfmt.Println(2*(best+slices.Max(columns)) - n - m)\n}\n",
+      "sha256": "56f7848b02b4c9bc59848f28dbbf6a33c9f67069d86cb2a8305b4fffc1cf8b88"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-242",
+  "packageChecksum": "0f943fa067202c76c870e5134c2048df5db88319bb3b915dc4123b642c60fcb4",
+  "sourceContentHash": "9cb445e777d82ffb9d13f4f492252890db1bbb0387ea312c29ac1fad76e5c96a",
+  "editorialSha256": "983b7c3f501ec6fcd28c9e68c492997f6fd3af2aa44e8d4066428d88c611f7fb",
+  "hints": {
+    "zh": [
+      "班级不必保持原下标相邻，可以先把技能排序；最小技能 v 所在的班里，任何人的技能都不能超过 v+maxSpread。",
+      "把技能在 [v, v+maxSpread] 内的人全部放进这个班不会更差，于是可以从最小的未分配者开始贪心开班。",
+      "排序后扫描，记录当前班的起始技能；若当前技能减起始技能大于 maxSpread，就新开一班并把起点设为当前技能；输出班数。"
+    ],
+    "en": [
+      "Classes need not keep original indices adjacent, so sort the skills first; in the class containing the smallest skill v, nobody can exceed v+maxSpread.",
+      "Putting everyone with skill in [v, v+maxSpread] into that class is never worse, so classes can be opened greedily starting from the smallest unassigned student.",
+      "Scan the sorted skills, remembering the starting skill of the current class; if the current skill minus the start exceeds maxSpread, open a new class starting at the current skill; output the number of classes."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the skills; each class starts from the smallest unassigned student and absorbs everyone whose skill is at most that skill plus maxSpread.\n\n## Proof of correctness\n\nThe class containing the smallest unassigned skill v cannot contain anyone above v+maxSpread. Moving all other students in this range into that class breaks no class constraint and does not increase the number of other classes, so some optimal solution uses the greedy first class. Recursing on the remaining students gives the minimum number of classes.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}
