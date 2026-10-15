@@ -1,11 +1,11 @@
 // Contest pieces shared by /contest, the leaderboard and /u/<handle>. No hooks: server pages
 // render them as they are. Styles in app/contest/contest.css.
-import { CONTEST_BANDS, contestBand } from '@/lib/contest';
+import { CONTEST_BANDS, contestBand, duelBand } from '@/lib/contest';
 import { formatClock } from '@/lib/mock-oa';
 
-/** The rating with its band, on the problem-rating chip (app/lc-rating.css). */
-export function BandChip({ rating, zh }: { rating: number; zh: boolean }) {
-  const band = contestBand(rating);
+/** The rating with its band, on the problem-rating chip (app/lc-rating.css); `duel` names the duel ladder's band. */
+export function BandChip({ rating, zh, duel = false }: { rating: number; zh: boolean; duel?: boolean }) {
+  const band = duel ? duelBand(rating) : contestBand(rating);
   return (
     <span className="lc-rating contest-band" data-band={band.color} title={zh ? `${band.zh}段` : `${band.en} band`}>
       <b>{rating}</b>
@@ -34,14 +34,14 @@ const W = 640,
   H = 200,
   PAD = 28;
 /**
- * The rating after each rated weekly as an SVG polyline over the band stripes. Points carry a
- * native tooltip; the caption says it in words.
+ * The rating after each rated weekly and starter as an SVG polyline over the band stripes.
+ * Points carry a native tooltip; the caption says it in words.
  */
 export function RatingCurve({
   points,
   zh,
 }: {
-  points: readonly { week: number; after: number; rank: number; entrants: number }[];
+  points: readonly { week: number; kind?: string; after: number; rank: number; entrants: number }[];
   zh: boolean;
 }) {
   if (!points.length) return null;
@@ -53,8 +53,8 @@ export function RatingCurve({
   const current = ratings[ratings.length - 1];
   const peak = Math.max(...ratings);
   const label = zh
-    ? `${points.length} 场周赛后 rating ${current}，最高 ${peak}`
-    : `Rating ${current} after ${points.length} weekl${points.length === 1 ? 'y' : 'ies'}, peak ${peak}`;
+    ? `${points.length} 场比赛后 rating ${current}，最高 ${peak}`
+    : `Rating ${current} after ${points.length} contest${points.length === 1 ? '' : 's'}, peak ${peak}`;
   return (
     <figure className="rating-curve">
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label}>
@@ -68,11 +68,11 @@ export function RatingCurve({
         })}
         <polyline className="rating-curve-line" points={points.map((p, i) => `${x(i)},${y(p.after)}`).join(' ')} />
         {points.map((p, i) => (
-          <circle key={p.week} className="rating-curve-dot" cx={x(i)} cy={y(p.after)} r={4}>
+          <circle key={i} className="rating-curve-dot" cx={x(i)} cy={y(p.after)} r={4}>
             <title>
               {zh
-                ? `第 ${p.week} 期：${p.after}（第 ${p.rank} / ${p.entrants} 名）`
-                : `Weekly #${p.week}: ${p.after} (rank ${p.rank} of ${p.entrants})`}
+                ? `${p.kind === 'starter' ? '入门赛' : '周赛'}第 ${p.week} 期：${p.after}（第 ${p.rank} / ${p.entrants} 名）`
+                : `${p.kind === 'starter' ? 'Starter' : 'Weekly'} #${p.week}: ${p.after} (rank ${p.rank} of ${p.entrants})`}
             </title>
           </circle>
         ))}
@@ -83,7 +83,7 @@ export function RatingCurve({
           {zh ? '最高' : 'Peak'} <b>{peak}</b>
         </span>
         <span>
-          {zh ? '周赛' : 'Weeklies'} <b>{points.length}</b>
+          {zh ? '场次' : 'Contests'} <b>{points.length}</b>
         </span>
       </figcaption>
     </figure>

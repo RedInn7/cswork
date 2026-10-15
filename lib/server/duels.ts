@@ -22,6 +22,8 @@ const DAY = 86400000;
 export const DUEL_PAIR_DAILY = 3;
 /** A queued learner who hasn't polled for this long has left the page: never matched. */
 const QUEUE_STALE = 30000;
+/** ...and after this long, out of the queue (the privacy page promises it). */
+const QUEUE_DROP = 600000;
 /** Problems drawn from this many unsolved ones nearest the pair's rating. */
 const NEAREST = 12;
 
@@ -82,6 +84,7 @@ async function match(p: Person, now: number) {
   const pool = contestSources.rated().filter((x) => byId.has(x.id));
   const db = sqlite();
   return db.transaction(() => {
+    db.prepare('DELETE FROM duel_queue WHERE seen_at<?').run(now - QUEUE_DROP);
     const me = db.prepare('SELECT * FROM duel_queue WHERE user_id=?').get(p.id) as QueueRow | undefined;
     if (!me) return null;
     const others = db

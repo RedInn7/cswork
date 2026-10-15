@@ -1,11 +1,12 @@
 'use client';
-import { useCallback, useEffect, useState, useSyncExternalStore, type FormEvent } from 'react';
-import { CONTEST_KINDS, RATE_GRACE } from '@/lib/contest';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from 'react';
+import { CONTEST_KINDS, isRatedKind, RATE_GRACE, weeklyTitle } from '@/lib/contest';
 import { contestName } from '@/lib/lc-rating';
 import { formatClock } from '@/lib/mock-oa';
 import { useLocale, useT } from '@/lib/i18n';
 import { api } from '@/lib/types';
 import type { RoomView } from '@/lib/server/contests';
+import type { DuelQueueState } from '@/lib/server/duels';
 import { penaltyText } from '@/components/contest-parts';
 import { RatingBadge } from '@/components/rating-badge';
 
@@ -76,18 +77,22 @@ const PHASE: Record<RoomView['phase'], [string, string]> = {
   ended: ['已结束', 'Finished'],
 };
 
+/** A contest name; `shareable` adds the opt-in to show one's accepted code after the room. */
 function NameForm({
   suggested,
   submit,
   label,
+  shareable = false,
   t,
 }: {
   suggested: string;
-  submit: (name: string) => Promise<void>;
+  submit: (name: string, shareCode: boolean) => Promise<void>;
   label: string;
+  shareable?: boolean;
   t: T;
 }) {
   const [name, setName] = useState(suggested);
+  const [share, setShare] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   async function go(e: FormEvent) {
@@ -95,7 +100,7 @@ function NameForm({
     setBusy(true);
     setError('');
     try {
-      await submit(name.trim());
+      await submit(name.trim(), share);
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -108,6 +113,7 @@ function NameForm({
         <span>{t('比赛昵称（计分板上公开显示）', 'Contest name (shown on the scoreboard)')}</span>
         <input value={name} onChange={(e) => setName(e.target.value)} maxLength={24} required />
       </label>
+      {shareable && <ShareCode checked={share} onChange={setShare} t={t} />}
       <button type="submit" disabled={busy || !name.trim()}>
         {label}
       </button>
@@ -120,23 +126,39 @@ function NameForm({
   );
 }
 
+function ShareCode({ checked, onChange, t }: { checked: boolean; onChange: (on: boolean) => void; t: T }) {
+  return (
+    <label className="contest-inline">
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      <span>{t('赛后公开我的 AC 代码', 'Show my accepted code after the contest')}</span>
+    </label>
+  );
+}
+
 const problemHref = (id: string, room: string | null) =>
   `/?${new URLSearchParams(room ? { view: 'problem', problem: id, room } : { view: 'problem', problem: id, tab: 'solutions' })}`;
 
 type Row = NonNullable<RoomView['standings']>['live'][number];
 
-/** One standings table: rank, name, solved, time, then a cell per question. */
+/**
+ * One standings table: rank, name, solved, time, then a cell per question. `overall`: filtered
+ * rows keep their overall rank. `onCode` opens the code a row shared for a question it solved.
+ */
 function Board({
   rows,
   count,
   caption,
   rated,
+  overall = false,
+  onCode,
   t,
 }: {
   rows: Row[];
   count: number;
   caption: string;
   rated: boolean;
+  overall?: boolean;
+  onCode?: (question: number, name: string) => void;
   t: T;
 }) {
   const qs = Array.from({ length: count }, (_, i) => `Q${i + 1}`);
@@ -146,7 +168,7 @@ function Board({
         <caption>{caption}</caption>
         <thead>
           <tr>
-            <th scope="col">#</th>
+            <th scope="col">{overall ? t('全局名次', 'Overall') : '#'}</th>
             <th scope="col">{t('昵称', 'Name')}</th>
             <th scope="col">{t('通过', 'Solved')}</th>
             <th scope="col">{t('罚时', 'Time')}</th>
@@ -165,6 +187,7 @@ function Board({
               <th scope="row">
                 {r.name}
                 {r.me && <small>{t('你', 'you')}</small>}
+                {r.unrated && <small className="contest-unrated">{t('不计分', 'unrated')}</small>}
               </th>
               <td className="contest-solved">{r.solved}</td>
               <td className="contest-time">{r.solved ? penaltyText(r.penalty) : '—'}</td>
@@ -176,6 +199,16 @@ function Board({
                       <>
                         {formatClock(c.at ?? 0)}
                         {!!c.wrong && <small> (-{c.wrong})</small>}
+                        {onCode && r.shared && (
+                          <button
+                            type="button"
+                            className="contest-code-link"
+                            aria-label={t(`看 ${r.name} 的 Q${k + 1} 代码`, `${r.name}'s Q${k + 1} code`)}
+                            onClick={() => onCode(k, r.name)}
+                          >
+                            {t('看代码', 'Code')}
+                          </button>
+                        )}
                       </>
                     ) : c.wrong ? (
                       `-${c.wrong}`
@@ -217,6 +250,8 @@ function Board({
   );
 }
 
+type Shared = { name: string; virtual: boolean; language: string; code: string; at: number };
+
 /**
  * /contest/<id>: the room, polled every 10 seconds while anything can still change (every
  * minute before the start, when only the entrant count moves), and once more as soon as the
@@ -229,19 +264,26 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
   const [view, setView] = useState(initial);
   const [skew, setSkew] = useState(0);
   const [error, setError] = useState('');
+  const [following, setFollowing] = useState(false);
+  const [code, setCode] = useState<{ question: number; name: string; items: Shared[] } | null>(null);
+  const codeHeading = useRef<HTMLHeadingElement>(null);
   const id = view.id;
-  const refresh = useCallback(async () => {
-    const sent = Date.now();
-    const next = await api<RoomView>(`oj/contests/${encodeURIComponent(id)}`);
-    setView(next);
-    setSkew(next.now - (sent + Date.now()) / 2);
-    setError('');
-  }, [id]);
+  const refresh = useCallback(
+    async (only = following) => {
+      const sent = Date.now();
+      const next = await api<RoomView>(`oj/contests/${encodeURIComponent(id)}${only ? '?following=1' : ''}`);
+      setView(next);
+      setSkew(next.now - (sent + Date.now()) / 2);
+      setError('');
+    },
+    [id, following],
+  );
+  useEffect(() => codeHeading.current?.focus(), [code]);
   const myEnd = view.me?.end ?? 0;
   const active =
     view.phase !== 'ended' ||
     view.now < myEnd + 60000 ||
-    (view.kind === 'weekly' && !view.rated && view.now < view.endsAt + RATE_GRACE + 600000);
+    ((isRatedKind(view.kind) || view.ranked) && !view.rated && view.now < view.endsAt + RATE_GRACE + 600000);
   const every = view.phase === 'upcoming' && !view.waiting ? 60000 : 10000;
   useEffect(() => {
     if (!active) return;
@@ -262,7 +304,7 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
   }, [active, every, refresh, view.startsAt, view.endsAt, view.now, myEnd]);
 
   const mine = view.me && view.now >= view.me.start && view.now < view.me.end;
-  const title = view.week ? (zh ? `CSWork 周赛 第 ${view.week} 期` : `CSWork Weekly #${view.week}`) : view.title;
+  const title = view.week ? weeklyTitle(view.week, zh, view.kind) : view.ranked ? t('1v1 排位赛', 'Ranked duel') : view.title;
   const clock =
     view.phase === 'upcoming'
       ? view.startsAt > view.now
@@ -273,9 +315,19 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
         : view.phase === 'running'
           ? { to: view.endsAt, label: t('距结束', 'Ends in') }
           : null;
-  const join = async (displayName: string) => {
-    setView(await api<RoomView>(`oj/contests/${encodeURIComponent(id)}/join`, { displayName }));
+  const join = async (displayName: string, shareCode: boolean) => {
+    setView(await api<RoomView>(`oj/contests/${encodeURIComponent(id)}/join`, { displayName, shareCode }));
   };
+  const showCode = async (question: number, name: string) => {
+    try {
+      const problem = view.problems![question].id;
+      const found = await api<{ items: Shared[] }>(`oj/contests/${encodeURIComponent(id)}/code?${new URLSearchParams({ problem })}`);
+      setCode({ question, name, items: found.items });
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+  const onCode = view.codeOpen && view.problems ? showCode : undefined;
   const invite = view.inviteCode ? `/contest?join=${view.inviteCode}` : '';
   return (
     <article className="contest-room">
@@ -318,6 +370,7 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
           <NameForm
             suggested={view.suggestedName}
             submit={join}
+            shareable
             t={t}
             label={
               view.phase === 'upcoming'
@@ -355,7 +408,11 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
         <output className="contest-winner">
           {view.winner
             ? t(`${view.winner} 率先通过全部题目，赢下对战`, `${view.winner} solved everything first and wins the duel`)
-            : t('先通过全部题目的一方获胜；都没做完则按计分板。', 'First to solve every question wins; otherwise the scoreboard decides.')}
+            : !view.ranked
+              ? t('先通过全部题目的一方获胜；都没做完则按计分板。', 'First to solve every question wins; otherwise the scoreboard decides.')
+              : view.rated
+                ? t('时间到，双方都没做完：平局。', "Time's up with neither done: a draw.")
+                : t('先通过全部题目的一方获胜；时间到都没做完算平局。', 'First to solve every question wins; a draw if time runs out first.')}
         </output>
       )}
 
@@ -392,18 +449,76 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
             {t('计分板', 'Scoreboard')}
             <small>
               {view.phase === 'running' ? t('每 10 秒刷新', 'Refreshes every 10 seconds') : ''}
-              {view.kind === 'weekly' && view.phase === 'ended' && !view.rated
+              {isRatedKind(view.kind) && view.phase === 'ended' && !view.rated
                 ? t('结束 15 分钟后结算 rating', 'Ratings settle 15 minutes after the end')
                 : ''}
             </small>
           </h2>
+          {view.following !== null && view.kind !== 'duel' && (
+            <label className="contest-inline contest-follow">
+              <input
+                type="checkbox"
+                checked={following}
+                onChange={(e) => {
+                  const on = e.target.checked;
+                  setFollowing(on);
+                  refresh(on).catch((err: Error) => setError(err.message));
+                }}
+              />
+              <span>{t('只看我关注的人（对方主页需展示比赛记录）', 'Only people I follow (whose profile shows contests)')}</span>
+            </label>
+          )}
           {view.standings.live.length ? (
-            <Board rows={view.standings.live} count={view.problemCount} caption={t('实时参赛', 'Live')} rated={view.rated} t={t} />
+            <Board
+              rows={view.standings.live}
+              count={view.problemCount}
+              caption={t('实时参赛', 'Live')}
+              rated={view.rated}
+              overall={!!view.following}
+              onCode={onCode}
+              t={t}
+            />
           ) : (
             <p className="contest-hidden-note">{t('还没有实时参赛的人。', 'Nobody raced this live.')}</p>
           )}
           {view.standings.virtual.length > 0 && (
-            <Board rows={view.standings.virtual} count={view.problemCount} caption={t('虚拟参赛（各自计时，不计 rating）', 'Virtual (own clocks, unrated)')} rated={false} t={t} />
+            <Board
+              rows={view.standings.virtual}
+              count={view.problemCount}
+              caption={t('虚拟参赛（各自计时，不计 rating）', 'Virtual (own clocks, unrated)')}
+              rated={false}
+              overall={!!view.following}
+              onCode={onCode}
+              t={t}
+            />
+          )}
+        </section>
+      )}
+
+      {code && (
+        <section aria-labelledby="contest-code" className="contest-code">
+          <h2 id="contest-code" className="lists-public-h2" tabIndex={-1} ref={codeHeading}>
+            {t(`Q${code.question + 1} 公开的代码`, `Q${code.question + 1}: shared code`)}
+            <small>
+              <button type="button" onClick={() => setCode(null)}>
+                {t('收起', 'Close')}
+              </button>
+            </small>
+          </h2>
+          {code.items.length ? (
+            code.items.map((item) => (
+              <details key={item.name} open={item.name === code.name}>
+                <summary>
+                  {item.name} · {item.language} · {formatClock(item.at)}
+                  {item.virtual ? t(' · 虚拟参赛', ' · virtual') : ''}
+                </summary>
+                <pre>
+                  <code>{item.code}</code>
+                </pre>
+              </details>
+            ))
+          ) : (
+            <p className="contest-hidden-note">{t('这道题还没有人公开代码。', 'Nobody has shared code for this question.')}</p>
           )}
         </section>
       )}
@@ -427,14 +542,36 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
           {view.kind === 'duel' && (
             <li>{t('对战在第二个人加入时开始计时。', 'A duel’s clock starts when the second player joins.')}</li>
           )}
-          {view.kind === 'weekly' && (
+          {view.ranked && (
             <li>
               {t(
-                '周赛结束后按 Elo 结算 rating：有提交的实时参赛者参与，初始 1500，场次越多波动越小。',
-                'Weeklies are rated Elo-style once they end: live entrants with a submission count, everyone starts at 1500, and ratings settle as you race more.',
+                '排位对战按两人 Elo（K=32）结算对战 rating，初始 1500，与周赛 rating 分开；同一对选手每天最多匹配 3 场。',
+                'Ranked duels move a duel rating by two-player Elo (K = 32), starting at 1500 and apart from the weekly rating; the same pair is matched at most 3 times a day.',
               )}
             </li>
           )}
+          {isRatedKind(view.kind) && (
+            <li>
+              {t(
+                '周赛和入门赛共用一套 Elo，结束后结算：有提交的实时参赛者参与，初始 1500，场次越多波动越小。',
+                'Weeklies and starters share one Elo, rated once they end: live entrants with a submission count, everyone starts at 1500, and ratings settle as you race more.',
+              )}
+            </li>
+          )}
+          {view.kind === 'starter' && (
+            <li>
+              {t(
+                '入门赛只给赛前 rating 低于 1700 的人计分；其他人照常上榜，标「不计分」。',
+                'A starter rates only entrants below 1700 before it; everyone else is on the board, marked unrated.',
+              )}
+            </li>
+          )}
+          <li>
+            {t(
+              '报名时可选赛后公开自己的 AC 代码；比赛结束 15 分钟后，登录的人能在计分板上点「看代码」。',
+              'When entering you can choose to show your accepted code afterwards; 15 minutes after the end, signed-in readers open it from the scoreboard.',
+            )}
+          </li>
         </ul>
       </details>
     </article>
@@ -507,8 +644,9 @@ export function JoinByCode({ initialCode, suggested }: { initialCode: string; su
               suggested={suggested}
               t={t}
               label={t('加入房间', 'Join room')}
-              submit={async (displayName) => {
-                const room = await api<RoomView>('oj/contests/join', { code: code.trim(), displayName });
+              shareable
+              submit={async (displayName, shareCode) => {
+                const room = await api<RoomView>('oj/contests/join', { code: code.trim(), displayName, shareCode });
                 location.assign(`/contest/${encodeURIComponent(room.id)}`);
               }}
             />
@@ -547,6 +685,7 @@ export function CreateRoom({
   const [later, setLater] = useState(false);
   const [startAt, setStartAt] = useState('');
   const [duration, setDuration] = useState(90);
+  const [share, setShare] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   useEffect(() => {
@@ -578,6 +717,7 @@ export function CreateRoom({
         displayName: name.trim(),
         startsAt,
         durationMin: duration,
+        shareCode: share,
         ...(source === 'pick'
           ? { problems: picked.map((p) => p.id) }
           : source === 'draw'
@@ -716,6 +856,7 @@ export function CreateRoom({
           </label>
         )}
       </div>
+      <ShareCode checked={share} onChange={setShare} t={t} />
       <p className="contest-hidden-note">
         {kind === 'duel'
           ? t('对战在对手加入时开始计时。', 'A duel’s clock starts when your opponent joins.')
@@ -733,5 +874,81 @@ export function CreateRoom({
         </p>
       )}
     </form>
+  );
+}
+
+/**
+ * Quick match for a ranked duel: queue under a contest name, poll every 3 seconds while waiting,
+ * and go to the room once matched. A queue or duel already running (another tab) is picked up.
+ */
+export function DuelQueue({ suggested, verified }: { suggested: string; verified: boolean }) {
+  const t = useT();
+  const now = useNow();
+  const [state, setState] = useState<DuelQueueState | null>(null);
+  const [error, setError] = useState('');
+  const show = useCallback((next: DuelQueueState) => {
+    setState(next);
+    setError('');
+    if (next.state === 'matched') location.assign(`/contest/${encodeURIComponent(next.roomId)}`);
+  }, []);
+  const poll = useCallback(
+    () =>
+      api<DuelQueueState>('oj/contests/duel/queue')
+        .then(show)
+        .catch((e: Error) => setError(e.message)),
+    [show],
+  );
+  useEffect(() => {
+    if (verified) void poll();
+  }, [verified, poll]);
+  const waiting = state?.state === 'waiting';
+  useEffect(() => {
+    if (!waiting) return;
+    const timer = setInterval(poll, 3000);
+    return () => clearInterval(timer);
+  }, [waiting, poll]);
+  if (!verified)
+    return <p className="contest-hidden-note">{t('验证邮箱后可以排位对战。', 'Verify your email to play ranked duels.')}</p>;
+  if (state?.state === 'waiting')
+    return (
+      <div className="contest-queue">
+        <p aria-live="polite">
+          {t(
+            `正在匹配：对战 rating ${state.rating}，当前接受 ±${state.window} 内的对手`,
+            `Finding an opponent: duel rating ${state.rating}, now within ±${state.window}`,
+          )}
+          {now !== null && <span className="contest-queue-wait"> · {formatClock(Math.max(0, now - state.since))}</span>}
+        </p>
+        <button
+          type="button"
+          onClick={() =>
+            api<DuelQueueState>('oj/contests/duel/leave', {})
+              .then(show)
+              .catch((e: Error) => setError(e.message))
+          }
+        >
+          {t('取消匹配', 'Cancel')}
+        </button>
+        {error && (
+          <p className="contest-error" role="alert">
+            {error}
+          </p>
+        )}
+      </div>
+    );
+  return (
+    <>
+      <NameForm
+        suggested={suggested}
+        t={t}
+        label={t('快速匹配', 'Quick match')}
+        submit={async (displayName) => show(await api<DuelQueueState>('oj/contests/duel/queue', { displayName }))}
+      />
+      {error && (
+        <p className="contest-error" role="alert">
+          {error}
+        </p>
+      )}
+    </>
   );
 }
