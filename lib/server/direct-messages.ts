@@ -142,17 +142,17 @@ export function inbox(me: string) {
   };
 }
 
-/** One conversation, oldest first: the latest PAGE messages from `after` on. */
-export function conversation(me: string, thread: string, after = 0) {
+/** One conversation, oldest first: the latest PAGE messages. */
+export function conversation(me: string, thread: string) {
   const db = sqlite();
   const them = otherSide(thread, me);
   const items = (
     db
       .prepare(
         `SELECT id,body,created_at AS createdAt,from_user=? AS mine FROM direct_messages
-        WHERE thread=? AND hidden=0 AND created_at>=? ORDER BY created_at DESC,rowid DESC LIMIT ${PAGE}`,
+        WHERE thread=? AND hidden=0 ORDER BY created_at DESC,rowid DESC LIMIT ${PAGE}`,
       )
-      .all(me, thread, after) as { id: string; body: string; createdAt: number; mine: number }[]
+      .all(me, thread) as { id: string; body: string; createdAt: number; mine: number }[]
   )
     .reverse()
     .map((m) => ({ ...m, mine: !!m.mine }));
@@ -180,7 +180,7 @@ function threadFor(me: string, key: string) {
 }
 
 /**
- * /api/oj/dm: GET the inbox; GET <key>[?after=] a conversation (marking it read); POST {to|post,
+ * /api/oj/dm: GET the inbox; GET <key> a conversation (marking it read); POST {to|post,
  * body} starts one, POST <key> {body} replies, <key>/block {on}, <key>/report {message, reason},
  * POST settings {open}.
  */
@@ -200,8 +200,7 @@ export async function handleDirectMessages(request: Request, p: Person | null, p
       thread,
       p.id,
     );
-    const after = Number(new URL(request.url).searchParams.get('after') ?? 0);
-    return json(conversation(p.id, thread, Number.isSafeInteger(after) ? after : 0));
+    return json(conversation(p.id, thread));
   }
   if (request.method !== 'POST') throw new HttpError(404, '接口不存在');
   await limit(p, 'dm-write', 20);

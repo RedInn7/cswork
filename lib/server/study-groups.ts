@@ -190,21 +190,21 @@ export function groupDetail(id: string, p: Person, tz = 0, now = Date.now()) {
 }
 
 /**
- * A group's chat, oldest first: the latest CHAT_PAGE messages from `after` on (a created_at the
- * client has; it drops ids it already shows). Authors show by their name in the group, null once
- * they left. Removed, moderated and reported-down messages leave the chat for everyone.
+ * A group's chat, oldest first: the latest CHAT_PAGE messages (open chats reload it whole, so
+ * removed lines leave them too). Authors show by their name in the group, null once they left.
+ * Removed, moderated and reported-down messages leave the chat for everyone.
  */
-export function groupChat(group: string, me: string, after = 0) {
+export function groupChat(group: string, me: string) {
   return (
     sqlite()
       .prepare(
         `SELECT g.id,g.body,g.created_at AS createdAt,g.user_id=@me AS mine,m.display_name AS name
         FROM study_group_messages g LEFT JOIN study_group_members m ON m.group_id=g.group_id AND m.user_id=g.user_id
-        WHERE g.group_id=@group AND g.hidden=0 AND g.created_at>=@after
+        WHERE g.group_id=@group AND g.hidden=0
           AND (SELECT COUNT(*) FROM post_reports r WHERE r.target='gmsg:'||g.id AND r.reason<>'${REPORT_CLEARED}')<${REPORTS_HIDE}
         ORDER BY g.created_at DESC,g.rowid DESC LIMIT ${CHAT_PAGE}`,
       )
-      .all({ group, me, after }) as { id: string; body: string; createdAt: number; mine: number; name: string | null }[]
+      .all({ group, me }) as { id: string; body: string; createdAt: number; mine: number; name: string | null }[]
   )
     .reverse()
     .map((m) => ({ ...m, mine: !!m.mine }));
@@ -342,8 +342,7 @@ export async function handleStudyGroups(request: Request, p: Person | null, path
         )
         .get(row.id);
       if (!role && !reported) throw new HttpError(403, '只有处理举报时老师才能查看小组聊天');
-      const after = Number(params.get('after') ?? 0);
-      return json({ items: groupChat(row.id, p.id, Number.isSafeInteger(after) ? after : 0) });
+      return json({ items: groupChat(row.id, p.id) });
     }
     if (action) throw new HttpError(404, '学习小组接口不存在');
     return json(groupDetail(id, p, tz()));

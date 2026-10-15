@@ -11,32 +11,35 @@ export const POLL_MS = 10000;
 const MAX = 2000;
 
 /**
- * A chat from `path` (oj/groups/<id>/messages, oj/dm/<key>): loaded, then polled every 10 s with
- * ?after= while the tab is visible, new lines merged by id. `fresh` is how many lines from others
- * the last poll brought, for one polite screen reader sentence instead of reading every line.
- * `show(next)` replaces it with a server answer (after sending or taking a line back).
+ * A chat from `path` (oj/groups/<id>/messages, oj/dm/<key>): loaded, then reloaded whole every
+ * 10 s while the tab is visible, so lines taken back or moderated leave open chats too. `fresh`
+ * is how many lines from others the last poll brought, for one polite screen reader sentence
+ * instead of reading every line. `show(next)` puts in a server answer (after sending or taking a
+ * line back).
  */
 export function useChat<T extends { items: ChatItem[] }>(path: string) {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState('');
   const [fresh, setFresh] = useState(0);
   const latest = useRef<T | null>(null);
-  const show = useCallback((next: T, merge = false) => {
-    const old = merge ? latest.current : null;
-    const added = old ? next.items.filter((n) => !old.items.some((o) => o.id === n.id)) : next.items;
-    latest.current = { ...next, items: old ? [...old.items, ...added] : next.items };
-    setData(latest.current);
-    setFresh(old ? added.filter((m) => !m.mine).length : 0);
+  const shown = useRef(0);
+  const show = useCallback((next: T, poll = false) => {
+    const old = poll ? latest.current : null;
+    shown.current++;
+    latest.current = next;
+    setData(next);
+    setFresh(old ? next.items.filter((n) => !n.mine && !old.items.some((o) => o.id === n.id)).length : 0);
   }, []);
   useEffect(() => {
     let live = true;
-    const load = (merge: boolean) => {
-      const at = merge ? latest.current?.items.at(-1)?.createdAt : undefined;
-      api<T>(at ? `${path}${path.includes('?') ? '&' : '?'}after=${at}` : path).then(
+    const load = (poll: boolean) => {
+      const asked = shown.current;
+      api<T>(path).then(
         (next) => {
-          if (!live) return;
+          // A send or take-back answered while this poll was out: its answer is newer.
+          if (!live || asked !== shown.current) return;
           setError('');
-          show(next, merge && !!latest.current);
+          show(next, poll);
         },
         (e: Error) => live && setError(e.message),
       );

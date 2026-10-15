@@ -84,7 +84,7 @@ function serve(routes) {
 }
 const line = (id, body, extra = {}) => ({ id, body, createdAt: 1000 + Number(id.slice(1)), mine: false, ...extra });
 
-test('group chat: names, polling with after, a polite count, unsend and report', async () => {
+test('group chat: names, polling, a polite count, unsend and report', async () => {
   const group = {
     id: 'Grp000000001',
     name: 'Sprint',
@@ -113,11 +113,11 @@ test('group chat: names, polling with after, a polite count, unsend and report',
     assert.equal(lines()[1].querySelector('.chat-body').textContent, 'Mine\ntwo lines');
     assert.ok(lines()[1].hasAttribute('data-mine'));
     assert.equal(document.querySelector('[aria-live="polite"]').textContent, '');
-    // A poll asks only for what is new and announces a count, not the text.
+    // A poll reloads the chat and announces a count of new lines, not the text.
     chat = [...chat, line('m3', 'New one', { name: 'Cat' })];
     await act(async () => polls[0]());
     await wait();
-    assert.equal(api.gets.at(-1), `oj/groups/Grp000000001/messages?after=${chat[1].createdAt}`);
+    assert.equal(api.gets.at(-1), 'oj/groups/Grp000000001/messages');
     assert.equal(lines().length, 3);
     assert.equal(document.querySelector('[aria-live="polite"]').textContent, '1 new message');
     // Send with Enter; Shift+Enter would only break the line.
@@ -138,6 +138,11 @@ test('group chat: names, polling with after, a polite count, unsend and report',
     await act(async () => lines()[0].querySelector('form').dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true })));
     await wait();
     assert.deepEqual(api.posts.at(-1), ['oj/groups/Grp000000001/report', { message: 'm1', reason: 'spam' }]);
+    // A line taken back or moderated elsewhere leaves the open chat on the next poll.
+    chat = chat.filter((m) => m.id !== 'm1');
+    await act(async () => polls[0]());
+    await wait();
+    assert.deepEqual(lines().map((li) => li.querySelector('.chat-body').textContent), ['New one', 'Hello']);
     await act(async () => root.unmount());
   } finally {
     api.restore();

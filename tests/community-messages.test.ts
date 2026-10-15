@@ -127,11 +127,10 @@ void test('group chat: members only, retention, unsay, reports take a message do
   );
   await new Promise((r) => setTimeout(r, 5));
   const second = (await ok(bob, 'POST', path, { body: 'Hello Amy' })).items.at(-1);
-  // Members read the chat by display name only; `after` returns only what is new.
+  // Members read the chat by display name only.
   const read = await ok(owner, 'GET', path);
   assert.equal(read.items.length, 2);
   assert.ok(!JSON.stringify(read).includes('m-amy') && !JSON.stringify(read).includes('Real'));
-  assert.deepEqual((await ok(owner, 'GET', `${path}?after=${second.createdAt}`)).items.map((m: { id: string }) => m.id), [second.id]);
   // A teacher reads it only while a message in it is reported, and never writes.
   assert.equal(await status(teacher, 'GET', path), 403);
   assert.equal(await status(teacher, 'POST', path, { body: 'hi' }), 404);
