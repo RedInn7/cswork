@@ -37,6 +37,7 @@ globalThis.fetch = async (url, init = {}) => {
   if (key === 'GET /api/oj/reports/companies') return Response.json({ items: [{ slug: 'google', name: 'Google' }] });
   if (key === 'POST /api/oj/applications') return Response.json({ item: card({ id: 'new', ...body }) });
   if (key === 'POST /api/oj/applications/amz') return Response.json({ item: { ...items[0], ...body } });
+  if (key === 'POST /api/oj/applications/wish/delete') return Response.json({ ok: true });
   return Response.json({ error: 'no route' }, { status: 404 });
 };
 const blobs = [];
@@ -74,6 +75,8 @@ test('the board shows the funnel, a column per stage, the countdown and the comp
 test('adding a card posts the form; moving one posts only its stage', async () => {
   await act(async () => button('添加投递').click());
   const form = document.querySelector('form.resume-form');
+  // The form takes the focus (which scrolls it into view); saving hands it back to the opener.
+  assert.equal(document.activeElement, form.querySelector('input[list="tracker-companies"]'));
   // Names come from the company pages.
   assert.ok(form.querySelector('#tracker-companies option[value="Google"]'));
   await setValue(form.querySelector('input[list="tracker-companies"]'), 'Google');
@@ -85,6 +88,7 @@ test('adding a card posts the form; moving one posts only its stage', async () =
   assert.equal(sent.appliedAt, new Date(2099, 2, 4).getTime(), 'a date is local midnight');
   assert.equal(sent.oaDeadline, null);
   assert.equal(document.querySelector('form.resume-form'), null);
+  assert.equal(document.activeElement, button('添加投递'));
   assert.ok([...column('applied').querySelectorAll('.tracker-company')].some((p) => p.textContent === 'Google'));
 
   column('oa').querySelector('select').focus();
@@ -101,11 +105,22 @@ test('adding a card posts the form; moving one posts only its stage', async () =
 
 test('a stage moved while the card is being edited is not saved back by the form', async () => {
   await act(async () => column('phone').querySelector('[data-id="amz"] .tracker-card-actions button').click());
+  assert.equal(document.activeElement, document.querySelector('form.resume-form input'));
   await setValue(column('phone').querySelector('[data-id="amz"] select'), 'oa', 'change');
   assert.equal(document.querySelector('form.resume-form select').value, 'oa');
   await act(async () => document.querySelector('form.resume-form button[type="submit"]').click());
   assert.equal(calls.at(-1)[1].stage, 'oa');
   assert.match(column('oa').textContent, /Amazon/);
+  // Back on the card's own Edit button, in its new column.
+  assert.equal(document.activeElement, column('oa').querySelector('[data-id="amz"] .tracker-card-actions button'));
+});
+
+test('deleting from the form leaves the focus on Add application', async () => {
+  window.confirm = () => true;
+  await act(async () => document.querySelector('[data-id="wish"] .tracker-card-actions button').click());
+  await act(async () => button('删除').click());
+  assert.equal(document.querySelector('[data-id="wish"]'), null);
+  assert.equal(document.activeElement, button('添加投递'));
 });
 
 test('a job link must be https before anything is sent', async () => {
@@ -118,6 +133,7 @@ test('a job link must be https before anything is sent', async () => {
   assert.equal(calls.length, before);
   assert.match(document.querySelector('.resume-error').textContent, /https:\/\//);
   await act(async () => button('取消').click());
+  assert.equal(document.activeElement, button('添加投递'));
 });
 
 test('the exports: CSV with formulas defused, a calendar with the open deadlines', async () => {

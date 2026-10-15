@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   applicationsCsv,
   countdown,
@@ -16,6 +16,7 @@ import {
 } from '@/lib/applications';
 import { api } from '@/lib/types';
 
+const ADD = '.tracker [data-add]';
 type Form = {
   id: string | null;
   company: string;
@@ -63,7 +64,10 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [now, setNow] = useState(() => Date.now());
-  const [moved, setMoved] = useState<string | null>(null);
+  // A selector to focus once the board has re-rendered: the moved card's select, or a closed form's opener.
+  const [refocus, setRefocus] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const editing = form && (form.id ?? '');
   useEffect(() => {
     let live = true;
     api<{ items: Application[] }>('oj/applications').then(
@@ -81,12 +85,19 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
       clearInterval(tick);
     };
   }, []);
-  // A moved card is rendered in another column: give its stage select the focus back.
   useEffect(() => {
-    if (!moved) return;
-    document.querySelector<HTMLSelectElement>(`[data-id="${moved}"] select`)?.focus();
-    setMoved(null);
-  }, [moved]);
+    if (!refocus) return;
+    document.querySelector<HTMLElement>(refocus)?.focus();
+    setRefocus(null);
+  }, [refocus]);
+  // The form opens above the board, off-screen from a card far down: focusing it scrolls it in.
+  useEffect(() => {
+    if (editing !== null) formRef.current?.querySelector('input')?.focus();
+  }, [editing]);
+  const close = (to: string | null = form?.id ? `[data-id="${form.id}"] .tracker-card-actions button` : ADD) => {
+    setRefocus(to);
+    setForm(null);
+  };
 
   const put = (item: Application) => setItems((list) => [item, ...(list ?? []).filter((a) => a.id !== item.id)]);
   async function send(path: string, body: unknown) {
@@ -119,7 +130,7 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
     });
     if (r?.item) {
       put(r.item);
-      setForm(null);
+      close();
     }
   }
   async function move(a: Application, stage: Stage) {
@@ -130,13 +141,14 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
     put(item);
     // An open edit form for this card would otherwise save its old stage back.
     setForm((f) => (f && f.id === item.id ? { ...f, stage: item.stage } : f));
-    setMoved(item.id);
+    // A moved card is rendered in another column: give its stage select the focus back.
+    setRefocus(`[data-id="${item.id}"] select`);
   }
   async function remove(id: string) {
     if (!window.confirm(t('删除这条投递记录？', 'Delete this application?'))) return;
     if (await send(`oj/applications/${id}/delete`, {})) {
       setItems((list) => (list ?? []).filter((a) => a.id !== id));
-      setForm(null);
+      close(ADD);
     }
   }
   const set = (patch: Partial<Form>) => setForm((f) => f && { ...f, ...patch });
@@ -166,7 +178,7 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
         </div>
       </dl>
       <div className="resume-actions">
-        <button type="button" onClick={() => setForm(toForm())} disabled={busy}>
+        <button type="button" data-add onClick={() => setForm(toForm())} disabled={busy}>
           {t('添加投递', 'Add application')}
         </button>
         <button
@@ -196,7 +208,7 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
       )}
 
       {form && (
-        <form className="resume-form visa-form" onSubmit={save} aria-label={form.id ? t('编辑投递', 'Edit application') : t('添加投递', 'Add application')}>
+        <form ref={formRef} className="resume-form visa-form" onSubmit={save} aria-label={form.id ? t('编辑投递', 'Edit application') : t('添加投递', 'Add application')}>
           <fieldset>
             <legend>{form.id ? t('编辑投递', 'Edit application') : t('添加投递', 'Add application')}</legend>
             <label>
@@ -261,7 +273,7 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
             <button type="submit" disabled={busy}>
               {t('保存', 'Save')}
             </button>
-            <button type="button" className="is-quiet" onClick={() => setForm(null)}>
+            <button type="button" className="is-quiet" onClick={() => close()}>
               {t('取消', 'Cancel')}
             </button>
             {form.id && (
