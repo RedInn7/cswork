@@ -282,7 +282,12 @@ void test('reminder mails go out once a day ahead and once an hour ahead, to ver
   process.env.APP_URL = 'https://cswork.test';
   const realFetch = globalThis.fetch;
   const mails: { to: string[]; subject: string; text: string }[] = [];
+  let limited = 0;
   globalThis.fetch = (async (_url: string, init: RequestInit) => {
+    if (limited > 0) {
+      limited--;
+      return new Response('rate limited', { status: 429 });
+    }
     mails.push(JSON.parse(String(init.body)));
     return Response.json({ id: 'x' });
   }) as typeof fetch;
@@ -297,11 +302,13 @@ void test('reminder mails go out once a day ahead and once an hour ahead, to ver
     requestMatch(rae, ask('Rae', [slot], { kind: 'ds', level: 'senior' }), 'zh', now);
     const pairId = requestMatch(sol, ask('Sol', [slot], { kind: 'ds', level: 'senior' }), 'en', now)!;
     sqlite().prepare('UPDATE mock_match_pairs SET meet_url=? WHERE id=?').run('https://meet.google.com/abc-defg-hij', pairId);
-    // Sol's email is unverified: only Rae hears, in her language and zone.
-    assert.equal(await sendPeerReminders(now), 1);
-    assert.equal(await sendPeerReminders(now + 60000), 0, 'never twice');
+    // Sol's email is unverified: only Rae hears, in her language and zone. A rate-limited send is retried next tick.
+    limited = 1;
+    assert.equal(await sendPeerReminders(now), 0);
+    assert.equal(await sendPeerReminders(now + 10 * 60000), 1);
+    assert.equal(await sendPeerReminders(now + 11 * 60000), 0, 'never twice');
     assert.deepEqual(mails[0].to, [rae.email]);
-    assert.equal(mails[0].subject, '明天有一场同伴模拟面试');
+    assert.equal(mails[0].subject, `同伴模拟面试提醒：${localSlot(slot, -480)}`);
     assert.match(mails[0].text, /同伴：Sol\n会议链接：https:\/\/meet\.google\.com\/abc-defg-hij/);
     assert.match(mails[0].text, new RegExp(`https://cswork\\.test/\\?view=mock-peer&pair=${pairId}`));
     assert.match(mails[0].text, /\(UTC\+8\)/);

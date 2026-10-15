@@ -117,11 +117,11 @@ export function peerReminderMail(
 ) {
   return zh
     ? {
-        subject: m.soon ? '同伴模拟面试 1 小时后开始' : '明天有一场同伴模拟面试',
+        subject: m.soon ? '同伴模拟面试 1 小时后开始' : `同伴模拟面试提醒：${m.when}`,
         text: `${m.soon ? '你的同伴模拟面试 1 小时后开始。' : '提醒一下：你约了一场同伴模拟面试。'}\n\n类型：${m.template}\n时间：${m.when}\n同伴：${m.partner}\n会议链接：${m.meetUrl || '尚未填写，可以在场次页面里填上'}\n\n场次页面（两轮的候选人和面试官链接都在这里）：\n${m.link}\n\n不想收到这类提醒？下次预约时取消勾选「邮件提醒」。`,
       }
     : {
-        subject: m.soon ? 'Your peer mock interview starts in an hour' : 'You have a peer mock interview tomorrow',
+        subject: m.soon ? 'Your peer mock interview starts in an hour' : `Peer mock interview reminder: ${m.when}`,
         text: `${m.soon ? 'Your peer mock interview starts in an hour.' : 'A reminder: you booked a peer mock interview.'}\n\nType: ${m.template}\nTime: ${m.when}\nPartner: ${m.partner}\nCall link: ${m.meetUrl || 'not set yet; add one on the session page'}\n\nSession page (both rounds' candidate and interviewer links):\n${m.link}\n\nDon't want these reminders? Untick "Email reminders" the next time you book.`,
       };
 }

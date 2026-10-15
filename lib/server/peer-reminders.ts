@@ -5,6 +5,8 @@ import { origin } from './env';
 import { mailReady, peerReminderMail, sendMail } from './mail';
 
 const HOUR = 3600000;
+// Resend's default limit is about 2 requests a second, shared with sign-in mails (scripts/newsletter.ts).
+const GAP_MS = 500;
 type Due = {
   id: string;
   kind: string;
@@ -21,8 +23,9 @@ type Due = {
  * Peer mock interview reminders, run every 10 minutes by the judge worker (lib/server/oj-worker.ts):
  * one mail a day ahead (sent from 24 down to 2 hours before) and one an hour ahead, to each side
  * whose request kept reminders on and whose account email is verified. A mail is claimed
- * (reminded_*_at) before it goes out, so no tick or second worker sends it twice; a failed send is
- * not retried. Instant requests that found nobody in time are closed here too. Returns mails sent.
+ * (reminded_*_at) before it goes out, so no tick or second worker sends it twice; if a send fails the
+ * claim is released for the next tick, and the Idempotency-Key keeps a side who already got it from
+ * getting it again. Instant requests that found nobody in time are closed here too. Returns mails sent.
  */
 export async function sendPeerReminders(now = Date.now()) {
   const db = sqlite();
@@ -42,6 +45,7 @@ export async function sendPeerReminders(now = Date.now()) {
     WHERE r.pair_id=? AND r.status='matched' AND r.remind=1 AND u.email_verified=1`,
   );
   let sent = 0;
+  let tried = 0;
   for (const pair of due) {
     const lead = pair.slot * HOUR - now;
     const soon = lead <= HOUR;
@@ -49,6 +53,7 @@ export async function sendPeerReminders(now = Date.now()) {
     if (soon ? pair.reminded_hour_at !== null : lead <= 2 * HOUR || pair.reminded_day_at !== null) continue;
     const column = soon ? 'reminded_hour_at' : 'reminded_day_at';
     if (!db.prepare(`UPDATE mock_match_pairs SET ${column}=? WHERE id=? AND ${column} IS NULL`).run(now, pair.id).changes) continue;
+    let failed = false;
     for (const r of to.all(pair.id) as { user_id: string; tz: number; locale: string; email: string }[]) {
       const zh = r.locale === 'zh';
       const mail = peerReminderMail(zh, {
@@ -59,13 +64,16 @@ export async function sendPeerReminders(now = Date.now()) {
         meetUrl: pair.meet_url,
         link: `${origin()}/?view=mock-peer&pair=${pair.id}`,
       });
+      if (tried++) await new Promise((done) => setTimeout(done, GAP_MS));
       try {
         await sendMail({ to: r.email, ...mail, key: `cswork-peer-${pair.id}-${column}-${r.user_id}` });
         sent++;
       } catch (error) {
+        failed = true;
         console.error('peer reminder', error instanceof Error ? error.message : 'unknown');
       }
     }
+    if (failed) db.prepare(`UPDATE mock_match_pairs SET ${column}=NULL WHERE id=? AND ${column}=?`).run(pair.id, now);
   }
   return sent;
 }
