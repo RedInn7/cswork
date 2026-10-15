@@ -1166,7 +1166,6 @@ export function OaCompanyBadge({
   );
 }
 
-/** Mounted only after the learner selects the editorial tab. */
 // The editorial's code tabs, in the Line 500 editorial's order; other languages follow.
 const EDITORIAL_ORDER = ['python', 'cpp', 'java', 'go'];
 function editorialRank(language: string) {
@@ -1175,9 +1174,10 @@ function editorialRank(language: string) {
 }
 
 /**
- * The workspace's editorial tab for an OA problem: the explanation (the guide's English one on an
- * English page) and the reference code by language, opening on the editor's language. The
- * workspace never mounts it in a mock OA or contest; the API refuses it in a running one.
+ * The workspace's editorial tab for an OA problem, mounted only once the learner selects it: the
+ * explanation (the guide's English one on an English page) and the reference code by language,
+ * opening on the editor's language. Never mounted in a mock OA or contest; the API refuses it in
+ * a running one.
  */
 export function OaEditorial({
   problemId,
