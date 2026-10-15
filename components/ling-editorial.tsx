@@ -12,6 +12,7 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { CodeDiff } from './editor';
+import { SolutionPosts } from './solution-posts';
 import { StatementMarkdown } from './statement-markdown';
 import { ojRequest, type LingEditorial as Editorial } from '@/lib/oj-client';
 import { englishMessage } from '@/lib/messages-en';
@@ -31,6 +32,8 @@ type EditorialLang = (typeof LANGS)[number][0];
  * Locked until the learner has passed the problem, unless they confirm they want it now;
  * the workspace keeps that choice (`unlocked`) so switching tabs doesn't forget it. The editorial
  * is fetched only once unlocked; the server refuses it during the learner's running contest.
+ * `discussion`: below it, the problem's community solutions (the same posts as the Solutions
+ * tab, so the contest gate holds), folded until asked for.
  */
 export function LingEditorial({
   problemId,
@@ -41,6 +44,7 @@ export function LingEditorial({
   code,
   language,
   settings,
+  discussion = false,
 }: {
   problemId: string;
   verified: boolean;
@@ -50,6 +54,7 @@ export function LingEditorial({
   code: string;
   language: Language;
   settings: EditorSettings;
+  discussion?: boolean;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const [lang, setLang] = useState<EditorialLang>(language === 'cpp' ? 'cpp' : 'python');
@@ -62,6 +67,7 @@ export function LingEditorial({
   const [editorial, setEditorial] = useState<Editorial | null>(null);
   const [error, setError] = useState('');
   const [attempt, setAttempt] = useState(0);
+  const [discussing, setDiscussing] = useState(false);
   useEffect(() => {
     if (!unlocked || editorial) return;
     const controller = new AbortController();
@@ -196,6 +202,14 @@ export function LingEditorial({
               </li>
             ))}
           </ol>
+          {discussion && (
+            <details className="cs-ling-discussion" onToggle={(e) => setDiscussing(e.currentTarget.open)}>
+              <summary>{t('社区题解与讨论', 'Community solutions and discussion')}</summary>
+              {discussing && (
+                <SolutionPosts problemId={problemId} english={english} code={code} language={language} unlocked />
+              )}
+            </details>
+          )}
         </>
       )}
       <AlertDialog open={confirm} onOpenChange={setConfirm}>

@@ -2,6 +2,7 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import {
   ArrowLeft,
+  Bookmark,
   EyeOff,
   Flag,
   Lightbulb,
@@ -47,17 +48,34 @@ export type PostSummary = {
   votes: number;
   voted: boolean;
   comments: number;
+  /** How many readers saved it, and whether this one did. */
+  stars?: number;
+  starred?: boolean;
   excerpt?: string;
 };
+/** A thread's poll; counts arrive once this reader has voted or it has closed. */
+export type Poll = {
+  question: string;
+  options: string[];
+  multi: boolean;
+  closesAt: number | null;
+  closed: boolean;
+  voters: number;
+  mine: number[];
+  counts: number[] | null;
+};
 type Comment = { id: string; body: string; createdAt: number; author: string; mine: boolean };
-type Detail = { post: PostSummary & { body: string }; comments: Comment[] };
-type Page = { solved: boolean; items: PostSummary[]; more: boolean };
+type Detail = { post: PostSummary & { body: string; poll?: Poll | null }; comments: Comment[] };
+/** `next`: the saved list's raw offset (it can drop rows it no longer shows). */
+type Page = { solved: boolean; items: PostSummary[]; more: boolean; next?: number };
 type Confirm = { title: string; description: string; action: string; run: () => void };
 
 // Same caps as lib/server/solution-posts.ts; the server is the one that enforces them.
 const TITLE_MAX = 120;
 const BODY_MAX = 20000;
 const COMMENT_MAX = 1000;
+const POLL_OPTIONS = 6;
+const POLL_OPTION_MAX = 80;
 // hidden: 2 is a moderator's hide (an author's own removal never comes back from the server).
 const MODERATED = 2;
 const LANGS: [string, string][] = [
@@ -67,6 +85,11 @@ const LANGS: [string, string][] = [
   ['go', 'Go'],
 ];
 const langName = (id: string) => LANGS.find(([key]) => key === id)?.[1] ?? '';
+/** A date input's value (YYYY-MM-DD) for a time, in the reader's time zone. */
+const localDate = (time: number) => {
+  const d = new Date(time);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
 const day = (time: number, english: boolean) =>
   new Date(time).toLocaleDateString(english ? 'en-US' : 'zh-CN', {
     year: 'numeric',
@@ -118,6 +141,13 @@ const WORDS: Record<
     all: ['全部评论', 'All comments'],
     empty: ['还没有评论。', 'No comments yet.'],
     loading: ['正在加载评论…', 'Loading comments…'],
+  },
+  sd: {
+    label: ['章节讨论', 'Chapter discussion'],
+    write: ['参与讨论', 'Join the discussion'],
+    all: ['全部讨论', 'All comments'],
+    empty: ['这一章还没有讨论，来提第一个问题吧。', 'No discussion on this chapter yet. Ask the first question.'],
+    loading: ['正在加载讨论…', 'Loading the discussion…'],
   },
 };
 /** Line 500 stops, the techniques a solution can be tagged with, in line order. */
@@ -184,11 +214,13 @@ export function SolutionsTab({
 
 /**
  * Community posts on one target (lib/community.ts). On a problem: solutions, locked until the
- * learner has an AC (or confirms they want to look), filterable by technique. Elsewhere: a
- * channel's threads (`tag` filters them by company), answers to a question or comments on an
- * experience, never locked. Then a list by votes or date, one post with its comments, and an
- * editor. `code`/`language` are the workspace editor's, offered as the new post's code.
- * Signed out (`signedIn` false) reading works where the server allows it; writing asks to sign in.
+ * learner has an AC (or confirms they want to look, or `unlocked`: under an editorial already
+ * opened), filterable by technique. Elsewhere: a channel's threads (`tag` filters them by
+ * company), answers to a question, comments on an experience or a system design chapter's
+ * discussion, never locked. Then a list by votes or date (or the reader's saved posts from
+ * anywhere), one post with its comments, and an editor. `code`/`language` are the workspace
+ * editor's, offered as the new post's code. Signed out (`signedIn` false) reading works where
+ * the server allows it; writing and saving ask to sign in.
  */
 export function SolutionPosts({
   problemId,
@@ -199,6 +231,7 @@ export function SolutionPosts({
   tag = '',
   initialPost,
   signedIn = true,
+  unlocked = false,
 }: {
   problemId: string;
   english: boolean;
@@ -210,22 +243,28 @@ export function SolutionPosts({
   /** Open this post first (a link from a thread's page). */
   initialPost?: string;
   signedIn?: boolean;
+  unlocked?: boolean;
 }) {
   const t: T = (zh, en) => (english ? en : zh);
-  const kind = targetKind(problemId);
+  // The UI only mounts on known targets (the server refuses the rest).
+  const kind = targetKind(problemId) ?? 'problem';
   const words = WORDS[kind];
-  const companies = useCompanies(kind === 'discuss');
+  // The reader's saved posts, from any target, in place of this target's list.
+  const [saved, setSaved] = useState(false);
+  const companies = useCompanies(kind === 'discuss' || saved);
   const [technique, setTechnique] = useState('');
   const filter = kind === 'problem' ? technique : tag;
   const [sort, setSort] = useState<'votes' | 'new'>('votes');
   // Opened from the AC dialog's histogram: one language's posts until the chip clears it.
   const [langFilter, setLangFilter] = useState(() => (langName(only) ? only : ''));
-  const query = `oj/posts?problem=${encodeURIComponent(problemId)}${filter ? `&tag=${encodeURIComponent(filter)}` : ''}&sort=${sort}${langFilter ? `&language=${langFilter}` : ''}`;
+  const query = saved
+    ? 'oj/posts?starred=1'
+    : `oj/posts?problem=${encodeURIComponent(problemId)}${filter ? `&tag=${encodeURIComponent(filter)}` : ''}&sort=${sort}${langFilter ? `&language=${langFilter}` : ''}`;
   const [page, setPage] = useState<Page | null>(null);
   const [error, setError] = useState('');
   const [reload, setReload] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [peek, setPeek] = useState(() => readPeek(problemId));
+  const [peek, setPeek] = useState(() => unlocked || readPeek(problemId));
   const [view, setView] = useState<
     { kind: 'list' } | { kind: 'post'; id: string } | { kind: 'edit'; post: Detail['post'] | null }
   >(() => (initialPost ? { kind: 'post', id: initialPost } : { kind: 'list' }));
@@ -245,7 +284,7 @@ export function SolutionPosts({
     if (!page) return;
     setLoadingMore(true);
     try {
-      const next = await api<Page>(`${query}&offset=${page.items.length}`);
+      const next = await api<Page>(`${query}&offset=${page.next ?? page.items.length}`);
       setPage({ ...next, items: [...page.items, ...next.items.filter((n) => !page.items.some((p) => p.id === n.id))] });
     } catch (e) {
       setError((e as Error).message);
@@ -287,15 +326,15 @@ export function SolutionPosts({
         onBack={back}
         onEdit={(post) => setView({ kind: 'edit', post })}
         ask={setConfirm}
-        backLabel={t(...words.all)}
-        tagName={(value) => tagLabel(value, kind, english, companies)}
+        backLabel={saved ? t('我的收藏', 'Saved posts') : t(...words.all)}
+        tagName={(value, postKind) => tagLabel(value, postKind, english, companies)}
         signedIn={signedIn}
       />
     );
   else if (view.kind === 'edit')
     body = (
       <PostEditor
-        problemId={problemId}
+        problemId={view.post?.problemId ?? problemId}
         english={english}
         initial={view.post}
         code={code}
@@ -359,16 +398,24 @@ export function SolutionPosts({
     body = (
       <>
         <header className="cs-posts-head">
-          <fieldset className="cs-posts-sort">
-            <legend className="sr-only">{t('排序', 'Sort by')}</legend>
-            <button type="button" aria-pressed={sort === 'votes'} onClick={() => setSort('votes')}>
-              {t('最热', 'Most votes')}
+          {!saved && (
+            <fieldset className="cs-posts-sort">
+              <legend className="sr-only">{t('排序', 'Sort by')}</legend>
+              <button type="button" aria-pressed={sort === 'votes'} onClick={() => setSort('votes')}>
+                {t('最热', 'Most votes')}
+              </button>
+              <button type="button" aria-pressed={sort === 'new'} onClick={() => setSort('new')}>
+                {t('最新', 'Newest')}
+              </button>
+            </fieldset>
+          )}
+          {signedIn && (
+            <button type="button" className="cs-post-act" aria-pressed={saved} onClick={() => setSaved((on) => !on)}>
+              <Bookmark size={13} aria-hidden="true" />
+              {t('我的收藏', 'Saved')}
             </button>
-            <button type="button" aria-pressed={sort === 'new'} onClick={() => setSort('new')}>
-              {t('最新', 'Newest')}
-            </button>
-          </fieldset>
-          {langFilter && (
+          )}
+          {!saved && langFilter && (
             <button
               type="button"
               className="cs-posts-lang-filter"
@@ -379,7 +426,7 @@ export function SolutionPosts({
               <X size={12} aria-hidden="true" />
             </button>
           )}
-          {kind === 'problem' && (
+          {!saved && kind === 'problem' && (
             <label className="cs-posts-filter">
               <span className="sr-only">{t('按技巧筛选', 'Filter by technique')}</span>
               <select value={technique} onChange={(e) => setTechnique(e.target.value)}>
@@ -408,17 +455,23 @@ export function SolutionPosts({
         )}
         {page.items.length ? (
           <ul className="cs-posts-list">
-            {page.items.map((post) => (
+            {page.items.map((post) => {
+              const postKind = targetKind(post.problemId) ?? 'problem';
+              return (
               <li key={post.id}>
                 <button type="button" className="cs-post-row" onClick={() => setView({ kind: 'post', id: post.id })}>
-                  {/* Answers and comments are titled by their first line: the excerpt says it all. */}
-                  {(kind === 'problem' || kind === 'discuss') && <span className="cs-post-row-title">{post.title}</span>}
+                  {/* Answers and comments are titled by their first line: the excerpt says it all,
+                      except among saved posts from everywhere. */}
+                  {(saved || kind === 'problem' || kind === 'discuss') && (
+                    <span className="cs-post-row-title">{post.title}</span>
+                  )}
                   {post.excerpt && <span className="cs-post-row-excerpt">{plainExcerpt(post.excerpt)}</span>}
                   <span className="cs-post-row-meta">
+                    {saved && <span className="cs-post-lang">{t(...POST_KINDS[postKind])}</span>}
                     <span>{post.author || t('学员', 'Learner')}</span>
                     <span>{day(post.createdAt, english)}</span>
                     {post.language && <span className="cs-post-lang">{langName(post.language)}</span>}
-                    {post.tag && <span className="cs-post-tag">{tagLabel(post.tag, kind, english, companies)}</span>}
+                    {post.tag && <span className="cs-post-tag">{tagLabel(post.tag, postKind, english, companies)}</span>}
                     {post.hidden === MODERATED && (
                       <span className="cs-post-flag">{t('已被隐藏', 'Hidden')}</span>
                     )}
@@ -435,10 +488,15 @@ export function SolutionPosts({
                   </span>
                 </button>
               </li>
-            ))}
+              );
+            })}
           </ul>
         ) : (
-          <p className="cs-posts-state">{t(...words.empty)}</p>
+          <p className="cs-posts-state">
+            {saved
+              ? t('还没有收藏帖子。打开一篇帖子，点「收藏」就会出现在这里。', 'No saved posts yet. Open a post and choose Save to keep it here.')
+              : t(...words.empty)}
+          </p>
         )}
         {page.more && (
           <button type="button" className="cs-posts-more" disabled={loadingMore} onClick={() => void more()}>
@@ -471,7 +529,7 @@ function PostView({
   onEdit: (post: Detail['post']) => void;
   ask: (confirm: Confirm) => void;
   backLabel: string;
-  tagName: (tag: string | undefined) => string;
+  tagName: (tag: string | undefined, kind: TargetKind) => string;
   signedIn: boolean;
 }) {
   const t: T = (zh, en) => (english ? en : zh);
@@ -509,7 +567,18 @@ function PostView({
       </>
     );
   const { post } = detail;
-  const postKind = targetKind(post.problemId);
+  const postKind = targetKind(post.problemId) ?? 'problem';
+  async function save() {
+    if (!signedIn) return authRequired();
+    const on = !post.starred;
+    setError('');
+    try {
+      await api('oj/marks', { target: `post:${post.id}`, mark: 'star', on });
+      setDetail((d) => d && { ...d, post: { ...d.post, starred: on, stars: (d.post.stars ?? 0) + (on ? 1 : -1) } });
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
   async function vote() {
     if (!signedIn) return authRequired();
     const on = !post.voted;
@@ -559,12 +628,21 @@ function PostView({
         <span>{day(post.createdAt, english)}</span>
         {post.updatedAt > post.createdAt + 60000 && <span>{t('已编辑', 'edited')}</span>}
         {post.language && <span className="cs-post-lang">{langName(post.language)}</span>}
-        {post.tag && <span className="cs-post-tag">{tagName(post.tag)}</span>}
+        {post.tag && <span className="cs-post-tag">{tagName(post.tag, postKind)}</span>}
         {postKind === 'discuss' && post.hidden === 0 && (
           <a href={threadPath(post.id)}>{t('公开链接', 'Public link')}</a>
         )}
       </p>
-      <StatementMarkdown body={post.body} untrusted className="cs-statement-markdown cs-post-body" />
+      <StatementMarkdown body={post.body} untrusted diagrams className="cs-statement-markdown cs-post-body" />
+      {post.poll && (
+        <PostPoll
+          postId={post.id}
+          poll={post.poll}
+          english={english}
+          signedIn={signedIn}
+          onVoted={(poll) => setDetail((d) => d && { ...d, post: { ...d.post, poll } })}
+        />
+      )}
       <div className="cs-post-actions">
         <button
           type="button"
@@ -578,6 +656,16 @@ function PostView({
           <ThumbsUp size={14} aria-hidden="true" />
           <span className="sr-only">{t('点赞', 'Upvote')}</span>
           {post.votes}
+        </button>
+        <button type="button" className="cs-post-act" aria-pressed={!!post.starred} onClick={() => void save()}>
+          <Bookmark size={14} aria-hidden="true" />
+          {post.starred ? t('已收藏', 'Saved') : t('收藏', 'Save')}
+          {!!post.stars && (
+            <>
+              <span className="sr-only">{t('，收藏人数', ', saved by')}</span>
+              {post.stars}
+            </>
+          )}
         </button>
         {post.mine ? (
           <>
@@ -669,6 +757,102 @@ function PostView({
   );
 }
 
+/** A thread's poll: pick and vote once, then bars of each option's share of the voters. */
+function PostPoll({
+  postId,
+  poll,
+  english,
+  signedIn,
+  onVoted,
+}: {
+  postId: string;
+  poll: Poll;
+  english: boolean;
+  signedIn: boolean;
+  onVoted: (poll: Poll) => void;
+}) {
+  const t: T = (zh, en) => (english ? en : zh);
+  const [picks, setPicks] = useState<number[]>([]);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  async function vote(event: FormEvent) {
+    event.preventDefault();
+    if (!signedIn) return authRequired();
+    setBusy(true);
+    setError('');
+    try {
+      onVoted((await api<{ poll: Poll }>(`oj/posts/${postId}/poll`, { choices: picks })).poll);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  const counts = poll.counts;
+  const meta = [
+    t(`${poll.voters} 人已投票`, `${poll.voters} ${poll.voters === 1 ? 'voter' : 'voters'}`),
+    poll.multi && t('可多选', 'Pick any'),
+    poll.closed
+      ? t('已截止', 'Closed')
+      : poll.closesAt && t(`${day(poll.closesAt, false)}截止`, `Closes ${day(poll.closesAt, true)}`),
+    !counts && t('投票后显示结果', 'Results show once you vote'),
+  ].filter(Boolean);
+  return (
+    <section className="cs-poll" aria-labelledby={`poll-${postId}`}>
+      <h4 id={`poll-${postId}`}>{poll.question}</h4>
+      {counts ? (
+        <ul className="cs-poll-results">
+          {poll.options.map((option, i) => {
+            const share = poll.voters ? Math.round((counts[i] / poll.voters) * 100) : 0;
+            return (
+              <li key={i} data-mine={poll.mine.includes(i) || undefined}>
+                <span>
+                  {option}
+                  {poll.mine.includes(i) && <span className="cs-poll-mine">{t('你的选择', 'Your choice')}</span>}
+                </span>
+                <span className="cs-poll-count">
+                  {share}% · {counts[i]}
+                </span>
+                <span className="cs-poll-bar" aria-hidden="true">
+                  <span style={{ width: `${share}%` }} />
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <form className="cs-poll-form" onSubmit={(e) => void vote(e)}>
+          <fieldset>
+            <legend className="sr-only">{poll.question}</legend>
+            {poll.options.map((option, i) => (
+              <label key={i}>
+                <input
+                  type={poll.multi ? 'checkbox' : 'radio'}
+                  name={`poll-${postId}`}
+                  checked={picks.includes(i)}
+                  onChange={(e) =>
+                    setPicks(poll.multi ? (e.target.checked ? [...picks, i] : picks.filter((x) => x !== i)) : [i])
+                  }
+                />
+                {option}
+              </label>
+            ))}
+          </fieldset>
+          <button type="submit" disabled={busy || !picks.length}>
+            {t('投票', 'Vote')}
+          </button>
+        </form>
+      )}
+      <p className="cs-poll-meta">{meta.join(' · ')}</p>
+      {error && (
+        <p className="cs-posts-error" role="alert">
+          {error}
+        </p>
+      )}
+    </section>
+  );
+}
+
 /** Report with a reason; one per learner, read by instructors in the teacher view. */
 function Report({ path, english }: { path: string; english: boolean }) {
   const t: T = (zh, en) => (english ? en : zh);
@@ -742,7 +926,7 @@ function PostEditor({
   onSaved: (id: string) => void;
 }) {
   const t: T = (zh, en) => (english ? en : zh);
-  const kind = targetKind(problemId);
+  const kind = targetKind(problemId) ?? 'problem';
   const solution = kind === 'problem';
   // Answers and comments have no title or language of their own.
   const titled = solution || kind === 'discuss';
@@ -770,6 +954,19 @@ function PostEditor({
         code.trim() ? codeBlock(code, editorLang) : '',
       ].join('\n')),
   );
+  // A thread's poll; `closes` is a date input's value. Frozen (and not sent) once anyone voted.
+  const [poll, setPoll] = useState(() =>
+    initial?.poll
+      ? {
+          question: initial.poll.question,
+          options: initial.poll.options,
+          multi: initial.poll.multi,
+          closes: initial.poll.closesAt ? localDate(initial.poll.closesAt) : '',
+        }
+      : null,
+  );
+  const pollLocked = !!initial?.poll?.voters;
+  const editPoll = (change: Partial<NonNullable<typeof poll>>) => setPoll((p) => p && { ...p, ...change });
   const [preview, setPreview] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -778,7 +975,22 @@ function PostEditor({
     setBusy(true);
     setError('');
     try {
-      const data = { title: titled ? title : '', body, language: solution ? lang : '', tag };
+      const data = {
+        title: titled ? title : '',
+        body,
+        language: solution ? lang : '',
+        tag,
+        ...(kind === 'discuss' &&
+          !pollLocked && {
+            poll: poll && {
+              question: poll.question,
+              options: poll.options.map((o) => o.trim()),
+              multi: poll.multi,
+              // The end of the chosen day, in the author's time zone.
+              closesAt: poll.closes ? new Date(`${poll.closes}T23:59:59`).getTime() : null,
+            },
+          }),
+      };
       const saved = initial
         ? await api<Detail>(`oj/posts/${initial.id}/edit`, data)
         : await api<Detail>('oj/posts', { ...data, problemId });
@@ -801,8 +1013,8 @@ function PostEditor({
       </h3>
       <p className="cs-post-editor-note">
         {t(
-          '所有人可见，显示你的公开主页名或打码后的昵称。支持 Markdown 和代码块；不支持图片和 HTML。',
-          'Everyone can read it, under your public handle or a masked display name. Markdown and code blocks work; images and HTML do not.',
+          '所有人可见，显示你的公开主页名或打码后的昵称。支持 Markdown、代码块和 mermaid 图（```mermaid 代码块）；不支持图片和 HTML。',
+          'Everyone can read it, under your public handle or a masked display name. Markdown, code blocks and mermaid diagrams (a ```mermaid block) work; images and HTML do not.',
         )}
       </p>
       <div className="cs-post-editor-row">
@@ -874,7 +1086,7 @@ function PostEditor({
       </div>
       {preview ? (
         body.trim() ? (
-          <StatementMarkdown body={body} untrusted className="cs-statement-markdown cs-post-body cs-post-preview" />
+          <StatementMarkdown body={body} untrusted diagrams className="cs-statement-markdown cs-post-body cs-post-preview" />
         ) : (
           <p className="cs-posts-state">{t('还没有内容。', 'Nothing written yet.')}</p>
         )
@@ -888,6 +1100,84 @@ function PostEditor({
           aria-label={t('正文', 'Body')}
           spellCheck={false}
         />
+      )}
+      {kind === 'discuss' && (
+        <fieldset className="cs-poll-editor" disabled={pollLocked}>
+          <legend>{t('投票', 'Poll')}</legend>
+          {pollLocked && (
+            <p className="cs-post-editor-note">
+              {t('已经有人投票，投票不能再修改。', 'People have voted, so the poll can no longer change.')}
+            </p>
+          )}
+          {!poll ? (
+            <button
+              type="button"
+              className="cs-post-act"
+              onClick={() => setPoll({ question: '', options: ['', ''], multi: false, closes: '' })}
+            >
+              {t('添加投票', 'Add a poll')}
+            </button>
+          ) : (
+            <>
+              <label>
+                <span>{t('问题', 'Question')}</span>
+                <input
+                  value={poll.question}
+                  onChange={(e) => editPoll({ question: e.target.value })}
+                  maxLength={200}
+                  required
+                />
+              </label>
+              {poll.options.map((option, i) => (
+                <div key={i} className="cs-poll-option">
+                  <input
+                    value={option}
+                    onChange={(e) => editPoll({ options: poll.options.map((o, j) => (j === i ? e.target.value : o)) })}
+                    maxLength={POLL_OPTION_MAX}
+                    required
+                    aria-label={t(`选项 ${i + 1}`, `Option ${i + 1}`)}
+                  />
+                  {poll.options.length > 2 && (
+                    <button
+                      type="button"
+                      className="cs-post-act"
+                      aria-label={t(`删除选项 ${i + 1}`, `Remove option ${i + 1}`)}
+                      onClick={() => editPoll({ options: poll.options.filter((_, j) => j !== i) })}
+                    >
+                      <X size={13} aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+              ))}
+              <div className="cs-poll-tools">
+                {poll.options.length < POLL_OPTIONS && (
+                  <button
+                    type="button"
+                    className="cs-post-act"
+                    onClick={() => editPoll({ options: [...poll.options, ''] })}
+                  >
+                    {t('添加选项', 'Add an option')}
+                  </button>
+                )}
+                <label className="cs-poll-check">
+                  <input
+                    type="checkbox"
+                    checked={poll.multi}
+                    onChange={(e) => editPoll({ multi: e.target.checked })}
+                  />
+                  {t('可多选', 'Allow several choices')}
+                </label>
+                <label className="cs-poll-check">
+                  {t('截止日期（可选）', 'Closes on (optional)')}
+                  <input type="date" value={poll.closes} onChange={(e) => editPoll({ closes: e.target.value })} />
+                </label>
+                <button type="button" className="cs-post-act" onClick={() => setPoll(null)}>
+                  {t('移除投票', 'Remove the poll')}
+                </button>
+              </div>
+            </>
+          )}
+        </fieldset>
       )}
       {error && (
         <p className="cs-posts-error" role="alert">
@@ -935,6 +1225,7 @@ const POST_KINDS: Record<TargetKind, [string, string]> = {
   discuss: ['讨论帖', 'Thread'],
   q: ['回答', 'Answer'],
   exp: ['面经评论', 'Experience comment'],
+  sd: ['章节讨论', 'Chapter discussion'],
 };
 /** Where a moderator reads a post in place: its problem, its thread page or its library item. */
 function targetHref(target: string, postId: string) {
@@ -943,6 +1234,7 @@ function targetHref(target: string, postId: string) {
   if (kind === 'discuss') return `/?view=discuss&channel=${encodeURIComponent(key)}&post=${encodeURIComponent(postId)}`;
   if (kind === 'q' || kind === 'exp')
     return `/?${new URLSearchParams({ view: 'content', type: kind === 'q' ? 'interview_question' : 'experience', slug: key })}`;
+  if (kind === 'sd') return `/system-design/${encodeURIComponent(key)}`;
   return `/?view=problem&problem=${encodeURIComponent(target)}`;
 }
 
@@ -984,7 +1276,7 @@ export function PostModeration() {
     <li key={`${item.kind}:${item.id}`} className="post-mod-item" data-hidden={item.hidden || undefined}>
       <p className="post-mod-meta">
         <span className="cs-post-lang">
-          {item.kind === 'comment' ? t('评论', 'Comment') : t(...POST_KINDS[targetKind(item.problemId)])}
+          {item.kind === 'comment' ? t('评论', 'Comment') : t(...POST_KINDS[targetKind(item.problemId) ?? 'problem'])}
         </span>
         <a href={targetHref(item.problemId, item.postId)}>{item.problemId}</a>
         <span>{item.author || t('学员', 'Learner')}</span>

@@ -56,6 +56,9 @@ export function PrivacyDocument() {
                 登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，以及给面经和面试题的点赞也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。面试报告和点赞只以人数汇总展示，不公开报告人和点赞人。模拟 OA 成绩和 AI 面试评分还会匿名参与「超过多少人」的百分位统计，同一场景不足 20 人（AI 面试不足 30 人）时不显示。
               </p>
               <p>
+                你在社区发布的题解、讨论帖、回答和评论（包括系统设计章节下的讨论）以公开主页名或打码后的昵称显示。收藏的帖子只有你自己能看到，帖子上只显示被收藏的总次数。参与讨论帖里的投票时，平台记录你的账号选了哪几项，用来保证每个账号只投一次；结果只显示每个选项的票数和投票人数，不公开谁投了什么。
+              </p>
+              <p>
                 参加比赛时，计分板只显示你报名时填写的比赛昵称；周赛、入门赛和 1v1 排位的 rating 与胜负记录保存在你的账号里，只有你在公开主页上打开「展示比赛记录」后才会出现在主页上。排位匹配期间，平台暂存你的比赛昵称、对战 rating 和排队时间，匹配成功或取消时删除，离开页面后最迟 20 分钟内删除。报名时可以选择「赛后公开我的 AC 代码」（默认不勾选）：勾选后，比赛结束 15 分钟起，能打开该场比赛的登录用户可以看到你在比赛时间内每题首次通过的代码；之后随时可以在比赛页关掉，关掉后不再向任何人展示。计分板的「只看关注」只列出主页展示比赛记录的人。
               </p>
               <p>
@@ -257,6 +260,16 @@ export function PrivacyDocument() {
                 AI interview scores also count, anonymously, toward the
                 percentiles other learners see, which only appear once a
                 scenario has 20 people (30 for AI interviews).
+              </p>
+              <p>
+                Solutions, threads, answers and comments you post in the
+                community (including a system design chapter’s discussion)
+                show under your public handle or a masked display name. Only you
+                can see which posts you saved; a post shows only how many people
+                saved it. When you vote in a thread’s poll, the platform
+                records which options your account chose, so each account votes
+                once; results show only each option’s count and the number of
+                voters, never who voted for what.
               </p>
               <p>
                 In contests, scoreboards show only the contest name you enter

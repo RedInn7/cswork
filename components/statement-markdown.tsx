@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Children, isValidElement, memo } from 'react';
+import React, { Children, isValidElement, lazy, memo, Suspense } from 'react';
 import Markdown, { type Components } from 'react-markdown';
 import remarkCjkFriendly from 'remark-cjk-friendly';
 import remarkGfm from 'remark-gfm';
@@ -273,6 +273,24 @@ const PLAIN = ['img', 'a'];
 const UNTRUSTED_HIDDEN = ['img'];
 // The overrides above repair imported statements (bold, scripts, labels); a learner's text renders as typed.
 const UNTRUSTED_COMPONENTS: Components = { a: components.a };
+// Loaded only when a post has a diagram: mermaid and its dialog stay out of every other bundle.
+const CourseDiagram = lazy(() => import('./course-diagram').then((m) => ({ default: m.CourseDiagram })));
+// A post's ```mermaid blocks draw as the course diagrams do (strict mermaid, an isolated image).
+const DIAGRAM_COMPONENTS: Components = {
+  ...UNTRUSTED_COMPONENTS,
+  pre: ({ children }) => {
+    const code = Children.toArray(children)[0];
+    return isValidElement<{ className?: string; children?: unknown }>(code) &&
+      code.props.className?.split(/\s+/).includes('language-mermaid') &&
+      typeof code.props.children === 'string' ? (
+      <Suspense fallback={<pre>{children}</pre>}>
+        <CourseDiagram source={code.props.children} />
+      </Suspense>
+    ) : (
+      <pre>{children}</pre>
+    );
+  },
+};
 // Parsing the statement is the costliest part of a workspace render; the many
 // re-renders while a submission is judged (status, verdict, history) skip it.
 export const StatementMarkdown = memo(function StatementMarkdown({
@@ -280,6 +298,7 @@ export const StatementMarkdown = memo(function StatementMarkdown({
   className = 'cs-statement-markdown',
   plain = false,
   untrusted = false,
+  diagrams = false,
 }: {
   body: string;
   className?: string;
@@ -287,12 +306,14 @@ export const StatementMarkdown = memo(function StatementMarkdown({
   /** Other learners' text: rendered as typed (none of the imported-statement repairs) and
    *  without images, so a post cannot load a tracking pixel for its readers. */
   untrusted?: boolean;
+  /** With untrusted: ```mermaid blocks draw as diagrams (text only, still no images or HTML). */
+  diagrams?: boolean;
 }) {
   return (
     <article className={className}>
       <Markdown
         remarkPlugins={MARKDOWN_PLUGINS}
-        components={untrusted ? UNTRUSTED_COMPONENTS : components}
+        components={untrusted ? (diagrams ? DIAGRAM_COMPONENTS : UNTRUSTED_COMPONENTS) : components}
         disallowedElements={plain ? PLAIN : untrusted ? UNTRUSTED_HIDDEN : undefined}
         unwrapDisallowed={plain}
       >
