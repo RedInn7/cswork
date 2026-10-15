@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-117",
+  "packageChecksum": "5cdcb80bfcaf0e2c7bb3b92f317a6e94c96655fc70bdbda46212068fb5b65e3a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nvector<int> parent, sz;\n\nint root(int a) {\n    while (parent[a] != a) {\n        parent[a] = parent[parent[a]];\n        a = parent[a];\n    }\n    return a;\n}\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, m;\n    cin >> n >> m;\n    parent.resize(n);\n    iota(parent.begin(), parent.end(), 0);\n    sz.assign(n, 1);\n    int answer = n, u, v;\n    while (cin >> u >> v) {\n        int a = root(u), b = root(v);\n        if (a == b) continue;\n        if (sz[a] < sz[b]) swap(a, b);\n        parent[b] = a;\n        sz[a] += sz[b];\n        answer--;\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "ea535e833d8f58a7fad2f6b238eed21e85c3c7358ac016b068d4a29b5036e30f"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = rb();\n        while (c != '-' && (c < '0' || c > '9')) c = rb();\n        boolean neg = c == '-';\n        if (neg) c = rb();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = rb();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n\n    static int[] parent, size;\n\n    static int root(int a) {\n        while (parent[a] != a) {\n            parent[a] = parent[parent[a]];\n            a = parent[a];\n        }\n        return a;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), m = nextInt();\n        parent = new int[n];\n        size = new int[n];\n        for (int i = 0; i < n; i++) {\n            parent[i] = i;\n            size[i] = 1;\n        }\n        int answer = n;\n        for (int e = 0; e < m; e++) {\n            int a = root(nextInt()), b = root(nextInt());\n            if (a == b) continue;\n            if (size[a] < size[b]) {\n                int t = a;\n                a = b;\n                b = t;\n            }\n            parent[b] = a;\n            size[a] += size[b];\n            answer--;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "467a707afa52edd65e22322c95a923a2eb87dd9ab7c2cc24d68f1a5061f88cd4"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tn := 0\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\n\nfunc main() {\n\tn, m := readInt(), readInt()\n\tparent, size := make([]int, n), make([]int, n)\n\tfor i := range parent {\n\t\tparent[i], size[i] = i, 1\n\t}\n\troot := func(a int) int {\n\t\tfor parent[a] != a {\n\t\t\tparent[a] = parent[parent[a]]\n\t\t\ta = parent[a]\n\t\t}\n\t\treturn a\n\t}\n\tanswer := n\n\tfor e := 0; e < m; e++ {\n\t\ta, b := root(readInt()), root(readInt())\n\t\tif a == b {\n\t\t\tcontinue\n\t\t}\n\t\tif size[a] < size[b] {\n\t\t\ta, b = b, a\n\t\t}\n\t\tparent[b] = a\n\t\tsize[a] += size[b]\n\t\tanswer--\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "b4f5685b7c39c5b2bc59241f037f41800019ec35c07000172b0ee2cbd34b1b44"
+    }
+  ]
+}

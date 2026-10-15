@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-121",
+  "packageChecksum": "cbc9b2118fd703a3a32ea7eb9fd2ece3a6642baeefc31bb7dcbf7c9a94392e33",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, m;\n    cin >> n >> m;\n    vector<int> streak(n, 0);\n    int answer = 0, server;\n    string result;\n    while (cin >> server >> result) {\n        int i = server - 1;\n        streak[i] = result == \"error\" ? streak[i] + 1 : 0;\n        if (streak[i] == 3) {\n            answer++;\n            streak[i] = 0; // the replacement server starts fresh\n        }\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "ba90a1d779245a67a576d549c8430093f5869909ae70a2433ea6f32f72f4b936"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = rb();\n        while (c != '-' && (c < '0' || c > '9')) c = rb();\n        boolean neg = c == '-';\n        if (neg) c = rb();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = rb();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = rb();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = rb();\n        StringBuilder sb = new StringBuilder();\n        while (c != -1 && c != ' ' && c != '\\n' && c != '\\r' && c != '\\t') {\n            sb.append((char) c);\n            c = rb();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), m = nextInt();\n        int[] streak = new int[n];\n        int answer = 0;\n        for (int k = 0; k < m; k++) {\n            int i = nextInt() - 1;\n            streak[i] = next().equals(\"error\") ? streak[i] + 1 : 0;\n            if (streak[i] == 3) {\n                answer++;\n                streak[i] = 0; // the replacement server starts fresh\n            }\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "583424cfa9c89ed94d871278f6ba8ce28461f0486d07d52ad1aecd2e67347bcf"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tn := 0\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc readToken() string {\n\tc, err := reader.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = reader.ReadByte()\n\t}\n\tvar tok []byte\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\ttok = append(tok, c)\n\t\tc, err = reader.ReadByte()\n\t}\n\treturn string(tok)\n}\n\nfunc main() {\n\tn, m := readInt(), readInt()\n\tstreak := make([]int, n)\n\tanswer := 0\n\tfor k := 0; k < m; k++ {\n\t\ti := readInt() - 1\n\t\tif readToken() == \"error\" {\n\t\t\tstreak[i]++\n\t\t} else {\n\t\t\tstreak[i] = 0\n\t\t}\n\t\tif streak[i] == 3 {\n\t\t\tanswer++\n\t\t\tstreak[i] = 0 // the replacement server starts fresh\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "0b0ce9306f535a0d25237c28196600b2125482ac4e5e3889c7d748b9cc593f71"
+    }
+  ]
+}

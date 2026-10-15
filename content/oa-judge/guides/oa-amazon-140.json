@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-140",
+  "packageChecksum": "807d30b2b7871ab5f4f0ebbedd3a80a448f264794c040de9fc601fe65bf8215d",
+  "sourceContentHash": "9a4abe9e3e341ca1686913df26c3fe8660c3d020b5ee0008ce04eb961a298ecb",
+  "editorialSha256": "2589ccbf177cab1b281e946a35eba6cca3f379e70bd7368246057f7582a59057",
+  "hints": {
+    "zh": [
+      "交换整串中的两种字母，相当于对字母表做一个置换；无论做多少次，“哪些位置上的字符相等”这个模式都不会改变。",
+      "所以能变成目标，当且仅当原串到目标串存在一个双向一致的字母对应：同一个原字母总对应同一个目标字母，同一个目标字母也只来自同一个原字母。这样的对应可以补全成 26 个字母的置换，而任意置换都能拆成若干次交换。",
+      "对每一对字符串，开两个长度 26 的数组 forward、back 并置为未定义；逐位置取 x=a[i]、y=b[i]，若 forward[x] 已定义且不等于 y，或 back[y] 已定义且不等于 x，则输出 0；否则记录 forward[x]=y、back[y]=x。全部位置都一致则输出 1。"
+    ],
+    "en": [
+      "Swapping two letters throughout the string applies a permutation to the alphabet; however many times you do it, the pattern of which positions hold equal characters never changes.",
+      "So the target is reachable exactly when there is a letter correspondence that is consistent in both directions: the same source letter always maps to the same target letter, and each target letter comes from only one source letter. Such a correspondence extends to a permutation of all 26 letters, and any permutation decomposes into swaps.",
+      "For each pair of strings use two arrays forward and back of size 26, initially undefined; for each position take x = a[i], y = b[i], and if forward[x] is defined and differs from y, or back[y] is defined and differs from x, output 0; otherwise record forward[x] = y and back[y] = x. If every position is consistent output 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBuild, position by position, the mapping from source characters to target characters and the reverse mapping; a conflict in either direction makes it impossible, otherwise it is feasible.\n\n## Correctness\n\nGlobal letter swaps compose into a permutation of the alphabet, which always preserves whether the characters at any two positions are equal. A mapping that is consistent in both directions is exactly this preservation of the equality pattern; it can be extended to a permutation of the whole 26-letter alphabet, and any permutation can be decomposed into pairwise swaps, so the condition is also sufficient.\n\n## Complexity\n\nTime O(total characters), space O(total input size), with O(26) auxiliary mapping per pair."
+}

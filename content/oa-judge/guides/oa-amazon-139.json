@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-139",
+  "packageChecksum": "209698ee94c01838ad3df661f3dcaa11f725bc2f23d03381244360488a4c0e37",
+  "sourceContentHash": "1b47e7fd42432b56b5d5b3a7307c68fe3adfb6d9723266b2dcf803704b0f5d5f",
+  "editorialSha256": "97af1fad2365e55b981a9228cb7fb702aa70086a13d5224f28b2cd4a2a388682",
+  "hints": {
+    "zh": [
+      "子段和为 0 等价于两个前缀和相等；而原数组里的 0 自己就是一个和为 0 的单元素段，插什么都消不掉，这时直接无解。",
+      "插入的数可以取得足够大（例如原数组绝对值总和加 1），这样任何跨过插入点的段都不可能和为 0，相当于把数组切开。于是问题变成：最少切几刀，使每一段内部前缀和互不相同。从左往右贪心，只在不得不切的时候、在冲突的最后一个间隙切。",
+      "若数组含 0 输出 -1。否则维护当前段的前缀和集合（初始只含 0）和当前前缀和；对每个元素 v，若 prefix+v 已在集合中，就在 v 前切一刀：答案加一，集合重置为 {0}、prefix 置 0；然后 prefix+=v 并加入集合。用 64 位整数，最后输出答案。"
+    ],
+    "en": [
+      "A zero-sum segment is the same as two equal prefix sums; and a 0 in the original array is a zero-sum single-element segment by itself that no insertion can remove, so then there is no solution.",
+      "An inserted number can be made large enough (for example the sum of absolute values plus 1) that no segment crossing it sums to 0, which effectively cuts the array. The problem becomes: make the fewest cuts so that prefix sums inside each piece are all distinct. Go greedily from left to right, cutting only when forced, in the last gap of the conflict.",
+      "If the array contains 0 print -1. Otherwise keep the set of prefix sums of the current piece (initially just 0) and the current prefix; for each element v, if prefix+v is already in the set, cut before v: add one to the answer, reset the set to {0} and prefix to 0; then add v to prefix and insert it into the set. Use 64-bit integers and print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan while keeping the set of prefix sums of the current unseparated segment. If adding the current item repeats a prefix sum, insert a separator value before the current item and start a new segment containing only the current item.\n\n## Correctness\n\nA repeated prefix sum is equivalent to the existence of a zero-sum segment, and any valid insertion plan must insert something inside that segment. Choosing the last inner gap of the conflict that ends earliest leaves no more future conflicts than choosing an earlier gap, so the greedy is optimal. Every separator can be set to the sum of the absolute values of the original array plus 1, so any segment that crosses a separator has a strictly positive sum, which guarantees that the cutting plan can really be realized.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

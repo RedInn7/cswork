@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-128",
+  "packageChecksum": "0f89a567015c9c2f1906bd7630055eabd07146d9e383491e76c93dbc31e68b0c",
+  "sourceContentHash": "25fa81ea28958d3dca8322a942ae8e6016077638869636d1d9466af2c54460d2",
+  "editorialSha256": "e3aef3b816d63d60ef1d19db6bce60ad1fc50d8d1896cd941a25f7a9fe1b2790",
+  "hints": {
+    "zh": [
+      "两种车的轮子数都是偶数，所以总轮数为奇数时一定无解。",
+      "总轮数为偶数时，先决定四轮车的数量：它可以是 0 到 w/4 之间的任意整数，剩下的轮子数仍为偶数且非负，两轮车数量就被唯一确定。",
+      "逐个读入 w：若 w 为奇数输出 0，否则输出 w/4+1（整数除法）；按输入顺序用空格分隔输出。"
+    ],
+    "en": [
+      "Both vehicle types have an even number of wheels, so an odd total has no solution.",
+      "For an even total, choose the number of four-wheelers first: it can be any integer from 0 to w/4, and the remaining wheel count is still even and non-negative, which uniquely determines the number of two-wheelers.",
+      "For each w print 0 if w is odd, otherwise w/4 + 1 (integer division); output the results in input order separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nOdd totals have no solution; for even totals the number of four-wheelers can be 0 to w//4, and the remaining wheels uniquely determine the number of two-wheelers.\n\n## Correctness\n\nThe total number of wheels of the two vehicle types must be even. Once the number of four-wheelers is fixed, the number of two-wheelers is uniquely determined by the equation, and the range of values guarantees it is non-negative, so the answer for an even total is w//4 + 1.\n\n## Complexity\n\nTime O(n), space O(n) including the output."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-145",
+  "packageChecksum": "81dd800694ec1efc50326a042b55a0bb0fdf096f841517b0e74be752cd960cb8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<int> a(n);\n    for (auto &x : a) cin >> x;\n    // In place: a[i] only needs the old a[i] and a[i+1], and a[i+1] is not yet overwritten.\n    for (int length = n; length > 2; length--)\n        for (int i = 0; i + 1 < length; i++) a[i] = (a[i] + a[i + 1]) % 10;\n    cout << a[0] << a[1] << '\\n';\n}\n",
+      "sha256": "f5466aa7775d31af1143566bd623f6e6fad39fa1846b24e0aae94f26d8d1259d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = rb();\n        while (c != '-' && (c < '0' || c > '9')) c = rb();\n        boolean neg = c == '-';\n        if (neg) c = rb();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = rb();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        int[] a = new int[n];\n        for (int i = 0; i < n; i++) a[i] = nextInt();\n        // In place: a[i] only needs the old a[i] and a[i+1], and a[i+1] is not yet overwritten.\n        for (int length = n; length > 2; length--)\n            for (int i = 0; i + 1 < length; i++) a[i] = (a[i] + a[i + 1]) % 10;\n        System.out.println(\"\" + a[0] + a[1]);\n    }\n}\n",
+      "sha256": "6801d580126d29d5615deb08b998a10b2a7d52fcbcc0002913cac71d59450f43"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tn := 0\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\n\nfunc main() {\n\tn := readInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\t// In place: a[i] only needs the old a[i] and a[i+1], and a[i+1] is not yet overwritten.\n\tfor length := n; length > 2; length-- {\n\t\tfor i := 0; i+1 < length; i++ {\n\t\t\ta[i] = (a[i] + a[i+1]) % 10\n\t\t}\n\t}\n\tfmt.Printf(\"%d%d\\n\", a[0], a[1])\n}\n",
+      "sha256": "5c762fdaea1ecb68380e678973a7b41fe12037a1c34300b235c39092563b5749"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-147",
+  "packageChecksum": "23fb56760dc7a506d181c8fc9ef8ef9aef3626badadd830d54b1979a24acc982",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    long long total = 0;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        total += v;\n        if (total <= 0) {\n            cout << i << '\\n'; // first non-positive prefix, 0-based\n            return 0;\n        }\n    }\n    cout << -1 << '\\n';\n}\n",
+      "sha256": "d635a2f23e362c41afb1530f04cb78c2b02078e1c8b076d2c083efc24899a367"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = rb();\n        while (c != '-' && (c < '0' || c > '9')) c = rb();\n        boolean neg = c == '-';\n        if (neg) c = rb();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = rb();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long total = 0;\n        for (int i = 0; i < n; i++) {\n            total += nextLong();\n            if (total <= 0) {\n                System.out.println(i); // first non-positive prefix, 0-based\n                return;\n            }\n        }\n        System.out.println(-1);\n    }\n}\n",
+      "sha256": "7dcd6842a8aa89d22c6dac36699fde0e162484916d0b4b08d9b165a0c436d456"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tn := 0\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\n\nfunc main() {\n\tn := readInt()\n\ttotal := 0\n\tfor i := 0; i < n; i++ {\n\t\ttotal += readInt()\n\t\tif total <= 0 {\n\t\t\tfmt.Println(i) // first non-positive prefix, 0-based\n\t\t\treturn\n\t\t}\n\t}\n\tfmt.Println(-1)\n}\n",
+      "sha256": "80aa47c6a95a8ade1cc1fdc0325bd167160758cf920a77ef8d3d7a3e723f0fe5"
+    }
+  ]
+}

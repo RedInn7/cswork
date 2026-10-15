@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-109",
+  "packageChecksum": "1e35c1b912277c3aeda7640343c784f0df746a5d78de4ea4a02d93718216b2d3",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, q;\n    cin >> n >> q;\n    vector<int> p(n);\n    for (auto &x : p) cin >> x;\n    vector<char> seen(n, 0);\n    int cycles = 0;\n    for (int i = 0; i < n; i++) {\n        if (seen[i]) continue;\n        cycles++;\n        for (int j = i; !seen[j]; j = p[j] - 1) seen[j] = 1;\n    }\n    long long minimum = n - cycles;\n    string out;\n    out.reserve(q);\n    for (int k = 0; k < q; k++) {\n        long long v;\n        cin >> v;\n        out += (n > 1 && v >= minimum && (v - minimum) % 2 == 0) ? '1' : '0';\n    }\n    cout << out << '\\n';\n}\n",
+      "sha256": "9a682829a6c4ea8f64cff1e0ab8c09afbb8bb58987a97d606e327e869f0724f2"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = rb();\n        while (c != '-' && (c < '0' || c > '9')) c = rb();\n        boolean neg = c == '-';\n        if (neg) c = rb();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = rb();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong(), q = (int) nextLong();\n        int[] p = new int[n];\n        for (int i = 0; i < n; i++) p[i] = (int) nextLong();\n        boolean[] seen = new boolean[n];\n        int cycles = 0;\n        for (int i = 0; i < n; i++) {\n            if (seen[i]) continue;\n            cycles++;\n            for (int j = i; !seen[j]; j = p[j] - 1) seen[j] = true;\n        }\n        long minimum = n - cycles;\n        StringBuilder sb = new StringBuilder(q + 1);\n        for (int k = 0; k < q; k++) {\n            long v = nextLong();\n            sb.append(n > 1 && v >= minimum && (v - minimum) % 2 == 0 ? '1' : '0');\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "544f5b0eac20ef2c3a769d4d62a8b6a666fe6d0dccdbae4fc32381290eafa073"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tn := 0\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn, q := readInt(), readInt()\n\tp := make([]int, n)\n\tfor i := range p {\n\t\tp[i] = readInt()\n\t}\n\tseen := make([]bool, n)\n\tcycles := 0\n\tfor i := 0; i < n; i++ {\n\t\tif seen[i] {\n\t\t\tcontinue\n\t\t}\n\t\tcycles++\n\t\tfor j := i; !seen[j]; j = p[j] - 1 {\n\t\t\tseen[j] = true\n\t\t}\n\t}\n\tminimum := n - cycles\n\tout := make([]byte, 0, q+1)\n\tfor k := 0; k < q; k++ {\n\t\tv := readInt()\n\t\tif n > 1 && v >= minimum && (v-minimum)%2 == 0 {\n\t\t\tout = append(out, '1')\n\t\t} else {\n\t\t\tout = append(out, '0')\n\t\t}\n\t}\n\tout = append(out, '\\n')\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "993b207cc21afb7368dba80d3961ae443796d1b71c1ca2c7cfc349a7f00eb86e"
+    }
+  ]
+}

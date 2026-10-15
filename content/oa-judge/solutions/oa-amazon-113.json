@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-113",
+  "packageChecksum": "53efb2f5130ec9dbea3081cf5fed199ae33a3a93495d14bfebc13b8dd2c37d78",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string s;\n    long long x, y;\n    cin >> s >> x >> y;\n    array<long long, 256> counts{};\n    for (unsigned char c : s) counts[c]++;\n    long long pairs = s.size() / 2, same = 0;\n    if (x <= y) {\n        for (long long f : counts) same += f / 2;\n    } else {\n        same = max(0LL, *max_element(counts.begin(), counts.end()) - pairs);\n    }\n    cout << same * x + (pairs - same) * y << '\\n';\n}\n",
+      "sha256": "0dd32b50686df664040248c7278d95ae30afadd3186e1361c126f56450e969e1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = rb();\n        while (c != '-' && (c < '0' || c > '9')) c = rb();\n        boolean neg = c == '-';\n        if (neg) c = rb();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = rb();\n        }\n        return neg ? -r : r;\n    }\n\n    static String next() throws IOException {\n        int c = rb();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = rb();\n        StringBuilder sb = new StringBuilder();\n        while (c != -1 && c != ' ' && c != '\\n' && c != '\\r' && c != '\\t') {\n            sb.append((char) c);\n            c = rb();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        long x = nextLong(), y = nextLong();\n        long[] counts = new long[65536];\n        for (int i = 0; i < s.length(); i++) counts[s.charAt(i)]++;\n        long pairs = s.length() / 2, same = 0, most = 0;\n        for (long f : counts) {\n            same += f / 2;\n            most = Math.max(most, f);\n        }\n        if (x > y) same = Math.max(0, most - pairs);\n        System.out.println(same * x + (pairs - same) * y);\n    }\n}\n",
+      "sha256": "50cbe01ef24889fd3f80fdf265af6816553899e061c20bb44d7e9167b2f818bd"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tn := 0\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc readToken() string {\n\tc, err := reader.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = reader.ReadByte()\n\t}\n\tvar tok []byte\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\ttok = append(tok, c)\n\t\tc, err = reader.ReadByte()\n\t}\n\treturn string(tok)\n}\n\nfunc main() {\n\ts := readToken()\n\tx, y := readInt(), readInt()\n\tvar counts [256]int\n\tfor i := 0; i < len(s); i++ {\n\t\tcounts[s[i]]++\n\t}\n\tpairs, same, most := len(s)/2, 0, 0\n\tfor _, f := range counts {\n\t\tsame += f / 2\n\t\tmost = max(most, f)\n\t}\n\tif x > y {\n\t\tsame = max(0, most-pairs)\n\t}\n\tfmt.Println(same*x + (pairs-same)*y)\n}\n",
+      "sha256": "ea9a230ef1d6d0be544c894c6b9ae356556534a1f3f99ecd9277783a6c990484"
+    }
+  ]
+}

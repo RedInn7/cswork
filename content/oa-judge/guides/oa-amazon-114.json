@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-114",
+  "packageChecksum": "6f236a43b5572199cdc4a4d94a8ecd3d804032022e3cf19dd2779e341b2df107",
+  "sourceContentHash": "63ec2fda108af359626b92313939c6fc97d2e3962a39fc0cb8e0b3f43af2ecb2",
+  "editorialSha256": "b09b39e2ab9556a01ecb32a570aeaefcaa506461bad41228d267843fbf070388",
+  "hints": {
+    "zh": [
+      "一个窗口的 beauty 就是窗口内“严格后缀最大值”的个数：从右往左看，比之前见过的所有值都严格大的位置才算。",
+      "从左到右滑动窗口，用单调队列保存当前窗口的严格后缀最大值下标，值严格递减；队列长度就是该窗口的 beauty。",
+      "对每个新下标 right：先弹出队首已离开窗口（下标小于 right-k+1）的元素，再从队尾弹出所有值小于等于新值的元素（相等也要弹，因为比较是严格的），然后压入 right；当 right≥k-1 时把队列长度加到答案里。"
+    ],
+    "en": [
+      "A window's beauty is the number of strict suffix maxima in it: reading from right to left, a position counts only if it is strictly larger than everything seen so far.",
+      "Slide the window from left to right and keep a monotonic queue of the indices of the current window's strict suffix maxima, with strictly decreasing values; the queue length is the window's beauty.",
+      "For each new index right: drop front entries that left the window (index below right-k+1), pop from the back every entry whose value is less than or equal to the new value (equal values must go too, because the comparison is strict), push right, and once right >= k-1 add the queue length to the answer."
+    ]
+  },
+  "explanationEn": "## Correctness\n\nScan from left to right; the queue holds the indices of the strict suffix maxima of the current window, with increasing indices and strictly decreasing values. Before a new value x is pushed, every position at the back of the queue whose value is `<= x` can no longer be greater than all values to its right, so it is removed; expired positions at the front are removed as well. The remaining positions are exactly the indices i in the window such that `products[i] > products[j]` for every later j, so the queue length is the window's beauty. Add it up window by window. Among equal values the earlier one must be evicted; the strict \"greater than\" must not be relaxed to \"greater than or equal\".\n\n## Complexity\n\nO(n) time and O(k) queue space; every position is pushed and popped at most once.\n\n## Source and boundaries\n\nThe key comparison in the [OAMaster original snapshot](https://oamaster.com/docs/companies/amazon#114-compute-beauty-of-array-products) is truncated. The [Amazon OA report thread](https://www.reddit.com/r/leetcode/comments/1et4ojn/amazon_oa_question/), which was opened and checked, interprets it as the number of positions in each window that are strictly greater than every element to their right; its sample input, k, and per-window contributions `2,1,2,3` agree with the OAMaster total output of 8. That thread is a candidate report and a community interpretation, not an official Amazon statement.\n\nAdded by this site: the first line of standard input contains n k and the second line contains n integers; 1≤n≤200000, 1≤k≤n, −10^9≤products[i]≤10^9. The original source did not preserve these ranges or the input/output protocol."
+}

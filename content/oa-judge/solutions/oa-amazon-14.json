@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-14",
+  "packageChecksum": "cd087c8b75670dafb845e1f669faf0b60a0ade87ddcd35c4797aafd60b82f86e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s, t;\n    cin >> s >> t;\n    size_t j = 0;\n    for (char c : s) {\n        char next = c == 'z' ? 'a' : c + 1;\n        // Greedy: match as early as possible, keeping c or its cyclic successor.\n        if (c == t[j] || next == t[j]) j++;\n        if (j == t.size()) {\n            cout << \"YES\\n\";\n            return 0;\n        }\n    }\n    cout << \"NO\\n\";\n}\n",
+      "sha256": "04fc0d8859f2c7becd5721b3586d598777e8e5dd833f30ba65dd3b542f260a8e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = rb();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = rb();\n        StringBuilder sb = new StringBuilder();\n        while (c != -1 && c != ' ' && c != '\\n' && c != '\\r' && c != '\\t') {\n            sb.append((char) c);\n            c = rb();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next(), t = next();\n        int j = 0;\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i), next = c == 'z' ? 'a' : (char) (c + 1);\n            // Greedy: match as early as possible, keeping c or its cyclic successor.\n            if (c == t.charAt(j) || next == t.charAt(j)) j++;\n            if (j == t.length()) {\n                System.out.println(\"YES\");\n                return;\n            }\n        }\n        System.out.println(\"NO\");\n    }\n}\n",
+      "sha256": "65aacd0b76b1718102bd8d5aecb6997d7b5234a0bbf167f98db93bfdc7cdab06"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readToken() string {\n\tc, err := reader.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = reader.ReadByte()\n\t}\n\tvar tok []byte\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\ttok = append(tok, c)\n\t\tc, err = reader.ReadByte()\n\t}\n\treturn string(tok)\n}\n\nfunc main() {\n\ts, t := readToken(), readToken()\n\tj := 0\n\tfor i := 0; i < len(s); i++ {\n\t\tc, next := s[i], s[i]+1\n\t\tif c == 'z' {\n\t\t\tnext = 'a'\n\t\t}\n\t\t// Greedy: match as early as possible, keeping c or its cyclic successor.\n\t\tif c == t[j] || next == t[j] {\n\t\t\tj++\n\t\t}\n\t\tif j == len(t) {\n\t\t\tfmt.Println(\"YES\")\n\t\t\treturn\n\t\t}\n\t}\n\tfmt.Println(\"NO\")\n}\n",
+      "sha256": "053236f40230c3bf1ecbb427e1815d1626437e736ad75536d72ad1c85328f976"
+    }
+  ]
+}

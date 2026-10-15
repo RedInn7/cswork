@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-145",
+  "packageChecksum": "81dd800694ec1efc50326a042b55a0bb0fdf096f841517b0e74be752cd960cb8",
+  "sourceContentHash": "c14898d394cc1b5f0287044d8a1a47d37164557d75b417444b7c38e82cbf82d5",
+  "editorialSha256": "20bf5dff312118654c6edb9f98200eded789d4b37670f8f4c215b94bea1af24b",
+  "hints": {
+    "zh": [
+      "n 最多 5000，直接模拟每一轮也只有约 n²/2 次加法，完全来得及。",
+      "新一轮的第 i 项只依赖上一轮的第 i 项和第 i+1 项；从左往右原地覆盖时，右边的旧值还没被改写，所以不需要额外数组。",
+      "有效长度 length 从 n 开始，当 length>2 时，对 i=0..length-2 令 a[i]=(a[i]+a[i+1]) mod 10，然后 length 减一；最后把 a[0] 和 a[1] 作为两个字符连在一起输出，前导 0 要保留。"
+    ],
+    "en": [
+      "n is at most 5000, so simulating every round directly takes only about n^2/2 additions, which is easily fast enough.",
+      "Item i of the next round depends only on items i and i+1 of the previous round; overwriting in place from left to right leaves the old value on the right untouched until it is used, so no extra array is needed.",
+      "Start with length = n; while length > 2, set a[i] = (a[i] + a[i+1]) mod 10 for i = 0..length-2 and then decrease length by one; finally print a[0] and a[1] as two characters next to each other, keeping a leading 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIn each round, overwrite in place toward the left with the adjacent sums mod 10, shrinking the effective length until it is 2.\n\n## Correctness\n\nItem i of a round depends only on the old items i and i+1, and when updating from left to right the old value on the right has not been overwritten yet, so the in-place update matches the definition exactly; induction gives the final two digits.\n\n## Complexity\n\nTime O(n^2), space O(n)."
+}

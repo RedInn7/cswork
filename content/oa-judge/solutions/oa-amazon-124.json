@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-124",
+  "packageChecksum": "e78d0977400847569543fc3b592787959f06d3f351ea4e741811a2546d5f99ff",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    const long long MOD = 1000000007;\n    string s, t;\n    cin >> s >> t;\n    int m = t.size();\n    // dp[j]: choices equal to exactly the first j characters of t; greater: already strictly greater.\n    vector<long long> dp(m + 1, 0);\n    dp[0] = 1;\n    long long greater = 0;\n    for (char c : s) {\n        greater = (greater * 2 + dp[m]) % MOD;\n        for (int j = m - 1; j >= 0; j--) {\n            if (c > t[j]) greater = (greater + dp[j]) % MOD;\n            else if (c == t[j]) dp[j + 1] = (dp[j + 1] + dp[j]) % MOD;\n        }\n    }\n    cout << greater << '\\n';\n}\n",
+      "sha256": "9d45ac8440c3d43a6a2f14dc2c5d79fdc830b3f410d7db0658a7a6e50716cf23"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = rb();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = rb();\n        StringBuilder sb = new StringBuilder();\n        while (c != -1 && c != ' ' && c != '\\n' && c != '\\r' && c != '\\t') {\n            sb.append((char) c);\n            c = rb();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        final long MOD = 1000000007L;\n        String s = next(), t = next();\n        int m = t.length();\n        char[] tc = t.toCharArray();\n        // dp[j]: choices equal to exactly the first j characters of t; greater: already strictly greater.\n        long[] dp = new long[m + 1];\n        dp[0] = 1;\n        long greater = 0;\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            greater = (greater * 2 + dp[m]) % MOD;\n            for (int j = m - 1; j >= 0; j--) {\n                if (c > tc[j]) greater = (greater + dp[j]) % MOD;\n                else if (c == tc[j]) dp[j + 1] = (dp[j + 1] + dp[j]) % MOD;\n            }\n        }\n        System.out.println(greater);\n    }\n}\n",
+      "sha256": "9b80dfc4d2df2141dad9d6d60f504c1753510dd6bfacfd93e2ed5bff199c4121"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readToken() string {\n\tc, err := reader.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = reader.ReadByte()\n\t}\n\tvar tok []byte\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\ttok = append(tok, c)\n\t\tc, err = reader.ReadByte()\n\t}\n\treturn string(tok)\n}\n\nfunc main() {\n\tconst mod = 1000000007\n\ts, t := readToken(), readToken()\n\tm := len(t)\n\t// dp[j]: choices equal to exactly the first j characters of t; greater: already strictly greater.\n\tdp := make([]int, m+1)\n\tdp[0] = 1\n\tgreater := 0\n\tfor i := 0; i < len(s); i++ {\n\t\tc := s[i]\n\t\tgreater = (greater*2 + dp[m]) % mod\n\t\tfor j := m - 1; j >= 0; j-- {\n\t\t\tif c > t[j] {\n\t\t\t\tgreater = (greater + dp[j]) % mod\n\t\t\t} else if c == t[j] {\n\t\t\t\tdp[j+1] = (dp[j+1] + dp[j]) % mod\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(greater)\n}\n",
+      "sha256": "021fdf24cab3200f2c1ff049c9775ad5f47de6aae14c015fd0ccfb0310c27d92"
+    }
+  ]
+}

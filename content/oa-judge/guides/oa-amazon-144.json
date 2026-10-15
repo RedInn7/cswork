@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-144",
+  "packageChecksum": "e79d754ec4dd1a5f7660a8dc195da5816c2b49bcc247dfbc5db1d91419abcddd",
+  "sourceContentHash": "c858197e4cfe9bea47905cd75dbb3698c072b1131a215e2a82d04800f853ad00",
+  "editorialSha256": "2ca654c8ad8ab9ce59b89ac47e13ab2a3eb4b839cf6caa7576acbcd4fa1e4c05",
+  "hints": {
+    "zh": [
+      "长度为 j+1 的两个前缀相同，当且仅当它们长度为 j 的前缀相同，且第 j+1 个字符也相同。",
+      "所以可以逐列细化分组：每个字符串带一个“当前前缀所在组”的编号，下一列的新组由（旧组编号，当前字符）唯一确定；每列统计各组人数，最大值就是这一长度的答案，不需要保存全部前缀或建字典树。",
+      "初始所有行都在组 0。对每一列 j：为每个 (旧组, 字符) 首次出现分配新编号，记录每行的新编号并累计各新组人数，取最大值作为本列答案；然后用新编号替换旧编号进入下一列。按长度 1..m 依次输出各列答案。"
+    ],
+    "en": [
+      "Two prefixes of length j+1 are equal exactly when their length-j prefixes are equal and their (j+1)-th characters are equal.",
+      "So refine the groups column by column: each string carries the id of its current prefix group, and the new group in the next column is uniquely determined by (old group id, current character); count the members of each group per column, and the largest count is the answer for that length, with no need to store all prefixes or build a trie.",
+      "Start with every row in group 0. For each column j: assign a new id to each (old group, character) pair the first time it appears, record each row's new id while counting the members of each new group, and take the largest count as this column's answer; then replace the old ids with the new ones for the next column. Output the answers for lengths 1..m in order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRefine the prefix groups column by column: a new group is uniquely determined by the old prefix group number and the current character; count the members of each group and take the maximum.\n\n## Correctness\n\nPrefixes of length j+1 are equal if and only if the length-j prefixes are equal and the current characters are equal. So the column-by-column update of group numbers represents the prefix equality relation exactly, and the largest group size in each column is what is asked. There is no need to store all prefixes or a million trie nodes.\n\n## Complexity\n\nTime O(nm), space O(nm) including the input, O(n) extra."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-115",
+  "packageChecksum": "e0e4601bb4574fad99d4c5761f1c10cd7d4739b383458e3d38c32fae94290339",
+  "sourceContentHash": "6911c0ecd9acfee4dbd91e401ccfe89a0780664307924c40a2b17254e71ee31d",
+  "editorialSha256": "aa633a9fdc1cffd3047105c86143e966ad139e5998e8d2ce45f56f8b65213a43",
+  "hints": {
+    "zh": [
+      "回文两侧必须一一配对，所以每个字母在左半边出现的次数是固定的：频次除以 2；输入本身是回文，至多只有一个字母频次为奇数。",
+      "左半边的字母集合已经确定，想让整串字典序最小，只需把左半边按字母升序排列；中间放那个奇数频次的字母，右半边是左半边的镜像。",
+      "统计 26 个字母的频次；按 a 到 z 依次把每个字母重复 频次/2 次拼成左半边；把频次为奇数的字母作为中心；输出 左半边 + 中心 + 左半边的逆序。"
+    ],
+    "en": [
+      "The two sides of a palindrome must pair up, so the number of times each letter appears in the left half is fixed at its frequency divided by 2; since the input is a palindrome, at most one letter has an odd count.",
+      "The multiset of the left half is fixed, so to make the whole string lexicographically smallest just sort the left half in ascending order; the odd-count letter goes in the middle and the right half mirrors the left.",
+      "Count the 26 letters; build the left half by repeating each letter from a to z frequency/2 times; take the letter with an odd count as the center; output left + center + reversed left."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPut half of each character into the left half in ascending letter order, put the only character with an odd count in the middle, and make the right half the reverse of the left half.\n\n## Correctness\n\nAny palindrome must pair characters across its two sides, so the number of each character in the left half is fixed at its frequency divided by 2 (integer division). Arranging the left half in ascending order makes it lexicographically smallest, the center character is uniquely determined by the odd frequency, and the right half is forced by the mirror constraint.\n\n## Complexity\n\nTime O(n+26), space O(n)."
+}

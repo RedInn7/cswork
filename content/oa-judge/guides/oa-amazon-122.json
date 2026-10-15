@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-122",
+  "packageChecksum": "c894c0e7d5b5b94f6a537c736f25bffb00d4250d55a4afd52f1839f6e90ea654",
+  "sourceContentHash": "26930f6c7127be649e4a8b611e9b289c51c223fc20df63d4703a62c5d9f80eee",
+  "editorialSha256": "dae2935e99cc4f7219a241f45ba7c4687aabd38f67043ad35862637de2aa5f8b",
+  "hints": {
+    "zh": [
+      "题目数的是不同的“数值对”，与下标和重复次数无关；而且 k 固定后，a 一确定 b=a+k 就确定了。",
+      "先把数组去重成一个集合，对集合里每个值 a 检查 a+k 是否也在集合中；因为允许同一下标自配，k=0 时每个不同值都算一对。",
+      "把所有数放进哈希集合；遍历集合中每个 a，若 a+k 在集合中就计数加一；输出计数。"
+    ],
+    "en": [
+      "The problem counts distinct value pairs, regardless of indices or repetitions; and with k fixed, choosing a determines b = a + k.",
+      "Deduplicate the array into a set and check for each value a in the set whether a+k is also present; since an index may pair with itself, every distinct value forms a pair when k=0.",
+      "Put all numbers in a hash set; for each a in the set add one to the count when a+k is in the set; print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter removing duplicates, check for each a whether a+k exists.\n\n## Correctness\n\nOnce k is fixed, a uniquely determines b, so each a in the set that satisfies the condition corresponds to exactly one distinct value pair. Pairing a value with itself does not require two indices, so the same reasoning applies directly when k=0.\n\n## Complexity\n\nExpected time O(n), space O(n)."
+}

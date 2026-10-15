@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-11",
+  "packageChecksum": "937325e370052320e1b2ef16b641afb831d6d98e6f53145e53b25ffdb81351f0",
+  "sourceContentHash": "c5cc2b64195c346cbfee19e915603eefdf4782498ca012730f8b3a87ab10cdd8",
+  "editorialSha256": "232f35542df3c9f84d08f656d9d3c7fdabf798a23e3c97ffdb8d4885a0639964",
+  "hints": {
+    "zh": [
+      "表达式要匹配 n 个字符，就最多有 n 个字符组；为了最长，每个位置都应该尽量放满 26 个字母，只在必须的地方去掉字母。",
+      "要排除 z，只需某一个位置的字符组不含 z[i]，而这个字母又不能是 x[i] 或 y[i]；所以只删一个字母就够，且完整组的字典序比缺字母的组更小，删除的位置应尽量靠右。",
+      "从左到右找最后一个满足 z[i]≠x[i] 且 z[i]≠y[i] 的位置；找不到就输出 -1。否则每个位置输出 [A..Z] 的完整组，只在该位置输出去掉 z[i] 的组，字母保持升序。"
+    ],
+    "en": [
+      "To match n characters the expression has at most n classes; to be as long as possible every position should hold all 26 letters, removing letters only where it is unavoidable.",
+      "To exclude z it is enough that one position's class lacks z[i], and that letter must be neither x[i] nor y[i]; so removing a single letter suffices, and since a full class is lexicographically smaller than a class with a missing letter, the removal should be as far right as possible.",
+      "Scan for the last index with z[i] != x[i] and z[i] != y[i]; if none exists print -1. Otherwise print the full class [A..Z] at every position, except at that index where you print the class without z[i], keeping letters in ascending order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFind the rightmost position where z[i] differs from both x[i] and y[i]. Output the full 26-letter class at every position, and remove z[i] only at the chosen position.\n\n## Correctness\n\nMatching n characters takes at most n classes, and each class holds at most 26 letters plus its brackets. To exclude z, at least one position must not contain z[i], and that character cannot be x[i] or y[i]. Removing just one letter reaches the maximum length. Letters in ascending order inside a class give the lexicographically smallest class, and a full class is lexicographically smaller than a class with a letter removed (including removing Z, since Z is smaller than the closing bracket), so the single missing letter should be placed as far right as possible.\n\n## Complexity\n\nTime and output space O(26n)."
+}

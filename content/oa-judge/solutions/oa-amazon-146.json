@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-146",
+  "packageChecksum": "4471896e90aa589b1717c04a883cb629cb6e58fbdf864bbe691ef6fa3473e683",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    array<int, 26> counts{};\n    for (char c : s) counts[c - 'a']++;\n    string left, middle;\n    for (int c = 0; c < 26; c++) {\n        left.append(counts[c] / 2, char('a' + c));\n        if (counts[c] % 2) middle += char('a' + c);\n    }\n    string right(left.rbegin(), left.rend());\n    cout << left << middle << right << '\\n';\n}\n",
+      "sha256": "9bd8fca35e36580165c26289f9a2e33e1414ca636c7bb3ca585b30417b2c0f0d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = rb();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = rb();\n        StringBuilder sb = new StringBuilder();\n        while (c != -1 && c != ' ' && c != '\\n' && c != '\\r' && c != '\\t') {\n            sb.append((char) c);\n            c = rb();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        int[] counts = new int[26];\n        for (int i = 0; i < s.length(); i++) counts[s.charAt(i) - 'a']++;\n        StringBuilder left = new StringBuilder(), middle = new StringBuilder();\n        for (int c = 0; c < 26; c++) {\n            for (int k = 0; k < counts[c] / 2; k++) left.append((char) ('a' + c));\n            if (counts[c] % 2 == 1) middle.append((char) ('a' + c));\n        }\n        String l = left.toString();\n        System.out.println(l + middle + left.reverse());\n    }\n}\n",
+      "sha256": "162e56502c926ef10236f5e1c473407a73a5610164f84aebc3d57cdf5a855198"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readToken() string {\n\tc, err := reader.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = reader.ReadByte()\n\t}\n\tvar tok []byte\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\ttok = append(tok, c)\n\t\tc, err = reader.ReadByte()\n\t}\n\treturn string(tok)\n}\n\nfunc main() {\n\ts := readToken()\n\tvar counts [26]int\n\tfor i := 0; i < len(s); i++ {\n\t\tcounts[s[i]-'a']++\n\t}\n\tvar left, middle []byte\n\tfor c := 0; c < 26; c++ {\n\t\tfor k := 0; k < counts[c]/2; k++ {\n\t\t\tleft = append(left, byte('a'+c))\n\t\t}\n\t\tif counts[c]%2 == 1 {\n\t\t\tmiddle = append(middle, byte('a'+c))\n\t\t}\n\t}\n\tout := append(append([]byte{}, left...), middle...)\n\tfor i := len(left) - 1; i >= 0; i-- {\n\t\tout = append(out, left[i])\n\t}\n\tfmt.Println(string(out))\n}\n",
+      "sha256": "b06dbb493cec925099f46caabcf7e50b3a6c7c0472f8390ef8da34304e104478"
+    }
+  ]
+}

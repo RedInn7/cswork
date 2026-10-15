@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-126",
+  "packageChecksum": "95af1d8b12a67235c543739ce9682c6a52979e0d649257071848a9b22187fef6",
+  "sourceContentHash": "8e8e57f56fb0a1b6b6afedf53faadca5d026345c0ba69afea5122b53eb337723",
+  "editorialSha256": "058add1b950c0ae21ba59cbe7dc7d64e78cd2b5e93956731c0ae40fc3094e28a",
+  "hints": {
+    "zh": [
+      "如果子串里有 k 个 1，那么 0 的个数必须是 k²，子串长度就固定为 k²+k；k=0 时长度为 0，不算非空子串。",
+      "长度不超过 n，所以 k 最多约为 √n；对每个 k，长度固定，只要检查每个起点开始的这一段里 1 的个数是不是恰好 k。",
+      "先求 1 的前缀和；对 k=1,2,… 直到 k²+k>n，令 length=k²+k，枚举所有起点 i，若 prefix[i+length]-prefix[i]==k 就计数加一；总复杂度 O(n√n)。"
+    ],
+    "en": [
+      "If a substring has k ones, its number of zeros must be k^2, so its length is fixed at k^2+k; k=0 would mean length 0, which is not a non-empty substring.",
+      "The length is at most n, so k is at most about sqrt(n); for each k the length is fixed, and you only need to check, for every start, whether that window contains exactly k ones.",
+      "Build prefix counts of 1s; for k = 1, 2, ... while k^2+k <= n, let length = k^2+k and for every start i add one when prefix[i+length] - prefix[i] == k; the total cost is O(n sqrt(n))."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf there are k ones, the substring length must be k^2+k with k>=1. So enumerate at most sqrt(n) values of k, and for each fixed length use prefix sums of the number of 1s to check every start.\n\n## Correctness\n\nNo valid non-empty substring can have k=0, because zero 0s would then require length 0. For k>=1 the condition is equivalent to having length k^2+k and containing k ones; enumerating these lengths and all starts misses nothing and counts nothing twice.\n\n## Complexity\n\nTime O(n sqrt(n)), space O(n)."
+}

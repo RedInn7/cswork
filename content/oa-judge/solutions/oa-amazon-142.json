@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-142",
+  "packageChecksum": "3523225cc7dc40f6a4a8e628fd8aefba1d20f7d937f5157c916b09f496ccc3fa",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<array<long long, 3>> rows(n);\n    long long maxA = 0, maxB = 0;\n    for (auto &r : rows) {\n        cin >> r[0] >> r[1] >> r[2];\n        sort(r.begin(), r.end());\n        maxA = max(maxA, r[0]);\n        maxB = max(maxB, r[1]);\n    }\n    // Beat everyone: own middle above every minimum, own maximum above every middle.\n    int answer = 0;\n    for (auto &r : rows)\n        if (r[1] > maxA && r[2] > maxB) answer++;\n    cout << answer << '\\n';\n}\n",
+      "sha256": "62816d0686b89cb996741dbbbd0cd78561121f33f2f68c043fbe383e45239319"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = rb();\n        while (c != '-' && (c < '0' || c > '9')) c = rb();\n        boolean neg = c == '-';\n        if (neg) c = rb();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = rb();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[][] rows = new long[n][3];\n        long maxA = 0, maxB = 0;\n        for (long[] r : rows) {\n            for (int k = 0; k < 3; k++) r[k] = nextLong();\n            Arrays.sort(r);\n            maxA = Math.max(maxA, r[0]);\n            maxB = Math.max(maxB, r[1]);\n        }\n        // Beat everyone: own middle above every minimum, own maximum above every middle.\n        int answer = 0;\n        for (long[] r : rows) if (r[1] > maxA && r[2] > maxB) answer++;\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "8c83e5a5e690d8a639a791d2d31651a7980161c023c564191ef181a9f1cd79c3"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tn := 0\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\n\nfunc main() {\n\tn := readInt()\n\trows := make([][3]int, n)\n\tmaxA, maxB := 0, 0\n\tfor i := range rows {\n\t\tr := rows[i][:]\n\t\tr[0], r[1], r[2] = readInt(), readInt(), readInt()\n\t\tsort.Ints(r)\n\t\tmaxA = max(maxA, r[0])\n\t\tmaxB = max(maxB, r[1])\n\t}\n\t// Beat everyone: own middle above every minimum, own maximum above every middle.\n\tanswer := 0\n\tfor _, r := range rows {\n\t\tif r[1] > maxA && r[2] > maxB {\n\t\t\tanswer++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "4e5571d91f50801262553a5c3ac42762af1e2748413c0ef260dc417899ef6997"
+    }
+  ]
+}

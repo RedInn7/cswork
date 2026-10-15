@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-111",
+  "packageChecksum": "58bd9d6b1d8423c1d98ae6ca098ec60b51def88392dcacd4aa30ec9d76a5d436",
+  "sourceContentHash": "c786407d819d219afb0f3e3a910e405abdfe1d016e7c4821d432b3160a189ae1",
+  "editorialSha256": "7d5a68d1770f499bb9ec541deab79587001a9f9b068dc46991858ea31a5ba521",
+  "hints": {
+    "zh": [
+      "这是带权区间调度：两场能同时选，必须一场的结束时间严格小于另一场的开始时间，端点相等也算冲突。",
+      "按结束时间排序后做 dp，dp[i] 表示只考虑前 i 场的最大观众量；对每一场要么跳过，要么接在所有结束严格早于它开始的场次之后。",
+      "以 start+duration 为结束时间排序，记录结束时间数组 ends；对第 i 场用二分找出 ends 中严格小于其 start 的个数 c，令 dp[i+1]=max(dp[i], dp[c]+volume)，答案是 dp[n]。注意结束时间可达 2×10⁹，要用 64 位整数。"
+    ],
+    "en": [
+      "This is weighted interval scheduling: two screenings can both be chosen only if one ends strictly before the other starts; equal endpoints count as a conflict.",
+      "Sort by end time and let dp[i] be the best audience using only the first i screenings; each screening is either skipped or appended after all screenings that end strictly before it starts.",
+      "Use start+duration as the end time, sort, and keep the array of end times; for screening i, binary search the number c of end times strictly less than its start, set dp[i+1] = max(dp[i], dp[c] + volume), and output dp[n]. End times can reach 2*10^9, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by end time and let dp record the best value of the first several screenings; for each screening, binary search the number of screenings that end strictly before it starts, and compare taking it with skipping it.\n\n## Correctness\n\nAny optimal plan either does not contain the screening that currently ends last, or all of its earlier screenings end strictly before that screening starts. The two cases are covered by the previous dp value and by the compatible prefix plus the current value respectively, so induction gives the global optimum.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

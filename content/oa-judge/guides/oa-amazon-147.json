@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-147",
+  "packageChecksum": "23fb56760dc7a506d181c8fc9ef8ef9aef3626badadd830d54b1979a24acc982",
+  "sourceContentHash": "db3ee2a877b61357dabfc84199e134bf037950e74a6a12b6f873304b96976dee",
+  "editorialSha256": "17474e12a68ec78eb98ca480c48f2520a77b28fecec49dc5b4d75cb1d0742588",
+  "hints": {
+    "zh": [
+      "前缀是按长度从短到长依次出现的，第一个满足条件的前缀就是最早的那个，不需要任何复杂结构。",
+      "从左到右累加前缀和，每加一个数就检查一次是否 ≤0，第一次满足时立即给出当前下标；注意本题使用 0 起始下标。",
+      "total=0；对 i=0..n-1，total+=a[i]，若 total≤0 就输出 i 并结束；循环结束仍未满足则输出 -1。前缀和可能超出 32 位，用 64 位整数。"
+    ],
+    "en": [
+      "Prefixes appear in order of increasing length, so the first one that satisfies the condition is the earliest; no special data structure is needed.",
+      "Accumulate the prefix sum from left to right, check after each addition whether it is <= 0, and report the current index the first time it is; note that this problem uses 0-based indices.",
+      "Set total = 0; for i = 0..n-1 add a[i] to total and, if total <= 0, print i and stop; if the loop finishes without that happening, print -1. Prefix sums can exceed 32 bits, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAccumulate the prefix sum and, as soon as it is <= 0, return the current 0-based index.\n\n## Correctness\n\nThe i-th addition gives exactly the sum of the prefix 0..i; checking in increasing index order, the first success must be the earliest one, and if no check succeeds there is no such prefix.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-112",
+  "packageChecksum": "be668d90bb10e7debfa3213d28a4bdc15270c5dc396d309d0a4fe52ed04bd5ad",
+  "sourceContentHash": "ce96a93613b338ac895b17f95d10ae3ad5fe90642d5a2ad12c0598439adfbeb2",
+  "editorialSha256": "42240503d578f888ba7033bea7e5704f81310bd48d7eaf0552eab8ad9e8ac6d8",
+  "hints": {
+    "zh": [
+      "环上两站之间只有两条不绕圈的路径：顺时针一条，逆时针一条，两者之和恰好是整圈周长。",
+      "用前缀和算出线性展开后两站之间的距离 d，另一方向就是周长减 d，取较小者；各查询相互独立，分别取最小再相加。",
+      "prefix[i] 为前 i 条边之和，周长为 prefix[n]；对每个查询 (a,b) 取 d=|prefix[a]-prefix[b]|，累加 min(d, prefix[n]-d)。总和可能很大，用 64 位整数。"
+    ],
+    "en": [
+      "Between two stations on a ring there are only two non-looping paths, one clockwise and one counterclockwise, and their lengths add up to the perimeter.",
+      "Prefix sums give the distance d between the two stations in the unrolled line; the other direction is the perimeter minus d, so take the smaller one. Queries are independent, so minimize each one and add them up.",
+      "Let prefix[i] be the sum of the first i edges and the perimeter be prefix[n]; for each query (a,b) take d = |prefix[a] - prefix[b]| and add min(d, prefix[n] - d). The total can be large, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrefix sums give the distance d in the linear unrolling, and the shortest distance on the ring is min(d, perimeter - d); add it up query by query.\n\n## Correctness\n\nWith positive edge weights, a shortest path on a ring is always one of the two simple arcs that do not wrap around, and the prefix difference and its complement with respect to the perimeter are exactly the lengths of those two arcs. The queries are independent, so minimizing each one separately and then summing is correct.\n\n## Complexity\n\nTime O(n+q), space O(n)."
+}

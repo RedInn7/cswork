@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-127",
+  "packageChecksum": "04803b67ba592a64d9228c39c26fa5339961ce4eea64ffd467795e7eae6d4907",
+  "sourceContentHash": "27340376306ed817db4d609cd5e636e8bdeaafa9cc588f3afc0c7662aaeeeeca",
+  "editorialSha256": "46e9a2092d7d90f5451f52e1c6edda1f44d4cdbbd031e1bab3e99678b36f830c",
+  "hints": {
+    "zh": [
+      "每个回文子串都由它的中心和半径唯一确定；中心可以落在某个字符上（奇数长度），也可以落在两个相邻字符之间（偶数长度）。",
+      "长度只有 1000，可以枚举全部 2n-1 个中心，从中心向两侧同步扩展；只要两端字符相等，就又得到一个新的回文子串。",
+      "对 center 从 0 到 2n-2，令 left=center/2、right=(center+1)/2；当 left≥0、right<n 且 s[left]==s[right] 时，答案加一，left 减一、right 加一；全部中心处理完输出答案。"
+    ],
+    "en": [
+      "Every palindromic substring is uniquely determined by its center and radius; the center can be on a character (odd length) or between two adjacent characters (even length).",
+      "With length only up to 1000, enumerate all 2n-1 centers and expand outward from each; every time both ends match you have found one more palindromic substring.",
+      "For center from 0 to 2n-2, set left = center/2 and right = (center+1)/2; while left >= 0, right < n and s[left] == s[right], add one to the answer and move left down and right up; print the answer after all centers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate odd and even centers and expand to both sides until the characters differ; each successful expansion counts one palindrome.\n\n## Correctness\n\nEvery palindrome corresponds uniquely to its center and radius. Expanding from a center visits exactly all valid radii for that center, and different centers or radii give different index ranges, so nothing is missed or counted twice.\n\n## Complexity\n\nTime O(n^2), auxiliary space O(1)."
+}

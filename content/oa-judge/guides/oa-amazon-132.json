@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-132",
+  "packageChecksum": "451efb10c0c80a04aba15f810288bb81edda1d326c82125f03d4e74663f98f21",
+  "sourceContentHash": "93d97e0816a82437fb5ee629e482b96b1ee8ba025a80ba8c29ae1eba64a68de9",
+  "editorialSha256": "c6e316b0aa219fe4a29f0d01803cfba8a957da1813b91b99a4f7291a33175a83",
+  "hints": {
+    "zh": [
+      "在同一批内任务按顺序执行且时长为正，所以“已经用了多少时间”就完全决定了完成了几项任务；只需要跟踪当前这一批累计用掉的时间。",
+      "对任务时长求前缀和，prefix[i] 就是第 i 项完成的时刻；累计用时为 T 时，完成的任务数就是不超过 T 的前缀个数，可以二分。累计用时达到总时长时，本班输出 0，超出的时间丢弃，累计清零，下一班重新从第一项开始。",
+      "求前缀和 prefix 与总时长 total；elapsed=0；对每个班次时长 v：elapsed+=v；若 elapsed≥total，输出 0 并令 elapsed=0；否则用二分求出 prefix 中 ≤elapsed 的个数 done，输出 n-done。用 64 位整数保存时间。"
+    ],
+    "en": [
+      "Within one batch tasks run in order with positive durations, so the time used so far fully determines how many tasks are done; you only need to track the time accumulated in the current batch.",
+      "Take prefix sums of the task durations so that prefix[i] is the moment task i finishes; with accumulated time T, the number of finished tasks is the number of prefixes not exceeding T, found by binary search. When the accumulated time reaches the total, the shift outputs 0, the excess is discarded, the accumulator resets, and the next shift restarts from the first task.",
+      "Build prefix and the total duration; set elapsed = 0; for each shift length v: add v to elapsed; if elapsed >= total output 0 and set elapsed = 0; otherwise binary search the number done of prefixes <= elapsed and output n - done. Store times in 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrefix sums of the task durations record the completion times. Accumulate the time already used in the current batch and binary search the number of completed tasks; when the total duration is reached, output 0 and reset to zero, preparing the restart for the next shift.\n\n## Correctness\n\nWithin a batch the tasks run in order and every duration is positive, so the accumulated time reaches a given prefix if and only if the first that many tasks are complete. Binary search counts the prefixes not exceeding the current time, which gives the number of completed tasks. When the whole batch is reached, the excess is discarded and the state is reset as the source examples show; in all other shifts the time keeps accumulating, preserving the progress invariant.\n\n## Complexity\n\nTime O(n + m log n), space O(n+m)."
+}

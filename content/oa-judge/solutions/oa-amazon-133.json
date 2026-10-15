@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-133",
+  "packageChecksum": "2cbd7d2c4e3be26537d81faf661d2c6e5a0e282673841c50a837f0a9c4282a24",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n, a, b, budget;\n    cin >> n >> a >> b >> budget;\n    // Fewest skips to make the last shipment yours: remainder r in 1..a+b needs (r-1)/a skips.\n    vector<long long> cost(n);\n    for (auto &c : cost) {\n        long long v;\n        cin >> v;\n        c = ((v - 1) % (a + b)) / a;\n    }\n    sort(cost.begin(), cost.end());\n    long long answer = 0;\n    for (long long c : cost) {\n        if (c > budget) break;\n        budget -= c;\n        answer++;\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "2a4b1b67aef1b121da01bc4ebcb86814afda498dbf90e5566b536bb573b195cd"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = rb();\n        while (c != '-' && (c < '0' || c > '9')) c = rb();\n        boolean neg = c == '-';\n        if (neg) c = rb();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = rb();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long a = nextLong(), b = nextLong(), budget = nextLong();\n        // Fewest skips to make the last shipment yours: remainder r in 1..a+b needs (r-1)/a skips.\n        long[] cost = new long[n];\n        for (int i = 0; i < n; i++) cost[i] = ((nextLong() - 1) % (a + b)) / a;\n        Arrays.sort(cost);\n        long answer = 0;\n        for (long c : cost) {\n            if (c > budget) break;\n            budget -= c;\n            answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "5320c02b1f449d5e42359c2071f8debec30d7f48b07622f5dc8f36d48e590535"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tn := 0\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\n\nfunc main() {\n\tn, a, b, budget := readInt(), readInt(), readInt(), readInt()\n\t// Fewest skips to make the last shipment yours: remainder r in 1..a+b needs (r-1)/a skips.\n\tcost := make([]int, n)\n\tfor i := range cost {\n\t\tcost[i] = ((readInt() - 1) % (a + b)) / a\n\t}\n\tsort.Ints(cost)\n\tanswer := 0\n\tfor _, c := range cost {\n\t\tif c > budget {\n\t\t\tbreak\n\t\t}\n\t\tbudget -= c\n\t\tanswer++\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "1d152c08f3fc181faa5d01b20ba1ff6e4e6abf934d6f2fc5ad29352f01a6fb76"
+    }
+  ]
+}

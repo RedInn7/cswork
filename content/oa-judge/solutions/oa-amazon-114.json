@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-114",
+  "packageChecksum": "6f236a43b5572199cdc4a4d94a8ecd3d804032022e3cf19dd2779e341b2df107",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, k;\n    cin >> n >> k;\n    vector<long long> products(n);\n    for (auto &x : products) cin >> x;\n    // Indices of the strict suffix maxima of the active window, values strictly decreasing.\n    vector<int> queue(n);\n    int head = 0, tail = 0;\n    long long total = 0;\n    for (int right = 0; right < n; right++) {\n        int left = right - k + 1;\n        while (head < tail && queue[head] < left) head++;\n        while (tail > head && products[queue[tail - 1]] <= products[right]) tail--;\n        queue[tail++] = right;\n        if (right >= k - 1) total += tail - head;\n    }\n    cout << total << '\\n';\n}\n",
+      "sha256": "670760075d8a3d8d8bed6487cf18e4abff859e60553f89e3c6ecea1f0d0966f7"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = rb();\n        while (c != '-' && (c < '0' || c > '9')) c = rb();\n        boolean neg = c == '-';\n        if (neg) c = rb();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = rb();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), k = nextInt();\n        long[] products = new long[n];\n        for (int i = 0; i < n; i++) products[i] = nextLong();\n        // Indices of the strict suffix maxima of the active window, values strictly decreasing.\n        int[] queue = new int[n];\n        int head = 0, tail = 0;\n        long total = 0;\n        for (int right = 0; right < n; right++) {\n            int left = right - k + 1;\n            while (head < tail && queue[head] < left) head++;\n            while (tail > head && products[queue[tail - 1]] <= products[right]) tail--;\n            queue[tail++] = right;\n            if (right >= k - 1) total += tail - head;\n        }\n        System.out.println(total);\n    }\n}\n",
+      "sha256": "06179554a4937328fb3a8f4713cc8b64b03cb2b125b508a5e2a3ed028f9775b8"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tn := 0\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\n\nfunc main() {\n\tn, k := readInt(), readInt()\n\tproducts := make([]int, n)\n\tfor i := range products {\n\t\tproducts[i] = readInt()\n\t}\n\t// Indices of the strict suffix maxima of the active window, values strictly decreasing.\n\tqueue := make([]int, n)\n\thead, tail, total := 0, 0, 0\n\tfor right := 0; right < n; right++ {\n\t\tleft := right - k + 1\n\t\tfor head < tail && queue[head] < left {\n\t\t\thead++\n\t\t}\n\t\tfor tail > head && products[queue[tail-1]] <= products[right] {\n\t\t\ttail--\n\t\t}\n\t\tqueue[tail] = right\n\t\ttail++\n\t\tif right >= k-1 {\n\t\t\ttotal += tail - head\n\t\t}\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "f8d9b0725874d05f1a7158fce46e33a24dc90999ecf733a63b8863b51d33e1b3"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-110",
+  "packageChecksum": "f8eead38aecc84545218b71564cb4a205b49c0023e04239dc6aef02955d701a4",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    sort(a.begin(), a.end());\n    vector<long long> prefix(n + 1, 0);\n    for (int i = 0; i < n; i++) prefix[i + 1] = prefix[i] + a[i];\n    // Sum of distances from a[l..r) to its median.\n    auto cost = [&](int l, int r) -> long long {\n        if (l == r) return 0;\n        int m = (l + r) / 2;\n        return a[m] * (m - l) - (prefix[m] - prefix[l]) + (prefix[r] - prefix[m + 1]) - a[m] * (r - m - 1);\n    };\n    long long best = LLONG_MAX;\n    for (int i = 0; i <= n; i++) best = min(best, cost(0, i) + cost(i, n));\n    cout << best << '\\n';\n}\n",
+      "sha256": "84c8a64fe77b1b1aa089e25f81dcb813a922e40e343f9fea935087a39b378bd3"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = rb();\n        while (c != '-' && (c < '0' || c > '9')) c = rb();\n        boolean neg = c == '-';\n        if (neg) c = rb();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = rb();\n        }\n        return neg ? -r : r;\n    }\n\n    static long[] a, prefix;\n\n    // Sum of distances from a[l..r) to its median.\n    static long cost(int l, int r) {\n        if (l == r) return 0;\n        int m = (l + r) / 2;\n        return a[m] * (m - l) - (prefix[m] - prefix[l]) + (prefix[r] - prefix[m + 1]) - a[m] * (r - m - 1);\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        prefix = new long[n + 1];\n        for (int i = 0; i < n; i++) prefix[i + 1] = prefix[i] + a[i];\n        long best = Long.MAX_VALUE;\n        for (int i = 0; i <= n; i++) best = Math.min(best, cost(0, i) + cost(i, n));\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "d46f470e7bd653d88d3a77f459f7f0edfe5536a318736e102be89e7b2e2c65ba"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tn := 0\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn := readInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\tsort.Ints(a)\n\tprefix := make([]int, n+1)\n\tfor i, v := range a {\n\t\tprefix[i+1] = prefix[i] + v\n\t}\n\t// Sum of distances from a[l..r) to its median.\n\tcost := func(l, r int) int {\n\t\tif l == r {\n\t\t\treturn 0\n\t\t}\n\t\tm := (l + r) / 2\n\t\treturn a[m]*(m-l) - (prefix[m] - prefix[l]) + (prefix[r] - prefix[m+1]) - a[m]*(r-m-1)\n\t}\n\tbest := -1\n\tfor i := 0; i <= n; i++ {\n\t\tif c := cost(0, i) + cost(i, n); best < 0 || c < best {\n\t\t\tbest = c\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "9942b49a7bfad2d2508caf00ddd642548abc771e00d7786f72747b440e2b6aa8"
+    }
+  ]
+}

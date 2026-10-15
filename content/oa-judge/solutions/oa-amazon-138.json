@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-138",
+  "packageChecksum": "19405a84f4fe9966020093b5b8511bf8587a273781ce179197f2fd755768a64a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<int> t(n + 1);\n    for (int i = 1; i <= n; i++) cin >> t[i];\n    long long answer = 0;\n    for (int i = 1; i <= n; i++) {\n        // Request i breaks a limit when the request `limit` places earlier is still in the window.\n        bool dropped = (i > 3 && t[i] == t[i - 3]) || (i > 20 && t[i] - t[i - 20] < 10) || (i > 60 && t[i] - t[i - 60] < 60);\n        answer += dropped;\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "c4597824fe8e8b2a354592c1703a226b8c2f12f0d3d49d331282e0c6b44389d8"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream is = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int rb() throws IOException {\n        if (ptr == len) {\n            len = is.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = rb();\n        while (c != '-' && (c < '0' || c > '9')) c = rb();\n        boolean neg = c == '-';\n        if (neg) c = rb();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = rb();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        int[] t = new int[n + 1];\n        for (int i = 1; i <= n; i++) t[i] = nextInt();\n        long answer = 0;\n        for (int i = 1; i <= n; i++) {\n            // Request i breaks a limit when the request `limit` places earlier is still in the window.\n            if ((i > 3 && t[i] == t[i - 3]) || (i > 20 && t[i] - t[i - 20] < 10) || (i > 60 && t[i] - t[i - 60] < 60)) answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "2694d3a48e0b89db8153a157eba30d7848ccc93b73348be8c3b2ab5e96cf92e1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tn := 0\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\n\nfunc main() {\n\tn := readInt()\n\tt := make([]int, n+1)\n\tfor i := 1; i <= n; i++ {\n\t\tt[i] = readInt()\n\t}\n\tanswer := 0\n\tfor i := 1; i <= n; i++ {\n\t\t// Request i breaks a limit when the request `limit` places earlier is still in the window.\n\t\tif (i > 3 && t[i] == t[i-3]) || (i > 20 && t[i]-t[i-20] < 10) || (i > 60 && t[i]-t[i-60] < 60) {\n\t\t\tanswer++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "dca91d8084085872333293fd570661fd362be66e8caa4a2367ac86dbfb095c11"
+    }
+  ]
+}
