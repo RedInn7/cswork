@@ -9,7 +9,7 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 const dir = mkdtempSync(resolve(tmpdir(), 'cswork-mock-oa-plus-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 const { sqlite } = await import('../db/sqlite');
-const { mockPeers } = await import('../lib/server/mock-oa');
+const { mockPeers, mockReport } = await import('../lib/server/mock-oa');
 const { onTopics, PEER_MIN } = await import('../lib/mock-oa');
 const { ojImportSchema } = await import('../lib/oj-types');
 
@@ -68,6 +68,13 @@ test('percentiles compare each learner once, at their best, within the scenario 
   assert.deepEqual(await mockPeers('me', custom, 0.6), { n: PEER_MIN, below: PEER_MIN });
   assert.equal(await mockPeers('me', { ...custom, questions: 2 }, 0.6), null);
   assert.equal(await mockPeers('me', { ...custom, source: 'lc' }, 0.6), null);
+  // The report asks with its scenario; without one (the history upload's rescoring) it compares nothing.
+  const person = { id: 'me', name: 'Me', email: 'me@example.test', role: 'student' as const, verified: true };
+  const window = { ids: 'lc-1,lc-2', from: String(Date.now() - 3600_000), to: String(Date.now()), slots: 'easy,hard' };
+  const report = await mockReport(person, new URLSearchParams({ ...window, preset: '1', company: 'acme', source: 'mixed' }));
+  assert.deepEqual(report.peers, { n: PEER_MIN, below: 0 });
+  assert.equal((await mockReport(person, new URLSearchParams(window))).peers, null);
+  assert.equal((await mockReport(person, new URLSearchParams({ ...window, preset: '1', company: 'ACME!', source: 'mixed' }))).peers, null);
 });
 
 test('a problem may give some languages their own time limit, within the same bounds', () => {

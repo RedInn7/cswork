@@ -286,6 +286,11 @@ export async function drawMockOa(p: Person, input: unknown) {
 }
 
 const DAY = 86400000;
+const scenarioSchema = z.object({
+  preset: z.enum(['0', '1']),
+  company: companySlug.nullable(),
+  source: z.enum(['mixed', 'oa', 'lc']),
+});
 export type MockScenario = {
   company: string | null;
   preset: boolean;
@@ -373,20 +378,19 @@ export async function mockReport(p: Person, params: URLSearchParams) {
     ids.map((_, i) => slots[i] ?? 'medium'),
   );
   const pending = items.some((i) => i.pending);
-  const preset = params.get('preset'),
-    company = params.get('company') || null,
-    source = params.get('source');
+  const scenario = scenarioSchema.safeParse({
+    preset: params.get('preset'),
+    company: params.get('company'),
+    source: params.get('source'),
+  });
   const peers =
-    preset === null ||
-    pending ||
-    (company !== null && !companySlug.safeParse(company).success) ||
-    (source !== 'mixed' && source !== 'oa' && source !== 'lc')
-      ? null
-      : await mockPeers(
+    scenario.success && !pending
+      ? await mockPeers(
           p.id,
-          { company, preset: preset === '1', source, questions: ids.length },
+          { ...scenario.data, preset: scenario.data.preset === '1', questions: ids.length },
           score.value / score.max,
-        );
+        )
+      : null;
   return { items, score, scoring, pending, peers };
 }
 
