@@ -99,7 +99,7 @@ void test(
 class Solution { public: ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) { return l1; } };`,
     );
     assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /solution\.cpp:1:\d+: error: redefinition of 'struct ListNode'/);
+    assert.match(result.stderr, /solution\.cpp:1:\d+: error: redefinition of ['‘]struct ListNode['’]/);
   },
 );
 
