@@ -142,7 +142,7 @@ export function MyProgress({
   const [result, setResult] = useState('');
   const [period, setPeriod] = useState('');
   // The public profile, when there is one: earned badges can be featured on it.
-  const [profile, setProfile] = useState<{ value: Profile; featurable: Set<string> } | null>(null);
+  const [profile, setProfile] = useState<{ value: Profile; featurable: Set<string>; recapYears: number[] } | null>(null);
   const [featureError, setFeatureError] = useState('');
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   // A freeze bought below counts on the calendar at once, before the bootstrap refreshes.
@@ -170,7 +170,7 @@ export function MyProgress({
       ).catch(() => null),
       api<{ companies: { slug: string; name: string }[] }>('oj/oa-library').catch(() => null),
       api<{ days: string[] }>('oj/points/daily').catch(() => null),
-      api<{ profile: Profile | null; badges: { id: string }[] }>('oj/profile').catch(() => null),
+      api<{ profile: Profile | null; badges: { id: string }[]; recapYears?: number[] }>('oj/profile').catch(() => null),
     ])
       .then(([history, marks, notes, line, oa, daily, mine]) => {
         if (!current) return;
@@ -183,7 +183,11 @@ export function MyProgress({
           now: Date.now(),
           dailyDays: daily?.days,
         });
-        setProfile(mine?.profile ? { value: mine.profile, featurable: new Set(mine.badges.map((b) => b.id)) } : null);
+        setProfile(
+          mine?.profile
+            ? { value: mine.profile, featurable: new Set(mine.badges.map((b) => b.id)), recapYears: mine.recapYears ?? [] }
+            : null,
+        );
       })
       .catch((reason: Error) => {
         if (current) setError(reason.message);
@@ -702,6 +706,7 @@ export function MyProgress({
           history={data.history}
           english={english}
           handle={profile?.value.visible ? profile.value.handle : null}
+          publicYears={profile?.recapYears ?? []}
           now={data.now}
         />
       )}

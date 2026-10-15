@@ -8,17 +8,20 @@ import '@/app/learner-cloud.css';
 /**
  * My progress: one local year of the practice history already loaded (no request of its own):
  * problems solved, active days, the longest streak, the busiest day and the stops most worked on.
- * `handle`: the learner's visible profile, which has a public recap page.
+ * `handle`: the learner's visible profile; `publicYears`: the years its public recap page serves
+ * (UTC, public problems only), so a local year with only course or private ACs gets no dead link.
  */
 export function YearRecapCard({
   history,
   english,
   handle,
+  publicYears,
   now,
 }: {
   history: readonly PracticeHistoryItem[];
   english: boolean;
   handle: string | null;
+  publicYears: readonly number[];
   /** When the history was read: days after it are still ahead. */
   now: number;
 }) {
@@ -82,7 +85,9 @@ export function YearRecapCard({
             ))}
           </select>
         )}
-        {handle && <a href={`/u/${handle}/recap/${year}`}>{t('公开回顾页', 'Public recap')} →</a>}
+        {handle && publicYears.includes(year) && (
+          <a href={`/u/${handle}/recap/${year}`}>{t('公开回顾页', 'Public recap')} →</a>
+        )}
       </div>
       <dl className="year-recap-meters">
         {meters.map(([zh, en, value]) => (

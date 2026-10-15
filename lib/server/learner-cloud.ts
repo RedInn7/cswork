@@ -666,7 +666,12 @@ async function handleProfile(request: Request, p: Person) {
   if (request.method === 'GET') {
     await limit(p, 'profile-read', 60);
     const profile = myProfile(p.id);
-    return json({ profile, badges: profile ? await featurable(p.id, profile.showContest) : [] });
+    return json({
+      profile,
+      badges: profile ? await featurable(p.id, profile.showContest) : [],
+      // The years /u/<handle>/recap/<year> serves (UTC, public problems only): My progress links only these.
+      recapYears: profile?.visible ? activeYears(p.id, shownIn(await publicCatalogue())) : [],
+    });
   }
   if (request.method !== 'POST') throw new HttpError(404, '接口不存在');
   await limit(p, 'profile-write', 20);
