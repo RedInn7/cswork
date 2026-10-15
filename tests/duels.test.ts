@@ -191,6 +191,8 @@ void test('a duel nobody finishes is a draw once its window closes', async () =>
   // Bob was the stronger side, so a draw costs him.
   assert.equal(row.a_before, 1516);
   assert.ok(row.a_after < 1516);
+  // A settlement that read the clock first may still insert last: insertion order decides.
+  sqlite().prepare("UPDATE duel_results SET created_at=0 WHERE room_id='draw1'").run();
   const record = duelRecord(bob.id);
   assert.deepEqual([record.rating, record.wins, record.draws, record.streak, record.best], [row.a_after, 1, 1, 0, 1]);
 });

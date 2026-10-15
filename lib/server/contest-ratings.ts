@@ -23,12 +23,15 @@ export function ratingHistory(userId: string) {
   ).map(({ ids, id, ...r }) => ({ ...r, week: roomWeek(id)!, total: (JSON.parse(ids) as string[]).length }));
 }
 
-/** A learner's duel rating: after their latest ranked duel, START_RATING before the first. */
+/**
+ * A learner's duel rating: after their latest ranked duel, START_RATING before the first. Latest
+ * by rowid: settlement order, which a shared or earlier-read created_at can't tell.
+ */
 export const duelRating = (userId: string) =>
   (sqlite()
     .prepare(
       `SELECT CASE WHEN a_user=@u THEN a_after ELSE b_after END FROM duel_results WHERE a_user=@u OR b_user=@u
-      ORDER BY created_at DESC,room_id DESC LIMIT 1`,
+      ORDER BY rowid DESC LIMIT 1`,
     )
     .pluck()
     .get({ u: userId }) as number | undefined) ?? START_RATING;
@@ -36,7 +39,7 @@ export const duelRating = (userId: string) =>
 /** Ranked duel record: wins, losses, draws, the current and the longest winning streak, the band. */
 export function duelRecord(userId: string) {
   const winners = sqlite()
-    .prepare('SELECT winner FROM duel_results WHERE a_user=@u OR b_user=@u ORDER BY created_at,room_id')
+    .prepare('SELECT winner FROM duel_results WHERE a_user=@u OR b_user=@u ORDER BY rowid')
     .pluck()
     .all({ u: userId }) as (string | null)[];
   let wins = 0,
