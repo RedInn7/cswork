@@ -254,20 +254,24 @@ const programsSchema = z
       .max(4),
   })
   .strict();
-const sidecars = new Map<string, unknown>();
+const sidecars = new Map<string, { id: string }>();
 /** content/oa-judge/<dir>/<id>.json, parsed once; a missing file is looked for again next time. */
-function sidecar<S extends z.ZodTypeAny>(dir: 'guides' | 'solutions', id: string, schema: S) {
+function sidecar<T extends { id: string }>(
+  dir: 'guides' | 'solutions',
+  id: string,
+  parse: (value: unknown) => T,
+): T | undefined {
   const key = `${dir}/${id}`;
   if (!sidecars.has(key) && /^oa-[a-z0-9-]+$/.test(id)) {
     const file = resolve(`content/oa-judge/${key}.json`);
     try {
       if (existsSync(file) && statSync(file).size < 1024 * 1024)
-        sidecars.set(key, schema.parse(JSON.parse(readFileSync(file, 'utf8'))));
+        sidecars.set(key, parse(JSON.parse(readFileSync(file, 'utf8'))));
     } catch {
       // An unreadable sidecar is simply not shown; scripts/oa-judge/check-guides.mjs fails on it.
     }
   }
-  const value = sidecars.get(key) as z.infer<S> | undefined;
+  const value = sidecars.get(key) as T | undefined;
   return value?.id === id ? value : undefined;
 }
 
@@ -277,7 +281,7 @@ function sidecar<S extends z.ZodTypeAny>(dir: 'guides' | 'solutions', id: string
  * like translations. Served only while bound to the live package and its catalog source.
  */
 export function oaGuide(id: string): z.infer<typeof guideSchema> | undefined {
-  const guide = sidecar('guides', id, guideSchema);
+  const guide = sidecar('guides', id, (value) => guideSchema.parse(value));
   return guide && oaJudgeRegistry().isCurrent(id, guide.packageChecksum, guide.sourceContentHash)
     ? guide
     : undefined;
@@ -290,14 +294,21 @@ let passing: Set<string> | undefined;
  * their code unchanged since.
  */
 export function oaExtraPrograms(id: string): { language: string; code: string }[] {
-  const extra = sidecar('solutions', id, programsSchema);
+  const extra = sidecar('solutions', id, (value) => programsSchema.parse(value));
   if (!extra || !oaJudgeRegistry().isCurrent(id, extra.packageChecksum)) return [];
   passing ??= passingPrograms(resolve('content/oa-judge'));
   return extra.programs
     .filter(
       (program) =>
         createHash('sha256').update(program.code).digest('hex') === program.sha256 &&
-        passing!.has(programKey({ id, ...program, packageChecksum: extra.packageChecksum })),
+        passing!.has(
+          programKey({
+            id,
+            language: program.language,
+            sha256: program.sha256,
+            packageChecksum: extra.packageChecksum,
+          }),
+        ),
     )
     .map(({ language, code }) => ({ language, code }));
 }

@@ -391,7 +391,7 @@ export function oaLibrary() {
         const explanationEn = oaGuide(id)?.explanationEn;
         return {
           ...solution,
-          ...(explanationEn && { explanationEn }),
+          ...(explanationEn ? { explanationEn } : {}),
           solutions: [
             ...solution.solutions,
             ...oaExtraPrograms(id).filter((item) => !shown.has(item.language)),
