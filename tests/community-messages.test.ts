@@ -26,6 +26,7 @@ const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
 const { publicProfile } = await import('../lib/server/learner-cloud');
 const { employerOf, FREE_MAIL } = await import('../lib/server/work-verify');
+const { chatText } = await import('../lib/server/study-groups');
 const domains = (await import('../lib/content/company-domains.json')).default.domains as Record<string, string[]>;
 
 const DAY = 86400000;
@@ -116,6 +117,9 @@ void test('group chat: members only, retention, unsay, reports take a message do
   assert.equal(await status(person('m-amy', { verified: false }), 'POST', path, { body: 'hi' }), 403);
   assert.equal(await status(amy, 'POST', path, { body: 'x'.repeat(2001) }), 400);
   assert.equal(await status(amy, 'POST', path, { body: 'a‮b' }), 400);
+  // Joined emoji and tab-indented code are ordinary chat; joiners alone are not.
+  for (const body of ['👩‍💻 🤷‍♂️ ❤️‍🔥', 'for x in y:\n\tprint(x)', 'می‌خواهم']) assert.ok(chatText.safeParse(body).success, body);
+  assert.equal(chatText.safeParse('\u200d\u200c').success, false);
   const first = await ok(amy, 'POST', path, { body: 'Line one\nline two' });
   assert.deepEqual(
     first.items.map((m: { name: string; body: string; mine: boolean }) => [m.name, m.body, m.mine]),

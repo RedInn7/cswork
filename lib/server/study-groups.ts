@@ -39,13 +39,20 @@ export const plain = (max: number, min = 1) =>
     .min(min)
     .max(max)
     .refine((s) => !/[\p{C}\u115F\u1160\u3164\uFFA0\u2800]/u.test(s) && (!s || /[\p{L}\p{N}\p{S}\p{P}]/u.test(s)));
-/** A chat or direct message: like plain(), but it may run over several lines. */
+/**
+ * A chat or direct message: like plain(), but it may run over several lines, indent pasted code
+ * with tabs, and join emoji (👩‍💻) or Persian and Indic letters with zero-width (non-)joiners.
+ */
 export const chatText = z
   .string()
   .trim()
   .min(1)
   .max(2000)
-  .refine((s) => !/[\p{C}\u115F\u1160\u3164\uFFA0\u2800]/u.test(s.replace(/\n/g, '')) && /[\p{L}\p{N}\p{S}\p{P}]/u.test(s));
+  .refine(
+    (s) =>
+      !/[\p{C}\u115F\u1160\u3164\uFFA0\u2800]/u.test(s.replace(/[\n\t\u200C\u200D]/g, '')) &&
+      /[\p{L}\p{N}\p{S}\p{P}]/u.test(s),
+  );
 /** Chat messages a member may send an hour, and the most one read returns. */
 export const CHAT_HOUR = 60;
 const CHAT_PAGE = 50;
