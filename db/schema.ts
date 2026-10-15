@@ -33,6 +33,7 @@ export * from './contests-schema';
 export * from './duels-schema';
 export * from './ai-interview-scores-schema';
 export * from './post-polls-schema';
+export * from './community-schema';
 import { practiceRounds } from './practice-round-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),

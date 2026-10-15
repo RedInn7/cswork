@@ -65,6 +65,12 @@ export function PrivacyDocument() {
                 预约同伴互面时，服务器保存你填写的昵称、面试类型、级别、可用时段、时区和语言，以及你选填的目标公司和话题；同伴只能看到昵称，匹配通知里会写出你们共同的公司和话题。开着「邮件提醒」时，开始前一天和前一小时会给你已验证的账户邮箱发提醒（经 Resend 发送），内容是面试类型、时间、同伴昵称和会议链接；预约时取消勾选就不会收到。
               </p>
               <p>
+                学习小组的聊天消息只有本组成员能看到，显示你在本组填的昵称；消息保留 180 天后自动删除，小组解散时一并删除；小组里有消息被举报、尚未处理时，负责审核的老师可以打开这个小组的聊天查看上下文。私信只有对话双方能看到，只能在互相关注的人之间，或者从内推帖请求内推时开始；你可以设置谁能给你发起新对话，也可以屏蔽对方。私信保留 365 天后自动删除。新私信只产生站内通知，通知里只有对方的公开主页名或打码后的昵称，不含正文，也不发邮件。被举报的聊天消息和私信（只有被举报的那一条）会交给负责审核的老师查看和处理。
+              </p>
+              <p>
+                验证员工身份时，你填写的工作邮箱只用来发送验证码（经 Resend 发送）。平台不保存邮箱本身，只保存它加上服务器密钥后计算的不可逆摘要（用来保证一个工作邮箱只验证一个账号）、邮箱域名和对应的公司，验证有效 1 年。「已验证 · 公司员工」默认哪里都不显示，你可以分别打开公开主页、讨论帖和题解、内推帖三处展示；讨论帖只限算法、内推和站务频道，面经讨论、求职、上岸故事频道和面经评论里永远不显示。账号设置里随时可以删除验证记录。
+              </p>
+              <p>
                 工单会保存你填写的问题、回复、附件，以及主动关联的课时、视频位置或提交记录。工单、作业和个人提交记录按账户权限提供给你及负责教学管理的老师查看，不作为面向其他学员的公开讨论内容。老师会使用这些资料答疑、评审作业、管理授权和跟进学习问题。
               </p>
               <p>
@@ -302,6 +308,35 @@ export function PrivacyDocument() {
                 the session (sent through Resend) with the type, time, your
                 partner&apos;s name and the call link; untick it when booking to
                 get none.
+              </p>
+              <p>
+                Study group chat messages are seen only by that group&apos;s
+                members, under the name you use in the group; they are deleted
+                after 180 days, and with the group when it is disbanded.
+                Moderating teachers can read a group&apos;s chat only while a
+                message in it is reported and not yet handled. Direct
+                messages are seen only by the two people in the conversation,
+                which can start only between people who follow each other or
+                from a referral thread&apos;s request button; you choose who may
+                start a conversation with you, and you can block anyone. Direct
+                messages are deleted after 365 days. A new one only creates an
+                on-site notification naming the sender by public handle or a
+                masked name, never its text, and no email. A reported chat or
+                direct message (only that one message) is shown to the teachers
+                who moderate the community.
+              </p>
+              <p>
+                When you verify where you work, the work email you enter is used
+                only to send the code (through Resend). The platform never keeps
+                the address: only a one-way digest of it computed with a server
+                secret (so one work email verifies one account), its domain and
+                the company, valid for a year. &ldquo;Verified &middot; company
+                employee&rdquo; shows nowhere by default; you can turn it on
+                separately for your public profile, threads and solutions, and
+                referral threads. Threads means the Algorithms, Referrals and
+                Site feedback channels: it never shows in the Interviews,
+                Careers or Offers channels or on experience comments. You can
+                remove the verification in account settings at any time.
               </p>
               <p>
                 Tickets store the questions you write, replies, and attachments,

@@ -15,6 +15,7 @@ import { publicProblem, reportCompanies, requireVerified } from './learner-cloud
 import { readJson } from './my-practice';
 import { awardUpvote } from './points';
 import { sdChapter } from './system-design-course';
+import { badgeName, badgeSql } from './work-verify';
 
 /**
  * Community posts and their comments (db/solution-posts-schema.ts). A post's problem_id is its
@@ -74,7 +75,8 @@ const postInput = z
   })
   .strict();
 const commentInput = z.object({ body: text(1000) }).strict();
-const reportInput = z.object({ reason: z.enum(['spam', 'offensive', 'wrong', 'other']) }).strict();
+export const reportReason = z.enum(['spam', 'offensive', 'wrong', 'other']);
+const reportInput = z.object({ reason: reportReason }).strict();
 
 // Saves (stars) count from verified accounts only, like a list's (learner-cloud's VERIFIED; it
 // imports this module, so the check is inline).
@@ -86,7 +88,8 @@ const POST = `SELECT sp.id,sp.problem_id AS problemId,sp.title,sp.language,sp.ta
   (SELECT COUNT(*) FROM post_comments c WHERE c.post_id=sp.id AND c.hidden=0) AS comments,
   (SELECT COUNT(*) FROM user_marks m JOIN "user" su ON su.id=m.user_id AND su.email_verified=1
     WHERE m.target='post:'||sp.id AND m.mark='star') AS stars,
-  EXISTS(SELECT 1 FROM user_marks m WHERE m.target='post:'||sp.id AND m.mark='star' AND m.user_id=@me) AS starred`;
+  EXISTS(SELECT 1 FROM user_marks m WHERE m.target='post:'||sp.id AND m.mark='star' AND m.user_id=@me) AS starred,
+  ${badgeSql('sp.user_id', 'posts')} AS employer,${badgeSql('sp.user_id', 'referrals')} AS referrer`;
 const PROFILE = (col: string) => `LEFT JOIN user_profiles pr ON pr.user_id=${col} AND pr.visible=1`;
 const FROM_POST = `FROM solution_posts sp LEFT JOIN "user" u ON u.id=sp.user_id ${PROFILE('sp.user_id')}`;
 type PostRow = {
@@ -106,6 +109,8 @@ type PostRow = {
   comments: number;
   stars: number;
   starred: number;
+  employer: string | null;
+  referrer: string | null;
   body?: string;
   excerpt?: string;
 };
@@ -116,7 +121,18 @@ const byline = <T extends { author: string; handle: string | null; mine: number 
   author: mine ? row.author : handle || (row.author ? maskName(row.author) : ''),
   mine: !!mine,
 });
-const shape = ({ voted, starred, ...r }: PostRow) => ({ ...byline(r), voted: !!voted, starred: !!starred });
+// The verified employee badge shows (where its owner switched it on) on solutions and these
+// channels only: in interview, offer or career talk, experience comments or answers it would read
+// as "an employee of X is interviewing".
+const BADGE_CHANNELS = new Set(['discuss:algo', 'discuss:referral', 'discuss:site']);
+const shape = ({ voted, starred, employer, referrer, ...r }: PostRow) => ({
+  ...byline(r),
+  voted: !!voted,
+  starred: !!starred,
+  employer: targetKind(r.problemId) === 'problem' || BADGE_CHANNELS.has(r.problemId) ? badgeName(employer) : null,
+  // A referral thread by a verified employee of the company it is tagged with: "request a referral".
+  referral: r.problemId === 'discuss:referral' && !!r.tag && referrer === r.tag && !!badgeName(referrer),
+});
 
 export const canModerate = (p: Person | null) => !!p && (p.role === 'teacher' || isCourseOwner(p));
 const reportedDown = (target: string) =>
@@ -360,13 +376,16 @@ async function openPost(p: Person, postId: string) {
   return row;
 }
 
-async function report(p: Person, target: string, authorId: string, request: Request) {
+/** One report per learner and target: posts, comments, group chat ('gmsg:') and direct messages ('dm:'). */
+export function fileReport(p: Person, target: string, authorId: string, reason: string) {
   if (authorId === p.id) throw new HttpError(400, '不能举报自己的内容');
-  const { reason } = reportInput.parse(await readJson(request, 500));
   underCap('post_reports', p, REPORTS_PER_DAY, '今天的举报次数已达上限');
   sqlite()
     .prepare('INSERT INTO post_reports(target,user_id,reason,created_at) VALUES(?,?,?,?) ON CONFLICT DO NOTHING')
     .run(target, p.id, reason, Date.now());
+}
+async function report(p: Person, target: string, authorId: string, request: Request) {
+  fileReport(p, target, authorId, reportInput.parse(await readJson(request, 500)).reason);
   return json({ reported: true });
 }
 
@@ -374,24 +393,31 @@ async function report(p: Person, target: string, authorId: string, request: Requ
  * hide / unhide flips between shown and moderated (an author's removal stays); any action clears
  * the reports (kept, marked cleared, so the same readers cannot report it down again).
  */
-function moderate(p: Person, kind: 'post' | 'comment', targetId: string, action: string) {
+const TABLES = {
+  post: 'solution_posts',
+  comment: 'post_comments',
+  gmsg: 'study_group_messages',
+  dm: 'direct_messages',
+} as const;
+type Kind = keyof typeof TABLES;
+function moderate(p: Person, kind: Kind, targetId: string, action: string) {
   if (!['hide', 'unhide', 'dismiss'].includes(action)) throw new HttpError(404, '题解接口不存在');
   requireModerator(p);
   const db = sqlite();
-  const table = kind === 'post' ? 'solution_posts' : 'post_comments';
+  const table = TABLES[kind];
   if (action !== 'dismiss') {
     const [from, to] = action === 'hide' ? [SHOWN, MODERATED] : [MODERATED, SHOWN];
     db.prepare(`UPDATE ${table} SET hidden=? WHERE id=? AND hidden=?`).run(to, targetId, from);
   }
   const row = db.prepare(`SELECT hidden FROM ${table} WHERE id=?`).get(targetId) as { hidden: number } | undefined;
-  if (!row) throw new HttpError(404, kind === 'post' ? '题解不存在' : '评论不存在');
+  if (!row) throw new HttpError(404, kind === 'post' ? '题解不存在' : kind === 'comment' ? '评论不存在' : '消息不存在');
   db.prepare('UPDATE post_reports SET reason=? WHERE target=?').run(REPORT_CLEARED, `${kind}:${targetId}`);
   auditStatement(p, `${kind}.${action}`, targetId).run();
   return json({ id: targetId, hidden: row.hidden });
 }
 
 type QueueItem = {
-  kind: 'post' | 'comment';
+  kind: Kind;
   id: string;
   postId: string;
   problemId: string;
@@ -427,6 +453,23 @@ async function moderationQueue(p: Person) {
         JOIN solution_posts sp ON sp.id=c.post_id LEFT JOIN "user" u ON u.id=c.user_id WHERE r.target LIKE 'comment:%'`,
       )
       .all() as (QueueItem & { lastAt: number })[]),
+    // Reported chat and direct messages: only what was reported, never the latest of either.
+    ...(db
+      .prepare(
+        `${REPORTS} SELECT 'gmsg' AS kind,g.id,g.group_id AS postId,'' AS problemId,COALESCE(sg.name,'') AS title,
+          substr(g.body,1,600) AS excerpt,COALESCE(u.name,'') AS author,g.hidden,g.created_at AS createdAt,
+          r.reports,r.reasons,r.lastAt FROM r JOIN study_group_messages g ON g.id=substr(r.target,6)
+        LEFT JOIN study_groups sg ON sg.id=g.group_id LEFT JOIN "user" u ON u.id=g.user_id WHERE r.target LIKE 'gmsg:%'`,
+      )
+      .all() as (QueueItem & { lastAt: number })[]),
+    ...(db
+      .prepare(
+        `${REPORTS} SELECT 'dm' AS kind,d.id,'' AS postId,'' AS problemId,'' AS title,substr(d.body,1,600) AS excerpt,
+          COALESCE(u.name,'') AS author,d.hidden,d.created_at AS createdAt,r.reports,r.reasons,r.lastAt
+        FROM r JOIN direct_messages d ON d.id=substr(r.target,4) LEFT JOIN "user" u ON u.id=d.from_user
+        WHERE r.target LIKE 'dm:%'`,
+      )
+      .all() as (QueueItem & { lastAt: number })[]),
   ]
     .sort((a, b) => b.reports! - a.reports! || b.lastAt - a.lastAt)
     .slice(0, 100);
@@ -446,6 +489,8 @@ async function moderationQueue(p: Person) {
   const seen = new Map<string, boolean>();
   const running = runningContestProblems(p.id);
   const shown = async (item: QueueItem) => {
+    // Chat and direct messages hang off no problem or page.
+    if (!item.problemId) return true;
     if (!seen.has(item.problemId))
       seen.set(item.problemId, !running.has(item.problemId) && (await visibleTarget(p, item.problemId)));
     return seen.get(item.problemId)!;
@@ -461,6 +506,8 @@ async function moderationQueue(p: Person) {
 /**
  * /api/oj/posts/… and /api/oj/post-comments/<id>/<action>. Threads, answers and comments read
  * signed out; solutions, the moderation queue and every write need an account.
+ * /api/oj/group-messages/<id>/<action> and direct-messages/… are the moderators' actions on
+ * reported chat and direct messages.
  */
 export async function handleSolutionPosts(request: Request, p: Person | null, path: string[]) {
   const [resource, target, action, extra] = path;
@@ -599,5 +646,7 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
     }
     return moderate(p, 'comment', target, action);
   }
+  if (resource === 'group-messages' || resource === 'direct-messages')
+    return moderate(p, resource === 'group-messages' ? 'gmsg' : 'dm', target, action);
   throw new HttpError(404, '题解接口不存在');
 }

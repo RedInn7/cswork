@@ -110,9 +110,12 @@ export async function handleFollows(request: Request, p: Person | null, path: st
     if (action) throw new HttpError(404, '接口不存在');
     const userId = visibleUser(params.get('handle') ?? '');
     if (!userId) throw new HttpError(404, '主页不存在');
-    const following =
-      !!p && !!sqlite().prepare('SELECT 1 FROM user_follows WHERE follower_id=? AND followee_id=?').get(p.id, userId);
-    return json({ following, self: p?.id === userId, signedIn: !!p, ...counts(userId) });
+    const edge = (from: string, to: string) =>
+      !!sqlite().prepare('SELECT 1 FROM user_follows WHERE follower_id=? AND followee_id=?').get(from, to);
+    const following = !!p && edge(p.id, userId);
+    // Following each other opens direct messages (lib/server/direct-messages.ts).
+    const mutual = following && edge(userId, p!.id);
+    return json({ following, mutual, self: p?.id === userId, signedIn: !!p, ...counts(userId) });
   }
   requirePerson(p);
   if (request.method !== 'POST' || action) throw new HttpError(404, '接口不存在');

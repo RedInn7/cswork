@@ -296,7 +296,7 @@ void test('follows: visible profiles only, counted and listed only when visible,
   await ok(me, 'POST', 'oj/follows', { handle: 'grace', on: true });
   await ok(others[1], 'POST', 'oj/follows', { handle: 'grace', on: true });
   const state = await ok(null, 'GET', 'oj/follows?handle=grace');
-  assert.deepEqual(state, { following: false, self: false, signedIn: false, followers: 1, followees: 0 }, 'the hidden follower is not counted');
+  assert.deepEqual(state, { following: false, mutual: false, self: false, signedIn: false, followers: 1, followees: 0 }, 'the hidden follower is not counted');
   assert.equal((await ok(me, 'GET', 'oj/follows?handle=grace')).following, true);
   assert.deepEqual(followPeople('grace', 'followers')?.items.map((f) => f.handle), ['ada']);
   assert.deepEqual(followPeople('ada', 'following')?.items.map((f) => f.handle), ['grace']);

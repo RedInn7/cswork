@@ -38,6 +38,7 @@ import { readLocale, useLocale, useT, type Locale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { Heading } from './learning';
 import { PublicProfileSettings } from './public-profile-settings';
+import { WorkBadgeSettings } from './work-badge';
 import { ApiTokenSettings } from './api-tokens';
 import '@/app/commerce.css';
 import { GiftBlock, RedeemGift } from './course-gift';
@@ -963,6 +964,7 @@ export function AccountView({
         </section>
       </div>
       <PublicProfileSettings />
+      <WorkBadgeSettings />
       <ApiTokenSettings key={tokensKey} />
       <section className="form-card commerce-account-card">
         <h2>

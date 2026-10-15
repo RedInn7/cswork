@@ -1,0 +1,336 @@
+/* Study group chat and direct messages (components/chat-log.tsx). Drawn in currentColor tints, so
+   one set of rules reads on the navy group panel and on the light messages page alike; your own
+   lines lean right with the amber edge of the Line 500 boards. */
+
+.chat-log {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 420px;
+  margin: 0;
+  padding: 4px 4px 4px 0;
+  overflow-y: auto;
+  list-style: none;
+  overscroll-behavior: contain;
+}
+.chat-log:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+.chat-log li {
+  max-width: min(78%, 560px);
+  padding: 7px 11px 8px;
+  border-left: 3px solid transparent;
+  border-radius: 4px 12px 12px 12px;
+  background: color-mix(in srgb, currentColor 7%, transparent);
+}
+.chat-log li[data-mine] {
+  align-self: flex-end;
+  border-left-color: #ffb23f;
+  border-radius: 12px 4px 12px 12px;
+  background: color-mix(in srgb, #ffb23f 14%, transparent);
+}
+.chat-log .chat-empty {
+  max-width: none;
+  align-self: center;
+  background: none;
+  opacity: 0.75;
+  font-size: 13px;
+}
+.chat-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 8px;
+  margin: 0 0 2px;
+  font-size: 11px;
+}
+.chat-meta b {
+  font-weight: 700;
+}
+.chat-meta time {
+  opacity: 0.75;
+  font-variant-numeric: tabular-nums;
+}
+.chat-meta button,
+.chat-meta .cs-post-act {
+  margin-left: auto;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: 11px;
+  opacity: 0.8;
+  cursor: pointer;
+}
+.chat-meta button:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+.chat-meta .cs-post-report select {
+  font-size: 11px;
+}
+.chat-body {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.chat-compose {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  margin-top: 10px;
+}
+.chat-compose textarea {
+  flex: 1;
+  min-height: 44px;
+  max-height: 160px;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, currentColor 4%, transparent);
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  resize: vertical;
+}
+.chat-compose button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: #ffb23f;
+  color: #1c1305;
+  font-weight: 700;
+  cursor: pointer;
+}
+.chat-compose button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.chat-compose textarea:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+/* Two tones, so the ring shows on the navy panel and on a light page. */
+.chat-compose button:focus-visible {
+  outline: 2px solid #ffb23f;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px #1c1305;
+}
+@media (max-width: 640px) {
+  .chat-log li {
+    max-width: 92%;
+  }
+}
+/* Reporting a line (Report, also on posts): the form sits in the line's meta row. */
+.chat-meta .cs-post-report {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+.chat-meta .cs-post-report button {
+  margin-left: 0;
+}
+.chat-meta .cs-post-reported {
+  margin-left: auto;
+  font-size: 11px;
+}
+
+/* ---------- ?view=messages: an inbox of rows, and each conversation on a navy board ---------- */
+.dm-panel {
+  margin: 0 0 16px;
+  padding: 16px 18px 14px;
+  border-radius: 14px;
+  color: var(--route-white);
+  background: var(--route-dots), var(--route-navy);
+}
+.dm-panel h2 {
+  margin: 0 0 6px;
+  font: 700 18px/1.3 var(--font-route);
+  overflow-wrap: anywhere;
+}
+.dm-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.dm-head h2 {
+  margin: 0;
+}
+.dm-head button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--route-white);
+  box-shadow: inset 0 0 0 1px var(--route-slate);
+  font-size: 13px;
+  cursor: pointer;
+}
+.dm-head button:hover {
+  background: rgb(238 243 248 / 0.08);
+}
+.dm-panel :is(.dm-head button, .dm-post a):focus-visible {
+  outline: 2px solid var(--route-white);
+  outline-offset: 2px;
+}
+.dm-post,
+.dm-note {
+  margin: 0 0 10px;
+  color: var(--route-white-2);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.dm-post a {
+  color: #8ee6c0;
+}
+.dm-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  color: #0d7a63;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.dm-back:hover {
+  text-decoration: underline;
+}
+.dm-open {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 0 0 12px;
+  font-size: 13px;
+}
+.dm-open select {
+  min-height: 34px;
+  padding: 0 8px;
+  border: 1px solid #c9d3de;
+  border-radius: 8px;
+  background: #fff;
+  color: #1d2733;
+  font: inherit;
+}
+.dm-unread {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #ffb23f;
+  color: #1c1305;
+  font-size: 11px;
+  font-weight: 700;
+  vertical-align: 1px;
+}
+.dm-unread[data-blocked] {
+  background: #e3e8ee;
+  color: #3d4652;
+}
+.dm-inbox .study-row[data-unread] strong {
+  font-weight: 800;
+}
+
+/* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
+@media screen {
+  .dark .chat-log:focus-visible {
+    outline: 2px solid currentColor;
+  }
+  .dark .chat-log li {
+    border-left: 3px solid transparent;
+    background: color-mix(in srgb, currentColor 7%, transparent);
+  }
+  .dark .chat-log li[data-mine] {
+    border-left-color: #ffb23f;
+    background: color-mix(in srgb, #ffb23f 14%, transparent);
+  }
+  .dark .chat-log .chat-empty {
+    background: none;
+  }
+  .dark .chat-meta button,
+  .dark .chat-meta .cs-post-act {
+    border: 0;
+    background: none;
+    color: inherit;
+  }
+  .dark .chat-meta button:hover {
+    text-decoration: underline;
+  }
+  .dark .chat-compose textarea {
+    border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+    background: color-mix(in srgb, currentColor 4%, transparent);
+    color: inherit;
+  }
+  .dark .chat-compose button {
+    border: 0;
+    background: #ffb23f;
+    color: #1c1305;
+  }
+  .dark .chat-compose textarea:focus-visible {
+    outline: 2px solid currentColor;
+  }
+  .dark .chat-compose button:focus-visible {
+    outline: 2px solid #ffb23f;
+    box-shadow: 0 0 0 2px #1c1305;
+  }
+  .dark .dm-panel {
+    color: var(--route-white);
+    background: var(--route-dots), var(--route-navy);
+  }
+  .dark .dm-head button {
+    border: 0;
+    background: transparent;
+    color: var(--route-white);
+    box-shadow: inset 0 0 0 1px var(--route-slate);
+  }
+  .dark .dm-head button:hover {
+    background: #eef3f814;
+  }
+  .dark .dm-panel :is(.dm-head button, .dm-post a):focus-visible {
+    outline: 2px solid var(--route-white);
+  }
+  .dark .dm-post,
+  .dark .dm-note {
+    color: var(--route-white-2);
+  }
+  .dark .dm-post a {
+    color: #9ae3c3;
+  }
+  .dark .dm-back {
+    color: #87d2bb;
+    text-decoration: none;
+  }
+  .dark .dm-back:hover {
+    text-decoration: underline;
+  }
+  .dark .dm-open select {
+    border: 1px solid #2f3740;
+    background: #191919;
+    color: #d3deec;
+  }
+  .dark .dm-unread {
+    background: #ffb23f;
+    color: #1c1305;
+  }
+  .dark .dm-unread[data-blocked] {
+    background: #111417;
+    color: #c6d0dc;
+  }
+}
+/* ── end dark theme ── */

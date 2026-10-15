@@ -125,3 +125,15 @@ export function peerReminderMail(
         text: `${m.soon ? 'Your peer mock interview starts in an hour.' : 'A reminder: you booked a peer mock interview.'}\n\nType: ${m.template}\nTime: ${m.when}\nPartner: ${m.partner}\nCall link: ${m.meetUrl || 'not set yet; add one on the session page'}\n\nSession page (both rounds' candidate and interviewer links):\n${m.link}\n\nDon't want these reminders? Untick "Email reminders" the next time you book.`,
       };
 }
+
+/** The work email badge's code (lib/server/work-verify.ts). */
+export const workCodeMail = (zh: boolean, code: string, company: string) =>
+  zh
+    ? {
+        subject: 'cswork 员工身份验证码',
+        text: `你正在用这个邮箱验证自己是 ${company} 的员工。\n\n验证码：${code}\n\n验证码 15 分钟内有效，请勿转发给他人。cswork 只保存这个邮箱的不可逆摘要，不保存邮箱本身，也不会再给它发邮件。如果不是你发起的操作，请忽略这封邮件。`,
+      }
+    : {
+        subject: 'Your cswork work email code',
+        text: `You asked to verify that you work at ${company} with this address.\n\nYour code: ${code}\n\nThe code is valid for 15 minutes. Don't share it with anyone. cswork keeps only a one-way digest of this address, never the address itself, and won't email it again. If you didn't ask for this, ignore this email.`,
+      };

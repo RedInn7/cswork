@@ -4,7 +4,6 @@ import {
   ArrowLeft,
   Bookmark,
   EyeOff,
-  Flag,
   Lightbulb,
   Lock,
   MessageSquare,
@@ -19,6 +18,7 @@ import { useLocale } from '@/lib/i18n';
 import { targetKind, threadPath, type TargetKind } from '@/lib/community';
 import { STOP_NAMES } from '@/lib/route-stops';
 import { StatementMarkdown } from './statement-markdown';
+import { Report } from './chat-log';
 import { Button } from './ui/button';
 import {
   AlertDialog,
@@ -52,6 +52,10 @@ export type PostSummary = {
   stars?: number;
   starred?: boolean;
   excerpt?: string;
+  /** The author's verified employer, where they show the badge on posts. */
+  employer?: string | null;
+  /** A referral thread by a verified employee of its company: it takes referral requests. */
+  referral?: boolean;
 };
 /** A thread's poll; counts arrive once this reader has voted or it has closed. */
 export type Poll = {
@@ -189,6 +193,17 @@ function tagLabel(tag: string | undefined, kind: TargetKind, english: boolean, c
 const authRequired = () => {
   if (window.dispatchEvent(new Event('cswork:auth-required', { cancelable: true }))) location.assign('/?view=account');
 };
+/** "Verified · X employee", and on a referral thread "Gives referrals". */
+function Badges({ post, t }: { post: PostSummary; t: T }) {
+  return (
+    <>
+      {post.employer && (
+        <span className="cs-post-badge">{t(`已验证 · ${post.employer} 员工`, `Verified · ${post.employer} employee`)}</span>
+      )}
+      {post.referral && <span className="cs-post-badge" data-referral>{t('可内推', 'Gives referrals')}</span>}
+    </>
+  );
+}
 const peekKey = (problemId: string) => `cswork:solutions-peek:${problemId}`;
 function readPeek(problemId: string) {
   try {
@@ -473,6 +488,7 @@ export function SolutionPosts({
                   <span className="cs-post-row-meta">
                     {saved && <span className="cs-post-lang">{t(...POST_KINDS[postKind])}</span>}
                     <span>{post.author || t('学员', 'Learner')}</span>
+                    <Badges post={post} t={t} />
                     <span>{day(post.createdAt, english)}</span>
                     {post.language && <span className="cs-post-lang">{langName(post.language)}</span>}
                     {post.tag && <span className="cs-post-tag">{tagLabel(post.tag, postKind, english, companies)}</span>}
@@ -629,6 +645,7 @@ function PostView({
       {(postKind === 'problem' || postKind === 'discuss') && <h3 className="cs-post-title">{post.title}</h3>}
       <p className="cs-post-meta">
         <span>{post.author || t('学员', 'Learner')}</span>
+        <Badges post={post} t={t} />
         <span>{day(post.createdAt, english)}</span>
         {post.updatedAt > post.createdAt + 60000 && <span>{t('已编辑', 'edited')}</span>}
         {post.language && <span className="cs-post-lang">{langName(post.language)}</span>}
@@ -695,6 +712,20 @@ function PostView({
           </>
         ) : (
           signedIn && <Report path={`oj/posts/${post.id}/report`} english={english} />
+        )}
+        {post.referral && !post.mine && (
+          <a
+            className="cs-post-act cs-post-refer"
+            href={`/?view=messages&post=${encodeURIComponent(post.id)}`}
+            onClick={(e) => {
+              if (signedIn) return;
+              e.preventDefault();
+              authRequired();
+            }}
+          >
+            <MessageSquare size={14} aria-hidden="true" />
+            {t('请求内推', 'Request a referral')}
+          </a>
         )}
       </div>
       {error && (
@@ -857,57 +888,6 @@ function PostPoll({
   );
 }
 
-/** Report with a reason; one per learner, read by instructors in the teacher view. */
-function Report({ path, english }: { path: string; english: boolean }) {
-  const t: T = (zh, en) => (english ? en : zh);
-  const [open, setOpen] = useState(false);
-  const [reason, setReason] = useState('spam');
-  const [done, setDone] = useState(false);
-  const [error, setError] = useState('');
-  if (done)
-    return (
-      <span className="cs-post-reported" role="status">
-        {t('已举报，谢谢', 'Reported. Thanks')}
-      </span>
-    );
-  if (!open)
-    return (
-      <button type="button" className="cs-post-act" onClick={() => setOpen(true)}>
-        <Flag size={13} aria-hidden="true" />
-        {t('举报', 'Report')}
-      </button>
-    );
-  async function submit(event: FormEvent) {
-    event.preventDefault();
-    setError('');
-    try {
-      await api(path, { reason });
-      setDone(true);
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  }
-  return (
-    <form className="cs-post-report" onSubmit={(e) => void submit(e)}>
-      <select value={reason} onChange={(e) => setReason(e.target.value)} aria-label={t('举报理由', 'Reason')}>
-        <option value="spam">{t('广告或灌水', 'Spam')}</option>
-        <option value="offensive">{t('不友善或冒犯', 'Offensive')}</option>
-        <option value="wrong">{t('解法有误', 'Wrong solution')}</option>
-        <option value="other">{t('其他', 'Other')}</option>
-      </select>
-      <button type="submit">{t('提交', 'Send')}</button>
-      <button type="button" onClick={() => setOpen(false)}>
-        {t('取消', 'Cancel')}
-      </button>
-      {error && (
-        <span className="cs-posts-error" role="alert">
-          {error}
-        </span>
-      )}
-    </form>
-  );
-}
-
 function PostEditor({
   problemId,
   english,
@@ -1024,6 +1004,14 @@ function PostEditor({
           'Everyone can read it, under your public handle or a masked display name. Markdown, code blocks and mermaid diagrams (a ```mermaid block) work; images and HTML do not.',
         )}
       </p>
+      {problemId === 'discuss:referral' && (
+        <p className="cs-post-editor-note">
+          {t(
+            '提供内推：标上你的公司。验证过这家公司的工作邮箱、并在账号设置里打开「内推帖」展示后，帖子会带「可内推」标记，读者可以私信请求内推。',
+            'Offering referrals: tag your company. Once you verify a work email there and turn on "Referral threads" in account settings, the thread shows "Gives referrals" and readers can message you for one.',
+          )}
+        </p>
+      )}
       <div className="cs-post-editor-row">
         {titled && (
           <label>
@@ -1207,7 +1195,7 @@ function PostEditor({
 }
 
 type QueueItem = {
-  kind: 'post' | 'comment';
+  kind: 'post' | 'comment' | 'gmsg' | 'dm';
   id: string;
   postId: string;
   problemId: string;
@@ -1226,6 +1214,13 @@ const REASONS: Record<string, [string, string]> = {
   other: ['其他', 'Other'],
 };
 
+/** Where each kind's moderation actions go. */
+const RESOURCES: Record<QueueItem['kind'], string> = {
+  post: 'posts',
+  comment: 'post-comments',
+  gmsg: 'group-messages',
+  dm: 'direct-messages',
+};
 /** What a post is, by its target, [zh, en]. */
 const POST_KINDS: Record<TargetKind, [string, string]> = {
   problem: ['题解', 'Solution'],
@@ -1271,7 +1266,7 @@ export function PostModeration() {
     setBusy(`${item.kind}:${item.id}`);
     setError('');
     try {
-      await api(`oj/${item.kind === 'post' ? 'posts' : 'post-comments'}/${item.id}/${action}`, {});
+      await api(`oj/${RESOURCES[item.kind]}/${item.id}/${action}`, {});
       setReload((n) => n + 1);
     } catch (e) {
       setError((e as Error).message);
@@ -1283,9 +1278,19 @@ export function PostModeration() {
     <li key={`${item.kind}:${item.id}`} className="post-mod-item" data-hidden={item.hidden || undefined}>
       <p className="post-mod-meta">
         <span className="cs-post-lang">
-          {item.kind === 'comment' ? t('评论', 'Comment') : t(...POST_KINDS[targetKind(item.problemId) ?? 'problem'])}
+          {item.kind === 'gmsg'
+            ? t('小组聊天', 'Group chat')
+            : item.kind === 'dm'
+              ? t('私信', 'Direct message')
+              : item.kind === 'comment'
+                ? t('评论', 'Comment')
+                : t(...POST_KINDS[targetKind(item.problemId) ?? 'problem'])}
         </span>
-        <a href={targetHref(item.problemId, item.postId)}>{item.problemId}</a>
+        {item.kind === 'gmsg' ? (
+          <a href={`/?view=group&id=${encodeURIComponent(item.postId)}`}>{item.title}</a>
+        ) : (
+          item.kind !== 'dm' && <a href={targetHref(item.problemId, item.postId)}>{item.problemId}</a>
+        )}
         <span>{item.author || t('学员', 'Learner')}</span>
         <span>{day(item.createdAt, english)}</span>
         {!!item.reports && (
@@ -1301,9 +1306,11 @@ export function PostModeration() {
         {item.hidden === 1 && <span>{t('作者已删除', 'Deleted by author')}</span>}
         {item.hidden === MODERATED && <span>{t('已隐藏', 'Hidden')}</span>}
       </p>
-      <strong className="post-mod-title">
-        {item.kind === 'comment' ? t(`评论于「${item.title}」`, `On “${item.title}”`) : item.title}
-      </strong>
+      {(item.kind === 'post' || item.kind === 'comment') && (
+        <strong className="post-mod-title">
+          {item.kind === 'comment' ? t(`评论于「${item.title}」`, `On “${item.title}”`) : item.title}
+        </strong>
+      )}
       <p className="post-mod-excerpt">{item.excerpt}</p>
       <div className="post-mod-actions">
         {item.hidden === 0 && (
@@ -1330,8 +1337,8 @@ export function PostModeration() {
       <div className="lms-toolbar">
         <p className="muted">
           {t(
-            '被举报的题解、讨论帖、回答和评论排在前面；三人举报的会先自动隐藏。隐藏后只有作者自己能看到，可以随时恢复。',
-            'Reported solutions, threads, answers and comments come first; three reports hide one until you act. Hidden items stay visible to their author only, and can be restored.',
+            '被举报的题解、讨论帖、回答、评论、小组聊天和私信排在前面；三人举报的会先自动隐藏。隐藏后只有作者自己能看到（聊天和私信对双方都隐藏），可以随时恢复。私信只有被举报的那一条会出现在这里。',
+            'Reported solutions, threads, answers, comments, group chat and direct messages come first; three reports hide one until you act. Hidden items stay visible to their author only (chat and direct messages to nobody), and can be restored. Only the reported direct message shows here, never the rest.',
           )}
         </p>
         <Button variant="outline" onClick={() => setReload((n) => n + 1)}>
