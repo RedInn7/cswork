@@ -80,6 +80,9 @@ test('a thread: anonymous and featured, nested replies, comment votes and a mode
     assert.deepEqual(items.map((li) => li.hasAttribute('data-reply')), [false, true]);
     assert.ok(items[0].textContent.includes('12 rep'));
     assert.ok(items[1].textContent.includes('Anonymous') && items[1].textContent.includes('OP'));
+    // The indent is visual only: a screen reader hears whose comment a reply answers.
+    assert.equal(items[1].querySelector('.sr-only').textContent, 'Reply to ada:');
+    assert.equal(items[0].querySelector('.cs-comment-meta .sr-only'), null);
 
     // Replying to a reply names that reply (the server files it under the top-level comment).
     await act(async () => items[1].querySelector('[aria-expanded]').click());
@@ -88,6 +91,9 @@ test('a thread: anonymous and featured, nested replies, comment votes and a mode
     await act(async () => box.form.requestSubmit());
     await settle();
     assert.deepEqual(sent.at(-1), [`/api/oj/posts/${postId}/comments`, { body: 'You are welcome', parentId: 'c-reply' }]);
+    // The reply form is gone; focus is back on the Reply button that opened it, not <body>.
+    assert.equal($('textarea[aria-label="Write a reply"]'), null);
+    assert.equal(document.activeElement, $$('.cs-comments li')[1].querySelector('[aria-expanded]'));
 
     await act(async () => $$('.cs-comments [data-vote]')[0].click());
     assert.deepEqual(sent.at(-1), ['/api/oj/post-comments/c-top/vote', { on: true }]);

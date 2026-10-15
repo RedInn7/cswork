@@ -230,6 +230,8 @@ function Badges({ post, t }: { post: PostSummary; t: T }) {
     </>
   );
 }
+const authorName = (who: Comment | PostSummary, t: T) =>
+  who.anonymous && !who.mine ? t('匿名用户', 'Anonymous') : who.author || t('学员', 'Learner');
 /**
  * Who wrote a post or comment: "Anonymous" on an anonymous one (its author sees their own name,
  * marked), with the author's reputation beside a public handle.
@@ -237,7 +239,7 @@ function Badges({ post, t }: { post: PostSummary; t: T }) {
 function Author({ who, t, as: Tag = 'span' }: { who: Comment | PostSummary; t: T; as?: 'span' | 'strong' }) {
   return (
     <>
-      <Tag>{who.anonymous && !who.mine ? t('匿名用户', 'Anonymous') : who.author || t('学员', 'Learner')}</Tag>
+      <Tag>{authorName(who, t)}</Tag>
       {who.anonymous && who.mine && <span>{t('（匿名发布）', '(posted anonymously)')}</span>}
       {who.reputation != null && (
         <span title={t('帖子被点赞、面经通过审核所得的积分', 'Points from upvoted posts and approved interview reports')}>
@@ -602,6 +604,7 @@ function PostView({
   // The comment a reply box is open under, and what is typed in it.
   const [replyTo, setReplyTo] = useState<Comment | null>(null);
   const [reply, setReply] = useState('');
+  const replyOpener = useRef<HTMLButtonElement | null>(null);
   const [busy, setBusy] = useState(false);
   useEffect(() => {
     let live = true;
@@ -633,6 +636,7 @@ function PostView({
       </>
     );
   const { post } = detail;
+  const byId = new Map(detail.comments.map((c) => [c.id, c]));
   const postKind = targetKind(post.problemId) ?? 'problem';
   async function save() {
     if (!signedIn) return authRequired();
@@ -674,6 +678,8 @@ function PostView({
       if (parent) {
         setReply('');
         setReplyTo(null);
+        // The form (and its focused button) goes away: back to the Reply button that opened it.
+        replyOpener.current?.focus();
       } else setComment('');
     } catch (e) {
       setError((e as Error).message);
@@ -819,75 +825,88 @@ function PostView({
         </h4>
         {!!detail.comments.length && (
           <ul>
-            {detail.comments.map((c) => (
-              <li key={c.id} data-reply={c.parentId ? '' : undefined}>
-                <div className="cs-comment-meta">
-                  <Author who={c} t={t} as="strong" />
-                  {c.op && <span className="cs-post-lang">{t('楼主', 'OP')}</span>}
-                  <span>{day(c.createdAt, english)}</span>
-                  <button
-                    type="button"
-                    className="cs-post-act"
-                    data-vote
-                    aria-pressed={!!c.voted}
-                    disabled={c.mine}
-                    aria-label={t(`点赞，${c.votes ?? 0} 人赞过`, `Upvote, ${c.votes ?? 0} so far`)}
-                    onClick={() => void voteComment(c)}
-                  >
-                    <ThumbsUp size={13} aria-hidden="true" />
-                    {c.votes ?? 0}
-                  </button>
-                  {post.hidden !== MODERATED && (
+            {detail.comments.map((c) => {
+              // Replies are indented only visually: say whose comment one answers.
+              const parent = c.parentId ? byId.get(c.parentId) : undefined;
+              return (
+                <li key={c.id} data-reply={c.parentId ? '' : undefined}>
+                  <div className="cs-comment-meta">
+                    {parent && (
+                      <span className="sr-only">
+                        {t(`回复 ${authorName(parent, t)}：`, `Reply to ${authorName(parent, t)}:`)}
+                      </span>
+                    )}
+                    <Author who={c} t={t} as="strong" />
+                    {c.op && <span className="cs-post-lang">{t('楼主', 'OP')}</span>}
+                    <span>{day(c.createdAt, english)}</span>
                     <button
                       type="button"
                       className="cs-post-act"
-                      aria-expanded={replyTo?.id === c.id}
-                      onClick={() => (signedIn ? setReplyTo(replyTo?.id === c.id ? null : c) : authRequired())}
+                      data-vote
+                      aria-pressed={!!c.voted}
+                      disabled={c.mine}
+                      aria-label={t(`点赞，${c.votes ?? 0} 人赞过`, `Upvote, ${c.votes ?? 0} so far`)}
+                      onClick={() => void voteComment(c)}
                     >
-                      {t('回复', 'Reply')}
+                      <ThumbsUp size={13} aria-hidden="true" />
+                      {c.votes ?? 0}
                     </button>
+                    {post.hidden !== MODERATED && (
+                      <button
+                        type="button"
+                        className="cs-post-act"
+                        aria-expanded={replyTo?.id === c.id}
+                        onClick={(e) => {
+                          if (!signedIn) return authRequired();
+                          replyOpener.current = e.currentTarget;
+                          setReplyTo(replyTo?.id === c.id ? null : c);
+                        }}
+                      >
+                        {t('回复', 'Reply')}
+                      </button>
+                    )}
+                    {c.mine ? (
+                      <button
+                        type="button"
+                        className="cs-post-act"
+                        onClick={() =>
+                          ask({
+                            title: t('删除这条评论？', 'Delete this comment?'),
+                            description: t('删除后不能恢复。', "It can't be restored."),
+                            action: t('删除', 'Delete'),
+                            run: () =>
+                              void remove(`oj/post-comments/${c.id}/delete`, () =>
+                                setDetail((d) => d && { ...d, comments: d.comments.filter((x) => x.id !== c.id) }),
+                              )(),
+                          })
+                        }
+                      >
+                        <Trash2 size={13} aria-hidden="true" />
+                        {t('删除', 'Delete')}
+                      </button>
+                    ) : (
+                      signedIn && <Report path={`oj/post-comments/${c.id}/report`} english={english} />
+                    )}
+                  </div>
+                  <p className="cs-comment-body">{c.body}</p>
+                  {replyTo?.id === c.id && (
+                    <form className="cs-comment-form" onSubmit={(e) => void send(e, c)}>
+                      <textarea
+                        value={reply}
+                        onChange={(e) => setReply(e.target.value)}
+                        maxLength={COMMENT_MAX}
+                        rows={2}
+                        aria-label={t('写回复', 'Write a reply')}
+                        placeholder={t('回复这条评论……', 'Reply to this comment…')}
+                      />
+                      <button type="submit" disabled={busy || !reply.trim()}>
+                        {t('发表回复', 'Reply')}
+                      </button>
+                    </form>
                   )}
-                  {c.mine ? (
-                    <button
-                      type="button"
-                      className="cs-post-act"
-                      onClick={() =>
-                        ask({
-                          title: t('删除这条评论？', 'Delete this comment?'),
-                          description: t('删除后不能恢复。', "It can't be restored."),
-                          action: t('删除', 'Delete'),
-                          run: () =>
-                            void remove(`oj/post-comments/${c.id}/delete`, () =>
-                              setDetail((d) => d && { ...d, comments: d.comments.filter((x) => x.id !== c.id) }),
-                            )(),
-                        })
-                      }
-                    >
-                      <Trash2 size={13} aria-hidden="true" />
-                      {t('删除', 'Delete')}
-                    </button>
-                  ) : (
-                    signedIn && <Report path={`oj/post-comments/${c.id}/report`} english={english} />
-                  )}
-                </div>
-                <p className="cs-comment-body">{c.body}</p>
-                {replyTo?.id === c.id && (
-                  <form className="cs-comment-form" onSubmit={(e) => void send(e, c)}>
-                    <textarea
-                      value={reply}
-                      onChange={(e) => setReply(e.target.value)}
-                      maxLength={COMMENT_MAX}
-                      rows={2}
-                      aria-label={t('写回复', 'Write a reply')}
-                      placeholder={t('回复这条评论……', 'Reply to this comment…')}
-                    />
-                    <button type="submit" disabled={busy || !reply.trim()}>
-                      {t('发表回复', 'Reply')}
-                    </button>
-                  </form>
-                )}
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         )}
         {post.hidden !== MODERATED && (

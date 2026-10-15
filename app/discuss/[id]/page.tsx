@@ -37,6 +37,8 @@ export async function generateMetadata({ params }: Props) {
 export default async function ThreadPage({ params }: Props) {
   const { post, comments, channel, company, zh } = await load((await params).id);
   const t = (a: string, b: string) => (zh ? a : b);
+  const name = (c: (typeof comments)[number]) => (c.anonymous ? t('匿名用户', 'Anonymous') : c.author || t('学员', 'Learner'));
+  const byId = new Map(comments.map((c) => [c.id, c]));
   const app = `/?${new URLSearchParams({ view: 'discuss', channel, post: post.id })}`;
   return (
     <article className="discuss-thread">
@@ -114,18 +116,23 @@ export default async function ThreadPage({ params }: Props) {
         </h2>
         {comments.length ? (
           <ol className="discuss-replies">
-            {comments.map((c) => (
-              <li key={c.id} data-reply={c.parentId ? '' : undefined}>
-                <p className="discuss-row-meta">
-                  <strong>{c.anonymous ? t('匿名用户', 'Anonymous') : c.author || t('学员', 'Learner')}</strong>
-                  {c.op && <span>{t('楼主', 'OP')}</span>}
-                  <span>{day(c.createdAt, zh)}</span>
-                  {!!c.votes && <span>{t(`${c.votes} 赞`, `${c.votes} ${c.votes === 1 ? 'upvote' : 'upvotes'}`)}</span>}
-                </p>
-                {/* Replies are plain text, as in the app. */}
-                <p className="discuss-reply-body">{c.body}</p>
-              </li>
-            ))}
+            {comments.map((c) => {
+              // Replies are indented only visually: say whose comment one answers.
+              const parent = c.parentId ? byId.get(c.parentId) : undefined;
+              return (
+                <li key={c.id} data-reply={c.parentId ? '' : undefined}>
+                  <p className="discuss-row-meta">
+                    {parent && <span className="sr-only">{t(`回复 ${name(parent)}：`, `Reply to ${name(parent)}:`)}</span>}
+                    <strong>{name(c)}</strong>
+                    {c.op && <span>{t('楼主', 'OP')}</span>}
+                    <span>{day(c.createdAt, zh)}</span>
+                    {!!c.votes && <span>{t(`${c.votes} 赞`, `${c.votes} ${c.votes === 1 ? 'upvote' : 'upvotes'}`)}</span>}
+                  </p>
+                  {/* Replies are plain text, as in the app. */}
+                  <p className="discuss-reply-body">{c.body}</p>
+                </li>
+              );
+            })}
           </ol>
         ) : (
           <p className="discuss-empty">{t('还没有回复。', 'No replies yet.')}</p>
