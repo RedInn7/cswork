@@ -1,0 +1,19 @@
+{
+  "id": "oa-roblox-13",
+  "packageChecksum": "8dafa4ea56e1f770b003ab341a454c9024261c201decddeccc03696ee936b8e9",
+  "sourceContentHash": "8d8083b14d6b948c4bc04846d279883fc0ea2cbe27125b16e0bdd1e4c9827f0e",
+  "editorialSha256": "1c16ed81b33080cfb790bbb048324f4d7444cfe392e1876f27c727e97bc62be9",
+  "hints": {
+    "zh": [
+      "只要有任何一个员工在忙，那一刻就不能开会，所以真正不可用的时间就是所有员工忙碌区间的并集，与是谁在忙无关。",
+      "把所有忙碌区间放在一起按开始时间排序并合并成不相交的段，然后从第 0 分钟开始依次检查相邻忙碌段之间的空档，第一个长度不小于 length 的空档的起点就是答案。",
+      "区间是半开的 [start,finish)，所以开始时间 ≤ 当前合并段结束时间时才合并，会议也可以恰好从某段结束的那一分钟开始。维护 current 为已扫描部分的最晚结束时间：若下一段开始减 current ≥ length 就输出 current；扫完所有段后，若 current+length ≤ 1440 输出 current，否则输出 -1。"
+    ],
+    "en": [
+      "If any one employee is busy at a moment, the meeting cannot be held then, so the unavailable time is simply the union of all employees' busy intervals, regardless of who is busy.",
+      "Put all busy intervals together, sort them by start and merge them into disjoint blocks; then, starting from minute 0, check the gaps between consecutive busy blocks in order. The start of the first gap of length at least length is the answer.",
+      "Intervals are half-open [start, finish), so merge only when a start is <= the current block's end, and a meeting may begin exactly at the minute a block ends. Keep current as the latest end seen so far: if the next block's start minus current is >= length, output current. After all blocks, output current if current + length <= 1440, otherwise -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMerge all employees' busy intervals into one global union, sort by start time, and scan the free gaps starting from minute 0. The start of the first gap whose length is at least length is the earliest answer. With half-open intervals a meeting may start in the same minute a busy interval ends.\n\n## Correctness\n\nWhenever any employee is busy, the new meeting cannot be scheduled, so the union of all busy periods is exactly the unavailable time. After merging, check the gaps between adjacent unavailable blocks in increasing time; the start of the first long-enough gap is no later than any later feasible interval, and the gap itself satisfies the feasibility condition. Finally the end-of-day boundary must also be checked.\n\n## Complexity\n\nThere are at most 10000 intervals: sorting takes O(M log M) time and O(M) space."
+}

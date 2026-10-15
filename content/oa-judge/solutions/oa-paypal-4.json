@@ -1,0 +1,21 @@
+{
+  "id": "oa-paypal-4",
+  "packageChecksum": "37baa29e5e7fcfad6606421d6fa93c4b07a83c014159642e526ce488da796a7c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\n// Minimum cost to make a non-decreasing; new values drawn from the distinct original values.\nstatic ll nondecreasingCost(const vector<ll>& a, const vector<ll>& vals) {\n    int k = vals.size();\n    vector<ll> dp(k), nd(k);\n    for (int j = 0; j < k; j++) dp[j] = llabs(a[0] - vals[j]);\n    for (size_t i = 1; i < a.size(); i++) {\n        ll best = LLONG_MAX;\n        for (int j = 0; j < k; j++) {\n            best = min(best, dp[j]);\n            nd[j] = best + llabs(a[i] - vals[j]);\n        }\n        swap(dp, nd);\n    }\n    return *min_element(dp.begin(), dp.end());\n}\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    vector<ll> a(n);\n    for (auto& x : a) scanf(\"%lld\", &x);\n    vector<ll> vals(a);\n    sort(vals.begin(), vals.end());\n    vals.erase(unique(vals.begin(), vals.end()), vals.end());\n    ll up = nondecreasingCost(a, vals);\n    reverse(a.begin(), a.end());\n    printf(\"%lld\\n\", min(up, nondecreasingCost(a, vals)));\n}\n",
+      "sha256": "dc6b1ebbe397c28fd240a34ede0bf1558cdef72fb27d0c7b00be2ff346eaa03a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    // Minimum cost to make a non-decreasing; new values drawn from the distinct original values.\n    static long nondecreasingCost(long[] a, long[] vals) {\n        int k = vals.length;\n        long[] dp = new long[k], nd = new long[k];\n        for (int j = 0; j < k; j++) dp[j] = Math.abs(a[0] - vals[j]);\n        for (int i = 1; i < a.length; i++) {\n            long best = Long.MAX_VALUE;\n            for (int j = 0; j < k; j++) {\n                best = Math.min(best, dp[j]);\n                nd[j] = best + Math.abs(a[i] - vals[j]);\n            }\n            long[] t = dp; dp = nd; nd = t;\n        }\n        long r = Long.MAX_VALUE;\n        for (long v : dp) r = Math.min(r, v);\n        return r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int n = Integer.parseInt(st.nextToken());\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = Long.parseLong(st.nextToken());\n        long[] vals = Arrays.stream(a).sorted().distinct().toArray();\n        long up = nondecreasingCost(a, vals);\n        long[] rev = new long[n];\n        for (int i = 0; i < n; i++) rev[i] = a[n - 1 - i];\n        System.out.println(Math.min(up, nondecreasingCost(rev, vals)));\n    }\n}\n",
+      "sha256": "1302d09f4740375b68631f176cc00c6bb106e7d66aa29aff3e62e7b054d2153e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nfunc abs(x int64) int64 {\n\tif x < 0 {\n\t\treturn -x\n\t}\n\treturn x\n}\n\n// Minimum cost to make a non-decreasing; new values drawn from the distinct original values.\nfunc nondecreasingCost(a, vals []int64) int64 {\n\tk := len(vals)\n\tdp, nd := make([]int64, k), make([]int64, k)\n\tfor j, v := range vals {\n\t\tdp[j] = abs(a[0] - v)\n\t}\n\tfor _, x := range a[1:] {\n\t\tbest := int64(math.MaxInt64)\n\t\tfor j, v := range vals {\n\t\t\tbest = min(best, dp[j])\n\t\t\tnd[j] = best + abs(x-v)\n\t\t}\n\t\tdp, nd = nd, dp\n\t}\n\treturn slices.Min(dp)\n}\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int64 { sc.Scan(); v, _ := strconv.ParseInt(sc.Text(), 10, 64); return v }\n\tn := int(next())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = next()\n\t}\n\tvals := slices.Clone(a)\n\tslices.Sort(vals)\n\tvals = slices.Compact(vals)\n\tup := nondecreasingCost(a, vals)\n\tslices.Reverse(a)\n\tfmt.Println(min(up, nondecreasingCost(a, vals)))\n}\n",
+      "sha256": "ce66498f0c02088092a03862261b3e24f748c64a2566acc7d734a39bbf59fbe2"
+    }
+  ]
+}

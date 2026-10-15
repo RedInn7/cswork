@@ -1,0 +1,19 @@
+{
+  "id": "oa-pure-storage-6",
+  "packageChecksum": "007386756dcfce7d94704ebeda1f5c25e490224927beec1e45b250336710bcb0",
+  "sourceContentHash": "58a8e3fa91513d331ee76e1b785c6a448e481e623a83553d85a9db6acf6a9348",
+  "editorialSha256": "461d82cf1eeb93939b55b5e06f03eb9dbd0e14229cac39d68f17064f83b19b0f",
+  "hints": {
+    "zh": [
+      "“必须按获取的逆序释放”意味着任何时刻只有最近一次获取、尚未释放的那把锁可以被释放——这正是栈顶的语义。",
+      "用一个栈记录获取顺序，再用一个哈希集合记录当前持有的锁。ACQUIRE 时若锁已在集合中就是错误；RELEASE 时必须恰好等于栈顶，否则就是错误。",
+      "按顺序处理事件，遇到第一个错误立即输出它的 1-based 序号；ACQUIRE 合法时入栈并加入集合，RELEASE 合法时弹栈并从集合删除。全部处理完后，栈为空输出 0，否则说明有锁悬空，输出 n+1。n=0 时直接输出 0。时间 O(n)。"
+    ],
+    "en": [
+      "\"Release in reverse order of acquisition\" means that at any moment only the most recently acquired, still unreleased lock may be released; that is exactly the top of a stack.",
+      "Keep a stack for the acquisition order and a hash set for the locks currently held. An ACQUIRE of a lock already in the set is an error; a RELEASE must name exactly the top of the stack, otherwise it is an error.",
+      "Process the events in order and output the 1-based index of the first error as soon as it appears. A valid ACQUIRE pushes onto the stack and adds to the set; a valid RELEASE pops and removes from the set. After all events, output 0 if the stack is empty, otherwise some lock is dangling and the answer is n + 1. With n = 0, output 0. Time O(n)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a stack to record the acquisition order and a set to record the locks currently held. An ACQUIRE of a lock already in the set is a violation; otherwise push it and add it to the set. A RELEASE must match the top of the stack, otherwise it is a violation; after a match, pop the stack and remove the lock from the set. If the stack is non-empty after the traversal, a lock is dangling.\n\n## Correctness\n\nThe set describes exactly all acquired but unreleased locks, so a repeated acquisition is recognized in constant time. The top of the stack is the most recent acquisition not yet released; the problem requires release in reverse order, so only the top may be released. The first event that violates any condition is the index of the first violation; with no violation, an empty stack is equivalent to everything having been released, and otherwise n+1 is returned by the rule.\n\n## Complexity\n\nEach event is pushed and popped at most once: time O(n), space O(n)."
+}

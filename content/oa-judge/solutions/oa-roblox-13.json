@@ -1,0 +1,21 @@
+{
+  "id": "oa-roblox-13",
+  "packageChecksum": "8dafa4ea56e1f770b003ab341a454c9024261c201decddeccc03696ee936b8e9",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, length;\n    scanf(\"%d %d\", &n, &length);\n    vector<pair<int, int>> busy;\n    for (int e = 0; e < n; e++) {\n        int m;\n        scanf(\"%d\", &m);\n        while (m--) { int a, b; scanf(\"%d %d\", &a, &b); busy.push_back({a, b}); }\n    }\n    sort(busy.begin(), busy.end());\n    vector<pair<int, int>> merged;\n    for (auto [a, b] : busy) {\n        if (!merged.empty() && a <= merged.back().second) merged.back().second = max(merged.back().second, b);\n        else merged.push_back({a, b});\n    }\n    // Half-open intervals: a meeting may start exactly when a busy block ends.\n    int current = 0;\n    for (auto [a, b] : merged) {\n        if (a - current >= length) { printf(\"%d\\n\", current); return 0; }\n        current = max(current, b);\n    }\n    printf(\"%d\\n\", current + length <= 1440 ? current : -1);\n}\n",
+      "sha256": "3927b8f8cc7838ae107892ee5257fff9f5aac709fbf155177432b18b17aa0e35"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int n = Integer.parseInt(st.nextToken()), length = Integer.parseInt(st.nextToken());\n        List<int[]> busy = new ArrayList<>();\n        for (int e = 0; e < n; e++)\n            for (int m = Integer.parseInt(st.nextToken()); m > 0; m--)\n                busy.add(new int[] {Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())});\n        busy.sort((x, y) -> x[0] != y[0] ? Integer.compare(x[0], y[0]) : Integer.compare(x[1], y[1]));\n        List<int[]> merged = new ArrayList<>();\n        for (int[] iv : busy) {\n            if (!merged.isEmpty() && iv[0] <= merged.get(merged.size() - 1)[1]) {\n                int[] last = merged.get(merged.size() - 1);\n                last[1] = Math.max(last[1], iv[1]);\n            } else merged.add(new int[] {iv[0], iv[1]});\n        }\n        // Half-open intervals: a meeting may start exactly when a busy block ends.\n        int current = 0;\n        for (int[] iv : merged) {\n            if (iv[0] - current >= length) { System.out.println(current); return; }\n            current = Math.max(current, iv[1]);\n        }\n        System.out.println(current + length <= 1440 ? current : -1);\n    }\n}\n",
+      "sha256": "106b1955fa2ed0c9555440b6cbddd923e7690eea9c2a1733e4d8fa2d78125624"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tn, length := next(), next()\n\tvar busy [][2]int\n\tfor e := 0; e < n; e++ {\n\t\tfor m := next(); m > 0; m-- {\n\t\t\ta, b := next(), next()\n\t\t\tbusy = append(busy, [2]int{a, b})\n\t\t}\n\t}\n\tsort.Slice(busy, func(i, j int) bool {\n\t\tif busy[i][0] != busy[j][0] {\n\t\t\treturn busy[i][0] < busy[j][0]\n\t\t}\n\t\treturn busy[i][1] < busy[j][1]\n\t})\n\tvar merged [][2]int\n\tfor _, iv := range busy {\n\t\tif len(merged) > 0 && iv[0] <= merged[len(merged)-1][1] {\n\t\t\tmerged[len(merged)-1][1] = max(merged[len(merged)-1][1], iv[1])\n\t\t} else {\n\t\t\tmerged = append(merged, iv)\n\t\t}\n\t}\n\t// Half-open intervals: a meeting may start exactly when a busy block ends.\n\tcurrent := 0\n\tfor _, iv := range merged {\n\t\tif iv[0]-current >= length {\n\t\t\tfmt.Println(current)\n\t\t\treturn\n\t\t}\n\t\tcurrent = max(current, iv[1])\n\t}\n\tif current+length <= 1440 {\n\t\tfmt.Println(current)\n\t} else {\n\t\tfmt.Println(-1)\n\t}\n}\n",
+      "sha256": "cb699e7f93c5d315460248f89610e09008e0d22b9f642067cc98b4fdea511e50"
+    }
+  ]
+}

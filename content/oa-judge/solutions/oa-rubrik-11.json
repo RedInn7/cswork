@@ -1,0 +1,21 @@
+{
+  "id": "oa-rubrik-11",
+  "packageChecksum": "5a43cdadde9db260c37c25d73a2ba246ff6df9565b1462ae38712f7e892df700",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int t;\n    cin >> t;\n    string out;\n    while (t--) {\n        string s, e, o;\n        cin >> s;\n        // Same-parity digits keep their order; merge the two subsequences greedily.\n        for (char c : s) ((c - '0') % 2 ? o : e) += c;\n        size_t i = 0, j = 0;\n        while (i < e.size() && j < o.size()) out += e[i] < o[j] ? e[i++] : o[j++];\n        out += e.substr(i);\n        out += o.substr(j);\n        out += '\\n';\n    }\n    cout << out;\n}\n",
+      "sha256": "232976cf605ec819da0cb1f333998c601d8dcb20808fdf4d5080f8f8d12321a1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int t = Integer.parseInt(st.nextToken());\n        StringBuilder out = new StringBuilder();\n        while (t-- > 0) {\n            String s = st.nextToken();\n            StringBuilder e = new StringBuilder(), o = new StringBuilder();\n            // Same-parity digits keep their order; merge the two subsequences greedily.\n            for (char c : s.toCharArray()) ((c - '0') % 2 == 1 ? o : e).append(c);\n            int i = 0, j = 0;\n            while (i < e.length() && j < o.length()) out.append(e.charAt(i) < o.charAt(j) ? e.charAt(i++) : o.charAt(j++));\n            out.append(e, i, e.length()).append(o, j, o.length()).append('\\n');\n        }\n        System.out.print(out);\n    }\n}\n",
+      "sha256": "0d1ade89529f998e699149e955fe22369b3eb05405ac4b3aa4618a5f3f272500"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tsc.Scan()\n\tt, _ := strconv.Atoi(sc.Text())\n\tw := bufio.NewWriterSize(os.Stdout, 1<<20)\n\tdefer w.Flush()\n\tfor ; t > 0; t-- {\n\t\tsc.Scan()\n\t\ts := sc.Text()\n\t\tvar e, o []byte\n\t\t// Same-parity digits keep their order; merge the two subsequences greedily.\n\t\tfor i := 0; i < len(s); i++ {\n\t\t\tif (s[i]-'0')%2 == 1 {\n\t\t\t\to = append(o, s[i])\n\t\t\t} else {\n\t\t\t\te = append(e, s[i])\n\t\t\t}\n\t\t}\n\t\ti, j := 0, 0\n\t\tfor i < len(e) && j < len(o) {\n\t\t\tif e[i] < o[j] {\n\t\t\t\tw.WriteByte(e[i])\n\t\t\t\ti++\n\t\t\t} else {\n\t\t\t\tw.WriteByte(o[j])\n\t\t\t\tj++\n\t\t\t}\n\t\t}\n\t\tw.Write(e[i:])\n\t\tw.Write(o[j:])\n\t\tw.WriteByte('\\n')\n\t}\n}\n",
+      "sha256": "5738701f673fa24b0cab910bb5f8d426bb9cd7a895cc89e6c49e41d9f22d12e0"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-pure-storage-6",
+  "packageChecksum": "007386756dcfce7d94704ebeda1f5c25e490224927beec1e45b250336710bcb0",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<string> stack;\n    unordered_set<string> held;\n    for (int i = 1; i <= n; i++) {\n        string op, name;\n        cin >> op >> name;\n        if (op == \"ACQUIRE\") {\n            if (held.count(name)) { cout << i << \"\\n\"; return 0; }\n            held.insert(name);\n            stack.push_back(name);\n        } else {\n            // Release must match the most recent unreleased acquire.\n            if (stack.empty() || stack.back() != name) { cout << i << \"\\n\"; return 0; }\n            stack.pop_back();\n            held.erase(name);\n        }\n    }\n    cout << (stack.empty() ? 0 : n + 1) << \"\\n\";\n}\n",
+      "sha256": "e634e0a7109caa47f8d844b5a9323a73355201dcef40a67dccd8f89f6cacd911"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int n = Integer.parseInt(st.nextToken());\n        ArrayDeque<String> stack = new ArrayDeque<>();\n        HashSet<String> held = new HashSet<>();\n        for (int i = 1; i <= n; i++) {\n            String op = st.nextToken(), name = st.nextToken();\n            if (op.equals(\"ACQUIRE\")) {\n                if (!held.add(name)) { System.out.println(i); return; }\n                stack.push(name);\n            } else {\n                // Release must match the most recent unreleased acquire.\n                if (stack.isEmpty() || !stack.peek().equals(name)) { System.out.println(i); return; }\n                stack.pop();\n                held.remove(name);\n            }\n        }\n        System.out.println(stack.isEmpty() ? 0 : n + 1);\n    }\n}\n",
+      "sha256": "00ee340131ad50dafd530a80ab4813dbb5a0c19c4c90dccdf87a1f66ee0b4c8a"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() string { sc.Scan(); return sc.Text() }\n\tn, _ := strconv.Atoi(next())\n\tvar stack []string\n\theld := map[string]bool{}\n\tfor i := 1; i <= n; i++ {\n\t\top, name := next(), next()\n\t\tif op == \"ACQUIRE\" {\n\t\t\tif held[name] {\n\t\t\t\tfmt.Println(i)\n\t\t\t\treturn\n\t\t\t}\n\t\t\theld[name] = true\n\t\t\tstack = append(stack, name)\n\t\t} else {\n\t\t\t// Release must match the most recent unreleased acquire.\n\t\t\tif len(stack) == 0 || stack[len(stack)-1] != name {\n\t\t\t\tfmt.Println(i)\n\t\t\t\treturn\n\t\t\t}\n\t\t\tstack = stack[:len(stack)-1]\n\t\t\tdelete(held, name)\n\t\t}\n\t}\n\tif len(stack) == 0 {\n\t\tfmt.Println(0)\n\t} else {\n\t\tfmt.Println(n + 1)\n\t}\n}\n",
+      "sha256": "9d1b071a538fa7b9f2f4e08ff8332256de568b896551114688315dac09d49b77"
+    }
+  ]
+}

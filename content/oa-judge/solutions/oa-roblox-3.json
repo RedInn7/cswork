@@ -1,0 +1,21 @@
+{
+  "id": "oa-roblox-3",
+  "packageChecksum": "8ccb7edef66d125e4c99e050bd5e32305343919ba06f0aea48de647fa0feba95",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\nint main() {\n    int rows, cols, r;\n    scanf(\"%d %d %d\", &rows, &cols, &r);\n    vector<vector<ll>> pref(rows, vector<ll>(cols + 1, 0));  // row prefix sums\n    for (int i = 0; i < rows; i++)\n        for (int j = 0; j < cols; j++) { ll x; scanf(\"%lld\", &x); pref[i][j + 1] = pref[i][j] + x; }\n    bool found = false;\n    ll best = 0;\n    for (int cr = r - 1; cr <= rows - r; cr++)\n        for (int cc = r - 1; cc <= cols - r; cc++) {\n            ll total = 0;\n            // Row cr+dr contributes columns with |dc| <= r-1-|dr|.\n            for (int dr = -(r - 1); dr < r; dr++) {\n                int rr = cr + dr;\n                if (rr < 0 || rr >= rows) continue;\n                int span = r - 1 - abs(dr), lo = max(0, cc - span), hi = min(cols - 1, cc + span);\n                total += pref[rr][hi + 1] - pref[rr][lo];\n            }\n            if (!found || total > best) { best = total; found = true; }\n        }\n    printf(\"%lld\\n\", found ? best : 0LL);\n}\n",
+      "sha256": "83da2ca6718d1c4b8bd958684c14c536ccc4655ee49c1e27c695d5e8c600f4f6"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int bp;\n\n    static long nextLong() {\n        while (buf[bp] <= ' ') bp++;\n        boolean neg = buf[bp] == '-';\n        if (neg) bp++;\n        long r = 0;\n        while (bp < buf.length && buf[bp] > ' ') r = r * 10 + (buf[bp++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int rows = (int) nextLong(), cols = (int) nextLong(), r = (int) nextLong();\n        long[][] pref = new long[rows][cols + 1];  // row prefix sums\n        for (int i = 0; i < rows; i++)\n            for (int j = 0; j < cols; j++) pref[i][j + 1] = pref[i][j] + nextLong();\n        boolean found = false;\n        long best = 0;\n        for (int cr = r - 1; cr <= rows - r; cr++)\n            for (int cc = r - 1; cc <= cols - r; cc++) {\n                long total = 0;\n                // Row cr+dr contributes columns with |dc| <= r-1-|dr|.\n                for (int dr = -(r - 1); dr < r; dr++) {\n                    int rr = cr + dr;\n                    if (rr < 0 || rr >= rows) continue;\n                    int span = r - 1 - Math.abs(dr), lo = Math.max(0, cc - span), hi = Math.min(cols - 1, cc + span);\n                    total += pref[rr][hi + 1] - pref[rr][lo];\n                }\n                if (!found || total > best) { best = total; found = true; }\n            }\n        System.out.println(found ? best : 0);\n    }\n}\n",
+      "sha256": "b3ae9fa0cf50baf1af13b2a7bb51f2e9c4102b6e8624fac144ca7cbfd521630f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int64 { sc.Scan(); v, _ := strconv.ParseInt(sc.Text(), 10, 64); return v }\n\trows, cols, r := int(next()), int(next()), int(next())\n\tpref := make([][]int64, rows) // row prefix sums\n\tfor i := range pref {\n\t\tpref[i] = make([]int64, cols+1)\n\t\tfor j := 0; j < cols; j++ {\n\t\t\tpref[i][j+1] = pref[i][j] + next()\n\t\t}\n\t}\n\tfound, best := false, int64(0)\n\tfor cr := r - 1; cr <= rows-r; cr++ {\n\t\tfor cc := r - 1; cc <= cols-r; cc++ {\n\t\t\tvar total int64\n\t\t\t// Row cr+dr contributes columns with |dc| <= r-1-|dr|.\n\t\t\tfor dr := -(r - 1); dr < r; dr++ {\n\t\t\t\trr := cr + dr\n\t\t\t\tif rr < 0 || rr >= rows {\n\t\t\t\t\tcontinue\n\t\t\t\t}\n\t\t\t\tspan := r - 1 - max(dr, -dr)\n\t\t\t\tlo, hi := max(0, cc-span), min(cols-1, cc+span)\n\t\t\t\ttotal += pref[rr][hi+1] - pref[rr][lo]\n\t\t\t}\n\t\t\tif !found || total > best {\n\t\t\t\tbest, found = total, true\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "10b0ee1fa4a6a5d820704ec4c529b360d003ba186445a68b966c2f782853a116"
+    }
+  ]
+}

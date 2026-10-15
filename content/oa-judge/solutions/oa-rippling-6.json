@@ -1,0 +1,21 @@
+{
+  "id": "oa-rippling-6",
+  "packageChecksum": "2af6ebe82dfdec40e330c14e790f43670c93107d8b925dd06246d56900ecdc04",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint n;\nvector<vector<int>> g;\n\n// BFS from start; returns (farthest node, its distance).\npair<int, int> farthest(int start) {\n    vector<int> dist(n + 1, -1), q{start};\n    dist[start] = 0;\n    int best = start;\n    for (size_t h = 0; h < q.size(); h++) {\n        int u = q[h];\n        for (int v : g[u])\n            if (dist[v] < 0) {\n                dist[v] = dist[u] + 1;\n                if (dist[v] > dist[best]) best = v;\n                q.push_back(v);\n            }\n    }\n    return {best, dist[best]};\n}\n\nint main() {\n    scanf(\"%d\", &n);\n    g.assign(n + 1, {});\n    for (int i = 0; i < n - 1; i++) {\n        int u, v;\n        scanf(\"%d %d\", &u, &v);\n        g[u].push_back(v);\n        g[v].push_back(u);\n    }\n    printf(\"%d\\n\", farthest(farthest(1).first).second);\n}\n",
+      "sha256": "6884233ae19f744241a7fd08f561e2f8e5ce9dffcd141b3bda4e2a5627c621cf"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static int n;\n    static int[] head, nxt, to;\n\n    // BFS from start; returns {farthest node, its distance}.\n    static int[] farthest(int start) {\n        int[] dist = new int[n + 1], q = new int[n];\n        Arrays.fill(dist, -1);\n        dist[start] = 0;\n        int qh = 0, qt = 0, best = start;\n        q[qt++] = start;\n        while (qh < qt) {\n            int u = q[qh++];\n            for (int e = head[u]; e != -1; e = nxt[e]) {\n                int v = to[e];\n                if (dist[v] < 0) {\n                    dist[v] = dist[u] + 1;\n                    if (dist[v] > dist[best]) best = v;\n                    q[qt++] = v;\n                }\n            }\n        }\n        return new int[] {best, dist[best]};\n    }\n\n    public static void main(String[] args) throws IOException {\n        DataInputStream in = new DataInputStream(new BufferedInputStream(System.in, 1 << 16));\n        n = readInt(in);\n        head = new int[n + 1];\n        Arrays.fill(head, -1);\n        nxt = new int[2 * n];\n        to = new int[2 * n];\n        int m = 0;\n        for (int i = 0; i < n - 1; i++) {\n            int u = readInt(in), v = readInt(in);\n            to[m] = v; nxt[m] = head[u]; head[u] = m++;\n            to[m] = u; nxt[m] = head[v]; head[v] = m++;\n        }\n        System.out.println(farthest(farthest(1)[0])[1]);\n    }\n\n    static int readInt(DataInputStream in) throws IOException {\n        int c = in.read();\n        while (c < '0' || c > '9') c = in.read();\n        int r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = in.read(); }\n        return r;\n    }\n}\n",
+      "sha256": "21fb008318162f9c22e9de04a9beca2eb5b65ea8f1afb1c61b37d61126a5e228"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tn := next()\n\tg := make([][]int, n+1)\n\tfor i := 0; i < n-1; i++ {\n\t\tu, v := next(), next()\n\t\tg[u] = append(g[u], v)\n\t\tg[v] = append(g[v], u)\n\t}\n\t// BFS from start; returns the farthest node and its distance.\n\tfarthest := func(start int) (int, int) {\n\t\tdist := make([]int, n+1)\n\t\tfor i := range dist {\n\t\t\tdist[i] = -1\n\t\t}\n\t\tdist[start] = 0\n\t\tbest := start\n\t\tq := []int{start}\n\t\tfor h := 0; h < len(q); h++ {\n\t\t\tu := q[h]\n\t\t\tfor _, v := range g[u] {\n\t\t\t\tif dist[v] < 0 {\n\t\t\t\t\tdist[v] = dist[u] + 1\n\t\t\t\t\tif dist[v] > dist[best] {\n\t\t\t\t\t\tbest = v\n\t\t\t\t\t}\n\t\t\t\t\tq = append(q, v)\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\treturn best, dist[best]\n\t}\n\tend, _ := farthest(1)\n\t_, d := farthest(end)\n\tfmt.Println(d)\n}\n",
+      "sha256": "cbe66c9f6e1dd42880bd3fb88517e1720a2421d1430383b16a607a06437d9764"
+    }
+  ]
+}

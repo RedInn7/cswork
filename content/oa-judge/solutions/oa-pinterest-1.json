@@ -1,0 +1,21 @@
+{
+  "id": "oa-pinterest-1",
+  "packageChecksum": "5bde2265ce5b721962fcd392e46146be225d05957cc48ab297a0a03ff3c72dce",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    char bestChar = 0;\n    int bestLen = 0;\n    for (size_t i = 0; i < s.size();) {\n        size_t j = i + 1;\n        while (j < s.size() && s[j] == s[i]) j++;\n        // \">=\" keeps the rightmost run on ties.\n        if ((int)(j - i) >= bestLen) { bestLen = j - i; bestChar = s[i]; }\n        i = j;\n    }\n    printf(\"%c%d\\n\", bestChar, bestLen);\n}\n",
+      "sha256": "fbb632666b1a278643d3040265348e3348c2832a8e64367e4be2b35971b79cc1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes()).trim();\n        char bestChar = 0;\n        int bestLen = 0;\n        for (int i = 0; i < s.length();) {\n            int j = i + 1;\n            while (j < s.length() && s.charAt(j) == s.charAt(i)) j++;\n            // \">=\" keeps the rightmost run on ties.\n            if (j - i >= bestLen) { bestLen = j - i; bestChar = s.charAt(i); }\n            i = j;\n        }\n        System.out.println(\"\" + bestChar + bestLen);\n    }\n}\n",
+      "sha256": "06d2315943c6ce3b6b3230f81706d9cae59674305b6cd481793efbdeeec7e8b4"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(os.Stdin)\n\ts := strings.TrimSpace(string(data))\n\tvar bestChar byte\n\tbestLen := 0\n\tfor i := 0; i < len(s); {\n\t\tj := i + 1\n\t\tfor j < len(s) && s[j] == s[i] {\n\t\t\tj++\n\t\t}\n\t\t// \">=\" keeps the rightmost run on ties.\n\t\tif j-i >= bestLen {\n\t\t\tbestLen, bestChar = j-i, s[i]\n\t\t}\n\t\ti = j\n\t}\n\tfmt.Printf(\"%c%d\\n\", bestChar, bestLen)\n}\n",
+      "sha256": "7a6c299fdd09aa9684fae51a51e6b5d74d402393ad6f345e4c9b8e0029c12dd6"
+    }
+  ]
+}

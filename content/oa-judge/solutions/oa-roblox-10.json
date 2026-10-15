@@ -1,0 +1,21 @@
+{
+  "id": "oa-roblox-10",
+  "packageChecksum": "7724a65853297256c41a40463349e13b6a0312bceba078505a274a6ee6fe9335",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, best = -1;\n    cin >> n;\n    string bestId;\n    for (int i = 0; i < n; i++) {\n        string id, usage;\n        cin >> id >> usage;\n        int v = stoi(usage);  // leading zeros are fine\n        if (v > best) { best = v; bestId = id; }\n    }\n    cout << bestId << \"\\n\";\n}\n",
+      "sha256": "550b9f34a43ef2025eab421af70e0a8c6793c691f54d842bf4609a0bee928261"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int n = Integer.parseInt(st.nextToken()), best = -1;\n        String bestId = \"\";\n        for (int i = 0; i < n; i++) {\n            String id = st.nextToken();\n            int v = Integer.parseInt(st.nextToken());  // leading zeros are fine\n            if (v > best) { best = v; bestId = id; }\n        }\n        System.out.println(bestId);\n    }\n}\n",
+      "sha256": "fe154ab9c31ffcd7b1950077e6b2b01e3b52efd63157a768fd5ec628e7d802ad"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() string { sc.Scan(); return sc.Text() }\n\tn, _ := strconv.Atoi(next())\n\tbest, bestID := -1, \"\"\n\tfor i := 0; i < n; i++ {\n\t\tid := next()\n\t\tv, _ := strconv.Atoi(next()) // leading zeros are fine\n\t\tif v > best {\n\t\t\tbest, bestID = v, id\n\t\t}\n\t}\n\tfmt.Println(bestID)\n}\n",
+      "sha256": "15df027cbec5970f7af1bfbc54f1008dd5b9f8f9d12ba9693742671eae22861f"
+    }
+  ]
+}

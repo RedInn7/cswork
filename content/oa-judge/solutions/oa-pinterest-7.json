@@ -1,0 +1,21 @@
+{
+  "id": "oa-pinterest-7",
+  "packageChecksum": "e794f9596f413faaa26bf5183955f1474848175c2ce7ae56e88e68e3a479d4e6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int finish, n;\n    scanf(\"%d %d\", &finish, &n);\n    vector<int> s(n);\n    for (auto& x : s) scanf(\"%d\", &x);\n    sort(s.begin(), s.end());\n    int pos = 0, total = 0, i = 0;\n    while (pos < finish) {\n        while (i < n && s[i] < pos) i++;\n        if (i == n) break;\n        int x = s[i++], reached = min(finish, x + 10);\n        total += reached - x;\n        pos = reached;\n    }\n    printf(\"%d\\n\", total);\n}\n",
+      "sha256": "bbb2ef7cf679bda6b670035a1e3fa208c2eb7b6b4bcc7a25ef8bcadac8629bce"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int finish = Integer.parseInt(st.nextToken()), n = Integer.parseInt(st.nextToken());\n        int[] s = new int[n];\n        for (int i = 0; i < n; i++) s[i] = Integer.parseInt(st.nextToken());\n        Arrays.sort(s);\n        int pos = 0, total = 0, i = 0;\n        while (pos < finish) {\n            while (i < n && s[i] < pos) i++;\n            if (i == n) break;\n            int x = s[i++], reached = Math.min(finish, x + 10);\n            total += reached - x;\n            pos = reached;\n        }\n        System.out.println(total);\n    }\n}\n",
+      "sha256": "1b6fd2f55b9137efe0cadad88fe482b3ac0334061053002af79e3ce7b084fc0b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tfinish, n := next(), next()\n\ts := make([]int, n)\n\tfor i := range s {\n\t\ts[i] = next()\n\t}\n\tsort.Ints(s)\n\tpos, total, i := 0, 0, 0\n\tfor pos < finish {\n\t\tfor i < n && s[i] < pos {\n\t\t\ti++\n\t\t}\n\t\tif i == n {\n\t\t\tbreak\n\t\t}\n\t\tx := s[i]\n\t\ti++\n\t\treached := min(finish, x+10)\n\t\ttotal += reached - x\n\t\tpos = reached\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "3b045f9af0527d5555474302f2c6dea8db0e11279c29b8873237b44c57ae3121"
+    }
+  ]
+}

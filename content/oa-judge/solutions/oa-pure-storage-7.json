@@ -1,0 +1,21 @@
+{
+  "id": "oa-pure-storage-7",
+  "packageChecksum": "8006fb6db7d657e9dafb78c56bcceb87472861f9d74a75a02a950349c37e2f62",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int n = s.size();\n    long long ans = 0;\n    // Manacher: d1 = odd radii, d2 = even radii; each radius counts that many palindromes.\n    vector<int> d1(n), d2(n);\n    for (int i = 0, l = 0, r = -1; i < n; i++) {\n        int k = i > r ? 1 : min(d1[l + r - i], r - i + 1);\n        while (i - k >= 0 && i + k < n && s[i - k] == s[i + k]) k++;\n        d1[i] = k; ans += k;\n        if (i + k - 1 > r) { l = i - k + 1; r = i + k - 1; }\n    }\n    for (int i = 0, l = 0, r = -1; i < n; i++) {\n        int k = i > r ? 0 : min(d2[l + r - i + 1], r - i + 1);\n        while (i - k - 1 >= 0 && i + k < n && s[i - k - 1] == s[i + k]) k++;\n        d2[i] = k; ans += k;\n        if (i + k - 1 > r) { l = i - k; r = i + k - 1; }\n    }\n    printf(\"%lld\\n\", ans);\n}\n",
+      "sha256": "da17c775522565a94fb0182408182297121290bcfb79774bd0d38e9c1c215871"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        byte[] s = new String(System.in.readAllBytes()).trim().getBytes();\n        int n = s.length;\n        long ans = 0;\n        // Manacher: d1 = odd radii, d2 = even radii; each radius counts that many palindromes.\n        int[] d1 = new int[n], d2 = new int[n];\n        for (int i = 0, l = 0, r = -1; i < n; i++) {\n            int k = i > r ? 1 : Math.min(d1[l + r - i], r - i + 1);\n            while (i - k >= 0 && i + k < n && s[i - k] == s[i + k]) k++;\n            d1[i] = k; ans += k;\n            if (i + k - 1 > r) { l = i - k + 1; r = i + k - 1; }\n        }\n        for (int i = 0, l = 0, r = -1; i < n; i++) {\n            int k = i > r ? 0 : Math.min(d2[l + r - i + 1], r - i + 1);\n            while (i - k - 1 >= 0 && i + k < n && s[i - k - 1] == s[i + k]) k++;\n            d2[i] = k; ans += k;\n            if (i + k - 1 > r) { l = i - k; r = i + k - 1; }\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "5935ab65d812a009ccdd5c0bb9f292b497876bdd4455c124ae0160496c5ad7fa"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(os.Stdin)\n\ts := strings.TrimSpace(string(data))\n\tn := len(s)\n\tvar ans int64\n\t// Manacher: d1 = odd radii, d2 = even radii; each radius counts that many palindromes.\n\td1, d2 := make([]int, n), make([]int, n)\n\tfor i, l, r := 0, 0, -1; i < n; i++ {\n\t\tk := 1\n\t\tif i <= r {\n\t\t\tk = min(d1[l+r-i], r-i+1)\n\t\t}\n\t\tfor i-k >= 0 && i+k < n && s[i-k] == s[i+k] {\n\t\t\tk++\n\t\t}\n\t\td1[i] = k\n\t\tans += int64(k)\n\t\tif i+k-1 > r {\n\t\t\tl, r = i-k+1, i+k-1\n\t\t}\n\t}\n\tfor i, l, r := 0, 0, -1; i < n; i++ {\n\t\tk := 0\n\t\tif i <= r {\n\t\t\tk = min(d2[l+r-i+1], r-i+1)\n\t\t}\n\t\tfor i-k-1 >= 0 && i+k < n && s[i-k-1] == s[i+k] {\n\t\t\tk++\n\t\t}\n\t\td2[i] = k\n\t\tans += int64(k)\n\t\tif i+k-1 > r {\n\t\t\tl, r = i-k, i+k-1\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "57dd03e4971d3b26e9814b32737aa42208cfe718a4717667d822ef5d04e3c4fc"
+    }
+  ]
+}

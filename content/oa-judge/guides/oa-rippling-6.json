@@ -1,0 +1,19 @@
+{
+  "id": "oa-rippling-6",
+  "packageChecksum": "2af6ebe82dfdec40e330c14e790f43670c93107d8b925dd06246d56900ecdc04",
+  "sourceContentHash": "f148de21bfbd492ca9dba31e2f08f2928f7ead694fcb3b67f9981421e8dce147",
+  "editorialSha256": "9048fdacbd8f2791dda7b4c1279f8df6f08a2a1d2da9c08677cdc7ab795ef23f",
+  "hints": {
+    "zh": [
+      "树上两点之间的路径唯一，传输时间就是路径上的边数，所以问题就是求树的直径。",
+      "经典做法是两次遍历：从任意节点出发找到最远的节点 u，u 一定是某条直径的一个端点；再从 u 出发遍历，得到的最远距离就是直径。",
+      "边权都是 1，用 BFS 计算距离即可；用迭代队列而不是递归 DFS，避免 20 万个节点的长链导致栈溢出。用邻接表存树，第一次 BFS 从节点 1 出发求最远点，第二次从该点出发取最大距离。g_nodes=1 时没有边，答案为 0。时间 O(n)。"
+    ],
+    "en": [
+      "The path between two nodes of a tree is unique and the transfer time is the number of edges on it, so the task is the diameter of the tree.",
+      "The classic method uses two traversals: from any node, find the farthest node u, which is always an endpoint of some diameter; traverse again from u, and the largest distance found is the diameter.",
+      "All edges have weight 1, so BFS gives the distances; use an iterative queue rather than recursive DFS so a 200000-node chain cannot overflow the stack. Store the tree as adjacency lists, run the first BFS from node 1 to find the farthest node, then the second BFS from that node and take the largest distance. With g_nodes = 1 there are no edges and the answer is 0. Time O(n)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe answer is the diameter of the tree. Traverse from any server and find the server u farthest from it; then traverse from u, and the largest distance found is the diameter of the tree. Every edge weight here is 1, so BFS is enough. An iterative queue is used to avoid recursion stack overflow on long chains. This site's maximum of 200000 nodes is a resource limit; the original problem gives no such bound.\n\n## Correctness\n\nThe path between any two nodes of a tree is unique. Starting from any node, the farthest node must be an endpoint of some diameter of the tree; therefore, when traversing from that endpoint u, the largest reachable distance is exactly the largest distance between any pair of nodes in the tree. The two BFS runs compute this distance, so the returned value is the maximum transfer time between any two servers.\n\n## Complexity\n\nEach traversal visits every node and edge at most once. The two BFS runs take O(n) time in total, and the adjacency lists, queue and distance array take O(n) space."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-reevo-2",
+  "packageChecksum": "4900269c2ed625db15c9e8a84ad13206d8603592f9b4160aed92f3dab84329c6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    vector<int> p(n);\n    for (auto& x : p) scanf(\"%d\", &x);\n    string out(n, '0');\n    vector<int> mx(n), mn(n);  // monotonic deques stored as index arrays\n    for (int k = 1; k <= n; k++) {\n        int mxh = 0, mxt = 0, mnh = 0, mnt = 0;\n        for (int i = 0; i < n; i++) {\n            while (mxt > mxh && p[mx[mxt - 1]] <= p[i]) mxt--;\n            mx[mxt++] = i;\n            while (mnt > mnh && p[mn[mnt - 1]] >= p[i]) mnt--;\n            mn[mnt++] = i;\n            if (mx[mxh] <= i - k) mxh++;\n            if (mn[mnh] <= i - k) mnh++;\n            // Distinct values in a window of size k form {1..k} iff min is 1 and max is k.\n            if (i >= k - 1 && p[mx[mxh]] == k && p[mn[mnh]] == 1) { out[k - 1] = '1'; break; }\n        }\n    }\n    puts(out.c_str());\n}\n",
+      "sha256": "ab3a4c5346e2cc41354294453c75ce1100c75a5e78ca317f7dfb2ff250cc1926"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int n = Integer.parseInt(st.nextToken());\n        int[] p = new int[n];\n        for (int i = 0; i < n; i++) p[i] = Integer.parseInt(st.nextToken());\n        char[] out = new char[n];\n        Arrays.fill(out, '0');\n        int[] mx = new int[n], mn = new int[n];  // monotonic deques stored as index arrays\n        for (int k = 1; k <= n; k++) {\n            int mxh = 0, mxt = 0, mnh = 0, mnt = 0;\n            for (int i = 0; i < n; i++) {\n                while (mxt > mxh && p[mx[mxt - 1]] <= p[i]) mxt--;\n                mx[mxt++] = i;\n                while (mnt > mnh && p[mn[mnt - 1]] >= p[i]) mnt--;\n                mn[mnt++] = i;\n                if (mx[mxh] <= i - k) mxh++;\n                if (mn[mnh] <= i - k) mnh++;\n                // Distinct values in a window of size k form {1..k} iff min is 1 and max is k.\n                if (i >= k - 1 && p[mx[mxh]] == k && p[mn[mnh]] == 1) { out[k - 1] = '1'; break; }\n            }\n        }\n        System.out.println(new String(out));\n    }\n}\n",
+      "sha256": "0ee6c7525232bd22c38d6e8700219cd34a6bc444adb41738104f43d87d4d593b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tn := next()\n\tp := make([]int, n)\n\tfor i := range p {\n\t\tp[i] = next()\n\t}\n\tout := make([]byte, n)\n\tfor i := range out {\n\t\tout[i] = '0'\n\t}\n\tmx, mn := make([]int, n), make([]int, n) // monotonic deques stored as index arrays\n\tfor k := 1; k <= n; k++ {\n\t\tmxh, mxt, mnh, mnt := 0, 0, 0, 0\n\t\tfor i := 0; i < n; i++ {\n\t\t\tfor mxt > mxh && p[mx[mxt-1]] <= p[i] {\n\t\t\t\tmxt--\n\t\t\t}\n\t\t\tmx[mxt] = i\n\t\t\tmxt++\n\t\t\tfor mnt > mnh && p[mn[mnt-1]] >= p[i] {\n\t\t\t\tmnt--\n\t\t\t}\n\t\t\tmn[mnt] = i\n\t\t\tmnt++\n\t\t\tif mx[mxh] <= i-k {\n\t\t\t\tmxh++\n\t\t\t}\n\t\t\tif mn[mnh] <= i-k {\n\t\t\t\tmnh++\n\t\t\t}\n\t\t\t// Distinct values in a window of size k form {1..k} iff min is 1 and max is k.\n\t\t\tif i >= k-1 && p[mx[mxh]] == k && p[mn[mnh]] == 1 {\n\t\t\t\tout[k-1] = '1'\n\t\t\t\tbreak\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(string(out))\n}\n",
+      "sha256": "89d2c0d084ecd11673290be73f2d00a0547d67dc703262c84b36676f3524c514"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-pure-storage-14",
+  "packageChecksum": "77b42248a4fdcac2e2fcea43fe818fa8d232232dc6584e0e9ae88b8c5b690303",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int r, m;\n    scanf(\"%d %d\", &r, &m);\n    vector<int> score(r, 0);\n    const int pts[] = {0, 10, 6, 4, 3, 2, 1};\n    for (int k = 0; k < m; k++) {\n        int race, who, pos;\n        scanf(\"%d %d %d\", &race, &who, &pos);\n        if (pos <= 6) score[who - 1001] += pts[pos];\n    }\n    int best = 0;\n    for (int i = 1; i < r; i++) if (score[i] > score[best]) best = i;  // strict: smaller ID wins ties\n    printf(\"%d %d\\n\", 1001 + best, score[best]);\n}\n",
+      "sha256": "651ea1e1f32562884f9e580015742d4e45bc23bc10417f2c4f0bed513ca1eb2a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int r = Integer.parseInt(st.nextToken()), m = Integer.parseInt(st.nextToken());\n        int[] score = new int[r], pts = {0, 10, 6, 4, 3, 2, 1};\n        for (int k = 0; k < m; k++) {\n            st.nextToken();  // race id is not needed\n            int who = Integer.parseInt(st.nextToken()), pos = Integer.parseInt(st.nextToken());\n            if (pos <= 6) score[who - 1001] += pts[pos];\n        }\n        int best = 0;\n        for (int i = 1; i < r; i++) if (score[i] > score[best]) best = i;  // strict: smaller ID wins ties\n        System.out.println((1001 + best) + \" \" + score[best]);\n    }\n}\n",
+      "sha256": "c469dfd508128c2955e9a5066687ee435ada7cad25c41000d91c683a35354a75"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tr, m := next(), next()\n\tscore := make([]int, r)\n\tpts := []int{0, 10, 6, 4, 3, 2, 1}\n\tfor k := 0; k < m; k++ {\n\t\tnext() // race id is not needed\n\t\twho, pos := next(), next()\n\t\tif pos <= 6 {\n\t\t\tscore[who-1001] += pts[pos]\n\t\t}\n\t}\n\tbest := 0\n\tfor i := 1; i < r; i++ {\n\t\tif score[i] > score[best] { // strict: smaller ID wins ties\n\t\t\tbest = i\n\t\t}\n\t}\n\tfmt.Println(1001+best, score[best])\n}\n",
+      "sha256": "e92b482c286b50bc7330608acdba005104dd90e2c15bf2b14dde3d26daf7ecb1"
+    }
+  ]
+}

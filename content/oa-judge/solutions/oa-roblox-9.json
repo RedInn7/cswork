@@ -1,0 +1,21 @@
+{
+  "id": "oa-roblox-9",
+  "packageChecksum": "7a399c8ec57e3afbb25d80f0239c0918c5241d875c03788656431a2c701143da",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    ll window, limit;\n    int q;\n    cin >> window >> limit >> q;\n    // Fixed windows: quota is counted per (key, floor(timestamp / window)).\n    unordered_map<string, ll> counts;\n    counts.reserve(2 * q + 1);\n    string out;\n    for (int i = 0; i < q; i++) {\n        ll ts;\n        string key;\n        cin >> ts >> key;\n        ll& c = counts[key + '#' + to_string(ts / window)];\n        if (i) out += ' ';\n        if (c < limit) { c++; out += \"ALLOW\"; }\n        else out += \"REJECT\";\n    }\n    out += '\\n';\n    cout << out;\n}\n",
+      "sha256": "8588aea5c23ade885f5f9af8653df8be366183f068acb8ea94a36a00f87b7af5"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int bp;\n\n    static String next() {\n        while (buf[bp] <= ' ') bp++;\n        int s = bp;\n        while (bp < buf.length && buf[bp] > ' ') bp++;\n        return new String(buf, s, bp - s);\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        long window = Long.parseLong(next()), limit = Long.parseLong(next());\n        int q = Integer.parseInt(next());\n        // Fixed windows: quota is counted per (key, floor(timestamp / window)).\n        HashMap<String, Long> counts = new HashMap<>(4 * q);\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < q; i++) {\n            long ts = Long.parseLong(next());\n            String k = next() + \"#\" + (ts / window);\n            long c = counts.getOrDefault(k, 0L);\n            if (i > 0) sb.append(' ');\n            if (c < limit) { counts.put(k, c + 1); sb.append(\"ALLOW\"); }\n            else sb.append(\"REJECT\");\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "fbb10ceb77d36c3f9fb3d13d9e163ce3c0835163f4f7c9b5bfe2045d2b253a45"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() string { sc.Scan(); return sc.Text() }\n\tnum := func() int64 { v, _ := strconv.ParseInt(next(), 10, 64); return v }\n\twindow, limit, q := num(), num(), int(num())\n\t// Fixed windows: quota is counted per (key, floor(timestamp / window)).\n\ttype bucket struct {\n\t\tkey string\n\t\tid  int64\n\t}\n\tcounts := make(map[bucket]int64, q)\n\tw := bufio.NewWriterSize(os.Stdout, 1<<20)\n\tdefer w.Flush()\n\tfor i := 0; i < q; i++ {\n\t\tts := num()\n\t\tb := bucket{next(), ts / window}\n\t\tif i > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tif counts[b] < limit {\n\t\t\tcounts[b]++\n\t\t\tw.WriteString(\"ALLOW\")\n\t\t} else {\n\t\t\tw.WriteString(\"REJECT\")\n\t\t}\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "fc66d802009d545c276f972c0310ea66e00cb38ba10578cd5a15bda553402697"
+    }
+  ]
+}

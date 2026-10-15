@@ -1,0 +1,19 @@
+{
+  "id": "oa-pinterest-4",
+  "packageChecksum": "efaee6f40ab495751ef5f7ae089387fd9a208ea00b7f06e9ab88a428841f1629",
+  "sourceContentHash": "153a0594e3dda9b26fde3db1f14ce3cd68496cd98d9288270a4042e5886af631",
+  "editorialSha256": "65951d6c41b28df429f6b90820b9fe6bca970a1f8a35b9d0f7c2985e8f9c8985",
+  "hints": {
+    "zh": [
+      "每次都要找“高度最低、并列时下标最小”的柱子，并且只有这一根柱子的高度会改变——这正是按 (高度, 下标) 排序的最小堆擅长的操作。",
+      "把 k 根柱子以 (0, i) 放进最小堆；按顺序处理每个 pin：弹出堆顶得到柱子下标，记录下来，把它的高度加上 pin 后重新入堆。",
+      "堆的比较键必须是完整的 (高度, 下标) 二元组，这样并列时自动选下标最小的。高度最多约 2×10^14，要用 64 位整数。第一行输出 n 个分配下标，第二行输出 k 根柱子的最终高度。总时间 O(n log k)。"
+    ],
+    "en": [
+      "Each step needs the column with the lowest height, smallest index on ties, and only that one column's height changes; that is exactly what a min-heap ordered by (height, index) does well.",
+      "Put the k columns into a min-heap as (0, i). For each pin in order, pop the top to get the column index, record it, add the pin to that column's height and push it back.",
+      "The heap key must be the full pair (height, index) so ties pick the smallest index automatically. Heights can reach about 2 * 10^14, so use 64-bit integers. Print the n assigned indices on the first line and the k final heights on the second. Total time O(n log k)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a min-heap ordered by (current height, column index). For each pin, take the top of the heap, record its index, increase that column's height and put it back into the heap.\n\n## Correctness\n\nThe heap order uses height and index as the complete sort key, so the top of the heap is always the lowest column with the smallest index, as the problem requires. After it is popped, only this column's height changes before it is pushed back, and the other columns' states stay the same; processing the pins one by one therefore matches the rule exactly.\n\n## Complexity\n\nLet n be the number of pins and k the number of columns. Time O(n log k), space O(k+n) (including the assignment result)."
+}

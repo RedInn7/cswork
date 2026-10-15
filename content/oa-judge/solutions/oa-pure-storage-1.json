@@ -1,0 +1,21 @@
+{
+  "id": "oa-pure-storage-1",
+  "packageChecksum": "0ff51fd98b48f8d1e9ecb1ee2cbba83a8395aacf5055f95aeac2212f67110410",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    long long prev, profit;\n    scanf(\"%lld\", &prev);\n    profit = prev;  // sell the initial unit on day 0\n    for (int i = 1; i < n; i++) {\n        long long x;\n        scanf(\"%lld\", &x);\n        if (x > prev) profit += x - prev;\n        prev = x;\n    }\n    printf(\"%lld\\n\", profit % 1000000000LL);\n}\n",
+      "sha256": "79d920c1af1cb850fd964e420e937609988e4608a6b3000bead7bb66b7486b3e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int bp;\n\n    static long nextLong() {\n        while (buf[bp] <= ' ') bp++;\n        long r = 0;\n        while (bp < buf.length && buf[bp] > ' ') r = r * 10 + (buf[bp++] - '0');\n        return r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong();\n        long prev = nextLong(), profit = prev;  // sell the initial unit on day 0\n        for (int i = 1; i < n; i++) {\n            long x = nextLong();\n            if (x > prev) profit += x - prev;\n            prev = x;\n        }\n        System.out.println(profit % 1_000_000_000L);\n    }\n}\n",
+      "sha256": "24bd3078a68db2c67c3cd003b995711f12be9f1e7d0c2f4974fb0e4846dca6b3"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int64 { sc.Scan(); v, _ := strconv.ParseInt(sc.Text(), 10, 64); return v }\n\tn := int(next())\n\tprev := next()\n\tprofit := prev // sell the initial unit on day 0\n\tfor i := 1; i < n; i++ {\n\t\tx := next()\n\t\tif x > prev {\n\t\t\tprofit += x - prev\n\t\t}\n\t\tprev = x\n\t}\n\tfmt.Println(profit % 1_000_000_000)\n}\n",
+      "sha256": "ac554726324c5b3b983b21ea1a05323df387302f2d68fb14be843c75bb1eca48"
+    }
+  ]
+}

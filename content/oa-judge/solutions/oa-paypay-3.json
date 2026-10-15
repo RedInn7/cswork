@@ -1,0 +1,21 @@
+{
+  "id": "oa-paypay-3",
+  "packageChecksum": "fd28e5ee0663b40aa6dbdb0962f1da5b26e868a8647606d441cc71a8f73fa60d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int best = 0;\n    for (size_t i = 0; i + 1 < s.size(); i++) best = max(best, (s[i] - '0') * 10 + (s[i + 1] - '0'));\n    printf(\"%d\\n\", best);\n}\n",
+      "sha256": "5d41f2c2d61af19abf16294c44a75fd7b837a9d0a764aa1c506c498f31264802"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes()).trim();\n        int best = 0;\n        for (int i = 0; i + 1 < s.length(); i++) best = Math.max(best, (s.charAt(i) - '0') * 10 + (s.charAt(i + 1) - '0'));\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "de6a0566cb811a269dc9f3d826899e7cf4d8c4401696bc56431f3f6596cb58c3"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(os.Stdin)\n\ts := strings.TrimSpace(string(data))\n\tbest := 0\n\tfor i := 0; i+1 < len(s); i++ {\n\t\tbest = max(best, int(s[i]-'0')*10+int(s[i+1]-'0'))\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "da8b3c60e72f827e13835d03683080a6acf199a0927958415c6471e121512990"
+    }
+  ]
+}

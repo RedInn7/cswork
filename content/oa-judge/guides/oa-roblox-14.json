@@ -1,0 +1,19 @@
+{
+  "id": "oa-roblox-14",
+  "packageChecksum": "ce4de1e7d2fa5990d5d63634da6c9c020c40f42277113aab649521113bb05c26",
+  "sourceContentHash": "ec12be152ec0d6c1776b9bc72c605bc48a020f68c37900955db78304fb5b902a",
+  "editorialSha256": "c4f9532fd22f738e8756898bbd6afaf592d7726e91332a518edcfbfb9fa995d1",
+  "hints": {
+    "zh": [
+      "“互为循环移位”是一个等价关系（旋转的复合仍是旋转），所以数组中的数可以按等价类分组，同一类里任意两个数都构成一对。",
+      "给每个数找一个类代表：把它的十进制数字串的所有旋转中字典序最小的那个作为键。两个同长度的数字串互为旋转，当且仅当它们的最小旋转相同；键的长度就是位数，自动保证位数相同。",
+      "用哈希表统计每个键已经出现的次数；从左到右处理时，当前数与此前同键的每个数各构成一对，把该键的已有计数加进答案后再把计数加一。每个数至多 10 位，枚举旋转是 O(D²)。答案最多约 n²/2，用 64 位整数。"
+    ],
+    "en": [
+      "\"Being cyclic shifts of each other\" is an equivalence relation (a composition of rotations is a rotation), so the numbers group into classes, and any two numbers in the same class form a pair.",
+      "Give each number a class representative: the lexicographically smallest rotation of its decimal digit string. Two digit strings of the same length are rotations of each other exactly when their smallest rotations match, and the key's length is the digit count, so equal digit counts come for free.",
+      "Count how many times each key has appeared in a hash map; processing left to right, the current number pairs with every earlier number of the same key, so add that key's current count to the answer and then increment it. Each number has at most 10 digits, so trying all rotations costs O(D^2). The answer can reach about n^2/2, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Problem\n\nA cyclic shift moves some trailing digits (possibly 0 of them) of a decimal number to the front, shifting the remaining digits back. Count index pairs i<j such that a[i] and a[j] have the same number of digits and a[i] equals some cyclic shift of a[j].\n\n## Approach\n\nTwo digit strings of the same length are cyclic shifts of each other if and only if their \"minimal representations\" (the lexicographically smallest of all rotations) are the same; being a cyclic shift is an equivalence relation. So take the minimal rotation of each number's digit string as its key (the key length is the digit count, which automatically guarantees equal digit counts) and count with a hash map; each new number forms a pair with every earlier number of the same key.\n\n## Correctness\n\nThe composition of rotations is still a rotation, so \"being cyclic shifts of each other\" is an equivalence relation, and each equivalence class has a unique minimal rotation. The digit string of a[i] has no leading zeros; if some rotation starts with 0, it cannot equal another positive integer's digit string, and plain string comparison handles this correctly (for example, 4560 and 456 have different digit counts, while 5604 and 4560 are in the same class).\n\n## Complexity\n\nEach number has at most 10 digits: O(n*D^2) with D <= 10. The answer is at most about n^2/2, so use 64-bit integers.\n\n## Independent verification\n\nThe oracle checks every pair i<j directly for equal digit counts and str(a[i]) occurring in str(a[j])+str(a[j]) (O(n^2), small data only), without using minimal representations. All arrays of length 1..4 built from {1,10,11,12,21,101,110,2} were exhausted, running the reference program on each. The wrong solutions cover sorting digits instead of rotating, checking only equality, comparing after removing 0s, and 32-bit counting."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-pure-storage-12",
+  "packageChecksum": "c2ece10de8587d468d4acbeae963a6cc7b9ca693c19909fc47e3be8cdb7553d3",
+  "sourceContentHash": "59fa90210c776c6b395d9884087895118cf8be743d19e973dec00dfdd9a34ada",
+  "editorialSha256": "7ae71e6b1fa9bda2545cd32697b0cdaba84021b7f3dccc6c892a3418bee795bf",
+  "hints": {
+    "zh": [
+      "判断条件“列表中恰好有一个元素等于 2x”只依赖于 2x 这个值在整个列表中的出现次数，和 x 的位置无关。",
+      "先统计每个值的出现次数（值域只有 0..1000，2x 最多 2000，可以直接开数组）。然后对输入中的每个元素 x（包括重复出现的）检查 freq[2x] 是否恰为 1。",
+      "满足条件的 x 全部放进结果（重复的 x 各算一次），排序后用空格连接输出；结果为空时输出空行。注意 0 的两倍还是 0，所以 0 只有在列表里恰好出现一次时才会被选中。时间 O(n log n)。"
+    ],
+    "en": [
+      "The condition \"exactly one element equals 2x\" depends only on how many times the value 2x occurs in the whole list, not on where x is.",
+      "First count how many times each value occurs (values are 0..1000 and 2x is at most 2000, so a plain array works). Then for every element x of the input, repeats included, check whether freq[2x] is exactly 1.",
+      "Put every qualifying x into the result (each repeated x counts separately), sort it and print it space-separated; print an empty line if the result is empty. Note that twice 0 is still 0, so 0 is selected only if it occurs exactly once in the list. Time O(n log n)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the frequency of each value. For each element x of the input, check whether freq[2x] is exactly 1; if so, add it to the answer, and sort at the end.\n\n## Correctness\n\nThe frequency array reflects exactly how many times each integer appears in the list. Checking the condition at every input position keeps all repeated x; the requirement of exactly one 2x is expressed precisely by a frequency equal to 1. Sorting satisfies the output order.\n\n## Complexity\n\nTime O(n log n), space O(1001+n)."
+}

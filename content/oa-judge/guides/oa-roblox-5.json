@@ -1,0 +1,19 @@
+{
+  "id": "oa-roblox-5",
+  "packageChecksum": "94f22367a0d27b03ab42b543810f4026f6d24e98bd03ab721149f1200a39daa9",
+  "sourceContentHash": "111f976d39ba5e12cc3faf7acf2d30ef7867f60bfe8228546145db1644704c83",
+  "editorialSha256": "e08f64b13a649f56cda22af87ebd501a25cac914df61f1ab8667f9678355113c",
+  "hints": {
+    "zh": [
+      "整数线上的连续段数，等于“左邻不存在的存活房屋”的个数；拆掉一栋房屋只会影响它所在的那一段。",
+      "所以只需维护存活坐标的集合和当前段数：拆 x 之前看 x−1 和 x+1 是否还存在，就能知道段数如何变化。",
+      "两侧都存在：一段被拆成两段，段数加一；两侧都不存在：x 自成一段，拆掉后段数减一；只有一侧存在：x 是端点，段数不变。初始段数用“x−1 不在集合中的 x 的个数”算出。用哈希集合，每次查询期望 O(1)；坐标到 10^9，x+1 用 64 位更安全。按顺序输出每次拆除后的段数。"
+    ],
+    "en": [
+      "The number of contiguous segments on the integer line equals the number of surviving houses with no left neighbour; demolishing a house only affects the segment containing it.",
+      "So you only need the set of surviving coordinates and the current segment count: before demolishing x, check whether x - 1 and x + 1 still exist to know how the count changes.",
+      "Both exist: one segment splits in two, so the count increases by one. Neither exists: x is a segment by itself, so the count decreases by one. Exactly one exists: x is an endpoint and the count stays the same. Compute the initial count as the number of x whose x - 1 is not in the set. A hash set gives expected O(1) per query; coordinates reach 10^9, so 64-bit arithmetic for x + 1 is safer. Output the count after each demolition in order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the set of coordinates not yet demolished and the current number of contiguous segments. Before deleting x, check whether x-1 and x+1 still exist: if both do, one segment is split into two, so the count increases by one; if neither does, an isolated segment disappears, so it decreases by one; if only one side exists, the count is unchanged.\n\n## Correctness\n\nContiguous segments on the integer line are counted exactly by the surviving houses that have no left neighbour, as segment starts. Deleting a point only affects its own segment: if the point is inside the segment, it splits into two; if the segment has length one, the whole segment disappears; if it is at an endpoint, the remaining houses still form one segment. The neighbour classification above corresponds exactly to these three cases.\n\n## Complexity\n\nAverage O(1) per query, space O(n)."
+}

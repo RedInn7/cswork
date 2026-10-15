@@ -1,0 +1,16 @@
+{
+  "id": "oa-point72-1",
+  "packageChecksum": "aced25ccf3a397a1a259621e81c7b07670451a7bea11610685120e37db8f2d23",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\nint main() {\n    int n, d;\n    scanf(\"%d %d\", &n, &d);\n    vector<ll> cnt(d, 0);\n    for (int i = 0; i < n; i++) {\n        ll v;\n        scanf(\"%lld\", &v);\n        cnt[((v % d) + d) % d]++;\n    }\n    ll ans = 0;\n    // Enumerate remainder triples a <= b <= c with a + b + c == 0 (mod d).\n    for (int a = 0; a < d; a++)\n        for (int b = a; b < d; b++) {\n            int c = ((-(a + b)) % d + d) % d;\n            if (c < b) continue;\n            if (a == b && b == c) ans += cnt[a] * (cnt[a] - 1) * (cnt[a] - 2) / 6;\n            else if (a == b) ans += cnt[a] * (cnt[a] - 1) / 2 * cnt[c];\n            else if (b == c) ans += cnt[a] * (cnt[b] * (cnt[b] - 1) / 2);\n            else ans += cnt[a] * cnt[b] * cnt[c];\n        }\n    printf(\"%lld\\n\", ans);\n}\n",
+      "sha256": "60ac4ec733ea7577efcf18e20744b22f518ea7a5b25fefe80693e10db865d6a9"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int n = Integer.parseInt(st.nextToken()), d = Integer.parseInt(st.nextToken());\n        long[] cnt = new long[d];\n        for (int i = 0; i < n; i++) cnt[(int) Math.floorMod(Long.parseLong(st.nextToken()), (long) d)]++;\n        long ans = 0;\n        // Enumerate remainder triples a <= b <= c with a + b + c == 0 (mod d).\n        for (int a = 0; a < d; a++)\n            for (int b = a; b < d; b++) {\n                int c = Math.floorMod(-(a + b), d);\n                if (c < b) continue;\n                if (a == b && b == c) ans += cnt[a] * (cnt[a] - 1) * (cnt[a] - 2) / 6;\n                else if (a == b) ans += cnt[a] * (cnt[a] - 1) / 2 * cnt[c];\n                else if (b == c) ans += cnt[a] * (cnt[b] * (cnt[b] - 1) / 2);\n                else ans += cnt[a] * cnt[b] * cnt[c];\n            }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "42eaf721c6107d3c46ee06d2726ed0994948a28aeecbbbd33e31a2731e84afd5"
+    }
+  ]
+}

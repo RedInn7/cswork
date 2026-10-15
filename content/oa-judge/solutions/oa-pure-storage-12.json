@@ -1,0 +1,21 @@
+{
+  "id": "oa-pure-storage-12",
+  "packageChecksum": "c2ece10de8587d468d4acbeae963a6cc7b9ca693c19909fc47e3be8cdb7553d3",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    vector<int> a(n), freq(2001, 0);\n    for (auto& x : a) { scanf(\"%d\", &x); freq[x]++; }\n    vector<int> res;\n    for (int x : a) if (freq[2 * x] == 1) res.push_back(x);\n    sort(res.begin(), res.end());\n    string out;\n    for (size_t i = 0; i < res.size(); i++) { if (i) out += ' '; out += to_string(res[i]); }\n    puts(out.c_str());\n}\n",
+      "sha256": "a40ec3091d4713bd43e67ceb100fabd6674ba967bb72532ee4dfdafde26e73ee"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int n = Integer.parseInt(st.nextToken());\n        int[] a = new int[n], freq = new int[2001];\n        for (int i = 0; i < n; i++) freq[a[i] = Integer.parseInt(st.nextToken())]++;\n        int[] res = Arrays.stream(a).filter(x -> freq[2 * x] == 1).sorted().toArray();\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < res.length; i++) { if (i > 0) sb.append(' '); sb.append(res[i]); }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "6f0346362645d76e0f19b18e8f152b6fc903f15273fcdc1a3c9b73941523ee2d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tn := next()\n\ta := make([]int, n)\n\tfreq := make([]int, 2001)\n\tfor i := range a {\n\t\ta[i] = next()\n\t\tfreq[a[i]]++\n\t}\n\tvar res []int\n\tfor _, x := range a {\n\t\tif freq[2*x] == 1 {\n\t\t\tres = append(res, x)\n\t\t}\n\t}\n\tsort.Ints(res)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor i, x := range res {\n\t\tif i > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(strconv.Itoa(x))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "b3b48256cddcc34111016c1f0f5deaf9852f175943bff8be9e2233780bebfa4d"
+    }
+  ]
+}

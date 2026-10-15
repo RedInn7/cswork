@@ -1,0 +1,19 @@
+{
+  "id": "oa-pinterest-7",
+  "packageChecksum": "e794f9596f413faaa26bf5183955f1474848175c2ce7ae56e88e68e3a479d4e6",
+  "sourceContentHash": "e04789871699dedbd8df967eaa97e5a10f3ce6f21dbd4b4719390a579a6ecdb0",
+  "editorialSha256": "f1c7c80c227bc42892d77b4fd09f6292efec7da4565e4cd34bf53308c2c45ae2",
+  "hints": {
+    "zh": [
+      "过程是确定性的模拟：每一轮都只会选“当前位置右侧（含当前位置）最近的那辆车”，而位置只会不断向右推进。",
+      "把滑板车位置排序，用一个指针跳过所有位置小于当前位置的车，指针指向的就是这一轮要骑的车。",
+      "当 pos<finish 时：指针越过所有 <pos 的车；若没有车了就结束（剩下步行不计）；否则取这辆车 x，骑到 reached=min(finish,x+10)，累加 reached−x，令 pos=reached，指针后移。每辆车至多处理一次，排序后线性完成。"
+    ],
+    "en": [
+      "The process is a deterministic simulation: each round only picks the nearest scooter at or to the right of the current position, and the position only moves right.",
+      "Sort the scooter positions and keep a pointer that skips every scooter whose position is less than the current position; the scooter under the pointer is the one ridden this round.",
+      "While pos < finish: advance the pointer past scooters < pos; if none remain, stop (the remaining walk is not counted). Otherwise take that scooter x, ride to reached = min(finish, x + 10), add reached - x, set pos = reached and advance the pointer. Each scooter is handled at most once, so after sorting the work is linear."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the scooter positions and, from the current position, find the first scooter with x >= the current position; add min(finish, x+10) - x and move the current position there. Stop when no usable scooter remains.\n\n## Correctness\n\nEach round, the rule uniquely names the nearest scooter to the right of the current point; in an ascending array that is exactly the lower_bound. It can be ridden to x+10 or finish, whichever comes first, so this round's distance is min(finish, x+10) - x. The algorithm simulates round by round according to the rule, walking distance that is not ridden is not counted, and each round the position strictly increases or reaches finish, so it terminates.\n\n## Complexity\n\nLet n be the number of scooters. Sorting takes O(n log n), after which each scooter is processed at most once; space O(n)."
+}

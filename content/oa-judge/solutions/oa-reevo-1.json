@@ -1,0 +1,21 @@
+{
+  "id": "oa-reevo-1",
+  "packageChecksum": "c4508af0a731f0d355f6dd0487f4f5d2a515de4d593e3dc348a67fbd9ea029c6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s, out;\n    cin >> s;\n    for (size_t i = 0; i < s.size();) {\n        size_t j = i + 1;\n        while (j < s.size() && s[j] == s[i]) j++;\n        out += s[i];\n        if (j - i > 1) out += to_string(j - i);\n        i = j;\n    }\n    puts(out.c_str());\n}\n",
+      "sha256": "8995ec25824ec5b5fee9726344ef0e1655b1c1a1ce543b8ea17c1f4dbfeb7212"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new String(System.in.readAllBytes()).trim();\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < s.length();) {\n            int j = i + 1;\n            while (j < s.length() && s.charAt(j) == s.charAt(i)) j++;\n            out.append(s.charAt(i));\n            if (j - i > 1) out.append(j - i);\n            i = j;\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "92569ced8a9bf503a25e4eaaea23d7be034564467f0ea69ad52b57958f2b0638"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(os.Stdin)\n\ts := strings.TrimSpace(string(data))\n\tvar out strings.Builder\n\tfor i := 0; i < len(s); {\n\t\tj := i + 1\n\t\tfor j < len(s) && s[j] == s[i] {\n\t\t\tj++\n\t\t}\n\t\tout.WriteByte(s[i])\n\t\tif j-i > 1 {\n\t\t\tout.WriteString(strconv.Itoa(j - i))\n\t\t}\n\t\ti = j\n\t}\n\tfmt.Println(out.String())\n}\n",
+      "sha256": "ecaa583da1b3fab8adb3d9b41d3d1868c759196c0a69f0e2522c78247e23a869"
+    }
+  ]
+}

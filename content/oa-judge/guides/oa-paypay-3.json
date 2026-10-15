@@ -1,0 +1,19 @@
+{
+  "id": "oa-paypay-3",
+  "packageChecksum": "fd28e5ee0663b40aa6dbdb0962f1da5b26e868a8647606d441cc71a8f73fa60d",
+  "sourceContentHash": "d96f74075aa3defa1d65c439603259ef07e6c4517d67a5a2a3d79e192140f204",
+  "editorialSha256": "48225a80c11da076a901be96313e296aa2a838ded5e24d5b1a4157aa87df6ea7",
+  "hints": {
+    "zh": [
+      "长度为 2 的连续片段一共只有 |S|−1 个，每个都由相邻两个数字组成。",
+      "直接线性扫描所有相邻数字对，把它们当作两位十进制数，取最大值即可。",
+      "对每个 i（0≤i<|S|−1），片段值为 (S[i]−'0')×10+(S[i+1]−'0')；前导零自然被当作整数处理，例如 \"05\" 就是 5。维护最大值并输出。"
+    ],
+    "en": [
+      "There are only |S| - 1 contiguous fragments of length 2, each made of two adjacent digits.",
+      "Scan all adjacent digit pairs once, read each as a two-digit decimal number, and keep the maximum.",
+      "For each i with 0 <= i < |S| - 1, the fragment value is (S[i] - '0') * 10 + (S[i+1] - '0'); a leading zero is handled naturally, so \"05\" is 5. Track the maximum and print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAmong all contiguous fragments of length 2 in the digit string, find the maximum value when each is read as a decimal number.\n\n## Proof of correctness\n\nThe construction corresponds one to one with the definition in the statement; every input position is processed according to the definition, so no solution is missed and nothing is counted twice.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-roblox-2",
+  "packageChecksum": "b6bea3fde27721d0d9269ebb091ec61bdb85f662529c902911b38fb3941c3a29",
+  "sourceContentHash": "3ae6424e08381bb9f2786ec68e8564f68037ebc9b63231f7ad82539552ed9820",
+  "editorialSha256": "e990c43c1cc0b2c7e7224a55daa90c91555f648a2efaff918c1d43a06acdb888",
+  "hints": {
+    "zh": [
+      "某个值在窗口中出现 c 次时，最多能组成 floor(c/2) 对下标互不相同的相等对；不同值的下标天然不冲突，所以窗口的最大不相交对数是各值 floor(c/2) 之和。",
+      "这个量随窗口右端扩大而不减、随左端右移而不增，满足双指针的单调性。对每个右端点，合法的左端点是一个前缀 [0, left)。",
+      "维护频次表和 pairs：加入元素时，若它的旧次数为奇数则 pairs 加一；当 pairs ≥ k 时不断移出左端元素，若被移出值的旧次数为偶数则 pairs 减一，left 右移。这样 left 停在使窗口刚好不足 k 对的位置，当前右端点贡献 left 个合法子数组。答案可达约 2×10^10，用 64 位整数；k 很大时答案为 0。"
+    ],
+    "en": [
+      "A value occurring c times in a window can form at most floor(c/2) equal pairs with all indices distinct; indices of different values never conflict, so the window's maximum number of disjoint pairs is the sum of floor(c/2) over values.",
+      "This quantity never decreases as the right end grows and never increases as the left end moves right, which is the monotonicity two pointers need. For each right end, the valid left ends form a prefix [0, left).",
+      "Keep a frequency table and pairs: when adding an element, pairs grows by one if its old count was odd; while pairs >= k, remove the leftmost element, decreasing pairs if the removed value's old count was even, and advance left. Then left stops where the window just falls short of k pairs, and the current right end contributes left valid subarrays. The answer can reach about 2 * 10^10, so use 64-bit integers; for a huge k the answer is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each value, maintain its number of occurrences in the current window. When an element is added, the value's number of pairable pairs increases by one only if its old count was odd; when one is removed, it decreases by one only if its old count was even. Two pointers maintain the shortest suffix whose maximum number of disjoint duplicate pairs within the window is less than k. For each right end, the valid left ends are exactly 0 through left-1, which is left of them.\n\n## Correctness\n\nIf a value occurs c times, it can form at most floor(c/2) pairs with all indices distinct; index sets of different values are naturally disjoint, so the window's maximum number of disjoint pairs is the sum of floor(c/2) over values. This quantity is non-decreasing as the right end advances and non-increasing as the left end moves right, so the two pointers pass exactly over all valid left ends, and accumulating left counts each subarray once with nothing missed.\n\n## Complexity\n\nEach index enters and leaves the window at most once: time O(n), space O(n)."
+}

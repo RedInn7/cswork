@@ -1,0 +1,19 @@
+{
+  "id": "oa-pure-storage-14",
+  "packageChecksum": "77b42248a4fdcac2e2fcea43fe818fa8d232232dc6584e0e9ae88b8c5b690303",
+  "sourceContentHash": "90e9b556a1b84f29d488526da03d73d30a151099165a94c029c786d2a8644d84",
+  "editorialSha256": "ecb6dae39853c80ef6a57416fc5abad4b559c55aef1656dbe9e7c0cb3c7d7ff5",
+  "hints": {
+    "zh": [
+      "选手 ID 是连续的 1001..1000+R，可以直接映射到数组下标；每条记录只影响一位选手的总分，比赛编号本身用不到。",
+      "用长度为 R 的数组累计得分：名次 1..6 分别加 10、6、4、3、2、1 分，其他名次不加分。没出现在记录里的选手保持 0 分，也要参与排名。",
+      "最后按（总分最高，ID 最小）选出获胜者：从下标 0 开始扫描，只有分数严格更大时才更换当前最佳，这样同分时自然保留 ID 较小者。输出 1001+下标 和该总分。时间 O(R+M)。"
+    ],
+    "en": [
+      "Racer IDs are the consecutive values 1001..1000+R, so they map straight to array indices; each record affects only one racer's total, and the race number itself is not needed.",
+      "Accumulate scores in an array of length R: positions 1..6 add 10, 6, 4, 3, 2, 1 points, and any other position adds nothing. Racers that never appear keep 0 points and still take part in the ranking.",
+      "Pick the winner by (highest total, smallest ID): scan from index 0 and replace the current best only when a score is strictly larger, so ties keep the smaller ID automatically. Print 1001 + index and that total. Time O(R + M)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAccumulate each racer's score in an array of length R. Only positions 1..6 add their points; other positions add nothing. Finally choose the racer with the smallest key under (total score descending, racer index ascending).\n\n## Correctness\n\nEach result record corresponds to exactly one racer's position in one race, so adding points by the given mapping yields each racer's total. The sort key first maximizes the total score and then minimizes the consecutive racer ID; including all R racers also ensures that racers who never appear take part in ties with zero points.\n\n## Complexity\n\nTime O(R+M), space O(R)."
+}

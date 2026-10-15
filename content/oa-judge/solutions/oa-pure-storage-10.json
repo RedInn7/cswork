@@ -1,0 +1,21 @@
+{
+  "id": "oa-pure-storage-10",
+  "packageChecksum": "9b72de71cff07120498be35fa774660896b45658f77d0b556115f4bdca42ae3f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, ans = 0;\n    cin >> n;\n    for (int i = 0; i < n; i++) {\n        string a, b;\n        cin >> a >> b;\n        sort(a.begin(), a.end());\n        sort(b.begin(), b.end());\n        ans += a != b;  // equal sorted strings <=> equal character counts\n    }\n    printf(\"%d\\n\", ans);\n}\n",
+      "sha256": "e2374e7f8b88fc666aef6182334fd9f9c69684f84dce01bc554db31d190ec46b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StringTokenizer st = new StringTokenizer(new String(System.in.readAllBytes()));\n        int n = Integer.parseInt(st.nextToken()), ans = 0;\n        for (int i = 0; i < n; i++) {\n            int[] cnt = new int[26];\n            for (char ch : st.nextToken().toCharArray()) cnt[ch - 'a']++;\n            for (char ch : st.nextToken().toCharArray()) cnt[ch - 'a']--;\n            for (int v : cnt) if (v != 0) { ans++; break; }\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "340264a09a6c9660715635b456fc32ec67ee9d1f3d4007adb1275768341eb770"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() string { sc.Scan(); return sc.Text() }\n\tn, _ := strconv.Atoi(next())\n\tans := 0\n\tfor i := 0; i < n; i++ {\n\t\tvar cnt [26]int\n\t\tfor _, ch := range next() {\n\t\t\tcnt[ch-'a']++\n\t\t}\n\t\tfor _, ch := range next() {\n\t\t\tcnt[ch-'a']--\n\t\t}\n\t\tif cnt != [26]int{} {\n\t\t\tans++\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "16893cf70183472419fda6f07c2d97e218516b9255b7596e0e90e8e10330bef7"
+    }
+  ]
+}
