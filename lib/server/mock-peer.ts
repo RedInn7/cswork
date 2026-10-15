@@ -16,8 +16,9 @@ import { plain } from './study-groups';
  * Peer mock interviews (db/mock-peer-schema.ts): a learner offers UTC hour slots for one
  * template and level; among open requests of the same template and level that share a future
  * slot, the one with the most target companies (×2) and topics in common becomes the partner,
- * the oldest first on a tie. An instant request ("practise now") pairs only with another filed
- * in the last INSTANT_MINUTES, for the hour under way, and lapses after that. Each pair runs two rounds of the template, each side the
+ * the oldest first on a tie. An instant request ("practice now") pairs only with another filed
+ * in the last INSTANT_MINUTES, for the hour under way, and lapses after that (lib/server/
+ * peer-reminders.ts closes it). Each pair runs two rounds of the template, each side the
  * candidate once, on the mock interview's candidate/interviewer links. Partners see only the
  * name typed for matching. Two no-show reports from different partners in 90 days pause matching;
  * a report the reported side answered with its own does not count. Cancelling a matched session
@@ -129,8 +130,10 @@ const sideOf = (req: Pick<RequestRow, 'user_id' | 'tz' | 'locale'>) => ({ user: 
 /** " · In common: Google, Graphs" for a match notice, or nothing. */
 function focusText(f: Focus | undefined, zh: boolean) {
   if (!f || !affinity(f)) return '';
-  const names = new Map(f.companies.length ? reportCompanies().map((c) => [c.slug, c.name]) : []);
-  const items = [...f.companies.map((c) => names.get(c) ?? c), ...f.topics.map((t) => STOP_NAMES[t]?.[zh ? 0 : 1] ?? t)];
+  const items = [
+    ...f.companies.map((slug) => reportCompanies().find((c) => c.slug === slug)?.name ?? slug),
+    ...f.topics.map((t) => STOP_NAMES[t]?.[zh ? 0 : 1] ?? t),
+  ];
   return ` · ${COMMON_FOCUS[zh ? 0 : 1]}: ${items.join(zh ? '、' : ', ')}`;
 }
 function tell(
@@ -193,7 +196,7 @@ export function requestMatch(
     db.prepare(`UPDATE mock_match_requests SET status='cancelled',updated_at=? WHERE user_id=? AND status='open'`).run(now, p.id);
     const mine = busy(p.id, now);
     if (mine.size >= UPCOMING_MAX) throw new HttpError(409, '已经约了 3 场，先完成再约');
-    // Practising now bypasses LEAD_HOURS: the hour under way, if it is free.
+    // Practice now bypasses LEAD_HOURS: the hour under way, if it is free.
     const slots = instant
       ? [hourNow(now)].filter((s) => !mine.has(s))
       : open([...new Set(input.slots)], now)
