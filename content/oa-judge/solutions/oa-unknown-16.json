@@ -1,0 +1,21 @@
+{
+  "id": "oa-unknown-16",
+  "packageChecksum": "64165d63daa7f91d94a7d952932b481326efac15ce50d5aee803ba2cfa1fdb0e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string a, b;\n    getline(cin, a);\n    getline(cin, b);\n    long long ca[256] = {0}, cb[256] = {0};\n    for (unsigned char c : a) ca[c]++;\n    for (unsigned char c : b) cb[c]++;\n    // Multiset intersection takes the min count per character, union the max.\n    long long inter = 0, uni = 0;\n    for (int c = 0; c < 256; c++) {\n        inter += min(ca[c], cb[c]);\n        uni += max(ca[c], cb[c]);\n    }\n    printf(\"%.12f\\n\", (double)inter / uni);\n}\n",
+      "sha256": "3036f2ee218078a2071e21c063e355b1f2ae83150cf52a5c6858933532a20897"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String a = br.readLine(), b = br.readLine();\n        long[] ca = new long[65536], cb = new long[65536];\n        for (int i = 0; i < a.length(); i++) ca[a.charAt(i)]++;\n        for (int i = 0; i < b.length(); i++) cb[b.charAt(i)]++;\n        // Multiset intersection takes the min count per character, union the max.\n        long inter = 0, uni = 0;\n        for (int c = 0; c < 65536; c++) {\n            inter += Math.min(ca[c], cb[c]);\n            uni += Math.max(ca[c], cb[c]);\n        }\n        System.out.printf(\"%.12f%n\", (double) inter / uni);\n    }\n}\n",
+      "sha256": "6d5839eff41d4555170af22e8be77a55ec368795970738dabc92fba70a929293"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\trd := bufio.NewReaderSize(os.Stdin, 1<<20)\n\ta, _ := rd.ReadString('\\n')\n\tb, _ := rd.ReadString('\\n')\n\ta = strings.TrimRight(a, \"\\r\\n\")\n\tb = strings.TrimRight(b, \"\\r\\n\")\n\tvar ca, cb [256]int\n\tfor i := 0; i < len(a); i++ {\n\t\tca[a[i]]++\n\t}\n\tfor i := 0; i < len(b); i++ {\n\t\tcb[b[i]]++\n\t}\n\t// Multiset intersection takes the min count per character, union the max.\n\tinter, uni := 0, 0\n\tfor c := 0; c < 256; c++ {\n\t\tinter += min(ca[c], cb[c])\n\t\tuni += max(ca[c], cb[c])\n\t}\n\tfmt.Printf(\"%.12f\\n\", float64(inter)/float64(uni))\n}\n",
+      "sha256": "8a1127004d9055fcb21eeebd3c9a0cc372edc9d8d01c851b0c7b2e9805c61dc6"
+    }
+  ]
+}

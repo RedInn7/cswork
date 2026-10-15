@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-65",
+  "packageChecksum": "cc41e45e2c2e47855817ec448a1e273778b9fbd46445aff8c8b8d7c54b179b6a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<string> w(n);\n    for (auto &s : w) cin >> s;\n    sort(w.begin(), w.end());\n    long long ans = 0;\n    // Words with prefix w[i] form the sorted range [w[i], w[i] + '{'), since '{' follows 'z'.\n    for (int i = 0; i < n; i++) ans += lower_bound(w.begin(), w.end(), w[i] + '{') - w.begin() - i - 1;\n    cout << ans << \"\\n\";\n}\n",
+      "sha256": "206f12caac07b74d0a4e63b7fb5e9b8c9955725955ac548ddd1134c4f781e0b2"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return null;\n        ByteArrayOutputStream sb = new ByteArrayOutputStream();\n        while (c != -1 && c > ' ') { sb.write(c); c = read(); }\n        return sb.toString(java.nio.charset.StandardCharsets.UTF_8);\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        String[] w = new String[n];\n        for (int i = 0; i < n; i++) w[i] = next();\n        Arrays.sort(w);\n        long ans = 0;\n        // Words with prefix w[i] form the sorted range [w[i], w[i] + '{'), since '{' follows 'z'.\n        for (int i = 0; i < n; i++) {\n            String key = w[i] + '{';\n            int lo = i + 1, hi = n;\n            while (lo < hi) {\n                int mid = (lo + hi) >>> 1;\n                if (w[mid].compareTo(key) < 0) lo = mid + 1;\n                else hi = mid;\n            }\n            ans += lo - i - 1;\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "d84d0edb382da089afcd93041f0869336da78c4ac192216b30b337e3096440f4"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc readToken() string {\n\tc, err := rd.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tif err != nil {\n\t\treturn \"\"\n\t}\n\tb := []byte{}\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tb = append(b, c)\n\t\tc, err = rd.ReadByte()\n\t}\n\treturn string(b)\n}\n\nfunc main() {\n\tn := readInt()\n\tw := make([]string, n)\n\tfor i := range w {\n\t\tw[i] = readToken()\n\t}\n\tsort.Strings(w)\n\tans := 0\n\t// Words with prefix w[i] form the sorted range [w[i], w[i] + \"{\"), since '{' follows 'z'.\n\tfor i := 0; i < n; i++ {\n\t\tkey := w[i] + \"{\"\n\t\tans += sort.SearchStrings(w, key) - i - 1\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "37d0d3cec90d55a00316292736e5af319d8bc5c0562f7fd87229e84528dfbd72"
+    }
+  ]
+}

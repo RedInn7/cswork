@@ -1,0 +1,21 @@
+{
+  "id": "oa-unknown-11",
+  "packageChecksum": "c22817d9c554d140900b56f706238d5b686de405eacfbaa64afb78eafa0cc5f3",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    long long target;\n    cin >> n >> target;\n    unordered_map<long long, int> seen;\n    for (int j = 0; j < n; j++) {\n        long long v;\n        cin >> v;\n        // Look up earlier indices before inserting, so an element never pairs with itself.\n        auto it = seen.find(target - v);\n        if (it != seen.end()) { cout << it->second << \" \" << j << \"\\n\"; return 0; }\n        seen[v] = j;\n    }\n}\n",
+      "sha256": "67a53f5abec4c6cf72503f110f734087f2bcf6b7193bc6dc3b34202ecd66062d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return null;\n        ByteArrayOutputStream sb = new ByteArrayOutputStream();\n        while (c != -1 && c > ' ') { sb.write(c); c = read(); }\n        return sb.toString(java.nio.charset.StandardCharsets.UTF_8);\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long target = nextLong();\n        Map<Long, Integer> seen = new HashMap<>();\n        for (int j = 0; j < n; j++) {\n            long v = nextLong();\n            // Look up earlier indices before inserting, so an element never pairs with itself.\n            Integer i = seen.get(target - v);\n            if (i != null) { System.out.println(i + \" \" + j); return; }\n            seen.put(v, j);\n        }\n    }\n}\n",
+      "sha256": "4e4b615b16e945e0e3e6c9ade9506a6da9b3c2a2c8c521b89479cf354d4d9f2e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc readToken() string {\n\tc, err := rd.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tif err != nil {\n\t\treturn \"\"\n\t}\n\tb := []byte{}\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tb = append(b, c)\n\t\tc, err = rd.ReadByte()\n\t}\n\treturn string(b)\n}\n\nfunc main() {\n\tn, target := readInt(), readInt()\n\tseen := map[int]int{}\n\tfor j := 0; j < n; j++ {\n\t\tv := readInt()\n\t\t// Look up earlier indices before inserting, so an element never pairs with itself.\n\t\tif i, ok := seen[target-v]; ok {\n\t\t\tfmt.Println(i, j)\n\t\t\treturn\n\t\t}\n\t\tseen[v] = j\n\t}\n}\n",
+      "sha256": "4aec1efa3c7202248bc244923e896d285fdfa6b19d28bf763d87f6e3121a09bb"
+    }
+  ]
+}

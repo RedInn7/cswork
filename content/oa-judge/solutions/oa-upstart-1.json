@@ -1,0 +1,21 @@
+{
+  "id": "oa-upstart-1",
+  "packageChecksum": "43f983d2d0f30ba40108c78ad2f71fda54608ac6be83758181155d662139152a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    long long minX = LLONG_MAX, maxX = LLONG_MIN, minY = LLONG_MAX, maxY = LLONG_MIN;\n    for (int i = 0; i < n; i++) {\n        long long x, y;\n        scanf(\"%lld %lld\", &x, &y);\n        minX = min(minX, x); maxX = max(maxX, x);\n        minY = min(minY, y); maxY = max(maxY, y);\n    }\n    printf(\"%lld %lld %lld %lld\\n\", minX, minY, maxX - minX, maxY - minY);\n}\n",
+      "sha256": "673a33166dac81ed569e25f4fbc91e24117528c5dca5f3d7d4be27653f6fdce4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return null;\n        ByteArrayOutputStream sb = new ByteArrayOutputStream();\n        while (c != -1 && c > ' ') { sb.write(c); c = read(); }\n        return sb.toString(java.nio.charset.StandardCharsets.UTF_8);\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long minX = Long.MAX_VALUE, maxX = Long.MIN_VALUE, minY = Long.MAX_VALUE, maxY = Long.MIN_VALUE;\n        for (int i = 0; i < n; i++) {\n            long x = nextLong(), y = nextLong();\n            minX = Math.min(minX, x); maxX = Math.max(maxX, x);\n            minY = Math.min(minY, y); maxY = Math.max(maxY, y);\n        }\n        System.out.println(minX + \" \" + minY + \" \" + (maxX - minX) + \" \" + (maxY - minY));\n    }\n}\n",
+      "sha256": "e34b7ab0f016155946fb331f4eaf8a19d8319a36eedc100c3275f863a427ad6f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc readToken() string {\n\tc, err := rd.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tif err != nil {\n\t\treturn \"\"\n\t}\n\tb := []byte{}\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tb = append(b, c)\n\t\tc, err = rd.ReadByte()\n\t}\n\treturn string(b)\n}\n\nfunc main() {\n\tn := readInt()\n\tminX, maxX, minY, maxY := math.MaxInt64, math.MinInt64, math.MaxInt64, math.MinInt64\n\tfor i := 0; i < n; i++ {\n\t\tx, y := readInt(), readInt()\n\t\tminX, maxX = min(minX, x), max(maxX, x)\n\t\tminY, maxY = min(minY, y), max(maxY, y)\n\t}\n\tfmt.Println(minX, minY, maxX-minX, maxY-minY)\n}\n",
+      "sha256": "d3d72f246121a94aa9c3b6e178923bc19987e755006c63445bb92b4cda4f9dad"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-53",
+  "packageChecksum": "3f8750708603dda78aba5532a1e40af6e2527ebe2dbb064b01487d7b750c740d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    // dp[i] = minimum deletions to make suffix a[i..] valid\n    vector<int> dp(n + 1, 0);\n    for (int i = n - 1; i >= 0; i--) {\n        dp[i] = 1 + dp[i + 1];\n        long long end = i + a[i] + 1;\n        if (end <= n) dp[i] = min(dp[i], dp[end]);\n    }\n    printf(\"%d\\n\", dp[0]);\n}\n",
+      "sha256": "d25c963eaf27dd1357639afa8edd0c5cb60a826d985e560556ab19e73bf5c69b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return null;\n        ByteArrayOutputStream sb = new ByteArrayOutputStream();\n        while (c != -1 && c > ' ') { sb.write(c); c = read(); }\n        return sb.toString(java.nio.charset.StandardCharsets.UTF_8);\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        // dp[i] = minimum deletions to make suffix a[i..] valid\n        int[] dp = new int[n + 1];\n        for (int i = n - 1; i >= 0; i--) {\n            dp[i] = 1 + dp[i + 1];\n            long end = i + a[i] + 1;\n            if (end <= n) dp[i] = Math.min(dp[i], dp[(int) end]);\n        }\n        System.out.println(dp[0]);\n    }\n}\n",
+      "sha256": "5345feaaff98e8dc5feb7e325d2deecbb03841cd5db5e3ef77c0623948fb4642"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc readToken() string {\n\tc, err := rd.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tif err != nil {\n\t\treturn \"\"\n\t}\n\tb := []byte{}\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tb = append(b, c)\n\t\tc, err = rd.ReadByte()\n\t}\n\treturn string(b)\n}\n\nfunc main() {\n\tn := readInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\t// dp[i] = minimum deletions to make suffix a[i..] valid\n\tdp := make([]int, n+1)\n\tfor i := n - 1; i >= 0; i-- {\n\t\tdp[i] = 1 + dp[i+1]\n\t\tif end := i + a[i] + 1; end <= n {\n\t\t\tdp[i] = min(dp[i], dp[end])\n\t\t}\n\t}\n\tfmt.Println(dp[0])\n}\n",
+      "sha256": "0a4db2f94898b94e245f346499e2c40de4846d222b2453eaa4af41b846177e8d"
+    }
+  ]
+}

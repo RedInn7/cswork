@@ -1,0 +1,21 @@
+{
+  "id": "oa-verisk-1",
+  "packageChecksum": "0c77d17860c689cfd279e0d5d21106241a3a58a94e9f913aef82d3a43b1b737b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    string out, s;\n    for (int k = 0; k < n; k++) {\n        cin >> s;\n        long long ans = 0;\n        // A run of length L needs L / 2 replacements (change every second character).\n        for (size_t i = 0; i < s.size();) {\n            size_t j = i + 1;\n            while (j < s.size() && s[j] == s[i]) j++;\n            ans += (j - i) / 2;\n            i = j;\n        }\n        out += to_string(ans) + \"\\n\";\n    }\n    cout << out;\n}\n",
+      "sha256": "42387f867a5059b8c72c83bc7b6fb168ca509ea10c9910e59f9f8045734cb9da"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        DataInputStream in = new DataInputStream(new BufferedInputStream(System.in, 1 << 16));\n        int c = in.read();\n        while (c < '0' || c > '9') c = in.read();\n        int n = 0;\n        while (c >= '0' && c <= '9') { n = n * 10 + c - '0'; c = in.read(); }\n        StringBuilder sb = new StringBuilder();\n        for (int k = 0; k < n; k++) {\n            while (c != -1 && c <= ' ') c = in.read();\n            // Stream each word: a run of length L needs L / 2 replacements.\n            long ans = 0;\n            int prev = -1, run = 0;\n            while (c != -1 && c > ' ') {\n                if (c == prev) run++;\n                else { ans += run / 2; run = 1; prev = c; }\n                c = in.read();\n            }\n            ans += run / 2;\n            sb.append(ans).append('\\n');\n        }\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "f8718b1614e445ce21866590315ed83f6f05739375be00f8ebba74a9052c2dd7"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc readToken() string {\n\tc, err := rd.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tif err != nil {\n\t\treturn \"\"\n\t}\n\tb := []byte{}\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tb = append(b, c)\n\t\tc, err = rd.ReadByte()\n\t}\n\treturn string(b)\n}\n\nfunc main() {\n\tn := readInt()\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor k := 0; k < n; k++ {\n\t\ts := readToken()\n\t\tans := 0\n\t\t// A run of length L needs L / 2 replacements (change every second character).\n\t\tfor i := 0; i < len(s); {\n\t\t\tj := i + 1\n\t\t\tfor j < len(s) && s[j] == s[i] {\n\t\t\t\tj++\n\t\t\t}\n\t\t\tans += (j - i) / 2\n\t\t\ti = j\n\t\t}\n\t\tw.WriteString(strconv.Itoa(ans) + \"\\n\")\n\t}\n}\n",
+      "sha256": "8714e9f84122820f7add65de79c4954914f7f041cc3568630eadc08f20d7dda8"
+    }
+  ]
+}

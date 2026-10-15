@@ -1,0 +1,21 @@
+{
+  "id": "oa-uber-48",
+  "packageChecksum": "86c3877b3af269911bf01e0b26ad86e02514ed68395af4de8fe831ac26d459b8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, m;\n    cin >> n >> m;\n    vector<int> prev(m + 1, 0), cur(m + 1, 0);\n    int best = 0;\n    for (int i = 0; i < n; i++) {\n        string row;\n        cin >> row;\n        fill(cur.begin(), cur.end(), 0);\n        for (int j = 1; j <= (int)row.size(); j++) {\n            if (row[j - 1] == '1') {\n                cur[j] = 1 + min({prev[j], prev[j - 1], cur[j - 1]});\n                best = max(best, cur[j]);\n            }\n        }\n        swap(prev, cur);\n    }\n    printf(\"%lld\\n\", (long long)best * best);\n}\n",
+      "sha256": "4981baf7c2eb3e03b920b3fbcfeedfce45d1c03ba9b9f1992707c6e13179c99d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return null;\n        ByteArrayOutputStream sb = new ByteArrayOutputStream();\n        while (c != -1 && c > ' ') { sb.write(c); c = read(); }\n        return sb.toString(java.nio.charset.StandardCharsets.UTF_8);\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), m = nextInt();\n        int[] prev = new int[m + 1], cur = new int[m + 1];\n        int best = 0;\n        for (int i = 0; i < n; i++) {\n            String row = next();\n            java.util.Arrays.fill(cur, 0);\n            for (int j = 1; j <= row.length(); j++) {\n                if (row.charAt(j - 1) == '1') {\n                    cur[j] = 1 + Math.min(Math.min(prev[j], prev[j - 1]), cur[j - 1]);\n                    best = Math.max(best, cur[j]);\n                }\n            }\n            int[] t = prev; prev = cur; cur = t;\n        }\n        System.out.println((long) best * best);\n    }\n}\n",
+      "sha256": "c5406a34ac91baae17d46438ce2dfbe87053ea617237f01e87b79a4e8464fb37"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc readToken() string {\n\tc, err := rd.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tif err != nil {\n\t\treturn \"\"\n\t}\n\tb := []byte{}\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tb = append(b, c)\n\t\tc, err = rd.ReadByte()\n\t}\n\treturn string(b)\n}\n\nfunc main() {\n\tn, m := readInt(), readInt()\n\tprev := make([]int, m+1)\n\tcur := make([]int, m+1)\n\tbest := 0\n\tfor i := 0; i < n; i++ {\n\t\trow := readToken()\n\t\tfor j := range cur {\n\t\t\tcur[j] = 0\n\t\t}\n\t\tfor j := 1; j <= len(row); j++ {\n\t\t\tif row[j-1] == '1' {\n\t\t\t\tcur[j] = 1 + min(prev[j], prev[j-1], cur[j-1])\n\t\t\t\tbest = max(best, cur[j])\n\t\t\t}\n\t\t}\n\t\tprev, cur = cur, prev\n\t}\n\tfmt.Println(best * best)\n}\n",
+      "sha256": "a6249fcd45f9b1d0fae4282f08e2f735a31911691544bdc6036d7b6ce3e32b00"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-48",
+  "packageChecksum": "86c3877b3af269911bf01e0b26ad86e02514ed68395af4de8fe831ac26d459b8",
+  "sourceContentHash": "9b781fb2c58542a4a428af6e7de43a90c52c88deaf1073b871df937484206268",
+  "editorialSha256": "af74f740b6725efded7774ad524a432165bb943ef789b4badfa881cff2c32049",
+  "hints": {
+    "zh": [
+      "以某个格子为右下角的全 1 正方形，向左、向上、向左上各退一格，都能得到以邻格为右下角的全 1 正方形。所以以当前格为右下角的最大边长由这三个邻居决定。",
+      "设 dp[i][j] 为以 (i,j) 为右下角的最大全 1 正方形边长。格子为 1 时 dp 等于左、上、左上三者最小值加一，为 0 时 dp 为 0。只用到上一行，可以按行滚动。",
+      "维护上一行数组 prev 和当前行数组 cur（下标从 1 开始，第 0 列恒为 0）。逐行逐列处理：字符为 '1' 时 cur[j]=1+min(prev[j],prev[j−1],cur[j−1]) 并更新最大边长 best，否则为 0；一行结束后交换两行。答案是 best 的平方。"
+    ],
+    "en": [
+      "An all-ones square with a given bottom-right cell, when shrunk by one toward the left, the top or the top-left, gives all-ones squares ending at the neighboring cells. So the largest side at the current cell is determined by those three neighbors.",
+      "Let dp[i][j] be the largest side of an all-ones square whose bottom-right corner is (i,j). For a 1 cell it is the minimum of the left, top and top-left values plus one; for a 0 cell it is 0. Only the previous row is needed, so roll the rows.",
+      "Keep prev for the previous row and cur for the current one (1-indexed, column 0 always 0). For each cell, if it is '1' set cur[j] = 1 + min(prev[j], prev[j-1], cur[j-1]) and update the best side; otherwise set it to 0. Swap the rows after each row. The answer is best squared."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a row-by-row rolling DP. When the current cell is 1, the largest side of a square with it as the bottom-right corner is the minimum of the left, top and top-left values plus 1.\n\n## Correctness\n\nA square of side s needs the three squares above (left, top, top-left) to have sides of at least s-1, together with the current 1. Taking the minimum of the three plus 1 does form a square, and anything larger would leave at least one side short. Taking the maximum side over all bottom-right corners and squaring it gives the answer.\n\n## Complexity\n\nTime O(nm), space O(m) apart from the input."
+}

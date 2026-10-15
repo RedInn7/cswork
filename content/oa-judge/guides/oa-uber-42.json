@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-42",
+  "packageChecksum": "bf95a897fd0e885df3bba4c73d397cc58b582cc58de1b8106d983732fec897d9",
+  "sourceContentHash": "f761e355823c15e8937d6ffc497b884a4ef8703f7699edc091d5e89a1d9b9b75",
+  "editorialSha256": "a0ec2bcbb3839ce80af59b7fb86d3c4f70edca81a785542331d621e2d7f8f9b7",
+  "hints": {
+    "zh": [
+      "值 1..k 在排列中各占一个不同的位置。只要这些位置之间没有空隙，它们组成的连续段里装的就恰好是 1..k。",
+      "按值从小到大依次加入，只需维护已加入位置的最左端和最右端；包围区间的长度正好等于 k 时，这 k 个位置连续。",
+      "先记下每个值所在的下标 pos[v]。令 left=n、right=−1，对 k=1..n 用 pos[k] 更新 left 和 right，若 right−left+1 等于 k 就输出 1，否则输出 0，最后拼成长度为 n 的 01 串。"
+    ],
+    "en": [
+      "The values 1..k occupy k distinct positions in the permutation. If those positions have no gaps between them, the contiguous block they form contains exactly 1..k.",
+      "Add values in increasing order and only track the leftmost and rightmost positions seen so far. When the length of that enclosing range equals k, the k positions are contiguous.",
+      "Record pos[v], the index of each value. Start with left = n and right = -1; for k = 1..n update left and right with pos[k], output 1 if right - left + 1 equals k and 0 otherwise, and join the results into a string of length n."
+    ]
+  },
+  "explanationEn": "## Approach\n\nInsert the positions of the values from 1 to n in order, maintaining the leftmost and rightmost positions. When the length of that range equals the number k of values added so far, these k positions are contiguous.\n\n## Correctness\n\nBecause the array is a permutation, the values 1..k occupy k distinct positions, all of which lie inside their minimal enclosing range. The enclosing range has length k exactly when there are no gaps, and in that case its elements are exactly 1..k.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

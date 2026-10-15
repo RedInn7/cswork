@@ -1,0 +1,21 @@
+{
+  "id": "oa-unknown-10",
+  "packageChecksum": "9659b20a1096c0bb1206b69dbb6617b65a82a7e7f8bb8195fe6a434b302a6ae0",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    long long best = 0;\n    for (int i = 1; i < n; i++) best = max(best, llabs(a[i] - a[i - 1]));\n    cout << best << \"\\n\";\n}\n",
+      "sha256": "6821384e65a794f790db3fdb20f6578c82b314ad71456e757adf1816fb7e105e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return null;\n        ByteArrayOutputStream sb = new ByteArrayOutputStream();\n        while (c != -1 && c > ' ') { sb.write(c); c = read(); }\n        return sb.toString(java.nio.charset.StandardCharsets.UTF_8);\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long prev = nextLong(), best = 0;\n        for (int i = 1; i < n; i++) {\n            long cur = nextLong();\n            best = Math.max(best, Math.abs(cur - prev));\n            prev = cur;\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "2b36ec52e1b55b26f6e21a82b21941c2257048255a72c648fa8e4104d5aea89c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' || c == '\\t' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc readToken() string {\n\tc, err := rd.ReadByte()\n\tfor err == nil && (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tif err != nil {\n\t\treturn \"\"\n\t}\n\tb := []byte{}\n\tfor err == nil && !(c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') {\n\t\tb = append(b, c)\n\t\tc, err = rd.ReadByte()\n\t}\n\treturn string(b)\n}\n\nfunc main() {\n\tn := readInt()\n\tprev, best := readInt(), 0\n\tfor i := 1; i < n; i++ {\n\t\tcur := readInt()\n\t\td := cur - prev\n\t\tif d < 0 {\n\t\t\td = -d\n\t\t}\n\t\tbest = max(best, d)\n\t\tprev = cur\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "d95e50c437faa83a7bf330699bd37d8eb8faa40cf5e11c03b4ae32fc8fa825ee"
+    }
+  ]
+}

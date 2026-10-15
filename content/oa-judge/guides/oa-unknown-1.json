@@ -1,0 +1,19 @@
+{
+  "id": "oa-unknown-1",
+  "packageChecksum": "d3d357ba4288cafb70f925e1f88661f37b9c40a40d7b5eeaa3f46e3f19368c16",
+  "sourceContentHash": "5091b84a0315c76718623c9225aef5922019b67d1fd48ff2e2fea44b2b3e67d4",
+  "editorialSha256": "a51f2f17d93f323c13985d2b6ba8374c4abf8af767a74341ac64bbdb67ff1d79",
+  "hints": {
+    "zh": [
+      "在树里，距离不超过 2 的两个点只有两种：父子，或者同一个父节点下的兄弟（祖孙也算距离 2，它们隔着一个父节点）。所以每个点只需和父亲、祖父以及兄弟们颜色不同。",
+      "任选一个根，从上往下着色并做乘法计数。根有 k 种选择；根的孩子要避开根并互相不同；其他节点的孩子要避开该节点和它的父节点，同时互相不同。每个节点的孩子们贡献一个下降阶乘。",
+      "以城市 1 为根统计度数。答案初始为 k mod 10⁹+7；对每个节点 v，可用颜色数 available 为 k−1（根）或 k−2（非根），孩子数 children 为 deg(v)（根）或 deg(v)−1（非根）。若 available<children，答案为 0；否则把 available·(available−1)·…·(available−children+1) 逐项取模乘进答案。"
+    ],
+    "en": [
+      "In a tree, two nodes at distance at most 2 are either parent and child or siblings under the same parent (a grandparent and grandchild are also at distance 2, with the parent between them). So each node only has to differ from its parent, its grandparent and its siblings.",
+      "Pick any root, color from the top down and count by multiplication. The root has k choices; the root's children must avoid the root and differ from each other; the children of any other node must avoid that node and its parent and differ from each other. Each node's children contribute one falling factorial.",
+      "Root the tree at city 1 and count degrees. Start the answer at k mod 10^9 + 7. For each node v, the available colors are k - 1 for the root or k - 2 otherwise, and the number of children is deg(v) for the root or deg(v) - 1 otherwise. If available < children, the answer is 0; otherwise multiply available * (available - 1) * ... * (available - children + 1) into the answer, reducing modulo at every step."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPick any root and count along the parent-child relation: the root has k choices; the root's children, one by one, avoid the root and the siblings already colored; the children of every other node must also avoid that node and its parent as well as the siblings already colored. Each node corresponds to a falling factorial, and all the factors are multiplied together modulo the given number.\n\n## Proof of Correctness\n\nIn a tree, the pairs of nodes at distance at most 2 are exactly parent-child pairs and siblings under the same parent. When coloring from the root toward the leaves, the colors available to the current node are exactly those left after excluding its parent and the siblings already processed, so every valid coloring is counted once and without conflict. If there are not enough available colors, the answer is 0.\n\n## Complexity\n\nTime O(n), space O(n). An independent oracle exhaustively enumerates colorings on small trees and checks every pair for distance-1/2 conflicts."
+}

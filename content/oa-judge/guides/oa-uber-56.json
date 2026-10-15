@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-56",
+  "packageChecksum": "e2dec2bfd0656a47c2fbc6a0addb5c8b76d0040e684004a97a6fa1dc7659aeb4",
+  "sourceContentHash": "6d26feefd77fd5b10bd5d68632ab85dfad60821cfcd1e44c2c83b5cfbdfa8cf6",
+  "editorialSha256": "650f725cb1f1fca89c09e7b4c71774ba7a42a8356f4c6e24f5485e4682a061ac",
+  "hints": {
+    "zh": [
+      "流水线吞吐是所有服务的最小值，所以要达到吞吐 T，每个服务都必须单独达到 T。各服务需要的最少扩容次数互不影响，而且 T 越大，总花费不会变少。",
+      "对答案 T 二分。给定 T，服务 i 至少要扩容 ceil(T/base[i])−1 次，把所有服务的最低花费加起来与预算比较即可判断可行性。",
+      "下界取 min(base)（不扩容就能达到），上界取 min(base[i]·(1+budget/cost[i]))，因为任一服务把全部预算用上也超不过它。二分时对每个 T 累加 ((T−1)/base[i])·cost[i]，一旦超过预算就提前停止；可行就提高下界，否则降低上界。注意用 64 位整数。"
+    ],
+    "en": [
+      "Pipeline throughput is the minimum over all services, so reaching throughput T means every service must reach T on its own. The minimum number of upgrades for each service is independent of the others, and a larger T never makes the total cost smaller.",
+      "Binary search on the answer T. For a given T, service i needs at least ceil(T / base[i]) - 1 upgrades; add up the minimum costs of all services and compare the sum with the budget.",
+      "The lower bound is min(base), reachable with no upgrades; the upper bound is min(base[i] * (1 + budget / cost[i])), since no service can exceed that even with the whole budget. For each T accumulate ((T - 1) / base[i]) * cost[i], stopping early once the budget is exceeded; raise the lower bound if feasible, otherwise lower the upper bound. Use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search on the target throughput T. Service i needs at least ceil(T/base[i]) - 1 upgrades; add up these minimum costs one by one, and T is infeasible once the sum exceeds the budget.\n\n## Correctness\n\nTo reach the pipeline target, every service must reach T. The minimum number of upgrades for each service is independent and unique, so the sum of their costs is the necessary and sufficient cost. That cost is non-decreasing in T, so binary search finds the largest feasible value.\n\n## Complexity\n\nTime O(n log U), space O(n), where U = min(base[i] × (1 + budget // cost[i]))."
+}

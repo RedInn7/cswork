@@ -1,0 +1,19 @@
+{
+  "id": "oa-unknown-5",
+  "packageChecksum": "1832363fa9f57bcbd1f6cd89fb86b00aef3d419661a7295913fcbecc807eacd6",
+  "sourceContentHash": "45d321c839cd230c329fe73c55ac15e390398b1491f9298a7fec0c0019d8384a",
+  "editorialSha256": "14c37537bb146bf8a6524edd3e383ec97e4340f806afbe7565af6850725706e9",
+  "hints": {
+    "zh": [
+      "单线程意味着任意时刻只有调用栈顶的函数在执行。两条相邻日志之间的那段时间，应当完整地记给当时的栈顶函数。",
+      "用栈模拟调用链，再用一个变量 previous 记录“下一个还没分配出去的时间点”。每来一条日志，先把 [previous, timestamp) 这段时间加给栈顶；start 的时间点属于新函数之后的执行，end 的时间点本身也属于正在结束的函数（结束时间是闭区间）。",
+      "previous 初始为 0，栈为空。处理 id:start:t 时：栈非空则栈顶加上 t−previous，然后压入 id，令 previous=t。处理 id:end:t 时：栈顶加上 t−previous，再给 id 加 1（补上时间点 t 本身），弹栈，令 previous=t+1。最后按编号输出 n 个独占时间。"
+    ],
+    "en": [
+      "Single-threaded means only the function on top of the call stack runs at any moment. The time between two consecutive log entries belongs entirely to the function on top of the stack at that time.",
+      "Simulate the call chain with a stack and keep a variable previous, the next time point not yet assigned. For each log, first add [previous, timestamp) to the top of the stack; a start time point belongs to the new function's later execution, while an end time point itself still belongs to the function that is ending (the end time is inclusive).",
+      "Start with previous = 0 and an empty stack. For id:start:t, if the stack is non-empty add t - previous to its top, then push id and set previous = t. For id:end:t, add t - previous to the top, add 1 more to id for the time point t itself, pop, and set previous = t + 1. Finally output the n exclusive times by function id."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a stack to hold the current call chain, and use `previous` to record the first time point not yet assigned. When each log arrives, first add `[previous, timestamp)` to the function on top of the stack; a `start` then pushes the new function, while an `end` also adds the ending time point to the current function and pops it.\n\n## Proof of Correctness\n\nBetween any two consecutive logs, only the function on top of the stack runs exclusively, so the length of that interval must be added to the top of the stack and to nothing else. A start event's time point is not part of the new function's already-executed interval; an end event is an inclusive bound by the statement, so the timestamp itself is added separately. As a result, every unit of execution time is counted exactly once for the right function.\n\n## Complexity\n\nTime O(m), space O(n), where m is the number of logs and n the number of functions."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-unknown-14",
+  "packageChecksum": "c3a7f5fc930715efdc374c5f2ab805105598be45d0d54b1e5180743c33f2defc",
+  "sourceContentHash": "e249354acbab8f93038c9f1629980bfaa882ec6fddcafffded4d6538d0366879",
+  "editorialSha256": "0c56dd6cddeb2a5fa1f1b279f0e82d10b091605105a1de8fefca4d700b3a26dd",
+  "hints": {
+    "zh": [
+      "先固定倍数 k。要让 k(A+X)=B+Y 且 Y≥0，就需要 k(A+X)≥B，所以最小的 X 是 max(0, ceil(B/k)−A)；X 定了以后 Y 被等式唯一确定。于是每个 k 都对应一个确定的最优代价。",
+      "k 可以很大，不能全部枚举。注意代价只通过 ceil(B/k) 依赖于 k 的“商”部分，而 ceil(B/k) 只有 O(√B) 种不同取值：小的 k 直接枚举，大的 k 按商分组，每组只需检查一个代表。另外 X 恰好变成 0 的那个 k 也要单独检查。",
+      "令 r=⌊√B⌋+2。对 k=1..min(B,r) 逐个计算代价；对 q=1..r，取 k=ceil(B/q) 计算代价；再检查 k=max(1, ceil(B/A))。代价公式为 X+k(A+X)−B，其中 X=max(0, ceil(B/k)−A)。取所有候选的最小值输出，中间结果要用 64 位整数。"
+    ],
+    "en": [
+      "First fix the multiplier k. For k(A+X) = B+Y with Y >= 0 you need k(A+X) >= B, so the smallest X is max(0, ceil(B/k) - A); once X is fixed, Y is determined by the equation. So every k has one well-defined optimal cost.",
+      "k can be large, so you cannot try them all. The cost depends on k mainly through ceil(B/k), and ceil(B/k) takes only O(sqrt B) distinct values: enumerate small k directly, group large k by that quotient and check one representative per group. Also check separately the k at which X just becomes 0.",
+      "Let r = floor(sqrt B) + 2. Compute the cost for k = 1..min(B, r); for q = 1..r compute it for k = ceil(B/q); then also check k = max(1, ceil(B/A)). The cost is X + k(A+X) - B with X = max(0, ceil(B/k) - A). Output the minimum over all candidates, using 64-bit integers for intermediate values."
+    ]
+  },
+  "explanationEn": "## Approach\n\nOnce the integer k is fixed, the smallest non-negative x is `max(0, ceil(B/k)−A)`; then set `y=k(A+x)−B`, and the cost is x+y. Small k are enumerated directly; for large k, the quotient `ceil(B/k)` takes only O(√B) distinct values, so k can be enumerated by quotient intervals, and the boundary where x=0 is checked separately.\n\n## Proof of Correctness\n\nFor a fixed k, any smaller x would make `k(A+x)<B`, which violates the condition; with this smallest x, y is uniquely determined by the equation, so the cost is optimal for that k. Small k are enumerated one by one, and large k are enumerated merged by equal values of `ceil(B/k)`, so every possible optimal quotient is covered; the smallest of these costs is the global optimum.\n\n## Complexity\n\nTime O(√B), space O(1). Random small values are also checked against an oracle that enumerates every k."
+}

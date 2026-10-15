@@ -1,0 +1,19 @@
+{
+  "id": "oa-verkada-1",
+  "packageChecksum": "5c14f3e66a385aa6787998770d25ee6c35e9d784175cf255670dbf589cbf4c6b",
+  "sourceContentHash": "accca20e488ee87de417011d05c896c22c45b45516f435fcf3ee6d3586604a9c",
+  "editorialSha256": "12bcc09363cd57b07a25aab79d05d9bc1c0808fd14589e3a7e8500e4dfcff43b",
+  "hints": {
+    "zh": [
+      "任务拆成三件互不相干的事：判断一个文件是否在 root 之下（严格后代），从文件内容里按空白切出 token，判断 token 是不是合法的 IPv4 地址。",
+      "判断后代要按完整路径组件比较，而不是字符串前缀：先把路径规范化（合并多余的斜杠、去掉 \".\"、处理 \"..\"），再看 root 的组件序列是否是文件路径组件序列的前缀，且两者不相等，这样 /data2 就不会被误认为在 /data 下。合法 IPv4 恰好四段，每段是十进制数字、不超过 255，并且除单独的 \"0\" 外不能有前导零。",
+      "读入 root 和文件数，逐行在第一个制表符处切开路径与内容。路径规范化后不是 root 的严格后代就跳过；否则把内容按空白切成 token，用点号切成四段逐段检查：非空、全是 ASCII 数字、长度大于 1 时首位不是 0、数值不超过 255。把所有通过的 token（保留重复）收集起来按字典序排序，每行输出一个；没有结果就什么都不输出。"
+    ],
+    "en": [
+      "The task splits into three independent parts: deciding whether a file lies under root (a strict descendant), cutting the file content into whitespace-separated tokens, and deciding whether a token is a valid IPv4 address.",
+      "Check descendants by whole path components, not by string prefix: normalize the paths first (merge extra slashes, drop \".\", resolve \"..\"), then require root's component list to be a prefix of the file's component list without the two being equal, so that /data2 is not mistaken for something under /data. A valid IPv4 address has exactly four parts, each made of decimal digits, at most 255, and without leading zeros except for a lone \"0\".",
+      "Read root and the file count, then split each line at the first tab into path and content. Skip the file if its normalized path is not a strict descendant of root; otherwise split the content on whitespace and split each token on dots into four parts, checking each: non-empty, all ASCII digits, no leading 0 when longer than one character, and value at most 255. Collect every token that passes, keeping duplicates, sort them lexicographically and print one per line; print nothing if there are none."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse `commonpath` to decide whether a path is a strict descendant; check each token for 4 decimal octets; keep repeated tokens and then sort. Time O(input length + sorting the results).\n\n## Proof of Correctness\n\nThe path-component prefix test selects exactly the files that are strict descendants of root. Each token is checked against the definition: four parts, decimal form, leading zeros and the value range; keeping every valid occurrence and then sorting neither misses an item nor introduces an invalid one.\n\n## Complexity\n\nDescendants of root are decided by complete POSIX path components, so a path that merely shares root's name as a string prefix is not included; each IP part may contain only decimal digits, and a leading zero is allowed only for a lone 0.\n\nO(T + A log A) time and O(A) space, where T is the length of the input text and A is the number of address occurrences.\n\n## Reference Implementation\n\n```python\ndef solve(raw):\n import os,re\n z=raw.splitlines();root=os.path.normpath(z[0]);n=int(z[1]);out=[]\n for line in z[2:2+n]:\n  path,content=line.split('\\t',1);p=os.path.normpath(path)\n  try:inside=os.path.commonpath([root,p])==root and p!=root\n  except ValueError:inside=False\n  if not inside:continue\n  for t in content.split():\n   a=t.split('.')\n   if len(a)==4 and all(x.isascii() and x.isdigit() and (x=='0' or not x.startswith('0')) and int(x)<=255 for x in a):out.append(t)\n return '\\n'.join(sorted(out))\n```"
+}

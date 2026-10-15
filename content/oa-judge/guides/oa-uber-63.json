@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-63",
+  "packageChecksum": "560b1d5fb32d409a0c06161f97e5f41aa696642bb9fe28992b0fb453881dcfc8",
+  "sourceContentHash": "f176577403c499c4ecf6c87163d8eed4658c2387e464fc0d12d1705da3075721",
+  "editorialSha256": "92a8169820774e0a20673da0e359293471616bcea17000aa7f9c04609e93dc45",
+  "hints": {
+    "zh": [
+      "每一场的胜者就是这一对里排名数字较小的那个，所以每轮的新名单只依赖上一轮的名单，直接模拟就够了。",
+      "每轮把名单两两分组，每组取较小值，人数为奇数时最后一个人直接晋级，按原顺序组成下一轮名单。人数每轮大约减半，所以所有轮的总处理量是线性的。",
+      "当名单长度大于 1 时循环：对下标 0,2,4,… 取 min(a[i],a[i+1])，若 i+1 越界就保留 a[i]；把新名单的人数和成员拼成一行记录下来。循环结束后先输出轮数 R，再依次输出各轮记录。n=1 时 R 为 0。"
+    ],
+    "en": [
+      "The winner of each match is the player with the smaller rank number in that pair, so each round's new list depends only on the previous list, and direct simulation is enough.",
+      "In each round pair up the list, take the smaller value of each pair, and let the last player advance automatically when the count is odd, keeping the original order for the next round. The count roughly halves every round, so the total work over all rounds is linear.",
+      "While the list has more than one player: for indices 0, 2, 4, ... take min(a[i], a[i+1]), keeping a[i] alone if i + 1 is out of range, and record a line with the new list's size and members. After the loop, print the number of rounds R and then each recorded line. For n = 1, R is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIn each round take the minimum of each pair, keep a leftover element as is, record the new list, and continue.\n\n## Correctness\n\nThe smallest rank in each pair is the winner of that match, and producing them in the original order matches the arrangement of the next round. Applying the rule round by round gives every correct list by induction; the number of players roughly halves each round, so the total work is linear.\n\n## Complexity\n\nTime O(n), space O(n), including all the output lists."
+}

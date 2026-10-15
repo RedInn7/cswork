@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-5",
+  "packageChecksum": "9bcd5678ce365da00cb1ff7e51d02bb2e89c881b0dcff5511625bdeec6f2c99d",
+  "sourceContentHash": "a7f2a8299324450cd336a0110237d5549757baa946e7ca0b8c12f172b702ebbb",
+  "editorialSha256": "8b87f4b0a7af1dbc5a2e57c47944219179ad22e15650d2c604371ec7c725d091",
+  "hints": {
+    "zh": [
+      "按规则，能兑换时一定优先兑换，而 P 只会在兑换时减少、不会被任何动作产生。所以兑换一共会发生多少次，只取决于初始 P 的数量。",
+      "兑换次数就是 floor(P/rate)。每次兑换本身算一个周期，并产生一个新的 A；所有 A（初始的和新产生的）最后都会被各消耗一次，每次也算一个周期。",
+      "数出串中 A 的个数 cntA 和 P 的个数 cntP，答案为 cntA+2·floor(cntP/rate)。不需要模拟过程。"
+    ],
+    "en": [
+      "By the rules a conversion always happens first when possible, and P only decreases during a conversion; no action ever creates a P. So the total number of conversions depends only on the initial count of P.",
+      "The number of conversions is floor(P / rate). Each conversion is one cycle and produces a new A; every A, initial or produced, is eventually consumed once, and each consumption is also one cycle.",
+      "Count the A's (cntA) and the P's (cntP) in the string; the answer is cntA + 2 * floor(cntP / rate). No simulation is needed."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEach conversion consumes a fixed number of P's, so floor(P/rate) conversions can be made. Every conversion also produces an A that must be consumed later, so the total number of cycles is the initial number of A's plus twice the number of conversions.\n\n## Correctness\n\nP only decreases, and only during a conversion; no other action produces a P, so the total number of conversions is fixed. Every A, initial or newly produced, is eventually consumed exactly once, so adding the two kinds of actions gives the number of cycles.\n\n## Complexity\n\nTime O(n), extra space O(1)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-51",
+  "packageChecksum": "4038ff2d019795a78bd59f595c6dbb52e5869cd5ad7f36a38abc7778f3b85bc3",
+  "sourceContentHash": "2ef2d758e6d9b9705ccbbb76c412a09ce91b97f31ffc500a51c63d623c04772d",
+  "editorialSha256": "f4af16ff85acb6e4d1e35c7b2815e3d08b96b687db0c61eebcf6ad6264a8fa16",
+  "hints": {
+    "zh": [
+      "固定根之后，每条边应该指向哪一边是确定的：从父亲指向孩子。所以一个根的代价就是“原方向与父子方向相反”的边数。",
+      "先以 0 为根数出需要反转的边数，再用换根：把根从父亲 v 挪到相邻孩子 w 时，只有 v、w 之间这条边的目标方向会反过来，其余边的需求不变，所以代价恰好变化 ±1。",
+      "建图时对原边 u→v 记录 (v,0) 到 u 的邻接表、(u,1) 到 v 的邻接表，1 表示沿这个方向走时原边需要反转。从 0 做 BFS 得到 parent、遍历顺序和每个孩子的 cost[w]，并累加出根 0 的代价。再按 BFS 顺序令 ans[w]=ans[parent[w]]+1−2·cost[w]，输出所有 ans 的最小值。"
+    ],
+    "en": [
+      "Once the root is fixed, the required direction of every edge is determined: from parent to child. So the cost of a root is the number of edges whose original direction is opposite to the parent-to-child direction.",
+      "Count the edges to reverse with 0 as the root, then reroot: moving the root from a node v to an adjacent child w flips only the required direction of the edge between them, and every other edge keeps its requirement, so the cost changes by exactly 1 in one direction or the other.",
+      "For an original edge u -> v, add (v, 0) to u's list and (u, 1) to v's list, where 1 means the edge must be reversed when traversed in that direction. BFS from 0 to get parents, the visiting order and cost[w] for each child, summing them into the cost of root 0. Then, in BFS order, set ans[w] = ans[parent[w]] + 1 - 2 * cost[w], and output the minimum of all ans."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst count the reversed edges with 0 as the root, then reroot: when the root moves to a child along an edge that originally points from parent to child, one more reversal is needed; if that edge was originally reversed, one fewer is needed.\n\n## Correctness\n\nRerooting between adjacent nodes only changes the target direction of the edge between them; every other edge keeps the same required direction relative to the root, so the cost changes by exactly ±1. Traversing all nodes gives the cost of every root, and we take the minimum.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-54",
+  "packageChecksum": "9ef141420efd2df8e1a0b996b0f7825dcf5a18832b752b92e882bd83b654edb4",
+  "sourceContentHash": "d1325d7a7ca58c181aed7a7247d9352a70286900c04832f0f49e562b3ab42b06",
+  "editorialSha256": "85a21c48d288cf339abf7d9d82c68c2fc101c9331e55077ebb16c2e760c4d3ad",
+  "hints": {
+    "zh": [
+      "每次把末尾挪到开头，本质上是循环右移。循环右移不改变任何循环意义下的相邻关系，只改变从哪里断开。",
+      "把数组首尾相接看成一个环，数一数相邻的“下降”（a[i] 大于它在环上的下一个元素）有几处。互不相同的元素排成严格升序后，环上恰好只有一处下降，就在最大值到最小值之间。",
+      "若数组本身已严格升序，答案为 0。否则统计所有满足 a[i]>a[(i+1) mod n] 的 i：恰好一处时，应在它之后断开，把后面的 n−i−1 个元素依次挪到前面，答案为 n−i−1；下降处多于一处则输出 −1。"
+    ],
+    "en": [
+      "Moving the last element to the front is a cyclic right shift. A cyclic shift keeps every adjacency of the circular order and only changes where the circle is cut.",
+      "View the array as a circle and count the descents, places where a[i] is greater than the next element around the circle. Distinct elements in strictly increasing order have exactly one descent on the circle, from the maximum to the minimum.",
+      "If the array is already strictly increasing, the answer is 0. Otherwise collect every i with a[i] > a[(i+1) mod n]. If there is exactly one, cut right after it, which takes moving the n - i - 1 elements after it to the front, so the answer is n - i - 1; with more than one descent, output -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf the array is already increasing, the answer is 0. Otherwise look for descents among the cyclic adjacencies. When there is exactly one descent, cutting right after it gives an increasing array, which takes n minus the cut point right shifts.\n\n## Correctness\n\nA cyclic right shift preserves all cyclic adjacencies and only changes which edge becomes the end-to-start link. A strictly increasing cycle of distinct elements has exactly one descent, so having exactly one descent is necessary and sufficient for feasibility, and the cut point is unique.\n\n## Complexity\n\nTime O(n), and O(n) space to store the input."
+}

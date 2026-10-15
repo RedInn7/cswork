@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-61",
+  "packageChecksum": "f18545270d911c38b8112c9163082b8118aa9a8b8abe6fec0366b7dd56ff3157",
+  "sourceContentHash": "c4cd59533f22c2c415f2d2534b93904e904af4cdd0c40fa847fdff21a7ca2aad",
+  "editorialSha256": "4cdf67f2c9decb05d54d68c73d56bac5f4532fbabd47418c6f00419ff26ec7ef",
+  "hints": {
+    "zh": [
+      "把“每个位置选一个质数、再把所有数组的乘积加起来”反过来看：若把每个位置可选质数的和相乘再展开，每一项恰好对应一个数组的分数。",
+      "由乘法分配律，答案就是各位置区间内质数之和的乘积。问题变成快速求任意区间 [low,high] 内的质数之和，用筛法加前缀和即可。",
+      "取所有 high 的最大值 M，用埃氏筛标出 M 以内的质数，再算 prefix[v]=不超过 v 的质数之和（会超过 32 位，要用 64 位）。对每个位置取 prefix[high]−prefix[low−1]，先对 10⁹+7 取模再乘进结果，结果也随时取模。"
+    ],
+    "en": [
+      "Look at \"choose a prime for each position and add up the products of all arrays\" the other way around: if you multiply the per-position sums of allowed primes and expand, each term corresponds exactly to the score of one array.",
+      "By the distributive law, the answer is the product of the prime sums of each position's interval. The task becomes finding the sum of primes in any interval [low, high] quickly, which a sieve plus prefix sums handles.",
+      "Let M be the largest high. Sieve the primes up to M and compute prefix[v], the sum of primes not exceeding v (it exceeds 32 bits, so use 64-bit integers). For each position take prefix[high] - prefix[low - 1], reduce it modulo 10^9 + 7, multiply it into the result, and keep the result reduced."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSieve all primes and compute prefix sums of the primes. The sum of the primes in each interval is a difference of prefix sums; multiply these sums together modulo the given number.\n\n## Correctness\n\nExpanding the product of the per-position prime sums, each term picks exactly one prime from every position, and the term's value is that array's score; the arrays correspond one-to-one with the terms of the expansion. So the distributive law turns the enumeration of combinations into a product of interval sums.\n\n## Complexity\n\nTime O(M log log M + n), space O(M), where M is the largest right endpoint."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-unknown-16",
+  "packageChecksum": "64165d63daa7f91d94a7d952932b481326efac15ce50d5aee803ba2cfa1fdb0e",
+  "sourceContentHash": "d22ead1480c069baa0b8935e5047b1b6711244f374f22e3314fcd1405fb0c9e4",
+  "editorialSha256": "c984cd61829f5f94e7a86be5c582c0e63653c53dfe29b1346206fde52231c35b",
+  "hints": {
+    "zh": [
+      "多重集 Jaccard 相似度只关心每个字符在两串里各出现了多少次，与字符的位置无关。",
+      "对每个字符，交集最多只能保留两串中较少的那一侧的次数，并集必须容纳较多的一侧的次数。所以交集大小是各字符 min(计数) 之和，并集大小是各字符 max(计数) 之和。",
+      "读入两行，分别统计 26 个字母的出现次数。遍历所有字符，累加 min(countA[c],countB[c]) 得到交集大小、累加 max(countA[c],countB[c]) 得到并集大小。两串都非空，所以并集大于 0，输出交集/并集，保留足够的小数位（例如 12 位）。"
+    ],
+    "en": [
+      "Multiset Jaccard similarity only depends on how many times each character occurs in each string, not on positions.",
+      "For each character, the intersection can keep at most the smaller of its two counts, and the union must hold the larger one. So the intersection size is the sum of min(counts) over characters and the union size is the sum of max(counts).",
+      "Read the two lines and count the occurrences of each letter in each. Over all characters, add min(countA[c], countB[c]) to the intersection size and max(countA[c], countB[c]) to the union size. Both strings are non-empty, so the union is positive; output intersection / union with enough decimal places, for example 12."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the occurrences of each character in the two strings separately. The size of the multiset intersection is the sum over characters of the minimum count, and the size of the union is the sum of the maximum counts; the answer is their ratio.\n\n## Proof of Correctness\n\nFor each character, the intersection keeps at most the number of occurrences on the side where it appears less often, and the union must keep the number on the side where it appears more often. Summing over the character classes gives the sizes of the multiset intersection and union respectively, and their ratio is exactly the multiset Jaccard similarity.\n\n## Complexity\n\nWith an alphabet of size σ, time O(n+m+σ), space O(σ)."
+}

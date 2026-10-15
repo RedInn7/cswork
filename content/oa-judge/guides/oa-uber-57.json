@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-57",
+  "packageChecksum": "2ce73d1f727f5c82370fc8516c4c74b31ffb48bf78baffc0f81f2b54a6789eb8",
+  "sourceContentHash": "4360d56cb83bebc64eca7d3e40f2491f19a018f28efd79a8f900e1a6206609d4",
+  "editorialSha256": "b8a9ff231a472df5809759cb9ced5b2046832bcb6ae185a0927b10521b9b87dc",
+  "hints": {
+    "zh": [
+      "每个非零格要和一个以自己为中心、去掉四个角的正方形区域里的最大值比较。去掉的只是四个原始角点，所以这个区域可以拆成几个普通矩形。",
+      "把区域拆成三块：中间各行（不含上下边界行）取完整宽度；上下两条边界行各去掉左右两端，只取内部列。每块都是矩形，用二维区间最大值结构查询，最多三次查询。",
+      "建一棵二维线段树：每行先建列方向的树，再按行合并成上层节点。对每个非零格 (i,j)，值为 v：先查行 [i−v+1,i+v−1]、列 [j−v,j+v]（都裁剪到边界内）；再对行 i−v 和 i+v 中在边界内的那一行，查列 [j−v+1,j+v−1]。若三块的最大值不超过 v，就记录该格。注意只有原始边界行越界时才跳过，被裁剪后的角不要误删。"
+    ],
+    "en": [
+      "Each non-zero cell is compared with the maximum over a square centered on it with the four corners removed. Only the four original corner points are removed, so the region splits into a few ordinary rectangles.",
+      "Split the region into three parts: the middle rows (excluding the top and bottom border rows) at full width, and the top and bottom border rows without their two end columns. Each part is a rectangle, so a 2D range-maximum structure answers it in at most three queries.",
+      "Build a 2D segment tree: build a column tree for every row, then merge rows into upper nodes. For a non-zero cell (i,j) with value v, query rows [i-v+1, i+v-1] and columns [j-v, j+v], both clipped to the grid; then for each of rows i-v and i+v that lies inside the grid, query columns [j-v+1, j+v-1]. If the maximum of these parts is at most v, record the cell. Skip a border row only when the original row is out of bounds, so that clipped corners are not wrongly removed."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBuild a 2D range-maximum tree. With its corners removed, each region splits into a full middle rectangle plus two segments on the top and bottom border rows, so at most three rectangles are queried. When an original border row is out of bounds, that segment is not queried, and corners that were already clipped are not wrongly removed.\n\n## Correctness\n\nThe middle rows contain none of the original corners, and the original top and bottom border rows only need their left and right endpoints excluded; the union of these three parts is exactly the defined region. The 2D tree returns the maximum of each rectangle, so comparing it with the cell's own value decides exactly; zero cells are excluded directly.\n\n## Complexity\n\nBuilding takes O(NM), each cell takes an O(log N log M) query, and space is O(NM), where N and M are the row and column counts rounded up to powers of 2."
+}

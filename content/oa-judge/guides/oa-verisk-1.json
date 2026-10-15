@@ -1,0 +1,19 @@
+{
+  "id": "oa-verisk-1",
+  "packageChecksum": "0c77d17860c689cfd279e0d5d21106241a3a58a94e9f913aef82d3a43b1b737b",
+  "sourceContentHash": "07980836bbc221ec23941ff4b5430ff95c69375d7cde1870ac896c1f6b43f84a",
+  "editorialSha256": "4e43521ea22d168207e911d641ee3071f819e4e2de852333a86836b6c0ce89f3",
+  "hints": {
+    "zh": [
+      "冲突只发生在连续相同的字符之间。把单词切成若干段“连续相同字符”，不同段之间的分界处本来就不相同，可以各段分别处理。",
+      "一段长度为 L 的相同字符，把其中第 2、4、6… 个字符改掉就能消除所有相邻相同，共 floor(L/2) 次；改成的字母只需与左右两边都不同，26 个字母总够用，也不会影响到相邻段。少于这个次数则必然留下两个相邻且未改动的相同字符。",
+      "对每个单词用双指针扫描：从 i 出发把 j 移到第一个与 s[i] 不同的位置，这一段长度为 j−i，答案加上 (j−i)/2（向下取整），然后令 i=j。扫描完输出该单词的答案，每个单词一行。"
+    ],
+    "en": [
+      "Conflicts only occur between consecutive equal characters. Split the word into runs of identical characters; the boundaries between different runs already differ, so each run can be handled on its own.",
+      "For a run of L equal characters, changing the 2nd, 4th, 6th, ... characters removes every adjacent equal pair, using floor(L/2) changes; each new letter only has to differ from its two neighbors, which 26 letters always allow, and it does not affect the neighboring runs. Any fewer changes would leave two adjacent unchanged equal characters.",
+      "For each word, scan with two pointers: from i, move j to the first position whose character differs from s[i]; the run has length j - i, so add (j - i) / 2 rounded down to the answer, then set i = j. After the scan print that word's answer, one line per word."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each word, find the minimum number of character replacements so that no two adjacent characters are the same.\n\n## Proof of Correctness\n\nThe construction corresponds one-to-one with the definition in the statement; every input position or operation is handled according to the definition, so no solution is missed and nothing is counted extra.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+}

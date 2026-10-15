@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-43",
+  "packageChecksum": "861304a60f5dcadbb000748d82d63a700aaf4bb9a2091b9916a7ae499026b892",
+  "sourceContentHash": "14c6ecf7ef0b147613f7c82e76885043a520b5d8a3caae952aa85aee75443b4a",
+  "editorialSha256": "d2bbfb6e25880e95442527d8891072c277c0414af89a9402892c978477ff8874",
+  "hints": {
+    "zh": [
+      "一段字符能重排成回文，当且仅当出现奇数次的字母至多一种。所以只需要知道路径上 26 个字母各自出现次数的奇偶性，一个 26 位掩码就够了。",
+      "预处理根到每个点的奇偶掩码。两点掩码异或会把公共的根到 LCA 前缀消掉，但 LCA 本身也被消掉了，需要再把 LCA 的字母补回来；LCA 用倍增求。",
+      "从根 0 做一次迭代 DFS，求 parent、depth 和 mask[v]=mask[parent]⊕(1<<字母)。建倍增表 up[j][v]，查询时先把深的点提到同一深度，再从高位往下同步上跳得到 LCA。路径掩码为 mask[u]⊕mask[v]⊕(LCA 字母位)，其置位个数不超过 1 输出 1，否则输出 0。"
+    ],
+    "en": [
+      "A multiset of characters can be rearranged into a palindrome exactly when at most one letter appears an odd number of times. So you only need the parity of each of the 26 letters along the path, which fits in a 26-bit mask.",
+      "Precompute the parity mask from the root to every node. XOR-ing two such masks cancels the shared root-to-LCA prefix, but it also cancels the LCA itself, so its letter must be added back. Find the LCA with binary lifting.",
+      "Run an iterative DFS from root 0 to get parent, depth and mask[v] = mask[parent] xor (1 << letter). Build the lifting table up[j][v]. For a query, lift the deeper node to the same depth, then jump both nodes from the highest level down to reach the LCA. The path mask is mask[u] xor mask[v] xor the LCA's letter bit; print 1 if it has at most one set bit, else 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain, for every node, the bitmask of character parities on the path from the root to that node, and find lowest common ancestors (LCA) with binary lifting. The path mask is mask[u] xor mask[v] xor letterBit[LCA]; the answer is yes when at most one bit is set.\n\n## Correctness\n\nXOR-ing the two root paths cancels their common prefix, which also cancels the LCA that must be counted once; adding its letter back gives the parity of the whole path. In a palindrome every character except a possible middle one comes in pairs, so having at most one character with odd frequency is necessary and sufficient.\n\n## Complexity\n\nTime O((n+q) log n), space O(n log n)."
+}

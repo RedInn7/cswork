@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-59",
+  "packageChecksum": "78132f5ffd11d815ab4ca4af606f380e57f3a6d95d45ba01c9af882bdd69fd32",
+  "sourceContentHash": "5a5d1100a1a01e162f598a19c374a04dccd66765ac9d61edf2b239e3de850b83",
+  "editorialSha256": "0c3f99f66df84e9ebb8b75069985749c658d5567819b038f4fbd25773c02152e",
+  "hints": {
+    "zh": [
+      "水每走一步花 1 个单位时间，而且只能流向高度不超过当前格的相邻格。把“能流过去”看成一条有向边，某格首次被打湿的时间就是从起点到它的最短步数。",
+      "边权都是 1 的最短路就是广度优先搜索。按距离一层层扩展，第一次访问到某格时得到的就是它最早被打湿的时间。",
+      "dist 全部初始化为 −1，起点设为 0 并入队。每次出队一个格子，检查上下左右四个邻居：在边界内、尚未访问、且高度不超过当前格，就令其 dist 为当前格加一并入队。BFS 结束后，按 n 行 m 列输出 dist，未访问的格子保持 −1。"
+    ],
+    "en": [
+      "Water takes one unit of time per step and can only flow to an adjacent cell whose height does not exceed the current cell's. Treat \"can flow there\" as a directed edge; the time a cell first gets wet is the shortest number of steps from the start to it.",
+      "Shortest paths with all edge weights equal to 1 are exactly breadth-first search. Expanding layer by layer, the first time a cell is visited gives the earliest time it gets wet.",
+      "Initialize every dist to -1, set the start to 0 and push it into the queue. Pop a cell and check its four neighbors: if a neighbor is inside the grid, not yet visited, and not higher than the current cell, set its dist to the current dist plus one and push it. After the BFS, print dist as n rows of m columns; unvisited cells stay -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTreat each allowed flow direction as a directed edge and use breadth-first search to compute the shortest number of edges from the start to every cell.\n\n## Correctness\n\nEach spreading step takes time 1, so a valid path of length t makes its endpoint wet at time t; conversely, the process of first becoming wet produces a valid path of the same length. BFS expands layer by layer in order of distance, so the first visit gives the shortest distance.\n\n## Complexity\n\nTime O(nm), space O(nm)."
+}

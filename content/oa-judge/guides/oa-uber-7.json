@@ -1,0 +1,19 @@
+{
+  "id": "oa-uber-7",
+  "packageChecksum": "ba4296f8f9fd4085bb72eac54f47505807427bfeec409b75866e5ac376670237",
+  "sourceContentHash": "533ad07d5ef07c9c7b9568d90f56850123aaf3f845d96039ad83ab92cfb276a3",
+  "editorialSha256": "966dec4cdfeb3054bef07851b8228ea181b92ceb1b300b397f85fb6fd8b08b9b",
+  "hints": {
+    "zh": [
+      "楼只能加高不能降低。最终形状一旦确定方向，就完全由起始高度 s 决定：升序时第 i 栋是 s+i，降序时是 s−i，每栋都给 s 一个独立的下界。",
+      "升序要求 s+i ≥ height[i] 对所有 i 成立，即 s ≥ max(height[i]−i)；降序要求 s ≥ max(height[i]+i)。总操作数随 s 增大而增大，所以各取最小可行的 s 就最优。",
+      "一次扫描求出 asc=max(height[i]−i)、desc=max(height[i]+i) 和总和 total，令 offset=n(n−1)/2。升序代价为 n·asc+offset−total，降序代价为 n·desc−offset−total，输出两者较小值。中间量会超过 32 位，用 64 位整数。"
+    ],
+    "en": [
+      "Buildings can only be raised. Once the direction is fixed, the final shape is determined by the start height s: building i becomes s + i when ascending or s - i when descending, and each building gives an independent lower bound on s.",
+      "Ascending needs s + i >= height[i] for every i, that is s >= max(height[i] - i); descending needs s >= max(height[i] + i). The total number of operations grows with s, so the smallest feasible s is optimal in each direction.",
+      "In one scan compute asc = max(height[i] - i), desc = max(height[i] + i) and the sum total, and let offset = n(n - 1)/2. The ascending cost is n * asc + offset - total and the descending cost is n * desc - offset - total; output the smaller one. Intermediate values exceed 32 bits, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe ascending start height must be at least max(height[i] - i), and the descending start height at least max(height[i] + i). Take the smallest feasible start for each direction and compute the total difference.\n\n## Correctness\n\nEach building can only be raised, which gives an independent lower bound on the start height; taking the largest of these bounds satisfies every position at once. The total number of operations increases with the start height, so the smallest feasible start is optimal, and we take the smaller of the two directions.\n\n## Complexity\n\nTime O(n), space O(n) (for the input array)."
+}

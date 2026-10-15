@@ -1,0 +1,19 @@
+{
+  "id": "oa-upstart-4",
+  "packageChecksum": "2e2a18b6474337d84e45af9c2ada03263dfb9f272ab11ec17d4c5fdbe8e085c9",
+  "sourceContentHash": "c8ae9e86719993843832ca0cc7076a364d8040757d4437de10576d5dddc4315b",
+  "editorialSha256": "36b4651c5bbda534ec72e0229c4a904dafa7856bbb5d511e1989e7f9c95e1408",
+  "hints": {
+    "zh": [
+      "从个位开始给数位编号，比较的是 num1+num2 与 givenSum 在同一位置上的数字。位数不同时，较短的数在高位上视为 0。",
+      "不需要把数字转成字符串再对齐：每次分别取两个数的个位（模 10）比较，再各自整除 10，就自然地从低位推进到高位，短的那个数在用完后个位一直是 0。",
+      "令 c=num1+num2（最大约 2·10¹⁸，64 位整数放得下），下标 i 从 0 开始。只要 c 或 givenSum 有一个不为 0 就继续：若 c mod 10 不等于 givenSum mod 10，输出 i；否则两者都除以 10，i 加一。循环正常结束说明完全相同，输出 −1。"
+    ],
+    "en": [
+      "Digits are numbered from the ones digit, and you compare the digits of num1 + num2 and givenSum at the same position. When the lengths differ, the shorter number counts as 0 in the higher positions.",
+      "There is no need to convert to strings and align them: take the ones digit of each number (mod 10), compare, then divide both by 10. This naturally moves from low to high positions, and the shorter number keeps giving 0 once it runs out.",
+      "Let c = num1 + num2 (at most about 2 * 10^18, which fits in a 64-bit integer) and start index i at 0. While c or givenSum is non-zero: if c mod 10 differs from givenSum mod 10, output i; otherwise divide both by 10 and increase i. If the loop ends normally the numbers are identical, so output -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRepeatedly take the ones digit of both numbers and compare them, then divide each by 10; return the current index at the first difference.\n\n## Proof of Correctness\n\nEach round processes exactly the current lowest digit, so the comparison moves strictly from the ones digit toward the higher digits. If the loop finishes, neither number has digits left, and after padding missing digits with 0 the two are completely identical.\n\n## Complexity\n\nTime O(log(max(num1+num2,givenSum))), space O(1)."
+}
