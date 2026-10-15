@@ -8,6 +8,7 @@ import { ROUND_LABELS } from '@/lib/experience';
 import { companyHubPath, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
 import { breadcrumbJsonLd, companyPageTitle, seoMetadata } from '@/lib/seo';
 import { CompanyStatsCard, MemberStatsCard } from '@/components/company-stats-card';
+import { CompanyFollowButton } from '@/components/company-follow-button';
 import { companyHub } from '@/lib/server/company-hub';
 import { rankInWindow, sourceDates } from '@/lib/server/company-insights';
 import { companyStats } from '@/lib/server/company-stats';
@@ -143,6 +144,7 @@ export default async function CompanyPage({ params, searchParams }: Props) {
         <a className="oa-public-cta is-quiet" href={`/discuss?${new URLSearchParams({ company: company.slug })}`}>
           {zh ? `讨论 ${company.name}` : `Discuss ${company.name}`}
         </a>
+        <CompanyFollowButton slug={company.slug} name={company.name} zh={zh} />
       </div>
       {stops.length > 1 && (
         <nav className="company-hub-stops" aria-label={zh ? '本页内容' : 'On this page'}>
