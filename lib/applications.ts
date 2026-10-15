@@ -13,8 +13,9 @@ export const STAGE_NAMES: Record<Stage, [string, string]> = {
   rejected: ['被拒', 'Rejected'],
   withdrawn: ['已撤回', 'Withdrawn'],
 };
-/** Closed applications: no countdown, no calendar event. */
-export const CLOSED: readonly Stage[] = ['rejected', 'withdrawn'];
+/** Stages with the OA still ahead: past them (or closed) a deadline gets no countdown and no calendar event. */
+export const OA_OPEN: readonly Stage[] = ['saved', 'applied', 'oa'];
+export const oaOpen = (a: Application) => a.oaDeadline !== null && OA_OPEN.includes(a.stage);
 export const APPLICATIONS_MAX = 300;
 export const NOTES_MAX = 2000;
 
@@ -106,10 +107,10 @@ export function applicationsCsv(items: readonly Application[], english: boolean)
   return '﻿' + [head, ...rows].map((r) => r.map(csvCell).join(',')).join('\r\n') + '\r\n';
 }
 
-/** One event per open OA deadline, reminded a day and two hours before by the calendar itself. */
+/** One event per open OA deadline still to come, reminded a day and two hours before by the calendar itself. */
 export function deadlinesIcs(items: readonly Application[], site: string, english: boolean, now = Date.now()) {
   const events = items
-    .filter((a) => a.oaDeadline !== null && !CLOSED.includes(a.stage))
+    .filter((a) => oaOpen(a) && a.oaDeadline! > now)
     .map((a) => {
       const what = `${a.company}${a.role ? ` · ${a.role}` : ''}`;
       const summary = english ? `OA due: ${what}` : `OA 截止：${what}`;

@@ -110,13 +110,16 @@ void test('CSV cells that a spreadsheet would run as formulas are defused', () =
   assert.match(csv, /"a,b\nc"/);
 });
 
-void test('the calendar has one event per open OA deadline with reminders a day and two hours before', () => {
+void test('the calendar has one event per OA deadline still ahead, with reminders a day and two hours before', () => {
   const deadline = Date.UTC(2099, 0, 2, 7, 30);
   const ics = deadlinesIcs(
     [
       row({ id: 'x', company: 'Acme; Inc', role: 'SWE', stage: 'oa', oaDeadline: deadline }),
       row({ id: 'y', stage: 'rejected', oaDeadline: deadline }),
       row({ id: 'z', stage: 'applied' }),
+      // Past the OA (the deadline no longer matters) or already passed: no event, no reminder.
+      row({ id: 'p', stage: 'phone', oaDeadline: deadline }),
+      row({ id: 'old', stage: 'oa', oaDeadline: Date.UTC(2097, 0, 1) }),
     ],
     'https://cswork.test',
     true,

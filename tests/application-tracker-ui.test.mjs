@@ -87,9 +87,25 @@ test('adding a card posts the form; moving one posts only its stage', async () =
   assert.equal(document.querySelector('form.resume-form'), null);
   assert.ok([...column('applied').querySelectorAll('.tracker-company')].some((p) => p.textContent === 'Google'));
 
+  column('oa').querySelector('select').focus();
   await setValue(column('oa').querySelector('select'), 'phone', 'change');
   assert.deepEqual(calls.at(-1), ['POST /api/oj/applications/amz', { stage: 'phone' }]);
-  assert.match(column('phone').textContent, /Amazon/);
+  const moved = column('phone').querySelector('[data-id="amz"]');
+  assert.match(moved.textContent, /Amazon/);
+  // Keyboard focus follows the card into its new column.
+  assert.equal(document.activeElement, moved.querySelector('select'));
+  // Past the OA stage the deadline has no countdown and nothing to export.
+  assert.equal(moved.querySelector('.tracker-due'), null);
+  assert.equal(button('导出 OA 截止日历').disabled, true);
+});
+
+test('a stage moved while the card is being edited is not saved back by the form', async () => {
+  await act(async () => column('phone').querySelector('[data-id="amz"] .tracker-card-actions button').click());
+  await setValue(column('phone').querySelector('[data-id="amz"] select'), 'oa', 'change');
+  assert.equal(document.querySelector('form.resume-form select').value, 'oa');
+  await act(async () => document.querySelector('form.resume-form button[type="submit"]').click());
+  assert.equal(calls.at(-1)[1].stage, 'oa');
+  assert.match(column('oa').textContent, /Amazon/);
 });
 
 test('a job link must be https before anything is sent', async () => {

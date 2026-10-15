@@ -2,13 +2,13 @@
 import { useEffect, useState } from 'react';
 import {
   applicationsCsv,
-  CLOSED,
   countdown,
   deadlinesIcs,
   funnel,
   httpsLink,
   localStamp,
   NOTES_MAX,
+  oaOpen,
   STAGE_NAMES,
   STAGES,
   type Application,
@@ -63,6 +63,7 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const [now, setNow] = useState(() => Date.now());
+  const [moved, setMoved] = useState<string | null>(null);
   useEffect(() => {
     let live = true;
     api<{ items: Application[] }>('oj/applications').then(
@@ -80,6 +81,12 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
       clearInterval(tick);
     };
   }, []);
+  // A moved card is rendered in another column: give its stage select the focus back.
+  useEffect(() => {
+    if (!moved) return;
+    document.querySelector<HTMLSelectElement>(`[data-id="${moved}"] select`)?.focus();
+    setMoved(null);
+  }, [moved]);
 
   const put = (item: Application) => setItems((list) => [item, ...(list ?? []).filter((a) => a.id !== item.id)]);
   async function send(path: string, body: unknown) {
@@ -116,8 +123,14 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
     }
   }
   async function move(a: Application, stage: Stage) {
-    const r = await send(`oj/applications/${a.id}`, { stage });
-    if (r?.item) put(r.item);
+    // The select stays enabled (disabling it would drop focus); one move at a time.
+    if (busy) return;
+    const item = (await send(`oj/applications/${a.id}`, { stage }))?.item;
+    if (!item) return;
+    put(item);
+    // An open edit form for this card would otherwise save its old stage back.
+    setForm((f) => (f && f.id === item.id ? { ...f, stage: item.stage } : f));
+    setMoved(item.id);
   }
   async function remove(id: string) {
     if (!window.confirm(t('删除这条投递记录？', 'Delete this application?'))) return;
@@ -131,7 +144,7 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
   if (!items) return <p className="visa-empty">{t('正在读取投递记录…', 'Loading your applications…')}</p>;
   const f = funnel(items);
   const rate = (n: number) => (f.applied ? `${Math.round((100 * n) / f.applied)}%` : '—');
-  const deadlines = items.filter((a) => a.oaDeadline !== null && !CLOSED.includes(a.stage)).length;
+  const deadlines = items.filter((a) => oaOpen(a) && a.oaDeadline! > now).length;
   return (
     <div className="tracker">
       <dl className="tracker-summary">
@@ -277,10 +290,10 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                 </h2>
                 <ul>
                   {list.map((a) => {
-                    const open = a.oaDeadline !== null && !CLOSED.includes(a.stage);
+                    const open = oaOpen(a);
                     const left = open ? countdown(a.oaDeadline!, now, !zh) : null;
                     return (
-                      <li key={a.id} className="tracker-card" data-due={open && left && a.oaDeadline! - now < SOON ? 'soon' : undefined}>
+                      <li key={a.id} className="tracker-card" data-id={a.id} data-due={open && left && a.oaDeadline! - now < SOON ? 'soon' : undefined}>
                         <p className="tracker-company">{a.company}</p>
                         {a.role && <p className="tracker-role">{a.role}</p>}
                         {open && (
@@ -310,7 +323,6 @@ export function ApplicationTracker({ zh }: { zh: boolean }) {
                           <select
                             aria-label={t(`${a.company} 的阶段`, `Stage of ${a.company}`)}
                             value={a.stage}
-                            disabled={busy}
                             onChange={(e) => move(a, e.target.value as Stage)}
                           >
                             {STAGES.map((s) => (
