@@ -90,7 +90,7 @@ export function PrivacyDocument() {
                 代码并停止输入片刻，平台可能将最新草稿发送到服务器预编译。预编译只准备可执行程序，不自动运行测试，也不产生提交记录或学习成绩。预编译请求处理后或到期时会从任务队列移除，编译结果仅作短期缓存。
               </p>
               <p>
-                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行：每次运行的代码和输入同样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，只是不出现在提交列表、统计和学习进度中；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。
+                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行：每次运行的代码和输入同样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，只是不出现在提交列表、统计和学习进度中；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。OA 调试练习（修复埋入的 bug）的提交也一样：代码和判题结果保存在你的运行记录里，不计积分、不算作通过这道题，也不出现在提交列表、统计和学习进度中；调试练习的代码草稿只留在当前浏览器。代码评审练习里标记的行号只用于当次判分，附加的说明不会上传，服务器都不保存。
               </p>
             </section>
 
@@ -128,7 +128,7 @@ export function PrivacyDocument() {
                 地址、设备或浏览器信息与有效期，用于账号安全和查看已登录设备；服务器也会产生访问、错误和管理操作记录，以排查故障和限制滥用。
               </p>
               <p>
-                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传。OA 选择题练习（/oa/mcq）的作答记录和模拟 OA 选择题环节的作答也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。
+                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传。OA 选择题练习（/oa/mcq）的作答记录和模拟 OA 选择题环节的作答也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。调试与代码评审练习（/oa/drills）完成了哪些，也只记在当前浏览器。
               </p>
               <p>
                 把网站安装到主屏后，浏览器会缓存离线提示页和网站自身的脚本、样式等构建文件，不缓存任何页面内容和个人数据；在账号设置里退出登录时，这些缓存会一并清空。
@@ -461,7 +461,15 @@ export function PrivacyDocument() {
                 teachers who manage your learning can view under their
                 permissions; they never appear in your submission list,
                 statistics or progress. A share link carries the code after
-                the # in the address, which the server does not store.
+                the # in the address, which the server does not store. OA
+                debugging drills (fixing a planted bug) work the same way:
+                their submissions&apos; code and results are kept with your run
+                records, earn no points, never mark the problem solved and stay
+                out of your submission list, statistics and progress; a
+                drill&apos;s code draft stays in the current browser. The lines
+                you flag in a code-review drill are used only to score that
+                attempt and are not stored, and your notes on them are never
+                uploaded.
               </p>
             </section>
 
@@ -537,7 +545,9 @@ export function PrivacyDocument() {
                 stay in the current browser and are never uploaded. So do your
                 answers on the OA multiple-choice practice page (/oa/mcq) and in
                 a mock OA&apos;s multiple-choice section: they are not uploaded and
-                do not sync to your account with mock OA results.
+                do not sync to your account with mock OA results. Which
+                debugging and code-review drills (/oa/drills) you have
+                completed is likewise kept in this browser only.
               </p>
               <p>
                 If you install the site to your home screen, the browser caches
