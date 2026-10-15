@@ -15,7 +15,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `id`: employee id\n- `name`: employee name\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Ava and Eve have a NULL manager_id; Hugo's manager id 42 does not exist. Everyone else's manager is in the table.",
      "hints": [
-      "`isin` tests whether manager_id appears among the ids; a missing value (pd.NA) is in no set."
+      "isin tests whether manager_id appears among the ids; a missing value (pd.NA) is in no set."
      ]
     }
    },
@@ -28,7 +28,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `id`：员工编号\n- `name`：员工姓名\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Ava 和 Eve 的 manager_id 是 NULL；Hugo 的上级编号 42 不存在。其余员工的上级都在表里。",
    "hints": [
-    "`isin` 检查 manager_id 是否出现在 id 列里；缺失值（pd.NA）不在任何集合里。"
+    "isin 检查 manager_id 是否出现在 id 列里；缺失值（pd.NA）不在任何集合里。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -92,7 +92,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `city`: city, with NULL shown as Unknown\n- `customers`: number of customers there\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Austin has Alice, Cara and Femi, Boston has two customers, and Dev's city is unknown.",
      "hints": [
-      "`fillna('Unknown')` first, then `groupby(...).size()`: groupby drops missing keys by default."
+      "fillna('Unknown') first, then groupby(...).size(): groupby drops missing keys by default."
      ]
     }
    },
@@ -105,7 +105,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `city`：城市，NULL 显示为 Unknown\n- `customers`：该城市的客户数\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Austin 有 Alice、Cara、Femi 三位客户，Boston 有两位，Dev 的城市未知。",
    "hints": [
-    "先 `fillna('Unknown')`，再 `groupby(...).size()`：groupby 默认会丢掉缺失的键。"
+    "先 fillna('Unknown')，再 groupby(...).size()：groupby 默认会丢掉缺失的键。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -169,7 +169,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `title`: course title\n- `enrolled`: students enrolled\n- `sat`: students who sat the exam\n- `avg_score`: average of those who sat\n- `avg_with_zero`: average with absences as 0\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Algebra has three enrolled and two who sat: (90+75)/2 = 82.5, and 165/3 = 55 with the absence as 0. Nobody sat Chemistry, so its average is NULL. Drama has no enrollments and is left out.",
      "hints": [
-      "`count` skips missing values while `size` counts every row; `mean` skips them too, so `fillna(0)` first to count absences as 0."
+      "count skips missing values while size counts every row; mean skips them too, so fillna(0) first to count absences as 0."
      ]
     }
    },
@@ -182,7 +182,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `title`：课程名\n- `enrolled`：选课人数\n- `sat`：参加考试人数\n- `avg_score`：参加者平均分\n- `avg_with_zero`：缺考按 0 分的平均分\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Algebra 三人选课、两人考试：(90+75)/2 = 82.5，缺考记 0 为 165/3 = 55。Chemistry 无人考试，平均分是 NULL。Drama 没人选课，不输出。",
    "hints": [
-    "`count` 不计缺失值，`size` 计所有行；`mean` 也跳过缺失值，按 0 分计时先 `fillna(0)`。"
+    "count 不计缺失值，size 计所有行；mean 也跳过缺失值，按 0 分计时先 fillna(0)。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -246,7 +246,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `id`: customer id\n- `name`: customer name\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Dev and Femi have no orders. Bob has only a cancelled order, which still counts.",
      "hints": [
-      "Negate `customers['id'].isin(...)` with `~`; guest orders have a missing customer_id, so `dropna()` first."
+      "Negate customers['id'].isin(...) with ~; guest orders have a missing customer_id, so dropna() first."
      ]
     }
    },
@@ -259,7 +259,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `id`：客户编号\n- `name`：客户姓名\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Dev 和 Femi 没有订单。Bob 只有一笔已取消的订单，也算下过单。",
    "hints": [
-    "用 `~customers['id'].isin(...)` 取反；游客订单的 customer_id 是缺失值，先 `dropna()`。"
+    "用 ~customers['id'].isin(...) 取反；游客订单的 customer_id 是缺失值，先 dropna()。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -323,7 +323,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `employee`: employee name\n- `salary`: employee's salary\n- `manager`: manager's name\n- `manager_salary`: manager's salary\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Finn (8500) out-earns his manager Eve (8000), and Jack (5500) out-earns Hugo (5000). Ben and Chloe earn less than Ava.",
      "hints": [
-      "`merge` employees with itself (left_on='manager_id', right_on='id') and tell the two sides apart with suffixes."
+      "merge employees with itself (left_on='manager_id', right_on='id') and tell the two sides apart with suffixes."
      ]
     }
    },
@@ -336,7 +336,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `employee`：员工姓名\n- `salary`：员工工资\n- `manager`：上级姓名\n- `manager_salary`：上级工资\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Finn（8500）高于上级 Eve（8000），Jack（5500）高于上级 Hugo（5000）。Ben 和 Chloe 低于 Ava。",
    "hints": [
-    "把 employees 和自己 `merge`（left_on='manager_id', right_on='id'），用 suffixes 区分两边的列。"
+    "把 employees 和自己 merge（left_on='manager_id', right_on='id'），用 suffixes 区分两边的列。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -400,7 +400,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `department`: department name\n- `headcount`: number of employees\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Engineering has 4, Sales 3, Support 2, and Legal has none, so 0; Iris belongs to no department.",
      "hints": [
-      "Count people per department_id, `map` the counts onto the departments and `fillna(0)` the empty ones."
+      "Count people per department_id, map the counts onto the departments and fillna(0) the empty ones."
      ]
     }
    },
@@ -413,7 +413,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `department`：部门名\n- `headcount`：员工人数\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Engineering 4 人，Sales 3 人，Support 2 人，Legal 没有员工显示 0；Iris 不属于任何部门。",
    "hints": [
-    "先按 department_id 数人数，再用 `map` 对到每个部门上，没有人的部门 `fillna(0)`。"
+    "先按 department_id 数人数，再用 map 对到每个部门上，没有人的部门 fillna(0)。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -477,7 +477,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `order_id`: order id\n- `customer`: customer name or Guest\n- `total`: order total\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Order 1 is 2×30 + 1×55 = 115 (the chess set was charged 55, not 60). Order 6 is a guest order. Orders 3 and 9 were cancelled and are left out.",
      "hints": [
-      "Sum the item amounts per order_id, `merge` with the paid orders, then join customers with how='left' and `fillna('Guest')`."
+      "Sum the item amounts per order_id, merge with the paid orders, then join customers with how='left' and fillna('Guest')."
      ]
     }
    },
@@ -490,7 +490,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `order_id`：订单编号\n- `customer`：客户姓名或 Guest\n- `total`：订单金额\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "订单 1 是 2×30 + 1×55 = 115（棋盘按折扣价 55 计）。订单 6 是游客订单。订单 3、9 已取消，不输出。",
    "hints": [
-    "先按 order_id 汇总明细金额，再和已支付订单 `merge`；客户用 how='left' 合并，游客的名字 `fillna('Guest')`。"
+    "先按 order_id 汇总明细金额，再和已支付订单 merge；客户用 how='left' 合并，游客的名字 fillna('Guest')。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -554,7 +554,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `city`: city\n- `first_id`: smaller customer id\n- `second_id`: larger customer id\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Austin has customers 1, 3 and 6, giving (1,3), (1,6) and (3,6); Boston gives (2,5). Dev’s city is unknown, so he is not paired.",
      "hints": [
-      "`dropna(subset=['city'])`, self-merge on city, and keep the rows where id_x < id_y."
+      "dropna(subset=['city']), self-merge on city, and keep the rows where id_x < id_y."
      ]
     }
    },
@@ -567,7 +567,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `city`：城市\n- `first_id`：编号较小的客户\n- `second_id`：编号较大的客户\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Austin 有客户 1、3、6，组成 (1,3)、(1,6)、(3,6) 三对；Boston 有 (2,5)。Dev 城市未知，不配对。",
    "hints": [
-    "先 `dropna(subset=['city'])`，再按 city 自连接，保留 id_x < id_y 的行。"
+    "先 dropna(subset=['city'])，再按 city 自连接，保留 id_x < id_y 的行。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -631,7 +631,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `id`: customer id\n- `name`: customer name\n- `paid_orders`: number of paid orders\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Alice has 4 orders, but order 9 was cancelled, which leaves exactly 3 paid. Cara has only 2.",
      "hints": [
-      "Keep the orders with status == 'paid', `groupby('customer_id').size()`, then filter >= 3."
+      "Keep the orders with status == 'paid', groupby('customer_id').size(), then filter >= 3."
      ]
     }
    },
@@ -644,7 +644,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `id`：客户编号\n- `name`：客户姓名\n- `paid_orders`：已支付订单数\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Alice 有 4 笔订单，其中订单 9 已取消，已支付的恰好 3 笔。Cara 只有 2 笔。",
    "hints": [
-    "先筛出 status == 'paid' 的订单，`groupby('customer_id').size()` 后再筛 >= 3。"
+    "先筛出 status == 'paid' 的订单，groupby('customer_id').size() 后再筛 >= 3。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -708,7 +708,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `category`: category\n- `revenue`: revenue\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Books makes 60+90+30+45+300 = 525 and Games 55+25+180+60 = 320; Kitchen makes only 230 and is filtered out.",
      "hints": [
-      "`sort_values(['revenue', 'category'], ascending=[False, True])` sorts by both keys at once."
+      "sort_values(['revenue', 'category'], ascending=[False, True]) sorts by both keys at once."
      ]
     }
    },
@@ -721,7 +721,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `category`：类目\n- `revenue`：销售额\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Books 共 60+90+30+45+300 = 525，Games 共 55+25+180+60 = 320，Kitchen 只有 230，被过滤掉。",
    "hints": [
-    "`sort_values(['revenue', 'category'], ascending=[False, True])` 一次给出两层排序。"
+    "sort_values(['revenue', 'category'], ascending=[False, True]) 一次给出两层排序。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -785,7 +785,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `email`: email in lowercase\n- `accounts`: customers using it\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "alice@mail.com and Alice@Mail.com are the same address, used by 2 customers.",
      "hints": [
-      "Normalize the case with `str.lower()` before grouping."
+      "Normalize the case with str.lower() before grouping."
      ]
     }
    },
@@ -798,7 +798,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `email`：全小写的邮箱\n- `accounts`：使用该邮箱的客户数\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "alice@mail.com 和 Alice@Mail.com 是同一个邮箱，被 2 位客户使用。",
    "hints": [
-    "`str.lower()` 统一大小写后再 groupby。"
+    "str.lower() 统一大小写后再 groupby。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -862,7 +862,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `second_salary`: second-highest distinct salary, or NULL\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "The distinct salaries, highest first, are 12000, 9000, 8500, … so the answer is 9000 (Ben and Chloe share it, which still counts once).",
      "hints": [
-      "`drop_duplicates()`, sort descending and take the second value; when there is none, the one row holds None."
+      "drop_duplicates(), sort descending and take the second value; when there is none, the one row holds None."
      ]
     }
    },
@@ -875,7 +875,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `second_salary`：第二高的不同工资，或 NULL\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "不同的工资从高到低是 12000、9000、8500……第二高是 9000（Ben 和 Chloe 并列也只算一个值）。",
    "hints": [
-    "`drop_duplicates()` 后降序排序，取第二个；不存在时结果是一行 None。"
+    "drop_duplicates() 后降序排序，取第二个；不存在时结果是一行 None。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -946,7 +946,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `department`: department name\n- `employee`: employee name\n- `salary`: salary\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Engineering averages 9250 and only Ava is above it; Sales averages 7500, beaten by Eve and Finn; Support averages 5250, beaten by Jack.",
      "hints": [
-      "`groupby('department_id')['salary'].transform('mean')` puts each department's average on every row."
+      "groupby('department_id')['salary'].transform('mean') puts each department's average on every row."
      ]
     }
    },
@@ -959,7 +959,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `department`：部门名\n- `employee`：员工姓名\n- `salary`：工资\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Engineering 平均 9250，只有 Ava 高于它；Sales 平均 7500，Eve 和 Finn 高于它；Support 平均 5250，Jack 高于它。",
    "hints": [
-    "`groupby('department_id')['salary'].transform('mean')` 把部门平均值放到每一行上。"
+    "groupby('department_id')['salary'].transform('mean') 把部门平均值放到每一行上。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -1023,7 +1023,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `id`: customer id\n- `name`: customer name\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "There are three categories: Books, Games and Kitchen. Alice covers them in orders 1 and 2, and Elle in order 7; Cara never bought Kitchen.",
      "hints": [
-      "`nunique()` counts each customer's categories; compare it with the number of categories in products."
+      "nunique() counts each customer's categories; compare it with the number of categories in products."
      ]
     }
    },
@@ -1036,7 +1036,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `id`：客户编号\n- `name`：客户姓名\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "类目共有 Books、Games、Kitchen 三个。Alice 在订单 1、2 里买齐了，Elle 在订单 7 里买齐了；Cara 没买过 Kitchen。",
    "hints": [
-    "`nunique()` 数每位客户买过几个类目，和 products 的类目总数比较。"
+    "nunique() 数每位客户买过几个类目，和 products 的类目总数比较。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -1100,7 +1100,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `customer_id`: customer id\n- `order_id`: latest order id\n- `order_date`: that order's date\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Alice's (1) order 9 was cancelled but is still her latest; Cara's (3) latest is order 8 on March 1.",
      "hints": [
-      "Sort by customer_id, order_date and id, then `groupby('customer_id').tail(1)` keeps each group's last row."
+      "Sort by customer_id, order_date and id, then groupby('customer_id').tail(1) keeps each group's last row."
      ]
     }
    },
@@ -1113,7 +1113,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `customer_id`：客户编号\n- `order_id`：最新订单编号\n- `order_date`：该订单日期\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Alice（1）的订单 9 虽已取消，仍是她最晚的一笔；Cara（3）最新的是 3 月 1 日的订单 8。",
    "hints": [
-    "按 customer_id、order_date、id 排序后，`groupby('customer_id').tail(1)` 取每组最后一行。"
+    "按 customer_id、order_date、id 排序后，groupby('customer_id').tail(1) 取每组最后一行。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -1177,7 +1177,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `department`: department name\n- `employee`: employee name\n- `salary`: salary\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Engineering’s levels are 12000, 9000 and 7000: Ben and Chloe share the second level and Dan is in the third, so all four are listed.",
      "hints": [
-      "`groupby(...)['salary'].rank(method='dense', ascending=False)` is DENSE_RANK."
+      "groupby(...)['salary'].rank(method='dense', ascending=False) is DENSE_RANK."
      ]
     }
    },
@@ -1190,7 +1190,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `department`：部门名\n- `employee`：员工姓名\n- `salary`：工资\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Engineering 的工资档是 12000、9000、7000：Ben 和 Chloe 同在第二档，Dan 在第三档，四人都输出。",
    "hints": [
-    "`groupby(...)['salary'].rank(method='dense', ascending=False)` 就是 DENSE_RANK。"
+    "groupby(...)['salary'].rank(method='dense', ascending=False) 就是 DENSE_RANK。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -1254,7 +1254,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `day`: date\n- `revenue`: revenue that day\n- `running_total`: running total\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "January 5 makes 115; January 20 has only order 2’s 80 (order 3 was cancelled), 195 in total; February 14 has two orders worth 210, …",
      "hints": [
-      "Sum per day, sort by date, and `cumsum()` gives the running total."
+      "Sum per day, sort by date, and cumsum() gives the running total."
      ]
     }
    },
@@ -1267,7 +1267,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `day`：日期\n- `revenue`：当天销售额\n- `running_total`：累计销售额\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "1 月 5 日 115，1 月 20 日只有订单 2 的 80（订单 3 已取消），累计 195；2 月 14 日有两笔共 210……",
    "hints": [
-    "按日期汇总并排序后，`cumsum()` 就是累计值。"
+    "按日期汇总并排序后，cumsum() 就是累计值。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -1331,7 +1331,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `month`: month as YYYY-MM\n- `revenue`: revenue that month\n- `change`: change from the previous listed month\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "January makes 115+80 = 195; February 115+180+30 = 325, a change of 130; March 255+300 = 555, a change of 230.",
      "hints": [
-      "`str[:7]` gives YYYY-MM; after sorting by month, `diff()` is the change from the previous row, NaN on the first."
+      "str[:7] gives YYYY-MM; after sorting by month, diff() is the change from the previous row, NaN on the first."
      ]
     }
    },
@@ -1344,7 +1344,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `month`：月份 YYYY-MM\n- `revenue`：当月销售额\n- `change`：与上一个列出月份的差\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "1 月 115+80 = 195；2 月 115+180+30 = 325，变化 130；3 月 255+300 = 555，变化 230。",
    "hints": [
-    "`str[:7]` 取出 YYYY-MM；按月排序后 `diff()` 就是和上一行的差，第一行为 NaN。"
+    "str[:7] 取出 YYYY-MM；按月排序后 diff() 就是和上一行的差，第一行为 NaN。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -1408,7 +1408,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `user_id`: user id\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "User 1 logged in on February 27, 28 and 29, 2024 (a leap year); user 3 on March 1–3; user 4 on only two days.",
      "hints": [
-      "Deduplicate, sort by date and subtract the position in the group (`cumcount()` days): one run of consecutive days shares the result."
+      "Deduplicate, sort by date and subtract the position in the group (cumcount() days): one run of consecutive days shares the result."
      ]
     }
    },
@@ -1421,7 +1421,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `user_id`：用户编号\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "用户 1 在 2024 年 2 月 27、28、29 日连续登录（闰年）；用户 3 在 3 月 1–3 日连续登录；用户 4 只有两天。",
    "hints": [
-    "去重后按日期排序，日期减去组内序号（`cumcount()` 天）：同一段连续登录得到同一个值。"
+    "去重后按日期排序，日期减去组内序号（cumcount() 天）：同一段连续登录得到同一个值。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -1485,7 +1485,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `retention`: next-day retention\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Of 4 users, users 1 (Feb 27 → 28), 3 (Mar 1 → 2) and 4 (Feb 28 → 29) came back the next day and user 2 did not: 3/4 = 0.75.",
      "hints": [
-      "Each first day is `groupby('user_id')['login_date'].min()`; add `pd.Timedelta(days=1)` and look the next day up in the logins."
+      "Each first day is groupby('user_id')['login_date'].min(); add pd.Timedelta(days=1) and look the next day up in the logins."
      ]
     }
    },
@@ -1498,7 +1498,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `retention`：次日留存率\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "4 位用户中，用户 1（2 月 27 日→28 日）、3（3 月 1 日→2 日）、4（2 月 28 日→29 日）次日回来了，用户 2 没有，留存率 3/4 = 0.75。",
    "hints": [
-    "每人首日用 `groupby('user_id')['login_date'].min()`，加 `pd.Timedelta(days=1)` 得到次日，再查它是否在登录记录里。"
+    "每人首日用 groupby('user_id')['login_date'].min()，加 pd.Timedelta(days=1) 得到次日，再查它是否在登录记录里。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -1562,7 +1562,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `id`: employee id\n- `name`: employee name\n- `hire_date`: hire date\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Dan, Finn, Gia, Hugo, Iris and Jack were hired in 2021 or later. Dan is in department 1 and is left out; Iris has no department, which counts as not in department 1.",
      "hints": [
-      "YYYY-MM-DD text compares correctly as strings; `fillna(0)` makes people without a department count as not in department 1."
+      "YYYY-MM-DD text compares correctly as strings; fillna(0) makes people without a department count as not in department 1."
      ]
     }
    },
@@ -1575,7 +1575,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `id`：员工编号\n- `name`：员工姓名\n- `hire_date`：入职日期\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "2021 年及以后入职的有 Dan、Finn、Gia、Hugo、Iris、Jack。Dan 在部门 1，排除；Iris 没有部门，也算不在部门 1。",
    "hints": [
-    "日期是 YYYY-MM-DD 文本，可以直接按字符串比较；`fillna(0)` 让没有部门的人也满足「不在 1 号部门」。"
+    "日期是 YYYY-MM-DD 文本，可以直接按字符串比较；fillna(0) 让没有部门的人也满足「不在 1 号部门」。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -1639,7 +1639,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `name`: product name\n- `category`: category\n- `price`: list price\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Chef Knife costs 80 and is out of range; Puzzle Box costs exactly 25, and BETWEEN includes both ends.",
      "hints": [
-      "`between(25, 60)` includes both ends; sort with `sort_values(['price', 'name'], ascending=[False, True])`."
+      "between(25, 60) includes both ends; sort with sort_values(['price', 'name'], ascending=[False, True])."
      ]
     }
    },
@@ -1652,7 +1652,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `name`：商品名\n- `category`：类目\n- `price`：标价\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Chef Knife 标价 80，超出范围；Puzzle Box 正好 25，BETWEEN 两端都包含。",
    "hints": [
-    "`between(25, 60)` 两端都包含；排序用 `sort_values(['price', 'name'], ascending=[False, True])`。"
+    "between(25, 60) 两端都包含；排序用 sort_values(['price', 'name'], ascending=[False, True])。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -1716,7 +1716,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `name`: employee name\n- `salary`: salary\n- `band`: band: 'high', 'mid' or 'low'\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Ben and Chloe earn exactly 9000, which is high; Hugo earns exactly 5000, which is mid; Iris at 4500 is low.",
      "hints": [
-      "Use `map` with a function that checks the bands in order, or `pd.cut` with the band edges."
+      "Use map with a function that checks the bands in order, or pd.cut with the band edges."
      ]
     }
    },
@@ -1729,7 +1729,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `name`：员工姓名\n- `salary`：工资\n- `band`：工资档：'high'、'mid' 或 'low'\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Ben 和 Chloe 正好 9000，属于 high；Hugo 正好 5000，属于 mid；Iris 4500 是 low。",
    "hints": [
-    "`map` 一个按顺序判断的函数，或者用 `pd.cut` 按区间分档。"
+    "map 一个按顺序判断的函数，或者用 pd.cut 按区间分档。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -1793,7 +1793,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `id`: customer id\n- `name`: customer name\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Alice (order 1), Cara (orders 4 and 8) and Elle (order 7) bought books, and Cara is listed once; order 6 is a guest order with no customer.",
      "hints": [
-      "Narrow down with `isin` step by step: Books products, the orders containing them, the paid ones, and their customers."
+      "Narrow down with isin step by step: Books products, the orders containing them, the paid ones, and their customers."
      ]
     }
    },
@@ -1806,7 +1806,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `id`：客户编号\n- `name`：客户姓名\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Alice（订单 1）、Cara（订单 4 和 8）、Elle（订单 7）买过图书，Cara 只输出一次；订单 6 是游客订单，没有客户。",
    "hints": [
-    "一步步用 `isin` 缩小范围：Books 商品 → 含有它们的订单 → 其中已支付的订单 → 这些订单的客户。"
+    "一步步用 isin 缩小范围：Books 商品 → 含有它们的订单 → 其中已支付的订单 → 这些订单的客户。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -1870,7 +1870,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `employee`: employee name\n- `manager`: manager's name, or NULL\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Ava and Eve have no manager and Hugo's manager id 42 does not exist, so those three rows have a NULL manager; the other 7 have one, 10 rows in all.",
      "hints": [
-      "`merge(..., how='left')` keeps every employee; the manager's columns are missing when there is no match."
+      "merge(..., how='left') keeps every employee; the manager's columns are missing when there is no match."
      ]
     }
    },
@@ -1883,7 +1883,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `employee`：员工姓名\n- `manager`：上级姓名，或 NULL\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Ava 和 Eve 没有上级，Hugo 的上级编号 42 不存在，这三行的上级都是 NULL；其余 7 人都能找到上级，一共 10 行。",
    "hints": [
-    "`merge(..., how='left')` 保留每位员工，找不到上级时上级的列是缺失值。"
+    "merge(..., how='left') 保留每位员工，找不到上级时上级的列是缺失值。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -1947,7 +1947,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `id`: product id\n- `name`: product name\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Tea Set never appears in any order. Puzzle Box and Chef Knife appear in the cancelled orders 3 and 9, but were also sold in paid orders, so they are not listed.",
      "hints": [
-      "Find the product_ids that appear in paid orders, then negate `isin` with `~`."
+      "Find the product_ids that appear in paid orders, then negate isin with ~."
      ]
     }
    },
@@ -1960,7 +1960,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `id`：商品编号\n- `name`：商品名\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Tea Set 从未出现在任何订单里。Puzzle Box 和 Chef Knife 虽然在已取消的订单 3、9 里出现过，但也在已支付订单里卖出过，不输出。",
    "hints": [
-    "先找出在已支付订单里出现过的 product_id，再用 `~isin` 取反。"
+    "先找出在已支付订单里出现过的 product_id，再用 ~isin 取反。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -2024,7 +2024,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `student_id`: student id\n- `title`: course title\n- `status`: 'sat', 'absent' or 'not enrolled'\n- `score`: score or NULL\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Four students times four courses make 16 rows. Student 1 sat Algebra and Biology and did not take Chemistry or Drama; student 3 enrolled in Algebra but missed it, so absent. The two kinds of NULL score differ in whether an enrollment row matched.",
      "hints": [
-      "`merge(how='cross')` builds every pair; a how='left' merge with the enrollments and `indicator=True` shows which rows found no match."
+      "merge(how='cross') builds every pair; a how='left' merge with the enrollments and indicator=True shows which rows found no match."
      ]
     }
    },
@@ -2037,7 +2037,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `student_id`：学生编号\n- `title`：课程名\n- `status`：'sat'、'absent' 或 'not enrolled'\n- `score`：分数或 NULL\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "4 名学生 × 4 门课共 16 行。学生 1 考了 Algebra 和 Biology，Chemistry、Drama 没选；学生 3 选了 Algebra 但缺考，是 absent。两种 NULL 分数要靠「有没有匹配到选课记录」来区分。",
    "hints": [
-    "`merge(how='cross')` 做笛卡尔积，再 how='left' 合并选课记录；`indicator=True` 告诉你哪些行没匹配上。"
+    "merge(how='cross') 做笛卡尔积，再 how='left' 合并选课记录；indicator=True 告诉你哪些行没匹配上。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -2178,7 +2178,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `order_id`: order id\n- `products`: number of different products\n- `units`: total units\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Orders 1 and 4 have two products each (3 units each) and order 7 has three (4 units). Order 3 has one product and was cancelled anyway.",
      "hints": [
-      "`agg(products=('product_id', 'nunique'), units=('quantity', 'sum'))` computes both columns at once."
+      "agg(products=('product_id', 'nunique'), units=('quantity', 'sum')) computes both columns at once."
      ]
     }
    },
@@ -2191,7 +2191,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `order_id`：订单编号\n- `products`：不同商品的种数\n- `units`：总件数\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "订单 1、4 各有两种商品（各 3 件），订单 7 有三种（4 件）。订单 3 只有一种商品，而且已取消。",
    "hints": [
-    "`agg(products=('product_id', 'nunique'), units=('quantity', 'sum'))` 一次算出两列。"
+    "agg(products=('product_id', 'nunique'), units=('quantity', 'sum')) 一次算出两列。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -2255,7 +2255,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `category`: category\n- `products`: number of products\n- `min_price`: lowest price\n- `max_price`: highest price\n- `avg_price`: average price\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Books has two products at 30 and 45, averaging 37.5; Games has 25 and 60, averaging 42.5; Kitchen has one at 80.",
      "hints": [
-      "Named aggregation, `agg(min_price=('price', 'min'), ...)`, gives each column its own name."
+      "Named aggregation, agg(min_price=('price', 'min'), ...), gives each column its own name."
      ]
     }
    },
@@ -2268,7 +2268,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `category`：类目\n- `products`：商品数\n- `min_price`：最低标价\n- `max_price`：最高标价\n- `avg_price`：平均标价\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Books 有 30 和 45 两件，平均 37.5；Games 是 25 和 60，平均 42.5；Kitchen 只有 80。",
    "hints": [
-    "命名聚合 `agg(min_price=('price', 'min'), ...)` 让每列都有自己的名字。"
+    "命名聚合 agg(min_price=('price', 'min'), ...) 让每列都有自己的名字。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -2332,7 +2332,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `title`: course title\n- `sat`: students who sat\n- `top`: top scores\n- `top_rate`: share of top scores\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Two students sat Algebra (90 and 75) and one is a top score, a share of 0.5; one sat Biology with 88, a share of 1. Nobody sat Chemistry, so it is left out.",
      "hints": [
-      "Drop the rows with a missing score; `(score >= 80).astype(int)` summed is the number of top scores."
+      "Drop the rows with a missing score; (score >= 80).astype(int) summed is the number of top scores."
      ]
     }
    },
@@ -2345,7 +2345,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `title`：课程名\n- `sat`：参加考试人数\n- `top`：优秀人数\n- `top_rate`：优秀率\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Algebra 有两人参加考试（90 和 75），一人优秀，优秀率 0.5；Biology 一人考了 88，优秀率 1。Chemistry 没人参加考试，不输出。",
    "hints": [
-    "先去掉 score 缺失的行；`(score >= 80).astype(int)` 再求和就是优秀人数。"
+    "先去掉 score 缺失的行；(score >= 80).astype(int) 再求和就是优秀人数。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -2409,7 +2409,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `city`: city or Unknown\n- `paid`: paid orders\n- `cancelled`: cancelled orders\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Austin's Alice and Cara have 5 paid orders and 1 cancelled; Boston's Bob and Elle have 1 of each. Guest order 6 belongs to no city, and Dev's city is unknown but he has no orders, so there is no Unknown row.",
      "hints": [
-      "Turn the status comparisons into 0 / 1 columns with `astype(int)`, then sum them per city."
+      "Turn the status comparisons into 0 / 1 columns with astype(int), then sum them per city."
      ]
     }
    },
@@ -2422,7 +2422,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `city`：城市或 Unknown\n- `paid`：已支付订单数\n- `cancelled`：已取消订单数\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Austin 的 Alice 和 Cara 共有 5 笔已支付、1 笔已取消；Boston 的 Bob 和 Elle 各 1 笔。游客订单 6 不属于任何城市；Dev 城市未知但没有订单，所以没有 Unknown 这一行。",
    "hints": [
-    "把 status 比较的结果 `astype(int)` 成 0 / 1 两列，再按城市求和。"
+    "把 status 比较的结果 astype(int) 成 0 / 1 两列，再按城市求和。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -2486,7 +2486,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `name`: employee name\n- `salary`: salary\n- `company_avg`: company average salary\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "The 10 salaries add up to 74500, an average of 7450. Ava, Ben, Chloe, Eve and Finn earn more.",
      "hints": [
-      "`mean()` gives one number: filter with it, then add it to every row as a constant column."
+      "mean() gives one number: filter with it, then add it to every row as a constant column."
      ]
     }
    },
@@ -2499,7 +2499,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `name`：员工姓名\n- `salary`：工资\n- `company_avg`：全公司平均工资\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "10 人工资总和 74500，平均 7450。Ava、Ben、Chloe、Eve、Finn 高于它。",
    "hints": [
-    "`mean()` 得到一个数，用它筛选，再作为常数列放到每一行。"
+    "mean() 得到一个数，用它筛选，再作为常数列放到每一行。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -2563,7 +2563,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `title`: course title\n- `student_id`: student id\n- `score`: top score\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "The top Algebra score is student 1’s 90 and the top Biology score is student 1’s 88. Nobody sat Chemistry and nobody took Drama, so neither is listed.",
      "hints": [
-      "`groupby('course_id')['score'].transform('max')` puts each course's top score on every row."
+      "groupby('course_id')['score'].transform('max') puts each course's top score on every row."
      ]
     }
    },
@@ -2576,7 +2576,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `title`：课程名\n- `student_id`：学生编号\n- `score`：最高分\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Algebra 最高分是学生 1 的 90，Biology 是学生 1 的 88。Chemistry 没人参加考试，Drama 没人选，都不输出。",
    "hints": [
-    "`groupby('course_id')['score'].transform('max')` 把每门课的最高分放到每一行上。"
+    "groupby('course_id')['score'].transform('max') 把每门课的最高分放到每一行上。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -2717,7 +2717,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `id`: customer id\n- `name`: customer name\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "All of Cara’s and Elle’s orders were paid. Alice had order 9 cancelled and Bob only has a cancelled order; Dev and Femi never ordered, so they do not count either.",
      "hints": [
-      "Two `isin` tests: the customer has orders and is not among those with a cancelled one."
+      "Two isin tests: the customer has orders and is not among those with a cancelled one."
      ]
     }
    },
@@ -2730,7 +2730,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `id`：客户编号\n- `name`：客户姓名\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Cara 和 Elle 的订单都已支付。Alice 有一笔已取消的订单 9，Bob 只有已取消的订单；Dev 和 Femi 没下过单，也不算。",
    "hints": [
-    "两个 `isin` 条件：有订单，并且不在「有取消订单的客户」里。"
+    "两个 isin 条件：有订单，并且不在「有取消订单的客户」里。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -2794,7 +2794,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `id`: customer id\n- `name`: customer name\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Chef Knife has the top list price, 80. Alice bought it in order 2 and Elle in order 7 at a discounted 75, which still counts; order 9 was cancelled.",
      "hints": [
-      "Find the priciest products with `products['price'].max()` (there may be several), then `isin` your way to the customers."
+      "Find the priciest products with products['price'].max() (there may be several), then isin your way to the customers."
      ]
     }
    },
@@ -2807,7 +2807,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `id`：客户编号\n- `name`：客户姓名\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Chef Knife 标价 80，最高。Alice 在订单 2 里买了它，Elle 在订单 7 里以折扣价 75 买到，也算；订单 9 已取消。",
    "hints": [
-    "先用 `products['price'].max()` 找出最贵的商品（可能有多个），再一步步 `isin` 到客户。"
+    "先用 products['price'].max() 找出最贵的商品（可能有多个），再一步步 isin 到客户。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -2871,7 +2871,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `department`: department name\n- `employee`: employee name\n- `salary`: salary\n- `pay_rank`: rank within the department\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "In Engineering Ava is 1, Ben and Chloe share 2, and Dan comes next at 4, not 3. Iris has no department and is not ranked.",
      "hints": [
-      "`rank(method='min', ascending=False)` is RANK: ties share the lowest place and the next place skips ahead."
+      "rank(method='min', ascending=False) is RANK: ties share the lowest place and the next place skips ahead."
      ]
     }
    },
@@ -2884,7 +2884,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `department`：部门名\n- `employee`：员工姓名\n- `salary`：工资\n- `pay_rank`：部门内名次\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Engineering 里 Ava 第 1，Ben 和 Chloe 并列第 2，下一位 Dan 是第 4 名，不是第 3。Iris 没有部门，不参与。",
    "hints": [
-    "`rank(method='min', ascending=False)` 就是 RANK：并列取最小名次，后面的名次跳过。"
+    "rank(method='min', ascending=False) 就是 RANK：并列取最小名次，后面的名次跳过。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -2948,7 +2948,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `customer_id`: customer id\n- `order_id`: order id\n- `order_date`: order date\n- `gap_days`: days since the previous paid order\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Alice's paid orders fall on January 5, January 20 and February 14: gaps of NULL, 15 and 25; her March 9 order 9 was cancelled and is left out. Cara's two orders are 28 days apart.",
      "hints": [
-      "After sorting, `groupby('customer_id')['day'].shift()` is the previous order's date; subtract and take `.dt.days`."
+      "After sorting, groupby('customer_id')['day'].shift() is the previous order's date; subtract and take .dt.days."
      ]
     }
    },
@@ -2961,7 +2961,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `customer_id`：客户编号\n- `order_id`：订单编号\n- `order_date`：订单日期\n- `gap_days`：距上一笔已支付订单的天数\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Alice 的已支付订单在 1 月 5 日、1 月 20 日、2 月 14 日，间隔 NULL、15、25；她 3 月 9 日的订单 9 已取消，不参与。Cara 两笔间隔 28 天。",
    "hints": [
-    "排好序后 `groupby('customer_id')['day'].shift()` 取上一笔的日期，相减后 `.dt.days`。"
+    "排好序后 groupby('customer_id')['day'].shift() 取上一笔的日期，相减后 .dt.days。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -3025,7 +3025,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `category`: category\n- `product`: product name\n- `revenue`: product revenue\n- `share`: share of the category revenue\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Books makes 525: SQL Basics 390 (0.74) and Graph Theory 135 (0.26). Games makes 320: Chess Set 295 (0.92) and Puzzle Box 25 (0.08). Kitchen only has Chef Knife, a share of 1.",
      "hints": [
-      "Total each product, then `groupby('category')['revenue'].transform('sum')` gives the category total to divide by."
+      "Total each product, then groupby('category')['revenue'].transform('sum') gives the category total to divide by."
      ]
     }
    },
@@ -3038,7 +3038,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `category`：类目\n- `product`：商品名\n- `revenue`：商品销售额\n- `share`：占类目销售额的比例\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Books 共 525：SQL Basics 390（0.74），Graph Theory 135（0.26）。Games 共 320：Chess Set 295（0.92），Puzzle Box 25（0.08）。Kitchen 只有 Chef Knife，占 1。",
    "hints": [
-    "先按商品汇总，再用 `groupby('category')['revenue'].transform('sum')` 得到类目总额作分母。"
+    "先按商品汇总，再用 groupby('category')['revenue'].transform('sum') 得到类目总额作分母。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -3102,7 +3102,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `customer_id`: customer id\n- `order_id`: order id\n- `total`: order value\n- `moving_avg`: average of the last three orders\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Alice's paid orders are worth 115, 80 and 180 in turn, so the moving averages are 115, 97.5 and 125. Cara's are 115 and 300: 115 and 207.5.",
      "hints": [
-      "After sorting, `rolling(3, min_periods=1).mean()` within each group averages an order with up to two before it."
+      "After sorting, rolling(3, min_periods=1).mean() within each group averages an order with up to two before it."
      ]
     }
    },
@@ -3115,7 +3115,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `customer_id`：客户编号\n- `order_id`：订单编号\n- `total`：订单金额\n- `moving_avg`：最近三单的平均金额\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Alice 的已支付订单依次是 115、80、180：移动平均是 115、97.5、125。Cara 是 115、300：115、207.5。",
    "hints": [
-    "排好序后，组内 `rolling(3, min_periods=1).mean()` 就是「本笔和之前最多两笔」的平均值。"
+    "排好序后，组内 rolling(3, min_periods=1).mean() 就是「本笔和之前最多两笔」的平均值。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -3179,7 +3179,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `department`: department name\n- `median_salary`: median salary\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Engineering’s four salaries sort to 7000, 9000, 9000, 12000 and both middle ones are 9000; Sales has three, so the middle 8000; Support has two, (5000 + 5500) / 2 = 5250. Legal has no employees and is left out.",
      "hints": [
-      "Call `median()` after the groupby: for an even count it averages the middle two."
+      "Call median() after the groupby: for an even count it averages the middle two."
      ]
     }
    },
@@ -3192,7 +3192,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `department`：部门名\n- `median_salary`：工资中位数\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Engineering 4 人排序后是 7000、9000、9000、12000，中间两个都是 9000；Sales 3 人取中间的 8000；Support 2 人取 (5000 + 5500) / 2 = 5250。Legal 没有员工，不输出。",
    "hints": [
-    "groupby 之后直接 `median()`：偶数个时就是中间两个的平均值。"
+    "groupby 之后直接 median()：偶数个时就是中间两个的平均值。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -3256,7 +3256,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `user_id`: user id\n- `longest_streak`: longest streak in days\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "User 1 has February 27–29, 3 days (two logins on the 28th count once); user 2’s two logins are not adjacent, so 1; user 3 has March 1–3, 3 days; user 4 has 2.",
      "hints": [
-      "Key each run of consecutive days as in the login-streak problem, `size()` every run, then take the `max()` per user."
+      "Key each run of consecutive days as in the login-streak problem, size() every run, then take the max() per user."
      ]
     }
    },
@@ -3269,7 +3269,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `user_id`：用户编号\n- `longest_streak`：最长连续登录天数\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "用户 1 在 2 月 27–29 日连续 3 天（28 日登录两次只算一天）；用户 2 的两次登录不相邻，最长 1 天；用户 3 是 3 月 1–3 日，3 天；用户 4 是 2 天。",
    "hints": [
-    "和「连续登录」一样给每段连续日期一个键，每段 `size()`，再按用户取 `max()`。"
+    "和「连续登录」一样给每段连续日期一个键，每段 size()，再按用户取 max()。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -3333,7 +3333,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `domain`: domain in lowercase\n- `customers`: number of customers\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "mail.com has Ana and Dmitri; Bram's shop.io and Cleo's Shop.io are the same domain in lowercase; web.org has only Esme.",
      "hints": [
-      "`str.split('@', n=1).str[-1]` takes the part after the @; then `str.lower()`."
+      "str.split('@', n=1).str[-1] takes the part after the @; then str.lower()."
      ]
     }
    },
@@ -3346,7 +3346,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `domain`：全小写的域名\n- `customers`：客户数\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "mail.com 有 Ana 和 Dmitri；Bram 的 shop.io 和 Cleo 的 Shop.io 转小写后是同一个域名；web.org 只有 Esme。",
    "hints": [
-    "`str.split('@', n=1).str[-1]` 取 @ 后面的部分，再 `str.lower()`。"
+    "str.split('@', n=1).str[-1] 取 @ 后面的部分，再 str.lower()。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -3410,7 +3410,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `id`: customer id\n- `masked`: masked email\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "ana@mail.com becomes a***@mail.com; CLEO@Shop.io becomes C***@Shop.io, letter case unchanged.",
      "hints": [
-      "`map` a function over the emails: s[:1] + '***' + s[s.find('@'):]."
+      "map a function over the emails: s[:1] + '***' + s[s.find('@'):]."
      ]
     }
    },
@@ -3423,7 +3423,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `id`：客户编号\n- `masked`：脱敏后的邮箱\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "ana@mail.com 变成 a***@mail.com；CLEO@Shop.io 变成 C***@Shop.io，大小写原样保留。",
    "hints": [
-    "对每个邮箱 `map` 一个函数：s[:1] + '***' + s[s.find('@'):]。"
+    "对每个邮箱 map 一个函数：s[:1] + '***' + s[s.find('@'):]。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -3487,7 +3487,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `id`: customer id\n- `email`: email\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "bo@@mail.com has two @; cy.mail.com has none; @mail.com has nothing before the @; ed@mailcom has no dot in its domain; gus@mail. ends its domain with a dot. flo.ray@mail.co.uk is valid: a dot may come before the @.",
      "hints": [
-      "Write the rules as a function returning True / False, `map` it over the emails and negate it."
+      "Write the rules as a function returning True / False, map it over the emails and negate it."
      ]
     }
    },
@@ -3500,7 +3500,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `id`：客户编号\n- `email`：邮箱\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "bo@@mail.com 有两个 @；cy.mail.com 没有 @；@mail.com 的 @ 前为空；ed@mailcom 的域名没有点；gus@mail. 的域名以点结尾。flo.ray@mail.co.uk 合法：点可以出现在 @ 前面。",
    "hints": [
-    "把规则写成一个返回 True / False 的函数，`map` 到 email 列上再取反。"
+    "把规则写成一个返回 True / False 的函数，map 到 email 列上再取反。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -3564,7 +3564,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `initial`: initial in uppercase\n- `customers`: number of customers\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "amy and Abe both go under A, 2 customers; bo goes under B and Cal under C.",
      "hints": [
-      "`str[:1].str.upper()` takes the first letter in uppercase; then group by it."
+      "str[:1].str.upper() takes the first letter in uppercase; then group by it."
      ]
     }
    },
@@ -3577,7 +3577,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `initial`：大写首字母\n- `customers`：客户数\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "amy 和 Abe 都归到 A，共 2 位；bo 归到 B；Cal 归到 C。",
    "hints": [
-    "`str[:1].str.upper()` 取首字母并转大写，再 groupby。"
+    "str[:1].str.upper() 取首字母并转大写，再 groupby。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -3641,7 +3641,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `year`: year as text 'YYYY'\n- `hires`: number of hires\n\n**Row order is compared in this problem**, so sort as asked. The `-- cswork:ordered` first line of the sample input marks this.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "2018 brought Ava and Eve, 2021 Dan and Hugo, 2022 Finn and Jack, and the other years one hire each.",
      "hints": [
-      "`str[:4]` gives the year as text; count per year, then `sort_values`."
+      "str[:4] gives the year as text; count per year, then sort_values."
      ]
     }
    },
@@ -3654,7 +3654,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `year`：年份文本 'YYYY'\n- `hires`：入职人数\n\n**本题比较行的顺序**，请按题目要求排序。样例输入第一行的 `-- cswork:ordered` 就是这个标记。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "2018 年 Ava 和 Eve 入职，2021 年 Dan 和 Hugo，2022 年 Finn 和 Jack，其余年份各 1 人。",
    "hints": [
-    "`str[:4]` 取出年份文本；按年份分组计数后 `sort_values`。"
+    "str[:4] 取出年份文本；按年份分组计数后 sort_values。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -3718,7 +3718,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `order_id`: order id\n- `order_date`: order date\n- `day`: 'Sat' or 'Sun'\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "January 20, 2024 is a Saturday and order 2 was paid; order 3 on the same day and order 9 on Saturday March 9 were both cancelled.",
      "hints": [
-      "`pd.to_datetime(...).dt.dayofweek` counts Monday as 0, Saturday as 5 and Sunday as 6."
+      "pd.to_datetime(...).dt.dayofweek counts Monday as 0, Saturday as 5 and Sunday as 6."
      ]
     }
    },
@@ -3731,7 +3731,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `order_id`：订单编号\n- `order_date`：订单日期\n- `day`：'Sat' 或 'Sun'\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "2024 年 1 月 20 日是星期六，订单 2 已支付；同一天的订单 3 和 3 月 9 日（星期六）的订单 9 都已取消。",
    "hints": [
-    "`pd.to_datetime(...).dt.dayofweek` 里周一是 0、周六是 5、周日是 6。"
+    "pd.to_datetime(...).dt.dayofweek 里周一是 0、周六是 5、周日是 6。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,
@@ -3795,7 +3795,7 @@
      "output": "Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n- `name`: employee name\n- `years`: full years served\n\nRows may come in any order.\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).",
      "explanation": "Ava joined on 2018-04-02 and reached 6 years on 2024-04-02; her 7th anniversary has not come, so 6. Iris joined on 2024-01-08 and has not served a full year: 0.",
      "hints": [
-      "Take `2025 - int(year)`, then subtract 1 when `str[5:]` (month-day) comes after '01-01'."
+      "Take 2025 - int(year), then subtract 1 when str[5:] (month-day) comes after '01-01'."
      ]
     }
    },
@@ -3808,7 +3808,7 @@
    "output": "返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n- `name`：员工姓名\n- `years`：满的整年数\n\n行的顺序不限。\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。",
    "explanation": "Ava 于 2018-04-02 入职，2024-04-02 满 6 年，第 7 个周年还没到，所以是 6；Iris 2024-01-08 入职，还不满 1 年，是 0。",
    "hints": [
-    "年份差 `2025 - int(年份)`，再看 `str[5:]`（月-日）是否晚于 '01-01'，晚了就减 1。"
+    "年份差 2025 - int(年份)，再看 str[5:]（月-日）是否晚于 '01-01'，晚了就减 1。"
    ],
    "timeLimit": 3,
    "memoryLimit": 262144,

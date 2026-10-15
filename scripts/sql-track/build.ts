@@ -280,7 +280,7 @@ function pandasStatement(problem: SqlProblem, solution: PandasSolution, locale: 
       ? `返回一个 DataFrame，按以下顺序包含这些列（列名不参与比较，列的顺序参与比较，index 被忽略）：\n\n${columnList(problem, zh)}\n\n${orderNote(problem, zh)}\n\n判题器把返回的 DataFrame 整理成和 SQL 版相同的格式再比较：第一行是列数，之后每行是一条记录的 JSON 数组。缺失值（None、NaN、NaT、pd.NA）写作 null，True / False 写作 1 / 0；小数四舍五入到 4 位，值为整数的小数与整数相同（3.0 等于 3）；Timestamp 写成 'YYYY-MM-DD' 文本（带时间时为 'YYYY-MM-DD HH:MM:SS'），Timedelta 写成天数；文本和数字不相等（'3' 不等于 3）。`
       : `Return a DataFrame with these columns in this order (names are not compared, their order is; the index is ignored):\n\n${columnList(problem, zh)}\n\n${orderNote(problem, zh)}\n\nThe judge formats the returned DataFrame like the SQL version's result before comparing: the first line is the column count, then each row is a JSON array. Missing values (None, NaN, NaT, pd.NA) are null and True / False are 1 / 0; decimals are rounded to 4 places and an integral decimal equals the integer (3.0 equals 3); a Timestamp becomes 'YYYY-MM-DD' text ('YYYY-MM-DD HH:MM:SS' with a time) and a Timedelta its number of days; text never equals a number ('3' is not 3).`,
     explanation: sql.explanation,
-    hints: [solution.hint[locale]],
+    hints: [solution.hint[locale].replaceAll('`', '')],
   };
 }
 

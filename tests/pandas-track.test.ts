@@ -135,6 +135,8 @@ test('the packages are the SQL packages as 50 valid pandas-only problems', () =>
     assert.ok(parsed.problem.translations?.en?.description.includes("tables['"));
     assert.ok(!/ROUND\(x/.test(`${parsed.problem.description}${parsed.problem.translations?.en?.description}`));
     assert.equal(parsed.problem.hints.length, 1);
+    // Hints render as plain text, so no Markdown backticks.
+    assert.ok(![...parsed.problem.hints, ...(parsed.problem.translations?.en?.hints ?? [])].some((hint) => hint.includes('`')));
   });
   const pandas = packages[0];
   const variant = (problem: Partial<OjProblemPackage['problem']>) =>
