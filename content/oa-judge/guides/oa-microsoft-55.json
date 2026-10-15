@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-55",
+  "packageChecksum": "f23d11ea0293bd4b36d9de348040f584020af3ce75c1ff06f36d86058bff8191",
+  "sourceContentHash": "aba032206fd4c2aad48f940b9059300f06beeda4b45e943d197d3249178ae836",
+  "editorialSha256": "98388d6fb4558560379067827343deaa1ea451dbd8a472113738910c64641669",
+  "hints": {
+    "zh": [
+      "消息能整条放下（长度不超过 K）时直接原样输出，不加省略号。",
+      "否则通知只能是开头若干个完整单词，再加上“一个空格和三个点”这 4 个字符；保留的单词越多通知越长，所以从前往后尽量多保留，直到再加一个词就会超过 K。",
+      "按单个空格切分单词，维护已保留前缀的长度（单词长度之和加上中间的空格）。依次尝试加入下一个词，若新长度加 4 超过 K 就停止。至少保留了一个词时输出前缀加“ ...”，一个都放不下时只输出“...”。消息里含有空格，要整行读取。"
+    ],
+    "en": [
+      "If the whole message fits (its length is at most K), print it unchanged without an ellipsis.",
+      "Otherwise the notification must be some whole leading words followed by the 4 characters of a space and three periods; keeping more words only makes it longer, so keep words from the front for as long as the next one still fits within K.",
+      "Split the message on single spaces and track the length of the kept prefix (word lengths plus the spaces between them). Try to add the next word, and stop once the new length plus 4 exceeds K. If at least one word was kept, print the prefix followed by \" ...\"; if none fits, print just \"...\". The message contains spaces, so read it as a whole line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst check whether the whole message fits. Otherwise keep prefix words one by one as long as the prefix length plus 4 does not exceed K, then append the ellipsis; if not even one word fits, return the three periods.\n\n## Correctness\n\nA notification must be a whole-word prefix of the original message plus the suffix. The prefix length strictly increases with the number of kept words, so the longest prefix within the limit is optimal; when the whole message needs no suffix, it is shown in full first.\n\n## Complexity\n\nTime O(message length), space O(message length)."
+}

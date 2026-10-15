@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-45",
+  "packageChecksum": "a4be223ead1fb01d429c4a91168ff1b0ac73d82d23c913c3990cd44224613b38",
+  "sourceContentHash": "b77cd909f252ed72fa26fff8c31d8cc2c84a1f608537d02d08321f8b68698e20",
+  "editorialSha256": "09a9c5914e74f552058aa2e40e3a60e7b556665dbaa0bd706a24ad35ebc630b9",
+  "hints": {
+    "zh": [
+      "删除之后剩下的字母保持原来的相对顺序，所以保留下来的部分就是原串的一个非降子序列；删得最少等价于留得最多。",
+      "答案是 |S| 减去最长非降子序列的长度。注意是“非降”，相同字母可以都保留。",
+      "维护数组 tails，第 i 项表示长度为 i+1 的非降子序列最小可能的结尾字母。对每个字母，找第一个严格大于它的位置（upper_bound）替换；找不到就追加到末尾。最后输出 |S| 减去 tails 的长度。"
+    ],
+    "en": [
+      "The remaining letters keep their original order, so the kept part is a non-decreasing subsequence of the word; deleting as few as possible means keeping as many as possible.",
+      "The answer is |S| minus the length of the longest non-decreasing subsequence. It is non-decreasing, so equal letters may all be kept.",
+      "Maintain an array tails whose entry i is the smallest possible last letter of a non-decreasing subsequence of length i+1. For each letter, find the first entry strictly greater than it (upper_bound) and replace it, or append the letter if there is none. Print |S| minus the length of tails."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe kept letters must form a subsequence of the original string that is lexicographically non-decreasing. Let L be the length of the longest non-decreasing subsequence; then at most L letters can be kept, and the answer is `n-L`. Use tails to maintain the smallest ending character of a non-decreasing subsequence of each length; for each character, use upper_bound to find the first position greater than it and replace it, or otherwise extend the sequence.\n\n## Correctness\n\nEvery way of keeping letters is a non-decreasing subsequence of the original string, so its length is at most L and at least n−L characters must be deleted. Conversely, the longest non-decreasing subsequence itself is obtained by deleting all the other characters, so deleting n−L characters suffices. The upper_bound update of tails is the classic longest non-decreasing subsequence algorithm; repeated letters can extend the sequence, and the final length is exactly L.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

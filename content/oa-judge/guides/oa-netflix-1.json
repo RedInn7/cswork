@@ -1,0 +1,19 @@
+{
+  "id": "oa-netflix-1",
+  "packageChecksum": "481e6603e02da3bd3fc969e5188fe7d13ceec92b44aeb6c535c80e568d06efe8",
+  "sourceContentHash": "267fc34e68b4083c22c21045df948a35361fa5fa1baf7bd845f69501d0ad89ea",
+  "editorialSha256": "486cd50d8096e7e46b07775079c093348082e0e59db920a31da73bd7069ef7ea",
+  "hints": {
+    "zh": [
+      "撤销不能靠逆运算实现：乘以 0 之后无法再用除法恢复。需要直接保存每次变更之前的状态。",
+      "撤销的总是最近一个尚未撤销的变更，这是后进先出的结构：用栈保存每次 ADD 或 MUL 之前的值即可；PRINT 不算变更，不入栈。",
+      "维护当前值（初始为 0）和一个栈：ADD、MUL 先把当前值压栈再计算；UNDO 弹出栈顶作为新的当前值；PRINT 把当前值记入输出列表。最后先输出 PRINT 的次数，再逐行输出记录的值。所有数值用 64 位整数。"
+    ],
+    "en": [
+      "Undo cannot be done with inverse operations: after multiplying by 0, division cannot restore the value. Save the state before every change instead.",
+      "Undo always reverts the most recent change that has not been undone, which is last-in first-out: push the value before every ADD or MUL onto a stack. PRINT is not a change and pushes nothing.",
+      "Keep the current value (starting at 0) and a stack: ADD and MUL push the current value and then compute; UNDO pops the top and makes it the current value; PRINT appends the current value to the output list. Print the number of PRINT commands first, then each recorded value on its own line. Use 64-bit integers throughout."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBefore each ADD or MUL, push the current state onto a stack; UNDO pops the top and restores it, and PRINT only records the current state.\n\n## Correctness\n\nThe stack holds, in order, the state before each change that has not been undone. A new change pushes its previous state, preserving this invariant; UNDO restores the last previous state and removes the corresponding stack entry, which undoes exactly the most recent change. Multiplying by zero needs no inverse operation either. PRINT changes neither the state nor the stack. By induction, every output is correct.\n\n## Complexity\n\nO(1) per command, O(q) total time, and O(q) space for the history and the output."
+}

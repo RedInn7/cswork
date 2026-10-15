@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-46",
+  "packageChecksum": "fa537d2874afb35cb84b3c9216538f6a0487ba637bd9f8daa2015024077a6bd7",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    // dp[v]: longest valid chain ending with right value v\n    int dp[7] = {0};\n    for (int i = 0; i < n; i++) {\n        int left, right;\n        cin >> left >> right;\n        dp[right] = max(dp[right], dp[left] + 1);\n    }\n    cout << n - *max_element(dp, dp + 7) << \"\\n\";\n}\n",
+      "sha256": "91e74b556a2c7b64922b73d6d3528425ab99ebb354953d132502515227a7ae52"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        // dp[v]: longest valid chain ending with right value v\n        int[] dp = new int[7];\n        for (int i = 0; i < n; i++) {\n            int left = nextInt(), right = nextInt();\n            dp[right] = Math.max(dp[right], dp[left] + 1);\n        }\n        int best = 0;\n        for (int v : dp) best = Math.max(best, v);\n        System.out.println(n - best);\n    }\n}\n",
+      "sha256": "8074797bf56289f25aebfde0d707c65ee540af353579d43bdd7123e8e3e782da"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\t// dp[v]: longest valid chain ending with right value v\n\tvar dp [7]int\n\tfor i := 0; i < n; i++ {\n\t\tleft, right := nextInt(), nextInt()\n\t\tdp[right] = max(dp[right], dp[left]+1)\n\t}\n\tbest := 0\n\tfor _, v := range dp {\n\t\tbest = max(best, v)\n\t}\n\tfmt.Println(n - best)\n}\n",
+      "sha256": "922e984740023fc73ce7a1607b451e839ee468d9a46fd264201733569e0ae16d"
+    }
+  ]
+}

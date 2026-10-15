@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-70",
+  "packageChecksum": "a41aa81d2954921ae4ff43f97b121fcff9a8b2d24d4cb3d67f8583fe12811692",
+  "sourceContentHash": "2986617469c40f0420a70a92e4d5ca8fc9349024dad52645a47b5fe2cd03d178",
+  "editorialSha256": "78077b4c78f6565bc0939a57d76a5da88beb0ef55712868adc67f26b57a35a03",
+  "hints": {
+    "zh": [
+      "“该字母的每个小写都出现在任何大写之前”只需要比较两个位置：最后一次小写出现的位置和第一次大写出现的位置。",
+      "对 26 个字母分别记录最后一次小写位置和第一次大写位置，一次扫描就能得到。",
+      "扫描字符串：小写字母更新自己的“最后小写位置”，大写字母只在第一次出现时记录“首个大写位置”。最后统计两个位置都存在、且最后小写位置小于首个大写位置的字母个数。"
+    ],
+    "en": [
+      "\"Every lowercase occurrence comes before every uppercase occurrence\" compares just two positions: the last lowercase occurrence and the first uppercase occurrence.",
+      "Record, for each of the 26 letters, its last lowercase position and its first uppercase position; one scan provides both.",
+      "Scan the string: a lowercase letter updates its last lowercase position, and an uppercase letter records its first uppercase position only the first time. Count the letters for which both positions exist and the last lowercase position is smaller than the first uppercase position."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord each letter's last lowercase position and first uppercase position; the letter qualifies if both exist and the former is smaller.\n\n## Correctness\n\nAll lowercase occurrences coming before all uppercase occurrences is equivalent to the latest lowercase occurrence coming before the earliest uppercase occurrence. Checking this necessary and sufficient condition for each letter separately and adding up gives the number of distinct qualifying letters.\n\n## Complexity\n\nTime O(N+26), space O(26)."
+}

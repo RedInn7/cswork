@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-65",
+  "packageChecksum": "fce5bb3f1bbdb9750a4b91ce77f5c83fce95d705a699bb8696000cb19632ffe1",
+  "sourceContentHash": "2b589b34f2f3279077895f811db8712e0ba054aa9e8608ebb5289d1645aa45df",
+  "editorialSha256": "6caee086aa24f2d97516db3c9b856000625f2c529acb89bcc97da0bfddde0e89",
+  "hints": {
+    "zh": [
+      "瓷砖最多三块，可以把“已经用了几块”放进状态：对每个前缀，记录用至多 t 块（t 为 0 到 3）能覆盖的最大和。",
+      "看前缀的最后一个元素：要么不被覆盖，结果和前一个前缀相同；要么被一块瓷砖覆盖，这块必然盖住最后两个元素，前面接上“少一块、少两个元素”的最优方案。",
+      "滚动保存前两个前缀的四个状态，初值都为 0（表示可以一块不放）。处理第 i 个元素时，新状态先复制上一个前缀的状态；若 i≥1，对 t 为 1 到 3，取“上一个前缀的 t 状态”与“再往前一个前缀的 t−1 状态加上 a[i−1]+a[i]”中的较大者。最后输出至多 3 块的状态。和可能超过 32 位。"
+    ],
+    "en": [
+      "There are at most three tiles, so put the number used into the state: for each prefix, record the best covered sum using at most t tiles, for t from 0 to 3.",
+      "Look at the last element of the prefix: either it is uncovered and the result equals that of the previous prefix, or a tile covers it, in which case the tile covers the last two elements and follows the best solution with one fewer tile on the prefix two elements shorter.",
+      "Keep the four states of the two previous prefixes, all starting at 0 (placing no tile is allowed). For element i, start the new states as a copy of the previous prefix; if i≥1, for t from 1 to 3 take the larger of the previous prefix's state t and the state t−1 of the prefix before it plus a[i−1]+a[i]. Print the state for at most 3 tiles. Sums can exceed 32 bits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA prefix DP maintains the maximum sum using at most 0, 1, 2, 3 tiles. The last element may stay uncovered; or one tile covers the last two cells and follows the best solution, with one fewer tile, that ends before those two cells.\n\n## Correctness\n\nIf a valid solution covers the last cell, its last tile must cover the last two cells and nothing before may overlap it; otherwise the solution belongs to a shorter prefix. The two branches exhaust all solutions, and initializing with zero allows not using tiles with negative gain.\n\n## Complexity\n\nTime O(3N), space O(1) apart from the input."
+}

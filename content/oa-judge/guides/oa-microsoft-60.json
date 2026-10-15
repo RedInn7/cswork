@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-60",
+  "packageChecksum": "a68865484b4aefb1ae7446c1c676374d8040890c9e88407695c430b04437afc8",
+  "sourceContentHash": "63e5f5c1c7cc3bacf18c1df7569a96f187f5d4c3e24fccc9634ed301e06b32b9",
+  "editorialSha256": "93a4f40943c123db313066d6512377c90a33c97e86e2d6dd37bbf262cbc98f8f",
+  "hints": {
+    "zh": [
+      "反转数位不需要字符串：x 对 10 取余得到最低位，x 整除 10 去掉最低位。",
+      "先记下符号，对绝对值做反转，再把符号乘回去；原数末尾的 0 反转后变成前导零，自然消失。",
+      "循环执行“答案乘 10 加上当前最低位，x 整除 10”，直到 x 为 0。最后检查结果是否在 −2^31 到 2^31−1 之间，不在就输出 0。中间结果用 64 位整数保存，才能安全判断越界（−2^31 的绝对值本身就超出 32 位）。"
+    ],
+    "en": [
+      "Reversing digits needs no string: x modulo 10 gives the lowest digit and integer division by 10 removes it.",
+      "Remember the sign, reverse the absolute value, then apply the sign again; trailing zeros of the input become leading zeros and simply disappear.",
+      "Repeat \"answer times 10 plus the lowest digit, then divide x by 10\" until x is 0. Finally check that the result lies in −2^31 to 2^31−1 and print 0 otherwise. Keep the intermediate value in a 64-bit integer so the overflow check is safe; the absolute value of −2^31 already exceeds 32 bits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRepeatedly take the units digit and append it to the end of the answer, without using string operations.\n\n## Overflow\n\nThe rule from the official statement of the same problem says to output 0 when the reversed result is outside the signed 32-bit range.\n\n## Correctness\n\nEach step appends the lowest digit of the original number to the current answer, so after all digits are processed the answer is exactly the reversed number; overflow is then handled by the range rule.\n\n## Complexity\n\nTime O(log|x|), space O(1)."
+}

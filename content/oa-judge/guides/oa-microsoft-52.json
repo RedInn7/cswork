@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-52",
+  "packageChecksum": "ca5dfc57cff986d0121cae0233dfe1d901a74ad5287dd2ca7be9e078a63fe412",
+  "sourceContentHash": "0045c4339c3a412cf785307978e8be22212894d7f6c583b0af326c10a2defce7",
+  "editorialSha256": "f2b3d716ad7ebb3e82597dfe55997bb7336149838ae27d8252f27ee666cac046",
+  "hints": {
+    "zh": [
+      "给第 i 个栈里的每枚代币赋权值 2 的 i 次方：拿走两枚、下一栈加一枚，总权值不变，而代币数减少 1。",
+      "只要某个栈至少有 2 枚就还能继续操作；最终每个栈至多 1 枚，这正是总权值的二进制表示，所以最少代币数就是总权值二进制中 1 的个数。",
+      "不必真的算出总权值（它可能非常大）：从第 0 个栈开始维护进位，当前高度加上进位后，奇偶性计入答案，其余的一半作为进位送到下一个栈。读完 N 个栈后进位还会继续向更高的栈传递，再加上进位二进制中 1 的个数即可。"
+    ],
+    "en": [
+      "Give every token on stack i the weight 2 to the power i: taking two tokens and adding one to the next stack keeps the total weight and removes one token.",
+      "As long as some stack holds at least 2 tokens another operation is possible; at the end every stack holds at most 1 token, which is exactly the binary representation of the total weight, so the minimum is the number of 1 bits of that total.",
+      "There is no need to build the total weight, which can be huge: walk from stack 0 with a carry, add the carry to the current height, count its parity in the answer, and pass half of the rest to the next stack. After the N stacks the carry keeps moving to higher stacks, so add the number of 1 bits of the remaining carry."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess the carry from low to high: add the carry to the current height, leave 1 if the result is odd, and send half of the rest to the next stack; after the input ends, keep processing the binary bits of the carry.\n\n## Correctness\n\nEvery token on stack i has weight 2^i; an operation does not change the total weight and reduces the token count by 1. In the end each stack holds at most 1 token, which is exactly the unique binary representation of the total weight; any state that is not of this form still allows an operation that reduces the count, so this is optimal.\n\n## Complexity\n\nTime O(N+log of the maximum height), space O(1) apart from the input."
+}

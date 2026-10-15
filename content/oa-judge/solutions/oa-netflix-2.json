@@ -1,0 +1,21 @@
+{
+  "id": "oa-netflix-2",
+  "packageChecksum": "7161c7fca49ea74b60e637fbb20c9f6816cc85af411688ee04e83cf46806371d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, g, k;\n    cin >> n >> g >> k;\n    vector<double> scores(n);\n    for (auto &x : scores) cin >> x;\n    string out = to_string(g) + \"\\n\";\n    char text[64];\n    for (int t = 0; t < g; t++) {\n        int m;\n        cin >> m;\n        vector<double> values(m);\n        for (auto &v : values) {\n            int id;\n            cin >> id;\n            v = scores[id];\n        }\n        sort(values.rbegin(), values.rend());  // the k highest come first\n        double sum = 0;\n        for (int i = 0; i < k; i++) sum += values[i];\n        snprintf(text, sizeof text, \"%.12g\", sum);\n        if (t) out += ' ';\n        out += text;\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "c5e4029d20d0cf44250c84bde323777dfc7aca21fbf830441555d7204261b708"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.math.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), g = nextInt(), k = nextInt();\n        double[] scores = new double[n];\n        for (int i = 0; i < n; i++) scores[i] = Double.parseDouble(next());\n        StringBuilder out = new StringBuilder().append(g).append('\\n');\n        MathContext digits = new MathContext(12);\n        for (int t = 0; t < g; t++) {\n            int m = nextInt();\n            double[] values = new double[m];\n            for (int i = 0; i < m; i++) values[i] = scores[nextInt()];\n            Arrays.sort(values);\n            double sum = 0;\n            for (int i = 0; i < k; i++) sum += values[m - 1 - i]; // the k highest, largest first\n            if (t > 0) out.append(' ');\n            out.append(new BigDecimal(sum).round(digits).stripTrailingZeros().toPlainString());\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "bb0d520eedf742e176096c89c4d5ca517fce9432ed02fee599689b0582a4a448"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, g, k := int(nextInt()), int(nextInt()), int(nextInt())\n\tscores := make([]float64, n)\n\tfor i := range scores {\n\t\tscores[i], _ = strconv.ParseFloat(string(next()), 64)\n\t}\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tw.WriteString(strconv.Itoa(g) + \"\\n\")\n\tfor t := 0; t < g; t++ {\n\t\tm := int(nextInt())\n\t\tvalues := make([]float64, m)\n\t\tfor i := range values {\n\t\t\tvalues[i] = scores[nextInt()]\n\t\t}\n\t\tsort.Sort(sort.Reverse(sort.Float64Slice(values))) // the k highest come first\n\t\tsum := 0.0\n\t\tfor _, v := range values[:k] {\n\t\t\tsum += v\n\t\t}\n\t\tif t > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(strconv.FormatFloat(sum, 'g', 12, 64))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "825ae090ac4840fcf612a73a37030f4e0a96f429ddc7917f534756dee6d9d813"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-56",
+  "packageChecksum": "1c868d9e87babeb3ef6d0d6dcc8edf377aa294636bd6c78311f9346711f16c6c",
+  "sourceContentHash": "39a34e238a80d2aff58e228270fdf424eee9634fbb4ca99595d70be27df2fb29",
+  "editorialSha256": "8edc82660c7f3a634552a822265c9f68ba0a0fe42304ad18caedbbfd072bfda7",
+  "hints": {
+    "zh": [
+      "只要数组里有两个相等的值，它们的异或就是 0，乘积直接为 0。否则所有值互不相同，而值域只有 1..3000，问题变成统计每种异或结果分别出现了多少对。",
+      "不必逐对枚举：所有数对异或值的分布，就是频率数组与自身的“异或卷积”，可以用快速沃尔什–阿达玛变换在长度 4096 上算出。若异或值 v 出现了 c 对，它在乘积里贡献 v 的 c 次方。",
+      "读入时顺便检测重复。无重复时，对长度 4096 的频率数组做整数异或变换，逐项平方，再变换一次并除以 4096，得到每个 v 的有序对数；v 非零时再除以 2 就是 i<j 的对数。最后用快速幂把各个 v 的贡献乘起来，对 1000000007 取模。中间值会超出 32 位，要用 64 位整数。"
+    ],
+    "en": [
+      "If any value repeats, those two XOR to 0 and the product is 0. Otherwise all values are distinct and lie in 1..3000, so the task becomes counting how many pairs produce each XOR value.",
+      "There is no need to enumerate pairs: the distribution of pairwise XOR values is the XOR convolution of the frequency array with itself, which the fast Walsh-Hadamard transform computes over length 4096. If XOR value v occurs in c pairs, it contributes v to the power c to the product.",
+      "Detect duplicates while reading. Without duplicates, apply the integer XOR transform to the frequency array of length 4096, square every entry, transform again and divide by 4096 to get the number of ordered pairs for each v; for nonzero v, halve it to get the pairs with i<j. Multiply the contributions with fast modular exponentiation modulo 1000000007. Intermediate values exceed 32 bits, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf any value repeats, some factor has XOR 0 and the answer is immediately 0. Otherwise, apply the integer XOR Walsh transform to the value frequencies of length 4096, square each entry, transform again, and divide by 4096 to get the number of ordered pairs for each XOR value; the number of unordered pairs with a nonzero XOR is half of that, and the answer is the product of modular powers using these counts.\n\n## Correctness\n\nThe XOR transform turns XOR convolution into a pointwise product, and the inverse transform gives the number of ordered pairs with x XOR y=v. When v is nonzero, no pair uses the same index twice, and swapping the two ends gives exactly two ordered pairs, so halving gives the count with i<j. Multiplying group by group over v is equivalent to the product of all the original factors; the branch for duplicate values, which produces a 0 factor, is also exact.\n\n## Complexity\n\nTime O(sum of N over the test cases+T·4096 log 4096+T·4096 log N), space O(4096), not counting input parsing."
+}

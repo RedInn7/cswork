@@ -1,0 +1,21 @@
+{
+  "id": "oa-morgan-stanley-3",
+  "packageChecksum": "54b037bc10e8cb9c6ed60b309101b1a8dc04c2e6a605063b487c2ce94bbd7bf5",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string pattern, text;\n    cin >> pattern >> text;\n    // matches of the first 1, 2, 3 pattern characters; update the longest prefix first\n    long long one = 0, two = 0, three = 0;\n    for (char ch : text) {\n        if (ch == pattern[2]) three += two;\n        if (ch == pattern[1]) two += one;\n        if (ch == pattern[0]) one++;\n    }\n    cout << three << \"\\n\";\n}\n",
+      "sha256": "b5e892564af33cb83c84172ccbc15e9cc48a4a7b9ccb82d427fb547f8f6fb14e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        String pattern = next(), text = next();\n        char p0 = pattern.charAt(0), p1 = pattern.charAt(1), p2 = pattern.charAt(2);\n        // matches of the first 1, 2, 3 pattern characters; update the longest prefix first\n        long one = 0, two = 0, three = 0;\n        for (int i = 0; i < text.length(); i++) {\n            char ch = text.charAt(i);\n            if (ch == p2) three += two;\n            if (ch == p1) two += one;\n            if (ch == p0) one++;\n        }\n        System.out.println(three);\n    }\n}\n",
+      "sha256": "4184e12026990e51e7d1fe6d3e5b2897cfefce721d1b8038ead32c0ec81a2250"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tpattern, text := next(), next()\n\t// matches of the first 1, 2, 3 pattern characters; update the longest prefix first\n\tvar one, two, three int64\n\tfor _, ch := range text {\n\t\tif ch == pattern[2] {\n\t\t\tthree += two\n\t\t}\n\t\tif ch == pattern[1] {\n\t\t\ttwo += one\n\t\t}\n\t\tif ch == pattern[0] {\n\t\t\tone++\n\t\t}\n\t}\n\tfmt.Println(three)\n}\n",
+      "sha256": "14b526b92c7512c18670b21940daa618bca59e549448372bc56cd6a52b4bba07"
+    }
+  ]
+}

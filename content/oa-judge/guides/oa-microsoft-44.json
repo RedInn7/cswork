@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-44",
+  "packageChecksum": "83177832e0405f487196052cffc5dae764956824236f5e5fb3f44d97dc2f0de8",
+  "sourceContentHash": "1a2f30019addd964a4b18057b486b6f8897010667d281b5da0cc19f273d5d77c",
+  "editorialSha256": "a58340037f9f1881fa35dcf5bc399bb6c7ade5dbc08ca763953b1aa72693e843",
+  "hints": {
+    "zh": [
+      "每个原始元素要么单独保留，要么和相邻的一个元素拼成一项，这相当于把数组切成若干长度为 1 或 2 的段。",
+      "设前 i 个元素的最大总和为 f[i]。最后一段要么只含第 i 个元素，要么是第 i−1 个和第 i 个元素拼接，所以 f[i] 只依赖 f[i−1] 和 f[i−2]。",
+      "拼接 x 和 y 的值等于 x 乘以 10 的“y 的位数”次方再加 y，0 也算一位。递推取 f[i−1]+a[i] 与 f[i−2]+拼接值 中的较大者，只保留最近两个状态和上一个元素即可，最后输出 f[N]；总和可能超过 32 位整数。"
+    ],
+    "en": [
+      "Each original element is either kept alone or joined with one neighbor, which is the same as cutting the array into pieces of length 1 or 2.",
+      "Let f[i] be the best total for the first i elements. The last piece is either element i alone or elements i−1 and i concatenated, so f[i] depends only on f[i−1] and f[i−2].",
+      "Concatenating x and y gives x times 10 to the power of the digit count of y, plus y, where 0 counts as one digit. Take the larger of f[i−1]+a[i] and f[i−2]+the concatenated value, keep only the last two states and the previous element, and print f[N]; the total can exceed 32-bit range."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrefix DP: either keep the last element on its own, or concatenate the last two original elements into one item; take the larger of the two sums.\n\n## Correctness\n\nIn any valid partition, the last group can contain only 1 or 2 original elements. Removing it leaves a valid optimal subproblem on a shorter prefix; the two recurrences exhaust all possibilities and guarantee no overlap.\n\n## Complexity\n\nTime O(N), space O(1) apart from the input."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-40",
+  "packageChecksum": "b0ffe459944715e7c5b5a3aa2a7112ccd3655579d5279d14b6741ffdcbc3ffc5",
+  "sourceContentHash": "1f1c9cc139a789bbd3f69e71522dc42a167811801a8ae45b90e9e334ff6e6f75",
+  "editorialSha256": "109be1b1df97054f753edd00ff6012c77c73c38efa627fad6bfe8225a31ae848",
+  "hints": {
+    "zh": [
+      "删掉的是长度固定为 R 的一段连续货架，剩下的是一个前缀加一个后缀；只需要关心窗口外每种类型还剩几个。",
+      "用滑动窗口枚举全部 N−R+1 个删除位置，同时维护“窗口外每种类型的数量”以及数量为正的类型个数。",
+      "先统计从下标 R 到末尾的频次和种类数，作为第一个窗口的结果；之后窗口右移一格时，把移出窗口的左端加回（数量从 0 变 1 时种类数加一），把新进入窗口的右端扣掉（数量减到 0 时种类数减一），每一步更新最大值。"
+    ],
+    "en": [
+      "The deleted part is a block of exactly R consecutive shelves, and what remains is a prefix plus a suffix; all that matters is how many of each type remain outside the block.",
+      "Slide the window over all N−R+1 deletion positions while maintaining the count of each type outside the window and the number of types whose count is positive.",
+      "First count frequencies and distinct types from index R to the end; that is the result of the first window. When the window moves right by one, add back the shelf leaving it on the left (a count going from 0 to 1 adds a type) and remove the shelf entering it on the right (a count dropping to 0 loses a type), updating the maximum at every step."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst subtract the first deletion window from the global frequencies, then slide the window: restore the old left end, delete the new right end, and maintain the number of types whose remaining frequency is positive.\n\n## Proof of correctness\n\nThe maintained frequencies are always exactly the counts of each type outside the window, so when an element enters or leaves the window you only need to check whether its frequency crosses 0 to update the number of types. Enumerating every consecutive deletion window and taking the maximum covers all valid choices.\n\n## Complexity\n\nTime O(N), space O(N)."
+}

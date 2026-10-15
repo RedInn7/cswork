@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-49",
+  "packageChecksum": "9dc323a2ea5231eff41216138734c1fbe39f62de5d1ade7026a6162205d38012",
+  "sourceContentHash": "9878f77241c2f63057d69a24cd779f68f559b2350d6053f670ff2aa74c3d53f9",
+  "editorialSha256": "88845fca0c7633e6340a1d6af3f2c7d1a380747551022748235a7e54ba7f435e",
+  "hints": {
+    "zh": [
+      "每列只有上下两格，列要平衡，就只能是一红一白，或者两格都保持 ?。因此两格是同一种固定颜色的列直接无解。",
+      "只有一个 ? 的列，填法唯一（与另一格颜色相反），必须花 1 次。两个 ? 的列可以不动，也可以花 2 次填成一红一白，专门用来调整行的平衡。",
+      "先处理所有单 ? 列并累计次数，同时统计上行 R 比 W 多出的数量 d（只看已确定颜色的列）。每个双 ? 列能让 d 改变 1，代价为 2；若 d 的绝对值不超过双 ? 列的数量，答案是单 ? 的次数加上 2 乘以 d 的绝对值，否则输出 −1。上行平衡后，由于每列都是一红一白，下行自动平衡。"
+    ],
+    "en": [
+      "Each column has only two cells, so a balanced column is either one R and one W or two cells left as ?. A column with two fixed cells of the same color makes the task impossible.",
+      "A column with a single ? has exactly one valid filling (the color opposite to the other cell) and costs 1. A column with two ? can stay as it is or be filled as one R and one W for a cost of 2, which is how row balance gets adjusted.",
+      "Handle every single-? column first and count those replacements, while tracking d, the number of R minus W in the top row over the columns with decided colors. Each double-? column changes d by 1 at a cost of 2; if the absolute value of d is at most the number of double-? columns, the answer is the single-? count plus twice the absolute value of d, otherwise −1. Once the top row is balanced, the bottom row is balanced too because every filled column holds one R and one W."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA ? on one side only must be filled with the color opposite to the other side, and a fixed same-color column means there is no solution. Leave double-? columns empty for now; after the forced fills, if the top row has d more R than W, fill d double-? columns with W on top and R below, and vice versa.\n\n## Correctness\n\nA two-cell column can only be RW, WR, or ??. A column with a single ? has a unique filling. Each double-? column costs 2 replacements to change the top row's difference by 1; therefore at least |difference| such columns are needed, and when there are enough empty columns, filling them this way meets the lower bound, with the bottom row balanced at the same time.\n\n## Complexity\n\nTime O(N), space O(1) apart from the input."
+}

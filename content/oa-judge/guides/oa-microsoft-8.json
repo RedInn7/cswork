@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-8",
+  "packageChecksum": "c4694f1087a1665120a775bd769b8cb3669faf4dc5fe340376093bf901c1730b",
+  "sourceContentHash": "442b629a783941351fac3ee2c822c65b4eee5825f5df2f2cbafab9c469e4fbe1",
+  "editorialSha256": "f818b77a6c2429fa640397fec3748628e06c5ec33bcd04e6a57700e361d58284",
+  "hints": {
+    "zh": [
+      "空地到每所房屋的距离都不超过 K，等价于它到最远那所房屋的距离不超过 K。",
+      "曼哈顿距离等于两点的 x+y 之差与 x−y 之差两者绝对值中的较大者。于是一块空地到所有房屋的最大距离，只取决于房屋的 x+y 和 x−y 的最小值、最大值这四个数。",
+      "先扫描一遍网格，求出所有房屋 x+y 与 x−y 的最小、最大值；没有房屋时答案就是格子总数（全是空地）。再扫描每块空地，计算它的 x+y、x−y 与这四个极值之差的最大值，不超过 K 就计数。"
+    ],
+    "en": [
+      "An empty lot within distance K of every house is the same as being within distance K of the farthest house.",
+      "Manhattan distance equals the larger of the absolute differences of x+y and of x−y between the two points. So the farthest distance from a lot to all houses depends only on four numbers: the minimum and maximum of x+y and of x−y over the houses.",
+      "Scan the grid once to find the minimum and maximum of x+y and x−y over all houses; with no house, the answer is the number of cells, since all are empty. Then scan every empty lot, take the largest difference between its x+y, x−y and those four extremes, and count it when that is at most K."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the minimum and maximum of x+y and x−y over all houses; for each empty lot, check whether its differences from all four extremes are ≤K.\n\n## Proof of correctness\n\nThe Manhattan distance equals the maximum of the absolute differences of the two transformed coordinates x+y and x−y. The maximum distance to all houses is determined by these four extremes alone, so checking the four inequalities is necessary and sufficient.\n\n## Complexity\n\nTime O(RC), space O(RC)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-money-forward-2",
+  "packageChecksum": "3b79cf33b49499fe9f361cf42372bb214a297ee2d043ed8c384c6bbfc8d9d7f6",
+  "sourceContentHash": "7d3c8483d9329524ba1a12261daf4cb49e22391ad85c68cb6cc27f056ab90c82",
+  "editorialSha256": "1f608328759813b9442055c31b3ac03d0ca1d25881221fbf45a684e073c2c6c3",
+  "hints": {
+    "zh": [
+      "长度只有 3000，每一步最多扫描并翻转整排棋子，直接模拟的平方复杂度完全够用。",
+      "第奇数步（从 1 数起）落黑棋、偶数步落白棋。落在左端时向右找最近的同色棋子，落在右端时向左找；找到才把两者之间的棋子全部翻成该颜色，找不到就什么也不翻。",
+      "用一个两端都留有余量的数组表示棋串（初始中间放黑、白两枚），左右各一个指针：左端落子就把左指针左移，右端落子就把右指针右移，避免在开头插入的开销。每一步沿落子方向扫描到最近的同色棋子，再翻转中间区间。最后统计黑、白数量，以空格分隔输出。"
+    ],
+    "en": [
+      "The transcript has at most 3000 moves and each move scans and flips at most the whole row, so a quadratic direct simulation is fast enough.",
+      "Odd moves (counting from 1) place black and even moves place white. A tile placed at the left end looks right for the nearest tile of its color, and one placed at the right end looks left; only if such a tile exists are all tiles between them flipped to that color, otherwise nothing changes.",
+      "Store the row in an array with spare room on both sides (starting with black then white in the middle) and keep left and right pointers: a move at the left end moves the left pointer left and a move at the right end moves the right pointer right, so nothing is ever inserted at the front. On each move scan in the move's direction to the nearest tile of the same color and flip the tiles in between. Finally count black and white and print the two numbers separated by a space."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSimulate the one-dimensional board step by step following the transcript. In the direction of the move, find the nearest tile of the same color and flip the tiles between it and the new tile.\n\n## Proof of correctness\n\nEach transcript character uniquely determines the color of the placed tile and the end of the board. The problem states that the middle range is flipped only when a nearest tile of the same color exists; maintaining the whole row step by step therefore matches the rules exactly.\n\n## Complexity\n\nTime O(|S|²), space O(|S|); this site limits the length to 3000 so that direct simulation fits."
+}

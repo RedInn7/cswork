@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-55",
+  "packageChecksum": "f23d11ea0293bd4b36d9de348040f584020af3ce75c1ff06f36d86058bff8191",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string text((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());\n    if (!text.empty() && text.back() == '\\n') text.pop_back();\n    size_t cut = text.find('\\n');\n    int k = stoi(text.substr(0, cut));\n    string message = text.substr(cut + 1);\n    if ((int)message.size() <= k) {\n        cout << message << \"\\n\";\n        return 0;\n    }\n    // keep whole prefix words while prefix + \" ...\" fits in k\n    string chosen;\n    size_t start = 0;\n    while (start <= message.size()) {\n        size_t end = message.find(' ', start);\n        if (end == string::npos) end = message.size();\n        string word = message.substr(start, end - start);\n        size_t candidate = chosen.size() + word.size() + (chosen.empty() ? 0 : 1);\n        if ((int)candidate + 4 > k) break;\n        if (!chosen.empty()) chosen += ' ';\n        chosen += word;\n        start = end + 1;\n    }\n    cout << (chosen.empty() ? string(\"...\") : chosen + \" ...\") << \"\\n\";\n}\n",
+      "sha256": "b77110017276b837d977daf4dedade0893b0c300232df03e9a2b5fb5ea4d4742"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.nio.charset.StandardCharsets;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String text = new String(System.in.readAllBytes(), StandardCharsets.UTF_8);\n        if (text.endsWith(\"\\n\")) text = text.substring(0, text.length() - 1);\n        int cut = text.indexOf('\\n');\n        int k = Integer.parseInt(text.substring(0, cut).trim());\n        String message = text.substring(cut + 1);\n        if (message.length() <= k) {\n            System.out.println(message);\n            return;\n        }\n        // keep whole prefix words while prefix + \" ...\" fits in k\n        StringBuilder chosen = new StringBuilder();\n        for (String word : message.split(\" \", -1)) {\n            int candidate = chosen.length() + word.length() + (chosen.length() > 0 ? 1 : 0);\n            if (candidate + 4 > k) break;\n            if (chosen.length() > 0) chosen.append(' ');\n            chosen.append(word);\n        }\n        System.out.println(chosen.length() > 0 ? chosen + \" ...\" : \"...\");\n    }\n}\n",
+      "sha256": "e5ff775899f4fba7c9e7a4d945c380c0bc3050ec8c5322f68252308895157adf"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(os.Stdin)\n\ttext := strings.TrimSuffix(string(raw), \"\\n\")\n\tfirst, message, _ := strings.Cut(text, \"\\n\")\n\tk, _ := strconv.Atoi(strings.TrimSpace(first))\n\tif len(message) <= k {\n\t\tfmt.Println(message)\n\t\treturn\n\t}\n\t// keep whole prefix words while prefix + \" ...\" fits in k\n\tchosen := []string{}\n\tlength := 0\n\tfor _, word := range strings.Split(message, \" \") {\n\t\tcandidate := length + len(word)\n\t\tif len(chosen) > 0 {\n\t\t\tcandidate++\n\t\t}\n\t\tif candidate+4 > k {\n\t\t\tbreak\n\t\t}\n\t\tchosen = append(chosen, word)\n\t\tlength = candidate\n\t}\n\tif len(chosen) == 0 {\n\t\tfmt.Println(\"...\")\n\t} else {\n\t\tfmt.Println(strings.Join(chosen, \" \") + \" ...\")\n\t}\n}\n",
+      "sha256": "26744901a424bc76723ca1ba07bdaf70fe8ec8fdd33aabfd0432225b39e9e980"
+    }
+  ]
+}

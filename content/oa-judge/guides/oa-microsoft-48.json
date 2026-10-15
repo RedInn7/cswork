@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-48",
+  "packageChecksum": "644d22faec3f6f3695662dc32268a91659f152c770312fe1cb41f5f20fd0e1de",
+  "sourceContentHash": "771385b5dd8d7eb882e68d72865fcb85a99df8f94a4adcf8830b67f33f22ba94",
+  "editorialSha256": "11e64592001b48119b188eaeac0a9dfca65894bd68125fb834d5daca573160bb",
+  "hints": {
+    "zh": [
+      "保留下来的车里，相邻两辆的重量和不能超过容量，单辆也不能超载。从左往右处理时，后面的车能否接上只取决于当前保留的最后一辆。",
+      "贪心：最后一辆越轻越好。新车和最后一辆冲突时，两辆中必须删一辆，删掉较重的那辆不会让后面的情况变差。",
+      "维护 last（当前保留的最后一辆，初始为空）和删除计数。对每辆车：重量超过容量就直接删除；否则若 last 存在且两者之和超过容量，删除计数加一，并把 last 改为两者中较轻的；否则把 last 设为这辆车。最后输出删除计数。"
+    ],
+    "en": [
+      "Among the kept cars, any two neighbors must weigh at most the capacity together, and no single car may exceed it. Scanning left to right, whether later cars fit depends only on the last kept car.",
+      "Greedy: the lighter the last car, the better. When a new car conflicts with the last one, one of the two must go, and removing the heavier one never makes the future worse.",
+      "Keep last (the last kept car, initially none) and a removal count. For each car: if it alone exceeds the capacity, remove it; otherwise, if last exists and the two together exceed the capacity, count a removal and set last to the lighter of the two; otherwise set last to this car. Print the removal count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan while keeping track of the current last kept car. A car that overloads on its own is removed directly; if it overloads together with the last car, one of the two must be removed, so keep the lighter one; otherwise append it.\n\n## Correctness\n\nWhen two adjacent cars overload, at least one of them must be removed, and keeping the lighter one never reduces future compatibility. If the old tail car is replaced, the new car is lighter, so it is still compatible with the car before the old tail. An exchange argument shows that each step's choice extends to an optimal solution.\n\n## Complexity\n\nTime O(N), space O(1) apart from the input."
+}

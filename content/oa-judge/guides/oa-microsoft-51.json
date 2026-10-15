@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-51",
+  "packageChecksum": "a17fc22dcea3a88312b723179fe0680b2d36fdae44cd74c22cacf694addda993",
+  "sourceContentHash": "70b565646792209860145c90e3a2620013e34da033a8b11480309dd6e8b1b9df",
+  "editorialSha256": "911cebb8fb0f0c9995fbc782dcdc84268ab2e1247624a879c91fe63b0317e112",
+  "hints": {
+    "zh": [
+      "交换两个同色球没有意义，所以红球之间的相对顺序不会改变，第 i 个红球最终落在连续段的第 i 个位置；每次有效的交换恰好让一个红球移动一格。",
+      "设第 i 个红球原位置为 p[i]，目标为 start+i，总步数是所有 |p[i]−i−start| 之和。令 b[i]=p[i]−i，问题变成选一个 start 使它到所有 b[i] 的距离和最小，即取中位数。",
+      "扫描字符串，对每个 R 记录“当前下标减去之前已见的红球数”，这个序列天然非降；没有红球时答案为 0。取它的中位数，累加每一项与中位数之差的绝对值；结果超过 10^9 时输出 −1。累加和可能超出 32 位。"
+    ],
+    "en": [
+      "Swapping two balls of the same color is pointless, so the red balls keep their relative order and the i-th red ball ends at the i-th cell of the block; each useful swap moves one red ball by exactly one cell.",
+      "If the i-th red ball starts at p[i] and ends at start+i, the total number of swaps is the sum of |p[i]−i−start|. With b[i]=p[i]−i, choose start to minimize the total distance to all b[i]: take the median.",
+      "Scan the string and, for each R, record its index minus the number of red balls seen before it; this sequence is already non-decreasing. With no red ball the answer is 0. Take the median and sum the absolute differences from it; print −1 if the sum exceeds 10^9. The sum may exceed 32-bit range."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe original positions p[i] of the red balls keep their relative order and move to the consecutive positions start+i; let b[i]=p[i]−i, minimize the sum of absolute distances to a common start, and take the median.\n\n## Correctness\n\nBalls of the same color never need to be swapped with each other, and matching the target positions in the original order avoids crossings. Each adjacent red-white swap moves one red ball by one step, so the total cost is exactly the sum of displacements; the sum of absolute distances is minimized at the median. b is already non-decreasing, so the median can be read off directly.\n\n## Complexity\n\nTime O(N), space O(N)."
+}

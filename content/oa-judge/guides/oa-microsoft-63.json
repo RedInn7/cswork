@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-63",
+  "packageChecksum": "e45242b44a8e8025c698510265b3eb437745c99358ae1478f173817de327573a",
+  "sourceContentHash": "0827e1088d482eb09d6df2eec904a143ea0dd28da7a2b2e39e8d935d9754160b",
+  "editorialSha256": "1f252a7e422f28fd3918826203537e34eb815e9bf8c70948ca266774633099ad",
+  "hints": {
+    "zh": [
+      "高度互不相同时，可以假设上限越大的楼分到的高度也越大：如果反过来，交换这两栋楼的高度仍然不超过各自的上限，总和也不变。",
+      "于是把楼按上限从大到小排序，分配的高度严格递减，并且每栋都尽量取大：不超过自己的上限，也要比前一栋小。",
+      "按上限降序（上限相同按下标）排列，previous 初值设为比所有上限都大的数；依次令每栋的高度为“上限”与“previous−1”中的较小者，并更新 previous，把高度记在该楼的原下标上。最后按原顺序输出全部高度。题目保证有解，高度不会降到 1 以下。"
+    ],
+    "en": [
+      "With distinct heights you may assume a building with a larger limit gets a larger height: if not, swapping the two heights still respects both limits and keeps the sum.",
+      "So sort the buildings by limit from largest to smallest; the heights are then strictly decreasing, and each should be as large as possible: at most its own limit and smaller than the previous one.",
+      "Order the buildings by limit descending (ties by index) and start previous above every limit; give each building the smaller of its limit and previous−1, update previous, and store the height at the building's original index. Print all heights in the original order. A solution is guaranteed, so heights never drop below 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAssign heights in decreasing order of limit, giving each building the largest integer that does not exceed its limit and is strictly less than the previously assigned height, then put the heights back at their original indices.\n\n## Correctness\n\nIf two limits are in descending order but their assigned heights are in the reverse order, swapping the two heights still respects the limits. Hence there is an optimal solution whose heights strictly decrease when the buildings are sorted by limit. Raising each item in order as high as min(limit, previous−1) never takes a height that is already chosen, and it dominates every feasible decreasing assignment item by item, so the total is optimal.\n\n## Complexity\n\nTime O(N log N), space O(N)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-71",
+  "packageChecksum": "0b16b0d6e1811f71dc879f9c80a89f4e29f25a0b8eb291c69b5740231c5c6b12",
+  "sourceContentHash": "45dbac6ef7cac55484adf055d0baa0d5e860c2600c61cc0b7f0f0f0b8e7fd0bb",
+  "editorialSha256": "a552971ac1d9693186924f839648b64cf3425c010b54d4519229dc579afd9c6a",
+  "hints": {
+    "zh": [
+      "两个串长度都不超过 20，可以直接回溯：从模式的第一个字符和文本的开头出发，逐个决定每个模式字符对应哪一段文本。",
+      "需要两张表：字符到字符串的映射，以及已被占用的字符串集合（保证不同字符不会映射到同一个串）。已经有映射的字符只需检查文本在当前位置是否以该串开头。",
+      "递归状态为（模式位置 i，文本位置 j）：i 到达末尾时，当且仅当 j 也到达末尾才算成功；剩余文本比剩余模式字符还少时剪枝。当前字符已有映射就验证后跳过；否则枚举从 j 开始的每个非空前缀（给后面每个模式字符至少留一个字母），跳过已被占用的串，记录映射后递归，失败就撤销。能匹配输出 1，否则输出 0。"
+    ],
+    "en": [
+      "Both strings have length at most 20, so plain backtracking works: start at the first pattern character and the start of the text, and decide which piece of text each pattern character maps to.",
+      "Keep two tables: the mapping from characters to strings, and the set of strings already taken, so that different characters never share a string. For a character that is already mapped, just check that the text continues with that string at the current position.",
+      "The recursion state is (pattern position i, text position j): when i reaches the end, succeed exactly when j is also at the end, and prune when fewer text letters remain than pattern characters. If the current character is mapped, verify and move on; otherwise try every non-empty prefix starting at j that leaves at least one letter for each later pattern character, skip strings already taken, record the mapping, recurse, and undo it on failure. Print 1 if a match exists and 0 otherwise."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBacktrack over positions in the pattern and the text. If a mapping already exists, only verify that fixed string; otherwise enumerate every non-empty prefix at the current position, skip strings already taken by other characters, and recurse.\n\n## Correctness\n\nIn a valid mapping, the current character's string is either already fixed or must be a non-empty prefix of the unconsumed text. Enumerating all such prefixes misses no solution, and the reverse set rejects many-to-one mappings; the match is complete when both strings end at the same time, and every other way of terminating is invalid.\n\n## Complexity\n\nTime O(|s|²·2^|s|) as a conservative upper bound, space O(|s|+|pattern|), with full lengths at most 20."
+}

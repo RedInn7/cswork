@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-47",
+  "packageChecksum": "56ded1790a424562c9975b124e92ae77333cfbdcff5cb51d4fcc1cd44bf45202",
+  "sourceContentHash": "c957decd6b05fe172d6bc8ad2066a51f2478baf719f0bcda868601abb2167d3a",
+  "editorialSha256": "b931e8b1d202d265c48efec93a25536d81c29cad8475fd03a5bf88e9339c7639",
+  "hints": {
+    "zh": [
+      "交换只是决定同一位置的两个数字谁上谁下，相同数字的位置无关紧要。第一个不同的位置决定了哪个数更大，后面的位无论怎么换都翻不过来。",
+      "固定首个不同位的方向后，要让差最小，后面每个不同位都应让较大的那个数拿较小的数字，也就是与首位方向相反；两种首位方向互为整体对调，最小差相同。",
+      "扫描所有不同的位置：记下第一个不同位的方向，之后与它同向的位数记为 same，反向的记为 opposite。首位不换时要把 same 个位都换过来；交换首位时，原来反向的 opposite 个位都要换，再加首位自己 1 次。答案为 same 与 opposite+1 的较小值；两串完全相同时答案为 0。"
+    ],
+    "en": [
+      "A swap only decides which of the two digits at a position goes on top, so positions with equal digits do not matter. The first differing position decides which number is larger, and no later position can overturn it.",
+      "Once the direction of the first differing position is fixed, the smallest difference requires every later differing position to give the smaller digit to the larger number, that is, to point opposite to the first one. The two choices of the first position are mirror images and give the same minimum difference.",
+      "Scan the differing positions: remember the direction of the first one, then count later positions in the same direction as same and in the opposite direction as opposite. Keeping the first position means swapping all same positions; swapping it means swapping all opposite positions plus the first one itself. The answer is the smaller of same and opposite+1, or 0 when the strings are identical."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe first differing position decides which number is larger, and every later differing position should offset that difference in the opposite direction. Compute the number of swaps for two options, leaving the first position unswapped or swapping it, and take the smaller.\n\n## Correctness\n\nThe first differing position contributes at least one unit of its place value, while the sum of all differences at later positions is strictly smaller than that, so they cannot change which number is larger. With that position's direction fixed, each later position independently has to contribute in the opposite direction to make the absolute difference minimal. The two directions of the first position are swaps of the whole strings and give the same difference, so it suffices to compare their minimum swap counts.\n\n## Complexity\n\nTime O(N), space O(1) apart from the input."
+}
