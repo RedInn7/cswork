@@ -3,7 +3,8 @@ import {
   caseConcurrency,
   createSlots,
 } from './oj-case-stream';
-import { persistCase } from './oj-case-store';
+import { boundedFeedback, persistCase } from './oj-case-store';
+import { aiTask } from './ai-tasks';
 import { runCodecRoundTrip } from './oj-codec-roundtrip';
 import { CompiledProgramCache } from './oj-compile-cache';
 import { PrecompileScheduler } from './oj-precompile-scheduler';
@@ -47,6 +48,8 @@ import {
   engineHealth,
   engineVerdict,
   matchesOutput,
+  projectVerdict,
+  runProject,
   type CompiledProgram,
 } from './oj-engine';
 
@@ -117,6 +120,8 @@ function update(
     'compile_output',
     'score',
     'finished_at',
+    // Project runs learn their size from the suites (createProjectRun queues 0).
+    'total',
   ]);
   if (Object.keys(fields).some((k) => !allowed.has(k)))
     throw new Error('Invalid update field');
@@ -149,9 +154,10 @@ async function judge(job: Job<{ submissionId: string }>) {
   }, 400);
   let releaseAdmission: (() => void) | undefined;
   let releaseForeground: (() => void) | undefined;
-  // A playground run has no version (so no budget row) and small fixed limits.
+  // Playground and project runs have no version (so no budget row) and small fixed limits.
   const exclusive =
     row.mode !== 'playground' &&
+    row.mode !== 'project' &&
     (!budget ||
       exclusiveSubmission(budget.bytes, budget.memoryLimit, budget.outputLimit));
   try {
@@ -231,6 +237,48 @@ async function judgeSubmission(
   let invalidateBridge = false;
   let terminalFailureCommitted = false;
   try {
+    if (claimed.mode === 'project') {
+      // No problem version: the learner's files against the task's two suites (runProject).
+      deadline = setTimeout(
+        () => controller.abort(new Error('Submission deadline exceeded')),
+        80_000,
+      );
+      const task = aiTask(claimed.problem_id.replace(/^ai-/, ''));
+      if (!task) {
+        update(id, attempt, {
+          status: 'system_error',
+          message: '练习任务不存在',
+          finished_at: Date.now(),
+        });
+        return;
+      }
+      update(id, attempt, { status: 'running' });
+      const { files } = JSON.parse(claimed.code) as { files: Record<string, string> };
+      const [visible, hidden] = await runProject(files, task.hidden, controller.signal);
+      const verdict = projectVerdict(visible, hidden, task.hiddenTotal);
+      db.transaction(() => {
+        current(id, attempt, controller.signal);
+        db.prepare(
+          'INSERT INTO oj_results(submission_id,ordinal,status,runtime_ms,memory_kb,stdout,stderr,hidden) VALUES(?,0,?,?,?,?,?,0)',
+        ).run(
+          id,
+          verdict.status,
+          verdict.runtimeMs,
+          verdict.memoryKb,
+          JSON.stringify(verdict.report),
+          boundedFeedback(verdict.output).text,
+        );
+        update(id, attempt, {
+          status: verdict.status,
+          passed: verdict.passed,
+          total: verdict.total,
+          runtime: verdict.runtimeMs / 1000,
+          memory: verdict.memoryKb,
+          finished_at: Date.now(),
+        });
+      }).immediate();
+      return;
+    }
     const loaded: Pick<OjJudgeSnapshot, 'spec' | 'cases'> =
       claimed.mode === 'playground'
         ? { spec: PLAYGROUND_SPEC, cases: [] }
