@@ -1675,6 +1675,7 @@ function Workspace({
             code={code}
             language={language}
             settings={settings}
+            discussion={!!boot.person && communityProblem(problem.id)}
           />
         ) : leftTab === 'editorial' ? (
           <OaEditorial key={problem.id} problemId={problem.id} />

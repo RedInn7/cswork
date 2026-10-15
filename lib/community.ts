@@ -14,12 +14,16 @@ export const isChannel = (value: unknown): value is Channel =>
 
 /**
  * What a post hangs off: a judge problem (a solution), discuss:<channel> (a thread),
- * exp:<experience slug> (a comment on an experience) or q:<question slug> (an answer).
+ * exp:<experience slug> (a comment on an experience), q:<question slug> (an answer) or
+ * sd:<chapter slug> (a system design chapter's discussion). Problem ids have no colon, so an
+ * unknown prefix is no target at all (null), never a problem.
  */
-export type TargetKind = 'problem' | 'discuss' | 'exp' | 'q';
-export function targetKind(target: string): TargetKind {
+export type TargetKind = 'problem' | 'discuss' | 'exp' | 'q' | 'sd';
+const PREFIXED = ['discuss', 'exp', 'q', 'sd'] as const;
+export function targetKind(target: string): TargetKind | null {
+  if (!target.includes(':')) return 'problem';
   const prefix = target.slice(0, target.indexOf(':'));
-  return prefix === 'discuss' || prefix === 'exp' || prefix === 'q' ? prefix : 'problem';
+  return PREFIXED.find((kind) => kind === prefix) ?? null;
 }
 export const discussTarget = (channel: Channel) => `discuss:${channel}`;
 /** A thread's crawlable page. */

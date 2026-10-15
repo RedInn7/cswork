@@ -7,7 +7,8 @@ import {
 } from 'drizzle-orm/sqlite-core';
 
 // Community posts (lib/server/solution-posts.ts). problem_id is the target: a judge problem id,
-// discuss:<channel>, exp:<experience slug> or q:<interview question slug>. No foreign keys:
+// discuss:<channel>, exp:<experience slug>, q:<interview question slug> or sd:<system design
+// chapter slug>. No foreign keys:
 // release.sh only applies additive SQL. Removing is a runtime flag, never a DELETE of
 // the text: hidden 0 shown, 1 removed by its author, 2 hidden by a moderator.
 export const solutionPosts = sqliteTable(

@@ -92,7 +92,8 @@ test('threads: a channel lists without a lock, signed out writing asks to sign i
     if (key.startsWith('GET oj/posts/')) return { post: { ...thread, body: 'Body' }, comments: [] };
   });
   const asked = [];
-  window.addEventListener('cswork:auth-required', () => asked.push(1));
+  // Academy's listener, which handles the prompt itself.
+  window.addEventListener('cswork:auth-required', (e) => (e.preventDefault(), asked.push(1)));
   try {
     await mount(createElement(SolutionPosts, { problemId: 'discuss:career', english: true, signedIn: false }));
     assert.equal($('.cs-posts-locked') === null, true, 'threads are never locked');

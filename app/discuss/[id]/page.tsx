@@ -69,9 +69,29 @@ export default async function ThreadPage({ params }: Props) {
       <div className="public-library-prose discuss-thread-body">
         <PublicLibraryMarkdown body={post.body ?? ''} math={false} ugc />
       </div>
+      {/* A poll's options; counts only once it has closed (voting happens in the app). */}
+      {post.poll && (
+        <section aria-labelledby="discuss-poll">
+          <h2 id="discuss-poll" className="lists-public-h2">
+            {t('投票：', 'Poll: ')}
+            {post.poll.question}
+          </h2>
+          <ul>
+            {post.poll.options.map((option, i) => (
+              <li key={i}>
+                {option}
+                {post.poll?.counts && ` · ${t(`${post.poll.counts[i]} 票`, `${post.poll.counts[i]} votes`)}`}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       <p>
         <a className="lists-public-cta" href={app}>
-          {t('在 CSWork 里回复或点赞', 'Reply or upvote on CSWork')} →
+          {post.poll && !post.poll.closed
+            ? t('在 CSWork 里投票、回复或点赞', 'Vote, reply or upvote on CSWork')
+            : t('在 CSWork 里回复或点赞', 'Reply or upvote on CSWork')}{' '}
+          →
         </a>
       </p>
       <section aria-labelledby="discuss-replies">

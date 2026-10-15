@@ -14,13 +14,16 @@ import { maskName } from './judge-feed';
 import { publicProblem, reportCompanies, requireVerified } from './learner-cloud';
 import { readJson } from './my-practice';
 import { awardUpvote } from './points';
+import { sdChapter } from './system-design-course';
 
 /**
  * Community posts and their comments (db/solution-posts-schema.ts). A post's problem_id is its
  * target (lib/community.ts): a judge problem's solutions (signed in), a discussion channel's
- * threads, comments under an experience or answers to an interview question (those three read
- * signed out). Every read re-checks that the target is still visible (HIDDEN_COMPANIES, course
- * gates, the library), every author write names its author in the WHERE clause, and authors
+ * threads, comments under an experience, answers to an interview question or a system design
+ * chapter's discussion (those four read signed out). A thread may carry a poll
+ * (db/post-polls-schema.ts); a reader saves a post as a star mark on post:<id>. Every read
+ * re-checks that the target is still visible (HIDDEN_COMPANIES, course gates, the library,
+ * the system design chapters), every author write names its author in the WHERE clause, and authors
  * show by their public handle or a masked name (never the account name, which is often a real
  * one). Bodies are Markdown the client renders without raw HTML.
  */
@@ -42,6 +45,18 @@ const text = (max: number) =>
     .min(1)
     .max(max)
     .refine((s) => !s.includes('\0'));
+const pollInput = z
+  .object({
+    question: text(200),
+    options: z
+      .array(text(80))
+      .min(2)
+      .max(6)
+      .refine((o) => new Set(o).size === o.length),
+    multi: z.boolean().default(false),
+    closesAt: z.number().int().positive().nullable().default(null),
+  })
+  .strict();
 const postInput = z
   .object({
     // Answers and comments may leave it empty: they take their first line.
@@ -54,17 +69,24 @@ const postInput = z
     body: text(20000),
     language: z.enum(['', 'python', 'cpp', 'java', 'go']).default(''),
     tag: z.string().max(80).default(''),
+    // A thread's poll: null removes it, left out keeps it as it is.
+    poll: pollInput.nullable().optional(),
   })
   .strict();
 const commentInput = z.object({ body: text(1000) }).strict();
 const reportInput = z.object({ reason: z.enum(['spam', 'offensive', 'wrong', 'other']) }).strict();
 
+// Saves (stars) count from verified accounts only, like a list's (learner-cloud's VERIFIED; it
+// imports this module, so the check is inline).
 const POST = `SELECT sp.id,sp.problem_id AS problemId,sp.title,sp.language,sp.tag,sp.hidden,
   sp.created_at AS createdAt,sp.updated_at AS updatedAt,COALESCE(u.name,'') AS author,pr.handle,
   sp.user_id=@me AS mine,
   (SELECT COUNT(*) FROM post_votes v WHERE v.post_id=sp.id) AS votes,
   EXISTS(SELECT 1 FROM post_votes v WHERE v.post_id=sp.id AND v.user_id=@me) AS voted,
-  (SELECT COUNT(*) FROM post_comments c WHERE c.post_id=sp.id AND c.hidden=0) AS comments`;
+  (SELECT COUNT(*) FROM post_comments c WHERE c.post_id=sp.id AND c.hidden=0) AS comments,
+  (SELECT COUNT(*) FROM user_marks m JOIN "user" su ON su.id=m.user_id AND su.email_verified=1
+    WHERE m.target='post:'||sp.id AND m.mark='star') AS stars,
+  EXISTS(SELECT 1 FROM user_marks m WHERE m.target='post:'||sp.id AND m.mark='star' AND m.user_id=@me) AS starred`;
 const PROFILE = (col: string) => `LEFT JOIN user_profiles pr ON pr.user_id=${col} AND pr.visible=1`;
 const FROM_POST = `FROM solution_posts sp LEFT JOIN "user" u ON u.id=sp.user_id ${PROFILE('sp.user_id')}`;
 type PostRow = {
@@ -82,6 +104,8 @@ type PostRow = {
   votes: number;
   voted: number;
   comments: number;
+  stars: number;
+  starred: number;
   body?: string;
   excerpt?: string;
 };
@@ -92,7 +116,7 @@ const byline = <T extends { author: string; handle: string | null; mine: number 
   author: mine ? row.author : handle || (row.author ? maskName(row.author) : ''),
   mine: !!mine,
 });
-const shape = ({ voted, ...r }: PostRow) => ({ ...byline(r), voted: !!voted });
+const shape = ({ voted, starred, ...r }: PostRow) => ({ ...byline(r), voted: !!voted, starred: !!starred });
 
 export const canModerate = (p: Person | null) => !!p && (p.role === 'teacher' || isCourseOwner(p));
 const reportedDown = (target: string) =>
@@ -104,14 +128,17 @@ const hiddenTags = () => {
 };
 const ITEM = /^[\w-]{1,300}$/;
 /**
- * Whether a target is open to posts: a published problem the reader may see, a known channel,
- * or an experience or interview question the library (or an approved member post) still shows.
+ * Whether a target is open to posts: a published problem the reader may see, a known channel or
+ * system design chapter, or an experience or interview question the library (or an approved
+ * member post) still shows.
  */
 export async function visibleTarget(p: Person | null, target: string) {
   const kind = targetKind(target);
   if (kind === 'problem') return !!p && (await publicProblem(p, target));
+  if (!kind) return false;
   const key = target.slice(target.indexOf(':') + 1);
   if (kind === 'discuss') return isChannel(key);
+  if (kind === 'sd') return !!sdChapter(key);
   if (kind === 'exp' && memberIdOf(key)) return !!readMember(memberIdOf(key)!, null)?.member.public;
   if (!ITEM.test(key)) return false;
   const row = library()
@@ -129,7 +156,7 @@ function validTag(target: string, tag: string) {
 /** The title a post is saved with: its own, or for answers and comments the body's first line. */
 function titleOf(target: string, d: { title: string; body: string }) {
   const kind = targetKind(target);
-  const title = d.title || (kind === 'exp' || kind === 'q' ? autoTitle(d.body) : '');
+  const title = d.title || (kind === 'exp' || kind === 'q' || kind === 'sd' ? autoTitle(d.body) : '');
   if (!title) throw new HttpError(400, '请填写标题');
   return title;
 }
@@ -145,6 +172,48 @@ function underCap(table: 'solution_posts' | 'post_comments' | 'post_reports', p:
     .prepare(`SELECT COUNT(*) AS n FROM ${table} WHERE user_id=? AND created_at>?`)
     .get(p.id, Date.now() - DAY) as { n: number };
   if (n >= max) throw new HttpError(429, message);
+}
+
+/** A post's poll as this reader sees it, or null: counts only once they have voted or it has closed. */
+function pollOf(postId: string, me: string, now = Date.now()) {
+  const db = sqlite();
+  const row = db
+    .prepare('SELECT question,options_json AS options,multi,closes_at AS closesAt FROM post_polls WHERE post_id=?')
+    .get(postId) as { question: string; options: string; multi: number; closesAt: number | null } | undefined;
+  if (!row) return null;
+  const options = JSON.parse(row.options) as string[];
+  const mine = db
+    .prepare('SELECT option FROM poll_votes WHERE post_id=? AND user_id=? ORDER BY option')
+    .pluck()
+    .all(postId, me) as number[];
+  const voters = db.prepare('SELECT COUNT(DISTINCT user_id) FROM poll_votes WHERE post_id=?').pluck().get(postId) as number;
+  const closed = row.closesAt !== null && row.closesAt <= now;
+  // Results wait for the reader's own vote (or the close), so early counts don't steer the rest.
+  let counts: number[] | null = null;
+  if (mine.length || closed) {
+    counts = options.map(() => 0);
+    for (const r of db
+      .prepare('SELECT option,COUNT(*) AS n FROM poll_votes WHERE post_id=? GROUP BY option')
+      .all(postId) as { option: number; n: number }[])
+      if (r.option < counts.length) counts[r.option] = r.n;
+  }
+  return { question: row.question, options, multi: !!row.multi, closesAt: row.closesAt, closed, voters, mine, counts };
+}
+/** Sets, replaces or (null) removes a thread's poll, inside the post's own write; frozen once anyone votes. */
+function savePoll(postId: string, target: string, poll: z.infer<typeof pollInput> | null | undefined, now: number) {
+  if (poll === undefined) return;
+  if (poll && targetKind(target) !== 'discuss') throw new HttpError(400, '只有讨论帖可以发起投票');
+  if (poll?.closesAt && poll.closesAt <= now) throw new HttpError(400, '投票截止时间要晚于现在');
+  const db = sqlite();
+  if (db.prepare('SELECT 1 FROM poll_votes WHERE post_id=? LIMIT 1').get(postId))
+    throw new HttpError(409, '已经有人投票，不能再修改投票');
+  if (!poll) db.prepare('DELETE FROM post_polls WHERE post_id=?').run(postId);
+  else
+    db.prepare(
+      `INSERT INTO post_polls(post_id,question,options_json,multi,closes_at,created_at) VALUES(?,?,?,?,?,?)
+      ON CONFLICT(post_id) DO UPDATE SET question=excluded.question,options_json=excluded.options_json,
+        multi=excluded.multi,closes_at=excluded.closes_at`,
+    ).run(postId, poll.question, JSON.stringify(poll.options), poll.multi ? 1 : 0, poll.closesAt, now);
 }
 
 /**
@@ -187,8 +256,38 @@ async function listPosts(p: Person | null, params: URLSearchParams) {
 }
 
 /**
- * One post with its comments; a hidden or reported-down one reads as missing unless it is the
- * author's own (not removed) or a moderator asks.
+ * The reader's saved posts across targets, last saved first, on targets they may still see and
+ * not in their running contest. `next` is the raw offset, as a dropped row leaves a short page.
+ */
+async function starredPosts(p: Person, params: URLSearchParams) {
+  const offset = Math.min(Math.max(0, Math.floor(Number(params.get('offset')) || 0)), 5000);
+  // Driven from the reader's own marks (a primary key range), then each post by its key, so the
+  // cost follows their saves, not every post on the site.
+  const rows = sqlite()
+    .prepare(
+      `${POST},substr(sp.body,1,300) AS excerpt FROM user_marks saved
+      JOIN solution_posts sp ON sp.id=substr(saved.target,6)
+      LEFT JOIN "user" u ON u.id=sp.user_id ${PROFILE('sp.user_id')}
+      WHERE saved.user_id=@me AND saved.target>='post:' AND saved.target<'post;' AND saved.mark='star'
+        AND (sp.user_id=@me OR (sp.hidden=${SHOWN} AND NOT ${reportedDown("'post:'||sp.id")}))
+        AND sp.hidden<>${REMOVED}${hiddenTags()}
+      ORDER BY saved.created_at DESC,sp.id LIMIT ${PAGE + 1} OFFSET @offset`,
+    )
+    .all({ me: p.id, offset }) as PostRow[];
+  const running = runningContestProblems(p.id);
+  const seen = new Map<string, boolean>();
+  const items = [];
+  for (const row of rows.slice(0, PAGE)) {
+    if (!seen.has(row.problemId))
+      seen.set(row.problemId, !running.has(row.problemId) && (await visibleTarget(p, row.problemId)));
+    if (seen.get(row.problemId)) items.push(shape(row));
+  }
+  return { solved: true, items, more: rows.length > PAGE, next: offset + Math.min(rows.length, PAGE) };
+}
+
+/**
+ * One post with its comments (and a thread's poll); a hidden or reported-down one reads as
+ * missing unless it is the author's own (not removed) or a moderator asks.
  */
 async function readPost(p: Person | null, postId: string) {
   const db = sqlite();
@@ -220,7 +319,7 @@ async function readPost(p: Person | null, postId: string) {
       mine: number;
     }[]
   ).map(byline);
-  return { post: shape(row), comments };
+  return { post: { ...shape(row), poll: pollOf(postId, me) }, comments };
 }
 
 /** A target's posts for a server-rendered page, as a signed-out reader sees them. */
@@ -371,6 +470,10 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
     await limitReader(request, p, 'posts-read', 120);
     if (resource === 'posts' && !target) {
       const params = new URL(request.url).searchParams;
+      if (params.get('starred') === '1') {
+        requirePerson(p);
+        return json(await starredPosts(p, params));
+      }
       if (targetKind(params.get('problem') ?? '') === 'problem') requirePerson(p);
       return json(await listPosts(p, params));
     }
@@ -394,10 +497,13 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
     const title = titleOf(d.problemId, d);
     underCap('solution_posts', p, POSTS_PER_DAY, '今天发布的帖子已达上限');
     const postId = randomUUID();
-    db.prepare(
-      `INSERT INTO solution_posts(id,problem_id,user_id,title,body,language,tag,hidden,created_at,updated_at)
-      VALUES(?,?,?,?,?,?,?,${SHOWN},?,?)`,
-    ).run(postId, d.problemId, p.id, title, d.body, d.language, d.tag, now, now);
+    db.transaction(() => {
+      db.prepare(
+        `INSERT INTO solution_posts(id,problem_id,user_id,title,body,language,tag,hidden,created_at,updated_at)
+        VALUES(?,?,?,?,?,?,?,${SHOWN},?,?)`,
+      ).run(postId, d.problemId, p.id, title, d.body, d.language, d.tag, now, now);
+      savePoll(postId, d.problemId, d.poll, now);
+    })();
     return json(await readPost(p, postId), 201);
   }
   if (!idOk(target) || !action) throw new HttpError(404, '题解接口不存在');
@@ -410,9 +516,13 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
       if (!own) throw new HttpError(404, '题解不存在');
       refuseDuringContest(p, own.problemId);
       if (!validTag(own.problemId, d.tag)) throw new HttpError(400, '标签无效');
-      db.prepare(
-        `UPDATE solution_posts SET title=?,body=?,language=?,tag=?,updated_at=? WHERE id=? AND user_id=? AND hidden<>${REMOVED}`,
-      ).run(titleOf(own.problemId, d), d.body, d.language, d.tag, now, target, p.id);
+      const title = titleOf(own.problemId, d);
+      db.transaction(() => {
+        db.prepare(
+          `UPDATE solution_posts SET title=?,body=?,language=?,tag=?,updated_at=? WHERE id=? AND user_id=? AND hidden<>${REMOVED}`,
+        ).run(title, d.body, d.language, d.tag, now, target, p.id);
+        savePoll(target, own.problemId, d.poll, now);
+      })();
       return json(await readPost(p, target));
     }
     if (action === 'delete') {
@@ -446,6 +556,27 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
         `INSERT INTO post_comments(id,post_id,user_id,body,hidden,created_at) VALUES(?,?,?,?,${SHOWN},?)`,
       ).run(randomUUID(), target, p.id, body, now);
       return json(await readPost(p, target), 201);
+    }
+    if (action === 'poll') {
+      const { choices } = z
+        .object({ choices: z.array(z.number().int().min(0).max(5)).min(1).max(6) })
+        .strict()
+        .parse(await readJson(request, 200));
+      await openPost(p, target);
+      const poll = pollOf(target, p.id, now);
+      if (!poll) throw new HttpError(404, '投票不存在');
+      if (poll.closed) throw new HttpError(409, '投票已截止');
+      const picks = [...new Set(choices)];
+      if (picks.some((c) => c >= poll.options.length) || (!poll.multi && picks.length > 1))
+        throw new HttpError(400, '投票选项无效');
+      // One vote per verified account (every write checks that), never changed afterwards.
+      db.transaction(() => {
+        if (db.prepare('SELECT 1 FROM poll_votes WHERE post_id=? AND user_id=?').get(target, p.id))
+          throw new HttpError(409, '你已经投过票了');
+        const insert = db.prepare('INSERT INTO poll_votes(post_id,user_id,option,created_at) VALUES(?,?,?,?)');
+        for (const c of picks) insert.run(target, p.id, c, now);
+      })();
+      return json({ poll: pollOf(target, p.id) });
     }
     if (action === 'report') return report(p, `post:${target}`, (await openPost(p, target)).userId, request);
     return moderate(p, 'post', target, action);

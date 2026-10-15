@@ -5,6 +5,7 @@ import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
 import { person } from '@/lib/server/auth';
 import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
+import { SolutionPosts } from '@/components/solution-posts';
 import { sdCases, sdChapter, sdChapters, sdParts, sdPath, sdSummary } from '@/lib/server/system-design-course';
 import { PublicLibraryMarkdown, markdownToc } from '../../library/markdown';
 import { SdQuiz } from '../quiz';
@@ -12,7 +13,7 @@ import { SdMarkRead, SdReadCheck, SdTryFirst } from '../reader';
 
 type Props = { params: Promise<{ slug: string }> };
 
-/** The signed-in reader, whose "design it first" draft is their private note. */
+/** The signed-in reader: their "design it first" draft is a private note; they may join the discussion. */
 async function viewerId() {
   return (await person(new Request(origin(), { headers: await headers() })).catch(() => null))?.id ?? null;
 }
@@ -42,7 +43,7 @@ export default async function SystemDesignChapter({ params }: Props) {
   const body = zh ? chapter.bodyZh : chapter.bodyEn;
   const toc = markdownToc(body);
   const slugs = sdChapters.map((c) => c.slug);
-  const userId = sdCases.has(chapter.slug) ? await viewerId() : null;
+  const userId = await viewerId();
   const tocList = (
     <ol>
       {toc.map((section) => (
@@ -128,10 +129,10 @@ export default async function SystemDesignChapter({ params }: Props) {
             </a>
           )}
         </nav>
-        {/* Follow-up once posts-plus adds the 'sd' target kind (lib/community.ts targetKind; until then
-            sd:<slug> reads as a problem id, locked and 404): the chapter discussion goes here,
-            <SolutionPosts problemId={`sd:${chapter.slug}`} english={!zh} signedIn={!!userId} />,
-            with viewerId() asked on every chapter, not only cases. */}
+        <section className="ct-community sd-discussion" aria-labelledby="sd-discussion-title">
+          <h2 id="sd-discussion-title">{t('章节讨论', 'Chapter discussion')}</h2>
+          <SolutionPosts problemId={`sd:${chapter.slug}`} english={!zh} signedIn={!!userId} />
+        </section>
       </article>
       <aside className="sd-aside" aria-label={t('课程导航', 'Course navigation')}>
         {toc.length > 1 && (

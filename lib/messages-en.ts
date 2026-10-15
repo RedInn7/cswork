@@ -296,6 +296,14 @@ const EN: Record<string, string> = {
   今天发布的帖子已达上限: "You've reached today's limit for posts",
   请填写标题: 'Please add a title',
   标签无效: 'Unknown tag',
+  // Thread polls (lib/server/solution-posts.ts)
+  只有讨论帖可以发起投票: 'Only discussion threads can have a poll',
+  投票截止时间要晚于现在: 'The poll must close in the future',
+  '已经有人投票，不能再修改投票': "People have voted already, so the poll can't change",
+  投票不存在: 'Poll not found',
+  投票已截止: 'This poll has closed',
+  投票选项无效: 'Invalid poll choice',
+  你已经投过票了: "You've already voted",
   // Saved lists and follows (lib/server/learner-cloud.ts, lib/server/follows.ts)
   不能收藏自己的题单: "You can't save your own list",
   请在题单页收藏: 'Save lists from their page',
