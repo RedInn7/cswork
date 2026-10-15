@@ -9,6 +9,9 @@ live=$(readlink -f "${CSWORK_CURRENT:-/srv/cswork/current}" 2>/dev/null || true)
 [[ -n $live && -d $live && $(readlink -f "${live%/*}") == $(readlink -f "$releases") ]] ||
   { echo 'prune skipped: no live release under releases/'; exit 0; }
 rollback=$(readlink -f "${1:-}" 2>/dev/null || true)
+# A same-release re-run (install.sh on the live SHA) names the live release as its rollback;
+# the real rollback is then unknown, so keep everything.
+[[ $rollback != "$live" ]] || { echo 'prune skipped: the rollback target is the live release'; exit 0; }
 for old in "$releases"/*; do
   name=${old##*/}
   # Only real <sha> directories; anything else in there was put by hand and stays.

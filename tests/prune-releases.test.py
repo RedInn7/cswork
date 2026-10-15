@@ -41,6 +41,12 @@ class PruneReleases(unittest.TestCase):
         self.assertEqual(self.run_prune(self.root).returncode, 0)
         self.assertEqual(self.left(), sorted([C, "e" * 40, "hand-made"]))
 
+    def test_rollback_equal_to_live_deletes_nothing(self):
+        # install.sh re-run on the live SHA: previous == target == live.
+        result = self.run_prune(self.root, str(self.root / "current"))
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(len(self.left()), 6)
+
     def test_live_release_outside_releases_deletes_nothing(self):
         outside = self.root / "elsewhere"
         outside.mkdir()
