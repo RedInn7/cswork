@@ -1,0 +1,19 @@
+{
+  "id": "oa-ziprecruiter-11",
+  "packageChecksum": "a6557155b7098850861d82fcd3580641469d2b5ef57710c6b446463dc4211654",
+  "sourceContentHash": "e30a5041575526e042906cdeae5db1ee2ea602801ef577850647f1a5465d958b",
+  "editorialSha256": "f2b60f862729af7f4f25fc149b5f4b32e7962d5c0f92998936f9a74542a07d92",
+  "hints": {
+    "zh": [
+      "点 p 被灯 [l, r] 照亮当且仅当 l≤p 且 r≥p；右端点 <p 的灯，左端点也一定 <p。",
+      "照亮数 = 左端点 ≤p 的灯数 − 右端点 <p 的灯数；把左端点、右端点分别排序后，每个控制点做两次二分即可。",
+      "分别排序 L、R；对每个控制点 p 计算 upper_bound(L, p) − lower_bound(R, p)，端点处也算照亮；按控制点的原输入顺序输出，不要把控制点排序后再输出。"
+    ],
+    "en": [
+      "Point p is lit by lamp [l, r] exactly when l ≤ p and r ≥ p; any lamp with right end < p also has left end < p.",
+      "Lit count = (lamps with left end ≤ p) − (lamps with right end < p); after sorting the left ends and the right ends separately, each control point needs just two binary searches.",
+      "Sort L and R separately; for each control point p compute upper_bound(L, p) − lower_bound(R, p), counting endpoints as lit; output in the original order of the control points, not after sorting them."
+    ]
+  },
+  "explanationEn": "## Problem\n\nEach lamp lights the closed interval [lamps[i][0],lamps[i][1]] on the number line. For each control point points[j], count how many lamps light it (endpoints count) and output the results in the input order of the control points.\n\n## Approach\n\nPoint p is covered by interval [l,r] ⇔ l≤p and r≥p. Coverage = (number of lamps with left end ≤p) − (number of lamps with right end <p), because any lamp with right end <p also has left end <p. Sort all left ends and all right ends separately, and do two binary searches per control point.\n\n## Correctness\n\nAmong the lamps with left end ≤p, exactly those with right end <p do not cover p, and all the others do. The two binary searches give these two counts.\n\n## Complexity\n\nO((n+m) log n).\n\n## Independent verification\n\nThe oracle checks l≤p≤r lamp by lamp for each control point (O(nm), small data only), without sorting or binary search; large cases are computed separately with a Python difference-array sweep. All combinations of 1..2 lamps on coordinates 1..4 and all control points were enumerated and the reference program was actually run on each. Wrong solutions cover excluding the right or left endpoint, outputting in sorted control-point order, and forgetting to subtract lamps that have already ended."
+}

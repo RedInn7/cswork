@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-11",
+  "packageChecksum": "57642fb0afe7ea7dcccf43ed6161d7838c4597f3a39a6dea911cb66bdd328ea4",
+  "sourceContentHash": "6d76498891fe3f5807dd4e6716da5481492d9fa32361fedc1d8a0b3664bab41c",
+  "editorialSha256": "6b3eb144aa114786b0d4da3614a5f3eac542036270c048408e4d7a804a8a0285",
+  "hints": {
+    "zh": [
+      "只关心三个数的和，与下标顺序无关，所以可以先排序；每个三元组按值排序后仍只被数一次。",
+      "排序后固定最小的数 a[i]，在它右侧用左右双指针找另外两个数：若 a[i]+a[l]+a[r]≤t，则 r 换成 l 与 r 之间任何位置都成立。",
+      "排序；对每个 i 令 l=i+1、r=n−1；当 l<r 时，若三数和≤t 则答案加 r−l 并让 l 右移，否则 r 左移。和最大约 3×10⁹，计数也可能超过 32 位，都用 64 位整数。"
+    ],
+    "en": [
+      "Only the sum of the three values matters, not their original positions, so you can sort first; each triplet is still counted exactly once by its sorted values.",
+      "After sorting, fix the smallest value a[i] and run two pointers l and r to its right: if a[i]+a[l]+a[r] ≤ t, then replacing r with any position between l and r also works.",
+      "Sort; for each i set l=i+1 and r=n−1; while l<r, if the sum is ≤ t add r−l to the answer and move l right, otherwise move r left. Sums reach about 3×10⁹ and the count can exceed 32 bits, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the array, fix i, and scan the remaining elements with two pointers l and r. If the sum is ≤ t, every position between l and r can serve as the third element, so add r−l; otherwise decrease r.\n\n## Correctness\n\nAfter sorting, when a[i]+a[l]+a[r] ≤ t holds, it also holds for every k in (l, r], and each such k forms a different triplet. If the sum is too large, only shrinking the largest element can make it feasible again. Every i<j<k is counted exactly once.\n\n## Complexity\n\nTime O(n²), space O(n); the site adds n ≤ 2500."
+}

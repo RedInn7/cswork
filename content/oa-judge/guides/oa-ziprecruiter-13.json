@@ -1,0 +1,19 @@
+{
+  "id": "oa-ziprecruiter-13",
+  "packageChecksum": "dc1e08df801a69ac0828d04571c52fa22434c4daba631da529becb916cf55e84",
+  "sourceContentHash": "b90967f56a9e952bb905eebcc2352b2f3b67629215a9a94052760b93628c556b",
+  "editorialSha256": "e46d022004b34815ed6ae5db80f1996c21c871199e4960a6d96d6eeb97f91f0c",
+  "hints": {
+    "zh": [
+      "总耗时只由相邻两个年份之间的每一段决定，各段互不影响。",
+      "每一段按规则计费：后一个年份更晚记 1，更早记 2，相同记 0。",
+      "读入 n 和年份序列，遍历 i=1..n−1，比较 a[i] 与 a[i−1] 累加 1、2 或 0，最后输出总和；n=1 时输出 0。"
+    ],
+    "en": [
+      "The total time depends only on each step between two adjacent years, and the steps are independent.",
+      "Charge each step by the rule: 1 if the next year is later, 2 if it is earlier, 0 if it is the same.",
+      "Read n and the years, loop i = 1..n−1 comparing a[i] with a[i−1] and adding 1, 2 or 0, then print the total; when n = 1 print 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompare adjacent years pair by pair: count 1 for an increase, 2 for a decrease and 0 when equal, then sum.\n\n## Proof of correctness\n\nThe journey consists of exactly n−1 transitions between adjacent years; each transition independently contributes the 0, 1 or 2 defined by the statement, and summing them gives the total time.\n\n## Complexity\n\nTime O(n), space O(n) (to store the input).\n\n## Source notes\n\nThis site adds a definite standard input/output protocol. The dense-arrival example of upstream problem 9 omitted the completion time of one admitted guest; following the explicit 300-second service and queue rules, the site corrected it to 3301 and states this truthfully in the source evidence."
+}

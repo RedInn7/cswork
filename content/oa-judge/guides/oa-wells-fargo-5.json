@@ -1,0 +1,19 @@
+{
+  "id": "oa-wells-fargo-5",
+  "packageChecksum": "84a5f12923914f492157ab9f5eb767c199b59444b0bdc6632ba8a8c7f9280769",
+  "sourceContentHash": "0b265afa4ce58762e7a307e5777c33a1a0762e9d46cdac781e9ef30f067a140a",
+  "editorialSha256": "588dc3eaabda18c94ceff15f7d17a1666c253525b8de90a4462a4017c33b6cd0",
+  "hints": {
+    "zh": [
+      "恰含 k 个 1 的最短子串，一定以 1 开头、以 1 结尾：两端多出来的 0 去掉后 1 的个数不变、长度更短。",
+      "所以候选只有“连续 k 个 1 构成的窗口”：从第 i 个 1 到第 i+k−1 个 1 之间的子串；在这些候选里按 (长度, 字典序) 取最小。",
+      "记录所有 1 的下标 p；对每个 i 取子串 s[p[i] .. p[i+k−1]]，若长度更短，或长度相同且字典序更小，就更新答案；最后输出答案（不加引号）。"
+    ],
+    "en": [
+      "The shortest substring with exactly k ones must start and end with a 1: trimming extra 0s at either end keeps the number of ones and makes it shorter.",
+      "So the only candidates are windows of k consecutive ones: the substring from the i-th one to the (i+k−1)-th one; among them take the minimum by (length, lexicographic order).",
+      "Record the indices p of all ones; for each i take the substring s[p[i] .. p[i+k−1]] and update the answer if it is shorter, or equally long and lexicographically smaller; print the answer (without quotes)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate every window of k consecutive ones, keep only the shortest candidate from the window's first one to its k-th one, then take the minimum by length and lexicographic order.\n\n## Correctness\n\nThe ones in any substring with exactly k ones form some window of k consecutive ones in the string. Removing the characters before its first one and after its last one does not change the number of ones and only makes it shorter, so the shortest candidates are always bounded by their first and last ones. Enumerating all windows covers every shortest candidate, so taking the minimum by (length, lexicographic order) is correct.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

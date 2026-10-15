@@ -1,0 +1,21 @@
+{
+  "id": "oa-zalando-2",
+  "packageChecksum": "3361403376dcfe7d50129670795631e3b40fe4cd4c9b8e30b577ef1812813989",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <iterator>\n#include <string>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string raw((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());\n    string st;\n    for (char ch : raw) {\n        if (ch != 'A' && ch != 'B' && ch != 'C' && ch != 'D') continue;\n        // A/B and C/D cancel when adjacent, in either order.\n        if (!st.empty() && st.back() != ch && ((st.back() <= 'B') == (ch <= 'B'))) st.pop_back();\n        else st += ch;\n    }\n    cout << st << '\\n';\n}\n",
+      "sha256": "e038dc248c9a7e65f5e9f5544225048e9070f64a6dabfe1495630d33b8ed89d1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        byte[] raw = System.in.readAllBytes();\n        byte[] st = new byte[raw.length];\n        int top = 0;\n        for (byte ch : raw) {\n            if (ch < 'A' || ch > 'D') continue;\n            // A/B and C/D cancel when adjacent, in either order.\n            if (top > 0 && st[top - 1] != ch && ((st[top - 1] <= 'B') == (ch <= 'B'))) top--;\n            else st[top++] = ch;\n        }\n        System.out.println(new String(st, 0, top));\n    }\n}\n",
+      "sha256": "8474da300a536e034c3051983221c01d8dec0094dcf59557f42826c88f7aea9c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(os.Stdin)\n\tst := make([]byte, 0, len(raw)+1)\n\tfor _, ch := range raw {\n\t\tif ch < 'A' || ch > 'D' {\n\t\t\tcontinue\n\t\t}\n\t\t// A/B and C/D cancel when adjacent, in either order.\n\t\tif n := len(st); n > 0 && st[n-1] != ch && (st[n-1] <= 'B') == (ch <= 'B') {\n\t\t\tst = st[:n-1]\n\t\t} else {\n\t\t\tst = append(st, ch)\n\t\t}\n\t}\n\tos.Stdout.Write(append(st, '\\n'))\n}\n",
+      "sha256": "20c68b88dbbf2940eac03fed8688b3b50fb474c36523b04ee6b0026d0af77611"
+    }
+  ]
+}

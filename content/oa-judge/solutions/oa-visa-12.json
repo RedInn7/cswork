@@ -1,0 +1,21 @@
+{
+  "id": "oa-visa-12",
+  "packageChecksum": "c4b1553c8f54ec4a2cb695e1ca93946ab9fce38bc81604d725e77ddcdbd3cf54",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <string>\n#include <unordered_map>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, q;\n    cin >> n >> q;\n    unordered_map<string, string> value;\n    value.reserve(2 * n + 1);\n    string k, t, v;\n    for (int i = 0; i < n; i++) {\n        cin >> k >> t >> v;\n        value[k + ' ' + t] = v;\n    }\n    string out;\n    for (int i = 0; i < q; i++) {\n        cin >> k >> t;\n        if (i) out += ' ';\n        out += value[k + ' ' + t];\n    }\n    out += '\\n';\n    cout << out;\n}\n",
+      "sha256": "0a9dabac5ff2c320fe9c0e89b12e42eef09e4735836965e34154ffbecff6739d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong(), q = (int) nextLong();\n        HashMap<String, String> value = new HashMap<>(4 * n + 16);\n        for (int i = 0; i < n; i++) {\n            String k = next(), t = next();\n            value.put(k + \" \" + t, next());\n        }\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < q; i++) {\n            String k = next(), t = next();\n            if (i > 0) out.append(' ');\n            out.append(value.get(k + \" \" + t));\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "c25fe0249d0a615ba990bdf9b4aac3a2b6611784f5a0be6665e25724431398b8"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc nextToken() string {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, q := int(nextInt()), int(nextInt())\n\tvalue := make(map[string]string, n)\n\tfor i := 0; i < n; i++ {\n\t\tk, t := nextToken(), nextToken()\n\t\tvalue[k+\" \"+t] = nextToken()\n\t}\n\tout := []byte{}\n\tfor i := 0; i < q; i++ {\n\t\tk, t := nextToken(), nextToken()\n\t\tif i > 0 {\n\t\t\tout = append(out, ' ')\n\t\t}\n\t\tout = append(out, value[k+\" \"+t]...)\n\t}\n\tout = append(out, '\\n')\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "ec4749ba7562fe97a4eb6890983bbfa6c2411c1945dfca2b0388de15a932b2ef"
+    }
+  ]
+}

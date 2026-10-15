@@ -1,0 +1,19 @@
+{
+  "id": "oa-xperi-1",
+  "packageChecksum": "20809533de9404ef405b7fe337d57c0d17e653a55bb32b4384c517813220eeee",
+  "sourceContentHash": "3b6024104fab3bce3178b7bafbee959216afdfc2dc25859de2fed028305d415f",
+  "editorialSha256": "cb346f09061d6e973e77139fd16c155096ea0c5fb171e139d795469fba740c4c",
+  "hints": {
+    "zh": [
+      "元素都不超过 50 < 64，任意多个元素的异或结果都落在 0..63，只有 64 种状态。",
+      "按位置做动态规划：dp[x] 表示已经填好的前缀异或为 x 的序列数，每加入一个元素就枚举它的取值 0..M 做转移。",
+      "dp[0]=1；重复 N 次：新数组 nxt 全 0，对每个旧状态 old 和每个 v∈[0, M]，把 dp[old] 加到 nxt[old^v]，并对 998244353 取模；最后输出 dp[X]。"
+    ],
+    "en": [
+      "Every element is at most 50 < 64, so the XOR of any number of elements lies in 0..63; there are only 64 states.",
+      "Do dynamic programming over positions: dp[x] is the number of filled prefixes whose XOR is x, and each new element enumerates its value 0..M as the transition.",
+      "Set dp[0] = 1; repeat N times: start nxt at all zeros, and for every old state and every v in [0, M] add dp[old] to nxt[old^v] modulo 998244353; print dp[X] at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain a DP over the XOR states 0..63. For each new element, move every old state to old XOR value for each value∈[0,M].\n\n## Proof of correctness\n\nDP[i][x] is the number of sequences whose first i positions XOR to x. The value of the last element uniquely determines the previous state x XOR value; summing over values enumerates every valid last element, so the transition counts each sequence exactly once. The answer is DP[N][X].\n\n## Complexity\n\nTime O(N·64·(M+1)), space O(64)."
+}

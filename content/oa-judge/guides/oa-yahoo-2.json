@@ -1,0 +1,19 @@
+{
+  "id": "oa-yahoo-2",
+  "packageChecksum": "b0509a600b1a952ae03108a55507d1fc8297f30274c60bedd417b2855dee8885",
+  "sourceContentHash": "e571e77c55dc2624962feb8278c2247509d76b3e3b6f4ee32d4b1a2494ae5ef8",
+  "editorialSha256": "0c7ca0053c7bf98859b43396020f5e585b4fe83636c91afe7d8a2cb6e6cf884d",
+  "hints": {
+    "zh": [
+      "合法子串一定恰好横跨两个相邻的连续段（一段 0、一段 1，或反过来），且两边长度相等。",
+      "把字符串压缩成连续段长度序列；相邻两段长度为 a、b 时，以它们交界为中心能构成 min(a, b) 个合法子串。",
+      "扫描时维护上一段长度 prev 和当前段长度 run；字符变化时把 min(prev, run) 加入答案并令 prev=run、run=1；结束后再加一次 min(prev, run) 输出。"
+    ],
+    "en": [
+      "A valid substring always spans exactly two adjacent runs (a run of 0s and a run of 1s, or the other way round) with equal lengths on both sides.",
+      "Compress the string into its run lengths; two adjacent runs of lengths a and b give min(a, b) valid substrings centered on their boundary.",
+      "While scanning keep the previous run length prev and the current run length run; when the character changes, add min(prev, run) to the answer and set prev = run, run = 1; after the loop add min(prev, run) once more and print."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompress the string into runs of equal characters; each pair of adjacent runs contributes the smaller length.\n\n## Proof of correctness\n\nA valid substring spans exactly two adjacent runs with equal lengths, so the number of possible starting points is the length of the shorter run.\n\n## Complexity\n\nO(n) time, O(1) space."
+}

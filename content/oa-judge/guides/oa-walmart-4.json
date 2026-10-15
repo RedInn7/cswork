@@ -1,0 +1,19 @@
+{
+  "id": "oa-walmart-4",
+  "packageChecksum": "6383bdaac69cd1c3058b5f45a8ad824c6e4ab4cbbf4ca500fed2de95bb079d4e",
+  "sourceContentHash": "5befc74773025fa5042cb2917d2be7fc10e1d64db7504ece60607541f339a222",
+  "editorialSha256": "daa65c4d57d5f6d893e774d2c078e2328b0ca813b8474b021d83c2136486e52e",
+  "hints": {
+    "zh": [
+      "令 y[i] = X[i] − (i+1)，则 |X[i] − (k+i+1)| 就等于 |y[i] − k|，问题变成选一个 k 让到所有 y[i] 的距离之和最小。",
+      "一维上到若干点的绝对距离之和，在中位数处取到最小值，而且中位数本身是整数。",
+      "算出所有 y[i]（只差一个常数平移，用 X[i]−i 也可以），排序后取 y[n/2] 作为 k，累加 |y[i] − k| 输出；和可达 2×10¹⁴，用 64 位整数。"
+    ],
+    "en": [
+      "Let y[i] = X[i] − (i+1); then |X[i] − (k+i+1)| equals |y[i] − k|, so the task becomes choosing k to minimize the total distance to all y[i].",
+      "On a line, the sum of absolute distances to a set of points is minimized at a median, and the median is itself an integer.",
+      "Compute every y[i] (shifting all of them by the same constant, e.g. using X[i]−i, does not matter), sort, take k = y[n/2], and print the sum of |y[i] − k|; the sum reaches 2×10¹⁴, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet y[i] = X[i]−(i+1); the target becomes Σ|y[i]−k|, and the median of y is an optimal k.\n\n## Proof of correctness\n\nThe sum of absolute deviations is minimized at the median. After the transformation the original expression equals |y[i]−k| term by term, so plugging in the median and summing gives the global minimum.\n\n## Complexity\n\nTime O(n log n), extra space O(n)."
+}

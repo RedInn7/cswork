@@ -1,0 +1,19 @@
+{
+  "id": "oa-weride-9",
+  "packageChecksum": "4b9eff709162a06d763d0d281eafd6d2b701f76ad2bcc5540ef5107c73d02fbc",
+  "sourceContentHash": "d0ca0bff74708ee0e5b708b2ef4c1f63edc77848111b539ce7e4cdb61d8e2988",
+  "editorialSha256": "3eae1e1066e156de59a4d8f49a4e059d20130b64e29fed9d6a5f5a95ed743fda",
+  "hints": {
+    "zh": [
+      "每天最多见一位投资人，按天从早到晚安排；某一天能见的人是区间已开始、尚未结束且还没见过的那些。",
+      "贪心：每天在当前可见的人里选截止日最早的那位；没人可见时直接跳到下一个最早开始日，而不是逐天枚举到 10⁹。",
+      "按开始日排序，用小根堆存可见者的截止日；若堆为空，把 day 跳到下一个开始日；把开始日 ≤day 的都入堆，弹出截止日 <day 的过期者；堆非空就弹出堆顶、答案加一、day 加一；循环到所有人都处理完。n=0 时输出 0。"
+    ],
+    "en": [
+      "At most one investor can be met per day, so schedule day by day from early to late; on a given day the possible investors are those whose window has started, has not ended, and who have not been met yet.",
+      "Greedy: each day, choose among the currently available investors the one with the earliest last day; when nobody is available, jump straight to the next earliest start day instead of stepping through days up to 10⁹.",
+      "Sort by start day and keep the available investors' last days in a min-heap; if the heap is empty, move day to the next start day; push everyone with start ≤ day, pop expired entries with last day < day; if the heap is non-empty, pop its top, add one to the answer and advance day by one; repeat until everyone is processed. Print 0 when n = 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAdd investors as candidates by their available start day; each day, pick the candidate whose window ends earliest; if there is currently no candidate, jump to the next start day.\n\n## Proof of correctness\n\nIf some day is given to an interval ending later while an interval ending earlier is kept, swapping the two does not reduce the number of meetings scheduled and leaves no fewer options for later. So taking the earliest deadline each day is a safe greedy choice; expired intervals can never be scheduled again.\n\n## Complexity\n\nO(n log n) time, O(n) space.\n\n## Source and additions\n\nhttps://oamaster.com/docs/companies/weride#9-meetup-schedule; the closed intervals and the daily limit in the statement are explicit; the original text lacks constraints, so this site adds upper bounds on dates and counts."
+}

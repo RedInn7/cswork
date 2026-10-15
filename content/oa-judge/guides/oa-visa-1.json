@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-1",
+  "packageChecksum": "31a232c1406dcbd64c25b0fea58bcb55233988c4294e825dd2ac121ac0d6ebb2",
+  "sourceContentHash": "7bcd9788b11f8e39c32c9f43305dadca4cafa2d851e1e5ce10e82f4599ecd4ab",
+  "editorialSha256": "1fd7a08e4564308069baa2074571228fbf30f3bcc99075505e4125926547bcba",
+  "hints": {
+    "zh": [
+      "答案只和每个字符是大写还是小写有关，字符之间互不影响。",
+      "把每个字符看作一次加减：大写字母贡献 +1，小写字母贡献 −1，总和就是大写数减小写数。",
+      "读入字符串，计数器从 0 开始；逐字符判断，'A'..'Z' 加一，'a'..'z' 减一；扫描结束后输出计数器（可能为负）。"
+    ],
+    "en": [
+      "The answer only depends on whether each character is uppercase or lowercase; characters do not affect each other.",
+      "Treat every character as a +1 or −1: an uppercase letter contributes +1 and a lowercase letter −1, so the total is exactly the uppercase count minus the lowercase count.",
+      "Read the string and start a counter at 0; for each character add one if it is in 'A'..'Z' and subtract one if it is in 'a'..'z'; print the counter at the end (it may be negative)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the string once: add one for each uppercase letter and subtract one for each lowercase letter.\n\n## Correctness\n\nEach character contributes exactly +1 (uppercase) or −1 (lowercase) to the answer; adding these contributions character by character gives the required difference.\n\n## Complexity\n\nTime O(n), extra space O(1)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-6",
+  "packageChecksum": "b53b1640400822e155e770b02cdcb99f59258061fabb1e73b495e85d8eed4b56",
+  "sourceContentHash": "a1c6cd73e176c57950904dcea2e944c417c5343ed6a58ed22671ca05ce62100a",
+  "editorialSha256": "6ad2838f9f3e80e2c4c9c3322d8a95e522b9971bc6ce8a761b171b5dbd23a6b0",
+  "hints": {
+    "zh": [
+      "必须恰好操作一次，候选只有 2n 个：反转长度为 k 的前缀或长度为 k 的后缀（k=1..n），原串本身不算候选。",
+      "本站限制长度 ≤2000，逐个构造这 2n 个结果并比较字典序，O(n²) 完全来得及。",
+      "对 k=1..n 构造 reverse(w[0..k)) + w[k..) 和 w[0..n−k) + reverse(w[n−k..))，与当前最优比较并保留更小者；最后输出最优结果。"
+    ],
+    "en": [
+      "Exactly one operation is required, so there are only 2n candidates: reverse the prefix of length k or the suffix of length k (k = 1..n); the original string itself is not a candidate.",
+      "The site limits the length to 2000, so building all 2n results and comparing them lexicographically, O(n²) in total, is easily fast enough.",
+      "For k = 1..n build reverse(w[0..k)) + w[k..) and w[0..n−k) + reverse(w[n−k..)), compare each with the best so far and keep the smaller; print the best at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate k = 1..n, build the two results of reversing the prefix and reversing the suffix, and take the minimum.\n\n## Correctness\n\nThere are exactly 2n operations allowed by the definition; the loop builds and compares each of them, so the smallest is the answer. The original string is not added as an extra candidate, which matches the requirement of exactly one operation.\n\n## Complexity\n\nTime O(n²), candidate space O(n²); the site adds n ≤ 2000."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-wells-fargo-4",
+  "packageChecksum": "bbe0dbdb1f42ea85688ce04da86019a9c07ebd575195d6ee7981180f8183a352",
+  "sourceContentHash": "93a60eafa91223238eeb0ec871c180eb018ef6841c50fe085f18bf26ed11419b",
+  "editorialSha256": "5d9885537111b0059e1aeccfe335e37422a4867905629989758bea2896771ed9",
+  "hints": {
+    "zh": [
+      "最终每个元素对应原数组的一段连续区间；元素都是正整数，区间越长乘积越大，所以一段可以合并成一个数当且仅当整段乘积 ≤k（单个元素总可以单独保留）。",
+      "从左到右贪心：当前段乘积乘上下一个数仍 ≤k 就并进来，否则另起一段；每次都让当前段尽量长不会让后面需要更多段。",
+      "段数初始为 1、乘积为 a[0]；对后续每个 x，若 product*x≤k 则 product*=x，否则段数加一并令 product=x。k 到 10¹⁸、x 到 10⁹，乘法会溢出 64 位，改用 product ≤ k / x（整数除法）判断。"
+    ],
+    "en": [
+      "Each final element corresponds to a contiguous segment of the original array; all elements are positive integers, so a longer segment has a larger product, and a segment can be merged into one number exactly when its whole product is ≤ k (a single element can always stay alone).",
+      "Greedy from left to right: if the current segment's product times the next number is still ≤ k, absorb it, otherwise start a new segment; always making the current segment as long as possible never forces more segments later.",
+      "Start with one segment and product a[0]; for each following x, if product*x ≤ k set product *= x, otherwise add a segment and set product = x. k reaches 10¹⁸ and x 10⁹, so the multiplication can overflow 64 bits; test product ≤ k / x (integer division) instead."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGreedily extend the current segment from left to right: as long as the segment's product times the next number is still ≤ k, absorb it; otherwise end the current segment and start a new one at the next number. Positive integers guarantee the product never decreases as the segment grows.\n\n## Correctness\n\nEach final element corresponds to a contiguous segment of the original array. A one-element segment needs no operation and can always be kept; a segment of length at least 2 is feasible only when its total product is ≤ k, and since products of positive integers never decrease, all merges of adjacent pieces inside it also satisfy the limit. From the current position, greedy takes the longest feasible segment; the first segment of any feasible plan cannot end beyond the greedy boundary. Replacing an optimal plan's first segment with the longer greedy segment does not increase the minimum number of segments for the remaining suffix; by induction on the suffix, greedy uses the fewest segments.\n\n## Complexity\n\nTime O(n), space O(1) (excluding the input)."
+}

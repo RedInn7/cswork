@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-16",
+  "packageChecksum": "c17b9cab32cb97dd5c1681c3fc6525a1322686d62bcacd6cd2423b899e83c5db",
+  "sourceContentHash": "ae2879fdef356bbaced42f138d2c50521508499e369a1be6516458a742edab28",
+  "editorialSha256": "f09642c54bbbd6e0e71b2dd33f4c0008ab1b17b84352be3311adb783b08760e3",
+  "hints": {
+    "zh": [
+      "一个位置能否接在前一个位置后面，只取决于前一位置选了 A 还是 B，以及它是否不大于当前选的值。",
+      "维护两个状态：以 i 结尾且第 i 位选 A[i]（或 B[i]）时，最长合法连续段的长度。",
+      "x、y 初始为 1；对 i≥1，若 A[i−1]≤A[i] 则新 x 可取 x+1，若 B[i−1]≤A[i] 则可取 y+1，都不行则为 1；新 y 同理与 B[i] 比较；每步用 max(x, y) 更新答案。"
+    ],
+    "en": [
+      "Whether a position can follow the previous one depends only on whether the previous position took A or B, and whether that value is not greater than the current choice.",
+      "Keep two states: the longest valid contiguous run ending at i when position i takes A[i], and when it takes B[i].",
+      "Start with x = y = 1; for i ≥ 1, the new x can be x+1 if A[i−1] ≤ A[i] and y+1 if B[i−1] ≤ A[i], otherwise 1; the new y is the same comparison against B[i]; update the answer with max(x, y) at every step."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain two states: the longest valid contiguous run ending at the current position when it takes A[i], and when it takes B[i]. Check whether each of the previous position's two choices is ≤ the current value; if neither can be extended, restart from the current position.\n\n## Correctness\n\nA valid run reaching the current position can only come from the previous element A[i−1] or B[i−1], which must be no larger than the current value. The two states cover every possibility; taking the longest extendable run is optimal, and otherwise the length is 1.\n\n## Complexity\n\nTime O(n), space O(1)."
+}

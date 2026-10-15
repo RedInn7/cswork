@@ -1,0 +1,21 @@
+{
+  "id": "oa-yahoo-2",
+  "packageChecksum": "b0509a600b1a952ae03108a55507d1fc8297f30274c60bedd417b2855dee8885",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <algorithm>\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    long long prev = 0, run = 0, ans = 0;\n    char last = 0;\n    for (char c : s) {\n        if (c == last) run++;\n        else {\n            ans += min(prev, run);  // adjacent runs contribute the shorter length\n            prev = run;\n            run = 1;\n            last = c;\n        }\n    }\n    cout << ans + min(prev, run) << '\\n';\n}\n",
+      "sha256": "b96334ad443cf1c34841064d7e87d8339276a4d3a7a93ffa80b2867259389d72"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        long prev = 0, run = 0, ans = 0;\n        char last = 0;\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            if (c == last) run++;\n            else {\n                ans += Math.min(prev, run);  // adjacent runs contribute the shorter length\n                prev = run;\n                run = 1;\n                last = c;\n            }\n        }\n        System.out.println(ans + Math.min(prev, run));\n    }\n}\n",
+      "sha256": "ae81af1a5d1f7326498450b9e65348e06d57ca7943947226008aa83bbc756593"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(os.Stdin)\n\ts := strings.TrimSpace(string(raw))\n\tvar prev, run, ans int64\n\tvar last byte\n\tfor i := 0; i < len(s); i++ {\n\t\tif s[i] == last {\n\t\t\trun++\n\t\t} else {\n\t\t\tans += min(prev, run) // adjacent runs contribute the shorter length\n\t\t\tprev, run, last = run, 1, s[i]\n\t\t}\n\t}\n\tfmt.Println(ans + min(prev, run))\n}\n",
+      "sha256": "ac3d06ccd624b21a63fd1ae9f48577e7d3c407161f926f89e99fd678e3aacd9c"
+    }
+  ]
+}

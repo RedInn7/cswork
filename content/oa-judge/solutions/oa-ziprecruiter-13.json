@@ -1,0 +1,21 @@
+{
+  "id": "oa-ziprecruiter-13",
+  "packageChecksum": "dc1e08df801a69ac0828d04571c52fa22434c4daba631da529becb916cf55e84",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <iostream>\n#include <vector>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    vector<int> a(n);\n    for (auto &x : a) cin >> x;\n    long long total = 0;\n    for (int i = 1; i < n; i++) total += a[i] > a[i - 1] ? 1 : a[i] < a[i - 1] ? 2 : 0;\n    cout << total << '\\n';\n}\n",
+      "sha256": "421ed36849b7fca95778730f4422eed4921198977487480907039a7b2b991a1f"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        long total = 0, prev = nextLong();\n        for (int i = 1; i < n; i++) {\n            long cur = nextLong();\n            total += cur > prev ? 1 : cur < prev ? 2 : 0;\n            prev = cur;\n        }\n        System.out.println(total);\n    }\n}\n",
+      "sha256": "a4d751c84db7f7e518b21cbb7aa38c4a33fee2f59468731705b05f3e7c9d9c4b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tprev := nextInt()\n\ttotal := 0\n\tfor i := 1; i < n; i++ {\n\t\tcur := nextInt()\n\t\tif cur > prev {\n\t\t\ttotal++\n\t\t} else if cur < prev {\n\t\t\ttotal += 2\n\t\t}\n\t\tprev = cur\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "3f3cf99c9ad3842df9b97b5fd0ef1507026a19c9f8eaa83f023b9976d90eb37d"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-wayfair-2",
+  "packageChecksum": "5a4e16e6147d39297bc8fd47d41525b6ece6d46c12b15e65c120d7fc44d067b0",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\nMAPPING = \"11222333444555666777888999\"  # value of 'a'..'z'\n\n\ndef main():\n    s = sys.stdin.read().split()[0]\n    values = [int(MAPPING[ord(c) - 97]) for c in s]\n    n = len(values)\n    offset = 8 * n\n    answer = 0\n    # A sum divisible by the length means an integer average k in 1..9:\n    # shift every value by -k and count zero-sum substrings with prefix-sum frequencies.\n    for average in range(1, 10):\n        freq = [0] * (16 * n + 1)\n        prefix = offset\n        freq[prefix] = 1\n        for v in values:\n            prefix += v - average\n            answer += freq[prefix]\n            freq[prefix] += 1\n    print(answer)\n\n\nmain()\n",
+      "sha256": "beb72d29e09196629c5b1c91cb88940091fce6f9f07512effd5b6eec01948459"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        String s = new BufferedReader(new InputStreamReader(System.in)).readLine().trim();\n        final String mapping = \"11222333444555666777888999\";  // value of 'a'..'z'\n        int n = s.length(), offset = 8 * n;\n        int[] freq = new int[16 * n + 1];\n        long answer = 0;\n        // A sum divisible by the length means an integer average k in 1..9:\n        // shift every value by -k and count zero-sum substrings with prefix-sum frequencies.\n        for (int average = 1; average <= 9; average++) {\n            Arrays.fill(freq, 0);\n            int prefix = offset;\n            freq[prefix] = 1;\n            for (int i = 0; i < n; i++) {\n                prefix += mapping.charAt(s.charAt(i) - 'a') - '0' - average;\n                answer += freq[prefix];\n                freq[prefix]++;\n            }\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "bc68b2be4079e2ff8d0c3daa0efcde889456ac60e7b08ea50c1b1e3caed33d52"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\traw, _ := io.ReadAll(os.Stdin)\n\ts := strings.TrimSpace(string(raw))\n\tconst mapping = \"11222333444555666777888999\" // value of 'a'..'z'\n\tn := len(s)\n\toffset := 8 * n\n\tfreq := make([]int32, 16*n+1)\n\tvar answer int64\n\t// A sum divisible by the length means an integer average k in 1..9:\n\t// shift every value by -k and count zero-sum substrings with prefix-sum frequencies.\n\tfor average := 1; average <= 9; average++ {\n\t\tclear(freq)\n\t\tprefix := offset\n\t\tfreq[prefix] = 1\n\t\tfor i := 0; i < n; i++ {\n\t\t\tprefix += int(mapping[s[i]-'a']-'0') - average\n\t\t\tanswer += int64(freq[prefix])\n\t\t\tfreq[prefix]++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "fd669d4465278b07740b91072560617fdd3969b7520f8ab798c165f70c5b4b33"
+    }
+  ]
+}

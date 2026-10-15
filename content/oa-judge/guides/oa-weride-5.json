@@ -1,0 +1,19 @@
+{
+  "id": "oa-weride-5",
+  "packageChecksum": "c06eec4bd00937d2117adbc4635777b3704b38899ebf0de681b5e90ec7c0d006",
+  "sourceContentHash": "b1639717ffbe4708cefb3029bfffbbb3d069343624539d09b7792a5e067eb34c",
+  "editorialSha256": "75aa7860c05fc4e121dc0971d775ffd0b15dd214e2c16505f3d82a1c88eac8f2",
+  "hints": {
+    "zh": [
+      "正向有两种走法，不好搜索；但反过来看，每个点的上一步是唯一确定的。",
+      "坐标都是正数：若 x>y，上一步只能是 (x−y, y)；若 y>x，上一步只能是 (x, y−x)。从终点不断倒推即可。",
+      "从 (x2, y2) 开始，只要两维都不小于起点且还没到达起点，就用较大的坐标减去较小的；循环结束后若恰好等于 (x1, y1) 输出 Yes，否则输出 No。"
+    ],
+    "en": [
+      "Going forward there are two moves, which is awkward to search; looked at backwards, though, each point has a uniquely determined previous step.",
+      "Coordinates are positive: if x > y the previous point can only be (x−y, y), and if y > x it can only be (x, y−x). Just keep stepping backwards from the target.",
+      "Start from (x2, y2); while both coordinates are at least the start's and the start has not been reached, subtract the smaller coordinate from the larger; afterwards print Yes if the point equals (x1, y1) exactly, otherwise No."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWalk backwards from the target: if x>y, the last step can only have come from (x−y,y); otherwise it came from (x,y−x). Once a coordinate drops below the start's, reaching it is impossible.\n\n## Proof of correctness\n\nEach of the two forward moves increases only one coordinate, by an amount equal to the other coordinate, so the inverse step is unique. Repeatedly applying the inverse step strictly decreases the sum of the coordinates; the target is reachable if and only if this process arrives at the start.\n\n## Complexity\n\nAt most O(x2+y2) steps and O(1) extra space; this is enough within the given bound of 1000.\n\n## Source and additions\n\nhttps://oamaster.com/docs/companies/weride#5-bot-movement-reachability-two-move-types; the ranges of the start and end points and the two moves are precisely defined; this site specifies stdin/stdout."
+}

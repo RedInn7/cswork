@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-7",
+  "packageChecksum": "783958d524b052dbe2d3c2f0f6dd784dd4ba34c7a61ccc24fea027a45a8249ce",
+  "sourceContentHash": "c52180b84e34597acb1b892647e2eeed843d36e5131140ae78a799ff36e4cd3c",
+  "editorialSha256": "78c9ddc86e63d2cdc5b430ab20620d596a559ba2638d668b96706ca6400e38b4",
+  "hints": {
+    "zh": [
+      "每个 4×4 子块恰好缺 1..16 中的一个数，缺失值等于 136 减去块内现有数字之和。",
+      "缺失值要先全部求出并升序排列；回填位置的顺序是整个 4n×4n 矩阵的行优先顺序，而不是按子块逐个回填。",
+      "枚举 n² 个子块求缺失值并排序；再按行从上到下、每行从左到右扫描整个矩阵，遇到 −1 就填入下一个缺失值；最后输出 4n 行。"
+    ],
+    "en": [
+      "Each 4×4 sub-block lacks exactly one number from 1..16, and the missing value equals 136 minus the sum of the numbers present in the block.",
+      "First collect all missing values and sort them ascending; the fill positions are ordered row-major over the whole 4n×4n matrix, not block by block.",
+      "Loop over the n² sub-blocks to get the missing values and sort them; then scan the whole matrix row by row, left to right, putting the next missing value into each −1 you meet; print the 4n rows."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each 4×4 sub-block compute the missing value `136−current sum`. Note that the statement orders the fill positions as all `-1` cells of the whole `(4n)×(4n)` matrix by row, then by column, not in sub-block traversal order. After sorting all missing values, write them one by one into the global row-major positions.\n\n## Proof of correctness\n\nEach block contains every number in 1..16 except one, so the block's sum is `136−missing` and the computed value is unique. The statement requires collecting these values and sorting them ascending, then mapping them onto the missing positions ordered row-major over the whole matrix; the algorithm builds both sequences according to these two explicit rules and assigns them one to one, so the output matrix matches the statement exactly.\n\n## Complexity\n\nLet the matrix side be `N=4n`. Scanning all cells and sorting the `n²` missing values takes `O(N²+n² log n)` time and `O(N²)` space (for the matrix and the input and output).\n\n## Verification\n\n163 oracle inputs recover each block's missing value with an independent set-complement algorithm; additionally, all 16 missing values × 16 missing positions of a single block were enumerated, 256 cases in total. The official cases include an 8×8 matrix that distinguishes global row-major order from sub-block traversal order, a maximum-boundary matrix with n=100, and 15 hidden matrix scenarios with distinct inputs. Both wrong programs that exit normally are rejected by the cases.\n\n## Source notes\n\nThe original problem and the fixed upstream commit explicitly require filling the missing positions in row-major order of the whole matrix. The upstream reference code actually records positions in sub-block order, which contradicts the text; this problem implements the statement's steps strictly and rewrites the site's examples. The original gives no upper bound on n; the site adds `1≤n≤100` to keep input and output within the OJ's capacity limits; the standard input/output protocol is also site-added."
+}

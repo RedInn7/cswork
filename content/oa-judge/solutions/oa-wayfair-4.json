@@ -1,0 +1,21 @@
+{
+  "id": "oa-wayfair-4",
+  "packageChecksum": "0402c49d4ce997fa555711a39f44da1f7aebe2dcb2a2c6ed2731745155e36f25",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <algorithm>\n#include <iostream>\n#include <string>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int q;\n    cin >> q;\n    string out;\n    for (int i = 0; i < q; i++) {\n        string s;\n        cin >> s;\n        long zeros = count(s.begin(), s.end(), '0');\n        out += (s[0] == '1' && zeros >= 2 && zeros % 2 == 0) ? \"True\\n\" : \"False\\n\";\n    }\n    cout << out;\n}\n",
+      "sha256": "60b91daf3f574595f3e5a2dd8b2305572f6a182fac8793f96ec926f5f89593c5"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int q = (int) nextLong();\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < q; i++) {\n            String s = next();\n            int zeros = 0;\n            for (int j = 0; j < s.length(); j++)\n                if (s.charAt(j) == '0') zeros++;\n            out.append(s.charAt(0) == '1' && zeros >= 2 && zeros % 2 == 0 ? \"True\" : \"False\").append('\\n');\n        }\n        System.out.print(out);\n    }\n}\n",
+      "sha256": "18137269b7b684f270a8527c564a0c1b4b5f99cc5f74337dd0ed4cc0d07ca574"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc nextToken() string {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tq := int(nextInt())\n\tvar out strings.Builder\n\tfor i := 0; i < q; i++ {\n\t\ts := nextToken()\n\t\tzeros := strings.Count(s, \"0\")\n\t\tif s[0] == '1' && zeros >= 2 && zeros%2 == 0 {\n\t\t\tout.WriteString(\"True\\n\")\n\t\t} else {\n\t\t\tout.WriteString(\"False\\n\")\n\t\t}\n\t}\n\tos.Stdout.WriteString(out.String())\n}\n",
+      "sha256": "ad2a25fc1df5344206a07e9c1f2b56535cffcbf01e78a84ae9492bb15bf970c9"
+    }
+  ]
+}

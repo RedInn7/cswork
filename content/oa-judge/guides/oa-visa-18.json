@@ -1,0 +1,19 @@
+{
+  "id": "oa-visa-18",
+  "packageChecksum": "da1b675fd1212f3b3cfd20a9666995e84274c23823d50892697799cebaf235a0",
+  "sourceContentHash": "b75a1eb78e7e26a4f46d75072ecf28adc72401ed206c389a06368adf2c10acff",
+  "editorialSha256": "4477ff13c9d1c909bc69a60364bc768506f9afc114a3a6bb586bad7e714a8dd8",
+  "hints": {
+    "zh": [
+      "按技能把人分成四类：双技能、只有技能 1、只有技能 2、没有技能；成本非负，没技能的人永远不必选。",
+      "固定选 j 个双技能者后，两种单技能者各还需 K−j 人，且各组都应选最便宜的；总代价 f(j) 用三组排序后的前缀和 O(1) 算出，并且 f 关于 j 是凸的。",
+      "三组分别排序求前缀和；对每个 K，j 的可行范围是 [max(0, K−|X|, K−|Y|), min(K, |B|)]，为空则输出 −1；否则在区间内二分第一个满足 f(j+1)−f(j)≥0 的 j，输出 f(j)，用 64 位整数。"
+    ],
+    "en": [
+      "Split people into four groups by skills: both skills, only skill 1, only skill 2, and none; costs are non-negative, so people with no skill never need to be chosen.",
+      "Once you fix taking j people with both skills, each single-skill group still needs K−j people, and every group should contribute its cheapest members; the total f(j) comes from prefix sums of the three sorted groups in O(1), and f is convex in j.",
+      "Sort the three groups and build prefix sums; for each K, the feasible j range is [max(0, K−|X|, K−|Y|), min(K, |B|)], and if it is empty print −1; otherwise binary search in the range for the first j with f(j+1)−f(j) ≥ 0 and print f(j), using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit people into four groups: B with both skills, X with only skill 1, Y with only skill 2, and those with none; with non-negative costs, people with no skill never need to be chosen. After fixing j people from B, each of the other two groups must supply K−j people, at cost f(j) = PB[j] + PX[K−j] + PY[K−j]. The feasible range of j is [max(0, K−|X|, K−|Y|), min(K, |B|)].\n\n## Correctness\n\nFor a given number j of people with both skills, the cheapest feasible plan must take the cheapest required number from each group, which gives f(j). Prefix sums of sorted costs have non-decreasing marginal costs; the difference of f is the marginal cost of B[j] minus the marginal costs of the last members removed from X and Y, which is non-decreasing in j, so f is discretely convex. Binary searching the first non-negative difference finds the minimum on the range. Non-negative costs allow dropping unnecessary people; the non-negativity restriction is site-added.\n\n## Complexity\n\nSorting takes O(n log n) and each K needs an O(log n) binary search, for a total time of O(n log n) and space O(n)."
+}
