@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-391",
+  "packageChecksum": "5620257c3247b464b07227c0b4bd353cb2cc78108969a859cffc3a41b4eefc46",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    long long sum = 0;\n    for (auto &x : a) { cin >> x; sum += x; }\n    long long base = sum / n, deficit = 0, excess = 0;\n    // Final piles are base or base+1: missing below base vs. surplus above base+1.\n    for (long long v : a) { deficit += max(0LL, base - v); excess += max(0LL, v - base - 1); }\n    cout << max(deficit, excess) << \"\\n\";\n}\n",
+      "sha256": "9f59dcc20311a3d49c3767d24ded25db7d4dc43b72e386cabf942da33d9020a3"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        long sum = 0;\n        for (int i = 0; i < n; i++) {\n            a[i] = nextLong();\n            sum += a[i];\n        }\n        long base = sum / n, deficit = 0, excess = 0;\n        // Final piles are base or base+1: missing below base vs. surplus above base+1.\n        for (long v : a) {\n            deficit += Math.max(0, base - v);\n            excess += Math.max(0, v - base - 1);\n        }\n        System.out.println(Math.max(deficit, excess));\n    }\n}\n",
+      "sha256": "9a7b6eaf49c60137e515d4a0043a0c78931d2f12dd1bee1158d5ecd87831fde6"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tsum := int64(0)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t\tsum += a[i]\n\t}\n\tbase := sum / int64(n)\n\tdeficit, excess := int64(0), int64(0)\n\t// Final piles are base or base+1: missing below base vs. surplus above base+1.\n\tfor _, v := range a {\n\t\tdeficit += max(0, base-v)\n\t\texcess += max(0, v-base-1)\n\t}\n\tfmt.Println(max(deficit, excess))\n}\n",
+      "sha256": "3e719fd834110d3b99632df3db31efcac6408db60ec567ac3f27c1908fb6ba6e"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-362",
+  "packageChecksum": "6b8c0c38e6eed84a780f9cd4f6adfbec32a5c51d788a14871ddd0ea331121f49",
+  "sourceContentHash": "abb01510f42497e187d5a8e12f70d3e709b2c04fac3ea735e493972eae4159cc",
+  "editorialSha256": "02b7f10b00bf8374717ac1f5963e1903bf5c023411621e7d747c006d0c0a76e0",
+  "hints": {
+    "zh": [
+      "反转只改变窗口内部，窗口之前的部分完全相同，所以字典序只取决于窗口里第一个发生变化的位置。",
+      "窗口反转后第 j 位是原来对称位置的字符：从窗口两端向中间成对比较，第一对不同的字符中，若右边那个小于左边那个，反转后整串就更小；全部相等说明是回文，不计数。",
+      "先把 JSON 字符串正确解码成码点序列（处理 \\uXXXX 转义、把代理对合并成一个码点、解码原始 UTF-8），再按码点比较；枚举每个起点，k≤20，每个窗口最多比较 10 对。"
+    ],
+    "en": [
+      "Reversal only changes the inside of the window and everything before it is identical, so the lexicographic result depends only on the first position in the window that changes.",
+      "After reversal, position j of the window holds the character from its mirror position. Compare pairs from both ends toward the middle; at the first unequal pair, the reversal is smaller exactly when the right character is smaller than the left one. If all pairs are equal the window is a palindrome and does not count.",
+      "Decode the JSON string into code points first (handle \\uXXXX escapes, join surrogate pairs into one code point, and decode raw UTF-8), then compare by code point. Enumerate every start; with k≤20 each window compares at most 10 pairs."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEverything outside the window is unchanged, so compare from both ends of the window toward the middle; if, at the first pair of different characters, the right one is smaller than the left one, that reversal succeeds.\n\n## Proof of correctness\n\nThe two strings are identical before the window. After the reversal, position j of the window holds the character from the symmetric position. When all earlier pairs are equal, the first unequal pair is exactly the first differing position of the whole string, and its comparison alone decides the lexicographic order; if all pairs are equal, the window is a palindrome and the reversal is not strictly smaller. Enumerating all windows misses nothing and counts nothing twice.\n\n## Complexity\n\nO(nk) time; since k≤20, each window compares at most 10 pairs in practice. O(1) space besides the input string."
+}

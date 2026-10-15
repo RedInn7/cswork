@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-361",
+  "packageChecksum": "887617e8993fd9484ab6fbde0c0c2a688de0fb0792640c2ff7ed61485906dce3",
+  "sourceContentHash": "6963fb1ad0a1e204b08aa86ca48720b66b8b0978b687181ec10fcf563828fcd2",
+  "editorialSha256": "a8969703df5a6c2558fe8ffbe8db9d84872d66e34b4276565c779842d69fa9ff",
+  "hints": {
+    "zh": [
+      "分别数“末端是最大值”的子数组和“首端是最大值”的子数组，再减去两端都是最大值的那些（它们被数了两次）。",
+      "固定右端 i，左端可以一直延伸到左边第一个严格更大的元素之前；单调栈（弹出所有 ≤ 当前值的元素）直接给出这个距离。把数组反过来再做一遍，就得到首端是最大值的情况。",
+      "两端都是最大值的子数组：维护一个按值递减的“值, 出现次数”栈，遇到 v 先弹掉所有更小的组；若栈顶值等于 v，就把次数加一并累加新的次数（含单点），否则压入新组并加 1。答案 = 两次单调栈计数之和 − 这个重叠数，用 64 位。"
+    ],
+    "en": [
+      "Count subarrays whose last element is the maximum and those whose first element is the maximum, then subtract those where both ends are the maximum, since they were counted twice.",
+      "Fixing the right end i, the left end can extend until just before the first strictly greater element on the left; a monotonic stack that pops all elements ≤ the current value gives that distance directly. Run it again on the reversed array for the first-element case.",
+      "For subarrays with both ends maximal, keep a stack of (value, count) groups with decreasing values; on v, pop all smaller groups; if the top value equals v, increment its count and add the new count (including the single element), otherwise push a new group and add 1. The answer is the two stack counts minus this overlap, in 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse monotonic stacks to count, separately, the subarrays whose last element is the maximum and those whose first element is the maximum, popping equal values too so as to find the strictly greater boundary; then use a decreasing stack of value groups to subtract the subarrays where both ends are the maximum.\n\n## Proof of correctness\n\nExtending inward from a fixed end until the first strictly greater value gives exactly all subarrays in which that end is the maximum. The two counts need inclusion-exclusion: when a value v appears, pop the smaller groups; if the top group has the same value, its previous c occurrences have no greater value between them and the current position, contributing c+1 subarrays with both ends maximal (including the single element); if the top differs, only the single element counts. Once a smaller group lies behind the current greater value, it can never contribute across it again, so popping it is safe. Therefore the subtracted term handles all repeated endpoints exactly, instead of just subtracting n.\n\n## Complexity\n\nO(n) time and O(n) space; counts use 64 bits."
+}

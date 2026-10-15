@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-366",
+  "packageChecksum": "079eec1fbd4249cde48560a7d0c5613c9fe4a10a3e95f96e4b56a40fc0b57439",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    char previous = 0;\n    long long answer = 0;\n    // Only changes between consecutive fixed characters are unavoidable.\n    for (char c : s) {\n        if (c == '?') continue;\n        if (previous && previous != c) answer++;\n        previous = c;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "5662cc068c31f9d62b9add523982ec98ea90ba667668cecbf5eb8999d209a029"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        char previous = 0;\n        long answer = 0;\n        // Only changes between consecutive fixed characters are unavoidable.\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            if (c == '?') continue;\n            if (previous != 0 && previous != c) answer++;\n            previous = c;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "08c8626337c5acacf293b5652c0514ea29fef5cc5ee3ff017449fb24ba8bba2d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() string {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\ts := next()\n\tvar previous byte\n\tanswer := 0\n\t// Only changes between consecutive fixed characters are unavoidable.\n\tfor i := 0; i < len(s); i++ {\n\t\tc := s[i]\n\t\tif c == '?' {\n\t\t\tcontinue\n\t\t}\n\t\tif previous != 0 && previous != c {\n\t\t\tanswer++\n\t\t}\n\t\tprevious = c\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "f5345bb2a73167f0a8a5740913c670f51ee7be4d255b1b5bba603255a1bc57ca"
+    }
+  ]
+}

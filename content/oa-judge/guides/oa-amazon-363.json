@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-363",
+  "packageChecksum": "39daecf13f261bdf71540c33c6af0cb0bdf53faf99be8d5f0818d7270ee28a6e",
+  "sourceContentHash": "2c3df236860f5dcddb75f93bf3da179965831424daa0379a18647c68caa87c51",
+  "editorialSha256": "c98c38c50a8a8946435a07d163df6f36b3beffcb17a23810ad444099c3d470de",
+  "hints": {
+    "zh": [
+      "对每个位置，需要知道左边有多少个严格更小的数、右边有多少个严格更小的数，两者都至少为 k 才算。",
+      "从左往右扫描时，把已经扫过的值放进按值域建立的树状数组，查询“小于当前值”的前缀和；值很大，先做坐标压缩，相等的值排名相同，不会被算进去。",
+      "压缩得到排名 rank；正向扫描时先记 leftLess[i]=query(rank−1) 再插入；清空后反向扫描同样求 rightLess；统计两者都 ≥k 的位置数。"
+    ],
+    "en": [
+      "For every position you need the number of strictly smaller values on its left and on its right; it counts only when both are at least k.",
+      "Scanning left to right, put the values seen so far into a Fenwick tree indexed by value and query the prefix of values below the current one. Values are large, so compress coordinates first; equal values share a rank and are not counted.",
+      "Compute ranks; scan forward recording leftLess[i]=query(rank−1) before inserting; clear the tree and scan backward the same way for rightLess; count the positions where both are at least k."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter coordinate compression, scan from left to right and query a Fenwick tree for the frequencies of the values below the current one, which gives the number of strictly smaller elements on the left; then do the same query scanning from right to left for the right side. Count the position when both numbers are at least k. Equal values share the same rank and are not included in the queried prefix.\n\n## Proof of correctness\n\nCoordinate compression preserves the order of the values. When position i is processed, the Fenwick tree contains exactly the values of all positions on one side of it; querying rank[i]-1 only accumulates values strictly less than prices[i], so equal values are not counted. The forward scan therefore gives exactly the number of smaller elements to the left of each position, and the backward scan exactly the number to the right. By definition, both counts being at least k holds if and only if the position is a k-Spike, so adding up these indicators gives the answer.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

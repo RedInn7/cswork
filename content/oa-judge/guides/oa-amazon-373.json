@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-373",
+  "packageChecksum": "dd9b2876008b9be42cb4f6328ec1b0dbcbc34f669dce965b50dbb0985fa2e133",
+  "sourceContentHash": "e726afcbbf47b01b12fccf3d13cda1d9c599f510578e8f91b481af1ca1c2e00b",
+  "editorialSha256": "7407fb76091c781821130386c03fa113f4ff93e93a99ba57808ae5d598a0390c",
+  "hints": {
+    "zh": [
+      "删除只能针对两种不同类型，所以剩下的东西一定被出现最多的那一类拖住；同时每次删两个，剩余个数与 n 的奇偶性相同。",
+      "有两个下界：2f−n（f 为最高频次，其余 n−f 个最多抵消它 n−f 个）和 n mod 2；可以证明总能恰好达到两者中较大的那个。",
+      "用哈希表或排序统计各类型的次数得到 f，输出 max(2f−n, n%2)。"
+    ],
+    "en": [
+      "A deletion always takes two different types, so whatever remains is held up by the most frequent type; also each step removes two items, so the remainder has the parity of n.",
+      "There are two lower bounds: 2f−n (with f the top frequency, the other n−f items cancel at most n−f of it) and n mod 2; the larger one is always achievable.",
+      "Count each type with a hash map or by sorting to get f, and print max(2f−n, n%2)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet f be the highest frequency; the answer is max(2f−n, n%2).\n\n## Proof of correctness\n\nThe most frequent type can be cancelled by at most the other n−f items, so at least 2f−n remain; each step deletes 2, so the remainder must also have the same parity as n. If one type is more than half, cancelling it one by one with the other types reaches the majority bound. Otherwise, when n is even, sort the items grouped by type and pair each position of the first half with the corresponding position of the second half; since no type exceeds half, every pair has two different types. When n is odd, first set aside one item so that no type is more than half of the rest, then pair the same way. Hence exactly the larger of the two lower bounds is reached.\n\n## Complexity\n\nExpected O(n) time and O(number of distinct types) space."
+}

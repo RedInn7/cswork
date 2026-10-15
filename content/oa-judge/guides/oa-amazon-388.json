@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-388",
+  "packageChecksum": "59027c8d57a0e4bd4b3fcb60d9e371e4ff83eaf9fe2974fc11b8fbb33c558c50",
+  "sourceContentHash": "68ce390b7e83b530941b31556f15349a1850863eaa9ad2d779abcb369cd89a24",
+  "editorialSha256": "3b61837ed863c02a660db1511356a6f10bb64c7a755f2c43d3362e16fc9634df",
+  "hints": {
+    "zh": [
+      "把最终尺寸看成从小到大依次分配的整数“槽位”；某商品只能放进不小于它原尺寸的槽位，代价是（槽位−原尺寸）×单价。",
+      "同一个槽位有多个商品都能放时，应该让单价最高的先放：交换一对“便宜的先放、贵的后放”不会更差。",
+      "按原尺寸排序；槽位从最小尺寸开始，把原尺寸 ≤ 当前槽位的商品都加入按单价排序的最大堆，弹出单价最高者放入当前槽位并累加费用，槽位加一；堆为空时直接跳到下一件商品的原尺寸。答案用 64 位。"
+    ],
+    "en": [
+      "Think of the final sizes as integer slots handed out from small to large; an item can only take a slot at least its original size, costing (slot − original size) × unit cost.",
+      "When several items can take the same slot, the most expensive one should go first: swapping a cheap-first, expensive-later pair never makes things worse.",
+      "Sort by original size; starting from the smallest size, push every item whose size is at most the current slot into a max-heap by unit cost, pop the most expensive one, place it in the current slot, add its cost, and move to the next slot; when the heap is empty, jump to the next item's size. Use a 64-bit answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by original size and assign integer size slots in order. Add every item that can already take a slot to a heap ordered by unit cost in descending order, and assign the most expensive one; when the heap is empty, jump to the next original size.\n\n## Proof of correctness\n\nAny empty slot with a waiting item can let a later-placed item move forward without increasing the cost. For two items that can both use the current slot, if the more expensive one is placed after the cheaper one, swapping them decreases or keeps the cost, and both are already released, so the result is still valid. Hence placing the most expensive item in the current slot can always be extended to an optimal solution; induction over the slots gives the global optimum. Skipping while the heap is empty only skips positions where no item can be placed, so nothing is missed.\n\n## Complexity\n\nO(n log n) time and O(n) space; the answer can reach 199999000000000."
+}

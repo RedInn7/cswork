@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-365",
+  "packageChecksum": "be41e290f9bf6ba15a1d764f284f9c0273eb41ed717015fa94e139731ac682bd",
+  "sourceContentHash": "1dc424df2a1b7891d54e851584b2dd6d522d57dfc41215948bb8f011cdb5b069",
+  "editorialSha256": "bde9f55fa5cf5a73440ecd1f575954c2bcf9a04350ce461e6e4dd6c7133491b9",
+  "hints": {
+    "zh": [
+      "子数组有 n(n+1)/2 个，不可能全部列出来；但“不同值个数 ≤x 的子数组有多少个”很好数，而且随 x 单调不减。",
+      "下中位数就是第 (T+1)/2 小的值（T=n(n+1)/2），所以可以二分答案 x，找第一个使上述计数达到目标序号的 x。",
+      "计数用滑动窗口：右端逐个加入，维护每个值的出现次数和不同值个数，不同值超过 x 就右移左端，每个右端贡献当前窗口长度；二分区间为 [1, n]，计数用 64 位。"
+    ],
+    "en": [
+      "There are n(n+1)/2 subarrays, far too many to list, but counting the subarrays with at most x distinct values is easy and monotone in x.",
+      "The lower median is the ((T+1)/2)-th smallest value with T=n(n+1)/2, so binary search the answer x for the first value whose count reaches that rank.",
+      "Count with a sliding window: add right ends one by one while tracking value counts and the number of distinct values, move the left end while there are more than x distinct values, and let each right end contribute the window length. Search x in [1, n] and use 64-bit counts."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe target rank is (T+1)//2 with T=n(n+1)/2. Binary search the answer x: a sliding window counts the subarrays with at most x distinct values, and when the count reaches the target, shrink the upper bound.\n\n## Proof of correctness\n\nFor a fixed right end, after moving the left end until the number of distinct values is ≤x, every start further right is valid and every start further left is not, so the right end contributes exactly the window length. Summing gives the number of subarrays with at most x distinct values, which is monotone in x; the first x whose count reaches the lower-median rank is exactly the required order statistic.\n\n## Complexity\n\nO(n log n) time and O(n) space; the number of subarrays uses 64 bits."
+}

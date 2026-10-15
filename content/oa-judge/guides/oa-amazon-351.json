@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-351",
+  "packageChecksum": "063ed91c3150c23b2198f28cd7d2d8ef5f2d23f25d07df4fcd985c72ed17f6cf",
+  "sourceContentHash": "005975c9a0e58982837455a69edf60cd83a947006ae3d8d0c0ba5c681c264dc2",
+  "editorialSha256": "e2cb8d967a48223adf21884cf89da9f2e1e638f0d124f862e89cb8b8a1d6cdc1",
+  "hints": {
+    "zh": [
+      "只有出现次数最多的字母会逼出空闲时隙：它的任意两次之间至少要隔 cooldown 个其他时隙。",
+      "设最高频数为 f、达到 f 的字母有 c 种：把它们排成 f−1 个长度为 cooldown+1 的块，再加最后一轮的 c 个，得到一个下界；任务总数是另一个下界，答案是两者中的较大值。",
+      "统计 26 个字母的频数，求出 f 和 c，输出 max(任务数, (f−1)·(cooldown+1)+c)。"
+    ],
+    "en": [
+      "Only the most frequent letter forces idle slots: any two runs of it need at least cooldown other slots between them.",
+      "Let f be the highest frequency and c the number of letters reaching it. Arranging them into f−1 blocks of length cooldown+1 plus a final round of c tasks gives one lower bound; the task count is another, and the answer is the larger of the two.",
+      "Count the 26 letters, find f and c, and print max(number of tasks, (f−1)·(cooldown+1)+c)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet f be the highest frequency and c the number of letters that reach f. The answer is max(total number of tasks, (f−1)(cooldown+1)+c).\n\n## Proof of correctness\n\nThe total number of tasks is a necessary lower bound. Take the c task types with frequency f: consecutive rounds of the same letter must be cooldown+1 apart, and the last round needs at least c positions, which gives the second lower bound. Using the most frequent tasks, build f−1 blocks of length at least cooldown+1 followed by the final c tasks, and spread the other types evenly into the free slots of the earlier blocks; since their frequencies do not exceed f, no block contains the same letter twice. When the free slots run out, enlarge the blocks instead of idling, so all tasks can be laid out back to back; when there are enough free slots, fill the rest with idle slots. Therefore the total length is exactly the maximum of the two lower bounds.\n\n## Complexity\n\nO(n+26) time and O(26) space."
+}

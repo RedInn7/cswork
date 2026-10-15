@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-370",
+  "packageChecksum": "5c90275d0c69b8141c3af378d72f5b62b46173ab3e3efea0e175ccb33614f3b5",
+  "sourceContentHash": "5bded38135e77b888500f69b270220136db4a88b8c14471ff9277bc6d44b1bab",
+  "editorialSha256": "6bdc01cb304178e6255a6fdd2c7fd85ff360c247e26e86ec501520cb4a2397d1",
+  "hints": {
+    "zh": [
+      "n 最多 1000，子数组大约 50 万个，可以全部枚举。",
+      "平均值恰好为整数 x，等价于“区间和 = 长度 × x”，用整除判断即可，避免浮点误差。",
+      "外层枚举左端，内层右移右端并累加区间和；若 和 % 长度 == 0，就把 和/长度 对应的计数加一；最后依次输出 x=1..n 的计数。"
+    ],
+    "en": [
+      "n is at most 1000, so there are only about half a million subarrays, few enough to enumerate.",
+      "The mean equals an integer x exactly when sum = length × x, so a divisibility check avoids floating-point error.",
+      "Loop over the left end and extend the right end while accumulating the sum; whenever sum % length == 0, increment the count for sum/length. Finally print the counts for x=1..n."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the left and right ends, accumulating the range sum incrementally; when the sum is divisible by the length, add 1 to the count of the corresponding mean.\n\n## Proof of correctness\n\nEnumerating all right ends for each left end produces every non-empty contiguous range exactly once, and the maintained sum is exact because it is accumulated term by term. The mean is an integer x if and only if sum = length × x, and the divisibility check has no floating-point error; since the permutation values lie in 1..n, the mean lies in that range too.\n\n## Complexity\n\nO(n²) time and O(n) space."
+}

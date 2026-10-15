@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-355",
+  "packageChecksum": "c1bebe3800e13c97766dbe21e14e4422e03a957a7dc053643b87d38fe7359c1f",
+  "sourceContentHash": "49a88a44c271bb0fea7ba49930e9f2adf8a37ede6a7b7e533ac9f5a2e1181c2f",
+  "editorialSha256": "0a3172384a6a58c6097e71423182d48049963a137ca0dce20ddd9b0e7d6c5179",
+  "hints": {
+    "zh": [
+      "选定容量为 w 的仓库后，费用可以直接写出来：把它补到 a 需要 max(0, a−w)，其余仓库总和 S−w 补到 b 需要 max(0, b−(S−w))；每次请求互不影响。",
+      "把费用看成 w 的函数：w<a 时随 w 增大不增，w≥a 时随 w 增大不减。所以只需检查小于 a 的最大容量和不小于 a 的最小容量。",
+      "容量排序并求总和 S；每个请求二分出第一个容量 ≥a 的位置 p，分别对 p−1 和 p（存在时）计算费用取最小。b 可达 10^15，全程用 64 位整数。"
+    ],
+    "en": [
+      "Once a warehouse of capacity w is chosen, the cost is explicit: raising it to a costs max(0, a−w), and raising the others' total S−w to b costs max(0, b−(S−w)). Requests are independent.",
+      "As a function of w, the cost does not increase while w<a and does not decrease once w≥a. So you only need the largest capacity below a and the smallest capacity at least a.",
+      "Sort the capacities and compute S. For each request, binary search the first position p with capacity ≥a, evaluate the cost at p−1 and p (when they exist), and take the minimum. b reaches 10^15, so use 64-bit integers throughout."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the capacities and compute their total S. When warehouse w is chosen, the cost is max(0,a−w)+max(0,b−(S−w)). Binary search for the first w≥a and compare only it and the capacity just before it.\n\n## Proof of correctness\n\nWhen w<a, the first term has slope −1 and the second slope 0 or 1, so the total cost does not increase with w; when w≥a, the first term is 0 and the second does not decrease with w. Therefore, below a only the largest capacity matters, and above a only the smallest. The two neighbors found by binary search cover the optimum of both regions, and the smaller cost is the global optimum; queries never modify S or the capacities.\n\n## Complexity\n\nO(n log n+q log n) time and O(n+q) space."
+}

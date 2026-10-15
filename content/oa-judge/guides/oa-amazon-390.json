@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-390",
+  "packageChecksum": "8ee742004ebd747ee0c59253b55b3d483e10a565bac63786eec7efd89042f3cc",
+  "sourceContentHash": "5fe700e18d195e893bf8e5b948a18fef6cbe6817f64bd935c189d1cefb7d0c15",
+  "editorialSha256": "922302255ceb098761ea65f6b4b66ad37f20e5115d14c254f78248cf51698d75",
+  "hints": {
+    "zh": [
+      "先把每个因子解析成“指数 → 系数”的映射：注意 ^ 后面的正负号属于指数，不是下一项的符号；省略的系数为 1，省略的指数为 1，没有变量的是常数项（指数 0）。",
+      "乘积中指数 e 的系数，等于所有“指数之和为 e”的两项系数乘积之和，所以两两相乘、指数相加、系数累加即可；系数可达 4×10^22，需要 128 位或大整数。",
+      "合并后按指数降序输出并跳过系数为 0 的项：首项正号省略，之后用 + 或 -；指数为 0 只写系数；系数绝对值为 1 且指数非 0 时省略 1；指数为 1 时省略 ^1；全部抵消时输出 0；变量字母取输入里的第一个字母。"
+    ],
+    "en": [
+      "First parse each factor into an exponent-to-coefficient map. The sign after ^ belongs to the exponent, not to the next term; an omitted coefficient is 1, an omitted exponent is 1, and a term without the variable is a constant (exponent 0).",
+      "In the product, the coefficient of exponent e is the sum of products of coefficient pairs whose exponents add up to e, so multiply all pairs, add exponents and accumulate coefficients; coefficients reach 4×10^22, so use 128-bit or big integers.",
+      "Print terms by descending exponent and skip zero coefficients: no sign before a positive first term, then + or -; exponent 0 prints only the coefficient; omit a coefficient of absolute value 1 when the exponent is non-zero; omit ^1; print 0 if everything cancels. The variable letter is the first letter in the input."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhile scanning terms, keep the sign inside an exponent separate from the sign of the term, and combine each factor by exponent; multiply the terms pairwise, multiplying coefficients and adding exponents, and accumulate into the corresponding exponent. Finally format in descending order and drop zero terms.\n\n## Proof of correctness\n\nEach original monomial is parsed uniquely into a coefficient and an exponent; the sign of a negative exponent is consumed after ^ and does not become the sign of the next term. By the distributive law, the coefficient of exponent e in the product is exactly the sum of the products of coefficients whose exponents add up to e, and accumulating over all pairs covers exactly those terms. Removing zero coefficients, the prescribed descending order and the omitted signs only change the representation, not the polynomial, so the output is the unique canonical expansion.\n\n## Complexity\n\nWith T and U original terms, the number of distinct output powers is K≤TU≤40000; time O(TU+K log K) and space O(T+U+K). Coefficients use arbitrary-precision integers, with absolute values up to 4×10^22, and exponents can reach ±2×10^9."
+}

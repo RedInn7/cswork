@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-380",
+  "packageChecksum": "f084c8bb1cccb05ea39cc498400184d4583f56947e7f16f8320682049e9301aa",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, m;\n    cin >> n >> m;\n    unordered_set<long long> positions;\n    positions.reserve(2 * (size_t)n + 1);\n    for (int i = 0; i < n; i++) { long long p; cin >> p; positions.insert(p); }\n    for (int i = 0; i < m; i++) {\n        long long u, v;\n        cin >> u >> v;\n        positions.erase(u);\n        positions.insert(v);\n    }\n    vector<long long> out(positions.begin(), positions.end());\n    sort(out.begin(), out.end());\n    string s = to_string(out.size()) + \"\\n\";\n    for (size_t i = 0; i < out.size(); i++) { if (i) s += ' '; s += to_string(out[i]); }\n    cout << s << \"\\n\";\n}\n",
+      "sha256": "30cd670bee7d8da3e3d7f9421dfafbbdb21037d946c4aa1768a035445c97265a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), m = nextInt();\n        HashSet<Long> positions = new HashSet<>(2 * n + 1);\n        for (int i = 0; i < n; i++) positions.add(nextLong());\n        for (int i = 0; i < m; i++) {\n            long u = nextLong(), v = nextLong();\n            positions.remove(u);\n            positions.add(v);\n        }\n        long[] out = new long[positions.size()];\n        int k = 0;\n        for (long p : positions) out[k++] = p;\n        Arrays.sort(out);\n        StringBuilder sb = new StringBuilder();\n        sb.append(out.length).append('\\n');\n        for (int i = 0; i < out.length; i++) {\n            if (i > 0) sb.append(' ');\n            sb.append(out[i]);\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "17f65c0ecf3a78622667e30386937c75f0c628bce1e02d8e1427217a4accbd4d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn, m := int(nextInt()), int(nextInt())\n\tpositions := make(map[int64]struct{}, n)\n\tfor i := 0; i < n; i++ {\n\t\tpositions[nextInt()] = struct{}{}\n\t}\n\tfor i := 0; i < m; i++ {\n\t\tu, v := nextInt(), nextInt()\n\t\tdelete(positions, u)\n\t\tpositions[v] = struct{}{}\n\t}\n\tout := make([]int64, 0, len(positions))\n\tfor p := range positions {\n\t\tout = append(out, p)\n\t}\n\tslices.Sort(out)\n\tbuf := strconv.AppendInt(nil, int64(len(out)), 10)\n\tbuf = append(buf, '\\n')\n\tfor i, p := range out {\n\t\tif i > 0 {\n\t\t\tbuf = append(buf, ' ')\n\t\t}\n\t\tbuf = strconv.AppendInt(buf, p, 10)\n\t}\n\tbuf = append(buf, '\\n')\n\tos.Stdout.Write(buf)\n}\n",
+      "sha256": "11e3a328803508b9ea4fa4f03282e20d30f7ed335247f1e95e598df861a7a759"
+    }
+  ]
+}

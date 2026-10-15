@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-372",
+  "packageChecksum": "adb868d67792858cde06e69d90fe51e4c9803c6e460a5412f788890529717e71",
+  "sourceContentHash": "7500f36e3904111b6ebc6f203348da4df64e25bda9f163b90e7185427b27dfe9",
+  "editorialSha256": "d64b386b98a8a3965e0c8aa30d7b9eea53026357af50709125dbdf897333ee98",
+  "hints": {
+    "zh": [
+      "每一类的价格严格递增，所以在任何一类里都应该从第一件开始连续购买。",
+      "问题等价于把 n 个递增序列合并后取前 m 小的和；每一类只需要关心它“下一件”的价格。",
+      "用最小堆保存每类的（下一件价格, 公差）；重复 m 次：弹出最小价格加到答案，再把价格加上公差放回堆。价格和总额都要用 64 位。"
+    ],
+    "en": [
+      "Prices within a category strictly increase, so within any category you should buy a prefix starting from the first item.",
+      "The task is the sum of the m smallest values of n merged increasing sequences; each category only matters through the price of its next item.",
+      "Keep a min-heap of (next price, step) per category; m times, pop the minimum, add its price to the answer, and push it back with the step added. Prices and the total need 64 bits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA min-heap keeps the cheapest unbought item of each category; each time, pop the minimum price, add it, and push the next price of the same category; do this m times.\n\n## Proof of correctness\n\nA positive b guarantees that the prices of each category strictly increase, so any plan that buys a later item while skipping a cheaper earlier one can be improved. The minimum over the category fronts is the minimum over all unbought items, so repeatedly taking it yields exactly the m smallest items of the merged increasing sequences, and no other m items can have a smaller sum.\n\n## Complexity\n\nO(n+m log n) time and O(n) space; costs use 64 bits."
+}

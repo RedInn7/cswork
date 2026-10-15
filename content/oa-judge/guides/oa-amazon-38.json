@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-38",
+  "packageChecksum": "4eb27311e050bf12aac3a148d50856714f5a75ad6c2a044993bee3e52a4d9f1a",
+  "sourceContentHash": "4cd956a84dd510453b5874263bb98527b3478eda91b561ea6bbdb960e2fa5196",
+  "editorialSha256": "d3df30e200667025fc3aa278f0f2932680e93e8cd721d81bae5dd7cc3ec405de",
+  "hints": {
+    "zh": [
+      "题目要求删掉 password 中所有出现在 reference 里的字符，这里没有选择的余地：每个匹配位置都必须删。",
+      "reference 只用来确定哪些字母要删，它里面重复出现的字母不会重复收费；password 里同一个字母出现几次就收几次费。",
+      "用 26 个布尔值标记 reference 中出现过的字母，扫描 password，对被标记的字母累加 cost[字母]，输出总和。"
+    ],
+    "en": [
+      "Every character of password that appears in reference must be deleted; there is no choice involved, every matching position goes.",
+      "reference only decides which letters are deleted, so letters repeated in it are not charged twice, while every occurrence in password is charged.",
+      "Mark the letters of reference in 26 booleans, scan password, add cost[letter] for every marked letter, and print the total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPut the letters that appear in reference into a set. Scan password and, for every character that belongs to the set, add the deletion cost of that letter. When a character appears several times in password, every occurrence is charged; a character repeated in reference is not charged again.\n\n## Correctness\n\nThe problem requires removing every character of password that appears in reference, so every matching position must be deleted; the cost cannot be lowered by keeping some of them or by handling only one kind of character. Non-matching positions are not deletion targets, and deleting them would only add positive cost. Therefore the only necessary and optimal deletion set is exactly the set of all matching positions, and adding up their costs position by position gives the minimum total cost.\n\n## Complexity\n\nO(|password|+|reference|) time and O(Σ) space, where Σ=26.\n\n## Reference implementation\n\n```python\nimport sys\n\ndef solve(raw):\n    lines = raw.splitlines()\n    if len(lines) != 3:\n        raise ValueError(\"expected password, reference, and 26 costs\")\n    password, reference = lines[0], lines[1]\n    costs = list(map(int, lines[2].split()))\n    if not 1 <= len(password) <= 100_000 or not 1 <= len(reference) <= 100_000:\n        raise ValueError(\"string length must be in [1, 100000]\")\n    if len(costs) != 26 or any(not 1 <= cost <= 100 for cost in costs):\n        raise ValueError(\"expected 26 costs in [1, 100]\")\n    if any(not ('a' <= char <= 'z') for char in password + reference):\n        raise ValueError(\"strings must contain lowercase English letters\")\n    removable = set(reference)\n    return str(sum(costs[ord(char) - ord('a')] for char in password if char in removable))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n```"
+}

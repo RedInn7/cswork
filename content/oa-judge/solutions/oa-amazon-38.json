@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-38",
+  "packageChecksum": "4eb27311e050bf12aac3a148d50856714f5a75ad6c2a044993bee3e52a4d9f1a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string password, reference;\n    cin >> password >> reference;\n    long long cost[26];\n    for (auto &c : cost) cin >> c;\n    bool removable[26] = {false};\n    for (char c : reference) removable[c - 'a'] = true;\n    long long answer = 0;\n    // Every occurrence of a reference letter must be deleted and pays its letter's cost.\n    for (char c : password) if (removable[c - 'a']) answer += cost[c - 'a'];\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "92b11e60098d7a572eaad0646aab204c4c9cb9a8567a5125ee12d3eebcb25f44"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String password = next(), reference = next();\n        long[] cost = new long[26];\n        for (int i = 0; i < 26; i++) cost[i] = nextLong();\n        boolean[] removable = new boolean[26];\n        for (int i = 0; i < reference.length(); i++) removable[reference.charAt(i) - 'a'] = true;\n        long answer = 0;\n        // Every occurrence of a reference letter must be deleted and pays its letter's cost.\n        for (int i = 0; i < password.length(); i++) {\n            int c = password.charAt(i) - 'a';\n            if (removable[c]) answer += cost[c];\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "717542787241da49ff3fbee8a8eab8be47f8a39222d622a3cf5a0dd846be8e5f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc next() string {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tpassword, reference := next(), next()\n\tvar cost [26]int64\n\tfor i := range cost {\n\t\tcost[i] = nextInt()\n\t}\n\tvar removable [26]bool\n\tfor i := 0; i < len(reference); i++ {\n\t\tremovable[reference[i]-'a'] = true\n\t}\n\tanswer := int64(0)\n\t// Every occurrence of a reference letter must be deleted and pays its letter's cost.\n\tfor i := 0; i < len(password); i++ {\n\t\tif c := password[i] - 'a'; removable[c] {\n\t\t\tanswer += cost[c]\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "d9dc56411c0ac5e955191cc55ee8b8b26b52426ae3ee1636ffdb3e9bc90e3001"
+    }
+  ]
+}

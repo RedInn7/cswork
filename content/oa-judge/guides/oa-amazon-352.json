@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-352",
+  "packageChecksum": "8eaa65ecd07079cb4fffe2de2fcf66861e467371c70a85c83756c86d8bb2606c",
+  "sourceContentHash": "bb25cac8de8d9d619621fbd9609f0bc7bc956aaeeca4053cb76dad601baa31db",
+  "editorialSha256": "81a94041c915b10ef343c26bbe28618f5fe0ef26db733932ce9c4a15a21d4d4a",
+  "hints": {
+    "zh": [
+      "能否选某笔交易，只取决于当前已选序列的末尾类型以及它在末尾连续了几次；负收益的交易也可能值得选，用来隔开同类的连续段。",
+      "定义 dp[c][r]：在已处理的前缀中，选中序列以类型 c 连续 r 次结尾时的最大收益；k 可以先截到 min(k, n)。",
+      "处理类型 c、收益 v 的交易：r 从大到小用 dp[c][r−1]+v 更新 dp[c][r]，再用“其他类型的最佳值与 0 中的较大者”+v 更新 dp[c][1]；维护每种类型的最佳值，最终答案是 0 与所有状态的最大值。"
+    ],
+    "en": [
+      "Whether a transaction can be taken depends only on the last type of the current selection and how many times it repeats at the end; a negative-profit transaction can still be worth taking to break up a streak.",
+      "Define dp[c][r] as the best profit of a selection from the processed prefix that ends with type c repeated exactly r times; k can be capped at min(k, n).",
+      "For a transaction of type c with profit v: for r from high to low, update dp[c][r] with dp[c][r−1]+v, then update dp[c][1] with max(0, best of the other types)+v. Keep the best value per type; the answer is the maximum of 0 and all states."
+    ]
+  },
+  "explanationEn": "## Approach\n\ndp[c][r] stores the best profit among selections of the processed prefix that end with type c repeated r times in a row. For a transaction of type c with profit v, keep the skip states; the best profit ending in another type, or the empty selection, extends to r=1, and the same type with r−1 extends to r. Update r in decreasing order so that the current transaction cannot be reused in the same round.\n\n## Proof of correctness\n\nEvery valid non-empty selection has a unique last type and a unique length of its final streak. When the current transaction is chosen, the previously chosen one either does not exist or has a different type, in which case the new streak length is 1, or has the same type with a streak one shorter. These mutually exclusive cases are exactly all transitions, and skipping keeps the old state. Reading the old best values of the other types and updating the same type in decreasing order guarantees that each original transaction is used at most once. By induction over prefixes, all valid subsequences are covered; taking the maximum of 0 and all states gives the optimum, and negative-profit separators are kept as well.\n\n## Complexity\n\nO(n·min(n,k)+26n) time and O(26·min(n,k)) space."
+}

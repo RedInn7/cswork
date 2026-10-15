@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-371",
+  "packageChecksum": "bbb2fe1672b14ec5cb177f76e7578c8d2474cf3b83a944db47513edd5a70b4d7",
+  "sourceContentHash": "9c70d50442ed42f8536751d6ae1d3999bd5c565e159a1d6aaed28690917cc4ff",
+  "editorialSha256": "2bd78c37d4b8ecc2c0da796ea37b13b0106432aa6cabcce072a5f409b2256093",
+  "hints": {
+    "zh": [
+      "总代价只取决于每个字母最终出现了几次（出现 f 次贡献 f(f−1)/2），与位置无关；所以先决定每个字母补几个，再决定放在哪里。",
+      "给某个字母再补一个的边际代价等于它当前的出现次数，所以每个问号都应补给当前次数最少的字母，次数相同时选字母更小的。",
+      "统计已知字母的次数，对每个问号从 26 个字母中取（次数, 字母）最小者并把它的次数加一；最后把补上的字母按字母序升序，依次填进从左到右的问号。"
+    ],
+    "en": [
+      "The total cost depends only on how many times each letter appears in the end (f occurrences cost f(f−1)/2), not on positions; so first decide how many of each letter to add, then where to put them.",
+      "Adding one more copy of a letter costs its current count, so each ? should go to the letter with the smallest current count, the smaller letter on ties.",
+      "Count the known letters; for each ?, pick the minimum (count, letter) among the 26 letters and increment its count. Then write the added letters in ascending alphabetical order into the ? positions from left to right."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst count all known characters. Use a 26-entry min-heap to repeatedly choose the letter with the smallest current frequency, breaking ties by the smaller letter; record only how many copies of each letter are added, and finally fill the ? positions with the added letters in ascending order.\n\n## Proof of correctness\n\nA letter with frequency f has total cost C(f,2); the next copy costs f, and each later one costs one more. Merging the 26 increasing marginal-cost sequences and taking the q smallest values achieves the minimum total cost; breaking marginal ties with the smaller letter makes the added multiset lexicographically smallest. The cost does not depend on positions, so this multiset is placed in ascending order into the ? positions from left to right: swapping any inversion makes the result smaller without changing the cost, so the secondary objective is optimal too.\n\n## Complexity\n\nO(n log 26) time; O(n) space including the result, and O(26) for the frequencies and the heap."
+}

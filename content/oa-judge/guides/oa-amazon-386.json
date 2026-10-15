@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-386",
+  "packageChecksum": "bc4132992f899f70c75c0fe41cbc8000570199c2c921583dfec3557fe03f0386",
+  "sourceContentHash": "61d3d7fecf56a9158a0e2b7694ef7303b649ab1de04c5952aec5ef1e41961a72",
+  "editorialSha256": "6faed22117029ed73318ea3de8f277875038e7268ab26164f89cde667db6cf00",
+  "hints": {
+    "zh": [
+      "删掉中间一个元素会把它左右两个合并，而这两个在原数组中下标相差 2；观察合并后的值由哪些原元素组成。",
+      "每个最终值都只包含原下标奇偶性相同的元素之和；反过来，同一奇偶性下任意非空子集都能通过合适的删除顺序合并出来。",
+      "分别累加偶数下标和奇数下标上的正数，取较大者；若两者都为 0（没有正数），答案就是原数组的最大值。和可达 5×10^13，用 64 位。"
+    ],
+    "en": [
+      "Deleting a middle element merges its two neighbors, which are 2 apart in the original array; look at which original elements end up in a merged value.",
+      "Every final value is a sum of original elements with the same index parity, and conversely any non-empty subset of one parity can be merged together with a suitable deletion order.",
+      "Sum the positive values at even indices and at odd indices separately and take the larger; if both are 0 (no positive values), the answer is the maximum element. Sums reach 5×10^13, so use 64 bits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSum the positive numbers at original odd indices and at original even indices separately and take the larger; if there are no positive numbers, take the maximum of the original array.\n\n## Proof of correctness\n\nA merge always skips over one element, so every surviving merged value consists only of original elements with the same index parity, which gives the larger of the two parity sums of positive numbers as an upper bound. Any non-empty chosen subset of one parity can be realized: first cut off the ends outside the chosen range; between two adjacent chosen items, if there are still unchosen items of the same parity, delete those first, which merges their neighbors of the other parity; in the end only one item of the other parity separates them, and deleting it merges the two chosen values, so by induction every subset can be realized. Hence when positive numbers exist, choosing all positive numbers of one parity reaches the bound; when there are none, no non-empty sum exceeds the largest single item, which can be kept by cutting off the ends.\n\n## Complexity\n\nO(n) time and O(1) space besides the input; the answer is at most 5×10^13."
+}

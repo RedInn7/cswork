@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-375",
+  "packageChecksum": "6d75cb582eb11abfc215c4195d77f65cf47686b009a63f3f14e27de8cceba240",
+  "sourceContentHash": "8fff03b56f0d08f5580d60e38e5c6c31ef08605d7a440a68b2473b340582f4be",
+  "editorialSha256": "bcf49e6ad3602f454fd0d51935af6f31a256d517d81c56ae66a719fedf3521c9",
+  "hints": {
+    "zh": [
+      "删除不会改变剩余元素的相对顺序，所以当前队列里某个值最前面的两个，就是原下标最小的两个；整个过程都可以用原下标比较先后。",
+      "按值分组：每个值维护一个原下标的最小堆；再用一个最大堆存“可能出现至少两次的正值”，取出时若该组已不足两个就跳过（懒删除）。",
+      "每轮取最大的重复值 p，弹出其组中最小的两个下标：前者标记删除，后者的值改为 p/2 并放入值 p/2 的组；若 p 的组仍有至少两个就把 p 放回，若 p/2>0 且其组至少两个就压入 p/2。结束后按原下标输出存活元素的个数和值。"
+    ],
+    "en": [
+      "Deletions never change the relative order of the remaining items, so the first two items of a value in the current queue are the two with the smallest original indices; original indices can be used for ordering throughout.",
+      "Group by value: each value keeps a min-heap of original indices, and a max-heap holds positive values that may occur at least twice; when popped, skip a value whose group has fewer than two items (lazy deletion).",
+      "Each round, take the largest duplicated value p and pop the two smallest indices of its group: delete the first, set the second to p/2 and push it into the group of p/2. Push p back if its group still has at least two items, and push p/2 if it is positive and its group has at least two. Finally print the count and the surviving values in original index order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each value, keep a min-heap of original indices; a max-heap schedules the duplicated positive values. In each round, take the two smallest indices, mark the first one as deleted, push the second one into the group of the halved value, and update the duplicate candidates.\n\n## Proof of correctness\n\nDeletions do not change the relative order of the surviving items, so comparing original indices agrees exactly with the order in the current queue. Each value's heap always holds all surviving items with that value, so taking its two smallest indices follows the rule exactly; the max candidate heap covers all duplicated positive values, and lazily discarding stale records with fewer than two items does not change the choice of the largest valid value. Each step updates exactly according to the original rule, so by induction the whole execution, and the final queue filtered by original index, agree with the process.\n\n## Complexity\n\nAt most n−1 successful operations; O(n log n) time and O(n) space."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-373",
+  "packageChecksum": "dd9b2876008b9be42cb4f6328ec1b0dbcbc34f669dce965b50dbb0985fa2e133",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    sort(a.begin(), a.end());\n    long long largest = 0;\n    for (long long i = 0, j = 0; i < n; i = j) {\n        while (j < n && a[j] == a[i]) j++;\n        largest = max(largest, j - i);\n    }\n    // The dominant kind can be cancelled at most n - f times; otherwise only parity remains.\n    cout << max(2 * largest - n, n % 2) << \"\\n\";\n}\n",
+      "sha256": "57f54313975c4f27889cb0bd0b28441194d3c1a0ab43980c8bb3eef9e62fbdeb"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        long largest = 0;\n        for (int i = 0, j = 0; i < n; i = j) {\n            while (j < n && a[j] == a[i]) j++;\n            largest = Math.max(largest, j - i);\n        }\n        // The dominant kind can be cancelled at most n - f times; otherwise only parity remains.\n        System.out.println(Math.max(2 * largest - n, n % 2));\n    }\n}\n",
+      "sha256": "a59f66ca031370464bc825de0ec3588a9a2fe89564d90f4a20776935458f42ae"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"sort\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tsort.Slice(a, func(i, j int) bool { return a[i] < a[j] })\n\tlargest := 0\n\tfor i, j := 0, 0; i < n; i = j {\n\t\tfor j < n && a[j] == a[i] {\n\t\t\tj++\n\t\t}\n\t\tlargest = max(largest, j-i)\n\t}\n\t// The dominant kind can be cancelled at most n - f times; otherwise only parity remains.\n\tfmt.Println(max(2*largest-n, n%2))\n}\n",
+      "sha256": "a6214c901505bc56226b632c2af8350b0bac5e3213b0f458534d820821ce188d"
+    }
+  ]
+}

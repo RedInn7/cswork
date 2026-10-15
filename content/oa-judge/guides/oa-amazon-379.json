@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-379",
+  "packageChecksum": "f67c1122916c1049306b580fd8564b2b62162537e774d0f2bd3d3d385d19eb3c",
+  "sourceContentHash": "51dc8279564eadc4650d46f3ae159075b85d480d9ef47daa89e8c80ab5b3a20b",
+  "editorialSha256": "91bbf2b232380eac1a71d2fe42fe38487d643dcae99276b72df1fa50e281e178",
+  "hints": {
+    "zh": [
+      "装货不会消耗卡车，每件货物的查询彼此独立：只需找到容量严格大于重量的最小容量，再在这个容量的卡车里取最小下标。",
+      "把卡车按容量排序，每个容量只保留最小的原下标，之后每次查询就是一次二分。",
+      "把（容量, 下标）排序后，二分出第一个容量大于重量的位置：同容量中排在最前的就是最小下标；找不到时输出 −1。"
+    ],
+    "en": [
+      "Loading does not use up a truck and packages are independent: find the smallest capacity strictly greater than the weight, then the smallest index among trucks with that capacity.",
+      "Sort trucks by capacity and keep only the smallest original index for each capacity; every query is then one binary search.",
+      "After sorting (capacity, index) pairs, binary search the first entry whose capacity exceeds the weight; the first entry of that capacity has the smallest index. Print −1 when there is none."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by capacity, keep the smallest index for each capacity, and binary search for the first capacity strictly greater than the weight.\n\n## Proof of correctness\n\nBinary search skips every capacity that is not large enough, so the first remaining capacity is exactly the minimum usable capacity; the stored smallest index resolves ties within that capacity and nothing else. Independent queries do not modify the structure, which matches the rule that trucks can be reused.\n\n## Complexity\n\nO(n log n+m log n) time and O(n+m) space."
+}

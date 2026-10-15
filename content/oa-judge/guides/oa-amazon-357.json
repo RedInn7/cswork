@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-357",
+  "packageChecksum": "d9db531cf82382f967efd23a1fe876a24332274bdedbc4529d844101430d81fa",
+  "sourceContentHash": "e52b7ddd454f2b03c97d7d355d793b41e2f25bb2020094861ed861d01bad7432",
+  "editorialSha256": "60805437c0ad252241851109b609391923695556419e2fba432f889d76c30e7b",
+  "hints": {
+    "zh": [
+      "先固定运行台数 r（等待台数 w=n−r）：阈值 ≤r 的机器人才能运行，阈值 >w 的才能等待，于是每台机器人要么被强制在某个状态，要么两种状态都可以。",
+      "用阈值频数前缀 F(t)。r≤w 时，中间的阈值哪种状态都不合法，只有 F(r)=F(w)=r 时贡献 1；r>w 时，阈值 ≤w 的必须运行、>r 的必须等待，其余 M=F(r)−F(w) 台自由，恰好再选 K=r−F(w) 台运行，贡献 C(M,K)。",
+      "r 从 n/2+1 增到 n 时 M、K 都不减，用 C(M,K)=C(M−1,K)·M/(M−K) 和 C(M,K)=C(M,K−1)·(M−K+1)/K 逐步更新；K 可能一开始为负或超过 M，此时值为 0，等 K 回到 0 或 M 时重置为 1。结果是不取模的大整数，C++ 需要自己实现“乘小数、精确除以小数、加法”的大数。"
+    ],
+    "en": [
+      "Fix the number of running robots r (so w=n−r wait). Only robots with threshold ≤r may run and only those with threshold >w may wait, so each robot is either forced into one state or free.",
+      "Use a prefix count F(t) of thresholds. If r≤w, middle thresholds fit neither state, so r contributes 1 only when F(r)=F(w)=r. If r>w, thresholds ≤w must run and thresholds >r must wait; the other M=F(r)−F(w) robots are free and exactly K=r−F(w) of them must run, contributing C(M,K).",
+      "As r grows from n/2+1 to n, M and K never decrease, so update with C(M,K)=C(M−1,K)·M/(M−K) and C(M,K)=C(M,K−1)·(M−K+1)/K. K may start negative or above M, where the value is 0, and it resets to 1 when K reaches 0 or M. The result is an exact big integer with no modulus; in C++ you need your own big number with small multiplication, exact small division and addition."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA frequency prefix F(t) counts the thresholds ≤t. Fix r. When r≤n−r, check the forbidden middle range and the forced counts; otherwise let M=F(r)−F(n−r) and K=r−F(n−r), which contributes C(M,K). As r increases, neither M nor K decreases, so the binomial coefficient is updated in batches with the neighboring-ratio recurrences instead of recomputing comb for every r.\n\n## Proof of correctness\n\nLet w=n−r. When r≤w, robots with threshold ≤r can only run, robots with threshold >w can only wait, and middle thresholds are invalid in both states, so only F(r)=F(w)=r contributes 1. When r>w, thresholds ≤w are forced to run and thresholds >r are forced to wait; the remaining M robots are free, and choosing exactly K of them to run gives C(M,K) ways. Configurations with different r are mutually exclusive. Update the binomial coefficient along the monotone M and K: adding a row uses C(M+1,K)=C(M,K)(M+1)/(M+1−K), adding a column in the same row uses C(M,K+1)=C(M,K)(M−K)/(K+1), and an out-of-range value 0 is restored to 1 at the boundaries K=0 or K=M. Induction with these identities gives the exact count.\n\n## Complexity\n\nO(n) big-integer multiplications and divisions plus O(n) frequency operations; this is not O(n) bit complexity. The integers have at most O(n) digits, and the frequencies take O(n) space."
+}

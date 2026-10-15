@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-359",
+  "packageChecksum": "066b2935e2b4db4187aaca2597e8dfb5f5ae2fa9e7e7cc6c61c662e1149fb07c",
+  "sourceContentHash": "e31ad7686ce87228caebed642bfba6331286ffab6a686586d7eb47843c50060c",
+  "editorialSha256": "104bea11e8caa024afa0ff4eb4a18a29ea3c264555b8a5223c68690108c89691",
+  "hints": {
+    "zh": [
+      "每个位置改或不改互不影响，所以 new 的每个字符只能变成它自己或它的循环后继（z 的后继是 a）。",
+      "这就是每个位置有两种候选字符的子序列匹配：贪心地让 old 的下一个字符尽早匹配，不会让后面的匹配变差。",
+      "对每个请求，用指针 j 指向 old；扫描 new 的每个字符 c，若 c 或 c 的后继等于 old[j] 就让 j 加一；最后 j 是否等于 old 的长度决定输出 YES 还是 NO。空的 old 一定是 YES。"
+    ],
+    "en": [
+      "Positions are changed independently, so each character of new can only become itself or its cyclic successor (after z comes a).",
+      "This is subsequence matching where each position offers two candidate characters; greedily matching the next character of old as early as possible never hurts later matches.",
+      "For each request keep a pointer j into old; for every character c of new, if c or its successor equals old[j], advance j. Print YES if j reaches the length of old, otherwise NO. An empty old is always YES."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan new with two pointers; if the current character or its single cyclic successor equals the next character of old, match it immediately.\n\n## Proof of correctness\n\nEach position independently decides whether to change. The earliest position that can match the target character can replace a later matching position in any feasible plan and leaves no fewer positions for the rest. Therefore matching each character as early as possible preserves the existence of a feasible suffix, and old is fully matched if and only if the request is feasible.\n\n## Complexity\n\nO(total length of all passwords) time, with O(number of requests) extra space for the output."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-370",
+  "packageChecksum": "5c90275d0c69b8141c3af378d72f5b62b46173ab3e3efea0e175ccb33614f3b5",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    vector<long long> out(n + 1);\n    for (int left = 0; left < n; left++) {\n        long long total = 0;\n        for (int right = left; right < n; right++) {\n            total += a[right];\n            long long size = right - left + 1;\n            if (total % size == 0) out[total / size]++;\n        }\n    }\n    for (int x = 1; x <= n; x++) cout << out[x] << (x == n ? '\\n' : ' ');\n}\n",
+      "sha256": "07493dbe56ab1ae5cebb73a1b6f468aa72c630659997ac7f6d99bd43d2484020"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) return -1;\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        long[] out = new long[n + 1];\n        for (int left = 0; left < n; left++) {\n            long total = 0;\n            for (int right = left; right < n; right++) {\n                total += a[right];\n                long size = right - left + 1;\n                if (total % size == 0) out[(int) (total / size)]++;\n            }\n        }\n        StringBuilder sb = new StringBuilder();\n        for (int x = 1; x <= n; x++) sb.append(out[x]).append(x == n ? '\\n' : ' ');\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "39d4dea8713fc1dc84935e1e045ee16522e2187676d2f4300ec0cd05b958bf79"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc nextInt() int64 {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tout := make([]int64, n+1)\n\tfor left := 0; left < n; left++ {\n\t\ttotal := int64(0)\n\t\tfor right := left; right < n; right++ {\n\t\t\ttotal += a[right]\n\t\t\tsize := int64(right - left + 1)\n\t\t\tif total%size == 0 {\n\t\t\t\tout[total/size]++\n\t\t\t}\n\t\t}\n\t}\n\tvar buf []byte\n\tfor x := 1; x <= n; x++ {\n\t\tbuf = strconv.AppendInt(buf, out[x], 10)\n\t\tif x == n {\n\t\t\tbuf = append(buf, '\\n')\n\t\t} else {\n\t\t\tbuf = append(buf, ' ')\n\t\t}\n\t}\n\tos.Stdout.Write(buf)\n}\n",
+      "sha256": "3adef1efb1182380d1a54ceccc591eab3a65725c2027fda594f81b03d7af4d84"
+    }
+  ]
+}

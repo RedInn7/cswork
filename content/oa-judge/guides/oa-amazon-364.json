@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-364",
+  "packageChecksum": "dec0597a54db68cc0c81f5d9fc9229e52a685e0eba3348ad462bf14fcd2a6cc9",
+  "sourceContentHash": "b8c9df13eaaba4f2e39ff6f755d251ce86ad9fafa834f4902520320e399d6d10",
+  "editorialSha256": "5e46e16b191f8bf4853f7374a410454536ff04f3a870c912a438f629217b7ef8",
+  "hints": {
+    "zh": [
+      "成对删除不会改变每种字符出现次数的奇偶性，所以最短结果恰好是“每个出现奇数次的字符各保留一个”，而且任何保持原顺序的这种选法都能做到。",
+      "问题变成：从原串中选一个子序列，恰好包含每个奇数次字符一次，并使它的字典序最小，这正是经典的“去重后字典序最小子序列”单调栈。",
+      "先统计次数确定需要的字符；扫描时把剩余次数减一，跳过不需要或已在栈中的字符；当栈顶大于当前字符且栈顶之后还会出现时弹出它。最后按 Python json.dumps(ensure_ascii=True) 的规则转义输出：非 ASCII 用小写 \\uXXXX，非 BMP 字符输出代理对。"
+    ],
+    "en": [
+      "Deleting pairs never changes the parity of a character's count, so the shortest result keeps exactly one copy of each character that occurs an odd number of times, and any order-preserving choice of those copies is reachable.",
+      "The task becomes: pick a subsequence that contains each odd-count character exactly once with the smallest lexicographic order, which is the classic monotonic-stack smallest subsequence of distinct characters.",
+      "Count characters to know which are needed; while scanning, decrement the remaining count and skip characters that are not needed or already on the stack; pop the top while it is larger than the current character and occurs again later. Print the result escaped like Python json.dumps(ensure_ascii=True): non-ASCII as lowercase \\uXXXX and non-BMP characters as surrogate pairs."
+    ]
+  },
+  "explanationEn": "## Approach\n\nOnly characters with an odd frequency need to be kept, once each. Scan the original string and use the remaining counts, the set of chosen characters and a monotonic stack to pick the smallest subsequence that contains each of these characters exactly once.\n\n## Proof of correctness\n\nDeleting equal characters in pairs preserves the parity of every frequency, so the shortest result keeps exactly one copy of each odd-frequency character. Any order-preserving choice of these characters, one each, can be completed by deleting all the other copies in pairs, so we only need the lexicographically smallest such subsequence. When the scan reaches a new required character, if the stack top is larger and still occurs later, postponing the top lets the smaller current character come earlier without losing feasibility; a character that cannot be popped is either smaller or at its last occurrence and must stay. An exchange argument at the first difference shows that the result is the lexicographically smallest feasible sequence.\n\n## Complexity\n\nO(n) time and O(n) space, with amortized constant work per stack operation."
+}

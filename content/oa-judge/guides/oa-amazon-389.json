@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-389",
+  "packageChecksum": "69417dae4fd28b7b33f6a053f5eaf1512119bd80af5a8ad63bb04e982f237eb9",
+  "sourceContentHash": "6b092631a93dc5c1393693b75e32240d626aa8b4263ca6a7f654fadc94e6e6a8",
+  "editorialSha256": "3880af7050fdac7a52db93e694e630e068d903e783f005789197b19520c0dd03",
+  "hints": {
+    "zh": [
+      "多看电影只会让结束更晚，所以两类各恰好看一部；剩下的只是先看哪一类、各看哪一部。",
+      "若先看第一类，第二部的结束时间 = max(第一部结束, 第二部上映)+时长，它随第一部结束时间单调不减，所以第一部只需选该类中结束最早的那部。",
+      "分别算两类单独看完的最早时刻 first、second；枚举剧情片 j 求 max(first, c[j])+e[j]，再枚举喜剧 i 求 max(second, a[i])+b[i]，所有值取最小。"
+    ],
+    "en": [
+      "Watching more movies only ends later, so exactly one movie per genre is watched; what remains is which genre goes first and which movies.",
+      "If one genre goes first, the second movie ends at max(end of the first, release of the second)+duration, which never decreases as the first one ends later, so the first movie should be the earliest-finishing one of its genre.",
+      "Compute each genre's earliest solo finish time, first and second; over every drama j take max(first, c[j])+e[j], over every comedy i take max(second, a[i])+b[i], and output the overall minimum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute the earliest finish time of each genre on its own. Assuming that genre is watched first, take its earliest finish time and go over the other genre, computing max(finish of the first genre, release of this movie)+duration; take the minimum over both orders.\n\n## Proof of correctness\n\nWatching more movies cannot finish earlier, so one movie of each genre suffices. For a fixed second movie, its end time is non-decreasing in the finish time of the first movie, so the first genre only needs to keep its earliest-finishing movie. Enumerating the second movie and both orders covers every possible optimum.\n\n## Complexity\n\nO(n+m) time and O(n+m) space including the input."
+}

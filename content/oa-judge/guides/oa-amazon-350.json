@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-350",
+  "packageChecksum": "cd4014c259ee71d0ad3610c0e23ef59043382ce320be6530c7461126a6fb0e7f",
+  "sourceContentHash": "19b4be4bb957429f376b6b0e12766bdccfbaafdf95bbdfb5d5512d6e21c04bed",
+  "editorialSha256": "7239a8b7d85b47a665bbbc73ab99ad7bd1b17f955f91836ddd9dab76ffd21234",
+  "hints": {
+    "zh": [
+      "与其枚举所有子数组，不如反过来问：每个元素作为最大值时负责哪些子数组？相等的最大值要规定唯一归属，比如归给最靠右的那个。",
+      "用单调栈找出每个元素左边第一个严格更大的位置和右边第一个大于等于的位置，得到左右可延伸的距离 L 和 R；这些子数组的长度之和有封闭公式。",
+      "左端有 L 种选法、右端有 R 种，长度为 l+r−1，求和得 L·R·(L+R)/2；把元素值乘上它再累加。总和可达 10^24 量级，要用 128 位或大整数；n=0 时输出 0。"
+    ],
+    "en": [
+      "Instead of enumerating subarrays, ask which subarrays each element owns as the maximum; equal maxima need a unique owner, for example the rightmost one.",
+      "A monotonic stack gives, for each element, the first strictly greater element to its left and the first greater-or-equal element to its right, i.e. how far it extends: L and R. The total length of those subarrays has a closed form.",
+      "The left end has L choices and the right end R choices, with length l+r−1; summing gives L·R·(L+R)/2. Multiply by the element's value and accumulate. Totals reach about 10^24, so use 128-bit or big integers; print 0 when n=0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a monotonic stack to find, for each element, the nearest strictly greater element on the left and the nearest greater-or-equal element on the right; let the distances to these boundaries be L and R. The element is responsible for L·R subarrays whose total length is L·R·(L+R)/2; multiply this by the element and accumulate.\n\n## Proof of correctness\n\nEach subarray is assigned to its rightmost maximum. The left end cannot cross a strictly greater element, and the right end cannot include the next equal or greater element, which gives exactly one owner per subarray, so nothing is missed or counted twice. With a left extension of 1..L and a right extension of 1..R, the length is l+r−1, and the double sum equals LR(L+R)/2. In the monotonic stack each position is pushed and popped only once.\n\n## Complexity\n\nO(n) time and O(n) space; the total may exceed 64 bits."
+}

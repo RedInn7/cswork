@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-4",
+  "packageChecksum": "c2a2f359fb0e8d6353feba38d38fec590f5573989ba0e51ed6439dba344c4548",
+  "sourceContentHash": "66e9f30a00008b8232f7c67bfced663b2b0ce1965ba620d05999bd98423a2e39",
+  "editorialSha256": "3f3782f06e30665cd1467e63e169235195ec802d2656fe2d2a2b011f51b8bf0d",
+  "hints": {
+    "zh": [
+      "对前缀整体加减 1 时，前缀内部相邻元素的差不变，只有前缀末尾与下一个元素之间的差会改变。",
+      "在末尾补一个 0，定义差分 d[i]=a[i]−a[i+1]：对长度为 i+1 的前缀操作恰好只改变 d[i]，各个差分互不影响。",
+      "每个差分至少要操作 |d[i]| 次，而且可以做到，所以答案为 |a[n−1]|+Σ|a[i]−a[i+1]|；结果可能超过 32 位，用 64 位累加。"
+    ],
+    "en": [
+      "Adding or subtracting 1 on a whole prefix keeps the differences inside the prefix unchanged; only the difference between the prefix's last element and the next element changes.",
+      "Append a 0 and let d[i]=a[i]−a[i+1]: an operation on the prefix of length i+1 changes exactly d[i], so the differences are independent.",
+      "Each difference needs at least |d[i]| operations and that is achievable, so the answer is |a[n−1]|+Σ|a[i]−a[i+1]|; it can exceed 32 bits, so accumulate in 64 bits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThink from right to left: the last element needs |arr[n−1]| operations on the whole array; after that, the absolute differences of adjacent values determine how many more operations on shorter prefixes are needed. The answer is |arr[n−1]|+Σ|arr[i]−arr[i+1]|.\n\n## Why it is correct\n\nAppend a 0 at the end and define the differences d[i]=arr[i]−arr[i+1]. Adding or subtracting 1 on the prefix of length i+1 changes only d[i] and leaves the other differences unchanged. Therefore each difference needs at least |d[i]| operations, and eliminating the differences one by one reaches this lower bound.\n\n## Complexity\n\nO(n) time and O(1) extra space besides the input."
+}

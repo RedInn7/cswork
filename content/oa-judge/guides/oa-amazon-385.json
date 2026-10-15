@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-385",
+  "packageChecksum": "022df4c1442a0b2532349a9d3ca4c08ef116a158df8ddd55b1232e7c39d53532",
+  "sourceContentHash": "723a796fa95ddd92dfdeb50c6ba17671ce4df759a25e50970a51d4edf4f63035",
+  "editorialSha256": "19e815dbe24a11f48b1943d2826e8314b9e9551f94ec2e52ce77ba8ddc278095",
+  "hints": {
+    "zh": [
+      "长度为 2h 的子串前后两半相同，等价于 h 对“相距 h 的字符”每一对都能变成同一个字母；各对之间不共享位置，所以问号可以各自独立地填。",
+      "一对字符相容，当且仅当它们相等或至少一个是问号。对固定的 h，只要找到连续 h 对相容的字符就成立。",
+      "h 从 n/2 递减到 1：扫描 i=0..n−h−1，若 s[i] 与 s[i+h] 相容则 run 加一，否则清零；run 达到 h 就输出 2h；都不行就输出 0。n≤5000，O(n²) 足够。"
+    ],
+    "en": [
+      "The two halves of a length-2h substring match exactly when each of the h pairs of characters at distance h can become the same letter; the pairs share no positions, so question marks are filled independently.",
+      "A pair is compatible when its characters are equal or at least one is a question mark. For a fixed h, it suffices to find h consecutive compatible pairs.",
+      "Let h go from n/2 down to 1: scan i=0..n−h−1, increasing run when s[i] and s[i+h] are compatible and resetting it otherwise; once run reaches h, print 2h. If nothing works, print 0. With n≤5000, O(n²) is fine."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the half length h from large to small and scan the character pairs at distance h, checking whether they are equal or contain a question mark; h consecutive compatible pairs give the answer 2h.\n\n## Proof of correctness\n\nThe two halves of a substring of length 2h correspond to h character pairs that share no positions. Each pair is compatible exactly when it can independently be replaced by the same letter, so all h pairs being compatible is equivalent to the substring having a valid replacement. Scanning runs of consecutive compatible pairs checks every start, and the first solution found with h in decreasing order is the longest.\n\n## Complexity\n\nO(n²) time and O(1) extra space."
+}

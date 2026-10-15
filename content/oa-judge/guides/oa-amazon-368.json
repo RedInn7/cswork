@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-368",
+  "packageChecksum": "3590d268d8332b0951514c6f0012a34bb7f8c219ea1c23530f2a1d8a689c46d1",
+  "sourceContentHash": "7ab5f7f5ecf5905ac6f25002f3cbbfcc7e421adf203d6bda3564e3142f791ad5",
+  "editorialSha256": "c5f776835ddbee4eb825325f2d32e0a4107f84a6de6903483b207ba67514aee4",
+  "hints": {
+    "zh": [
+      "两数之和能否被 x 整除，只取决于它们除以 x 的余数：r1+r2 ≡ 0 (mod x)。",
+      "从左到右扫描，处理 j 时只和它之前的商品配对，这样每一对恰好统计一次，也不会让商品和自己配对。",
+      "用哈希表记录已见过的余数次数：对每个价格令 r=p mod x，先把余数 (x−r) mod x 的次数加进答案，再把 r 的次数加一；x 可达 2×10^9，不能开长度为 x 的数组；答案用 64 位。"
+    ],
+    "en": [
+      "Whether two prices sum to a multiple of x depends only on their remainders mod x: r1+r2 ≡ 0 (mod x).",
+      "Scan left to right and pair j only with earlier items; every pair is then counted exactly once and no item is paired with itself.",
+      "Keep a hash map of the remainder counts seen so far: for each price, with r = p mod x, first add the count of (x−r) mod x to the answer, then increment the count of r. x can reach 2×10^9, so no array of length x; use a 64-bit answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhile scanning, first add the frequency of the complementary remainder among earlier items, then increment the count of the current remainder.\n\n## Proof of correctness\n\nThe sum is divisible by x exactly when the two remainders are complementary. When j is scanned, the table contains only items with i<j, so adding the frequency of the complement counts exactly all valid pairs whose right end is j; different j never repeat a pair, so the answer is exact and no item is paired with itself.\n\n## Complexity\n\nExpected O(n) time and O(min(n,x)) space, using a sparse dictionary instead of an array of length x."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-358",
+  "packageChecksum": "5a0372a4bdc96d1f91e2c96a94066df627a4a03ac033a5aeb329425e711888cd",
+  "sourceContentHash": "bf6e311ff6e44473e2222123db0d6850eba3b6531ab09e2870e60477e429a3c4",
+  "editorialSha256": "6f4b4693dadcd4074e43b1f496cc6191f0b0a6e9a0c95b69b17ed9c0e5c42d62",
+  "hints": {
+    "zh": [
+      "插入位置可以任意选，所以只关心至少要插多少个左括号和右括号：前缀余额的最低点决定左括号的下限，最终余额再决定右括号的数量。",
+      "必需的数量满足之后，再多插只能一左一右成对进行；数量固定时，每种括号都应挑评分最高的那些。",
+      "求 L=−min(0, 最低前缀余额) 和 R=L+最终余额；把套件中的左、右括号分别按评分降序排序，先取左边前 L 个、右边前 R 个（负分也必须取），之后只要下一对左右括号的评分和为正就继续成对加入。"
+    ],
+    "en": [
+      "Since insert positions are free, only the counts matter: the lowest prefix balance fixes the minimum number of '(' and the final balance then fixes the number of ')'.",
+      "Beyond the required brackets, extra ones can only be added in matched pairs of one '(' and one ')'; for a fixed count of each type, take the highest-scoring ones.",
+      "Compute L=−min(0, lowest prefix balance) and R=L+final balance. Sort the kit's '(' scores and ')' scores in descending order, take the first L and the first R (even if negative), then keep adding the next '(' and ')' together while their score sum is positive."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute the lowest prefix balance and the final balance of the original string to determine the minimum required numbers of left and right brackets. For each bracket type, take the required ones in descending order of score; after that, keep taking pairs while the marginal score of the pair is still positive.\n\n## Proof of correctness\n\nAny negative prefix requires left brackets to be added before it, at least L=−min(0, lowest balance), and the final balance then requires R=L+final balance. Putting L left brackets at the front and R right brackets at the end achieves this. Extra left and right brackets must be chosen in equal numbers; for a fixed count, taking the highest scores of each type is optimal, and the marginal sum of the next pair is non-increasing, so adding only pairs with a positive margin reaches the global maximum.\n\n## Complexity\n\nO(|s|+m log m) time and O(m) space."
+}

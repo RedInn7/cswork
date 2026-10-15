@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-380",
+  "packageChecksum": "f084c8bb1cccb05ea39cc498400184d4583f56947e7f16f8320682049e9301aa",
+  "sourceContentHash": "2806e33c9a68de8a913be199ff0129ad5184df32e968177b2a78f18297c43090",
+  "editorialSha256": "1ed7b10e7dfc303306cd6993e764d10fccde7152b7f0d5503ee64ab27521e5c3",
+  "hints": {
+    "zh": [
+      "题目保证每次 from 有数据、to 没有数据，所以只需要维护“哪些位置有数据”这个集合。",
+      "每次迁移就是在集合中删除 from、加入 to，不需要知道具体是哪一份数据。",
+      "用哈希集合存初始位置，依次处理 m 次迁移，最后把集合排序，先输出元素个数，再输出升序位置（n=0 时第二行为空）。"
+    ],
+    "en": [
+      "Every move is guaranteed to have data at from and none at to, so all you need is the set of occupied positions.",
+      "A move just deletes from and inserts to in that set; which piece of data moved does not matter.",
+      "Put the initial positions in a hash set, apply the m moves in order, then sort the set and print its size followed by the positions in ascending order (the second line is empty when n=0)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA set stores the positions that hold data; for each move, remove from and add to; sort at the end.\n\n## Proof of correctness\n\nInitially the set equals the set of occupied positions. A valid move removes exactly one old position and adds one empty position, leaving the others unchanged, so every step keeps the two equal; the final sort only changes the output order.\n\n## Complexity\n\nExpected O(m+n log n) time and O(n+m) space including the input."
+}
