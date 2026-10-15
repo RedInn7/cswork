@@ -33,6 +33,7 @@ import {
   type IntegerRowChecker,
 } from './oj-result-shapes';
 import { LANGUAGE_IDS, type Language, type Problem } from './problems';
+import { HTTP_FIXTURE_KEY, HTTP_FIXTURES_MAX_BYTES } from './http-fixtures.mjs';
 import {
   OJ_MAX_CASE_BYTES,
   OJ_MAX_EXPECTED_BYTES,
@@ -100,6 +101,11 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
   languages: Language[];
   /** ACM starter programs that replace the generic ones, e.g. a skeleton above a fixed driver (Core Skills). */
   starters?: Partial<Record<Language, string>>;
+  /**
+   * REST API problems: "GET <path>?<sorted query>" → JSON body, answered offline for Python
+   * (lib/http-fixtures.mjs). Judge-only: publicProblem and cleanOaStatement drop it.
+   */
+  httpFixtures?: Record<string, unknown>;
 };
 
 export type OjImportedCase = {
@@ -344,6 +350,9 @@ export const ojImportSchema = z
         starters: z
           .partialRecord(z.enum(['python', 'go', 'java', 'cpp']), z.string().max(20000))
           .optional(),
+        httpFixtures: z
+          .record(z.string().max(2000).regex(HTTP_FIXTURE_KEY), z.json())
+          .optional(),
       })
       .strict(),
     cases: z.array(testcase).min(1).max(OJ_MAX_CASES),
@@ -467,14 +476,14 @@ export const ojImportSchema = z
     // core- (Core Skills) and bk- (book) problems are free, publicly listed
     // tracks (lib/free-tracks.ts), so like the SQL track they stay in its home lesson.
     if (
-      /^(core|bk)-/.test(data.problem.id) &&
+      /^(core|bk|rest)-/.test(data.problem.id) &&
       (data.problem.courseId !== 'gomall' || data.problem.lessonId !== '00-overview')
     )
       ctx.addIssue({
         code: 'custom',
         path: ['problem', 'id'],
         message:
-          'core- / bk- 题号只能用于 gomall/00-overview 里的 Core Skills 题和书题 / core- and bk- ids are for Core Skills and book problems in gomall/00-overview',
+          'core- / bk- / rest- 题号只能用于 gomall/00-overview 里的 Core Skills 题、书题和 REST API 题 / core-, bk- and rest- ids are for Core Skills, book and REST API problems in gomall/00-overview',
       });
     // pd- problems are the SQL track's pandas versions, judged by PANDAS_HARNESS
     // (lib/server/sql-judge.ts): the same rules, plus room for a python that
@@ -500,6 +509,27 @@ export const ojImportSchema = z
         path: ['problem', 'languages'],
         message:
           'Pandas 题只能用 pd- 题号、仅 Pandas 语言、exact 校验、放在 gomall/00-overview，时限至少 3 秒、内存至少 256 MB / Pandas problems need a pd- id, pandas only, the exact checker, gomall/00-overview, at least 3 s and 256 MB',
+      });
+    // REST API problems (rest- and OA ids): Python only, fixtures within 512 KB.
+    const fixtures = data.problem.httpFixtures;
+    if (
+      fixtures &&
+      (!/^(oa|rest)-/.test(data.problem.id) ||
+        data.problem.languages.join() !== 'python' ||
+        !Object.keys(fixtures).length ||
+        new TextEncoder().encode(JSON.stringify(fixtures)).byteLength > HTTP_FIXTURES_MAX_BYTES)
+    )
+      ctx.addIssue({
+        code: 'custom',
+        path: ['problem', 'httpFixtures'],
+        message:
+          'HTTP 桩只能用于 oa- / rest- 题、仅 Python，且不超过 512 KB / HTTP fixtures need an oa- or rest- id, Python only and at most 512 KB',
+      });
+    if (data.problem.id.startsWith('rest-') && !fixtures)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['problem', 'httpFixtures'],
+        message: 'rest- 题必须带 HTTP 桩 / rest- problems need HTTP fixtures',
       });
     if (new Set(data.cases.map((c) => c.name)).size !== data.cases.length)
       ctx.addIssue({

@@ -3,6 +3,10 @@
  */
 import assert from 'node:assert/strict';
 import { referenceExtension } from './reference-program.mjs';
+import {
+  HTTP_FIXTURE_BOOTSTRAP,
+  HTTP_FIXTURES_FILE,
+} from '../../lib/http-fixtures.mjs';
 
 export function assertNormalExit(result, label = 'program') {
   assert.equal(result.status, 'Accepted', label + ' must run normally');
@@ -118,13 +122,23 @@ export function createReferenceSandbox({ url, token, fetchImpl = fetch }) {
               spec.memoryLimit * 1024,
               spec.outputLimit * 1024,
             ),
+            // REST API problems: the judge's offline HTTP stubs (lib/http-fixtures.mjs).
             args:
               program.language === 'python'
-                ? ['/usr/bin/python3', '-I', 'main.py']
+                ? spec.httpFixtures
+                  ? ['/usr/bin/python3', '-I', '-c', HTTP_FIXTURE_BOOTSTRAP, 'main.py']
+                  : ['/usr/bin/python3', '-I', 'main.py']
                 : ['main'],
             copyIn:
               program.language === 'python'
-                ? { 'main.py': { content: program.code } }
+                ? {
+                    'main.py': { content: program.code },
+                    ...(spec.httpFixtures && {
+                      [HTTP_FIXTURES_FILE]: {
+                        content: JSON.stringify(spec.httpFixtures),
+                      },
+                    }),
+                  }
                 : { main: { fileId: cache.main } },
           });
         });

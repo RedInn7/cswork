@@ -100,8 +100,10 @@ export function cleanOaStatement<
 >(spec: T): T {
   const explanation = cleanText(spec.explanation);
   const hints = spec.hints?.map((hint) => cleanText(hint)).filter(Boolean);
+  // REST API fixtures answer hidden cases' requests: judge-only, never display copy.
+  const { httpFixtures: _judgeOnly, ...rest } = spec as T & { httpFixtures?: unknown };
   return {
-    ...spec,
+    ...(rest as T),
     description: cleanText(spec.description),
     input: cleanText(spec.input),
     output: cleanText(spec.output),

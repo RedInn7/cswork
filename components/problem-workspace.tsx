@@ -362,8 +362,8 @@ function Workspace({
   const statementLocaleRef = useRef(statementLocale);
   statementLocaleRef.current = statementLocale;
   const statement = problemStatement(problem, statementLocale);
-  // SQL track (and its pandas versions) and Core Skills statements are Markdown: schema blocks, operation lists.
-  const markdownStatement = !!trackLanguageOf(problem.id) || problem.id.startsWith('core-');
+  // SQL track (and its pandas versions), Core Skills and REST API statements are Markdown: schema blocks, operation lists.
+  const markdownStatement = !!trackLanguageOf(problem.id) || /^(core|rest)-/.test(problem.id);
   const english = statementLocale === 'en' && !!problem.translations?.en;
   // Labels that followed an English statement still do; otherwise the site language decides.
   const uiEnglish = english || locale === 'en';

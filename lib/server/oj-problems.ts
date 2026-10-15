@@ -262,7 +262,8 @@ export async function getJudgeProblem(p: Person, problemId: string) {
 }
 
 async function publicProblem(version: VersionRow): Promise<OjPublicProblem> {
-  const parsed = JSON.parse(version.spec_json) as OjProblemSpec;
+  // REST API fixtures are judge data (hidden cases read them): never in a statement or the catalogue.
+  const { httpFixtures: _judgeOnly, ...parsed } = JSON.parse(version.spec_json) as OjProblemSpec;
   // OA packages keep provenance notes under their checksum; readers get the display copy.
   const spec = version.problem_id.startsWith('oa-')
     ? cleanOaStatement(parsed)
