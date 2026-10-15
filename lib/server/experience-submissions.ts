@@ -650,8 +650,9 @@ export function reviewQueue() {
 export type ReviewItem = ReturnType<typeof reviewQueue>['pending'][number];
 
 /**
- * Approve (clearing reports) or reject with a note for the author; works on any status. The first
- * approval of a post on a company with a page notifies that company's followers, its author aside.
+ * Approve (clearing reports) or reject with a note for the author; works on any status. Publishing
+ * a post (from pending or rejected) on a company with a page notifies that company's followers,
+ * each once and its author never.
  */
 function review(p: Person, id: string, input: unknown) {
   requireTeacher(p);
@@ -679,7 +680,7 @@ function review(p: Person, id: string, input: unknown) {
     if (d.status !== 'approved') return 1;
     db.prepare('DELETE FROM experience_flags WHERE submission_id=?').run(id);
     const company = names.get(before.company_slug);
-    // Ids per post and follower: approving it again after a rejection never notifies twice.
+    // Ids per post and follower: published again after a rejection, nobody hears twice.
     if (before.status !== 'approved' && company)
       db.prepare(
         `INSERT INTO notifications(id,user_id,kind,title,body,href,created_at)
