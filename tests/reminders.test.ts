@@ -1,7 +1,8 @@
 // Learning reminders (lib/server/reminders.ts) and Web Push (lib/server/web-push.ts), on a fake
 // clock: digests go to learners whose local hour it is, once a local day; contest reminders are
 // claimed once; push endpoints are allowlisted; mail carries a one-click unsubscribe.
-process.env.TZ = 'UTC'; // As deploy/cswork-oj-worker.service runs the worker.
+// Neither UTC nor every learner's zone: the digest's local days must not depend on the worker's TZ.
+process.env.TZ = 'Asia/Shanghai';
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { createPublicKey, generateKeyPairSync, verify } from 'node:crypto';
@@ -298,21 +299,25 @@ void test('contest reminders: live entrants of a weekly or starter, an hour ahea
   const gus = person('r-gus'); // Reminders on.
   const hal = person('r-hal'); // Reminders on, contest reminders off.
   const ivy = person('r-ivy'); // Never opted in.
-  for (const p of [gus, hal, ivy]) addUser(p);
+  const jo = person('r-jo'); // Reminders on, in Chinese.
+  for (const p of [gus, hal, ivy, jo]) addUser(p);
   await call(gus, 'POST', 'oj/notify', prefs({ review: false, streak: false, hour: 3 }));
+  await call(jo, 'POST', 'oj/notify', prefs({ review: false, streak: false, hour: 3, locale: 'zh' }));
   await call(hal, 'POST', 'oj/notify', prefs({ contest: false, review: false, streak: false, hour: 3 }));
   room('weekly-1', 'weekly', NOW + 40 * 60000);
   room('mashup-1', 'mashup', NOW + 40 * 60000);
   room('starter-1', 'starter', NOW + 3 * HOUR);
-  for (const p of [gus, hal, ivy]) enter('weekly-1', p.id);
+  for (const p of [gus, hal, ivy, jo]) enter('weekly-1', p.id);
   enter('mashup-1', gus.id);
   enter('starter-1', gus.id);
-  assert.equal(await sendLearnerReminders(NOW), 1);
+  assert.equal(await sendLearnerReminders(NOW), 2);
+  // Named as the contest pages name it, in each learner's language (the room keeps the English).
+  assert.equal(notice(`contest:weekly-1:${jo.id}`)!.body, 'CSWork 周赛 第 1 期');
   const n = notice(`contest:weekly-1:${gus.id}`)!;
   assert.deepEqual({ ...n, created_at: 0 }, {
     kind: 'contest-start',
     title: '你报名的比赛 1 小时内开始',
-    body: 'CSWork weekly-1',
+    body: 'CSWork Weekly #1',
     href: '/contest/weekly-1',
     created_at: 0,
   });
@@ -330,6 +335,8 @@ void test('contest reminders: live entrants of a weekly or starter, an hour ahea
   // The next day's digest at Gus's hour names a contest within the day, in his time.
   room('weekly-2', 'weekly', Date.UTC(2026, 9, 17, 1));
   enter('weekly-2', gus.id);
-  assert.equal(await sendLearnerReminders(Date.UTC(2026, 9, 16, 3, 5)), 1);
-  assert.equal(notice(`rem:2026-10-16:${gus.id}`)!.body, 'CSWork weekly-2: starts 10-17 01:00');
+  enter('weekly-2', jo.id);
+  assert.equal(await sendLearnerReminders(Date.UTC(2026, 9, 16, 3, 5)), 2);
+  assert.equal(notice(`rem:2026-10-16:${gus.id}`)!.body, 'CSWork Weekly #2: starts 10-17 01:00');
+  assert.equal(notice(`rem:2026-10-16:${jo.id}`)!.body, 'CSWork 周赛 第 2 期：10-17 01:00 开始');
 });

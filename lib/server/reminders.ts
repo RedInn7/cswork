@@ -2,6 +2,7 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
+import { roomWeek, weeklyTitle } from '@/lib/contest';
 import { englishMessage } from '@/lib/messages-en';
 import { dueReviews, type PracticeHistoryItem } from '@/lib/practice-review';
 import { practiceStats } from '@/lib/practice-stats';
@@ -19,15 +20,15 @@ import { pushEndpoint, pushReady, pushTo } from './web-push';
  * each device they turned push on for, and with email on a mail to the verified address. Entrants
  * of a weekly or starter also get a notice and push an hour before it starts. Each notice has a
  * deterministic id: writing it is the claim, so no tick, restart or second worker sends twice.
- * The judge worker runs this every 10 minutes (lib/server/oj-worker.ts) and must run with TZ=UTC.
+ * The judge worker runs this every 10 minutes (lib/server/oj-worker.ts), in any TZ.
  * ponytail: tz is the offset when last saved (the card re-saves it when opened elsewhere); a
  * daylight saving change moves the hour until then. Store an IANA zone if that matters.
  */
 const MINUTE = 60000;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
-// Resend's limit is about 2 requests a second, shared with sign-in mails (lib/server/peer-reminders.ts).
-const GAP_MS = 500;
+// Resend's limit is about 2 requests a second, shared with sign-in mails: leave them the other half.
+const GAP_MS = 1000;
 /** Push devices per learner; subscribing another drops the oldest. */
 const DEVICES_MAX = 10;
 
@@ -46,17 +47,36 @@ type Prefs = {
 
 /** The local date (YYYY-MM-DD) at `at` for a Date#getTimezoneOffset of `tz` minutes. */
 const localDate = (at: number, tz: number) => new Date(at - tz * MINUTE).toISOString().slice(0, 10);
+/**
+ * `at` re-anchored so this process's local time reads the learner's wall clock at `at`: dueReviews
+ * and practiceStats count local days, and this makes them the learner's whatever the process TZ.
+ */
+function wall(at: number, tz: number) {
+  const d = new Date(at - tz * MINUTE);
+  return new Date(
+    d.getUTCFullYear(),
+    d.getUTCMonth(),
+    d.getUTCDate(),
+    d.getUTCHours(),
+    d.getUTCMinutes(),
+    d.getUTCSeconds(),
+    d.getUTCMilliseconds(),
+  ).getTime();
+}
+/** A weekly's or starter's name in the learner's language (contest_rooms keeps the English one). */
+const contestTitle = (c: { id: string; title: string; kind: string }, zh: boolean) => {
+  const week = roomWeek(c.id);
+  return week === null ? c.title : weeklyTitle(week, zh, c.kind);
+};
 const fresh = (id: string) => !sqlite().prepare('SELECT 1 FROM notifications WHERE id=?').get(id);
 
 /**
- * Today's digest for one learner, or null when it would be empty. With TZ=UTC, shifting every
- * time by the learner's offset makes dueReviews' and practiceStats' local days theirs, so the
- * counts match their progress page (streak freezes included).
+ * Today's digest for one learner, or null when it would be empty. Every time is re-anchored to
+ * the learner's wall clock, so the counts match their progress page (streak freezes included).
  */
 function digestFor(r: Prefs, now: number): ReminderDigest | null {
   const db = sqlite();
-  const shift = r.tz * MINUTE;
-  const local = now - shift;
+  const local = wall(now, r.tz);
   let reviews = 0;
   let streak: ReminderDigest['streak'] = null;
   if (r.review || r.streak) {
@@ -67,8 +87,8 @@ function digestFor(r: Prefs, now: number): ReminderDigest | null {
       const byProblem = new Map<string, number[]>();
       for (const a of acs) {
         const times = byProblem.get(a.problem_id);
-        if (times) times.push(a.created_at - shift);
-        else byProblem.set(a.problem_id, [a.created_at - shift]);
+        if (times) times.push(wall(a.created_at, r.tz));
+        else byProblem.set(a.problem_id, [wall(a.created_at, r.tz)]);
       }
       // dueReviews reads only acAt.
       reviews = dueReviews([...byProblem.values()].map((acAt) => ({ acAt }) as PracticeHistoryItem), local).length;
@@ -80,12 +100,12 @@ function digestFor(r: Prefs, now: number): ReminderDigest | null {
         .all(r.user_id, now - 400 * DAY) as number[];
       // The calendar's 183 days (lib/server/api.ts bootstrap activity).
       const stats = practiceStats(
-        acs.filter((a) => a.created_at > now - 183 * DAY).map((a) => ({ ...a, created_at: a.created_at - shift })),
+        acs.filter((a) => a.created_at > now - 183 * DAY).map((a) => ({ ...a, created_at: wall(a.created_at, r.tz) })),
         new Date(local).toDateString(),
         true,
         [],
         undefined,
-        bought.map((t) => t - shift),
+        bought.map((t) => wall(t, r.tz)),
       );
       if (!stats.today && stats.streak >= 2)
         streak = { days: stats.streak, freezes: stats.freezesLeft, breaks: stats.rescue || !stats.freezesLeft };
@@ -95,15 +115,15 @@ function digestFor(r: Prefs, now: number): ReminderDigest | null {
     ? (
         db
           .prepare(
-            `SELECT c.id,c.title,c.starts_at FROM contest_entries e JOIN contest_rooms c ON c.id=e.room_id
+            `SELECT c.id,c.title,c.kind,c.starts_at FROM contest_entries e JOIN contest_rooms c ON c.id=e.room_id
             WHERE e.user_id=? AND e.virtual_start IS NULL AND c.kind IN ('weekly','starter') AND c.starts_at>? AND c.starts_at<=?
             ORDER BY c.starts_at`,
           )
-          .all(r.user_id, now, now + DAY) as { id: string; title: string; starts_at: number }[]
+          .all(r.user_id, now, now + DAY) as { id: string; title: string; kind: string; starts_at: number }[]
       ).map((c) => ({
         id: c.id,
-        title: c.title,
-        at: new Date(c.starts_at - shift).toISOString().slice(5, 16).replace('T', ' '),
+        title: contestTitle(c, r.locale === 'zh'),
+        at: new Date(c.starts_at - r.tz * MINUTE).toISOString().slice(5, 16).replace('T', ' '),
       }))
     : [];
   return reviews || streak || r.daily || contests.length ? { reviews, streak, daily: !!r.daily, contests } : null;
@@ -115,11 +135,11 @@ export async function sendLearnerReminders(now = Date.now()) {
   let sent = 0;
   const starting = db
     .prepare(
-      `SELECT e.user_id,c.id,c.title FROM contest_entries e JOIN contest_rooms c ON c.id=e.room_id
+      `SELECT e.user_id,c.id,c.title,c.kind,n.locale FROM contest_entries e JOIN contest_rooms c ON c.id=e.room_id
       JOIN notify_prefs n ON n.user_id=e.user_id AND n.contest=1
       WHERE c.kind IN ('weekly','starter') AND e.virtual_start IS NULL AND c.starts_at>? AND c.starts_at<=?`,
     )
-    .all(now, now + HOUR) as { user_id: string; id: string; title: string }[];
+    .all(now, now + HOUR) as { user_id: string; id: string; title: string; kind: string; locale: string }[];
   for (const c of starting) {
     const id = `contest:${c.id}:${c.user_id}`;
     const notice = {
@@ -127,7 +147,7 @@ export async function sendLearnerReminders(now = Date.now()) {
       userId: c.user_id,
       kind: 'contest-start',
       title: '你报名的比赛 1 小时内开始',
-      body: c.title,
+      body: contestTitle(c, c.locale === 'zh'),
       href: `/contest/${c.id}`,
       now,
     };
@@ -159,7 +179,7 @@ export async function sendLearnerReminders(now = Date.now()) {
     if (mailed++) await delay(GAP_MS);
     const unsubscribe = `${origin()}/api/newsletter/unsubscribe?${new URLSearchParams({ token: r.token, list: 'reminders' })}`;
     try {
-      // ponytail: a failed mail is not retried; the notice and push went out.
+      // sendMail waits out a 429; any other failure is not retried, the notice and push went out.
       await sendMail({
         to: r.address,
         ...reminderMail(zh, lines, origin(), unsubscribe),
