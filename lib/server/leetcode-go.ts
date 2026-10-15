@@ -5,8 +5,10 @@ const definitions: Record<string, string> = {
   ListNode: 'type ListNode struct { Val int; Next *ListNode }',
   Node: 'type Node struct { Val int; Next, Left, Right, Random, Prev, Child, Parent *Node }',
   Interval: 'type Interval struct { Start, End int }',
+  // One package cannot hide a field, so the array and the call count live only
+  // in the closures the judge builds (scripts/leetcode-mode/go/runtime.go).
   MountainArray:
-    'type MountainArray struct { Values []int; Calls int }\nfunc (m *MountainArray) get(i int) int { m.Calls++; if m.Calls>100 { panic("MountainArray.get exceeds 100 calls") }; return m.Values[i] }\nfunc (m *MountainArray) length() int { return len(m.Values) }',
+    'type MountainArray struct { get_ func(int) int; length_ func() int }\nfunc (m *MountainArray) get(i int) int { return m.get_(i) }\nfunc (m *MountainArray) length() int { return m.length_() }',
 };
 const clean = (source: string) =>
   source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');

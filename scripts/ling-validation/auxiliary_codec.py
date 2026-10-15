@@ -1,19 +1,25 @@
 """Fixed adapters for the reviewed MountainArray and Interval reference APIs."""
 class MountainArray:
+    # The array and the call count live only in these closures, never in an
+    # attribute a solution can read or reset. ponytail: __closure__ reflection
+    # still reaches them; a practice judge does not defend against reflection.
+    __slots__=('get','length')
     def __init__(self, values):
         if type(values) is not list or not 3<=len(values)<=10000 or not all(type(v) is int and 0<=v<=10**9 for v in values):
             raise ValueError('Invalid mountain storage')
         peak=values.index(max(values))
         if not 0<peak<len(values)-1 or any(a>=b for a,b in zip(values[:peak],values[1:peak+1])) or any(a<=b for a,b in zip(values[peak:],values[peak+1:])):raise ValueError('Invalid mountain shape')
-        self._values=tuple(values)
-        self.calls=0
-    def get(self, index):
-        if type(index) is not int or not 0<=index<len(self._values):
-            raise ValueError('Invalid mountain index')
-        self.calls+=1
-        if self.calls>100:raise ValueError('MountainArray get budget exceeded')
-        return self._values[index]
-    def length(self):return len(self._values)
+        values=tuple(values)
+        calls=0
+        def get(index):
+            nonlocal calls
+            if type(index) is not int or not 0<=index<len(values):
+                raise ValueError('Invalid mountain index')
+            calls+=1
+            if calls>100:raise ValueError('MountainArray get budget exceeded')
+            return values[index]
+        self.get=get
+        self.length=lambda:len(values)
 
 class Interval:
     def __init__(self,start=None,end=None):

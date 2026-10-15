@@ -337,7 +337,8 @@ class Graph:
         while index < len(self.objects):
             obj = self.objects[index]
             if isinstance(obj, auxiliary.MountainArray):
-                typ, fields = 'MountainArray', {'values': list(obj._values)}
+                # The native side gets the array; no learner Python runs in this bridge.
+                typ, fields = 'MountainArray', {'values': list(obj.length.__closure__[0].cell_contents)}
             elif isinstance(obj, auxiliary.Interval):
                 typ, fields = 'Interval', {'start': obj.start, 'end': obj.end}
             else:
