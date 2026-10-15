@@ -118,8 +118,8 @@ function GroupChat({ id, member, t, english }: { id: string; member: boolean; t:
       <h2 id="group-chat">{t('小组聊天', 'Group chat')}</h2>
       <p className="group-sub">
         {t(
-          `只有组员能看到，保留 ${CHAT_RETENTION_DAYS} 天；三位组员举报的消息会先隐藏。`,
-          `Members only, kept ${CHAT_RETENTION_DAYS} days; a message three members report is hidden.`,
+          `只有组员能看到（有消息被举报时，审核老师也能查看），保留 ${CHAT_RETENTION_DAYS} 天；三位组员举报的消息会先隐藏。`,
+          `Members only (and moderating teachers while a message is reported), kept ${CHAT_RETENTION_DAYS} days; a message three members report is hidden.`,
         )}
       </p>
       {chat.data ? (

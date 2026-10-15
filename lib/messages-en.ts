@@ -253,6 +253,7 @@ const EN: Record<string, string> = {
   只有组长可以管理小组: 'Only the group owner can manage the group',
   成员不存在: 'Member not found',
   消息不存在: 'Message not found',
+  只有处理举报时老师才能查看小组聊天: 'Teachers can read a group chat only while a message in it is reported',
   // Work email badge (lib/server/work-verify.ts)
   '个人邮箱不能验证员工身份，请用公司邮箱': "A personal email can't verify an employer. Use your work email",
   '暂不支持这个邮箱域名，目前只支持有公司页的公司': "This email domain isn't supported yet: only companies with a company page are",

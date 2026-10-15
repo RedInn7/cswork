@@ -15,7 +15,8 @@ import { fileReport, reportReason } from './solution-posts';
  * Study groups (db/study-groups-schema.ts): a member sees the group's name, goal, invite code
  * and, per member, only the display name chosen on joining and accepted-problem counts per
  * local day. Never names, emails, code or which problems. A group someone is not in reads as
- * missing; teachers may open and moderate any group from a report.
+ * missing; teachers may open and moderate any group from a report, and read its chat while a
+ * message in it is reported.
  */
 const DAY = 86400000;
 export const GROUP_MAX = 50;
@@ -332,8 +333,17 @@ export async function handleStudyGroups(request: Request, p: Person | null, path
     await limit(p, 'group-read', 120);
     if (!id) return json({ items: myGroups(p.id), ownedMax: OWNED_MAX, joinedMax: JOINED_MAX });
     if (action === 'messages') {
+      const { row, role } = readable(id, p);
+      // A moderating teacher reads a chat only while one of its messages is reported.
+      const reported = db
+        .prepare(
+          `SELECT 1 FROM study_group_messages g JOIN post_reports r ON r.target='gmsg:'||g.id
+          WHERE g.group_id=? AND r.reason<>'${REPORT_CLEARED}' LIMIT 1`,
+        )
+        .get(row.id);
+      if (!role && !reported) throw new HttpError(403, '只有处理举报时老师才能查看小组聊天');
       const after = Number(params.get('after') ?? 0);
-      return json({ items: groupChat(readable(id, p).row.id, p.id, Number.isSafeInteger(after) ? after : 0) });
+      return json({ items: groupChat(row.id, p.id, Number.isSafeInteger(after) ? after : 0) });
     }
     if (action) throw new HttpError(404, '学习小组接口不存在');
     return json(groupDetail(id, p, tz()));
@@ -365,7 +375,7 @@ export async function handleStudyGroups(request: Request, p: Person | null, path
     );
     return json(groupDetail(row.id, p, tz()));
   }
-  // Chat: members only (a moderating teacher reads it, and acts from the moderation queue).
+  // Chat: members only (a teacher reads it while a message is reported, and acts from the moderation queue).
   if (action === 'messages' || action === 'unsay' || action === 'report') {
     const { row, role } = readable(id, p);
     if (!role) throw new HttpError(404, '学习小组不存在');

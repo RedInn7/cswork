@@ -132,8 +132,8 @@ void test('group chat: members only, retention, unsay, reports take a message do
   assert.equal(read.items.length, 2);
   assert.ok(!JSON.stringify(read).includes('m-amy') && !JSON.stringify(read).includes('Real'));
   assert.deepEqual((await ok(owner, 'GET', `${path}?after=${second.createdAt}`)).items.map((m: { id: string }) => m.id), [second.id]);
-  // A teacher moderating reads it, but cannot write.
-  assert.equal((await ok(teacher, 'GET', path)).items.length, 2);
+  // A teacher reads it only while a message in it is reported, and never writes.
+  assert.equal(await status(teacher, 'GET', path), 403);
   assert.equal(await status(teacher, 'POST', path, { body: 'hi' }), 404);
   // Only the author takes a message back.
   assert.equal(await status(amy, 'POST', `groups/${group.id}/unsay`, { message: second.id }), 404);
@@ -144,6 +144,7 @@ void test('group chat: members only, retention, unsay, reports take a message do
   assert.equal(await status(bob, 'POST', `groups/${group.id}/report`, { message: second.id, reason: 'spam' }), 400);
   for (const p of [owner, amy]) await ok(p, 'POST', `groups/${group.id}/report`, { message: second.id, reason: 'offensive' });
   assert.equal((await ok(bob, 'GET', path)).items.length, 1);
+  assert.equal((await ok(teacher, 'GET', path)).items.length, 1);
   await ok(cat, 'POST', `groups/${group.id}/report`, { message: second.id, reason: 'offensive' });
   assert.equal((await ok(bob, 'GET', path)).items.length, 0);
   // The moderation queue lists it under its group; a teacher's restore clears the reports.
@@ -153,6 +154,7 @@ void test('group chat: members only, retention, unsay, reports take a message do
   assert.equal(item.excerpt, 'Hello Amy');
   await ok(teacher, 'POST', `group-messages/${second.id}/dismiss`, {});
   assert.equal((await ok(bob, 'GET', path)).items.length, 1);
+  assert.equal(await status(teacher, 'GET', path), 403, 'handled: closed to teachers again');
   assert.equal(await status(amy, 'POST', `group-messages/${second.id}/hide`, {}), 403);
   // Disbanding deletes the chat.
   await ok(owner, 'POST', `groups/${group.id}/delete`, {});
