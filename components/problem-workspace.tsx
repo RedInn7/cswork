@@ -408,8 +408,8 @@ function Workspace({
       : language === 'pandas'
         ? t('Pandas · solve(tables) 返回 DataFrame', 'Pandas · solve(tables) returns a DataFrame')
         : intelligence.state === 'idle'
-        ? t('语言服务待启动', 'Language service not started')
-        : say(intelligence.message);
+          ? t('语言服务待启动', 'Language service not started')
+          : say(intelligence.message);
   const suggest = useRef<(() => void) | null>(null);
   const format = useRef<(() => void) | null>(null);
   const runButton = useRef<HTMLButtonElement>(null);
