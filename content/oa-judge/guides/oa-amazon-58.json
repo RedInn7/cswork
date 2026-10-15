@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-58",
+  "packageChecksum": "50737de7eee6e6a83c882b3a230148c7381f9aeeffb08c1b024b3b480c64499f",
+  "sourceContentHash": "b593f71bc695539f345e64fd1c5a9b05aa9ced14d1167afe1dd890eb761b7163",
+  "editorialSha256": "4d6398f3bda70b59e2ce7f151017a18e41bda69cce3f0952b9a39940e1d4cc26",
+  "hints": {
+    "zh": [
+      "所有极大段长度都为偶数时，每个段的边界只能落在偶数位置上，所以原串按位置两两分组后，每组的两个字符最终必须相同。",
+      "每组的最少翻转数各自独立：00、11 不需要翻转，并且在翻转数最少的前提下必须保持原样；01、10 必须翻 1 位，可以自由选择变成 00 还是 11，于是可以“跟随”相邻固定组的颜色，不额外增加段数。",
+      "每两位一组扫描，只看固定组（两个字符相同的组）；记录上一个固定组的字符 last，当前固定组字符与 last 不同就让段数加一并更新 last；全是自由组时段数为 0，此时答案取 1，即输出 max(1, runs)。"
+    ],
+    "en": [
+      "When every maximal run has even length, every run boundary falls on an even position, so after grouping the string into consecutive pairs, the two characters of each pair must end up equal.",
+      "Each pair's minimum flips are independent: 00 and 11 need no flip and must stay as they are under the minimum flip count; 01 and 10 need exactly one flip and may become either 00 or 11, so they can take the color of a neighboring fixed pair without adding runs.",
+      "Scan the string two characters at a time and look only at fixed pairs (two equal characters); keep the character last of the previous fixed pair and add one run whenever the current fixed pair differs from last, then update last; if every pair is free the count is 0, so print max(1, runs)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGroup the string by original positions into pairs of two. Pairs 00 and 11 need no flip and must be kept under the minimum number of flips; pairs 01 and 10 need exactly one flip and may freely become 00 or 11. Ignore the free pairs, count the changes of character among the forced pairs, and add 1; if every pair is free, there is 1 run.\n\n## Proof of correctness\n\nEvery boundary of an even-length maximal run must lie at an even position, so each pair of positions must be equal, and the minimum flips of each pair are determined independently. A free pair can be filled with the color of a neighbor on its left or right, so it never adds more runs than the forced color changes require; each forced color change adds at least one run, and this lower bound is achievable.\n\n## Complexity\n\nO(n) time and O(1) space."
+}

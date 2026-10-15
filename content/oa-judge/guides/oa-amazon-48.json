@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-48",
+  "packageChecksum": "150cac9a2ee969e6905ed086af5eed4d966d92f83ab93e1facd8d189d135bc85",
+  "sourceContentHash": "a28b269416d62c768ba73be6e3c2b9af4d2600bab3406f93c618c50ee2e758f6",
+  "editorialSha256": "0ca9a911ea608c94006cbf65c0e3c07240c307c36837c43c82aeee0459fe4cf3",
+  "hints": {
+    "zh": [
+      "不论怎么分，第一个元素和最后一个元素一定各被计入一次费用；其余的费用全部来自“切口”。",
+      "在 i 和 i+1 之间切一刀，会让 a[i] 成为一段的结尾、a[i+1] 成为下一段的开头，正好新增 a[i]+a[i+1]；各切口互不影响，所以就是在 n−1 个切口权值中选 k−1 个。",
+      "计算所有相邻和 a[i]+a[i+1] 并排序；基础费用 base = a[0]+a[n−1]；最小费用是 base 加最小的 k−1 个权值，最大费用是 base 加最大的 k−1 个权值；k=1 时两者都是 base。注意用 64 位整数。"
+    ],
+    "en": [
+      "No matter how you split, the first and the last elements are each counted exactly once; every other part of the cost comes from the cuts.",
+      "A cut between i and i+1 makes a[i] the end of one segment and a[i+1] the start of the next, adding exactly a[i]+a[i+1]; the cuts are independent, so you are choosing k-1 of the n-1 cut weights.",
+      "Compute every adjacent sum a[i]+a[i+1] and sort them; the base cost is a[0]+a[n-1]; the minimum is the base plus the k-1 smallest weights and the maximum is the base plus the k-1 largest; when k=1 both equal the base. Use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe first and last elements always contribute; every other contribution comes from the sum of the two elements adjacent to a cut. Choose the k-1 smallest or largest adjacent sums.\n\n## Proof of correctness\n\nWith no cut, the cost is a[0]+a[n-1]. Adding a cut between i and i+1 adds exactly the new endpoints a[i]+a[i+1]. The cuts are independent of each other, so taking a fixed number of the smallest/largest weights is optimal.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-52",
+  "packageChecksum": "c6e75b52340e36abe9d15e82d15531cd6a1e39945a790216c859acbd379bafcb",
+  "sourceContentHash": "239019484054fc0868a29e6370fa2fad5d86d9766f72a2650690a4c2729d4396",
+  "editorialSha256": "e3039d03e4943248ad994640ed72b15a4aaaa46a965e57a1f8ec402181c139e2",
+  "hints": {
+    "zh": [
+      "先把已有区间按“相交或共享端点即合并”的规则合并成若干互不接触的块；新增区间的作用只是把若干个连续的块连成一个。",
+      "新区间要同时连上第 l 块和第 r 块，最短的做法是从第 l 块的右端连到第 r 块的左端，中间的块会被自然穿过；所以可行当且仅当 左端[r] − 右端[l] ≤ k。连上 t 块会让块数减少 t−1。",
+      "按左端点排序并合并（a ≤ 当前块右端就合并）；然后用双指针：右指针逐个前进，当 左端[right] − 右端[left] > k 时左指针右移，记录最大的 right−left+1 作为 best；输出 合并后块数 − best + 1。"
+    ],
+    "en": [
+      "First merge the existing intervals into blocks that do not touch, merging whenever two intervals intersect or share an endpoint; the new interval can only join some consecutive blocks into one.",
+      "To connect block l with block r, the shortest bridge runs from block l's right end to block r's left end, passing through every block in between; so it is possible exactly when left[r] - right[l] <= k. Connecting t blocks reduces the count by t-1.",
+      "Sort by left endpoint and merge (merge when a <= the current block's right end); then use two pointers: advance right one block at a time and move left forward while left[right] - right[left] > k, keeping the largest right-left+1 as best; print the number of merged blocks - best + 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst merge the existing intersecting intervals. One new interval can connect a run of consecutive blocks if and only if the last block's left end minus the first block's right end is <= k; use two pointers to find the largest number of blocks that can be connected.\n\n## Proof of correctness\n\nThe shortest bridge spanning the first and last blocks goes from the first block's right end to the last block's left end, and every block in between is necessarily crossed by the bridge, so the condition is necessary and sufficient. If the bridge connects t blocks, the number of connected blocks drops by t-1. A sliding window over the sorted endpoints finds the largest t.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

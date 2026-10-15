@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-63",
+  "packageChecksum": "7c90f09eaa5c1d0346ea54a06d05579479867b26bdc93e3c15ec347371440141",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &v : a) cin >> v;\n    sort(a.begin(), a.end());\n    int most = 0;  // largest number of items in one warehouse\n    for (int i = 0, j; i < n; i = j) {\n        for (j = i; j < n && a[j] == a[i]; j++) {}\n        most = max(most, j - i);\n    }\n    cout << max(most, (n + 1) / 2) << \"\\n\";\n}\n",
+      "sha256": "d144f0a943f5804d14bcefec8f9483d728c32c84943bcffc6fa95fda75af7c35"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        int most = 0; // largest number of items in one warehouse\n        for (int i = 0, j; i < n; i = j) {\n            for (j = i; j < n && a[j] == a[i]; j++) {}\n            most = Math.max(most, j - i);\n        }\n        System.out.println(Math.max(most, (n + 1) / 2));\n    }\n}\n",
+      "sha256": "e22f990abccbbb3ac53156400684cc843edda23be39011a9a58c1f34247d3304"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"sort\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tsort.Ints(a)\n\tmost := 0 // largest number of items in one warehouse\n\tfor i := 0; i < n; {\n\t\tj := i\n\t\tfor j < n && a[j] == a[i] {\n\t\t\tj++\n\t\t}\n\t\tmost = max(most, j-i)\n\t\ti = j\n\t}\n\tfmt.Println(max(most, (n+1)/2))\n}\n",
+      "sha256": "42ea9e600617bacbf09dd29fd1b5e34e2efb2a367344356224d22301063345d4"
+    }
+  ]
+}

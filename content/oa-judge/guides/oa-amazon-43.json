@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-43",
+  "packageChecksum": "ba2c7d1826fc7f19119de22a8ec9130dae1d90346aa9b61daa3c159db9f9a12a",
+  "sourceContentHash": "a77db7f28536f044f137f35d44deaede598b701e05afefe479a122f982147928",
+  "editorialSha256": "40e904d4777e69b186fc7da00a20431fa184ad5b68ae3c0a1cc61d9995095b64",
+  "hints": {
+    "zh": [
+      "子序列必须保序，但中位数只看所选元素排序后的结果，所以选哪些位置都无所谓，只关心选了哪些值。",
+      "设 j = ⌈k/2⌉。任意 k 个数里的第 j 小，不会小于整个数组的第 j 小，也不会大于整个数组的第 n−k+j 小；这两个界分别由最小的 k 项和最大的 k 项取到。",
+      "把数组升序排序，令 middle = (k−1)/2（0 下标），最大中位数是 a[n−k+middle]，最小中位数是 a[middle]，按“最大 最小”的顺序输出。"
+    ],
+    "en": [
+      "The subsequence must keep its order, but the median only looks at the chosen values after sorting, so which positions you pick does not matter, only which values.",
+      "Let j = ceil(k/2). The j-th smallest of any k chosen values can be no smaller than the j-th smallest of the whole array and no larger than its (n-k+j)-th smallest; the k smallest items and the k largest items reach these two bounds.",
+      "Sort the array ascending and let middle = (k-1)/2 (0-based); the maximum median is a[n-k+middle] and the minimum median is a[middle]; print them in the order maximum, minimum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the array. The minimum median comes from the k smallest items, and the maximum median comes from the k largest items.\n\n## Proof of correctness\n\nThe j-th smallest of any k items can be neither smaller than the global j-th smallest nor larger than the global (n-k+j)-th smallest. The k smallest items and the k largest items reach these two bounds respectively.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

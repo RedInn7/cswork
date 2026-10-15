@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-6",
+  "packageChecksum": "29c63a3d168c91d6728087d3228304e6c1e7d7e3e82fcefe56b4fd451ec8b667",
+  "sourceContentHash": "d0a845ce9acf65504c9962e209184ba16b680772bf8b4cb159775ecc109399bc",
+  "editorialSha256": "e48f2c46ca47938a20bce36b5768efa59f125d7eb67a70e0f9a07b3358ae498c",
+  "hints": {
+    "zh": [
+      "所有数的总和是固定的，所以“最大化自己的得分”和“最小化对手的得分”是同一件事，双方的目标其实一致地指向同一种取法。",
+      "直觉是每次都拿剩下最大的数。可以对剩余个数做归纳：把“先拿最大值”与“先拿别的数”的交替和相减，按降序相邻项配对后差值非负，所以先拿最大值总是不劣。",
+      "把数组降序排序，下标为偶数的数归玩家 1、奇数的归玩家 2，计算交替和 a0 − a1 + a2 − …，输出其绝对值；用 64 位整数。"
+    ],
+    "en": [
+      "The total of all numbers is fixed, so maximizing your own score is the same as minimizing the opponent's score, and both goals point to the same way of picking.",
+      "The intuition is to always take the largest remaining number. Prove it by induction on the count of remaining numbers: subtract the alternating sum for \"take the largest first\" from that for \"take something else first\", pair adjacent terms of the descending order, and the difference is non-negative, so taking the largest first is never worse.",
+      "Sort the array in descending order; even indices go to player 1 and odd indices to player 2; compute the alternating sum a0 - a1 + a2 - ... and print its absolute value using a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe sum of all values is fixed, so maximizing your own score is equivalent to minimizing the opponent's score. Sort the values in descending order, let the two players take numbers alternately, and compute the alternating sum.\n\n## Why it is correct\n\nUse induction on the number of remaining numbers. In the descending array a, taking the maximum first gives the score difference a0 - a1 + a2 - ...; after first taking some other position j, by the induction hypothesis the remaining numbers are also taken alternately. Subtracting the two expressions, the terms can be paired as adjacent items of the descending order, and the resulting difference is non-negative. Therefore there is always an optimal choice that takes the maximum first, and the induction holds.\n\n## Complexity\n\nO(n log n) time and O(n) extra space (sorting and storing the input)."
+}

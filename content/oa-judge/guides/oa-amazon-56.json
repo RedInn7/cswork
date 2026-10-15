@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-56",
+  "packageChecksum": "4be6077d0917563af29cb153b861dfd12116eed8a24a5ae97788a39b602cbd12",
+  "sourceContentHash": "a0bdcc89514ca065d298fd7548c4713cfce96cdc03193ec7b75bff61fa6f7a43",
+  "editorialSha256": "f1771e187987c9151da0abaf83e543e0aa14ae4b33a82ad27456041a50fa3488",
+  "hints": {
+    "zh": [
+      "合法子串里 1 的个数 k 不能为 0（否则 0 也得是 0 个，串就空了）；一旦 k 确定，0 的个数就是 k²，子串长度被固定为 k² + k。",
+      "长度 k²+k 不超过 n，所以 k 最多约 √n 个取值；对每个 k，只需检查所有长度为 k²+k 的窗口里 1 是不是恰好 k 个，用 1 的前缀和可以 O(1) 判断。",
+      "建 1 的前缀和；对 k = 1, 2, … 只要 k²+k ≤ n：设 length = k²+k，遍历所有终点 end = length..n，若 prefix[end] − prefix[end−length] == k 就计数；总复杂度 O(n√n)，答案用 64 位整数。"
+    ],
+    "en": [
+      "The number of 1s, k, in a valid substring cannot be 0 (otherwise there would be no 0s either and the substring would be empty); once k is fixed, the number of 0s is k^2 and the length is fixed at k^2 + k.",
+      "Since k^2+k <= n, there are only about sqrt(n) values of k; for each k, check every window of length k^2+k for exactly k ones, which a prefix count of 1s answers in O(1).",
+      "Build the prefix count of 1s; for k = 1, 2, ... while k^2+k <= n, let length = k^2+k and go over every end = length..n, counting the window when prefix[end] - prefix[end-length] == k; the total work is O(n sqrt n), and the answer should be a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf there are k ones, the substring length must be k^2 + k. Enumerate every k >= 1 for which this length is <= n, and use the prefix count of 1s to check all windows of that fixed length.\n\n## Proof of correctness\n\nA non-empty valid substring cannot have zero 1s, because then it would also have to have zero 0s. Every valid substring has a unique positive integer k and a unique length k^2 + k; the prefix sum condition ensures there are exactly k ones, so the other k^2 characters are all 0. Hence the enumeration counts every valid substring exactly once.\n\n## Complexity\n\nO(n sqrt n) time and O(n) space."
+}

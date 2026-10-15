@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-53",
+  "packageChecksum": "24806b1136d50917a25f62e92124d7b0849a517aae65e05b7144fe136217cf4d",
+  "sourceContentHash": "76111d3252d2bb335845d0751ce76f4d625615531af8c6f8632630d52c076e6e",
+  "editorialSha256": "93b65724c88a15e7e6ad3e600595638612b98cbe66826cf43952bacdb6d42269",
+  "hints": {
+    "zh": [
+      "先排序。设想已经选出的数构成一个集合，前缀极差只取决于集合的最小值和最大值；如果中间还有没选的数，先把它选上不会让任何前缀极差变大。",
+      "因此存在一种最优顺序，使得每一步已选的数恰好是排序后的一个连续区间，而最后加入的数只能是区间的左端或右端。这就得到区间 DP：dp[l][r] = a[r] − a[l] + min(dp[l+1][r], dp[l][r−1])。",
+      "把数组升序排序，单个元素的 dp 为 0；按区间长度从 2 到 n 递推，只保留上一层长度的一维数组（current[l] 由 previous[l] 和 previous[l+1] 得到）；最后 previous[0] 就是答案。O(n²) 次运算，n ≤ 2000，用 64 位整数。"
+    ],
+    "en": [
+      "Sort first. Picture the set of values already placed: a prefix range depends only on its minimum and maximum, and if some unplaced value lies between them, placing it earlier never increases any prefix range.",
+      "So some optimal order always has the placed values forming a contiguous interval of the sorted array, and the last value added is the left or right end of that interval. This gives the interval DP dp[l][r] = a[r] - a[l] + min(dp[l+1][r], dp[l][r-1]).",
+      "Sort ascending; a single element has dp 0; iterate interval lengths from 2 to n keeping only a one-dimensional array for the previous length (current[l] comes from previous[l] and previous[l+1]); at the end previous[0] is the answer. That is O(n^2) work for n <= 2000, with 64-bit values."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter sorting, use an interval DP: dp[l,r] = a[r] - a[l] + min(dp[l+1,r], dp[l,r-1]), where a single element costs 0, rolling over layers that keep only the previous length.\n\n## Proof of correctness\n\nGiven the current minimum and maximum, if some value inside that range has not been chosen yet, choosing it earlier does not increase any prefix range, so there is an optimal order in which each step's chosen values form a contiguous range of the sorted array. The last value added can only be the left or right end of the range; the range of the whole segment is then fixed, and adding the optimal cost of the corresponding shorter range gives the recurrence.\n\n## Complexity\n\nO(n^2) time and O(n) space."
+}

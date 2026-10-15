@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-69",
+  "packageChecksum": "cc98c930dd36a0a9f7865aca7a6fc5ed221de02432b87128be0ef8319b1e5565",
+  "sourceContentHash": "d9be2de68c11794bd8f4b7c47467dc8c7bf0074d34d80a7d25c9ec5744c2fd3e",
+  "editorialSha256": "ec0486bee9615b601b337ef24500912035b85449221eac8ed897d3884196b817",
+  "hints": {
+    "zh": [
+      "一次操作会把某个值的所有出现位置一起改名，所以同一个值的所有位置最终永远是同一类；如果某个值的两次出现夹住了另一个值，这两个值最终必须变成同一类。",
+      "把“出现区间相互交错”的值全部并在一起，会把数组切成若干最小的封闭块（类似按每个字符最后出现位置划分字符串）；不同块之间没有共同的值，可以各自独立处理，每块最终只能剩一种值。",
+      "先记录每个值最后出现的位置；从左到右扫描，维护当前块的最远结束位置 end 和块内各值的出现次数及最大频次；当 i == end 时块结束，费用加上 块长 − 最大频次，然后开始新块。"
+    ],
+    "en": [
+      "One operation renames every occurrence of a value at once, so all positions of a value always stay in the same class; and if two occurrences of one value enclose another value, those two values must end up in the same class.",
+      "Merging all values whose occurrence spans interleave cuts the array into minimal closed blocks (like partitioning a string by the last occurrence of each character); different blocks share no value and can be handled independently, and each block must end with a single value.",
+      "Record the last position of every value; scan left to right, keeping the farthest end of the current block plus the counts of values in it and the maximum frequency; when i == end the block closes, so add block length - maximum frequency to the cost and start a new block."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPartition the array into minimal closed blocks using last occurrence positions, similar to splitting a string by the last position of each character. All values in a block must be merged into one; keep the value with the highest original frequency in the block, at a cost of block length minus that maximum frequency.\n\n## Proof of correctness\n\nIf two occurrences of a value enclose another value, then when that value is kept at the end, the positions in between must hold the same value; even renaming first does not help, because a global replacement can never split positions of the same class. Therefore the closure of mutually interleaving occurrence ranges must become a single class. Different closed blocks share no values and can be merged independently. Keeping one class's original value avoids paying for that class's frequency, while every other position must be changed at least once, so choosing the highest frequency achieves the minimum cost.\n\n## Complexity\n\nO(n) time and O(n) space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-46",
+  "packageChecksum": "b022ea7b6c421c65b3b2e08a71b22470ffcf90a8d5e85902917bc8ea1f834975",
+  "sourceContentHash": "28769cb66564333fb796a09a972460554cd7602f16b31c93a91c056f95b7b7d2",
+  "editorialSha256": "759e64cb56cf17d14199e6e75dd1163d0b11c7c5a5243d25f04f7c7aebd4abde",
+  "hints": {
+    "zh": [
+      "名额限制只作用在原字符串的每个极大相同字符段内部，跳过命令不会改变段的划分，所以各段之间完全独立。",
+      "收益都是正数，每段在名额内能选就选；固定名额时选收益最大的若干项最优，所以每段取最大的 min(k, 段长) 个收益。",
+      "从左到右扫描，找到每个极大段 [start, i)；把这一段的收益降序排序（或部分选择前 k 大），累加前 k 个；全部段加完后用 64 位整数输出。"
+    ],
+    "en": [
+      "The limit applies inside each maximal run of identical characters of the original string, and skipping commands never changes the runs, so the runs are completely independent.",
+      "All profits are positive, so each run should use as many slots as it can; with a fixed number of slots, picking the largest profits is optimal, so each run contributes its min(k, run length) largest profits.",
+      "Scan left to right to find each maximal run [start, i); sort that run's profits in descending order (or select its top k) and add the first k; after all runs, print the total as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nHandle each original run independently and choose at most k items with the largest profits in that run.\n\n## Proof of correctness\n\nThe slots of different runs do not affect each other, and since profits are positive, each run should take items whenever it can. With a fixed number of slots, if a lower profit were chosen while a higher one was left out, swapping them would improve the total, so taking the k largest items of each run is optimal, and summing them gives the global optimum.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

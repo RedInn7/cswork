@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-59",
+  "packageChecksum": "a62475d523664dd02e7ee4ad00ea6844cf51863e8f0786551d0d3e8850bba7bf",
+  "sourceContentHash": "1f4b86e0c0f72754a20a986b8c2d77d27a4529d62f59e64702d3088ba34174ca",
+  "editorialSha256": "cd0f4fd895c28d85af9d1727759364acaf20389bb9d56ef3d43840fc18b4afe7",
+  "hints": {
+    "zh": [
+      "在一个仓库里，“你取 p、同事取 q”构成一整轮，完整的一轮不改变下一次轮到谁；真正决定胜负的只有最后剩下的那部分 r = (v−1) mod (p+q) + 1（1..p+q）。",
+      "在最后这部分里，你第一次出库能取走 p；如果 r > p，你需要同事跳过若干次让你连续出库，最少跳过次数是 ⌈r/p⌉ − 1 = ⌊(r−1)/p⌋。每个仓库的奖励都是 1，所以应该优先拿跳过成本低的仓库。",
+      "对每个仓库算 cost = ((v−1) mod (p+q)) / p（整数除法）；把成本升序排序，依次用预算购买，成本超过剩余预算时停止；输出买到的仓库数。注意 p+q 可能超过 32 位范围。"
+    ],
+    "en": [
+      "At one warehouse, \"you take p, the colleague takes q\" is one full round, and a full round does not change whose turn comes next; only the final remainder r = (v-1) mod (p+q) + 1 (between 1 and p+q) decides the winner.",
+      "In that final part your first dispatch removes p; if r > p you need the colleague to skip so you can dispatch again, and the minimum number of skips is ceil(r/p) - 1 = floor((r-1)/p). Every warehouse is worth 1, so buy the cheapest warehouses in skips first.",
+      "For each warehouse compute cost = ((v-1) mod (p+q)) / p with integer division; sort the costs ascending and buy them one by one with the skip budget, stopping when a cost exceeds the remaining budget; print the number bought. Note that p+q can exceed the 32-bit range."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each warehouse, take the positive remainder after complete rounds, r = (v-1) mod (p+q) + 1; winning it needs floor((r-1)/p) skips. Buy rewards in ascending order of the number of skips needed.\n\n## Proof of correctness\n\nComplete rounds without skips do not change whose turn it is. In the final positive-remainder phase, each extra dispatch of yours requires one skip by the colleague, so the minimum number of extra skips is ceil(r/p) - 1. Skips placed earlier can be exchanged into the final phase without reducing the required number. Every reward is worth 1, so taking the cheapest first achieves the maximum count.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

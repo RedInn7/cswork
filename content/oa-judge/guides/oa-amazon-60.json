@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-60",
+  "packageChecksum": "33b937e07a4bf1204084829ca943f8eb04dd6e169a3b59f4160cf824ac5b85d3",
+  "sourceContentHash": "ce1d43d7eaa8201b916443afcfb7f2f26b2df0116deaf5f73cc85b516c47b065",
+  "editorialSha256": "ff5fc3dca7fd3c29c3b540ebca3f9f02794b960b6fd0d37637113c64469f1905",
+  "hints": {
+    "zh": [
+      "环上相邻两数相差不超过 1，所以选中的不同取值必须是一段连续整数，中间不能有缺口。",
+      "沿着环从最小值走到最大值再走回来，每个内部取值都要被经过两次，所以内部取值至少要出现 2 次；两个端点取值各出现 1 次就够，多余的同值服务器可以挨着放。满足这个条件时，按值先递增再递减就能排成环。",
+      "统计每个值的频次，按值从小到大扫描，维护以当前值为右端点的最大合法总数 current：值不连续时重置为当前频次；与前一个值连续但前一个值只出现 1 次时，前一个值只能做左端点，current = 前一频次 + 当前频次；否则 current 加上当前频次。取所有 current 的最大值。"
+    ],
+    "en": [
+      "Adjacent values on the ring differ by at most 1, so the distinct values chosen must form a range of consecutive integers with no gaps.",
+      "Going around the ring from the smallest value up to the largest and back passes every interior value twice, so each interior value needs at least 2 copies; each of the two end values needs only 1, and extra copies of a value can sit next to each other. When this holds, arranging values increasing then decreasing forms a valid ring.",
+      "Count each value's frequency and scan the values in ascending order, keeping current, the best total for a valid range ending at the current value: reset it to the current frequency when the value is not consecutive; if it is consecutive but the previous value appears only once, the previous value can only be the left end, so current = previous count + current count; otherwise add the current frequency. Take the maximum of current."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe distinct values chosen must be consecutive, and every value except the two end values must appear at least twice. Count frequencies and scan consecutive keys: if the previous key has only 1 item, extending to a new key can only restart from that previous key; otherwise keep accumulating.\n\n## Proof of correctness\n\nThere can be no gap between consecutive values. An interior value separates the two sides, and a round trip around the ring passes at least two servers with that value, so it needs 2 copies; each end needs only 1, and the remaining duplicate values can be placed next to an equal value. When these conditions hold, a ring can be built by going up through the values and then back down, so the condition is necessary and sufficient. The scan maintains the largest total frequency of a valid range whose right end is the current value.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

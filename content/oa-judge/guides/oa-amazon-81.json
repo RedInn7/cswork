@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-81",
+  "packageChecksum": "4aad2ec6c5e8cac6fd1636664ed4089f0532b173ee3b65a16df5a0a042eb21d1",
+  "sourceContentHash": "f5fabfaa03749586e1859aa113890b71e73a54697087be5cc96ba3e08a29bd8a",
+  "editorialSha256": "0e89cef8d4a42e9d3f4d75a2cbdca78036fdb26e35bfc1cb1418baf3280994ab",
+  "hints": {
+    "zh": [
+      "主机恰好有 n/2 台，所以主机内存总和不可能超过“最大的 n/2 个数之和”这个上界。问题是这个上界能不能达到。",
+      "把数组排序后分成较小的一半和较大的一半：较小一半中的每个值都不超过较大一半中的任何值，所以任意一一配对都满足“备机 ≤ 主机”，上界可以达到。",
+      "把内存值升序排序，累加下标 n/2..n−1 的元素并输出；和可能超过 32 位，用 64 位整数。"
+    ],
+    "en": [
+      "There are exactly n/2 primaries, so the primaries' total memory can never exceed the sum of the n/2 largest values. The question is whether that bound is reachable.",
+      "Sort the array and split it into the smaller half and the larger half: every value in the smaller half is at most every value in the larger half, so any one-to-one pairing satisfies backup <= primary, and the bound is reached.",
+      "Sort the memory values ascending and print the sum of the elements at indices n/2..n-1; the sum may exceed 32 bits, so use a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter sorting, choose the n/2 largest servers as primaries and the rest as backups.\n\n## Proof of correctness\n\nAny choice has only n/2 primaries, and their sum cannot exceed the sum of the larger half. Every value in the smaller half is <= every value in the larger half, so any one-to-one matching satisfies backup <= primary, reaching the upper bound.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

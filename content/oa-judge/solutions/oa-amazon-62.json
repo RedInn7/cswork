@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-62",
+  "packageChecksum": "fd8885fcd136b3e67e5f0e983bc47198c6544f6b7896ca6d8c39bd1f310056f9",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    // The answer is the AND of all misplaced values (0 when already sorted, by convention).\n    long long answer = -1;\n    for (int i = 0; i < n; i++) {\n        long long value;\n        cin >> value;\n        if (value != i) answer = answer < 0 ? value : (answer & value);\n    }\n    cout << (answer < 0 ? 0 : answer) << \"\\n\";\n}\n",
+      "sha256": "a66af4535ff43d2317c604325cd619a59b10dc7eef88217616a5ce0f7aa9583a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        // The answer is the AND of all misplaced values (0 when already sorted, by convention).\n        long answer = -1;\n        for (int i = 0; i < n; i++) {\n            long value = nextLong();\n            if (value != i) answer = answer < 0 ? value : (answer & value);\n        }\n        System.out.println(answer < 0 ? 0 : answer);\n    }\n}\n",
+      "sha256": "a03501b1d72724d8e783e9901d74ba948e42d19b684c1b3706dbd3544ed45550"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\t// The answer is the AND of all misplaced values (0 when already sorted, by convention).\n\tanswer := -1\n\tfor i := 0; i < n; i++ {\n\t\tvalue := nextInt()\n\t\tif value != i {\n\t\t\tif answer < 0 {\n\t\t\t\tanswer = value\n\t\t\t} else {\n\t\t\t\tanswer &= value\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(max(answer, 0))\n}\n",
+      "sha256": "a8f7942dd6b381c6e4ea3a56039045f8d9ed2c7203350ac28ac679b49914fabc"
+    }
+  ]
+}

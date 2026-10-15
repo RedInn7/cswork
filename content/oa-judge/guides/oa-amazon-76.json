@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-76",
+  "packageChecksum": "f7a6767458ab15f04dce8f8cbca2645650b8c802ae3e562035636a97a6fe7e2a",
+  "sourceContentHash": "4384e2b0bd7d42925025d91854c7b727459af684dc4aa16c1ac382d1890e8c54",
+  "editorialSha256": "47879a6aaae73b4a9c55e594dec78027aa71c4106ddfea964af31e33a7ba0c97",
+  "hints": {
+    "zh": [
+      "每秒的总用量等于此刻“活跃”的用户数，而活跃数只在某个用户开始或结束时才会变化，所以把时间轴切成若干段，每段内活跃数恒定。",
+      "把每个用户变成两个事件：start 时刻 +1、end+1 时刻 −1，按时间排序后依次处理；一段活跃数为 c、长度为 L 的时间贡献 c×L。阈值若落在某一段内，只需向上取整算出在这一段里还要再走几秒。",
+      "排序事件后维护 active、total、previous：对每个事件时刻 t，先算 contribution = active × (t − previous)；若 active > 0 且 total + contribution ≥ 目标，输出 previous + ⌈(目标 − total)/active⌉ − 1 并结束；否则累加 total、更新 active 和 previous；全部处理完仍不够则输出 −1。阈值可达 10¹⁴，用 64 位整数。"
+    ],
+    "en": [
+      "The usage in each second equals the number of active users at that moment, and that number changes only when some user starts or ends, so the timeline splits into segments with a constant number of active users.",
+      "Turn each user into two events, +1 at start and -1 at end+1, and process them in time order; a segment of length L with c active users contributes c*L. If the threshold falls inside a segment, a ceiling division tells how many more seconds into that segment are needed.",
+      "After sorting the events, keep active, total, and previous: for each event time t, compute contribution = active * (t - previous); if active > 0 and total + contribution >= target, print previous + ceil((target - total)/active) - 1 and stop; otherwise add to total and update active and previous; if all events pass without reaching it, print -1. The target can reach 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord a +1 event at start and a -1 event at end+1, and sort them by time. Between consecutive events the number of active users is fixed, so accumulate segment by segment; when the threshold falls inside a segment, use a ceiling division to find the fewest seconds.\n\n## Proof of correctness\n\nThe events describe exactly whether each second is still inside each closed interval. A segment of L seconds with a fixed active count c contributes cL; if the target falls inside that segment, ceil(remaining amount / c) seconds are needed, which gives the earliest time it is reached. If no segment is enough, the only possible answer is -1.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

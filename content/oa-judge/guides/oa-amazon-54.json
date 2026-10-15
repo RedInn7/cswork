@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-54",
+  "packageChecksum": "efa26c6d6c3e36f437bc0355db277f2101cd7c148ba4faae4b7c67e1ba5c23f7",
+  "sourceContentHash": "b9326468a944d70eff4fe9720c1c85526356ec15017245c648410e272545c615",
+  "editorialSha256": "a304b875b2a67fd93a60ba42d6fde062d0b01c1b49e0deb080daff3b137689b8",
+  "hints": {
+    "zh": [
+      "模数为 p 的位置只能产生 0..p−1 中的值；模数越小，可选集合越小，而且小模数的可选集合包含在大模数的可选集合里。",
+      "按模数从小到大处理，并始终让已经产生的不同值是最紧凑的 0..count−1：如果当前模数 > count，就让它产生新值 count；否则它能产生的值全都已经用过，只能重复。",
+      "把模数升序排序，count 从 0 开始；对每个模数 p，若 p > count 则 count 加一；最后输出 count。"
+    ],
+    "en": [
+      "A position with modulus p can only produce values in 0..p-1; a smaller modulus has a smaller set of options, and the options of a small modulus are contained in those of a larger one.",
+      "Process the moduli from small to large and keep the distinct values produced so far as compact as possible, namely 0..count-1: if the current modulus is greater than count, let it produce the new value count; otherwise every value it can produce is already used, so it can only repeat one.",
+      "Sort the moduli ascending and start with count = 0; for each modulus p, increase count when p > count; print count at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess the moduli in ascending order with 0..count-1 already constructed. If the modulus is greater than count, give the current position the new remainder count and increase the counter.\n\n## Proof of correctness\n\nThe usable sets of smaller moduli are nested inside those of larger moduli. If the current modulus is <= count, all its usable values already lie in 0..count-1, so it cannot add a new distinct value; otherwise the new value count is feasible. This most compact set of distinct values is the least restrictive for later constraints, and induction shows it is optimal.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

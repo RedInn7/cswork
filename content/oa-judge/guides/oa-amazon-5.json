@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-5",
+  "packageChecksum": "f6803b2290cf63cbd1aa43032da438244ef4b0ac19efd0e52a96d11c7c164bf8",
+  "sourceContentHash": "da001287191150089de604df802f9fa43a7e2f15f183efd3cada2e9e6191bcd3",
+  "editorialSha256": "73a5e066f073c9132b278a658bea8b43e290c507a2406dde063cfd002f048912",
+  "hints": {
+    "zh": [
+      "用前缀和 S 表示：从 l 开始的子段，每个前缀和都非负，等价于之后的每个前缀和 S[r] 都不小于 S[l]。",
+      "所以对每个起点 l，子段能延伸到的最远位置，就是 l 右侧第一个满足 S[j] < S[l] 的下标 j 之前；“右侧第一个严格更小”正是单调栈的经典问题。",
+      "构造长度 n+1 的前缀和数组；从左到右维护一个前缀和递增的栈，当前值严格小于栈顶时弹出并记录 stop[栈顶] = 当前下标；没被弹出的 stop 设为 n+1；答案是所有 l<n 中 stop[l]−l−1 的最大值（可能为 0）。前缀和用 64 位整数。"
+    ],
+    "en": [
+      "With prefix sums S: a segment starting at l has every prefix sum non-negative if and only if every later prefix sum S[r] is at least S[l].",
+      "So for each start l, the segment can extend up to just before the first index j to the right of l with S[j] < S[l]; finding the first strictly smaller element to the right is the classic monotonic stack problem.",
+      "Build the prefix sum array of length n+1; scan left to right keeping a stack of increasing prefix sums, and when the current value is strictly smaller than the top, pop it and set stop[top] to the current index; indices never popped get stop = n+1; the answer is the maximum of stop[l]-l-1 over l < n (possibly 0). Use 64-bit prefix sums."
+    ]
+  },
+  "explanationEn": "## Approach\n\nOn the prefix sum array, find for each position the first prefix sum to its right that is strictly smaller. Every element before it can be taken, and reaching it means failure.\n\n## Proof of correctness\n\nFor a segment starting at l, every prefix being non-negative is equivalent to all later prefix sums staying >= S[l]. The first position with a value strictly smaller than S[l] is exactly the first invalid end point. A monotonic stack determines these positions one by one, and the longest valid length follows directly.\n\n## Complexity\n\nO(n) time and O(n) space."
+}

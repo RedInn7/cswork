@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-49",
+  "packageChecksum": "eaa8946d1ca0dc849bb52d338b4a73950d49000d8606c43c6e1f509e9588384b",
+  "sourceContentHash": "6abe438bfc39f31841819582e5c57ec8cebe9ac83228a94c533d131951328c9f",
+  "editorialSha256": "89e5f6272a617f501694d64c435ed68bcac638aee2ebeaa11259a099fe82fb6b",
+  "hints": {
+    "zh": [
+      "突变字符永远不会被删除，而且它们会把普通字符分隔成互不影响的若干段：每段只会被紧挨在它右边的那个突变字符吃掉。",
+      "每一轮，每个突变字符恰好删掉它左边那一段的一个字符，各段同时缩短；所以总轮数等于所有“右边有突变字符”的普通段中最长的那段长度。最后一个突变字符右侧的尾段永远不会被删。",
+      "从左到右扫描，用 run 记录当前连续普通字符的个数；遇到突变字符时用 run 更新答案并把 run 清零，遇到普通字符就 run 加一；扫描结束后不再用尾部的 run 更新，输出答案（没有删除时为 0）。"
+    ],
+    "en": [
+      "Mutation characters are never deleted, and they split the normal characters into independent segments: each segment is eaten only by the mutation character immediately to its right.",
+      "In every round, each mutation character deletes exactly one character of the segment to its left, and all segments shrink at the same time; so the number of rounds equals the length of the longest normal segment that has a mutation character on its right. The tail after the last mutation character is never deleted.",
+      "Scan left to right with a counter run for the current stretch of normal characters; on a mutation character, update the answer with run and reset run to zero; on a normal character, increase run. Do not use the trailing run at the end, and print the answer (0 if nothing is ever deleted)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEach mutation character consumes, one per round, the stretch of consecutive normal characters between it and the previous mutation character. The answer is the maximum length of the normal stretches that precede a mutation character; the trailing normal stretch is never consumed.\n\n## Proof of correctness\n\nMutation characters always remain and block each other, so the normal stretch to the left of each one is reduced by exactly one character per round by that character, and all stretches shrink simultaneously and independently. Finishing all stretches takes as many rounds as the longest one, and the tail to the right of the last mutation character is never deleted.\n\n## Complexity\n\nO(n) time and O(1) space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-72",
+  "packageChecksum": "f7fbb0c77f5825e52324baaf2d748ad9469d9329e8905d3c9f57e66dbd9549ef",
+  "sourceContentHash": "8edbee154303a12a582888500ec0b8560007abec32297f656b3714314f920a99",
+  "editorialSha256": "29d6aa9ef97a856cd6fb629c88493fdbf9b3fa901a4bb2e362b7f509c0648d5c",
+  "hints": {
+    "zh": [
+      "固定一个套餐时，它最好的搭配一定是“价格最高的兼容功能”；所以把功能按价格降序排好，每个套餐从头往后找第一个兼容的即可。",
+      "担心这样会退化成 n×m？不会：每次跳过一个功能，都对应一条不同的不兼容对，所以所有套餐加起来最多失败 X 次，成功 n 次。",
+      "把不兼容对编码成 (套餐−1)×m + (功能−1) 存入集合（或排序后二分查找）；功能下标按价格降序排序；对每个套餐沿这个顺序找到第一个不在集合中的功能，用两者价格和更新最大值；答案可能超过 32 位，用 64 位整数。"
+    ],
+    "en": [
+      "For a fixed plan, its best partner is always the most expensive compatible feature; so sort the features by price in descending order and, for each plan, walk from the front until the first compatible one.",
+      "Worried this degrades to n*m? It does not: every skipped feature corresponds to a different incompatible pair, so across all plans there are at most X failures plus n successes.",
+      "Encode each incompatible pair as (plan-1)*m + (feature-1) and store it in a set (or a sorted array searched by binary search); sort feature indices by price in descending order; for each plan find the first feature in that order not in the set and update the maximum with the sum of the two prices; the answer can exceed 32 bits, so use a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the features by price in descending order, and for each plan scan to the first compatible feature. The total number of failed checks is at most X; take the maximum of each plan's best total price.\n\n## Proof of correctness\n\nFor a fixed plan, the first valid feature is the most expensive one. Every skip corresponds to a different incompatible edge, so the scans over all plans have at most X failures and n successes; this enumerates the optimum completely without degenerating into nm enumeration.\n\n## Complexity\n\nO(m log m + n + X) time and O(n + m + X) space."
+}

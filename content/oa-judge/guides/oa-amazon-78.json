@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-78",
+  "packageChecksum": "8eed155dc14f3c80a2c3ba4e65f97297859555a1ae1f78c85d5db9e6ae4a2f01",
+  "sourceContentHash": "20809bd89f4e4792eb9b0f91db100b5da13d04b3afe6abdc59a630e1493f492a",
+  "editorialSha256": "bdca752423983993b7eceda6c35b98c2571dcecdc97eabb38fd8e076f7a8cebe",
+  "hints": {
+    "zh": [
+      "只关心每个等级出现的次数 f。所有组的大小只能是 b 或 b+1（某个 b ≥ 1），而且 b 不会超过最小的频次。",
+      "固定 b 时，频次 f 至少要分成 ⌈f/(b+1)⌉ 组；这些组每组至少要 b 个，所以可行当且仅当 ⌈f/(b+1)⌉ × b ≤ f，此时把多出来的每组补 1 即可。b 越大，各等级需要的最少组数不增，所以从大往小试，第一个对所有等级都可行的 b 给出最少总组数。",
+      "统计各等级频次；令 b 从最小频次递减到 1：对每个频次算 groups = (f + b)/(b + 1)（整数除法），若 groups × b > f 则该 b 不可行，否则累加 groups；第一个全部可行的 b 的累加和即为答案（b = 1 一定可行）。总工作量不超过 不同等级数 × 最小频次 ≤ n。"
+    ],
+    "en": [
+      "Only the count f of each level matters. All group sizes must be b or b+1 for some b >= 1, and b can never exceed the smallest frequency.",
+      "For a fixed b, a level with frequency f needs at least ceil(f/(b+1)) groups; each of those needs at least b servers, so b works exactly when ceil(f/(b+1)) * b <= f, and then the leftovers can be spread one per group. A larger b never increases the minimum number of groups per level, so try b from large to small; the first b feasible for every level gives the fewest total groups.",
+      "Count the frequency of each level; for b from the smallest frequency down to 1: for each frequency compute groups = (f + b)/(b + 1) with integer division; if groups * b > f this b fails, otherwise add groups; the sum for the first b that works for all levels is the answer (b = 1 always works). The total work is at most (number of levels) x (smallest frequency) <= n."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the smaller group size b, decreasing from the smallest level frequency. A frequency f uses ceil(f/(b+1)) groups, which is feasible only if each of these groups has at least b items. The first b that is feasible for all levels gives the fewest total groups.\n\n## Proof of correctness\n\nFor a fixed b, the number of groups is at least ceil(f/(b+1)). If f >= that number of groups x b, adding the remaining items one per group forms groups of size b or b+1; if not, adding more groups only raises the minimum requirement. As b grows, the minimum number of groups needed for each frequency does not increase, so the first feasible value found while decreasing is optimal.\n\n## Complexity\n\nO(n) time, since the number of distinct levels x the smallest frequency <= n; O(n) space."
+}

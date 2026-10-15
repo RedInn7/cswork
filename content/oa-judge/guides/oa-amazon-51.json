@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-51",
+  "packageChecksum": "4a9eccb129d680529168cccbd5aceb0fa78cb6352a60272db22c596266891e76",
+  "sourceContentHash": "370c477357100c5d754e09f0aaa8ab5f0df376f06647af705a87385b5cf7c8d7",
+  "editorialSha256": "a8ebeb06b95eca5425f4172ea87c070a2dd763fbb27914596c823f52b975b056",
+  "hints": {
+    "zh": [
+      "每台服务器需要的攻击次数是固定的 p = ⌈health/k⌉；它在被关闭之前每秒都贡献 request 个请求，所以总请求数等于“每台服务器的关闭时刻 × 它的 request”之和，再加最后的 1。",
+      "交错攻击不会更好：把攻击按完成顺序连续安排，任何服务器的完成时间都不会变晚。于是问题变成带权完成时间最小化的单机排序：比较相邻两台 i、j，先做 i 更优当且仅当 p_i·w_j < p_j·w_i。",
+      "为每台服务器算出 (p, w=request)，按 p/w 升序排序（用交叉相乘的整数比较避免浮点）；依次累加 elapsed += p，答案 += elapsed × w，初值为 1；用 64 位整数。"
+    ],
+    "en": [
+      "Each server needs a fixed number of attacks p = ceil(health/k); it contributes request requests every second until it is shut down, so the total equals the sum over servers of (shutdown time x request), plus the final 1.",
+      "Interleaving attacks never helps: scheduling each server's attacks contiguously in completion order makes no server finish later. The problem becomes single-machine weighted completion time: for adjacent servers i and j, doing i first is better exactly when p_i*w_j < p_j*w_i.",
+      "For each server compute (p, w = request), sort by p/w ascending using the integer cross-product comparison instead of floating point; then accumulate elapsed += p and answer += elapsed*w starting from answer = 1, using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA server needs p = ceil(health/k) attacks and has weight request. Process the servers contiguously in ascending order of p/request, comparing ratios with integer cross products.\n\n## Proof of correctness\n\nAny interleaved attack plan can be rearranged to handle the servers contiguously in their completion order, so that no server finishes later; hence there is an optimal solution without interleaving. For adjacent jobs i and j, the cost saved by putting i before j instead of the reverse is determined by p_i*w_j - p_j*w_i; sorting by this ratio removes every inversion and is therefore optimal. The total number of requests is the sum of completion time x request, plus the final 1.\n\n## Complexity\n\nO(n log n) time and O(n) space."
+}

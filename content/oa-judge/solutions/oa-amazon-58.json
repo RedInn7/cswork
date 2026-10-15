@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-58",
+  "packageChecksum": "50737de7eee6e6a83c882b3a230148c7381f9aeeffb08c1b024b3b480c64499f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // Only fixed pairs (00 / 11) matter; free pairs (01 / 10) blend into a neighbor.\n    char last = 0;\n    int runs = 0;\n    for (size_t i = 0; i + 1 < s.size(); i += 2)\n        if (s[i] == s[i + 1] && s[i] != last) {\n            runs++;\n            last = s[i];\n        }\n    cout << max(1, runs) << \"\\n\";\n}\n",
+      "sha256": "0e615bff804ae1d6f2d0c1b1313726403d4ade0d6b0847ea333a61784b0e6c16"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        // Only fixed pairs (00 / 11) matter; free pairs (01 / 10) blend into a neighbor.\n        char last = 0;\n        int runs = 0;\n        for (int i = 0; i + 1 < s.length(); i += 2)\n            if (s.charAt(i) == s.charAt(i + 1) && s.charAt(i) != last) {\n                runs++;\n                last = s.charAt(i);\n            }\n        System.out.println(Math.max(1, runs));\n    }\n}\n",
+      "sha256": "43103589d238ecfddaa6d3e79eed6705e1651b778308b2ff06d4d32bc5d1f1e2"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := token()\n\t// Only fixed pairs (00 / 11) matter; free pairs (01 / 10) blend into a neighbor.\n\tvar last byte\n\truns := 0\n\tfor i := 0; i+1 < len(s); i += 2 {\n\t\tif s[i] == s[i+1] && s[i] != last {\n\t\t\truns++\n\t\t\tlast = s[i]\n\t\t}\n\t}\n\tfmt.Println(max(1, runs))\n}\n",
+      "sha256": "b44f383eb57e17698b757f9d77affc5d336b93c0c26a6ce0e1654e68ab114922"
+    }
+  ]
+}

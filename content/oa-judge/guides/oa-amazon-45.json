@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-45",
+  "packageChecksum": "3f03bdc1b840718ca64a24fb6e9dc3309176f1cc5b40bfbf26eefcbea1e0b720",
+  "sourceContentHash": "713cd8056ca88f52463725a048ae615c7077ebbdce242f537cb98a3ec3bb5348",
+  "editorialSha256": "1beb164ab9bf2f09671b616bd77aefd835dc5fb1bc72c704a996d36cc771c2d4",
+  "hints": {
+    "zh": [
+      "考虑两个显然的下界：每次最多发 2 件，所以至少 ⌈n/2⌉ 次；同一地点的商品不能一起发，出现最多的地点有 f 件，就至少要 f 次。",
+      "这两个下界中较大的那个总能达到：若某地点占多数，就让它的每件商品尽量和其它地点配对，剩下的单发；否则总能两两配成不同地点，最多剩一件单发。",
+      "统计每个地点的出现次数（排序后数连续段或用哈希表），取最大频次 f，输出 max(f, (n+1)/2)。"
+    ],
+    "en": [
+      "Consider two obvious lower bounds: each shipment carries at most 2 items, so at least ceil(n/2) shipments; items from the same location cannot ship together, so if the most frequent location has f items, at least f shipments.",
+      "The larger of the two bounds is always achievable: if one location is a majority, pair each of its items with an item from another location and ship the rest alone; otherwise items can be paired across different locations with at most one left over.",
+      "Count how often each location occurs (sort and count runs, or use a hash map), take the largest frequency f, and print max(f, (n+1)/2)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet the most frequent location occur f times; the answer is max(f, ceil(n/2)).\n\n## Proof of correctness\n\nEach shipment carries at most 2 items, so at least ceil(n/2) shipments are needed; items from the same location cannot be paired, so the f items of the most frequent location need at least f shipments. If one location is a majority, pair it with the other locations first and then ship the remainder alone; otherwise the items can be paired so that at most one single item remains, reaching the larger lower bound.\n\n## Complexity\n\nO(n) time and O(n) space."
+}
