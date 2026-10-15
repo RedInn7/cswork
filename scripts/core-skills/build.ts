@@ -161,6 +161,12 @@ export const PROBLEMS: Problem[] = [
     difficulty: '中等',
     summary: { zh: 'O(log n) 的区间求和与单点修改', en: 'O(log n) range sums and point updates' },
   },
+  {
+    slug: 'fenwick-tree',
+    group: 'advanced',
+    difficulty: '中等',
+    summary: { zh: 'lowbit、前缀和与倍增求第 k 个', en: 'lowbit, prefix sums and k-th by binary lifting' },
+  },
 ];
 
 const EXT: Record<CodeLanguage, string> = { python: 'py', cpp: 'cpp', java: 'java', go: 'go' };
