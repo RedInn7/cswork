@@ -95,6 +95,9 @@ before(async () => {
   db.prepare(
     "INSERT INTO study_library(id,number,slug,title_zh,title_en,difficulty,topics_json,payload_json,content_hash,case_count,expected_count,judge_problem_id,verified_hash,imported_at) VALUES('lc-1',1,'two-sum','两数之和','Two Sum','简单','[]','{}','source',1,1,'lc-1',?,0)",
   ).run(`source:${version}`);
+  // The first problem with live drills, published from its checked-in package.
+  const oa = JSON.parse(readFileSync(`content/oa-judge/packages/${[...oaDrillIndex().keys()][0]}.json`, 'utf8')) as OjProblemPackage;
+  await publishProblemDraft(teacher, oa.problem.id, (await saveProblemDraft(teacher, oa, null)).draft!.revision);
 });
 after(() => {
   sqlite().close();
@@ -205,13 +208,31 @@ void test('a running contest closes the problem’s drills, reviews and drill su
   const leave = enterContest(id);
   assert.equal(await status(me, 'GET', `oa-library/${id}/drill`), 403);
   assert.equal(await status(me, 'POST', `oa-library/${id}/review`, { n: drills[0], lines: [1] }), 403);
+  const body = { problemId: id, language: 'python', code: 'print(1)', mode: 'drill', idempotencyKey: randomUUID() };
+  assert.equal(await status(me, 'POST', 'submissions', body), 403);
+  assert.equal(await status(me, 'POST', 'submissions', { ...body, mode: 'drill-run', idempotencyKey: randomUUID() }), 403);
   leave();
   assert.equal(await status(me, 'GET', `oa-library/${id}/drill`), 200);
-  const body = { problemId: 'lc-1', language: 'python', code: 'print(1)', mode: 'drill', idempotencyKey: randomUUID() };
-  const leaveLc = enterContest('lc-1');
-  assert.equal(await status(me, 'POST', 'submissions', body), 403);
-  leaveLc();
   const created = (await (await call(me, 'POST', 'submissions', body)).json()) as { id: string; mode: string };
   assert.equal(created.mode, 'drill');
+  await cancelSubmission(me, created.id);
+});
+
+void test('drill submissions and runs only on a problem with live drills; a drill run is an unlisted run', async () => {
+  const [id] = [...oaDrillIndex()][0];
+  const body = { language: 'python', code: 'print(1)', idempotencyKey: randomUUID() };
+  // Any other problem: no unlisted judging of its hidden cases.
+  assert.equal(await status(me, 'POST', 'submissions', { ...body, problemId: 'lc-1', mode: 'drill' }), 404);
+  assert.equal(await status(me, 'POST', 'submissions', { ...body, problemId: 'lc-1', mode: 'drill-run' }), 404);
+  const created = (await (
+    await call(me, 'POST', 'submissions', { ...body, problemId: id, mode: 'drill-run', stdin: '1\n' })
+  ).json()) as { id: string; mode: string; total: number };
+  assert.equal(created.mode, 'run', 'the page shows it as a run');
+  assert.equal(created.total, 1, 'custom input, like a run');
+  const row = sqlite().prepare('SELECT mode FROM submissions WHERE id=?').get(created.id) as { mode: string };
+  assert.equal(row.mode, 'drill-run');
+  assert.equal(formalMode(row.mode), false);
+  const history = (await (await call(me, 'GET', `submissions?problemId=${id}`)).json()) as { items: { id: string }[] };
+  assert.ok(!history.items.some((item) => item.id === created.id), 'drill runs stay out of the submission list');
   await cancelSubmission(me, created.id);
 });

@@ -16,7 +16,7 @@ import type { Person } from './auth';
 import { handleEditorIntelligence } from './editor-intelligence';
 import { judgeFeed } from './judge-feed';
 import { requestPrecompile } from './oj-precompile';
-import { handleOaLibrary } from './oa-library';
+import { currentDrills, handleOaLibrary } from './oa-library';
 import { handleMockOa } from './mock-oa';
 import { handleSkillTests } from './skill-tests';
 import { handleSpeedrun } from './speedrun';
@@ -399,9 +399,14 @@ export async function handleOj(
       if (e instanceof HttpError) throw e;
       throw new HttpError(400, '无效的 JSON');
     }
-    // A drill submission (fixing a planted bug) starts from the reference: never inside a running contest.
+    // A drill submission or run (fixing a planted bug) starts from the reference: never inside a
+    // running contest, and only on a problem with live drills (an unlisted judging of any other
+    // problem would probe its hidden cases without leaving an attempt).
     const drill = data as { mode?: unknown; problemId?: unknown } | null;
-    if (drill?.mode === 'drill' && typeof drill.problemId === 'string') refuseInContest(p, drill.problemId);
+    if ((drill?.mode === 'drill' || drill?.mode === 'drill-run') && typeof drill.problemId === 'string') {
+      refuseInContest(p, drill.problemId);
+      currentDrills(drill.problemId);
+    }
     const created = await createSubmission(p, data);
     // Reuse the owner-checked public projection for both fresh submissions and
     // idempotent replays, after briefly waiting for a fast verdict. Clients

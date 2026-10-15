@@ -211,7 +211,7 @@ function isStarter(code: string, language: Language, own?: OJProblem['starters']
   return own?.[language] === code || Object.values(starterTemplates).some((set) => set[language] === code);
 }
 /** Analytics calls the formal judge "submit", like its button. */
-const judgeMode = (mode: string) => (mode === 'judge' ? 'submit' : 'run');
+const judgeMode = (mode: string) => (mode === 'judge' || mode === 'drill' ? 'submit' : 'run');
 /** ojRequest's HTTP code, 'timeout' or 'network'. */
 const failureStatus = (e: unknown) =>
   String((e as { status?: number | string }).status ?? 'unknown');
@@ -1471,8 +1471,10 @@ function Workspace({
     setPollPaused(false);
     setWatchFallback(false);
     persistDraft();
-    // A drill's submission is judged like one but never counts (mode 'drill', lib/oa-drills.ts).
-    const sent = drillItem && mode === 'judge' ? 'drill' : mode;
+    // A drill's submission is judged like one but never counts (mode 'drill', lib/oa-drills.ts);
+    // its runs are runs kept out of the history and the AI tutor ('drill-run', shown as 'run').
+    const shown = drillItem && mode === 'judge' ? 'drill' : mode;
+    const sent = drillItem && mode === 'run' ? 'drill-run' : shown;
     const payload = {
       problemId: problem.id,
       language,
@@ -1515,7 +1517,7 @@ function Workspace({
             language,
             code,
             codingMode,
-            mode: sent,
+            mode: shown,
             passed: 0,
             total: 0,
             created_at: Date.now(),

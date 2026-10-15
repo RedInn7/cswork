@@ -78,7 +78,8 @@ test('a fix drill opens on the buggy program with its own local draft, counts ed
         problem_id: 'oa-x-1',
         language: 'python',
         codingMode: 'acm',
-        mode: body.mode,
+        // The server shows a drill's run as a run.
+        mode: body.mode === 'drill-run' ? 'run' : body.mode,
         code: body.code,
         status: 'accepted',
         passed: 2,
@@ -141,6 +142,10 @@ test('a fix drill opens on the buggy program with its own local draft, counts ed
     await act(async () => [...document.querySelectorAll('button')].find((n) => n.textContent === 'Reset code').click());
     await act(async () => [...document.querySelectorAll('button')].find((n) => n.textContent === 'Replace').click());
     assert.equal(editor().value, BUG);
+    // A run in a drill is a drill run: kept out of the history and the AI tutor.
+    await act(async () => [...document.querySelectorAll('button')].find((n) => n.textContent.trim() === 'Run').click());
+    await settle();
+    assert.equal(posts[2].mode, 'drill-run');
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

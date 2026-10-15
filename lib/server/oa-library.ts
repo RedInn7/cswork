@@ -405,8 +405,8 @@ function drillEntries() {
   }
   return drillFile;
 }
-/** A problem's drills while its company is shown and they were built from its live package. */
-function currentDrills(id: string) {
+/** A problem's drills while its company is shown and they were built from its live package; else 404. */
+export function currentDrills(id: string) {
   const entry = drillEntries().get(id);
   if (!entry || !oaLibrary().problem(id) || !oaJudgeRegistry().isCurrent(id, entry.packageChecksum))
     throw new HttpError(404, '这道题没有调试练习');

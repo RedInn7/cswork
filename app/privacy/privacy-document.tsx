@@ -90,7 +90,7 @@ export function PrivacyDocument() {
                 代码并停止输入片刻，平台可能将最新草稿发送到服务器预编译。预编译只准备可执行程序，不自动运行测试，也不产生提交记录或学习成绩。预编译请求处理后或到期时会从任务队列移除，编译结果仅作短期缓存。
               </p>
               <p>
-                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行：每次运行的代码和输入同样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，只是不出现在提交列表、统计和学习进度中；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。OA 调试练习（修复埋入的 bug）的提交也一样：代码和判题结果保存在你的运行记录里，不计积分、不算作通过这道题，也不出现在提交列表、统计和学习进度中；调试练习的代码草稿只留在当前浏览器。代码评审练习里标记的行号只用于当次判分，附加的说明不会上传，服务器都不保存。
+                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行：每次运行的代码和输入同样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，只是不出现在提交列表、统计和学习进度中；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。OA 调试练习（修复埋入的 bug）的提交和运行也一样：代码和判题结果保存在你的运行记录里，不计积分、不算作通过这道题，也不出现在提交列表、统计和学习进度中；调试练习的代码草稿只留在当前浏览器。代码评审练习里标记的行号只用于当次判分，附加的说明不会上传，服务器都不保存。
               </p>
             </section>
 
@@ -463,7 +463,7 @@ export function PrivacyDocument() {
                 statistics or progress. A share link carries the code after
                 the # in the address, which the server does not store. OA
                 debugging drills (fixing a planted bug) work the same way:
-                their submissions&apos; code and results are kept with your run
+                their submissions&apos; and runs&apos; code and results are kept with your run
                 records, earn no points, never mark the problem solved and stay
                 out of your submission list, statistics and progress; a
                 drill&apos;s code draft stays in the current browser. The lines
