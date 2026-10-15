@@ -129,6 +129,8 @@ test('a problem with its own starters opens, switches and resets to them', async
     );
     await settle();
     assert.equal(editor().value, starters.python);
+    // The fixed driver reads the input, so the generic input templates are not offered.
+    assert.equal(document.querySelector('.cs-io-templates'), null);
     // The statement is Markdown: the method table renders as a table.
     assert.ok(document.querySelector('table'));
     await select('Programming language', 'go');

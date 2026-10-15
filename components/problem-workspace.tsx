@@ -2216,7 +2216,10 @@ function Workspace({
               <SquareTerminal size={15} />
             </button>
           )}
-          {codingMode === 'acm' && language !== 'sql' && (
+          {/* A problem's own starter carries a fixed driver that already reads the input. */}
+          {codingMode === 'acm' &&
+            language !== 'sql' &&
+            !problem.starters?.[language] && (
             <select
               className="cs-io-templates"
               aria-label={t('使用输入模板', 'Use an input template')}
