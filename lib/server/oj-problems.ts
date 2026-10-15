@@ -14,6 +14,7 @@ import { createOjSeedPackages } from '../../scripts/seed-oj-data.mjs';
 import type { Person } from './auth';
 import { canSeeCourse, requireCourseVisible } from './course-visibility';
 import { database, shownOaSql } from './env';
+import { freeTrackSql } from '@/lib/free-tracks';
 import {
   oaJudgeRegistry,
   requireOaJudgeReady,
@@ -177,8 +178,8 @@ const libraryJudgeGate = `NOT EXISTS (
       OR l.verified_hash IS NOT (l.content_hash || ':' || p.current_version_id))
 )`;
 
-/** OA, SQL track and study-library problems judge free for any verified account. */
-const freeJudge = `(p.id LIKE 'oa-%' OR p.id LIKE 'sql-%' OR EXISTS(SELECT 1 FROM study_library s WHERE s.judge_problem_id=p.id))`;
+/** OA, first-party tracks (lib/free-tracks.ts) and study-library problems judge free for any verified account. */
+const freeJudge = `(${freeTrackSql('p.id')} OR EXISTS(SELECT 1 FROM study_library s WHERE s.judge_problem_id=p.id))`;
 
 /**
  * `libraryJudgeGate` and `freeJudge` for the whole catalogue, evaluated as sets.
@@ -196,7 +197,7 @@ const catalogueQuery = () => `WITH blocked AS (
   WHERE l.verified_hash IS NOT (l.content_hash || ':' || p.current_version_id)
 )
 SELECT v.*,p.course_id,
-  (p.id LIKE 'oa-%' OR p.id LIKE 'sql-%' OR p.id IN (SELECT judge_problem_id FROM study_library WHERE judge_problem_id IS NOT NULL)) AS free
+  (${freeTrackSql('p.id')} OR p.id IN (SELECT judge_problem_id FROM study_library WHERE judge_problem_id IS NOT NULL)) AS free
 FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id
 WHERE p.published=1 AND p.id NOT IN (SELECT id FROM blocked)${shownOaSql('p.id')}
 ORDER BY p.created_at,p.id`;
