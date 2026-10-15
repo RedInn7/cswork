@@ -9,6 +9,7 @@ import { Input } from './ui/input';
 import { NativeSelect, NativeSelectOption } from './ui/native-select';
 import '@/app/learner-cloud.css';
 
+type LinkKind = 'website' | 'github' | 'linkedin' | 'x';
 type Profile = {
   handle: string;
   visible: boolean;
@@ -16,9 +17,19 @@ type Profile = {
   showContest: boolean;
   bio: string;
   featuredBadge: string | null;
+  links: { kind: LinkKind; url: string }[];
+  school: string;
+  gradYear: number | null;
+  targetRole: string;
 };
 type Earned = { id: string; zh: string; en: string };
 const HANDLE = '^[a-z0-9][a-z0-9\\-]{1,28}[a-z0-9]$';
+const LINKS: [LinkKind, string, string, string][] = [
+  ['website', '个人网站', 'Website', 'https://you.example.com'],
+  ['github', 'GitHub', 'GitHub', 'https://github.com/you'],
+  ['linkedin', 'LinkedIn', 'LinkedIn', 'https://www.linkedin.com/in/you'],
+  ['x', 'X', 'X', 'https://x.com/you'],
+];
 
 /** Account settings: the opt-in public page /u/<handle>. Off until the learner turns it on. */
 export function PublicProfileSettings() {
@@ -32,7 +43,17 @@ export function PublicProfileSettings() {
     showContest: false,
     bio: '',
     featuredBadge: null,
+    links: [],
+    school: '',
+    gradYear: null,
+    targetRole: '',
   });
+  const linkUrl = (kind: LinkKind) => form.links.find((l) => l.kind === kind)?.url ?? '';
+  const setLink = (kind: LinkKind, url: string) =>
+    setForm({
+      ...form,
+      links: LINKS.map(([k]) => ({ kind: k, url: k === kind ? url : linkUrl(k) })).filter((l) => l.url.trim()),
+    });
   // Badges the page would show, from the server: the ones that may be featured.
   const [badges, setBadges] = useState<Earned[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -47,10 +68,11 @@ export function PublicProfileSettings() {
         setSaved(profile);
         // A featured badge no longer earned would be refused on the next save: let it go.
         if (profile)
-          setForm({
+          setForm((form) => ({
+            ...form,
             ...profile,
             featuredBadge: badges?.some((b) => b.id === profile.featuredBadge) ? profile.featuredBadge : null,
-          });
+          }));
         setBadges(badges ?? []);
         setLoaded(true);
       },
@@ -69,8 +91,8 @@ export function PublicProfileSettings() {
       </h2>
       <p className="muted">
         {t(
-          '默认关闭。打开后，别人能看到你的主页名、简介、按难度和站点统计的通过数、刷题热力图、最近通过的题和公开题单；不会显示昵称和邮箱。',
-          'Off by default. When on, others see your handle, bio, solved counts by difficulty and stop, practice heatmap, recent solves and public lists, never your name or email.',
+          '默认关闭。打开后，别人能看到你的主页名、简介、你填写的链接、学校和目标岗位、按难度和站点统计的通过数、按年的刷题热力图和年度回顾、最近通过的题和公开题单，也能拿你的通过数和自己的对比；不会显示昵称和邮箱。',
+          'Off by default. When on, others see your handle, bio, the links, school and target role you fill in, solved counts by difficulty and stop, yearly heatmaps and year in review, recent solves and public lists, and can compare your counts with theirs, never your name or email.',
         )}
       </p>
       <form
@@ -91,7 +113,7 @@ export function PublicProfileSettings() {
           })
             .then(({ profile, badges }) => {
               setSaved(profile);
-              setForm(profile);
+              setForm((form) => ({ ...form, ...profile }));
               setBadges(badges ?? []);
               setMessage(profile.visible ? t('主页已公开。', 'Your profile is public.') : t('已保存，主页未公开。', 'Saved. Your profile is not public.'));
             }, (reason: Error) => setError(reason.message))
@@ -124,6 +146,61 @@ export function PublicProfileSettings() {
           maxLength={160}
           onChange={(e) => setForm({ ...form, bio: e.target.value })}
         />
+        <label htmlFor={`${id}-school`}>{t('学校（可选）', 'School (optional)')}</label>
+        <Input
+          id={`${id}-school`}
+          value={form.school}
+          maxLength={80}
+          autoComplete="organization"
+          onChange={(e) => setForm({ ...form, school: e.target.value })}
+          aria-describedby={`${id}-school-help`}
+        />
+        <small id={`${id}-school-help`} className="muted">
+          {t(
+            '学校会出现在学校排行榜上，需要同时开启比赛展示；同校至少 3 人公开后才有这个学校的榜。学校是自填的，榜上会注明未经验证。',
+            'Your school puts you on its school board, together with showing contests; a school gets a board once 3 learners show it. Schools are self-reported and the board says so.',
+          )}
+        </small>
+        <div className="cloud-profile-pair">
+          <div>
+            <label htmlFor={`${id}-grad`}>{t('毕业年份（可选）', 'Graduation year (optional)')}</label>
+            <Input
+              id={`${id}-grad`}
+              type="number"
+              inputMode="numeric"
+              min={1990}
+              max={2040}
+              value={form.gradYear ?? ''}
+              onChange={(e) => setForm({ ...form, gradYear: e.target.value ? Number(e.target.value) : null })}
+            />
+          </div>
+          <div>
+            <label htmlFor={`${id}-role`}>{t('目标岗位（可选）', 'Target role (optional)')}</label>
+            <Input
+              id={`${id}-role`}
+              value={form.targetRole}
+              maxLength={60}
+              onChange={(e) => setForm({ ...form, targetRole: e.target.value })}
+            />
+          </div>
+        </div>
+        <fieldset className="cloud-profile-links">
+          <legend>{t('链接（可选，只接受 https）', 'Links (optional, https only)')}</legend>
+          {LINKS.map(([kind, zh, en, placeholder]) => (
+            <div key={kind}>
+              <label htmlFor={`${id}-link-${kind}`}>{t(zh, en)}</label>
+              <Input
+                id={`${id}-link-${kind}`}
+                type="url"
+                pattern="https://.+"
+                maxLength={200}
+                placeholder={placeholder}
+                value={linkUrl(kind)}
+                onChange={(e) => setLink(kind, e.target.value)}
+              />
+            </div>
+          ))}
+        </fieldset>
         <label className="cloud-check">
           <input
             type="checkbox"

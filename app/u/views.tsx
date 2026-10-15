@@ -3,7 +3,8 @@ import { threadPath } from '@/lib/community';
 import { problemTitle, type ProblemSummary } from '@/lib/problems';
 import { STOP_NAMES, stopHref } from '@/lib/route-stops';
 import type { followPeople } from '@/lib/server/follows';
-import type { publicProfile, readList } from '@/lib/server/learner-cloud';
+import type { publicCompare, publicProfile, publicYear, readList } from '@/lib/server/learner-cloud';
+import type { Activity } from '@/components/practice-calendar';
 import type { profileCertificates } from '@/lib/server/certificates';
 import { FollowButton } from '@/components/follow-button';
 import { ListStar } from '@/components/list-star';
@@ -12,6 +13,44 @@ import { BandChip, RatingCurve } from '@/components/contest-parts';
 
 /** Judge languages by their usual names; anything else as stored. */
 const LANGUAGE_NAMES: Record<string, string> = { python: 'Python', cpp: 'C++', java: 'Java', go: 'Go', sql: 'SQL', pandas: 'Pandas' };
+const LINK_NAMES: Record<string, string> = { github: 'GitHub', linkedin: 'LinkedIn', x: 'X' };
+const LEVELS = ['easy', 'medium', 'hard'] as const;
+type Solved = { total: number; easy: number; medium: number; hard: number };
+
+/** Solved counts by difficulty, the profile's big numbers. */
+function SolvedStats({ solved, zh }: { solved: Solved; zh: boolean }) {
+  return (
+    <>
+      <dl className="learner-stats">
+        <div className="learner-total">
+          <dt>{zh ? '已通过' : 'Solved'}</dt>
+          <dd>{solved.total}</dd>
+        </div>
+        {LEVELS.map((key) => {
+          const level = levelOf(key)!;
+          return (
+            <div key={key} data-level={key}>
+              <dt>{zh ? level[1] : level[2]}</dt>
+              <dd>{solved[key]}</dd>
+            </div>
+          );
+        })}
+      </dl>
+      {solved.total > 0 && (
+        <span
+          className="learner-split"
+          aria-hidden="true"
+          style={
+            {
+              '--easy': solved.easy / solved.total,
+              '--medium': solved.medium / solved.total,
+            } as React.CSSProperties
+          }
+        />
+      )}
+    </>
+  );
+}
 
 /** /u/<handle>: a learner's opt-in page. Pure of request context, so tests render it directly. */
 export function ProfileView({
@@ -19,20 +58,26 @@ export function ProfileView({
   catalogue,
   zh,
   certificates = [],
+  year,
+  viewer,
 }: {
   profile: NonNullable<ReturnType<typeof publicProfile>>;
   catalogue: ReadonlyMap<string, ProblemSummary>;
   zh: boolean;
   /** Course completion certificates (lib/server/certificates.ts). */
   certificates?: ReturnType<typeof profileCertificates>;
+  /** ?year=: that calendar year's heatmap in place of the last half year. */
+  year?: { year: number; activity: Activity[] };
+  /** The signed-in reader's own visible handle: offers "compare with me". */
+  viewer?: string | null;
 }) {
   const t = (a: string, b: string) => (zh ? a : b);
   const { solved } = profile;
-  const levels = [
-    ['easy', solved.easy],
-    ['medium', solved.medium],
-    ['hard', solved.hard],
-  ] as const;
+  const facts = [
+    profile.school,
+    profile.gradYear && t(`${profile.gradYear} 届`, `Class of ${profile.gradYear}`),
+    profile.targetRole && t(`目标岗位：${profile.targetRole}`, `Aiming for ${profile.targetRole}`),
+  ].filter(Boolean);
   return (
     <article className="learner-profile">
       <section className="lists-public-hero learner-hero">
@@ -51,6 +96,19 @@ export function ProfileView({
           </div>
         )}
         {profile.bio && <p>{profile.bio}</p>}
+        {!!facts.length && <p className="learner-facts">{facts.join(' · ')}</p>}
+        {!!profile.links?.length && (
+          <ul className="learner-links" aria-label={t('链接', 'Links')}>
+            {profile.links.map((link) => (
+              <li key={link.kind}>
+                <a href={link.url} rel="nofollow ugc noopener" target="_blank">
+                  {LINK_NAMES[link.kind] ?? new URL(link.url).hostname.replace(/^www\./, '')}
+                  <span className="sr-only">{t('（新窗口打开）', ' (opens in a new tab)')}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
         <div className="learner-social">
           <FollowButton handle={profile.handle} zh={zh} followers={profile.followers ?? 0}>
             <a href={`/u/${profile.handle}/following`}>
@@ -61,38 +119,32 @@ export function ProfileView({
                 <b>{profile.listStars}</b> {t('次题单被收藏', profile.listStars === 1 ? 'list save' : 'list saves')}
               </span>
             )}
+            {viewer && viewer !== profile.handle && (
+              <a href={`/u/compare?a=${viewer}&b=${profile.handle}`}>{t('和我对比', 'Compare with me')}</a>
+            )}
           </FollowButton>
         </div>
-        <dl className="learner-stats">
-          <div className="learner-total">
-            <dt>{t('已通过', 'Solved')}</dt>
-            <dd>{solved.total}</dd>
-          </div>
-          {levels.map(([key, n]) => {
-            const level = levelOf(key)!;
-            return (
-              <div key={key} data-level={key}>
-                <dt>{zh ? level[1] : level[2]}</dt>
-                <dd>{n}</dd>
-              </div>
-            );
-          })}
-        </dl>
-        {solved.total > 0 && (
-          <span
-            className="learner-split"
-            aria-hidden="true"
-            style={
-              {
-                '--easy': solved.easy / solved.total,
-                '--medium': solved.medium / solved.total,
-              } as React.CSSProperties
-            }
-          />
-        )}
+        <SolvedStats solved={solved} zh={zh} />
       </section>
 
-      <ProfileHeatmap activity={profile.activity} zh={zh} />
+      {!!profile.years?.length && (
+        <nav className="learner-years" aria-label={t('按年份看热力图', 'Heatmap by year')}>
+          <a href={`/u/${profile.handle}`} aria-current={year ? undefined : 'page'}>
+            {t('近半年', 'Last 6 months')}
+          </a>
+          {profile.years.map((y) => (
+            <a key={y} href={`/u/${profile.handle}?year=${y}`} aria-current={year?.year === y ? 'page' : undefined}>
+              {y}
+            </a>
+          ))}
+          {year && (
+            <a className="learner-years-recap" href={`/u/${profile.handle}/recap/${year.year}`}>
+              {t(`${year.year} 年度回顾`, `${year.year} in review`)} →
+            </a>
+          )}
+        </nav>
+      )}
+      <ProfileHeatmap activity={year?.activity ?? profile.activity} zh={zh} year={year?.year} />
 
       {!!profile.contest?.length && (
         <section aria-labelledby="learner-contest">
@@ -291,6 +343,162 @@ export function ProfileView({
         <a className="lists-public-cta" href="/?view=problems&utm_source=profile">
           {t('一起在 CSWork 刷题', 'Practice on CSWork too')} →
         </a>
+      </p>
+    </article>
+  );
+}
+
+/** /u/<handle>/recap/<year>: one year of a public profile. */
+export function RecapView({ recap, zh }: { recap: NonNullable<ReturnType<typeof publicYear>>; zh: boolean }) {
+  const t = (a: string, b: string) => (zh ? a : b);
+  const { handle, year } = recap;
+  return (
+    <article className="learner-profile">
+      <nav className="lists-public-crumbs" aria-label={t('导航路径', 'Breadcrumb')}>
+        <a href={`/u/${handle}`}>@{handle}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{t(`${year} 年度回顾`, `${year} in review`)}</span>
+      </nav>
+      <section className="lists-public-hero learner-hero">
+        <p className="lists-public-kicker">{t('年度回顾', 'Year in review')}</p>
+        <h1>{t(`@${handle} 的 ${year}`, `@${handle} in ${year}`)}</h1>
+        <SolvedStats solved={recap.solved} zh={zh} />
+        {recap.contest && (
+          <p className="learner-recap-contest">
+            {t(
+              `参加 ${recap.contest.contests} 场计分比赛，rating ${recap.contest.start} → ${recap.contest.end}`,
+              `${recap.contest.contests} rated ${recap.contest.contests === 1 ? 'contest' : 'contests'}, rating ${recap.contest.start} → ${recap.contest.end}`,
+            )}
+          </p>
+        )}
+      </section>
+      <ProfileHeatmap activity={recap.activity} zh={zh} year={year} />
+      {!!recap.stops.length && (
+        <section aria-labelledby="learner-recap-stops">
+          <h2 id="learner-recap-stops" className="lists-public-h2">
+            {t('这一年刷得最多的 500 路站点', 'Line 500 stops with most solved this year')}
+          </h2>
+          <ol className="learner-stops">
+            {recap.stops.map((stop) => (
+              <li key={stop.slug}>
+                <a href={stopHref(stop.slug) ?? '/?view=problems'}>
+                  <span>{STOP_NAMES[stop.slug]?.[zh ? 0 : 1] ?? stop.slug}</span>
+                  <small>{t(`今年 ${stop.solved} 题 / 共 ${stop.total}`, `${stop.solved} of ${stop.total} this year`)}</small>
+                  <span
+                    className="lists-public-bar"
+                    style={{ '--frac': stop.solved / stop.total } as React.CSSProperties}
+                    aria-hidden="true"
+                  />
+                </a>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+      {recap.years.length > 1 && (
+        <nav className="learner-years" aria-label={t('其他年份', 'Other years')}>
+          {recap.years.map((y) => (
+            <a key={y} href={`/u/${handle}/recap/${y}`} aria-current={y === year ? 'page' : undefined}>
+              {y}
+            </a>
+          ))}
+        </nav>
+      )}
+      <p className="learner-note">
+        {t(
+          '按你所在时区的日期统计热力图；通过题数按 UTC 年份统计。',
+          'The heatmap counts days in your time zone; solved counts follow the UTC year.',
+        )}
+      </p>
+    </article>
+  );
+}
+
+/** /u/compare: two or three public profiles side by side, counts only. */
+export function CompareView({ compare, zh }: { compare: NonNullable<ReturnType<typeof publicCompare>>; zh: boolean }) {
+  const t = (a: string, b: string) => (zh ? a : b);
+  const { people } = compare;
+  const rows: [string, string, keyof Solved][] = [
+    ['已通过', 'Solved', 'total'],
+    ...LEVELS.map((key) => {
+      const level = levelOf(key)!;
+      return [level[1], level[2], key] as [string, string, keyof Solved];
+    }),
+  ];
+  return (
+    <article className="learner-profile">
+      <section className="lists-public-hero learner-hero">
+        <p className="lists-public-kicker">{t('刷题对比', 'Compare')}</p>
+        <h1>{people.map((p) => `@${p.handle}`).join(' vs ')}</h1>
+        <p className="learner-compare-common">
+          {t(
+            people.length > 2 ? `三人都通过的题：${compare.common} 道` : `两人都通过的题：${compare.common} 道`,
+            `Solved by ${people.length > 2 ? 'all three' : 'both'}: ${compare.common}`,
+          )}
+        </p>
+      </section>
+      <div className="contest-board-wrap" role="region" aria-label={t('通过数对比', 'Solved counts')} tabIndex={0}>
+        <table className="contest-board learner-compare">
+          <caption className="sr-only">{t('按难度的通过数', 'Solved by difficulty')}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{t('难度', 'Difficulty')}</th>
+              {people.map((p) => (
+                <th scope="col" key={p.handle}>
+                  <a href={`/u/${p.handle}`}>@{p.handle}</a>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(([rowZh, rowEn, key]) => (
+              <tr key={key}>
+                <th scope="row">{t(rowZh, rowEn)}</th>
+                {people.map((p) => (
+                  <td key={p.handle}>{p.solved[key]}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {!!compare.stops.length && (
+        <section aria-labelledby="learner-compare-stops">
+          <h2 id="learner-compare-stops" className="lists-public-h2">
+            {t('500 路各站进度', 'Line 500 stops')}
+          </h2>
+          <ol className="learner-compare-stops">
+            {compare.stops.map((stop) => (
+              <li key={stop.slug}>
+                <a href={stopHref(stop.slug) ?? '/?view=problems'}>{STOP_NAMES[stop.slug]?.[zh ? 0 : 1] ?? stop.slug}</a>
+                <ul>
+                  {people.map((p) => {
+                    const n = p.stops[stop.slug] ?? 0;
+                    return (
+                      <li key={p.handle}>
+                        <span>@{p.handle}</span>
+                        <b>
+                          {n}/{stop.total}
+                        </b>
+                        <span
+                          className="lists-public-bar"
+                          style={{ '--frac': n / stop.total } as React.CSSProperties}
+                          aria-hidden="true"
+                        />
+                      </li>
+                    );
+                  })}
+                </ul>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+      <p className="learner-note">
+        {t(
+          '只比较公开主页上已有的统计和共同通过的题数，不列出具体题目。',
+          'Only the counts each public profile already shows, plus how many problems all of them solved; never which ones.',
+        )}
       </p>
     </article>
   );

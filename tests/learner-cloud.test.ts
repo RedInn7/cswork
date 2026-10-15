@@ -197,6 +197,10 @@ void test('the public profile is off by default, names nobody and counts only pu
     showContest: false,
     bio: 'grinding',
     featuredBadge: null,
+    links: [],
+    school: '',
+    gradYear: null,
+    targetRole: '',
   });
   assert.equal(publicProfile('line-rider', catalogue), null, 'not public until switched on');
   assert.equal(await status(other, 'POST', 'profile', { handle: 'line-rider', visible: true }), 409);
