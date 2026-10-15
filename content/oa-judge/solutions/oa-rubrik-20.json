@@ -1,0 +1,21 @@
+{
+  "id": "oa-rubrik-20",
+  "packageChecksum": "c848157578706b6bfef01d97db90236d5a12fbd0245e1865534d6a34dc9464c1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    priority_queue<long long, vector<long long>, greater<long long>> heap;\n    long long stamina = 0;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        heap.push(v);\n        stamina += v;\n        // drop the most negative chosen gem when stamina goes below zero\n        if (stamina < 0) {\n            stamina -= heap.top();\n            heap.pop();\n        }\n    }\n    cout << heap.size() << \"\\n\";\n}\n",
+      "sha256": "6c92ca4f376969a62fcfde1edd3fbb4b989b43a9bbe52e6507dbe10bf408b62d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static boolean hasMore() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return false;\n        ptr--;\n        return true;\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        PriorityQueue<Long> heap = new PriorityQueue<>();\n        long stamina = 0;\n        for (int i = 0; i < n; i++) {\n            long v = nextLong();\n            heap.add(v);\n            stamina += v;\n            // drop the most negative chosen gem when stamina goes below zero\n            if (stamina < 0) stamina -= heap.poll();\n        }\n        System.out.println(heap.size());\n    }\n}\n",
+      "sha256": "03b8e8584bf8420012cec383bdb513089d6afe28291ce1206ab29fbdc9aa8074"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"container/heap\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\ntype minHeap []int64\n\nfunc (h minHeap) Len() int           { return len(h) }\nfunc (h minHeap) Less(i, j int) bool { return h[i] < h[j] }\nfunc (h minHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\nfunc (h *minHeap) Push(x any)        { *h = append(*h, x.(int64)) }\nfunc (h *minHeap) Pop() any {\n\told := *h\n\tv := old[len(old)-1]\n\t*h = old[:len(old)-1]\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn := int(nextInt())\n\th := &minHeap{}\n\tvar stamina int64\n\tfor i := 0; i < n; i++ {\n\t\tv := nextInt()\n\t\theap.Push(h, v)\n\t\tstamina += v\n\t\t// drop the most negative chosen gem when stamina goes below zero\n\t\tif stamina < 0 {\n\t\t\tstamina -= heap.Pop(h).(int64)\n\t\t}\n\t}\n\tfmt.Println(h.Len())\n}\n",
+      "sha256": "5022252bfa09a890785826bb4301696aad856a87ad5b5b71d1a8843698d76b16"
+    }
+  ]
+}

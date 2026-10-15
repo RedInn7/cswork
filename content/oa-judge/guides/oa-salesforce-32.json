@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-32",
+  "packageChecksum": "a59fafb7cef1ced5226a1db060b6a5abb776244578894380f3b8ab2cc2f2842c",
+  "sourceContentHash": "fad909d179ecc900f1593287b996fea561c7358352bbe87be4c9e670c68f3596",
+  "editorialSha256": "b9e7ca7149c693da02d47c870d12ead6a77efc56c5e0001bf0eae38baf843b88",
+  "hints": {
+    "zh": [
+      "最长同字符段的目标长度 L 越大越容易达成，可行性对 L 单调，可以二分 L；但 L=1 要求整串严格交替，只有 0101… 和 1010… 两种结果，需要单独处理。",
+      "L≥2 时各个原始段可以独立考虑：长度为 r 的段里每 L+1 个连续字符至少要翻一次，所以至少需要 floor(r/(L+1)) 次；而通过把翻转位置隔开、在段尾调整位置避免与相邻段拼接，这个次数也总能做到。",
+      "先分别计算变成 0101… 和 1010… 的翻转数，较小者 ≤k 就输出 1；否则统计所有原始段长，在 [2, 最长段] 上二分 L，检查 Σ floor(r/(L+1)) ≤ k，输出最小可行的 L。"
+    ],
+    "en": [
+      "The larger the target length L of the longest run, the easier it is to reach, so feasibility is monotone and you can binary search L. But L=1 forces the whole string to alternate strictly, leaving only 0101... and 1010..., so handle it separately.",
+      "For L>=2 the original runs can be considered independently: in a run of length r every L+1 consecutive characters need at least one flip, so at least floor(r/(L+1)) flips are needed; spacing the flips apart and shifting them near the run's end so it does not merge with its neighbors always achieves that number.",
+      "First compute the flips needed to reach 0101... and 1010...; if the smaller is at most k, print 1. Otherwise collect all original run lengths, binary search L in [2, longest run], check whether the sum of floor(r/(L+1)) is at most k, and print the smallest feasible L."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search on the maximum run length L. When L=1, compute the minimum number of flips to reach either of the two alternating strings; when L>=2, each original run of length r needs at least floor(r/(L+1)) flips, and check whether the sum is <=k.\n\n## Proof of correctness\n\nIn an original run of length r, every L+1 consecutive characters must be flipped at least once, which gives the required lower bound. For L>=2 the flips can be spaced apart, with positions adjusted at the ends to avoid merging with neighboring runs, which achieves that number; each run reaches its bound independently. For L=1 every pair of adjacent positions must differ, so only the two alternating strings are possible, and their Hamming distances must be compared specifically. Feasibility is monotone in L, so binary search is correct.\n\n## Complexity\n\nTime O(n log n), space O(n) to store the original runs."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-rubrik-13",
+  "packageChecksum": "f24d7a3a67d877224c7179b5424727be5f3a208f434779e98005233987401bfa",
+  "sourceContentHash": "816aa8fcc9938841d943a80e3c5e7d457066b9c7bc501db18e14f4c37c5a2c46",
+  "editorialSha256": "03b0f275f6b7af2ea874a8b92ef46844816e5c0a04af4ba953c2d06dd134adbe",
+  "hints": {
+    "zh": [
+      "点赋值会把某个服务精确地设成新值，之后的操作 2 只会对它取最大值；所以每个服务的最终值只取决于它最后一次被赋值的值，以及那次赋值之后出现过的最大 x。",
+      "不能把历史上所有操作 2 的最大 x 当成永久下限，因为点赋值可以把数值调低。先对操作序列预处理“类型 2 目标值的后缀最大值”，再给每个服务记下最后一次赋值的值和时间。",
+      "倒序扫描操作，得到 suffix[t]＝第 t+1 个操作到末尾里类型 2 的最大 x（类型 1 视为 0）；正序扫描，记录每个服务最后赋值的值与时间，初值时间记为 0；每个服务的答案是 max(最后赋值值, suffix[最后赋值时间])。"
+    ],
+    "en": [
+      "A point assignment sets a service to an exact new value, and every later operation 2 can only raise it by taking a maximum. So the final value of a service depends only on its last assigned value and the largest x that appears after that assignment.",
+      "Do not treat the largest operation-2 target in the whole history as a permanent floor, because a point assignment can lower a value. Precompute suffix maxima of the type-2 targets over the operation list, and record each service's last assigned value and time.",
+      "Scan the operations backwards to get suffix[t], the largest type-2 x among operations t+1..m (a type-1 operation counts as 0). Scan forwards to record each service's last assigned value and its time, with the initial value at time 0. Each answer is max(last value, suffix[last time])."
+    ]
+  },
+  "explanationEn": "## Approach\n\nOperation 2 applies chmax(x) to every current value, while operation 1 overwrites a single position and may lower it. Therefore the maximum of all historical HPA values cannot be used as a permanent floor. For each position, record the value and the time of its last assignment (initial value or point assignment); then compute, from right to left, the largest type-2 x at or after each point in time (including the operation at that time position). Each final item is `max(last assigned value, largest HPA x after the last assignment)`.\n\n## Proof of correctness\n\nFix a service i. Its initial value or its last type-1 operation sets the current value exactly to `last_value[i]`. After that, type-1 operations no longer affect it; each type-2 operation takes the maximum of it and x. Applying these operations one after another gives the same result as taking the maximum with the largest of these x values. Therefore the answer is `max(last_value[i], suffix_max[last_assignment[i]])`. HPA operations before that assignment have been overwritten by that type-1 operation, so they are not wrongly counted.\n\n## Complexity\n\nTime O(n+m), space O(n+m).\n\n## Source notes\n\nThe pinned OAMaster source describes the two kinds of operations, but that MDX does not provide a complete input protocol or ranges; this site explicitly adds 1-based point indices and size bounds. The monotone historical-floor solution attached upstream is incorrect when a point assignment can lower a value; this problem fixes it with a suffix maximum."
+}

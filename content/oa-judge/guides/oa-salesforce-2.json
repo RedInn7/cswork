@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-2",
+  "packageChecksum": "cb984ee43b8bea19b1b77fee47605fa48f36a9f83531f236b4ab841e558a8c15",
+  "sourceContentHash": "9af3fb88a895760cd5ce610742f569dc9f9471b1397496baabe5e477ebd26bd0",
+  "editorialSha256": "f549dfc671a28e218ff7988b33690f1225fd33f18a03381b409cf80d5e62173c",
+  "hints": {
+    "zh": [
+      "特征 00 的模型对两种特征都没有帮助，永远不用买；11 一次满足两种特征，01 和 10 必须成对购买才能同时把两种特征的数量各加一。",
+      "固定买 t 个 11 之后，剩下只需各买 k−t 个 01 和 10，当然各取最便宜的。把第 i 便宜的 01 与第 i 便宜的 10 配成一个“双特征单位”，这些单位的价格随 i 递增；再与所有 11 的价格放在一起，问题就变成从一个列表里取最便宜的 k 项。",
+      "分别排序 01、10、11 的费用；对 i<min(|01|,|10|) 生成配对单位 a[i]+b[i]；把配对单位与全部 11 费用合并排序并依次求前缀和；对 k=1..n，前缀和存在就输出它，否则输出 −1。先输出 n，再输出这 n 个答案。"
+    ],
+    "en": [
+      "A model with features 00 never helps either feature, so it is never bought. An 11 model satisfies both features at once, while 01 and 10 must be bought in pairs to raise both counts by one.",
+      "After fixing t models of type 11, you need k-t models each of 01 and 10, and of course the cheapest ones. Pair the i-th cheapest 01 with the i-th cheapest 10 into one dual-feature unit; unit prices increase with i. Put the units together with all 11 prices, and the task becomes taking the k cheapest items of one list.",
+      "Sort the costs of 01, 10, and 11 separately. For i < min(|01|,|10|), create the paired unit a[i]+b[i]. Merge the units with all 11 costs, sort, and take prefix sums. For k=1..n, output the prefix sum if it exists, otherwise -1. Print n first, then these n answers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the costs of 01, 10, and 11 separately. Pair the i-th cheapest 01 with the i-th cheapest 10 to form one dual-feature unit, merge these units with all 11 costs in sorted order, and take prefix sums one by one.\n\n## Correctness\n\nBecause costs are positive, once t models of type 11 are chosen, we only need k-t single-feature models of each kind, and we take the cheapest ones. 01 and 10 are each increasing, so the paired costs are increasing too; the 11 costs are increasing. The k cheapest items of the two sorted lists naturally respect the prefix dependence within each list, which is equivalent to enumerating t to get the minimum cost. 00 never improves any constraint.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

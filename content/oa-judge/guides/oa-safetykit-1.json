@@ -1,0 +1,19 @@
+{
+  "id": "oa-safetykit-1",
+  "packageChecksum": "a65ab5ded4e0e60988953a25720b6070af6d1c6d59d919dd99526c758f0c3477",
+  "sourceContentHash": "410507ae7f8e7b4b0ad9174b4afa08284da2f9f8dbc36e5fe2179688754c352c",
+  "editorialSha256": "11d609784feb9fdd407b4e3d4d4757d6ab84889189c88ef7ad06ee398e2898f7",
+  "hints": {
+    "zh": [
+      "三个变换必须严格按题目顺序执行：先顺时针旋转指定角度，再按标志做垂直翻转，最后按标志做水平翻转；n 不超过 500，直接模拟即可。",
+      "旋转 180、270 度可以看成重复做 rotation/90 次顺时针 90 度旋转；顺时针 90 度旋转后的新矩阵满足 b[i][j]=a[n−1−j][i]。垂直翻转是整体反转行的顺序，水平翻转是把每一行左右反转。",
+      "读入矩阵后循环 rotation/90 次，每次按 b[i][j]=a[n−1−j][i] 生成新矩阵；若 vertical_flip 为 1 则反转行序；若 horizontal_flip 为 1 则反转每一行；最后逐行输出，同行元素用一个空格分隔。"
+    ],
+    "en": [
+      "The three transformations must run in exactly the stated order: first rotate clockwise by the given angle, then flip vertically if its flag is set, then flip horizontally if its flag is set. With n at most 500, direct simulation is enough.",
+      "A rotation by 180 or 270 degrees is just rotation/90 repeated clockwise 90-degree rotations; after one clockwise 90-degree rotation the new matrix satisfies b[i][j]=a[n-1-j][i]. A vertical flip reverses the order of the rows, and a horizontal flip reverses each row.",
+      "Read the matrix, then repeat rotation/90 times: build a new matrix with b[i][j]=a[n-1-j][i]. If vertical_flip is 1, reverse the row order; if horizontal_flip is 1, reverse every row. Print the rows one per line with single spaces between elements."
+    ]
+  },
+  "explanationEn": "## Approach\n\nApply the transformations specified by the problem one after another: a clockwise 90-degree rotation can be done with a new matrix `b[i][j]=a[n-1-j][i]`; after repeating it rotation/90 times, reverse the order of the rows if the vertical flip is enabled, and reverse each row if the horizontal flip is enabled.\n\n## Proof of correctness\n\nThe formula places the element at row `n-1-j`, column `i` of the old matrix at row `i`, column `j` of the new matrix, which is exactly a clockwise 90-degree rotation. Repeating this transformation gives the specified angle; afterwards, reversing the row order and reversing the columns within each row implement the top-bottom and left-right flips respectively. Every operation is executed strictly in the order of the statement, so the result is correct.\n\n## Complexity\n\nO(n^2) time and O(n^2) space."
+}

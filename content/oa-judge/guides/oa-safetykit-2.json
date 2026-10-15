@@ -1,0 +1,19 @@
+{
+  "id": "oa-safetykit-2",
+  "packageChecksum": "754b5ea1f29151775ba13c9ed15ecc2c02056da8417aae4a1bebaabfeb0c3e17",
+  "sourceContentHash": "068ecc8ffcc36c134fec58c33a07063aacf94663a6f483bb9ae111fa3cd9e744",
+  "editorialSha256": "4771d5db0ec95b15db32ed047d3d0be52bb69c07cdff406bfb6c3892cf29a148",
+  "hints": {
+    "zh": [
+      "命令串会被无限次重复执行，所以只需要看执行一遍之后机器人的位置和朝向，就能推断整个轨迹的走势。",
+      "执行一遍后若回到原点，轨迹显然有界；若朝向发生了改变，那么最多重复 4 遍朝向就会转回初始方向，每一遍的位移相互抵消，轨迹同样有界；只有“没回原点且朝向不变”时，每一遍都沿同一方向平移，轨迹无界。",
+      "对每个命令串模拟一遍：用 0..3 表示朝向，L 加一、R 减一（都对 4 取模），G 沿当前朝向前进一步；结束时若位置为 (0,0) 或朝向不为初始方向则输出 YES，否则输出 NO。"
+    ],
+    "en": [
+      "The command string is repeated forever, so the position and heading after a single pass are enough to determine how the whole path behaves.",
+      "If the robot is back at the origin after one pass, the path is clearly bounded. If its heading has changed, then within at most 4 passes it faces the original direction again and the displacements of those passes cancel out, so the path is bounded too. Only when it is not at the origin and still faces the same direction does each pass shift it the same way, making the path unbounded.",
+      "Simulate one pass per string: encode the heading as 0..3, add 1 for L and subtract 1 for R (both modulo 4), and step forward along the current heading for G. At the end, print YES if the position is (0,0) or the heading differs from the initial one, otherwise print NO."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA command string made of G (move forward), L, and R (turn in place) is executed repeatedly; determine whether the robot's path is bounded.\n\n## Proof of correctness\n\nThe construction corresponds one-to-one with the definition in the statement; each input position/operation is processed according to the definition, so no solution is missed and nothing is over-counted.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+}

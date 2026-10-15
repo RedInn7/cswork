@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-12",
+  "packageChecksum": "d07a76432eabbe960750d9fd662e74c78b8791cdba762afa407ced29eeae85c7",
+  "sourceContentHash": "02bbefb4f84609478290cf778e9f688a4a132a6a22051330b751aaa4fb8c2acb",
+  "editorialSha256": "42aa740a3b30fe362e1b13a04db083810a6d9d5ad74720ce0eee41546222ea6c",
+  "hints": {
+    "zh": [
+      "目标串 s 在 Y 中必须连续，在 X 中可以跳着选；所以适合以“s 在 Y 中的结尾位置”为状态，逐个处理 X 的字符。",
+      "设 dp[j] 为：用 X 已处理的前缀作子序列，能拼出的、在 Y 中以第 j 个字符结尾的连续片段的最大长度。新读入 X 的字符 c 若等于 Y[j−1]，片段就能从 dp[j−1] 延长一位；不等就只能跳过 c，保留原值。",
+      "dp 初始全为 0；对 X 的每个字符 c，让 j 从 |Y| 倒序到 1：若 c==Y[j−1]，则 dp[j]=max(dp[j], dp[j−1]+1)。倒序保证用到的是上一轮的 dp[j−1]，不会把同一个 X 字符用两次。最后输出 dp 的最大值。"
+    ],
+    "en": [
+      "The target string s must be contiguous in Y but may skip characters in X, so use the end position of s in Y as the state and process X one character at a time.",
+      "Let dp[j] be the maximum length of a contiguous piece of Y ending at its j-th character that can be formed as a subsequence of the processed prefix of X. If the new character c of X equals Y[j-1], the piece can extend dp[j-1] by one; otherwise c must be skipped and dp[j] keeps its value.",
+      "Start with dp all zero. For each character c of X, loop j from |Y| down to 1: if c==Y[j-1], set dp[j]=max(dp[j], dp[j-1]+1). The descending order makes sure dp[j-1] still holds the previous round's value, so one character of X is never used twice. Print the maximum of dp."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUpdate dp[j] row by row over the characters of X: within the processed prefix of X, dp[j] is the maximum length of a contiguous piece ending at the j-th character of Y that can be formed. When the characters are equal, transition from the old dp[j-1]+1; otherwise, the only option is to skip the current character of X.\n\n## Correctness\n\nSkipping a character of X keeps the old dp[j]. If the current character is used, it must equal Y[j-1], and the previous target character must end right at Y[j-2]; so the only allowed extension is the old dp[j-1]+1. The two choices cover every subsequence scheme while not allowing any character inside Y to be skipped. Taking the maximum over all ending positions gives the answer.\n\n## Complexity\n\nTime O(|X||Y|), space O(|Y|)."
+}

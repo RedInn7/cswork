@@ -1,0 +1,19 @@
+{
+  "id": "oa-rubrik-5",
+  "packageChecksum": "575d81da6dba136b128d0fd69831d2e87e6ebbe488e97e0cf0c5dfe72a7403be",
+  "sourceContentHash": "97c2195e093b9fe5f3198bc2ca14247b91a06920eca53449d32cca1f222ead2c",
+  "editorialSha256": "b2f2f4d2ed2f8f0ff56ff1f5fb15444cface9a39dfb54371edf6f81c3d21dbbe",
+  "hints": {
+    "zh": [
+      "删掉一组 K 个相同字符后，左右两边可能接上并形成新的可删除组，这种连锁反应和括号匹配很像，适合从左到右用栈来处理。",
+      "不要逐个字符压栈，而是压“(字符, 连续个数)”这样的组：新字符和栈顶字符相同时只需让计数加一，计数达到 K 就整组弹出；弹出后下一个字符会自然和新的栈顶比较，从而处理连锁删除。",
+      "从左到右扫描：若栈非空且栈顶字符等于当前字符，栈顶计数加一，等于 K 时弹出；否则压入 (当前字符, 1)。扫描结束后把栈中每组按计数展开拼接，就是最终单词。"
+    ],
+    "en": [
+      "After a group of K equal characters is removed, the two sides may join and form a new removable group. This chain reaction resembles bracket matching and is handled well by a stack scanned from left to right.",
+      "Instead of pushing single characters, push groups of the form (character, consecutive count). When the new character equals the top's character, just increase the count; when the count reaches K, pop the whole group. After a pop, the next character is compared with the new top, which handles chained removals.",
+      "Scan from left to right: if the stack is non-empty and its top character equals the current one, increase the top count and pop it when the count equals K; otherwise push (current character, 1). At the end, expand each group by its count and concatenate them to get the final word."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the characters from left to right, maintaining a stack of `(character, consecutive count)`. When a count reaches K, pop that group; after popping, later characters naturally merge with the new stack top, which handles chained deletions.\n\n## Correctness\n\nAt any prefix of the scan, the stack represents the unique stable result of repeatedly deleting from that prefix according to the rules, and adjacent character groups in the stack are different. When a new character is read, if it equals the stack top it can only extend that group; once the length reaches K, one group is deleted immediately, giving the stable result of the prefix. If the character is different, a new group is created. By induction on the prefix length, expanding the stack at the end gives the stable result of the whole string; the statement guarantees the result is unique, so it does not depend on the order of operations.\n\n## Complexity\n\nLet n be the length of word. Time O(n), space O(n)."
+}

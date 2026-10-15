@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-27",
+  "packageChecksum": "0b7d053da2ab1f179087b05913ae94b401fe1af66e0869736b35610448123514",
+  "sourceContentHash": "f262a32a04afed023bcc10ba12b3a7afd96df0c348a195d74c3cf02f68f7cff7",
+  "editorialSha256": "6d885c8a85f071daa70cd6fe7d67b0badd632a398340cc7943b32bbb3ff76a63",
+  "hints": {
+    "zh": [
+      "任务总量是固定的，两个核的收益之和永远等于全部时间之和 S；所以每一方最大化自己的收益，等价于最大化“自己减去对方”的差值。",
+      "从最后一个任务往前看：设 d 为处理完后面任务时“持锁方相对另一方”的最优差值。当前持锁方若自取任务并交出锁，差值为 time−d；若把任务给对方并保留锁，差值为 d−time；两者取大，就是 |time−d|。",
+      "令 d=0，从后往前对每个任务做 d=|time−d|；同时求出总和 S；最后第一核收益为 (S+d)/2，第二核为 (S−d)/2，按此顺序输出，使用 64 位整数。"
+    ],
+    "en": [
+      "The total work is fixed, so the two cores' payoffs always add up to the sum S of all times. Each side maximizing its own payoff is therefore equivalent to maximizing its own payoff minus the other's.",
+      "Look from the last task backwards: let d be the best advantage of the lock holder over the other core for the remaining tasks. If the current holder takes the task and hands over the lock, the advantage is time-d; if it gives the task away and keeps the lock, it is d-time. The better of the two is |time-d|.",
+      "Start with d=0 and, from the last task to the first, set d=|time-d|; also compute the total S. The first core gets (S+d)/2 and the second gets (S-d)/2; print them in that order using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGoing from back to front, maintain d, the optimal payoff advantage of the lock holder over the other core, starting from 0 and updated for each item as |time-d|. Finally, recover the two cores' payoffs from the total S as (S+d)/2 and (S-d)/2.\n\n## Proof of correctness\n\nTaking the task and handing over the lock produces an advantage of time-d; giving it to the other core and keeping the lock produces d-time. With a fixed total, maximizing one's own payoff is equivalent to maximizing the advantage, and the larger of the two is the absolute value. Backward induction holds; in a tie, the two cores' payoffs are still uniquely determined by the same total and advantage.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input; payoffs use 64 bits."
+}

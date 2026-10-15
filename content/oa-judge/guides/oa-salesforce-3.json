@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-3",
+  "packageChecksum": "76010e201c337e6d38854f41c627fe2af864f155e62941900619f47e56135544",
+  "sourceContentHash": "98637ea8d9c64b562a5bf592f319278973711edc2ac32017281b5755a60796cd",
+  "editorialSha256": "34c2035a88e2341190d8203480a9720a641a25fdb18adeb76f48b360a098ab2e",
+  "hints": {
+    "zh": [
+      "每个位置要回答两个问题：它的值在前面出现过没有、在后面出现过没有；当前位置自己不算。",
+      "从左往右扫描时，维护一个“已经见过的值”的集合，查询当前值是否在其中就回答了第一个问题；从右往左做同样的事就回答第二个问题。注意要先查询、再把当前值加入集合。",
+      "正向扫描：若当前值在集合中则标 1 否则标 0，然后加入集合；清空集合后反向扫描得到后出现标记，再按原顺序排列；第一行输出前出现标记串，第二行输出后出现标记串，各恰好 n 位。"
+    ],
+    "en": [
+      "Each position must answer two questions: has its value appeared earlier, and does it appear later? The position itself does not count.",
+      "While scanning from left to right, keep a set of values already seen; checking whether the current value is in it answers the first question. Doing the same from right to left answers the second. Make sure to look up first and only then add the current value.",
+      "Forward scan: write 1 if the current value is in the set, otherwise 0, then add it. Clear the set and scan backwards to get the later-occurrence flags, kept in the original order. Print the earlier flags on the first line and the later flags on the second, each exactly n digits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDo one forward scan and one backward scan, using a set to store the numbers already seen.\n\n## Correctness\n\nWhen the scan reaches position i, the set contains exactly the values at smaller indices, so a lookup gives the first line; the backward scan likewise gives the values at larger indices. Looking up before inserting excludes the current position itself.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

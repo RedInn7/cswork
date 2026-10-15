@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-23",
+  "packageChecksum": "51b058904005f60f49c15b9c855c9ab457b6730224dd1119c495edbeee801019",
+  "sourceContentHash": "17e92dbd1b9c6148c541ad8bf46f346ec80952ca7937f8d5c185d0e6b36f0450",
+  "editorialSha256": "7fa39a073ac523c963c2990a1254719749e4470352e56abab4a7eca0dd1858be",
+  "hints": {
+    "zh": [
+      "开发人手足够，所有开发同时开始，完成时间只取决于被选去开发的功能中最慢的那个；集成由组长一人依次完成，耗时是被选去集成的时间之和；两者并行，总时间取较大者。",
+      "对总时间 T 做二分：开发时间大于 T 的功能必须改为集成，其余都开发即可；只要这些必须集成的耗时之和不超过 T，T 就可行，而且 T 越大越容易满足。注意耗时可以为 0。",
+      "在 [0, max(developmentTime)] 上二分：对候选 T，用 64 位累加所有 developmentTime[i]>T 的 integrationTime[i]；和 ≤T 则收缩上界，否则抬高下界；输出最小可行值。"
+    ],
+    "en": [
+      "There are enough developers and all development starts together, so the developed features finish when the slowest of them does. Integration is done one after another by the lead alone and takes the sum of the chosen integration times. Both run in parallel, so the total time is the larger of the two.",
+      "Binary search the total time T: features whose development time exceeds T must be integrated instead, and all others can just be developed. T is feasible exactly when those forced integration times sum to at most T, and a larger T is always easier. Note that times can be 0.",
+      "Binary search over [0, max(developmentTime)]: for a candidate T, add up in 64 bits the integrationTime[i] of every developmentTime[i] > T; if the sum is at most T, lower the upper bound, otherwise raise the lower bound. Print the smallest feasible value."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search on the total time T: features whose development time exceeds T must be integrated, and the sum of their integration times must not exceed T; everything else can simply be developed.\n\n## Proof of correctness\n\nIf a development time is >T, that feature cannot be developed, which gives the set that must be integrated. When its sum is >T, no plan can finish within T; otherwise, hand that set to the team lead and develop the rest in parallel, which finishes within T. The decision is monotone in T, so binary search returns the minimum feasible value.\n\n## Complexity\n\nTime O(n log(1+maximum development time)), space O(n); accumulate with 64 bits."
+}

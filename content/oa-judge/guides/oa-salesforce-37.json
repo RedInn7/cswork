@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-37",
+  "packageChecksum": "c3d33a74a1ab3dfa11c69cf3d254a47d9c5731614019fc838cc4d80eb8dcd381",
+  "sourceContentHash": "5ad81b3d069b80fbad1eb75fea25195c01713b0c87a0da0c95905c86c1f2a949",
+  "editorialSha256": "cc03020632decd37f9e71024f23decd3f3b89e17cd70bedeb89eb1d2fd636eac",
+  "hints": {
+    "zh": [
+      "把每个位置 i 的转换成本 |s[i]−t[i]|（ASCII 差的绝对值）算出来，问题就变成：在一个非负整数数组里找总和不超过 K 的最长连续区间。",
+      "成本非负意味着缩短区间不会让总成本变大，所以对每个右端点，合法的左端点是一段连续的后缀，可以用双指针：右端右移、超预算时左端右移，左端永远不回退。",
+      "解析 JSON 得到 s、t、K；右端点从左到右，累加当前位置成本，总和大于 K 时减去左端成本并右移左端；每步用 right−left+1 更新答案；长度为 0 时答案为 0。"
+    ],
+    "en": [
+      "Compute the conversion cost |s[i]-t[i]| (absolute ASCII difference) at every position, and the task becomes finding the longest contiguous interval with total at most K in an array of non-negative integers.",
+      "Non-negative costs mean that shrinking an interval never increases its total, so for each right end the valid left ends form a contiguous suffix, and two pointers work: move the right end forward, move the left end forward while over budget, and never move the left end back.",
+      "Parse the JSON to get s, t, and K. Move the right end from left to right, adding the cost at that position; while the total exceeds K, subtract the cost at the left end and advance it. Update the answer with right-left+1 at each step; with empty strings the answer is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTreat the per-position costs as a non-negative array, and use two pointers to maintain the longest window whose total cost does not exceed K.\n\n## Proof of correctness\n\nShrinking the interval never increases the non-negative cost, so after the right end grows, it is enough to move the left end until the window is valid again. At that point the left end is the smallest possible, giving the longest valid interval for that right end; comparing over all right ends covers the global optimum.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input."
+}

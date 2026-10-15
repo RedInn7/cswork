@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-36",
+  "packageChecksum": "94e1daf33359a29d65b261d3bff245a9712d8ab424388e8a895372f442ce340d",
+  "sourceContentHash": "a94b733afc27778845e83791973f6aeb2516285affeba5b1a2300ca0a7f56361",
+  "editorialSha256": "4d11b9120794c9b37805c77d7504e98042b24791b99ebaca012de01a6ddf1bc3",
+  "hints": {
+    "zh": [
+      "相邻字符是否相同只取决于相邻两个位置，所以只要记住前缀的最后一个字母，就能判断下一个字母能不能接上：用 26 个状态做动态规划。",
+      "设 dp[c] 为前缀合法且以字母 c 结尾的方案数。当前位置可以放字母 c 时，新方案数等于“前缀总方案数减去以 c 结尾的方案数”；固定字母的位置只有对应那一个状态非零，问号则 26 个字母都允许。",
+      "按第一个字符初始化 dp（问号则 26 个都为 1，否则只有该字母为 1）；之后每个位置先求 total=Σdp，再令新 dp[c]=total−dp[c]（字母可用时）或 0（不可用时），全部对 1000000007 取模并注意减法后加模；最后输出 Σdp 取模。"
+    ],
+    "en": [
+      "Whether adjacent characters are equal depends only on neighboring positions, so remembering the last letter of the prefix is enough to decide whether the next letter fits: use dynamic programming with 26 states.",
+      "Let dp[c] be the number of valid prefixes ending with letter c. If the current position may hold letter c, the new count is the total number of prefixes minus those ending with c. A fixed letter keeps only its own state non-zero, while a question mark allows all 26 letters.",
+      "Initialize dp from the first character (all 26 states are 1 for a question mark, otherwise only that letter is 1). For each later position compute total = sum of dp, then set the new dp[c] to total-dp[c] if c is allowed and 0 otherwise, all modulo 1000000007, adding the modulus back after subtraction. Finally print the sum of dp modulo 1000000007."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse 26 states to record the last letter. For a letter c usable at the current position, the new count equals the prefix's total count minus the count ending in c.\n\n## Proof of correctness\n\nEvery valid new prefix is uniquely formed by a valid old prefix followed by a new character different from its last letter; subtracting the count with the same last letter from the total excludes exactly the one invalid class. A fixed letter keeps only its own state, a question mark allows all states, and the claim follows by induction over positions.\n\n## Complexity\n\nTime O(26n), space O(26)."
+}

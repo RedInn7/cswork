@@ -1,0 +1,19 @@
+{
+  "id": "oa-rubrik-20",
+  "packageChecksum": "c848157578706b6bfef01d97db90236d5a12fbd0245e1865534d6a34dc9464c1",
+  "sourceContentHash": "4493eb16d95e9aa9cf9dba91a1649335ab89c90ad81bc81036968bbfe9afbb64",
+  "editorialSha256": "2df7e5b29dc77094774850015f9f1abb0773b01a1241f329cb1c1828d91f3f76",
+  "hints": {
+    "zh": [
+      "体力只在拾取时变化，要在每个时刻都非负。想拾得最多，就应该在不得不放弃时放弃“最拖后腿”的那颗宝石。",
+      "从左到右先假设每颗宝石都拾取；一旦体力变成负数，就从已经拾取的宝石里撤销数值最小（最负）的那一颗：这样只损失一个计数，却能让体力回升最多。",
+      "维护体力和以及已选宝石的最小堆：每读入一个 a[i] 就压入堆并累加体力；若体力小于 0，弹出堆顶并从体力中减去它；扫描结束后堆的大小就是答案。体力和用 64 位整数。"
+    ],
+    "en": [
+      "Stamina only changes when you pick a gem, and it must stay non-negative at every moment. To pick as many as possible, whenever you are forced to give something up you should give up the gem that hurts the most.",
+      "Scan from left to right, tentatively picking every gem. As soon as stamina becomes negative, undo the picked gem with the smallest (most negative) value: that costs only one gem in the count but raises stamina the most.",
+      "Keep the stamina sum and a min-heap of the picked values. For each a[i], push it and add it to stamina; if stamina is below 0, pop the heap top and subtract it from stamina. After the scan, the heap size is the answer. Use a 64-bit integer for stamina."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan from left to right, tentatively picking up every gem while maintaining the stamina sum and a min-heap of the chosen values; if the sum becomes negative, destroy the chosen gem with the smallest (most negative) value (pop the heap top) until stamina is non-negative.\n\n## Correctness\n\nAt any prefix of the scan, the algorithm maintains a feasible chosen set of maximum size. After a new gem is added, if stamina is still non-negative, the size increases by one. If it becomes negative, no set containing all chosen gems of this prefix is feasible; to restore feasibility while keeping as many gems as possible, deleting the chosen gem with the smallest value increases stamina the most while losing only one in the count. Repeat until feasible. Induction over every prefix gives the maximum feasible size; at the end, that is the maximum number of gems picked over the whole process.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

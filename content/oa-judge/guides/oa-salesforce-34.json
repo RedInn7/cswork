@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-34",
+  "packageChecksum": "397db904edd4febb76ddfd5713ff6550efcaf49d1a755597729f44a25479db53",
+  "sourceContentHash": "7e44a0900dee810c42bd976c5d2bb107d2e882c42311f698262c5230d9f9e8ae",
+  "editorialSha256": "a66ced4b1a8e025b9741034d8aa4fcc8fcbaa435a6704f8b728b32b0e5a6ba0f",
+  "hints": {
+    "zh": [
+      "元素互异，差值最小的数值对在排序之后一定是相邻的两个数：如果两数之间还夹着别的数，它们的差会被拆成两个正差之和，严格大于其中某个相邻差。",
+      "所以只要排序一次，算出所有相邻差中的最小值，再找出所有达到这个最小差的相邻对；按排序顺序扫描，输出自然满足“每对小值在前、各对按第一项再第二项升序”的要求。",
+      "读入后排序；第一遍扫描求相邻差的最小值 best（差值可达 2×10^9，用 64 位）；第二遍扫描把每个满足 a[i]−a[i−1]=best 的相邻对按“小 大”的格式各输出一行，不输出对数或差值。"
+    ],
+    "en": [
+      "The elements are distinct, so after sorting, a pair with the minimum difference must be adjacent: if another number sat between them, their difference would split into two positive gaps and be strictly larger than one of the adjacent differences.",
+      "So sort once, compute the smallest difference among adjacent elements, and collect every adjacent pair that reaches it. Scanning in sorted order automatically puts the smaller value first and orders the pairs by first item and then second item.",
+      "Read and sort. In a first pass find best, the minimum adjacent difference (it can reach 2*10^9, so use 64 bits). In a second pass print every adjacent pair with a[i]-a[i-1]=best as \"small large\" on its own line; do not print the count or the difference."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter sorting, find the minimum difference between adjacent elements, then output in order every adjacent pair that achieves it.\n\n## Proof of correctness\n\nIf there are other numbers between the two values of a pair, their difference is split by two positive gaps, so it is strictly larger than at least one adjacent difference; hence the minimum difference can only come from adjacent elements. Scanning in sorted order naturally satisfies all the ordering requirements of the result.\n\n## Complexity\n\nTime O(n log n), space O(n+output); the worst-case output is less than 2400000 bytes."
+}

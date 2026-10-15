@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-33",
+  "packageChecksum": "69d7c84bfcf1802717b67ce538c08452172c7a4a55262c67f79eb60661c0e221",
+  "sourceContentHash": "ffd49fd6511e00a34b6797e09dd61e8fe76bc053a9ad66e57bc9329b878ddf25",
+  "editorialSha256": "c4c1b8bca43e0a66eab5c503676e9dfe2b74c8e93b10817ef0d00023f56a4cd5",
+  "hints": {
+    "zh": [
+      "每个合法分段方案都有唯一的最后一段；去掉最后一段，剩下的是一个“前缀恰好分成少一段”的方案，因此可以按段数做动态规划。还要先处理边界：n=0 时 k=0 输出 0、否则 −1；k<1 或 k>n 输出 −1。",
+      "设 dp[g][e] 为把前 e 个元素恰好分成 g 段的最小代价。计算 dp[g][e] 时枚举最后一段的起点 s，代价是 dp[g−1][s] 加上 a[s..e−1] 的最大值；让 s 从 e−1 往左移动，就能随手更新这段的最大值，不必重复计算。",
+      "dp[0][0]=0，其余为无穷大；对 g=1..k、e=g..n，令 s 从 e−1 递减到 g−1，维护 largest=max(largest,a[s])，取 min(dp[g−1][s]+largest)；只保留上一层可把空间降到 O(n)；输出 dp[k][n]，代价用 64 位整数。"
+    ],
+    "en": [
+      "Every valid partition has a unique last segment; removing it leaves a partition of a prefix into exactly one segment fewer, so dynamic programming over the number of segments works. Handle the edge cases first: when n=0, print 0 if k=0 and -1 otherwise; when k<1 or k>n, print -1.",
+      "Let dp[g][e] be the minimum cost of splitting the first e elements into exactly g segments. To compute it, enumerate the start s of the last segment: the cost is dp[g-1][s] plus the maximum of a[s..e-1]. Moving s from e-1 to the left lets you update that maximum incrementally instead of recomputing it.",
+      "Set dp[0][0]=0 and everything else to infinity. For g=1..k and e=g..n, let s go down from e-1 to g-1, keep largest=max(largest,a[s]), and take the minimum of dp[g-1][s]+largest. Keeping only the previous layer reduces space to O(n). Print dp[k][n]; use 64-bit costs."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRun dynamic programming over the number of segments. Enumerate the left boundary of the last segment; the transition is the previous optimal cost plus the maximum of the last segment, maintaining that maximum incrementally while extending to the left.\n\n## Proof of correctness\n\nEvery valid partition has a unique start of its last segment, and removing the last segment leaves a partition of the prefix into exactly one segment fewer. Taking the minimum over all valid starts, using prefix optima that are correct by induction, covers exactly all partitions. An empty prefix with 0 segments costs 0, and all other impossible states are infinite.\n\n## Complexity\n\nTime O(kn^2), O(n) space with rolling arrays, using 64-bit costs."
+}

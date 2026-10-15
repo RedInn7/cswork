@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-41",
+  "packageChecksum": "1b934b5c3cb13f9c6883a0331a4e8ff40df1e55875b08093a1248d2252e057c5",
+  "sourceContentHash": "1b41c92ddfd0fb088f90ab1d36b1da21dc62c90b84fc94c4607fcceff2c75472",
+  "editorialSha256": "7b5e95250f8c624232c256e50d5bbddb55ad566f3872d895f7395da58eab84ff",
+  "hints": {
+    "zh": [
+      "直接枚举不可行，考虑递推：设 F[i] 为长度 i 的合法串数；长度不足 k 的串不可能出现 k 个连续相同字母，所以 i<k 时 F[i]=26^i。注意 k=1 时任何非空串都不合法，答案直接为 0。",
+      "在合法的长度 i−1 串后面接任意字母共有 26F[i−1] 种，其中恰好会出现一部分非法串：它们是末尾刚好形成 k 个相同字母的串，可以拆成“合法的长度 i−k 前缀＋一个与该前缀末字母不同的字母重复 k 次”，共 25F[i−k] 种；当 i=k 时非法串只有 26 种全同串。",
+      "若 k=1 输出 0；否则 F[0]=1，对 i=1..n 先令 F[i]=26F[i−1]，若 i=k 再减 26，若 i>k 再减 25F[i−k]，全部对 1000000007 取模并在减法后修正为非负；输出 F[n]。"
+    ],
+    "en": [
+      "Enumeration is impossible, so look for a recurrence. Let F[i] be the number of valid strings of length i; a string shorter than k cannot contain k equal letters in a row, so F[i]=26^i for i<k. Note that when k=1 every non-empty string is invalid, so the answer is 0.",
+      "Appending any letter to a valid string of length i-1 gives 26F[i-1] strings, and some of them become invalid: exactly those whose last k letters became equal. Each is a valid prefix of length i-k followed by one letter different from that prefix's last letter repeated k times, so there are 25F[i-k] of them; when i=k the invalid strings are just the 26 all-equal strings.",
+      "If k=1, print 0. Otherwise set F[0]=1 and for i=1..n let F[i]=26F[i-1], subtract 26 when i=k, or subtract 25F[i-k] when i>k, everything modulo 1000000007 and fixed up to be non-negative after subtraction. Print F[n]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet F[i] be the number of valid strings of length i. For i<k it is 26^i; F[k]=26^k-26; for i>k, F[i]=26F[i-1]-25F[i-k]. When k=1, output 0 directly.\n\n## Proof of correctness\n\nAny valid string of length i-1 followed by any letter gives 26F[i-1] strings in total. When i>k, the newly created invalid strings are exactly a valid prefix of length i-k followed by a letter different from that prefix's last character repeated k times, 25F[i-k] in total; when i=k, the invalid strings are the 26 all-equal strings. Subtracting gives the number of valid strings with no duplicates and no omissions.\n\n## Complexity\n\nTime O(n), space O(n) for the array of residues, which can be further reduced to O(k) with a circular buffer."
+}

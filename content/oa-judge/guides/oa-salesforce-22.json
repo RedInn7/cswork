@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-22",
+  "packageChecksum": "2f519dc9f74b7f973495f84416ae5dc343173e37e18fb89dbb614427f96dddf1",
+  "sourceContentHash": "1c9ef6cb75933b7e6f195f29b70597d2b65df99853034059a080f5b416b61dd0",
+  "editorialSha256": "5ea99ada732e0bb32a47efbc165ac0840ba974f0b099cd0fef2f814ab44c6116",
+  "hints": {
+    "zh": [
+      "把每个字符看成权值：普通字符记 1，特殊字符记 0，问题就变成“和不超过 k 的最长连续子数组”，而且所有权值都非负。",
+      "权值非负意味着缩短窗口不会让普通字符数变多，所以对每个右端点，合法的左端点是一段连续区间，可以用滑动窗口：右端点右移时左端点只会向右走。",
+      "右端点从左到右扫描，遇到 charValue 对应为 0 的字符就让计数加一；计数超过 k 时不断右移左端点，并在移出普通字符时减一；每步用 right−left+1 更新最大长度并输出。"
+    ],
+    "en": [
+      "Give each character a weight: 1 for a normal character and 0 for a special one. The task becomes the longest contiguous subarray with sum at most k, and all weights are non-negative.",
+      "Non-negative weights mean that shrinking a window never increases the count of normal characters, so for each right end the valid left ends form a contiguous range, and a sliding window works: the left end only moves right as the right end moves right.",
+      "Move the right end from left to right, increasing the count whenever the character's charValue is 0. While the count exceeds k, advance the left end, decreasing the count when a normal character leaves. Update the maximum with right-left+1 at each step and print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAdvance the right end while counting normal characters; when the count exceeds k, move the left end until the window is valid again.\n\n## Proof of correctness\n\nNormal characters contribute non-negative amounts, so shortening the window never increases the total. The smallest valid left end for each right end gives the longest valid substring for that right end; enumerating all right ends and taking the maximum gives the global optimum.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input."
+}

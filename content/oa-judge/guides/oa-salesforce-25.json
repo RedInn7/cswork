@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-25",
+  "packageChecksum": "c49c16334751cf0277f3806c68b6a4478448b37a02794a50f3625b174ab548ea",
+  "sourceContentHash": "20d1b1e85633dc54874e0570b1e2eb2c4511e69803845c08ce0be1271c0cc9d4",
+  "editorialSha256": "ae4923a27dc298ad5c20be5cf86be33f02a146e7a64f1ac9fa39c834ac6500b6",
+  "hints": {
+    "zh": [
+      "要找的串在 X 中可以跳着取（子序列），在 Y 中必须连续（子串）；适合以“在 Y 中的结尾位置”为状态，依次处理 X 的字符。比较时要按 Unicode 字符（码点）比较，而不是按字节或 UTF-16 单元。",
+      "设 dp[j] 为：用已处理的 X 前缀作子序列，能得到的、在 Y 中以第 j 个字符结尾的最长连续串长度。读入 X 的字符 c 时，若 c 等于 Y 的第 j 个字符，就可以从 dp[j−1] 延长一位；否则不用 c，保持原值。",
+      "先把 JSON 解析成两个码点序列（注意 \\u 转义和代理对要还原成一个字符）；dp 全为 0，对 X 的每个字符让 j 从 |Y| 倒序到 1，相等时 dp[j]=max(dp[j], dp[j−1]+1)；倒序保证同一个 X 字符不被重复使用；输出 dp 的最大值（空串时为 0）。"
+    ],
+    "en": [
+      "The target string may skip characters in X (a subsequence) but must be contiguous in Y (a substring), so use its end position in Y as the state and process X one character at a time. Compare Unicode characters (code points), not bytes or UTF-16 units.",
+      "Let dp[j] be the length of the longest contiguous string ending at the j-th character of Y that can be a subsequence of the processed prefix of X. When a character c of X equals the j-th character of Y, it can extend dp[j-1] by one; otherwise c is not used and dp[j] keeps its value.",
+      "First parse the JSON into two sequences of code points (a \\u escape pair forming a surrogate pair is one character). Start with dp all zero; for each character of X loop j from |Y| down to 1 and, on a match, set dp[j]=max(dp[j], dp[j-1]+1). The descending order prevents reusing one character of X. Print the maximum of dp (0 for empty strings)."
+    ]
+  },
+  "explanationEn": "## Approach\n\ndp[j] stores the longest contiguous string ending at the j-th character of Y that can be a subsequence of the processed prefix of X. For each character of X read, update the matching positions in decreasing order of j to max(old value, dp[j-1]+1).\n\n## Proof of correctness\n\nWhen the current character of X is not used, the old state is kept; when it is used, it must match the current position of Y, and the previous match must end contiguously at the previous position of Y. The decreasing order guarantees that the previous round's state is read and the same character of X is not reused; the two kinds of transitions exhaust all valid matches.\n\n## Complexity\n\nTime O(|X||Y|), space O(|Y|)."
+}

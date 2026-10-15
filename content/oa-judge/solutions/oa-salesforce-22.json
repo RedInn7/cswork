@@ -1,0 +1,21 @@
+{
+  "id": "oa-salesforce-22",
+  "packageChecksum": "2f519dc9f74b7f973495f84416ae5dc343173e37e18fb89dbb614427f96dddf1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    string s, bits;\n    long long k;\n    cin >> s >> k >> bits;\n    long long left = 0, normal = 0, answer = 0;\n    for (long long right = 0; right < (long long)s.size(); right++) {\n        normal += bits[s[right] - 'a'] == '0';\n        while (normal > k) normal -= bits[s[left++] - 'a'] == '0';\n        answer = max(answer, right - left + 1);\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "97d4b20cdb5b3eaa0d4545e2cc8718afc967c5efa531d5f6abab7218ca2604aa"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static boolean hasMore() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return false;\n        ptr--;\n        return true;\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        long k = nextLong();\n        String bits = next();\n        int left = 0, answer = 0;\n        long normal = 0;\n        for (int right = 0; right < s.length(); right++) {\n            if (bits.charAt(s.charAt(right) - 'a') == '0') normal++;\n            while (normal > k) {\n                if (bits.charAt(s.charAt(left) - 'a') == '0') normal--;\n                left++;\n            }\n            answer = Math.max(answer, right - left + 1);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "8bec07c2675565609f1641fdcdf9540eed0cb0d02c8422acbbd4740a7275f2f2"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc nextToken() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\ts := nextToken()\n\tk := nextInt()\n\tbits := nextToken()\n\tvar left, normal int64\n\tanswer := 0\n\tfor right := 0; right < len(s); right++ {\n\t\tif bits[s[right]-'a'] == '0' {\n\t\t\tnormal++\n\t\t}\n\t\tfor normal > k {\n\t\t\tif bits[s[left]-'a'] == '0' {\n\t\t\t\tnormal--\n\t\t\t}\n\t\t\tleft++\n\t\t}\n\t\tanswer = max(answer, right-int(left)+1)\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "a35df31ddd08df16fdb95ced5616a46a9e112af2b1b6b27789b39e5435d7eeaa"
+    }
+  ]
+}

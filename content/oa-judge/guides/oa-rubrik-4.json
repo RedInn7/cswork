@@ -1,0 +1,19 @@
+{
+  "id": "oa-rubrik-4",
+  "packageChecksum": "5bb35d83150ec20efc4bf9fb3492997026815ea72c947a0de0dc7709cec89212",
+  "sourceContentHash": "6c31ac1e8aec13784b6deae7e37abb01e483978cd6c92337278c75949f45c3b2",
+  "editorialSha256": "5ae772215c25ccbeb40429950472e8208b737d14dc075a9d4236de69e8133f01",
+  "hints": {
+    "zh": [
+      "前导零不改变数值，可以先把它们去掉；去掉之后再看剩下的二进制串长什么样。",
+      "2^k 的二进制表示恰好是一个 1 后面跟 k 个 0；如果去掉前导零后什么都不剩，说明这个数是 0，而 0 不是 2 的幂。",
+      "去掉首尾空白和所有前导 0；若剩余串非空、首字符是 1、并且之后再没有出现 1，就输出 True，否则输出 False。"
+    ],
+    "en": [
+      "Leading zeros do not change the value, so strip them first and then look at the shape of the remaining binary string.",
+      "The binary form of 2^k is exactly a single 1 followed by k zeros. If nothing remains after stripping the leading zeros, the number is 0, and 0 is not a power of two.",
+      "Trim surrounding whitespace and all leading 0s. If the rest is non-empty, starts with 1, and contains no further 1, print True; otherwise print False."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter stripping leading zeros, the binary representation is a 1 followed by some number of 0s if and only if the number is a power of 2.\n\n## Correctness\n\nThe binary representation of 2^k is exactly a 1 followed by k zeros; leading zeros do not change the value, and an all-zero string represents 0, so it should return False.\n\n## Complexity\n\nTime O(|s|), space O(|s|)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-salesforce-29",
+  "packageChecksum": "1405c239b9957da3fa5df875c76288f09de27921df248b2cae1bbbb09b8fe079",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> tails;  // tails[i]: smallest tail of a strictly increasing run of length i+1\n    long long x, count = 0;\n    while (cin >> x) {\n        count++;\n        auto it = lower_bound(tails.begin(), tails.end(), x);\n        if (it == tails.end()) tails.push_back(x);\n        else *it = x;\n    }\n    cout << max(0LL, count - (long long)tails.size() - 1) << \"\\n\";\n}\n",
+      "sha256": "0cd57b45aae4ebd0d9fc04b8cea734c665e393a014e4c1f49d4b6019bc876bd6"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static boolean hasMore() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return false;\n        ptr--;\n        return true;\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] tails = new long[Math.max(n, 1)]; // tails[i]: smallest tail of a strictly increasing run of length i+1\n        int size = 0, count = 0;\n        while (hasMore()) {\n            long x = nextLong();\n            count++;\n            int lo = 0, hi = size;\n            while (lo < hi) {\n                int mid = (lo + hi) >>> 1;\n                if (tails[mid] < x) lo = mid + 1;\n                else hi = mid;\n            }\n            if (lo == tails.length) tails = java.util.Arrays.copyOf(tails, tails.length * 2);\n            tails[lo] = x;\n            if (lo == size) size++;\n        }\n        System.out.println(Math.max(0, count - size - 1));\n    }\n}\n",
+      "sha256": "5335aee435c631a2693b640e38a1690532e623aa04696050ff294444da224536"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"sort\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc hasMore() bool {\n\tskip()\n\treturn pos < len(data)\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tnextInt() // n\n\tvar tails []int64 // tails[i]: smallest tail of a strictly increasing run of length i+1\n\tcount := 0\n\tfor hasMore() {\n\t\tx := nextInt()\n\t\tcount++\n\t\ti := sort.Search(len(tails), func(j int) bool { return tails[j] >= x })\n\t\tif i == len(tails) {\n\t\t\ttails = append(tails, x)\n\t\t} else {\n\t\t\ttails[i] = x\n\t\t}\n\t}\n\tfmt.Println(max(0, count-len(tails)-1))\n}\n",
+      "sha256": "a11cd71967177fb9529428f76ec307c9df1472d017bc3e5f9cbfc32c7614ffd1"
+    }
+  ]
+}

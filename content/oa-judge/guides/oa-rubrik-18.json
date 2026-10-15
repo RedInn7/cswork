@@ -1,0 +1,19 @@
+{
+  "id": "oa-rubrik-18",
+  "packageChecksum": "f8d0e0d6e88fde71a712662944152b37cff101f3eb5455e0b469006ac37b9b01",
+  "sourceContentHash": "9cec552300c2a547bddebdd2f15a7676471504e87582650105bc6cbbcfad0ab6",
+  "editorialSha256": "70cf82ae4c568146c1299e5573ea362022021ddb6bab5f8e9564faae41ab3aab",
+  "hints": {
+    "zh": [
+      "经理一旦确定为 v，能雇的人只来自 v 的子树（含 v 本人），预算固定时要让人数最多，就该从成本最小的员工开始雇。",
+      "如果某个成本在 v 的子树里因为超预算而被舍弃，它是当时保留集合中最贵的；对 v 的任何祖先，子树只会更大、预算不变，这个成本也不会被选中，所以可以永久丢掉。由于 R[i]<i，按编号从大到小处理就能保证孩子先于父亲。",
+      "给每个结点维护一个大根堆存放保留的成本及其总和；按编号从 N 到 1 处理结点 v：总和超过 M 就不断弹出堆顶，然后用 L[v]×堆大小更新答案，再把堆合并到父亲（把小堆的元素逐个放进大堆，即启发式合并）。答案可达 10^14，用 64 位整数。"
+    ],
+    "en": [
+      "Once the manager is fixed as v, hired people can only come from v's subtree (including v). With a fixed budget, to hire as many people as possible you should hire the cheapest employees first.",
+      "If a cost is discarded inside v's subtree for exceeding the budget, it was the most expensive kept cost at that moment. For any ancestor of v the subtree is only larger and the budget is the same, so that cost will never be chosen there either and can be dropped for good. Because R[i] < i, processing employees in decreasing index order handles children before their parent.",
+      "Keep a max-heap of the retained costs and their sum for each node. Process v from N down to 1: while the sum exceeds M, pop the top; then update the answer with L[v] times the heap size; then merge the heap into the parent's (push the elements of the smaller heap into the larger one, small-to-large). The answer can reach 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Problem\n\nThe company is a tree rooted at the CEO. Choose a manager v, then hire some employees from v's subtree (including v), with total cost at most M; the happiness is L[v] times the number of hired people. Find the maximum happiness.\n\n## Approach\n\nOnce the manager is fixed as v, we only need to hire as many people as possible from v's subtree, and clearly we should take them in increasing order of cost. So for each node we maintain a max-heap holding the costs in the subtree that are \"currently kept\", together with their sum; whenever the sum exceeds M, pop the largest cost. After a node is processed, merge its heap into its parent's heap (merge the smaller heap into the larger one). Since R[i]<i, processing nodes in decreasing index order guarantees that children are processed before their parent.\n\n## Correctness\n\nIf a cost is popped in subtree v for exceeding the budget, it is the most expensive one in the kept set at that time. For any ancestor u, the multiset of costs in u's subtree contains that of v's subtree, and the budget is the same, so the optimal kept set (the cheapest few costs) will not contain it either; popping it is therefore permanently safe. For each v, what remains in the heap is exactly the longest prefix of the cheapest costs in the subtree whose sum does not exceed M, and its size is the maximum number of people that manager can hire.\n\n## Complexity\n\nSmall-to-large merging gives O(n log^2 n). The answer can reach 10^5×10^9=10^14, so use 64-bit integers.\n\n## Independent verification\n\nThe oracle collects, for every node, the costs in its subtree, sorts them, and greedily takes a prefix (O(n^2 log n), independent of heap merging); on small data it also enumerates every combination of manager and hired subset to take the maximum directly. All parent arrays with 1..4 nodes, costs {1,2}, leadership {1,3}, and budgets 1..3 were enumerated exhaustively, packed 10 tests per group, and the reference program was actually run on them. The wrong solutions cover a manager who cannot hire themselves, popping the cheapest cost when over budget, a 32-bit product, and looking only at direct reports."
+}

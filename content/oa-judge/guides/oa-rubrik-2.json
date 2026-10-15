@@ -1,0 +1,19 @@
+{
+  "id": "oa-rubrik-2",
+  "packageChecksum": "5046d96fcf3c03e4dd6c2320ecf65697cdc4cc15a0405e54ed52e5d2dd31249d",
+  "sourceContentHash": "e29a9f663155975bde25d849be0e436cbf49decb81c5a98242c4aedaec4622ac",
+  "editorialSha256": "645525a71fa03ebb79412bd7400c79d764b3cb2d69508fc4effde76d9590627d",
+  "hints": {
+    "zh": [
+      "一个用户能看到的就是他所在连通分量里的全部用户，所以每个查询的答案就是该用户所在连通分量的大小，与边的方向和顺序无关。",
+      "用并查集一次性处理所有边，把连通的用户合并到同一集合，并在根结点上维护集合大小；重复边和自环在合并时会被自然忽略。",
+      "初始化 parent[i]=i、size[i]=1；对每条边找到两端的根，若不同就把小集合挂到大集合下并累加大小（配合路径压缩）；最后对每个查询用户找到根，按查询顺序输出 size[根]。"
+    ],
+    "en": [
+      "The users someone can see are exactly the users in their connected component, so the answer to each query is the size of that user's connected component, regardless of edge order.",
+      "Process all edges once with a union-find structure, merging connected users into the same set and keeping the set size at the root. Duplicate edges and self-loops are naturally ignored when merging.",
+      "Initialize parent[i]=i and size[i]=1. For each edge, find the roots of both ends; if they differ, attach the smaller set under the larger one and add the sizes (with path compression). Finally, for each queried user find the root and print size[root] in query order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess all edges with a union-find structure using path compression and union by size; for each query, read the set size recorded at the root.\n\n## Correctness\n\nAfter processing each undirected edge, the union-find structure has merged together exactly the vertices that are reachable through edges: by induction over the edges, each set contains exactly its connected component and nothing else. Union by size maintains the set size at the root, so each query outputs exactly the number of people in the user's component.\n\n## Complexity\n\nTime O((N+E+Q) α(N)), space O(N+E)."
+}

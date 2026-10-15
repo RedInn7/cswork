@@ -1,0 +1,21 @@
+{
+  "id": "oa-salesforce-16",
+  "packageChecksum": "09c6735e358df9a47428fba976b4b68ec760f50457846fbb2937976d18f7163b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, k;\n    cin >> n >> k;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    int q = 0;  // groups of size at least 2\n    for (int i = 0; i < k; i++) {\n        long long size;\n        cin >> size;\n        q += size >= 2;\n    }\n    sort(a.begin(), a.end());\n    long long ans = 0;\n    for (int i = 0; i < q; i++) ans += a[n - 1 - i] - a[i];\n    cout << ans << \"\\n\";\n}\n",
+      "sha256": "5575000c965788eff4b5fae49c1e7e39113ff226201871771971dcceef30d1e7"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int read() throws IOException {\n        if (ptr == len) {\n            len = System.in.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static boolean hasMore() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        if (c == -1) return false;\n        ptr--;\n        return true;\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') {\n            r = r * 10 + (c - '0');\n            c = read();\n        }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = read();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), k = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        int q = 0; // groups of size at least 2\n        for (int i = 0; i < k; i++)\n            if (nextLong() >= 2) q++;\n        Arrays.sort(a);\n        long ans = 0;\n        for (int i = 0; i < q; i++) ans += a[n - 1 - i] - a[i];\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "3ee1b71547dffc18cf5ba4f36464740ab2f7c5921c4856a652c25087555a2c27"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(bufio.NewReader(os.Stdin))\n\tn, k := int(nextInt()), int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tq := 0 // groups of size at least 2\n\tfor i := 0; i < k; i++ {\n\t\tif nextInt() >= 2 {\n\t\t\tq++\n\t\t}\n\t}\n\tslices.Sort(a)\n\tvar ans int64\n\tfor i := 0; i < q; i++ {\n\t\tans += a[n-1-i] - a[i]\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "d4d2f05b814a5a364eb4f3a3f6adb4e13320d081a593bb5ce5ea34cc2ac0cb4e"
+    }
+  ]
+}
