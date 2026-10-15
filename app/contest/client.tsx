@@ -912,12 +912,20 @@ export function DuelQueue({ suggested, verified }: { suggested: string; verified
   if (state?.state === 'waiting')
     return (
       <div className="contest-queue">
-        <p aria-live="polite">
-          {t(
-            `正在匹配：对战 rating ${state.rating}，当前接受 ±${state.window} 内的对手`,
-            `Finding an opponent: duel rating ${state.rating}, now within ±${state.window}`,
+        <p>
+          <span aria-live="polite">
+            {t(
+              `正在匹配：对战 rating ${state.rating}，当前接受 ±${state.window} 内的对手`,
+              `Finding an opponent: duel rating ${state.rating}, now within ±${state.window}`,
+            )}
+          </span>
+          {/* Outside the live region: a timer isn't read out every second. */}
+          {now !== null && (
+            <span className="contest-queue-wait" role="timer">
+              {' '}
+              · {formatClock(Math.max(0, now - state.since))}
+            </span>
           )}
-          {now !== null && <span className="contest-queue-wait"> · {formatClock(Math.max(0, now - state.since))}</span>}
         </p>
         <button
           type="button"

@@ -384,7 +384,10 @@ test('quick match: queue under a name, wait with the window shown, cancel', asyn
     await act(async () => button('Quick match').click());
     await wait();
     assert.deepEqual(api.posts.at(-1), ['oj/contests/duel/queue', { displayName: 'Amy' }]);
-    assert.ok(document.querySelector('.contest-queue').textContent.includes('within ±200'));
+    const live = document.querySelector('.contest-queue [aria-live]');
+    assert.ok(live.textContent.includes('within ±200'));
+    const clock = document.querySelector('.contest-queue [role="timer"]');
+    assert.ok(clock && !live.contains(clock), 'the ticking clock stays out of the live region');
     await act(async () => button('Cancel').click());
     await wait();
     assert.deepEqual(api.posts.at(-1), ['oj/contests/duel/leave', {}]);
