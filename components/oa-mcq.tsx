@@ -61,7 +61,7 @@ export function McqItem({
   const right = mcqRight(q.answer, picks);
   const letters = q.answer.map((a) => LETTERS[a]).join(zh ? '、' : ', ');
   return (
-    <fieldset className="oa-mcq-item">
+    <fieldset className="oa-mcq-item" aria-describedby={q.code ? `mcq-code-${q.id}` : undefined}>
       <legend>
         <span className="oa-mcq-qno" aria-hidden="true">
           Q{n}
@@ -69,7 +69,7 @@ export function McqItem({
         {text.q}
       </legend>
       {q.code && (
-        <pre className="oa-mcq-code">
+        <pre className="oa-mcq-code" id={`mcq-code-${q.id}`}>
           <code>{q.code}</code>
         </pre>
       )}
