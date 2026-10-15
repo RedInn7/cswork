@@ -19,6 +19,7 @@ for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Eve
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import('react-dom/client');
 const { ReminderSettings } = await import('../components/reminder-settings.tsx');
+const { setLocale } = await import('../lib/i18n.ts');
 const { CompanyFollowButton, FollowedCompanies } = await import('../components/company-follow-button.tsx');
 
 const server = {
@@ -26,11 +27,14 @@ const server = {
   follows: { signedIn: true, items: [] },
 };
 const calls = [];
+// While set, saves wait for it: a request in flight.
+let gate = null;
 globalThis.fetch = async (url, init = {}) => {
   const key = `${init.method ?? 'GET'} ${String(url)}`;
   const body = init.body ? JSON.parse(init.body) : undefined;
   calls.push([key, body]);
   if (key === 'GET /api/oj/notify') return Response.json(server.settings);
+  if (gate) await gate;
   // Off drops every device's push address.
   if (key === 'POST /api/oj/notify')
     return Response.json((server.settings = { ...server.settings, prefs: body.prefs, endpoints: body.prefs ? server.settings.endpoints : [] }));
@@ -85,10 +89,10 @@ test('reminders: off until turned on, then each change saves with the local time
   await act(async () => root.render(createElement('div')));
 });
 
-test('reminders saved in another time zone are moved to this one on open; unverified, no email', async () => {
+test('reminders saved in another time zone or language are moved to this one on open and on a switch; unverified, no email', async () => {
   const tz = new Date().getTimezoneOffset();
   server.settings = {
-    prefs: { review: true, streak: false, daily: true, contest: true, email: false, hour: 9, tz: tz + 60, locale: 'en' },
+    prefs: { review: true, streak: false, daily: true, contest: true, email: false, hour: 9, tz: tz + 60, locale: 'zh' },
     push: null,
     mail: true,
     verified: false,
@@ -97,10 +101,68 @@ test('reminders saved in another time zone are moved to this one on open; unveri
   calls.length = 0;
   await act(async () => root.render(createElement(ReminderSettings)));
   await settle();
-  assert.deepEqual(calls.at(-1), ['POST /api/oj/notify', { prefs: { ...server.settings.prefs, tz } }]);
+  assert.deepEqual(calls.at(-1), ['POST /api/oj/notify', { prefs: { ...server.settings.prefs, tz, locale: 'en' } }]);
   assert.equal(box('Also email my account address').disabled, true);
   assert.match(box('Also email my account address').closest('label').textContent, /Verify your email/);
+  // Switching the site language while the card is open: once, and not again on the reply.
+  calls.length = 0;
+  try {
+    await act(async () => setLocale('zh'));
+    await settle();
+    assert.deepEqual(calls, [['POST /api/oj/notify', { prefs: { ...server.settings.prefs, locale: 'zh' } }]]);
+  } finally {
+    await act(async () => setLocale('en'));
+    await settle();
+  }
+  // Already matching: opening the card saves nothing.
   await act(async () => root.render(createElement('div')));
+  calls.length = 0;
+  await act(async () => root.render(createElement(ReminderSettings)));
+  await settle();
+  assert.deepEqual(calls, [['GET /api/oj/notify', undefined]]);
+  await act(async () => root.render(createElement('div')));
+});
+
+test('a save in flight disables nothing, so focus stays put; a change made meanwhile is not sent', async () => {
+  const tz = new Date().getTimezoneOffset();
+  server.settings = {
+    prefs: { review: true, streak: true, daily: false, contest: true, email: false, hour: 20, tz, locale: 'en' },
+    push: null,
+    mail: true,
+    verified: true,
+    endpoints: [],
+  };
+  await act(async () => root.render(createElement(ReminderSettings)));
+  await settle();
+  let release;
+  gate = new Promise((done) => (release = done));
+  try {
+    calls.length = 0;
+    const hour = document.querySelector('#reminders select');
+    hour.focus();
+    await act(async () => {
+      Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, 'value').set.call(hour, '7');
+      hour.dispatchEvent(new window.Event('change', { bubbles: true }));
+    });
+    await settle();
+    assert.equal(document.querySelector('#reminders').getAttribute('aria-busy'), 'true');
+    for (const control of document.querySelectorAll('#reminders input, #reminders select, #reminders button')) {
+      assert.equal(control.disabled, false, control.outerHTML);
+      assert.equal(control.matches(':disabled'), false, control.outerHTML);
+    }
+    assert.equal(hour.getAttribute('aria-disabled'), 'true');
+    assert.equal(document.activeElement, hour);
+    await click(box('The daily problem'));
+    assert.equal(box('The daily problem').checked, false);
+    assert.deepEqual(calls.map(([key, body]) => [key, body.prefs.hour, body.prefs.daily]), [['POST /api/oj/notify', 7, false]]);
+    await act(async () => release());
+    await settle();
+    assert.equal(hour.getAttribute('aria-disabled'), 'false');
+    assert.equal(hour.value, '7');
+  } finally {
+    gate = null;
+    await act(async () => root.render(createElement('div')));
+  }
 });
 
 test('push for this device: permission, subscribe with the VAPID key, off again, gone with reminders off', async () => {

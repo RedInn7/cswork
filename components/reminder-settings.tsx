@@ -41,7 +41,10 @@ export function ReminderSettings() {
   const [device, setDevice] = useState<PushSubscription | null>();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  // One request at a time. Nothing is disabled meanwhile (that would drop keyboard focus from the
+  // control just used): the controls say aria-disabled and a change made then is not sent.
   async function run(work: () => Promise<void>) {
+    if (busy) return;
     setBusy(true);
     setError('');
     try {
@@ -65,12 +68,7 @@ export function ReminderSettings() {
   useEffect(() => {
     let live = true;
     api<Settings>('oj/notify').then(
-      (s) => {
-        if (!live) return;
-        setSettings(s);
-        // Moved time zones (or daylight saving): keep the hour local.
-        if (s.prefs && s.prefs.tz !== new Date().getTimezoneOffset()) void save(s.prefs);
-      },
+      (s) => live && setSettings(s),
       (e: Error) => live && setError(e.message),
     );
     if (pushSupported())
@@ -81,8 +79,15 @@ export function ReminderSettings() {
     return () => {
       live = false;
     };
-    // oxlint-disable-next-line react-hooks/exhaustive-deps -- Once on mount.
   }, []);
+  const prefs = settings?.prefs;
+  // Moved time zones (or daylight saving), or switched the site language: the hour stays local
+  // and the reminders come in the language the site is read in.
+  useEffect(() => {
+    // oxlint-disable-next-line react/react-compiler -- Syncs the server's copy; save() marks the card busy.
+    if (prefs && (prefs.tz !== new Date().getTimezoneOffset() || prefs.locale !== locale)) void save(prefs);
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- When either changes.
+  }, [prefs, locale]);
   const pushOn = (publicKey: string) =>
     run(async () => {
       if ((await Notification.requestPermission()) !== 'granted')
@@ -99,12 +104,11 @@ export function ReminderSettings() {
       await subscription.unsubscribe();
       setDevice(null);
     });
-  const prefs = settings?.prefs;
   // Push is on here only while the server still has this browser's endpoint: turning reminders
   // off elsewhere, a gone push service or another account subscribing this browser drops it.
   const here = device && settings?.endpoints.includes(new URL(device.endpoint).href) ? device : null;
   return (
-    <section className="form-card commerce-account-card" id="reminders" aria-labelledby={`${id}-title`}>
+    <section className="form-card commerce-account-card" id="reminders" aria-labelledby={`${id}-title`} aria-busy={busy}>
       <h2 id={`${id}-title`}>
         <BellRing size={19} aria-hidden="true" />
         {t('学习提醒', 'Reminders')}
@@ -120,7 +124,7 @@ export function ReminderSettings() {
       ) : !prefs ? (
         <Button
           variant="outline"
-          disabled={busy}
+          aria-disabled={busy}
           onClick={() =>
             void save({ review: true, streak: true, daily: false, contest: true, email: false, hour: 20, tz: 0, locale })
           }
@@ -129,11 +133,16 @@ export function ReminderSettings() {
         </Button>
       ) : (
         <div className="cloud-profile-form">
-          <fieldset className="cloud-profile-links" disabled={busy}>
+          <fieldset className="cloud-profile-links">
             <legend>{t('提醒内容', 'Remind me about')}</legend>
             {KINDS.map(([kind, zh, en]) => (
               <label className="cloud-check" key={kind}>
-                <input type="checkbox" checked={prefs[kind]} onChange={(e) => void save({ ...prefs, [kind]: e.target.checked })} />
+                <input
+                  type="checkbox"
+                  checked={prefs[kind]}
+                  aria-disabled={busy}
+                  onChange={(e) => void save({ ...prefs, [kind]: e.target.checked })}
+                />
                 <span>{t(zh, en)}</span>
               </label>
             ))}
@@ -142,7 +151,7 @@ export function ReminderSettings() {
           <NativeSelect
             id={`${id}-hour`}
             value={prefs.hour}
-            disabled={busy}
+            aria-disabled={busy}
             onChange={(e) => void save({ ...prefs, hour: Number(e.target.value) })}
           >
             {Array.from({ length: 24 }, (_, h) => (
@@ -155,7 +164,8 @@ export function ReminderSettings() {
             <input
               type="checkbox"
               checked={prefs.email}
-              disabled={busy || (!prefs.email && (!settings.mail || !settings.verified))}
+              aria-disabled={busy}
+              disabled={!prefs.email && (!settings.mail || !settings.verified)}
               onChange={(e) => void save({ ...prefs, email: e.target.checked })}
             />
             <span>
@@ -173,12 +183,12 @@ export function ReminderSettings() {
             here ? (
               <p>
                 {t('这台设备已开启推送。', 'Push is on for this device.')}{' '}
-                <Button variant="ghost" disabled={busy} onClick={() => void pushOff(here)}>
+                <Button variant="ghost" aria-disabled={busy} onClick={() => void pushOff(here)}>
                   {t('关闭本设备推送', 'Turn push off here')}
                 </Button>
               </p>
             ) : (
-              <Button variant="outline" disabled={busy} onClick={() => void pushOn(settings.push!)}>
+              <Button variant="outline" aria-disabled={busy} onClick={() => void pushOn(settings.push!)}>
                 {t('在这台设备上开启推送', 'Turn push on for this device')}
               </Button>
             )
@@ -189,7 +199,7 @@ export function ReminderSettings() {
                 : t('推送尚未开通。', 'Push isn’t available yet.')}
             </small>
           )}
-          <Button variant="ghost" disabled={busy} onClick={() => void save(null)}>
+          <Button variant="ghost" aria-disabled={busy} onClick={() => void save(null)}>
             {t('关闭学习提醒', 'Turn reminders off')}
           </Button>
         </div>
