@@ -251,6 +251,13 @@ export default async function MockOaCompany({ params }: Props) {
                 ? `题目从 ${p.name} 的 OA 真题和高频 LeetCode 题里抽，优先没做过的`
                 : `Problems drawn from ${p.name}'s OA bank and its frequent LeetCode questions, preferring ones you have not solved`}
             </li>
+            {p.mcq && (
+              <li>
+                {zh
+                  ? `开考先做 ${p.mcq.count} 道选择题（${p.mcq.minutes} 分钟，本站原创、按真实 OA 的考点出题），检录时可关闭`
+                  : `First, ${p.mcq.count} multiple-choice questions in ${p.mcq.minutes} minutes (original questions on the real OA's topics); you can turn them off at check-in`}
+              </li>
+            )}
             <li>
               {zh
                 ? '考试期间隐藏题解和提示，交卷后给出成绩单并解锁题解'
@@ -261,7 +268,12 @@ export default async function MockOaCompany({ params }: Props) {
         <div>
           <h2 className="mock-public-h2">{zh ? '不在模拟内' : 'Not simulated'}</h2>
           <ul>
-            {extra && <li>{extra}</li>}
+            {extra && (
+              <li>
+                {extra}
+                {p.mcq && (zh ? '（其中选择题部分有模拟）' : ' (the MCQ part is simulated)')}
+              </li>
+            )}
             <li>
               {zh
                 ? '摄像头、麦克风、屏幕监考和查重'

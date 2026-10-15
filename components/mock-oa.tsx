@@ -34,8 +34,10 @@ import { STOP_NAMES, stopHref, topicName } from '@/lib/route-stops';
 import type { Boot } from '@/lib/types';
 import {
   archiveMock,
+  drawMcq,
   extraSections,
   findMock,
+  finishMcq,
   finishMock,
   formatClock,
   LADDER,
@@ -44,8 +46,11 @@ import {
   readMockState,
   reportLevel,
   reportWindow,
+  scoreMcq,
   watchMockState,
   writeMockState,
+  type McqConfig,
+  type McqQuestion,
   type MockSession,
   type MockSource,
   type MockState,
@@ -57,6 +62,7 @@ import { syncMockHistory, uploadMocks } from '@/lib/mock-cloud';
 import { pruneTracks } from '@/lib/mock-replay';
 import { MockReplay } from './mock-replay';
 import { handInSkill } from './mock-exam-bar';
+import { loadMcqBank, McqItem } from './oa-mcq';
 import '@/app/mock-oa.css';
 
 type Preset = {
@@ -81,6 +87,8 @@ type Preset = {
   tips_en: string;
   evidence: string;
   pool: { oa: number; lc: number; total: number };
+  /** The real OA's MCQ section, when it has one. */
+  mcq?: McqConfig;
 };
 type Presets = {
   companies: Preset[];
@@ -263,7 +271,7 @@ export function MockOa({
     }
     // Read fresh: a mock whose time ran out, or one started in another tab, counts.
     const current = readMockState(userId);
-    const live = !!current.active?.startedAt;
+    const live = !!(current.active?.startedAt || current.active?.mcq?.startedAt);
     if (live && !confirmed) {
       setReplace({ key, request });
       return;
@@ -290,11 +298,15 @@ export function MockOa({
         skew: drawn.now - now,
         createdAt: now,
       };
-      // A replaced running mock is handed in as it stands; an unstarted draw is just dropped.
-      save((latest) => ({
-        ...(latest.active?.startedAt ? archiveMock(latest, finishMock(latest.active, now)) : latest),
-        active: session,
-      }));
+      // A replaced running mock is handed in as it stands (an MCQ section first moves on to
+      // coding); an unstarted draw is just dropped.
+      save((latest) => {
+        const running = latest.active && finishMcq(latest.active, now);
+        return {
+          ...(running?.startedAt ? archiveMock(latest, finishMock(running, now)) : latest),
+          active: session,
+        };
+      });
       navigate('mock', { session: session.id });
     } catch (e) {
       const message = (e as Error).message;
@@ -358,6 +370,29 @@ export function MockOa({
         />
       ) : params.report && !report ? (
         <MissingSession navigate={navigate} />
+      ) : params.session && briefing?.mcq?.startedAt && !briefing.startedAt ? (
+        <MockMcqSection
+          session={briefing}
+          pick={(index, picks) =>
+            save((latest) => {
+              const a = latest.active;
+              if (!a || a.id !== briefing.id || !a.mcq || a.startedAt) return latest;
+              const next = a.mcq.picks.map((p, i) => (i === index ? picks : p));
+              return { ...latest, active: { ...a, mcq: { ...a.mcq, picks: next } } };
+            })
+          }
+          handIn={() => {
+            const saved = save((latest) =>
+              latest.active?.id === briefing.id
+                ? { ...latest, active: finishMcq(latest.active, Date.now()) }
+                : latest,
+            );
+            const coding = saved?.active;
+            if (coding?.id === briefing.id && coding.startedAt)
+              navigate('problem', { problem: coding.ids[0], mock: coding.id });
+            else navigate('mock');
+          }}
+        />
       ) : params.session && briefing && !briefing.startedAt ? (
         <MockBriefing
           session={briefing}
@@ -374,11 +409,25 @@ export function MockOa({
             );
             navigate('mock');
           }}
-          start={() => {
-            const started = { ...briefing, startedAt: Date.now() };
+          start={async (mcq) => {
+            let started: MockSession = { ...briefing, startedAt: Date.now() };
+            if (mcq) {
+              let bank: McqQuestion[];
+              try {
+                bank = await loadMcqBank();
+              } catch {
+                setError(t('选择题没能加载，请重试。', 'The multiple-choice questions failed to load. Try again.'));
+                return;
+              }
+              // Questions from the last five mocks go last.
+              const seen = new Set(readMockState(userId).history.slice(0, 5).flatMap((s) => s.mcq?.ids ?? []));
+              const ids = drawMcq(bank, mcq, Date.now(), seen);
+              // The coding clock waits for the MCQ section to end (finishMcq).
+              started = { ...briefing, mcq: { ids, picks: ids.map(() => []), minutes: mcq.minutes, startedAt: Date.now() } };
+            }
             const saved = save((latest) =>
               // Started, replaced or cancelled in another tab: keep what that tab wrote.
-              latest.active?.id === briefing.id && !latest.active.startedAt
+              latest.active?.id === briefing.id && !latest.active.startedAt && !latest.active.mcq?.startedAt
                 ? { ...latest, active: started }
                 : latest,
             );
@@ -390,7 +439,8 @@ export function MockOa({
               minutes: started.minutes,
               source: started.source,
             });
-            navigate('problem', { problem: started.ids[0], mock: started.id });
+            // With MCQs this page now shows the MCQ section; otherwise coding starts.
+            if (!started.mcq) navigate('problem', { problem: started.ids[0], mock: started.id });
           }}
         />
       ) : (
@@ -486,7 +536,13 @@ function LiveStrip({
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, []);
-  const clock = mockClock(session, now);
+  // An MCQ section that ran out has moved on to coding (as settleMockState will record).
+  const s =
+    session.mcq?.startedAt && !session.startedAt && mockClock(session.mcq, now).phase === 'finished'
+      ? finishMcq(session, now)
+      : session;
+  const inMcq = !!s.mcq?.startedAt && !s.startedAt;
+  const clock = mockClock(inMcq ? s.mcq! : s, now);
   if (clock.phase === 'finished')
     return (
       <div className="mock-live">
@@ -505,7 +561,11 @@ function LiveStrip({
     <div className="mock-live" data-warn={clock.warning || undefined}>
       <span className="mock-live-tag">
         <i aria-hidden="true" />
-        {running ? t('进行中', 'In progress') : t('已抽题，待开始', 'Drawn, not started')}
+        {inMcq
+          ? t('选择题环节', 'MCQ section')
+          : running
+            ? t('进行中', 'In progress')
+            : t('已抽题，待开始', 'Drawn, not started')}
       </span>
       <strong>
         {session.name || t('自定义模拟', 'Custom mock')} · {session.ids.length}{' '}
@@ -522,7 +582,7 @@ function LiveStrip({
           type="button"
           className="mock-cta"
           onClick={() =>
-            running
+            running && !inMcq
               ? navigate('problem', { problem: session.ids[0], mock: session.id })
               : navigate('mock', { session: session.id })
           }
@@ -530,7 +590,7 @@ function LiveStrip({
           {running ? t('继续作答', 'Resume') : t('去检录', 'Check in')}
           <ArrowRight size={16} />
         </button>
-        {running && (
+        {running && !inMcq && (
           <button type="button" className="mock-ghost" onClick={() => handIn(session.id)}>
             <Flag size={14} />
             {t('交卷', 'Hand in')}
@@ -698,7 +758,9 @@ function MockLanding({
                         <b>
                           {extra.codingOnly
                             ? t('只有编程：', 'Coding only: ')
-                            : t('编程之外（不模拟）：', 'Besides coding (not simulated): ')}
+                            : c.mcq
+                              ? t('编程之外（选择题有模拟）：', 'Besides coding (MCQs simulated): ')
+                              : t('编程之外（不模拟）：', 'Besides coding (not simulated): ')}
                         </b>
                         {extra.text}
                       </p>
@@ -1014,6 +1076,125 @@ export function MockTopicBrief({ preset, navigate }: { preset: Preset; navigate:
   );
 }
 
+/** The MCQ section: its own clock; handing in (or time running out) starts the coding part. */
+function MockMcqSection({
+  session,
+  pick,
+  handIn,
+}: {
+  session: MockSession;
+  pick: (index: number, picks: number[]) => void;
+  handIn: () => void;
+}) {
+  const t = useT(),
+    zh = useLocale() === 'zh';
+  const mcq = session.mcq!;
+  const [bank, setBank] = useState<McqQuestion[] | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    let live = true;
+    loadMcqBank().then(
+      (value) => live && setBank(value),
+      () => live && setFailed(true),
+    );
+    return () => {
+      live = false;
+    };
+  }, [attempt]);
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+  const clock = mockClock(mcq, now);
+  const over = clock.phase === 'finished';
+  const handedIn = useRef(false);
+  useEffect(() => {
+    if (!over || handedIn.current) return;
+    handedIn.current = true;
+    handIn();
+  }, [over, handIn]);
+  const byId = new Map((bank ?? []).map((q) => [q.id, q]));
+  const answered = mcq.picks.filter((p) => p.length).length;
+  return (
+    <>
+      <section className="mock-board" aria-labelledby="mock-mcq-title">
+        <p className="mock-kicker">
+          <i aria-hidden="true" />
+          {t('选择题环节', 'MCQ section')} · MOCK OA
+        </p>
+        <div className="mock-pass">
+          <div>
+            <h2 id="mock-mcq-title">
+              <Logo slug={session.company} name={session.name || 'Custom'} />
+              {session.name || t('自定义模拟', 'Custom mock')}
+            </h2>
+            <p className="mock-lede">
+              {t(
+                `${mcq.ids.length} 道选择题，交卷后进入 ${session.ids.length} 道编程题`,
+                `${mcq.ids.length} multiple-choice questions, then ${session.ids.length} coding questions`,
+              )}
+            </p>
+          </div>
+          <div className="mock-pass-clock" role="timer" aria-label={t('选择题剩余时间', 'MCQ time left')}>
+            <span className="mock-led">{formatClock(clock.remaining)}</span>
+            <small>{t('剩余', 'LEFT')}</small>
+          </div>
+        </div>
+      </section>
+      <section className="mock-section" aria-label={t('选择题', 'Multiple-choice questions')}>
+        {failed ? (
+          <p className="mock-note" role="alert">
+            {t('选择题没能加载。', 'The questions failed to load.')}
+            <button
+              type="button"
+              onClick={() => {
+                setFailed(false);
+                setAttempt((n) => n + 1);
+              }}
+            >
+              {t('重试', 'Retry')}
+            </button>
+          </p>
+        ) : !bank ? (
+          <p aria-busy="true">
+            <LoaderCircle className="cs-spin" />
+          </p>
+        ) : (
+          <ol className="oa-mcq-list">
+            {mcq.ids.map((id, i) => {
+              const q = byId.get(id);
+              return q ? (
+                <li key={id}>
+                  <McqItem
+                    q={q}
+                    text={zh ? q.zh : q.en}
+                    n={i + 1}
+                    zh={zh}
+                    picks={mcq.picks[i] ?? []}
+                    onPick={(picks) => pick(i, picks)}
+                    reveal={false}
+                  />
+                </li>
+              ) : null;
+            })}
+          </ol>
+        )}
+        <div className="mock-actions">
+          <button type="button" className="mock-cta" onClick={handIn}>
+            <Flag size={15} />
+            {t(
+              `交卷，进入编程（已答 ${answered}/${mcq.ids.length}）`,
+              `Hand in and start coding (${answered}/${mcq.ids.length} answered)`,
+            )}
+          </button>
+        </div>
+      </section>
+    </>
+  );
+}
+
 function MockBriefing({
   session,
   preset,
@@ -1031,10 +1212,15 @@ function MockBriefing({
   busy: boolean;
   redraw: () => void;
   cancel: () => void;
-  start: () => void;
+  /** Starts the clock; with an MCQ config, the MCQ section comes first. */
+  start: (mcq?: McqConfig) => void;
 }) {
   const t = useT(),
     zh = useLocale() === 'zh';
+  const [withMcq, setWithMcq] = useState(true);
+  // Only a company's real format has its MCQ section; a custom mock is coding only.
+  const offer = session.preset ? preset?.mcq : undefined;
+  const mcq = withMcq ? offer : undefined;
   const known = new Set(boot.problems.map((p) => p.id));
   const missing = session.ids.some((id) => !known.has(id));
   const extra = preset && !extraSections(preset, zh).codingOnly ? extraSections(preset, zh).text : '';
@@ -1063,13 +1249,35 @@ function MockBriefing({
         </div>
       </div>
       {preset && <MockTopicBrief preset={preset} navigate={navigate} />}
+      {offer && (
+        <label className="mock-mcq-toggle">
+          <input type="checkbox" checked={withMcq} onChange={(e) => setWithMcq(e.target.checked)} />
+          <span>
+            {t(
+              `含选择题 ${offer.count} 题 / ${offer.minutes} 分钟`,
+              `Include the MCQ section: ${offer.count} questions / ${offer.minutes} min`,
+            )}
+            <small>
+              {t(
+                '先做选择题，单独计时；交卷或时间到后进入编程题。',
+                'Taken first on its own clock; coding starts when you hand it in or time runs out.',
+              )}
+            </small>
+          </span>
+        </label>
+      )}
       <ul className="mock-rules">
         <li>
           <Timer size={16} aria-hidden="true" />
-          {t(
-            `点「开始计时」后倒计时 ${session.minutes} 分钟；刷新或离开页面不会暂停。`,
-            `The ${session.minutes}-minute countdown starts when you press Start; refreshing or leaving the page does not pause it.`,
-          )}
+          {mcq
+            ? t(
+                `点「开始计时」后先做 ${mcq.count} 道选择题（${mcq.minutes} 分钟），交卷或时间到后开始 ${session.minutes} 分钟的编程倒计时；刷新或离开页面不会暂停。`,
+                `Press Start for ${mcq.count} multiple-choice questions (${mcq.minutes} min); handing them in or running out of time starts the ${session.minutes}-minute coding countdown. Refreshing or leaving does not pause either.`,
+              )
+            : t(
+                `点「开始计时」后倒计时 ${session.minutes} 分钟；刷新或离开页面不会暂停。`,
+                `The ${session.minutes}-minute countdown starts when you press Start; refreshing or leaving the page does not pause it.`,
+              )}
         </li>
         <li>
           <Shuffle size={16} aria-hidden="true" />
@@ -1088,9 +1296,19 @@ function MockBriefing({
         </li>
         <li>
           <Info size={16} aria-hidden="true" />
-          {extra
-            ? t(`只模拟编程部分；${extra}不在本模拟内。`, `Only the coding part is simulated; not included: ${extra}.`)
-            : t('只模拟编程部分，不含摄像头监考。', 'Only the coding part is simulated; there is no camera proctoring.')}
+          {mcq && extra
+            ? t(
+                `模拟编程和选择题部分（选择题是本站原创题，按真实 OA 的考点出）。真实 OA 编程之外还有：${extra}；其中只模拟了选择题，不含摄像头监考。`,
+                `The coding and MCQ parts are simulated (the MCQs are original, on the topics the real OA covers). Besides coding, the real OA has: ${extra}; only its MCQs are simulated here, and there is no camera proctoring.`,
+              )
+            : mcq
+              ? t(
+                  `模拟编程和选择题部分（选择题是本站原创题，按真实 OA 的考点出），不含摄像头监考。`,
+                  'The coding and MCQ parts are simulated (the MCQs are original, on the topics the real OA covers); there is no camera proctoring.',
+                )
+              : extra
+                ? t(`只模拟编程部分；${extra}不在本模拟内。`, `Only the coding part is simulated; not included: ${extra}.`)
+                : t('只模拟编程部分，不含摄像头监考。', 'Only the coding part is simulated; there is no camera proctoring.')}
         </li>
       </ul>
       {missing && (
@@ -1099,7 +1317,7 @@ function MockBriefing({
         </p>
       )}
       <div className="mock-actions">
-        <button type="button" className="mock-cta mock-cta-big" onClick={start} disabled={missing} autoFocus>
+        <button type="button" className="mock-cta mock-cta-big" onClick={() => start(mcq)} disabled={missing} autoFocus>
           <Timer size={18} />
           {t('开始计时', 'Start the clock')}
         </button>
@@ -1200,6 +1418,13 @@ function MockReport({
   }, [data, solved, onResult, session]);
   const used = Math.max(0, (session.finishedAt ?? session.startedAt ?? 0) - (session.startedAt ?? 0));
   const titles = new Map(boot.problems.map((p) => [p.id, p]));
+  // The MCQ section is scored here, in this browser: it stays out of the account history.
+  const [bank, setBank] = useState<McqQuestion[] | null>(null);
+  useEffect(() => {
+    if (session.mcq) loadMcqBank().then(setBank, () => {});
+  }, [session.mcq]);
+  const mcq = session.mcq && bank ? scoreMcq(bank, session.mcq) : null;
+  const byId = new Map((bank ?? []).map((q) => [q.id, q]));
   return (
     <>
       <section className="mock-board mock-report" aria-labelledby="mock-report-title">
@@ -1262,6 +1487,14 @@ function MockReport({
             <dt>{t('次提交', 'submissions')}</dt>
             <dd>{data ? data.items.reduce((n, i) => n + i.attempts, 0) : '—'}</dd>
           </div>
+          {mcq && data && (
+            <div>
+              <dt>{t('合计（编程 + 选择题）', 'total (coding + MCQ)')}</dt>
+              <dd>
+                {data.score.per.reduce((a, b) => a + b, 0) + mcq.points}/{data.score.per.length * 100 + mcq.max}
+              </dd>
+            </div>
+          )}
           <div>
             <dt>{t('交卷', 'handed in')}</dt>
             <dd className="mock-dd-text">
@@ -1315,7 +1548,61 @@ function MockReport({
               </li>
             );
           })}
+          {mcq && (
+            <li data-state={mcq.correct === mcq.total ? 'ac' : mcq.correct ? 'partial' : 'tried'}>
+              <span className="mock-q">MCQ</span>
+              <span className="mock-result-title">
+                <strong>{t('选择题环节', 'MCQ section')}</strong>
+                <small>
+                  {t(`答对 ${mcq.correct}/${mcq.total}`, `${mcq.correct} of ${mcq.total} correct`)}
+                </small>
+              </span>
+              <span className="mock-chip" data-state={mcq.correct === mcq.total ? 'ac' : mcq.correct ? 'partial' : 'tried'}>
+                {mcq.correct}/{mcq.total}
+              </span>
+              <span className="mock-points">
+                {mcq.points}
+                <small>/100</small>
+              </span>
+              <button
+                type="button"
+                className="mock-ghost"
+                onClick={() => {
+                  const review = document.getElementById('mock-mcq-review') as HTMLDetailsElement | null;
+                  if (!review) return;
+                  review.open = true;
+                  review.scrollIntoView({ block: 'start' });
+                }}
+              >
+                {t('解析', 'Review')}
+                <ArrowRight size={14} />
+              </button>
+            </li>
+          )}
         </ol>
+        {mcq && session.mcq && (
+          <details className="mock-mcq-review" id="mock-mcq-review">
+            <summary>{t('选择题答案与解析', 'MCQ answers and explanations')}</summary>
+            <ol className="oa-mcq-list">
+              {session.mcq.ids.map((id, i) => {
+                const q = byId.get(id);
+                return q ? (
+                  <li key={id}>
+                    <McqItem
+                      q={q}
+                      text={locale === 'zh' ? q.zh : q.en}
+                      n={i + 1}
+                      zh={locale === 'zh'}
+                      picks={session.mcq?.picks[i] ?? []}
+                      onPick={() => {}}
+                      reveal
+                    />
+                  </li>
+                ) : null;
+              })}
+            </ol>
+          </details>
+        )}
         <p className="mock-footnote">
           {t(
             '部分分：判题遇到第一个未通过的用例就停止，所以按它之前通过的用例数计。成绩只统计开考到交卷之间的提交，并同步到你的账号。',

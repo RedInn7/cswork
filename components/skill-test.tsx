@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { englishMessage } from '@/lib/messages-en';
-import { archiveMock, finishMock, formatClock, readMockState, writeMockState } from '@/lib/mock-oa';
+import { archiveMock, finishMcq, finishMock, formatClock, readMockState, writeMockState } from '@/lib/mock-oa';
 import { ojRequest } from '@/lib/oj-client';
 import type { skillOverview } from '@/lib/server/skill-tests';
 import {
@@ -32,8 +32,10 @@ function storeExam(userId: string, attempt: SkillAttempt, serverNow: number, zh:
   if (!test) return false;
   const now = Date.now();
   const state = readMockState(userId);
+  // A mock in its MCQ section first moves on to coding, so it is handed in too.
+  const running = state.active && finishMcq(state.active, now);
   const base =
-    state.active?.startedAt && state.active.id !== attempt.id ? archiveMock(state, finishMock(state.active, now)) : state;
+    running?.startedAt && running.id !== attempt.id ? archiveMock(state, finishMock(running, now)) : state;
   return writeMockState(userId, { ...base, active: skillSession(attempt, test, serverNow, now, zh) });
 }
 

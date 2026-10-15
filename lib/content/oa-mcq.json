@@ -1,0 +1,5693 @@
+{
+ "version": 1,
+ "questions": [
+  {
+   "id": "mcq-os-1",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "同一进程内的多个线程共享下列哪一项？",
+    "choices": [
+     "寄存器组",
+     "各自的栈",
+     "堆和全局变量（同一地址空间）",
+     "程序计数器"
+    ],
+    "explain": "线程共享进程的地址空间（代码段、堆、全局变量、打开的文件），但每个线程有自己的栈、程序计数器和寄存器。"
+   },
+   "en": {
+    "q": "Which of these do threads of the same process share?",
+    "choices": [
+     "The register set",
+     "Their stacks",
+     "The heap and globals (one address space)",
+     "The program counter"
+    ],
+    "explain": "Threads share the process address space (code, heap, globals, open files); each has its own stack, program counter and registers."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-os-2",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "发生缺页（page fault）的直接原因是？",
+    "choices": [
+     "访问了空指针以外的合法地址",
+     "访问的虚拟页当前不在物理内存中",
+     "磁盘写满",
+     "CPU 缓存未命中"
+    ],
+    "explain": "页表项标记该页不在内存时，MMU 触发缺页异常，内核把页从磁盘（或零页）调入后重新执行指令。缓存未命中由硬件处理，不会陷入内核。"
+   },
+   "en": {
+    "q": "What directly causes a page fault?",
+    "choices": [
+     "Accessing any valid non-null address",
+     "The referenced virtual page is not in physical memory",
+     "The disk is full",
+     "A CPU cache miss"
+    ],
+    "explain": "When the page-table entry says the page is not resident, the MMU raises a fault and the kernel brings the page in, then retries the instruction. A cache miss is handled in hardware without a trap."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-os-3",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "下列哪种调度算法可能让长作业一直得不到执行（饥饿）？",
+    "choices": [
+     "时间片轮转",
+     "先来先服务",
+     "短作业优先（SJF）",
+     "以上都不会"
+    ],
+    "explain": "只要不断有更短的作业到达，SJF 就一直先运行它们，长作业可能无限等待。轮转和 FCFS 都保证每个作业最终能运行。"
+   },
+   "en": {
+    "q": "Which scheduling policy can starve long jobs?",
+    "choices": [
+     "Round robin",
+     "First come, first served",
+     "Shortest job first (SJF)",
+     "None of these"
+    ],
+    "explain": "If shorter jobs keep arriving, SJF keeps running them first and a long job can wait forever. Round robin and FCFS both guarantee every job eventually runs."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-os-4",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "下列哪一项不是死锁的必要条件？",
+    "choices": [
+     "占有并等待",
+     "资源可以被抢占",
+     "循环等待",
+     "互斥"
+    ],
+    "explain": "Coffman 四条件是互斥、占有并等待、不可抢占、循环等待。资源可抢占恰好破坏了“不可抢占”，是预防死锁的手段之一。"
+   },
+   "en": {
+    "q": "Which is NOT a necessary condition for deadlock?",
+    "choices": [
+     "Hold and wait",
+     "Resources can be preempted",
+     "Circular wait",
+     "Mutual exclusion"
+    ],
+    "explain": "The four Coffman conditions are mutual exclusion, hold and wait, no preemption and circular wait. Preemptible resources break 'no preemption', so they prevent deadlock."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-os-5",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "系统出现“抖动”（thrashing）时，最典型的现象是？",
+    "choices": [
+     "进程频繁换页，CPU 利用率反而很低",
+     "线程之间频繁抢锁",
+     "磁盘坏道导致读写失败",
+     "CPU 温度过高自动降频"
+    ],
+    "explain": "分给进程的物理页框太少，工作集放不下，大部分时间都花在换入换出上，CPU 大多在等 I/O。"
+   },
+   "en": {
+    "q": "What is the typical symptom of thrashing?",
+    "choices": [
+     "Processes page constantly and CPU utilisation drops",
+     "Threads keep contending for a lock",
+     "Bad disk sectors cause I/O errors",
+     "The CPU throttles because it is too hot"
+    ],
+    "explain": "Processes get too few frames to hold their working sets, so most time goes to paging in and out and the CPU mostly waits on I/O."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-os-6",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "程序连续调用 3 次 fork()（都不检查返回值），最后一共有多少个进程（含原进程）？",
+    "choices": [
+     "3",
+     "4",
+     "6",
+     "8"
+    ],
+    "explain": "每次 fork 都让当前所有进程翻倍：1 → 2 → 4 → 8。"
+   },
+   "en": {
+    "q": "A program calls fork() three times in a row without checking the return value. How many processes exist at the end, including the original?",
+    "choices": [
+     "3",
+     "4",
+     "6",
+     "8"
+    ],
+    "explain": "Each fork doubles every process that runs it: 1 → 2 → 4 → 8."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-os-7",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "同一进程内的线程切换通常比进程切换开销小，主要原因是？",
+    "choices": [
+     "不需要切换地址空间（页表），TLB 不用刷新",
+     "线程切换不经过内核",
+     "线程切换不需要保存寄存器",
+     "线程没有自己的栈"
+    ],
+    "explain": "线程切换仍要保存和恢复寄存器、栈指针；省下的主要是换页表和随之而来的 TLB、缓存失效。内核线程的切换照样要进内核。"
+   },
+   "en": {
+    "q": "Why is switching between threads of one process usually cheaper than switching processes?",
+    "choices": [
+     "No address-space (page table) switch, so the TLB stays warm",
+     "Thread switches never enter the kernel",
+     "Thread switches do not save registers",
+     "Threads have no stack of their own"
+    ],
+    "explain": "Registers and the stack pointer are still saved; the saving is the page-table switch and the TLB and cache misses it causes. Kernel threads still switch inside the kernel."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-os-8",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "分页（paging）内存管理消除了哪一种碎片？",
+    "choices": [
+     "外部碎片",
+     "两种都不消除",
+     "两种都消除",
+     "内部碎片"
+    ],
+    "explain": "任何空闲页框都能装任何页，所以不会出现“总空闲够但不连续”的外部碎片；但进程最后一页用不满，仍有内部碎片。"
+   },
+   "en": {
+    "q": "Which kind of fragmentation does paging eliminate?",
+    "choices": [
+     "External fragmentation",
+     "Neither",
+     "Both",
+     "Internal fragmentation"
+    ],
+    "explain": "Any free frame can hold any page, so there is no 'enough free memory but not contiguous' external fragmentation; the last page of a process is partly unused, which is internal fragmentation."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-os-9",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "有 3 个页框、初始为空，访问序列 1 2 3 4 1 2 5 1 2 3 4 5，用 LRU 置换一共发生多少次缺页？",
+    "choices": [
+     "8",
+     "9",
+     "10",
+     "11"
+    ],
+    "explain": "逐步模拟：前 7 次访问（1 2 3 4 1 2 5）全部缺页，接着 1、2 命中，3、4、5 又各缺一次，共 10 次。"
+   },
+   "en": {
+    "q": "With 3 initially empty frames and the reference string 1 2 3 4 1 2 5 1 2 3 4 5, how many page faults does LRU incur?",
+    "choices": [
+     "8",
+     "9",
+     "10",
+     "11"
+    ],
+    "explain": "Simulate it: the first seven references (1 2 3 4 1 2 5) all fault, 1 and 2 then hit, and 3, 4 and 5 fault again: 10 in total."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-os-10",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "Belady 异常（增加页框反而缺页更多）会出现在哪种置换算法中？",
+    "choices": [
+     "FIFO",
+     "LRU",
+     "以上都不会",
+     "最优置换（OPT）"
+    ],
+    "explain": "LRU 和 OPT 都是“栈算法”，k 个页框里的页总是 k+1 个页框里页的子集，所以不会出现异常；FIFO 不满足这一点。"
+   },
+   "en": {
+    "q": "Which page replacement policy can show Belady's anomaly (more frames, more faults)?",
+    "choices": [
+     "FIFO",
+     "LRU",
+     "None of these",
+     "Optimal (OPT)"
+    ],
+    "explain": "LRU and OPT are stack algorithms: the pages held with k frames are always a subset of those held with k+1, so they cannot show the anomaly. FIFO is not."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-os-11",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "下列哪个操作一定需要系统调用（进入内核态）？",
+    "choices": [
+     "读写局部变量",
+     "两个整数相加",
+     "调用自己写的函数",
+     "从文件读取数据"
+    ],
+    "explain": "访问文件要经过内核管理的设备和文件系统，只能通过 read 等系统调用；其余几项都在用户态完成。"
+   },
+   "en": {
+    "q": "Which of these always needs a system call (a switch to kernel mode)?",
+    "choices": [
+     "Reading a local variable",
+     "Adding two integers",
+     "Calling a function you wrote",
+     "Reading data from a file"
+    ],
+    "explain": "Files live behind kernel-managed devices and file systems, reachable only through calls such as read; the rest happen in user mode."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-os-12",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "“僵尸进程”指的是？",
+    "choices": [
+     "被挂起到磁盘上的进程",
+     "占用 CPU 却没有进展的进程",
+     "已经退出、但父进程还没调用 wait 回收的子进程",
+     "父进程先退出、被 init 收养的进程"
+    ],
+    "explain": "子进程退出后保留进程表项和退出码，直到父进程 wait。父进程先退出、被 init 收养的是孤儿进程。"
+   },
+   "en": {
+    "q": "What is a zombie process?",
+    "choices": [
+     "A process swapped out to disk",
+     "A process that burns CPU without making progress",
+     "A child that exited but whose parent has not called wait on it",
+     "A process whose parent exited and that init adopted"
+    ],
+    "explain": "An exited child keeps its process-table entry and exit status until the parent waits on it. One adopted by init after its parent exits is an orphan."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-os-13",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "TLB 缓存的是什么？",
+    "choices": [
+     "最近访问的数据",
+     "虚拟页号到物理页框号的映射",
+     "磁盘块",
+     "系统调用表"
+    ],
+    "explain": "TLB 是页表的硬件缓存，命中时不用访问内存中的页表就能完成地址转换。缓存数据的是 L1/L2/L3。"
+   },
+   "en": {
+    "q": "What does the TLB cache?",
+    "choices": [
+     "Recently accessed data",
+     "Virtual page to physical frame translations",
+     "Disk blocks",
+     "The system call table"
+    ],
+    "explain": "The TLB is a hardware cache of the page table, so a hit translates an address without walking the page table in memory. Data goes in the L1/L2/L3 caches."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-os-14",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "32 位虚拟地址、页大小 4 KB，页内偏移占多少位？",
+    "choices": [
+     "10",
+     "12",
+     "20",
+     "22"
+    ],
+    "explain": "4 KB = 2^12 字节，所以偏移 12 位，剩下 20 位是页号（2^20 个页）。"
+   },
+   "en": {
+    "q": "With 32-bit virtual addresses and 4 KB pages, how many bits is the page offset?",
+    "choices": [
+     "10",
+     "12",
+     "20",
+     "22"
+    ],
+    "explain": "4 KB = 2^12 bytes, so the offset is 12 bits and the remaining 20 bits are the page number (2^20 pages)."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-os-15",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "时间片轮转（RR）调度中，如果时间片设得非常大，它会退化成？",
+    "choices": [
+     "短作业优先",
+     "优先级调度",
+     "多级反馈队列",
+     "先来先服务（FCFS）"
+    ],
+    "explain": "时间片比任何作业都长时，每个作业都能一次跑完，顺序就是到达顺序，即 FCFS。"
+   },
+   "en": {
+    "q": "In round-robin scheduling, what does a very large time quantum degenerate into?",
+    "choices": [
+     "Shortest job first",
+     "Priority scheduling",
+     "Multilevel feedback queue",
+     "First come, first served"
+    ],
+    "explain": "With a quantum longer than every job, each runs to completion in arrival order: FCFS."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-os-16",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "fork 使用写时复制（copy-on-write）的效果是？",
+    "choices": [
+     "父子进程先共享物理页，有一方写入时才复制那一页",
+     "fork 时立即复制整个地址空间",
+     "父进程的写入对子进程可见",
+     "子进程只能读不能写"
+    ],
+    "explain": "页先标成只读共享，写入触发异常后内核只复制被写的那一页，各自之后的修改互不可见。紧接着 exec 的场景几乎不用复制。"
+   },
+   "en": {
+    "q": "What does copy-on-write do for fork?",
+    "choices": [
+     "Parent and child share pages until one writes, then only that page is copied",
+     "fork copies the whole address space at once",
+     "The parent's writes become visible to the child",
+     "The child can only read memory"
+    ],
+    "explain": "Pages are shared read-only; a write faults and the kernel copies just that page, so later writes stay private. A fork followed by exec copies almost nothing."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-os-17",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "DMA（直接内存访问）的主要好处是？",
+    "choices": [
+     "让 CPU 缓存更大",
+     "设备和内存之间传输数据时不需要 CPU 逐字节搬运",
+     "让磁盘寻道更快",
+     "取消了中断"
+    ],
+    "explain": "CPU 只需设置好传输，DMA 控制器完成搬运后发一个中断通知，CPU 期间可以做别的事。"
+   },
+   "en": {
+    "q": "What is the main benefit of DMA?",
+    "choices": [
+     "It makes CPU caches larger",
+     "Devices move data to and from memory without the CPU copying each byte",
+     "It makes disk seeks faster",
+     "It removes interrupts"
+    ],
+    "explain": "The CPU sets up the transfer, the DMA controller moves the data and raises one interrupt when done, and the CPU is free meanwhile."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-os-18",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "在“多对一”用户级线程模型里，一个线程发起阻塞式系统调用，会怎样？",
+    "choices": [
+     "内核为它新建一个内核线程",
+     "整个进程（所有线程）都被阻塞",
+     "只有该线程阻塞",
+     "系统调用自动变成非阻塞"
+    ],
+    "explain": "内核只看到一个可调度实体，它一阻塞，进程里其他用户线程也无法运行。一对一模型（如 Linux pthread）没有这个问题。"
+   },
+   "en": {
+    "q": "In the many-to-one user-level thread model, what happens when one thread makes a blocking system call?",
+    "choices": [
+     "The kernel creates a kernel thread for it",
+     "The whole process, every thread, blocks",
+     "Only that thread blocks",
+     "The call becomes non-blocking"
+    ],
+    "explain": "The kernel sees one schedulable entity; when it blocks, no other user thread in the process can run. The one-to-one model (Linux pthreads) avoids this."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-os-19",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "深度递归最常见的崩溃原因是？",
+    "choices": [
+     "堆内存泄漏",
+     "调用栈溢出",
+     "缺页",
+     "死锁"
+    ],
+    "explain": "每层调用都在栈上压一个栈帧，栈的大小有限（常见 1–8 MB），超出即栈溢出。"
+   },
+   "en": {
+    "q": "What usually crashes a very deep recursion?",
+    "choices": [
+     "A heap leak",
+     "Stack overflow",
+     "A page fault",
+     "Deadlock"
+    ],
+    "explain": "Each call pushes a frame onto a fixed-size stack (often 1–8 MB); going past it overflows the stack."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-os-20",
+   "section": "cs",
+   "topic": "os",
+   "zh": {
+    "q": "父进程先于子进程退出后，子进程会怎样？",
+    "choices": [
+     "被 init（PID 1）或子收割者收养",
+     "变成僵尸进程",
+     "立即被杀死",
+     "挂起直到重启"
+    ],
+    "explain": "这种进程叫孤儿进程，会被重新挂到 init 或设置了 subreaper 的祖先下，由它负责 wait 回收。"
+   },
+   "en": {
+    "q": "What happens to a child process when its parent exits first?",
+    "choices": [
+     "It is adopted by init (PID 1) or a subreaper",
+     "It becomes a zombie",
+     "It is killed immediately",
+     "It is suspended until reboot"
+    ],
+    "explain": "It becomes an orphan and is re-parented to init or a subreaper ancestor, which will wait on it."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-dbms-1",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "ACID 中的 I 代表什么？",
+    "choices": [
+     "隔离性（Isolation）",
+     "索引（Index）",
+     "幂等（Idempotency）",
+     "完整性（Integrity）"
+    ],
+    "explain": "ACID 是原子性、一致性、隔离性、持久性。隔离性指并发事务彼此看不到对方未完成的中间状态（程度由隔离级别决定）。"
+   },
+   "en": {
+    "q": "What does the I in ACID stand for?",
+    "choices": [
+     "Isolation",
+     "Index",
+     "Idempotency",
+     "Integrity"
+    ],
+    "explain": "ACID is atomicity, consistency, isolation and durability. Isolation means concurrent transactions do not see each other's unfinished work, to a degree set by the isolation level."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-dbms-2",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "哪个隔离级别能防止脏读，但仍允许不可重复读？",
+    "choices": [
+     "读未提交",
+     "读已提交",
+     "可重复读",
+     "可串行化"
+    ],
+    "explain": "读已提交只读到已提交的数据，但同一事务两次读同一行之间，别的事务可以提交修改，所以两次结果可能不同。"
+   },
+   "en": {
+    "q": "Which isolation level prevents dirty reads but still allows non-repeatable reads?",
+    "choices": [
+     "Read uncommitted",
+     "Read committed",
+     "Repeatable read",
+     "Serializable"
+    ],
+    "explain": "Read committed only sees committed data, but another transaction can commit a change between two reads of the same row, so they can differ."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-dbms-3",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "按 SQL 标准，哪个隔离级别才能保证不出现幻读？",
+    "choices": [
+     "可重复读",
+     "可串行化",
+     "读已提交",
+     "读未提交"
+    ],
+    "explain": "标准里可重复读仍允许幻读（范围查询多出新插入的行），只有可串行化排除全部三种异常。个别引擎（如 InnoDB 的间隙锁）在可重复读下也能挡住大部分幻读，但那是实现细节。"
+   },
+   "en": {
+    "q": "Under the SQL standard, which isolation level is guaranteed to prevent phantom reads?",
+    "choices": [
+     "Repeatable read",
+     "Serializable",
+     "Read committed",
+     "Read uncommitted"
+    ],
+    "explain": "The standard lets repeatable read show phantoms (new rows in a range query); only serializable rules out all three anomalies. Some engines, such as InnoDB with gap locks, block most phantoms at repeatable read, but that is an implementation detail."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-dbms-4",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "第二范式（2NF）要消除的是？",
+    "choices": [
+     "非主属性之间的传递依赖",
+     "非主属性对复合主键的部分依赖",
+     "重复的列（非原子值）",
+     "所有冗余"
+    ],
+    "explain": "1NF 要求原子值，2NF 去掉部分依赖，3NF 再去掉传递依赖。"
+   },
+   "en": {
+    "q": "What does second normal form (2NF) remove?",
+    "choices": [
+     "Transitive dependencies between non-key attributes",
+     "Non-key attributes depending on only part of a composite key",
+     "Repeating groups (non-atomic values)",
+     "All redundancy"
+    ],
+    "explain": "1NF requires atomic values, 2NF removes partial dependencies and 3NF removes transitive ones."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-dbms-5",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "表 Employee(emp_id, dept_id, dept_name)，主键 emp_id，dept_id 决定 dept_name。它违反了哪个范式？",
+    "choices": [
+     "2NF",
+     "3NF",
+     "1NF",
+     "都不违反"
+    ],
+    "explain": "emp_id → dept_id → dept_name 是传递依赖，违反 3NF；主键只有一列，不存在部分依赖，所以满足 2NF。应把部门拆成单独的表。"
+   },
+   "en": {
+    "q": "Employee(emp_id, dept_id, dept_name) has key emp_id, and dept_id determines dept_name. Which normal form does it violate?",
+    "choices": [
+     "2NF",
+     "3NF",
+     "1NF",
+     "None"
+    ],
+    "explain": "emp_id → dept_id → dept_name is a transitive dependency, which breaks 3NF; a single-column key cannot have partial dependencies, so 2NF holds. Split departments into their own table."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-dbms-6",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "关于主键（PRIMARY KEY）和唯一约束（UNIQUE），哪些说法正确？（多选）",
+    "choices": [
+     "主键列不能为 NULL",
+     "一张表最多一个主键",
+     "UNIQUE 列一律不能为 NULL",
+     "一张表最多一个 UNIQUE 约束"
+    ],
+    "explain": "主键隐含 NOT NULL 且只能有一个；UNIQUE 约束可以有多个，大多数数据库允许 UNIQUE 列存多个 NULL。"
+   },
+   "en": {
+    "q": "Which statements about PRIMARY KEY and UNIQUE are true? (Select all that apply)",
+    "choices": [
+     "A primary key column cannot be NULL",
+     "A table has at most one primary key",
+     "A UNIQUE column can never be NULL",
+     "A table has at most one UNIQUE constraint"
+    ],
+    "explain": "A primary key implies NOT NULL and there is only one; a table can have many UNIQUE constraints, and most databases allow several NULLs in a UNIQUE column."
+   },
+   "answer": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "mcq-dbms-7",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "数据库更常用 B+ 树而不是哈希做通用索引，主要因为？",
+    "choices": [
+     "B+ 树支持范围查询和有序遍历",
+     "B+ 树不占磁盘空间",
+     "哈希索引不能建在整数列上",
+     "B+ 树的等值查找一定更快"
+    ],
+    "explain": "B+ 树叶子节点有序并相互链接，适合 BETWEEN、ORDER BY、前缀匹配；哈希只适合等值查找，且等值查找通常哈希更快。"
+   },
+   "en": {
+    "q": "Why do databases usually prefer B+ trees over hash indexes for general-purpose indexing?",
+    "choices": [
+     "B+ trees support range queries and ordered scans",
+     "B+ trees use no disk space",
+     "Hash indexes cannot index integers",
+     "B+ trees are always faster for equality lookups"
+    ],
+    "explain": "B+ tree leaves are sorted and linked, which suits BETWEEN, ORDER BY and prefix matches; a hash only answers equality, where it is usually faster."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-dbms-8",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "关于聚簇索引，哪项说法正确？",
+    "choices": [
+     "一张表可以有任意多个",
+     "它只存储主键",
+     "它决定表中行的物理存储顺序，一张表最多一个",
+     "它不能用于范围查询"
+    ],
+    "explain": "数据按聚簇索引的键排序存放，行只能按一种顺序存，所以最多一个。InnoDB 中主键就是聚簇索引。"
+   },
+   "en": {
+    "q": "Which statement about a clustered index is true?",
+    "choices": [
+     "A table can have any number of them",
+     "It stores only the primary key",
+     "It sets the physical order of rows, so a table has at most one",
+     "It cannot serve range queries"
+    ],
+    "explain": "Rows are stored in clustered-key order, and they can only be stored in one order. In InnoDB the primary key is the clustered index."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-dbms-9",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "A 表有 5 行。SELECT * FROM A LEFT JOIN B ON ... 至少返回多少行？",
+    "choices": [
+     "0",
+     "5",
+     "25",
+     "取决于 B 的行数"
+    ],
+    "explain": "左连接保留左表每一行：没有匹配的行也会出现一次（右边补 NULL），有多个匹配的行会出现多次，所以至少 5 行。"
+   },
+   "en": {
+    "q": "Table A has 5 rows. At least how many rows does SELECT * FROM A LEFT JOIN B ON ... return?",
+    "choices": [
+     "0",
+     "5",
+     "25",
+     "Depends on the size of B"
+    ],
+    "explain": "A left join keeps every left row: unmatched rows appear once with NULLs on the right and rows with several matches appear several times, so at least 5."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-dbms-10",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "列 x 的值为 1、NULL、2、NULL。COUNT(*) 和 COUNT(x) 分别是？",
+    "choices": [
+     "2 和 4",
+     "4 和 4",
+     "4 和 2",
+     "2 和 2"
+    ],
+    "explain": "COUNT(*) 数行数；COUNT(x) 只数 x 不为 NULL 的行。"
+   },
+   "en": {
+    "q": "Column x holds 1, NULL, 2, NULL. What are COUNT(*) and COUNT(x)?",
+    "choices": [
+     "2 and 4",
+     "4 and 4",
+     "4 and 2",
+     "2 and 2"
+    ],
+    "explain": "COUNT(*) counts rows; COUNT(x) counts only rows where x is not NULL."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-dbms-11",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "要筛出“订单数超过 10 的客户”，条件应该写在哪里？",
+    "choices": [
+     "SELECT 列表里",
+     "ORDER BY COUNT(*) > 10",
+     "WHERE COUNT(*) > 10",
+     "GROUP BY 之后的 HAVING COUNT(*) > 10"
+    ],
+    "explain": "WHERE 在分组之前逐行过滤，不能用聚合函数；HAVING 在分组之后过滤组。"
+   },
+   "en": {
+    "q": "To keep only customers with more than 10 orders, where does the condition go?",
+    "choices": [
+     "In the SELECT list",
+     "ORDER BY COUNT(*) > 10",
+     "WHERE COUNT(*) > 10",
+     "HAVING COUNT(*) > 10 after GROUP BY"
+    ],
+    "explain": "WHERE filters rows before grouping and cannot use aggregates; HAVING filters groups after GROUP BY."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-dbms-12",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "标准 SQL 中，哪个子句可以引用 SELECT 列表里定义的别名？",
+    "choices": [
+     "HAVING",
+     "GROUP BY",
+     "WHERE",
+     "ORDER BY"
+    ],
+    "explain": "逻辑执行顺序是 FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY，只有 ORDER BY 在 SELECT 之后。（MySQL 等方言额外放宽了 GROUP BY/HAVING。）"
+   },
+   "en": {
+    "q": "In standard SQL, which clause can refer to an alias defined in the SELECT list?",
+    "choices": [
+     "HAVING",
+     "GROUP BY",
+     "WHERE",
+     "ORDER BY"
+    ],
+    "explain": "The logical order is FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY, and only ORDER BY comes after SELECT. (Some dialects such as MySQL also allow it in GROUP BY and HAVING.)"
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-dbms-13",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "SELECT * FROM t WHERE x = NULL 会返回什么？",
+    "choices": [
+     "x 为 NULL 的所有行",
+     "语法错误",
+     "不返回任何行",
+     "所有行"
+    ],
+    "explain": "任何值和 NULL 用 = 比较的结果都是 UNKNOWN，WHERE 只保留 TRUE 的行。要写 x IS NULL。"
+   },
+   "en": {
+    "q": "What does SELECT * FROM t WHERE x = NULL return?",
+    "choices": [
+     "Every row where x is NULL",
+     "A syntax error",
+     "No rows",
+     "Every row"
+    ],
+    "explain": "Comparing anything with NULL using = yields UNKNOWN, and WHERE keeps only TRUE rows. Write x IS NULL."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-dbms-14",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "两阶段锁协议（2PL）保证了什么？",
+    "choices": [
+     "事务永不等待",
+     "不会死锁",
+     "冲突可串行化",
+     "不会级联回滚"
+    ],
+    "explain": "先只加锁、后只解锁，能保证调度冲突可串行化，但仍可能死锁；严格 2PL（提交时才释放写锁）才避免级联回滚。"
+   },
+   "en": {
+    "q": "What does two-phase locking (2PL) guarantee?",
+    "choices": [
+     "Transactions never wait",
+     "Freedom from deadlock",
+     "Conflict serializability",
+     "No cascading aborts"
+    ],
+    "explain": "Acquiring all locks before releasing any guarantees conflict serializability but can still deadlock; strict 2PL, which holds write locks until commit, is what avoids cascading aborts."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-dbms-15",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "预写日志（WAL）的核心规则是？",
+    "choices": [
+     "只在关机时写日志",
+     "数据页必须先于日志写到磁盘",
+     "修改的日志记录必须先于对应数据页写到磁盘",
+     "日志只记录读操作"
+    ],
+    "explain": "先落盘日志，崩溃后就能用日志重做已提交、撤销未提交的修改，保证原子性和持久性。"
+   },
+   "en": {
+    "q": "What is the core rule of write-ahead logging (WAL)?",
+    "choices": [
+     "The log is written only at shutdown",
+     "Data pages are written before the log",
+     "A change is logged to disk before the data page it changes",
+     "The log records only reads"
+    ],
+    "explain": "With the log on disk first, recovery can redo committed changes and undo uncommitted ones, which gives atomicity and durability."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-dbms-16",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "外键（FOREIGN KEY）约束的作用是？",
+    "choices": [
+     "该列的值唯一",
+     "该列不能为 NULL",
+     "引用完整性：引用的值必须在被引用表的键中存在",
+     "该列自动建立聚簇索引"
+    ],
+    "explain": "外键列的非 NULL 值必须对应被引用表某行的主键或唯一键；外键本身可以重复，也可以为 NULL。"
+   },
+   "en": {
+    "q": "What does a FOREIGN KEY constraint enforce?",
+    "choices": [
+     "Values in the column are unique",
+     "The column cannot be NULL",
+     "Referential integrity: referenced values must exist as a key in the other table",
+     "The column gets a clustered index"
+    ],
+    "explain": "Non-NULL values must match a primary or unique key in the referenced table; the foreign key itself may repeat and may be NULL."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-dbms-17",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "关于给表加索引，哪项说法是错误的？",
+    "choices": [
+     "它会让 INSERT 和 UPDATE 变慢",
+     "它占用额外存储",
+     "它总能让任何查询变快",
+     "它能加速按该列的查找"
+    ],
+    "explain": "每次写入都要维护索引，还占空间；查询返回大部分行时，优化器往往宁可全表扫描，索引并不总有用。"
+   },
+   "en": {
+    "q": "Which statement about adding an index is FALSE?",
+    "choices": [
+     "It slows down INSERT and UPDATE",
+     "It takes extra storage",
+     "It always makes every query faster",
+     "It can speed up lookups on that column"
+    ],
+    "explain": "Every write must maintain the index and it takes space; when a query returns most rows the optimiser often prefers a full scan, so an index does not always help."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-dbms-18",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "UNION 和 UNION ALL 的区别是？",
+    "choices": [
+     "UNION ALL 去重，UNION 保留重复行",
+     "UNION 要求列名相同",
+     "没有区别",
+     "UNION 去重，UNION ALL 保留重复行"
+    ],
+    "explain": "UNION 需要额外排序或哈希去重，所以不需要去重时 UNION ALL 更快。"
+   },
+   "en": {
+    "q": "How do UNION and UNION ALL differ?",
+    "choices": [
+     "UNION ALL removes duplicates; UNION keeps them",
+     "UNION requires identical column names",
+     "There is no difference",
+     "UNION removes duplicates; UNION ALL keeps them"
+    ],
+    "explain": "UNION needs an extra sort or hash to remove duplicates, so UNION ALL is faster when duplicates do not matter."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-dbms-19",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "在 (a, b) 上建了复合 B+ 树索引。哪些查询条件能高效利用它？（多选）",
+    "choices": [
+     "WHERE a = 1 AND b = 2",
+     "WHERE a + b = 3",
+     "WHERE b = 2",
+     "WHERE a = 1"
+    ],
+    "explain": "复合索引按 a 排序、a 相同再按 b 排序，满足最左前缀才能定位；只给 b 或对列做运算都用不上有序性。"
+   },
+   "en": {
+    "q": "There is a composite B+ tree index on (a, b). Which predicates can use it efficiently? (Select all that apply)",
+    "choices": [
+     "WHERE a = 1 AND b = 2",
+     "WHERE a + b = 3",
+     "WHERE b = 2",
+     "WHERE a = 1"
+    ],
+    "explain": "The index is sorted by a, then b within equal a, so it needs the leftmost prefix; b alone, or an expression over the columns, cannot use that order."
+   },
+   "answer": [
+    0,
+    3
+   ]
+  },
+  {
+   "id": "mcq-dbms-20",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "按 CAP 定理，发生网络分区时，分布式系统只能在哪两者之间取舍？",
+    "choices": [
+     "延迟和吞吐",
+     "一致性和可用性",
+     "原子性和持久性",
+     "一致性和分区容忍"
+    ],
+    "explain": "分区是无法避免的事实；出现分区时，要么拒绝部分请求（保一致），要么允许各分区各自响应（保可用）。"
+   },
+   "en": {
+    "q": "By the CAP theorem, during a network partition a distributed system must choose between which two?",
+    "choices": [
+     "Latency and throughput",
+     "Consistency and availability",
+     "Atomicity and durability",
+     "Consistency and partition tolerance"
+    ],
+    "explain": "Partitions happen regardless; during one, a system either refuses some requests (consistent) or lets each side answer on its own (available)."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-dbms-21",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "乐观并发控制通常怎样发现冲突？",
+    "choices": [
+     "定期全表扫描",
+     "不检测，后写的覆盖先写的",
+     "读之前先加排他锁",
+     "提交时检查版本号或时间戳是否被别人改过"
+    ],
+    "explain": "读时不加锁，更新时带上 WHERE version = 旧版本；影响 0 行说明有人先改了，需要重试。适合冲突少的场景。"
+   },
+   "en": {
+    "q": "How does optimistic concurrency control usually detect a conflict?",
+    "choices": [
+     "By periodic full-table scans",
+     "It does not; the last write wins",
+     "By taking an exclusive lock before reading",
+     "At commit, by checking whether a version number or timestamp changed"
+    ],
+    "explain": "Reads take no locks; the update says WHERE version = the old version, and zero affected rows means someone got there first, so retry. It suits low-contention workloads."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-dbms-22",
+   "section": "cs",
+   "topic": "dbms",
+   "zh": {
+    "q": "防止 SQL 注入最可靠的做法是？",
+    "choices": [
+     "把单引号替换成两个单引号",
+     "隐藏数据库报错信息",
+     "前端校验输入",
+     "参数化查询（预编译语句）"
+    ],
+    "explain": "参数化查询让用户输入只作为数据传给数据库，永远不会被解析成 SQL；手工转义容易遗漏编码和边界情况，前端校验可以绕过。"
+   },
+   "en": {
+    "q": "What is the most reliable defence against SQL injection?",
+    "choices": [
+     "Doubling single quotes",
+     "Hiding database error messages",
+     "Validating input in the front end",
+     "Parameterised queries (prepared statements)"
+    ],
+    "explain": "Parameters reach the database as data and are never parsed as SQL; hand escaping misses encodings and edge cases, and front-end checks are easy to bypass."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-network-1",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "下列哪种应用最常直接使用 UDP？",
+    "choices": [
+     "网页浏览（HTTP/1.1）",
+     "发送邮件（SMTP）",
+     "DNS 查询",
+     "SSH"
+    ],
+    "explain": "一次 DNS 查询通常一问一答、报文很小，用 UDP 省去握手；HTTP/1.1、SSH、SMTP 都需要可靠有序的字节流，用 TCP。"
+   },
+   "en": {
+    "q": "Which of these most commonly runs directly over UDP?",
+    "choices": [
+     "Web browsing over HTTP/1.1",
+     "Sending email (SMTP)",
+     "DNS queries",
+     "SSH"
+    ],
+    "explain": "A DNS lookup is one small request and reply, so UDP saves the handshake; HTTP/1.1, SSH and SMTP need a reliable ordered stream and use TCP."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-network-2",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "TCP 三次握手的报文顺序是？",
+    "choices": [
+     "SYN → ACK → FIN",
+     "SYN → FIN → ACK",
+     "ACK → SYN → SYN-ACK",
+     "SYN → SYN-ACK → ACK"
+    ],
+    "explain": "客户端发 SYN，服务器回 SYN-ACK，客户端再回 ACK，双方确认了彼此的初始序列号。"
+   },
+   "en": {
+    "q": "What is the order of segments in the TCP three-way handshake?",
+    "choices": [
+     "SYN → ACK → FIN",
+     "SYN → FIN → ACK",
+     "ACK → SYN → SYN-ACK",
+     "SYN → SYN-ACK → ACK"
+    ],
+    "explain": "The client sends SYN, the server answers SYN-ACK and the client acknowledges with ACK, so both sides have confirmed each other's initial sequence numbers."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-network-3",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "IP 协议属于 TCP/IP 模型的哪一层？",
+    "choices": [
+     "数据链路层",
+     "传输层",
+     "应用层",
+     "网络层"
+    ],
+    "explain": "IP 负责跨网络的寻址和路由，属于网络层（OSI 第 3 层）；TCP/UDP 在它上面的传输层。"
+   },
+   "en": {
+    "q": "Which layer of the TCP/IP model does IP belong to?",
+    "choices": [
+     "Data link layer",
+     "Transport layer",
+     "Application layer",
+     "Network (internet) layer"
+    ],
+    "explain": "IP handles addressing and routing across networks, the network layer (OSI layer 3); TCP and UDP sit above it in the transport layer."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-network-4",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "服务器暂时过载、希望客户端稍后重试，最合适的 HTTP 状态码是？",
+    "choices": [
+     "301",
+     "404",
+     "500",
+     "503"
+    ],
+    "explain": "503 Service Unavailable 表示暂时不可用，可以配合 Retry-After 头；500 是笼统的服务器错误，404 是资源不存在，301 是永久重定向。"
+   },
+   "en": {
+    "q": "A server is temporarily overloaded and wants the client to retry later. Which status code fits best?",
+    "choices": [
+     "301",
+     "404",
+     "500",
+     "503"
+    ],
+    "explain": "503 Service Unavailable means temporarily unavailable and can carry Retry-After; 500 is a generic server error, 404 not found and 301 a permanent redirect."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-network-5",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "ARP 协议的作用是？",
+    "choices": [
+     "给主机分配 IP 地址",
+     "在路由器之间交换路由表",
+     "把域名解析成 IP 地址",
+     "在局域网内把 IP 地址解析成 MAC 地址"
+    ],
+    "explain": "要在以太网上把包交给同一网段的主机或网关，需要对方的 MAC 地址，ARP 广播询问得到。域名解析是 DNS，分配地址是 DHCP。"
+   },
+   "en": {
+    "q": "What does ARP do?",
+    "choices": [
+     "Assigns IP addresses to hosts",
+     "Exchanges routing tables between routers",
+     "Resolves a domain name to an IP address",
+     "Resolves an IP address to a MAC address on the local network"
+    ],
+    "explain": "To hand a frame to a host or gateway on the same segment you need its MAC address, which ARP asks for by broadcast. Names are DNS; address assignment is DHCP."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-network-6",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "一个 /24 子网最多有多少个可分配给主机的地址？",
+    "choices": [
+     "252",
+     "254",
+     "255",
+     "256"
+    ],
+    "explain": "主机位 8 位，2^8 = 256 个地址，去掉网络地址和广播地址剩 254 个。"
+   },
+   "en": {
+    "q": "How many usable host addresses does a /24 subnet have?",
+    "choices": [
+     "252",
+     "254",
+     "255",
+     "256"
+    ],
+    "explain": "8 host bits give 2^8 = 256 addresses; minus the network and broadcast addresses leaves 254."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-network-7",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "一个 /26 子网最多有多少个可用主机地址？",
+    "choices": [
+     "30",
+     "62",
+     "64",
+     "126"
+    ],
+    "explain": "主机位 32 − 26 = 6 位，2^6 − 2 = 62。"
+   },
+   "en": {
+    "q": "How many usable host addresses does a /26 subnet have?",
+    "choices": [
+     "30",
+     "62",
+     "64",
+     "126"
+    ],
+    "explain": "32 − 26 = 6 host bits, and 2^6 − 2 = 62."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-network-8",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "TCP 连接关闭后进入 TIME_WAIT 状态的是哪一方？",
+    "choices": [
+     "双方都会",
+     "总是服务器",
+     "被动关闭的一方",
+     "主动关闭的一方"
+    ],
+    "explain": "主动关闭方发出最后一个 ACK 后等待 2MSL，确保对方收到 ACK，并让旧连接的迟到报文消失。"
+   },
+   "en": {
+    "q": "Which side of a TCP connection enters TIME_WAIT after it closes?",
+    "choices": [
+     "Both sides",
+     "Always the server",
+     "The side that closes second",
+     "The side that closes first (active close)"
+    ],
+    "explain": "The active closer sends the final ACK and waits 2×MSL so the peer gets it and stray segments of the old connection die out."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-network-9",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "HTTPS 默认使用哪个端口？",
+    "choices": [
+     "22",
+     "80",
+     "443",
+     "8080"
+    ],
+    "explain": "HTTP 是 80，HTTPS 是 443，SSH 是 22，8080 只是常见的备用 HTTP 端口。"
+   },
+   "en": {
+    "q": "Which port does HTTPS use by default?",
+    "choices": [
+     "22",
+     "80",
+     "443",
+     "8080"
+    ],
+    "explain": "HTTP is 80, HTTPS 443 and SSH 22; 8080 is just a common alternative HTTP port."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-network-10",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "交换机和路由器分别主要工作在哪一层？",
+    "choices": [
+     "交换机第 3 层，路由器第 2 层",
+     "交换机第 2 层，路由器第 3 层",
+     "都在第 4 层",
+     "都在第 1 层"
+    ],
+    "explain": "（二层）交换机按 MAC 地址转发帧，路由器按 IP 地址在网络之间转发包。三层交换机兼有路由功能。"
+   },
+   "en": {
+    "q": "At which layers do a switch and a router mainly work?",
+    "choices": [
+     "Switch at layer 3, router at layer 2",
+     "Switch at layer 2, router at layer 3",
+     "Both at layer 4",
+     "Both at layer 1"
+    ],
+    "explain": "A (layer-2) switch forwards frames by MAC address; a router forwards packets between networks by IP address. Layer-3 switches also route."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-network-11",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "TCP 的流量控制（flow control）主要防止什么？",
+    "choices": [
+     "发送方发得太快、接收方缓冲区溢出",
+     "IP 地址冲突",
+     "报文被篡改",
+     "网络中间链路拥塞"
+    ],
+    "explain": "接收方在 ACK 里通告接收窗口，发送方未确认的数据不超过它。防止网络拥塞的是拥塞控制（cwnd）。"
+   },
+   "en": {
+    "q": "What does TCP flow control prevent?",
+    "choices": [
+     "A fast sender overflowing the receiver's buffer",
+     "IP address conflicts",
+     "Segments being tampered with",
+     "Congestion inside the network"
+    ],
+    "explain": "The receiver advertises a window in its ACKs and the sender keeps unacknowledged data within it. Network congestion is the job of congestion control (cwnd)."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-network-12",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "TCP 慢启动阶段，拥塞窗口 cwnd 大致怎样增长？",
+    "choices": [
+     "保持不变",
+     "每个 RTT 翻倍（指数增长）",
+     "每个 RTT 加 1（线性增长）",
+     "每个 RTT 减半"
+    ],
+    "explain": "每收到一个 ACK，cwnd 加 1 个 MSS，相当于每个 RTT 翻倍，直到达到 ssthresh 后转入线性增长的拥塞避免。"
+   },
+   "en": {
+    "q": "During TCP slow start, how does the congestion window grow?",
+    "choices": [
+     "It stays constant",
+     "It doubles every RTT (exponential)",
+     "It grows by one segment per RTT (linear)",
+     "It halves every RTT"
+    ],
+    "explain": "Each ACK adds one MSS, which doubles cwnd per RTT until it reaches ssthresh; then congestion avoidance grows it linearly."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-network-13",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "TLS（HTTPS）提供了哪些保障？（多选）",
+    "choices": [
+     "隐藏你访问的服务器 IP",
+     "传输内容加密",
+     "验证服务器身份",
+     "防篡改（完整性）"
+    ],
+    "explain": "TLS 加密并校验每条记录，用证书验证服务器；但 IP 包头不加密，网络上仍能看到你连的是哪个 IP。"
+   },
+   "en": {
+    "q": "Which guarantees does TLS (HTTPS) provide? (Select all that apply)",
+    "choices": [
+     "Hiding which server IP you contact",
+     "Encryption of the traffic",
+     "Authentication of the server",
+     "Integrity against tampering"
+    ],
+    "explain": "TLS encrypts and authenticates each record and checks the server certificate; IP headers stay in the clear, so the network still sees which IP you contact."
+   },
+   "answer": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "id": "mcq-network-14",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "按 HTTP 规范，下列哪些方法是幂等的？（多选）",
+    "choices": [
+     "POST",
+     "PUT",
+     "DELETE",
+     "GET"
+    ],
+    "explain": "幂等指重复同一请求和只发一次效果相同。PUT 整体替换、DELETE 删除，重复做结果一样；POST 每次可能新建一个资源。"
+   },
+   "en": {
+    "q": "Which HTTP methods are idempotent by the spec? (Select all that apply)",
+    "choices": [
+     "POST",
+     "PUT",
+     "DELETE",
+     "GET"
+    ],
+    "explain": "Idempotent means repeating a request has the same effect as sending it once. PUT replaces and DELETE removes, so repeats change nothing more; each POST may create a new resource."
+   },
+   "answer": [
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "id": "mcq-network-15",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "下列哪些是私有（内网）IPv4 地址？（多选）",
+    "choices": [
+     "10.1.2.3",
+     "172.20.1.5",
+     "172.32.0.1",
+     "192.169.1.1"
+    ],
+    "explain": "私有地址段是 10.0.0.0/8、172.16.0.0/12（172.16–172.31）、192.168.0.0/16。172.32 和 192.169 都在段外。"
+   },
+   "en": {
+    "q": "Which are private IPv4 addresses? (Select all that apply)",
+    "choices": [
+     "10.1.2.3",
+     "172.20.1.5",
+     "172.32.0.1",
+     "192.169.1.1"
+    ],
+    "explain": "The private ranges are 10.0.0.0/8, 172.16.0.0/12 (172.16–172.31) and 192.168.0.0/16. 172.32 and 192.169 fall outside them."
+   },
+   "answer": [
+    0,
+    1
+   ]
+  },
+  {
+   "id": "mcq-network-16",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "在 100 Mbps 的链路上发送 1 MB（10^6 字节）的数据，传输时延（不计传播时延）约为？",
+    "choices": [
+     "10 ms",
+     "800 ms",
+     "80 ms",
+     "8 ms"
+    ],
+    "explain": "10^6 字节 = 8×10^6 位，除以 10^8 位/秒 = 0.08 秒 = 80 ms。注意 B（字节）和 b（位）差 8 倍。"
+   },
+   "en": {
+    "q": "How long does it take to put 1 MB (10^6 bytes) onto a 100 Mbps link, ignoring propagation delay?",
+    "choices": [
+     "10 ms",
+     "800 ms",
+     "80 ms",
+     "8 ms"
+    ],
+    "explain": "10^6 bytes = 8×10^6 bits; divided by 10^8 bits/s that is 0.08 s = 80 ms. Mind the factor of 8 between bytes and bits."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-network-17",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "HTTP/2 相比 HTTP/1.1 的主要改进是？",
+    "choices": [
+     "取消了头部",
+     "在一个 TCP 连接上多路复用多个请求",
+     "不再需要 TLS 证书",
+     "改用 UDP 传输"
+    ],
+    "explain": "HTTP/2 用二进制分帧，多个流共用一个连接并压缩头部；但 TCP 层丢包仍会阻塞所有流，HTTP/3 才改用基于 UDP 的 QUIC。"
+   },
+   "en": {
+    "q": "What is the main improvement of HTTP/2 over HTTP/1.1?",
+    "choices": [
+     "Dropping headers entirely",
+     "Multiplexing many requests over one TCP connection",
+     "No longer needing TLS certificates",
+     "Switching to UDP"
+    ],
+    "explain": "HTTP/2 uses binary frames so many streams share one connection, with header compression; a TCP loss still stalls every stream, which is why HTTP/3 moved to QUIC over UDP."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-network-18",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "ping 命令使用的是哪个协议？",
+    "choices": [
+     "ICMP",
+     "TCP",
+     "ARP",
+     "UDP"
+    ],
+    "explain": "ping 发送 ICMP Echo Request 并等待 Echo Reply，没有端口的概念。"
+   },
+   "en": {
+    "q": "Which protocol does ping use?",
+    "choices": [
+     "ICMP",
+     "TCP",
+     "ARP",
+     "UDP"
+    ],
+    "explain": "ping sends ICMP Echo Requests and waits for Echo Replies; there are no ports involved."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-network-19",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "NAT（网络地址转换）主要解决什么问题？",
+    "choices": [
+     "加密局域网流量",
+     "把域名转换成 IP",
+     "防止 ARP 欺骗",
+     "让多台使用私有地址的主机共享一个公网 IP"
+    ],
+    "explain": "NAT 改写出站包的源地址和端口，并记录映射以便把回包送回内网主机，缓解了 IPv4 地址不足。"
+   },
+   "en": {
+    "q": "What problem does NAT mainly solve?",
+    "choices": [
+     "Encrypting LAN traffic",
+     "Turning names into IPs",
+     "Preventing ARP spoofing",
+     "Letting many hosts with private addresses share one public IP"
+    ],
+    "explain": "NAT rewrites the source address and port of outgoing packets and keeps a mapping to route replies back, which eases IPv4 address exhaustion."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-network-20",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "WebSocket 连接是怎样建立的？",
+    "choices": [
+     "先发一个带 Upgrade 头的 HTTP 请求，之后在同一 TCP 连接上全双工通信",
+     "直接用 UDP 发送",
+     "通过 DNS 隧道",
+     "每条消息一个新的 HTTP 请求"
+    ],
+    "explain": "服务器返回 101 Switching Protocols 后，连接就不再按 HTTP 请求-响应工作，双方都能随时发消息。"
+   },
+   "en": {
+    "q": "How is a WebSocket connection established?",
+    "choices": [
+     "An HTTP request with an Upgrade header, then full-duplex messages on the same TCP connection",
+     "By sending UDP directly",
+     "Through a DNS tunnel",
+     "One new HTTP request per message"
+    ],
+    "explain": "After the server answers 101 Switching Protocols, the connection stops being HTTP request-response and either side can send at any time."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-network-21",
+   "section": "cs",
+   "topic": "network",
+   "zh": {
+    "q": "DHCP 的主要作用是？",
+    "choices": [
+     "自动为主机分配 IP 地址、网关和 DNS 等配置",
+     "把 IP 解析成 MAC",
+     "在路由器间同步路由",
+     "加密 DNS 查询"
+    ],
+    "explain": "主机启动时广播 DHCP Discover，服务器提供带租期的地址和网络配置。"
+   },
+   "en": {
+    "q": "What is DHCP mainly for?",
+    "choices": [
+     "Giving hosts an IP address, gateway, DNS and other settings automatically",
+     "Resolving IPs to MACs",
+     "Syncing routes between routers",
+     "Encrypting DNS queries"
+    ],
+    "explain": "A booting host broadcasts DHCP Discover and a server offers a leased address plus network settings."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-concurrency-1",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "两个线程各执行 1000 次 count++（count 初值 0，没有任何同步）。最终 count 的值？",
+    "choices": [
+     "一定小于 2000",
+     "一定是 2000",
+     "可能大于 2000",
+     "可能小于 2000"
+    ],
+    "explain": "count++ 是“读-加-写”三步，两个线程交错时一次更新会覆盖另一次，结果可能小于 2000；也可能恰好没交错而得到 2000，但不会超过 2000。"
+   },
+   "en": {
+    "q": "Two threads each run count++ 1000 times on a shared count starting at 0, with no synchronisation. What is the final value?",
+    "choices": [
+     "Always less than 2000",
+     "Always 2000",
+     "Possibly more than 2000",
+     "Possibly less than 2000"
+    ],
+    "explain": "count++ is read, add, write; interleaved, one update overwrites another, so the result can be below 2000. It can also come out at exactly 2000, but never above."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-concurrency-2",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "线程 A 持有锁 L1 等待 L2，线程 B 持有 L2 等待 L1。最简单可靠的修复是？",
+    "choices": [
+     "加 sleep 错开时间",
+     "给线程设更高优先级",
+     "所有线程按同一个全局顺序加锁（先 L1 后 L2）",
+     "把锁换成 volatile 变量"
+    ],
+    "explain": "固定加锁顺序就不会形成循环等待，破坏了死锁的必要条件之一。sleep 只是降低概率。"
+   },
+   "en": {
+    "q": "Thread A holds lock L1 and waits for L2; thread B holds L2 and waits for L1. What is the simplest reliable fix?",
+    "choices": [
+     "Add sleeps to stagger them",
+     "Raise the thread priorities",
+     "Make every thread take locks in one global order (L1, then L2)",
+     "Replace the locks with volatile variables"
+    ],
+    "explain": "A fixed lock order makes circular wait impossible, removing one of the necessary conditions. Sleeps only make it rarer."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-concurrency-3",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "初值为 3 的计数信号量保护一段代码，最多有几个线程能同时在里面？",
+    "choices": [
+     "不限",
+     "2",
+     "1",
+     "3"
+    ],
+    "explain": "每个线程进入时 P（减 1），减到 0 后后来者阻塞，离开时 V（加 1），所以最多 3 个。"
+   },
+   "en": {
+    "q": "A counting semaphore initialised to 3 guards a section. At most how many threads can be inside at once?",
+    "choices": [
+     "Unlimited",
+     "2",
+     "1",
+     "3"
+    ],
+    "explain": "Each entering thread decrements it; at 0 the next one blocks, and each leaving thread increments it, so at most 3."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-concurrency-4",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "使用条件变量时，wait() 为什么要放在 while 循环里检查条件？",
+    "choices": [
+     "为了让 CPU 空转等待",
+     "wait 只能在循环里编译通过",
+     "可能有虚假唤醒，或者被唤醒时条件已被别的线程改变",
+     "为了避免持有锁"
+    ],
+    "explain": "POSIX 和 Java 都允许虚假唤醒；而且 notify 到重新拿到锁之间，别的线程可能已经把条件消费掉，所以醒来要重新检查。"
+   },
+   "en": {
+    "q": "Why should a condition-variable wait() sit inside a while loop that rechecks the condition?",
+    "choices": [
+     "To spin the CPU while waiting",
+     "wait only compiles inside a loop",
+     "Wake-ups can be spurious, or another thread may have changed the condition first",
+     "To avoid holding the lock"
+    ],
+    "explain": "POSIX and Java both allow spurious wake-ups, and between the notify and reacquiring the lock another thread may have consumed the condition, so recheck on waking."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-concurrency-5",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "“活锁”（livelock）指的是？",
+    "choices": [
+     "线程互相等待对方释放锁而全部阻塞",
+     "低优先级线程永远得不到 CPU",
+     "线程运行太快导致数据竞争",
+     "线程都在运行、不断响应对方而改变状态，但谁都没有进展"
+    ],
+    "explain": "和死锁的区别是线程没有阻塞，仍在忙着“谦让”。全部阻塞地互相等待是死锁，低优先级线程一直轮不到是饥饿。"
+   },
+   "en": {
+    "q": "What is a livelock?",
+    "choices": [
+     "Threads all block waiting for each other's locks",
+     "A low-priority thread never gets the CPU",
+     "Threads run so fast they race on data",
+     "Threads keep running and reacting to each other, but none makes progress"
+    ],
+    "explain": "Unlike deadlock, nobody is blocked; they are busy stepping aside for each other. Everyone blocked waiting on each other is deadlock; a low-priority thread that never runs is starvation."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-concurrency-6",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "Java 中把计数器声明为 volatile int count，再在多个线程里执行 count++，结果会怎样？",
+    "choices": [
+     "每个线程只看到自己的副本",
+     "完全线程安全",
+     "编译错误",
+     "仍然可能丢失更新，因为 ++ 不是原子操作"
+    ],
+    "explain": "volatile 保证可见性和有序性，不保证“读-改-写”的原子性。用 AtomicInteger 或加锁。"
+   },
+   "en": {
+    "q": "In Java, count is declared volatile int and several threads run count++. What happens?",
+    "choices": [
+     "Each thread only sees its own copy",
+     "It is fully thread-safe",
+     "It does not compile",
+     "Updates can still be lost, because ++ is not atomic"
+    ],
+    "explain": "volatile gives visibility and ordering, not atomic read-modify-write. Use AtomicInteger or a lock."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-concurrency-7",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "读写锁（read-write lock）允许的情形是？",
+    "choices": [
+     "多个写者同时持有",
+     "任何时候只允许一个线程",
+     "读者和写者同时持有",
+     "多个读者同时持有，或一个写者独占"
+    ],
+    "explain": "读不改数据，可以并发；写需要独占，既排斥其他写者也排斥读者。读多写少时比普通互斥锁并发度更高。"
+   },
+   "en": {
+    "q": "What does a read-write lock allow?",
+    "choices": [
+     "Many writers together",
+     "Only one thread at any time",
+     "Readers and a writer together",
+     "Many readers together, or one writer alone"
+    ],
+    "explain": "Readers do not change data, so they can share; a writer needs exclusive access against readers and writers. It beats a plain mutex when reads dominate."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-concurrency-8",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "基于 CAS（compare-and-swap）的无锁栈可能遇到什么经典问题？",
+    "choices": [
+     "ABA 问题",
+     "缓冲区溢出",
+     "优先级反转",
+     "死锁"
+    ],
+    "explain": "值从 A 变成 B 又变回 A，CAS 只比较值会误以为没变。常用带版本号的指针（如 AtomicStampedReference）解决。"
+   },
+   "en": {
+    "q": "Which classic problem can a lock-free stack built on CAS run into?",
+    "choices": [
+     "The ABA problem",
+     "Buffer overflow",
+     "Priority inversion",
+     "Deadlock"
+    ],
+    "explain": "A value goes A → B → A and a value-only CAS thinks nothing changed. Tagged or versioned pointers (AtomicStampedReference, say) fix it."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-concurrency-9",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "自旋锁（spinlock）在什么情况下比阻塞式互斥锁更合适？",
+    "choices": [
+     "多核机器上、临界区非常短",
+     "持锁时间很长",
+     "临界区里有磁盘 I/O",
+     "单核机器上"
+    ],
+    "explain": "临界区很短时，忙等几十个周期比让线程睡眠再唤醒（两次上下文切换）便宜；单核上自旋只会浪费持锁线程需要的 CPU。"
+   },
+   "en": {
+    "q": "When is a spinlock a better fit than a blocking mutex?",
+    "choices": [
+     "On a multicore machine with a very short critical section",
+     "When the lock is held for a long time",
+     "When the critical section does disk I/O",
+     "On a single-core machine"
+    ],
+    "explain": "For a very short section, spinning a few dozen cycles is cheaper than sleeping and waking (two context switches); on one core spinning only burns the CPU the lock holder needs."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-concurrency-10",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "在默认（带 GIL）的 CPython 中，想用多核加速 CPU 密集型计算，通常应该？",
+    "choices": [
+     "用多进程（multiprocessing）",
+     "用多线程（threading）",
+     "用 asyncio",
+     "把变量声明为 global"
+    ],
+    "explain": "GIL 让同一时刻只有一个线程执行 Python 字节码，线程只适合 I/O 密集任务；每个进程有自己的解释器和 GIL，可以真正并行。（3.13 起另有实验性的无 GIL 构建。）"
+   },
+   "en": {
+    "q": "In default CPython (with the GIL), how do you usually use several cores for CPU-bound work?",
+    "choices": [
+     "Use multiple processes (multiprocessing)",
+     "Use threads (threading)",
+     "Use asyncio",
+     "Declare the variables global"
+    ],
+    "explain": "The GIL lets one thread run Python bytecode at a time, so threads only help I/O-bound work; each process has its own interpreter and GIL and truly runs in parallel. (3.13 adds an experimental free-threaded build.)"
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-concurrency-11",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "可重入锁（reentrant lock）的特点是？",
+    "choices": [
+     "已持有它的线程可以再次获取而不会把自己锁死",
+     "它不会阻塞",
+     "任何线程都可以释放它",
+     "它允许多个写者"
+    ],
+    "explain": "可重入锁记录持有者和重入次数，同一线程再获取只加计数，释放同样次数后才真正解锁。Java 的 synchronized 和 ReentrantLock 都是可重入的。"
+   },
+   "en": {
+    "q": "What makes a lock reentrant?",
+    "choices": [
+     "The thread holding it can acquire it again without deadlocking itself",
+     "It never blocks",
+     "Any thread can release it",
+     "It allows several writers"
+    ],
+    "explain": "It records the owner and a hold count; the owner re-acquiring just bumps the count, and it unlocks after as many releases. Java's synchronized and ReentrantLock are both reentrant."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-concurrency-12",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "一个线程对同一把不可重入的互斥锁连续调用两次 lock()，会发生什么？",
+    "choices": [
+     "另一个线程会被唤醒",
+     "第二次调用永远阻塞（自死锁）",
+     "第二次调用立即返回",
+     "锁自动变成可重入"
+    ],
+    "explain": "锁已被自己持有，第二次 lock 等待持有者释放，而持有者正是自己，所以永远等不到。（有的实现会检测并报错，但不能指望。）"
+   },
+   "en": {
+    "q": "A thread calls lock() twice in a row on the same non-reentrant mutex. What happens?",
+    "choices": [
+     "Another thread is woken",
+     "The second call blocks forever (self-deadlock)",
+     "The second call returns at once",
+     "The lock becomes reentrant"
+    ],
+    "explain": "The lock is held by the caller, so the second lock waits for the holder, which is itself. Some implementations detect it and fail, but you cannot rely on that."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-concurrency-13",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "用信号量实现有界缓冲区的生产者-消费者，通常需要哪几个信号量？",
+    "choices": [
+     "empty 和 full，都初值为 0",
+     "empty（初值 N）、full（初值 0）和一个互斥锁",
+     "只要一个互斥锁",
+     "每个槽位一个信号量"
+    ],
+    "explain": "生产者先 P(empty) 再加锁放入、V(full)；消费者先 P(full) 再加锁取出、V(empty)。互斥锁保护缓冲区本身的下标。"
+   },
+   "en": {
+    "q": "A bounded-buffer producer-consumer built on semaphores usually needs which semaphores?",
+    "choices": [
+     "empty and full, both starting at 0",
+     "empty (starts at N), full (starts at 0) and a mutex",
+     "Just one mutex",
+     "One semaphore per slot"
+    ],
+    "explain": "Producers P(empty), lock, insert, V(full); consumers P(full), lock, remove, V(empty). The mutex protects the buffer's indices."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-concurrency-14",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "哲学家就餐问题中，哪种做法可以避免死锁？",
+    "choices": [
+     "让其中一位哲学家先拿右手边、其他人先拿左手边的叉子",
+     "增加每个人吃饭的时间",
+     "每个人都先拿左手边的叉子",
+     "拿不到叉子就一直等"
+    ],
+    "explain": "所有人同时拿起左叉就形成循环等待；有一个人顺序相反，环就断了（等价于给资源规定全局顺序）。"
+   },
+   "en": {
+    "q": "In the dining philosophers problem, which change avoids deadlock?",
+    "choices": [
+     "One philosopher picks up the right fork first; everyone else picks up the left first",
+     "Let everyone eat longer",
+     "Everyone picks up the left fork first",
+     "Wait for as long as it takes"
+    ],
+    "explain": "If everyone lifts the left fork together, the wait is circular; one philosopher going the other way breaks the cycle, the same as a global resource order."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-concurrency-15",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "程序 90% 的部分可以完美并行。按 Amdahl 定律，用 4 个核最多加速约多少倍？",
+    "choices": [
+     "约 3.08 倍",
+     "约 3.6 倍",
+     "4 倍",
+     "10 倍"
+    ],
+    "explain": "加速比 = 1 / (0.1 + 0.9/4) = 1 / 0.325 ≈ 3.08。核数无限时上限是 1/0.1 = 10 倍。"
+   },
+   "en": {
+    "q": "A program is 90% perfectly parallelisable. By Amdahl's law, what is the best speed-up on 4 cores?",
+    "choices": [
+     "About 3.08×",
+     "About 3.6×",
+     "4×",
+     "10×"
+    ],
+    "explain": "Speed-up = 1 / (0.1 + 0.9/4) = 1 / 0.325 ≈ 3.08. With unlimited cores the ceiling is 1/0.1 = 10×."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-concurrency-16",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "单线程事件循环（如 Node.js、asyncio）提供的是？",
+    "choices": [
+     "自动避免所有竞态条件",
+     "多核并行执行 JavaScript/Python 代码",
+     "比多线程一定更快",
+     "并发（交替推进多个任务），但不是并行"
+    ],
+    "explain": "任务在 await/回调处让出，单线程交替处理大量 I/O；计算本身仍在一个线程上。await 之间也可能交错，竞态依然存在。"
+   },
+   "en": {
+    "q": "What does a single-threaded event loop (Node.js, asyncio) provide?",
+    "choices": [
+     "Automatic freedom from every race",
+     "Parallel execution of JavaScript/Python on many cores",
+     "Always faster than threads",
+     "Concurrency (interleaving many tasks) but not parallelism"
+    ],
+    "explain": "Tasks yield at await or callbacks, so one thread juggles lots of I/O; computation still runs on one thread. Tasks interleave across awaits, so races still exist."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-concurrency-17",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "优先级反转是指？",
+    "choices": [
+     "调度器把优先级排反了",
+     "两个线程互相等待",
+     "高优先级线程等待被低优先级线程持有的锁，而中优先级线程抢占了低优先级线程",
+     "低优先级线程永远不运行"
+    ],
+    "explain": "结果是高优先级线程实际被中优先级线程拖住。常用优先级继承：持锁的低优先级线程临时继承等待者的高优先级。"
+   },
+   "en": {
+    "q": "What is priority inversion?",
+    "choices": [
+     "The scheduler sorts priorities backwards",
+     "Two threads wait on each other",
+     "A high-priority thread waits on a lock held by a low-priority one, which a medium-priority thread keeps preempting",
+     "A low-priority thread never runs"
+    ],
+    "explain": "The high-priority thread is effectively held up by the medium one. Priority inheritance fixes it: the lock holder temporarily inherits the waiter's priority."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-concurrency-18",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "Java 中双重检查锁定（double-checked locking）的单例，实例字段为什么要声明为 volatile？",
+    "choices": [
+     "让构造函数只运行一次",
+     "否则编译不通过",
+     "为了让字段不可修改",
+     "防止指令重排让别的线程看到未初始化完的对象"
+    ],
+    "explain": "“分配内存、构造、赋值引用”可能被重排成先赋值，另一个线程在第一次检查时就拿到未构造完的对象。volatile 禁止这种重排。"
+   },
+   "en": {
+    "q": "In Java double-checked locking for a singleton, why must the instance field be volatile?",
+    "choices": [
+     "To make the constructor run once",
+     "Otherwise it does not compile",
+     "To make the field immutable",
+     "To stop reordering from exposing a partly constructed object to other threads"
+    ],
+    "explain": "'Allocate, construct, publish' can be reordered so the reference is published first, and another thread's first check returns a half-built object. volatile forbids that reordering."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-concurrency-19",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "屏障（barrier）同步的作用是？",
+    "choices": [
+     "让一组线程都到达某一点后才一起继续",
+     "保证只有一个线程进入临界区",
+     "阻止编译器重排内存访问",
+     "限制线程池大小"
+    ],
+    "explain": "常用于分阶段的并行计算：每个线程算完本阶段后在屏障等，全部到齐再进入下一阶段（如 Java 的 CyclicBarrier）。"
+   },
+   "en": {
+    "q": "What does a barrier do?",
+    "choices": [
+     "Holds a group of threads until all reach a point, then releases them together",
+     "Lets only one thread into a critical section",
+     "Stops the compiler reordering memory accesses",
+     "Caps a thread pool"
+    ],
+    "explain": "Used for phased parallel work: each thread finishes the phase, waits at the barrier, and all start the next phase together (Java's CyclicBarrier)."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-concurrency-20",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "使用线程池而不是每个任务新建线程，主要好处有哪些？（多选）",
+    "choices": [
+     "任务一定按提交顺序完成",
+     "复用线程，省去反复创建销毁的开销",
+     "限制并发线程数，防止资源耗尽",
+     "自动消除数据竞争"
+    ],
+    "explain": "线程池解决的是开销和容量问题；任务之间共享数据照样要同步，多个工作线程执行时完成顺序也不确定。"
+   },
+   "en": {
+    "q": "What are the main benefits of a thread pool over a new thread per task? (Select all that apply)",
+    "choices": [
+     "Tasks always finish in submission order",
+     "Reusing threads avoids repeated creation and teardown",
+     "Bounding the number of threads prevents resource exhaustion",
+     "Data races disappear automatically"
+    ],
+    "explain": "A pool addresses overhead and capacity; shared data still needs synchronisation, and with several workers completion order is not fixed."
+   },
+   "answer": [
+    1,
+    2
+   ]
+  },
+  {
+   "id": "mcq-concurrency-21",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "Java 中 Thread.sleep() 和 Object.wait() 的关键区别是？",
+    "choices": [
+     "两者都不释放锁",
+     "sleep 会释放锁，wait 不会",
+     "wait 会释放对象的监视器锁，sleep 不会",
+     "sleep 只能在 synchronized 块里调用"
+    ],
+    "explain": "wait 必须在持有该对象锁时调用，调用后释放锁并等待 notify；sleep 只是暂停当前线程，持有的锁照样持有。"
+   },
+   "en": {
+    "q": "What is the key difference between Thread.sleep() and Object.wait() in Java?",
+    "choices": [
+     "Neither releases the lock",
+     "sleep releases the lock; wait does not",
+     "wait releases the monitor lock; sleep does not",
+     "sleep can only be called inside synchronized"
+    ],
+    "explain": "wait must be called while holding the object's lock and releases it until notified; sleep just pauses the thread and keeps any locks it holds."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-concurrency-22",
+   "section": "cs",
+   "topic": "concurrency",
+   "zh": {
+    "q": "“数据竞争”（data race）的准确定义是？",
+    "choices": [
+     "两个线程并发访问同一内存位置，至少一个是写，且没有同步",
+     "两个线程同时读同一个变量",
+     "两个线程争用同一把锁",
+     "线程执行顺序不确定"
+    ],
+    "explain": "只读共享没有问题；有写入又没有锁、原子操作等建立先后关系，才是数据竞争，在 C/C++ 里是未定义行为。"
+   },
+   "en": {
+    "q": "What exactly is a data race?",
+    "choices": [
+     "Two threads access the same memory location concurrently, at least one writes, with no synchronisation",
+     "Two threads read the same variable at once",
+     "Two threads contend for one lock",
+     "Thread order is nondeterministic"
+    ],
+    "explain": "Shared reads are fine; a write with nothing (lock, atomic) ordering the accesses is a data race, which is undefined behaviour in C and C++."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-oop-1",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "方法重写（override）和方法重载（overload）分别对应哪种多态？",
+    "choices": [
+     "重写是编译时多态，重载是运行时多态",
+     "两者都是运行时多态",
+     "两者都不是多态",
+     "重写是运行时多态，重载是编译时多态"
+    ],
+    "explain": "重写的方法按对象的实际类型动态分派；重载按参数的静态类型在编译期选定。"
+   },
+   "en": {
+    "q": "Which kind of polymorphism do overriding and overloading give?",
+    "choices": [
+     "Overriding is compile-time; overloading is run-time",
+     "Both are run-time",
+     "Neither is polymorphism",
+     "Overriding is run-time; overloading is compile-time"
+    ],
+    "explain": "An overridden method is dispatched on the object's actual type at run time; an overload is chosen at compile time from the static argument types."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-oop-2",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "Java 中关于抽象类和接口，哪些说法正确？（多选）",
+    "choices": [
+     "抽象类可以有构造函数和实例字段",
+     "接口可以有非 static 的实例字段",
+     "接口可以有 default 方法（Java 8 起）",
+     "一个类只能继承一个类，但可以实现多个接口"
+    ],
+    "explain": "接口里的字段隐式是 public static final 常量，不能有实例状态；抽象类可以有状态和构造函数。"
+   },
+   "en": {
+    "q": "Which statements about abstract classes and interfaces in Java are true? (Select all that apply)",
+    "choices": [
+     "An abstract class can have constructors and instance fields",
+     "An interface can have non-static instance fields",
+     "Interfaces can have default methods (since Java 8)",
+     "A class extends one class but can implement many interfaces"
+    ],
+    "explain": "Fields in an interface are implicitly public static final constants, so no instance state; an abstract class can have state and constructors."
+   },
+   "answer": [
+    0,
+    2,
+    3
+   ]
+  },
+  {
+   "id": "mcq-oop-3",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "里氏替换原则（LSP）要求什么？",
+    "choices": [
+     "父类必须是抽象类",
+     "子类不能新增方法",
+     "每个类只有一个职责",
+     "子类对象能替换父类对象使用而不破坏程序的正确性"
+    ],
+    "explain": "经典反例：正方形继承长方形，setWidth 同时改了高，依赖“宽高独立”的调用方就出错了。“每个类只有一个职责”是单一职责原则。"
+   },
+   "en": {
+    "q": "What does the Liskov substitution principle require?",
+    "choices": [
+     "The base class must be abstract",
+     "Subclasses add no methods",
+     "Each class has one responsibility",
+     "A subclass object can stand in for its base class without breaking correctness"
+    ],
+    "explain": "The classic counter-example is Square extends Rectangle: setWidth also changes the height and breaks callers that assume they are independent. 'One responsibility per class' is the single-responsibility principle."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-oop-4",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "SOLID 中的 O（开闭原则）是指？",
+    "choices": [
+     "对象应尽量开放字段",
+     "对扩展开放，对修改关闭",
+     "类要么完全公开要么完全私有",
+     "只用开源依赖"
+    ],
+    "explain": "新增行为时通过新增类型（实现接口、组合策略）完成，而不是改动已经测试过的代码。"
+   },
+   "en": {
+    "q": "What does the O in SOLID (open/closed) mean?",
+    "choices": [
+     "Objects should expose their fields",
+     "Open for extension, closed for modification",
+     "Classes are either fully public or fully private",
+     "Use only open-source dependencies"
+    ],
+    "explain": "Add behaviour by adding types (implementing an interface, plugging in a strategy) rather than editing tested code."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-oop-5",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "依赖倒置原则（DIP）建议？",
+    "choices": [
+     "所有类都继承同一个基类",
+     "低层模块调用高层模块",
+     "不使用依赖注入",
+     "高层模块和低层模块都依赖抽象"
+    ],
+    "explain": "例如业务逻辑依赖 Repository 接口，而不是直接依赖某个具体的 MySQL 实现，这样易于替换和测试。"
+   },
+   "en": {
+    "q": "What does the dependency inversion principle recommend?",
+    "choices": [
+     "Every class extends one base class",
+     "Low-level modules call high-level ones",
+     "Avoid dependency injection",
+     "High- and low-level modules both depend on abstractions"
+    ],
+    "explain": "Business logic depends on a Repository interface rather than a concrete MySQL class, so the implementation can be swapped and tested."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-oop-6",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "“组合优于继承”的主要理由是？",
+    "choices": [
+     "组合一定运行更快",
+     "继承在 Java 中已被弃用",
+     "继承不能复用代码",
+     "组合耦合更松，能在运行时替换部件，避免脆弱的类层次"
+    ],
+    "explain": "子类依赖父类的实现细节，父类一改子类就可能坏（脆弱基类问题）；组合只依赖接口。"
+   },
+   "en": {
+    "q": "Why 'favour composition over inheritance'?",
+    "choices": [
+     "Composition always runs faster",
+     "Inheritance is deprecated in Java",
+     "Inheritance cannot reuse code",
+     "Composition is looser, parts can be swapped at run time, and it avoids fragile hierarchies"
+    ],
+    "explain": "A subclass depends on its parent's implementation and breaks when it changes (the fragile base class problem); composition depends only on an interface."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-oop-7",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "Java 中子类定义了与父类同签名的 static 方法，会发生什么？",
+    "choices": [
+     "运行时异常",
+     "隐藏父类方法，调用哪个由引用的静态类型决定",
+     "编译错误",
+     "重写父类方法，按实际对象类型调用"
+    ],
+    "explain": "static 方法属于类，不参与动态分派，所以只是“隐藏”。用 Parent p = new Child(); p.m() 调用的是 Parent.m。"
+   },
+   "en": {
+    "q": "In Java, a subclass declares a static method with the same signature as one in its parent. What happens?",
+    "choices": [
+     "A run-time exception",
+     "It hides the parent's method; the static type of the reference decides which runs",
+     "A compile error",
+     "It overrides it; the actual object type decides"
+    ],
+    "explain": "Static methods belong to the class and are not dispatched dynamically, so this is hiding. With Parent p = new Child(), p.m() calls Parent.m."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-oop-8",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "实现单例模式时，最关键的一步是？",
+    "choices": [
+     "把类声明为 abstract",
+     "把所有方法设为 static",
+     "构造函数私有，通过静态方法返回唯一实例",
+     "重写 equals 方法"
+    ],
+    "explain": "私有构造函数阻止外部 new，静态访问点负责创建并缓存唯一实例（多线程下还要注意初始化安全）。"
+   },
+   "en": {
+    "q": "What is the key step in implementing the Singleton pattern?",
+    "choices": [
+     "Declare the class abstract",
+     "Make every method static",
+     "Make the constructor private and return the one instance from a static method",
+     "Override equals"
+    ],
+    "explain": "A private constructor stops outside code calling new, and a static accessor creates and caches the single instance (thread-safe initialisation matters too)."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-oop-9",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "观察者模式（Observer）适合哪种场景？",
+    "choices": [
+     "一个对象状态变化时，需要通知多个依赖它的对象",
+     "为复杂子系统提供一个简单入口",
+     "在运行时选择不同的算法",
+     "确保一个类只有一个实例"
+    ],
+    "explain": "主题维护观察者列表，变化时逐个回调，事件监听就是典型例子。提供简单入口是外观模式，运行时选算法是策略模式，唯一实例是单例模式。"
+   },
+   "en": {
+    "q": "Which situation suits the Observer pattern?",
+    "choices": [
+     "Several objects must be notified when one object changes",
+     "Giving a complex subsystem one simple entry point",
+     "Choosing an algorithm at run time",
+     "Ensuring a class has one instance"
+    ],
+    "explain": "The subject keeps a list of observers and calls each on change; event listeners are the classic example. A simple entry point is Facade, choosing an algorithm is Strategy and one instance is Singleton."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-oop-10",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "Java 不支持类的多继承，主要是为了避免什么问题？",
+    "choices": [
+     "接口过多",
+     "菱形继承的歧义",
+     "栈溢出",
+     "垃圾回收变慢"
+    ],
+    "explain": "两个父类都继承同一个祖先并各自重写同一方法时，子类该用哪个不明确。接口的 default 方法冲突时，Java 要求子类显式重写。"
+   },
+   "en": {
+    "q": "Java forbids multiple inheritance of classes mainly to avoid what?",
+    "choices": [
+     "Too many interfaces",
+     "The diamond problem",
+     "Stack overflow",
+     "Slower garbage collection"
+    ],
+    "explain": "If two parents inherit one ancestor and both override a method, the child's choice is ambiguous. For clashing interface default methods Java makes the class override explicitly."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-oop-11",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "策略模式（Strategy）的作用是？",
+    "choices": [
+     "给对象动态添加职责",
+     "把请求沿处理链传递",
+     "按步骤构建复杂对象",
+     "把一族可互换的算法封装起来，运行时选择"
+    ],
+    "explain": "例如排序比较器、支付方式、压缩算法都可以是策略；分步构建是建造者，动态加职责是装饰器，沿链传递是责任链。"
+   },
+   "en": {
+    "q": "What is the Strategy pattern for?",
+    "choices": [
+     "Adding responsibilities to an object dynamically",
+     "Passing a request along a chain of handlers",
+     "Building a complex object step by step",
+     "Wrapping interchangeable algorithms so one can be picked at run time"
+    ],
+    "explain": "Comparators, payment methods and compression codecs are typical strategies; step-by-step building is Builder, adding responsibilities is Decorator and passing along handlers is Chain of Responsibility."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-oop-12",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "Java 中重写 equals 时为什么必须同时重写 hashCode？",
+    "choices": [
+     "hashCode 决定 equals 的结果",
+     "为了让对象不可变",
+     "否则编译不通过",
+     "相等的对象必须有相同的哈希码，否则 HashMap/HashSet 会出错"
+    ],
+    "explain": "HashMap 先按 hashCode 找桶再用 equals 比较；两个“相等”的对象哈希不同会落在不同的桶，查找和去重都会失败。反过来，哈希相同的对象不必相等。"
+   },
+   "en": {
+    "q": "In Java, why must you override hashCode when you override equals?",
+    "choices": [
+     "hashCode decides what equals returns",
+     "To make the object immutable",
+     "Otherwise it does not compile",
+     "Equal objects must share a hash code or HashMap and HashSet misbehave"
+    ],
+    "explain": "HashMap finds the bucket by hashCode, then compares with equals; equal objects with different hashes land in different buckets, so lookups and dedup fail. Equal hashes do not have to mean equal objects."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-oop-13",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "装饰器模式（Decorator）的特点是？",
+    "choices": [
+     "包装同一接口的对象，在不修改原类的情况下叠加功能",
+     "只能有一个实例",
+     "把两个不兼容的接口适配起来",
+     "把对象的创建交给子类"
+    ],
+    "explain": "Java 的 BufferedInputStream(new FileInputStream(...)) 就是装饰器：每层都实现同一接口并委托给被包装对象。适配不兼容接口的是适配器模式。"
+   },
+   "en": {
+    "q": "What characterises the Decorator pattern?",
+    "choices": [
+     "Wrapping an object of the same interface to add behaviour without changing its class",
+     "Allowing only one instance",
+     "Adapting two incompatible interfaces",
+     "Leaving object creation to subclasses"
+    ],
+    "explain": "Java's BufferedInputStream(new FileInputStream(...)) is a decorator: each layer implements the same interface and delegates to the wrapped one. Adapting incompatible interfaces is the Adapter pattern."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-oop-14",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "Java 中 protected 成员可以被谁访问？",
+    "choices": [
+     "只有本类",
+     "只有子类",
+     "所有类",
+     "同一个包内的类，以及其他包中的子类"
+    ],
+    "explain": "Java 的 protected 比 C++ 宽：同包可见，再加上子类（跨包时通过子类自身的引用访问）。"
+   },
+   "en": {
+    "q": "In Java, who can access a protected member?",
+    "choices": [
+     "Only the class itself",
+     "Only subclasses",
+     "Every class",
+     "Classes in the same package, and subclasses in other packages"
+    ],
+    "explain": "Java's protected is wider than C++'s: visible within the package, plus to subclasses (across packages, through the subclass's own references)."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-oop-15",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "封装（encapsulation）最主要的目的是？",
+    "choices": [
+     "隐藏内部状态，只通过方法暴露受控的操作",
+     "减少类的数量",
+     "让代码运行更快",
+     "允许多继承"
+    ],
+    "explain": "外部只能经由方法修改状态，类可以维护自己的不变量，内部实现改了也不影响调用方。"
+   },
+   "en": {
+    "q": "What is the main purpose of encapsulation?",
+    "choices": [
+     "Hide internal state and expose only controlled operations",
+     "Reduce the number of classes",
+     "Make code run faster",
+     "Allow multiple inheritance"
+    ],
+    "explain": "Outside code changes state only through methods, so the class keeps its invariants and can change its internals without breaking callers."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-oop-16",
+   "section": "cs",
+   "topic": "oop",
+   "zh": {
+    "q": "工厂方法模式（Factory Method）解决的问题是？",
+    "choices": [
+     "调用方不必知道要创建的具体类",
+     "在对象之间广播事件",
+     "保证对象只创建一次",
+     "复制已有对象"
+    ],
+    "explain": "创建逻辑放在一个方法里（可由子类覆盖），调用方只依赖产品的接口，新增产品类型时调用方不用改。"
+   },
+   "en": {
+    "q": "What problem does the Factory Method pattern solve?",
+    "choices": [
+     "Callers need not know the concrete class being created",
+     "Broadcasting events between objects",
+     "Ensuring an object is created only once",
+     "Copying existing objects"
+    ],
+    "explain": "Creation lives in one method that subclasses can override; callers depend only on the product interface and need no change for a new product type."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-python-1",
+   "section": "code-output",
+   "topic": "python",
+   "code": "def add(x, items=[]):\n    items.append(x)\n    return items\n\nadd(1)\nadd(2)\nprint(add(3))",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "TypeError",
+     "[3]",
+     "[1, 2, 3]",
+     "[1, 2]"
+    ],
+    "explain": "默认参数在函数定义时只求值一次，三次调用共用同一个列表。惯用写法是 items=None，在函数体内再新建列表。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "TypeError",
+     "[3]",
+     "[1, 2, 3]",
+     "[1, 2]"
+    ],
+    "explain": "A default value is evaluated once, when the function is defined, so all three calls share one list. The idiom is items=None and a new list inside."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-python-2",
+   "section": "code-output",
+   "topic": "python",
+   "code": "fs = [lambda: i for i in range(3)]\nprint([f() for f in fs])",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "[0, 1, 2]",
+     "[0, 0, 0]",
+     "[2, 2, 2]",
+     "NameError"
+    ],
+    "explain": "lambda 捕获的是变量 i 本身而不是当时的值（延迟绑定），调用时 i 已经是 2。可以写成 lambda i=i: i 固定当时的值。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "[0, 1, 2]",
+     "[0, 0, 0]",
+     "[2, 2, 2]",
+     "NameError"
+    ],
+    "explain": "The lambdas capture the variable i, not its value at the time (late binding), and i is 2 when they run. lambda i=i: i freezes the value."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-python-3",
+   "section": "code-output",
+   "topic": "python",
+   "code": "print(-7 // 2, -7 % 2)",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "-3 1",
+     "-3 -1",
+     "-4 -1",
+     "-4 1"
+    ],
+    "explain": "Python 的 // 向负无穷取整，所以 -7 // 2 = -4；% 的结果和除数同号，满足 (-4)*2 + 1 = -7。C、Java 向零取整，会得到 -3 和 -1。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "-3 1",
+     "-3 -1",
+     "-4 -1",
+     "-4 1"
+    ],
+    "explain": "Python floors //, so -7 // 2 = -4, and % takes the sign of the divisor so that (-4)*2 + 1 = -7. C and Java truncate toward zero and give -3 and -1."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-python-4",
+   "section": "code-output",
+   "topic": "python",
+   "code": "a = [[0] * 2] * 2\na[0][0] = 1\nprint(a)",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "[[1, 0], [1, 0]]",
+     "[[1, 1], [1, 1]]",
+     "[[1, 0], [0, 0]]",
+     "[[1, 1], [0, 0]]"
+    ],
+    "explain": "外层 * 2 复制的是同一个内层列表的引用，两行其实是同一个对象。建二维表要写 [[0] * 2 for _ in range(2)]。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "[[1, 0], [1, 0]]",
+     "[[1, 1], [1, 1]]",
+     "[[1, 0], [0, 0]]",
+     "[[1, 1], [0, 0]]"
+    ],
+    "explain": "The outer * 2 copies a reference to one inner list, so both rows are the same object. Build a grid with [[0] * 2 for _ in range(2)]."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-python-5",
+   "section": "code-output",
+   "topic": "python",
+   "code": "a = [1, 2]\nb = a[:]\nprint(a == b, a is b)",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "False True",
+     "True True",
+     "False False",
+     "True False"
+    ],
+    "explain": "切片 a[:] 生成新列表：内容相等（==），但不是同一个对象（is）。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "False True",
+     "True True",
+     "False False",
+     "True False"
+    ],
+    "explain": "The slice a[:] makes a new list: equal contents (==) but a different object (is)."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-python-6",
+   "section": "code-output",
+   "topic": "python",
+   "code": "s = \"abcdef\"\nprint(s[::-2])",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "ace",
+     "eca",
+     "bdf",
+     "fdb"
+    ],
+    "explain": "步长 -2 从最后一个字符开始倒着每隔一个取：f、d、b。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "ace",
+     "eca",
+     "bdf",
+     "fdb"
+    ],
+    "explain": "A step of -2 starts at the last character and takes every other one backwards: f, d, b."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-python-7",
+   "section": "code-output",
+   "topic": "python",
+   "code": "d = {\"a\": 1, \"b\": 2}\nd[\"a\"] = 3\nd[\"c\"] = 4\nprint(list(d))",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "['b', 'a', 'c']",
+     "['a', 'b', 'c']",
+     "['c', 'b', 'a']",
+     "['a', 'c', 'b']"
+    ],
+    "explain": "字典按插入顺序保存键（3.7 起有保证）；给已有的键赋值不改变它的位置。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "['b', 'a', 'c']",
+     "['a', 'b', 'c']",
+     "['c', 'b', 'a']",
+     "['a', 'c', 'b']"
+    ],
+    "explain": "Dicts keep keys in insertion order (guaranteed since 3.7); assigning to an existing key does not move it."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-python-8",
+   "section": "code-output",
+   "topic": "python",
+   "code": "g = (x * x for x in range(4))\nprint(sum(g), sum(g))",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "6 6",
+     "0 14",
+     "14 14",
+     "14 0"
+    ],
+    "explain": "生成器只能遍历一次：第一次 sum 得到 0+1+4+9 = 14，之后它已耗尽，第二次 sum 是 0。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "6 6",
+     "0 14",
+     "14 14",
+     "14 0"
+    ],
+    "explain": "A generator can be iterated once: the first sum is 0+1+4+9 = 14, then it is exhausted and the second sum is 0."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-python-9",
+   "section": "code-output",
+   "topic": "python",
+   "code": "t = ([1],)\ntry:\n    t[0] += [2]\nexcept TypeError:\n    pass\nprint(t)",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "([2],)",
+     "([1, 2],)",
+     "TypeError",
+     "([1],)"
+    ],
+    "explain": "t[0] += [2] 先对列表做原地扩展（成功），再把结果赋回 t[0]，这一步因元组不可变抛 TypeError。异常被吞掉，但列表已经改了。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "([2],)",
+     "([1, 2],)",
+     "TypeError",
+     "([1],)"
+    ],
+    "explain": "t[0] += [2] first extends the list in place (which works), then assigns back to t[0], which raises TypeError because tuples are immutable. The error is swallowed but the list has changed."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-python-10",
+   "section": "code-output",
+   "topic": "python",
+   "code": "class A:\n    items = []\n\n    def add(self, x):\n        self.items.append(x)\n\na, b = A(), A()\na.add(1)\nb.add(2)\nprint(a.items)",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "[2]",
+     "[1]",
+     "[]",
+     "[1, 2]"
+    ],
+    "explain": "items 是类属性，所有实例共享同一个列表；self.items.append 没有赋值，不会创建实例属性。应在 __init__ 里写 self.items = []。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "[2]",
+     "[1]",
+     "[]",
+     "[1, 2]"
+    ],
+    "explain": "items is a class attribute shared by every instance; self.items.append assigns nothing, so no instance attribute is created. Set self.items = [] in __init__."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-python-11",
+   "section": "code-output",
+   "topic": "python",
+   "code": "def make():\n    n = 0\n    def inc():\n        nonlocal n\n        n += 1\n        return n\n    return inc\n\nf = make()\nf()\nf()\nprint(f())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "1",
+     "UnboundLocalError",
+     "3",
+     "2"
+    ],
+    "explain": "nonlocal 让 inc 修改外层的 n，三次调用依次返回 1、2、3。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "1",
+     "UnboundLocalError",
+     "3",
+     "2"
+    ],
+    "explain": "nonlocal lets inc update the enclosing n, so the three calls return 1, 2 and 3."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-python-12",
+   "section": "code-output",
+   "topic": "python",
+   "code": "words = [\"bb\", \"a\", \"ccc\", \"dd\"]\nprint(sorted(words, key=len))",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "['a', 'bb', 'ccc', 'dd']",
+     "['a', 'dd', 'bb', 'ccc']",
+     "['a', 'bb', 'dd', 'ccc']",
+     "['ccc', 'bb', 'dd', 'a']"
+    ],
+    "explain": "sorted 是稳定排序：长度相同的 \"bb\" 和 \"dd\" 保持原来的先后顺序。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "['a', 'bb', 'ccc', 'dd']",
+     "['a', 'dd', 'bb', 'ccc']",
+     "['a', 'bb', 'dd', 'ccc']",
+     "['ccc', 'bb', 'dd', 'a']"
+    ],
+    "explain": "sorted is stable: \"bb\" and \"dd\" have the same length and keep their original order."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-python-13",
+   "section": "code-output",
+   "topic": "python",
+   "code": "print(list(zip([1, 2, 3], \"ab\")))",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "[(1, 'a'), (2, 'b'), (3, None)]",
+     "[(1, 'ab')]",
+     "[(1, 'a'), (2, 'b')]",
+     "ValueError"
+    ],
+    "explain": "zip 在最短的输入耗尽时停止，多出来的 3 被丢弃。需要补齐用 itertools.zip_longest。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "[(1, 'a'), (2, 'b'), (3, None)]",
+     "[(1, 'ab')]",
+     "[(1, 'a'), (2, 'b')]",
+     "ValueError"
+    ],
+    "explain": "zip stops when the shortest input runs out, so the extra 3 is dropped. Use itertools.zip_longest to pad."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-python-14",
+   "section": "code-output",
+   "topic": "python",
+   "code": "print(True + True * 3)",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "TypeError",
+     "4",
+     "True",
+     "6"
+    ],
+    "explain": "bool 是 int 的子类，True 等于 1：1 + 1 * 3 = 4。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "TypeError",
+     "4",
+     "True",
+     "6"
+    ],
+    "explain": "bool subclasses int and True is 1: 1 + 1 * 3 = 4."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-python-15",
+   "section": "code-output",
+   "topic": "python",
+   "code": "print(1 < 3 > 2, 1 < 2 < 1)",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "True False",
+     "True True",
+     "False False",
+     "False True"
+    ],
+    "explain": "链式比较 a < b > c 等价于 a < b and b > c：第一个是 True and True，第二个是 True and False。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "True False",
+     "True True",
+     "False False",
+     "False True"
+    ],
+    "explain": "A chain a < b > c means a < b and b > c: the first is True and True, the second True and False."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-python-16",
+   "section": "code-output",
+   "topic": "python",
+   "code": "def f():\n    try:\n        return \"try\"\n    finally:\n        print(\"finally\", end=\" \")\n\nprint(f())",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "finally try",
+     "finally",
+     "try",
+     "try finally"
+    ],
+    "explain": "return 的值先算好，然后执行 finally（打印 finally），函数返回后外层的 print 才打印 try。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "finally try",
+     "finally",
+     "try",
+     "try finally"
+    ],
+    "explain": "The return value is computed, then finally runs (printing \"finally\"), and only after the function returns does the outer print show \"try\"."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-python-17",
+   "section": "code-output",
+   "topic": "python",
+   "code": "a = {1, 2, 3}\nb = {2, 3, 4}\nprint(sorted(a ^ b))",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "[2, 3]",
+     "[1, 2, 3, 4]",
+     "[1]",
+     "[1, 4]"
+    ],
+    "explain": "^ 是对称差：只在其中一个集合里出现的元素。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "[2, 3]",
+     "[1, 2, 3, 4]",
+     "[1]",
+     "[1, 4]"
+    ],
+    "explain": "^ is the symmetric difference: elements in exactly one of the sets."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-python-18",
+   "section": "code-output",
+   "topic": "python",
+   "code": "print(\"-\".join(\"ab\" * 2))",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "abab",
+     "-a-b-a-b-",
+     "a-b-a-b",
+     "ab-ab"
+    ],
+    "explain": "\"ab\" * 2 是 \"abab\"；join 把字符串当作字符序列，在每两个字符之间插入 \"-\"。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "abab",
+     "-a-b-a-b-",
+     "a-b-a-b",
+     "ab-ab"
+    ],
+    "explain": "\"ab\" * 2 is \"abab\"; join treats a string as a sequence of characters and puts \"-\" between each pair."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-python-19",
+   "section": "code-output",
+   "topic": "python",
+   "code": "x = 10\n\ndef f():\n    print(x)\n    x = 5\n\ntry:\n    f()\nexcept UnboundLocalError:\n    print(\"error\")",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "error",
+     "10 5",
+     "5",
+     "10"
+    ],
+    "explain": "函数体内有对 x 的赋值，编译时 x 就被当成局部变量；print(x) 时局部 x 还没赋值，抛 UnboundLocalError。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "error",
+     "10 5",
+     "5",
+     "10"
+    ],
+    "explain": "Because f assigns to x, x is local throughout f; print(x) runs before that assignment and raises UnboundLocalError."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-python-20",
+   "section": "code-output",
+   "topic": "python",
+   "code": "print([x for x in range(10) if x % 3 == 0][-1])",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "0",
+     "3",
+     "6",
+     "9"
+    ],
+    "explain": "列表是 [0, 3, 6, 9]，[-1] 取最后一个元素。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "0",
+     "3",
+     "6",
+     "9"
+    ],
+    "explain": "The list is [0, 3, 6, 9], and [-1] takes the last element."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-python-21",
+   "section": "code-output",
+   "topic": "python",
+   "code": "d = {}\nd.setdefault(\"k\", []).append(1)\nd.setdefault(\"k\", []).append(2)\nprint(d)",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "KeyError",
+     "{'k': [1]}",
+     "{'k': [2]}",
+     "{'k': [1, 2]}"
+    ],
+    "explain": "setdefault 键不存在时插入默认值并返回它，存在时返回已有的值，所以两次 append 都作用在同一个列表上。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "KeyError",
+     "{'k': [1]}",
+     "{'k': [2]}",
+     "{'k': [1, 2]}"
+    ],
+    "explain": "setdefault inserts the default when the key is missing and returns the stored value otherwise, so both appends hit the same list."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-python-22",
+   "section": "code-output",
+   "topic": "python",
+   "code": "import copy\n\na = [[1], [2]]\nb = copy.copy(a)\nb[0].append(9)\nb.append([3])\nprint(len(a), a[0])",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "3 [1, 9]",
+     "2 [1, 9]",
+     "3 [1]",
+     "2 [1]"
+    ],
+    "explain": "浅拷贝只复制外层列表，内层列表仍是共享的：b[0].append 影响 a[0]，b.append 不影响 a 的长度。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "3 [1, 9]",
+     "2 [1, 9]",
+     "3 [1]",
+     "2 [1]"
+    ],
+    "explain": "A shallow copy duplicates only the outer list and shares the inner ones: b[0].append changes a[0], b.append leaves len(a) alone."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-python-23",
+   "section": "code-output",
+   "topic": "python",
+   "code": "print(round(2.5), round(3.5))",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "3 3",
+     "2 4",
+     "2 3",
+     "3 4"
+    ],
+    "explain": "Python 3 的 round 用“银行家舍入”：恰好在中间时舍入到偶数，所以 2.5 → 2、3.5 → 4。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "3 3",
+     "2 4",
+     "2 3",
+     "3 4"
+    ],
+    "explain": "Python 3's round uses banker's rounding: exact halves go to the even neighbour, so 2.5 → 2 and 3.5 → 4."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-python-24",
+   "section": "code-output",
+   "topic": "python",
+   "code": "print(0.1 + 0.2 == 0.3)",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "True",
+     "0.3",
+     "TypeError",
+     "False"
+    ],
+    "explain": "0.1 和 0.2 都无法用二进制浮点数精确表示，和是 0.30000000000000004。比较浮点数用 math.isclose。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "True",
+     "0.3",
+     "TypeError",
+     "False"
+    ],
+    "explain": "Neither 0.1 nor 0.2 is exact in binary floating point; the sum is 0.30000000000000004. Compare floats with math.isclose."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-python-25",
+   "section": "code-output",
+   "topic": "python",
+   "code": "for i, c in enumerate(\"xyz\", 1):\n    pass\nprint(i, c)",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "NameError",
+     "3 y",
+     "3 z",
+     "2 z"
+    ],
+    "explain": "enumerate 从 1 开始计数；for 循环结束后循环变量保留最后一次的值。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "NameError",
+     "3 y",
+     "3 z",
+     "2 z"
+    ],
+    "explain": "enumerate counts from 1, and loop variables keep their last values after the loop ends."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-python-26",
+   "section": "code-output",
+   "topic": "python",
+   "code": "def f(a, *rest, b=0):\n    return a + sum(rest) + b\n\nprint(f(1, 2, 3, b=4))",
+   "lang": "python",
+   "zh": {
+    "q": "下面的 Python 代码输出什么？",
+    "choices": [
+     "7",
+     "10",
+     "6",
+     "TypeError"
+    ],
+    "explain": "a = 1，rest 收集 (2, 3)，*rest 之后的 b 只能用关键字传入，b = 4：1 + 5 + 4 = 10。"
+   },
+   "en": {
+    "q": "What does this Python code print?",
+    "choices": [
+     "7",
+     "10",
+     "6",
+     "TypeError"
+    ],
+    "explain": "a = 1, rest collects (2, 3), and b after *rest is keyword-only, so b = 4: 1 + 5 + 4 = 10."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-js-1",
+   "section": "code-output",
+   "topic": "js",
+   "code": "console.log(typeof null, typeof NaN);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "null undefined",
+     "null number",
+     "object NaN",
+     "object number"
+    ],
+    "explain": "typeof null 是 \"object\"，这是语言早期留下的历史问题；NaN 是 number 类型的一个特殊值。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "null undefined",
+     "null number",
+     "object NaN",
+     "object number"
+    ],
+    "explain": "typeof null is \"object\", a historical quirk of the language; NaN is a special value of type number."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-js-2",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const out = [];\nfor (var i = 0; i < 3; i++) out.push(() => i);\nconsole.log(out.map((f) => f()).join(\" \"));",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "0 1 2",
+     "2 2 2",
+     "undefined undefined undefined",
+     "3 3 3"
+    ],
+    "explain": "var 是函数作用域，三个箭头函数共享同一个 i，调用时循环已结束，i 为 3。把 var 换成 let，每次迭代都有新的绑定，输出 0 1 2。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "0 1 2",
+     "2 2 2",
+     "undefined undefined undefined",
+     "3 3 3"
+    ],
+    "explain": "var is function-scoped, so all three arrows share one i, which is 3 once the loop ends. With let each iteration gets a fresh binding and it prints 0 1 2."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-js-3",
+   "section": "code-output",
+   "topic": "js",
+   "code": "console.log(0 == \"\", 0 === \"\", null == undefined);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "false false false",
+     "true false true",
+     "true false false",
+     "false false true"
+    ],
+    "explain": "== 会做类型转换：\"\" 转成数字 0；=== 不转换，类型不同直接 false；null == undefined 是规范里的特例，为 true。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "false false false",
+     "true false true",
+     "true false false",
+     "false false true"
+    ],
+    "explain": "== coerces: \"\" becomes 0. === does not, so different types are false. null == undefined is a special case in the spec and is true."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-js-4",
+   "section": "code-output",
+   "topic": "js",
+   "code": "console.log([10, 9, 1, 2].sort().join(\",\"));",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "1,10,2,9",
+     "1,2,9,10",
+     "10,9,2,1",
+     "9,10,1,2"
+    ],
+    "explain": "不传比较函数时，sort 把元素转成字符串按字典序比较，\"10\" 排在 \"2\" 前面。数字排序要写 sort((a, b) => a - b)。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "1,10,2,9",
+     "1,2,9,10",
+     "10,9,2,1",
+     "9,10,1,2"
+    ],
+    "explain": "Without a comparator, sort compares elements as strings, so \"10\" comes before \"2\". Sort numbers with sort((a, b) => a - b)."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-js-5",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const log = [];\nlog.push(\"A\");\nsetTimeout(() => {\n  log.push(\"B\");\n  console.log(log.join(\" \"));\n}, 0);\nPromise.resolve().then(() => log.push(\"C\"));\nlog.push(\"D\");",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "A C D B",
+     "A B C D",
+     "A D B C",
+     "A D C B"
+    ],
+    "explain": "同步代码先跑完（A、D）；然后清空微任务队列（Promise 回调 C）；最后才执行宏任务 setTimeout（B）。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "A C D B",
+     "A B C D",
+     "A D B C",
+     "A D C B"
+    ],
+    "explain": "Synchronous code runs first (A, D); then the microtask queue drains (the promise callback, C); the setTimeout macrotask (B) comes last."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-js-6",
+   "section": "code-output",
+   "topic": "js",
+   "code": "console.log(typeof f, typeof g);\nfunction f() {}\nvar g = function () {};",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "undefined undefined",
+     "function undefined",
+     "function function",
+     "ReferenceError"
+    ],
+    "explain": "函数声明整体提升，声明前就能用；var g 只提升声明，赋值还没执行，此时 g 是 undefined。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "undefined undefined",
+     "function undefined",
+     "function function",
+     "ReferenceError"
+    ],
+    "explain": "A function declaration is hoisted whole; var g hoists only the declaration, so before the assignment runs g is undefined."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-js-7",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const obj = {\n  name: \"box\",\n  plain() {\n    return [1].map(function () {\n      return this?.name;\n    })[0];\n  },\n  arrow() {\n    return [1].map(() => this.name)[0];\n  },\n};\nconsole.log(obj.plain(), obj.arrow());",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "undefined undefined",
+     "box undefined",
+     "undefined box",
+     "box box"
+    ],
+    "explain": "普通函数作为回调被调用时 this 不是 obj（严格模式下是 undefined，否则是全局对象），取不到 name；箭头函数没有自己的 this，沿用 arrow() 里的 this，即 obj。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "undefined undefined",
+     "box undefined",
+     "undefined box",
+     "box box"
+    ],
+    "explain": "A plain function called as a callback does not get obj as this (it gets undefined in strict mode, the global object otherwise), so no name; an arrow has no this of its own and uses arrow()'s, which is obj."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-js-8",
+   "section": "code-output",
+   "topic": "js",
+   "code": "function counter() {\n  let n = 0;\n  return () => ++n;\n}\nconst a = counter();\nconst b = counter();\na();\na();\nconsole.log(a(), b());",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "2 1",
+     "1 1",
+     "3 1",
+     "3 4"
+    ],
+    "explain": "每次调用 counter 都创建新的闭包和新的 n：a 已调用两次，第三次返回 3；b 独立计数，返回 1。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "2 1",
+     "1 1",
+     "3 1",
+     "3 4"
+    ],
+    "explain": "Each counter() call creates a new closure with its own n: a has run twice, so the third call returns 3; b counts separately and returns 1."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-js-9",
+   "section": "code-output",
+   "topic": "js",
+   "code": "console.log(\"5\" + 3, \"5\" - 3, \"5\" * \"2\");",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "53 2 10",
+     "53 53 52",
+     "8 2 52",
+     "8 2 10"
+    ],
+    "explain": "+ 遇到字符串就做拼接；- 和 * 只对数字有意义，会把字符串转成数字。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "53 2 10",
+     "53 53 52",
+     "8 2 52",
+     "8 2 10"
+    ],
+    "explain": "+ concatenates when either side is a string; - and * only make sense for numbers, so the strings are converted."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-js-10",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const arr = [1, 2, 3];\narr[5] = 6;\nconsole.log(arr.length, arr.filter(() => true).length);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "4 6",
+     "6 6",
+     "4 4",
+     "6 4"
+    ],
+    "explain": "给下标 5 赋值后 length 变成 6，下标 3、4 是“空位”；filter 等数组方法会跳过空位，所以只剩 4 个元素。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "4 6",
+     "6 6",
+     "4 4",
+     "6 4"
+    ],
+    "explain": "Assigning index 5 makes length 6 with holes at 3 and 4; filter and similar methods skip holes, leaving 4 elements."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-js-11",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const o = { b: 1, 2: \"x\", a: 2, 1: \"y\" };\nconsole.log(Object.keys(o).join(\",\"));",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "b,2,a,1",
+     "1,2,b,a",
+     "a,b,1,2",
+     "b,a,1,2"
+    ],
+    "explain": "整数形式的键按数值升序排在最前，其余字符串键按插入顺序排在后面。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "b,2,a,1",
+     "1,2,b,a",
+     "a,b,1,2",
+     "b,a,1,2"
+    ],
+    "explain": "Integer-like keys come first in ascending order, then string keys in insertion order."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-js-12",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const log = [];\nasync function f() {\n  log.push(1);\n  await null;\n  log.push(3);\n}\nf();\nlog.push(2);\nsetTimeout(() => console.log(log.join(\" \")), 0);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "1 3 2",
+     "2 1 3",
+     "1 2 3",
+     "3 1 2"
+    ],
+    "explain": "async 函数同步执行到第一个 await（推入 1），然后把剩余部分放进微任务队列返回；接着推入 2，微任务再推入 3。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "1 3 2",
+     "2 1 3",
+     "1 2 3",
+     "3 1 2"
+    ],
+    "explain": "An async function runs synchronously up to the first await (pushing 1), then queues the rest as a microtask and returns; 2 is pushed next and the microtask pushes 3."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-js-13",
+   "section": "code-output",
+   "topic": "js",
+   "code": "console.log([\"1\", \"2\", \"3\"].map(parseInt).join(\",\"));",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "1,NaN,NaN",
+     "NaN,NaN,NaN",
+     "1,NaN,3",
+     "1,2,3"
+    ],
+    "explain": "map 给回调传 (元素, 下标)，于是变成 parseInt(\"1\", 0)、parseInt(\"2\", 1)、parseInt(\"3\", 2)：基数 0 按 10 处理，基数 1 非法，二进制里没有 3。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "1,NaN,NaN",
+     "NaN,NaN,NaN",
+     "1,NaN,3",
+     "1,2,3"
+    ],
+    "explain": "map passes (element, index), so the calls are parseInt(\"1\", 0), parseInt(\"2\", 1) and parseInt(\"3\", 2): radix 0 means 10, radix 1 is invalid and 3 is not a binary digit."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-js-14",
+   "section": "code-output",
+   "topic": "js",
+   "code": "const { a = 1, b = 2 } = { a: undefined, b: null };\nconsole.log(a, b);",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "undefined 2",
+     "1 2",
+     "1 null",
+     "undefined null"
+    ],
+    "explain": "解构默认值只在值为 undefined 时生效；null 是一个实际的值，不会触发默认值。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "undefined 2",
+     "1 2",
+     "1 null",
+     "undefined null"
+    ],
+    "explain": "Destructuring defaults apply only when the value is undefined; null is a real value and does not trigger the default."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-js-15",
+   "section": "code-output",
+   "topic": "js",
+   "code": "console.log(NaN === NaN, Object.is(NaN, NaN), [NaN].includes(NaN), [NaN].indexOf(NaN));",
+   "lang": "javascript",
+   "zh": {
+    "q": "下面的 JavaScript 代码（Node.js 运行）输出什么？",
+    "choices": [
+     "false false false -1",
+     "true true true 0",
+     "false true false -1",
+     "false true true -1"
+    ],
+    "explain": "NaN 不等于任何值包括自己；Object.is 和 includes 用 SameValueZero 之类的算法能认出 NaN，indexOf 用 === 所以找不到。"
+   },
+   "en": {
+    "q": "What does this JavaScript print when run in Node.js?",
+    "choices": [
+     "false false false -1",
+     "true true true 0",
+     "false true false -1",
+     "false true true -1"
+    ],
+    "explain": "NaN equals nothing, itself included; Object.is and includes use SameValue(Zero) and recognise it, while indexOf uses === and does not."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-java-1",
+   "section": "code-output",
+   "topic": "java",
+   "code": "public class Main {\n    public static void main(String[] args) {\n        String a = \"hi\";\n        String b = new String(\"hi\");\n        System.out.println((a == b) + \" \" + a.equals(b));\n    }\n}",
+   "lang": "java",
+   "zh": {
+    "q": "下面的 Java 程序输出什么？",
+    "choices": [
+     "true true",
+     "false false",
+     "false true",
+     "true false"
+    ],
+    "explain": "== 比较引用：new String 一定创建新对象，和字符串常量池里的 \"hi\" 不是同一个；equals 比较内容。"
+   },
+   "en": {
+    "q": "What does this Java program print?",
+    "choices": [
+     "true true",
+     "false false",
+     "false true",
+     "true false"
+    ],
+    "explain": "== compares references: new String always makes a new object, distinct from the pooled literal \"hi\"; equals compares contents."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-java-2",
+   "section": "code-output",
+   "topic": "java",
+   "code": "public class Main {\n    public static void main(String[] args) {\n        Integer x = 127, y = 127, p = 128, q = 128;\n        System.out.println((x == y) + \" \" + (p == q));\n    }\n}",
+   "lang": "java",
+   "zh": {
+    "q": "下面的 Java 程序输出什么？",
+    "choices": [
+     "true true",
+     "true false",
+     "false false",
+     "false true"
+    ],
+    "explain": "自动装箱调用 Integer.valueOf，默认缓存 -128 到 127 的对象，所以 127 拿到同一个对象，128 是两个不同的对象。包装类型要用 equals 比较。"
+   },
+   "en": {
+    "q": "What does this Java program print?",
+    "choices": [
+     "true true",
+     "true false",
+     "false false",
+     "false true"
+    ],
+    "explain": "Autoboxing calls Integer.valueOf, which caches -128 to 127 by default, so the 127s are one object and the 128s are two. Compare wrappers with equals."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-java-3",
+   "section": "code-output",
+   "topic": "java",
+   "code": "public class Main {\n    public static void main(String[] args) {\n        System.out.println(('a' + 1) + \" \" + (char) ('a' + 1));\n    }\n}",
+   "lang": "java",
+   "zh": {
+    "q": "下面的 Java 程序输出什么？",
+    "choices": [
+     "a1 b",
+     "98 b",
+     "b b",
+     "98 98"
+    ],
+    "explain": "char 参与算术时提升为 int：'a' 是 97，加 1 得 98；强制转回 char 就是 'b'。"
+   },
+   "en": {
+    "q": "What does this Java program print?",
+    "choices": [
+     "a1 b",
+     "98 b",
+     "b b",
+     "98 98"
+    ],
+    "explain": "A char in arithmetic is promoted to int: 'a' is 97, so 'a' + 1 is 98; cast back to char it is 'b'."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-java-4",
+   "section": "code-output",
+   "topic": "java",
+   "code": "public class Main {\n    static void f(Object o) { System.out.println(\"Object\"); }\n    static void f(String s) { System.out.println(\"String\"); }\n\n    public static void main(String[] args) {\n        f(null);\n    }\n}",
+   "lang": "java",
+   "zh": {
+    "q": "下面的 Java 程序输出什么？",
+    "choices": [
+     "NullPointerException",
+     "编译错误：调用有歧义",
+     "String",
+     "Object"
+    ],
+    "explain": "null 可以匹配两个重载，编译器选最具体的那个；String 是 Object 的子类，更具体。"
+   },
+   "en": {
+    "q": "What does this Java program print?",
+    "choices": [
+     "NullPointerException",
+     "Compile error: ambiguous call",
+     "String",
+     "Object"
+    ],
+    "explain": "null fits both overloads and the compiler picks the most specific; String is a subclass of Object, so it wins."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-java-5",
+   "section": "code-output",
+   "topic": "java",
+   "code": "class A {\n    String name = \"A\";\n    String who() { return \"A\"; }\n}\n\nclass B extends A {\n    String name = \"B\";\n    String who() { return \"B\"; }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        A obj = new B();\n        System.out.println(obj.name + \" \" + obj.who());\n    }\n}",
+   "lang": "java",
+   "zh": {
+    "q": "下面的 Java 程序输出什么？",
+    "choices": [
+     "A A",
+     "B B",
+     "A B",
+     "B A"
+    ],
+    "explain": "字段没有多态，按引用的静态类型 A 取到 A.name；实例方法动态分派，调用 B.who()。"
+   },
+   "en": {
+    "q": "What does this Java program print?",
+    "choices": [
+     "A A",
+     "B B",
+     "A B",
+     "B A"
+    ],
+    "explain": "Fields are not polymorphic, so the static type A gives A.name; instance methods dispatch dynamically and B.who() runs."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-java-6",
+   "section": "code-output",
+   "topic": "java",
+   "code": "public class Main {\n    static void change(int[] arr, int n) {\n        arr[0] = 9;\n        n = 9;\n        arr = new int[] {7};\n    }\n\n    public static void main(String[] args) {\n        int[] a = {1};\n        int n = 1;\n        change(a, n);\n        System.out.println(a[0] + \" \" + n);\n    }\n}",
+   "lang": "java",
+   "zh": {
+    "q": "下面的 Java 程序输出什么？",
+    "choices": [
+     "9 1",
+     "9 9",
+     "1 1",
+     "7 9"
+    ],
+    "explain": "Java 总是按值传递：数组引用的副本仍指向同一个数组，arr[0] = 9 改的是原数组；之后让副本指向新数组不影响调用方，int n 也只是副本。"
+   },
+   "en": {
+    "q": "What does this Java program print?",
+    "choices": [
+     "9 1",
+     "9 9",
+     "1 1",
+     "7 9"
+    ],
+    "explain": "Java always passes by value: the copied array reference still points at the caller's array, so arr[0] = 9 sticks; repointing the copy afterwards does nothing to the caller, and n is just a copy."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-java-7",
+   "section": "code-output",
+   "topic": "java",
+   "code": "public class Main {\n    public static void main(String[] args) {\n        int big = Integer.MAX_VALUE;\n        System.out.println(big + 1);\n    }\n}",
+   "lang": "java",
+   "zh": {
+    "q": "下面的 Java 程序输出什么？",
+    "choices": [
+     "ArithmeticException",
+     "2147483648",
+     "0",
+     "-2147483648"
+    ],
+    "explain": "int 溢出不会报错，按二进制补码回绕到最小值 -2^31。需要检测可以用 Math.addExact。"
+   },
+   "en": {
+    "q": "What does this Java program print?",
+    "choices": [
+     "ArithmeticException",
+     "2147483648",
+     "0",
+     "-2147483648"
+    ],
+    "explain": "int overflow does not throw; it wraps around in two's complement to the minimum, -2^31. Math.addExact detects it."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-java-8",
+   "section": "code-output",
+   "topic": "java",
+   "code": "public class Main {\n    static int f() {\n        try {\n            return 1;\n        } finally {\n            return 2;\n        }\n    }\n\n    public static void main(String[] args) {\n        System.out.println(f());\n    }\n}",
+   "lang": "java",
+   "zh": {
+    "q": "下面的 Java 程序输出什么？",
+    "choices": [
+     "1",
+     "12",
+     "编译错误",
+     "2"
+    ],
+    "explain": "finally 一定执行，它里面的 return 覆盖了 try 里准备返回的值（还会吞掉异常），所以不要在 finally 里 return。"
+   },
+   "en": {
+    "q": "What does this Java program print?",
+    "choices": [
+     "1",
+     "12",
+     "Compile error",
+     "2"
+    ],
+    "explain": "finally always runs, and its return replaces the value try was about to return (it would also swallow exceptions), which is why you should never return from finally."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-java-9",
+   "section": "code-output",
+   "topic": "java",
+   "code": "public class Main {\n    public static void main(String[] args) {\n        String s = \"abc\";\n        s.toUpperCase();\n        System.out.println(s + \" \" + s.concat(\"d\"));\n    }\n}",
+   "lang": "java",
+   "zh": {
+    "q": "下面的 Java 程序输出什么？",
+    "choices": [
+     "abc abcd",
+     "ABC ABCd",
+     "ABC abcd",
+     "abc abc"
+    ],
+    "explain": "String 不可变：toUpperCase 和 concat 都返回新字符串。第一个结果被丢弃，s 仍是 \"abc\"。"
+   },
+   "en": {
+    "q": "What does this Java program print?",
+    "choices": [
+     "abc abcd",
+     "ABC ABCd",
+     "ABC abcd",
+     "abc abc"
+    ],
+    "explain": "Strings are immutable: toUpperCase and concat return new strings. The first result is thrown away, so s is still \"abc\"."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-java-10",
+   "section": "code-output",
+   "topic": "java",
+   "code": "class C {\n    static int count = 0;\n    C() { count++; }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        new C();\n        new C();\n        C c = new C();\n        System.out.println(C.count);\n    }\n}",
+   "lang": "java",
+   "zh": {
+    "q": "下面的 Java 程序输出什么？",
+    "choices": [
+     "0",
+     "1",
+     "2",
+     "3"
+    ],
+    "explain": "static 字段属于类，所有实例共享；每次构造都让它加 1，共构造了 3 次。"
+   },
+   "en": {
+    "q": "What does this Java program print?",
+    "choices": [
+     "0",
+     "1",
+     "2",
+     "3"
+    ],
+    "explain": "A static field belongs to the class and is shared; each constructor call increments it, and there are three."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-java-11",
+   "section": "code-output",
+   "topic": "java",
+   "code": "import java.util.HashSet;\nimport java.util.Set;\n\nclass P {\n    int x;\n    P(int x) { this.x = x; }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Set<P> s = new HashSet<>();\n        s.add(new P(1));\n        s.add(new P(1));\n        System.out.println(s.size());\n    }\n}",
+   "lang": "java",
+   "zh": {
+    "q": "下面的 Java 程序输出什么？",
+    "choices": [
+     "编译错误",
+     "1",
+     "0",
+     "2"
+    ],
+    "explain": "P 没有重写 equals 和 hashCode，沿用 Object 的按身份比较，两个 new 出来的对象被当成不同元素。改成 record P(int x) 就会得到 1。"
+   },
+   "en": {
+    "q": "What does this Java program print?",
+    "choices": [
+     "Compile error",
+     "1",
+     "0",
+     "2"
+    ],
+    "explain": "P does not override equals and hashCode, so Object's identity comparison applies and the two new objects are different elements. As record P(int x) it would print 1."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-java-12",
+   "section": "code-output",
+   "topic": "java",
+   "code": "public class Main {\n    public static void main(String[] args) {\n        Object o = true ? 1 : 2.0;\n        System.out.println(o);\n    }\n}",
+   "lang": "java",
+   "zh": {
+    "q": "下面的 Java 程序输出什么？",
+    "choices": [
+     "2.0",
+     "true",
+     "1",
+     "1.0"
+    ],
+    "explain": "条件表达式两个分支是 int 和 double，按数值提升规则整体类型是 double，1 先变成 1.0 再装箱成 Double。"
+   },
+   "en": {
+    "q": "What does this Java program print?",
+    "choices": [
+     "2.0",
+     "true",
+     "1",
+     "1.0"
+    ],
+    "explain": "The branches are int and double, so numeric promotion makes the whole expression double: 1 becomes 1.0 and is boxed as a Double."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-probability-1",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "掷两颗均匀的骰子，点数之和为 7 的概率是？",
+    "choices": [
+     "1/12",
+     "7/36",
+     "1/9",
+     "1/6"
+    ],
+    "explain": "36 种等可能结果里和为 7 的有 (1,6)…(6,1) 共 6 种，6/36 = 1/6。"
+   },
+   "en": {
+    "q": "Two fair dice are rolled. What is the probability that the sum is 7?",
+    "choices": [
+     "1/12",
+     "7/36",
+     "1/9",
+     "1/6"
+    ],
+    "explain": "Of the 36 equally likely outcomes, six sum to 7, (1,6) through (6,1): 6/36 = 1/6."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-probability-2",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "掷两颗均匀的骰子，至少有一个 6 的概率是？",
+    "choices": [
+     "5/18",
+     "1/3",
+     "11/36",
+     "1/6"
+    ],
+    "explain": "用补集：两个都不是 6 的概率是 (5/6)^2 = 25/36，所以至少一个 6 是 11/36。"
+   },
+   "en": {
+    "q": "Two fair dice are rolled. What is the probability of at least one six?",
+    "choices": [
+     "5/18",
+     "1/3",
+     "11/36",
+     "1/6"
+    ],
+    "explain": "Use the complement: neither is a six with probability (5/6)^2 = 25/36, so at least one six is 11/36."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-probability-3",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "均匀硬币抛 3 次，恰好 2 次正面的概率是？",
+    "choices": [
+     "3/8",
+     "1/4",
+     "1/2",
+     "2/3"
+    ],
+    "explain": "C(3,2) = 3 种位置，每种概率 1/8，共 3/8。"
+   },
+   "en": {
+    "q": "A fair coin is tossed 3 times. What is the probability of exactly 2 heads?",
+    "choices": [
+     "3/8",
+     "1/4",
+     "1/2",
+     "2/3"
+    ],
+    "explain": "C(3,2) = 3 placements, each with probability 1/8: 3/8."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-probability-4",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "从一副 52 张的标准扑克牌中不放回地抽 2 张，两张都是 A 的概率是？",
+    "choices": [
+     "2/221",
+     "1/169",
+     "1/26",
+     "1/221"
+    ],
+    "explain": "(4/52) × (3/51) = 12/2652 = 1/221。放回抽取才是 (1/13)^2 = 1/169。"
+   },
+   "en": {
+    "q": "Two cards are drawn without replacement from a standard 52-card deck. What is the probability both are aces?",
+    "choices": [
+     "2/221",
+     "1/169",
+     "1/26",
+     "1/221"
+    ],
+    "explain": "(4/52) × (3/51) = 12/2652 = 1/221. With replacement it would be (1/13)^2 = 1/169."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-probability-5",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "抛均匀硬币直到第一次出现正面，期望要抛几次？",
+    "choices": [
+     "1.5",
+     "2",
+     "3",
+     "4"
+    ],
+    "explain": "几何分布的期望是 1/p = 1/(1/2) = 2。"
+   },
+   "en": {
+    "q": "A fair coin is tossed until the first head. What is the expected number of tosses?",
+    "choices": [
+     "1.5",
+     "2",
+     "3",
+     "4"
+    ],
+    "explain": "A geometric distribution has mean 1/p = 1/(1/2) = 2."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-probability-6",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "至少要多少人，才能让“有两人生日相同”的概率超过 50%（一年按 365 天、生日均匀分布）？",
+    "choices": [
+     "23",
+     "30",
+     "57",
+     "183"
+    ],
+    "explain": "23 人时所有生日都不同的概率约为 0.493，于是有人相同的概率约 0.507，首次超过一半。"
+   },
+   "en": {
+    "q": "How many people are needed for the chance that two share a birthday to exceed 50% (365 equally likely days)?",
+    "choices": [
+     "23",
+     "30",
+     "57",
+     "183"
+    ],
+    "explain": "With 23 people the chance that all birthdays differ is about 0.493, so a shared birthday has about 0.507, the first count above one half."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-probability-7",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "某病患病率 1%。检测对患者 99% 呈阳性，对健康人 5% 呈阳性（假阳性）。一个人检测阳性，他真正患病的概率约为？",
+    "choices": [
+     "约 50%",
+     "95%",
+     "约 17%",
+     "99%"
+    ],
+    "explain": "贝叶斯：0.01×0.99 / (0.01×0.99 + 0.99×0.05) = 0.0099 / 0.0594 = 1/6 ≈ 16.7%。患病率低时，假阳性占了阳性的大多数。"
+   },
+   "en": {
+    "q": "A disease affects 1% of people. A test is positive for 99% of the sick and for 5% of the healthy. Given a positive test, what is the chance the person is sick?",
+    "choices": [
+     "About 50%",
+     "95%",
+     "About 17%",
+     "99%"
+    ],
+    "explain": "Bayes: 0.01×0.99 / (0.01×0.99 + 0.99×0.05) = 0.0099 / 0.0594 = 1/6 ≈ 16.7%. When the disease is rare, false positives make up most positives."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-probability-8",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "三门问题：你选了一扇门，主持人（知道答案）打开另一扇空门。此时换门，赢的概率是？",
+    "choices": [
+     "1/2",
+     "1/3",
+     "3/4",
+     "2/3"
+    ],
+    "explain": "最初选中奖品的概率只有 1/3；有 2/3 的情况奖品在另外两扇门里，主持人去掉了其中的空门，换门就赢。"
+   },
+   "en": {
+    "q": "Monty Hall: you pick a door, and the host, who knows, opens another empty door. If you switch, what is your chance of winning?",
+    "choices": [
+     "1/2",
+     "1/3",
+     "3/4",
+     "2/3"
+    ],
+    "explain": "Your first pick is right only 1/3 of the time; 2/3 of the time the prize is behind the other two, and the host has removed the empty one, so switching wins."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-probability-9",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "掷一颗均匀骰子直到出现 6，期望要掷几次？",
+    "choices": [
+     "3.5",
+     "5",
+     "6",
+     "36"
+    ],
+    "explain": "每次成功概率 1/6 的几何分布，期望 1/p = 6。"
+   },
+   "en": {
+    "q": "A fair die is rolled until a six appears. What is the expected number of rolls?",
+    "choices": [
+     "3.5",
+     "5",
+     "6",
+     "36"
+    ],
+    "explain": "A geometric distribution with success probability 1/6 has mean 1/p = 6."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-probability-10",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "掷一颗均匀骰子，期望掷多少次才能让六个面都至少出现一次？",
+    "choices": [
+     "6",
+     "12",
+     "14.7",
+     "21"
+    ],
+    "explain": "集齐优惠券问题：6 × (1 + 1/2 + 1/3 + 1/4 + 1/5 + 1/6) = 14.7。"
+   },
+   "en": {
+    "q": "How many rolls of a fair die are expected before every face has appeared at least once?",
+    "choices": [
+     "6",
+     "12",
+     "14.7",
+     "21"
+    ],
+    "explain": "The coupon collector: 6 × (1 + 1/2 + 1/3 + 1/4 + 1/5 + 1/6) = 14.7."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-probability-11",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "一个家庭有两个孩子，已知至少有一个是男孩，两个都是男孩的概率是？（每个孩子独立、男女各半）",
+    "choices": [
+     "1/2",
+     "1/4",
+     "2/3",
+     "1/3"
+    ],
+    "explain": "等可能的情况 BB、BG、GB、GG，条件排除 GG 后剩 3 种，只有 BB 一种满足。"
+   },
+   "en": {
+    "q": "A family has two children and at least one is a boy. What is the probability both are boys? (Independent, half boys and half girls)",
+    "choices": [
+     "1/2",
+     "1/4",
+     "2/3",
+     "1/3"
+    ],
+    "explain": "The equally likely cases are BB, BG, GB and GG; the condition rules out GG, leaving three, and only BB qualifies."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-probability-12",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "把 1 到 n 随机排列，期望有多少个数恰好在自己的位置上（不动点）？",
+    "choices": [
+     "n/2",
+     "1/n",
+     "1",
+     "ln n"
+    ],
+    "explain": "期望的线性性：每个数在原位的概率是 1/n，n 个相加正好是 1，和 n 无关。"
+   },
+   "en": {
+    "q": "A random permutation of 1..n is chosen. What is the expected number of fixed points?",
+    "choices": [
+     "n/2",
+     "1/n",
+     "1",
+     "ln n"
+    ],
+    "explain": "Linearity of expectation: each number is in place with probability 1/n, and n of those add up to 1, whatever n is."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-probability-13",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "袋中有 3 个红球、5 个蓝球，不放回地取 2 个，两个都是红球的概率是？",
+    "choices": [
+     "9/64",
+     "3/8",
+     "1/8",
+     "3/28"
+    ],
+    "explain": "(3/8) × (2/7) = 6/56 = 3/28，也等于 C(3,2)/C(8,2) = 3/28。"
+   },
+   "en": {
+    "q": "A bag holds 3 red and 5 blue balls. Two are drawn without replacement. What is the probability both are red?",
+    "choices": [
+     "9/64",
+     "3/8",
+     "1/8",
+     "3/28"
+    ],
+    "explain": "(3/8) × (2/7) = 6/56 = 3/28, the same as C(3,2)/C(8,2)."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-probability-14",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "掷两颗均匀骰子，点数之和的期望是？",
+    "choices": [
+     "6",
+     "6.5",
+     "7",
+     "12"
+    ],
+    "explain": "每颗骰子期望 3.5，期望可以直接相加：3.5 + 3.5 = 7。"
+   },
+   "en": {
+    "q": "Two fair dice are rolled. What is the expected sum?",
+    "choices": [
+     "6",
+     "6.5",
+     "7",
+     "12"
+    ],
+    "explain": "Each die averages 3.5 and expectations add: 3.5 + 3.5 = 7."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-probability-15",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "P(A) = 0.5，P(B) = 0.4，P(A∩B) = 0.2，则 P(A∪B) = ？",
+    "choices": [
+     "0.2",
+     "0.5",
+     "0.7",
+     "0.9"
+    ],
+    "explain": "容斥原理：0.5 + 0.4 − 0.2 = 0.7。"
+   },
+   "en": {
+    "q": "P(A) = 0.5, P(B) = 0.4 and P(A∩B) = 0.2. What is P(A∪B)?",
+    "choices": [
+     "0.2",
+     "0.5",
+     "0.7",
+     "0.9"
+    ],
+    "explain": "Inclusion-exclusion: 0.5 + 0.4 − 0.2 = 0.7."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-probability-16",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "均匀硬币抛 10 次，正面次数的方差是？",
+    "choices": [
+     "0.25",
+     "2.5",
+     "5",
+     "10"
+    ],
+    "explain": "二项分布方差 np(1−p) = 10 × 0.5 × 0.5 = 2.5。"
+   },
+   "en": {
+    "q": "A fair coin is tossed 10 times. What is the variance of the number of heads?",
+    "choices": [
+     "0.25",
+     "2.5",
+     "5",
+     "10"
+    ],
+    "explain": "A binomial variance is np(1−p) = 10 × 0.5 × 0.5 = 2.5."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-probability-17",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "掷两颗均匀骰子，较大点数的期望约是？",
+    "choices": [
+     "3.5",
+     "4",
+     "4.47",
+     "5"
+    ],
+    "explain": "P(max ≤ k) = (k/6)^2，于是 P(max = k) = (2k−1)/36，期望 Σ k(2k−1)/36 = 161/36 ≈ 4.47。"
+   },
+   "en": {
+    "q": "Two fair dice are rolled. What is the expected value of the larger number, roughly?",
+    "choices": [
+     "3.5",
+     "4",
+     "4.47",
+     "5"
+    ],
+    "explain": "P(max ≤ k) = (k/6)^2, so P(max = k) = (2k−1)/36 and the mean is Σ k(2k−1)/36 = 161/36 ≈ 4.47."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-probability-18",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "在一根木棍上均匀随机地选两个点把它折成三段，三段能拼成三角形的概率是？",
+    "choices": [
+     "1/4",
+     "1/3",
+     "1/2",
+     "1/8"
+    ],
+    "explain": "能拼成三角形当且仅当每段都短于一半。在单位正方形里画出两个切点的可行区域，面积是 1/4。"
+   },
+   "en": {
+    "q": "A stick is broken at two uniformly random points. What is the probability the three pieces form a triangle?",
+    "choices": [
+     "1/4",
+     "1/3",
+     "1/2",
+     "1/8"
+    ],
+    "explain": "The pieces form a triangle exactly when each is shorter than half the stick; that region of the unit square of cut points has area 1/4."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-probability-19",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "公平赌博：你有 1 元，每局各以 1/2 概率赢或输 1 元，赢到 3 元或输光就停。赢到 3 元的概率是？",
+    "choices": [
+     "1/2",
+     "1/4",
+     "2/3",
+     "1/3"
+    ],
+    "explain": "公平游戏里资金是鞅，终止时的期望仍是 1：3p + 0(1−p) = 1，所以 p = 1/3。"
+   },
+   "en": {
+    "q": "A fair game: you start with $1 and each round win or lose $1 with probability 1/2, stopping at $3 or $0. What is the chance you reach $3?",
+    "choices": [
+     "1/2",
+     "1/4",
+     "2/3",
+     "1/3"
+    ],
+    "explain": "In a fair game your bankroll is a martingale, so its expected final value is still 1: 3p = 1 and p = 1/3."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-probability-20",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "从 1 到 10 中随机选两个不同的数，它们的和为偶数的概率是？",
+    "choices": [
+     "2/5",
+     "4/9",
+     "1/2",
+     "5/9"
+    ],
+    "explain": "和为偶数要求同奇或同偶：2 × C(5,2) = 20 种，总共 C(10,2) = 45 种，20/45 = 4/9。"
+   },
+   "en": {
+    "q": "Two different numbers are chosen at random from 1 to 10. What is the probability their sum is even?",
+    "choices": [
+     "2/5",
+     "4/9",
+     "1/2",
+     "5/9"
+    ],
+    "explain": "An even sum needs two odds or two evens: 2 × C(5,2) = 20 of the C(10,2) = 45 pairs, so 4/9."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-probability-21",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "单词 LEVEL 的字母有多少种不同的排列？",
+    "choices": [
+     "20",
+     "30",
+     "60",
+     "120"
+    ],
+    "explain": "5 个字母里 L 和 E 各出现两次：5! / (2! × 2!) = 30。"
+   },
+   "en": {
+    "q": "How many distinct arrangements are there of the letters of LEVEL?",
+    "choices": [
+     "20",
+     "30",
+     "60",
+     "120"
+    ],
+    "explain": "L and E each appear twice among five letters: 5! / (2! × 2!) = 30."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-probability-22",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "抛均匀硬币，期望抛多少次才第一次出现“连续两次正面”？",
+    "choices": [
+     "3",
+     "4",
+     "6",
+     "8"
+    ],
+    "explain": "设 E 为期望：第一次反面（1/2）从头开始；正面后反面（1/4）也从头开始；E = ½(E+1) + ¼(E+2) + ¼·2，解得 E = 6。"
+   },
+   "en": {
+    "q": "A fair coin is tossed until two heads in a row appear. What is the expected number of tosses?",
+    "choices": [
+     "3",
+     "4",
+     "6",
+     "8"
+    ],
+    "explain": "Let E be the expectation: a tail first (1/2) restarts, head-then-tail (1/4) restarts too: E = ½(E+1) + ¼(E+2) + ¼·2, so E = 6."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-probability-23",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "独立事件 A、B 满足 P(A) = 0.3，P(B) = 0.5，A 和 B 都不发生的概率是？",
+    "choices": [
+     "0.15",
+     "0.2",
+     "0.35",
+     "0.65"
+    ],
+    "explain": "独立时 P(非A 且 非B) = 0.7 × 0.5 = 0.35。"
+   },
+   "en": {
+    "q": "Independent events A and B have P(A) = 0.3 and P(B) = 0.5. What is the probability that neither happens?",
+    "choices": [
+     "0.15",
+     "0.2",
+     "0.35",
+     "0.65"
+    ],
+    "explain": "With independence, P(not A and not B) = 0.7 × 0.5 = 0.35."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-probability-24",
+   "section": "quant",
+   "topic": "probability",
+   "zh": {
+    "q": "均匀硬币抛 4 次，正面次数多于反面次数的概率是？",
+    "choices": [
+     "5/16",
+     "3/8",
+     "1/2",
+     "11/16"
+    ],
+    "explain": "需要 3 或 4 次正面：(C(4,3) + C(4,4)) / 16 = 5/16。剩下的概率里还有 6/16 是平局。"
+   },
+   "en": {
+    "q": "A fair coin is tossed 4 times. What is the probability of more heads than tails?",
+    "choices": [
+     "5/16",
+     "3/8",
+     "1/2",
+     "11/16"
+    ],
+    "explain": "That needs 3 or 4 heads: (C(4,3) + C(4,4)) / 16 = 5/16. Ties take another 6/16."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-logic-1",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "数列 2, 6, 12, 20, 30, ? 的下一项是？",
+    "choices": [
+     "36",
+     "40",
+     "42",
+     "44"
+    ],
+    "explain": "第 n 项是 n(n+1)：1×2, 2×3, …, 6×7 = 42；相邻差是 4, 6, 8, 10, 12。"
+   },
+   "en": {
+    "q": "What comes next: 2, 6, 12, 20, 30, ?",
+    "choices": [
+     "36",
+     "40",
+     "42",
+     "44"
+    ],
+    "explain": "The nth term is n(n+1): 1×2, 2×3, …, 6×7 = 42; the gaps are 4, 6, 8, 10, 12."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-logic-2",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "3:15 时，时针和分针之间的夹角是多少度？",
+    "choices": [
+     "0",
+     "7.5",
+     "15",
+     "22.5"
+    ],
+    "explain": "分针指向 90°；时针每分钟走 0.5°，3 点在 90°，过 15 分钟到 97.5°，相差 7.5°。"
+   },
+   "en": {
+    "q": "What is the angle between the hour and minute hands at 3:15?",
+    "choices": [
+     "0",
+     "7.5",
+     "15",
+     "22.5"
+    ],
+    "explain": "The minute hand is at 90°; the hour hand moves 0.5° a minute, from 90° at 3:00 to 97.5° at 3:15, so 7.5° apart."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-logic-3",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "“所有 bloop 都是 razzie，所有 razzie 都是 lazzie。”由此可以确定？",
+    "choices": [
+     "无法确定任何结论",
+     "所有 lazzie 都是 bloop",
+     "所有 bloop 都是 lazzie",
+     "有些 razzie 不是 bloop"
+    ],
+    "explain": "包含关系可以传递：bloop ⊆ razzie ⊆ lazzie。反方向和“有些不是”都无法确定（集合可能相等）。"
+   },
+   "en": {
+    "q": "'All bloops are razzies and all razzies are lazzies.' What follows for certain?",
+    "choices": [
+     "Nothing follows",
+     "All lazzies are bloops",
+     "All bloops are lazzies",
+     "Some razzies are not bloops"
+    ],
+    "explain": "Inclusion is transitive: bloops ⊆ razzies ⊆ lazzies. The reverse, and \"some are not\", do not follow; the sets could be equal."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-logic-4",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "“如果下雨，地面就会湿。”与之逻辑等价的是？",
+    "choices": [
+     "下雨当且仅当地面湿",
+     "如果没下雨，地面就不湿",
+     "如果地面湿了，就下过雨",
+     "如果地面没湿，就没有下雨"
+    ],
+    "explain": "“若 P 则 Q”等价于它的逆否命题“若非 Q 则非 P”；“地面湿了就下过雨”是逆命题，“没下雨地面就不湿”是否命题，都不等价。"
+   },
+   "en": {
+    "q": "'If it rains, the ground gets wet.' Which statement is logically equivalent?",
+    "choices": [
+     "It rains if and only if the ground is wet",
+     "If it did not rain, the ground is not wet",
+     "If the ground is wet, it rained",
+     "If the ground is not wet, it did not rain"
+    ],
+    "explain": "'If P then Q' is equivalent to its contrapositive, 'if not Q then not P'; 'if wet then it rained' is the converse and 'if no rain then not wet' the inverse, and neither is equivalent."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-logic-5",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "岛上的人要么是永远说真话的骑士，要么是永远说假话的无赖。A 说：“我们两个都是无赖。”A 和 B 分别是？",
+    "choices": [
+     "A 无赖，B 骑士",
+     "都是骑士",
+     "都是无赖",
+     "A 骑士，B 无赖"
+    ],
+    "explain": "骑士不可能说自己是无赖，所以 A 是无赖，这句话为假，说明“两人都是无赖”不成立，B 只能是骑士。"
+   },
+   "en": {
+    "q": "Each islander is a knight (always truthful) or a knave (always lies). A says: 'We are both knaves.' What are A and B?",
+    "choices": [
+     "A knave, B knight",
+     "Both knights",
+     "Both knaves",
+     "A knight, B knave"
+    ],
+    "explain": "A knight cannot claim to be a knave, so A is a knave and the statement is false: they are not both knaves, so B is a knight."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-logic-6",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "12 个球里有 1 个比其他的重，用天平最少称几次一定能找出它？",
+    "choices": [
+     "2",
+     "3",
+     "4",
+     "6"
+    ],
+    "explain": "每次称有三种结果（左重、右重、平衡），k 次最多区分 3^k 种情况：3^2 = 9 < 12 ≤ 27 = 3^3，所以 3 次。"
+   },
+   "en": {
+    "q": "Of 12 balls one is heavier. What is the minimum number of weighings on a balance that always finds it?",
+    "choices": [
+     "2",
+     "3",
+     "4",
+     "6"
+    ],
+    "explain": "Each weighing has three outcomes (left, right, balance), so k weighings tell apart at most 3^k cases: 3^2 = 9 < 12 ≤ 27 = 3^3, so 3."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-logic-7",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "甲单独完成一项工作要 6 小时，乙要 3 小时。两人一起做需要多久？",
+    "choices": [
+     "4.5 小时",
+     "1.5 小时",
+     "3 小时",
+     "2 小时"
+    ],
+    "explain": "效率相加：1/6 + 1/3 = 1/2（每小时完成半项），所以 2 小时。"
+   },
+   "en": {
+    "q": "A finishes a job alone in 6 hours, B in 3. How long do they take together?",
+    "choices": [
+     "4.5 hours",
+     "1.5 hours",
+     "3 hours",
+     "2 hours"
+    ],
+    "explain": "Rates add: 1/6 + 1/3 = 1/2 of the job per hour, so 2 hours."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-logic-8",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "两列火车相距 300 km 相向而行，速度分别为 60 km/h 和 90 km/h，多久相遇？",
+    "choices": [
+     "3 小时",
+     "1.5 小时",
+     "2 小时",
+     "5 小时"
+    ],
+    "explain": "相对速度 60 + 90 = 150 km/h，300 / 150 = 2 小时。"
+   },
+   "en": {
+    "q": "Two trains 300 km apart head toward each other at 60 km/h and 90 km/h. When do they meet?",
+    "choices": [
+     "3 hours",
+     "1.5 hours",
+     "2 hours",
+     "5 hours"
+    ],
+    "explain": "The closing speed is 60 + 90 = 150 km/h, and 300 / 150 = 2 hours."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-logic-9",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "球拍和球一共 1.10 美元，球拍比球贵 1 美元。球多少钱？",
+    "choices": [
+     "$0.01",
+     "$0.05",
+     "$0.15",
+     "$0.10"
+    ],
+    "explain": "设球 x：x + (x + 1) = 1.10，x = 0.05。直觉答案 0.10 会让球拍 1.10、总价 1.20。"
+   },
+   "en": {
+    "q": "A bat and a ball cost $1.10 in total, and the bat costs $1 more than the ball. How much is the ball?",
+    "choices": [
+     "$0.01",
+     "$0.05",
+     "$0.15",
+     "$0.10"
+    ],
+    "explain": "Let the ball be x: x + (x + 1) = 1.10, so x = 0.05. The intuitive $0.10 makes the bat $1.10 and the total $1.20."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-logic-10",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "湖里的睡莲每天面积翻倍，第 48 天正好盖满整个湖。哪一天盖满一半？",
+    "choices": [
+     "第 46 天",
+     "第 24 天",
+     "第 12 天",
+     "第 47 天"
+    ],
+    "explain": "翻倍前一天正好是一半：第 47 天。"
+   },
+   "en": {
+    "q": "A lily patch doubles every day and covers the lake on day 48. On which day did it cover half?",
+    "choices": [
+     "Day 46",
+     "Day 24",
+     "Day 12",
+     "Day 47"
+    ],
+    "explain": "One day before the final doubling it was half: day 47."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-logic-11",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "5 台机器 5 分钟生产 5 个零件。100 台机器生产 100 个零件需要多久？",
+    "choices": [
+     "20 分钟",
+     "1 分钟",
+     "5 分钟",
+     "100 分钟"
+    ],
+    "explain": "每台机器 5 分钟做 1 个；100 台并行，5 分钟做 100 个。"
+   },
+   "en": {
+    "q": "5 machines make 5 widgets in 5 minutes. How long do 100 machines take to make 100 widgets?",
+    "choices": [
+     "20 minutes",
+     "1 minute",
+     "5 minutes",
+     "100 minutes"
+    ],
+    "explain": "Each machine makes one widget in 5 minutes; 100 machines in parallel make 100 in the same 5 minutes."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-logic-12",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "NOT (A AND B) 等价于？",
+    "choices": [
+     "NOT A OR B",
+     "A OR B",
+     "(NOT A) AND (NOT B)",
+     "(NOT A) OR (NOT B)"
+    ],
+    "explain": "德摩根定律：非（A 且 B）=（非 A）或（非 B）。"
+   },
+   "en": {
+    "q": "NOT (A AND B) is equivalent to which expression?",
+    "choices": [
+     "NOT A OR B",
+     "A OR B",
+     "(NOT A) AND (NOT B)",
+     "(NOT A) OR (NOT B)"
+    ],
+    "explain": "De Morgan's law: NOT (A AND B) = (NOT A) OR (NOT B)."
+   },
+   "answer": [
+    3
+   ]
+  },
+  {
+   "id": "mcq-logic-13",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "抽屉里有 10 只黑袜和 10 只白袜，摸黑拿，最少拿几只能保证有一双同色？",
+    "choices": [
+     "2",
+     "3",
+     "11",
+     "21"
+    ],
+    "explain": "抽屉原理：只有 2 种颜色，拿 3 只必有 2 只同色。"
+   },
+   "en": {
+    "q": "A drawer has 10 black and 10 white socks. In the dark, how many must you take to be sure of a matching pair?",
+    "choices": [
+     "2",
+     "3",
+     "11",
+     "21"
+    ],
+    "explain": "The pigeonhole principle: with two colours, any 3 socks include two of the same colour."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-logic-14",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "10 个人两两握手一次，一共握多少次手？",
+    "choices": [
+     "20",
+     "45",
+     "90",
+     "100"
+    ],
+    "explain": "每对人握一次：C(10,2) = 10 × 9 / 2 = 45。"
+   },
+   "en": {
+    "q": "Ten people each shake hands with every other person once. How many handshakes?",
+    "choices": [
+     "20",
+     "45",
+     "90",
+     "100"
+    ],
+    "explain": "One per pair: C(10,2) = 10 × 9 / 2 = 45."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-logic-15",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "下列数中哪一个与其他的不同类？2, 3, 5, 9, 11",
+    "choices": [
+     "2",
+     "3",
+     "9",
+     "11"
+    ],
+    "explain": "其余都是质数，9 = 3 × 3 是合数。（2 虽然是唯一的偶数，但也是质数。）"
+   },
+   "en": {
+    "q": "Which is the odd one out: 2, 3, 5, 9, 11?",
+    "choices": [
+     "2",
+     "3",
+     "9",
+     "11"
+    ],
+    "explain": "All the others are primes; 9 = 3 × 3 is composite. (2 is the only even one, but it is prime too.)"
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-logic-16",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "父亲现在的年龄是儿子的 4 倍，20 年后是儿子的 2 倍。儿子现在几岁？",
+    "choices": [
+     "5",
+     "10",
+     "15",
+     "20"
+    ],
+    "explain": "4s + 20 = 2(s + 20)，解得 s = 10（父亲 40，20 年后 60 和 30）。"
+   },
+   "en": {
+    "q": "A father is 4 times his son's age now and will be twice the son's age in 20 years. How old is the son now?",
+    "choices": [
+     "5",
+     "10",
+     "15",
+     "20"
+    ],
+    "explain": "4s + 20 = 2(s + 20) gives s = 10 (the father is 40; in 20 years, 60 and 30)."
+   },
+   "answer": [
+    1
+   ]
+  },
+  {
+   "id": "mcq-logic-17",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "100! 的末尾有多少个 0？",
+    "choices": [
+     "11",
+     "20",
+     "24",
+     "25"
+    ],
+    "explain": "数因子 5 的个数：⌊100/5⌋ + ⌊100/25⌋ = 20 + 4 = 24（因子 2 远比 5 多）。"
+   },
+   "en": {
+    "q": "How many trailing zeros does 100! have?",
+    "choices": [
+     "11",
+     "20",
+     "24",
+     "25"
+    ],
+    "explain": "Count the factors of 5: ⌊100/5⌋ + ⌊100/25⌋ = 20 + 4 = 24 (factors of 2 are far more plentiful)."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-logic-18",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "8×8 的国际象棋棋盘上，一共有多少个大小不同的正方形？",
+    "choices": [
+     "64",
+     "120",
+     "204",
+     "256"
+    ],
+    "explain": "边长为 k 的正方形有 (9−k)^2 个，1^2 + 2^2 + … + 8^2 = 204。"
+   },
+   "en": {
+    "q": "How many squares of all sizes are there on an 8×8 chessboard?",
+    "choices": [
+     "64",
+     "120",
+     "204",
+     "256"
+    ],
+    "explain": "There are (9−k)^2 squares of side k, and 1^2 + 2^2 + … + 8^2 = 204."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-logic-19",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "今天是星期三，100 天后是星期几？",
+    "choices": [
+     "星期五",
+     "星期三",
+     "星期四",
+     "星期六"
+    ],
+    "explain": "100 = 14 × 7 + 2，相当于往后数 2 天：星期五。"
+   },
+   "en": {
+    "q": "Today is Wednesday. What day is it 100 days from now?",
+    "choices": [
+     "Friday",
+     "Wednesday",
+     "Thursday",
+     "Saturday"
+    ],
+    "explain": "100 = 14 × 7 + 2, so count two days on: Friday."
+   },
+   "answer": [
+    0
+   ]
+  },
+  {
+   "id": "mcq-logic-20",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "数列 1, 4, 9, 16, 25, ? 的下一项是？",
+    "choices": [
+     "30",
+     "35",
+     "36",
+     "49"
+    ],
+    "explain": "都是平方数：6^2 = 36。"
+   },
+   "en": {
+    "q": "What comes next: 1, 4, 9, 16, 25, ?",
+    "choices": [
+     "30",
+     "35",
+     "36",
+     "49"
+    ],
+    "explain": "They are squares: 6^2 = 36."
+   },
+   "answer": [
+    2
+   ]
+  },
+  {
+   "id": "mcq-logic-21",
+   "section": "quant",
+   "topic": "logic",
+   "zh": {
+    "q": "一个班 30 人，21 人会 Python，17 人会 Java，每人至少会一种。两种都会的有几人？",
+    "choices": [
+     "4",
+     "8",
+     "9",
+     "13"
+    ],
+    "explain": "容斥：21 + 17 − 30 = 8。"
+   },
+   "en": {
+    "q": "In a class of 30, 21 know Python and 17 know Java, and everyone knows at least one. How many know both?",
+    "choices": [
+     "4",
+     "8",
+     "9",
+     "13"
+    ],
+    "explain": "Inclusion-exclusion: 21 + 17 − 30 = 8."
+   },
+   "answer": [
+    1
+   ]
+  }
+ ]
+}

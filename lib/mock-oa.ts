@@ -302,16 +302,23 @@ export type MockSession = {
    * counts only submissions in `language` when it is set.
    */
   cert?: { test: string; language?: string | null };
+  /**
+   * The MCQ section, taken before the coding clock starts; its end is `startedAt`. Stays in
+   * this browser (the account history keeps the coding part only).
+   */
+  mcq?: { ids: string[]; picks: number[][]; minutes: number; startedAt?: number; finishedAt?: number };
 };
 export type MockState = { active: MockSession | null; history: MockSession[] };
 export const MOCK_HISTORY = 30;
 export const WARN_MINUTES = [10, 5] as const;
 
-export const mockDeadline = (s: MockSession) =>
+/** What a clock needs: a session's coding part, or its MCQ section. */
+type Clocked = Pick<MockSession, 'startedAt' | 'minutes' | 'finishedAt'>;
+export const mockDeadline = (s: Clocked) =>
   (s.startedAt ?? 0) + s.minutes * 60000;
 
 /** Phase, time left and the warning level (10 or 5 minutes left, else 0). */
-export function mockClock(s: MockSession, now: number) {
+export function mockClock(s: Clocked, now: number) {
   if (!s.startedAt)
     return { phase: 'ready' as const, remaining: s.minutes * 60000, warning: 0 };
   const remaining = Math.max(0, mockDeadline(s) - now);
@@ -365,9 +372,24 @@ export function archiveMock(state: MockState, s: MockSession): MockState {
   };
 }
 
-/** A running session whose time ran out while the tab was closed finishes now. */
+/**
+ * Hands in the MCQ section (at its deadline when that has passed) and starts the coding
+ * clock there. Anything not in its MCQ section comes back as it is.
+ */
+export function finishMcq(s: MockSession, now: number): MockSession {
+  if (!s.mcq?.startedAt || s.startedAt) return s;
+  const end = Math.min(now, mockDeadline(s.mcq));
+  return { ...s, mcq: { ...s.mcq, finishedAt: end }, startedAt: end };
+}
+
+/**
+ * A running session whose time ran out while the tab was closed finishes now; an MCQ
+ * section that ran out moves on to coding, whose clock started at the section's end.
+ */
 export function settleMockState(state: MockState, now: number): MockState {
   const a = state.active;
+  if (a?.mcq?.startedAt && !a.startedAt && mockClock(a.mcq, now).phase === 'finished')
+    return settleMockState({ ...state, active: finishMcq(a, now) }, now);
   if (!a?.startedAt || mockClock(a, now).phase !== 'finished') return state;
   return archiveMock(state, finishMock(a, now, 'timeout'));
 }
@@ -408,7 +430,12 @@ function validSession(value: unknown): value is MockSession {
     Array.isArray(s.slots) &&
     Number.isFinite(s.minutes) &&
     Number.isFinite(s.createdAt) &&
-    Number.isFinite(s.skew ?? 0)
+    Number.isFinite(s.skew ?? 0) &&
+    (s.mcq === undefined ||
+      (Array.isArray(s.mcq?.ids) &&
+        Array.isArray(s.mcq.picks) &&
+        s.mcq.picks.every(Array.isArray) &&
+        Number.isFinite(s.mcq.minutes)))
   );
 }
 /** Tolerant: anything malformed reads as an empty state. */
@@ -482,4 +509,83 @@ export function mockExamFor(
   if (!session?.startedAt || !session.ids.includes(problemId)) return null;
   const running = mockClock(session, now).phase === 'running';
   return mock || running ? { session, running } : null;
+}
+
+// ---------------------------------------------------------------- multiple choice
+
+export type McqSection = 'cs' | 'code-output' | 'quant';
+export const MCQ_SECTIONS: readonly McqSection[] = ['cs', 'code-output', 'quant'];
+type McqText = { q: string; choices: string[]; explain: string };
+/** One question of lib/content/oa-mcq.json. */
+export type McqQuestion = {
+  id: string;
+  section: McqSection;
+  topic: string;
+  /** The snippet a code-output question asks about, the same in both languages. */
+  code?: string;
+  lang?: string;
+  zh: McqText;
+  en: McqText;
+  /** Right choices; more than one means "select all that apply". */
+  answer: number[];
+  /** The public OA item a question was adapted from. */
+  source?: string;
+};
+/** A preset's MCQ section: how many questions, how long, and where they come from. */
+export type McqConfig = {
+  count: number;
+  minutes: number;
+  sections: McqSection[];
+  topics?: string[];
+};
+
+/**
+ * `count` question ids from the config's sections (and topics, when set) in a seeded random
+ * order, ones not in `exclude` (recently seen) first.
+ */
+export function drawMcq(
+  bank: readonly McqQuestion[],
+  config: Pick<McqConfig, 'count' | 'sections' | 'topics'>,
+  seed: number,
+  exclude: ReadonlySet<string> = new Set(),
+) {
+  const random = seededRandom(seed);
+  return bank
+    .filter(
+      (q) =>
+        config.sections.includes(q.section) &&
+        (!config.topics?.length || config.topics.includes(q.topic)),
+    )
+    .map((q) => ({ id: q.id, seen: +exclude.has(q.id), order: random() }))
+    .sort((a, b) => a.seen - b.seen || a.order - b.order)
+    .slice(0, config.count)
+    .map((q) => q.id);
+}
+
+/** Right only when the pick is exactly the answer set: no partial credit on "select all". */
+export const mcqRight = (answer: readonly number[], pick: readonly number[] = []) =>
+  pick.length === answer.length && answer.every((a) => pick.includes(a));
+
+/**
+ * The MCQ section's result. It counts as one more 100-point block next to the coding
+ * questions' 0–100 each.
+ */
+// ponytail: flat 100 for the whole section; per-question points if a preset ever needs them.
+export function scoreMcq(
+  bank: readonly McqQuestion[],
+  mcq: Pick<NonNullable<MockSession['mcq']>, 'ids' | 'picks'>,
+) {
+  const byId = new Map(bank.map((q) => [q.id, q]));
+  const per = mcq.ids.map((id, i) => {
+    const q = byId.get(id);
+    return !!q && mcqRight(q.answer, mcq.picks[i]);
+  });
+  const correct = per.filter(Boolean).length;
+  return {
+    per,
+    correct,
+    total: mcq.ids.length,
+    points: mcq.ids.length ? Math.round((100 * correct) / mcq.ids.length) : 0,
+    max: 100,
+  };
 }

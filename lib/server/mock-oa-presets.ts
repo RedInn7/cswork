@@ -1,11 +1,11 @@
 import presetsFile from '@/lib/content/mock-oa-presets.json';
-import type { Scoring, Slot } from '@/lib/mock-oa';
+import type { McqConfig, Scoring, Slot } from '@/lib/mock-oa';
 import { hiddenCompanies } from './env';
 
 export type MockPreset = Omit<
   (typeof presetsFile)['companies'][number],
-  'slots' | 'scoring'
-> & { slots: Slot[]; scoring: Scoring };
+  'slots' | 'scoring' | 'mcq'
+> & { slots: Slot[]; scoring: Scoring; mcq?: McqConfig };
 export const MOCK_PRESETS_UPDATED = presetsFile.updated;
 const presets = presetsFile.companies as MockPreset[];
 
