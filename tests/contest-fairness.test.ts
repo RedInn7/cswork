@@ -173,7 +173,7 @@ void test('the problem payload carries no editorial, only whether one exists and
   // No approach's code, in any language, rides along (compared JSON-escaped, as the payload carries it).
   const payload = JSON.stringify(problem);
   for (const approach of lingEditorial('lc-1')!.approaches)
-    for (const code of [approach.python, approach.cpp])
+    for (const code of [approach.python, approach.cpp, approach.java, approach.go])
       assert.equal(payload.includes(JSON.stringify(code).slice(1, -1)), false);
   const none = (await (await call(amy, 'GET', `problems/${bare}`)).json()) as Record<string, unknown>;
   assert.equal(none.lingEditorialVerified, null);

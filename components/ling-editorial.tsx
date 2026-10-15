@@ -23,12 +23,18 @@ import '@/app/ling-editorial.css';
 const LANGS = [
   ['python', 'Python'],
   ['cpp', 'C++'],
+  ['java', 'Java'],
+  ['go', 'Go'],
 ] as const;
 type EditorialLang = (typeof LANGS)[number][0];
+const editorialLang = (language: Language): EditorialLang | null =>
+  LANGS.find(([id]) => id === language)?.[0] ?? null;
+const langName = (lang: EditorialLang) => LANGS.find(([id]) => id === lang)![1];
 
 /**
  * The Line 500 editorial tab: approaches from brute force to best, each with its idea,
- * complexity and Python / C++ code, and a diff of that code against the editor's.
+ * complexity and Python / C++ / Java / Go code, and a diff against the editor's code
+ * in the editor's own language (the shown language when the editorial has none in it).
  * Locked until the learner has passed the problem, unless they confirm they want it now;
  * the workspace keeps that choice (`unlocked`) so switching tabs doesn't forget it. The editorial
  * is fetched only once unlocked; the server refuses it during the learner's running contest.
@@ -57,13 +63,14 @@ export function LingEditorial({
   discussion?: boolean;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
-  const [lang, setLang] = useState<EditorialLang>(language === 'cpp' ? 'cpp' : 'python');
+  const [lang, setLang] = useState<EditorialLang>(editorialLang(language) ?? 'python');
+  // Like for like: my Java code diffs against the Java editorial, whichever tab is shown.
+  const diffLang = editorialLang(language) ?? lang;
   const [compare, setCompare] = useState<number | null>(null);
   const [confirm, setConfirm] = useState(false);
   // The confirm unmounts the locked panel and its button, so focus lands on the heading instead.
   const confirmed = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
-  const langName = LANGS.find(([id]) => id === lang)![1];
   const [editorial, setEditorial] = useState<Editorial | null>(null);
   const [error, setError] = useState('');
   const [attempt, setAttempt] = useState(0);
@@ -88,7 +95,7 @@ export function LingEditorial({
         {verified ? (
           <span className="cs-ling-verified">
             <BadgeCheck size={14} aria-hidden="true" />
-            {t('代码已通过本题全部测试', 'Code passes every test of this problem')}
+            {t('Python 代码已通过本题全部测试，C++、Java、Go 已通过公开样例', 'Python passes every test; C++, Java and Go pass the public samples')}
           </span>
         ) : (
           <span className="cs-ling-unverified">
@@ -180,7 +187,7 @@ export function LingEditorial({
                   <>
                     <div className="cs-diff-labels">
                       <span>
-                        {t('官方题解', 'Editorial')} · {langName}
+                        {t('官方题解', 'Editorial')} · {langName(diffLang)}
                       </span>
                       <span>
                         {t('我的代码', 'My code')} ·{' '}
@@ -189,9 +196,9 @@ export function LingEditorial({
                     </div>
                     <div className="cs-history-editor cs-ling-diff">
                       <CodeDiff
-                        original={approach[lang]}
+                        original={approach[diffLang]}
                         modified={code}
-                        originalLanguage={lang}
+                        originalLanguage={diffLang}
                         language={language}
                         settings={settings}
                         ariaLabel={t('官方题解与我的代码的差异', 'Differences between the editorial and my code')}

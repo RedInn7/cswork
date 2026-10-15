@@ -6,11 +6,13 @@ import editorials from '../lib/content/ling-editorials.json';
 import { curatedByNumber } from '../lib/ling-curated';
 import { lingEditorial } from '../lib/server/ling-editorials';
 
-const FIELDS = ['cpp', 'ideaEn', 'ideaZh', 'nameEn', 'nameZh', 'python', 'space', 'time'];
-// Room for a long DP idea or a verbose C++ solution; anything past this is a paste accident.
+const FIELDS = ['cpp', 'go', 'ideaEn', 'ideaZh', 'java', 'nameEn', 'nameZh', 'python', 'space', 'time'];
+// Room for a long DP idea or a verbose C++/Java/Go solution; anything past this is a paste accident.
 const MAX = { name: 60, idea: 1200, cost: 40, code: 6000 } as const;
 const BIG_O = String.raw`(?:[A-Za-z]+(?:/[A-Za-z]+)* )?O\([^()]*(?:\([^()]*\)[^()]*)*\)`;
 const COST = new RegExp(`^${BIG_O}(?:, ${BIG_O})*$`);
+// The types scripts/leetcode-mode/cpp/context.hpp and lib/server/leetcode-go.ts define.
+const PLATFORM = String.raw`(?:TreeNode|ListNode|Node|Interval|MountainArray)\b`;
 
 void test('every editorial is a Line 500 problem with 1-4 complete bilingual approaches', () => {
   const file = editorials as Record<string, Record<string, unknown>>;
@@ -49,6 +51,13 @@ void test('every editorial is a Line 500 problem with 1-4 complete bilingual app
         if (!COST.test(String(approach[key])) || /[一-鿿]/.test(String(approach[key])))
           bad.push(`${at}.${key}: not big-O`);
       if (!/[一-鿿]/.test(String(approach.ideaZh))) bad.push(`${at}.ideaZh: no Chinese`);
+      // A helper named like a judge type replaces the harness's own, whose fields the input builder uses.
+      const code = (key: 'cpp' | 'go') =>
+        String(approach[key]).replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, '');
+      if (new RegExp(String.raw`\b(?:struct|class)\s+${PLATFORM}\s*\{`).test(code('cpp')))
+        bad.push(`${at}.cpp: redeclares a platform type`);
+      if (new RegExp(String.raw`\btype\s+${PLATFORM}`).test(code('go')))
+        bad.push(`${at}.go: redeclares a platform type`);
     });
   }
   assert.deepEqual(bad, []);

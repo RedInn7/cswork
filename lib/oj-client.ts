@@ -52,7 +52,10 @@ export type OJProblem = Problem & {
   stop?: string | null;
   similar?: SimilarProblem[];
 };
-/** Approaches from brute force to best; `verified`: every approach passed the judge's tests. */
+/**
+ * Approaches from brute force to best; `verified`: every approach's Python passed the judge's tests,
+ * its C++, Java and Go the public samples (lib/content/leetcode-public-samples.json).
+ */
 export type LingEditorial = {
   approaches: {
     nameZh: string;
@@ -63,6 +66,8 @@ export type LingEditorial = {
     space: string;
     python: string;
     cpp: string;
+    java: string;
+    go: string;
   }[];
   verified: boolean;
 };
