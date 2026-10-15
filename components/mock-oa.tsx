@@ -758,7 +758,9 @@ function MockLanding({
                         <b>
                           {extra.codingOnly
                             ? t('只有编程：', 'Coding only: ')
-                            : t('编程之外（不模拟）：', 'Besides coding (not simulated): ')}
+                            : c.mcq
+                              ? t('编程之外（选择题有模拟）：', 'Besides coding (MCQs simulated): ')
+                              : t('编程之外（不模拟）：', 'Besides coding (not simulated): ')}
                         </b>
                         {extra.text}
                       </p>
@@ -1216,7 +1218,9 @@ function MockBriefing({
   const t = useT(),
     zh = useLocale() === 'zh';
   const [withMcq, setWithMcq] = useState(true);
-  const mcq = preset?.mcq && withMcq ? preset.mcq : undefined;
+  // Only a company's real format has its MCQ section; a custom mock is coding only.
+  const offer = session.preset ? preset?.mcq : undefined;
+  const mcq = withMcq ? offer : undefined;
   const known = new Set(boot.problems.map((p) => p.id));
   const missing = session.ids.some((id) => !known.has(id));
   const extra = preset && !extraSections(preset, zh).codingOnly ? extraSections(preset, zh).text : '';
@@ -1245,13 +1249,13 @@ function MockBriefing({
         </div>
       </div>
       {preset && <MockTopicBrief preset={preset} navigate={navigate} />}
-      {preset?.mcq && (
+      {offer && (
         <label className="mock-mcq-toggle">
           <input type="checkbox" checked={withMcq} onChange={(e) => setWithMcq(e.target.checked)} />
           <span>
             {t(
-              `含选择题 ${preset.mcq.count} 题 / ${preset.mcq.minutes} 分钟`,
-              `Include the MCQ section: ${preset.mcq.count} questions / ${preset.mcq.minutes} min`,
+              `含选择题 ${offer.count} 题 / ${offer.minutes} 分钟`,
+              `Include the MCQ section: ${offer.count} questions / ${offer.minutes} min`,
             )}
             <small>
               {t(

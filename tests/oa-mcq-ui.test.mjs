@@ -138,3 +138,34 @@ test('mock OA report: an MCQ row with its score, and a review with the answers',
   assert.equal(review.open, true);
   root.unmount();
 });
+
+test('mock OA check-in: a preset with an MCQ section offers it (on by default); a custom mock does not', async () => {
+  const presets = JSON.parse(readFileSync('lib/content/mock-oa-presets.json', 'utf8')).companies;
+  const rubrik = { ...presets.find((c) => c.slug === 'rubrik'), pool: { oa: 9, lc: 9, total: 18 } };
+  globalThis.fetch = async () => new Response(JSON.stringify({ companies: [rubrik], others: [], all: { oa: 9, lc: 9 } }));
+  const { MockOa } = await import('../components/mock-oa.tsx');
+  const moves = [];
+  const s = session({});
+  dom({ 'cswork:mock:v1:guest': JSON.stringify({ active: s, history: [] }) });
+  // The problems must exist for the start button to be enabled.
+  const known = { ...boot, problems: [{ id: 'lc-1' }, { id: 'lc-2' }] };
+  let root = await render(createElement(MockOa, { boot: known, params: { view: 'mock', session: s.id }, navigate: (...a) => moves.push(a) }));
+  const toggle = document.querySelector('.mock-mcq-toggle input');
+  assert.equal(toggle?.checked, true);
+  assert.match(document.querySelector('.mock-mcq-toggle').textContent, /Include the MCQ section: 10 questions \/ 15 min/);
+  await act(async () => button('Start the clock').click());
+  await settle();
+  const active = JSON.parse(localStorage.getItem('cswork:mock:v1:guest')).active;
+  assert.equal(active.startedAt, undefined, 'the coding clock waits');
+  assert.equal(active.mcq.ids.length, 10);
+  assert(active.mcq.ids.every((id) => byId.get(id).topic === 'concurrency'));
+  assert.equal(moves.length, 0, 'stays on the mock page for the MCQ section');
+  assert.match(document.body.textContent, /Hand in and start coding \(0\/10 answered\)/);
+  root.unmount();
+
+  dom({ 'cswork:mock:v1:guest': JSON.stringify({ active: session({ preset: false }), history: [] }) });
+  root = await render(createElement(MockOa, { boot, params: { view: 'mock', session: s.id }, navigate() {} }));
+  assert.equal(document.querySelector('.mock-mcq-toggle'), null);
+  root.unmount();
+  delete globalThis.fetch;
+});
