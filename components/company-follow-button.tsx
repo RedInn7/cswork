@@ -59,6 +59,7 @@ export function CompanyFollowButton({
   if (!state) return null;
   if (!state.signedIn)
     return (
+      // oxlint-disable-next-line next/no-html-link-for-pages -- the SPA's account view signs in; also on public pages.
       <a className={className} href="/?view=account#companies">
         <Bell size={15} aria-hidden="true" />
         {t(`登录后关注 ${name}`, `Sign in to follow ${name}`)}
@@ -97,6 +98,7 @@ export function FollowedCompanies({ zh }: { zh: boolean }) {
       {state.items.length ? (
         state.items.map((c) => (
           <div className="service-row" key={c.slug}>
+            {/* oxlint-disable-next-line next/no-html-link-for-pages -- a server page, left from the SPA. */}
             <a href={companyHubPath(c.slug)}>{c.name}</a>
             <Button
               variant="ghost"

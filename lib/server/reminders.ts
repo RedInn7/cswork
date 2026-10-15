@@ -120,9 +120,17 @@ export async function sendLearnerReminders(now = Date.now()) {
     .all(now, now + HOUR) as { user_id: string; id: string; title: string }[];
   for (const c of starting) {
     const id = `contest:${c.id}:${c.user_id}`;
+    const notice = {
+      id,
+      userId: c.user_id,
+      kind: 'contest-start',
+      title: '你报名的比赛 1 小时内开始',
+      body: c.title,
+      href: `/contest/${c.id}`,
+      now,
+    };
     // notify is false when another worker wrote it in between.
-    if (!fresh(id) || !notify({ id, userId: c.user_id, kind: 'contest-start', title: '你报名的比赛 1 小时内开始', body: c.title, href: `/contest/${c.id}`, now }))
-      continue;
+    if (!fresh(id) || !notify(notice)) continue;
     sent++;
     await pushTo(c.user_id, now);
   }

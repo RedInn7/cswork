@@ -22,10 +22,12 @@ export default async function UnsubscribePage({ searchParams }: Props) {
         <p className="lists-public-kicker">{say(['CSWork 周报', 'The CSWork weekly'], ['CSWork 学习提醒', 'CSWork reminders'])}</p>
         <h1>{say(['退订周报', 'Unsubscribe'], ['退订提醒邮件', 'Stop reminder emails'])}</h1>
         {reminders && done === '1' ? (
-          <p role="status">
-            {zh
-              ? '已退订，不会再收到提醒邮件。站内提醒和推送不受影响，可以在账户页关掉。'
-              : 'Done: no more reminder emails. In-app and push reminders are unchanged; turn them off on your account page.'}
+          <p>
+            <output>
+              {zh
+                ? '已退订，不会再收到提醒邮件。站内提醒和推送不受影响，可以在账户页关掉。'
+                : 'Done: no more reminder emails. In-app and push reminders are unchanged; turn them off on your account page.'}
+            </output>
           </p>
         ) : valid ? (
           <form method="post" action={`/api/newsletter/unsubscribe?token=${token}${reminders ? '&list=reminders' : ''}`}>

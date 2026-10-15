@@ -41,6 +41,23 @@ export function ReminderSettings() {
   const [device, setDevice] = useState<PushSubscription | null>();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  async function run(work: () => Promise<void>) {
+    setBusy(true);
+    setError('');
+    try {
+      await work();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  const save = (prefs: Prefs | null) =>
+    run(async () =>
+      setSettings(
+        await api<Settings>('oj/notify', { prefs: prefs && { ...prefs, tz: new Date().getTimezoneOffset(), locale } }),
+      ),
+    );
   useEffect(() => {
     let live = true;
     api<Settings>('oj/notify').then(
@@ -60,25 +77,8 @@ export function ReminderSettings() {
     return () => {
       live = false;
     };
-    // oxlint-disable-next-line react-hooks/exhaustive-deps -- Once on mount; save reads the first settings only.
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- Once on mount.
   }, []);
-  async function run(work: () => Promise<void>) {
-    setBusy(true);
-    setError('');
-    try {
-      await work();
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  }
-  const save = (prefs: Prefs | null) =>
-    run(async () =>
-      setSettings(
-        await api<Settings>('oj/notify', { prefs: prefs && { ...prefs, tz: new Date().getTimezoneOffset(), locale } }),
-      ),
-    );
   const pushOn = (publicKey: string) =>
     run(async () => {
       if ((await Notification.requestPermission()) !== 'granted')
