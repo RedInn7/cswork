@@ -355,11 +355,15 @@
   box-shadow: inset 0 2px 0 var(--amber);
 }
 .ai-round-code {
+  position: relative;
   flex: 1;
   min-height: 520px;
 }
-.ai-round-code .cs-editor-host {
-  height: 100%;
+/* Fills the flex item whatever its height resolves to; Monaco relayouts itself. */
+.ai-round-code > .cs-editor-host {
+  position: absolute;
+  inset: 0;
+  height: auto;
 }
 .ai-round-actions {
   display: flex;
