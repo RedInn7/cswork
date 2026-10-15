@@ -108,6 +108,8 @@ finish() {
   if [[ "$paused" == true ]]; then
     queue resume || { echo 'ERROR: application healthy but queue resume failed'; exit 1; }
   fi
+  # Only once judging is admitted again: deleting old releases never holds the queue paused.
+  if [[ "$complete" == true ]]; then bash "$source_dir/deploy/prune-releases.sh" "$previous" || true; fi
   exit "$code"
 }
 trap finish EXIT
