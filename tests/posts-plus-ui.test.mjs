@@ -106,6 +106,10 @@ test('a thread draws its mermaid, takes one poll vote, saves and lists saved pos
     const bars = [...document.querySelectorAll('.cs-poll-bar > span')].map((s) => s.style.width);
     assert.deepEqual(bars, ['33%', '67%']);
     assert.equal($('.cs-poll-results li[data-mine]').textContent.includes('C++'), true);
+    // The Vote button left with the form: focus moves to the poll and its status line says so.
+    assert.equal(document.activeElement === $('.cs-poll'), true);
+    assert.equal($('.cs-poll-meta').getAttribute('role'), 'status');
+    assert.equal($('.cs-poll-meta').textContent.startsWith('Vote saved · 3 voters'), true);
 
     // Save: a star mark on post:<id>.
     const save = button('Save');

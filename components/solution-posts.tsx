@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import {
   ArrowLeft,
   Bookmark,
@@ -810,6 +810,12 @@ function PostPoll({
   const [picks, setPicks] = useState<number[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [saved, setSaved] = useState(false);
+  const box = useRef<HTMLElement>(null);
+  // The Vote button leaves with the form: focus the poll, whose status line reads the result.
+  useEffect(() => {
+    if (saved) box.current?.focus();
+  }, [saved]);
   async function vote(event: FormEvent) {
     event.preventDefault();
     if (!signedIn) return authRequired();
@@ -817,6 +823,7 @@ function PostPoll({
     setError('');
     try {
       onVoted((await api<{ poll: Poll }>(`oj/posts/${postId}/poll`, { choices: picks })).poll);
+      setSaved(true);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -825,6 +832,7 @@ function PostPoll({
   }
   const counts = poll.counts;
   const meta = [
+    saved && t('已投票', 'Vote saved'),
     t(`${poll.voters} 人已投票`, `${poll.voters} ${poll.voters === 1 ? 'voter' : 'voters'}`),
     poll.multi && t('可多选', 'Pick any'),
     poll.closed
@@ -833,7 +841,7 @@ function PostPoll({
     !counts && t('投票后显示结果', 'Results show once you vote'),
   ].filter(Boolean);
   return (
-    <section className="cs-poll" aria-labelledby={`poll-${postId}`}>
+    <section className="cs-poll" aria-labelledby={`poll-${postId}`} ref={box} tabIndex={-1}>
       <h4 id={`poll-${postId}`}>{poll.question}</h4>
       {counts ? (
         <ul className="cs-poll-results">
@@ -878,7 +886,9 @@ function PostPoll({
           </button>
         </form>
       )}
-      <p className="cs-poll-meta">{meta.join(' · ')}</p>
+      <p className="cs-poll-meta" role="status">
+        {meta.join(' · ')}
+      </p>
       {error && (
         <p className="cs-posts-error" role="alert">
           {error}
