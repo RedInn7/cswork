@@ -17,6 +17,24 @@ import {
 import { api } from '@/lib/types';
 
 export type SkillOverview = ReturnType<typeof skillOverview>;
+type Clock = { server: number; client: number };
+
+/** The server's time now, from the clocks of the last fetch. */
+const serverTime = (clock: Clock) => clock.server + (Date.now() - clock.client);
+
+/**
+ * Puts the attempt in this browser as the running mock session (a mock OA still on the clock is
+ * handed in as it stands, as a new mock draw would); false when storage is unavailable.
+ */
+function storeExam(userId: string, attempt: SkillAttempt, serverNow: number, zh: boolean) {
+  const test = skillTest(attempt.test);
+  if (!test) return false;
+  const now = Date.now();
+  const state = readMockState(userId);
+  const base =
+    state.active?.startedAt && state.active.id !== attempt.id ? archiveMock(state, finishMock(state.active, now)) : state;
+  return writeMockState(userId, { ...base, active: skillSession(attempt, test, serverNow, now, zh) });
+}
 
 /**
  * /certify: the exams, their rules, the running one and past results, and the certificates
@@ -38,14 +56,13 @@ export function SkillTests({
   const t = (a: string, b: string) => (zh ? a : b);
   const [data, setData] = useState(initial);
   // The server clock at the last fetch, against this browser's: exams count down to its deadline.
-  const [clock, setClock] = useState(() => ({ server: initial?.now ?? Date.now(), client: Date.now() }));
+  const [clock, setClock] = useState<Clock>(() => ({ server: initial?.now ?? Date.now(), client: Date.now() }));
   const [now, setNow] = useState(() => Date.now());
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
   const [confirm, setConfirm] = useState<SkillTest | null>(null);
   const [onProfile, setOnProfile] = useState<Record<string, boolean>>({});
   const confirmButton = useRef<HTMLButtonElement>(null);
-  const serverNow = () => clock.server + (Date.now() - clock.client);
   const fail = (e: unknown) => {
     const message = (e as Error).message;
     setError(t(message, englishMessage(message)));
@@ -72,7 +89,7 @@ export function SkillTests({
     if (!due) return;
     const timer = setTimeout(() => void refresh(), 5000);
     return () => clearTimeout(timer);
-    // oxlint-disable-next-line react/react-compiler -- refresh is a fresh closure each render; new data re-arms the retry.
+    // oxlint-disable-next-line react/react-compiler, react-hooks/exhaustive-deps -- refresh is a fresh closure each render; new data re-arms the retry.
   }, [due, data]);
   useEffect(() => {
     if (confirm) confirmButton.current?.focus();
@@ -80,16 +97,8 @@ export function SkillTests({
 
   /** Puts the attempt in this browser as the running mock session and opens its first question. */
   function openExam(attempt: SkillAttempt, at: number) {
-    const test = skillTest(attempt.test);
-    if (!test || !userId) return;
-    const session = skillSession(attempt, test, at, Date.now(), zh);
-    const state = readMockState(userId);
-    // A mock OA still on the clock is handed in as it stands, as a new mock draw would.
-    const base =
-      state.active?.startedAt && state.active.id !== attempt.id
-        ? archiveMock(state, finishMock(state.active, Date.now()))
-        : state;
-    if (!writeMockState(userId, { ...base, active: session })) {
+    if (!userId) return;
+    if (!storeExam(userId, attempt, at, zh)) {
       setError(
         t(
           '浏览器存储不可用，无法进入考试界面。请退出无痕模式后再试；考试仍在服务器上计时。',
@@ -161,7 +170,7 @@ export function SkillTests({
             {formatClock(runningLeft)}
           </span>
           <div className="certify-live-actions">
-            <button type="button" className="certify-primary" onClick={() => openExam(running, serverNow())}>
+            <button type="button" className="certify-primary" onClick={() => openExam(running, serverTime(clock))}>
               {t('继续作答', 'Back to the exam')}
             </button>
             <button type="button" className="certify-quiet" disabled={busy === 'finish'} onClick={() => void handIn(running)}>

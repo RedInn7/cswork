@@ -66,9 +66,7 @@ export function CourseRating({ courseId, zh }: { courseId: string; zh: boolean }
           ))}
         </fieldset>
       )}
-      <span className="course-rating-status" role="status">
-        {status}
-      </span>
+      <output className="course-rating-status">{status}</output>
     </div>
   );
 }
