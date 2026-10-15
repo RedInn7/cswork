@@ -27,8 +27,8 @@ const PLACEMENTS: [Placement, string, string, string, string][] = [
     'posts',
     '讨论帖和题解',
     'Threads and solutions',
-    '面经评论里永远不显示，以免透露「这家公司的员工在找工作」。',
-    'Never on experience comments, where it would say an employee there is interviewing.',
+    '只在题解和算法、内推、站务频道显示；面经、求职、上岸故事和面经评论里永远不显示，以免透露「这家公司的员工在找工作」。',
+    'Only on solutions and the Algorithms, Referrals and Site feedback channels. Never in interview, career or offer talk or on experience comments, where it would say an employee there is interviewing.',
   ],
   [
     'referrals',

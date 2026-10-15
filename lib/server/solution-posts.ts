@@ -97,12 +97,14 @@ const byline = <T extends { author: string; handle: string | null; mine: number 
   author: mine ? row.author : handle || (row.author ? maskName(row.author) : ''),
   mine: !!mine,
 });
+// The verified employee badge shows (where its owner switched it on) on solutions and these
+// channels only: in interview, offer or career talk, experience comments or answers it would read
+// as "an employee of X is interviewing".
+const BADGE_CHANNELS = new Set(['discuss:algo', 'discuss:referral', 'discuss:site']);
 const shape = ({ voted, employer, referrer, ...r }: PostRow) => ({
   ...byline(r),
   voted: !!voted,
-  // The verified employee badge where its owner switched it on; never on experience comments,
-  // where it would read as "an employee of X is interviewing".
-  employer: targetKind(r.problemId) === 'exp' ? null : badgeName(employer),
+  employer: targetKind(r.problemId) === 'problem' || BADGE_CHANNELS.has(r.problemId) ? badgeName(employer) : null,
   // A referral thread by a verified employee of the company it is tagged with: "request a referral".
   referral: r.problemId === 'discuss:referral' && !!r.tag && referrer === r.tag && !!badgeName(referrer),
 });

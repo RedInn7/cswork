@@ -322,4 +322,9 @@ void test('badge placements, the referral board and direct messages', async () =
   const comment = (await ok(amy, 'POST', 'posts', { problemId: 'exp:g-exp', body: 'Good luck!' })).post;
   assert.equal(comment.employer, null);
   assert.equal((await ok(null, 'GET', path)).post.employer, 'Google');
+  // Nor do threads where it would read as job hunting; the algorithm channel carries it.
+  for (const [channel, shown] of [['interview', null], ['offer', null], ['career', null], ['algo', 'Google']] as const) {
+    const post = (await ok(amy, 'POST', 'posts', { problemId: `discuss:${channel}`, title: 'Notes', body: 'Notes' })).post;
+    assert.equal(post.employer, shown, channel);
+  }
 });
