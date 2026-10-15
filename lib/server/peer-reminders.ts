@@ -6,7 +6,8 @@ import { mailReady, peerReminderMail, sendMail } from './mail';
 
 const HOUR = 3600000;
 // Resend's default limit is about 2 requests a second, shared with sign-in mails (scripts/newsletter.ts).
-const GAP_MS = 500;
+// One mail a second leaves the other half of that budget to sign-in and verification mails.
+const GAP_MS = 1000;
 type Due = {
   id: string;
   kind: string;

@@ -73,3 +73,9 @@ node --import tsx scripts/publish-oa-judge.ts --batch google-next TEACHER_EMAIL
 沙箱验证支持 `tokens` 和 `exact`，语义必须与生产一致；不允许把异常退出的错误程序算作有效反例。元数据、代码、输入输出或对照文件变更后，必须重新生成并验证相应批次报告，不能手工改报告指纹。
 
 发布前执行 `node scripts/oa-judge/coverage.mjs`，统计表同时校验真实文件哈希、通过数量、独立输入数量与全部错误程序名称。`sandbox_verified` 只表示报告有效，是否线上可提交仍由已发布数据库版本与 registry 校验值共同决定。
+
+## 调试与代码评审练习
+
+`node scripts/oa-judge/build-drills.mjs` 把 `mutants/` 里与 registry Python 解相差 1–3 行（行数相同、忽略行尾空白）的变异体生成 `drills.json`（私有服务端资产，由 `scripts/package-oa-library.mjs` 打包，不进 public）。变异体的英文名来自 `drill-names-en.json`（中文名 → 英文，LLM 翻译）；新增的名称补进这个文件后重跑脚本。registry 或 mutants 变动后必须重跑，`tests/oa-drills.test.ts` 会检查 `drills.json` 是否最新。
+
+`python3 scripts/rest-api/build.py` 生成 REST API 题：原先因依赖外部实时接口而 blocked 的 Oracle #6、Palantir #2、Rippling #3 进入候选批次 `rest-api-next`，题包带 `httpFixtures`（原创固定 JSON，键为 `GET <path>?<排序后的 query>`，见 `lib/http-fixtures.mjs`），判题和 `verify-oa-judge.mjs` 都用内联 `-c` 引导代码给 Python 注入离线的 `requests` / `urlopen`。题包还带 `visibleFixtureKeys`（参考解和错误程序在公开用例上请求到的键，扩展到整组分页）：样例运行、自定义输入只把这些键拷进沙箱，隐藏用例的数据只在正式评测时进沙箱（`lib/server/oj-engine.ts` 的 `runSpec`）。同一脚本还生成 6 道原创 `rest-` 题（`content/rest-api/`，由 `publish-sql-track.ts` 发布）；它们同样要在真实 GoJudge 上跑过：`GO_JUDGE_URL=… GO_JUDGE_TOKEN=… node scripts/rest-api/verify-sandbox.mjs` 让每道题的参考解通过全部用例、每个错误程序至少错一条，并写出 `content/rest-api/sandbox-report.json`。报告提交后，发布脚本只发布校验和在报告里的题包，其余记为 `unverified` 跳过；题包一改就要重跑。三道 OA 题只做了本地子进程验证，仍需 `node scripts/verify-oa-judge.mjs --candidate-batch rest-api-next` 跑真实 GoJudge 后再晋级；英文翻译要等进入 registry 后再加。

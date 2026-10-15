@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CalendarPlus, ChevronDown, RefreshCw } from 'lucide-react';
 import { Button } from './ui/button';
+import { CompanyFollowButton } from './company-follow-button';
 import { classicList } from '@/lib/classic-lists';
 import { SLOTS, type Slot } from '@/lib/mock-oa';
 import { ojRequest } from '@/lib/oj-client';
@@ -427,6 +428,7 @@ export function StudyPlan({
         <button type="button" className="route-plan-link" onClick={() => setEditing(true)}>
           {t('调整计划', 'Edit plan')}
         </button>
+        {company && <CompanyFollowButton slug={company.slug} name={company.name} zh={!english} hint className="route-plan-link" />}
         <button
           type="button"
           className="route-plan-link"

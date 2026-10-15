@@ -11,8 +11,11 @@ import { leetcodeContract, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import type { CodingMode } from '@/lib/coding-mode';
 import type { OjProblemSpec } from '@/lib/oj-types';
 import { boundedFeedback, FEEDBACK_BYTES } from './oj-case-store';
-import { aiTask } from './ai-tasks';
+import { aiTask, icaTask } from './ai-tasks';
+import { icaPassed, icaUnlocked } from './ica';
 import {
+  ICA_LEVELS,
+  icaProblemId,
   PROJECT_MAX_BYTES,
   PROJECT_MAX_FILES,
   PROJECT_PATH,
@@ -37,8 +40,11 @@ export type SubmissionRow = {
    * playground: /playground runs, no problem, never in history or statistics. reference: the
    * editorial's code on a learner's custom case (createReferenceRun), never shown as theirs.
    * project: an AI-assisted round run (createProjectRun), unlisted like a playground run.
+   * drill: an OA debugging drill, judged on every case like judge but unlisted: no points,
+   * never solved, out of history and statistics (the learner started from a planted bug).
+   * drill-run: a run inside a drill, judged like run but unlisted like drill; its detail reads 'run'.
    */
-  mode: 'judge' | 'run' | 'playground' | 'reference' | 'project';
+  mode: 'judge' | 'run' | 'playground' | 'reference' | 'project' | 'drill' | 'drill-run';
   coding_mode: CodingMode;
   harness_version: string | null;
   custom_input: string | null;
@@ -57,6 +63,8 @@ export type SubmissionRow = {
   created_at: number;
   updated_at: number;
 };
+/** Judged on every case, hidden ones included, with a formal verdict: a submission or a drill. */
+export const formalMode = (mode: string) => mode === 'judge' || mode === 'drill';
 export function judgeReady() {
   if (process.env.OJ_ENABLED === 'true') return true;
   return Boolean(
@@ -70,7 +78,7 @@ const inputSchema = z
     problemId: z.string().min(1).max(80),
     language: z.enum(LANGUAGE_IDS),
     code: z.string().min(1).max(MAX_CODE_BYTES),
-    mode: z.enum(['judge', 'run']).default('judge'),
+    mode: z.enum(['judge', 'run', 'drill', 'drill-run']).default('judge'),
     codingMode: z.enum(['leetcode', 'acm']).default('acm'),
     stdin: z.string().max(MAX_STDIN_BYTES).optional(),
     idempotencyKey: z.string().regex(/^[a-zA-Z0-9_-]{16,100}$/),
@@ -214,7 +222,9 @@ export async function createPlaygroundRun(p: Person, value: unknown) {
 }
 const projectSchema = z
   .object({
-    task: z.string().regex(/^[a-z0-9-]{1,60}$/),
+    // An AI-assisted task, or "ica:<slug>" with the ICA level to judge.
+    task: z.string().regex(/^(?:ica:)?[a-z0-9-]{1,60}$/),
+    level: z.number().int().min(1).max(ICA_LEVELS).optional(),
     files: z.record(z.string().regex(PROJECT_PATH), z.string().max(PROJECT_MAX_BYTES)),
     idempotencyKey: z.string().regex(/^[a-zA-Z0-9_-]{16,100}$/),
   })
@@ -232,7 +242,9 @@ export function projectTooLarge(files: Record<string, string>) {
  */
 export async function createProjectRun(p: Person, value: unknown) {
   const d = projectSchema.parse(value);
-  const task = aiTask(d.task);
+  const ica = d.task.startsWith('ica:');
+  if (ica !== (d.level !== undefined)) throw new HttpError(400, '无效的请求内容');
+  const task = ica ? icaTask(d.task.slice(4)) : aiTask(d.task);
   if (!task) throw new HttpError(404, '练习任务不存在');
   const files = Object.entries(d.files).sort(([a], [b]) => (a < b ? -1 : 1));
   if (!files.length || projectTooLarge(d.files))
@@ -241,7 +253,10 @@ export async function createProjectRun(p: Person, value: unknown) {
     throw new HttpError(400, '内容不能包含空字符');
   if (p.role !== 'teacher' && !p.verified)
     throw new HttpError(403, '请先验证邮箱，再运行和提交代码');
-  const problemId = projectProblemId(task.slug);
+  // An ICA level opens once the one before it passed (lib/server/ica.ts).
+  if (ica && d.level! > icaUnlocked(icaPassed(p.id, task.slug)))
+    throw new HttpError(403, '请先通过上一关');
+  const problemId = ica ? icaProblemId(task.slug, d.level!) : projectProblemId(task.slug);
   const code = JSON.stringify({ files: Object.fromEntries(files) });
   const hash = createHash('sha256').update(JSON.stringify([problemId, code])).digest('hex');
   const prior = priorRequest(p.id, d.idempotencyKey, hash);
@@ -280,6 +295,8 @@ export function projectReport(row: { stdout: string | null; stderr: string | nul
 }
 export async function createSubmission(p: Person, value: unknown) {
   const d = inputSchema.parse(value);
+  // A drill's run is a run on the examples (or custom input), kept out of the history like the drill.
+  const run = d.mode === 'run' || d.mode === 'drill-run';
   if (
     Buffer.byteLength(d.code) > MAX_CODE_BYTES ||
     (d.stdin !== undefined && Buffer.byteLength(d.stdin) > MAX_STDIN_BYTES)
@@ -287,7 +304,7 @@ export async function createSubmission(p: Person, value: unknown) {
     throw new HttpError(413, '代码和自定义输入分别最多 64 KiB');
   if (d.code.includes('\0') || d.stdin?.includes('\0'))
     throw new HttpError(400, '内容不能包含空字符');
-  if (d.mode === 'judge' && d.stdin !== undefined)
+  if (!run && d.stdin !== undefined)
     throw new HttpError(400, '正式提交不能携带自定义输入');
   // Access, publication and OA readiness need only the spec. The worker loads and
   // integrity-checks the test data itself, so this request never reads hidden cases.
@@ -327,8 +344,8 @@ export async function createSubmission(p: Person, value: unknown) {
     throw new HttpError(503, '判题服务尚未配置，代码草稿已保留');
   await limit(
     p,
-    d.mode === 'run' ? 'oj-run' : 'oj-submit',
-    d.mode === 'run' ? 12 : 6,
+    run ? 'oj-run' : 'oj-submit',
+    run ? 12 : 6,
   );
   // Reserve the writer before reading duplicate/queue state. A deferred WAL
   // read transaction cannot safely upgrade while the judge is writing results.
@@ -337,7 +354,7 @@ export async function createSubmission(p: Person, value: unknown) {
     if (duplicate) return { id: duplicate.id, status: duplicate.status };
     admit(p);
     const total =
-      d.mode === 'judge'
+      !run
         ? caseCount(true)
         : d.stdin !== undefined
           ? 1
@@ -436,7 +453,8 @@ function summary(s: SubmissionRow, roundNumbers?: Map<string, number>) {
     id: s.id,
     problem_id: s.problem_id,
     language: s.language,
-    mode: s.mode,
+    // ponytail: the learner's page shows a drill's run as a run; only the stored mode keeps it unlisted.
+    mode: s.mode === 'drill-run' ? 'run' : s.mode,
     codingMode: s.coding_mode || 'acm',
     status: s.status,
     passed: s.passed,
@@ -619,7 +637,7 @@ export async function submissionDetail(p: Person, id: string) {
         .get(s.problem_version_id) as { revision: number } | undefined)
     : undefined;
   const definitions =
-    s.mode !== 'judge' && s.custom_input !== null
+    !formalMode(s.mode) && s.custom_input !== null
       ? [
           {
             ordinal: 0,
@@ -633,7 +651,7 @@ export async function submissionDetail(p: Person, id: string) {
             .prepare(
               "SELECT ordinal,hidden,CASE WHEN hidden=0 THEN input ELSE NULL END as input,CASE WHEN hidden=0 THEN expected_output ELSE NULL END as expectedOutput FROM oj_test_cases WHERE version_id=? AND (?='judge' OR hidden=0) ORDER BY ordinal",
             )
-            .all(s.problem_version_id, s.mode) as {
+            .all(s.problem_version_id, formalMode(s.mode) ? 'judge' : s.mode) as {
             ordinal: number;
             hidden: number;
             input: string | null;
@@ -677,7 +695,7 @@ export async function submissionDetail(p: Person, id: string) {
     };
   });
   const failed =
-    s.mode === 'judge' &&
+    formalMode(s.mode) &&
     !ACTIVE.includes(s.status) &&
     [
       'wrong_answer',
@@ -755,8 +773,8 @@ export async function submissionDetail(p: Person, id: string) {
     project: s.mode === 'project' ? projectReport(results[0]) : undefined,
   };
 }
-/** Never the learner's own attempts: /playground, editorial reference runs, ai-assisted projects. */
-const UNLISTED_MODES = "('playground','reference','project')";
+/** Never the learner's own attempts: /playground, editorial reference runs, ai-assisted projects, OA drills and their runs. */
+const UNLISTED_MODES = "('playground','reference','project','drill','drill-run')";
 export function submissionHistory(
   p: Person,
   problemId: string | null,

@@ -76,6 +76,7 @@ import {
 } from './mock-exam-bar';
 import { ContestBar, useContestRoom } from './contest-bar';
 import { useReplayRecorder } from './mock-replay';
+import { contestReplay } from '@/lib/mock-replay';
 import { reportWindow } from '@/lib/mock-oa';
 import {
   Dialog,
@@ -153,6 +154,7 @@ import {
   type SubmissionPage,
 } from '@/lib/oj-client';
 import { FeedbackTiming } from '@/lib/oj-feedback-timing';
+import { changedLines, markDrill, type Drill } from '@/lib/oa-drills';
 import { track } from '@/lib/analytics';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
@@ -176,6 +178,8 @@ type WorkspaceProps = {
   room?: string;
   /** ?tab=solutions opens on the community solutions (a contest's upsolve links); ?tab=history on Submissions. */
   tab?: string;
+  /** ?drill=<n>: an OA debugging drill, the problem's n-th planted bug to fix (lib/oa-drills.ts). */
+  drill?: string;
 };
 type MaxPanel = 'statement' | 'code' | 'console';
 type ReplaceRequest = {
@@ -208,7 +212,7 @@ function isStarter(code: string, language: Language, own?: OJProblem['starters']
   return own?.[language] === code || Object.values(starterTemplates).some((set) => set[language] === code);
 }
 /** Analytics calls the formal judge "submit", like its button. */
-const judgeMode = (mode: string) => (mode === 'judge' ? 'submit' : 'run');
+const judgeMode = (mode: string) => (mode === 'judge' || mode === 'drill' ? 'submit' : 'run');
 /** ojRequest's HTTP code, 'timeout' or 'network'. */
 const failureStatus = (e: unknown) =>
   String((e as { status?: number | string }).status ?? 'unknown');
@@ -276,7 +280,7 @@ function readCases(key: string): string[] {
 export function ProblemWorkspace(props: WorkspaceProps) {
   return (
     <Workspace
-      key={`${props.boot.person?.id || 'guest'}:${props.problem.id}`}
+      key={`${props.boot.person?.id || 'guest'}:${props.problem.id}:${props.drill ?? ''}`}
       {...props}
     />
   );
@@ -291,8 +295,11 @@ function Workspace({
   mock,
   room,
   tab,
+  drill,
 }: WorkspaceProps) {
   const userId = boot.person?.id || 'guest';
+  // A debugging drill, never inside a mock or contest (the API refuses it in a running contest too).
+  const drillN = !mock && !room && drill && /^\d{1,4}$/.test(drill) ? Number(drill) : null;
   // A running mock OA or contest hides solutions, hints and the way to other problems.
   const exam = useMockExam(mock, userId, initialProblem.id);
   const contest = useContestRoom(room, initialProblem.id);
@@ -303,8 +310,27 @@ function Workspace({
       ? `${initialProblem.id}:mock:${exam.session.id}`
       : room
         ? `${initialProblem.id}:room:${room}`
-        : initialProblem.id,
+        : drillN !== null
+          ? `${initialProblem.id}:drill:${drillN}`
+          : initialProblem.id,
   );
+  // The drill's buggy program; the editor opens on it once it has loaded (or failed to).
+  const [drillItem, setDrillItem] = useState<Drill | null>(null);
+  const [drillError, setDrillError] = useState('');
+  useEffect(() => {
+    if (drillN === null) return;
+    const controller = new AbortController();
+    ojRequest<{ items: Drill[] }>(`oa-library/${encodeURIComponent(initialProblem.id)}/drill`, undefined, controller.signal)
+      .then(({ items }) => {
+        const found = items.find((item) => item.n === drillN);
+        if (found) setDrillItem(found);
+        else setDrillError('这道题没有调试练习');
+      })
+      .catch((e) => {
+        if (!controller.signal.aborted) setDrillError((e as Error).message);
+      });
+    return () => controller.abort();
+  }, [drillN, initialProblem.id]);
   // In the exam the Submissions tab lists only this exam's attempts.
   const examFrom = exam?.running
     ? reportWindow(exam.session).from
@@ -362,8 +388,8 @@ function Workspace({
   const statementLocaleRef = useRef(statementLocale);
   statementLocaleRef.current = statementLocale;
   const statement = problemStatement(problem, statementLocale);
-  // SQL track (and its pandas versions) and Core Skills statements are Markdown: schema blocks, operation lists.
-  const markdownStatement = !!trackLanguageOf(problem.id) || problem.id.startsWith('core-');
+  // SQL track (and its pandas versions), Core Skills and REST API statements are Markdown: schema blocks, operation lists.
+  const markdownStatement = !!trackLanguageOf(problem.id) || /^(core|rest)-/.test(problem.id);
   const english = statementLocale === 'en' && !!problem.translations?.en;
   // Labels that followed an English statement still do; otherwise the site language decides.
   const uiEnglish = english || locale === 'en';
@@ -617,9 +643,16 @@ function Workspace({
   // The tutor's extras; SQL track problems have no AI (lib/server/ai-tutor.ts takes code languages).
   const aiOn = !!boot.services?.ai && !!boot.person && !examMode && !isTrackLanguage(language);
   const aiContext: AiContext = { language, codingMode, code, english: uiEnglish };
-  // A running mock OA records this question for the report's code replay (this browser only).
+  // A running mock OA or contest run records this question for the report's or the room's code
+  // replay (this browser only).
   const recordReplay = useReplayRecorder(
-    exam?.running && ready ? exam.session : null,
+    !ready
+      ? null
+      : exam?.running
+        ? exam.session
+        : contest?.running && room
+          ? contestReplay(room, contest.view.me!, contest.view.problems!.map((p) => p.id), contest.skew)
+          : null,
     initialProblem.id,
     code,
   );
@@ -683,7 +716,8 @@ function Workspace({
     code: starters.python,
   });
   // Signed in and not a mock question: drafts also live on the server, across devices.
-  const cloudSync = !!boot.person && !mock && !room;
+  // A drill's draft is its own (draftId) and stays in this browser.
+  const cloudSync = !!boot.person && !mock && !room && drillN === null;
   const cloudFor = (next: Language, mode: CodingMode) =>
     cloudSync ? { problemId: draftId, language: next, codingMode: mode } : undefined;
   const [restored, setRestored] = useState<{ previous: string; at: number } | null>(null);
@@ -698,9 +732,21 @@ function Workspace({
   latestRefresh.current = refresh;
   const idempotency = useRef<{ fingerprint: string; key: string } | null>(null);
   const latestDetailRequest = useRef(0);
-  const activeStorageKey = `cswork:oj:active:${userId}:${initialProblem.id}`;
+  const activeStorageKey = `cswork:oj:active:${userId}:${initialProblem.id}${drillN === null ? '' : `:drill:${drillN}`}`;
   const draftActive = !!submission && activeStatuses.has(submission.status);
   const pending = submitting || draftActive;
+  // A drill: lines changed so far (its program is Python), and a pass once accepted within the
+  // budget; the verdict stands until the code is edited again.
+  const drillChanged = drillItem && language === 'python' ? changedLines(drillItem.code, code) : null;
+  const drillVerdict =
+    drillChanged !== null && submission?.mode === 'drill' && submission.status === 'accepted' && submission.code === code
+      ? drillChanged
+      : null;
+  const drillPassed = !!drillItem && drillVerdict !== null && drillVerdict <= drillItem.budget;
+  useEffect(() => {
+    if (drillPassed && drillN !== null) markDrill(initialProblem.id, drillN, 'fix');
+  }, [drillPassed, drillN, initialProblem.id]);
+  const lineCount = (n: number) => (n === 1 ? '1 line' : `${n} lines`);
   const codeBytes = new TextEncoder().encode(code).byteLength;
   const maxCodeBytes = problem.maxCodeBytes || 65536;
   const maxStdinBytes = problem.maxStdinBytes || 65536;
@@ -842,18 +888,21 @@ function Workspace({
   }, []);
 
   useEffect(() => {
-    if (!loadedProblem) return;
+    if (!loadedProblem || (drillN !== null && !drillItem && !drillError)) return;
     alive.current = true;
     setSettings(readEditorSettings(userId));
     let chosen: Language = 'python';
-    const initialMode: CodingMode = loadedProblem.codingModes?.includes(
+    // A drill's program is a Python stdin program.
+    const initialMode: CodingMode = !drillItem && loadedProblem.codingModes?.includes(
       'leetcode',
     )
       ? 'leetcode'
       : 'acm';
     setCodingMode(initialMode);
     const template = (lang: Language) =>
-      initialMode === 'leetcode'
+      drillItem && lang === 'python'
+        ? drillItem.code
+        : initialMode === 'leetcode'
         ? loadedProblem.leetcodeTemplates?.[lang] || ''
         : loadedProblem.starters?.[lang] ||
           starterTemplates[statementLocaleRef.current][lang];
@@ -861,7 +910,7 @@ function Workspace({
       const storedLanguage = localStorage.getItem(
         `cswork:editor:language:${userId}`,
       );
-      if (languages.some((item) => item.id === storedLanguage))
+      if (languages.some((item) => item.id === storedLanguage) && !drillItem)
         chosen = storedLanguage as Language;
       // An SQL problem opens in SQL, and SQL never carries over to other problems.
       if (loadedProblem.languages && !loadedProblem.languages.includes(chosen))
@@ -927,7 +976,7 @@ function Workspace({
       document.removeEventListener('visibilitychange', visibility);
     };
     // oxlint-disable-next-line react-hooks/exhaustive-deps -- cloudFor only reads cloudSync and draftId, both fixed for this workspace.
-  }, [userId, draftId, persistDraft, loadedProblem]);
+  }, [userId, draftId, persistDraft, loadedProblem, drillItem, drillError]);
 
   // A newer copy from another device replaces the draft unless it was edited since opening; undo puts it back.
   useEffect(() => {
@@ -1267,6 +1316,7 @@ function Workspace({
       });
   }
   function templateFor(next: Language, mode: CodingMode) {
+    if (drillItem && next === 'python' && mode === 'acm') return drillItem.code;
     return mode === 'leetcode'
       ? problem.leetcodeTemplates?.[next] || ''
       : problem.starters?.[next] || starterTemplates[statementLocale][next];
@@ -1429,12 +1479,16 @@ function Workspace({
     setPollPaused(false);
     setWatchFallback(false);
     persistDraft();
+    // A drill's submission is judged like one but never counts (mode 'drill', lib/oa-drills.ts);
+    // its runs are runs kept out of the history and the AI tutor ('drill-run', shown as 'run').
+    const shown = drillItem && mode === 'judge' ? 'drill' : mode;
+    const sent = drillItem && mode === 'run' ? 'drill-run' : shown;
     const payload = {
       problemId: problem.id,
       language,
       code,
       codingMode,
-      mode,
+      mode: sent,
       ...(mode === 'run' && inputMode === 'custom' ? { stdin } : {}),
     };
     const fingerprint = JSON.stringify(payload);
@@ -1471,7 +1525,7 @@ function Workspace({
             language,
             code,
             codingMode,
-            mode,
+            mode: shown,
             passed: 0,
             total: 0,
             created_at: Date.now(),
@@ -2165,7 +2219,7 @@ function Workspace({
             onClick={() => submit('judge')}
             title="Ctrl / ⌘ + Shift + Enter"
           >
-            {submitting || (draftActive && submission?.mode === 'judge') ? (
+            {submitting || (draftActive && submission?.mode !== 'run') ? (
               <LoaderCircle size={15} className="cs-spin" />
             ) : (
               <Send size={15} />
@@ -2321,6 +2375,47 @@ function Workspace({
           )}
         </div>
       </div>
+      {drillN !== null && (
+        <output className="cs-draft-restored">
+          <span>
+            {!drillItem
+              ? drillError
+                ? say(drillError)
+                : t('正在载入调试练习…', 'Loading the debugging drill…')
+              : drillPassed
+                ? t(
+                    `修好了：全部测试通过，只改了 ${drillVerdict} 行。`,
+                    `Fixed: every test passes and you changed ${lineCount(drillVerdict!)}.`,
+                  )
+                : drillVerdict !== null
+                  ? t(
+                      `全部测试通过，但改了 ${drillVerdict} 行，超过 ${drillItem.budget} 行的上限。只改出错的那几行再提交一次。`,
+                      `Every test passes, but you changed ${lineCount(drillVerdict)}, over the ${drillItem.budget}-line limit. Change only the faulty lines and submit again.`,
+                    )
+                  : drillChanged === null
+                    ? t('这道调试练习是 Python 代码，切回 Python 继续。', 'This drill is Python code: switch back to Python to continue.')
+                    : t(
+                        `调试练习：这段代码里埋了 bug，最多改 ${drillItem.budget} 行把它修好。已改 ${drillChanged} 行${drillChanged > drillItem.budget ? '，超过上限' : ''}。`,
+                        `Debugging drill: this code has a planted bug. Fix it by changing at most ${lineCount(drillItem.budget)}. Changed so far: ${drillChanged}${drillChanged > drillItem.budget ? ', over the limit' : ''}.`,
+                      )}
+          </span>
+          {drillItem && (
+            <button
+              type="button"
+              onClick={() =>
+                setReplaceRequest({
+                  code: drillItem.code,
+                  language: 'python',
+                  codingMode: 'acm',
+                  title: t('恢复成有 bug 的原始代码？', 'Restore the original buggy code?'),
+                })
+              }
+            >
+              {t('恢复原代码', 'Reset code')}
+            </button>
+          )}
+        </output>
+      )}
       {restored && (
         <output className="cs-draft-restored">
           <span>
@@ -2498,7 +2593,7 @@ function Workspace({
                         {t('自定义输入', 'Custom input')}
                       </button>
                     </div>
-                    {!isTrackLanguage(language) && (
+                    {!isTrackLanguage(language) && !problem.httpApi && (
                       <DebugButton
                         language={language}
                         code={code}

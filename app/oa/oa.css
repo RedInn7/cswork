@@ -183,6 +183,30 @@
   color: #087158;
   border: 1px solid currentColor;
 }
+/* Following a company (components/company-follow-button.tsx): quiet, filled while following. */
+.oa-public .company-follow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid #087158;
+  border-radius: 9px;
+  background: transparent;
+  color: #087158;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+.oa-public .company-follow[aria-pressed='true'] {
+  background: #087158;
+  color: #fff;
+}
+.oa-public .company-follow:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
 .oa-public-list {
   list-style: none;
   padding: 0;
@@ -587,6 +611,16 @@
     background: transparent;
     color: #8ed5bc;
     border: 1px solid currentColor;
+  }
+  .dark .oa-public .company-follow {
+    border: 1px solid #087158;
+    background: transparent;
+    color: #8ed5bc;
+    text-decoration: none;
+  }
+  .dark .oa-public .company-follow[aria-pressed='true'] {
+    background: #087158;
+    color: #fff;
   }
   .dark .oa-public-list {
     border-top: 1px solid var(--oa-rule);

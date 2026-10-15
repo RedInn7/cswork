@@ -1,0 +1,14 @@
+[
+  {
+    "name": "漏掉最后一页",
+    "code": "import re\nimport requests\n\nURL = 'https://data.cswork.test/api/tvseries'\n\n\ndef shows_in_production(start_year, end_year):\n    found, page, pages = [], 1, 1\n    while page <= max(1, pages - 1):\n        body = requests.get(URL, params={'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for show in body['data']:\n            runtime = show['runtime_of_series']\n            years = [int(year) for year in re.findall(r'\\d{4}', runtime)]\n            running = len(years) == 1 and '-' in runtime\n            if years[0] > start_year:\n                continue\n            if end_year == -1 and running or end_year != -1 and not running and years[-1] <= end_year:\n                found.append(show['name'])\n        page += 1\n    return sorted(found)\n\n\nstart_year, end_year = map(int, input().split())\nnames = shows_in_production(start_year, end_year)\nprint(len(names))\nfor name in names:\n    print(name)\n"
+  },
+  {
+    "name": "单年剧当作在播",
+    "code": "import re\nimport requests\n\nURL = 'https://data.cswork.test/api/tvseries'\n\n\ndef shows_in_production(start_year, end_year):\n    found, page, pages = [], 1, 1\n    while page <= pages:\n        body = requests.get(URL, params={'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for show in body['data']:\n            runtime = show['runtime_of_series']\n            years = [int(year) for year in re.findall(r'\\d{4}', runtime)]\n            running = len(years) == 1\n            if years[0] > start_year:\n                continue\n            if end_year == -1 and running or end_year != -1 and not running and years[-1] <= end_year:\n                found.append(show['name'])\n        page += 1\n    return sorted(found)\n\n\nstart_year, end_year = map(int, input().split())\nnames = shows_in_production(start_year, end_year)\nprint(len(names))\nfor name in names:\n    print(name)\n"
+  },
+  {
+    "name": "开播年严格小于",
+    "code": "import re\nimport requests\n\nURL = 'https://data.cswork.test/api/tvseries'\n\n\ndef shows_in_production(start_year, end_year):\n    found, page, pages = [], 1, 1\n    while page <= pages:\n        body = requests.get(URL, params={'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for show in body['data']:\n            runtime = show['runtime_of_series']\n            years = [int(year) for year in re.findall(r'\\d{4}', runtime)]\n            running = len(years) == 1 and '-' in runtime\n            if years[0] >= start_year:\n                continue\n            if end_year == -1 and running or end_year != -1 and not running and years[-1] <= end_year:\n                found.append(show['name'])\n        page += 1\n    return sorted(found)\n\n\nstart_year, end_year = map(int, input().split())\nnames = shows_in_production(start_year, end_year)\nprint(len(names))\nfor name in names:\n    print(name)\n"
+  }
+]

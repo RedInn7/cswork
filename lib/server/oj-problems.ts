@@ -262,7 +262,8 @@ export async function getJudgeProblem(p: Person, problemId: string) {
 }
 
 async function publicProblem(version: VersionRow): Promise<OjPublicProblem> {
-  const parsed = JSON.parse(version.spec_json) as OjProblemSpec;
+  // REST API fixtures are judge data (hidden cases read them): never in a statement or the catalogue.
+  const { httpFixtures, ...parsed } = JSON.parse(version.spec_json) as OjProblemSpec;
   // OA packages keep provenance notes under their checksum; readers get the display copy.
   const spec = version.problem_id.startsWith('oa-')
     ? cleanOaStatement(parsed)
@@ -282,6 +283,8 @@ async function publicProblem(version: VersionRow): Promise<OjPublicProblem> {
   );
   return {
     ...spec,
+    // Only that it is one: the in-browser debugger has no HTTP stubs to run it with.
+    ...(httpFixtures && { httpApi: true }),
     versionId: version.id,
     version: version.revision,
     checksum: version.checksum,
@@ -368,7 +371,7 @@ export async function getPublicOaProblem(problemId: string) {
 }
 
 /** Catalogue visibility for one problem; hidden and missing look the same. */
-export async function canSeeProblem(p: Person, problemId: string) {
+export async function canSeeProblem(p: Person | null, problemId: string) {
   const pr = await one<GatedRow>(
     `SELECT p.course_id,${freeJudge} AS free FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}${shown('p.id')}`,
     problemId,

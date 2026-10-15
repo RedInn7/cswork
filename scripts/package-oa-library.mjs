@@ -29,6 +29,13 @@ if (registry.schemaVersion !== 1 || !Array.isArray(registry.items))
 const registryTarget = resolve('dist/standalone/content/oa-judge');
 mkdirSync(registryTarget, { recursive: true });
 copyFileSync(registrySource, resolve(registryTarget, 'registry.json'));
+// Debugging drills are the reference a line or three off: private like the registry.
+const drillsSource = resolve('content/oa-judge/drills.json');
+if (existsSync(drillsSource)) {
+  if (statSync(drillsSource).size > 64 * 1024 * 1024)
+    throw new Error('OA drills exceed size budget');
+  copyFileSync(drillsSource, resolve(registryTarget, 'drills.json'));
+}
 // English statements are display-only; ship those bound to the current package checksum.
 const checksums = new Map(
   registry.items.map((item) => [item.id, item.packageChecksum]),

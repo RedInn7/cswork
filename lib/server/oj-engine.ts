@@ -11,6 +11,7 @@ import { matchesStringStructure } from '@/lib/oj-string-structures';
 import { semanticCheckerId } from '@/lib/oj-semantic-contract';
 import { matchesSemantic } from '@/lib/oj-semantic-checkers';
 import type { CodeLanguage, Language } from '@/lib/problems';
+import { HTTP_FIXTURE_BOOTSTRAP, HTTP_FIXTURES_FILE } from '../http-fixtures.mjs';
 import { javaCommand, LEETCODE_SUPPORT } from './leetcode-mode';
 import { PANDAS_HARNESS, SQL_HARNESS } from './sql-judge';
 import {
@@ -363,6 +364,22 @@ export async function compile(
   }
   return { result, program };
 }
+/**
+ * The spec a submission's cases run under. Judge and drill runs keep every fixture: hidden cases
+ * read them and only verdicts come back. Every other run (samples, custom input) prints its stdout
+ * to the learner, so it gets only the fixtures the visible cases request (visibleFixtureKeys);
+ * the rest of the map, hidden cases' inputs and data, never enters that sandbox.
+ */
+export function runSpec(spec: OjProblemSpec, formal: boolean): OjProblemSpec {
+  if (formal || !spec.httpFixtures) return spec;
+  const visible = new Set(spec.visibleFixtureKeys);
+  return {
+    ...spec,
+    httpFixtures: Object.fromEntries(
+      Object.entries(spec.httpFixtures).filter(([key]) => visible.has(key)),
+    ),
+  };
+}
 export async function run(
   program: CompiledProgram,
   input: string,
@@ -419,6 +436,9 @@ export async function run(
     : program.cache['main.pyc']
       ? 'main.pyc'
       : 'main.py';
+  // REST API problems: the program's GETs are answered from the package (lib/http-fixtures.mjs).
+  const fixtures =
+    program.language === 'python' && !program.bridgeSource && spec.httpFixtures;
   const args =
     program.bridgeSource || program.language === 'python'
       ? [
@@ -426,6 +446,7 @@ export async function run(
           '-I',
           // The trusted bridge needs only the standard library: skip site setup.
           ...(program.bridgeSource ? ['-S'] : []),
+          ...(fixtures ? ['-c', HTTP_FIXTURE_BOOTSTRAP] : []),
           script,
           ...(program.leetcodeInput ? ['--leetcode-input'] : []),
         ]
@@ -438,6 +459,9 @@ export async function run(
   // Bytecode runs keep the .py beside them for traceback source lines.
   if (program.language === 'python')
     copyIn['main.py'] = { content: program.source };
+  // ponytail: inline per case (≤512 KB); upload once as a cached file if fixtures grow.
+  if (fixtures)
+    copyIn[HTTP_FIXTURES_FILE] = { content: JSON.stringify(fixtures) };
   if (program.bridgeSource) {
     copyIn['bridge.py'] = { content: program.bridgeSource };
     if (program.bridgeBytecode)

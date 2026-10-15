@@ -50,11 +50,14 @@ function memoryCaches(fetch) {
 
 /** Loads public/sw.js with a fake network: `online` toggles it, `seen` lists what reached it. */
 function worker() {
-  const net = { online: true, seen: [] };
+  // pending: what /api/oj/notify/pending answers (null: signed out).
+  const net = { online: true, seen: [], pending: null, shown: [], opened: [] };
   const fetch = async (r) => {
     net.seen.push(url(r));
     if (!net.online) throw new TypeError('offline');
     const path = new URL(url(r)).pathname;
+    if (path === '/api/oj/notify/pending')
+      return net.pending ? Response.json({ items: net.pending }) : Response.json({ error: 'sign in' }, { status: 401 });
     if (path === '/offline')
       return new Response('<link rel="stylesheet" href="/_next/static/css/app-1a2b.css"><h1>offline</h1>', {
         headers: { 'content-type': 'text/html' },
@@ -69,12 +72,15 @@ function worker() {
     location: new URL(ORIGIN),
     addEventListener: (type, fn) => (handlers[type] = fn),
     skipWaiting: async () => {},
-    clients: { claim: async () => {} },
+    clients: { claim: async () => {}, openWindow: async (href) => void net.opened.push(href) },
+    // JSON: plain objects of this realm, not the worker's.
+    registration: { showNotification: async (title, options) => void net.shown.push(JSON.parse(JSON.stringify({ title, ...options }))) },
+    navigator: { language: 'zh-CN' },
   };
   vm.runInNewContext(readFileSync(new URL('public/sw.js', root), 'utf8'), { self, caches, fetch, Response, URL, Promise });
-  const lifecycle = async (type) => {
+  const lifecycle = async (type, event = {}) => {
     const waits = [];
-    handlers[type]({ waitUntil: (p) => waits.push(p) });
+    handlers[type]({ ...event, waitUntil: (p) => waits.push(p) });
     await Promise.all(waits);
   };
   /** A fetch event: the response the worker gave (or null when it let the browser handle it). */
@@ -166,6 +172,66 @@ test('sign-out empties every cache, and the next page load puts the offline page
     await clearOfflineCaches();
   } finally {
     delete globalThis.caches;
+  }
+});
+
+test('a push shows the pending reminders, or a plain one when it cannot read them; a click opens only this site', async () => {
+  const sw = worker();
+  sw.net.pending = [{ id: 'rem:2026-10-15:u1', title: 'Today’s practice reminder', body: '1 problem is due for review', href: '/?view=progress' }];
+  await sw.lifecycle('push');
+  assert.deepEqual(sw.net.shown, [
+    {
+      title: 'Today’s practice reminder',
+      body: '1 problem is due for review',
+      tag: 'rem:2026-10-15:u1',
+      icon: '/icons/icon-192.png',
+      data: { href: '/?view=progress' },
+    },
+  ]);
+  // Signed out (or offline), it still shows one: Chrome requires it for every push.
+  sw.net.pending = null;
+  await sw.lifecycle('push');
+  sw.net.online = false;
+  await sw.lifecycle('push');
+  assert.deepEqual(
+    sw.net.shown.slice(1).map((n) => [n.title, n.body, n.data.href]),
+    [
+      ['cswork', '你有新的学习提醒', '/?view=progress'],
+      ['cswork', '你有新的学习提醒', '/?view=progress'],
+    ],
+  );
+  const click = (href) => sw.lifecycle('notificationclick', { notification: { close() {}, data: { href } } });
+  await click('/contest/weekly-3');
+  await click('https://evil.example/phish');
+  assert.deepEqual(sw.net.opened, [`${ORIGIN}/contest/weekly-3`]);
+});
+
+test('before sign-out, this browser’s push subscription is dropped on the server and in the browser', async () => {
+  const { clearPush } = await import('../components/sw-register.tsx');
+  const original = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
+  const realFetch = globalThis.fetch;
+  const posted = [];
+  let unsubscribed = 0;
+  const subscription = { endpoint: 'https://fcm.googleapis.com/fcm/send/x', unsubscribe: async () => void unsubscribed++ };
+  const use = (serviceWorker) => Object.defineProperty(globalThis, 'navigator', { value: { serviceWorker }, configurable: true });
+  globalThis.fetch = async (path, init) => {
+    posted.push([path, JSON.parse(init.body)]);
+    return new Response('{}');
+  };
+  try {
+    use({ getRegistration: async () => ({ pushManager: { getSubscription: async () => subscription } }) });
+    await clearPush();
+    assert.deepEqual(posted, [['/api/oj/notify/subscription', { endpoint: subscription.endpoint, on: false }]]);
+    assert.equal(unsubscribed, 1);
+    // No registration, or no service worker support at all: nothing to do, quietly.
+    use({ getRegistration: async () => undefined });
+    await clearPush();
+    use(undefined);
+    await clearPush();
+    assert.equal(posted.length, 1);
+  } finally {
+    globalThis.fetch = realFetch;
+    if (original) Object.defineProperty(globalThis, 'navigator', original);
   }
 });
 

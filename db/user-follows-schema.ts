@@ -15,3 +15,17 @@ export const userFollows = sqliteTable(
     index('user_follows_followee').on(t.followeeId, t.createdAt),
   ],
 );
+
+// Companies a learner follows (lib/server/follows.ts, at most 20): an approved member report
+// notifies at once (experience-submissions review), new OA problems in one daily notice
+// (lib/server/company-follows.ts) covering last_digest_at (or the follow) until then.
+export const companyFollows = sqliteTable(
+  'company_follows',
+  {
+    userId: text('user_id').notNull(),
+    companySlug: text('company_slug').notNull(),
+    createdAt: integer('created_at').notNull(),
+    lastDigestAt: integer('last_digest_at'),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.companySlug] }), index('company_follows_company').on(t.companySlug)],
+);

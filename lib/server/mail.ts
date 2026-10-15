@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { setTimeout as delay } from 'node:timers/promises';
 import { setting } from './env';
 
 export type AuthMailPurpose =
@@ -54,7 +55,14 @@ export async function sendAuthOTP(
   });
 }
 
-/** One plain-text mail through Resend; `key` makes retries idempotent. Throws unless sent. */
+/** The longest sendMail waits out rate limits in all: an OTP request waits on it. */
+const MAIL_RETRY_MS = 3000;
+/**
+ * One plain-text mail through Resend; `key` makes retries idempotent. Throws unless sent.
+ * Resend's ~2 requests a second are shared by the web process and the worker, so a 429 is sent
+ * again with the same key after Retry-After (else 1 s, then 2 s), within MAIL_RETRY_MS.
+ * ponytail: each process paces itself; a limiter shared by both if 429s outlast the budget.
+ */
 export async function sendMail({
   to,
   subject,
@@ -79,23 +87,31 @@ export async function sendMail({
     !['127.0.0.1', 'localhost', '[::1]'].includes(endpoint.hostname)
   )
     throw new Error('邮件服务地址必须使用 HTTPS');
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    signal: AbortSignal.timeout(8000),
-    headers: {
-      Authorization: `Bearer ${setting('RESEND_API_KEY')}`,
-      'Content-Type': 'application/json',
-      'Idempotency-Key': key,
-    },
-    body: JSON.stringify({
-      from: setting('MAIL_FROM'),
-      to: [to],
-      subject,
-      text,
-      ...(headers ? { headers } : {}),
-    }),
-  });
-  if (!response.ok) throw new Error(`mail not sent (${response.status})`);
+  for (let retry = 0, waited = 0; ; retry++) {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      signal: AbortSignal.timeout(8000),
+      headers: {
+        Authorization: `Bearer ${setting('RESEND_API_KEY')}`,
+        'Content-Type': 'application/json',
+        'Idempotency-Key': key,
+      },
+      body: JSON.stringify({
+        from: setting('MAIL_FROM'),
+        to: [to],
+        subject,
+        text,
+        ...(headers ? { headers } : {}),
+      }),
+    });
+    if (response.ok) return;
+    const after = Number(response.headers.get('retry-after') || NaN) * 1000;
+    const wait = Math.max(500, Number.isFinite(after) ? after : 1000 * 2 ** retry);
+    if (response.status !== 429 || waited + wait > MAIL_RETRY_MS)
+      throw new Error(`mail not sent (${response.status})`);
+    waited += wait;
+    await delay(wait);
+  }
 }
 
 /** The newsletter's double opt-in mail (lib/server/newsletter.ts). */
@@ -137,3 +153,49 @@ export const workCodeMail = (zh: boolean, code: string, company: string) =>
         subject: 'Your cswork work email code',
         text: `You asked to verify that you work at ${company} with this address.\n\nYour code: ${code}\n\nThe code is valid for 15 minutes. Don't share it with anyone. cswork keeps only a one-way digest of this address, never the address itself, and won't email it again. If you didn't ask for this, ignore this email.`,
       };
+
+/** What a learner's daily reminder holds (lib/server/reminders.ts). */
+export type ReminderDigest = {
+  /** Problems due for review today (the progress page's review ladder). */
+  reviews: number;
+  /** A streak of 2+ days with nothing solved today; `breaks`: no streak freeze would cover today. */
+  streak: { days: number; freezes: number; breaks: boolean } | null;
+  daily: boolean;
+  /** Weeklies and starters entered live that start within a day, `at` in the learner's time. */
+  contests: { id: string; title: string; at: string }[];
+};
+/** The daily reminder's lines, each with the site path it links to; the notice joins them on one line. */
+export function reminderLines(zh: boolean, d: ReminderDigest): [string, string][] {
+  const lines: [string, string][] = [];
+  if (d.reviews)
+    lines.push([
+      zh ? `${d.reviews} 道题到了复习时间` : `${d.reviews} ${d.reviews === 1 ? 'problem is' : 'problems are'} due for review`,
+      '/?view=progress',
+    ]);
+  if (d.streak) {
+    const { days, freezes, breaks } = d.streak;
+    lines.push([
+      zh
+        ? `已连续打卡 ${days} 天，今天还没有通过的题${breaks ? '，今天不做就断了' : `（本月还剩 ${freezes} 次断签保护）`}`
+        : `${days}-day streak and nothing solved today${breaks ? ': solve one today or it ends' : ` (${freezes} streak ${freezes === 1 ? 'freeze' : 'freezes'} left this month)`}`,
+      '/?view=progress',
+    ]);
+  }
+  if (d.daily) lines.push([zh ? '今天的每日一题' : 'Today’s daily problem', '/daily']);
+  for (const c of d.contests) lines.push([zh ? `${c.title}：${c.at} 开始` : `${c.title}: starts ${c.at}`, `/contest/${c.id}`]);
+  return lines;
+}
+/** The daily reminder mail: the same lines with their links, where to change it and the one-click unsubscribe. */
+export function reminderMail(zh: boolean, lines: [string, string][], site: string, unsubscribe: string) {
+  const items = lines.map(([text, path]) => `· ${text}\n  ${site}${path}`).join('\n\n');
+  const settings = `${site}/?view=account#reminders`;
+  return zh
+    ? {
+        subject: 'CSWork 今日学习提醒',
+        text: `${items}\n\n提醒的时间和内容可以在账户页修改：${settings}\n不想再收到提醒邮件？一键退订：${unsubscribe}`,
+      }
+    : {
+        subject: 'Your CSWork reminder for today',
+        text: `${items}\n\nChange when and what you’re reminded of on your account page: ${settings}\nNo more reminder emails? Unsubscribe in one click: ${unsubscribe}`,
+      };
+}

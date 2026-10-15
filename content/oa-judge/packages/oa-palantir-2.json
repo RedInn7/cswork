@@ -1,0 +1,1089 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-palantir-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "REST API：国家区号",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Palantir",
+      "REST API",
+      "HTTP",
+      "JSON"
+    ],
+    "description": "给定国家名和电话号码，请求国家接口取得该国的电话区号，输出 `+<区号> <电话号码>`。\n\n```text\nGET https://data.cswork.test/api/countries?name=<国家名>\n```\n\n返回的 JSON 中，`data` 要么为空数组（没有这个国家），要么恰好含一条记录：\n\n```json\n{\"page\": 1, \"per_page\": 10, \"total\": 1, \"total_pages\": 1,\n \"data\": [{\"name\": \"Puerto Rico\", \"capital\": \"San Juan\", \"region\": \"Americas\", \"callingCodes\": [\"1787\", \"1939\"]}]}\n```\n\n- `name` 必须与记录名完全一致（区分大小写），否则 `data` 为空；国家名里可能有空格，要做 URL 编码。\n- `callingCodes` 有多个时用下标最大的那个；`callingCodes` 为空数组也视为查不到。\n- 查不到时输出 -1。\n\n评测环境没有外网：接口返回的是题目自带的固定数据。Python 里的 `requests.get` 和 `urllib.request.urlopen` 由评测机直接应答，数据之外的地址返回 HTTP 404 和一段 JSON 错误信息。本题只支持 Python。",
+    "input": "第一行国家名（英文字母和空格，首尾无空格）；第二行电话号码（5 到 15 位数字）。",
+    "output": "输出一行：`+区号 电话号码`，或 -1。",
+    "explanation": "样例 1：Afghanistan 的区号只有 93。样例 2：Puerto Rico 有两个区号，取下标最大的 1939。样例 3：Oceania 不是国家，data 为空。",
+    "hints": [
+      "国家名含空格时要编码：requests 的 params 或 urllib.parse.urlencode 都会处理。",
+      "“下标最大”就是数组的最后一个元素。",
+      "data 非空但 callingCodes 为空时也输出 -1。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 64,
+    "checker": "exact",
+    "languages": [
+      "python"
+    ],
+    "httpFixtures": {
+      "GET /api/countries?name=Afghanistan": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Afghanistan",
+            "capital": "Kabul",
+            "region": "Asia",
+            "callingCodes": [
+              "93"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Albania": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Albania",
+            "capital": "Tirana",
+            "region": "Europe",
+            "callingCodes": [
+              "355"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Algeria": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Algeria",
+            "capital": "Algiers",
+            "region": "Africa",
+            "callingCodes": [
+              "213"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Argentina": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Argentina",
+            "capital": "Buenos Aires",
+            "region": "Americas",
+            "callingCodes": [
+              "54"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Australia": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Australia",
+            "capital": "Canberra",
+            "region": "Oceania",
+            "callingCodes": [
+              "61"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Austria": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Austria",
+            "capital": "Vienna",
+            "region": "Europe",
+            "callingCodes": [
+              "43"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Bangladesh": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Bangladesh",
+            "capital": "Dhaka",
+            "region": "Asia",
+            "callingCodes": [
+              "880"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Belgium": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Belgium",
+            "capital": "Brussels",
+            "region": "Europe",
+            "callingCodes": [
+              "32"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Brazil": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Brazil",
+            "capital": "Brasilia",
+            "region": "Americas",
+            "callingCodes": [
+              "55"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Canada": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Canada",
+            "capital": "Ottawa",
+            "region": "Americas",
+            "callingCodes": [
+              "1"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Chile": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Chile",
+            "capital": "Santiago",
+            "region": "Americas",
+            "callingCodes": [
+              "56"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=China": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "China",
+            "capital": "Beijing",
+            "region": "Asia",
+            "callingCodes": [
+              "86"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Colombia": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Colombia",
+            "capital": "Bogota",
+            "region": "Americas",
+            "callingCodes": [
+              "57"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Denmark": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Denmark",
+            "capital": "Copenhagen",
+            "region": "Europe",
+            "callingCodes": [
+              "45"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Dominican+Republic": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Dominican Republic",
+            "capital": "Santo Domingo",
+            "region": "Americas",
+            "callingCodes": [
+              "1809",
+              "1829",
+              "1849"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Egypt": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Egypt",
+            "capital": "Cairo",
+            "region": "Africa",
+            "callingCodes": [
+              "20"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Finland": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Finland",
+            "capital": "Helsinki",
+            "region": "Europe",
+            "callingCodes": [
+              "358"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=France": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "France",
+            "capital": "Paris",
+            "region": "Europe",
+            "callingCodes": [
+              "33"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Germany": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Germany",
+            "capital": "Berlin",
+            "region": "Europe",
+            "callingCodes": [
+              "49"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Greece": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Greece",
+            "capital": "Athens",
+            "region": "Europe",
+            "callingCodes": [
+              "30"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=India": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "India",
+            "capital": "New Delhi",
+            "region": "Asia",
+            "callingCodes": [
+              "91"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Indonesia": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Indonesia",
+            "capital": "Jakarta",
+            "region": "Asia",
+            "callingCodes": [
+              "62"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Ireland": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Ireland",
+            "capital": "Dublin",
+            "region": "Europe",
+            "callingCodes": [
+              "353"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Italy": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Italy",
+            "capital": "Rome",
+            "region": "Europe",
+            "callingCodes": [
+              "39"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Japan": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Japan",
+            "capital": "Tokyo",
+            "region": "Asia",
+            "callingCodes": [
+              "81"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Kazakhstan": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Kazakhstan",
+            "capital": "Astana",
+            "region": "Asia",
+            "callingCodes": [
+              "76",
+              "77"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Kenya": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Kenya",
+            "capital": "Nairobi",
+            "region": "Africa",
+            "callingCodes": [
+              "254"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Mexico": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Mexico",
+            "capital": "Mexico City",
+            "region": "Americas",
+            "callingCodes": [
+              "52"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Netherlands": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Netherlands",
+            "capital": "Amsterdam",
+            "region": "Europe",
+            "callingCodes": [
+              "31"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=New+Zealand": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "New Zealand",
+            "capital": "Wellington",
+            "region": "Oceania",
+            "callingCodes": [
+              "64"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Nigeria": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Nigeria",
+            "capital": "Abuja",
+            "region": "Africa",
+            "callingCodes": [
+              "234"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Norway": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Norway",
+            "capital": "Oslo",
+            "region": "Europe",
+            "callingCodes": [
+              "47"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Pakistan": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Pakistan",
+            "capital": "Islamabad",
+            "region": "Asia",
+            "callingCodes": [
+              "92"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Peru": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Peru",
+            "capital": "Lima",
+            "region": "Americas",
+            "callingCodes": [
+              "51"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Philippines": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Philippines",
+            "capital": "Manila",
+            "region": "Asia",
+            "callingCodes": [
+              "63"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Poland": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Poland",
+            "capital": "Warsaw",
+            "region": "Europe",
+            "callingCodes": [
+              "48"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Portugal": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Portugal",
+            "capital": "Lisbon",
+            "region": "Europe",
+            "callingCodes": [
+              "351"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Puerto+Rico": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Puerto Rico",
+            "capital": "San Juan",
+            "region": "Americas",
+            "callingCodes": [
+              "1787",
+              "1939"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Singapore": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Singapore",
+            "capital": "Singapore",
+            "region": "Asia",
+            "callingCodes": [
+              "65"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=South+Africa": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "South Africa",
+            "capital": "Pretoria",
+            "region": "Africa",
+            "callingCodes": [
+              "27"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=South+Korea": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "South Korea",
+            "capital": "Seoul",
+            "region": "Asia",
+            "callingCodes": [
+              "82"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Spain": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Spain",
+            "capital": "Madrid",
+            "region": "Europe",
+            "callingCodes": [
+              "34"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Sweden": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Sweden",
+            "capital": "Stockholm",
+            "region": "Europe",
+            "callingCodes": [
+              "46"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Switzerland": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Switzerland",
+            "capital": "Bern",
+            "region": "Europe",
+            "callingCodes": [
+              "41"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Thailand": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Thailand",
+            "capital": "Bangkok",
+            "region": "Asia",
+            "callingCodes": [
+              "66"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Turkey": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Turkey",
+            "capital": "Ankara",
+            "region": "Asia",
+            "callingCodes": [
+              "90"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=United+Kingdom": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "United Kingdom",
+            "capital": "London",
+            "region": "Europe",
+            "callingCodes": [
+              "44"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=United+States+of+America": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "United States of America",
+            "capital": "Washington",
+            "region": "Americas",
+            "callingCodes": [
+              "1"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Vietnam": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Vietnam",
+            "capital": "Hanoi",
+            "region": "Asia",
+            "callingCodes": [
+              "84"
+            ]
+          }
+        ]
+      },
+      "GET /api/countries?name=Bouvet+Island": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Bouvet Island",
+            "capital": "",
+            "region": "Antarctic",
+            "callingCodes": []
+          }
+        ]
+      },
+      "GET /api/countries?name=Heard+Island+and+McDonald+Islands": {
+        "page": 1,
+        "per_page": 10,
+        "total": 1,
+        "total_pages": 1,
+        "data": [
+          {
+            "name": "Heard Island and McDonald Islands",
+            "capital": "",
+            "region": "Antarctic",
+            "callingCodes": []
+          }
+        ]
+      },
+      "GET /api/countries?name=Oceania": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/countries?name=Atlantis": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/countries?name=afghanistan": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/countries?name=United+States": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/countries?name=Korea": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/countries?name=PUERTO+RICO": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/countries?name=New+Zealandia": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      },
+      "GET /api/countries?name=Bouvet": {
+        "page": 1,
+        "per_page": 10,
+        "total": 0,
+        "total_pages": 0,
+        "data": []
+      }
+    },
+    "visibleFixtureKeys": [
+      "GET /api/countries?name=Afghanistan",
+      "GET /api/countries?name=Oceania",
+      "GET /api/countries?name=Puerto+Rico"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "Afghanistan\n6564454455\n",
+      "expectedOutput": "+93 6564454455\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "Puerto Rico\n564539386\n",
+      "expectedOutput": "+1939 564539386\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "Oceania\n987574876\n",
+      "expectedOutput": "-1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 1",
+      "input": "Dominican Republic\n391550731658\n",
+      "expectedOutput": "+1849 391550731658\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 2",
+      "input": "Kazakhstan\n5455363\n",
+      "expectedOutput": "+77 5455363\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 3",
+      "input": "Puerto Rico\n6730161010\n",
+      "expectedOutput": "+1939 6730161010\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 4",
+      "input": "Bouvet Island\n83321907\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 5",
+      "input": "Heard Island and McDonald Islands\n75558048199871\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 6",
+      "input": "Atlantis\n11594335101\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 7",
+      "input": "afghanistan\n64675672211015\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 8",
+      "input": "United States\n040567078048\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 9",
+      "input": "Korea\n03136451\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 10",
+      "input": "PUERTO RICO\n800821263128892\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 11",
+      "input": "New Zealandia\n508284348224\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 12",
+      "input": "Bouvet\n08100156288\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 13",
+      "input": "United States of America\n569683\n",
+      "expectedOutput": "+1 569683\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 14",
+      "input": "Canada\n42830347\n",
+      "expectedOutput": "+1 42830347\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 15",
+      "input": "South Africa\n6834704124556\n",
+      "expectedOutput": "+27 6834704124556\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 16",
+      "input": "New Zealand\n91953123973\n",
+      "expectedOutput": "+64 91953123973\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 17",
+      "input": "Algeria\n023371\n",
+      "expectedOutput": "+213 023371\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 18",
+      "input": "Netherlands\n866059426669\n",
+      "expectedOutput": "+31 866059426669\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 19",
+      "input": "Austria\n72376101\n",
+      "expectedOutput": "+43 72376101\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 20",
+      "input": "Japan\n02747\n",
+      "expectedOutput": "+81 02747\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 21",
+      "input": "Finland\n84546\n",
+      "expectedOutput": "+358 84546\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 22",
+      "input": "Nigeria\n472587589\n",
+      "expectedOutput": "+234 472587589\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

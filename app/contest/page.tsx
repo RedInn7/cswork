@@ -10,7 +10,7 @@ import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
 import { BandChip, beijingTime } from '@/components/contest-parts';
 import { LibraryPageView } from '../library/page-view';
-import { CreateRoom, DuelQueue, JoinByCode, LocalTime, WeeklyClock } from './client';
+import { ContestCalendar, CreateRoom, DuelQueue, JoinByCode, LocalTime, WeeklyClock } from './client';
 
 type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
 
@@ -87,6 +87,14 @@ export default async function ContestLobbyPage({ searchParams }: Props) {
         ) : (
           <p className="contest-when">{t('题库还不够出一场周赛，稍后再来。', 'Not enough rated problems for a weekly yet.')}</p>
         )}
+        <ContestCalendar
+          room={
+            weekly && lobby.now < weekly.startsAt
+              ? { id: weekly.id, start: weekly.startsAt, minutes: weekly.durationMin, title: weeklyTitle(weekly.week!, zh) }
+              : undefined
+          }
+          feed={`${origin()}/contest/calendar.ics${zh ? '' : '?lang=en'}`}
+        />
         {lobby.me?.rating ? (
           <p className="contest-when">
             {t('你的 rating', 'Your rating')} <BandChip rating={lobby.me.rating} zh={zh} />
@@ -121,6 +129,11 @@ export default async function ContestLobbyPage({ searchParams }: Props) {
                   : t('报名入门赛', 'Enter the starter')}{' '}
               →
             </a>
+            {lobby.now < starter.startsAt && (
+              <ContestCalendar
+                room={{ id: starter.id, start: starter.startsAt, minutes: starter.durationMin, title: weeklyTitle(starter.week!, zh, 'starter') }}
+              />
+            )}
           </section>
         )}
         <section aria-labelledby="contest-duel" className="contest-card">

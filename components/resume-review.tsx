@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ojRequest } from '@/lib/oj-client';
 import type { ResumeReview as Review } from '@/lib/server/ai-resume';
+import { REVIEW_KEY } from './resume-builder';
 
 // Mirrors lib/server/ai-resume.ts; the server checks again.
 const RESUME_MIN = 80;
@@ -11,7 +12,8 @@ type Reply = { review: Review; remaining: number; limit: number; bonus: number }
 
 /**
  * /career/resume: paste resume text, get structured feedback (lib/server/ai-resume.ts). The
- * text lives only in this page's state: it is not saved in the browser or on the server.
+ * text lives only in this page's state: it is not saved in the browser or on the server (the
+ * builder's hand-over in sessionStorage is removed as soon as it is read).
  */
 export function ResumeReview({ zh }: { zh: boolean }) {
   const t = (a: string, b: string) => (zh ? a : b);
@@ -25,6 +27,15 @@ export function ResumeReview({ zh }: { zh: boolean }) {
     [review, setReview] = useState<Review | null>(null);
   const result = useRef<HTMLElement>(null);
   useEffect(() => {
+    // Sent over once from the resume builder (components/resume-builder.tsx); not kept.
+    try {
+      const sent = sessionStorage.getItem(REVIEW_KEY);
+      sessionStorage.removeItem(REVIEW_KEY);
+      // oxlint-disable-next-line react/react-compiler -- Hydrate from browser storage after SSR.
+      if (sent) setResume(sent.slice(0, RESUME_CHARS));
+    } catch {
+      // Blocked storage: the form starts empty.
+    }
     let live = true;
     ojRequest<Record<string, number>>('ai/usage')
       .then((usage) => live && setLeft((usage.resume ?? 0) + (usage.bonus ?? 0)))

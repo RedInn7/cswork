@@ -64,3 +64,32 @@ self.addEventListener('fetch', (event) => {
   event.waitUntil(cacheOffline().catch(() => {}));
   event.respondWith(fetch(request).catch(() => caches.match(OFFLINE).then((page) => page || Response.error())));
 });
+
+// Reminders (lib/server/reminders.ts): a push carries no payload, it only says "look". The worker
+// asks the server what to show for the signed-in learner. Every push must show something
+// (userVisibleOnly), so when that fails (signed out, offline) a plain one stands in.
+self.addEventListener('push', (event) => {
+  const zh = /^zh\b/i.test(self.navigator?.language || '');
+  const fallback = { id: 'cswork', title: 'cswork', body: zh ? '你有新的学习提醒' : 'You have a new reminder', href: '/?view=progress' };
+  event.waitUntil(
+    fetch('/api/oj/notify/pending', { credentials: 'same-origin', cache: 'no-store' })
+      .then((response) => (response.ok ? response.json() : { items: [] }))
+      .catch(() => ({ items: [] }))
+      .then(({ items }) =>
+        Promise.all(
+          (items?.length ? items : [fallback]).map((n) =>
+            // The notice id as tag: a second push for the same reminder replaces it quietly.
+            self.registration.showNotification(n.title, { body: n.body, tag: n.id, icon: '/icons/icon-192.png', data: { href: n.href } }),
+          ),
+        ),
+      ),
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const target = new URL(event.notification.data?.href || '/', self.location.origin);
+  // Only this site's pages.
+  if (target.origin !== self.location.origin) return;
+  event.waitUntil(self.clients.openWindow(target.href));
+});

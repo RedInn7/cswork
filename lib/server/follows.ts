@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
+import { employerSlug } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
 import { shownOaSql } from './env';
 import { HttpError, json, limit, limitReader, requirePerson } from './http';
-import { HANDLE } from './learner-cloud';
+import { HANDLE, reportCompanies } from './learner-cloud';
 import { readJson } from './my-practice';
 
 /**
@@ -101,9 +102,53 @@ const edge = (from: string, to: string) =>
 /** Two accounts that follow each other (the bar for direct messages and the compare page's shared count). */
 export const mutualFollow = (a: string, b: string) => edge(a, b) && edge(b, a);
 
-/** /api/oj/follows/…: GET ?handle= (the button's state, signed out too), GET board, POST {handle,on}. */
+/** Companies a learner may follow (lib/server/company-follows.ts tells them what's new). */
+const COMPANY_FOLLOW_MAX = 20;
+/** The reader's followed companies that still have a page, oldest follow first; [] signed out. */
+function followedCompanies(p: Person | null) {
+  if (!p) return [];
+  const names = new Map(reportCompanies().map((c) => [c.slug, c.name]));
+  return (
+    sqlite().prepare('SELECT company_slug FROM company_follows WHERE user_id=? ORDER BY created_at').pluck().all(p.id) as string[]
+  ).flatMap((slug) => (names.has(slug) ? [{ slug, name: names.get(slug)! }] : []));
+}
+/** follows/companies: GET the list (signed out too, for the button), POST {slug,on}. */
+async function handleCompanyFollows(request: Request, p: Person | null) {
+  if (request.method === 'GET') {
+    await limitReader(request, p, 'follows-read', 120);
+    return json({ signedIn: !!p, items: followedCompanies(p) });
+  }
+  requirePerson(p);
+  if (request.method !== 'POST') throw new HttpError(404, '接口不存在');
+  await limit(p, 'company-follow-write', 30);
+  const d = z
+    .object({ slug: z.string().max(80), on: z.boolean() })
+    .strict()
+    .parse(await readJson(request, 300));
+  const slug = employerSlug(d.slug);
+  if (!reportCompanies().some((c) => c.slug === slug)) throw new HttpError(404, '公司不存在');
+  const db = sqlite();
+  if (!d.on) db.prepare('DELETE FROM company_follows WHERE user_id=? AND company_slug=?').run(p.id, slug);
+  else {
+    const followed = db.prepare('SELECT company_slug FROM company_follows WHERE user_id=?').pluck().all(p.id) as string[];
+    if (followed.length >= COMPANY_FOLLOW_MAX && !followed.includes(slug))
+      throw new HttpError(409, '最多关注 20 家公司');
+    db.prepare('INSERT INTO company_follows(user_id,company_slug,created_at) VALUES(?,?,?) ON CONFLICT DO NOTHING').run(
+      p.id,
+      slug,
+      Date.now(),
+    );
+  }
+  return json({ signedIn: true, items: followedCompanies(p) });
+}
+
+/**
+ * /api/oj/follows/…: GET ?handle= (the button's state, signed out too), GET board, POST {handle,on};
+ * follows/companies for companies.
+ */
 export async function handleFollows(request: Request, p: Person | null, path: string[]) {
   const [action, extra] = path;
+  if (action === 'companies' && extra === undefined) return handleCompanyFollows(request, p);
   if (extra !== undefined) throw new HttpError(404, '接口不存在');
   const params = new URL(request.url).searchParams;
   if (request.method === 'GET') {

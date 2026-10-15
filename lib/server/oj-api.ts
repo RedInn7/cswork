@@ -16,7 +16,7 @@ import type { Person } from './auth';
 import { handleEditorIntelligence } from './editor-intelligence';
 import { judgeFeed } from './judge-feed';
 import { requestPrecompile } from './oj-precompile';
-import { handleOaLibrary } from './oa-library';
+import { currentDrills, handleOaLibrary } from './oa-library';
 import { handleMockOa } from './mock-oa';
 import { handleSkillTests } from './skill-tests';
 import { handleSpeedrun } from './speedrun';
@@ -38,6 +38,7 @@ import { handleMockPeer } from './mock-peer';
 import { handleNewsletter } from './newsletter';
 import { handleFollows } from './follows';
 import { handleApplications } from './applications';
+import { handleNotify } from './reminders';
 import { handleDirectMessages } from './direct-messages';
 import { handleWorkVerify } from './work-verify';
 import { sourceDates } from './company-insights';
@@ -58,6 +59,7 @@ import {
   similarProblems,
 } from './study-library';
 import { lcRating } from './lc-ratings';
+import { icaView } from './ica';
 import { lingEditorial } from './ling-editorials';
 import { awardAccepted, handlePoints } from './points';
 import { classicList } from '@/lib/classic-lists';
@@ -120,8 +122,9 @@ export async function handleOj(
 ) {
   const url = new URL(request.url),
     [resource, id, action, operation] = path;
-  // An OA editorial is closed while its problem is in the reader's running contest, like Line 500's.
-  if (resource === 'oa-library' && action === 'solution') refuseInContest(p, id);
+  // An OA editorial is closed while its problem is in the reader's running contest, like Line 500's;
+  // so are its drills, each the reference solution a line or three off.
+  if (resource === 'oa-library' && ['solution', 'drill', 'review'].includes(action)) refuseInContest(p, id);
   if (resource === 'oa-library')
     return handleOaLibrary(request, p, path.slice(1));
   if (resource === 'mock-oa' && id === 'history' && !action) return handleMockHistory(request, p);
@@ -135,6 +138,7 @@ export async function handleOj(
   if (resource === 'newsletter') return handleNewsletter(request, p, path.slice(1));
   if (resource === 'follows') return handleFollows(request, p, path.slice(1));
   if (resource === 'applications') return handleApplications(request, p, path.slice(1));
+  if (resource === 'notify') return handleNotify(request, p, path.slice(1));
   if (resource === 'dm') return handleDirectMessages(request, p, path.slice(1));
   if (resource === 'work') return handleWorkVerify(request, p, path.slice(1));
   // The weekly, standings and the rating board read signed out; the handler checks the rest.
@@ -238,6 +242,13 @@ export async function handleOj(
     // Public judge status board: submission metadata only, rate limited per client.
     await limitReader(request, p, 'judge-feed-read', 120);
     return json(judgeFeed(p, url.searchParams));
+  }
+  // An ICA set's open levels (statements and public tests), level 1 signed out; never hidden tests.
+  if (request.method === 'GET' && resource === 'ica' && id && !action) {
+    await limitReader(request, p, 'ica-read', 120);
+    const view = icaView(p?.id ?? null, id);
+    if (!view) throw new HttpError(404, '练习任务不存在');
+    return json(view);
   }
   // Threads, answers and comments read signed out; the handler checks the rest.
   if (['posts', 'post-comments', 'group-messages', 'direct-messages'].includes(resource))
@@ -397,6 +408,14 @@ export async function handleOj(
     } catch (e) {
       if (e instanceof HttpError) throw e;
       throw new HttpError(400, '无效的 JSON');
+    }
+    // A drill submission or run (fixing a planted bug) starts from the reference: never inside a
+    // running contest, and only on a problem with live drills (an unlisted judging of any other
+    // problem would probe its hidden cases without leaving an attempt).
+    const drill = data as { mode?: unknown; problemId?: unknown } | null;
+    if ((drill?.mode === 'drill' || drill?.mode === 'drill-run') && typeof drill.problemId === 'string') {
+      refuseInContest(p, drill.problemId);
+      currentDrills(drill.problemId);
     }
     const created = await createSubmission(p, data);
     // Reuse the owner-checked public projection for both fresh submissions and

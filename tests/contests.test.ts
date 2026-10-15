@@ -8,12 +8,14 @@ import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import type { Person } from '../lib/server/auth';
 import {
   contestBand,
+  contestIcs,
   drawWeekly,
   duelWinner,
   eloRatings,
   PENALTY_MS,
   ratingWeight,
   standings,
+  starterStart,
   weeklyId,
   weeklyStart,
   weekNumber,
@@ -108,6 +110,27 @@ void test('the weekly runs Sunday 09:00–10:30 Beijing time, numbered from the 
   assert.equal(new Date(weeklyStart(1)).toISOString(), '2026-10-18T01:00:00.000Z');
   assert.equal(weekNumber(weeklyStart(5)), 5);
   assert.equal(weeklyId(5), 'weekly-5');
+});
+
+void test('the contest calendar: the weekly and the starter repeat weekly from their first slot, 30-minute alarms', async () => {
+  const { GET } = await import('../app/contest/calendar.ics/route');
+  const feed = GET(new Request('https://cswork.org/contest/calendar.ics'));
+  assert.equal(feed.headers.get('content-type'), 'text/calendar; charset=utf-8');
+  const text = await feed.text();
+  const events = text.split('BEGIN:VEVENT').slice(1);
+  assert.equal(events.length, 2);
+  // Sunday 09:00 and Wednesday 20:00 Beijing time, fixed in UTC: Beijing keeps no daylight saving.
+  assert.match(events[0], /DTSTART:20261018T010000Z\r\nDTEND:20261018T023000Z\r\nRRULE:FREQ=WEEKLY\r\nSUMMARY:CSWork 周赛\r\n/);
+  assert.match(events[1], /DTSTART:20261014T120000Z\r\nDTEND:20261014T130000Z\r\nRRULE:FREQ=WEEKLY\r\nSUMMARY:CSWork 入门赛\r\n/);
+  for (const event of events) assert.match(event, /BEGIN:VALARM\r\nACTION:DISPLAY\r\nDESCRIPTION:[^\r]+\r\nTRIGGER:-PT30M\r\n/);
+  assert.match(text, /X-WR-CALNAME:CSWork 比赛\r\n/);
+  assert.match(await GET(new Request('https://cswork.org/contest/calendar.ics?lang=en')).text(), /SUMMARY:CSWork Starter\r\n/);
+  // One contest, added on its own: no repeat, the title escaped, a stable UID.
+  const one = contestIcs([{ id: 'starter-2', start: starterStart(2), minutes: 60, title: 'Starter #2, the one', url: 'https://cswork.org/contest/starter-2' }], undefined, 0);
+  assert.equal(one.includes('RRULE'), false);
+  assert.equal(one.includes('X-WR-CALNAME'), false);
+  assert.match(one, /UID:cswork-starter-2@cswork\r\nDTSTAMP:19700101T000000Z\r\nDTSTART:20261021T120000Z\r\n/);
+  assert.match(one, /SUMMARY:Starter #2\\, the one\r\n/);
 });
 
 void test('the weekly draw fills Q1–Q4 by rating, reproducibly, avoiding recent problems', () => {

@@ -14,6 +14,7 @@ import { oaReadyProblems } from '@/lib/server/oa-judge';
 import { oaLibrary } from '@/lib/server/oa-library';
 import { MOCK_PRESETS_UPDATED, mockPresetFor } from '@/lib/server/mock-oa-presets';
 import { oaDifficulty } from '@/lib/server/oa-topics';
+import { CompanyFollowButton } from '@/components/company-follow-button';
 import { OaCompanyMark, OaDifficulty, OaExamFormat, oaTopicLine } from '../parts';
 
 type Props = { params: Promise<{ company: string }> };
@@ -38,6 +39,7 @@ export async function generateMetadata({ params }: Props) {
     title: oaPageTitle(locale, name),
     description: lead,
     path: oaCompanyPath(company.slug),
+    image: `${oaCompanyPath(company.slug)}/opengraph-image`,
   });
 }
 
@@ -101,9 +103,12 @@ export default async function OaCompanyPage({ params }: Props) {
         </a>
         {/* Every employer with OA problems has a company page. */}
         {company.slug !== OTHER_COMPANY && (
-          <Link className="oa-public-cta is-quiet" href={companyHubPath(company.slug)} prefetch={false}>
-            {zh ? `${name} 面经、面试题与高频题` : `${name} interview prep`}
-          </Link>
+          <>
+            <Link className="oa-public-cta is-quiet" href={companyHubPath(company.slug)} prefetch={false}>
+              {zh ? `${name} 面经、面试题与高频题` : `${name} interview prep`}
+            </Link>
+            <CompanyFollowButton slug={company.slug} name={name} zh={zh} />
+          </>
         )}
       </div>
       <ol className="oa-public-list" aria-label={zh ? `${name} OA 题目` : `${name} OA problems`}>

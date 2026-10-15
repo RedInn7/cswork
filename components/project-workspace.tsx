@@ -10,7 +10,7 @@ import { useLocale, useT } from '@/lib/i18n';
 import { activeStatuses, cancelOJ, ojRequest, verdict, type OJSubmission } from '@/lib/oj-client';
 import { currentTheme } from '@/lib/theme-script';
 
-type Run = OJSubmission & { project?: ProjectReport | null };
+export type Run = OJSubmission & { project?: ProjectReport | null };
 type Turn = { role: 'user' | 'assistant'; text: string };
 /** This browser's copy of the project: every file, the open tabs and the one in the editor. */
 type Saved = { files: Record<string, string>; open: string[]; active: string };
@@ -45,20 +45,28 @@ function readSaved(task: string, starter: Record<string, string>): Saved {
  */
 export function ProjectWorkspace({
   task,
+  level,
   files: starter,
   hiddenTotal,
   signedIn,
   verified,
   ai,
   aiLimit,
+  pair = true,
+  onFinished,
 }: {
   task: string;
+  /** ICA sets (/oa/ica): the level a run judges, with task "ica:<slug>". */
+  level?: number;
   files: Record<string, string>;
   hiddenTotal: number;
   signedIn: boolean;
   verified: boolean;
   ai: boolean;
   aiLimit: number;
+  /** False hides the AI pair: an ICA round allows no AI. */
+  pair?: boolean;
+  onFinished?: (run: Run) => void;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -74,12 +82,17 @@ export function ProjectWorkspace({
   const [pairError, setPairError] = useState('');
   const [left, setLeft] = useState<number | null>(null);
   const request = useRef<AbortController | null>(null);
+  const loaded = useRef('');
 
   useEffect(() => {
+    // A new task hydrates from browser storage after SSR. New starting files for the same task (an ICA
+    // level opening) join the live copy instead, so edits the debounced save has not written survive.
+    const same = loaded.current === task;
+    loaded.current = task;
     // oxlint-disable-next-line react/react-compiler -- Hydrate from browser storage after SSR.
-    setSaved(readSaved(task, starter));
-    return () => request.current?.abort();
+    setSaved((value) => (value && same ? { ...value, files: { ...starter, ...value.files } } : readSaved(task, starter)));
   }, [task, starter]);
+  useEffect(() => () => request.current?.abort(), [task]);
   useEffect(() => {
     if (!saved) return;
     const timer = setTimeout(() => {
@@ -147,7 +160,7 @@ export function ProjectWorkspace({
     setError('');
     setRun(null);
     try {
-      let current = await ojRequest<Run>('ai-assisted/run', { task, files, idempotencyKey: crypto.randomUUID() }, controller.signal);
+      let current = await ojRequest<Run>('ai-assisted/run', { task, level, files, idempotencyKey: crypto.randomUUID() }, controller.signal);
       setRun(current);
       while (activeStatuses.has(current.status)) {
         current = await ojRequest<Run>(
@@ -157,6 +170,7 @@ export function ProjectWorkspace({
         );
         setRun(current);
       }
+      onFinished?.(current);
     } catch (e) {
       if (!controller.signal.aborted) setError(e instanceof Error ? e.message : String(e));
     } finally {
@@ -376,66 +390,68 @@ export function ProjectWorkspace({
           )}
         </section>
 
-        <section className="ai-round-pair" aria-labelledby="ai-round-pair-title">
-          <h2 id="ai-round-pair-title">{t('AI 结对', 'AI pair')}</h2>
-          {!ai ? (
-            <p className="ai-round-hint">
-              {t(
-                '本站暂未开放 AI 结对。这一轮不靠 AI 也能完成：读代码、写测试、跑测试，和面试里 AI 不给力时一样。',
-                "The AI pair isn't available on this site right now. The project works without it: read the code, write tests and run them, as you would when the AI lets you down in an interview.",
-              )}
-            </p>
-          ) : !signedIn ? (
-            <p className="ai-round-hint">{t('登录后可以和 AI 结对。', 'Sign in to pair with the AI.')}</p>
-          ) : (
-            <>
+        {pair && (
+          <section className="ai-round-pair" aria-labelledby="ai-round-pair-title">
+            <h2 id="ai-round-pair-title">{t('AI 结对', 'AI pair')}</h2>
+            {!ai ? (
               <p className="ai-round-hint">
                 {t(
-                  `它能读到 README、你当前的文件（打开的优先）和上次运行的公开结果，可以写代码，但跑不了测试。每天 ${aiLimit} 次${left === null ? '' : `，今天还剩 ${left} 次`}。`,
-                  `It reads the README, your current files (the open one first) and the last run's public results. It may write code but cannot run tests. ${aiLimit} a day${left === null ? '' : `, ${left} left today`}.`,
+                  '本站暂未开放 AI 结对。这一轮不靠 AI 也能完成：读代码、写测试、跑测试，和面试里 AI 不给力时一样。',
+                  "The AI pair isn't available on this site right now. The project works without it: read the code, write tests and run them, as you would when the AI lets you down in an interview.",
                 )}
               </p>
-              {turns.length > 0 && (
-                <ol className="ai-round-turns">
-                  {turns.map((turn, index) => (
-                    <li key={index} data-role={turn.role}>
-                      {turn.role === 'user' ? (
-                        <p>{turn.text}</p>
-                      ) : (
-                        <StatementMarkdown body={turn.text} className="cs-statement-markdown ai-round-reply" plain />
-                      )}
-                    </li>
-                  ))}
-                </ol>
-              )}
-              <form className="ai-round-ask" onSubmit={ask}>
-                <label htmlFor="ai-round-question" className="sr-only">
-                  {t('问 AI 结对', 'Ask the AI pair')}
-                </label>
-                <textarea
-                  id="ai-round-question"
-                  value={question}
-                  maxLength={1000}
-                  placeholder={t('例如：test_reserve 为什么失败？', 'For example: why does test_reserve fail?')}
-                  onChange={(event) => setQuestion(event.target.value)}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) void ask(event);
-                  }}
-                />
-                <Button type="submit" size="sm" disabled={asking || !question.trim()}>
-                  {asking ? <LoaderCircle size={14} className="cs-spin" /> : <Send size={14} />}
-                  {t('发送', 'Send')}
-                </Button>
-              </form>
-              <output className="sr-only">{asking ? t('AI 正在回复', 'The AI is replying') : ''}</output>
-              {pairError && (
-                <p className="ai-round-error" role="alert">
-                  {pairError}
+            ) : !signedIn ? (
+              <p className="ai-round-hint">{t('登录后可以和 AI 结对。', 'Sign in to pair with the AI.')}</p>
+            ) : (
+              <>
+                <p className="ai-round-hint">
+                  {t(
+                    `它能读到 README、你当前的文件（打开的优先）和上次运行的公开结果，可以写代码，但跑不了测试。每天 ${aiLimit} 次${left === null ? '' : `，今天还剩 ${left} 次`}。`,
+                    `It reads the README, your current files (the open one first) and the last run's public results. It may write code but cannot run tests. ${aiLimit} a day${left === null ? '' : `, ${left} left today`}.`,
+                  )}
                 </p>
-              )}
-            </>
-          )}
-        </section>
+                {turns.length > 0 && (
+                  <ol className="ai-round-turns">
+                    {turns.map((turn, index) => (
+                      <li key={index} data-role={turn.role}>
+                        {turn.role === 'user' ? (
+                          <p>{turn.text}</p>
+                        ) : (
+                          <StatementMarkdown body={turn.text} className="cs-statement-markdown ai-round-reply" plain />
+                        )}
+                      </li>
+                    ))}
+                  </ol>
+                )}
+                <form className="ai-round-ask" onSubmit={ask}>
+                  <label htmlFor="ai-round-question" className="sr-only">
+                    {t('问 AI 结对', 'Ask the AI pair')}
+                  </label>
+                  <textarea
+                    id="ai-round-question"
+                    value={question}
+                    maxLength={1000}
+                    placeholder={t('例如：test_reserve 为什么失败？', 'For example: why does test_reserve fail?')}
+                    onChange={(event) => setQuestion(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) void ask(event);
+                    }}
+                  />
+                  <Button type="submit" size="sm" disabled={asking || !question.trim()}>
+                    {asking ? <LoaderCircle size={14} className="cs-spin" /> : <Send size={14} />}
+                    {t('发送', 'Send')}
+                  </Button>
+                </form>
+                <output className="sr-only">{asking ? t('AI 正在回复', 'The AI is replying') : ''}</output>
+                {pairError && (
+                  <p className="ai-round-error" role="alert">
+                    {pairError}
+                  </p>
+                )}
+              </>
+            )}
+          </section>
+        )}
       </div>
     </section>
   );

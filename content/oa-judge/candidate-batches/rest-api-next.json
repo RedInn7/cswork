@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-oracle-6",
+      "sourceContentHash": "6c5de4f813329069bb5206f6e4fddd4e873fea2762e40f530aeb0031413fe8f4",
+      "packageChecksum": "49e806f6cdf5bb16862bfb6f64b7f299260522fbdf51e6af86681294257ea9db",
+      "editorial": "## 思路\n\n请求一次 `/api/inventory?barcode=<条码>`：`data` 为空输出 -1；否则取唯一商品的 `price` 与 `discount`，用整数计算 `(price × (100 − discount) + 50) // 100`。\n\n## 正确性证明\n\n折后价为 x = price × (100 − discount) / 100，记 P = price × (100 − discount)（非负整数）。题目要求 .5 向上的四舍五入，即 ⌊x + 1/2⌋ = ⌊(P + 50) / 100⌋，整数整除恰好给出这个值，不经过浮点数，因此不会出现 2.4999… 之类的误差，也不会像 Python 的 round() 那样把 2.5 舍成 2。条码以字符串原样作为查询参数，前导零不会丢失；`data` 为空时按题意输出 -1。\n\n## 复杂度\n\n一次请求，O(1) 时间与空间（不计 JSON 解析）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import requests\n\n\ndef discounted_price(barcode):\n    body = requests.get('https://data.cswork.test/api/inventory', params={'barcode': barcode}, timeout=10).json()\n    if not body['data']:\n        return -1\n    item = body['data'][0]\n    # price * (1 - discount / 100), half up, in exact integers: no float, no banker's rounding.\n    return (item['price'] * (100 - item['discount']) + 50) // 100\n\n\nprint(discounted_price(input().strip()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-palantir-2",
+      "sourceContentHash": "e1941956a4ba8bdf82d4ea403f58e5338f9e809ea5d14e988909379b73d988dd",
+      "packageChecksum": "62f18f1eb46b052fb2d447077f2d0689cb2b71df6a1c20732a1603c0dea78cbc",
+      "editorial": "## 思路\n\n用国家名做查询参数请求一次接口；`data` 非空且 `callingCodes` 非空时输出 `+` 加最后一个区号、空格、电话号码，否则输出 -1。\n\n## 正确性证明\n\n接口按名称精确匹配，至多返回一条记录，因此一次请求即可确定该国的全部区号。题目规定多个区号时取下标最大者，即数组最后一个元素；没有记录或区号数组为空时都没有可用区号，按规定输出 -1。电话号码原样拼接，不做任何变换。\n\n## 复杂度\n\n一次请求，O(L) 时间与空间，L 为输出长度。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import json\nimport urllib.parse\nimport urllib.request\n\n\ndef phone_number(country, number):\n    url = 'https://data.cswork.test/api/countries?' + urllib.parse.urlencode({'name': country})\n    with urllib.request.urlopen(url, timeout=10) as response:\n        body = json.load(response)\n    codes = body['data'][0]['callingCodes'] if body['data'] else []\n    return '+' + codes[-1] + ' ' + number if codes else '-1'\n\n\ncountry = input().strip()\nnumber = input().strip()\nprint(phone_number(country, number))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-rippling-3",
+      "sourceContentHash": "e7b2503d581c0868693d3723f258119e696a84c1351bb334e9a4be3dfb405186",
+      "packageChecksum": "2d834a79537bed77eae278df2c23690e8a457f298c7f97a91ae416f5056bb5ed",
+      "editorial": "## 思路\n\n从第 1 页起依次请求到第 `total_pages` 页。对每部剧用正则取出四位年份：两个年份为已完结（开播、完结），一个年份且含 `-` 为仍在播出，一个年份不含 `-` 为同年开播并完结。按条件筛选后排序输出。\n\n## 正确性证明\n\n接口按页划分全部剧集，第 1 页给出总页数，请求 1..total_pages 恰好覆盖每部剧一次，最后一页不足 10 条也会被读取。三种 runtime 写法互斥：在播剧只有开播年；完结剧的完结年是最后一个年份（单年剧开播年即完结年）。筛选条件与题意逐条对应：开播年 ≤ start_year；end_year = -1 时要求在播，否则要求已完结且完结年 ≤ end_year。Python 的字符串排序按码点比较，与规定的字典序一致。\n\n## 复杂度\n\n请求 ⌈n/10⌉ 次，处理 O(n)，排序 O(k log k)；n 为剧集总数，k 为结果数。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import re\nimport requests\n\nURL = 'https://data.cswork.test/api/tvseries'\n\n\ndef shows_in_production(start_year, end_year):\n    found, page, pages = [], 1, 1\n    while page <= pages:\n        body = requests.get(URL, params={'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for show in body['data']:\n            runtime = show['runtime_of_series']\n            years = [int(year) for year in re.findall(r'\\d{4}', runtime)]\n            running = len(years) == 1 and '-' in runtime\n            if years[0] > start_year:\n                continue\n            if end_year == -1 and running or end_year != -1 and not running and years[-1] <= end_year:\n                found.append(show['name'])\n        page += 1\n    return sorted(found)\n\n\nstart_year, end_year = map(int, input().split())\nnames = shows_in_production(start_year, end_year)\nprint(len(names))\nfor name in names:\n    print(name)\n"
+        }
+      ]
+    }
+  ]
+}

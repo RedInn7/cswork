@@ -1,14 +1,19 @@
 /**
  * Offline teacher publication of the SQL track: content/sql-track/packages.json
- * and its pandas versions, pandas-packages.json, which CI rebuilds and checks
+ * and its pandas versions, pandas-packages.json (plus the REST API problems,
+ * content/rest-api/packages.json), which CI rebuilds and checks
  * query by query and solution by solution (tests/sql-track.test.ts,
  * tests/pandas-track.test.ts). Unchanged packages are skipped, so release.sh
  * runs this on every release. The pd- problems stay hidden until the judge
- * reports pandas (lib/server/oj-problems.ts), so they can go out first.
+ * reports pandas (lib/server/oj-problems.ts), so they can go out first. A rest-
+ * package goes out only once go-judge itself ran it: its checksum must be in
+ * content/rest-api/sandbox-report.json (scripts/rest-api/verify-sandbox.mjs);
+ * until then it is logged as "unverified" and skipped.
  *   node --env-file=.env --import tsx scripts/publish-sql-track.ts TEACHER_EMAIL
  */
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
 import { sqlite } from '../db/sqlite';
 import {
   validateProblemPackage,
@@ -41,19 +46,32 @@ const teacher: Person = {
   verified: true,
   role: 'teacher',
 };
+// The REST_API_REPORT override is for tests.
+const restReport = process.env.REST_API_REPORT || 'content/rest-api/sandbox-report.json';
+const report = existsSync(restReport)
+  ? (JSON.parse(readFileSync(restReport, 'utf8')) as { engine: string; allPassed: boolean; problems: { packageSha256: string }[] })
+  : null;
+assert(!report || (report.engine === 'go-judge' && report.allPassed), 'Incomplete REST API sandbox report');
+const verified = new Set(report?.problems.map((p) => p.packageSha256));
 // Validate everything before publishing anything.
 const prepared = (
   [
     ['content/sql-track/packages.json', /^sql-\d{2}$/, 'sql'],
     ['content/sql-track/pandas-packages.json', /^pd-\d{2}$/, 'pandas'],
+    // REST API problems on offline HTTP fixtures (scripts/rest-api/build.py, tests/oa-rest-fixtures.test.ts).
+    ['content/rest-api/packages.json', /^rest-\d{2}$/, 'python'],
   ] as const
 ).flatMap(([file, id, language]) =>
-  (JSON.parse(readFileSync(file, 'utf8')) as unknown[]).map((raw) => {
+  (JSON.parse(readFileSync(file, 'utf8')) as unknown[]).flatMap((raw) => {
     const payload = validateProblemPackage(raw);
     assert.match(payload.problem.id, id);
     assert.deepEqual(payload.problem.languages, [language]);
-    assert.equal(payload.problem.checker, 'exact');
-    return payload;
+    assert.ok(language === 'python' ? payload.problem.httpFixtures : payload.problem.checker === 'exact');
+    if (language === 'python' && !verified.has(createHash('sha256').update(JSON.stringify(raw)).digest('hex'))) {
+      console.log(JSON.stringify({ id: payload.problem.id, status: 'unverified' }));
+      return [];
+    }
+    return [payload];
   }),
 );
 assert.equal(new Set(prepared.map((p) => p.problem.id)).size, prepared.length);

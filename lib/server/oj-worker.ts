@@ -4,7 +4,7 @@ import {
   createSlots,
 } from './oj-case-stream';
 import { boundedFeedback, persistCase } from './oj-case-store';
-import { aiTask } from './ai-tasks';
+import { projectSuite } from './ai-tasks';
 import { runCodecRoundTrip } from './oj-codec-roundtrip';
 import { CompiledProgramCache } from './oj-compile-cache';
 import { PrecompileScheduler } from './oj-precompile-scheduler';
@@ -26,6 +26,8 @@ import { Queue, Worker, type Job } from 'bullmq';
 import { sqlite } from '@/db/sqlite';
 import { loadJudgeSnapshot, ensureOjSeed } from './oj-problems';
 import { sendPeerReminders } from './peer-reminders';
+import { sendLearnerReminders } from './reminders';
+import { sendCompanyDigest } from './company-follows';
 import { seed } from './seed';
 import {
   assertSnapshotBudget,
@@ -37,12 +39,14 @@ import {
 } from './oj-worker-policy';
 import {
   ACTIVE,
+  formalMode,
   PLAYGROUND_SPEC,
   submissionRow,
   type SubmissionRow,
 } from './oj-submissions';
 import {
   run,
+  runSpec,
   cleanup,
   compileBridge,
   engineHealth,
@@ -216,7 +220,9 @@ async function judgeSubmission(
   })();
   if (!claimed) return;
   const attempt = claimed.attempt,
-    controller = new AbortController();
+    controller = new AbortController(),
+    // A submission or an OA drill: every case, hidden ones too, stopping at the first failure.
+    formal = formalMode(claimed.mode);
   controllers.set(id, controller);
   let deadline: ReturnType<typeof setTimeout> | undefined;
   const monitor = setInterval(() => {
@@ -243,7 +249,8 @@ async function judgeSubmission(
         () => controller.abort(new Error('Submission deadline exceeded')),
         80_000,
       );
-      const task = aiTask(claimed.problem_id.replace(/^ai-/, ''));
+      // An AI-assisted task, or an ICA level with the hidden tests of its levels so far.
+      const task = projectSuite(claimed.problem_id);
       if (!task) {
         update(id, attempt, {
           status: 'system_error',
@@ -289,7 +296,7 @@ async function judgeSubmission(
     const snapshot = {
       ...loaded,
       spec: {
-        ...loaded.spec,
+        ...runSpec(loaded.spec, formal),
         timeLimit:
           loaded.spec.timeLimits?.[claimed.language] ??
           loaded.spec.timeLimit,
@@ -297,10 +304,10 @@ async function judgeSubmission(
     };
     assertSnapshotBudget(snapshot.cases);
     // Runs on the learner's own input: custom-input runs and playground runs.
-    const ownInput = claimed.mode !== 'judge' && claimed.custom_input !== null;
+    const ownInput = !formal && claimed.custom_input !== null;
     const caseCount = ownInput
       ? 1
-      : snapshot.cases.filter((c) => claimed.mode === 'judge' || !c.hidden)
+      : snapshot.cases.filter((c) => formal || !c.hidden)
           .length;
     // Respect the published per-case budget, including valid long problem sets.
     const totalSeconds =
@@ -381,7 +388,7 @@ async function judgeSubmission(
             weight: 1,
           },
         ]
-      : snapshot.cases.filter((c) => claimed.mode === 'judge' || !c.hidden);
+      : snapshot.cases.filter((c) => formal || !c.hidden);
     if (
       program.leetcodeInput &&
       ['lc-297', 'lc-449'].includes(snapshot.spec.id)
@@ -469,7 +476,7 @@ async function judgeSubmission(
           attempt,
           ordinal: c.ordinal,
           status:
-            claimed.mode !== 'judge' &&
+            !formal &&
             c.expectedOutput === null &&
             status === 'accepted'
               ? 'finished'
@@ -479,7 +486,7 @@ async function judgeSubmission(
           stdout: result.files?.stdout,
           stderr: result.files?.stderr,
           hidden: c.hidden,
-          terminalFailure: claimed.mode === 'judge' && status !== 'accepted',
+          terminalFailure: formal && status !== 'accepted',
         },
         {
           passed,
@@ -488,11 +495,11 @@ async function judgeSubmission(
           score: Math.round((weight / totalWeight) * 100),
         },
       );
-      if (claimed.mode === 'judge' && status !== 'accepted')
+      if (formal && status !== 'accepted')
         terminalFailureCommitted = true;
       // Expensive resource failures stop this submission; unexecuted cases are explicitly skipped.
       if (
-        (claimed.mode === 'judge' && status !== 'accepted') ||
+        (formal && status !== 'accepted') ||
         [
           'time_limit',
           'memory_limit',
@@ -506,7 +513,7 @@ async function judgeSubmission(
     current(id, attempt, controller.signal);
     update(id, attempt, {
       status:
-        claimed.mode !== 'judge' && overall === 'accepted' ? 'finished' : overall,
+        !formal && overall === 'accepted' ? 'finished' : overall,
       finished_at: Date.now(),
     });
   } catch (error) {
@@ -763,15 +770,23 @@ const precompileTimer = setInterval(() => {
     /* Optional acceleration never stops judging. */
   }
 }, OJ_DISPATCH_INTERVAL_MS);
-// Peer mock interview reminder mails, and instant requests that lapsed: the worker is the
-// one long-running process with the mail settings, so no separate timer unit.
-const reminderTimer = setInterval(
-  () =>
-    void sendPeerReminders().catch((error: unknown) =>
-      console.error('peer reminders', error instanceof Error ? error.message : 'unknown'),
-    ),
-  600_000,
-);
+// Peer mock interview reminder mails, and instant requests that lapsed; learners' reminder
+// digests and contest reminders (any process TZ); followed companies' new OA problems. The worker
+// is the one long-running process with the mail settings, so no separate timer unit. One after
+// another, and never two ticks at once, so mails stay under Resend's rate limit.
+let reminding = false;
+const reminderTimer = setInterval(() => {
+  if (reminding) return;
+  reminding = true;
+  void (async () => {
+    for (const [name, send] of [
+      ['peer reminders', sendPeerReminders],
+      ['learner reminders', sendLearnerReminders],
+      ['company digest', sendCompanyDigest],
+    ] as const)
+      await send().catch((error: unknown) => console.error(name, error instanceof Error ? error.message : 'unknown'));
+  })().finally(() => (reminding = false));
+}, 600_000);
 async function stop() {
   if (stopping) return;
   stopping = true;

@@ -9,11 +9,12 @@ import {
 } from '@/lib/oa-company-brands';
 import { oaStatementLang, oaStatementMarkdown } from '@/lib/oa-verified-statement';
 import { breadcrumbJsonLd, oaPageTitle, seoMetadata } from '@/lib/seo';
+import { icaTask } from '@/lib/server/ai-tasks';
 import { HttpError } from '@/lib/server/http';
 import { mockPresetFor } from '@/lib/server/mock-oa-presets';
 import { requestLocale } from '@/lib/server/locale';
 import { oaEnglishStatement, oaReadyProblems } from '@/lib/server/oa-judge';
-import { oaLibrary } from '@/lib/server/oa-library';
+import { oaDrillIndex, oaLibrary } from '@/lib/server/oa-library';
 import { oaDifficulty, oaTopic } from '@/lib/server/oa-topics';
 import { getPublicOaProblem } from '@/lib/server/oj-problems';
 import { OA_KIND_NAMES, stopHref, topicName } from '@/lib/route-stops';
@@ -22,6 +23,15 @@ import { PublicLibraryMarkdown } from '../../../library/markdown';
 import { OaCompanyMark, OaDifficulty } from '../../parts';
 
 type Props = { params: Promise<{ company: string; id: string }> };
+/** Four-level OAs left unjudged for their unclear rules: the ICA set closest to each (/oa/ica). */
+const ICA_TWINS: Record<string, string> = {
+  'oa-meta-11': 'bank-ledger',
+  'oa-visa-9': 'bank-ledger',
+  'oa-ramp-1': 'bank-ledger',
+  'oa-ramp-3': 'bank-ledger',
+  'oa-ziprecruiter-1': 'bank-ledger',
+  'oa-tradedesk-1': 'file-store',
+};
 const load = cache(async (slug: string, id: string) => {
   // Same gates as the OA API: hidden companies 404, and only the canonical company path exists.
   const found = oaLibrary().problem(id);
@@ -58,6 +68,8 @@ const load = cache(async (slug: string, id: string) => {
         : null,
     locale,
     name,
+    // Debugging drills (the API serves them signed in); only a judge-ready problem can be fixed.
+    drills: judged ? oaDrillIndex().get(id) : undefined,
     previous: siblings[at - 1],
     next: siblings[at + 1],
   };
@@ -87,6 +99,7 @@ export default async function OaProblemPage({ params }: Props) {
   const zh = locale === 'zh';
   const topic = oaTopic(item.id);
   const kind = topic && Object.hasOwn(OA_KIND_NAMES, topic.k) ? OA_KIND_NAMES[topic.k] : null;
+  const twin = Object.hasOwn(ICA_TWINS, item.id) ? icaTask(ICA_TWINS[item.id]) : undefined;
   return (
     <article className="public-library-article oa-public-problem">
       <script
@@ -169,7 +182,27 @@ export default async function OaProblemPage({ params }: Props) {
                 {zh ? `模拟 ${name} OA` : `Mock ${name} OA`}
               </a>
             )}
+            {page.drills && (
+              <>
+                <a
+                  className="oa-public-cta is-quiet"
+                  href={`/?${new URLSearchParams({ view: 'problem', problem: item.id, drill: String(page.drills[0]) })}`}
+                >
+                  {zh ? '调试练习' : 'Debugging drill'}
+                </a>
+                <a className="oa-public-cta is-quiet" href={`/oa/drills/review/${encodeURIComponent(item.id)}`}>
+                  {zh ? '代码评审练习' : 'Code review drill'}
+                </a>
+              </>
+            )}
           </div>
+        )}
+        {twin && (
+          <p className="oa-public-actions">
+            <a className="oa-public-cta is-quiet" href={`/oa/ica/${twin.slug}`}>
+              {zh ? `同类可判练习：${twin.title[0]}（四关递进）` : `Judged practice of this kind: ${twin.title[1]} (four levels)`}
+            </a>
+          </p>
         )}
       </header>
       {statement.trim() ? (

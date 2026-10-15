@@ -167,6 +167,23 @@
   font-size: 13px;
   color: var(--cert-muted);
 }
+.certificate-share {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 18px;
+  margin: 14px 0 0;
+  font-size: 14px;
+}
+.certificate-share a {
+  color: #14213d;
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+.certificate-share a:focus-visible {
+  outline: 2px solid var(--cert-gold);
+  outline-offset: 3px;
+}
 .certificate-note {
   max-width: 44em;
   margin: 18px auto 0;
@@ -186,6 +203,7 @@
   }
   .certificate-top,
   .certificate-actions,
+  .certificate-share,
   .certificate-note,
   .certificate-profile {
     display: none;
@@ -261,6 +279,12 @@
   }
   .dark .certificate-actions [role='status'] {
     color: var(--cert-muted);
+  }
+  .dark .certificate-share a {
+    color: #d0dffd;
+  }
+  .dark .certificate-share a:focus-visible {
+    outline: 2px solid var(--cert-gold);
   }
   .dark .certificate-note {
     color: var(--cert-muted);

@@ -67,8 +67,14 @@ export function PrivacyDocument() {
               <p>
                 参加技能认证考试时，平台保存每场考试抽到的题目、开考和交卷时间、成绩与是否通过，用于计时、计分、7 天的重考间隔和你的考试记录；成绩由你在考试时间内的正式提交算出，不会公开。通过后签发的证书和课程结业证书一样，只有你在证书列表里勾选「在公开主页展示」后才会出现在公开主页上，证书页面显示你的账号名称。给课程打分时，平台保存你给的星级（1–5 星，不含文字）和时间；其他人只能看到汇总的平均分和人数，不足 5 人时不显示平均分。
               </p>
+              <p id="privacy-share-cards">
+                公开主页、证书、OA 公司页和周赛、入门赛的链接被分享到社交网站或聊天软件时，链接预览里的图片由本站服务器生成：公开主页的图片只有主页名、按难度的通过题数、最长连续通过天数，以及打开「展示比赛记录」时的最新 rating；证书的图片和证书页一样，显示课程名称、账号名称、日期和验证编号；比赛的图片只有场次名称、日期和参赛人数，私人房间和 1v1 排位只用网站的通用图片。图片用本站自带的字体绘制，不把任何文字发给字体服务或其他第三方；账号名称里有这套字体画不出的字时，改为显示公开主页名，没有公开主页名就不显示名字。证书页的「分享到 LinkedIn」「分享到 X」和只有证书持有人能看到的「添加到 LinkedIn 资料」都只是链接：点击后，浏览器才会把证书链接（添加到资料时还有课程名称、签发年月和验证编号）带到对方网站。
+              </p>
               <p>
                 预约同伴互面时，服务器保存你填写的昵称、面试类型、级别、可用时段、时区和语言，以及你选填的目标公司和话题；同伴只能看到昵称，匹配通知里会写出你们共同的公司和话题。开着「邮件提醒」时，开始前一天和前一小时会给你已验证的账户邮箱发提醒（经 Resend 发送），内容是面试类型、时间、同伴昵称和会议链接；预约时取消勾选就不会收到。
+              </p>
+              <p id="privacy-reminders">
+                学习提醒默认关闭。在账户页打开后，服务器保存你选的提醒内容（到期复习、连续打卡、每日一题、报名的周赛和入门赛）、每天的提醒时间、时区偏移和语言，每天最多一条，写进站内消息；报名的比赛开始前 1 小时还会再提醒一次。在某台设备上开启推送时，平台保存这台设备的浏览器给出的推送地址（属于 Google、Mozilla、Apple 或 Microsoft 的推送服务，每个账号最多 10 台设备）；推送本身不带任何内容，设备收到后再向本平台读取提醒文字，推送服务商看不到提醒写了什么。关闭这台设备的推送或退出登录时，这个地址随即删除。打开邮件提醒后，每天最多一封发到已验证的账户邮箱（经 Resend 发送），每封都能一键退订。关闭学习提醒会删除这些设置和所有设备的推送地址。关注的公司（最多 20 家）只有你自己能看到；它们有新面经通过审核或上线新的 OA 题时，你会收到站内消息，不发邮件，也不推送。
               </p>
               <p id="privacy-tracker">
                 使用投递追踪（/career/tracker）时，平台在你的账号里保存你填写的公司、岗位、阶段、投递日期、OA 截止和面试时间、内推信息、职位链接和备注，每个账号最多 300 条。这些记录只有你自己能看到，不出现在公开主页、排行榜和任何统计里；删除一条就从服务器上删除。导出的 CSV 和 OA 截止日历文件在你的浏览器里生成，截止提醒由你自己的日历应用发出，平台不发送提醒。
@@ -90,7 +96,7 @@ export function PrivacyDocument() {
                 代码并停止输入片刻，平台可能将最新草稿发送到服务器预编译。预编译只准备可执行程序，不自动运行测试，也不产生提交记录或学习成绩。预编译请求处理后或到期时会从任务队列移除，编译结果仅作短期缓存。
               </p>
               <p>
-                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行：每次运行的代码和输入同样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，只是不出现在提交列表、统计和学习进度中；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。
+                登录后，题目的代码草稿会在你停止输入约 3 秒后保存到服务器，方便在其他设备上接着写；每个账号最多保留 2000 份，最久未改的先删除。模拟 OA 中的题目草稿只留在当前浏览器。代码沙盒（/playground）的运行和自定义输入运行一样交给隔离环境执行：每次运行的代码和输入同样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，只是不出现在提交列表、统计和学习进度中；分享链接把代码放在网址的 # 之后，服务器不保存链接内容。OA 调试练习（修复埋入的 bug）的提交和运行也一样：代码和判题结果保存在你的运行记录里，不计积分、不算作通过这道题，也不出现在提交列表、统计和学习进度中；调试练习的代码草稿只留在当前浏览器。代码评审练习里标记的行号只用于当次判分，附加的说明不会上传，服务器都不保存。
               </p>
             </section>
 
@@ -128,7 +134,7 @@ export function PrivacyDocument() {
                 地址、设备或浏览器信息与有效期，用于账号安全和查看已登录设备；服务器也会产生访问、错误和管理操作记录，以排查故障和限制滥用。
               </p>
               <p>
-                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传。OA 选择题练习（/oa/mcq）的作答记录和模拟 OA 选择题环节的作答也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。
+                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传。OA 选择题练习（/oa/mcq）的作答记录和模拟 OA 选择题环节的作答也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。调试与代码评审练习（/oa/drills）完成了哪些，也只记在当前浏览器。
               </p>
               <p>
                 把网站安装到主屏后，浏览器会缓存离线提示页和网站自身的脚本、样式等构建文件，不缓存任何页面内容和个人数据；在账号设置里退出登录时，这些缓存会一并清空。
@@ -173,7 +179,7 @@ export function PrivacyDocument() {
                 Anthropic，用于生成回复；追问时还会发送本页最近几轮问答，调试时还会发送你自己能看到的失败信息（判题结果、报错和公开样例或自定义输入的输入输出，不含隐藏测试数据），解释题面时只发送题面和你选中的文字、不发送代码。不发送邮箱、姓名或账户标识。平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不使用 AI 助教就不会发送。
               </p>
               <p>
-                使用模拟面试的 AI 面试官时，服务器会把这道题的题面和面试官参考资料、你这一题的对话、计时和代码框里的代码发送给 Anthropic，用于生成面试官的回复和结束时的评估；系统设计和低层设计题点「完成这一步」时，还会发送这一步的对话，用于这一步的打分和建议。招聘方初筛和 offer 谈判的角色扮演会发送练习场景（虚构的公司类型、岗位和 offer 数字）和你的对话，场景里的招聘方底线只在服务器上。同样不发送邮箱、姓名或账户标识。平台不保存对话和评估文字（它们只存在你的浏览器里），只保存每场评估的各项 1–4 分和结论，用于和同类面试比较；生成评估前你自己打的 1–4 分（可以不打）也和这场评估存在一起，只用于「我的进度」里你自己的自评校准，不对外显示。语音输入使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；不点语音输入就不会录音。模拟 OA 的代码回放和专注度自检（离开页面的时段、超过 40 字符的粘贴）只保存在你的浏览器里，不会上传，也不用于监考。
+                使用模拟面试的 AI 面试官时，服务器会把这道题的题面和面试官参考资料、你这一题的对话、计时和代码框里的代码发送给 Anthropic，用于生成面试官的回复和结束时的评估；系统设计和低层设计题点「完成这一步」时，还会发送这一步的对话，用于这一步的打分和建议。招聘方初筛和 offer 谈判的角色扮演会发送练习场景（虚构的公司类型、岗位和 offer 数字）和你的对话，场景里的招聘方底线只在服务器上。同样不发送邮箱、姓名或账户标识。平台不保存对话和评估文字（它们只存在你的浏览器里），只保存每场评估的各项 1–4 分和结论，用于和同类面试比较；生成评估前你自己打的 1–4 分（可以不打）也和这场评估存在一起，只用于「我的进度」里你自己的自评校准，不对外显示。语音输入使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；不点语音输入就不会录音。模拟 OA 和比赛的代码回放和专注度自检（离开页面的时段、超过 40 字符的粘贴）只保存在你的浏览器里，不会上传，也不用于监考；比赛回放只给录制它的参赛者本人看。比赛日历的订阅链接是公开的固定赛程，不含账号信息，单场比赛的日历文件在你的浏览器里生成。
               </p>
               <p>
                 在搜索框（⌘K）里点「问 AI」时，服务器会把你的问题、你选中的页面文字（如有）和站内匹配到的几段公开内容发送给
@@ -183,9 +189,15 @@ export function PrivacyDocument() {
                 在「简历 AI 点评」页（/career/resume）提交时，服务器会把你粘贴的简历文字、目标岗位和职位描述（如有）发送给
                 Anthropic，用于生成点评；不发送你的邮箱或账户标识。简历里本身写着的姓名、电话等信息会随文字一起发送，提交前可以先删掉。平台不保存简历文字和点评结果，只记录每天的调用次数和用量；点评只显示在你当前的浏览器页面里。不提交就不会发送。
               </p>
+              <p id="privacy-resume-builder">
+                在简历生成器（/career/resume/builder）里填写的内容只保存在当前浏览器的本地存储里，不会上传；「导出 JSON」的文件也在浏览器里生成。登录后点「从 CSWork 填入」时，页面会向服务器读取你自己的证书、比赛 rating、通过题数和公开主页名（主页公开时），只填到这个页面上，服务器不记录简历内容。点「送去 AI 点评」时，简历的纯文字暂存在当前标签页的会话存储里，简历 AI 点评页读取后立即删除；只有你在那里提交，文字才会按上一段的方式发送给 Anthropic。
+              </p>
               <p id="privacy-ai-round">
                 在「AI 辅助编程轮」练习（/ai-assisted）里点「运行测试」时，项目的全部文件会交给隔离环境运行公开测试和隐藏测试；这些文件和测试结果像代码沙盒的运行一样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，不出现在提交列表、统计、积分和学习进度中。编辑中的文件只保存在当前浏览器。使用 AI 结对时，服务器会把这道练习的说明、你当前的文件（总量有上限，超出的只发送文件名）、最近几轮对话和你上一次运行的公开测试结果（隐藏测试只有通过数量）发送给
                 Anthropic，用于生成回复；不发送邮箱、姓名或账户标识，平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不提问就不会发送。
+              </p>
+              <p id="privacy-ica">
+                「CodeSignal ICA 式练习」（/oa/ica）的运行与上面相同：项目文件和测试结果保存在你的运行记录里，平台据此判断你通过了哪些关卡、解锁下一关。90 分钟计时只记在当前浏览器。这项练习没有 AI 结对，不向任何第三方发送内容。
               </p>
               <p>
                 平台会为持续提供课程、处理教学反馈、对账及故障恢复保留必要资料和备份，目前没有对所有账户及学习记录统一设置自动删除期限。业务数据与备份的清理时间可能不同；收到删除请求后，会确认涉及的资料、处理范围及需要保留的记录。
@@ -364,6 +376,27 @@ export function PrivacyDocument() {
                 gave them; others see only the average and the number of
                 ratings, and no average until 5 people have rated.
               </p>
+              <p id="privacy-share-cards">
+                When a link to a public profile, a certificate, an OA company
+                page or a weekly or starter contest is shared on a social site
+                or in a chat app, the preview image is drawn by this site&apos;s
+                server. A profile&apos;s image shows only the handle, problems
+                solved by difficulty, the longest run of days with an accepted
+                answer and, with showing contests on, the latest rating. A
+                certificate&apos;s image shows what its page shows: the course,
+                the account name, the date and the verification ID. A
+                contest&apos;s image shows only its name, date and number of
+                entrants; private rooms and ranked duels use the site&apos;s
+                generic image. Images are drawn with a font bundled with the
+                site, and no text is sent to a font service or any other third
+                party: an account name with characters that font lacks is
+                replaced by the public handle, or left out when there is none.
+                On a certificate page, “Share on LinkedIn”, “Share on X” and
+                “Add to LinkedIn profile” (shown only to the holder) are plain
+                links: only when you click one does your browser take the
+                certificate link (and, when adding to your profile, the course
+                name, issue month and verification ID) to that site.
+              </p>
               <p>
                 When you book a peer mock interview, the server keeps the name
                 you enter, the interview type, level, the hours you offer, your
@@ -374,6 +407,27 @@ export function PrivacyDocument() {
                 the session (sent through Resend) with the type, time, your
                 partner&apos;s name and the call link; untick it when booking to
                 get none.
+              </p>
+              <p id="privacy-reminders">
+                Reminders are off by default. Turn them on in your account and
+                the server keeps what you want reminding of (reviews due,
+                streaks, the daily problem, weeklies and starters you entered),
+                the hour, your time zone offset and language: at most one
+                reminder a day, in your notifications, plus one an hour before
+                a contest you entered. When you turn push on for a device, the
+                platform keeps the push address its browser gives (a Google,
+                Mozilla, Apple or Microsoft push service; at most 10 devices an
+                account). Pushes carry no content: the device then fetches the
+                reminder text from cswork, so the push service never sees it.
+                Turning push off on that device, or signing out there, deletes
+                the address. With email reminders on, at most one email a day
+                goes to your verified account address (sent through Resend),
+                each with one-click unsubscribe. Turning reminders off deletes
+                these settings and every device’s push address. The
+                companies you follow (up to 20) are visible
+                only to you; a newly approved interview report or new OA
+                problem at one of them is a notification, never an email or
+                push.
               </p>
               <p id="privacy-tracker">
                 When you use the application tracker (/career/tracker), your
@@ -461,7 +515,15 @@ export function PrivacyDocument() {
                 teachers who manage your learning can view under their
                 permissions; they never appear in your submission list,
                 statistics or progress. A share link carries the code after
-                the # in the address, which the server does not store.
+                the # in the address, which the server does not store. OA
+                debugging drills (fixing a planted bug) work the same way:
+                their submissions&apos; and runs&apos; code and results are kept with your run
+                records, earn no points, never mark the problem solved and stay
+                out of your submission list, statistics and progress; a
+                drill&apos;s code draft stays in the current browser. The lines
+                you flag in a code-review drill are used only to score that
+                attempt and are not stored, and your notes on them are never
+                uploaded.
               </p>
             </section>
 
@@ -537,7 +599,9 @@ export function PrivacyDocument() {
                 stay in the current browser and are never uploaded. So do your
                 answers on the OA multiple-choice practice page (/oa/mcq) and in
                 a mock OA&apos;s multiple-choice section: they are not uploaded and
-                do not sync to your account with mock OA results.
+                do not sync to your account with mock OA results. Which
+                debugging and code-review drills (/oa/drills) you have
+                completed is likewise kept in this browser only.
               </p>
               <p>
                 If you install the site to your home screen, the browser caches
@@ -644,10 +708,13 @@ export function PrivacyDocument() {
                 speech recognition; some browsers (Chrome, for example) send the
                 audio to the browser maker&apos;s servers to turn it into text,
                 without going through this platform, and nothing is recorded
-                unless you press dictate. Mock OA code replays and the focus
-                self-check (time away from the page, pastes over 40 characters)
-                stay in your browser, are never uploaded and are not
-                proctoring.
+                unless you press dictate. Mock OA and contest code replays and
+                the focus self-check (time away from the page, pastes over 40
+                characters) stay in your browser, are never uploaded and are
+                not proctoring; a contest replay shows only to the entrant it
+                recorded. The contest calendar feed is the public fixed
+                schedule with nothing about your account, and a single
+                contest&apos;s calendar file is made in your browser.
               </p>
               <p>
                 When you choose Ask AI in the search box (⌘K), the server sends
@@ -668,6 +735,19 @@ export function PrivacyDocument() {
                 counts and usage, and the review exists only on your open page.
                 Nothing is sent unless you submit.
               </p>
+              <p id="privacy-resume-builder">
+                What you enter in the resume builder (/career/resume/builder)
+                is kept only in this browser&apos;s local storage and is never
+                uploaded; Export JSON makes its file in the browser too. When
+                you are signed in and choose “Fill in from CSWork”, the page
+                reads your own certificates, contest rating, solved counts and
+                public handle (if your profile is public) from the server into
+                this page only; the server does not record the resume. “Send to
+                AI review” keeps the resume&apos;s plain text in this tab&apos;s
+                session storage until the AI resume review page reads it, then
+                deletes it; the text goes to Anthropic, as described above, only
+                if you submit there.
+              </p>
               <p id="privacy-ai-round">
                 When you run the tests of an AI-assisted round project
                 (/ai-assisted), every file of the project goes to the isolated
@@ -683,6 +763,14 @@ export function PrivacyDocument() {
                 reply. No email, name or account identifier is sent; the platform
                 records only daily call counts and usage, never what was sent or
                 the AI's reply. Nothing is sent unless you ask.
+              </p>
+              <p id="privacy-ica">
+                Runs in the CodeSignal ICA-style practice (/oa/ica) work the
+                same way: the project files and results are kept in your run
+                records, and the platform reads them to know which levels you
+                passed and which to unlock. The 90-minute timer lives only in
+                your browser. There is no AI pair there, and nothing is sent to
+                any third party.
               </p>
               <p>
                 The platform retains necessary data and backups to keep

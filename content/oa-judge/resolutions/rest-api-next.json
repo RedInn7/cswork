@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-oracle-6",
+      "sourceContentHash": "6c5de4f813329069bb5206f6e4fddd4e873fea2762e40f530aeb0031413fe8f4",
+      "batch": "rest-api-next",
+      "previousReason": "依赖外部实时REST API，缺离线响应协议及最近整数中点舍入定义。",
+      "reason": "原题依赖外部实时 REST API；改用题目自带的离线 HTTP 桩（固定原创 JSON 数据，requests/urlopen 由评测机应答），明确舍入、匹配与分页语义，Python 判题。"
+    },
+    {
+      "id": "oa-palantir-2",
+      "sourceContentHash": "e1941956a4ba8bdf82d4ea403f58e5338f9e809ea5d14e988909379b73d988dd",
+      "batch": "rest-api-next",
+      "previousReason": "原题要求实时查询外部 HackerRank JSON API，返回结果依赖外部服务且没有可复现的站内输入协议；原始 C++ 参考实现也明确是需要外部库的伪代码占位。未擅自替换为静态国家数据或 mock API。",
+      "reason": "原题依赖外部实时 REST API；改用题目自带的离线 HTTP 桩（固定原创 JSON 数据，requests/urlopen 由评测机应答），明确舍入、匹配与分页语义，Python 判题。"
+    },
+    {
+      "id": "oa-rippling-3",
+      "sourceContentHash": "e7b2503d581c0868693d3723f258119e696a84c1351bb334e9a4be3dfb405186",
+      "batch": "rest-api-next",
+      "previousReason": "依赖外部 REST API 返回数据集且未固定快照、字段模式与错误处理，结果不能确定性复现。",
+      "reason": "原题依赖外部实时 REST API；改用题目自带的离线 HTTP 桩（固定原创 JSON 数据，requests/urlopen 由评测机应答），明确舍入、匹配与分页语义，Python 判题。"
+    }
+  ]
+}

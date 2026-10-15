@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { mock, test } from 'node:test';
 import { register } from 'node:module';
 import { JSDOM } from 'jsdom';
 import { createElement, act } from 'react';
@@ -32,7 +32,7 @@ for (const name of [
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] ?? dom.window.MouseEvent });
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import('react-dom/client');
-const { DuelQueue, RoomLive } = await import('../app/contest/client.tsx');
+const { ContestCalendar, DuelQueue, RoomLive } = await import('../app/contest/client.tsx');
 const { ContestBar } = await import('../components/contest-bar.tsx');
 const { RatingCurve, BandChip } = await import('../components/contest-parts.tsx');
 
@@ -136,6 +136,8 @@ test('a running room: the board, the clock, and questions that open in the conte
     assert.ok(document.querySelector('.contest-invite code').textContent === 'ABCD2345');
     assert.ok(document.querySelectorAll('caption').length === 1, 'no virtual table without virtual entrants');
     assert.ok(document.querySelector('.contest-follow') === null, 'a mashup has no follow filter');
+    assert.ok(button('Add to calendar') === undefined, 'it has started');
+    assert.ok(document.querySelector('.contest-replay') === null, 'no replay while the run goes on');
     await act(async () => root.unmount());
   } finally {
     api.restore();
@@ -163,6 +165,23 @@ test('the public weekly: enter before the start; once it runs, joining is virtua
     const root = await mount(createElement(RoomLive, { initial: upcoming, fallbackStart: '' }));
     assert.ok(button('Enter the contest') !== undefined);
     assert.ok(document.querySelector('[role="timer"]') !== null);
+    // Add to calendar: an .ics of this one contest, made in the browser.
+    const made = [];
+    const createObjectURL = URL.createObjectURL;
+    URL.createObjectURL = (blob) => (made.push(blob), 'blob:ics');
+    try {
+      await act(async () => button('Add to calendar').click());
+    } finally {
+      URL.createObjectURL = createObjectURL;
+    }
+    assert.equal(made.length, 1);
+    assert.equal(made[0].type, 'text/calendar');
+    const ics = await made[0].text();
+    assert.match(ics, /UID:cswork-weekly-9@cswork/);
+    assert.match(ics, /SUMMARY:CSWork Weekly #9\r\n/);
+    assert.match(ics, /URL:https:\/\/cswork.test\/contest\/weekly-9\r\n/);
+    assert.match(ics, /TRIGGER:-PT30M/);
+    assert.equal(ics.includes('RRULE'), false);
     await act(async () => root.unmount());
   } finally {
     api0.restore();
@@ -235,6 +254,54 @@ test('the public weekly: enter before the start; once it runs, joining is virtua
   }
 });
 
+test('once my own run is over, the room holds my code replay, shown only where this browser recorded one', async () => {
+  const over = room({ phase: 'ended', startsAt: now - 90 * MIN, endsAt: now - 30 * MIN, me: { name: 'Amy', virtual: false, share: false, start: now - 90 * MIN, end: now - 30 * MIN } });
+  const api = serve(() => Response.json(over));
+  try {
+    const root = await mount(createElement(RoomLive, { initial: over, fallbackStart: '' }));
+    assert.ok(document.querySelector('.contest-replay') !== null);
+    // No IndexedDB here, so nothing recorded: no replay deck.
+    assert.ok(document.querySelector('#mock-replay-title') === null);
+    await act(async () => root.unmount());
+  } finally {
+    api.restore();
+  }
+});
+
+test('the lobby calendar: each add button names its contest; copying says so, or hands over the address', async () => {
+  const feed = 'https://cswork.test/contest/calendar.ics';
+  const setClipboard = (value) => Object.defineProperty(navigator, 'clipboard', { configurable: true, value });
+  const root = await mount(createElement(ContestCalendar, { room: { id: 'starter-9', start: now + MIN, minutes: 60, title: 'CSWork Starter #9' }, feed }));
+  try {
+    assert.equal(button('Add to calendar').getAttribute('aria-label'), 'Add to calendar: CSWork Starter #9');
+    const status = document.querySelector('.contest-calendar [role="status"]');
+    // No clipboard: the address, selected, to copy by hand.
+    setClipboard(undefined);
+    await act(async () => button('Copy calendar link').click());
+    const input = document.querySelector('.contest-calendar input');
+    assert.equal(input.value, feed);
+    assert.equal(document.activeElement, input);
+    assert.equal(status.textContent, '');
+    // Copied: said in the live region for 2 seconds.
+    mock.timers.enable({ apis: ['setTimeout'] });
+    setClipboard({ writeText: async () => {} });
+    await act(async () => button('Copy calendar link').click());
+    assert.equal(status.textContent, 'Copied');
+    assert.equal(document.querySelector('.contest-calendar input'), null);
+    await act(async () => mock.timers.tick(2000));
+    assert.equal(status.textContent, '');
+    mock.timers.reset();
+    // Refused: the address again.
+    setClipboard({ writeText: () => Promise.reject(new Error('denied')) });
+    await act(async () => button('Copy calendar link').click());
+    assert.equal(document.querySelector('.contest-calendar input').value, feed);
+  } finally {
+    mock.timers.reset();
+    delete navigator.clipboard;
+    await act(async () => root.unmount());
+  }
+});
+
 test('a duel waits for its opponent: no clock, no questions', async () => {
   const waiting = room({ kind: 'duel', cap: 2, entrants: 1, phase: 'upcoming', waiting: true, problems: null, standings: null });
   const api = serve(() => Response.json(waiting));
@@ -242,6 +309,7 @@ test('a duel waits for its opponent: no clock, no questions', async () => {
     const root = await mount(createElement(RoomLive, { initial: waiting, fallbackStart: '' }));
     assert.ok(document.querySelector('.contest-hidden-note').textContent.includes('when your opponent joins'));
     assert.ok(document.querySelector('[role="timer"]') === null, 'its set start has passed: nothing to count down');
+    assert.ok(button('Add to calendar') === undefined, 'no start to put in a calendar');
     await act(async () => root.unmount());
   } finally {
     api.restore();

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rippling-3",
+  "title": "REST API：某时期的剧集",
+  "explanation": "## 思路\n\n从第 1 页起依次请求到第 `total_pages` 页。对每部剧用正则取出四位年份：两个年份为已完结（开播、完结），一个年份且含 `-` 为仍在播出，一个年份不含 `-` 为同年开播并完结。按条件筛选后排序输出。\n\n## 正确性证明\n\n接口按页划分全部剧集，第 1 页给出总页数，请求 1..total_pages 恰好覆盖每部剧一次，最后一页不足 10 条也会被读取。三种 runtime 写法互斥：在播剧只有开播年；完结剧的完结年是最后一个年份（单年剧开播年即完结年）。筛选条件与题意逐条对应：开播年 ≤ start_year；end_year = -1 时要求在播，否则要求已完结且完结年 ≤ end_year。Python 的字符串排序按码点比较，与规定的字典序一致。\n\n## 复杂度\n\n请求 ⌈n/10⌉ 次，处理 O(n)，排序 O(k log k)；n 为剧集总数，k 为结果数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import re\nimport requests\n\nURL = 'https://data.cswork.test/api/tvseries'\n\n\ndef shows_in_production(start_year, end_year):\n    found, page, pages = [], 1, 1\n    while page <= pages:\n        body = requests.get(URL, params={'page': page}, timeout=10).json()\n        pages = body['total_pages']\n        for show in body['data']:\n            runtime = show['runtime_of_series']\n            years = [int(year) for year in re.findall(r'\\d{4}', runtime)]\n            running = len(years) == 1 and '-' in runtime\n            if years[0] > start_year:\n                continue\n            if end_year == -1 and running or end_year != -1 and not running and years[-1] <= end_year:\n                found.append(show['name'])\n        page += 1\n    return sorted(found)\n\n\nstart_year, end_year = map(int, input().split())\nnames = shows_in_production(start_year, end_year)\nprint(len(names))\nfor name in names:\n    print(name)\n"
+    }
+  ]
+}

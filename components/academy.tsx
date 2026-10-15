@@ -488,6 +488,7 @@ export function Academy() {
             mock={params.mock}
             room={params.room}
             tab={params.tab}
+            drill={params.drill}
           />
         ) : (
           <Empty

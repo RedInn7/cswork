@@ -43,7 +43,9 @@ import { ApiTokenSettings } from './api-tokens';
 import '@/app/commerce.css';
 import { GiftBlock, RedeemGift } from './course-gift';
 import { NewsletterToggle } from './newsletter-toggle';
-import { clearOfflineCaches } from './sw-register';
+import { ReminderSettings } from './reminder-settings';
+import { FollowedCompanies } from './company-follow-button';
+import { clearOfflineCaches, clearPush } from './sw-register';
 
 // English labels for the shared (Chinese) status maps in lib/commerce-types.
 export const orderStatusEn: Record<OrderStatus, string> = {
@@ -1165,6 +1167,8 @@ export function AccountView({
           disabled={busy}
           onClick={() =>
             void run(async () => {
+              // While still signed in, so the server forgets this device's push subscription too.
+              await clearPush();
               check((await authClient.signOut()).error);
               await clearOfflineCaches();
               await refresh();
@@ -1201,6 +1205,11 @@ export function AccountView({
       <section className="form-card commerce-account-card" id="newsletter">
         <h2>{t('每周周报', 'Weekly newsletter')}</h2>
         <NewsletterToggle />
+      </section>
+      <ReminderSettings />
+      <section className="form-card commerce-account-card" id="companies">
+        <h2>{t('关注的公司', 'Companies you follow')}</h2>
+        <FollowedCompanies zh={locale === 'zh'} />
       </section>
       <section className="form-card commerce-account-card">
         <h2>{t('订单与收据', 'Orders and receipts')}</h2>

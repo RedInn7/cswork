@@ -367,6 +367,28 @@ function readable(id: string, p: Person | null) {
 const entrantCount = (room: string) =>
   (sqlite().prepare('SELECT COUNT(*) AS n FROM contest_entries WHERE room_id=?').get(room) as { n: number }).n;
 
+/**
+ * A weekly's or starter's share card (app/contest/[id]/opengraph-image): its title and how many
+ * entered, never anyone's place. Null for anything else, so a private room's title stays private.
+ */
+export function contestCard(id: string) {
+  const week = roomWeek(id);
+  const row =
+    week === null
+      ? undefined
+      : (sqlite().prepare(`SELECT kind,starts_at AS startsAt FROM contest_rooms WHERE id=? AND visibility='public'`).get(id) as
+          | { kind: string; startsAt: number }
+          | undefined);
+  if (week === null || !row || !isRatedKind(row.kind)) return null;
+  return {
+    id,
+    zh: weeklyTitle(week, true, row.kind),
+    en: weeklyTitle(week, false, row.kind),
+    entrants: entrantCount(id),
+    startsAt: row.startsAt,
+  };
+}
+
 /** For lists: no problems, no names. */
 function card(row: RoomRow & { entrants?: number }) {
   return {

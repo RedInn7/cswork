@@ -339,6 +339,13 @@ const EN: Record<string, string> = {
   主页不存在: 'Profile not found',
   不能关注自己: "You can't follow yourself",
   关注人数已达上限: "You're following as many people as you can",
+  // Company follows (lib/server/follows.ts, company-follows.ts) and reminders (lib/server/reminders.ts); notification titles too
+  公司不存在: 'Company not found',
+  '最多关注 20 家公司': 'You can follow up to 20 companies',
+  推送尚未开通: "Push notifications aren't available yet",
+  不支持这个推送服务: "This push service isn't supported",
+  今日学习提醒: "Today's practice reminder",
+  '你报名的比赛 1 小时内开始': 'A contest you entered starts within the hour',
   // Application tracker (lib/server/applications.ts)
   投递记录已达上限: "You've reached the limit for tracked applications",
   投递记录不存在: 'Application not found',
@@ -378,6 +385,7 @@ const EN: Record<string, string> = {
   '简历过长，最多读取 12000 个字符': 'The resume is too long; the review reads at most 12,000 characters',
   // AI-assisted round (lib/server/ai-rounds.ts, createProjectRun)
   练习任务不存在: 'Practice task not found',
+  请先通过上一关: 'Pass the previous level first',
   '项目最多 30 个文件，合计 256 KiB': 'A project is limited to 30 files and 256 KiB in all',
   '今天的 AI 结对次数已用完，明天再来': "You've used today's AI pair requests. Come back tomorrow",
   'AI 结对今天的额度已用完，明天再来': 'The AI pair is out of credit for today. Come back tomorrow',
@@ -427,6 +435,7 @@ const EN: Record<string, string> = {
   // OA problems
   'OA 题目不存在': 'OA problem not found',
   'OA 接口不存在': 'OA endpoint not found',
+  这道题没有调试练习: "This problem has no debugging drill",
   未知公司: 'Unknown company',
   // Timed mock OA (lib/server/mock-oa.ts)
   '模拟 OA 接口不存在': 'Mock OA endpoint not found',
@@ -572,6 +581,8 @@ const PATTERNS: [RegExp, (...m: string[]) => string][] = [
       `Outside the problem's constraints: ${name} ${what === '的值' ? 'value' : what === '节点数' ? 'node count' : 'length'} ${rest}`,
   ],
   [/^(\d+) 人赞了你的帖子$/, (n) => `${n} ${n === '1' ? 'person' : 'people'} upvoted your post`],
+  [/^关注的公司上线了 (\d+) 道新 OA 题$/, (n) => `${n} new OA ${n === '1' ? 'problem' : 'problems'} at companies you follow`],
+  [/^(.+) 有新面经$/, (company) => `New interview report: ${company}`],
 ];
 
 export function englishMessage(message: string) {

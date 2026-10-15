@@ -1,10 +1,13 @@
 import '../certificate.css';
+import { headers } from 'next/headers';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { seoMetadata } from '@/lib/seo';
-import { certificateById } from '@/lib/server/certificates';
+import { person } from '@/lib/server/auth';
+import { certificateById, certificateOwner } from '@/lib/server/certificates';
+import { origin } from '@/lib/server/env';
 import { requestLocale } from '@/lib/server/locale';
 import { CertificateView } from '../view';
 
@@ -29,6 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ? `CSWork ${cert.skill ? '技能认证' : '课程'}「${cert.course}」的${cert.skill ? '站内证书' : '结业证书'}，验证编号 ${cert.id}。`
         : `CSWork ${cert.skill ? 'skill certificate' : 'certificate of completion'} for "${cert.course}", verification ID ${cert.id}.`,
       path: `/certificate/${cert.id}`,
+      image: `/certificate/${cert.id}/opengraph-image`,
     }),
     // A personal page: shared by its owner, never indexed.
     robots: { index: false, follow: false },
@@ -37,6 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CertificatePage({ params }: Props) {
   const { cert, zh } = await load((await params).id);
+  const viewer = await person(new Request(origin(), { headers: await headers() })).catch(() => null);
   return (
     <div className="certificate-page" lang={zh ? 'zh-CN' : 'en'}>
       <header className="certificate-top">
@@ -48,7 +53,7 @@ export default async function CertificatePage({ params }: Props) {
         </Link>
       </header>
       <main id="main-content">
-        <CertificateView cert={cert} zh={zh} />
+        <CertificateView cert={cert} zh={zh} owner={!!viewer && certificateOwner(cert.id) === viewer.id} />
       </main>
     </div>
   );

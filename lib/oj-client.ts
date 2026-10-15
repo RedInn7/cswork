@@ -20,6 +20,8 @@ export type OJProblem = Problem & {
   leetcodeTemplates?: Partial<Record<Language, string>>;
   /** This problem's own ACM starters (lib/oj-types.ts), in place of the generic templates. */
   starters?: Partial<Record<Language, string>>;
+  /** A REST API problem: its fixtures stay on the judge, so the Python debugger cannot run it. */
+  httpApi?: boolean;
   leetcodeInputHelp?: { zh: string; en: string } | null;
   /** LeetCode mode's parameters, one custom-case field each; null keeps the raw text. */
   leetcodeParams?: { name: string; type: string }[] | null;
@@ -101,7 +103,8 @@ export type OJSubmission = {
   language: Language;
   codingMode?: CodingMode;
   status: string;
-  mode: 'judge' | 'run';
+  /** drill: an OA debugging drill, judged like a submission but never counted (lib/oa-drills.ts). */
+  mode: 'judge' | 'run' | 'drill';
   passed: number;
   total: number;
   score?: number;
@@ -216,7 +219,7 @@ export async function submitOJ(
   if (
     typeof receipt.problem_id === 'string' &&
     typeof receipt.language === 'string' &&
-    (receipt.mode === 'run' || receipt.mode === 'judge') &&
+    (receipt.mode === 'run' || receipt.mode === 'judge' || receipt.mode === 'drill') &&
     typeof receipt.passed === 'number' &&
     typeof receipt.total === 'number' &&
     typeof receipt.created_at === 'number' &&

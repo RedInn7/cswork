@@ -205,7 +205,7 @@ export function SubmissionResult({
   const running = activeStatuses.has(submission.status);
   const diagnostic =
     !running &&
-    submission.mode === 'judge' &&
+    submission.mode !== 'run' &&
     submission.firstFailure?.ordinal === current?.ordinal &&
     submission.firstFailure?.status === current?.status
       ? submission.firstFailure
@@ -277,7 +277,7 @@ export function SubmissionResult({
               : t('正式提交', 'Submission')}
             {ranCase !== undefined &&
               t(` · 自定义用例 ${ranCase}`, ` · Custom case ${ranCase}`)}
-            {submission.mode === 'judge' && !running && (
+            {(submission.mode === 'judge' || submission.mode === 'drill') && !running && (
               <>
                 {' '}
                 ·{' '}
@@ -353,7 +353,7 @@ export function SubmissionResult({
             : submission.message}
         </p>
       )}
-      {submission.mode === 'judge' && firstFailure >= 0 && skippedCases > 0 && (
+      {(submission.mode === 'judge' || submission.mode === 'drill') && firstFailure >= 0 && skippedCases > 0 && (
         <p className="cs-result-message">
           {t(
             '发现未通过的测试点，已停止后续评测。下方可查看失败原因。',
