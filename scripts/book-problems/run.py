@@ -18,6 +18,8 @@ import sys
 import time
 
 sys.setrecursionlimit(100000)
+# problem.py may import the shared helpers beside this file (trees.py).
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 
 def same(checker, actual, expected):
