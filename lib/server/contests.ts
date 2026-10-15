@@ -727,8 +727,9 @@ export async function sharedCode(id: string, problem: string, p: Person, now = D
 /**
  * The problems of every room running for this learner now: a live entrant's from the start to
  * the end, a virtual one's inside their own window. A duel waiting for its second entrant hasn't
- * started (roomView). One query on contest_entries_user; a request that checks many problems
- * reads it once.
+ * started (roomView). A skill certification exam running for them (lib/server/skill-tests.ts)
+ * counts as a room too, so every refuseInContest gate holds during it. One query on
+ * contest_entries_user; a request that checks many problems reads it once.
  */
 export function runningContestProblems(userId: string, now = Date.now()) {
   return new Set(
@@ -737,7 +738,9 @@ export function runningContestProblems(userId: string, now = Date.now()) {
         `SELECT DISTINCT j.value FROM contest_entries e JOIN contest_rooms c ON c.id=e.room_id, json_each(c.problem_ids_json) j
         WHERE e.user_id=@user AND COALESCE(e.virtual_start,c.starts_at)<=@now
           AND @now<COALESCE(e.virtual_start,c.starts_at)+c.duration_min*${MINUTE}
-          AND (c.kind<>'duel' OR (SELECT COUNT(*) FROM contest_entries x WHERE x.room_id=c.id)>=${ROOM_CAP.duel})`,
+          AND (c.kind<>'duel' OR (SELECT COUNT(*) FROM contest_entries x WHERE x.room_id=c.id)>=${ROOM_CAP.duel})
+        UNION SELECT j.value FROM skill_attempts a, json_each(a.ids_json) j
+        WHERE a.user_id=@user AND a.finished_at IS NULL AND a.started_at<=@now AND @now<a.deadline`,
       )
       .pluck()
       .all({ user: userId, now }) as string[],

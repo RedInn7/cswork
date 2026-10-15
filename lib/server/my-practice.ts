@@ -3,6 +3,7 @@ import { sqlite } from '@/db/sqlite';
 import { curatedByNumber } from '@/lib/ling-curated';
 import { NOTE_MAX_BYTES, type PracticeHistoryItem } from '@/lib/practice-review';
 import type { Person } from './auth';
+import { selfPacedCertificate } from './certificates';
 import { library } from './content-library';
 import { boundedText, HttpError, json, limit } from './http';
 
@@ -311,6 +312,9 @@ export async function handleMyPractice(
           'INSERT INTO user_marks(user_id,target,mark,created_at) VALUES(?,?,?,?) ON CONFLICT DO NOTHING',
         ).run(p.id, d.target, d.mark, Date.now());
       })();
+      // The last chapter of a self-paced course read: its certificate, issued here and not on a GET.
+      if (d.mark === 'read' && d.target.startsWith('sd:'))
+        return json({ ...d, certificate: selfPacedCertificate(p.id, d.target) });
     }
     return json(d);
   }
