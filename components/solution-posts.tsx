@@ -878,7 +878,6 @@ function PostView({
                       onChange={(e) => setReply(e.target.value)}
                       maxLength={COMMENT_MAX}
                       rows={2}
-                      autoFocus
                       aria-label={t('写回复', 'Write a reply')}
                       placeholder={t('回复这条评论……', 'Reply to this comment…')}
                     />

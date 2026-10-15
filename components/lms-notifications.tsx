@@ -54,7 +54,7 @@ export function NotificationsPane({
           {t('全部标记已读', 'Mark all as read')}
         </Button>
       </div>
-      <div className="lms-toolbar" role="group" aria-label={t('消息类型', 'Notification type')}>
+      <div className="lms-toolbar">
         {KINDS.map(([value, zh, en]) => (
           <Button
             key={value}

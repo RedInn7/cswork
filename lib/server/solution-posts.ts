@@ -175,7 +175,7 @@ const shape = ({ voted, starred, employer, referrer, pinned, ...r }: PostRow) =>
     !r.anonymous && r.problemId === 'discuss:referral' && !!r.tag && referrer === r.tag && !!badgeName(referrer),
 });
 
-/** As posts show people (and direct messages and notices name them): the public handle if the profile is visible, else a masked name. */
+/** As posts, direct messages and notices name people: the public handle if the profile is visible, else a masked name. */
 export function nameOf(userId: string) {
   const r = sqlite()
     .prepare(
@@ -727,7 +727,9 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
       // A reply goes under a shown top-level comment of the same post: one level, never deeper.
       const parent = parentId
         ? (db
-            .prepare(`SELECT user_id AS userId,parent_id AS parentId FROM post_comments WHERE id=? AND post_id=? AND hidden=${SHOWN}`)
+            .prepare(
+              `SELECT user_id AS userId,parent_id AS parentId FROM post_comments WHERE id=? AND post_id=? AND hidden=${SHOWN}`,
+            )
             .get(parentId, target) as { userId: string; parentId: string | null } | undefined)
         : undefined;
       if (parentId && !parent) throw new HttpError(404, '评论不存在');
@@ -788,8 +790,8 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
       const { on } = z.object({ on: z.boolean() }).strict().parse(await readJson(request, 200));
       const row = db
         .prepare(
-          `SELECT post_id AS postId,user_id AS userId FROM post_comments WHERE id=? AND hidden=${SHOWN}
-            AND NOT ${reportedDown("'comment:'||id")}`,
+          `SELECT c.post_id AS postId,c.user_id AS userId FROM post_comments c WHERE c.id=? AND c.hidden=${SHOWN}
+            AND NOT ${reportedDown("'comment:'||c.id")}`,
         )
         .get(target) as { postId: string; userId: string } | undefined;
       if (!row) throw new HttpError(404, '评论不存在');

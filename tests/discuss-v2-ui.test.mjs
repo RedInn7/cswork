@@ -29,7 +29,7 @@ function type(element, value) {
   Object.getOwnPropertyDescriptor(proto.prototype, 'value').set.call(element, value);
   element.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
 }
-let sent = [];
+const sent = [];
 let reads = [];
 let reply = () => ({});
 const originalFetch = globalThis.fetch;
