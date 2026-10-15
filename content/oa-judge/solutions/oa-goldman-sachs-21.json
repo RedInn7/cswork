@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-21",
+  "packageChecksum": "d3177316d69c6f705de2cebb1918a6e159700c543c8ae0dd51c3d9c41b296f2b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n; long long k;\n    if (scanf(\"%d %lld\", &n, &k) != 2) return 0;\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    // Sliding window: all values are positive, so shrink from the left while the sum exceeds k.\n    long long s = 0;\n    int l = 0, best = 0;\n    for (int r = 0; r < n; r++) {\n        s += a[r];\n        while (s > k) s -= a[l++];\n        best = max(best, r - l + 1);\n    }\n    printf(\"%d\\n\", best);\n}\n",
+      "sha256": "964810cf646269cf7a86722d6c4937630c88cbc9d97b1a61eae2419667e44eeb"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken(); int n = (int) st.nval;\n        st.nextToken(); long k = (long) st.nval;\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) { st.nextToken(); a[i] = (long) st.nval; }\n        // Sliding window: all values are positive, so shrink from the left while the sum exceeds k.\n        long s = 0;\n        int l = 0, best = 0;\n        for (int r = 0; r < n; r++) {\n            s += a[r];\n            while (s > k) s -= a[l++];\n            best = Math.max(best, r - l + 1);\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "5221669ca1da62a6bf57b725d5d247d5ce8efd30d7c43bc1a31e65e2da3748ef"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<16)\n\tvar n int\n\tvar k int64\n\tfmt.Fscan(in, &n, &k)\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\tfmt.Fscan(in, &a[i])\n\t}\n\t// Sliding window: all values are positive, so shrink from the left while the sum exceeds k.\n\tvar s int64\n\tl, best := 0, 0\n\tfor r := 0; r < n; r++ {\n\t\ts += a[r]\n\t\tfor s > k {\n\t\t\ts -= a[l]\n\t\t\tl++\n\t\t}\n\t\tbest = max(best, r-l+1)\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "1fa6678481ba0a852dceff4da1218f72ef88c0db57a0496f25ccff5181282ef8"
+    }
+  ]
+}

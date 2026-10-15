@@ -1,0 +1,19 @@
+{
+  "id": "oa-general-motors-1",
+  "packageChecksum": "8f4ee1ff5fee05c71b7c939338c7e9b985ebfdb3f11d7f100c26836df3d6e39c",
+  "sourceContentHash": "37462d6086c5e5a3d5918f8eb3c7c1bf0390dc72b5a0c7a24449ecc04d4454ec",
+  "editorialSha256": "9cd793cdb8dd7c85faaa2645815030d6eedbd9793b9ea6fcf657e8d7fe1879c3",
+  "hints": {
+    "zh": [
+      "消息本身不超过 K 时原样输出；否则只能保留完整单词组成的前缀，并在后面加一个空格和省略号，整体长度不能超过 K。",
+      "前缀越长，“前缀 + 空格 + ...”就越长，长度随单词数单调增加。所以从第一个单词开始逐个尝试加入，第一次超限就停止，之前的就是最长可行前缀。",
+      "若消息长度 ≤ K 直接输出；否则按空格拆出单词，逐个尝试：把当前已选单词加上新单词用空格连接，再加上“ ...”（4 个字符），若总长超过 K 就停止，否则接受这个单词；最后若一个单词都没选上输出“...”，否则输出已选单词加“ ...”。"
+    ],
+    "en": [
+      "If the message fits within K, print it unchanged; otherwise you may only keep a prefix of complete words followed by a space and an ellipsis, and the whole thing must not exceed K characters.",
+      "The longer the prefix, the longer \"prefix + space + ...\" becomes, so the length grows monotonically with the number of words. Try adding words one at a time from the first; stop at the first one that overflows, and what you have is the longest feasible prefix.",
+      "If the message length is at most K, print it; otherwise split it into words and try them in order: join the chosen words and the new word with spaces, append \" ...\" (4 characters), and stop if the total exceeds K, otherwise accept the word; finally print \"...\" if no word was accepted, else the accepted words followed by \" ...\"."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTry adding complete words one at a time, and keep only the longest prefix whose length with the ellipsis does not exceed K.\n\n## Proof of correctness\n\nThe prefix length increases monotonically, so once the first prefix overflows, every longer prefix is infeasible too; the whole-word rule forbids cutting inside a word.\n\n## Complexity\n\nO(|message|) time, O(|message|) space."
+}

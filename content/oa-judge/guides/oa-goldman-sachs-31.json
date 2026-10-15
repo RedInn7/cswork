@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-31",
+  "packageChecksum": "27da768570b806df807e183a5ac9c8643ce9bce1e1451fc6868a03da514437cc",
+  "sourceContentHash": "13837999587bf33cb6aff906648abd8295a39413f1f270a0df2a1c202cf4e1b7",
+  "editorialSha256": "b4975052e4899f9096d75648500862effd40eb90d528523369e4a4f8959d6176",
+  "hints": {
+    "zh": [
+      "成本两两不同，而目标差 target 为正数，所以每个符合条件的无序对 {x, y} 都有唯一的较小值 x 和较大值 y = x + target。",
+      "只要从较小值的角度去数：对每个 x 检查 x + target 是否在集合里，这样每个数对恰好被计数一次，不需要枚举所有数对。",
+      "把所有成本放进哈希集合；遍历集合中的每个 x，若 x + target 也在集合中就计数加一；输出计数。数值可到 2×10^9，加上 target 后用 64 位整数。"
+    ],
+    "en": [
+      "The costs are pairwise distinct and the target difference is positive, so every valid unordered pair {x, y} has a unique smaller value x and larger value y = x + target.",
+      "Count from the smaller value only: for each x check whether x + target is in the set; each pair is then counted exactly once, with no need to enumerate all pairs.",
+      "Put all costs into a hash set; for each x in the set, increment the count if x + target is also present; print the count. Values reach 2*10^9, so use 64-bit integers once target is added."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPut the costs into a hash set; for each x check whether x+target exists. Because target>0, each unordered pair is counted only once, from its smaller value.\n\n## Proof of correctness\n\nIf the unordered pair {x,y} has absolute difference equal to the positive target, then there is exactly one smaller value x and one larger value y=x+target. Going through every cost and checking whether it plus target is in the set corresponds one-to-one with the valid value pairs.\n\n## Complexity\n\nAverage O(n) time, O(n) space."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-fortinet-1",
+  "packageChecksum": "bd8d5260b61bd259dee1fd9da51b9cd10265e495e626039c6f41ea00b883e7d2",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n, x = int(data[0]), int(data[1])\n    cost = data[2:2 + n]\n    MOD = 1_000_000_007\n    pw = [1] * n\n    for i in range(1, n):\n        pw[i] = pw[i - 1] * 2 % MOD\n    rem, ans = x, 0\n    # Greedy from the highest index: 2^i beats all lower profits combined.\n    for i in range(n - 1, -1, -1):\n        c = int(cost[i])\n        if c <= rem:\n            rem -= c\n            ans += pw[i]\n    print(ans % MOD)\n\n\nmain()\n",
+      "sha256": "310b663f2b408d56e72076383e95a28ef4669a5ad1e6da6d634a7c98cb438831"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        DataInputStream in = new DataInputStream(new BufferedInputStream(System.in, 1 << 16));\n        int n = (int) readLong(in);\n        long x = readLong(in);\n        long[] c = new long[n];\n        for (int i = 0; i < n; i++) c[i] = readLong(in);\n        final long MOD = 1_000_000_007L;\n        long[] pw = new long[n];\n        for (int i = 0; i < n; i++) pw[i] = i == 0 ? 1 : pw[i - 1] * 2 % MOD;\n        long rem = x, ans = 0;\n        // Greedy from the highest index: 2^i beats all lower profits combined.\n        for (int i = n - 1; i >= 0; i--) {\n            if (c[i] <= rem) {\n                rem -= c[i];\n                ans = (ans + pw[i]) % MOD;\n            }\n        }\n        System.out.println(ans);\n    }\n\n    static long readLong(DataInputStream in) throws IOException {\n        int b = in.read();\n        while (b != '-' && (b < '0' || b > '9')) b = in.read();\n        boolean neg = false;\n        if (b == '-') { neg = true; b = in.read(); }\n        long r = 0;\n        while (b >= '0' && b <= '9') { r = r * 10 + (b - '0'); b = in.read(); }\n        return neg ? -r : r;\n    }\n}\n",
+      "sha256": "00bf97275983c19f75694a66bc3d5c398e805715d5c1f35b924a412983481ad1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<16)\n\tvar n int\n\tvar x int64\n\tfmt.Fscan(in, &n, &x)\n\tc := make([]int64, n)\n\tfor i := range c {\n\t\tc[i] = readInt(in)\n\t}\n\tconst MOD = 1_000_000_007\n\tpw := make([]int64, n)\n\tfor i := 0; i < n; i++ {\n\t\tif i == 0 {\n\t\t\tpw[i] = 1\n\t\t} else {\n\t\t\tpw[i] = pw[i-1] * 2 % MOD\n\t\t}\n\t}\n\trem, ans := x, int64(0)\n\t// Greedy from the highest index: 2^i beats all lower profits combined.\n\tfor i := n - 1; i >= 0; i-- {\n\t\tif c[i] <= rem {\n\t\t\trem -= c[i]\n\t\t\tans = (ans + pw[i]) % MOD\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n\nfunc readInt(in *bufio.Reader) int64 {\n\tb, _ := in.ReadByte()\n\tfor b != '-' && (b < '0' || b > '9') {\n\t\tb, _ = in.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, _ = in.ReadByte()\n\t}\n\tvar r int64\n\tfor b >= '0' && b <= '9' {\n\t\tr = r*10 + int64(b-'0')\n\t\tb, _ = in.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "634f1beca2c985f7f921a89d7ddeaaa23e2d44152266b634dc0195c8ab6ee160"
+    }
+  ]
+}

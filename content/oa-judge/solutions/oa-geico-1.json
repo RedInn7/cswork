@@ -1,0 +1,21 @@
+{
+  "id": "oa-geico-1",
+  "packageChecksum": "589754dec35281061cf10fa3a06b028b7f5786d22e7ca5f29d4571a8b9892df9",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long U; int n;\n    if (scanf(\"%lld %d\", &U, &n) != 2) return 0;\n    vector<long long> w(n);\n    for (auto &x : w) scanf(\"%lld\", &x);\n    vector<long long> c(w);\n    sort(c.begin(), c.end());\n    c.erase(unique(c.begin(), c.end()), c.end());\n    int m = c.size();\n    vector<int> tree(m + 1, 0);  // Fenwick tree of prefix maxima over compressed weights\n    auto query = [&](int i) { int r = 0; for (; i; i -= i & -i) r = max(r, tree[i]); return r; };\n    auto update = [&](int i, int v) { for (; i <= m; i += i & -i) tree[i] = max(tree[i], v); };\n    int best = 0;\n    for (long long x : w) {\n        if (x > U) continue;\n        // Longest safe subsequence ending here: predecessors with weight <= U - x.\n        int prior = query(upper_bound(c.begin(), c.end(), U - x) - c.begin());\n        int len = prior + 1;\n        update(upper_bound(c.begin(), c.end(), x) - c.begin(), len);\n        best = max(best, len);\n    }\n    printf(\"%d\\n\", n - best);\n}\n",
+      "sha256": "93ffafed18f9777423d2696f225a04e3ec1bd199220ad2f2c374096567b6eb24"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static int m;\n    static int[] tree;\n\n    static int query(int i) { int r = 0; for (; i > 0; i -= i & -i) r = Math.max(r, tree[i]); return r; }\n    static void update(int i, int v) { for (; i <= m; i += i & -i) tree[i] = Math.max(tree[i], v); }\n\n    // Number of values in sorted c that are <= x.\n    static int upperBound(long[] c, long x) {\n        int lo = 0, hi = c.length;\n        while (lo < hi) { int mid = (lo + hi) >>> 1; if (c[mid] <= x) lo = mid + 1; else hi = mid; }\n        return lo;\n    }\n\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.resetSyntax();\n        st.wordChars('!', '~');\n        st.whitespaceChars(0, ' ');\n        st.nextToken(); long U = Long.parseLong(st.sval);\n        st.nextToken(); int n = Integer.parseInt(st.sval);\n        long[] w = new long[n];\n        for (int i = 0; i < n; i++) { st.nextToken(); w[i] = Long.parseLong(st.sval); }\n        long[] c = Arrays.stream(w).sorted().distinct().toArray();\n        m = c.length;\n        tree = new int[m + 1]; // Fenwick tree of prefix maxima over compressed weights\n        int best = 0;\n        for (long x : w) {\n            if (x > U) continue;\n            // Longest safe subsequence ending here: predecessors with weight <= U - x.\n            int len = query(upperBound(c, U - x)) + 1;\n            update(upperBound(c, x), len);\n            best = Math.max(best, len);\n        }\n        System.out.println(n - best);\n    }\n}\n",
+      "sha256": "b95ca0c8de7706c49d8c363e75745d201eb45b39af40a8cb47be9c6365f9dfba"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"slices\"\n\t\"sort\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar U int64\n\tvar n int\n\tfmt.Fscan(in, &U, &n)\n\tw := make([]int64, n)\n\tfor i := range w {\n\t\tfmt.Fscan(in, &w[i])\n\t}\n\tc := slices.Clone(w)\n\tslices.Sort(c)\n\tc = slices.Compact(c)\n\tm := len(c)\n\ttree := make([]int, m+1) // Fenwick tree of prefix maxima over compressed weights\n\tupper := func(x int64) int { return sort.Search(m, func(p int) bool { return c[p] > x }) }\n\tbest := 0\n\tfor _, x := range w {\n\t\tif x > U {\n\t\t\tcontinue\n\t\t}\n\t\t// Longest safe subsequence ending here: predecessors with weight <= U - x.\n\t\tprior := 0\n\t\tfor i := upper(U - x); i > 0; i -= i & -i {\n\t\t\tprior = max(prior, tree[i])\n\t\t}\n\t\tlength := prior + 1\n\t\tfor i := upper(x); i <= m; i += i & -i {\n\t\t\ttree[i] = max(tree[i], length)\n\t\t}\n\t\tbest = max(best, length)\n\t}\n\tfmt.Println(n - best)\n}\n",
+      "sha256": "7d3237ed2326e3f7858d1b2357bae2dd36f8d5ece23e9b6dda13620ee48de6b8"
+    }
+  ]
+}

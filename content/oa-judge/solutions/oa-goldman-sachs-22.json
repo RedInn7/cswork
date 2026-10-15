@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-22",
+  "packageChecksum": "9368820ae3629458b1ebf7d8043dcef2ad23104d3745e36df380c9804ea7f038",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    sort(a.rbegin(), a.rend());  // largest first\n    long long total = 0;\n    int count = 0;\n    for (long long v : a) {\n        if (total + v <= 0) break;  // every remaining value is no larger\n        total += v;\n        count++;\n    }\n    printf(\"%d\\n\", count);\n}\n",
+      "sha256": "16acd4377468f850a587688f80361e5b9660bcc70489c500e9fbafe8f9a05a6e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken(); int n = (int) st.nval;\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) { st.nextToken(); a[i] = (long) st.nval; }\n        Arrays.sort(a);\n        long total = 0;\n        int count = 0;\n        for (int i = n - 1; i >= 0; i--) { // largest first\n            if (total + a[i] <= 0) break;  // every remaining value is no larger\n            total += a[i];\n            count++;\n        }\n        System.out.println(count);\n    }\n}\n",
+      "sha256": "c5cbeb30f8ce02846fab0cd6ab92469b8f985e0d7938cc00a7089fe345627951"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"slices\"\n)\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<16)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\tfmt.Fscan(in, &a[i])\n\t}\n\tslices.Sort(a)\n\tvar total int64\n\tcount := 0\n\tfor i := n - 1; i >= 0; i-- { // largest first\n\t\tif total+a[i] <= 0 { // every remaining value is no larger\n\t\t\tbreak\n\t\t}\n\t\ttotal += a[i]\n\t\tcount++\n\t}\n\tfmt.Println(count)\n}\n",
+      "sha256": "7462e3c97dfc4209e1cc4c796f0e0f3d98c2d70a52961db7c83af22997876022"
+    }
+  ]
+}

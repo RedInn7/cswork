@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-21",
+  "packageChecksum": "d3177316d69c6f705de2cebb1918a6e159700c543c8ae0dd51c3d9c41b296f2b",
+  "sourceContentHash": "9058018f04e1b900493c04caa1b5ea4db0a3024b19bca3c6b9c9f63bd429a4b9",
+  "editorialSha256": "fd226c9e05ccd67ac07bb9e2f54c71b280215e149c8b391078b5c17a7f3be62b",
+  "hints": {
+    "zh": [
+      "所有元素都是正数，所以子数组越往左扩展和越大。对固定的右端点，合法的左端点构成一段连续区间。",
+      "用滑动窗口：右端点每次右移一格把新元素加入窗口和；只要和超过 k，就把左端点右移并减去移出的元素。此时窗口就是以当前右端点结尾的最长合法子数组。",
+      "维护左端点 l、窗口和 s 和答案 best；对每个右端点 r：s 加上 a[r]，当 s > k 时 s 减去 a[l] 且 l 加一；然后用 r − l + 1 更新 best（窗口可能为空，此时长度为 0）；最后输出 best。"
+    ],
+    "en": [
+      "All elements are positive, so extending a subarray to the left only increases its sum. For a fixed right end, the valid left ends form a contiguous range.",
+      "Use a sliding window: each time the right end moves one step, add the new element to the window sum; while the sum exceeds k, move the left end right and subtract the element leaving the window. The window is then the longest valid subarray ending at the current right end.",
+      "Keep the left end l, the window sum s and the answer best; for each right end r: add a[r] to s, and while s > k subtract a[l] and increment l; then update best with r - l + 1 (the window may be empty, which gives length 0); print best."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPositive values allow a sliding window: add the element at the right end, and while the sum exceeds k keep removing elements from the left end, maintaining the maximum length of the current valid window.\n\n## Proof of correctness\n\nFor each right end, removing the fewest left elements gives the longest valid window ending at that point: all elements are positive, so any start further left only increases the sum. Scanning all right ends and taking the maximum gives the global optimum.\n\n## Complexity\n\nO(n) time, O(1) space."
+}

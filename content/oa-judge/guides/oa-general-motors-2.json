@@ -1,0 +1,19 @@
+{
+  "id": "oa-general-motors-2",
+  "packageChecksum": "9ff8ff937e812f31e0f3e67c99770deb59de67a56bdd2e563927165ddf9ec2c1",
+  "sourceContentHash": "9fd9642f4f0e56b51a11447aa7ec3dba8c62a764bb6eac1d8bca2ef9043a1719",
+  "editorialSha256": "b7d2d457fe3d424a59ffb13f9102a36b53e016616234fddfd364f41b4da5e396",
+  "hints": {
+    "zh": [
+      "Z 最大只有 500，目标数字和 2·digitSum(Z) 也很小，满足条件的 X 不会离 Z 太远。",
+      "既然要的是大于 Z 的最小 X，从 Z+1 开始往上逐个检查即可，第一个满足数字和条件的数就是答案。",
+      "先算出 target = 2 × Z 的数字和；令 X = Z + 1，循环判断 X 的数字和（反复取个位并除以 10）是否等于 target，不等就加一，相等即输出 X。"
+    ],
+    "en": [
+      "Z is at most 500 and the target digit sum 2*digitSum(Z) is small, so the valid X is never far above Z.",
+      "Since you want the smallest X greater than Z, just check numbers upward from Z+1; the first one with the required digit sum is the answer.",
+      "Compute target = 2 times the digit sum of Z; set X = Z + 1 and loop: compute the digit sum of X (repeatedly take the last digit and divide by 10); if it differs from target increment X, otherwise print X."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate upward from Z+1 and check the digit sum.\n\n## Proof of correctness\n\nThe enumeration order is strictly increasing, so the first number that satisfies the condition is the smallest; exhaustive search over the whole domain confirms that a solution always exists in range.\n\n## Complexity\n\nO((X−Z)·digits) time, O(1) space."
+}

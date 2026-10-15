@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-29",
+  "packageChecksum": "d4312b52084d6cdacb1ba111106cd374f118f334c4b9ed702d694abef5f29b2d",
+  "sourceContentHash": "922f13844de3f24311656cb270f5e46d0c08768241f272a8f459ef60b0717f8e",
+  "editorialSha256": "1a75a1dffbadbecb1c8da10cba3e27e23c708a336a817794c181863baa05df65",
+  "hints": {
+    "zh": [
+      "先判断三角形是否退化：三个顶点共线时面积为 0，直接返回 0。判断点是否在三角形内（含边界）可以用叉积，不需要浮点数。",
+      "对非退化三角形，按 A→B、B→C、C→A 三条有向边，计算点相对每条边的叉积。点在内部或边界上，当且仅当这三个叉积不会同时出现正数和负数（为 0 表示在边所在直线上）。",
+      "用 cross(u, v, w) = (v−u)×(w−u) 计算；若 cross(A, B, C) = 0 输出 0；分别对 p 和 q 计算三个叉积，判断是否“既有正又有负”，否则视为在内部或边界；最后两者都在输出 3，只有 p 输出 1，只有 q 输出 2，都不在输出 4。"
+    ],
+    "en": [
+      "First check whether the triangle is degenerate: if the three vertices are collinear its area is 0 and you return 0. Point-in-triangle (boundary included) can be tested with cross products, no floating point needed.",
+      "For a non-degenerate triangle, take the directed edges A->B, B->C, C->A and compute the cross product of the point against each edge. The point is inside or on the boundary exactly when these three values are never both positive and negative (a 0 means the point is on that edge's line).",
+      "Use cross(u, v, w) = (v - u) x (w - u); if cross(A, B, C) = 0 print 0; for p and for q compute the three cross products and check whether both signs occur, otherwise the point counts as inside or on the boundary; finally print 3 if both are inside, 1 if only p, 2 if only q, and 4 if neither."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse the cross product (signed area) to check that the triangle is non-degenerate, then check whether the cross products of the point with the three edges have consistent signs. A zero cross product allows the point to lie on the boundary.\n\n## Proof of correctness\n\nThe triangle's area is nonzero if and only if the three vertices are not collinear. For a non-degenerate triangle, a point is inside or on the boundary if and only if its cross products with respect to the three directed edges are all non-negative or all non-positive; this includes the boundary. Decide p and q separately, then map to the case number given in the statement.\n\n## Complexity\n\nO(1) time, O(1) space."
+}

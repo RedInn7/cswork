@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-14",
+  "packageChecksum": "34ff947fe8d2d1d69e328cf190fbd1b7d22f2591371bd639abe7a8e125d8b8c5",
+  "sourceContentHash": "c7b385d949525a217505f7f19ef2a21630bd060bee9be067d5e937f527393bee",
+  "editorialSha256": "6f7fc671631d0c0a2d9997899c4e68ea57dc5cf5beb705721047c1d5de32ce0d",
+  "hints": {
+    "zh": [
+      "四位码允许前导零，每一位都是 0 到 9 独立选取，数字和最多 36。可以一位一位地填，并记录到目前为止的数字和。",
+      "设 dp[s] 为已填若干位、数字和为 s 的方案数。每多填一位，就把每个旧状态 s 转移到 s + d（d 从 0 到 9）。",
+      "dp 初始只有 dp[0] = 1（空代码）；重复 4 次：新建数组 next，对每个 s 和每个数字 d（s + d ≤ 36）把 dp[s] 加到 next[s + d]，然后用 next 替换 dp；最后输出 dp[S]。"
+    ],
+    "en": [
+      "Four-digit codes allow leading zeros, each digit is chosen independently from 0 to 9, and the digit sum is at most 36. Fill the code one digit at a time while tracking the digit sum so far.",
+      "Let dp[s] be the number of ways to fill the digits so far with digit sum s. Each extra digit moves every old state s to s + d for d from 0 to 9.",
+      "Start with only dp[0] = 1 (the empty code); repeat 4 times: create a new array next, and for every s and digit d with s + d <= 36 add dp[s] to next[s + d], then replace dp with next; print dp[S]."
+    ]
+  },
+  "explanationEn": "## Approach\n\ndp[s] records how many partial codes have digit sum s after some digits have been written. For each new digit, every old state transitions to the states obtained by adding a digit 0..9.\n\n## Why it is correct\n\nInitially there is only the empty code, with digit sum zero. Every code that is one digit longer comes uniquely from the old code obtained by deleting its last digit together with that last digit, so the transitions neither double count nor miss anything. After all four digits, dp[S] is the answer.\n\n## Complexity\n\nO(4×37×10) time, O(37) extra space."
+}

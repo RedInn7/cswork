@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-15",
+  "packageChecksum": "9f10580c93cfd27ff710d064499ac3cb9733220caf6f08ab23ded9067de0de34",
+  "sourceContentHash": "cad1ea53b2b5521f512e79cc01e494868ab821af9a93de207f89cc6703c45216",
+  "editorialSha256": "bee4b847ba419370c10d0668c2c8fe2059b3cdd487178c36f17d559e96dc061b",
+  "hints": {
+    "zh": [
+      "炸弹 i 能直接引爆 j 的条件是 j 在 i 的半径内，但反过来不一定成立，所以这是一张有向图；选一个起点引爆的数量，就是从它出发能到达的点数。",
+      "n 最多 1000，可以先建出每个点的直接可达集合（包括自身），再做传递闭包：用位集表示可达集合，对每个中间点 k，凡是能到达 k 的起点都把 k 的可达集合并进来。",
+      "用整数坐标平方距离判断 (xi−xj)² + (yi−yj)² ≤ ri²（用 64 位）建立位集 reach[i]；对 k 从 0 到 n−1，遍历所有 i，若 reach[i] 含有 k 就执行 reach[i] |= reach[k]；最后输出所有 reach[i] 中 1 的个数的最大值。"
+    ],
+    "en": [
+      "Bomb i directly detonates j when j is within i's radius, but not necessarily the other way round, so this is a directed graph; the number detonated from a chosen start is the number of nodes reachable from it.",
+      "With n at most 1000, first build each node's directly reachable set (including itself), then take the transitive closure: represent reachable sets as bitsets, and for each intermediate node k, every start that reaches k merges in k's reachable set.",
+      "Build bitset reach[i] by testing (xi-xj)^2 + (yi-yj)^2 <= ri^2 with integer squared distances (64 bits); for k from 0 to n-1, go over every i and if reach[i] contains k, do reach[i] |= reach[k]; print the maximum number of set bits over all reach[i]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst compute the directed adjacency bitsets (including the node itself), then use the bitset version of the transitive closure to merge everything reachable through each intermediate node, and finally take the maximum number of set bits.\n\n## Correctness\n\nThe initial bitsets contain the nodes reachable in zero or one step. When intermediate node k is processed, merging k's reachable set into every start that can reach k adds exactly the paths that use k as a new intermediate node. After all intermediate nodes have been covered, each row is the complete chain-reaction set.\n\n## Complexity\n\nBuilding the graph from distances takes O(n²); the closure takes O(n³/W) bit operations, where W is the machine word size; O(n²/W) space."
+}

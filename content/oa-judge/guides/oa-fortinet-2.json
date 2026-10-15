@@ -1,0 +1,19 @@
+{
+  "id": "oa-fortinet-2",
+  "packageChecksum": "b85518907b9829cb1e64b038623c969172ebb5517a2177c1f043cba28051dc88",
+  "sourceContentHash": "97fc7982fbd48e129125077eb4cccfec15fa258d3b5d104f92775c44e5693129",
+  "editorialSha256": "c5e6f81422cc4c4560913d0d65f985704d063973743aee0d6f358cc5aed11501",
+  "hints": {
+    "zh": [
+      "i mod j 与 j mod i 在所有有序对上求和时总量相同，对角项 i=j 贡献为 0，所以只需算出全体 i mod j 的总和 T，答案是 2T。",
+      "固定除数 j 时，i 从 1 到 n 的余数按周期 j 重复：每个完整周期的余数是 0 到 j−1，最后不足一个周期的部分余数是 1 到 r。这样每个 j 的贡献可以用公式直接算出。",
+      "对 j 从 1 到 n：令 q = n / j、r = n mod j，贡献为 q·j(j−1)/2 + r(r+1)/2，用 64 位整数计算后累加并对 10^9+7 取模；循环结束后输出 2T 对 10^9+7 取模的结果。"
+    ],
+    "en": [
+      "Summed over all ordered pairs, the totals of i mod j and of j mod i are equal, and the diagonal terms i=j contribute 0, so you only need the total T of all i mod j; the answer is 2T.",
+      "For a fixed divisor j, the remainders of i = 1..n repeat with period j: every full period has remainders 0 to j-1, and the final partial period has remainders 1 to r. This gives each j's contribution in closed form.",
+      "For j from 1 to n: let q = n / j and r = n mod j; the contribution is q*j*(j-1)/2 + r*(r+1)/2, computed in 64 bits and added to T modulo 10^9+7; after the loop print 2T modulo 10^9+7."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe problem defines `C(i,j)=i mod j+j mod i`. The i and j listed in the statement are two independent ranges 1..n, so the sum is taken over all ordered `(i,j)` combinations; the diagonal terms with equal indices are 0 and do not affect the result. The total of all `i mod j` equals the total of all `j mod i`, so the answer is `2T`, where `T=Σ[j=1..n] Σ[i=1..n] (i mod j)`.\n\nFix j and write `n=qj+r`. The sequence `1 mod j, 2 mod j, ...` repeats once every j terms, and one full period sums to `j(j−1)/2`; the remaining r terms have remainders `1..r`, which sum to `r(r+1)/2`. So the contribution of this j is `q·j(j−1)/2+r(r+1)/2`. Add them up, multiply by 2 and reduce modulo 1,000,000,007.\n\n## Proof of correctness\n\nFor a fixed j, the first qj values of i split into q full periods, each with remainders exactly 0 to j−1, and the last r remainders are 1 to r, so the formula computes `Σ_i i mod j` exactly. Swapping the summation variables shows that `Σ_{i,j} j mod i` equals `Σ_{i,j} i mod j`; every diagonal term is zero, so the total checksum is exactly 2T. The algorithm goes through every j and computes its exact contribution; reducing modulo at the end does not change the result modulo the prime.\n\n## Complexity\n\nO(n) time and O(1) extra space.\n\n## Verification\n\n163 oracle inputs directly enumerate all ordered distinct pairs; in addition, n=1..80 are all cross-checked. The formal tests include n=1, 2, 3, several small values, sizes around the modulus boundary, and n=10⁶. The expected value at the largest size is computed with the independent identity `Σ_i i mod j = n(n+1)/2 − j·Σ_i floor(i/j)`. Two wrong programs that exit normally, one missing the symmetric term and one wrongly skipping divisibility-related pairs, are both rejected by the tests.\n\n## Source and this site's protocol\n\nThe original FastPrep document in the fixed commit states the formula, the parameter n, the modulus 10⁹+7, n≤10⁶, and that i and j each independently range over 1..n; the converted text in the OAMaster MDX/catalog is cut off at the `<` in the range. Reading them as two independent ranges gives ordered pairs; the statement also says distinct, so the diagonal terms are not needed (they would be 0 under the formula anyway). This site adds stdin/stdout: the input is one n and the output is the integer after the modulo."
+}

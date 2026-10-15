@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-12",
+  "packageChecksum": "be995b013bf4bf266dea7ba4d4393d5f2514052f09d974f4419ae95084e6b838",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    int h, w;\n    cin >> h >> w;\n    vector<string> g(h);\n    for (auto &row : g) cin >> row;\n    string word;\n    cin >> word;\n    // All rows and all columns; each is split into segments by '#'.\n    vector<string> lines(g);\n    for (int c = 0; c < w; c++) {\n        string col;\n        for (int r = 0; r < h; r++) col += g[r][c];\n        lines.push_back(col);\n    }\n    for (auto &line : lines) {\n        size_t start = 0;\n        while (start <= line.size()) {\n            size_t stop = line.find('#', start);\n            if (stop == string::npos) stop = line.size();\n            if (stop - start == word.size()) {\n                bool ok = true;\n                for (size_t i = 0; i < word.size() && ok; i++)\n                    ok = line[start + i] == '_' || line[start + i] == word[i];\n                if (ok) { puts(\"1\"); return 0; }\n            }\n            start = stop + 1;\n        }\n    }\n    puts(\"0\");\n}\n",
+      "sha256": "bac62bbb749616a2d63f625c73abdf089273b0ce2299e51561ba87e23746ab17"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        List<String> tokens = new ArrayList<>();\n        String line;\n        while ((line = br.readLine()) != null)\n            for (String t : line.trim().split(\"\\\\s+\")) if (!t.isEmpty()) tokens.add(t);\n        int h = Integer.parseInt(tokens.get(0)), w = Integer.parseInt(tokens.get(1));\n        String[] g = tokens.subList(2, 2 + h).toArray(new String[0]);\n        String word = tokens.get(tokens.size() - 1);\n        // All rows and all columns; each is split into segments by '#'.\n        List<String> lines = new ArrayList<>(Arrays.asList(g));\n        for (int c = 0; c < w; c++) {\n            StringBuilder col = new StringBuilder();\n            for (int r = 0; r < h; r++) col.append(g[r].charAt(c));\n            lines.add(col.toString());\n        }\n        for (String s : lines) {\n            int start = 0;\n            while (start <= s.length()) {\n                int stop = s.indexOf('#', start);\n                if (stop < 0) stop = s.length();\n                if (stop - start == word.length()) {\n                    boolean ok = true;\n                    for (int i = 0; i < word.length() && ok; i++) {\n                        char a = s.charAt(start + i);\n                        ok = a == '_' || a == word.charAt(i);\n                    }\n                    if (ok) { System.out.println(1); return; }\n                }\n                start = stop + 1;\n            }\n        }\n        System.out.println(0);\n    }\n}\n",
+      "sha256": "8b75c740c6af58476984dcb46097dbee55ec15624f78ba6cc9424ca48cee87fa"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<16)\n\tvar h, w int\n\tfmt.Fscan(in, &h, &w)\n\tg := make([]string, h)\n\tfor i := range g {\n\t\tfmt.Fscan(in, &g[i])\n\t}\n\tvar word string\n\tfmt.Fscan(in, &word)\n\t// All rows and all columns; each is split into segments by '#'.\n\tlines := append([]string{}, g...)\n\tfor c := 0; c < w; c++ {\n\t\tcol := make([]byte, h)\n\t\tfor r := 0; r < h; r++ {\n\t\t\tcol[r] = g[r][c]\n\t\t}\n\t\tlines = append(lines, string(col))\n\t}\n\tfor _, line := range lines {\n\t\tfor _, part := range strings.Split(line, \"#\") {\n\t\t\tif len(part) != len(word) {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tok := true\n\t\t\tfor i := 0; i < len(word) && ok; i++ {\n\t\t\t\tok = part[i] == '_' || part[i] == word[i]\n\t\t\t}\n\t\t\tif ok {\n\t\t\t\tfmt.Println(1)\n\t\t\t\treturn\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(0)\n}\n",
+      "sha256": "d2b7322d3415424b278f64454d039131e3aa434350b6e332565769930bf283f8"
+    }
+  ]
+}

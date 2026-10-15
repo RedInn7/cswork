@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-13",
+  "packageChecksum": "3c21983199c95cfe6c755c30bcfdff3973668783a2ad8ad0d6bcfc781bc53630",
+  "sourceContentHash": "004809fae240ffcd6a2d112782a0147034f1b131480814a2d0c746fdb503f5d0",
+  "editorialSha256": "98fe45636cd4f4c3272e3e6e8bc5a2234a6bc2149560bd7734ae5668e79dbdd3",
+  "hints": {
+    "zh": [
+      "规模非常小：披萨最多 10 种，配料最多 10 种且每种最多用一次、最多加两种，所以所有订单组合可以直接枚举。",
+      "一份订单 = 一种披萨 + 配料集合（0 种、1 种或两种不同下标的配料）。按“与预算差值的绝对值更小优先，差值相同取总价更低”来比较候选。",
+      "先列出所有配料额外价格：0、每种单独的价格、每两种不同下标配料之和；对每种披萨与每个额外价格求总价，若（|总价 − x|，总价）比当前最优更小就替换；初始最优可取第一种披萨不加配料；最后输出最优总价。"
+    ],
+    "en": [
+      "The sizes are tiny: at most 10 pizzas and at most 10 toppings, each topping used at most once and at most two of them, so every order can be enumerated directly.",
+      "An order is one pizza plus a topping set (none, one, or two toppings with different indices). Compare candidates by the smaller absolute difference from the budget first and, on a tie, the lower total price.",
+      "First list every topping extra: 0, each single topping's price, and the sum of every pair of toppings with different indices; for each pizza and each extra compute the total, and replace the best when (|total - x|, total) is smaller; start with the first pizza and no topping; print the best total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate every pizza together with no topping, one topping, and two toppings with different indices. Compare candidates by (absolute difference, total price).\n\n## Why it is correct\n\nEvery valid order contains exactly one pizza and a topping set of size at most 2; the enumeration covers these sets completely without using the same topping twice. The comparison rule takes the smallest difference first and then the lowest price, as the statement requires.\n\n## Complexity\n\nO(nm²+n) time, O(m²+1) extra space."
+}

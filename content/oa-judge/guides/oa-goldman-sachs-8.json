@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-8",
+  "packageChecksum": "52753548d00cba05f9626c5f9720e1eba7e5bf6d934287a619f2c89841c3071d",
+  "sourceContentHash": "29dd85a417af622740e86933d83515a9c5a5d42bd9a9a3bcd4dc087bf33304bb",
+  "editorialSha256": "91ddad4da82878d03376691064be3282cdabaa7804ee18ea7b5018efd49bc7a8",
+  "hints": {
+    "zh": [
+      "命令串无限重复，只需要看执行一遍之后机器人的位移和朝向，就能判断之后的轨迹会不会越走越远。",
+      "执行一遍后若回到原点，显然有界；若朝向变了，那么至多四遍后朝向复原，这几遍的位移按旋转对称相互抵消，也有界；只有朝向不变且位移非零时，每遍都沿同一方向累积，轨迹无界。",
+      "对每个命令串，从 (0,0) 朝北（方向编号 0）开始模拟：G 按当前方向前进一格，L 让方向逆时针转 90°，R 让方向顺时针转 90°；结束后若位置为原点或方向不为北，输出 YES，否则输出 NO；每个命令串一行。"
+    ],
+    "en": [
+      "The command string repeats forever, and the robot's displacement and heading after one pass are enough to tell whether its path keeps drifting away.",
+      "If one pass returns to the origin, the path is clearly bounded; if the heading has changed, it is restored within four passes and their displacements cancel out by rotational symmetry, so it is bounded too; only when the heading is unchanged and the displacement is nonzero does each pass add up in the same direction, making the path unbounded.",
+      "For each command string, simulate from (0,0) facing north (direction 0): G moves one step in the current direction, L turns 90 degrees counterclockwise, R turns 90 degrees clockwise; afterwards print YES if the position is the origin or the direction is not north, otherwise NO, one line per string."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSimulate the commands once, recording the displacement and the final heading. If the robot is back at the origin, or the final heading differs from the initial heading, the displacements of repeated executions cancel out periodically and the path is bounded; otherwise each pass accumulates displacement in the same direction and the path is unbounded.\n\n## Proof of correctness\n\nThe heading after each pass can only take four values. If the heading changes, it is restored after at most four passes, and the displacements of these four passes sum to zero by rotational symmetry; after that the state repeats. If the heading does not change, a nonzero displacement accumulates in the same direction every pass and is unbounded, while a zero displacement keeps the position fixed.\n\n## Complexity\n\nO(L) time per command string, O(1) extra space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-17",
+  "packageChecksum": "ddeb5210eb59f384952d1b97126e3b049f4bfd24daf4a6072913882c0077da0e",
+  "sourceContentHash": "58663a383c5443b63c80809c42804f2d4d1d76fe56b4ced0609bc2a956090136",
+  "editorialSha256": "4f8ffc41c4fd2592cc312407d78499c71ede40e5a88a4e70c41df68bd655be15",
+  "hints": {
+    "zh": [
+      "2 阶幻方不存在（四个不同的数无法让行列同时等和），输出 null；其余阶数都存在幻方，而且任意合法构造都被接受，所以按 n 的奇偶性分三类用经典构造即可。",
+      "奇数阶用 Siamese 方法：从第一行中间开始，依次放 1 到 n²，每次往右上走，若目标格已被占就改为往下走。4 的倍数阶：按 4×4 的对角线图案，把落在图案上的格子换成互补数 n²+1−v。其余偶数阶（n = 2 mod 4）用 LUX 类构造：拆成四个奇数阶块再交换部分列。",
+      "单偶阶时令 m = n/2、k = (n−2)/4，先用奇数构造得到 m 阶幻方 base，四个象限分别加上 0、2m²、3m²、m²（左上、右上、左下、右下）；然后对上半区每一行，把最左边 k 列和最右边 k−1 列与下半区对应格交换；最后在第 k 行把第 0 列和第 k 列再与下半区对应格交换一次。按行输出，数字用空格隔开。"
+    ],
+    "en": [
+      "An order-2 magic square does not exist (four distinct numbers cannot make rows and columns sum equally), so output null; every other order has one and any valid construction is accepted, so use the classic constructions split into three cases by n.",
+      "For odd n use the Siamese method: start in the middle of the top row and place 1 to n^2, each time moving up and to the right, or down instead if that cell is taken. For n divisible by 4, follow the 4x4 diagonal pattern and replace every cell on it with its complement n^2+1-v. For the remaining even orders (n = 2 mod 4) use a LUX-style construction: split into four odd blocks and swap some columns.",
+      "For the singly even case let m = n/2 and k = (n-2)/4, build an order-m magic square base with the odd construction, and add 0, 2m^2, 3m^2, m^2 to the four quadrants (top-left, top-right, bottom-left, bottom-right); then, for every row of the top half, swap the leftmost k columns and the rightmost k-1 columns with the matching cells of the bottom half; finally, in row k, swap columns 0 and k with the bottom half once more. Print row by row with numbers separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor odd orders use the Siamese construction (move up and to the right, and move down on a collision); for orders divisible by 4, take complementary numbers following the 4×4 position pattern; for the other even orders, build from four odd-order blocks with specific column swaps. Order 2 has no solution.\n\n## Correctness\n\nThe odd construction covers all cells in cycles of n and balances every row, column and diagonal. For doubly even orders, numbers that are complementary about the center are chosen in pairs, so every line averages (n²+1)/2. For singly even orders, the four blocks are offset by 0, 2m², 3m² and m²; swapping the left k columns and the rightmost k−1 columns balances the upper and lower halves, and adjusting the first column and column k in the middle row balances the diagonals; the swaps do not change the set of values. In the end every line sums to n(n²+1)/2. For order 2, if the four numbers are distinct, equal row and column sums at the same time would force two numbers to be equal, so there is no solution.\n\n## Complexity\n\nO(n²) time, O(n²) space."
+}

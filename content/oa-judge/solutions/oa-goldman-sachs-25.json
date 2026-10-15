@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-25",
+  "packageChecksum": "95e16e4dc1d12154ebb039df98723892154a243e215a8fb4daefebb92f65f29b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    long long s = 0, mn = 0, x;\n    for (int i = 0; i < n; i++) {\n        scanf(\"%lld\", &x);\n        s += x;\n        if (s < mn) mn = s;  // minimum prefix sum (empty prefix counts as 0)\n    }\n    printf(\"%lld\\n\", 1 - mn);\n}\n",
+      "sha256": "595ef93de086f7052c0d2f66fa65ef885741317f82057c2e8c31ee18a4cde17b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken();\n        int n = (int) st.nval;\n        long s = 0, mn = 0;\n        for (int i = 0; i < n; i++) {\n            st.nextToken();\n            s += (long) st.nval;\n            mn = Math.min(mn, s); // minimum prefix sum (empty prefix counts as 0)\n        }\n        System.out.println(1 - mn);\n    }\n}\n",
+      "sha256": "1e804d3ee3201380e9eac808c5823e30a617d4f35807bb787972b903a98117ef"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<16)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\tvar s, mn int64\n\tfor i := 0; i < n; i++ {\n\t\tvar x int64\n\t\tfmt.Fscan(in, &x)\n\t\ts += x\n\t\tmn = min(mn, s) // minimum prefix sum (empty prefix counts as 0)\n\t}\n\tfmt.Println(1 - mn)\n}\n",
+      "sha256": "e3020db64865c4976c096f2ac35ac05b3440db13d5a5935b3226698828433056"
+    }
+  ]
+}

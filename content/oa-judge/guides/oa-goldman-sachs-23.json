@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-23",
+  "packageChecksum": "544edced5b2055eab8253267741b28df422dd6f3ff98a93813561dfb983a4695",
+  "sourceContentHash": "4553e4cdf1fc6ad43c9eba713ac3a6b0086a828249af60ab55e5afb8850fbdc9",
+  "editorialSha256": "61b0a21558cfcc017d625ceca02e7d7b5f1b979c02cf05e7972803a05354d662",
+  "hints": {
+    "zh": [
+      "新加入的元素 v 要接在某个已选元素 u 后面，条件 u XOR v = k 唯一确定了 u = v XOR k。也就是说，前驱只取决于数值，不取决于位置。",
+      "用 dp[值] 记录“到目前为止以这个值结尾的最长合法子序列长度”。从左到右扫描，新值 v 可以接在值为 v XOR k 的子序列后面，或者自己单独开始。",
+      "开一个按值索引的数组（数值不超过 10^6，异或结果小于 2^21）或哈希表；对每个 v：令 dp[v] = max(dp[v], dp[v XOR k] + 1)（不存在时视为 0），并用 dp[v] 更新答案；答案至少为 1，最后输出。"
+    ],
+    "en": [
+      "A newly added element v must follow some chosen element u, and the condition u XOR v = k forces u = v XOR k. So the predecessor depends only on the value, not on the position.",
+      "Let dp[value] be the length of the longest valid subsequence seen so far that ends with that value. Scanning left to right, a new value v can extend a subsequence ending with value v XOR k, or start on its own.",
+      "Use an array indexed by value (values are at most 10^6, so XOR results are below 2^21) or a hash map; for each v: set dp[v] = max(dp[v], dp[v XOR k] + 1) (missing entries count as 0) and update the answer with dp[v]; the answer is at least 1; print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain dp[v]: the longest valid subsequence ending with value v within the current prefix. A new value v can follow the value v XOR k.\n\n## Proof of correctness\n\nIf the new element v follows a previous element u, validity requires u XOR v=k, which uniquely gives u=v XOR k. The transition takes that state plus one and keeps any existing best state ending with v. Scanning the elements one by one guarantees that only earlier elements are used, which matches the order of a subsequence.\n\n## Complexity\n\nO(n) time, O(distinct(arr)) space."
+}

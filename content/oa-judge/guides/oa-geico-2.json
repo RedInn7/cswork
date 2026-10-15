@@ -1,0 +1,19 @@
+{
+  "id": "oa-geico-2",
+  "packageChecksum": "459a0c1df4031a1837d9a82bb5596020c4779515635a4ec591e755b599ab7864",
+  "sourceContentHash": "7d4f89ad7f86046a3ef9e64bd953b6b88bfc2b50c76e6e6ce880aa420cee9369",
+  "editorialSha256": "d69998fd1db7e4e9e6b0db2d5c80c5ace2df1758f5b3ff5513f88ce24064bb73",
+  "hints": {
+    "zh": [
+      "LRU 缓存需要两样东西：按键快速找到值，以及知道哪个键最久没被用过。get 命中和任何 put（包括更新已有键）都算一次“使用”。",
+      "用哈希表存键到值，再用一个按使用时间排列的有序结构（双向链表或有序字典）记录从最久未用到最近使用的顺序；每次使用就把该键移到最近使用的一端，超出容量时从最久未用的一端删除。",
+      "先解析第一行 capacity=N；逐行处理：put(k,v) 时若键已存在先移除旧位置，再把 (k,v) 放到最近使用端，若元素数超过容量就删掉最久未用端的键；get(k) 时若不存在输出 −1，否则把它移到最近使用端并输出其值。注意题目第一个样例漏了一个 −1，以逐步模拟结果为准。"
+    ],
+    "en": [
+      "An LRU cache needs two things: finding a value by key quickly, and knowing which key has gone unused the longest. A get hit and every put (including an update of an existing key) count as a use.",
+      "Store key to value in a hash map, and keep an ordered structure by usage time (a doubly linked list or an ordered dictionary) from least to most recently used; every use moves the key to the most-recent end, and when the capacity is exceeded remove the key at the least-recent end.",
+      "Parse the first line capacity=N, then process line by line: for put(k,v), if the key exists remove its old position, put (k,v) at the most-recent end, and if the size exceeds the capacity delete the key at the least-recent end; for get(k), output -1 if it is missing, otherwise move it to the most-recent end and output its value. The statement's first example drops one -1; trust the step-by-step simulation."
+    ]
+  },
+  "explanationEn": "## Why it is correct\n\nA `get` hit marks the key as most recently used, and a `put` insert or update also refreshes the recency order; when over capacity, the least recently used key is deleted. The output of the source's first multi-step example omits one `get(1)` result: after `put(4,4)` key 1 has already been evicted, so that query outputs `-1`. The repeated Example 1 later in the source explicitly gives five outputs, and a step-by-step simulation also gives `1, -1, -1, 3, 4`. Only that output is corrected; the semantics of the operations are not changed.\n\n## Algorithm\n\nA hash table stores key to value, and an `OrderedDict` keeps the order from least recently used to most recently used. After a hit or a put, move the key to the end; when over capacity, pop the first item. Each operation takes expected O(1) time, and the space is O(capacity)."
+}

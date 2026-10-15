@@ -1,0 +1,19 @@
+{
+  "id": "oa-fortinet-5",
+  "packageChecksum": "9c3189440617532edfcd41d03ec6d46bf601dd02cb10b4c57cbceff2c98b0988",
+  "sourceContentHash": "2366a16fa69aa08412d60bb37be054bfb4cf09f2cbc7ca7767d9c8edc5757273",
+  "editorialSha256": "f51620749cd0882ff8afe7013d4ba402887c5899f6cea0184f7219627f8b692a",
+  "hints": {
+    "zh": [
+      "长度为 L 的同字符连续段恰好贡献 L(L+1)/2 个美丽子串，而且这个函数是凸的：把点号集中分给一侧比分散开更划算。",
+      "先把固定字母切成连续段，两段字母相同时中间的点号全部填成这个字母，直接把它们合并。合并后相邻两段字母不同，每个点号间隙只需决定整体归左段还是归右段；开头和结尾的点号直接并入第一段和最后一段。",
+      "得到各段长度 len 和段间间隙 gap 后做 DP：状态记录上一个间隙是否分给了当前段。处理第 i 个间隙时，当前段的长度是 len[i] 加上（若上一个间隙分给它）gap[i−1]；若把本间隙分给左边，就结算三角数 tri(该长度 + gap[i])，否则结算 tri(该长度)，并把状态传给下一段。最后一段按状态结算后取最大值；全是点号时答案是 tri(n)。"
+    ],
+    "en": [
+      "A run of L equal characters contributes exactly L(L+1)/2 beautiful substrings, and this function is convex: giving a block of dots entirely to one side beats splitting it.",
+      "First cut the fixed letters into runs; when two neighboring runs have the same letter, fill all the dots between them with that letter and merge them. After merging, neighboring runs have different letters, so each gap of dots only has to go entirely to the left run or to the right run; leading and trailing dots simply join the first and last runs.",
+      "With the run lengths len and the gaps gap between runs, run a DP whose state records whether the previous gap was given to the current run. At gap i, the current run's length is len[i] plus gap[i-1] if that gap went to it; if this gap goes left, settle the triangular number tri(length + gap[i]), otherwise settle tri(length), and pass the state on to the next run. Settle the last run according to its state and take the maximum; if the string is all dots, the answer is tri(n)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount each run of fixed characters on its own, and fill each run of dots with a single character. If the fixed runs on both sides have the same character, merge them; otherwise attach the whole run of dots to whichever side gives the larger gain.\n\n## Proof of correctness\n\nA run of L equal characters has exactly L(L+1)/2 beautiful substrings. The gain from splitting a run of dots between its two sides is a convex function of the length given to each side, so the maximum is reached when everything goes to the left side or everything goes to the right side. When the characters at both ends are the same, filling everything with that character merges the three runs, which beats splitting. Different runs of dots are separated by fixed characters, so their decisions do not affect each other.\n\n## Complexity\n\nO(n) time and O(1) extra space.\n\n## Source and additions\n\nhttps://oamaster.com/docs/companies/fortinet#5-maximize-beautiful-substrings; the source problem's rules and examples are clear. This site adds the input character set, the length limit, and stdin/stdout."
+}

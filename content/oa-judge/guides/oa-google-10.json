@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-10",
+  "packageChecksum": "f5ab93988284bbcd77577a56e0980e8961ca6b6b29f1bd83071693746a637c35",
+  "sourceContentHash": "40d57769f08ec108d9eeb16c4582168899c5e7eb7624912dbb01072c0221564f",
+  "editorialSha256": "4fa279df5671983bcf5aa7cd2d3793c2ca649bc795a7f07951d9f90871c49e19",
+  "hints": {
+    "zh": [
+      "选 k 位等价于删掉 n−k 位。要让结果最大，就要让最前面的数位尽可能大：如果一个较小的数字后面跟着更大的数字，在还能删除的情况下删掉前面那个较小的总是更好。",
+      "用单调栈从左到右处理：新数字比栈顶大并且还有删除次数时，就弹出栈顶并消耗一次删除，直到不能再弹；然后把新数字压栈。",
+      "remove = n − k；依次处理每个数字：当 remove > 0、栈非空且栈顶小于当前数字时弹栈并让 remove 减一，然后压入当前数字；扫描结束后只保留栈的前 k 位（剩余删除量从尾部去掉）；去掉前导零后输出，若全为零则输出 0。"
+    ],
+    "en": [
+      "Choosing k digits is the same as deleting n-k of them. To make the result largest, the leading digits must be as large as possible: if a smaller digit is followed by a larger one and you can still delete, deleting the smaller one is always better.",
+      "Process the digits left to right with a monotonic stack: while the new digit is larger than the top and deletions remain, pop the top and spend one deletion; then push the new digit.",
+      "Set remove = n - k; for each digit: while remove > 0, the stack is non-empty and its top is smaller than the current digit, pop and decrement remove, then push the digit; after the scan keep only the first k digits of the stack (the remaining deletions come off the end); strip leading zeros and print, or print 0 if all are zero."
+    ]
+  },
+  "explanationEn": "## Approach\n\nn−k digits may be deleted. Maintain a monotonic stack: when the new digit is larger, pop the smaller digits at the end as long as deletions remain. Finally take the first k digits.\n\n## Why it is correct\n\nIf deletions remain, keeping a smaller digit that comes before a larger digit makes the first differing position smaller; deleting it can only improve the result. When nothing more can be popped, keep the current prefix and remove the remaining deletions from the tail. So step by step we obtain the lexicographically largest subsequence of k digits.\n\n## Complexity\n\nO(n) time, O(n) extra space."
+}

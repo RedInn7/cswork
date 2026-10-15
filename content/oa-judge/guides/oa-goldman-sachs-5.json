@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-5",
+  "packageChecksum": "077f67217353b18f862d277b4900cf2774f986cd9963df68e83821f96d35c926",
+  "sourceContentHash": "987b8a5d3e66c961ac5e7ee7de8172bb66747ab4bb7b2df5d9057771e7dc49e9",
+  "editorialSha256": "cc23e957dc4965188fc695e8b2b77e03f6b392f6ddb62fd9bf0fbb2076756e09",
+  "hints": {
+    "zh": [
+      "每个回文子串都有一个中心：长度为奇数时中心是某个字符，长度为偶数时中心是两个相邻字符之间的间隙。",
+      "枚举所有 2n−1 个中心，从中心向两边扩展；只要左右字符相同，就找到一个新的回文子串，并继续向外扩展，一旦不同就停下。",
+      "答案计数初始为 0；对每个位置 c：先令左右指针都为 c，当两指针都在范围内且字符相等时计数加一并向外各移一格；再令左指针为 c、右指针为 c+1，同样扩展计数；最后输出总数。n ≤ 5000，O(n²) 足够。"
+    ],
+    "en": [
+      "Every palindromic substring has a center: for odd length it is a character, and for even length it is the gap between two adjacent characters.",
+      "Enumerate all 2n-1 centers and expand outwards from each; as long as the left and right characters match you have found one more palindrome and keep expanding, and you stop at the first mismatch.",
+      "Start the count at 0; for each position c: set both pointers to c, and while both are in range with equal characters, increment the count and move each pointer one step outwards; then do the same with the left pointer at c and the right one at c+1; print the total. With n <= 5000, O(n^2) is enough."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse each character position and each gap between adjacent characters as a palindrome center and expand to both sides; every time the left and right characters are equal, one palindromic substring has been found.\n\n## Proof of correctness\n\nThe center of any palindromic substring is either a character or the gap between two adjacent characters. Expanding around all centers of these two kinds enumerates every palindromic substring, and each exactly once.\n\n## Complexity\n\nO(n²) time, O(1) extra space (not counting the input)."
+}

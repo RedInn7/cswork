@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-23",
+  "packageChecksum": "544edced5b2055eab8253267741b28df422dd6f3ff98a93813561dfb983a4695",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<int> a(n);\n    for (auto &x : a) scanf(\"%d\", &x);\n    int k;\n    scanf(\"%d\", &k);\n    // dp[v] = longest valid subsequence so far ending with value v (values < 2^20, so xor < 2^21).\n    vector<int> dp(1 << 21, 0);\n    int best = 1;\n    for (int v : a) {\n        dp[v] = max(dp[v], dp[v ^ k] + 1);\n        best = max(best, dp[v]);\n    }\n    printf(\"%d\\n\", best);\n}\n",
+      "sha256": "0057ccd445c24d9093d761b67aff5cda47b0f04639a5b4de324b535558a8cf96"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken(); int n = (int) st.nval;\n        int[] a = new int[n];\n        for (int i = 0; i < n; i++) { st.nextToken(); a[i] = (int) st.nval; }\n        st.nextToken(); int k = (int) st.nval;\n        // dp[v] = longest valid subsequence so far ending with value v (values < 2^20, so xor < 2^21).\n        int[] dp = new int[1 << 21];\n        int best = 1;\n        for (int v : a) {\n            dp[v] = Math.max(dp[v], dp[v ^ k] + 1);\n            best = Math.max(best, dp[v]);\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "93e9cac65c040f837f91331798f894358c1e3acbe557c951341b013005251dd7"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<16)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\ta := make([]int, n)\n\tfor i := range a {\n\t\tfmt.Fscan(in, &a[i])\n\t}\n\tvar k int\n\tfmt.Fscan(in, &k)\n\t// dp[v] = longest valid subsequence so far ending with value v (values < 2^20, so xor < 2^21).\n\tdp := make([]int, 1<<21)\n\tbest := 1\n\tfor _, v := range a {\n\t\tdp[v] = max(dp[v], dp[v^k]+1)\n\t\tbest = max(best, dp[v])\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "2403939e02bb45fa5d500276fec8fc149edfd77d241ccd50f9b013a5961ada15"
+    }
+  ]
+}

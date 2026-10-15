@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-24",
+  "packageChecksum": "ddfa0b2d827d93b88d984ae9d6af126873bce62c8cdaae8500fb6d5f974a83ac",
+  "sourceContentHash": "7eaffb814ced0ac93607501947d09c0cb5527c168a2e3e9ee9717964ce9ccd13",
+  "editorialSha256": "5cb4a1f4b38bd67d0eab2366b0079d970f1fb50e543f099c6187df842a17034b",
+  "hints": {
+    "zh": [
+      "员工不需要区分，只关心办公室里当前有多少人：C（新人进入）和 U（从会议室回来）让人数加一，R（去会议室）和 L（永久离开）让人数减一。",
+      "任一时刻办公室里每人都要占一把椅子，所以椅子数至少是室内人数的历史最大值；而按“有空椅先用、没有才买”的规则，购买数恰好等于这个最大值。",
+      "对每个模拟字符串，把室内人数 inside 和最大值 best 初始化为 0；逐个字符：C 或 U 时 inside 加一，R 或 L 时减一，每步用 inside 更新 best；把每个模拟的 best 按输入顺序用空格连接输出。"
+    ],
+    "en": [
+      "Employees are indistinguishable; only the current number of people in the office matters: C (a new employee enters) and U (returns from the meeting room) add one, R (goes to the meeting room) and L (leaves permanently) subtract one.",
+      "At any moment every person in the office needs a chair, so the number of chairs is at least the maximum headcount ever reached; with the rule of using a free chair first and buying only when none is free, the number bought equals exactly that maximum.",
+      "For each simulation string, start the office headcount inside and the maximum best at 0; for each character: C or U increments inside, R or L decrements it, and after every step update best with inside; output the best values of all simulations in input order, separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSimulate the number of employees in the office: C and U increase it by one, R and L decrease it by one. The answer is the maximum number of people in the office over the whole process; whenever someone enters and there is no free chair, exactly one more chair has to be bought.\n\n## Correctness\n\nAt every moment each employee in the office must have a chair, so the number of chairs is at least the maximum headcount in the office. Reusing free chairs according to the rules, and buying only when an entry brings the headcount up to the number of chairs already bought, keeps the number of chairs always equal to the maximum headcount so far. At the end the number of purchases reaches exactly this lower bound. The valid event sequence guarantees that every departure or return corresponds to an existing employee, so the state is unique.\n\n## Complexity\n\nLet L be the total number of characters over all simulations; O(L) time and O(1) extra space."
+}

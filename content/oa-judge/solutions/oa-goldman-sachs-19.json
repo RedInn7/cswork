@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-19",
+  "packageChecksum": "b9c769833f79493555b8fae0d5e80ef267819d8612f1150b98815b5dc2a2299c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\nint main() {\n    ll n, k;\n    if (scanf(\"%lld %lld\", &n, &k) != 2) return 0;\n    if (k >= 3) { puts(\"0\"); return 0; }  // two equal appended diffs, then their difference is 0\n    vector<ll> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    sort(a.begin(), a.end());\n    ll ans = a[0];\n    for (int i = 1; i < n; i++) ans = min(ans, a[i] - a[i - 1]);\n    if (k == 1 || ans == 0) { printf(\"%lld\\n\", ans); return 0; }\n    // k == 2: every first difference d, then its distance to the nearest original value.\n    for (int i = 1; i < n; i++)\n        for (int j = 0; j < i; j++) {\n            ll d = a[i] - a[j];\n            int p = lower_bound(a.begin(), a.end(), d) - a.begin();\n            if (p < n) ans = min(ans, a[p] - d);\n            if (p) ans = min(ans, d - a[p - 1]);\n            if (ans == 0) { puts(\"0\"); return 0; }\n        }\n    printf(\"%lld\\n\", ans);\n}\n",
+      "sha256": "a7cd6e8790da9ea49c397e29826e11667cf89db04d200bdfd0a8c55b6664f753"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken(); int n = (int) st.nval;\n        st.nextToken(); long k = (long) st.nval;\n        if (k >= 3) { System.out.println(0); return; } // two equal appended diffs, then their difference is 0\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) { st.nextToken(); a[i] = (long) st.nval; }\n        Arrays.sort(a);\n        long ans = a[0];\n        for (int i = 1; i < n; i++) ans = Math.min(ans, a[i] - a[i - 1]);\n        if (k == 1 || ans == 0) { System.out.println(ans); return; }\n        // k == 2: every first difference d, then its distance to the nearest original value.\n        for (int i = 1; i < n; i++)\n            for (int j = 0; j < i; j++) {\n                long d = a[i] - a[j];\n                int lo = 0, hi = n;\n                while (lo < hi) { int mid = (lo + hi) >>> 1; if (a[mid] < d) lo = mid + 1; else hi = mid; }\n                if (lo < n) ans = Math.min(ans, a[lo] - d);\n                if (lo > 0) ans = Math.min(ans, d - a[lo - 1]);\n                if (ans == 0) { System.out.println(0); return; }\n            }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "cda670892306593298f7dcc803e375b984a7ef18f7f873860a2371941f6c53c8"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"slices\"\n\t\"sort\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tvar k int64\n\tfmt.Fscan(in, &n, &k)\n\tif k >= 3 { // two equal appended diffs, then their difference is 0\n\t\tfmt.Println(0)\n\t\treturn\n\t}\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\tfmt.Fscan(in, &a[i])\n\t}\n\tslices.Sort(a)\n\tans := a[0]\n\tfor i := 1; i < n; i++ {\n\t\tans = min(ans, a[i]-a[i-1])\n\t}\n\tif k == 1 || ans == 0 {\n\t\tfmt.Println(ans)\n\t\treturn\n\t}\n\t// k == 2: every first difference d, then its distance to the nearest original value.\n\tfor i := 1; i < n; i++ {\n\t\tfor j := 0; j < i; j++ {\n\t\t\td := a[i] - a[j]\n\t\t\tp := sort.Search(n, func(x int) bool { return a[x] >= d })\n\t\t\tif p < n {\n\t\t\t\tans = min(ans, a[p]-d)\n\t\t\t}\n\t\t\tif p > 0 {\n\t\t\t\tans = min(ans, d-a[p-1])\n\t\t\t}\n\t\t\tif ans == 0 {\n\t\t\t\tfmt.Println(0)\n\t\t\t\treturn\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "0bf72ec9c2f2355fb2d8b7235c35fa1f53bc1bffbc7168ad5097cea1078cab34"
+    }
+  ]
+}

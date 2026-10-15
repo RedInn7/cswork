@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-6",
+  "packageChecksum": "3a04a722c87b58e892a2b4580d6ac0f62620986e54347868454bdc99cae874d4",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\nint main() {\n    int n; ll cost, price;\n    if (scanf(\"%d %lld %lld\", &n, &cost, &price) != 3) return 0;\n    vector<ll> len(n);\n    for (auto &x : len) scanf(\"%lld\", &x);\n    ll best = 0, maxLen = *max_element(len.begin(), len.end());\n    for (ll sale = 1; sale <= maxLen; sale++) {\n        ll per = sale * price, profit = 0;\n        for (ll rod : len) {\n            ll pieces = rod / sale, rem = rod % sale, gain;\n            if (pieces == 0) continue;\n            if (rem) gain = pieces * (per - cost);  // every kept piece needs a cut\n            else {\n                // All pieces need one cut fewer; otherwise keep at most pieces-1.\n                ll all = pieces * per - (pieces - 1) * cost;\n                ll partial = max(0LL, (pieces - 1) * (per - cost));\n                gain = max({0LL, all, partial});\n            }\n            profit += max(0LL, gain);\n        }\n        best = max(best, profit);\n    }\n    printf(\"%lld\\n\", best);\n}\n",
+      "sha256": "b4382658480a054c35d2a16d81ba65ea5668318bfea191a48143323c71d60ebb"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken(); int n = (int) st.nval;\n        st.nextToken(); long cost = (long) st.nval;\n        st.nextToken(); long price = (long) st.nval;\n        long[] len = new long[n];\n        long maxLen = 0;\n        for (int i = 0; i < n; i++) { st.nextToken(); len[i] = (long) st.nval; maxLen = Math.max(maxLen, len[i]); }\n        long best = 0;\n        for (long sale = 1; sale <= maxLen; sale++) {\n            long per = sale * price, profit = 0;\n            for (long rod : len) {\n                long pieces = rod / sale, rem = rod % sale, gain;\n                if (pieces == 0) continue;\n                if (rem != 0) gain = pieces * (per - cost); // every kept piece needs a cut\n                else {\n                    // All pieces need one cut fewer; otherwise keep at most pieces-1.\n                    long all = pieces * per - (pieces - 1) * cost;\n                    long partial = Math.max(0, (pieces - 1) * (per - cost));\n                    gain = Math.max(0, Math.max(all, partial));\n                }\n                profit += Math.max(0, gain);\n            }\n            best = Math.max(best, profit);\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "ce8dc47f105f758659dfd48a76c6a624981156fc25c69ae100851795e645c95e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"slices\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tvar cost, price int64\n\tfmt.Fscan(in, &n, &cost, &price)\n\tlength := make([]int64, n)\n\tfor i := range length {\n\t\tfmt.Fscan(in, &length[i])\n\t}\n\tvar best int64\n\tfor sale := int64(1); sale <= slices.Max(length); sale++ {\n\t\tper, profit := sale*price, int64(0)\n\t\tfor _, rod := range length {\n\t\t\tpieces, rem := rod/sale, rod%sale\n\t\t\tif pieces == 0 {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tvar gain int64\n\t\t\tif rem != 0 {\n\t\t\t\tgain = pieces * (per - cost) // every kept piece needs a cut\n\t\t\t} else {\n\t\t\t\t// All pieces need one cut fewer; otherwise keep at most pieces-1.\n\t\t\t\tall := pieces*per - (pieces-1)*cost\n\t\t\t\tpartial := max(0, (pieces-1)*(per-cost))\n\t\t\t\tgain = max(0, all, partial)\n\t\t\t}\n\t\t\tprofit += max(0, gain)\n\t\t}\n\t\tbest = max(best, profit)\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "1c7cb646c0a21e81a5e9f791b36bba0d70457cb16e0896590d4ea662131c4e05"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-16",
+  "packageChecksum": "8785d93bbf10f6920c2bf06fd9ace2c4a4ce7462d9dc993325fc57459c3cbc8e",
+  "sourceContentHash": "ff0a92b5b9258ca6aa9f427f631058fd048724c010d3b55a7b6b089650ecda45",
+  "editorialSha256": "eb53ecfcd1cfbc8f906dcc6bc5ce8b7536a40344e09d0a1d00dd85db0746eefa",
+  "hints": {
+    "zh": [
+      "表达式是嵌套的 add(x,y) 和 sub(x,y)。遇到右括号时，这一层调用的两个参数一定都已经求出了值。",
+      "不用递归（嵌套可能很深），而是用两个栈：操作栈记录尚未完成的 add/sub，数值栈记录已经求出的值。扫描到右括号时，弹出两个值和一个操作，算完后把结果压回数值栈。",
+      "逐字符扫描：遇到 a 或 s 就把 add 或 sub 压入操作栈并跳过三个字符；遇到 − 或数字就读出完整的有符号整数压入数值栈；遇到 ) 就先弹出右参数、再弹出左参数，按栈顶操作计算后压回；左括号、逗号和空格直接跳过；最后数值栈里唯一的值就是答案，中间值用 64 位整数。"
+    ],
+    "en": [
+      "The expression is nested add(x,y) and sub(x,y). When you reach a closing parenthesis, both arguments of that call have already been evaluated.",
+      "Avoid recursion (the nesting can be very deep) and use two stacks: an operator stack for the add/sub calls still open, and a value stack for evaluated values. At a closing parenthesis, pop two values and one operator, compute, and push the result back onto the value stack.",
+      "Scan character by character: on a or s push add or sub onto the operator stack and skip three characters; on - or a digit read the whole signed integer and push it; on ) pop the right argument first, then the left one, apply the top operator and push the result; skip opening parentheses, commas and spaces; at the end the only value left is the answer, and intermediate values use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLexically scan for add, sub, signed integers and closing parentheses. Use an operator stack and a value stack; when a closing parenthesis appears, pop two values and perform one operation, which avoids deep recursion.\n\n## Why it is correct\n\nWhen a closing parenthesis is reached, the subexpressions of its two arguments have already been evaluated, and the top of the value stack holds the right argument and then the left argument. Computing with the most recent unfinished operation and pushing the result back is equivalent to replacing the whole subexpression. After eliminating all operations from the inside out, only the total result remains.\n\n## Complexity\n\nO(L) time, O(L) extra space."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-13",
+  "packageChecksum": "3c21983199c95cfe6c755c30bcfdff3973668783a2ad8ad0d6bcfc781bc53630",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, m; long long x;\n    cin >> n >> m >> x;\n    vector<long long> pizza(n), top(m);\n    for (auto &v : pizza) cin >> v;\n    for (auto &v : top) cin >> v;\n    // Topping sums for 0, 1 or 2 distinct toppings.\n    vector<long long> extras = {0};\n    for (int i = 0; i < m; i++) extras.push_back(top[i]);\n    for (int i = 0; i < m; i++)\n        for (int j = i + 1; j < m; j++) extras.push_back(top[i] + top[j]);\n    long long ans = pizza[0];\n    for (long long p : pizza)\n        for (long long e : extras) {\n            long long c = p + e;\n            // Smaller distance to the budget first, then the lower price.\n            if (make_pair(llabs(c - x), c) < make_pair(llabs(ans - x), ans)) ans = c;\n        }\n    printf(\"%lld\\n\", ans);\n}\n",
+      "sha256": "66d3891721ef12c01867af79910df2b616e2e50f702b11518b247d2ac30d83fa"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt(), m = sc.nextInt();\n        long x = sc.nextLong();\n        long[] pizza = new long[n], top = new long[m];\n        for (int i = 0; i < n; i++) pizza[i] = sc.nextLong();\n        for (int i = 0; i < m; i++) top[i] = sc.nextLong();\n        // Topping sums for 0, 1 or 2 distinct toppings.\n        List<Long> extras = new ArrayList<>();\n        extras.add(0L);\n        for (int i = 0; i < m; i++) extras.add(top[i]);\n        for (int i = 0; i < m; i++)\n            for (int j = i + 1; j < m; j++) extras.add(top[i] + top[j]);\n        long ans = pizza[0];\n        for (long p : pizza)\n            for (long e : extras) {\n                long c = p + e, dc = Math.abs(c - x), da = Math.abs(ans - x);\n                // Smaller distance to the budget first, then the lower price.\n                if (dc < da || (dc == da && c < ans)) ans = c;\n            }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "1a3f50e7b2967ceeef631c5e41174979c4f4c576fd11fc927dbeae98413a741b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc abs(v int64) int64 {\n\tif v < 0 {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n, m int\n\tvar x int64\n\tfmt.Fscan(in, &n, &m, &x)\n\tpizza, top := make([]int64, n), make([]int64, m)\n\tfor i := range pizza {\n\t\tfmt.Fscan(in, &pizza[i])\n\t}\n\tfor i := range top {\n\t\tfmt.Fscan(in, &top[i])\n\t}\n\t// Topping sums for 0, 1 or 2 distinct toppings.\n\textras := append([]int64{0}, top...)\n\tfor i := 0; i < m; i++ {\n\t\tfor j := i + 1; j < m; j++ {\n\t\t\textras = append(extras, top[i]+top[j])\n\t\t}\n\t}\n\tans := pizza[0]\n\tfor _, p := range pizza {\n\t\tfor _, e := range extras {\n\t\t\tc := p + e\n\t\t\tdc, da := abs(c-x), abs(ans-x)\n\t\t\t// Smaller distance to the budget first, then the lower price.\n\t\t\tif dc < da || (dc == da && c < ans) {\n\t\t\t\tans = c\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "58b76257ec7a59044a66c198f22fb0e7400d87220d0b25dd33c8f050ead697b8"
+    }
+  ]
+}

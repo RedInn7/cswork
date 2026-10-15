@@ -1,0 +1,21 @@
+{
+  "id": "oa-fortinet-2",
+  "packageChecksum": "b85518907b9829cb1e64b038623c969172ebb5517a2177c1f043cba28051dc88",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n\nint main() {\n    long long n;\n    if (scanf(\"%lld\", &n) != 1) return 0;\n    const long long MOD = 1000000007LL;\n    long long t = 0;\n    // For fixed j: q full residue cycles (sum j(j-1)/2 each) plus residues 1..r.\n    for (long long j = 1; j <= n; j++) {\n        long long q = n / j, r = n % j;\n        long long s = q * j * (j - 1) / 2 + r * (r + 1) / 2;\n        t = (t + s) % MOD;\n    }\n    printf(\"%lld\\n\", 2 * t % MOD);\n}\n",
+      "sha256": "455adc0d6a417b851eadb01c80b092031fb36d1548d91f7101446aa26b8c79cf"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        long n = new Scanner(System.in).nextLong();\n        final long MOD = 1_000_000_007L;\n        long t = 0;\n        // For fixed j: q full residue cycles (sum j(j-1)/2 each) plus residues 1..r.\n        for (long j = 1; j <= n; j++) {\n            long q = n / j, r = n % j;\n            long s = q * j * (j - 1) / 2 + r * (r + 1) / 2;\n            t = (t + s) % MOD;\n        }\n        System.out.println(2 * t % MOD);\n    }\n}\n",
+      "sha256": "04787975e0edf1defdb0f3f0260339853161f02f5b34b949458305e266f4c2d4"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar n int64\n\tfmt.Scan(&n)\n\tconst MOD = 1_000_000_007\n\tvar t int64\n\t// For fixed j: q full residue cycles (sum j(j-1)/2 each) plus residues 1..r.\n\tfor j := int64(1); j <= n; j++ {\n\t\tq, r := n/j, n%j\n\t\ts := q*j*(j-1)/2 + r*(r+1)/2\n\t\tt = (t + s) % MOD\n\t}\n\tfmt.Println(2 * t % MOD)\n}\n",
+      "sha256": "d7800ee8893a7e63e3cc57fe88144d2220f12b24a44fed09b91fa9978aa4b327"
+    }
+  ]
+}

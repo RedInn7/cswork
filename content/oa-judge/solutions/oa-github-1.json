@@ -1,0 +1,21 @@
+{
+  "id": "oa-github-1",
+  "packageChecksum": "cd0d2000d54356d07f3133a4f46835aa2e359aa5d383a452e59eaa0b2576fffc",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long n, u;\n    if (scanf(\"%lld %lld\", &n, &u) != 2) return 0;\n    long long last = -1, answer = 0, v;  // last = weight of the last kept vehicle (-1: none)\n    for (long long i = 0; i < n && scanf(\"%lld\", &v) == 1; i++) {\n        if (v > u) answer++;\n        else if (last < 0 || last + v <= u) last = v;\n        else { answer++; last = min(last, v); }  // drop the heavier of the conflicting pair\n    }\n    printf(\"%lld\\n\", answer);\n}\n",
+      "sha256": "02b53edf4490a3e818988daf2e90f5a36767bdb940074c325ee16b8cc962ba95"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        DataInputStream in = new DataInputStream(new BufferedInputStream(System.in, 1 << 16));\n        long n = readLong(in), u = readLong(in);\n        long last = -1, answer = 0; // last = weight of the last kept vehicle (-1: none)\n        for (long i = 0; i < n; i++) {\n            long v = readLong(in);\n            if (v > u) answer++;\n            else if (last < 0 || last + v <= u) last = v;\n            else { answer++; last = Math.min(last, v); } // drop the heavier of the conflicting pair\n        }\n        System.out.println(answer);\n    }\n\n    static long readLong(DataInputStream in) throws IOException {\n        int b = in.read();\n        while (b != '-' && (b < '0' || b > '9')) b = in.read();\n        boolean neg = false;\n        if (b == '-') { neg = true; b = in.read(); }\n        long r = 0;\n        while (b >= '0' && b <= '9') { r = r * 10 + (b - '0'); b = in.read(); }\n        return neg ? -r : r;\n    }\n}\n",
+      "sha256": "5c0602927188ae30ebd1e0528a9068ca02061d5e3bdbd1ddfa8aad03be2788b6"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc readInt(in *bufio.Reader) int64 {\n\tb, _ := in.ReadByte()\n\tfor b != '-' && (b < '0' || b > '9') {\n\t\tb, _ = in.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, _ = in.ReadByte()\n\t}\n\tvar r int64\n\tfor b >= '0' && b <= '9' {\n\t\tr = r*10 + int64(b-'0')\n\t\tb, _ = in.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tin := bufio.NewReaderSize(os.Stdin, 1<<16)\n\tn, u := readInt(in), readInt(in)\n\tlast, answer := int64(-1), int64(0) // last = weight of the last kept vehicle (-1: none)\n\tfor i := int64(0); i < n; i++ {\n\t\tv := readInt(in)\n\t\tif v > u {\n\t\t\tanswer++\n\t\t} else if last < 0 || last+v <= u {\n\t\t\tlast = v\n\t\t} else {\n\t\t\tanswer++\n\t\t\tlast = min(last, v) // drop the heavier of the conflicting pair\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "50dc1d720275eff0c9906a48baa334ea9d084340e2add807ac321f7e64343518"
+    }
+  ]
+}

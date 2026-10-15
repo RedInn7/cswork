@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-29",
+  "packageChecksum": "d4312b52084d6cdacb1ba111106cd374f118f334c4b9ed702d694abef5f29b2d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\ntypedef long long ll;\n\nll cross(ll ux, ll uy, ll vx, ll vy, ll wx, ll wy) { return (vx - ux) * (wy - uy) - (vy - uy) * (wx - ux); }\n\nll x1, y1_, x2, y2, x3, y3;\n\n// Inside or on the boundary: the three edge cross products never have both signs.\nbool inside(ll px, ll py) {\n    ll z[3] = {cross(x1, y1_, x2, y2, px, py), cross(x2, y2, x3, y3, px, py), cross(x3, y3, x1, y1_, px, py)};\n    bool neg = false, pos = false;\n    for (ll v : z) { if (v < 0) neg = true; if (v > 0) pos = true; }\n    return !(neg && pos);\n}\n\nint main() {\n    ll xp, yp, xq, yq;\n    if (scanf(\"%lld %lld %lld %lld %lld %lld %lld %lld %lld %lld\", &x1, &y1_, &x2, &y2, &x3, &y3, &xp, &yp, &xq, &yq) != 10) return 0;\n    if (cross(x1, y1_, x2, y2, x3, y3) == 0) { puts(\"0\"); return 0; }  // degenerate triangle\n    bool p = inside(xp, yp), q = inside(xq, yq);\n    printf(\"%d\\n\", p && q ? 3 : p ? 1 : q ? 2 : 4);\n}\n",
+      "sha256": "1d76ae18e43c4d596b10be95a3c97f4ba2b23b42ec8202526c2d64b837dbd350"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    static long x1, y1, x2, y2, x3, y3;\n\n    static long cross(long ux, long uy, long vx, long vy, long wx, long wy) {\n        return (vx - ux) * (wy - uy) - (vy - uy) * (wx - ux);\n    }\n\n    // Inside or on the boundary: the three edge cross products never have both signs.\n    static boolean inside(long px, long py) {\n        long[] z = {cross(x1, y1, x2, y2, px, py), cross(x2, y2, x3, y3, px, py), cross(x3, y3, x1, y1, px, py)};\n        boolean neg = false, pos = false;\n        for (long v : z) { if (v < 0) neg = true; if (v > 0) pos = true; }\n        return !(neg && pos);\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        x1 = sc.nextLong(); y1 = sc.nextLong(); x2 = sc.nextLong(); y2 = sc.nextLong(); x3 = sc.nextLong(); y3 = sc.nextLong();\n        long xp = sc.nextLong(), yp = sc.nextLong(), xq = sc.nextLong(), yq = sc.nextLong();\n        if (cross(x1, y1, x2, y2, x3, y3) == 0) { System.out.println(0); return; } // degenerate triangle\n        boolean p = inside(xp, yp), q = inside(xq, yq);\n        System.out.println(p && q ? 3 : p ? 1 : q ? 2 : 4);\n    }\n}\n",
+      "sha256": "dade55aa18c3ff3cedcd13596a46b737b69b7f761162a17a8b22591c4cc2f674"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\ntype pt struct{ x, y int64 }\n\nfunc cross(u, v, w pt) int64 { return (v.x-u.x)*(w.y-u.y) - (v.y-u.y)*(w.x-u.x) }\n\nfunc main() {\n\tvar a, b, c, p, q pt\n\tfmt.Scan(&a.x, &a.y, &b.x, &b.y, &c.x, &c.y, &p.x, &p.y, &q.x, &q.y)\n\tif cross(a, b, c) == 0 { // degenerate triangle\n\t\tfmt.Println(0)\n\t\treturn\n\t}\n\t// Inside or on the boundary: the three edge cross products never have both signs.\n\tinside := func(r pt) bool {\n\t\tneg, pos := false, false\n\t\tfor _, v := range []int64{cross(a, b, r), cross(b, c, r), cross(c, a, r)} {\n\t\t\tif v < 0 {\n\t\t\t\tneg = true\n\t\t\t}\n\t\t\tif v > 0 {\n\t\t\t\tpos = true\n\t\t\t}\n\t\t}\n\t\treturn !(neg && pos)\n\t}\n\tip, iq := inside(p), inside(q)\n\tswitch {\n\tcase ip && iq:\n\t\tfmt.Println(3)\n\tcase ip:\n\t\tfmt.Println(1)\n\tcase iq:\n\t\tfmt.Println(2)\n\tdefault:\n\t\tfmt.Println(4)\n\t}\n}\n",
+      "sha256": "ca8206b07f3379db6debe78a6eb4144377c4aaa13b0953215f0ff610ebbe57fe"
+    }
+  ]
+}

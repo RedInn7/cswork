@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-12",
+  "packageChecksum": "be995b013bf4bf266dea7ba4d4393d5f2514052f09d974f4419ae95084e6b838",
+  "sourceContentHash": "898d9d323c94316ec0540244128ac54e22e6cdd71a656629c8ae4b44a5040fe8",
+  "editorialSha256": "9893c24027a7beb39b6fc21cd4e8d376bda6d76a29e8eaf4f9188dab02177895",
+  "hints": {
+    "zh": [
+      "单词只能从左到右或从上到下写，而且必须恰好填满一段被边界或 # 围住的连续格子。所以候选位置就是每一行、每一列按 # 切开后的所有段。",
+      "只有长度与单词相同的段才可能放下；对这样的段逐字符检查：格子是 _（空位）或者恰好是单词对应位置的字母即可。",
+      "把每一行和每一列（列可以拼成字符串）都按 # 拆成若干段；对每个长度等于单词长度的段，逐位检查是否为 _ 或与单词字母相同，全部兼容就输出 1；所有段都不行时输出 0。"
+    ],
+    "en": [
+      "A word can only be written left to right or top to bottom, and it must fill exactly one contiguous segment bounded by the border or by #. So the candidate positions are all segments of every row and every column after splitting on #.",
+      "Only segments whose length equals the word's length can work; for such a segment check each cell: it must be _ (empty) or exactly the word's letter at that position.",
+      "Split every row and every column (build each column as a string) into segments on #; for each segment whose length equals the word's, check position by position that it is _ or matches the word's letter, and print 1 if all positions are compatible; if no segment works, print 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit every row and every column on #; check only the segments with the same length as the word, confirming character by character that each cell is empty or the target letter.\n\n## Correctness\n\nA valid placement must correspond to exactly one row or column segment surrounded by walls or the border; conversely, a segment of the same length whose characters are all compatible can always take the word. Enumerating all these segments neither misses any placement nor accepts a partial segment.\n\n## Complexity\n\nO(rc) time, O(rc) space."
+}

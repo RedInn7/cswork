@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-15",
+  "packageChecksum": "9f10580c93cfd27ff710d064499ac3cb9733220caf6f08ab23ded9067de0de34",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<ll> x(n), y(n), r(n);\n    for (int i = 0; i < n; i++) scanf(\"%lld %lld %lld\", &x[i], &y[i], &r[i]);\n    // reach[i] = bombs reachable from i (directed, includes i itself).\n    vector<bitset<1000>> reach(n);\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < n; j++)\n            if ((x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]) <= r[i] * r[i]) reach[i][j] = 1;\n    // Warshall closure on bitsets: every row that reaches k absorbs k's row.\n    for (int k = 0; k < n; k++)\n        for (int i = 0; i < n; i++)\n            if (reach[i][k]) reach[i] |= reach[k];\n    size_t best = 0;\n    for (auto &row : reach) best = max(best, row.count());\n    printf(\"%zu\\n\", best);\n}\n",
+      "sha256": "a4233b521c02dfdc33678e64890e1342984ca51df409cb4f5120e95b26ca7e45"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken();\n        int n = (int) st.nval;\n        long[] x = new long[n], y = new long[n], r = new long[n];\n        for (int i = 0; i < n; i++) {\n            st.nextToken(); x[i] = (long) st.nval;\n            st.nextToken(); y[i] = (long) st.nval;\n            st.nextToken(); r[i] = (long) st.nval;\n        }\n        int w = (n + 63) / 64;\n        // reach[i] = bitset of bombs reachable from i (directed, includes i itself).\n        long[][] reach = new long[n][w];\n        for (int i = 0; i < n; i++)\n            for (int j = 0; j < n; j++) {\n                long dx = x[i] - x[j], dy = y[i] - y[j];\n                if (dx * dx + dy * dy <= r[i] * r[i]) reach[i][j >> 6] |= 1L << (j & 63);\n            }\n        // Warshall closure on bitsets: every row that reaches k absorbs k's row.\n        for (int k = 0; k < n; k++) {\n            long[] row = reach[k];\n            for (int i = 0; i < n; i++)\n                if ((reach[i][k >> 6] >>> (k & 63) & 1) == 1)\n                    for (int t = 0; t < w; t++) reach[i][t] |= row[t];\n        }\n        int best = 0;\n        for (long[] row : reach) {\n            int c = 0;\n            for (long v : row) c += Long.bitCount(v);\n            best = Math.max(best, c);\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "544ac6dd19d8875ccd0e5986e32e0d44a021cc55af2d38133a8667190df9f333"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math/bits\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\tx, y, r := make([]int64, n), make([]int64, n), make([]int64, n)\n\tfor i := 0; i < n; i++ {\n\t\tfmt.Fscan(in, &x[i], &y[i], &r[i])\n\t}\n\tw := (n + 63) / 64\n\t// reach[i] = bitset of bombs reachable from i (directed, includes i itself).\n\treach := make([][]uint64, n)\n\tfor i := range reach {\n\t\treach[i] = make([]uint64, w)\n\t\tfor j := 0; j < n; j++ {\n\t\t\tdx, dy := x[i]-x[j], y[i]-y[j]\n\t\t\tif dx*dx+dy*dy <= r[i]*r[i] {\n\t\t\t\treach[i][j>>6] |= 1 << (j & 63)\n\t\t\t}\n\t\t}\n\t}\n\t// Warshall closure on bitsets: every row that reaches k absorbs k's row.\n\tfor k := 0; k < n; k++ {\n\t\trow := reach[k]\n\t\tfor i := 0; i < n; i++ {\n\t\t\tif reach[i][k>>6]>>(k&63)&1 == 1 {\n\t\t\t\tfor t := range row {\n\t\t\t\t\treach[i][t] |= row[t]\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\tbest := 0\n\tfor _, row := range reach {\n\t\tc := 0\n\t\tfor _, v := range row {\n\t\t\tc += bits.OnesCount64(v)\n\t\t}\n\t\tbest = max(best, c)\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "3a328336ba885755e807742ada4a039315879ef6c8bc81b704a8bf05e700bce4"
+    }
+  ]
+}

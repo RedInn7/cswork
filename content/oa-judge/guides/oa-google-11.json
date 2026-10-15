@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-11",
+  "packageChecksum": "8b75b88fd497f2e2b8c8d5e7c0e2a741c0248776cd6e9ec85b4de82e289c1d58",
+  "sourceContentHash": "a39f25eadb1410fe795a1756fd13343dc85ec77371fe7d14ceb514a0fcd69ef9",
+  "editorialSha256": "742c0f9ff9f29ebbedcb38b40a52909e3dfee6a8415fbac4167dfd30b8746378",
+  "hints": {
+    "zh": [
+      "只需要覆盖目标区间本身，目标之间的空隙不用管；但一颗卫星可以跨过空隙同时覆盖多个目标。这是经典的“用最少区间覆盖”问题。",
+      "把目标和卫星都按起点排序，始终关注“当前最左边还没被覆盖的点”。在所有起点不晚于这个点的卫星里，选终点最远的那颗，换成它不会让后续覆盖变差。",
+      "维护已覆盖到的位置 end 和卫星指针；按顺序处理每个目标 [l, r]：若 end ≥ r 跳过；否则令 point = max(l, end)，当 point < r 时，把所有起点 ≤ point 的卫星依次纳入并记录最远终点 far；若 far ≤ point 说明无法覆盖，输出 −1；否则答案加一，令 end 与 point 都等于 far。全部处理完输出答案。"
+    ],
+    "en": [
+      "Only the target regions themselves must be covered, not the gaps between them; but one satellite may span a gap and cover several targets. This is the classic covering with the fewest intervals.",
+      "Sort targets and satellites by start, and always focus on the leftmost point not yet covered. Among the satellites starting at or before that point, choose the one reaching farthest; switching to it never makes later coverage worse.",
+      "Keep the covered-up-to position end and a satellite pointer; process each target [l, r] in order: skip it if end >= r; otherwise set point = max(l, end), and while point < r, take in every satellite whose start is <= point and record the farthest end far; if far <= point, coverage is impossible, print -1; otherwise increment the answer and set end and point to far. After all targets, print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the targets and the satellites separately. Scan the leftmost uncovered point of the targets, and among the satellites starting no later than that point choose the one with the farthest end; an already chosen range may span the gaps between targets.\n\n## Correctness\n\nThe next satellite that covers the current point and extends to the right must start at that point or earlier. Replacing the next satellite of any feasible plan with the one reaching farthest never reduces later coverage. Each exchange keeps the plan no worse, eliminating the uncovered parts of all targets one by one; when no satellite extends further, the part to the right of that point really cannot be covered.\n\n## Complexity\n\nO(n log n+m log m) time, O(n+m) space."
+}

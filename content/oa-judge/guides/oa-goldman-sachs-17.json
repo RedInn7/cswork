@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-17",
+  "packageChecksum": "2ca2435f3695905865e740142b0de691e91d646bb18f5f16f953350040ffcc34",
+  "sourceContentHash": "33ba76fa89371f1b938eeccaf92e909d51bef9d17b98c89189953885d748de8c",
+  "editorialSha256": "0b2b2ad73b746b9a4b3e97e16bd5d09ad0ee467798404629c42309420c3c4535",
+  "hints": {
+    "zh": [
+      "所需核心数就是任意时刻同时运行的进程数的最大值。注意区间两端都包含：进程在 end 那一刻仍在运行。",
+      "把每个进程拆成两个事件：start 时刻 +1，end+1 时刻 −1。按时间排序后从左到右扫描，当前累计值就是该时刻正在运行的进程数。",
+      "为每个进程生成 (start, +1) 和 (end+1, −1) 两个事件；按时间排序，同一时刻让 −1 排在 +1 前面（这样恰好在 end+1 时释放的核心可以复用）；扫描时累加并记录最大值，输出这个最大值。"
+    ],
+    "en": [
+      "The number of cores needed is the maximum number of processes running at the same moment. Both ends are inclusive: a process is still running at time end.",
+      "Split each process into two events: +1 at start and -1 at end+1. After sorting by time and scanning from left to right, the running total is the number of processes active at that moment.",
+      "Create events (start, +1) and (end+1, -1) for each process; sort by time, putting -1 before +1 at equal times (so a core released at end+1 can be reused right away); accumulate while scanning, track the maximum, and print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCreate a +1 event at each start and a −1 event one moment after each end, sort by time, scan while keeping the current concurrency, and take the maximum.\n\n## Proof of correctness\n\nBecause the interval endpoints are inclusive, a process is still running at time end, so its core is released only at end+1. After scanning past any event, the current count is exactly the number of processes running at that moment; its maximum is a lower bound on the cores needed over all moments, and that many cores suffice for a schedule.\n\n## Complexity\n\nO(n log n) time, O(n) space."
+}

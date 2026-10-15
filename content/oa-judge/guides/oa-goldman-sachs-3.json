@@ -1,0 +1,19 @@
+{
+  "id": "oa-goldman-sachs-3",
+  "packageChecksum": "d3f93077a424ff6d0254ef57a21975ae84a438a4f743f3dc4f18ade9403b419b",
+  "sourceContentHash": "8ce7272efa6e3367c2ece67eaa635cf6745139b680a946454cee69d7f753e058",
+  "editorialSha256": "06a316a2bafefda92db9ad3ed457388fbca72b52bf3a0143eaf36dba3ccf7d56",
+  "hints": {
+    "zh": [
+      "退格只影响它前面紧挨着的那个仍然保留的字符，空字符串上退格不起作用。这正是栈的行为：字母入栈，# 出栈。",
+      "分别把两个字符串处理成退格后的最终结果，再比较是否相同。处理时遇到小写字母就压栈，遇到 # 且栈非空就弹出一个字符。",
+      "读入两行；对每行建一个字符栈（可以直接用字符串或字符数组的末尾当栈顶），逐字符处理：字母追加，# 时若非空就删掉末尾；处理完比较两个结果，相等输出 1，否则输出 0。每串最长 200000，线性时间即可。"
+    ],
+    "en": [
+      "A backspace only affects the nearest kept character before it, and a backspace on an empty string does nothing. That is exactly stack behavior: letters push, # pops.",
+      "Turn each string into its final result after backspaces, then compare the two. While processing, push every lowercase letter, and on # pop one character if the stack is not empty.",
+      "Read the two lines; for each, build a character stack (the end of a string or char array works as the top) and process character by character: append a letter, and on # remove the last character if any; then compare the two results and print 1 if equal, otherwise 0. Each string has at most 200000 characters, so linear time is enough."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess each of the two strings with a stack. Push every lowercase letter; on `#`, pop one character if the stack is not empty, and ignore it when the stack is empty. Finally compare whether the two stacks are equal.\n\n## Correctness\n\nAfter scanning any prefix of a string, the stack holds exactly the characters that remain after performing all backspaces of that prefix as the statement defines, in their original order: ordinary characters are appended at the end, and a backspace deletes the last character when the stack is not empty and changes nothing when it is empty. Applying this to the complete strings and comparing the two results gives the correct answer.\n\n## Complexity\n\nWith string lengths n and m, the time is O(n+m) and the auxiliary space is O(n+m). The complete original limit is 200000 per string, and the formal package includes full-range boundaries for keeping, clearing, extra backspaces, and equal/unequal results."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-goldman-sachs-8",
+  "packageChecksum": "52753548d00cba05f9626c5f9720e1eba7e5bf6d934287a619f2c89841c3071d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    const int dx[] = {0, 1, 0, -1}, dy[] = {1, 0, -1, 0};\n    for (int i = 0; i < n; i++) {\n        string cmd;\n        cin >> cmd;\n        int x = 0, y = 0, dir = 0;\n        for (char c : cmd) {\n            if (c == 'G') { x += dx[dir]; y += dy[dir]; }\n            else if (c == 'L') dir = (dir + 3) % 4;\n            else dir = (dir + 1) % 4;\n        }\n        // Bounded iff back at the origin or facing a different direction after one pass.\n        puts((x == 0 && y == 0) || dir != 0 ? \"YES\" : \"NO\");\n    }\n}\n",
+      "sha256": "8d4a6fb3ad6e678f0e6ec25aa793a183012d7bd1f3f675c10eef6541d7492459"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int n = Integer.parseInt(st.nextToken());\n        int[] dx = {0, 1, 0, -1}, dy = {1, 0, -1, 0};\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            while (!st.hasMoreTokens()) st = new StringTokenizer(br.readLine());\n            String cmd = st.nextToken();\n            int x = 0, y = 0, dir = 0;\n            for (int j = 0; j < cmd.length(); j++) {\n                char c = cmd.charAt(j);\n                if (c == 'G') { x += dx[dir]; y += dy[dir]; }\n                else if (c == 'L') dir = (dir + 3) % 4;\n                else dir = (dir + 1) % 4;\n            }\n            // Bounded iff back at the origin or facing a different direction after one pass.\n            out.append((x == 0 && y == 0) || dir != 0 ? \"YES\" : \"NO\").append('\\n');\n        }\n        System.out.print(out);\n    }\n}\n",
+      "sha256": "35dfbce85c939cca817495b4190e53d365632198afe68826ed03d3ba9c51c3b6"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tin := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(in, &n)\n\tdx, dy := []int{0, 1, 0, -1}, []int{1, 0, -1, 0}\n\tfor i := 0; i < n; i++ {\n\t\tvar cmd string\n\t\tfmt.Fscan(in, &cmd)\n\t\tx, y, dir := 0, 0, 0\n\t\tfor _, c := range cmd {\n\t\t\tswitch c {\n\t\t\tcase 'G':\n\t\t\t\tx += dx[dir]\n\t\t\t\ty += dy[dir]\n\t\t\tcase 'L':\n\t\t\t\tdir = (dir + 3) % 4\n\t\t\tdefault:\n\t\t\t\tdir = (dir + 1) % 4\n\t\t\t}\n\t\t}\n\t\t// Bounded iff back at the origin or facing a different direction after one pass.\n\t\tif (x == 0 && y == 0) || dir != 0 {\n\t\t\tfmt.Println(\"YES\")\n\t\t} else {\n\t\t\tfmt.Println(\"NO\")\n\t\t}\n\t}\n}\n",
+      "sha256": "bc5071ac629dffc5fbacc8138d5f8ab0d35bff5d1f8f4a64da4371d493a81aaf"
+    }
+  ]
+}
