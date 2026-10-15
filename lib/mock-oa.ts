@@ -10,6 +10,16 @@ export type MockSource = 'mixed' | 'oa' | 'lc';
 export const SLOTS: readonly Slot[] = ['easy', 'medium', 'hard'];
 const RANK: Record<Slot, number> = { easy: 0, medium: 1, hard: 2 };
 
+/**
+ * What the real OA has besides coding. "None" (无) means coding only; "None (…)"
+ * keeps its remark (proctoring, dropped MCQs) as a coding-only note.
+ */
+export function extraSections(p: { sections_zh: string; sections_en: string }, zh: boolean) {
+  const text = zh ? p.sections_zh : p.sections_en;
+  const none = /^(?:None|无)\s*(?:[(（](.*)[)）])?$/.exec(text);
+  return none ? { codingOnly: true, text: none[1] ?? '' } : { codingOnly: false, text };
+}
+
 /** Catalogue difficulty (简单/中等/困难, or the English word) as a slot. */
 export function slotOf(difficulty?: string | null): Slot | null {
   const value = (

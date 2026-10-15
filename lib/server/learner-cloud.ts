@@ -566,7 +566,7 @@ async function handleLists(request: Request, p: Person | null, id?: string, acti
 // ---------------------------------------------------------------- public profile
 
 const RESERVED = new Set([
-  'admin', 'api', 'cswork', 'help', 'lists', 'me', 'owner', 'privacy', 'profile',
+  'admin', 'api', 'compare', 'cswork', 'help', 'lists', 'me', 'owner', 'privacy', 'profile',
   'root', 'settings', 'support', 'teacher', 'u', 'user', 'users',
 ]);
 export const HANDLE = /^[a-z0-9](?:[a-z0-9-]{1,28})[a-z0-9]$/;

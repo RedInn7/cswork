@@ -5,6 +5,7 @@ import { REPORT_CLEARED, REPORTS_HIDE } from '@/lib/community';
 import type { Person } from './auth';
 import { HttpError, json, limit, requirePerson } from './http';
 import { maskName } from './judge-feed';
+import { notify } from './notify';
 import { HANDLE, requireVerified } from './learner-cloud';
 import { readJson } from './my-practice';
 import { fileReport, reportReason } from './solution-posts';
@@ -106,14 +107,14 @@ function send(p: Person, thread: string, to: string, body: string, post: string 
       'INSERT INTO direct_messages(id,thread,from_user,to_user,body,post_id,hidden,created_at) VALUES(?,?,?,?,?,?,0,?)',
     ).run(randomUUID(), thread, p.id, to, body, post, now);
     if (!ringing)
-      db.prepare('INSERT INTO notifications(id,user_id,title,body,href,created_at) VALUES(?,?,?,?,?,?)').run(
-        randomUUID(),
-        to,
-        post ? '你收到一条内推请求' : '你收到一条新私信',
-        nameOf(p.id),
-        `/?view=messages&thread=${threadKey(thread)}`,
+      notify({
+        userId: to,
+        kind: 'dm',
+        title: post ? '你收到一条内推请求' : '你收到一条新私信',
+        body: nameOf(p.id),
+        href: `/?view=messages&thread=${threadKey(thread)}`,
         now,
-      );
+      });
   })();
 }
 

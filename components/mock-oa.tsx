@@ -34,6 +34,7 @@ import { STOP_NAMES, stopHref, topicName } from '@/lib/route-stops';
 import type { Boot } from '@/lib/types';
 import {
   archiveMock,
+  extraSections,
   findMock,
   finishMock,
   formatClock,
@@ -138,15 +139,6 @@ const LEVEL_NAME: Record<Slot, [string, string]> = {
   hard: ['困难', 'Hard'],
 };
 const MINUTES = [15, 30, 45, 60, 70, 75, 90, 120, 150, 180];
-/**
- * What the real OA has besides coding. "None" (无) means coding only; "None (…)"
- * keeps its remark (proctoring, dropped MCQs) as a coding-only note.
- */
-function extraSections(p: Preset, zh: boolean) {
-  const text = zh ? p.sections_zh : p.sections_en;
-  const none = /^(?:None|无)\s*(?:[(（](.*)[)）])?$/.exec(text);
-  return none ? { codingOnly: true, text: none[1] ?? '' } : { codingOnly: false, text };
-}
 const platformKey = (platform: string | null) =>
   (platform || '').split(/[\s/]/)[0].toLowerCase();
 /** Ids from the running mock and the last five, so a new draw brings fresh problems. */

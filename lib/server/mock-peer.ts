@@ -10,6 +10,7 @@ import type { Person } from './auth';
 import { HttpError, json, limit, requirePerson } from './http';
 import { reportCompanies } from './learner-cloud';
 import { readJson } from './my-practice';
+import { notify as notice } from './notify';
 import { plain } from './study-groups';
 
 /**
@@ -121,11 +122,8 @@ function busy(user: string, now: number) {
 const templateName = (kind: string, zh: boolean) => TEMPLATES.find((t) => t.id === kind)?.name[zh ? 0 : 1] ?? kind;
 
 /** Titles are fixed text (translated when shown); the body is written in the learner's language. */
-function notify(user: string, title: string, body: string, pair: string, now: number) {
-  sqlite()
-    .prepare('INSERT INTO notifications(id,user_id,title,body,href,created_at) VALUES(?,?,?,?,?,?)')
-    .run(randomBytes(16).toString('hex'), user, title, body, `/?view=mock-peer&pair=${pair}`, now);
-}
+const notify = (userId: string, title: string, body: string, pair: string, now: number) =>
+  notice({ userId, kind: 'mock-peer', title, body, href: `/?view=mock-peer&pair=${pair}`, now });
 const sideOf = (req: Pick<RequestRow, 'user_id' | 'tz' | 'locale'>) => ({ user: req.user_id, tz: req.tz, zh: req.locale === 'zh' });
 /** " · In common: Google, Graphs" for a match notice, or nothing. */
 function focusText(f: Focus | undefined, zh: boolean) {

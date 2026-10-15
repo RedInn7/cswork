@@ -4,6 +4,7 @@
  * tests. v1 keeps the goal in this browser only (planStorageKey), like the mock
  * OA history; syncing it across devices needs a table.
  */
+import { calendar, escapeText, vevent } from './ics';
 import { slotOf, SLOTS, type Slot } from './mock-oa';
 import { ROUTE_SLUGS, stopPrereqs } from './route-stops';
 
@@ -491,7 +492,6 @@ export function planWeeks(days: readonly PlanDay[]): PlanWeek[] {
   return weeks;
 }
 
-// RFC 5545 text: escape, then fold to 75 octets with CRLF + space.
 /** The plan's week list can group by week (planWeeks), stop or difficulty; this browser remembers. */
 export type PlanGroupBy = 'week' | 'topic' | 'difficulty';
 export type PlanOrder = 'plan' | 'difficulty';
@@ -546,29 +546,7 @@ export function planGroups(days: readonly PlanDay[], by: 'topic' | 'difficulty',
   return list;
 }
 
-const escapeText = (text: string) =>
-  text.replace(/[\\;,]/g, '\\$&').replace(/\r?\n/g, '\\n');
-function fold(line: string) {
-  const parts: string[] = [];
-  let part = '',
-    size = 0;
-  for (const ch of line) {
-    const cp = ch.codePointAt(0)!;
-    const bytes = cp < 0x80 ? 1 : cp < 0x800 ? 2 : cp < 0x10000 ? 3 : 4;
-    if (size + bytes > (parts.length ? 74 : 75)) {
-      parts.push(part);
-      part = '';
-      size = 0;
-    }
-    part += ch;
-    size += bytes;
-  }
-  parts.push(part);
-  return parts.join('\r\n ');
-}
 const compact = (date: string) => date.replaceAll('-', '');
-const utcStamp = (now: Date) =>
-  now.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 
 /**
  * The plan as an iCalendar file: daily practice series before and in the sprint
@@ -593,27 +571,9 @@ export function planIcs({
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const at = (date: string) => `${compact(date)}T${time.replace(':', '')}00`;
-  const lines = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//CSWork//Study Plan//EN',
-    'CALSCALE:GREGORIAN',
-    'METHOD:PUBLISH',
-    `X-WR-CALNAME:${escapeText(t('CSWork 冲刺计划', 'CSWork sprint plan'))}`,
-  ];
-  const event = (uid: string, fields: string[], alarm: string, note: string) =>
-    lines.push(
-      'BEGIN:VEVENT',
-      `UID:cswork-plan-${uid}@cswork.org`,
-      `DTSTAMP:${utcStamp(now)}`,
-      ...fields,
-      'BEGIN:VALARM',
-      'ACTION:DISPLAY',
-      `DESCRIPTION:${escapeText(note)}`,
-      `TRIGGER:${alarm}`,
-      'END:VALARM',
-      'END:VEVENT',
-    );
+  const events: string[][] = [];
+  const event = (uid: string, fields: string[], trigger: string, note: string) =>
+    events.push(vevent(`cswork-plan-${uid}@cswork.org`, now, fields, { trigger, note }));
   const company = goal.company;
   // One series before the sprint and one in it: their paces differ.
   for (const sprint of [false, true]) {
@@ -694,6 +654,14 @@ export function planIcs({
       summary,
     );
   }
-  lines.push('END:VCALENDAR');
-  return lines.map(fold).join('\r\n') + '\r\n';
+  return calendar(
+    [
+      'VERSION:2.0',
+      'PRODID:-//CSWork//Study Plan//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      `X-WR-CALNAME:${escapeText(t('CSWork 冲刺计划', 'CSWork sprint plan'))}`,
+    ],
+    events,
+  );
 }

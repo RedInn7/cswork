@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CalendarPlus, Check, Clock3, Flag, Link2, Users, Video, X, Zap } from 'lucide-react';
 import { api } from '@/lib/types';
+import { calendar, escapeText, utcStamp, vevent } from '@/lib/ics';
 import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { TEMPLATES } from '@/lib/mock-interview';
@@ -97,28 +98,21 @@ const when = (ms: number, english: boolean) =>
     hour: '2-digit',
     minute: '2-digit',
   });
-const stamp = (ms: number) => new Date(ms).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-
 /** An .ics event for the session, built in the browser. */
 export function icsFor(pair: PeerPair, site: string, english: boolean) {
   const name = templateOf(pair.kind)?.name[english ? 1 : 0] ?? pair.kind;
-  const text = (s: string) => s.replace(/[\\;,]/g, (c) => `\\${c}`).replace(/\n/g, '\\n');
-  return [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//CSWork//Peer mock interview//EN',
-    'BEGIN:VEVENT',
-    `UID:${pair.id}@cswork`,
-    `DTSTAMP:${stamp(Date.now())}`,
-    `DTSTART:${stamp(pair.start)}`,
-    `DTEND:${stamp(pair.start + minutesOf(pair.kind) * 60000)}`,
-    `SUMMARY:${text(english ? `CSWork peer mock interview: ${name}` : `CSWork 同伴模拟面试：${name}`)}`,
-    `DESCRIPTION:${text(`${english ? 'Partner' : '对方'}: ${pair.partner}\n${pair.meetUrl || site + '/?view=mock-peer&pair=' + pair.id}`)}`,
-    `URL:${site}/?view=mock-peer&pair=${pair.id}`,
-    'END:VEVENT',
-    'END:VCALENDAR',
-    '',
-  ].join('\r\n');
+  return calendar(
+    ['VERSION:2.0', 'PRODID:-//CSWork//Peer mock interview//EN'],
+    [
+      vevent(`${pair.id}@cswork`, Date.now(), [
+        `DTSTART:${utcStamp(pair.start)}`,
+        `DTEND:${utcStamp(pair.start + minutesOf(pair.kind) * 60000)}`,
+        `SUMMARY:${escapeText(english ? `CSWork peer mock interview: ${name}` : `CSWork 同伴模拟面试：${name}`)}`,
+        `DESCRIPTION:${escapeText(`${english ? 'Partner' : '对方'}: ${pair.partner}\n${pair.meetUrl || site + '/?view=mock-peer&pair=' + pair.id}`)}`,
+        `URL:${site}/?view=mock-peer&pair=${pair.id}`,
+      ]),
+    ],
+  );
 }
 
 /** ?view=mock-peer: ask for a partner, then the sessions (&pair= highlights one). */
