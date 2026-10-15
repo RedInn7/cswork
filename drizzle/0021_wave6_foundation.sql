@@ -1,1 +1,0 @@
-ALTER TABLE `notifications` ADD `kind` text DEFAULT '' NOT NULL;
