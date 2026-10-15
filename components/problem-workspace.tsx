@@ -727,11 +727,12 @@ function Workspace({
   const activeStorageKey = `cswork:oj:active:${userId}:${initialProblem.id}${drillN === null ? '' : `:drill:${drillN}`}`;
   const draftActive = !!submission && activeStatuses.has(submission.status);
   const pending = submitting || draftActive;
-  // A drill: lines changed so far (its program is Python), and a pass once accepted within the budget.
+  // A drill: lines changed so far (its program is Python), and a pass once accepted within the
+  // budget; the verdict stands until the code is edited again.
   const drillChanged = drillItem && language === 'python' ? changedLines(drillItem.code, code) : null;
   const drillVerdict =
-    drillItem && submission?.mode === 'drill' && submission.status === 'accepted' && submission.code !== undefined
-      ? changedLines(drillItem.code, submission.code)
+    drillChanged !== null && submission?.mode === 'drill' && submission.status === 'accepted' && submission.code === code
+      ? drillChanged
       : null;
   const drillPassed = !!drillItem && drillVerdict !== null && drillVerdict <= drillItem.budget;
   useEffect(() => {
