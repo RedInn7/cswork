@@ -750,7 +750,8 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     contest: contest.map(({ week, kind, after, rank, entrants }) => ({ week, kind, after, rank, entrants })),
     // Ranked duels (lib/server/duels.ts), under the same opt-in; null before the first.
     duel: duel?.played ? duel : null,
-    badges: profileBadges(profile.user_id, catalogue, stops, contest),
+    // The contest badges are the weekly's (lib/achievements.ts): starters don't count toward them.
+    badges: profileBadges(profile.user_id, catalogue, stops, contest.filter((c) => c.kind === 'weekly')),
     posts: {
       items: posts.slice(0, 10).map((post) => ({
         id: post.id,

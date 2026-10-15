@@ -257,3 +257,11 @@ void test('shared code: opt-in, first AC in the window, RATE_GRACE after the end
   assert.equal(await status(null, 'GET', `contests/${ID}/code?problem=${ids[0]}`), 401);
   assert.equal(await status(amy, 'GET', `contests/${ID}/code?problem=x`), 400);
 });
+
+void test("a profile curves starters too, but the contest badges stay the weekly's", async () => {
+  assert.equal((await call(amy, 'POST', 'profile', { handle: 'amy-racer', visible: true, showContest: true })).status, 200);
+  const { publicProfile } = await import('../lib/server/learner-cloud');
+  const profile = publicProfile('amy-racer', new Map())!;
+  assert.deepEqual(profile.contest.map((c) => c.kind), ['starter']);
+  assert.ok(!profile.badges.some((b) => b.group === 'contest'));
+});
