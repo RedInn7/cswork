@@ -246,7 +246,7 @@ export async function handleNotify(request: Request, p: Person | null, path: str
       ).run(randomUUID(), p.id, endpoint, now);
       db.prepare(
         `DELETE FROM push_subscriptions WHERE user_id=? AND id NOT IN
-        (SELECT id FROM push_subscriptions WHERE user_id=? ORDER BY created_at DESC,id LIMIT ${DEVICES_MAX})`,
+        (SELECT id FROM push_subscriptions WHERE user_id=? ORDER BY created_at DESC,rowid DESC LIMIT ${DEVICES_MAX})`,
       ).run(p.id, p.id);
     })();
     return json(settings(p));
