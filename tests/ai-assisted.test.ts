@@ -58,7 +58,7 @@ const { runProject, projectVerdict } = await import('../lib/server/oj-engine');
 const { createProjectRun, submissionDetail, submissionHistory, cancelSubmission } = await import('../lib/server/oj-submissions');
 const { judgeFeed } = await import('../lib/server/judge-feed');
 const { aiRoundCompanies, pairContext, PAIR_CONTEXT_CHARS } = await import('../lib/server/ai-rounds');
-const { takeQuota, AI_DAILY_LIMITS, today } = await import('../lib/server/ai-tutor');
+const { takeQuota, tidyReply, AI_DAILY_LIMITS, today } = await import('../lib/server/ai-tutor');
 const { handleOj } = await import('../lib/server/oj-api');
 
 const me: Person = { id: 'aa-me', name: 'Me', email: 'aa-me@example.test', role: 'student', verified: true };
@@ -280,6 +280,7 @@ void test('the AI pair is off without a key, sends a capped context with the las
   assert.equal(reply.remaining, AI_DAILY_LIMITS.pair - 1);
   const call = sent[0];
   assert.equal(call.system.includes('AI pair programmer'), true);
+  assert.ok(call.system.includes('each at most 60 lines and 120 lines in all'), 'the code caps tidyReply enforces');
   assert.ok(call.max_tokens <= 4096);
   const prompt = call.messages.map((m) => m.content).join('\n');
   assert.ok(prompt.length <= PAIR_CONTEXT_CHARS + 200, String(prompt.length));
@@ -323,6 +324,15 @@ void test('the AI pair is off without a key, sends a capped context with the las
   sqlite().prepare("INSERT INTO contest_entries(room_id,user_id,display_name,joined_at) VALUES('aa-room',?,'Me',?)").run(me.id, now);
   await assert.rejects(ask({}), status(403));
   delete process.env.ANTHROPIC_API_KEY;
+});
+
+void test('a pair reply within its stated caps comes back whole', () => {
+  const block = (name: string) => ['```python', ...Array.from({ length: 60 }, (_, i) => `    ${name}_${i} = compute(${name}, ${i})  # line ${i}`.padEnd(50, '.')), '```'].join('\n');
+  const prose = Array.from({ length: 150 }, (_, i) => `word${i} other`).join(' ');
+  const reply = `${prose}\n\n${block('a')}\n\nIn src/b.py:\n\n${block('b')}`;
+  assert.equal(tidyReply(reply, 'pair'), reply);
+  // A third 60-line block is past the 120 lines in all.
+  assert.equal(tidyReply(`${reply}\n\n${block('c')}`, 'pair'), reply);
 });
 
 void test("the names of the files left out count toward the pair's budget", () => {
