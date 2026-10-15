@@ -562,16 +562,13 @@ const PATTERNS: [RegExp, (...m: string[]) => string][] = [
   [/^题目文件最多 (\d+(?:\.\d+)?) MiB$/, (n) => `The problem file can be at most ${n} MiB`],
   [/^课程更新：([\s\S]+)$/, (title) => `Course update: ${title}`],
   [/^服务暂时不可用（(\d+)）$/, (status) => `Service temporarily unavailable (${status})`],
-<<<<<<< HEAD
   // POST problems/<id>/expected (lib/testcase-fields.ts checkConstraints)
   [
     /^超出题目约束：(\S+) (长度|节点数|的值) (\S+ [<>] \S+)$/,
     (name, what, rest) =>
       `Outside the problem's constraints: ${name} ${what === '的值' ? 'value' : what === '节点数' ? 'node count' : 'length'} ${rest}`,
   ],
-=======
   [/^(\d+) 人赞了你的帖子$/, (n) => `${n} ${n === '1' ? 'person' : 'people'} upvoted your post`],
->>>>>>> feat/wave6a-g3-20261015
 ];
 
 export function englishMessage(message: string) {

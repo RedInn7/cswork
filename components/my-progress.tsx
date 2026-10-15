@@ -19,6 +19,7 @@ import { BadgeWall, progressBadges } from './achievements';
 import { MockCloudHistory } from './mock-cloud-history';
 import { FollowBoard } from './follow-board';
 import { MyExperienceSubmissions } from './experience-submissions';
+import { YearRecapCard } from './year-recap-card';
 import { LevelPicks } from './level-picks';
 import { PointsPanel } from './points-panel';
 import { Button } from './ui/button';
@@ -696,6 +697,14 @@ export function MyProgress({
           panel()
         )}
       </div>
+      {data && (
+        <YearRecapCard
+          history={data.history}
+          english={english}
+          handle={profile?.value.visible ? profile.value.handle : null}
+          now={data.now}
+        />
+      )}
       {boot.person && <PointsPanel english={english} onChange={(s) => setBought(s.freezes.purchased)} />}
       {boot.person && <MockCloudHistory userId={boot.person.id} navigate={navigate} english={english} />}
       {boot.person && <InterviewCalibration english={english} />}

@@ -298,25 +298,54 @@ export async function settleDuels(now = Date.now()) {
   for (const row of due) settleDuel(row, roomStandings(row, await roomProblems(row), now).live, now);
 }
 
-/** Current ratings, highest first: weekly display names only, never accounts. */
-export async function leaderboard(p: Person | null, max = 100, now = Date.now()) {
+/**
+ * Current ratings, highest first: weekly display names only, never accounts. With `school` (a
+ * school_key), only learners whose public profile shows both that school and their contests:
+ * their curve already ties the contest name to the handle, so the board links it.
+ */
+export async function leaderboard(p: Person | null, max = 100, now = Date.now(), school?: string) {
   await settleWeeklies(now);
   const rows = sqlite()
     .prepare(
-      `SELECT r.user_id,r.after AS rating,e.display_name AS name,
+      `SELECT r.user_id,r.after AS rating,e.display_name AS name,${school ? 'up.handle' : 'NULL'} AS handle,
         (SELECT COUNT(*) FROM contest_ratings x WHERE x.user_id=r.user_id) AS contests
       FROM contest_ratings r JOIN contest_rooms c ON c.id=r.room_id
       LEFT JOIN contest_entries e ON e.room_id=r.room_id AND e.user_id=r.user_id
+      ${school ? 'JOIN user_profiles up ON up.user_id=r.user_id AND up.visible=1 AND up.show_contest=1 AND up.school_key=@school' : ''}
       WHERE c.starts_at=(SELECT MAX(c2.starts_at) FROM contest_ratings r2 JOIN contest_rooms c2 ON c2.id=r2.room_id
         WHERE r2.user_id=r.user_id)
-      ORDER BY r.after DESC,c.starts_at,r.user_id LIMIT ?`,
+      ORDER BY r.after DESC,c.starts_at,r.user_id LIMIT @max`,
     )
-    .all(max) as { user_id: string; rating: number; name: string | null; contests: number }[];
+    .all(school ? { max, school } : { max }) as {
+    user_id: string;
+    rating: number;
+    name: string | null;
+    handle: string | null;
+    contests: number;
+  }[];
   let rank = 0;
   return rows.map((r, i) => {
     if (!i || rows[i - 1].rating !== r.rating) rank = i + 1;
-    return { rank, name: r.name ?? '—', rating: r.rating, contests: r.contests, me: r.user_id === p?.id };
+    return { rank, name: r.name ?? '—', handle: r.handle, rating: r.rating, contests: r.contests, me: r.user_id === p?.id };
   });
+}
+
+/**
+ * Self-reported schools with at least 3 rated learners showing both school and contests (exactly
+ * who leaderboard(..., school) lists), biggest first.
+ */
+export function schoolBoards() {
+  // ponytail: the most used spelling (then shortest) names a school; a canonical list if spellings clash.
+  return sqlite()
+    .prepare(
+      `WITH m AS (SELECT school_key AS key,school FROM user_profiles p
+        WHERE visible=1 AND show_contest=1 AND school_key<>''
+          AND EXISTS (SELECT 1 FROM contest_ratings r WHERE r.user_id=p.user_id))
+      SELECT key,(SELECT s.school FROM m s WHERE s.key=m.key GROUP BY s.school
+          ORDER BY COUNT(*) DESC,LENGTH(s.school),s.school LIMIT 1) AS name,COUNT(*) AS members
+      FROM m GROUP BY key HAVING COUNT(*)>=3 ORDER BY members DESC,key LIMIT 100`,
+    )
+    .all() as { key: string; name: string; members: number }[];
 }
 
 // ---------------------------------------------------------------- rooms

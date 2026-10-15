@@ -1,30 +1,46 @@
 import { headers } from 'next/headers';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { CONTEST_BANDS } from '@/lib/contest';
 import { seoMetadata } from '@/lib/seo';
 import { person } from '@/lib/server/auth';
-import { leaderboard } from '@/lib/server/contests';
+import { leaderboard, schoolBoards } from '@/lib/server/contests';
 import { origin } from '@/lib/server/env';
+import { schoolKey } from '@/lib/server/learner-cloud';
 import { requestLocale } from '@/lib/server/locale';
 import { BandChip } from '@/components/contest-parts';
 
-export async function generateMetadata(): Promise<Metadata> {
+type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const zh = (await requestLocale()) === 'zh';
-  return seoMetadata({
-    title: zh ? '周赛与入门赛 Rating 排行榜 · cswork' : 'Weekly and starter contest ratings · cswork',
-    description: zh
-      ? 'CSWork 周赛与入门赛共用的 Elo rating 排行榜与段位：车库、站站停、快车、直达、特快、高铁、磁浮。'
-      : 'Elo ratings from the CSWork weekly and starter contests, by band: Depot, Local, Express, Rapid, Limited, Bullet, Maglev.',
-    path: '/contest/leaderboard',
-  });
+  return {
+    ...seoMetadata({
+      title: zh ? '周赛与入门赛 Rating 排行榜 · cswork' : 'Weekly and starter contest ratings · cswork',
+      description: zh
+        ? 'CSWork 周赛与入门赛共用的 Elo rating 排行榜与段位：车库、站站停、快车、直达、特快、高铁、磁浮。'
+        : 'Elo ratings from the CSWork weekly and starter contests, by band: Depot, Local, Express, Rapid, Limited, Bullet, Maglev.',
+      path: '/contest/leaderboard',
+    }),
+    // School boards rest on self-reported schools: kept out of search.
+    ...((await searchParams).school ? { robots: { index: false, follow: false } } : {}),
+  };
 }
 
-/** /contest/leaderboard: the top 100 current ratings, by the name each raced under last. */
-export default async function ContestLeaderboardPage() {
+/**
+ * /contest/leaderboard: the top 100 current ratings, by the name each raced under last.
+ * ?school=<key>: a school with at least 3 learners showing school and contests on their profile.
+ */
+export default async function ContestLeaderboardPage({ searchParams }: Props) {
   const viewer = await person(new Request(origin(), { headers: await headers() })).catch(() => null);
   const zh = (await requestLocale()) === 'zh';
   const t = (a: string, b: string) => (zh ? a : b);
-  const rows = await leaderboard(viewer);
+  const wanted = (await searchParams).school;
+  const boards = schoolBoards();
+  const school = typeof wanted === 'string' ? boards.find((b) => b.key === schoolKey(wanted)) : undefined;
+  if (wanted !== undefined && !school) notFound();
+  const rows = await leaderboard(viewer, 100, undefined, school?.key);
   return (
     <article className="contest-leaderboard">
       <section className="lists-public-hero contest-hero">
@@ -47,10 +63,37 @@ export default async function ContestLeaderboardPage() {
           ))}
         </ul>
       </section>
+      {!!boards.length && (
+        <nav className="contest-schools" aria-label={t('学校排行榜', 'School boards')}>
+          <Link href="/contest/leaderboard" prefetch={false} aria-current={school ? undefined : 'page'}>
+            {t('全站', 'Everyone')}
+          </Link>
+          {boards.map((b) => (
+            <Link
+              key={b.key}
+              href={`/contest/leaderboard?school=${encodeURIComponent(b.key)}`}
+              prefetch={false}
+              aria-current={b.key === school?.key ? 'page' : undefined}
+            >
+              {b.name} <small>{b.members}</small>
+            </Link>
+          ))}
+        </nav>
+      )}
+      {school && (
+        <p className="contest-hidden-note">
+          {t(
+            `${school.name}：学校是学习者自己填写的，未经验证。只列出公开主页、同时展示学校和比赛记录的人。`,
+            `${school.name}: schools are self-reported and unverified. Only learners whose public profile shows both their school and their contests are listed.`,
+          )}
+        </p>
+      )}
       {rows.length ? (
         <div className="contest-board-wrap" role="region" aria-label={t('排行榜', 'Leaderboard')} tabIndex={0}>
           <table className="contest-board contest-ratings">
-            <caption>{t('当前 rating 前 100', 'Top 100 current ratings')}</caption>
+            <caption>
+              {school ? t(`${school.name} · 当前 rating`, `${school.name} · current ratings`) : t('当前 rating 前 100', 'Top 100 current ratings')}
+            </caption>
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -64,7 +107,7 @@ export default async function ContestLeaderboardPage() {
                 <tr key={i} data-me={r.me || undefined}>
                   <td className="contest-rank">{r.rank}</td>
                   <th scope="row">
-                    {r.name}
+                    {r.handle ? <a href={`/u/${r.handle}`}>{r.name}</a> : r.name}
                     {r.me && <small>{t('你', 'you')}</small>}
                   </th>
                   <td>

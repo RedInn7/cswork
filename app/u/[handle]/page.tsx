@@ -1,13 +1,16 @@
+import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { cache } from 'react';
 import { seoMetadata } from '@/lib/seo';
-import { publicCatalogue, publicProfile } from '@/lib/server/learner-cloud';
+import { person } from '@/lib/server/auth';
+import { origin } from '@/lib/server/env';
+import { ownerHandle, publicCatalogue, publicProfile, publicYear } from '@/lib/server/learner-cloud';
 import { profileCertificates } from '@/lib/server/certificates';
 import { requestLocale } from '@/lib/server/locale';
 import { ProfileView } from '../views';
 
-type Props = { params: Promise<{ handle: string }> };
+type Props = { params: Promise<{ handle: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
 /** Off, missing and reserved handles are all a plain 404: nothing says an account exists. */
 const load = cache(async (handle: string) => {
@@ -34,6 +37,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function LearnerProfilePage({ params }: Props) {
-  return <ProfileView {...await load((await params).handle)} />;
+export default async function LearnerProfilePage({ params, searchParams }: Props) {
+  const page = await load((await params).handle);
+  // ?year=: one of the years the page lists; anything else shows the last half year.
+  const wanted = Number((await searchParams).year);
+  const year = page.profile.years.includes(wanted) ? publicYear(page.profile.handle, wanted, page.catalogue) : null;
+  const viewer = await person(new Request(origin(), { headers: await headers() })).catch(() => null);
+  return (
+    <ProfileView
+      {...page}
+      year={year ? { year: year.year, activity: year.activity } : undefined}
+      viewer={viewer ? ownerHandle(viewer.id) : null}
+    />
+  );
 }
