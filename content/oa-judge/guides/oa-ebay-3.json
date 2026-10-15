@@ -1,0 +1,19 @@
+{
+  "id": "oa-ebay-3",
+  "packageChecksum": "d3757492efd001b79530076236b9ae6c839c46bbd83f7d1e643ea5a67c18e327",
+  "sourceContentHash": "cc78dca0097c1926c400a3288e2550d1a6b64751b1491c093a8b679204020ed1",
+  "editorialSha256": "fa8decc14cd0944bf62bbaf2c02f9546b2270e83470f0d29fbdb58256e57edba",
+  "hints": {
+    "zh": [
+      "每个合法中心都要求一个 (2r+1)×(2r+1) 窗口的和，逐格累加太慢；二维前缀和可以 O(1) 求任意矩形的和。",
+      "所有窗口都基于原图计算，所以先对原图建前缀和，再把结果写进另一个数组，不能边算边覆盖。只有窗口完整落在图内的中心（行在 [r, h−r)、列在 [r, w−r)）才替换，其余像素保持原值。",
+      "令 p[i+1][j+1] = a[i][j] + p[i][j+1] + p[i+1][j] − p[i][j]。对合法中心 (i, j)，窗口和为 p[i+r+1][j+r+1] − p[i−r][j+r+1] − p[i+r+1][j−r] + p[i−r][j−r]，新值为它整除 (2r+1)²。最后按 h 行、空格分隔输出整个矩阵。"
+    ],
+    "en": [
+      "Every valid center needs the sum of a (2r+1) x (2r+1) window, and adding cells one by one is too slow; a 2D prefix sum gives the sum of any rectangle in O(1).",
+      "All windows use the original image, so build the prefix sums on the original and write results into a separate array instead of overwriting as you go. Only centers whose window lies fully inside the image (rows in [r, h-r), columns in [r, w-r)) are replaced; every other pixel keeps its value.",
+      "Let p[i+1][j+1] = a[i][j] + p[i][j+1] + p[i+1][j] - p[i][j]. For a valid center (i, j) the window sum is p[i+r+1][j+r+1] - p[i-r][j+r+1] - p[i+r+1][j-r] + p[i-r][j-r], and the new value is that sum divided by (2r+1)^2, rounded down. Print the matrix as h space-separated rows."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA 2D prefix sum gives the sum of any square window in constant time; each valid center is replaced by the quotient of the window sum divided by the window area.\n\n## Correctness\n\nInclusion-exclusion on the prefix sums gives the window sum of the original image, and integer division rounding down is exactly the floor mean of the statement; only centers of complete windows are written, and all other cells keep their original values.\n\n## Complexity\n\nO(hw) time and space."
+}

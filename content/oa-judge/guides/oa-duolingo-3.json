@@ -1,0 +1,19 @@
+{
+  "id": "oa-duolingo-3",
+  "packageChecksum": "b94a7d90408bfedb779b12ec24c0091ff842a7c101eb36fc9e5e801e039627d3",
+  "sourceContentHash": "741b09b83f84bf5c16574e05cb1fb6d00902b4ba2ff5af009f1cf4cadac19efb",
+  "editorialSha256": "3d446c0151d8798ce79c9b99a2dc64e95c664371c87de89e8a1b42f209b22f0a",
+  "hints": {
+    "zh": [
+      "只需要一次从左到右的扫描，维护“到目前为止见过几个辅音”的计数；非字母字符和元音既不计数也不改动。",
+      "辅音是英文字母中去掉 a、e、i、o、u 的 21 个（y 也算辅音）。把它们按字母顺序排成一个环，“下一个辅音”就是在环上前进一位，z 会回到 b；大小写先统一成小写查表，再恢复原来的大小写。",
+      "整行读入 message（可能含空格），再读 n。逐字符扫描：若是 ASCII 字母且不是元音，计数加一；计数是 n 的倍数时，把它换成辅音环中的下一个字母并保持大小写。其他字符原样保留，最后输出整行。"
+    ],
+    "en": [
+      "A single left-to-right scan is enough, keeping a count of the consonants seen so far; non-letters and vowels are neither counted nor changed.",
+      "The consonants are the 21 English letters other than a, e, i, o, u (y counts as a consonant). Arrange them in alphabetical order on a cycle; the next consonant is one step forward, so z wraps around to b. Look the letter up in lowercase and then restore its original case.",
+      "Read message as a whole line (it may contain spaces), then read n. Scan character by character: for an ASCII letter that is not a vowel, increment the count; when the count is a multiple of n, replace the letter with the next one on the consonant cycle, keeping its case. Leave every other character unchanged and print the whole line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the string while maintaining the number of consonants seen; whenever the count is a multiple of n, advance one position in the cycle formed by the 21 English consonants.\n\n## Proof of correctness\n\nScanning character by character guarantees that characters that are not targets stay unchanged; the count only increases on English letters that are not vowels, so the k-th consonant is identified exactly when the count reaches k. The successor operation on the cyclic consonant list directly implements the \"next consonant\" rule of the statement, including the z-to-b wraparound, and the case is restored after mapping in lowercase.\n\n## Complexity\n\nO(|message|) time and O(|message|) extra space."
+}

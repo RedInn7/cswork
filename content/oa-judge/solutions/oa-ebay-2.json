@@ -1,0 +1,21 @@
+{
+  "id": "oa-ebay-2",
+  "packageChecksum": "d1e0abf7bfd8bd3b34bcc91ffba3a7420a986ae943c22de924e3db417e1e3fbf",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string all((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());\n    size_t nl = all.find('\\n');\n    long long n = stoll(all.substr(0, nl));\n    string word = all.substr(nl + 1);\n    if (!word.empty() && word.back() == '\\n') word.pop_back();\n    const string cs = \"bcdfghjklmnpqrstvwxyz\";\n    long long cnt = 0;\n    for (char &c : word) {\n        unsigned char u = c;\n        char lower = tolower(u);\n        if (u < 128 && isalpha(u) && string(\"aeiou\").find(lower) == string::npos && ++cnt % n == 0) {\n            // Shift to the next consonant (z wraps to b), keeping the case.\n            char x = cs[(cs.find(lower) + 1) % cs.size()];\n            c = isupper(u) ? toupper(x) : x;\n        }\n    }\n    cout << word << \"\\n\";\n}\n",
+      "sha256": "e7cabb3885b1e200b3b182db198a95f1033b381c349f82003ab3cb88dac988b5"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        byte[] all = System.in.readAllBytes();\n        int nl = 0;\n        while (all[nl] != '\\n') nl++;\n        long n = Long.parseLong(new String(all, 0, nl).trim());\n        int end = all.length;\n        if (end > nl + 1 && all[end - 1] == '\\n') end--;\n        String cs = \"bcdfghjklmnpqrstvwxyz\";\n        long cnt = 0;\n        for (int i = nl + 1; i < end; i++) {\n            int c = all[i];\n            boolean upper = c >= 'A' && c <= 'Z';\n            if (!upper && !(c >= 'a' && c <= 'z')) continue;\n            char lower = (char) (c | 0x20);\n            if (\"aeiou\".indexOf(lower) >= 0 || ++cnt % n != 0) continue;\n            // Shift to the next consonant (z wraps to b), keeping the case.\n            char x = cs.charAt((cs.indexOf(lower) + 1) % cs.length());\n            all[i] = (byte) (upper ? Character.toUpperCase(x) : x);\n        }\n        BufferedOutputStream out = new BufferedOutputStream(System.out);\n        out.write(all, nl + 1, end - nl - 1);\n        out.write('\\n');\n        out.flush();\n    }\n}\n",
+      "sha256": "bdab2ab60998a19ac374060f964654a7e340ffd2b57c48e9a0fcc4b1dfff72fd"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bytes\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {\n\tall, _ := io.ReadAll(os.Stdin)\n\tnl := bytes.IndexByte(all, '\\n')\n\tn, _ := strconv.Atoi(strings.TrimSpace(string(all[:nl])))\n\tword := bytes.TrimSuffix(all[nl+1:], []byte(\"\\n\"))\n\tconst cs = \"bcdfghjklmnpqrstvwxyz\"\n\tcnt := 0\n\tfor i, c := range word {\n\t\tupper := c >= 'A' && c <= 'Z'\n\t\tif !upper && !(c >= 'a' && c <= 'z') {\n\t\t\tcontinue\n\t\t}\n\t\tlower := c | 0x20\n\t\tif strings.IndexByte(\"aeiou\", lower) >= 0 {\n\t\t\tcontinue\n\t\t}\n\t\tif cnt++; cnt%n == 0 {\n\t\t\t// Shift to the next consonant (z wraps to b), keeping the case.\n\t\t\tx := cs[(strings.IndexByte(cs, lower)+1)%len(cs)]\n\t\t\tif upper {\n\t\t\t\tx -= 'a' - 'A'\n\t\t\t}\n\t\t\tword[i] = x\n\t\t}\n\t}\n\tos.Stdout.Write(append(word, '\\n'))\n}\n",
+      "sha256": "fbcfe49e97d98fae4999d3c992b4748c0844eaa9afeb2dbe4d08b199f86190f1"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-flexport-5",
+  "packageChecksum": "ada6e7c6b6e3021109c8181a6e00e9f2f679c8efad029c810105175456de3dc8",
+  "sourceContentHash": "315c0827f1ebe9793143f7e3440cb5c64c851debddcb0ca1d531eaa84fc373a0",
+  "editorialSha256": "44e735c4cc647f5c12f775ad1791397463af0593287069f4be1a38942af02172",
+  "hints": {
+    "zh": [
+      "“所有点能否在 t 秒内收集完”关于 t 是单调的，所以可以二分时间，把问题变成判定。判定时把玩家和点都排序，最左的未收集点一定由某个玩家负责，而越靠左的玩家越该先处理左边的点。",
+      "从左到右处理玩家，维护最左的未收集点 x。若 x 在玩家左边且距离超过 t，后面的玩家更远，直接失败；若 x 在玩家右边超过 t，这个玩家帮不上忙，跳过。若 x 在玩家左侧 (距离 L)，玩家可以先左后右，右侧最远到 p + t − 2L；或先右后左，最远到 p + ⌊(t − L)/2⌋，取较大者。若 x 在右侧，最远到 p + t。",
+      "二分 t ∈ [0, 2·10^9+1]。判定函数里：对每个玩家 p，按上面规则算出可达右边界 reach（x 在左侧时先把所有 ≤ p 的点都标记为已收集），再把所有 ≤ reach 的点跳过；所有点被跳过即可行。坐标与时间相加可能超过 32 位，用 64 位整数。"
+    ],
+    "en": [
+      "Whether all points can be collected within t seconds is monotone in t, so binary search the time and turn the problem into a yes/no check. For the check, sort the players and the points; the leftmost uncollected point must be handled by some player, and players further left should take care of the left points first.",
+      "Process players from left to right while tracking the leftmost uncollected point x. If x is left of the player by more than t, later players are even farther, so fail; if x is right of the player by more than t, this player cannot help, so skip it. If x is to the left at distance L, the player can go left first and then right, reaching p + t - 2L on the right, or go right first and come back, reaching p + floor((t - L)/2); take the larger. If x is to the right, the reach is p + t.",
+      "Binary search t in [0, 2 * 10^9 + 1]. In the check, for each player p compute the right reach as above (when x is on the left, first mark every point <= p as collected), then skip all points <= reach; the time is feasible if every point gets skipped. Coordinates plus time can exceed 32 bits, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search on the total time. Sort the players and the points, and assign points to players from left to right. The current player first collects the uncovered points on its left that lie on its way anyway, then computes the farthest point to the right it can reach within time t, and advances the pointer.\n\n## Proof of correctness\n\nIn any feasible assignment, the points already covered by players further left can be fixed as a prefix from left to right. If the first uncovered point x is to the left of the player at p, going to x collects every uncovered point not greater than p on the way; covering a right end r then has two routes: left first and then right, or right first and then back to x. The farthest boundaries they allow are p+t-2(p-x) and p+floor((t-(p-x))/2), respectively, and the larger one is taken. If x is to the right, the boundary is p+t. The first point beyond the reachable interval for this time cannot be rescued by the current player or by any player further right; advancing greedily in this way never misses a feasible solution. Feasibility is monotone in t, and binary search gives the minimum time.\n\n## Complexity\n\nWith the range V<=2x10^9: O((n+m) log V) time and O(n+m) space."
+}

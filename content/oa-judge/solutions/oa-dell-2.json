@@ -1,0 +1,21 @@
+{
+  "id": "oa-dell-2",
+  "packageChecksum": "a677235b0fcde87d4af50a594368281d383834a1531ed1cf331a5b1e16646fad",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;  // empty input leaves s empty\n    long long answer = 0, previous = 0, current = 0;\n    char last = 0;\n    for (char c : s) {\n        if (c == last) current++;\n        else {\n            // A new run starts: the boundary between the previous two runs contributes min of their lengths.\n            answer += min(previous, current);\n            previous = current;\n            current = 1;\n            last = c;\n        }\n    }\n    cout << answer + min(previous, current) << \"\\n\";\n}\n",
+      "sha256": "7f6e8820763a41afe57db39a35ecad5d4bfdb33560d1ab33cee71556b07dccfd"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        String s = next();\n        long answer = 0, previous = 0, current = 0;\n        char last = 0;\n        for (int i = 0; i < s.length(); i++) {\n            char c = s.charAt(i);\n            if (c == last) current++;\n            else {\n                answer += Math.min(previous, current);\n                previous = current;\n                current = 1;\n                last = c;\n            }\n        }\n        System.out.println(answer + Math.min(previous, current));\n    }\n}\n",
+      "sha256": "eee4f4771f9ec3e5dc732b6e65938bd58ac5fb71925dad0aafb7f8bbeaf1a078"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\ts := token()\n\tvar answer, previous, current int64\n\tvar last byte\n\tfor _, c := range s {\n\t\tif c == last {\n\t\t\tcurrent++\n\t\t} else {\n\t\t\tanswer += min(previous, current)\n\t\t\tprevious, current, last = current, 1, c\n\t\t}\n\t}\n\tfmt.Println(answer + min(previous, current))\n}\n",
+      "sha256": "a7758e23c04eb6f50bca86a287ec2dc7d602aa5bc94439f5e7279c11ba13783c"
+    }
+  ]
+}

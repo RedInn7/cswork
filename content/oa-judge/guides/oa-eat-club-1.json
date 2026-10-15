@@ -1,0 +1,19 @@
+{
+  "id": "oa-eat-club-1",
+  "packageChecksum": "ca08f7b9b822be593c6e8438c20825b55c48bef503060c47f4c45417b78e26e5",
+  "sourceContentHash": "32b52a05756fa3a1346ddcb0f5c9119131a3bc5b31cc5099e3e7aec01c09d9fa",
+  "editorialSha256": "380a331cb5b09a4077dee29a6be96419814f042ebf33863567f4a0f48c0a6210",
+  "hints": {
+    "zh": [
+      "N 只有 1000，所以可以枚举左端点、逐个向右扩展右端点，总共 O(N²) 个子数组；关键是每加入一个数时能 O(1) 级别地更新这个子数组的贡献。",
+      "排序后相邻元素之差大于 1，就是“值域上相邻的两个出现值之间有缺口”。用位集合记录已出现的值，插入新值 v 时只会影响它的前驱 p 和后继 s：原来 p 和 s 相邻，现在变成 p–v 和 v–s 两对。重复出现的值不改变任何相邻关系。",
+      "固定左端点时清空位集合和缺口计数 gaps。加入新值 v（未出现过）：找到前驱 p 和后继 s，若两者都存在且 s − p > 1 则 gaps 减一；若 p 存在且 v − p > 1 则加一；若 s 存在且 s − v > 1 则加一。长度为 1 的子数组贡献 1，否则贡献 gaps；全部累加后对 10^9+7 取模。前驱后继可以按 64 位字查找最高位/最低位。"
+    ],
+    "en": [
+      "N is only 1000, so you can fix the left end and extend the right end one step at a time, O(N^2) subarrays in total; the key is to update the current subarray's contribution cheaply whenever one value is added.",
+      "After sorting, adjacent elements differ by more than 1 exactly when two consecutive present values in the value domain have a gap. Keep the present values in a bitset; inserting a new value v only affects its predecessor p and successor s: the pair p-s is replaced by p-v and v-s. A value that is already present changes nothing.",
+      "For each left end, clear the bitset and the gap count. When adding a value v not yet present, find its predecessor p and successor s: if both exist and s - p > 1, decrement the count; if p exists and v - p > 1, increment it; if s exists and s - v > 1, increment it. A subarray of length 1 contributes 1, otherwise it contributes the current count; sum everything and reduce modulo 10^9+7. Predecessor and successor can be found by scanning 64-bit words for the highest or lowest set bit."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFix the left endpoint and extend the right endpoint step by step, maintaining a bitset of the values that have appeared. When inserting a new value, find its predecessor and successor and update the number of adjacent value pairs whose gap is greater than 1; a single-element subarray counts an extra 1.\n\n## Proof of correctness\n\nAfter sorting, adjacent distinct values are exactly the consecutive present values in the ordered value set. Inserting a new value can only split the one adjacency between its predecessor and successor and add its relations with the two sides; the predecessor and successor determined by the bitset therefore let the gap contribution of each subarray be maintained incrementally and exactly. Enumerating all contiguous ranges gives the total.\n\n## Complexity\n\nO(N^2) value-domain bit operations in time, and O(N) space."
+}

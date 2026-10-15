@@ -1,0 +1,19 @@
+{
+  "id": "oa-deloitte-1",
+  "packageChecksum": "18318df0eaa4c661754ff2ba1e0fa7a3ca002d955b462ce4be2577a1bedb7a7e",
+  "sourceContentHash": "b3955caf1fe7b1dcb569fde382b65713131bb674cd31c196b67cdbb9388ed7e9",
+  "editorialSha256": "3b38b2e059ec87e03d4912ed7514f90920be96dce112bcd3901026505e0b1e68",
+  "hints": {
+    "zh": [
+      "行对称把 (i, j) 和 (i, m−1−j) 绑在一起，列对称把 (i, j) 和 (n−1−i, j) 绑在一起，两种镜像合起来把格子分成一个个互相约束的小组。",
+      "每个小组最多 4 个格子（中间行或中间列上会重合成 2 个或 1 个），组内必须同色，而不同组之间互不影响，所以可以每组单独取最优。",
+      "只枚举左上四分之一（含中线）的格子 (i, j)，取出 {(i,j), (i,m−1−j), (n−1−i,j), (n−1−i,m−1−j)} 去重后的集合，数其中 B 的个数 b，把 min(b, 组大小 − b) 加进答案。"
+    ],
+    "en": [
+      "Row symmetry ties (i, j) to (i, m-1-j), and column symmetry ties (i, j) to (n-1-i, j); together the two mirrors split the cells into small groups that constrain each other.",
+      "Each group has at most 4 cells (fewer on the middle row or column), all cells in a group must end up the same color, and different groups are independent, so each group can be optimized on its own.",
+      "Visit only the cells (i, j) of the top-left quarter, middle lines included. Take the deduplicated set {(i,j), (i,m-1-j), (n-1-i,j), (n-1-i,m-1-j)}, count its B cells b, and add min(b, group size - b) to the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGroup the cells that constrain each other under the top-bottom and left-right mirrors into orbits of at most four cells; make each group uniform with its majority color.\n\n## Proof of correctness\n\nRow and column symmetry require all cells in the same orbit to be equal, and different orbits do not constrain each other. Choosing the majority color in each orbit needs the fewest flips, and adding the per-orbit optima gives the global optimum.\n\n## Complexity\n\nO(nm) time and O(nm) extra space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-doordash-2",
+  "packageChecksum": "1f11f9af495b4b50799960e6fe7e598058ca280038a555787334020ac2b3a5fb",
+  "sourceContentHash": "4fb9a60b6a5739e7b14c0d2433c57c5e331966e4cdfb3dca2c92f595200f5514",
+  "editorialSha256": "a39b4377baccd839992dac0c02fed848c4e0496112b6e79e1365a33b3e6e81f2",
+  "hints": {
+    "zh": [
+      "每个查询都单独做一次 BFS 会超时。注意所有查询问的都是“到最近仓库”的距离，可以反过来从仓库出发一次算出所有格子的答案。",
+      "把所有 D 格同时作为起点放进队列做多源 BFS，墙 X 不入队。BFS 按距离从小到大扩展，一个格子第一次被访问时的距离就是它到最近仓库的最短四方向距离。",
+      "按行读入网格（注意道路是空格，要整行读取），把所有 D 的距离设为 0 并入队，BFS 填出距离数组，没访问到的保持 −1。回答查询时先检查坐标是否在 0..R−1、0..C−1 范围内，越界输出 −1，否则输出距离数组的值（墙格自然是 −1）。"
+    ],
+    "en": [
+      "Running a BFS per query is too slow. Every query asks for the distance to the nearest warehouse, so you can go the other way and compute all answers at once starting from the warehouses.",
+      "Put every D cell into the queue at once and run a multi-source BFS, never enqueuing walls X. BFS expands in increasing distance, so the first time a cell is reached gives its shortest four-direction distance to any warehouse.",
+      "Read the grid line by line (roads are spaces, so read whole lines), set every D to distance 0 and enqueue it, and let BFS fill a distance array; unreached cells stay -1. For each query, first check that the coordinates lie in 0..R-1 and 0..C-1 and print -1 if not; otherwise print the stored distance (walls are naturally -1)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRun a multi-source BFS from all warehouses at once to get the distance from every walkable position to its nearest warehouse, then answer the queries one by one.\n\n## Correctness\n\nBFS expands in increasing order of distance; the first visit of a cell gives its shortest four-neighbor distance from any warehouse. Walls are never enqueued, and unvisited cells and invalid coordinates both return -1.\n\n## Complexity\n\nO(RC+Q) time and O(RC) space."
+}

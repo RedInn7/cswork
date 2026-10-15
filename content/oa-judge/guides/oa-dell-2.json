@@ -1,0 +1,19 @@
+{
+  "id": "oa-dell-2",
+  "packageChecksum": "a677235b0fcde87d4af50a594368281d383834a1531ed1cf331a5b1e16646fad",
+  "sourceContentHash": "d67b4a8868dc4446881a83426c2a8760c67115af272610786237d7ac827d1962",
+  "editorialSha256": "f0719eb959053334058e3138b90f803cefa8da050baeb1dc504b4a667150b255",
+  "hints": {
+    "zh": [
+      "合法子串里只发生一次 0/1 切换，所以它一定横跨某个“相邻两段同字符连续段”的分界线，并且只横跨这一条。",
+      "把字符串切成同字符的连续段。对一条分界线，左右各取 j 个字符就得到一个合法子串，j 可以取 1 到两段长度的较小值，因此这条分界线贡献 min(左段长, 右段长)。",
+      "从左到右扫描，记录上一段长度 previous 和当前段长度 current；遇到新字符时先把 min(previous, current) 加进答案，再令 previous = current、current = 1。扫描结束后再补加最后一对的 min。空串输出 0。"
+    ],
+    "en": [
+      "A valid substring switches between 0 and 1 exactly once, so it crosses exactly one boundary between two adjacent runs of equal characters.",
+      "Split the string into runs of equal characters. Taking j characters on each side of a boundary gives a valid substring for every j from 1 to the shorter of the two runs, so each boundary contributes min(left run length, right run length).",
+      "Scan left to right, keeping the previous run length and the current run length. When the character changes, add min(previous, current) to the answer, then set previous = current and current = 1. After the scan, add the min for the last pair as well. An empty string gives 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit the string into runs of equal characters; each pair of adjacent runs contributes the smaller of their lengths. Sum this over all adjacent pairs.\n\n## Proof of correctness\n\nA valid substring has only one character change, so it crosses exactly one boundary between a pair of adjacent runs. If it takes j characters on each side, the feasible values of j are exactly 1..min(the two run lengths), and different boundaries never count the same substring. The sum is therefore complete and counts nothing twice.\n\n## Complexity\n\nO(n) time and O(1) auxiliary space."
+}

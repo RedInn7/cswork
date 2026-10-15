@@ -1,0 +1,19 @@
+{
+  "id": "oa-ebay-5",
+  "packageChecksum": "b302b3e7e02a557192893446fd37390021efaaa934998caa58ac0945556342ca",
+  "sourceContentHash": "514080148eb8c592f69ef7dc61c394be71d876888d84c0100b501be8658fd401",
+  "editorialSha256": "3baf7fae0df0403bed276663487470337b5d36670b56e6f86d62e61fb26254a5",
+  "hints": {
+    "zh": [
+      "只需要对每个数单独数它十进制表示里有几个 0，再看个数是否为奇数。",
+      "反复取个位（x % 10）再除以 10，就能逐位访问一个正整数的每一位；唯一的特例是 0 本身：它的表示是 \"0\"，循环一次都不会执行，所以要单独算作含一个 0。",
+      "读入 n 个数（最大 10^18，用 64 位整数）。对每个 x：若 x == 0 则零的个数为 1，否则循环统计 x % 10 == 0 的次数；零的个数为奇数时答案加一，最后输出答案。"
+    ],
+    "en": [
+      "You only need to count, for each number on its own, how many 0 digits its decimal representation has, and check whether that count is odd.",
+      "Repeatedly taking the last digit (x % 10) and dividing by 10 visits every digit of a positive integer. The one special case is 0 itself: its representation is \"0\", but the loop never runs, so count it as containing one zero separately.",
+      "Read the n numbers (up to 10^18, so use 64-bit integers). For each x: if x == 0 the zero count is 1, otherwise count how many times x % 10 == 0 while dividing by 10. Add one to the answer when the zero count is odd, and print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nStrip off the decimal digits of each number one by one and count the zeros; the number 0 is counted separately as containing one zero.\n\n## Correctness\n\nEach decimal digit of an integer is visited exactly once by taking the last digit modulo 10; the special case for 0 matches its standard representation, and the parity test is directly equivalent to the statement.\n\n## Complexity\n\nO(N log V) time and O(1) extra space."
+}

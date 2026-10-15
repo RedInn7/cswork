@@ -1,0 +1,19 @@
+{
+  "id": "oa-drw-1",
+  "packageChecksum": "a8de967b9dbffe1bd5b1285296caa35e79e5c1c00a034fe791f7670101afdc88",
+  "sourceContentHash": "cc6e094064578cba0629febe5e5749b0ebfb583ae4beefbe3c348a9cd4f6660b",
+  "editorialSha256": "cb3e4e279ce1732f7ad17ab3c19a33be54aa3a578fb08343cee4b8ffe75a3766",
+  "hints": {
+    "zh": [
+      "方块只会竖直下落，所以它在下落途中只可能被每一列最上面那个已占格子挡住，下面的空洞它根本到不了。",
+      "用每行一个 10 位二进制数表示盘面。对方块的每个格子 (dx, dy)，若它所在列当前最高占用到第 top 行，则方块底部至少落在 top − dy；所有格子取最大值（且不低于 0）就是落点。",
+      "写入四个格子后，删除所有等于全 1（1023）的行，其余行按原顺序整体下移（不填补空洞），再去掉顶部的空行；行数就是高度。每一行输入从空盘面开始，按逗号拆出“字母 + 一位列号”逐个处理，输出最终行数。"
+    ],
+    "en": [
+      "A piece only falls straight down, so on its way it can only be stopped by the highest occupied cell of each column; it can never reach the holes underneath.",
+      "Represent the board as one 10-bit number per row. For each square (dx, dy) of the piece, if its column is occupied up to row top, the piece's bottom must be at least top - dy; the maximum over the four squares (and at least 0) is the landing row.",
+      "After writing the four squares, delete every row equal to all ones (1023), keep the other rows in their order (they shift down as whole rows and do not fill holes), and remove empty rows at the top; the number of rows is the height. Each input line starts from an empty board: split it on commas into a letter plus one column digit, process them in order, and print the final row count."
+    ]
+  },
+  "explanationEn": "## Problem\n\nSimplified Tetris on a board 10 columns wide. Pieces fall from above and stop as soon as any part touches the bottom or a piece that has already stopped; pieces are rigid, do not rotate, and have fixed shapes (Q, Z, S, T, I, L, J). A row that becomes full is cleared, and the rows above it shift down as a whole; the pattern within each row is unchanged, and gaps below are not filled. Each input line is a placement sequence that starts from an empty board; output the height of the remaining pieces at the end.\n\n## Approach\n\nRepresent the board with one 10-bit binary number per row. When placing a piece, it falls from the top all the way down, so it is only blocked by the highest occupied cell of each column: for each square (dx,dy) of the piece, if the highest occupied row of its column is top, then the bottom of the piece is at least top-dy; the maximum of these values is the landing position. After writing the four squares, delete every row equal to all ones (the other rows move down in their original order), then remove empty rows at the top. The final number of rows is the height.\n\n## Correctness\n\nA piece moves vertically from the top down and can only be blocked on the way by the topmost block of each column; the holes below cannot be reached, so the landing position is determined by the column top heights. Clearing rows only deletes full rows and keeps the relative order of the other rows and the pattern within each row, which matches the statement that rows fall as a whole and gaps are not filled.\n\n## Complexity\n\nO(4*H + H) per piece, with H<=100.\n\n## Independent validation\n\nThe oracle uses Python to simulate a piece falling one cell at a time from high above and stopping on collision, storing the occupied cells in a set, without the column-top height formula. All placement sequences of 1..2 pieces (every piece, every valid column) were enumerated as one multi-line input, plus random long sequences, and the reference program was actually run on each. The wrong solutions cover swapped S/Z shapes, a piece passing through blocks above it into a hole, not clearing rows, and filling gaps column by column after a clear."
+}

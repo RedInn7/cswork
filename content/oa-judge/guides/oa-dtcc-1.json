@@ -1,0 +1,19 @@
+{
+  "id": "oa-dtcc-1",
+  "packageChecksum": "d906759b72265db94b814672d2629fb315c4fe691369653f1ccc1ea9c11d80e2",
+  "sourceContentHash": "70cfcc291ba0cede2e3560160c36140ba63bada16f29a6855a26c4f473786a9b",
+  "editorialSha256": "4e0e18e725ab02f0fea176943dbf4c1eb8ac546f3c6baa4e510ed91169a04855",
+  "hints": {
+    "zh": [
+      "手算长除法时，下一位数字完全由当前余数决定：余数乘 10 后除以 N 得到这一位，新的余数是取模的结果。",
+      "余数一旦重复，之后的数字就会周期性重复，所以记录每个余数第一次出现时已经生成了几位数字：再次遇到同一余数，那个位置之前是非循环前缀，之后是循环节。余数变成 0 说明小数有限，按题意循环节记为 0。",
+      "从余数 1 开始循环：记下当前余数的位置，余数乘 10，追加一位 remainder / N，余数对 N 取模；直到余数为 0 或重复为止。然后输出 \"0.\" + 前缀 + 循环节 + 空格 + 循环节，例如 1/8 输出 0.1250 0，1/9 输出 0.1 1。"
+    ],
+    "en": [
+      "In long division the next digit is determined entirely by the current remainder: multiply it by 10, divide by N to get the digit, and the new remainder is the modulus.",
+      "Once a remainder repeats, the digits repeat from there on, so record how many digits had been produced when each remainder first appeared. When a remainder shows up again, the digits before that position are the non-repeating prefix and the rest is the cycle. A remainder of 0 means the decimal terminates, and the statement then treats the cycle as 0.",
+      "Start with remainder 1 and loop: store the current remainder's position, multiply by 10, append the digit remainder / N, and reduce modulo N, until the remainder is 0 or repeats. Then print \"0.\" + prefix + cycle + a space + cycle; for example 1/8 prints 0.1250 0 and 1/9 prints 0.1 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTrack the remainders of the long division. The position where a remainder first appears is where the cycle of the decimal starts; when it appears again, the repeating cycle is determined. If the remainder becomes 0, the decimal terminates, and the cycle is then taken to be 0 as the statement says.\n\n## Note on the example format\n\nWrite the decimal as \"non-repeating prefix + one copy of the cycle\", then output the cycle once more after a space. So 1/8 = 0.125000... has prefix 125 and cycle 0, and the output is `0.1250 0`; 1/9 has an empty prefix and cycle 1, and the output is `0.1 1`. The two source examples together establish that a terminating decimal is represented with cycle 0, not with arbitrary zero padding.\n\n## Correctness\n\nEach step of decimal long division is determined uniquely by the current remainder. A remainder of 0 means all later digits are 0; there are at most N-1 nonzero remainders, and when one repeats, the digit sequence after it repeats with that period from then on. The first-occurrence position therefore gives the shortest non-repeating prefix and the corresponding cycle.\n\n## Complexity\n\nAt most N remainders are processed, so time and space are both O(N)."
+}

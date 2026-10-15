@@ -1,0 +1,19 @@
+{
+  "id": "oa-doordash-6",
+  "packageChecksum": "bec838e9819724cb4b91f82ccbfb6df05b598c216375551be584279791a32bfd",
+  "sourceContentHash": "ed1329825c362bc1aa6892aad68c6b845897a004e9281a40339cf069795a1d0a",
+  "editorialSha256": "b5762b1c50013bd7d8c5113f868a5835c1ec824453cc4fffee01c0cce1eacab8",
+  "hints": {
+    "zh": [
+      "每位厨师独立选菜，菜可以被多人重复选，所以厨师之间没有任何冲突，答案就是每位厨师各自能拿到的最大利润之和。",
+      "把菜按难度排序后，一位厨师能做的菜恰好是难度 ≤ 技能值的一个前缀；预先算出每个前缀的最大利润，就只需找出这个前缀有多长。",
+      "把 (难度, 利润) 按难度排序，算前缀最大利润数组 best。对每位厨师用二分（upper_bound）找出难度 ≤ 技能的菜的个数 i，i > 0 时加上 best[i−1]，否则加 0。总和用 64 位整数。"
+    ],
+    "en": [
+      "Each chef picks independently and a dish may be chosen by many chefs, so the chefs never conflict; the answer is the sum of each chef's own best profit.",
+      "After sorting dishes by difficulty, the dishes a chef can make form a prefix (difficulty <= skill). Precompute the maximum profit of every prefix, and you only need to find how long that prefix is.",
+      "Sort the (difficulty, profit) pairs by difficulty and build the prefix-maximum profit array best. For each chef, binary search (upper_bound) for the number i of dishes with difficulty <= skill; add best[i-1] if i > 0, otherwise 0. Keep the total in a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by difficulty and precompute the prefix maximum profit; for each chef, binary search for the prefix of dishes they can make and add its maximum profit.\n\n## Correctness\n\nEach chef chooses independently and dishes are not exclusive; the feasible set of a chef is exactly a prefix in difficulty order, and the best choice is the maximum profit of that prefix.\n\n## Complexity\n\nO((n+m) log m) time and O(m) space."
+}

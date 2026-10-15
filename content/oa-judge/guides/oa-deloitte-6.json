@@ -1,0 +1,19 @@
+{
+  "id": "oa-deloitte-6",
+  "packageChecksum": "ae30f668417da0591ef4112da1437b943f90a5ee5af8412eddf3d7470c4fb39c",
+  "sourceContentHash": "5f5a688464e57463acef0063269c7e07cadec3b8b3aa2a52cba869d38daae678",
+  "editorialSha256": "7d4bd966f5c803b79ca8346f43123edd3bd75d4881f6d23afa5f14ccdb5f6ab6",
+  "hints": {
+    "zh": [
+      "一个子串里每个字母都出现偶数次，等价于它两端的前缀里，每个字母出现次数的奇偶性完全相同。",
+      "把 26 个字母的奇偶性压成一个 26 位掩码，每读一个字符就翻转对应位。两个位置的前缀掩码相同，中间那一段就是合法子串；固定右端点时，左端越早越长。",
+      "用哈希表记录每种掩码第一次出现的位置，空前缀的掩码 0 记为位置 −1。扫描到 i 时更新掩码，若它已出现过就用 i − 最早位置更新答案，否则记下 i。全程没有合法非空子串时答案为 0。"
+    ],
+    "en": [
+      "Every letter occurs an even number of times in a substring exactly when the two prefixes bounding it have the same parity for every letter.",
+      "Pack the parities of the 26 letters into a 26-bit mask and flip one bit per character. Two positions with the same prefix mask enclose a valid substring, and for a fixed right end, the earliest matching left end gives the longest one.",
+      "Store the first position where each mask appears in a hash map, with mask 0 of the empty prefix at position -1. At index i update the mask; if it has been seen, update the answer with i minus that earliest position, otherwise record i. If no non-empty valid substring exists the answer stays 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEncode the parity of the occurrences of the 26 letters as a bitmask, and record the earliest position where each state appears.\n\n## Proof of correctness\n\nWhen two prefix parity masks are equal, every letter occurs an even number of times between them; for a fixed right end, choosing the earliest position gives the longest substring. Scanning all prefixes and taking the maximum length gives the global optimum.\n\n## Complexity\n\nO(n) time and O(min(n, 2^26)) space."
+}

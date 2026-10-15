@@ -1,0 +1,19 @@
+{
+  "id": "oa-ebay-8",
+  "packageChecksum": "cb4fdb3838eac1976bec766c3e38044104f5177bdd61acb0cad151d076d6bab4",
+  "sourceContentHash": "3e33c5dede37f8aa928bc09e06e55c9f4a3577ee15940079b59eaa78eb2fbd83",
+  "editorialSha256": "e693274bd7ef65c659dcfad58264ea5f880daebdaa3061cd97674cac63068560",
+  "hints": {
+    "zh": [
+      "房子只增不减，并且位置互不相同，所以一个新房子 x 只可能和以 x−1 结尾的区间、以 x+1 开头的区间连起来，其他连续段都不受影响。",
+      "用两个哈希表记录每个极大连续段的端点：starts[l] = r，ends[r] = l。这样新房子能 O(1) 找到左右邻段并合并。因为段只会变长、不会断开，历史最大长度就是当前答案。",
+      "插入 x 时令 left = right = x；若 ends 中有 x−1，就取出它的左端点作为 left 并删掉这段的记录；若 starts 中有 x+1，就取出它的右端点作为 right 并删掉记录。登记 starts[left] = right、ends[right] = left，用 right − left + 1 更新最大值并输出，每次插入输出一行。"
+    ],
+    "en": [
+      "Houses are only added and their positions are distinct, so a new house x can only join the run ending at x-1 and the run starting at x+1; every other run is unaffected.",
+      "Keep the endpoints of every maximal run in two hash maps: starts[l] = r and ends[r] = l. A new house then finds its left and right neighbor runs in O(1) and merges them. Runs only grow and never split, so the largest length seen so far is the current answer.",
+      "To insert x, set left = right = x; if ends contains x-1, take its left endpoint as left and remove that run's entries; if starts contains x+1, take its right endpoint as right and remove its entries. Record starts[left] = right and ends[right] = left, update the maximum with right - left + 1, and print it, one line per insertion."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse two hash maps to record the left and right endpoints of the contiguous runs: `starts[l]=r` and `ends[r]=l`. When inserting x, if `ends` contains x-1, absorb the left run; if `starts` contains x+1, absorb the right run. Register the merged run and update the historical maximum length.\n\n## Correctness\n\nBefore the insertion, every built house belongs to exactly one contiguous run. The new position x can only connect the left run ending at x-1 and the right run starting at x+1; after checking and removing these two endpoints and registering the merged run, the other runs are unchanged. Therefore the run tables always describe the maximal contiguous runs of all houses exactly. Since houses are only added, the historical maximum never decreases.\n\n## Complexity\n\nEach insertion performs a constant number of hash-map operations, for expected O(q) time and O(q) space."
+}

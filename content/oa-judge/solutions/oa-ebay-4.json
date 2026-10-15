@@ -1,0 +1,21 @@
+{
+  "id": "oa-ebay-4",
+  "packageChecksum": "e01c9af00118ea5ee727dc3bb0f524defdb726d762f4dbafa4304787650e32a6",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, k;\n    cin >> n >> k;\n    vector<long long> a(n), b(n), g(n);\n    for (auto &x : a) cin >> x;\n    for (auto &x : b) cin >> x;\n    // Baseline profit, plus the gain of resetting day i to its best strategy (|rate|) instead of the current one.\n    long long base = 0;\n    for (int i = 0; i < n; i++) {\n        base -= a[i] * b[i];\n        g[i] = llabs(a[i]) + a[i] * b[i];\n    }\n    long long w = 0;\n    for (int i = 0; i < k; i++) w += g[i];\n    long long best = w;\n    for (int i = k; i < n; i++) {\n        w += g[i] - g[i - k];\n        best = max(best, w);\n    }\n    cout << base + best << \"\\n\";\n}\n",
+      "sha256": "7509df094f83f2bb3ea83e7692ca8ab87e665ba0df630a9493b070891f9e7029"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), k = nextInt();\n        long[] a = new long[n], g = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        long base = 0;\n        for (int i = 0; i < n; i++) {\n            long b = nextLong();\n            base -= a[i] * b;\n            g[i] = Math.abs(a[i]) + a[i] * b;\n        }\n        long w = 0;\n        for (int i = 0; i < k; i++) w += g[i];\n        long best = w;\n        for (int i = k; i < n; i++) {\n            w += g[i] - g[i - k];\n            best = Math.max(best, w);\n        }\n        System.out.println(base + best);\n    }\n}\n",
+      "sha256": "85a98bdafdd213ddd5f3de74aba5bf5fd3faf83619dca2206cde117847a2a1fc"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, k := nextInt(), nextInt()\n\ta, g := make([]int, n), make([]int, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tbase := 0\n\tfor i := range a {\n\t\tb := nextInt()\n\t\tbase -= a[i] * b\n\t\tg[i] = max(a[i], -a[i]) + a[i]*b\n\t}\n\tw := 0\n\tfor i := 0; i < k; i++ {\n\t\tw += g[i]\n\t}\n\tbest := w\n\tfor i := k; i < n; i++ {\n\t\tw += g[i] - g[i-k]\n\t\tbest = max(best, w)\n\t}\n\tfmt.Println(base + best)\n}\n",
+      "sha256": "03fd9507e0c69e95fd5aca8c325472d06e0519cfbd56d8d5b3cd5f7214c9f775"
+    }
+  ]
+}

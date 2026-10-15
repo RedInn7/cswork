@@ -1,0 +1,21 @@
+{
+  "id": "oa-duolingo-3",
+  "packageChecksum": "b94a7d90408bfedb779b12ec24c0091ff842a7c101eb36fc9e5e801e039627d3",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string message, line;\n    getline(cin, message);\n    if (!message.empty() && message.back() == '\\r') message.pop_back();\n    getline(cin, line);\n    long long n = stoll(line);\n    const string consonants = \"bcdfghjklmnpqrstvwxyz\", vowels = \"aeiouAEIOU\";\n    long long count = 0;\n    for (char &ch : message) {\n        char lower = tolower((unsigned char)ch);\n        if (lower >= 'a' && lower <= 'z' && vowels.find(ch) == string::npos) {\n            if (++count % n == 0) {\n                // Next consonant in the cyclic consonant list, keeping the case.\n                char shifted = consonants[(consonants.find(lower) + 1) % consonants.size()];\n                ch = isupper((unsigned char)ch) ? toupper(shifted) : shifted;\n            }\n        }\n    }\n    cout << message << \"\\n\";\n}\n",
+      "sha256": "67c1ab6e38ec02c202bd22f0147b8815d444159295b9b414501efa85c05e1b7f"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        char[] message = br.readLine().toCharArray();\n        long n = Long.parseLong(br.readLine().trim());\n        String consonants = \"bcdfghjklmnpqrstvwxyz\", vowels = \"aeiouAEIOU\";\n        long count = 0;\n        for (int i = 0; i < message.length; i++) {\n            char ch = message[i], lower = Character.toLowerCase(ch);\n            if (lower >= 'a' && lower <= 'z' && vowels.indexOf(ch) < 0 && ++count % n == 0) {\n                // Next consonant in the cyclic consonant list, keeping the case.\n                char shifted = consonants.charAt((consonants.indexOf(lower) + 1) % consonants.length());\n                message[i] = Character.isUpperCase(ch) ? Character.toUpperCase(shifted) : shifted;\n            }\n        }\n        System.out.print(new String(message) + \"\\n\");\n    }\n}\n",
+      "sha256": "8b930bc350be94bba7be0fe15a18f9eee8397ec4ce597bd3f67c6208add0081e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {\n\tr := bufio.NewReaderSize(os.Stdin, 1<<20)\n\tline, _ := r.ReadString('\\n')\n\tmessage := []byte(strings.TrimRight(line, \"\\r\\n\"))\n\tnLine, _ := r.ReadString('\\n')\n\tn, _ := strconv.Atoi(strings.TrimSpace(nLine))\n\tconst consonants = \"bcdfghjklmnpqrstvwxyz\"\n\tcount := 0\n\tfor i, ch := range message {\n\t\tlower := ch | 0x20\n\t\tisLetter := (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')\n\t\tif isLetter && !strings.ContainsRune(\"aeiou\", rune(lower)) {\n\t\t\tcount++\n\t\t\tif count%n == 0 {\n\t\t\t\t// Next consonant in the cyclic consonant list, keeping the case.\n\t\t\t\tshifted := consonants[(strings.IndexByte(consonants, lower)+1)%len(consonants)]\n\t\t\t\tif ch < 'a' {\n\t\t\t\t\tshifted -= 'a' - 'A'\n\t\t\t\t}\n\t\t\t\tmessage[i] = shifted\n\t\t\t}\n\t\t}\n\t}\n\tos.Stdout.Write(append(message, '\\n'))\n}\n",
+      "sha256": "7b7159a022210763d3134e38d1bc4fb06a3eecf8f79a4f4e2b0b25fe4e12ee0e"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-ericsson-1",
+  "packageChecksum": "a6b03d2d75a1544a22bbdfa800a43c155812572df078a2b6e7c3a5c0ca7af438",
+  "sourceContentHash": "a25fd936a3867511f8561da85b0f500015becbdc28bf91da8a00e09df245972d",
+  "editorialSha256": "f7623f18c973b5ca9efd7be560f6b3ea9c8f04fa273d25e7732fb6692216aa51",
+  "hints": {
+    "zh": [
+      "杨辉三角每一行的首尾都是 1，中间每个数等于上一行正上方两个相邻数之和，所以可以一行一行地往下构造。",
+      "第 i 行（从 0 开始）有 i + 1 个数。先把整行设为 1，再用上一行算出位置 1 到 i − 1 的值即可；numRows = 0 时什么都不构造。",
+      "循环 numRows 次构造每一行，然后按紧凑 JSON 输出：最外层方括号，行与行、数与数之间只用逗号分隔，不加空格，例如 [[1],[1,1],[1,2,1]]；numRows = 0 时输出 []。30 行以内的数都在 32 位整数范围内。"
+    ],
+    "en": [
+      "Every row of Pascal's triangle starts and ends with 1, and each inner number is the sum of the two adjacent numbers directly above it, so you can build it row by row.",
+      "Row i (counting from 0) has i + 1 numbers. Fill the row with 1s, then compute positions 1 to i - 1 from the previous row; when numRows = 0 nothing is built.",
+      "Build numRows rows, then print them as compact JSON: outer square brackets, with rows and numbers separated only by commas and no spaces, for example [[1],[1,1],[1,2,1]]; for numRows = 0 print []. Within 30 rows every value fits in a 32-bit integer."
+    ]
+  },
+  "explanationEn": "# Pascal's Triangle\n\n## Approach\n\nBuild the triangle row by row starting from the first row. Each row starts and ends with 1, and every inner position is the sum of the two adjacent numbers in the previous row.\n\n## Correctness\n\nBy induction on the row number: the first row contains only 1, which matches the definition; assuming the previous row is correct, the new row sets its first and last entries to 1 and computes the inner entries by definition, so every position of the new row is correct. Repeating the construction gives the first numRows rows; when numRows=0, an empty array is returned naturally.\n\n## Complexity\n\nTime and output space are both O(numRows^2).\n\n## Reference implementation\n\n```python\nimport json\nimport sys\n\ndef solve(raw):\n    num_rows = int(raw.strip())\n    if not 0 <= num_rows <= 30:\n        raise ValueError(\"numRows must be between 0 and 30\")\n    triangle = []\n    for index in range(num_rows):\n        row = [1] * (index + 1)\n        for column in range(1, index):\n            row[column] = triangle[index - 1][column - 1] + triangle[index - 1][column]\n        triangle.append(row)\n    return json.dumps(triangle, separators=(\",\", \":\"))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n```"
+}

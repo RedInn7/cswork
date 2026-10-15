@@ -1,0 +1,19 @@
+{
+  "id": "oa-ebay-7",
+  "packageChecksum": "ac82b4b51351ce3bfe1332e6d41b99561d2197bbbdacc4cff635de991c1fcbdc",
+  "sourceContentHash": "d4e68c17a384346b69345065cb7534527fb3226ffefe7cb776c33d98dd7d5e03",
+  "editorialSha256": "b4a0d1b3d16a32045858ab6d8a1c88ea04ea9350fd4e7decea5f2c7f72f638b1",
+  "hints": {
+    "zh": [
+      "表达式只能一直向右或一直向下，所以每个合法表达式都是某一行或某一列中连续的一段，可以把每行、每列当成独立的一维字符串来处理。",
+      "在一维串上从左到右扫，维护“以当前数字结尾的最大表达式值” prev。遇到数字 x 时，要么从 x 重新开始，要么接在前一个数字的表达式后面（中间必须恰好隔一个 + 或 −），取两者较大值。",
+      "扫描时：数字 → 若前面紧跟着一个合法符号且之前有 prev，则 v = max(x, prev ± x)，否则 v = x，用 v 更新答案并令 prev = v；符号且前一字符是数字 → 记下符号；其他情况（连续符号、开头的符号）→ 清空 prev 和符号。对所有行和所有列各扫一次，取最大值；单个数字本身也是合法表达式。"
+    ],
+    "en": [
+      "An expression only goes straight right or straight down, so every valid expression is a contiguous piece of one row or one column; treat each row and each column as an independent 1D string.",
+      "Scan a 1D string from left to right and keep prev, the largest value of an expression ending at the current digit. At a digit x you either start fresh from x or extend the expression ending at the previous digit (with exactly one + or - in between), and take the larger.",
+      "While scanning: at a digit, if a valid sign directly precedes it and prev exists, v = max(x, prev +/- x), otherwise v = x; update the answer with v and set prev = v. At a sign right after a digit, remember the sign. Anything else (two signs in a row, a leading sign) clears prev and the sign. Scan every row and every column once and take the maximum; a single digit is also a valid expression."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan each row and each column linearly, recording the largest expression ending at the current digit; the previous term can be extended through the sign in between, or the expression can restart at the current digit.\n\n## Correctness\n\nEvery valid expression corresponds to a contiguous segment on one row or one column. The state covers all segments ending at the current digit: either a new one starting at the current digit, or one continuing the segment that ends at the previous digit; an invalid character breaks the chain. Taking the maximum over all rows and columns gives the global optimum.\n\n## Complexity\n\nO(hw) time and O(max(h,w)) space."
+}

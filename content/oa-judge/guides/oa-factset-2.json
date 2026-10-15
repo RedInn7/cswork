@@ -1,0 +1,19 @@
+{
+  "id": "oa-factset-2",
+  "packageChecksum": "bae1d82be51616b29e75b5db1037f775c3393bcb6ebd5af69b6f81c6d3f288be",
+  "sourceContentHash": "5e97686c0e5a9026640c6f395d43dd49e3655fbc6de1ce8fa1082c057700524a",
+  "editorialSha256": "1830c49da69431716e8e716d5eaa1804127a1d052efa8cb0c7b1ebc80528b06b",
+  "hints": {
+    "zh": [
+      "每一轮都要取出当前最重的两块石头，并且可能放回一块新石头，这正是最大堆（优先队列）支持的操作。",
+      "把所有重量放进最大堆。每轮弹出两个最大值 x ≥ y：相等时两块都消失，不相等时把差 x − y 放回堆中。每轮堆的大小至少减一，所以至多 n 轮。",
+      "堆中元素多于一个时重复上述过程；结束后堆里剩一块就输出它的重量，堆空则输出 0。重量最大 10^9，差值不会更大，普通整数即可（用 64 位更稳妥）。"
+    ],
+    "en": [
+      "Every turn removes the two heaviest stones and may put one new stone back, which is exactly what a max-heap (priority queue) supports.",
+      "Put all weights into a max-heap. Each turn pop the two largest values x >= y: if they are equal both disappear, otherwise push the difference x - y back. The heap shrinks by at least one every turn, so there are at most n turns.",
+      "Repeat while the heap has more than one stone; at the end print the remaining stone's weight, or 0 if the heap is empty. Weights are at most 10^9 and differences never grow, so ordinary integers suffice (64-bit is the safe choice)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a max-heap to repeatedly take out the two heaviest stones; when they are not equal, put their difference back into the heap.\n\n## Proof of correctness\n\nThe top of the heap is always the heaviest stone currently present, so every turn selects stones exactly as the statement requires. With equal weights no stone is put back; with unequal weights only the weight difference is put back. When the loop ends, the single element in the heap (or the empty heap) is the required result.\n\n## Complexity\n\nO(n log n) time and O(n) space.\n\n## Source notes\n\nThe problem rules, examples, and n/weight constraints are complete.\n\nThis site separately compiled the standard input/output protocol; it does not claim that the original site provided that protocol."
+}

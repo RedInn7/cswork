@@ -1,0 +1,19 @@
+{
+  "id": "oa-doordash-8",
+  "packageChecksum": "8feca7693b98974d41dd893a4fa6bb59d0eb95e4a04d293a0d694af887d5ff25",
+  "sourceContentHash": "ba51f67c14901321dc116dc7d73e962d4f3b318a4fc8f60b013258e93e97a47c",
+  "editorialSha256": "882ade6a0f9e0263869f80393c3e95fe224b810fb6ba7fc160eb9b2828c01b5f",
+  "hints": {
+    "zh": [
+      "n 最多 2000，选的人数也不超过 n，所以每一轮直接在候选人里找最大值、再把他删掉，总共 O(n·team_size) 就够了，不需要更巧妙的数据结构。",
+      "每轮的候选人是剩余序列的前 k 个和后 k 个的并集；两段重叠时同一个人只算一次。剩余序列始终保持原顺序，所以“原下标最小”就等于“在当前序列中位置最靠前”。",
+      "重复 team_size 轮：在位置 [0, k) 和 [len−k, len) 中找分数最高者，同分取位置最小的，把分数加进总和并从序列中删除。分数可为负，总和用 64 位整数。"
+    ],
+    "en": [
+      "n is at most 2000 and at most n people are picked, so finding the maximum among the candidates and deleting that person each round costs O(n * team_size) in total; no clever data structure is needed.",
+      "Each round's candidates are the union of the first k and the last k people of the remaining sequence; when the two windows overlap, a person counts only once. The remaining sequence keeps its original order, so the smallest original index is simply the earliest position in the current sequence.",
+      "Repeat team_size times: among positions [0, k) and [len-k, len), pick the highest score, breaking ties by the smaller position; add the score to the total and remove that person. Scores can be negative, so use a 64-bit total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIn each round, build the union of the two candidate windows, choose by score descending and then by original index ascending, and then delete that employee from the sequence.\n\n## Correctness\n\nThe candidate set equals the union of the two windows in the statement; the sort key implements \"highest score first, earliest index on ties\". Deleting one person per round keeps the remaining sequence in order, which matches the definition.\n\n## Complexity\n\nO(n * team_size) time; this site has n<=2000, and O(n) space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-flexport-8",
+  "packageChecksum": "a38b58de89d1920824cda86b25746e5627b891216846664870ea7ada21bf3f71",
+  "sourceContentHash": "b00e5d6090e4514d6fdd8b8e404a732b2ae150d06c15a84aa5eb1d050f5d2a90",
+  "editorialSha256": "6cc50aaa876d189513fb4a39595bb8d4f8074d50b6ea13bdaa7891cd49ffbe60",
+  "hints": {
+    "zh": [
+      "每个人都把球传给固定的下一个人，所以从 1 号出发的持球序列一定在某一刻开始重复，之后就是一个循环。k 可达 10^12，不能一步步模拟。",
+      "从 1 号开始沿着 receiver 走，记录每个人第一次拿到球的时刻，直到遇到已经拿过球的人。设他第一次出现在时刻 start，那么时刻 start 之后的持球者以长度 len = 路径长 − start 为周期循环。",
+      "把访问顺序存进数组 path。若 k 小于 path 的长度，答案就是 path[k]；否则答案是 path[start + (k − start) mod len]。k 用 64 位整数读入。"
+    ],
+    "en": [
+      "Everyone passes to a fixed next person, so the sequence of holders starting from friend 1 must eventually repeat and then cycle forever. k can be 10^12, so you cannot simulate step by step.",
+      "Walk along receiver from friend 1, recording the time each friend first gets the ball, until you reach a friend who has already held it. If that friend first appeared at time start, then from time start on, the holders repeat with period len = path length - start.",
+      "Store the visiting order in an array path. If k is less than the length of path, the answer is path[k]; otherwise it is path[start + (k - start) mod len]. Read k as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nStarting with friend 1, each second the ball is passed to the friend specified by receiver; find who holds the ball after the given number of seconds.\n\n## Proof of correctness\n\nThe construction corresponds one to one with the definition in the statement; every input position or operation is handled by the definition, so nothing is missed and nothing is counted extra.\n\n## Complexity\n\nSee the implementation and the problem constraints for the time and space bounds."
+}

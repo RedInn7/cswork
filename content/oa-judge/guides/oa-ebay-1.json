@@ -1,0 +1,19 @@
+{
+  "id": "oa-ebay-1",
+  "packageChecksum": "7d7e902bb10c5d35dc503c1db2c4fef0bfa0918a5feb73c2c23b735818bc24d2",
+  "sourceContentHash": "337fc43fc422e46310974f89bb8a9a369529d1216c4fe200b221d6075f30aeed",
+  "editorialSha256": "7ae460ba294b09eb1908046cd039e18be31a0bc5dd26b0cd9fa20cdb03150c6c",
+  "hints": {
+    "zh": [
+      "新数组的顺序就是“左、右、左、右……”轮流从原数组两端取元素，取过的不再用，不需要任何排序或额外计算。",
+      "用两个指针 l 和 r 分别指向还没取的最左和最右元素，每轮先取 l，再在还有剩余时取 r，两个指针相遇就结束。",
+      "令 l = 0、r = n − 1，当 l ≤ r 时：输出 a[l] 并 l++；若此时仍有 l ≤ r，再输出 a[r] 并 r−−。注意 n 为奇数时最后中间那个元素只输出一次，最后用空格分隔输出。"
+    ],
+    "en": [
+      "The new order simply alternates left, right, left, right... taking elements from the two ends of the original array, and an element is used once; no sorting or extra computation is needed.",
+      "Keep two pointers l and r at the leftmost and rightmost elements not yet taken. Each round take l first, then r if anything is left, and stop when the pointers cross.",
+      "Set l = 0 and r = n - 1. While l <= r: output a[l] and increment l; if l <= r still holds, output a[r] and decrement r. When n is odd the middle element is output only once. Print the values separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse two pointers: in each round take the left end, then the right end (if elements remain).\n\n## Correctness\n\nEach round removes the leftmost and the rightmost elements not yet output, with no repeats and no omissions; when the range shrinks to empty, the output order is exactly the alternating left-right rule.\n\n## Complexity\n\nO(n) time and O(n) output space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-doordash-1",
+  "packageChecksum": "c16db07dd8fdf0b10580d400399c06ea9b503e9c45c631c7dbf319de67554aa6",
+  "sourceContentHash": "69dfbaed19228d3ad6cd926555aaf964bddd47f2d0289ed38edd9527bce4a4c2",
+  "editorialSha256": "5c40db97eb7a336672928fa89dbbb6f5501bf4b6cec944a75aa873e9acf41640",
+  "hints": {
+    "zh": [
+      "正着模拟时全局抬价要改动整个数组，代价太大。换个角度看：每件商品的最终价格只取决于它最后一次单点赋值，以及这之后发生的所有全局下限。",
+      "倒序扫描操作，维护“到目前为止见过的全局下限最大值” floor。对某个位置，倒序遇到的第一个单点赋值就是它正向的最后一次赋值，此时的 floor 恰好是之后作用于它的全部下限的最大值。",
+      "倒序处理：遇到 2 类操作就令 floor = max(floor, v)；遇到 1 x v 且第 x 项还没有记录时，记录 max(v, floor)。扫描完后，记录过的位置直接输出记录值，没被赋值过的位置输出 max(初始价, floor)。"
+    ],
+    "en": [
+      "Simulating forward, every global raise touches the whole array, which is too slow. Instead note that an item's final price depends only on its last point assignment and all the global lower bounds applied after it.",
+      "Scan the operations backwards while keeping floor, the largest global lower bound seen so far. For each position, the first point assignment met in reverse is its last assignment in forward time, and floor at that moment is exactly the largest bound applied to it afterwards.",
+      "Process in reverse: for a type 2 operation set floor = max(floor, v); for 1 x v when item x has no record yet, record max(v, floor). After the scan, a recorded position prints its record, and a position never assigned prints max(initial price, floor)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the operations in reverse while maintaining the largest lower bound of the later global raises; for each item we only need its last forward point assignment and the raises after it.\n\n## Correctness\n\nThe first point assignment met in reverse is the last forward assignment of that position, and the global operations after it affect its final value; if the position was never assigned, its initial price goes through every global lower bound. The two cases are computed exactly by the recorded array and by the initial values, respectively.\n\n## Complexity\n\nO(n+q) time and space."
+}

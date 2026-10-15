@@ -1,0 +1,19 @@
+{
+  "id": "oa-doordash-5",
+  "packageChecksum": "aa4bca25ac0822023c4e4cece70b51f8891ac0289f6617b1eb66177f96cf9556",
+  "sourceContentHash": "1f034affb0098803d69e771112ab065d96b7d12ca0cc25a7072d2c3d816198eb",
+  "editorialSha256": "5749af4cbbade0ba05c09c6cde16c2ecbbf8932518d2042504ce8e2743649f6e",
+  "hints": {
+    "zh": [
+      "需要反复合并两个人所在的组，并随时查询某个人所在组的人数，这正是并查集擅长的操作。",
+      "并查集的每个根记录组大小，F 操作按大小合并两个根，T 操作分别找到两人的根并把两组人数相加。题意要求同组时也对两个人各算一次，所以同组就是加两倍组大小，不需要特判。",
+      "初始化 parent[i] = i、size[i] = 1。F a b：找到两个根，不同时把小组挂到大组下并累加大小。T a b：答案加上 size[find(a)] + size[find(b)]。查找时做路径压缩，累计值用 64 位整数。"
+    ],
+    "en": [
+      "You repeatedly merge the groups of two people and ask for the size of a person's group, which is exactly what a disjoint-set union is for.",
+      "Keep the group size at each root. An F operation merges the two roots by size, and a T operation finds both roots and adds the two sizes. The statement counts each person separately even when they share a group, so that case simply adds the size twice with no special handling.",
+      "Initialize parent[i] = i and size[i] = 1. For F a b, find both roots and, if they differ, attach the smaller group under the larger one and add the sizes. For T a b, add size[find(a)] + size[find(b)] to the answer. Use path compression in find and a 64-bit total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA union-find structure maintains representatives and group sizes. F merges by size, and T adds the sizes of the two groups to the running total.\n\n## Correctness\n\nThe representative identifies a connected component, and merging keeps the group sizes correct. Each Total query takes the group size separately for each of the two students, so when they are in the same group it is counted twice, as the statement says.\n\n## Complexity\n\nO((n+q) alpha(n)) time and O(n) space."
+}

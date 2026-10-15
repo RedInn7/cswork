@@ -1,0 +1,19 @@
+{
+  "id": "oa-ericsson-2",
+  "packageChecksum": "56efdd9ae21c534ee5f5a4ab880aaf903150523d72603490ccf9de7836c8bb41",
+  "sourceContentHash": "8d40b9021b75b5ffce2439fd7819bce15c82dc50765f9a0a03b980fd42a2d1b0",
+  "editorialSha256": "c3ade9993e1e1cbc86f350b838e3bdf13be4820d4c6b7e0a88d90f1d93a2f673",
+  "hints": {
+    "zh": [
+      "先要知道每个值出现了几次，然后按题目给的顺序把不同的值排好，取前 k 个即可。",
+      "排序规则是频次降序、频次相同时数值升序，等价于按二元组 (−频次, 数值) 升序排序。值域只有 −10000..10000，可以用哈希表或偏移后的数组计数。",
+      "统计每个值的频次，把所有出现过的不同值放进列表，按 (−频次, 数值) 排序，输出前 k 个，用空格分隔。题目保证 k 不超过不同值的个数。"
+    ],
+    "en": [
+      "First find how many times each value occurs, then sort the distinct values in the order the statement gives and take the first k.",
+      "The order is frequency descending and, for equal frequencies, value ascending, which is the same as sorting by the pair (-frequency, value) ascending. Values only range over -10000..10000, so a hash map or an offset array can do the counting.",
+      "Count each value's frequency, put the distinct values into a list, sort it by (-frequency, value), and print the first k separated by spaces. The statement guarantees k does not exceed the number of distinct values."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the frequencies, then sort by (-frequency, value).\n\n## Proof of correctness\n\nThis sort key satisfies, item by item, \"higher frequency first\" and \"on ties, the smaller value first\".\n\n## Complexity\n\nO(n+d log d) time, O(d) space."
+}

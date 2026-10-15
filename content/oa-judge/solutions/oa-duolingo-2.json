@@ -1,0 +1,16 @@
+{
+  "id": "oa-duolingo-2",
+  "packageChecksum": "26f65f27fc2701394ed3cc70f3962dd3dce7a529b8772ed3de42e6be58dee4b7",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    long long n, k;\n    cin >> n >> k;\n    // Earliest index of each prefix-sum remainder; equal remainders bound a divisible interval.\n    unordered_map<long long, int> first;\n    first.reserve(2 * n + 2);\n    first[0] = -1;\n    long long prefix = 0;\n    int answer = 0;\n    for (int i = 0; i < n; i++) {\n        long long amount;\n        cin >> amount;\n        prefix = ((prefix + amount) % k + k) % k;\n        auto it = first.find(prefix);\n        if (it != first.end()) answer = max(answer, i - it->second);\n        else first[prefix] = i;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "253019bf041216363984884d15a8688c6f4338abfed90ec38cc72ea334ab92bb"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long k = nextLong();\n        HashMap<Long, Integer> first = new HashMap<>();\n        first.put(0L, -1);\n        long prefix = 0;\n        int answer = 0;\n        for (int i = 0; i < n; i++) {\n            prefix = Math.floorMod(prefix + nextLong(), k);\n            Integer at = first.get(prefix);\n            if (at != null) answer = Math.max(answer, i - at);\n            else first.put(prefix, i);\n        }\n        System.out.print(answer + \"\\n\");\n    }\n}\n",
+      "sha256": "3c699602064ab7df774c4457bd597c75a3d0f2e8f44f3e2fc1719c43126899d0"
+    }
+  ]
+}
