@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-10",
+  "packageChecksum": "5b367d6682c2fe569e367133886f4cbaff5827fc7715db63a207e50a2ed7e801",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int left, right;\n    cin >> left >> right;\n    int count = 0;\n    for (int v = left; v <= right; v++) {\n        int a = v / 100, b = v / 10 % 10, c = v % 10;\n        if (a != b && b != c && a != c) count++;\n    }\n    cout << count << \"\\n\";\n    return 0;\n}\n",
+      "sha256": "32c8a05060e8ca91d6cb7f05f25ec7107090bb57930d7d4ccd02b9bc63bef833"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner in = new Scanner(System.in);\n        int left = in.nextInt(), right = in.nextInt();\n        int count = 0;\n        for (int v = left; v <= right; v++) {\n            int a = v / 100, b = v / 10 % 10, c = v % 10;\n            if (a != b && b != c && a != c) count++;\n        }\n        System.out.println(count);\n    }\n}\n",
+      "sha256": "2b1f24d7cecea9b46f5f290540f45d96b47e0ad052daf11c8f331d4efbd62ec4"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar left, right int\n\tfmt.Scan(&left, &right)\n\tcount := 0\n\tfor v := left; v <= right; v++ {\n\t\ta, b, c := v/100, v/10%10, v%10\n\t\tif a != b && b != c && a != c {\n\t\t\tcount++\n\t\t}\n\t}\n\tfmt.Println(count)\n}\n",
+      "sha256": "ace5414095deae79d1a9163e212ca73f9e4329bfed325b4b75202e14e1ec3154"
+    }
+  ]
+}

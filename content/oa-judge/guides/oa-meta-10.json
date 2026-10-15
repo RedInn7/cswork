@@ -1,0 +1,18 @@
+{
+  "id": "oa-meta-10",
+  "packageChecksum": "5b367d6682c2fe569e367133886f4cbaff5827fc7715db63a207e50a2ed7e801",
+  "sourceContentHash": "90208f7703463eb8ad8d65c8ffa9420a23ebd5a4c59fc0522b5f3709f44dd5c2",
+  "hints": {
+    "zh": [
+      "区间里最多只有 900 个三位数，逐个检查完全来得及。",
+      "把每个数拆成百位、十位、个位三个数字，三个数字两两不同才计数。",
+      "从 left 枚举到 right；用 v/100、v/10%10、v%10 取出三个数字；若 a≠b、b≠c 且 a≠c，计数加一；最后输出计数。"
+    ],
+    "en": [
+      "The range holds at most 900 three-digit numbers, so checking each one is fast enough.",
+      "Split each number into its hundreds, tens and units digits, and count it only when all three differ.",
+      "Loop v from left to right; take a = v/100, b = v/10 % 10, c = v % 10; add one when a != b, b != c and a != c; print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWalk through the range and count the numbers whose three digits are pairwise different, for example by turning each number into its three characters and checking that the set of them has size 3.\n\n## Why it works\n\nA set keeps exactly the distinct digit characters, so its size is 3 if and only if the three digits differ pairwise, and the closed range visits every integer once.\n\n## Complexity\n\nTime O(right - left + 1), extra space O(1)."
+}

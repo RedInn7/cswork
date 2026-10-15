@@ -19,9 +19,9 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { HTTP_FIXTURE_BOOTSTRAP, HTTP_FIXTURES_FILE } from '../../lib/http-fixtures.mjs';
 import { matchesOutput } from '../../lib/server/oj-engine.ts';
@@ -193,11 +193,15 @@ export function readPackage(id) {
 }
 const registryEntry = (id) =>
   JSON.parse(readFileSync(resolve(root, 'registry.json'), 'utf8')).items.find((item) => item.id === id);
-const write = (file, value) => writeFileSync(file, JSON.stringify(value, null, 2) + '\n');
+const write = (file, value) => {
+  mkdirSync(dirname(file), { recursive: true });
+  writeFileSync(file, JSON.stringify(value, null, 2) + '\n');
+};
 const order = (a, b) => a.id.localeCompare(b.id) || LANGUAGES.indexOf(a.language) - LANGUAGES.indexOf(b.language);
 
 function print(label, result) {
-  console.log(`${label}: ${result.passed}/${result.total} passed, max CPU ${result.maxCpuMs} ms, max RSS ${result.maxRssKb} KiB (${result.environment})`);
+  const stopped = result.passed + result.failures.length < result.total ? ' (stopped after 3 failures)' : '';
+  console.log(`${label}: ${result.passed}/${result.total} passed${stopped}, max CPU ${result.maxCpuMs} ms, max RSS ${result.maxRssKb} KiB (${result.environment})`);
   for (const failure of result.failures) console.log(`  FAIL case ${failure.case}: ${failure.verdict}${failure.detail ? `\n${failure.detail}` : ''}`);
 }
 const warnSlow = (label, result, timeLimit) =>
