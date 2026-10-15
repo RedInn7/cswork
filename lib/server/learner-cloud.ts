@@ -19,7 +19,7 @@ import { readJson } from './my-practice';
 import { canSeeProblem, listProblemSummaries } from './oj-problems';
 import { dailyDays } from './points';
 import { visibleTarget } from './solution-posts';
-import { badgeName, badgeSql } from './work-verify';
+import { badgeName, badgeSql, badgeTarget } from './work-verify';
 
 /**
  * Learner data that lives on the server (db/learner-cloud-schema.ts): finished mock OAs,
@@ -746,7 +746,10 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     .all(profile.user_id) as { id: string; language: string }[])
     if (shown(r.id)) byLanguage.set(r.language, (byLanguage.get(r.language) ?? 0) + 1);
   const hidden = hiddenCompanies();
+  // The verified employee badge, only if its owner switched it on for the profile.
+  const employer = badgeName(db.prepare(`SELECT ${badgeSql('?', 'profile')}`).pluck().get(profile.user_id) as string | null);
   // Posts anyone can open: solutions on public problems and threads; reported-down ones stay out.
+  // Beside the badge only posts that could carry it, never interview, career or offer talk or OA solutions.
   const posts = (
     db
       .prepare(
@@ -757,8 +760,10 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
         ORDER BY sp.created_at DESC LIMIT 500`,
       )
       .all(profile.user_id) as { id: string; target: string; title: string; tag: string; createdAt: number; votes: number }[]
-  ).filter((post) =>
-    post.target.startsWith('discuss:') ? isChannel(post.target.slice(8)) && !hidden.has(post.tag) : shown(post.target),
+  ).filter(
+    (post) =>
+      (post.target.startsWith('discuss:') ? isChannel(post.target.slice(8)) && !hidden.has(post.tag) : shown(post.target)) &&
+      (!employer || badgeTarget(post.target)),
   );
   const follows = db
     .prepare(
@@ -793,8 +798,7 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     badges,
     // Shown while still earned: a badge lost since (a hidden contest curve) just disappears.
     featured: badges.find((b) => b.id === profile.featured_badge) ?? null,
-    // The verified employee badge, only if its owner switched it on for the profile.
-    employer: badgeName(db.prepare(`SELECT ${badgeSql('?', 'profile')}`).pluck().get(profile.user_id) as string | null),
+    employer,
     posts: {
       items: posts.slice(0, 10).map((post) => ({
         id: post.id,

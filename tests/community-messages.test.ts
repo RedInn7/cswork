@@ -332,4 +332,23 @@ void test('badge placements, the referral board and direct messages', async () =
     const post = (await ok(amy, 'POST', 'posts', { problemId: `discuss:${channel}`, title: 'Notes', body: 'Notes' })).post;
     assert.equal(post.employer, shown, channel);
   }
+  // Nor does her profile list those threads beside its badge; without the badge it lists them all.
+  const listed = () => publicProfile('amy-g', new Map())!.posts.items.map((p: { target: string }) => p.target).sort();
+  assert.deepEqual(listed(), ['discuss:algo', 'discuss:referral']);
+  await ok(amy, 'POST', 'work/show', { profile: false });
+  assert.deepEqual(listed(), ['discuss:algo', 'discuss:career', 'discuss:interview', 'discuss:offer', 'discuss:referral']);
+  await ok(amy, 'POST', 'work/show', { profile: true });
+});
+
+void test('verifying at another company switches every placement off', async () => {
+  // Renewing at the same company keeps Amy's choices (profile and posts on, from above).
+  await verify(amy, 'amy@google.com');
+  assert.deepEqual((await ok(amy, 'GET', 'work')).verification.show, { profile: true, posts: true, referrals: false });
+  // Consent was for Google: Amazon starts from nothing, before and after the code.
+  const code = await verify(amy, 'amy@amazon.com');
+  assert.deepEqual((await ok(amy, 'GET', 'work')).verification.show, { profile: false, posts: false, referrals: false });
+  const state = await ok(amy, 'POST', 'work/confirm', { code });
+  assert.equal(state.verification.company.slug, 'amazon');
+  assert.deepEqual(state.verification.show, { profile: false, posts: false, referrals: false });
+  assert.equal(publicProfile('amy-g', new Map())!.employer, null);
 });

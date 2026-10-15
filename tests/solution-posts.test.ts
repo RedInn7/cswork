@@ -49,7 +49,7 @@ type List = { solved: boolean; items: Post[]; more: boolean };
 before(() => {
   const db = sqlite();
   migrate(drizzle(db), { migrationsFolder: resolve('drizzle') });
-  for (const id of ['oa-amazon-1', 'oa-hiddenco-1', 'course-x'])
+  for (const id of ['oa-amazon-1', 'oa-hiddenco-1', 'course-x', 'lc-1'])
     db.prepare(
       `INSERT INTO oj_problems(id,course_id,lesson_id,current_version_id,published,created_at,updated_at) VALUES(?,'gomall','00-overview','v-'||?,1,1,1)`,
     ).run(id, id);
@@ -206,4 +206,20 @@ void test('daily caps stop a scripted client', async () => {
   assert.equal(await status(spammer, 'POST', 'posts', { problemId: 'oa-amazon-1', title: 'one more', body: 'b' }), 429);
   const page = await ok<List>(me, 'GET', 'posts?problem=oa-amazon-1&sort=new');
   assert.equal(page.items.length, 11);
+});
+
+void test('the employee badge stays off company OA solutions', async () => {
+  // A Google employee's solution to an Amazon OA problem would say a Google employee is taking Amazon's OA.
+  const cara: Person = { ...me, id: 'posts-cara', email: 'cara@example.test' };
+  sqlite()
+    .prepare(
+      `INSERT INTO work_verifications(user_id,company_slug,domain,email_hash,attempts,verified_at,show_posts,created_at)
+      VALUES(?,'google','google.com','h',0,?,1,1)`,
+    )
+    .run(cara.id, Date.now());
+  type Badged = { post: { employer: string | null } };
+  const oa = await ok<Badged>(cara, 'POST', 'posts', { problemId: 'oa-amazon-1', title: 'OA', body: 'b' });
+  assert.equal(oa.post.employer, null);
+  const lc = await ok<Badged>(cara, 'POST', 'posts', { problemId: 'lc-1', title: 'LC', body: 'b' });
+  assert.equal(lc.post.employer, 'Google');
 });

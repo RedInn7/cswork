@@ -1,6 +1,7 @@
 import { createHmac, randomInt, timingSafeEqual } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
+import { targetKind } from '@/lib/community';
 import domainsFile from '@/lib/content/company-domains.json';
 import type { Person } from './auth';
 import { setting } from './env';
@@ -15,7 +16,8 @@ import { readJson } from './my-practice';
  * keeps only an HMAC of the address, keyed with a server secret (a plain hash of a guessable
  * address could be checked against a list of names), and one address verifies one account.
  * The badge lasts a year and shows only where its owner switched it on: the public profile,
- * community posts, referral threads. Never on experience comments.
+ * community posts, referral threads. Never on experience comments. Verifying at another company
+ * switches every placement off again: consent was given for the old employer.
  */
 const DAY = 86400000;
 export const BADGE_DAYS = 365;
@@ -56,6 +58,12 @@ export function employerOf(email: string) {
 export const badgeSql = (user: string, placement: Placement) =>
   `(SELECT company_slug FROM work_verifications WHERE user_id=${user} AND show_${placement}=1
     AND verified_at>strftime('%s','now')*1000-${BADGE_DAYS * DAY})`;
+// The posts badge shows on solutions and these channels only: in interview, offer or career talk,
+// on a company's OA problem, experience comments or answers it would read as "an employee of X is
+// interviewing". A profile that shows the badge lists only these posts too (learner-cloud publicProfile).
+const BADGE_CHANNELS = new Set(['discuss:algo', 'discuss:referral', 'discuss:site']);
+export const badgeTarget = (target: string) =>
+  BADGE_CHANNELS.has(target) || (targetKind(target) === 'problem' && !target.startsWith('oa-'));
 /** A badge's company name while the company keeps its page: a hidden company's badge goes too. */
 export const badgeName = (slug: string | null | undefined) =>
   (slug && reportCompanies().find((c) => c.slug === slug)?.name) || null;
@@ -133,13 +141,17 @@ export async function handleWorkVerify(request: Request, p: Person | null, path:
       console.error('mail', error instanceof Error ? error.message : 'unknown');
       throw new HttpError(502, '验证码邮件未能发送，请稍后重试');
     });
-    // Renewing the same address keeps the badge meanwhile; another address takes it down until confirmed.
+    // Renewing the same address keeps the badge meanwhile; another address takes it down until confirmed,
+    // and another company switches every placement off (SET reads the old row on the right).
     db.prepare(
       `INSERT INTO work_verifications(user_id,company_slug,domain,email_hash,code_hash,code_expires_at,attempts,created_at)
       VALUES(?,?,?,?,?,?,0,?) ON CONFLICT(user_id) DO UPDATE SET company_slug=excluded.company_slug,
         domain=excluded.domain,email_hash=excluded.email_hash,code_hash=excluded.code_hash,
         code_expires_at=excluded.code_expires_at,attempts=0,
-        verified_at=CASE WHEN email_hash=excluded.email_hash THEN verified_at END`,
+        verified_at=CASE WHEN email_hash=excluded.email_hash THEN verified_at END,
+        show_profile=CASE WHEN company_slug=excluded.company_slug THEN show_profile ELSE 0 END,
+        show_posts=CASE WHEN company_slug=excluded.company_slug THEN show_posts ELSE 0 END,
+        show_referrals=CASE WHEN company_slug=excluded.company_slug THEN show_referrals ELSE 0 END`,
     ).run(p.id, company.slug, company.domain, hash, mac(`${p.id}:${code}`), now + CODE_MS, now);
     return json(workState(p.id, now));
   }
