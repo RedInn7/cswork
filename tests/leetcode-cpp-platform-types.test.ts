@@ -101,3 +101,28 @@ class Solution { public: ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) { r
     assert.match(result.stderr, /solution\.cpp:1:\d+: error: redefinition of 'struct ListNode'/);
   },
 );
+
+void test(
+  'learner globals named like the harness internals compile',
+  { skip },
+  () => {
+    const globals =
+      'struct Answer { int x; }; struct Json {}; int call = 0, construct = 0, dump = 0;';
+    for (const [id, code] of [
+      [
+        'lc-1',
+        `${globals}
+class Solution { public: vector<int> twoSum(vector<int>& nums, int target) { return {0, 1}; } };`,
+      ],
+      ['lc-146', lru(`${globals}\n${lruNode}`)],
+      [
+        'lc-297',
+        `${globals}
+class Codec { public: string serialize(TreeNode* root) { return ""; } TreeNode* deserialize(string data) { return nullptr; } };`,
+      ],
+    ] as const) {
+      const result = compile(id, code);
+      assert.equal(result.status, 0, `${id}\n${result.stderr}`);
+    }
+  },
+);

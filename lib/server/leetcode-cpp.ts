@@ -165,12 +165,12 @@ export function buildLeetCodeCpp(
   let body: string;
   if (problemId === 297 || problemId === 449) {
     body = `Codec instance;
-    Json::Array result;
+    cswork::Json::Array result;
     const auto operation = request.at("operation").str();
     for (const auto& argument : request.at("args").array()) {
-      Json input(Json::Array{argument});
-      if (operation == "serialize") result.push_back(call(graph, instance, &Codec::serialize, input).result);
-      else if (operation == "deserialize") result.push_back(call(graph, instance, &Codec::deserialize, input).result);
+      cswork::Json input(cswork::Json::Array{argument});
+      if (operation == "serialize") result.push_back(cswork::call(graph, instance, &Codec::serialize, input).result);
+      else if (operation == "deserialize") result.push_back(cswork::call(graph, instance, &Codec::deserialize, input).result);
       else throw runtime_error("Unknown codec operation");
     }
     answer = {result, request.at("args")};`;
@@ -178,7 +178,7 @@ export function buildLeetCodeCpp(
     const method = methods.find((method) => method.name !== className)?.name;
     if (!method)
       throw new Error('LeetCode C++ template has no solution method');
-    body = `Solution instance; answer = call(graph, instance, &Solution::${method}, request.at("args"));`;
+    body = `Solution instance; answer = cswork::call(graph, instance, &Solution::${method}, request.at("args"));`;
   } else {
     const constructor = methods.find((method) => method.name === className);
     if (!constructor)
@@ -188,14 +188,14 @@ export function buildLeetCodeCpp(
     const dispatch = allowed
       .map(
         ({ name }, index) =>
-          `${index ? 'else ' : ''}if (operation == "${name}") result.push_back(call(graph, *instance, &${className}::${name}, parameters[i]).result);`,
+          `${index ? 'else ' : ''}if (operation == "${name}") result.push_back(cswork::call(graph, *instance, &${className}::${name}, parameters[i]).result);`,
       )
       .join('\n      ');
     body = `const auto& operations = request.at("operations").array();
     const auto& parameters = request.at("parameters").array();
     if (operations.empty() || operations.size() != parameters.size() || operations[0].str() != "${className}") throw runtime_error("Invalid design trace");
-    auto instance = construct<${[className, ...types].join(', ')}>(graph, parameters[0]);
-    Json::Array result{Json()};
+    auto instance = cswork::construct<${[className, ...types].join(', ')}>(graph, parameters[0]);
+    cswork::Json::Array result{cswork::Json()};
     for (size_t i = 1; i < operations.size(); ++i) {
       const auto operation = operations[i].str();
       ${dispatch}
@@ -217,14 +217,14 @@ int main() {
     auto request = cswork::Parser(input).parse();
     cswork::Graph graph;
     graph.load(request.at("nodes"));
-    using namespace cswork;
-    Answer answer;
+    // Qualified: the learner may declare Answer, Json, call... at global scope.
+    cswork::Answer answer;
     ${body}
-    Json nodes = graph.serialize();
-    Json response(Json::Object{{"result", answer.result}, {"args", answer.args}, {"nodes", nodes}});
+    cswork::Json nodes = graph.serialize();
+    cswork::Json response(cswork::Json::Object{{"result", answer.result}, {"args", answer.args}, {"nodes", nodes}});
     ofstream output("cswork-result.json", ios::binary | ios::trunc);
     if (!output) throw runtime_error("Cannot open result file");
-    dump(output, response);
+    cswork::dump(output, response);
     output << '\\n';
     output.close();
     if (!output) throw runtime_error("Cannot write result file");
