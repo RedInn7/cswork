@@ -36,6 +36,31 @@ test('every real course Mermaid block parses under the exact production configur
   t.diagnostic(`${total} actual course diagrams parsed without errors`);
 });
 
+test('every system design course diagram parses and fits the length limit', async () => {
+  const course = JSON.parse(
+    readFileSync(
+      new URL('../lib/content/system-design-course.json', import.meta.url),
+      'utf8',
+    ),
+  );
+  let total = 0;
+  for (const chapter of course.chapters)
+    for (const key of ['bodyZh', 'bodyEn'])
+      for (const match of chapter[key].matchAll(
+        /^```mermaid\n([\s\S]*?)^```/gm,
+      )) {
+        total += 1;
+        const where = `${chapter.slug}.${key}, diagram ${total}`;
+        assert.ok(match[1].length <= DIAGRAM_MAX_LENGTH, where);
+        assert.ok(
+          (await mermaid.parse(prepareCourseDiagram(match[1]))).diagramType,
+          where,
+        );
+        assert.match(match[1], /^\s*accTitle: /m, `${where} has an accessible title`);
+      }
+  assert.ok(total >= 48, 'the converted architecture diagrams stay covered');
+});
+
 test('author directives, frontmatter and oversized sources cannot alter renderer policy', () => {
   for (const source of [
     '%%{init: {"securityLevel":"loose","htmlLabels":true}}%%\nflowchart LR\n A-->B',
