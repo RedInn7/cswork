@@ -14,6 +14,7 @@ import {
   Library,
   MessagesSquare,
   MessageCircle,
+  Mail,
   ScrollText,
   BookOpen,
   Code2,
@@ -126,6 +127,9 @@ const MyLists = lazy(() =>
 const StudyGroups = lazy(() =>
   import('./study-groups').then((m) => ({ default: m.StudyGroups }), loadFailed),
 );
+const Messages = lazy(() =>
+  import('./messages').then((m) => ({ default: m.Messages }), loadFailed),
+);
 const DiscussBoard = lazy(() =>
   import('./discuss-board').then((m) => ({ default: m.DiscussBoard }), loadFailed),
 );
@@ -152,6 +156,7 @@ const nav: [LucideIcon, string, string, string][] = [
   [BookUser, 'STAR 故事库', 'Story Bank', 'stories'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
   [MessageCircle, '讨论区', 'Discuss', 'discuss'],
+  [Mail, '私信', 'Messages', 'messages'],
   [Library, '学习资料', 'Resources', 'resources'],
   [BookOpen, '我的课程', 'My Courses', 'courses'],
   [BookOpen, '算法知识点', 'Algorithm Concepts', 'knowledge'],
@@ -434,6 +439,8 @@ export function Academy() {
         return <MyLists key={boot.person?.id} boot={boot} navigate={navigate} list={params.list} />;
       case 'group':
         return <StudyGroups key={boot.person?.id} navigate={navigate} params={params} />;
+      case 'messages':
+        return <Messages key={boot.person?.id || 'guest'} params={params} navigate={navigate} />;
       case 'discuss':
         return <DiscussBoard key={boot.person?.id || 'guest'} params={params} navigate={navigate} signedIn={!!boot.person} />;
       case 'questions':

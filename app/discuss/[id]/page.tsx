@@ -61,6 +61,9 @@ export default async function ThreadPage({ params }: Props) {
         <h1>{post.title}</h1>
         <p className="discuss-row-meta">
           <span>{post.author || t('学员', 'Learner')}</span>
+          {post.employer && (
+            <span className="discuss-chip">{t(`已验证 · ${post.employer} 员工`, `Verified · ${post.employer} employee`)}</span>
+          )}
           <span>{day(post.createdAt, zh)}</span>
           {post.updatedAt > post.createdAt + 60000 && <span>{t('已编辑', 'edited')}</span>}
           <span>{t(`${post.votes} 赞`, `${post.votes} ${post.votes === 1 ? 'upvote' : 'upvotes'}`)}</span>
@@ -73,6 +76,14 @@ export default async function ThreadPage({ params }: Props) {
         <a className="lists-public-cta" href={app}>
           {t('在 CSWork 里回复或点赞', 'Reply or upvote on CSWork')} →
         </a>
+        {post.referral && (
+          <>
+            {' '}
+            <a className="lists-public-cta" href={`/?view=messages&post=${encodeURIComponent(post.id)}`}>
+              {t('请求内推', 'Request a referral')} →
+            </a>
+          </>
+        )}
       </p>
       <section aria-labelledby="discuss-replies">
         <h2 id="discuss-replies" className="lists-public-h2">

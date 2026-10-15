@@ -45,6 +45,11 @@ export function ProfileView({
             {zh ? profile.featured.zh : profile.featured.en}
           </div>
         )}
+        {profile.employer && (
+          <div className="learner-employer">
+            {t(`已验证 · ${profile.employer} 员工`, `Verified · ${profile.employer} employee`)}
+          </div>
+        )}
         {profile.bio && <p>{profile.bio}</p>}
         <div className="learner-social">
           <FollowButton handle={profile.handle} zh={zh} followers={profile.followers ?? 0}>
