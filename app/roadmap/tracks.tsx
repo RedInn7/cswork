@@ -6,13 +6,14 @@ import { RouteGraph, type StopProgress } from '@/components/route-graph';
 import { ojRequest } from '@/lib/oj-client';
 import type { RouteSectionInput } from '@/lib/route-stops';
 
-export type SdPart = 'framework' | 'blocks' | 'cases' | 'lld' | 'concurrency';
+export type SdPart = 'framework' | 'blocks' | 'cases' | 'lld' | 'concurrency' | 'ml';
 const PARTS: [SdPart, string, string][] = [
   ['framework', '答题框架', 'Framework'],
   ['blocks', '基本构件', 'Building blocks'],
   ['cases', '经典案例', 'Case studies'],
   ['lld', '面向对象设计（LLD）', 'Low-level design'],
   ['concurrency', '并发', 'Concurrency'],
+  ['ml', 'ML 系统设计', 'ML system design'],
 ];
 type Link = { title: string; href: string };
 
@@ -92,7 +93,7 @@ export function RoadmapTracks({
         <p className="roadmap-lead">
           {member
             ? t(`已读 ${readCount} / ${sd.length} 章。`, `${readCount} of ${sd.length} chapters read.`)
-            : t('先学答题框架和基本构件，再做案例，最后是面向对象设计和并发。', 'Start with the framework and building blocks, then the case studies, then low-level design and concurrency.')}
+            : t('先学答题框架和基本构件，再做案例，然后是面向对象设计和并发，最后是 ML 系统设计。', 'Start with the framework and building blocks, then the case studies, then low-level design and concurrency, and finally ML system design.')}
         </p>
         <ol className="roadmap-parts">
           {PARTS.map(([part, zh, en]) => {

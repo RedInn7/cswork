@@ -6,7 +6,7 @@ import { GUIDE_CHAPTERS, guidePath } from '@/lib/career-guide';
 import { curatedEntries } from '@/lib/ling-curated';
 import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
 import { requestLocale } from '@/lib/server/locale';
-import { sdChapters, sdPath } from '@/lib/server/system-design-course';
+import { sdChapters, sdParts, sdPath } from '@/lib/server/system-design-course';
 import { LibraryPageView } from '../library/page-view';
 import { RoadmapTracks, type SdPart } from './tracks';
 
@@ -14,7 +14,7 @@ const COPY = {
   zh: {
     title: `面试路线图：算法知识点依赖图、系统设计与行为面试 | ${SITE_NAME}`,
     description:
-      '三条轨道看清准备顺序：35 个算法知识点的先修关系图，系统设计从答题框架到案例、LLD 和并发的章节，以及行为面试的准备入口。登录后显示自己的进度。',
+      '三条轨道看清准备顺序：35 个算法知识点的先修关系图，系统设计从答题框架到案例、LLD、并发和 ML 系统设计的章节，以及行为面试的准备入口。登录后显示自己的进度。',
     eyebrow: '路线图 · 编码 / 系统设计 / 行为面试',
     heading: '先学什么、再学什么，一张图看清。',
     crumb: '路线图',
@@ -22,24 +22,27 @@ const COPY = {
   en: {
     title: `Interview Roadmap: Topic Prerequisites, System Design & Behavioral | ${SITE_NAME}`,
     description:
-      'Three tracks in study order: a prerequisite graph of 35 algorithm topics, the system design chapters from the framework to case studies, low-level design and concurrency, and where to prepare behavioral rounds. Sign in to see your progress.',
+      'Three tracks in study order: a prerequisite graph of 35 algorithm topics, the system design chapters from the framework to case studies, low-level design, concurrency and ML system design, and where to prepare behavioral rounds. Sign in to see your progress.',
     eyebrow: 'ROADMAP · CODING / SYSTEM DESIGN / BEHAVIORAL',
     heading: 'What to learn first, and what comes next.',
     crumb: 'Roadmap',
   },
 };
 
-// Framework → building blocks → case studies → LLD → concurrency; new case chapters land in cases.
+// Framework → building blocks → case studies → LLD → concurrency → ML. A chapter takes the course
+// part it reads in (sdParts), so a new chapter lands beside its neighbours; unknown parts read as cases.
+const PART_FROM: Record<string, SdPart> = {
+  'ood-interview-approach': 'lld',
+  'concurrency-primitives': 'concurrency',
+  'ml-design-framework': 'ml',
+};
 const sdPartOf = (slug: string): SdPart =>
   slug === 'framework'
     ? 'framework'
     : slug === 'building-blocks'
       ? 'blocks'
-      : /^(ood-|solid-|lld-)/.test(slug)
-        ? 'lld'
-        : /concurren|blocking-queue|executor/.test(slug)
-          ? 'concurrency'
-          : 'cases';
+      : PART_FROM[sdParts.find((part) => part.chapters.some((chapter) => chapter.slug === slug))?.from ?? ''] ??
+        'cases';
 // The behavioral prep chapters of the career guide.
 const BEHAVIORAL = ['phone-screen', 'onsite'];
 

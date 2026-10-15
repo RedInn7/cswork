@@ -6,9 +6,18 @@ import { JSDOM } from 'jsdom';
 import { createElement, act } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { register } from 'node:module';
+import { readFileSync } from 'node:fs';
 
+// Stylesheets load as nothing; the page reads the locale cookie through a stubbed next/headers (English).
+const mocks = {
+  'next/headers': 'export const cookies = async () => ({ get: () => undefined }); export const headers = async () => new Headers();',
+  'next/link': 'export default function Link() { return null; }',
+  'next/navigation': 'export const usePathname = () => "/roadmap"; export const useSearchParams = () => new URLSearchParams();',
+};
 register(
-  `data:text/javascript,${encodeURIComponent("export async function load(url, context, next) { if (url.endsWith('.css')) return { format: 'module', source: 'export default {}', shortCircuit: true }; return next(url, context); }")}`,
+  `data:text/javascript,${encodeURIComponent(`const mocks = ${JSON.stringify(mocks)};
+export async function resolve(s, c, n) { return mocks[s] ? { url: 'mock:' + s, shortCircuit: true } : n(s, c); }
+export async function load(url, context, next) { if (url.startsWith('mock:')) return { format: 'module', source: mocks[url.slice(5)], shortCircuit: true }; if (url.endsWith('.css')) return { format: 'module', source: 'export default {}', shortCircuit: true }; return next(url, context); }`)}`,
   import.meta.url,
 );
 
@@ -120,4 +129,30 @@ test('signed in, the tracks show topic progress and read chapters; signed out th
     globalThis.fetch = originalFetch;
     dom.window.close();
   }
+});
+
+test('every system design chapter lands in its course part, the ML chapters in their own', async () => {
+  const { default: RoadmapPage } = await import('../app/roadmap/page.tsx');
+  const { RoadmapTracks } = await import('../app/roadmap/tracks.tsx');
+  const find = (node) =>
+    node && typeof node === 'object'
+      ? node.type === RoadmapTracks
+        ? node
+        : [node.props?.children].flat(Infinity).map(find).find(Boolean)
+      : undefined;
+  const tracks = find(await RoadmapPage());
+  const course = JSON.parse(readFileSync(new URL('../lib/content/system-design-course.json', import.meta.url), 'utf8'));
+  const { sd } = tracks.props;
+  assert.deepEqual(sd.map((chapter) => chapter.slug), course.chapters.map((chapter) => chapter.slug));
+  const part = Object.fromEntries(sd.map((chapter) => [chapter.slug, chapter.part]));
+  for (const slug of ['ml-design-framework', 'recsys-ranking', 'search-ranking', 'ads-ctr', 'fraud-detection']) assert.equal(part[slug], 'ml', slug);
+  for (const slug of ['ood-interview-approach', 'solid-in-practice', 'lld-elevator']) assert.equal(part[slug], 'lld', slug);
+  for (const slug of ['concurrency-primitives', 'bounded-blocking-queue', 'rate-limited-executor']) assert.equal(part[slug], 'concurrency', slug);
+  assert.equal(part['url-shortener'], 'cases');
+  const doc = new JSDOM(renderToStaticMarkup(tracks)).window.document;
+  assert.deepEqual(
+    [...doc.querySelectorAll('.roadmap-parts h3')].map((h) => h.textContent),
+    ['Framework', 'Building blocks', 'Case studies', 'Low-level design', 'Concurrency', 'ML system design'],
+  );
+  assert.equal(doc.querySelectorAll('.roadmap-parts ol li').length, sd.length, 'no chapter is left out');
 });
