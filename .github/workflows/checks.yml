@@ -46,10 +46,10 @@ jobs:
       - run: node --import tsx --test --test-concurrency=1 tests/oa-judge.test.ts tests/oa-judge-gate.test.ts tests/oa-judge-content.test.ts
       - run: node scripts/oa-judge/check-translations.mjs --quiet
       - run: node --check tests/oj-latency-load.mjs
-      - run: node --test tests/oj-capacity-config.test.mjs tests/oj-capacity-release.test.mjs
+      - run: node --test tests/oj-capacity-config.test.mjs tests/oj-capacity-release.test.mjs tests/oj-runner-swap.test.mjs
       - run: node --check tests/oj-capacity-benchmark.mjs
       - run: node --check tests/oj-capacity-admission-integration.mjs
-      - run: bash -n tests/oj-capacity-benchmark.sh deploy/oj-capacity-release.sh
+      - run: bash -n tests/oj-capacity-benchmark.sh deploy/oj-capacity-release.sh deploy/oj-pandas-release.sh
       - run: node --check deploy/oj-queue-control.cjs
       - run: bash -n deploy/release.sh deploy/check-additive-migrations.sh
       - run: node --test tests/check-additive-migrations.test.mjs
