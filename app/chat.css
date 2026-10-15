@@ -67,8 +67,19 @@
   opacity: 1;
   text-decoration: underline;
 }
+/* solution-posts.css, once loaded, lights its pill on hover (0,3,0): keep the plain link here. */
+.chat-meta .cs-post-act:hover:not(:disabled) {
+  background: none;
+  color: inherit;
+}
 .chat-meta .cs-post-report select {
   font-size: 11px;
+}
+/* Errors drawn on the navy panels: the light-on-navy red (.classic-tick-error), not #b42318. */
+.group-panel .cloud-error,
+.dm-panel .cloud-error,
+.chat-meta .cs-posts-error {
+  color: #ffb4b4;
 }
 .chat-body {
   margin: 0;
@@ -271,6 +282,15 @@
   }
   .dark .chat-meta button:hover {
     text-decoration: underline;
+  }
+  .dark .chat-meta .cs-post-act:hover:not(:disabled) {
+    background: none;
+    color: inherit;
+  }
+  .dark .group-panel .cloud-error,
+  .dark .dm-panel .cloud-error,
+  .dark .chat-meta .cs-posts-error {
+    color: #ffb4b4;
   }
   .dark .chat-compose textarea {
     border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
