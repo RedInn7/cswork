@@ -119,7 +119,9 @@ test('LeetCode cases edit per parameter, run with the editorial beside them, and
         cases: [],
       });
     }
-    if (url.includes('/submissions/ref-1?wait=1'))
+    // A plain poll, not a long poll: those slots belong to the learner's own run watch.
+    if (url.includes('/submissions/ref-1?')) throw new Error('reference took a long-poll slot');
+    if (url.endsWith('/submissions/ref-1'))
       return Response.json({ id: 'ref-1', status: 'finished', cases: [{ ordinal: 0, status: 'finished', stdout: '[0, 1]\n' }] });
     if (url.endsWith('/submissions') && init?.method === 'POST') {
       const body = JSON.parse(init.body);
@@ -198,7 +200,7 @@ test('LeetCode cases edit per parameter, run with the editorial beside them, and
     assert.equal(fields().length, 2);
     // Run: the learner's run and the editorial's run on the same case.
     await click(button('Run'));
-    await settle();
+    await act(async () => new Promise((r) => setTimeout(r, 800)));
     assert.deepEqual(posts.at(-1).stdin, '[3,3]\n6');
     assert.equal(expectedPosts.length, 1);
     assert.equal(expectedPosts[0].stdin, '[3,3]\n6');

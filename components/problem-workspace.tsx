@@ -1491,12 +1491,15 @@ function Workspace({
         { stdin: input, codingMode: mode, idempotencyKey: crypto.randomUUID() },
         controller.signal,
       );
-      while (activeStatuses.has(item.status))
+      // Plain polls: the server allows two long polls per learner, and the run's own watch needs one.
+      while (activeStatuses.has(item.status)) {
+        await new Promise((resolve) => setTimeout(resolve, 750));
         item = await ojRequest<OJSubmission>(
-          `submissions/${item.id}?wait=1&after=${encodeURIComponent(item.watchToken ?? '')}`,
+          `submissions/${item.id}`,
           undefined,
           controller.signal,
         );
+      }
       const output = item.cases?.[0]?.stdout;
       setReference(
         item.status === 'finished' && output !== undefined
