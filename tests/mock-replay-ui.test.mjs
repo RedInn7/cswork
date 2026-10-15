@@ -188,10 +188,16 @@ test('time away and long pastes are recorded for the self-check, and the report 
   let visibility = 'visible';
   Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => visibility });
   const fire = (target, type) => target.dispatchEvent(new dom.window.Event(type));
-  const paste = (text) => {
+  // Monaco's hidden textarea sits inside the editor host; the custom input does not.
+  const editor = document.createElement('div');
+  editor.className = 'cs-editor-host';
+  editor.innerHTML = '<textarea></textarea>';
+  const customInput = document.createElement('textarea');
+  document.body.append(editor, customInput);
+  const paste = (text, target = editor.firstChild) => {
     const event = new dom.window.Event('paste', { bubbles: true });
     Object.defineProperty(event, 'clipboardData', { value: { getData: () => text } });
-    document.body.dispatchEvent(event);
+    target.dispatchEvent(event);
   };
   const root = createRoot(document.getElementById('root'));
   try {
@@ -202,7 +208,7 @@ test('time away and long pastes are recorded for the self-check, and the report 
     // Hidden, then blurred too: one stretch, closed by whichever comes back first.
     await act(async () => (mock.timers.tick(700), (visibility = 'hidden'), fire(document, 'visibilitychange'), fire(window, 'blur')));
     await act(async () => (mock.timers.tick(60_000), (visibility = 'visible'), fire(document, 'visibilitychange'), fire(window, 'focus')));
-    await act(async () => (paste('x'.repeat(50)), paste('short')));
+    await act(async () => (paste('x'.repeat(50)), paste('short'), paste('y'.repeat(80), customInput), paste('z'.repeat(80), document.body)));
     await act(async () => mock.timers.tick(2000));
     await act(async () => root.render(createElement(Recorder, { running: false })));
     await act(flush);
@@ -222,6 +228,8 @@ test('time away and long pastes are recorded for the self-check, and the report 
   } finally {
     await act(async () => root.unmount());
     delete document.visibilityState;
+    editor.remove();
+    customInput.remove();
     mock.timers.reset();
   }
 });

@@ -90,7 +90,8 @@ export function useReplayRecorder(session: MockSession | null, problemId: string
       dirty = true;
       snap();
     };
-    // The focus self-check: hidden or unfocused stretches, and long pastes (Monaco's bubble up).
+    // The focus self-check: hidden or unfocused stretches, and long pastes into the code editor
+    // (Monaco's bubble up from inside .cs-editor-host; custom input and notes don't count).
     let left: number | null = null;
     const leave = () => {
       left ??= now();
@@ -106,7 +107,8 @@ export function useReplayRecorder(session: MockSession | null, problemId: string
     const visibility = () => (document.visibilityState === 'hidden' ? (leave(), snap()) : back());
     const paste = (e: ClipboardEvent) => {
       const chars = e.clipboardData?.getData('text').length ?? 0;
-      if (!track || track.full || chars <= PASTE_CHARS) return;
+      const inEditor = e.target instanceof Element && !!e.target.closest('.cs-editor-host');
+      if (!track || track.full || !inEditor || chars <= PASTE_CHARS) return;
       track.pastes.push([now(), chars]);
       dirty = true;
     };
