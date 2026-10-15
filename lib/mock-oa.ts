@@ -287,6 +287,8 @@ export type MockSession = {
   finishedAt?: number;
   reason?: 'manual' | 'timeout';
   result?: { score: number; max: number; solved: number; estimate: boolean };
+  /** A skill certification exam (lib/skill-tests.ts): the server keeps its clock and score. */
+  cert?: { test: string };
 };
 export type MockState = { active: MockSession | null; history: MockSession[] };
 export const MOCK_HISTORY = 30;
@@ -337,14 +339,16 @@ export function reportWindow(s: MockSession) {
   };
 }
 
-/** The finished session goes to the top of the history (newest first, capped). */
+/**
+ * The finished session goes to the top of the history (newest first, capped). A skill exam
+ * only leaves `active`: its result lives on the server (/certify), not in the mock history.
+ */
 export function archiveMock(state: MockState, s: MockSession): MockState {
   return {
     active: state.active?.id === s.id ? null : state.active,
-    history: [s, ...state.history.filter((h) => h.id !== s.id)].slice(
-      0,
-      MOCK_HISTORY,
-    ),
+    history: s.cert
+      ? state.history
+      : [s, ...state.history.filter((h) => h.id !== s.id)].slice(0, MOCK_HISTORY),
   };
 }
 

@@ -3,7 +3,7 @@
  * by the API (lib/server/skill-tests.ts) and the page (components/skill-test.tsx). In the
  * workspace a running exam is a mock OA session (lib/mock-oa.ts) carrying `cert`.
  */
-import { questionFraction, type QuestionResult, type Slot } from './mock-oa';
+import { questionFraction, type MockSession, type QuestionResult, type Slot } from './mock-oa';
 
 export type SkillTestId = 'problem-solving-basic' | 'problem-solving-intermediate' | 'sql' | 'python';
 export type SkillTest = {
@@ -82,4 +82,40 @@ export function skillScore(results: readonly (QuestionResult | null)[]) {
     max = per.length * 100;
   const passed = max > 0 && score >= PASS_TOTAL * max && per.every((p) => p >= PASS_EACH * 100);
   return { per, score, max, passed };
+}
+
+export type SkillAttempt = {
+  id: string;
+  test: string;
+  ids: string[];
+  language: string | null;
+  startedAt: number;
+  deadline: number;
+  finishedAt: number | null;
+  score: number | null;
+  max: number | null;
+  passed: boolean | null;
+};
+/**
+ * A running attempt as the workspace's mock exam session: the server's start and deadline in
+ * this browser's clock (`skew` = server minus browser), so the exam bar counts down to the same end.
+ */
+export function skillSession(a: SkillAttempt, test: SkillTest, serverNow: number, clientNow: number, zh: boolean): MockSession {
+  const skew = serverNow - clientNow;
+  return {
+    id: a.id,
+    company: null,
+    name: zh ? test.zh : test.en,
+    platform: test.language === 'python' ? 'Python' : null,
+    preset: false,
+    scoring: 'tests',
+    source: test.band ? 'lc' : 'mixed',
+    slots: [...test.slots],
+    ids: a.ids,
+    minutes: (a.deadline - a.startedAt) / 60000,
+    skew,
+    createdAt: a.startedAt - skew,
+    startedAt: a.startedAt - skew,
+    cert: { test: test.id },
+  };
 }

@@ -390,6 +390,14 @@ const EN: Record<string, string> = {
   '所选知识点下的题不够，减少题量或多选几个':
     'Not enough problems on the topics you picked. Draw fewer questions or pick more topics',
   模拟考试参数无效: 'Invalid mock exam parameters',
+  // Skill certification exams (lib/server/skill-tests.ts) and their certificates
+  你还有一场认证考试没有结束: 'You still have a certification exam in progress',
+  '同一项认证 7 天内只能考一次': 'You can take each certification exam once every 7 days',
+  '题库里你还没做过的题不够，暂时无法开考':
+    "There aren't enough problems you haven't solved for this exam yet",
+  没有进行中的认证考试: 'No certification exam in progress',
+  认证考试接口不存在: 'Certification endpoint not found',
+  系统设计面试课: 'System Design Interview Course',
   '这道题的题解和测试数据正在校验，暂未开放':
     "This problem's solution and test data are being verified and aren't available yet",
   '这道题的题解正在校验，暂未开放': "This problem's solution is being verified and isn't available yet",

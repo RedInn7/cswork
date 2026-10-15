@@ -54,6 +54,7 @@ import {
 import { syncMockHistory, uploadMocks } from '@/lib/mock-cloud';
 import { pruneTracks } from '@/lib/mock-replay';
 import { MockReplay } from './mock-replay';
+import { handInSkill } from './mock-exam-bar';
 import '@/app/mock-oa.css';
 
 type Preset = {
@@ -413,12 +414,14 @@ export function MockOa({
           draw={draw}
           navigate={navigate}
           handIn={(id) => {
+            const cert = findMock(readMockState(userId), id)?.cert;
             save((latest) =>
               latest.active?.id === id && latest.active.startedAt
                 ? archiveMock(latest, finishMock(latest.active, Date.now()))
                 : latest,
             );
-            navigate('mock', { report: id });
+            if (cert) handInSkill(cert.test);
+            else navigate('mock', { report: id });
           }}
         />
       )}

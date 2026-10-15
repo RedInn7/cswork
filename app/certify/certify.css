@@ -1,0 +1,338 @@
+/* /certify: exam tickets with a tear-off stub on Line 500's board; a passed one carries a stamp. */
+.certify-intro {
+  display: grid;
+  gap: 12px;
+  max-width: 720px;
+}
+.certify-intro h1 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 46px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+.certify-intro p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.65;
+}
+.certify-kicker,
+.certify-intro .certify-kicker {
+  margin: 0;
+  color: #9a6a12;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.certify {
+  display: grid;
+  gap: 40px;
+}
+.certify-section-title {
+  margin: 0 0 16px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.certify-alert {
+  margin: 0;
+  padding: 12px 16px;
+  border-left: 3px solid #b42318;
+  background: #fdf0ef;
+  color: #8a1c12;
+}
+.certify-note {
+  margin: 14px 0 0;
+  color: var(--muted);
+}
+
+/* The running exam: the departure board's navy sign and an amber clock. */
+.certify-live {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 16px 28px;
+  padding: 24px 28px;
+  border-radius: 6px;
+  background: var(--navy);
+  color: #eef2f7;
+}
+.certify-live h2 {
+  margin: 4px 0 6px;
+  font-size: 24px;
+}
+.certify-live p {
+  margin: 0;
+  color: #c4ceda;
+}
+.certify-live .certify-kicker {
+  color: var(--amber);
+}
+.certify-live-clock {
+  font-size: clamp(34px, 6vw, 52px);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--amber);
+}
+.certify-live-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  grid-column: 1 / -1;
+}
+.certify-live .certify-quiet {
+  border-color: #51627a;
+  color: #eef2f7;
+}
+
+/* Buttons: one solid, one outline. */
+.certify-primary,
+.certify-quiet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.certify-primary {
+  border: 1px solid var(--ac);
+  background: var(--ac);
+  color: #ffffff;
+}
+.lists-public a.certify-primary {
+  color: #ffffff;
+  text-decoration: none;
+}
+.certify-quiet {
+  border: 1px solid #b9c3cd;
+  background: transparent;
+  color: var(--ink);
+}
+.certify-primary:disabled,
+.certify-quiet:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.certify-primary:focus-visible,
+.certify-quiet:focus-visible {
+  outline: 2px solid var(--ac);
+  outline-offset: 3px;
+}
+
+/* Exam tickets: body | perforation | stub. */
+.certify-tickets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 470px), 1fr));
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.certify-ticket {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 168px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgb(14 26 43 / 0.06);
+  animation: certify-in 420ms ease-out both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+@keyframes certify-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.certify-ticket-body {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 22px 24px;
+}
+.certify-ticket-no {
+  margin: 0;
+  color: #9a6a12;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+.certify-ticket h3 {
+  margin: 0;
+  font-size: 21px;
+  letter-spacing: -0.02em;
+}
+.certify-ticket-pool,
+.certify-ticket-last {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.certify-ticket-stub {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-content: center;
+  align-items: baseline;
+  gap: 2px 8px;
+  padding: 20px 18px;
+  border-left: 2px dashed #cdd5dd;
+  background: #f8f6f0;
+  border-radius: 0 6px 6px 0;
+}
+.certify-ticket-stub strong {
+  font-size: 26px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.certify-ticket-stub span {
+  color: var(--muted);
+  font-size: 13px;
+}
+.certify-ticket-stub em,
+.certify-ticket-stub small,
+.certify-ticket-stub > .certify-primary,
+.certify-confirm {
+  grid-column: 1 / -1;
+}
+.certify-ticket-stub em {
+  margin-top: 4px;
+  color: #9a6a12;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 700;
+}
+.certify-ticket-stub > .certify-primary {
+  margin-top: 12px;
+}
+.certify-ticket-stub small {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.certify-confirm {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+.certify-confirm p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+/* Passed: an inked stamp across the ticket. */
+.certify-stamp {
+  justify-self: start;
+  margin-top: 6px;
+  padding: 4px 10px;
+  border: 2px solid #9a6a12;
+  border-radius: 3px;
+  color: #7a530b;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: rotate(-3deg);
+}
+.lists-public a.certify-stamp {
+  color: #7a530b;
+}
+.certify-ticket[data-passed] {
+  border-color: #d9c79c;
+}
+
+.certify-rules ul {
+  display: grid;
+  gap: 10px;
+  max-width: 760px;
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.65;
+}
+
+.certify-history {
+  width: 100%;
+  max-width: 760px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.certify-history th,
+.certify-history td {
+  padding: 10px 12px 10px 0;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+}
+.certify-history th {
+  color: var(--muted);
+  font-weight: 700;
+}
+.certify-history td[data-result='passed'] {
+  color: var(--ac);
+  font-weight: 700;
+}
+
+.certify-certs {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.certify-certs li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 20px;
+  padding: 14px 18px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: #ffffff;
+}
+.certify-certs a {
+  display: grid;
+  gap: 2px;
+  font-weight: 700;
+}
+.certify-certs a span {
+  color: #9a6a12;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+.certify-certs label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@media (max-width: 560px) {
+  .certify-ticket {
+    grid-template-columns: 1fr;
+  }
+  .certify-ticket-stub {
+    border-top: 2px dashed #cdd5dd;
+    border-left: 0;
+    border-radius: 0 0 6px 6px;
+  }
+  .certify-live {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .certify-ticket {
+    animation: none;
+  }
+}

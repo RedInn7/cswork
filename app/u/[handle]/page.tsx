@@ -14,7 +14,8 @@ const load = cache(async (handle: string) => {
   const catalogue = await publicCatalogue();
   const profile = publicProfile(handle.toLowerCase(), catalogue);
   if (!profile) notFound();
-  return { profile, catalogue, certificates: profileCertificates(profile.handle), zh: (await requestLocale()) === 'zh' };
+  const zh = (await requestLocale()) === 'zh';
+  return { profile, catalogue, certificates: profileCertificates(profile.handle, zh), zh };
 });
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

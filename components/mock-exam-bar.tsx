@@ -14,6 +14,7 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { useT } from '@/lib/i18n';
+import { ojRequest } from '@/lib/oj-client';
 import {
   archiveMock,
   findMock,
@@ -73,7 +74,16 @@ export function finishMockExam(
       userId,
       archiveMock(state, finishMock(session, Date.now(), reason)),
     );
-  navigate('mock', { report: id });
+  if (session?.cert) handInSkill(session.cert.test);
+  else navigate('mock', { report: id });
+}
+
+/** A skill exam is handed in to the server, which scores it; /certify shows the result. */
+export function handInSkill(test: string) {
+  void ojRequest(`skills/${test}/finish`, {})
+    // Already handed in (another tab) or past its deadline: the server settles it on its own.
+    .catch(() => {})
+    .finally(() => location.assign('/certify'));
 }
 
 const stateLabel = {
@@ -130,7 +140,7 @@ export function MockExamBar({
       aria-label={t('模拟考试', 'Mock exam')}
     >
       <div className="mock-exam-id">
-        <span className="mock-exam-kicker">MOCK OA</span>
+        <span className="mock-exam-kicker">{session.cert ? 'CERTIFY' : 'MOCK OA'}</span>
         <strong>{session.name || t('自定义模拟', 'Custom mock')}</strong>
         {session.platform && <small>{session.platform}</small>}
       </div>

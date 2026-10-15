@@ -12,19 +12,22 @@ type Props = { params: Promise<{ id: string }> };
 
 /** Malformed and unknown ids are the same plain 404. */
 const load = cache(async (id: string) => {
-  const cert = certificateById(id);
+  const zh = (await requestLocale()) === 'zh';
+  const cert = certificateById(id, zh);
   if (!cert) notFound();
-  return { cert, zh: (await requestLocale()) === 'zh' };
+  return { cert, zh };
 });
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { cert, zh } = await load((await params).id);
   return {
     ...seoMetadata({
-      title: zh ? `结业证书：${cert.course} · CSWork` : `Certificate: ${cert.course} · CSWork`,
+      title: zh
+        ? `${cert.skill ? '技能认证' : '结业证书'}：${cert.course} · CSWork`
+        : `${cert.skill ? 'Skill certificate' : 'Certificate'}: ${cert.course} · CSWork`,
       description: zh
-        ? `CSWork 课程「${cert.course}」的结业证书，验证编号 ${cert.id}。`
-        : `CSWork certificate of completion for "${cert.course}", verification ID ${cert.id}.`,
+        ? `CSWork ${cert.skill ? '技能认证' : '课程'}「${cert.course}」的${cert.skill ? '站内证书' : '结业证书'}，验证编号 ${cert.id}。`
+        : `CSWork ${cert.skill ? 'skill certificate' : 'certificate of completion'} for "${cert.course}", verification ID ${cert.id}.`,
       path: `/certificate/${cert.id}`,
     }),
     // A personal page: shared by its owner, never indexed.
