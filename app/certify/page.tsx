@@ -1,4 +1,5 @@
 import '../lists/lists.css';
+import './certify.css';
 import { headers } from 'next/headers';
 import Link from 'next/link';
 import { Suspense } from 'react';

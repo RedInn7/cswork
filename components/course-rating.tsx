@@ -60,7 +60,7 @@ export function CourseRating({ courseId, zh }: { courseId: string; zh: boolean }
                 checked={rating.mine === stars}
                 onChange={() => void rate(stars)}
               />
-              <span aria-hidden="true">★</span>
+              <span aria-hidden="true" className="course-rating-glyph" />
               <span className="sr-only">{t(`${stars} 星`, `${stars} star${stars === 1 ? '' : 's'}`)}</span>
             </label>
           ))}

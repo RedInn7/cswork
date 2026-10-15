@@ -15,7 +15,6 @@ import {
   type SkillTest,
 } from '@/lib/skill-tests';
 import { api } from '@/lib/types';
-import '@/app/certify/certify.css';
 
 export type SkillOverview = ReturnType<typeof skillOverview>;
 
