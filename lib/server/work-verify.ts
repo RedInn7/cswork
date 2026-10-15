@@ -115,7 +115,8 @@ export async function handleWorkVerify(request: Request, p: Person | null, path:
     const company = employerOf(email);
     if (!company) throw new HttpError(400, '暂不支持这个邮箱域名，目前只支持有公司页的公司');
     if (!mailReady()) throw new HttpError(503, '邮件服务尚未开放，暂时无法验证工作邮箱');
-    const hash = mac(email);
+    // Plus addressing (ada+2@corp.com) reaches the same inbox: it is one address, for one account.
+    const hash = mac(email.replace(/\+[^@]*@/, '@'));
     await limit(p, 'work-code', CODES_PER_DAY, 86400);
     await limit({ id: `work:${hash}` } as Person, 'work-code', CODES_PER_DAY, 86400);
     await limit({ id: 'site' } as Person, 'work-code', SITE_CODES_PER_DAY, 86400);

@@ -198,7 +198,7 @@ void test('work email: codes by mail, an HMAC only, one address per account, rat
   assert.deepEqual(state.verification.show, { profile: false, posts: false, referrals: false }, 'every placement starts off');
   assert.equal(await status(amy, 'POST', 'work/confirm', { code }), 400, 'a code works once');
   // The same address cannot verify a second account; the attempt leaves no badge behind.
-  const again = await verify(bob, 'amy@google.com');
+  const again = await verify(bob, 'amy+bob@google.com');
   assert.equal(await status(bob, 'POST', 'work/confirm', { code: again }), 409);
   assert.equal((await ok(bob, 'GET', 'work')).verification.active, false);
   // Five wrong tries and the code is dead.
