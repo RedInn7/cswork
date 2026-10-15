@@ -155,6 +155,12 @@ export const PROBLEMS: Problem[] = [
     difficulty: '中等',
     summary: { zh: '带计数的插入、删除与前缀统计', en: 'Counted insert, erase and prefix counts' },
   },
+  {
+    slug: 'segment-tree',
+    group: 'advanced',
+    difficulty: '中等',
+    summary: { zh: 'O(log n) 的区间求和与单点修改', en: 'O(log n) range sums and point updates' },
+  },
 ];
 
 const EXT: Record<CodeLanguage, string> = { python: 'py', cpp: 'cpp', java: 'java', go: 'go' };
