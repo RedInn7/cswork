@@ -96,5 +96,5 @@ export function buildLeetCodeGo(
   // User import declarations must precede all helper declarations.
   return runtime
     .replace('// CSWORK_DISPATCH', dispatch)
-    .replace('var csnodes', `${code}\n${platform(signature, code)}\nvar csnodes`);
+    .replace('var csnodes', () => `${code}\n${platform(signature, code)}\nvar csnodes`);
 }

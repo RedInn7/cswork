@@ -123,3 +123,9 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode { return &ListNode{Val:
     }
   },
 );
+
+void test('learner code is spliced verbatim, $ patterns included', () => {
+  const code =
+    'func twoSum(nums []int, target int) []int { if "$&" == string(\'$\') { return nil }; return []int{0, 1} }';
+  assert.ok(leetcodeSource('lc-1', 'go', code, 262144).source.includes(code));
+});
