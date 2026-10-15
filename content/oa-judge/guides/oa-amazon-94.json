@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-94",
+  "packageChecksum": "d407872e046e2551f34966f718694c755c9b6296da1bc349cfde4cf7c6f498e7",
+  "sourceContentHash": "a7600ae8a76040c270cb44bf5cac1da220821be1e0d4656d568ee23009167612",
+  "editorialSha256": "15182bd87e4de65e9642a039a76ff8c8aedb5ebce24942ec4443e491149dd7a4",
+  "hints": {
+    "zh": [
+      "题目按\"数值对\"去重，而不是按下标对计数，所以一个值出现多少次只影响它能不能和自己配对。",
+      "统计每个值的出现次数。每个合法的无序数值对都有唯一的较小端 a，只从较小端出发计数就不会重复。",
+      "对每个不同的值 a，令 b=target−a：若 a≤b、b 出现过，并且 a≠b 或 a 至少出现两次，答案加一。target 可达 5×10^9，要用 64 位整数。"
+    ],
+    "en": [
+      "Pairs are deduplicated by value, not counted by index, so how many times a value occurs only matters for whether it can pair with itself.",
+      "Count the occurrences of each value. Every valid unordered value pair has a unique smaller end a, so counting only from the smaller end never double-counts.",
+      "For each distinct value a, let b = target - a: if a <= b, b occurs, and either a != b or a occurs at least twice, add one to the answer. target can reach 5×10^9, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount the frequencies and enumerate each distinct a; count it only when a≤target−a and the complement exists; when the two are equal, check that the frequency is at least 2.\n\n## Proof of Correctness\n\nEvery valid unordered value pair has a unique smaller end a, so nothing is counted twice and nothing is missed; the frequency constraint guarantees exactly that two distinct indices can be chosen.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

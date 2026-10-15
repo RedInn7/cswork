@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-9",
+  "packageChecksum": "b5af171f9c059b5fd0b6ca0eca9bd65968aacdfe198b5642157cd32f66a42cd6",
+  "sourceContentHash": "c4283e8ada3722c46f46690670a5a3230274cddf61a53848fe0b293955c2d972",
+  "editorialSha256": "6dcbfb3f56de15600bc6bb6448ea10a91659024937ff82aff2cf746f0f611be0",
+  "hints": {
+    "zh": [
+      "去掉离群值之后，剩下的是若干正常数再加上它们的和，所以剩余元素的总和恰好是\"和元素\"的两倍。",
+      "枚举每个元素作为离群值 o：剩余总和 total−o 必须是偶数，而且它的一半 s 必须在另一个下标上出现。满足这两点时，剩下的数自然构成一组正常数。",
+      "先求总和，并用哈希表统计每个值出现的次数。对每个 o 计算 s=(total−o)/2，若 s 的出现次数大于\"s 等于 o 时要扣掉 o 自己的 1 次\"，o 就合法；取所有合法 o 的最大值。总和要用 64 位整数。"
+    ],
+    "en": [
+      "After removing the outlier, what remains is the normal numbers plus their sum, so the total of the remaining elements is exactly twice the sum element.",
+      "Try every element as the outlier o: the remaining total total - o must be even, and its half s must appear at another index. When both hold, the rest of the numbers automatically form a valid set of normal numbers.",
+      "Compute the total and count the occurrences of each value in a hash map. For each o, let s = (total - o) / 2; o is valid if s occurs more often than the one occurrence that must be excluded when s equals o. Output the largest valid o, using 64-bit integers for the total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the outlier element o; the remaining total must then be even, and its half s must appear as an element at another index. Check this with a frequency array or a hash table.\n\n## Proof of Correctness\n\nAfter removing the outlier, what remains is the normal numbers and their sum, so the remaining total = 2s. Conversely, as long as s exists at another index, removing these two indices leaves numbers whose sum equals s, which forms a valid choice. Enumerate every o and take the maximum.\n\n## Complexity\n\nExpected time O(n), space O(n)."
+}

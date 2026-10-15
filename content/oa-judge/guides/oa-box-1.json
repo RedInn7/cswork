@@ -1,0 +1,19 @@
+{
+  "id": "oa-box-1",
+  "packageChecksum": "34796981b78f6356456b00fb2b5669dba813213e635eaf5ebc40d10bfd6e6568",
+  "sourceContentHash": "d431d6ee4707c787d007d6b8f747971ef84199be60869fa23ac108ded82f98e8",
+  "editorialSha256": "1d970bfa85dc49f4fcd266b7a8881efecb81cf9a3b648d51de5963757a5f1cd5",
+  "hints": {
+    "zh": [
+      "序列号的结构是固定的：前 3 位字母，接着 4 位年份，最后 1 位字母，中间剩下的部分就是币值，不需要去猜币值在哪里结束。",
+      "逐条检查：长度在 10 到 12 之间；前三位是互不相同的大写字母；第 4 到 7 位都是数字且年份在 1900 到 2019 之间；最后一位是大写字母；中间片段必须与 10、20、50、100、200、500、1000 之一作为字符串完全相同（像 0020 这样的不算）。",
+      "把所有合法硬币的币值相加得到总额，对整笔交易只扣一次 1%：输出 总额×99 整除 100。总额乘 99 可能超出 32 位范围，要用 64 位整数。"
+    ],
+    "en": [
+      "The layout of a serial number is fixed: 3 letters, then a 4-digit year, then one final letter, and whatever is left in the middle is the denomination. There is no need to guess where the denomination ends.",
+      "Check each serial: length 10 to 12; the first three characters are distinct uppercase letters; characters 4 to 7 are digits forming a year from 1900 to 2019; the last character is an uppercase letter; and the middle part must equal one of 10, 20, 50, 100, 200, 500, 1000 exactly as a string (something like 0020 does not count).",
+      "Add up the denominations of all valid coins and deduct the 1% fee once for the whole transaction: print total * 99 / 100 with integer division. total * 99 can exceed 32 bits, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Problem\n\nA transaction consists of several coin serial numbers. A valid serial number satisfies: length 10..12; the first 3 characters are distinct uppercase letters; the next 4 characters are a year in 1900..2019; the following characters are the denomination, which must be exactly one of 10, 20, 50, 100, 200, 500, 1000; the character right after the denomination is the last character and must be an uppercase letter. Sum the denominations of the valid coins, then deduct a 1% tax from the total of this transaction and round down.\n\n## Approach\n\nThe positions are fixed: the middle part outside the first 7 characters and the last character (index 7 up to the second-to-last character) is the denomination, of length 2..4. Check each serial number in turn: the length, the first three letters, the four digits of the year and its range, the uppercase last character, and an exact string comparison of the middle segment against the denomination set. If it is valid, add the denomination. Finally output ⌊total×99/100⌋; integer arithmetic gives the exact rounding.\n\n## Correctness\n\nRule 5 requires that the \"next character\" after the denomination is the last character, so the boundaries of the denomination segment are uniquely determined. Comparing denominations by exact string comparison ensures that something like \"0020\" is not misread as 20. The tax is deducted once from the total of the whole transaction, which differs from deducting and rounding coin by coin.\n\n## Complexity\n\nO(Σ|s|). The total is at most 10^5×1000=10^8, and multiplying it by 99 requires a 64-bit integer.\n\n## Independent Verification\n\nThe oracle uses the regular expression ^[A-Z]{3}\\d{4}(10|20|50|100|200|500|1000)[A-Z]$ plus the distinctness and year checks, and then deducts the tax from the total with Python integers, without reusing the slicing logic of the reference implementation. A small domain enumerated all serial numbers combined from valid and various invalid segments, and the reference program was actually run on each of them. The wrong solutions cover not deducting the tax (giving 1720), deducting the tax coin by coin, missing the distinctness check, the year upper bound, and 32-bit overflow."
+}

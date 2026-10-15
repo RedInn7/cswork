@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-90",
+  "packageChecksum": "2d0842add0458b0a9d6a39f007ff24889740ac8f63b8e0c46fa12b7d631768dc",
+  "sourceContentHash": "78d02855276d5f73a843710de853b6980732a1cfe3ec2e7f76207b351226125d",
+  "editorialSha256": "27e0b9e88406545f7ad862413db03076b4c4d0d2def597c5d90ae06891b5fda1",
+  "hints": {
+    "zh": [
+      "n 最多 5000，每一轮长度减一，总共的加法次数约为 n²/2，直接模拟就足够快。",
+      "每一轮用相邻两项之和模 10 生成新的一层。可以原地覆盖：把第 i 项改成 (a[i]+a[i+1]) mod 10，然后把有效长度减一。",
+      "重复到只剩两个元素为止，把这两个数字直接拼成两个字符输出；第一个数字是 0 时也要原样输出，不能当成整数打印。"
+    ],
+    "en": [
+      "n is at most 5000 and each round shortens the array by one, so there are about n^2/2 additions in total; a direct simulation is fast enough.",
+      "Each round builds the next layer from the sums of adjacent pairs modulo 10. You can do it in place: replace a[i] with (a[i] + a[i+1]) mod 10 and then shrink the active length by one.",
+      "Repeat until two elements remain and print those two digits as a two-character string; if the first digit is 0 it must still be printed, so do not print the pair as an integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute the adjacent sums layer by layer directly; each layer is one element shorter, and the final two digits are concatenated.\n\n## Proof of Correctness\n\nOne transformation builds the next layer strictly from the adjacent items of the previous layer; after repeating it n−2 times the length is exactly 2, so the simulation matches the definition. An independent cross-check uses the closed-form expression weighted by binomial coefficients.\n\n## Complexity\n\nTime O(n²), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-barclay-1",
+  "packageChecksum": "175dd6152d86b199e8030c608aa205350a295b0ba2a84b9ef09da2d2d97b79b2",
+  "sourceContentHash": "5ec240bf19573c67da891823ffb6d64c978229835b413c8bf6b7eaf102a4a0d3",
+  "editorialSha256": "250b1e889a7a0fae110379dc66b8a3a5dd0c7c4a2e662916e937c0e6c7fd3a2f",
+  "hints": {
+    "zh": [
+      "如果把下标 i 换成 X，新的整体 GCD 等于 gcd(其余元素的 GCD, X)，它一定是\"其余元素 GCD\"的约数，而且不超过 X≤R。",
+      "设 g_i 为除 a_i 以外所有元素的 GCD，则替换 i 能得到的最大值就是 g_i 不超过 R 的最大约数（让 X 等于这个约数即可达到）。别忘了不操作时的整体 GCD 也是候选，它可能大于 R。",
+      "用前缀 GCD 和后缀 GCD 在 O(1) 内求出每个 g_i；若 g_i≤R 直接取 g_i，否则枚举 1 到 √g_i 的约数对，找出不超过 R 的最大约数。答案取整体 GCD 与所有这些值中的最大者。"
+    ],
+    "en": [
+      "If index i is replaced by X, the new overall GCD is gcd(GCD of the other elements, X), which is always a divisor of the GCD of the other elements and is at most X <= R.",
+      "Let g_i be the GCD of all elements except a_i. The best result from replacing i is the largest divisor of g_i that does not exceed R (choose X equal to that divisor). Do not forget the overall GCD without any operation, which may be larger than R.",
+      "Get every g_i in O(1) from prefix and suffix GCD arrays; if g_i <= R take g_i, otherwise enumerate divisor pairs up to the square root of g_i and keep the largest divisor not above R. The answer is the maximum of the overall GCD and all these values."
+    ]
+  },
+  "explanationEn": "## Problem\n\nAn array A and an integer R. At most once (possibly not at all), replace some element with any integer X in 1..R. Find the maximum possible GCD of the whole array.\n\n## Approach\n\nWithout an operation the answer is the overall gcd. If index i is replaced, let g_i be the gcd of the other elements; the new gcd is gcd(g_i,X), which must be a divisor of g_i, and for any divisor d≤R of g_i, choosing X=d achieves d. So the largest value obtainable by replacing i is the largest divisor of g_i not exceeding R. Get each g_i in O(1) with prefix and suffix gcds, then enumerate divisors up to √g_i to find the largest divisor not exceeding R (when g_i≤R it is g_i itself).\n\n## Correctness\n\ngcd(g_i,X) divides g_i, and when X≤R, gcd(g_i,X)≤X≤R, so it is a divisor of g_i not exceeding R; conversely, every such divisor is reachable. The answer is the maximum of not operating and all i. Note that the overall gcd may be greater than R, in which case not operating is better.\n\n## Complexity\n\nO(n√V), V=10^5.\n\n## Independent Verification\n\nThe oracle enumerates the replaced position i and every X∈[1,R] and computes the gcd of the whole array directly, also considering no replacement (O(n²R), small data only), without using the prefix/suffix and divisor reasoning. All combinations with length 2..3, elements 1..6, and R=1..6 were enumerated exhaustively, and the reference program was actually run on each of them. The wrong solutions cover a mandatory replacement, taking min(g,R), replacing only the largest element, and only being able to replace with R."
+}

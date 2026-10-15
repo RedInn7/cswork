@@ -1,0 +1,19 @@
+{
+  "id": "oa-arista-networks-1",
+  "packageChecksum": "2b562bd4c1ee6a59c0c491ec85f8faade1417110763502545a4ce833ca5a597e",
+  "sourceContentHash": "13df53e1626b3a9183111ec0e4360531cd9b1fe0e70557cd92e285f8f63f7343",
+  "editorialSha256": "3f92c8f7ce6fd18de8fcbef771ae50f688577a742d33c15b6b4955ace73dfc4d",
+  "hints": {
+    "zh": [
+      "把矩阵按行优先展开成一维数组，B 就是这个数组的前缀和，再按原来的形状放回去。",
+      "只需要一个贯穿整个矩阵的累加和：先按行、再按列遍历，每遇到一个元素就把它加进累加和，此时的累加和就是该位置的答案，换行时不要清零。",
+      "读入 m、n 后逐个读元素，累加后立即写出，每行 n 个数用空格分隔。和最大可达 2×10^14，需要 64 位整数。"
+    ],
+    "en": [
+      "Flatten the matrix in row-major order into a one-dimensional array; B is the prefix sum of that array put back into the original shape.",
+      "A single running sum across the whole matrix is enough: traverse row by row and column by column, add each element to the running sum, and the running sum at that moment is the answer for that cell. Do not reset it at the start of a row.",
+      "After reading m and n, read the elements one by one, add each to the sum and write the sum immediately, with n numbers per line separated by spaces. The sum can reach 2×10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAccumulate one global running sum row by row and column by column; each position contains exactly all elements of the rows before it plus the elements to its left in the current row. Time O(mn), extra space O(n) for output.\n\n## Proof of Correctness\n\nWhen traversing in row-major order, the maintained running sum always equals the sum of the current cell and all cells before it in A; writing it into the same position of B gives exactly the prefix sum the problem asks for.\n\n## Complexity\n\nAll prefix sums use arbitrary-precision integers; the input rectangle is complete.\n\nO(mn) time; O(1) extra space besides the output matrix.\n\n## Reference Implementation\n\n```python\ndef solve(raw):\n z=raw.splitlines();m,n=map(int,z[0].split());s=0;o=[]\n for line in z[1:1+m]:\n  a=list(map(int,line.split()));r=[]\n  for x in a[:n]:s+=x;r.append(str(s))\n  o.append(' '.join(r))\n return '\\n'.join(o)\n```"
+}

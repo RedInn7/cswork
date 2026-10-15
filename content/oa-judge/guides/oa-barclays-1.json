@@ -1,0 +1,19 @@
+{
+  "id": "oa-barclays-1",
+  "packageChecksum": "ca803e40ccf544f4937365c848fae07fb5ce64e9272f7b264f6ce9e991ebc4d4",
+  "sourceContentHash": "7712a2f2c096f65bba6067194d2ba01d4ef652d45fff87782b5a63a0ebfc6d82",
+  "editorialSha256": "1d6d3b700ae72b6b9448ce9159d6f91e66261a918aa0b93b1537abbcdc4b7e78",
+  "hints": {
+    "zh": [
+      "N 可以大到 2^31−1，不能逐项递推到 N。先观察数列的取值范围：两个不超过 18 的数，各自的数字和都不超过 9。",
+      "所有项都在 0 到 18 之间，所以\"最近两项\"这个状态最多只有 19×19 种；状态一旦重复，之后的数列就周期性地重复。",
+      "从 (0,1) 开始递推，记录每个二元状态第一次出现的位置，直到某个状态重复，得到周期起点 start 和周期长度 period。N 小于已生成的长度时直接取值，否则取下标 start+(N−start) mod period 处的项。"
+    ],
+    "en": [
+      "N can be as large as 2^31-1, so you cannot iterate the recurrence up to N. Look at the range of the terms first: two numbers that are at most 18 each have a digit sum of at most 9.",
+      "Every term lies in 0..18, so the state formed by the last two terms has at most 19*19 possibilities; once a state repeats, the rest of the sequence repeats periodically.",
+      "Iterate from (0, 1) and record where each pair state first appears until some state repeats, which gives the cycle start and the period. If N is smaller than the generated length, read the term directly; otherwise read the term at index start + (N - start) mod period."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe state is the two most recent terms (a,b), and the next term is digitSum(a)+digitSum(b). All terms lie in 0..18: the initial 0 and 1 satisfy this; if both terms are at most 18, each digit sum is at most 9, so the next term is at most 18. A finite state space must repeat, so record the pair states and detect the cycle, which locates any supported N directly.\n\n## Proof of Correctness\n\nThe first two terms are 0 and 1. Assuming the two terms at the current position agree with the original recurrence, the next term is computed strictly by the definition, adding the digit sums of the two terms, so the next term also agrees. The two most recent terms always lie in 0..18, so the state must repeat within a finite number of steps; all terms after a repeated state are exactly the same as before, so mapping a query through the cycle does not change the N-th term.\n\n## Complexity\n\nPreprocessing visits at most 19² bounded pair states, so time and space are both O(1) with respect to the input N; each query is O(1)."
+}

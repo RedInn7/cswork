@@ -1,0 +1,19 @@
+{
+  "id": "oa-bloomberg-2",
+  "packageChecksum": "c0ab3c57520a2e742a2079137aa0cc97a1411a4c9e194cae653d2e1ade4a3479",
+  "sourceContentHash": "c849c45e2998ef4c4265ac88d1a657ca10b0a6641bbe0cdfe2b626093f5bd466",
+  "editorialSha256": "edfbcc73ceb801b345911bccb1ca11d27239f47bdea2471279a6df42abb1b7e1",
+  "hints": {
+    "zh": [
+      "查询多达 10^5 个，但右端点不超过 10^6，可以先把 1 到最大右端点的每个数都预处理一遍，再用前缀和回答每个区间。",
+      "判断一个数有没有重复数字：逐位取出数字，用 10 位的位掩码记录出现过的数字，若某一位已经被置位就说明重复。",
+      "令 pre[x] 为 1 到 x 中无重复数字的数的个数，pre[x]=pre[x−1]+（x 是否合法）；对每个查询 [n, m] 输出 pre[m]−pre[n−1]，按查询顺序每行一个。"
+    ],
+    "en": [
+      "There can be 10^5 queries, but the right endpoints are at most 10^6, so precompute every number from 1 to the largest right endpoint once and answer each range with prefix sums.",
+      "To test a number for repeated digits, take its digits one at a time and record them in a 10-bit mask; if a digit bit is already set, the number has a repeat.",
+      "Let pre[x] be how many numbers in 1..x have no repeated digit, with pre[x] = pre[x-1] + (x is valid). For each query [n, m] print pre[m] - pre[n-1], one per line in query order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a bitmask to decide whether each number from 1 to the largest right endpoint has a repeated digit, while building a prefix count; the answer for a range is pre[m]−pre[n−1].\n\n## Correctness\n\nWhile scanning a number, the mask records exactly the digits that have appeared, and a repeated bit occurs if and only if there is a repeated digit. The prefix count therefore equals the number of valid numbers in the corresponding prefix, and the subtraction removes the numbers smaller than n, leaving exactly the answer for the closed interval.\n\n## Complexity\n\nLet M be the largest right endpoint; time O(M log M+q), space O(M+q)."
+}

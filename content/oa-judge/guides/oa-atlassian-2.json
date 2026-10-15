@@ -1,0 +1,19 @@
+{
+  "id": "oa-atlassian-2",
+  "packageChecksum": "fae1f3b8a40455eb63f6172bc1f662ccc84d42b29519a1d25c646f5c4bd0dc75",
+  "sourceContentHash": "016603fca1f61efca00c75f12ff4ce63f23c778fc1c9b9ce4d492514af4b3297",
+  "editorialSha256": "f161a356b85efd9cf597db1ecff5fb12016fff300a6bce4504ffd0ab0e7a42bd",
+  "hints": {
+    "zh": [
+      "花束必须由相邻的花组成，也不能去掉中间的花再拼接，所以只看以当前位置结尾的最后一束，就能做前缀动态规划。",
+      "设 dp[i] 为前 i 朵花的最大收入。第 i 朵花要么不用（dp[i−1]），要么和前一朵组成 01 或 10 花束（dp[i−2]+q），要么和前两朵组成 000 花束（dp[i−3]+p）。",
+      "从左到右计算，三种情况取最大值，只需保留最近三个 dp 值；最终答案是 dp[n]。"
+    ],
+    "en": [
+      "A bouquet must consist of adjacent flowers and flowers cannot be removed to create new neighbors, so looking only at the last bouquet ending at the current position gives a prefix dynamic program.",
+      "Let dp[i] be the best revenue from the first i flowers. Flower i is either unused (dp[i-1]), or ends a 01 or 10 bouquet with the previous flower (dp[i-2] + q), or ends a 000 bouquet with the previous two (dp[i-3] + p).",
+      "Compute from left to right, taking the maximum of the three cases and keeping only the last three dp values; the answer is dp[n]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA prefix DP can skip the last flower, or choose a valid bouquet made of the last two or last three flowers, keeping a rolling window of the previous 3 states.\n\n## Proof of Correctness\n\nIf an optimal plan does not use the last flower, it comes from the previous prefix; otherwise the bouquet containing the last flower must be an allowed pattern of the last two or last three flowers, and after removing that bouquet the remaining plan must be optimal. The recurrence enumerates all mutually exclusive possibilities, and induction completes the proof.\n\n## Complexity\n\nO(n) time, O(1) DP space, and O(n) for the input string."
+}

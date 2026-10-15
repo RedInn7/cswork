@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-85",
+  "packageChecksum": "600561ee3a20ea23228f2391051ccde8184e2059ee0394f30f802fd2e0793d0a",
+  "sourceContentHash": "2c1623ae7bd8cd388d44a45a612c161fca0c16e52cdfb1633f00755a944d7ab5",
+  "editorialSha256": "d19abdb409b70926e2c9a8000a493afb5f73396b60082d57d50922cebeb0fd5f",
+  "hints": {
+    "zh": [
+      "按位与的结果要尽量大，应从最高位往低位逐位决定：高位能拿到 1 就一定要拿，低位再好也补不回一个高位。",
+      "假设答案的高位部分已经确定，尝试再加一位得到候选掩码 mask。对每个数单独算出\"至少加多少才能包含 mask 的全部 1 位\"，取最便宜的 m 个，看总和是否不超过 k。",
+      "对数 x，找出 mask 中 x 缺少的最高位 b：最小的合格值是保留 x 在 b 以上的高位、把第 b 位置 1、低于 b 的部分只放 mask 要求的位，代价为该值减 x。从第 30 位到第 0 位依次尝试，每次把代价排序后取前 m 个求和与 k 比较，满足就把这一位并入答案。"
+    ],
+    "en": [
+      "To make the AND as large as possible, decide the bits from the highest to the lowest: if a high bit can be 1 it must be, because no combination of lower bits outweighs it.",
+      "Assume the higher part of the answer is fixed and try adding one more bit to get a candidate mask. For every number independently, compute the smallest increase that makes it contain all 1 bits of the mask, take the m cheapest, and check whether their sum is at most k.",
+      "For a number x, find the highest bit b of the mask that x lacks: the smallest valid value keeps the bits of x above b, sets bit b, and below b keeps only the bits the mask requires; the cost is that value minus x. Try bits 30 down to 0; each time sort the costs, sum the first m, compare with k, and keep the bit if it fits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTry the answer mask from the highest bit to the lowest. For each number, compute the minimum amount that must be added so that it contains all the 1 bits of the mask; the bit can be kept if the sum of the smallest m costs is ≤ k.\n\n## Proof of Correctness\n\nIf the highest required bit that x is missing is b, the smallest feasible y keeps the prefix above b, sets b to 1, and then keeps only the bits required by the lower part of the mask, clearing all other low bits. Any smaller y must fail to satisfy that bit or a higher prefix. The costs of the items are independent, so choosing the m smallest costs decides feasibility; greedy from the highest bit guarantees the optimum, since integer order is lexicographic order on bits.\n\n## Complexity\n\nTime O(31 n log n), space O(n); the extra processing involves at most 31 bits."
+}

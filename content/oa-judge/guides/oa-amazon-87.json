@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-87",
+  "packageChecksum": "19d029a917995999195e6421bb423d443b907e0b5ce838a42ae8cb92c813e4f1",
+  "sourceContentHash": "e229165b8c043a75c643e53b2f988d25ac168fd4bb7d6b68f539648a040c95ec",
+  "editorialSha256": "f64b688dd07db3f87901da42f97ba94066cf8d6d4f209f316450ef8e10f7812b",
+  "hints": {
+    "zh": [
+      "每个查询关心的是长度固定的闭区间 [q−timeWindow, q]。如果按 q 从小到大处理查询，窗口的左右端点都只会向右移动。",
+      "把日志按时间排序，查询也按时间排序并记住原下标，用双指针维护窗口内的日志；为每个技能记录窗口内的请求次数，同时维护\"次数非零的技能个数\"。",
+      "对每个查询：右指针加入时间 ≤ q 的日志（某技能计数从 0 变 1 时活跃数加一），左指针移出时间 < q−timeWindow 的日志（计数从 1 变 0 时活跃数减一）；该查询的答案是 numSkills 减活跃数，按原下标写回后依次输出。"
+    ],
+    "en": [
+      "Each query looks at a closed interval [q - timeWindow, q] of fixed length. If the queries are processed in increasing order of q, both ends of the window only move to the right.",
+      "Sort the logs by time and the queries by time while remembering their original indices, and maintain the logs inside the window with two pointers; keep a per-skill count of requests in the window and the number of skills whose count is non-zero.",
+      "For each query: the right pointer adds logs with time <= q (the active count grows when a skill count goes from 0 to 1), and the left pointer removes logs with time < q - timeWindow (the active count shrinks when a count drops to 0). The answer is numSkills minus the active count; store it at the original index and print the answers in input order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the logs by time, and sort the queries as well while keeping their original indices. With two pointers, add the logs whose time is ≤ q and remove the logs whose time is < q−window, maintaining the number of active skills with a per-skill frequency count.\n\n## Proof of Correctness\n\nAfter sorting, both ends of the query window move monotonically to the right, so each log is added and removed at most once. The frequencies match exactly the number of requests of each skill in the current closed interval; the number of non-zero frequencies is the number of active skills, and subtracting it from the total number of skills gives the answer.\n\n## Complexity\n\nTime O(m log m+q log q), space O(numSkills+m+q)."
+}

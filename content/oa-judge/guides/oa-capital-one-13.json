@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-13",
+  "packageChecksum": "2c6df030e0a30d0b19d529512cb44362649dc03d718efc91a2fa4974b20e027c",
+  "sourceContentHash": "b6c7932c13ac71829b960a8d04029ac6f0463240d28d956de7b746adce52ad1e",
+  "editorialSha256": "616b5243913bbcb5b46a205f5607e6840ccdb8c414d6d159b462d13fbffb16bd",
+  "hints": {
+    "zh": [
+      "只需要知道每个数在十进制下有几位，注意 0 也算 1 位。",
+      "位数可以直接取十进制字符串的长度，也可以反复除以 10 来数（这时 0 要单独当作 1 位处理）。",
+      "遍历数组，位数为偶数就把计数加一，最后输出计数。"
+    ],
+    "en": [
+      "You only need the number of decimal digits of each value; note that 0 has one digit.",
+      "The digit count is the length of the decimal string, or you can count divisions by 10 (in that case treat 0 as one digit separately).",
+      "Go through the array, add one to the count whenever the number of digits is even, and print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute the number of decimal digits of each non-negative integer, and count it if the number of digits is even. The number of digits can be obtained from the length of the decimal string; 0 is written with one digit.\n\n## Correctness\n\nEach array element contributes 1 only when its decimal representation has an even length, and 0 otherwise. Adding the contributions term by term gives exactly what the problem asks for, and each term is processed exactly once.\n\n## Complexity\n\nTime O(n·d), where d≤10; space O(1) (excluding the space needed to parse the input)."
+}

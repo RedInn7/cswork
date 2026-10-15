@@ -1,0 +1,19 @@
+{
+  "id": "oa-canva-3",
+  "packageChecksum": "2277260b50c42e262ab8581ea4e8e88f1bcf05d4e426f40f13b740ca3b596989",
+  "sourceContentHash": "58547702007282d5ecbf89d298884157ce92626b9e8d448be7e9720b6b2f35dd",
+  "editorialSha256": "afdd02a349aa82558c934e72fe9769f3f79ebb3abaf6631f95ab3cd39303e37f",
+  "hints": {
+    "zh": [
+      "合法子串由一段 0 和一段 1（顺序不限）组成且两段等长，所以它一定恰好跨过原串中某一处相邻字符不同的分界。",
+      "把字符串看成连续相同字符组成的若干段。相邻两段的长度为 a 和 b 时，以它们的分界为中心能取出的合法子串恰好有 min(a, b) 个。",
+      "扫描字符串，维护上一段长度 prev 与当前段长度 run：字符变化时把 min(prev, run) 加入答案，并令 prev=run、run=1，否则 run 加一；扫描结束后再加一次 min(prev, run)。答案用 64 位整数。"
+    ],
+    "en": [
+      "A valid substring is a block of 0s and a block of 1s (in either order) of equal length, so it always straddles exactly one boundary where adjacent characters differ.",
+      "View the string as runs of identical characters. If two adjacent runs have lengths a and b, exactly min(a, b) valid substrings are centered on their boundary.",
+      "Scan the string while keeping the previous run length prev and the current run length run: when the character changes, add min(prev, run) to the answer and set prev = run, run = 1; otherwise increase run. After the scan add min(prev, run) once more. Use a 64-bit answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit the string into runs of identical characters; each pair of adjacent runs contributes the smaller of the two run lengths.\n\n## Proof of Correctness\n\nAny valid substring must span exactly one pair of adjacent runs with different characters; the number of possible positions across that boundary is the smaller of the two run lengths. Different pairs of adjacent runs cannot represent the same substring, so the sum is the answer.\n\n## Complexity\n\nTime O(n), extra space O(1)."
+}

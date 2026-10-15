@@ -1,0 +1,19 @@
+{
+  "id": "oa-braze-1",
+  "packageChecksum": "0dd162ef252dd7a758a98919658e1c23c52f725c25f9d6a982b42a4a5bca3dca",
+  "sourceContentHash": "ac7b74967b334a850bdb334157b82073a79b4aeca80ff374f2e7849490401fe2",
+  "editorialSha256": "385cedc16ca7083dfd23d9011899ead4be4d0b846158a5cb2019f6fc4f97f464",
+  "hints": {
+    "zh": [
+      "各件商品之间没有共享的折扣额度或联动条件，总价最小就等价于每件商品各自取最低价再相加。",
+      "一件商品的候选价是原价，加上它每个有效标签算出的价格：类型 0 直接是折后价，类型 1 是 原价×(100−百分比)/100 向下取整，类型 2 是原价减去减价额。在折扣表里找不到的标签直接忽略。",
+      "先把折扣标签读进哈希表（标签名 → 类型和数值），再逐件商品遍历它的标签，在原价与各候选价中取最小值，累加到总价后输出。"
+    ],
+    "en": [
+      "Items share no discount budget and no linked conditions, so minimizing the total is the same as taking the lowest price of each item separately and adding them up.",
+      "The candidate prices of an item are its original price plus one price per valid tag: type 0 is the discounted price itself, type 1 is price * (100 - percent) / 100 rounded down, and type 2 is the price minus the amount off. Tags missing from the discount table are ignored.",
+      "Read the discount tags into a hash map from tag name to (type, amount), then for each item go through its tags, take the minimum of the original price and all candidate prices, add it to the total, and print the total."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the original price and the prices computed from all valid tags, and take the minimum for each item. A percentage gives `floor(price×(100−percent)/100)`; the fixed amount off is bounded by the item's original price, so there is no ambiguity from negative prices.\n\n## Proof of Correctness\n\nDifferent items share no discount budget and no linked conditions, so minimizing the total price decomposes into minimizing each item independently. Enumerating the original price and the price of each valid tag, with percentage prices rounded down, and taking the minimum makes the resulting total the global minimum.\n\n## Complexity\n\nProduct descriptors are one line each; tags are whitespace-free identifiers; all values are integers.\n\nO(P + T + d) time and O(P + d) space, where P is the number of items and T is the total number of item tags.\n\n## Reference Implementation\n\n```python\ndef solve(raw):\n z=raw.splitlines();n,d=map(int,z[0].split());p=[]\n for line in z[1:1+n]:\n  a=line.split();p.append((int(a[0]),a[2:2+int(a[1])]))\n disc={}\n for line in z[1+n:1+n+d]:\n  k,t,v=line.split();disc[k]=(int(t),int(v))\n total=0\n for price,tags in p:\n  best=price\n  for tag in tags:\n   if tag not in disc:continue\n   t,v=disc[tag];x=v if t==0 else price*(100-v)//100 if t==1 else price-v;best=min(best,x)\n  total+=best\n return str(total)\n```"
+}

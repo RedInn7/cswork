@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-89",
+  "packageChecksum": "732a2d39eb5df1eedbb3600b886194f1be172dced8bd7d4394f09a5bd6f6497f",
+  "sourceContentHash": "7cf61993b038f6204a932b28077c81dd984d6156743d2532899e07c72793f655",
+  "editorialSha256": "d81070e79648358bdf7a113b4519bb44cf5bc2e98a7c64c3e0199b67a1e17f20",
+  "hints": {
+    "zh": [
+      "每走一步的代价都相同，这是无权网格上的最短路问题。",
+      "从左上角做广度优先搜索：按层扩展时，每个格子第一次被访问时的步数就是它的最短距离。0 格不能进入，已访问的格子不再入队。",
+      "把格子编号为\"行×列数+列\"，用一个初值为 −1 的距离数组和数组实现的队列；出队时若是 9 就输出它的距离，否则检查上下左右四个邻居，可通行且未访问的距离加一后入队；队列空了还没遇到 9 就输出 −1。"
+    ],
+    "en": [
+      "Every move costs the same, so this is a shortest-path problem on an unweighted grid.",
+      "Run a breadth-first search from the top-left corner: when expanding level by level, the step count at which a cell is first reached is its shortest distance. Cells with 0 cannot be entered, and visited cells are never enqueued again.",
+      "Number each cell as row times width plus column, and use a distance array initialized to -1 plus an array-based queue. When you dequeue a 9, print its distance; otherwise look at the four neighbors and enqueue each passable unvisited one with distance plus one. If the queue empties without reaching 9, print -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRun BFS with a one-dimensional distance array and an index queue, entering only non-0 cells and marking each cell when it is first enqueued.\n\n## Proof of Correctness\n\nEvery move costs 1, so BFS visits cells in increasing order of distance and the first distance assigned to a cell is the shortest; reaching 9 gives the shortest route. If the queue runs out, the destination is unreachable.\n\n## Complexity\n\nTime O(rc), space O(rc), using compact integer arrays to store the queue and the distances."
+}

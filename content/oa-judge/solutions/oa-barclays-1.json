@@ -1,0 +1,11 @@
+{
+  "id": "oa-barclays-1",
+  "packageChecksum": "ca803e40ccf544f4937365c848fae07fb5ce64e9272f7b264f6ce9e991ebc4d4",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <vector>\nusing namespace std;\n\nstatic int digitSum(int v) {\n    int s = 0;\n    for (; v; v /= 10) s += v % 10;\n    return s;\n}\n\nint main() {\n    long long n;\n    if (scanf(\"%lld\", &n) != 1) return 0;\n    // Every term is in 0..18, so the pair (previous, current) repeats quickly.\n    vector<int> values = {0, 1};\n    int seen[19][19];\n    for (auto &row : seen)\n        for (int &x : row) x = -1;\n    int a = 0, b = 1;\n    while (seen[a][b] < 0) {\n        seen[a][b] = (int)values.size() - 1;\n        int c = digitSum(a) + digitSum(b);\n        a = b;\n        b = c;\n        values.push_back(b);\n    }\n    long long start = seen[a][b], period = (long long)values.size() - 1 - start;\n    long long index = n < (long long)values.size() ? n : start + (n - start) % period;\n    printf(\"%d\\n\", values[index]);\n}\n",
+      "sha256": "365d2f4f3d7649df9d904e523042377ba349c7a7222d24a95c4e5e0902791f3b"
+    }
+  ]
+}

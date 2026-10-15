@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-95",
+  "packageChecksum": "c0fa458a0c5973e83bab3debbcf49d1c9e9e441bf77322c7735c7c2b6cb278c3",
+  "sourceContentHash": "8e11d997ad4702dcbe2501e347cee9ffaf665bbc302c6803e7fe8de7037c0234",
+  "editorialSha256": "65044bfcfc8876fc6179498f6688dd99e78685972e293b59cb9a0d807dd273fc",
+  "hints": {
+    "zh": [
+      "子序列比 system 大只有三种来源：已经更大的再接任意字符；与 system 某个前缀相等、下一个字符更大；与整个 system 相等后再接任意字符。",
+      "用 dp[j] 表示\"恰好等于 system 前 j 个字符\"的子序列个数（dp[0]=1 代表空序列），greater 表示已经更大的子序列个数。依次处理 customer 的字符，每个已有子序列都可以选择接或不接这个字符。",
+      "处理字符 ch 时：先令 greater = 2·greater + dp[m]（m 为 system 的长度）；再让 j 从 m−1 倒序到 0，若 ch>system[j] 则 greater 加上 dp[j]，若相等则 dp[j+1] 加上 dp[j]。倒序保证同一个字符不会被用两次，所有运算对 10^9+7 取模，最后输出 greater。"
+    ],
+    "en": [
+      "A subsequence can become greater than system in only three ways: it is already greater and gets any character appended; it equals a prefix of system and the next character is larger; or it equals the whole of system and gets any character appended.",
+      "Let dp[j] be the number of subsequences equal to the first j characters of system (dp[0] = 1 for the empty sequence), and let greater be the number of subsequences that are already greater. Process the characters of customer in order; every existing subsequence may either take or skip the current character.",
+      "For a character ch: first set greater = 2*greater + dp[m], where m is the length of system; then for j from m-1 down to 0, add dp[j] to greater if ch > system[j], or add dp[j] to dp[j+1] if they are equal. The descending order keeps the character from being used twice. Do every operation modulo 10^9+7 and print greater at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\ndp[j] records the number of subsequences exactly equal to the first j characters of system, and greater records the number of subsequences that are already greater. Each new character doubles greater; an equal prefix followed by a larger character, or the complete system followed by any character, also becomes greater; the equal-prefix DP is updated in reverse order.\n\n## Proof of Correctness\n\nEvery subsequence is uniquely classified by whether it uses the current character. Anything already greater stays greater after any append; the first difference must come from an equal prefix followed by a larger character, and appending to the complete system also makes it greater. The reverse order guarantees that the current character is used only once; the cases are mutually exclusive and cover every qualifying subsequence.\n\n## Complexity\n\nTime O(|customer|·|system|), space O(|system|)."
+}

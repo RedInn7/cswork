@@ -1,0 +1,21 @@
+{
+  "id": "oa-blackrock-5",
+  "packageChecksum": "bfb7c65d1ddcfeb8e72a097278119166bff64a5885392d4f98b93f0d8b1cda7c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <unordered_set>\nusing namespace std;\n\nint main() {\n    long long n;\n    if (scanf(\"%lld\", &n) != 1) return 0;\n    unordered_set<long long> seen;\n    while (n != 1 && !seen.count(n)) {\n        seen.insert(n);\n        long long s = 0;\n        for (; n; n /= 10) s += (n % 10) * (n % 10);\n        n = s;\n    }\n    puts(n == 1 ? \"1\" : \"0\");\n}\n",
+      "sha256": "9a7d7111c54bc039807a44f4bc919f134a8e174efbe264ba42b8eb6cee99fca6"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        long n = nextLong();\n        HashSet<Long> seen = new HashSet<>();\n        while (n != 1 && !seen.contains(n)) {\n            seen.add(n);\n            long s = 0;\n            for (; n > 0; n /= 10) s += (n % 10) * (n % 10);\n            n = s;\n        }\n        System.out.println(n == 1 ? \"1\" : \"0\");\n    }\n}\n",
+      "sha256": "dfd1d1c52c984a26ca994e4f78f72d2b1457527695e3749186f23958bcc72649"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\tseen := map[int]bool{}\n\tfor n != 1 && !seen[n] {\n\t\tseen[n] = true\n\t\ts := 0\n\t\tfor ; n > 0; n /= 10 {\n\t\t\ts += (n % 10) * (n % 10)\n\t\t}\n\t\tn = s\n\t}\n\tif n == 1 {\n\t\tfmt.Println(\"1\")\n\t} else {\n\t\tfmt.Println(\"0\")\n\t}\n}\n",
+      "sha256": "66d1e7de6d5e73e729487b658d9acc1305b73a43f6aa882eb19622eb4616261f"
+    }
+  ]
+}
