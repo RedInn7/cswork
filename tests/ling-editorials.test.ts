@@ -16,7 +16,7 @@ const COST = new RegExp(`^${BIG_O}(?:, ${BIG_O})*$`);
 const PLATFORM = String.raw`(?:TreeNode|ListNode|Node|Interval|MountainArray)\b`;
 const NAMES = ['TreeNode', 'ListNode', 'Node', 'Interval', 'MountainArray'];
 const uncommented = (code: unknown) =>
-  String(code ?? '').replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, '');
+  (typeof code === 'string' ? code : '').replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, '');
 
 void test('every editorial is a Line 500 problem with 1-4 complete bilingual approaches', () => {
   const file = editorials as Record<string, Record<string, unknown>>;
