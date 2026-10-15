@@ -8,7 +8,7 @@ const pkg = {
   problem: {
     id: 'oa-fixture-1',
     timeLimit: 1,
-    memoryLimit: 65536,
+    memoryLimit: 262144,
     outputLimit: 64,
     checker: 'tokens',
     languages: ['python', 'cpp', 'java', 'go'],
@@ -30,8 +30,8 @@ test('a correct Python program passes every case; each kind of failure gets the 
   assert.deepEqual(verdicts(run('print(3)\nraise SystemExit(1)\n')), ['runtime_error', 'runtime_error']);
   assert.deepEqual(verdicts(run('print(3\n')), ['compile_error']);
   assert.deepEqual(verdicts(run("print('x' * 100000)\n")), ['output_limit', 'output_limit']);
-  // 128 MiB written, over the 64 MiB limit.
-  assert.deepEqual(verdicts(run("x = b'x' * (128 << 20)\nprint(3)\n")), ['memory_limit', 'memory_limit']);
+  // 320 MiB written, over the 256 MiB limit (a JVM alone stays well under it).
+  assert.deepEqual(verdicts(run("x = b'x' * (320 << 20)\nprint(3)\n")), ['memory_limit', 'memory_limit']);
   const slow = verifyProgram({ ...pkg, cases: pkg.cases.slice(0, 1) }, 'python', 'while True:\n    pass\n');
   assert.deepEqual(verdicts(slow), ['time_limit']);
   assert.throws(() => verifyProgram({ ...pkg, problem: { ...pkg.problem, languages: ['python'] } }, 'go', ''), /does not accept go/);
