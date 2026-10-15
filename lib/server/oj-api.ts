@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { leetcodeTemplates, leetcodeContract } from './leetcode-mode';
+import { leetcodeTemplates, leetcodeContract, leetcodeParams } from './leetcode-mode';
 import {
   changePracticeRound,
   practiceRoundState,
@@ -14,7 +14,7 @@ import { handleMockOa } from './mock-oa';
 import { handleSpeedrun } from './speedrun';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
-import { handleMyPractice, problemVote } from './my-practice';
+import { handleMyPractice, problemVote, readJson } from './my-practice';
 import { handleAiTutor, isAiRoute } from './ai-tutor';
 import { handleAiInterview } from './ai-interviewer';
 import { handleAiAsk } from './ai-ask';
@@ -27,11 +27,14 @@ import { handleStudyGroups } from './study-groups';
 import { handleMockPeer } from './mock-peer';
 import { handleNewsletter } from './newsletter';
 import { handleFollows } from './follows';
+import { sourceDates } from './company-insights';
 import { handleContests, inRunningContest, refuseInContest } from './contests';
+import { handleDuels } from './duels';
 import { handleApiTokens } from './api-tokens';
 import { dailyProblem } from './daily-problem';
 import { curatedByNumber, curatedHint } from '@/lib/ling-curated';
 import { companyTagIndex } from '@/lib/company-tags';
+import { windowCounts } from '@/lib/report-windows';
 import { hiddenCompanies } from './env';
 import {
   getStudyLibrary,
@@ -68,6 +71,7 @@ import {
 } from './oj-problems';
 import {
   createPlaygroundRun,
+  createReferenceRun,
   createSubmission,
   submissionDetail,
   waitForSubmission,
@@ -116,6 +120,7 @@ export async function handleOj(
   if (resource === 'newsletter') return handleNewsletter(request, p, path.slice(1));
   if (resource === 'follows') return handleFollows(request, p, path.slice(1));
   // The weekly, standings and the rating board read signed out; the handler checks the rest.
+  if (resource === 'contests' && id === 'duel') return handleDuels(request, p, path);
   if (resource === 'contests') return handleContests(request, p, path);
   if (request.method === 'GET' && resource === 'speedrun' && !id)
     return handleSpeedrun(request, p);
@@ -139,6 +144,7 @@ export async function handleOj(
     const live = p ? inRunningContest(p.id, id) : false;
     const hint = live ? null : curatedHint(id);
     const tags = companyTagIndex(hiddenCompanies());
+    const dated = sourceDates();
     // Per round like Solved, over all history rather than the first page; 2 opens hint 3.
     const failed = hint && p ? failedJudgeIds(p.id, id, round?.id) : [];
     return json({
@@ -146,11 +152,13 @@ export async function handleOj(
       codingModes: templates ? ['leetcode', 'acm'] : ['acm'],
       leetcodeTemplates: templates,
       leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
+      leetcodeParams: leetcodeParams(id),
       sourceStatement: getStudySourceStatement(id),
       curatedHint: hint,
       // Contest rating (zerotrac), null outside rated contests.
       rating: lcRating(id),
-      companies: tags.get(id) ?? [],
+      // Each company's reports by age; the report slugs stay on the server.
+      companies: (tags.get(id) ?? []).map(({ sources, ...tag }) => ({ ...tag, windows: windowCounts(sources, dated, Date.now()) })),
       hintEarned: failed.length > 0,
       // Ids, not a count: the client unions them with live verdicts so none counts twice.
       failedSubmissionIds: failed,
@@ -215,7 +223,7 @@ export async function handleOj(
     return handleMyPractice(request, p, resource);
   if (resource === 'ai' && id && isAiRoute(id) && !action)
     return handleAiTutor(request, p, id);
-  if (resource === 'ai' && (id === 'interview' || id === 'interview-report') && !action)
+  if (resource === 'ai' && (id === 'interview' || id === 'interview-step' || id === 'interview-report') && !action)
     return handleAiInterview(request, p, id);
   // Questions answered from the site's own pages (lib/server/ai-ask.ts).
   if (resource === 'ai' && id === 'ask' && !action) return handleAiAsk(request, p);
@@ -310,6 +318,17 @@ export async function handleOj(
   }
   if (resource === 'submissions' && id && action === 'cancel')
     return json(await cancelSubmission(p, id));
+  if (resource === 'problems' && id && action === 'expected' && !operation) {
+    // A custom case's expected output from the verified editorial's best approach: closed,
+    // like the editorial, while the problem is in this learner's running contest.
+    const editorial = lingEditorial(id);
+    if (!editorial?.verified) throw new HttpError(404, '这道题没有可用的参考解');
+    refuseInContest(p, id);
+    const data = await readJson(request, 200000);
+    const created = await createReferenceRun(p, id, data, editorial.approaches.at(-1)!.python);
+    // Watched like a run: GET submissions/<id>?wait=1; its code never comes back.
+    return json(await settleSubmission(p, created.id, request.signal), 201);
+  }
   if (resource === 'playground' && id === 'run' && !action) {
     let data: unknown;
     try {

@@ -18,6 +18,7 @@ import {
   refLabel,
   sourceUrl,
 } from '../lib/classic-lists';
+import { readLcSite, saveLcSite } from '../lib/lc-site';
 import { curatedByNumber, curatedEntries } from '../lib/ling-curated';
 import { SITEMAP_STATIC_ENTRIES, sitemapLibraryRange } from '../lib/seo';
 
@@ -214,7 +215,7 @@ void test('a book list counts each book problem; problems sharing one twin share
   assert.equal(plain.collection.mapped, plain.collection.total);
 });
 
-void test('groups keep their order; problems not judgeable here are external and out of progress', () => {
+void test('groups keep their order; problems not judgeable here are external and out of progress', async () => {
   const view = listClassicLibrary(list, 'alice');
   assert.deepEqual(
     view.groups.map((g) => [g.nameEn, g.items.map((i) => i.number)]),
@@ -250,6 +251,12 @@ void test('groups keep their order; problems not judgeable here are external and
   assert.equal(b.items[0].stop?.slug, curatedByNumber.get(unready)!.sectionSlug);
   assert.equal(b.items[1].stop, null);
   assert.equal(a.items[0].stop, null);
+  // Stage and rating let a short study plan keep foundation, then easier problems.
+  const { lcRatingOf } = await import('../lib/server/lc-ratings');
+  assert.equal(a.items[1].stage, ['基础', '核心', '进阶'].indexOf(stop.stage));
+  const rating = lcRatingOf(onLine)?.rating;
+  assert.equal(a.items[1].rating, rating == null ? null : Math.round(rating));
+  assert.deepEqual([b.items[1].stage, a.items[0].rating], [null, null]);
   // Missing numbers still list, with an empty title the pages fill in.
   assert.equal(problemTitle(a.items[0], true), `LeetCode ${missing}`);
   assert.equal(problemTitle(b.items[1], false), 'Off the line');
@@ -296,6 +303,26 @@ void test('public page helpers: LeetCode links by locale, app links, levels and 
   // No known slug (or an unsafe one): search by number.
   assert.equal(leetcodeUrl(42, '', true), 'https://leetcode.com/problemset/?search=42');
   assert.equal(leetcodeUrl(42, '../x', false), 'https://leetcode.cn/problemset/?search=42');
+  // The site the reader chose (lib/lc-site.ts) wins over the language.
+  assert.equal(leetcodeUrl(1, 'two-sum', 'cn'), 'https://leetcode.cn/problems/two-sum/');
+  assert.equal(leetcodeUrl(1, 'two-sum', 'com'), 'https://leetcode.com/problems/two-sum/');
+  // Without storage (or blocked) the language decides; a saved choice wins; junk is ignored.
+  assert.equal(readLcSite(true), 'com');
+  assert.equal(readLcSite(false), 'cn');
+  const saved: Record<string, string> = {};
+  Object.defineProperty(globalThis, 'localStorage', {
+    configurable: true,
+    value: { getItem: (k: string) => saved[k] ?? null, setItem: (k: string, v: string) => (saved[k] = v) },
+  });
+  try {
+    saveLcSite('cn');
+    assert.equal(saved['cswork:lc-site'], 'cn');
+    assert.equal(readLcSite(true), 'cn');
+    saved['cswork:lc-site'] = 'jp';
+    assert.equal(readLcSite(true), 'com');
+  } finally {
+    delete (globalThis as { localStorage?: unknown }).localStorage;
+  }
   assert.equal(classicListAppHref('blind-75'), '/?view=problems&library=blind-75');
   assert.equal(problemAppHref('lc-1'), '/?view=problem&problem=lc-1');
   assert.deepEqual(levelOf('中等'), ['medium', '中等', 'Medium']);

@@ -74,6 +74,12 @@ test('book lists label rows by book number, show twins and coverage, link twinle
     assert.equal(rows[2].getAttribute('href'), 'https://leetcode.cn/problems/slug-14-II-lcof/');
     assert.ok(rows[2].textContent.includes('External'));
     assert.ok(document.querySelector('.classic-coverage').textContent.includes('2 of 3 have a LeetCode twin'));
+    // Only problems with a LeetCode number can be ticked; the bar counts those.
+    assert.deepEqual(
+      [...document.querySelectorAll('.classic-tick input')].map((box) => box.getAttribute('aria-label')),
+      ['Done: Offer 07 Problem 105', 'Done: Offer 14-II Problem 343'],
+    );
+    assert.equal(document.querySelector('progress').getAttribute('max'), '2');
     // The source link is the URL alone.
     const source = [...document.querySelectorAll('.classic-lead a')].find((a) => a.textContent.includes('Original list'));
     assert.equal(source.getAttribute('href'), 'https://leetcode.cn/studyplan/coding-interviews/');

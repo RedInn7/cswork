@@ -103,5 +103,7 @@ export type MemberDetails = {
   /** The author's address was verified (no identity check beyond that). */
   verified: boolean;
 };
-/** Filters only member posts carry: imported experiences have none of these. */
-export const MEMBER_FILTERS = ['employment', 'season', 'channel'] as const;
+/** Facts only member posts carry, each a filter menu: imported experiences have none of these. */
+export const MEMBER_FACETS = ['employment', 'season', 'channel'] as const;
+/** Filters that list member posts only: the facts, and verified=1 (authors with a verified address). */
+export const MEMBER_FILTERS = [...MEMBER_FACETS, 'verified'] as const;

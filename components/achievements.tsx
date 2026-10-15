@@ -8,6 +8,7 @@ import {
   newlyEarned,
   type Badge,
 } from '@/lib/achievements';
+import { classicListProgress } from '@/lib/classic-lists';
 import { readMockState } from '@/lib/mock-oa';
 import { canonicalCompany } from '@/lib/oa-company-brands';
 import type { PracticeHistoryItem } from '@/lib/practice-review';
@@ -35,6 +36,7 @@ export function progressBadges({
   now,
   companyNames = new Map(),
   bought = [],
+  dailyDays,
 }: {
   sections: readonly Section[];
   history: readonly PracticeHistoryItem[];
@@ -45,6 +47,8 @@ export function progressBadges({
   companyNames?: ReadonlyMap<string, string>;
   /** Streak freezes bought with points (bootstrap purchasedFreezes), as on the calendar. */
   bought?: readonly number[];
+  /** Daily problems solved on their day (GET oj/points/daily); no month badges without it. */
+  dailyDays?: readonly string[];
 }) {
   const solved = new Set(history.flatMap((item) => (item.firstAcAt ? [item.problemId] : [])));
   const perStop = new Map<string, number>();
@@ -71,19 +75,31 @@ export function progressBadges({
   );
   const first = Math.min(now, ...acActivity.map((a) => a.created_at));
   const weeks = Math.max(26, Math.ceil((now - first) / WEEK) + 2);
+  const stops = sections.map((s) => ({ ...s, solved: Math.max(s.solved, perStop.get(s.slug) ?? 0) }));
+  const visible = new Set(problems.map((p) => p.id));
+  const count = (prefix: string) => [...solved].filter((id) => id.startsWith(prefix)).length;
   return achievements({
-    stops: sections.map((s) => ({ ...s, solved: Math.max(s.solved, perStop.get(s.slug) ?? 0) })),
+    stops,
     bestStreak: practiceStats(acActivity, new Date(now).toDateString(), false, [], weeks, bought).best,
     acTimes: acActivity.map((a) => a.created_at),
     companies: [...companies.values()],
     perfectMock:
       !!userId &&
       readMockState(userId).history.some((s) => !!s.result && s.result.score >= s.result.max),
+    dailyDays,
+    lists: classicListProgress(solved, (id) => visible.has(id)),
+    domains: { line: stops.reduce((n, s) => n + s.solved, 0), sql: count('sql-'), oa: count('oa-') },
   });
 }
 
-function Medal({ badge, t, index }: { badge: Badge; t: T; index: number }) {
+/** Setting a badge beside the handle on the public page; offered for badges that page would show. */
+type Feature = { featured: string | null; featurable: ReadonlySet<string>; onFeature: (id: string | null) => void };
+
+function Medal({ badge, t, index, feature }: { badge: Badge; t: T; index: number; feature?: Feature }) {
   const [have, need] = badge.progress;
+  // A domain shows the way to its next star until the last one.
+  const done = badge.earned && (badge.group !== 'domain' || have >= need);
+  const on = feature?.featured === badge.id;
   return (
     <li
       className="badge-medal"
@@ -95,32 +111,46 @@ function Medal({ badge, t, index }: { badge: Badge; t: T; index: number }) {
         {badge.group === 'streak' || badge.group === 'days' ? need : <Award size={18} />}
       </span>
       <span className="badge-medal-name">{t(badge.zh, badge.en)}</span>
-      <span className="badge-medal-state">
-        {badge.earned ? t('已解锁', 'Unlocked') : `${have} / ${need}`}
-      </span>
+      <span className="badge-medal-state">{done ? t('已解锁', 'Unlocked') : `${have} / ${need}`}</span>
+      {badge.earned && feature?.featurable.has(badge.id) && (
+        <button
+          type="button"
+          className="badge-feature"
+          aria-pressed={on}
+          onClick={() => feature?.onFeature(on ? null : badge.id)}
+        >
+          {on ? t('主页展示中', 'On your profile') : t('设为展示', 'Feature')}
+        </button>
+      )}
     </li>
   );
 }
 
-/** The badge wall: the line's 35 stop roundels, then milestones, companies and mocks. */
-export function BadgeWall({ badges, english }: { badges: Badge[]; english: boolean }) {
-  const t: T = (zh, en) => (english ? en : zh);
-  const stops = badges.filter((b) => b.group === 'stop');
-  const line = badges.find((b) => b.group === 'line');
-  const cleared = stops.filter((b) => b.earned).length;
-  const milestones = badges.filter((b) => ['streak', 'days', 'mock'].includes(b.group));
-  // Earned companies, then the three closest to done.
-  const companies = badges
-    .filter((b) => b.group === 'company')
+/** A group's earned badges, then the three closest to done. */
+function closest(badges: Badge[], group: Badge['group']) {
+  const all = badges
+    .filter((b) => b.group === group)
     .sort(
       (a, b) =>
         Number(b.earned) - Number(a.earned) ||
         b.progress[0] / b.progress[1] - a.progress[0] / a.progress[1],
     );
-  const shownCompanies = [
-    ...companies.filter((b) => b.earned),
-    ...companies.filter((b) => !b.earned && b.progress[0] > 0).slice(0, 3),
-  ];
+  return [...all.filter((b) => b.earned), ...all.filter((b) => !b.earned && b.progress[0] > 0).slice(0, 3)];
+}
+
+/**
+ * The badge wall: the line's 35 stop roundels, then milestones and domain stars, daily problem
+ * months, classic lists and companies. With `feature`, earned medals can go on the public page.
+ */
+export function BadgeWall({ badges, english, feature }: { badges: Badge[]; english: boolean; feature?: Feature }) {
+  const t: T = (zh, en) => (english ? en : zh);
+  const stops = badges.filter((b) => b.group === 'stop');
+  const line = badges.find((b) => b.group === 'line');
+  const cleared = stops.filter((b) => b.earned).length;
+  const milestones = badges.filter((b) => ['streak', 'days', 'mock', 'domain'].includes(b.group));
+  const months = badges.filter((b) => b.group === 'daily');
+  const shownLists = closest(badges, 'list');
+  const shownCompanies = closest(badges, 'company');
   const earned = badges.filter((b) => b.earned).length;
   return (
     <div className="badge-wall">
@@ -174,9 +204,47 @@ export function BadgeWall({ badges, english }: { badges: Badge[]; english: boole
         </h2>
         <ul className="badge-medals">
           {milestones.map((badge, i) => (
-            <Medal key={badge.id} badge={badge} t={t} index={i} />
+            <Medal key={badge.id} badge={badge} t={t} index={i} feature={feature} />
           ))}
         </ul>
+      </section>
+      <section aria-labelledby="badge-daily-title">
+        <h2 id="badge-daily-title" className="badge-heading">
+          {t('每日一题全勤', 'Daily problem months')}
+        </h2>
+        {months.length ? (
+          <ul className="badge-medals">
+            {months.map((badge, i) => (
+              <Medal key={badge.id} badge={badge} t={t} index={i} feature={feature} />
+            ))}
+          </ul>
+        ) : (
+          <p className="badge-empty">
+            {t(
+              '一个北京月份里每天都做完当天的每日一题，就能拿到这个月的全勤徽章。',
+              'Solve the daily problem on every day of a month (Beijing time) to earn that month’s badge.',
+            )}
+          </p>
+        )}
+      </section>
+      <section aria-labelledby="badge-list-title">
+        <h2 id="badge-list-title" className="badge-heading">
+          {t('经典题单', 'Classic lists')}
+        </h2>
+        {shownLists.length ? (
+          <ul className="badge-medals">
+            {shownLists.map((badge, i) => (
+              <Medal key={badge.id} badge={badge} t={t} index={i} feature={feature} />
+            ))}
+          </ul>
+        ) : (
+          <p className="badge-empty">
+            {t(
+              '把热题 100、Blind 75 这样的经典题单里能在本站判题的题全部做通，就能拿到它的徽章。',
+              'Solve every problem of a classic list such as Top 100 Liked or Blind 75 that is judged here to earn its badge.',
+            )}
+          </p>
+        )}
       </section>
       <section aria-labelledby="badge-company-title">
         <h2 id="badge-company-title" className="badge-heading">
@@ -185,7 +253,7 @@ export function BadgeWall({ badges, english }: { badges: Badge[]; english: boole
         {shownCompanies.length ? (
           <ul className="badge-medals">
             {shownCompanies.map((badge, i) => (
-              <Medal key={badge.id} badge={badge} t={t} index={i} />
+              <Medal key={badge.id} badge={badge} t={t} index={i} feature={feature} />
             ))}
           </ul>
         ) : (

@@ -47,6 +47,75 @@ export const ROUTE_SECTIONS: (RouteGroup & { slugs: string[] })[] = [
   { zh: '设计与位运算', en: 'Design & Bits', slugs: ['design-containers', 'design-cache-index', 'design-trie-serialization', 'bits-math'] },
 ];
 export const OTHER_SECTION: RouteGroup = { zh: '其他', en: 'Other' };
+/** The 35 stops in line order. */
+export const ROUTE_SLUGS = ROUTE_SECTIONS.flatMap((section) => section.slugs);
+/**
+ * What to learn before each stop: a DAG whose every edge points back along the line
+ * (tests/route-stops.test.ts), drawn by components/route-graph.tsx and used by the study
+ * plan to order a stop's first problem after its prerequisites'. Advice only; nothing locks.
+ */
+export const STOP_PREREQS: Record<string, string[]> = {
+  'array-foundations': [],
+  'hash-counting': ['array-foundations'],
+  'string-processing': ['array-foundations'],
+  'two-pointers-windows': ['array-foundations'],
+  'prefix-intervals': ['hash-counting'],
+  'binary-search': ['array-foundations'],
+  'stacks-heaps': ['array-foundations'],
+  'greedy-scheduling': ['stacks-heaps'],
+  'linked-list': ['array-foundations'],
+  'binary-tree': ['linked-list'],
+  'binary-tree-paths': ['binary-tree'],
+  'binary-tree-build': ['binary-tree'],
+  'binary-search-tree': ['binary-tree', 'binary-search'],
+  'grid-traversal': ['binary-tree'],
+  'graph-connectivity': ['grid-traversal'],
+  'graph-topological': ['grid-traversal'],
+  'graph-shortest-path': ['grid-traversal', 'stacks-heaps'],
+  'graph-spanning-tree': ['graph-connectivity'],
+  'backtracking-enumeration': ['binary-tree'],
+  'backtracking-strings': ['backtracking-enumeration', 'string-processing'],
+  'backtracking-constraints': ['backtracking-enumeration'],
+  'dp-foundations': ['backtracking-enumeration'],
+  'dp-grid': ['dp-foundations'],
+  'dp-knapsack': ['dp-foundations'],
+  'dp-subsequence': ['dp-foundations'],
+  'dp-string': ['dp-subsequence', 'string-processing'],
+  'dp-palindrome': ['dp-string'],
+  'dp-state-machine': ['dp-foundations'],
+  'dp-stock': ['dp-state-machine'],
+  'dp-scheduling': ['dp-foundations', 'binary-search'],
+  'dp-search-game': ['dp-foundations', 'binary-tree-paths'],
+  'design-containers': ['hash-counting', 'stacks-heaps'],
+  'design-cache-index': ['hash-counting', 'linked-list'],
+  'design-trie-serialization': ['hash-counting', 'binary-tree'],
+  'bits-math': ['array-foundations'],
+};
+/** A stop's prerequisites; none for an unknown slug. */
+export const stopPrereqs = (slug: string) =>
+  Object.hasOwn(STOP_PREREQS, slug) ? STOP_PREREQS[slug] : [];
+/**
+ * The stops in columns by longest prerequisite path (a stop sits one column right of its
+ * deepest prerequisite). Within a column, stops follow the mean row of their prerequisites
+ * (one barycenter pass, ties in line order) so edges cross less.
+ */
+export function routeLayers(): string[][] {
+  const depth = new Map<string, number>();
+  for (const slug of ROUTE_SLUGS)
+    depth.set(slug, Math.max(-1, ...stopPrereqs(slug).map((p) => depth.get(p)!)) + 1);
+  const layers: string[][] = [];
+  for (const slug of ROUTE_SLUGS) (layers[depth.get(slug)!] ??= []).push(slug);
+  const row = new Map<string, number>();
+  for (const layer of layers) {
+    const mean = (slug: string) => {
+      const rows = stopPrereqs(slug).map((p) => row.get(p)! / Math.max(1, layers[depth.get(p)!].length - 1));
+      return rows.length ? rows.reduce((a, b) => a + b, 0) / rows.length : 0;
+    };
+    layer.sort((a, b) => mean(a) - mean(b));
+    layer.forEach((slug, i) => row.set(slug, i));
+  }
+  return layers;
+}
 export const STOP_NAMES: Record<string, [string, string]> = {
   'array-foundations': ['原地数组', 'In-place Arrays'], 'hash-counting': ['哈希计数', 'Hashing'],
   'string-processing': ['字符串', 'Strings'], 'two-pointers-windows': ['双指针滑窗', 'Two Pointers'],

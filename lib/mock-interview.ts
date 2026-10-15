@@ -3,9 +3,11 @@
  * seedable draw. Pure (no I/O), so the server draws, and the SPA and landing pages read the
  * same templates. Texts are [zh, en].
  */
+import type { RubricId } from './mock-interview-feedback';
+
 export type Text = [zh: string, en: string];
 
-export type KindId = 'coding' | 'behavioral' | 'design' | 'sql' | 'analytics' | 'stats' | 'ml';
+export type KindId = 'coding' | 'behavioral' | 'design' | 'sql' | 'analytics' | 'stats' | 'ml' | 'lld';
 type Kind = {
   name: Text;
   /** Content library categories this slot draws from. */
@@ -14,6 +16,11 @@ type Kind = {
   minutes: number;
   /** The company matters more than the role (behavioral answers carry across roles). */
   companyFirst?: boolean;
+  /**
+   * Only with the AI interviewer: no answers to show a person (the LLD template's course
+   * chapters), so never in a custom mix, a solo run or a peer interview.
+   */
+  aiOnly?: boolean;
 };
 export const KINDS: Record<KindId, Kind> = {
   coding: { name: ['编程题', 'Coding'], categories: ['Coding & Algorithms'], minutes: 25 },
@@ -36,6 +43,7 @@ export const KINDS: Record<KindId, Kind> = {
   },
   stats: { name: ['统计与概率', 'Statistics & probability'], categories: ['Statistics & Math'], minutes: 12 },
   ml: { name: ['机器学习', 'Machine learning'], categories: ['Machine Learning'], minutes: 20 },
+  lld: { name: ['低层设计（OOD）', 'Low-level design (OOD)'], categories: ['Low-Level Design'], minutes: 45, aiOnly: true },
 };
 /** Fewer questions than this and the slot says its bank is small. */
 export const SMALL_BANK = 30;
@@ -138,19 +146,124 @@ export const TEMPLATES: Template[] = [
     ],
   },
 ];
+/** Guided low-level design with the AI interviewer: kept out of TEMPLATES, which peers share. */
+export const LLD_TEMPLATE: Template = {
+  id: 'lld',
+  name: ['LLD 面向对象设计', 'LLD / object-oriented design'],
+  blurb: [
+    '一道低层设计题，和 AI 面试官一步步来：问清需求、建类、定接口、写核心代码、谈扩展，每步都有反馈。',
+    'One low-level design question, step by step with the AI interviewer: clarify, model the classes, define the interfaces, write the core code, discuss extensions, with feedback on each step.',
+  ],
+  role: 'swe',
+  round: null,
+  slots: [{ kind: 'lld', minutes: 45 }],
+};
 export const CUSTOM_NAME: Text = ['自定义', 'Custom'];
+
+export type GuideStep = {
+  id: string;
+  minutes: number;
+  name: Text;
+  /** What the step should cover. */
+  points: Text;
+  /** The rubric dimensions its feedback scores. */
+  rubric: RubricId[];
+};
+/**
+ * The AI interviewer's step-by-step guide (components/mock-interview.tsx, lib/server/ai-interviewer.ts):
+ * system design questions (not the fundamentals the design slot also draws) and LLD ones.
+ */
+export const GUIDED_STEPS: Record<'design' | 'lld', GuideStep[]> = {
+  design: [
+    {
+      id: 'requirements',
+      minutes: 5,
+      name: ['需求', 'Requirements'],
+      points: ['问清功能和非功能需求：用户量、读写比例、延迟、一致性。', 'Pin down functional and non-functional requirements: users, read/write ratio, latency, consistency.'],
+      rubric: ['problem', 'communication'],
+    },
+    {
+      id: 'entities',
+      minutes: 5,
+      name: ['核心实体', 'Core entities'],
+      points: ['列出核心实体和它们的关系，估一下数据量。', 'List the core entities and how they relate; estimate the data size.'],
+      rubric: ['problem'],
+    },
+    {
+      id: 'api',
+      minutes: 5,
+      name: ['接口', 'API'],
+      points: ['定义主要接口：请求、响应、分页和错误。', 'Define the main API: requests, responses, pagination and errors.'],
+      rubric: ['coding', 'communication'],
+    },
+    {
+      id: 'high-level',
+      minutes: 10,
+      name: ['整体架构', 'High-level design'],
+      points: ['讲清整体架构：客户端、服务、存储、缓存、队列，走一遍主要请求。', 'Lay out the architecture: clients, services, storage, caches, queues; walk the main requests through it.'],
+      rubric: ['problem', 'complexity'],
+    },
+    {
+      id: 'deep-dives',
+      minutes: 15,
+      name: ['深入', 'Deep dives'],
+      points: ['挑一两个瓶颈深入：扩展、分片、一致性、故障，讲清取舍。', 'Go deep on one or two bottlenecks: scaling, sharding, consistency, failures; explain the trade-offs.'],
+      rubric: ['complexity', 'testing'],
+    },
+  ],
+  lld: [
+    {
+      id: 'clarify',
+      minutes: 5,
+      name: ['澄清需求', 'Clarify'],
+      points: ['问清用例、参与者和边界，说出你的假设。', 'Clarify the use cases, actors and limits; state your assumptions.'],
+      rubric: ['problem', 'communication'],
+    },
+    {
+      id: 'classes',
+      minutes: 8,
+      name: ['类与关系', 'Classes'],
+      points: ['找出核心类、各自的职责和关系（组合、继承）。', 'Find the core classes, their responsibilities and relationships (composition, inheritance).'],
+      rubric: ['problem', 'coding'],
+    },
+    {
+      id: 'interfaces',
+      minutes: 7,
+      name: ['接口', 'Interfaces'],
+      points: ['定义关键接口和方法签名，说明哪里可能变化。', 'Define the key interfaces and method signatures; say what is likely to change.'],
+      rubric: ['coding', 'communication'],
+    },
+    {
+      id: 'code',
+      minutes: 15,
+      name: ['核心代码', 'Core code'],
+      points: ['在代码框里写出核心逻辑，处理并发和边界情况。', 'Write the core logic in the code box, handling concurrency and edge cases.'],
+      rubric: ['coding', 'testing'],
+    },
+    {
+      id: 'extensibility',
+      minutes: 5,
+      name: ['扩展', 'Extensions'],
+      points: ['讨论扩展：新需求怎么加进来，用到了哪些设计原则或模式。', 'Discuss extensions: how new requirements fit in, which principles or patterns help.'],
+      rubric: ['complexity', 'communication'],
+    },
+  ],
+};
+/** A question's guide: every LLD question, and design questions in the System Design category; else null. */
+export const guideFor = (kind: KindId, category: string | null | undefined) =>
+  kind === 'lld' ? GUIDED_STEPS.lld : kind === 'design' && category === 'System Design' ? GUIDED_STEPS.design : null;
 
 /**
  * A template by id, or a custom one from `mix` ("coding.2-behavioral.1": counts per kind) and
  * `minutes` (the total, shared out by each kind's suggested time). Null when invalid.
  */
 export function resolveTemplate(id: string | null, mix?: string | null, minutes?: string | number | null): Template | null {
-  if (id !== 'custom') return TEMPLATES.find((t) => t.id === id) ?? null;
+  if (id !== 'custom') return [...TEMPLATES, LLD_TEMPLATE].find((t) => t.id === id) ?? null;
   const slots: Slot[] = [];
   for (const part of (mix || '').split('-')) {
     const [kind, count] = part.split('.');
     const n = Number(count);
-    if (!Object.hasOwn(KINDS, kind) || !Number.isInteger(n) || n < 0 || n > 5) return null;
+    if (!Object.hasOwn(KINDS, kind) || KINDS[kind as KindId].aiOnly || !Number.isInteger(n) || n < 0 || n > 5) return null;
     for (let i = 0; i < n; i++) slots.push({ kind: kind as KindId, minutes: KINDS[kind as KindId].minutes });
   }
   if (!slots.length || slots.length > 8) return null;

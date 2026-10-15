@@ -75,12 +75,13 @@ export function precompileKey(x: {
 /**
  * Foreground work preempts speculation, except a submission of exactly the
  * draft being compiled: finishing that compile is the submission's own compile.
+ * A reference run (Python, nothing to compile) never preempts it.
  */
 export function hasForegroundSubmissions(except?: PrecompileDraft) {
   return Boolean(
     sqlite()
       .prepare(
-        "SELECT 1 FROM submissions WHERE status IN ('queued','compiling','running') AND cancel_requested=0 AND NOT (user_id IS ? AND problem_version_id IS ? AND language IS ? AND COALESCE(coding_mode,'acm') IS ? AND code IS ?) LIMIT 1",
+        "SELECT 1 FROM submissions WHERE status IN ('queued','compiling','running') AND cancel_requested=0 AND mode<>'reference' AND NOT (user_id IS ? AND problem_version_id IS ? AND language IS ? AND COALESCE(coding_mode,'acm') IS ? AND code IS ?) LIMIT 1",
       )
       .get(
         except?.user_id ?? null,

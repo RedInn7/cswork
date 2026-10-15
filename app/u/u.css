@@ -212,6 +212,19 @@
 .learner-follow:disabled {
   opacity: 0.6;
 }
+/* The one badge the learner chose to feature, under the handle. */
+.learner-featured {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--amber);
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 750;
+}
 /* Languages and badges side by side when there is room. */
 .learner-pair {
   display: grid;
@@ -473,6 +486,10 @@
   .dark .lists-public-hero .learner-follow[aria-pressed='true'] {
     background: transparent;
     color: var(--amber);
+  }
+  .dark .learner-featured {
+    background: var(--amber);
+    color: var(--navy);
   }
   .dark .learner-badges li {
     border: 1px solid var(--rule);

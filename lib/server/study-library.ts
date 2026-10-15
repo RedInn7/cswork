@@ -1,6 +1,8 @@
 import { sqlite } from '@/db/sqlite';
 import { companyTagIndex, type CompanyTag } from '@/lib/company-tags';
+import { inWindow, reportWindow, windowCounts } from '@/lib/report-windows';
 import hintFile from '@/lib/content/ling-hints.json';
+import { sourceDates } from './company-insights';
 import { hiddenCompanies } from './env';
 import { HttpError, rows } from './http';
 import { oaLibrary } from './oa-library';
@@ -288,13 +290,20 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
                   ? item[status]
                   : false)),
   );
-  // sort=frequency: the chosen company's most reported problems first. The sort is
-  // stable, so equal counts keep the line's order.
+  // sort=frequency: the chosen company's most reported problems first, counting the reports of
+  // ?window=3m|6m|1y|2y only when given. The sort is stable, so equal counts keep the line's order.
   const sort = params.get('sort') || '';
   if (company && sort === 'frequency') {
-    const reports = (item: (typeof all)[number]) =>
-      item.companies.find((c) => c.slug === company)?.count ?? 0;
-    filtered.sort((a, b) => reports(b) - reports(a));
+    const period = reportWindow(params.get('window'));
+    const dated = period === 'all' ? null : sourceDates();
+    const now = Date.now();
+    const counts = new Map(
+      filtered.map((item) => {
+        const tag = item.companies.find((c) => c.slug === company);
+        return [item, !tag ? 0 : dated ? inWindow(windowCounts(tag.sources, dated, now), period) : tag.count];
+      }),
+    );
+    filtered.sort((a, b) => counts.get(b)! - counts.get(a)!);
   }
   // number / difficulty / rating / acceptance, either way (dir=asc|desc); problems without
   // a value (unrated, too few people for a share) stay last, in line order.
@@ -371,10 +380,19 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
     ),
     sequence,
     // The study plan (lib/study-plan.ts) counts what is left of the sequence:
-    // [problem id, difficulty, stop index] per unsolved entry, in line order.
+    // [problem id, difficulty, stop index, stage index, rating] per unsolved entry, in
+    // line order. Stage and rating pick what a short plan keeps.
     planTodo: all.flatMap((item) =>
       item.caseStatus === 'verified' && item.judgeProblemId && !item.solved
-        ? [[item.judgeProblemId, item.difficulty, STOP_INDEX.get(item.selection.sectionSlug) ?? 0] as const]
+        ? [
+            [
+              item.judgeProblemId,
+              item.difficulty,
+              STOP_INDEX.get(item.selection.sectionSlug) ?? 0,
+              CURATED_STAGES.indexOf(item.selection.stage),
+              item.rating === null ? null : Math.round(item.rating),
+            ] as const,
+          ]
         : [],
     ),
     nextProblemId: userId ? (nextItem?.judgeProblemId ?? null) : null,
@@ -560,6 +578,8 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
   const progress = userId
     ? studyProgress(userId, practiceRoundState(userId).activeRoundId)
     : new Map();
+  // Ticked by hand on the list (solved elsewhere): user_marks problem:lc-<n> done.
+  const marks = userId ? problemMarks(userId) : new Map<string, Set<string>>();
   const item = ({ number, ref, refSlug }: ClassicEntry) => {
     const row = number === null ? undefined : rows.get(number);
     // summary() only exposes the judge id of a problem that is judgeable now.
@@ -579,6 +599,9 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
       titleZh: row?.titleZh ?? '',
       titleEn: row?.titleEn ?? '',
       difficulty: row?.difficulty ?? '',
+      // What a short study plan keeps first: foundation stage, then lower rating.
+      stage: selection ? CURATED_STAGES.indexOf(selection.stage) : null,
+      rating: row?.rating == null ? null : Math.round(row.rating),
       judgeProblemId,
       external: !judgeProblemId,
       // Its Line 500 stop, judgeable here or not.
@@ -597,6 +620,7 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
           ? 'attempted'
           : 'not_started') as 'solved' | 'attempted' | 'not_started',
       judging: !!state?.pending,
+      done: number !== null && !!marks.get(`lc-${number}`)?.has('done'),
     };
   };
   const groups = list.groups.map((group, index) => {

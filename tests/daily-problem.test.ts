@@ -8,6 +8,12 @@ import {
   dailyStreak,
 } from '../lib/daily-problem';
 import { dailySource } from '../lib/server/daily-problem';
+import { register } from 'node:module';
+// The statement markdown renders diagrams, which import their stylesheet; tests load it as nothing.
+register(
+  `data:text/javascript,${encodeURIComponent("export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};return n(u,c);}")}`,
+  import.meta.url,
+);
 
 const DAY = 86400000;
 // 2026-10-14 01:00 in Beijing is still 2026-10-13 in UTC.

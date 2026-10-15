@@ -10,7 +10,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const CJK = /[㐀-鿿]/;
 // Seeded course content, and OTP mails (lib/server/mail.ts carries its own English).
 // The SQL judge embeds its Python harness (bilingual verdict text) as a string.
-const NOT_MESSAGES = new Set(['lib/server/seed.ts', 'lib/server/seed-interview.ts', 'lib/server/mail.ts', 'lib/server/sql-judge.ts']);
+const NOT_MESSAGES = new Set(['lib/server/seed.ts', 'lib/server/seed-interview.ts', 'lib/server/mail.ts', 'lib/server/sql-judge.ts', 'lib/server/system-design-course.ts']);
 // LeetCode's own verdict text, matched in its API responses and never shown.
 const MATCHED = new Set(['通过']);
 

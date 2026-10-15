@@ -200,7 +200,7 @@ test('the points card shows the balance and buys a freeze, handing the purchase 
   const posts = [];
   const summary = (balance, bought) => ({
     balance, ledger: [{ delta: 10, reason: 'ac-day', ref: '2026-10-14', createdAt: Date.now() }, { delta: -100, reason: 'freeze', createdAt: Date.now() }],
-    prices: { freeze: 100, ai: 50 }, rules: { acDay: 10, daily: 20, firstAc: 5, firstAcCap: 100, streak: 50, experience: 100, upvote: 2, upvoteCap: 40 },
+    prices: { freeze: 100, ai: 50 }, rules: { acDay: 10, daily: 20, dailyMonth: 100, dailyMonthDays: 25, firstAc: 5, firstAcCap: 100, streak: 50, experience: 100, upvote: 2, upvoteCap: 40 },
     freezes: { boughtThisMonth: bought.length, monthlyMax: 3, purchased: bought }, ai: null,
   });
   globalThis.fetch = async (url, options) => {

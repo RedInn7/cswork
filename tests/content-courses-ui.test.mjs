@@ -12,7 +12,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 const react = pathToFileURL(createRequire(import.meta.url).resolve('react')).href;
 const prefix = `import React from ${JSON.stringify(react)};`;
 const mocks = {
-  'next/headers': `export const cookies = async () => ({ get: () => (globalThis.__locale ? { value: globalThis.__locale } : undefined) });`,
+  'next/headers': `export const cookies = async () => ({ get: () => (globalThis.__locale ? { value: globalThis.__locale } : undefined) }); export const headers = async () => new Headers();`,
   'next/navigation': `export function notFound() { throw Object.assign(new Error('NEXT_NOT_FOUND'), { digest: 'NEXT_NOT_FOUND' }); }`,
   'next/link': `${prefix}export default function Link({ href, prefetch, children, ...rest }) { return React.createElement('a', { href, ...rest }, children); }`,
   editor: `${prefix}export function CodeDiff(p) { return React.createElement('pre', { 'data-diff': '', 'data-original': p.original, 'data-modified': p.modified, 'data-language': p.originalLanguage, 'aria-label': p.ariaLabel }); }`,

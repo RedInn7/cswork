@@ -1,6 +1,7 @@
 import lcMapFile from '@/lib/content/company-lc-map.json';
 import presetsFile from '@/lib/content/mock-oa-presets.json';
 import { employerSlug } from '@/lib/oa-company-brands';
+import type { ReportWindows } from '@/lib/report-windows';
 
 /** A judgeable problem one company reported, merged across the company's slugs. */
 export type CompanyProblem = {
@@ -10,6 +11,8 @@ export type CompanyProblem = {
   count: number;
   /** Latest report date, YYYY-MM-DD. */
   last: string;
+  /** Content slugs of the reports, one per report. */
+  sources: string[];
 };
 /** A company that reported asking a problem: how often, how recently and in which rounds. */
 export type CompanyTag = Omit<CompanyProblem, 'id'> & {
@@ -18,6 +21,8 @@ export type CompanyTag = Omit<CompanyProblem, 'id'> & {
   /** Reported in an Online Assessment. */
   oa: boolean;
 };
+/** A problem's company as the problem payload sends it: report slugs stay on the server, their ages come instead. */
+export type CompanyChip = Omit<CompanyTag, 'sources'> & { windows?: ReportWindows };
 /** lib/content/company-lc-map.json v2: `sources` are every content slug, `count` distinct reports. */
 type MapEntry = {
   id: string;
@@ -52,12 +57,13 @@ export function companyLcProblems(
     merged.set(employer, problems);
     for (const e of entries) {
       if (!LC.test(e.id)) continue;
-      const p = problems.get(e.id) ?? { id: e.id, rounds: [], count: 0, last: '' };
+      const p = problems.get(e.id) ?? { id: e.id, rounds: [], count: 0, last: '', sources: [] };
       problems.set(e.id, p);
       // Two spellings never share a report: a source belongs to one company.
       p.count += e.count;
       if (e.last > p.last) p.last = e.last;
       for (const r of e.rounds) if (!p.rounds.includes(r)) p.rounds.push(r);
+      for (const src of e.sources) if (!p.sources.includes(src)) p.sources.push(src);
     }
   }
   return new Map(

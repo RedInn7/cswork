@@ -11,7 +11,7 @@ export type EditorSettings = {
   layout: 'horizontal' | 'vertical';
   /** Topic tags (the spoilers) stay behind the Topics button; company tags always show. */
   hideTags: boolean;
-  keymap: 'default' | 'vim';
+  keymap: 'default' | 'vim' | 'emacs';
 };
 
 export const defaultEditorSettings: EditorSettings = {
@@ -43,7 +43,7 @@ export function readEditorSettings(userId: string): EditorSettings {
       minimap: value.minimap === true,
       layout: value.layout === 'vertical' ? 'vertical' : 'horizontal',
       hideTags: value.hideTags !== false,
-      keymap: value.keymap === 'vim' ? 'vim' : 'default',
+      keymap: value.keymap === 'vim' || value.keymap === 'emacs' ? value.keymap : 'default',
     };
   } catch {
     return defaultEditorSettings;

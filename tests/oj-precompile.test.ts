@@ -227,7 +227,11 @@ void test('a submission of the draft being compiled does not preempt it; any oth
     sqlite().prepare("DELETE FROM submissions WHERE id='edited'").run();
     insert('someone', 'other', draft.code, 'acm');
     assert.equal(hasForegroundSubmissions(draft), true);
+    sqlite().prepare("DELETE FROM submissions WHERE id='someone'").run();
+    insert('reference', 'student', 'class Solution: pass', 'acm');
+    sqlite().prepare("UPDATE submissions SET mode='reference' WHERE id='reference'").run();
+    assert.equal(hasForegroundSubmissions(draft), false);
   } finally {
-    sqlite().prepare("DELETE FROM submissions WHERE id IN ('same','edited','someone')").run();
+    sqlite().prepare("DELETE FROM submissions WHERE id IN ('same','edited','someone','reference')").run();
   }
 });

@@ -12,7 +12,6 @@ import { tmpdir } from 'node:os';
 import Database from 'better-sqlite3';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { PublicLibraryMarkdown } from '../app/library/markdown';
 import {
   parsePublicLibraryQuery,
   publicLibraryList,
@@ -23,6 +22,13 @@ import {
   publicLibraryListPath,
   publicLibraryDescription,
 } from '../lib/server/public-library';
+import { register } from 'node:module';
+// Diagrams in the markdown import their stylesheet; tests load stylesheets as nothing.
+register(
+  `data:text/javascript,${encodeURIComponent("export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};return n(u,c);}")}`,
+  import.meta.url,
+);
+const { PublicLibraryMarkdown } = await import('../app/library/markdown');
 
 const folder = mkdtempSync(join(tmpdir(), 'cswork-public-library-'));
 const previousPath = process.env.CONTENT_DATABASE_PATH;

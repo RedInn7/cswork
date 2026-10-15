@@ -41,8 +41,10 @@ import {
   Lightbulb,
   LoaderCircle,
   Lock,
+  Maximize,
   Maximize2,
   MessageSquare,
+  Minimize,
   Minimize2,
   Play,
   Plus,
@@ -59,6 +61,7 @@ import { OaCompanyBadge, OaEditorial } from './oa-library';
 import { LingEditorial } from './ling-editorial';
 import { CompanyTags } from './company-tags';
 import { NotesTab, ProblemMarks, ProblemNotes, useProblemNote } from './problem-notes';
+import { SubmissionNote } from './submission-note';
 import { AskedReport, communityProblem } from './problem-community';
 import { SolutionPosts, SolutionsTab } from './solution-posts';
 import { HintLadder, useHintLadder } from './hint-ladder';
@@ -100,6 +103,7 @@ import { encodeShare } from '@/lib/playground-share';
 import { StatementMarkdown } from './statement-markdown';
 import { LeetCodeSamples } from './leetcode-samples';
 import { leetcodePublicSample } from '@/lib/leetcode-public-samples';
+import { joinFields, splitFields } from '@/lib/testcase-fields';
 import type { CodingMode } from '@/lib/coding-mode';
 import type { IntelligenceStatus } from '@/lib/editor-intelligence';
 import {
@@ -107,6 +111,7 @@ import {
   SubmissionCodeDialog,
   SubmissionResult,
   Verdict,
+  type ReferenceOutput,
 } from './oj-results';
 import {
   languages,
@@ -164,7 +169,7 @@ type WorkspaceProps = {
   mock?: string;
   /** ?room=<contest id>: the problem is a question of a contest room (lib/server/contests.ts). */
   room?: string;
-  /** ?tab=solutions opens on the community solutions (a contest's upsolve links). */
+  /** ?tab=solutions opens on the community solutions (a contest's upsolve links); ?tab=history on Submissions. */
   tab?: string;
 };
 type MaxPanel = 'statement' | 'code' | 'console';
@@ -240,6 +245,15 @@ const FAILED_VERDICTS = new Set([
   'runtime_error',
   'compile_error',
 ]);
+/**
+ * A public example as a custom case: ACM stdin as is; LeetCode's "name = value" lines become
+ * one JSON value per line. null when there is no such form.
+ */
+function exampleAsCase(problemId: string, mode: CodingMode, sample: { input: string; expectedOutput: string }) {
+  return mode === 'acm'
+    ? sample.input
+    : (leetcodePublicSample(problemId, sample)?.input?.replace(/^[A-Za-z_]\w*\s*=\s*/gm, '') ?? null);
+}
 function readCases(key: string): string[] {
   try {
     const value: unknown = JSON.parse(localStorage.getItem(key) || 'null');
@@ -397,7 +411,13 @@ function Workspace({
   const runButton = useRef<HTMLButtonElement>(null);
   const [leftTab, setLeftTab] = useState<
     'statement' | 'history' | 'editorial' | 'notes' | 'solutions'
-  >(tab === 'solutions' && boot.person && communityProblem(initialProblem.id) ? 'solutions' : 'statement');
+  >(
+    tab === 'solutions' && boot.person && communityProblem(initialProblem.id)
+      ? 'solutions'
+      : tab === 'history' && boot.person
+        ? 'history'
+        : 'statement',
+  );
   // Private to an account, and closed during a mock exam like the editorial.
   const note = useProblemNote(
     boot.person && !examMode ? userId : null,
@@ -417,6 +437,23 @@ function Workspace({
     setCustomCases(readCases(casesKey));
     setCaseIndex(0);
   }, [casesKey]);
+  // LeetCode cases edit one labelled field per parameter; Raw text (or a line count that
+  // doesn't match) shows the stored text itself.
+  const [rawCase, setRawCase] = useState(false);
+  const caseParams = codingMode === 'leetcode' && problem.leetcodeParams?.length ? problem.leetcodeParams : null;
+  const caseFields = caseParams && !rawCase ? splitFields(stdin, caseParams.length) : null;
+  const editCase = (value: string) =>
+    saveCases(
+      customCases.map((item, index) => (index === caseIndex ? value : item)),
+      caseIndex,
+    );
+  // The editorial's output on the custom case just run (POST problems/:id/expected): the
+  // expected output beside the learner's. Never in a mock exam or contest.
+  const [reference, setReference] = useState<ReferenceOutput | null>(null);
+  const referenceController = useRef<AbortController | null>(null);
+  useEffect(() => () => referenceController.current?.abort(), []);
+  // The note under a sample run that added its failing example to the custom cases.
+  const [caseNote, setCaseNote] = useState('');
   const [sampleIndex, setSampleIndex] = useState(0);
   const [recovering, setRecovering] = useState(false);
   const [hintCount, setHintCount] = useState(0);
@@ -432,6 +469,15 @@ function Workspace({
     'statement',
   );
   const [expanded, setExpanded] = useState(true);
+  // Browser full screen, stacking with focus mode; null where it's unavailable (iPhone Safari).
+  const [fullscreen, setFullscreen] = useState<boolean | null>(null);
+  useEffect(() => {
+    if (!document.fullscreenEnabled) return;
+    const sync = () => setFullscreen(!!document.fullscreenElement);
+    sync();
+    document.addEventListener('fullscreenchange', sync);
+    return () => document.removeEventListener('fullscreenchange', sync);
+  }, []);
   // Focus mode hides the top bar (and its sign-in button), so the notice carries the one entry.
   const signIn = expanded && !boot.person && (
     <button onClick={() => window.dispatchEvent(new Event('cswork:auth-required'))}>
@@ -559,6 +605,43 @@ function Workspace({
     if (submission.status === 'accepted' && submission.total <= 0) return;
     recordReplay.current(submission);
   }, [submission, recordReplay]);
+  // A sample run's first failing example joins the custom cases (an identical one is just
+  // selected), once per run; hidden cases never reach the browser.
+  const exampleAdded = useRef<string | null>(null);
+  useEffect(() => {
+    if (
+      !submission ||
+      submission.mode !== 'run' ||
+      ranCase !== null ||
+      activeStatuses.has(submission.status) ||
+      exampleAdded.current === submission.id ||
+      (submission.codingMode ?? 'acm') !== codingMode
+    )
+      return;
+    const failed = submission.cases?.find(
+      (item) => FAILED_VERDICTS.has(item.status) && item.stdin !== undefined,
+    );
+    if (!failed) return;
+    exampleAdded.current = submission.id;
+    const input = exampleAsCase(problem.id, codingMode, {
+      input: failed.stdin!,
+      expectedOutput: failed.expected ?? '',
+    });
+    if (
+      input === null ||
+      new TextEncoder().encode(input).byteLength > maxStdinBytes ||
+      (customCases.length >= MAX_CASES && !customCases.includes(input))
+    )
+      return;
+    const known = customCases.includes(input);
+    addCase(input);
+    setCaseNote(
+      known
+        ? t(`失败的样例 ${failed.ordinal + 1} 已在自定义用例里，已切换过去`, `Failed example ${failed.ordinal + 1} is already a custom case; it's selected`)
+        : t(`已把失败的样例 ${failed.ordinal + 1} 加入自定义用例`, `Added failed example ${failed.ordinal + 1} to your custom cases`),
+    );
+    // oxlint-disable-next-line react-hooks/exhaustive-deps -- once per finished sample run; addCase reads the current cases.
+  }, [submission]);
   const [success, setSuccess] = useState<OJSubmission | null>(null);
   const [solveSeconds, setSolveSeconds] = useState<number | null>(null);
   const announcedSuccess = useRef<string | null>(null);
@@ -608,16 +691,8 @@ function Workspace({
         },
       ];
   const sample = samples[sampleIndex] || samples[0];
-  // The example as custom input: ACM stdin as is; LeetCode's "name = value" lines become
-  // one JSON value per line. null when there is no such form to copy.
-  const exampleCase = !loadedProblem
-    ? null
-    : codingMode === 'acm'
-      ? sample.input
-      : (leetcodePublicSample(problem.id, sample)?.input?.replace(
-          /^[A-Za-z_]\w*\s*=\s*/gm,
-          '',
-        ) ?? null);
+  // The example as custom input; null when there is no such form to copy.
+  const exampleCase = !loadedProblem ? null : exampleAsCase(problem.id, codingMode, sample);
   // Bootstrap carries no statements; this stands in until `problems/:id` answers.
   const problemLoading = !loadedProblem && !problemError && (
     <div className="cs-loading" role="status">
@@ -1307,6 +1382,17 @@ function Workspace({
     setSubmitting(true);
     setSubmission(null);
     setRanCase(mode === 'run' && inputMode === 'custom' ? caseIndex : null);
+    setCaseNote('');
+    referenceController.current?.abort();
+    setReference(null);
+    if (
+      mode === 'run' &&
+      inputMode === 'custom' &&
+      problem.lingEditorialVerified === true &&
+      !!problem.codingModes?.includes('leetcode') &&
+      !examMode
+    )
+      void runReference(stdin, codingMode);
     showConsole('result');
     setMobilePane('editor');
     setError('');
@@ -1392,6 +1478,36 @@ function Workspace({
         busyRef.current = false;
         if (alive.current) setSubmitting(false);
       }
+    }
+  }
+  /** The expected output for this custom case, run beside the learner's own run. */
+  async function runReference(input: string, mode: CodingMode) {
+    const controller = new AbortController();
+    referenceController.current = controller;
+    setReference({ status: 'pending' });
+    try {
+      let item = await ojRequest<OJSubmission>(
+        `problems/${encodeURIComponent(problem.id)}/expected`,
+        { stdin: input, codingMode: mode, idempotencyKey: crypto.randomUUID() },
+        controller.signal,
+      );
+      // Plain polls: the server allows two long polls per learner, and the run's own watch needs one.
+      while (activeStatuses.has(item.status)) {
+        await new Promise((resolve) => setTimeout(resolve, 750));
+        item = await ojRequest<OJSubmission>(
+          `submissions/${item.id}`,
+          undefined,
+          controller.signal,
+        );
+      }
+      const output = item.cases?.[0]?.stdout;
+      setReference(
+        item.status === 'finished' && output !== undefined
+          ? { status: 'done', output }
+          : { status: 'failed' },
+      );
+    } catch {
+      if (!controller.signal.aborted) setReference({ status: 'failed' });
     }
   }
   async function cancel() {
@@ -1653,15 +1769,15 @@ function Workspace({
                 <option value="zh">中文</option>
                 <option value="en">English</option>
               </select>
-              {/* Acceptance, votes and sharing: none of them during a mock OA. */}
-              {!examMode && (
-                <ProblemMeta
-                  problemId={problem.id}
-                  title={statement.title}
-                  english={uiEnglish}
-                  signedIn={!!boot.person}
-                />
-              )}
+              {/* Acceptance, votes and sharing: none of them during a mock OA; the time limit stays. */}
+              <ProblemMeta
+                problemId={problem.id}
+                title={statement.title}
+                english={uiEnglish}
+                signedIn={!!boot.person}
+                timeLimit={problem.timeLimits?.[language] ?? problem.timeLimit}
+                limitOnly={examMode}
+              />
             </div>
             {/* Company reports are a hint too: never during a mock. */}
             {!examMode && !!problem.companies?.length && (
@@ -2477,6 +2593,17 @@ function Workspace({
                             {t('复制样例', 'Copy example')}
                           </button>
                         )}
+                        {caseParams && (
+                          <button
+                            type="button"
+                            className="cs-raw-toggle"
+                            aria-pressed={rawCase}
+                            title={t('按原始文本编辑：每行一个 JSON 参数', 'Edit as raw text: one JSON argument per line')}
+                            onClick={() => setRawCase((value) => !value)}
+                          >
+                            {t('原始文本', 'Raw text')}
+                          </button>
+                        )}
                         <button
                           type="button"
                           aria-label={t(
@@ -2493,42 +2620,77 @@ function Workspace({
                           <Trash2 size={13} />
                         </button>
                       </div>
-                      <textarea
-                        id="custom-case-input"
-                        className="cs-custom-input"
-                        aria-label={
-                          codingMode === 'leetcode'
-                            ? t(
-                                `自定义函数参数（用例 ${caseIndex + 1}）`,
-                                `Custom function arguments (case ${caseIndex + 1})`,
-                              )
-                            : t(
-                                `自定义标准输入（用例 ${caseIndex + 1}）`,
-                                `Custom stdin (case ${caseIndex + 1})`,
-                              )
-                        }
-                        value={stdin}
-                        onChange={(event) =>
-                          saveCases(
-                            customCases.map((item, index) =>
-                              index === caseIndex ? event.target.value : item,
-                            ),
-                            caseIndex,
-                          )
-                        }
-                        placeholder={
-                          codingMode === 'leetcode'
-                            ? t(
-                                '按题目参数顺序，每行输入一个 JSON 值。例如两数之和：\n[2,7,11,15]\n9',
-                                'One JSON value per line, in parameter order. For Two Sum:\n[2,7,11,15]\n9',
-                              )
-                            : t(
-                                '在这里输入数据，支持空输入。',
-                                'Enter input here. Empty input is allowed.',
-                              )
-                        }
-                        spellCheck={false}
-                      />
+                      {caseFields ? (
+                        <div
+                          id="custom-case-input"
+                          className="cs-case-fields"
+                          role="group"
+                          aria-label={t(
+                            `自定义函数参数（用例 ${caseIndex + 1}）`,
+                            `Custom function arguments (case ${caseIndex + 1})`,
+                          )}
+                        >
+                          {caseParams!.map((param, index) => (
+                            <label key={param.name}>
+                              <span>
+                                <code>{param.name}</code> · {param.type}
+                              </span>
+                              <input
+                                value={caseFields[index]}
+                                spellCheck={false}
+                                autoComplete="off"
+                                onChange={(event) =>
+                                  editCase(
+                                    joinFields(
+                                      caseFields.map((field, i) =>
+                                        i === index ? event.target.value : field,
+                                      ),
+                                    ),
+                                  )
+                                }
+                              />
+                            </label>
+                          ))}
+                        </div>
+                      ) : (
+                        <textarea
+                          id="custom-case-input"
+                          className="cs-custom-input"
+                          aria-label={
+                            codingMode === 'leetcode'
+                              ? t(
+                                  `自定义函数参数（用例 ${caseIndex + 1}）`,
+                                  `Custom function arguments (case ${caseIndex + 1})`,
+                                )
+                              : t(
+                                  `自定义标准输入（用例 ${caseIndex + 1}）`,
+                                  `Custom stdin (case ${caseIndex + 1})`,
+                                )
+                          }
+                          value={stdin}
+                          onChange={(event) => editCase(event.target.value)}
+                          placeholder={
+                            codingMode === 'leetcode'
+                              ? t(
+                                  '按题目参数顺序，每行输入一个 JSON 值。例如两数之和：\n[2,7,11,15]\n9',
+                                  'One JSON value per line, in parameter order. For Two Sum:\n[2,7,11,15]\n9',
+                                )
+                              : t(
+                                  '在这里输入数据，支持空输入。',
+                                  'Enter input here. Empty input is allowed.',
+                                )
+                          }
+                          spellCheck={false}
+                        />
+                      )}
+                      {caseParams && !rawCase && !caseFields && (
+                        <p className="cs-console-note" role="status">
+                          {t(
+                            `这个用例的行数和 ${caseParams.length} 个参数对不上，先按原始文本编辑。`,
+                            `This case's lines don't match the ${caseParams.length} parameters, so it shows as raw text.`,
+                          )}
+                        </p>
+                      )}
                       <p className="cs-console-note">
                         {codingMode === 'leetcode' &&
                           (problem.leetcodeInputHelp
@@ -2567,19 +2729,28 @@ function Workspace({
                   <p>{uiEnglish ? 'Submitting…' : '正在提交…'}</p>
                 </div>
               ) : submission ? (
-                <SubmissionResult
-                  submission={submission}
-                  cancel={cancel}
-                  cancelling={cancelling}
-                  inspect={() => inspect(submission)}
-                  onUseInput={codingMode === 'acm' ? debugWithCase : undefined}
-                  maxStdinBytes={maxStdinBytes}
-                  ranCase={
-                    submission.mode === 'run' && ranCase !== null
-                      ? ranCase + 1
-                      : undefined
-                  }
-                />
+                <>
+                  {caseNote && (
+                    <p className="cs-result-message" role="status">
+                      {caseNote}
+                    </p>
+                  )}
+                  <SubmissionResult
+                    submission={submission}
+                    cancel={cancel}
+                    cancelling={cancelling}
+                    inspect={() => inspect(submission)}
+                    onUseInput={codingMode === 'acm' ? debugWithCase : undefined}
+                    maxStdinBytes={maxStdinBytes}
+                    ranCase={
+                      submission.mode === 'run' && ranCase !== null
+                        ? ranCase + 1
+                        : undefined
+                    }
+                    reference={submission.mode === 'run' && ranCase !== null ? reference : null}
+                    checker={problem.checker}
+                  />
+                </>
               ) : (
                 <div className="cs-empty compact">
                   <Terminal size={25} />
@@ -2776,6 +2947,23 @@ function Workspace({
           >
             {expanded ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
           </button>
+          {fullscreen !== null && (
+            <button
+              className="cs-top-button"
+              aria-pressed={fullscreen}
+              aria-label={t('浏览器全屏', 'Full screen')}
+              title={t('浏览器全屏', 'Full screen')}
+              onClick={() =>
+                void (
+                  fullscreen
+                    ? document.exitFullscreen()
+                    : document.documentElement.requestFullscreen()
+                ).catch(() => {})
+              }
+            >
+              {fullscreen ? <Minimize size={17} /> : <Maximize size={17} />}
+            </button>
+          )}
         </div>
       </div>
       {success && exam && examMode && (
@@ -3044,6 +3232,7 @@ function Workspace({
         currentCode={code}
         language={language}
         settings={settings}
+        note={inspected && boot.person && !examMode && <SubmissionNote key={inspected.id} userId={userId} submissionId={inspected.id} />}
         restore={(item) => {
           if (item.code === undefined) return;
           setInspected(null);
@@ -3560,8 +3749,8 @@ function SettingsDialog({
               {t('键位', 'Keybindings')}
               <small>
                 {t(
-                  'Vim 模式下 :w 保存草稿',
-                  'In Vim mode, :w saves the draft',
+                  'Vim 模式下 :w 保存草稿；Emacs 模式下 C-s 是搜索，C-x C-s 保存草稿',
+                  'In Vim mode, :w saves the draft. In Emacs mode, C-s searches and C-x C-s saves the draft',
                 )}
               </small>
             </span>
@@ -3576,6 +3765,7 @@ function SettingsDialog({
             >
               <option value="default">{t('默认', 'Default')}</option>
               <option value="vim">Vim</option>
+              <option value="emacs">Emacs</option>
             </select>
           </label>
           <label>

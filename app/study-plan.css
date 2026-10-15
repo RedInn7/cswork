@@ -120,7 +120,7 @@
   font-weight: 400;
   color: var(--route-white-3);
 }
-.study-bank .route-plan-form :is(input, select) {
+.study-bank .route-plan-form :is(input:where(:not([type='checkbox'], [type='range'])), select) {
   box-sizing: border-box;
   min-block-size: 36px;
   inline-size: 100%;
@@ -137,6 +137,95 @@
 .study-bank .route-plan-form select {
   max-width: none;
   padding-right: 24px;
+}
+/* Difficulty boxes, the topic picker and the weeks slider: amber ticks on the ticket. */
+.route-plan-form :is(input[type='checkbox'], input[type='range']) {
+  margin: 0;
+  accent-color: var(--route-amber);
+}
+.route-plan-form input[type='checkbox'] {
+  inline-size: 16px;
+  block-size: 16px;
+}
+.route-plan-form input[type='range'] {
+  inline-size: 100%;
+  min-block-size: 24px;
+}
+.route-plan-fields > .route-plan-checks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--route-white-2);
+}
+.route-plan-checks legend {
+  float: left;
+  inline-size: 100%;
+  margin-bottom: 4px;
+  padding: 0;
+}
+.route-plan-checks label,
+.route-plan-topics label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 24px;
+  font-weight: 500;
+  color: var(--route-white);
+  cursor: pointer;
+}
+.route-plan-topics {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--route-white-2);
+}
+.route-plan-topics summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-block-size: 32px;
+  cursor: pointer;
+  list-style: none;
+}
+.route-plan-topics summary::-webkit-details-marker {
+  display: none;
+}
+.route-plan-topics summary span {
+  font-weight: 500;
+  color: var(--route-amber);
+}
+.route-plan-topics[open] summary svg {
+  transform: rotate(180deg);
+}
+.route-plan-topics summary:focus-visible {
+  outline: 2px solid var(--route-white);
+  outline-offset: 2px;
+}
+.route-plan-topics fieldset {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 2px 12px;
+  max-block-size: 240px;
+  margin: 4px 0 0;
+  padding: 0;
+  border: 0;
+  overflow-y: auto;
+}
+.route-plan-topics fieldset > button {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+.route-plan-note {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--route-white-3);
 }
 .route-plan-error {
   margin: 0;
@@ -362,10 +451,36 @@ a.route-plan-tag:hover {
   .dark .route-plan-fields small {
     color: var(--route-white-3);
   }
-  .dark .study-bank .route-plan-form :is(input, select) {
+  .dark .study-bank .route-plan-form :is(input:where(:not([type='checkbox'], [type='range'])), select) {
     border: 1px solid var(--route-slate);
     background-color: var(--route-navy);
     color: var(--route-white);
+  }
+  .dark .route-plan-form :is(input[type='checkbox'], input[type='range']) {
+    accent-color: var(--route-amber);
+  }
+  .dark .route-plan-fields > .route-plan-checks {
+    border: 0;
+    color: var(--route-white-2);
+  }
+  .dark .route-plan-checks label,
+  .dark .route-plan-topics label {
+    color: var(--route-white);
+  }
+  .dark .route-plan-topics {
+    color: var(--route-white-2);
+  }
+  .dark .route-plan-topics summary span {
+    color: var(--route-amber);
+  }
+  .dark .route-plan-topics summary:focus-visible {
+    outline: 2px solid var(--route-white);
+  }
+  .dark .route-plan-topics fieldset {
+    border: 0;
+  }
+  .dark .route-plan-note {
+    color: var(--route-white-3);
   }
   .dark .route-plan-error {
     color: #f6a0a4;

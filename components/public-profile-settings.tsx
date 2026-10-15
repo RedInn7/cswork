@@ -6,9 +6,18 @@ import { useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { NativeSelect, NativeSelectOption } from './ui/native-select';
 import '@/app/learner-cloud.css';
 
-type Profile = { handle: string; visible: boolean; indexable: boolean; showContest: boolean; bio: string };
+type Profile = {
+  handle: string;
+  visible: boolean;
+  indexable: boolean;
+  showContest: boolean;
+  bio: string;
+  featuredBadge: string | null;
+};
+type Earned = { id: string; zh: string; en: string };
 const HANDLE = '^[a-z0-9][a-z0-9\\-]{1,28}[a-z0-9]$';
 
 /** Account settings: the opt-in public page /u/<handle>. Off until the learner turns it on. */
@@ -16,18 +25,33 @@ export function PublicProfileSettings() {
   const t = useT();
   const id = useId();
   const [saved, setSaved] = useState<Profile | null>(null);
-  const [form, setForm] = useState<Profile>({ handle: '', visible: false, indexable: false, showContest: false, bio: '' });
+  const [form, setForm] = useState<Profile>({
+    handle: '',
+    visible: false,
+    indexable: false,
+    showContest: false,
+    bio: '',
+    featuredBadge: null,
+  });
+  // Badges the page would show, from the server: the ones that may be featured.
+  const [badges, setBadges] = useState<Earned[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   useEffect(() => {
     let live = true;
-    api<{ profile: Profile | null }>('oj/profile').then(
-      ({ profile }) => {
+    api<{ profile: Profile | null; badges?: Earned[] }>('oj/profile').then(
+      ({ profile, badges }) => {
         if (!live) return;
         setSaved(profile);
-        if (profile) setForm(profile);
+        // A featured badge no longer earned would be refused on the next save: let it go.
+        if (profile)
+          setForm({
+            ...profile,
+            featuredBadge: badges?.some((b) => b.id === profile.featuredBadge) ? profile.featuredBadge : null,
+          });
+        setBadges(badges ?? []);
         setLoaded(true);
       },
       (e: Error) => live && setError(e.message),
@@ -56,15 +80,19 @@ export function PublicProfileSettings() {
           setBusy(true);
           setError('');
           setMessage('');
-          api<{ profile: Profile }>('oj/profile', {
+          api<{ profile: Profile; badges?: Earned[] }>('oj/profile', {
             ...form,
             handle: form.handle.trim().toLowerCase(),
             indexable: form.visible && form.indexable,
             showContest: form.visible && form.showContest,
+            // A contest badge goes with the hidden curve.
+            featuredBadge:
+              form.featuredBadge?.startsWith('contest:') && !(form.visible && form.showContest) ? null : form.featuredBadge,
           })
-            .then(({ profile }) => {
+            .then(({ profile, badges }) => {
               setSaved(profile);
               setForm(profile);
+              setBadges(badges ?? []);
               setMessage(profile.visible ? t('主页已公开。', 'Your profile is public.') : t('已保存，主页未公开。', 'Saved. Your profile is not public.'));
             }, (reason: Error) => setError(reason.message))
             .finally(() => setBusy(false));
@@ -124,15 +152,32 @@ export function PublicProfileSettings() {
             onChange={(e) => setForm({ ...form, showContest: e.target.checked })}
           />
           <span>
-            {t('显示周赛 rating 曲线和比赛徽章', 'Show my weekly contest rating and contest badges')}
+            {t('显示周赛和入门赛 rating、1v1 排位战绩和比赛徽章', 'Show my weekly and starter ratings, ranked 1v1 record and contest badges')}
             <small>
               {t(
-                '曲线带每期的名次和 rating，别人能据此在公开计分板上认出你的比赛昵称。',
-                'The curve carries each weekly’s rank and rating, which lets others find your contest name on the public scoreboards.',
+                '曲线带每场周赛和入门赛的名次和 rating，别人能据此在公开计分板上认出你的比赛昵称；排位战绩是对战 rating 和胜负平场数。',
+                'The curve carries your rank and rating in each weekly and starter, which lets others find your contest name on the public scoreboards; the ranked 1v1 record is your duel rating and wins, losses and draws.',
               )}
             </small>
           </span>
         </label>
+        {badges.length > 0 && (
+          <>
+            <label htmlFor={`${id}-featured`}>{t('主页名旁展示的徽章（可选）', 'Badge beside your handle (optional)')}</label>
+            <NativeSelect
+              id={`${id}-featured`}
+              value={form.featuredBadge ?? ''}
+              onChange={(e) => setForm({ ...form, featuredBadge: e.target.value || null })}
+            >
+              <NativeSelectOption value="">{t('不展示', 'None')}</NativeSelectOption>
+              {badges.map((b) => (
+                <NativeSelectOption key={b.id} value={b.id}>
+                  {t(b.zh, b.en)}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
+          </>
+        )}
         <Button variant="outline" disabled={busy || !loaded || !form.handle.trim()}>
           {t('保存公开主页设置', 'Save profile settings')}
         </Button>

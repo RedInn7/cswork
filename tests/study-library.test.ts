@@ -211,6 +211,8 @@ void test('verification expires when the source snapshot or published judge vers
         'lc-3',
         '中等',
         curatedSections.findIndex((s) => s.slug === curatedByNumber.get(3)!.sectionSlug),
+        ['基础', '核心', '进阶'].indexOf(curatedByNumber.get(3)!.stage),
+        null,
       ],
     ],
   );

@@ -5,13 +5,18 @@ import './globals.css';
 import './theme.css';
 import { THEME_SCRIPT } from '@/lib/theme-script';
 import { Analytics } from '@/components/analytics';
+import { SwRegister } from '@/components/sw-register';
 import { CommandPalette } from '@/components/command-palette';
 import { aiEnabled } from '@/lib/server/ai-tutor';
 import { measurementId } from '@/lib/analytics';
 import { SEO_HOME, seoMetadata } from '@/lib/seo';
 // In the reader's language from the first byte, so the tab title doesn't flash either.
 export async function generateMetadata(): Promise<Metadata> {
-  return seoMetadata({ ...SEO_HOME[await requestLocale()], path: '/' });
+  return {
+    ...seoMetadata({ ...SEO_HOME[await requestLocale()], path: '/' }),
+    // The home-screen icon on iOS; others read app/manifest.ts.
+    icons: { apple: '/icons/apple-touch-icon.png' },
+  };
 }
 export default async function RootLayout({
   children,
@@ -34,6 +39,8 @@ export default async function RootLayout({
         </LocaleProvider>
         {/* Google Analytics loads only after the visitor opts in (components/analytics.tsx). */}
         <Analytics id={measurementId(process.env.GA_MEASUREMENT_ID)} />
+        {/* Installable app and offline page (public/sw.js); never in dev, where files change under it. */}
+        {process.env.NODE_ENV === 'production' && <SwRegister />}
       </body>
     </html>
   );

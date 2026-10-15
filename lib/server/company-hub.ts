@@ -168,7 +168,8 @@ export function companyHub(db: Database.Database | null, slug: string, ready: Re
   return {
     company,
     oa: company.oa ? (oaLibrary().company(slug, ready)?.items ?? []) : [],
-    leetcode: rankedProblems(companyLcProblems(hidden).get(slug) ?? []).slice(0, 10),
+    // Every reported one: the page ranks them by its report window and shows the top ten.
+    leetcode: rankedProblems(companyLcProblems(hidden).get(slug) ?? []),
     experiences: latest(db, company.library, ['experience']),
     questions: latest(db, company.library, QUESTION_TYPES),
     mockOa: mockPresetFor(slug)?.slug ?? null,

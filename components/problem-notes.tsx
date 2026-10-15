@@ -39,6 +39,17 @@ function writeDraft(key: string, draft: Draft | null) {
     else localStorage.setItem(key, JSON.stringify(draft));
   } catch {}
 }
+/**
+ * Text written signed out and kept by the caller, handed to the note's local draft: on its next
+ * load it is saved if the account has no note yet, or offered beside the saved one. False (keep
+ * it) while an unsaved draft of the account's is still there.
+ */
+export function stashNoteDraft(userId: string, target: string, body: string) {
+  const key = draftKey(userId, target);
+  if (readDraft(key)) return false;
+  writeDraft(key, { body, base: null });
+  return true;
+}
 const stamp = (value: unknown) => (typeof value === 'number' ? value : null);
 /** Saves the note and returns the server's new updatedAt. */
 export async function putNote(target: string, body: string) {

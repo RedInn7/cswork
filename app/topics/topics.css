@@ -29,6 +29,32 @@
   --route-dots: radial-gradient(rgb(238 243 248 / 0.035) 1px, transparent 1.5px) 0 0 / 8px 8px;
 }
 
+/* Index: the entry to /roadmap above the strips. */
+.topics-roadmap {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 36px;
+  padding: 14px 18px;
+  border: 1px solid #dce5df;
+  border-left: 4px solid #087158;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #152c24;
+}
+.public-library .topics-roadmap:hover {
+  border-color: #087158;
+  text-decoration: none;
+}
+.topics-roadmap strong {
+  color: #087158;
+  font-size: 15px;
+}
+.topics-roadmap span {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #4a5d55;
+}
+
 /* Index: one route strip per section */
 .topics-map {
   display: grid;
@@ -430,6 +456,22 @@
     --topics-text: #c9ddd4;
     --topics-muted: #b4c8be;
     --topics-rule: #2b322d;
+  }
+  .dark .topics-roadmap {
+    border: 1px solid #2b322d;
+    border-left: 4px solid #087158;
+    background: #191919;
+    color: #cbe3d9;
+  }
+  .dark .public-library .topics-roadmap:hover {
+    border-color: #087158;
+    text-decoration: none;
+  }
+  .dark .topics-roadmap strong {
+    color: #8ed5bc;
+  }
+  .dark .topics-roadmap span {
+    color: #baccc4;
   }
   .dark .topics-group h2,
   .dark .topics-notes h2,

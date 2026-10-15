@@ -157,7 +157,7 @@ export function problemStats(
   };
 }
 
-let shares: { at: number; map: Map<string, number> } | null = null;
+let shares: { at: number; map: Map<string, number>; people: Map<string, number> } | null = null;
 /**
  * Accepted share of people per LeetCode-bank problem, for the bank's "acceptance" sort: one
  * grouped query for every problem, cached like the per-problem stats. Problems tried by
@@ -174,6 +174,15 @@ export function acceptanceIndex(now = Date.now()) {
         GROUP BY s.problem_id HAVING attempted>=?`,
     )
     .all(MIN_PEOPLE) as { id: string; attempted: number; accepted: number }[];
-  shares = { at: now, map: new Map(rows.map((r) => [r.id, r.accepted / r.attempted])) };
+  shares = {
+    at: now,
+    map: new Map(rows.map((r) => [r.id, r.accepted / r.attempted])),
+    people: new Map(rows.map((r) => [r.id, r.accepted])),
+  };
   return shares.map;
+}
+/** People who solved each LeetCode-bank problem, from the same query and floor as acceptanceIndex. */
+export function acceptedPeople(now = Date.now()) {
+  acceptanceIndex(now);
+  return shares!.people;
 }

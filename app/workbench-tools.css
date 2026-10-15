@@ -234,6 +234,60 @@
 .cs-workspace[data-theme='dark'] .cs-custom-cases > button:hover:not(:disabled) {
   background: #2b3851;
 }
+/* LeetCode cases edited one labelled field per parameter (lib/testcase-fields.ts). */
+.cs-custom-cases > .cs-raw-toggle {
+  margin-left: auto;
+}
+.cs-custom-cases > .cs-raw-toggle + button:last-child {
+  margin-left: 0;
+}
+.cs-custom-cases > .cs-raw-toggle[aria-pressed='true'] {
+  background: #e8eef9;
+  color: var(--primary);
+}
+.cs-case-fields {
+  display: grid;
+  gap: 8px;
+}
+.cs-case-fields > label {
+  display: grid;
+  gap: 3px;
+  color: #6b778a;
+  font-size: 11px;
+}
+.cs-case-fields code {
+  color: #3d4b62;
+  font-weight: 600;
+}
+.cs-case-fields input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #e3e8f0;
+  border-radius: 7px;
+  background: #f9fafd;
+  color: #3d4b62;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 12px;
+}
+.cs-case-fields input:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+.cs-workspace[data-theme='dark'] .cs-custom-cases > .cs-raw-toggle[aria-pressed='true'] {
+  background: #2b3851;
+  color: var(--cs-blue);
+}
+.cs-workspace[data-theme='dark'] .cs-case-fields > label {
+  color: var(--cs-muted);
+}
+.cs-workspace[data-theme='dark'] .cs-case-fields code {
+  color: var(--cs-text);
+}
+.cs-workspace[data-theme='dark'] .cs-case-fields input {
+  border-color: var(--cs-border);
+  background: var(--cs-surface-soft);
+  color: var(--cs-text);
+}
 /* After an AC: how many people solved it, and how this runtime compares. */
 .cs-accepted-banner .cs-accepted-standing {
   display: grid;
@@ -363,6 +417,39 @@
   }
   .dark .cs-workspace[data-theme='dark'] .cs-custom-cases > button:hover:not(:disabled) {
     background: #2b3851;
+  }
+  .dark .cs-custom-cases > .cs-raw-toggle[aria-pressed='true'] {
+    background: #0e1117;
+    color: var(--primary);
+  }
+  .dark .cs-case-fields > label {
+    color: #b1bcce;
+  }
+  .dark .cs-case-fields code {
+    color: #bfcee5;
+  }
+  .dark .cs-case-fields input {
+    border: 1px solid #2a2e34;
+    background: #161718;
+    color: #bfcee5;
+  }
+  .dark .cs-case-fields input:focus-visible {
+    outline: 2px solid var(--primary);
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-custom-cases > .cs-raw-toggle[aria-pressed='true'] {
+    background: #2b3851;
+    color: var(--cs-blue);
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-case-fields > label {
+    color: var(--cs-muted);
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-case-fields code {
+    color: var(--cs-text);
+  }
+  .dark .cs-workspace[data-theme='dark'] .cs-case-fields input {
+    border-color: var(--cs-border);
+    background: var(--cs-surface-soft);
+    color: var(--cs-text);
   }
   .dark .cs-accepted-banner .cs-accepted-standing {
     color: #b6bdca;

@@ -95,6 +95,8 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
   auxiliaryId?: number;
   complexDesignId?: number;
   stringStructureId?: number;
+  /** CPU seconds per test case for some languages, in place of timeLimit (lib/server/oj-worker.ts). */
+  timeLimits?: Partial<Record<Language, number>>;
   languages: Language[];
 };
 
@@ -279,6 +281,12 @@ export const ojImportSchema = z
         explanation: z.string().max(12000),
         hints: z.array(limitedText(2000)).max(10),
         timeLimit: z.number().min(0.1).max(10),
+        timeLimits: z
+          .partialRecord(
+            z.enum(['python', 'go', 'java', 'cpp', 'sql']),
+            z.number().min(0.1).max(10),
+          )
+          .optional(),
         memoryLimit: z.number().int().min(16384).max(524288),
         outputLimit: z.number().int().min(1).max(65536),
         checker: z.enum([

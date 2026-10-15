@@ -110,6 +110,11 @@ export function wholePercents(parts: readonly number[]) {
 // ponytail: a perfect topic match (affinity 1) is 3× as likely as no overlap; raise
 // this to lean harder on the company's topics.
 const AFFINITY = 2;
+/** A custom mock's chosen topics as a hard filter: only problems on at least one of them. */
+export const onTopics = (pool: readonly PoolItem[], topics: readonly string[] = []) =>
+  topics.length ? pool.filter((item) => item.topics?.some((slug) => topics.includes(slug))) : [...pool];
+/** Fewer other learners than this in a scenario and the report shows no percentile. */
+export const PEER_MIN = 20;
 /** Lexicographic a < b. */
 function before(a: number[], b: number[]) {
   for (let k = 0; k < a.length; k++) if (a[k] !== b[k]) return a[k] < b[k];
@@ -270,6 +275,8 @@ export type MockSession = {
   preset: boolean;
   scoring: Scoring;
   source: MockSource;
+  /** A custom mock drawn only from these Line 500 stops (kept for "draw again"). */
+  topics?: string[];
   slots: Slot[];
   ids: string[];
   minutes: number;

@@ -14,27 +14,33 @@ type Meta = {
 };
 
 /**
- * The line under the problem title: the site's acceptance rate (hidden below the stats'
- * sample floor), up/down votes (one per learner, a mark on problem:<id>) and a share
- * button. Stats and votes need an account; sharing does not.
+ * The line under the problem title: the time limit for the language picked, the site's
+ * acceptance rate (hidden below the stats' sample floor), up/down votes (one per learner,
+ * a mark on problem:<id>) and a share button. Stats and votes need an account; sharing does not.
+ * limitOnly (a mock OA or contest): the time limit alone, nothing fetched.
  */
 export function ProblemMeta({
   problemId,
   title,
   english,
   signedIn,
+  timeLimit,
+  limitOnly,
 }: {
   problemId: string;
   title: string;
   english: boolean;
   signedIn: boolean;
+  /** CPU seconds per test case in the current language (0 until the statement loads). */
+  timeLimit?: number;
+  limitOnly?: boolean;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const [meta, setMeta] = useState<Meta | null>(null);
   const [mine, setMine] = useState<Vote | null>(null);
   const [note, setNote] = useState('');
   useEffect(() => {
-    if (!signedIn) return;
+    if (!signedIn || limitOnly) return;
     const controller = new AbortController();
     ojRequest<Meta>(`problem-stats/${encodeURIComponent(problemId)}`, undefined, controller.signal).then(
       (fresh) => {
@@ -46,7 +52,7 @@ export function ProblemMeta({
       },
     );
     return () => controller.abort();
-  }, [problemId, signedIn]);
+  }, [problemId, signedIn, limitOnly]);
   // The counts are cached server-side; this viewer's own change shows at once.
   const count = (kind: Vote) =>
     Math.max(mine === kind ? 1 : 0, (meta?.votes?.[kind] ?? 0) - (meta?.vote === kind ? 1 : 0) + (mine === kind ? 1 : 0));
@@ -81,8 +87,13 @@ export function ProblemMeta({
     }
   }
   const acceptance = meta?.acceptance;
+  const limit = !!timeLimit && (
+    <span className="cs-problem-meta-rate">{t(`时限 ${timeLimit} 秒`, `Time limit ${timeLimit}s`)}</span>
+  );
+  if (limitOnly) return limit ? <div className="cs-problem-meta">{limit}</div> : null;
   return (
     <div className="cs-problem-meta">
+      {limit}
       {acceptance && (
         <span
           className="cs-problem-meta-rate"

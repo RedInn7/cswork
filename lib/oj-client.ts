@@ -1,6 +1,6 @@
 import type { Problem, Language } from './problems';
 import type { CodingMode } from './coding-mode';
-import type { CompanyTag } from './company-tags';
+import type { CompanyChip } from './company-tags';
 import { readLocale } from './i18n';
 
 export type OJProblem = Problem & {
@@ -10,12 +10,18 @@ export type OJProblem = Problem & {
   maxCodeBytes?: number;
   maxStdinBytes?: number;
   languages?: Language[];
+  /** Per-language CPU seconds per test case, in place of timeLimit (lib/oj-types.ts). */
+  timeLimits?: Partial<Record<Language, number>>;
   languageVersions?: Partial<Record<Language, string>>;
   samples?: { name: string; input: string; expectedOutput: string }[];
   judgeAvailable?: boolean;
   codingModes?: CodingMode[];
   leetcodeTemplates?: Partial<Record<Language, string>>;
   leetcodeInputHelp?: { zh: string; en: string } | null;
+  /** LeetCode mode's parameters, one custom-case field each; null keeps the raw text. */
+  leetcodeParams?: { name: string; type: string }[] | null;
+  /** How outputs are compared; line-by-line diffs only make sense for exact and tokens. */
+  checker?: string;
   practiceRound?: { id: string; number: number } | null;
   sourceStatement?: {
     descriptionZh: string;
@@ -28,7 +34,7 @@ export type OJProblem = Problem & {
   /** Contest rating (zerotrac), null outside rated contests. */
   rating?: number | null;
   /** Companies reported to have asked this problem (lib/company-tags.ts). */
-  companies?: CompanyTag[];
+  companies?: CompanyChip[];
   /** A failed formal submission in the current practice round. */
   hintEarned?: boolean;
   /** Failed formal submissions this round, up to 2 ids. */

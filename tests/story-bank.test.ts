@@ -114,9 +114,9 @@ void test('the notes API stores stories privately and lists them with their bodi
   assert.deepEqual(mine.items.map((i) => i.target), ['story:m1x']);
   assert.equal(parseStory(mine.items[0].target, mine.items[0].body!)?.title, 'On-call');
   assert.equal(((await call(other, 'GET', 'notes?prefix=story:')) as Items).items.length, 0);
-  // The plain list still names every note without bodies.
+  // The plain list is the notes hub: written notes only, stories left out, snippets not bodies.
   const all = (await call(me, 'GET', 'notes')) as Items;
-  assert.equal(all.items.length, 2);
+  assert.deepEqual(all.items.map((i) => i.target), ['content:interview_question/q1']);
   assert.equal(all.items.some((i) => 'body' in i), false);
   await call(me, 'PUT', 'notes?target=story:m1x', { body: '' });
   assert.equal(((await call(me, 'GET', 'notes?prefix=story:')) as Items).items.length, 0);

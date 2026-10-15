@@ -8,7 +8,7 @@ import type { profileCertificates } from '@/lib/server/certificates';
 import { FollowButton } from '@/components/follow-button';
 import { ListStar } from '@/components/list-star';
 import { LocalDay, ProfileHeatmap } from './heatmap';
-import { RatingCurve } from '@/components/contest-parts';
+import { BandChip, RatingCurve } from '@/components/contest-parts';
 
 /** Judge languages by their usual names; anything else as stored. */
 const LANGUAGE_NAMES: Record<string, string> = { python: 'Python', cpp: 'C++', java: 'Java', go: 'Go', sql: 'SQL' };
@@ -38,6 +38,13 @@ export function ProfileView({
       <section className="lists-public-hero learner-hero">
         <p className="lists-public-kicker">{t('学习者主页', 'Learner profile')}</p>
         <h1>@{profile.handle}</h1>
+        {profile.featured && (
+          <div className="learner-featured" data-group={profile.featured.group}>
+            <span aria-hidden="true">★</span>
+            <span className="sr-only">{t('展示的徽章：', 'Featured badge: ')}</span>
+            {zh ? profile.featured.zh : profile.featured.en}
+          </div>
+        )}
         {profile.bio && <p>{profile.bio}</p>}
         <div className="learner-social">
           <FollowButton handle={profile.handle} zh={zh} followers={profile.followers ?? 0}>
@@ -85,12 +92,32 @@ export function ProfileView({
       {!!profile.contest?.length && (
         <section aria-labelledby="learner-contest">
           <h2 id="learner-contest" className="lists-public-h2">
-            {t('周赛 rating', 'Weekly contest rating')}
+            {t('比赛 rating', 'Contest rating')}
             <small>
               <a href="/contest/leaderboard">{t('排行榜', 'Leaderboard')}</a>
             </small>
           </h2>
           <RatingCurve points={profile.contest} zh={zh} />
+        </section>
+      )}
+
+      {profile.duel && (
+        <section aria-labelledby="learner-duel">
+          <h2 id="learner-duel" className="lists-public-h2">
+            {t('1v1 排位', 'Ranked 1v1')}
+          </h2>
+          <p className="learner-duel">
+            <BandChip rating={profile.duel.rating} zh={zh} duel />
+            <span>
+              {t(
+                `${profile.duel.wins} 胜 ${profile.duel.losses} 负 ${profile.duel.draws} 平`,
+                `${profile.duel.wins}W ${profile.duel.losses}L ${profile.duel.draws}D`,
+              )}
+            </span>
+            <span>
+              {t(`连胜 ${profile.duel.streak}，最长 ${profile.duel.best}`, `Streak ${profile.duel.streak}, best ${profile.duel.best}`)}
+            </span>
+          </p>
         </section>
       )}
 

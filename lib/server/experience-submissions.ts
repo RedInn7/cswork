@@ -10,7 +10,7 @@ import {
   SEASON,
   SENTIMENTS,
   SOURCES,
-  MEMBER_FILTERS,
+  MEMBER_FACETS,
   type MemberDetails,
 } from '@/lib/experience';
 import { employerSlug } from '@/lib/oa-company-brands';
@@ -227,7 +227,8 @@ const detailsOf = (r: Row): MemberDetails => ({
  * Category, difficulty and kind filters never match a post.
  */
 export function memberExperiences(params: URLSearchParams) {
-  if (params.get('category') || params.get('difficulty') || params.get('kind')) return [];
+  // Members give no seniority either.
+  if (params.get('category') || params.get('difficulty') || params.get('kind') || params.get('seniority')) return [];
   const where = [PUBLIC],
     args: string[] = [];
   const company = params.get('company');
@@ -250,13 +251,14 @@ export function memberExperiences(params: URLSearchParams) {
     where.push('s.result=?');
     args.push(result.slice(0, 40));
   }
-  for (const key of MEMBER_FILTERS) {
+  for (const key of MEMBER_FACETS) {
     const value = params.get(key);
     if (value) {
       where.push(`s.${key}=?`);
       args.push(value.slice(0, 40));
     }
   }
+  if (params.get('verified') === '1') where.push('(SELECT a.email_verified FROM "user" a WHERE a.id=s.user_id)=1');
   // Every word has to appear in the title, body or role.
   for (const word of (params.get('q') || '').trim().slice(0, 120).split(/\s+/).filter(Boolean).slice(0, 6)) {
     const like = `%${word.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
@@ -336,7 +338,7 @@ export function memberFacets() {
   const shown = `${PUBLIC} AND s.company_slug IN (SELECT value FROM json_each(?))`;
   const companies = JSON.stringify([...names.keys()]);
   return Object.fromEntries(
-    MEMBER_FILTERS.map((key) => [
+    MEMBER_FACETS.map((key) => [
       key,
       db
         .prepare(
@@ -345,7 +347,7 @@ export function memberFacets() {
         )
         .all(companies),
     ]),
-  ) as Record<(typeof MEMBER_FILTERS)[number], { value: string; label: string; n: number }[]>;
+  ) as Record<(typeof MEMBER_FACETS)[number], { value: string; label: string; n: number }[]>;
 }
 
 /** Below this many public member posts with a fact, a company page shows no aggregate of it. */

@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CalendarPlus, ChevronDown } from 'lucide-react';
+import { CalendarPlus, ChevronDown, RefreshCw } from 'lucide-react';
 import { Button } from './ui/button';
+import { classicList } from '@/lib/classic-lists';
+import { SLOTS, type Slot } from '@/lib/mock-oa';
 import { ojRequest } from '@/lib/oj-client';
-import type { RouteStop } from '@/lib/route-stops';
+import { ROUTE_SLUGS, STOP_NAMES, type RouteStop } from '@/lib/route-stops';
 import {
   addDays,
   buildPlan,
@@ -12,7 +14,9 @@ import {
   LEGACY_TARGET_KEY,
   loadGoal,
   localDay,
+  MAX_WEEKS,
   oaDateInRange,
+  PLAN_POOLS,
   planGroups,
   planIcs,
   planStorageKey,
@@ -25,13 +29,48 @@ import {
   type PlanOrder,
   type PlanCompany,
   type PlanGoal,
+  type PlanPool,
   type PlanProblem,
   type PlanWeek,
 } from '@/lib/study-plan';
 import '@/app/study-plan.css';
 
-/** One `planTodo` entry of the curated list: [problem id, difficulty, stop index]. */
-export type PlanTodo = readonly [string, string, number];
+/**
+ * One `planTodo` entry of the curated list: [problem id, difficulty, stop index, stage
+ * index, rating]. A classic list's problems off the line have stop null and no stage.
+ */
+export type PlanTodo = readonly [
+  id: string,
+  difficulty: string,
+  stop: number | null,
+  stage?: number,
+  rating?: number | null,
+];
+type PoolView = {
+  groups: {
+    items: {
+      judgeProblemId: string | null;
+      difficulty: string;
+      solved: boolean;
+      stop: { slug: string } | null;
+      stage: number | null;
+      rating: number | null;
+    }[];
+  }[];
+  sequence: string[];
+};
+const toProblem = ([id, difficulty, stop, stage, rating]: PlanTodo): PlanProblem => ({
+  id,
+  difficulty,
+  stop: stop ?? undefined,
+  stage,
+  rating,
+});
+/** A pool's name: Line 500 or the classic list's. */
+const poolName = (pool: PlanPool, english: boolean) => {
+  const list = pool === 'line' ? null : classicList(pool);
+  return list ? (english ? list.nameEn : list.nameZh) : english ? 'Line 500' : '500 路';
+};
 type Preset = PlanCompany & { pool?: { total: number } };
 type OaPage = {
   items: { id: string; difficulty?: string; progress?: string }[];
@@ -111,8 +150,38 @@ export function useStudyPlan(
     });
     return () => controller.abort();
   }, [aliases]);
+  // A classic list pool: its judgeable unsolved problems in the list's own order.
+  const pool = goal?.status === 'planned' && goal.pool !== 'line' ? goal.pool : '';
+  const [listed, setListed] = useState<{ pool: string; todo: PlanTodo[]; sequence: string[] }>({
+    pool: '',
+    todo: [],
+    sequence: [],
+  });
+  useEffect(() => {
+    if (!pool) return;
+    const controller = new AbortController();
+    ojRequest<PoolView>(`library?${new URLSearchParams({ collection: pool })}`, undefined, controller.signal).then(
+      (view) => {
+        // A number listed in two groups is planned once.
+        const seen = new Set<string>();
+        const todo = view.groups
+          .flatMap((group) => group.items)
+          .flatMap((item): PlanTodo[] => {
+            const id = item.judgeProblemId;
+            if (!id || item.solved || seen.has(id)) return [];
+            seen.add(id);
+            const stop = item.stop ? ROUTE_SLUGS.indexOf(item.stop.slug) : -1;
+            return [[id, item.difficulty, stop < 0 ? null : stop, item.stage ?? undefined, item.rating]];
+          });
+        setListed({ pool, todo, sequence: view.sequence });
+      },
+      () => {},
+    );
+    return () => controller.abort();
+  }, [pool]);
   const plan = useMemo(() => {
-    if (goal?.status !== 'planned' || !todo || !today) return null;
+    const source = pool ? (listed.pool === pool ? listed : null) : todo ? { todo, sequence } : null;
+    if (goal?.status !== 'planned' || !source || !today) return null;
     // Today's ACs left `todo` (or will once the lists refresh) but still count
     // toward today's goal.
     const solvedToday = new Set(
@@ -124,18 +193,16 @@ export function useStudyPlan(
     return buildPlan({
       goal,
       today,
-      line: todo.flatMap(([id, difficulty, stop]) =>
-        solvedToday.has(id) ? [] : [{ id, difficulty, stop }],
-      ),
+      line: source.todo.flatMap((entry) => (solvedToday.has(entry[0]) ? [] : [toProblem(entry)])),
       company: all.filter((p) => !p.solved && !solvedToday.has(p.id)),
       done: {
-        line: sequence?.filter((id) => solvedToday.has(id)).length ?? 0,
+        line: source.sequence?.filter((id) => solvedToday.has(id)).length ?? 0,
         company: all.filter((p) => solvedToday.has(p.id)).length,
       },
     });
-  }, [goal, today, todo, sequence, activity, company, aliases]);
+  }, [goal, today, todo, sequence, pool, listed, activity, company, aliases]);
   const day = plan?.days[0];
-  const from = plan ? (goal?.startStop ?? 0) : 0;
+  const from = plan && goal?.pool === 'line' ? goal.startStop : 0;
   const target =
     day?.mock || day?.oa ? 0 : plan?.daily || goal?.dailyTarget || DEFAULT_GOAL.dailyTarget;
   useEffect(() => {
@@ -151,7 +218,7 @@ export function useStudyPlan(
     save,
     target,
     /** The line's first unsolved problem from a later start stop: where the trip starts. */
-    start: from > 0 ? todo?.find(([, , stop]) => stop >= from) : undefined,
+    start: from > 0 ? todo?.find(([, , stop]) => (stop ?? 0) >= from) : undefined,
   };
 }
 
@@ -315,14 +382,37 @@ export function StudyPlan({
         {[
           plan.todo
             ? t(`每天 ${plan.daily} 题`, `${plan.daily} a day`)
-            : t('线路上可判的题都通过了', 'Every problem on the line is solved'),
+            : plan.filtered
+              ? t('筛选后没有待做的题', 'Nothing left under your filters')
+              : goal.pool === 'line'
+                ? t('线路上可判的题都通过了', 'Every problem on the line is solved')
+                : t('题单里可判的题都通过了', 'Every judgeable problem on the list is solved'),
           t(`每周 ${goal.weeklyHours} 小时`, `${goal.weeklyHours} h a week`),
+          goal.pool !== 'line' && t(`题池 ${poolName(goal.pool, false)}`, `Pool: ${poolName(goal.pool, true)}`),
           company && t(`目标 ${company.name}`, `Target: ${company.name}`),
-          goal.startStop > 0 && stops[goal.startStop] && t(`从 ${stopLabel(goal.startStop)} 出发`, `From ${stopLabel(goal.startStop)}`),
+          goal.pool === 'line' &&
+            goal.startStop > 0 &&
+            stops[goal.startStop] &&
+            t(`从 ${stopLabel(goal.startStop)} 出发`, `From ${stopLabel(goal.startStop)}`),
         ]
           .filter(Boolean)
           .join(' · ')}
       </p>
+      {!plan.todo && plan.filtered > 0 ? (
+        <p className="route-plan-note">
+          {t(
+            '放宽难度或知识点，或者换一个题池，再保存一次。',
+            'Widen the difficulty or topics, or pick another pool, and save again.',
+          )}
+        </p>
+      ) : plan.cut > 0 ? (
+        <p className="route-plan-note">
+          {t(
+            `时间排不下全部：每个知识点都留一部分，先排基础题和难度分低的题，另外 ${plan.cut} 题没有排进来。`,
+            `Not enough days for everything: every topic keeps a share, foundation and lower-rated problems first; ${plan.cut} more are left out.`,
+          )}
+        </p>
+      ) : null}
       {!!todayMock && (
         <a className="route-plan-mock" href={mockHref}>
           {t(`今天：模拟 OA 第 ${todayMock} 次`, `Today: mock OA #${todayMock}`)}
@@ -337,6 +427,18 @@ export function StudyPlan({
         <button type="button" className="route-plan-link" onClick={() => setEditing(true)}>
           {t('调整计划', 'Edit plan')}
         </button>
+        <button
+          type="button"
+          className="route-plan-link"
+          aria-describedby="route-plan-regenerate"
+          onClick={() => onSave({ ...goal, shuffle: (goal.shuffle % 999_999) + 1 })}
+        >
+          <RefreshCw size={14} aria-hidden="true" />
+          {t('重新生成', 'Regenerate')}
+        </button>
+        <span id="route-plan-regenerate" className="sr-only">
+          {t('换一种知识点搭配，只重排还没做的题', 'Mixes the topics another way; only unsolved problems move')}
+        </span>
       </div>
       <details className="route-plan-weeks">
         <summary>
@@ -380,9 +482,11 @@ export function StudyPlan({
                 <span className="route-plan-week">
                   {g.level
                     ? { easy: t('简单', 'Easy'), medium: t('中等', 'Medium'), hard: t('困难', 'Hard') }[g.level]
-                    : g.stop === null
-                      ? t('目标公司 OA', 'Target company OA')
-                      : stopLabel(g.stop)}
+                    : g.stop !== null
+                      ? stopLabel(g.stop)
+                      : g.key === 'oa'
+                        ? t('目标公司 OA', 'Target company OA')
+                        : t('其他题', 'Other problems')}
                   <small>
                     {monthDay(g.first)}
                     {g.last !== g.first && `–${monthDay(g.last)}`}
@@ -420,10 +524,9 @@ export function StudyPlan({
                       : t('无新题', 'Nothing new')}
                 </span>
                 <span className="route-plan-stops">
-                  {w.stops &&
-                    (w.stops[0] === w.stops[1]
-                      ? stopLabel(w.stops[0])
-                      : `${stopLabel(w.stops[0])} → ${stopLabel(w.stops[1])}`)}
+                  {/* A mixed week holds several stops; the row names the first three. */}
+                  {w.stops.slice(0, 3).map(stopLabel).join(' · ')}
+                  {w.stops.length > 3 && ` +${w.stops.length - 3}`}
                 </span>
                 <span className="route-plan-tags">
                   {w.sprint && !(w.oa && w.days.length === 1) && (
@@ -470,6 +573,10 @@ function PlanForm({
   const [weekly, setWeekly] = useState(String(goal.weeklyHours));
   const [solved, setSolved] = useState(goal.solvedBefore ? String(goal.solvedBefore) : '');
   const [start, setStart] = useState(Math.min(goal.startStop, Math.max(0, stops.length - 1)));
+  const [pool, setPool] = useState<PlanPool>(goal.pool);
+  const [weeks, setWeeks] = useState(goal.weeks);
+  const [levels, setLevels] = useState<Slot[]>(goal.difficulties);
+  const [topics, setTopics] = useState<string[]>(goal.topics.length ? goal.topics : ROUTE_SLUGS);
   const [presets, setPresets] = useState<Preset[] | null>(null);
   const [error, setError] = useState('');
   const first = useRef<HTMLInputElement>(null);
@@ -498,6 +605,8 @@ function PlanForm({
       return setError(t('每周小时数填 1 到 40 之间的整数。', 'Weekly hours must be a whole number from 1 to 40.'));
     if (!Number.isInteger(solvedBefore) || solvedBefore < 0 || solvedBefore > 5000)
       return setError(t('已刷题数填 0 到 5000 之间的整数。', 'Problems solved must be a whole number from 0 to 5000.'));
+    if (!levels.length) return setError(t('至少选一种难度。', 'Pick at least one difficulty.'));
+    if (!topics.length) return setError(t('至少选一个知识点。', 'Pick at least one topic.'));
     const preset = companies.find((c) => c.slug === slug);
     onDone({
       ...goal,
@@ -514,8 +623,15 @@ function PlanForm({
       weeklyHours,
       solvedBefore,
       startStop: start,
+      pool,
+      weeks,
+      difficulties: SLOTS.filter((slot) => levels.includes(slot)),
+      // Every stop is saved as "all", so stops added later join the plan.
+      topics: topics.length === ROUTE_SLUGS.length ? [] : ROUTE_SLUGS.filter((slug) => topics.includes(slug)),
     });
   }
+  const levelNames: Record<Slot, string> = { easy: t('简单', 'Easy'), medium: t('中等', 'Medium'), hard: t('困难', 'Hard') };
+  const allTopics = topics.length === ROUTE_SLUGS.length;
   return (
     <form
       className="route-plan route-plan-card route-plan-form"
@@ -542,6 +658,34 @@ function PlanForm({
           />
           <small id="route-plan-date-hint">{t('还不知道可以留空', 'Leave empty if unknown')}</small>
         </div>
+        {!oaDate && (
+          <div className="route-plan-field">
+            <label htmlFor="route-plan-weeks">{t('计划几周', 'Plan length')}</label>
+            <input
+              id="route-plan-weeks"
+              type="range"
+              min={1}
+              max={MAX_WEEKS}
+              step={1}
+              value={weeks}
+              aria-describedby="route-plan-weeks-hint"
+              onChange={(event) => setWeeks(Number(event.target.value))}
+            />
+            <small id="route-plan-weeks-hint" aria-live="polite">
+              {t(`${weeks} 周（没有 OA 日期时）`, `${weeks} ${weeks === 1 ? 'week' : 'weeks'} (without an OA date)`)}
+            </small>
+          </div>
+        )}
+        <label>
+          {t('题池', 'Problem pool')}
+          <select value={pool} onChange={(event) => setPool(event.target.value as PlanPool)}>
+            {PLAN_POOLS.map((p) => (
+              <option key={p} value={p}>
+                {poolName(p, english)}
+              </option>
+            ))}
+          </select>
+        </label>
         <label>
           {t('目标公司', 'Target company')}
           <select value={slug} onChange={(event) => setSlug(event.target.value)}>
@@ -586,7 +730,55 @@ function PlanForm({
             }}
           />
         </label>
-        {stops.length > 0 && (
+        <fieldset className="route-plan-checks">
+          <legend>{t('难度', 'Difficulty')}</legend>
+          {SLOTS.map((slot) => (
+            <label key={slot}>
+              <input
+                type="checkbox"
+                checked={levels.includes(slot)}
+                onChange={(event) =>
+                  setLevels(event.target.checked ? [...levels, slot] : levels.filter((l) => l !== slot))
+                }
+              />
+              {levelNames[slot]}
+            </label>
+          ))}
+        </fieldset>
+        <details className="route-plan-topics route-plan-wide">
+          <summary>
+            {t('知识点', 'Topics')}
+            <span>
+              {allTopics
+                ? t('全部', 'All')
+                : t(`已选 ${topics.length} / ${ROUTE_SLUGS.length}`, `${topics.length} of ${ROUTE_SLUGS.length}`)}
+            </span>
+            <ChevronDown size={14} aria-hidden="true" />
+          </summary>
+          <fieldset>
+            <legend className="sr-only">{t('排进计划的知识点', 'Topics to plan')}</legend>
+            <button
+              type="button"
+              className="route-plan-link"
+              onClick={() => setTopics(allTopics ? [] : ROUTE_SLUGS)}
+            >
+              {allTopics ? t('全部取消', 'Clear all') : t('全选', 'Select all')}
+            </button>
+            {ROUTE_SLUGS.map((slug, i) => (
+              <label key={slug}>
+                <input
+                  type="checkbox"
+                  checked={topics.includes(slug)}
+                  onChange={(event) =>
+                    setTopics(event.target.checked ? [...topics, slug] : topics.filter((s) => s !== slug))
+                  }
+                />
+                {String(i + 1).padStart(2, '0')} {STOP_NAMES[slug][english ? 1 : 0]}
+              </label>
+            ))}
+          </fieldset>
+        </details>
+        {stops.length > 0 && pool === 'line' && (
           <div className="route-plan-field route-plan-wide">
             <label htmlFor="route-plan-start">{t('从哪一站出发', 'Start at stop')}</label>
             <select

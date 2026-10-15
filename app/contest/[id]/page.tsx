@@ -26,14 +26,14 @@ const load = cache(async (id: string) => {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { view, zh } = await load((await params).id);
-  const title = view.week ? weeklyTitle(view.week, zh) : view.title;
+  const title = view.week ? weeklyTitle(view.week, zh, view.kind) : view.ranked ? (zh ? '1v1 排位赛' : 'Ranked duel') : view.title;
   return {
     ...seoMetadata({
       title: `${title} · cswork`,
       description: zh ? `${title}：题目、计分板与赛后补题。` : `${title}: questions, scoreboard and upsolving.`,
       path: `/contest/${view.id}`,
     }),
-    // Rooms are private; only the weekly is a page worth finding.
+    // Rooms are private; only the weekly and the starter are pages worth finding.
     ...(view.visibility === 'public' ? {} : { robots: { index: false, follow: false } }),
   };
 }

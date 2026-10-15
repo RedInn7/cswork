@@ -231,6 +231,7 @@ const EN: Record<string, string> = {
   题单数量已达上限: "You've reached the limit for lists",
   '题单最多 500 道题': 'A list can hold at most 500 problems',
   这个主页名已被占用: 'That handle is taken',
+  这枚徽章还没有获得: 'You haven’t earned that badge yet',
   面试月份无效: 'Invalid interview month',
   没有这家公司: 'Unknown company',
   今天的报告次数已达上限: "You've reached today's limit for reports",
@@ -260,6 +261,7 @@ const EN: Record<string, string> = {
   '一周内取消了 3 场已匹配的面试，暂时不能匹配': 'You cancelled 3 matched sessions this week, so matching is paused for now',
   你已经有一个在等待匹配的请求: 'You already have a request waiting for a partner',
   '已经约了 3 场，先完成再约': 'You already have 3 sessions booked. Finish one before booking more',
+  这个小时你已经约了一场模拟面试: 'You already have a mock interview booked this hour',
   '请至少选一个未来 7 天内的时段': 'Pick at least one time slot in the next 7 days',
   这场模拟面试不存在: 'Mock interview not found',
   这场模拟面试已结束或已取消: 'This mock interview is over or was cancelled',
@@ -278,8 +280,14 @@ const EN: Record<string, string> = {
   这个昵称在本场已被使用: 'Someone in this contest already uses that name',
   '这道题在你正在进行的比赛里，题解、讨论和 AI 助教赛后开放':
     "This problem is in a contest you're taking. Its editorial, solutions and AI tutor open once your contest ends",
+  题目不在这场比赛里: "That problem isn't in this contest",
+  '比赛结束 15 分钟后才能看代码': 'Shared code opens 15 minutes after the contest ends',
+  你没有报名这场比赛: "You haven't entered this contest",
+  // Ranked duels (lib/server/duels.ts)
+  '可判的题目不够，暂时无法匹配': 'Not enough judgeable problems to match you right now',
   // Community solutions (lib/server/solution-posts.ts)
   题解不存在: 'Solution not found',
+  这道题没有可用的参考解: 'This problem has no reference solution to compare with',
   评论不存在: 'Comment not found',
   题解接口不存在: 'Solutions endpoint not found',
   仅老师可以管理题解: 'Only instructors can moderate solutions',
@@ -333,7 +341,8 @@ const EN: Record<string, string> = {
   请先在题面里选中一段文字: 'Select some text in the statement first',
   通过本题后才能分析复杂度: 'Complexity analysis opens once you pass this problem',
   还没有失败的运行或提交可以分析: 'There is no failed run or submission to look at yet',
-  只能给题目投票: 'Only problems can be voted on',
+  '只能给题目投票，或给面经和面试题点赞': 'Only problems can be voted on, and experiences and interview questions upvoted',
+  只有老师可以把内容设为精选: 'Only teachers can mark content as curated',
   // AI interviewer (lib/server/ai-interviewer.ts)
   'AI 面试官暂时不可用，请稍后再试': 'The AI interviewer is unavailable right now. Please try again later',
   'AI 面试官无法回答这个请求': "The AI interviewer can't answer this request",
@@ -342,6 +351,9 @@ const EN: Record<string, string> = {
   '今天的 AI 面试对话轮数已用完，明天再来': "You've used today's AI interview messages. Come back tomorrow",
   '这场 AI 面试已失效，请重新开始': 'This AI interview has expired. Your next message starts a new one',
   '这场面试的对话轮数已用完': 'This interview is out of messages',
+  这场面试的分步反馈次数已用完: 'This interview is out of step feedback',
+  这一步还没有你的回答: "You haven't answered anything in this step yet",
+  这道题没有这个步骤: "This question doesn't have that step",
   'AI 面试官今天的额度已用完，明天再来': 'The AI interviewer is out of credit for today. Come back tomorrow',
   '这场面试已经生成过评估': 'This interview already has its report',
   '这道题的对话太长了，请换下一题或结束面试': "This question's conversation is too long. Move on to the next question or finish the interview",
@@ -375,6 +387,8 @@ const EN: Record<string, string> = {
   '没有这家公司的模拟 OA': "There's no mock OA for this company",
   '这家公司的可判题还不够，换一家公司或减少题量':
     "There aren't enough judgeable problems for this mock yet. Pick another company or fewer questions",
+  '所选知识点下的题不够，减少题量或多选几个':
+    'Not enough problems on the topics you picked. Draw fewer questions or pick more topics',
   模拟考试参数无效: 'Invalid mock exam parameters',
   '这道题的题解和测试数据正在校验，暂未开放':
     "This problem's solution and test data are being verified and aren't available yet",

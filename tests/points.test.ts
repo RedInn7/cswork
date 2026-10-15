@@ -149,6 +149,37 @@ void test('the daily problem pays on its own day when the verdict is read just p
   assert.ok(ledger('midnight-user').some((row) => row.reason === 'daily' && row.ref === beijingDate(late.created_at)));
 });
 
+void test("a month's 25th daily problem pays 100, every day of it 100 more, and the calendar reads the ledger", async () => {
+  const now = Date.now();
+  const today = beijingDate(now);
+  const month = today.slice(0, 7);
+  const [y, m] = month.split('-').map(Number);
+  const others = Array.from({ length: new Date(Date.UTC(y, m, 0)).getUTCDate() }, (_, i) =>
+    `${month}-${String(i + 1).padStart(2, '0')}`,
+  ).filter((day) => day !== today);
+  const fill = (userId: string, days: string[]) => {
+    for (const day of days) points.award(userId, 'daily', day, points.POINTS.daily, now);
+  };
+  fill('month-25', others.slice(0, 24));
+  assert.equal(await points.awardAccepted(accepted('month-25', 'lc-1', now), now), 10 + 5 + 20 + 100);
+  assert.ok(ledger('month-25').some((row) => row.reason === 'daily-month' && row.ref === `${month}:25`));
+  assert.ok(!ledger('month-25').some((row) => row.ref === `${month}:all`));
+  fill('month-all', others);
+  assert.equal(await points.awardAccepted(accepted('month-all', 'lc-1', now), now), 10 + 5 + 20 + 100 + 100);
+  // 24 days only: no bonus yet.
+  fill('month-24', others.slice(0, 23));
+  assert.equal(await points.awardAccepted(accepted('month-24', 'lc-1', now), now), 10 + 5 + 20);
+  // Years back too: the badge wall keeps every month won.
+  fill('month-all', ['2020-01-05']);
+  const { days } = (await call(person('month-all'), ['points', 'daily'])) as { days: string[] };
+  assert.equal(days.length, others.length + 2);
+  assert.equal(days[0], '2020-01-05');
+  assert.ok(days.includes(today) && days.every((d, i) => !i || days[i - 1] < d));
+  // The ledger shows the month bonus with its ref.
+  const summary = (await call(person('month-all'), ['points'])) as { ledger: { reason: string; ref?: string }[] };
+  assert.ok(summary.ledger.some((e) => e.reason === 'daily-month' && e.ref === `${month}:all`));
+});
+
 void test('first ACs stop paying past 100 a day, and a capped-out problem never pays later', async () => {
   const now = Date.now();
   let got = 0;

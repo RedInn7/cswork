@@ -24,12 +24,14 @@ import { leetcodeSource, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import { Queue, Worker, type Job } from 'bullmq';
 import { sqlite } from '@/db/sqlite';
 import { loadJudgeSnapshot, ensureOjSeed } from './oj-problems';
+import { sendPeerReminders } from './peer-reminders';
 import { seed } from './seed';
 import {
   assertSnapshotBudget,
   OJ_WORKER_CONCURRENCY,
   OJ_CASE_SLOTS,
   exclusiveSubmission,
+  leetcodeShape,
   SubmissionAdmission,
 } from './oj-worker-policy';
 import {
@@ -229,10 +231,20 @@ async function judgeSubmission(
   let invalidateBridge = false;
   let terminalFailureCommitted = false;
   try {
-    const snapshot: Pick<OjJudgeSnapshot, 'spec' | 'cases'> =
+    const loaded: Pick<OjJudgeSnapshot, 'spec' | 'cases'> =
       claimed.mode === 'playground'
         ? { spec: PLAYGROUND_SPEC, cases: [] }
         : await loadJudgeSnapshot(claimed.problem_version_id!);
+    // A per-language limit replaces timeLimit everywhere below: cases, codec runs, the deadline.
+    const snapshot = {
+      ...loaded,
+      spec: {
+        ...loaded.spec,
+        timeLimit:
+          loaded.spec.timeLimits?.[claimed.language] ??
+          loaded.spec.timeLimit,
+      },
+    };
     assertSnapshotBudget(snapshot.cases);
     // Runs on the learner's own input: custom-input runs and playground runs.
     const ownInput = claimed.mode !== 'judge' && claimed.custom_input !== null;
@@ -248,10 +260,8 @@ async function judgeSubmission(
       totalSeconds * 1000,
     );
     current(id, attempt, controller.signal);
-    if (
-      claimed.coding_mode === 'leetcode' &&
-      claimed.harness_version !== LEETCODE_HARNESS_VERSION
-    ) {
+    const shape = leetcodeShape(claimed);
+    if (shape.wrap && claimed.harness_version !== LEETCODE_HARNESS_VERSION) {
       update(id, attempt, {
         status: 'system_error',
         message: '函数驱动版本已更新，请重新提交；原代码已保留。',
@@ -259,15 +269,14 @@ async function judgeSubmission(
       });
       return;
     }
-    const wrapped =
-      claimed.coding_mode === 'leetcode'
-        ? leetcodeSource(
-            snapshot.spec.id,
-            claimed.language,
-            claimed.code,
-            snapshot.spec.memoryLimit,
-          )
-        : { source: claimed.code };
+    const wrapped = shape.wrap
+      ? leetcodeSource(
+          snapshot.spec.id,
+          claimed.language,
+          claimed.code,
+          snapshot.spec.memoryLimit,
+        )
+      : { source: claimed.code };
     const compileStarted = performance.now();
     // Built beside the compile; without it the bridge simply runs from source.
     bridgeAcquisition = wrapped.bridgeSource
@@ -295,10 +304,7 @@ async function judgeSubmission(
     program.bridgeSource = wrapped.bridgeSource;
     if (bridge?.result.status === 'Accepted')
       program.bridgeBytecode = bridge.program.cache['bridge.pyc'];
-    program.leetcodeInput =
-      claimed.coding_mode === 'leetcode' &&
-      claimed.mode === 'run' &&
-      claimed.custom_input !== null;
+    program.leetcodeInput = shape.leetcodeInput;
     current(id, attempt, controller.signal);
     if (compiled.result.status !== 'Accepted') {
       update(id, attempt, {
@@ -707,10 +713,20 @@ const precompileTimer = setInterval(() => {
     /* Optional acceleration never stops judging. */
   }
 }, OJ_DISPATCH_INTERVAL_MS);
+// Peer mock interview reminder mails, and instant requests that lapsed: the worker is the
+// one long-running process with the mail settings, so no separate timer unit.
+const reminderTimer = setInterval(
+  () =>
+    void sendPeerReminders().catch((error: unknown) =>
+      console.error('peer reminders', error instanceof Error ? error.message : 'unknown'),
+    ),
+  600_000,
+);
 async function stop() {
   if (stopping) return;
   stopping = true;
   clearInterval(timer);
+  clearInterval(reminderTimer);
   clearInterval(dispatchTimer);
   clearInterval(precompileTimer);
   for (const controller of controllers.values()) controller.abort();

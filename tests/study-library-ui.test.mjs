@@ -113,6 +113,8 @@ test('curated practice UI preserves language and round history, deduplicates cli
       } else activeRoundId = request.roundId;
       return Response.json(roundState());
     }
+    // The daily problem month beside the calendar reads the points ledger once.
+    if (url.endsWith('/oj/points/daily')) return Response.json({ days: [] });
     requests.push(url);
     if (new URL(url, 'https://cswork.test').searchParams.get('random') === '1')
       return Response.json({ ...page(), random: pickResult });
@@ -197,7 +199,12 @@ test('curated practice UI preserves language and round history, deduplicates cli
       'frequency',
     );
     assert.equal(document.querySelectorAll('.study-row').length, 3, 'the ranked page is not stale');
+    // Ranked by the reports of a recent window instead of all of them.
+    assert.equal(new URL(requests.at(-1), 'https://cswork.test').searchParams.has('window'), false);
+    await select(document.querySelector('option[value="3m"]').parentElement, '3m');
+    assert.equal(new URL(requests.at(-1), 'https://cswork.test').searchParams.get('window'), '3m');
     await select(document.querySelector('option[value="meta"]').parentElement, '');
+    assert.equal(new URL(requests.at(-1), 'https://cswork.test').searchParams.has('window'), false, 'no ranking, no window');
     assert.equal(
       new URL(requests.at(-1), 'https://cswork.test').searchParams.get('sort'),
       '',

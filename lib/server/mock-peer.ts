@@ -2,16 +2,23 @@ import { randomBytes } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { TEMPLATES } from '@/lib/mock-interview';
-import { LEAD_HOURS, LEVELS, SLOTS_MAX, WINDOW_HOURS, meetingUrl } from '@/lib/mock-peer';
+import {
+  COMMON_FOCUS, FOCUS_MAX, INSTANT_MINUTES, LEAD_HOURS, LEVELS, SLOTS_MAX, WINDOW_HOURS, localSlot, meetingUrl,
+} from '@/lib/mock-peer';
+import { STOP_NAMES } from '@/lib/route-stops';
 import type { Person } from './auth';
 import { HttpError, json, limit, requirePerson } from './http';
+import { reportCompanies } from './learner-cloud';
 import { readJson } from './my-practice';
 import { plain } from './study-groups';
 
 /**
  * Peer mock interviews (db/mock-peer-schema.ts): a learner offers UTC hour slots for one
- * template and level; the oldest open request of the same template and level that shares a
- * future slot becomes the partner. Each pair runs two rounds of the template, each side the
+ * template and level; among open requests of the same template and level that share a future
+ * slot, the one with the most target companies (×2) and topics in common becomes the partner,
+ * the oldest first on a tie. An instant request ("practice now") pairs only with another filed
+ * in the last INSTANT_MINUTES, for the hour under way, and lapses after that (lib/server/
+ * peer-reminders.ts closes it). Each pair runs two rounds of the template, each side the
  * candidate once, on the mock interview's candidate/interviewer links. Partners see only the
  * name typed for matching. Two no-show reports from different partners in 90 days pause matching;
  * a report the reported side answered with its own does not count. Cancelling a matched session
@@ -40,8 +47,12 @@ type RequestRow = {
   locale: string;
   status: 'open' | 'matched' | 'cancelled';
   pair_id: string | null;
+  remind: number;
+  focus_json: string;
+  instant: number;
   created_at: number;
 };
+type Focus = { companies: string[]; topics: string[] };
 type PairRow = {
   id: string;
   kind: string;
@@ -59,9 +70,22 @@ type PairRow = {
   created_at: number;
 };
 
+const INSTANT_MS = INSTANT_MINUTES * 60000;
 const hourNow = (now: number) => Math.floor(now / HOUR);
 /** Slots still bookable at `now`. */
 const open = (slots: readonly number[], now: number) => slots.filter((s) => s >= hourNow(now) + LEAD_HOURS);
+/** An open request that can still match: an instant one for INSTANT_MINUTES, else while it has hours ahead. */
+const live = (r: Pick<RequestRow, 'slots_json' | 'instant' | 'created_at'>, now: number) =>
+  r.instant ? r.created_at > now - INSTANT_MS : open(JSON.parse(r.slots_json) as number[], now).length > 0;
+/** What two requests' focus has in common, in the first one's order. */
+function commonFocus(mine: Focus, json: string): Focus {
+  const theirs = JSON.parse(json) as Partial<Focus>;
+  return {
+    companies: mine.companies.filter((c) => theirs.companies?.includes(c)),
+    topics: mine.topics.filter((t) => theirs.topics?.includes(t)),
+  };
+}
+const affinity = (f: Focus) => f.companies.length * 2 + f.topics.length;
 
 /**
  * Distinct partners who reported `user` missing in the last 90 days, leaving out sessions where
@@ -94,14 +118,6 @@ function busy(user: string, now: number) {
   );
 }
 
-const pad = (n: number) => String(n).padStart(2, '0');
-/** "2026-10-15 22:00 (UTC+8)" in a Date#getTimezoneOffset zone. */
-export function localSlot(slot: number, tz: number) {
-  const d = new Date(slot * HOUR - tz * 60000);
-  const off = -tz;
-  const zone = `UTC${off < 0 ? '-' : '+'}${Math.floor(Math.abs(off) / 60)}${Math.abs(off) % 60 ? `:${pad(Math.abs(off) % 60)}` : ''}`;
-  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} (${zone})`;
-}
 const templateName = (kind: string, zh: boolean) => TEMPLATES.find((t) => t.id === kind)?.name[zh ? 0 : 1] ?? kind;
 
 /** Titles are fixed text (translated when shown); the body is written in the learner's language. */
@@ -111,17 +127,27 @@ function notify(user: string, title: string, body: string, pair: string, now: nu
     .run(randomBytes(16).toString('hex'), user, title, body, `/?view=mock-peer&pair=${pair}`, now);
 }
 const sideOf = (req: Pick<RequestRow, 'user_id' | 'tz' | 'locale'>) => ({ user: req.user_id, tz: req.tz, zh: req.locale === 'zh' });
+/** " · In common: Google, Graphs" for a match notice, or nothing. */
+function focusText(f: Focus | undefined, zh: boolean) {
+  if (!f || !affinity(f)) return '';
+  const items = [
+    ...f.companies.map((slug) => reportCompanies().find((c) => c.slug === slug)?.name ?? slug),
+    ...f.topics.map((t) => STOP_NAMES[t]?.[zh ? 0 : 1] ?? t),
+  ];
+  return ` · ${COMMON_FOCUS[zh ? 0 : 1]}: ${items.join(zh ? '、' : ', ')}`;
+}
 function tell(
   to: { user: string; tz: number; zh: boolean },
   title: string,
   pair: Pick<PairRow, 'id' | 'kind' | 'slot'>,
   partner: string,
   now: number,
+  common?: Focus,
 ) {
   notify(
     to.user,
     title,
-    `${templateName(pair.kind, to.zh)} · ${localSlot(pair.slot, to.tz)} · ${to.zh ? '对方' : 'Partner'}: ${partner}`,
+    `${templateName(pair.kind, to.zh)} · ${localSlot(pair.slot, to.tz)} · ${to.zh ? '对方' : 'Partner'}: ${partner}${focusText(common, to.zh)}`,
     pair.id,
     now,
   );
@@ -136,49 +162,76 @@ function sides(pair: PairRow) {
 }
 
 /**
- * Files the request and, in the same transaction, pairs it with the oldest open request of
- * the same template and level that shares a free future slot (the earliest shared one).
+ * Files the request and, in the same transaction, pairs it with the open request of the same
+ * template and level that shares a free future slot (the earliest shared one), most focus in
+ * common first, then the oldest. An instant request takes the hour under way instead.
  */
 export function requestMatch(
   p: Person,
-  input: { displayName: string; kind: string; level: string; slots: number[]; tz: number },
+  input: {
+    displayName: string;
+    kind: string;
+    level: string;
+    slots: number[];
+    tz: number;
+    remind?: boolean;
+    instant?: boolean;
+    focus?: Focus;
+  },
   locale: 'zh' | 'en',
   now = Date.now(),
 ) {
+  const instant = !!input.instant,
+    focus = input.focus ?? { companies: [], topics: [] };
   const db = sqlite();
   return db.transaction(() => {
     if (noShows(p.id, now) >= NO_SHOW_LIMIT)
       throw new HttpError(403, '你被报告爽约两次，匹配已暂停 90 天');
     if (cancels(p.id, now) >= CANCEL_LIMIT) throw new HttpError(403, '一周内取消了 3 场已匹配的面试，暂时不能匹配');
     const waiting = db
-      .prepare(`SELECT slots_json FROM mock_match_requests WHERE user_id=? AND status='open'`)
-      .get(p.id) as Pick<RequestRow, 'slots_json'> | undefined;
-    if (waiting && open(JSON.parse(waiting.slots_json) as number[], now).length)
-      throw new HttpError(409, '你已经有一个在等待匹配的请求');
-    // A request whose hours have all passed gives way to the new one.
+      .prepare(`SELECT slots_json,instant,created_at FROM mock_match_requests WHERE user_id=? AND status='open'`)
+      .get(p.id) as Pick<RequestRow, 'slots_json' | 'instant' | 'created_at'> | undefined;
+    if (waiting && live(waiting, now)) throw new HttpError(409, '你已经有一个在等待匹配的请求');
+    // A request whose hours have all passed (or an instant one that lapsed) gives way to the new one.
     db.prepare(`UPDATE mock_match_requests SET status='cancelled',updated_at=? WHERE user_id=? AND status='open'`).run(now, p.id);
     const mine = busy(p.id, now);
     if (mine.size >= UPCOMING_MAX) throw new HttpError(409, '已经约了 3 场，先完成再约');
-    const slots = open([...new Set(input.slots)], now)
-      .filter((s) => s <= hourNow(now) + WINDOW_HOURS && !mine.has(s))
-      .sort((x, y) => x - y);
-    if (!slots.length) throw new HttpError(400, '请至少选一个未来 7 天内的时段');
+    // Practice now bypasses LEAD_HOURS: the hour under way, if it is free.
+    const slots = instant
+      ? [hourNow(now)].filter((s) => !mine.has(s))
+      : open([...new Set(input.slots)], now)
+          .filter((s) => s <= hourNow(now) + WINDOW_HOURS && !mine.has(s))
+          .sort((x, y) => x - y);
+    if (!slots.length)
+      throw instant
+        ? new HttpError(409, '这个小时你已经约了一场模拟面试')
+        : new HttpError(400, '请至少选一个未来 7 天内的时段');
     const id = randomBytes(9).toString('base64url');
     db.prepare(
-      `INSERT INTO mock_match_requests(id,user_id,display_name,kind,level,slots_json,tz,locale,status,created_at,updated_at)
-      VALUES(?,?,?,?,?,?,?,?,'open',?,?)`,
-    ).run(id, p.id, input.displayName, input.kind, input.level, JSON.stringify(slots), input.tz, locale, now, now);
-    const candidates = db
-      .prepare(
-        // Slots lie within a week of filing, so older open requests can no longer match.
-        `SELECT * FROM mock_match_requests WHERE status='open' AND kind=? AND level=? AND user_id<>? AND created_at>?
-        ORDER BY created_at,id`,
-      )
-      .all(input.kind, input.level, p.id, now - 8 * DAY) as RequestRow[];
-    for (const other of candidates) {
+      `INSERT INTO mock_match_requests(id,user_id,display_name,kind,level,slots_json,tz,locale,status,remind,focus_json,instant,created_at,updated_at)
+      VALUES(?,?,?,?,?,?,?,?,'open',?,?,?,?,?)`,
+    ).run(
+      id, p.id, input.displayName, input.kind, input.level, JSON.stringify(slots), input.tz, locale,
+      +(input.remind ?? true), JSON.stringify(focus), +instant, now, now,
+    );
+    const candidates = (
+      db
+        .prepare(
+          // Slots lie within a week of filing, so older open requests can no longer match.
+          `SELECT * FROM mock_match_requests WHERE status='open' AND kind=? AND level=? AND user_id<>? AND instant=? AND created_at>?
+          ORDER BY created_at,id`,
+        )
+        .all(input.kind, input.level, p.id, +instant, now - (instant ? INSTANT_MS : 8 * DAY)) as RequestRow[]
+    )
+      .map((other) => ({ other, common: commonFocus(focus, other.focus_json) }))
+      // Stable: the oldest first among equals.
+      .sort((x, y) => affinity(y.common) - affinity(x.common));
+    for (const { other, common } of candidates) {
       if (noShows(other.user_id, now) >= NO_SHOW_LIMIT) continue;
       const theirs = busy(other.user_id, now);
-      const shared = open(JSON.parse(other.slots_json) as number[], now).filter((s) => slots.includes(s) && !theirs.has(s));
+      const shared = instant
+        ? slots.filter((s) => !theirs.has(s))
+        : open(JSON.parse(other.slots_json) as number[], now).filter((s) => slots.includes(s) && !theirs.has(s));
       if (!shared.length) continue;
       const pair: PairRow = {
         id: randomBytes(9).toString('base64url'),
@@ -207,8 +260,8 @@ export function requestMatch(
         other.id,
         id,
       );
-      tell(sideOf(other), '同伴模拟面试已匹配', pair, pair.b_name, now);
-      tell({ user: p.id, tz: input.tz, zh: locale === 'zh' }, '同伴模拟面试已匹配', pair, pair.a_name, now);
+      tell(sideOf(other), '同伴模拟面试已匹配', pair, pair.b_name, now, common);
+      tell({ user: p.id, tz: input.tz, zh: locale === 'zh' }, '同伴模拟面试已匹配', pair, pair.a_name, now, common);
       return pair.id;
     }
     return null;
@@ -218,13 +271,15 @@ export function requestMatch(
 /** A pair as one side sees it: the partner's name, and links to this side's own two roles. */
 function view(pair: PairRow, user: string, now: number) {
   const me = pair.a_user === user ? 'a' : 'b';
-  const start = pair.slot * HOUR;
+  // An instant pair starts when it matched, inside its hour.
+  const start = Math.max(pair.slot * HOUR, pair.created_at);
   const partnerMissing = me === 'a' ? pair.b_no_show_at : pair.a_no_show_at;
   return {
     id: pair.id,
     kind: pair.kind,
     level: pair.level,
     slot: pair.slot,
+    start,
     partner: me === 'a' ? pair.b_name : pair.a_name,
     meetUrl: pair.meet_url,
     status: pair.status,
@@ -262,8 +317,10 @@ export function peerState(user: string, now = Date.now()) {
           kind: request.kind,
           level: request.level,
           slots,
-          // Every offered hour has passed: nobody can match it any more.
-          expired: !open(slots, now).length,
+          instant: !!request.instant,
+          remind: !!request.remind,
+          // Every offered hour has passed (or an instant request's minutes): nobody can match it any more.
+          expired: !live(request, now),
           createdAt: request.created_at,
         }
       : null,
@@ -285,8 +342,26 @@ const requestInput = z
     displayName: plain(24),
     kind: z.string().refine((k) => TEMPLATES.some((t) => t.id === k)),
     level: z.enum(LEVELS),
-    slots: z.array(z.number().int().nonnegative()).min(1).max(SLOTS_MAX),
+    // Empty for an instant request; a scheduled one without a future hour is refused in requestMatch.
+    slots: z.array(z.number().int().nonnegative()).max(SLOTS_MAX).default([]),
     tz: z.number().int().min(-840).max(840),
+    remind: z.boolean().default(true),
+    instant: z.boolean().default(false),
+    focus: z
+      .object({
+        companies: z
+          .array(z.string().max(80))
+          .max(FOCUS_MAX)
+          .default([])
+          .refine((list) => !list.length || list.every((c) => reportCompanies().some((r) => r.slug === c))),
+        topics: z
+          .array(z.string().refine((t) => Object.hasOwn(STOP_NAMES, t)))
+          .max(FOCUS_MAX)
+          .default([]),
+      })
+      .strict()
+      .transform((f) => ({ companies: [...new Set(f.companies)], topics: [...new Set(f.topics)] }))
+      .default({ companies: [], topics: [] }),
   })
   .strict();
 

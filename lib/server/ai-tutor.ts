@@ -410,7 +410,8 @@ function lastVerdict(userId: string, problemId: string) {
   const row = db
     .prepare(
       `SELECT status,passed,total,mode,language,compile_output AS compileOutput FROM submissions
-      WHERE user_id=? AND problem_id=? AND status IN (${FINISHED}) ORDER BY created_at DESC,rowid DESC LIMIT 1`,
+      WHERE user_id=? AND problem_id=? AND mode IN ('judge','run') AND status IN (${FINISHED})
+      ORDER BY created_at DESC,rowid DESC LIMIT 1`,
     )
     .get(userId, problemId) as
     | { status: string; passed: number; total: number; mode: string; language: string; compileOutput: string | null }
@@ -448,7 +449,8 @@ export function lastFailure(userId: string, problemId: string) {
     .prepare(
       `SELECT id,status,passed,total,mode,language,message,problem_version_id AS version,
         custom_input AS customInput,compile_output AS compileOutput FROM submissions
-      WHERE user_id=? AND problem_id=? AND status IN (${FAILURES.map((f) => `'${f}'`).join(',')})
+      WHERE user_id=? AND problem_id=? AND mode IN ('judge','run')
+        AND status IN (${FAILURES.map((f) => `'${f}'`).join(',')})
       ORDER BY created_at DESC,rowid DESC LIMIT 1`,
     )
     .get(userId, problemId) as

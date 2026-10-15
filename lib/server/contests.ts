@@ -3,18 +3,27 @@ import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import {
   drawWeekly,
+  duelElo,
   duelWinner,
   eloRatings,
   entryWindow,
+  isRatedKind,
   rankRows,
   RATE_GRACE,
+  roomWeek,
   standings,
   START_RATING,
+  starterId,
+  starterStart,
+  STARTER_MINUTES,
+  STARTER_RATED_BELOW,
+  STARTER_SLOTS,
   weeklyId,
   weeklyStart,
   weekNumber,
   weeklyTitle,
   WEEKLY_MINUTES,
+  WEEKLY_SLOTS,
   type ContestEntry,
   type ContestSubmission,
   type Standing,
@@ -30,33 +39,37 @@ import { mockCatalogue, mockPool } from './mock-oa';
 import { readJson } from './my-practice';
 import { listProblemSummaries } from './oj-problems';
 import { ratedJudgeable } from './study-library';
+import { duelRating } from './contest-ratings';
 export { ratingHistory } from './contest-ratings';
 import { code as inviteCode, newCode, plain } from './study-groups';
 
 /**
- * Contest rooms (db/contests-schema.ts): the weekly site contest, created lazily the first time
- * anyone opens /contest in a week, and learners' own mashups and 1v1 duels. Standings are read
- * from judge submissions inside each entrant's window (ICPC: solved, then AC time + 5 minutes
- * per earlier wrong verdict); nothing about judging changes. Weeklies are rated once, on the
- * first read after the window and a grace period. Scoreboards carry display names chosen on
- * joining, never account ids; a private room reads as missing to anyone not in it.
+ * Contest rooms (db/contests-schema.ts): the site contests (the weekly and the easier starter),
+ * created lazily the first time anyone opens /contest in a week, learners' own mashups and 1v1
+ * duels, and ranked duels from the queue (lib/server/duels.ts). Standings are read from judge
+ * submissions inside each entrant's window (ICPC: solved, then AC time + 5 minutes per earlier
+ * wrong verdict); nothing about judging changes. Site contests share one Elo and are rated once,
+ * on the first read after the window and a grace period; ranked duels on their own two-player
+ * Elo once decided. Scoreboards carry display names chosen on joining, never account ids; a
+ * private room reads as missing to anyone not in it.
  */
 const MINUTE = 60000;
-/** A weekly avoids problems used by this many earlier weeklies. */
+const DAY = 86400000;
+/** A site contest avoids problems used by this many earlier site contests. */
 const RECENT_WEEKLIES = 26;
 export const ROOM_CAP: Record<string, number> = { mashup: 100, duel: 2 };
 export const ROOMS_PER_DAY = 10;
 /** Scoreboard rows per table; the reader's own row is always added. */
 export const BOARD_ROWS = 200;
 const problemId = z.string().regex(/^(?:oa-[a-z0-9-]{1,180}|lc-\d{1,6})$/);
-const displayName = plain(24);
+export const displayName = plain(24);
 const roomId = /^[A-Za-z0-9_-]{1,24}$/;
 
 type RoomRow = {
   id: string;
   owner_id: string | null;
   title: string;
-  kind: 'weekly' | 'mashup' | 'duel';
+  kind: 'weekly' | 'starter' | 'mashup' | 'duel';
   problem_ids_json: string;
   starts_at: number;
   duration_min: number;
@@ -94,7 +107,7 @@ async function buildJudgeable(from: Promise<ProblemSummary[]>) {
 // Rebuilt only when the summaries snapshot changes: room pages poll every few seconds.
 let judgeableCache: { from: Promise<ProblemSummary[]>; value: ReturnType<typeof buildJudgeable> } | null = null;
 /** Coding problems a room may hold, hidden companies left out, with their summaries. */
-function judgeable() {
+export function judgeable() {
   const from = contestSources.summaries();
   if (judgeableCache?.from !== from) judgeableCache = { from, value: buildJudgeable(from) };
   return judgeableCache.value;
@@ -108,35 +121,60 @@ async function roomProblems(row: RoomRow, found?: Awaited<ReturnType<typeof judg
   return (JSON.parse(row.problem_ids_json) as string[]).filter((id) => byId.has(id) && !hiddenOa(id, hidden));
 }
 const endOf = (row: RoomRow) => row.starts_at + row.duration_min * MINUTE;
-const weekOf = (row: RoomRow) => (row.kind === 'weekly' ? Number(row.id.slice(7)) : null);
+const weekOf = (row: RoomRow) => (isRatedKind(row.kind) ? roomWeek(row.id) : null);
+/** A duel the queue matched: rated on the duel ladder. Invite duels have an owner and stay unrated. */
+const isRanked = (row: RoomRow) => row.kind === 'duel' && !row.owner_id;
 
-// ---------------------------------------------------------------- the weekly contest
+// ---------------------------------------------------------------- the weekly and the starter
 
-/** This week's weekly, drawn on first sight; null before week 1 or with too small a pool. */
-export function ensureWeekly(now = Date.now()) {
-  const week = weekNumber(now);
-  if (week < 1) return null;
+/** This week's site contest of a kind, drawn on first sight; `avoid` never makes its set. */
+function ensureSite(kind: 'weekly' | 'starter', week: number, now: number, avoid: readonly string[] = []) {
   const db = sqlite(),
-    id = weeklyId(week);
+    id = kind === 'weekly' ? weeklyId(week) : starterId(week);
   const found = db.prepare('SELECT * FROM contest_rooms WHERE id=?').get(id) as RoomRow | undefined;
   if (found) return found;
   const used = new Set(
     (
       db
-        .prepare("SELECT problem_ids_json FROM contest_rooms WHERE kind='weekly' ORDER BY starts_at DESC LIMIT ?")
+        .prepare("SELECT problem_ids_json FROM contest_rooms WHERE kind IN ('weekly','starter') ORDER BY starts_at DESC LIMIT ?")
         .pluck()
-        .all(RECENT_WEEKLIES) as string[]
+        .all(2 * RECENT_WEEKLIES) as string[]
     ).flatMap((ids) => JSON.parse(ids) as string[]),
   );
   // A secret seed: a week number would let anyone work the set out from the public pool.
-  const ids = drawWeekly(contestSources.rated(), randomInt(2 ** 31), used);
+  const ids = drawWeekly(
+    contestSources.rated().filter((p) => !avoid.includes(p.id)),
+    randomInt(2 ** 31),
+    used,
+    kind === 'weekly' ? WEEKLY_SLOTS : STARTER_SLOTS,
+  );
   if (!ids) return null;
   // Two first visitors may draw different sets: the first insert wins, the second is a no-op.
   db.prepare(
     `INSERT OR IGNORE INTO contest_rooms(id,owner_id,title,kind,problem_ids_json,starts_at,duration_min,visibility,created_at)
-    VALUES(?,NULL,?,'weekly',?,?,?,'public',?)`,
-  ).run(id, weeklyTitle(week, false), JSON.stringify(ids), weeklyStart(week), WEEKLY_MINUTES, now);
+    VALUES(?,NULL,?,?,?,?,?,'public',?)`,
+  ).run(
+    id,
+    weeklyTitle(week, false, kind),
+    kind,
+    JSON.stringify(ids),
+    kind === 'weekly' ? weeklyStart(week) : starterStart(week),
+    kind === 'weekly' ? WEEKLY_MINUTES : STARTER_MINUTES,
+    now,
+  );
   return db.prepare('SELECT * FROM contest_rooms WHERE id=?').get(id) as RoomRow;
+}
+
+/**
+ * This week's weekly and starter, drawn on first sight; each null before week 1 or with too
+ * small a pool. The starter (Wednesday) never holds a problem of the weekly (Sunday) after it.
+ */
+export function ensureWeekly(now = Date.now()) {
+  const week = weekNumber(now);
+  if (week < 1) return { weekly: null, starter: null };
+  const weekly = ensureSite('weekly', week, now);
+  const starter = ensureSite('starter', week, now, weekly ? (JSON.parse(weekly.problem_ids_json) as string[]) : []);
+  return { weekly, starter };
 }
 
 function roomStandings(row: RoomRow, ids: readonly string[], now: number) {
@@ -169,17 +207,36 @@ function roomStandings(row: RoomRow, ids: readonly string[], now: number) {
   };
 }
 
+/** Each entrant's rating and rated contests before this room started (weeklies and starters). */
+function priorRatings(row: RoomRow) {
+  const rows = sqlite()
+    .prepare(
+      `SELECT e.user_id,
+        (SELECT r.after FROM contest_ratings r JOIN contest_rooms c ON c.id=r.room_id
+          WHERE r.user_id=e.user_id AND c.starts_at<@at ORDER BY c.starts_at DESC LIMIT 1) AS rating,
+        (SELECT COUNT(*) FROM contest_ratings r JOIN contest_rooms c ON c.id=r.room_id
+          WHERE r.user_id=e.user_id AND c.starts_at<@at) AS contests
+      FROM contest_entries e WHERE e.room_id=@room`,
+    )
+    .all({ room: row.id, at: row.starts_at }) as { user_id: string; rating: number | null; contests: number }[];
+  return new Map(rows.map((r) => [r.user_id, { rating: r.rating ?? START_RATING, contests: r.contests }]));
+}
+/** Races a starter unrated: rated STARTER_RATED_BELOW or more before it. */
+const outOfStarter = (row: RoomRow, prior: ReturnType<typeof priorRatings>, userId: string) =>
+  row.kind === 'starter' && (prior.get(userId)?.rating ?? START_RATING) >= STARTER_RATED_BELOW;
+
 /**
- * Rates every finished weekly not yet rated, oldest first, so each starts from the ratings
- * before it. Live entrants with a submission in the window are rated; the guard on rated_at
- * makes a second (or concurrent) call a no-op.
+ * Rates every finished weekly and starter not yet rated, oldest first, so each starts from the
+ * ratings before it. Live entrants with a submission in the window are rated (a starter's only
+ * below STARTER_RATED_BELOW, ranked among themselves); the guard on rated_at makes a second (or
+ * concurrent) call a no-op.
  */
 export async function settleWeeklies(now = Date.now()) {
   const db = sqlite();
   const due = db
     .prepare(
-      `SELECT * FROM contest_rooms WHERE kind='weekly' AND rated_at IS NULL AND starts_at+duration_min*${MINUTE}+?<=?
-      ORDER BY starts_at`,
+      `SELECT * FROM contest_rooms WHERE kind IN ('weekly','starter') AND rated_at IS NULL
+        AND starts_at+duration_min*${MINUTE}+?<=? ORDER BY starts_at`,
     )
     .all(RATE_GRACE, now) as RoomRow[];
   for (const row of due) {
@@ -187,17 +244,11 @@ export async function settleWeeklies(now = Date.now()) {
     db.transaction(() => {
       if (!db.prepare('UPDATE contest_rooms SET rated_at=? WHERE id=? AND rated_at IS NULL').run(now, row.id).changes)
         return;
-      const rated = rankRows(roomStandings(row, ids, Infinity).live.filter((s) => s.tried));
-      const prior = db.prepare(
-        `SELECT r.after,(SELECT COUNT(*) FROM contest_ratings x JOIN contest_rooms y ON y.id=x.room_id
-            WHERE x.user_id=r.user_id AND y.starts_at<@at) AS contests
-        FROM contest_ratings r JOIN contest_rooms c ON c.id=r.room_id
-        WHERE r.user_id=@user AND c.starts_at<@at ORDER BY c.starts_at DESC LIMIT 1`,
+      const prior = priorRatings(row);
+      const rated = rankRows(
+        roomStandings(row, ids, Infinity).live.filter((s) => s.tried && !outOfStarter(row, prior, s.userId)),
       );
-      const players = rated.map((s) => {
-        const before = prior.get({ user: s.userId, at: row.starts_at }) as { after: number; contests: number } | undefined;
-        return { rating: before?.after ?? START_RATING, contests: before?.contests ?? 0, rank: s.rank };
-      });
+      const players = rated.map((s) => ({ ...prior.get(s.userId)!, rank: s.rank }));
       const after = eloRatings(players);
       const insert = db.prepare(
         'INSERT INTO contest_ratings(user_id,room_id,before,after,rank,entrants,solved,created_at) VALUES(?,?,?,?,?,?,?,?)',
@@ -207,6 +258,43 @@ export async function settleWeeklies(now = Date.now()) {
       );
     })();
   }
+}
+
+/**
+ * Rates a ranked duel once it is decided: someone solved everything first (duelWinner), or the
+ * window closed with neither done, a draw. A verdict still pending waits, up to RATE_GRACE after
+ * the end. Two-player Elo on the duel ladder (duelElo); rated_at guards a second call.
+ */
+function settleDuel(row: RoomRow, live: readonly Standing[], now: number) {
+  const winner = duelWinner(live);
+  const pending = live.some((s) => s.cells.some((c) => c.pending));
+  if (live.length !== 2 || (!winner && now < endOf(row)) || (pending && now < endOf(row) + RATE_GRACE)) return;
+  const db = sqlite();
+  db.transaction(() => {
+    if (!db.prepare('UPDATE contest_rooms SET rated_at=? WHERE id=? AND rated_at IS NULL').run(now, row.id).changes)
+      return;
+    const [a, b] = [...live].sort((x, y) => x.userId.localeCompare(y.userId));
+    const before = [duelRating(a.userId), duelRating(b.userId)] as const;
+    const after = duelElo(before[0], before[1], !winner ? 0.5 : winner.userId === a.userId ? 1 : 0);
+    db.prepare(
+      `INSERT INTO duel_results(room_id,a_user,b_user,winner,a_before,a_after,b_before,b_after,created_at)
+      VALUES(?,?,?,?,?,?,?,?,?)`,
+    ).run(row.id, a.userId, b.userId, winner?.userId ?? null, before[0], after[0], before[1], after[1], now);
+  })();
+}
+
+/**
+ * Settles ranked duels whose window has closed. ponytail: only those started in the last two
+ * days (an index range): the lobby and the queue read this often, so nothing waits that long.
+ */
+export async function settleDuels(now = Date.now()) {
+  const due = sqlite()
+    .prepare(
+      `SELECT * FROM contest_rooms WHERE kind='duel' AND starts_at>? AND owner_id IS NULL AND rated_at IS NULL
+        AND starts_at+duration_min*${MINUTE}<=? ORDER BY starts_at`,
+    )
+    .all(now - 2 * DAY, now) as RoomRow[];
+  for (const row of due) settleDuel(row, roomStandings(row, await roomProblems(row), now).live, now);
 }
 
 /** Current ratings, highest first: weekly display names only, never accounts. */
@@ -240,8 +328,8 @@ function readable(id: string, p: Person | null) {
   const entry =
     row && p
       ? (db
-          .prepare('SELECT user_id,display_name,joined_at,virtual_start FROM contest_entries WHERE room_id=? AND user_id=?')
-          .get(row.id, p.id) as EntryRow | undefined)
+          .prepare('SELECT user_id,display_name,joined_at,virtual_start,share_code FROM contest_entries WHERE room_id=? AND user_id=?')
+          .get(row.id, p.id) as (EntryRow & { share_code: number }) | undefined)
       : undefined;
   if (!row || (row.visibility !== 'public' && !entry && p?.role !== 'teacher')) throw new HttpError(404, '比赛不存在');
   return { row, entry };
@@ -256,6 +344,7 @@ function card(row: RoomRow & { entrants?: number }) {
     kind: row.kind,
     title: row.title,
     week: weekOf(row),
+    ranked: isRanked(row),
     startsAt: row.starts_at,
     durationMin: row.duration_min,
     entrants: row.entrants ?? entrantCount(row.id),
@@ -265,10 +354,14 @@ function card(row: RoomRow & { entrants?: number }) {
 /**
  * A room as its reader may see it. Problems: never before the start; during the live window to
  * entrants; after it to anyone who can open the room. Standings from the start, in two tables
- * (live, virtual), top BOARD_ROWS plus the reader's own row.
+ * (live, virtual), top BOARD_ROWS plus the reader's own row. `following` (weekly and starter
+ * only, ignored elsewhere) keeps the live table to the reader and the people they follow whose
+ * profile shows contests, and of those only rows the profile's curve already ties to the handle: a
+ * rating row once rated, a live entrant racing rated before that. Ranks stay overall; the virtual
+ * table, never on a profile, stays whole.
  */
-export async function roomView(id: string, p: Person | null, now = Date.now()) {
-  if (id.startsWith('weekly-')) await settleWeeklies(now);
+export async function roomView(id: string, p: Person | null, now = Date.now(), following = false) {
+  if (roomWeek(id) !== null) await settleWeeklies(now);
   const { row, entry } = readable(id, p);
   const found = await judgeable();
   const ids = await roomProblems(row, found);
@@ -278,21 +371,64 @@ export async function roomView(id: string, p: Person | null, now = Date.now()) {
   const waiting = row.kind === 'duel' && entrantCount(row.id) < ROOM_CAP.duel;
   const phase = waiting || now < row.starts_at ? 'upcoming' : now < end ? 'running' : 'ended';
   const board = phase === 'upcoming' ? null : roomStandings(row, ids, now);
-  const ratings =
-    row.kind === 'weekly' && row.rated_at
-      ? new Map(
-          (
-            sqlite()
-              .prepare('SELECT user_id,before,after FROM contest_ratings WHERE room_id=?')
-              .all(row.id) as { user_id: string; before: number; after: number }[]
-          ).map((r) => [r.user_id, r]),
+  const db = sqlite();
+  if (isRanked(row) && board && !row.rated_at) {
+    settleDuel(row, board.live, now);
+    row.rated_at = db.prepare('SELECT rated_at FROM contest_rooms WHERE id=?').pluck().get(row.id) as number | null;
+  }
+  const ratings = new Map(
+    (
+      (!row.rated_at
+        ? []
+        : isRanked(row)
+          ? db
+              .prepare(
+                `SELECT a_user AS user_id,a_before AS before,a_after AS after FROM duel_results WHERE room_id=@id
+                UNION ALL SELECT b_user,b_before,b_after FROM duel_results WHERE room_id=@id`,
+              )
+              .all({ id: row.id })
+          : db.prepare('SELECT user_id,before,after FROM contest_ratings WHERE room_id=?').all(row.id)) as {
+        user_id: string;
+        before: number;
+        after: number;
+      }[]
+    ).map((r) => [r.user_id, r]),
+  );
+  const prior = row.kind === 'starter' && board ? priorRatings(row) : null;
+  const unrated = (s: Standing) => !!prior && !s.virtual && outOfStarter(row, prior, s.userId);
+  const follows =
+    following && p && isRatedKind(row.kind)
+      ? new Set(
+          db
+            .prepare(
+              `SELECT f.followee_id FROM user_follows f
+              JOIN user_profiles u ON u.user_id=f.followee_id AND u.visible=1 AND u.show_contest=1 WHERE f.follower_id=?`,
+            )
+            .pluck()
+            .all(p.id) as string[],
         )
       : null;
+  const own = entry
+    ? entryWindow({ startsAt: row.starts_at, durationMin: row.duration_min }, { virtualStart: entry.virtual_start })
+    : null;
+  // Shared code opens to accounts with the ratings, and never while the reader's own run of the
+  // room goes on; a sharer's code once their own window is over.
+  const codeOpen = !!p && phase === 'ended' && now >= end + RATE_GRACE && !(own && now < own.end);
+  const sharing = codeOpen
+    ? new Set(
+        db
+          .prepare('SELECT user_id FROM contest_entries WHERE room_id=? AND share_code=1 AND COALESCE(virtual_start,?)+?<=?')
+          .pluck()
+          .all(row.id, row.starts_at, row.duration_min * MINUTE, now) as string[],
+      )
+    : null;
+  const followed = (s: Standing) =>
+    s.userId === p?.id || (!!follows?.has(s.userId) && (row.rated_at ? ratings.has(s.userId) : !unrated(s)));
   const shown = (list: Standing[]) =>
     list
       .filter((s, i) => i < BOARD_ROWS || s.userId === p?.id)
       .map((s) => {
-        const rating = ratings?.get(s.userId);
+        const rating = ratings.get(s.userId);
         return {
           rank: s.rank,
           name: s.name,
@@ -302,11 +438,11 @@ export async function roomView(id: string, p: Person | null, now = Date.now()) {
           cells: s.cells,
           me: s.userId === p?.id,
           rating: rating ? { before: rating.before, after: rating.after } : null,
+          /** A starter entrant racing unrated (rated STARTER_RATED_BELOW or more before it). */
+          unrated: unrated(s),
+          shared: !!sharing?.has(s.userId),
         };
       });
-  const own = entry
-    ? entryWindow({ startsAt: row.starts_at, durationMin: row.duration_min }, { virtualStart: entry.virtual_start })
-    : null;
   const entrants = board?.entries.length ?? entrantCount(row.id);
   const cap = ROOM_CAP[row.kind] ?? null;
   return {
@@ -314,6 +450,7 @@ export async function roomView(id: string, p: Person | null, now = Date.now()) {
     kind: row.kind,
     title: row.title,
     week: weekOf(row),
+    ranked: isRanked(row),
     visibility: row.visibility,
     startsAt: row.starts_at,
     durationMin: row.duration_min,
@@ -334,10 +471,13 @@ export async function roomView(id: string, p: Person | null, now = Date.now()) {
             return { id: pid, title: s?.title ?? pid, titleEn: s?.titleEn ?? null, difficulty: s?.difficulty ?? null, rating: lcRating(pid) };
           })
         : null,
-    standings: board ? { live: shown(board.live), virtual: shown(board.virtual) } : null,
+    standings: board ? { live: shown(follows ? board.live.filter(followed) : board.live), virtual: shown(board.virtual) } : null,
+    /** Null signed out or in a mashup or duel; else whether the live table keeps only the people the reader follows. */
+    following: p && isRatedKind(row.kind) ? following : null,
+    codeOpen,
     winner: row.kind === 'duel' && board ? (duelWinner(board.live)?.name ?? null) : null,
     rated: !!row.rated_at,
-    me: entry && own ? { name: entry.display_name, virtual: entry.virtual_start !== null, ...own } : null,
+    me: entry && own ? { name: entry.display_name, virtual: entry.virtual_start !== null, share: !!entry.share_code, ...own } : null,
     canJoin: !!p && !entry && row.visibility === 'public' && (cap === null || entrants < cap),
     // The name the reader last raced under, to prefill the join form.
     suggestedName:
@@ -351,14 +491,18 @@ export async function roomView(id: string, p: Person | null, now = Date.now()) {
 }
 export type RoomView = Awaited<ReturnType<typeof roomView>>;
 
-/** /contest: this week's weekly, past ones, and the reader's rooms. */
+/** /contest: this week's weekly and starter, past ones, and the reader's rooms. */
 export async function contestLobby(p: Person | null, now = Date.now()) {
-  const weekly = ensureWeekly(now);
+  const { weekly, starter } = ensureWeekly(now);
   await settleWeeklies(now);
+  await settleDuels(now);
   const db = sqlite();
   const withCount = `c.*,(SELECT COUNT(*) FROM contest_entries x WHERE x.room_id=c.id) AS entrants`;
   const past = db
-    .prepare(`SELECT ${withCount} FROM contest_rooms c WHERE kind='weekly' AND starts_at+duration_min*${MINUTE}<=? ORDER BY starts_at DESC LIMIT 12`)
+    .prepare(
+      `SELECT ${withCount} FROM contest_rooms c WHERE kind IN ('weekly','starter') AND starts_at+duration_min*${MINUTE}<=?
+      ORDER BY starts_at DESC LIMIT 12`,
+    )
     .all(now) as (RoomRow & { entrants: number })[];
   const mine = p
     ? (db
@@ -381,7 +525,8 @@ export async function contestLobby(p: Person | null, now = Date.now()) {
     now,
     weekly: weekly ? card(weekly) : null,
     nextWeekly: weeklyStart(weekNumber(now) + 1),
-    past: past.filter((r) => r.id !== weekly?.id).map(card),
+    starter: starter ? card(starter) : null,
+    past: past.filter((r) => r.id !== weekly?.id && r.id !== starter?.id).map(card),
     mine: mine.map(card),
     me: p ? { signedIn: true, verified: p.verified || p.role === 'teacher', name: last?.name ?? '', rating: last?.rating ?? null } : null,
     replays: p ? replays() : [],
@@ -419,11 +564,12 @@ const createSchema = z
       .strict()
       .optional(),
     replay: z.string().regex(/^[wb]\d{1,4}$/).optional(),
+    shareCode: z.boolean().default(false),
   })
   .strict()
   .refine((d) => [d.problems, d.draw, d.replay].filter((x) => x !== undefined).length === 1);
 
-function requireVerified(p: Person) {
+export function requireVerified(p: Person) {
   if (!p.verified && p.role !== 'teacher') throw new HttpError(403, '请先验证邮箱');
 }
 
@@ -456,32 +602,46 @@ async function createRoom(p: Person, input: unknown, now = Date.now()) {
     if (!ids.length) throw new HttpError(404, '这场周赛没有可判的题目');
   }
   const db = sqlite();
-  const id = randomBytes(9).toString('base64url');
-  db.transaction(() => {
+  return db.transaction(() => {
     const { n } = db
       .prepare('SELECT COUNT(*) AS n FROM contest_rooms WHERE owner_id=? AND created_at>?')
       .get(p.id, now - 86400000) as { n: number };
     if (n >= ROOMS_PER_DAY) throw new HttpError(429, '每天最多创建 10 个比赛房间');
-    db.prepare(
-      `INSERT INTO contest_rooms(id,owner_id,title,kind,problem_ids_json,starts_at,duration_min,invite_code,visibility,created_at)
-      VALUES(?,?,?,?,?,?,?,?,'private',?)`,
-    ).run(id, p.id, d.title, d.kind, JSON.stringify(ids), Math.max(now, d.startsAt), d.durationMin, newCode(), now);
-    db.prepare(
-      'INSERT INTO contest_entries(room_id,user_id,display_name,joined_at,virtual_start) VALUES(?,?,?,?,NULL)',
-    ).run(id, p.id, d.displayName, now);
+    const room = { owner: p.id, title: d.title, kind: d.kind, ids, startsAt: Math.max(now, d.startsAt), durationMin: d.durationMin };
+    return insertRoom(room, { userId: p.id, name: d.displayName, share: d.shareCode }, now).id;
   })();
-  return id;
+}
+
+/**
+ * A private room and its first, live entrant: an owner's own room (with an invite code) or a
+ * ranked duel the queue matched (no owner, no code). Callers check their limits around it.
+ */
+export function insertRoom(
+  room: { owner: string | null; title: string; kind: 'mashup' | 'duel'; ids: readonly string[]; startsAt: number; durationMin: number },
+  first: { userId: string; name: string; share: boolean },
+  now: number,
+) {
+  const db = sqlite();
+  const id = randomBytes(9).toString('base64url');
+  db.prepare(
+    `INSERT INTO contest_rooms(id,owner_id,title,kind,problem_ids_json,starts_at,duration_min,invite_code,visibility,created_at)
+    VALUES(?,?,?,?,?,?,?,?,'private',?)`,
+  ).run(id, room.owner, room.title, room.kind, JSON.stringify(room.ids), room.startsAt, room.durationMin, room.owner ? newCode() : null, now);
+  db.prepare(
+    'INSERT INTO contest_entries(room_id,user_id,display_name,joined_at,virtual_start,share_code) VALUES(?,?,?,?,NULL,?)',
+  ).run(id, first.userId, first.name, now, +first.share);
+  return db.prepare('SELECT * FROM contest_rooms WHERE id=?').get(id) as RoomRow;
 }
 
 /** Compared in JS: SQLite lower() folds ASCII only. */
-const fold = (s: string) => s.normalize('NFKC').toLowerCase();
+export const fold = (s: string) => s.normalize('NFKC').toLowerCase();
 
 /**
  * Joins live before the start; from the start on, as a virtual run timed from now and never
  * rated, so nobody can solve first and enter once it went well. A duel's second entrant
  * starts it: the clock (re)starts now unless it was set later. Idempotent.
  */
-function enter(row: RoomRow, p: Person, name: string, now = Date.now()) {
+export function enter(row: RoomRow, p: Person, name: string, now = Date.now(), share = false) {
   requireVerified(p);
   const db = sqlite();
   db.transaction(() => {
@@ -494,8 +654,8 @@ function enter(row: RoomRow, p: Person, name: string, now = Date.now()) {
     if (startsDuel)
       db.prepare('UPDATE contest_rooms SET starts_at=MAX(starts_at,?) WHERE id=?').run(now, row.id);
     db.prepare(
-      'INSERT INTO contest_entries(room_id,user_id,display_name,joined_at,virtual_start) VALUES(?,?,?,?,?)',
-    ).run(row.id, p.id, name, now, startsDuel || now < row.starts_at ? null : now);
+      'INSERT INTO contest_entries(room_id,user_id,display_name,joined_at,virtual_start,share_code) VALUES(?,?,?,?,?,?)',
+    ).run(row.id, p.id, name, now, startsDuel || now < row.starts_at ? null : now, +share);
   })();
   return row.id;
 }
@@ -527,6 +687,39 @@ async function search(q: string) {
     .sort((a, b) => Number(b.id === number) - Number(a.id === number) || a.id.localeCompare(b.id, 'en', { numeric: true }))
     .slice(0, 20)
     .map((s) => ({ id: s.id, title: s.title, titleEn: s.titleEn ?? null, difficulty: s.difficulty, rating: lcRating(s.id) }));
+}
+
+/**
+ * Accepted code entrants chose to share (share_code), for one of the room's problems: each
+ * sharer's first AC inside their own window, once that window is over; `name` (the sharer the
+ * reader picked) first, then live entrants. Opens to accounts that can open the room RATE_GRACE
+ * after it ends, never while the problem is in a contest running for the reader (a virtual run
+ * of this very room included).
+ */
+export async function sharedCode(id: string, problem: string, p: Person, now = Date.now(), name = '') {
+  const { row } = readable(id, p);
+  if (!(await roomProblems(row)).includes(problem)) throw new HttpError(404, '题目不在这场比赛里');
+  if (now < endOf(row) + RATE_GRACE) throw new HttpError(403, '比赛结束 15 分钟后才能看代码');
+  refuseInContest(p, problem, now);
+  const items = sqlite()
+    .prepare(
+      // SQLite: with MIN(), the bare columns come from the row holding the minimum.
+      `SELECT e.display_name AS name,e.virtual_start IS NOT NULL AS virtual,s.language,s.code,
+        MIN(s.created_at)-COALESCE(e.virtual_start,@start) AS at
+      FROM contest_entries e JOIN submissions s ON s.user_id=e.user_id
+      WHERE e.room_id=@room AND e.share_code=1 AND s.problem_id=@problem AND s.mode='judge' AND s.status='accepted'
+        AND s.created_at>=COALESCE(e.virtual_start,@start) AND s.created_at<=COALESCE(e.virtual_start,@start)+@ms
+        AND COALESCE(e.virtual_start,@start)+@ms<=@now
+      GROUP BY e.user_id ORDER BY e.display_name=@name DESC,virtual,at,name LIMIT 50`,
+    )
+    .all({ room: row.id, problem, start: row.starts_at, ms: row.duration_min * MINUTE, now, name }) as {
+    name: string;
+    virtual: number;
+    language: string;
+    code: string;
+    at: number;
+  }[];
+  return { problem, items: items.map((r) => ({ ...r, virtual: !!r.virtual })) };
 }
 
 // ---------------------------------------------------------------- fairness
@@ -584,8 +777,13 @@ export async function handleContests(request: Request, p: Person | null, path: s
     await limitReader(request, p, 'contest-read', 120);
     if (!id) return json(await contestLobby(p));
     if (id === 'leaderboard' && !action) return json({ items: await leaderboard(p) });
+    if (action === 'code') {
+      requirePerson(p);
+      await limit(p, 'contest-code', 30);
+      return json(await sharedCode(id, problemId.parse(params.get('problem')), p, Date.now(), params.get('name') ?? ''));
+    }
     if (action) throw new HttpError(404, '比赛接口不存在');
-    return json(await roomView(id, p));
+    return json(await roomView(id, p, Date.now(), params.get('following') === '1'));
   }
   if (request.method !== 'POST') throw new HttpError(404, '比赛接口不存在');
   requirePerson(p);
@@ -594,14 +792,25 @@ export async function handleContests(request: Request, p: Person | null, path: s
   if (id === 'join' && !action) {
     await limit(p, 'contest-join', 10);
     await limit(p, 'contest-join-hour', 60, 3600);
-    const d = z.object({ code: z.string(), displayName }).strict().parse(await readJson(request, 1000));
-    return json(await roomView(enter(byCode(d.code), p, d.displayName), p));
+    const d = z
+      .object({ code: z.string(), displayName, shareCode: z.boolean().default(false) })
+      .strict()
+      .parse(await readJson(request, 1000));
+    return json(await roomView(enter(byCode(d.code), p, d.displayName, Date.now(), d.shareCode), p));
   }
   if (action === 'join') {
     const { row } = readable(id, p);
     if (row.visibility !== 'public') throw new HttpError(404, '比赛不存在');
-    const d = z.object({ displayName }).strict().parse(await readJson(request, 1000));
-    return json(await roomView(enter(row, p, d.displayName), p));
+    const d = z.object({ displayName, shareCode: z.boolean().default(false) }).strict().parse(await readJson(request, 1000));
+    return json(await roomView(enter(row, p, d.displayName, Date.now(), d.shareCode), p));
+  }
+  // An entrant turns sharing their accepted code on or off, any time.
+  if (action === 'share') {
+    const { row, entry } = readable(id, p);
+    if (!entry) throw new HttpError(404, '你没有报名这场比赛');
+    const { on } = z.object({ on: z.boolean() }).strict().parse(await readJson(request, 200));
+    sqlite().prepare('UPDATE contest_entries SET share_code=? WHERE room_id=? AND user_id=?').run(+on, row.id, p.id);
+    return json({ on });
   }
   throw new HttpError(404, '比赛接口不存在');
 }
