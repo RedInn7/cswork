@@ -54,3 +54,29 @@ class Solution { public int[] twoSum(int[] nums, int target) { Node n = new Node
     }
   },
 );
+
+void test(
+  'a signature type named in a literal or a local class is still provided',
+  { skip },
+  () => {
+    for (const extra of [
+      'String doc = "class ListNode";',
+      'char brace = \'{\'; String block = """\n  class ListNode {\n""";',
+      'int digits() { class ListNode { int d; } return new ListNode().d; }',
+    ]) {
+      const code = `class Solution { ${extra}
+  public ListNode addTwoNumbers(ListNode l1, ListNode l2) { return new ListNode(l1.val + l2.val); } }`;
+      assert.match(source('lc-2', code), /^class ListNode \{/m, extra);
+      const dir = mkdtempSync(join(tmpdir(), 'cswork-java-platform-'));
+      try {
+        writeFileSync(join(dir, 'Main.java'), source('lc-2', code));
+        const result = spawnSync('javac', ['-d', dir, join(dir, 'Main.java')], {
+          encoding: 'utf8',
+        });
+        assert.equal(result.status, 0, `${extra}\n${result.stderr}`);
+      } finally {
+        rmSync(dir, { recursive: true, force: true });
+      }
+    }
+  },
+);

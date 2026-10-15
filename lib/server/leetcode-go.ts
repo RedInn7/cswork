@@ -10,12 +10,15 @@ const definitions: Record<string, string> = {
 };
 const clean = (source: string) =>
   source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
-/** Package-level text only: no comments, literals, or `{...}` bodies (a local type may shadow X). */
-function packageLevel(source: string) {
+/**
+ * Package-level (Go) or top-level (Java) text only: no comments, literals, or
+ * `{...}` bodies, where a local or nested type may shadow X.
+ */
+export function packageLevel(source: string) {
   let depth = 0;
   let top = '';
   for (const ch of source.replace(
-    /\/\*[\s\S]*?\*\/|\/\/[^\n]*|`[^`]*`|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'/g,
+    /\/\*[\s\S]*?\*\/|\/\/[^\n]*|`[^`]*`|"""(?:\\[\s\S]|[^\\])*?"""|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'/g,
     ' ',
   )) {
     if (ch === '}') depth--;

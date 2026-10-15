@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { packageLevel } from './leetcode-go';
 const definitions: Record<string, string> = {
   TreeNode:
     'class TreeNode { int val; TreeNode left, right; TreeNode() {} TreeNode(int v) { val=v; } TreeNode(int v,TreeNode l,TreeNode r) {val=v;left=l;right=r;} }',
@@ -14,14 +15,12 @@ const definitions: Record<string, string> = {
 // Like LeetCode, only the types the official signature uses; the runtime is
 // reflective and names none, so every other name belongs to the learner.
 function helpers(source: string, signature: string) {
-  const clean = source
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/\/\/[^\n]*/g, '');
+  const top = packageLevel(source);
   return Object.entries(definitions)
     .filter(
       ([name]) =>
         new RegExp(`\\b${name}\\b`).test(signature) &&
-        !new RegExp(`\\b(?:class|interface)\\s+${name}\\b`).test(clean),
+        !new RegExp(`\\b(?:class|interface)\\s+${name}\\b`).test(top),
     )
     .map(([, code]) => code)
     .join('\n');
