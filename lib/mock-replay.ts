@@ -148,6 +148,27 @@ export const contestReplay = (
   skew,
 });
 
+/**
+ * Contest runs have no history to prune their tracks by: this browser keeps the CONTEST_KEEP it
+ * started recording last (a duel is a room of its own, so they pile up). A bad list throws: nothing
+ * is remembered, and nothing pruned.
+ */
+const CONTEST_RUNS = 'cswork:contest-replays',
+  CONTEST_KEEP = 20;
+const contestRuns = (): string[] => {
+  const list: unknown = JSON.parse(localStorage.getItem(CONTEST_RUNS) || '[]');
+  return Array.isArray(list) ? list.filter((id): id is string => typeof id === 'string') : [];
+};
+/** Called as a session starts recording; anything but a contest run is left to its mock history. */
+export function rememberContestRun(id: string) {
+  if (!id.startsWith(CONTEST_PREFIX)) return;
+  try {
+    localStorage.setItem(CONTEST_RUNS, JSON.stringify([id, ...contestRuns().filter((x) => x !== id)].slice(0, CONTEST_KEEP)));
+  } catch {
+    /* No storage (or full): the run is recorded all the same, and a later prune may drop it. */
+  }
+}
+
 /* ---------------------------------------------------------------- storage */
 
 const DB = 'cswork-replay',
@@ -232,8 +253,9 @@ export const loadSession = async (session: string, ids: readonly string[]) => {
 };
 /**
  * Drops the tracks of mock sessions no account on this browser still has (a mock leaves the
- * history after MOCK_HISTORY newer ones). The states are read when the keys are, so a mock drawn in
- * another tab meanwhile is kept: it is written to its state before anything is recorded.
+ * history after MOCK_HISTORY newer ones), and of contest runs past the last CONTEST_KEEP. The
+ * states are read when the keys are, so a mock drawn or a run started in another tab meanwhile is
+ * kept: it is written to its state or the list before anything is recorded.
  */
 export async function pruneTracks() {
   try {
@@ -245,9 +267,8 @@ export async function pruneTracks() {
       const state = parseMockState(localStorage.getItem(name));
       for (const s of [state.active, ...state.history]) if (s) keep.add(s.id);
     }
-    // ponytail: contest runs are kept, with no history to prune them by; a few KB gzipped each.
-    for (const key of keys)
-      if (!key.startsWith(CONTEST_PREFIX) && !keep.has(key.split(':')[0])) await withStore('readwrite', (s) => s.delete(key));
+    for (const id of contestRuns()) keep.add(id);
+    for (const key of keys) if (!keep.has(key.split(':')[0])) await withStore('readwrite', (s) => s.delete(key));
   } catch {
     /* Without storage there is nothing to prune, and nothing is pruned on a failed read. */
   }

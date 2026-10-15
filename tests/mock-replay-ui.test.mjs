@@ -47,7 +47,7 @@ globalThis.indexedDB = {
 
 const { createRoot } = await import('react-dom/client');
 const { MockReplay, useReplayRecorder } = await import('../components/mock-replay.tsx');
-const { contestReplay, loadSession, pruneTracks, trackKey } = await import('../lib/mock-replay.ts');
+const { contestReplay, loadSession, pruneTracks, rememberContestRun, trackKey } = await import('../lib/mock-replay.ts');
 const { mockStorageKey } = await import('../lib/mock-oa.ts');
 
 const flush = async () => {
@@ -263,8 +263,15 @@ test('a contest run records on the server clock and replays its own window', asy
     assert.deepEqual(p2.opens, [60_000]);
     assert.equal(p2.events[0].t, 30_000);
     // After the run, the room page rebuilds the session from the same window, without the skew.
-    await act(async () => root.render(createElement(MockReplay, { session: contestReplay('r1', me, ['p1', 'p2']), title: (id) => id })));
+    await act(async () =>
+      root.render(
+        createElement(MockReplay, { session: contestReplay('r1', me, ['p1', 'p2']), title: (id) => id, heading: 'My code replay', level: 2 }),
+      ),
+    );
     await report();
+    const heading = document.querySelector('#mock-replay-title');
+    assert.equal(heading.tagName, 'H2');
+    assert.equal(heading.textContent, 'My code replay');
     assert.equal(document.querySelector('.mock-replay-clock').textContent, '00:00 / 30:00');
     assert.equal(document.querySelector('.mock-replay-marks button').dataset.tone, 'ac');
     // Another entrant of the room on this browser has nothing to replay.
@@ -279,12 +286,20 @@ test('a session that left every history on this browser loses its replay', async
   stored.set(trackKey('kept', 'p1'), 'x');
   stored.set(trackKey('gone', 'p1'), 'x');
   localStorage.setItem(mockStorageKey('someone'), JSON.stringify({ active: null, history: [{ id: 'kept', ids: ['p1'], slots: ['easy'], minutes: 30, createdAt: 1, skew: 0 }] }));
+  // Contest runs have no mock history: the last 20 this browser started recording stay.
+  const run = (room) => contestReplay(room, { name: 'Amy', start: 0, end: 1 }, []).id;
+  stored.set(trackKey(run('old'), 'p1'), 'x');
   await pruneTracks();
   assert.equal(stored.has(trackKey('kept', 'p1')), true);
   assert.equal(stored.has(trackKey('gone', 'p1')), false);
   assert.equal(stored.has(trackKey('s1', 'p1')), false);
-  // Contest runs have no mock history: they stay.
-  assert.equal(stored.has(trackKey(contestReplay('r1', { name: 'Amy', start: 0, end: 1 }, []).id, 'p2')), true);
+  assert.equal(stored.has(trackKey(run('r1'), 'p2')), true, 'recorded above, so listed');
+  assert.equal(stored.has(trackKey(run('old'), 'p1')), false, 'never listed');
+  for (let i = 0; i < 20; i++) rememberContestRun(run(`duel-${i}`));
+  rememberContestRun('s2');
+  assert.equal(JSON.parse(localStorage.getItem('cswork:contest-replays')).length, 20, 'a mock is not listed');
+  await pruneTracks();
+  assert.equal(stored.has(trackKey(run('r1'), 'p2')), false, '20 newer runs push it out');
 });
 
 test('a mock recorded before the focus self-check says so instead of counting zero', async () => {

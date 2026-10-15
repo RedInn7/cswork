@@ -21,6 +21,7 @@ import {
   trackWrite,
   timeSummary,
   trackKey,
+  rememberContestRun,
   type ReplaySession,
   type Track,
 } from '@/lib/mock-replay';
@@ -43,6 +44,8 @@ export function useReplayRecorder(session: ReplaySession | null, problemId: stri
       end = start + session.minutes * 60_000,
       key = trackKey(session.id, problemId),
       cap = Math.floor(REPLAY_BYTES / session.ids.length);
+    // Listed before anything is recorded, so a prune in another tab keeps it.
+    rememberContestRun(session.id);
     let track: Track | null = null,
       last = '',
       dirty = false,
@@ -143,8 +146,19 @@ const tone = (m: Marker) => (m.status === 'accepted' ? 'ac' : m.mode === 'run' ?
  * The replay on a finished mock's report or under a contest room: a timeline with each run and
  * submission marked, play / pause at 1×, 4× or 16×, the code as it stood, and where the time went.
  */
-export function MockReplay({ session, title }: { session: ReplaySession; title: (id: string) => string }) {
+export function MockReplay({
+  session,
+  title,
+  heading,
+  level = 3,
+}: {
+  session: ReplaySession;
+  title: (id: string) => string;
+  heading?: string;
+  level?: 2 | 3;
+}) {
   const t = useT();
+  const H = level === 2 ? 'h2' : 'h3';
   const [tracks, setTracks] = useState<(Track | null)[] | null>(null);
   useEffect(() => {
     let live = true;
@@ -196,7 +210,7 @@ export function MockReplay({ session, title }: { session: ReplaySession; title: 
   return (
     <section className="mock-section mock-replay" aria-labelledby="mock-replay-title">
       <div className="mock-toolbar">
-        <h3 id="mock-replay-title">{t('代码回放', 'Code replay')}</h3>
+        <H id="mock-replay-title">{heading ?? t('代码回放', 'Code replay')}</H>
         <p>
           {t(
             '作答时每 2 秒记一次代码，只存在这个浏览器里，不上传。',
