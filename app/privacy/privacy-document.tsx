@@ -53,10 +53,13 @@ export function PrivacyDocument() {
                 为支持续播、练习和教学，平台保存课程权限、视频播放位置、完成进度、笔记与收藏，以及你提交的代码、判题结果、作业链接和评审记录。课程更新与工单回复也会产生站内通知及已读记录。
               </p>
               <p>
-                登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，以及给面经和面试题的点赞也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。面试报告和点赞只以人数汇总展示，不公开报告人和点赞人。
+                登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，以及给面经和面试题的点赞也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。面试报告和点赞只以人数汇总展示，不公开报告人和点赞人。模拟 OA 成绩和 AI 面试评分还会匿名参与「超过多少人」的百分位统计，同一场景不足 20 人（AI 面试不足 30 人）时不显示。
               </p>
               <p>
                 参加比赛时，计分板只显示你报名时填写的比赛昵称；周赛、入门赛和 1v1 排位的 rating 与胜负记录保存在你的账号里，只有你在公开主页上打开「展示比赛记录」后才会出现在主页上。排位匹配期间，平台暂存你的比赛昵称、对战 rating 和排队时间，匹配成功或取消时删除，离开页面后最迟 20 分钟内删除。报名时可以选择「赛后公开我的 AC 代码」（默认不勾选）：勾选后，比赛结束 15 分钟起，能打开该场比赛的登录用户可以看到你在比赛时间内每题首次通过的代码。计分板的「只看关注」只列出主页展示比赛记录的人。
+              </p>
+              <p>
+                预约同伴互面时，服务器保存你填写的昵称、面试类型、级别、可用时段、时区和语言，以及你选填的目标公司和话题；同伴只能看到昵称，匹配通知里会写出你们共同的公司和话题。开着「邮件提醒」时，开始前一天和前一小时会给你已验证的账户邮箱发提醒（经 Resend 发送），内容是面试类型、时间、同伴昵称和会议链接；预约时取消勾选就不会收到。
               </p>
               <p>
                 工单会保存你填写的问题、回复、附件，以及主动关联的课时、视频位置或提交记录。工单、作业和个人提交记录按账户权限提供给你及负责教学管理的老师查看，不作为面向其他学员的公开讨论内容。老师会使用这些资料答疑、评审作业、管理授权和跟进学习问题。
@@ -152,7 +155,7 @@ export function PrivacyDocument() {
                 Anthropic，用于生成回复；追问时还会发送本页最近几轮问答，调试时还会发送你自己能看到的失败信息（判题结果、报错和公开样例或自定义输入的输入输出，不含隐藏测试数据），解释题面时只发送题面和你选中的文字、不发送代码。不发送邮箱、姓名或账户标识。平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不使用 AI 助教就不会发送。
               </p>
               <p>
-                使用模拟面试的 AI 面试官时，服务器会把这道题的题面和面试官参考资料、你这一题的对话、计时和代码框里的代码发送给 Anthropic，用于生成面试官的回复和结束时的评估；同样不发送邮箱、姓名或账户标识，平台不保存对话和评估，它们只存在你的浏览器里。语音输入使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；不点语音输入就不会录音。模拟 OA 的代码回放只保存在你的浏览器里，不会上传。
+                使用模拟面试的 AI 面试官时，服务器会把这道题的题面和面试官参考资料、你这一题的对话、计时和代码框里的代码发送给 Anthropic，用于生成面试官的回复和结束时的评估；系统设计和低层设计题点「完成这一步」时，还会发送这一步的对话，用于这一步的打分和建议。同样不发送邮箱、姓名或账户标识。平台不保存对话和评估文字（它们只存在你的浏览器里），只保存每场评估的五项 1–4 分和结论，用于和同类面试比较。语音输入使用浏览器自带的语音识别，部分浏览器（例如 Chrome）会把录音发送到浏览器厂商的服务器转成文字，这一过程不经过本平台；不点语音输入就不会录音。模拟 OA 的代码回放和专注度自检（离开页面的时段、超过 40 字符的粘贴）只保存在你的浏览器里，不会上传，也不用于监考。
               </p>
               <p>
                 在搜索框（⌘K）里点「问 AI」时，服务器会把你的问题、你选中的页面文字（如有）和站内匹配到的几段公开内容发送给
@@ -250,7 +253,10 @@ export function PrivacyDocument() {
                 badges they earn (including daily-problem months, and one badge
                 you may feature beside your handle), never your name or email.
                 Interview reports and upvotes are shown only as counts of
-                people; reporters and voters are never named.
+                people; reporters and voters are never named. Mock OA scores and
+                AI interview scores also count, anonymously, toward the
+                percentiles other learners see, which only appear once a
+                scenario has 20 people (30 for AI interviews).
               </p>
               <p>
                 In contests, scoreboards show only the contest name you enter
@@ -266,6 +272,17 @@ export function PrivacyDocument() {
                 accepted code you submitted for each question during it. The
                 scoreboard’s “only people I follow” view lists only people whose
                 profile shows contests.
+              </p>
+              <p>
+                When you book a peer mock interview, the server keeps the name
+                you enter, the interview type, level, the hours you offer, your
+                time zone and language, and any target companies and topics you
+                add. Partners see only that name; the match notice lists the
+                companies and topics you share. With email reminders on, your
+                verified account email gets a reminder a day and an hour before
+                the session (sent through Resend) with the type, time, your
+                partner&apos;s name and the call link; untick it when booking to
+                get none.
               </p>
               <p>
                 Tickets store the questions you write, replies, and attachments,
@@ -471,14 +488,20 @@ export function PrivacyDocument() {
                 sends the question, its interviewer notes, your conversation on
                 that question, the clock and the code in the code box to
                 Anthropic to write the interviewer&apos;s replies and the final
-                report. Your email, name and account identifiers are not sent,
-                and the platform keeps neither the conversation nor the report:
-                they live in your browser. Dictation uses your browser&apos;s own
+                report; when you finish a step of a system design or low-level
+                design question, it also sends that step&apos;s conversation to
+                score it and suggest one fix. Your email, name and account
+                identifiers are not sent. The platform keeps neither the
+                conversation nor the report text (they live in your browser),
+                only each report&apos;s five 1–4 scores and verdict, to compare
+                with similar interviews. Dictation uses your browser&apos;s own
                 speech recognition; some browsers (Chrome, for example) send the
                 audio to the browser maker&apos;s servers to turn it into text,
                 without going through this platform, and nothing is recorded
-                unless you press dictate. Mock OA code replays stay in your
-                browser and are never uploaded.
+                unless you press dictate. Mock OA code replays and the focus
+                self-check (time away from the page, pastes over 40 characters)
+                stay in your browser, are never uploaded and are not
+                proctoring.
               </p>
               <p>
                 When you choose Ask AI in the search box (⌘K), the server sends

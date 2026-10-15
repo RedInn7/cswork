@@ -1776,6 +1776,7 @@ function Workspace({
                   title={statement.title}
                   english={uiEnglish}
                   signedIn={!!boot.person}
+                  timeLimit={problem.timeLimits?.[language] ?? problem.timeLimit}
                 />
               )}
             </div>

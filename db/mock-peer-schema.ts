@@ -19,6 +19,12 @@ export const mockMatchRequests = sqliteTable(
     locale: text('locale').notNull().default('en'),
     status: text('status').notNull().default('open'),
     pairId: text('pair_id'),
+    /** 1: email this learner a day and an hour before the session (lib/server/peer-reminders.ts). */
+    remind: integer('remind').notNull().default(1),
+    /** {companies, topics} up to 3 each: partners sharing them are matched first. */
+    focusJson: text('focus_json').notNull().default('{}'),
+    /** 1: "practise now", matched only with other instant requests filed in the last 15 minutes. */
+    instant: integer('instant').notNull().default(0),
     createdAt: integer('created_at').notNull(),
     updatedAt: integer('updated_at').notNull(),
   },
@@ -48,6 +54,9 @@ export const mockMatchPairs = sqliteTable(
     status: text('status').notNull().default('scheduled'),
     aNoShowAt: integer('a_no_show_at'),
     bNoShowAt: integer('b_no_show_at'),
+    /** When the day-before and hour-before reminder mails were claimed (sent at most once each). */
+    remindedDayAt: integer('reminded_day_at'),
+    remindedHourAt: integer('reminded_hour_at'),
     createdAt: integer('created_at').notNull(),
     updatedAt: integer('updated_at').notNull(),
   },

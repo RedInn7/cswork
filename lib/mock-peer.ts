@@ -13,6 +13,20 @@ export const LEVEL_NAMES: Record<Level, Text> = {
 export const LEAD_HOURS = 2;
 export const WINDOW_HOURS = 7 * 24;
 export const SLOTS_MAX = 24;
+/** "Practise now": a request that finds no other instant one this many minutes after filing lapses. */
+export const INSTANT_MINUTES = 15;
+/** Target companies and topics a request may name; partners sharing them are matched first. */
+export const FOCUS_MAX = 3;
+export const COMMON_FOCUS: Text = ['共同关注', 'In common'];
+
+const pad = (n: number) => String(n).padStart(2, '0');
+/** "2026-10-15 22:00 (UTC+8)" in a Date#getTimezoneOffset zone. */
+export function localSlot(slot: number, tz: number) {
+  const d = new Date(slot * 3600000 - tz * 60000);
+  const off = -tz;
+  const zone = `UTC${off < 0 ? '-' : '+'}${Math.floor(Math.abs(off) / 60)}${Math.abs(off) % 60 ? `:${pad(Math.abs(off) % 60)}` : ''}`;
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())} (${zone})`;
+}
 /** Hosts a meeting link may point at; anything else could be a phishing page. */
 const MEETING_HOSTS = [
   'meet.google.com',

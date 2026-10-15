@@ -1992,6 +1992,130 @@ td[data-over] .mi-bar i {
   margin-top: 10px;
   text-align: right;
 }
+
+/* Guided steps (system design, LLD): the line of stops, the step under way and its feedback. */
+.mi-guide {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 16px 20px;
+}
+.mi-guide-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mi-guide-steps li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--rd-muted);
+  font-size: 13px;
+  font-weight: 650;
+}
+.mi-guide-steps li span {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--rd-line);
+  border-radius: 50%;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.mi-guide-steps li[data-state='now'] {
+  color: var(--rd-ink);
+}
+.mi-guide-steps li[data-state='now'] span {
+  border-color: var(--mi-navy);
+  background: var(--mi-navy);
+  color: var(--mi-amber);
+}
+.mi-guide-steps li[data-state='done'] span {
+  border-color: transparent;
+  background: var(--rd-brand-soft);
+  color: var(--rd-brand-ink);
+}
+.mi-guide-now {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  color: var(--rd-ink-2);
+  font-size: 14px;
+}
+.mi-guide-now p {
+  margin: 0;
+}
+.mi-guide-now strong {
+  margin-right: 10px;
+  color: var(--rd-ink);
+}
+.mi-guide-clock {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.mi-guide-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 4px;
+}
+.mi-step-card {
+  display: grid;
+  gap: 4px;
+  padding: 10px 14px;
+  border-left: 3px solid var(--mi-amber);
+  border-radius: 4px 12px 12px 4px;
+  background: color-mix(in oklch, var(--mi-amber) 10%, var(--rd-surface));
+  color: var(--rd-ink);
+  font-size: 13px;
+}
+.mi-step-card p {
+  margin: 0;
+}
+.mi-step-card .mi-ticket-kicker {
+  color: var(--rd-ink-2);
+}
+.mi-ai-extras {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 18px 22px;
+}
+.mi-ai-extras h2 {
+  margin: 0;
+  font-size: 15px;
+}
+.mi-ai-extras h2 small {
+  color: var(--rd-muted);
+  font-weight: 600;
+}
+.mi-peers,
+.mi-guide-scores {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+.mi-peers li,
+.mi-guide-scores li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+.mi-peers b {
+  color: var(--rd-brand-ink);
+}
+.mi-guide-scores small {
+  flex-basis: 100%;
+  color: var(--rd-muted);
+}
 @media (max-width: 860px) {
   .mi-work-side.mi-ai-side {
     overflow: visible;
@@ -2605,6 +2729,48 @@ td[data-over] .mi-bar i {
     color: var(--rd-ink);
   }
   .dark .mi-ai-privacy {
+    color: var(--rd-muted);
+  }
+  .dark .mi-guide-steps li {
+    color: var(--rd-muted);
+  }
+  .dark .mi-guide-steps li span {
+    border: 1px solid var(--rd-line);
+  }
+  .dark .mi-guide-steps li[data-state='now'] {
+    color: var(--rd-ink);
+  }
+  .dark .mi-guide-steps li[data-state='now'] span {
+    border-color: var(--mi-navy);
+    background: var(--mi-navy);
+    color: var(--mi-amber);
+  }
+  .dark .mi-guide-steps li[data-state='done'] span {
+    border-color: transparent;
+    background: var(--rd-brand-soft);
+    color: var(--rd-brand-ink);
+  }
+  .dark .mi-guide-now {
+    color: var(--rd-ink-2);
+  }
+  .dark .mi-guide-now strong {
+    color: var(--rd-ink);
+  }
+  .dark .mi-step-card {
+    border-left: 3px solid var(--mi-amber);
+    background: color-mix(in oklch, var(--mi-amber) 10%, var(--rd-surface));
+    color: var(--rd-ink);
+  }
+  .dark .mi-step-card .mi-ticket-kicker {
+    color: var(--rd-ink-2);
+  }
+  .dark .mi-ai-extras h2 small {
+    color: var(--rd-muted);
+  }
+  .dark .mi-peers b {
+    color: var(--rd-brand-ink);
+  }
+  .dark .mi-guide-scores small {
     color: var(--rd-muted);
   }
 }

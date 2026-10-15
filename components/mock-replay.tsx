@@ -5,12 +5,15 @@ import { useT } from '@/lib/i18n';
 import { formatClock, type MockSession } from '@/lib/mock-oa';
 import { verdict, type OJSubmission } from '@/lib/oj-client';
 import {
+  AWAY_MS,
+  PASTE_CHARS,
   REPLAY_BYTES,
   SNAPSHOT_MS,
   activeAt,
   cursor,
   delta,
   emptyTrack,
+  focusSummary,
   lastCode,
   loadSession,
   loadTrack,
@@ -23,8 +26,9 @@ import {
 
 /**
  * Records this question of a running mock OA (null session: not recording): the editor every
- * SNAPSHOT_MS it changed, the moment the question was opened, and each finished run or
- * submission of the exam window. Returns the callback for a submission's result.
+ * SNAPSHOT_MS it changed, the moment the question was opened, each finished run or submission
+ * of the exam window, the stretches the page was hidden or unfocused, and pastes over
+ * PASTE_CHARS characters. Returns the callback for a submission's result.
  */
 export function useReplayRecorder(session: MockSession | null, problemId: string, code: string) {
   const latest = useRef(code);
@@ -86,13 +90,39 @@ export function useReplayRecorder(session: MockSession | null, problemId: string
       dirty = true;
       snap();
     };
+    // The focus self-check: hidden or unfocused stretches, and long pastes (Monaco's bubble up).
+    let left: number | null = null;
+    const leave = () => {
+      left ??= now();
+    };
+    const back = () => {
+      const at = now();
+      if (track && !track.full && left !== null && at - left >= AWAY_MS) {
+        track.away.push([left, at]);
+        dirty = true;
+      }
+      left = null;
+    };
+    const visibility = () => (document.visibilityState === 'hidden' ? (leave(), snap()) : back());
+    const paste = (e: ClipboardEvent) => {
+      const chars = e.clipboardData?.getData('text').length ?? 0;
+      if (!track || track.full || chars <= PASTE_CHARS) return;
+      track.pastes.push([now(), chars]);
+      dirty = true;
+    };
     const timer = setInterval(snap, SNAPSHOT_MS);
-    const hide = () => document.visibilityState === 'hidden' && snap();
-    document.addEventListener('visibilitychange', hide);
+    document.addEventListener('visibilitychange', visibility);
+    window.addEventListener('blur', leave);
+    window.addEventListener('focus', back);
+    document.addEventListener('paste', paste, true);
     return () => {
       live = false;
       clearInterval(timer);
-      document.removeEventListener('visibilitychange', hide);
+      document.removeEventListener('visibilitychange', visibility);
+      window.removeEventListener('blur', leave);
+      window.removeEventListener('focus', back);
+      document.removeEventListener('paste', paste, true);
+      back();
       snap();
       onResult.current = () => {};
     };
@@ -149,6 +179,9 @@ export function MockReplay({ session, title }: { session: MockSession; title: (i
   const shown = pinned ?? Math.max(0, live);
   const code = cursors[shown]?.(at) ?? '';
   const { perQuestion, pauses } = timeSummary(tracks, duration);
+  const focus = focusSummary(tracks, duration);
+  const unrecorded = tracks.some((track) => track?.legacy);
+  const pos = (ms: number) => `${duration ? (ms / duration) * 100 : 0}%`;
   const label = (m: Marker) =>
     `Q${m.q + 1} · ${m.mode === 'run' ? t('运行', 'Run') : t('提交', 'Submit')} · ${t(...verdict(m.status, m.mode))}${
       m.total ? ` ${m.passed}/${m.total}` : ''
@@ -200,6 +233,17 @@ export function MockReplay({ session, title }: { session: MockSession; title: (i
             aria-label={t('回放进度', 'Replay position')}
             aria-valuetext={`${formatClock(at)} / ${formatClock(duration)}`}
           />
+          {/* Away stretches and long pastes: drawn here, told in words under the time split. */}
+          {!unrecorded && (
+            <ol className="mock-replay-away" aria-hidden="true">
+              {focus.away.map(([from, to]) => (
+                <li key={from} style={{ left: pos(from), width: `calc(${pos(to - from)} + 2px)` }} />
+              ))}
+              {focus.pastes.map((p, i) => (
+                <li key={`p${i}`} className="mock-replay-paste" style={{ left: pos(p.t) }} title={`Q${p.q + 1} · ${formatClock(p.t)}`} />
+              ))}
+            </ol>
+          )}
           <ol className="mock-replay-marks" aria-label={t('运行和提交', 'Runs and submissions')}>
             {markers.map((m, i) => (
               <li key={i} style={{ left: `${duration ? (m.t / duration) * 100 : 0}%` }}>
@@ -262,6 +306,27 @@ export function MockReplay({ session, title }: { session: MockSession; title: (i
           </ul>
         ) : (
           <p className="mock-footnote">{t('没有超过 3 分钟的停顿。', 'No pause longer than 3 minutes.')}</p>
+        )}
+        <h4>{t('专注度自检', 'Focus self-check')}</h4>
+        {unrecorded ? (
+          <p className="mock-replay-focus">
+            {t('这场模拟在专注度自检上线前开始，没有记录离开页面和粘贴。', 'This mock began before the focus self-check, so time away and pastes were not recorded.')}
+          </p>
+        ) : (
+          <>
+            <p className="mock-replay-focus">
+              {t(
+                `离开页面 ${focus.away.length} 次，共 ${formatClock(focus.awayMs)}；粘贴 ${focus.pastes.length} 次（超过 ${PASTE_CHARS} 字符）。`,
+                `Left the page ${focus.away.length} time${focus.away.length === 1 ? '' : 's'} for ${formatClock(focus.awayMs)} in all; ${focus.pastes.length} paste${focus.pastes.length === 1 ? '' : 's'} of over ${PASTE_CHARS} characters.`,
+              )}
+            </p>
+            <p className="mock-footnote">
+              {t(
+                '给你自己复盘用：只保存在这个浏览器里，不上传，也不是监考。时间轴上的灰带是离开的时段，竖线是粘贴。',
+                'For your own review: kept in this browser only, never uploaded, and not proctoring. Grey bands on the timeline are time away; ticks are pastes.',
+              )}
+            </p>
+          </>
         )}
       </div>
     </section>

@@ -24,6 +24,7 @@ import { leetcodeSource, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import { Queue, Worker, type Job } from 'bullmq';
 import { sqlite } from '@/db/sqlite';
 import { loadJudgeSnapshot, ensureOjSeed } from './oj-problems';
+import { sendPeerReminders } from './peer-reminders';
 import { seed } from './seed';
 import {
   assertSnapshotBudget,
@@ -230,10 +231,20 @@ async function judgeSubmission(
   let invalidateBridge = false;
   let terminalFailureCommitted = false;
   try {
-    const snapshot: Pick<OjJudgeSnapshot, 'spec' | 'cases'> =
+    const loaded: Pick<OjJudgeSnapshot, 'spec' | 'cases'> =
       claimed.mode === 'playground'
         ? { spec: PLAYGROUND_SPEC, cases: [] }
         : await loadJudgeSnapshot(claimed.problem_version_id!);
+    // A per-language limit replaces timeLimit everywhere below: cases, codec runs, the deadline.
+    const snapshot = {
+      ...loaded,
+      spec: {
+        ...loaded.spec,
+        timeLimit:
+          loaded.spec.timeLimits?.[claimed.language] ??
+          loaded.spec.timeLimit,
+      },
+    };
     assertSnapshotBudget(snapshot.cases);
     // Runs on the learner's own input: custom-input runs and playground runs.
     const ownInput = claimed.mode !== 'judge' && claimed.custom_input !== null;
@@ -702,10 +713,20 @@ const precompileTimer = setInterval(() => {
     /* Optional acceleration never stops judging. */
   }
 }, OJ_DISPATCH_INTERVAL_MS);
+// Peer mock interview reminder mails, and instant requests that lapsed: the worker is the
+// one long-running process with the mail settings, so no separate timer unit.
+const reminderTimer = setInterval(
+  () =>
+    void sendPeerReminders().catch((error: unknown) =>
+      console.error('peer reminders', error instanceof Error ? error.message : 'unknown'),
+    ),
+  600_000,
+);
 async function stop() {
   if (stopping) return;
   stopping = true;
   clearInterval(timer);
+  clearInterval(reminderTimer);
   clearInterval(dispatchTimer);
   clearInterval(precompileTimer);
   for (const controller of controllers.values()) controller.abort();

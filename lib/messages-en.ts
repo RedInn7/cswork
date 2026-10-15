@@ -261,6 +261,7 @@ const EN: Record<string, string> = {
   '一周内取消了 3 场已匹配的面试，暂时不能匹配': 'You cancelled 3 matched sessions this week, so matching is paused for now',
   你已经有一个在等待匹配的请求: 'You already have a request waiting for a partner',
   '已经约了 3 场，先完成再约': 'You already have 3 sessions booked. Finish one before booking more',
+  这个小时你已经约了一场模拟面试: 'You already have a mock interview booked this hour',
   '请至少选一个未来 7 天内的时段': 'Pick at least one time slot in the next 7 days',
   这场模拟面试不存在: 'Mock interview not found',
   这场模拟面试已结束或已取消: 'This mock interview is over or was cancelled',
@@ -349,6 +350,9 @@ const EN: Record<string, string> = {
   '今天的 AI 面试对话轮数已用完，明天再来': "You've used today's AI interview messages. Come back tomorrow",
   '这场 AI 面试已失效，请重新开始': 'This AI interview has expired. Your next message starts a new one',
   '这场面试的对话轮数已用完': 'This interview is out of messages',
+  这场面试的分步反馈次数已用完: 'This interview is out of step feedback',
+  这一步还没有你的回答: "You haven't answered anything in this step yet",
+  这道题没有这个步骤: "This question doesn't have that step",
   'AI 面试官今天的额度已用完，明天再来': 'The AI interviewer is out of credit for today. Come back tomorrow',
   '这场面试已经生成过评估': 'This interview already has its report',
   '这道题的对话太长了，请换下一题或结束面试': "This question's conversation is too long. Move on to the next question or finish the interview",
@@ -382,6 +386,8 @@ const EN: Record<string, string> = {
   '没有这家公司的模拟 OA': "There's no mock OA for this company",
   '这家公司的可判题还不够，换一家公司或减少题量':
     "There aren't enough judgeable problems for this mock yet. Pick another company or fewer questions",
+  '所选知识点下的题不够，减少题量或多选几个':
+    'Not enough problems on the topics you picked. Draw fewer questions or pick more topics',
   模拟考试参数无效: 'Invalid mock exam parameters',
   '这道题的题解和测试数据正在校验，暂未开放':
     "This problem's solution and test data are being verified and aren't available yet",
