@@ -59,6 +59,9 @@ export function PrivacyDocument() {
                 参加比赛时，计分板只显示你报名时填写的比赛昵称；周赛、入门赛和 1v1 排位的 rating 与胜负记录保存在你的账号里，只有你在公开主页上打开「展示比赛记录」后才会出现在主页上。排位匹配期间，平台暂存你的比赛昵称、对战 rating 和排队时间，匹配成功或取消时删除，离开页面后最迟 20 分钟内删除。报名时可以选择「赛后公开我的 AC 代码」（默认不勾选）：勾选后，比赛结束 15 分钟起，能打开该场比赛的登录用户可以看到你在比赛时间内每题首次通过的代码；之后随时可以在比赛页关掉，关掉后不再向任何人展示。计分板的「只看关注」只列出主页展示比赛记录的人。
               </p>
               <p>
+                参加技能认证考试时，平台保存每场考试抽到的题目、开考和交卷时间、成绩与是否通过，用于计时、计分、7 天的重考间隔和你的考试记录；成绩由你在考试时间内的正式提交算出，不会公开。通过后签发的证书和课程结业证书一样，只有你在证书列表里勾选「在公开主页展示」后才会出现在公开主页上，证书页面显示你的账号名称。给课程打分时，平台保存你给的星级（1–5 星，不含文字）和时间；其他人只能看到汇总的平均分和人数，不足 5 人时不显示平均分。
+              </p>
+              <p>
                 预约同伴互面时，服务器保存你填写的昵称、面试类型、级别、可用时段、时区和语言，以及你选填的目标公司和话题；同伴只能看到昵称，匹配通知里会写出你们共同的公司和话题。开着「邮件提醒」时，开始前一天和前一小时会给你已验证的账户邮箱发提醒（经 Resend 发送），内容是面试类型、时间、同伴昵称和会议链接；预约时取消勾选就不会收到。
               </p>
               <p>
@@ -274,6 +277,19 @@ export function PrivacyDocument() {
                 it is no longer shown to anyone. The
                 scoreboard’s “only people I follow” view lists only people whose
                 profile shows contests.
+              </p>
+              <p>
+                When you take a skill certification exam, the platform keeps the
+                questions it drew, the start and hand-in times, the score and
+                whether you passed, for the timer, the scoring, the 7-day retake
+                interval and your exam history. The score comes from your formal
+                submissions during the exam and is never published. Certificates
+                you earn work like course certificates: they appear on your
+                public profile only if you tick “show on my public profile”, and
+                the certificate page shows your account name. When you rate a
+                course, the platform keeps your stars (1–5, no text) and when you
+                gave them; others see only the average and the number of
+                ratings, and no average until 5 people have rated.
               </p>
               <p>
                 When you book a peer mock interview, the server keeps the name

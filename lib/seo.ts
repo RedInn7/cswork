@@ -166,6 +166,7 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   ...GUIDE_CHAPTERS.map((chapter) => ({ path: guidePath(chapter.slug) })),
   { path: '/career/resume' },
   { path: '/career/visa-timeline' },
+  { path: '/certify' },
 ];
 /** `statics`: entries written before the library on page 1 (static pages plus the mock OA pages). */
 export function sitemapPageCount(
