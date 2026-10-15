@@ -591,7 +591,7 @@ function linkAllowed({ kind, url }: { kind: string; url: string }) {
 const profileLink = z
   .object({ kind: z.enum(['website', 'github', 'linkedin', 'x']), url: z.string().trim().max(200) })
   .strict()
-  .refine(linkAllowed, '链接无效')
+  .refine(linkAllowed)
   .transform((link) => ({ kind: link.kind, url: new URL(link.url).href }));
 /** The school board key: lowercase, no punctuation, symbols or spaces ("M.I.T." and "mit" meet). */
 export const schoolKey = (school: string) => school.toLowerCase().replace(/[\p{P}\p{S}\s]/gu, '');
