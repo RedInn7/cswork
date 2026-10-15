@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-12",
+  "packageChecksum": "7f1854f83663d8fb7fa7712f63125ebe902688ed8317c1b78d9c389c5f0b2d87",
+  "sourceContentHash": "fac47682957122c374d0f2e86eb79ccd15090dc98bf4defe3969a54f01ea8f62",
+  "editorialSha256": "e2f44355dc887a1a526c040ae965a25af60e5f88b82bfb8b5f0a4c0382444ccc",
+  "hints": {
+    "zh": [
+      "每次检查只关心半开区间 [x, x+size) 里此刻有没有障碍，也就是区间内已放置的障碍个数是否为 0；坐标范围很大，但操作只有 10^5 个。",
+      "离线先读完所有操作，把所有放置坐标排序作为离散化后的位置；再按时间顺序用树状数组记录已放置的障碍，检查时只会统计到已经执行过的放置。",
+      "放置时在排序后的坐标数组中二分出下标，在树状数组对应位置加 1；检查时分别二分出 x 和 x+size 的第一个不小于它的下标，两个前缀和之差为 0 就记字符 1，否则记 0；把所有结果拼成一个字符串输出。x+size 可能超过 32 位整数范围。"
+    ],
+    "en": [
+      "Each check only asks whether the half-open range [x, x+size) currently holds any obstacle, that is, whether the number of placed obstacles inside it is 0; coordinates are huge but there are only 10^5 operations.",
+      "Read all operations offline and sort every placement coordinate to get compressed positions; then replay the operations in time order with a Fenwick tree of placed obstacles, so a check only sees placements that already happened.",
+      "On a placement, binary search the coordinate's index in the sorted array and add 1 there in the Fenwick tree; on a check, binary search the first index not less than x and the first index not less than x+size, and emit the character 1 if the two prefix sums are equal, otherwise 0; concatenate all results into one string. x+size can exceed the 32-bit range."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRead all placement coordinates in advance and compress them, using a Fenwick tree to record how many have been placed. When the range count between the two binary-searched indices is zero, the range is clear.\n\n## Why it is correct\n\nCompression keeps only coordinates that can hold an obstacle and does not change their order. The left bound uses lower_bound(x) and the right bound uses lower_bound(x+size); their difference counts exactly the placement operations already executed inside the half-open range, and includes neither future obstacles nor the right endpoint.\n\n## Complexity\n\nTime O(q log q), extra space O(q)."
+}

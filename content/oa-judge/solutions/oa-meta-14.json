@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-14",
+  "packageChecksum": "aabd0486113a6a4f3c28fb0af6eeeb4e618f2fbfd2c042224114a373e71aba45",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int rows, cols;\n    if (scanf(\"%d %d\", &rows, &cols) != 2) return 0;\n    vector<long long> a((size_t)rows * cols);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    string out;\n    for (int d = 0; d < rows + cols - 1; d++) {\n        int low = max(0, d - cols + 1), high = min(rows - 1, d);\n        // Even diagonals go up (row descending), odd ones go down.\n        for (int t = 0; t <= high - low; t++) {\n            int i = d % 2 == 0 ? high - t : low + t;\n            if (!out.empty()) out += ' ';\n            out += to_string(a[(size_t)i * cols + d - i]);\n        }\n    }\n    out += '\\n';\n    fwrite(out.data(), 1, out.size(), stdout);\n}\n",
+      "sha256": "ed3aebb3ff4d3b3f79ac3472bb759c509debc2d73a613f7221701f33efdcb625"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int rows = nextInt(), cols = nextInt();\n        long[] a = new long[rows * cols];\n        for (int i = 0; i < a.length; i++) a[i] = nextLong();\n        StringBuilder sb = new StringBuilder();\n        for (int d = 0; d < rows + cols - 1; d++) {\n            int low = Math.max(0, d - cols + 1), high = Math.min(rows - 1, d);\n            // Even diagonals go up (row descending), odd ones go down.\n            for (int t = 0; t <= high - low; t++) {\n                int i = d % 2 == 0 ? high - t : low + t;\n                if (sb.length() > 0) sb.append(' ');\n                sb.append(a[i * cols + d - i]);\n            }\n        }\n        sb.append('\\n');\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "6d07bf8e462f58d9564395bef268ad34644c57d54f37fc578d4298076180374d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\trows, cols := int(nextInt()), int(nextInt())\n\ta := make([]int64, rows*cols)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tout := make([]byte, 0, 12*len(a)+1)\n\tfor d := 0; d < rows+cols-1; d++ {\n\t\tlow, high := max(0, d-cols+1), min(rows-1, d)\n\t\t// Even diagonals go up (row descending), odd ones go down.\n\t\tfor t := 0; t <= high-low; t++ {\n\t\t\ti := low + t\n\t\t\tif d%2 == 0 {\n\t\t\t\ti = high - t\n\t\t\t}\n\t\t\tif len(out) > 0 {\n\t\t\t\tout = append(out, ' ')\n\t\t\t}\n\t\t\tout = strconv.AppendInt(out, a[i*cols+d-i], 10)\n\t\t}\n\t}\n\tout = append(out, '\\n')\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "c8c564a4cecffb1295632796460dffefb45c00c6aca3bc517380f82abec1cfe4"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-2",
+  "packageChecksum": "f405c1a99df7561252fd8af2aee9a5277c729e6c1ae63eb5ae064fd674794b47",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    long long k;\n    if (scanf(\"%d %lld\", &n, &k) != 2) return 0;\n    int answer = 0;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        scanf(\"%lld\", &v);\n        while (v > 1 && v % k == 0) v /= k;\n        if (v == 1) answer++;\n    }\n    printf(\"%d\\n\", answer);\n}\n",
+      "sha256": "07dcfa0564e0e1d43b5cdde040a14772b88e63cf363765dec90d046cc4b0d2ab"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long k = nextLong();\n        int answer = 0;\n        for (int i = 0; i < n; i++) {\n            long v = nextLong();\n            while (v > 1 && v % k == 0) v /= k;\n            if (v == 1) answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "1ec6a716c6ee59c053652040764dfd88141d3ae094ccf479e36f88458a4ce05f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tk := nextInt()\n\tanswer := 0\n\tfor i := 0; i < n; i++ {\n\t\tv := nextInt()\n\t\tfor v > 1 && v%k == 0 {\n\t\t\tv /= k\n\t\t}\n\t\tif v == 1 {\n\t\t\tanswer++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "53e9f21d80f04a39d5a584584659390a11be1e4d00508bde1705c169a040c843"
+    }
+  ]
+}

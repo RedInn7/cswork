@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-21",
+  "packageChecksum": "f49be287111c1a05bb73736f0441b9aa65bcab9cdb823ce4e43ffcd09e39ee7b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());\n    // Depth = number of open brackets around the integer; scan the JSON text directly.\n    long long total = 0, depth = 0;\n    for (size_t i = 0; i < s.size();) {\n        char c = s[i];\n        if (c == '[') depth++, i++;\n        else if (c == ']') depth--, i++;\n        else if (c == '-' || isdigit((unsigned char)c)) {\n            bool neg = c == '-';\n            if (neg) i++;\n            long long v = 0;\n            while (i < s.size() && isdigit((unsigned char)s[i])) v = v * 10 + (s[i++] - '0');\n            total += (neg ? -v : v) * depth;\n        } else i++;\n    }\n    printf(\"%lld\\n\", total);\n}\n",
+      "sha256": "b84355be9312d307e32388424c9ebbc4df11dca2166752e1b2f958748f8581eb"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        // Depth = number of open brackets around the integer; scan the JSON text directly.\n        long total = 0, depth = 0;\n        int i = 0;\n        while (i < buf.length) {\n            byte c = buf[i];\n            if (c == '[') {\n                depth++;\n                i++;\n            } else if (c == ']') {\n                depth--;\n                i++;\n            } else if (c == '-' || (c >= '0' && c <= '9')) {\n                boolean neg = c == '-';\n                if (neg) i++;\n                long v = 0;\n                while (i < buf.length && buf[i] >= '0' && buf[i] <= '9') v = v * 10 + (buf[i++] - '0');\n                total += (neg ? -v : v) * depth;\n            } else i++;\n        }\n        System.out.println(total);\n    }\n}\n",
+      "sha256": "e82d9e968aaa89e095f40959eeeb340df8a85660aac9b2257842323d9f0684a8"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\t// Depth = number of open brackets around the integer; scan the JSON text directly.\n\tvar total, depth int64\n\tfor i := 0; i < len(data); {\n\t\tc := data[i]\n\t\tswitch {\n\t\tcase c == '[':\n\t\t\tdepth++\n\t\t\ti++\n\t\tcase c == ']':\n\t\t\tdepth--\n\t\t\ti++\n\t\tcase c == '-' || (c >= '0' && c <= '9'):\n\t\t\tneg := c == '-'\n\t\t\tif neg {\n\t\t\t\ti++\n\t\t\t}\n\t\t\tvar v int64\n\t\t\tfor i < len(data) && data[i] >= '0' && data[i] <= '9' {\n\t\t\t\tv = v*10 + int64(data[i]-'0')\n\t\t\t\ti++\n\t\t\t}\n\t\t\tif neg {\n\t\t\t\tv = -v\n\t\t\t}\n\t\t\ttotal += v * depth\n\t\tdefault:\n\t\t\ti++\n\t\t}\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "9fb73ccf6aeb68df98a7ce7409c29e2bde91f493a162b88259c132751f27d7cc"
+    }
+  ]
+}

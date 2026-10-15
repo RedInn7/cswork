@@ -1,0 +1,21 @@
+{
+  "id": "oa-mathworks-6",
+  "packageChecksum": "467eb26883947a5140a0f2cc7ff9b73c66e372644a6739ee5a51d32e9485c0c9",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    long long lo, hi;\n    if (scanf(\"%d %lld %lld\", &n, &lo, &hi) != 3) return 0;\n    long long answer = 0;\n    int start = 0, lastMin = -1, lastMax = -1;\n    for (int i = 0; i < n; i++) {\n        long long x;\n        scanf(\"%lld\", &x);\n        if (x < lo || x > hi) {\n            // Out-of-range value: no valid window may cross it.\n            start = i + 1;\n            lastMin = lastMax = -1;\n            continue;\n        }\n        if (x == lo) lastMin = i;\n        if (x == hi) lastMax = i;\n        if (lastMin >= start && lastMax >= start) answer += min(lastMin, lastMax) - start + 1;\n    }\n    printf(\"%lld\\n\", answer);\n}\n",
+      "sha256": "b79cd1196fada3a192f0d5de472977374ed1a8e8f23abdff9a085bd0385f58bd"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long lo = nextLong(), hi = nextLong();\n        long answer = 0;\n        int start = 0, lastMin = -1, lastMax = -1;\n        for (int i = 0; i < n; i++) {\n            long x = nextLong();\n            if (x < lo || x > hi) {\n                // Out-of-range value: no valid window may cross it.\n                start = i + 1;\n                lastMin = lastMax = -1;\n                continue;\n            }\n            if (x == lo) lastMin = i;\n            if (x == hi) lastMax = i;\n            if (lastMin >= start && lastMax >= start) answer += Math.min(lastMin, lastMax) - start + 1;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "5fa17a07005068bf52168ab1b31a076da707ea923a68de213748781fff27bfdd"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tlo, hi := nextInt(), nextInt()\n\tvar answer int64\n\tstart, lastMin, lastMax := 0, -1, -1\n\tfor i := 0; i < n; i++ {\n\t\tx := nextInt()\n\t\tif x < lo || x > hi {\n\t\t\t// Out-of-range value: no valid window may cross it.\n\t\t\tstart = i + 1\n\t\t\tlastMin, lastMax = -1, -1\n\t\t\tcontinue\n\t\t}\n\t\tif x == lo {\n\t\t\tlastMin = i\n\t\t}\n\t\tif x == hi {\n\t\t\tlastMax = i\n\t\t}\n\t\tif lastMin >= start && lastMax >= start {\n\t\t\tanswer += int64(min(lastMin, lastMax) - start + 1)\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "dfae9a1a1d2c20ad586b757a98b5abfeacc64674bb68a8173a041e5eb406a4ed"
+    }
+  ]
+}

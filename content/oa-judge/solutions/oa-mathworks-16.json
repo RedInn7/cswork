@@ -1,0 +1,21 @@
+{
+  "id": "oa-mathworks-16",
+  "packageChecksum": "d25c9001dc5b83216323dfa647e50967bb68470043cef43231940336c2818c73",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    const int NEG = -1000000000;\n    // dp[len]: best beauty after keeping a subsequence of length len.\n    vector<int> dp(n + 1, NEG);\n    dp[0] = 0;\n    for (int t = 0; t < n; t++) {\n        int x;\n        scanf(\"%d\", &x);\n        for (int len = n - 1; len >= 0; len--)\n            if (dp[len] >= 0) dp[len + 1] = max(dp[len + 1], dp[len] + (x == len + 1));\n    }\n    printf(\"%d\\n\", *max_element(dp.begin() + 1, dp.end()));\n}\n",
+      "sha256": "701e3ed052c485dc82bd19aeabe540c251a37aea93597e5a87895088affcd631"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        final int NEG = -1000000000;\n        // dp[len]: best beauty after keeping a subsequence of length len.\n        int[] dp = new int[n + 1];\n        Arrays.fill(dp, NEG);\n        dp[0] = 0;\n        for (int t = 0; t < n; t++) {\n            int x = nextInt();\n            for (int len = n - 1; len >= 0; len--)\n                if (dp[len] >= 0) dp[len + 1] = Math.max(dp[len + 1], dp[len] + (x == len + 1 ? 1 : 0));\n        }\n        int best = NEG;\n        for (int len = 1; len <= n; len++) best = Math.max(best, dp[len]);\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "c5c88a9de3b0b7bfab2213c912379ac33717359bd426c1b862e04e9a167b15eb"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tconst NEG = -1000000000\n\t// dp[len]: best beauty after keeping a subsequence of length len.\n\tdp := make([]int, n+1)\n\tfor i := range dp {\n\t\tdp[i] = NEG\n\t}\n\tdp[0] = 0\n\tfor t := 0; t < n; t++ {\n\t\tx := int(nextInt())\n\t\tfor l := n - 1; l >= 0; l-- {\n\t\t\tif dp[l] >= 0 {\n\t\t\t\tgain := 0\n\t\t\t\tif x == l+1 {\n\t\t\t\t\tgain = 1\n\t\t\t\t}\n\t\t\t\tdp[l+1] = max(dp[l+1], dp[l]+gain)\n\t\t\t}\n\t\t}\n\t}\n\tbest := NEG\n\tfor l := 1; l <= n; l++ {\n\t\tbest = max(best, dp[l])\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "ba5d309bf4540a2427475c20add00e22142404b03e5f70e7e682c3f995842c1a"
+    }
+  ]
+}

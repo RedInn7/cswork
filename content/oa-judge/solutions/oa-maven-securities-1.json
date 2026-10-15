@@ -1,0 +1,21 @@
+{
+  "id": "oa-maven-securities-1",
+  "packageChecksum": "725366508c8ffbbd7613b6361e1e440373191d68e863ca0ab693342255c3eb73",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<long long> a(n);\n    long long total = 0;\n    for (auto &x : a) {\n        scanf(\"%lld\", &x);\n        total += x;\n    }\n    long long pref = 0, answer = 0;\n    for (int i = 0; i + 1 < n; i++) {\n        pref += a[i];\n        if (pref > total - pref) answer++;\n    }\n    printf(\"%lld\\n\", answer);\n}\n",
+      "sha256": "77187692ca258f533b1802b9d31d0a91109c2088d94f6e83f42b851942ea84fb"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long[] a = new long[n];\n        long total = 0;\n        for (int i = 0; i < n; i++) {\n            a[i] = nextLong();\n            total += a[i];\n        }\n        long pref = 0, answer = 0;\n        for (int i = 0; i + 1 < n; i++) {\n            pref += a[i];\n            if (pref > total - pref) answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "896558ee4aa0490cebcf4c9c96fa444089607d19c8a5610748707b65348afbaf"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tvar total int64\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t\ttotal += a[i]\n\t}\n\tvar pref, answer int64\n\tfor i := 0; i+1 < n; i++ {\n\t\tpref += a[i]\n\t\tif pref > total-pref {\n\t\t\tanswer++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "e0230da6021f61ae025ee0954c0a0b39be6e4e86cf662f5a666a991473026429"
+    }
+  ]
+}

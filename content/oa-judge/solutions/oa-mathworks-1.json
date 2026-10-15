@@ -1,0 +1,21 @@
+{
+  "id": "oa-mathworks-1",
+  "packageChecksum": "1eb19c60e16bbbc3b920e44fdaf9a3c6ee38623762b91f4e5f49c476f9e8bc61",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    long long m;\n    if (scanf(\"%d %lld\", &n, &m) != 2) return 0;\n    vector<long long> a(n);\n    for (auto &x : a) {\n        scanf(\"%lld\", &x);\n        x %= m;\n    }\n    // freq counts remainders strictly left of the middle index.\n    vector<long long> freq(m, 0);\n    long long answer = 0;\n    if (n) freq[a[0]] = 1;\n    for (int mid = 1; mid < n - 1; mid++) {\n        long long r = a[mid];\n        for (int k = mid + 1; k < n; k++) answer += freq[(2 * m - r - a[k]) % m];\n        freq[r]++;\n    }\n    printf(\"%lld\\n\", answer);\n}\n",
+      "sha256": "3d452827ccfaf7cf8c5d20cdb96e0d9c19fca2cdeba0ea34c25784ef74de9157"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        int m = nextInt();\n        int[] a = new int[n];\n        for (int i = 0; i < n; i++) a[i] = (int) (nextLong() % m);\n        // freq counts remainders strictly left of the middle index.\n        long[] freq = new long[m];\n        long answer = 0;\n        if (n > 0) freq[a[0]] = 1;\n        for (int mid = 1; mid < n - 1; mid++) {\n            int r = a[mid];\n            for (int k = mid + 1; k < n; k++) answer += freq[(2 * m - r - a[k]) % m];\n            freq[r]++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "be7a7ceb108fb8d82f09a909989e21308b1f591ef59afb1e717c7a6cedf492ea"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, m := int(nextInt()), nextInt()\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt() % m\n\t}\n\t// freq counts remainders strictly left of the middle index.\n\tfreq := make([]int64, m)\n\tvar answer int64\n\tif n > 0 {\n\t\tfreq[a[0]] = 1\n\t}\n\tfor mid := 1; mid < n-1; mid++ {\n\t\tr := a[mid]\n\t\tfor k := mid + 1; k < n; k++ {\n\t\t\tanswer += freq[(2*m-r-a[k])%m]\n\t\t}\n\t\tfreq[r]++\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "9e1d4e73d33777d77047b2e7e6e02072bc33bce9348f92289727743af5d17949"
+    }
+  ]
+}

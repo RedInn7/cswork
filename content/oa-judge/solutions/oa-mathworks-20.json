@@ -1,0 +1,21 @@
+{
+  "id": "oa-mathworks-20",
+  "packageChecksum": "fec54db280c1232ba6c5632be28ecc9cd577975d8332e466e2d22127418fa132",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = list(map(int, sys.stdin.buffer.read().split()))\n    n, m = data[0], data[1]\n    team_a = data[2:2 + n]\n    team_b = data[2 + n:2 + n + m]\n    sa, sb = sum(team_a), sum(team_b)\n    za, zb = team_a.count(0), team_b.count(0)\n    # Each team can reach every total in [s+z, s+10000z]; intersect the two ranges.\n    lo = max(sa + za, sb + zb)\n    hi = min(sa + 10000 * za, sb + 10000 * zb)\n    print(lo if lo <= hi else -1)\n\n\nmain()\n",
+      "sha256": "9271855e236f2b5982b477d7dc75a54dceedacf5a644e10dc7eac936e8b6ea43"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), m = nextInt();\n        long sa = 0, sb = 0, za = 0, zb = 0;\n        for (int i = 0; i < n; i++) {\n            long x = nextLong();\n            sa += x;\n            if (x == 0) za++;\n        }\n        for (int i = 0; i < m; i++) {\n            long x = nextLong();\n            sb += x;\n            if (x == 0) zb++;\n        }\n        // Each team can reach every total in [s+z, s+10000z]; intersect the two ranges.\n        long lo = Math.max(sa + za, sb + zb), hi = Math.min(sa + 10000 * za, sb + 10000 * zb);\n        System.out.println(lo <= hi ? lo : -1);\n    }\n}\n",
+      "sha256": "553ff91e1fbdd0c9741178b82f0a0cc5ecba60b41e0ca411f56f978795639c1e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, m := int(nextInt()), int(nextInt())\n\tvar sa, sb, za, zb int64\n\tfor i := 0; i < n; i++ {\n\t\tx := nextInt()\n\t\tsa += x\n\t\tif x == 0 {\n\t\t\tza++\n\t\t}\n\t}\n\tfor i := 0; i < m; i++ {\n\t\tx := nextInt()\n\t\tsb += x\n\t\tif x == 0 {\n\t\t\tzb++\n\t\t}\n\t}\n\t// Each team can reach every total in [s+z, s+10000z]; intersect the two ranges.\n\tlo, hi := max(sa+za, sb+zb), min(sa+10000*za, sb+10000*zb)\n\tif lo <= hi {\n\t\tfmt.Println(lo)\n\t} else {\n\t\tfmt.Println(-1)\n\t}\n}\n",
+      "sha256": "f79b668cfdd6f6d1dc0cab53a6a3f15997f421e5e21d641fd20d977e65c58245"
+    }
+  ]
+}

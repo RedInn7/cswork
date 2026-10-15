@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-19",
+  "packageChecksum": "86d61863e66fbd1e91da25e1323ade6d23b278118d0babf01d2cae4f6cf2e51d",
+  "sourceContentHash": "7352d6171018ebc0e53fa8dc44d983a770d023fa054e84407f7289952c2edda8",
+  "editorialSha256": "09eaa70b8e7fd80c1587222cca9dd1f9952c9ca62a9e38203931481cd5a21d2f",
+  "hints": {
+    "zh": [
+      "先不管奇偶，把所有正数都选上得到的和最大；如果这个和已经是偶数，它就是答案。",
+      "若正数之和是奇数，就必须改变某个奇数的选取状态才能变成偶数：要么去掉一个已选的正奇数，要么加入一个负奇数。增删偶数不改变奇偶性，只会让结果变差。",
+      "求出所有正数之和 S；S 为偶数时直接输出。否则找出最小的正奇数 p 和最接近 0 的负奇数 q，候选值为 S−p 与 S+q（只考虑存在的那个），再与一个都不选的 0 比较取最大值输出。判断奇偶时注意负数取余的符号。"
+    ],
+    "en": [
+      "Ignoring parity, taking every positive number gives the largest sum; if that sum is already even, it is the answer.",
+      "If the sum of the positives is odd, some odd number's choice must flip to fix the parity: either drop a chosen positive odd number or add a negative odd number. Adding or dropping even numbers does not change parity and only makes the result worse.",
+      "Compute S, the sum of all positive numbers; output it if it is even. Otherwise find the smallest positive odd p and the negative odd q closest to 0; the candidates are S - p and S + q (only those that exist), compared with 0 for choosing nothing, and the maximum is the answer. Mind the sign of the remainder for negative numbers when testing oddness."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst take all positive numbers to get the maximum sum; if it is odd, compare two fixes: removing the smallest positive odd number, or adding the negative odd number closest to 0.\n\n## Proof of correctness\n\nThe sum of all positive numbers is the maximum when no parity condition is imposed. If it is odd, any feasible solution must at least remove a positive odd number or add a negative odd number; choosing whichever of these two adjustments loses the least gives the maximum even sum.\n\n## Complexity\n\nO(n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-16",
+  "packageChecksum": "d25c9001dc5b83216323dfa647e50967bb68470043cef43231940336c2818c73",
+  "sourceContentHash": "904bcbf9864a7a9810d3060d85b5d99098671e8cd2310395c700fcb0f875b34b",
+  "editorialSha256": "427902b56cdd4b32fb60c8bff9fe49a4ac2a8bab7b5cf1450d0fd9b6683f03a2",
+  "hints": {
+    "zh": [
+      "删除若干元素后剩下的就是原数组的一个非空子序列；一个被保留的元素能否得分，只取决于它前面保留了多少个元素。",
+      "按原顺序处理元素，用 dp[k] 表示在已处理的前缀中保留 k 个元素时能得到的最大 beauty。保留当前元素 x 会让长度从 k 变成 k+1，并且当 x 恰好等于 k+1 时多得 1 分。",
+      "dp[0]=0，其余初始化为不可达；对每个元素，让 k 从大到小枚举，用 dp[k] 加上（x 等于 k+1 时为 1，否则为 0）去更新 dp[k+1]，倒序保证同一个元素不会被用两次；全部处理完后在长度 1..n 中取 dp 的最大值，因为数组至少要保留一个元素。"
+    ],
+    "en": [
+      "After deletions what remains is a non-empty subsequence of the original array; whether a kept element scores depends only on how many elements are kept before it.",
+      "Process elements in order and let dp[k] be the best beauty when k elements of the processed prefix are kept. Keeping the current element x moves the length from k to k+1 and scores one more point exactly when x equals k+1.",
+      "Set dp[0] = 0 and everything else unreachable; for each element, loop k from high to low and relax dp[k+1] with dp[k] plus 1 if x equals k+1 (otherwise plus 0); the reverse order ensures an element is used at most once. At the end take the maximum of dp over lengths 1..n, because at least one element must remain."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe DP state dp[k] is the maximum beauty when a subsequence of length k is chosen from the current prefix. When the current element is kept, its new position is k+1, which decides whether it scores; update in reverse order to avoid choosing it more than once.\n\n## Proof of correctness\n\ndp[k] is the maximum beauty achievable after processing the current prefix of the original array and choosing a subsequence of length k. Skipping the current element keeps the old state; choosing it puts it at new position k+1, and it scores only when its value is exactly k+1. Reverse-order transitions guarantee that each original element is used at most once. After processing everything, take the maximum over all non-empty lengths.\n\n## Complexity\n\nO(n^2), space O(n)."
+}

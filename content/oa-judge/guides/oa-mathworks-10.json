@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-10",
+  "packageChecksum": "d7b808028f80249b2d581f4fcf55114bd0b1cce1e3e6ae136fb14b8bcc6565d2",
+  "sourceContentHash": "39116201ef9cf030aab98b8c4011c0ee5dc99b3c47327233ebb53bf4d39cbb7c",
+  "editorialSha256": "4dc8b76ec25cb6e5dc80ab9f1ad92a49f865f5a243b10a081fb3d0d93c1be0aa",
+  "hints": {
+    "zh": [
+      "两个单词“形状相同”，等价于把其中一个整体平移若干个字母得到另一个，这时它们相邻字母的有符号差值序列完全一样。",
+      "把每个单词转成相邻字母的差值序列当作签名（保留正负号，不取绝对值）；有 n−1 个单词的签名相同，只有答案的签名与众不同。",
+      "计算所有单词的签名并统计每种签名出现的次数，输出签名只出现一次的那个单词；n≥3 保证多数签名至少出现两次，不会混淆。"
+    ],
+    "en": [
+      "Two words have the same shape exactly when one is the other shifted by a fixed number of letters, and then their sequences of signed differences between adjacent letters are identical.",
+      "Turn each word into its sequence of adjacent-letter differences and use it as a signature (keep the sign, do not take absolute values); n-1 words share one signature and only the answer has a different one.",
+      "Compute every word's signature, count how often each signature occurs, and output the word whose signature occurs exactly once; n >= 3 guarantees the majority signature appears at least twice, so there is no ambiguity."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompare the directed sequences of adjacent-letter differences. For example, ACB and BDC are both (+2,-1).\n\n## Proof of correctness\n\nThe problem guarantees that exactly one word has a difference signature different from all the others. After counting the signatures, the only word whose signature occurs exactly once is the answer.\n\n## Complexity\n\nO(nL), space O(nL)."
+}

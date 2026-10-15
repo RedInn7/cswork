@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-26",
+  "packageChecksum": "6716db82bf605f522d7080ca256380ce6b58f19c3e15ec4f339a619655c89e51",
+  "sourceContentHash": "e57909197d36d92957cb9f822e5c928ba47eb53cfd471921282244b1db6946b9",
+  "editorialSha256": "0b1dc20db568efa7a02b93ba5f9e56237f2f610dd8ce22d2c955ea14c5731712",
+  "hints": {
+    "zh": [
+      "不能向上走，所以路径在每一行内都是一段连续的水平移动；如果在同一行里改变左右方向，必然会回到走过的格子，这是不允许的。",
+      "因此每一行的走法只有两种：从落下来的那一列一直向右，或者一直向左。可以逐行做动态规划，记录走到每个格子时最多已经经过多少格。",
+      "维护上一行的结果（从上方落入某一列时已经走过的格子数，第一行只有起点能进入）；对当前行分别从左到右、从右到左各扫描一次：可通行的格子取“从上方落下”和“从同方向相邻格过来”两者中的较大值再加一；两次扫描取较大者作为新的上一行。最后看右下角是否可达，起点被堵或终点不可达都输出 −1。"
+    ],
+    "en": [
+      "You can never move up, so inside each row the path is one contiguous horizontal stretch; reversing direction within a row would revisit a cell, which is not allowed.",
+      "So each row is walked in one of only two ways: from the column you dropped into, keep going right, or keep going left. A row-by-row DP can record the maximum number of cells visited when reaching each cell.",
+      "Keep the previous row's values (cells visited when dropping into each column; in the first row only the start can be entered); scan the current row once left to right and once right to left: a passable cell takes the larger of dropping in from above and arriving from its neighbor in the scan direction, plus one; take the larger of the two scans as the new previous row. At the end check the bottom-right cell, and output -1 if the start is blocked or the exit is unreachable."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRow-by-row dynamic programming. Each row is entered by moving down from the previous row; run one left-to-right scan and one right-to-left scan, take the larger value at each position, and use it as the entry for the next row.\n\n## Proof of correctness\n\nThe path never moves up, so each row is visited in one stretch; changing the horizontal direction within a row would necessarily revisit a cell, which is illegal. Therefore the path inside each row is a segment going left or going right, and the two scans cover it completely. Merging the maximum of the two directions for the next row never reuses a cell of the current row, so the dynamic program enumerates exactly all valid routes.\n\n## Complexity\n\nTime O(RC), space O(C) excluding the input."
+}

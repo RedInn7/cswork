@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-20",
+  "packageChecksum": "fec54db280c1232ba6c5632be28ecc9cd577975d8332e466e2d22127418fa132",
+  "sourceContentHash": "7e72868ab531aac0fc3ba0e90d8926afec453bf624a2e10dc4a7251f24d17a27",
+  "editorialSha256": "8dacd19aac373ab1b046391a1738dc74dc97bca2b85253145a313462d81f682d",
+  "hints": {
+    "zh": [
+      "每个空位都可以独立填 1..10000 中的任意整数，所以一队补完之后能得到的总和不是零散的几个值，而是一整段连续的整数。",
+      "一队已有技能和为 s、空位数为 z 时，补完后的总和恰好可以取遍区间 [s+z, s+10000z]（z=0 时只能是 s）。两队总和相等，就是要在两个区间的交集里取一个值，最小的就是交集的下界。",
+      "分别统计两队非零技能之和与 0 的个数，算出各自的区间；交集下界取两个下界中较大的，上界取两个上界中较小的；下界不超过上界就输出下界，否则输出 −1。总和用 64 位整数更稳妥。"
+    ],
+    "en": [
+      "Each empty position can independently take any integer from 1 to 10000, so the totals a team can reach after filling are not scattered values but one contiguous run of integers.",
+      "If a team's existing skills sum to s and it has z empty positions, its total after filling can be every integer in [s+z, s+10000z] (only s when z = 0). Equal totals means choosing a value in the intersection of the two intervals, and the smallest one is the intersection's lower bound.",
+      "For each team add up the non-zero skills and count the zeros, then build its interval; the intersection's lower bound is the larger of the two lower bounds and its upper bound the smaller of the two upper bounds; output the lower bound if it does not exceed the upper bound, otherwise -1. Use 64-bit integers for the sums to be safe."
+    ]
+  },
+  "explanationEn": "## Problem\n\nIn the two teams' skill arrays, 0 means that position is missing a player, and every empty position must be filled with one player whose skill is between 1 and 10000 (0 stands for a missing player, so a filled position cannot be 0; any player's skill is at most 10000). Find the minimum possible total when the two teams' total skills are equal; if that cannot be done, output -1.\n\n## Approach\n\nWhen a team's existing skill sum is s and it has z empty positions, the total after filling can be any integer in [s+z, s+10000z] (each empty position independently takes 1..10000, and the sums cover the whole interval); when z=0 it can only be s. Intersect the two teams' intervals; if the intersection is non-empty, the answer is its lower bound, otherwise -1.\n\n## Correctness\n\nThe sum of z integers each taken from [1,10000] takes exactly every integer in [z,10000z], so the reachable set is an interval. An equal total must belong to both intervals, and the smallest such value is the lower bound of the intersection.\n\n## Complexity\n\nO(n+m). The total is at most about 10^9; 64-bit integers are the safer choice.\n\n## Independent verification\n\nThe oracle represents each team's set of reachable totals as a Python big-integer bitset: for each empty position it takes the union of the set shifted by every amount in 1..10000 (implemented by doubling), then finds the lowest set bit of the intersection of the two teams' sets, without using the interval formula. It enumerates every combination of team lengths 1..3 with elements from {0,3,10000} and actually runs the reference program on each one. The wrong solutions cover allowing a fill of 0, ignoring the upper limit, taking the smaller lower bound, and getting the upper bound wrong."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-22",
+  "packageChecksum": "b5495bc7e818f96b3b101ccc3b390bfacd1fa012894cca9b68fea7a0f7c45883",
+  "sourceContentHash": "679c2efab66d84f7ba4b3c9b48b9738b9f54c95914de88192082718117e27277",
+  "editorialSha256": "2f406b64de50b77d96e3923968e7bc2c0c7886fee2a16c2a5922bef64fc51271",
+  "hints": {
+    "zh": [
+      "只有辅音字母参与计数，元音、空格、数字和标点既不计数也不改变；被替换的是第 n、2n、3n……个辅音。",
+      "“下一个辅音”就是在字母表中往后找第一个不是元音的字母，越过 z 就回到 a 继续找，所以 z 变成 b；替换后要保持原来的大小写。",
+      "第一行读出 n，第二行整行原样保留（包括首尾和连续空格，也可能是空行）；逐字符处理，遇到辅音计数加一，计数是 n 的倍数时按小写形式找到下一个辅音再恢复大小写，其他字符原样保留；最后输出整行，只以一个换行结尾。"
+    ],
+    "en": [
+      "Only consonant letters are counted; vowels, spaces, digits and punctuation are neither counted nor changed, and the replaced characters are the n-th, 2n-th, 3n-th, ... consonants.",
+      "The next consonant is the first letter after it in the alphabet that is not a vowel, wrapping from z back to a, so z becomes b; the replacement keeps the original case.",
+      "Read n from the first line and keep the second line exactly as it is (leading, trailing and repeated spaces included; it may also be empty); process it character by character, counting consonants, and when the count is a multiple of n find the next consonant of the lowercase form and restore the case, leaving every other character untouched; print the whole line followed by a single newline."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain a consonant counter; at every multiple of n, move the character forward to the next English letter that is not a vowel, continuing from a after passing z; finally restore the original case.\n\n## Proof of correctness\n\nThe counter only increases on consonants, so the replaced positions are exactly the n-th, 2n-th, 3n-th, ... consonants. Searching through the alphabet cyclically and skipping vowels gives exactly the next consonant defined by the problem, and all other characters stay unchanged.\n\n## Complexity\n\nTime O(L), output space O(L)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-25",
+  "packageChecksum": "6a1028ad601d0f6a70401da1a38a61fe33092b08d2c1d32bb5d139f2da0d8737",
+  "sourceContentHash": "ac34c9b36d50759d8552de01ef552349979162367fba9cb11d551388681f730f",
+  "editorialSha256": "c02e29fe1df0d19e9672ad64035f55c2a360ecf08ac6297a44e350bebca768dc",
+  "hints": {
+    "zh": [
+      "所有时间都在同一天内，把 HH:MM 换算成从零点开始的分钟数之后，比较先后就变成了比较整数。",
+      "要找的是严格早于当前时间的最晚一班车；时刻表可能无序、有重复，直接扫描一遍取最大值即可，不需要排序。正好等于当前时间的车还没发车。",
+      "把最后一行的当前时间和每个发车时间都换算成分钟数；在所有小于当前分钟数的发车时间中取最大值，存在就输出两者之差，否则输出 −1。注意 n 可能为 0。"
+    ],
+    "en": [
+      "All times are on the same day, so after converting HH:MM into minutes since midnight, comparing times is just comparing integers.",
+      "You want the latest bus strictly earlier than the current time; the timetable may be unsorted and contain duplicates, so one scan taking the maximum is enough and no sorting is needed. A bus exactly at the current time has not left yet.",
+      "Convert the current time on the last line and every departure time to minutes; among the departures smaller than the current minute value take the maximum, and print the difference if one exists, otherwise -1. Note that n can be 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nConvert times to minutes since midnight and scan for the largest departure time strictly earlier than the current time.\n\n## Proof of correctness\n\nThe conversion preserves the order of times within the same day. The largest departure minute is the last bus that has already left, and the difference between the two is the elapsed minutes; if there is no candidate, no bus has left.\n\n## Complexity\n\nTime O(n), space O(1) excluding the input."
+}

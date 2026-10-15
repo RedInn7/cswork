@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-24",
+  "packageChecksum": "7eec5f8dc979ee037262735234eba7d8ea47f712fbf06de0dd2d32b91e0b9a32",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<long long> dep(n), ret(n);\n    for (auto &x : dep) scanf(\"%lld\", &x);\n    for (auto &x : ret) scanf(\"%lld\", &x);\n    // Scan departure days right to left, keeping the cheapest strictly later return.\n    long long bestReturn = ret[n - 1], answer = dep[n - 2] + bestReturn;\n    for (int i = n - 2; i >= 0; i--) {\n        bestReturn = min(bestReturn, ret[i + 1]);\n        answer = min(answer, dep[i] + bestReturn);\n    }\n    printf(\"%lld\\n\", answer);\n}\n",
+      "sha256": "81b9554ea0d04e4d0ed9a8847ea8be992d121ebc2f1abacacc0fb7ba7977aa41"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long[] dep = new long[n], ret = new long[n];\n        for (int i = 0; i < n; i++) dep[i] = nextLong();\n        for (int i = 0; i < n; i++) ret[i] = nextLong();\n        // Scan departure days right to left, keeping the cheapest strictly later return.\n        long bestReturn = ret[n - 1], answer = dep[n - 2] + bestReturn;\n        for (int i = n - 2; i >= 0; i--) {\n            bestReturn = Math.min(bestReturn, ret[i + 1]);\n            answer = Math.min(answer, dep[i] + bestReturn);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "1867ccbd217416b23e1099e75ffa841caaa7482965a74f7d17010e8d3211c0de"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tdep := make([]int64, n)\n\tret := make([]int64, n)\n\tfor i := range dep {\n\t\tdep[i] = nextInt()\n\t}\n\tfor i := range ret {\n\t\tret[i] = nextInt()\n\t}\n\t// Scan departure days right to left, keeping the cheapest strictly later return.\n\tbestReturn := ret[n-1]\n\tanswer := dep[n-2] + bestReturn\n\tfor i := n - 2; i >= 0; i-- {\n\t\tbestReturn = min(bestReturn, ret[i+1])\n\t\tanswer = min(answer, dep[i]+bestReturn)\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "d65c951be6c7056eaf4bcdb3a94dfaed3c77a727d3f567c3da40963faf858ee7"
+    }
+  ]
+}

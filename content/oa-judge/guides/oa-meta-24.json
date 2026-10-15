@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-24",
+  "packageChecksum": "7eec5f8dc979ee037262735234eba7d8ea47f712fbf06de0dd2d32b91e0b9a32",
+  "sourceContentHash": "a593c760ead9bffff0c1e7bdc69f17028ece67e9f8641d955b24c057c08bd53c",
+  "editorialSha256": "eabfbc9f8da7606503e5da361de072c5bd005e5b8418d03c2ae82377cd532d98",
+  "hints": {
+    "zh": [
+      "返程必须严格晚于出发（j>i），所以不能简单地把两个数组各自的最小值相加。",
+      "固定出发日 i 时，最优的返程票价就是 returning[i+1..n−1] 中的最小值；从右往左扫描，可以在 O(1) 内维护这个后缀最小值。",
+      "先把后缀最小值设为最后一天的返程票价、答案设为倒数第二天的去程票价加上它；然后 i 从 n−2 递减到 0，先用 returning[i+1] 更新后缀最小值，再用 departing[i] 加后缀最小值更新答案。票价可以为负，求和用 64 位整数。"
+    ],
+    "en": [
+      "The return must be strictly later than the departure (j > i), so simply adding the minimums of the two arrays is wrong.",
+      "For a fixed departure day i, the best return fare is the minimum of returning[i+1..n-1]; scanning from right to left maintains that suffix minimum in O(1) per step.",
+      "Start with the suffix minimum equal to the last day's return fare and the answer equal to the second-to-last day's departure fare plus it; then for i from n-2 down to 0, first update the suffix minimum with returning[i+1], then update the answer with departing[i] plus the suffix minimum. Fares can be negative; use 64-bit sums."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhen iterating over the departure day i, the return must come later, so only returning[i+1..n-1] is considered. Scan from right to left while maintaining the minimum fare in that range, add it to departing[i], and update the answer.\n\n## Proof of correctness\n\nFor any fixed departure day i, the valid return days are exactly j>i; the suffix minimum is exactly the minimum among these valid return fares, so adding it to departing[i] gives the optimal valid cost for that i. Taking the minimum after iterating over every i covers all valid departure days, so the global optimum is obtained.\n\n## Complexity\n\nTime O(n), extra space O(1) (excluding the input arrays).\n\n## Source and site conventions\n\nThe fixed OAMaster snapshot (https://oamaster.com/docs/companies/meta#24-get-minimum-round-trip-cost, content fingerprint a593c760ead9bffff0c1e7bdc69f17028ece67e9f8641d955b24c057c08bd53c) gives the array definitions and the original example but omits the return-day restriction; its example solutions in three languages take the minimum of each array separately and ignore the order of the days. The 1Point3Acres report of the same problem explicitly requires j>i: https://www.1point3acres.com/interview/problems/meta-solve-transportation-problem. Under this strict condition the original example is still 2 (outbound fare 1 on day 0, return fare 1 on day 3). The snapshot gives no constraints; n, the fare range, and the stdin/stdout protocol on this site are all supplementary conventions."
+}

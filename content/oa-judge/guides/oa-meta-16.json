@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-16",
+  "packageChecksum": "73cbe70aba9ed6eab7352a11f28e1443b84e7d7731ed03836ab371c8017b42be",
+  "sourceContentHash": "272c0dfc3765d093a90caeabaeb9a08b1ee9826de8b17fc406c62f27d30db29f",
+  "editorialSha256": "91a06bb40e7d1e1f1fbc599fefed4dab901eec36c7b5644332cbb4c3d9b3051d",
+  "hints": {
+    "zh": [
+      "数组已经非递减，两个下标的和会随左下标右移而变大、随右下标左移而变小，这正是双指针能够排除候选的前提。",
+      "左右指针从两端出发：当前和小于目标时，左端再配任何更靠左的右端只会更小，这个左端可以丢弃；否则右端再配更靠右的左端只会更大，这个右端可以丢弃。每一步都用当前和更新最优差值。",
+      "当左指针小于右指针时循环：计算两数之和与 k 的绝对差，比当前最优更小就记录这两个值；和小于 k 就让左指针加一，否则右指针减一；结束后输出记录的两个值。和与差值用 64 位整数，k 可能为负。"
+    ],
+    "en": [
+      "The array is non-decreasing, so the sum of two entries grows as the left index moves right and shrinks as the right index moves left; that is exactly what lets two pointers discard candidates.",
+      "Start the pointers at both ends: if the current sum is below the target, the left end paired with any smaller right index is even smaller, so drop the left end; otherwise the right end paired with any larger left index is even larger, so drop the right end. Update the best difference with the current sum at every step.",
+      "While left < right: compute the absolute difference between the pair's sum and k and record the two values if it beats the best so far; then move left up by one if the sum is below k, otherwise move right down by one; finally print the recorded values. Use 64-bit integers for sums and differences; k may be negative."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTwo pointers start from the two ends of the array and maintain the current minimum absolute difference. When the sum is less than the target, move the left pointer right; otherwise move the right pointer left, always keeping the two indices different.\n\n## Proof of correctness\n\nWhen the current sum is less than the target, keeping the left pointer and decreasing the right pointer only makes the sum smaller and cannot improve the current difference, so that left end can be discarded; when the sum is not less than the target, keeping the right end and increasing the left end is no better either, so that right end can be discarded. Every step records the current candidate, and in the end the globally optimal pair is kept.\n\n## Complexity\n\nTime O(n), space O(1) excluding the input."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-mathworks-8",
+  "packageChecksum": "115cacc789c666743749ff0b35e3f61672465ebb3439d329c25032d0d84b4f4d",
+  "sourceContentHash": "23bf8efa3b3114ef340be0fd12d0104a77966dcf9c83766e7141e1c2b70a1e79",
+  "editorialSha256": "9672c0387cc1f09488a8a5156ced9540766cfb6a3667710f4478e64871144857",
+  "hints": {
+    "zh": [
+      "生产 x 单位时，每种金属只需要补足短缺的部分，最少花费是 Σmax(0, x·composition[i]−stock[i])·cost[i]，并且这个花费随 x 单调不减。",
+      "花费单调，所以“预算内能否生产 x 单位”对 x 单调，可以二分最大的可行产量。",
+      "先从 1 开始不断翻倍，找到一个不可行的上界，再在 [0, 上界) 上二分；计算花费时，一旦某种金属的短缺量或累计花费已经超过预算就立即判为不可行，这样既省时间，也能避免 64 位乘法溢出。"
+    ],
+    "en": [
+      "To produce x units each metal only needs its shortfall covered, so the minimum cost is the sum of max(0, x * composition[i] - stock[i]) * cost[i], and that cost never decreases as x grows.",
+      "Because the cost is monotone, whether x units fit in the budget is monotone in x, so you can binary search for the largest feasible output.",
+      "Double from 1 until you find an infeasible upper bound, then binary search on [0, upper bound); while computing the cost, declare x infeasible as soon as a single shortfall or the running cost exceeds the budget, which saves time and also prevents 64-bit multiplication overflow."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe purchase cost for an output of x is the sum of max(0,x*composition[i]-stock[i])*cost[i], which is non-decreasing in x, so binary search for the largest feasible output. The source example's output of 1 is correct, but the cost formula in the original explanation is wrong; this site corrected it according to the rules.\n\n## Proof of correctness\n\nFor a given output, each metal only needs to make up the shortfall of the recipe, and the formula is exactly the minimum purchase cost to reach that output. The cost is non-decreasing in the output, so binary search finds the maximum output within the budget.\n\n## Complexity\n\nO(n log U), space O(n)."
+}

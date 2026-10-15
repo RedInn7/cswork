@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-18",
+  "packageChecksum": "87e46784b3dd995a8283f4ad4be4c466385f279365431929fcd32acb9f1da6ef",
+  "sourceContentHash": "45e2a41972f68d21c81d836000e936c3b1597c4ffb2672a5bff0a4a5f0cf4ba9",
+  "editorialSha256": "727b30c6f6d3aea05beecf757ad1ab59efc025dea7bcdfc13130c630c022a1f8",
+  "hints": {
+    "zh": [
+      "数组严格递增且都是正整数，所以在 a[i] 之前缺失的正整数个数恰好是 a[i]−i−1（下标从 0 开始），而且这个数随 i 单调不减。",
+      "找到缺失个数第一次达到 k 的位置 i，答案就落在 a[i−1] 和 a[i] 之间；此时比答案小的数组元素恰好有 i 个，所以答案等于 k+i。",
+      "二分查找最小的下标 i 使 a[i]−i−1 不小于 k，找不到时 i 取 n，直接输出 k+i；k 与答案可以超过 10^9，注意整数范围。"
+    ],
+    "en": [
+      "The array is strictly increasing and positive, so the number of missing positive integers before a[i] is exactly a[i] - i - 1 (0-based), and this count never decreases as i grows.",
+      "Find the first position i where the missing count reaches k; the answer lies between a[i-1] and a[i], exactly i array elements are smaller than it, and so the answer is k + i.",
+      "Binary search for the smallest index i with a[i] - i - 1 >= k, taking i = n if there is none, and output k + i; k and the answer can exceed 10^9, so watch the integer range."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAt index i the number of missing values is a[i]-i-1. Binary search for the first position whose missing count reaches k; the result is k plus that index, and if no such position exists the index is n.\n\n## Why it is correct\n\nStrict increase guarantees that the missing count is monotone. The array elements to the left of the insertion point all come before the answer, and those to the right all come after it; if there are i existing numbers on the left, then the answer and everything before it contain k missing numbers, so the answer is k+i.\n\n## Complexity\n\nBinary search time O(log n), input storage O(n)."
+}

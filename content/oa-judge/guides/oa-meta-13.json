@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-13",
+  "packageChecksum": "437db85124ee65943d5ed8d9d259b9651234d12038f7f1b959f105c67ab5aae1",
+  "sourceContentHash": "0ec3367e3d1897bfef6db762f3068fa1c61a0bd81704a5c63eab62f475eaec08",
+  "editorialSha256": "0ed43a7407c3f6962ac24bacf5f62197521990fb84ce05d8ac14c8c771a7006d",
+  "hints": {
+    "zh": [
+      "答案只是“大写字母个数减去小写字母个数”，数字、空格和标点都不影响结果，空字符串的结果为 0。",
+      "不需要分别统计两种字母再相减，可以一边扫描一边维护一个累计值：大写字母贡献 +1，小写字母贡献 −1，其余字符贡献 0。",
+      "把整行原样读入（保留空格，不要按空白切分后丢掉字符），逐个字符判断它是否落在 A..Z 或 a..z 中并更新累计值，最后输出；结果可能是负数。"
+    ],
+    "en": [
+      "The answer is just the number of uppercase letters minus the number of lowercase letters; digits, spaces and punctuation do not matter, and an empty string gives 0.",
+      "There is no need to count the two kinds separately and subtract; keep one running value while scanning: an uppercase letter contributes +1, a lowercase letter -1, and anything else 0.",
+      "Read the whole line as is (keep the spaces; do not split on whitespace and lose characters), check for each character whether it falls in A..Z or a..z and update the running value, then print it; the result may be negative."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the characters: an uppercase letter adds one, a lowercase letter subtracts one, and other characters leave the running value unchanged.\n\n## Why it is correct\n\nEvery uppercase character contributes +1, every lowercase character contributes -1, and other characters contribute zero. Adding them up one by one gives exactly the difference between the two counts.\n\n## Complexity\n\nTime O(n), extra space O(1)."
+}

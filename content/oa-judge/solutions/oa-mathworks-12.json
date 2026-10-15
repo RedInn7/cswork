@@ -1,0 +1,21 @@
+{
+  "id": "oa-mathworks-12",
+  "packageChecksum": "892ce36ba9dcc63a1d1b2693b5a2f88baaa394d2a25336b8810901b367bf70b9",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    const long long MOD = 1000000007;\n    int n, d;\n    if (scanf(\"%d %d\", &n, &d) != 2) return 0;\n    vector<long long> v(26, 1);\n    for (int step = 1; step < n; step++) {\n        long long p[27];\n        p[0] = 0;\n        for (int i = 0; i < 26; i++) p[i + 1] = (p[i] + v[i]) % MOD;\n        for (int i = 0; i < 26; i++) v[i] = (p[min(26, i + d + 1)] - p[max(0, i - d)] + MOD) % MOD;\n    }\n    long long s = 0;\n    for (long long x : v) s = (s + x) % MOD;\n    printf(\"%lld\\n\", s);\n}\n",
+      "sha256": "27a7c7c824e93c188b868f0d0d979d4393e2101188b2eb10ff19beab110d7a8e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        final long MOD = 1000000007L;\n        int n = nextInt(), d = nextInt();\n        long[] v = new long[26];\n        Arrays.fill(v, 1);\n        long[] p = new long[27];\n        for (int step = 1; step < n; step++) {\n            for (int i = 0; i < 26; i++) p[i + 1] = (p[i] + v[i]) % MOD;\n            for (int i = 0; i < 26; i++) v[i] = (p[Math.min(26, i + d + 1)] - p[Math.max(0, i - d)] + MOD) % MOD;\n        }\n        long s = 0;\n        for (long x : v) s = (s + x) % MOD;\n        System.out.println(s);\n    }\n}\n",
+      "sha256": "f484c088ace3600f54571ccfc579bf137865eec9870564dbf5b85560196e991c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tconst MOD = 1000000007\n\tn, d := int(nextInt()), int(nextInt())\n\tv := make([]int64, 26)\n\tfor i := range v {\n\t\tv[i] = 1\n\t}\n\tp := make([]int64, 27)\n\tfor step := 1; step < n; step++ {\n\t\tfor i := 0; i < 26; i++ {\n\t\t\tp[i+1] = (p[i] + v[i]) % MOD\n\t\t}\n\t\tfor i := 0; i < 26; i++ {\n\t\t\tv[i] = (p[min(26, i+d+1)] - p[max(0, i-d)] + MOD) % MOD\n\t\t}\n\t}\n\tvar s int64\n\tfor _, x := range v {\n\t\ts = (s + x) % MOD\n\t}\n\tfmt.Println(s)\n}\n",
+      "sha256": "fc44bec4a1ba2324a7bd477a6ce0b70b015ed59f4855d86ba43a594927b4473d"
+    }
+  ]
+}

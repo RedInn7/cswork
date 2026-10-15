@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-19",
+  "packageChecksum": "c18cbf12f356dd5c6ef1f70d085d6d60eea779521f4eb45b85c1aa10f69f57da",
+  "sourceContentHash": "f584a5e79b73bfff39db37f43d3b5cf4196f317b9cfd761c41fa140c67b94140",
+  "editorialSha256": "77034c63cf75e85cec230eb2667afba357fdc2c0746a5eab2c9ec7fb2b3b7df2",
+  "hints": {
+    "zh": [
+      "一段区间能全部变成 1，当且仅当其中 0 的个数不超过 k；问题就变成找“0 的个数不超过 k”的最长连续区间。",
+      "右端点向右移动时，合法的最靠左的左端点只会右移、不会左移，所以可以用滑动窗口：窗口内 0 的个数超过 k 时就收缩左端。",
+      "右端点从左到右扫描，遇到 0 就把计数加一；当计数大于 k 时不断右移左端点（移出去的是 0 就把计数减一）；每一步都用当前窗口长度更新答案。k=0 时答案就是最长的全 1 段。"
+    ],
+    "en": [
+      "A range can be turned entirely into 1s exactly when it contains at most k zeros; so the task is to find the longest contiguous range with at most k zeros.",
+      "As the right end moves right, the leftmost valid left end only moves right, never left, so a sliding window works: shrink the left end whenever the window holds more than k zeros.",
+      "Sweep the right end from left to right, adding one to the zero count on each 0; while the count exceeds k, advance the left end (subtracting one when a 0 leaves); after each step update the answer with the window length. With k = 0 the answer is the longest all-ones run."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA sliding window maintains the number of zeros inside it, shrinks the left end when that number exceeds k, and records the maximum length over all valid windows.\n\n## Why it is correct\n\nAn interval can be turned entirely into 1s if and only if it contains at most k zeros. For each right end, the left end after shrinking gives the longest valid window ending at that right end; scanning every right end therefore covers the globally optimal segment.\n\n## Complexity\n\nTime O(n), extra space O(1) excluding the input."
+}

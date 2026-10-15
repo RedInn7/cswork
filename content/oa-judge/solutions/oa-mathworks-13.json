@@ -1,0 +1,21 @@
+{
+  "id": "oa-mathworks-13",
+  "packageChecksum": "1fb13c0ae686b98f0550ac590a6494d87e375da9c15bb0ea4b5185689e068d67",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstatic bool vowel(char c) { return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'; }\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, q;\n    cin >> n >> q;\n    vector<int> pre(n + 1, 0);\n    string s;\n    for (int i = 0; i < n; i++) {\n        cin >> s;\n        pre[i + 1] = pre[i] + (vowel(s.front()) && vowel(s.back()));\n    }\n    string out;\n    for (int t = 0; t < q; t++) {\n        cin >> s;\n        size_t dash = s.find('-');\n        int l = stoi(s.substr(0, dash)), r = stoi(s.substr(dash + 1));\n        if (t) out += '\\n';\n        out += to_string(pre[r] - pre[l - 1]);\n    }\n    out += '\\n';\n    fwrite(out.data(), 1, out.size(), stdout);\n}\n",
+      "sha256": "e1ca998845cdb684ef62654b742d6ba671869b1f404b1aa55d06cef44242f951"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] >= '0' && buf[pos] <= '9') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    static boolean vowel(char c) {\n        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), q = nextInt();\n        int[] pre = new int[n + 1];\n        for (int i = 0; i < n; i++) {\n            String s = next();\n            pre[i + 1] = pre[i] + (vowel(s.charAt(0)) && vowel(s.charAt(s.length() - 1)) ? 1 : 0);\n        }\n        StringBuilder sb = new StringBuilder();\n        for (int t = 0; t < q; t++) {\n            String s = next();\n            int dash = s.indexOf('-');\n            int l = Integer.parseInt(s.substring(0, dash)), r = Integer.parseInt(s.substring(dash + 1));\n            if (t > 0) sb.append('\\n');\n            sb.append(pre[r] - pre[l - 1]);\n        }\n        sb.append('\\n');\n        System.out.print(sb);\n    }\n}\n",
+      "sha256": "ef27e0cdf277d4ce4c874730111af4bdc30dfdc813999ae9ee09983c12a62fcf"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skip() {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n}\n\nfunc next() string {\n\tskip()\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[start:pos])\n}\n\nfunc nextInt() int64 {\n\tskip()\n\tneg := false\n\tif pos < len(data) && data[pos] == '-' {\n\t\tneg = true\n\t\tpos++\n\t}\n\tvar r int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tr = r*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc vowel(c byte) bool {\n\treturn c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, q := int(nextInt()), int(nextInt())\n\tpre := make([]int, n+1)\n\tfor i := 0; i < n; i++ {\n\t\ts := next()\n\t\tpre[i+1] = pre[i]\n\t\tif vowel(s[0]) && vowel(s[len(s)-1]) {\n\t\t\tpre[i+1]++\n\t\t}\n\t}\n\tout := make([]byte, 0, 8*q)\n\tfor t := 0; t < q; t++ {\n\t\ts := next()\n\t\tdash := strings.IndexByte(s, '-')\n\t\tl, _ := strconv.Atoi(s[:dash])\n\t\tr, _ := strconv.Atoi(s[dash+1:])\n\t\tif t > 0 {\n\t\t\tout = append(out, '\\n')\n\t\t}\n\t\tout = strconv.AppendInt(out, int64(pre[r]-pre[l-1]), 10)\n\t}\n\tout = append(out, '\\n')\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "66d24e38ceade9ea4ca220da2ad22175be790e2c9c17f79fef23c2e41105b972"
+    }
+  ]
+}

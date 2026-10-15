@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-15",
+  "packageChecksum": "0a6b15fa91c8f61bd7b9d256d614abdd8748169d93d6f9af4fc3cf9b67adccac",
+  "sourceContentHash": "485bec968fa16e9292c6198f3a0ea371cb376e3dc3fe3d1018d97fe4c48322ff",
+  "editorialSha256": "fca20ff2b589b88798f6c5bb8c7099d6513d580bdb30bcff13aed5c21c2b69d7",
+  "hints": {
+    "zh": [
+      "矩阵最多 30×30，对每个非零格直接逐个检查它的比较区域就足够快；值为 0 的格子不参与判断。",
+      "值为 v 的格子 (i,j) 的比较区域是以它为中心、半径为 v 的正方形与矩阵的交集；要跳过中心自身，以及完整正方形的四个角（行差和列差都等于 v 的位置）——角点按完整正方形定义，而不是按裁剪后的区域。",
+      "按行再按列枚举每个非零格，在裁剪后的范围内查找是否有其他格子的值不小于 v（排除中心和四个角点），找不到就记录这个坐标；最后先输出个数，再逐行输出行号和列号。v 可能远大于矩阵尺寸，裁剪时注意范围。"
+    ],
+    "en": [
+      "The matrix is at most 30 x 30, so checking each non-zero cell's comparison region directly is fast enough; cells with value 0 are never candidates.",
+      "For a cell (i,j) with value v, the comparison region is the square of radius v centered on it, intersected with the matrix; skip the center itself and the four corners of the full square (the positions whose row and column differences both equal v). The corners come from the full square, not from the clipped region.",
+      "Enumerate non-zero cells row by row, then column by column, and look inside the clipped range for any other cell whose value is at least v (excluding the center and the four corners); if none exists, record the coordinate. Print the count first, then one row and column per line. v can be far larger than the matrix, so clip the range carefully."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate every non-zero cell, clip the checked range to the matrix, and test the cells one by one, skipping the center and the corners of the original square.\n\n## Why it is correct\n\nClipping only removes cells that do not exist. The loops cover exactly the cells that the rule says to compare; if some value >=v appears, the cell is not a strict maximum, otherwise it is. Scanning in row-then-column order keeps the output sorted.\n\n## Complexity\n\nTime O((RC)^2), space O(RC) excluding the output."
+}

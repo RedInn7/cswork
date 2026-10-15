@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-27",
+  "packageChecksum": "e932d6f46b80ce379e5d96478569705e2e449e64030f6d88a368bb1d7e10a8bc",
+  "sourceContentHash": "8e526090198ab69e5696f7bb0075bdb931e8019748067788359f6dad7159270d",
+  "editorialSha256": "f3e42d027526a2899829ee92a602ee8a7f694986888bdea161412d2fc88ee7a1",
+  "hints": {
+    "zh": [
+      "斐波那契数增长得很快，不超过 10^6 的只有三十个左右，完全可以逐项生成。",
+      "序列非递减，离 N 最近的斐波那契数一定是夹住 N 的相邻两项之一：最后一个不超过 N 的项，或者第一个不小于 N 的项。",
+      "用两个变量表示相邻两项，初始为 0 和 1；当后一项小于 N 时整体向后推进一项。停止后输出 N 减前一项与后一项减 N 中的较小值；N=0 时前一项 0 已经命中，答案为 0。"
+    ],
+    "en": [
+      "Fibonacci numbers grow quickly; only about thirty of them are at most 10^6, so generating them one by one is perfectly fine.",
+      "The sequence is non-decreasing, so the Fibonacci number nearest to N is one of the two consecutive terms that bracket N: the last term not exceeding N or the first term not less than N.",
+      "Keep two consecutive terms, starting with 0 and 1, and advance both by one step while the later term is less than N. Then output the smaller of N minus the earlier term and the later term minus N; for N = 0 the earlier term 0 already matches and the answer is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGenerate consecutive Fibonacci numbers until the later one is not less than N; compare the distances from these two numbers to N.\n\n## Proof of correctness\n\nThe sequence is non-decreasing, and the two consecutive terms that bracket N are its nearest candidates on the left and on the right; no other term can be closer, so take the smaller of the two distances.\n\n## Complexity\n\nTime O(log(N+1)), extra space O(1)."
+}
