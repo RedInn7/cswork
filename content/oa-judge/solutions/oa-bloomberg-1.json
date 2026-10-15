@@ -1,0 +1,21 @@
+{
+  "id": "oa-bloomberg-1",
+  "packageChecksum": "da12319fe238a1efe6fbbb1e3aaca9788a87daf08579734a13dbd026dbaf52c1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long n;\n    cin >> n;\n    while (n % 2 == 0) n /= 2;  // even divisors never give a run of consecutive integers\n    long long divisors = 1;\n    for (long long p = 3; p * p <= n; p += 2) {\n        int exponent = 0;\n        while (n % p == 0) {\n            n /= p;\n            exponent++;\n        }\n        divisors *= exponent + 1;\n    }\n    if (n > 1) divisors *= 2;\n    cout << divisors - 1 << \"\\n\";  // the odd divisor 1 is num on its own\n    return 0;\n}\n",
+      "sha256": "c156cc0d18ebbaf8fb5f0331ce178c26c5294d246fe802854ecb3555d9eca44c"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        long n = new Scanner(System.in).nextLong();\n        while (n % 2 == 0) n /= 2; // even divisors never give a run of consecutive integers\n        long divisors = 1;\n        for (long p = 3; p * p <= n; p += 2) {\n            int exponent = 0;\n            while (n % p == 0) {\n                n /= p;\n                exponent++;\n            }\n            divisors *= exponent + 1;\n        }\n        if (n > 1) divisors *= 2;\n        System.out.println(divisors - 1); // the odd divisor 1 is num on its own\n    }\n}\n",
+      "sha256": "113154524ddf1c85f6179835badc5efad1abe6c73948bde76a418c1c9055de99"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar n int64\n\tfmt.Scan(&n)\n\tfor n%2 == 0 {\n\t\tn /= 2 // even divisors never give a run of consecutive integers\n\t}\n\tdivisors := int64(1)\n\tfor p := int64(3); p*p <= n; p += 2 {\n\t\texponent := int64(0)\n\t\tfor n%p == 0 {\n\t\t\tn /= p\n\t\t\texponent++\n\t\t}\n\t\tdivisors *= exponent + 1\n\t}\n\tif n > 1 {\n\t\tdivisors *= 2\n\t}\n\tfmt.Println(divisors - 1) // the odd divisor 1 is num on its own\n}\n",
+      "sha256": "7d209e18af6a989c752fa3de65fa126d8ce88e4e67d384236293aa8d211c9040"
+    }
+  ]
+}

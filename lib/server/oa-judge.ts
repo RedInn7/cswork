@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { z } from 'zod';
@@ -8,6 +9,7 @@ import {
   cleanOaStatement,
   formatOaVerifiedStatement,
 } from '../oa-verified-statement';
+import { passingPrograms, programKey } from '../oa-solution-evidence.mjs';
 
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
 const registrySchema = z.object({
@@ -53,8 +55,18 @@ export function createOaJudgeRegistry(
       : undefined;
   }
   return {
-    isCurrent(id: string, checksum: string) {
-      return current(id)?.packageChecksum === checksum;
+    /** Bound to the live package (and, when given, to the catalog source it was built from). */
+    isCurrent(id: string, checksum: string, sourceContentHash?: string) {
+      const entry = current(id);
+      return (
+        entry?.packageChecksum === checksum &&
+        (sourceContentHash === undefined || entry.sourceContentHash === sourceContentHash)
+      );
+    },
+    /** sha256 of the current entry's editorial: the guide's English editorial translates exactly this. */
+    editorialSha256(id: string) {
+      const entry = current(id);
+      return entry && createHash('sha256').update(entry.editorial).digest('hex');
     },
     isReady(version: OaPublishedVersion) {
       const entry = current(version.id);
@@ -218,4 +230,92 @@ export function oaEnglishStatement(id: string) {
   return value && value.id === id && oaJudgeRegistry().isCurrent(id, value.packageChecksum)
     ? value.en
     : undefined;
+}
+
+const hintList = z.array(z.string().trim().min(1).max(2000)).length(3);
+const guideSchema = z
+  .object({
+    id: z.string(),
+    packageChecksum: digest,
+    sourceContentHash: digest,
+    editorialSha256: digest,
+    hints: z.object({ zh: hintList, en: hintList }).strict(),
+    explanationEn: z.string().trim().min(1).max(20000),
+  })
+  .strict();
+const programsSchema = z
+  .object({
+    id: z.string(),
+    packageChecksum: digest,
+    programs: z
+      .array(
+        z
+          .object({
+            language: z.enum(['python', 'cpp', 'java', 'go']),
+            code: z.string().min(1).max(200000),
+            sha256: digest,
+          })
+          .strict(),
+      )
+      .max(4),
+  })
+  .strict();
+const sidecars = new Map<string, { id: string }>();
+/** content/oa-judge/<dir>/<id>.json, parsed once; a missing file is looked for again next time. */
+function sidecar<T extends { id: string }>(
+  dir: 'guides' | 'solutions',
+  id: string,
+  parse: (value: unknown) => T,
+): T | undefined {
+  const key = `${dir}/${id}`;
+  if (!sidecars.has(key) && /^oa-[a-z0-9-]+$/.test(id)) {
+    const file = resolve(`content/oa-judge/${key}.json`);
+    try {
+      if (existsSync(file) && statSync(file).size < 1024 * 1024)
+        sidecars.set(key, parse(JSON.parse(readFileSync(file, 'utf8'))));
+    } catch {
+      // An unreadable sidecar is simply not shown; scripts/oa-judge/check-guides.mjs fails on it.
+    }
+  }
+  const value = sidecars.get(key) as T | undefined;
+  return value?.id === id ? value : undefined;
+}
+
+/**
+ * A problem's guide (content/oa-judge/guides/<id>.json): three hints in Chinese and English
+ * (observation, approach, steps) and the editorial in English, kept beside the verified package
+ * like translations. Served only while bound to the live package and its catalog source; the
+ * English editorial only while the registry's editorial is still the one it translates.
+ */
+export function oaGuide(id: string): (Omit<z.infer<typeof guideSchema>, 'explanationEn'> & { explanationEn?: string }) | undefined {
+  const guide = sidecar('guides', id, (value) => guideSchema.parse(value));
+  const registry = oaJudgeRegistry();
+  if (!guide || !registry.isCurrent(id, guide.packageChecksum, guide.sourceContentHash)) return undefined;
+  return registry.editorialSha256(id) === guide.editorialSha256 ? guide : { ...guide, explanationEn: undefined };
+}
+
+let passing: Set<string> | undefined;
+/**
+ * Reference programs beyond the registry's own (content/oa-judge/solutions/<id>.json): only those
+ * whose latest solutions report result (scripts/oa-judge/verify-solutions.mjs) passed every case of
+ * the live package, their code unchanged since.
+ */
+export function oaExtraPrograms(id: string): { language: string; code: string }[] {
+  const extra = sidecar('solutions', id, (value) => programsSchema.parse(value));
+  if (!extra || !oaJudgeRegistry().isCurrent(id, extra.packageChecksum)) return [];
+  passing ??= passingPrograms(resolve('content/oa-judge'));
+  return extra.programs
+    .filter(
+      (program) =>
+        createHash('sha256').update(program.code).digest('hex') === program.sha256 &&
+        passing!.has(
+          programKey({
+            id,
+            language: program.language,
+            sha256: program.sha256,
+            packageChecksum: extra.packageChecksum,
+          }),
+        ),
+    )
+    .map(({ language, code }) => ({ language, code }));
 }

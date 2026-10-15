@@ -116,12 +116,15 @@ type Detail = Item & {
 };
 type Solution = {
   explanation: string;
+  /** The guide's English editorial, when the problem has one. */
+  explanationEn?: string;
   solutions: { language: string; code: string }[];
 };
 const languageNames: Record<string, string> = {
   python: 'Python',
   java: 'Java',
   cpp: 'C++',
+  go: 'Go',
   sql: 'SQL',
   css: 'CSS',
   bash: 'Bash',
@@ -566,7 +569,12 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                     ) : (
                       <>
                         {solution.explanation.trim() ? (
-                          <OaMarkdown body={solution.explanation} />
+                          <OaMarkdown
+                            body={
+                              (locale === 'en' && solution.explanationEn) ||
+                              solution.explanation
+                            }
+                          />
                         ) : (
                           <p className="oa-source">
                             {t(
@@ -1158,12 +1166,36 @@ export function OaCompanyBadge({
   );
 }
 
-/** Mounted only after the learner selects the editorial tab. */
-export function OaEditorial({ problemId }: { problemId: string }) {
-  const t = useT();
+// The editorial's code tabs, in the Line 500 editorial's order; other languages follow.
+const EDITORIAL_ORDER = ['python', 'cpp', 'java', 'go'];
+function editorialRank(language: string) {
+  const rank = EDITORIAL_ORDER.indexOf(language);
+  return rank < 0 ? EDITORIAL_ORDER.length : rank;
+}
+
+/**
+ * The workspace's editorial tab for an OA problem, mounted only once the learner selects it: the
+ * explanation (the guide's English one on an English page) and the reference code by language,
+ * opening on the editor's language. Never mounted in a mock OA or contest; the API refuses it in
+ * a running one.
+ */
+export function OaEditorial({
+  problemId,
+  english,
+  language = '',
+}: {
+  problemId: string;
+  english?: boolean;
+  /** The editor's language: its code tab opens first. */
+  language?: string;
+}) {
+  const locale = useLocale();
+  const en = english ?? locale === 'en';
+  const t = (zh: string, enText: string) => (en ? enText : zh);
   const [data, setData] = useState<Solution | null>(null);
   const [error, setError] = useState('');
   const [attempt, setAttempt] = useState(0);
+  const [picked, setPicked] = useState(language);
   useEffect(() => {
     const controller = new AbortController();
     setData(null);
@@ -1191,17 +1223,36 @@ export function OaEditorial({ problemId }: { problemId: string }) {
     );
   if (!data)
     return <p role="status">{t('正在加载题解…', 'Loading solution…')}</p>;
+  const languages = [...new Set(data.solutions.map((item) => item.language))].sort(
+    (a, b) => editorialRank(a) - editorialRank(b),
+  );
+  const shown = languages.includes(picked) ? picked : languages[0];
   return (
-    <section aria-label={t('题解', 'Solution')} className="oa-solution">
-      <OaMarkdown body={data.explanation} />
-      {data.solutions.map((solution, index) => (
-        <div key={solution.language + index}>
-          <h3>{languageNames[solution.language] || solution.language}</h3>
-          <pre className="oa-code">
+    // Line 500's editorial layout and code block: themed by the workspace (app/ling-editorial.css).
+    <section aria-label={t('题解', 'Solution')} className="oa-solution cs-ling-editorial">
+      <OaMarkdown body={(en && data.explanationEn) || data.explanation} />
+      {languages.length > 0 && (
+        <fieldset className="cs-ling-langs">
+          <legend className="sr-only">{t('代码语言', 'Code language')}</legend>
+          {languages.map((id) => (
+            <button
+              key={id}
+              type="button"
+              aria-pressed={shown === id}
+              onClick={() => setPicked(id)}
+            >
+              {languageNames[id] || id}
+            </button>
+          ))}
+        </fieldset>
+      )}
+      {data.solutions
+        .filter((solution) => solution.language === shown)
+        .map((solution, index) => (
+          <pre className="cs-ling-code" key={shown + index}>
             <code>{solution.code}</code>
           </pre>
-        </div>
-      ))}
+        ))}
     </section>
   );
 }

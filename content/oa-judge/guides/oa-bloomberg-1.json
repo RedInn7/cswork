@@ -1,0 +1,19 @@
+{
+  "id": "oa-bloomberg-1",
+  "packageChecksum": "da12319fe238a1efe6fbbb1e3aaca9788a87daf08579734a13dbd026dbaf52c1",
+  "sourceContentHash": "2590599b144ae9a3701947372119ab2fb98596366123a1ecf840b8042e96fcef",
+  "editorialSha256": "bc6049eac455eeed39cb4101c65a7c1c1dc8d30da28bd522278b9ac233e68f19",
+  "hints": {
+    "zh": [
+      "k 个连续正整数之和等于 k 乘以它们的中间值；按 k 的奇偶分开看，每一种写法都对应 num 的一个奇约数。",
+      "除了奇约数 1（只有 num 自己一项），每个奇约数恰好对应一种至少两项的写法，所以答案是 num 的奇约数个数减 1。",
+      "先把 num 里的因子 2 全部除掉；对剩下的奇数从 3 开始试除到平方根，每个质因子的指数为 e 就把 (e+1) 乘进结果；最后剩下的数若大于 1 再乘 2；输出乘积减 1。"
+    ],
+    "en": [
+      "A run of k consecutive positive integers adds up to k times its middle value; split by the parity of k, every way of writing num belongs to one odd divisor of num.",
+      "Apart from the odd divisor 1 (num on its own), each odd divisor gives exactly one way with at least two terms, so the answer is the number of odd divisors of num minus 1.",
+      "Divide every factor 2 out of num; trial-divide the odd part by 3, 5, 7, ... up to its square root, multiplying in (e + 1) for each prime with exponent e; multiply by 2 if a factor above 1 is left; print the product minus 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nDivide every factor 2 out of num, factor the odd part that remains, and subtract 1 from its number of positive divisors.\n\n## Why it works\n\nA run of odd length d is centred on num/d, where d is an odd divisor of num. If its first term is positive, that is one way of writing num. Otherwise the same odd divisor gives a run of even length 2num/d starting at (d+1)/2 - num/d, which is then positive: the two candidate first terms are integers adding up to 1, so exactly one of them is positive. Conversely, any run of consecutive positive integers gives back its d uniquely, from its length when that is odd and from the odd factor that goes with its length when it is even, so this is a bijection. The odd divisor 1 stands for num on its own, a single term, so it is subtracted.\n\n## Complexity\n\nTrial division takes O(sqrt(num)) time and O(1) extra space."
+}

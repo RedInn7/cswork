@@ -6,7 +6,9 @@ import {
   readdirSync,
   statSync,
 } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
+import { solutionReports } from '../lib/oa-solution-evidence.mjs';
 const source = resolve('content/oa-master/catalog.json');
 if (statSync(source).size > 64 * 1024 * 1024)
   throw new Error('OA catalog exceeds size budget');
@@ -36,23 +38,41 @@ if (existsSync(drillsSource)) {
     throw new Error('OA drills exceed size budget');
   copyFileSync(drillsSource, resolve(registryTarget, 'drills.json'));
 }
-// English statements are display-only; ship those bound to the current package checksum.
-const checksums = new Map(
-  registry.items.map((item) => [item.id, item.packageChecksum]),
-);
-const translationSource = resolve('content/oa-judge/translations');
-const translationTarget = resolve(registryTarget, 'translations');
-mkdirSync(translationTarget, { recursive: true });
-let translations = 0;
-for (const file of existsSync(translationSource)
-  ? readdirSync(translationSource).filter((f) => f.endsWith('.json'))
-  : []) {
-  const t = JSON.parse(readFileSync(resolve(translationSource, file), 'utf8'));
-  if (t.packageChecksum !== checksums.get(t.id) || `${t.id}.json` !== file)
-    throw new Error(`Stale or misnamed OA translation: ${file}`);
-  copyFileSync(resolve(translationSource, file), resolve(translationTarget, file));
-  translations++;
+// English statements, guides (hint ladder, English editorial) and extra reference programs are
+// display-only sidecars: ship those bound to the current package (guides: and catalog source and
+// the editorial their English one translates).
+const entries = new Map(registry.items.map((item) => [item.id, item]));
+const shipped = {};
+for (const dir of ['translations', 'guides', 'solutions']) {
+  const source = resolve('content/oa-judge', dir);
+  const target = resolve(registryTarget, dir);
+  mkdirSync(target, { recursive: true });
+  shipped[dir] = 0;
+  for (const file of existsSync(source)
+    ? readdirSync(source).filter((f) => f.endsWith('.json'))
+    : []) {
+    const t = JSON.parse(readFileSync(resolve(source, file), 'utf8'));
+    const entry = entries.get(t.id);
+    if (
+      t.packageChecksum !== entry?.packageChecksum ||
+      `${t.id}.json` !== file ||
+      (dir === 'guides' &&
+        (t.sourceContentHash !== entry.sourceContentHash ||
+          t.editorialSha256 !==
+            createHash('sha256').update(entry.editorial).digest('hex')))
+    )
+      throw new Error(`Stale or misnamed OA ${dir} file: ${file}`);
+    copyFileSync(resolve(source, file), resolve(target, file));
+    shipped[dir]++;
+  }
 }
+// The evidence the server checks before showing an extra program (lib/oa-solution-evidence.mjs).
+mkdirSync(resolve(registryTarget, 'reports'), { recursive: true });
+for (const file of solutionReports('content/oa-judge'))
+  copyFileSync(
+    resolve('content/oa-judge/reports', file),
+    resolve(registryTarget, 'reports', file),
+  );
 console.log(
-  `Packaged ${catalog.items.length} OA reading problems and ${translations} English statements as private server assets.`,
+  `Packaged ${catalog.items.length} OA reading problems, ${shipped.translations} English statements, ${shipped.guides} guides and ${shipped.solutions} extra solution sets as private server assets.`,
 );

@@ -17,6 +17,8 @@ import { hiddenCompanies } from './env';
 import { HttpError, json, limit, limitReader, requirePerson, rows } from './http';
 import { problemMarks, readJson } from './my-practice';
 import {
+  oaExtraPrograms,
+  oaGuide,
   oaJudgeRegistry,
   oaReadyProblems,
   oaVerifiedStatement,
@@ -118,6 +120,8 @@ export function createOaLibrary(
       sourceContentHash: string,
     ) => {
       explanation: string;
+      /** The editorial in English, from the problem's guide. */
+      explanationEn?: string;
       solutions: { language: string; code: string }[];
     };
     /** Topic estimates per problem; lib/content/oa-topics.json by default. */
@@ -379,8 +383,21 @@ export function oaLibrary() {
     if (statSync(file).size > 64 * 1024 * 1024)
       throw new Error('OA catalog exceeds size budget');
     library = createOaLibrary(JSON.parse(readFileSync(file, 'utf8')), {
-      solution: (id, sourceContentHash) =>
-        oaJudgeRegistry().solution(id, sourceContentHash),
+      solution: (id, sourceContentHash) => {
+        const solution = oaJudgeRegistry().solution(id, sourceContentHash);
+        // Beside the package, like translations: the guide's English editorial and the verified
+        // programs in the languages the registry's one doesn't cover.
+        const shown = new Set(solution.solutions.map((item) => item.language));
+        const explanationEn = oaGuide(id)?.explanationEn;
+        return {
+          ...solution,
+          ...(explanationEn ? { explanationEn } : {}),
+          solutions: [
+            ...solution.solutions,
+            ...oaExtraPrograms(id).filter((item) => !shown.has(item.language)),
+          ],
+        };
+      },
     });
   }
   return library;
