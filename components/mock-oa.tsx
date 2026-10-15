@@ -30,7 +30,7 @@ import { englishMessage } from '@/lib/messages-en';
 import { ojRequest, verdict } from '@/lib/oj-client';
 import { problemTitle } from '@/lib/problems';
 import { companyInitials, companyLogos } from '@/lib/oa-company-brands';
-import { stopHref, topicName } from '@/lib/route-stops';
+import { STOP_NAMES, stopHref, topicName } from '@/lib/route-stops';
 import type { Boot } from '@/lib/types';
 import {
   archiveMock,
@@ -94,6 +94,7 @@ type Drawn = {
   slots: Slot[];
   scoring: Scoring;
   source: MockSource;
+  topics?: string[];
   now: number;
 };
 type DrawRequest =
@@ -105,6 +106,7 @@ type DrawRequest =
         minutes: number;
         slots: Slot[];
         source: MockSource;
+        topics?: string[];
       };
     };
 type Report = {
@@ -119,6 +121,8 @@ type Report = {
   }[];
   score: { value: number; min: number; max: number; per: number[]; estimate: boolean };
   pending: boolean;
+  /** Other learners' best in the same scenario scored below this (lib/server/mock-oa.ts mockPeers). */
+  peers?: { n: number; below: number } | null;
 };
 
 const LEVEL: Record<Slot, [string, string]> = {
@@ -156,6 +160,7 @@ const drawRequest = (s: MockSession): DrawRequest =>
           minutes: s.minutes,
           slots: s.slots,
           source: s.source,
+          ...(s.topics?.length ? { topics: s.topics } : {}),
         },
       };
 
@@ -284,6 +289,7 @@ export function MockOa({
         preset: drawn.preset,
         scoring: drawn.scoring,
         source: drawn.source,
+        ...(drawn.topics?.length ? { topics: drawn.topics } : {}),
         slots: drawn.slots,
         ids: drawn.ids,
         minutes: drawn.minutes,
@@ -757,6 +763,7 @@ function CustomMock({
   const [minutes, setMinutes] = useState(90);
   const [level, setLevel] = useState<'ladder' | Slot>('ladder');
   const [source, setSource] = useState<MockSource>('mixed');
+  const [topics, setTopics] = useState<string[]>([]);
   const counts =
     [...presets.companies, ...presets.others].find((c) => c.slug === company)?.pool ?? presets.all;
   const pool = source === 'mixed' ? counts.oa + counts.lc : counts[source];
@@ -794,6 +801,7 @@ function CustomMock({
               minutes,
               slots: level === 'ladder' ? LADDER[questions] : Array(questions).fill(level),
               source,
+              ...(topics.length ? { topics } : {}),
             },
           });
         }}
@@ -851,9 +859,30 @@ function CustomMock({
             {radio<MockSource>('mock-source', 'lc', source, setSource, 'LeetCode')}
           </div>
         </fieldset>
+        <fieldset className="mock-field mock-topics">
+          <legend>
+            {t('知识点（可选，最多 5 个）', 'Topics (optional, up to 5)')} <b>{topics.length}/5</b>
+          </legend>
+          <div className="mock-chips">
+            {Object.entries(STOP_NAMES).map(([slug, [zh, en]]) => {
+              const on = topics.includes(slug);
+              return (
+                <button
+                  key={slug}
+                  type="button"
+                  aria-pressed={on}
+                  disabled={!on && topics.length >= 5}
+                  onClick={() => setTopics(on ? topics.filter((x) => x !== slug) : [...topics, slug])}
+                >
+                  {t(zh, en)}
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
         <div className="mock-custom-go">
           <span className="mock-pool">
-            {t('题池', 'Pool')} <b>{pool}</b>
+            {topics.length ? t('题池（未按知识点筛）', 'Pool (before topics)') : t('题池', 'Pool')} <b>{pool}</b>
           </span>
           <button type="submit" className="mock-cta" disabled={busy || pool < questions}>
             {busy ? <LoaderCircle size={15} className="cs-spin" /> : <Shuffle size={15} />}
@@ -1131,6 +1160,10 @@ function MockReport({
       to: String(to),
       scoring: session.scoring,
       slots: session.slots.join(','),
+      // The scenario, for how this score stands among other learners' (mockPeers).
+      preset: session.preset ? '1' : '0',
+      ...(session.company ? { company: session.company } : {}),
+      source: session.source,
     });
     let timer: ReturnType<typeof setTimeout> | undefined;
     ojRequest<Report>(`mock-oa/report?${query}`, undefined, controller.signal).then(
@@ -1187,6 +1220,14 @@ function MockReport({
             <>
               <span className="mock-led mock-score-value">{data.score.value}</span>
               <span className="mock-score-max">/ {data.score.max}</span>
+              {data.peers && (
+                <small className="mock-peers">
+                  {t(
+                    `超过 ${Math.round((100 * data.peers.below) / data.peers.n)}% 的同场景模拟（${data.peers.n} 人）`,
+                    `Ahead of ${Math.round((100 * data.peers.below) / data.peers.n)}% of mocks like this (${data.peers.n} people)`,
+                  )}
+                </small>
+              )}
               {data.score.estimate && (
                 <small>
                   {t(

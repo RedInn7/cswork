@@ -7,6 +7,8 @@ import { employerSlug } from '@/lib/oa-company-brands';
 import {
   drawMock,
   LADDER,
+  onTopics,
+  PEER_MIN,
   REPORT_SLACK,
   scoreMock,
   seededRandom,
@@ -211,6 +213,7 @@ const drawSchema = z
         minutes: z.number().int().min(15).max(180),
         slots: z.array(z.enum(['easy', 'medium', 'hard'])).max(4).optional(),
         source: z.enum(['mixed', 'oa', 'lc']).default('mixed'),
+        topics: z.array(z.string().regex(/^[a-z0-9-]{1,60}$/)).max(5).optional(),
       })
       .strict()
       .optional(),
@@ -237,11 +240,10 @@ export async function drawMockOa(p: Person, input: unknown) {
       : LADDER[questions]
     : preset!.slots;
   const source: MockSource = custom ? custom.source : 'mixed';
-  const pool = mockPool(
-    await catalogue(),
-    preset ? preset.aliases : slug ? [slug] : null,
-    source,
-    hidden,
+  const topics = custom?.topics ?? [];
+  const pool = onTopics(
+    mockPool(await catalogue(), preset ? preset.aliases : slug ? [slug] : null, source, hidden),
+    topics,
   );
   const solved = new Set(
     (
@@ -260,7 +262,12 @@ export async function drawMockOa(p: Person, input: unknown) {
     random: seededRandom(randomInt(2 ** 31)),
   });
   if (!ids)
-    throw new HttpError(409, '这家公司的可判题还不够，换一家公司或减少题量');
+    throw new HttpError(
+      409,
+      topics.length
+        ? '所选知识点下的题不够，减少题量或多选几个'
+        : '这家公司的可判题还不够，换一家公司或减少题量',
+    );
   return {
     ids,
     company: preset?.slug ?? slug,
@@ -272,12 +279,51 @@ export async function drawMockOa(p: Person, input: unknown) {
     slots,
     scoring: preset?.scoring ?? 'tests',
     source,
+    topics,
     // The client keeps the offset: submissions are timed by this clock.
     now: Date.now(),
   };
 }
 
-/** Attempts, best result and first AC per question in the exam window, plus the score. */
+const DAY = 86400000;
+export type MockScenario = {
+  company: string | null;
+  preset: boolean;
+  source: MockSource;
+  questions: number;
+};
+/**
+ * How a score share (score / max) stands among other learners' mocks of the same scenario
+ * in the last 180 days, each learner's best once: a preset against that company's preset
+ * mocks, a custom one against custom mocks of the same count and source without a company.
+ * Null for a custom mock with a company, or under PEER_MIN learners.
+ * ponytail: scans mock_sessions by start time; index (company, started_at) when it grows.
+ */
+export async function mockPeers(userId: string, s: MockScenario, share: number, now = Date.now()) {
+  if (!s.preset && s.company) return null;
+  const bests = (
+    await rows<{ best: number }>(
+      `SELECT MAX(CAST(score AS REAL)/max) AS best FROM mock_sessions
+      WHERE user_id<>? AND started_at>? AND score IS NOT NULL AND max>0 AND ${
+        s.preset
+          ? 'preset=1 AND company=?'
+          : 'preset=0 AND company IS NULL AND source=? AND json_array_length(ids_json)=?'
+      }
+      GROUP BY user_id`,
+      userId,
+      now - 180 * DAY,
+      ...(s.preset ? [s.company] : [s.source, s.questions]),
+    )
+  ).map((r) => r.best);
+  return bests.length >= PEER_MIN
+    ? { n: bests.length, below: bests.filter((best) => best < share).length }
+    : null;
+}
+
+/**
+ * Attempts, best result and first AC per question in the exam window, plus the score. With
+ * the scenario (preset, company, source), a finished report also says how it stands (mockPeers).
+ */
 export async function mockReport(p: Person, params: URLSearchParams) {
   const ids = (params.get('ids') || '').split(',').filter(Boolean),
     from = Number(params.get('from')),
@@ -321,16 +367,27 @@ export async function mockReport(p: Person, params: URLSearchParams) {
       from + REPORT_SLACK,
     ),
   }));
-  return {
-    items,
-    score: scoreMock(
-      items.map((i) => i.best),
-      scoring,
-      ids.map((_, i) => slots[i] ?? 'medium'),
-    ),
+  const score = scoreMock(
+    items.map((i) => i.best),
     scoring,
-    pending: items.some((i) => i.pending),
-  };
+    ids.map((_, i) => slots[i] ?? 'medium'),
+  );
+  const pending = items.some((i) => i.pending);
+  const preset = params.get('preset'),
+    company = params.get('company') || null,
+    source = params.get('source');
+  const peers =
+    preset === null ||
+    pending ||
+    (company !== null && !companySlug.safeParse(company).success) ||
+    (source !== 'mixed' && source !== 'oa' && source !== 'lc')
+      ? null
+      : await mockPeers(
+          p.id,
+          { company, preset: preset === '1', source, questions: ids.length },
+          score.value / score.max,
+        );
+  return { items, score, scoring, pending, peers };
 }
 
 export async function handleMockOa(

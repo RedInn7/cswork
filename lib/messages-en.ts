@@ -375,6 +375,8 @@ const EN: Record<string, string> = {
   '没有这家公司的模拟 OA': "There's no mock OA for this company",
   '这家公司的可判题还不够，换一家公司或减少题量':
     "There aren't enough judgeable problems for this mock yet. Pick another company or fewer questions",
+  '所选知识点下的题不够，减少题量或多选几个':
+    'Not enough problems on the topics you picked. Draw fewer questions or pick more topics',
   模拟考试参数无效: 'Invalid mock exam parameters',
   '这道题的题解和测试数据正在校验，暂未开放':
     "This problem's solution and test data are being verified and aren't available yet",
