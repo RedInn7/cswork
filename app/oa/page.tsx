@@ -70,6 +70,11 @@ export default async function OaIndex() {
           <dd>{companies.length}</dd>
         </div>
       </dl>
+      <p className="oa-public-actions">
+        <a className="oa-public-cta is-quiet" href="/oa/mcq">
+          {zh ? 'OA 选择题练习（CS 基础 · 读代码 · 数学逻辑）' : 'OA multiple-choice practice (CS · code output · quant)'}
+        </a>
+      </p>
       {!!fresh.length && (
         <details className="oa-public-fresh">
           <summary>

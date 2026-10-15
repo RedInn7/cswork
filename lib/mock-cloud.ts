@@ -36,9 +36,12 @@ export function unsyncedMocks(history: readonly MockSession[], remote: readonly 
   return history.filter((s) => s.startedAt && s.finishedAt && !scored.has(s.id));
 }
 
-/** Uploads finished sessions; resolves to the account's whole history. */
+/** Uploads finished sessions (their MCQ section stays in this browser); resolves to the account's whole history. */
 export function uploadMocks(sessions: readonly MockSession[]) {
-  return api<Saved>('oj/mock-oa/history', { sessions: sessions.slice(0, 30) });
+  return api<Saved>('oj/mock-oa/history', {
+    // ponytail: undefined drops out of the JSON body.
+    sessions: sessions.slice(0, 30).map((s) => ({ ...s, mcq: undefined })),
+  });
 }
 
 /**

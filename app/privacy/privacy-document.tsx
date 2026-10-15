@@ -29,7 +29,7 @@ export function PrivacyDocument() {
               cswork
               是提供课程、视频、编程练习与教学反馈的学习平台。这份说明介绍平台当前如何处理你的资料，以及你可以如何联系我们。
             </p>
-            <p className="privacy-updated">更新于 2026 年 10 月 14 日</p>
+            <p className="privacy-updated">更新于 2026 年 10 月 15 日</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">账户与第三方登录</h2>
@@ -122,7 +122,7 @@ export function PrivacyDocument() {
                 地址、设备或浏览器信息与有效期，用于账号安全和查看已登录设备；服务器也会产生访问、错误和管理操作记录，以排查故障和限制滥用。
               </p>
               <p>
-                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传。
+                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传。OA 选择题练习（/oa/mcq）的作答记录和模拟 OA 选择题环节的作答也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。
               </p>
               <p>
                 把网站安装到主屏后，浏览器会缓存离线提示页和网站自身的脚本、样式等构建文件，不缓存任何页面内容和个人数据；在账号设置里退出登录时，这些缓存会一并清空。
@@ -212,7 +212,7 @@ export function PrivacyDocument() {
               practice, and teaching feedback. This notice explains how the
               platform currently handles your data and how you can contact us.
             </p>
-            <p className="privacy-updated">Updated October 14, 2026</p>
+            <p className="privacy-updated">Updated October 15, 2026</p>
 
             <section aria-labelledby="privacy-account">
               <h2 id="privacy-account">Accounts and third-party sign-in</h2>
@@ -473,7 +473,10 @@ export function PrivacyDocument() {
                 local drafts. On a shared device, you can clear this site’s
                 stored data in your browser; this also clears local content that
                 has not been submitted yet. Dates you enter in the visa timeline
-                stay in the current browser and are never uploaded.
+                stay in the current browser and are never uploaded. So do your
+                answers on the OA multiple-choice practice page (/oa/mcq) and in
+                a mock OA&apos;s multiple-choice section: they are not uploaded and
+                do not sync to your account with mock OA results.
               </p>
               <p>
                 If you install the site to your home screen, the browser caches

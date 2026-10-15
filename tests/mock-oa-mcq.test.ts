@@ -14,6 +14,7 @@ import {
   type MockSession,
 } from '../lib/mock-oa';
 import { shownMockPresets } from '../lib/server/mock-oa-presets';
+import { SITEMAP_STATIC_ENTRIES } from '../lib/seo';
 
 const bank = bankFile.questions as McqQuestion[];
 const TOPICS = ['os', 'dbms', 'network', 'concurrency', 'oop', 'python', 'java', 'js', 'probability', 'logic'];
@@ -30,6 +31,7 @@ test('the bank is well formed: unique ids, known sections and topics, answers in
     assert.equal(!!q.code, q.section === 'code-output', q.id);
   }
   assert(bank.some((q) => q.answer.length > 1), 'some questions are select-all');
+  assert(SITEMAP_STATIC_ENTRIES.some((e) => e.path === '/oa/mcq'), 'the practice page is in the sitemap');
 });
 
 test('every preset MCQ section can fill its draw from the bank', () => {
