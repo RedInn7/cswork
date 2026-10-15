@@ -1,0 +1,19 @@
+{
+  "id": "oa-tesla-3",
+  "packageChecksum": "223d2a2ca54f5204e5ad5d2407642f7b43fa287a09e62c3e14563788f4b5b78e",
+  "sourceContentHash": "17cb2b88ce688f2c4a8ee2b0d1a7614700c0c23d89075da130ca54ff6ec1c218",
+  "editorialSha256": "ceb44e666c85ab9c330f98c9276f7ba7ab109295ef9e454eba8b998fca082430",
+  "hints": {
+    "zh": [
+      "把 L 看成 +1、R 看成 −1，一段 L 和 R 数量相等，当且仅当这段的和为 0；而整个分割的每个段末，从开头算起的前缀和都必须是 0。",
+      "所以段数不可能超过“前缀和等于 0 的位置个数”；反过来在每个前缀和回到 0 的位置都切一刀，每一段都合法，正好达到这个上界。",
+      "维护 balance=0、answer=0；扫描每个字符，L 则 balance+1，R 则 balance−1，每当 balance 变回 0 时 answer 加一，最后输出 answer。"
+    ],
+    "en": [
+      "Treat L as +1 and R as -1. A segment has equally many L and R exactly when its sum is 0, and at the end of every segment of a full partition the prefix sum from the start must be 0.",
+      "So the number of segments cannot exceed the number of positions where the prefix sum is 0. Conversely, cutting at every position where the prefix sum returns to 0 makes every segment valid and reaches that bound.",
+      "Keep balance = 0 and answer = 0. For each character add 1 for L or subtract 1 for R, and whenever balance returns to 0, increment answer. Output answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount L as 1 and R as -1, scan the prefix sums, and cut a segment every time the sum returns to 0.\n\n## Correctness\n\nIn any valid partition covering the whole string from the start, the global prefix sum at the end of every segment must be 0, so the number of segments is at most the number of zero prefixes. Cutting at every zero prefix makes the difference between adjacent cuts 0, so each segment is valid and all characters are covered, reaching the upper bound.\n\n## Complexity\n\nO(n) time and O(1) extra space."
+}

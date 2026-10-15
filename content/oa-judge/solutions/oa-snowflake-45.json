@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-45",
+  "packageChecksum": "42f92ff1de233b011ec8d847d082e4d2941bb0d75946d7c1c85c221b48b96648",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    int n, saving;\n    scanf(\"%d %d\", &n, &saving);\n    vector<long long> a(n), b(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    for (auto &x : b) scanf(\"%lld\", &x);\n    // 0/1 knapsack: cost = current price, value = future - current.\n    vector<long long> dp(saving + 1, 0);\n    for (int i = 0; i < n; i++) {\n        long long cost = a[i], gain = b[i] - a[i];\n        if (gain <= 0 || cost > saving) continue;\n        for (long long money = saving; money >= cost; money--)\n            dp[money] = max(dp[money], dp[money - cost] + gain);\n    }\n    printf(\"%lld\\n\", dp[saving]);\n}\n",
+      "sha256": "229b9844d682ac78c35ab0bf115f980f1aeb322b45b5f1308ac2fa2b5dbd8c4e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), saving = nextInt();\n        long[] a = new long[n], b = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        for (int i = 0; i < n; i++) b[i] = nextLong();\n        // 0/1 knapsack: cost = current price, value = future - current.\n        long[] dp = new long[saving + 1];\n        for (int i = 0; i < n; i++) {\n            long cost = a[i], gain = b[i] - a[i];\n            if (gain <= 0 || cost > saving) continue;\n            int c = (int) cost;\n            for (int money = saving; money >= c; money--)\n                dp[money] = Math.max(dp[money], dp[money - c] + gain);\n        }\n        System.out.println(dp[saving]);\n    }\n}\n",
+      "sha256": "585365f91bff3d8cc1501498ab95d85d285421d076ad9fad8fd3a5525852126f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn, saving := readInt(), readInt()\n\ta, b := make([]int, n), make([]int, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\tfor i := range b {\n\t\tb[i] = readInt()\n\t}\n\t// 0/1 knapsack: cost = current price, value = future - current.\n\tdp := make([]int, saving+1)\n\tfor i := 0; i < n; i++ {\n\t\tcost, gain := a[i], b[i]-a[i]\n\t\tif gain <= 0 || cost > saving {\n\t\t\tcontinue\n\t\t}\n\t\tfor money := saving; money >= cost; money-- {\n\t\t\tif v := dp[money-cost] + gain; v > dp[money] {\n\t\t\t\tdp[money] = v\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(dp[saving])\n}\n",
+      "sha256": "69f2ffb7a257df55606dd4bb0dec24b748e3a0dd9830ea0497eb957bb8bbc87d"
+    }
+  ]
+}

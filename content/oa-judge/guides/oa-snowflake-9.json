@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-9",
+  "packageChecksum": "02b64090eeff563a583bd61395d9817038da0ce3742faeefb5e0eb355cf1b816",
+  "sourceContentHash": "8becb042d9ace190184de35c48031ccb96578748a0c263dd63abf3bededa74e8",
+  "editorialSha256": "e8c864b9fd8285f598579095cd701033d584f231fae091ba9065cf84b71316aa",
+  "hints": {
+    "zh": [
+      "只有 7 位，每个 ? 位最多有 9 种取值，所有补全方案可以直接搜索；关键是按位从小到大枚举，输出就自然是字典序。",
+      "预先算出从第 i 位到末尾能凑出的最小工时和最大工时（? 位分别取 0 和 day_hours）；搜索时若剩余工时不在这个区间内就立即剪枝。",
+      "从后往前求 low[i]、high[i]；深搜 visit(i, remaining)：越界就返回，i=7 时记录当前串；? 位按 0..day_hours 升序尝试，固定位只走一个分支。最后先输出方案数，再逐行输出各方案；结果可能有几十万行，要用缓冲输出。"
+    ],
+    "en": [
+      "There are only 7 positions and at most 9 values per ?, so all completions can be searched directly. The key is to try digits in increasing order position by position, so the output is automatically in lexicographic order.",
+      "Precompute the minimum and maximum hours that positions i..6 can still contribute (a ? contributes 0 or day_hours). During the search, prune immediately when the remaining hours fall outside that range.",
+      "Compute low[i] and high[i] from the back. Depth-first visit(i, remaining): return if remaining is out of range; at i = 7 record the current string; at a ? try 0..day_hours in ascending order, and a fixed digit has a single branch. Print the number of schedules and then each schedule on its own line; there can be hundreds of thousands of lines, so buffer the output."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate digits from left to right in ascending order, prune with the minimum and maximum hours still achievable, and keep the leaves that reach the total exactly.\n\n## Correctness\n\nEvery completion corresponds to a unique root-to-leaf path: a fixed position has a single branch and an unknown position enumerates all legal digits. Pruning only removes prefixes that cannot reach the total, so nothing is missed, and the ascending depth-first search naturally outputs in lexicographic order.\n\n## Complexity\n\nO(9^7) time and O(7R) output space; R is at most 273127, within the 4 MiB output limit."
+}

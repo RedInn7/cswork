@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-41",
+  "packageChecksum": "a5ca529993a8a214ec166c7bfd5ab1e8beeec56388c6a1454b7f2662399a5357",
+  "sourceContentHash": "d5f9fa030286800f51b7c2a21ed586749e9cc4ff0c5d33810cfffc015a6d0fbb",
+  "editorialSha256": "38af8abe3dd2fd6cbe4a860325feaf5bbc4c38cff549806e9ac9429e3c12cf63",
+  "hints": {
+    "zh": [
+      "每一步至少加 1，所以生成的边长已经严格递增，不需要再排序；并且每个值都不超过 10⁹，可以用 32 位无符号数紧凑保存 600 万个值。",
+      "固定长 s[i] 时，合法的宽是有序数组的一个前缀；长增大时这个前缀只会变短。于是用一个从数组末尾向左移动的右指针做双指针。",
+      "按递推生成 s；right 从 n−1 开始，枚举 left=0..n−1：当 right≥0 且 s[left]×s[right]>area 时 right 左移；若 right<0 就停止，否则答案加上 right+1。乘积、area 和计数都用 64 位整数比较和累加。"
+    ],
+    "en": [
+      "Each step adds at least 1, so the generated side lengths are already strictly increasing and need no sorting. Every value is at most 10^9, so the 6,000,000 values fit compactly in unsigned 32-bit storage.",
+      "For a fixed length s[i], the valid widths form a prefix of the sorted array, and this prefix only shrinks as the length grows. So use two pointers, with a right pointer that moves left from the end of the array.",
+      "Generate s by the recurrence. Start right = n - 1 and loop left = 0..n-1: while right >= 0 and s[left] * s[right] > area, decrement right; if right < 0 stop, otherwise add right + 1 to the answer. Compare products with area and accumulate the count in 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEach side length is at least 1 larger than the previous one, so the array is already strictly increasing. Store it in a compact unsigned 32-bit array and move a right pointer from the end toward the left; for each left side length, add the number of right side lengths whose area qualifies.\n\n## Correctness\n\nWith the length fixed at s[i], the valid widths form a prefix of the sorted array; as the length increases, the upper bound of the valid widths never increases, so the right pointer only needs to move left. Under each length every width is counted exactly once, so ordered combinations are counted and squares are not missed. Side lengths are at most 10^9, so 32-bit storage is safe; use 64-bit or arbitrary-precision integers for products and counts.\n\n## Complexity\n\nO(n) time and 4n bytes of extra space for the side lengths; Python uses array instead of six million int objects."
+}

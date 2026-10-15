@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-42",
+  "packageChecksum": "ce85bd96d0dac9ef018cc8b87a8a2f0749f315caa4e788c54fb6ac3d5352bdb5",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    int n, threshold;\n    scanf(\"%d %d\", &n, &threshold);\n    unordered_map<int, int> counts;\n    counts.reserve(2 * n + 1);\n    for (int i = 0; i < n; i++) {\n        int sender, recipient, amount;\n        scanf(\"%d %d %d\", &sender, &recipient, &amount);\n        counts[sender]++;\n        // A self-transfer counts once for that log.\n        if (recipient != sender) counts[recipient]++;\n    }\n    vector<int> out;\n    for (auto &[u, c] : counts)\n        if (c >= threshold) out.push_back(u);\n    sort(out.begin(), out.end());\n    string s = to_string(out.size()) + \"\\n\";\n    for (size_t i = 0; i < out.size(); i++) {\n        if (i) s += ' ';\n        s += to_string(out[i]);\n    }\n    puts(s.c_str());\n}\n",
+      "sha256": "1df90f69b0d3046d94c15558216ae1c332144973fbf6b9ac3e7778bc6e1c3ce6"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), threshold = nextInt();\n        HashMap<Integer, Integer> counts = new HashMap<>(4 * n + 16);\n        for (int i = 0; i < n; i++) {\n            int sender = nextInt(), recipient = nextInt();\n            nextLong();\n            counts.merge(sender, 1, Integer::sum);\n            // A self-transfer counts once for that log.\n            if (recipient != sender) counts.merge(recipient, 1, Integer::sum);\n        }\n        int[] out = counts.entrySet().stream().filter(e -> e.getValue() >= threshold)\n                .mapToInt(Map.Entry::getKey).sorted().toArray();\n        StringBuilder sb = new StringBuilder();\n        sb.append(out.length).append('\\n');\n        for (int i = 0; i < out.length; i++) {\n            if (i > 0) sb.append(' ');\n            sb.append(out[i]);\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "c82eaee4ef510d2a7c5bade826f9e54038cbee0f3fc1d9ac289b04a131c30bf6"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn, threshold := readInt(), readInt()\n\tcounts := make(map[int]int, 2*n)\n\tfor i := 0; i < n; i++ {\n\t\tsender, recipient := readInt(), readInt()\n\t\treadInt()\n\t\tcounts[sender]++\n\t\t// A self-transfer counts once for that log.\n\t\tif recipient != sender {\n\t\t\tcounts[recipient]++\n\t\t}\n\t}\n\tout := []int{}\n\tfor u, c := range counts {\n\t\tif c >= threshold {\n\t\t\tout = append(out, u)\n\t\t}\n\t}\n\tsort.Ints(out)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tw.WriteString(strconv.Itoa(len(out)) + \"\\n\")\n\tfor i, u := range out {\n\t\tif i > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(strconv.Itoa(u))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "b07144da819a0e85d374778a58ed099afd32433a6ac81c16212afabcea7f30f4"
+    }
+  ]
+}

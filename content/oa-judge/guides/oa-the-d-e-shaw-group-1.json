@@ -1,0 +1,19 @@
+{
+  "id": "oa-the-d-e-shaw-group-1",
+  "packageChecksum": "4c231843e96b209e7388c0bbcbf9e212d092e52972d556c7d420c785aed8c76d",
+  "sourceContentHash": "2d06a529967cc367f2259d2b4540a16f9400136008fa5381901122efea8def32",
+  "editorialSha256": "ce4722036963cb15a69d9f6987f6baa8f918f25517c1fa570e5ec5c39c3074a7",
+  "hints": {
+    "zh": [
+      "删除区间 [l,r] 后剩下“前缀 + 后缀”。它非降当且仅当前缀本身非降、后缀本身非降，并且两段都非空时衔接处 arr[l−1]≤arr[r+1]；另外不能把整个数组删光。",
+      "设 P 为最长非降前缀的长度。若 P=n，任意非空区间（除整个数组）都可以删。否则设 S 为最长非降后缀的起点；左端 l 只能取 0..P，右段起点 j=r+1 必须满足 j≥max(l+1,S)，而在有序后缀里满足 arr[j]≥arr[l−1] 的 j 是一段连续后缀，可以二分。",
+      "P=n 时答案为 n(n+1)/2−1。否则：l=0 时 j 取 [max(1,S), n−1]，贡献 n−max(1,S)；对 l=1..P，在 [max(l+1,S), n) 上二分第一个 arr[j]≥arr[l−1] 的位置 j，贡献 n−j+1（再加上 j=n 删到末尾的情况）。全部累加，用 64 位整数。"
+    ],
+    "en": [
+      "Deleting [l, r] leaves prefix + suffix. It is non-decreasing exactly when the prefix and the suffix are each non-decreasing and, when both are non-empty, arr[l-1] <= arr[r+1] at the join; also the whole array may not be deleted.",
+      "Let P be the length of the longest non-decreasing prefix. If P = n, any non-empty range except the whole array can be deleted. Otherwise let S be the start of the longest non-decreasing suffix; l can only be 0..P, the start of the kept suffix j = r + 1 must satisfy j >= max(l + 1, S), and in the sorted suffix the j with arr[j] >= arr[l-1] form a contiguous tail, which binary search finds.",
+      "If P = n the answer is n(n+1)/2 - 1. Otherwise, for l = 0 the start j ranges over [max(1, S), n - 1], contributing n - max(1, S). For l = 1..P, binary search in [max(l + 1, S), n) the first j with arr[j] >= arr[l-1] and add n - j + 1 (this includes j = n, deleting through the end). Sum everything in a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Problem\n\nAfter deleting one non-empty contiguous subarray, the remainder (the left part concatenated with the right part) must be non-empty and non-decreasing (equal values allowed; in the original table [1,1,2] and [1,2,2] are judged sorted). Count such subarrays.\n\n## Approach\n\nLet the deleted range be [l, r]. The remaining array is sorted if and only if the prefix arr[0..l-1] is non-decreasing, the suffix arr[r+1..n-1] is non-decreasing, and arr[l-1] <= arr[r+1] when both parts are non-empty; in addition the whole array may not be deleted.\n\nLet P be the length of the longest non-decreasing prefix. If P = n, every non-empty range (except the whole array) is valid, and the answer is n(n+1)/2 - 1. Otherwise let S be the start of the longest non-decreasing suffix. l can only be 0..P; the start of the right part j = r + 1 must satisfy j >= max(l + 1, S). For l = 0, j ranges over [max(1, S), n - 1] (j = n would mean deleting everything); for l >= 1, j = n is always valid, and every other j needs arr[j] >= arr[l-1]; the suffix is sorted, so binary search finds the first position that satisfies it.\n\n## Correctness\n\nEach valid range is uniquely determined by (l, j), and the conditions above are exactly necessary and sufficient for the remaining array to be non-decreasing. On the sorted suffix, the j satisfying arr[j] >= arr[l-1] form a contiguous tail whose start the binary search finds, so the count has no duplicates and no omissions.\n\n## Complexity\n\nO(n log n). The answer is at most about 2 * 10^10, so use 64-bit integers.\n\n## Independent verification\n\nThe oracle precomputes whether each prefix and suffix is non-decreasing and enumerates (l, r) in O(n^2), without binary search; for even smaller data it also builds the remaining array directly and checks it. All arrays of length 1..7 with values 1..3 were enumerated and the reference program was actually run on each. The wrong solutions include strictly increasing semantics, counting the deletion of everything, a strict greater-than at the join, and 32-bit counters."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-39",
+  "packageChecksum": "8d633bb4e4e5ab361c797f0cb652cf19756492759b9cdeb09d4ecef3813ba8b4",
+  "sourceContentHash": "2037e483fa005ed20648fdd5500c249d64e45bb68af1616336518e0eabcdc6ab",
+  "editorialSha256": "e08725793038af59d130a17e647cba021ed29dd6f1a7a377a1fca8e28b04d525",
+  "hints": {
+    "zh": [
+      "只关心人和蛋糕之间的最小下标差。固定较大的那个下标时，最优搭档一定是它左边最近的另一类元素，更远的同类候选不可能更优。",
+      "从左到右扫描一遍，分别记住最近一次出现的人和最近一次出现的蛋糕的位置；每遇到一个非零元素，只和最近的另一类元素算一次距离。",
+      "用 last[1]、last[2] 记录位置，初值为 −1，best 设为无穷大；遇到值 v≠0 时，若 last[3−v]≥0，就用 i−last[3−v] 更新 best，然后令 last[v]=i。扫描结束后 best 仍为无穷大说明缺少某一类，输出 −1。"
+    ],
+    "en": [
+      "Only the minimum index gap between a person and a cake matters. When the larger index of a pair is fixed, the best partner is the nearest element of the other kind to its left; any farther candidate of that kind cannot be better.",
+      "Scan once from left to right, remembering the latest position of a person and the latest position of a cake. Whenever you meet a non-zero element, compare it only with the latest element of the other kind.",
+      "Keep last[1] and last[2], both starting at -1, and best = infinity. For a value v != 0 at index i, if last[3 - v] >= 0, update best with i - last[3 - v], then set last[v] = i. If best is still infinity at the end, one kind is missing, so output -1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhile scanning, keep the index of the most recent person and the most recent cake. Each time a non-zero element appears, pair it with the most recent element of the other kind.\n\n## Correctness\n\nFor the current element taken as the right end, the shortest valid distance is given by the nearest element of the other kind on its left. The larger index of every valid pair becomes the current element at some point of the scan, so the minimum over these local minima is the global minimum.\n\n## Complexity\n\nO(n) time and O(1) space."
+}

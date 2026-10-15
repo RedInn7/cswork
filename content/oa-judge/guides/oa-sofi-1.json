@@ -1,0 +1,19 @@
+{
+  "id": "oa-sofi-1",
+  "packageChecksum": "9cce44127bf7cba9487dea336184b8fdf5ac32bf03c26eff0539aeeb0533bfea",
+  "sourceContentHash": "e09ff15d9275308f9598de66f8fc3e191b60e181cb89850e7dc35cd91d60efb7",
+  "editorialSha256": "849b1a79d7ddded21c54615858692ec6c4255d3ef5fb5f9d146d4743b1099b4e",
+  "hints": {
+    "zh": [
+      "如果第 k 台处理器能分到 x 个工作，那么分到更少也一定可行：可行性随 x 单调，可以二分最大的 x。",
+      "固定 x 后，为了尽量少用工作，往两侧每走一步就减 1，直到降为 1 后保持 1；这样得到的是所有合法分配里总数最小的一种，只需判断它是否不超过 m。",
+      "二分 x∈[1,m]；need(x)=x+side(k−1,x)+side(n−k,x)，其中 side(cnt,x) 中前 full=min(cnt,x−1) 个位置依次放 x−1,x−2,…，用等差数列求和，其余 cnt−full 个位置各放 1。need(x)≤m 就记录 x 并向右找，否则向左。计算用 64 位整数。"
+    ],
+    "en": [
+      "If the k-th processor can receive x jobs, it can also receive fewer: feasibility is monotone in x, so binary search the largest x.",
+      "With x fixed, to use as few jobs as possible, decrease by 1 at every step away from processor k on both sides until reaching 1, then keep 1. This is the minimum-total valid assignment, so you only need to check whether it is at most m.",
+      "Binary search x in [1, m]. need(x) = x + side(k - 1, x) + side(n - k, x), where side(cnt, x) puts x - 1, x - 2, ... on the first full = min(cnt, x - 1) positions (an arithmetic series) and 1 on each of the remaining cnt - full positions. If need(x) <= m, record x and search right, otherwise search left. Use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search the number of jobs x on the given processor. With x fixed, to use as few jobs as possible, put x - 1, x - 2, ... on the neighbouring processors to the left and right in turn, and once the value drops to 1 put 1 on every remaining position. Compute the minimum sum of each side with an arithmetic series. If the minimum total does not exceed m, x is feasible; this condition is monotone in x, so binary search the largest feasible value.\n\n## Proof of correctness\n\nWith adjacent differences at most 1 and the given value x, each step outward forces the processor's job count to be at least the previous value minus 1, and at least 1. The construction above takes this lower bound at every position, which gives the minimum total over all feasible configurations. So x is feasible if and only if this minimum sum is <= m; feasibility is monotone in x, and the binary search finds the maximum.\n\n## Complexity\n\nO(log m) time and O(1) space.\n\n## Source notes\n\nThe problem statement follows a fixed OAMaster snapshot; the standard input/output protocol is this site's addition, and the original site is not claimed to provide it."
+}

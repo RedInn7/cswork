@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-7",
+  "packageChecksum": "313e69a6cb4c3493b5b693975fb4491a16fea268d41434c8c6c60e520e7645b7",
+  "sourceContentHash": "dbe34f26d6185a05114cfe073ea7690cf4a563e5e3ba95843586ca747e373a09",
+  "editorialSha256": "0d1c0c2731b81e72d4c785a87949b985c9c316c706c6215444ee7ac03bb3b5c1",
+  "hints": {
+    "zh": [
+      "把房子按“左数第 i 个和右数第 i 个”配成 n/2 对，从最外层的一对向中间涂色；每对内部两座房子要异色，并且分别与外侧已涂好的邻居异色。",
+      "最外层一对只要求两座异色，有 3×2=6 种；之后每一对 (c,d) 要满足 c≠a、d≠b、c≠d（a、b 是外侧一对的颜色），无论 a、b 是什么都恰好有 3 种。",
+      "答案是 6×3^(n/2−1) mod 10⁹+7，用快速幂计算 3 的 n/2−1 次方再乘 6 取模；最内层一对相邻的限制正好就是对内异色，不需要额外处理。"
+    ],
+    "en": [
+      "Pair the i-th house from the left with the i-th house from the right to get n/2 pairs, and paint from the outermost pair inward. The two houses of a pair must differ, and each must also differ from its already painted outer neighbour.",
+      "The outermost pair only needs two different colors: 3 * 2 = 6 ways. Every later pair (c, d) needs c != a, d != b and c != d, where a and b are the outer pair's colors, and there are exactly 3 such choices whatever a and b are.",
+      "The answer is 6 * 3^(n/2 - 1) mod 10^9 + 7. Compute the power of 3 with fast exponentiation, multiply by 6 and reduce. The adjacency constraint of the innermost pair is the same as the in-pair difference, so nothing extra is needed."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPaint pair by pair from both ends toward the middle: 6 ways for the first pair and 3 ways for each later pair.\n\n## Correctness\n\nLet the already painted left and right colors be a and b, which differ. A new pair (c, d) must satisfy c != a, d != b and c != d. Among three colors there are exactly 3 ordered choices, the same for every a and b. The adjacency constraint of the innermost pair is just the in-pair difference, which adds no further condition, so the multiplication principle gives 6 * 3^(n/2 - 1).\n\n## Complexity\n\nO(log n) time and O(1) space."
+}

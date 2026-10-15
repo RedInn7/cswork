@@ -1,0 +1,21 @@
+{
+  "id": "oa-tradedesk-3",
+  "packageChecksum": "219a3f2a60e226956d88594e02759da5d18aa4e749f8cb5830de54cca9d6e969",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n, k = int(data[0]), int(data[1])\n    rates = list(map(int, data[2:2 + n]))\n    strategy = list(map(int, data[2 + n:2 + 2 * n]))\n    # P: prefix of strategy*rate (profit), Q: prefix of rates.\n    p = [0] * (n + 1)\n    q = [0] * (n + 1)\n    for i in range(n):\n        p[i + 1] = p[i] + strategy[i] * rates[i]\n        q[i + 1] = q[i] + rates[i]\n    base = p[n]\n    best = base  # not modifying is allowed\n    h = k // 2\n    for l in range(n - k + 1):\n        # Window [l, l+k): drop its old contribution, the second half all sells.\n        v = base - (p[l + k] - p[l]) + (q[l + k] - q[l + h])\n        if v > best:\n            best = v\n    print(best)\n\n\nmain()\n",
+      "sha256": "98a141e90dee53438734404628c63edffafd4535f91b2ae82b62fa55c3c86235"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), k = nextInt();\n        long[] r = new long[n], s = new long[n];\n        for (int i = 0; i < n; i++) r[i] = nextLong();\n        for (int i = 0; i < n; i++) s[i] = nextLong();\n        // P: prefix of strategy*rate (profit), Q: prefix of rates.\n        long[] P = new long[n + 1], Q = new long[n + 1];\n        for (int i = 0; i < n; i++) { P[i + 1] = P[i] + s[i] * r[i]; Q[i + 1] = Q[i] + r[i]; }\n        long base = P[n], best = base; // not modifying is allowed\n        int h = k / 2;\n        for (int l = 0; l + k <= n; l++) {\n            // Window [l, l+k): drop its old contribution, the second half all sells.\n            long v = base - (P[l + k] - P[l]) + (Q[l + k] - Q[l + h]);\n            best = Math.max(best, v);\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "eacd822adbd9ba44dc3da92f49a99a07a479e45ecc2382ca664e62524248465e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn, k := readInt(), readInt()\n\tr, s := make([]int, n), make([]int, n)\n\tfor i := range r {\n\t\tr[i] = readInt()\n\t}\n\tfor i := range s {\n\t\ts[i] = readInt()\n\t}\n\t// P: prefix of strategy*rate (profit), Q: prefix of rates.\n\tP, Q := make([]int, n+1), make([]int, n+1)\n\tfor i := 0; i < n; i++ {\n\t\tP[i+1] = P[i] + s[i]*r[i]\n\t\tQ[i+1] = Q[i] + r[i]\n\t}\n\tbase := P[n]\n\tbest := base // not modifying is allowed\n\th := k / 2\n\tfor l := 0; l+k <= n; l++ {\n\t\t// Window [l, l+k): drop its old contribution, the second half all sells.\n\t\tbest = max(best, base-(P[l+k]-P[l])+(Q[l+k]-Q[l+h]))\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "f6e0709aa6fe1284fa6f0898e3d98e1c5c067496dadb4031370b9684c92da43e"
+    }
+  ]
+}

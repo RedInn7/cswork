@@ -1,0 +1,19 @@
+{
+  "id": "oa-stripe-3",
+  "packageChecksum": "c3ff962b878fdf452e346ba003accba4e99d58eb764318c051da918710dff40f",
+  "sourceContentHash": "56e6011596ce4573d8a1ef2de3e6dfa1e43589545261f1c2aab6374b128023c5",
+  "editorialSha256": "b09b1a80843783612c85bb8091cd84a502423ecdbd7e8cce3cc1c68786add97c",
+  "hints": {
+    "zh": [
+      "每天都要根据当天仍有效的关联重新建图，而不是在前一天的图上增量修改：关联过期后连通块可能分裂，只有重建才能正确反映。",
+      "某天有效的关联满足 add_day≤day<add_day+duration。同一 link_type 的所有有效商户两两连边；图的顶点是当天至少有一条有效关联的商户，没有与他人共享类型的商户自成大小为 1 的连通块。",
+      "每天把当天新关联加入记录，筛出有效记录，按类型收集商户集合并两两连边（邻居用集合去重）；对每个连通块做 DFS/BFS，pin 取度数（不同邻居数）最大者、并列时取 ID 字典序最小者；连通块按大小降序、pin 升序排序，先输出 Day d，再输出每行“  cluster size=<大小> pin=<ID>”。"
+    ],
+    "en": [
+      "Rebuild the graph every day from the associations still active that day instead of editing the previous day's graph: once associations expire, components may split, and only a rebuild reflects that correctly.",
+      "An association is active on day when add_day <= day < add_day + duration. All active merchants sharing a link_type are connected pairwise. The vertices are the merchants with at least one active association that day, and a merchant sharing no type with anyone forms a component of size 1.",
+      "Each day, append the day's new associations, filter the active records, collect the merchant set of each type and connect its members pairwise (neighbours stored in sets). Run DFS/BFS over each component; the pin is the vertex with the most distinct neighbours, ties broken by the smallest ID. Sort components by size descending, then pin ascending, and print Day d followed by one line '  cluster size=<size> pin=<id>' per component."
+    ]
+  },
+  "explanationEn": "## Why it is correct\n\nAdd the new associations day by day and keep the active ones that satisfy `add_day <= day < add_day + duration`. Merchants with the same `link_type` form a group, connected pairwise. Then traverse the graph to find the connected components; in each component count the distinct neighbours of every vertex, take the one with the highest degree as the pin, and on ties choose the lexicographically smallest ID. Finally sort by component size descending and pin ascending.\n\n## Correctness\n\nAny two merchants in an active same-type group are connected by the rule, so the constructed edge set is exactly all of the day's association edges. DFS/BFS visits exactly the connected component of each vertex; the number of distinct neighbours is the vertex degree in the graph, so the pin choice matches the statement. The final sort key also matches the problem's specification. Each day the graph is rebuilt from the currently active associations, so splits caused by expired associations show up naturally in the new components.\n\n## Complexity\n\nLet E be the number of active records on a day and V the number of merchants. Pairwise connection inside groups is O(E^2) in the worst case, traversal is O(V + E_graph), and the space is O(V + E_graph). This site limits the total number of records to 200, so the worst-case graph size has a clear bound. Singleton vertices are kept as this site's statement specifies."
+}

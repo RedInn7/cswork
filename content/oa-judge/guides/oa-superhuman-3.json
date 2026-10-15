@@ -1,0 +1,19 @@
+{
+  "id": "oa-superhuman-3",
+  "packageChecksum": "63fa46f17c8dab687c5f2113d549691470e08edfc72bfb634cf797f49d504bad",
+  "sourceContentHash": "851e9ec99d5480fdd86019b1e342d8597dda62d0fc974de7e85ea9aad3b6be13",
+  "editorialSha256": "be1ad0b1281486109f9d3698e2a62b13124e3f31bc20bff1813b17403ad747c0",
+  "hints": {
+    "zh": [
+      "容量升序排列，直接连接跨越多台服务器的费用等于中间各相邻间隙之和，所以最优路线总是沿着相邻服务器一段段走过去。",
+      "每一段相邻移动的费用要么是容量差，要么在“目标恰好是当前服务器的最近服务器”时只需 1；向右和向左的单步费用不同，需要分别计算，然后用两个方向的前缀和回答询问。",
+      "R[i] 为 i→i+1 的费用：i=0 或 a[i+1]−a[i]<a[i]−a[i−1] 时为 1，否则为 a[i+1]−a[i]；L[i] 为 i→i−1 的费用：i=n−1 或 a[i]−a[i−1]<a[i+1]−a[i] 时为 1，否则为 a[i]−a[i−1]。对 R、L 分别做前缀和 pr、pl；询问 (s,t) 中 s<t 答 pr[t]−pr[s]，s>t 答 pl[s+1]−pl[t+1]，相等答 0，用 64 位整数。"
+    ],
+    "en": [
+      "Capacities are sorted, so a direct connection across several servers costs the sum of the gaps in between. Hence an optimal route always walks across adjacent servers one segment at a time.",
+      "Each adjacent move costs either the capacity difference, or just 1 when the target is exactly the current server's nearest server. Moving right and moving left have different step costs, so compute them separately and answer queries with prefix sums in each direction.",
+      "R[i], the cost of i -> i+1, is 1 if i = 0 or a[i+1] - a[i] < a[i] - a[i-1], otherwise a[i+1] - a[i]. L[i], the cost of i -> i-1, is 1 if i = n - 1 or a[i] - a[i-1] < a[i+1] - a[i], otherwise a[i] - a[i-1]. Build prefix sums pr and pl; for a query (s, t) answer pr[t] - pr[s] if s < t, pl[s+1] - pl[t+1] if s > t, and 0 if equal, using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each adjacent directed edge, take the nearest-shortcut price 1 or the direct capacity difference, and answer queries with per-direction prefix sums.\n\n## Proof of correctness\n\nA direct connection spanning several segments costs the sum of the gaps. Along the chain, replacing a nearest-neighbour gap with 1 is never more expensive, and a path crosses every segment at least once, so the total of the prefix edge prices is optimal.\n\n## Complexity\n\nO(n + q) time, O(n) space."
+}

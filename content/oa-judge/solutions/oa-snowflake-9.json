@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-9",
+  "packageChecksum": "02b64090eeff563a583bd61395d9817038da0ce3742faeefb5e0eb355cf1b816",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint day;\nstring s, cur(7, '0'), out;\nint low[8], high[8];\nlong long cnt = 0;\n\n// Depth-first in ascending digit order, pruned by the reachable hour range.\nvoid visit(int i, int remaining) {\n    if (remaining < low[i] || remaining > high[i]) return;\n    if (i == 7) { out += cur; out += '\\n'; cnt++; return; }\n    if (s[i] == '?') {\n        for (int v = 0; v <= day; v++) { cur[i] = '0' + v; visit(i + 1, remaining - v); }\n    } else {\n        cur[i] = s[i];\n        visit(i + 1, remaining - (s[i] - '0'));\n    }\n}\n\nint main() {\n    int work;\n    cin >> work >> day >> s;\n    for (int i = 6; i >= 0; i--) {\n        low[i] = low[i + 1] + (s[i] == '?' ? 0 : s[i] - '0');\n        high[i] = high[i + 1] + (s[i] == '?' ? day : s[i] - '0');\n    }\n    visit(0, work);\n    printf(\"%lld\\n\", cnt);\n    fwrite(out.data(), 1, out.size(), stdout);\n}\n",
+      "sha256": "0be3edcadc0d00c5a8cd58039269686a441494f41094bb6030e30b43876cf197"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static int day;\n    static char[] s, cur = new char[7];\n    static int[] low = new int[8], high = new int[8];\n    static StringBuilder out = new StringBuilder();\n    static int cnt = 0;\n\n    // Depth-first in ascending digit order, pruned by the reachable hour range.\n    static void visit(int i, int remaining) {\n        if (remaining < low[i] || remaining > high[i]) return;\n        if (i == 7) { out.append(cur).append('\\n'); cnt++; return; }\n        if (s[i] == '?') {\n            for (int v = 0; v <= day; v++) { cur[i] = (char) ('0' + v); visit(i + 1, remaining - v); }\n        } else {\n            cur[i] = s[i];\n            visit(i + 1, remaining - (s[i] - '0'));\n        }\n    }\n\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        StringTokenizer st = new StringTokenizer(br.readLine());\n        int work = Integer.parseInt(st.nextToken());\n        day = Integer.parseInt(st.nextToken());\n        String line = br.readLine();\n        while (line.trim().isEmpty()) line = br.readLine();\n        s = line.trim().toCharArray();\n        for (int i = 6; i >= 0; i--) {\n            low[i] = low[i + 1] + (s[i] == '?' ? 0 : s[i] - '0');\n            high[i] = high[i + 1] + (s[i] == '?' ? day : s[i] - '0');\n        }\n        visit(0, work);\n        PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out), 1 << 16));\n        pw.println(cnt);\n        pw.print(out);\n        pw.flush();\n    }\n}\n",
+      "sha256": "110b362cf05b4ff0385a48d511c309f06132ef9453019a8c5079771d35350de0"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar (\n\tday       int\n\ts         string\n\tcur       = make([]byte, 7)\n\tlow, high [8]int\n\tout       []byte\n\tcnt       int\n)\n\n// Depth-first in ascending digit order, pruned by the reachable hour range.\nfunc visit(i, remaining int) {\n\tif remaining < low[i] || remaining > high[i] {\n\t\treturn\n\t}\n\tif i == 7 {\n\t\tout = append(out, cur...)\n\t\tout = append(out, '\\n')\n\t\tcnt++\n\t\treturn\n\t}\n\tif s[i] == '?' {\n\t\tfor v := 0; v <= day; v++ {\n\t\t\tcur[i] = byte('0' + v)\n\t\t\tvisit(i+1, remaining-v)\n\t\t}\n\t} else {\n\t\tcur[i] = s[i]\n\t\tvisit(i+1, remaining-int(s[i]-'0'))\n\t}\n}\n\nfunc main() {\n\tvar work int\n\tfmt.Fscan(bufio.NewReader(os.Stdin), &work, &day, &s)\n\tfor i := 6; i >= 0; i-- {\n\t\tif s[i] == '?' {\n\t\t\tlow[i], high[i] = low[i+1], high[i+1]+day\n\t\t} else {\n\t\t\td := int(s[i] - '0')\n\t\t\tlow[i], high[i] = low[i+1]+d, high[i+1]+d\n\t\t}\n\t}\n\tvisit(0, work)\n\tw := bufio.NewWriterSize(os.Stdout, 1<<16)\n\tdefer w.Flush()\n\tfmt.Fprintln(w, cnt)\n\tw.Write(out)\n}\n",
+      "sha256": "ddf1b351e0a4af13764e874ce539e2a492a9fe0bafac52da03a4c13ad8eb7151"
+    }
+  ]
+}

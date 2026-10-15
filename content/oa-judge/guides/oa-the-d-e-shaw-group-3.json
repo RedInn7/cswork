@@ -1,0 +1,19 @@
+{
+  "id": "oa-the-d-e-shaw-group-3",
+  "packageChecksum": "65fff9be6adf62722f6f4872f516b578747c68176ce6ed9fadc1f94bf5e90975",
+  "sourceContentHash": "784a23f47a193889bf4316046cc770f196df430b436a59fddf1bedf25a4c226b",
+  "editorialSha256": "75ab29d827c23d4f8dae7a8053d8b49eec9b27ebc5c0148f348736698ac79720",
+  "hints": {
+    "zh": [
+      "删掉区间后剩下“前缀 + 后缀”。它严格递增当且仅当前缀、后缀各自严格递增，且两段都非空时前缀末值小于后缀首值；剩余数组允许为空。",
+      "保留的前缀只能落在最长严格递增前缀内，后缀起点只能落在最长严格递增后缀的范围内。枚举保留前缀的长度 i，与它衔接的最早后缀起点 j 随 i 增大只会右移，可以用双指针。",
+      "先求最长严格递增前缀的末下标 left；若整个数组严格递增，答案为 n(n+1)/2。否则求最长严格递增后缀的起点 right，令 j=right；对 i=0..left+1：j=max(j,i+1)，i>0 时把 j 右移到 a[j]>a[i−1] 为止，然后答案加 n−j+1（包括后缀为空的情况）。用 64 位整数。"
+    ],
+    "en": [
+      "After deleting a range, prefix + suffix remains. It is strictly increasing exactly when the prefix and the suffix are each strictly increasing and, when both are non-empty, the prefix's last value is smaller than the suffix's first value; the remainder may be empty.",
+      "The kept prefix must lie within the longest strictly increasing prefix, and the suffix start must lie within the longest strictly increasing suffix. Enumerate the kept prefix length i; the earliest suffix start j that joins it only moves right as i grows, so use two pointers.",
+      "Find the last index left of the longest strictly increasing prefix; if the whole array is strictly increasing, the answer is n(n+1)/2. Otherwise find the start right of the longest strictly increasing suffix and set j = right. For i = 0..left+1: j = max(j, i + 1); if i > 0, move j right until a[j] > a[i-1]; then add n - j + 1 (this includes an empty suffix). Use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFind the longest strictly increasing prefix and suffix. Enumerate the kept prefix length i and use two pointers to find the earliest suffix start j that joins it while staying strictly increasing; every suffix start after j also works, so add up the count.\n\n## Proof of correctness\n\nAfter deleting the segment [i, j), the remainder is strictly increasing if and only if the prefix is strictly increasing by itself, the suffix is strictly increasing by itself, and where they meet the prefix's last value is smaller than the suffix's first value; no comparison is needed when either side is empty. The prefix length can only lie within the longest increasing prefix, and the suffix start can only lie within the longest increasing suffix. As the prefix's last value increases, the smallest feasible suffix start never moves left, so the two pointers count every non-empty deletion range exactly once and nothing else.\n\n## Complexity\n\nO(n) time and O(n) extra space (the input)."
+}

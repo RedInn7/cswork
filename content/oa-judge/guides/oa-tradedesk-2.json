@@ -1,0 +1,19 @@
+{
+  "id": "oa-tradedesk-2",
+  "packageChecksum": "7f4b66163930fafa348af2f829702578e49e501f023751d75b73e64daa1ae38e",
+  "sourceContentHash": "72f373eb00b2f31cfc2ab507f1b01ec95e1e7de113b3f2325f0f53a11b2a483e",
+  "editorialSha256": "218fdb8bf5ba17bebee2a9d03eab075a8460bee50d5d42f40aaf5759171113d4",
+  "hints": {
+    "zh": [
+      "每盏灯照亮的是一个整数闭区间 [x−r, x+r]；要数的是恰好被一盏灯覆盖的整数点个数，而不是区段个数。坐标很大，不能逐点标记。",
+      "用差分扫描线：在 x−r 处 +1，在 x+r+1 处 −1（用 x+r+1 表示闭区间的结束）。把事件按坐标排序后，相邻两个事件坐标之间的覆盖次数是常数。",
+      "收集 2n 个事件并排序；同一坐标的事件一起处理，更新覆盖数 cov；若处理完后 cov=1，就把“下一个事件坐标 − 当前坐标”加入答案。坐标可达 ±2×10⁹，答案可达约 4×10⁹，用 64 位整数。"
+    ],
+    "en": [
+      "Each lamp lights the closed integer interval [x - r, x + r]; count the integer points covered by exactly one lamp, not the number of segments. Coordinates are large, so points cannot be marked one by one.",
+      "Use a difference sweep: +1 at x - r and -1 at x + r + 1 (x + r + 1 marks the end of the closed interval). After sorting the events by coordinate, the coverage is constant between two consecutive event coordinates.",
+      "Collect the 2n events and sort them. Process all events at the same coordinate together to update the coverage cov; if cov = 1 afterwards, add next event coordinate - current coordinate to the answer. Coordinates reach +-2 * 10^9 and the answer about 4 * 10^9, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Problem\n\nEach lamp lights the closed integer interval [x - r, x + r]. Count the integer coordinates lit by exactly one lamp (not the number of segments).\n\n## Approach\n\nDifference sweep line: each interval adds +1 at x - r and -1 at x + r + 1. Sort the 2n events by coordinate; after processing all events at the same coordinate together, you get the coverage count from that coordinate up to the next event coordinate (left-closed, right-open). When the coverage is 1, add the length of that stretch to the answer.\n\n## Correctness\n\nAll integer points between two consecutive event coordinates are covered by the same set of intervals, so the coverage is constant and equals the sum of the increments of the earlier events; accumulating by stretches is therefore equivalent to counting point by point. Using x + r + 1 for the right end marks the end of the closed interval and avoids missing the endpoint.\n\n## Complexity\n\nSorting is O(n log n). Coordinates can reach +-2 * 10^9 and the answer about 4 * 10^9, so use 64-bit integers.\n\n## Independent verification\n\nThe oracle discretizes all endpoints and, for each elementary segment, directly counts how many intervals cover it completely (O(n^2), small data only), which differs from the sweep-line implementation; for even smaller data it also counts integer point by point. All combinations of 1..3 lamps with coordinates -2..2 and radii 1..2 were enumerated and the reference program was actually run on each. The wrong solutions include counting the union, an open right endpoint, counting only the number of segments (a misreading of the upstream text), and 32-bit accumulation."
+}

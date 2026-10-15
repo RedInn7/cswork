@@ -1,0 +1,19 @@
+{
+  "id": "oa-tradedesk-3",
+  "packageChecksum": "219a3f2a60e226956d88594e02759da5d18aa4e749f8cb5830de54cca9d6e969",
+  "sourceContentHash": "38e472159fc2b303208065c233ce9863c0dd0af4671fd7d06fe25a3ecbef3fec",
+  "editorialSha256": "e5274de65bbb34b732c5828eb047ab97999d035667b9076bf2e664d4390fccb3",
+  "hints": {
+    "zh": [
+      "修改只影响选中的 k 个连续元素：窗口外的贡献不变，窗口前半段变成持有（贡献 0），后半段每天都卖出（贡献当天价格）。也可以完全不修改。",
+      "原利润 base=Σstrategy[i]·rates[i]。选窗口 [l,l+k) 后，新利润 = base − 窗口内原贡献 + 后半段价格之和；两部分都可以用前缀和 O(1) 求出。",
+      "建前缀和 P（strategy[i]·rates[i]）和 Q（rates[i]），h=k/2；对每个 l=0..n−k 计算 base−(P[l+k]−P[l])+(Q[l+k]−Q[l+h])，答案取 base 与所有窗口值的最大值。利润绝对值可达 10¹⁰，用 64 位整数。"
+    ],
+    "en": [
+      "The modification only affects the k chosen consecutive elements: contributions outside the window are unchanged, the first half of the window becomes hold (contributing 0), and every day of the second half sells (contributing that day's price). Not modifying at all is also allowed.",
+      "The original profit is base = sum of strategy[i] * rates[i]. After choosing the window [l, l+k), the new profit is base - the window's original contribution + the sum of prices in the second half; both parts come from prefix sums in O(1).",
+      "Build prefix sums P of strategy[i] * rates[i] and Q of rates[i], and let h = k/2. For each l = 0..n-k compute base - (P[l+k] - P[l]) + (Q[l+k] - Q[l+h]); the answer is the maximum of base and all window values. Profits can reach 10^10 in absolute value, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Problem\n\nrates[i] is the price on day i, strategy[i] is in {-1 buy, 0 hold, 1 sell}, and profit = sum of selling prices - sum of buying prices. You may (but need not) choose a segment of exactly k consecutive elements, set its first half to 0 and its second half to 1. Find the maximum profit.\n\n## Approach\n\nThe original profit is base = sum of strategy[i] * rates[i]. After choosing the window [l, l+k), the window's original contributions are cleared and every day of the second half becomes a sale, so the new profit = base - (sum over the window of strategy[i] * rates[i]) + (sum over the second half of rates[i]). Two prefix sums compute each window in O(1), and the answer is the maximum of base and all window values (since not modifying is allowed).\n\n## Correctness\n\nElements outside the window are unchanged and the elements inside the window are completely overwritten, so the formula corresponds term by term. All possible window starts and the no-modification case are enumerated.\n\n## Complexity\n\nO(n). The absolute value of the profit can reach 10^10, so use 64-bit integers.\n\n## Independent verification\n\nThe oracle actually builds the modified strategy array for every window and recomputes the whole profit (O(nk), small data only), without prefix sums. All combinations with n = 2..4, every even k, prices 1..2 and strategies in {-1, 0, 1} were enumerated and the reference program was actually run on each. The wrong solutions cover forcing a modification, swapping the two halves, not clearing the original actions in the first half of the window, and 32-bit accumulation."
+}

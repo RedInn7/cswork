@@ -1,0 +1,19 @@
+{
+  "id": "oa-square-point-2",
+  "packageChecksum": "87c9851f8db4ff317b3e59b738e8e62f133944d4cfa6ff0b94fe03842adb6ca0",
+  "sourceContentHash": "343e1b28b94f2120daffc93691706188f42026151950ae5f02182f768a887e40",
+  "editorialSha256": "4c2b57fcebe88c3abaf84f533d0426f4b356a371bc5d51c6e49e37e074340448",
+  "hints": {
+    "zh": [
+      "把商品名先排好序，所有以某个前缀开头的商品在有序数组里一定连成一段，而且这一段最前面的就是字典序最小的。",
+      "对搜索词的每个前缀，用二分找到第一个不小于该前缀的商品位置，从那里往后看，只要还以该前缀开头就收集，最多收集 3 个。",
+      "排序商品；对 i=1..len(word)，取 prefix=word[:i]，lower_bound 得到起点 j，循环当 j<n 且 p[j] 以 prefix 开头且已收集少于 3 个时加入并 j++。收集为空输出 -，否则用空格连接输出。"
+    ],
+    "en": [
+      "Sort the product names first. All products starting with a given prefix then form one contiguous block of the sorted array, and the first item of that block is the lexicographically smallest.",
+      "For each prefix of the search word, binary search the first product that is not smaller than the prefix, then walk forward collecting products while they still start with the prefix, at most 3 of them.",
+      "Sort the products. For i = 1..len(word), let prefix = word[:i], take j = lower_bound(prefix), and while j < n, p[j] starts with prefix and fewer than 3 are collected, collect p[j] and advance j. Print - if nothing was collected, otherwise the collected names joined by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the products first, then search each prefix in turn and collect the first 3 matches.\n\n## Proof of correctness\n\nAfter sorting, when all products are scanned in order, the first match found is the lexicographically smallest one; continuing the scan takes at most three items, so the output for each prefix is exactly what the problem asks for.\n\n## Complexity\n\nLet n be the number of products and m the length of the search word. Sorting is O(n log n), and each prefix is located by binary search and checks at most 3 results, so the time is O(n log n + m log n), not counting the cost of character comparisons.\n\n## Source notes\n\nThis site compiled the standard input/output protocol separately; the original site is not claimed to provide it."
+}

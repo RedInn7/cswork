@@ -1,0 +1,21 @@
+{
+  "id": "oa-tradedesk-2",
+  "packageChecksum": "7f4b66163930fafa348af2f829702578e49e501f023751d75b73e64daa1ae38e",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n = int(data[0])\n    # Difference events: +1 at x-r, -1 at x+r+1 (closed interval end), merged per coordinate.\n    delta = {}\n    for i in range(n):\n        x = int(data[1 + 2 * i])\n        r = int(data[2 + 2 * i])\n        a, b = x - r, x + r + 1\n        delta[a] = delta.get(a, 0) + 1\n        delta[b] = delta.get(b, 0) - 1\n    keys = sorted(delta)\n    ans = 0\n    cov = 0\n    # Between consecutive event coordinates the coverage is constant.\n    for i in range(len(keys) - 1):\n        cov += delta[keys[i]]\n        if cov == 1:\n            ans += keys[i + 1] - keys[i]\n    print(ans)\n\n\nmain()\n",
+      "sha256": "07929666710e1a629c2758796d4d4221b9fd12554252b0e9f03a52ebe7e15b2b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        // Event key = 2*coordinate + (1 for +1, 0 for -1); the closed interval ends at x+r+1.\n        long[] e = new long[2 * n];\n        for (int i = 0; i < n; i++) {\n            long x = nextLong(), r = nextLong();\n            e[2 * i] = (x - r) * 2 + 1;\n            e[2 * i + 1] = (x + r + 1) * 2;\n        }\n        Arrays.sort(e);\n        long ans = 0;\n        int cov = 0;\n        for (int i = 0; i < e.length; ) {\n            long p = e[i] >> 1;\n            while (i < e.length && (e[i] >> 1) == p) cov += (e[i++] & 1) == 1 ? 1 : -1;\n            // Coverage is constant from p up to the next event coordinate.\n            if (i < e.length && cov == 1) ans += (e[i] >> 1) - p;\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "c7611245cb1640c71bbb597ceadebc3643484991d7f2d483bc9a037adf2ca07b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn := readInt()\n\t// Event key = 2*coordinate + (1 for +1, 0 for -1); the closed interval ends at x+r+1.\n\te := make([]int, 2*n)\n\tfor i := 0; i < n; i++ {\n\t\tx, r := readInt(), readInt()\n\t\te[2*i] = (x-r)*2 + 1\n\t\te[2*i+1] = (x + r + 1) * 2\n\t}\n\tsort.Ints(e)\n\tans, cov := 0, 0\n\tfor i := 0; i < len(e); {\n\t\tp := e[i] >> 1\n\t\tfor i < len(e) && e[i]>>1 == p {\n\t\t\tif e[i]&1 == 1 {\n\t\t\t\tcov++\n\t\t\t} else {\n\t\t\t\tcov--\n\t\t\t}\n\t\t\ti++\n\t\t}\n\t\t// Coverage is constant from p up to the next event coordinate.\n\t\tif i < len(e) && cov == 1 {\n\t\t\tans += e[i]>>1 - p\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "a7000d70604f7b162452ea6ec324338cba02dae8ba1c865eac7fe0b7c5c0a966"
+    }
+  ]
+}

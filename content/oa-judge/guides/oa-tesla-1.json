@@ -1,0 +1,19 @@
+{
+  "id": "oa-tesla-1",
+  "packageChecksum": "204dba8f08a5a4c2e0e03b4c0e9a74269644f55472402b8fff185a8ff44b520f",
+  "sourceContentHash": "cf1d6b184d87dea36a5de35eacbaa63a64bbc9bd244484020c2eb12d15a8d441",
+  "editorialSha256": "f94a8d453f1bbe864aee6affa64ca32ff1346bb1b8ce5da6df4ca8233600773a",
+  "hints": {
+    "zh": [
+      "每个字母独立变换，顺序不变；只需要把字母看成 0 到 25 的编号，右移 4 位并在 Z 之后绕回 A。",
+      "对字母编号 x，加密后的编号是 (x+4) mod 26，取模恰好处理 W、X、Y、Z 绕回开头的情况。",
+      "逐个字符计算 'A'+((c−'A'+4) mod 26)，把结果按原顺序拼成新字符串输出。"
+    ],
+    "en": [
+      "Each letter is transformed on its own and the order stays the same; treat letters as numbers 0..25, shift right by 4 and wrap around from Z back to A.",
+      "For a letter number x, the encrypted number is (x + 4) mod 26; the modulus handles W, X, Y and Z wrapping to the start.",
+      "For each character compute 'A' + ((c - 'A' + 4) mod 26), and concatenate the results in the original order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nConvert each letter to 0 through 25, add 4, take the result modulo 26, and convert it back to a letter.\n\n## Correctness\n\nAdding 4 gives the position shifted to the right, and modulo 26 handles the wrap-around at the end exactly; mapping character by character while keeping the order gives the answer.\n\n## Complexity\n\nO(n) time and O(n) output space."
+}

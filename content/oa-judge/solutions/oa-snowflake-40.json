@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-40",
+  "packageChecksum": "4d3f2ee18faf2af73db046da6201e52b65c4bf94c4417133fa1ba72fddffbb4f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    vector<int> a(n);\n    int even = 0;\n    for (auto &x : a) { scanf(\"%d\", &x); if (x % 2 == 0) even++; }\n    // Odd numbers inside the first `even` slots must each be swapped out.\n    long long ans = 0;\n    for (int i = 0; i < even; i++) ans += a[i] % 2;\n    printf(\"%lld\\n\", ans);\n}\n",
+      "sha256": "242856075d134a0acfd5d2dffb8cd3e2edc1a444ed6a183fda09ddf87d742db4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static int nextInt() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        int r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        int[] a = new int[n];\n        int even = 0;\n        for (int i = 0; i < n; i++) { a[i] = nextInt(); if (a[i] % 2 == 0) even++; }\n        // Odd numbers inside the first `even` slots must each be swapped out.\n        long ans = 0;\n        for (int i = 0; i < even; i++) ans += a[i] % 2;\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "1f6ed51ef76bc8a767eafe4277d2a76464c7f18dd23419e16ec3add0b6f5c63f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn := readInt()\n\ta := make([]int, n)\n\teven := 0\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t\tif a[i]%2 == 0 {\n\t\t\teven++\n\t\t}\n\t}\n\t// Odd numbers inside the first `even` slots must each be swapped out.\n\tans := 0\n\tfor i := 0; i < even; i++ {\n\t\tans += a[i] % 2\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "270bfdf4b19fd159dae8d83c5ce90decff48474fc14cf95df65b5eea850b99b9"
+    }
+  ]
+}

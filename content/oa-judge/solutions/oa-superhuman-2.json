@@ -1,0 +1,21 @@
+{
+  "id": "oa-superhuman-2",
+  "packageChecksum": "2a72cbc67f46b4dccee8b1da2c9134efc3b0b52004e38d52c32b3f5f6decceeb",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    int n;\n    long long t;\n    scanf(\"%d %lld\", &n, &t);\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    // Jump +2 whenever possible: the spread grows with the last index reached.\n    int i = 0;\n    long long c = 1;\n    while (a[i] - a[0] < t) {\n        if (i + 2 < n) i += 2;\n        else if (i + 1 < n) i += 1;\n        else { printf(\"%d\\n\", n); return 0; }\n        c++;\n    }\n    printf(\"%lld\\n\", c);\n}\n",
+      "sha256": "28918d1eb7386cfd49139017a3b527af0d808c651d3341630078a9c2a9fa9aa2"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long t = nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        // Jump +2 whenever possible: the spread grows with the last index reached.\n        int i = 0;\n        long c = 1;\n        while (a[i] - a[0] < t) {\n            if (i + 2 < n) i += 2;\n            else if (i + 1 < n) i += 1;\n            else { System.out.println(n); return; }\n            c++;\n        }\n        System.out.println(c);\n    }\n}\n",
+      "sha256": "e8576bced40b77f6fd2f7d12b0396d42d15d31b543e2e0dbd6f04d7f6b7e4703"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn, t := readInt(), readInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t}\n\t// Jump +2 whenever possible: the spread grows with the last index reached.\n\ti, c := 0, 1\n\tfor a[i]-a[0] < t {\n\t\tif i+2 < n {\n\t\t\ti += 2\n\t\t} else if i+1 < n {\n\t\t\ti++\n\t\t} else {\n\t\t\tfmt.Println(n)\n\t\t\treturn\n\t\t}\n\t\tc++\n\t}\n\tfmt.Println(c)\n}\n",
+      "sha256": "e762f9f68b87921de1f7fee299c80ca7d8b426b30be5c2517b63401b65f62759"
+    }
+  ]
+}

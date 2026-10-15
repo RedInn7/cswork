@@ -1,0 +1,21 @@
+{
+  "id": "oa-sofi-1",
+  "packageChecksum": "9cce44127bf7cba9487dea336184b8fdf5ac32bf03c26eff0539aeeb0533bfea",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nlong long n, m, k;\n\n// Minimum jobs on `cnt` processors next to one holding x: x-1, x-2, ..., then 1s.\nlong long side(long long cnt, long long x) {\n    long long full = min(cnt, x - 1);\n    return (x - 1 + x - full) * full / 2 + max(0LL, cnt - full);\n}\n\nlong long need(long long x) { return x + side(k - 1, x) + side(n - k, x); }\n\nint main() {\n    cin >> n >> m >> k;\n    long long lo = 1, hi = m, ans = 1;\n    while (lo <= hi) {\n        long long mid = (lo + hi) / 2;\n        if (need(mid) <= m) { ans = mid; lo = mid + 1; }\n        else hi = mid - 1;\n    }\n    cout << ans << \"\\n\";\n}\n",
+      "sha256": "586233f0130622ba6bb9a0f7f7964e421951d9e1146389db09197635ae6d2d4a"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.Scanner;\n\npublic class Main {\n    static long n, m, k;\n\n    // Minimum jobs on `cnt` processors next to one holding x: x-1, x-2, ..., then 1s.\n    static long side(long cnt, long x) {\n        long full = Math.min(cnt, x - 1);\n        return (x - 1 + x - full) * full / 2 + Math.max(0, cnt - full);\n    }\n\n    static long need(long x) { return x + side(k - 1, x) + side(n - k, x); }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        n = sc.nextLong(); m = sc.nextLong(); k = sc.nextLong();\n        long lo = 1, hi = m, ans = 1;\n        while (lo <= hi) {\n            long mid = (lo + hi) / 2;\n            if (need(mid) <= m) { ans = mid; lo = mid + 1; }\n            else hi = mid - 1;\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "12c94d83ca8fd5f056460b648fdcb6cd2ae660bcf33403dd33d7f5f6b84766aa"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nvar n, m, k int64\n\n// Minimum jobs on `cnt` processors next to one holding x: x-1, x-2, ..., then 1s.\nfunc side(cnt, x int64) int64 {\n\tfull := min(cnt, x-1)\n\treturn (x-1+x-full)*full/2 + max(0, cnt-full)\n}\n\nfunc need(x int64) int64 { return x + side(k-1, x) + side(n-k, x) }\n\nfunc main() {\n\tfmt.Scan(&n, &m, &k)\n\tlo, hi, ans := int64(1), m, int64(1)\n\tfor lo <= hi {\n\t\tmid := (lo + hi) / 2\n\t\tif need(mid) <= m {\n\t\t\tans, lo = mid, mid+1\n\t\t} else {\n\t\t\thi = mid - 1\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "a28b7d4ad7139327b303b2ae5df03051b987afb88f1dfe15c661359b14c21dfb"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-stripe-13",
+  "packageChecksum": "d904ba1963e74ee647d5c981acae7db237c687abcec93decc591b722bbc17ce7",
+  "sourceContentHash": "64366bb6f9c63f6fa897a9a009b72f694b9da1c0afae239514fc3db3bc47264c",
+  "editorialSha256": "379d7eade22b744584576116505b8511c20f62930657b7f0ca77487df82fc5e2",
+  "hints": {
+    "zh": [
+      "输出就是“按发件人分组，再在组内排序”。每行只有前三个字段按空白切分，第四个字段起到行尾的全部文本都是主题，主题可以含空格，也可以为空。",
+      "用发件人作为键把记录收集到各自的组里，组内按 (时间戳, 收件人, 主题) 三元组排序；时间戳按整数比较，其余按字典序比较。发件人本身也按字典序输出。",
+      "逐行解析：跳过空白读出时间戳、发件人、收件人，再跳过空白，剩下的就是主题。所有组按发件人排序后依次输出 sender: <发件人> 和组内各行 <时间戳> <收件人> [主题]，主题为空时不要多输出空格；第一行先输出总行数（组数加记录数）。"
+    ],
+    "en": [
+      "The output is just group by sender, then sort inside each group. Only the first three fields of a line are whitespace-separated; everything from the fourth field to the end of the line is the subject, which may contain spaces or be empty.",
+      "Collect the records into groups keyed by sender, and sort each group by the triple (timestamp, recipient, subject), comparing timestamps as integers and the rest lexicographically. The senders themselves are output in lexicographic order too.",
+      "Parse each line by skipping whitespace to read the timestamp, sender and recipient, then skip whitespace again; the rest is the subject. Go through the groups sorted by sender, printing sender: <sender> followed by the group's <timestamp> <recipient> [subject] lines, with no extra space when the subject is empty. The first line is the total number of lines, i.e. groups plus records."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCollect records by sender, then sort them with the triple key `(timestamp, recipient, subject)`; finally output the groups sorted by sender key.\n\n## Correctness\n\nEvery record goes into exactly the group of its sender. Ascending group keys give the group order the problem requires, and the lexicographic order of the triples matches the three-level ordering inside a group exactly, so the output covers all input logs and only them, and satisfies every ordering rule.\n\n## Complexity\n\nLet n be the number of logs. Sorting takes O(n log n) in total, with O(n) space."
+}

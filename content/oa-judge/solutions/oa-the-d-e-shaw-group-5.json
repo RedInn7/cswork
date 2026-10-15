@@ -1,0 +1,21 @@
+{
+  "id": "oa-the-d-e-shaw-group-5",
+  "packageChecksum": "9d839f476057886c267f336a25284c8c63aa2fd083b7df6afe6c820ce8e1e604",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    int n;\n    long long target;\n    scanf(\"%d %lld\", &n, &target);\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    // |x-y| + |x+y| = 2 * max(|x|, |y|)\n    if (target < 0 || target % 2) { puts(\"0\"); return 0; }\n    long long radius = target / 2, le = 0, lt = 0;\n    for (long long x : a) { le += llabs(x) <= radius; lt += llabs(x) < radius; }\n    printf(\"%lld\\n\", le * (le - 1) / 2 - lt * (lt - 1) / 2);\n}\n",
+      "sha256": "471faa329679f30bd0d8af8efb1c10369f0a5924a6c394638dade43ca925ec28"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long target = nextLong();\n        // |x-y| + |x+y| = 2 * max(|x|, |y|)\n        if (target < 0 || target % 2 != 0) { System.out.println(0); return; }\n        long radius = target / 2, le = 0, lt = 0;\n        for (int i = 0; i < n; i++) {\n            long x = Math.abs(nextLong());\n            if (x <= radius) le++;\n            if (x < radius) lt++;\n        }\n        System.out.println(le * (le - 1) / 2 - lt * (lt - 1) / 2);\n    }\n}\n",
+      "sha256": "94514a025161605bae1842e2ddf15930879f18368ec82fd34598b92d6c0bd214"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn, target := readInt(), readInt()\n\t// |x-y| + |x+y| = 2 * max(|x|, |y|)\n\tif target < 0 || target%2 != 0 {\n\t\tfmt.Println(0)\n\t\treturn\n\t}\n\tradius, le, lt := target/2, 0, 0\n\tfor i := 0; i < n; i++ {\n\t\tx := readInt()\n\t\tif x < 0 {\n\t\t\tx = -x\n\t\t}\n\t\tif x <= radius {\n\t\t\tle++\n\t\t}\n\t\tif x < radius {\n\t\t\tlt++\n\t\t}\n\t}\n\tfmt.Println(le*(le-1)/2 - lt*(lt-1)/2)\n}\n",
+      "sha256": "612dade5e5cf95e00d384034d8d52adca2a3580b8afb4d69972d18abc42f8e2e"
+    }
+  ]
+}

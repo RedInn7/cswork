@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-47",
+  "packageChecksum": "704a7c0aaee103cf136d1300f9c3e731444a7a938d2dcc0c73e6fdadf59f5c01",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n    int size = 1 << n;\n    vector<char> reachable(size, 0);\n    for (int i = 0; i < k; i++) { int x; scanf(\"%d\", &x); reachable[x] = 1; }\n    // Superset propagation: a mask is reachable if some input is its submask.\n    for (int step = 1; step < size; step <<= 1)\n        for (int base = 0; base < size; base += 2 * step)\n            for (int low = base; low < base + step; low++)\n                if (reachable[low]) reachable[low + step] = 1;\n    long long total = 0;\n    for (char c : reachable) total += c;\n    printf(\"%lld\\n\", total);\n}\n",
+      "sha256": "fa31459e2fa1f814d3a54b7dcf5eb90538378791993ae2f126c1ae5b430f8078"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    static int nextInt() throws IOException { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt(), k = nextInt();\n        int size = 1 << n;\n        boolean[] reachable = new boolean[size];\n        for (int i = 0; i < k; i++) reachable[nextInt()] = true;\n        // Superset propagation: a mask is reachable if some input is its submask.\n        for (int step = 1; step < size; step <<= 1)\n            for (int base = 0; base < size; base += 2 * step)\n                for (int low = base; low < base + step; low++)\n                    if (reachable[low]) reachable[low + step] = true;\n        long total = 0;\n        for (boolean r : reachable) if (r) total++;\n        System.out.println(total);\n    }\n}\n",
+      "sha256": "b67295621da3eec63f8b56e01049d31a8f47379e2aad61ac1d98316885083a97"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn := 0\n\tc, _ := rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn, k := readInt(), readInt()\n\tsize := 1 << n\n\treachable := make([]bool, size)\n\tfor i := 0; i < k; i++ {\n\t\treachable[readInt()] = true\n\t}\n\t// Superset propagation: a mask is reachable if some input is its submask.\n\tfor step := 1; step < size; step <<= 1 {\n\t\tfor base := 0; base < size; base += 2 * step {\n\t\t\tfor low := base; low < base+step; low++ {\n\t\t\t\tif reachable[low] {\n\t\t\t\t\treachable[low+step] = true\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\ttotal := 0\n\tfor _, r := range reachable {\n\t\tif r {\n\t\t\ttotal++\n\t\t}\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "243015b56e75a358c3f3bcaba751cb3fecd4cb881faea5d0b31208ac4e33a910"
+    }
+  ]
+}

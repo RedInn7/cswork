@@ -1,0 +1,19 @@
+{
+  "id": "oa-stripe-2",
+  "packageChecksum": "2743d4d0b315100e77b5db256dbdd041ae7535b2ac84ec9fbfa4161226eb28cf",
+  "sourceContentHash": "366364ba7b6248f2f2347370c7bade510653e707c85a7c2d4bf8934633275838",
+  "editorialSha256": "24b9f66a0d371e62e90ac7bc6b42d24c8f9bdb31e916afdbde419c0d30c7d7ab",
+  "hints": {
+    "zh": [
+      "三个步骤彼此独立、按固定顺序执行：先金额乘数，再客户频次加分，最后同小时频次罚分；每一步都对完整的交易列表单独扫描一遍，而规则与交易按下标一一对应。",
+      "金额步骤：amount 严格大于 min_transaction_amount 时把商户分数乘以该规则的乘数。频次步骤：按 (商户, 客户) 分组，一组达到 3 笔后，这组每笔交易的 additive factor 都要计入（前三笔在第 3 笔时追溯计入，之后逐笔计入）。罚分步骤按 (商户, 客户, 小时) 分组，同样要求至少 3 笔。",
+      "实现时：分数初值取各商户 base_score；第一遍按条件相乘；第二遍对每个大小≥3 的 (商户, 客户) 组，把组内所有 additive factor 加到商户分数上；第三遍对每个大小≥3 的 (商户, 客户, 小时) 组求 penalty 之和，小时在 12..17 时加上，在 9..11 或 18..21 时减去，其他小时不变。最后按商户 ID 字典序输出全部商户，包括没有交易的商户。"
+    ],
+    "en": [
+      "The three steps are independent and run in a fixed order: amount multipliers first, then the customer-frequency bonus, then the same-hour frequency penalty. Each step scans the full transaction list on its own, and rules match transactions by index.",
+      "Amount step: when amount is strictly greater than min_transaction_amount, multiply the merchant's score by that rule's multiplier. Frequency step: group by (merchant, customer); once a group reaches 3 transactions, every transaction's additive factor in it counts (the first three retroactively at the 3rd, later ones one by one). The penalty step groups by (merchant, customer, hour) and also needs at least 3 transactions.",
+      "Start every score at the merchant's base_score. Pass one multiplies where the condition holds. Pass two adds, for every (merchant, customer) group of size >= 3, all additive factors of the group to the merchant's score. Pass three sums the penalties of every (merchant, customer, hour) group of size >= 3; add the sum when the hour is in 12..17, subtract it when the hour is in 9..11 or 18..21, and leave other hours alone. Output all merchants in lexicographic order of ID, including merchants without transactions."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst, in input order, apply the multiplication for every transaction meeting the strict condition `amount > min_transaction_amount`. Then group separately by (merchant, customer) and by (merchant, customer, hour). For a group that reaches three transactions, when the 3rd transaction triggers, the additive factor or penalty of each of the first three is applied; from the 4th transaction on, each transaction's own value is applied. Amount multiplication, the frequency bonus and the hourly penalty are three separate steps executed in that order. Finally output every merchant (including merchants without transactions) in lexicographic order of merchant ID.\n\n## Correctness\n\nThe amount step checks, for each transaction independently, the rule at the same index, so it applies exactly every multiplier whose strictly-greater condition holds. Grouping by (merchant, customer) keeps the original transaction order; applying the rules of the first three when the 3rd arrives and only the new transaction's rule afterwards matches the retroactive and cumulative semantics of the source example exactly. Hour groups work the same way, except that the grouping key also includes the hour, and the penalty is applied with its sign only in the hour bands the problem lists. The three steps run separately, so the result follows the order of operations the problem specifies.\n\n## Complexity\n\nLet n be the number of transactions and m the number of merchants. Grouping and the three scans are O(n), sorting the merchants is O(m log m), and the extra space is O(n + m)."
+}

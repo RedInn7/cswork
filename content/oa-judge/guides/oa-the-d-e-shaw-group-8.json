@@ -1,0 +1,19 @@
+{
+  "id": "oa-the-d-e-shaw-group-8",
+  "packageChecksum": "2e7782aedfb581d57a39d8e636da6001bd26478a9a95ade6ae1ee44715d852e5",
+  "sourceContentHash": "a01d3c74a72ac45b00ba7322477cf4575e63286b726cf4dd0ccb5ff9c7c8b1f0",
+  "editorialSha256": "7bdf21f1937386a707f7a147ef5a2f4431e4d93377eac6b9859a10d94d7ad7c0",
+  "hints": {
+    "zh": [
+      "以 a[i] 为最大值（允许并列）的最长区间，不能包含任何严格大于 a[i] 的元素；两侧最近的严格更大元素就是它的边界。",
+      "设 left 为左侧最近严格更大元素的下标（没有则为 −1），right 为右侧最近严格更大元素的下标（没有则为 n），则 b[i]=right−left−1。用单调栈在线性时间内求出两侧边界。",
+      "从左到右扫描，弹出所有 ≤ 当前值的栈顶，剩下的栈顶即 left，再压入 i；从右到左同理得到 right。两侧都用 ≤ 弹栈，使相等的值能互相包含。对 right−left−1 求和，用 64 位整数；元素可以为负数。"
+    ],
+    "en": [
+      "The longest range in which a[i] is the maximum (ties allowed) cannot contain any element strictly greater than a[i]; the nearest strictly greater elements on both sides are its boundaries.",
+      "Let left be the index of the nearest strictly greater element on the left (-1 if none) and right the nearest on the right (n if none); then b[i] = right - left - 1. A monotonic stack finds both boundaries in linear time.",
+      "Scan left to right, popping every stack top that is <= the current value; the remaining top is left, then push i. Do the same from right to left to get right. Pop with <= on both sides so equal values can include each other. Sum right - left - 1 in a 64-bit integer; elements may be negative."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each position, find the nearest strictly greater element on its left and on its right. All elements between them are not greater than the current value, so the largest valid range length is the width between the two boundaries. A monotonic stack finds the boundaries in linear time.\n\n## Proof of correctness\n\nThe nearest strictly greater element cannot be included in the range, because a[i] would then no longer be the maximum; on either side, every element before that one is not greater than a[i] and can be included without breaking the maximum condition. So the nearest strictly greater elements on the left and right uniquely determine the largest range, whose length is right - left - 1. Adding this over all positions gives the target sum.\n\n## Complexity\n\nO(n) time and O(n) extra space."
+}

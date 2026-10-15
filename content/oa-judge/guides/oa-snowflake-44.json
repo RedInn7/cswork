@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-44",
+  "packageChecksum": "197f9765f485b5a8261e0cc79c960ba1a140d358d9465ad16498a5a440d4cb34",
+  "sourceContentHash": "f7fdfe58aa9e18ccd725e4df71ee65a500362400a07b39dba4b906d2e4eed5df",
+  "editorialSha256": "55cf60afc1c3006d2cd2eaf8db22baffcd482bd19df568d79dd8d7cfc0a1221e",
+  "hints": {
+    "zh": [
+      "对同一堆反复操作时，每次移走的石子数 floor(x/2) 只会越来越少，所以每一步都应该挑当前能移走最多的那一堆。",
+      "用最大堆维护所有石堆：每次取出最大的一堆 x，放回 ceil(x/2)。当最大值已经是 1 时，后续操作都移走 0 颗，可以直接停止。",
+      "把所有堆放进最大堆；循环 k 次：若堆顶为 1 则跳出，否则把堆顶 x 替换为 (x+1)/2（整数除法）并调整堆。最后把堆中所有值相加输出，总和用 64 位整数。"
+    ],
+    "en": [
+      "When the same pile is operated on repeatedly, the number of stones removed each time, floor(x/2), only decreases, so each step should pick the pile from which the most stones can be removed right now.",
+      "Keep all piles in a max-heap: take out the largest pile x and put back ceil(x/2). Once the maximum is 1, every further operation removes 0 stones, so you can stop.",
+      "Push all piles into a max-heap. Repeat k times: if the top is 1, break; otherwise replace the top x with (x + 1) / 2 using integer division and restore the heap. Finally output the sum of all values in the heap, using a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a max-heap (negated values in Python). Each time, take the largest pile, remove the floor of its half, and put back the ceiling of its half. Once the maximum is 1, further operations change nothing, so you can stop.\n\n## Correctness\n\nThe gains of consecutive operations on each pile are non-increasing, and always choosing the current largest gain is a feasible prefix choice of a global optimum. The largest pile yields the largest floor(x/2) gain; an exchange argument turns the first step of any optimal plan into this pile without making it worse. When every pile is 1, each of the remaining required operations removes 0 stones, so computing the final sum early is valid.\n\n## Complexity\n\nO(n + k log n) time and O(n) space."
+}

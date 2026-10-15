@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-39",
+  "packageChecksum": "8d633bb4e4e5ab361c797f0cb652cf19756492759b9cdeb09d4ecef3813ba8b4",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    // last[v]: latest index holding value v (1 = person, 2 = cake)\n    int last[3] = {-1, -1, -1};\n    int best = INT_MAX;\n    for (int i = 0; i < n; i++) {\n        int v;\n        scanf(\"%d\", &v);\n        if (v) {\n            int other = 3 - v;\n            if (last[other] >= 0) best = min(best, i - last[other]);\n            last[v] = i;\n        }\n    }\n    printf(\"%d\\n\", best == INT_MAX ? -1 : best);\n}\n",
+      "sha256": "9bc81af2e340fc385272ec0b40d1f4c9489cd9dc732d255c9bdbbbf6bed4383b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream in = System.in;\n\n    static int read() throws IOException {\n        if (ptr == len) { len = in.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static int nextInt() throws IOException {\n        int c = read();\n        while (c != '-' && (c < '0' || c > '9')) c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        int r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + c - '0'; c = read(); }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        int[] last = {-1, -1, -1};\n        int best = Integer.MAX_VALUE;\n        for (int i = 0; i < n; i++) {\n            int v = nextInt();\n            if (v != 0) {\n                int other = 3 - v;\n                if (last[other] >= 0) best = Math.min(best, i - last[other]);\n                last[v] = i;\n            }\n        }\n        System.out.println(best == Integer.MAX_VALUE ? -1 : best);\n    }\n}\n",
+      "sha256": "5ec8dd2144b4f13a8beedc15ae3bb5f8650402281d69bb4ff217ec0a1187ba7b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<20)\n\nfunc readInt() int {\n\tn, c := 0, byte(0)\n\tc, _ = rd.ReadByte()\n\tfor c == ' ' || c == '\\n' || c == '\\r' {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = rd.ReadByte()\n\t}\n\tfor c >= '0' && c <= '9' {\n\t\tn = n*10 + int(c-'0')\n\t\tc, _ = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -n\n\t}\n\treturn n\n}\n\nfunc main() {\n\tn := readInt()\n\tlast := [3]int{-1, -1, -1}\n\tbest := -1\n\tfor i := 0; i < n; i++ {\n\t\tv := readInt()\n\t\tif v != 0 {\n\t\t\tother := 3 - v\n\t\t\tif last[other] >= 0 && (best < 0 || i-last[other] < best) {\n\t\t\t\tbest = i - last[other]\n\t\t\t}\n\t\t\tlast[v] = i\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "39097ec6fb7debfd16e271d52a31ee38394d8a21ae0070b7a082701cf8db0553"
+    }
+  ]
+}
