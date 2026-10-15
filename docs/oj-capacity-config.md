@@ -19,7 +19,7 @@
 ```sh
 docker build -f deploy/oj/Dockerfile.capacity \
   --build-arg BASE_IMAGE=<已核验的本地镜像ID或digest> \
-  -t cswork-go-judge:1.12.3-seccomp-capacity4 deploy/oj
+  -t cswork-go-judge:1.12.3-seccomp-capacity4-pandas deploy/oj
 ```
 
 先暂停并排空评测队列，再使用新 compose 重建 sandbox，核验健康检查和参数，最后恢复队列。保留旧镜像及旧 compose 用于回退。`Dockerfile.capacity` 不适合跨工具链版本更新；全新安装继续使用完整 Dockerfile。加入 pandas 后 compose 与 `oj-capacity-release.sh` 使用 `cswork-go-judge:1.12.3-seccomp-capacity4-pandas`（由 `deploy/oj-pandas-release.sh` 构建并切换）；该镜像存在之前 `oj-capacity-release.sh` 在预检阶段就会拒绝运行，不改动任何服务。

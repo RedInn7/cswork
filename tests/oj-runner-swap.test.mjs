@@ -98,7 +98,22 @@ test('both runner swap scripts start the sandbox exactly as compose.yaml declare
     assert.equal(image, value('image'), `${name} runs a different image than compose.yaml`);
     assert.match(script, /^export ES_AUTH_TOKEN="\$GO_JUDGE_TOKEN"$/m);
   }
-  assert.match(scripts['oj-capacity-release.sh'], new RegExp(`^docker image inspect ${value('image').replaceAll('.', '\\.')} >/dev/null$`, 'm'));
+  // The capacity release runs only on the verified pandas runner, not merely when the tag exists.
+  assert.ok(
+    scripts['oj-capacity-release.sh'].includes(`[[ $(docker inspect -f '{{.Image}}' cswork-oj-sandbox) == $(docker image inspect -f '{{.Id}}' ${value('image')}) ]] ||`),
+    'oj-capacity-release.sh checks the running runner is the pandas image',
+  );
+});
+
+test('a rollback ignores hangups and the queue is rechecked right before pausing', () => {
+  for (const name of ['oj-pandas-release.sh', 'oj-capacity-release.sh']) {
+    const finish = scripts[name].slice(scripts[name].indexOf('finish() {'));
+    assert.match(finish, /^  trap - EXIT\n  #[^\n]*\n  trap '' HUP INT TERM$/m, name);
+  }
+  // After the build and smoke test, immediately before the handler and the pause.
+  const beforeHandler = pandas.slice(0, pandas.indexOf('\nrunner_stopped=false\nrenamed=false'));
+  assert.match(beforeHandler.split('\n').at(-1), /^queue status \|/);
+  assert.ok(beforeHandler.lastIndexOf('docker build') < beforeHandler.lastIndexOf('queue status'));
 });
 
 test('pandas release never deletes a container or image', () => {

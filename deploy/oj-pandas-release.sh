@@ -105,17 +105,28 @@ install -d -m 700 /srv/cswork/oj-rollback "$rollback"
 cp -a /etc/cswork/oj.env /srv/cswork/oj/compose.yaml /srv/cswork/oj/verify-runtime.py "$rollback/"
 paused=false
 worker_touched=false
+# Again right before pausing: someone may have started maintenance during the build.
+queue status | "$node" -e 'let text="";process.stdin.on("data",v=>text+=v);process.stdin.on("end",()=>{if(JSON.parse(text).paused){console.error("Queue is already paused; preserve maintenance and abort");process.exit(1)}})'
 runner_stopped=false
 renamed=false
 complete=false
 finish() {
   code=$?
   trap - EXIT
+  # A dropped SSH session or Ctrl-C must not stop a rollback or the queue resume halfway.
+  trap '' HUP INT TERM
   set +e
   recovery_failed=false
   if [[ "$complete" != true && "$worker_touched" == true ]]; then
     echo "Pandas rollout failed (exit $code); restoring the previous runner." >&2
     systemctl stop cswork-oj-worker.service || recovery_failed=true
+    # Hide pd- at once: a heartbeat listing pandas belongs to the runner being removed.
+    runuser -u cswork -- "$node" --env-file=/etc/cswork/cswork.env --input-type=module -e '
+      import {createRequire} from "node:module";
+      const Database=createRequire("/srv/cswork/current/package.json")("better-sqlite3");
+      const db=new Database(process.env.DATABASE_PATH);
+      db.prepare("UPDATE oj_runtime SET details=json_remove(details,?) WHERE id=?").run("$.languageVersions.pandas","worker");db.close();' ||
+      echo 'warning: could not clear the pandas heartbeat; pd- stays visible until the worker restarts' >&2
     if [[ "$renamed" == true ]]; then
       # Keep a failed new runner, stopped and renamed, for its logs.
       if docker inspect cswork-oj-sandbox >/dev/null 2>&1; then

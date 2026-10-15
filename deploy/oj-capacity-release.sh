@@ -16,7 +16,9 @@ target="/srv/cswork/releases/$release"
 test ! -e "$target"
 old_runner="cswork-oj-sandbox-rollback-${release:0:12}"
 ! docker inspect "$old_runner" >/dev/null 2>&1
-docker image inspect cswork-go-judge:1.12.3-seccomp-capacity4-pandas >/dev/null
+# Only after oj-pandas-release.sh succeeded: the running runner is the verified pandas image.
+[[ $(docker inspect -f '{{.Image}}' cswork-oj-sandbox) == $(docker image inspect -f '{{.Id}}' cswork-go-judge:1.12.3-seccomp-capacity4-pandas) ]] ||
+  { echo 'The runner is not the verified pandas image; run deploy/oj-pandas-release.sh first'; exit 1; }
 test "$(docker inspect -f '{{.State.Running}}' cswork-oj-sandbox)" = true
 test "$(df --output=avail -B1 /srv/cswork | tail -1)" -gt 1073741824
 # Separate copy, not hardlinks: replacing the worker cannot alter the rollback release.
@@ -54,6 +56,8 @@ complete=false
 finish() {
   code=$?
   trap - EXIT
+  # A dropped SSH session or Ctrl-C must not stop a rollback or the queue resume halfway.
+  trap '' HUP INT TERM
   set +e
   recovery_failed=false
   if [[ "$complete" != true && "$worker_touched" == true ]]; then
