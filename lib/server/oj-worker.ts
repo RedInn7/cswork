@@ -771,7 +771,7 @@ const precompileTimer = setInterval(() => {
   }
 }, OJ_DISPATCH_INTERVAL_MS);
 // Peer mock interview reminder mails, and instant requests that lapsed; learners' reminder
-// digests and contest reminders (needs TZ=UTC); followed companies' new OA problems. The worker
+// digests and contest reminders (any process TZ); followed companies' new OA problems. The worker
 // is the one long-running process with the mail settings, so no separate timer unit. One after
 // another, and never two ticks at once, so mails stay under Resend's rate limit.
 let reminding = false;

@@ -24,6 +24,8 @@ function useCompanyFollows() {
     };
   }, []);
   async function toggle(slug: string, on: boolean) {
+    // One request at a time; the controls stay enabled so keyboard focus stays put.
+    if (busy) return;
     setBusy(true);
     setError('');
     try {
@@ -72,7 +74,7 @@ export function CompanyFollowButton({
         type="button"
         className={className}
         aria-pressed={following}
-        disabled={busy}
+        aria-disabled={busy}
         title={t('有新面经或新 OA 题时通知你', 'Get notified of new interview reports and OA problems')}
         onClick={() => void toggle(slug, !following)}
       >

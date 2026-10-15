@@ -289,7 +289,8 @@ void test('reminder mails go out once a day ahead and once an hour ahead, to ver
   globalThis.fetch = (async (_url: string, init: RequestInit) => {
     if (limited > 0) {
       limited--;
-      return new Response('rate limited', { status: 429 });
+      // A failure sendMail does not retry (a 429 is retried in place): the claim must be released.
+      return new Response('unavailable', { status: 503 });
     }
     mails.push(JSON.parse(String(init.body)));
     return Response.json({ id: 'x' });
