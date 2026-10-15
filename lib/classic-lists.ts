@@ -17,13 +17,14 @@ export type ClassicList = {
   /**
    * A LeetCode list's groups hold problem numbers. A book list's groups hold its
    * own problems in book order instead: the book number, the main-site LeetCode
-   * twin (null when there is none) and the slug of its page on leetcode.cn.
+   * twin (null when there is none), the slug of its page on leetcode.cn and, for
+   * a problem without a twin, CSWork's own rewrite judged here (content/book-problems).
    */
   groups: {
     nameZh: string;
     nameEn: string;
     numbers?: number[];
-    refs?: { ref: string; lc: number | null; slug: string }[];
+    refs?: { ref: string; lc: number | null; slug: string; judge?: string }[];
   }[];
 };
 export const classicLists = lists as ClassicList[];
