@@ -202,7 +202,10 @@
   line-height: 1.7;
 }
 .oa-review-score:empty {
-  display: none;
+  /* Out of the layout but still in the accessibility tree: a live region must exist before its first result. */
+  position: absolute;
+  padding: 0;
+  border: 0;
 }
 .oa-review-score strong {
   color: #17212b;
@@ -341,6 +344,9 @@
     border-top: 1px solid #2d3237;
     border-bottom: 1px solid #2d3237;
     color: #bed2e5;
+  }
+  .dark .oa-review-score:empty {
+    border: 0;
   }
   .dark .oa-review-score strong {
     color: #d6e1ed;

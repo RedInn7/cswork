@@ -190,12 +190,15 @@ test('the code-review drill scores flagged lines, reveals the bug and records a 
     await press(line(3).querySelector('button'));
     assert.equal(line(3).querySelector('button').getAttribute('aria-pressed'), 'true');
     assert.ok(line(3).querySelector('input'), 'a flagged line takes a note');
-    await press(byText('Submit (2 flagged)'));
+    const submitButton = byText('Submit (2 flagged)');
+    await press(submitButton);
     await settle();
     assert.deepEqual(reviews[0], { n: 3, lines: [2, 3] });
     assert.equal(line(3).dataset.state, 'hit');
     assert.equal(line(2).dataset.state, 'false');
     assert.match(document.querySelector('.oa-review-score').textContent, /Found 1 of 1 faulty lines, 1 flagged by mistake\. The planted bug: Off by one/);
+    // The Submit button's node becomes "Review again" (React reuses it), so a focused Submit keeps focus.
+    assert.ok(submitButton === byText('Review again') && submitButton.isConnected);
     assert.equal(localStorage.getItem('cswork:drills:v1'), null, 'a false flag is no clean review');
     await press(byText('Review again'));
     await press(line(3).querySelector('button'));
@@ -210,4 +213,10 @@ test('the code-review drill scores flagged lines, reveals the bug and records a 
     window.close();
     delete globalThis.IS_REACT_ACT_ENVIRONMENT;
   }
+});
+
+test('the review score stays a live region while empty, so its first result is announced', async () => {
+  const { readFileSync } = await import('node:fs');
+  const css = readFileSync(new URL('../app/oa-drills.css', import.meta.url), 'utf8');
+  for (const [, body] of css.matchAll(/\.oa-review-score:empty\s*\{([^}]*)\}/g)) assert.doesNotMatch(body, /display:\s*none|visibility:\s*hidden/);
 });

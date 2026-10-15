@@ -159,7 +159,7 @@ export function MockReplay({
   level?: 2 | 3;
 }) {
   const t = useT();
-  const H = level === 2 ? 'h2' : 'h3';
+  const [H, Sub] = level === 2 ? (['h2', 'h3'] as const) : (['h3', 'h4'] as const);
   const [tracks, setTracks] = useState<(Track | null)[] | null>(null);
   useEffect(() => {
     let live = true;
@@ -298,7 +298,7 @@ export function MockReplay({
         </figure>
       </div>
       <div className="mock-replay-split">
-        <h4>{t('时间分布', 'Where the time went')}</h4>
+        <Sub>{t('时间分布', 'Where the time went')}</Sub>
         <ol className="mock-replay-bars">
           {session.ids.map((id, q) => (
             <li key={id}>
@@ -325,7 +325,7 @@ export function MockReplay({
         ) : (
           <p className="mock-footnote">{t('没有超过 3 分钟的停顿。', 'No pause longer than 3 minutes.')}</p>
         )}
-        <h4>{t('专注度自检', 'Focus self-check')}</h4>
+        <Sub>{t('专注度自检', 'Focus self-check')}</Sub>
         {unrecorded ? (
           <p className="mock-replay-focus">
             {t('这场模拟在专注度自检上线前开始，没有记录离开页面和粘贴。', 'This mock began before the focus self-check, so time away and pastes were not recorded.')}

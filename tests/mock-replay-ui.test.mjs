@@ -272,6 +272,8 @@ test('a contest run records on the server clock and replays its own window', asy
     const heading = document.querySelector('#mock-replay-title');
     assert.equal(heading.tagName, 'H2');
     assert.equal(heading.textContent, 'My code replay');
+    // Its sub-headings follow it one level down: an h3 under the room's h2, not an h4.
+    assert.deepEqual([...document.querySelectorAll('.mock-replay-split :is(h3, h4)')].map((h) => h.tagName), ['H3', 'H3']);
     assert.equal(document.querySelector('.mock-replay-clock').textContent, '00:00 / 30:00');
     assert.equal(document.querySelector('.mock-replay-marks button').dataset.tone, 'ac');
     // Another entrant of the room on this browser has nothing to replay.
@@ -289,7 +291,12 @@ test('a session that left every history on this browser loses its replay', async
   // Contest runs have no mock history: the last 20 this browser started recording stay.
   const run = (room) => contestReplay(room, { name: 'Amy', start: 0, end: 1 }, []).id;
   stored.set(trackKey(run('old'), 'p1'), 'x');
+  // A display name may hold a ':' — the session is everything before the last one.
+  const colon = contestReplay('r9', { name: 'Bob: CMU', start: 0, end: 1 }, []).id;
+  rememberContestRun(colon);
+  stored.set(trackKey(colon, 'lc-1'), 'x');
   await pruneTracks();
+  assert.equal(stored.has(trackKey(colon, 'lc-1')), true, 'a listed run whose name has a colon');
   assert.equal(stored.has(trackKey('kept', 'p1')), true);
   assert.equal(stored.has(trackKey('gone', 'p1')), false);
   assert.equal(stored.has(trackKey('s1', 'p1')), false);

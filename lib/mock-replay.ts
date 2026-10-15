@@ -268,7 +268,8 @@ export async function pruneTracks() {
       for (const s of [state.active, ...state.history]) if (s) keep.add(s.id);
     }
     for (const id of contestRuns()) keep.add(id);
-    for (const key of keys) if (!keep.has(key.split(':')[0])) await withStore('readwrite', (s) => s.delete(key));
+    // The session id is everything before the last ':' (problem ids have none; a contest name may).
+    for (const key of keys) if (!keep.has(key.slice(0, key.lastIndexOf(':')))) await withStore('readwrite', (s) => s.delete(key));
   } catch {
     /* Without storage there is nothing to prune, and nothing is pruned on a failed read. */
   }
