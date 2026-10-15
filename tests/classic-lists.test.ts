@@ -215,7 +215,7 @@ void test('a book list counts each book problem; problems sharing one twin share
   assert.equal(plain.collection.mapped, plain.collection.total);
 });
 
-void test('groups keep their order; problems not judgeable here are external and out of progress', () => {
+void test('groups keep their order; problems not judgeable here are external and out of progress', async () => {
   const view = listClassicLibrary(list, 'alice');
   assert.deepEqual(
     view.groups.map((g) => [g.nameEn, g.items.map((i) => i.number)]),
@@ -251,6 +251,12 @@ void test('groups keep their order; problems not judgeable here are external and
   assert.equal(b.items[0].stop?.slug, curatedByNumber.get(unready)!.sectionSlug);
   assert.equal(b.items[1].stop, null);
   assert.equal(a.items[0].stop, null);
+  // Stage and rating let a short study plan keep foundation, then easier problems.
+  const { lcRatingOf } = await import('../lib/server/lc-ratings');
+  assert.equal(a.items[1].stage, ['基础', '核心', '进阶'].indexOf(stop.stage));
+  const rating = lcRatingOf(onLine)?.rating;
+  assert.equal(a.items[1].rating, rating == null ? null : Math.round(rating));
+  assert.deepEqual([b.items[1].stage, a.items[0].rating], [null, null]);
   // Missing numbers still list, with an empty title the pages fill in.
   assert.equal(problemTitle(a.items[0], true), `LeetCode ${missing}`);
   assert.equal(problemTitle(b.items[1], false), 'Off the line');

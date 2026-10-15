@@ -37,7 +37,7 @@ import '@/app/study-plan.css';
 
 /**
  * One `planTodo` entry of the curated list: [problem id, difficulty, stop index, stage
- * index, rating]. A classic list's problems carry the first three, stop null off the line.
+ * index, rating]. A classic list's problems off the line have stop null and no stage.
  */
 export type PlanTodo = readonly [
   id: string,
@@ -53,6 +53,8 @@ type PoolView = {
       difficulty: string;
       solved: boolean;
       stop: { slug: string } | null;
+      stage: number | null;
+      rating: number | null;
     }[];
   }[];
   sequence: string[];
@@ -169,7 +171,7 @@ export function useStudyPlan(
             if (!id || item.solved || seen.has(id)) return [];
             seen.add(id);
             const stop = item.stop ? ROUTE_SLUGS.indexOf(item.stop.slug) : -1;
-            return [[id, item.difficulty, stop < 0 ? null : stop]];
+            return [[id, item.difficulty, stop < 0 ? null : stop, item.stage ?? undefined, item.rating]];
           });
         setListed({ pool, todo, sequence: view.sequence });
       },

@@ -590,6 +590,9 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
       titleZh: row?.titleZh ?? '',
       titleEn: row?.titleEn ?? '',
       difficulty: row?.difficulty ?? '',
+      // What a short study plan keeps first: foundation stage, then lower rating.
+      stage: selection ? CURATED_STAGES.indexOf(selection.stage) : null,
+      rating: row?.rating == null ? null : Math.round(row.rating),
       judgeProblemId,
       external: !judgeProblemId,
       // Its Line 500 stop, judgeable here or not.
