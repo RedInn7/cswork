@@ -124,17 +124,18 @@ func main() {
 	for _, x := range ns {
 		n := x.(map[string]interface{})
 		var o interface{}
+		// Only the judge's types; the learner's own Node etc. never reach the graph.
 		switch n["type"] {
 		case "TreeNode":
-			o = &TreeNode{}
+			o = &cswPlatformTreeNode{}
 		case "ListNode":
-			o = &ListNode{}
+			o = &cswPlatformListNode{}
 		case "Node":
-			o = &Node{}
+			o = &cswPlatformNode{}
 		case "Interval":
-			o = &Interval{}
+			o = &cswPlatformInterval{}
 		case "MountainArray":
-			o = &MountainArray{}
+			o = &cswPlatformMountainArray{}
 		default:
 			panic("Unknown node")
 		}

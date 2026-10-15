@@ -8,17 +8,36 @@ const definitions: Record<string, string> = {
   MountainArray:
     'type MountainArray struct { Values []int; Calls int }\nfunc (m *MountainArray) get(i int) int { m.Calls++; if m.Calls>100 { panic("MountainArray.get exceeds 100 calls") }; return m.Values[i] }\nfunc (m *MountainArray) length() int { return len(m.Values) }',
 };
-function helpers(source: string, relevantOnly = false) {
-  const clean = source
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/\/\/[^\n]*/g, '');
+const clean = (source: string) =>
+  source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+/** The template's own definitions of the types its signature uses. */
+function helpers(snippet: string) {
   return Object.entries(definitions)
     .filter(
       ([name]) =>
-        (!relevantOnly || new RegExp(`\\b${name}\\b`).test(source)) &&
-        !new RegExp(`\\btype\\s+${name}\\b`).test(clean),
+        new RegExp(`\\b${name}\\b`).test(snippet) &&
+        !new RegExp(`\\btype\\s+${name}\\b`).test(clean(snippet)),
     )
     .map(([, s]) => s)
+    .join('\n');
+}
+/**
+ * The runtime uses only cswPlatformX. Like LeetCode, X itself exists only when
+ * the official signature uses it, and then it is one type: the learner's
+ * package-level definition (our template ships one) or ours.
+ */
+function platform(signature: string, code: string) {
+  return Object.entries(definitions)
+    .map(([name, definition]) => {
+      const own = `cswPlatform${name}`;
+      if (!new RegExp(`\\b${name}\\b`).test(clean(signature)))
+        return definition.replace(new RegExp(`\\b${name}\\b`, 'g'), own);
+      // ponytail: a grouped `type ( X ... )` is not seen and reports X redeclared.
+      const alias = `type ${own} = ${name}`;
+      return new RegExp(`\\btype\\s+${name}\\b`).test(clean(code))
+        ? alias
+        : `${definition}\n${alias}`;
+    })
     .join('\n');
 }
 function official(problemId: number, snippet: string) {
@@ -34,7 +53,7 @@ export function getLeetCodeGoTemplate(
   snippet: string,
 ): string {
   const code = official(problemId, snippet);
-  return `package main\n\n${code}\n\n${helpers(code, true)}\n`;
+  return `package main\n\n${code}\n\n${helpers(code)}\n`;
 }
 export function buildLeetCodeGo(
   problemId: number,
@@ -42,10 +61,8 @@ export function buildLeetCodeGo(
   snippet: string,
 ): string {
   const code = source.replace(/^\s*package\s+\w+\s*;?/m, '');
-  const declaration = official(problemId, snippet).replace(
-    /\/\*[\s\S]*?\*\//g,
-    '',
-  );
+  const signature = official(problemId, snippet);
+  const declaration = signature.replace(/\/\*[\s\S]*?\*\//g, '');
   const methods = [
     ...declaration.matchAll(/func\s*\([^)]*\)\s*(\w+)\s*\(/g),
   ].map((m) => m[1]);
@@ -64,5 +81,5 @@ export function buildLeetCodeGo(
   // User import declarations must precede all helper declarations.
   return runtime
     .replace('// CSWORK_DISPATCH', dispatch)
-    .replace('var csnodes', `${code}\n${helpers(code)}\nvar csnodes`);
+    .replace('var csnodes', `${code}\n${platform(signature, code)}\nvar csnodes`);
 }
