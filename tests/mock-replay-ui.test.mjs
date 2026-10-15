@@ -177,6 +177,55 @@ test('a track over its size cap stops recording, and the report says so', async 
   }
 });
 
+test('time away and long pastes are recorded for the self-check, and the report shows them', async () => {
+  mock.timers.enable({ apis: ['setInterval', 'Date'], now: 3_000_000 });
+  const start = Date.now();
+  const session = { id: 's-focus', ids: ['p1'], minutes: 60, startedAt: start, skew: 0, slots: ['easy'], createdAt: start };
+  function Recorder({ running }) {
+    useReplayRecorder(running ? session : null, 'p1', 'code');
+    return null;
+  }
+  let visibility = 'visible';
+  Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => visibility });
+  const fire = (target, type) => target.dispatchEvent(new dom.window.Event(type));
+  const paste = (text) => {
+    const event = new dom.window.Event('paste', { bubbles: true });
+    Object.defineProperty(event, 'clipboardData', { value: { getData: () => text } });
+    document.body.dispatchEvent(event);
+  };
+  const root = createRoot(document.getElementById('root'));
+  try {
+    await act(async () => root.render(createElement(Recorder, { running: true })));
+    await act(flush);
+    // A blink of lost focus is not leaving.
+    await act(async () => (mock.timers.tick(1000), fire(window, 'blur'), mock.timers.tick(300), fire(window, 'focus')));
+    // Hidden, then blurred too: one stretch, closed by whichever comes back first.
+    await act(async () => (mock.timers.tick(700), (visibility = 'hidden'), fire(document, 'visibilitychange'), fire(window, 'blur')));
+    await act(async () => (mock.timers.tick(60_000), (visibility = 'visible'), fire(document, 'visibilitychange'), fire(window, 'focus')));
+    await act(async () => (paste('x'.repeat(50)), paste('short')));
+    await act(async () => mock.timers.tick(2000));
+    await act(async () => root.render(createElement(Recorder, { running: false })));
+    await act(flush);
+    const [track] = await loadSession('s-focus', ['p1']);
+    assert.deepEqual(track.away, [[2000, 62_000]]);
+    assert.deepEqual(track.pastes, [[62_000, 50]]);
+    await act(async () => root.render(createElement(MockReplay, { session: { ...session, finishedAt: start + 600_000 }, title: (id) => id })));
+    await act(flush);
+    const marks = [...document.querySelectorAll('.mock-replay-away li')];
+    assert.equal(marks.length, 2);
+    assert.equal(Number.parseFloat(marks[0].style.left).toFixed(3), '0.333');
+    assert.equal(marks[1].className, 'mock-replay-paste');
+    assert.equal(
+      document.querySelector('.mock-replay-focus').textContent,
+      'Left the page 1 time for 01:00 in all; 1 paste of over 40 characters.',
+    );
+  } finally {
+    await act(async () => root.unmount());
+    delete document.visibilityState;
+    mock.timers.reset();
+  }
+});
+
 test('a session that left every history on this browser loses its replay', async () => {
   stored.set(trackKey('kept', 'p1'), 'x');
   stored.set(trackKey('gone', 'p1'), 'x');

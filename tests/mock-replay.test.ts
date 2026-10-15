@@ -7,6 +7,7 @@ import {
   cursor,
   delta,
   emptyTrack,
+  focusSummary,
   lastCode,
   packTrack,
   timeSummary,
@@ -73,4 +74,18 @@ void test('tracks pack small and come back whole; anything else reads as no trac
   assert.deepEqual(await unpackTrack(JSON.stringify(track)), track);
   assert.equal(await unpackTrack(JSON.stringify({ v: 2 })), null);
   assert.equal(await unpackTrack(42), null);
+});
+
+void test('a v1 track reads as v2 with nothing away; the self-check merges stretches and keeps long pastes', async () => {
+  const old = { v: 1, frames: [[0, 0, 0, 'x']], events: [], opens: [0] };
+  assert.deepEqual(await unpackTrack(JSON.stringify(old)), { ...old, v: 2, away: [], pastes: [] });
+  const min = 60_000;
+  const q1: Track = { ...emptyTrack(), away: [[min, 3 * min], [-5000, 1000]], pastes: [[2 * min, 41], [3 * min, 40]] };
+  // Two tabs on Q2 overlap Q1's stretch; one ran past the hand-in.
+  const q2: Track = { ...emptyTrack(), away: [[2 * min, 4 * min], [9 * min, 12 * min]], pastes: [[11 * min, 500]] };
+  const { away, awayMs, pastes } = focusSummary([q1, null, q2], 10 * min);
+  assert.deepEqual(away, [[0, 1000], [min, 4 * min], [9 * min, 10 * min]]);
+  assert.equal(awayMs, 1000 + 4 * min);
+  // 40 characters is not over the line, and a paste after the end is not part of the exam.
+  assert.deepEqual(pastes, [{ t: 2 * min, q: 0, chars: 41 }]);
 });

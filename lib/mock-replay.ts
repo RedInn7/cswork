@@ -3,7 +3,8 @@ import { mockStorageKey, parseMockState } from './mock-oa';
 /**
  * Code replay of a mock OA, for the learner's own review: while the exam runs, the workspace
  * records the editor every 2 seconds it changed, plus each run and submission with its
- * verdict (components/mock-replay.tsx). One track per question, kept gzipped in this browser's
+ * verdict, and for the focus self-check the stretches the page was hidden or unfocused and
+ * the long pastes (components/mock-replay.tsx). One track per question, kept gzipped in this browser's
  * IndexedDB and never uploaded; a session's tracks share REPLAY_BYTES. The pure parts (delta
  * frames, the cursor, the time summary) are tested in tests/mock-replay.test.ts.
  */
@@ -13,19 +14,28 @@ const MOCK_STATE_PREFIX = mockStorageKey('');
 /** A change: [ms since the exam started, common prefix length, common suffix length, inserted text]. */
 export type Frame = [t: number, prefix: number, suffix: number, text: string];
 export type ReplayEvent = { t: number; mode: 'run' | 'judge'; status: string; passed: number; total: number; id: string };
+/** A stretch the page was hidden or lost focus: [from, to] in ms since the exam started. */
+export type Away = [from: number, to: number];
+/** A paste of over PASTE_CHARS characters: [ms since the exam started, characters]. */
+export type Paste = [t: number, chars: number];
 export type Track = {
-  v: 1;
+  v: 2;
   frames: Frame[];
   events: ReplayEvent[];
   /** When the question was opened. */
   opens: number[];
+  away: Away[];
+  pastes: Paste[];
   /** Stopped at the size cap: what follows was not recorded. */
   full?: boolean;
 };
 export const REPLAY_BYTES = 2 * 1024 * 1024;
 export const SNAPSHOT_MS = 2000;
 export const PAUSE_MS = 3 * 60_000;
-export const emptyTrack = (): Track => ({ v: 1, frames: [], events: [], opens: [] });
+export const PASTE_CHARS = 40;
+/** Shorter than this is not leaving (a click into devtools, a permission prompt). */
+export const AWAY_MS = 1000;
+export const emptyTrack = (): Track => ({ v: 2, frames: [], events: [], opens: [], away: [], pastes: [] });
 
 /** The edit from `before` to `after` as the common ends and what changed between them. */
 export function delta(before: string, after: string): [number, number, string] {
@@ -90,6 +100,29 @@ export function timeSummary(tracks: readonly (Track | null)[], duration: number)
   return { perQuestion, pauses };
 }
 
+/**
+ * The report's focus self-check: the stretches away from the page merged across questions and
+ * clipped to the exam, their total, and the long pastes with their question, in time order.
+ */
+export function focusSummary(tracks: readonly (Track | null)[], duration: number) {
+  const spans = tracks
+    .flatMap((track) => track?.away ?? [])
+    .map(([from, to]): Away => [Math.max(0, from), Math.min(duration, to)])
+    .filter(([from, to]) => to > from)
+    .sort((a, b) => a[0] - b[0]);
+  const away: Away[] = [];
+  for (const [from, to] of spans) {
+    const last = away.at(-1);
+    if (last && from <= last[1]) last[1] = Math.max(last[1], to);
+    else away.push([from, to]);
+  }
+  const pastes = tracks
+    .flatMap((track, q) => (track?.pastes ?? []).map(([t, chars]) => ({ t, q, chars })))
+    .filter((p) => p.t >= 0 && p.t <= duration && p.chars > PASTE_CHARS)
+    .sort((a, b) => a.t - b.t);
+  return { away, awayMs: away.reduce((sum, [from, to]) => sum + to - from, 0), pastes };
+}
+
 /* ---------------------------------------------------------------- storage */
 
 const DB = 'cswork-replay',
@@ -126,10 +159,18 @@ async function unpack(value: ArrayBuffer | string) {
   return new Response(new Blob([value]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
 }
 export const packTrack = (track: Track) => pack(JSON.stringify(track));
+/** A v1 track (before the focus self-check) reads as v2 with nothing away and no pastes. */
 export async function unpackTrack(value: unknown): Promise<Track | null> {
   if (typeof value !== 'string' && !(value instanceof ArrayBuffer)) return null;
-  const track = JSON.parse(await unpack(value)) as Track;
-  return track?.v === 1 && Array.isArray(track.frames) && Array.isArray(track.events) && Array.isArray(track.opens) ? track : null;
+  const track = JSON.parse(await unpack(value)) as Omit<Track, 'v'> & { v: number };
+  if (!(track?.v === 1 || track?.v === 2) || !Array.isArray(track.frames) || !Array.isArray(track.events) || !Array.isArray(track.opens))
+    return null;
+  return {
+    ...track,
+    v: 2,
+    away: Array.isArray(track.away) ? track.away : [],
+    pastes: Array.isArray(track.pastes) ? track.pastes : [],
+  };
 }
 
 /** Storage can be missing or blocked (private mode, old browsers): reads give null, writes false. */
