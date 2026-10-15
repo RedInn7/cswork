@@ -65,12 +65,12 @@ test('the index, a course and a lesson: links, numbering, quiz, practice and the
   assert.ok(doc.getElementById('sd-quiz-title') && doc.getElementById('learn-practice-title'));
   assert.deepEqual(
     [...doc.querySelectorAll('.learn-practice a')].map((a) => a.getAttribute('href')),
-    ['/?view=problem&problem=lc-1046', '/?view=problem&problem=lc-703', '/?view=problem&problem=lc-215'],
+    ['/?view=problem&problem=lc-1338', '/?view=problem&problem=lc-378', '/?view=problem&problem=lc-767'],
   );
-  // All three are solved in a lesson (215 in Python's heapq): said so, not passed off as fresh.
+  // Fresh practice, not the lesson's worked examples: just the problem number.
   assert.deepEqual(
     [...doc.querySelectorAll('.learn-practice li span')].map((span) => span.textContent),
-    ['LeetCode 1046', 'LeetCode 703', 'LeetCode 215'].map((n) => `${n} · worked in a lesson: rewrite it from memory`),
+    ['LeetCode 1338', 'LeetCode 378', 'LeetCode 767'],
   );
   assert.ok(doc.querySelector('figure.course-diagram'), 'the heap diagram draws in the browser');
   const outline = [...doc.querySelectorAll('.sd-outline a')];

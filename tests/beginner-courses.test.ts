@@ -112,6 +112,11 @@ void test('problems a lesson solves or assigns are known, so exams and duels can
   // Worked examples, read off the lessons' code; a few are not practice anywhere.
   for (const id of ['lc-1', 'lc-876', 'lc-1046', 'lc-746', 'lc-2300', 'lc-102', 'lc-217']) assert.ok(learnSolved.has(id), id);
   assert.ok(!learnSolved.has('lc-226'), 'Invert Binary Tree is left to the learner');
+  // Homework is fresh practice: never a problem some lesson's text already solves.
+  const retyped = beginnerCourses.flatMap((c) =>
+    c.chapters.flatMap((ch) => ch.homework.filter((h) => learnSolved.has(h.id)).map((h) => `${c.slug}/${ch.slug}: ${h.id}`)),
+  );
+  assert.deepEqual(retyped, []);
   for (const chapter of beginnerCourses.flatMap((c) => c.chapters))
     for (const id of [...chapter.solves, ...chapter.homework.map((h) => h.id)]) assert.ok(learnProblems.has(id), id);
 });

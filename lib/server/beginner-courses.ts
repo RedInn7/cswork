@@ -37,7 +37,7 @@ export const beginnerCourse = (slug: string) => beginnerCourses.find((c) => c.sl
 export const learnProblems = new Set(
   beginnerCourses.flatMap((c) => c.chapters.flatMap((ch) => [...ch.solves, ...ch.homework.map((h) => h.id)])),
 );
-/** Problems solved in some lesson's text: practice that is a worked example, not a fresh one. */
+/** Problems solved in some lesson's text (worked examples); homework never assigns one. */
 export const learnSolved = new Set(beginnerCourses.flatMap((c) => c.chapters.flatMap((ch) => ch.solves)));
 export const learnKey = (course: string, chapter: string) => `${course}/${chapter}`;
 export const learnPath = (course?: string, chapter?: string) =>
