@@ -1,7 +1,7 @@
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
@@ -82,6 +82,34 @@ test('statement files: a title, four sections and "- " hints', () => {
     hints: ['one', 'two'],
   });
   assert.throws(() => parseStatement('# T\nbody\n## a\nin\n'), /four/);
+});
+
+test('run.py: the tests must reach MAX_N, and float answers never expect the -1 sentinel', () => {
+  const run = (cases: string[], checker = 'tokens') => {
+    const folder = resolve(dir, `bk-run-${cases.join('-')}-${checker}`);
+    mkdirSync(folder);
+    writeFileSync(
+      resolve(folder, 'problem.py'),
+      [
+        "LEVEL, TAGS, SAMPLES, MAX_N = '简单', ['x'], 1, 10",
+        `CHECKER = '${checker}'`,
+        "solve = lambda s: '1 ' + s.split()[0]",
+        "wrong_a = wrong_b = lambda s: '1 7'",
+        `cases = lambda r: ${JSON.stringify(cases)}`,
+      ].join('\n'),
+    );
+    const result = spawnSync('python3', ['-I', '-S', '-B', 'scripts/book-problems/run.py', folder], { encoding: 'utf8' });
+    return [result.status, result.stderr.trim()];
+  };
+  assert.deepEqual(run(['1', '5', '10']), [0, '']);
+  assert.deepEqual(run(['1', '5', '9']), [1, 'bk-run-1-5-9-tokens: no hidden case reaches bound 1 of MAX_N, 10']);
+  // Only hidden cases count.
+  assert.deepEqual(run(['10', '5', '9']), [1, 'bk-run-10-5-9-tokens: no hidden case reaches bound 1 of MAX_N, 10']);
+  assert.deepEqual(run(['1', '5', '11']), [1, 'bk-run-1-5-11-tokens: a case exceeds bound 1 of MAX_N, 10']);
+  assert.deepEqual(run(['1', '-1', '10'], 'float-array'), [
+    1,
+    'bk-run-1--1-10-float-array: an expected value is -1, which the float checker matches exactly',
+  ]);
 });
 
 test('the build reproduces packages.json: references rerun and every mistake fails a hidden case', () => {
