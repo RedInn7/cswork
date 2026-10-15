@@ -143,6 +143,12 @@ export const PROBLEMS: Problem[] = [
     difficulty: '中等',
     summary: { zh: '邻接矩阵上 O(n²) 的最小生成树', en: 'An O(n²) minimum spanning tree on an adjacency matrix' },
   },
+  {
+    slug: 'union-find',
+    group: 'advanced',
+    difficulty: '简单',
+    summary: { zh: '路径压缩与按秩合并', en: 'Path compression and union by rank' },
+  },
 ];
 
 const EXT: Record<CodeLanguage, string> = { python: 'py', cpp: 'cpp', java: 'java', go: 'go' };
