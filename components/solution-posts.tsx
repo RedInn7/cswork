@@ -980,8 +980,10 @@ function PostEditor({
         body,
         language: solution ? lang : '',
         tag,
+        // Sent when there is one to save or one to remove (null).
         ...(kind === 'discuss' &&
-          !pollLocked && {
+          !pollLocked &&
+          (poll || initial?.poll) && {
             poll: poll && {
               question: poll.question,
               options: poll.options.map((o) => o.trim()),
