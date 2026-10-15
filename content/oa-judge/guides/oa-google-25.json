@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-25",
+  "packageChecksum": "dbd508796855dbc912f680c18cd5a20d8f934d0a1a3fe0e4c796c5c8b40393bd",
+  "sourceContentHash": "003eb65eda8f5abc456692431a5ddd03de96f7d7976f7a928e0210a5f39abf06",
+  "editorialSha256": "e91d93b4a1b0c5cba8a7d19da9d2be764df29c9815978b6235a7987b099a18e8",
+  "hints": {
+    "zh": [
+      "只需要知道每个值出现了多少次，出现次数最多的那个值的次数就是答案。",
+      "用哈希表统计频率：每读到一个元素，就给它对应的计数加一。",
+      "建立值到次数的映射；遍历数组，counts[v] 加一并随时更新最大计数；输出最大计数。"
+    ],
+    "en": [
+      "All you need is how many times each value occurs; the count of the most frequent value is the answer.",
+      "Count frequencies with a hash map: every element adds one to its own counter.",
+      "Build a map from value to count; for each element increment counts[v] and keep the running maximum; print that maximum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAccumulate the number of occurrences of each value in a hash map and take the largest count.\n\n## Correctness\n\nEach element adds exactly one to its own counter, so in the end every counter equals the true frequency of its value, and the largest counter is the required result.\n\n## Complexity\n\nExpected time O(n), space O(n)."
+}

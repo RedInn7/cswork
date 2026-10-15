@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-54",
+  "packageChecksum": "fd7179a4e7dc21ff83068eefaa5388311bc4f853398d03f8dd0e2ec680f7ecc9",
+  "sourceContentHash": "8f3151bc421bae8bbf8e20a530db9b86d79b17182e15428553465f6ebf4096be",
+  "editorialSha256": "287c6d4ffd0e5294f223c368efa2884d69cf306fb80d785782f8fbfbd9db3027",
+  "hints": {
+    "zh": [
+      "目标只有两种：0101… 或 1010…。固定目标后，从左到右看每一位：更早开始的翻转已经确定，更晚开始的翻转碰不到当前位。",
+      "所以当前位与目标不符时，唯一的办法就是从当前位置开启一次长度为 k 的翻转；若窗口会越过末尾，这个目标就无解。用差分记录每个翻转何时结束，维护当前位被翻转次数的奇偶性。",
+      "对两种目标分别计算：开长度 n+1 的数组 end，parity=0，count=0；遍历 i：parity^=end[i]；若 (s[i]^parity)≠(目标首位^(i%2))，则当 i+k>n 时该目标无解，否则 parity^=1、end[i+k]^=1、count+1；取两种目标中可行者的最小 count，都不可行输出 −1。"
+    ],
+    "en": [
+      "There are only two targets: 0101... or 1010.... With the target fixed, look at positions from left to right: flips that start earlier are already decided, and flips that start later cannot touch the current position.",
+      "So when the current position disagrees with the target, the only option is to start a flip of length k right here; if the window would run past the end, that target is impossible. Record with a difference array where each flip ends, and keep the parity of flips covering the current position.",
+      "For each of the two targets: use an array end of size n+1, parity = 0, count = 0; for each i: parity ^= end[i]; if (s[i] ^ parity) != (first ^ (i % 2)), the target is impossible when i + k > n, otherwise set parity ^= 1, end[i+k] ^= 1 and add one to count; print the smallest count among feasible targets, or -1 if neither is feasible."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFix each of the two targets 0101... and 1010... separately. Scan from left to right, maintaining the parity of the active flips; when the current position does not match, a window must be started at the current position, and if the window goes out of bounds that target has no solution.\n\n## Correctness\n\nWhen the current position is processed, flips starting earlier are already decided, and flips starting later cannot change the current position, so starting a flip here on a mismatch is the only choice. Flipping the same window twice cancels out and can never reduce the count. The unique greedy sequence for each target is optimal; take the minimum over the two targets.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-19",
+  "packageChecksum": "639068d765a7bfcbd5b4f26832a13532df19003fb0338e2df7e5aac8f01c3be0",
+  "sourceContentHash": "6603b99615d1791f43b3144d4078827d87557587fed4b8bf6eb0dc79ed185fa6",
+  "editorialSha256": "fc9095a322eb74eb962d9d76f7b05531395638c3835ce6f4b3bc315b85c24018",
+  "hints": {
+    "zh": [
+      "先算出 k：整个数组里出现过的玩家的最小出现次数。要找的窗口里频数最大值恰好为 k，可以先放宽为“每个玩家频数都不超过 k”。",
+      "“所有频数 ≤ k”这个条件对窗口是单调的：右端右移时左端只需向右移，所以能用滑动窗口求最长合法窗口。再说明最长窗口里必有频数恰为 k 的玩家。",
+      "用计数器求出 k；再用另一个计数器做滑窗：右端加入 a[right] 后，若它的次数超过 k，就不断移出 a[left] 并右移左端；每步用 right−left+1 更新答案；最后输出最大长度。"
+    ],
+    "en": [
+      "First compute k, the smallest number of occurrences among the players that appear in the whole array. The window must have a maximum frequency of exactly k; relax this to every player appearing at most k times.",
+      "The condition that every frequency is at most k is monotone over windows: when the right end moves right, the left end only moves right, so a sliding window finds the longest valid window. Then argue that the longest window always contains a player with frequency exactly k.",
+      "Count all values to get k; slide a window with a second counter: after adding a[right], while its count exceeds k, remove a[left] and advance left; update the answer with right-left+1 at every step; print the maximum length."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a sliding window that keeps every player's count at most k. After adding a new player, if its count exceeds k, move the left end until the window is valid again, and record the longest window.\n\n## Why it is correct\n\nFor the condition \"every frequency <= k\", the left end of a valid window can only move monotonically, so the sliding window finds the maximum length. The maximum window must contain a player whose frequency is exactly k: otherwise, if it is not the whole array, it could be extended further; if it is the whole array, at least one player's global frequency is k. Therefore this maximum length satisfies the equality required by the original problem.\n\n## Complexity\n\nTime O(n), extra space O(n)."
+}

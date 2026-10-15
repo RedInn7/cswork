@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-25",
+  "packageChecksum": "dbd508796855dbc912f680c18cd5a20d8f934d0a1a3fe0e4c796c5c8b40393bd",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    unordered_map<int, int> counts;\n    counts.reserve(2 * n + 1);\n    int answer = 0;\n    for (int i = 0; i < n; i++) {\n        int v;\n        scanf(\"%d\", &v);\n        answer = max(answer, ++counts[v]);\n    }\n    printf(\"%d\\n\", answer);\n}\n",
+      "sha256": "a3a1b1a82192d0400435df79965d592e663b4044f0cfdb317db4c1138fba2740"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken();\n        int n = (int) st.nval;\n        HashMap<Integer, Integer> counts = new HashMap<>(2 * n + 1);\n        int answer = 0;\n        for (int i = 0; i < n; i++) {\n            st.nextToken();\n            answer = Math.max(answer, counts.merge((int) st.nval, 1, Integer::sum));\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "aeb224fd759fe4f15a83f1e045e621446192b3d8f13f4c7e8fac520c09813b10"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnextInt := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tn := nextInt()\n\tcounts := make(map[int]int, n)\n\tanswer := 0\n\tfor i := 0; i < n; i++ {\n\t\tv := nextInt()\n\t\tcounts[v]++\n\t\tanswer = max(answer, counts[v])\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "7cc41472f50b1e5b6be4ad794674ac14be33d07287db144b0838e0d482641d0c"
+    }
+  ]
+}

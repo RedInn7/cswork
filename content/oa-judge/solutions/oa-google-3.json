@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-3",
+  "packageChecksum": "06bcecc07e6b955943401a84196ff9737eea127136dd9602acce09ced64c9650",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    long long table = 0, answer = 0; // coins on the table / coins already won\n    for (char e : s) {\n        if (e == 'i') table++;\n        else if (e == 'd') table = max(0LL, table - 1);\n        else { answer += table; table = 0; }\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "51140a70387eda764b71e11ad6e9380b974ab1ae9a09a9fad0eeea94ef8a6981"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        String s = new Scanner(System.in).next();\n        long table = 0, answer = 0; // coins on the table / coins already won\n        for (char e : s.toCharArray()) {\n            if (e == 'i') table++;\n            else if (e == 'd') table = Math.max(0, table - 1);\n            else { answer += table; table = 0; }\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "42c2ce5f1a34bec82eae8a8caeb636061a5c6c41ffd60f45de0647d3b77d3b45"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar s string\n\tfmt.Scan(&s)\n\ttable, answer := 0, 0 // coins on the table / coins already won\n\tfor _, e := range s {\n\t\tswitch e {\n\t\tcase 'i':\n\t\t\ttable++\n\t\tcase 'd':\n\t\t\ttable = max(0, table-1)\n\t\tdefault:\n\t\t\tanswer += table\n\t\t\ttable = 0\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "e084a8bf49abebbb87c66a474e8095a0718b3bb22da884208123930802b1d8bf"
+    }
+  ]
+}

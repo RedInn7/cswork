@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-31",
+  "packageChecksum": "443deab8e0d5e585b8a37b68d3843cc23ec8b322efa176031e1419984a0fef79",
+  "sourceContentHash": "b28519390cdb3f51242aa7f40843f252d7689d67c2d13b260244d499d0f5484a",
+  "editorialSha256": "ba1a087e09fcb6dc25e1959eca0d6367339f6e591ccb54268efc7bdf8ebc8a9c",
+  "hints": {
+    "zh": [
+      "S(u) 是按后序把子树里的字母拼起来，所以每个 S(u) 都是整棵树后序串里的一段连续区间。",
+      "做一次后序遍历（子节点按编号从小到大）得到整串，并记录每个节点子树对应的区间；问题就变成了大量“某个区间是否回文”的查询，可以用 Manacher 在线性时间求出每个中心的最长回文半径。",
+      "邻接表排序后迭代后序遍历，记录 start[u] 和 end[u]；对整串分别求奇数长度半径 odd[i] 和偶数长度半径 even[i]；查询区间 [a,b) 时取长度 L=b−a、中心 c=(a+b)/2：L 为奇数时判断 odd[c]≥L/2+1，L 为偶数时判断 even[c]≥L/2；依次输出 1 或 0。"
+    ],
+    "en": [
+      "S(u) concatenates the letters of the subtree in post-order, so every S(u) is a contiguous range of the post-order string of the whole tree.",
+      "Run one post-order traversal (children in increasing id order) to build the full string and record the range of every subtree. The problem then becomes many queries asking whether a range is a palindrome, and Manacher's algorithm gives the longest palindrome radius at every centre in linear time.",
+      "Sort the adjacency lists and run an iterative post-order traversal, recording start[u] and end[u]; compute odd-length radii odd[i] and even-length radii even[i] for the whole string; for a query range [a, b) let L = b - a and c = (a + b) / 2: if L is odd check odd[c] >= L/2 + 1, otherwise check even[c] >= L/2; print 1 or 0 for each query."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAn iterative post-order traversal maps every subtree to a contiguous range of the whole string; run odd-length and even-length Manacher on the whole string, and directly check the palindrome radius each query range needs.\n\n## Correctness\n\nPost-order traversal finishes all descendants of a node consecutively before leaving the node, so the recorded range is exactly the string defined by the problem. Manacher records the longest odd and even palindrome that can be extended from each centre; a range is a palindrome if and only if the radius at its centre covers the whole range. Only character equality comparisons are used, with no reliance on hash collision assumptions.\n\n## Complexity\n\nSorting the adjacency lists takes O(n log n), the traversal and Manacher take O(n), the queries take O(q), and space is O(n + q)."
+}

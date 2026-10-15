@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-24",
+  "packageChecksum": "5f790747067144e387883a2c02c0672c85336b49f39acd1f23bf2d012a8a5a4d",
+  "sourceContentHash": "8fe8f19f389c6e40517a1c65f7d0b9c7fcc06dae5c7a7b9faa2a10455afb2fa3",
+  "editorialSha256": "9fc69b5794841d38373702f234ac9b5815d0e025a090d55a6f58b5fab59ef3bd",
+  "hints": {
+    "zh": [
+      "一个以值 v 结尾、长度大于 1 的合法子序列，它的倒数第二项一定是之前出现过的 v−1。",
+      "用以“结尾值”为键的动态规划：dp[v] 表示当前前缀中以 v 结尾的最长子序列长度，扫描到 v 时由 dp[v−1] 转移。",
+      "用哈希表保存 dp；从左到右读入 v，令 dp[v]=max(dp[v], dp[v−1]+1)（不存在的键按 0 计），同时维护全局最大值并输出。"
+    ],
+    "en": [
+      "A valid subsequence of length greater than 1 that ends with value v must have a previously seen v-1 as its second-to-last element.",
+      "Use a dynamic program keyed by the ending value: dp[v] is the longest subsequence in the current prefix that ends with v, and reading v transitions from dp[v-1].",
+      "Store dp in a hash map; read values left to right and set dp[v] = max(dp[v], dp[v-1] + 1), treating missing keys as 0; keep the overall maximum and print it."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet dp[v] be the best length of a subsequence of the current prefix that ends with v. When v is scanned, update dp[v] with dp[v-1] + 1.\n\n## Correctness\n\nAny valid subsequence that ends with this occurrence of v and has length greater than one must have an earlier v-1 as its second-to-last element; its best length is already stored in dp[v-1]. Appending v gives the best candidate, and taking the maximum with the old value preserves the prefix invariant.\n\n## Complexity\n\nExpected time O(n), space O(n)."
+}

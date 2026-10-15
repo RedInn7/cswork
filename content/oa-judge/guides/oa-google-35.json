@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-35",
+  "packageChecksum": "7ea1d08cec72c22029746bf12844eb4cbd274420f21e636eb63b322fa3197dbb",
+  "sourceContentHash": "759cfe7fb02df211ddb8c340f47dfa9ab048ed7c53ac4ffbea6e16d5dc4f604e",
+  "editorialSha256": "99c0cd2a2a8c4cfc5a97b591865d9dba76840d4759e35c59532d00bb1b36aa6f",
+  "hints": {
+    "zh": [
+      "输出顺序分两个阶段：先按收藏列表顺序给出所有收藏，再按原列表顺序给出所有未收藏的图片，之后一直是 NULL。",
+      "只需要一个收藏集合和两个游标：第一阶段推进收藏游标；第二阶段推进原列表游标，并跳过收藏集合里的图片。游标只向前走，不会重复输出。",
+      "把收藏标识放进哈希集合；对 q 次调用：若收藏游标未走完就输出下一个收藏；否则把原列表游标跳过所有收藏项，若还有图片则输出并前进，否则输出 NULL；结果用空格连接输出。"
+    ],
+    "en": [
+      "The output has two phases: first all favourites in favourite-list order, then all non-favourite images in original order, and NULL after that.",
+      "You only need a set of favourites and two cursors: phase one advances the favourite cursor; phase two advances the cursor over the original list and skips images in the favourite set. Cursors only move forward, so nothing is returned twice.",
+      "Put the favourite ids in a hash set; for each of the q calls: if the favourite cursor is not exhausted, output the next favourite; otherwise move the original-list cursor past favourites, output the next image and advance if one exists, or output NULL; print the results separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAt construction time only build the set of favourites and keep two cursors. First advance the favourite cursor; after that, scan the original list skipping favourites, and output NULL once everything is exhausted.\n\n## Correctness\n\nThe first phase outputs exactly all favourites in favourite order. The second phase scans in the original order; the set check excludes every favourite that was already output, and every non-favourite is output once. Because the cursors only move forward, later calls never repeat an image or go out of bounds.\n\n## Complexity\n\nConstruction O(m), all q calls together O(n + m + q), extra space O(m) (not counting input and output)."
+}

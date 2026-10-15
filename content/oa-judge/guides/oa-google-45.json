@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-45",
+  "packageChecksum": "af68b55c46dcc302d513e221809a992886a35d56827eac403842a25b6b007da1",
+  "sourceContentHash": "eb24ff834abb2e8ef515db29a91308414307144aad15804f989d63e249731470",
+  "editorialSha256": "bbd42ea1d1c09ca2c26916c80c3000ea40217433036c59b38bff7e55f8fe6f63",
+  "hints": {
+    "zh": [
+      "所需椅子数就是任意时刻同时在场的最大人数。区间是半开的 [S,E)：在时刻 t 离开的人已经让出椅子，同一时刻到达的人可以接着用。",
+      "把每位客人拆成两个事件：到达 +1、离开 −1。按时间排序扫描并累加人数，记录最大值；同一时刻必须先处理离开再处理到达。",
+      "生成 2n 个事件 (时间, ±1)，按（时间, 增量）升序排序（−1 自然排在 +1 前面）；从 0 开始依次累加增量，每次更新最大值；输出最大值。"
+    ],
+    "en": [
+      "The number of chairs needed is the maximum number of guests present at the same time. Intervals are half-open [S, E): a guest leaving at time t has already freed the chair, and a guest arriving at the same moment can reuse it.",
+      "Split each guest into two events: arrival +1 and departure -1. Sort by time, scan while accumulating the count, and record the maximum; at equal times departures must be processed before arrivals.",
+      "Create 2n events (time, +-1) and sort them by (time, delta) ascending (so -1 naturally comes before +1); starting from 0, add the deltas in order and update the maximum after each one; print the maximum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTurn each guest into the half-open interval [S[i], E[i]). An arrival event increases the number present by one and a departure event decreases it by one. Sort by time; at the same time, process departures before arrivals, and record the maximum count.\n\n## Correctness\n\nFor any time t, the half-open interval [S, E) covers t if and only if S <= t < E. At each time the event scan first removes all intervals with E = t and then adds all intervals with S = t, so the count after processing that time equals the number of intervals covering the instant just to its right; this is also the number present from that time until the next event. The count only changes at arrival or departure events, so the maximum seen in the scan is the maximum number present at any time, which is the number of chairs needed.\n\n## Complexity\n\nSorting the 2n events takes time O(n log n), space O(n).\n\n## Sources and site conventions\n\nThe original OAMaster problem only gives the arrival/departure definitions of S/E, with no constraints and no example. Fixed problem snapshot: https://oamaster.com/docs/companies/google#45-minimum-number-of-chairs; upstream commit `e66f809f4c953bce129f68491726176615db6afc`, Google page Git blob `300032c24800642c2ecedab9d930e86db3cdb54a`. A public page of the same problem gives exactly the same statement and example, and states clearly that a chair can be reused when one guest leaves and another arrives at the same time: https://leetcode.com/discuss/post/356520/google-oa-2019-min-number-of-chairs/. Another page of the same problem explicitly marks the attendance intervals as half-open: https://www.fastprep.io/problems/google-meeting-rooms-ii. This site explicitly adds n <= 200000 and the time range to make standard input/output judging convenient; these ranges are not attributed to the original problem."
+}

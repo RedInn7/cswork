@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-49",
+  "packageChecksum": "86493e13b782b08e353a9be08447a2a4ae4aa19725e416dbbccf21b8ac27ec8e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long size, k, need;\n    if (scanf(\"%lld %lld %lld\", &size, &k, &need) != 3) return 0;\n    vector<long long> bloom(size);\n    for (auto &x : bloom) scanf(\"%lld\", &x);\n    if (k * need > size) { puts(\"-1\"); return 0; }\n    // Can we make `need` bouquets of k adjacent roses by `day`?\n    auto possible = [&](long long day) {\n        long long bouquets = 0, run = 0;\n        for (long long b : bloom) {\n            if (b <= day) {\n                if (++run == k) { run = 0; if (++bouquets >= need) return true; }\n            } else run = 0;\n        }\n        return false;\n    };\n    long long low = *min_element(bloom.begin(), bloom.end()), high = *max_element(bloom.begin(), bloom.end());\n    while (low < high) {\n        long long mid = (low + high) / 2;\n        if (possible(mid)) high = mid;\n        else low = mid + 1;\n    }\n    printf(\"%lld\\n\", low);\n}\n",
+      "sha256": "2dd6fb0ca88d5627aa2f9ce399df7634d2cd521b3f8746e6468a5212ecdccc70"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static long[] bloom;\n    static long k, need;\n\n    // Can we make `need` bouquets of k adjacent roses by `day`?\n    static boolean possible(long day) {\n        long bouquets = 0, run = 0;\n        for (long b : bloom) {\n            if (b <= day) {\n                if (++run == k) { run = 0; if (++bouquets >= need) return true; }\n            } else run = 0;\n        }\n        return false;\n    }\n\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken();\n        int size = (int) st.nval;\n        st.nextToken();\n        k = (long) st.nval;\n        st.nextToken();\n        need = (long) st.nval;\n        bloom = new long[size];\n        long low = Long.MAX_VALUE, high = Long.MIN_VALUE;\n        for (int i = 0; i < size; i++) {\n            st.nextToken();\n            bloom[i] = (long) st.nval;\n            low = Math.min(low, bloom[i]);\n            high = Math.max(high, bloom[i]);\n        }\n        if (k * need > size) { System.out.println(-1); return; }\n        while (low < high) {\n            long mid = (low + high) / 2;\n            if (possible(mid)) high = mid;\n            else low = mid + 1;\n        }\n        System.out.println(low);\n    }\n}\n",
+      "sha256": "61fad9f10c7f1d83a93f4b7d99b8c3c732e1001de0aedc5e92e5a1b45f043a20"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnextInt := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tsize, k, need := nextInt(), nextInt(), nextInt()\n\tbloom := make([]int, size)\n\tfor i := range bloom {\n\t\tbloom[i] = nextInt()\n\t}\n\tif k*need > size {\n\t\tfmt.Println(-1)\n\t\treturn\n\t}\n\t// Can we make `need` bouquets of k adjacent roses by `day`?\n\tpossible := func(day int) bool {\n\t\tbouquets, run := 0, 0\n\t\tfor _, b := range bloom {\n\t\t\tif b <= day {\n\t\t\t\trun++\n\t\t\t\tif run == k {\n\t\t\t\t\trun = 0\n\t\t\t\t\tbouquets++\n\t\t\t\t\tif bouquets >= need {\n\t\t\t\t\t\treturn true\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t} else {\n\t\t\t\trun = 0\n\t\t\t}\n\t\t}\n\t\treturn false\n\t}\n\tlow, high := slices.Min(bloom), slices.Max(bloom)\n\tfor low < high {\n\t\tmid := (low + high) / 2\n\t\tif possible(mid) {\n\t\t\thigh = mid\n\t\t} else {\n\t\t\tlow = mid + 1\n\t\t}\n\t}\n\tfmt.Println(low)\n}\n",
+      "sha256": "8d61e4b62ae68aa964b31542abb916988b0f71a366a53642bcc5f918a4eb68f2"
+    }
+  ]
+}

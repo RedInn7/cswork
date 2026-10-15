@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-24",
+  "packageChecksum": "5f790747067144e387883a2c02c0672c85336b49f39acd1f23bf2d012a8a5a4d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    // dp[v] = longest +1-step subsequence of the prefix that ends with value v.\n    unordered_map<long long, int> dp;\n    dp.reserve(2 * n + 1);\n    int answer = 0;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        scanf(\"%lld\", &v);\n        auto it = dp.find(v - 1);\n        int cand = (it == dp.end() ? 0 : it->second) + 1;\n        int &cur = dp[v];\n        cur = max(cur, cand);\n        answer = max(answer, cur);\n    }\n    printf(\"%d\\n\", answer);\n}\n",
+      "sha256": "9af9811aa29b9e85b869fdaddba7e9c883be38191c63759ded3f194a027a7689"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken();\n        int n = (int) st.nval;\n        // dp[v] = longest +1-step subsequence of the prefix that ends with value v.\n        HashMap<Long, Integer> dp = new HashMap<>(2 * n + 1);\n        int answer = 0;\n        for (int i = 0; i < n; i++) {\n            st.nextToken();\n            long v = (long) st.nval;\n            int cand = dp.getOrDefault(v - 1, 0) + 1;\n            int cur = Math.max(dp.getOrDefault(v, 0), cand);\n            dp.put(v, cur);\n            answer = Math.max(answer, cur);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "054af6f322e46e0da1f0321bedea8b2b99c539c344c0076e64e8492c055b5101"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnextInt := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tn := nextInt()\n\t// dp[v] = longest +1-step subsequence of the prefix that ends with value v.\n\tdp := make(map[int]int, n)\n\tanswer := 0\n\tfor i := 0; i < n; i++ {\n\t\tv := nextInt()\n\t\tdp[v] = max(dp[v], dp[v-1]+1)\n\t\tanswer = max(answer, dp[v])\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "e41760a8ec547ed30b809910f81a1aa0b0a1271e45b1a2461a2a8dbaf004ca92"
+    }
+  ]
+}

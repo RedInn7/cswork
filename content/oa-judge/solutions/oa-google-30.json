@@ -1,0 +1,16 @@
+{
+  "id": "oa-google-30",
+  "packageChecksum": "dc0063740b21d7d37308e994b7fccc97036a3df2b6fe0ebd9d45efbb494d3ed4",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long target;\n    cin >> target;\n    tuple<int, long long, int> bestKey{INT_MAX, 0, 0};\n    int bestValue = -1;\n    for (int value = 0; value < 10000; value++) {\n        string d = to_string(value);\n        int presses = d.size();\n        for (size_t i = 1; i < d.size(); i++)\n            if (d[i] != d[i - 1]) presses += 2; // finger move between different keys\n        // Up to two digits are seconds; otherwise the last two digits are seconds (may reach 99).\n        long long seconds = d.size() <= 2 ? value : (value / 100) * 60 + value % 100;\n        long long diff = llabs(seconds - target);\n        if (diff * 10 > target) continue;\n        tuple<int, long long, int> key{presses, diff, value};\n        if (bestValue < 0 || key < bestKey) { bestKey = key; bestValue = value; }\n    }\n    cout << bestValue << \"\\n\";\n}\n",
+      "sha256": "b8b5dbcbaa1b949daee73635317364ea02afa045350b9a27347717b294ca138d"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        long target = new Scanner(System.in).nextLong();\n        int bestValue = -1, bestPresses = 0;\n        long bestDiff = 0;\n        for (int value = 0; value < 10000; value++) {\n            String d = Integer.toString(value);\n            int presses = d.length();\n            for (int i = 1; i < d.length(); i++)\n                if (d.charAt(i) != d.charAt(i - 1)) presses += 2; // finger move between different keys\n            // Up to two digits are seconds; otherwise the last two digits are seconds (may reach 99).\n            long seconds = d.length() <= 2 ? value : (value / 100) * 60L + value % 100;\n            long diff = Math.abs(seconds - target);\n            if (diff * 10 > target) continue;\n            // Values are scanned in increasing order, so a strict comparison keeps the smallest value on ties.\n            if (bestValue < 0 || presses < bestPresses || (presses == bestPresses && diff < bestDiff)) {\n                bestValue = value;\n                bestPresses = presses;\n                bestDiff = diff;\n            }\n        }\n        System.out.println(bestValue);\n    }\n}\n",
+      "sha256": "14e99e1eda2a1c10f9cf91a69c853eca64a775dfc722d1f30ddf3f25deadfc0b"
+    }
+  ]
+}

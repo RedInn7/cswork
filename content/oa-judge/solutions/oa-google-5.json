@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-5",
+  "packageChecksum": "15c3897255626c970bd2ba11cee21f34f9699ae033154c1f0ba9b25b7cd348b0",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    int counts[10] = {0}; // counts[d] = elements containing digit d\n    for (int i = 0; i < n; i++) {\n        int v;\n        scanf(\"%d\", &v);\n        int tens = v / 10, ones = v % 10;\n        counts[tens]++;\n        if (ones != tens) counts[ones]++;\n    }\n    printf(\"%d\\n\", *max_element(counts, counts + 10));\n}\n",
+      "sha256": "ad7c331c6640efd6f788a0cca159e6545e3b19e4be3a40fa1aff6d40b4a400f6"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = sc.nextInt();\n        int[] counts = new int[10]; // counts[d] = elements containing digit d\n        for (int i = 0; i < n; i++) {\n            int v = sc.nextInt(), tens = v / 10, ones = v % 10;\n            counts[tens]++;\n            if (ones != tens) counts[ones]++;\n        }\n        System.out.println(Arrays.stream(counts).max().getAsInt());\n    }\n}\n",
+      "sha256": "4d484ef9935f677d2d08b133bdc8df8c4201776fc3802aab93cc618f03a6215b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar n int\n\tfmt.Scan(&n)\n\tvar counts [10]int // counts[d] = elements containing digit d\n\tfor i := 0; i < n; i++ {\n\t\tvar v int\n\t\tfmt.Scan(&v)\n\t\ttens, ones := v/10, v%10\n\t\tcounts[tens]++\n\t\tif ones != tens {\n\t\t\tcounts[ones]++\n\t\t}\n\t}\n\tbest := 0\n\tfor _, c := range counts {\n\t\tbest = max(best, c)\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "9773661c1cf7a2a8e3b55db68de02fd8a029cc6156d10e8424ba7387330c6a3c"
+    }
+  ]
+}

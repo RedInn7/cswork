@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-29",
+  "packageChecksum": "3ef04651fdcc509a535a6b2423f96f2e491e4337660b61223d6e83ce7f616d71",
+  "sourceContentHash": "bfd2ff2e195eaed4046c99008a47ed20ee2d50e1bdaae34ce749c112de7d8014",
+  "editorialSha256": "111184541d923a38725735840f991a71f5eb0116f683cc9ade8f51d28f969e13",
+  "hints": {
+    "zh": [
+      "反复删叶子后剩下的点集总是连通的；反过来，任何连通子树都能通过从外向内删叶子得到。所以问题等价于：保留至少 n−k 个点的连通子树，使直径最小。",
+      "二分直径上限 D。直径不超过 D 的树都有中心：D 为偶数时中心是一个顶点、所有点距它不超过 D/2；D 为奇数时中心可能落在一条边上。于是只需检查“以某顶点为中心的半径球”或“以某条边为中心、两侧各取半径球”中最大的一个是否至少有 n−k 个点。",
+      "用点分治预处理每个点的重心祖先链和按距离的前缀计数，快速回答“距顶点 v 不超过 r 的点数”；把树以 1 为根，用 DFS 序加按深度的可持久化线段树回答“子树中深度不超过某值的点数”，从而算出边两侧的范围人数。二分 D∈[0, n−k−1]：先检查所有顶点球，若 D 为奇数再检查每条父子边；可行则缩小上界，最后输出下界。"
+    ],
+    "en": [
+      "Removing leaves repeatedly always leaves a connected vertex set, and any connected subtree can be reached by removing leaves from the outside in. So the problem is: keep a connected subtree with at least n-k vertices and minimise its diameter.",
+      "Binary search a diameter bound D. Every tree with diameter at most D has a centre: for even D it is a vertex with all vertices within D/2 of it; for odd D the centre may lie on an edge. So it is enough to check whether the largest vertex-centred ball, or edge-centred pair of balls on both sides of an edge, has at least n-k vertices.",
+      "Use centroid decomposition to store, for every vertex, its chain of centroid ancestors with prefix counts by distance, which answers how many vertices lie within distance r of v. Root the tree at vertex 1 and build a persistent segment tree over Euler order keyed by depth, which answers how many vertices of a subtree have depth at most some value, giving the size on each side of an edge. Binary search D in [0, n-k-1]: check all vertex balls, and for odd D also check every parent-child edge; shrink the upper bound when feasible and print the lower bound."
+    ]
+  },
+  "explanationEn": "## Why it is correct\n\nThe vertices left after deleting leaves always stay connected; conversely, any connected subtree can be obtained by deleting leaves of the complementary branches from the outside in. So the problem becomes: keep a connected subtree with at least q = n - k vertices and minimise its diameter.\n\nBinary search a diameter bound D. When D = 2r, every tree with diameter <= D has a vertex centre, and all vertices are within r of the centre; the candidate sets are the radius-r balls around every vertex of the original tree. When D = 2r + 1, the centre may also lie on an edge: on each side of the edge keep the vertices within r of that side's endpoint. Every candidate set is connected and has diameter <= D; the tree centre theorem also guarantees that every feasible subtree is contained in the corresponding candidate, so the largest candidate has size >= q if and only if D is feasible.\n\nDistance-frequency prefixes from a centroid decomposition answer the vertex ball sizes. After rooting the original tree, Euler subtree intervals and persistent prefix counts by depth give the number of vertices in range on one side of an edge. Total preprocessing is O(n log n), one feasibility check is O(n log n), the total time after the binary search is O(n log^2 n), and space is O(n log n).\n\n## Source constraint correction\n\nThe original source states 0 < k < n, but sample 1 uses k = 0; this candidate explicitly changes it to 0 <= k < n so that the sample and the \"at most k times\" definition agree, and n = 1, k = 0 outputs 0. The standard input/output protocol is an addition by this site."
+}

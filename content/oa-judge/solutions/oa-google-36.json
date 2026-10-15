@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-36",
+  "packageChecksum": "8358e53d3b04790c26811319f52c9bac78bda8812e24c530eaa7a0bd66efe02d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, m;\n    if (scanf(\"%d %d\", &n, &m) != 2) return 0;\n    // length[x] is the run length stored at both ends of each occupied run.\n    vector<int> length(n + 2, 0);\n    for (int day = 1; day <= n; day++) {\n        int x;\n        scanf(\"%d\", &x);\n        int left = length[x - 1], right = length[x + 1], total = left + right + 1;\n        length[x] = length[x - left] = length[x + right] = total;\n        if (total >= m) { printf(\"%d\\n\", day); return 0; }\n    }\n}\n",
+      "sha256": "5a0da58488e9a8a28b1813e51d00b167582ff56831273adf0a0b422689539bab"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken();\n        int n = (int) st.nval;\n        st.nextToken();\n        int m = (int) st.nval;\n        // length[x] is the run length stored at both ends of each occupied run.\n        int[] length = new int[n + 2];\n        for (int day = 1; day <= n; day++) {\n            st.nextToken();\n            int x = (int) st.nval;\n            int left = length[x - 1], right = length[x + 1], total = left + right + 1;\n            length[x] = total;\n            length[x - left] = total;\n            length[x + right] = total;\n            if (total >= m) { System.out.println(day); return; }\n        }\n    }\n}\n",
+      "sha256": "b45e96b3f274d7ae87507cdb32c6cbb3f36af2c50a15a7eaea2511f644d3143d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnextInt := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tn, m := nextInt(), nextInt()\n\t// length[x] is the run length stored at both ends of each occupied run.\n\tlength := make([]int, n+2)\n\tfor day := 1; day <= n; day++ {\n\t\tx := nextInt()\n\t\tleft, right := length[x-1], length[x+1]\n\t\ttotal := left + right + 1\n\t\tlength[x], length[x-left], length[x+right] = total, total, total\n\t\tif total >= m {\n\t\t\tfmt.Println(day)\n\t\t\treturn\n\t\t}\n\t}\n}\n",
+      "sha256": "614c427041e8fcce41b72c8cda61d0bdbe3b2f4ccf4068e6851583f1ab1a694e"
+    }
+  ]
+}

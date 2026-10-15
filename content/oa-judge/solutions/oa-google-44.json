@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-44",
+  "packageChecksum": "49fc3422c4d490dd86bccce29941621acfe37f76c8996fa5aeecea1165242074",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // Greedy from the most significant digit, keeping a valid completion possible.\n    if (s[0] == '?') s[0] = (s[1] == '?' || s[1] <= '3') ? '2' : '1';\n    if (s[1] == '?') s[1] = s[0] == '2' ? '3' : '9';\n    if (s[3] == '?') s[3] = '5';\n    if (s[4] == '?') s[4] = '9';\n    cout << s << \"\\n\";\n}\n",
+      "sha256": "85f2c003b04f7dcbf2c55af863aaaa56ddfff2ffbe0a31fe64647436276d6d87"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        char[] s = new Scanner(System.in).next().toCharArray();\n        // Greedy from the most significant digit, keeping a valid completion possible.\n        if (s[0] == '?') s[0] = (s[1] == '?' || s[1] <= '3') ? '2' : '1';\n        if (s[1] == '?') s[1] = s[0] == '2' ? '3' : '9';\n        if (s[3] == '?') s[3] = '5';\n        if (s[4] == '?') s[4] = '9';\n        System.out.println(new String(s));\n    }\n}\n",
+      "sha256": "d09717a5e7c4fddecde87e801a11e31ee3b90699cb845e4f60482e6331b5bd1f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar line string\n\tfmt.Scan(&line)\n\ts := []byte(line)\n\t// Greedy from the most significant digit, keeping a valid completion possible.\n\tif s[0] == '?' {\n\t\tif s[1] == '?' || s[1] <= '3' {\n\t\t\ts[0] = '2'\n\t\t} else {\n\t\t\ts[0] = '1'\n\t\t}\n\t}\n\tif s[1] == '?' {\n\t\tif s[0] == '2' {\n\t\t\ts[1] = '3'\n\t\t} else {\n\t\t\ts[1] = '9'\n\t\t}\n\t}\n\tif s[3] == '?' {\n\t\ts[3] = '5'\n\t}\n\tif s[4] == '?' {\n\t\ts[4] = '9'\n\t}\n\tfmt.Println(string(s))\n}\n",
+      "sha256": "235cf2469ef521ffc21d6a5a75bc5fce3861ad0fcf5bc4f0e062d0c986a024e8"
+    }
+  ]
+}

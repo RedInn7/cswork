@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-55",
+  "packageChecksum": "c3d06d6057d5f653f92d437cbac187f228573b7f173809dd6da46643e5d9dd0d",
+  "sourceContentHash": "971edc614d56ec933eadad1b231489844d4db0c0dc4da02c9e63c41406e27a34",
+  "editorialSha256": "f00619b50ce3ddb8d6bae2c9dfb158ce12b6360fbac7314c69850b9519cb5f8a",
+  "hints": {
+    "zh": [
+      "从右往左看，最右边的元素不需要拆；每处理一个元素时，它右侧已处理部分的最左值就是它所有份的上界 limit。",
+      "当前值 v 至少要拆成 ⌈v/limit⌉ 份才能让每份不超过 limit；把 v 尽量平均地拆成这么多份，既达到最少份数，又让最左一份 ⌊v/份数⌋ 尽可能大，给更左边的元素留出最宽松的上界。",
+      "limit=a[n−1]，answer=0；i 从 n−2 递减到 0：parts=max(1, ⌈a[i]/limit⌉)，answer+=parts−1，limit=⌊a[i]/parts⌋；输出 answer（可能很大，用 64 位整数）。"
+    ],
+    "en": [
+      "Work from right to left: the rightmost element never needs splitting, and when an element is processed, the leftmost value of the already processed part to its right is the upper bound limit for all its pieces.",
+      "The current value v needs at least ceil(v/limit) pieces so that every piece is at most limit; splitting v as evenly as possible into that many pieces reaches the minimum count and makes the leftmost piece floor(v/pieces) as large as possible, leaving the loosest bound for the elements further left.",
+      "Set limit = a[n-1] and answer = 0; for i from n-2 down to 0: parts = max(1, ceil(a[i]/limit)), answer += parts - 1, limit = floor(a[i]/parts); print answer (it can be large, so use 64-bit integers)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess from right to left. With the upper bound limit allowed by the right side, the current value v needs at least ceil(v/limit) parts; split it into these parts as evenly as possible, and the new leftmost value floor(v/parts) becomes the upper bound for the next step.\n\n## Correctness\n\nKeeping every part <= limit guarantees that it connects to the processed suffix, so ceil(v/limit) is a lower bound on the number of parts. Splitting v evenly into non-decreasing parts that differ by at most 1 reaches this lower bound and maximises the leftmost part, leaving the widest constraint for the earlier elements. Keeping the optimal and loosest suffix at every step gives the globally minimal number of splits; k parts take k-1 splits.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input."
+}

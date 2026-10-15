@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-41",
+  "packageChecksum": "7a21a47ab0f1b183e50a34e79bef0411c33c1f2ec98a1d8e2f9f07e929e71eca",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    n = int(data[0])\n    points = list(map(int, data[1:1 + n]))\n    # dp[i] = best score using only indices i..n-1; taking i blocks i+1..i+points[i].\n    dp = [0] * (n + 1)\n    for i in range(n - 1, -1, -1):\n        nxt = min(n, i + points[i] + 1)\n        take = points[i] + dp[nxt]\n        dp[i] = take if take > dp[i + 1] else dp[i + 1]\n    print(dp[0])\n\n\nmain()\n",
+      "sha256": "dae8acc40110849af90efcf773df994639876cf434488cc03b0c2dcd0eb31b99"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken();\n        int n = (int) st.nval;\n        long[] p = new long[n];\n        for (int i = 0; i < n; i++) { st.nextToken(); p[i] = (long) st.nval; }\n        // dp[i] = best score using only indices i..n-1; taking i blocks i+1..i+p[i].\n        long[] dp = new long[n + 1];\n        for (int i = n - 1; i >= 0; i--) {\n            int nxt = (int) Math.min(n, i + p[i] + 1);\n            dp[i] = Math.max(dp[i + 1], p[i] + dp[nxt]);\n        }\n        System.out.println(dp[0]);\n    }\n}\n",
+      "sha256": "2f0dbbdcf606ce35ca8cded46d64662fb73e4c525dffa8f3124397d2005a5d76"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnextInt := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tn := nextInt()\n\tp := make([]int, n)\n\tfor i := range p {\n\t\tp[i] = nextInt()\n\t}\n\t// dp[i] = best score using only indices i..n-1; taking i blocks i+1..i+p[i].\n\tdp := make([]int, n+1)\n\tfor i := n - 1; i >= 0; i-- {\n\t\tnxt := min(n, i+p[i]+1)\n\t\tdp[i] = max(dp[i+1], p[i]+dp[nxt])\n\t}\n\tfmt.Println(dp[0])\n}\n",
+      "sha256": "b10cacd6959cbad160f1445880d40066860c89bdb43ff73f41a31ffb591ab249"
+    }
+  ]
+}

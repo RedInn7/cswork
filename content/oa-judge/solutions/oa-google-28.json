@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-28",
+  "packageChecksum": "9ed0a5abad1f2f68ff74ee5d83d016d3e741f7f77646900b50b06326a2ff1165",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint n;\nvector<vector<int>> g;\n\n// BFS from root; returns (last vertex reached, its distance) = a farthest vertex.\npair<int, int> farthest(int root) {\n    vector<int> dist(n, -1), queue{root};\n    dist[root] = 0;\n    for (size_t h = 0; h < queue.size(); h++) {\n        int u = queue[h];\n        for (int v : g[u])\n            if (dist[v] < 0) { dist[v] = dist[u] + 1; queue.push_back(v); }\n    }\n    return {queue.back(), dist[queue.back()]};\n}\n\nint main() {\n    if (scanf(\"%d\", &n) != 1) return 0;\n    g.assign(n, {});\n    for (int i = 0; i < n - 1; i++) {\n        int u, v;\n        scanf(\"%d %d\", &u, &v);\n        g[u - 1].push_back(v - 1);\n        g[v - 1].push_back(u - 1);\n    }\n    int u = farthest(0).first;\n    int diameter = farthest(u).second;\n    printf(\"%d\\n\", (diameter + 1) / 2);\n}\n",
+      "sha256": "eb5c2f70eba9ba43eea61320ace78970369383cef4bd4b8ffbb70d4787dac658"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static int n;\n    static int[] head, nxt, to;\n\n    // BFS from root; returns {last vertex reached, its distance} = a farthest vertex.\n    static int[] farthest(int root) {\n        int[] dist = new int[n], queue = new int[n];\n        Arrays.fill(dist, -1);\n        dist[root] = 0;\n        int qh = 0, qt = 0;\n        queue[qt++] = root;\n        while (qh < qt) {\n            int u = queue[qh++];\n            for (int e = head[u]; e >= 0; e = nxt[e]) {\n                int v = to[e];\n                if (dist[v] < 0) { dist[v] = dist[u] + 1; queue[qt++] = v; }\n            }\n        }\n        int last = queue[qt - 1];\n        return new int[] {last, dist[last]};\n    }\n\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken();\n        n = (int) st.nval;\n        head = new int[n];\n        Arrays.fill(head, -1);\n        nxt = new int[2 * n];\n        to = new int[2 * n];\n        int m = 0;\n        for (int i = 0; i < n - 1; i++) {\n            st.nextToken();\n            int u = (int) st.nval - 1;\n            st.nextToken();\n            int v = (int) st.nval - 1;\n            to[m] = v; nxt[m] = head[u]; head[u] = m++;\n            to[m] = u; nxt[m] = head[v]; head[v] = m++;\n        }\n        int u = farthest(0)[0];\n        int diameter = farthest(u)[1];\n        System.out.println((diameter + 1) / 2);\n    }\n}\n",
+      "sha256": "2952ed1599cdd2a5510a2e268262a249951c262a71fa7e52437d2cf2dfd42a0e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnextInt := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tn := nextInt()\n\tg := make([][]int, n)\n\tfor i := 0; i < n-1; i++ {\n\t\tu, v := nextInt()-1, nextInt()-1\n\t\tg[u] = append(g[u], v)\n\t\tg[v] = append(g[v], u)\n\t}\n\t// BFS from root; returns the last vertex reached (a farthest one) and its distance.\n\tfarthest := func(root int) (int, int) {\n\t\tdist := make([]int, n)\n\t\tfor i := range dist {\n\t\t\tdist[i] = -1\n\t\t}\n\t\tdist[root] = 0\n\t\tqueue := []int{root}\n\t\tfor h := 0; h < len(queue); h++ {\n\t\t\tu := queue[h]\n\t\t\tfor _, v := range g[u] {\n\t\t\t\tif dist[v] < 0 {\n\t\t\t\t\tdist[v] = dist[u] + 1\n\t\t\t\t\tqueue = append(queue, v)\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\tlast := queue[len(queue)-1]\n\t\treturn last, dist[last]\n\t}\n\tu, _ := farthest(0)\n\t_, diameter := farthest(u)\n\tfmt.Println((diameter + 1) / 2)\n}\n",
+      "sha256": "d6c71652f378f3f5d81bce02a531efb94cb42b0e03201b48a0ce32e26002a748"
+    }
+  ]
+}

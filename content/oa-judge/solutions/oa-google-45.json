@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-45",
+  "packageChecksum": "af68b55c46dcc302d513e221809a992886a35d56827eac403842a25b6b007da1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<pair<long long, int>> events(2 * n);\n    for (int i = 0; i < n; i++) { long long s; scanf(\"%lld\", &s); events[i] = {s, 1}; }\n    for (int i = 0; i < n; i++) { long long e; scanf(\"%lld\", &e); events[n + i] = {e, -1}; }\n    // Half-open [S, E): at equal times the departure (-1) sorts before the arrival (+1).\n    sort(events.begin(), events.end());\n    int occupied = 0, answer = 0;\n    for (auto &ev : events) {\n        occupied += ev.second;\n        answer = max(answer, occupied);\n    }\n    printf(\"%d\\n\", answer);\n}\n",
+      "sha256": "2a3fa58bec8059394b856f343c1fe419c0ed19e6fe6b3089ff02097d13f15fd1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken();\n        int n = (int) st.nval;\n        // Event = time * 2 + (1 for an arrival, 0 for a departure), so at equal times\n        // the departure sorts first (half-open [S, E)).\n        long[] events = new long[2 * n];\n        for (int i = 0; i < n; i++) { st.nextToken(); events[i] = (long) st.nval * 2 + 1; }\n        for (int i = 0; i < n; i++) { st.nextToken(); events[n + i] = (long) st.nval * 2; }\n        Arrays.sort(events);\n        int occupied = 0, answer = 0;\n        for (long e : events) {\n            occupied += (e & 1) == 1 ? 1 : -1;\n            answer = Math.max(answer, occupied);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "1a699f6ced2ffe83a0d7de41aa7cf9b7942cd32a9bdb27f27765a8052db9c02c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnextInt := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tn := nextInt()\n\tevents := make([][2]int, 0, 2*n)\n\tfor i := 0; i < n; i++ {\n\t\tevents = append(events, [2]int{nextInt(), 1})\n\t}\n\tfor i := 0; i < n; i++ {\n\t\tevents = append(events, [2]int{nextInt(), -1})\n\t}\n\t// Half-open [S, E): at equal times the departure (-1) sorts before the arrival (+1).\n\tsort.Slice(events, func(i, j int) bool {\n\t\tif events[i][0] != events[j][0] {\n\t\t\treturn events[i][0] < events[j][0]\n\t\t}\n\t\treturn events[i][1] < events[j][1]\n\t})\n\toccupied, answer := 0, 0\n\tfor _, ev := range events {\n\t\toccupied += ev[1]\n\t\tanswer = max(answer, occupied)\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "48f0e930e7522424b3e784921a80d05f7ed06045aeeddf5d0a261fcb88c21797"
+    }
+  ]
+}

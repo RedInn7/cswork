@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-5",
+  "packageChecksum": "15c3897255626c970bd2ba11cee21f34f9699ae033154c1f0ba9b25b7cd348b0",
+  "sourceContentHash": "bb5724e5d660c79e756050f21f4cbe3c43e0a6dec814a72d509c86d95f88b216",
+  "editorialSha256": "574235e8fa2bee0f94923702ad95663cc650c7b1889863ab3c808ddd661a92fc",
+  "hints": {
+    "zh": [
+      "合法分组的所有成员都含有同一个数字 d，所以分组大小不会超过“含有 d 的元素个数”；反过来，所有含 d 的元素一定能组成合法分组。",
+      "因此只要对数字 0..9 分别统计有多少个元素包含它，取最大值即可。注意同一个元素的十位和个位相同时只能算一次。",
+      "开长度为 10 的计数数组；对每个两位数取十位 t 和个位 o：counts[t] 加一，若 o≠t 再给 counts[o] 加一；输出计数数组的最大值。"
+    ],
+    "en": [
+      "All members of a valid group share some digit d, so the group cannot be larger than the number of elements containing d; conversely, all elements containing d always form a valid group.",
+      "So count, for each digit 0..9, how many elements contain it, and take the maximum. When an element's tens and units digits are equal, it must be counted only once.",
+      "Use a counting array of size 10; for each two-digit number take its tens digit t and units digit o: add one to counts[t], and add one to counts[o] only if o != t; print the maximum of the array."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount, for each digit 0..9, how many array elements contain it. For a number, add one for its tens digit first, and add one for its units digit only when it differs from the tens digit. The largest count is the answer.\n\n## Why it is correct\n\nAny valid group must have a digit d shared by all its members, so its size does not exceed the number of elements containing d. Conversely, all the elements containing d always form a valid group, so the maximum of the ten counts is both an upper bound and an achievable solution.\n\n## Complexity\n\nTime O(n), extra space O(1) apart from the input."
+}

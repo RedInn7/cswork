@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-23",
+  "packageChecksum": "74a09c5383112e538eab11ab747aef84b27e6d27001bc16ef19aaad210b51e26",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    if (!(cin >> n)) return 0;\n    // Per activity level: (min heart rate, max heart rate).\n    unordered_map<string, pair<int, int>> groups;\n    for (int i = 0; i < n; i++) {\n        int v;\n        string c;\n        cin >> v >> c;\n        auto it = groups.find(c);\n        if (it == groups.end()) groups.emplace(c, make_pair(v, v));\n        else {\n            it->second.first = min(it->second.first, v);\n            it->second.second = max(it->second.second, v);\n        }\n    }\n    int answer = 0;\n    for (auto &kv : groups) answer = max(answer, kv.second.second - kv.second.first);\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "07f64760d125cc98997e5d8a659dd249e97e8f5cc7b7b3a24b1abd5f0243b517"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in), 1 << 16);\n        StringTokenizer st = new StringTokenizer(\"\");\n        List<String> tokens = new ArrayList<>();\n        String line;\n        while ((line = br.readLine()) != null) {\n            st = new StringTokenizer(line);\n            while (st.hasMoreTokens()) tokens.add(st.nextToken());\n        }\n        int n = Integer.parseInt(tokens.get(0));\n        // Per activity level: {min heart rate, max heart rate}.\n        HashMap<String, int[]> groups = new HashMap<>();\n        for (int i = 0; i < n; i++) {\n            int v = Integer.parseInt(tokens.get(1 + 2 * i));\n            String c = tokens.get(2 + 2 * i);\n            int[] g = groups.get(c);\n            if (g == null) groups.put(c, new int[] {v, v});\n            else {\n                g[0] = Math.min(g[0], v);\n                g[1] = Math.max(g[1], v);\n            }\n        }\n        int answer = 0;\n        for (int[] g : groups.values()) answer = Math.max(answer, g[1] - g[0]);\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "53bf2b51d04b20c80a3a4e5291c4771e8fd30d5c3b29d82a71954f1bf56bdc24"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() string { sc.Scan(); return sc.Text() }\n\tn, _ := strconv.Atoi(next())\n\t// Per activity level: [min heart rate, max heart rate].\n\tgroups := map[string][2]int{}\n\tfor i := 0; i < n; i++ {\n\t\tv, _ := strconv.Atoi(next())\n\t\tc := next()\n\t\tif g, ok := groups[c]; ok {\n\t\t\tgroups[c] = [2]int{min(g[0], v), max(g[1], v)}\n\t\t} else {\n\t\t\tgroups[c] = [2]int{v, v}\n\t\t}\n\t}\n\tanswer := 0\n\tfor _, g := range groups {\n\t\tanswer = max(answer, g[1]-g[0])\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "fdde490792233c626c22a47472dc9b8f0c624cca926f3ebb2a1d657b3cba9460"
+    }
+  ]
+}

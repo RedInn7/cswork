@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-37",
+  "packageChecksum": "bfb3de460cc9090d0784f89b7911397ffbf9d10aca3598e633a10b895fb315d1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // Reachable balances ('(' minus ')') form a step-2 interval [low, high];\n    // every reachable state keeps the same number of surviving parentheses.\n    long long survivors = 0, low = 0, high = 0;\n    for (char ch : s) {\n        if (ch == '(') { survivors++; low++; high++; }\n        else if (ch == ')') { survivors++; low--; high--; }\n        else {\n            long long removed = min<long long>(ch - '0', survivors); // a digit larger than the count removes all\n            if (removed == 0) continue;\n            low = max(removed - survivors, low - removed);\n            high = min(survivors - removed, high + removed);\n            survivors -= removed;\n        }\n    }\n    cout << (survivors % 2 == 0 && low <= 0 && 0 <= high ? 1 : 0) << \"\\n\";\n}\n",
+      "sha256": "67dc6f6f348125d999c8a03a6876275409a128afa673e61d997e318de55a3e41"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        DataInputStream in = new DataInputStream(new BufferedInputStream(System.in, 1 << 16));\n        // Reachable balances ('(' minus ')') form a step-2 interval [low, high];\n        // every reachable state keeps the same number of surviving parentheses.\n        long survivors = 0, low = 0, high = 0;\n        int c;\n        while ((c = in.read()) != -1) {\n            if (c == '(') { survivors++; low++; high++; }\n            else if (c == ')') { survivors++; low--; high--; }\n            else if (c >= '0' && c <= '9') {\n                long removed = Math.min(c - '0', survivors); // a digit larger than the count removes all\n                if (removed == 0) continue;\n                low = Math.max(removed - survivors, low - removed);\n                high = Math.min(survivors - removed, high + removed);\n                survivors -= removed;\n            }\n        }\n        System.out.println(survivors % 2 == 0 && low <= 0 && 0 <= high ? 1 : 0);\n    }\n}\n",
+      "sha256": "7e5b71b3aedfd52b3755dd5e1129382887f8c660dc42c609ec462a73b2591976"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\treader := bufio.NewReaderSize(os.Stdin, 1<<20)\n\tline, _ := reader.ReadString('\\n')\n\ts := strings.TrimSpace(line)\n\t// Reachable balances ('(' minus ')') form a step-2 interval [low, high];\n\t// every reachable state keeps the same number of surviving parentheses.\n\tsurvivors, low, high := 0, 0, 0\n\tfor i := 0; i < len(s); i++ {\n\t\tswitch ch := s[i]; {\n\t\tcase ch == '(':\n\t\t\tsurvivors++\n\t\t\tlow++\n\t\t\thigh++\n\t\tcase ch == ')':\n\t\t\tsurvivors++\n\t\t\tlow--\n\t\t\thigh--\n\t\tdefault:\n\t\t\tremoved := min(int(ch-'0'), survivors) // a digit larger than the count removes all\n\t\t\tif removed == 0 {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tlow = max(removed-survivors, low-removed)\n\t\t\thigh = min(survivors-removed, high+removed)\n\t\t\tsurvivors -= removed\n\t\t}\n\t}\n\tif survivors%2 == 0 && low <= 0 && 0 <= high {\n\t\tfmt.Println(1)\n\t} else {\n\t\tfmt.Println(0)\n\t}\n}\n",
+      "sha256": "250c2f2ded64a8fd6643c1b62744d5124dafccdaa436852e339cbc8c122bfef9"
+    }
+  ]
+}

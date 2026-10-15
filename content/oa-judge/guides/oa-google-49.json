@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-49",
+  "packageChecksum": "86493e13b782b08e353a9be08447a2a4ae4aa19725e416dbbccf21b8ac27ec8e",
+  "sourceContentHash": "975142d67fbeaf8a3cfbecbf2b129d8eb336f4421e81cb8a53fb245f9944d52f",
+  "editorialSha256": "79943f18224d0e7a54fe767efb97a04557effc306e719409cc63da3cf68a7d94",
+  "hints": {
+    "zh": [
+      "日期越晚，开放的玫瑰只会越多，能做出的花束数不会减少，所以“第 d 天能否做出 n 束”关于 d 单调，可以二分答案。",
+      "固定日期 d 后贪心检查：从左到右数连续已开放的玫瑰，每凑满 k 朵就做一束并清零，遇到未开放的也清零。一段长度为 L 的连续开放区间最多做 ⌊L/k⌋ 束，贪心恰好做到。",
+      "若 N<n×k 直接输出 −1；否则在 [min(roses), max(roses)] 上二分：mid 可行则 high=mid，否则 low=mid+1；可行性检查按上面的贪心计数，达到 n 束即返回真；输出 low。注意 n×k 可能超过 32 位范围。"
+    ],
+    "en": [
+      "The later the day, the more roses are open, and the number of bouquets never decreases, so whether n bouquets can be made by day d is monotone in d and the answer can be binary searched.",
+      "For a fixed day d, check greedily: count consecutive open roses from left to right, make a bouquet and reset whenever k are collected, and reset at every rose that is not open yet. A run of L consecutive open roses gives at most floor(L/k) bouquets, which the greedy achieves.",
+      "If N < n * k print -1; otherwise binary search on [min(roses), max(roses)]: if mid is feasible set high = mid, else low = mid + 1; the feasibility check counts bouquets greedily as above and returns true once n are made; print low. Note that n * k may exceed the 32-bit range."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search the earliest day d. To check a day, count consecutive open roses from left to right; every time k are collected, make one bouquet and reset the current run, and reset the run at every unopened rose. If at least n bouquets can be made, d is feasible, otherwise it is not. Feasibility is monotone in the day, so binary search the answer.\n\n## Correctness\n\nFor a fixed day d, a run of consecutive open roses of length L yields at most floor(L/k) non-overlapping bouquets; making a bouquet as soon as k roses are collected in the scan reaches exactly this number. Therefore the scan's bouquet count is at least n if and only if the day is feasible. A later day only adds open roses and never reduces the number of feasible bouquets, so feasibility is monotone; the first feasible day found by binary search is the earliest one. If N < n*k, there are not enough roses in total and the answer is -1.\n\n## Complexity\n\nLet N be the number of roses and D the largest bloom day. Time O(N log D), extra space O(N) (storing the input).\n\n## Sources and site conventions\n\nThe problem code of the fixed OAMaster snapshot, in all three languages, treats k as the number of adjacent roses per bouquet and n as the number of bouquets, and returns -1 when N < n*k; the verifiable upstream page is https://oamaster.com/docs/companies/google#49-min-days-to-bloom. LeetCode's description of the same problem reproduces the complete definition and exactly the same original example: https://leetcode.com/discuss/post/334191/google-oa-min-days-to-bloom/. The upstream publishes no constraints; the numeric ranges listed in the statement and the stdin/stdout protocol are additions by this site."
+}

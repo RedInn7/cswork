@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-26",
+  "packageChecksum": "6ab66f74b2cd5411315bfe4a949d96fdcc74fbc490453b5ab5cd93f87b677f45",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    // left[i]: non-decreasing run ending at i; right[i]: run starting at i.\n    vector<int> left(n, 1), right(n, 1);\n    for (int i = 1; i < n; i++)\n        if (a[i - 1] <= a[i]) left[i] = left[i - 1] + 1;\n    for (int i = n - 2; i >= 0; i--)\n        if (a[i] <= a[i + 1]) right[i] = right[i + 1] + 1;\n    int answer = *max_element(left.begin(), left.end());\n    for (int i = 0; i < n; i++) {\n        int l = i ? left[i - 1] : 0, r = i + 1 < n ? right[i + 1] : 0;\n        answer = max({answer, l + 1, r + 1});\n        // Changing a[i] can bridge both runs when a[i-1] <= a[i+1].\n        if (i > 0 && i < n - 1 && a[i - 1] <= a[i + 1]) answer = max(answer, l + r + 1);\n    }\n    printf(\"%d\\n\", answer);\n}\n",
+      "sha256": "40b396b663734f89c34bc9c164cf503f1a755e8ba695ffdda55c8f17981a9161"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        st.nextToken();\n        int n = (int) st.nval;\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) { st.nextToken(); a[i] = (long) st.nval; }\n        // left[i]: non-decreasing run ending at i; right[i]: run starting at i.\n        int[] left = new int[n], right = new int[n];\n        int answer = 0;\n        for (int i = 0; i < n; i++) {\n            left[i] = i > 0 && a[i - 1] <= a[i] ? left[i - 1] + 1 : 1;\n            answer = Math.max(answer, left[i]);\n        }\n        for (int i = n - 1; i >= 0; i--) right[i] = i + 1 < n && a[i] <= a[i + 1] ? right[i + 1] + 1 : 1;\n        for (int i = 0; i < n; i++) {\n            int l = i > 0 ? left[i - 1] : 0, r = i + 1 < n ? right[i + 1] : 0;\n            answer = Math.max(answer, Math.max(l + 1, r + 1));\n            // Changing a[i] can bridge both runs when a[i-1] <= a[i+1].\n            if (i > 0 && i < n - 1 && a[i - 1] <= a[i + 1]) answer = Math.max(answer, l + r + 1);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "ecb5387bee97dff60cde4b54c72b9dac43fe5b5c56a50dc1a25b4f388c0ffe2f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnextInt := func() int { sc.Scan(); v, _ := strconv.Atoi(sc.Text()); return v }\n\tn := nextInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\t// left[i]: non-decreasing run ending at i; right[i]: run starting at i.\n\tleft := make([]int, n)\n\tright := make([]int, n)\n\tanswer := 0\n\tfor i := 0; i < n; i++ {\n\t\tleft[i] = 1\n\t\tif i > 0 && a[i-1] <= a[i] {\n\t\t\tleft[i] = left[i-1] + 1\n\t\t}\n\t\tanswer = max(answer, left[i])\n\t}\n\tfor i := n - 1; i >= 0; i-- {\n\t\tright[i] = 1\n\t\tif i+1 < n && a[i] <= a[i+1] {\n\t\t\tright[i] = right[i+1] + 1\n\t\t}\n\t}\n\tfor i := 0; i < n; i++ {\n\t\tl, r := 0, 0\n\t\tif i > 0 {\n\t\t\tl = left[i-1]\n\t\t}\n\t\tif i+1 < n {\n\t\t\tr = right[i+1]\n\t\t}\n\t\tanswer = max(answer, l+1, r+1)\n\t\t// Changing a[i] can bridge both runs when a[i-1] <= a[i+1].\n\t\tif i > 0 && i < n-1 && a[i-1] <= a[i+1] {\n\t\t\tanswer = max(answer, l+r+1)\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "445dd590c8022a39421cafd29bafbf020062236ab9a9396286214cd9f2f58edf"
+    }
+  ]
+}

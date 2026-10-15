@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-41",
+  "packageChecksum": "7a21a47ab0f1b183e50a34e79bef0411c33c1f2ec98a1d8e2f9f07e929e71eca",
+  "sourceContentHash": "bd0619d92777c50853e6af399da9049db80b2666697b6a7c64cb950671c6a9a6",
+  "editorialSha256": "9800ee284f6b059dab581c815fcf94903fb4ee7c11d41ba8fd3c47c853133954",
+  "hints": {
+    "zh": [
+      "屏蔽只影响后面的下标：取了下标 i 之后，下一个能取的位置至少是 i+points[i]+1，而之后怎么选与 i 之前的决策无关。",
+      "从右往左做动态规划：dp[i] 表示只考虑下标 i..n−1 时的最大得分；对 i 只有“不取”和“取”两种选择。",
+      "dp[n]=0；i 从 n−1 递减到 0：dp[i]=max(dp[i+1], points[i]+dp[min(n, i+points[i]+1)])；输出 dp[0]，用 64 位整数存储。"
+    ],
+    "en": [
+      "Blocking only affects later indices: after taking index i, the next index that can be taken is at least i + points[i] + 1, and the later choices do not depend on decisions before i.",
+      "Run a dynamic program from right to left: dp[i] is the best score using only indices i..n-1; for index i there are only two choices, skip it or take it.",
+      "Set dp[n] = 0; for i from n-1 down to 0: dp[i] = max(dp[i+1], points[i] + dp[min(n, i + points[i] + 1)]); print dp[0], stored in 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Problem\n\nIn the array points, the value v = points[i] at index i is both the score and the cost: after taking it, the next v indices i+1..i+v can no longer be taken. Blocking only works forward. Find the maximum total score.\n\n## Approach\n\nDynamic programming from right to left: dp[i] is the best score when only indices i..n-1 are considered. Skipping i gives dp[i+1]; taking i gives points[i] + dp[min(n, i+points[i]+1)]. The answer is dp[0].\n\n## Correctness\n\nAfter taking index i, the next index that can be taken is at least i+points[i]+1, and the later choices are not affected by any decision before i (blocking only works forward), so the subproblems are independent and the transition covers both taking and skipping i. In the sample, first take 1 (blocking 3), then take 99 to get 100; if blocking worked in both directions, 99 would block the earlier 1 and the sample would not hold.\n\n## Complexity\n\nO(n). Taking a value v occupies v+1 positions, so the total score is at most n.\n\n## Independent verification\n\nThe oracle uses a \"push\" DP: best[j] is the best score when the next takeable index is j, transitioning forward from left to right, a different direction from the reference's pull-style suffix DP; even smaller data additionally enumerates every subset of indices and checks the blocking condition. All arrays of length 1..6 with values 0..3 are enumerated and each is run through the actual reference program. The wrong solutions cover blocking one too few, one too many, a local greedy, and mistaking the rule for \"adjacent elements cannot both be taken\"."
+}

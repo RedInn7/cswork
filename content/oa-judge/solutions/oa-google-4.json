@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-4",
+  "packageChecksum": "649937f74161f1f658faaee8c016ec3bef77a63dbe0349562ba1bf3c7169e724",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string board;\n    cin >> board;\n    int answer = 0;\n    // Pieces stay on their index mod 3; each chain collects every coin right of its leftmost piece.\n    for (int residue = 0; residue < 3; residue++) {\n        bool started = false;\n        for (size_t i = residue; i < board.size(); i += 3) {\n            if (board[i] == 'T') started = true;\n            else if (board[i] == 'C' && started) answer++;\n        }\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "50c277655023103cc8b9b1980afc50b14a6c8acfb5a90365482d867350294e26"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        String board = new Scanner(System.in).next();\n        int answer = 0;\n        // Pieces stay on their index mod 3; each chain collects every coin right of its leftmost piece.\n        for (int residue = 0; residue < 3; residue++) {\n            boolean started = false;\n            for (int i = residue; i < board.length(); i += 3) {\n                char c = board.charAt(i);\n                if (c == 'T') started = true;\n                else if (c == 'C' && started) answer++;\n            }\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "e5b53bb5961be9d5ec9dc8135b14eaa3f66f08d42628b9125cab91e68e687e90"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar board string\n\tfmt.Scan(&board)\n\tanswer := 0\n\t// Pieces stay on their index mod 3; each chain collects every coin right of its leftmost piece.\n\tfor residue := 0; residue < 3; residue++ {\n\t\tstarted := false\n\t\tfor i := residue; i < len(board); i += 3 {\n\t\t\tif board[i] == 'T' {\n\t\t\t\tstarted = true\n\t\t\t} else if board[i] == 'C' && started {\n\t\t\t\tanswer++\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "f41c63a3d55322cbdc89748f2e8c37644215435572aa1f8d2929dbd911f01bcf"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-47",
+  "packageChecksum": "a71dfe9fc0165a61632d39c95528004e29728ab9a59ba846794ec6c5bdb8cde0",
+  "sourceContentHash": "1f862785cd002f8995b9bc29838d1bacb79fdd0a1c70501798e76d4c4551da12",
+  "editorialSha256": "13a2fccca9ee2aeab04c08f657e198a500a94a7514e1ff40ddb8e2528e0c065c",
+  "hints": {
+    "zh": [
+      "合法方案只有两类：不修改，或者恰好把某一个元素反号；元素个数只有 10 万，可以全部枚举。",
+      "设原总和为 S。把元素 x 反号后，新总和等于 S−2x，不需要重新求和。",
+      "先求 S，答案初值为 |S|；遍历每个元素 x，用 |S−2x| 更新最小值；输出最小值。"
+    ],
+    "en": [
+      "There are only two kinds of valid plans: change nothing, or negate exactly one element; with at most 100000 elements, all of them can be enumerated.",
+      "Let S be the original sum. After negating an element x, the new sum is S - 2x, with no need to sum again.",
+      "Compute S and start the answer at |S|; for every element x update the minimum with |S - 2x|; print the minimum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst compute the total S; the candidate for changing nothing is |S|. Negating an element x makes the total S - 2x; scan all elements and take the smallest absolute value.\n\n## Correctness\n\nThe only valid plans are to change nothing or to negate one chosen index, and the scan enumerates all of them; S - 2x is exactly the total after removing the original x and adding -x. Taking the minimum is optimal.\n\n## Complexity\n\nTime O(n), space O(1) apart from the input."
+}

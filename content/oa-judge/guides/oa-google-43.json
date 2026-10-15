@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-43",
+  "packageChecksum": "23d22f8aae7d4084f3342c0699e854fa266fa1e34825e0f91a247ec4f387b82b",
+  "sourceContentHash": "cc418920a05863d4c9d9ff1e2cd05726030873ebc619dd65b47b5bcdb61612c5",
+  "editorialSha256": "f3b296ed01a82836342978763a9b9fbfb517ea9ef88e5763c65eb5a71c38be0d",
+  "hints": {
+    "zh": [
+      "所有操作的删除和必须相同，而第一次操作只有三种方向，所以这个公共和只可能是 a[0]+a[1]、a[n−2]+a[n−1]、a[0]+a[n−1] 三个值之一。",
+      "固定目标和之后，剩余数组总是原数组的一段连续区间，状态就是区间本身；每一步有三种删除方向，各自把区间缩短 2。按区间长度递增做动态规划，只需保留上一层（长度少 2）的结果。",
+      "对三个候选和分别计算：previous 初始全为 0；长度从 2+n%2 开始每次加 2 到 n，对每个左端点 left（右端点 right=left+len−1）检查三种删除是否等于目标和，可行就用 1 加上对应的更短区间结果更新；该候选的结果是 previous[0]；输出三者最大值（n<2 时为 0）。"
+    ],
+    "en": [
+      "Every operation must remove the same sum, and the first operation has only three directions, so the common sum can only be one of a[0]+a[1], a[n-2]+a[n-1] and a[0]+a[n-1].",
+      "Once the target sum is fixed, the remaining array is always a contiguous range of the original, so the state is the range itself; each step has three deletion directions, each shortening the range by 2. Run a DP over ranges in increasing length, keeping only the previous layer (length shorter by 2).",
+      "For each of the three candidate sums: start with previous all 0; for lengths from 2 + n % 2 up to n in steps of 2, for every left end (right = left + len - 1) check whether each of the three deletions equals the target and, if so, update with 1 plus the result of the corresponding shorter range; the candidate's result is previous[0]; print the maximum over the three (0 when n < 2)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe sum of the first deletion can only be one of three candidate values. For each fixed value, run a dynamic program by the length of the remaining range; the three deletion directions each move to a range shorter by 2, and a rolling array keeps the previous layer.\n\n## Correctness\n\nEvery valid first operation is one of the three directions, so its sum is among the candidates. After the sum is fixed, the first step from any range state is still one of three options, and a valid direction gives 1 plus the best count of the remaining range. Solving completely in increasing length and finally taking the maximum over the three candidates covers every possible sequence.\n\n## Complexity\n\nTime O(n^2), space O(n)."
+}

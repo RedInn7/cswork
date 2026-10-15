@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-38",
+  "packageChecksum": "256682f62bcb0ffbf7792989c5a4c86602d998868a18f03740dd5f6890a33ad4",
+  "sourceContentHash": "a39f8d67147bd8f6341f8e6f80a80e80c3ed7727f2420562e88bc1f4f25020f4",
+  "editorialSha256": "1e149c17d1a858aa7f310ecd4b6b862b316058db7d26f23704f3a205acbd5cc7",
+  "hints": {
+    "zh": [
+      "合法窗口必须是 B 中长度为 |A| 的连续子串，并且字符频次与 A 完全一致，所以先用固定长度的滑动窗口找出所有合法起点。",
+      "所有候选窗口长度相同，比较它们的字典序等价于比较从各自起点开始的后缀的字典序。构造 B 的后缀数组（倍增排序）得到每个后缀的排名，取排名最大的合法起点即可，避免逐个比较长窗口。",
+      "维护 26 个字母的频次差和“不为 0 的字母数”mismatches，窗口每右移一格更新两个字母并记录 mismatches=0 的起点；若没有合法起点输出 −1；否则用倍增法求 B 的后缀排名，在合法起点中选排名最大的 start，输出 B[start, start+|A|)。"
+    ],
+    "en": [
+      "A valid window must be a contiguous substring of B of length |A| whose letter counts equal those of A, so first find every valid start with a fixed-length sliding window.",
+      "All candidate windows have the same length, so comparing them lexicographically is the same as comparing the suffixes that start at those positions. Build the suffix array of B (prefix doubling with sorting) to rank every suffix, and take the valid start with the highest rank instead of comparing long windows one by one.",
+      "Keep the count differences of the 26 letters and mismatches, the number of letters whose difference is non-zero; each one-step slide updates two letters, and starts with mismatches = 0 are valid; if there is no valid start print -1; otherwise compute the suffix ranks of B by doubling, pick the valid start with the largest rank and print B[start, start + |A|)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a sliding window of length |A| to maintain the differences in character counts, and mark every window whose counts equal those of A. To avoid comparing many long windows one by one, build the suffix array of B; all candidate windows have the same length, so the lexicographic order of two windows equals the order of the corresponding suffixes, and we take the valid start with the largest suffix rank.\n\n## Correctness\n\nAll count differences are zero if and only if the current window contains the same characters with the same multiplicities as A, so the sliding window identifies exactly all valid substrings. For two substrings of the same length, the order decided by their first differing character also decides the order of the suffixes starting at their positions; both have length |A|, so neither substring ends early within the compared range and changes the order. Therefore the valid window with the largest suffix rank is the required lexicographically largest window. If there is no valid window, output -1.\n\n## Complexity\n\nThe count scan is O(|B|), the prefix-doubling suffix array sort is O(|B| log^2 |B|), and space is O(|B|).\n\n## Sources and site conventions\n\nThe fixed OAMaster snapshot only keeps a truncated statement and one original example: https://oamaster.com/docs/companies/google#38-largest-lexicographical-substring (content fingerprint a39f8d67147bd8f6341f8e6f80a80e80c3ed7727f2420562e88bc1f4f25020f4). A summary page of the same problem adds \"find in B a contiguous window of length |A| whose character counts equal those of A, take the lexicographically largest; return -1 when there is none\": https://www.1point3acres.com/interview/problems/google-largest-lexicographical-substring. That page is a second-hand summary, not Google's official original statement; the original example `abc` / `abcab` / `cab` agrees with this rule. The original sources give no character set or length limits, so lowercase letters and the length bounds are clearly marked as this site's judging limits and are not claimed to be original constraints."
+}

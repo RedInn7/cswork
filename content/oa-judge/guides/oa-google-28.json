@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-28",
+  "packageChecksum": "9ed0a5abad1f2f68ff74ee5d83d016d3e741f7f77646900b50b06326a2ff1165",
+  "sourceContentHash": "e617096117086f1f5e0bbf8ce14fd4018fc6c52a2183b16f196d15c7939ba24a",
+  "editorialSha256": "9a7916ebef87f6ed19c34f3f1c691aac0c14adf9e496a6ab9c16f13b95ef3502",
+  "hints": {
+    "zh": [
+      "一个点的“最远距离”至少是它到直径两个端点距离中的较大者，所以答案不会小于直径长度 D 的一半（向上取整）。",
+      "直径中点恰好能达到这个下界，所以答案就是 ⌈D/2⌉。求直径用两次 BFS：从任意点出发找到最远点，再从那个点出发找最远距离。",
+      "建邻接表；从节点 1 做 BFS 得到最远点 u；再从 u 做 BFS 得到最远距离 D；输出 (D+1)/2（整除）。单节点树时 D=0，输出 0。"
+    ],
+    "en": [
+      "The farthest distance from any vertex is at least the larger of its distances to the two ends of a diameter, so the answer cannot be smaller than half the diameter length D, rounded up.",
+      "The middle vertex of a diameter reaches this lower bound, so the answer is ceil(D/2). Find the diameter with two BFS runs: from any vertex find the farthest vertex, then from that vertex find the farthest distance.",
+      "Build adjacency lists; BFS from vertex 1 to get the farthest vertex u; BFS from u to get the largest distance D; print (D + 1) / 2 with integer division. A single-vertex tree has D = 0 and prints 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTwo breadth-first searches give the tree diameter D, and the answer is ceil(D/2).\n\n## Correctness\n\nThe two ends of a diameter are D apart, so every vertex is at distance at least ceil(D/2) from at least one of them. The middle vertex of the diameter is within that distance of every vertex; otherwise a path longer than D could be formed. Therefore the middle vertex attains this lower bound. In a tree, the farthest vertex from any vertex is an end of a diameter, and a second search from it gives the diameter.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

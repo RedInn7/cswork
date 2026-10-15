@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-4",
+  "packageChecksum": "649937f74161f1f658faaee8c016ec3bef77a63dbe0349562ba1bf3c7169e724",
+  "sourceContentHash": "c4a25089fe4cdae3c8299c2f30ef4cfbe185d29b890d44f5247a716943893dec",
+  "editorialSha256": "1b63857461a8bbf230792bd0df0858a716e152f0a82170a0f4f956df4fa70e4d",
+  "hints": {
+    "zh": [
+      "棋子每次向右跳 3 格，所以永远停留在下标模 3 相同的位置上；三个余数类互不影响，可以分开计算。",
+      "在同一条链上，最左棋子左边的金币永远够不到；而从右往左依次把棋子往右推到底，最左棋子右边的金币都能被收集到。",
+      "对余数 r=0,1,2 分别扫描下标 r, r+3, r+6…：遇到第一个 T 之后开始计数，之后遇到的每个 C 计一枚；三条链的计数相加后输出。"
+    ],
+    "en": [
+      "A piece always jumps exactly 3 cells to the right, so it stays on indices with the same value mod 3; the three residue classes are independent and can be handled separately.",
+      "On one chain, coins to the left of the leftmost piece can never be reached, while moving the pieces right as far as possible, from right to left, collects every coin to the right of the leftmost piece.",
+      "For each residue r = 0, 1, 2 scan the indices r, r+3, r+6, ...: start counting after the first T, and count every C seen after that; add the counts of the three chains and print the sum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit the indices into three independent chains by their value mod 3. On each chain, count only the coins to the right of the leftmost piece.\n\n## Why it is correct\n\nA piece can only stop on its own residue class, so the coins to the left of the leftmost piece are never reachable. Moving the pieces on a chain one by one from right to left until they cannot continue, a piece further right never blocks a piece further left from collecting the coins between them, so in the end every coin after the leftmost piece can be collected. Add up the results of the three chains.\n\n## Complexity\n\nTime O(n), extra space O(n) (string slices)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-3",
+  "packageChecksum": "06bcecc07e6b955943401a84196ff9737eea127136dd9602acce09ced64c9650",
+  "sourceContentHash": "e944fd04e14a2fb3e69da0faf2942e041c603fea159953301bef03abe4fa7eb8",
+  "editorialSha256": "6bfacc8051305cd01301b3c909e46b15b1f4275915f77ebe7873786af5e2865a",
+  "hints": {
+    "zh": [
+      "只需要两个数：桌上当前还有多少枚硬币，以及到目前为止已经赢得多少枚。最后留在桌上的硬币不算奖励。",
+      "按事件顺序更新这两个计数器：放入加一；取走减一但不能低于 0；赢得时把桌上的数量加进奖励，再把桌面清零。",
+      "table=0、answer=0；遍历字符串：i 则 table+1，d 则 table=max(0, table−1)，w 则 answer+=table 且 table=0；结束后只输出 answer。"
+    ],
+    "en": [
+      "Only two numbers matter: how many coins are currently on the table, and how many have been won so far. Coins left on the table at the end are not a reward.",
+      "Update these two counters event by event: insert adds one; take removes one but never goes below 0; win adds the table count to the reward and then clears the table.",
+      "Set table = 0 and answer = 0; for each character: on i add one to table, on d set table = max(0, table - 1), on w add table to answer and set table = 0; print only answer at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse table for the number of coins on the table and answer for the number already won. On d, keep table non-negative; on w, settle the coins first and then reset table to zero.\n\n## Why it is correct\n\nAfter processing each prefix, table is exactly the number of coins on the table that have not been settled yet, and answer is exactly the reward of all previous w events. The three updates correspond to the three rules and preserve this invariant. At the end only answer is printed, so the remaining coins that were never won are not counted.\n\n## Complexity\n\nTime O(n), extra space O(1) apart from the input."
+}

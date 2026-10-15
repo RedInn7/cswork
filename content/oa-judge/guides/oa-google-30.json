@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-30",
+  "packageChecksum": "dc0063740b21d7d37308e994b7fccc97036a3df2b6fe0ebd9d45efbb494d3ed4",
+  "sourceContentHash": "3684f8816d11622681cb48dfb68bffb50710780124e95786e270ebcd4437b1e6",
+  "editorialSha256": "e855b99c4aa9f4934b84638b590d18958c8770bc1c8956cef2ca30141a0d3a20",
+  "hints": {
+    "zh": [
+      "本站约定键入值只考虑 0..9999，一共只有一万个候选，每个最多四位，完全可以逐一枚举。",
+      "对每个候选算出两样东西：按键成本（位数加上相邻不同数字的移动成本 2）和它代表的秒数（两位以内按秒；更长时末两位是秒、前缀是分钟，秒数不进位）。过滤掉与目标相差超过 10% 的候选，再按（成本、时间差、数值）选最小。",
+      "枚举 value=0..9999：成本 = 位数 + 2×相邻不同数字的对数；秒数 = 位数≤2 时为 value，否则为 (value/100)×60 + value%100；若 10×|秒数−target| > target 则跳过；否则与当前最优比较三元组（成本、差值、数值），更小则替换；输出最优数值。"
+    ],
+    "en": [
+      "This site only considers typed values 0..9999, so there are just ten thousand candidates with at most four digits each; enumerating all of them is easy.",
+      "For each candidate compute two things: the key cost (number of digits plus 2 for every pair of adjacent different digits) and the time it means (up to two digits are seconds; otherwise the last two digits are seconds and the prefix is minutes, without carrying seconds). Drop candidates that differ from the target by more than 10%, then pick the smallest by (cost, time difference, value).",
+      "Enumerate value = 0..9999: cost = digit count + 2 * (adjacent pairs of different digits); seconds = value when it has at most two digits, otherwise (value / 100) * 60 + value % 100; skip it if 10 * |seconds - target| > target; otherwise compare the triple (cost, difference, value) with the best so far and keep the smaller; print the best value."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate 0 to 9999. Interpret an input of at most two digits as seconds; for a longer input, the last two digits are seconds and the prefix is minutes, without base-60 carrying of the seconds. Scan the digit string to count key presses and the movement cost between adjacent different digits. Among inputs satisfying `10 * difference <= targetTime`, choose the lexicographically smallest by (total cost, time difference, value).\n\n## Correctness\n\nThe candidate domain on this site is exactly 10000 integers. The algorithm enumerates each of them and only excludes inputs outside the 10% range; the remaining candidates are compared completely by cost, time difference and the site's tie rule, in the priority order of the problem, so the selected input is the optimum for this site's specification. For `0 <= targetTime <= 6039`, a key value representing the same number of seconds always exists, so there is always an answer.\n\n## Complexity\n\nThe number of candidates is fixed at 10000 and each has at most 4 digits, so time is O(10000) and extra space is O(1).\n\n## Sources and site conventions\n\nOAMaster fully defines the cost, the +-10% rule, the tie-break by time difference first, and an example, but gives no target range; its Python, Java and C++ code all enumerate `0..9999` and all select by `(cost, time difference, input value)`: https://oamaster.com/docs/companies/google#30-find-optimal-input (snapshot fingerprint 3684f8816d11622681cb48dfb68bffb50710780124e95786e270ebcd4437b1e6). A Google interview report of the same problem reproduces the \"10 minutes -> 888\" example and the cost explanation: https://leetcode.com/discuss/post/6159225/Google-or-Onsite-or-Microwave-optimal-keystroke-input/; a Chinese explanation of the same problem: https://leetcode.cn/discuss/post/3275912/xiang-wen-wen-da-jia-zhe-liang-ti-zen-ya-ct85/. To avoid unsolvable inputs or overflow, and to faithfully reuse the search domain of the three-language solutions, `targetTime <= 6039`, typed values of at most four digits, and the final tie-break by smallest input value are all clearly marked as conventions of this site; they are not claimed to be original interview constraints."
+}
