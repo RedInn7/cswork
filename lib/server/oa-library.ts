@@ -453,7 +453,7 @@ export async function handleOaLibrary(
     const found = currentDrills(id).find((item) => item.n === d.n);
     if (!found) throw new HttpError(404, '这道题没有调试练习');
     const { bugLines, nameZh, nameEn } = found;
-    return json({ ...scoreReview(bugLines, d.lines), bugLines, nameZh, ...(nameEn && { nameEn }) } satisfies DrillReview);
+    return json({ ...scoreReview(bugLines, d.lines), bugLines, nameZh, ...(nameEn ? { nameEn } : {}) } satisfies DrillReview);
   }
   const problems = await oaReadyProblems();
   const ready = new Set(problems.keys());

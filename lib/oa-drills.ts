@@ -40,7 +40,7 @@ export function changedLines(from: string, to: string) {
     y = b.slice(start, endB);
   // ponytail: O(n·m) LCS on the edited middle; a pasted-over program just counts every line.
   if (x.length * y.length > 4_000_000) return Math.max(x.length, y.length);
-  let row = new Array<number>(y.length + 1).fill(0);
+  let row: number[] = Array.from({ length: y.length + 1 }, () => 0);
   for (const line of x) {
     const next = [0];
     for (let j = 0; j < y.length; j++) next.push(line === y[j] ? row[j] + 1 : Math.max(row[j + 1], next[j]));

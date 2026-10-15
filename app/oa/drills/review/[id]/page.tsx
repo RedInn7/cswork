@@ -15,8 +15,8 @@ type Props = { params: Promise<{ id: string }>; searchParams: Promise<{ n?: stri
 
 const load = async (id: string) => {
   const drills = oaDrillIndex().get(id),
-    found = drills && oaLibrary().problem(id);
-  if (!found) notFound();
+    found = oaLibrary().problem(id);
+  if (!drills || !found) notFound();
   return { drills, ...found };
 };
 
@@ -46,7 +46,9 @@ export default async function CodeReviewPage({ params, searchParams }: Props) {
           OA
         </Link>
         <span aria-hidden="true">/</span>
-        <a href="/oa/drills">{zh ? '调试与评审练习' : 'Debugging drills'}</a>
+        <Link href="/oa/drills" prefetch={false}>
+          {zh ? '调试与评审练习' : 'Debugging drills'}
+        </Link>
         <span aria-hidden="true">/</span>
         <span aria-current="page">{zh ? '代码评审' : 'Code review'}</span>
       </nav>
@@ -64,7 +66,9 @@ export default async function CodeReviewPage({ params, searchParams }: Props) {
         <CodeReviewDrill id={item.id} drills={drills} first={drills.includes(asked) ? asked : drills[0]} zh={zh} />
       ) : (
         <p className="public-library-empty">
-          {zh ? '登录后即可练习。' : 'Sign in to practise.'} <a href="/?view=account">{zh ? '登录' : 'Sign in'} →</a>
+          {zh ? '登录后即可练习。' : 'Sign in to practise.'} <Link href="/?view=account" prefetch={false}>
+            {zh ? '登录' : 'Sign in'} →
+          </Link>
         </p>
       )}
     </>

@@ -141,7 +141,7 @@ export function CodeReviewDrill({ id, drills, first, zh }: { id: string; drills:
             );
           })}
       </ol>
-      <p className="oa-review-score" role="status">
+      <output className="oa-review-score">
         {result && (
           <>
             <strong>
@@ -154,7 +154,7 @@ export function CodeReviewDrill({ id, drills, first, zh }: { id: string; drills:
             <span lang={!zh && !result.nameEn ? 'zh-CN' : undefined}>{zh ? result.nameZh : (result.nameEn ?? result.nameZh)}</span>
           </>
         )}
-      </p>
+      </output>
       {error && (
         <p className="oa-review-error" role="alert">
           {say(error)}

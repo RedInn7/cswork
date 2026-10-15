@@ -117,7 +117,7 @@ void test('a drill is a mutant one to three lines off the reference, trailing wh
       { name: '改三行', code: 'a=0\nb=0\nc=0\nd=4\nprint(a)\n' },
     ],
     { 改一行: 'One line changed' },
-  );
+  ) as { n: number; bugLines: number[]; budget: number; nameZh: string; nameEn?: string }[];
   assert.deepEqual(
     drills.map(({ n, bugLines, budget, nameZh, nameEn }) => ({ n, bugLines, budget, nameZh, nameEn })),
     [

@@ -64,7 +64,9 @@ export default async function OaDrillsPage({ searchParams }: Props) {
       <>
         {intro}
         <p className="public-library-empty">
-          {zh ? '登录后即可练习。' : 'Sign in to practise.'} <a href="/?view=account">{zh ? '登录' : 'Sign in'} →</a>
+          {zh ? '登录后即可练习。' : 'Sign in to practise.'} <Link href="/?view=account" prefetch={false}>
+            {zh ? '登录' : 'Sign in'} →
+          </Link>
         </p>
       </>
     );
