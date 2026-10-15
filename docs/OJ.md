@@ -26,6 +26,14 @@ cswork 使用 Monaco Editor 作为浏览器编辑器、BullMQ 作为持久化任
 - 结果对比：SQL 测试点的期望输出和实际输出都是上面的统一格式时，结果面板（`components/sql-result-diff.tsx`，解析与行 diff 在 `lib/sql-result.ts`）把两边画成一张表：相同的行、缺少的行（−）、多出的行（+），答错的行显示期望和实际两行并标出不同的格子。以下情况只显示原文：超过 400 行；报错；首个失败点带截断标记；任一侧达到 32 KB（存储上限 `FEEDBACK_BYTES`，逐点结果没有截断标记，截在行尾的输出仍能解析，所以按长度兜底）；含超出 JavaScript 安全整数范围（2^53）的整数（SQLite 是 64 位整数，解析后会丢精度，两个不同的行会显示成一致）。
 - 不做 Pandas 专项：判题镜像没有 pandas（`deploy/oj/Dockerfile` 只装了 python3 标准库），学员代码也不能联网装包。要做时先在镜像里装 `python3-pandas` 并在 `deploy/oj/verify-runtime.py` 里检查它。
 
+## Core Skills
+
+- 21 道「手写数据结构与经典算法」原创题（动态数组、链表、环形双端队列、拉链哈希表、最小堆、LRU、二分、快排、归并、计数排序、KMP、网格 BFS、拓扑排序、Dijkstra、Bellman-Ford、Kruskal、Prim、并查集、字典树、线段树、树状数组），ACM 模式，四种语言都能判题，`tokens` checker。
+- 每题在 `content/core-skills/<slug>/`：`statement.{zh,en}.md`（`# 标题`、题面，再依次是输入、输出、样例说明、提示四个 `## ` 小节；题面和输出按 Markdown 渲染）、`starter.*` 和 `solution.*` 各四种语言、`gen.py` 打印测试输入（JSON：`samples`、`tests`）。起始代码上半部分是要补全的类或函数，下半部分以「—— 以下驱动代码请勿修改」开头，是读操作序列、调用实现、打印结果的固定驱动。
+- 题包里的 `starters`（`lib/oj-types.ts`）随题目 payload 下发；工作区 ACM 模式下优先用它，未改动的起始代码按模板对待（切换语言、重置、切换题面语言都会换回它）。
+- `node --import tsx scripts/core-skills/build.ts` 用本机工具链代替 go-judge（python3、`$CXX` 或 g++ `-std=c++20`、`javac --release 21`、`go -lang=go1.24`）：solution.py 的输出就是期望答案；每种语言的 solution 必须和 starter 的驱动逐字相同并在全部测试上输出一致；每种语言的 starter 必须原样编译通过、但答错样例。生成 `content/core-skills/packages.json` 和列表用的 `lib/content/core-skills.json`；`tests/core-skills.test.ts` 重跑构建并比对。
+- 发布：`deploy/release.sh` 在 SQL 专项之后运行 `scripts/publish-core-skills.ts`，未变化的题跳过。`core-` 题号在 `lib/free-tracks.ts` 里，对已验证邮箱的账号免费评测；导入校验要求 `core-` 题挂在 `gomall/00-overview`。入口是题库的「Core Skills」（`?view=problems&library=core`）和公开页 `/core-skills`。
+
 ## 持久化与运行
 
 固定例外：`oa-pure-storage-8` 使用 `oa-binary-search-witness`，原题没有输入，只保留一个公开空输入测试点，不构造重复隐藏数据。检查器接受所有合法的 Java int 二分查找反例，而非比较固定输出；其余题目仍要求公开和隐藏测试点。
