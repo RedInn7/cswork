@@ -157,3 +157,47 @@ for (const language of ['python', 'cpp', 'java', 'go'] as const)
       assert.equal(result.built, stage === 'run', `${code}\n${result.log}`);
     }
   });
+
+// Drafts saved before the closures (40e7397d7) still carry the old template's class, as
+// shipped and as Format Document (gofmt, JDT LS) rewrote it.
+const legacy = {
+  java: [
+    'class MountainArray { int[] values; int calls; public int get(int i){if(++calls>100)throw new IllegalStateException("MountainArray.get exceeds 100 calls");return values[i];} public int length(){return values.length;} }',
+    'class MountainArray {\n    int[] values;\n    int calls;\n\n    public int get(int i) {\n        if (++calls > 100)\n            throw new IllegalStateException("MountainArray.get exceeds 100 calls");\n        return values[i];\n    }\n\n    public int length() {\n        return values.length;\n    }\n}',
+  ],
+  go: [
+    'type MountainArray struct { Values []int; Calls int }\nfunc (m *MountainArray) get(i int) int { m.Calls++; if m.Calls>100 { panic("MountainArray.get exceeds 100 calls") }; return m.Values[i] }\nfunc (m *MountainArray) length() int { return len(m.Values) }',
+    'type MountainArray struct {\n\tValues []int\n\tCalls  int\n}\n\nfunc (m *MountainArray) get(i int) int {\n\tm.Calls++\n\tif m.Calls > 100 {\n\t\tpanic("MountainArray.get exceeds 100 calls")\n\t}\n\treturn m.Values[i]\n}\nfunc (m *MountainArray) length() int { return len(m.Values) }',
+  ],
+};
+const oldDraft = (language: 'java' | 'go', solution: string, definition: string) =>
+  language === 'go'
+    ? `package main\n\n${solution.replace(/^package main\n/, '')}\n\n${definition}\n`
+    : `import java.util.*;\nimport java.math.*;\n\n${solution}\n\n${definition}\n`;
+const oldCheats = {
+  java: [
+    'class Solution { public int findInMountainArray(int target, MountainArray m) { for (int i = 0; i < m.values.length; i++) if (m.values[i] == target) return i; return -1; } }',
+    'class Solution { public int findInMountainArray(int target, MountainArray m) { for (int i = 0; i < m.length(); i++) { m.calls = 0; if (m.get(i) == target) return i; } return -1; } }',
+  ],
+  go: [
+    'func findInMountainArray(target int, m *MountainArray) int { for i, v := range m.Values { if v == target { return i } }; return -1 }',
+    'func findInMountainArray(target int, m *MountainArray) int { for i := 0; i < m.length(); i++ { m.Calls = 0; if m.get(i) == target { return i } }; return -1 }',
+  ],
+};
+
+for (const language of ['java', 'go'] as const)
+  void test(`${language}: an old-template draft still passes, its fields stay out of reach`, { skip: skip[language] }, () => {
+    for (const definition of legacy[language]) {
+      const result = judge(language, oldDraft(language, editorial.approaches[0][language], definition));
+      assert.ok(result.ok, result.log);
+      assert.equal(result.stdout, '998\n');
+    }
+    const [definition] = legacy[language];
+    const scan = judge(language, oldDraft(language, linear[language], definition));
+    assert.ok(scan.built && !scan.ok, 'the old class no longer counts calls itself, the judge does');
+    assert.match(scan.log, /MountainArray/);
+    for (const code of oldCheats[language]) {
+      const result = judge(language, oldDraft(language, code, definition));
+      assert.equal(result.built, false, `${code}\n${result.log}`);
+    }
+  });

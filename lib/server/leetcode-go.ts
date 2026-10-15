@@ -10,6 +10,19 @@ const definitions: Record<string, string> = {
   MountainArray:
     'type MountainArray struct { get_ func(int) int; length_ func() int }\nfunc (m *MountainArray) get(i int) int { return m.get_(i) }\nfunc (m *MountainArray) length() int { return m.length_() }',
 };
+// What the template shipped before the call budget moved into closures (40e7397d7).
+const legacyMountainArray =
+  'type MountainArray struct { Values []int; Calls int }\nfunc (m *MountainArray) get(i int) int { m.Calls++; if m.Calls>100 { panic("MountainArray.get exceeds 100 calls") }; return m.Values[i] }\nfunc (m *MountainArray) length() int { return len(m.Values) }';
+/**
+ * A draft saved from an older template keeps that template's definition. Swap
+ * it, token for token (any whitespace, gofmt's dropped semicolons), for today's
+ * so the draft still runs; code that reads the old fields then fails to build.
+ */
+export function upgradeLegacy(source: string, legacy: string, current: string) {
+  const tokens = legacy.match(/\w+|[^\w\s;]/g)!;
+  const pattern = tokens.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[\\s;]*');
+  return source.replace(new RegExp(pattern), () => current);
+}
 const clean = (source: string) =>
   source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
 /**
@@ -80,7 +93,11 @@ export function buildLeetCodeGo(
   source: string,
   snippet: string,
 ): string {
-  const code = source.replace(/^\s*package\s+\w+\s*;?/m, '');
+  const code = upgradeLegacy(
+    source.replace(/^\s*package\s+\w+\s*;?/m, ''),
+    legacyMountainArray,
+    definitions.MountainArray,
+  );
   const signature = official(problemId, snippet);
   const declaration = signature.replace(/\/\*[\s\S]*?\*\//g, '');
   const methods = [
