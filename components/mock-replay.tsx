@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pause, Play } from 'lucide-react';
 import { useT } from '@/lib/i18n';
-import { formatClock, type MockSession } from '@/lib/mock-oa';
+import { formatClock } from '@/lib/mock-oa';
 import { verdict, type OJSubmission } from '@/lib/oj-client';
 import {
   AWAY_MS,
@@ -21,16 +21,18 @@ import {
   trackWrite,
   timeSummary,
   trackKey,
+  rememberContestRun,
+  type ReplaySession,
   type Track,
 } from '@/lib/mock-replay';
 
 /**
- * Records this question of a running mock OA (null session: not recording): the editor every
- * SNAPSHOT_MS it changed, the moment the question was opened, each finished run or submission
- * of the exam window, the stretches the page was hidden or unfocused, and pastes over
+ * Records this question of a running mock OA or contest run (null session: not recording): the
+ * editor every SNAPSHOT_MS it changed, the moment the question was opened, each finished run or
+ * submission of the exam window, the stretches the page was hidden or unfocused, and pastes over
  * PASTE_CHARS characters. Returns the callback for a submission's result.
  */
-export function useReplayRecorder(session: MockSession | null, problemId: string, code: string) {
+export function useReplayRecorder(session: ReplaySession | null, problemId: string, code: string) {
   const latest = useRef(code);
   latest.current = code;
   const onResult = useRef<(s: OJSubmission) => void>(() => {});
@@ -42,6 +44,8 @@ export function useReplayRecorder(session: MockSession | null, problemId: string
       end = start + session.minutes * 60_000,
       key = trackKey(session.id, problemId),
       cap = Math.floor(REPLAY_BYTES / session.ids.length);
+    // Listed before anything is recorded, so a prune in another tab keeps it.
+    rememberContestRun(session.id);
     let track: Track | null = null,
       last = '',
       dirty = false,
@@ -139,11 +143,22 @@ type Marker = { t: number; q: number; mode: 'run' | 'judge'; status: string; pas
 const tone = (m: Marker) => (m.status === 'accepted' ? 'ac' : m.mode === 'run' ? 'run' : 'fail');
 
 /**
- * The replay on a finished mock's report: a timeline with each run and submission marked,
- * play / pause at 1×, 4× or 16×, the code as it stood, and where the time went.
+ * The replay on a finished mock's report or under a contest room: a timeline with each run and
+ * submission marked, play / pause at 1×, 4× or 16×, the code as it stood, and where the time went.
  */
-export function MockReplay({ session, title }: { session: MockSession; title: (id: string) => string }) {
+export function MockReplay({
+  session,
+  title,
+  heading,
+  level = 3,
+}: {
+  session: ReplaySession;
+  title: (id: string) => string;
+  heading?: string;
+  level?: 2 | 3;
+}) {
   const t = useT();
+  const H = level === 2 ? 'h2' : 'h3';
   const [tracks, setTracks] = useState<(Track | null)[] | null>(null);
   useEffect(() => {
     let live = true;
@@ -195,11 +210,11 @@ export function MockReplay({ session, title }: { session: MockSession; title: (i
   return (
     <section className="mock-section mock-replay" aria-labelledby="mock-replay-title">
       <div className="mock-toolbar">
-        <h3 id="mock-replay-title">{t('代码回放', 'Code replay')}</h3>
+        <H id="mock-replay-title">{heading ?? t('代码回放', 'Code replay')}</H>
         <p>
           {t(
-            '考试中每 2 秒记一次代码，只存在这个浏览器里，不上传。',
-            'The editor was recorded every 2 seconds during the exam. It stays in this browser and is never uploaded.',
+            '作答时每 2 秒记一次代码，只存在这个浏览器里，不上传。',
+            'The editor was recorded every 2 seconds while you worked. It stays in this browser and is never uploaded.',
           )}
         </p>
       </div>
