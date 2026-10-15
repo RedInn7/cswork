@@ -134,6 +134,8 @@ export async function limit(
   const now = Date.now();
   if (now > nextLimitCleanup) {
     database().prepare('DELETE FROM limits WHERE expires_at<?').bind(now).run();
+    // Duel queue rows 10 minutes unpolled (duels.ts QUEUE_DROP): the privacy page promises it.
+    database().prepare('DELETE FROM duel_queue WHERE seen_at<?').bind(now - 600000).run();
     nextLimitCleanup = now + 600000;
   }
   const key = `${p.id}:${action}:${Math.floor(now / (seconds * 1000))}`;

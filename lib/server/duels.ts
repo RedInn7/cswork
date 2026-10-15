@@ -22,7 +22,7 @@ const DAY = 86400000;
 export const DUEL_PAIR_DAILY = 3;
 /** A queued learner who hasn't polled for this long has left the page: never matched. */
 const QUEUE_STALE = 30000;
-/** ...and after this long, out of the queue (the privacy page promises it). */
+/** ...and after this long, out of the queue (here and in http.ts limit(): the privacy page promises it). */
 const QUEUE_DROP = 600000;
 /** Problems drawn from this many unsolved ones nearest the pair's rating. */
 const NEAREST = 12;

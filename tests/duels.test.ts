@@ -96,8 +96,13 @@ void test('two-player Elo with K = 32, the widening window, the ladder bands', (
 
 let first = '';
 void test('the queue matches two learners into a ranked duel on problems neither has solved', async () => {
+  // Gone 11 minutes: the periodic cleanup on the first rate-limited request drops the row.
+  sqlite()
+    .prepare("INSERT INTO duel_queue(user_id,display_name,rating,created_at,seen_at) VALUES('d-gone','Gone',1500,?,?)")
+    .run(Date.now() - 11 * MIN, Date.now() - 11 * MIN);
   assert.equal(await status(person('d-new', { verified: false }), 'POST', 'contests/duel/queue', { displayName: 'N' }), 403);
   assert.equal(await status(null, 'GET', 'contests/duel/queue'), 401);
+  assert.equal(sqlite().prepare('SELECT COUNT(*) FROM duel_queue').pluck().get(), 0);
   submit(amy.id, 'lc-12', 'accepted', Date.now() - 86400000);
   assert.deepEqual(await poll(amy), { state: 'idle' });
   const waiting = await queue(amy, 'Amy');
