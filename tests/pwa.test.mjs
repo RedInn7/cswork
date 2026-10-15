@@ -5,6 +5,15 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import vm from 'node:vm';
+import { register } from 'node:module';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+
+// The offline page imports its stylesheet; tests load stylesheets as nothing.
+register(
+  `data:text/javascript,${encodeURIComponent("export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};return n(u,c);}")}`,
+  import.meta.url,
+);
 
 const ORIGIN = 'https://cswork.test';
 const root = new URL('..', import.meta.url);
@@ -82,7 +91,7 @@ function worker() {
     return response;
   };
   const cached = () =>
-    ['cswork-v1', 'cswork-offline-v1']
+    ['cswork-v2', 'cswork-offline-v2']
       .flatMap((name) => [...(caches.stores.get(name)?.keys() ?? [])])
       .map((u) => new URL(u).pathname)
       .sort();
@@ -91,19 +100,23 @@ function worker() {
 
 test('install keeps the offline page and its stylesheet; activate drops older versions', async () => {
   const sw = worker();
-  sw.caches.stores.set('cswork-v0', new Map([[`${ORIGIN}/old`, new Response('x')]]));
+  sw.caches.stores.set('cswork-v1', new Map([[`${ORIGIN}/old`, new Response('x')]]));
+  // v1 kept /offline in one locale; the new install fetches its own copy rather than reuse it.
+  sw.caches.stores.set('cswork-offline-v1', new Map([[`${ORIGIN}/offline`, new Response('<h1>现在连不上网</h1>')]]));
   await sw.lifecycle('install');
   assert.deepEqual(sw.cached(), ['/_next/static/css/app-1a2b.css', '/offline']);
   await sw.request('/_next/static/chunks/main-9f8e.js');
   await sw.lifecycle('activate');
-  assert.deepEqual([...sw.caches.stores.keys()].sort(), ['cswork-offline-v1', 'cswork-v1']);
+  assert.deepEqual([...sw.caches.stores.keys()].sort(), ['cswork-offline-v2', 'cswork-v2']);
+  sw.net.online = false;
+  assert.match(await (await sw.request('/u/someone', { mode: 'navigate' })).text(), /^<link[^>]+><h1>offline<\/h1>$/);
 });
 
 test('trimming old build files never drops the offline page or its stylesheet', async () => {
   const sw = worker();
   await sw.lifecycle('install');
   for (let i = 0; i < 301; i++) await sw.request(`/_next/static/chunks/c${i}.js`);
-  assert.equal(sw.caches.stores.get('cswork-v1').size, 300);
+  assert.equal(sw.caches.stores.get('cswork-v2').size, 300);
   sw.net.online = false;
   const css = await sw.request('/_next/static/css/app-1a2b.css');
   assert.equal(await css.text(), 'body of /_next/static/css/app-1a2b.css');
@@ -161,10 +174,21 @@ test('the manifest installs standalone from / and its icons exist at their state
   const m = manifest();
   assert.equal(m.display, 'standalone');
   assert.equal(m.start_url, '/?source=pwa');
+  // Fetched without cookies, so it speaks the default locale (English) and says so.
+  assert.equal(m.lang, 'en');
+  assert.ok(!/[\u4e00-\u9fff]/.test(`${m.name} ${m.short_name} ${m.description}`));
   assert.ok(m.icons.some((i) => i.purpose === 'maskable'));
   for (const icon of [...m.icons, { src: '/icons/apple-touch-icon.png', sizes: '180x180' }]) {
     const png = readFileSync(new URL(`public${icon.src}`, root));
     assert.equal(png.toString('ascii', 1, 4), 'PNG', icon.src);
     assert.equal(`${png.readUInt32BE(16)}x${png.readUInt32BE(20)}`, icon.sizes, icon.src);
   }
+});
+
+test('the offline page reads in both languages, so the one cached copy serves every reader', async () => {
+  const { default: OfflinePage } = await import('../app/offline/page.tsx');
+  const doc = renderToStaticMarkup(createElement(OfflinePage));
+  assert.match(doc, /<h1><span lang="en">You’re offline<\/span>.*<span lang="zh-CN">现在连不上网<\/span><\/h1>/);
+  assert.match(doc, /<p lang="en">.+<\/p><p lang="zh-CN">.+<\/p>/);
+  assert.match(doc, /<a href="\/">.*Back to cswork.*回到 cswork.*<\/a>/);
 });

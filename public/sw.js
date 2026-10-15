@@ -3,7 +3,8 @@
 // shared computer must not show the last user's page offline. Navigations go to the network
 // and fall back to /offline; only the hashed build files under /_next/static/ are kept, which
 // are the same for everyone. Everything else (API, RSC, POST) passes straight through.
-const VERSION = 1;
+// 2: /offline is bilingual now; v1 kept it in whichever locale first fetched it.
+const VERSION = 2;
 const CACHE = `cswork-v${VERSION}`;
 // The offline page and its stylesheets live apart, so trimming build files never drops them.
 const OFFLINE_CACHE = `cswork-offline-v${VERSION}`;
