@@ -2498,7 +2498,7 @@ function Workspace({
                         {t('自定义输入', 'Custom input')}
                       </button>
                     </div>
-                    {!isTrackLanguage(language) && (
+                    {!isTrackLanguage(language) && !problem.httpApi && (
                       <DebugButton
                         language={language}
                         code={code}

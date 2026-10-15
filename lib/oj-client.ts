@@ -20,6 +20,8 @@ export type OJProblem = Problem & {
   leetcodeTemplates?: Partial<Record<Language, string>>;
   /** This problem's own ACM starters (lib/oj-types.ts), in place of the generic templates. */
   starters?: Partial<Record<Language, string>>;
+  /** A REST API problem: its fixtures stay on the judge, so the Python debugger cannot run it. */
+  httpApi?: boolean;
   leetcodeInputHelp?: { zh: string; en: string } | null;
   /** LeetCode mode's parameters, one custom-case field each; null keeps the raw text. */
   leetcodeParams?: { name: string; type: string }[] | null;

@@ -263,7 +263,7 @@ export async function getJudgeProblem(p: Person, problemId: string) {
 
 async function publicProblem(version: VersionRow): Promise<OjPublicProblem> {
   // REST API fixtures are judge data (hidden cases read them): never in a statement or the catalogue.
-  const { httpFixtures: _judgeOnly, ...parsed } = JSON.parse(version.spec_json) as OjProblemSpec;
+  const { httpFixtures, ...parsed } = JSON.parse(version.spec_json) as OjProblemSpec;
   // OA packages keep provenance notes under their checksum; readers get the display copy.
   const spec = version.problem_id.startsWith('oa-')
     ? cleanOaStatement(parsed)
@@ -283,6 +283,8 @@ async function publicProblem(version: VersionRow): Promise<OjPublicProblem> {
   );
   return {
     ...spec,
+    // Only that it is one: the in-browser debugger has no HTTP stubs to run it with.
+    ...(httpFixtures && { httpApi: true }),
     versionId: version.id,
     version: version.revision,
     checksum: version.checksum,

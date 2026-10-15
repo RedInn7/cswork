@@ -137,6 +137,8 @@ export type OjPublicProblem = Problem & {
   /** OA/library problems judge free for verified accounts; course exercises need the course. */
   freeJudge?: boolean;
   starters?: OjProblemSpec['starters'];
+  /** A REST API problem (its httpFixtures stay on the server). */
+  httpApi?: boolean;
 };
 
 export type OjJudgeCase = OjImportedCase & { id: string; ordinal: number };

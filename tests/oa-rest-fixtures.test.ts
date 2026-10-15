@@ -180,10 +180,12 @@ void test('published fixtures stay out of the catalogue, the statement and OA di
   const secret = Object.keys(packages[0].problem.httpFixtures!)[0].slice(4);
   const listed = (await listPublishedProblems(null)).filter((p) => p.id.startsWith('rest-'));
   assert.equal(listed.length, packages.length);
-  assert.ok(listed.every((p) => p.freeJudge && !('httpFixtures' in p)));
+  // Only the flag that hides the in-browser debugger, which has no stubs, reaches readers.
+  assert.ok(listed.every((p) => p.freeJudge && p.httpApi === true && !('httpFixtures' in p)));
   assert.equal(JSON.stringify(listed).includes(secret), false);
   const problem = await getPublishedProblem(student, 'rest-01');
   assert.equal('httpFixtures' in problem, false);
+  assert.equal(problem.httpApi, true);
   const response = await handleOj(new Request('https://cswork.test/api/oj/problems/rest-01'), student, ['problems', 'rest-01']);
   assert.equal(response.status, 200);
   const body = await response.text();
