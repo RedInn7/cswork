@@ -198,4 +198,5 @@ install -m 644 "$source_dir/deploy/cswork-backup.service" /etc/systemd/system/cs
 install -m 644 "$source_dir/deploy/cswork-backup.timer" /etc/systemd/system/cswork-backup.timer
 systemctl daemon-reload
 systemctl enable --now cswork-backup.timer
+bash "$source_dir/deploy/prune-releases.sh" "$previous" || true
 echo "cswork release $release is running. Issue/verify TLS before sharing https://$domain."
