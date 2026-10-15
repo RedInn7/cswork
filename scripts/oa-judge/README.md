@@ -79,3 +79,22 @@ node --import tsx scripts/publish-oa-judge.ts --batch google-next TEACHER_EMAIL
 `node scripts/oa-judge/build-drills.mjs` 把 `mutants/` 里与 registry Python 解相差 1–3 行（行数相同、忽略行尾空白）的变异体生成 `drills.json`（私有服务端资产，由 `scripts/package-oa-library.mjs` 打包，不进 public）。变异体的英文名来自 `drill-names-en.json`（中文名 → 英文，LLM 翻译）；新增的名称补进这个文件后重跑脚本。registry 或 mutants 变动后必须重跑，`tests/oa-drills.test.ts` 会检查 `drills.json` 是否最新。
 
 `python3 scripts/rest-api/build.py` 生成 REST API 题：原先因依赖外部实时接口而 blocked 的 Oracle #6、Palantir #2、Rippling #3 进入候选批次 `rest-api-next`，题包带 `httpFixtures`（原创固定 JSON，键为 `GET <path>?<排序后的 query>`，见 `lib/http-fixtures.mjs`），判题和 `verify-oa-judge.mjs` 都用内联 `-c` 引导代码给 Python 注入离线的 `requests` / `urlopen`。题包还带 `visibleFixtureKeys`（参考解和错误程序在公开用例上请求到的键，扩展到整组分页）：样例运行、自定义输入只把这些键拷进沙箱，隐藏用例的数据只在正式评测时进沙箱（`lib/server/oj-engine.ts` 的 `runSpec`）。同一脚本还生成 6 道原创 `rest-` 题（`content/rest-api/`，由 `publish-sql-track.ts` 发布）；它们同样要在真实 GoJudge 上跑过：`GO_JUDGE_URL=… GO_JUDGE_TOKEN=… node scripts/rest-api/verify-sandbox.mjs` 让每道题的参考解通过全部用例、每个错误程序至少错一条，并写出 `content/rest-api/sandbox-report.json`。报告提交后，发布脚本只发布校验和在报告里的题包，其余记为 `unverified` 跳过；题包一改就要重跑。三道 OA 题只做了本地子进程验证，仍需 `node scripts/verify-oa-judge.mjs --candidate-batch rest-api-next` 跑真实 GoJudge 后再晋级；英文翻译要等进入 registry 后再加。
+
+## 分级提示、英文题解与四语言参考代码
+
+这些都是题包旁的旁路文件，不改 `registry.json` 或 `batches/`（改了会让整批 `entrySha256` 失效、须重新沙箱验证）。
+
+- `guides/<id>.json`：`{ id, packageChecksum, sourceContentHash, hints: { zh: [3], en: [3] }, explanationEn }`。两个校验值抄 registry 条目；三条提示依次是观察、思路、步骤（界面已标出级别，正文不要再写"观察："之类前缀，不放代码）；`explanationEn` 是 registry 中文题解的英文版（Markdown）。有 guide 的题，`GET problems/<id>` 返回 `oaHints`，并去掉题包自带的 `hints` 和 `translations.en.hints`；比赛或认证考试进行中不返回。
+- `solutions/<id>.json`：`{ id, packageChecksum, programs: [{ language, code, sha256 }] }`，只放 registry 已有语言之外的 python / cpp / java / go（registry 每题只有一份 Python 或 C++）。不要手写，用校验脚本的 `--save` 生成。
+- `reports/solutions-<chunk>.json`：校验记录。服务端只展示在某份报告里通过当前题包全部用例、且代码哈希未变的程序（`lib/oa-solution-evidence.mjs`）。
+
+```sh
+# 单题单语言：按判题机的编译参数和时间/内存/输出限制跑完题包全部用例；全过才用 --save 写入 solutions/<id>.json
+node --import tsx scripts/oa-judge/verify-solutions.mjs oa-meta-10 java Main.java --save
+# 按块重跑这些题旁路文件里的每个程序，结果合并进 reports/solutions-<chunk>.json
+node --import tsx scripts/oa-judge/verify-solutions.mjs --report pilot oa-meta-10 oa-bloomberg-1
+# CI 同款检查：校验值是否过期、每题三条中英提示、英文里没有中文、每个程序都有通过记录
+node scripts/oa-judge/check-guides.mjs
+```
+
+工具链取自 PATH（脚本会把 `/opt/homebrew/bin` 放在最前）：python3.13 或 python3、g++-14 或 g++、javac/java、go。一次只跑一个进程。本机通常比判题机快，CPU 用时超过限制一半时脚本会提示，要留余量。打包（`scripts/package-oa-library.mjs`）遇到校验值过期的 guide 或 solutions 直接报错。
