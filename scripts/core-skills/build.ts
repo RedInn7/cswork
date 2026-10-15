@@ -77,6 +77,30 @@ export const PROBLEMS: Problem[] = [
     difficulty: '中等',
     summary: { zh: '哈希表加双向链表的 O(1) 淘汰', en: 'O(1) eviction with a hash map and a doubly linked list' },
   },
+  {
+    slug: 'binary-search',
+    group: 'sort-search',
+    difficulty: '简单',
+    summary: { zh: '左闭右开区间上的 lower_bound / upper_bound', en: 'lower_bound and upper_bound on a half-open range' },
+  },
+  {
+    slug: 'quicksort',
+    group: 'sort-search',
+    difficulty: '中等',
+    summary: { zh: 'Lomuto 划分与随机基准', en: 'Lomuto partition and random pivots' },
+  },
+  {
+    slug: 'merge-sort',
+    group: 'sort-search',
+    difficulty: '中等',
+    summary: { zh: '稳定归并，顺便数逆序对', en: 'A stable merge that counts inversions on the way' },
+  },
+  {
+    slug: 'counting-sort',
+    group: 'sort-search',
+    difficulty: '简单',
+    summary: { zh: '计数、前缀和与稳定回填', en: 'Counts, prefix sums and a stable placement pass' },
+  },
 ];
 
 const EXT: Record<CodeLanguage, string> = { python: 'py', cpp: 'cpp', java: 'java', go: 'go' };
