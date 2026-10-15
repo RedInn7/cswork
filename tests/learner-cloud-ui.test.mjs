@@ -342,7 +342,8 @@ test('the public profile card is off until switched on and saves a lowercase han
 test('the profile card features one earned badge, and a contest one only with the curve shown', async () => {
   const posts = [];
   const original = globalThis.fetch;
-  const saved = { handle: 'line-rider', visible: true, indexable: false, showContest: true, bio: '', featuredBadge: null };
+  // Featuring a badge given up since: the form lets it go rather than have the save refused.
+  const saved = { handle: 'line-rider', visible: true, indexable: false, showContest: true, bio: '', featuredBadge: 'list:blind-75' };
   globalThis.fetch = async (url, init = {}) => {
     if (!init.body)
       return Response.json({
@@ -360,6 +361,7 @@ test('the profile card features one earned badge, and a contest one only with th
     const root = await mount(createElement(PublicProfileSettings));
     const select = document.querySelector('select');
     assert.deepEqual([...select.options].map((o) => o.value), ['', 'daily:2026-02', 'contest:first']);
+    assert.equal(select.value, '');
     const choose = (value) =>
       act(async () => {
         select.value = value;

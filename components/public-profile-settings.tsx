@@ -45,7 +45,12 @@ export function PublicProfileSettings() {
       ({ profile, badges }) => {
         if (!live) return;
         setSaved(profile);
-        if (profile) setForm(profile);
+        // A featured badge no longer earned would be refused on the next save: let it go.
+        if (profile)
+          setForm({
+            ...profile,
+            featuredBadge: badges?.some((b) => b.id === profile.featuredBadge) ? profile.featuredBadge : null,
+          });
         setBadges(badges ?? []);
         setLoaded(true);
       },
