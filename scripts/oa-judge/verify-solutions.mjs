@@ -1,9 +1,11 @@
 /**
  * Verifies a Python, C++, Java or Go program against EVERY case of an OA judge package
  * (content/oa-judge/packages/<id>.json) on this machine, built and run as lib/server/oj-engine.ts
- * does in go-judge: its compiler flags, javaCommand's JVM flags, CPU time ≤ timeLimit, wall time
- * ≤ max(3, 3 × timeLimit), peak memory ≤ memoryLimit, stdout ≤ outputLimit, and matchesOutput
- * with the package's checker (ACM: stdin in, stdout out). One process at a time.
+ * does in go-judge: its compiler flags, javaCommand's JVM flags, its environment, CPU time ≤
+ * timeLimit, wall time ≤ max(3, 3 × timeLimit), memory ≤ memoryLimit (the process group's RSS,
+ * polled while it runs), stdout ≤ outputLimit, and matchesOutput with the package's checker (ACM:
+ * stdin in, stdout out). One process at a time. This machine is usually faster than the judge, so
+ * a case using more than CPU_MARGIN of the time limit fails too ('time_margin').
  *
  *   node --import tsx scripts/oa-judge/verify-solutions.mjs <id> <language> <file> [--save]
  *     prints passed/total and the failing cases; with --save a program that passes everything
@@ -14,7 +16,9 @@
  *     every case of the current package are ever served (lib/oa-solution-evidence.mjs).
  *
  * Toolchains come from PATH with /opt/homebrew/bin first: python3.13 or python3, g++-14 or g++,
- * javac/java, go. Timing is this machine's, usually faster than the judge's: keep headroom.
+ * Homebrew's openjdk@21 or javac/java, go. --save and --report need the judge's (JUDGE_TOOLCHAINS):
+ * javac compiles with --release 21 and go against a go.mod at 1.24 plus vet's stdversion check, so
+ * a newer JDK or Go stands in for those two.
  */
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -28,6 +32,10 @@ import { matchesOutput } from '../../lib/server/oj-engine.ts';
 import { javaCommand } from '../../lib/server/leetcode-mode.ts';
 
 export const LANGUAGES = ['python', 'cpp', 'java', 'go'];
+/** The judge image's toolchains (deploy/oj/Dockerfile, Debian trixie). */
+export const JUDGE_TOOLCHAINS = { python: '3.13', cpp: '14', java: '21', go: '1.24' };
+/** Share of the time limit a case may use here: the judge machine is usually slower. */
+export const CPU_MARGIN = 0.5;
 const SOURCE = { python: 'main.py', cpp: 'main.cpp', java: 'Main.java', go: 'main.go' };
 const sha256 = (text) => createHash('sha256').update(text).digest('hex');
 if (existsSync('/opt/homebrew/bin') && !process.env.PATH?.startsWith('/opt/homebrew/bin'))
@@ -48,71 +56,115 @@ export function toolchains() {
     python: tool(['python3.13', 'python3'], ['--version']),
     // Apple's g++ is clang without <bits/stdc++.h>: Homebrew GCC first.
     cpp: tool(['g++-14', 'g++'], ['--version']),
-    java: tool(['javac'], ['-version']),
+    java: tool(['/opt/homebrew/opt/openjdk@21/bin/javac', 'javac'], ['-version']),
     go: tool(['go'], ['version']),
   };
   return found;
 }
+const VERSION = { python: /Python (\d+\.\d+)/, cpp: /(\d+)\.\d+\.\d+$/, java: /javac (\d+)/, go: /go(\d+\.\d+)/ };
+/**
+ * Whether this machine builds `language` like the judge: Python and g++ of the judge's version;
+ * javac and go at least the judge's, as build() pins them to its language and library.
+ */
+export function judgeToolchain(language, tools = toolchains()) {
+  const local = tools[language]?.version.match(VERSION[language])?.[1];
+  const want = JUDGE_TOOLCHAINS[language];
+  if (!local) return false;
+  return language === 'java' || language === 'go'
+    ? local.localeCompare(want, undefined, { numeric: true }) >= 0
+    : local === want;
+}
+const requireJudgeToolchain = (language) =>
+  assert(
+    judgeToolchain(language),
+    `${language}: ${toolchains()[language]?.version ?? 'no toolchain'} here, the judge has ${JUDGE_TOOLCHAINS[language]}; install it (brew install python@3.13 gcc@14 openjdk@21 go) before --save or --report`,
+  );
 
 /**
- * Runs argv[4:] with in.txt as stdin, out.txt / err.txt as stdout / stderr, a CPU rlimit just
- * past the limit and a wall clock; prints its exit, signal, CPU seconds, peak RSS (KiB) and
- * whether the clock ran out. wait4 is the portable way to get one child's rusage.
+ * Runs argv[5:] in its own process group with in.txt as stdin, out.txt / err.txt as stdout /
+ * stderr, a CPU rlimit just past the limit, a wall clock and the group's RSS polled against the
+ * memory limit (KiB; RLIMIT_AS would kill JVMs and Go for the address space they reserve); kills
+ * whatever the group left behind; prints its exit, signal, CPU seconds, peak RSS (KiB) and whether
+ * the clock or the memory ran out. wait4 is the portable way to get one child's rusage.
  */
 const RUNNER = String.raw`
 import json, os, resource, signal, subprocess, sys, time
-cpu, wall, out = float(sys.argv[1]), float(sys.argv[2]), int(sys.argv[3])
+cpu, wall, out, mem = float(sys.argv[1]), float(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4])
 def limits():
     os.setsid()
     resource.setrlimit(resource.RLIMIT_CPU, (int(cpu) + 1, int(cpu) + 2))
     resource.setrlimit(resource.RLIMIT_FSIZE, (out + 1, out + 1))
+def kill(group):
+    # Also after the leader exits, for what it left running. macOS answers EPERM for a group of zombies.
+    try:
+        os.killpg(group, signal.SIGKILL)
+    except OSError:
+        pass
+def group_rss(group):
+    # ps reads the same on macOS and Linux; about 10 ms a call, hence every 50 ms.
+    lines = subprocess.run(['ps', '-A', '-o', 'pgid=,rss='], capture_output=True, text=True).stdout.splitlines()
+    return sum(int(r) for g, r in (line.split() for line in lines if line.strip()) if int(g) == group)
 with open('in.txt', 'rb') as i, open('out.txt', 'wb') as o, open('err.txt', 'wb') as e:
-    p = subprocess.Popen(sys.argv[4:], stdin=i, stdout=o, stderr=e, preexec_fn=limits)
-start, late = time.monotonic(), False
+    p = subprocess.Popen(sys.argv[5:], stdin=i, stdout=o, stderr=e, preexec_fn=limits)
+start, late, over, polled = time.monotonic(), False, False, 0.0
 while True:
     pid, status, usage = os.wait4(p.pid, os.WNOHANG)
     if pid:
         break
-    if time.monotonic() - start > wall:
-        late = True
-        os.killpg(p.pid, signal.SIGKILL)
+    now = time.monotonic() - start
+    late = now > wall
+    if not late and now - polled >= 0.05:
+        polled, over = now, group_rss(p.pid) > mem
+    if late or over:
+        kill(p.pid)
         pid, status, usage = os.wait4(p.pid, 0)
         break
     time.sleep(0.005)
+kill(p.pid)
 print(json.dumps({
     'exit': os.WEXITSTATUS(status) if os.WIFEXITED(status) else None,
     'signal': os.WTERMSIG(status) if os.WIFSIGNALED(status) else None,
     'cpu': usage.ru_utime + usage.ru_stime,
     'rss': usage.ru_maxrss // 1024 if sys.platform == 'darwin' else usage.ru_maxrss,
     'late': late,
+    'over': over,
 }))
 `;
 
-/** Builds the program like oj-engine.ts compile(); returns the run command or a compile error. */
+/**
+ * Builds the program like oj-engine.ts compile(), held to the judge's Java and Go (--release, and a
+ * go.mod at its version with vet's check for newer library calls); returns the run command or a
+ * compile error.
+ */
 function build(language, code, dir, tools, memoryLimit) {
   writeFileSync(join(dir, SOURCE[language]), code);
   const t = tools[language];
+  if (language === 'go') writeFileSync(join(dir, 'go.mod'), `module main\n\ngo ${JUDGE_TOOLCHAINS.go}\n`);
   const commands = {
-    python: [t.bin, '-I', '-c', "import py_compile; py_compile.compile('main.py', doraise=True)"],
-    cpp: [t.bin, '-std=c++20', '-O2', '-pipe', 'main.cpp', '-o', 'main'],
-    java: [t.bin, '-J-XX:TieredStopAtLevel=1', '-J-XX:+UseSerialGC', '-encoding', 'UTF-8', 'Main.java'],
-    go: [t.bin, 'build', '-trimpath', '-o', 'main', 'main.go'],
+    python: [[t.bin, '-I', '-c', "import py_compile; py_compile.compile('main.py', doraise=True)"]],
+    cpp: [[t.bin, '-std=c++20', '-O2', '-pipe', 'main.cpp', '-o', 'main']],
+    java: [[t.bin, '--release', JUDGE_TOOLCHAINS.java, '-J-XX:TieredStopAtLevel=1', '-J-XX:+UseSerialGC', '-encoding', 'UTF-8', 'Main.java']],
+    go: [
+      [t.bin, 'vet', '-stdversion', '.'],
+      [t.bin, 'build', '-trimpath', '-o', 'main', '.'],
+    ],
   };
-  const [bin, ...args] = commands[language];
-  const done = spawnSync(bin, args, {
-    cwd: dir,
-    encoding: 'utf8',
-    timeout: 120_000,
-    env: { ...process.env, GOTOOLCHAIN: 'local', GOPROXY: 'off', GOSUMDB: 'off', CGO_ENABLED: '0', GOFLAGS: '' },
-  });
-  if (done.status !== 0) return { error: `${done.stdout}${done.stderr}`.slice(0, 4000) || String(done.error) };
+  for (const [bin, ...args] of commands[language]) {
+    const done = spawnSync(bin, args, {
+      cwd: dir,
+      encoding: 'utf8',
+      timeout: 120_000,
+      env: { ...process.env, GOTOOLCHAIN: 'local', GOPROXY: 'off', GOSUMDB: 'off', CGO_ENABLED: '0', GOFLAGS: '' },
+    });
+    if (done.status !== 0) return { error: `${done.stdout}${done.stderr}`.slice(0, 4000) || String(done.error) };
+  }
   return {
     run:
       language === 'python'
         ? [t.bin, '-I', 'main.py']
         : language === 'java'
           ? // The judge's JVM flags; classes from the directory instead of main.jar.
-            javaCommand(memoryLimit).map((arg) => (arg === '/usr/bin/java' ? 'java' : arg === 'main.jar' ? '.' : arg))
+            javaCommand(memoryLimit).map((arg) => (arg === '/usr/bin/java' ? t.bin.replace(/javac$/, 'java') : arg === 'main.jar' ? '.' : arg))
           : ['./main'],
   };
 }
@@ -146,8 +198,9 @@ export function verifyProgram(pkg, language, code) {
       writeFileSync(join(dir, 'in.txt'), test.input);
       const done = spawnSync(
         tools.python.bin,
-        ['-I', '-c', RUNNER, String(problem.timeLimit), String(wall), String(outBytes), ...command],
-        { cwd: dir, encoding: 'utf8', timeout: (wall + 30) * 1000 },
+        ['-I', '-c', RUNNER, String(problem.timeLimit), String(wall), String(outBytes), String(problem.memoryLimit), ...command],
+        // The judge's environment (oj-engine.ts baseEnv), not this shell's tokens.
+        { cwd: dir, encoding: 'utf8', timeout: (wall + 30) * 1000, env: { PATH: process.env.PATH, HOME: dir, LANG: 'C.UTF-8', TZ: 'UTC' } },
       );
       assert.equal(done.status, 0, `runner failed: ${done.stderr || done.error}`);
       const r = JSON.parse(done.stdout);
@@ -160,13 +213,15 @@ export function verifyProgram(pkg, language, code) {
           ? 'time_limit'
           : r.signal === 25 /* SIGXFSZ */ || Buffer.byteLength(stdout) > outBytes || errBytes > Math.min(outBytes, 65536)
             ? 'output_limit'
-            : r.rss > problem.memoryLimit
+            : r.over || r.rss > problem.memoryLimit
               ? 'memory_limit'
               : r.exit !== 0
                 ? 'runtime_error'
-                : matchesOutput(stdout, test.expectedOutput, problem.checker, test.input)
-                  ? 'accepted'
-                  : 'wrong_answer';
+                : !matchesOutput(stdout, test.expectedOutput, problem.checker, test.input)
+                  ? 'wrong_answer'
+                  : r.cpu > problem.timeLimit * CPU_MARGIN
+                    ? 'time_margin'
+                    : 'accepted';
       if (verdict === 'accepted') passed++;
       else {
         failures.push({
@@ -204,17 +259,14 @@ function print(label, result) {
   console.log(`${label}: ${result.passed}/${result.total} passed${stopped}, max CPU ${result.maxCpuMs} ms, max RSS ${result.maxRssKb} KiB (${result.environment})`);
   for (const failure of result.failures) console.log(`  FAIL case ${failure.case}: ${failure.verdict}${failure.detail ? `\n${failure.detail}` : ''}`);
 }
-const warnSlow = (label, result, timeLimit) =>
-  result.maxCpuMs > timeLimit * 500 &&
-  console.log(`  WARN ${label} used over half the ${timeLimit}s limit here; the judge machine is usually slower.`);
 
 function single([id, language, file, ...flags]) {
   assert(id && language && file, 'Usage: verify-solutions.mjs <id> <language> <file> [--save]');
+  if (flags.includes('--save')) requireJudgeToolchain(language);
   const code = readFileSync(file, 'utf8');
   const { pkg, packageChecksum } = readPackage(id);
   const result = verifyProgram(pkg, language, code);
   print(`${id} ${language}`, result);
-  warnSlow(language, result, pkg.problem.timeLimit);
   const ok = result.total > 0 && result.passed === result.total;
   if (ok && flags.includes('--save')) {
     assert.notEqual(registryEntry(id)?.authoredSolutions[0].language, language, `${id} already shows its verified ${language} program`);
@@ -231,8 +283,10 @@ function single([id, language, file, ...flags]) {
 function report([chunk, ...ids]) {
   assert(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(chunk ?? '') && ids.length, 'Usage: verify-solutions.mjs --report <chunk> <id>...');
   const results = [];
-  for (const id of ids) {
-    const sidecar = JSON.parse(readFileSync(resolve(root, 'solutions', `${id}.json`), 'utf8'));
+  const sidecars = ids.map((id) => JSON.parse(readFileSync(resolve(root, 'solutions', `${id}.json`), 'utf8')));
+  for (const language of new Set(sidecars.flatMap((s) => s.programs.map((p) => p.language)))) requireJudgeToolchain(language);
+  for (const [index, id] of ids.entries()) {
+    const sidecar = sidecars[index];
     assert.equal(sidecar.id, id, `solutions/${id}.json names ${sidecar.id}`);
     const { pkg, packageChecksum } = readPackage(id);
     assert.equal(sidecar.packageChecksum, packageChecksum, `solutions/${id}.json is for another package version`);
@@ -240,7 +294,6 @@ function report([chunk, ...ids]) {
       assert.equal(sha256(program.code), program.sha256, `${id} ${program.language}: sha256 does not match the code`);
       const result = verifyProgram(pkg, program.language, program.code);
       print(`${id} ${program.language}`, result);
-      warnSlow(program.language, result, pkg.problem.timeLimit);
       const { failures, ...rest } = result;
       results.push({ id, language: program.language, sha256: program.sha256, packageChecksum, ...rest, ...(failures.length && { failures }), verifiedAt: new Date().toISOString() });
     }

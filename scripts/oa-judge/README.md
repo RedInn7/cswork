@@ -97,4 +97,4 @@ node --import tsx scripts/oa-judge/verify-solutions.mjs --report pilot oa-meta-1
 node scripts/oa-judge/check-guides.mjs
 ```
 
-工具链取自 PATH（脚本会把 `/opt/homebrew/bin` 放在最前）：python3.13 或 python3、g++-14 或 g++、javac/java、go。一次只跑一个进程。本机通常比判题机快，CPU 用时超过限制一半时脚本会提示，要留余量。打包（`scripts/package-oa-library.mjs`）遇到校验值过期的 guide 或 solutions 直接报错。
+工具链取自 PATH（脚本会把 `/opt/homebrew/bin` 放在最前）：python3.13 或 python3、g++-14 或 g++、Homebrew 的 openjdk@21 或 javac/java、go。`--save` 和 `--report` 要求与判题镜像一致（Python 3.13、g++ 14）；Java 用 `--release 21` 编译、Go 按 `go 1.24` 的 go.mod 编译并跑 `go vet -stdversion`，所以更新的 JDK / Go 也行，用了 Java 22 或 Go 1.25 以后才有的写法或库函数会判编译错误。程序在判题机同款环境变量（PATH/HOME/LANG=C.UTF-8/TZ=UTC）下运行，进程组的内存每 50ms 查一次、超限即杀，结束后整组清理。一次只跑一个进程。本机通常比判题机快：任一用例 CPU 用时超过限制一半即判 `time_margin`，不算通过。打包（`scripts/package-oa-library.mjs`）遇到校验值过期的 guide 或 solutions 直接报错。
