@@ -90,7 +90,8 @@ export function useReplayRecorder(session: ReplaySession | null, problemId: stri
       const t = s.created_at - skew - start;
       // Older than the exam (a recovered earlier run), or already recorded.
       if (t < -5000 || track.events.some((e) => e.id === s.id.slice(0, 12))) return;
-      track.events.push({ t: Math.max(0, t), mode: s.mode, status: s.status, passed: s.passed, total: s.total, id: s.id.slice(0, 12) });
+      // A drill's formal submission replays as a submit.
+      track.events.push({ t: Math.max(0, t), mode: s.mode === 'run' ? 'run' : 'judge', status: s.status, passed: s.passed, total: s.total, id: s.id.slice(0, 12) });
       dirty = true;
       snap();
     };

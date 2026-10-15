@@ -35,7 +35,7 @@ after(() => {
   rmSync(dir, { recursive: true, force: true });
 });
 
-const person = (id: string, role = 'student'): Person => ({ id, name: id, email: `${id}@example.test`, role, verified: true });
+const person = (id: string, role: Person['role'] = 'student'): Person => ({ id, name: id, email: `${id}@example.test`, role, verified: true });
 async function call(p: Person | null, method: string, path: string, body?: unknown) {
   const url = new URL(`https://cswork.test/api/${path}`);
   const request = new Request(url, { method, body: body === undefined ? undefined : JSON.stringify(body) });
