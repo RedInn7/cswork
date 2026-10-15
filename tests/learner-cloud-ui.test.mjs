@@ -135,6 +135,12 @@ test('the profile and public list pages render without names, with links and a h
   ).window.document.querySelector('.learner-featured');
   assert.equal(chip.textContent, '★Featured badge: Algorithms · 2 stars');
   assert.equal(chip.getAttribute('data-group'), 'domain');
+  const langs = new JSDOM(
+    renderToStaticMarkup(
+      createElement(ProfileView, { profile: { ...profile, languages: [{ language: 'pandas', n: 2 }, { language: 'sql', n: 1 }] }, catalogue, zh: false }),
+    ),
+  ).window.document;
+  assert.deepEqual([...langs.querySelectorAll('.learner-langs li > span:first-child')].map((s) => s.textContent), ['Pandas', 'SQL']);
   const list = {
     id: 'AbCdEfGhIjKl',
     title: 'Warm-up',
