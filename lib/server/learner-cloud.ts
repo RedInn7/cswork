@@ -18,6 +18,7 @@ import { readJson } from './my-practice';
 import { canSeeProblem, listProblemSummaries } from './oj-problems';
 import { dailyDays } from './points';
 import { visibleTarget } from './solution-posts';
+import { badgeName, badgeSql } from './work-verify';
 
 /**
  * Learner data that lives on the server (db/learner-cloud-schema.ts): finished mock OAs,
@@ -791,6 +792,8 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     badges,
     // Shown while still earned: a badge lost since (a hidden contest curve) just disappears.
     featured: badges.find((b) => b.id === profile.featured_badge) ?? null,
+    // The verified employee badge, only if its owner switched it on for the profile.
+    employer: badgeName(db.prepare(`SELECT ${badgeSql('?', 'profile')}`).pluck().get(profile.user_id) as string | null),
     posts: {
       items: posts.slice(0, 10).map((post) => ({
         id: post.id,

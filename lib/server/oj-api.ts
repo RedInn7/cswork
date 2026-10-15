@@ -27,6 +27,8 @@ import { handleStudyGroups } from './study-groups';
 import { handleMockPeer } from './mock-peer';
 import { handleNewsletter } from './newsletter';
 import { handleFollows } from './follows';
+import { handleDirectMessages } from './direct-messages';
+import { handleWorkVerify } from './work-verify';
 import { sourceDates } from './company-insights';
 import { handleContests, inRunningContest, refuseInContest } from './contests';
 import { handleDuels } from './duels';
@@ -119,6 +121,8 @@ export async function handleOj(
   if (resource === 'peer') return handleMockPeer(request, p, path.slice(1));
   if (resource === 'newsletter') return handleNewsletter(request, p, path.slice(1));
   if (resource === 'follows') return handleFollows(request, p, path.slice(1));
+  if (resource === 'dm') return handleDirectMessages(request, p, path.slice(1));
+  if (resource === 'work') return handleWorkVerify(request, p, path.slice(1));
   // The weekly, standings and the rating board read signed out; the handler checks the rest.
   if (resource === 'contests' && id === 'duel') return handleDuels(request, p, path);
   if (resource === 'contests') return handleContests(request, p, path);
@@ -212,7 +216,8 @@ export async function handleOj(
     return json(judgeFeed(p, url.searchParams));
   }
   // Threads, answers and comments read signed out; the handler checks the rest.
-  if (resource === 'posts' || resource === 'post-comments') return handleSolutionPosts(request, p, path);
+  if (['posts', 'post-comments', 'group-messages', 'direct-messages'].includes(resource))
+    return handleSolutionPosts(request, p, path);
   requirePerson(p);
   if (resource === 'tokens') return handleApiTokens(request, p, path.slice(1));
   if (resource === 'cloud' && id === 'drafts' && !operation)

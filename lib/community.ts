@@ -5,6 +5,7 @@ export const CHANNELS = {
   interview: ['面经讨论', 'Interviews', '聊面试流程、轮次和准备方法。', 'Interview processes, rounds and how to prepare.'],
   algo: ['算法', 'Algorithms', '题目思路、模板和复杂度。', 'Approaches, templates and complexity.'],
   career: ['求职', 'Careers', '投递、内推、简历和选 offer。', 'Applications, referrals, résumés and choosing offers.'],
+  referral: ['内推', 'Referrals', '已验证的员工提供内推，按公司找。', 'Verified employees offering referrals, by company.'],
   offer: ['上岸故事', 'Offers & timelines', '拿到 offer 的经历和时间线。', 'Offer stories and their timelines.'],
   site: ['站务', 'Site feedback', '建议、问题反馈和新功能。', 'Suggestions, bugs and new features.'],
 } as const satisfies Record<string, readonly [string, string, string, string]>;
@@ -32,6 +33,10 @@ export const REPORTS_HIDE = 3;
  * readers cannot take the post down again. Only reports made after that decision count.
  */
 export const REPORT_CLEARED = 'cleared';
+/** Days a study group chat message (lib/server/study-groups.ts) is kept; the privacy page says so. */
+export const CHAT_RETENTION_DAYS = 180;
+/** Days a direct message (lib/server/direct-messages.ts) is kept; the privacy page says so. */
+export const DM_RETENTION_DAYS = 365;
 /** Up to this many votes a new thread stays out of search (spam rarely earns three). */
 export const INDEX_VOTES = 3;
 
