@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { buttonVariants } from './ui/button';
-import { useT } from '@/lib/i18n';
+import { weeklyTitle } from '@/lib/contest';
+import { useLocale, useT } from '@/lib/i18n';
 import { formatClock } from '@/lib/mock-oa';
 import { api } from '@/lib/types';
 import type { RoomView } from '@/lib/server/contests';
@@ -67,6 +68,7 @@ export function ContestBar({
   navigate: Navigate;
 }) {
   const t = useT();
+  const zh = useLocale() === 'zh';
   const { view, skew, running } = contest;
   const me = view.me!;
   const [now, setNow] = useState(() => Date.now());
@@ -84,7 +86,7 @@ export function ContestBar({
     );
     return mine.some((s) => s.status === 'accepted') ? 'ac' : mine.length ? 'tried' : 'todo';
   });
-  const title = view.week ? t(`CSWork 周赛 第 ${view.week} 期`, `CSWork Weekly #${view.week}`) : view.title;
+  const title = view.week ? weeklyTitle(view.week, zh, view.kind) : view.ranked ? t('1v1 排位赛', 'Ranked duel') : view.title;
   return (
     <div
       className="mock-exam-bar"
@@ -95,7 +97,7 @@ export function ContestBar({
     >
       <div className="mock-exam-id">
         <span className="mock-exam-kicker">
-          {view.kind === 'weekly' ? 'WEEKLY' : view.kind === 'duel' ? 'DUEL' : 'CONTEST'}
+          {{ weekly: 'WEEKLY', starter: 'STARTER', duel: 'DUEL', mashup: 'CONTEST' }[view.kind]}
           {me.virtual ? ' · VIRTUAL' : ''}
         </span>
         <strong>{running ? title : t('本场已结束，题解已解锁', 'Contest over. Solutions are unlocked')}</strong>

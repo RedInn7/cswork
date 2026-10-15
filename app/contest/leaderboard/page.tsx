@@ -11,10 +11,10 @@ import { BandChip } from '@/components/contest-parts';
 export async function generateMetadata(): Promise<Metadata> {
   const zh = (await requestLocale()) === 'zh';
   return seoMetadata({
-    title: zh ? '周赛 Rating 排行榜 · cswork' : 'Weekly contest ratings · cswork',
+    title: zh ? '周赛与入门赛 Rating 排行榜 · cswork' : 'Weekly and starter contest ratings · cswork',
     description: zh
-      ? 'CSWork 周赛的 Elo rating 排行榜与段位：车库、站站停、快车、直达、特快、高铁、磁浮。'
-      : 'Elo ratings from the CSWork weekly contest, by band: Depot, Local, Express, Rapid, Limited, Bullet, Maglev.',
+      ? 'CSWork 周赛与入门赛共用的 Elo rating 排行榜与段位：车库、站站停、快车、直达、特快、高铁、磁浮。'
+      : 'Elo ratings from the CSWork weekly and starter contests, by band: Depot, Local, Express, Rapid, Limited, Bullet, Maglev.',
     path: '/contest/leaderboard',
   });
 }
@@ -28,12 +28,12 @@ export default async function ContestLeaderboardPage() {
   return (
     <article className="contest-leaderboard">
       <section className="lists-public-hero contest-hero">
-        <p className="lists-public-kicker">{t('周赛 Rating', 'Weekly ratings')}</p>
+        <p className="lists-public-kicker">{t('比赛 Rating', 'Contest ratings')}</p>
         <h1>{t('Rating 排行榜', 'Rating board')}</h1>
         <p>
           {t(
-            '每场周赛结束后按 Elo 结算：人人从 1500 起步，名次超出预期就涨，场次越多变化越稳。段位按列车等级命名。',
-            'Every weekly is rated Elo-style when it ends: everyone starts at 1500, placing above expectation raises it, and ratings steady as you race more. Bands are named after the trains on the line.',
+            '每场周赛和入门赛结束后按 Elo 结算（入门赛只给 1700 以下的人计分）：人人从 1500 起步，名次超出预期就涨，场次越多变化越稳。段位按列车等级命名。',
+            'Every weekly and starter is rated Elo-style when it ends (a starter only below 1700): everyone starts at 1500, placing above expectation raises it, and ratings steady as you race more. Bands are named after the trains on the line.',
           )}
         </p>
         <ul className="contest-bands" aria-label={t('段位', 'Bands')}>
@@ -56,7 +56,7 @@ export default async function ContestLeaderboardPage() {
                 <th scope="col">#</th>
                 <th scope="col">{t('比赛昵称', 'Contest name')}</th>
                 <th scope="col">Rating</th>
-                <th scope="col">{t('周赛场次', 'Weeklies')}</th>
+                <th scope="col">{t('比赛场次', 'Contests')}</th>
               </tr>
             </thead>
             <tbody>
@@ -78,7 +78,7 @@ export default async function ContestLeaderboardPage() {
         </div>
       ) : (
         <p className="contest-hidden-note">
-          {t('第一场周赛结算后，这里就有名次了。', 'The board fills in once the first weekly is rated.')}{' '}
+          {t('第一场比赛结算后，这里就有名次了。', 'The board fills in once the first contest is rated.')}{' '}
           <a href="/contest">{t('去报名', 'Enter the weekly')} →</a>
         </p>
       )}

@@ -8,7 +8,7 @@ import { reportWindow, slotOf, type MockSession, type Slot } from '@/lib/mock-oa
 import { canonicalCompany, employerSlug, OTHER_COMPANY } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
 import { companyDirectory, hasHub } from './company-hub';
-import { ratingHistory } from './contest-ratings';
+import { duelRecord, ratingHistory } from './contest-ratings';
 import { library } from './content-library';
 import { hiddenCompanies, shownOaSql } from './env';
 import { HttpError, json, limit, limitReader, requirePerson } from './http';
@@ -734,6 +734,7 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     .get({ me: profile.user_id }) as { followers: number; following: number };
   // Opt-in: each weekly's rank and rating match one row of that weekly's public scoreboard.
   const contest = profile.show_contest ? ratingHistory(profile.user_id) : [];
+  const duel = profile.show_contest ? duelRecord(profile.user_id) : null;
   return {
     handle: profile.handle,
     bio: profile.bio,
@@ -748,9 +749,12 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     lists,
     listStars,
     languages: [...byLanguage].map(([language, n]) => ({ language, n })).sort((a, b) => b.n - a.n),
-    // Rated weeklies, oldest first (lib/server/contests.ts): the curve and the contest badges.
-    contest: contest.map(({ week, after, rank, entrants }) => ({ week, after, rank, entrants })),
-    badges: profileBadges(profile.user_id, catalogue, stops, contest),
+    // Rated weeklies and starters, oldest first (lib/server/contests.ts): the curve and the contest badges.
+    contest: contest.map(({ week, kind, after, rank, entrants }) => ({ week, kind, after, rank, entrants })),
+    // Ranked duels (lib/server/duels.ts), under the same opt-in; null before the first.
+    duel: duel?.played ? duel : null,
+    // The contest badges are the weekly's (lib/achievements.ts): starters don't count toward them.
+    badges: profileBadges(profile.user_id, catalogue, stops, contest.filter((c) => c.kind === 'weekly')),
     posts: {
       items: posts.slice(0, 10).map((post) => ({
         id: post.id,

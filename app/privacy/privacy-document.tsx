@@ -56,6 +56,9 @@ export function PrivacyDocument() {
                 登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，以及给面经和面试题的点赞也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，不显示昵称和邮箱。面试报告和点赞只以人数汇总展示，不公开报告人和点赞人。
               </p>
               <p>
+                参加比赛时，计分板只显示你报名时填写的比赛昵称；周赛、入门赛和 1v1 排位的 rating 与胜负记录保存在你的账号里，只有你在公开主页上打开「展示比赛记录」后才会出现在主页上。排位匹配期间，平台暂存你的比赛昵称、对战 rating 和排队时间，匹配成功或取消时删除，离开页面后最迟 20 分钟内删除。报名时可以选择「赛后公开我的 AC 代码」（默认不勾选）：勾选后，比赛结束 15 分钟起，能打开该场比赛的登录用户可以看到你在比赛时间内每题首次通过的代码。计分板的「只看关注」只列出主页展示比赛记录的人。
+              </p>
+              <p>
                 工单会保存你填写的问题、回复、附件，以及主动关联的课时、视频位置或提交记录。工单、作业和个人提交记录按账户权限提供给你及负责教学管理的老师查看，不作为面向其他学员的公开讨论内容。老师会使用这些资料答疑、评审作业、管理授权和跟进学习问题。
               </p>
               <p>
@@ -243,6 +246,21 @@ export function PrivacyDocument() {
                 handle and bio you chose and your practice statistics, never
                 your name or email. Interview reports and upvotes are shown only
                 as counts of people; reporters and voters are never named.
+              </p>
+              <p>
+                In contests, scoreboards show only the contest name you enter
+                with. Weekly, starter and ranked 1v1 ratings and duel records are
+                stored with your account and appear on your public profile only
+                if you turn on showing contests there. While you wait for a
+                ranked duel, the platform keeps your contest name, duel rating
+                and queue time, deleted once you are matched or cancel, and
+                within 20 minutes of leaving the page. When
+                entering you may choose to show your accepted code after the
+                contest (off by default): if you do, from 15 minutes after the
+                end, signed-in readers who can open that contest see the first
+                accepted code you submitted for each question during it. The
+                scoreboard’s “only people I follow” view lists only people whose
+                profile shows contests.
               </p>
               <p>
                 Tickets store the questions you write, replies, and attachments,

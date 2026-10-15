@@ -5,10 +5,11 @@ import { sqliteTable, text, integer, index, primaryKey } from 'drizzle-orm/sqlit
 // entrant's window, so judging and contests stay independent.
 
 /**
- * kind: 'weekly' (the site contest, created lazily per week, id weekly-<n>), 'mashup' or 'duel'.
- * problem_ids_json: judge problem ids in question order. visibility: 'public' (weekly) or
- * 'private' (entrants only; others join with invite_code). rated_at: when a weekly's ratings
- * were settled, so settling runs once.
+ * kind: 'weekly' and 'starter' (the site contests, created lazily per week, ids weekly-<n> and
+ * starter-<n>), 'mashup' or 'duel' (owner_id null for a ranked duel from the queue).
+ * problem_ids_json: judge problem ids in question order. visibility: 'public' (site contests) or
+ * 'private' (entrants only; others join with invite_code). rated_at: when a site contest's or a
+ * ranked duel's ratings were settled, so settling runs once.
  */
 export const contestRooms = sqliteTable(
   'contest_rooms',
@@ -28,7 +29,10 @@ export const contestRooms = sqliteTable(
   (t) => [index('contest_rooms_kind_start').on(t.kind, t.startsAt), index('contest_rooms_owner').on(t.ownerId)],
 );
 
-/** virtual_start: null for a live entrant; the join time for a virtual run after the window. */
+/**
+ * virtual_start: null for a live entrant; the join time for a virtual run after the window.
+ * share_code: 1 when the entrant chose to show their accepted code once the room is over.
+ */
 export const contestEntries = sqliteTable(
   'contest_entries',
   {
@@ -37,6 +41,7 @@ export const contestEntries = sqliteTable(
     displayName: text('display_name').notNull(),
     joinedAt: integer('joined_at').notNull(),
     virtualStart: integer('virtual_start'),
+    shareCode: integer('share_code').notNull().default(0),
   },
   (t) => [primaryKey({ columns: [t.roomId, t.userId] }), index('contest_entries_user').on(t.userId, t.joinedAt)],
 );

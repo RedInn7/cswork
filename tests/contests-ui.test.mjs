@@ -32,7 +32,7 @@ for (const name of [
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] ?? dom.window.MouseEvent });
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import('react-dom/client');
-const { RoomLive } = await import('../app/contest/client.tsx');
+const { DuelQueue, RoomLive } = await import('../app/contest/client.tsx');
 const { ContestBar } = await import('../components/contest-bar.tsx');
 const { RatingCurve, BandChip } = await import('../components/contest-parts.tsx');
 
@@ -54,16 +54,18 @@ async function mount(element) {
 }
 function serve(routes) {
   const posts = [];
+  const calls = [];
   const original = globalThis.fetch;
   globalThis.fetch = async (url, init = {}) => {
     const path = String(url).replace('/api/', '');
     const body = init.body ? JSON.parse(init.body) : undefined;
+    calls.push(path);
     if (body) posts.push([path, body]);
     const answer = routes(path, body);
     if (!answer) throw new Error(`unexpected ${path}`);
     return answer;
   };
-  return { posts, restore: () => (globalThis.fetch = original) };
+  return { posts, calls, restore: () => (globalThis.fetch = original) };
 }
 
 const MIN = 60000;
@@ -192,7 +194,7 @@ test('the public weekly: enter before the start; once it runs, joining is virtua
     assert.ok(button('Enter the contest') === undefined, 'it has started: no live entry');
     await act(async () => button('Run it virtually').click());
     await wait();
-    assert.deepEqual(api.posts.at(-1), ['oj/contests/weekly-9/join', { displayName: 'Amy' }]);
+    assert.deepEqual(api.posts.at(-1), ['oj/contests/weekly-9/join', { displayName: 'Amy', shareCode: false }]);
     assert.ok(document.querySelector('.contest-me').textContent.includes('“Amy”'));
     assert.ok(document.querySelector('.contest-me').textContent.includes('virtually'));
     assert.ok(document.querySelectorAll('.contest-problems li').length === 2);
@@ -285,11 +287,113 @@ test('the rating curve: one point per weekly over the bands, said in words', () 
     }),
   );
   const body = new JSDOM(html).window.document;
-  assert.ok(body.querySelector('svg').getAttribute('aria-label') === 'Rating 1580 after 3 weeklies, peak 1610');
+  assert.ok(body.querySelector('svg').getAttribute('aria-label') === 'Rating 1580 after 3 contests, peak 1610');
   assert.ok(body.querySelector('polyline').getAttribute('points').split(' ').length === 3);
   assert.ok(body.querySelectorAll('circle').length === 3);
   assert.ok(!body.querySelector('svg').hasAttribute('preserveAspectRatio'), 'scaled evenly: round dots on a phone');
   assert.ok(body.querySelector('figcaption').textContent.includes('Local'));
   assert.ok(renderToStaticMarkup(createElement(RatingCurve, { points: [], zh: true })) === '');
   assert.ok(renderToStaticMarkup(createElement(BandChip, { rating: 1900, zh: true })).includes('直达'));
+});
+
+test('a starter: unrated rows marked, the board narrowed to people I follow, shared code after it', async () => {
+  const ended = room({
+    id: 'starter-9',
+    kind: 'starter',
+    week: 9,
+    visibility: 'public',
+    phase: 'ended',
+    startsAt: now - 200 * MIN,
+    endsAt: now - 140 * MIN,
+    inviteCode: null,
+    owner: false,
+    me: null,
+    rated: true,
+    following: false,
+    codeOpen: true,
+    standings: {
+      live: [
+        row(1, 'Pro', { solved: 2, penalty: 9 * MIN, unrated: true, shared: true, cells: cells([true, 4 * MIN, 0], [true, 5 * MIN, 0]) }),
+        row(2, 'Amy', { me: true, solved: 1, rating: { before: 1500, after: 1520 }, cells: cells([true, 6 * MIN, 0], [false, null, 0]) }),
+        row(3, 'Mid', { solved: 0 }),
+      ],
+      virtual: [],
+    },
+  });
+  const api = serve((path) =>
+    path === 'oj/contests/starter-9?following=1'
+      ? Response.json({ ...ended, following: true, standings: { live: [ended.standings.live[1]], virtual: [] } })
+      : path.startsWith('oj/contests/starter-9/code?')
+        ? Response.json({ problem: 'lc-1', items: [{ name: 'Pro', virtual: false, language: 'python', code: 'print(1)', at: 4 * MIN }] })
+        : Response.json(ended),
+  );
+  try {
+    const root = await mount(createElement(RoomLive, { initial: ended, fallbackStart: '' }));
+    assert.ok(document.querySelector('h1').textContent === 'CSWork Starter #9');
+    const pro = [...document.querySelectorAll('tbody tr')][0];
+    assert.ok(pro.querySelector('.contest-unrated').textContent === 'unrated');
+    assert.ok(document.querySelectorAll('.contest-unrated').length === 1);
+    // Only a sharer's solved cells carry the link.
+    assert.ok(document.querySelectorAll('.contest-code-link').length === 2);
+    await act(async () => document.querySelector('.contest-code-link').click());
+    await wait();
+    assert.ok(api.calls.some((p) => p === 'oj/contests/starter-9/code?problem=lc-1&name=Pro'));
+    assert.ok(document.querySelector('.contest-code pre').textContent === 'print(1)');
+    assert.ok(document.querySelector('.contest-code details').open);
+    assert.ok(document.activeElement === document.querySelector('#contest-code'), 'focus moves to the code');
+    const toggle = document.querySelector('.contest-follow input');
+    await act(async () => toggle.click());
+    await wait();
+    assert.ok([...document.querySelectorAll('tbody tr')].length === 1);
+    assert.ok(document.querySelector('thead th').textContent === 'Overall');
+    assert.ok(document.querySelector('.contest-rank').textContent === '2');
+    await act(async () => root.unmount());
+  } finally {
+    api.restore();
+  }
+});
+
+test('entering can opt in to sharing code', async () => {
+  const upcoming = room({ id: 'weekly-9', kind: 'weekly', week: 9, visibility: 'public', phase: 'upcoming', startsAt: now + 60 * MIN, endsAt: now + 150 * MIN, me: null, canJoin: true, problems: null, standings: null, inviteCode: null, owner: false, suggestedName: 'Amy' });
+  const api = serve((path, body) => Response.json(body ? { ...upcoming, me: { name: 'Amy', virtual: false, start: upcoming.startsAt, end: upcoming.endsAt }, canJoin: false } : upcoming));
+  try {
+    const root = await mount(createElement(RoomLive, { initial: upcoming, fallbackStart: '' }));
+    const share = [...document.querySelectorAll('.contest-join input[type="checkbox"]')];
+    assert.ok(share.length === 1 && !share[0].checked, 'off by default');
+    await act(async () => share[0].click());
+    await act(async () => button('Enter the contest').click());
+    await wait();
+    assert.deepEqual(api.posts.at(-1), ['oj/contests/weekly-9/join', { displayName: 'Amy', shareCode: true }]);
+    await act(async () => root.unmount());
+  } finally {
+    api.restore();
+  }
+});
+
+test('quick match: queue under a name, wait with the window shown, cancel', async () => {
+  let state = { state: 'idle' };
+  const api = serve((path, body) => {
+    if (path === 'oj/contests/duel/queue' && body) state = { state: 'waiting', since: Date.now(), rating: 1500, window: 200 };
+    if (path === 'oj/contests/duel/leave') state = { state: 'idle' };
+    return Response.json(state);
+  });
+  try {
+    const root = await mount(createElement(DuelQueue, { suggested: 'Amy', verified: true }));
+    assert.ok(api.calls[0] === 'oj/contests/duel/queue', 'picks up a queue from another tab');
+    assert.ok(document.querySelector('.contest-join input[type="checkbox"]') === null);
+    await act(async () => button('Quick match').click());
+    await wait();
+    assert.deepEqual(api.posts.at(-1), ['oj/contests/duel/queue', { displayName: 'Amy' }]);
+    assert.ok(document.querySelector('.contest-queue').textContent.includes('within ±200'));
+    await act(async () => button('Cancel').click());
+    await wait();
+    assert.deepEqual(api.posts.at(-1), ['oj/contests/duel/leave', {}]);
+    assert.ok(button('Quick match') !== undefined);
+    await act(async () => root.unmount());
+  } finally {
+    api.restore();
+  }
+  const unverified = await mount(createElement(DuelQueue, { suggested: '', verified: false }));
+  assert.ok(document.querySelector('.contest-hidden-note').textContent.includes('Verify your email'));
+  await act(async () => unverified.unmount());
 });

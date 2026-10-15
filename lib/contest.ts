@@ -1,6 +1,7 @@
 /**
- * Contest rooms and the weekly contest: the weekly schedule and draw, ICPC standings, Elo-style
- * ratings and rating bands. Pure and client-safe; lib/server/contests.ts feeds it rows.
+ * Contest rooms, the weekly and the starter: their schedules and draws, ICPC standings, Elo-style
+ * ratings, ranked duel ratings and rating bands. Pure and client-safe; lib/server/contests.ts
+ * feeds it rows.
  */
 import type { RatingBand } from './lc-rating';
 import { seededRandom } from './mock-oa';
@@ -26,7 +27,30 @@ export const weeklyStart = (week: number) => WEEKLY_EPOCH + (week - 1) * WEEK + 
 export const weeklyId = (week: number) => `weekly-${week}`;
 /** Late verdicts land before a finished weekly is rated. */
 export const RATE_GRACE = 15 * MINUTE;
-export const weeklyTitle = (week: number, zh: boolean) => (zh ? `CSWork 周赛 第 ${week} 期` : `CSWork Weekly #${week}`);
+export const weeklyTitle = (week: number, zh: boolean, kind = 'weekly') =>
+  kind === 'starter'
+    ? zh
+      ? `CSWork 入门赛 第 ${week} 期`
+      : `CSWork Starter #${week}`
+    : zh
+      ? `CSWork 周赛 第 ${week} 期`
+      : `CSWork Weekly #${week}`;
+
+/** The starter: Wednesday 20:00–21:00 Beijing time of the same week, three easier problems. */
+export const STARTER_OFFSET = 2 * DAY + 20 * HOUR;
+export const STARTER_MINUTES = 60;
+export const starterStart = (week: number) => WEEKLY_EPOCH + (week - 1) * WEEK + STARTER_OFFSET;
+export const starterId = (week: number) => `starter-${week}`;
+/** Codeforces Div. 3 rule: a starter rates only entrants below this before it; the rest race unrated. */
+export const STARTER_RATED_BELOW = 1700;
+
+/** The weekly and the starter: public, rated on one shared Elo. Everything else is a private room. */
+export const isRatedKind = (kind: string): kind is 'weekly' | 'starter' => kind === 'weekly' || kind === 'starter';
+/** weekly-<n> and starter-<n> give n; any other room id null. */
+export function roomWeek(id: string) {
+  const m = /^(?:weekly|starter)-(\d{1,6})$/.exec(id);
+  return m ? Number(m[1]) : null;
+}
 
 /** Q1–Q4 by contest rating (zerotrac): [from, to] inclusive. */
 export const WEEKLY_SLOTS: readonly (readonly [number, number])[] = [
@@ -35,22 +59,29 @@ export const WEEKLY_SLOTS: readonly (readonly [number, number])[] = [
   [1800, 2000],
   [2100, Infinity],
 ];
+/** The starter's Q1–Q3: a slot below the weekly's each. */
+export const STARTER_SLOTS: readonly (readonly [number, number])[] = [
+  [1000, 1199],
+  [1200, 1400],
+  [1500, 1700],
+];
 
 /**
- * Four judgeable problems, one per slot, the same for the same seed and pool. Per slot: a
- * problem in range that recent weeklies have not used, else any in range, else the nearest
- * rating. Null when the pool has fewer than four problems.
+ * One judgeable problem per slot (the weekly's four by default), the same for the same seed and
+ * pool. Per slot: a problem in range that recent contests have not used, else any in range, else
+ * the nearest rating. Null when the pool has fewer problems than slots.
  */
 export function drawWeekly(
   pool: readonly { id: string; rating: number }[],
   seed: number,
   used: ReadonlySet<string> = new Set(),
+  slots = WEEKLY_SLOTS,
 ) {
   const random = seededRandom(seed);
   const sorted = [...new Map(pool.map((p) => [p.id, p])).values()].sort((a, b) => a.id.localeCompare(b.id));
-  if (sorted.length < WEEKLY_SLOTS.length) return null;
+  if (sorted.length < slots.length) return null;
   const picked: string[] = [];
-  for (const [from, to] of WEEKLY_SLOTS) {
+  for (const [from, to] of slots) {
     const left = sorted.filter((p) => !picked.includes(p.id));
     const fits = left.filter((p) => p.rating >= from && p.rating <= to);
     const fresh = fits.filter((p) => !used.has(p.id));
@@ -68,6 +99,7 @@ export function drawWeekly(
 /** Room kinds as [zh, en]. */
 export const CONTEST_KINDS = {
   weekly: ['周赛', 'Weekly'],
+  starter: ['入门赛', 'Starter'],
   mashup: ['自选赛', 'Mashup'],
   duel: ['1v1 对战', '1v1 duel'],
 } as const satisfies Record<string, readonly [string, string]>;
@@ -245,3 +277,28 @@ export const CONTEST_BANDS = [
 export type ContestBand = (typeof CONTEST_BANDS)[number];
 export const contestBand = (rating: number): ContestBand =>
   CONTEST_BANDS.findLast((band) => rating >= band.from) ?? CONTEST_BANDS[0];
+
+// ---------------------------------------------------------------- ranked duels
+
+export const DUEL_MINUTES = 30;
+/** Matched within this rating gap: 200 at first, 100 wider per 30 seconds waited. */
+export const duelWindow = (waitedMs: number) => 200 + 100 * Math.floor(Math.max(0, waitedMs) / 30000);
+/** Two-player Elo, K = 32: A scores 1, 0.5 or 0; B loses what A gains. */
+export function duelElo(a: number, b: number, score: number) {
+  const delta = Math.round(32 * (score - 1 / (1 + 10 ** ((b - a) / 400))));
+  return [a + delta, b - delta] as const;
+}
+/** The duel ladder's own names on the contest bands' thresholds and colours. */
+const DUEL_NAMES: Record<ContestBand['key'], readonly [string, string]> = {
+  depot: ['见习', 'Rookie'],
+  local: ['挑战者', 'Challenger'],
+  express: ['斗士', 'Contender'],
+  rapid: ['精英', 'Elite'],
+  limited: ['大师', 'Master'],
+  bullet: ['宗师', 'Grandmaster'],
+  maglev: ['传奇', 'Legend'],
+};
+export function duelBand(rating: number) {
+  const { key, color } = contestBand(rating);
+  return { key, color, zh: DUEL_NAMES[key][0], en: DUEL_NAMES[key][1] };
+}

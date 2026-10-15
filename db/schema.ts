@@ -30,6 +30,7 @@ export * from './group-camp-schema';
 export * from './newsletter-schema';
 export * from './course-gift-schema';
 export * from './contests-schema';
+export * from './duels-schema';
 import { practiceRounds } from './practice-round-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),
