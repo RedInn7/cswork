@@ -341,6 +341,9 @@ test('a starter: unrated rows marked, the board narrowed to people I follow, sha
     assert.ok(document.querySelector('.contest-code pre').textContent === 'print(1)');
     assert.ok(document.querySelector('.contest-code details').open);
     assert.ok(document.activeElement === document.querySelector('#contest-code'), 'focus moves to the code');
+    await act(async () => button('Close').click());
+    assert.ok(document.querySelector('.contest-code') === null);
+    assert.ok(document.activeElement === document.querySelector('.contest-code-link'), 'Close hands focus back to its button');
     const toggle = document.querySelector('.contest-follow input');
     await act(async () => toggle.click());
     await wait();

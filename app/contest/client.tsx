@@ -158,7 +158,7 @@ function Board({
   caption: string;
   rated: boolean;
   overall?: boolean;
-  onCode?: (question: number, name: string) => void;
+  onCode?: (question: number, name: string, from: HTMLElement) => void;
   t: T;
 }) {
   const qs = Array.from({ length: count }, (_, i) => `Q${i + 1}`);
@@ -204,7 +204,7 @@ function Board({
                             type="button"
                             className="contest-code-link"
                             aria-label={t(`看 ${r.name} 的 Q${k + 1} 代码`, `${r.name}'s Q${k + 1} code`)}
-                            onClick={() => onCode(k, r.name)}
+                            onClick={(e) => onCode(k, r.name, e.currentTarget)}
                           >
                             {t('看代码', 'Code')}
                           </button>
@@ -267,6 +267,8 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
   const [following, setFollowing] = useState(false);
   const [code, setCode] = useState<{ question: number; name: string; items: Shared[] } | null>(null);
   const codeHeading = useRef<HTMLHeadingElement>(null);
+  // The "Code" button that opened the panel: Close hands focus back to it.
+  const opener = useRef<HTMLElement | null>(null);
   const id = view.id;
   const refresh = useCallback(
     async (only = following) => {
@@ -318,7 +320,8 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
   const join = async (displayName: string, shareCode: boolean) => {
     setView(await api<RoomView>(`oj/contests/${encodeURIComponent(id)}/join`, { displayName, shareCode }));
   };
-  const showCode = async (question: number, name: string) => {
+  const showCode = async (question: number, name: string, from: HTMLElement) => {
+    opener.current = from;
     try {
       const problem = view.problems![question].id;
       const found = await api<{ items: Shared[] }>(`oj/contests/${encodeURIComponent(id)}/code?${new URLSearchParams({ problem, name })}`);
@@ -500,7 +503,13 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
           <h2 id="contest-code" className="lists-public-h2" tabIndex={-1} ref={codeHeading}>
             {t(`Q${code.question + 1} 公开的代码`, `Q${code.question + 1}: shared code`)}
             <small>
-              <button type="button" onClick={() => setCode(null)}>
+              <button
+                type="button"
+                onClick={() => {
+                  setCode(null);
+                  opener.current?.focus();
+                }}
+              >
                 {t('收起', 'Close')}
               </button>
             </small>
