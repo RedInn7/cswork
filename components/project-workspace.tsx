@@ -82,12 +82,17 @@ export function ProjectWorkspace({
   const [pairError, setPairError] = useState('');
   const [left, setLeft] = useState<number | null>(null);
   const request = useRef<AbortController | null>(null);
+  const loaded = useRef('');
 
   useEffect(() => {
+    // A new task hydrates from browser storage after SSR. New starting files for the same task (an ICA
+    // level opening) join the live copy instead, so edits the debounced save has not written survive.
+    const same = loaded.current === task;
+    loaded.current = task;
     // oxlint-disable-next-line react/react-compiler -- Hydrate from browser storage after SSR.
-    setSaved(readSaved(task, starter));
-    return () => request.current?.abort();
+    setSaved((value) => (value && same ? { ...value, files: { ...starter, ...value.files } } : readSaved(task, starter)));
   }, [task, starter]);
+  useEffect(() => () => request.current?.abort(), [task]);
   useEffect(() => {
     if (!saved) return;
     const timer = setTimeout(() => {

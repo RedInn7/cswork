@@ -40,6 +40,12 @@ async function mount(stored = {}) {
 const levels = () => [...document.querySelectorAll('.ica-levels button')];
 const button = (text) => [...document.querySelectorAll('button')].find((n) => n.textContent.trim() === text);
 const click = (node) => act(async () => node.dispatchEvent(new window.MouseEvent('click', { bubbles: true })));
+const code = () => document.querySelector('[aria-label="test editor"]');
+const typeInto = (node, value) =>
+  act(async () => {
+    Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set.call(node, value);
+    node.dispatchEvent(new window.Event('input', { bubbles: true }));
+  });
 
 test('levels unlock one by one, runs name their level, the score counts the current level share, no AI pair', async () => {
   const sent = [];
@@ -75,6 +81,9 @@ test('levels unlock one by one, runs name their level, the score counts the curr
     assert.equal(document.getElementById('ai-round-pair-title'), null, 'an ICA round has no AI pair');
     assert.match(document.querySelector('.ica-score').textContent, /Score 0 \/ 4/);
 
+    // Typed just before the run, inside the 400 ms before this browser's copy is saved.
+    const edited = 'class Ledger:\n    balance = 0\n';
+    await typeInto(code(), edited);
     await click(button('Run tests'));
     await settle();
     assert.equal(sent[0].url, '/api/oj/ai-assisted/run');
@@ -91,6 +100,7 @@ test('levels unlock one by one, runs name their level, the score counts the curr
     ]);
     assert.match(document.querySelector('.ica-statement').textContent, /Brief of level 2/);
     assert.ok(button('test_level2.py'));
+    assert.equal(code().value, edited, 'opening a level keeps the edit the save has not written yet');
     assert.match(document.querySelector('.ica-score').textContent, /Score 1 \/ 4/);
 
     // Level 2's hidden suite holds level 1's 7 tests too: 10 of 13 is half of level 2's own 6.
