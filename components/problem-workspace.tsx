@@ -1769,16 +1769,15 @@ function Workspace({
                 <option value="zh">中文</option>
                 <option value="en">English</option>
               </select>
-              {/* Acceptance, votes and sharing: none of them during a mock OA. */}
-              {!examMode && (
-                <ProblemMeta
-                  problemId={problem.id}
-                  title={statement.title}
-                  english={uiEnglish}
-                  signedIn={!!boot.person}
-                  timeLimit={problem.timeLimits?.[language] ?? problem.timeLimit}
-                />
-              )}
+              {/* Acceptance, votes and sharing: none of them during a mock OA; the time limit stays. */}
+              <ProblemMeta
+                problemId={problem.id}
+                title={statement.title}
+                english={uiEnglish}
+                signedIn={!!boot.person}
+                timeLimit={problem.timeLimits?.[language] ?? problem.timeLimit}
+                limitOnly={examMode}
+              />
             </div>
             {/* Company reports are a hint too: never during a mock. */}
             {!examMode && !!problem.companies?.length && (
