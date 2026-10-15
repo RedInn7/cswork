@@ -157,8 +157,8 @@ export function PublicProfileSettings() {
         />
         <small id={`${id}-school-help`} className="muted">
           {t(
-            '学校会出现在学校排行榜上，需要同时开启比赛展示；同校至少 3 人公开后才有这个学校的榜。学校是自填的，榜上会注明未经验证。',
-            'Your school puts you on its school board, together with showing contests; a school gets a board once 3 learners show it. Schools are self-reported and the board says so.',
+            '学校会出现在学校排行榜上，需要同时开启比赛展示并有比赛积分；同校至少 3 位这样的人后才有这个学校的榜。学校是自填的，榜上会注明未经验证。',
+            'Your school puts you on its school board, together with showing contests and a contest rating; a school gets a board once 3 such learners show it. Schools are self-reported and the board says so.',
           )}
         </small>
         <div className="cloud-profile-pair">

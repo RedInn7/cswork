@@ -174,6 +174,10 @@ test('the recap and compare pages show counts only', () => {
   const cmp = html(createElement(CompareView, { compare, zh: false }));
   assert.equal(cmp.querySelector('h1').textContent, '@ann vs @bob');
   assert.equal(cmp.querySelector('.learner-compare-common').textContent, 'Solved by both: 2');
+  // The nowrap board scrolls inside its own keyboard-reachable region, never the page on a phone.
+  const wrap = cmp.querySelector('.contest-board-wrap[role="region"][tabindex="0"]');
+  assert.ok(wrap?.querySelector('table.learner-compare'));
+  assert.equal(wrap.getAttribute('aria-label'), 'Solved by difficulty');
   assert.deepEqual(
     [...cmp.querySelectorAll('.learner-compare tbody tr')].map((tr) => [...tr.children].map((c) => c.textContent)),
     [
@@ -207,7 +211,7 @@ test('the settings card saves links, school, class year and role, and says the s
     const root = await mount(createElement(PublicProfileSettings));
     // A profile saved before these fields existed loads with them empty.
     assert.equal(document.querySelector('input[autocomplete="organization"]').value, '');
-    assert.match(document.body.textContent, /school board, together with showing contests/);
+    assert.match(document.body.textContent, /school board, together with showing contests and a contest rating/);
     const input = (label) => document.getElementById([...document.querySelectorAll('label')].find((l) => l.textContent === label).htmlFor);
     await act(async () => type(input('School (optional)'), 'MIT'));
     await act(async () => type(input('Graduation year (optional)'), '2027'));
