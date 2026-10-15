@@ -1,5 +1,12 @@
 import { z } from 'zod';
-import { leetcodeTemplates, leetcodeContract, leetcodeParams } from './leetcode-mode';
+import {
+  leetcodeTemplates,
+  leetcodeContract,
+  leetcodeParams,
+  leetcodeConstraints,
+  leetcodeReturnType,
+} from './leetcode-mode';
+import { checkConstraints, splitFields } from '@/lib/testcase-fields';
 import {
   changePracticeRound,
   practiceRoundState,
@@ -169,6 +176,9 @@ export async function handleOj(
       leetcodeTemplates: templates,
       leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
       leetcodeParams: leetcodeParams(id),
+      // What a run prints (a void in-place problem: its parameter), so trees and lists are drawn.
+      leetcodeReturnType: leetcodeReturnType(id),
+      leetcodeConstraints: leetcodeConstraints(id),
       sourceStatement: getStudySourceStatement(id),
       curatedHint: hint,
       // Contest rating (zerotrac), null outside rated contests.
@@ -344,6 +354,15 @@ export async function handleOj(
     if (!editorial?.verified) throw new HttpError(404, '这道题没有可用的参考解');
     refuseInContest(p, id);
     const data = await readJson(request, 200000);
+    // An input outside the statement's bounds would get a misleading "expected" output.
+    const params = leetcodeParams(id),
+      bounds = leetcodeConstraints(id),
+      d = data as { stdin?: unknown; codingMode?: unknown } | null;
+    if (params && bounds && d?.codingMode === 'leetcode' && typeof d.stdin === 'string') {
+      const fields = splitFields(d.stdin, params.length);
+      const broken = fields && checkConstraints(fields, params, bounds).find(Boolean);
+      if (broken) throw new HttpError(422, broken[0]);
+    }
     const created = await createReferenceRun(p, id, data, editorial.approaches.at(-1)!.python);
     // Watched like a run: GET submissions/<id>?wait=1; its code never comes back.
     return json(await settleSubmission(p, created.id, request.signal), 201);
