@@ -235,3 +235,17 @@ test('a session that left every history on this browser loses its replay', async
   assert.equal(stored.has(trackKey('gone', 'p1')), false);
   assert.equal(stored.has(trackKey('s1', 'p1')), false);
 });
+
+test('a mock recorded before the focus self-check says so instead of counting zero', async () => {
+  const session = { id: 's-v1', ids: ['p1'], minutes: 60, startedAt: 0, skew: 0, slots: ['easy'], createdAt: 0, finishedAt: 600_000 };
+  stored.set(trackKey('s-v1', 'p1'), JSON.stringify({ v: 1, frames: [[0, 0, 0, 'x']], events: [], opens: [0] }));
+  const root = createRoot(document.getElementById('root'));
+  try {
+    await act(async () => root.render(createElement(MockReplay, { session, title: (id) => id })));
+    await act(flush);
+    assert.equal(document.querySelector('.mock-replay-away'), null);
+    assert.match(document.querySelector('.mock-replay-focus').textContent, /before the focus self-check/);
+  } finally {
+    await act(async () => root.unmount());
+  }
+});

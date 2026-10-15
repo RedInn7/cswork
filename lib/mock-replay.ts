@@ -28,6 +28,8 @@ export type Track = {
   pastes: Paste[];
   /** Stopped at the size cap: what follows was not recorded. */
   full?: boolean;
+  /** Begun before the focus self-check (v1): away and pastes were not recorded. */
+  legacy?: boolean;
 };
 export const REPLAY_BYTES = 2 * 1024 * 1024;
 export const SNAPSHOT_MS = 2000;
@@ -159,7 +161,7 @@ async function unpack(value: ArrayBuffer | string) {
   return new Response(new Blob([value]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
 }
 export const packTrack = (track: Track) => pack(JSON.stringify(track));
-/** A v1 track (before the focus self-check) reads as v2 with nothing away and no pastes. */
+/** A v1 track (before the focus self-check) reads as a legacy v2 one, with nothing away and no pastes. */
 export async function unpackTrack(value: unknown): Promise<Track | null> {
   if (typeof value !== 'string' && !(value instanceof ArrayBuffer)) return null;
   const track = JSON.parse(await unpack(value)) as Omit<Track, 'v'> & { v: number };
@@ -168,6 +170,7 @@ export async function unpackTrack(value: unknown): Promise<Track | null> {
   return {
     ...track,
     v: 2,
+    ...(track.v === 1 ? { legacy: true } : {}),
     away: Array.isArray(track.away) ? track.away : [],
     pastes: Array.isArray(track.pastes) ? track.pastes : [],
   };

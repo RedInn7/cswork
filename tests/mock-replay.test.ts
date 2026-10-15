@@ -76,9 +76,9 @@ void test('tracks pack small and come back whole; anything else reads as no trac
   assert.equal(await unpackTrack(42), null);
 });
 
-void test('a v1 track reads as v2 with nothing away; the self-check merges stretches and keeps long pastes', async () => {
+void test('a v1 track reads as a legacy v2 one with nothing away; the self-check merges stretches and keeps long pastes', async () => {
   const old = { v: 1, frames: [[0, 0, 0, 'x']], events: [], opens: [0] };
-  assert.deepEqual(await unpackTrack(JSON.stringify(old)), { ...old, v: 2, away: [], pastes: [] });
+  assert.deepEqual(await unpackTrack(JSON.stringify(old)), { ...old, v: 2, legacy: true, away: [], pastes: [] });
   const min = 60_000;
   const q1: Track = { ...emptyTrack(), away: [[min, 3 * min], [-5000, 1000]], pastes: [[2 * min, 41], [3 * min, 40]] };
   // Two tabs on Q2 overlap Q1's stretch; one ran past the hand-in.

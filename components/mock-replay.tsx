@@ -180,6 +180,7 @@ export function MockReplay({ session, title }: { session: MockSession; title: (i
   const code = cursors[shown]?.(at) ?? '';
   const { perQuestion, pauses } = timeSummary(tracks, duration);
   const focus = focusSummary(tracks, duration);
+  const unrecorded = tracks.some((track) => track?.legacy);
   const pos = (ms: number) => `${duration ? (ms / duration) * 100 : 0}%`;
   const label = (m: Marker) =>
     `Q${m.q + 1} · ${m.mode === 'run' ? t('运行', 'Run') : t('提交', 'Submit')} · ${t(...verdict(m.status, m.mode))}${
@@ -233,14 +234,16 @@ export function MockReplay({ session, title }: { session: MockSession; title: (i
             aria-valuetext={`${formatClock(at)} / ${formatClock(duration)}`}
           />
           {/* Away stretches and long pastes: drawn here, told in words under the time split. */}
-          <ol className="mock-replay-away" aria-hidden="true">
-            {focus.away.map(([from, to]) => (
-              <li key={from} style={{ left: pos(from), width: `calc(${pos(to - from)} + 2px)` }} />
-            ))}
-            {focus.pastes.map((p, i) => (
-              <li key={`p${i}`} className="mock-replay-paste" style={{ left: pos(p.t) }} title={`Q${p.q + 1} · ${formatClock(p.t)}`} />
-            ))}
-          </ol>
+          {!unrecorded && (
+            <ol className="mock-replay-away" aria-hidden="true">
+              {focus.away.map(([from, to]) => (
+                <li key={from} style={{ left: pos(from), width: `calc(${pos(to - from)} + 2px)` }} />
+              ))}
+              {focus.pastes.map((p, i) => (
+                <li key={`p${i}`} className="mock-replay-paste" style={{ left: pos(p.t) }} title={`Q${p.q + 1} · ${formatClock(p.t)}`} />
+              ))}
+            </ol>
+          )}
           <ol className="mock-replay-marks" aria-label={t('运行和提交', 'Runs and submissions')}>
             {markers.map((m, i) => (
               <li key={i} style={{ left: `${duration ? (m.t / duration) * 100 : 0}%` }}>
@@ -305,18 +308,26 @@ export function MockReplay({ session, title }: { session: MockSession; title: (i
           <p className="mock-footnote">{t('没有超过 3 分钟的停顿。', 'No pause longer than 3 minutes.')}</p>
         )}
         <h4>{t('专注度自检', 'Focus self-check')}</h4>
-        <p className="mock-replay-focus">
-          {t(
-            `离开页面 ${focus.away.length} 次，共 ${formatClock(focus.awayMs)}；粘贴 ${focus.pastes.length} 次（超过 ${PASTE_CHARS} 字符）。`,
-            `Left the page ${focus.away.length} time${focus.away.length === 1 ? '' : 's'} for ${formatClock(focus.awayMs)} in all; ${focus.pastes.length} paste${focus.pastes.length === 1 ? '' : 's'} of over ${PASTE_CHARS} characters.`,
-          )}
-        </p>
-        <p className="mock-footnote">
-          {t(
-            '给你自己复盘用：只保存在这个浏览器里，不上传，也不是监考。时间轴上的灰带是离开的时段，竖线是粘贴。',
-            'For your own review: kept in this browser only, never uploaded, and not proctoring. Grey bands on the timeline are time away; ticks are pastes.',
-          )}
-        </p>
+        {unrecorded ? (
+          <p className="mock-replay-focus">
+            {t('这场模拟在专注度自检上线前开始，没有记录离开页面和粘贴。', 'This mock began before the focus self-check, so time away and pastes were not recorded.')}
+          </p>
+        ) : (
+          <>
+            <p className="mock-replay-focus">
+              {t(
+                `离开页面 ${focus.away.length} 次，共 ${formatClock(focus.awayMs)}；粘贴 ${focus.pastes.length} 次（超过 ${PASTE_CHARS} 字符）。`,
+                `Left the page ${focus.away.length} time${focus.away.length === 1 ? '' : 's'} for ${formatClock(focus.awayMs)} in all; ${focus.pastes.length} paste${focus.pastes.length === 1 ? '' : 's'} of over ${PASTE_CHARS} characters.`,
+              )}
+            </p>
+            <p className="mock-footnote">
+              {t(
+                '给你自己复盘用：只保存在这个浏览器里，不上传，也不是监考。时间轴上的灰带是离开的时段，竖线是粘贴。',
+                'For your own review: kept in this browser only, never uploaded, and not proctoring. Grey bands on the timeline are time away; ticks are pastes.',
+              )}
+            </p>
+          </>
+        )}
       </div>
     </section>
   );
