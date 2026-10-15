@@ -1115,6 +1115,9 @@ function MockMcqSection({
     handedIn.current = true;
     handIn();
   }, [over, handIn]);
+  // Start swaps the briefing (and its focused button) for this section: take the focus over.
+  const title = useRef<HTMLHeadingElement>(null);
+  useEffect(() => title.current?.focus(), []);
   const byId = new Map((bank ?? []).map((q) => [q.id, q]));
   const answered = mcq.picks.filter((p) => p.length).length;
   return (
@@ -1126,7 +1129,7 @@ function MockMcqSection({
         </p>
         <div className="mock-pass">
           <div>
-            <h2 id="mock-mcq-title">
+            <h2 id="mock-mcq-title" ref={title} tabIndex={-1}>
               <Logo slug={session.company} name={session.name || 'Custom'} />
               {session.name || t('自定义模拟', 'Custom mock')}
             </h2>
@@ -1159,7 +1162,7 @@ function MockMcqSection({
           </p>
         ) : !bank ? (
           <p aria-busy="true">
-            <LoaderCircle className="cs-spin" />
+            <LoaderCircle className="cs-spin" aria-hidden="true" /> {t('正在加载选择题…', 'Loading questions…')}
           </p>
         ) : (
           <ol className="oa-mcq-list">

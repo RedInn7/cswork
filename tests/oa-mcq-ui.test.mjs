@@ -50,6 +50,11 @@ test('practice: submit grades and explains, answers persist in this browser, fil
   assert.match(document.body.textContent, /3 questions/);
   assert.equal(document.querySelectorAll('input[type="checkbox"]').length, multi.en.choices.length);
   assert.match(document.querySelector('pre code').textContent, /def add/);
+  // The snippet describes its question's radio group (the legend alone is only "what does this print?").
+  const pre = document.querySelector('pre.oa-mcq-code');
+  assert.ok(pre.id);
+  assert.equal(pre.closest('fieldset').getAttribute('aria-describedby'), pre.id);
+  assert.equal(document.querySelector('fieldset').getAttribute('aria-describedby'), null);
 
   // Submit needs a pick.
   const first = document.querySelector('.oa-mcq-list > li');
@@ -162,6 +167,8 @@ test('mock OA check-in: a preset with an MCQ section offers it (on by default); 
   assert.equal(active.mcq.ids.length, 10);
   assert(active.mcq.ids.every((id) => byId.get(id).topic === 'concurrency'));
   assert.equal(moves.length, 0, 'stays on the mock page for the MCQ section');
+  // Start's button is gone: the section's heading takes the focus.
+  assert.equal(document.activeElement, document.getElementById('mock-mcq-title'));
   assert.match(document.body.textContent, /Hand in and start coding \(0\/10 answered\)/);
   root.unmount();
 
