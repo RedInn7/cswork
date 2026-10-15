@@ -108,6 +108,12 @@ const cheats: Record<Language, [string, 'compile' | 'run'][]> = {
       `${linear.java}\nclass MountainArray { int[] values; public int get(int i) { return values[i]; } public int length() { return values.length; } }`,
       'run',
     ],
+    // Even keeping the judge's constructor and adding a field leaves it null.
+    [
+      'class Solution { public int findInMountainArray(int target, MountainArray m) { for (int i = 0; i < m.length(); i++) if (m.values[i] == target) return i; return -1; } }\n' +
+        'final class MountainArray { int[] values; private final java.util.function.IntUnaryOperator read; private final java.util.function.IntSupplier size; MountainArray(java.util.function.IntUnaryOperator read, java.util.function.IntSupplier size) { this.read = read; this.size = size; } public int get(int i) { return read.applyAsInt(i); } public int length() { return size.getAsInt(); } }',
+      'run',
+    ],
   ],
   go: [
     [
@@ -121,6 +127,12 @@ const cheats: Record<Language, [string, 'compile' | 'run'][]> = {
     [
       `${linear.go}type MountainArray struct { Values []int }\nfunc (m *MountainArray) get(i int) int { return m.Values[i] }\nfunc (m *MountainArray) length() int { return len(m.Values) }\n`,
       'compile',
+    ],
+    // The judge's closures plus an extra exported field: the field stays nil.
+    [
+      'package main\nfunc findInMountainArray(target int, m *MountainArray) int { for i := 0; i < m.length(); i++ { if m.Values[i] == target { return i } }; return -1 }\n' +
+        'type MountainArray struct { get_ func(int) int; length_ func() int; Values []int }\nfunc (m *MountainArray) get(i int) int { return m.get_(i) }\nfunc (m *MountainArray) length() int { return m.length_() }\n',
+      'run',
     ],
     [
       'package main\nfunc findInMountainArray(target int, m *MountainArray) int { saved := *m; for i := 0; i < m.length(); i++ { *m = saved; if m.get(i) == target { return i } }; return -1 }\n',

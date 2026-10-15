@@ -153,6 +153,10 @@ func main() {
 		csnodes = append(csnodes, v)
 	}
 	for i, x := range ns {
+		// A learner struct may add a Values field; it must stay empty.
+		if x.(map[string]interface{})["type"] == "MountainArray" {
+			continue
+		}
 		for k, v := range x.(map[string]interface{})["fields"].(map[string]interface{}) {
 			f := csnodes[i].Elem().FieldByName(csstrings.ToUpper(k[:1]) + k[1:])
 			if f.IsValid() && f.CanSet() {
