@@ -1,5 +1,6 @@
 import type Database from 'better-sqlite3';
 import {
+  KINDS,
   ROUNDS,
   companyCounts,
   companyGroup,
@@ -13,6 +14,7 @@ import {
 import { lcIdBySource } from '@/lib/company-tags';
 import { hiddenCompanies } from './env';
 import { HttpError } from './http';
+import { sdChapter } from './system-design-course';
 
 /**
  * Mock interview sets over the content library (GET /api/content/mock and mock-companies).
@@ -56,6 +58,37 @@ export function mockPool(db: Database.Database): PoolRow[] {
   return pool;
 }
 
+/** The LLD template's questions: system design course chapters, asked only by the AI interviewer. */
+export const LLD_CHAPTERS = ['lld-parking-lot', 'lld-lru-cache-ttl', 'lld-elevator', 'bounded-blocking-queue', 'rate-limited-executor'];
+/**
+ * An LLD question by id (`sd-<chapter>`), or null. The statement is generic; the chapter is the
+ * reference answer and the course's OOD playbook the rubric, both for the AI interviewer only.
+ */
+export function lldQuestion(id: string) {
+  const slug = id.startsWith('sd-') ? id.slice(3) : '';
+  const chapter = LLD_CHAPTERS.includes(slug) ? sdChapter(slug) : undefined;
+  if (!chapter) return null;
+  // "LLD Case 1: Parking Lot" → "Parking Lot".
+  const title = chapter.titleEn.replace(/^[^:]*:\s*/, ''),
+    titleZh = chapter.titleZh.replace(/^[^：]*：/, '');
+  return {
+    id,
+    slug,
+    title,
+    question: `**${title}**（${titleZh}）\n\nDesign ${title} as in a low-level (object-oriented) design interview: clarify the requirements, model the classes and how they relate, define the interfaces, write the core code, then discuss how the design extends.`,
+    rubric: sdChapter('ood-interview-approach')?.bodyEn ?? '',
+    solution: chapter.bodyEn,
+  };
+}
+const lldPool = (): PoolRow[] =>
+  LLD_CHAPTERS.flatMap((slug) => {
+    const q = lldQuestion(`sd-${slug}`);
+    return q
+      ? [{ id: q.id, type: 'course_chapter', slug, title: q.title, company: null, companyName: null, role: null,
+          category: KINDS.lld.categories[0], round: null, difficulty: null, listed: false, problem: null }]
+      : [];
+  });
+
 const counts = new WeakMap<Database.Database, ReturnType<typeof companyCounts>>();
 export function mockCompanies(db: Database.Database) {
   if (!counts.has(db)) counts.set(db, companyCounts(mockPool(db)));
@@ -72,7 +105,8 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
   if (!/^[a-z0-9]{1,24}$/i.test(seed)) throw new HttpError(400, '抽题编号无效');
   const company = /^[a-z0-9-]{1,80}$/.test(params.get('company') || '') ? params.get('company') : null;
   const round = params.get('round');
-  const drawn = drawSet(mockPool(db), template, {
+  const lld = template.slots.some((s) => s.kind === 'lld');
+  const drawn = drawSet(lld ? [...mockPool(db), ...lldPool()] : mockPool(db), template, {
     seed,
     company,
     role: params.get('role'),
@@ -99,7 +133,10 @@ export function mockSet(db: Database.Database, params: URLSearchParams) {
       if (!item) return { ...slot, item: null };
       const row = bodies.get(item.id);
       const parts = splitBody(row?.body ?? '');
-      if (questionOnly) Object.assign(parts, { hints: '', followUps: '', rubric: '', solution: '' });
+      // An LLD question's reference never leaves the server (lib/server/ai-interviewer.ts reads it).
+      const course = item.type === 'course_chapter';
+      if (course) parts.question = lldQuestion(item.id)?.question ?? '';
+      if (questionOnly || course) Object.assign(parts, { hints: '', followUps: '', rubric: '', solution: '' });
       return {
         ...slot,
         item: {
