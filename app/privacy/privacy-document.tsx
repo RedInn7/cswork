@@ -67,6 +67,9 @@ export function PrivacyDocument() {
               <p>
                 预约同伴互面时，服务器保存你填写的昵称、面试类型、级别、可用时段、时区和语言，以及你选填的目标公司和话题；同伴只能看到昵称，匹配通知里会写出你们共同的公司和话题。开着「邮件提醒」时，开始前一天和前一小时会给你已验证的账户邮箱发提醒（经 Resend 发送），内容是面试类型、时间、同伴昵称和会议链接；预约时取消勾选就不会收到。
               </p>
+              <p id="privacy-tracker">
+                使用投递追踪（/career/tracker）时，平台在你的账号里保存你填写的公司、岗位、阶段、投递日期、OA 截止和面试时间、内推信息、职位链接和备注，每个账号最多 300 条。这些记录只有你自己能看到，不出现在公开主页、排行榜和任何统计里；删除一条就从服务器上删除。导出的 CSV 和 OA 截止日历文件在你的浏览器里生成，截止提醒由你自己的日历应用发出，平台不发送提醒。
+              </p>
               <p>
                 学习小组的聊天消息只有本组成员能看到，显示你在本组填的昵称；消息保留 180 天后自动删除，小组解散时一并删除；小组里有消息被举报、尚未处理时，负责审核的老师可以打开这个小组的聊天查看上下文。私信只有对话双方能看到，只能在互相关注的人之间，或者从内推帖请求内推时开始；你可以设置谁能给你发起新对话，也可以屏蔽对方。私信保留 365 天后自动删除。新私信只产生站内通知，通知里只有对方的公开主页名或打码后的昵称，不含正文，也不发邮件。被举报的聊天消息和私信（只有被举报的那一条）会交给负责审核的老师查看和处理。
               </p>
@@ -324,6 +327,17 @@ export function PrivacyDocument() {
                 the session (sent through Resend) with the type, time, your
                 partner&apos;s name and the call link; untick it when booking to
                 get none.
+              </p>
+              <p id="privacy-tracker">
+                When you use the application tracker (/career/tracker), your
+                account keeps the company, role, stage, application date, OA
+                deadline and interview time, referral, job link and notes you
+                enter, up to 300 applications. Only you can see them: they never
+                appear on your public profile, on leaderboards or in any
+                statistics, and deleting one removes it from the server. The CSV
+                and the OA deadline calendar file are made in your browser, and
+                the reminders come from your own calendar app; the platform sends
+                none.
               </p>
               <p>
                 Study group chat messages are seen only by that group&apos;s
