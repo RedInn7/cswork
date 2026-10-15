@@ -47,7 +47,7 @@ globalThis.indexedDB = {
 
 const { createRoot } = await import('react-dom/client');
 const { MockReplay, useReplayRecorder } = await import('../components/mock-replay.tsx');
-const { loadSession, pruneTracks, trackKey } = await import('../lib/mock-replay.ts');
+const { contestReplay, loadSession, pruneTracks, trackKey } = await import('../lib/mock-replay.ts');
 const { mockStorageKey } = await import('../lib/mock-oa.ts');
 
 const flush = async () => {
@@ -239,6 +239,42 @@ test('time away and long pastes are recorded for the self-check, and the report 
   }
 });
 
+test('a contest run records on the server clock and replays its own window', async () => {
+  mock.timers.enable({ apis: ['setInterval', 'Date'], now: 4_000_000 });
+  // The room started a minute ago by the server, which runs 5 seconds ahead of this browser.
+  const skew = 5000;
+  const me = { name: 'Amy', start: Date.now() + skew - 60_000, end: Date.now() + skew + 29 * 60_000 };
+  const live = contestReplay('r1', me, ['p1', 'p2'], skew);
+  let onResult;
+  function Recorder({ running }) {
+    onResult = useReplayRecorder(running ? live : null, 'p2', 'x');
+    return null;
+  }
+  const root = createRoot(document.getElementById('root'));
+  try {
+    await act(async () => root.render(createElement(Recorder, { running: true })));
+    await act(flush);
+    // Judged 30 seconds into the run, by the server's clock.
+    await act(async () => onResult.current({ problem_id: 'p2', id: 'sub-contest-1', created_at: me.start + 30_000, mode: 'judge', status: 'accepted', passed: 2, total: 2 }));
+    await act(async () => root.render(createElement(Recorder, { running: false })));
+    await act(flush);
+    const [p1, p2] = await loadSession(live.id, ['p1', 'p2']);
+    assert.equal(p1, null);
+    assert.deepEqual(p2.opens, [60_000]);
+    assert.equal(p2.events[0].t, 30_000);
+    // After the run, the room page rebuilds the session from the same window, without the skew.
+    await act(async () => root.render(createElement(MockReplay, { session: contestReplay('r1', me, ['p1', 'p2']), title: (id) => id })));
+    await report();
+    assert.equal(document.querySelector('.mock-replay-clock').textContent, '00:00 / 30:00');
+    assert.equal(document.querySelector('.mock-replay-marks button').dataset.tone, 'ac');
+    // Another entrant of the room on this browser has nothing to replay.
+    assert.deepEqual(await loadSession(contestReplay('r1', { ...me, name: 'Ben' }, []).id, ['p1', 'p2']), [null, null]);
+  } finally {
+    await act(async () => root.unmount());
+    mock.timers.reset();
+  }
+});
+
 test('a session that left every history on this browser loses its replay', async () => {
   stored.set(trackKey('kept', 'p1'), 'x');
   stored.set(trackKey('gone', 'p1'), 'x');
@@ -247,6 +283,8 @@ test('a session that left every history on this browser loses its replay', async
   assert.equal(stored.has(trackKey('kept', 'p1')), true);
   assert.equal(stored.has(trackKey('gone', 'p1')), false);
   assert.equal(stored.has(trackKey('s1', 'p1')), false);
+  // Contest runs have no mock history: they stay.
+  assert.equal(stored.has(trackKey(contestReplay('r1', { name: 'Amy', start: 0, end: 1 }, []).id, 'p2')), true);
 });
 
 test('a mock recorded before the focus self-check says so instead of counting zero', async () => {

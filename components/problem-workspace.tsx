@@ -76,6 +76,7 @@ import {
 } from './mock-exam-bar';
 import { ContestBar, useContestRoom } from './contest-bar';
 import { useReplayRecorder } from './mock-replay';
+import { contestReplay } from '@/lib/mock-replay';
 import { reportWindow } from '@/lib/mock-oa';
 import {
   Dialog,
@@ -617,9 +618,16 @@ function Workspace({
   // The tutor's extras; SQL track problems have no AI (lib/server/ai-tutor.ts takes code languages).
   const aiOn = !!boot.services?.ai && !!boot.person && !examMode && !isTrackLanguage(language);
   const aiContext: AiContext = { language, codingMode, code, english: uiEnglish };
-  // A running mock OA records this question for the report's code replay (this browser only).
+  // A running mock OA or contest run records this question for the report's or the room's code
+  // replay (this browser only).
   const recordReplay = useReplayRecorder(
-    exam?.running && ready ? exam.session : null,
+    !ready
+      ? null
+      : exam?.running
+        ? exam.session
+        : contest?.running && room
+          ? contestReplay(room, contest.view.me!, contest.view.problems!.map((p) => p.id), contest.skew)
+          : null,
     initialProblem.id,
     code,
   );

@@ -4,6 +4,7 @@ import {
   PAUSE_MS,
   activeAt,
   applyFrame,
+  contestReplay,
   cursor,
   delta,
   emptyTrack,
@@ -11,6 +12,7 @@ import {
   lastCode,
   packTrack,
   timeSummary,
+  trackKey,
   unpackTrack,
   type Frame,
   type Track,
@@ -88,4 +90,27 @@ void test('a v1 track reads as a legacy v2 one with nothing away; the self-check
   assert.equal(awayMs, 1000 + 4 * min);
   // 40 characters is not over the line, and a paste after the end is not part of the exam.
   assert.deepEqual(pastes, [{ t: 2 * min, q: 0, chars: 41 }]);
+});
+
+void test('a contest run replays as a session of its own: keyed by room and entrant, its window in browser time', () => {
+  const min = 60_000;
+  const me = { name: 'Amy', start: 1_000 * min, end: 1_090 * min };
+  // This browser runs 3 seconds behind the server.
+  const session = contestReplay('weekly-9', me, ['lc-1', 'lc-2'], 3000);
+  assert.deepEqual(session, {
+    id: 'contest-weekly-9-Amy',
+    startedAt: me.start - 3000,
+    finishedAt: me.end - 3000,
+    minutes: 90,
+    ids: ['lc-1', 'lc-2'],
+    skew: 3000,
+  });
+  assert.equal(trackKey(session.id, 'lc-1'), 'contest-weekly-9-Amy:lc-1');
+  // Another entrant of the room, or the same name in another room, is another session.
+  assert.notEqual(contestReplay('weekly-9', { ...me, name: 'Ben' }, []).id, session.id);
+  assert.notEqual(contestReplay('weekly-10', me, []).id, session.id);
+  // The replay after the end needs no skew: only the window's length counts.
+  const after = contestReplay('weekly-9', me, ['lc-1', 'lc-2']);
+  assert.equal(after.id, session.id);
+  assert.equal(after.finishedAt! - after.startedAt!, 90 * min);
 });

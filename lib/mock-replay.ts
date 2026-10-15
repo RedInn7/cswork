@@ -1,8 +1,8 @@
-import { mockStorageKey, parseMockState } from './mock-oa';
+import { mockStorageKey, parseMockState, type MockSession } from './mock-oa';
 
 /**
- * Code replay of a mock OA, for the learner's own review: while the exam runs, the workspace
- * records the editor every 2 seconds it changed, plus each run and submission with its
+ * Code replay of a mock OA or a contest run, for the learner's own review: while it runs, the
+ * workspace records the editor every 2 seconds it changed, plus each run and submission with its
  * verdict, and for the focus self-check the stretches the page was hidden or unfocused and
  * the long pastes (components/mock-replay.tsx). One track per question, kept gzipped in this browser's
  * IndexedDB and never uploaded; a session's tracks share REPLAY_BYTES. The pure parts (delta
@@ -125,6 +125,29 @@ export function focusSummary(tracks: readonly (Track | null)[], duration: number
   return { away, awayMs: away.reduce((sum, [from, to]) => sum + to - from, 0), pastes };
 }
 
+/** What recording and replaying need of a session: a mock OA's, or a contest run's (contestReplay). */
+export type ReplaySession = Pick<MockSession, 'id' | 'startedAt' | 'finishedAt' | 'skew' | 'minutes' | 'ids'>;
+
+const CONTEST_PREFIX = 'contest-';
+/**
+ * A contest entrant's own run as a replay session, from the room view's window (server clock;
+ * `skew` is server minus this browser, and the recorder keeps browser time). An entrant's name is
+ * unique in its room and fixed, so on a shared browser the id is theirs alone.
+ */
+export const contestReplay = (
+  room: string,
+  me: { name: string; start: number; end: number },
+  ids: string[],
+  skew = 0,
+): ReplaySession => ({
+  id: `${CONTEST_PREFIX}${room}-${me.name}`,
+  startedAt: me.start - skew,
+  finishedAt: me.end - skew,
+  minutes: (me.end - me.start) / 60_000,
+  ids,
+  skew,
+});
+
 /* ---------------------------------------------------------------- storage */
 
 const DB = 'cswork-replay',
@@ -208,8 +231,8 @@ export const loadSession = async (session: string, ids: readonly string[]) => {
   return Promise.all(ids.map((id) => loadTrack(trackKey(session, id))));
 };
 /**
- * Drops the tracks of sessions no account on this browser still has (a mock leaves the history
- * after MOCK_HISTORY newer ones). The states are read when the keys are, so a mock drawn in
+ * Drops the tracks of mock sessions no account on this browser still has (a mock leaves the
+ * history after MOCK_HISTORY newer ones). The states are read when the keys are, so a mock drawn in
  * another tab meanwhile is kept: it is written to its state before anything is recorded.
  */
 export async function pruneTracks() {
@@ -222,7 +245,9 @@ export async function pruneTracks() {
       const state = parseMockState(localStorage.getItem(name));
       for (const s of [state.active, ...state.history]) if (s) keep.add(s.id);
     }
-    for (const key of keys) if (!keep.has(key.split(':')[0])) await withStore('readwrite', (s) => s.delete(key));
+    // ponytail: contest runs are kept, with no history to prune them by; a few KB gzipped each.
+    for (const key of keys)
+      if (!key.startsWith(CONTEST_PREFIX) && !keep.has(key.split(':')[0])) await withStore('readwrite', (s) => s.delete(key));
   } catch {
     /* Without storage there is nothing to prune, and nothing is pruned on a failed read. */
   }
