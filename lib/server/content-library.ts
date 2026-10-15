@@ -9,7 +9,7 @@ import { companyPractice } from './company-hub';
 import { memberExperiences, memberFacets, memberIdOf, memberItem, mergePage, type MemberSummary } from './experience-submissions';
 import { setting } from './env';
 import { HttpError, json, limitReader } from './http';
-import { recentSince } from './learner-cloud';
+import { recentSince, VERIFIED } from './learner-cloud';
 import { mockCompanies, mockPool, mockSet } from './mock-interview';
 import { acceptedPeople } from './problem-stats';
 
@@ -129,8 +129,9 @@ type Reports = Map<string, { n: number; last: string }>;
 // ponytail: site-wide aggregates over the user database, kept 10 minutes like problem-stats.
 let engaged: { at: number; items: Map<string, Engagement>; reports: Reports } | null = null;
 /**
- * Per item (`<type>/<slug>`): stars and upvotes (user_marks on content:<type>/<slug>) and visible
- * answers or comments (solution_posts on q:<slug>, exp:<slug>); per reported id (q:<slug>, lc-<n>):
+ * Per item (`<type>/<slug>`): stars and upvotes (user_marks on content:<type>/<slug>) by verified
+ * accounts only, like list stars, so throwaway accounts cannot lift an item up the popular order, and
+ * visible answers or comments (solution_posts on q:<slug>, exp:<slug>); per reported id (q:<slug>, lc-<n>):
  * distinct learners who said they were asked it in the recent months, and the latest month.
  */
 function engagement(now = Date.now()) {
@@ -145,7 +146,8 @@ function engagement(now = Date.now()) {
   const marks = db
     .prepare(
       `SELECT substr(target,9) AS key,SUM(mark='star') AS stars,SUM(mark='up') AS ups FROM user_marks
-       WHERE target>='content:' AND target<'content;' AND mark IN ('star','up') GROUP BY target`,
+       WHERE target>='content:' AND target<'content;' AND mark IN ('star','up') AND ${VERIFIED('user_marks.user_id')}
+       GROUP BY target`,
     )
     .all() as { key: string; stars: number; ups: number }[];
   for (const m of marks) Object.assign(of(m.key), { stars: m.stars, ups: m.ups });
@@ -436,8 +438,14 @@ export async function handleContent(request: Request, p: Person | null, path: st
   const params = new URL(request.url).searchParams;
   const [action] = path;
   // A member's own experience (lib/server/experience-submissions.ts), library or not.
-  if (action === 'item' && params.get('type') === 'experience' && memberIdOf(params.get('slug')))
-    return json(await memberItem(db, params.get('slug')!, p));
+  if (action === 'item' && params.get('type') === 'experience' && memberIdOf(params.get('slug'))) {
+    const found = await memberItem(db, params.get('slug')!, p);
+    return json({
+      ...found,
+      curated: curatedItems().has(`experience/${found.slug}`),
+      stats: engagementOf('experience', found.slug).stats,
+    });
+  }
   if (!db) {
     if (action === 'stats') return json({ counts: {}, companies: 0, updatedAt: null });
     if (action === 'list') return json({ items: [], total: 0, page: 1, pageSize: PAGE, facets: null });

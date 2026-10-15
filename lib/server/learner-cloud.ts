@@ -331,7 +331,7 @@ function ownerHandle(ownerId: string) {
  * account once and never the owner: forking needs no verification, so one account forking
  * its own list again and again must not climb the plaza.
  */
-const VERIFIED = (col: string) => `EXISTS(SELECT 1 FROM "user" u WHERE u.id=${col} AND u.email_verified=1)`;
+export const VERIFIED = (col: string) => `EXISTS(SELECT 1 FROM "user" u WHERE u.id=${col} AND u.email_verified=1)`;
 const STARS = (list: string) =>
   `(SELECT COUNT(*) FROM user_marks m WHERE m.target='list:'||${list} AND m.mark='star' AND ${VERIFIED('m.user_id')})`;
 const FORKS = (list: string) =>

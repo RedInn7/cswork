@@ -86,12 +86,22 @@ const post = db.prepare(
 const report = db.prepare(
   'INSERT INTO problem_reports(id,user_id,problem_id,company,round,asked_month,created_at) VALUES(?,?,?,?,?,?,?)',
 );
+const user = db.prepare(
+  'INSERT INTO "user"(id,name,email,email_verified,created_at,updated_at) VALUES(?,?,?,?,?,?)',
+);
+for (const id of ['a1', 'a2']) user.run(id, id, `${id}@example.test`, 1, NOW, NOW);
+user.run('throwaway', 'T', 'throwaway@example.test', 0, NOW, NOW);
 const month = new Date(NOW).toISOString().slice(0, 7);
 // iq-old: five answers (one hidden by a moderator does not count) = 10.
 for (let i = 0; i < 6; i++) post.run(`p${i}`, 'q:iq-old', `a${i}`, 'T', 'B', i === 5 ? 2 : 0, NOW, NOW);
 // iq-new: a star, two learners asked = 1 + 6 = 7, and an upvote = 8.
 mark.run('a1', 'content:interview_question/iq-new', 'star', NOW);
 mark.run('a2', 'content:interview_question/iq-new', 'up', NOW);
+// An unverified account's star and upvote count for nothing (iq-quiet stays unscored).
+mark.run('throwaway', 'content:interview_question/iq-quiet', 'star', NOW);
+mark.run('throwaway', 'content:interview_question/iq-quiet', 'up', NOW);
+// A member post's upvote shows on its detail page as on its card.
+mark.run('a1', 'content:experience/member.vvvvvvvvvvvv', 'up', NOW);
 report.run('r1', 'a1', 'q:iq-new', 'acme', 'onsite', month, NOW);
 report.run('r2', 'a2', 'q:iq-new', '', '', month, NOW);
 // The coding question is reported as the judge problem it maps to; 20 people tried lc-146, 12 solved it.
@@ -161,9 +171,6 @@ void test('"I was asked this" on a library interview question', async () => {
 });
 
 void test('verified: member posts by authors with a verified address only', async () => {
-  const user = db.prepare(
-    'INSERT INTO "user"(id,name,email,email_verified,created_at,updated_at) VALUES(?,?,?,?,?,?)',
-  );
   user.run('m-yes', 'Y', 'y@example.test', 1, NOW, NOW);
   user.run('m-no', 'N', 'n@example.test', 0, NOW, NOW);
   const submit = db.prepare(
@@ -179,4 +186,12 @@ void test('verified: member posts by authors with a verified address only', asyn
   assert.equal(verified.memberOnly, true);
   // Members give no seniority: a seniority filter leaves them out.
   assert.equal((await list('type=experience&seniority=Senior')).items.some((c) => c.slug.startsWith('member.')), false);
+  // A member post's detail carries its counts and curated mark like its card.
+  const card = verified.items[0];
+  await oj(teacher, 'POST', 'marks', { target: 'content:experience/member.vvvvvvvvvvvv', mark: 'curated', on: true });
+  const url = new URL('http://localhost/api/content/item?type=experience&slug=member.vvvvvvvvvvvv');
+  const detail = (await (await handleContent(new Request(url), null, ['item'])).json()) as Card;
+  assert.equal(card.stats.ups, 1);
+  assert.deepEqual(detail.stats, card.stats);
+  assert.equal(detail.curated, true);
 });
