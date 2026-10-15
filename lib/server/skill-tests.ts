@@ -5,6 +5,7 @@ import { curatedByNumber } from '@/lib/ling-curated';
 import { drawMock, seededRandom, slotOf, summarizeAttempts, type PoolItem } from '@/lib/mock-oa';
 import { SKILL_COOLDOWN_DAYS, SKILL_TESTS, skillScore, skillTest, type SkillTest } from '@/lib/skill-tests';
 import type { Person } from './auth';
+import { learnProblems } from './beginner-courses';
 import { externalCertificates, issueCertificate } from './certificates';
 import { requireVerified } from './contests';
 import { HttpError, json, limit, requirePerson } from './http';
@@ -61,7 +62,9 @@ export const skillSources = {
 async function pool(test: SkillTest): Promise<PoolItem[]> {
   if (!test.band) return skillSources.sql();
   const [min, max] = test.band;
-  return (await skillSources.line500()).filter((item) => item.rating >= min && item.rating < max);
+  return (await skillSources.line500()).filter(
+    (item) => item.rating >= min && item.rating < max && !learnProblems.has(item.id),
+  );
 }
 
 const view = (r: Row) => ({

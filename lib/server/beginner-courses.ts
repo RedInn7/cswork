@@ -32,7 +32,7 @@ export const beginnerCourses = (file as { courses: BeginnerCourse[] }).courses;
 export const beginnerCourse = (slug: string) => beginnerCourses.find((c) => c.slug === slug);
 /**
  * Every problem a public lesson solves or assigns: its answer is a click away on /learn, past
- * the contest gate, so exams and duels never draw one (lib/server/skill-tests.ts, duels.ts).
+ * the contest gate, so skill exams, site contests, room draws and duels never draw one.
  */
 export const learnProblems = new Set(
   beginnerCourses.flatMap((c) => c.chapters.flatMap((ch) => [...ch.solves, ...ch.homework.map((h) => h.id)])),

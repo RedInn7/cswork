@@ -32,6 +32,7 @@ export { RATE_GRACE } from '@/lib/contest';
 import { drawMock, LADDER, seededRandom } from '@/lib/mock-oa';
 import type { ProblemSummary } from '@/lib/problems';
 import type { Person } from './auth';
+import { learnProblems } from './beginner-courses';
 import { hiddenCompanies } from './env';
 import { HttpError, json, limit, limitReader, requirePerson } from './http';
 import { lcRating, lcRatingOf } from './lc-ratings';
@@ -143,7 +144,7 @@ function ensureSite(kind: 'weekly' | 'starter', week: number, now: number, avoid
   );
   // A secret seed: a week number would let anyone work the set out from the public pool.
   const ids = drawWeekly(
-    contestSources.rated().filter((p) => !avoid.includes(p.id)),
+    contestSources.rated().filter((p) => !avoid.includes(p.id) && !learnProblems.has(p.id)),
     randomInt(2 ** 31),
     used,
     kind === 'weekly' ? WEEKLY_SLOTS : STARTER_SLOTS,
@@ -584,7 +585,7 @@ async function createRoom(p: Person, input: unknown, now = Date.now()) {
     if (!ids.every((id) => allowed.has(id))) throw new HttpError(400, '有题目不能用于比赛');
   } else if (d.draw) {
     const drawn = drawMock({
-      pool: mockPool(catalogue, null, d.draw.source),
+      pool: mockPool(catalogue, null, d.draw.source).filter((item) => !learnProblems.has(item.id)),
       slots: LADDER[d.draw.questions],
       random: seededRandom(randomInt(2 ** 31)),
     });

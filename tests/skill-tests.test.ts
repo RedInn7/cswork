@@ -172,10 +172,13 @@ void test('python counts only Python; the deadline hands in; a judging verdict h
   assert.throws(() => finishSkillTest(bob, skillTest('python')!, t0 + 48 * MIN), { status: 404 });
 });
 
-void test('the draw refuses when every problem in the band is solved', async () => {
+void test('the draw refuses when every problem in the band is solved or solved on /learn', async () => {
   const t0 = Date.UTC(2026, 9, 3);
   for (const id of ['lc-11']) submit(zoe.id, id, 'accepted', t0 - DAY, 10);
   await assert.rejects(startSkillTest(zoe, skillTest('problem-solving-intermediate')!, t0), { status: 409 });
+  // Left in the basic band: lc-1 and lc-20, whose answers the crash courses print.
+  for (const id of ['lc-21', 'lc-3', 'lc-15']) submit(zoe.id, id, 'accepted', t0 - DAY, 10);
+  await assert.rejects(startSkillTest(zoe, skillTest('problem-solving-basic')!, t0), { status: 409 });
   assert.equal(await status(call(zoe, 'POST', 'skills/nope/start', {})), 404);
 });
 
