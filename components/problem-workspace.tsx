@@ -388,6 +388,7 @@ function Workspace({
           java: 'Solution.java',
           go: 'solution.go',
           sql: 'query.sql',
+          pandas: 'solution.py',
         }[language]
       : languageFiles[language];
   const [code, setCode] = useState(starters.python);
