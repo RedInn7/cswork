@@ -10,6 +10,8 @@ export type OJProblem = Problem & {
   maxCodeBytes?: number;
   maxStdinBytes?: number;
   languages?: Language[];
+  /** Per-language CPU seconds per test case, in place of timeLimit (lib/oj-types.ts). */
+  timeLimits?: Partial<Record<Language, number>>;
   languageVersions?: Partial<Record<Language, string>>;
   samples?: { name: string; input: string; expectedOutput: string }[];
   judgeAvailable?: boolean;

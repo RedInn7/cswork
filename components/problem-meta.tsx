@@ -14,20 +14,23 @@ type Meta = {
 };
 
 /**
- * The line under the problem title: the site's acceptance rate (hidden below the stats'
- * sample floor), up/down votes (one per learner, a mark on problem:<id>) and a share
- * button. Stats and votes need an account; sharing does not.
+ * The line under the problem title: the time limit for the language picked, the site's
+ * acceptance rate (hidden below the stats' sample floor), up/down votes (one per learner,
+ * a mark on problem:<id>) and a share button. Stats and votes need an account; sharing does not.
  */
 export function ProblemMeta({
   problemId,
   title,
   english,
   signedIn,
+  timeLimit,
 }: {
   problemId: string;
   title: string;
   english: boolean;
   signedIn: boolean;
+  /** CPU seconds per test case in the current language (0 until the statement loads). */
+  timeLimit?: number;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const [meta, setMeta] = useState<Meta | null>(null);
@@ -83,6 +86,9 @@ export function ProblemMeta({
   const acceptance = meta?.acceptance;
   return (
     <div className="cs-problem-meta">
+      {!!timeLimit && (
+        <span className="cs-problem-meta-rate">{t(`时限 ${timeLimit} 秒`, `Time limit ${timeLimit}s`)}</span>
+      )}
       {acceptance && (
         <span
           className="cs-problem-meta-rate"

@@ -1563,6 +1563,39 @@ export function OjAdmin({
                           ))}
                       </div>
                     </div>
+                    {/* Slower runtimes may get more time; empty keeps the CPU time limit above. */}
+                    <div className="oj-admin-language-options">
+                      <strong>
+                        {t(
+                          '按语言设时限（秒，留空用上面的默认值）',
+                          'Per-language time limit (seconds; empty uses the default above)',
+                        )}
+                      </strong>
+                      <div>
+                        {languages
+                          .filter((language) => spec.languages.includes(language.id))
+                          .map((language) => (
+                            <label key={language.id}>
+                              {language.name}
+                              <Input
+                                className="oj-admin-time-override"
+                                type="number"
+                                min={0.1}
+                                max={10}
+                                step={0.1}
+                                placeholder={String(spec.timeLimit)}
+                                value={spec.timeLimits?.[language.id] ?? ''}
+                                onChange={(e) => {
+                                  const { [language.id]: _, ...rest } = spec.timeLimits ?? {};
+                                  const n = e.target.valueAsNumber;
+                                  const next = Number.isFinite(n) ? { ...rest, [language.id]: n } : rest;
+                                  updateSpec('timeLimits', Object.keys(next).length ? next : undefined);
+                                }}
+                              />
+                            </label>
+                          ))}
+                      </div>
+                    </div>
                     <p className="oj-admin-muted">
                       {t(
                         '所有程序通过标准输入与标准输出交互，不开放网络访问。题目文件只包含声明式数据。',

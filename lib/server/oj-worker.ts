@@ -229,10 +229,20 @@ async function judgeSubmission(
   let invalidateBridge = false;
   let terminalFailureCommitted = false;
   try {
-    const snapshot: Pick<OjJudgeSnapshot, 'spec' | 'cases'> =
+    const loaded: Pick<OjJudgeSnapshot, 'spec' | 'cases'> =
       claimed.mode === 'playground'
         ? { spec: PLAYGROUND_SPEC, cases: [] }
         : await loadJudgeSnapshot(claimed.problem_version_id!);
+    // A per-language limit replaces timeLimit everywhere below: cases, codec runs, the deadline.
+    const snapshot = {
+      ...loaded,
+      spec: {
+        ...loaded.spec,
+        timeLimit:
+          loaded.spec.timeLimits?.[claimed.language] ??
+          loaded.spec.timeLimit,
+      },
+    };
     assertSnapshotBudget(snapshot.cases);
     // Runs on the learner's own input: custom-input runs and playground runs.
     const ownInput = claimed.mode !== 'judge' && claimed.custom_input !== null;
