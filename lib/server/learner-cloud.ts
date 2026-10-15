@@ -576,12 +576,16 @@ const LINK_HOSTS: Record<string, readonly string[]> = {
   linkedin: ['linkedin.com'],
   x: ['x.com', 'twitter.com'],
 };
-/** https only, no credentials, and the right site; javascript: and plain http: never reach a page. */
+/**
+ * https only, no credentials, and the right site; javascript: and plain http: never reach a page.
+ * The 200 cap is on the stored (percent-encoded) href, so a saved link always fits when sent back.
+ */
 function linkAllowed({ kind, url }: { kind: string; url: string }) {
   if (!URL.canParse(url)) return false;
-  const { protocol, username, password, hostname } = new URL(url);
+  const { protocol, username, password, hostname, href } = new URL(url);
   const hosts = LINK_HOSTS[kind];
   return (
+    href.length <= 200 &&
     protocol === 'https:' &&
     !username &&
     !password &&
@@ -593,8 +597,8 @@ const profileLink = z
   .strict()
   .refine(linkAllowed)
   .transform((link) => ({ kind: link.kind, url: new URL(link.url).href }));
-/** The school board key: lowercase, no punctuation, symbols or spaces ("M.I.T." and "mit" meet). */
-export const schoolKey = (school: string) => school.toLowerCase().replace(/[\p{P}\p{S}\s]/gu, '');
+/** The school board key: NFKC, lowercase, no punctuation, symbols or spaces ("M.I.T.", "ＭＩＴ" and "mit" meet). */
+export const schoolKey = (school: string) => school.normalize('NFKC').toLowerCase().replace(/[\p{P}\p{S}\s]/gu, '');
 const profileInput = z
   .object({
     handle: z

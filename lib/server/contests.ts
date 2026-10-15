@@ -330,14 +330,20 @@ export async function leaderboard(p: Person | null, max = 100, now = Date.now(),
   });
 }
 
-/** Self-reported schools with at least 3 learners showing both school and contests, biggest first. */
+/**
+ * Self-reported schools with at least 3 rated learners showing both school and contests (exactly
+ * who leaderboard(..., school) lists), biggest first.
+ */
 export function schoolBoards() {
-  // ponytail: the alphabetically first spelling names a school; a canonical list if spellings clash.
+  // ponytail: the most used spelling (then shortest) names a school; a canonical list if spellings clash.
   return sqlite()
     .prepare(
-      `SELECT school_key AS key,MIN(school) AS name,COUNT(*) AS members FROM user_profiles
-      WHERE visible=1 AND show_contest=1 AND school_key<>'' GROUP BY school_key HAVING COUNT(*)>=3
-      ORDER BY members DESC,key LIMIT 100`,
+      `WITH m AS (SELECT school_key AS key,school FROM user_profiles p
+        WHERE visible=1 AND show_contest=1 AND school_key<>''
+          AND EXISTS (SELECT 1 FROM contest_ratings r WHERE r.user_id=p.user_id))
+      SELECT key,(SELECT s.school FROM m s WHERE s.key=m.key GROUP BY s.school
+          ORDER BY COUNT(*) DESC,LENGTH(s.school),s.school LIMIT 1) AS name,COUNT(*) AS members
+      FROM m GROUP BY key HAVING COUNT(*)>=3 ORDER BY members DESC,key LIMIT 100`,
     )
     .all() as { key: string; name: string; members: number }[];
 }

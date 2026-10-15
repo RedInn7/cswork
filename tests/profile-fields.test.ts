@@ -96,6 +96,16 @@ void test('profile links must be https on the right site; javascript:, http: and
     [cleared.body!.profile.links, cleared.body!.profile.school, cleared.body!.profile.gradYear, cleared.body!.profile.targetRole],
     [[], '', null, ''],
   );
+  // The 200 cap is on the stored, percent-encoded href: 20 CJK characters (180 encoded) do not fit,
+  // 10 do, and the saved profile goes back unchanged (as the settings page and badge picker send it).
+  const wiki = 'https://zh.wikipedia.org/wiki/';
+  const reader = person('pf-wiki'); // a fresh write budget
+  const own = { handle: 'wiki-reader', visible: true };
+  assert.equal((await post(reader, { ...own, links: [{ kind: 'website', url: wiki + '图'.repeat(20) }] })).status, 400);
+  const encoded = await post(reader, { ...own, links: [{ kind: 'website', url: wiki + '图'.repeat(10) }] });
+  assert.equal(encoded.status, 200);
+  assert.equal((encoded.body!.profile.links as { url: string }[])[0].url.length, 120);
+  assert.equal((await post(reader, encoded.body!.profile)).status, 200, 'a saved profile is accepted back as is');
   assert.equal((await post(me, { handle: 'compare', visible: true })).status, 400, 'reserved for /u/compare');
 });
 
@@ -103,6 +113,7 @@ void test('school keys fold case, punctuation and spaces', () => {
   assert.equal(schoolKey('M.I.T.'), 'mit');
   assert.equal(schoolKey('University of  Washington'), 'universityofwashington');
   assert.equal(schoolKey('清华大学（深圳）'), '清华大学深圳');
+  assert.equal(schoolKey('ＭＩＴ'), 'mit', 'full-width folds too');
 });
 
 void test('a school board lists only learners showing both their profile and their contests', async () => {
@@ -111,11 +122,13 @@ void test('a school board lists only learners showing both their profile and the
     `INSERT INTO contest_rooms(id,owner_id,title,kind,problem_ids_json,starts_at,duration_min,visibility,rated_at,created_at)
     VALUES('weekly-900',NULL,'Weekly 900','weekly','[]',1000,90,'public',2000,1)`,
   ).run();
-  const add = (id: string, rating: number, profile: { visible: number; show: number; school: string } | null) => {
-    db.prepare(
-      `INSERT INTO contest_ratings(user_id,room_id,before,after,rank,entrants,solved,created_at) VALUES(?,'weekly-900',1500,?,1,9,1,2000)`,
-    ).run(id, rating);
-    db.prepare(`INSERT INTO contest_entries(room_id,user_id,display_name,joined_at) VALUES('weekly-900',?,?,1)`).run(id, `Racer ${id}`);
+  const add = (id: string, rating: number | null, profile: { visible: number; show: number; school: string } | null) => {
+    if (rating !== null) {
+      db.prepare(
+        `INSERT INTO contest_ratings(user_id,room_id,before,after,rank,entrants,solved,created_at) VALUES(?,'weekly-900',1500,?,1,9,1,2000)`,
+      ).run(id, rating);
+      db.prepare(`INSERT INTO contest_entries(room_id,user_id,display_name,joined_at) VALUES('weekly-900',?,?,1)`).run(id, `Racer ${id}`);
+    }
     if (profile)
       db.prepare(
         `INSERT INTO user_profiles(user_id,handle,visible,indexable,show_contest,bio,school,school_key,created_at,updated_at)
@@ -129,8 +142,15 @@ void test('a school board lists only learners showing both their profile and the
   add('s5', 1900, { visible: 0, show: 1, school: 'Tsinghua' }); // profile hidden
   add('s6', 2000, { visible: 1, show: 1, school: 'MIT' }); // another school
   add('s7', 2100, null); // no profile at all
+  add('s8', 1650, { visible: 1, show: 1, school: 'Stanford' });
+  add('s9', null, { visible: 1, show: 1, school: 'Stanford' }); // never rated
+  add('s10', null, { visible: 1, show: 1, school: 'stanford' }); // never rated
 
-  assert.deepEqual(schoolBoards(), [{ key: 'tsinghua', name: 'TsingHua.', members: 3 }], 'MIT has one member');
+  assert.deepEqual(
+    schoolBoards(),
+    [{ key: 'tsinghua', name: 'Tsinghua', members: 3 }],
+    'MIT has one member, Stanford one rated one; the tie between spellings goes to the shortest',
+  );
   const board = await leaderboard(null, 100, 3000, 'tsinghua');
   assert.deepEqual(
     board.map((r) => [r.rank, r.name, r.handle]),
@@ -141,6 +161,6 @@ void test('a school board lists only learners showing both their profile and the
     ],
   );
   const everyone = await leaderboard(null, 100, 3000);
-  assert.equal(everyone.length, 7, 'the site board is unchanged');
+  assert.equal(everyone.length, 8, 'the site board is unchanged');
   assert.ok(everyone.every((r) => r.handle === null), 'and never names a handle');
 });
