@@ -11,6 +11,7 @@ import { judgeFeed } from './judge-feed';
 import { requestPrecompile } from './oj-precompile';
 import { handleOaLibrary } from './oa-library';
 import { handleMockOa } from './mock-oa';
+import { handleSkillTests } from './skill-tests';
 import { handleSpeedrun } from './speedrun';
 import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
@@ -19,6 +20,8 @@ import { handleAiTutor, isAiRoute } from './ai-tutor';
 import { handleAiInterview } from './ai-interviewer';
 import { handleAiAsk } from './ai-ask';
 import { handleAiResume } from './ai-resume';
+import { handleAiPair } from './ai-rounds';
+import { PROJECT_MAX_BYTES } from '@/lib/ai-coding';
 import { problemStats } from './problem-stats';
 import { handleDrafts, handleLearnerCloud, handleMockHistory } from './learner-cloud';
 import { handleSolutionPosts } from './solution-posts';
@@ -27,6 +30,8 @@ import { handleStudyGroups } from './study-groups';
 import { handleMockPeer } from './mock-peer';
 import { handleNewsletter } from './newsletter';
 import { handleFollows } from './follows';
+import { handleDirectMessages } from './direct-messages';
+import { handleWorkVerify } from './work-verify';
 import { sourceDates } from './company-insights';
 import { handleContests, inRunningContest, refuseInContest } from './contests';
 import { handleDuels } from './duels';
@@ -71,6 +76,7 @@ import {
 } from './oj-problems';
 import {
   createPlaygroundRun,
+  createProjectRun,
   createReferenceRun,
   createSubmission,
   submissionDetail,
@@ -112,6 +118,7 @@ export async function handleOj(
     return handleOaLibrary(request, p, path.slice(1));
   if (resource === 'mock-oa' && id === 'history' && !action) return handleMockHistory(request, p);
   if (resource === 'mock-oa') return handleMockOa(request, p, path.slice(1));
+  if (resource === 'skills') return handleSkillTests(request, p, path.slice(1));
   if (resource === 'lists' || resource === 'profile' || resource === 'reports')
     return handleLearnerCloud(request, p, path);
   if (resource === 'experiences') return handleExperienceSubmissions(request, p, path.slice(1));
@@ -119,6 +126,8 @@ export async function handleOj(
   if (resource === 'peer') return handleMockPeer(request, p, path.slice(1));
   if (resource === 'newsletter') return handleNewsletter(request, p, path.slice(1));
   if (resource === 'follows') return handleFollows(request, p, path.slice(1));
+  if (resource === 'dm') return handleDirectMessages(request, p, path.slice(1));
+  if (resource === 'work') return handleWorkVerify(request, p, path.slice(1));
   // The weekly, standings and the rating board read signed out; the handler checks the rest.
   if (resource === 'contests' && id === 'duel') return handleDuels(request, p, path);
   if (resource === 'contests') return handleContests(request, p, path);
@@ -149,6 +158,13 @@ export async function handleOj(
     const failed = hint && p ? failedJudgeIds(p.id, id, round?.id) : [];
     return json({
       ...problem,
+      // The package's own hints too, in every language; copies, never the cached problem.
+      ...(live && {
+        hints: [],
+        translations:
+          problem.translations &&
+          Object.fromEntries(Object.entries(problem.translations).map(([k, v]) => [k, v && { ...v, hints: [] }])),
+      }),
       codingModes: templates ? ['leetcode', 'acm'] : ['acm'],
       leetcodeTemplates: templates,
       leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
@@ -212,7 +228,8 @@ export async function handleOj(
     return json(judgeFeed(p, url.searchParams));
   }
   // Threads, answers and comments read signed out; the handler checks the rest.
-  if (resource === 'posts' || resource === 'post-comments') return handleSolutionPosts(request, p, path);
+  if (['posts', 'post-comments', 'group-messages', 'direct-messages'].includes(resource))
+    return handleSolutionPosts(request, p, path);
   requirePerson(p);
   if (resource === 'tokens') return handleApiTokens(request, p, path.slice(1));
   if (resource === 'cloud' && id === 'drafts' && !operation)
@@ -229,12 +246,14 @@ export async function handleOj(
   if (resource === 'ai' && id === 'ask' && !action) return handleAiAsk(request, p);
   // The resume review on /career/resume (lib/server/ai-resume.ts).
   if (resource === 'ai' && id === 'resume' && !action) return handleAiResume(request, p);
+  // The AI pair of the AI-assisted round (lib/server/ai-rounds.ts).
+  if (resource === 'ai' && id === 'pair' && !action) return handleAiPair(request, p);
   if (resource === 'points' && !action) return handlePoints(request, p, id);
   if (request.method === 'GET') {
     if (resource === 'library') {
       await limit(p, 'library-read', 120);
       return json(
-        id ? getStudyLibrary(id) : listLibrary(url.searchParams, p.id),
+        id ? getStudyLibrary(id, p.id) : listLibrary(url.searchParams, p.id),
       );
     }
     if (resource === 'recommend' && !id) {
@@ -339,6 +358,11 @@ export async function handleOj(
     }
     // Same owner-checked detail and watch protocol as a custom-input run.
     const created = await createPlaygroundRun(p, data);
+    return json(await settleSubmission(p, created.id, request.signal), 201);
+  }
+  if (resource === 'ai-assisted' && id === 'run' && !action) {
+    // An AI-assisted round run: the playground's watch protocol, its report on the detail.
+    const created = await createProjectRun(p, await readJson(request, PROJECT_MAX_BYTES * 2 + 10_000));
     return json(await settleSubmission(p, created.id, request.signal), 201);
   }
   if (resource === 'submissions' && !id) {

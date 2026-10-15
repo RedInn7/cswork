@@ -32,6 +32,7 @@ export { RATE_GRACE } from '@/lib/contest';
 import { drawMock, LADDER, seededRandom } from '@/lib/mock-oa';
 import type { ProblemSummary } from '@/lib/problems';
 import type { Person } from './auth';
+import { learnProblems } from './beginner-courses';
 import { hiddenCompanies } from './env';
 import { HttpError, json, limit, limitReader, requirePerson } from './http';
 import { lcRating, lcRatingOf } from './lc-ratings';
@@ -143,7 +144,7 @@ function ensureSite(kind: 'weekly' | 'starter', week: number, now: number, avoid
   );
   // A secret seed: a week number would let anyone work the set out from the public pool.
   const ids = drawWeekly(
-    contestSources.rated().filter((p) => !avoid.includes(p.id)),
+    contestSources.rated().filter((p) => !avoid.includes(p.id) && !learnProblems.has(p.id)),
     randomInt(2 ** 31),
     used,
     kind === 'weekly' ? WEEKLY_SLOTS : STARTER_SLOTS,
@@ -584,7 +585,7 @@ async function createRoom(p: Person, input: unknown, now = Date.now()) {
     if (!ids.every((id) => allowed.has(id))) throw new HttpError(400, '有题目不能用于比赛');
   } else if (d.draw) {
     const drawn = drawMock({
-      pool: mockPool(catalogue, null, d.draw.source),
+      pool: mockPool(catalogue, null, d.draw.source).filter((item) => !learnProblems.has(item.id)),
       slots: LADDER[d.draw.questions],
       random: seededRandom(randomInt(2 ** 31)),
     });
@@ -725,22 +726,32 @@ export async function sharedCode(id: string, problem: string, p: Person, now = D
 // ---------------------------------------------------------------- fairness
 
 /**
+ * A problem and its twin: pd-NN is sql-NN in pandas, the same statement, hidden datasets and
+ * expected output, so every contest and exam gate (and the exam's solved filter) takes them as one.
+ */
+export const withTwin = (id: string) =>
+  id.startsWith('sql-') ? [id, `pd-${id.slice(4)}`] : id.startsWith('pd-') ? [id, `sql-${id.slice(3)}`] : [id];
+
+/**
  * The problems of every room running for this learner now: a live entrant's from the start to
  * the end, a virtual one's inside their own window. A duel waiting for its second entrant hasn't
- * started (roomView). One query on contest_entries_user; a request that checks many problems
- * reads it once.
+ * started (roomView). A skill certification exam running for them (lib/server/skill-tests.ts)
+ * counts as a room too, so every refuseInContest gate holds during it. Twins (withTwin) count
+ * too. One query on contest_entries_user; a request that checks many problems reads it once.
  */
 export function runningContestProblems(userId: string, now = Date.now()) {
   return new Set(
-    sqlite()
+    (sqlite()
       .prepare(
         `SELECT DISTINCT j.value FROM contest_entries e JOIN contest_rooms c ON c.id=e.room_id, json_each(c.problem_ids_json) j
         WHERE e.user_id=@user AND COALESCE(e.virtual_start,c.starts_at)<=@now
           AND @now<COALESCE(e.virtual_start,c.starts_at)+c.duration_min*${MINUTE}
-          AND (c.kind<>'duel' OR (SELECT COUNT(*) FROM contest_entries x WHERE x.room_id=c.id)>=${ROOM_CAP.duel})`,
+          AND (c.kind<>'duel' OR (SELECT COUNT(*) FROM contest_entries x WHERE x.room_id=c.id)>=${ROOM_CAP.duel})
+        UNION SELECT j.value FROM skill_attempts a, json_each(a.ids_json) j
+        WHERE a.user_id=@user AND a.finished_at IS NULL AND a.started_at<=@now AND @now<a.deadline`,
       )
       .pluck()
-      .all({ user: userId, now }) as string[],
+      .all({ user: userId, now }) as string[]).flatMap(withTwin),
   );
 }
 export const inRunningContest = (userId: string, problemId: string, now = Date.now()) =>

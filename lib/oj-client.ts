@@ -17,6 +17,8 @@ export type OJProblem = Problem & {
   judgeAvailable?: boolean;
   codingModes?: CodingMode[];
   leetcodeTemplates?: Partial<Record<Language, string>>;
+  /** This problem's own ACM starters (lib/oj-types.ts), in place of the generic templates. */
+  starters?: Partial<Record<Language, string>>;
   leetcodeInputHelp?: { zh: string; en: string } | null;
   /** LeetCode mode's parameters, one custom-case field each; null keeps the raw text. */
   leetcodeParams?: { name: string; type: string }[] | null;

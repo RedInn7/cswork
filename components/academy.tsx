@@ -14,6 +14,7 @@ import {
   Library,
   MessagesSquare,
   MessageCircle,
+  Mail,
   ScrollText,
   BookOpen,
   Code2,
@@ -33,6 +34,8 @@ import {
   UsersRound,
   Zap,
   Network,
+  GraduationCap,
+  Award,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -126,6 +129,9 @@ const MyLists = lazy(() =>
 const StudyGroups = lazy(() =>
   import('./study-groups').then((m) => ({ default: m.StudyGroups }), loadFailed),
 );
+const Messages = lazy(() =>
+  import('./messages').then((m) => ({ default: m.Messages }), loadFailed),
+);
 const DiscussBoard = lazy(() =>
   import('./discuss-board').then((m) => ({ default: m.DiscussBoard }), loadFailed),
 );
@@ -149,9 +155,12 @@ const nav: [LucideIcon, string, string, string][] = [
   [Dices, '模拟面试', 'Mock Interview', 'mock-interview'],
   // A path, not a view: the public course page (app/system-design).
   [Network, '系统设计课', 'System Design', '/system-design'],
+  [GraduationCap, '入门速成课', 'Beginner Courses', '/learn'],
+  [Award, '技能认证', 'Certification', '/certify'],
   [BookUser, 'STAR 故事库', 'Story Bank', 'stories'],
   [ScrollText, '面经', 'Experiences', 'experiences'],
   [MessageCircle, '讨论区', 'Discuss', 'discuss'],
+  [Mail, '私信', 'Messages', 'messages'],
   [Library, '学习资料', 'Resources', 'resources'],
   [BookOpen, '我的课程', 'My Courses', 'courses'],
   [BookOpen, '算法知识点', 'Algorithm Concepts', 'knowledge'],
@@ -228,7 +237,10 @@ export function Academy() {
     return () => window.removeEventListener('popstate', sync);
   }, [refresh]);
   useEffect(() => {
-    const loginAgain = () => setLogin(true);
+    const loginAgain = (e: Event) => {
+      e.preventDefault(); // Handled: callers outside academy fall back to the account page.
+      setLogin(true);
+    };
     window.addEventListener('cswork:auth-required', loginAgain);
     return () => window.removeEventListener('cswork:auth-required', loginAgain);
   }, []);
@@ -434,6 +446,8 @@ export function Academy() {
         return <MyLists key={boot.person?.id} boot={boot} navigate={navigate} list={params.list} />;
       case 'group':
         return <StudyGroups key={boot.person?.id} navigate={navigate} params={params} />;
+      case 'messages':
+        return <Messages key={boot.person?.id || 'guest'} params={params} navigate={navigate} />;
       case 'discuss':
         return <DiscussBoard key={boot.person?.id || 'guest'} params={params} navigate={navigate} signedIn={!!boot.person} />;
       case 'questions':

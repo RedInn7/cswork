@@ -204,7 +204,7 @@ test('certificates are issued once, verify publicly, and show on a visible profi
 });
 
 test('the certificate page shows the name, course, date and verification id in both languages', () => {
-  const cert = { id: 'AbCdEfGh12345678', courseId: 'sysd', issuedAt: Date.UTC(2026, 9, 14), course: 'System Design', name: 'Ada <b>Member</b>', handle: 'ada', lessons: 2 };
+  const cert = { id: 'AbCdEfGh12345678', courseId: 'sysd', issuedAt: Date.UTC(2026, 9, 14), course: 'System Design', name: 'Ada <b>Member</b>', handle: 'ada', lessons: 2, skill: false };
   for (const zh of [false, true]) {
     const doc = new JSDOM(renderToStaticMarkup(createElement(CertificateView, { cert, zh }))).window.document;
     assert.ok(doc.querySelector('h1')!.textContent!.includes('Ada <b>Member</b>'));
@@ -216,5 +216,11 @@ test('the certificate page shows the name, course, date and verification id in b
     assert.equal(doc.querySelector('.certificate-profile a')!.getAttribute('href'), '/u/ada');
     assert.equal(doc.querySelectorAll('.certificate-actions button').length, 2);
     assert.ok(doc.querySelector('.certificate-verify a')!.textContent!.endsWith(`/certificate/${cert.id}`));
+    // A skill exam's certificate says so, has no lesson count, and calls itself a site certification.
+    const skill = new JSDOM(renderToStaticMarkup(createElement(CertificateView, { cert: { ...cert, skill: true }, zh }))).window
+      .document;
+    assert.match(skill.querySelector('.certificate-kicker')!.textContent!, zh ? /技能认证/ : /Skill certification/);
+    assert.equal(skill.querySelectorAll('.certificate-facts > div').length, 2);
+    assert.match(skill.querySelector('.certificate-note')!.textContent!, zh ? /站内认证/ : /site certification/);
   }
 });

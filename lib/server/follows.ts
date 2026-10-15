@@ -96,6 +96,9 @@ export function followBoard(p: Person, tz = 0, now = Date.now()) {
   return { following: people.size, since: monday * DAY + shift, items: items.slice(0, 50) };
 }
 
+const edge = (from: string, to: string) =>
+  !!sqlite().prepare('SELECT 1 FROM user_follows WHERE follower_id=? AND followee_id=?').get(from, to);
+
 /** /api/oj/follows/…: GET ?handle= (the button's state, signed out too), GET board, POST {handle,on}. */
 export async function handleFollows(request: Request, p: Person | null, path: string[]) {
   const [action, extra] = path;
@@ -110,9 +113,10 @@ export async function handleFollows(request: Request, p: Person | null, path: st
     if (action) throw new HttpError(404, '接口不存在');
     const userId = visibleUser(params.get('handle') ?? '');
     if (!userId) throw new HttpError(404, '主页不存在');
-    const following =
-      !!p && !!sqlite().prepare('SELECT 1 FROM user_follows WHERE follower_id=? AND followee_id=?').get(p.id, userId);
-    return json({ following, self: p?.id === userId, signedIn: !!p, ...counts(userId) });
+    const following = !!p && edge(p.id, userId);
+    // Following each other opens direct messages (lib/server/direct-messages.ts).
+    const mutual = following && edge(userId, p!.id);
+    return json({ following, mutual, self: p?.id === userId, signedIn: !!p, ...counts(userId) });
   }
   requirePerson(p);
   if (request.method !== 'POST' || action) throw new HttpError(404, '接口不存在');
@@ -132,5 +136,6 @@ export async function handleFollows(request: Request, p: Person | null, path: st
       'INSERT INTO user_follows(follower_id,followee_id,created_at) VALUES(?,?,?) ON CONFLICT DO NOTHING',
     ).run(p.id, userId, Date.now());
   } else db.prepare('DELETE FROM user_follows WHERE follower_id=? AND followee_id=?').run(p.id, userId);
-  return json({ following: d.on, self: false, signedIn: true, ...counts(userId) });
+  // The button swaps in this answer: following back shows "Message" straight away.
+  return json({ following: d.on, mutual: d.on && edge(userId, p.id), self: false, signedIn: true, ...counts(userId) });
 }

@@ -73,6 +73,8 @@ export function SdMarkRead({ slug, slugs }: { slug: string; slugs: string[] }) {
   const { state, slugs: done } = useRead();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  // The course's certificate, issued when this mark completed it (lib/server/certificates.ts).
+  const [certificate, setCertificate] = useState<string | null>(null);
   if (state === 'guest')
     return (
       <div className="sd-read">
@@ -85,7 +87,8 @@ export function SdMarkRead({ slug, slugs }: { slug: string; slugs: string[] }) {
     setBusy(true);
     setError('');
     try {
-      await api('oj/marks', { target: `sd:${slug}`, mark: 'read', on });
+      const reply = await api<{ certificate?: string | null }>('oj/marks', { target: `sd:${slug}`, mark: 'read', on });
+      setCertificate(reply.certificate ?? null);
       const next = new Set(read.slugs);
       if (on) next.add(slug);
       else next.delete(slug);
@@ -108,6 +111,15 @@ export function SdMarkRead({ slug, slugs }: { slug: string; slugs: string[] }) {
         {t('读完了，标记为已读', "I've read this chapter")}
       </label>
       <SdReadCount slugs={slugs} />
+      {/* Mounted before the notice, so screen readers announce it (focus stays on the checkbox). */}
+      <div role="status" className={certificate ? 'sd-read-certificate' : undefined}>
+        {certificate && (
+          <>
+            {t('整门课都读完了，结业证书已签发：', 'You have read the whole course. Your certificate is ready: ')}
+            <a href={`/certificate/${certificate}`}>{t('查看证书', 'View certificate')}</a>
+          </>
+        )}
+      </div>
       {error && (
         <p className="sd-read-error" role="alert">
           {error}

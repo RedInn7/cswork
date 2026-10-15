@@ -5,7 +5,7 @@ import { api, type Boot } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { verdictNames } from '@/lib/oj-client';
-import { problemTitle } from '@/lib/problems';
+import { problemTitle, trackLanguageOf } from '@/lib/problems';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
 import { STOP_NAMES } from '@/lib/route-stops';
 import {
@@ -69,14 +69,10 @@ function highlight(text: string, words: string[]) {
   // split() with one capture group puts the matches at the odd indices.
   return text.split(pattern).map((part, i) => (i % 2 ? <mark key={i}>{part}</mark> : part));
 }
-const source = (id: string): 'lc' | 'oa' | 'sql' | 'course' =>
-  id.startsWith('lc-')
-    ? 'lc'
-    : id.startsWith('oa-')
-      ? 'oa'
-      : id.startsWith('sql-')
-        ? 'sql'
-        : 'course';
+const SOURCES = ['lc', 'oa', 'sql', 'core', 'bk'] as const;
+// pd- problems are the SQL track's pandas versions, so they count as 'sql'.
+const source = (id: string): (typeof SOURCES)[number] | 'course' =>
+  trackLanguageOf(id) ? 'sql' : (SOURCES.find((prefix) => id.startsWith(`${prefix}-`)) ?? 'course');
 
 /** ?view=progress: practice history, mistakes, reviews due today, and the learner's marks and notes. */
 export function MyProgress({
@@ -252,7 +248,7 @@ export function MyProgress({
   const tried = (item: PracticeHistoryItem) =>
     t(`提交 ${item.attempts} 次`, `${item.attempts} submission${item.attempts > 1 ? 's' : ''}`);
   const sourceName = (id: string) =>
-    ({ lc: 'LeetCode', oa: 'OA', sql: t('SQL 专项', 'SQL track'), course: t('课程练习', 'Course') })[
+    ({ lc: 'LeetCode', oa: 'OA', sql: t('SQL 专项', 'SQL track'), core: 'Core Skills', bk: t('书中题目', 'Book problem'), course: t('课程练习', 'Course') })[
       source(id)
     ];
 

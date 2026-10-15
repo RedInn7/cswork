@@ -2,7 +2,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
-import type { Language } from '@/lib/problems';
+import { LANGUAGE_IDS, type Language } from '@/lib/problems';
 import type { Person } from './auth';
 import { HttpError, limit } from './http';
 import { ensurePracticeRound, isSelectedProblem } from './practice-rounds';
@@ -11,6 +11,15 @@ import { leetcodeContract, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import type { CodingMode } from '@/lib/coding-mode';
 import type { OjProblemSpec } from '@/lib/oj-types';
 import { boundedFeedback, FEEDBACK_BYTES } from './oj-case-store';
+import { aiTask } from './ai-tasks';
+import {
+  PROJECT_MAX_BYTES,
+  PROJECT_MAX_FILES,
+  PROJECT_PATH,
+  PROJECT_RUNS_PER_HOUR,
+  projectProblemId,
+  type ProjectReport,
+} from '@/lib/ai-coding';
 
 export const MAX_CODE_BYTES = 65536;
 export const MAX_STDIN_BYTES = 65536;
@@ -27,8 +36,9 @@ export type SubmissionRow = {
   /**
    * playground: /playground runs, no problem, never in history or statistics. reference: the
    * editorial's code on a learner's custom case (createReferenceRun), never shown as theirs.
+   * project: an AI-assisted round run (createProjectRun), unlisted like a playground run.
    */
-  mode: 'judge' | 'run' | 'playground' | 'reference';
+  mode: 'judge' | 'run' | 'playground' | 'reference' | 'project';
   coding_mode: CodingMode;
   harness_version: string | null;
   custom_input: string | null;
@@ -58,7 +68,7 @@ export function judgeReady() {
 const inputSchema = z
   .object({
     problemId: z.string().min(1).max(80),
-    language: z.enum(['python', 'go', 'java', 'cpp', 'sql']),
+    language: z.enum(LANGUAGE_IDS),
     code: z.string().min(1).max(MAX_CODE_BYTES),
     mode: z.enum(['judge', 'run']).default('judge'),
     codingMode: z.enum(['leetcode', 'acm']).default('acm'),
@@ -201,6 +211,72 @@ export async function createPlaygroundRun(p: Person, value: unknown) {
       harness_version: null,
     });
   }).immediate();
+}
+const projectSchema = z
+  .object({
+    task: z.string().regex(/^[a-z0-9-]{1,60}$/),
+    files: z.record(z.string().regex(PROJECT_PATH), z.string().max(PROJECT_MAX_BYTES)),
+    idempotencyKey: z.string().regex(/^[a-zA-Z0-9_-]{16,100}$/),
+  })
+  .strict();
+/** Over a project's limits (files, bytes in all): runs and the AI pair refuse it with a 413. */
+export function projectTooLarge(files: Record<string, string>) {
+  const texts = Object.values(files);
+  return texts.length > PROJECT_MAX_FILES || texts.reduce((n, text) => n + Buffer.byteLength(text), 0) > PROJECT_MAX_BYTES;
+}
+/**
+ * An AI-assisted round run (/ai-assisted/<task>): the learner's src/ and tests/ against the
+ * task's public and hidden suites (lib/server/ai-tasks.ts). `code` holds the files as JSON
+ * under their own size limit, not MAX_CODE_BYTES; there is no problem version. mode 'project'
+ * keeps it out of history, the status board, statistics, points and the AI tutor's verdicts.
+ */
+export async function createProjectRun(p: Person, value: unknown) {
+  const d = projectSchema.parse(value);
+  const task = aiTask(d.task);
+  if (!task) throw new HttpError(404, '练习任务不存在');
+  const files = Object.entries(d.files).sort(([a], [b]) => (a < b ? -1 : 1));
+  if (!files.length || projectTooLarge(d.files))
+    throw new HttpError(413, '项目最多 30 个文件，合计 256 KiB');
+  if (files.some(([, text]) => text.includes('\0')))
+    throw new HttpError(400, '内容不能包含空字符');
+  if (p.role !== 'teacher' && !p.verified)
+    throw new HttpError(403, '请先验证邮箱，再运行和提交代码');
+  const problemId = projectProblemId(task.slug);
+  const code = JSON.stringify({ files: Object.fromEntries(files) });
+  const hash = createHash('sha256').update(JSON.stringify([problemId, code])).digest('hex');
+  const prior = priorRequest(p.id, d.idempotencyKey, hash);
+  if (prior) return { id: prior.id, status: prior.status };
+  if (!judgeReady())
+    throw new HttpError(503, '判题服务尚未配置，代码草稿已保留');
+  await limit(p, 'oj-project', PROJECT_RUNS_PER_HOUR, 3600);
+  return sqlite().transaction(() => {
+    const duplicate = priorRequest(p.id, d.idempotencyKey, hash);
+    if (duplicate) return { id: duplicate.id, status: duplicate.status };
+    admit(p);
+    return enqueue(p, d.idempotencyKey, {
+      problem_id: problemId,
+      problem_version_id: null,
+      language: 'python',
+      code,
+      mode: 'project',
+      custom_input: null,
+      request_hash: hash,
+      // Both suites' sizes are known once they ran; the worker sets it.
+      total: 0,
+      practice_round_id: null,
+      coding_mode: 'acm',
+      harness_version: null,
+    });
+  }).immediate();
+}
+/** A finished project run's report (the worker's one result row), null before it has one. */
+export function projectReport(row: { stdout: string | null; stderr: string | null } | undefined): ProjectReport | null {
+  try {
+    const value = JSON.parse(row?.stdout ?? 'null') as Omit<ProjectReport, 'output'> | null;
+    return value && { visible: value.visible, hidden: value.hidden, output: row?.stderr ?? '' };
+  } catch {
+    return null;
+  }
 }
 export async function createSubmission(p: Person, value: unknown) {
   const d = inputSchema.parse(value);
@@ -613,9 +689,16 @@ export async function submissionDetail(p: Person, id: string) {
       ? results.find((r) => r.status !== 'accepted' && r.status !== 'finished')
       : undefined;
   let firstFailure;
+  // While the problem is in the owner's running contest or skill exam, a hidden case stays
+  // home: one counterexample per submission would hand over the hidden tests the exam scores.
+  // The verdict and passed/total still show. Imported lazily: the judge worker bundle stays free of contests.
+  const sealed =
+    failed &&
+    definitions.find((c) => c.ordinal === failed.ordinal)?.hidden !== false &&
+    (await import('./contests')).inRunningContest(s.user_id, s.problem_id);
   // Old hidden results have no captured output. Do not invent a counterexample
   // for those rows, or reveal any additional cases in the version snapshot.
-  if (failed && failed.status === s.status && failed.stdout !== null) {
+  if (failed && !sealed && failed.status === s.status && failed.stdout !== null) {
     const definition = sqlite()
       .prepare(
         'SELECT substr(input,1,?) AS input,substr(expected_output,1,?) AS expected_output FROM oj_test_cases WHERE version_id=? AND ordinal=?',
@@ -668,6 +751,8 @@ export async function submissionDetail(p: Person, id: string) {
     queuedPosition: position,
     cancelRequested: Boolean(s.cancel_requested),
     problemVersion: snapshot ? `v${snapshot.revision}` : undefined,
+    // A project run has no cases: its one result row holds the suites' report.
+    project: s.mode === 'project' ? projectReport(results[0]) : undefined,
   };
 }
 /** Never the learner's own attempts: /playground, editorial reference runs, ai-assisted projects. */

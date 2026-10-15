@@ -15,18 +15,32 @@ export const PER_DAY_MAX = 10;
 export const START_RANGE_DAYS = 60;
 const dayIndex = (date: string) => Date.parse(`${date}T00:00:00Z`) / DAY;
 
-/** The plan's problems judgeable here, in list order, each once. */
-export function campTasks(plan: string) {
+/**
+ * The plan's problems judgeable here, in list order, each once. With `since` (a cohort's day 1,
+ * ms), problems created from then on go last, so publishing new ones (the book lists' bk-
+ * problems) leaves a running cohort's days as they were.
+ */
+export function campTasks(plan: string, since?: number) {
   const list = classicList(plan);
   if (!list) return [];
   const seen = new Set<string>();
-  return listClassicLibrary(list).groups.flatMap((group) =>
+  const tasks = listClassicLibrary(list).groups.flatMap((group) =>
     group.items.flatMap((item) => {
       if (!item.judgeProblemId || seen.has(item.judgeProblemId)) return [];
       seen.add(item.judgeProblemId);
       return [{ id: item.judgeProblemId, number: item.number, titleZh: item.titleZh, titleEn: item.titleEn, difficulty: item.difficulty }];
     }),
   );
+  if (since === undefined) return tasks;
+  // ponytail: keyed on oj_problems.created_at; a problem created earlier but judgeable only later
+  // still lands in list order. Store each cohort's ids if that starts to matter.
+  const late = new Set(
+    sqlite()
+      .prepare('SELECT id FROM oj_problems WHERE created_at>=? AND id IN (SELECT value FROM json_each(?))')
+      .pluck()
+      .all(since, JSON.stringify([...seen])) as string[],
+  );
+  return [...tasks.filter((t) => !late.has(t.id)), ...tasks.filter((t) => late.has(t.id))];
 }
 
 /**
@@ -43,7 +57,8 @@ export function campDetail(groupId: string, shift: number, today: number) {
     | undefined;
   const list = row && classicList(row.plan);
   if (!row || !list) return null;
-  const all = campTasks(row.plan);
+  const start = dayIndex(row.start_date) * DAY + shift;
+  const all = campTasks(row.plan, start);
   const days = Math.ceil(all.length / row.per_day);
   const day = today - dayIndex(row.start_date) + 1;
   const slice = day >= 1 && day <= days ? all.slice((day - 1) * row.per_day, day * row.per_day) : [];
@@ -54,7 +69,7 @@ export function campDetail(groupId: string, shift: number, today: number) {
       WHERE user_id IN (SELECT user_id FROM study_group_members WHERE group_id=?)
         AND mode='judge' AND status='accepted' AND created_at>=? AND problem_id IN (SELECT value FROM json_each(?))`,
     )
-    .all(groupId, dayIndex(row.start_date) * DAY + shift, JSON.stringify(all.map((t) => t.id))) as { u: string; id: string }[])
+    .all(groupId, start, JSON.stringify(all.map((t) => t.id))) as { u: string; id: string }[])
     (solved.get(r.u) ?? solved.set(r.u, new Set()).get(r.u)!).add(r.id);
   return {
     info: {

@@ -143,6 +143,20 @@ export default async function ClassicListPage({ params }: Props) {
                     {item.ref && item.number !== null && (
                       <span className="lists-public-twin">LeetCode {item.number}</span>
                     )}
+                    {/* Judged here as cswork's rewrite: the book's page stays a reference. */}
+                    {item.refSlug && item.number === null && item.judgeProblemId && (
+                      <a
+                        className="lists-public-origin"
+                        href={bookProblemUrl(item.refSlug)}
+                        rel="nofollow noopener noreferrer"
+                        target="_blank"
+                      >
+                        {zh ? '原题' : 'Original'}
+                        <span className="sr-only">
+                          {zh ? `：${label}（在新窗口打开）` : `: ${label} (opens in a new tab)`}
+                        </span>
+                      </a>
+                    )}
                     {item.stop && (
                       <span
                         className="lists-public-stop"

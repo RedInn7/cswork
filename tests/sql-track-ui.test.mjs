@@ -92,3 +92,67 @@ test('the SQL track lists published problems by topic and opens them', async () 
     dom.window.close();
   }
 });
+
+// Once the pd- versions are listed, a SQL / Pandas switch picks which version the rows open.
+test('the SQL track switches to the pandas versions once they are listed', async () => {
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
+  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage'])
+    Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const { createRoot } = await import('react-dom/client');
+  const { SqlTrack } = await import('../components/sql-track.tsx');
+  const navigations = [];
+  const root = createRoot(document.getElementById('root'));
+  const render = (availableProblemIds, key) =>
+    act(async () => {
+      root.render(
+        createElement(SqlTrack, {
+          key,
+          navigate: (...args) => navigations.push(args),
+          availableProblemIds,
+          activity: [{ problem_id: 'pd-01' }, { problem_id: 'sql-04' }],
+          signedIn: true,
+        }),
+      );
+    });
+  const click = (node) =>
+    act(async () => {
+      node.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    });
+  const switchButtons = () => [...document.querySelectorAll('fieldset.classic-site button')];
+  const hrefs = () => [...document.querySelectorAll('a.study-row')].map((a) => a.getAttribute('href').split('=').at(-1));
+  try {
+    // The judge has no pandas yet: no pd- problems listed, no switch.
+    await render(['sql-01', 'sql-04'], 'sql-only');
+    assert.equal(switchButtons().length, 0);
+    assert.deepEqual(hrefs(), ['sql-01', 'sql-04']);
+
+    await render(['sql-01', 'sql-04', 'pd-01', 'pd-04', 'pd-05'], 'both');
+    assert.deepEqual(switchButtons().map((b) => [b.textContent, b.getAttribute('aria-pressed')]), [
+      ['SQL', 'true'],
+      ['Pandas', 'false'],
+    ]);
+    assert.equal(document.querySelector('fieldset.classic-site legend').textContent, 'Practice language');
+    await click(switchButtons()[1]);
+    assert.equal(switchButtons()[1].getAttribute('aria-pressed'), 'true');
+    assert.equal(localStorage.getItem('cswork:sql-track-language'), 'pandas');
+    assert.ok(document.querySelector('.classic-kicker').textContent.includes('pandas edition'));
+    // The rows open the pandas versions; their solves are their own.
+    assert.deepEqual(hrefs(), ['pd-01', 'pd-04', 'pd-05']);
+    assert.equal(document.querySelector('progress')?.getAttribute('value'), '1');
+    assert.ok(document.querySelector('a.study-row[data-next]')?.getAttribute('href').endsWith('pd-04'));
+    assert.ok(document.querySelectorAll('a.study-row')[1].textContent.includes('4.'));
+    await click(document.querySelectorAll('a.study-row')[2]);
+    assert.deepEqual(navigations.at(-1), ['problem', { problem: 'pd-05' }]);
+    assert.equal(sessionStorage.getItem('cswork:problem-sequence'), '["pd-01","pd-04","pd-05"]');
+
+    // The choice is remembered for the next visit.
+    await render(['sql-01', 'sql-04', 'pd-01', 'pd-04', 'pd-05'], 'again');
+    assert.deepEqual(hrefs(), ['pd-01', 'pd-04', 'pd-05']);
+    await click(switchButtons()[0]);
+    assert.deepEqual(hrefs(), ['sql-01', 'sql-04']);
+  } finally {
+    await act(async () => root.unmount());
+    dom.window.close();
+  }
+});

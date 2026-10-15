@@ -252,6 +252,29 @@ const EN: Record<string, string> = {
   '组长不能退出，可以解散小组': "The owner can't leave. Disband the group instead",
   只有组长可以管理小组: 'Only the group owner can manage the group',
   成员不存在: 'Member not found',
+  消息不存在: 'Message not found',
+  只有处理举报时老师才能查看小组聊天: 'Teachers can read a group chat only while a message in it is reported',
+  // Work email badge (lib/server/work-verify.ts)
+  '个人邮箱不能验证员工身份，请用公司邮箱': "A personal email can't verify an employer. Use your work email",
+  '暂不支持这个邮箱域名，目前只支持有公司页的公司': "This email domain isn't supported yet: only companies with a company page are",
+  '邮件服务尚未开放，暂时无法验证工作邮箱': "Email isn't set up yet, so work emails can't be verified for now",
+  '验证码已失效，请重新获取': 'This code has expired. Ask for a new one',
+  验证码不正确: 'That code is not right',
+  '验证码邮件未能发送，请稍后重试': "The code email couldn't be sent. Please try again later",
+  这个工作邮箱已经验证过另一个账号: 'This work email already verified another account',
+  还没有验证工作邮箱: "You haven't verified a work email yet",
+  // Direct messages (lib/server/direct-messages.ts); notification titles too
+  内推帖不存在或已失效: 'This referral post is gone or no longer offers referrals',
+  互相关注后才能发私信: 'You can message someone once you follow each other',
+  对方暂不接收你的私信: "This person isn't taking messages from you",
+  今天发送的私信已达上限: "You've sent today's maximum of messages",
+  今天新开的私信会话已达上限: "You've started today's maximum of new conversations",
+  '对方今天收到的新私信太多了，请明天再试': 'This person got too many new messages today. Please try tomorrow',
+  你收到一条内推请求: 'You have a new referral request',
+  你收到一条新私信: 'You have a new message',
+  会话不存在: 'Conversation not found',
+  不能给自己发私信: "You can't message yourself",
+  对方暂不接收新的私信: "This person isn't taking new conversations",
   // Peer mock interviews (lib/server/mock-peer.ts); notification titles too
   同伴模拟面试已匹配: 'Peer mock interview matched',
   同伴模拟面试已取消: 'Peer mock interview cancelled',
@@ -296,6 +319,14 @@ const EN: Record<string, string> = {
   今天发布的帖子已达上限: "You've reached today's limit for posts",
   请填写标题: 'Please add a title',
   标签无效: 'Unknown tag',
+  // Thread polls (lib/server/solution-posts.ts)
+  只有讨论帖可以发起投票: 'Only discussion threads can have a poll',
+  投票截止时间要晚于现在: 'The poll must close in the future',
+  '已经有人投票，不能再修改投票': "People have voted already, so the poll can't change",
+  投票不存在: 'Poll not found',
+  投票已截止: 'This poll has closed',
+  投票选项无效: 'Invalid poll choice',
+  你已经投过票了: "You've already voted",
   // Saved lists and follows (lib/server/learner-cloud.ts, lib/server/follows.ts)
   不能收藏自己的题单: "You can't save your own list",
   请在题单页收藏: 'Save lists from their page',
@@ -336,6 +367,12 @@ const EN: Record<string, string> = {
   '今天的简历点评次数已用完，明天再来': "You've used today's resume reviews. Come back tomorrow",
   '请粘贴完整的简历文字（至少 80 个字符）': 'Paste your whole resume as text (at least 80 characters)',
   '简历过长，最多读取 12000 个字符': 'The resume is too long; the review reads at most 12,000 characters',
+  // AI-assisted round (lib/server/ai-rounds.ts, createProjectRun)
+  练习任务不存在: 'Practice task not found',
+  '项目最多 30 个文件，合计 256 KiB': 'A project is limited to 30 files and 256 KiB in all',
+  '今天的 AI 结对次数已用完，明天再来': "You've used today's AI pair requests. Come back tomorrow",
+  'AI 结对今天的额度已用完，明天再来': 'The AI pair is out of credit for today. Come back tomorrow',
+  '比赛进行中，AI 结对暂停，赛后开放': 'The AI pair is paused while your contest runs; it reopens afterwards',
   '这道题没有 LeetCode 模式': "This problem has no LeetCode mode",
   请先输入问题: 'Type a question first',
   请先在题面里选中一段文字: 'Select some text in the statement first',
@@ -390,6 +427,16 @@ const EN: Record<string, string> = {
   '所选知识点下的题不够，减少题量或多选几个':
     'Not enough problems on the topics you picked. Draw fewer questions or pick more topics',
   模拟考试参数无效: 'Invalid mock exam parameters',
+  // Skill certification exams (lib/server/skill-tests.ts) and their certificates
+  你还有一场认证考试没有结束: 'You still have a certification exam in progress',
+  '同一项认证 7 天内只能考一次': 'You can take each certification exam once every 7 days',
+  '题库里你还没做过的题不够，暂时无法开考':
+    "There aren't enough problems you haven't solved for this exam yet",
+  没有进行中的认证考试: 'No certification exam in progress',
+  认证考试接口不存在: 'Certification endpoint not found',
+  系统设计面试课: 'System Design Interview Course',
+  // Course star ratings (lib/server/course-ratings.ts)
+  学完至少一节后才能评分: 'Finish at least one lesson before rating this course',
   '这道题的题解和测试数据正在校验，暂未开放':
     "This problem's solution and test data are being verified and aren't available yet",
   '这道题的题解正在校验，暂未开放': "This problem's solution is being verified and isn't available yet",

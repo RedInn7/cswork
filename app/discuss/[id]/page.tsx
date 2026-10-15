@@ -61,6 +61,9 @@ export default async function ThreadPage({ params }: Props) {
         <h1>{post.title}</h1>
         <p className="discuss-row-meta">
           <span>{post.author || t('学员', 'Learner')}</span>
+          {post.employer && (
+            <span className="discuss-chip">{t(`已验证 · ${post.employer} 员工`, `Verified · ${post.employer} employee`)}</span>
+          )}
           <span>{day(post.createdAt, zh)}</span>
           {post.updatedAt > post.createdAt + 60000 && <span>{t('已编辑', 'edited')}</span>}
           <span>{t(`${post.votes} 赞`, `${post.votes} ${post.votes === 1 ? 'upvote' : 'upvotes'}`)}</span>
@@ -69,10 +72,39 @@ export default async function ThreadPage({ params }: Props) {
       <div className="public-library-prose discuss-thread-body">
         <PublicLibraryMarkdown body={post.body ?? ''} math={false} ugc />
       </div>
+      {/* A poll's options; counts only once it has closed (voting happens in the app). */}
+      {post.poll && (
+        <section aria-labelledby="discuss-poll">
+          <h2 id="discuss-poll" className="lists-public-h2">
+            {t('投票：', 'Poll: ')}
+            {post.poll.question}
+          </h2>
+          <ul>
+            {post.poll.options.map((option, i) => (
+              <li key={i}>
+                {option}
+                {post.poll?.counts &&
+                  ` · ${t(`${post.poll.counts[i]} 票`, `${post.poll.counts[i]} ${post.poll.counts[i] === 1 ? 'vote' : 'votes'}`)}`}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       <p>
         <a className="lists-public-cta" href={app}>
-          {t('在 CSWork 里回复或点赞', 'Reply or upvote on CSWork')} →
+          {post.poll && !post.poll.closed
+            ? t('在 CSWork 里投票、回复或点赞', 'Vote, reply or upvote on CSWork')
+            : t('在 CSWork 里回复或点赞', 'Reply or upvote on CSWork')}{' '}
+          →
         </a>
+        {post.referral && (
+          <>
+            {' '}
+            <a className="lists-public-cta" href={`/?view=messages&post=${encodeURIComponent(post.id)}`}>
+              {t('请求内推', 'Request a referral')} →
+            </a>
+          </>
+        )}
       </p>
       <section aria-labelledby="discuss-replies">
         <h2 id="discuss-replies" className="lists-public-h2">

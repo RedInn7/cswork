@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { classicLists } from './classic-lists';
 import { ROUTE_SECTIONS } from './route-stops';
 import { GUIDE_CHAPTERS, guidePath } from './career-guide';
+import { AI_TASK_SLUGS } from './ai-coding';
 
 // Public URLs must not follow request hosts or private deployment configuration.
 export const SITE_URL = 'https://cswork.org';
@@ -161,11 +162,15 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: '/contest/leaderboard' },
   { path: '/topics' },
   { path: '/roadmap' },
+  { path: '/core-skills' },
   ...ROUTE_SECTIONS.flatMap((s) => s.slugs.map((slug) => ({ path: `/topics/${slug}` }))),
   { path: guidePath() },
   ...GUIDE_CHAPTERS.map((chapter) => ({ path: guidePath(chapter.slug) })),
   { path: '/career/resume' },
   { path: '/career/visa-timeline' },
+  { path: '/ai-assisted' },
+  ...AI_TASK_SLUGS.map((slug) => ({ path: `/ai-assisted/${slug}` })),
+  { path: '/certify' },
 ];
 /** `statics`: entries written before the library on page 1 (static pages plus the mock OA pages). */
 export function sitemapPageCount(

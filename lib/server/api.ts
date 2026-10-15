@@ -54,6 +54,7 @@ import { purchasedFreezes } from './points';
 import { aiEnabled } from './ai-tutor';
 import { tokenCaller } from './api-tokens';
 import { certificatesFor, finishedCourses, showOnProfile } from './certificates';
+import { handleCourseRatings, ratingColumns } from './course-ratings';
 const id = z.string().min(1).max(100),
   short = z.string().trim().min(1).max(180),
   long = z.string().trim().min(1).max(12000);
@@ -96,7 +97,7 @@ function services() {
 /** `lite` skips the problem catalogue for the client's periodic refresh. */
 export async function bootstrap(p: Person | null, lite = false) {
   const cs = await rows<Course & { revision: number; position: number }>(
-    `SELECT id,title,summary,version,published,revision,position,category,level FROM courses ${p?.role === 'teacher' ? '' : 'WHERE published=1'} ORDER BY position,id`,
+    `SELECT id,title,summary,version,published,revision,position,category,level,${ratingColumns('courses.id')} FROM courses ${p?.role === 'teacher' ? '' : 'WHERE published=1'} ORDER BY position,id`,
   );
   for (const c of cs) {
     c.has_access = p ? await allowed(p, c.id) : false;
@@ -206,6 +207,8 @@ export async function handle(request: Request) {
     if (resource === 'oj')
       // handleOj requires sign-in except for public OA reads, the landing list and the judge feed.
       return await handleOj(request, p, path.slice(1));
+    // Course star ratings: averages read signed out, rating needs a started course.
+    if (resource === 'course-ratings' && !resourceId) return await handleCourseRatings(request, p);
     if (request.method === 'GET') {
       if (resource === 'bootstrap')
         return json(await bootstrap(p, url.searchParams.get('lite') === '1'));

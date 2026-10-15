@@ -11,7 +11,7 @@ import { LocalDay, ProfileHeatmap } from './heatmap';
 import { BandChip, RatingCurve } from '@/components/contest-parts';
 
 /** Judge languages by their usual names; anything else as stored. */
-const LANGUAGE_NAMES: Record<string, string> = { python: 'Python', cpp: 'C++', java: 'Java', go: 'Go', sql: 'SQL' };
+const LANGUAGE_NAMES: Record<string, string> = { python: 'Python', cpp: 'C++', java: 'Java', go: 'Go', sql: 'SQL', pandas: 'Pandas' };
 
 /** /u/<handle>: a learner's opt-in page. Pure of request context, so tests render it directly. */
 export function ProfileView({
@@ -43,6 +43,11 @@ export function ProfileView({
             <span aria-hidden="true">★</span>
             <span className="sr-only">{t('展示的徽章：', 'Featured badge: ')}</span>
             {zh ? profile.featured.zh : profile.featured.en}
+          </div>
+        )}
+        {profile.employer && (
+          <div className="learner-employer">
+            {t(`已验证 · ${profile.employer} 员工`, `Verified · ${profile.employer} employee`)}
           </div>
         )}
         {profile.bio && <p>{profile.bio}</p>}
@@ -246,7 +251,7 @@ export function ProfileView({
       {!!certificates.length && (
         <section aria-labelledby="learner-certificates">
           <h2 id="learner-certificates" className="lists-public-h2">
-            {t('结业证书', 'Certificates')}
+            {t('证书', 'Certificates')}
           </h2>
           <ul className="lists-public-board">
             {certificates.map((c) => (

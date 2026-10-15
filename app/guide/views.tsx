@@ -19,6 +19,8 @@ export const GUIDE_COPY = {
     reviewCta: '试试简历 AI 点评',
     visa: '国际学生：按项目结束日和 OPT 日期，排出 OPT、STEM OPT 和 H-1B 的窗口与截止日。',
     visaCta: '身份时间线计算器',
+    aiRound: '允许用 AI 的编程面试：在多文件代码库里修 bug、加功能，旁边有 AI 结对，再用隐藏测试检验。',
+    aiRoundCta: 'AI 辅助编程轮练习',
     crumb: '求职指南',
   },
   en: {
@@ -35,6 +37,8 @@ export const GUIDE_COPY = {
     reviewCta: 'Try the AI resume review',
     visa: 'International students: lay out your OPT, STEM OPT and H-1B windows and deadlines from your own dates.',
     visaCta: 'Visa timeline calculator',
+    aiRound: 'Coding rounds that allow AI: fix and extend a small multi-file codebase with an AI pair, checked by hidden tests.',
+    aiRoundCta: 'AI-assisted round practice',
     crumb: 'Career guide',
   },
 };
@@ -115,6 +119,12 @@ export function GuideIndexView({ zh }: { zh: boolean }) {
         <p>{c.visa}</p>
         <a href="/career/visa-timeline">
           {c.visaCta} <span aria-hidden="true">→</span>
+        </a>
+      </aside>
+      <aside className="guide-review-cta" aria-label={c.aiRoundCta}>
+        <p>{c.aiRound}</p>
+        <a href="/ai-assisted">
+          {c.aiRoundCta} <span aria-hidden="true">→</span>
         </a>
       </aside>
     </>

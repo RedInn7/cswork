@@ -28,6 +28,7 @@ import {
   isKnowledgeLesson,
 } from '@/lib/interview-curriculum';
 import { KnowledgeExercises } from './knowledge-exercises';
+import { isFreeTrack } from '@/lib/free-tracks';
 import '@/app/knowledge-exercises.css';
 import '@/app/study-library.css';
 import '@/app/daily-month.css';
@@ -48,6 +49,7 @@ import {
   filterCourses,
 } from '@/lib/course-catalog';
 import { GiftButton } from './course-gift';
+import { CourseRating, RatingSummary } from './course-rating';
 export type Navigate = (view: string, extra?: Record<string, string>) => void;
 export function CourseList({
   boot,
@@ -174,6 +176,10 @@ export function CourseList({
                         : t('配套算法与工程实验', 'Algorithm and engineering labs')}
                     </span>
                     <span>v{c.version}</span>
+                    {/* CourseRating below shows the live one, updated when the learner rates. */}
+                    {!(c.has_access && done > 0) && (
+                      <RatingSummary avg={c.rating_avg} count={c.rating_count} zh={locale === 'zh'} />
+                    )}
                   </div>
                 </div>
                 <div className="course-access">
@@ -197,6 +203,8 @@ export function CourseList({
                           c.lessons.length ? (done / c.lessons.length) * 100 : 0
                         }
                       />
+                      {/* Rated once a lesson is done; the server checks the same. */}
+                      {done > 0 && <CourseRating courseId={c.id} zh={locale === 'zh'} />}
                       {certificate && (
                         <a className="course-certificate-link" href={`/certificate/${certificate.id}`}>
                           {t('查看结业证书', 'View your certificate')}
@@ -401,7 +409,8 @@ export function CourseList({
                               )}
                               {boot.problems.some(
                                 (p) =>
-                                  p.lessonId === l.id ||
+                                  // Free tracks (SQL, book problems) only borrow a lesson id.
+                                  (p.lessonId === l.id && !isFreeTrack(p.id)) ||
                                   interviewCatalog
                                     .find((chapter) => chapter.id === l.id)
                                     ?.homeworkProblemIds.includes(p.id),
@@ -671,7 +680,7 @@ export function LessonReader({
     interviewChapter = interviewCatalog.find((chapter) => chapter.id === id),
     related = boot.problems.filter(
       (p) =>
-        p.lessonId === id ||
+        (p.lessonId === id && !isFreeTrack(p.id)) ||
         interviewChapter?.homeworkProblemIds.includes(p.id),
     ),
     next = all[all.findIndex((l) => l.id === id) + 1],

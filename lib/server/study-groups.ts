@@ -1,19 +1,22 @@
-import { createHash, randomBytes } from 'node:crypto';
+import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { curatedEntries } from '@/lib/ling-curated';
+import { REPORT_CLEARED, REPORTS_HIDE } from '@/lib/community';
 import { STOP_NAMES } from '@/lib/route-stops';
 import type { Person } from './auth';
 import { shownOaSql } from './env';
 import { HttpError, json, limit, requirePerson } from './http';
 import { readJson } from './my-practice';
 import { campDetail, setCamp } from './group-camp';
+import { fileReport, reportReason } from './solution-posts';
 
 /**
  * Study groups (db/study-groups-schema.ts): a member sees the group's name, goal, invite code
  * and, per member, only the display name chosen on joining and accepted-problem counts per
  * local day. Never names, emails, code or which problems. A group someone is not in reads as
- * missing; teachers may open and moderate any group from a report.
+ * missing; teachers may open and moderate any group from a report, and read its chat while a
+ * message in it is reported.
  */
 const DAY = 86400000;
 export const GROUP_MAX = 50;
@@ -37,6 +40,23 @@ export const plain = (max: number, min = 1) =>
     .min(min)
     .max(max)
     .refine((s) => !/[\p{C}\u115F\u1160\u3164\uFFA0\u2800]/u.test(s) && (!s || /[\p{L}\p{N}\p{S}\p{P}]/u.test(s)));
+/**
+ * A chat or direct message: like plain(), but it may run over several lines, indent pasted code
+ * with tabs, and join emoji (👩‍💻) or Persian and Indic letters with zero-width (non-)joiners.
+ */
+export const chatText = z
+  .string()
+  .trim()
+  .min(1)
+  .max(2000)
+  .refine(
+    (s) =>
+      !/[\p{C}\u115F\u1160\u3164\uFFA0\u2800]/u.test(s.replace(/[\n\t\u200C\u200D]/g, '')) &&
+      /[\p{L}\p{N}\p{S}\p{P}]/u.test(s),
+  );
+/** Chat messages a member may send an hour, and the most one read returns. */
+export const CHAT_HOUR = 60;
+const CHAT_PAGE = 50;
 const displayName = plain(24);
 const groupId = z.string().regex(/^[A-Za-z0-9_-]{12}$/);
 export const code = z
@@ -169,6 +189,27 @@ export function groupDetail(id: string, p: Person, tz = 0, now = Date.now()) {
   };
 }
 
+/**
+ * A group's chat, oldest first: the latest CHAT_PAGE messages (open chats reload it whole, so
+ * removed lines leave them too). Authors show by their name in the group, null once they left.
+ * Removed, moderated and reported-down messages leave the chat for everyone.
+ */
+export function groupChat(group: string, me: string) {
+  return (
+    sqlite()
+      .prepare(
+        `SELECT g.id,g.body,g.created_at AS createdAt,g.user_id=@me AS mine,m.display_name AS name
+        FROM study_group_messages g LEFT JOIN study_group_members m ON m.group_id=g.group_id AND m.user_id=g.user_id
+        WHERE g.group_id=@group AND g.hidden=0
+          AND (SELECT COUNT(*) FROM post_reports r WHERE r.target='gmsg:'||g.id AND r.reason<>'${REPORT_CLEARED}')<${REPORTS_HIDE}
+        ORDER BY g.created_at DESC,g.rowid DESC LIMIT ${CHAT_PAGE}`,
+      )
+      .all({ group, me }) as { id: string; body: string; createdAt: number; mine: number; name: string | null }[]
+  )
+    .reverse()
+    .map((m) => ({ ...m, mine: !!m.mine }));
+}
+
 /** The reader's groups, newest joined first. */
 export function myGroups(userId: string) {
   return sqlite()
@@ -291,6 +332,18 @@ export async function handleStudyGroups(request: Request, p: Person | null, path
     }
     await limit(p, 'group-read', 120);
     if (!id) return json({ items: myGroups(p.id), ownedMax: OWNED_MAX, joinedMax: JOINED_MAX });
+    if (action === 'messages') {
+      const { row, role } = readable(id, p);
+      // A moderating teacher reads a chat only while one of its messages is reported.
+      const reported = db
+        .prepare(
+          `SELECT 1 FROM study_group_messages g JOIN post_reports r ON r.target='gmsg:'||g.id
+          WHERE g.group_id=? AND r.reason<>'${REPORT_CLEARED}' LIMIT 1`,
+        )
+        .get(row.id);
+      if (!role && !reported) throw new HttpError(403, '只有处理举报时老师才能查看小组聊天');
+      return json({ items: groupChat(row.id, p.id) });
+    }
     if (action) throw new HttpError(404, '学习小组接口不存在');
     return json(groupDetail(id, p, tz()));
   }
@@ -321,9 +374,39 @@ export async function handleStudyGroups(request: Request, p: Person | null, path
     );
     return json(groupDetail(row.id, p, tz()));
   }
+  // Chat: members only (a teacher reads it while a message is reported, and acts from the moderation queue).
+  if (action === 'messages' || action === 'unsay' || action === 'report') {
+    const { row, role } = readable(id, p);
+    if (!role) throw new HttpError(404, '学习小组不存在');
+    if (action === 'messages') {
+      requireVerified(p);
+      const { body } = z.object({ body: chatText }).strict().parse(await readJson(request, 10000));
+      await limit(p, 'group-chat', CHAT_HOUR, 3600);
+      db.prepare('INSERT INTO study_group_messages(id,group_id,user_id,body,hidden,created_at) VALUES(?,?,?,?,0,?)').run(
+        randomUUID(),
+        row.id,
+        p.id,
+        body,
+        Date.now(),
+      );
+      return json({ items: groupChat(row.id, p.id) }, 201);
+    }
+    const d = z
+      .object({ message: z.string().max(40), reason: reportReason.optional() })
+      .strict()
+      .parse(await readJson(request, 500));
+    const message = db
+      .prepare('SELECT user_id FROM study_group_messages WHERE id=? AND group_id=? AND hidden=0')
+      .get(d.message, row.id) as { user_id: string } | undefined;
+    if (!message || (action === 'unsay' && message.user_id !== p.id)) throw new HttpError(404, '消息不存在');
+    if (action === 'unsay') db.prepare('UPDATE study_group_messages SET hidden=1 WHERE id=?').run(d.message);
+    else fileReport(p, `gmsg:${d.message}`, message.user_id, d.reason ?? 'other');
+    return json({ items: groupChat(row.id, p.id) });
+  }
   const { row } = managed(id, p);
   if (action === 'delete') {
     db.transaction(() => {
+      db.prepare('DELETE FROM study_group_messages WHERE group_id=?').run(row.id);
       db.prepare('DELETE FROM study_group_members WHERE group_id=?').run(row.id);
       db.prepare('DELETE FROM study_group_camps WHERE group_id=?').run(row.id);
       db.prepare('DELETE FROM study_groups WHERE id=?').run(row.id);

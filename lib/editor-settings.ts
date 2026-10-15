@@ -192,4 +192,5 @@ export const languageFiles: Record<Language, string> = {
   java: 'Main.java',
   cpp: 'main.cpp',
   sql: 'query.sql',
+  pandas: 'solution.py',
 };

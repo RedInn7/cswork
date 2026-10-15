@@ -56,10 +56,22 @@ export function PrivacyDocument() {
                 登录后，交卷的模拟 OA 成绩、自建题单、对题目和题库面试题的「我面试被问到过」报告，以及给面经和面试题的点赞也保存在你的账号里。题单默认私有，设为公开后持链接的人都能看到和复制；公开主页默认关闭，打开后只显示你设定的主页名、简介和刷题统计，以及由此得到的徽章（包括按月的每日一题全勤，和你选择展示在主页名旁的一枚），不显示昵称和邮箱。面试报告和点赞只以人数汇总展示，不公开报告人和点赞人。模拟 OA 成绩和 AI 面试评分还会匿名参与「超过多少人」的百分位统计，同一场景不足 20 人（AI 面试不足 30 人）时不显示。
               </p>
               <p>
+                你在社区发布的题解、讨论帖、回答和评论（包括系统设计章节下的讨论）以公开主页名或打码后的昵称显示。收藏的帖子只有你自己能看到，帖子上只显示被收藏的总次数。参与讨论帖里的投票时，平台记录你的账号选了哪几项，用来保证每个账号只投一次；结果只显示每个选项的票数和投票人数，不公开谁投了什么。
+              </p>
+              <p>
                 参加比赛时，计分板只显示你报名时填写的比赛昵称；周赛、入门赛和 1v1 排位的 rating 与胜负记录保存在你的账号里，只有你在公开主页上打开「展示比赛记录」后才会出现在主页上。排位匹配期间，平台暂存你的比赛昵称、对战 rating 和排队时间，匹配成功或取消时删除，离开页面后最迟 20 分钟内删除。报名时可以选择「赛后公开我的 AC 代码」（默认不勾选）：勾选后，比赛结束 15 分钟起，能打开该场比赛的登录用户可以看到你在比赛时间内每题首次通过的代码；之后随时可以在比赛页关掉，关掉后不再向任何人展示。计分板的「只看关注」只列出主页展示比赛记录的人。
               </p>
               <p>
+                参加技能认证考试时，平台保存每场考试抽到的题目、开考和交卷时间、成绩与是否通过，用于计时、计分、7 天的重考间隔和你的考试记录；成绩由你在考试时间内的正式提交算出，不会公开。通过后签发的证书和课程结业证书一样，只有你在证书列表里勾选「在公开主页展示」后才会出现在公开主页上，证书页面显示你的账号名称。给课程打分时，平台保存你给的星级（1–5 星，不含文字）和时间；其他人只能看到汇总的平均分和人数，不足 5 人时不显示平均分。
+              </p>
+              <p>
                 预约同伴互面时，服务器保存你填写的昵称、面试类型、级别、可用时段、时区和语言，以及你选填的目标公司和话题；同伴只能看到昵称，匹配通知里会写出你们共同的公司和话题。开着「邮件提醒」时，开始前一天和前一小时会给你已验证的账户邮箱发提醒（经 Resend 发送），内容是面试类型、时间、同伴昵称和会议链接；预约时取消勾选就不会收到。
+              </p>
+              <p>
+                学习小组的聊天消息只有本组成员能看到，显示你在本组填的昵称；消息保留 180 天后自动删除，小组解散时一并删除；小组里有消息被举报、尚未处理时，负责审核的老师可以打开这个小组的聊天查看上下文。私信只有对话双方能看到，只能在互相关注的人之间，或者从内推帖请求内推时开始；你可以设置谁能给你发起新对话，也可以屏蔽对方。私信保留 365 天后自动删除。新私信只产生站内通知，通知里只有对方的公开主页名或打码后的昵称，不含正文，也不发邮件。被举报的聊天消息和私信（只有被举报的那一条）会交给负责审核的老师查看和处理。
+              </p>
+              <p>
+                验证员工身份时，你填写的工作邮箱只用来发送验证码（经 Resend 发送）。平台不保存邮箱本身，只保存它加上服务器密钥后计算的不可逆摘要（用来保证一个工作邮箱只验证一个账号）、邮箱域名和对应的公司，验证有效 1 年。「已验证 · 公司员工」默认哪里都不显示，你可以分别打开公开主页、讨论帖和题解、内推帖三处展示，换成另一家公司的邮箱验证后三处都会重新关闭；讨论帖只限算法、内推和站务频道，面经讨论、求职、上岸故事频道、公司 OA 题的题解和面经评论里永远不显示。公开主页显示徽章时，主页的帖子列表不列出面经讨论、求职、上岸故事帖和公司 OA 题的题解，但这些帖子本身仍署你的主页名。账号设置里随时可以删除验证记录。
               </p>
               <p>
                 工单会保存你填写的问题、回复、附件，以及主动关联的课时、视频位置或提交记录。工单、作业和个人提交记录按账户权限提供给你及负责教学管理的老师查看，不作为面向其他学员的公开讨论内容。老师会使用这些资料答疑、评审作业、管理授权和跟进学习问题。
@@ -165,6 +177,10 @@ export function PrivacyDocument() {
                 在「简历 AI 点评」页（/career/resume）提交时，服务器会把你粘贴的简历文字、目标岗位和职位描述（如有）发送给
                 Anthropic，用于生成点评；不发送你的邮箱或账户标识。简历里本身写着的姓名、电话等信息会随文字一起发送，提交前可以先删掉。平台不保存简历文字和点评结果，只记录每天的调用次数和用量；点评只显示在你当前的浏览器页面里。不提交就不会发送。
               </p>
+              <p id="privacy-ai-round">
+                在「AI 辅助编程轮」练习（/ai-assisted）里点「运行测试」时，项目的全部文件会交给隔离环境运行公开测试和隐藏测试；这些文件和测试结果像代码沙盒的运行一样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，不出现在提交列表、统计、积分和学习进度中。编辑中的文件只保存在当前浏览器。使用 AI 结对时，服务器会把这道练习的说明、你当前的文件（总量有上限，超出的只发送文件名）、最近几轮对话和你上一次运行的公开测试结果（隐藏测试只有通过数量）发送给
+                Anthropic，用于生成回复；不发送邮箱、姓名或账户标识，平台只记录每天的调用次数和用量，不保存发送的内容和 AI 的回复。不提问就不会发送。
+              </p>
               <p>
                 平台会为持续提供课程、处理教学反馈、对账及故障恢复保留必要资料和备份，目前没有对所有账户及学习记录统一设置自动删除期限。业务数据与备份的清理时间可能不同；收到删除请求后，会确认涉及的资料、处理范围及需要保留的记录。
               </p>
@@ -259,6 +275,16 @@ export function PrivacyDocument() {
                 scenario has 20 people (30 for AI interviews).
               </p>
               <p>
+                Solutions, threads, answers and comments you post in the
+                community (including a system design chapter’s discussion)
+                show under your public handle or a masked display name. Only you
+                can see which posts you saved; a post shows only how many people
+                saved it. When you vote in a thread’s poll, the platform
+                records which options your account chose, so each account votes
+                once; results show only each option’s count and the number of
+                voters, never who voted for what.
+              </p>
+              <p>
                 In contests, scoreboards show only the contest name you enter
                 with. Weekly, starter and ranked 1v1 ratings and duel records are
                 stored with your account and appear on your public profile only
@@ -276,6 +302,19 @@ export function PrivacyDocument() {
                 profile shows contests.
               </p>
               <p>
+                When you take a skill certification exam, the platform keeps the
+                questions it drew, the start and hand-in times, the score and
+                whether you passed, for the timer, the scoring, the 7-day retake
+                interval and your exam history. The score comes from your formal
+                submissions during the exam and is never published. Certificates
+                you earn work like course certificates: they appear on your
+                public profile only if you tick “show on my public profile”, and
+                the certificate page shows your account name. When you rate a
+                course, the platform keeps your stars (1–5, no text) and when you
+                gave them; others see only the average and the number of
+                ratings, and no average until 5 people have rated.
+              </p>
+              <p>
                 When you book a peer mock interview, the server keeps the name
                 you enter, the interview type, level, the hours you offer, your
                 time zone and language, and any target companies and topics you
@@ -285,6 +324,40 @@ export function PrivacyDocument() {
                 the session (sent through Resend) with the type, time, your
                 partner&apos;s name and the call link; untick it when booking to
                 get none.
+              </p>
+              <p>
+                Study group chat messages are seen only by that group&apos;s
+                members, under the name you use in the group; they are deleted
+                after 180 days, and with the group when it is disbanded.
+                Moderating teachers can read a group&apos;s chat only while a
+                message in it is reported and not yet handled. Direct
+                messages are seen only by the two people in the conversation,
+                which can start only between people who follow each other or
+                from a referral thread&apos;s request button; you choose who may
+                start a conversation with you, and you can block anyone. Direct
+                messages are deleted after 365 days. A new one only creates an
+                on-site notification naming the sender by public handle or a
+                masked name, never its text, and no email. A reported chat or
+                direct message (only that one message) is shown to the teachers
+                who moderate the community.
+              </p>
+              <p>
+                When you verify where you work, the work email you enter is used
+                only to send the code (through Resend). The platform never keeps
+                the address: only a one-way digest of it computed with a server
+                secret (so one work email verifies one account), its domain and
+                the company, valid for a year. &ldquo;Verified &middot; company
+                employee&rdquo; shows nowhere by default; you can turn it on
+                separately for your public profile, threads and solutions, and
+                referral threads, and all three turn off again when you verify
+                a work email at another company. Threads means the Algorithms,
+                Referrals and Site feedback channels: it never shows in the
+                Interviews, Careers or Offers channels, on solutions to a
+                company&rsquo;s OA problems or on experience comments. While
+                your public profile shows the badge, its post list leaves out
+                Interviews, Careers and Offers threads and OA solutions, though
+                those posts still carry your handle. You can remove the
+                verification in account settings at any time.
               </p>
               <p>
                 Tickets store the questions you write, replies, and attachments,
@@ -523,6 +596,22 @@ export function PrivacyDocument() {
                 store the resume text or the review; it records only daily call
                 counts and usage, and the review exists only on your open page.
                 Nothing is sent unless you submit.
+              </p>
+              <p id="privacy-ai-round">
+                When you run the tests of an AI-assisted round project
+                (/ai-assisted), every file of the project goes to the isolated
+                environment to run the public and hidden tests. Like playground
+                runs, the files and results are kept in your run records, which
+                you and the instructors who manage teaching can view under their
+                permissions; they never appear in your submissions, statistics,
+                points or progress. Files you are editing stay in your browser.
+                When you use the AI pair, the server sends the project's brief,
+                your current files (up to a size cap; beyond it only file names),
+                the last few turns of the conversation and your last run's public
+                test results (hidden tests as counts only) to Anthropic to write a
+                reply. No email, name or account identifier is sent; the platform
+                records only daily call counts and usage, never what was sent or
+                the AI's reply. Nothing is sent unless you ask.
               </p>
               <p>
                 The platform retains necessary data and backups to keep

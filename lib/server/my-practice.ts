@@ -3,6 +3,7 @@ import { sqlite } from '@/db/sqlite';
 import { curatedByNumber } from '@/lib/ling-curated';
 import { NOTE_MAX_BYTES, type PracticeHistoryItem } from '@/lib/practice-review';
 import type { Person } from './auth';
+import { selfPacedCertificate } from './certificates';
 import { library } from './content-library';
 import { boundedText, HttpError, json, limit } from './http';
 
@@ -15,8 +16,9 @@ const MAX_BATCH = 500;
 // story:<id> holds one STAR story as JSON (components/story-bank.tsx); list:<id> starred is a
 // saved public list, written through /api/oj/lists/<id>/star (which checks the list) only.
 // sd:<chapter> holds a system design chapter's quiz answers as JSON (app/system-design/quiz.tsx).
-// sub:<submission id> is a note on one submission; q:<slug> is a content library question.
-const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q):[\w./-]{1,200}$/);
+// sub:<submission id> is a note on one submission; q:<slug> is a content library question;
+// post:<id> starred is a saved community post (listed by GET /api/oj/posts?starred=1).
+const target = z.string().regex(/^(?:problem|content|story|list|sd|sub|q|post):[\w./-]{1,200}$/);
 // up/down: a problem's vote, one per learner (setting one clears the other); experiences and
 // interview questions take upvotes too. done: ticked by hand (solved elsewhere); read: a chapter
 // or page marked as read; curated: a teacher's pick of a library item.
@@ -311,6 +313,9 @@ export async function handleMyPractice(
           'INSERT INTO user_marks(user_id,target,mark,created_at) VALUES(?,?,?,?) ON CONFLICT DO NOTHING',
         ).run(p.id, d.target, d.mark, Date.now());
       })();
+      // The last chapter of a self-paced course read: its certificate, issued here and not on a GET.
+      if (d.mark === 'read' && d.target.startsWith('sd:'))
+        return json({ ...d, certificate: selfPacedCertificate(p.id, d.target) });
     }
     return json(d);
   }

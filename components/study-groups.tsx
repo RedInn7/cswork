@@ -18,6 +18,8 @@ import {
 } from './ui/alert-dialog';
 import type { Navigate } from './learning';
 import { CampPanel, type Camp } from './group-camp';
+import { ChatCompose, ChatLog, Report, useChat, type ChatItem } from './chat-log';
+import { CHAT_RETENTION_DAYS } from '@/lib/community';
 import '@/app/learner-cloud.css';
 import '@/app/study-groups.css';
 
@@ -93,10 +95,68 @@ function Privacy({ t }: { t: T }) {
   return (
     <p className="group-privacy">
       {t(
-        '隐私：组员只能看到你在本组填的昵称、每天通过的题数、连续天数和本周通过数，开营后还有营期任务的完成数；看不到你的邮箱、账号名、代码或具体做了哪些题。随时可以退出。',
-        'Privacy: members see only the name you use in this group, how many problems you solve each day, your streak and this week’s count, plus how many cohort tasks you’ve done once a cohort starts. Never your email, account name, code or which problems. You can leave any time.',
+        `隐私：组员只能看到你在本组填的昵称、每天通过的题数、连续天数和本周通过数，开营后还有营期任务的完成数，以及你在小组聊天里发的消息（保留 ${CHAT_RETENTION_DAYS} 天）；看不到你的邮箱、账号名、代码或具体做了哪些题。随时可以退出。`,
+        `Privacy: members see only the name you use in this group, how many problems you solve each day, your streak and this week’s count, plus how many cohort tasks you’ve done once a cohort starts, and what you write in the group chat (kept ${CHAT_RETENTION_DAYS} days). Never your email, account name, code or which problems. You can leave any time.`,
       )}
     </p>
+  );
+}
+/** The group's chat: members write, a teacher moderating only reads; others' lines can be reported. */
+function GroupChat({ id, member, t, english }: { id: string; member: boolean; t: T; english: boolean }) {
+  const chat = useChat<{ items: ChatItem[] }>(`oj/groups/${encodeURIComponent(id)}/messages`);
+  const post = async (path: string, body: unknown) => {
+    try {
+      chat.show(await api<{ items: ChatItem[] }>(`oj/groups/${encodeURIComponent(id)}/${path}`, body));
+      return true;
+    } catch (e) {
+      chat.setError((e as Error).message);
+      return false;
+    }
+  };
+  return (
+    <section className="group-panel group-chat" aria-labelledby="group-chat">
+      <h2 id="group-chat">{t('小组聊天', 'Group chat')}</h2>
+      <p className="group-sub">
+        {t(
+          `只有组员能看到（有消息被举报时，审核老师也能查看），保留 ${CHAT_RETENTION_DAYS} 天；三位组员举报的消息会先隐藏。`,
+          `Members only (and moderating teachers while a message is reported), kept ${CHAT_RETENTION_DAYS} days; a message three members report is hidden.`,
+        )}
+      </p>
+      {chat.data ? (
+        <ChatLog
+          items={chat.data.items}
+          label={t('聊天记录', 'Chat messages')}
+          english={english}
+          named
+          fresh={chat.fresh}
+          actions={(m) =>
+            member &&
+            (m.mine ? (
+              <button type="button" onClick={() => void post('unsay', { message: m.id })}>
+                {t('撤回', 'Unsend')}
+              </button>
+            ) : (
+              <Report path={`oj/groups/${encodeURIComponent(id)}/report`} body={{ message: m.id }} english={english} />
+            ))
+          }
+        />
+      ) : (
+        !chat.error && <output className="group-sub">{t('正在加载聊天…', 'Loading the chat…')}</output>
+      )}
+      {/* A teacher reads the chat only while a line is reported: otherwise the 403 is a quiet note. */}
+      {chat.forbidden && !member ? (
+        <p className="group-sub">{t(chat.error, englishMessage(chat.error))}</p>
+      ) : (
+        <ErrorLine error={chat.error} t={t} />
+      )}
+      {member && (
+        <ChatCompose
+          label={t('发消息给小组', 'Message the group')}
+          english={english}
+          send={(body) => post('messages', { body })}
+        />
+      )}
+    </section>
   );
 }
 function ErrorLine({ error, t }: { error: string; t: T }) {
@@ -767,6 +827,7 @@ function GroupPage({ id, navigate, t, english }: { id: string; navigate: Navigat
           ))}
         </ol>
       </section>
+      <GroupChat id={group.id} member={!!group.role} t={t} english={english} />
       <Privacy t={t} />
 
       <AlertDialog open={!!confirm} onOpenChange={(open) => !open && setConfirm(null)}>

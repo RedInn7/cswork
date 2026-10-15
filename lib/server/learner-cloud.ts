@@ -6,6 +6,7 @@ import { classicListProgress } from '@/lib/classic-lists';
 import { isChannel, REPORT_CLEARED, REPORTS_HIDE } from '@/lib/community';
 import { curatedByNumber, curatedEntries } from '@/lib/ling-curated';
 import { reportWindow, slotOf, type MockSession, type Slot } from '@/lib/mock-oa';
+import { LANGUAGE_IDS } from '@/lib/problems';
 import { canonicalCompany, employerSlug, OTHER_COMPANY } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
 import { companyDirectory, hasHub } from './company-hub';
@@ -18,6 +19,7 @@ import { readJson } from './my-practice';
 import { canSeeProblem, listProblemSummaries } from './oj-problems';
 import { dailyDays } from './points';
 import { visibleTarget } from './solution-posts';
+import { badgeName, badgeSql, badgeTarget } from './work-verify';
 
 /**
  * Learner data that lives on the server (db/learner-cloud-schema.ts): finished mock OAs,
@@ -744,7 +746,10 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     .all(profile.user_id) as { id: string; language: string }[])
     if (shown(r.id)) byLanguage.set(r.language, (byLanguage.get(r.language) ?? 0) + 1);
   const hidden = hiddenCompanies();
+  // The verified employee badge, only if its owner switched it on for the profile.
+  const employer = badgeName(db.prepare(`SELECT ${badgeSql('?', 'profile')}`).pluck().get(profile.user_id) as string | null);
   // Posts anyone can open: solutions on public problems and threads; reported-down ones stay out.
+  // Beside the badge only posts that could carry it, never interview, career or offer talk or OA solutions.
   const posts = (
     db
       .prepare(
@@ -755,8 +760,10 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
         ORDER BY sp.created_at DESC LIMIT 500`,
       )
       .all(profile.user_id) as { id: string; target: string; title: string; tag: string; createdAt: number; votes: number }[]
-  ).filter((post) =>
-    post.target.startsWith('discuss:') ? isChannel(post.target.slice(8)) && !hidden.has(post.tag) : shown(post.target),
+  ).filter(
+    (post) =>
+      (post.target.startsWith('discuss:') ? isChannel(post.target.slice(8)) && !hidden.has(post.tag) : shown(post.target)) &&
+      (!employer || badgeTarget(post.target)),
   );
   const follows = db
     .prepare(
@@ -791,6 +798,7 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     badges,
     // Shown while still earned: a badge lost since (a hidden contest curve) just disappears.
     featured: badges.find((b) => b.id === profile.featured_badge) ?? null,
+    employer,
     posts: {
       items: posts.slice(0, 10).map((post) => ({
         id: post.id,
@@ -979,7 +987,7 @@ export const DRAFT_ROWS = 2000;
 const DRAFT_BYTES = 65536;
 const draftKey = z
   .object({
-    language: z.enum(['python', 'go', 'java', 'cpp', 'sql']),
+    language: z.enum(LANGUAGE_IDS),
     mode: z.enum(['acm', 'leetcode']),
   })
   .strict();

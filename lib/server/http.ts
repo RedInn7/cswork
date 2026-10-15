@@ -2,6 +2,7 @@ import { ZodError } from 'zod';
 import { database, origin } from './env';
 import type { Person } from './auth';
 import { englishMessage } from '@/lib/messages-en';
+import { CHAT_RETENTION_DAYS, DM_RETENTION_DAYS } from '@/lib/community';
 export class HttpError extends Error {
   constructor(
     public status: number,
@@ -136,6 +137,9 @@ export async function limit(
     database().prepare('DELETE FROM limits WHERE expires_at<?').bind(now).run();
     // Duel queue rows 10 minutes unpolled (duels.ts QUEUE_DROP): the privacy page promises it.
     database().prepare('DELETE FROM duel_queue WHERE seen_at<?').bind(now - 600000).run();
+    // Group chat and direct messages past their retention: the privacy page promises it too.
+    database().prepare('DELETE FROM study_group_messages WHERE created_at<?').bind(now - CHAT_RETENTION_DAYS * 86400000).run();
+    database().prepare('DELETE FROM direct_messages WHERE created_at<?').bind(now - DM_RETENTION_DAYS * 86400000).run();
     nextLimitCleanup = now + 600000;
   }
   const key = `${p.id}:${action}:${Math.floor(now / (seconds * 1000))}`;

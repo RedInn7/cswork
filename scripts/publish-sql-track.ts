@@ -1,7 +1,10 @@
 /**
- * Offline teacher publication of the SQL track: content/sql-track/packages.json,
- * which CI rebuilds and checks query by query (tests/sql-track.test.ts).
- * Unchanged packages are skipped, so release.sh runs this on every release.
+ * Offline teacher publication of the SQL track: content/sql-track/packages.json
+ * and its pandas versions, pandas-packages.json, which CI rebuilds and checks
+ * query by query and solution by solution (tests/sql-track.test.ts,
+ * tests/pandas-track.test.ts). Unchanged packages are skipped, so release.sh
+ * runs this on every release. The pd- problems stay hidden until the judge
+ * reports pandas (lib/server/oj-problems.ts), so they can go out first.
  *   node --env-file=.env --import tsx scripts/publish-sql-track.ts TEACHER_EMAIL
  */
 import assert from 'node:assert/strict';
@@ -39,13 +42,20 @@ const teacher: Person = {
   role: 'teacher',
 };
 // Validate everything before publishing anything.
-const prepared = (JSON.parse(readFileSync('content/sql-track/packages.json', 'utf8')) as unknown[]).map((raw) => {
-  const payload = validateProblemPackage(raw);
-  assert.match(payload.problem.id, /^sql-\d{2}$/);
-  assert.deepEqual(payload.problem.languages, ['sql']);
-  assert.equal(payload.problem.checker, 'exact');
-  return payload;
-});
+const prepared = (
+  [
+    ['content/sql-track/packages.json', /^sql-\d{2}$/, 'sql'],
+    ['content/sql-track/pandas-packages.json', /^pd-\d{2}$/, 'pandas'],
+  ] as const
+).flatMap(([file, id, language]) =>
+  (JSON.parse(readFileSync(file, 'utf8')) as unknown[]).map((raw) => {
+    const payload = validateProblemPackage(raw);
+    assert.match(payload.problem.id, id);
+    assert.deepEqual(payload.problem.languages, [language]);
+    assert.equal(payload.problem.checker, 'exact');
+    return payload;
+  }),
+);
 assert.equal(new Set(prepared.map((p) => p.problem.id)).size, prepared.length);
 for (const payload of prepared) {
   const current = db

@@ -12,7 +12,7 @@ import { semanticCheckerId } from '@/lib/oj-semantic-contract';
 import { matchesSemantic } from '@/lib/oj-semantic-checkers';
 import type { CodeLanguage, Language } from '@/lib/problems';
 import { javaCommand, LEETCODE_SUPPORT } from './leetcode-mode';
-import { SQL_HARNESS } from './sql-judge';
+import { PANDAS_HARNESS, SQL_HARNESS } from './sql-judge';
 import {
   asciiTokens,
   parseIntegerRowCollection,
@@ -264,8 +264,8 @@ export async function compile(
   source: string,
   signal: AbortSignal,
 ) {
-  // SQL has nothing to build: the trusted harness runs the query as data (see run).
-  if (language === 'sql') {
+  // SQL and pandas have nothing to build: a trusted harness runs the source (see run).
+  if (language === 'sql' || language === 'pandas') {
     const result: EngineResult = { status: 'Accepted' };
     const program: CompiledProgram = { language, source, cache: {} };
     return { result, program };
@@ -389,6 +389,29 @@ export async function run(
       },
       signal,
     );
+  if (program.language === 'pandas') {
+    const command = limits(
+      input,
+      spec.timeLimit,
+      Math.max(3, spec.timeLimit * 3),
+      memoryBytes,
+      spec.outputLimit * 1024,
+    );
+    return execute(
+      {
+        ...command,
+        // One BLAS / OpenMP thread: numpy's default pool would eat the process limit.
+        env: [...command.env, 'OPENBLAS_NUM_THREADS=1', 'OMP_NUM_THREADS=1'],
+        // No -S: pandas lives in the image's dist-packages.
+        args: ['/usr/bin/python3', '-I', 'judge.py'],
+        copyIn: {
+          'judge.py': { content: PANDAS_HARNESS },
+          'solution.py': { content: program.source },
+        },
+      },
+      signal,
+    );
+  }
   const script = program.bridgeSource
     ? program.bridgeBytecode
       ? 'bridge.pyc'
@@ -434,6 +457,119 @@ export async function run(
     },
     signal,
   );
+}
+/**
+ * Runs one unittest suite (argv[1], a directory beside src/) and prints only a JSON report
+ * on stdout: everything the code under test prints goes to stderr. A subTest failure counts
+ * its test once; a class or module that fails to set up counts as one failed test. The report
+ * comes from the same process as the learner's code, so they can forge it: nothing is
+ * awarded for a project run, and a forged report only fools its author.
+ */
+export const PROJECT_HARNESS = `
+import json, os, sys, unittest
+report = os.fdopen(os.dup(1), 'w')
+os.dup2(2, 1)
+start = sys.argv[1]
+open(os.path.join(start, '__init__.py'), 'a').close()  # discovery needs a package
+
+class Result(unittest.TestResult):
+    def __init__(self):
+        super().__init__()
+        self.ran = []
+    def startTest(self, test):
+        super().startTest(test)
+        self.ran.append(test.id())
+
+result = Result()
+failed = {}
+try:
+    unittest.TestLoader().discover(start, top_level_dir='.').run(result)
+except BaseException as error:
+    failed['(discovery)'] = '%s: %s' % (type(error).__name__, error)
+for test, text in result.failures + result.errors + [(t, 'Unexpected success') for t in result.unexpectedSuccesses]:
+    failed.setdefault(getattr(test, 'test_case', test).id(), text)
+skipped = {test.id() for test, _ in result.skipped}
+passed = sum(1 for name in result.ran if name not in failed and name not in skipped)
+total = len(result.ran) + sum(1 for name in failed if name not in result.ran)
+report.write(json.dumps({'passed': passed, 'total': total,
+    'failures': [{'name': name, 'message': text[-1500:]} for name, text in list(failed.items())[:20]]}))
+report.flush()
+`;
+export const PROJECT_SECONDS = 10;
+export type ProjectRun = {
+  result: EngineResult;
+  report: { passed: number; total: number; failures: { name: string; message: string }[] } | null;
+};
+/**
+ * A project's two suites, each in its own sandbox: `files` (the learner's src/ and tests/)
+ * with tests/, then the learner's src/ with the task's hidden suite. Hidden tests never share a
+ * sandbox with anything the learner gets to read back. `slot` holds a runner slot per sandbox.
+ */
+export async function runProject(
+  files: Record<string, string>,
+  hidden: Record<string, string>,
+  signal: AbortSignal,
+  slot: (signal: AbortSignal) => Promise<() => void> = async () => () => {},
+) {
+  const suite = async (start: string, copy: Record<string, string>): Promise<ProjectRun> => {
+    const release = await slot(signal);
+    const result = await execute(
+      {
+        ...limits('', PROJECT_SECONDS, PROJECT_SECONDS * 2, 268435456, 65536),
+        args: ['/usr/bin/python3', '-I', 'cswork_tests.py', start],
+        copyIn: {
+          ...Object.fromEntries(Object.entries(copy).map(([path, content]) => [path, { content }] as const)),
+          'cswork_tests.py': { content: PROJECT_HARNESS },
+        },
+      },
+      signal,
+    ).finally(release);
+    let report: ProjectRun['report'] = null;
+    try {
+      const value = JSON.parse(result.files?.stdout?.trim().split('\n').at(-1) || 'null');
+      if (Number.isInteger(value?.passed) && Number.isInteger(value?.total) && Array.isArray(value?.failures))
+        report = value;
+    } catch {
+      /* No report: the run crashed, timed out or printed over it. */
+    }
+    return { result, report };
+  };
+  const source = Object.fromEntries(Object.entries(files).filter(([path]) => path.startsWith('src/')));
+  return Promise.all([suite('tests', files), suite('hidden_tests', { ...source, ...hidden })]);
+}
+/**
+ * The run's verdict and what its learner may see: the public suite in full (failures capped),
+ * the hidden suite as passed/total only, out of `hiddenTotal` (counted from the task's files)
+ * so a suite that never loaded still shows how many it holds. The learner's src/ shares the
+ * hidden sandbox and can read its tests, so only the clamped pass count leaves it: no time or
+ * memory, and a limit or crash there is just none passed.
+ */
+export function projectVerdict(visible: ProjectRun, hidden: ProjectRun, hiddenTotal: number) {
+  const verdict = engineVerdict(visible.result);
+  const limit = verdict === 'accepted' ? null : verdict;
+  const shown = visible.report && {
+    passed: visible.report.passed,
+    total: visible.report.total,
+    failures: visible.report.failures.slice(0, 20).map((f) => ({
+      name: String(f.name).slice(0, 200),
+      message: String(f.message).slice(-1500),
+    })),
+  };
+  const hiddenPassed = engineVerdict(hidden.result) === 'accepted' ? (hidden.report?.passed ?? 0) : 0;
+  const secret = { passed: Math.max(0, Math.min(hiddenPassed, hiddenTotal)), total: hiddenTotal };
+  const passed = (shown?.passed ?? 0) + secret.passed,
+    total = (shown?.total ?? 0) + secret.total;
+  return {
+    // The public suite's crash or limit first; then all-or-nothing over both suites.
+    status: limit ?? (!shown ? 'runtime_error' : passed === total && shown.total > 0 ? 'accepted' : 'wrong_answer'),
+    passed,
+    total,
+    report: { visible: shown, hidden: secret },
+    // Only the public suite's output: the hidden run's would show its tests.
+    output: visible.result.files?.stderr ?? '',
+    runtimeMs: (visible.result.time ?? 0) / 1e6,
+    memoryKb: Math.ceil((visible.result.memory ?? 0) / 1024),
+  };
 }
 export async function cleanup(program: CompiledProgram) {
   await Promise.allSettled(

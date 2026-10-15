@@ -14,11 +14,14 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { useT } from '@/lib/i18n';
+import { ojRequest } from '@/lib/oj-client';
+import { languages } from '@/lib/problems';
 import {
   archiveMock,
   findMock,
   finishMock,
   formatClock,
+  mockCert,
   mockClock,
   mockExamFor,
   questionStates,
@@ -30,7 +33,7 @@ import {
 import '@/app/mock-oa.css';
 
 type Navigate = (view: string, extra?: Record<string, string>) => void;
-type Submissions = { problem_id: string; status: string; created_at: number }[];
+type Submissions = { problem_id: string; status: string; created_at: number; language?: string }[];
 
 /**
  * The mock this problem belongs to (?mock=<id>, or the running one that holds it);
@@ -66,6 +69,8 @@ export function finishMockExam(
   navigate: Navigate,
   reason: MockSession['reason'] = 'manual',
 ) {
+  // Before reading: settling drops a skill exam whose time ran out.
+  const cert = mockCert(userId, id);
   const state = readMockState(userId),
     session = findMock(state, id);
   if (session)
@@ -73,7 +78,16 @@ export function finishMockExam(
       userId,
       archiveMock(state, finishMock(session, Date.now(), reason)),
     );
-  navigate('mock', { report: id });
+  if (cert) handInSkill(cert.test);
+  else navigate('mock', { report: id });
+}
+
+/** A skill exam is handed in to the server, which scores it; /certify shows the result. */
+export function handInSkill(test: string) {
+  void ojRequest(`skills/${test}/finish`, {})
+    // Already handed in (another tab) or past its deadline: the server settles it on its own.
+    .catch(() => {})
+    .finally(() => location.assign('/certify'));
 }
 
 const stateLabel = {
@@ -130,7 +144,7 @@ export function MockExamBar({
       aria-label={t('模拟考试', 'Mock exam')}
     >
       <div className="mock-exam-id">
-        <span className="mock-exam-kicker">MOCK OA</span>
+        <span className="mock-exam-kicker">{session.cert ? 'CERTIFY' : 'MOCK OA'}</span>
         <strong>{session.name || t('自定义模拟', 'Custom mock')}</strong>
         {session.platform && <small>{session.platform}</small>}
       </div>
@@ -230,6 +244,7 @@ export function MockExamDone({
 export function ExamAcceptedDialog({
   session,
   problemId,
+  language,
   submissions,
   userId,
   navigate,
@@ -237,6 +252,8 @@ export function ExamAcceptedDialog({
 }: {
   session: MockSession;
   problemId: string;
+  /** The accepted submission's language: a language-bound exam counts only its own. */
+  language: string;
   submissions: Submissions;
   userId: string;
   navigate: Navigate;
@@ -244,24 +261,33 @@ export function ExamAcceptedDialog({
 }) {
   const t = useT();
   const primary = useRef<HTMLButtonElement>(null);
+  const only = session.cert?.language;
+  const counts = !only || language === only;
   // The refreshed submissions may not include this AC yet.
   const states = questionStates(session, submissions).map((s, i) =>
-    session.ids[i] === problemId ? 'ac' : s,
+    counts && session.ids[i] === problemId ? 'ac' : s,
   );
   const at = session.ids.indexOf(problemId);
   const order = [...session.ids.slice(at + 1), ...session.ids.slice(0, at)];
   const next = order.find((id) => states[session.ids.indexOf(id)] !== 'ac');
   const solved = states.filter((s) => s === 'ac').length;
+  const done = solved === session.ids.length;
+  const onlyName = languages.find((l) => l.id === only)?.name ?? only;
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="cs-accepted-dialog" showCloseButton={false} initialFocus={primary}>
         <div className="cs-accepted-banner">
           <DialogTitle className="cs-accepted-title">Accepted</DialogTitle>
           <DialogDescription className="cs-accepted-stats">
-            {t(
-              `Q${at + 1} 通过 · 本场 ${solved} / ${session.ids.length}`,
-              `Q${at + 1} solved · ${solved} of ${session.ids.length} in this exam`,
-            )}
+            {counts
+              ? t(
+                  `Q${at + 1} 通过 · 本场 ${solved} / ${session.ids.length}`,
+                  `Q${at + 1} solved · ${solved} of ${session.ids.length} in this exam`,
+                )
+              : t(
+                  `本场只计 ${onlyName} 提交，这次通过不算分 · 本场 ${solved} / ${session.ids.length}`,
+                  `Only ${onlyName} submissions count in this exam, so this one does not score · ${solved} of ${session.ids.length}`,
+                )}
           </DialogDescription>
           <Button
             ref={primary}
@@ -270,12 +296,16 @@ export function ExamAcceptedDialog({
             onClick={() =>
               next
                 ? navigate('problem', { problem: next, mock: session.id })
-                : finishMockExam(userId, session.id, navigate)
+                : done
+                  ? finishMockExam(userId, session.id, navigate)
+                  : onClose()
             }
           >
             {next
               ? t(`下一题 Q${session.ids.indexOf(next) + 1}`, `Next: Q${session.ids.indexOf(next) + 1}`)
-              : t('全部通过，交卷', 'All solved: finish')}
+              : done
+                ? t('全部通过，交卷', 'All solved: finish')
+                : t('继续作答', 'Keep going')}
             <ChevronRight />
           </Button>
           <button

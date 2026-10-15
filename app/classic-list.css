@@ -184,10 +184,11 @@
   font-size: 12px;
   color: #ffb4b4;
 }
-/* A row: the hand tick, then the problem's link. The stripes move from the link to the row. */
+/* A row: the hand tick, the problem's link and, for a rewritten book problem, its original
+   on leetcode.cn. The stripes move from the link to the row. */
 .classic-row {
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-columns: 34px minmax(0, 1fr) auto;
   align-items: center;
   border-radius: 9px;
 }
@@ -212,6 +213,23 @@
   cursor: pointer;
 }
 .classic-tick input:focus-visible {
+  outline: 2px solid #087158;
+  outline-offset: 2px;
+}
+
+.classic-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 12px 0 4px;
+  font-size: 12px;
+  color: #4f5d6a;
+  white-space: nowrap;
+}
+.classic-source:is(:hover, :focus-visible) {
+  color: #087158;
+}
+.classic-source:focus-visible {
   outline: 2px solid #087158;
   outline-offset: 2px;
 }
@@ -396,6 +414,15 @@
     accent-color: #087158;
   }
   .dark .classic-tick input:focus-visible {
+    outline: 2px solid #8ed5bc;
+  }
+  .dark .classic-source {
+    color: #bac8d4;
+  }
+  .dark .classic-source:is(:hover, :focus-visible) {
+    color: #8ed5bc;
+  }
+  .dark .classic-source:focus-visible {
     outline: 2px solid #8ed5bc;
   }
   .dark .classic-stop {

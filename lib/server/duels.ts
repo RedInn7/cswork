@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { DUEL_MINUTES, duelWindow } from '@/lib/contest';
 import type { Person } from './auth';
+import { learnProblems } from './beginner-courses';
 import { duelRating, duelRecord } from './contest-ratings';
 import { contestSources, displayName, enter, fold, insertRoom, judgeable, requireVerified, settleDuels } from './contests';
 import { HttpError, json, limit, limitReader, requirePerson } from './http';
@@ -81,7 +82,7 @@ function drawDuel(pool: readonly { id: string; rating: number }[], users: readon
  */
 async function match(p: Person, now: number) {
   const { byId } = await judgeable();
-  const pool = contestSources.rated().filter((x) => byId.has(x.id));
+  const pool = contestSources.rated().filter((x) => byId.has(x.id) && !learnProblems.has(x.id));
   const db = sqlite();
   return db.transaction(() => {
     db.prepare('DELETE FROM duel_queue WHERE seen_at<?').run(now - QUEUE_DROP);
