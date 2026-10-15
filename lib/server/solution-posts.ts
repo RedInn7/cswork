@@ -261,11 +261,15 @@ async function listPosts(p: Person | null, params: URLSearchParams) {
  */
 async function starredPosts(p: Person, params: URLSearchParams) {
   const offset = Math.min(Math.max(0, Math.floor(Number(params.get('offset')) || 0)), 5000);
+  // Driven from the reader's own marks (a primary key range), then each post by its key, so the
+  // cost follows their saves, not every post on the site.
   const rows = sqlite()
     .prepare(
-      `${POST},substr(sp.body,1,300) AS excerpt ${FROM_POST}
-      JOIN user_marks saved ON saved.user_id=@me AND saved.target='post:'||sp.id AND saved.mark='star'
-      WHERE (sp.user_id=@me OR (sp.hidden=${SHOWN} AND NOT ${reportedDown("'post:'||sp.id")}))
+      `${POST},substr(sp.body,1,300) AS excerpt FROM user_marks saved
+      JOIN solution_posts sp ON sp.id=substr(saved.target,6)
+      LEFT JOIN "user" u ON u.id=sp.user_id ${PROFILE('sp.user_id')}
+      WHERE saved.user_id=@me AND saved.target>='post:' AND saved.target<'post;' AND saved.mark='star'
+        AND (sp.user_id=@me OR (sp.hidden=${SHOWN} AND NOT ${reportedDown("'post:'||sp.id")}))
         AND sp.hidden<>${REMOVED}${hiddenTags()}
       ORDER BY saved.created_at DESC,sp.id LIMIT ${PAGE + 1} OFFSET @offset`,
     )
