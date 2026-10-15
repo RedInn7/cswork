@@ -131,6 +131,18 @@ export const PROBLEMS: Problem[] = [
     difficulty: '中等',
     summary: { zh: '负权边、n - 1 轮松弛与负环检测', en: 'Negative weights, n - 1 relaxation rounds and negative cycles' },
   },
+  {
+    slug: 'kruskal',
+    group: 'graph',
+    difficulty: '中等',
+    summary: { zh: '按权排序加并查集的最小生成树', en: 'A minimum spanning tree from sorted edges and union-find' },
+  },
+  {
+    slug: 'prim',
+    group: 'graph',
+    difficulty: '中等',
+    summary: { zh: '邻接矩阵上 O(n²) 的最小生成树', en: 'An O(n²) minimum spanning tree on an adjacency matrix' },
+  },
 ];
 
 const EXT: Record<CodeLanguage, string> = { python: 'py', cpp: 'cpp', java: 'java', go: 'go' };
