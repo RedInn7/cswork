@@ -26,6 +26,7 @@ const { handleOj } = await import('../lib/server/oj-api');
 const { handleNewsletterLink } = await import('../lib/server/newsletter');
 const { sendLearnerReminders } = await import('../lib/server/reminders');
 const { pushEndpoint, vapidJwt } = await import('../lib/server/web-push');
+const { sendMail } = await import('../lib/server/mail');
 
 before(() => migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') }));
 after(() => {
@@ -36,10 +37,14 @@ after(() => {
 // Every outgoing request: pushes and Resend mails.
 const sent: { url: string; headers: Record<string, string>; body: string | null }[] = [];
 let pushStatus = 201;
+// What Resend answers next ([status, Retry-After]); then it accepts.
+const mailReplies: [number, string?][] = [];
 globalThis.fetch = (async (input: string | URL, init: RequestInit = {}) => {
   const url = String(input);
   sent.push({ url, headers: init.headers as Record<string, string>, body: (init.body as string) ?? null });
-  return url.startsWith('https://api.resend.com/') ? Response.json({ id: 'mail' }) : new Response(null, { status: pushStatus });
+  if (!url.startsWith('https://api.resend.com/')) return new Response(null, { status: pushStatus });
+  const [status, after] = mailReplies.shift() ?? [200];
+  return status === 200 ? Response.json({ id: 'mail' }) : new Response(null, { status, headers: after ? { 'Retry-After': after } : {} });
 }) as typeof fetch;
 const pushes = () => sent.filter((r) => !r.url.startsWith('https://api.resend.com/'));
 const mails = () => sent.filter((r) => r.url.startsWith('https://api.resend.com/')).map((r) => JSON.parse(r.body!));
@@ -339,4 +344,27 @@ void test('contest reminders: live entrants of a weekly or starter, an hour ahea
   assert.equal(await sendLearnerReminders(Date.UTC(2026, 9, 16, 3, 5)), 2);
   assert.equal(notice(`rem:2026-10-16:${gus.id}`)!.body, 'CSWork Weekly #2: starts 10-17 01:00');
   assert.equal(notice(`rem:2026-10-16:${jo.id}`)!.body, 'CSWork 周赛 第 2 期：10-17 01:00 开始');
+});
+
+void test('a mail Resend rate-limits is sent again with the same key after Retry-After, within a few seconds', async () => {
+  Object.assign(process.env, { RESEND_API_KEY: 're_test', MAIL_FROM: 'CSWork <hi@cswork.test>' });
+  const mail = (key: string) => sendMail({ to: 'a@example.test', subject: 's', text: 't', key });
+  try {
+    sent.length = 0;
+    mailReplies.push([429, '1']);
+    const start = Date.now();
+    await mail('k-1');
+    assert.ok(Date.now() - start >= 1000, 'waited out Retry-After');
+    assert.deepEqual(sent.map((r) => r.headers['Idempotency-Key']), ['k-1', 'k-1']);
+    // Longer than a web request should hang, or not a 429: given up at once.
+    sent.length = 0;
+    mailReplies.push([429, '60'], [500]);
+    await assert.rejects(mail('k-2'), /429/);
+    await assert.rejects(mail('k-3'), /500/);
+    assert.equal(sent.length, 2);
+  } finally {
+    mailReplies.length = 0;
+    delete process.env.RESEND_API_KEY;
+    delete process.env.MAIL_FROM;
+  }
 });
