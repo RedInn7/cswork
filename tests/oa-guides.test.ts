@@ -122,3 +122,19 @@ void test('only programs a report saw pass every case of that package count as v
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+void test('a guide binds to the live package and the catalog source it was written from', async () => {
+  const { createOaJudgeRegistry } = await import('../lib/server/oa-judge');
+  const [source, pkg, other] = ['a', 'b', 'c'].map((c) => c.repeat(64));
+  const registry = createOaJudgeRegistry(
+    {
+      schemaVersion: 1,
+      items: [{ id: 'oa-x-1', sourceContentHash: source, packageChecksum: pkg, editorial: 'x', authoredSolutions: [{ language: 'python', code: 'x' }] }],
+    },
+    new Map([['oa-x-1', source]]),
+  );
+  assert.equal(registry.isCurrent('oa-x-1', pkg), true);
+  assert.equal(registry.isCurrent('oa-x-1', pkg, source), true);
+  assert.equal(registry.isCurrent('oa-x-1', pkg, other), false);
+  assert.equal(registry.isCurrent('oa-x-1', other, source), false);
+});
