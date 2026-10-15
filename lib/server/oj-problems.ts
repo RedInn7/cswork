@@ -371,7 +371,7 @@ export async function getPublicOaProblem(problemId: string) {
 }
 
 /** Catalogue visibility for one problem; hidden and missing look the same. */
-export async function canSeeProblem(p: Person, problemId: string) {
+export async function canSeeProblem(p: Person | null, problemId: string) {
   const pr = await one<GatedRow>(
     `SELECT p.course_id,${freeJudge} AS free FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}${shown('p.id')}`,
     problemId,

@@ -3,6 +3,7 @@ import './ica.css';
 import Link from 'next/link';
 import { breadcrumbJsonLd, SITE_NAME, seoMetadata } from '@/lib/seo';
 import { icaTasks } from '@/lib/server/ai-tasks';
+import { canSeeProblem } from '@/lib/server/oj-problems';
 import { requestLocale } from '@/lib/server/locale';
 import { shownMockPresets } from '@/lib/server/mock-oa-presets';
 
@@ -77,6 +78,8 @@ export default async function IcaIndex() {
     i = zh ? 0 : 1;
   const tasks = icaTasks();
   const companies = icaCompanies();
+  // The rest- track is published only after go-judge verified it (scripts/publish-sql-track.ts): no link before then.
+  const rest = await canSeeProblem(null, 'rest-01');
   return (
     <article className="ica-round">
       <script
@@ -146,11 +149,13 @@ export default async function IcaIndex() {
           <li key={tip}>{tip}</li>
         ))}
       </ul>
-      <p className="oa-public-actions">
-        <a className="oa-public-cta is-quiet" href={`/?${new URLSearchParams({ view: 'problem', problem: 'rest-01' })}`}>
-          {c.rest}
-        </a>
-      </p>
+      {rest && (
+        <p className="oa-public-actions">
+          <a className="oa-public-cta is-quiet" href={`/?${new URLSearchParams({ view: 'problem', problem: 'rest-01' })}`}>
+            {c.rest}
+          </a>
+        </p>
+      )}
     </article>
   );
 }
