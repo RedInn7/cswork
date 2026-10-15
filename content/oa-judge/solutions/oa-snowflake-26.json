@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-26",
+  "packageChecksum": "94d11c83cf752279e81d48983f66b0c2b4c0a02dbddfbff672047bd21b6d44ba",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    // v[0] = no, v[1] = one, v[2] = both (profit by number of earlier neighbors).\n    vector<ll> v[3];\n    for (int t = 0; t < 3; t++) {\n        v[t].resize(n);\n        for (auto &x : v[t]) scanf(\"%lld\", &x);\n    }\n    if (n == 1) {\n        printf(\"%lld\\n\", v[0][0]);\n        return 0;\n    }\n    // Best settled prefix: dp0 if the right neighbor of node i is deployed before it, dp1 otherwise.\n    ll dp0 = v[1][0], dp1 = v[0][0];\n    for (int i = 1; i < n - 1; i++) {\n        ll n0 = max(dp0 + v[1][i], dp1 + v[2][i]);\n        ll n1 = max(dp0 + v[0][i], dp1 + v[1][i]);\n        dp0 = n0, dp1 = n1;\n    }\n    printf(\"%lld\\n\", max(dp0 + v[0][n - 1], dp1 + v[1][n - 1]));\n}\n",
+      "sha256": "0e1ea9876f932e63f427abbafaa7ac92407a6c1def58edbed1f80bc7ff5728af"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        // v[0] = no, v[1] = one, v[2] = both (profit by number of earlier neighbors).\n        long[][] v = new long[3][n];\n        for (int t = 0; t < 3; t++)\n            for (int i = 0; i < n; i++) v[t][i] = nextLong();\n        if (n == 1) {\n            System.out.println(v[0][0]);\n            return;\n        }\n        // Best settled prefix: dp0 if the right neighbor of node i is deployed before it, dp1 otherwise.\n        long dp0 = v[1][0], dp1 = v[0][0];\n        for (int i = 1; i < n - 1; i++) {\n            long n0 = Math.max(dp0 + v[1][i], dp1 + v[2][i]);\n            long n1 = Math.max(dp0 + v[0][i], dp1 + v[1][i]);\n            dp0 = n0;\n            dp1 = n1;\n        }\n        System.out.println(Math.max(dp0 + v[0][n - 1], dp1 + v[1][n - 1]));\n    }\n}\n",
+      "sha256": "14a24460cd2d48fa21b2a21c2ac3bea46101902c0018c44a0724d8c47bc29e09"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\t// v[0] = no, v[1] = one, v[2] = both (profit by number of earlier neighbors).\n\tvar v [3][]int64\n\tfor t := 0; t < 3; t++ {\n\t\tv[t] = make([]int64, n)\n\t\tfor i := range v[t] {\n\t\t\tv[t][i] = nextInt()\n\t\t}\n\t}\n\tif n == 1 {\n\t\tfmt.Println(v[0][0])\n\t\treturn\n\t}\n\t// Best settled prefix: dp0 if the right neighbor of node i is deployed before it, dp1 otherwise.\n\tdp0, dp1 := v[1][0], v[0][0]\n\tfor i := 1; i < n-1; i++ {\n\t\tdp0, dp1 = max(dp0+v[1][i], dp1+v[2][i]), max(dp0+v[0][i], dp1+v[1][i])\n\t}\n\tfmt.Println(max(dp0+v[0][n-1], dp1+v[1][n-1]))\n}\n",
+      "sha256": "e9ef2231be248002b63b8e66354bd371d2dd27a0458099bf872b90f79f3cd465"
+    }
+  ]
+}

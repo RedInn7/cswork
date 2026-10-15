@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-6",
+  "packageChecksum": "5cdf699567650976c12a3548e7d91ff95062226ef510c86ea9619c2c2ef7cc54",
+  "sourceContentHash": "33fd5c21cb90108291323d1c41a537e96013eaad51e1ae4ff64c8b2d82abbb67",
+  "editorialSha256": "e31721f826314f03f0871a66dc9c1f3687d4eebfc0b3b1dbd8fb3ef465890a7f",
+  "hints": {
+    "zh": [
+      "没有数据的叶子永远不需要去，可以删掉；而站在一个点就能收集距离≤2的数据，所以有数据的叶子本身也不必真的走到。",
+      "先像拓扑排序一样反复删除“无数据的叶子”；之后剩下的树里每个叶子都有数据，再按层同时剥掉两层叶子（每层一次性删除当前所有叶子）。剩余部分里的每条边都必须往返各走一次。",
+      "用度数数组和队列：第一阶段把度≤1且无数据的点入队，删点时更新邻居度数，邻居变成无数据叶子就入队；第二阶段把剩余度为1的点入队，按当时的队列长度处理两轮；答案是剩余点的度数之和，即剩余边数的两倍。"
+    ],
+    "en": [
+      "A leaf without data never needs to be visited and can be deleted; and since standing at a node collects everything within distance 2, even the leaves that hold data do not have to be reached.",
+      "First repeatedly delete leaves without data, like a topological peel; afterwards every leaf of the remaining tree holds data, so peel off two layers of leaves, each layer removing all current leaves at once. Every edge that is still left must be walked once in each direction.",
+      "Use a degree array and a queue: in phase one enqueue nodes with degree <= 1 and no data, update neighbor degrees on deletion, and enqueue a neighbor once it becomes a data-free leaf; in phase two enqueue the remaining degree-1 nodes and process two rounds, each limited to the queue length at its start; the answer is the sum of degrees of the remaining nodes, i.e., twice the remaining edge count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst repeatedly delete leaves without data, then delete the two outermost layers of leaves of the remaining tree at the same time. Each remaining edge is traversed twice.\n\n## Correctness\n\nA leaf branch without data contains no target that must be collected, so it can be deleted. Every remaining leaf end holds data, and since data can be collected from distance 2, after removing two layers of edges from each end, all targets can be covered from the core. Any edge that still remains has, on each side, targets that cannot be collected from the other side within two steps, so a closed walk must cross that edge and come back, at least twice. A depth-first traversal of the core tree attains this lower bound; if the core has no edges, a single node is enough.\n\n## Complexity\n\nTime O(n), space O(n); deep chains are not traversed recursively."
+}

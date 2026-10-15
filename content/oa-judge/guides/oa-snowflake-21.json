@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-21",
+  "packageChecksum": "72041e9a7f750beb00002fd1d10a00fb31039dfae5659af43f9cdd53b8c4e592",
+  "sourceContentHash": "37ec7f8bfd1236e4257851c431b6a350965f0e54a99c5e13f5b2c8143d1687e8",
+  "editorialSha256": "ea1a9b1d56f80da065002ed6adffd582f37c6fe2c66a929dc512957b6961b7b1",
+  "hints": {
+    "zh": [
+      "字符可以丢弃也可以重排，所以只关心查询里每个数字需要多少个；而读取总是从头开始，读到的一定是s的某个前缀。",
+      "一个前缀能凑出查询，当且仅当对每个数字c，前缀里c的个数不少于查询中c的个数r，也就是前缀至少读到c第r次出现的位置。",
+      "预处理每个数字依次出现的位置（1基）；对每个查询统计10个数字的需求次数，若某个数字出现次数不足则答案为−1，否则答案是各需求数字第r次出现位置的最大值，空查询答案为0。先输出q，再输出各答案。"
+    ],
+    "en": [
+      "Characters may be discarded and rearranged, so only how many of each digit the query needs matters; reading always starts at the beginning, so what has been read is a prefix of s.",
+      "A prefix can form the query exactly when, for every digit c, it contains at least r copies of c, where r is the count of c in the query; that is, it reaches the position of the r-th occurrence of c.",
+      "Precompute the 1-based positions of each digit in order; for each query count the demand for each of the 10 digits; if some digit occurs too few times the answer is -1, otherwise it is the largest r-th occurrence position over the needed digits, and 0 for an empty query. Print q and then the answers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRecord the positions of each digit. If a query needs digit c r times, reading must reach at least the position of the r-th occurrence of c; the answer is the maximum of all these positions.\n\n## Correctness\n\nSequential access means the characters read are exactly some prefix. A prefix contains the demand if and only if, for every digit, it has reached that digit's r-th occurrence. Therefore the maximum of these positions is both a necessary lower bound and enough to hold every demand.\n\n## Complexity\n\nTime O(|s|+total query length+10q), space O(|s|+q)."
+}

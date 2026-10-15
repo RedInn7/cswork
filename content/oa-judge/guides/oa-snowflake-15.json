@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-15",
+  "packageChecksum": "377c8789f54ec7d89c4aab9a4505c7cbe8c215e555d03ed8e8f2cd44c3c91a1a",
+  "sourceContentHash": "f2b68b10d03413461c08568b0d1a798dd71535e884ab8d080ce53c888957c425",
+  "editorialSha256": "c27bae7d363f69764196c6a6036694d48fabb3c3a453f0d44970fc2e0304d4d5",
+  "hints": {
+    "zh": [
+      "一次操作里被选中的任务得到x秒，其余任务得到y秒。可以等价地看成：每次操作所有任务都得到y秒，再给被选中的任务额外加x−y秒。",
+      "固定总操作数t后，每个任务先拿到t·y；剩余需求只能靠被选中来补，每次补x−y，所需次数是剩余量除以x−y向上取整。这些次数之和不超过t就可行，而且t越大越容易可行。",
+      "在[0,ceil(max/y)]上二分t：对每个任务，若v−t·y>0则need加上ceil((v−t·y)/(x−y))；need≤t时hi=t，否则lo=t+1。全部用64位整数，输出lo。"
+    ],
+    "en": [
+      "In one operation the chosen task runs x seconds and every other task runs y seconds. Equivalently, every task gets y seconds in every operation, and the chosen task gets an extra x - y.",
+      "With the total number of operations t fixed, each task first gets t * y; the rest of its need can only come from being chosen, x - y at a time, so it must be chosen ceil(remaining / (x - y)) times. t is feasible when these counts sum to at most t, and a larger t is only easier.",
+      "Binary search t on [0, ceil(max / y)]: for each task, if v - t*y > 0 add ceil((v - t*y) / (x - y)) to need; if need <= t set hi = t, otherwise lo = t + 1. Use 64-bit integers throughout and print lo."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search on the number of operations t; first give every task a base amount of t*y, then divide each task's remaining need by x-y, rounding up, to get the number of extra times it must be the main task; t is feasible if the sum is at most t.\n\n## Correctness\n\nAny t-step schedule provides the extra main-task execution at most t times, so the condition is necessary. If the sum of the required counts is <=t, choose still-unfinished tasks according to these counts; surplus reservations for already finished tasks can be replaced by other unfinished tasks without reducing any necessary execution, and once everything is finished there is no need to continue, so all tasks finish within at most t steps. Feasibility is monotone, so binary search gives the minimum.\n\n## Complexity\n\nTime O(n log maxTime), space O(n)."
+}

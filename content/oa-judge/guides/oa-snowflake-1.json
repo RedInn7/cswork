@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-1",
+  "packageChecksum": "1a5b744a2eeaf61c1764a844431043da0004d5ee26cace1bd85fb6529a3f189d",
+  "sourceContentHash": "6df4d16e351b4716ebebf9c6cddfa335c77b9b347baae6f83cbbd6764f483ea7",
+  "editorialSha256": "a35db0cfb4e1d65a55b570e32bd568ea2b3e2995f23daa3d2328365fe41ba46d",
+  "hints": {
+    "zh": [
+      "每一段都是不超过10^6的质数且没有前导零，所以每段最多6位；可以先用埃氏筛预处理10^6以内的质数表。",
+      "按前缀做计数DP：dp[i]表示前i个字符的划分方案数，dp[0]=1。最后一段从某个非0字符开始，长度为1到6。",
+      "从左到右枚举起点i（s[i]为'0'则跳过），把s[i..j]逐位累成数值value（j最多到i+5），若value是质数则dp[j+1]加上dp[i]并对10^9+7取模；答案为dp[n]。"
+    ],
+    "en": [
+      "Every segment is a prime up to 10^6 with no leading zero, so each segment has at most 6 digits; precompute the primes below 10^6 with a sieve of Eratosthenes.",
+      "Count with a prefix DP: dp[i] is the number of partitions of the first i characters, with dp[0] = 1. The last segment starts at a nonzero character and has length 1 to 6.",
+      "Go over start positions i from left to right (skip when s[i] is '0'), build value = s[i..j] digit by digit for j up to i + 5, and whenever value is prime add dp[i] to dp[j+1] modulo 10^9+7; the answer is dp[n]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSieve the primes below one million; dp[i] is the number of valid partitions of the first i characters, extending from each nonzero starting position by at most 6 digits.\n\n## Correctness\n\nAny valid last segment has length at most 6 and is a prime without leading zeros; removing it leaves a unique prefix partition. The transitions enumerate all valid last segments, which do not overlap, so by induction from the single way of partitioning the empty prefix, the count is correct.\n\n## Complexity\n\nTime O(10^6 log log 10^6+6n), space O(10^6+n)."
+}

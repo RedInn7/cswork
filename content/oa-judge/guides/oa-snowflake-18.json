@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-18",
+  "packageChecksum": "7eb87c7435191e22004432d7befd279e9118f461d9a9b3d09cdf64e8b128e30a",
+  "sourceContentHash": "004888feefa75caf9db258dcb2ddb65cb64b5118fc460b5db2b7d9b17d31c2c2",
+  "editorialSha256": "081be4733e2420ceebf3c517f85d39a1af5fed0f168e695e50556f300543cf20",
+  "hints": {
+    "zh": [
+      "单点区间[a,a]只含一个整数，不可能包含两个不同的数，出现就直接无解。其余情况下，选的点越靠右，越可能同时照顾到后面的区间。",
+      "按右端点升序（右端点相同时左端点降序）处理区间。由于后面区间的右端点更大，判断已选点是否覆盖当前区间只需看已选的最大两个数a<b。",
+      "维护a=b=−1和计数：若l>b，当前区间里一个已选点都没有，选r−1和r，计数加2；否则若l>a，区间里只有b，再选r，令a=b、b=r，计数加1；否则已满足。有单点区间时输出−1，否则输出计数。"
+    ],
+    "en": [
+      "A single-point interval [a, a] holds only one integer, so it can never contain two distinct numbers; if one appears there is no solution. Otherwise, picking points further right helps later intervals more.",
+      "Process intervals by right endpoint ascending (left endpoint descending on ties). Since later intervals end further right, whether the chosen points cover the current interval depends only on the two largest chosen numbers a < b.",
+      "Keep a = b = -1 and a counter: if l > b the interval has no chosen point, so choose r - 1 and r and add 2; else if l > a only b lies inside, so choose r, set a = b, b = r and add 1; otherwise it is already satisfied. Print -1 if any single-point interval exists, otherwise the counter."
+    ]
+  },
+  "explanationEn": "## Approach\n\nProcess intervals by right endpoint in ascending order, and by left endpoint in descending order for equal right endpoints, maintaining the two largest numbers in the chosen set; when coverage is insufficient, choose numbers as close as possible to the current right endpoint.\n\n## Correctness\n\nAfter sorting by right endpoint, whether the existing points cover the current interval depends only on the two largest of them. When points must be added, choosing the rightmost available integers is never worse for later intervals further to the right than any other choice, and the added points of an optimal solution can be exchanged for the greedy points without breaking the intervals already processed. Induction gives the minimum set. A single point cannot contain two distinct integers, so -1 is returned.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-5",
+  "packageChecksum": "0b5259fdb61dc438add24c50deb3156ccbb2bdbc625dbd011c0525be89fd2aa6",
+  "sourceContentHash": "6d6e6befcf667126f7b6b0578cbf9bbe93578fa5567a548cf97285dd04f74097",
+  "editorialSha256": "657c3ae8f69451d1eb89f9801441e2870aec7e3c898df03fd6b413fa4e590be3",
+  "hints": {
+    "zh": [
+      "n≤40，直接枚举2^40个子序列太多，但每一半只有至多2^20种选法；任意子序列都能唯一拆成左半的选择加右半的选择，空子序列对应和0。",
+      "折半枚举：分别求出两半的全部子集和并排序，问题就变成在两个有序数组里各取一个数，使它们的和最接近goal。",
+      "左指针从左半最小和开始、右指针从右半最大和开始：每次用两和之和更新|和−goal|的最小值；和小于goal就右移左指针，大于就左移右指针，等于时答案直接为0。答案初值取|goal|，对应空子序列。"
+    ],
+    "en": [
+      "With n <= 40, enumerating all 2^40 subsequences is too much, but each half has at most 2^20 choices; every subsequence splits uniquely into a choice from the left half plus a choice from the right half, and the empty subsequence has sum 0.",
+      "Meet in the middle: generate and sort all subset sums of each half, and the task becomes picking one number from each of two sorted arrays so that their sum is closest to goal.",
+      "Start the left pointer at the smallest left sum and the right pointer at the largest right sum; each time update the minimum of |sum - goal|; if the sum is below goal move the left pointer right, if above move the right pointer left, and if equal the answer is 0. Initialize the answer to |goal| for the empty subsequence."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit the array in half, generate all subset sums of each half and sort them, then use one pointer from the left and one from the right to find the sum closest to goal.\n\n## Correctness\n\nEvery subsequence decomposes uniquely into a choice in the left half and a choice in the right half, so the enumerated sums cover all possibilities. When the sum of the two is below the target, pairing the current (smaller) left sum with any even smaller right sum cannot improve in the direction of crossing the target, so the left pointer is advanced; when it is above the target, the right pointer is decreased symmetrically. Keeping the minimum difference at every step covers every potentially optimal combination. The empty set corresponds to sum 0.\n\n## Complexity\n\nTime O(n*2^(n/2)), space O(2^(n/2)); the full upper bound of 40 elements is kept."
+}

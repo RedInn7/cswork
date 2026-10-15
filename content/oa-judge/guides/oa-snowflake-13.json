@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-13",
+  "packageChecksum": "5c5acaf10a4619aa51c50be2e9b977036a81d64819c4d49f88239dd95e53b3cd",
+  "sourceContentHash": "384589ad0a74cf962ed61492906609e6eeb5bfe8bac91b957b9d5a21a1b6851d",
+  "editorialSha256": "4f7113952df5b1c0e63f87285546a7fdf94d4cfce45a1fea9281e64d01faca07",
+  "hints": {
+    "zh": [
+      "屏障越大，每个粒子剩下的能量max(energy−barrier,0)只会变小或不变，所以总能量随屏障单调不增。",
+      "因此满足“总能量≥th”的屏障构成从0开始的一段前缀，可以二分查找最后一个合法值；屏障等于最大能量时总能量为0，必然不合法。",
+      "在[0,max(energy)]上二分：取mid=(lo+hi+1)/2，计算各项max(e−mid,0)之和（用64位整数），若≥th则lo=mid，否则hi=mid−1；收敛后输出lo。"
+    ],
+    "en": [
+      "As the barrier grows, each particle's remaining energy max(energy - barrier, 0) can only stay or shrink, so the total energy is non-increasing in the barrier.",
+      "Hence the barriers with total energy >= th form a prefix starting at 0, and binary search can find the last valid one; at a barrier equal to the maximum energy the total is 0, which is never valid.",
+      "Binary search on [0, max(energy)]: take mid = (lo + hi + 1) / 2, compute the sum of max(e - mid, 0) with 64-bit integers, set lo = mid if it is >= th and hi = mid - 1 otherwise; print lo once they meet."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search for the last barrier at which the total energy is still not below the threshold.\n\n## Correctness\n\nEach term is non-increasing as the barrier grows, so the valid barriers form a prefix; 0 is valid and the maximum initial energy is not. At every step the binary search keeps, according to the predicate, the interval that contains the last valid position, so it converges to the answer.\n\n## Complexity\n\nTime O(n log maxEnergy), space O(n)."
+}

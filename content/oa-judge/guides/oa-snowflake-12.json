@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-12",
+  "packageChecksum": "d5b9b4177f0b819c383ea277beed5aaa7f760fe19b24bebe3bc1b99fc6ae8ac0",
+  "sourceContentHash": "f5c62f04def90ad1b7ae76fe6cbfdb787d975ffe68e3fec53d5ea91a868ce17e",
+  "editorialSha256": "ba82e234f5f5bccca0d5d810aeca1bc778aac8a3776d780eb3ad7033817f78d9",
+  "hints": {
+    "zh": [
+      "子序列的“变化次数”只和相邻两个被选元素是否相等有关，所以状态只需要记住结尾的值和已经用掉的变化次数。",
+      "设dp[v][j]为以值v结尾、变化至多j次的最长长度，best[j]为所有结尾值中的最大值。处理一个值为v的新元素时，它可以接在同值结尾的后面（不增加变化），也可以接在任意至多j−1次变化的子序列后面。",
+      "对每个元素v，j从k倒序到0：dp[v][j]=max(dp[v][j]+1, j>0时为best[j−1]+1否则为1)，再用它更新best[j]；倒序保证用到的best[j−1]还是处理本元素之前的值。值很大，用哈希表把每个值映射到自己的数组。答案为best[k]。"
+    ],
+    "en": [
+      "The number of changes in a subsequence depends only on whether consecutive chosen elements are equal, so the state just needs the last value and the number of changes used so far.",
+      "Let dp[v][j] be the longest length ending with value v using at most j changes, and best[j] the maximum over all ending values. A new element with value v can follow a subsequence ending with v (no new change) or any subsequence with at most j - 1 changes.",
+      "For each element v, go j from k down to 0: dp[v][j] = max(dp[v][j] + 1, best[j-1] + 1 if j > 0 else 1), then update best[j] with it; the decreasing order keeps best[j-1] at its value from before this element. Values are large, so map each value to its own array with a hash map. The answer is best[k]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain dp[value][j], the longest length ending with value using at most j changes, and the global best best[j] for each j. Update j in decreasing order, taking the better of extending the same value and best[j-1]+1.\n\n## Correctness\n\nExtending with the same value adds no change; extending any subsequence that has at most j-1 changes adds at most one change, so the second term is valid. Remove the last element of an optimal non-empty subsequence: if the last value equals the one before it, the case falls under the first term, otherwise under the second, so the transitions are complete. The decreasing order ensures that the current element is not used twice.\n\n## Complexity\n\nTime O(nk), space O(nk)."
+}

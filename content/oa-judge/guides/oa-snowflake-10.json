@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-10",
+  "packageChecksum": "74bee29676b9ace39bd1c101e031f382653af7ff100d0a4261300e769478310a",
+  "sourceContentHash": "c6e9c581253dda232e37b61530a5b58d840bb8db4b844aec2106be2d2e077f80",
+  "editorialSha256": "79968039de8adeebc0bb9433b4d97d09d43303d8c7944bb8de5aa27dbc3f6ed2",
+  "hints": {
+    "zh": [
+      "每轮候选是剩余列表前k个与后k个的并集。把还没进入任何一侧候选的人看成中间一段连续的“未曝光”区间，它只会从两端缩短。",
+      "用一个堆存放所有已曝光的候选，按分数从大到小、同分下标从小到大排序。某人被选走后，他所在的那一侧少了一个人，只需从未曝光区间的同一端补一个进来。",
+      "用left、right两个指针：先从左端放入至多k个，再从右端放入至多k个（left≤right时才能放）；重复t次：弹出堆顶并累加分数，若left≤right，就按被弹出者来自左侧还是右侧补入a[left++]或a[right−−]。输出总和，用64位整数。"
+    ],
+    "en": [
+      "Each round's candidates are the union of the first k and the last k people of the remaining list. Treat the people not yet exposed on either side as one contiguous middle range, which only shrinks from its two ends.",
+      "Keep every exposed candidate in one heap ordered by score descending, then index ascending. When someone is picked, their side loses one candidate, so just refill from the same end of the unexposed range.",
+      "Use pointers left and right: push up to k people from the left end, then up to k from the right end (only while left <= right); repeat t times: pop the top and add its score, and if left <= right, refill with a[left++] or a[right--] depending on which side the popped person came from. Print the total as a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nOne heap holds the candidates from both sides, ordered by negative score and original index, and records which side each came from; after a pop, refill from the corresponding side with an element that has not been exposed yet.\n\n## Correctness\n\nThe unexposed range is always contiguous, and the heap contains exactly the deduplicated union of the selectable first k and last k elements; refilling from the same side keeps this invariant, and once the range is exhausted the heap contains everyone who remains. The order of original indices is the same as the relative order after deletions, so the top of the heap is exactly the person chosen by the rule.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

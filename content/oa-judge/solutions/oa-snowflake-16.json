@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-16",
+  "packageChecksum": "2539ccc597d0dabc17a482b39a18d5e231d0cc5f56757ff603d47c804a643f9d",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nconst long long MOD = 1000000007;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<string> words(n);\n    for (auto &w : words) cin >> w;\n    string t;\n    cin >> t;\n    int m = words[0].size(), T = t.size();\n    // freq[i][c]: how many words have letter c in column i.\n    vector<array<long long, 26>> freq(m);\n    for (auto &f : freq) f.fill(0);\n    for (auto &w : words)\n        for (int i = 0; i < (int)w.size(); i++) freq[i][w[i] - 'a']++;\n    vector<long long> dp(T + 1, 0);\n    dp[0] = 1;\n    for (int i = 0; i < m; i++)\n        for (int j = min(i + 1, T); j >= 1; j--)  // reverse so a column is used at most once\n            dp[j] = (dp[j] + dp[j - 1] * freq[i][t[j - 1] - 'a']) % MOD;\n    printf(\"%lld\\n\", dp[T]);\n}\n",
+      "sha256": "279522f8f8fdc4bbc6a8942d1f8d4a27dde4f1dac67dadc13aaebbfc9f7a2d3d"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        final long MOD = 1000000007L;\n        int n = nextInt();\n        String[] words = new String[n];\n        for (int i = 0; i < n; i++) words[i] = next();\n        String t = next();\n        int m = words[0].length(), T = t.length();\n        // freq[i*26+c]: how many words have letter c in column i.\n        long[] freq = new long[m * 26];\n        for (String w : words)\n            for (int i = 0; i < w.length(); i++) freq[i * 26 + w.charAt(i) - 'a']++;\n        long[] dp = new long[T + 1];\n        dp[0] = 1;\n        for (int i = 0; i < m; i++)\n            for (int j = Math.min(i + 1, T); j >= 1; j--) // reverse so a column is used at most once\n                dp[j] = (dp[j] + dp[j - 1] * freq[i * 26 + t.charAt(j - 1) - 'a']) % MOD;\n        System.out.println(dp[T]);\n    }\n}\n",
+      "sha256": "2a33c62202e3eb6506abfdd0177be60454ed83564302fb7d067d547293ea05ba"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tconst MOD = 1000000007\n\tn := int(nextInt())\n\twords := make([][]byte, n)\n\tfor i := range words {\n\t\twords[i] = next()\n\t}\n\tt := next()\n\tm, T := len(words[0]), len(t)\n\t// freq[i*26+c]: how many words have letter c in column i.\n\tfreq := make([]int64, m*26)\n\tfor _, w := range words {\n\t\tfor i, c := range w {\n\t\t\tfreq[i*26+int(c-'a')]++\n\t\t}\n\t}\n\tdp := make([]int64, T+1)\n\tdp[0] = 1\n\tfor i := 0; i < m; i++ {\n\t\tfor j := min(i+1, T); j >= 1; j-- { // reverse so a column is used at most once\n\t\t\tdp[j] = (dp[j] + dp[j-1]*freq[i*26+int(t[j-1]-'a')]) % MOD\n\t\t}\n\t}\n\tfmt.Println(dp[T])\n}\n",
+      "sha256": "a73b8860cabf8655479ee623a3e774180c96cc4b3f4fd77276fe51da2c3e6935"
+    }
+  ]
+}

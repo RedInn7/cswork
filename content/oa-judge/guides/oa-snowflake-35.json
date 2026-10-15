@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-35",
+  "packageChecksum": "ec4f8a7c549a4da74cc14fef32025e080be6cfd3b5fc4f53a3f1454747b5b949",
+  "sourceContentHash": "b097c83e5220fe36019b172a562f92fd7393858db427117abadcbd0ef40a765b",
+  "editorialSha256": "c12e16520efaa8999429ec017f0d7a2f39747e1cbf6acce462c6de41a1a05679",
+  "hints": {
+    "zh": [
+      "更长子串的每次出现都包含它长度为L的前缀的一次出现，而且前缀的不同字符数不会更多。所以只需要考虑长度恰为minLength=L的子串。",
+      "问题变成：在所有长度为L且不同字符数不超过maxUnique的子串中，求同一文本的最大出现次数（允许重叠）。用滑动窗口标记每个以i结尾的长度L窗口是否合格；用后缀自动机精确统计每个子串的出现次数，避免哈希碰撞。",
+      "构建后缀自动机，记录每个状态的出现次数（新建状态为1、克隆状态为0）和首次出现的结束位置；按len从大到小把次数沿后缀链接累加。对满足len(link)<L≤len的状态，若首次结束位置处的窗口合格，就用它的次数更新答案；没有合格子串则输出0。输入是JSON，字符串长度按Unicode字符计算。"
+    ],
+    "en": [
+      "Each occurrence of a longer substring contains an occurrence of its length-L prefix, and the prefix has no more distinct characters. So only substrings of length exactly minLength = L need to be considered.",
+      "The task becomes: among substrings of length L with at most maxUnique distinct characters, find the largest number of occurrences of one text (overlaps allowed). Mark with a sliding window whether the length-L window ending at each i qualifies, and count occurrences exactly with a suffix automaton to avoid hash collisions.",
+      "Build the suffix automaton, storing each state's occurrence count (1 for a new state, 0 for a clone) and the end position of its first occurrence; add counts up the suffix links in decreasing order of len. For each state with len(link) < L <= len whose window at the first end position qualifies, update the answer with its count; print 0 if none qualifies. The input is JSON and lengths count Unicode characters."
+    ]
+  },
+  "explanationEn": "## Approach\n\nOnly the shortest length L needs to be considered: the length-L prefix of any longer substring occurs at least as often and has no more distinct characters. Use a sliding window to mark the qualifying length-L windows, and a suffix automaton to count the occurrences of each substring exactly; then filter the states that represent length L.\n\n## Correctness\n\nEach occurrence of a valid longer substring corresponds to an occurrence of its prefix, so shortening to L is never worse. Each state of the suffix automaton represents the substrings that share the same set of end positions, with lengths between len(link)+1 and len; if a state covers L, it represents a unique text of length L. Accumulating end counts along suffix links in decreasing order of length gives exact occurrence counts, and the sliding-window mark at the representative position checks the number of distinct characters; taking the maximum gives the answer without any collision-prone hashing.\n\n## Complexity\n\nTime O(n log n) (states sorted by length), space O(n)."
+}

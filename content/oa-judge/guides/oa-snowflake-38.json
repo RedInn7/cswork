@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-38",
+  "packageChecksum": "b9d91efa65e851e10b42237e96caac30bcb9c491874a123b4c586a4b31782f2e",
+  "sourceContentHash": "312a002a73ae519e7eee30a3e5e9f9c936b4fbbf18438240f0c96586ffe73cf6",
+  "editorialSha256": "ad215d600bea6e717066b33f967182f1f1d42e860641c2f1fc8a0f18b2e62aa2",
+  "hints": {
+    "zh": [
+      "先把已有区间排序合并（端点相接也算相连），得到若干严格分离的块。新增的一段如果连起了第l块和第r块，它们之间的所有块也都被连了起来。",
+      "新段连接第l到第r块所需的最短长度是第r块左端点减去第l块右端点，只要这个差≤k就能做到；连接w个块会让总块数减少w−1。",
+      "合并后用双指针：右指针r递增，若start[r]−end[l]>k就右移l，记录最大窗口长度best（至少为1）；答案为块数−best+1。"
+    ],
+    "en": [
+      "First sort and merge the given intervals (touching endpoints count as connected) into strictly separated blocks. If the new segment connects block l and block r, every block in between is connected too.",
+      "The shortest segment connecting blocks l through r has length (start of block r) - (end of block l), so it is possible exactly when that gap is <= k; connecting w blocks lowers the block count by w - 1.",
+      "After merging use two pointers: advance r, move l right while start[r] - end[l] > k, and keep the largest window size best (at least 1); the answer is the number of blocks - best + 1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst sort and merge the existing intersecting intervals, then use two pointers to find the largest run of consecutive blocks that one segment can connect: the start of block r minus the end of block l is <=k. Connecting w blocks reduces the total number of blocks by w-1.\n\n## Correctness\n\nAfter merging, the blocks are strictly separated. A new segment that spans the first and last blocks of a run must cover at least the gap between them, whose shortest length is the left endpoint of the right block minus the right endpoint of the left block; when that fits, taking these two endpoints connects all the blocks in between at once. The blocks that intersect an optimal new segment are consecutive, so enumerating all windows and taking the maximum misses nothing.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

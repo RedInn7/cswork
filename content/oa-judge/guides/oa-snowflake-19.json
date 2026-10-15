@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-19",
+  "packageChecksum": "d72c1401cfd0204c254853ff8422c64834f6c5678e537fce79da8ac641034ce9",
+  "sourceContentHash": "f70c934406065c88551faf305401338e90ba5627fae83b67e444d51ac0b28c69",
+  "editorialSha256": "ed76afaeeab0e8a99c5a476638802bcfec050327d5742aaa057c833f25e553e1",
+  "hints": {
+    "zh": [
+      "任何前缀的MEX都不会超过整个剩余数组的MEX，所以每一轮能拿到的最大首项就是剩余数组的MEX，而且只要前缀包含了0..MEX−1就能拿到。",
+      "拿到这个值之后删得越短越好：保留更多元素意味着结果可以更长，字典序也更大。MEX为0时每次只删一个元素，得到尽可能多的0。",
+      "先统计频数求出初始MEX；每轮记target为当前MEX，逐个删除元素：频数减到0时把MEX下调为min(MEX,v)；若v<target且本轮第一次见到就计数，计数达到target时结束本轮（target为0时删一个就结束）。用轮次编号标记“本轮见过”，避免每轮清空集合。最后输出结果长度和序列。"
+    ],
+    "en": [
+      "No prefix can have a MEX larger than the MEX of the whole remaining array, so the best first value in each round is the remaining array's MEX, and any prefix containing 0..MEX-1 achieves it.",
+      "Once that value is reached, delete as little as possible: keeping more elements lets the result grow longer and lexicographically larger. When the MEX is 0, delete one element at a time to get as many zeros as possible.",
+      "Count frequencies to get the initial MEX; each round let target be the current MEX and delete elements one by one: when a frequency drops to 0 lower MEX to min(MEX, v); if v < target and it is new in this round count it, and end the round when the count reaches target (after one element if target is 0). Mark seen values with the round number instead of clearing a set. Finally print the result length and the sequence."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrecompute the suffix frequencies and the MEX; in each round take the MEX of the remaining array and cut the shortest prefix that first covers 0..MEX-1. When the MEX is 0, delete only one element. When a frequency drops to zero, update the suffix MEX downward.\n\n## Correctness\n\nThe MEX of any prefix cannot exceed the MEX of the whole remaining array, and covering all smaller numbers achieves this optimal first item. Once it is achieved, ending earlier keeps more elements, and any plan that deletes more is compatible with the first part of the kept array, so it cannot improve the lexicographic order; the optimal solution of the remainder therefore applies recursively. When the MEX is 0, keeping the most elements maximizes the number of zero items. Each element is consumed only once, and the total initialization length of the required sets does not exceed n.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-43",
+  "packageChecksum": "d513b3ad80406ae8e36c23d65c11a1f62d5020352a9982020d946c29278ff720",
+  "sourceContentHash": "aade29eef2c4d67bcb861df556f58081c4b9974e0c20d85288c1187ea0aed38f",
+  "editorialSha256": "ad169054b38e4fa5d5c161c530314ca5e61317375d0cc96300431ffee753e118",
+  "hints": {
+    "zh": [
+      "从塔y朝一个方向看，塔x可见当且仅当x比两者之间的所有塔都高；也就是说，沿这个方向能看到的恰好是从y出发一路严格创新高的那些塔。左右两侧互不相交，可以分别统计再相加。",
+      "从左到右扫描时，用单调栈维护“当前位置往左看能看到的塔”，栈中高度从栈顶到栈底严格递增。新塔加入后，所有不高于它的旧塔都会被它挡住，以后再也看不见。",
+      "对每个位置i：先把栈的大小加到answer[i]，再弹出所有高度≤height[i]的栈顶，最后压入height[i]；从右到左再做一遍同样的过程并累加到answer，最后按原顺序输出。"
+    ],
+    "en": [
+      "Looking from tower y in one direction, tower x is visible exactly when x is taller than every tower between them; in other words, the towers seen in that direction are exactly the strict new-maximum towers starting from y. The left and right sides are disjoint, so count them separately and add.",
+      "While scanning left to right, keep a monotonic stack of the towers visible when looking left from the current position, with heights strictly increasing from top to bottom. Once a new tower is added, every old tower no taller than it is blocked by it for good.",
+      "For each position i: first add the stack size to answer[i], then pop every top whose height is <= height[i], then push height[i]; repeat the same pass from right to left, adding into answer, and print the counts in the original order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan from left to right; the stack keeps the strict record-height towers of the scanned prefix as seen looking from right to left. First add the stack length to the current visible count, then pop the old records whose height is <= the current tower's, and push the current tower. Do the same once more in reverse and accumulate.\n\n## Proof of correctness\n\nA past tower is visible exactly when its height is strictly greater than all heights between it and the current tower, i.e., when it is a strict record-height tower in that direction. After the current tower is added, every old record no taller than it is blocked, while the taller ones remain records; the monotonic stack maintains this invariant. The left and right sides are independent and disjoint, so the results are added.\n\n## Complexity\n\nTime O(n), space O(n). The original example [5,2,10,1] gives [2,2,3,1]; do not apply the other visibility rule based on the minimum height of the two ends."
+}

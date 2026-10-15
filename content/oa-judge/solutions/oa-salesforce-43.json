@@ -1,0 +1,21 @@
+{
+  "id": "oa-salesforce-43",
+  "packageChecksum": "d513b3ad80406ae8e36c23d65c11a1f62d5020352a9982020d946c29278ff720",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    vector<long long> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    vector<long long> ans(n, 0);\n    vector<long long> st;\n    // Left-to-right pass, then right-to-left pass with the same monotonic stack.\n    for (int pass = 0; pass < 2; pass++) {\n        st.clear();\n        for (int k = 0; k < n; k++) {\n            int i = pass == 0 ? k : n - 1 - k;\n            ans[i] += (long long)st.size();\n            while (!st.empty() && st.back() <= a[i]) st.pop_back();\n            st.push_back(a[i]);\n        }\n    }\n    string out;\n    for (int i = 0; i < n; i++) {\n        if (i) out += ' ';\n        out += to_string(ans[i]);\n    }\n    puts(out.c_str());\n}\n",
+      "sha256": "7f0976b4bf4439706cedb70ecfef84cbd34324567ed264f244541e0e64839322"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        long[] ans = new long[n];\n        long[] st = new long[n];\n        // Left-to-right pass, then right-to-left pass with the same monotonic stack.\n        for (int pass = 0; pass < 2; pass++) {\n            int top = 0;\n            for (int k = 0; k < n; k++) {\n                int i = pass == 0 ? k : n - 1 - k;\n                ans[i] += top;\n                while (top > 0 && st[top - 1] <= a[i]) top--;\n                st[top++] = a[i];\n            }\n        }\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            if (i > 0) sb.append(' ');\n            sb.append(ans[i]);\n        }\n        System.out.println(sb);\n    }\n}\n",
+      "sha256": "5f2aa1615a1631efbe212b2896bef814814a74b17641b26e7f442810aa269cd1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tans := make([]int64, n)\n\tst := make([]int64, 0, n)\n\t// Left-to-right pass, then right-to-left pass with the same monotonic stack.\n\tfor pass := 0; pass < 2; pass++ {\n\t\tst = st[:0]\n\t\tfor k := 0; k < n; k++ {\n\t\t\ti := k\n\t\t\tif pass == 1 {\n\t\t\t\ti = n - 1 - k\n\t\t\t}\n\t\t\tans[i] += int64(len(st))\n\t\t\tfor len(st) > 0 && st[len(st)-1] <= a[i] {\n\t\t\t\tst = st[:len(st)-1]\n\t\t\t}\n\t\t\tst = append(st, a[i])\n\t\t}\n\t}\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tfor i := 0; i < n; i++ {\n\t\tif i > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(strconv.FormatInt(ans[i], 10))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "b503a7d38d31cfd08dca8a898b0742f66a1489ebb7496dea6b0910a3f58bfad9"
+    }
+  ]
+}

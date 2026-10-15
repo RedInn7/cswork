@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-14",
+  "packageChecksum": "2b9853be6a892ec62b67ddd39dda2f1ee1530eb971369584d5b7e7d6c1658871",
+  "sourceContentHash": "82e8f46b0b0f11d9a48930c000e372f1e7b5b8e0847467b16cdc6dceffd69920",
+  "editorialSha256": "dd5ed5b52fc016973b5171c7047016e80c2650afd1aa23d38b0fea2f0c5304f4",
+  "hints": {
+    "zh": [
+      "未来能怎么跳只取决于当前位置和“方向是否被锁、锁在哪个方向”：上一跳长度大于1就锁定该方向，长度为1则自由。到达E还要求最后一跳长度为1，即落在E时处于自由态。",
+      "把（行、列、锁定状态）当作图的结点，共n×m×5个状态，每次跳跃代价都是1，所以可以直接BFS求最少步数。",
+      "从S的自由态出发BFS；对弹出的状态枚举允许的方向（自由时四个，锁定时只有一个），沿该方向逐格前进（可以越过墙），每个非墙格都是落点：距离为1的落点得到自由态，更远的落点锁定该方向；首次弹出E的自由态时输出步数，队列耗尽则输出−1。"
+    ],
+    "en": [
+      "Which jumps are possible next depends only on the current cell and whether the direction is locked, and to which direction: a previous jump longer than 1 locks its direction, a jump of length 1 frees it. Reaching E also requires the last jump to have length 1, i.e., landing on E in the free state.",
+      "Treat (row, column, lock state) as graph nodes, n*m*5 states in total; every jump costs 1, so a plain BFS gives the minimum number of steps.",
+      "BFS from the free state at S; for each popped state try the allowed directions (all four when free, only one when locked), walk along that direction cell by cell (walls may be jumped over), and every non-wall cell is a landing spot: distance 1 gives the free state, longer distances lock that direction. Print the step count the first time E is popped in the free state, or -1 if the queue runs out."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRun BFS on states made of the coordinates and the locked direction (plus a free state), enumerating the allowed directions and all valid landing cells; a long jump locks the direction, and a short jump makes the state free.\n\n## Correctness\n\nThe state contains exactly all the history that affects future legal moves. Each edge corresponds to one legal jump, and conversely every legal move is enumerated. All edge weights are 1, so the first time BFS visits the target in the free state gives the minimum number of steps. Accepting only the free state ensures that the last step has length 1.\n\n## Complexity\n\nTime O(nm(n+m)), space O(nm)."
+}

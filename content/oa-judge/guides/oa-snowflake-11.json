@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-11",
+  "packageChecksum": "71a7cd95eee94ef78c4518288fe675d6a5b0ac227eadecddb85d247c2eae62f2",
+  "sourceContentHash": "0c74f501c9c27779e35805b2c9ac24588e2d0ca5c2b84f5ed60def2c9c34468f",
+  "editorialSha256": "9e2155048d4c58f5907b24b33f71015fcd594f1bf6f82a0b45e0a513994e2521",
+  "hints": {
+    "zh": [
+      "这是带权区间调度：每个电话是半开区间[start,start+duration)，前一个的结束时刻等于后一个的开始时刻时不冲突。",
+      "把电话按结束时刻排序后做前缀DP：dp[i]为前i个电话的最优值，第i个电话要么不选（dp[i−1]），要么选，此时之前能衔接的电话恰好是结束时刻≤它开始时刻的一段前缀。",
+      "排序得到结束时刻数组ends；对第i个电话二分出前i−1个中ends≤start的个数p，dp[i]=max(dp[i−1],dp[p]+volume)。结束时刻和总量都可能超过32位，用64位整数，输出dp[n]。"
+    ],
+    "en": [
+      "This is weighted interval scheduling: each call is the half-open interval [start, start+duration), and a call ending exactly when the next one starts does not conflict with it.",
+      "Sort the calls by end time and run a prefix DP: dp[i] is the best value using the first i calls; call i is either skipped (dp[i-1]) or taken, in which case the calls that can precede it are exactly a prefix of calls whose end time is <= its start.",
+      "Build the sorted array ends; for call i binary search the number p of calls among the first i-1 with end <= start, and set dp[i] = max(dp[i-1], dp[p] + volume). End times and totals can exceed 32 bits, so use 64-bit integers, and print dp[n]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by end time. Let dp[i] be the maximum order volume obtainable from the first i calls. For call i, binary search for the number p of calls whose end time is no later than its start time: without the current call the value is dp[i-1], and with it the value is dp[p]+volume[i]; take the larger.\n\n## Correctness\n\nFor the first i calls sorted by end time, an optimal plan either does not choose call i, in which case its value is at most dp[i-1], or chooses call i. Under the half-open interval rule used by the source's implementations in three languages, the calls that can come right before it are exactly the intervals with end time <= start[i], and these form a sorted prefix p, so the best value when choosing it is dp[p]+volume[i]. The two cases cover all feasible plans, and taking the maximum gives dp[i]. By induction on i, dp[n] is the global optimum.\n\n## Complexity\n\nTime O(n log n), space O(n).\n\n## Source and site conventions\n\nIn the original example, calls 2 and 4 can be chosen, for an order volume of 76. The original problem gives the input ranges but does not state whether equal endpoints conflict; the Python, Java, and C++ implementations in the pinned snapshot all use `end <= next start` to decide that two calls can follow each other, and this site makes that implementation rule explicit as the half-open interval `[start, start+duration)`. This site adds the stdin/stdout input format. Source: https://oamaster.com/docs/companies/snowflake#11-maximum-order-volume-weighted-interval-scheduling"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-sig-4",
+  "packageChecksum": "cb8bb18a4a06c001141ae76a34546e18a73da16b726a39fa7dc754f83dcfe64b",
+  "sourceContentHash": "d4d72e31741ca5be7bea26b3bc070b9d17b56f0a31a39edcd972757b88f3c554",
+  "editorialSha256": "6a684f1a0db71a1b91c2d3fadef420720953902d4d8a0f00d1dd695b2881d4b8",
+  "hints": {
+    "zh": [
+      "两个片段拼接成accessCode，等价于在accessCode的十进制串中选一个切分点：左边一段等于第一个片段，右边一段等于第二个片段。目标最多18位，切分点最多17个。",
+      "先用哈希表统计每个片段数值出现的次数。对每个切分，左右两段各有若干位置可选，相乘就是这一切分贡献的有序位置对数；右段以0开头时不可能等于规范十进制片段。",
+      "枚举切分点cut=1..len−1：answer加上cnt[left]×cnt[right]；若left与right文本相同，再减去cnt[left]，因为同一位置不能和自己配对。结果用64位整数。"
+    ],
+    "en": [
+      "Two fragments concatenate to accessCode exactly when some split point of accessCode's decimal string has the left part equal to the first fragment and the right part equal to the second. The target has at most 18 digits, so there are at most 17 split points.",
+      "First count how many times each fragment value occurs with a hash map. For a split, the left and right parts each have some positions to choose from, and their product is the number of ordered position pairs for that split; a right part starting with 0 can never equal a canonical decimal fragment.",
+      "For each cut = 1..len-1 add cnt[left] * cnt[right] to the answer; if left and right are the same text, subtract cnt[left], because a position cannot pair with itself. Use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWrite the target accessCode as a canonical decimal string. Every way of concatenating corresponds to a non-empty split `target = left + right`. Count the occurrences of each integer in the array and accumulate `count(left) × count(right)`. When the left and right fragments are equal, the same position cannot be used twice at once, so `count(left)` is subtracted from the product.\n\nThis count assigns positions to ordered roles: for example, two fragments `12` with the same value can form `1212`, and swapping these two positions is still a different way of using them. If two different fragments can form the target in both orders, their respective splits are each counted.\n\n## Proof of correctness\n\nAny valid way consists of a first fragment and a second fragment at a different position, and concatenating their decimal strings gives exactly the target, so it corresponds to exactly one non-empty split of the target string. That split has `count(left)×count(right)` ordered position choices in the array; if the left and right texts are equal, no position may pair with itself, so `count(left)` invalid choices are subtracted. Conversely, every counted ordered position pair consists of two fragments at different positions whose texts concatenate to exactly the target, so each is a valid way. Therefore the algorithm counts exactly all valid concatenation pairs.\n\n## Complexity\n\nThe target has at most 18 digits, so at most 17 splits are checked. Time `O(N + D)`, space `O(U + D)`, where `U` is the number of distinct fragments and `D` is the number of digits of the target.\n\n## Source and site conventions\n\nThe pinned statement calls fragments/accessCode positive integers, explicitly says they are concatenated side by side rather than added numerically, and counts pairs of fragments at specific positions as different ways. The original example `[1,212,12,12]` with target `1212` has output 3, which can be recomputed from one ordered way `1+212` plus two ways `12+12` at different positions. The input is only a function signature; this site adds the standard I/O and limits: `1<=N<=100000`, `1<=fragment<=10^9`, `1<=accessCode<=10^18`. Integers are written in canonical decimal without leading zeros."
+}

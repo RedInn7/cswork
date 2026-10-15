@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-15",
+  "packageChecksum": "377c8789f54ec7d89c4aab9a4505c7cbe8c215e555d03ed8e8f2cd44c3c91a1a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\nint main() {\n    int n;\n    ll x, y;\n    scanf(\"%d %lld %lld\", &n, &x, &y);\n    vector<ll> a(n);\n    for (auto &v : a) scanf(\"%lld\", &v);\n    ll extra = x - y, lo = 0, hi = (*max_element(a.begin(), a.end()) + y - 1) / y;\n    // t operations give every task t*y; each main pick adds extra = x - y more.\n    while (lo < hi) {\n        ll t = (lo + hi) / 2, need = 0;\n        for (ll v : a) {\n            ll rem = v - t * y;\n            if (rem > 0) need += (rem + extra - 1) / extra;\n        }\n        if (need <= t) hi = t;\n        else lo = t + 1;\n    }\n    printf(\"%lld\\n\", lo);\n}\n",
+      "sha256": "652f7b2717f7afd28402e5a3210b9da3d629b62742ca06e3ffbd1784b20fbba5"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long x = nextLong(), y = nextLong();\n        long[] a = new long[n];\n        long mx = 0;\n        for (int i = 0; i < n; i++) {\n            a[i] = nextLong();\n            mx = Math.max(mx, a[i]);\n        }\n        long extra = x - y, lo = 0, hi = (mx + y - 1) / y;\n        // t operations give every task t*y; each main pick adds extra = x - y more.\n        while (lo < hi) {\n            long t = (lo + hi) / 2, need = 0;\n            for (long v : a) {\n                long rem = v - t * y;\n                if (rem > 0) need += (rem + extra - 1) / extra;\n            }\n            if (need <= t) hi = t;\n            else lo = t + 1;\n        }\n        System.out.println(lo);\n    }\n}\n",
+      "sha256": "a4acc65db6048a046d229484eb068bf7fd83871cab918e4d34c38bef928e139f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := int(nextInt())\n\tx, y := nextInt(), nextInt()\n\ta := make([]int64, n)\n\tvar mx int64\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t\tmx = max(mx, a[i])\n\t}\n\textra, lo, hi := x-y, int64(0), (mx+y-1)/y\n\t// t operations give every task t*y; each main pick adds extra = x - y more.\n\tfor lo < hi {\n\t\tt := (lo + hi) / 2\n\t\tvar need int64\n\t\tfor _, v := range a {\n\t\t\tif rem := v - t*y; rem > 0 {\n\t\t\t\tneed += (rem + extra - 1) / extra\n\t\t\t}\n\t\t}\n\t\tif need <= t {\n\t\t\thi = t\n\t\t} else {\n\t\t\tlo = t + 1\n\t\t}\n\t}\n\tfmt.Println(lo)\n}\n",
+      "sha256": "ef3ffe8d543b429641107187fbb26b301622207242f485a6149b984955068bbd"
+    }
+  ]
+}

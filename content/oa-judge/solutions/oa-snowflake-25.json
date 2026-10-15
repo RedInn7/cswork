@@ -1,0 +1,21 @@
+{
+  "id": "oa-snowflake-25",
+  "packageChecksum": "2b05dac4cdf5daa5f817a53fccfd0d93620951dfcf6b42a2001df10b4d1acd7e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\ntypedef long long ll;\n\nint main() {\n    int n, k;\n    scanf(\"%d %d\", &n, &k);\n    vector<ll> a(n);\n    for (auto &x : a) scanf(\"%lld\", &x);\n    const ll INF = LLONG_MAX / 4;\n    vector<ll> dp(n + 1, INF);\n    dp[0] = 0;\n    for (int i = 1; i <= n; i++) {\n        // Last segment a[j..i-1]: walk j backward, keeping its maximum.\n        ll largest = LLONG_MIN, best = INF;\n        for (int j = i - 1; j >= max(0, i - k); j--) {\n            largest = max(largest, a[j]);\n            best = min(best, dp[j] + largest);\n        }\n        dp[i] = best;\n    }\n    printf(\"%lld\\n\", dp[n]);\n}\n",
+      "sha256": "3491cf9cb6a1cbb4bb88b7b60d2a07dc9ca88a81582382806dc792f0060206ad"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static void skip() {\n        while (pos < buf.length && buf[pos] <= ' ') pos++;\n    }\n\n    static String next() {\n        skip();\n        int s = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, s, pos - s);\n    }\n\n    static long nextLong() {\n        skip();\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), k = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        final long INF = Long.MAX_VALUE / 4;\n        long[] dp = new long[n + 1];\n        for (int i = 1; i <= n; i++) {\n            // Last segment a[j..i-1]: walk j backward, keeping its maximum.\n            long largest = Long.MIN_VALUE, best = INF;\n            for (int j = i - 1; j >= Math.max(0, i - k); j--) {\n                largest = Math.max(largest, a[j]);\n                best = Math.min(best, dp[j] + largest);\n            }\n            dp[i] = best;\n        }\n        System.out.println(dp[n]);\n    }\n}\n",
+      "sha256": "ae39b0408b5a49a6450e11b2083310423c3524d6a273f406cd45299a4d44670a"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"math\"\n\t\"os\"\n)\n\nvar data []byte\nvar p int\n\nfunc next() []byte {\n\tfor p < len(data) && data[p] <= ' ' {\n\t\tp++\n\t}\n\ts := p\n\tfor p < len(data) && data[p] > ' ' {\n\t\tp++\n\t}\n\treturn data[s:p]\n}\n\nfunc nextInt() int64 {\n\tt := next()\n\tneg := len(t) > 0 && t[0] == '-'\n\tif neg {\n\t\tt = t[1:]\n\t}\n\tvar r int64\n\tfor _, c := range t {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn, k := int(nextInt()), int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tconst INF = math.MaxInt64 / 4\n\tdp := make([]int64, n+1)\n\tfor i := 1; i <= n; i++ {\n\t\t// Last segment a[j..i-1]: walk j backward, keeping its maximum.\n\t\tlargest, best := int64(math.MinInt64), int64(INF)\n\t\tfor j := i - 1; j >= max(0, i-k); j-- {\n\t\t\tlargest = max(largest, a[j])\n\t\t\tbest = min(best, dp[j]+largest)\n\t\t}\n\t\tdp[i] = best\n\t}\n\tfmt.Println(dp[n])\n}\n",
+      "sha256": "fc380ad3eba2192809f9b1635f214f0151fed6a5867ba5b153a58fc1e66e9908"
+    }
+  ]
+}

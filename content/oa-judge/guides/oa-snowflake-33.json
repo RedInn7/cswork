@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-33",
+  "packageChecksum": "305a4214ac938ffe342dd0176b9d90eec9f7b4c34385fe5b97d0a6804dbe5828",
+  "sourceContentHash": "add66db60666852ddc5d117f8a3693328472a1841cd299eac901e4427005711f",
+  "editorialSha256": "f59015d5928304b1f5adb97911eb5f27a09ac6a3270ad02dd0fe2929bfdb2012",
+  "hints": {
+    "zh": [
+      "各网络互相独立。若最终升级x台，这x台不能卖掉，其余n−x台最多可以全部卖掉换钱。",
+      "可行条件是x·upgrade≤money+(n−x)·sell，整理得x·(upgrade+sell)≤money+n·sell；只要满足，先卖掉不升级的服务器再升级即可实现。",
+      "每个网络的答案是min(n, (money+n·sell)整除(upgrade+sell))。先输出网络数，再依次输出各网络的答案。"
+    ],
+    "en": [
+      "Networks are independent. If x servers are upgraded in the end, those x cannot be sold, while the other n - x can all be sold for money.",
+      "Feasibility is x * upgrade <= money + (n - x) * sell, i.e., x * (upgrade + sell) <= money + n * sell; whenever it holds, selling the servers that will not be upgraded first and then upgrading achieves it.",
+      "Each network's answer is min(n, floor((money + n * sell) / (upgrade + sell))). Print the number of networks, then each answer in order."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhen x servers are kept and upgraded, at most n-x can be sold. Therefore x<=n and x(upgrade+sell)<=money+n×sell; just round down.\n\n## Correctness\n\nA necessary condition is that the funds needed to upgrade x servers do not exceed the maximum funds available after selling all the servers that are not upgraded; when it holds, selling the non-upgraded servers first and then upgrading achieves it, so the inequality is also sufficient. Taking the largest allowed integer gives the optimum.\n\n## Complexity\n\nTime O(q), space O(q) for the output."
+}

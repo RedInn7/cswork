@@ -1,0 +1,19 @@
+{
+  "id": "oa-sentry-2",
+  "packageChecksum": "5ac9beca6a75a8a989a51bcea2acf144d6ec7790f4a1ad28491a2fa8b4223411",
+  "sourceContentHash": "dccdc79813b5710252dcd99604ca7e2ab8510131f4c277942ca570e4c400bbc6",
+  "editorialSha256": "7bcb68213faec36f493851cfa0449da73672fa9931f4c05c53cb048e22ed5631",
+  "hints": {
+    "zh": [
+      "先只看第一问：网格四方向移动、每步代价1，最少步数就是从起点BFS得到的距离。第二问要求在所有最短路径中挑宝藏最多的一条。",
+      "一条路径是最短路，当且仅当它每一步都从距离d的格子走到距离d+1的格子。这些边构成按距离分层的有向无环图，可以在上面做DP。",
+      "BFS时同时维护best[格子]：起点为它是否有宝藏；第一次发现邻格z时设dist[z]=dist[u]+1、best[z]=best[u]+treasure[z]；若z已被发现且dist[z]=dist[u]+1，就用best[u]+treasure[z]更新最大值。出口不可达输出−1 0，否则输出dist和best。"
+    ],
+    "en": [
+      "Look at the first question alone: moves go in four directions at cost 1, so the minimum number of steps is the BFS distance from the start. The second question asks for the shortest path that collects the most treasures.",
+      "A path is shortest exactly when every step goes from a cell at distance d to a cell at distance d + 1. These edges form a DAG layered by distance, on which a DP can run.",
+      "Keep best[cell] during the BFS: the start gets 1 if it holds a treasure; when neighbor z is discovered for the first time set dist[z] = dist[u] + 1 and best[z] = best[u] + treasure[z]; if z is already discovered and dist[z] = dist[u] + 1, raise best[z] to best[u] + treasure[z] when larger. Print -1 0 if the exit is unreachable, otherwise dist and best of the exit."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst run BFS from start to get the shortest distance of every cell; then do DP in increasing order of distance, transitioning only from neighbors whose distance is 1 smaller, and record for each cell the maximum number of treasures over the shortest paths that reach it.\n\n## Proof of correctness\n\nWith the BFS distances, every edge of every shortest path goes from distance d to d+1, and these edges form a directed acyclic graph. In increasing order of distance, the DP has already considered all shortest-path predecessors, so taking the maximum gives the maximum number of treasures over shortest paths to that cell. The distance and the DP value of the exit are exactly the answer.\n\n## Complexity\n\nTime O(rows*cols), space O(rows*cols)."
+}
