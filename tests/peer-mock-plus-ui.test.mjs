@@ -74,3 +74,38 @@ test('practice now: with reminders off and a focus, it asks at once and counts t
   assert.equal(document.querySelectorAll('.peer-chips li').length, 0);
   await act(async () => root.unmount());
 });
+
+test('an instant pair counts from when it matched, not from the top of its hour', async () => {
+  const HOUR = 3600000;
+  const start = Date.now() - 10 * 60000;
+  const pair = {
+    id: 'Pair00000002',
+    kind: 'behavioral',
+    level: 'mid',
+    // Its hour ended long before the 80 minutes from the match do.
+    slot: Math.floor(Date.now() / HOUR) - 2,
+    start,
+    partner: 'Amy',
+    meetUrl: '',
+    status: 'scheduled',
+    rounds: [
+      { set: 'aaaa1111', as: 'candidate' },
+      { set: 'bbbb2222', as: 'interviewer' },
+    ],
+    reported: false,
+    reportedMe: false,
+    canReport: true,
+    canCancel: false,
+  };
+  globalThis.fetch = async (url) => {
+    if (String(url).endsWith('/api/oj/peer')) return Response.json({ request: null, paused: false, pairs: [pair] });
+    throw new Error(`unexpected ${url}`);
+  };
+  const root = createRoot(document.getElementById('root'));
+  await act(async () => root.render(createElement(MockPeer, { navigate() {}, params: {} })));
+  await wait();
+  assert.ok(document.querySelector('[aria-labelledby="peer-upcoming"] .peer-pass'));
+  assert.equal(document.querySelector('[aria-labelledby="peer-past"]'), null);
+  assert.equal(document.querySelector('.peer-pass-time time').getAttribute('datetime'), new Date(start).toISOString());
+  await act(async () => root.unmount());
+});

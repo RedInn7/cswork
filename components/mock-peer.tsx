@@ -33,6 +33,8 @@ export type PeerPair = {
   kind: string;
   level: string;
   slot: number;
+  /** When it starts: an instant pair starts when it matched, inside its hour. */
+  start: number;
   partner: string;
   meetUrl: string;
   status: 'scheduled' | 'cancelled';
@@ -87,8 +89,8 @@ export function slotGrid(now: number, english: boolean) {
   }
   return { days, rows: [...rows].sort(), cells };
 }
-const when = (slot: number, english: boolean) =>
-  new Date(slot * HOUR).toLocaleString(english ? 'en-US' : 'zh-CN', {
+const when = (ms: number, english: boolean) =>
+  new Date(ms).toLocaleString(english ? 'en-US' : 'zh-CN', {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
@@ -108,8 +110,8 @@ export function icsFor(pair: PeerPair, site: string, english: boolean) {
     'BEGIN:VEVENT',
     `UID:${pair.id}@cswork`,
     `DTSTAMP:${stamp(Date.now())}`,
-    `DTSTART:${stamp(pair.slot * HOUR)}`,
-    `DTEND:${stamp(pair.slot * HOUR + minutesOf(pair.kind) * 60000)}`,
+    `DTSTART:${stamp(pair.start)}`,
+    `DTEND:${stamp(pair.start + minutesOf(pair.kind) * 60000)}`,
     `SUMMARY:${text(english ? `CSWork peer mock interview: ${name}` : `CSWork 同伴模拟面试：${name}`)}`,
     `DESCRIPTION:${text(`${english ? 'Partner' : '对方'}: ${pair.partner}\n${pair.meetUrl || site + '/?view=mock-peer&pair=' + pair.id}`)}`,
     `URL:${site}/?view=mock-peer&pair=${pair.id}`,
@@ -157,7 +159,7 @@ export function MockPeer({ navigate, params }: { navigate: Navigate; params: Rec
     return () => clearInterval(timer);
   }, [instantWaiting]);
   const [now] = useState(() => Date.now());
-  const upcoming = state?.pairs.filter((p) => p.status === 'scheduled' && p.slot * HOUR + minutesOf(p.kind) * 60000 > now) ?? [];
+  const upcoming = state?.pairs.filter((p) => p.status === 'scheduled' && p.start + minutesOf(p.kind) * 60000 > now) ?? [];
   const past = state?.pairs.filter((p) => !upcoming.includes(p)) ?? [];
   return (
     <div className="rd mi peer" lang={english ? 'en' : 'zh'}>
@@ -286,7 +288,7 @@ function Waiting({
             </p>
             <ul className="peer-chips" aria-label={t('你选的时段', 'Your hours')}>
               {ahead.map((s) => (
-                <li key={s}>{when(s, english)}</li>
+                <li key={s}>{when(s * HOUR, english)}</li>
               ))}
             </ul>
           </>
@@ -594,7 +596,7 @@ function PairCard({
         </p>
         <p className="peer-pass-time">
           <Clock3 size={15} aria-hidden="true" />
-          <time dateTime={new Date(pair.slot * HOUR).toISOString()}>{when(pair.slot, english)}</time>
+          <time dateTime={new Date(pair.start).toISOString()}>{when(pair.start, english)}</time>
           {!scheduled && <span className="peer-tag">{t('已取消', 'Cancelled')}</span>}
         </p>
         <p className="peer-pass-partner">

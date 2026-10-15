@@ -48,6 +48,7 @@ type State = {
   pairs: {
     id: string;
     slot: number;
+    start: number;
     partner: string;
     meetUrl: string;
     status: string;
@@ -116,6 +117,7 @@ void test('the oldest overlapping request becomes the partner, at the earliest s
   assert.equal(matched.request, null);
   const pair = matched.pairs[0];
   assert.equal(pair.slot, hour + 5);
+  assert.equal(pair.start, pair.slot * HOUR);
   assert.equal(pair.partner, 'Amy');
   assert.equal(pair.status, 'scheduled');
   assert.equal(pair.canCancel, true);
@@ -243,6 +245,7 @@ void test('practice now pairs two instant requests for the hour under way, and l
   const pair = matched.pairs[0];
   assert.equal(pair.partner, 'Ivy');
   assert.equal(pair.slot, Math.floor(now / HOUR));
+  assert.ok(pair.start >= now && pair.start < (pair.slot + 1) * HOUR, 'it starts when it matched');
   // Under way: no cancelling, and no no-show report until 10 minutes after it matched.
   assert.equal(pair.canCancel, false);
   assert.equal(pair.canReport, false);

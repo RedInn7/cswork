@@ -90,11 +90,14 @@ test('peer timetable: every bookable hour once, as local rows and day columns', 
   assert.equal(Math.min(...slots), Math.floor(now / HOUR) + LEAD_HOURS);
   assert.ok(grid.days.length >= 7 && grid.days.length <= 8);
   assert.ok(grid.rows.length >= 24 && grid.rows.every((r) => /^\d\d:\d\d$/.test(r)));
-  const pair = { id: 'Pair00000001', kind: 'phone', level: 'mid', slot: Date.UTC(2026, 9, 15, 14) / HOUR, partner: 'Amy, Lee', meetUrl: '' };
+  const start = Date.UTC(2026, 9, 15, 14);
+  const pair = { id: 'Pair00000001', kind: 'phone', level: 'mid', slot: start / HOUR, start, partner: 'Amy, Lee', meetUrl: '' };
   const ics = icsFor(pair, 'https://cswork.test', true);
   assert.ok(ics.includes('DTSTART:20261015T140000Z\r\n'));
   // Two 50-minute rounds.
   assert.ok(ics.includes('DTEND:20261015T154000Z\r\n'));
+  // An instant pair starts when it matched, inside its hour.
+  assert.ok(icsFor({ ...pair, start: start + 55 * 60000 }, 'https://cswork.test', true).includes('DTSTART:20261015T145500Z\r\n'));
   assert.ok(ics.includes('Partner: Amy\\, Lee'));
   assert.equal(roundHref('phone', { set: 'abcd1234', as: 'candidate' }), '/?view=mock-interview&template=phone&set=abcd1234&as=candidate');
 });
@@ -110,6 +113,7 @@ test('peer page: pick hours and ask; a session shows its own two roles and check
         kind: 'behavioral',
         level: 'mid',
         slot,
+        start: slot * HOUR,
         partner: '<b>Amy</b>',
         meetUrl: '',
         status: 'scheduled',

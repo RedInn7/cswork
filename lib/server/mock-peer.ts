@@ -279,6 +279,7 @@ function view(pair: PairRow, user: string, now: number) {
     kind: pair.kind,
     level: pair.level,
     slot: pair.slot,
+    start,
     partner: me === 'a' ? pair.b_name : pair.a_name,
     meetUrl: pair.meet_url,
     status: pair.status,
