@@ -1,0 +1,361 @@
+/*
+ * OA debugging and code-review drills: the index /oa/drills and the review drill
+ * (components/code-review-drill.tsx). Palette follows app/oa-mcq.css; the dark block is generated.
+ */
+.oa-drills-filters {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 20px;
+}
+.oa-drills-filters p,
+.oa-drills-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+.oa-drills-filters span,
+.oa-drills-actions span {
+  margin-right: 4px;
+  color: #5b6b78;
+  font-size: 13px;
+}
+.oa-drills-filters a,
+.oa-drills-actions a,
+.oa-drills-actions button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid #d9e0e6;
+  border-radius: 999px;
+  background: #fff;
+  color: #33475a;
+  font: inherit;
+  font-size: 13px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.oa-drills-filters a[aria-current='page'],
+.oa-drills-actions button[aria-pressed='true'] {
+  border: 1px solid #0e1a2b;
+  background: #0e1a2b;
+  color: #fff;
+}
+.oa-drills-filters small {
+  margin-left: 4px;
+  font-size: 11px;
+  opacity: 0.8;
+}
+.oa-drills-filters a:focus-visible,
+.oa-drills-actions a:focus-visible,
+.oa-drills-actions button:focus-visible,
+.oa-review-code button:focus-visible,
+.oa-review-code input:focus-visible,
+.oa-review-actions a:focus-visible,
+.oa-review-actions button:focus-visible {
+  outline: 2px solid #3d6fb6;
+  outline-offset: 2px;
+}
+.oa-drills-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid #d9e0e6;
+}
+.oa-drills-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #d9e0e6;
+}
+.oa-drills-list li > div {
+  display: grid;
+  flex: 1 1 260px;
+  gap: 2px;
+  min-width: 0;
+}
+.oa-drills-list li > div a {
+  color: #17212b;
+  font-weight: 600;
+}
+.oa-drills-list li > div small {
+  color: #5b6b78;
+  font-size: 13px;
+}
+.oa-drills-done {
+  color: #0b6b49;
+  font-size: 13px;
+  font-weight: 600;
+}
+.oa-drills-note {
+  margin: 18px 0 0;
+  color: #5b6b78;
+  font-size: 14px;
+}
+/* The review drill */
+.oa-review {
+  display: grid;
+  gap: 14px;
+}
+.oa-review-code {
+  margin: 0;
+  padding: 8px 0;
+  overflow-x: auto;
+  border-radius: 8px;
+  background: #f3f5f7;
+  list-style: none;
+}
+.oa-review-code li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 0 12px 0 0;
+  border-left: 3px solid transparent;
+}
+.oa-review-code button {
+  display: flex;
+  flex: 1 0 auto;
+  gap: 14px;
+  padding: 1px 0;
+  border: 0;
+  background: none;
+  color: #17212b;
+  font: 13.5px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  text-align: left;
+  cursor: pointer;
+}
+.oa-review-code button:disabled {
+  cursor: default;
+}
+.oa-review-code code {
+  font: inherit;
+  white-space: pre;
+  tab-size: 4;
+}
+.oa-review-no {
+  flex: none;
+  width: 3.5ch;
+  color: #5b6b78;
+  text-align: right;
+  user-select: none;
+}
+.oa-review-code li:has(button[aria-pressed='true']) {
+  border-left-color: #0e1a2b;
+  background: #e4e9ee;
+}
+.oa-review-code li[data-state='hit'] {
+  border-left-color: #0b7a53;
+  background: #e8f5ef;
+}
+.oa-review-code li[data-state='missed'] {
+  border-left-color: #b3261e;
+  background: #fbece8;
+}
+.oa-review-code li[data-state='false'] {
+  border-left-color: #8a5200;
+  background: #fdf3e3;
+}
+.oa-review-mark {
+  font: 600 12px/1.4 system-ui, sans-serif;
+}
+[data-state='hit'] .oa-review-mark {
+  color: #0b6b49;
+}
+[data-state='missed'] .oa-review-mark {
+  color: #a3221b;
+}
+[data-state='false'] .oa-review-mark {
+  color: #7a4800;
+}
+.oa-review-code input,
+.oa-review-note {
+  flex: 0 1 520px;
+  min-width: 0;
+  margin: 2px 0 6px calc(3.5ch + 14px);
+  font-size: 13px;
+}
+.oa-review-code input {
+  min-height: 30px;
+  padding: 0 8px;
+  border: 1px solid #c3ccd5;
+  border-radius: 6px;
+  background: #fff;
+  color: #17212b;
+}
+.oa-review-note {
+  color: #33475a;
+  font-style: italic;
+}
+.oa-review-score {
+  display: block;
+  margin: 0;
+  padding: 12px 0;
+  border-top: 1px solid #d9e0e6;
+  border-bottom: 1px solid #d9e0e6;
+  color: #33475a;
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+.oa-review-score:empty {
+  display: none;
+}
+.oa-review-score strong {
+  color: #17212b;
+}
+.oa-review-error {
+  margin: 0;
+  color: #a3221b;
+  font-size: 14px;
+}
+.oa-review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+}
+.oa-review-actions button,
+.oa-review-actions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+/* Colours per element: app/theme.css hand-sets the button's dark fill, keyed by this selector. */
+.oa-review-actions button {
+  border: 1px solid #0e1a2b;
+  background: #0e1a2b;
+  color: #fff;
+}
+.oa-review-actions a {
+  border: 1px solid #0e1a2b;
+  background: #fff;
+  color: #0e1a2b;
+}
+.oa-review-actions button[aria-disabled='true'] {
+  border-color: #c3ccd5;
+  background: #eef1f4;
+  color: #5b6b78;
+  cursor: not-allowed;
+}
+
+/* ── dark theme: generated by scripts/dark-theme.mjs, do not edit by hand ── */
+@media screen {
+  .dark .oa-drills-filters span,
+  .dark .oa-drills-actions span {
+    color: #b4c3cf;
+  }
+  .dark .oa-drills-filters a,
+  .dark .oa-drills-actions a,
+  .dark .oa-drills-actions button {
+    border: 1px solid #2d3237;
+    background: #191919;
+    color: #bed2e5;
+    text-decoration: none;
+  }
+  .dark .oa-drills-filters a:focus-visible,
+  .dark .oa-drills-actions a:focus-visible,
+  .dark .oa-drills-actions button:focus-visible,
+  .dark .oa-review-code button:focus-visible,
+  .dark .oa-review-code input:focus-visible,
+  .dark .oa-review-actions a:focus-visible,
+  .dark .oa-review-actions button:focus-visible {
+    outline: 2px solid #96c0fc;
+  }
+  .dark .oa-drills-list {
+    border-top: 1px solid #2d3237;
+  }
+  .dark .oa-drills-list li {
+    border-bottom: 1px solid #2d3237;
+  }
+  .dark .oa-drills-list li > div a {
+    color: #d6e1ed;
+  }
+  .dark .oa-drills-list li > div small {
+    color: #b4c3cf;
+  }
+  .dark .oa-drills-done {
+    color: #93d8b6;
+  }
+  .dark .oa-drills-note {
+    color: #b4c3cf;
+  }
+  .dark .oa-review-code {
+    background: #131415;
+  }
+  .dark .oa-review-code li {
+    border-left: 3px solid transparent;
+  }
+  .dark .oa-review-code button {
+    border: 0;
+    background: none;
+    color: #d6e1ed;
+  }
+  .dark .oa-review-no {
+    color: #b4c3cf;
+  }
+  .dark .oa-review-code li:has(button[aria-pressed='true']) {
+    border-left-color: #94a4bb;
+    background: #111316;
+  }
+  .dark .oa-review-code li[data-state='hit'] {
+    border-left-color: #0b7a53;
+    background: #0d1411;
+  }
+  .dark .oa-review-code li[data-state='missed'] {
+    border-left-color: #b3261e;
+    background: #170f0d;
+  }
+  .dark .oa-review-code li[data-state='false'] {
+    border-left-color: #8a5200;
+    background: #18130a;
+  }
+  .dark [data-state='hit'] .oa-review-mark {
+    color: #93d8b6;
+  }
+  .dark [data-state='missed'] .oa-review-mark {
+    color: #fdafa4;
+  }
+  .dark [data-state='false'] .oa-review-mark {
+    color: #efbd8d;
+  }
+  .dark .oa-review-code input {
+    border: 1px solid #333a41;
+    background: #191919;
+    color: #d6e1ed;
+  }
+  .dark .oa-review-note {
+    color: #bed2e5;
+  }
+  .dark .oa-review-score {
+    border-top: 1px solid #2d3237;
+    border-bottom: 1px solid #2d3237;
+    color: #bed2e5;
+  }
+  .dark .oa-review-score strong {
+    color: #d6e1ed;
+  }
+  .dark .oa-review-error {
+    color: #fdafa4;
+  }
+  .dark .oa-review-actions button,
+  .dark .oa-review-actions a {
+    text-decoration: none;
+  }
+  .dark .oa-review-actions a {
+    border: 1px solid #94a4bb;
+    background: #191919;
+    color: #d6e4f9;
+  }
+}
+/* ── end dark theme ── */

@@ -13,7 +13,7 @@ import { HttpError } from '@/lib/server/http';
 import { mockPresetFor } from '@/lib/server/mock-oa-presets';
 import { requestLocale } from '@/lib/server/locale';
 import { oaEnglishStatement, oaReadyProblems } from '@/lib/server/oa-judge';
-import { oaLibrary } from '@/lib/server/oa-library';
+import { oaDrillIndex, oaLibrary } from '@/lib/server/oa-library';
 import { oaDifficulty, oaTopic } from '@/lib/server/oa-topics';
 import { getPublicOaProblem } from '@/lib/server/oj-problems';
 import { OA_KIND_NAMES, stopHref, topicName } from '@/lib/route-stops';
@@ -58,6 +58,8 @@ const load = cache(async (slug: string, id: string) => {
         : null,
     locale,
     name,
+    // Debugging drills (the API serves them signed in); only a judge-ready problem can be fixed.
+    drills: judged ? oaDrillIndex().get(id) : undefined,
     previous: siblings[at - 1],
     next: siblings[at + 1],
   };
@@ -168,6 +170,19 @@ export default async function OaProblemPage({ params }: Props) {
               >
                 {zh ? `模拟 ${name} OA` : `Mock ${name} OA`}
               </a>
+            )}
+            {page.drills && (
+              <>
+                <a
+                  className="oa-public-cta is-quiet"
+                  href={`/?${new URLSearchParams({ view: 'problem', problem: item.id, drill: String(page.drills[0]) })}`}
+                >
+                  {zh ? '调试练习' : 'Debugging drill'}
+                </a>
+                <a className="oa-public-cta is-quiet" href={`/oa/drills/review/${encodeURIComponent(item.id)}`}>
+                  {zh ? '代码评审练习' : 'Code review drill'}
+                </a>
+              </>
             )}
           </div>
         )}

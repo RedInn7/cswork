@@ -39,6 +39,7 @@ import {
 } from './oj-worker-policy';
 import {
   ACTIVE,
+  formalMode,
   PLAYGROUND_SPEC,
   submissionRow,
   type SubmissionRow,
@@ -218,7 +219,9 @@ async function judgeSubmission(
   })();
   if (!claimed) return;
   const attempt = claimed.attempt,
-    controller = new AbortController();
+    controller = new AbortController(),
+    // A submission or an OA drill: every case, hidden ones too, stopping at the first failure.
+    formal = formalMode(claimed.mode);
   controllers.set(id, controller);
   let deadline: ReturnType<typeof setTimeout> | undefined;
   const monitor = setInterval(() => {
@@ -299,10 +302,10 @@ async function judgeSubmission(
     };
     assertSnapshotBudget(snapshot.cases);
     // Runs on the learner's own input: custom-input runs and playground runs.
-    const ownInput = claimed.mode !== 'judge' && claimed.custom_input !== null;
+    const ownInput = !formal && claimed.custom_input !== null;
     const caseCount = ownInput
       ? 1
-      : snapshot.cases.filter((c) => claimed.mode === 'judge' || !c.hidden)
+      : snapshot.cases.filter((c) => formal || !c.hidden)
           .length;
     // Respect the published per-case budget, including valid long problem sets.
     const totalSeconds =
@@ -383,7 +386,7 @@ async function judgeSubmission(
             weight: 1,
           },
         ]
-      : snapshot.cases.filter((c) => claimed.mode === 'judge' || !c.hidden);
+      : snapshot.cases.filter((c) => formal || !c.hidden);
     if (
       program.leetcodeInput &&
       ['lc-297', 'lc-449'].includes(snapshot.spec.id)
@@ -471,7 +474,7 @@ async function judgeSubmission(
           attempt,
           ordinal: c.ordinal,
           status:
-            claimed.mode !== 'judge' &&
+            !formal &&
             c.expectedOutput === null &&
             status === 'accepted'
               ? 'finished'
@@ -481,7 +484,7 @@ async function judgeSubmission(
           stdout: result.files?.stdout,
           stderr: result.files?.stderr,
           hidden: c.hidden,
-          terminalFailure: claimed.mode === 'judge' && status !== 'accepted',
+          terminalFailure: formal && status !== 'accepted',
         },
         {
           passed,
@@ -490,11 +493,11 @@ async function judgeSubmission(
           score: Math.round((weight / totalWeight) * 100),
         },
       );
-      if (claimed.mode === 'judge' && status !== 'accepted')
+      if (formal && status !== 'accepted')
         terminalFailureCommitted = true;
       // Expensive resource failures stop this submission; unexecuted cases are explicitly skipped.
       if (
-        (claimed.mode === 'judge' && status !== 'accepted') ||
+        (formal && status !== 'accepted') ||
         [
           'time_limit',
           'memory_limit',
@@ -508,7 +511,7 @@ async function judgeSubmission(
     current(id, attempt, controller.signal);
     update(id, attempt, {
       status:
-        claimed.mode !== 'judge' && overall === 'accepted' ? 'finished' : overall,
+        !formal && overall === 'accepted' ? 'finished' : overall,
       finished_at: Date.now(),
     });
   } catch (error) {
