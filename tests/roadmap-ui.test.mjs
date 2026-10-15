@@ -149,10 +149,13 @@ test('every system design chapter lands in its course part, the ML chapters in t
   for (const slug of ['ood-interview-approach', 'solid-in-practice', 'lld-elevator']) assert.equal(part[slug], 'lld', slug);
   for (const slug of ['concurrency-primitives', 'bounded-blocking-queue', 'rate-limited-executor']) assert.equal(part[slug], 'concurrency', slug);
   assert.equal(part['url-shortener'], 'cases');
+  // The key-technology and pattern chapters are parts of their own, not case studies.
+  for (const chapter of sd)
+    if (/^(tech|pattern)-/.test(chapter.slug)) assert.equal(part[chapter.slug], chapter.slug.startsWith('tech-') ? 'tech' : 'patterns', chapter.slug);
   const doc = new JSDOM(renderToStaticMarkup(tracks)).window.document;
   assert.deepEqual(
     [...doc.querySelectorAll('.roadmap-parts h3')].map((h) => h.textContent),
-    ['Framework', 'Building blocks', 'Case studies', 'Low-level design', 'Concurrency', 'ML system design'],
+    ['Framework', 'Building blocks', 'Case studies', 'Low-level design', 'Concurrency', 'ML system design', 'Key technologies', 'Patterns'],
   );
   assert.equal(doc.querySelectorAll('.roadmap-parts ol li').length, sd.length, 'no chapter is left out');
 });

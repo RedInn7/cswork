@@ -67,7 +67,14 @@ test('the index groups chapters into parts; a chapter renders its table of conte
   globalThis.__locale = 'zh';
   let doc = parse(renderToStaticMarkup(await Index()));
   const parts = [...doc.querySelectorAll('.sd-part')];
-  assert.deepEqual(parts.map((part) => part.querySelector('h2').textContent), ['系统设计：框架与案例', '面向对象设计（LLD）', '并发编程', 'ML 系统设计']);
+  assert.deepEqual(parts.map((part) => part.querySelector('h2').textContent), [
+    '系统设计：框架与案例',
+    '面向对象设计（LLD）',
+    '并发编程',
+    'ML 系统设计',
+    '关键技术',
+    '通用设计模式',
+  ]);
   assert.deepEqual(
     [...parts[3].querySelectorAll('.sd-sheets a')].map((a) => a.getAttribute('href')),
     ['ml-design-framework', 'recsys-ranking', 'search-ranking', 'ads-ctr', 'fraud-detection'].map((slug) => `/system-design/${slug}`),

@@ -6,7 +6,7 @@ import { RouteGraph, type StopProgress } from '@/components/route-graph';
 import { ojRequest } from '@/lib/oj-client';
 import type { RouteSectionInput } from '@/lib/route-stops';
 
-export type SdPart = 'framework' | 'blocks' | 'cases' | 'lld' | 'concurrency' | 'ml';
+export type SdPart = 'framework' | 'blocks' | 'cases' | 'lld' | 'concurrency' | 'ml' | 'tech' | 'patterns';
 const PARTS: [SdPart, string, string][] = [
   ['framework', '答题框架', 'Framework'],
   ['blocks', '基本构件', 'Building blocks'],
@@ -14,6 +14,8 @@ const PARTS: [SdPart, string, string][] = [
   ['lld', '面向对象设计（LLD）', 'Low-level design'],
   ['concurrency', '并发', 'Concurrency'],
   ['ml', 'ML 系统设计', 'ML system design'],
+  ['tech', '关键技术', 'Key technologies'],
+  ['patterns', '通用设计模式', 'Patterns'],
 ];
 type Link = { title: string; href: string };
 

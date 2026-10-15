@@ -80,17 +80,58 @@ void test('the loader finds chapters by slug and lists the course pages for the 
   );
 });
 
-void test('the index parts cover every chapter once, in order, ending with ML system design', () => {
+void test('the index parts cover every chapter once, in order: ML system design, then key technologies and patterns', () => {
   assert.equal(sdParts[0].chapters[0], sdChapters[0]);
   assert.deepEqual(
     sdParts.flatMap((part) => part.chapters),
     sdChapters,
   );
   assert.ok(sdParts.every((part) => part.chapters[0]?.slug === part.from));
-  assert.deepEqual(
-    sdParts.at(-1)?.chapters.map((chapter) => chapter.slug),
-    ['ml-design-framework', 'recsys-ranking', 'search-ranking', 'ads-ctr', 'fraud-detection'],
+  const slugsOf = (from: string) => sdParts.find((part) => part.from === from)?.chapters.map((chapter) => chapter.slug);
+  assert.deepEqual(slugsOf('ml-design-framework'), ['ml-design-framework', 'recsys-ranking', 'search-ranking', 'ads-ctr', 'fraud-detection']);
+  assert.deepEqual(slugsOf('tech-kafka'), [
+    'tech-kafka',
+    'tech-redis',
+    'tech-postgres',
+    'tech-dynamodb-cassandra',
+    'tech-elasticsearch',
+    'tech-zookeeper-etcd',
+    'tech-flink-streaming',
+    'tech-blob-storage',
+  ]);
+  assert.deepEqual(slugsOf('pattern-real-time-updates'), [
+    'pattern-real-time-updates',
+    'pattern-contention',
+    'pattern-multi-step',
+    'pattern-long-running-tasks',
+    'pattern-large-blobs',
+    'pattern-scaling-reads',
+    'pattern-scaling-writes',
+  ]);
+  assert.equal(sdParts.at(-1)?.from, 'pattern-real-time-updates');
+});
+
+void test('key technologies and patterns are optional reading: not exercises, not required for the certificate', async () => {
+  const { SELF_PACED } = await import('../lib/server/certificates');
+  const targets = SELF_PACED.find((c) => c.id === 'sd:system-design')!.targets;
+  const optional = sdChapters.filter((chapter) => /^(tech|pattern)-/.test(chapter.slug));
+  assert.equal(optional.length, 15);
+  for (const chapter of optional) {
+    assert.equal(sdCases.has(chapter.slug), false, chapter.slug);
+    assert.equal(targets.includes(`sd:${chapter.slug}`), false, chapter.slug);
+    assert.ok(chapter.quiz.length >= 4 && chapter.quiz.length <= 6, chapter.slug);
+  }
+  assert.equal(targets.length, sdChapters.length - optional.length);
+  assert.ok(targets.includes('sd:framework') && targets.includes('sd:fraud-detection'));
+  // Every link inside the course points at a chapter that exists.
+  const slugs = new Set(sdChapters.map((chapter) => chapter.slug));
+  const broken = sdChapters.flatMap((chapter) =>
+    [...`${chapter.bodyZh}\n${chapter.bodyEn}`.matchAll(/\]\(\/system-design\/([a-z0-9-]+)\)/g)]
+      .map((m) => m[1])
+      .filter((slug) => !slugs.has(slug))
+      .map((slug) => `${chapter.slug} → ${slug}`),
   );
+  assert.deepEqual(broken, []);
 });
 
 void test('every case chapter grades answers and sets level expectations in both languages', () => {
