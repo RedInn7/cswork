@@ -53,6 +53,14 @@ const { mockStorageKey } = await import('../lib/mock-oa.ts');
 const flush = async () => {
   for (let i = 0; i < 30; i++) await new Promise((r) => setImmediate(r));
 };
+/**
+ * Polls until done() holds, each wait in its own act() so React commits in between: a report
+ * reads gzipped tracks, and gunzip runs on libuv's thread pool, so no fixed count of turns covers it.
+ */
+const until = async (done) => {
+  for (let i = 0; i < 200 && !(await done()); i++) await act(() => new Promise((r) => setTimeout(r, 20)));
+};
+const report = () => until(() => !!document.querySelector('#mock-replay-title'));
 
 test('recording a running exam, then replaying it on the report', async () => {
   mock.timers.enable({ apis: ['setInterval', 'Date'], now: 1_000_000 });
@@ -96,7 +104,7 @@ test('recording a running exam, then replaying it on the report', async () => {
     // The report, ten minutes after the start.
     const finished = { ...session, finishedAt: start + 10 * 60_000 };
     await act(async () => root.render(createElement(MockReplay, { session: finished, title: (id) => `Title ${id}` })));
-    await act(flush);
+    await report();
     const $ = (s) => document.querySelector(s);
     assert.equal($('#mock-replay-title').textContent, 'Code replay');
     const marks = [...document.querySelectorAll('.mock-replay-marks button')];
@@ -146,18 +154,15 @@ test('a track over its size cap stops recording, and the report says so', async 
     useReplayRecorder(running ? session : null, 'p1', code);
     return null;
   }
-  const until = async (done) => {
-    for (let i = 0; i < 200 && !(await done()); i++) await new Promise((r) => setTimeout(r, 20));
-  };
   const saved = async () => (await loadSession('s-full', ['p1']))[0];
   const root = createRoot(document.getElementById('root'));
   try {
     await act(async () => root.render(createElement(Recorder, { running: true })));
-    await act(() => until(async () => (await saved())?.frames.length === 1));
+    await until(async () => (await saved())?.frames.length === 1);
     // A paste too big to keep, even gzipped.
     await act(async () => setCode(randomBytes(1_600_000).toString('base64')));
     await act(async () => mock.timers.tick(2000));
-    await act(() => until(async () => (await saved())?.full === true));
+    await until(async () => (await saved())?.full === true);
     const track = await saved();
     assert.equal(track.full, true);
     assert.deepEqual(track.frames.map((f) => f[3]), ['a']);
@@ -169,7 +174,7 @@ test('a track over its size cap stops recording, and the report says so', async 
     await act(flush);
     assert.deepEqual((await saved()).opens, [0]);
     await act(async () => root.render(createElement(MockReplay, { session: { ...session, finishedAt: start + 60_000 }, title: (id) => id })));
-    await act(() => until(async () => !!document.querySelector('.mock-replay-code figcaption')));
+    await report();
     assert.equal(document.querySelector('.mock-replay-code figcaption').textContent.includes('size cap'), true);
   } finally {
     await act(async () => root.unmount());
@@ -216,7 +221,7 @@ test('time away and long pastes are recorded for the self-check, and the report 
     assert.deepEqual(track.away, [[2000, 62_000]]);
     assert.deepEqual(track.pastes, [[62_000, 50]]);
     await act(async () => root.render(createElement(MockReplay, { session: { ...session, finishedAt: start + 600_000 }, title: (id) => id })));
-    await act(flush);
+    await report();
     const marks = [...document.querySelectorAll('.mock-replay-away li')];
     assert.equal(marks.length, 2);
     assert.equal(Number.parseFloat(marks[0].style.left).toFixed(3), '0.333');
