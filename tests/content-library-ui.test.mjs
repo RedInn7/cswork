@@ -203,3 +203,49 @@ test('detail actions: upvote, a teacher\'s curated pick and "I was asked this to
   assert.match(asked.textContent, /I was asked this too4/);
   await act(async () => root.unmount());
 });
+
+test('"I was asked this too" on a coding question only when its judge problem opens here', async () => {
+  globalThis.fetch = async (url) => {
+    if (String(url).includes('/api/oj/reports')) return Response.json({ problemId: 'lc-146', months: 6, total: 0, last: null, companies: [], mine: [] });
+    return Response.json({
+      ...experience('lru'), type: 'coding_question', round: null, curated: false,
+      stats: { answers: 0, ups: 0, asked: null, practised: null },
+      body: 'Question body.', updatedAt: null, extra: {}, dupOf: null, practice: 'lc-146', relations: [], companyPractice: null,
+    });
+  };
+  const root = createRoot(document.getElementById('root'));
+  const render = (problemIds) =>
+    act(async () =>
+      root.render(createElement(ContentDetail, { params: { type: 'coding_question', slug: 'lru' }, navigate: () => {}, problemIds, userId: 'u1' })),
+    );
+  await render([]);
+  await settle();
+  assert.equal(document.querySelector('.cs-asked'), null, 'mapped but not judge-ready: a report would be refused');
+  await render(['lc-146']);
+  await settle();
+  assert.ok(document.querySelector('.ct-actions .cs-asked'));
+  await act(async () => root.unmount());
+});
+
+test('switching the type tab clears seniority, and the algorithm tab the order', async () => {
+  globalThis.fetch = async () =>
+    Response.json({ items: [], total: 0, page: 1, pageSize: 20, facets: null });
+  const navigations = [];
+  const root = createRoot(document.getElementById('root'));
+  await act(async () =>
+    root.render(
+      createElement(ContentList, {
+        section: 'resources',
+        params: { type: 'guide', seniority: 'Senior', sort: 'popular' },
+        navigate: (...a) => navigations.push(a),
+      }),
+    ),
+  );
+  await settle();
+  const tab = (name) => [...document.querySelectorAll('.rd-segment button')].find((b) => b.textContent === name);
+  await act(async () => tab('Concepts').click());
+  assert.deepEqual(navigations.at(-1), ['resources', { type: 'concept', sort: 'popular' }]);
+  await act(async () => tab('Algorithms').click());
+  assert.deepEqual(navigations.at(-1), ['resources', { type: 'algorithm' }], 'tutorials keep syllabus order');
+  await act(async () => root.unmount());
+});

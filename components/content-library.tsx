@@ -540,7 +540,21 @@ export function ContentList({
                   key={value}
                   type="button"
                   aria-pressed={type === value}
-                  onClick={() => apply({ type: value, kind: '', company: '', role: '', category: '', difficulty: '', round: '', result: '' })}
+                  onClick={() =>
+                    apply({
+                      type: value,
+                      kind: '',
+                      company: '',
+                      role: '',
+                      category: '',
+                      difficulty: '',
+                      round: '',
+                      seniority: '',
+                      result: '',
+                      // Algorithm tutorials keep syllabus order and have no order tabs.
+                      ...(value === 'algorithm' && { sort: '' }),
+                    })
+                  }
                 >
                   {t(zh, en)}
                 </button>
@@ -810,7 +824,18 @@ const ANSWER_PARTS: [keyof BodyParts, string, string][] = [
  * Under an item's title: an upvote (experiences and interview questions), a teacher's curated pick,
  * and "I was asked this" (an interview question, or the judge problem a coding question maps to).
  */
-function ItemActions({ item, userId, teacher }: { item: Detail; userId: string | null; teacher: boolean }) {
+function ItemActions({
+  item,
+  problem,
+  userId,
+  teacher,
+}: {
+  item: Detail;
+  /** The judge problem a coding question maps to, when this visitor can open it (reports need one). */
+  problem: string | null;
+  userId: string | null;
+  teacher: boolean;
+}) {
   const t = useT();
   const english = useLocale() === 'en';
   const target = `content:${item.type}/${item.slug}`;
@@ -856,7 +881,7 @@ function ItemActions({ item, userId, teacher }: { item: Detail; userId: string |
     item.type === 'interview_question' && !item.member
       ? `q:${item.slug}`
       : item.type === 'coding_question'
-        ? item.practice
+        ? problem
         : null;
   if (!votable && !teacher && !asked) return null;
   return (
@@ -968,7 +993,13 @@ export function ContentDetail({
               {item.summary && !opensWith(item.body, item.summary) && (
                 <p className="ct-lead">{localized(locale, item.summary, item.summaryZh)}</p>
               )}
-              <ItemActions key={key} item={item} userId={userId} teacher={teacher} />
+              <ItemActions
+                key={key}
+                item={item}
+                problem={item.practice && problemIds.includes(item.practice) ? item.practice : null}
+                userId={userId}
+                teacher={teacher}
+              />
             </header>
             {dup && dup.kind !== 'prachub' && (
               <div className="ct-callout rd-reveal" style={{ '--i': 1 } as React.CSSProperties}>
