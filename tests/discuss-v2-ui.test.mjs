@@ -81,13 +81,13 @@ test('a thread: anonymous and featured, nested replies, comment votes and a mode
     assert.ok(items[0].textContent.includes('12 rep'));
     assert.ok(items[1].textContent.includes('Anonymous') && items[1].textContent.includes('OP'));
 
-    // Replying to a reply goes under its top-level comment.
+    // Replying to a reply names that reply (the server files it under the top-level comment).
     await act(async () => items[1].querySelector('[aria-expanded]').click());
     const box = $('textarea[aria-label="Write a reply"]');
     await act(async () => type(box, 'You are welcome'));
     await act(async () => box.form.requestSubmit());
     await settle();
-    assert.deepEqual(sent.at(-1), [`/api/oj/posts/${postId}/comments`, { body: 'You are welcome', parentId: 'c-top' }]);
+    assert.deepEqual(sent.at(-1), [`/api/oj/posts/${postId}/comments`, { body: 'You are welcome', parentId: 'c-reply' }]);
 
     await act(async () => $$('.cs-comments [data-vote]')[0].click());
     assert.deepEqual(sent.at(-1), ['/api/oj/post-comments/c-top/vote', { on: true }]);

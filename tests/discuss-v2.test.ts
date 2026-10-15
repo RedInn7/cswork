@@ -99,8 +99,7 @@ void test('replies nest one level, order by votes, and comment votes pay nothing
   const detail = await ok<Detail>(cy, 'POST', `posts/${post.id}/comments`, { body: 'Newer reply', parentId: top.id });
   const reply = detail.comments.find((c) => c.body === 'Newer reply')!;
   assert.equal(reply.parentId, top.id);
-  // No reply to a reply, nor to another post's comment or a made-up one.
-  assert.equal(await status(dee, 'POST', `posts/${post.id}/comments`, { body: 'Deeper', parentId: reply.id }), 400);
+  // No reply to another post's comment or a made-up one.
   const other = (await thread(bob)).post;
   assert.equal(await status(dee, 'POST', `posts/${other.id}/comments`, { body: 'Elsewhere', parentId: top.id }), 404);
   assert.equal(
@@ -129,14 +128,19 @@ void test('replies nest one level, order by votes, and comment votes pay nothing
   const paid = sqlite().prepare("SELECT COUNT(*) FROM point_ledger WHERE user_id=?").pluck().get(cy.id) as number;
   assert.equal(paid, 0, 'comment votes pay no points');
 
-  // A removed comment's replies stay, standing on their own.
+  // A reply to a reply goes under the same top-level comment: one level, never deeper.
+  const deeper = (await ok<Detail>(ada, 'POST', `posts/${post.id}/comments`, { body: 'Deeper', parentId: reply.id })).comments;
+  assert.equal(deeper.find((c) => c.body === 'Deeper')!.parentId, top.id);
+
+  // A removed comment's replies stay, standing on their own, and can still be answered.
   await ok(bob, 'POST', `post-comments/${top.id}/delete`, {});
+  await ok(dee, 'POST', `posts/${post.id}/comments`, { body: 'To an orphan', parentId: reply.id });
   const after = await ok<Detail>(dee, 'GET', `posts/${post.id}`);
-  assert.deepEqual(after.comments.map((c) => [c.body, c.parentId]), [
-    ['Second', null],
-    ['Newer reply', null],
-    ['Older reply', null],
-  ]);
+  assert.deepEqual(
+    after.comments.map((c) => c.body).sort((a, b) => a.localeCompare(b)),
+    ['Deeper', 'Newer reply', 'Older reply', 'Second', 'To an orphan'],
+  );
+  assert.ok(after.comments.every((c) => c.parentId === null));
 });
 
 void test('replies and @mentions notify; only visible handles, never yourself', async () => {
@@ -158,6 +162,11 @@ void test('replies and @mentions notify; only visible handles, never yourself', 
   assert.deepEqual(notices(dee.id).map((n) => n.title), ['有人回复了你的评论']);
   assert.deepEqual(notices(ada.id).map((n) => n.title), ['有人回复了你的帖子', '有人回复了你的帖子']);
   assert.equal(notices(bob.id).length, 1, 'no notice for mentioning yourself');
+  // A reply to that reply notifies whom it answers (bob), not the top comment's author again.
+  const bobReply = (await ok<Detail>(ada, 'GET', `posts/${post.id}`)).comments.find((c) => c.body.startsWith('Thanks'))!;
+  await ok(cy, 'POST', `posts/${post.id}/comments`, { body: 'Agreed', parentId: bobReply.id });
+  assert.deepEqual(notices(bob.id, 'reply').map((n) => [n.title, n.body]), [['有人回复了你的评论', 'Na***: Agreed']]);
+  assert.equal(notices(dee.id).length, 1);
   // At most five handles a text.
   const many = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6'];
   for (const h of many) {
@@ -172,6 +181,12 @@ void test('replies and @mentions notify; only visible handles, never yourself', 
   sqlite().prepare('INSERT INTO dm_blocks(user_id,blocked_id,created_at) VALUES(?,?,1)').run('a1', bob.id);
   await ok(bob, 'POST', `posts/${post.id}/comments`, { body: 'cc @user-a1' });
   assert.equal(notices('a1').length, 1);
+  // Nor of your replies to their post or comment.
+  const before = notices(ada.id).length;
+  sqlite().prepare('INSERT INTO dm_blocks(user_id,blocked_id,created_at) VALUES(?,?,1)').run(ada.id, cy.id);
+  await ok(cy, 'POST', `posts/${post.id}/comments`, { body: 'Blocked one' });
+  assert.equal(notices(ada.id).length, before);
+  sqlite().prepare('DELETE FROM dm_blocks WHERE user_id=?').run(ada.id);
 
   // ?kind= picks one tab.
   const url = (kind: string) => new URL(`https://cswork.test/api/lms/notifications?kind=${kind}`);
@@ -193,6 +208,11 @@ void test('upvotes merge into one notice per post and day', async () => {
   await ok(cy, 'POST', `posts/${post.id}/vote`, { on: true });
   const likes = notices(ada.id, 'like');
   assert.deepEqual(likes.map((n) => [n.title, n.readAt]), [['2 人赞了你的帖子', null]]);
+  // Un-voting and voting again raises nothing: only a new high for the day does.
+  sqlite().prepare('UPDATE notifications SET read_at=1').run();
+  for (const [who, on] of [[cy, false], [bob, false], [cy, true], [bob, true]] as const)
+    await ok(who, 'POST', `posts/${post.id}/vote`, { on });
+  assert.deepEqual(notices(ada.id, 'like').map((n) => [n.title, n.readAt]), [['2 人赞了你的帖子', 1]]);
   // Upvoting yourself is refused; a hidden post notifies no one.
   assert.equal(await status(ada, 'POST', `posts/${post.id}/vote`, { on: true }), 400);
   await ok(teacher, 'POST', `posts/${post.id}/hide`, {});
@@ -214,13 +234,16 @@ void test('an anonymous post names no one, its author excepted, on the board, th
   const { post } = await thread(bob, { problemId: 'discuss:offer', title: 'Offer numbers', body: 'Comp details, cc @ada', anonymous: true });
   assert.equal(post.mine, true);
   assert.equal(post.anonymous, true);
-  // A mention from an anonymous author carries no name.
-  assert.deepEqual(notices(ada.id, 'mention').map((n) => n.body), ['Offer numbers']);
+  // An anonymous author mentions no one, blocked or not, so a missing notice names no one.
+  assert.deepEqual(notices(ada.id, 'mention'), []);
 
   await ok(ada, 'POST', `posts/${post.id}/vote`, { on: true });
   const top = (await ok<Detail>(ada, 'POST', `posts/${post.id}/comments`, { body: 'Congrats' })).comments[0];
-  // The author answering under it stays anonymous, marked as the poster, in replies' notices too.
+  // The author answering under it stays anonymous, marked as the poster, in replies' notices too,
+  // which skip the block check so their arriving tells nothing.
+  sqlite().prepare('INSERT INTO dm_blocks(user_id,blocked_id,created_at) VALUES(?,?,1)').run(ada.id, bob.id);
   await ok(bob, 'POST', `posts/${post.id}/comments`, { body: 'Thank you', parentId: top.id });
+  sqlite().prepare('DELETE FROM dm_blocks WHERE user_id=?').run(ada.id);
   assert.deepEqual(notices(ada.id, 'reply').map((n) => n.body), ['Thank you']);
   for (const reader of [ada, null]) {
     const listed = await ok<List>(reader, 'GET', 'posts?problem=discuss:offer&sort=new');
@@ -273,4 +296,20 @@ void test('moderators feature posts first in either order', async () => {
   }
   await ok(teacher, 'POST', `posts/${a.id}/unpin`, {});
   assert.equal((await ok<List>(ada, 'GET', 'posts?problem=discuss:career&sort=new')).items[0].id, b.id);
+});
+
+void test("a judge problem's notices carry no excerpt into the recipient's running exam", async () => {
+  const { post } = await ok<Detail>(ada, 'POST', 'posts', { problemId: 'oa-amazon-1', title: 'Greedy', body: 'Sort it' });
+  sqlite().prepare('DELETE FROM notifications').run();
+  const now = Date.now();
+  sqlite()
+    .prepare(
+      "INSERT INTO skill_attempts(id,user_id,test,ids_json,language,started_at,deadline,created_at) VALUES('dv-exam',?,'python','[\"oa-amazon-1\"]',NULL,?,?,0)",
+    )
+    .run(ada.id, now - 1000, now + 3600000);
+  await ok(bob, 'POST', `posts/${post.id}/comments`, { body: 'Sort by end time, then two pointers' });
+  assert.deepEqual(notices(ada.id).map((n) => [n.title, n.body]), [['有人回复了你的帖子', '']]);
+  sqlite().prepare("UPDATE skill_attempts SET finished_at=? WHERE id='dv-exam'").run(Date.now());
+  await ok(bob, 'POST', `posts/${post.id}/comments`, { body: 'Or a heap' });
+  assert.equal(notices(ada.id).at(-1)!.body, '@bob-b: Or a heap');
 });

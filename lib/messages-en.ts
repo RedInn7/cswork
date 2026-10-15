@@ -321,7 +321,6 @@ const EN: Record<string, string> = {
   标签无效: 'Unknown tag',
   // Discussion v2: anonymous posts, replies, comment votes and their notices
   这里不能匿名发帖: "You can't post anonymously here",
-  楼中楼只能回复一层: 'Replies go one level deep: reply to the top comment instead',
   不能给自己的评论点赞: "You can't upvote your own comment",
   有人回复了你的帖子: 'New reply to your post',
   有人回复了你的评论: 'New reply to your comment',

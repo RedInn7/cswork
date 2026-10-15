@@ -656,7 +656,7 @@ function PostView({
       setError((e as Error).message);
     }
   }
-  // A reply to a reply goes under the same top-level comment (replies nest one level).
+  // A reply names the comment it answers; the server files a reply to a reply under its top-level comment.
   async function send(event: FormEvent, parent?: Comment) {
     event.preventDefault();
     if (!signedIn) return authRequired();
@@ -668,7 +668,7 @@ function PostView({
       setDetail(
         await api<Detail>(`oj/posts/${post.id}/comments`, {
           body,
-          ...(parent && { parentId: parent.parentId || parent.id }),
+          ...(parent && { parentId: parent.id }),
         }),
       );
       if (parent) {

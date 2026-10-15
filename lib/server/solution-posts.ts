@@ -13,7 +13,7 @@ import {
 import { STOP_NAMES } from '@/lib/route-stops';
 import type { Person } from './auth';
 import { library } from './content-library';
-import { refuseInContest, runningContestProblems } from './contests';
+import { inRunningContest, refuseInContest, runningContestProblems } from './contests';
 import { isCourseOwner } from './course-visibility';
 import { hiddenCompanies } from './env';
 import { memberIdOf, readMember } from './experience-submissions';
@@ -37,8 +37,9 @@ import { badgeName, badgeSql, badgeTarget } from './work-verify';
  * show by their public handle or a masked name (never the account name, which is often a real
  * one). Bodies are Markdown the client renders without raw HTML. An anonymous post (only where
  * anonymousAllowed) shows other readers no author at all, nor do its author's comments under it;
- * its author and the moderation queue still see who wrote it. Comments nest one level (parent_id).
- * Replies, @mentions and upvotes leave in-app notices (lib/server/notify.ts).
+ * its author and the moderation queue still see who wrote it. Comments nest one level (parent_id):
+ * a reply to a reply goes under the same top-level comment. Replies, @mentions and upvotes leave
+ * in-app notices (lib/server/notify.ts).
  */
 const DAY = 86400000;
 const PAGE = 30;
@@ -451,33 +452,38 @@ async function openPost(p: Person, postId: string) {
 }
 type OpenPost = { id: string; problemId: string; userId: string; title: string; anonymous: number; down: number };
 
-/** Owners of the visible profiles @named in a text, at most MENTIONS_MAX, less anyone blocking the writer. */
-function mentioned(text: string, writer: string) {
+/** Owners of the visible profiles @named in a text, at most MENTIONS_MAX. */
+function mentioned(text: string) {
   const handles = [...new Set(Array.from(text.matchAll(MENTION), (m) => m[1]))].slice(0, MENTIONS_MAX);
   if (!handles.length) return [];
   return sqlite()
-    .prepare(
-      `SELECT pr.user_id FROM user_profiles pr WHERE pr.visible=1 AND pr.handle IN (${handles.map(() => '?').join(',')})
-        AND NOT EXISTS(SELECT 1 FROM dm_blocks b WHERE b.user_id=pr.user_id AND b.blocked_id=?)`,
-    )
+    .prepare(`SELECT user_id FROM user_profiles WHERE visible=1 AND handle IN (${handles.map(() => '?').join(',')})`)
     .pluck()
-    .all(...handles, writer) as string[];
+    .all(...handles) as string[];
 }
 /**
  * Notices for a new post or comment: `to` (replies) first, then the @mentioned; one each, never to
- * the writer, none on a reported-down post. An anonymous post's author goes unnamed in them.
+ * the writer or anyone blocking them, none on a reported-down post. Anonymous writing (an anonymous
+ * post's author on it) names no one, mentions no one and skips the block check, so no notice's
+ * presence or absence tells its author apart. A judge problem's notice carries no excerpt to a
+ * recipient it is in a running contest for.
  */
 function notifyWrite(p: Person, post: OpenPost, to: { userId: string; title: string }[], text: string, now: number) {
   if (post.down) return;
-  const from = post.anonymous && post.userId === p.id ? '' : `${nameOf(p.id)}: `;
+  const anonymous = !!post.anonymous && post.userId === p.id;
+  const from = anonymous ? '' : `${nameOf(p.id)}: `;
+  const problem = targetKind(post.problemId) === 'problem';
+  const blocks = sqlite().prepare('SELECT 1 FROM dm_blocks WHERE user_id=? AND blocked_id=?');
   const done = new Set([p.id]);
   const send = (userId: string, kind: string, title: string) => {
     if (done.has(userId)) return;
     done.add(userId);
-    notify({ userId, kind, title, body: `${from}${autoTitle(text)}`, href: postHref(post.problemId, post.id), now });
+    if (!anonymous && blocks.get(userId, p.id)) return;
+    const body = problem && inRunningContest(userId, post.problemId, now) ? '' : `${from}${autoTitle(text)}`;
+    notify({ userId, kind, title, body, href: postHref(post.problemId, post.id), now });
   };
   for (const r of to) send(r.userId, 'reply', r.title);
-  for (const userId of mentioned(text, p.id)) send(userId, 'mention', '有人在讨论中提到了你');
+  if (!anonymous) for (const userId of mentioned(text)) send(userId, 'mention', '有人在讨论中提到了你');
 }
 
 /** One report per learner and target: posts, comments, group chat ('gmsg:') and direct messages ('dm:'). */
@@ -705,15 +711,20 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
             .prepare('SELECT COUNT(*) FROM post_votes WHERE post_id=? AND created_at>=?')
             .pluck()
             .get(target, Date.parse(day)) as number;
-          notify({
-            id: `like:${target}:${day}`,
-            userId: post.userId,
-            kind: 'like',
-            title: `${voters} 人赞了你的帖子`,
-            body: post.title,
-            href: postHref(post.problemId, target),
-            now,
-          });
+          const notice = `like:${target}:${day}`;
+          // Only a new high for the day raises it again, so un-voting and voting again never re-marks
+          // it unread. ponytail: the count is read back from the title (`N 人…`), no extra column.
+          const shown = db.prepare('SELECT title FROM notifications WHERE id=?').pluck().get(notice) as string | undefined;
+          if (voters > (Number.parseInt(shown ?? '') || 0))
+            notify({
+              id: notice,
+              userId: post.userId,
+              kind: 'like',
+              title: `${voters} 人赞了你的帖子`,
+              body: post.title,
+              href: postHref(post.problemId, target),
+              now,
+            });
         }
       } else db.prepare('DELETE FROM post_votes WHERE post_id=? AND user_id=?').run(target, p.id);
       const { votes } = db.prepare('SELECT COUNT(*) AS votes FROM post_votes WHERE post_id=?').get(target) as {
@@ -724,7 +735,9 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
     if (action === 'comments') {
       const { body, parentId } = commentInput.parse(await readJson(request, 5000));
       const post = await openPost(p, target);
-      // A reply goes under a shown top-level comment of the same post: one level, never deeper.
+      // A reply goes under a shown comment of the same post and notifies its author; one to a reply
+      // goes under that reply's own top-level comment (one level, never deeper), even where that
+      // comment is gone and the reply stands on its own.
       const parent = parentId
         ? (db
             .prepare(
@@ -733,11 +746,10 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
             .get(parentId, target) as { userId: string; parentId: string | null } | undefined)
         : undefined;
       if (parentId && !parent) throw new HttpError(404, '评论不存在');
-      if (parent?.parentId) throw new HttpError(400, '楼中楼只能回复一层');
       underCap('post_comments', p, COMMENTS_PER_DAY, '今天的评论已达上限');
       db.prepare(
         `INSERT INTO post_comments(id,post_id,user_id,parent_id,body,hidden,created_at) VALUES(?,?,?,?,?,${SHOWN},?)`,
-      ).run(randomUUID(), target, p.id, parentId ?? null, body, now);
+      ).run(randomUUID(), target, p.id, parent?.parentId ?? parentId ?? null, body, now);
       notifyWrite(
         p,
         post,
