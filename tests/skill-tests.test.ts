@@ -182,6 +182,29 @@ void test('the draw refuses when every problem in the band is solved or solved o
   assert.equal(await status(call(zoe, 'POST', 'skills/nope/start', {})), 404);
 });
 
+void test('pd-NN is sql-NN in pandas: a pandas AC solves it for the SQL draw, and the exam gates the twin', async () => {
+  const t0 = Date.UTC(2026, 9, 4);
+  const sql = skillSources.sql;
+  skillSources.sql = () => [
+    { id: 'sql-01', difficulty: 'easy', loose: false },
+    { id: 'sql-02', difficulty: 'medium', loose: false },
+    { id: 'sql-03', difficulty: 'medium', loose: false },
+  ];
+  try {
+    const pat = person('s-pat');
+    submit(pat.id, 'pd-02', 'accepted', t0 - DAY, 10, 'pandas');
+    await assert.rejects(startSkillTest(pat, skillTest('sql')!, t0), { status: 409 }, 'sql-02 is solved through pd-02');
+    const quinn = person('s-quinn');
+    const attempt = await startSkillTest(quinn, skillTest('sql')!, t0);
+    assert.deepEqual([...attempt.ids].sort(), ['sql-01', 'sql-02', 'sql-03']);
+    assert.equal(inRunningContest(quinn.id, 'pd-02', t0 + MIN), true);
+    assert.throws(() => refuseInContest(quinn, 'pd-03', t0 + MIN), { status: 403 });
+    assert.equal(inRunningContest(quinn.id, 'pd-02', t0 + 46 * MIN), false, 'over at the deadline');
+  } finally {
+    skillSources.sql = sql;
+  }
+});
+
 void test('reading the last system design chapter issues the self-paced certificate once', async () => {
   const course = SELF_PACED.find((c) => c.id === 'sd:system-design')!;
   const [last, ...rest] = [...course.targets].reverse();

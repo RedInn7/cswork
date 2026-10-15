@@ -726,15 +726,22 @@ export async function sharedCode(id: string, problem: string, p: Person, now = D
 // ---------------------------------------------------------------- fairness
 
 /**
+ * A problem and its twin: pd-NN is sql-NN in pandas, the same statement, hidden datasets and
+ * expected output, so every contest and exam gate (and the exam's solved filter) takes them as one.
+ */
+export const withTwin = (id: string) =>
+  id.startsWith('sql-') ? [id, `pd-${id.slice(4)}`] : id.startsWith('pd-') ? [id, `sql-${id.slice(3)}`] : [id];
+
+/**
  * The problems of every room running for this learner now: a live entrant's from the start to
  * the end, a virtual one's inside their own window. A duel waiting for its second entrant hasn't
  * started (roomView). A skill certification exam running for them (lib/server/skill-tests.ts)
- * counts as a room too, so every refuseInContest gate holds during it. One query on
- * contest_entries_user; a request that checks many problems reads it once.
+ * counts as a room too, so every refuseInContest gate holds during it. Twins (withTwin) count
+ * too. One query on contest_entries_user; a request that checks many problems reads it once.
  */
 export function runningContestProblems(userId: string, now = Date.now()) {
   return new Set(
-    sqlite()
+    (sqlite()
       .prepare(
         `SELECT DISTINCT j.value FROM contest_entries e JOIN contest_rooms c ON c.id=e.room_id, json_each(c.problem_ids_json) j
         WHERE e.user_id=@user AND COALESCE(e.virtual_start,c.starts_at)<=@now
@@ -744,7 +751,7 @@ export function runningContestProblems(userId: string, now = Date.now()) {
         WHERE a.user_id=@user AND a.finished_at IS NULL AND a.started_at<=@now AND @now<a.deadline`,
       )
       .pluck()
-      .all({ user: userId, now }) as string[],
+      .all({ user: userId, now }) as string[]).flatMap(withTwin),
   );
 }
 export const inRunningContest = (userId: string, problemId: string, now = Date.now()) =>

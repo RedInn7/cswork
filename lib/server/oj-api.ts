@@ -158,6 +158,13 @@ export async function handleOj(
     const failed = hint && p ? failedJudgeIds(p.id, id, round?.id) : [];
     return json({
       ...problem,
+      // The package's own hints too, in every language; copies, never the cached problem.
+      ...(live && {
+        hints: [],
+        translations:
+          problem.translations &&
+          Object.fromEntries(Object.entries(problem.translations).map(([k, v]) => [k, v && { ...v, hints: [] }])),
+      }),
       codingModes: templates ? ['leetcode', 'acm'] : ['acm'],
       leetcodeTemplates: templates,
       leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
@@ -246,7 +253,7 @@ export async function handleOj(
     if (resource === 'library') {
       await limit(p, 'library-read', 120);
       return json(
-        id ? getStudyLibrary(id) : listLibrary(url.searchParams, p.id),
+        id ? getStudyLibrary(id, p.id) : listLibrary(url.searchParams, p.id),
       );
     }
     if (resource === 'recommend' && !id) {

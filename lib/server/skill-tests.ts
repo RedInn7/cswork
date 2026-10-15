@@ -7,7 +7,7 @@ import { SKILL_COOLDOWN_DAYS, SKILL_TESTS, skillScore, skillTest, type SkillTest
 import type { Person } from './auth';
 import { learnProblems } from './beginner-courses';
 import { externalCertificates, issueCertificate } from './certificates';
-import { requireVerified } from './contests';
+import { requireVerified, withTwin } from './contests';
 import { HttpError, json, limit, requirePerson } from './http';
 import { lcRating } from './lc-ratings';
 import { catalogue } from './mock-oa';
@@ -15,9 +15,10 @@ import { catalogue } from './mock-oa';
 /**
  * Skill certification exams (/certify). The server draws the questions and owns the clock; the
  * workspace runs the exam as a mock OA session (components/skill-test.tsx). While one runs, its
- * problems count as a running contest (contests.ts runningContestProblems), so editorials, hints,
- * community posts and the AI tutor are refused. Finishing, or the deadline, scores the learner's
- * judge submissions inside the window like the mock OA report; a pass issues skill:<test>.
+ * problems (and their pandas twins) count as a running contest (contests.ts runningContestProblems),
+ * so editorials, hints, community posts, the AI tutor and hidden-test feedback are refused.
+ * Finishing, or the deadline, scores the learner's judge submissions inside the window like the
+ * mock OA report; a pass issues skill:<test>.
  */
 const DAY = 86400000;
 const COOLDOWN = SKILL_COOLDOWN_DAYS * DAY;
@@ -149,12 +150,14 @@ export async function startSkillTest(p: Person, test: SkillTest, now = Date.now(
     if (last !== null && now < last + COOLDOWN) throw new HttpError(429, '同一项认证 7 天内只能考一次');
   };
   check();
-  // Never a problem already accepted: its old code would just be submitted again.
+  // Never a problem already accepted, its pandas twin included: its old code would just be submitted again.
   const solved = new Set(
-    db
-      .prepare("SELECT DISTINCT problem_id FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'")
-      .pluck()
-      .all(p.id) as string[],
+    (
+      db
+        .prepare("SELECT DISTINCT problem_id FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'")
+        .pluck()
+        .all(p.id) as string[]
+    ).flatMap(withTwin),
   );
   const seen = new Set(
     (db.prepare('SELECT ids_json FROM skill_attempts WHERE user_id=? AND test=?').pluck().all(p.id, test.id) as string[]).flatMap(

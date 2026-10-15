@@ -30,9 +30,18 @@ import {
   type ClassicList,
 } from '@/lib/classic-lists';
 import { STOP_NAMES } from '@/lib/route-stops';
+import { runningContestProblems } from './contests';
 
 const CURATED_STAGES: CuratedEntry['stage'][] = ['基础', '核心', '进阶'];
 const STOP_INDEX = new Map(curatedSections.map((section, index) => [section.slug, index]));
+/**
+ * A Line 500 row's selection. Its reason is the one-line approach (GET problems' curatedHint), so
+ * it stays home while the problem is in the viewer's running contest or skill exam.
+ */
+const selectionOf = (number: number, sealed: boolean) => {
+  const selection = curatedByNumber.get(number);
+  return selection && sealed ? { ...selection, reason: '', reasonEn: '' } : selection;
+};
 
 type LibraryRow = {
   id: string;
@@ -224,10 +233,11 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
     : new Map();
   const tags = companyTagIndex(hiddenCompanies());
   const marks = userId ? problemMarks(userId) : new Map<string, Set<string>>();
+  const running = userId ? runningContestProblems(userId) : new Set<string>();
   const all = rows
     .map((row) => ({
       ...summary(row),
-      selection: curatedByNumber.get(row.number)!,
+      selection: selectionOf(row.number, running.has(row.judge_problem_id ?? row.id))!,
       companies: tags.get(row.id) ?? [],
       starred: !!marks.get(row.judge_problem_id ?? row.id)?.has('star'),
       redo: !!marks.get(row.judge_problem_id ?? row.id)?.has('redo'),
@@ -747,7 +757,7 @@ export function getStudySourceStatement(judgeProblemId: string) {
   };
 }
 
-export function getStudyLibrary(id: string) {
+export function getStudyLibrary(id: string, userId?: string) {
   if (!/^lc-\d{1,6}$/.test(id)) throw new HttpError(404, '题目不存在');
   const row = sqlite()
     .prepare(
@@ -759,7 +769,8 @@ export function getStudyLibrary(id: string) {
   // Never serialize the source reference solutions, local paths, candidate inputs or answers.
   return {
     ...summary(row),
-    selection: curatedByNumber.get(row.number) || null,
+    selection:
+      selectionOf(row.number, !!userId && runningContestProblems(userId).has(row.judge_problem_id ?? row.id)) || null,
     descriptionZh: payload.descriptionZh,
     descriptionEn: payload.descriptionEn,
     sourceUrl: payload.sourceUrl,

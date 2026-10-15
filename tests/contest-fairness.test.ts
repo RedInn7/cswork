@@ -1,6 +1,8 @@
 // Server-side fairness in a running contest: the Line 500 editorial leaves the problem payload for
 // its own endpoint, and the editorial, community solutions and the AI tutor refuse (403) a problem
 // of a contest window running for the learner; other problems and other learners are unaffected.
+// The package hints and the Line 500 reason stay home too, and a skill exam's sql-NN takes its
+// pandas twin pd-NN along.
 import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync } from 'node:fs';
@@ -29,6 +31,20 @@ const amy = person('f-amy'); // live entrant of the running room
 const bob = person('f-bob'); // not in any room
 const cat = person('f-cat'); // virtual entrant, own window running
 const dan = person('f-dan'); // live entrant of an ended room, owner of a waiting duel
+const eve = person('f-eve'); // in a running SQL skill exam on sql-01
+// Every package here carries hints in both languages.
+const SPEC = JSON.stringify({ hints: ['zh hint'], translations: { en: { hints: ['en hint'] } } });
+type Shown = { hints?: string[]; translations?: { en?: { hints: string[] } } };
+const shown = async (p: Person, id: string) => (await (await call(p, 'GET', `problems/${id}`)).json()) as Shown;
+const hints = (problem: Shown) => [...(problem.hints ?? []), ...(problem.translations?.en?.hints ?? [])];
+const reasonOf = async (p: Person, path: string) => {
+  const body = (await (await call(p, 'GET', path)).json()) as {
+    selection?: { reason: string; reasonEn: string };
+    items?: { judgeProblemId: string; selection: { reason: string; reasonEn: string } }[];
+  };
+  const selection = body.selection ?? body.items!.find((item) => item.judgeProblemId === 'lc-1')!.selection;
+  return selection.reason + selection.reasonEn;
+};
 
 function call(p: Person | null, method: string, path: string, body?: unknown) {
   const url = new URL(`https://cswork.test/api/oj/${path}`);
@@ -89,14 +105,30 @@ before(() => {
       `INSERT INTO oj_problems(id,course_id,lesson_id,current_version_id,published,created_at,updated_at) VALUES(?,'gomall','00-overview',?,1,1,1)`,
     ).run(id, `v-${n}`);
     db.prepare(
-      "INSERT INTO oj_problem_versions(id,problem_id,revision,spec_json,checksum,created_by,created_at) VALUES(?,?,1,'{}','test','teacher',1)",
-    ).run(`v-${n}`, id);
+      "INSERT INTO oj_problem_versions(id,problem_id,revision,spec_json,checksum,created_by,created_at) VALUES(?,?,1,?,'test','teacher',1)",
+    ).run(`v-${n}`, id, SPEC);
     db.prepare(
       `INSERT INTO study_library(id,number,slug,title_zh,title_en,difficulty,topics_json,payload_json,content_hash,
       case_count,expected_count,judge_problem_id,verified_hash,imported_at) VALUES(?,?,?,?,?,'简单','[]','{}','h',1,1,?,?,0)`,
     ).run(id, n, `p-${n}`, `题${n}`, `P${n}`, id, `h:v-${n}`);
   }
+  // The SQL track's sql-01 and its pandas twin pd-01, listed once the judge reports pandas.
+  for (const id of ['sql-01', 'pd-01']) {
+    db.prepare(
+      `INSERT INTO oj_problems(id,course_id,lesson_id,current_version_id,published,created_at,updated_at) VALUES(?,'gomall','00-overview',?,1,1,1)`,
+    ).run(id, `v-${id}`);
+    db.prepare(
+      "INSERT INTO oj_problem_versions(id,problem_id,revision,spec_json,checksum,created_by,created_at) VALUES(?,?,1,?,'test','teacher',1)",
+    ).run(`v-${id}`, id, SPEC);
+  }
+  db.prepare("INSERT INTO oj_runtime(id,heartbeat_at,healthy,details) VALUES('worker',?,1,?)").run(
+    Date.now(),
+    JSON.stringify({ languageVersions: { pandas: '2' } }),
+  );
   const now = Date.now();
+  db.prepare(
+    "INSERT INTO skill_attempts(id,user_id,test,ids_json,language,started_at,deadline,created_at) VALUES('exam',?,'sql','[\"sql-01\"]','sql',?,?,0)",
+  ).run(eve.id, now - 5 * MIN, now + 40 * MIN);
   room('live', 'mashup', ['lc-1', 'oa-acme-1'], now - 10 * MIN);
   entry('live', amy);
   // Ended an hour ago for its live entrant; a virtual run started five minutes ago is still on.
@@ -152,6 +184,25 @@ void test('the problem payload carries no editorial, only whether one exists and
   assert.notEqual(outside.lingHints, null);
 });
 
+void test("the package's own hints, in every language, stay home in the window; a sql- exam takes its pd- twin", async () => {
+  assert.deepEqual(hints(await shown(amy, 'lc-1')), []);
+  assert.deepEqual(hints(await shown(bob, 'lc-1')), ['zh hint', 'en hint']);
+  assert.deepEqual(hints(await shown(amy, 'lc-20')), ['zh hint', 'en hint'], 'a problem outside the room');
+  // The exam drew sql-01; pd-01 is the same problem in pandas, so every gate covers it.
+  assert.deepEqual([...runningContestProblems(eve.id)].sort(), ['pd-01', 'sql-01']);
+  assert.deepEqual(hints(await shown(eve, 'sql-01')), []);
+  assert.deepEqual(hints(await shown(eve, 'pd-01')), []);
+  assert.deepEqual(hints(await shown(bob, 'pd-01')), ['zh hint', 'en hint']);
+  assert.equal(await ai(eve, 'pd-01'), 403);
+});
+
+void test('the Line 500 reason (the curated hint) leaves the library rows and detail in the window', async () => {
+  assert.equal(await reasonOf(amy, 'library/lc-1'), '');
+  assert.equal(await reasonOf(amy, 'library?q=P1'), '');
+  assert.notEqual(await reasonOf(bob, 'library/lc-1'), '');
+  assert.notEqual(await reasonOf(bob, 'library?q=P1'), '');
+});
+
 void test('the editorial endpoint: signed in, 403 in a running contest, open elsewhere and after', async () => {
   assert.equal(await status(null, 'GET', 'problems/lc-1/editorial'), 401);
   assert.equal(await status(bob, 'GET', `problems/${bare}/editorial`), 404);
@@ -201,4 +252,12 @@ void test('once the window ends everything opens again', async () => {
   assert.equal(await status(amy, 'GET', 'problems/lc-1/editorial'), 200);
   assert.equal(await status(amy, 'GET', 'posts?problem=lc-1'), 200);
   assert.equal(await ai(amy, 'lc-1'), 409);
+  assert.deepEqual(hints(await shown(amy, 'lc-1')), ['zh hint', 'en hint']);
+  assert.notEqual(await reasonOf(amy, 'library/lc-1'), '');
+  assert.notEqual(await reasonOf(amy, 'library?q=P1'), '');
+  // Handing the exam in opens both twins again.
+  sqlite().prepare("UPDATE skill_attempts SET finished_at=? WHERE id='exam'").run(Date.now());
+  assert.deepEqual(hints(await shown(eve, 'pd-01')), ['zh hint', 'en hint']);
+  assert.deepEqual(hints(await shown(eve, 'sql-01')), ['zh hint', 'en hint']);
+  assert.equal(await ai(eve, 'pd-01'), 409);
 });
