@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { topLevelCode } from './leetcode-cpp';
 const definitions: Record<string, string> = {
   TreeNode: 'type TreeNode struct { Val int; Left, Right *TreeNode }',
   ListNode: 'type ListNode struct { Val int; Next *ListNode }',
@@ -9,9 +10,7 @@ const definitions: Record<string, string> = {
     'type MountainArray struct { Values []int; Calls int }\nfunc (m *MountainArray) get(i int) int { m.Calls++; if m.Calls>100 { panic("MountainArray.get exceeds 100 calls") }; return m.Values[i] }\nfunc (m *MountainArray) length() int { return len(m.Values) }',
 };
 function helpers(source: string, relevantOnly = false) {
-  const clean = source
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/\/\/[^\n]*/g, '');
+  const clean = topLevelCode(source);
   return Object.entries(definitions)
     .filter(
       ([name]) =>

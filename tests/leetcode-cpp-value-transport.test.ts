@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { buildLeetCodeCpp } from '../lib/server/leetcode-cpp';
+import { buildLeetCodeGo } from '../lib/server/leetcode-go';
 
 const contracts = JSON.parse(
   readFileSync('lib/content/leetcode-contracts.json', 'utf8'),
@@ -75,4 +76,17 @@ void test('user-defined internal nodes remain valid and explicit platform nodes 
     1,
     'custom definition is not duplicated',
   );
+});
+
+void test('a platform type nested in a class or function keeps the platform definition; a top-level one replaces it', () => {
+  const lru = (types: string) =>
+    `${types}class LRUCache { struct Node { int key, val; Node *prev, *next; }; public: LRUCache(int capacity) { char c = '{'; string s = "}"; } int get(int key) { return 0; } void put(int key, int value) {} };`;
+  const platform = (built: string) => /^class Node \{/m.test(built);
+  assert.ok(platform(light(146, lru(''))), 'nested Node shadows, platform Node stays for the runtime');
+  assert.ok(!platform(light(146, lru('struct Node { int val; Node *left, *right, *next, *random, *prev, *child, *parent; };\n'))));
+  // Go: a function-local type shadows the package-level helper the runtime instantiates.
+  const go = (types: string) =>
+    buildLeetCodeGo(1, `${types}func twoSum(nums []int, target int) []int {\n\ttype Node struct{ v int }\n\t_ = '{'\n\treturn nil\n}`, contracts['lc-1'].templates.go);
+  assert.ok(go('').includes('type Node struct { Val int;'));
+  assert.ok(!go('type Node struct{ Val int; Next, Left, Right, Random, Prev, Child, Parent *Node }\n').includes('type Node struct { Val int;'));
 });
