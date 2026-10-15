@@ -291,6 +291,7 @@ test('the editorial stays locked until solved or confirmed, is fetched only then
     await act(async () => buttons('Compare with my code')[0].click());
     diff = document.querySelector('pre[data-diff]');
     assert.equal(diff.getAttribute('data-original'), editorial.approaches[0].go);
+    assert.equal(diff.getAttribute('data-language'), 'go');
     assert.ok(document.querySelector('.cs-diff-labels').textContent.includes('Editorial · Go'));
   } finally {
     globalThis.fetch = original;
