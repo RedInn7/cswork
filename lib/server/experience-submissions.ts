@@ -649,7 +649,10 @@ export function reviewQueue() {
 }
 export type ReviewItem = ReturnType<typeof reviewQueue>['pending'][number];
 
-/** Approve (clearing reports) or reject with a note for the author; works on any status. */
+/**
+ * Approve (clearing reports) or reject with a note for the author; works on any status. The first
+ * approval of a post on a company with a page notifies that company's followers, its author aside.
+ */
 function review(p: Person, id: string, input: unknown) {
   requireTeacher(p);
   const d = z
@@ -658,13 +661,41 @@ function review(p: Person, id: string, input: unknown) {
     .parse(input);
   if (d.status === 'rejected' && !d.note) throw new HttpError(400, '请写明不通过的原因');
   const db = sqlite();
+  const now = Date.now();
+  const names = companyNames();
   const done = db.transaction(() => {
-    const { changes } = db
-      .prepare('UPDATE experience_submissions SET status=?,review_note=?,reviewed_by=?,reviewed_at=? WHERE id=?')
-      .run(d.status, d.note, p.id, Date.now(), id);
-    if (changes && d.status === 'approved') db.prepare('DELETE FROM experience_flags WHERE submission_id=?').run(id);
-    return changes;
-  })();
+    // Read inside an IMMEDIATE transaction: of two teachers approving at once, one sees it approved.
+    const before = db.prepare('SELECT status,user_id,company_slug,title FROM experience_submissions WHERE id=?').get(id) as
+      | Pick<Row, 'status' | 'user_id' | 'company_slug' | 'title'>
+      | undefined;
+    if (!before) return 0;
+    db.prepare('UPDATE experience_submissions SET status=?,review_note=?,reviewed_by=?,reviewed_at=? WHERE id=?').run(
+      d.status,
+      d.note,
+      p.id,
+      now,
+      id,
+    );
+    if (d.status !== 'approved') return 1;
+    db.prepare('DELETE FROM experience_flags WHERE submission_id=?').run(id);
+    const company = names.get(before.company_slug);
+    // Ids per post and follower: approving it again after a rejection never notifies twice.
+    if (before.status !== 'approved' && company)
+      db.prepare(
+        `INSERT INTO notifications(id,user_id,kind,title,body,href,created_at)
+        SELECT 'follow-exp:' || @id || ':' || user_id,user_id,'company-report',@title,@body,@href,@now FROM company_follows
+        WHERE company_slug=@company AND user_id<>@author ON CONFLICT(id) DO NOTHING`,
+      ).run({
+        id,
+        title: `${company} 有新面经`,
+        body: before.title,
+        href: memberExperiencePath(id),
+        now,
+        company: before.company_slug,
+        author: before.user_id,
+      });
+    return 1;
+  }).immediate();
   if (!done) throw new HttpError(404, '内容不存在');
   settleExperience(id, d.status === 'approved');
   auditStatement(p, `experience.${d.status}`, id).run();
