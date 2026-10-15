@@ -98,6 +98,8 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
   /** CPU seconds per test case for some languages, in place of timeLimit (lib/server/oj-worker.ts). */
   timeLimits?: Partial<Record<Language, number>>;
   languages: Language[];
+  /** ACM starter programs that replace the generic ones, e.g. a skeleton above a fixed driver (Core Skills). */
+  starters?: Partial<Record<Language, string>>;
 };
 
 export type OjImportedCase = {
@@ -338,6 +340,9 @@ export const ojImportSchema = z
           .array(z.enum(['python', 'go', 'java', 'cpp', 'sql']))
           .min(1)
           .max(5),
+        starters: z
+          .partialRecord(z.enum(['python', 'go', 'java', 'cpp']), z.string().max(20000))
+          .optional(),
       })
       .strict(),
     cases: z.array(testcase).min(1).max(OJ_MAX_CASES),
