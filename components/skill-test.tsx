@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { englishMessage } from '@/lib/messages-en';
 import { archiveMock, finishMock, formatClock, readMockState, writeMockState } from '@/lib/mock-oa';
 import { ojRequest } from '@/lib/oj-client';
@@ -18,6 +18,7 @@ import { api } from '@/lib/types';
 
 export type SkillOverview = ReturnType<typeof skillOverview>;
 type Clock = { server: number; client: number };
+const noop = () => () => {};
 
 /** The server's time now, from the clocks of the last fetch. */
 const serverTime = (clock: Clock) => clock.server + (Date.now() - clock.client);
@@ -63,6 +64,8 @@ export function SkillTests({
   const [confirm, setConfirm] = useState<SkillTest | null>(null);
   const [onProfile, setOnProfile] = useState<Record<string, boolean>>({});
   const confirmButton = useRef<HTMLButtonElement>(null);
+  // Dates follow the reader's time zone, so they appear once hydrated, never in the server HTML.
+  const hydrated = useSyncExternalStore(noop, () => true, () => false);
   const fail = (e: unknown) => {
     const message = (e as Error).message;
     setError(t(message, englishMessage(message)));
@@ -143,7 +146,9 @@ export function SkillTests({
   }
 
   const date = (at: number) =>
-    new Intl.DateTimeFormat(zh ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(at);
+    hydrated
+      ? new Intl.DateTimeFormat(zh ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(at)
+      : '';
   const title = (id: string) => {
     const test = skillTest(id);
     return test ? t(test.zh, test.en) : id;

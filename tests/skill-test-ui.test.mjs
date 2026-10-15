@@ -74,6 +74,14 @@ test('signed out: four exams with their rules, each asking to sign in', async ()
   await act(async () => root.unmount());
 });
 
+test('the server HTML has no reader-local dates to mismatch on hydration', async () => {
+  const { renderToString } = await import('react-dom/server');
+  const { SkillTests } = await import('../components/skill-test.tsx');
+  const html = renderToString(createElement(SkillTests, { initial: overview(), userId: 'u1', verified: true, zh: false }));
+  assert.match(html, /150\/300 · Not passed/);
+  assert.doesNotMatch(html, /Oct|Opens again \w/);
+});
+
 test('signed in: cooldowns, past results, certificates, and starting an exam into the mock session', async () => {
   const navigations = useDom();
   const attempt = { id: 'att-1', test: 'problem-solving-basic', ids: ['lc-20', 'lc-15'], language: null, startedAt: T, deadline: T + 60 * MIN, finishedAt: null, score: null, max: null, passed: null };
