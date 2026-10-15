@@ -1,0 +1,68 @@
+/* Course star ratings (components/course-rating.tsx): an amber row of five, the average beside it. */
+.course-rating {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+}
+.course-rating-summary {
+  color: #8a5a00;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.course-rating-stars {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.course-rating-stars legend {
+  float: left;
+  margin-right: 8px;
+  padding: 0;
+  font-size: 13px;
+  color: inherit;
+}
+.course-rating-star {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  color: #b9b2a4;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.course-rating-star input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+/* The checked star and every lower one (later in the DOM, earlier on screen); hover previews. */
+.course-rating-star:has(input:checked),
+.course-rating-star:has(input:checked) ~ .course-rating-star,
+.course-rating-stars:hover .course-rating-star:hover,
+.course-rating-stars:hover .course-rating-star:hover ~ .course-rating-star {
+  color: #b7791f;
+}
+.course-rating-stars:hover .course-rating-star:not(:hover, :hover ~ .course-rating-star) {
+  color: #b9b2a4;
+}
+.course-rating-star:has(input:focus-visible) {
+  outline: 2px solid #b7791f;
+  outline-offset: 1px;
+}
+.course-rating-status {
+  font-size: 13px;
+  color: inherit;
+  opacity: 0.8;
+}

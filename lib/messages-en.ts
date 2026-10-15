@@ -398,6 +398,8 @@ const EN: Record<string, string> = {
   没有进行中的认证考试: 'No certification exam in progress',
   认证考试接口不存在: 'Certification endpoint not found',
   系统设计面试课: 'System Design Interview Course',
+  // Course star ratings (lib/server/course-ratings.ts)
+  学完至少一节后才能评分: 'Finish at least one lesson before rating this course',
   '这道题的题解和测试数据正在校验，暂未开放':
     "This problem's solution and test data are being verified and aren't available yet",
   '这道题的题解正在校验，暂未开放': "This problem's solution is being verified and isn't available yet",

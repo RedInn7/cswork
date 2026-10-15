@@ -48,6 +48,7 @@ import {
   filterCourses,
 } from '@/lib/course-catalog';
 import { GiftButton } from './course-gift';
+import { CourseRating, RatingSummary } from './course-rating';
 export type Navigate = (view: string, extra?: Record<string, string>) => void;
 export function CourseList({
   boot,
@@ -174,6 +175,7 @@ export function CourseList({
                         : t('配套算法与工程实验', 'Algorithm and engineering labs')}
                     </span>
                     <span>v{c.version}</span>
+                    <RatingSummary avg={c.rating_avg} count={c.rating_count} zh={locale === 'zh'} />
                   </div>
                 </div>
                 <div className="course-access">
@@ -197,6 +199,8 @@ export function CourseList({
                           c.lessons.length ? (done / c.lessons.length) * 100 : 0
                         }
                       />
+                      {/* Rated once a lesson is done; the server checks the same. */}
+                      {done > 0 && <CourseRating courseId={c.id} zh={locale === 'zh'} />}
                       {certificate && (
                         <a className="course-certificate-link" href={`/certificate/${certificate.id}`}>
                           {t('查看结业证书', 'View your certificate')}
