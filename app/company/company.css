@@ -275,6 +275,49 @@
   grid-template-columns: 56px minmax(0, 1fr) auto;
 }
 
+/* H-1B petitions (app/company/h1b.tsx): one row per fiscal year, scrolls sideways on phones. */
+.company-h1b-table {
+  overflow-x: auto;
+  border: 1px solid var(--oa-rule);
+  border-radius: 12px;
+}
+.company-h1b-table:focus-visible {
+  outline: 2px solid var(--oa-line);
+  outline-offset: 3px;
+}
+.company-h1b-table table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.company-h1b-table :is(th, td) {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--oa-rule);
+  text-align: right;
+}
+.company-h1b-table :is(th, td):first-child {
+  text-align: left;
+}
+.company-h1b-table thead th {
+  color: var(--oa-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.company-h1b-table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+.company-h1b-note {
+  margin: 10px 0 0;
+  color: var(--oa-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.company-hub-sources.company-h1b-employers {
+  padding: 8px 0 0;
+}
+
 @media (max-width: 600px) {
   .company-hub-stops ol {
     gap: 20px;
@@ -402,6 +445,24 @@
   .dark .oa-public-chip[data-result='bad'] {
     background: #1b0e11;
     color: #fcaaaf;
+  }
+  .dark .company-h1b-table {
+    border: 1px solid var(--oa-rule);
+  }
+  .dark .company-h1b-table:focus-visible {
+    outline: 2px solid var(--oa-line);
+  }
+  .dark .company-h1b-table :is(th, td) {
+    border-bottom: 1px solid var(--oa-rule);
+  }
+  .dark .company-h1b-table thead th {
+    color: var(--oa-muted);
+  }
+  .dark .company-h1b-table tbody tr:last-child :is(th, td) {
+    border-bottom: 0;
+  }
+  .dark .company-h1b-note {
+    color: var(--oa-muted);
   }
 }
 /* ── end dark theme ── */

@@ -25,6 +25,7 @@ import { oaReadyProblems } from '@/lib/server/oa-judge';
 import { publicLibraryPath } from '@/lib/server/public-library';
 import { OaCompanyMark, OaDifficulty } from '../../oa/parts';
 import { CompanyAsked } from '../asked-reports';
+import { H1bPanel } from '../h1b';
 import { Facts, QUESTION_LEVELS } from '../parts';
 
 type Props = {
@@ -347,6 +348,8 @@ export default async function CompanyPage({ params, searchParams }: Props) {
           </ol>
         </section>
       )}
+
+      <H1bPanel slug={company.slug} zh={zh} />
     </>
   );
 }
