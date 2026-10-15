@@ -120,8 +120,9 @@ export async function handleOj(
 ) {
   const url = new URL(request.url),
     [resource, id, action, operation] = path;
-  // An OA editorial is closed while its problem is in the reader's running contest, like Line 500's.
-  if (resource === 'oa-library' && action === 'solution') refuseInContest(p, id);
+  // An OA editorial is closed while its problem is in the reader's running contest, like Line 500's;
+  // so are its drills, each the reference solution a line or three off.
+  if (resource === 'oa-library' && ['solution', 'drill', 'review'].includes(action)) refuseInContest(p, id);
   if (resource === 'oa-library')
     return handleOaLibrary(request, p, path.slice(1));
   if (resource === 'mock-oa' && id === 'history' && !action) return handleMockHistory(request, p);
@@ -398,6 +399,9 @@ export async function handleOj(
       if (e instanceof HttpError) throw e;
       throw new HttpError(400, '无效的 JSON');
     }
+    // A drill submission (fixing a planted bug) starts from the reference: never inside a running contest.
+    const drill = data as { mode?: unknown; problemId?: unknown } | null;
+    if (drill?.mode === 'drill' && typeof drill.problemId === 'string') refuseInContest(p, drill.problemId);
     const created = await createSubmission(p, data);
     // Reuse the owner-checked public projection for both fresh submissions and
     // idempotent replays, after briefly waiting for a fast verdict. Clients

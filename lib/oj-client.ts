@@ -101,7 +101,8 @@ export type OJSubmission = {
   language: Language;
   codingMode?: CodingMode;
   status: string;
-  mode: 'judge' | 'run';
+  /** drill: an OA debugging drill, judged like a submission but never counted (lib/oa-drills.ts). */
+  mode: 'judge' | 'run' | 'drill';
   passed: number;
   total: number;
   score?: number;
@@ -216,7 +217,7 @@ export async function submitOJ(
   if (
     typeof receipt.problem_id === 'string' &&
     typeof receipt.language === 'string' &&
-    (receipt.mode === 'run' || receipt.mode === 'judge') &&
+    (receipt.mode === 'run' || receipt.mode === 'judge' || receipt.mode === 'drill') &&
     typeof receipt.passed === 'number' &&
     typeof receipt.total === 'number' &&
     typeof receipt.created_at === 'number' &&

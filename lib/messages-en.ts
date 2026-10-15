@@ -427,6 +427,7 @@ const EN: Record<string, string> = {
   // OA problems
   'OA 题目不存在': 'OA problem not found',
   'OA 接口不存在': 'OA endpoint not found',
+  这道题没有调试练习: "This problem has no debugging drill",
   未知公司: 'Unknown company',
   // Timed mock OA (lib/server/mock-oa.ts)
   '模拟 OA 接口不存在': 'Mock OA endpoint not found',

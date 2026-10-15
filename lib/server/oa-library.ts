@@ -1,4 +1,4 @@
-import { readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { z } from 'zod';
 import {
@@ -11,10 +11,11 @@ import {
 } from '@/lib/oa-company-brands';
 import { TOPIC_NAMES } from '@/lib/route-stops';
 import type { SitemapEntry } from '@/lib/seo';
+import { scoreReview, type Drill, type DrillReview } from '@/lib/oa-drills';
 import type { Person } from './auth';
 import { hiddenCompanies } from './env';
-import { HttpError, json, limitReader, requirePerson, rows } from './http';
-import { problemMarks } from './my-practice';
+import { HttpError, json, limit, limitReader, requirePerson, rows } from './http';
+import { problemMarks, readJson } from './my-practice';
 import {
   oaJudgeRegistry,
   oaReadyProblems,
@@ -385,25 +386,75 @@ export function oaLibrary() {
   return library;
 }
 
+type StoredDrill = Drill & Omit<DrillReview, 'hits' | 'missed' | 'falsePositives'>;
+let drillFile: Map<string, { packageChecksum: string; drills: StoredDrill[] }> | undefined;
+/**
+ * Debugging and code-review drills by problem (scripts/oa-judge/build-drills.mjs): a private
+ * asset like the registry, since a mutant is the reference solution one to three lines off.
+ */
+function drillEntries() {
+  if (!drillFile) {
+    const file = resolve('content/oa-judge/drills.json');
+    if (existsSync(file) && statSync(file).size > 64 * 1024 * 1024)
+      throw new Error('OA drills exceed size budget');
+    drillFile = new Map(
+      existsSync(file)
+        ? Object.entries((JSON.parse(readFileSync(file, 'utf8')) as { problems: Record<string, { packageChecksum: string; drills: StoredDrill[] }> }).problems)
+        : [],
+    );
+  }
+  return drillFile;
+}
+/** A problem's drills while its company is shown and they were built from its live package. */
+function currentDrills(id: string) {
+  const entry = drillEntries().get(id);
+  if (!entry || !oaLibrary().problem(id) || !oaJudgeRegistry().isCurrent(id, entry.packageChecksum))
+    throw new HttpError(404, '这道题没有调试练习');
+  return entry.drills;
+}
+/** Drill count of every problem that has live drills: the /oa/drills index. */
+export function oaDrillCounts() {
+  const counts = new Map<string, number>();
+  for (const [id, entry] of drillEntries())
+    if (oaLibrary().problem(id) && oaJudgeRegistry().isCurrent(id, entry.packageChecksum))
+      counts.set(id, entry.drills.length);
+  return counts;
+}
+const reviewSchema = z
+  .object({ n: z.number().int().nonnegative(), lines: z.array(z.number().int().positive().max(100000)).max(200) })
+  .strict();
+
 export async function handleOaLibrary(
   request: Request,
   person: Person | null,
   path: string[],
 ) {
-  // Catalogue and statements are public; solutions stay behind sign-in.
+  // Catalogue and statements are public; solutions and drills stay behind sign-in.
   const [id, action, ...extra] = path;
+  // GET drill: the buggy programs; POST review: lines marked on one of them, scored.
+  const drill = action === 'drill' || action === 'review';
   if (
-    request.method !== 'GET' ||
+    request.method !== (action === 'review' ? 'POST' : 'GET') ||
     extra.length ||
-    (action && action !== 'solution')
+    (action && action !== 'solution' && !drill)
   )
     throw new HttpError(404, 'OA 接口不存在');
-  // Deny signed-out solution requests before touching the database or content.
-  if (action === 'solution') requirePerson(person);
+  // Deny signed-out solution and drill requests before touching the database or content.
+  if (action) requirePerson(person);
   await limitReader(request, person, 'oa-library-read', 120);
   const data = oaLibrary();
   // Reference snippets in the imported source are never returned by the live API.
   if (id && action === 'solution') return json(data.solution(id));
+  // Never the bug's lines or name until a review is submitted.
+  if (id && action === 'drill') return json({ items: currentDrills(id).map(({ n, code, budget }) => ({ n, code, budget })) });
+  if (id && action === 'review') {
+    await limit(person!, 'oa-review-write', 30);
+    const d = reviewSchema.parse(await readJson(request, 4000));
+    const found = currentDrills(id).find((item) => item.n === d.n);
+    if (!found) throw new HttpError(404, '这道题没有调试练习');
+    const { bugLines, nameZh, nameEn } = found;
+    return json({ ...scoreReview(bugLines, d.lines), bugLines, nameZh, ...(nameEn && { nameEn }) } satisfies DrillReview);
+  }
   const problems = await oaReadyProblems();
   const ready = new Set(problems.keys());
   if (id) {
