@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-303",
+  "packageChecksum": "0adb5d6645ffe9095bee960f48f1798a94c1bbd64d2093d5c806842c4cd9eff4",
+  "sourceContentHash": "82b5d991781770ec091eaed079332e3dd8b01c99438b7d6ac8f95553e917fcec",
+  "editorialSha256": "44de397730131dfe16e63bad4b222596f76fdf87d7f3a9ae9105bd6a8a88374b",
+  "hints": {
+    "zh": [
+      "生命值只会减少不会恢复，所以只要最后一轮之后生命仍大于0，中间每一轮都自然满足。问题变成：总有效伤害最少能是多少？",
+      "护甲只用一次，抵消量是min(armor, 当轮伤害)。想让抵消量最大，就应该把它用在伤害最大的那一轮。",
+      "求出伤害总和S与最大单次伤害M，答案为S−min(armor, M)+1。总和可达10^14，需要64位整数。"
+    ],
+    "en": [
+      "Health only goes down and never recovers, so if it is still above 0 after the last round, it was above 0 after every earlier round too. The question becomes: what is the smallest possible total effective damage?",
+      "The armor is used once and blocks min(armor, that round's damage). To block as much as possible, use it on the round with the largest damage.",
+      "Compute the total damage S and the largest single hit M; the answer is S−min(armor, M)+1. The total can reach 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSubtract min(armor,max(power)) from the total damage, then add 1.\n\n## Proof of correctness\n\nThe amount blocked is at most the smaller of the armor value and the largest single hit, and using the armor on the largest hit achieves it. The remaining damage in every round is non-negative, so health never increases from round to round; hence being strictly positive at the end is equivalent to being strictly positive after every round. The initial health must exceed the minimum total effective damage by at least 1, and the formula achieves exactly that.\n\n## Complexity\n\nTime O(n), auxiliary space O(1) excluding input, 64-bit integers."
+}

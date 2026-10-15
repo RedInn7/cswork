@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-323",
+  "packageChecksum": "df08d4b2a637cd3f72d475aadf2fe1f70e8746cb480633688739ca757f79c73f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    string s; cin >> s;\n    bool vowel = false, consonant = false;\n    int answer = 0;\n    for (char c : s) {\n        if (string(\"aeiou\").find(c) != string::npos) vowel = true; else consonant = true;\n        if (vowel && consonant) { answer++; vowel = consonant = false; }  // close the segment as early as possible\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "5af47ecbca48b7526eadc3ba026ba34a2e3d7d6e6ccb5e76f82e0eca9a9246d7"
+    },
+    {
+      "language": "java",
+      "code": "public class Main {\n    public static void main(String[] args) throws Exception {\n        String s = new FastReader().next();\n        boolean vowel = false, consonant = false;\n        int answer = 0;\n        for (char c : s.toCharArray()) {\n            if (\"aeiou\".indexOf(c) >= 0) vowel = true; else consonant = true;\n            if (vowel && consonant) { answer++; vowel = consonant = false; }  // close the segment as early as possible\n        }\n        System.out.println(answer);\n    }\n}\n\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "dd4f55f14767c8e039c4c3e745a01153d7b6f615a9fefdba23e80b4dc90338b4"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tvowel, consonant, answer := false, false, 0\n\tfor _, c := range readToken() {\n\t\tif strings.ContainsRune(\"aeiou\", c) {\n\t\t\tvowel = true\n\t\t} else {\n\t\t\tconsonant = true\n\t\t}\n\t\tif vowel && consonant { // close the segment as early as possible\n\t\t\tanswer++\n\t\t\tvowel, consonant = false, false\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "921971e4f97d13ff96739a1458889e60b1fb6ad8f2a3639bbffafdb04ae83926"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-34",
+  "packageChecksum": "97bcb2375fc08303cc26f4ccf54a23e2ca9b2a6335e7afd74c79a136a3518290",
+  "sourceContentHash": "0073ab89cf3b45a6b537db58ebcc43e8004f92943b4aa7217ad5e6e192e9a2aa",
+  "editorialSha256": "52fed37e65d1b20a6ed0e2e61560f9aecd856ae63cd3809ee64b9f30415dcb9e",
+  "hints": {
+    "zh": [
+      "一个数字只要右边还有比它小的数字，留在原地就会挡住那个更小的数字，最终串不可能是升序；被移动的数字可以插到任意位置，但会变成min(d+1,9)。",
+      "每个需要移动的数字只移动一次（只加1）最划算。从右往左看，当前数字大于它右侧所有数字的最小值时必须移动，否则保留不动；保留下来的数字天然是非降的。",
+      "从右向左扫描，维护右侧最小值minimum（初值10）：当前值大于minimum就给min(值+1, 9)计数，否则给该值计数并更新minimum。最后按0到9依次输出每个数字各自的个数次，即为答案。"
+    ],
+    "en": [
+      "As long as a digit has some smaller digit to its right, leaving it in place blocks that smaller digit, so the final string could not be ascending. A moved digit can be inserted anywhere, but it becomes min(d+1,9).",
+      "Moving each such digit exactly once (incrementing by 1 only) is best. Looking from right to left, the current digit must move if it is greater than the minimum of all digits to its right; otherwise it stays, and the digits that stay are naturally non-decreasing.",
+      "Scan from right to left, keeping minimum, the smallest digit to the right (starting at 10): if the current value is greater than minimum, count min(value+1, 9); otherwise count the value itself and update minimum. Finally print each digit from 0 to 9 as many times as it was counted."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGo from right to left, maintaining the minimum digit to the right. If the current digit is larger than that minimum, it must be moved and incremented; all others are kept. Finally, sort the transformed digits.\n\n## Proof of correctness\n\nIf a digit has a smaller digit after it, leaving it in place would block the smaller digit from moving forward, so an optimal solution can move it and increment it only once; extra increments never help. The unmoved digits form a non-decreasing sequence and the moved digits can be inserted anywhere, so all digits can be merged in ascending order, giving the smallest result.\n\n## Complexity\n\nTime O(n+10), space O(n)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-346",
+  "packageChecksum": "424249f42d4cc4367c0e39fe1534d2830818a37b97b9f2115ccdd6480df80b8a",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    string s; int k; cin >> s >> k;\n    int left[26] = {0}, right[26] = {0}, common = 0, answer = 0;\n    for (char c : s) right[c - 'a']++;\n    for (size_t p = 0; p + 1 < s.size(); p++) {\n        int i = s[p] - 'a';\n        common -= left[i] > 0 && right[i] > 0;\n        left[i]++; right[i]--;\n        common += left[i] > 0 && right[i] > 0;\n        if (common > k) answer++;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "b7d729cb95a923656ae9bdbf29312b82cbfa0be4e6c409e8a1b2f085f2ded484"
+    },
+    {
+      "language": "java",
+      "code": "public class Main {\n    public static void main(String[] args) throws Exception {\n        FastReader r = new FastReader();\n        String s = r.next();\n        int k = r.nextInt(), common = 0, answer = 0;\n        int[] left = new int[26], right = new int[26];\n        for (int p = 0; p < s.length(); p++) right[s.charAt(p) - 'a']++;\n        for (int p = 0; p + 1 < s.length(); p++) {\n            int i = s.charAt(p) - 'a';\n            if (left[i] > 0 && right[i] > 0) common--;\n            left[i]++;\n            right[i]--;\n            if (left[i] > 0 && right[i] > 0) common++;\n            if (common > k) answer++;\n        }\n        System.out.println(answer);\n    }\n}\n\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "b6b83ab301f924334011338b8d800c5647b1f21d2adabe3b37ef1efed133a53c"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\ts := readToken()\n\tk := readInt()\n\tvar left, right [26]int\n\tcommon, answer := 0, 0\n\tfor i := range s {\n\t\tright[s[i]-'a']++\n\t}\n\tfor p := 0; p+1 < len(s); p++ {\n\t\ti := s[p] - 'a'\n\t\tif left[i] > 0 && right[i] > 0 {\n\t\t\tcommon--\n\t\t}\n\t\tleft[i]++\n\t\tright[i]--\n\t\tif left[i] > 0 && right[i] > 0 {\n\t\t\tcommon++\n\t\t}\n\t\tif common > k {\n\t\t\tanswer++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "073167f659efb4371db83d4baa65f2a1bc891c183c86ec05ae0a93e48b350e05"
+    }
+  ]
+}

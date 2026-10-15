@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-338",
+  "packageChecksum": "5337e0bbfb924ef98ec2b8ed680e4a68ee7efb16352bf489727ad9af453cc1e4",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    string s, count, w; cin >> s >> count;\n    vector<string> words;\n    while (cin >> w) words.push_back(w);\n    for (auto &c : s) c = tolower(c);\n    int n = s.size(), left = 0, answer = 0;\n    for (int right = 0; right < n; right++) {\n        for (auto &word : words) {\n            int start = right - (int)word.size() + 1;\n            if (start >= 0 && s.compare(start, word.size(), word) == 0) left = max(left, start + 1);\n        }\n        answer = max(answer, right - left + 1);\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "d596cc5573f4d5bb3104d2c5248853ee646ac698a998185ce2d999e316d1b2ef"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        FastReader r = new FastReader();\n        String s = r.next().toLowerCase();\n        r.next();\n        List<String> words = new ArrayList<>();\n        for (String w = r.next(); !w.isEmpty(); w = r.next()) words.add(w);\n        int left = 0, answer = 0;\n        for (int right = 0; right < s.length(); right++) {\n            for (String word : words) {\n                int start = right - word.length() + 1;\n                if (start >= 0 && s.startsWith(word, start)) left = Math.max(left, start + 1);\n            }\n            answer = Math.max(answer, right - left + 1);\n        }\n        System.out.println(answer);\n    }\n}\n\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "22f5fc5206072dcf0532370511fa9104512ecb24013f3aa134e7e9cc82a0e111"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\ts := strings.ToLower(readToken())\n\treadToken()\n\tvar words []string\n\tfor w := readToken(); w != \"\"; w = readToken() {\n\t\twords = append(words, w)\n\t}\n\tleft, answer := 0, 0\n\tfor right := range s {\n\t\tfor _, word := range words {\n\t\t\tstart := right - len(word) + 1\n\t\t\tif start >= 0 && s[start:right+1] == word {\n\t\t\t\tleft = max(left, start+1)\n\t\t\t}\n\t\t}\n\t\tanswer = max(answer, right-left+1)\n\t}\n\tfmt.Println(answer)\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "5e202892c636854db9eca8000c69dc567292fe0abe693d16660b83df0614e7d1"
+    }
+  ]
+}

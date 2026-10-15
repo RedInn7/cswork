@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-338",
+  "packageChecksum": "5337e0bbfb924ef98ec2b8ed680e4a68ee7efb16352bf489727ad9af453cc1e4",
+  "sourceContentHash": "4728cc10cc785e0b10635845e892e9c84df3390891ce6b58e130faeb234da278",
+  "editorialSha256": "ee11341bf487b0b6b2c449607e81bd2e85769236c51b3c599636f7f3d0f10c8e",
+  "hints": {
+    "zh": [
+      "匹配不区分大小写，先把评论整体转成小写。一个子串合法，当且仅当它不完整包含任何一次禁用词的出现。",
+      "用滑动窗口：右端逐个向右移动；若某个禁用词恰好在右端结束、从p开始，那么窗口左端必须大于p。左端只会往右移，每个右端对应的最长合法窗口就是[左端, 右端]。",
+      "left=0；对每个right，检查每个禁用词w：当起点start=right−|w|+1≥0且s[start..right]等于w时，left=max(left, start+1)；然后用right−left+1更新答案。词数和词长都不超过10，总工作量很小。"
+    ],
+    "en": [
+      "Matching ignores case, so first convert the whole review to lowercase. A substring is valid exactly when it does not fully contain any occurrence of a banned word.",
+      "Use a sliding window: move the right end one step at a time; if some banned word ends exactly at the right end and starts at p, the window's left end must be greater than p. The left end only moves right, and the longest valid window for each right end is [left, right].",
+      "Set left=0. For each right, check each banned word w: when start=right−|w|+1≥0 and s[start..right] equals w, set left=max(left, start+1); then update the answer with right−left+1. There are at most 10 words of at most 10 letters, so the total work is small."
+    ]
+  },
+  "explanationEn": "## Approach\n\nConvert the review to lowercase. Enumerate the right end and check whether each banned word ends there; if one matches starting at p, move the left end of the window to at least p+1, then measure the length.\n\n## Proof of correctness\n\nA valid window cannot fully contain any matched range [p,r], so its left end must be greater than p. Keeping the largest p+1 over all matches so far excludes exactly every banned word that ends no later than the current right end, and any smaller left end would contain some banned word. So this window is the longest valid window for each right end, and taking the maximum covers the global optimum.\n\n## Complexity\n\nTime O(n·number of words·longest word length), space O(n)."
+}

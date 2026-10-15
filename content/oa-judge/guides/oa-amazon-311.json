@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-311",
+  "packageChecksum": "59c022e7e3765f5db9a8c9d210865ad0ec73bfe6972298902bab422bde1dc32d",
+  "sourceContentHash": "8cee1fe9f2005a1c979327222091ca7ccfc8508756811c17815400573dd8ee01",
+  "editorialSha256": "f2f6dfdb2ebf9ad88318f92aa9c7c22d454eeec041d8f3af688c721b49e553ce",
+  "hints": {
+    "zh": [
+      "答案要尽可能长地保留s的前缀，但保留下来的前缀本身必须是完美串，所以不能越过s中第一处相邻相同的位置；同时答案必须严格变大，至少要改动一个位置。",
+      "从能保留的最长前缀末端开始往左试：在位置i放一个比s[i]大、又不等于s[i−1]的最小字母。一旦某个位置成功，后面每一位都取最小的合法字母即可，后缀总能填满。",
+      "找到第一个满足s[p]=s[p−1]的p（没有则p=n），让i从min(p, n−1)往下枚举；对每个i从s[i]+1到z找第一个不等于s[i−1]的字母，找到就放下，然后按“前一位是a就填b，否则填a”交替填满并输出。所有i都失败时输出−1。"
+    ],
+    "en": [
+      "The answer should keep as long a prefix of s as possible, but that kept prefix must itself be perfect, so it cannot extend past the first place in s where two adjacent characters are equal; the answer must also be strictly greater, so at least one position must change.",
+      "Start from the end of the longest prefix that can be kept and try leftward: at position i put the smallest letter that is greater than s[i] and different from s[i−1]. As soon as one position works, every later position just takes the smallest valid letter, and the suffix can always be filled.",
+      "Find the first p with s[p]=s[p−1] (p=n if there is none), and let i go down from min(p, n−1). For each i, look from s[i]+1 to z for the first letter different from s[i−1]; when found, place it, fill the rest alternately (\"b if the previous letter is a, otherwise a\"), and output. If every i fails, output −1."
+    ]
+  },
+  "explanationEn": "## Problem\n\nA string in which no two adjacent characters are equal is called a perfect string. Given a lowercase string s (not necessarily perfect), find the smallest perfect string that has the same length as s and is lexicographically strictly greater than s; output -1 if none exists.\n\n## Approach\n\nThe longer the common prefix between the answer and s, the smaller the answer. Let p be the first position with s[p]=s[p−1] (p=n when s is perfect). The prefix s[0..i−1] kept by the answer must be perfect, so i≤p; the answer must also be strictly greater, so i≤n−1. Try i from min(p,n−1) leftward: at position i place the smallest letter c that is greater than s[i] and different from s[i−1]; once found, fill each position after i with the smallest valid letter (b if the previous one is a, otherwise a), that is, alternating ababa…. If no i works, output -1.\n\n## Correctness\n\nLexicographic comparison is decided by the first differing position. The longer the kept prefix and the smaller the letter at that position, the smaller the result; the rest just takes the smallest valid letter position by position, and the suffix can always be filled by alternating a/b, so it never fails. When i>p the kept prefix contains equal adjacent characters and cannot be perfect; when s is perfect, i=n means nothing changes, which is not strictly greater.\n\n## Complexity\n\nO(26n); in practice only O(n+26) is needed.\n\n## Independent verification\n\nFor every position i and every allowed letter, the oracle builds the candidate string, filters the candidates that are perfect and greater than s, and takes the minimum, without relying on the claim that the first feasible position from the right is optimal. On small data it also increments the string in base 26 starting from s until it reaches the first perfect string, directly checking \"same length, strictly greater, smallest\". All strings of length 1..4 over the alphabet {a,b,c,y,z} are enumerated exhaustively and the reference program is actually run on each. The wrong solutions cover not checking that the prefix is perfect, filling the suffix with a, ignoring a clash with the previous character, and returning a perfect string itself."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-344",
+  "packageChecksum": "1720df72aaab5a70cd2c6878fae5a739cba40ba5b54c90a32fac2836931160bb",
+  "sourceContentHash": "f3abc2608adfa0d8f28c2fc75f8ec822fb0ddeefcf09b9d2ec352b293895f57a",
+  "editorialSha256": "43b6b17f6c66c2aa6f28f8b627a22007e171dac10323150dd2a273c352b03bdc",
+  "hints": {
+    "zh": [
+      "同一个值的所有副本排序键相同，会排在一起，所以可以先按不同的值来考虑，最后再按出现次数展开。",
+      "统计每个值的出现次数，然后对所有不同的值按“次数升序，次数相同按数值升序”排序。",
+      "用哈希表或排序后分组得到(次数, 值)，按这个二元组升序排序；依次把每个值输出“次数”遍，用空格分隔。n=0时输出空行。"
+    ],
+    "en": [
+      "All copies of a value have the same sort key and end up together, so you can think in terms of distinct values first and expand them by their counts at the end.",
+      "Count how many times each value occurs, then sort the distinct values by \"count ascending, and value ascending for equal counts\".",
+      "Get (count, value) pairs with a hash map or by grouping after sorting, and sort the pairs in ascending order; then print each value count times, separated by spaces. When n=0, print an empty line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount frequencies, sort all distinct values by (frequency, value), and expand each one by its original frequency.\n\n## Proof of correctness\n\nAll copies of a value share the same sort key, and counting never mixes up how many times it occurs; the sort key matches the two-level priority exactly, and expanding keeps exactly the original multiset, so the result is in the required order.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

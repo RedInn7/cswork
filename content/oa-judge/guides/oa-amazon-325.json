@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-325",
+  "packageChecksum": "5a9b19306bd560a7ca7b4e2d8b771654fa20737d468bb9f093b42c90db0641f5",
+  "sourceContentHash": "4eb2f52b4fdc1ea7e70eba77efd36c6178afccb999d0ebf5655318e23ca216fd",
+  "editorialSha256": "f5e09069f9694acfe2b8246418c4e57d0624a5065fb82a91309ddc3fd3a1fab3",
+  "hints": {
+    "zh": [
+      "离第i天最近的严格低价日，要么是它左边最近的严格更低者，要么是右边最近的严格更低者，只需比较这两个候选。",
+      "“每个位置左侧最近的严格更小元素”是经典的单调栈问题：从左往右扫，栈中价格保持严格递增，遇到价格≥当前的就弹出。右侧同理从右往左扫。预处理后每个查询O(1)。",
+      "预处理left[i]、right[i]（不存在记−1）。对查询日i（转成0-based）：左边不存在就取右边；右边不存在或i−left≤right−i就取左边（同距取较小日期）；否则取右边。输出1-based编号，都不存在时输出−1。"
+    ],
+    "en": [
+      "The strictly cheaper day nearest to day i is either the nearest strictly lower day on its left or the nearest strictly lower day on its right; only these two candidates need comparing.",
+      "\"The nearest strictly smaller element to the left of each position\" is a classic monotonic stack problem: scan left to right, keep prices strictly increasing on the stack, and pop anything ≥ the current price. Do the same from right to left for the right side. After this preprocessing, each query is O(1).",
+      "Precompute left[i] and right[i] (−1 when missing). For query day i (converted to 0-based): if there is no left candidate, take the right one; if there is no right candidate or i−left ≤ right−i, take the left one (a tie goes to the smaller day); otherwise take the right one. Output the 1-based day, or −1 if neither exists."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan with a monotonically increasing stack from the left and from the right separately, popping prices ≥ the current one, to get the nearest strictly lower position on each side; each query compares the two distances and takes the left one on a tie.\n\n## Proof of correctness\n\nA popped position with a higher or equal price can never do better for later queries than the current position, which is nearer and not higher, so discarding it is safe; the remaining stack top is exactly the nearest strictly lower price on that side. The globally nearest day must be one of the two nearest candidates on the left and the right, and comparing by distance and then by day number implements the problem's rule.\n\n## Complexity\n\nTime O(n+q), space O(n+q)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-320",
+  "packageChecksum": "af069267c2cc7dad6fcfe08a4e226fc0d19d23a9686eadfd89330efe149898b3",
+  "sourceContentHash": "1301369739489c1f9e9ce428300d8b9565c3fa87445f55a354b3d2981d070a37",
+  "editorialSha256": "9654cacefa047c37fce9772303ef9bfe0e2d8e118263d6d057cd50c077a0e85a",
+  "hints": {
+    "zh": [
+      "有效布局要同时满足：每项都是4位数字序号紧跟非空的字母数字配置值；序号恰好是1..条目数且不重复；配置值也互不相同。任何一条不满足，整个布局都无效。",
+      "n个互不相同且都落在1..n里的序号，必然恰好覆盖1..n，所以只需检查范围和重复，不必另外检查缺号。按序号把值放进长度为n的数组，自然就是输出顺序。",
+      "用竖线拆分（保留空条目，空输入也算一个空条目）；逐项检查长度≥5、前4位是数字、其余是ASCII字母或数字、序号在1..n内、该序号没用过、该值没出现过，否则立即输出[\"Invalid configuration\"]。全部通过后按序号输出紧凑的JSON字符串数组。"
+    ],
+    "en": [
+      "A valid layout must satisfy all of these at once: every entry is a 4-digit sequence number immediately followed by a non-empty alphanumeric value; the sequence numbers are exactly 1..number of entries with no repeats; and the configuration values are all distinct. If any of them fails, the whole layout is invalid.",
+      "n distinct sequence numbers that all lie in 1..n must cover 1..n exactly, so you only need to check the range and repeats, not missing numbers separately. Putting each value into an array of length n by its sequence number gives the output order directly.",
+      "Split on the vertical bar (keep empty entries; empty input also counts as one empty entry). For each entry check that its length is ≥5, the first 4 characters are digits, the rest are ASCII letters or digits, the number is in 1..n, the number has not been used, and the value has not appeared; otherwise output [\"Invalid configuration\"] immediately. If everything passes, output the values in sequence-number order as a compact JSON array of strings."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter splitting, check for each entry the four-digit sequence number, the ASCII configuration value, the sequence-number range 1..n, and uniqueness of both numbers and values; store the values in an array by sequence number and output it.\n\n## Proof of correctness\n\nAll n distinct sequence numbers lie in 1..n if and only if none is missing and they are consecutive. The format and character set of each entry are checked independently, and sets rule out both kinds of duplicates, so the layout is accepted if and only if it meets every formal validity requirement. Placing the values into the array by sequence number guarantees the returned order. The original constraints allowing duplicates in the input only mean that the input may be invalid; they do not cancel the uniqueness check in the body of the statement.\n\n## Complexity\n\nTime O(layout length+n), space O(layout length+n)."
+}

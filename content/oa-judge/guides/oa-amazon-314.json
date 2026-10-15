@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-314",
+  "packageChecksum": "703146209ac984bd07781656e878038615fe30a386f3b7e0f137241294c899a8",
+  "sourceContentHash": "15ba0d37d8a792cd2390533f0d9c3aca301de730ac7552a140294506b3b2f498",
+  "editorialSha256": "c8492012e64e978d7697f4bd5ad06e43bca22ce904934e78b791f561ba2a7369",
+  "hints": {
+    "zh": [
+      "总路程f(p)=2·Σ|c−p|是关于p的凸函数：在中位数处最小，往两边走只增不减。所以满足预算的整数位置是一段连续区间（也可能为空）。",
+      "先看中位数处是否满足预算，不满足答案就是0；满足时，区间左端在[−10^9, 中位数]里、右端在[中位数, 10^9]里，各自可以二分。计算f(p)时对排序后的坐标用前缀和，再二分出≤p的个数，单次O(log n)。",
+      "排序并求前缀和；cost(p)：设cnt为≤p的中心数，cost=2·(p·cnt−前cnt个之和+其余之和−p·(n−cnt))。中位数取a[n/2]，超预算输出0；否则二分出最小的可行L和最大的可行R（不要越出±10^9），输出R−L+1。全程用64位整数。"
+    ],
+    "en": [
+      "The total distance f(p)=2·Σ|c−p| is convex in p: it is smallest at the median and never decreases as you move away on either side. So the integer positions within budget form one contiguous range (possibly empty).",
+      "First check whether the median is within budget; if not, the answer is 0. If it is, the left end of the range lies in [−10^9, median] and the right end in [median, 10^9], and each can be binary searched. To compute f(p), use prefix sums over the sorted coordinates together with a binary search for how many are ≤p, so one evaluation costs O(log n).",
+      "Sort and build prefix sums. For cost(p), let cnt be the number of centers ≤p; cost=2·(p·cnt − sum of the first cnt + sum of the rest − p·(n−cnt)). Take the median a[n/2]; if it is over budget output 0, otherwise binary search the smallest feasible L and the largest feasible R (without leaving ±10^9) and output R−L+1. Use 64-bit integers throughout."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort and take the median point. If the median's cost exceeds the budget, the answer is 0; otherwise binary search for the leftmost feasible integer between the left end and the median, and for the rightmost feasible integer between the median and the right end. Compute costs with sorted prefix sums and a binary-searched split point; the answer is R−L+1.\n\n## Proof of correctness\n\nThe sum of absolute distances is smallest at the median and is non-decreasing as you move away from the median interval on either side. So if the median is infeasible there is no solution anywhere, and if it is feasible, each side switches between true and false exactly once, so separate binary searches give the two exact boundaries. With prefix sums, the centers ≤p contribute p·count−sum and the rest contribute sum−p·count; multiplying by 2 gives exactly the round-trip distance. The feasible positions form a closed integer interval of length R−L+1, consistent exactly with the two ends of the original number line.\n\n## Complexity\n\nTime O(n log n+log(2·10^9)·log n), space O(n)."
+}

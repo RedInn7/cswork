@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-348",
+  "packageChecksum": "8ec29f1617eb911bef4c32c27405e59c920102b3d17d09c24faa06e49ac98695",
+  "sourceContentHash": "19bed4287c5bc18313c60257c09134f38d4482d4a3be4b6060e6310ae4987469",
+  "editorialSha256": "23ac843163741b7a2433b2d4e5564230b375936d7bbd1dd58f76e0e726ea0705",
+  "hints": {
+    "zh": [
+      "requests最大到10^12，不能逐次模拟。把数组降序排列后观察：每次只降低一个最大值，所以最大的若干个值会被削平成一层，然后一起往下降。",
+      "若当前顶部有c个元素都在高度h，下一个不同高度是l，那么接下来c(h−l)次操作中，每c次让这一层整体降1，每次的最大值可以按等差数列求和；只要还没全部相等，最小值始终是初始最小值。",
+      "逐层处理：take=min(剩余次数, c(h−l))，q=take/c，r=take%c，贡献为c·q(2h−q+1)/2+r(h−q)+最小值·take。所有元素都降到同一高度v后，每轮第一步贡献2v、其余n−1步贡献2v−1，且每轮整体降1，用整轮公式再加上不足一轮的余数部分。结果可能超过64位，需要大整数或128位整数。"
+    ],
+    "en": [
+      "requests can be as large as 10^12, so you cannot simulate one operation at a time. Sort the array in descending order and observe: each step lowers only one maximum, so the largest values get planed down into one level that then descends together.",
+      "If the current top has c elements all at height h and the next distinct height is l, then during the next c(h−l) operations every c of them lower this level by 1, and the maximum of each step can be summed as an arithmetic series; until everything is equal, the minimum is always the initial minimum.",
+      "Process each level in turn: take=min(remaining, c(h−l)), q=take/c, r=take%c, contributing c·q(2h−q+1)/2+r(h−q)+minimum·take. Once all elements have dropped to the same height v, the first step of each round gives 2v and the other n−1 steps give 2v−1, and every round lowers the whole array by 1; use the full-round formula plus the partial last round. The result may exceed 64 bits, so use big integers or 128-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMerge equal heights from high to low. With the current top c items at height h and the next height l, you can process at most c(h−l) operations in one batch, and the minimum stays fixed except in the phase after everything has become equal. Accumulate the maximums with arithmetic sums over full rounds plus the remainder. Once everything is equal, separately account for the minimum dropping after the first step of each round.\n\n## Proof of correctness\n\nBefore reaching the next level, every c operations lower all the top items by 1 and leave the other elements unchanged, so the sum of the maximums over q full rounds and r extra steps is c·q(2h−q+1)/2+r(h−q). Until then the minimum is always the initial minimum m, which adds m times the number of operations. When all n items equal v, the first step of a round contributes 2v and the remaining n−1 steps contribute 2v−1 each; q full rounds contribute 2n[qv−q(q−1)/2]−q(n−1). The remaining r>0 steps contribute 2r(v−q)−(r−1). The levels and the tail partition all operations exactly, including n=1, negative values, and going below the original minimum.\n\n## Complexity\n\nTime O(n log n), space O(n); use arbitrary-precision integers or sufficiently wide integers."
+}

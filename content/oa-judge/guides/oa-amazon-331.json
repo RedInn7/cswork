@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-331",
+  "packageChecksum": "71571bad697d41743ff09d3e2852bc6a86dc4520f2042a37be99613332fe9d13",
+  "sourceContentHash": "6627d1e0ad52e89f950534f1338574e424956bfe9c985cb952ab3d462041c918",
+  "editorialSha256": "3becc452c9ab0d697293dda8d0af7b29d107b833a5ece255eb5e9a2d8ab5b995",
+  "hints": {
+    "zh": [
+      "把选中的字符升序排序，效果只能是把0往左挪、把1往右挪，0和1的总数都不变。因此任何前缀里1的个数都不会增加。",
+      "反过来，只要目标与原串0的总数相同，并且目标每个前缀里1的个数都不超过原串同长度前缀，就一定能到达（把0一个个往左移即可）。至于?填什么：总数固定时，把需要的0放在最靠前的?上，能让每个前缀的1都尽量少。",
+      "预处理原串0的总数和前缀1的个数。对每个目标：need=原串0数−目标中固定0的个数，若need<0或大于?的个数就是NO；否则从左扫描，need>0时把?当0（need减1），否则当1，累计1的个数，一旦超过原串对应前缀就是NO，扫完则为YES。"
+    ],
+    "en": [
+      "Sorting the chosen characters in ascending order can only move 0s left and 1s right, and the total numbers of 0s and 1s stay the same. So the number of 1s in any prefix never increases.",
+      "Conversely, as long as the target has the same total number of 0s as the original and each prefix of the target has no more 1s than the original prefix of the same length, it is reachable (move the 0s left one at a time). As for what each ? should be: with the totals fixed, putting the needed 0s on the earliest ? positions makes every prefix have as few 1s as possible.",
+      "Precompute the original string's total number of 0s and its prefix counts of 1s. For each target: need = original 0s − fixed 0s in the target; if need<0 or need exceeds the number of ?, answer NO. Otherwise scan from the left, treating ? as 0 while need>0 (decrementing need) and as 1 afterwards, counting the 1s; as soon as the count exceeds the original prefix, answer NO, and if the scan finishes, answer YES."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe total number of 0s in the target must equal that of the original string. First subtract the fixed 0s, place the required 0s at the earliest ? positions, and fill the remaining ? with 1; if there are too few or too many, answer NO. Then check that every prefix of the target has no more 1s than the matching prefix of the original; answer YES only if all of them hold.\n\n## Proof of correctness\n\nSorting a subsequence in ascending order can only move 1s right and 0s left, so it keeps the totals and never increases the number of 1s in any prefix. Conversely, the prefix condition is equivalent to every 0 of the target being no later than the corresponding 0 of the original, which can be achieved by moving the 0s left one at a time with adjacent 10→01 sorts. With the totals fixed, putting 0s in the earliest ? positions minimizes the number of 1s in every prefix at once; if that still exceeds a bound, no other replacement can work, and if it satisfies them all, it is a witness of reachability.\n\n## Complexity\n\nTime O(L+Lq), space O(L+q) excluding the input characters."
+}

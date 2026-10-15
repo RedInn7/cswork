@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-330",
+  "packageChecksum": "5dc5de153da3ea9c3c27120e5dd7249b7a085132f113622e0adf003242108677",
+  "sourceContentHash": "47dbf2b3dce0d9075105adbe0dede04da3ff8e1254583d9469f821ce13d89b3a",
+  "editorialSha256": "a3d74b97454e2e7faa7aae74fa3a7cfaf7e8d8ade9bfda48c428c0c116c91eac",
+  "hints": {
+    "zh": [
+      "如果target≤0，一台都不买就够了。否则，功率≤0的机器只花钱不帮忙，可以直接丢掉。",
+      "若决定从价格1的机器里买i台、从价格2的机器里买j台，显然各自买功率最大的那几台最好。于是只需枚举i，并为它找最小的j。",
+      "两组分别按功率降序排序，并对价格2的组做前缀和。i从0枚举到组1的大小，维护组1前i台的功率和supplied；在前缀和里二分第一个≥max(0, target−supplied)的位置j，存在时用i+2j更新答案。最终没有可行解输出−1，所有和都用64位。"
+    ],
+    "en": [
+      "If target≤0, buying nothing is already enough. Otherwise, a machine with power ≤0 only costs money without helping, so it can be dropped.",
+      "If you decide to buy i machines at price 1 and j machines at price 2, it is clearly best to buy the most powerful ones in each group. So you only need to enumerate i and find the smallest j for it.",
+      "Sort both groups by power in descending order and build prefix sums for the price-2 group. Enumerate i from 0 to the size of group 1, keeping supplied, the power of the first i machines of group 1; binary search the prefix sums for the first position j that is ≥ max(0, target−supplied), and if it exists update the answer with i+2j. If nothing is feasible, output −1; use 64-bit integers for all sums."
+    ]
+  },
+  "explanationEn": "## Approach\n\nIf target≤0, the answer is 0 right away. Otherwise discard non-positive powers, group the machines by price, sort each group's powers in descending order, and take prefix sums. Enumerate how many machines to take from the price-1 group, binary search for the fewest machines from the price-2 group that cover the remaining need, and take the minimum total price.\n\n## Proof of correctness\n\nAll prices are positive, so removing a machine with non-positive power only lowers the cost and never lowers the reachable power; hence an optimal choice never includes such machines. With the number taken from each group fixed, taking that group's most powerful machines dominates every other choice. After fixing the count from the first group, the positive prefix sums of the second group strictly increase, so the fewest machines found by binary search give the lowest price for that count; taking the global minimum then exhausts every feasible combination.\n\n## Complexity\n\nTime O(n log n), space O(n); power sums use 64 bits."
+}

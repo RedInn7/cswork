@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-306",
+  "packageChecksum": "bccb681881e9157d765fd43c985c726abff0e97897d2a6cdcc76e2e517525d05",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom operator import ne\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    if not data:\n        return\n    s = data[0]\n    n = len(s)\n    half = n // 2\n    # pair position i with n-1-i and count the mismatched pairs\n    m = sum(map(ne, s[:half], s[::-1][:half]))\n    if m % 2 == 0:\n        print(m // 2)\n    elif n % 2 == 1:\n        print((m + 1) // 2)\n    else:\n        print(-1)\n\n\nmain()\n",
+      "sha256": "4372eac248257346fba607bda345273ffa4012603affb88ae4004b9f6990fd0b"
+    },
+    {
+      "language": "java",
+      "code": "public class Main {\n    public static void main(String[] args) throws Exception {\n        String s = new FastReader().next();\n        int n = s.length(), m = 0;\n        for (int i = 0; i < n / 2; i++) if (s.charAt(i) != s.charAt(n - 1 - i)) m++;  // mismatched pairs\n        if (m % 2 == 0) System.out.println(m / 2);\n        else if (n % 2 == 1) System.out.println((m + 1) / 2);\n        else System.out.println(-1);\n    }\n}\n\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "58f357e295fbfaae921991bf1a8e841ca772b3ea4068ee4f9c1538cad023cde5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\ts := readToken()\n\tn, m := len(s), 0\n\tfor i := 0; i < n/2; i++ {\n\t\tif s[i] != s[n-1-i] { // mismatched pair\n\t\t\tm++\n\t\t}\n\t}\n\tswitch {\n\tcase m%2 == 0:\n\t\tfmt.Println(m / 2)\n\tcase n%2 == 1:\n\t\tfmt.Println((m + 1) / 2)\n\tdefault:\n\t\tfmt.Println(-1)\n\t}\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "87bf88cc5156684299024da390837d8bb2756397789c3145e4b2266cd9421cfe"
+    }
+  ]
+}

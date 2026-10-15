@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-337",
+  "packageChecksum": "06c4d84778e0c86a436ce63e9571e0c7c2546706c9ffea60f8c43692f53c3dfb",
+  "sourceContentHash": "e30d0b3662b7bbc9141234c496dc7a83018061484007b17d38c5ba96a9b04f31",
+  "editorialSha256": "044a4e39b7b72cefeb2997ea639d7aa542ae71a78d4f63332f44688a638ec40a",
+  "hints": {
+    "zh": [
+      "从没被移动过的字符保持原来的相对顺序，并且都排在所有被移动的字符前面。所以最终串的开头一段，必须是原串的一个子序列。",
+      "要移动的次数最少，就要让不动的字符尽量多：它们组成目标串（原串的反转）的一个前缀，同时又是原串的子序列。其余字符按目标后缀的顺序依次移到末尾即可。",
+      "令target为s的反转，指针matched=0；顺序扫描s，若当前字符等于target[matched]就让matched加1。最终答案为n−matched。"
+    ],
+    "en": [
+      "Characters that are never moved keep their original relative order and all come before every moved character. So the beginning of the final string must be a subsequence of the original string.",
+      "To move as few times as possible, keep as many characters in place as possible: they form a prefix of the target (the reversed string) that is also a subsequence of the original. The other characters are then moved to the end one by one in the order of the target's suffix.",
+      "Let target be the reverse of s and set a pointer matched=0; scan s in order, and whenever the current character equals target[matched], increase matched by 1. The answer is n−matched."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet the target be the reverse of the original string. Scan the original string and greedily match the longest possible prefix of the target, starting from its beginning; the answer is the number of unmatched characters.\n\n## Proof of correctness\n\nCharacters that are never moved keep their original relative order and stay in front of the characters that were moved. So with t operations, at least n−t unmoved characters form a prefix of the target, whose length is at most the longest matchable prefix L, giving t≥n−L. Conversely, keep the original positions of that prefix and move every other character to the end once, in the order of the target's remaining suffix, finishing in n−L operations. When matching the prefix, always taking the earliest available character leaves the most positions for later, so by induction the greedy finds L.\n\n## Complexity\n\nTime O(n), space O(n) to store the reversed string."
+}

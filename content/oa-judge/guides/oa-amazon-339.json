@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-339",
+  "packageChecksum": "a17401b2f6a50ab5a60b80493d604ee956969bec3c181d722a58795b85cdb0ae",
+  "sourceContentHash": "8c60c1e414cf0a504f26cfd3e6747bb130634a24f889dd95326f6efd30d656ed",
+  "editorialSha256": "51e925868e6179739c8c946abd9c013a4d98506c56105cb250343b3aa81b3f87",
+  "hints": {
+    "zh": [
+      "车只能吃同行或同列的车。把每一行、每一列看成一个点，每枚车看成连接它所在行和列的一条边，能相互影响的车就落在同一个连通块里。",
+      "吃子不会让两个连通块合并，而且一个块里的车永远吃不光，所以每个含车的连通块至少剩1枚；反过来每个块都能一步步吃到只剩1枚。答案就是含车的连通块个数。",
+      "建大小为n+m的并查集（行i对应i，列j对应n+j）；读棋盘时每遇到1就合并行i与列n+j，并标记这一行有车。最后统计所有有车的行的不同根的个数（全空棋盘为0）。"
+    ],
+    "en": [
+      "A rook can only capture rooks in its row or column. Treat each row and each column as a vertex and each rook as an edge joining its row and column; rooks that can affect each other end up in the same connected component.",
+      "Captures never merge two components, and the rooks of a component can never all be eaten, so every component that contains rooks keeps at least 1; conversely, each component can be captured down to exactly 1. The answer is the number of components that contain rooks.",
+      "Build a union-find of size n+m (row i is i, column j is n+j). While reading the board, for every 1 merge row i with column n+j and mark that the row has a rook. Finally count the distinct roots among the rows that have rooks (an empty board gives 0)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTreat rows and columns as the vertices of a bipartite graph, with each rook as an edge joining its row and its column. Merge all occupied positions with a union-find and count the connected components that contain edges.\n\n## Proof of correctness\n\nA capture is equivalent to deleting the edge of the moving rook while the captured rook's position remains; an original connected component never merges with another one, and a non-empty component can never be deleted entirely, so each keeps at least one rook. The reverse construction: if there is a cycle, deleting one edge of the cycle keeps it connected; if a tree has several edges, deleting a leaf edge keeps the remaining edges connected. Every deleted edge shares a row or column with some kept edge, so that rook can capture the nearest rook in that direction, which removes exactly its starting position from the board and obeys the no-jumping rule. Therefore each component can be reduced step by step to a single rook, reaching the lower bound.\n\n## Complexity\n\nTime O(nm·α(n+m)), extra space O(n+m); the reference reads row by row and does not store all rook coordinates."
+}

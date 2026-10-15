@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-33",
+  "packageChecksum": "22012086dce6847a0ae0e115e2bfae9792e1a8234a2b559beacdedc7316c9efb",
+  "sourceContentHash": "edfc453a92deef37ebc88601eb66af4b050be468930d9b7f88267c10e75b35da",
+  "editorialSha256": "522f968c6111f38f4f15b09f195c32135287b11c144be4c025325c9cfea58e80",
+  "hints": {
+    "zh": [
+      "在环上访问所有目标，最终走过的部分是一段连续的弧，而没有走的部分恰好落在相邻两个目标之间的空隙里。",
+      "没走的那段空隙越长越好，所以应该跳过最大的相邻间隔（包括从最后一个目标绕回第一个目标的那段）。答案=环长−最大间隔。",
+      "排序并去重；间隔初值为a[0]+total−a[末尾]（绕回的那段），再与每对相邻目标的差取最大值；输出total减去最大间隔。只有一个目标时答案为0。"
+    ],
+    "en": [
+      "To visit every target on the ring, the part you walk is one contiguous arc, and the part you skip lies inside a gap between two neighboring targets.",
+      "The longer the skipped gap the better, so skip the largest gap between neighboring targets (including the one that wraps from the last target back to the first). Answer = ring length − largest gap.",
+      "Sort and deduplicate; start the gap at a[0]+total−a[last] (the wrap-around part), then take the maximum with the difference of each pair of neighboring targets; output total minus the largest gap. With a single target the answer is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort and deduplicate the points to visit, find the largest gap along the ring between adjacent points, and the answer is the ring length minus that largest gap.\n\n## Proof of correctness\n\nAfter removing the largest gap, the remaining arc is connected and contains every target, so walking along it once is enough. If a shortest walk covers the whole ring, it takes at least the ring length; otherwise the edges it passes form one arc containing every target, and the part it does not walk cannot span a target, so its length is at most the largest gap. Hence this construction is the shortest.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

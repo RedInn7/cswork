@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-31",
+  "packageChecksum": "185469e4786f37963aadaee53e463d2726c21ee29da7c4c439ac9ca26fc46405",
+  "sourceContentHash": "10fac9aa1e463fd9a684c00472528100a4d7b47e1f8a952f5742625b4c3e5a7b",
+  "editorialSha256": "d2d58cadda762004b884c97dc48fe8c0cd8e207f60280072faf4079726d9fa61",
+  "hints": {
+    "zh": [
+      "商品被追加后在购物车中的相对位置不再变化，删除只是让某个位置失效。所以可以给每次追加编一个递增序号，最后按序号输出仍然存在的商品。",
+      "删除“第一次出现的x”，就是删除x所有仍存在的副本里序号最小的那个。对每种商品按加入顺序维护一条链，链头就是下一次要删的位置。",
+      "用数组记录每个序号的值、是否已删、同值的下一个序号，用字典记录每个值的链头和链尾。追加时接到链尾；删除时标记链头，并把链头移到链上的下一个。最后先输出未删除的个数，再按序号输出这些商品。"
+    ],
+    "en": [
+      "Once an item is appended, its relative position in the cart never changes; a removal only invalidates one position. So give each append an increasing number and, at the end, output the surviving items in that order.",
+      "Removing \"the first occurrence of x\" means removing the copy of x with the smallest number among those still present. Keep a chain per item in insertion order; the head of the chain is the next position to remove.",
+      "Use arrays for each number's value, whether it was removed, and the next number with the same value, plus a dictionary holding each value's chain head and tail. An append links onto the tail; a removal marks the head and moves the head to the next one in the chain. Finally output the number of surviving items, then those items in order of their numbers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGive each append a unique increasing position. A shared next array links the positions of the same item, and a dictionary stores only the head and tail index of each item; on removal, advance the head index and mark the position. Finally, output the positions that were not removed, in order.\n\n## Proof of correctness\n\nThe index chain of each item is ordered by insertion time, so removing the head of the chain removes exactly the first current occurrence. Global positions increase, which preserves the cart order, and filtering out the removal marks gives the final result. All items share the index arrays; no separate deque is created for each distinct value.\n\n## Complexity\n\nTime O(n+q), space O(n+q)."
+}

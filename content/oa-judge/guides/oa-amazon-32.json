@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-32",
+  "packageChecksum": "f269775848bf44095ae2d720069cac147258e5de294bf9776fe7d2ef0041391d",
+  "sourceContentHash": "d57f3152741908c6689196515009b51d5b71a6e52f3add83f0af0573c1328a9e",
+  "editorialSha256": "5de2776ca9cfa48d10d272a7c448f9e709387d1a22e552bb2c7972ae4a4dc0cf",
+  "hints": {
+    "zh": [
+      "删得越多，剩下的序列只会是原来的子序列，LIS不会变长。所以“删除前k张后仍满足门槛”关于k是单调的：可行的k是从0开始的一段前缀。",
+      "对k二分。检查某个k时，把remove前k个位置标记为删除，按原顺序扫描剩余元素求严格递增子序列的长度；严格递增要用lower_bound（第一个≥当前值的位置）来替换。",
+      "low=0、high=n、答案初值−1；每次取mid，若剩余LIS≥min_order就记录答案并往右找，否则往左找。LIS用tails数组：对每个存活的值找第一个≥它的位置，到末尾就追加，否则替换。连k=0都不可行时答案保持−1。"
+    ],
+    "en": [
+      "The more you delete, the remaining sequence is just a subsequence of what was there, so its LIS never gets longer. Hence \"still meets the threshold after removing the first k\" is monotonic in k: the feasible values of k form a prefix starting at 0.",
+      "Binary search on k. To check some k, mark the first k positions of remove as deleted and scan the remaining elements in their original order to get the length of the longest strictly increasing subsequence; strictly increasing means replacing with lower_bound (the first position ≥ the current value).",
+      "Set low=0, high=n and the answer to −1. Take mid each time: if the remaining LIS is ≥ min_order, record the answer and search right; otherwise search left. For the LIS, keep a tails array: for each surviving value find the first position ≥ it, append if that is the end, otherwise replace. If even k=0 is infeasible, the answer stays −1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet f(k) be the strict LIS length of the dominos that remain after deleting the first k in the order of remove. Deleting elements never increases the LIS, so the condition f(k)≥min_order is monotonic in k, and the largest feasible k can be found by binary search. For each k, mark the surviving positions with a bytearray, then scan the original array and maintain the tails of the strict LIS with patience sorting.\n\n## Correctness\n\nFor a fixed k, the remaining positions are exactly those pointed to by remove[k:], and the scan keeps the original array order; bisect_left replaces an equal value at the same tails length, so duplicates are never chained into a strictly increasing subsequence, and the computed value is exactly the LIS length of the remaining sequence. If k is feasible, the surviving set for any smaller number of deletions contains the current set, so its LIS is no smaller; if k is infeasible, no larger number of deletions can be feasible either. So the feasible values of k form a prefix starting at 0, and the binary search returns its largest endpoint.\n\nIf k=0 is already infeasible, the feasible set the source asks about is empty, and no return value is defined. This site explicitly adds the output -1, and does not present this addition as a rule of the original problem.\n\n## Complexity\n\nOne check is O(n log n) and the binary search makes O(log n) checks, for O(n log²n) time overall and O(n) space.\n\n## Source and this site's protocol\n\nThe fixed OAMaster statement specifies that remove is a 0-based permutation of [0..n-1], that the dominos keep their original order, and that the threshold applies to the strict LIS. This site adds the input layout, and specifies the output -1 for the case the original problem leaves undefined, where the initial LIS is already below the threshold."
+}

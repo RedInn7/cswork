@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-328",
+  "packageChecksum": "c66c0a9419134cc469f1e39e29b59e5be4e21781bc998b532e67d8c688527c65",
+  "sourceContentHash": "ce3c007c330cd8db3d0421f9e316339a520befa318c529fd213c7dd5f61f70ef",
+  "editorialSha256": "ce5c6103dc4923e1ae499ca6eedb87f556966fdf1f1135bca555bd6f2d91480c",
+  "hints": {
+    "zh": [
+      "队列中元素的相对顺序永远不变，删除只会让元素消失。所以“当前队首”就是还没被删的最小下标，可以用一个只往前走的指针找到。",
+      "每秒要删掉所有期限≤t的剩余元素，而t单调递增：把下标按期限排序，用第二个只往前走的指针批量处理新到期的元素，已经删过的跳过即可。",
+      "下标按wait排序；alive全设为真，remaining=n，t=0。循环直到remaining为0：head向前跳过已删元素，删掉head；然后指针前进，处理所有wait≤t的下标，若仍存活就删除并减计数；记录remaining，t加1。用空格输出所有记录（最后一个一定是0）。"
+    ],
+    "en": [
+      "The relative order of the queue never changes; removals only make elements disappear. So \"the current head\" is the smallest index not yet removed, which a pointer that only moves forward can find.",
+      "Each second must remove every remaining element whose deadline is ≤t, and t only increases: sort the indices by deadline and use a second forward-only pointer to handle newly expired items in bulk, skipping those already removed.",
+      "Sort the indices by wait; set alive to all true, remaining=n and t=0. Loop until remaining is 0: move head forward past removed elements and remove head; then advance the pointer over every index with wait≤t, removing it and decrementing the count if it is still alive; record remaining and increase t by 1. Output all records separated by spaces (the last one is always 0)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the indices by deadline, mark the processes still in the queue with an alive array, and only move head forward to find the first item not yet removed. Each second, remove head first, then advance a pointer through the deadline-sorted order to remove, in bulk, the remaining items with wait≤t.\n\n## Proof of correctness\n\nalive represents exactly the items still in the queue after all earlier processing and expiry actions; the original relative order never changes, so the smallest alive index is the head of the queue. The pointer over the deadline-sorted order finds exactly the items that newly expire this second, and alive excludes those already processed so they are not subtracted twice. Neither pointer ever moves back; each item is removed by processing at most once and checked for expiry once, so the printed count is the true queue length at each specified moment.\n\n## Complexity\n\nTime O(n log n), space O(n), and the output length is ≤n."
+}

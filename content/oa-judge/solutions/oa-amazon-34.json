@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-34",
+  "packageChecksum": "97bcb2375fc08303cc26f4ccf54a23e2ca9b2a6335e7afd74c79a136a3518290",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    string s; cin >> s;\n    int minimum = 10;\n    long long counts[10] = {0};\n    for (int i = (int)s.size() - 1; i >= 0; i--) {\n        int value = s[i] - '0';\n        if (value > minimum) counts[min(value + 1, 9)]++;  // a smaller digit sits to its right: move it\n        else { counts[value]++; minimum = value; }\n    }\n    string out;\n    for (int d = 0; d < 10; d++) out.append(counts[d], char('0' + d));\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "c7e3bdd68df02aa9e1af62a65d6a1923ec5503260ede6295313063b74a9c5ac1"
+    },
+    {
+      "language": "java",
+      "code": "public class Main {\n    public static void main(String[] args) throws Exception {\n        String s = new FastReader().next();\n        int minimum = 10;\n        int[] counts = new int[10];\n        for (int i = s.length() - 1; i >= 0; i--) {\n            int value = s.charAt(i) - '0';\n            if (value > minimum) counts[Math.min(value + 1, 9)]++;  // a smaller digit sits to its right: move it\n            else { counts[value]++; minimum = value; }\n        }\n        StringBuilder sb = new StringBuilder();\n        for (int d = 0; d < 10; d++) sb.append(String.valueOf((char) ('0' + d)).repeat(counts[d]));\n        System.out.println(sb);\n    }\n}\n\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "db2c29c3c8810823976d09d005a06a83841006088c939f1eba8904f5ca321d1b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\ts := readToken()\n\tminimum := 10\n\tvar counts [10]int\n\tfor i := len(s) - 1; i >= 0; i-- {\n\t\tvalue := int(s[i] - '0')\n\t\tif value > minimum { // a smaller digit sits to its right: move it\n\t\t\tcounts[min(value+1, 9)]++\n\t\t} else {\n\t\t\tcounts[value]++\n\t\t\tminimum = value\n\t\t}\n\t}\n\tvar b strings.Builder\n\tfor d := 0; d < 10; d++ {\n\t\tb.WriteString(strings.Repeat(string(rune('0'+d)), counts[d]))\n\t}\n\tfmt.Println(b.String())\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "89ef8d53aabcdcd71c92cd5cf44ac0a8ffb56ef2ce79c9d57528568d958cbbe9"
+    }
+  ]
+}

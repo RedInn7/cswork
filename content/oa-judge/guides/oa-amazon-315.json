@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-315",
+  "packageChecksum": "a908a5ff434e6840de4c2feba3fe0489b325402b2a042bb91ffeb21caaf524de",
+  "sourceContentHash": "63debdf7b68736185d97c9f3b4969bd9f427a2413b9af31356f2069af448df80",
+  "editorialSha256": "7ff08ef42a6d9ccc70174077da230063a34c7fa2c222a6bfaf35ab9065fd4fc0",
+  "hints": {
+    "zh": [
+      "直接统计“恰好等于k”不适合滑动窗口，但“最大值−最小值≤K”的子数组具有单调性：固定右端，左端越靠右越容易满足。",
+      "恰好为k的数量=范围≤k的数量−范围≤k−1的数量。范围≤K的数量可以用双指针加两个单调队列（一个维护最大值、一个维护最小值）在O(n)内求出；K<0时为0。",
+      "atMost(K)：右端逐个右移，把新元素压入递减队列和递增队列；当队首最大值−队首最小值>K时左端右移，若队首下标等于原左端就弹出；每一步累加right−left+1。输出atMost(k)−atMost(k−1)，计数与数值差都用64位。"
+    ],
+    "en": [
+      "Counting \"exactly k\" directly does not suit a sliding window, but subarrays with max − min ≤ K are monotonic: for a fixed right end, the further right the left end, the easier the condition holds.",
+      "The number with range exactly k = the number with range ≤k − the number with range ≤k−1. The number with range ≤K can be computed in O(n) with two pointers and two monotonic queues (one for the maximum, one for the minimum); it is 0 when K<0.",
+      "For atMost(K), move the right end one step at a time and push the new element into a decreasing queue and an increasing queue; while front maximum − front minimum > K, move the left end right, popping a queue front whose index equals the old left end; add right−left+1 at each step. Output atMost(k)−atMost(k−1), using 64-bit integers for the counts and the value differences."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse two monotonic queues to maintain the window maximum and minimum, and compute atMost(K), the number of windows whose range is ≤K, by adding the length of the valid suffix at each right end. The answer is atMost(k)−atMost(k−1), and a negative K returns 0.\n\n## Proof of correctness\n\nFor a fixed right end, removing elements from the left never increases the range, so the valid left ends form a suffix. Once two pointers find the earliest valid left end, every later left end is valid too, giving right−left+1 windows. The max/min monotonic queues give the exact window extremes, and each element enters and leaves them at most once. An integer range is exactly k if and only if it is ≤k but not ≤k−1, so subtracting the two counts neither double counts nor misses anything.\n\n## Complexity\n\nTime O(n), space O(n); the result uses 64-bit integers."
+}

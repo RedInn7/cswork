@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-306",
+  "packageChecksum": "bccb681881e9157d765fd43c985c726abff0e97897d2a6cdcc76e2e517525d05",
+  "sourceContentHash": "9b235604a16217ba1c44315a4cdc13a338192854448800cc4269c791ccd9ea10",
+  "editorialSha256": "24710c2d69451c728db952d3f70f26fd4223e05de5f4102fefed6e9d26475823",
+  "hints": {
+    "zh": [
+      "把第i个字符和倒数第i个字符看成一对。回文只要求每一对都相等，所以只需关心有多少对不相等，记为m。",
+      "一次交换只动两个位置，最多修好两对，所以至少需要⌈m/2⌉次；两个不相等的对可以用一次交换同时修好。m为奇数时，最后剩下的一对需要借助中间字符。",
+      "统计m：m为偶数输出m/2；m为奇数且长度为奇数输出(m+1)/2；m为奇数且长度为偶数时1的个数是奇数，偶数长度的回文做不到，输出−1。"
+    ],
+    "en": [
+      "Treat the i-th character and the i-th character from the end as a pair. A palindrome only needs every pair to match, so all that matters is how many pairs differ; call it m.",
+      "One swap moves only two positions, so it fixes at most two pairs, and at least ⌈m/2⌉ swaps are needed; two mismatched pairs can be fixed together by one swap. When m is odd, the last remaining pair needs help from the middle character.",
+      "Count m. If m is even, output m/2; if m is odd and the length is odd, output (m+1)/2; if m is odd and the length is even, the number of 1s is odd, which no even-length palindrome allows, so output −1."
+    ]
+  },
+  "explanationEn": "## Problem\n\nOne operation swaps the characters at any two positions (they do not need to be adjacent). Find the minimum number of swaps that turns a 01 string into a palindrome, or output −1 if it cannot be done.\n\n## Approach\n\nPair position i with n−1−i, and let m be the number of pairs whose characters differ.\n\n- One swap changes at most two positions, so it fixes at most two pairs. When m is even, swap the 0 of one \"01\" pair with the 1 of another \"10\" pair (or pair them up in a similar way), fixing two pairs per swap, so the answer is m/2.\n- When m is odd and the length is odd, the last remaining pair can be fixed by swapping with the middle character (whatever the middle character is), so the answer is (m+1)/2.\n- When m is odd and the length is even, the number of 1s has the same parity as m, so it is odd; an even-length palindrome must contain an even number of 1s, and swaps do not change the number of 1s, so there is no solution.\n\n## Correctness\n\nLower bound: each swap touches only two positions, so at most two pairs go from unequal to equal, and at least ⌈m/2⌉ swaps are needed; the construction above reaches the lower bound exactly. The no-solution condition comes from the parity of the number of 1s.\n\n## Complexity\n\nO(n).\n\n## Independent verification\n\nThe oracle derives feasibility from the number of 1s, the number of 0s and the parity of the length, and re-derives the answer by counting the mismatched 01 pairs and 10 pairs separately; on small data, a BFS over the swap graph also finds the shortest number of steps. All 01 strings of length 1..9 are enumerated exhaustively, the BFS results are compared with the formula one by one, and the reference program is actually run on each. Under the rules the original example gives 2 (first swap (4,5), then swap (1,2) to get 1001001). The wrong solutions cover one swap per pair, declaring every odd m unsolvable, and ignoring the no-solution case together with rounding down."
+}

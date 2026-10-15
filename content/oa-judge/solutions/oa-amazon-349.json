@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-349",
+  "packageChecksum": "71d15b08b6283d9fcd4add61e81bab115bd13701ae69a3b2a3cc2d408df340ac",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    long long n; cin >> n;\n    long long k = 1, answer = 0;\n    while (k <= n) {\n        long long q = n / k;\n        answer += q;\n        k = n / q + 1;  // skip every divisor with the same quotient\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "92b91362db5e5b0934c5df548269d349588ff57a59e66b8409df607cadc2625d"
+    },
+    {
+      "language": "java",
+      "code": "public class Main {\n    public static void main(String[] args) throws Exception {\n        long n = new FastReader().nextLong(), k = 1, answer = 0;\n        while (k <= n) {\n            long q = n / k;\n            answer += q;\n            k = n / q + 1;  // skip every divisor with the same quotient\n        }\n        System.out.println(answer);\n    }\n}\n\n\nfinal class FastReader {\n    private final java.io.InputStream in = System.in;\n    private final byte[] buf = new byte[1 << 16];\n    private int len = 0, ptr = 0;\n\n    private int read() throws java.io.IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    String next() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = read(); }\n        return sb.toString();\n    }\n\n    long nextLong() throws java.io.IOException {\n        int c = read();\n        while (c != -1 && c <= ' ') c = read();\n        boolean neg = c == '-';\n        if (neg) c = read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = read(); }\n        return neg ? -r : r;\n    }\n\n    int nextInt() throws java.io.IOException { return (int) nextLong(); }\n}\n",
+      "sha256": "745cde07fd1f000265d53ee94c3168b84c9e1a929c575b54fec59594f4c09d28"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tn := readInt()\n\tk, answer := 1, 0\n\tfor k <= n {\n\t\tq := n / k\n\t\tanswer += q\n\t\tk = n/q + 1 // skip every divisor with the same quotient\n\t}\n\tfmt.Println(answer)\n}\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readToken() string {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tvar buf []byte\n\tfor err == nil && b > ' ' {\n\t\tbuf = append(buf, b)\n\t\tb, err = reader.ReadByte()\n\t}\n\treturn string(buf)\n}\n\nfunc readInt() int {\n\tb, err := reader.ReadByte()\n\tfor err == nil && b <= ' ' {\n\t\tb, err = reader.ReadByte()\n\t}\n\tneg := false\n\tif b == '-' {\n\t\tneg = true\n\t\tb, err = reader.ReadByte()\n\t}\n\tr := 0\n\tfor err == nil && b >= '0' && b <= '9' {\n\t\tr = r*10 + int(b-'0')\n\t\tb, err = reader.ReadByte()\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n",
+      "sha256": "05421a3e513a0e1599b01a46623872abb353c1456d68190e9445e762e2e403d1"
+    }
+  ]
+}

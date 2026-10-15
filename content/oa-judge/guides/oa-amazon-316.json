@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-316",
+  "packageChecksum": "ebe3e09a183abb11e953d6ec3dee88d4ef804dcdcdfb8747ac9f4ccb0c8f84f3",
+  "sourceContentHash": "518e6b42b12eb1ada6c1da7b176eae7f1bb1e41798cff2b59812d198bfb3f6cf",
+  "editorialSha256": "857022129c9f92d4c494957e892bf65f28097b5949f86ab5ada2a617a7ba437b",
+  "hints": {
+    "zh": [
+      "先把区间合并成互不相交的段，最小间隙只可能出现在相邻两段之间；共用端点的区间也算相交。",
+      "按起点排序后从左到右扫描，维护当前合并段的终点。下一个区间的起点不超过终点就并入；否则当前段已经结束，起点减终点就是一个间隙。",
+      "排序；end取第一个区间的终点，答案初值为“无”；之后对每个区间：若起点≤end，end更新为两者终点的较大者；否则用起点−end更新最小间隙，并把end设为该区间的终点。若从未出现间隙，输出−1。"
+    ],
+    "en": [
+      "First merge the intervals into disjoint segments; the minimum gap can only occur between two adjacent segments. Intervals sharing an endpoint also count as intersecting.",
+      "Sort by start and scan from left to right, keeping the end of the current merged segment. If the next interval starts no later than that end, merge it; otherwise the current segment is finished, and start minus end is one gap.",
+      "Sort; set end to the first interval's end and the answer to \"none\". For each later interval: if its start ≤ end, set end to the larger of the two ends; otherwise update the minimum gap with start − end and set end to this interval's end. If no gap ever appeared, output −1."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort by start and scan, maintaining the end of the current merged segment; when a start is greater than it, record the gap and begin a new segment.\n\n## Proof of correctness\n\nAfter sorting, if the next interval's start is ≤ the current end, it intersects the current segment and merging creates no gap; otherwise every later start is even larger and cannot connect back to the current segment, so the gap found is exactly the distance between two adjacent final segments. The distance between non-adjacent segments is never smaller, so taking the minimum over adjacent segments during the scan gives the minimum gap over all segments.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

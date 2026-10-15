@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-346",
+  "packageChecksum": "424249f42d4cc4367c0e39fe1534d2830818a37b97b9f2115ccdd6480df80b8a",
+  "sourceContentHash": "c831d4907155f8d16e6ca25919de7b0af078c552c89b2c39297ce01210f8a914",
+  "editorialSha256": "085b17b57d3d10e14f3453364ed5d4f75208d728711259f67cfcd1359d5f97b6",
+  "hints": {
+    "zh": [
+      "切口从左往右移动时，每次只有一个字符从右半部分移到左半部分，其他字母的状态都不变，不需要每次重新统计。",
+      "维护左右两边各26个字母的频数，以及“两边都出现”的字母数common。移动字符c时，只有字母c是否两边都出现可能改变。",
+      "先把整个串计入右边的频数。对前n−1个字符c依次处理：若c原本两边都有，common减1；左边加1、右边减1；若现在两边都有，common加1；若common>k，答案加1。输出答案。"
+    ],
+    "en": [
+      "As the cut moves from left to right, only one character moves from the right part to the left part each time and every other letter stays the same, so there is no need to recount from scratch.",
+      "Keep the 26 letter frequencies on each side and common, the number of letters present on both sides. When character c moves, only whether letter c appears on both sides can change.",
+      "First count the whole string into the right frequencies. Then for each of the first n−1 characters c: if c was present on both sides, decrease common; add 1 on the left and subtract 1 on the right; if c is now present on both sides, increase common; if common>k, add 1 to the answer. Output the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the 26 left and 26 right frequencies and the number of letters present on both sides. Each time a character moves from the right part to the left part, first subtract its old contribution to the intersection, then add its new contribution; only check the first n−1 cuts.\n\n## Proof of correctness\n\nMoving one character only changes whether that letter appears on the left and on the right; the intersection contributions of the other letters stay the same, so the maintained value always equals the size of the intersection of the two parts' character sets. Every cut with two non-empty parts is checked exactly once, and the strict comparison >k gives the exact count.\n\n## Complexity\n\nTime O(n), space O(26)."
+}
