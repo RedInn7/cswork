@@ -5,14 +5,18 @@ import { test } from 'node:test';
 import editorials from '../lib/content/ling-editorials.json';
 import { curatedByNumber } from '../lib/ling-curated';
 import { lingEditorial } from '../lib/server/ling-editorials';
+import { leetcodeContract } from '../lib/server/leetcode-mode';
 
 const FIELDS = ['cpp', 'go', 'ideaEn', 'ideaZh', 'java', 'nameEn', 'nameZh', 'python', 'space', 'time'];
 // Room for a long DP idea or a verbose C++/Java/Go solution; anything past this is a paste accident.
 const MAX = { name: 60, idea: 1200, cost: 40, code: 6000 } as const;
 const BIG_O = String.raw`(?:[A-Za-z]+(?:/[A-Za-z]+)* )?O\([^()]*(?:\([^()]*\)[^()]*)*\)`;
 const COST = new RegExp(`^${BIG_O}(?:, ${BIG_O})*$`);
-// The types scripts/leetcode-mode/cpp/context.hpp and lib/server/leetcode-go.ts define.
+// The types scripts/leetcode-mode/cpp/context.hpp and lib/server/leetcode-{go,java}.ts define.
 const PLATFORM = String.raw`(?:TreeNode|ListNode|Node|Interval|MountainArray)\b`;
+const NAMES = ['TreeNode', 'ListNode', 'Node', 'Interval', 'MountainArray'];
+const uncommented = (code: unknown) =>
+  (typeof code === 'string' ? code : '').replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, '');
 
 void test('every editorial is a Line 500 problem with 1-4 complete bilingual approaches', () => {
   const file = editorials as Record<string, Record<string, unknown>>;
@@ -51,13 +55,23 @@ void test('every editorial is a Line 500 problem with 1-4 complete bilingual app
         if (!COST.test(String(approach[key])) || /[一-鿿]/.test(String(approach[key])))
           bad.push(`${at}.${key}: not big-O`);
       if (!/[一-鿿]/.test(String(approach.ideaZh))) bad.push(`${at}.ideaZh: no Chinese`);
-      // A helper named like a judge type replaces the harness's own, whose fields the input builder uses.
-      const code = (key: 'cpp' | 'go') =>
-        String(approach[key]).replace(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, '');
+      // Like LeetCode, the judge declares a platform type only when the official signature uses it.
+      // Then a C++ helper of that name is a redefinition and a Go one must keep the judge's fields.
+      const code = (key: 'cpp' | 'go' | 'java') => uncommented(approach[key]);
       if (new RegExp(String.raw`\b(?:struct|class)\s+${PLATFORM}\s*\{`).test(code('cpp')))
         bad.push(`${at}.cpp: redeclares a platform type`);
       if (new RegExp(String.raw`\btype\s+${PLATFORM}`).test(code('go')))
         bad.push(`${at}.go: redeclares a platform type`);
+      // Otherwise the type does not exist, and the code must declare its own.
+      const templates = leetcodeContract(id)?.templates;
+      for (const key of ['cpp', 'go', 'java'] as const)
+        for (const name of NAMES)
+          if (
+            new RegExp(String.raw`\b${name}\b`).test(code(key)) &&
+            !new RegExp(String.raw`\b${name}\b`).test(uncommented(templates?.[key])) &&
+            !new RegExp(String.raw`\b(?:struct|class|interface|type)\s+${name}\b`).test(code(key))
+          )
+            bad.push(`${at}.${key}: uses ${name}, which its signature does not declare`);
     });
   }
   assert.deepEqual(bad, []);

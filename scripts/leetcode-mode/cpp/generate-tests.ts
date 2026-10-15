@@ -31,7 +31,8 @@ const entries=Object.entries(contracts) as [string,{templates:{cpp:string}}][];
 const batches=[];
 for(let offset=0;offset<entries.length;offset+=25){
   const rows=entries.slice(offset,offset+25);
-  let text=context+'\n'+runtime+'\n';
+  // Many interfaces share one unit: expose every platform type, as each case's own context would.
+  let text=context+'\n'+runtime+'\nusing namespace cswork_platform;\n';
   for(const [id,p] of rows){
     const source=buildLeetCodeCpp(Number(id.slice(3)),p.templates.cpp,p.templates.cpp);
     const driver=source.slice(source.lastIndexOf('\nint main()')).replace('int main()','int test_interface()');

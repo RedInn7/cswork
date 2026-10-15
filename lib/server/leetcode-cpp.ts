@@ -29,34 +29,38 @@ export function getLeetCodeCppRuntime(): string {
   return getLeetCodeCppJsonRuntime() + asset('runtime.hpp');
 }
 
-function context(problemId: number, snippet?: string, source?: string) {
-  const raw = asset('context.hpp');
-  const used = snippet === undefined ? null : cleanSnippet(snippet);
-  const definitions = [
-    ...raw.matchAll(/^(?:struct|class) (\w+) \{[\s\S]*?^};/gm),
-  ]
-    .filter(
-      (match) => used === null || new RegExp(`\\b${match[1]}\\b`).test(used),
-    )
-    .filter(
-      (match) =>
-        !source ||
-        !new RegExp(`\\b(?:struct|class)\\s+${match[1]}\\s*\\{`).test(
-          cleanSnippet(source),
-        ),
-    )
-    .map((match) => {
-      let definition = match[0];
-      if (problemId === 430 && match[1] === 'Node') {
-        definition = definition.replace(
-          'Node(int v,Node* l,Node* r,Node* n):val(v),left(l),right(r),next(n){}',
-          'Node(int v,Node* p,Node* n,Node* c):val(v),next(n),prev(p),child(c){}',
-        );
-      }
-      const guard = `CSWORK_LEETCODE_${match[1].toUpperCase()}`;
-      return `#ifndef ${guard}\n#define ${guard}\n${definition}\n#endif`;
-    });
-  return `#if __has_include("/usr/local/include/cswork/stdc++.hpp")\n#include "/usr/local/include/cswork/stdc++.hpp"\n#else\n#include <bits/stdc++.h>\n#endif\nusing namespace std;\n${definitions.join('\n')}\n`;
+// The runtime uses only cswork_platform::X. Like LeetCode, X is declared at
+// global scope only when the official signature uses it; every other name is
+// the learner's, at any scope.
+function context(problemId: number, snippet: string) {
+  const used = cleanSnippet(snippet);
+  const global: string[] = [];
+  const platform: string[] = [];
+  for (const [definition, name] of asset('context.hpp').matchAll(
+    /^(?:struct|class) (\w+) \{[\s\S]*?^};/gm,
+  )) {
+    const own =
+      problemId === 430 && name === 'Node'
+        ? definition.replace(
+            'Node(int v,Node* l,Node* r,Node* n):val(v),left(l),right(r),next(n){}',
+            'Node(int v,Node* p,Node* n,Node* c):val(v),next(n),prev(p),child(c){}',
+          )
+        : definition;
+    if (new RegExp(`\\b${name}\\b`).test(used)) {
+      global.push(own);
+      platform.push(`using ::${name};`);
+    } else platform.push(own);
+  }
+  const visible = `#if __has_include("/usr/local/include/cswork/stdc++.hpp")\n#include "/usr/local/include/cswork/stdc++.hpp"\n#else\n#include <bits/stdc++.h>\n#endif\nusing namespace std;\n${global.join('\n')}\n`;
+  return {
+    visible,
+    full: `${visible}namespace cswork_platform {\n${platform.join('\n')}\n}\n`,
+  };
+}
+
+/** The editor's context: what LeetCode declares, never the judge's own namespace. */
+export function getLeetCodeCppContext(problemId: number, snippet: string) {
+  return context(problemId, snippet).visible;
 }
 
 function cleanSnippet(snippet: string) {
@@ -65,9 +69,7 @@ function cleanSnippet(snippet: string) {
 
 // Restrict the lighter transport to a complete, ordinary official interface.
 // Anything we do not recognize keeps the general graph transport.
-function usesValueOnlyInterface(snippet: string, source: string) {
-  const platformType = /\b(?:TreeNode|ListNode|Node|Interval|MountainArray)\b/;
-  if (platformType.test(cleanSnippet(source))) return false;
+function usesValueOnlyInterface(snippet: string) {
   const clean = cleanSnippet(snippet).trim();
   const method =
     /^class\s+Solution\s*\{\s*public:\s*([\w\s:<>,&]+?)\s+\w+\s*\(([^()]*)\)\s*\{\s*\}\s*};$/.exec(
@@ -95,9 +97,9 @@ function usesValueOnlyInterface(snippet: string, source: string) {
   }
 }
 
-function runtimeFor(snippet: string, source: string) {
+function runtimeFor(snippet: string) {
   const runtime = asset('runtime.hpp');
-  if (!usesValueOnlyInterface(snippet, source)) return runtime;
+  if (!usesValueOnlyInterface(snippet)) return runtime;
   const start = runtime.indexOf('void Graph::load(const Json& input){');
   const end = runtime.indexOf('template<class T> struct Method;', start);
   if (start < 0 || end < 0) return runtime;
@@ -172,12 +174,12 @@ export function buildLeetCodeCpp(
   let body: string;
   if (problemId === 297 || problemId === 449) {
     body = `Codec instance;
-    Json::Array result;
+    cswork::Json::Array result;
     const auto operation = request.at("operation").str();
     for (const auto& argument : request.at("args").array()) {
-      Json input(Json::Array{argument});
-      if (operation == "serialize") result.push_back(call(graph, instance, &Codec::serialize, input).result);
-      else if (operation == "deserialize") result.push_back(call(graph, instance, &Codec::deserialize, input).result);
+      cswork::Json input(cswork::Json::Array{argument});
+      if (operation == "serialize") result.push_back(cswork::call(graph, instance, &Codec::serialize, input).result);
+      else if (operation == "deserialize") result.push_back(cswork::call(graph, instance, &Codec::deserialize, input).result);
       else throw runtime_error("Unknown codec operation");
     }
     answer = {result, request.at("args")};`;
@@ -185,7 +187,7 @@ export function buildLeetCodeCpp(
     const method = methods.find((method) => method.name !== className)?.name;
     if (!method)
       throw new Error('LeetCode C++ template has no solution method');
-    body = `Solution instance; answer = call(graph, instance, &Solution::${method}, request.at("args"));`;
+    body = `Solution instance; answer = cswork::call(graph, instance, &Solution::${method}, request.at("args"));`;
   } else {
     const constructor = methods.find((method) => method.name === className);
     if (!constructor)
@@ -195,14 +197,14 @@ export function buildLeetCodeCpp(
     const dispatch = allowed
       .map(
         ({ name }, index) =>
-          `${index ? 'else ' : ''}if (operation == "${name}") result.push_back(call(graph, *instance, &${className}::${name}, parameters[i]).result);`,
+          `${index ? 'else ' : ''}if (operation == "${name}") result.push_back(cswork::call(graph, *instance, &${className}::${name}, parameters[i]).result);`,
       )
       .join('\n      ');
     body = `const auto& operations = request.at("operations").array();
     const auto& parameters = request.at("parameters").array();
     if (operations.empty() || operations.size() != parameters.size() || operations[0].str() != "${className}") throw runtime_error("Invalid design trace");
-    auto instance = construct<${[className, ...types].join(', ')}>(graph, parameters[0]);
-    Json::Array result{Json()};
+    auto instance = cswork::construct<${[className, ...types].join(', ')}>(graph, parameters[0]);
+    cswork::Json::Array result{cswork::Json()};
     for (size_t i = 1; i < operations.size(); ++i) {
       const auto operation = operations[i].str();
       ${dispatch}
@@ -210,12 +212,12 @@ export function buildLeetCodeCpp(
     }
     answer = {result, request.at("args")};`;
   }
-  return `${context(problemId, undefined, source)}
+  return `${context(problemId, snippet).full}
 ${getLeetCodeCppJsonRuntime()}
 #line 1 "solution.cpp"
 ${source}
 #line 1 "cswork-driver.cpp"
-${runtimeFor(snippet, source)}
+${runtimeFor(snippet)}
 int main() {
   try {
     ios::sync_with_stdio(false);
@@ -224,14 +226,14 @@ int main() {
     auto request = cswork::Parser(input).parse();
     cswork::Graph graph;
     graph.load(request.at("nodes"));
-    using namespace cswork;
-    Answer answer;
+    // Qualified: the learner may declare Answer, Json, call... at global scope.
+    cswork::Answer answer;
     ${body}
-    Json nodes = graph.serialize();
-    Json response(Json::Object{{"result", answer.result}, {"args", answer.args}, {"nodes", nodes}});
+    cswork::Json nodes = graph.serialize();
+    cswork::Json response(cswork::Json::Object{{"result", answer.result}, {"args", answer.args}, {"nodes", nodes}});
     ofstream output("cswork-result.json", ios::binary | ios::trunc);
     if (!output) throw runtime_error("Cannot open result file");
-    dump(output, response);
+    cswork::dump(output, response);
     output << '\\n';
     output.close();
     if (!output) throw runtime_error("Cannot write result file");
@@ -243,5 +245,3 @@ int main() {
 }
 `;
 }
-
-export { context as getLeetCodeCppContext };

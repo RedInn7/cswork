@@ -19,7 +19,7 @@ void test('ordinary official scalar, string, nested vector and mutating interfac
   const source = light(53);
   assert.ok(
     source.includes('struct TreeNode {'),
-    'platform types remain available',
+    'platform types remain available to the runtime',
   );
   assert.ok(
     source.includes('Unexpected graph result'),
@@ -62,17 +62,19 @@ void test('unrecognized or additional interface constructs fall back to the gene
     assert.ok(!isLight(light(1, template, template)), template);
 });
 
-void test('user-defined internal nodes remain valid and explicit platform nodes preserve full transport', () => {
+void test('learner types never change the transport, even with a platform name', () => {
   const ordinary =
     'struct LocalNode { int val; }; class Solution { public: int maxSubArray(vector<int>& nums) { LocalNode n{nums[0]}; return n.val; } };';
   assert.ok(isLight(light(53, ordinary)));
   const platform =
     'struct TreeNode { int val; }; class Solution { public: int maxSubArray(vector<int>& nums) { TreeNode n{nums[0]}; return n.val; } };';
   const built = light(53, platform);
-  assert.ok(!isLight(built));
-  assert.equal(
-    (built.match(/struct TreeNode \{/g) ?? []).length,
-    1,
-    'custom definition is not duplicated',
+  assert.ok(isLight(built));
+  const user = built.indexOf('#line 1 "solution.cpp"');
+  const namespace = built.indexOf('namespace cswork_platform {');
+  const judge = built.indexOf('struct TreeNode {');
+  assert.ok(
+    namespace < judge && judge < user,
+    'an unused platform type stays in the judge namespace, never global',
   );
 });

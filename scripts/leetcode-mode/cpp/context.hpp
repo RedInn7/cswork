@@ -2,6 +2,10 @@
 #define CSWORK_LEETCODE_CONTEXT
 #include <bits/stdc++.h>
 using namespace std;
+// The judge's own node types. The runtime uses only cswork_platform::X; the
+// harness defines X at global scope (as LeetCode does) only when the problem's
+// signature uses it, so learners may name their own types anything else.
+namespace cswork_platform {
 struct TreeNode {
     int val; TreeNode *left, *right;
     TreeNode(int v=0, TreeNode* l=nullptr, TreeNode* r=nullptr):val(v),left(l),right(r){}
@@ -33,4 +37,5 @@ public:
     int get(int index) { if(++calls>100) throw runtime_error("MountainArray.get exceeded 100 calls"); return values.at(index); }
     int length() { return static_cast<int>(values.size()); }
 };
+} // namespace cswork_platform
 #endif
