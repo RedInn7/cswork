@@ -261,6 +261,13 @@ const programsSchema = z
   })
   .strict();
 const sidecars = new Map<string, { id: string }>();
+// Where the guide and solution sidecars and their reports live; tests point it at a fixture copy.
+let sidecarRoot = 'content/oa-judge';
+export function useOaSidecarRoot(root: string) {
+  sidecarRoot = root;
+  sidecars.clear();
+  passing = undefined;
+}
 /** content/oa-judge/<dir>/<id>.json, parsed once; a missing file is looked for again next time. */
 function sidecar<T extends { id: string }>(
   dir: 'guides' | 'solutions',
@@ -269,7 +276,7 @@ function sidecar<T extends { id: string }>(
 ): T | undefined {
   const key = `${dir}/${id}`;
   if (!sidecars.has(key) && /^oa-[a-z0-9-]+$/.test(id)) {
-    const file = resolve(`content/oa-judge/${key}.json`);
+    const file = resolve(sidecarRoot, `${key}.json`);
     try {
       if (existsSync(file) && statSync(file).size < 1024 * 1024)
         sidecars.set(key, parse(JSON.parse(readFileSync(file, 'utf8'))));
@@ -303,7 +310,7 @@ let passing: Set<string> | undefined;
 export function oaExtraPrograms(id: string): { language: string; code: string }[] {
   const extra = sidecar('solutions', id, (value) => programsSchema.parse(value));
   if (!extra || !oaJudgeRegistry().isCurrent(id, extra.packageChecksum)) return [];
-  passing ??= passingPrograms(resolve('content/oa-judge'));
+  passing ??= passingPrograms(resolve(sidecarRoot));
   return extra.programs
     .filter(
       (program) =>
