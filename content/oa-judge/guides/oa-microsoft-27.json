@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-27",
+  "packageChecksum": "83d0517868401d39d20e7a24785ad08074b4c06311138d60ba4276075d4753df",
+  "sourceContentHash": "1b3e53a0367d635c3d877128708171a4d2d2b93f09604cc2f6abd53e9321754c",
+  "editorialSha256": "a9af20ac2342d2188023e27108a01a1bfa93bfb86a7e0d9ed2c6b569d15cd6e5",
+  "hints": {
+    "zh": [
+      "OR 的大小主要由最高位决定。把多次翻倍分散到不同元素上，不如全部集中到一个元素上：集中后这个元素的最高位会更高，超过分散方案能达到的所有位。",
+      "所以只需枚举把全部 K 次翻倍都给哪一个元素，即它左移 K 位，再与其余所有元素 OR 起来，取最大值。",
+      "预处理后缀 OR 数组，从左到右扫描并维护前缀 OR。对每个 i，候选值 = 前缀 OR | (a[i] 左移 K 位) | 后缀 OR（从 i+1 开始），取最大值后把 a[i] 并入前缀 OR。a[i] 左移 30 位可能超过 32 位，用 64 位整数。"
+    ],
+    "en": [
+      "The size of an OR is decided mainly by its highest bit. Spreading the doublings over several elements is never better than putting them all on one element, whose highest bit then rises above every bit the spread-out plan can reach.",
+      "So only enumerate which element receives all K doublings, shift it left by K, OR it with all the other elements, and take the maximum.",
+      "Precompute suffix ORs and sweep left to right keeping a prefix OR. For each i the candidate is prefix OR | (a[i] shifted left by K) | suffix OR from i+1; take the maximum, then add a[i] into the prefix OR. Shifting by up to 30 can exceed 32 bits, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nConcentrate all doublings on a single element; prefix and suffix ORs give the OR of the remaining elements for each candidate in constant time.\n\n## Proof of correctness\n\nIn an optimal allocation, let the final highest non-zero bit belong to x. Transfer the operations used on the other elements to x: if anything is actually transferred, x's highest bit strictly rises above every bit of the original answer, so the result is larger. Hence some optimal solution applies all operations to one element. The conclusion also holds when everything is zero.\n\n## Complexity\n\nTime O(n), space O(n)."
+}

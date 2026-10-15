@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-5",
+  "packageChecksum": "1ba8d9d7199e28aa4261cb17b409eb9f781c6aec7446c505e37921b230c6cdc7",
+  "sourceContentHash": "0c372b188daf97a56efc91c58daacb9a2d79ca91fa82ba6d6ab414e9835c9a75",
+  "editorialSha256": "a8ef991d1c95329101a6d7e320ae8ff76b0cd188b260dc51126b740b8f146676",
+  "hints": {
+    "zh": [
+      "把一个子数组向两边扩展，任何值的出现次数都不会减少。",
+      "因此只要有某个子数组满足条件，整个数组也一定满足；反过来整个数组都不满足时，任何子数组都不可能满足。答案只可能是 n 或 0。",
+      "统计整个数组中每个值的出现次数，取最大次数；若它严格大于 k 就输出 n，否则输出 0。"
+    ],
+    "en": [
+      "Extending a subarray on either side never lowers the number of times any value occurs in it.",
+      "So if any subarray qualifies, the whole array qualifies too; and if the whole array does not, no subarray can. The answer is either n or 0.",
+      "Count how often each value occurs in the whole array and take the largest count; print n if it is strictly greater than k, otherwise print 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount frequencies over the whole array. If any frequency exceeds k, the whole array is optimal; otherwise no subarray can qualify.\n\n## Why it works\n\nExtending a range never lowers the occurrence count of any value, so if a valid subarray exists, the full array is valid too. Conversely, when no value occurs more than k times in the full array, no shorter range can exceed k either.\n\n## Complexity\n\nExpected time O(n), extra space O(n)."
+}

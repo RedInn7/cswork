@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-19",
+  "packageChecksum": "3df05ba03accf2557dd911eae5eab8d642c0b9ee690255f3b9695b4b5737bef5",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    sort(a.begin(), a.end());\n    long long answer = max(1LL, a[n - 1] - a[0]);\n    // split the sorted holes into a[0..i-1] and a[i..n-1], one board each\n    for (int i = 1; i < n; i++) answer = min(answer, max({1LL, a[i - 1] - a[0], a[n - 1] - a[i]}));\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "866eca707ce077960a602b6c7d7caa9c7edd51f9ac07d8d7b8eb995bbecea4c2"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        long answer = Math.max(1, a[n - 1] - a[0]);\n        // split the sorted holes into a[0..i-1] and a[i..n-1], one board each\n        for (int i = 1; i < n; i++)\n            answer = Math.min(answer, Math.max(1, Math.max(a[i - 1] - a[0], a[n - 1] - a[i])));\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "dcc946ba73adba47203e05de622dae76c11eed6c9303f50bdd6141b0f9b04b3b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn := next()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = next()\n\t}\n\tsort.Ints(a)\n\tanswer := max(1, a[n-1]-a[0])\n\t// split the sorted holes into a[0..i-1] and a[i..n-1], one board each\n\tfor i := 1; i < n; i++ {\n\t\tanswer = min(answer, max(1, a[i-1]-a[0], a[n-1]-a[i]))\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "29b1a3808bc17c34c9804ba1dcac6ce285722c1089f80a53875e9a7ed7454fad"
+    }
+  ]
+}

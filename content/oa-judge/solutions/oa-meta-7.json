@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-7",
+  "packageChecksum": "68c5ee077f626a95d479a890b9f1358548db02b4b87a1f3ce9197c6c4cd71fa7",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstatic bool isVowel(char c) { return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'; }\n\nint main() {\n    string s((istreambuf_iterator<char>(cin)), istreambuf_iterator<char>());\n    while (!s.empty() && s.back() == '\\n') s.pop_back();\n    vector<int> at;\n    for (int i = 0; i < (int)s.size(); i++)\n        if (isVowel(s[i])) at.push_back(i);\n    if (!at.empty()) {\n        // vowel i takes the character of vowel i-1; the first takes the last\n        char last = s[at.back()];\n        for (int i = (int)at.size() - 1; i > 0; i--) s[at[i]] = s[at[i - 1]];\n        s[at[0]] = last;\n    }\n    cout << s << \"\\n\";\n}\n",
+      "sha256": "ac848c5f1a056545c51f2c509a9d372ad950975879ca0202eb5d440f251b32c1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.nio.charset.StandardCharsets;\nimport java.util.*;\n\npublic class Main {\n    static boolean isVowel(char c) {\n        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';\n    }\n\n    public static void main(String[] args) throws IOException {\n        String text = new String(System.in.readAllBytes(), StandardCharsets.UTF_8);\n        int len = text.length();\n        while (len > 0 && text.charAt(len - 1) == '\\n') len--;\n        char[] s = text.substring(0, len).toCharArray();\n        List<Integer> at = new ArrayList<>();\n        for (int i = 0; i < s.length; i++) if (isVowel(s[i])) at.add(i);\n        if (!at.isEmpty()) {\n            // vowel i takes the character of vowel i-1; the first takes the last\n            char last = s[at.get(at.size() - 1)];\n            for (int i = at.size() - 1; i > 0; i--) s[at.get(i)] = s[at.get(i - 1)];\n            s[at.get(0)] = last;\n        }\n        System.out.print(new String(s) + \"\\n\");\n    }\n}\n",
+      "sha256": "bb57ea6035f942acc1d3b7ab6ba5e0074b41d8ffccf2a11b2d04f9edf15bec2e"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nfunc main() {\n\tdata, _ := io.ReadAll(os.Stdin)\n\ts := []byte(strings.TrimRight(string(data), \"\\n\"))\n\tvar at []int\n\tfor i, c := range s {\n\t\tif strings.IndexByte(\"aeiou\", c) >= 0 {\n\t\t\tat = append(at, i)\n\t\t}\n\t}\n\tif len(at) > 0 {\n\t\t// vowel i takes the character of vowel i-1; the first takes the last\n\t\tlast := s[at[len(at)-1]]\n\t\tfor i := len(at) - 1; i > 0; i-- {\n\t\t\ts[at[i]] = s[at[i-1]]\n\t\t}\n\t\ts[at[0]] = last\n\t}\n\tos.Stdout.Write(append(s, '\\n'))\n}\n",
+      "sha256": "e8bc50336b473dd579fe7b2c9613e1212138e1b74037da754eb426549edd4172"
+    }
+  ]
+}

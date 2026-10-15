@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-9",
+  "packageChecksum": "2ef53937966cd0bcc170e894d7cab6b89229b70c18546417146fdc1184b28b3d",
+  "sourceContentHash": "4200f8c06cf88218a65d06f9a3b403abf0f6991b4fc401a75dc2101598b7ea61",
+  "editorialSha256": "d0ff4575521f3a0c4292d619ecae0a311f9305098451a038548f586e3a472832",
+  "hints": {
+    "zh": [
+      "矩阵最多 100×100、命令最多 100 条，每条命令直接在整个矩阵上执行也只有百万级操作，按定义模拟即可。",
+      "交换行、交换列、反转行、反转列都是原地交换元素；只有顺时针旋转会改变行数和列数，需要新建一个列数×行数的矩阵。",
+      "旋转时把旧矩阵 (i,j) 放到新矩阵 (j,R−1−i)，其中 R 是旧行数；反转列时把第 i 行和第 R−1−i 行的该列元素交换。所有命令执行完后，先输出当前行数和列数，再逐行输出矩阵。"
+    ],
+    "en": [
+      "The matrix is at most 100×100 with at most 100 commands, so applying each command to the whole matrix costs only about a million operations; simulate the definitions directly.",
+      "Swapping rows or columns and reversing a row or column are all in-place element swaps; only the clockwise rotation changes the dimensions, so it needs a new matrix with the old column count as its row count.",
+      "For a rotation, put old cell (i,j) at new cell (j,R−1−i), where R is the old row count; to reverse a column, swap that column's entries in rows i and R−1−i. After all commands, print the current row and column counts, then the matrix row by row."
+    ]
+  },
+  "explanationEn": "## Approach\n\nA swap exchanges the corresponding elements, a reversal reverses the corresponding row or column, and a rotation turns column j, read from bottom to top, into the new row j.\n\n## Why it works\n\nEach operation applies the coordinate permutation it defines. A clockwise rotation maps the old (i,j) to (j,R−1−i), so reading a column from bottom to top gives exactly the new row. Composing all the permutations in order yields the final matrix.\n\n## Complexity\n\nTime O(qRC), extra space O(RC)."
+}

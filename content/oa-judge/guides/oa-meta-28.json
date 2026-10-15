@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-28",
+  "packageChecksum": "2aedb9542904b7159c5c57ccbbc238ca87432231f9af4baa032c99cd02ecefc6",
+  "sourceContentHash": "fe3b464a7f0d3b1fb9bac05a3c3ea1f4255ecde0dc05d3f1ac276b0316d839d7",
+  "editorialSha256": "f9406fb5fd63ce62fdffad37340ed9f73e09c2cabc696d02e9b2bbb23c4b3fa4",
+  "hints": {
+    "zh": [
+      "两个列表合并之后，\"各自内部不重叠\"这一性质就不再有用，问题变成普通的区间合并；注意端点相等也算相交。",
+      "把全部 n+m 个区间放在一起按起点排序，从左往右扫，维护当前正在合并的一段：新区间的起点不超过这段的右端就并进去。",
+      "排序后依次取区间：结果为空或起点大于结果最后一段的右端时新开一段，否则把最后一段的右端改成两者右端的较大值。最后先输出段数，再逐行输出每段的左右端点；两个列表都空时只输出 0。"
+    ],
+    "en": [
+      "Once the two lists are combined, the fact that each list was non-overlapping on its own no longer helps; this is plain interval merging, and touching endpoints count as overlapping.",
+      "Put all n+m intervals together, sort them by start, and sweep left to right while keeping the segment currently being merged: an interval whose start does not exceed that segment's right end joins it.",
+      "Take the sorted intervals one by one: if the result is empty or the start is greater than the right end of the last segment, open a new segment; otherwise set the last segment's right end to the larger of the two right ends. Print the number of segments, then each segment's ends on its own line; with both lists empty, print just 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort all intervals by start and maintain the current merged segment: when the new start does not exceed the current right end, extend the right end; otherwise start a new segment.\n\n## Proof of correctness\n\nAfter sorting, if the new start is greater than the current right end, no later interval can fill that gap either, so the current segment can be output as final. Otherwise the two segments intersect, and their union runs from the leftmost start to the larger right end, so merging neither loses nor adds covered positions.\n\n## Complexity\n\nTime O((n+m)log(n+m)), space O(n+m)."
+}

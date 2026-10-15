@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-19",
+  "packageChecksum": "3df05ba03accf2557dd911eae5eab8d642c0b9ee690255f3b9695b4b5737bef5",
+  "sourceContentHash": "7cc8a58e580dd4821a504d04705ab64d3926b662292285dee526a2373d7c3216",
+  "editorialSha256": "421127f76e47a083a99ff5d04db045299b077af6e30a64630f3d429c88fc40b5",
+  "hints": {
+    "zh": [
+      "一块木板盖住的是坐标轴上的一段连续区间，所以把洞排好序后，两块木板各自盖住的一定是排序后的一段前缀和一段后缀。",
+      "枚举前缀与后缀的分界：所需长度是两段跨度（最大坐标减最小坐标）的较大值，同时长度至少为 1；所有分界取最小。",
+      "把坐标排序，先把答案设为 max(1, 最大减最小)（相当于一块木板盖全部）。对每个 i 从 1 到 N−1，左组是前 i 个、右组是其余，长度为 max(1, 左组跨度, 右组跨度)，取最小值输出。"
+    ],
+    "en": [
+      "A board covers a contiguous stretch of the axis, so after sorting the holes, the two boards cover a prefix and a suffix of the sorted list.",
+      "Enumerate the split between prefix and suffix: the needed length is the larger of the two spans (largest minus smallest coordinate), and at least 1; take the minimum over all splits.",
+      "Sort the coordinates and start with the answer max(1, largest minus smallest), as if one board covered everything. For each i from 1 to N−1, the left group is the first i holes and the right group the rest; the length is max(1, left span, right span). Print the minimum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter sorting, enumerate the boundary between the left and right groups covered by the two boards; the length must be at least the larger span of the two groups, and at least 1.\n\n## Proof of correctness\n\nA board covers a contiguous range of coordinates, so any feasible solution can be split in sorted order into two segments, each covered by one board. With the boundary fixed, the span between each segment's ends is exactly the minimum length needed; enumerating all boundaries gives the global optimum.\n\n## Complexity\n\nTime O(N log N), space O(N)."
+}

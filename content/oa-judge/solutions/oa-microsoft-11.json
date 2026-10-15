@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-11",
+  "packageChecksum": "ebf1553fe7cbb9d2ffff63bcc53484641dad367e3f0f68ed713c0007fc042483",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    long long carry = 0, answer = 0;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        long long total = v + carry;\n        answer += total % 2;\n        carry = total / 2;\n    }\n    // past the end, every set bit of the carry leaves one single block\n    cout << answer + __builtin_popcountll(carry) << \"\\n\";\n}\n",
+      "sha256": "98645535328b5a56aed6d58c59672922a55a050f3d023348b0e8324826db661b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long carry = 0, answer = 0;\n        for (int i = 0; i < n; i++) {\n            long total = nextLong() + carry;\n            answer += total % 2;\n            carry = total / 2;\n        }\n        // past the end, every set bit of the carry leaves one single block\n        System.out.println(answer + Long.bitCount(carry));\n    }\n}\n",
+      "sha256": "2224e4949635ba8239120a0e05a5a33605f83324e53b219ddef0d701c2b690a0"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math/bits\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn := next()\n\tcarry, answer := 0, 0\n\tfor i := 0; i < n; i++ {\n\t\ttotal := next() + carry\n\t\tanswer += total % 2\n\t\tcarry = total / 2\n\t}\n\t// past the end, every set bit of the carry leaves one single block\n\tfmt.Println(answer + bits.OnesCount64(uint64(carry)))\n}\n",
+      "sha256": "8e11edfb09ccd31555e4c7e68de98d0ddef8d148854d38bb9f6ebda5a99ab84e"
+    }
+  ]
+}

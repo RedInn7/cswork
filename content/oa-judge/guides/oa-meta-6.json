@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-6",
+  "packageChecksum": "cfc715977fa552b8426c0b1ff98602ffed9e24647e1a7698c978c780ea708ae8",
+  "sourceContentHash": "52b2161adae0b1a27429728cc8f53f12bbd076afded5af3723e3836c412d58c2",
+  "editorialSha256": "f413093a249172135a30a66327b573c721d26f0435a7350ec6b2d71ae35b6ac0",
+  "hints": {
+    "zh": [
+      "坐标都是整数，两个对象碰撞时横坐标差和纵坐标差都只能是 −1、0 或 1，所以每个对象只可能和周围九个格点上的对象碰撞。",
+      "按输入顺序处理，用哈希表记录每个坐标上已经出现过的对象个数；每加入一个对象，就查它周围九个坐标已有多少对象，这样每一对只在较晚的那个对象加入时被数一次。",
+      "对每个对象 (x,y)：枚举 dx、dy 各取 −1、0、1，把哈希表中 (x+dx,y+dy) 的计数加到答案里；然后把 (x,y) 的计数加一。同一坐标的多个对象通过计数自然处理，最后输出答案。"
+    ],
+    "en": [
+      "Coordinates are integers, so for two colliding objects each coordinate difference is −1, 0 or 1; an object can only collide with objects on the nine surrounding lattice points.",
+      "Process objects in input order with a hash map from coordinate to the number of objects already seen there. When an object arrives, look up how many objects sit on its nine neighboring coordinates, so each pair is counted once, when its later object arrives.",
+      "For each object (x,y), let dx and dy each range over −1, 0, 1 and add the stored count at (x+dx,y+dy) to the answer; then increment the count at (x,y). Several objects on the same coordinate are handled by the counts. Print the answer at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRead the coordinates one by one, add up the number of already-recorded objects at the nine neighboring integer coordinates, then record the current object.\n\n## Why it works\n\nWith integer coordinates, the allowed differences on each axis can only be −1, 0 or 1. The nine coordinate lookups cover exactly the earlier objects that collide with the current one. Each pair is counted once, when its later object is added, and repeated coordinates are handled by the frequency counts.\n\n## Complexity\n\nTime O(n), extra space O(n)."
+}

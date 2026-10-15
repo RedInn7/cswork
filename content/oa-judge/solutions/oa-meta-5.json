@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-5",
+  "packageChecksum": "1ba8d9d7199e28aa4261cb17b409eb9f781c6aec7446c505e37921b230c6cdc7",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, k;\n    cin >> n >> k;\n    unordered_map<long long, int> counts;\n    counts.reserve(n * 2);\n    int best = 0;\n    for (int i = 0; i < n; i++) {\n        long long x;\n        cin >> x;\n        best = max(best, ++counts[x]);\n    }\n    // the whole array is optimal whenever any value occurs more than k times\n    cout << (best > k ? n : 0) << \"\\n\";\n}\n",
+      "sha256": "32bd7544bee725a2b44bf74583d786e02f623ac248763b3bdd29fff3f5b8468c"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong(), k = (int) nextLong();\n        HashMap<Long, Integer> counts = new HashMap<>();\n        int best = 0;\n        for (int i = 0; i < n; i++) best = Math.max(best, counts.merge(nextLong(), 1, Integer::sum));\n        // the whole array is optimal whenever any value occurs more than k times\n        System.out.println(best > k ? n : 0);\n    }\n}\n",
+      "sha256": "cd0dedd00ec35855d19f8b7e09ca6f54d040d5fd43bb7524a70d57bfe4d3e44d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn, k := next(), next()\n\tcounts := make(map[int]int, n)\n\tbest := 0\n\tfor i := 0; i < n; i++ {\n\t\tx := next()\n\t\tcounts[x]++\n\t\tbest = max(best, counts[x])\n\t}\n\t// the whole array is optimal whenever any value occurs more than k times\n\tif best > k {\n\t\tfmt.Println(n)\n\t} else {\n\t\tfmt.Println(0)\n\t}\n}\n",
+      "sha256": "89b6b3de76348686d15bf3a0b4df16ebf27ee7aaa3fd5873d4c72a97138b261f"
+    }
+  ]
+}

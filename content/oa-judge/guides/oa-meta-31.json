@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-31",
+  "packageChecksum": "b76855e9360b828967f91da483e5ae4dfa14c60f34f12ff7a407410c2fa3a667",
+  "sourceContentHash": "a248727c1f7fe87067c0ea4bb5849a2df57904b7efb43ef76dc54505da8ed31f",
+  "editorialSha256": "d38c8bb5a48a917ed3d0eea7744371df450235a07a97ad66a53c2b0e93ef59ef",
+  "hints": {
+    "zh": [
+      "一个长度为 m+1 的窗口只由它的 m 个相邻大小关系决定是否匹配，与具体数值无关。",
+      "把数组转成相邻比较序列（后一个大记 1、相等记 0、小记 −1），问题就变成在这个序列中统计模式的出现次数，允许重叠，用 KMP 线性完成。",
+      "先求模式的前缀函数；扫描比较序列时失配就沿前缀函数回退，相等就把匹配长度加一；匹配长度等于 m 时答案加一，并回退到前缀函数在 m−1 处的值继续扫描。"
+    ],
+    "en": [
+      "Whether a window of length m+1 matches is decided only by its m adjacent comparisons, not by the actual values.",
+      "Turn the array into its comparison sequence (1 when the next value is larger, 0 when equal, −1 when smaller). The task becomes counting possibly overlapping occurrences of the pattern in that sequence, which KMP does in linear time.",
+      "Compute the pattern's prefix function. While scanning the comparison sequence, fall back along the prefix function on a mismatch and extend the match length on equality; when the match length equals m, add one to the answer and fall back to the prefix function value at m−1 before continuing."
+    ]
+  },
+  "explanationEn": "## Approach\n\nConvert the array into its sequence of adjacent comparisons and match the pattern with KMP. After a successful match, fall back to the longest proper prefix that is also a suffix, so overlapping matches are counted too.\n\n## Proof of correctness\n\nEach window of the original array corresponds uniquely to its sequence of adjacent comparisons. At every position KMP keeps the longest pattern prefix that can still match, falling back on a mismatch loses no possible match, and each complete match corresponds to one valid window.\n\n## Complexity\n\nTime O(n+m), space O(n+m)."
+}

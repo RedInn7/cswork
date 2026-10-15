@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-17",
+  "packageChecksum": "ca409a69e03aa61afa37d028ba98c70e980c88d27a6cafe18392d53b2dd027d2",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string key, text;\n    cin >> key >> text;\n    // key itself plus every string one adjacent swap away from it\n    set<string> variants = {key};\n    for (size_t i = 0; i + 1 < key.size(); i++) {\n        string t = key;\n        swap(t[i], t[i + 1]);\n        variants.insert(t);\n    }\n    int answer = 0;\n    for (size_t i = 0; i + key.size() <= text.size(); i++) answer += variants.count(text.substr(i, key.size()));\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "3877329b84c05522cd4edab2711408e3a7e2736f98bd60b4bf5625adafa6a0d0"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner in = new Scanner(System.in);\n        String key = in.next(), text = in.next();\n        // key itself plus every string one adjacent swap away from it\n        Set<String> variants = new HashSet<>();\n        variants.add(key);\n        for (int i = 0; i + 1 < key.length(); i++) {\n            char[] t = key.toCharArray();\n            char c = t[i];\n            t[i] = t[i + 1];\n            t[i + 1] = c;\n            variants.add(new String(t));\n        }\n        int answer = 0, m = key.length();\n        for (int i = 0; i + m <= text.length(); i++) if (variants.contains(text.substring(i, i + m))) answer++;\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "89dc8d9f1181f3eef5c6b3eead5d32ad724276f17c338e59cb4dcc5d283d68bb"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tvar key, text string\n\tfmt.Scan(&key, &text)\n\t// key itself plus every string one adjacent swap away from it\n\tvariants := map[string]bool{key: true}\n\tfor i := 0; i+1 < len(key); i++ {\n\t\tt := []byte(key)\n\t\tt[i], t[i+1] = t[i+1], t[i]\n\t\tvariants[string(t)] = true\n\t}\n\tanswer := 0\n\tfor i := 0; i+len(key) <= len(text); i++ {\n\t\tif variants[text[i:i+len(key)]] {\n\t\t\tanswer++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "36016854a940e34d0aa86997c230ee612773690b601a479febfcb6aa8d5b5b13"
+    }
+  ]
+}

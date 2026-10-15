@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-26",
+  "packageChecksum": "606415dbe633f32835b3f991a88b25f37bc15d1cbb9e6a8389b39df22a618e42",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    // delete at the first strict descent, or the last character if there is none\n    size_t cut = s.size() - 1;\n    for (size_t i = 0; i + 1 < s.size(); i++)\n        if (s[i] > s[i + 1]) {\n            cut = i;\n            break;\n        }\n    s.erase(cut, 1);\n    cout << s << \"\\n\";\n}\n",
+      "sha256": "9c5e9a04885b74cd3d1e650723c3372573b50a0fca2340095c2d437583c36d08"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        String s = next();\n        // delete at the first strict descent, or the last character if there is none\n        int cut = s.length() - 1;\n        for (int i = 0; i + 1 < s.length(); i++)\n            if (s.charAt(i) > s.charAt(i + 1)) {\n                cut = i;\n                break;\n            }\n        System.out.println(s.substring(0, cut) + s.substring(cut + 1));\n    }\n}\n",
+      "sha256": "695bec69a3a9e08ce5338afce5ddc33b79aaac660b0fe8376aa658ff63d87035"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tvar s string\n\tfmt.Fscan(bufio.NewReader(os.Stdin), &s)\n\t// delete at the first strict descent, or the last character if there is none\n\tcut := len(s) - 1\n\tfor i := 0; i+1 < len(s); i++ {\n\t\tif s[i] > s[i+1] {\n\t\t\tcut = i\n\t\t\tbreak\n\t\t}\n\t}\n\tfmt.Println(s[:cut] + s[cut+1:])\n}\n",
+      "sha256": "886b8e2dd2532aef0ec591558715b428fcfeb12ecbd536f665438349088257c8"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-14",
+  "packageChecksum": "f87639be4fa33f692662f9cd9be3a6a2151240917700a576968f2bafb35a27e6",
+  "sourceContentHash": "43f3a4ddb8f95c70fa84428d13e1fb5d533c090c868facb6f4debcdd73060c1c",
+  "editorialSha256": "4baf671f4cfe6a8831d4170b9ce45a02d4b3a5d9974f981e71ebfbd8b58c995a",
+  "hints": {
+    "zh": [
+      "删掉一段连续字符后，只有接缝两边的两段相同字符可能合并成一段，其他所有段的编码都不变。",
+      "预先算好每个前缀和每个后缀单独编码的长度，以及每个位置所在段向左、向右延伸的长度；枚举删除的起点，用前缀长度加后缀长度，再在接缝两侧字符相同时修正这两段。",
+      "一段长度为 v 的编码长度是：v=0 为 0，v=1 为 1，否则为 v 的十进制位数加 1。前缀编码长度可以逐字符增量计算（新长度的代价减旧长度的代价），后缀同理。对每个起点 start、终点 end=start+K：长度=前缀[start]+后缀[end]，若 start>0、end<N 且两侧字符相同，再减去两段各自的代价、加上合并后长度的代价；取最小值。"
+    ],
+    "en": [
+      "After deleting a block of consecutive characters, only the two runs on either side of the seam can merge into one; every other run encodes exactly as before.",
+      "Precompute the encoded length of every prefix and every suffix on its own, plus how far each position's run extends to the left and to the right. Enumerate the deletion start, add the prefix and suffix lengths, and fix up the two seam runs when their characters match.",
+      "A run of length v costs 0 when v=0, 1 when v=1, and otherwise its number of decimal digits plus 1. Prefix lengths can be built character by character as the cost of the new run length minus the cost of the old one, and suffixes the same way. For each start and end=start+K, the length is prefix[start]+suffix[end]; if start>0, end<N and the characters on both sides match, subtract the two runs' costs and add the cost of their combined length. Take the minimum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPrecompute the encoded lengths of all prefixes and suffixes and the lengths of the runs at the boundaries. Enumerate the deletion position; if the boundary characters on both sides are the same, merge their two runs and update the encoded length.\n\n## Proof of correctness\n\nAfter deletion, only the runs at the seam can merge; all other runs stay unchanged. So adding the prefix and suffix lengths, subtracting the two boundary runs and adding the merged run's length gives exactly the full encoded length for that deletion. Enumerate all positions and take the minimum.\n\n## Complexity\n\nTime O(N log N) (for computing decimal digit counts), space O(N)."
+}

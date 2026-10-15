@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-3",
+  "packageChecksum": "edf2b307d28f7d786c94b5c4515d345ef96582b41bb08f0d03c4a9b8c5e03878",
+  "sourceContentHash": "0eb62829f3a6b0a0c7bd7c96a6a95602efceea2c56934fb232d5c298e4e23c5a",
+  "editorialSha256": "3114854cb3d0ecdb5b5bdcf025dc54f7dd866d090811634fc84811b4614351b7",
+  "hints": {
+    "zh": [
+      "每次删掉两个相同字母，不会改变任何字母出现次数的奇偶性；所以最短结果里，出现奇数次的字母恰好各留一个，出现偶数次的字母全部删掉。",
+      "问题变成：从原串中给每个奇数次字母各选一个位置，使组成的子序列字典序最小，这正是经典的\"去除重复字母取最小字典序\"，用单调栈贪心。",
+      "先统计每个字母的总次数，确定哪些字母要保留。从左到右扫描并维护每个字母的剩余次数：跳过不需要保留或已在栈中的字母；否则当栈顶字母比当前字母大且后面还会再出现时，把栈顶弹出（并取消其在栈中的标记）；再把当前字母压栈。最后输出栈中字符串，可能为空行。"
+    ],
+    "en": [
+      "Deleting two equal letters never changes the parity of any letter's count, so a shortest result keeps exactly one copy of each letter with an odd count and none of the letters with an even count.",
+      "The task becomes choosing one position for each odd-count letter so that the resulting subsequence is lexicographically smallest, which is the classic smallest subsequence of distinct letters, solved greedily with a monotonic stack.",
+      "Count each letter to decide which letters are kept. Scan left to right while tracking each letter's remaining count: skip letters that are not kept or already on the stack; otherwise, while the top of the stack is larger than the current letter and appears again later, pop it and clear its on-stack mark; then push the current letter. Print the stack as a string, which may be an empty line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nOnly letters that appear an odd number of times need to keep one copy each. After filtering out the other letters, use a monotonic stack to pick the lexicographically smallest subsequence without repeats.\n\n## Proof of correctness\n\nDeleting a pair does not change the parity of a frequency, so in a shortest result each odd-frequency letter keeps exactly one copy and no even-frequency letter is kept. As long as a larger letter on top of the stack still appears later, the smaller letter may enter first and that letter can be postponed; greedily choosing the smallest feasible prefix gives the smallest lexicographic order.\n\n## Complexity\n\nTime O(N), auxiliary character space O(26)."
+}

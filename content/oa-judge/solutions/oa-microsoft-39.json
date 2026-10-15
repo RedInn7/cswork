@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-39",
+  "packageChecksum": "6483f8d294c852f83cf4e5471431e713dae1a2da51a3270c36eaad89844fe085",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, k, l;\n    cin >> n >> k >> l;\n    vector<long long> prefix(n + 1, 0);\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        prefix[i + 1] = prefix[i] + v;\n    }\n    long long answer = LLONG_MIN;\n    for (int i = 0; i + k <= n; i++) {\n        long long leftSum = prefix[i + k] - prefix[i];\n        for (int j = 0; j + l <= n; j++) {\n            int start = max(i, j), end = min(i + k, j + l);\n            long long overlap = start < end ? prefix[end] - prefix[start] : 0;\n            // the overlap is counted twice in the two sums but must count as -1 times\n            answer = max(answer, leftSum + prefix[j + l] - prefix[j] - 3 * overlap);\n        }\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "388484ef84b4148b6af7e2f72df50a9b8fb5e1c3e4106b9b4b966a3cdcfa122f"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), k = nextInt(), l = nextInt();\n        long[] prefix = new long[n + 1];\n        for (int i = 0; i < n; i++) prefix[i + 1] = prefix[i] + nextLong();\n        long answer = Long.MIN_VALUE;\n        for (int i = 0; i + k <= n; i++) {\n            long leftSum = prefix[i + k] - prefix[i];\n            for (int j = 0; j + l <= n; j++) {\n                int start = Math.max(i, j), end = Math.min(i + k, j + l);\n                long overlap = start < end ? prefix[end] - prefix[start] : 0;\n                // the overlap is counted twice in the two sums but must count as -1 times\n                answer = Math.max(answer, leftSum + prefix[j + l] - prefix[j] - 3 * overlap);\n            }\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "12b1c293c023b91c54323d90e7176bb181eb686f0edaff1d406134f835b8bf8d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn, k, l := next(), next(), next()\n\tprefix := make([]int, n+1)\n\tfor i := 0; i < n; i++ {\n\t\tprefix[i+1] = prefix[i] + next()\n\t}\n\tanswer := math.MinInt64\n\tfor i := 0; i+k <= n; i++ {\n\t\tleftSum := prefix[i+k] - prefix[i]\n\t\tfor j := 0; j+l <= n; j++ {\n\t\t\tstart, end := max(i, j), min(i+k, j+l)\n\t\t\toverlap := 0\n\t\t\tif start < end {\n\t\t\t\toverlap = prefix[end] - prefix[start]\n\t\t\t}\n\t\t\t// the overlap is counted twice in the two sums but must count as -1 times\n\t\t\tanswer = max(answer, leftSum+prefix[j+l]-prefix[j]-3*overlap)\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "a2f28171a7614c336830a6f7abe2ff30eed2f111e911a053c36414513d04ce68"
+    }
+  ]
+}

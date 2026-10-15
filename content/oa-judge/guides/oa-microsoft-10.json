@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-10",
+  "packageChecksum": "bfd4fe2f82055fb1c1353810d5f7fc6ab32f9efeeb663f0b1fdca5bbd47cd08b",
+  "sourceContentHash": "cc60f5916f2557e81b329c87e4a11350647fe2ff33d7e6903857437d8b0c8e6b",
+  "editorialSha256": "e0c3fe3a1b9afb4cda0d4bc091a9921311e47519a801a5b689f8e50440220a97",
+  "hints": {
+    "zh": [
+      "来回走同一条边两次，这个字母会被翻转两次等于没翻；所以最终状态只取决于终点：起点和终点之间的那一段字母被翻转，其余不变。",
+      "直接朝终点走是到达该终点最短的走法，因此只需枚举从起点一直向左走、一直向右走经过的每个终点，检查翻转后 a、b 是否相等。",
+      "先算 a 的个数减 b 的个数，为 0 直接输出 0。否则分别向左、向右一步步走，每跨过一个字母，a 变 b 则差值减 2，b 变 a 则加 2；差值第一次变成 0 时记录步数，两个方向取较小值；都达不到就输出 −1（总长为奇数时必然如此）。"
+    ],
+    "en": [
+      "Crossing the same edge twice flips its letter twice, which cancels out. So the final string depends only on the end point: the letters between the start and the end are flipped and the rest are unchanged.",
+      "Walking straight to an end point is the shortest way to reach it, so it is enough to enumerate every end point reached by walking straight left or straight right and check whether a and b balance after the flips.",
+      "Compute the count of a minus the count of b; if it is 0, print 0. Otherwise walk left and right step by step: each crossed a turned into b lowers the difference by 2, and each b turned into a raises it by 2. Record the steps when the difference becomes 0, take the smaller over the two directions, and print −1 if neither works (always the case when the length is odd)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhether an edge ends up flipped depends only on whether the end point and the start lie on opposite sides of it; enumerate every end point reached by walking straight left or right and check whether the letter counts balance.\n\n## Proof of correctness\n\nCrossing the same edge twice cancels out, so for any walk the edges finally flipped are exactly the contiguous segment between the start and the end point. Walking directly to the end point is the shortest, so enumerating all straight paths covers every possible final state. An odd length can never be split evenly.\n\n## Complexity\n\nTime O(N), extra space O(1)."
+}

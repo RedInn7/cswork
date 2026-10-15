@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-39",
+  "packageChecksum": "6483f8d294c852f83cf4e5471431e713dae1a2da51a3270c36eaad89844fe085",
+  "sourceContentHash": "82a2175eaa773a455dfb74bf1af14ee0e15db18059f0d1e89a13a3bccba47bfb",
+  "editorialSha256": "b9ef0a3cfc6fa0c4165d38d88c1c3a80aa4fc73ce054598f7708e0bc3f76cc8f",
+  "hints": {
+    "zh": [
+      "直接把两段的和相加时，重叠部分被算了 2 次，而题目要求它按相反数只算 1 次，也就是 −1 次。",
+      "所以得分 = 第一段和 + 第二段和 − 3×重叠部分和；N 只有 2000，可以直接枚举两段的起点。",
+      "先求前缀和。枚举长度 K 的段起点 i 和长度 L 的段起点 j：重叠区间是 [max(i,j), min(i+K,j+L))，非空时用前缀和求出重叠和，否则为 0；得分为两段和减去 3 倍重叠和，取最大值。答案可能为负，初值要足够小，用 64 位整数。"
+    ],
+    "en": [
+      "Adding the two segment sums counts the overlap twice, while the rules want it counted once with its sign flipped, that is, −1 times.",
+      "So the score is first sum + second sum − 3 × overlap sum; with N only up to 2000, both starts can be enumerated directly.",
+      "Build prefix sums. For every start i of the length-K segment and start j of the length-L segment, the overlap is [max(i,j), min(i+K,j+L)); when it is non-empty take its sum from the prefix sums, otherwise use 0. The score is the two sums minus three times the overlap sum; take the maximum. The answer can be negative, so start very low and use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse prefix sums to compute the sums of both segments, then subtract 3 times the sum of the overlap; enumerate both starts and take the maximum.\n\n## Proof of correctness\n\nWhen the two segment sums are simply added, overlapping elements are counted twice, while the target needs them counted −1 times, so subtracting 3 times the overlap sum corrects this exactly. All start combinations are enumerated, and taking the maximum is optimal, including when scores are negative.\n\n## Complexity\n\nTime O((N−K+1)(N−L+1)), space O(N)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-meta-3",
+  "packageChecksum": "d1fd97bce70390eb505cf9e25a1e7655b8cf836e06cb872d9a22b707a39528c1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, m;\n    cin >> n >> m;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    vector<int> p(m), pi(m, 0);\n    for (auto &x : p) cin >> x;\n    // prefix function of the pattern\n    for (int i = 1; i < m; i++) {\n        int j = pi[i - 1];\n        while (j && p[i] != p[j]) j = pi[j - 1];\n        if (p[i] == p[j]) j++;\n        pi[i] = j;\n    }\n    long long answer = 0;\n    int j = 0;\n    for (int i = 0; i + 1 < n; i++) {\n        int v = (a[i + 1] > a[i]) - (a[i + 1] < a[i]);\n        while (j && v != p[j]) j = pi[j - 1];\n        if (v == p[j]) j++;\n        if (j == m) {\n            answer++;\n            j = pi[j - 1];\n        }\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "59cc61d110ee39267f04534c7524fec8281071de23953c298223ed5798ad4141"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = (int) nextLong(), m = (int) nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        int[] p = new int[m], pi = new int[m];\n        for (int i = 0; i < m; i++) p[i] = (int) nextLong();\n        // prefix function of the pattern\n        for (int i = 1; i < m; i++) {\n            int j = pi[i - 1];\n            while (j > 0 && p[i] != p[j]) j = pi[j - 1];\n            if (p[i] == p[j]) j++;\n            pi[i] = j;\n        }\n        long answer = 0;\n        int j = 0;\n        for (int i = 0; i + 1 < n; i++) {\n            int v = Long.compare(a[i + 1], a[i]);\n            while (j > 0 && v != p[j]) j = pi[j - 1];\n            if (v == p[j]) j++;\n            if (j == m) {\n                answer++;\n                j = pi[j - 1];\n            }\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "657ed68cc0551d2c7e1b6ecb0593ae6a85d3846def3e049027f65b1deaebdde5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn, m := next(), next()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = next()\n\t}\n\tp := make([]int, m)\n\tfor i := range p {\n\t\tp[i] = next()\n\t}\n\t// prefix function of the pattern\n\tpi := make([]int, m)\n\tfor i := 1; i < m; i++ {\n\t\tj := pi[i-1]\n\t\tfor j > 0 && p[i] != p[j] {\n\t\t\tj = pi[j-1]\n\t\t}\n\t\tif p[i] == p[j] {\n\t\t\tj++\n\t\t}\n\t\tpi[i] = j\n\t}\n\tanswer, j := 0, 0\n\tfor i := 0; i+1 < n; i++ {\n\t\tv := 0\n\t\tif a[i+1] > a[i] {\n\t\t\tv = 1\n\t\t} else if a[i+1] < a[i] {\n\t\t\tv = -1\n\t\t}\n\t\tfor j > 0 && v != p[j] {\n\t\t\tj = pi[j-1]\n\t\t}\n\t\tif v == p[j] {\n\t\t\tj++\n\t\t}\n\t\tif j == m {\n\t\t\tanswer++\n\t\t\tj = pi[j-1]\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "0e9679178dffefb0722c8be2486396976464bab0a59e155e9d157cce23cd74bd"
+    }
+  ]
+}

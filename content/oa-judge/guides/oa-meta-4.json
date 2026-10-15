@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-4",
+  "packageChecksum": "7cca3716517aa4c564f088b5654a2aca364de54190f89b07798518f98e12789e",
+  "sourceContentHash": "b023c0234dd99709469766da8a5abdca0f6cd34d71ffb465de9703f05a98e385",
+  "editorialSha256": "c5e50c10fa9cc16cae03436a8582dcd36de26ec5f327d7bfac1c54cc8d21d397",
+  "hints": {
+    "zh": [
+      "所有人同时空闲，等价于这一分钟不属于任何一个忙碌区间，所以可以把所有人的忙碌区间放在一起处理。",
+      "把忙碌区间按起点排序，从早到晚扫，记录目前为止忙碌时间覆盖到的最右端；每个区间开始前的空隙就是一段大家都空闲的时间。",
+      "维护 end（初始为 0）：对每个区间，若它的起点减 end 不小于会议长度，就输出 end；否则把 end 更新为 end 与该区间终点的较大值。扫完后再检查 1440 减 end 是否不小于会议长度，是则输出 end，否则输出 −1。"
+    ],
+    "en": [
+      "Everyone is free at a minute exactly when that minute lies in no busy interval, so all employees' busy intervals can be handled together as one list.",
+      "Sort the busy intervals by start and sweep forward in time, tracking the rightmost point covered by busy time so far; the gap before each interval starts is a stretch when everyone is free.",
+      "Keep end, starting at 0. For each interval, if its start minus end is at least the meeting length, print end; otherwise set end to the larger of end and the interval's finish. After the sweep, print end if 1440 minus end is at least the meeting length, and −1 otherwise."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the intervals by start and keep the rightmost end of the busy time scanned so far; as soon as the gap before an interval is long enough, return the start of that gap.\n\n## Why it works\n\nAll employees being free together is equivalent to not belonging to any busy interval. The sorted scan keeps merging overlapping busy time, so the gaps it checks come in increasing time order; the first gap that is long enough is necessarily the earliest.\n\n## Complexity\n\nTime O(b log b), space O(b)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-23",
+  "packageChecksum": "981ce5250536ae9d346c22acf011b52d1df0691ba3241c936cfb2a96a9414e92",
+  "sourceContentHash": "10fa8b740fd319fedf45f15ad0439597beadc5a30dd628adc7e6ae405437ba2c",
+  "editorialSha256": "c4841ea49f12027565494ee96c7b2657e0794ad643d3c67a560fcfa7a402c59a",
+  "hints": {
+    "zh": [
+      "所有行和列都是回文，等价于每个格子和它的左右镜像、上下镜像、对角镜像颜色相同；这几个格子组成一组，不同组互不相交。",
+      "每一组最后要么全变成 B、要么全变成 W，代价分别是组内 W 的个数和 B 的个数；各组独立，取较小者相加即可。",
+      "枚举左上四分之一的格子 (i,j)（i 小于 (N+1)/2、j 小于 (M+1)/2），取 (i,j)、(N−1−i,j)、(i,M−1−j)、(N−1−i,M−1−j) 并去重（在中间行或中间列时会重复），数出其中 B 的个数，答案加上 min(B 的个数, 组大小−B 的个数)。"
+    ],
+    "en": [
+      "Every row and column being a palindrome is the same as every cell having the same color as its horizontal, vertical and diagonal mirror images; those cells form a group, and different groups are disjoint.",
+      "Each group ends up all B or all W, costing its number of W cells or its number of B cells respectively; groups are independent, so add up the smaller cost of each.",
+      "Enumerate the cells (i,j) of the top-left quarter (i below (N+1)/2, j below (M+1)/2). Take (i,j), (N−1−i,j), (i,M−1−j) and (N−1−i,M−1−j), removing duplicates (they repeat on a middle row or column), count the B cells among them, and add min(B count, group size minus B count) to the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEach cell belongs to one group with its horizontal and vertical mirror images; each group becomes all B or all W, so flip the cells of the less frequent color.\n\n## Proof of correctness\n\nEvery row and column being a palindrome is equivalent to every mirror equivalence class having a single color. The classes are disjoint, and within a class the costs of the two targets are the number of B cells and the number of W cells, so taking the smaller one independently and summing is optimal.\n\n## Complexity\n\nTime O(NM), extra space O(1)."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-33",
+  "packageChecksum": "0a834028a9ae596e0c5c2cd2a8655892f709b05a459d8a2467913845c7367758",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, m;\n    cin >> n >> m;\n    vector<int> a(n * m);\n    for (auto &x : a) cin >> x;\n    int answer = 0;\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < m; j++)\n            if (a[i * m + j]) {\n                answer += 4;\n                // each edge shared with the land above or to the left is interior\n                if (i && a[(i - 1) * m + j]) answer -= 2;\n                if (j && a[i * m + j - 1]) answer -= 2;\n            }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "4268a923fdf3d1102db169b6f2aaa3cfb6543c3257a02e858e9050e32e7aff62"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), m = nextInt();\n        int[] a = new int[n * m];\n        for (int i = 0; i < n * m; i++) a[i] = nextInt();\n        int answer = 0;\n        for (int i = 0; i < n; i++)\n            for (int j = 0; j < m; j++)\n                if (a[i * m + j] != 0) {\n                    answer += 4;\n                    // each edge shared with the land above or to the left is interior\n                    if (i > 0 && a[(i - 1) * m + j] != 0) answer -= 2;\n                    if (j > 0 && a[i * m + j - 1] != 0) answer -= 2;\n                }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "ca28672d1895b895660bc24a6c7eb47b936b91b927ea1896610b2db64ddfdd2f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn, m := next(), next()\n\ta := make([]int, n*m)\n\tfor i := range a {\n\t\ta[i] = next()\n\t}\n\tanswer := 0\n\tfor i := 0; i < n; i++ {\n\t\tfor j := 0; j < m; j++ {\n\t\t\tif a[i*m+j] == 0 {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tanswer += 4\n\t\t\t// each edge shared with the land above or to the left is interior\n\t\t\tif i > 0 && a[(i-1)*m+j] != 0 {\n\t\t\t\tanswer -= 2\n\t\t\t}\n\t\t\tif j > 0 && a[i*m+j-1] != 0 {\n\t\t\t\tanswer -= 2\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "f8b9da7caf47559ff4575cd162008a669187c04ae0b4c9af92018419a6419868"
+    }
+  ]
+}

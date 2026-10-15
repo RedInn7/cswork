@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-36",
+  "packageChecksum": "704477282fac651f30a0467da8ab983d0fec73e931f2e0b8a38fea6630165e8c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, x, y;\n    cin >> n >> x >> y;\n    vector<int> a(n);\n    for (auto &v : a) cin >> v;\n    sort(a.begin(), a.end());\n    // bit s: the chosen cars can put total time s on line 1 (s <= x)\n    bitset<512> bits, mask;\n    bits[0] = 1;\n    for (int s = 0; s <= x; s++) mask[s] = 1;\n    int total = 0, answer = 0;\n    for (int i = 0; i < n; i++) {\n        total += a[i];\n        if (total > x + y) break;\n        bits = (bits | (bits << a[i])) & mask;\n        // feasible when some line-1 load s has total - s <= y\n        if ((bits >> max(0, total - y)).any()) answer = i + 1;\n        else break;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "2f52b7498a2398d63269f330f55629df5451ca74d400048c4e0575916042947e"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt(), x = nextInt(), y = nextInt();\n        int[] a = new int[n];\n        for (int i = 0; i < n; i++) a[i] = nextInt();\n        Arrays.sort(a);\n        // bit s: the chosen cars can put total time s on line 1 (s <= x)\n        java.math.BigInteger bits = java.math.BigInteger.ONE;\n        java.math.BigInteger mask = java.math.BigInteger.ONE.shiftLeft(x + 1).subtract(java.math.BigInteger.ONE);\n        int total = 0, answer = 0;\n        for (int i = 0; i < n; i++) {\n            total += a[i];\n            if (total > x + y) break;\n            bits = bits.or(bits.shiftLeft(a[i])).and(mask);\n            // feasible when some line-1 load s has total - s <= y\n            if (bits.shiftRight(Math.max(0, total - y)).signum() != 0) answer = i + 1;\n            else break;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "6d860292552e11b5290982ea3282427f6dbf84355c0d07e0591daa76f7193621"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math/big\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn, x, y := next(), next(), next()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = next()\n\t}\n\tsort.Ints(a)\n\t// bit s: the chosen cars can put total time s on line 1 (s <= x)\n\tbits := big.NewInt(1)\n\tmask := new(big.Int).Sub(new(big.Int).Lsh(big.NewInt(1), uint(x+1)), big.NewInt(1))\n\tshifted := new(big.Int)\n\ttotal, answer := 0, 0\n\tfor i, v := range a {\n\t\ttotal += v\n\t\tif total > x+y {\n\t\t\tbreak\n\t\t}\n\t\tbits.Or(bits, shifted.Lsh(bits, uint(v)))\n\t\tbits.And(bits, mask)\n\t\t// feasible when some line-1 load s has total - s <= y\n\t\tif shifted.Rsh(bits, uint(max(0, total-y))).Sign() != 0 {\n\t\t\tanswer = i + 1\n\t\t} else {\n\t\t\tbreak\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "4fe3ccf868a84e71acc42a934dcd5279f5cddba94fa72a299c7d3b211ed6a481"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-10",
+  "packageChecksum": "bfd4fe2f82055fb1c1353810d5f7fc6ab32f9efeeb663f0b1fdca5bbd47cd08b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    int start;\n    cin >> s >> start;\n    int n = s.size(), difference = 0;\n    for (char c : s) difference += c == 'a' ? 1 : -1;\n    if (difference == 0) {\n        cout << 0 << \"\\n\";\n        return 0;\n    }\n    int answer = INT_MAX;\n    // walk straight left or right; each crossed edge flips its letter\n    for (int direction : {-1, 1}) {\n        int delta = difference, p = start, steps = 0;\n        while (p + direction >= 0 && p + direction <= n) {\n            int edge = direction == 1 ? p : p - 1;\n            delta += s[edge] == 'a' ? -2 : 2;\n            p += direction;\n            steps++;\n            if (delta == 0) answer = min(answer, steps);\n        }\n    }\n    cout << (answer == INT_MAX ? -1 : answer) << \"\\n\";\n}\n",
+      "sha256": "a76b0db8a575f0a1ed3837b2bcb986e6f69558b413c4068e077d35bafcf77f8b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        String s = next();\n        int start = nextInt(), n = s.length(), difference = 0;\n        for (int i = 0; i < n; i++) difference += s.charAt(i) == 'a' ? 1 : -1;\n        if (difference == 0) {\n            System.out.println(0);\n            return;\n        }\n        int answer = Integer.MAX_VALUE;\n        // walk straight left or right; each crossed edge flips its letter\n        for (int direction : new int[] {-1, 1}) {\n            int delta = difference, p = start, steps = 0;\n            while (p + direction >= 0 && p + direction <= n) {\n                int edge = direction == 1 ? p : p - 1;\n                delta += s.charAt(edge) == 'a' ? -2 : 2;\n                p += direction;\n                steps++;\n                if (delta == 0) answer = Math.min(answer, steps);\n            }\n        }\n        System.out.println(answer == Integer.MAX_VALUE ? -1 : answer);\n    }\n}\n",
+      "sha256": "e21aa32a38c3bbca9f3d441474f476e95fcc2789e18d8d06fc931fe05ea2e290"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\nfunc main() {\n\tvar s string\n\tvar start int\n\tfmt.Scan(&s, &start)\n\tn, difference := len(s), 0\n\tfor _, c := range s {\n\t\tif c == 'a' {\n\t\t\tdifference++\n\t\t} else {\n\t\t\tdifference--\n\t\t}\n\t}\n\tif difference == 0 {\n\t\tfmt.Println(0)\n\t\treturn\n\t}\n\tanswer := math.MaxInt\n\t// walk straight left or right; each crossed edge flips its letter\n\tfor _, direction := range []int{-1, 1} {\n\t\tdelta, p, steps := difference, start, 0\n\t\tfor p+direction >= 0 && p+direction <= n {\n\t\t\tedge := p\n\t\t\tif direction == -1 {\n\t\t\t\tedge = p - 1\n\t\t\t}\n\t\t\tif s[edge] == 'a' {\n\t\t\t\tdelta -= 2\n\t\t\t} else {\n\t\t\t\tdelta += 2\n\t\t\t}\n\t\t\tp += direction\n\t\t\tsteps++\n\t\t\tif delta == 0 {\n\t\t\t\tanswer = min(answer, steps)\n\t\t\t}\n\t\t}\n\t}\n\tif answer == math.MaxInt {\n\t\tanswer = -1\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "0495ab8f5e1692231561fbef4cd942bf9f86e374f731ad50108b7b0cc0139f65"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-30",
+  "packageChecksum": "0465b8e3566e68fe7c8223e8737cabd053d2cf3927f62c2bf3a55b24225070bc",
+  "sourceContentHash": "459167e5e43683da3d3aff6bcd8a7f064a1402d5a7d54d76d8635dc435d41e13",
+  "editorialSha256": "bb540933e6bfad9e266e76ddb8e81fa48a8c315f104f4dfb03d7a64189e6963d",
+  "hints": {
+    "zh": [
+      "一个值在区间里出现 c 次，最多能组成 floor(c/2) 对互不共享下标的数对；区间的总对数就是各个值的 floor(c/2) 之和。",
+      "左端点固定时，右端点越往右，对数只增不减；所以可以用双指针，一旦窗口达到 k 对，当前左端点配上当前及更靠右的所有右端点都满足。",
+      "右端点逐个右移，把新值的次数加一，次数变成偶数时对数加一；只要对数不少于 k，就把答案加上 N−right（right 从 0 开始），再移出最左元素，若其次数从偶数变为奇数则对数减一，继续检查。"
+    ],
+    "en": [
+      "A value that appears c times in a range forms at most floor(c/2) pairs that share no index, so the range's pair count is the sum of floor(c/2) over its values.",
+      "With the left end fixed, moving the right end further right never lowers the pair count. So use two pointers: once the window reaches k pairs, the current left end works with the current right end and every right end beyond it.",
+      "Move the right end one step at a time and increment the new value's count, adding one pair when the count becomes even. While the pair count is at least k, add N−right to the answer (right is 0-based), then drop the leftmost element, losing one pair if its count goes from even to odd, and check again."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain a window with two pointers. A value that occurs c times can form at most floor(c/2) pairs of equal numbers that share no index. After a value enters the window, if its count becomes even, the pair count increases by one. As long as the current window has at least k pairs, count for the current left endpoint every subarray ending at the current right endpoint or further right, then remove the leftmost element and keep shrinking.\n\n## Correctness\n\nPairing each value independently, a value occurring c times yields at most floor(c/2) non-overlapping pairs, so the window's total pair count is exactly the sum of floor(freq/2) over all values. With the left endpoint fixed, moving the right endpoint further right only adds elements and never decreases the pair count. When the window first satisfies the condition, every subarray whose end is not smaller than the current right satisfies it, so N-right of them are counted at once. Then the left endpoint moves right; if the condition still holds, the corresponding suffix range is counted for this new left endpoint. Both pointers advance monotonically, so every qualifying left endpoint is handled exactly at its earliest feasible right endpoint, and every subarray is counted exactly once. When an element is removed, a pair is lost only when its count drops from even to odd.\n\n## Complexity\n\nTime O(N), space O(U), where U is the number of distinct values in the window.\n\n## Source and site conventions\n\nThe original example lists the three ranges for `[0,1,0,1,0], k=2`; the Python, Java and C++ solutions in the fixed snapshot all add a pair whenever a value's count reaches an even number, which defines the pairs as non-overlapping. The original snapshot's constraints are unknown; N, k and the value range follow this site's constraints in the statement. Source: https://oamaster.com/docs/companies/meta#30-enumerating-narrative-sections"
+}

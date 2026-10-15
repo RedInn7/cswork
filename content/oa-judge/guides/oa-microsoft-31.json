@@ -1,0 +1,19 @@
+{
+  "id": "oa-microsoft-31",
+  "packageChecksum": "c0f13836142db397e44623fd86c3a57a3c60579ca4ca203a8771fb2a84c9230e",
+  "sourceContentHash": "aa04767f03c9de062db1867f035cfb6b4be1c433b343c7955adb723b2674f95b",
+  "editorialSha256": "acfe3f4d1711a3dd82508bfcafb8bf49224011305a1c528e4959400f81714874",
+  "hints": {
+    "zh": [
+      "栈是后进先出，把一个栈里的元素全部倒进另一个栈，顺序就被反转一次，最早进来的元素就到了栈顶。",
+      "用一个入队栈接收新元素，一个出队栈负责弹出和查看；只有在出队栈为空时，才把入队栈整个倒过去，这样旧元素总是先于新元素出队。",
+      "push 时压入入队栈并输出 null；empty 时两个栈都空才输出 true；pop 和 peek 先在出队栈为空时把入队栈逐个弹出压入出队栈，然后 pop 弹出出队栈顶并输出，peek 只输出栈顶。所有返回值放在一行，用空格分隔。"
+    ],
+    "en": [
+      "A stack is last in, first out; pouring one stack entirely into another reverses the order once, bringing the earliest element to the top.",
+      "Use an incoming stack for new elements and an outgoing stack for pop and peek. Pour the incoming stack over only when the outgoing stack is empty, so older elements always leave before newer ones.",
+      "push: push onto the incoming stack and output null. empty: output true only when both stacks are empty. pop and peek: if the outgoing stack is empty, move every element from the incoming stack onto it one by one; then pop removes and outputs the outgoing top while peek just outputs it. Print all return values on one line separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe incoming stack records new elements; when the outgoing stack is empty, pour the whole incoming stack into it, and pop and peek work on the top of the outgoing stack.\n\n## Proof of correctness\n\nPouring reverses the most recent enqueue order, so the earliest element becomes the top of the outgoing stack. Pouring only when the outgoing stack is empty guarantees that older elements always leave before newer ones, and each element is moved at most once.\n\n## Complexity\n\nAmortized O(1) per operation, space O(Q)."
+}

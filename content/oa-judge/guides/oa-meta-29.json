@@ -1,0 +1,19 @@
+{
+  "id": "oa-meta-29",
+  "packageChecksum": "de0a454f48de3236439d6a2a76bf0d5503e1f45a5aa0c8575f5a6c0ab6b81bd6",
+  "sourceContentHash": "d6b90bf15bdc1916a05a6aef8ce85dbcbb862bb895a019cb4c8ccd57d6d1ba17",
+  "editorialSha256": "8f327c581ace1e425377807017fa686eba5d2be6a6a88e9f28319a6291a1d601",
+  "hints": {
+    "zh": [
+      "区间最多只有 900 个三位数，逐个检查完全来得及，不需要任何数位 DP。",
+      "把每个数拆成百位、十位、个位三个数字，只有三个数字两两不同时才计数。",
+      "从 left 枚举到 right：百位是整除 100，十位是整除 10 后再对 10 取余，个位是对 10 取余；三个两两不等时计数加一，最后输出计数。"
+    ],
+    "en": [
+      "The range holds at most 900 three-digit numbers, so checking each one directly is fast enough; no digit DP is needed.",
+      "Split each number into its hundreds, tens and units digits, and count it only when the three digits are pairwise different.",
+      "Loop from left to right: the hundreds digit is the number divided by 100, the tens digit is the number divided by 10 then taken mod 10, and the units digit is the number mod 10; add one when all three differ pairwise, then print the count."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate the integers in the range directly, extract the hundreds, tens and units digits, and check the three pairwise-inequality conditions.\n\n## Proof of correctness\n\nEnumerating the closed range visits every candidate once, and the three inequalities holding means exactly that any two digits differ, so nothing is missed or counted twice.\n\n## Complexity\n\nTime O(right−left+1), extra space O(1)."
+}

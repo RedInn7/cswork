@@ -1,0 +1,21 @@
+{
+  "id": "oa-microsoft-20",
+  "packageChecksum": "1792841259195a22d9ef107f8a5e0bb4ef0a78fe80a1550c7378e535debea63e",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n), b(n);\n    long long sa = 0, sb = 0;\n    for (auto &x : a) cin >> x, sa += x;\n    for (auto &x : b) cin >> x, sb += x;\n    if (sa != sb || sa % 2 != 0) {\n        cout << 0 << \"\\n\";\n        return 0;\n    }\n    long long left = 0, right = 0, half = sa / 2;\n    int answer = 0;\n    // both prefixes must hit half of the common total at the same cut\n    for (int i = 0; i + 1 < n; i++) {\n        left += a[i];\n        right += b[i];\n        if (left == half && right == half) answer++;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "087bca4ba4aca7ce2741da439f8bf6302e564db103e11ba7e8023ad710a9782c"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (buf[pos] <= ' ') pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > ' ') pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= ' ') pos++;\n        boolean neg = buf[pos] == '-';\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > ' ') r = r * 10 + (buf[pos++] - '0');\n        return neg ? -r : r;\n    }\n\n    static int nextInt() {\n        return (int) nextLong();\n    }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long[] a = new long[n], b = new long[n];\n        long sa = 0, sb = 0;\n        for (int i = 0; i < n; i++) sa += a[i] = nextLong();\n        for (int i = 0; i < n; i++) sb += b[i] = nextLong();\n        if (sa != sb || sa % 2 != 0) {\n            System.out.println(0);\n            return;\n        }\n        long left = 0, right = 0, half = sa / 2;\n        int answer = 0;\n        // both prefixes must hit half of the common total at the same cut\n        for (int i = 0; i + 1 < n; i++) {\n            left += a[i];\n            right += b[i];\n            if (left == half && right == half) answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "a1b49c4766063c93402ae25d1edae088fad3e6a851b2150502e69de34fd5f185"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn := next()\n\ta, b := make([]int, n), make([]int, n)\n\tsa, sb := 0, 0\n\tfor i := range a {\n\t\ta[i] = next()\n\t\tsa += a[i]\n\t}\n\tfor i := range b {\n\t\tb[i] = next()\n\t\tsb += b[i]\n\t}\n\tif sa != sb || sa%2 != 0 {\n\t\tfmt.Println(0)\n\t\treturn\n\t}\n\tleft, right, half, answer := 0, 0, sa/2, 0\n\t// both prefixes must hit half of the common total at the same cut\n\tfor i := 0; i+1 < n; i++ {\n\t\tleft += a[i]\n\t\tright += b[i]\n\t\tif left == half && right == half {\n\t\t\tanswer++\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "9b07d2c99cfdfbaeac4f649982d87e45b4d7f6ee9469d54ed58e3a50d5da695c"
+    }
+  ]
+}
