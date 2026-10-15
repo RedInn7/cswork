@@ -270,6 +270,59 @@ test('only terminal first failure exposes bounded counterexample to owner and te
   sqlite().prepare('DELETE FROM oj_outbox WHERE submission_id=?').run(saved.id);
   sqlite().prepare('DELETE FROM submissions WHERE id=?').run(saved.id);
 });
+test("a hidden case's counterexample stays home while the problem is in the owner's running exam or contest", async () => {
+  const saved = await createSubmission(student, request());
+  const raw = sqlite()
+    .prepare('SELECT problem_version_id FROM submissions WHERE id=?')
+    .get(saved.id) as { problem_version_id: string };
+  const [sample, secret] = [0, 1].map(
+    (hidden) =>
+      sqlite()
+        .prepare('SELECT ordinal,input FROM oj_test_cases WHERE version_id=? AND hidden=? ORDER BY ordinal LIMIT 1')
+        .get(raw.problem_version_id, hidden) as { ordinal: number; input: string },
+  );
+  const result = (ordinal: number, hidden: number) => {
+    sqlite().prepare('DELETE FROM oj_results WHERE submission_id=?').run(saved.id);
+    sqlite()
+      .prepare(
+        'INSERT INTO oj_results(submission_id,ordinal,status,runtime_ms,memory_kb,stdout,stderr,hidden) VALUES(?,?,?,?,?,?,?,?)',
+      )
+      .run(saved.id, ordinal, 'wrong_answer', 1, 1, 'mine', '', hidden);
+  };
+  result(secret.ordinal, 1);
+  sqlite().prepare("UPDATE submissions SET status='wrong_answer',passed=3,total=9 WHERE id=?").run(saved.id);
+  const now = Date.now();
+  sqlite()
+    .prepare(
+      "INSERT INTO skill_attempts(id,user_id,test,ids_json,language,started_at,deadline,created_at) VALUES('exam',?,'python',?,NULL,?,?,0)",
+    )
+    .run(student.id, JSON.stringify(['watch-intervals']), now - 60000, now + 3600000);
+  const sealed = await submissionDetail(student, saved.id);
+  assert.equal(sealed.firstFailure, undefined);
+  assert.deepEqual([sealed.status, sealed.passed, sealed.total], ['wrong_answer', 3, 9]);
+  assert.equal(JSON.stringify(sealed).includes(secret.input), false);
+  // A sample's case is on the statement already: its counterexample stays.
+  result(sample.ordinal, 0);
+  assert.equal((await submissionDetail(student, saved.id)).firstFailure?.stdin, sample.input);
+  // A contest room holds the same way; the exam's end opens the counterexample again.
+  result(secret.ordinal, 1);
+  sqlite().prepare("UPDATE skill_attempts SET finished_at=? WHERE id='exam'").run(now);
+  assert.equal((await submissionDetail(student, saved.id)).firstFailure?.stdin, secret.input);
+  sqlite()
+    .prepare(
+      "INSERT INTO contest_rooms(id,owner_id,title,kind,problem_ids_json,starts_at,duration_min,visibility,created_at) VALUES('room',NULL,'r','mashup',?,?,60,'private',0)",
+    )
+    .run(JSON.stringify(['watch-intervals']), now - 60000);
+  sqlite()
+    .prepare("INSERT INTO contest_entries(room_id,user_id,display_name,joined_at) VALUES('room',?,'s',0)")
+    .run(student.id);
+  assert.equal((await submissionDetail(student, saved.id)).firstFailure, undefined);
+  sqlite().prepare("DELETE FROM contest_entries WHERE room_id='room'").run();
+  assert.equal((await submissionDetail(student, saved.id)).firstFailure?.stdin, secret.input);
+  sqlite().prepare('DELETE FROM oj_results WHERE submission_id=?').run(saved.id);
+  sqlite().prepare('DELETE FROM oj_outbox WHERE submission_id=?').run(saved.id);
+  sqlite().prepare('DELETE FROM submissions WHERE id=?').run(saved.id);
+});
 test('custom runs preserve empty stdin and do not use hidden cases', async () => {
   const saved = await createSubmission(
     teacher,

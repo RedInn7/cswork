@@ -689,9 +689,16 @@ export async function submissionDetail(p: Person, id: string) {
       ? results.find((r) => r.status !== 'accepted' && r.status !== 'finished')
       : undefined;
   let firstFailure;
+  // While the problem is in the owner's running contest or skill exam, a hidden case stays
+  // home: one counterexample per submission would hand over the hidden tests the exam scores.
+  // The verdict and passed/total still show. Imported lazily: the judge worker bundle stays free of contests.
+  const sealed =
+    failed &&
+    definitions.find((c) => c.ordinal === failed.ordinal)?.hidden !== false &&
+    (await import('./contests')).inRunningContest(s.user_id, s.problem_id);
   // Old hidden results have no captured output. Do not invent a counterexample
   // for those rows, or reveal any additional cases in the version snapshot.
-  if (failed && failed.status === s.status && failed.stdout !== null) {
+  if (failed && !sealed && failed.status === s.status && failed.stdout !== null) {
     const definition = sqlite()
       .prepare(
         'SELECT substr(input,1,?) AS input,substr(expected_output,1,?) AS expected_output FROM oj_test_cases WHERE version_id=? AND ordinal=?',
