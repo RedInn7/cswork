@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-4",
+  "packageChecksum": "cdbc8ec0ab4447bc0c1a1e90036d834f1f80621145809098ae8370ba89adebce",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; cin >> n;\n    vector<int> odd, even;\n    for (int i = 0; i < n; i++) { int v; cin >> v; (v % 2 ? odd : even).push_back(v); }\n    size_t i = 0, j = 0;\n    vector<int> out;\n    out.reserve(n);\n    while (i < odd.size() && j < even.size()) {\n        if (odd[i] < even[j]) out.push_back(odd[i++]);\n        else out.push_back(even[j++]);\n    }\n    while (i < odd.size()) out.push_back(odd[i++]);\n    while (j < even.size()) out.push_back(even[j++]);\n    string res;\n    for (size_t t = 0; t < out.size(); t++) { if (t) res += ' '; res += to_string(out[t]); }\n    cout << res << '\\n';\n}\n",
+      "sha256": "cfb8c900c1bb3f90e319bb53d6fe935047fc94c7771896e84c10cc5439a56787"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        int[] odd = new int[n], even = new int[n];\n        int no = 0, ne = 0;\n        for (int i = 0; i < n; i++) {\n            int v = nextInt();\n            if (v % 2 != 0) odd[no++] = v;\n            else even[ne++] = v;\n        }\n        StringBuilder out = new StringBuilder();\n        int i = 0, j = 0;\n        while (i < no || j < ne) {\n            int v;\n            if (j >= ne || (i < no && odd[i] < even[j])) v = odd[i++];\n            else v = even[j++];\n            if (out.length() > 0) out.append(' ');\n            out.append(v);\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "ce8cb212d4b965b8003e4710b472c9a68cff5feab7177e6b10c686d915ae2145"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tn := int(nextInt())\n\tvar odd, even []int64\n\tfor i := 0; i < n; i++ {\n\t\tif v := nextInt(); v%2 != 0 {\n\t\t\todd = append(odd, v)\n\t\t} else {\n\t\t\teven = append(even, v)\n\t\t}\n\t}\n\ti, j, first := 0, 0, true\n\tfor i < len(odd) || j < len(even) {\n\t\tvar v int64\n\t\tif j >= len(even) || (i < len(odd) && odd[i] < even[j]) {\n\t\t\tv = odd[i]\n\t\t\ti++\n\t\t} else {\n\t\t\tv = even[j]\n\t\t\tj++\n\t\t}\n\t\tif !first {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tfirst = false\n\t\tw.WriteString(strconv.FormatInt(v, 10))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "d5d35f2d91f1d515cad9deb071ecfd3fffe0a95608f03bd03733b499242f0ad9"
+    }
+  ]
+}

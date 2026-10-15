@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-15",
+  "packageChecksum": "5a7dc64dfd57b3ec1ae90c4cab6cd6d7c09753dabb0ad0f75e6c3fc5d516ee88",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    long long lo, hi;\n    cin >> lo >> hi;\n    long long answer = 0, a = 1;\n    // hi >= 1 inside the loop, so hi / 5 and hi / 3 are floor divisions; dividing first avoids overflow\n    while (a <= hi) {\n        long long v = a;\n        while (v <= hi) {\n            if (v >= lo) answer++;\n            if (v > hi / 5) break;\n            v *= 5;\n        }\n        if (a > hi / 3) break;\n        a *= 3;\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "43599ed05cbfafd3b230657a1259e7cca4b116916997ee24e5eba239a8d07878"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        long lo = Long.parseLong(next()), hi = Long.parseLong(next());\n        long answer = 0, a = 1;\n        // hi >= 1 inside the loop, so hi / 5 and hi / 3 are floor divisions; dividing first avoids overflow\n        while (a <= hi) {\n            long v = a;\n            while (v <= hi) {\n                if (v >= lo) answer++;\n                if (v > hi / 5) break;\n                v *= 5;\n            }\n            if (a > hi / 3) break;\n            a *= 3;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "5e51366e57ae055102ba3bd2639903ec472b751e4116f10998661fd8df44e72b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tlo, _ := strconv.ParseInt(string(next()), 10, 64)\n\thi, _ := strconv.ParseInt(string(next()), 10, 64)\n\tvar answer, a int64 = 0, 1\n\t// hi >= 1 inside the loop, so hi/5 and hi/3 are floor divisions; dividing first avoids overflow\n\tfor a <= hi {\n\t\tv := a\n\t\tfor v <= hi {\n\t\t\tif v >= lo {\n\t\t\t\tanswer++\n\t\t\t}\n\t\t\tif v > hi/5 {\n\t\t\t\tbreak\n\t\t\t}\n\t\t\tv *= 5\n\t\t}\n\t\tif a > hi/3 {\n\t\t\tbreak\n\t\t}\n\t\ta *= 3\n\t}\n\tw.WriteString(strconv.FormatInt(answer, 10) + \"\\n\")\n}\n",
+      "sha256": "8d99fe6563999ce9994f95e2f9de78f78379ba8097fdf21d3f7730ed904dc3ee"
+    }
+  ]
+}

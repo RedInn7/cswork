@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-15",
+  "packageChecksum": "5a7dc64dfd57b3ec1ae90c4cab6cd6d7c09753dabb0ad0f75e6c3fc5d516ee88",
+  "sourceContentHash": "e45d8da57ee0ef831071e0be0a50c975e4a9691d49e9c1bc60ef8abbb7fa4c4b",
+  "editorialSha256": "231399ce635011c6bda85f4afc7f53ce9b33cae56ad854018e0b9a26887822cc",
+  "hints": {
+    "zh": [
+      "形如3^x·5^y的数增长极快，不超过2^63−1的这类数只有几百个，完全可以全部枚举。由质因数分解唯一，不同的(x,y)对应不同的值，不会重复计数。",
+      "外层枚举3的幂，内层在它的基础上不断乘5，只要不超过high就检查是否不小于low；high小于1时答案为0。",
+      "为防止溢出，乘5前先判断当前值是否已经大于high整除5的结果，乘3前同理用high整除3判断，满足就停止这一层。每个落在[low,high]内的值计数一次。"
+    ],
+    "en": [
+      "Numbers of the form 3^x·5^y grow very fast; only a few hundred of them fit below 2^63−1, so they can all be enumerated. By unique prime factorization, different (x,y) pairs give different values, so nothing is counted twice.",
+      "In the outer loop enumerate powers of 3; in the inner loop keep multiplying by 5, and while the value does not exceed high, check whether it is at least low. If high is less than 1 the answer is 0.",
+      "To avoid overflow, before multiplying by 5 check whether the current value already exceeds high divided by 5 (integer division), and likewise use high divided by 3 before multiplying by 3; stop that layer when it does. Count every value that lands in [low,high] once."
+    ]
+  },
+  "explanationEn": "## Approach\n\nGenerate, layer by layer, the powers of 3 not exceeding high and the values obtained by multiplying them by 5, and count those not less than low; check the upper bound with division before multiplying.\n\n## Proof of correctness\n\nPrime factorization is unique, so different exponent pairs give different values. The loops cover every exponent combination that satisfies the upper bound, with no omissions or repeats, and filtering by the lower bound afterwards gives exactly the answer for the interval.\n\n## Complexity\n\nTime O(log high·log high), space O(1)."
+}

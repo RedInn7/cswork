@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-48",
+  "packageChecksum": "dcb96df076de643b037f49606e23a1fcaced0d473040c5ee70e698f4f0608913",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; long long q; cin >> n >> q;\n    vector<long long> a(n), gaps(n);\n    for (auto &v : a) cin >> v;\n    for (int i = 0; i < n; i++) { long long y; cin >> y; gaps[i] = max(0LL, y - a[i]); }\n    sort(gaps.begin(), gaps.end());\n    int answer = 0;\n    for (long long gap : gaps) {\n        if (gap > q) break;\n        q -= gap; answer++;\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "07a814c824bcb527a06b3bb6100dd2140fa8bd5e0e720c4fab43272df08d019a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long q = nextLong();\n        long[] a = new long[n], gaps = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        for (int i = 0; i < n; i++) gaps[i] = Math.max(0, nextLong() - a[i]);\n        Arrays.sort(gaps);\n        int answer = 0;\n        for (long gap : gaps) {\n            if (gap > q) break;\n            q -= gap;\n            answer++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "290cab3cb51cadbfa956331053f1c2bfb2da363724cce7511e6a53944f5eac71"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"sort\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tn, q := int(nextInt()), nextInt()\n\ta, gaps := make([]int64, n), make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tfor i := range gaps {\n\t\tgaps[i] = max(0, nextInt()-a[i])\n\t}\n\tsort.Slice(gaps, func(i, j int) bool { return gaps[i] < gaps[j] })\n\tanswer := 0\n\tfor _, gap := range gaps {\n\t\tif gap > q {\n\t\t\tbreak\n\t\t}\n\t\tq -= gap\n\t\tanswer++\n\t}\n\tw.WriteString(strconv.Itoa(answer) + \"\\n\")\n}\n",
+      "sha256": "eed85ff082c72fb5b2061284a5d740d1eb502c382a28924b1ef0e62f433f67ee"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-53",
+  "packageChecksum": "314e341d46a0220e6dc636b42b710bec6c13cfd1724867b84ad4f06f8deaffc2",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; cin >> n;\n    vector<long long> a(n);\n    for (auto &v : a) cin >> v;\n    sort(a.begin(), a.end());\n    int l = 0, r = n - 1;\n    string out;\n    bool first = true;\n    auto put = [&](long long v) { if (!first) out += ' '; first = false; out += to_string(v); };\n    while (l <= r) {\n        put(a[r--]);\n        if (l <= r) put(a[l++]);\n    }\n    cout << out << '\\n';\n}\n",
+      "sha256": "2c8480358e84eba57d9b87ef96450b2fecc3cf21a82c0031cf98851a888b38f3"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        int l = 0, r = n - 1;\n        StringBuilder out = new StringBuilder();\n        while (l <= r) {\n            if (out.length() > 0) out.append(' ');\n            out.append(a[r--]);\n            if (l <= r) out.append(' ').append(a[l++]);\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "14c58ef3984b09ddb230a61f1e5582a1d11892689da664d80ee13e537c71f0d8"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"sort\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tn := int(nextInt())\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tsort.Slice(a, func(i, j int) bool { return a[i] < a[j] })\n\tl, r := 0, n-1\n\tfirst := true\n\tput := func(v int64) {\n\t\tif !first {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tfirst = false\n\t\tw.WriteString(strconv.FormatInt(v, 10))\n\t}\n\tfor l <= r {\n\t\tput(a[r])\n\t\tr--\n\t\tif l <= r {\n\t\t\tput(a[l])\n\t\t\tl++\n\t\t}\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "7c990fe66f657f83338a3c843572d2bf2211617f8bed3919768a52125bc1ec88"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-28",
+  "packageChecksum": "da7228adab9ce5b081884909279200b1e6bab172eb3b79af7d0c500964778fbd",
+  "sourceContentHash": "9c18d59754a83524ecd876a08a251e3f7cc884f8304156db9796ed140568be93",
+  "editorialSha256": "14f1d341ff13c16dd15d66a233a7ae5f971f2b0f335748ae094ab1d93a0534af",
+  "hints": {
+    "zh": [
+      "每个ID只关心它最后一次出现的位置；从后往前看，某个ID第一次被遇到的位置恰好就是它最后出现的位置。",
+      "倒序扫描请求，用哈希集合记录已经收集过的ID；遇到新ID就按顺序收集，这个顺序正好是按最后出现时间从近到远。",
+      "按行读取（ID可能含空格，不能按空白切分），从最后一行往前扫：见过的跳过，否则加入集合和结果列表，收集满k个立即停止；扫完仍不足k个输出-1，否则先输出k，再逐行输出收集到的ID。"
+    ],
+    "en": [
+      "For each ID only its last occurrence matters; scanning from the back, the first place an ID is met is exactly its last occurrence.",
+      "Scan the requests in reverse and keep a hash set of IDs already collected; collect each new ID as it appears, and this order is exactly from most recent to least recent by last occurrence.",
+      "Read input line by line (IDs may contain spaces, so do not split on whitespace) and scan from the last line backward: skip IDs already seen, otherwise add them to the set and the result list, and stop as soon as k are collected; if fewer than k are found print -1, otherwise print k followed by the collected IDs, one per line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan in reverse, use a set to skip IDs already seen, and stop after collecting k; if there are not enough, report that it is infeasible.\n\n## Proof of correctness\n\nScanning from right to left, the first position where an ID is met is its last occurrence, so the order of first encounters in reverse is exactly the descending order of last-occurrence times. Skipping IDs already seen only removes repeats, so the first k items are what is asked for; if the scan ends with fewer, the total number of distinct IDs really is insufficient.\n\n## Complexity\n\nTime O(n·ID length), space O(n·ID length)."
+}

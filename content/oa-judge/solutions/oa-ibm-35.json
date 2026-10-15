@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-35",
+  "packageChecksum": "819c73f45a8e82a192fa984d283b77ad47a5c08edad4dabf5d68f662f3c2fb47",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    long long a, b, c, x, y;\n    cin >> a >> b >> c >> x >> y;\n    long long best = LLONG_MAX;\n    for (long long z : {0LL, min(x, y), max(x, y)})\n        best = min(best, z * c + max(0LL, x - z) * a + max(0LL, y - z) * b);\n    cout << best << '\\n';\n}\n",
+      "sha256": "7f781783a5bda8fed367693d29a6c8f0bbeafb2fc695ffeaa1121cd44fef9fed"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        long a = nextLong(), b = nextLong(), c = nextLong(), x = nextLong(), y = nextLong();\n        long best = Long.MAX_VALUE;\n        for (long z : new long[] {0, Math.min(x, y), Math.max(x, y)})\n            best = Math.min(best, z * c + Math.max(0, x - z) * a + Math.max(0, y - z) * b);\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "752c8e9c4e5ce399cf025eeb6933de82739b688739b06c5ba4c31ba286934125"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\ta, b, c, x, y := nextInt(), nextInt(), nextInt(), nextInt(), nextInt()\n\tbest := int64(-1)\n\tfor _, z := range []int64{0, min(x, y), max(x, y)} {\n\t\tcost := z*c + max(0, x-z)*a + max(0, y-z)*b\n\t\tif best < 0 || cost < best {\n\t\t\tbest = cost\n\t\t}\n\t}\n\tw.WriteString(strconv.FormatInt(best, 10) + \"\\n\")\n}\n",
+      "sha256": "3c59650f501a249e270fd4107c5723e61b43796aba968ff52577066319f6dc53"
+    }
+  ]
+}

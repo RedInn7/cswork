@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-45",
+  "packageChecksum": "f5a1acbcdb32cd3ddcce70e69fbb3db5bc170391f56e5f27fc1125e5377fe6ac",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; cin >> n;\n    string s, out;\n    bool first = true;\n    while (cin >> s) {\n        long long level = 0, low = 0;\n        for (char c : s) { level += c == '(' ? 1 : -1; low = min(low, level); }\n        if (!first) out += ' ';\n        first = false;\n        out += (level == 0 && low >= -1) ? '1' : '0';\n    }\n    cout << out << '\\n';\n}\n",
+      "sha256": "79de1562964c616b973ccc21bc6e1a81853ec72ff6613abf61b6eff7e8aff3fa"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        nextInt();\n        StringBuilder out = new StringBuilder();\n        while (true) {\n            while (pos < buf.length && buf[pos] <= 32) pos++;\n            if (pos >= buf.length) break;\n            long level = 0, low = 0;\n            while (pos < buf.length && buf[pos] > 32) {\n                level += buf[pos++] == '(' ? 1 : -1;\n                low = Math.min(low, level);\n            }\n            if (out.length() > 0) out.append(' ');\n            out.append(level == 0 && low >= -1 ? '1' : '0');\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "c4215c6a65ac91f2f6dab983799d7fc1cdf4ec1a880803496cc14fada390b495"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tnextInt()\n\tfirst := true\n\tfor {\n\t\ts := next()\n\t\tif len(s) == 0 {\n\t\t\tbreak\n\t\t}\n\t\tlevel, low := 0, 0\n\t\tfor _, c := range s {\n\t\t\tif c == '(' {\n\t\t\t\tlevel++\n\t\t\t} else {\n\t\t\t\tlevel--\n\t\t\t}\n\t\t\tlow = min(low, level)\n\t\t}\n\t\tif !first {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tfirst = false\n\t\tif level == 0 && low >= -1 {\n\t\t\tw.WriteByte('1')\n\t\t} else {\n\t\t\tw.WriteByte('0')\n\t\t}\n\t}\n\tw.WriteByte('\\n')\n\t_ = strconv.Itoa\n}\n",
+      "sha256": "714653ee2d3a731af49b1cf67f20a11d626ae2cb5b94378334f9b684551a1bb4"
+    }
+  ]
+}

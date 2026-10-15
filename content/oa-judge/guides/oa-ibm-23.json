@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-23",
+  "packageChecksum": "a96f24a0ffca8f14b7d73333f462a4355fd48c070c51dfda8f8da17b2e991560",
+  "sourceContentHash": "17e72b1637eda91888db6c70f3d4634f8d194b08deb2cee5299cf602e94abbb1",
+  "editorialSha256": "ecfffe2bee8f58ae0bdd2cb1fd75cb61e25def8a34466a1ef350595a772ea302",
+  "hints": {
+    "zh": [
+      "子集和的奇偶性只取决于选了多少个奇数；空集给出偶数和0，所以答案至少是0。",
+      "逐项处理，只维护两个状态：已处理前缀能得到的最大偶数和、最大奇数和（奇数和一开始不可达）。每一项只有不选和选两种决策。",
+      "对每个值v：若v为偶数，新偶数和=max(偶, 偶+v)，奇数和若可达则更新为max(奇, 奇+v)；若v为奇数，新偶数和=max(偶, 奇+v)（奇数状态不可达时保持原偶数和），新奇数和=max(奇, 偶+v)（不可达时直接取偶+v）。判断奇偶时注意负数，最后输出偶数状态。"
+    ],
+    "en": [
+      "The parity of a subset sum depends only on how many odd numbers are chosen; the empty set gives the even sum 0, so the answer is at least 0.",
+      "Process the items one by one and keep only two states: the largest even sum and the largest odd sum achievable over the processed prefix (the odd sum is unreachable at first). Each item is either skipped or taken.",
+      "For each value v: if v is even, the new even sum is max(even, even+v), and the odd sum, if reachable, becomes max(odd, odd+v); if v is odd, the new even sum is max(even, odd+v) (it stays unchanged while no odd sum is reachable), and the new odd sum is max(odd, even+v) (simply even+v while none is reachable). Take care with the parity of negative numbers, and print the even state at the end."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the maximum even sum and the maximum odd sum achievable over the processed prefix, and for each item choose whether to skip or take it.\n\n## Proof of correctness\n\nInitially the empty set gives the even sum 0, and the odd state is unreachable. When an item is processed, every subset falls uniquely into one of two classes: those without the item and those with it; the latter come from the corresponding old parity state plus the value. So the item-by-item transitions cover all subsets, and keeping only the maximum for each parity is enough.\n\n## Complexity\n\nTime O(n), space O(1)."
+}

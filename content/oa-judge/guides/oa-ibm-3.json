@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-3",
+  "packageChecksum": "23a8cc76d76c3fd600c3003ff36e2821dbf3dbae5fc4335f38228fe0535018e5",
+  "sourceContentHash": "36512c6e4ad7b1f39b84e2b4691bb24141302b4d7b50961428db16d58cdecd90",
+  "editorialSha256": "86ac682ccdd0030dd6c85ed2e79710f550c3e1e61d0a5152ef9d094c9aa90cfe",
+  "hints": {
+    "zh": [
+      "团队按技能排序后相邻差不超过1，等价于团队的技能值铺成一段中间没有大于1空隙的区域，可以跨越多个不同的技能值。",
+      "把全部技能排序：如果某处相邻差大于1，任何团队都无法跨过这个空隙；而同一段没有空隙的连续区域里，所有人可以全部选入。",
+      "排序后扫描，相邻差不超过1时当前段长度加1，否则重置为1，同时记录最大段长作为答案。技能差可能达到2×10^9，比较时注意整数范围。"
+    ],
+    "en": [
+      "Requiring adjacent skills to differ by at most 1 after sorting means the team's skills cover a stretch with no gap larger than 1, which may span several different skill values.",
+      "Sort all skills: if two neighbors differ by more than 1, no team can cross that gap, while everyone inside one gap-free stretch can be chosen together.",
+      "After sorting, scan the array: when the adjacent difference is at most 1, extend the current run by 1, otherwise reset it to 1, and keep the longest run as the answer. Differences can reach 2×10^9, so mind the integer range."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter sorting, accumulate the length of each run whose adjacent differences are ≤1, and start over whenever a larger gap appears.\n\n## Proof of correctness\n\nNo valid team can cross a gap of missing skills larger than 1; choosing everyone in the same gap-free run at once is still valid, and removing anyone cannot increase the count. So the longest run is optimal.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

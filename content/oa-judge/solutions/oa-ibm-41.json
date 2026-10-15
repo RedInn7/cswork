@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-41",
+  "packageChecksum": "d2a3fe35b7abdb105057164a34de946925711accef076e50ec240f07d7ebf4ee",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    long long n, k; cin >> n >> k;\n    long long champion; cin >> champion;\n    long long wins = 0;\n    for (long long i = 1; i < n; i++) {\n        long long v; cin >> v;\n        if (v > champion) { champion = v; wins = 1; }\n        else wins++;\n        if (wins >= k) break;\n    }\n    cout << champion << '\\n';\n}\n",
+      "sha256": "9bc2696f5bd40662b805c7ca00e21afa0df0e0839668a1f7adc41893031c5fe7"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long k = nextLong();\n        long champion = nextLong(), wins = 0;\n        for (int i = 1; i < n; i++) {\n            long v = nextLong();\n            if (v > champion) {\n                champion = v;\n                wins = 1;\n            } else wins++;\n            if (wins >= k) break;\n        }\n        System.out.println(champion);\n    }\n}\n",
+      "sha256": "2abb1db455ba6c9449767a406dc6e1aef74fed2e08c9df3863a1618a60450119"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tn, k := nextInt(), nextInt()\n\tchampion := nextInt()\n\tvar wins int64\n\tfor i := int64(1); i < n; i++ {\n\t\tv := nextInt()\n\t\tif v > champion {\n\t\t\tchampion, wins = v, 1\n\t\t} else {\n\t\t\twins++\n\t\t}\n\t\tif wins >= k {\n\t\t\tbreak\n\t\t}\n\t}\n\tw.WriteString(strconv.FormatInt(champion, 10) + \"\\n\")\n}\n",
+      "sha256": "466ad6afba91837caf3d133d383a312d474c0afb5036a8894a5adadbca484b02"
+    }
+  ]
+}

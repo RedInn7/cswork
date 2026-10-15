@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-13",
+  "packageChecksum": "0d9d91c6837ce94601fd4ea3d651fea4c02148a3a5f08fd341f0f82952937ed1",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    int n; cin >> n;\n    string out;\n    for (int i = 0; i < n; i++) {\n        long long x, y, r, a, b, s;\n        cin >> x >> y >> r >> a >> b >> s;\n        long long v = (x - a) * (x - a) + (y - b) * (y - b);\n        long long sum = (r + s) * (r + s), diff = (r - s) * (r - s);\n        if (v == 0) out += \"Concentric\";\n        else if (v == sum || v == diff) out += \"Touching\";\n        else if (v > sum) out += \"Disjoint-Outside\";\n        else if (v < diff) out += \"Disjoint-Inside\";\n        else out += \"Intersecting\";\n        out += '\\n';\n    }\n    cout << out;\n}\n",
+      "sha256": "766fb31ca92ac38b60b44c65670dd192b65965a7179da2693b336613727977c4"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < n; i++) {\n            long x = nextLong(), y = nextLong(), r = nextLong(), a = nextLong(), b = nextLong(), s = nextLong();\n            long v = (x - a) * (x - a) + (y - b) * (y - b);\n            long sum = (r + s) * (r + s), diff = (r - s) * (r - s);\n            if (v == 0) out.append(\"Concentric\");\n            else if (v == sum || v == diff) out.append(\"Touching\");\n            else if (v > sum) out.append(\"Disjoint-Outside\");\n            else if (v < diff) out.append(\"Disjoint-Inside\");\n            else out.append(\"Intersecting\");\n            out.append('\\n');\n        }\n        System.out.print(out);\n    }\n}\n",
+      "sha256": "c1f644ef06400c860b9506c886f72345f91bb5ee9806f4eb178ba2fccd1394f3"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriterSize(os.Stdout, 1<<16)\n\tdefer w.Flush()\n\tn := int(nextInt())\n\tfor i := 0; i < n; i++ {\n\t\tx, y, r, a, b, s := nextInt(), nextInt(), nextInt(), nextInt(), nextInt(), nextInt()\n\t\tv := (x-a)*(x-a) + (y-b)*(y-b)\n\t\tsum, diff := (r+s)*(r+s), (r-s)*(r-s)\n\t\tswitch {\n\t\tcase v == 0:\n\t\t\tw.WriteString(\"Concentric\")\n\t\tcase v == sum || v == diff:\n\t\t\tw.WriteString(\"Touching\")\n\t\tcase v > sum:\n\t\t\tw.WriteString(\"Disjoint-Outside\")\n\t\tcase v < diff:\n\t\t\tw.WriteString(\"Disjoint-Inside\")\n\t\tdefault:\n\t\t\tw.WriteString(\"Intersecting\")\n\t\t}\n\t\tw.WriteByte('\\n')\n\t}\n\t_ = strconv.Itoa\n}\n",
+      "sha256": "f0893211bbe04c802586b227f8acdf1dfa68e9e79f6691a085c37bcf598ae6ca"
+    }
+  ]
+}

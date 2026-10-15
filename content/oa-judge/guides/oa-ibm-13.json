@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-13",
+  "packageChecksum": "0d9d91c6837ce94601fd4ea3d651fea4c02148a3a5f08fd341f0f82952937ed1",
+  "sourceContentHash": "5401a923da1dd73ffbd7d9416ac6ae25fe121e45d015f6723312bda02be7ffa0",
+  "editorialSha256": "441ea9ea4732e9d75c3fd1a96e694dd5786aff661f2f2cd9a6116114f77c7f47",
+  "hints": {
+    "zh": [
+      "两圆的关系只取决于圆心距d与两半径之和、之差的大小关系；圆心重合是需要最先单独判断的特殊情况。",
+      "为避免开方带来的精度问题，直接比较平方：把d²与(R+r)²、(R−r)²比较即可，因为非负数取平方不改变大小顺序。",
+      "每组先算d²：为0输出Concentric；等于(R+r)²或(R−r)²输出Touching；大于(R+r)²输出Disjoint-Outside；小于(R−r)²输出Disjoint-Inside；其余输出Intersecting。坐标和半径不超过5000，平方用整数即可精确计算。"
+    ],
+    "en": [
+      "The relation between two circles depends only on how the center distance d compares with the sum and the difference of the radii; coinciding centers are a special case to check first.",
+      "To avoid precision problems from square roots, compare squares directly: compare d² with (R+r)² and (R−r)², since squaring non-negative numbers preserves their order.",
+      "For each pair compute d² first: if it is 0 print Concentric; if it equals (R+r)² or (R−r)² print Touching; if it is greater than (R+r)² print Disjoint-Outside; if it is less than (R−r)² print Disjoint-Inside; otherwise print Intersecting. Coordinates and radii are at most 5000, so integer squares are exact."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst check whether the centers coincide; otherwise compare the squared distance between the centers with the square of the sum of the radii and the square of their difference.\n\n## Proof of correctness\n\nThe two circles' boundaries meet exactly when |R−r| ≤ d ≤ R+r; equality at either end is exactly tangency, and the strict interior gives two intersection points; outside this range the circles are separate from each other or one lies inside the other. Squaring preserves order for non-negative numbers, and handling the concentric case separately avoids confusing coincident circles with degenerate cases.\n\n## Complexity\n\nTime O(n), space O(n) to store the output."
+}

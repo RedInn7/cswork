@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-51",
+  "packageChecksum": "0f3e332da6efc02f2f00f6a0cc2b898a4a985ef51cb0420e3c11ba7298c7ddf6",
+  "sourceContentHash": "913d4dfa4a8f970bcd1a5f9a7cfa47e22d21ff3854960c96f3ebcbe16b7a3872",
+  "editorialSha256": "ddcdbf2aee75f01a17f329256addd364eefbce4c187c7d46a8ac6be06e2597d4",
+  "hints": {
+    "zh": [
+      "长度恰好为k的连续子数组只有n−k+1个，相邻两个窗口只差一个元素进、一个元素出，适合用滑动窗口逐个检查。",
+      "维护窗口内各元素的出现次数和窗口内元素之和；窗口中元素两两不同，等价于不同值的个数恰好等于k。",
+      "依次加入右端元素并更新计数与和，窗口长度超过k时移出最左边的元素（计数减到0就删去）；当窗口长度为k且不同值个数为k时，用窗口和更新最大值。始终没有合法窗口（包括k>n）时输出-1，合法最大和即使为负也照常输出。"
+    ],
+    "en": [
+      "There are only n−k+1 contiguous subarrays of length exactly k, and neighboring windows differ by one element entering and one leaving, so a sliding window can check them one by one.",
+      "Keep the count of each element in the window and the window sum; the elements are pairwise distinct exactly when the number of distinct values equals k.",
+      "Add elements on the right one at a time, updating counts and the sum, and once the window is longer than k remove the leftmost element (dropping it when its count reaches 0); whenever the window has length k and k distinct values, update the maximum with the window sum. If no window is ever valid (including when k>n) print -1; a valid maximum is printed as is, even when negative."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a sliding window to maintain the sum and element frequencies; update the maximum sum when the length is exactly k and the number of distinct values is also k.\n\n## Proof of correctness\n\nEvery window of length k is visited exactly once; the frequency table only holds elements inside the window, so having k distinct values is equivalent to all elements being different. Taking the maximum over all valid windows, and reporting -1 only when no valid window was met, gives the answer.\n\n## Complexity\n\nTime O(n), space O(min(n,k))."
+}

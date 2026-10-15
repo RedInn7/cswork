@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-50",
+  "packageChecksum": "e1cdc0488ee490e418e11710105e8df571d99c540da4d3abf9bcce8237ea2b14",
+  "sourceContentHash": "1424c4f7125e5e003f0a90ed89fa284f07f6dc9763a22c850bc4776775b3e952",
+  "editorialSha256": "4ca32c20d982a53827967048a19421aea23bbbb4dfe282c45bf82af5953cec57",
+  "hints": {
+    "zh": [
+      "若最小间距d可以做到，那么任何更小的间距也能做到，可行性关于d单调，因此可以二分答案。",
+      "给定d判断能否选出k个点：排序后从最左边的点开始，每次选第一个与上一个选中点距离至少为d的点；把任意可行方案的选点逐个换成更靠左的贪心选择不会变差，所以贪心选出的点数最多。",
+      "排序坐标，在[0, 最大坐标−最小坐标]上二分，取中点时向上取整；贪心计数不少于k时把下界移到中点，否则把上界移到中点减1；循环结束时的下界就是答案。"
+    ],
+    "en": [
+      "If a minimum gap d is achievable, every smaller gap is achievable too; feasibility is monotone in d, so the answer can be binary searched.",
+      "To test a given d: after sorting, start from the leftmost point and repeatedly choose the first point at least d away from the last chosen one; replacing the points of any feasible selection one by one with these earlier greedy choices never hurts, so the greedy picks the most points.",
+      "Sort the coordinates and binary search on [0, max coordinate − min coordinate], rounding the midpoint up; if the greedy count is at least k move the lower bound to the midpoint, otherwise move the upper bound to the midpoint minus 1; the final lower bound is the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAfter sorting, binary search on the candidate distance; greedily start from the leftmost point and each time choose the earliest point at least that distance from the last chosen point, then check whether k points can be chosen.\n\n## Proof of correctness\n\nFor a fixed distance, replacing the first point of any feasible selection with the leftmost point does not harm later choices, and the same holds point by point, so the greedy picks the most points. Feasibility is monotone in the distance, so the last feasible integer distance found by binary search is optimal.\n\n## Complexity\n\nTime O(n log n + n log 10^9), space O(n)."
+}

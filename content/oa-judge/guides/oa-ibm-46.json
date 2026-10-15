@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-46",
+  "packageChecksum": "49d9fe9728705c4c04c24a9af27957ec1e9e0f37d648b632364d6655b45a4525",
+  "sourceContentHash": "bf5e8a3fbbac8224273b97412bbb18fd3fedf0f013313f36dd5cd7bf0b75dd65",
+  "editorialSha256": "e5fdc19c38176cc92c0bb5814ab1ef9c70f106241cad3865c7f9b2adadadc09f",
+  "hints": {
+    "zh": [
+      "如果每一步都前进，位置依次是三角数1、3、6、10……，终点是T=steps·(steps+1)/2，这是能到达的上界。",
+      "若禁点不是这些正三角数之一，一直前进即可得到T；若是，至少要少走一点，答案不超过T−1。只跳过第一步时，之后的位置都是三角数减1，而相邻正三角数相差至少2，所以绝不会踩到那个三角数禁点。",
+      "禁点为0时起点本身被禁，输出-1；否则检查是否存在1≤j≤steps使j(j+1)/2等于禁点，存在则输出T−1，否则输出T。"
+    ],
+    "en": [
+      "If you move at every step, the positions are the triangular numbers 1, 3, 6, 10, ..., ending at T=steps·(steps+1)/2, which is the upper bound.",
+      "If the forbidden index is not one of these positive triangular numbers, moving every step gives T; if it is, you must give up at least a little, so the answer is at most T−1. Skipping only the first step makes every later position a triangular number minus 1, and distinct positive triangular numbers differ by at least 2, so that forbidden triangular number is never hit.",
+      "If the forbidden index is 0 the start itself is forbidden, so print -1; otherwise check whether some 1≤j≤steps has j(j+1)/2 equal to the forbidden index, and print T−1 if so, otherwise T."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMoving at every step ends at the triangular number T; if some positive triangular prefix is the forbidden point, skip the first step and the answer is T−1; otherwise it is T. A forbidden starting point returns -1 separately.\n\n## Proof of correctness\n\nWithout skipping, the position after each step is a triangular number, so if the forbidden point is never hit, the upper bound equal to the sum of all step lengths is reached. If it is hit, at least 1 must be given up, giving the upper bound T−1; after skipping the first step, every position after a forward step is a triangular number minus 1, and adjacent positive triangular numbers differ by at least 2, so such a position never equals that positive triangular forbidden point, and the bound is achievable.\n\n## Complexity\n\nTime O(steps), space O(1)."
+}

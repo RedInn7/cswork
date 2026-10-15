@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-32",
+  "packageChecksum": "503c3eb9111ce249e43ca32c071e7f2279de7f731b76d8713b61567fed22342a",
+  "sourceContentHash": "390475da8c6f07da957734763f99843d8875584e742b2e8b2b3eb7f81a7f4a50",
+  "editorialSha256": "b103684d079bca654e50b3e525f874fcfa0f5ee5f132be6cc61f393222f1d5bd",
+  "hints": {
+    "zh": [
+      "同一时刻同时运行的进程都需要不同的核心，所以最大并发数是核心数的下界；而按开始时间分配空闲核心正好能达到这个下界。",
+      "问题转化为求闭区间的最大重叠数。端点相接也算重叠，所以当某个开始时刻等于某个结束时刻时，应当先计入开始、再处理结束。",
+      "把所有开始时刻和结束时刻分别排序；按开始时刻遍历，每次先把结束时刻严格小于当前开始的进程移出（并发数减1），再计入当前进程，并用当前并发数更新最大值作为答案。"
+    ],
+    "en": [
+      "Processes running at the same moment need different cores, so the maximum concurrency is a lower bound on the number of cores, and assigning free cores in order of start time reaches exactly this bound.",
+      "The problem becomes finding the maximum overlap of closed intervals. Touching endpoints still overlap, so when a start time equals an end time, count the start before processing the end.",
+      "Sort all start times and all end times separately; walk through the start times, first removing every process whose end time is strictly less than the current start (concurrency minus 1), then adding the current process and updating the maximum concurrency, which is the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the start times and end times separately and scan with two pointers. When a start equals an end, process the start first, and update the maximum current concurrency.\n\n## Proof of correctness\n\nProcesses running at the same moment all need different cores, so the maximum concurrency is a lower bound. Assign processes in order of start time to any free core, and open a new core only when all assigned cores are still busy; at that moment the number of running processes equals the number of cores. Hence the number of cores never exceeds the maximum concurrency, which reaches the lower bound.\n\n## Complexity\n\nTime O(n log n), space O(n)."
+}

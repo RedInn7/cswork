@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-36",
+  "packageChecksum": "51bf582abb5a56a1158c2086d5bf3c00a626449e0a4451ea5e3e90c943535def",
+  "sourceContentHash": "fad1bb4fa4386b2e33eb28de6c15329ad1fa57baa12cdc56153e680a21df113b",
+  "editorialSha256": "9bc5332ba248d0d68328ba987916db1e31fa9554d7a5432c96ed1b847d909a70",
+  "hints": {
+    "zh": [
+      "替换不会改变字符串长度，所以两串长度不同时无论如何都不可能，直接输出-1。",
+      "长度相同时比较两串各字母的出现次数：第一串比第二串多出来的那些字符必须被替换，每次替换至多消除一个多余字符，因此多余字符的总数是下界。",
+      "对每一对：长度不等输出-1；否则统计各字母在两串中的计数差，把所有正的差值相加输出（多余总量等于缺少总量，把每个多余字符改成一个缺少的字符就能达到下界）。空串以空行给出，需要按行读取。"
+    ],
+    "en": [
+      "Replacements never change a string's length, so when the two lengths differ it is impossible and the answer is -1.",
+      "With equal lengths, compare the letter counts of the two strings: the characters the first string has in excess of the second must be replaced, and each replacement removes at most one excess character, so the total excess is a lower bound.",
+      "For each pair: print -1 if the lengths differ; otherwise compute the count difference of every letter between the two strings and print the sum of the positive differences (the total excess equals the total shortage, so changing each excess character into a missing one reaches the bound). Empty strings are given as empty lines, so read line by line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nWhen the lengths are equal, count how many of each character the first string has in excess of the second, and sum them.\n\n## Proof of correctness\n\nEach replacement reduces the excess characters by at most one, so the number of excess characters is a lower bound. Equal lengths mean the total excess equals the total shortage, and changing each excess character into a missing one reaches the lower bound. Even allowing either string to be modified cannot go below this bound.\n\n## Complexity\n\nTime O(total number of characters), extra space O(26) per pair."
+}

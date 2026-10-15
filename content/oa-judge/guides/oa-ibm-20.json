@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-20",
+  "packageChecksum": "20a8e00f48a51d84f7243b00b53d4c98f1ad39b0df57170855a80b66d1080c97",
+  "sourceContentHash": "2d1697ba86ab45ca89e89c5896f9b0d2c4f00acd1af9fdaeacb2c36824e4434e",
+  "editorialSha256": "bb9f804afd55b5faf49ed72eb89f25b2d11530b549ebe8adc7aa2fbcb20e1915",
+  "hints": {
+    "zh": [
+      "任何课表都能唯一拆成若干个“同一科目的极大连续段”，两科的段交替出现，所以两科的段数相等或相差1，并且每段长度都在1到N之间。",
+      "设F(s,k)为把s拆成k个1到N之间正整数的方案数，可以用隔板法加容斥计算，也可以按最后一段长度分类做滑动窗口DP。段数都为k时有两种开头，贡献2F(P,k)F(C,k)；段数相差1时贡献F(P,k+1)F(C,k)+F(P,k)F(C,k+1)。",
+      "先处理平凡情况：P>N(C+1)或C>N(P+1)时答案为0；N≥max(P,C)时答案为C(P+C,P)。其余测试按N分组，同一N下先估算两种方法的运算量再择优：容斥F(s,k)=Σ(−1)^j·C(k,j)·C(s−jN−1,k−1)，或共享DP F(s,k)=Σ_{v=1..N}F(s−v,k−1)并用滑动和维护，一次算出所有需要的s。最后k从1到min(P,C)累加上述组合，全程对10^9+7取模。"
+    ],
+    "en": [
+      "Every schedule splits uniquely into maximal runs of the same subject; runs of the two subjects alternate, so their run counts are equal or differ by 1, and every run has length between 1 and N.",
+      "Let F(s,k) be the number of ways to split s into k positive integers in 1..N; it can be computed by stars and bars with inclusion-exclusion, or by a sliding-window DP that classifies by the length of the last run. With k runs each there are two possible starting subjects, contributing 2F(P,k)F(C,k); with run counts differing by 1 the contribution is F(P,k+1)F(C,k)+F(P,k)F(C,k+1).",
+      "Handle the trivial cases first: if P>N(C+1) or C>N(P+1) the answer is 0; if N≥max(P,C) the answer is C(P+C,P). Group the remaining tests by N and, for each N, estimate the work of both methods and pick the cheaper one: inclusion-exclusion F(s,k)=Σ(−1)^j·C(k,j)·C(s−jN−1,k−1), or a shared DP F(s,k)=Σ_{v=1..N}F(s−v,k−1) maintained as a sliding sum that produces every needed s in one pass. Finally sum the combinations above for k from 1 to min(P,C), all modulo 10^9+7."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCount by runs of the same subject: F(s,k) is the number of ways to split s into k positive integers in 1..N. Group all tests by N and, based on the estimated amount of computation, choose between the inclusion-exclusion formula and a shared sliding-window DP; all s with the same N share one DP pass instead of recomputing it for each test. Finally combine the cases where the two subjects' run counts are equal or differ by 1.\n\n## Proof of correctness\n\nAfter removing the one class that every run must contain, count with stars and bars and use inclusion-exclusion to exclude runs longer than N, which gives F(s,k)=Σ(−1)^j C(k,j)C(s−jN−1,k−1). With the same run count k there are two possible starting subjects, contributing 2F(P,k)F(C,k); when the counts differ by 1 the contributions are F(P,k+1)F(C,k) and F(P,k)F(C,k+1). Every schedule corresponds uniquely to its maximal runs, so nothing is missed or counted twice. The shared DP uses F(s,k)=Σ_{v=1..N}F(s−v,k−1), classifying by the length of the last run without omission or repetition, with initial value F(0,0)=1. For a fixed k, consecutive sums differ by one added term and one removed term, so the sliding sum yields exactly the same F. The two computation paths only change the order of computation, so the choice between them does not affect the count.\n\n## Complexity\n\nLet S be the set of class totals that must be computed for one group with the same N, M=max(S), and R=|S|. The inclusion-exclusion cost is A=Σ_{s∈S}Σ_{k=ceil(s/N)..s}(floor((s−k)/N)+1), and the shared DP cost is B=Σ_{k=1..M}(min(M,Nk)−k+1)+RM; the path is chosen from these estimates, and N=1 or 2 uses a direct formula. Each group costs at most O(M²+RM), combining the results costs O(Σmin(P,C)), and storage is O(2000+Σ requested s), with no two-dimensional table rebuilt for each test."
+}

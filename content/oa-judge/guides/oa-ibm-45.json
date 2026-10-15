@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-45",
+  "packageChecksum": "f5a1acbcdb32cd3ddcce70e69fbb3db5bc170391f56e5f27fc1125e5377fe6ac",
+  "sourceContentHash": "7d28eb9e125fb4c10042e1beed7eb8e076ecbeb1e3754f4a788e840cecf64de9",
+  "editorialSha256": "6751281dfb2c06ccc7d97f54d545a485adc4057792cc193bf972531d5d8f03e9",
+  "hints": {
+    "zh": [
+      "移动括号不会改变左右括号的数量，所以总平衡（左括号数减右括号数）必须为0；另外，移动一个括号对任何前缀的平衡值最多只能提高1。",
+      "因此前缀平衡的最小值必须不小于−1；反过来，若最小值恰为−1，把第一次让平衡变成负数的那个右括号移到末尾就能修好。",
+      "对每个字符串扫描一遍，计算总平衡和前缀平衡的最小值；总平衡为0且最小值不小于−1时输出1，否则输出0。"
+    ],
+    "en": [
+      "Moving a parenthesis does not change how many left and right parentheses there are, so the total balance (lefts minus rights) must be 0; also, moving one parenthesis raises the balance of any prefix by at most 1.",
+      "So the minimum prefix balance must be at least −1; conversely, if the minimum is exactly −1, moving the right parenthesis that first makes the balance negative to the end fixes the string.",
+      "Scan each string once and compute its total balance and its minimum prefix balance; print 1 if the total is 0 and the minimum is at least −1, otherwise print 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompute the total balance and the minimum prefix balance; the total balance must be 0, and it suffices that the minimum is not less than −1.\n\n## Proof of correctness\n\nA move does not change the total numbers of left and right parentheses, and it raises the balance of any prefix by at most 1, so a total balance of 0 and a minimum of at least −1 are necessary. If the minimum is −1, take out the right parenthesis that first makes the balance negative and put it at the end: the prefixes before it were already non-negative, the prefixes after it gain 1 and are non-negative too, and the total returns to 0 at the end. If there is no negative value, no move is needed.\n\n## Complexity\n\nTime O(total length), extra O(1) per string."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-43",
+  "packageChecksum": "f34c2477136a1e97faf5c4c2992c81a006c3e2bb19497981d46da95be4d814a1",
+  "sourceContentHash": "c9fe01ada7b1764cd80586505feb3c3a21f0e08b2ae7051194187e3311c8cf59",
+  "editorialSha256": "047f024d43c828a5c2c9e37c433cc30309ddeb34ffa87037b8cbedd3591c68c3",
+  "hints": {
+    "zh": [
+      "要让字典序最小，就要尽早让某一位变小；而把a降一位会变成z，反而变大，所以修改区间不应包含a（除非整个串都是a）。",
+      "跳过开头所有的a，从第一个非a字符开始修改；在遇到下一个a之前，多降低每一位都只会更好，所以一直延伸到下一个a之前停下。",
+      "找到第一个非a的位置，把从它开始直到下一个a（或串尾）之前的每个字符都改为前一个字母；如果整个串都是a，任何修改都会让串变大，就只把最后一个字符改成z。"
+    ],
+    "en": [
+      "To minimize lexicographically, some position should become smaller as early as possible; decrementing an a turns it into z, which is larger, so the chosen substring should contain no a unless the whole string is a's.",
+      "Skip all leading a's and start at the first non-a character; until the next a, decrementing every additional position only helps, so extend the substring right up to just before the next a.",
+      "Find the first non-a position and replace every character from there up to, but not including, the next a (or the end) with the previous letter; if the string is all a's, every change makes it larger, so change only the last character to z."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSkip the leading a's, then decrement the following run of non-a characters; if the string is all a's, change only the last character to z.\n\n## Proof of correctness\n\nModifying the first non-a character lowers that position, and the earlier a position is lowered the smaller the string is lexicographically; extending across an a would make that position larger, so the substring must stop before the next a, and before that, lowering each additional position is always better. When the string is all a's, every modification makes it larger, so changing as late as possible and only one position gives the minimum.\n\n## Complexity\n\nTime O(n), output space O(n)."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-26",
+  "packageChecksum": "ed93d3a91b8882ed7c66e16a8638b457da22734a2fccf1bb1fa341c0aac2eb88",
+  "sourceContentHash": "cfbd3c4eae8d14f94f1aedd8b6ea3e5e085c66fcf5519060deebbcdb7a602efd",
+  "editorialSha256": "0dcab5e8efe41f672b4db168e3717875aead8ad9f645838586881ee8e3a68c2c",
+  "hints": {
+    "zh": [
+      "在x为1的位上令y为1，会让异或结果的这一位变成0，既减小数值又浪费额度，所以y只应在x为0的位上放1。",
+      "二进制中某一位的权重大于它以下所有位权重之和，因此有限的置位额度应当优先用在最高的那些0位上。",
+      "从最高位到最低位扫描x：若该位为0且还有额度，y的这一位输出1并把额度减1；否则输出0。y与x等长，前导0照常输出。"
+    ],
+    "en": [
+      "Setting a 1 in y where x has a 1 turns that bit of the XOR into 0, which both lowers the value and wastes budget, so y should place 1s only where x has 0s.",
+      "In binary, a bit's weight is larger than the total weight of all lower bits, so the limited budget of set bits should go to the highest 0 bits first.",
+      "Scan x from the most significant bit to the least: if the bit is 0 and budget remains, output 1 for y and decrease the budget; otherwise output 0. y has the same length as x, and leading 0s are printed as usual."
+    ]
+  },
+  "explanationEn": "## Approach\n\nStarting from the most significant bit, set a bit of y to 1 only where x is 0 and set-bit budget remains; all other bits are 0.\n\n## Proof of correctness\n\nWhere x is 1, setting y to 1 only lowers the result and uses up budget, so it is never better than 0. Where x is 0, setting a 1 adds that bit's weight; a higher bit's weight exceeds the sum of all lower bits, so spending the limited budget on the highest 0 bits in order is optimal.\n\n## Complexity\n\nTime O(bits), output space O(bits)."
+}

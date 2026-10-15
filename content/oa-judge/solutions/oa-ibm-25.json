@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-25",
+  "packageChecksum": "687f04d61f480796dfba4301ec9063a3be2fbe908fb1b840bec134167f00f13b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    ios::sync_with_stdio(false); cin.tie(nullptr);\n    long long n, k; cin >> n >> k;\n    vector<long long> a(n);\n    for (auto &v : a) cin >> v;\n    sort(a.begin(), a.end());\n    a.erase(unique(a.begin(), a.end()), a.end());\n    long long previous = 0;\n    for (long long v : a) {\n        long long gap = v - previous - 1;\n        if (k <= gap) { cout << previous + k << '\\n'; return 0; }\n        k -= gap; previous = v;\n    }\n    cout << previous + k << '\\n';\n}\n",
+      "sha256": "830f9c84df19eac3896218b9b92936387745995ed58a98b8d7c9a4c31be6de0b"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        int n = nextInt();\n        long k = nextLong();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        Arrays.sort(a);\n        long previous = 0;\n        for (int i = 0; i < n; i++) {\n            if (i > 0 && a[i] == a[i - 1]) continue; // duplicates take no extra place\n            long gap = a[i] - previous - 1;\n            if (k <= gap) {\n                System.out.println(previous + k);\n                return;\n            }\n            k -= gap;\n            previous = a[i];\n        }\n        System.out.println(previous + k);\n    }\n}\n",
+      "sha256": "9555c9a52bb215a2491ec9959425c7c2ea905f35d190a2afd816b10fa95666ed"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n\t\"sort\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\tn, k := int(nextInt()), nextInt()\n\ta := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\tsort.Slice(a, func(i, j int) bool { return a[i] < a[j] })\n\tvar previous int64\n\tfor i, v := range a {\n\t\tif i > 0 && v == a[i-1] {\n\t\t\tcontinue // duplicates take no extra place\n\t\t}\n\t\tgap := v - previous - 1\n\t\tif k <= gap {\n\t\t\tw.WriteString(strconv.FormatInt(previous+k, 10) + \"\\n\")\n\t\t\treturn\n\t\t}\n\t\tk -= gap\n\t\tprevious = v\n\t}\n\tw.WriteString(strconv.FormatInt(previous+k, 10) + \"\\n\")\n}\n",
+      "sha256": "abe561c039352dc7f24a5dda70caa93bd212048810301d370db6862ddffefdbb"
+    }
+  ]
+}

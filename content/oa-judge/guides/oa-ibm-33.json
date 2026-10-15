@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-33",
+  "packageChecksum": "a7473eb469aa95f02fde479a68ea61a670d392536d68d3b58209216af489a8b6",
+  "sourceContentHash": "6d98953431acd9e0f4a4a5589406a519ca741505aaadfdb5ee614ee9e751ed26",
+  "editorialSha256": "95005bcda7f176937896d28f03d42d58360e849954ceb24871d68a34ed39e424",
+  "hints": {
+    "zh": [
+      "从左往右看，第一个出现的“连续m个0”窗口中至少要有一个位置被某次操作覆盖，否则字符串里仍然有连续m个0。",
+      "负责这个窗口的那次操作应当尽量往右放（仍覆盖窗口的最后一个0），这样能为后面覆盖更多位置；靠近末尾时区间不足k长就贴住右边界。",
+      "扫描时累计当前连续0的个数；当它达到m时，操作数加1，把从当前位置开始（若越界则改为从n−k开始）的k个位置视为已变成1，指针直接跳到该区间之后，并把连续0计数清零；否则指针前进一位。"
+    ],
+    "en": [
+      "Scanning left to right, the first window of m consecutive 0s must have at least one position covered by some operation, or the string would still contain m consecutive 0s.",
+      "The operation responsible for that window should be placed as far right as possible while still covering the window's last 0, which covers the most of what comes next; near the end, where a length-k interval does not fit, align it with the right boundary.",
+      "While scanning, count the current run of 0s; when it reaches m, add one operation, treat the k positions starting at the current one (or starting at n−k if that would run past the end) as set to 1, jump the pointer past that interval, and reset the zero count; otherwise advance the pointer by one."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAccumulate the zero run from left to right; the first time m 0s have accumulated, place the length-k interval covering that position as far right as possible and set it to 1, skip that interval, and reset the zero count.\n\n## Proof of correctness\n\nWhen the first all-zero window of length m appears, any feasible plan must apply an operation that covers at least one of its positions. Moving the operation responsible for this window as far right as possible while still covering the window does not break the validity of the processed prefix and does not reduce future coverage. Near the end, where fewer than k positions remain, the interval is aligned with the right boundary. After this exchange the optimal plan can be assumed to contain the greedy operation, and recursively handling the part to its right gives the optimum.\n\n## Complexity\n\nTime O(n), space O(1)."
+}

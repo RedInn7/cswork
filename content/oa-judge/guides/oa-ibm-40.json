@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-40",
+  "packageChecksum": "b4b9c51bc60901ae725782e554691c3d59c12e3d5b42f9b837ed4cd9e498fc96",
+  "sourceContentHash": "54ed694f75b02446e4c8a0e20a8c22a573562f2a798640eca614116c799f2fb4",
+  "editorialSha256": "f3ac14461ee48931b00209f446f52e92c71d449dc6b6b197a9a065d88f2d9666",
+  "hints": {
+    "zh": [
+      "若某个字母的连续上限为0，这个字母完全不能用，答案就是另一个字母最多能连续放的个数，即它的数量与上限的较小值。",
+      "两个上限都至少为1时，b个B最多把A分成b+1段，所以能放下的A至多为maxA·(b+1)，B同理。两类不可能同时超出容量；都不超出时全部字符都能用上。",
+      "依次判断：maxA=0输出min(countB,maxB)；maxB=0输出min(countA,maxA)；若countA>maxA·(countB+1)输出countB+maxA·(countB+1)；若countB>maxB·(countA+1)输出countA+maxB·(countA+1)；否则输出countA+countB。乘积可能超出32位整数。"
+    ],
+    "en": [
+      "If a letter's run limit is 0, that letter cannot be used at all, and the answer is how many of the other letter fit in one run: the smaller of its count and its limit.",
+      "When both limits are at least 1, b B's split the A's into at most b+1 runs, so at most maxA·(b+1) A's fit, and symmetrically for B. Both letters can never exceed their capacity at the same time, and if neither does, every character can be used.",
+      "Check in order: if maxA=0 print min(countB,maxB); if maxB=0 print min(countA,maxA); if countA>maxA·(countB+1) print countB+maxA·(countB+1); if countB>maxB·(countA+1) print countA+maxB·(countA+1); otherwise print countA+countB. The products can exceed 32-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nHandle the cases where a run limit is 0 first. Otherwise, if the A's exceed the capacity of the countB+1 slots provided by the B's, use only as many A's as the slots can hold; handle too many B's symmetrically; if neither is in excess, use them all.\n\n## Proof of correctness\n\nb B's split the A's into at most b+1 runs, so a≤maxA(b+1) is a necessary condition, and symmetrically for the other letter. When both limits are at least 1, these two conditions are also sufficient: spread the more numerous letter into at most (count of the other)+1 runs, then place the other letter as separators and fill between the runs, so that no run exceeds its limit. If only one letter exceeds its capacity, keep all of the other letter and fill every slot to reach the maximum; removing some of the other letter would only reduce the capacity further. Both letters cannot exceed their capacities at the same time.\n\n## Complexity\n\nTime O(1), space O(1)."
+}

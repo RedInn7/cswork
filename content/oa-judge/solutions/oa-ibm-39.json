@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-39",
+  "packageChecksum": "df134f5b86570575b750b294d9b5a95320f9ed257bddc58790b1ee18dbb03bfd",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    string s; cin >> s;\n    size_t i = 1; long long answer = 0;\n    while (i < s.size()) {\n        if (abs(s[i] - s[i - 1]) <= 1) { answer++; i += 2; }\n        else i++;\n    }\n    cout << answer << '\\n';\n}\n",
+      "sha256": "01d14f32cb8d23d351f7a5617c6dddd15d3310c1f614f8c5fb288cf1825c50f5"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        String s = next();\n        int i = 1;\n        long answer = 0;\n        while (i < s.length()) {\n            if (Math.abs(s.charAt(i) - s.charAt(i - 1)) <= 1) {\n                answer++;\n                i += 2;\n            } else i++;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "bfed158652276cf33e6cf6ff3b7a7e3a661fcfe0e7c95f1e4bd0fbe42d7c3c75"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\ts := next()\n\tanswer := 0\n\tfor i := 1; i < len(s); {\n\t\tif d := int(s[i]) - int(s[i-1]); d >= -1 && d <= 1 {\n\t\t\tanswer++\n\t\t\ti += 2\n\t\t} else {\n\t\t\ti++\n\t\t}\n\t}\n\tw.WriteString(strconv.Itoa(answer) + \"\\n\")\n}\n",
+      "sha256": "c1e688dd4334215ee77b6c38197c32db44faa53ebec699787c04548271472729"
+    }
+  ]
+}

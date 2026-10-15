@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-24",
+  "packageChecksum": "eaf8cf111e8887dd7442572ab87c3a0556c9a5852070d8c78c920ef14a08b418",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\nint main() {\n    string s; cin >> s;\n    long long blocks = 1;\n    for (size_t i = 1; i < s.size(); i++) if (s[i] <= s[i - 1]) blocks++;\n    cout << 3 * blocks - (long long)s.size() << '\\n';\n}\n",
+      "sha256": "3caa7ca7bf0770931bc9e581ffa771ea586cd74ffc471a6754cb2140f2720a63"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf;\n    static int pos;\n\n    static String next() {\n        while (pos < buf.length && buf[pos] <= 32) pos++;\n        int start = pos;\n        while (pos < buf.length && buf[pos] > 32) pos++;\n        return new String(buf, start, pos - start);\n    }\n\n    static long nextLong() {\n        while (buf[pos] <= 32) pos++;\n        boolean neg = buf[pos] == 45;\n        if (neg) pos++;\n        long r = 0;\n        while (pos < buf.length && buf[pos] > 32) r = r * 10 + (buf[pos++] - 48);\n        return neg ? -r : r;\n    }\n\n    static int nextInt() { return (int) nextLong(); }\n\n    public static void main(String[] args) throws IOException {\n        buf = System.in.readAllBytes();\n        String s = next();\n        long blocks = 1;\n        for (int i = 1; i < s.length(); i++) if (s.charAt(i) <= s.charAt(i - 1)) blocks++;\n        System.out.println(3 * blocks - s.length());\n    }\n}\n",
+      "sha256": "0739ba26c9f1d53ab7d03ee7e052c257d700c05774e81409688626ba1793b541"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"io\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar data []byte\nvar pos int\n\nfunc next() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int64 {\n\tb := next()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tvar r int64\n\tfor _, c := range b {\n\t\tr = r*10 + int64(c-'0')\n\t}\n\tif neg {\n\t\treturn -r\n\t}\n\treturn r\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tw := bufio.NewWriter(os.Stdout)\n\tdefer w.Flush()\n\ts := next()\n\tblocks := 1\n\tfor i := 1; i < len(s); i++ {\n\t\tif s[i] <= s[i-1] {\n\t\t\tblocks++\n\t\t}\n\t}\n\tw.WriteString(strconv.Itoa(3*blocks-len(s)) + \"\\n\")\n}\n",
+      "sha256": "0f32d041fcba1881f9f532238a012e611af3c5c14f02a6dfaac28a279d460904"
+    }
+  ]
+}

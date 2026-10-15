@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-18",
+  "packageChecksum": "c5520be07f82c824d471f977b29866fc60e2d4177029c4fbfa46e63a6c615e6f",
+  "sourceContentHash": "808fbd135e43431e7fbd881a3bae850278389bdaab7b1985347b528c919e7d7d",
+  "editorialSha256": "7c48eb1205a54224395afaca42d05ba376aa0055f052a1d2259658bc656418ec",
+  "hints": {
+    "zh": [
+      "一次操作只会删除与所选字符相同的字母，不同字母互不影响；所选字符本身保留，因此每种字母至少剩一个，最短串中每种出现过的字母恰好留一个。",
+      "某字母出现f次就要删掉f−1个，而一次操作最多删2个，所以至少需要ceil((f−1)/2)=floor(f/2)次；选中间位置的那一个出现就能一次删两侧各一个，这个下界可以达到。",
+      "统计每种字母的出现次数f，把所有字母的floor(f/2)相加即为答案。"
+    ],
+    "en": [
+      "An operation only deletes letters equal to the chosen one, so different letters never affect each other; the chosen character itself stays, so at least one copy of each letter remains, and the shortest string keeps exactly one copy of every letter that occurs.",
+      "A letter occurring f times needs f−1 deletions, and one operation deletes at most 2, so at least ceil((f−1)/2) = floor(f/2) operations are needed; choosing an occurrence in the middle deletes one on each side, so this bound is achievable.",
+      "Count the frequency f of each letter and sum floor(f/2) over all letters."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAt least one copy of each letter must remain, so a letter with frequency f needs f−1 deletions, and one operation deletes at most 2; choosing a middle occurrence lets you keep deleting on both sides, so its contribution is floor(f/2).\n\n## Proof of correctness\n\nNo operation affects other letters, and the chosen letter is kept, so the shortest string has one copy of each letter. At least ceil((f−1)/2) steps are needed; when f≥3, choosing an occurrence that is not at either end deletes 2, and when 2 remain, one more deletion removes 1, which achieves this lower bound. Summing over the letters gives the answer.\n\n## Complexity\n\nTime O(n), space O(26)."
+}
