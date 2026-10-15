@@ -1,0 +1,19 @@
+{
+  "id": "oa-zscaler-2",
+  "packageChecksum": "450370c3554fe7dd5529dd3ca1489f65d8fe8e62c694b8b0340d4a8b1d46fa56",
+  "sourceContentHash": "c356dca35734bb8f025c639109ab349005177f184da1979563652ccecad8ce31",
+  "editorialSha256": "5407f33d62741d5482653da37f8a4f42494c0d8b74308a02d5a9fec2eb31a89f",
+  "hints": {
+    "zh": [
+      "一个频率要通过全部滤波器，就必须同时落在每个闭区间里；多个闭区间的交集仍然是一个闭区间（可能为空），所以不必对每个频率逐一检查 m 个区间。",
+      "交集的左端点是所有区间左端点的最大值，右端点是所有区间右端点的最小值；若左端点大于右端点，交集为空，答案为 0。之后只需判断每个频率是否落在这一个区间里。",
+      "读入 n、m 和 n 个频率；扫描 m 个区间，求出 lo=最大左端点、hi=最小右端点；再遍历所有频率，统计满足 lo≤x≤hi 的个数并输出。总时间 O(n+m)。"
+    ],
+    "en": [
+      "A frequency passes every filter only if it lies in every closed interval at once; the intersection of closed intervals is again a single closed interval (possibly empty), so there is no need to test each frequency against all m intervals.",
+      "The intersection starts at the maximum of all left endpoints and ends at the minimum of all right endpoints; if the start exceeds the end, the intersection is empty and the answer is 0. After that you only need to test each frequency against this one interval.",
+      "Read n, m and the n frequencies; scan the m intervals to get lo = the largest left endpoint and hi = the smallest right endpoint; then go over all frequencies, count those with lo <= x <= hi, and print the count. Total time O(n+m)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe intersection runs from the largest left endpoint to the smallest right endpoint; traverse the frequencies and count those that fall within this closed interval.\n\n## Proof of correctness\n\nA number satisfies all intervals if and only if it is not smaller than any lower bound and not larger than any upper bound.\n\n## Complexity\n\nO(n+m) time, O(1) extra space."
+}

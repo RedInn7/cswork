@@ -1,0 +1,19 @@
+{
+  "id": "oa-ziprecruiter-14",
+  "packageChecksum": "4110ddf25a6b2a85c5ba85fadfe35fd751889f16616c7fc4575a1b881a6287e1",
+  "sourceContentHash": "fb0697a11fa3bb30a6a1fcae4a56eff831d243e3227c4ab75b9b9b26f2975fe7",
+  "editorialSha256": "b641935d4107e3f903c7af2d375720c6f2728d9c0c2a61cbe5aa353d9b1ea512",
+  "hints": {
+    "zh": [
+      "答案只可能来自长度为 3 的连续窗口：长度为 n 的字符串共有 n−2 个窗口（n<3 时一个都没有），每个窗口可以独立判断，不需要任何额外的数据结构。",
+      "\"两两不同\"要比较三对字符：第一与第二、第二与第三、第一与第三。只比较相邻两对会把 aba 这种首尾相同的窗口错算进去；也不要按子串去重，同样的三元组出现在不同位置要分别计数。",
+      "读入字符串，计数器置 0；让 i 从 0 走到 n−3，若 s[i]≠s[i+1]、s[i+1]≠s[i+2] 且 s[i]≠s[i+2]，计数加一；循环结束后输出计数（长度小于 3 时循环不执行，直接输出 0）。"
+    ],
+    "en": [
+      "Only consecutive windows of length 3 can contribute: a string of length n has n-2 such windows (none when n < 3), and each window can be judged on its own without any extra data structure.",
+      "\"Pairwise distinct\" needs three comparisons: first vs second, second vs third, and first vs third. Comparing only the two adjacent pairs wrongly counts windows like aba whose ends are equal; also do not deduplicate by substring, because the same triplet at different positions is counted separately.",
+      "Read the string and set a counter to 0; for i from 0 to n-3, if s[i] != s[i+1], s[i+1] != s[i+2] and s[i] != s[i+2], increment the counter; print the counter at the end (when the length is below 3 the loop does not run and the answer is 0)."
+    ]
+  },
+  "explanationEn": "## Problem\n\nCount the indices i such that s[i], s[i+1], s[i+2] are pairwise distinct. When the length is less than 3, the answer is 0.\n\n## Approach\n\nSlide a window of length 3 and check, for each window, whether all three pairs of characters are unequal.\n\n## Correctness\n\nEach valid index corresponds to exactly one window, and the three pairwise comparisons are equivalent to \"pairwise distinct\". Comparing only the two adjacent pairs would count windows like aba whose first and last characters are equal, and deduplicating by distinct substrings would undercount windows that occur more than once.\n\n## Complexity\n\nO(n).\n\n## Independent verification\n\nThe oracle decides with len(set(s[i:i+3]))==3, which differs from the pairwise comparison. All strings of length 1..7 over the alphabet {a,b,c} are enumerated and the reference program is actually run on each of them; the official cases cover the original examples, lengths 1 and 2, all-equal strings, period abc, period aba, random full-length strings, and more. The wrong solutions cover forgetting to compare the first and last characters, deduplicating by substring, missing the last window, and excluding only triplets whose three characters are all equal."
+}

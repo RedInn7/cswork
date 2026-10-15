@@ -1,0 +1,21 @@
+{
+  "id": "oa-ziprecruiter-2",
+  "packageChecksum": "cb222e5d571cb941ebc01bc65077690d14554563a1874d615961239d1a96f3b8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n, m;\n    if (scanf(\"%d %d\", &n, &m) != 2) return 0;\n    vector<long long> fish(n), baits(m);\n    for (auto &x : fish) scanf(\"%lld\", &x);\n    for (auto &x : baits) scanf(\"%lld\", &x);\n    sort(fish.begin(), fish.end());\n    sort(baits.begin(), baits.end());\n    int i = 0;\n    long long ans = 0;\n    for (long long b : baits) {\n        // skip fish this bait (and every later, larger bait) cannot catch\n        while (i < n && fish[i] <= b) i++;\n        for (int used = 0; i < n && used < 3; used++, i++) ans++;\n    }\n    printf(\"%lld\\n\", ans);\n}\n",
+      "sha256": "c5c7d7543b22b6c9f14de983ed0a68a238f3a9ab78cde7d6abc2644dc8fd9d89"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        DataInputStream in = new DataInputStream(new BufferedInputStream(System.in, 1 << 16));\n        int n = (int) readLong(in), m = (int) readLong(in);\n        long[] fish = new long[n], baits = new long[m];\n        for (int k = 0; k < n; k++) fish[k] = readLong(in);\n        for (int k = 0; k < m; k++) baits[k] = readLong(in);\n        Arrays.sort(fish);\n        Arrays.sort(baits);\n        int i = 0;\n        long ans = 0;\n        for (long b : baits) {\n            // skip fish this bait (and every later, larger bait) cannot catch\n            while (i < n && fish[i] <= b) i++;\n            for (int used = 0; i < n && used < 3; used++, i++) ans++;\n        }\n        System.out.println(ans);\n    }\n\n    static long readLong(DataInputStream in) throws IOException {\n        int c = in.read();\n        while (c != '-' && (c < '0' || c > '9')) c = in.read();\n        boolean neg = c == '-';\n        if (neg) c = in.read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = in.read(); }\n        return neg ? -r : r;\n    }\n}\n",
+      "sha256": "77b73c957267b3312fd19ed7dc6dc45d7b9795cdabf0f830d3d6d45732e7d678"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"sort\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\treturn v\n\t}\n\tn, m := next(), next()\n\tfish := make([]int, n)\n\tbaits := make([]int, m)\n\tfor k := range fish {\n\t\tfish[k] = next()\n\t}\n\tfor k := range baits {\n\t\tbaits[k] = next()\n\t}\n\tsort.Ints(fish)\n\tsort.Ints(baits)\n\ti, ans := 0, 0\n\tfor _, b := range baits {\n\t\t// skip fish this bait (and every later, larger bait) cannot catch\n\t\tfor i < n && fish[i] <= b {\n\t\t\ti++\n\t\t}\n\t\tfor used := 0; i < n && used < 3; used++ {\n\t\t\tans++\n\t\t\ti++\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "a86479d7c3c3765384909c33a57bfbc8df078f4b2b0677cd7da85f7f5b29bbc9"
+    }
+  ]
+}

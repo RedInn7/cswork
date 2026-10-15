@@ -1,0 +1,19 @@
+{
+  "id": "oa-ziprecruiter-6",
+  "packageChecksum": "64aba46693fffee5ec48841afa4b979994c251bc2ab7afc25a9ad60b7dd6dcea",
+  "sourceContentHash": "e3aaaa7b35f2dd54da5dd226eb0ec49a484eded066a5257d6b108783bd6a32b4",
+  "editorialSha256": "682ddbe31d0a5a366093d0f61af76ff3c960cc934fa2e070db6bc02e2a811c4b",
+  "hints": {
+    "zh": [
+      "循环移位只改变起点、不改变字符的环形顺序，所以\"能互相循环移位\"是一种等价关系：同一类里任意两个数都构成合法数对，不同类之间都不行。位数不同的数移位后长度仍不同，自然落在不同的类里。",
+      "给每个等价类选一个代表：把数的十进制串在每个位置切开、前后两段对调，得到它的全部循环移位，取其中字典序最小的串作为标识。两个数能互相循环移位当且仅当标识相同；数值重复的不同下标也会落在同一类，按下标分别计数。",
+      "对每个 a[i] 计算标识（遍历所有切点，取最小的旋转串），用哈希表统计每个标识出现的次数 c；答案是所有类的 c·(c−1)/2 之和。"
+    ],
+    "en": [
+      "A cyclic shift only changes the starting point, not the circular order of the digits, so \"can be cyclically shifted into each other\" is an equivalence relation: any two numbers in the same class form a valid pair, and numbers in different classes never do. Numbers with different digit counts keep different lengths after shifting, so they fall into different classes automatically.",
+      "Pick a representative for each class: cut the decimal string at every position and swap the two parts to get all its cyclic shifts, then use the lexicographically smallest one as the identifier. Two numbers are cyclic shifts of each other exactly when their identifiers are equal; equal values at different indices land in the same class and are counted per index.",
+      "For each a[i], compute its identifier (try every cut point and keep the smallest rotation), and count in a hash map how many times each identifier appears, say c; the answer is the sum of c*(c-1)/2 over all classes."
+    ]
+  },
+  "explanationEn": "## Why it is correct\n\nTwo positive integers can form what the problem calls a cyclic pair only if they have the same number of digits. Fix a number; cutting its decimal string at each index and swapping the two parts yields all of its cyclic shifts; take the lexicographically smallest of these strings as the identifier of the equivalence class. Two numbers are cyclic shifts of each other if and only if their identifiers are equal. Therefore, when an equivalence class contains c input positions, its contribution is exactly C(c,2), and repeated inputs are also counted by distinct indices.\n\n## Example erratum\n\nThe rules, constraints, and explanation of the fixed source explicitly list all five matching pairs of the example, but the example output was mistakenly written as 3. Direct pairwise enumeration gives: `13/31/13` contributes 3 pairs, `5604/4560` contributes 1 pair, and `546/654` contributes 1 pair, for a total of 5. The statement and input are kept as they are; only the public example answer is corrected to 5.\n\n## Complexity and this site's input format\n\nLet n be the array length and L the maximum number of digits. The reference solution builds the equivalence classes from cyclic shifts in O(nL^2) time and O(nL) space. This site's standard input is n followed by n positive integers; it adopts the source constraints `1<=n<=100` and `1<=a[i]<=10000`, only binding the mistakenly written `years.length/years[i]` of the original to the array `a` used in the statement."
+}

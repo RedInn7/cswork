@@ -1,0 +1,19 @@
+{
+  "id": "oa-ziprecruiter-2",
+  "packageChecksum": "cb222e5d571cb941ebc01bc65077690d14554563a1874d615961239d1a96f3b8",
+  "sourceContentHash": "dc9fee47fd7da9df26cca3b6e8b98eb0a1f0f447c55e74bda31aa16ba72b49c6",
+  "editorialSha256": "610d31bf9cf68368beab2c7c6ee33482bff05c977628f8637e90ba5a8b759d37",
+  "hints": {
+    "zh": [
+      "鱼饵越小，能钓的鱼越多：小鱼饵可钓的鱼集合包含大鱼饵可钓的鱼集合。因此把鱼和鱼饵都排好序后，可以按从小到大的顺序贪心分配，每条鱼只需被扫过一次。",
+      "按鱼饵从小到大处理。不大于当前鱼饵的鱼，它钓不到，之后更大的鱼饵也钓不到，可以永久跳过；在剩下的鱼里，当前鱼饵应该钓最小的那几条，因为较小的鱼后面的鱼饵可能钓不到，而把较大的鱼留给后面的鱼饵更有机会被用上。",
+      "鱼和鱼饵分别升序排序，用指针 i 指向尚未处理的最小的鱼，答案置 0。对每个鱼饵 b：先在 i<n 且 fish[i]≤b 时让 i 前移；再在 i<n 且本鱼饵已用次数不到 3 时，答案加一、i 前移。所有鱼饵处理完后输出答案。"
+    ],
+    "en": [
+      "The smaller the bait, the more fish it can catch: the set of fish a smaller bait can catch contains the set a larger bait can catch. So once fish and baits are sorted, you can assign greedily from small to large and scan each fish only once.",
+      "Process baits from smallest to largest. A fish not larger than the current bait cannot be caught by it, nor by any later, larger bait, so it can be skipped for good; among the remaining fish, the current bait should take the smallest ones, because a small fish may be out of reach for later baits while a larger fish left behind is more likely to be used later.",
+      "Sort fish and baits ascending, keep a pointer i at the smallest unprocessed fish, and set the answer to 0. For each bait b: while i < n and fish[i] <= b, advance i; then while i < n and this bait has been used fewer than 3 times, add one to the answer and advance i. After all baits, print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort the fish and the baits in ascending order. For each bait, skip the fish that are not larger than it, then use it to catch up to three of the smallest catchable fish currently remaining.\n\n## Proof of correctness\n\nThe set of fish a smaller bait can catch contains the set a larger bait can catch. Assigning the current bait to the smallest catchable fish never reduces later matches; otherwise, the larger fish matched in an optimal solution can be swapped with this smaller fish. Repeating this yields the maximum number of matches.\n\n## Complexity\n\nTime O(n log n + m log m), space O(n+m).\n\n## Source notes\n\nThis site supplied a deterministic standard input/output protocol. In upstream problem 9, the dense-arrival example omitted the completion time of one admitted guest; this site corrected it to 3301 according to the explicit 300-second service and queue rules, and states this truthfully in the source evidence."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-zolostays-1",
+  "packageChecksum": "b6f666a167496d9518718306454fe6ba4ae713fa289c510ba2558d46ee97406f",
+  "sourceContentHash": "50c0c06011e600c36c746e789637bbb5b416b982d5b76868f6d0b13b132ccbc1",
+  "editorialSha256": "89afec7338262d2c929577cd6c1546d493e257108ce064bc679d3f4a95c40af4",
+  "hints": {
+    "zh": [
+      "设 prefix[0]=0、prefix[j] 为前 j 个数之和，则子数组 (i, j] 的和就是 prefix[j]−prefix[i]。问题变成在 n+1 个前缀和中统计满足 i<j 且 lower ≤ prefix[j]−prefix[i] ≤ upper 的下标对数。前缀和可能超出 32 位，要用 64 位整数。",
+      "下标对 i<j 的计数适合放进归并排序：递归处理左右两半后，跨越中点的对一定是 i 在左半、j 在右半，而两半各自已排好序，原来的先后关系已由左右位置保证。对左半递增的 prefix[i]，右半中满足条件的 prefix[j] 是一段连续区间，且区间两端都随 prefix[i] 单调右移，可以用两个指针线性统计。",
+      "写递归函数 sortCount(lo, hi)：区间长度 ≤1 时返回 0；否则先递归两半并相加；再令两个指针 l=r=mid，对左半每个 i，把 l 推进到第一个 prefix[l]−prefix[i] ≥ lower 的位置，把 r 推进到第一个 prefix[r]−prefix[i] > upper 的位置，累加 r−l；最后把两半合并成有序。对整个 prefix[0..n] 调用并输出结果。"
+    ],
+    "en": [
+      "Let prefix[0] = 0 and prefix[j] be the sum of the first j numbers; then the subarray (i, j] sums to prefix[j] - prefix[i]. The task becomes counting pairs i < j among the n+1 prefix sums with lower <= prefix[j] - prefix[i] <= upper. Prefix sums can exceed 32 bits, so use 64-bit integers.",
+      "Counting pairs with i < j fits naturally into merge sort: after recursing on both halves, every pair crossing the midpoint has i in the left half and j in the right half, and both halves are already sorted, since the original order is captured by the left/right split. For increasing prefix[i] in the left half, the matching prefix[j] in the right half form one contiguous range whose two ends only move right, so two pointers count them in linear time.",
+      "Write sortCount(lo, hi): return 0 when the range has length <= 1; otherwise recurse on both halves and add the results; then set pointers l = r = mid, and for each i in the left half advance l to the first position with prefix[l] - prefix[i] >= lower and r to the first position with prefix[r] - prefix[i] > upper, adding r - l; finally merge the two halves into sorted order. Call it on all of prefix[0..n] and print the result."
+    ]
+  },
+  "explanationEn": "## Why it is correct\n\nLet `prefix[0]=0` and let `prefix[j]` be the sum of the first j numbers. The sum of a contiguous subarray ending at j is `prefix[j]-prefix[i]`, where `i<j`. For the sum to fall within the closed interval `[lower, upper]`, we need `prefix[i]+lower <= prefix[j] <= prefix[i]+upper`.\n\nMerge sort the prefix sums. When the left and right halves are each sorted, fix `prefix[i]` in the left half and use two monotone pointers to count the elements of the right half whose difference falls within the closed interval; then merge the two halves. Each recursion level processes O(n) elements, for a total time of O(n log n) and space of O(n).\n\n## Example erratum\n\nFor example 2 the fixed source only says \"there are 8\" without listing the ranges; enumerating all contiguous subarrays directly according to the problem's explicit definition, there are 13 whose sums lie in `[-2, 6]`. The input and the statement are unchanged; only this example's output is corrected from 8 to 13. The answers to examples 1 and 3 remain 3 and 12, respectively.\n\n## This site's input format\n\nThe first line is n, the second line contains n integers, and the third line contains lower and upper. This site limits n to `1..50000`, takes the array elements and the bounds as 32-bit signed integers, and requires `lower<=upper`; this size limit guarantees that the maximum result `n(n+1)/2` fits in a 32-bit signed output. The original fixed source gave no constraints, so these are bounds added by this site to define an executable interface and numeric ranges, and they are not presented as source constraints."
+}

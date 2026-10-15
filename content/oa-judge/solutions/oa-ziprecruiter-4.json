@@ -1,0 +1,21 @@
+{
+  "id": "oa-ziprecruiter-4",
+  "packageChecksum": "4f92201d1a8573783e0a0213e2afa9c707d1d26e5fae2075f1cad95e6ba25620",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    unordered_map<long long, long long> freq;  // value -> occurrences so far\n    freq.reserve(n * 2);\n    long long ans = 0;\n    auto look = [&](long long v) {\n        auto it = freq.find(v);\n        if (it != freq.end()) ans += it->second;\n    };\n    for (int k = 0; k < n; k++) {\n        long long self;\n        scanf(\"%lld\", &self);\n        string s = to_string(self);\n        look(self);\n        int d = s.size();\n        // distinct swaps of unequal digits give pairwise distinct strings, so no dedup is needed\n        for (int i = 0; i < d; i++)\n            for (int j = i + 1; j < d; j++) {\n                if (s[i] == s[j] || (i == 0 && s[j] == '0')) continue;\n                swap(s[i], s[j]);\n                look(stoll(s));\n                swap(s[i], s[j]);\n            }\n        freq[self]++;\n    }\n    printf(\"%lld\\n\", ans);\n}\n",
+      "sha256": "6b7139efb4ffd6b5e245feb8d6b779502b3a98b9afec30eba36110e0b8ef2c67"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        DataInputStream in = new DataInputStream(new BufferedInputStream(System.in, 1 << 16));\n        int n = (int) readLong(in);\n        HashMap<Long, Integer> freq = new HashMap<>(n * 2);  // value -> occurrences so far\n        long ans = 0;\n        for (int k = 0; k < n; k++) {\n            long self = readLong(in);\n            char[] c = Long.toString(self).toCharArray();\n            Integer f = freq.get(self);\n            if (f != null) ans += f;\n            int d = c.length;\n            // distinct swaps of unequal digits give pairwise distinct strings, so no dedup is needed\n            for (int i = 0; i < d; i++)\n                for (int j = i + 1; j < d; j++) {\n                    if (c[i] == c[j] || (i == 0 && c[j] == '0')) continue;\n                    char t = c[i]; c[i] = c[j]; c[j] = t;\n                    long v = 0;\n                    for (char ch : c) v = v * 10 + (ch - '0');\n                    f = freq.get(v);\n                    if (f != null) ans += f;\n                    t = c[i]; c[i] = c[j]; c[j] = t;\n                }\n            freq.merge(self, 1, Integer::sum);\n        }\n        System.out.println(ans);\n    }\n\n    static long readLong(DataInputStream in) throws IOException {\n        int c = in.read();\n        while (c != '-' && (c < '0' || c > '9')) c = in.read();\n        boolean neg = c == '-';\n        if (neg) c = in.read();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = in.read(); }\n        return neg ? -r : r;\n    }\n}\n",
+      "sha256": "d17de75a57f0e20f17d4601cafb5c0078f76c326fec7e93f12f93f8e88d47c57"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tsc.Scan()\n\tn, _ := strconv.Atoi(sc.Text())\n\tfreq := make(map[int64]int64, n) // value -> occurrences so far\n\tvar ans int64\n\tfor k := 0; k < n; k++ {\n\t\tsc.Scan()\n\t\tself, _ := strconv.ParseInt(sc.Text(), 10, 64)\n\t\tc := []byte(strconv.FormatInt(self, 10))\n\t\tans += freq[self]\n\t\td := len(c)\n\t\t// distinct swaps of unequal digits give pairwise distinct strings, so no dedup is needed\n\t\tfor i := 0; i < d; i++ {\n\t\t\tfor j := i + 1; j < d; j++ {\n\t\t\t\tif c[i] == c[j] || (i == 0 && c[j] == '0') {\n\t\t\t\t\tcontinue\n\t\t\t\t}\n\t\t\t\tc[i], c[j] = c[j], c[i]\n\t\t\t\tvar v int64\n\t\t\t\tfor _, ch := range c {\n\t\t\t\t\tv = v*10 + int64(ch-'0')\n\t\t\t\t}\n\t\t\t\tans += freq[v]\n\t\t\t\tc[i], c[j] = c[j], c[i]\n\t\t\t}\n\t\t}\n\t\tfreq[self]++\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "0927f8f8bf23fe731ca07d9798957f36e67bcc95f2ce6b3a62555bec8390a5ec"
+    }
+  ]
+}

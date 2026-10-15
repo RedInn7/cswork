@@ -1,0 +1,21 @@
+{
+  "id": "oa-ziprecruiter-3",
+  "packageChecksum": "3657906ef38e267c1204e05196cdf9b2eb40ea676223f989ace8ab30f1ea2fdd",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    unordered_map<string, pair<long long, long long>> total;  // name -> (sum, count)\n    total.reserve(n * 2);\n    for (int i = 0; i < n; i++) {\n        string name;\n        long long grade;\n        cin >> name >> grade;\n        auto &t = total[name];\n        t.first += grade;\n        t.second++;\n    }\n    const string *best = nullptr;\n    long long bs = 0, bc = 1;\n    for (auto &[name, t] : total) {\n        // compare t.first / t.second > bs / bc by cross-multiplication\n        if (!best || t.first * bc > bs * t.second) {\n            best = &name;\n            bs = t.first;\n            bc = t.second;\n        }\n    }\n    cout << *best << \"\\n\";\n}\n",
+      "sha256": "cfb55e41c491b6db740fb225e1adc13ed6acaec8da6c43cdfa611e1c69da54c7"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static BufferedReader in = new BufferedReader(new InputStreamReader(System.in), 1 << 16);\n    static StringTokenizer st = new StringTokenizer(\"\");\n\n    static String next() throws IOException {\n        while (!st.hasMoreTokens()) st = new StringTokenizer(in.readLine());\n        return st.nextToken();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = Integer.parseInt(next());\n        HashMap<String, long[]> total = new HashMap<>();  // name -> {sum, count}\n        for (int i = 0; i < n; i++) {\n            String name = next();\n            long grade = Long.parseLong(next());\n            long[] t = total.computeIfAbsent(name, k -> new long[2]);\n            t[0] += grade;\n            t[1]++;\n        }\n        String best = null;\n        long bs = 0, bc = 1;\n        for (Map.Entry<String, long[]> e : total.entrySet()) {\n            long[] t = e.getValue();\n            // compare t[0] / t[1] > bs / bc by cross-multiplication\n            if (best == null || t[0] * bc > bs * t[1]) {\n                best = e.getKey();\n                bs = t[0];\n                bc = t[1];\n            }\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "8cd0fd2de117c88d2baef8c0f9c7f5eec1f1bd3a7b05ffae6bb4c3b4e5727f9b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<20)\n\tsc.Split(bufio.ScanWords)\n\tsc.Scan()\n\tn, _ := strconv.Atoi(sc.Text())\n\tsum := map[string]int64{}\n\tcnt := map[string]int64{}\n\torder := []string{}\n\tfor i := 0; i < n; i++ {\n\t\tsc.Scan()\n\t\tname := sc.Text()\n\t\tsc.Scan()\n\t\tgrade, _ := strconv.ParseInt(sc.Text(), 10, 64)\n\t\tif _, ok := cnt[name]; !ok {\n\t\t\torder = append(order, name)\n\t\t}\n\t\tsum[name] += grade\n\t\tcnt[name]++\n\t}\n\tbest := \"\"\n\tvar bs, bc int64 = 0, 1\n\tfor _, name := range order {\n\t\ts, c := sum[name], cnt[name]\n\t\t// compare s / c > bs / bc by cross-multiplication\n\t\tif best == \"\" || s*bc > bs*c {\n\t\t\tbest, bs, bc = name, s, c\n\t\t}\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "4087061dacca22d38cf5382de6e767a432292795963f62987ef08e2b60ee816c"
+    }
+  ]
+}

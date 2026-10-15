@@ -1,0 +1,21 @@
+{
+  "id": "oa-ziprecruiter-6",
+  "packageChecksum": "64aba46693fffee5ec48841afa4b979994c251bc2ab7afc25a9ad60b7dd6dcea",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\n// smallest cyclic rotation of the decimal string; it identifies the equivalence class\nstring canonical(long long value) {\n    string s = to_string(value), best = s;\n    for (size_t i = 1; i < s.size(); i++) best = min(best, s.substr(i) + s.substr(0, i));\n    return best;\n}\n\nint main() {\n    int n;\n    cin >> n;\n    map<string, long long> counts;\n    for (int i = 0; i < n; i++) {\n        long long v;\n        cin >> v;\n        counts[canonical(v)]++;\n    }\n    long long ans = 0;\n    for (auto &[key, c] : counts) ans += c * (c - 1) / 2;\n    cout << ans << \"\\n\";\n}\n",
+      "sha256": "c9bd0cc677eff462bbb4c46c73542ee719c2c55f0be0c60b8eb68cc9358ef6b1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    // smallest cyclic rotation of the decimal string; it identifies the equivalence class\n    static String canonical(long value) {\n        String s = Long.toString(value), best = s;\n        for (int i = 1; i < s.length(); i++) {\n            String r = s.substring(i) + s.substring(0, i);\n            if (r.compareTo(best) < 0) best = r;\n        }\n        return best;\n    }\n\n    public static void main(String[] args) throws IOException {\n        StreamTokenizer in = new StreamTokenizer(new BufferedReader(new InputStreamReader(System.in)));\n        in.nextToken();\n        int n = (int) in.nval;\n        HashMap<String, Long> counts = new HashMap<>();\n        for (int i = 0; i < n; i++) {\n            in.nextToken();\n            counts.merge(canonical((long) in.nval), 1L, Long::sum);\n        }\n        long ans = 0;\n        for (long c : counts.values()) ans += c * (c - 1) / 2;\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "a44f5dc05d738c2e066ac4533285cd32dfe3fb15a296eeca632336a8f9322b68"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\n// smallest cyclic rotation of the decimal string; it identifies the equivalence class\nfunc canonical(value int64) string {\n\ts := strconv.FormatInt(value, 10)\n\tbest := s\n\tfor i := 1; i < len(s); i++ {\n\t\tif r := s[i:] + s[:i]; r < best {\n\t\t\tbest = r\n\t\t}\n\t}\n\treturn best\n}\n\nfunc main() {\n\treader := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(reader, &n)\n\tcounts := map[string]int64{}\n\tfor i := 0; i < n; i++ {\n\t\tvar v int64\n\t\tfmt.Fscan(reader, &v)\n\t\tcounts[canonical(v)]++\n\t}\n\tvar ans int64\n\tfor _, c := range counts {\n\t\tans += c * (c - 1) / 2\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "fc682cf53d13772f1a1014741881fc0f9e146659c8f1f63256a6cb011c2c48a0"
+    }
+  ]
+}
