@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-8",
+  "packageChecksum": "4c459a04bd0b2e9d21b313ff39925907d40f5fda36deebbd53dc151c76323530",
+  "sourceContentHash": "93fd848abe135dda7f3c0b3b3c4f1db54ef5601b2ba1d0d9d48dd10ea31a2c70",
+  "editorialSha256": "f40f8f4263309356c1148d52b67d5771c38f50e3204957f2d9912a0a0adf9b38",
+  "hints": {
+    "zh": [
+      "数字是个位在前存储的，正好就是竖式加法从低位到高位的顺序。",
+      "逐位相加并维护进位：每一位的结果是 (进位+两数该位) mod 10，新进位是除以 10 的商；短的那个列表缺的位当作 0。",
+      "对 i 从 0 到 max(n,m)−1 累加两数第 i 位和进位，记录本位与新进位；结束后若还有进位就再补一位；然后去掉末尾（即最高位）多余的 0，但至少保留一位；按个位在前的顺序用空格输出。"
+    ],
+    "en": [
+      "The digits are stored least significant first, which is exactly the order of column addition from low to high digits.",
+      "Add digit by digit with a carry: each result digit is (carry + both digits) mod 10 and the new carry is the quotient by 10; a missing digit of the shorter list counts as 0.",
+      "For i from 0 to max(n, m) - 1 add the i-th digits of both numbers and the carry, recording the digit and the new carry; afterwards append the carry if one is left; then drop surplus zeros at the end (the high digits) but keep at least one digit; print the digits least significant first, separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nAdd digit by digit while keeping the carry, and finally remove the surplus high-order zeros.\n\n## Proof of correctness\n\nBefore position i is processed, the digits below i already equal the corresponding digits of the true sum, and carry is the carry into the part not yet written. Taking the quotient and remainder by 10 gives the next carry and the current digit, which preserves the invariant. After both lists are processed and the final carry is written, the result is the complete sum, and removing high-order zeros does not change the value.\n\n## Complexity\n\nO(n+m) time and O(n+m) space; the long lists are never converted into big integers."
+}

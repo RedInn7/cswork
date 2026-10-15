@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-15",
+  "packageChecksum": "92242ac438669e1f582ea61bfafd4a802f268c9c0c9ec1cb6e946e7d383ebe34",
+  "sourceContentHash": "61a264565c5671f3252bc17794e694d9210e6f577a3f5dfbe9d0c964963d2739",
+  "editorialSha256": "91543246cb9af20947b332753eddcdf1e6a42044c2765bf4425a694d1eb0f30f",
+  "hints": {
+    "zh": [
+      "重复在同一位置建墙不改变状态，所以每个位置只有“有墙/无墙”两种状态；查询只关心区间里墙的个数是否大于 0。",
+      "用树状数组（Fenwick 树）维护每个位置是否有墙：第一次建墙时把该位置加 1，查询时用两个前缀和之差得到区间内的墙数。",
+      "准备长度 n+1 的树状数组和一个“是否已建”标记数组；build i 时若未建过就标记并在 i 处加 1，已建过则什么也不做；query l r 计算 prefix(r+1) − prefix(l)，大于 0 输出 1，否则输出 0；所有查询结果按顺序用空格连接输出。"
+    ],
+    "en": [
+      "Building on the same position twice changes nothing, so every position is just \"wall\" or \"no wall\"; a query only asks whether the number of walls in the range is positive.",
+      "Keep a Fenwick tree over the positions: add 1 at a position the first time a wall is built there, and get the number of walls in a range as a difference of two prefix sums.",
+      "Keep a Fenwick tree of size n+1 and a \"built\" flag per position; for build i, if the flag is not set, set it and add 1 at i, otherwise do nothing; for query l r compute prefix(r+1) - prefix(l) and output 1 if it is positive, else 0; print all answers in order separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a Fenwick tree to record whether a wall has been built at each position. The first build at a position adds one there; a repeated build does not update anything. To query the closed interval [l,r], count its walls with the prefix sums prefix(r+1) - prefix(l).\n\n## Correctness\n\nEvery built position contributes exactly one unit to the tree and every unbuilt position contributes zero; the idempotent update guarantees that repeated operations do not change any contribution. A Fenwick prefix sum returns the total contribution of the half-open range [0,x), so the difference of the two prefixes is exactly the number of walls in the closed interval [l,r]. That number is positive if and only if the interval contains a wall.\n\n## Complexity\n\nO(log n) time per operation, O(n) space."
+}

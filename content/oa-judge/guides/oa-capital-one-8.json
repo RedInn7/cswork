@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-8",
+  "packageChecksum": "a7fef7baf1f4340cbb6b38e06c4a3547585ecc3573e996256574e817f757d076",
+  "sourceContentHash": "65ce1f8008f5adcbd4918d72a24e0351252abb4170b3dbcd0fb376c1e103fe47",
+  "editorialSha256": "5bde3316d88cec8f6e0b11ae1ee00fb023efb65cb2867c53c39e6152ab4dfdd0",
+  "hints": {
+    "zh": [
+      "一个段在某个时刻“完整收到”，当且仅当 [start, start+length) 中的每个偏移都已到达；段一旦完成就永远完成，只能计一次。",
+      "维护已到达偏移的集合和每个段是否已完成的标记；每到一个字节，就对所有未完成的段检查一遍其区间是否被全部覆盖。",
+      "用布尔数组记录已到达的偏移；对第 i 个到达的字节先标记它，再遍历所有未完成段，逐个检查区间内每个位置是否已到达（遇到缺失立即停），全覆盖则标记完成并让计数加 1；每个字节处理后把当前计数加入输出，最后用空格连接 m 个数。"
+    ],
+    "en": [
+      "A segment is complete at some moment exactly when every offset of [start, start + length) has arrived; once complete it stays complete and is counted only once.",
+      "Keep the set of arrived offsets and a done flag per segment; after each byte, check every unfinished segment to see whether its whole range is now covered.",
+      "Mark arrived offsets in a boolean array; for the i-th byte mark it, then go through all unfinished segments and check each position of the range (stopping at the first missing one); if all are present mark the segment done and increase the count; append the current count after each byte and print the m numbers separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep the set of offsets received so far. Each time an offset arrives, check, for every segment not yet complete, whether every position of its half-open range has appeared; a completed segment is counted only once.\n\n## Proof of correctness\n\nThe range contains exactly the byte positions the segment requires, so the subset check is equivalent to the segment having been received in full. All unfinished segments are re-checked at every moment, so the running count of completed segments is exact.\n\n## Complexity\n\nO(mL) time, where L is the total length of all segments; O(L+m) space.\n\n## Source notes\n\nThe original text explicitly uses `[start,start+length)`; this site adds the stdin/stdout protocol and the size limits."
+}

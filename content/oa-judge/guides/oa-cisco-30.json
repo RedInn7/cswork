@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-30",
+  "packageChecksum": "25682838c887aa9a5940b9ec5c6da1e05b77c1adf763d43884e2cd5b72c45800",
+  "sourceContentHash": "0a4531d7c53b26349a62b77656fcaeb1fa2277d18feb62f12f5849b67e29664e",
+  "editorialSha256": "68accbd034b39bbb9c8fdc8734d0af6f4c1cb6a042dbbe24262c9fc392a46db4",
+  "hints": {
+    "zh": [
+      "看最后一个罐子：要么不取它，要么取它，而取它就不能取前一个罐子。",
+      "设 f[i] 为前 i 个罐子的最优值，则 f[i] = max(f[i−1], f[i−2]+a[i])；只依赖前两项，可以用两个变量滚动。",
+      "用 older（前 i−2 个的最优）和 previous（前 i−1 个的最优）都从 0 开始；对每个数量 v，新值为 max(previous, older+v)，然后 older 变为原来的 previous、previous 变为新值；最后输出 previous，用 64 位整数。"
+    ],
+    "en": [
+      "Look at the last jar: either you skip it, or you take it, and taking it rules out the jar before it.",
+      "Let f[i] be the best total over the first i jars; then f[i] = max(f[i - 1], f[i - 2] + a[i]); it only depends on the two previous values, so two rolling variables suffice.",
+      "Start older (best for the first i - 2 jars) and previous (best for the first i - 1 jars) at 0; for each amount v the new value is max(previous, older + v), then older takes the old previous and previous takes the new value; print previous, using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRoll the optimum values for the first i-2 jars and the first i-1 jars; the current jar can be skipped, or added to the optimum for the first i-2 jars.\n\n## Proof of correctness\n\nWhether an optimal plan takes the last jar splits all plans into two mutually exclusive and exhaustive classes: if it does not, the value equals the optimum at the previous position; if it does, the previous jar cannot be taken, so the jar can be added to the optimum two positions back. Induction gives the global optimum.\n\n## Complexity\n\nO(n) time and O(1) auxiliary space apart from the input; the largest answer is 5*10^11."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-cisco-22",
+  "packageChecksum": "25b650749d5edfc91ba2b89f7bf4feca404e9ccb5e2eacd9cfe5c816bc54fcf2",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstatic string in;\nstatic size_t p = 0;\nstatic void readAll() {\n    char b[1 << 16];\n    size_t k;\n    while ((k = fread(b, 1, sizeof b, stdin)) > 0) in.append(b, k);\n}\nstatic bool skipSpace() {\n    while (p < in.size() && (unsigned char)in[p] <= ' ') p++;\n    return p < in.size();\n}\nstatic string token() {\n    skipSpace();\n    size_t s = p;\n    while (p < in.size() && (unsigned char)in[p] > ' ') p++;\n    return in.substr(s, p - s);\n}\nstatic long long num() {\n    skipSpace();\n    bool neg = false;\n    if (p < in.size() && (in[p] == '-' || in[p] == '+')) neg = in[p++] == '-';\n    long long v = 0;\n    while (p < in.size() && in[p] >= '0' && in[p] <= '9') v = v * 10 + (in[p++] - '0');\n    return neg ? -v : v;\n}\n\nint main() {\n    readAll();\n    long long n = num(), lowest = 0, answer = 0;\n    // Pair each element only with the smallest element before it.\n    for (long long i = 0; i < n; i++) {\n        long long v = num();\n        if (i > 0) answer = max(answer, v - lowest);\n        lowest = i == 0 ? v : min(lowest, v);\n    }\n    printf(\"%lld\\n\", answer);\n}\n",
+      "sha256": "f06eddb1fc4bceedd2ba01c7bf06d91cbc667ffa4730b1ecf2a2a37002c49e8b"
+    },
+    {
+      "language": "java",
+      "code": "public class Main {\n    static byte[] data;\n    static int pos = 0;\n\n    static boolean skipSpace() {\n        while (pos < data.length && (data[pos] & 0xff) <= ' ') pos++;\n        return pos < data.length;\n    }\n\n    static String token() {\n        skipSpace();\n        int s = pos;\n        while (pos < data.length && (data[pos] & 0xff) > ' ') pos++;\n        return new String(data, s, pos - s, java.nio.charset.StandardCharsets.UTF_8);\n    }\n\n    static long num() {\n        skipSpace();\n        boolean neg = false;\n        if (pos < data.length && (data[pos] == '-' || data[pos] == '+')) neg = data[pos++] == '-';\n        long v = 0;\n        while (pos < data.length && data[pos] >= '0' && data[pos] <= '9') v = v * 10 + (data[pos++] - '0');\n        return neg ? -v : v;\n    }\n\n    public static void main(String[] args) throws Exception {\n        data = System.in.readAllBytes();\n        long n = num(), lowest = 0, answer = 0;\n        // Pair each element only with the smallest element before it.\n        for (long i = 0; i < n; i++) {\n            long v = num();\n            if (i > 0) answer = Math.max(answer, v - lowest);\n            lowest = i == 0 ? v : Math.min(lowest, v);\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "a897fac15e187936380192f3dc7569d18e9bb246fe405c85a2803e5b651284f6"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\nfunc skipSpace() bool {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\treturn pos < len(data)\n}\n\nfunc token() string {\n\tskipSpace()\n\ts := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn string(data[s:pos])\n}\n\nfunc num() int64 {\n\tskipSpace()\n\tneg := false\n\tif pos < len(data) && (data[pos] == '-' || data[pos] == '+') {\n\t\tneg = data[pos] == '-'\n\t\tpos++\n\t}\n\tvar v int64\n\tfor pos < len(data) && data[pos] >= '0' && data[pos] <= '9' {\n\t\tv = v*10 + int64(data[pos]-'0')\n\t\tpos++\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := num()\n\tvar lowest, answer int64\n\t// Pair each element only with the smallest element before it.\n\tfor i := int64(0); i < n; i++ {\n\t\tv := num()\n\t\tif i > 0 {\n\t\t\tanswer = max(answer, v-lowest)\n\t\t\tlowest = min(lowest, v)\n\t\t} else {\n\t\t\tlowest = v\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "7ed7a7feb2664d538f88381795ceb68ad48b8eb2c66c3e8ba0e5e7323eba2b35"
+    }
+  ]
+}

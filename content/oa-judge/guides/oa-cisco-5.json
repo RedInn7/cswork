@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-5",
+  "packageChecksum": "53fb1965ee194f8262e33d7985a1b6d7339bc7b42138cc5855868de0261b285f",
+  "sourceContentHash": "503e51239db9984f4f5cdec915d5b0320d2f412a67e098a30a6baed301df7466",
+  "editorialSha256": "60dbb2e9a8b2b73946b9384479d6779bb5ee120c4f70010974972ef13eb8e240",
+  "hints": {
+    "zh": [
+      "只能插入和删除时，没被删除的原字符必须按原顺序出现在目标串里，所以它们构成两个串的公共子序列；保留得越多，操作越少。",
+      "求两个串的最长公共子序列长度 L，答案就是 len(a)+len(b)−2L；字符要按 Unicode 码点计，输入是 JSON 字符串，需要先解析转义。",
+      "把两行分别按 JSON 解析成码点序列，让较短的作为 DP 的列；用一维滚动数组 row 和变量 diagonal 保存左上角的旧值：字符相同时 row[j]=diagonal+1，否则 row[j]=max(row[j], row[j−1])；最后输出 len(a)+len(b)−2×row[末尾]。"
+    ],
+    "en": [
+      "With only insertions and deletions, the original characters that survive must appear in the target in the same order, so they form a common subsequence; the more you keep, the fewer operations you need.",
+      "Compute L, the length of the longest common subsequence, and answer len(a) + len(b) - 2L; characters are Unicode code points and each line is a JSON string, so decode the escapes first.",
+      "Parse each line as JSON into a sequence of code points and use the shorter one as the DP columns; keep a 1D rolling array row plus a variable diagonal holding the old upper-left value: on equal characters row[j] = diagonal + 1, otherwise row[j] = max(row[j], row[j - 1]); print len(a) + len(b) - 2 * row[last]."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a rolling array to compute L, the length of the longest common subsequence, and return len(a)+len(b)-2L. Use the shorter string as the DP columns to save space.\n\n## Proof of correctness\n\nThe original characters that are not deleted must appear in the target string in their original order, so they form a common subsequence; at most L of them can be kept, so at least len(a)-L deletions and len(b)-L insertions are needed. Keeping one longest common subsequence, deleting the other original characters and inserting the remaining target characters into the gaps achieves this lower bound. The prefix LCS DP adds 1 to the diagonal when the last characters are equal, and otherwise takes the maximum of skipping either last character; rolling the storage does not change these dependencies.\n\n## Complexity\n\nO(nm) time and O(min(n,m)) auxiliary space; characters are counted as code points, not as UTF-8 bytes or UTF-16 surrogate units."
+}

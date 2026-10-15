@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-7",
+  "packageChecksum": "c4b7010391bb03e3c538025015d17d48f83e617794c5fe64481858c51205826c",
+  "sourceContentHash": "787a49ae90ec0b99daa48551383ec82146d076ed7176c43212dcb5138fbd1561",
+  "editorialSha256": "a37317b7181ecadcf5df1956235286657c4435e97fd0011e4c7ca24e346ce82b",
+  "hints": {
+    "zh": [
+      "边长为 s 的正方形放得下，当且仅当存在连续 s 栋楼且它们的高度都至少为 s；而且如果 s 放得下，更小的边长也一定放得下。",
+      "可行性随边长单调，所以对边长 s 二分；每次用一遍线性扫描检查“高度 ≥ s 的连续楼数能否达到 s”。",
+      "二分范围是 [0, min(n, 最大高度)]；check(s) 维护当前连续满足高度 ≥ s 的楼数 run，不满足就清零，run ≥ s 时返回可行（s=0 总是可行）；取最大的可行 s，输出 s×s（用 64 位整数）。"
+    ],
+    "en": [
+      "A square of side s fits if and only if some s consecutive buildings all have height at least s; and if side s fits, every smaller side fits too.",
+      "Feasibility is monotone in the side, so binary search on s; each check is one linear scan asking whether a run of buildings with height >= s reaches length s.",
+      "Search s in [0, min(n, maximum height)]; check(s) keeps run, the number of consecutive buildings with height >= s, resetting it on a shorter building, and succeeds once run >= s (s = 0 always succeeds); take the largest feasible s and print s * s using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nTest whether a side length s is feasible: scan the heights and check whether there are at least s consecutive buildings whose heights are all at least s. Feasibility can only stay the same or become false as s grows, so binary search for the largest s; the answer is s².\n\n## Correctness\n\nA group of consecutive buildings all at least s tall can hold a square of width s and height s; conversely, any square of side s must cover at least s consecutive buildings, all of height at least s. So the check is equivalent to feasibility, and the monotone binary search finds the largest side.\n\n## Complexity\n\nThe binary search takes O(n log(min(n,max(h)))) time and O(1) extra space."
+}

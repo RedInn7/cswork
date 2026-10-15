@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-24",
+  "packageChecksum": "b506a053e63449b4b0945f861fa8735f27455d283db8bdd92f04688312c6ff5f",
+  "sourceContentHash": "97bcc8282b7e4b709a8af6daccbf5610dbc9dc2600101c69be825631086a2c60",
+  "editorialSha256": "9001254186c104935b561d7078919ef26247577745a0396166e370418d6070ff",
+  "hints": {
+    "zh": [
+      "最终的每个目标区域都是由若干原区域合并而成；k 个区域合成一个至少要迁移 k−1 次，之后再把总数调成目标需要 |总和−目标| 次增减。",
+      "n 最多为 10，可以枚举每个原区域属于目标组 0、1、2 还是不使用；三个组都必须非空，代价为各组 (区域数−1)×c + |组内总和−目标| 之和。",
+      "递归处理第 i 个区域：先尝试不使用，再依次尝试放进三个组（更新该组的总和与个数，回溯时撤销）；若剩余区域数已不足以填满空组就剪枝；到达末尾且三组都非空时计算代价并更新最小值，用 64 位整数。"
+    ],
+    "en": [
+      "Each final target region is formed by merging some original regions; merging k regions into one takes at least k - 1 moves, and adjusting the total to the target then takes |total - target| increments or decrements.",
+      "With n at most 10, enumerate for every original region whether it goes to target group 0, 1 or 2 or stays unused; all three groups must be non-empty, and the cost is the sum over groups of (regions - 1) * c + |group total - target|.",
+      "Recurse over region i: first try leaving it unused, then try each of the three groups (update that group's total and count, undo on backtrack); prune when the remaining regions cannot fill the empty groups; at the end, if all three groups are non-empty, compute the cost and keep the minimum, using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate, for every initial region, whether it belongs to target group 0/1/2 or is unused. All three target groups are non-empty, and a group costs (number of regions - 1)c + |machine total - target|. The recursion only maintains the three totals and counts.\n\n## Proof of correctness\n\nEvery final selected region is formed by merging some original regions, and the three source groups are pairwise disjoint and non-empty. A group needs at least k-1 merges, and the net increments and decrements are at least the absolute difference between its total and its target. Conversely, merging each group first and then adjusting up or down to the positive target reaches exactly this lower bound without affecting the unselected regions; the enumeration therefore contains and realizes an optimal plan.\n\n## Complexity\n\nO(4^n) time and O(n) auxiliary recursion space; the groupings are not stored."
+}

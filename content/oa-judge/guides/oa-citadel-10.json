@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-10",
+  "packageChecksum": "c6e1123344830b4bdc4806a313ab9c68251a54fabbe5da248285d315fd2dc42a",
+  "sourceContentHash": "882649ee817d9090146f463a7f8ce201cb2a13a25d4236dbe48ecb2b6a58aa35",
+  "editorialSha256": "c05784c2076972f2bfd10bdffb0f72e7136bcf0a32bce65b052f1a8e79800633",
+  "hints": {
+    "zh": [
+      "C(i,j) 关于 i、j 对称，所以总和等于 2×Σ(i mod j)，只需对每个除数 j 求 i 从 1 到 n 的余数和。",
+      "固定 j，令 n = q·j + r：余数序列由 q 个完整的 0..j−1 周期和一段 0..r 的尾巴组成，两部分都可以用等差数列求和公式直接算。",
+      "对 j 从 1 到 n：q=n/j，r=n%j，累加 q·j(j−1)/2 + r(r+1)/2 并对 1000000007 取模（中间结果不超过约 10^12，64 位整数足够）；最后输出 2×总和 mod 1000000007。"
+    ],
+    "en": [
+      "C(i, j) is symmetric in i and j, so the total equals 2 * sum(i mod j); for each divisor j you only need the sum of remainders over i = 1..n.",
+      "Fix j and write n = q * j + r: the remainders consist of q full cycles 0..j - 1 plus a tail 0..r, and both parts have closed-form arithmetic-series sums.",
+      "For j from 1 to n: q = n / j and r = n % j; add q * j * (j - 1) / 2 + r * (r + 1) / 2 and reduce modulo 1000000007 (intermediate values stay around 10^12, so 64-bit integers suffice); finally print 2 * total mod 1000000007."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse symmetry to compute 2 times the sum of (i mod j). Fix j and write n=qj+r: the complete remainder cycles contribute q*j(j-1)/2 and the remainder tail contributes r(r+1)/2.\n\n## Proof of correctness\n\nThe remainders of 1..n consist of exactly q complete cycles 0..j-1 and a tail 0..r, and both arithmetic-series sums are exact. Enumerating every divisor j gives the total of the first term; swapping i and j shows that the second term has the same total, so we multiply by 2 and reduce modulo.\n\n## Complexity\n\nO(n) time, O(1) extra space."
+}

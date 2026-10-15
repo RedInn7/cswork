@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-12",
+  "packageChecksum": "63def54dc354852e689a214cb6fe1bb07668d2d1f039064cfd18d54e462781a9",
+  "sourceContentHash": "f6c750f758bf2b703251e94c7c5290c8d104a28a903ca1fbc0fac29839c969b5",
+  "editorialSha256": "dc656390ee6e0780e518a295865e0f2cc930eb4e75df97d2a2f74b52e6179f1b",
+  "hints": {
+    "zh": [
+      "数组严格递增，所以两个相邻元素属于同一个连续段，当且仅当后一个恰好比前一个大 1。",
+      "一边扫描一边维护当前段的首尾；下一个值等于末尾加 1 就延伸，否则把当前段输出并以该值开新段。",
+      "空列表直接输出空文本；否则 start=end=a[0]；对后续每个值 v，若 v==end+1 则 end=v，否则输出当前段（start==end 时只写 start，否则写 “start to end”）并令 start=end=v；扫描结束后别忘了输出最后一段；每段占一行。"
+    ],
+    "en": [
+      "The list is strictly increasing, so two neighbours belong to the same run exactly when the second is one more than the first.",
+      "Scan while keeping the first and last value of the current run; extend it when the next value equals the last plus 1, otherwise emit the run and start a new one at that value.",
+      "An empty list prints nothing; otherwise start = end = a[0]; for each following value v, if v == end + 1 set end = v, otherwise emit the run (just start when start == end, else \"start to end\") and set start = end = v; after the scan emit the last run too; one run per line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep the first and last value of the current run; when the next value equals the last value + 1, extend the run, otherwise close the current run and start a new one.\n\n## Proof of correctness\n\nBecause the list is strictly increasing, an adjacent difference of 1 means exactly that both values belong to the same consecutive run, and a difference greater than 1 means no run can span the missing integers. The run is closed each time at the only legal split point, which produces all maximal consecutive runs with no overlap and nothing missing.\n\n## Complexity\n\nO(n) time, O(n) space counting the output."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-21",
+  "packageChecksum": "9746118041cd782523af8314f51d5494835792f19e04d6cb8a4098b5a4043f26",
+  "sourceContentHash": "c15e194cc5142b871ba575fff240c36bdb5ba538da181ea03582701298851035",
+  "editorialSha256": "6f953ec4c3be91a8a9feed6aafa45eacda32fb72e408e4221acc59b997c89e91",
+  "hints": {
+    "zh": [
+      "每个回文子串都有唯一的中心（某个字符，或两个相邻字符之间）；从同一中心扩展出的最长回文比该中心的其他回文都长。",
+      "枚举全部 2n−1 个奇偶中心，各自向两侧扩展到不能再扩，只把每个中心的最长回文当作候选；长度不足 2 的候选直接忽略。",
+      "对中心 middle（0..2n−2），left=middle/2，right=left+middle%2，两端字符相等就同时外扩；候选为 s[left+1..right−1]；若长度 ≥2 且比当前答案更长，或等长且字典序更小，就更新答案；最后答案为空输出 None。"
+    ],
+    "en": [
+      "Every palindromic substring has a unique center (a character or the gap between two neighbours), and the longest palindrome grown from a center beats every other palindrome with that center.",
+      "Enumerate all 2n - 1 odd and even centers, expand each as far as possible, and only treat each center's longest palindrome as a candidate; ignore candidates shorter than 2.",
+      "For center middle in 0..2n - 2 set left = middle / 2 and right = left + middle % 2, and widen both ends while the characters match; the candidate is s[left + 1 .. right - 1]; if its length is at least 2 and it is longer than the current answer, or equally long and lexicographically smaller, take it; print None if the answer stays empty."
+    ]
+  },
+  "explanationEn": "## Approach\n\nEnumerate both kinds of palindrome centers, odd and even, expand each until it can no longer grow, and compare only the longest candidate from each center.\n\n## Proof of correctness\n\nEvery palindrome has a unique center. A non-maximal palindrome with the same center can never be better than the longest one at that center, so comparing only each center's longest candidate does not miss the global optimum; among equal lengths, the lexicographically smaller string is chosen explicitly.\n\n## Complexity\n\nO(n²) time; candidate slices need at most O(n) auxiliary space."
+}

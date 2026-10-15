@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-11",
+  "packageChecksum": "d9354e58fbbaa22bed698dae281f50c80aadfccb00a313292053a5d5da0b94c1",
+  "sourceContentHash": "885a3d5de9f2c52fe1192110dd62a794c5ac9a2856b0628f1bf24679b9e65644",
+  "editorialSha256": "17b6a3ed8c570f37e9c92de713234c5c040e2b619afc3150ea5b526ee798d938",
+  "hints": {
+    "zh": [
+      "没有金币的叶子永远不必进入；而带金币的叶子在距离 2 以内就能收集，所以真正必须走的只是“连接所有金币的子树”再向内缩两层后剩下的部分。",
+      "先像拓扑排序一样反复删掉无金币的叶子；然后对剩下的树同步删两层叶子；剩下的每条边在闭合路线中都必须走两次。",
+      "维护每个点的当前度数和存活标记，剩余边数从 n−1 开始；用队列删除所有度 ≤1 且无金币的点，每删一条边剩余边数减 1，邻居度数降到 ≤1 且无金币就入队；再取所有存活且度 ≤1 的点作为一层，连续删两层（删除时邻居度数恰好变成 1 就进入下一层）；答案是 2×max(0, 剩余边数)。"
+    ],
+    "en": [
+      "A leaf without a coin never has to be entered, and a leaf with a coin can be collected from distance 2, so the only part you must walk is the subtree connecting all coins after shrinking it by two layers.",
+      "First repeatedly delete coin-free leaves, as in a topological peel; then delete two layers of leaves from what remains, layer by layer; every remaining edge must be walked twice on a closed route.",
+      "Track each node current degree and an alive flag, with the edge count starting at n - 1; queue every node with degree <= 1 and no coin, and on deleting it decrement the edge count per removed edge and queue a neighbour whose degree drops to <= 1 and has no coin; then take all alive nodes of degree <= 1 as a layer and delete two layers (a neighbour whose degree becomes exactly 1 joins the next layer); the answer is 2 * max(0, remaining edges)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst repeatedly delete leaves without coins, then delete two layers of leaves simultaneously, and multiply the number of remaining edges by 2.\n\n## Proof of correctness\n\nA coin-free leaf is not part of the minimal subtree connecting all coins and never needs to be entered. Every leaf of that subtree carries a coin, and collecting at distance 2 allows the outer two layers to be skipped; for every edge from the third layer inward, both sides contain a coin at least two layers away from the edge, so any route that collects everything must cross that edge. Walking each edge of the remaining connected tree there and back covers all coins, and a closed route must traverse every necessary edge at least twice, so the lower and upper bounds coincide; if nothing remains, staying at a suitable center is enough.\n\n## Complexity\n\nO(n) time, O(n) space."
+}

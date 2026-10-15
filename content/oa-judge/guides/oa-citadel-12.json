@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-12",
+  "packageChecksum": "534faed2ac7e99dbb6e7e63aa4ccca27cd53c27067a5ffafbec45f03ebd11b01",
+  "sourceContentHash": "4c81a0a25c163a00aa51f199b326304b91a5cd29c3baf64beab1d41180360b33",
+  "editorialSha256": "6c382aec1816f87967e4dc181ef407556f4b6bca7ada8fff662167bad25cf8a3",
+  "hints": {
+    "zh": [
+      "用前缀和表示内部总和：子段 [l,r] 稳定，当且仅当 a[l]=a[r] 且 P[r]−P[l+1]=a[l]，其中 P[i] 是前 i 项之和。",
+      "把条件移项成“相同的二元组”：左端 l 对应键 (a[l], P[l+1]+a[l])，右端 r 对应键 (a[r], P[r])；扫描右端时，用哈希表统计之前每个左端键出现的次数。",
+      "先算前缀和（用 64 位）；r 从 0 扫到 n−1，每步先把 l=r−2（若 ≥0）的键加入计数，保证子段长度至少为 3；再把计数表中键 (a[r], P[r]) 的次数加到答案上；最后输出答案。"
+    ],
+    "en": [
+      "Write the inner sum with prefix sums: segment [l, r] is stable exactly when a[l] = a[r] and P[r] - P[l + 1] = a[l], where P[i] is the sum of the first i values.",
+      "Rearrange the condition into equal pairs: left end l has key (a[l], P[l + 1] + a[l]) and right end r has key (a[r], P[r]); while scanning right ends, count earlier left-end keys in a hash map.",
+      "Compute prefix sums in 64 bits; scan r from 0 to n - 1, first adding the key of l = r - 2 (when l >= 0) so every segment has length at least 3, then adding the count stored for (a[r], P[r]) to the answer; print the answer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nLet the prefix P[i] be the sum of the first i elements. Scan the right end r, counting each l<=r-2 under the key (a[l],P[l+1]+a[l]), and query the key (a[r],P[r]).\n\n## Proof of correctness\n\nThe stability condition is equivalent to a[l]=a[r] and P[r]-P[l+1]=a[l], and rearranging gives exactly equal key pairs. Inserting only l<=r-2 guarantees a length of at least 3, the hash counts keep every distinct left end, and each segment is counted exactly once at its own right end.\n\n## Complexity\n\nO(n) time, O(n) space; prefix sums use 64-bit integers."
+}

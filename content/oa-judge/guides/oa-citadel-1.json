@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-1",
+  "packageChecksum": "75cc3eeed4d5e8de917164994cf03c3401a21c742013d9e9d487efaf62f2eb24",
+  "sourceContentHash": "033c310c50d0b1644aafecd91b752b5e6498c35e51adf75f562e7d776f637013",
+  "editorialSha256": "729918b97f8ccfed25fe64e9c00d58b820ec71c0994ad579c24fa54df92f8d7c",
+  "hints": {
+    "zh": [
+      "数值都小于 1024，所以 OR 结果只有 1024 种；对同一个 OR 值，只需记住达到它的递增子序列中最小的末尾值，末尾越小以后能接的数越多。",
+      "设 last[mask] 为 OR 等于 mask 的严格递增子序列的最小末尾值（空子序列对应 last[0]=0）；读到 v 时，所有 last[mask]<v 的状态都能接上 v，转移到 mask|v，末尾值为 v。",
+      "last 全部初始化为“不可达”（例如 1024），last[0]=0；对每个元素 v，遍历 mask=0..1023，若 last[mask]<v 则 last[mask|v]=min(last[mask|v], v)（新状态末尾为 v，不会在同一轮被再次用来接 v）；最后收集所有可达的 mask，先输出个数，再按升序输出这些值（包含 0）。"
+    ],
+    "en": [
+      "All values are below 1024, so there are only 1024 possible OR results; for each OR value it is enough to remember the smallest last element of an increasing subsequence reaching it, since a smaller tail can be extended by more numbers later.",
+      "Let last[mask] be the smallest final value of a strictly increasing subsequence whose OR is mask (the empty subsequence gives last[0] = 0); on reading v, every state with last[mask] < v can take v and moves to mask | v with tail v.",
+      "Initialise every last to unreachable (for example 1024) and last[0] = 0; for each element v loop mask over 0..1023 and, if last[mask] < v, set last[mask | v] = min(last[mask | v], v) (the new state ends with v, so it cannot take v again in the same round); finally collect every reachable mask and print their count, then the values in ascending order (0 included)."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each OR value keep only the smallest last value of a reachable increasing subsequence; on reading v, move from every state whose last value is < v to OR|v.\n\n## Proof of correctness\n\nFor the same OR value, a smaller last value means a larger set of numbers can be appended later, so keeping the smallest last value loses no future feasible plan. A state can take v only if its last value is < v, so the transition is exact; the new state has last value v, which can never again be strictly smaller than v in the same round, so the current position is not reused. The initial empty sequence can take any positive number, and induction covers all subsequences.\n\n## Complexity\n\nO(1024n) time, O(1024) space."
+}

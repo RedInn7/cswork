@@ -1,0 +1,19 @@
+{
+  "id": "oa-capital-one-5",
+  "packageChecksum": "36b0efa947deaf34544f42c2d40b8e44bf7c31534196ec4f6959f68b7e0a10b6",
+  "sourceContentHash": "dd471b84bc30df49eedf43086c625a6fc740502bf8b4c31670998070da3c377c",
+  "editorialSha256": "7c47867f2b1849e5bb16a6e4f9dbe14389bca1aaaa3954fd40628a493c4f25f5",
+  "hints": {
+    "zh": [
+      "合法的起点只有 0、8、16……这些 8 的倍数，“最靠左”就是按起点从小到大找到的第一个可用块；释放需要知道每个单元属于哪次分配。",
+      "用一个数组记录每个单元是否占用，再用另一个数组记录每个单元所属的分配 ID；申请时按 8 的倍数枚举起点检查整段是否空闲，释放时扫描整个数组清掉该 ID 的所有单元。",
+      "申请 x：从 s=0 起每次加 8，若 s+x ≤ n 且 [s,s+x) 全空闲，就把这些单元标记为占用并写上新 ID（ID 从 1 开始，只有成功分配才递增），输出 s；找不到输出 −1。释放 id：扫描所有单元，把 ID 等于 id 的清空并计数，计数大于 0 输出数量，否则输出 −1。初始占用的单元没有 ID，不会被释放。"
+    ],
+    "en": [
+      "The only legal starts are multiples of 8 (0, 8, 16, ...), and \"leftmost\" means the first usable block when the starts are tried in increasing order; freeing needs to know which allocation owns each unit.",
+      "Keep one array with the occupied flag of every unit and another with the allocation ID that owns it; an allocation tries starts in steps of 8 and checks that the whole block is free, and a free scans the whole array to clear every unit with that ID.",
+      "Allocate x: for s = 0, 8, 16, ..., if s + x <= n and [s, s + x) is all free, mark those units occupied with a new ID (IDs start at 1 and grow only on success) and output s; output -1 if no start works. Free id: scan all units, clear the ones whose ID equals id and count them; output the count if it is positive, otherwise -1. Initially occupied units carry no ID and are never freed."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCheck candidate starts in increasing multiples of 8 and allocate at the first one whose block is large enough and entirely free, writing the new ID into every unit of the block. To free, scan by ID and clear all matching units.\n\n## Proof of correctness\n\nEnumerating starts in increasing order covers every legal aligned start, so the first one that satisfies the contiguous-free condition is the leftmost allocatable block. Every successful allocation uses a unique ID, and a full scan frees exactly all of its units.\n\n## Complexity\n\nO(n) per operation, O(n) space.\n\n## Source notes\n\nThis site adds the input protocol and the convention that initially occupied units cannot be freed."
+}
