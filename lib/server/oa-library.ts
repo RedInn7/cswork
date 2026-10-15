@@ -412,13 +412,13 @@ function currentDrills(id: string) {
     throw new HttpError(404, '这道题没有调试练习');
   return entry.drills;
 }
-/** Drill count of every problem that has live drills: the /oa/drills index. */
-export function oaDrillCounts() {
-  const counts = new Map<string, number>();
+/** Drill numbers of every problem that has live drills: the /oa/drills index. */
+export function oaDrillIndex() {
+  const index = new Map<string, number[]>();
   for (const [id, entry] of drillEntries())
     if (oaLibrary().problem(id) && oaJudgeRegistry().isCurrent(id, entry.packageChecksum))
-      counts.set(id, entry.drills.length);
-  return counts;
+      index.set(id, entry.drills.map((drill) => drill.n));
+  return index;
 }
 const reviewSchema = z
   .object({ n: z.number().int().nonnegative(), lines: z.array(z.number().int().positive().max(100000)).max(200) })
