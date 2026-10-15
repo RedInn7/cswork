@@ -215,13 +215,13 @@ void test('an anonymous post names no one, its author excepted, on the board, th
   assert.equal(post.mine, true);
   assert.equal(post.anonymous, true);
   // A mention from an anonymous author carries no name.
-  assert.deepEqual(notices(ada.id).map((n) => n.body), ['Offer numbers']);
+  assert.deepEqual(notices(ada.id, 'mention').map((n) => n.body), ['Offer numbers']);
 
   await ok(ada, 'POST', `posts/${post.id}/vote`, { on: true });
   const top = (await ok<Detail>(ada, 'POST', `posts/${post.id}/comments`, { body: 'Congrats' })).comments[0];
   // The author answering under it stays anonymous, marked as the poster, in replies' notices too.
   await ok(bob, 'POST', `posts/${post.id}/comments`, { body: 'Thank you', parentId: top.id });
-  assert.equal(notices(ada.id).at(-1)!.body, 'Thank you');
+  assert.deepEqual(notices(ada.id, 'reply').map((n) => n.body), ['Thank you']);
   for (const reader of [ada, null]) {
     const listed = await ok<List>(reader, 'GET', 'posts?problem=discuss:offer&sort=new');
     const detail = await ok<Detail>(reader, 'GET', `posts/${post.id}`);
@@ -255,6 +255,7 @@ void test('an anonymous post names no one, its author excepted, on the board, th
 void test('moderators feature posts first in either order', async () => {
   const a = (await ok<Detail>(dee, 'POST', 'posts', { problemId: 'discuss:career', title: 'Older', body: 'x' })).post;
   const b = (await ok<Detail>(dee, 'POST', 'posts', { problemId: 'discuss:career', title: 'Newer', body: 'y' })).post;
+  sqlite().prepare('UPDATE solution_posts SET created_at=created_at-1000 WHERE id=?').run(a.id);
   await ok(ada, 'POST', `posts/${b.id}/vote`, { on: true });
   assert.equal(await status(ada, 'POST', `posts/${a.id}/pin`, {}), 403);
   assert.equal((await ok<Detail>(ada, 'GET', `posts/${a.id}`)).moderator, false);

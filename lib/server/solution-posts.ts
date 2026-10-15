@@ -15,7 +15,6 @@ import type { Person } from './auth';
 import { library } from './content-library';
 import { refuseInContest, runningContestProblems } from './contests';
 import { isCourseOwner } from './course-visibility';
-import { nameOf } from './direct-messages';
 import { hiddenCompanies } from './env';
 import { memberIdOf, readMember } from './experience-submissions';
 import { auditStatement, HttpError, json, limit, limitReader, requirePerson } from './http';
@@ -176,6 +175,15 @@ const shape = ({ voted, starred, employer, referrer, pinned, ...r }: PostRow) =>
     !r.anonymous && r.problemId === 'discuss:referral' && !!r.tag && referrer === r.tag && !!badgeName(referrer),
 });
 
+/** As posts show people (and direct messages and notices name them): the public handle if the profile is visible, else a masked name. */
+export function nameOf(userId: string) {
+  const r = sqlite()
+    .prepare(
+      `SELECT u.name,pr.handle FROM "user" u LEFT JOIN user_profiles pr ON pr.user_id=u.id AND pr.visible=1 WHERE u.id=?`,
+    )
+    .get(userId) as { name: string; handle: string | null } | undefined;
+  return r?.handle ? `@${r.handle}` : maskName(r?.name ?? '');
+}
 export const canModerate = (p: Person | null) => !!p && (p.role === 'teacher' || isCourseOwner(p));
 const reportedDown = (target: string) =>
   `(SELECT COUNT(*) FROM post_reports r WHERE r.target=${target} AND r.reason<>'${REPORT_CLEARED}')>=${REPORTS_HIDE}`;
