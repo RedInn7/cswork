@@ -89,6 +89,8 @@ worker 仍一次处理一个提交，复用执行器现有的两个槽，让至�
 
 已有 runner 可用 `Dockerfile.pch` 基于当前镜像的不可变 image ID 构建小型升级，避免重编译 go-judge；完整新安装的 `Dockerfile` 也执行同一 `build-cpp-pch.sh`。替换前保留旧镜像标签，等在途任务归零后暂停 worker，再替换 sandbox，检查健康并重启 worker以清空旧执行器缓存。回滚为旧镜像后，新网页与 worker 的普通头 fallback 仍可运行。
 
+SQL 专项的 pandas 版（`pd-` 题）用 Debian 的 `python3-pandas`：已有 runner 用 `Dockerfile.pandas` 同样基于当前 image ID 增量升级，完整安装的 `Dockerfile` 已包含该包。替换 sandbox 后重新运行 `verify-runtime.py`（在沙箱内实测 pandas 并写入 `OJ_LANGUAGE_VERSIONS`）并重启 worker，`pd-` 题才会出现；未安装 pandas 时网页自动隐藏这些题，所以应用可以先于镜像发布。
+
 ## 从提交点击到结果显示（2026-09-06）
 
 参考 LeetCode 的运行结果面板与提交记录流程（[官方操作说明](https://support.leetcode.com/hc/en-us/articles/360012016874-Start-your-Coding-Practice)）。其完整编译/调度实现未公开，本项目不据此声称采用相同后端或相同耗时。
