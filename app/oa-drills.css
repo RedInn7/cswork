@@ -39,7 +39,7 @@
 }
 .oa-drills-filters a[aria-current='page'],
 .oa-drills-actions button[aria-pressed='true'] {
-  border-color: #0e1a2b;
+  border: 1px solid #0e1a2b;
   background: #0e1a2b;
   color: #fff;
 }
@@ -224,17 +224,21 @@
   align-items: center;
   min-height: 36px;
   padding: 0 16px;
-  border: 1px solid #0e1a2b;
   border-radius: 8px;
-  background: #0e1a2b;
-  color: #fff;
   font: inherit;
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
 }
+/* Colours per element: app/theme.css hand-sets the button's dark fill, keyed by this selector. */
+.oa-review-actions button {
+  border: 1px solid #0e1a2b;
+  background: #0e1a2b;
+  color: #fff;
+}
 .oa-review-actions a {
+  border: 1px solid #0e1a2b;
   background: #fff;
   color: #0e1a2b;
 }
@@ -258,10 +262,6 @@
     background: #191919;
     color: #bed2e5;
     text-decoration: none;
-  }
-  .dark .oa-drills-filters a[aria-current='page'],
-  .dark .oa-drills-actions button[aria-pressed='true'] {
-    border-color: #0e1a2b;
   }
   .dark .oa-drills-filters a:focus-visible,
   .dark .oa-drills-actions a:focus-visible,
@@ -350,12 +350,10 @@
   }
   .dark .oa-review-actions button,
   .dark .oa-review-actions a {
-    border: 1px solid #0e1a2b;
-    background: #0e1a2b;
-    color: #fff;
     text-decoration: none;
   }
   .dark .oa-review-actions a {
+    border: 1px solid #94a4bb;
     background: #191919;
     color: #d6e4f9;
   }
