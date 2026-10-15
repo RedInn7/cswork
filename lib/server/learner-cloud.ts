@@ -17,6 +17,7 @@ import { HttpError, json, limit, limitReader, requirePerson } from './http';
 import { mockReport } from './mock-oa';
 import { readJson } from './my-practice';
 import { canSeeProblem, listProblemSummaries } from './oj-problems';
+import { mutualFollow } from './follows';
 import { dailyDays } from './points';
 import { reputationSql, visibleTarget } from './solution-posts';
 import { badgeName, badgeSql, badgeTarget } from './work-verify';
@@ -960,24 +961,37 @@ export function publicYear(handle: string, year: number, catalogue: PublicCatalo
  * Two or three visible profiles side by side, or null when any is hidden or missing: the solved
  * counts and Line 500 stops each page already shows, plus how many problems all of them solved.
  * Never which problems: a profile lists only its ten latest.
+ *
+ * That shared count is null unless the viewer is one of them and follows each of the others both
+ * ways: otherwise a throwaway account that accepts one problem and compares itself with someone
+ * learns whether they solved it.
  */
-export function publicCompare(handles: readonly string[], catalogue: PublicCatalogue) {
+export function publicCompare(handles: readonly string[], catalogue: PublicCatalogue, viewerId: string | null = null) {
   const unique = [...new Set(handles)];
   if (unique.length < 2 || unique.length > 3) return null;
   const shown = shownIn(catalogue);
-  const people: { handle: string; solved: ReturnType<typeof tally>['solved']; stops: Record<string, number>; ids: Set<string> }[] =
-    [];
+  const people: {
+    userId: string;
+    handle: string;
+    solved: ReturnType<typeof tally>['solved'];
+    stops: Record<string, number>;
+    ids: Set<string>;
+  }[] = [];
   for (const handle of unique) {
     const profile = visibleProfile(handle);
     if (!profile) return null;
     const ids = new Set(solvedList(profile.user_id, shown).map((s) => s.id));
     const { solved, stops } = tally(ids, catalogue);
-    people.push({ handle: profile.handle, solved, stops: Object.fromEntries(stops), ids });
+    people.push({ userId: profile.user_id, handle: profile.handle, solved, stops: Object.fromEntries(stops), ids });
   }
   const [first, ...rest] = people;
+  const friends =
+    !!viewerId &&
+    people.some((p) => p.userId === viewerId) &&
+    people.every((p) => p.userId === viewerId || mutualFollow(viewerId, p.userId));
   return {
     people: people.map((p) => ({ handle: p.handle, solved: p.solved, stops: p.stops })),
-    common: [...first.ids].filter((id) => rest.every((p) => p.ids.has(id))).length,
+    common: friends ? [...first.ids].filter((id) => rest.every((p) => p.ids.has(id))).length : null,
     // Line order, every stop anyone reached.
     stops: [...STOP_TOTALS]
       .filter(([slug]) => people.some((p) => p.stops[slug]))

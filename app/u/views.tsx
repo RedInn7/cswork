@@ -436,10 +436,15 @@ export function CompareView({ compare, zh }: { compare: NonNullable<ReturnType<t
         <p className="lists-public-kicker">{t('刷题对比', 'Compare')}</p>
         <h1>{people.map((p) => `@${p.handle}`).join(' vs ')}</h1>
         <p className="learner-compare-common">
-          {t(
-            people.length > 2 ? `三人都通过的题：${compare.common} 道` : `两人都通过的题：${compare.common} 道`,
-            `Solved by ${people.length > 2 ? 'all three' : 'both'}: ${compare.common}`,
-          )}
+          {compare.common === null
+            ? t(
+                '互相关注后可以看到共同通过的题数',
+                `Follow each other to see how many problems you ${people.length > 2 ? 'all' : 'both'} solved`,
+              )
+            : t(
+                people.length > 2 ? `三人都通过的题：${compare.common} 道` : `两人都通过的题：${compare.common} 道`,
+                `Solved by ${people.length > 2 ? 'all three' : 'both'}: ${compare.common}`,
+              )}
         </p>
       </section>
       <div className="contest-board-wrap" role="region" aria-label={t('按难度的通过数', 'Solved by difficulty')} tabIndex={0}>

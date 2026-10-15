@@ -16,11 +16,11 @@ const DAY = 86400000;
 // ponytail: a flat cap keeps a scripted client from following every profile.
 export const FOLLOW_MAX = 1000;
 const LIST_MAX = 200;
-const handle = z.string().trim().toLowerCase().regex(HANDLE);
 
 /** A visible profile's account id, or null (hidden and missing look the same). */
 function visibleUser(h: string) {
-  return handle.safeParse(h).success
+  // HANDLE only inside functions: learner-cloud imports this module back (mutualFollow).
+  return HANDLE.test(h.toLowerCase())
     ? ((
         sqlite().prepare('SELECT user_id FROM user_profiles WHERE handle=? AND visible=1').get(h.toLowerCase()) as
           | { user_id: string }
@@ -98,6 +98,8 @@ export function followBoard(p: Person, tz = 0, now = Date.now()) {
 
 const edge = (from: string, to: string) =>
   !!sqlite().prepare('SELECT 1 FROM user_follows WHERE follower_id=? AND followee_id=?').get(from, to);
+/** Two accounts that follow each other (the bar for direct messages and the compare page's shared count). */
+export const mutualFollow = (a: string, b: string) => edge(a, b) && edge(b, a);
 
 /** /api/oj/follows/…: GET ?handle= (the button's state, signed out too), GET board, POST {handle,on}. */
 export async function handleFollows(request: Request, p: Person | null, path: string[]) {

@@ -1,6 +1,9 @@
+import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { seoMetadata } from '@/lib/seo';
+import { person } from '@/lib/server/auth';
+import { origin } from '@/lib/server/env';
 import { publicCatalogue, publicCompare } from '@/lib/server/learner-cloud';
 import { requestLocale } from '@/lib/server/locale';
 import { CompareView } from '../views';
@@ -20,11 +23,15 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-/** /u/compare?a=&b=(&c=): two or three public profiles; any hidden or missing one is a 404. */
+/**
+ * /u/compare?a=&b=(&c=): two or three public profiles; any hidden or missing one is a 404. The
+ * shared solved count needs the viewer among them, following each of the others both ways.
+ */
 export default async function CompareLearnersPage({ searchParams }: Props) {
   const q = await searchParams;
   const handles = [q.a, q.b, q.c].flatMap((v) => (typeof v === 'string' && v ? [v.toLowerCase()] : []));
-  const compare = publicCompare(handles, await publicCatalogue());
+  const viewer = await person(new Request(origin(), { headers: await headers() })).catch(() => null);
+  const compare = publicCompare(handles, await publicCatalogue(), viewer?.id ?? null);
   if (!compare) notFound();
   return <CompareView compare={compare} zh={(await requestLocale()) === 'zh'} />;
 }

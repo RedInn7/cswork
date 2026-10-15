@@ -108,8 +108,13 @@ void test('the year counts its own UTC days and pads the heatmap for the readerâ
   assert.equal(JSON.stringify(y2026).includes('lc-'), false, 'no problem ids');
 });
 
+const follow = (from: string, to: string) =>
+  sqlite().prepare('INSERT INTO user_follows(follower_id,followee_id,created_at) VALUES(?,?,1)').run(from, to);
+
 void test('compare: per-person counts and the number solved by all, never which problems', () => {
-  const two = publicCompare(['ann', 'bob'], catalogue)!;
+  follow('u-ann', 'u-bob');
+  follow('u-bob', 'u-ann');
+  const two = publicCompare(['ann', 'bob'], catalogue, 'u-ann')!;
   assert.deepEqual(
     two.people.map((p) => [p.handle, p.solved.total]),
     [
@@ -121,8 +126,34 @@ void test('compare: per-person counts and the number solved by all, never which 
   assert.deepEqual(two.people[1].stops, { 'hash-counting': 1, 'two-pointers-windows': 1, 'stacks-heaps': 1 });
   assert.deepEqual(two.stops.map((s) => s.slug).sort(), ['hash-counting', 'stacks-heaps', 'two-pointers-windows']);
   assert.equal(JSON.stringify(two).includes('lc-'), false, 'no problem ids');
-  assert.equal(publicCompare(['ann', 'bob', 'cat'], catalogue)!.common, 1, 'lc-3 only');
+  assert.equal(publicCompare(['ann', 'bob'], catalogue, 'u-bob')!.common, 2, 'either side of the pair');
+  follow('u-ann', 'u-cat');
+  follow('u-cat', 'u-ann');
+  assert.equal(publicCompare(['ann', 'bob', 'cat'], catalogue, 'u-ann')!.common, 1, 'lc-3 only');
   assert.equal(publicCompare(['ann', 'hidden-one'], catalogue), null);
   assert.equal(publicCompare(['ann', 'ann'], catalogue), null, 'two different people');
   assert.equal(publicCompare(['ann', 'bob', 'cat', 'hidden-one'], catalogue), null, 'three at most');
+});
+
+void test('compare: the shared count only for a compared viewer who follows each of the others both ways', () => {
+  // A throwaway account that accepts one problem must not learn whether someone else solved it.
+  const common = (handles: string[], viewer?: string | null) => publicCompare(handles, catalogue, viewer)!.common;
+  sqlite().prepare('DELETE FROM user_follows').run();
+  assert.equal(common(['ann', 'bob']), null, 'signed out');
+  follow('u-ann', 'u-bob');
+  assert.equal(common(['ann', 'bob'], 'u-ann'), null, 'one way only');
+  assert.equal(common(['ann', 'bob'], 'u-bob'), null);
+  follow('u-bob', 'u-ann');
+  assert.equal(common(['ann', 'bob'], 'u-ann'), 2);
+  assert.equal(common(['ann', 'bob'], 'u-cat'), null, 'not one of them');
+  assert.equal(common(['ann', 'bob']), null);
+  // Three people: the viewer and each of the other two, both ways; the other two need not.
+  follow('u-cat', 'u-ann');
+  assert.equal(common(['ann', 'bob', 'cat'], 'u-ann'), null, 'ann does not follow cat back');
+  follow('u-ann', 'u-cat');
+  assert.equal(common(['ann', 'bob', 'cat'], 'u-ann'), 1);
+  assert.equal(common(['bob', 'cat', 'ann'], 'u-ann'), 1, 'any order');
+  assert.equal(common(['ann', 'bob', 'cat'], 'u-bob'), null, 'bob and cat do not follow each other');
+  const shown = publicCompare(['ann', 'bob'], catalogue, 'u-ann')!;
+  assert.equal(JSON.stringify(shown).includes('u-'), false, 'no account ids');
 });

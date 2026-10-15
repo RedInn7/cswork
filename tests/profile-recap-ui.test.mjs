@@ -195,6 +195,22 @@ test('the recap and compare pages show counts only', () => {
     ],
   );
   assert.ok(cmp.querySelector('a[href="/u/bob"]'));
+
+  // Not following each other: a note instead of the shared count.
+  const hidden = { ...compare, common: null };
+  assert.equal(
+    html(createElement(CompareView, { compare: hidden, zh: false })).querySelector('.learner-compare-common').textContent,
+    'Follow each other to see how many problems you both solved',
+  );
+  const three = { ...hidden, people: [...compare.people, { ...compare.people[1], handle: 'cat' }] };
+  assert.equal(
+    html(createElement(CompareView, { compare: three, zh: true })).querySelector('.learner-compare-common').textContent,
+    '互相关注后可以看到共同通过的题数',
+  );
+  assert.equal(
+    html(createElement(CompareView, { compare: three, zh: false })).querySelector('.learner-compare-common').textContent,
+    'Follow each other to see how many problems you all solved',
+  );
 });
 
 test('the settings card saves links, school, class year and role, and says the school board needs contests shown', async () => {
