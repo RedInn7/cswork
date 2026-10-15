@@ -196,8 +196,10 @@ export async function handleMyPractice(
         const { n } = db
           .prepare('SELECT COUNT(*) AS n FROM user_marks WHERE user_id=?')
           .get(p.id) as { n: number };
-        if (n + keys.length > MAX_ROWS) throw new HttpError(409, '笔记或标记已达上限');
-        return keys.reduce((sum, key) => sum + insert.run(p.id, key, batch.mark, now).changes, 0);
+        const added = keys.reduce((sum, key) => sum + insert.run(p.id, key, batch.mark, now).changes, 0);
+        // Ticks already there add nothing; the throw rolls the inserts back.
+        if (n + added > MAX_ROWS) throw new HttpError(409, '笔记或标记已达上限');
+        return added;
       })();
       return json({ mark: batch.mark, added });
     }

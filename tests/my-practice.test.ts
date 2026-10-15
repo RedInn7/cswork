@@ -212,6 +212,9 @@ void test('done ticks move in as one batch, all or none, and show on classic lis
   assert.equal(await status(full, 'POST', 'marks', batch(['problem:lc-1', 'problem:lc-2'])), 409);
   assert.deepEqual(await done(full), []);
   assert.equal((await ok<{ added: number }>(full, 'POST', 'marks', batch(['problem:lc-1']))).added, 1);
+  // At the cap, ticks already there still merge.
+  assert.equal((await ok<{ added: number }>(full, 'POST', 'marks', batch(['problem:lc-1']))).added, 0);
+  assert.equal(await status(full, 'POST', 'marks', batch(['problem:lc-1', 'problem:lc-2'])), 409);
   // The classic list view carries the ticks.
   const { listClassicLibrary } = await import('../lib/server/study-library');
   const { classicList } = await import('../lib/classic-lists');
