@@ -38,6 +38,8 @@ export function McqPractice({ items, zh }: { items: PracticeItem[]; zh: boolean 
   const [stored, setStored] = useState(true);
   useEffect(() => {
     try {
+      // After mount, so the server and first client render agree (no storage on the server).
+      // oxlint-disable-next-line react/react-compiler -- one read of browser storage per mount.
       setDone(parseAnswers(localStorage.getItem(KEY)));
     } catch {
       setStored(false);
@@ -66,7 +68,8 @@ export function McqPractice({ items, zh }: { items: PracticeItem[]; zh: boolean 
   return (
     <>
       <div className="oa-mcq-filters">
-        <div role="group" aria-label={t('题型', 'Section')}>
+        <fieldset>
+          <legend className="sr-only">{t('题型', 'Section')}</legend>
           {chip(!section, t('全部', 'All'), items.length, () => {
             setSection('');
             setTopic('');
@@ -77,8 +80,9 @@ export function McqPractice({ items, zh }: { items: PracticeItem[]; zh: boolean 
               setTopic('');
             }),
           )}
-        </div>
-        <div role="group" aria-label={t('知识点', 'Topic')}>
+        </fieldset>
+        <fieldset>
+          <legend className="sr-only">{t('知识点', 'Topic')}</legend>
           {chip(!topic, t('全部知识点', 'All topics'), inSection.length, () => setTopic(''))}
           {topics.map((slug) =>
             chip(
@@ -88,7 +92,7 @@ export function McqPractice({ items, zh }: { items: PracticeItem[]; zh: boolean 
               () => setTopic(slug),
             ),
           )}
-        </div>
+        </fieldset>
       </div>
       <div className="oa-mcq-score">
         <output aria-live="polite">

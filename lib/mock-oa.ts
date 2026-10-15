@@ -387,11 +387,9 @@ export function finishMcq(s: MockSession, now: number): MockSession {
  * section that ran out moves on to coding, whose clock started at the section's end.
  */
 export function settleMockState(state: MockState, now: number): MockState {
-  let a = state.active;
-  if (a?.mcq?.startedAt && !a.startedAt && mockClock(a.mcq, now).phase === 'finished') {
-    a = finishMcq(a, now);
-    state = { ...state, active: a };
-  }
+  const a = state.active;
+  if (a?.mcq?.startedAt && !a.startedAt && mockClock(a.mcq, now).phase === 'finished')
+    return settleMockState({ ...state, active: finishMcq(a, now) }, now);
   if (!a?.startedAt || mockClock(a, now).phase !== 'finished') return state;
   return archiveMock(state, finishMock(a, now, 'timeout'));
 }

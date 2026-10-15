@@ -376,7 +376,7 @@ export function MockOa({
           pick={(index, picks) =>
             save((latest) => {
               const a = latest.active;
-              if (a?.id !== briefing.id || !a.mcq || a.startedAt) return latest;
+              if (!a || a.id !== briefing.id || !a.mcq || a.startedAt) return latest;
               const next = a.mcq.picks.map((p, i) => (i === index ? picks : p));
               return { ...latest, active: { ...a, mcq: { ...a.mcq, picks: next } } };
             })

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { cache } from 'react';
 import { oaCompanyName, oaCompanyPath, oaProblemPath } from '@/lib/oa-company-brands';
 import { breadcrumbJsonLd, oaPageTitle, seoMetadata } from '@/lib/seo';
@@ -71,9 +72,9 @@ export default async function OaIndex() {
         </div>
       </dl>
       <p className="oa-public-actions">
-        <a className="oa-public-cta is-quiet" href="/oa/mcq">
+        <Link className="oa-public-cta is-quiet" href="/oa/mcq" prefetch={false}>
           {zh ? 'OA 选择题练习（CS 基础 · 读代码 · 数学逻辑）' : 'OA multiple-choice practice (CS · code output · quant)'}
-        </a>
+        </Link>
       </p>
       {!!fresh.length && (
         <details className="oa-public-fresh">

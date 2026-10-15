@@ -99,7 +99,7 @@ export function OaExamFormat({ preset: p, updated, zh }: { preset: MockPreset; u
     [
       zh ? '来源' : 'Sources',
       p.refs.length ? (
-        <ul>
+        <ul key="refs">
           {p.refs.map((r) => (
             <li key={r.url}>
               <a href={r.url} rel="nofollow noopener noreferrer" target="_blank">

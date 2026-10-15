@@ -19,7 +19,7 @@ import { SITEMAP_STATIC_ENTRIES } from '../lib/seo';
 const bank = bankFile.questions as McqQuestion[];
 const TOPICS = ['os', 'dbms', 'network', 'concurrency', 'oop', 'python', 'java', 'js', 'probability', 'logic'];
 
-test('the bank is well formed: unique ids, known sections and topics, answers in range, both languages', () => {
+void test('the bank is well formed: unique ids, known sections and topics, answers in range, both languages', () => {
   assert.equal(new Set(bank.map((q) => q.id)).size, bank.length);
   for (const q of bank) {
     assert(MCQ_SECTIONS.includes(q.section), q.id);
@@ -34,7 +34,7 @@ test('the bank is well formed: unique ids, known sections and topics, answers in
   assert(SITEMAP_STATIC_ENTRIES.some((e) => e.path === '/oa/mcq'), 'the practice page is in the sitemap');
 });
 
-test('every preset MCQ section can fill its draw from the bank', () => {
+void test('every preset MCQ section can fill its draw from the bank', () => {
   const withMcq = shownMockPresets().filter((p) => p.mcq);
   assert(withMcq.length >= 9);
   for (const p of withMcq) {
@@ -46,7 +46,7 @@ test('every preset MCQ section can fill its draw from the bank', () => {
   assert(drawMcq(bank, coinbase.mcq!, 7).every((id) => quant.has(id)), 'coinbase draws quant only');
 });
 
-test('a draw has no repeats, follows sections and topics, is seeded, and prefers unseen questions', () => {
+void test('a draw has no repeats, follows sections and topics, is seeded, and prefers unseen questions', () => {
   const config = { count: 10, sections: ['cs' as const], topics: ['concurrency'] };
   const ids = drawMcq(bank, config, 42);
   assert.equal(ids.length, 10);
@@ -62,7 +62,7 @@ test('a draw has no repeats, follows sections and topics, is seeded, and prefers
   assert.equal(drawMcq(bank, { count: 500, sections: ['quant'] }, 1).length, bank.filter((q) => q.section === 'quant').length);
 });
 
-test('a select-all question scores only the exact answer set; the section is a 100-point block', () => {
+void test('a select-all question scores only the exact answer set; the section is a 100-point block', () => {
   assert(mcqRight([0, 2], [2, 0]));
   assert(!mcqRight([0, 2], [0]));
   assert(!mcqRight([0, 2], [0, 1, 2]));
@@ -97,7 +97,7 @@ const base: MockSession = {
   createdAt: 1000,
 };
 
-test('old sessions without mcq still parse; a malformed mcq drops the session', () => {
+void test('old sessions without mcq still parse; a malformed mcq drops the session', () => {
   const state = parseMockState(JSON.stringify({ active: base, history: [{ ...base, id: 'old', startedAt: 2000, finishedAt: 3000 }] }));
   assert.equal(state.active?.id, 's1');
   assert.equal(state.history.length, 1);
@@ -106,7 +106,7 @@ test('old sessions without mcq still parse; a malformed mcq drops the session', 
   assert.equal(parseMockState(JSON.stringify({ active: { ...base, mcq: { ids: 'x' } }, history: [] })).active, null);
 });
 
-test('the MCQ section ends at hand-in or its deadline, and the coding clock starts there', () => {
+void test('the MCQ section ends at hand-in or its deadline, and the coding clock starts there', () => {
   const s = { ...base, mcq: { ids: ['a'], picks: [[]], minutes: 15, startedAt: 10_000 } };
   assert.equal(mockClock(s, 20_000).phase, 'ready', 'coding has not started');
   assert.equal(mockClock(s.mcq, 20_000).phase, 'running');

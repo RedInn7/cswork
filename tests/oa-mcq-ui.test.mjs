@@ -45,7 +45,7 @@ test('practice: submit grades and explains, answers persist in this browser, fil
   const { McqPractice, parseAnswers } = await import('../app/oa/mcq/practice.tsx');
   assert.deepEqual(parseAnswers('{"a":[1],"b":[],"c":"x","d":[0.5]}'), { a: [1] });
   assert.deepEqual(parseAnswers('nope'), {});
-  const items = [single, multi, byId.get('mcq-python-1')].map(({ zh, en, ...q }) => ({ ...q, text: en }));
+  const items = [single, multi, byId.get('mcq-python-1')].map((q) => ({ ...q, zh: undefined, en: undefined, text: q.en }));
   const root = await render(createElement(McqPractice, { items, zh: false }));
   assert.match(document.body.textContent, /3 questions/);
   assert.equal(document.querySelectorAll('input[type="checkbox"]').length, multi.en.choices.length);
