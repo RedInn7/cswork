@@ -3,15 +3,24 @@
 // the server, and the client form sends pasted text only when asked and shows the review.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { register } from 'node:module';
+import { register, createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
 import { JSDOM } from 'jsdom';
 import { createElement, act } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
+const react = pathToFileURL(createRequire(import.meta.url).resolve('react')).href;
+const mocks = {
+  'next/headers': `export const cookies = async () => ({ get: () => undefined });`,
+  'next/link': `import React from ${JSON.stringify(react)};export default function Link({ href, prefetch, children, ...rest }) { return React.createElement('a', { href, ...rest }, children); }`,
+};
 register(
-  `data:text/javascript,${encodeURIComponent(
-    `export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};return n(u,c);}`,
-  )}`,
+  `data:text/javascript,${encodeURIComponent(`const mocks=${JSON.stringify(mocks)};
+export async function resolve(s,c,n){if(mocks[s])return {url:'mock:'+s,shortCircuit:true};return n(s,c);}
+export async function load(u,c,n){
+  if(u.startsWith('mock:'))return {format:'module',source:mocks[u.slice(5)],shortCircuit:true};
+  if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};
+  return n(u,c);}`)}`,
   import.meta.url,
 );
 
@@ -108,6 +117,16 @@ test('a chapter renders its body with labelled scroll regions, a table of conten
 test('the sitemap lists the guide and the resume review', () => {
   const paths = new Set(SITEMAP_STATIC_ENTRIES.map((e) => e.path));
   for (const path of ['/guide', '/career/resume', '/career/visa-timeline', ...GUIDE_CHAPTERS.map((c) => `/guide/${c.slug}`)]) assert.ok(paths.has(path), path);
+});
+
+test('no nav or timeline link points at the H-1B ranking while its data is unbuilt', async () => {
+  const { H1B } = await import('../lib/server/h1b.ts');
+  const { GuideShell } = await import('../app/guide/shell.tsx');
+  const { default: VisaTimelinePage } = await import('../app/career/visa-timeline/page.tsx');
+  const shell = renderToStaticMarkup(createElement(GuideShell, { zh: false, children: null }));
+  const visa = renderToStaticMarkup(await VisaTimelinePage());
+  assert.match(shell, /href="\/career\/tracker"/);
+  for (const html of [shell, visa]) assert.equal(html.includes('href="/career/h1b"'), H1B.fiscalYears.length > 0);
 });
 
 test('the resume form waits for enough text, sends it once, and shows the review', async () => {

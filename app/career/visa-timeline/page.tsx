@@ -3,6 +3,7 @@ import { seoMetadata } from '@/lib/seo';
 import { guidePath } from '@/lib/career-guide';
 import { requestLocale } from '@/lib/server/locale';
 import { VisaTimeline } from '@/components/visa-timeline';
+import { H1B } from '@/lib/server/h1b';
 
 const copy = {
   en: {
@@ -59,9 +60,11 @@ export default async function VisaTimelinePage() {
           {c.notice} <a href={guidePath('visa')}>{c.chapter}</a>
         </p>
       </div>
-      <p>
-        <a href="/career/h1b">{c.h1b} →</a>
-      </p>
+      {H1B.fiscalYears.length > 0 && (
+        <p>
+          <a href="/career/h1b">{c.h1b} →</a>
+        </p>
+      )}
       <VisaTimeline zh={zh} />
     </>
   );
