@@ -50,7 +50,7 @@ export function YearRecapCard({
   const meters: [string, string, string | number][] = [
     ['通过题数', 'Solved', recap.total],
     ['有通过的天数', 'Active days', recap.activeDays],
-    ['最长连续', 'Best streak', t(`${recap.best} 天`, `${recap.best} days`)],
+    ['最长连续', 'Best streak', t(`${recap.best} 天`, `${recap.best} ${recap.best === 1 ? 'day' : 'days'}`)],
     [
       '最忙的一天',
       'Busiest day',
