@@ -60,6 +60,14 @@ export function TopicsIndexView({ zh }: { zh: boolean }) {
         <h1>{c.heading}</h1>
         <p>{c.description}</p>
       </div>
+      <a className="topics-roadmap" href="/roadmap">
+        <strong>{zh ? '知识点依赖图' : 'Prerequisite graph'}</strong>
+        <span>
+          {zh
+            ? '35 站谁是谁的先修，一张图看清；还有系统设计和行为面试的学习路线。'
+            : 'How the 35 stops build on each other, plus the system design and behavioral tracks.'}
+        </span>
+      </a>
       <div className="topics-map">
         {TOPIC_GROUPS.map((group, g) => (
           <section className="topics-group" key={group.en} aria-labelledby={`topics-group-${g}`}>

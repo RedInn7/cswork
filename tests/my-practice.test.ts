@@ -241,6 +241,50 @@ void test('a problem vote is up or down, never both, and only on a problem', asy
   assert.equal(problemVote(other.id, 'lc-2'), null);
 });
 
+void test('done ticks move in as one batch, all or none, and show on classic lists', async () => {
+  type Marks = { items: { target: string }[] };
+  const batch = (targets: unknown, extra = {}) => ({ targets, mark: 'done', ...extra });
+  const added = await ok<{ added: number }>(me, 'POST', 'marks', batch(['problem:lc-1', 'problem:lc-11', 'problem:lc-1']));
+  assert.equal(added.added, 2, 'duplicates count once');
+  assert.equal((await ok<{ added: number }>(me, 'POST', 'marks', batch(['problem:lc-1']))).added, 0, 'idempotent');
+  const done = async (p = me) =>
+    (await ok<Marks>(p, 'GET', 'marks?mark=done')).items.map((i) => i.target).sort();
+  assert.deepEqual(await done(), ['problem:lc-1', 'problem:lc-11']);
+  assert.deepEqual(await done(other), []);
+  // One bad entry refuses the whole batch.
+  for (const body of [
+    batch([]),
+    batch(Array.from({ length: 501 }, (_, i) => `problem:lc-${i + 1}`)),
+    batch(['problem:lc-3', 'content:x/y']),
+    batch(['problem:lc-3'], { mark: 'star' }),
+    batch(['problem:lc-3'], { on: true }),
+  ])
+    assert.equal(await status(me, 'POST', 'marks', body), 400);
+  assert.equal(await status(null, 'POST', 'marks', batch(['problem:lc-3'])), 401);
+  assert.deepEqual(await done(), ['problem:lc-1', 'problem:lc-11']);
+  // A batch that would pass the per-learner cap adds nothing.
+  const full: Person = { ...me, id: 'practice-full' };
+  const insert = sqlite().prepare("INSERT INTO user_marks(user_id,target,mark,created_at) VALUES(?,?,'star',1)");
+  sqlite().transaction(() => {
+    for (let i = 0; i < 4999; i++) insert.run(full.id, `problem:x-${i}`);
+  })();
+  assert.equal(await status(full, 'POST', 'marks', batch(['problem:lc-1', 'problem:lc-2'])), 409);
+  assert.deepEqual(await done(full), []);
+  assert.equal((await ok<{ added: number }>(full, 'POST', 'marks', batch(['problem:lc-1']))).added, 1);
+  // At the cap, ticks already there still merge.
+  assert.equal((await ok<{ added: number }>(full, 'POST', 'marks', batch(['problem:lc-1']))).added, 0);
+  assert.equal(await status(full, 'POST', 'marks', batch(['problem:lc-1', 'problem:lc-2'])), 409);
+  // The classic list view carries the ticks.
+  const { listClassicLibrary } = await import('../lib/server/study-library');
+  const { classicList } = await import('../lib/classic-lists');
+  const items = (p: Person) =>
+    listClassicLibrary(classicList('blind-75')!, p.id).groups.flatMap((g) => g.items);
+  const ticked = (p: Person) => items(p).flatMap((item) => (item.done ? [item.number] : []));
+  assert.deepEqual(ticked(me).sort((a, b) => a! - b!), [1, 11]);
+  assert.deepEqual(ticked(other), []);
+  assert.ok(items(me).every((item) => typeof item.done === 'boolean'));
+});
+
 void test('reviews climb the 3/7/21/60-day ladder by distinct AC days', () => {
   assert.deepEqual(REVIEW_LADDER, [3, 7, 21, 60]);
   const noon = new Date(2026, 9, 1, 12).getTime();

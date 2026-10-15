@@ -1196,6 +1196,16 @@
   font-size: 12px;
   color: var(--route-white-3);
 }
+/* To /roadmap: the stops as a prerequisite graph. */
+.route-graph-link {
+  font-size: 12px;
+  color: var(--route-white-2);
+  text-underline-offset: 3px;
+}
+.route-graph-link:is(:hover, :focus-visible) {
+  color: var(--route-white);
+  text-decoration: underline;
+}
 .route-heat-key i {
   width: 5px;
   height: 5px;
@@ -2276,6 +2286,13 @@
   }
   .dark .route-heat-key {
     color: var(--route-white-3);
+  }
+  .dark .route-graph-link {
+    color: var(--route-white-2);
+  }
+  .dark .route-graph-link:is(:hover, :focus-visible) {
+    color: var(--route-white);
+    text-decoration: underline;
   }
   .dark .route-heat-key i {
     background: #ff747c;

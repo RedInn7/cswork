@@ -1,4 +1,5 @@
 import lists from './content/classic-lists.json';
+import type { LcSite } from './lc-site';
 
 /**
  * A public problem list mapped onto this bank by LeetCode number. Only facts are
@@ -44,9 +45,12 @@ export const bookProblemUrl = (slug: string) =>
     ? `https://leetcode.cn/problems/${slug}/`
     : 'https://leetcode.cn/problemset/';
 
-/** A problem judged elsewhere: leetcode.cn for Chinese readers, leetcode.com for English. */
-export function leetcodeUrl(number: number, slug: string, english: boolean) {
-  const origin = english ? 'https://leetcode.com' : 'https://leetcode.cn';
+/**
+ * A problem judged elsewhere, on the chosen site (lib/lc-site.ts); `true` / `false` keep
+ * the old default: leetcode.com for English readers, leetcode.cn for Chinese ones.
+ */
+export function leetcodeUrl(number: number, slug: string, site: LcSite | boolean) {
+  const origin = site === true || site === 'com' ? 'https://leetcode.com' : 'https://leetcode.cn';
   // Numbers missing from the bank have no known slug; search by number instead.
   return /^[a-z0-9-]+$/.test(slug)
     ? `${origin}/problems/${slug}/`

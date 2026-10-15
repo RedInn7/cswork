@@ -70,10 +70,28 @@ test('classic lists show groups and progress, link external problems out and swi
     nextProblemId: 'lc-21',
   };
   const requests = [];
+  const posts = [];
+  // Members' hand ticks, as the server keeps them (user_marks done).
+  const done = new Set();
+  let failPost = false;
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = async (url) => {
+  globalThis.fetch = async (url, init) => {
     requests.push(url);
-    return Response.json(view);
+    if (init?.method === 'POST') {
+      const body = JSON.parse(init.body);
+      posts.push(body);
+      if (failPost) return Response.json({ error: '笔记或标记已达上限' }, { status: 409 });
+      for (const target of body.targets ?? [body.target]) {
+        const n = Number(target.slice('problem:lc-'.length));
+        if (body.on === false) done.delete(n);
+        else done.add(n);
+      }
+      return Response.json({ ok: true });
+    }
+    return Response.json({
+      ...view,
+      groups: view.groups.map((g) => ({ ...g, items: g.items.map((i) => ({ ...i, done: done.has(i.number) })) })),
+    });
   };
   const navigations = [];
   let authPrompts = 0;
@@ -118,18 +136,60 @@ test('classic lists show groups and progress, link external problems out and swi
     assert.equal(rows[1].getAttribute('target'), '_blank');
     assert.ok(rows[1].textContent.includes('External'));
     assert.ok(rows[1].textContent.includes('LeetCode 9999'));
-    assert.ok(!document.querySelector('progress'), 'guests have no progress bar');
-    assert.ok(document.body.textContent.includes('2 of 3 judgeable here'));
+    // The site switch: leetcode.cn instead, remembered by this browser.
+    const site = (name) => [...document.querySelectorAll('.classic-site button')].find((b) => b.textContent === name);
+    assert.equal(site('LeetCode US').getAttribute('aria-pressed'), 'true');
+    await click(site('LeetCode CN'));
+    assert.equal(rows[1].getAttribute('href'), 'https://leetcode.cn/problemset/?search=9999');
+    assert.equal(localStorage.getItem('cswork:lc-site'), 'cn');
+    await click(site('LeetCode US'));
+    assert.equal(rows[1].getAttribute('href'), 'https://leetcode.com/problemset/?search=9999');
+    // Guests tick problems by hand, any row, kept in this browser and counted in the bar.
+    let bar = document.querySelector('progress');
+    assert.equal(bar.getAttribute('max'), '3');
+    // (This mock answers lc-1 solved even for a guest.)
+    assert.equal(bar.getAttribute('value'), '1');
+    assert.ok(document.body.textContent.includes('1 of 3 done'));
+    assert.ok(document.body.textContent.includes('2 judgeable here'));
+    const box = (n) => document.querySelector(`input[aria-label^="Done: ${n}."]`);
+    assert.equal(document.querySelectorAll('.classic-tick input').length, 3);
+    await click(box(9999));
+    assert.equal(box(9999).checked, true);
+    assert.equal(localStorage.getItem('cswork:list-done:blind-75'), '[9999]');
+    assert.equal(bar.getAttribute('value'), '2');
+    assert.equal(document.querySelector('.classic-manual').textContent, '1 ticked by hand');
+    assert.equal(posts.length, 0, 'nothing leaves the browser');
+    assert.ok(
+      [...document.querySelectorAll('button')].some((b) => b.textContent === 'Sign in to sync across devices'),
+    );
     await click(rows[0]);
     assert.equal(authPrompts, 1);
     assert.equal(navigations.length, 0);
 
-    // Members get the bar over judgeable problems and the next problem.
+    // Signing in moves the browser's ticks into the account in one batch, then clears them.
     await render(true);
-    const bar = document.querySelector('progress');
-    assert.ok(!!bar);
-    assert.equal(bar.getAttribute('max'), '2');
-    assert.equal(bar.getAttribute('value'), '1');
+    await act(async () => new Promise((r) => setTimeout(r, 10)));
+    assert.deepEqual(posts[0], { targets: ['problem:lc-9999'], mark: 'done' });
+    assert.equal(localStorage.getItem('cswork:list-done:blind-75'), null);
+    // The bar counts problems solved here or ticked by hand.
+    bar = document.querySelector('progress');
+    assert.equal(bar.getAttribute('max'), '3');
+    assert.equal(bar.getAttribute('value'), '2');
+    assert.equal(box(9999).checked, true, 'the ticks come back from the account');
+    assert.ok(document.body.textContent.includes('2 of 3 done'));
+    // A member's tick is a done mark; a refused one rolls back with the server's reason.
+    await click(box(21));
+    assert.deepEqual(posts.at(-1), { target: 'problem:lc-21', mark: 'done', on: true });
+    assert.equal(bar.getAttribute('value'), '3');
+    failPost = true;
+    await click(box(21));
+    await act(async () => new Promise((r) => setTimeout(r, 10)));
+    assert.equal(box(21).checked, true);
+    assert.equal(document.querySelector('.classic-tick-error').textContent, "You've reached the limit for notes or marks");
+    failPost = false;
+    await click(box(21));
+    assert.equal(box(21).checked, false);
+    assert.ok(!document.querySelector('.classic-tick-error'), 'the next tick clears it');
     assert.ok(!!document.querySelector('a.study-row[data-next]'));
     const start = [...document.querySelectorAll('button')].find(
       (b) => b.textContent === 'Start next problem',

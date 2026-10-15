@@ -380,10 +380,19 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
     ),
     sequence,
     // The study plan (lib/study-plan.ts) counts what is left of the sequence:
-    // [problem id, difficulty, stop index] per unsolved entry, in line order.
+    // [problem id, difficulty, stop index, stage index, rating] per unsolved entry, in
+    // line order. Stage and rating pick what a short plan keeps.
     planTodo: all.flatMap((item) =>
       item.caseStatus === 'verified' && item.judgeProblemId && !item.solved
-        ? [[item.judgeProblemId, item.difficulty, STOP_INDEX.get(item.selection.sectionSlug) ?? 0] as const]
+        ? [
+            [
+              item.judgeProblemId,
+              item.difficulty,
+              STOP_INDEX.get(item.selection.sectionSlug) ?? 0,
+              CURATED_STAGES.indexOf(item.selection.stage),
+              item.rating === null ? null : Math.round(item.rating),
+            ] as const,
+          ]
         : [],
     ),
     nextProblemId: userId ? (nextItem?.judgeProblemId ?? null) : null,
@@ -569,6 +578,8 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
   const progress = userId
     ? studyProgress(userId, practiceRoundState(userId).activeRoundId)
     : new Map();
+  // Ticked by hand on the list (solved elsewhere): user_marks problem:lc-<n> done.
+  const marks = userId ? problemMarks(userId) : new Map<string, Set<string>>();
   const item = ({ number, ref, refSlug }: ClassicEntry) => {
     const row = number === null ? undefined : rows.get(number);
     // summary() only exposes the judge id of a problem that is judgeable now.
@@ -588,6 +599,9 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
       titleZh: row?.titleZh ?? '',
       titleEn: row?.titleEn ?? '',
       difficulty: row?.difficulty ?? '',
+      // What a short study plan keeps first: foundation stage, then lower rating.
+      stage: selection ? CURATED_STAGES.indexOf(selection.stage) : null,
+      rating: row?.rating == null ? null : Math.round(row.rating),
       judgeProblemId,
       external: !judgeProblemId,
       // Its Line 500 stop, judgeable here or not.
@@ -606,6 +620,7 @@ export function listClassicLibrary(list: ClassicList, userId?: string) {
           ? 'attempted'
           : 'not_started') as 'solved' | 'attempted' | 'not_started',
       judging: !!state?.pending,
+      done: number !== null && !!marks.get(`lc-${number}`)?.has('done'),
     };
   };
   const groups = list.groups.map((group, index) => {

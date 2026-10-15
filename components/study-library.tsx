@@ -734,7 +734,7 @@ export function StudyLibrary({
   const route = data?.collection ? routeStops(data.collection.sections) : null;
   const stops = route?.stops ?? [];
   const currentSlug =
-    (planStart ? stops[planStart[2]]?.slug : undefined) ??
+    (planStart ? stops[planStart[2] ?? 0]?.slug : undefined) ??
     next?.sectionSlug ??
     stops.find((stop) => stop.solved < stop.total)?.slug ??
     stops.at(-1)?.slug ??
@@ -1136,6 +1136,9 @@ export function StudyLibrary({
                   {t('热度点：面经出现越多越亮', 'Dots glow with interview reports')}
                 </span>
               )}
+              <a className="route-graph-link" href="/roadmap">
+                {t('查看依赖图', 'Prerequisite graph')}
+              </a>
               {data?.currentRound && (
                 <details className="route-round">
                   <summary>
