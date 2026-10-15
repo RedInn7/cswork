@@ -5,7 +5,8 @@
  * each test's answer. Every starter is a skeleton above a fixed driver; each solution keeps
  * that driver word for word, must reproduce every answer in its language, and every starter
  * must compile as shipped yet fail the sample. Local toolchains stand in for go-judge:
- * python3, $CXX or g++ (C++20), javac --release 21 and go with -lang=go1.24.
+ * python3, $CXX or g++ (C++20), javac --release 17 and go -lang=go1.18: below the judge's Java 21
+ * and Go 1.24, so whatever passes here also compiles there, on CI's default JDK and Go too.
  *
  *   node --import tsx scripts/core-skills/build.ts          # write the files
  *   node --import tsx scripts/core-skills/build.ts --check  # fail on drift
@@ -202,8 +203,8 @@ function compile(language: CodeLanguage, source: string) {
       : language === 'cpp'
         ? exec(process.env.CXX || 'g++', ['-std=c++20', '-O2', '-o', 'main', 'main.cpp'], dir)
         : language === 'java'
-          ? exec('javac', ['--release', '21', '-encoding', 'UTF-8', 'Main.java'], dir)
-          : exec('go', ['build', '-gcflags=-lang=go1.24', '-o', 'main', 'main.go'], dir);
+          ? exec('javac', ['--release', '17', '-encoding', 'UTF-8', 'Main.java'], dir)
+          : exec('go', ['build', '-gcflags=-lang=go1.18', '-o', 'main', 'main.go'], dir);
   const [command, args] =
     language === 'python'
       ? ['python3', ['-I', 'main.py']]
