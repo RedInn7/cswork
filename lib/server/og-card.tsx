@@ -148,8 +148,8 @@ type Cert = { id: string; course: string; issuedAt: number; skill: boolean; name
 /** /certificate/<id>: the course (both titles), the holder's account name, the date and the id. */
 export function certificateOg(zh: Cert, en: Cert): OgCard {
   const fallback = en.handle ? `@${en.handle}` : 'A CSWork learner';
-  const course = fit(zh.course, fit(en.course, 'A CSWork course'));
-  const english = fit(en.course, '');
+  const course = fit(zh.course, fit(en.course, 'A CSWork course', 30), 30);
+  const english = fit(en.course, '', 60);
   return {
     kicker: zh.skill ? '技能认证 · Skill certification' : '结业证书 · Certificate of completion',
     title: course,
