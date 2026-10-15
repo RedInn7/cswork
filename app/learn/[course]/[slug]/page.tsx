@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { problemAppHref } from '@/lib/classic-lists';
 import { SITE_NAME, breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
-import { beginnerCourse, learnKey, learnPath } from '@/lib/server/beginner-courses';
+import { beginnerCourse, learnKey, learnPath, learnSolved } from '@/lib/server/beginner-courses';
 import { requestLocale } from '@/lib/server/locale';
 import { sdSummary } from '@/lib/server/system-design-course';
 import { PublicLibraryMarkdown, markdownToc } from '../../../library/markdown';
@@ -104,7 +104,10 @@ export default async function LearnChapter({ params }: Props) {
             {chapter.homework.map((problem) => (
               <li key={problem.id}>
                 <a href={problemAppHref(problem.id)}>{zh ? problem.zh : problem.en}</a>
-                <span>{problem.id.replace('lc-', 'LeetCode ')}</span>
+                <span>
+                  {problem.id.replace('lc-', 'LeetCode ')}
+                  {learnSolved.has(problem.id) && t(' · 课里讲过解法，凭记忆再写一遍', ' · worked in a lesson: rewrite it from memory')}
+                </span>
               </li>
             ))}
           </ol>

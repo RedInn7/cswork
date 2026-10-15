@@ -61,6 +61,22 @@ test('every system design course diagram parses and fits the length limit', asyn
   assert.ok(total >= 48, 'the converted architecture diagrams stay covered');
 });
 
+test('every beginner crash course diagram parses', async () => {
+  const { courses } = JSON.parse(
+    readFileSync(new URL('../lib/content/beginner-courses.json', import.meta.url), 'utf8'),
+  );
+  let total = 0;
+  for (const course of courses)
+    for (const chapter of course.chapters)
+      for (const key of ['bodyZh', 'bodyEn'])
+        for (const match of chapter[key].matchAll(/^```mermaid\n([\s\S]*?)^```/gm)) {
+          total += 1;
+          const where = `${course.slug}/${chapter.slug}.${key}, diagram ${total}`;
+          assert.ok((await mermaid.parse(prepareCourseDiagram(match[1]))).diagramType, where);
+        }
+  assert.ok(total >= 20, 'a diagram in every Big-O lesson, in both languages');
+});
+
 test('author directives, frontmatter and oversized sources cannot alter renderer policy', () => {
   for (const source of [
     '%%{init: {"securityLevel":"loose","htmlLabels":true}}%%\nflowchart LR\n A-->B',

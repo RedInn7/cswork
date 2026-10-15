@@ -67,6 +67,11 @@ test('the index, a course and a lesson: links, numbering, quiz, practice and the
     [...doc.querySelectorAll('.learn-practice a')].map((a) => a.getAttribute('href')),
     ['/?view=problem&problem=lc-1046', '/?view=problem&problem=lc-703', '/?view=problem&problem=lc-215'],
   );
+  // All three are solved in a lesson (215 in Python's heapq): said so, not passed off as fresh.
+  assert.deepEqual(
+    [...doc.querySelectorAll('.learn-practice li span')].map((span) => span.textContent),
+    ['LeetCode 1046', 'LeetCode 703', 'LeetCode 215'].map((n) => `${n} · worked in a lesson: rewrite it from memory`),
+  );
   assert.ok(doc.querySelector('figure.course-diagram'), 'the heap diagram draws in the browser');
   const outline = [...doc.querySelectorAll('.sd-outline a')];
   assert.equal(outline.length, 10);

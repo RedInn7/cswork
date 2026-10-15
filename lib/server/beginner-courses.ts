@@ -11,6 +11,8 @@ export type BeginnerChapter = {
   quiz: SdQuestion[];
   /** Line 500 practice after the chapter, easy ones. */
   homework: { id: string; zh: string; en: string }[];
+  /** Problems whose solution the chapter's text prints (worked examples). */
+  solves: string[];
 };
 export type BeginnerCourse = {
   slug: string;
@@ -28,6 +30,15 @@ export type BeginnerCourse = {
  */
 export const beginnerCourses = (file as { courses: BeginnerCourse[] }).courses;
 export const beginnerCourse = (slug: string) => beginnerCourses.find((c) => c.slug === slug);
+/**
+ * Every problem a public lesson solves or assigns: its answer is a click away on /learn, past
+ * the contest gate, so exams and duels never draw one (lib/server/skill-tests.ts, duels.ts).
+ */
+export const learnProblems = new Set(
+  beginnerCourses.flatMap((c) => c.chapters.flatMap((ch) => [...ch.solves, ...ch.homework.map((h) => h.id)])),
+);
+/** Problems solved in some lesson's text: practice that is a worked example, not a fresh one. */
+export const learnSolved = new Set(beginnerCourses.flatMap((c) => c.chapters.flatMap((ch) => ch.solves)));
 export const learnKey = (course: string, chapter: string) => `${course}/${chapter}`;
 export const learnPath = (course?: string, chapter?: string) =>
   ['/learn', course, chapter].filter(Boolean).join('/');

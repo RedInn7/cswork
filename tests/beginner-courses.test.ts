@@ -17,12 +17,14 @@ const dir = mkdtempSync(resolve(tmpdir(), 'cswork-beginner-'));
 process.env.DATABASE_PATH = resolve(dir, 'test.sqlite');
 const { sqlite } = await import('../db/sqlite');
 const { handleOj } = await import('../lib/server/oj-api');
-const { beginnerCourse, beginnerCourses, learnKey, learnPath, learnPaths } = await import('../lib/server/beginner-courses');
+const { beginnerCourse, beginnerCourses, learnKey, learnPath, learnPaths, learnProblems, learnSolved } = await import(
+  '../lib/server/beginner-courses'
+);
 const { SELF_PACED, certificateById } = await import('../lib/server/certificates');
 const { DIAGRAM_MAX_LENGTH } = await import('../lib/course-diagram');
 
 const COURSE = ['chapters', 'slug', 'summaryEn', 'summaryZh', 'titleEn', 'titleZh'];
-const CHAPTER = ['bodyEn', 'bodyZh', 'homework', 'quiz', 'slug', 'titleEn', 'titleZh'];
+const CHAPTER = ['bodyEn', 'bodyZh', 'homework', 'quiz', 'slug', 'solves', 'titleEn', 'titleZh'];
 const QUESTION = ['answer', 'choices', 'qEn', 'qZh', 'whyEn', 'whyZh'];
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const text = (value: unknown) => typeof value === 'string' && value.trim().length > 0;
@@ -80,6 +82,11 @@ void test('two courses of complete bilingual chapters, quizzes and three practic
         if (!Object.hasOwn(contracts.problems, problem.id)) bad.push(`${at}: ${problem.id} has no contract`);
         if (!text(problem.zh) || !text(problem.en)) bad.push(`${at}: ${problem.id} title`);
       }
+      for (const id of chapter.solves as string[]) if (!/^lc-\d+$/.test(id)) bad.push(`${at}: solves ${id}`);
+      // Every Big-O lesson explains with a diagram, in both languages.
+      if (course.slug === 'big-o')
+        for (const key of ['bodyZh', 'bodyEn'])
+          if (!/^```mermaid\n/m.test(String(chapter[key]))) bad.push(`${at}.${key}: no diagram`);
     }
   }
   assert.deepEqual(bad, []);
@@ -99,6 +106,14 @@ void test('quiz answers sit in every position and are rarely the longest choice'
   }
   assert.ok(Math.max(...at) <= questions.length * 0.3, `answer positions ${at}`);
   assert.ok(longest <= questions.length * 2 * 0.3, `the answer is the longest choice ${longest} times`);
+});
+
+void test('problems a lesson solves or assigns are known, so exams and duels can leave them out', () => {
+  // Worked examples, read off the lessons' code; a few are not practice anywhere.
+  for (const id of ['lc-1', 'lc-876', 'lc-1046', 'lc-746', 'lc-2300', 'lc-102', 'lc-217']) assert.ok(learnSolved.has(id), id);
+  assert.ok(!learnSolved.has('lc-226'), 'Invert Binary Tree is left to the learner');
+  for (const chapter of beginnerCourses.flatMap((c) => c.chapters))
+    for (const id of [...chapter.solves, ...chapter.homework.map((h) => h.id)]) assert.ok(learnProblems.has(id), id);
 });
 
 void test('paths, lookups and the self-paced course behind each course', () => {
