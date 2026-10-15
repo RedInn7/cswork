@@ -184,7 +184,11 @@ function tagLabel(tag: string | undefined, kind: TargetKind, english: boolean, c
   if (kind === 'problem') return Object.hasOwn(STOP_NAMES, tag) ? STOP_NAMES[tag][english ? 1 : 0] : '';
   return companies.find((c) => c.slug === tag)?.name ?? tag;
 }
-const authRequired = () => window.dispatchEvent(new Event('cswork:auth-required'));
+// Academy cancels this and opens its sign-in sheet; a page without it (a system design chapter)
+// sends the reader to the account page instead.
+const authRequired = () => {
+  if (window.dispatchEvent(new Event('cswork:auth-required', { cancelable: true }))) location.assign('/?view=account');
+};
 const peekKey = (problemId: string) => `cswork:solutions-peek:${problemId}`;
 function readPeek(problemId: string) {
   try {
@@ -954,8 +958,8 @@ function PostEditor({
         code.trim() ? codeBlock(code, editorLang) : '',
       ].join('\n')),
   );
-  // A thread's poll; `closes` is a date input's value. Frozen (and not sent) once anyone voted.
-  const [poll, setPoll] = useState(() =>
+  // A thread's poll; `closes` is a date input's value. Frozen once anyone voted.
+  const [opened] = useState(() =>
     initial?.poll
       ? {
           question: initial.poll.question,
@@ -965,6 +969,15 @@ function PostEditor({
         }
       : null,
   );
+  const [poll, setPoll] = useState(opened);
+  const pollData = (p: typeof poll) =>
+    p && {
+      question: p.question,
+      options: p.options.map((o) => o.trim()),
+      multi: p.multi,
+      // The end of the chosen day, in the author's time zone.
+      closesAt: p.closes ? new Date(`${p.closes}T23:59:59`).getTime() : null,
+    };
   const pollLocked = !!initial?.poll?.voters;
   const editPoll = (change: Partial<NonNullable<typeof poll>>) => setPoll((p) => p && { ...p, ...change });
   const [preview, setPreview] = useState(false);
@@ -975,23 +988,15 @@ function PostEditor({
     setBusy(true);
     setError('');
     try {
+      const sent = pollData(poll);
       const data = {
         title: titled ? title : '',
         body,
         language: solution ? lang : '',
         tag,
-        // Sent when there is one to save or one to remove (null).
-        ...(kind === 'discuss' &&
-          !pollLocked &&
-          (poll || initial?.poll) && {
-            poll: poll && {
-              question: poll.question,
-              options: poll.options.map((o) => o.trim()),
-              multi: poll.multi,
-              // The end of the chosen day, in the author's time zone.
-              closesAt: poll.closes ? new Date(`${poll.closes}T23:59:59`).getTime() : null,
-            },
-          }),
+        // Sent only when added, edited or removed (null); an untouched poll is left as it is, so a
+        // body edit never trips over a passed close date or a vote cast since the editor opened.
+        ...(kind === 'discuss' && JSON.stringify(sent) !== JSON.stringify(pollData(opened)) && { poll: sent }),
       };
       const saved = initial
         ? await api<Detail>(`oj/posts/${initial.id}/edit`, data)

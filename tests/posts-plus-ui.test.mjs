@@ -150,3 +150,73 @@ test('a thread draws its mermaid, takes one poll vote, saves and lists saved pos
     globalThis.fetch = originalFetch;
   }
 });
+
+test('editing a thread sends its poll only when it changed; a guest outside academy goes to sign in', async () => {
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
+  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage', 'sessionStorage', 'navigator'])
+    Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  const assigned = [];
+  Object.defineProperty(globalThis, 'location', { configurable: true, value: { assign: (url) => assigned.push(url) } });
+  const { createRoot } = await import('react-dom/client');
+  const { SolutionPosts } = await import('../components/solution-posts.tsx');
+
+  // The author's thread, its poll closed yesterday with no votes: a body edit must not resend it.
+  const mine = { ...thread, mine: true };
+  const stale = { ...poll, voters: 0, closesAt: Date.now() - 86_400_000, closed: true, counts: [0, 0] };
+  const sent = [];
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, init = {}) => {
+    const path = String(url);
+    if (init.method === 'POST') {
+      sent.push([path, JSON.parse(init.body)]);
+      return Response.json({ post: { ...mine, body, poll: stale }, comments: [] });
+    }
+    if (path === '/api/oj/reports/companies') return Response.json({ items: [] });
+    if (path.startsWith('/api/oj/posts?')) return Response.json({ solved: true, items: [mine], more: false });
+    return Response.json({ post: { ...mine, body, poll: stale }, comments: [] });
+  };
+  const root = createRoot(document.getElementById('root'));
+  const $ = (selector) => document.querySelector(selector);
+  const button = (text) => [...document.querySelectorAll('button')].find((b) => b.textContent.includes(text));
+  const click = (text) => act(async () => button(text).click());
+  const settle = () => act(async () => new Promise((r) => setTimeout(r, 5)));
+  const edit = async (change) => {
+    await click('Edit');
+    await change();
+    await act(async () => $('.cs-post-editor').requestSubmit());
+    await settle();
+    return sent.at(-1)[1];
+  };
+  try {
+    await act(async () => root.render(createElement(SolutionPosts, { problemId: 'discuss:algo', english: true, signedIn: true })));
+    await settle();
+    await click('Which language for OAs?');
+    await settle();
+    const area = () => $('textarea[aria-label="Body"]');
+    const setBody = () =>
+      act(async () => {
+        Object.getOwnPropertyDescriptor(dom.window.HTMLTextAreaElement.prototype, 'value').set.call(area(), 'Edited.');
+        area().dispatchEvent(new dom.window.Event('input', { bubbles: true }));
+      });
+    assert.equal('poll' in (await edit(setBody)), false, 'an untouched poll is not sent');
+    const removed = await edit(() => click('Remove the poll'));
+    assert.equal(removed.poll, null, 'a removed poll is sent as null');
+
+    // A guest: academy cancels the event and signs them in itself; with nobody listening the
+    // account page takes over.
+    await act(async () => root.render(createElement(SolutionPosts, { key: 'sd', problemId: 'sd:caching', english: true, signedIn: false })));
+    await settle();
+    await click('Join the discussion');
+    assert.deepEqual(assigned, ['/?view=account']);
+    let handled = 0;
+    const academy = (e) => (e.preventDefault(), handled++);
+    window.addEventListener('cswork:auth-required', academy);
+    await click('Join the discussion');
+    window.removeEventListener('cswork:auth-required', academy);
+    assert.deepEqual([handled, assigned.length], [1, 1]);
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = originalFetch;
+    delete globalThis.location;
+  }
+});

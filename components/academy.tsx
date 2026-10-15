@@ -228,7 +228,10 @@ export function Academy() {
     return () => window.removeEventListener('popstate', sync);
   }, [refresh]);
   useEffect(() => {
-    const loginAgain = () => setLogin(true);
+    const loginAgain = (e: Event) => {
+      e.preventDefault(); // Handled: callers outside academy fall back to the account page.
+      setLogin(true);
+    };
     window.addEventListener('cswork:auth-required', loginAgain);
     return () => window.removeEventListener('cswork:auth-required', loginAgain);
   }, []);
