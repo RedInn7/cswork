@@ -23,7 +23,7 @@ export function yearRecap(activity: readonly Activity[], year: number, now: numb
   for (const a of activity) {
     if (new Date(a.created_at).getFullYear() !== year) continue;
     const i = index(a.created_at);
-    byDay.set(i, (byDay.get(i) ?? new Set()).add(a.problem_id));
+    byDay.set(i, (byDay.get(i) ?? new Set<string>()).add(a.problem_id));
     solved.add(a.problem_id);
     times.push(a.created_at);
   }

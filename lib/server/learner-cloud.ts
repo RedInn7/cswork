@@ -958,7 +958,8 @@ export function publicCompare(handles: readonly string[], catalogue: PublicCatal
   const unique = [...new Set(handles)];
   if (unique.length < 2 || unique.length > 3) return null;
   const shown = shownIn(catalogue);
-  const people = [];
+  const people: { handle: string; solved: ReturnType<typeof tally>['solved']; stops: Record<string, number>; ids: Set<string> }[] =
+    [];
   for (const handle of unique) {
     const profile = visibleProfile(handle);
     if (!profile) return null;
