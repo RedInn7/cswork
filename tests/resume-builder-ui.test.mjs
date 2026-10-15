@@ -112,6 +112,19 @@ test('importing a file replaces the resume; a bad file says so and keeps it', as
   await unmount();
 });
 
+test('every field holds exactly what a reload keeps: nothing typed is cut on the next visit', async () => {
+  localStorage.clear();
+  const fields = (host) => [...host.querySelectorAll('input:not([type="file"]), textarea')];
+  const first = await mount({ zh: false, signedIn: false });
+  for (const field of fields(first.host)) await setValue(field, 'x'.repeat(field.maxLength));
+  const typed = fields(first.host).map((f) => f.value.length);
+  await first.unmount();
+  const again = await mount({ zh: false, signedIn: false });
+  assert.deepEqual(fields(again.host).map((f) => f.value.length), typed);
+  await again.unmount();
+  localStorage.clear();
+});
+
 test('a sheet taller than one Letter page warns', async () => {
   const sizes = { clientWidth: 720, scrollHeight: 1200 };
   for (const [prop, value] of Object.entries(sizes))

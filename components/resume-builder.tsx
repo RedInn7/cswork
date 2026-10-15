@@ -48,6 +48,20 @@ export const blankResume = (): Resume => ({
   awards: '',
 });
 
+/** Field caps: the form's maxLength and what normalizeResume keeps are one and the same. */
+const MAX: Record<Exclude<keyof Resume, ListKey> | keyof ResumeItem, number> = {
+  name: 80,
+  email: 120,
+  phone: 40,
+  location: 80,
+  links: 300,
+  title: 120,
+  subtitle: 160,
+  dates: 60,
+  bullets: 3000,
+  skills: 2000,
+  awards: 2000,
+};
 const text = (value: unknown, max: number) => (typeof value === 'string' ? value.slice(0, max) : '');
 /** Anything (a stored or imported file) as a resume: unknown fields dropped, strings capped. */
 export function normalizeResume(raw: unknown): Resume {
@@ -55,19 +69,24 @@ export function normalizeResume(raw: unknown): Resume {
   const items = (value: unknown) =>
     (Array.isArray(value) ? value : []).slice(0, ITEMS).map((v) => {
       const i = v && typeof v === 'object' ? (v as Record<string, unknown>) : {};
-      return { title: text(i.title, 120), subtitle: text(i.subtitle, 160), dates: text(i.dates, 60), bullets: text(i.bullets, 3000) };
+      return {
+        title: text(i.title, MAX.title),
+        subtitle: text(i.subtitle, MAX.subtitle),
+        dates: text(i.dates, MAX.dates),
+        bullets: text(i.bullets, MAX.bullets),
+      };
     });
   return {
-    name: text(r.name, 80),
-    email: text(r.email, 120),
-    phone: text(r.phone, 40),
-    location: text(r.location, 80),
-    links: text(r.links, 300),
+    name: text(r.name, MAX.name),
+    email: text(r.email, MAX.email),
+    phone: text(r.phone, MAX.phone),
+    location: text(r.location, MAX.location),
+    links: text(r.links, MAX.links),
     education: items(r.education),
     experience: items(r.experience),
     projects: items(r.projects),
-    skills: text(r.skills, 2000),
-    awards: text(r.awards, 2000),
+    skills: text(r.skills, MAX.skills),
+    awards: text(r.awards, MAX.awards),
   };
 }
 
@@ -108,24 +127,26 @@ const appendLines = (value: string, add: string[]) => {
   const fresh = add.filter((line) => !have.has(line));
   return { value: [value.trimEnd(), ...fresh].filter(Boolean).join('\n'), added: fresh.length };
 };
+/** `value` without its older CSWork line (matched by `stale`) when `line` brings a new one: numbers get replaced, not stacked. */
+const refresh = (value: string, stale: RegExp, line?: string) =>
+  !line || lines(value).includes(line) ? value : value.split('\n').filter((row) => !stale.test(lines(row)[0] ?? '')).join('\n');
 /**
  * The learner's CSWork record merged in, each line once: certificates (with their verification
  * links) and the contest rating under awards, the solved counts under skills, the public profile
- * under links. Returns how many lines were new.
+ * under links. A newer rating or solved count replaces the old line. Returns how many lines were new.
  */
 export function mergeFacts(r: Resume, f: ResumeFacts) {
-  const awards = appendLines(r.awards, [
+  const rating = f.rating === null ? [] : [`CSWork contest rating ${f.rating} (${f.contests} rated ${f.contests === 1 ? 'contest' : 'contests'})`];
+  const solved = f.solved.total
+    ? [`Algorithms: ${f.solved.total} problems solved on CSWork (${f.solved.easy} easy, ${f.solved.medium} medium, ${f.solved.hard} hard)`]
+    : [];
+  const awards = appendLines(refresh(r.awards, /^CSWork contest rating \d+ \(/, rating[0]), [
     ...f.certificates.map(
       (c) => `${c.course}, CSWork ${c.skill ? 'skill certification' : 'certificate'}, ${month(c.issuedAt)} (cswork.org/certificate/${c.id})`,
     ),
-    ...(f.rating === null ? [] : [`CSWork contest rating ${f.rating} (${f.contests} rated ${f.contests === 1 ? 'contest' : 'contests'})`]),
+    ...rating,
   ]);
-  const skills = appendLines(
-    r.skills,
-    f.solved.total
-      ? [`Algorithms: ${f.solved.total} problems solved on CSWork (${f.solved.easy} easy, ${f.solved.medium} medium, ${f.solved.hard} hard)`]
-      : [],
-  );
+  const skills = appendLines(refresh(r.skills, /^Algorithms: \d+ problems solved on CSWork /, solved[0]), solved);
   const profile = f.handle ? `cswork.org/u/${f.handle}` : '';
   const linkNew = !!profile && !r.links.includes(profile);
   return {
@@ -179,7 +200,7 @@ const SECTIONS: { key: ListKey; legend: [string, string]; fields: [keyof ResumeI
     add: ['添加项目', 'Add project'],
   },
 ];
-const CONTACT: [keyof Resume, string, string, string][] = [
+const CONTACT: [Exclude<keyof Resume, ListKey>, string, string, string][] = [
   ['name', '姓名', 'Full name', 'name'],
   ['email', '邮箱', 'Email', 'email'],
   ['phone', '电话', 'Phone', 'tel'],
@@ -261,7 +282,7 @@ export function ResumeBuilder({ zh, signedIn }: { zh: boolean; signedIn: boolean
               <input
                 value={resume[key] as string}
                 autoComplete={autoComplete}
-                maxLength={key === 'links' ? 300 : 120}
+                maxLength={MAX[key]}
                 onChange={(e) => change({ ...resume, [key]: e.target.value })}
               />
             </label>
@@ -276,9 +297,9 @@ export function ResumeBuilder({ zh, signedIn }: { zh: boolean; signedIn: boolean
                   <label key={field}>
                     {t(zhLabel, enLabel)}
                     {field === 'bullets' ? (
-                      <textarea rows={4} value={item[field]} maxLength={3000} onChange={(e) => editItem(key, index, field, e.target.value)} />
+                      <textarea rows={4} value={item[field]} maxLength={MAX.bullets} onChange={(e) => editItem(key, index, field, e.target.value)} />
                     ) : (
-                      <input value={item[field]} maxLength={160} onChange={(e) => editItem(key, index, field, e.target.value)} />
+                      <input value={item[field]} maxLength={MAX[field]} onChange={(e) => editItem(key, index, field, e.target.value)} />
                     )}
                   </label>
                 ))}
@@ -302,11 +323,11 @@ export function ResumeBuilder({ zh, signedIn }: { zh: boolean; signedIn: boolean
           <legend>{t('技能、奖项与证书', 'Skills, awards and certifications')}</legend>
           <label>
             {t('技能，每行一类（例如 Languages: Python, Go）', 'Skills, one group per line (e.g. Languages: Python, Go)')}
-            <textarea rows={4} value={resume.skills} maxLength={2000} onChange={(e) => change({ ...resume, skills: e.target.value })} />
+            <textarea rows={4} value={resume.skills} maxLength={MAX.skills} onChange={(e) => change({ ...resume, skills: e.target.value })} />
           </label>
           <label>
             {t('奖项与证书，每行一条', 'Awards and certifications, one per line')}
-            <textarea rows={4} value={resume.awards} maxLength={2000} onChange={(e) => change({ ...resume, awards: e.target.value })} />
+            <textarea rows={4} value={resume.awards} maxLength={MAX.awards} onChange={(e) => change({ ...resume, awards: e.target.value })} />
           </label>
           {signedIn && (
             <div className="resume-actions">

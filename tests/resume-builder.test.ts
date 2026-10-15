@@ -171,4 +171,16 @@ void test('CSWork facts merge in once: certificates and rating to awards, counts
   assert.deepEqual(twice.resume, once.resume);
   const none = mergeFacts(blankResume(), { ...f, certificates: [], rating: null, solved: { total: 0, easy: 0, medium: 0, hard: 0 }, handle: null });
   assert.equal(none.added, 0);
+  // Another contest and more ACs later: the numbers are replaced, never stacked (a bullet the learner added included).
+  const bulleted = { ...once.resume, awards: once.resume.awards.replace('CSWork contest', '- CSWork contest') };
+  const later = mergeFacts(bulleted, { ...f, rating: 1630, contests: 3, solved: { total: 15, easy: 6, medium: 7, hard: 2 } });
+  assert.equal(later.added, 2);
+  assert.deepEqual(later.resume.awards.split('\n'), [
+    'Dean’s list',
+    'System Design Interview Course, CSWork certificate, Mar 2026 (cswork.org/certificate/MyCert0000000001)',
+    'CSWork contest rating 1630 (3 rated contests)',
+  ]);
+  assert.equal(later.resume.skills, 'Algorithms: 15 problems solved on CSWork (6 easy, 7 medium, 2 hard)');
+  // No rating this time: the old line stays as the learner left it.
+  assert.equal(mergeFacts(later.resume, { ...f, rating: null }).resume.awards, later.resume.awards);
 });
