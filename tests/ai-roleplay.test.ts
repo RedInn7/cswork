@@ -33,10 +33,8 @@ const ok = (text: string) => () =>
   Response.json({ stop_reason: 'end_turn', content: [{ type: 'text', text }], usage: { input_tokens: 100, output_tokens: 20 } });
 async function call(action: string, body?: unknown, method = 'POST') {
   try {
-    const request = new Request(`https://cswork.test/api/oj/ai/${action}`, {
-      method,
-      body: body === undefined ? undefined : JSON.stringify(body),
-    });
+    const url = `https://cswork.test/api/oj/ai/${action}`;
+    const request = method === 'GET' ? new Request(url) : new Request(url, { method: 'POST', body: JSON.stringify(body) });
     const response = await handleOj(request, me, ['ai', action]);
     return { status: response.status, body: (await response.json()) as Record<string, unknown> };
   } catch (error) {
