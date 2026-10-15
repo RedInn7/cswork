@@ -20,7 +20,7 @@ register(
 export async function resolve(s,c,n){if(s.startsWith('next/')&&mocks[s])return {url:'mock:'+s,shortCircuit:true};return n(s,c);}
 export async function load(u,c,n){
   if(u.startsWith('mock:'))return {format:'module',source:mocks[u.slice(5)],shortCircuit:true};
-  if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};
+  if(u.endsWith('.css'))return {format:'module',source:'export default {}',shortCircuit:true};
   return n(u,c);}`)}`,
   import.meta.url,
 );
@@ -101,8 +101,13 @@ test('marking the last chapter read shows the course certificate', async () => {
   );
   await settle();
   assert.equal(document.querySelector('.sd-read-certificate'), null);
+  // The status region is there before the notice, so the notice is announced when it lands.
+  const region = document.querySelector('.sd-read [role="status"]');
+  assert.equal(region?.textContent, '');
   await act(async () => document.querySelector('.sd-read input').click());
   await settle();
+  assert.equal(document.querySelector('.sd-read [role="status"]'), region);
+  assert.equal(region.querySelector('a').getAttribute('href'), '/certificate/CertCourse000001');
   assert.equal(document.querySelector('.sd-read-certificate a').getAttribute('href'), '/certificate/CertCourse000001');
   await act(async () => root.unmount());
 });
@@ -123,8 +128,10 @@ test('course stars: the average from enough ratings, and a learner who started r
   await settle();
   assert.deepEqual(calls[0], ['GET', '/api/course-ratings?course=sd%3Abig-o', undefined]);
   const summary = document.querySelector('.course-rating-summary');
-  assert.equal(summary.getAttribute('aria-label'), '4.2 out of 5 stars from 7 ratings');
-  assert.equal(summary.textContent, '★4.2 (7)');
+  // Screen readers ignore aria-label on a plain span: the sentence is (visually hidden) text.
+  assert.equal(summary.hasAttribute('aria-label'), false);
+  assert.equal(summary.querySelector('.sr-only').textContent, '4.2 out of 5 stars from 7 ratings');
+  assert.equal([...summary.querySelectorAll('[aria-hidden="true"]')].map((s) => s.textContent).join(' '), '★4.2 (7)');
   const radios = [...document.querySelectorAll('.course-rating-stars input[type="radio"]')];
   // In reading order, so screen readers and arrow keys go the way the stars are drawn.
   assert.deepEqual(radios.map((r) => r.value), ['1', '2', '3', '4', '5']);
@@ -152,4 +159,35 @@ test('course stars: the average from enough ratings, and a learner who started r
   await act(async () => other.unmount());
   assert.equal(renderToStaticMarkup(createElement(RatingSummary, { avg: null, count: 9, zh: true })), '');
   assert.match(renderToStaticMarkup(createElement(RatingSummary, { avg: 4.6, count: 23, zh: true })), /平均 4.6 星，23 人评分/);
+});
+
+test('a course card shows its rating once: the live one beside the stars once a lesson is done', async () => {
+  const { CourseList } = await import('../components/learning.tsx');
+  const course = (id, has_access) => ({
+    id,
+    title: id,
+    summary: '',
+    lessons: [{ id: `${id}-1`, title: 'One', slug: 'one', position: 1 }],
+    version: '1',
+    has_access,
+    rating_avg: 4.5,
+    rating_count: 22,
+  });
+  const boot = {
+    person: null,
+    courses: [course('gomall', true), course('mit-6824', false)],
+    problems: [],
+    progress: [{ lesson_id: 'gomall-1', completed: true }],
+    submissions: [],
+    notifications: [],
+    services: {},
+  };
+  const doc = parse(
+    renderToStaticMarkup(createElement(CourseList, { boot, navigate() {}, login() {}, ask() {} })),
+  );
+  const cards = [...doc.querySelectorAll('.course-detail')];
+  assert.equal(cards.length, 2);
+  // The finished card leaves its meta line to CourseRating (which loads in the browser).
+  assert.equal(cards[0].querySelectorAll('.course-meta .course-rating-summary').length, 0);
+  assert.equal(cards[1].querySelectorAll('.course-meta .course-rating-summary').length, 1);
 });
