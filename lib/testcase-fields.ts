@@ -43,16 +43,16 @@ export type Message = [zh: string, en: string];
 /** A parameter's [min, max] bounds read off the statement (lib/content/leetcode-constraints.json). */
 export type Constraint = { len?: number[]; val?: number[] };
 
+export type TreeShape = { val: number; left: number; right: number };
 /**
  * The judge's level-order tree, after custom_args (scripts/leetcode-mode/runtime.py) drops
  * trailing nulls: [] is the empty tree, then tree_codec.py's rules. Nodes in level order,
  * children by index (-1 none); a string names the broken rule.
  */
-export function levelOrderTree(tokens: unknown[]) {
+export function levelOrderTree(tokens: unknown[]): TreeShape[] | 'root' | 'value' | 'unreachable' {
   const values = tokens.slice();
   while (values.length && values.at(-1) === null) values.pop();
-  type TreeNode = { val: number; left: number; right: number };
-  const nodes: TreeNode[] = [];
+  const nodes: TreeShape[] = [];
   if (!values.length) return nodes;
   if (values[0] === null) return 'root';
   if (values.some((v) => v !== null && !int32(v))) return 'value';
