@@ -112,9 +112,16 @@ test('signed in: cooldowns, past results, certificates, and starting an exam int
   await act(async () => button(confirm, 'Cancel').click());
   assert.equal(ticket('Problem Solving (Basic)').querySelector('.certify-confirm'), null);
   await act(async () => button(ticket('Problem Solving (Basic)'), 'Start exam').click());
+  // A mock OA still in its MCQ section is handed in (MCQs, then coding), not dropped.
+  const mcqStart = Date.now() - 5 * MIN;
+  const mock = { id: 'mock-1', company: 'rubrik', name: 'Rubrik', platform: 'CodeSignal', preset: true, scoring: 'tests', source: 'mixed', slots: ['easy'], ids: ['lc-1'], minutes: 60, skew: 0, createdAt: mcqStart, mcq: { ids: ['mcq-os-1'], picks: [[0]], minutes: 15, startedAt: mcqStart } };
+  localStorage.setItem('cswork:mock:v1:u1', JSON.stringify({ active: mock, history: [] }));
   await act(async () => button(ticket('Problem Solving (Basic)'), 'Start').click());
   assert.deepEqual(calls.at(-1), ['POST /api/oj/skills/problem-solving-basic/start', {}]);
   const state = JSON.parse(localStorage.getItem('cswork:mock:v1:u1'));
+  assert.equal(state.history[0].id, 'mock-1');
+  assert.ok(state.history[0].mcq.finishedAt >= mcqStart + 5 * MIN && state.history[0].finishedAt >= state.history[0].startedAt);
+  assert.deepEqual(state.history[0].mcq.picks, [[0]]);
   assert.equal(state.active.id, 'att-1');
   assert.deepEqual(state.active.cert, { test: 'problem-solving-basic', language: null });
   assert.deepEqual(state.active.ids, ['lc-20', 'lc-15']);
