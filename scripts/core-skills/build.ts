@@ -149,6 +149,12 @@ export const PROBLEMS: Problem[] = [
     difficulty: '简单',
     summary: { zh: '路径压缩与按秩合并', en: 'Path compression and union by rank' },
   },
+  {
+    slug: 'trie',
+    group: 'advanced',
+    difficulty: '中等',
+    summary: { zh: '带计数的插入、删除与前缀统计', en: 'Counted insert, erase and prefix counts' },
+  },
 ];
 
 const EXT: Record<CodeLanguage, string> = { python: 'py', cpp: 'cpp', java: 'java', go: 'go' };
