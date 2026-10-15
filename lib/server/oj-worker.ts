@@ -26,6 +26,8 @@ import { Queue, Worker, type Job } from 'bullmq';
 import { sqlite } from '@/db/sqlite';
 import { loadJudgeSnapshot, ensureOjSeed } from './oj-problems';
 import { sendPeerReminders } from './peer-reminders';
+import { sendLearnerReminders } from './reminders';
+import { sendCompanyDigest } from './company-follows';
 import { seed } from './seed';
 import {
   assertSnapshotBudget,
@@ -763,15 +765,23 @@ const precompileTimer = setInterval(() => {
     /* Optional acceleration never stops judging. */
   }
 }, OJ_DISPATCH_INTERVAL_MS);
-// Peer mock interview reminder mails, and instant requests that lapsed: the worker is the
-// one long-running process with the mail settings, so no separate timer unit.
-const reminderTimer = setInterval(
-  () =>
-    void sendPeerReminders().catch((error: unknown) =>
-      console.error('peer reminders', error instanceof Error ? error.message : 'unknown'),
-    ),
-  600_000,
-);
+// Peer mock interview reminder mails, and instant requests that lapsed; learners' reminder
+// digests and contest reminders (needs TZ=UTC); followed companies' new OA problems. The worker
+// is the one long-running process with the mail settings, so no separate timer unit. One after
+// another, and never two ticks at once, so mails stay under Resend's rate limit.
+let reminding = false;
+const reminderTimer = setInterval(() => {
+  if (reminding) return;
+  reminding = true;
+  void (async () => {
+    for (const [name, send] of [
+      ['peer reminders', sendPeerReminders],
+      ['learner reminders', sendLearnerReminders],
+      ['company digest', sendCompanyDigest],
+    ] as const)
+      await send().catch((error: unknown) => console.error(name, error instanceof Error ? error.message : 'unknown'));
+  })().finally(() => (reminding = false));
+}, 600_000);
 async function stop() {
   if (stopping) return;
   stopping = true;

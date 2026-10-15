@@ -273,13 +273,16 @@ export async function handleNewsletter(request: Request, p: Person | null, path:
  * same-origin check (mail clients post List-Unsubscribe=One-Click from nowhere). Confirming
  * is a GET from the mail; unsubscribing is a POST, from the /newsletter/unsubscribe page or
  * the one-click header, so link scanners cannot unsubscribe anyone. A GET of the unsubscribe
- * URL lands on that page.
+ * URL lands on that page. With list=reminders the token is a reminder digest's
+ * (lib/server/reminders.ts), and unsubscribing turns its mails off.
  */
 export async function handleNewsletterLink(request: Request, action: string | undefined) {
   // Generous: mail providers send one-click unsubscribes from a few shared addresses in bursts,
   // and a 256-bit token is not guessable anyway; the limit only bounds the writes.
   await limitReader(request, null, 'newsletter-link', 600);
-  const token = new URL(request.url).searchParams.get('token') ?? '';
+  const params = new URL(request.url).searchParams;
+  const token = params.get('token') ?? '';
+  const reminders = params.get('list') === 'reminders';
   const db = sqlite();
   const now = Date.now();
   if (action === 'confirm' && request.method === 'GET') {
@@ -291,14 +294,21 @@ export async function handleNewsletterLink(request: Request, action: string | un
     return Response.redirect(`${origin()}/newsletter?${done ? 'confirmed' : 'invalid'}=1`, 303);
   }
   // Mail clients without RFC 8058 open the header's URL: they get the page with the button.
-  if (action === 'unsubscribe' && request.method === 'GET')
-    return Response.redirect(`${origin()}/newsletter/unsubscribe${TOKEN.test(token) ? `?token=${token}` : ''}`, 303);
+  if (action === 'unsubscribe' && request.method === 'GET') {
+    const query = new URLSearchParams({ ...(TOKEN.test(token) && { token }), ...(reminders && { list: 'reminders' }) });
+    return Response.redirect(`${origin()}/newsletter/unsubscribe${query.size ? `?${query}` : ''}`, 303);
+  }
   if (action === 'unsubscribe' && request.method === 'POST') {
     if (TOKEN.test(token))
-      db.prepare('UPDATE newsletter_subs SET unsubscribed_at=COALESCE(unsubscribed_at,?) WHERE token=?').run(now, token);
+      db.prepare(
+        reminders
+          ? 'UPDATE notify_prefs SET email=0,updated_at=? WHERE token=?'
+          : 'UPDATE newsletter_subs SET unsubscribed_at=COALESCE(unsubscribed_at,?) WHERE token=?',
+      ).run(now, token);
     // RFC 8058 one-click posts this body; the page's form gets a page back.
     const oneClick = (await boundedText(request, 1000).catch(() => '')).includes('List-Unsubscribe=One-Click');
-    return oneClick ? json({ unsubscribed: true }) : Response.redirect(`${origin()}/newsletter?unsubscribed=1`, 303);
+    if (oneClick) return json({ unsubscribed: true });
+    return Response.redirect(`${origin()}${reminders ? '/newsletter/unsubscribe?list=reminders&done=1' : '/newsletter?unsubscribed=1'}`, 303);
   }
   throw new HttpError(404, '接口不存在');
 }
