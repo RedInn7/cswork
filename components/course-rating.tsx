@@ -11,8 +11,10 @@ export const RATING_SAVE_DELAY = 600;
 export function RatingSummary({ avg, count, zh }: { avg?: number | null; count?: number; zh: boolean }) {
   if (avg === null || avg === undefined || !count) return null;
   return (
-    <span className="course-rating-summary" aria-label={zh ? `平均 ${avg} 星，${count} 人评分` : `${avg} out of 5 stars from ${count} ratings`}>
+    <span className="course-rating-summary">
       <span aria-hidden="true">★{avg.toFixed(1)}</span> <span aria-hidden="true">({count})</span>
+      {/* Read as text: a plain span's aria-label is ignored by screen readers. */}
+      <span className="sr-only">{zh ? `平均 ${avg} 星，${count} 人评分` : `${avg} out of 5 stars from ${count} ratings`}</span>
     </span>
   );
 }

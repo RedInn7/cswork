@@ -176,7 +176,10 @@ export function CourseList({
                         : t('配套算法与工程实验', 'Algorithm and engineering labs')}
                     </span>
                     <span>v{c.version}</span>
-                    <RatingSummary avg={c.rating_avg} count={c.rating_count} zh={locale === 'zh'} />
+                    {/* CourseRating below shows the live one, updated when the learner rates. */}
+                    {!(c.has_access && done > 0) && (
+                      <RatingSummary avg={c.rating_avg} count={c.rating_count} zh={locale === 'zh'} />
+                    )}
                   </div>
                 </div>
                 <div className="course-access">
