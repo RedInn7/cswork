@@ -36,7 +36,7 @@ const otherSide = (thread: string, me: string) => {
   return a === me ? b : a;
 };
 /** As posts show people: the public handle if the profile is visible, else a masked name. */
-function nameOf(userId: string) {
+export function nameOf(userId: string) {
   const r = sqlite()
     .prepare(
       `SELECT u.name,pr.handle FROM "user" u LEFT JOIN user_profiles pr ON pr.user_id=u.id AND pr.visible=1 WHERE u.id=?`,
@@ -57,7 +57,7 @@ function recipient(p: Person, d: { to?: string; post?: string }) {
     const post = db
       .prepare(
         `SELECT sp.user_id AS author,sp.tag FROM solution_posts sp WHERE sp.id=? AND sp.problem_id='discuss:referral'
-          AND sp.hidden=0 AND sp.tag<>'' AND ${badgeSql('sp.user_id', 'referrals')}=sp.tag
+          AND sp.hidden=0 AND sp.anonymous=0 AND sp.tag<>'' AND ${badgeSql('sp.user_id', 'referrals')}=sp.tag
           AND (SELECT COUNT(*) FROM post_reports r WHERE r.target='post:'||sp.id AND r.reason<>'${REPORT_CLEARED}')<${REPORTS_HIDE}`,
       )
       .get(d.post) as { author: string; tag: string } | undefined;

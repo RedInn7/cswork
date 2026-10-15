@@ -61,6 +61,11 @@ export function ProfileView({
                 <b>{profile.listStars}</b> {t('次题单被收藏', profile.listStars === 1 ? 'list save' : 'list saves')}
               </span>
             )}
+            {!!profile.reputation && (
+              <span title={t('帖子被点赞、面经通过审核所得的积分', 'Points from upvoted posts and approved interview reports')}>
+                <b>{profile.reputation}</b> {t('声望', 'reputation')}
+              </span>
+            )}
           </FollowButton>
         </div>
         <dl className="learner-stats">

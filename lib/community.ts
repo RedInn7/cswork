@@ -29,6 +29,26 @@ export function targetKind(target: string): TargetKind | null {
 export const discussTarget = (channel: Channel) => `discuss:${channel}`;
 /** A thread's crawlable page. */
 export const threadPath = (id: string) => `/discuss/${id}`;
+/** Where a post is read in place: its thread in the app, its library item, its chapter or its problem. */
+export function postHref(target: string, postId: string) {
+  const kind = targetKind(target);
+  const key = target.slice(target.indexOf(':') + 1);
+  if (kind === 'discuss') return `/?view=discuss&channel=${encodeURIComponent(key)}&post=${encodeURIComponent(postId)}`;
+  if (kind === 'q' || kind === 'exp')
+    return `/?${new URLSearchParams({ view: 'content', type: kind === 'q' ? 'interview_question' : 'experience', slug: key })}`;
+  if (kind === 'sd') return `/system-design/${encodeURIComponent(key)}`;
+  return `/?view=problem&problem=${encodeURIComponent(target)}`;
+}
+/** Channels where the verified employee badge may show on posts (lib/server/work-verify.ts). */
+export const BADGE_CHANNELS: ReadonlySet<string> = new Set(['discuss:algo', 'discuss:referral', 'discuss:site']);
+/**
+ * Where a post may go up anonymously: discussion that carries no employee badge (so no referral
+ * thread, which opens a direct message to its author) and never a judge problem's solution.
+ */
+export const anonymousAllowed = (target: string) => {
+  const kind = targetKind(target);
+  return !!kind && kind !== 'problem' && !BADGE_CHANNELS.has(target);
+};
 /** Readers' reports that take a post or comment down until a moderator acts (as experiences' FLAGS_HIDE). */
 export const REPORTS_HIDE = 3;
 /**

@@ -168,6 +168,7 @@ type Form = {
   month: string;
   body: string;
   questions: string;
+  anonymous: boolean;
   agree: boolean;
   // Optional structured facts; '' means not given.
   difficulty: string;
@@ -192,7 +193,7 @@ function ExperienceForm({
   const [companies, setCompanies] = useState<{ slug: string; name: string }[]>([]);
   const [now] = useState(() => Date.now());
   const [form, setForm] = useState<Form>(() => ({
-    company: '', title: '', role: '', rounds: [], result: '', month: localMonth(now), body: '', questions: '', agree: false,
+    company: '', title: '', role: '', rounds: [], result: '', month: localMonth(now), body: '', questions: '', anonymous: false, agree: false,
     difficulty: '', sentiment: '', channel: '', employment: '', season: '', location: '', weeks: '',
   }));
   const year = new Date(now).getFullYear();
@@ -470,6 +471,15 @@ function ExperienceForm({
           onChange={(e) => set({ questions: e.target.value })}
           placeholder={t('例如：LRU 缓存\n设计一个短链服务', 'e.g. LRU cache\nDesign a URL shortener')}
         />
+      </label>
+      <label className="xs-agree">
+        <input type="checkbox" checked={form.anonymous} onChange={(e) => set({ anonymous: e.target.checked })} />
+        <span>
+          {t(
+            '匿名发布：公开页面不显示我的主页名，也不计入主页声望；老师审核时仍能看到是谁投的稿。',
+            'Post anonymously: the public page shows no handle and it adds nothing to my profile reputation; reviewing teachers still see who sent it.',
+          )}
+        </span>
       </label>
       <label className="xs-agree">
         <input type="checkbox" required checked={form.agree} onChange={(e) => set({ agree: e.target.checked })} />

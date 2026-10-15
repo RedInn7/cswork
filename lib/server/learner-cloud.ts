@@ -17,7 +17,7 @@ import { HttpError, json, limit, limitReader, requirePerson } from './http';
 import { mockReport } from './mock-oa';
 import { readJson } from './my-practice';
 import { canSeeProblem, listProblemSummaries } from './oj-problems';
-import { dailyDays } from './points';
+import { dailyDays, reputationSql } from './points';
 import { visibleTarget } from './solution-posts';
 import { badgeName, badgeSql, badgeTarget } from './work-verify';
 
@@ -748,14 +748,15 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
   const hidden = hiddenCompanies();
   // The verified employee badge, only if its owner switched it on for the profile.
   const employer = badgeName(db.prepare(`SELECT ${badgeSql('?', 'profile')}`).pluck().get(profile.user_id) as string | null);
-  // Posts anyone can open: solutions on public problems and threads; reported-down ones stay out.
-  // Beside the badge only posts that could carry it, never interview, career or offer talk or OA solutions.
+  // Posts anyone can open: solutions on public problems and threads; reported-down and anonymous
+  // ones stay out. Beside the badge only posts that could carry it, never interview, career or offer
+  // talk or OA solutions.
   const posts = (
     db
       .prepare(
         `SELECT sp.id,sp.problem_id AS target,sp.title,sp.tag,sp.created_at AS createdAt,
           (SELECT COUNT(*) FROM post_votes v WHERE v.post_id=sp.id) AS votes
-        FROM solution_posts sp WHERE sp.user_id=? AND sp.hidden=0
+        FROM solution_posts sp WHERE sp.user_id=? AND sp.hidden=0 AND sp.anonymous=0
           AND (SELECT COUNT(*) FROM post_reports r WHERE r.target='post:'||sp.id AND r.reason<>'${REPORT_CLEARED}')<${REPORTS_HIDE}
         ORDER BY sp.created_at DESC LIMIT 500`,
       )
@@ -790,6 +791,8 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
     recent: solved.slice(0, 10).map((s) => ({ id: s.id, at: s.at - (s.at % HOUR) })),
     lists,
     listStars,
+    // Answer reputation (points.ts reputationSql): upvotes on posts and approved interview reports.
+    reputation: db.prepare(`SELECT ${reputationSql('@u')}`).pluck().get({ u: profile.user_id }) as number,
     languages: [...byLanguage].map(([language, n]) => ({ language, n })).sort((a, b) => b.n - a.n),
     // Rated weeklies and starters, oldest first (lib/server/contests.ts): the curve and the contest badges.
     contest: contest.map(({ week, kind, after, rank, entrants }) => ({ week, kind, after, rank, entrants })),

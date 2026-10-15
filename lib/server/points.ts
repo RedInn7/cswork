@@ -170,6 +170,18 @@ export function awardUpvote(authorId: string, voter: Person, postId: string, now
   return award(authorId, 'upvote', `${postId}:${voter.id}`, POINTS.upvote, now, POINTS.upvoteCap);
 }
 
+/**
+ * Answer reputation, an SQL expression for the author in `user`: what upvotes on their posts and
+ * approved interview reports paid, less what anonymous ones paid, so the number moving never ties
+ * an anonymous post to a profile. Upvote refs are `<post id>:<voter>`, report refs `<id>#<n>`.
+ */
+export const reputationSql = (user: string) => `((SELECT COALESCE(SUM(l.delta),0) FROM point_ledger l
+    WHERE l.user_id=${user} AND l.reason IN ('upvote','experience'))
+  - (SELECT COALESCE(SUM(l.delta),0) FROM solution_posts a JOIN point_ledger l ON l.user_id=a.user_id
+    AND l.reason='upvote' AND l.ref_id>a.id||':' AND l.ref_id<a.id||';' WHERE a.user_id=${user} AND a.anonymous=1)
+  - (SELECT COALESCE(SUM(l.delta),0) FROM experience_submissions a JOIN point_ledger l ON l.user_id=a.user_id
+    AND l.reason='experience' AND l.ref_id>a.id||'#' AND l.ref_id<a.id||'$' WHERE a.user_id=${user} AND a.anonymous=1))`;
+
 /** An interview report's points follow its state: approved and shown 100, otherwise 0. */
 export function settleExperience(submissionId: string, shown: boolean, now = Date.now()) {
   const author = sqlite().prepare('SELECT user_id FROM experience_submissions WHERE id=?').pluck().get(submissionId) as

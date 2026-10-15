@@ -1,19 +1,29 @@
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
-import { autoTitle, isChannel, REPORT_CLEARED, REPORTS_HIDE, targetKind } from '@/lib/community';
+import {
+  anonymousAllowed,
+  autoTitle,
+  isChannel,
+  postHref,
+  REPORT_CLEARED,
+  REPORTS_HIDE,
+  targetKind,
+} from '@/lib/community';
 import { STOP_NAMES } from '@/lib/route-stops';
 import type { Person } from './auth';
 import { library } from './content-library';
 import { refuseInContest, runningContestProblems } from './contests';
 import { isCourseOwner } from './course-visibility';
+import { nameOf } from './direct-messages';
 import { hiddenCompanies } from './env';
 import { memberIdOf, readMember } from './experience-submissions';
 import { auditStatement, HttpError, json, limit, limitReader, requirePerson } from './http';
 import { maskName } from './judge-feed';
 import { publicProblem, reportCompanies, requireVerified } from './learner-cloud';
 import { readJson } from './my-practice';
-import { awardUpvote } from './points';
+import { notify } from './notify';
+import { awardUpvote, reputationSql } from './points';
 import { sdChapter } from './system-design-course';
 import { badgeName, badgeSql, badgeTarget } from './work-verify';
 
@@ -26,13 +36,19 @@ import { badgeName, badgeSql, badgeTarget } from './work-verify';
  * re-checks that the target is still visible (HIDDEN_COMPANIES, course gates, the library,
  * the system design chapters), every author write names its author in the WHERE clause, and authors
  * show by their public handle or a masked name (never the account name, which is often a real
- * one). Bodies are Markdown the client renders without raw HTML.
+ * one). Bodies are Markdown the client renders without raw HTML. An anonymous post (only where
+ * anonymousAllowed) shows other readers no author at all, nor do its author's comments under it;
+ * its author and the moderation queue still see who wrote it. Comments nest one level (parent_id).
+ * Replies, @mentions and upvotes leave in-app notices (lib/server/notify.ts).
  */
 const DAY = 86400000;
 const PAGE = 30;
 const POSTS_PER_DAY = 10;
 const COMMENTS_PER_DAY = 100;
 const REPORTS_PER_DAY = 30;
+/** @handles a post or comment may notify; the handle shape is learner-cloud's HANDLE. */
+const MENTIONS_MAX = 5;
+const MENTION = /(?:^|\s)@([a-z0-9][a-z0-9-]{1,28}[a-z0-9])(?![a-z0-9-])/g;
 // hidden: shown, removed by its author (for good), hidden by a moderator (reversible).
 const SHOWN = 0;
 const REMOVED = 1;
@@ -74,7 +90,7 @@ const postInput = z
     poll: pollInput.nullable().optional(),
   })
   .strict();
-const commentInput = z.object({ body: text(1000) }).strict();
+const commentInput = z.object({ body: text(1000), parentId: id.optional() }).strict();
 export const reportReason = z.enum(['spam', 'offensive', 'wrong', 'other']);
 const reportInput = z.object({ reason: reportReason }).strict();
 
@@ -89,7 +105,8 @@ const POST = `SELECT sp.id,sp.problem_id AS problemId,sp.title,sp.language,sp.ta
   (SELECT COUNT(*) FROM user_marks m JOIN "user" su ON su.id=m.user_id AND su.email_verified=1
     WHERE m.target='post:'||sp.id AND m.mark='star') AS stars,
   EXISTS(SELECT 1 FROM user_marks m WHERE m.target='post:'||sp.id AND m.mark='star' AND m.user_id=@me) AS starred,
-  ${badgeSql('sp.user_id', 'posts')} AS employer,${badgeSql('sp.user_id', 'referrals')} AS referrer`;
+  ${badgeSql('sp.user_id', 'posts')} AS employer,${badgeSql('sp.user_id', 'referrals')} AS referrer,
+  sp.anonymous,sp.pinned,${reputationSql('sp.user_id')} AS reputation`;
 const PROFILE = (col: string) => `LEFT JOIN user_profiles pr ON pr.user_id=${col} AND pr.visible=1`;
 const FROM_POST = `FROM solution_posts sp LEFT JOIN "user" u ON u.id=sp.user_id ${PROFILE('sp.user_id')}`;
 type PostRow = {
@@ -111,24 +128,40 @@ type PostRow = {
   starred: number;
   employer: string | null;
   referrer: string | null;
+  anonymous: number;
+  pinned: number;
+  reputation: number;
   body?: string;
   excerpt?: string;
 };
-/** Your own name to you; to everyone else the public handle if you chose one, else a masked name. */
+/**
+ * Your own name to you; to everyone else the public handle if you chose one, else a masked name,
+ * and nothing at all when anonymous. Reputation shows beside a public handle only.
+ */
 // mine (and voted) leave the rest first: a 0/1 column and a boolean of one name intersect to never.
-const byline = <T extends { author: string; handle: string | null; mine: number }>({ handle, mine, ...row }: T) => ({
+const byline = <T extends { author: string; handle: string | null; mine: number; anonymous: number; reputation: number }>({
+  handle,
+  mine,
+  anonymous,
+  reputation,
+  ...row
+}: T) => ({
   ...row,
-  author: mine ? row.author : handle || (row.author ? maskName(row.author) : ''),
+  author: mine ? row.author : anonymous ? '' : handle || (row.author ? maskName(row.author) : ''),
   mine: !!mine,
+  anonymous: !!anonymous,
+  reputation: handle && !anonymous ? reputation : null,
 });
-const shape = ({ voted, starred, employer, referrer, ...r }: PostRow) => ({
+const shape = ({ voted, starred, employer, referrer, pinned, ...r }: PostRow) => ({
   ...byline(r),
   voted: !!voted,
   starred: !!starred,
+  pinned: !!pinned,
   // The verified employee badge, where its owner switched it on and the target allows it (work-verify).
-  employer: badgeTarget(r.problemId) ? badgeName(employer) : null,
+  employer: !r.anonymous && badgeTarget(r.problemId) ? badgeName(employer) : null,
   // A referral thread by a verified employee of the company it is tagged with: "request a referral".
-  referral: r.problemId === 'discuss:referral' && !!r.tag && referrer === r.tag && !!badgeName(referrer),
+  referral:
+    !r.anonymous && r.problemId === 'discuss:referral' && !!r.tag && referrer === r.tag && !!badgeName(referrer),
 });
 
 export const canModerate = (p: Person | null) => !!p && (p.role === 'teacher' || isCourseOwner(p));
@@ -239,7 +272,8 @@ async function listPosts(p: Person | null, params: URLSearchParams) {
   const all = problem === 'discuss:all';
   if (!all && !(await visibleTarget(p, problem))) throw new HttpError(404, '题目不存在或尚未发布');
   if (!all) refuseDuringContest(p, problem);
-  const order = params.get('sort') === 'new' ? 'sp.created_at DESC' : 'votes DESC,sp.created_at DESC';
+  // Featured (pinned) posts first, either way.
+  const order = `sp.pinned DESC,${params.get('sort') === 'new' ? 'sp.created_at DESC' : 'votes DESC,sp.created_at DESC'}`;
   const offset = Math.min(Math.max(0, Math.floor(Number(params.get('offset')) || 0)), 5000);
   // ?language=: one language's posts (the AC dialog's histogram links here); '' is all.
   const language = postInput.shape.language.parse(params.get('language') ?? '');
@@ -315,24 +349,46 @@ async function readPost(p: Person | null, postId: string) {
     (await visibleTarget(p, row.problemId));
   if (!row || !visible) throw new HttpError(404, '题解不存在');
   refuseDuringContest(p, row.problemId);
-  const comments = (
+  // An anonymous post's author stays anonymous in their own comments under it (marked op).
+  const rows = (
     db
       .prepare(
-        `SELECT c.id,c.body,c.created_at AS createdAt,COALESCE(u.name,'') AS author,pr.handle,c.user_id=@me AS mine
-        FROM post_comments c LEFT JOIN "user" u ON u.id=c.user_id ${PROFILE('c.user_id')}
+        `SELECT c.id,c.parent_id AS parentId,c.body,c.created_at AS createdAt,COALESCE(u.name,'') AS author,pr.handle,
+          c.user_id=@me AS mine,c.user_id=sp.user_id AS op,sp.anonymous=1 AND c.user_id=sp.user_id AS anonymous,
+          (SELECT COUNT(*) FROM comment_votes v WHERE v.comment_id=c.id) AS votes,
+          EXISTS(SELECT 1 FROM comment_votes v WHERE v.comment_id=c.id AND v.user_id=@me) AS voted,
+          ${reputationSql('c.user_id')} AS reputation
+        FROM post_comments c JOIN solution_posts sp ON sp.id=c.post_id
+        LEFT JOIN "user" u ON u.id=c.user_id ${PROFILE('c.user_id')}
         WHERE c.post_id=@id AND c.hidden=${SHOWN} AND (c.user_id=@me OR NOT ${reportedDown("'comment:'||c.id")})
-        ORDER BY c.created_at,c.id LIMIT 500`,
+        ORDER BY votes DESC,c.created_at,c.id LIMIT 500`,
       )
       .all({ me, id: postId }) as {
       id: string;
+      parentId: string | null;
       body: string;
       createdAt: number;
       author: string;
       handle: string | null;
       mine: number;
+      op: number;
+      anonymous: number;
+      votes: number;
+      voted: number;
+      reputation: number;
     }[]
-  ).map(byline);
-  return { post: { ...shape(row), poll: pollOf(postId, me) }, comments };
+  ).map(({ op, voted, ...c }) => ({ ...byline(c), op: !!op, voted: !!voted }));
+  // Each top-level comment followed by its replies, both by votes then time. A reply whose
+  // comment is gone (removed, hidden) stands on its own.
+  const tops = new Set(rows.filter((c) => !c.parentId).map((c) => c.id));
+  const replies = Map.groupBy(
+    rows.filter((c) => c.parentId && tops.has(c.parentId)),
+    (c) => c.parentId,
+  );
+  const comments = rows
+    .filter((c) => !c.parentId || !tops.has(c.parentId))
+    .flatMap((c) => [{ ...c, parentId: null }, ...(tops.has(c.id) ? (replies.get(c.id) ?? []) : [])]);
+  return { post: { ...shape(row), poll: pollOf(postId, me) }, comments, moderator: canModerate(p) };
 }
 
 /** A target's posts for a server-rendered page, as a signed-out reader sees them. */
@@ -364,13 +420,44 @@ const idOk = (value: string) => id.safeParse(value).success;
 async function openPost(p: Person, postId: string) {
   const row = sqlite()
     .prepare(
-      `SELECT sp.problem_id AS problemId,sp.user_id AS userId FROM solution_posts sp
+      `SELECT sp.id,sp.problem_id AS problemId,sp.user_id AS userId,sp.title,sp.anonymous,
+        ${reportedDown("'post:'||sp.id")} AS down FROM solution_posts sp
       WHERE sp.id=@id AND sp.hidden=${SHOWN} AND (sp.user_id=@me OR NOT ${reportedDown("'post:'||sp.id")})${hiddenTags()}`,
     )
-    .get({ id: postId, me: p.id }) as { problemId: string; userId: string } | undefined;
+    .get({ id: postId, me: p.id }) as OpenPost | undefined;
   if (!row || !(await visibleTarget(p, row.problemId))) throw new HttpError(404, '题解不存在');
   refuseDuringContest(p, row.problemId);
   return row;
+}
+type OpenPost = { id: string; problemId: string; userId: string; title: string; anonymous: number; down: number };
+
+/** Owners of the visible profiles @named in a text, at most MENTIONS_MAX, less anyone blocking the writer. */
+function mentioned(text: string, writer: string) {
+  const handles = [...new Set(Array.from(text.matchAll(MENTION), (m) => m[1]))].slice(0, MENTIONS_MAX);
+  if (!handles.length) return [];
+  return sqlite()
+    .prepare(
+      `SELECT pr.user_id FROM user_profiles pr WHERE pr.visible=1 AND pr.handle IN (${handles.map(() => '?').join(',')})
+        AND NOT EXISTS(SELECT 1 FROM dm_blocks b WHERE b.user_id=pr.user_id AND b.blocked_id=?)`,
+    )
+    .pluck()
+    .all(...handles, writer) as string[];
+}
+/**
+ * Notices for a new post or comment: `to` (replies) first, then the @mentioned; one each, never to
+ * the writer, none on a reported-down post. An anonymous post's author goes unnamed in them.
+ */
+function notifyWrite(p: Person, post: OpenPost, to: { userId: string; title: string }[], text: string, now: number) {
+  if (post.down) return;
+  const from = post.anonymous && post.userId === p.id ? '' : `${nameOf(p.id)}: `;
+  const done = new Set([p.id]);
+  const send = (userId: string, kind: string, title: string) => {
+    if (done.has(userId)) return;
+    done.add(userId);
+    notify({ userId, kind, title, body: `${from}${autoTitle(text)}`, href: postHref(post.problemId, post.id), now });
+  };
+  for (const r of to) send(r.userId, 'reply', r.title);
+  for (const userId of mentioned(text, p.id)) send(userId, 'mention', '有人在讨论中提到了你');
 }
 
 /** One report per learner and target: posts, comments, group chat ('gmsg:') and direct messages ('dm:'). */
@@ -534,20 +621,25 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
   await limit(p, 'post-write', 30);
   const now = Date.now();
   if (resource === 'posts' && !target) {
-    const d = postInput.extend({ problemId: z.string().max(320) }).parse(await readJson(request, 90000));
+    const d = postInput
+      .extend({ problemId: z.string().max(320), anonymous: z.boolean().default(false) })
+      .parse(await readJson(request, 90000));
     if (!(await visibleTarget(p, d.problemId))) throw new HttpError(404, '题目不存在或尚未发布');
     refuseDuringContest(p, d.problemId);
     if (!validTag(d.problemId, d.tag)) throw new HttpError(400, '标签无效');
+    if (d.anonymous && !anonymousAllowed(d.problemId)) throw new HttpError(400, '这里不能匿名发帖');
     const title = titleOf(d.problemId, d);
     underCap('solution_posts', p, POSTS_PER_DAY, '今天发布的帖子已达上限');
     const postId = randomUUID();
     db.transaction(() => {
       db.prepare(
-        `INSERT INTO solution_posts(id,problem_id,user_id,title,body,language,tag,hidden,created_at,updated_at)
-        VALUES(?,?,?,?,?,?,?,${SHOWN},?,?)`,
-      ).run(postId, d.problemId, p.id, title, d.body, d.language, d.tag, now, now);
+        `INSERT INTO solution_posts(id,problem_id,user_id,title,body,language,tag,hidden,anonymous,created_at,updated_at)
+        VALUES(?,?,?,?,?,?,?,${SHOWN},?,?,?)`,
+      ).run(postId, d.problemId, p.id, title, d.body, d.language, d.tag, d.anonymous ? 1 : 0, now, now);
       savePoll(postId, d.problemId, d.poll, now);
     })();
+    const post = { id: postId, problemId: d.problemId, userId: p.id, title, anonymous: d.anonymous ? 1 : 0, down: 0 };
+    notifyWrite(p, post, [], `${title}\n${d.body}`, now);
     return json(await readPost(p, postId), 201);
   }
   if (!idOk(target) || !action) throw new HttpError(404, '题解接口不存在');
@@ -585,7 +677,24 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
           .prepare('INSERT INTO post_votes(post_id,user_id,created_at) VALUES(?,?,?) ON CONFLICT DO NOTHING')
           .run(target, p.id, now);
         // Once per voter and post, ever: un-voting and voting again pays nothing more.
-        if (changes) awardUpvote(post.userId, p, target, now);
+        if (changes) {
+          awardUpvote(post.userId, p, target, now);
+          // One notice per post and (UTC) day, counting that day's voters.
+          const day = new Date(now).toISOString().slice(0, 10);
+          const voters = db
+            .prepare('SELECT COUNT(*) FROM post_votes WHERE post_id=? AND created_at>=?')
+            .pluck()
+            .get(target, Date.parse(day)) as number;
+          notify({
+            id: `like:${target}:${day}`,
+            userId: post.userId,
+            kind: 'like',
+            title: `${voters} 人赞了你的帖子`,
+            body: post.title,
+            href: postHref(post.problemId, target),
+            now,
+          });
+        }
       } else db.prepare('DELETE FROM post_votes WHERE post_id=? AND user_id=?').run(target, p.id);
       const { votes } = db.prepare('SELECT COUNT(*) AS votes FROM post_votes WHERE post_id=?').get(target) as {
         votes: number;
@@ -593,13 +702,41 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
       return json({ votes, voted: on });
     }
     if (action === 'comments') {
-      const { body } = commentInput.parse(await readJson(request, 5000));
-      await openPost(p, target);
+      const { body, parentId } = commentInput.parse(await readJson(request, 5000));
+      const post = await openPost(p, target);
+      // A reply goes under a shown top-level comment of the same post: one level, never deeper.
+      const parent = parentId
+        ? (db
+            .prepare(`SELECT user_id AS userId,parent_id AS parentId FROM post_comments WHERE id=? AND post_id=? AND hidden=${SHOWN}`)
+            .get(parentId, target) as { userId: string; parentId: string | null } | undefined)
+        : undefined;
+      if (parentId && !parent) throw new HttpError(404, '评论不存在');
+      if (parent?.parentId) throw new HttpError(400, '楼中楼只能回复一层');
       underCap('post_comments', p, COMMENTS_PER_DAY, '今天的评论已达上限');
       db.prepare(
-        `INSERT INTO post_comments(id,post_id,user_id,body,hidden,created_at) VALUES(?,?,?,?,${SHOWN},?)`,
-      ).run(randomUUID(), target, p.id, body, now);
+        `INSERT INTO post_comments(id,post_id,user_id,parent_id,body,hidden,created_at) VALUES(?,?,?,?,?,${SHOWN},?)`,
+      ).run(randomUUID(), target, p.id, parentId ?? null, body, now);
+      notifyWrite(
+        p,
+        post,
+        [
+          ...(parent ? [{ userId: parent.userId, title: '有人回复了你的评论' }] : []),
+          { userId: post.userId, title: '有人回复了你的帖子' },
+        ],
+        body,
+        now,
+      );
       return json(await readPost(p, target), 201);
+    }
+    if (action === 'pin' || action === 'unpin') {
+      requireModerator(p);
+      await limit(p, 'post-pin-write', 30);
+      const { changes } = db
+        .prepare(`UPDATE solution_posts SET pinned=? WHERE id=? AND hidden<>${REMOVED}`)
+        .run(action === 'pin' ? 1 : 0, target);
+      if (!changes) throw new HttpError(404, '题解不存在');
+      auditStatement(p, `post.${action}`, target).run();
+      return json({ id: target, pinned: action === 'pin' });
     }
     if (action === 'poll') {
       const { choices } = z
@@ -626,6 +763,29 @@ export async function handleSolutionPosts(request: Request, p: Person | null, pa
     return moderate(p, 'post', target, action);
   }
   if (resource === 'post-comments') {
+    if (action === 'vote') {
+      await limit(p, 'comment-vote-write', 60);
+      const { on } = z.object({ on: z.boolean() }).strict().parse(await readJson(request, 200));
+      const row = db
+        .prepare(
+          `SELECT post_id AS postId,user_id AS userId FROM post_comments WHERE id=? AND hidden=${SHOWN}
+            AND NOT ${reportedDown("'comment:'||id")}`,
+        )
+        .get(target) as { postId: string; userId: string } | undefined;
+      if (!row) throw new HttpError(404, '评论不存在');
+      await openPost(p, row.postId);
+      if (row.userId === p.id) throw new HttpError(400, '不能给自己的评论点赞');
+      // Comment votes order replies and pay no points (so they cannot be farmed).
+      if (on)
+        db.prepare('INSERT INTO comment_votes(comment_id,user_id,created_at) VALUES(?,?,?) ON CONFLICT DO NOTHING').run(
+          target,
+          p.id,
+          now,
+        );
+      else db.prepare('DELETE FROM comment_votes WHERE comment_id=? AND user_id=?').run(target, p.id);
+      const votes = db.prepare('SELECT COUNT(*) FROM comment_votes WHERE comment_id=?').pluck().get(target) as number;
+      return json({ votes, voted: on });
+    }
     if (action === 'delete') {
       const { changes } = db
         .prepare(`UPDATE post_comments SET hidden=${REMOVED} WHERE id=? AND user_id=?`)
