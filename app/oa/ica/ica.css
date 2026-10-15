@@ -1,0 +1,178 @@
+/* /oa/ica: the AI-assisted round's project bench (ai-assisted.css) inside the OA pages, on their green-ink palette. */
+.ica-round {
+  --navy: #0e1a2b;
+  --amber: #ffb23f;
+  --ink: #152c24;
+  --muted: #4d6359;
+  --rule: #dfe6e2;
+}
+.oa-public:has(.ica-bench) .public-library-main {
+  max-width: 1320px;
+}
+.ica-lead {
+  max-width: 54em;
+  margin: -6px 0 18px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.ica-compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 12px;
+  margin: 0 0 8px;
+}
+.ica-compare div {
+  padding: 16px 18px;
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--amber);
+  border-radius: 12px;
+  background: #fff;
+}
+.ica-compare dt {
+  margin-bottom: 6px;
+  font-weight: 800;
+}
+.ica-compare dd {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.ica-companies {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ica-companies li {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: #fff;
+}
+.ica-companies span {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.ica-head {
+  margin: 18px 0 16px;
+}
+.ica-head h1 {
+  margin: 10px 0 6px;
+  font-size: clamp(26px, 4vw, 36px);
+  line-height: 1.15;
+}
+.ica-head p:last-child {
+  max-width: 60em;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.ica-bench {
+  display: grid;
+  gap: 14px;
+}
+.ica-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: #fff;
+}
+.ica-levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ica-levels button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 34px;
+  padding: 4px 13px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ica-levels button[data-state='passed'] {
+  border-color: #2e8b6a;
+  background: #edf8f3;
+  color: #17664b;
+}
+.ica-levels button[aria-current='step'] {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: var(--amber);
+}
+.ica-levels button:disabled {
+  background: #f3f5f4;
+  color: #5b6962;
+  cursor: not-allowed;
+}
+.ica-levels button:focus-visible,
+.ica-timer button:focus-visible {
+  outline: 2px solid #0d7a63;
+  outline-offset: 2px;
+}
+.ica-score {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.ica-score strong {
+  color: var(--ink);
+  font-size: 18px;
+}
+.ica-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.ica-timer [data-over] {
+  color: #b42318;
+}
+.ica-timer button:not([data-slot]) {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #0d7a63;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.ica-statement {
+  padding: 18px 22px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: #fff;
+  overflow-x: auto;
+}
+@media (max-width: 720px) {
+  .ica-timer {
+    margin-left: 0;
+  }
+  .ica-statement {
+    padding: 14px 14px;
+  }
+}

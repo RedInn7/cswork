@@ -74,6 +74,9 @@ export default async function OaIndex() {
       <p className="oa-public-actions">
         <Link className="oa-public-cta is-quiet" href="/oa/mcq" prefetch={false}>
           {zh ? 'OA 选择题练习（CS 基础 · 读代码 · 数学逻辑）' : 'OA multiple-choice practice (CS · code output · quant)'}
+        </Link>{' '}
+        <Link className="oa-public-cta is-quiet" href="/oa/ica" prefetch={false}>
+          {zh ? 'CodeSignal ICA 式四关练习' : 'CodeSignal ICA-style four-level practice'}
         </Link>
       </p>
       {!!fresh.length && (

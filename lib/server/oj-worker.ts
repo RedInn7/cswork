@@ -4,7 +4,7 @@ import {
   createSlots,
 } from './oj-case-stream';
 import { boundedFeedback, persistCase } from './oj-case-store';
-import { aiTask } from './ai-tasks';
+import { projectSuite } from './ai-tasks';
 import { runCodecRoundTrip } from './oj-codec-roundtrip';
 import { CompiledProgramCache } from './oj-compile-cache';
 import { PrecompileScheduler } from './oj-precompile-scheduler';
@@ -243,7 +243,8 @@ async function judgeSubmission(
         () => controller.abort(new Error('Submission deadline exceeded')),
         80_000,
       );
-      const task = aiTask(claimed.problem_id.replace(/^ai-/, ''));
+      // An AI-assisted task, or an ICA level with the hidden tests of its levels so far.
+      const task = projectSuite(claimed.problem_id);
       if (!task) {
         update(id, attempt, {
           status: 'system_error',

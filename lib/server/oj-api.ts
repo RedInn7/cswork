@@ -58,6 +58,7 @@ import {
   similarProblems,
 } from './study-library';
 import { lcRating } from './lc-ratings';
+import { icaView } from './ica';
 import { lingEditorial } from './ling-editorials';
 import { awardAccepted, handlePoints } from './points';
 import { classicList } from '@/lib/classic-lists';
@@ -238,6 +239,13 @@ export async function handleOj(
     // Public judge status board: submission metadata only, rate limited per client.
     await limitReader(request, p, 'judge-feed-read', 120);
     return json(judgeFeed(p, url.searchParams));
+  }
+  // An ICA set's open levels (statements and public tests), level 1 signed out; never hidden tests.
+  if (request.method === 'GET' && resource === 'ica' && id && !action) {
+    await limitReader(request, p, 'ica-read', 120);
+    const view = icaView(p?.id ?? null, id);
+    if (!view) throw new HttpError(404, '练习任务不存在');
+    return json(view);
   }
   // Threads, answers and comments read signed out; the handler checks the rest.
   if (['posts', 'post-comments', 'group-messages', 'direct-messages'].includes(resource))
