@@ -122,7 +122,7 @@ export function WorkBadgeSettings() {
                 'Only companies with a company page; personal addresses (gmail, qq, 163, outlook…) don’t count. Up to 3 codes a day.',
               )}
         </small>
-        <Button variant="outline" disabled={busy || !state?.mail || !email.trim()}>
+        <Button type="submit" variant="outline" disabled={busy || !state?.mail || !email.trim()}>
           {t('发送验证码', 'Send code')}
         </Button>
       </form>
@@ -145,7 +145,7 @@ export function WorkBadgeSettings() {
             onChange={(e) => setCode(e.target.value)}
             required
           />
-          <Button variant="outline" disabled={busy || code.trim().length !== 6}>
+          <Button type="submit" variant="outline" disabled={busy || code.trim().length !== 6}>
             {t('确认', 'Confirm')}
           </Button>
         </form>

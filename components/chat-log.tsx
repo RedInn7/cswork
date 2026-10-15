@@ -100,11 +100,11 @@ export function ChatLog({
       >
         {items.map((m) => (
           <li key={m.id} data-mine={m.mine || undefined}>
-            <p className="chat-meta">
+            <div className="chat-meta">
               {named && <b>{m.mine ? t('我', 'You') : (m.name ?? t('已退出的成员', 'Former member'))}</b>}
               <time dateTime={new Date(m.createdAt).toISOString()}>{when(m.createdAt, english)}</time>
               {actions?.(m)}
-            </p>
+            </div>
             <p className="chat-body">{m.body}</p>
           </li>
         ))}
