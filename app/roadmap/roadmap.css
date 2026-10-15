@@ -1,8 +1,8 @@
 /* /roadmap: three tracks on the public library shell; the coding track is components/route-graph.tsx. */
 .roadmap-tracks {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 48px;
-  min-width: 0;
 }
 .roadmap-track {
   min-width: 0;
@@ -92,6 +92,7 @@
   stroke: #a35f00;
 }
 .route-graph-node[data-state='later'] .route-graph-track {
+  stroke: #87978f;
   stroke-dasharray: 3 3;
 }
 .route-graph-node[data-state='later'] .route-graph-name {
@@ -139,6 +140,7 @@
   border-color: #a35f00;
 }
 .roadmap-legend li[data-state='later']::before {
+  border-color: #87978f;
   border-style: dashed;
 }
 
@@ -230,6 +232,9 @@
   .dark .route-graph-name {
     fill: #cbe3d9;
   }
+  .dark .route-graph-node[data-state='later'] .route-graph-track {
+    stroke: #87978f;
+  }
   .dark .route-graph-node[data-state='later'] .route-graph-name {
     fill: #b4c7be;
   }
@@ -247,6 +252,7 @@
     background: #191919;
   }
   .dark .roadmap-legend li[data-state='later']::before {
+    border-color: #87978f;
     border-style: dashed;
   }
   .dark .roadmap-parts > li {
