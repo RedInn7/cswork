@@ -37,16 +37,23 @@ function publicUrl(path: string): string {
 export const problemShareUrl = (problemId: string) =>
   publicUrl(`/?${new URLSearchParams({ view: 'problem', problem: problemId })}`);
 
+/**
+ * `image`: the page's own share card (an opengraph-image route path), written out explicitly with
+ * a large Twitter card. Without one a page gets the site card through app/opengraph-image.tsx.
+ */
 export function seoMetadata({
   title,
   description,
   path,
+  image,
 }: {
   title: string;
   description: string;
   path: string;
+  image?: string;
 }): Metadata {
   const url = publicUrl(path);
+  const images = image ? [{ url: publicUrl(image), width: 1200, height: 630, alt: title }] : undefined;
   return {
     metadataBase: new URL(SITE_URL),
     title,
@@ -58,8 +65,9 @@ export function seoMetadata({
       url,
       siteName: SITE_NAME,
       type: 'website',
+      ...(images && { images }),
     },
-    twitter: { card: 'summary', title, description },
+    twitter: images ? { card: 'summary_large_image', title, description, images } : { card: 'summary', title, description },
   };
 }
 
@@ -167,6 +175,7 @@ export const SITEMAP_STATIC_ENTRIES: SitemapEntry[] = [
   { path: guidePath() },
   ...GUIDE_CHAPTERS.map((chapter) => ({ path: guidePath(chapter.slug) })),
   { path: '/career/resume' },
+  { path: '/career/resume/builder' },
   { path: '/career/visa-timeline' },
   { path: '/ai-assisted' },
   ...AI_TASK_SLUGS.map((slug) => ({ path: `/ai-assisted/${slug}` })),

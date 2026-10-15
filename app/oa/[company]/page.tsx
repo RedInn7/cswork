@@ -39,6 +39,7 @@ export async function generateMetadata({ params }: Props) {
     title: oaPageTitle(locale, name),
     description: lead,
     path: oaCompanyPath(company.slug),
+    image: `${oaCompanyPath(company.slug)}/opengraph-image`,
   });
 }
 

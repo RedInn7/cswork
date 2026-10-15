@@ -10,6 +10,7 @@ import { LANGUAGE_IDS } from '@/lib/problems';
 import { canonicalCompany, employerSlug, OTHER_COMPANY } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
 import { companyDirectory, hasHub } from './company-hub';
+import { myCertificates } from './certificates';
 import { duelRecord, ratingHistory } from './contest-ratings';
 import { library } from './content-library';
 import { hiddenCompanies, shownOaSql } from './env';
@@ -920,6 +921,27 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
   };
 }
 
+/**
+ * The share card's numbers (app/u/[handle]/opengraph-image), or null when the page would 404:
+ * solved by difficulty, the longest streak of AC days and, with contests shown, the latest rating.
+ */
+export function profileCard(handle: string, catalogue: PublicCatalogue) {
+  const profile = visibleProfile(handle);
+  if (!profile) return null;
+  const shown = shownIn(catalogue);
+  const ac = (
+    sqlite()
+      .prepare(`SELECT problem_id AS id,created_at AS at FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted'`)
+      .all(profile.user_id) as { id: string; at: number }[]
+  ).filter((s) => shown(s.id));
+  return {
+    handle: profile.handle,
+    solved: tally(new Set(ac.map((s) => s.id)), catalogue).solved,
+    streak: longestStreak(ac.map((s) => s.at)),
+    rating: profile.show_contest ? (ratingHistory(profile.user_id).at(-1)?.after ?? null) : null,
+  };
+}
+
 /** Widest time zone offsets (UTC−12 to UTC+14): a reader's local year lies inside the padded UTC one. */
 const YEAR_PAD = 14 * HOUR;
 /**
@@ -1240,6 +1262,30 @@ export async function handleDrafts(request: Request, p: Person, problem?: string
   return json({ saved });
 }
 
+/**
+ * GET profile/resume-facts: the learner's own record for the resume builder (/career/resume/builder),
+ * in English: certificates (linked from /certificate/<id>), the latest weekly/starter rating and the
+ * solved counts the public profile shows, plus the handle when that profile is public. Nothing is
+ * written: the resume itself stays in the browser.
+ */
+async function handleResumeFacts(request: Request, p: Person) {
+  if (request.method !== 'GET') throw new HttpError(404, '接口不存在');
+  await limit(p, 'profile-read', 60);
+  const catalogue = await publicCatalogue();
+  const contests = ratingHistory(p.id);
+  const profile = myProfile(p.id);
+  return json({
+    certificates: myCertificates(p.id, false).map(({ id, course, issuedAt, skill }) => ({ id, course, issuedAt, skill })),
+    rating: contests.at(-1)?.after ?? null,
+    contests: contests.length,
+    solved: tally(
+      solvedList(p.id, shownIn(catalogue)).map((s) => s.id),
+      catalogue,
+    ).solved,
+    handle: profile?.visible ? profile.handle : null,
+  });
+}
+
 /** /api/oj/{lists,profile,reports}/…: public list and report reads work signed out. */
 export async function handleLearnerCloud(request: Request, p: Person | null, path: string[]) {
   const [resource, id, action, extra] = path;
@@ -1248,5 +1294,6 @@ export async function handleLearnerCloud(request: Request, p: Person | null, pat
   if (resource === 'reports' && !action) return handleReports(request, p, id);
   requirePerson(p);
   if (resource === 'profile' && !id) return handleProfile(request, p);
+  if (resource === 'profile' && id === 'resume-facts' && !action) return handleResumeFacts(request, p);
   throw new HttpError(404, '接口不存在');
 }

@@ -67,6 +67,9 @@ export function PrivacyDocument() {
               <p>
                 参加技能认证考试时，平台保存每场考试抽到的题目、开考和交卷时间、成绩与是否通过，用于计时、计分、7 天的重考间隔和你的考试记录；成绩由你在考试时间内的正式提交算出，不会公开。通过后签发的证书和课程结业证书一样，只有你在证书列表里勾选「在公开主页展示」后才会出现在公开主页上，证书页面显示你的账号名称。给课程打分时，平台保存你给的星级（1–5 星，不含文字）和时间；其他人只能看到汇总的平均分和人数，不足 5 人时不显示平均分。
               </p>
+              <p id="privacy-share-cards">
+                公开主页、证书、OA 公司页和周赛、入门赛的链接被分享到社交网站或聊天软件时，链接预览里的图片由本站服务器生成：公开主页的图片只有主页名、按难度的通过题数、最长连续通过天数，以及打开「展示比赛记录」时的最新 rating；证书的图片和证书页一样，显示课程名称、账号名称、日期和验证编号；比赛的图片只有场次名称、日期和参赛人数，私人房间和 1v1 排位只用网站的通用图片。图片用本站自带的字体绘制，不把任何文字发给字体服务或其他第三方；账号名称里有这套字体画不出的字时，改为显示公开主页名，没有公开主页名就不显示名字。证书页的「分享到 LinkedIn」「分享到 X」和只有证书持有人能看到的「添加到 LinkedIn 资料」都只是链接：点击后，浏览器才会把证书链接（添加到资料时还有课程名称、签发年月和验证编号）带到对方网站。
+              </p>
               <p>
                 预约同伴互面时，服务器保存你填写的昵称、面试类型、级别、可用时段、时区和语言，以及你选填的目标公司和话题；同伴只能看到昵称，匹配通知里会写出你们共同的公司和话题。开着「邮件提醒」时，开始前一天和前一小时会给你已验证的账户邮箱发提醒（经 Resend 发送），内容是面试类型、时间、同伴昵称和会议链接；预约时取消勾选就不会收到。
               </p>
@@ -185,6 +188,9 @@ export function PrivacyDocument() {
               <p id="privacy-resume">
                 在「简历 AI 点评」页（/career/resume）提交时，服务器会把你粘贴的简历文字、目标岗位和职位描述（如有）发送给
                 Anthropic，用于生成点评；不发送你的邮箱或账户标识。简历里本身写着的姓名、电话等信息会随文字一起发送，提交前可以先删掉。平台不保存简历文字和点评结果，只记录每天的调用次数和用量；点评只显示在你当前的浏览器页面里。不提交就不会发送。
+              </p>
+              <p id="privacy-resume-builder">
+                在简历生成器（/career/resume/builder）里填写的内容只保存在当前浏览器的本地存储里，不会上传；「导出 JSON」的文件也在浏览器里生成。登录后点「从 CSWork 填入」时，页面会向服务器读取你自己的证书、比赛 rating、通过题数和公开主页名（主页公开时），只填到这个页面上，服务器不记录简历内容。点「送去 AI 点评」时，简历的纯文字暂存在当前标签页的会话存储里，简历 AI 点评页读取后立即删除；只有你在那里提交，文字才会按上一段的方式发送给 Anthropic。
               </p>
               <p id="privacy-ai-round">
                 在「AI 辅助编程轮」练习（/ai-assisted）里点「运行测试」时，项目的全部文件会交给隔离环境运行公开测试和隐藏测试；这些文件和测试结果像代码沙盒的运行一样保存在你的运行记录里，你和负责教学管理的老师按权限可以查看，不出现在提交列表、统计、积分和学习进度中。编辑中的文件只保存在当前浏览器。使用 AI 结对时，服务器会把这道练习的说明、你当前的文件（总量有上限，超出的只发送文件名）、最近几轮对话和你上一次运行的公开测试结果（隐藏测试只有通过数量）发送给
@@ -366,6 +372,27 @@ export function PrivacyDocument() {
                 course, the platform keeps your stars (1–5, no text) and when you
                 gave them; others see only the average and the number of
                 ratings, and no average until 5 people have rated.
+              </p>
+              <p id="privacy-share-cards">
+                When a link to a public profile, a certificate, an OA company
+                page or a weekly or starter contest is shared on a social site
+                or in a chat app, the preview image is drawn by this site&apos;s
+                server. A profile&apos;s image shows only the handle, problems
+                solved by difficulty, the longest run of days with an accepted
+                answer and, with showing contests on, the latest rating. A
+                certificate&apos;s image shows what its page shows: the course,
+                the account name, the date and the verification ID. A
+                contest&apos;s image shows only its name, date and number of
+                entrants; private rooms and ranked duels use the site&apos;s
+                generic image. Images are drawn with a font bundled with the
+                site, and no text is sent to a font service or any other third
+                party: an account name with characters that font lacks is
+                replaced by the public handle, or left out when there is none.
+                On a certificate page, “Share on LinkedIn”, “Share on X” and
+                “Add to LinkedIn profile” (shown only to the holder) are plain
+                links: only when you click one does your browser take the
+                certificate link (and, when adding to your profile, the course
+                name, issue month and verification ID) to that site.
               </p>
               <p>
                 When you book a peer mock interview, the server keeps the name
@@ -691,6 +718,19 @@ export function PrivacyDocument() {
                 store the resume text or the review; it records only daily call
                 counts and usage, and the review exists only on your open page.
                 Nothing is sent unless you submit.
+              </p>
+              <p id="privacy-resume-builder">
+                What you enter in the resume builder (/career/resume/builder)
+                is kept only in this browser&apos;s local storage and is never
+                uploaded; Export JSON makes its file in the browser too. When
+                you are signed in and choose “Fill in from CSWork”, the page
+                reads your own certificates, contest rating, solved counts and
+                public handle (if your profile is public) from the server into
+                this page only; the server does not record the resume. “Send to
+                AI review” keeps the resume&apos;s plain text in this tab&apos;s
+                session storage until the AI resume review page reads it, then
+                deletes it; the text goes to Anthropic, as described above, only
+                if you submit there.
               </p>
               <p id="privacy-ai-round">
                 When you run the tests of an AI-assisted round project

@@ -14,9 +14,40 @@ export function certificateDate(issuedAt: number, zh: boolean) {
   }).format(issuedAt);
 }
 
-export function CertificateView({ cert, zh }: { cert: CertificateData; zh: boolean }) {
+/**
+ * LinkedIn's "Add licence or certification" form filled in (for the holder) and the share links.
+ * Plain links: nothing goes to LinkedIn or X until the reader clicks one.
+ */
+export function shareLinks(cert: CertificateData, zh: boolean) {
+  const url = `${SITE_URL}/certificate/${cert.id}`;
+  const issued = new Date(cert.issuedAt);
+  const text = cert.skill
+    ? zh
+      ? `我通过了 CSWork 技能认证「${cert.course}」`
+      : `I passed the CSWork skill certification “${cert.course}”`
+    : zh
+      ? `我完成了 CSWork 课程「${cert.course}」`
+      : `I completed the CSWork course “${cert.course}”`;
+  return {
+    addToProfile: `https://www.linkedin.com/profile/add?${new URLSearchParams({
+      startTask: 'CERTIFICATION_NAME',
+      name: cert.course,
+      organizationName: 'CSWork',
+      issueYear: String(issued.getUTCFullYear()),
+      issueMonth: String(issued.getUTCMonth() + 1),
+      certUrl: url,
+      certId: cert.id,
+    })}`,
+    linkedIn: `https://www.linkedin.com/sharing/share-offsite/?${new URLSearchParams({ url })}`,
+    x: `https://x.com/intent/tweet?${new URLSearchParams({ text, url })}`,
+  };
+}
+
+/** `owner`: the holder is reading, so the add-to-LinkedIn-profile link shows. */
+export function CertificateView({ cert, zh, owner = false }: { cert: CertificateData; zh: boolean; owner?: boolean }) {
   const t = (a: string, b: string) => (zh ? a : b);
   const url = `${SITE_URL}/certificate/${cert.id}`;
+  const share = shareLinks(cert, zh);
   const date = certificateDate(cert.issuedAt, zh);
   return (
     <>
@@ -65,6 +96,19 @@ export function CertificateView({ cert, zh }: { cert: CertificateData; zh: boole
         )}
       </article>
       <CertificateActions url={url} zh={zh} />
+      <nav className="certificate-share" aria-label={t('分享证书', 'Share this certificate')}>
+        {owner && (
+          <a href={share.addToProfile} target="_blank" rel="noopener noreferrer">
+            {t('添加到 LinkedIn 资料', 'Add to LinkedIn profile')}
+          </a>
+        )}
+        <a href={share.linkedIn} target="_blank" rel="noopener noreferrer">
+          {t('分享到 LinkedIn', 'Share on LinkedIn')}
+        </a>
+        <a href={share.x} target="_blank" rel="noopener noreferrer">
+          {t('分享到 X', 'Share on X')}
+        </a>
+      </nav>
       <p className="certificate-note">
         {cert.skill
           ? t(

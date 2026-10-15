@@ -138,6 +138,22 @@ export function certificateById(id: string, zh = true) {
   return cert ? { ...cert, lessons: EXTERNAL.get(cert.courseId)?.lessons ?? cert.lessons } : null;
 }
 
+/** Who holds certificate `id` (its page shows the holder the add-to-LinkedIn link). */
+export const certificateOwner = (id: string) =>
+  sqlite().prepare('SELECT user_id FROM certificates WHERE id=?').pluck().get(id) as string | undefined;
+
+/** All the learner's own certificates with their titles, newest first (the resume builder). */
+export function myCertificates(userId: string, zh = true) {
+  return (
+    sqlite()
+      .prepare(
+        `SELECT c.id,c.course_id AS courseId,c.issued_at AS issuedAt,co.title AS course FROM certificates c
+        LEFT JOIN courses co ON co.id=c.course_id AND co.published=1 WHERE c.user_id=? ORDER BY c.issued_at DESC,c.id`,
+      )
+      .all(userId) as (Omit<Certificate, 'onProfile'> & { course: string | null })[]
+  ).flatMap((row) => shown(row, zh) ?? []);
+}
+
 /** Certificates the learner chose to list on a visible public profile, newest first. */
 export function profileCertificates(handle: string, zh = true) {
   return (
