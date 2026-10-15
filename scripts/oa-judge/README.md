@@ -73,3 +73,7 @@ node --import tsx scripts/publish-oa-judge.ts --batch google-next TEACHER_EMAIL
 沙箱验证支持 `tokens` 和 `exact`，语义必须与生产一致；不允许把异常退出的错误程序算作有效反例。元数据、代码、输入输出或对照文件变更后，必须重新生成并验证相应批次报告，不能手工改报告指纹。
 
 发布前执行 `node scripts/oa-judge/coverage.mjs`，统计表同时校验真实文件哈希、通过数量、独立输入数量与全部错误程序名称。`sandbox_verified` 只表示报告有效，是否线上可提交仍由已发布数据库版本与 registry 校验值共同决定。
+
+## 调试与代码评审练习
+
+`node scripts/oa-judge/build-drills.mjs` 把 `mutants/` 里与 registry Python 解相差 1–3 行（行数相同、忽略行尾空白）的变异体生成 `drills.json`（私有服务端资产，由 `scripts/package-oa-library.mjs` 打包，不进 public）。变异体的英文名来自 `drill-names-en.json`（中文名 → 英文，LLM 翻译）；新增的名称补进这个文件后重跑脚本。registry 或 mutants 变动后必须重跑，`tests/oa-drills.test.ts` 会检查 `drills.json` 是否最新。

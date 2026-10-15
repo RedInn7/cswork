@@ -130,7 +130,11 @@ void test('a drill is a mutant one to three lines off the reference, trailing wh
 
 void test('the checked-in drills.json is what build-drills.mjs builds', () => {
   const built = buildDrills();
-  assert.deepEqual(JSON.parse(readFileSync('content/oa-judge/drills.json', 'utf8')), built);
+  assert.deepEqual(
+    JSON.parse(readFileSync('content/oa-judge/drills.json', 'utf8')),
+    built,
+    'content/oa-judge/drills.json is stale: run node scripts/oa-judge/build-drills.mjs',
+  );
   const all = Object.values(built.problems as Record<string, { drills: { budget: number; bugLines: number[] }[] }>).flatMap(
     (p) => p.drills,
   );
