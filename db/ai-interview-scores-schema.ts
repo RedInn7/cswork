@@ -18,5 +18,6 @@ export const aiInterviewScores = sqliteTable(
     createdAt: integer('created_at').notNull(),
     selfJson: text('self_json'),
   },
-  (t) => [index('ai_interview_scores_kind').on(t.kind, t.createdAt)],
+  // By user: a learner's own reports (interviewCalibration).
+  (t) => [index('ai_interview_scores_kind').on(t.kind, t.createdAt), index('ai_interview_scores_user').on(t.userId, t.createdAt)],
 );
