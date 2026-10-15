@@ -40,11 +40,15 @@ const key = () => setting('WORK_EMAIL_SECRET') || setting('BETTER_AUTH_SECRET') 
 const mac = (value: string) => createHmac('sha256', key()).update(value).digest('base64url');
 const domainOf = (email: string) => email.slice(email.lastIndexOf('@') + 1).toLowerCase();
 
-/** The company a work address belongs to: a listed domain (or a subdomain of one) of a company with a page. */
+/**
+ * The company a work address belongs to: exactly a listed domain of a company with a page. Never
+ * any subdomain: big companies relay or hand out mail on theirs (marketplace and booking relays,
+ * customer inbound-mail handlers), so a code delivered there proves nothing.
+ */
 export function employerOf(email: string) {
   const domain = domainOf(email);
   if (FREE_MAIL.has(domain)) return null;
-  const slug = Object.keys(DOMAINS).find((s) => DOMAINS[s].some((d) => domain === d || domain.endsWith(`.${d}`)));
+  const slug = Object.keys(DOMAINS).find((s) => DOMAINS[s].includes(domain));
   const company = slug ? reportCompanies().find((c) => c.slug === slug) : undefined;
   return company ? { ...company, domain } : null;
 }

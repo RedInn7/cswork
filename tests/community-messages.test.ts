@@ -162,7 +162,10 @@ void test('company domains: no free mail, only employers with a page', () => {
   assert.equal(employerOf('ada@qq.com'), null);
   assert.equal(employerOf('ada@corp.example'), null);
   assert.equal(employerOf('ada@google.com')?.slug, 'google');
-  assert.equal(employerOf('ada@eng.google.com')?.slug, 'google', 'a subdomain counts');
+  // Exact domains only: big companies relay or hand out mail on their subdomains.
+  assert.equal(employerOf('ada@eng.google.com'), null);
+  assert.equal(employerOf('bot@x1.na1.apex.salesforce.com'), null);
+  assert.equal(employerOf('ada@bloomberg.net'), null, 'every Terminal user has one');
   assert.equal(employerOf('ada@notgoogle.com'), null);
   assert.equal(employerOf('ada@meta.com'), null, 'a hidden company verifies nobody');
 });
