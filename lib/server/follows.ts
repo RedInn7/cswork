@@ -103,7 +103,7 @@ const edge = (from: string, to: string) =>
 export const mutualFollow = (a: string, b: string) => edge(a, b) && edge(b, a);
 
 /** Companies a learner may follow (lib/server/company-follows.ts tells them what's new). */
-export const COMPANY_FOLLOW_MAX = 20;
+const COMPANY_FOLLOW_MAX = 20;
 /** The reader's followed companies that still have a page, oldest follow first; [] signed out. */
 function followedCompanies(p: Person | null) {
   if (!p) return [];
