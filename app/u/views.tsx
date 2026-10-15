@@ -437,31 +437,29 @@ export function CompareView({ compare, zh }: { compare: NonNullable<ReturnType<t
           )}
         </p>
       </section>
-      <div className="contest-board-wrap" role="region" aria-label={t('通过数对比', 'Solved counts')} tabIndex={0}>
-        <table className="contest-board learner-compare">
-          <caption className="sr-only">{t('按难度的通过数', 'Solved by difficulty')}</caption>
-          <thead>
-            <tr>
-              <th scope="col">{t('难度', 'Difficulty')}</th>
+      <table className="contest-board learner-compare">
+        <caption className="sr-only">{t('按难度的通过数', 'Solved by difficulty')}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{t('难度', 'Difficulty')}</th>
+            {people.map((p) => (
+              <th scope="col" key={p.handle}>
+                <a href={`/u/${p.handle}`}>@{p.handle}</a>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(([rowZh, rowEn, key]) => (
+            <tr key={key}>
+              <th scope="row">{t(rowZh, rowEn)}</th>
               {people.map((p) => (
-                <th scope="col" key={p.handle}>
-                  <a href={`/u/${p.handle}`}>@{p.handle}</a>
-                </th>
+                <td key={p.handle}>{p.solved[key]}</td>
               ))}
             </tr>
-          </thead>
-          <tbody>
-            {rows.map(([rowZh, rowEn, key]) => (
-              <tr key={key}>
-                <th scope="row">{t(rowZh, rowEn)}</th>
-                {people.map((p) => (
-                  <td key={p.handle}>{p.solved[key]}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
       {!!compare.stops.length && (
         <section aria-labelledby="learner-compare-stops">
           <h2 id="learner-compare-stops" className="lists-public-h2">

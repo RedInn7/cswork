@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { useMemo, useSyncExternalStore } from 'react';
 import { usePracticeStats, type Activity, type PracticeCell } from '@/components/practice-calendar';
 import { yearRecap } from '@/lib/year-recap';
 
@@ -41,8 +41,9 @@ function HalfYearHeatmap({ activity, zh }: { activity: Activity[]; zh: boolean }
 
 function YearHeatmap({ activity, zh, year }: { activity: Activity[]; zh: boolean; year: number }) {
   const t = (a: string, b: string) => (zh ? a : b);
-  const [now, setNow] = useState<number | null>(null);
-  useEffect(() => setNow(Date.now()), []);
+  // The reader's local day once mounted; days after it are still ahead.
+  const today = useSyncExternalStore(noop, () => new Date().toDateString(), () => null);
+  const now = today === null ? null : new Date(today).getTime();
   // Before mount: the year's layout (the same in every time zone) with blank cells.
   const recap = useMemo(() => yearRecap(now === null ? [] : activity, year, now ?? Infinity, !zh), [activity, year, now, zh]);
   const busiest = recap.busiest;

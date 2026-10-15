@@ -259,7 +259,7 @@ test('my year recap card sums the loaded history, per year, and links the public
     item('oa-x-1', [new Date(2025, 3, 1, 10).getTime()]),
     item('lc-9', []),
   ];
-  const root = await mount(createElement(YearRecapCard, { history, english: true, handle: 'ann' }));
+  const root = await mount(createElement(YearRecapCard, { history, english: true, handle: 'ann', now: at(5, 1) }));
   assert.equal(document.querySelector('#year-recap-title').textContent, '2026 in review');
   const meters = () => [...document.querySelectorAll('.year-recap-meters dd')].map((d) => d.textContent);
   assert.deepEqual(meters(), ['2', '2', '2 days', 'Jan 6 · 2']);
@@ -274,7 +274,7 @@ test('my year recap card sums the loaded history, per year, and links the public
   assert.equal(document.querySelector('.year-recap-stops'), null);
   assert.equal(document.querySelector('.year-recap a').getAttribute('href'), '/u/ann/recap/2025');
   await act(async () => root.unmount());
-  const none = await mount(createElement(YearRecapCard, { history: [item('lc-9', [])], english: false, handle: null }));
+  const none = await mount(createElement(YearRecapCard, { history: [item('lc-9', [])], english: false, handle: null, now: at(5, 1) }));
   assert.equal(document.querySelector('.year-recap'), null, 'nothing solved yet: no card');
   await act(async () => none.unmount());
 });

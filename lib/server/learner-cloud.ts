@@ -969,7 +969,7 @@ export function publicCompare(handles: readonly string[], catalogue: PublicCatal
   }
   const [first, ...rest] = people;
   return {
-    people: people.map(({ ids, ...person }) => person),
+    people: people.map((p) => ({ handle: p.handle, solved: p.solved, stops: p.stops })),
     common: [...first.ids].filter((id) => rest.every((p) => p.ids.has(id))).length,
     // Line order, every stop anyone reached.
     stops: [...STOP_TOTALS]

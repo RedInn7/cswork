@@ -1,4 +1,5 @@
 import { headers } from 'next/headers';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { CONTEST_BANDS } from '@/lib/contest';
@@ -39,7 +40,7 @@ export default async function ContestLeaderboardPage({ searchParams }: Props) {
   const boards = schoolBoards();
   const school = typeof wanted === 'string' ? boards.find((b) => b.key === schoolKey(wanted)) : undefined;
   if (wanted !== undefined && !school) notFound();
-  const rows = await leaderboard(viewer, 100, Date.now(), school?.key);
+  const rows = await leaderboard(viewer, 100, undefined, school?.key);
   return (
     <article className="contest-leaderboard">
       <section className="lists-public-hero contest-hero">
@@ -64,17 +65,18 @@ export default async function ContestLeaderboardPage({ searchParams }: Props) {
       </section>
       {!!boards.length && (
         <nav className="contest-schools" aria-label={t('学校排行榜', 'School boards')}>
-          <a href="/contest/leaderboard" aria-current={school ? undefined : 'page'}>
+          <Link href="/contest/leaderboard" prefetch={false} aria-current={school ? undefined : 'page'}>
             {t('全站', 'Everyone')}
-          </a>
+          </Link>
           {boards.map((b) => (
-            <a
+            <Link
               key={b.key}
               href={`/contest/leaderboard?school=${encodeURIComponent(b.key)}`}
+              prefetch={false}
               aria-current={b.key === school?.key ? 'page' : undefined}
             >
               {b.name} <small>{b.members}</small>
-            </a>
+            </Link>
           ))}
         </nav>
       )}

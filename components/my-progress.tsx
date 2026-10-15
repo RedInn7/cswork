@@ -657,6 +657,7 @@ export function MyProgress({
           history={data.history}
           english={english}
           handle={profile?.value.visible ? profile.value.handle : null}
+          now={data.now}
         />
       )}
       {boot.person && <PointsPanel english={english} onChange={(s) => setBought(s.freezes.purchased)} />}

@@ -14,10 +14,13 @@ export function YearRecapCard({
   history,
   english,
   handle,
+  now,
 }: {
   history: readonly PracticeHistoryItem[];
   english: boolean;
   handle: string | null;
+  /** When the history was read: days after it are still ahead. */
+  now: number;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const years = useMemo(
@@ -33,10 +36,10 @@ export function YearRecapCard({
         : yearRecap(
             history.flatMap((i) => i.acAt.map((at) => ({ problem_id: i.problemId, created_at: at }))),
             year,
-            Date.now(),
+            now,
             english,
           ),
-    [history, year, english],
+    [history, year, now, english],
   );
   const stops = useMemo(() => {
     const counts = new Map<string, number>();
