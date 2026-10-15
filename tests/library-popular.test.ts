@@ -68,7 +68,7 @@ async function oj(p: Person, method: string, path: string, body?: unknown) {
   const url = new URL(`https://cswork.test/api/oj/${path}`);
   try {
     const response = await handleOj(
-      new Request(url, { method, body: body && JSON.stringify(body), headers: body ? { 'Content-Type': 'application/json' } : {} }),
+      new Request(url, { method, body: body === undefined ? undefined : JSON.stringify(body), headers: body ? { 'Content-Type': 'application/json' } : {} }),
       p,
       url.pathname.split('/').slice(3),
     );

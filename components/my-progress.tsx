@@ -274,7 +274,7 @@ export function MyProgress({
       not_started: t('未提交', 'Not submitted'),
     }[progress];
     const stop = item?.stop ? STOP_NAMES[item.stop] : undefined;
-    const extra = note?.tab ? { tab: note.tab } : {};
+    const extra: Record<string, string> = note?.tab ? { tab: note.tab } : {};
     const href = `/?${new URLSearchParams({ view: 'problem', problem: id, ...extra })}`;
     return (
       <li key={note?.key ?? id}>

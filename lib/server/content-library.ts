@@ -265,7 +265,7 @@ function list(db: Database.Database, params: URLSearchParams) {
   const memberOnly = MEMBER_FILTERS.some((key) => params.get(key));
   const index = engagement();
   // Every card says whether it is curated and what learners did with it.
-  const decorate = <T extends { type: unknown; slug: unknown }>(item: T) => ({
+  const decorate = (item: Record<string, unknown>) => ({
     ...item,
     curated: curated.has(`${item.type}/${item.slug}`),
     stats: engagementOf(item.type as string, item.slug as string, index).stats,

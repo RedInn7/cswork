@@ -193,7 +193,7 @@ void test('report sources: listed rows only, dated by the interview else the pos
   assert.deepEqual(windowCounts(lru.sources, dated, NOW), { m3: 1, m6: 0, y1: 0, y2: 1, older: 0 });
   // A company page: counts inside the window, and the reports behind a row that have a page.
   const amazon = companyLcProblems().get('amazon')!.filter((p) => p.id === 'lc-146' || p.id === 'lc-3');
-  const row = (p: ReturnType<typeof rankInWindow>[number]) => [p.id, p.n, p.refs.map((r) => r.date)];
+  const row = (p: { id: string; n: number; refs: { date: string | null }[] }) => [p.id, p.n, p.refs.map((r) => r.date)];
   assert.deepEqual(rankInWindow(amazon, '3m', dated, NOW).map(row), [['lc-146', 1, ['2026-09-01']]], 'none left at zero');
   assert.deepEqual(rankInWindow(amazon, 'all', dated, NOW).map(row), [
     ['lc-146', 2, ['2026-09-01', '2025-01-01']],
