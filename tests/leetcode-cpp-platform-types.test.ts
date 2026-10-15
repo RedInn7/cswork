@@ -51,7 +51,8 @@ void test('only the types the official signature uses are global', () => {
     getLeetCodeCppContext(
       leetcodeContract(id)!.number,
       leetcodeContract(id)!.templates.cpp,
-    ).split('namespace cswork_platform {')[0];
+    );
+  assert.doesNotMatch(global('lc-146'), /cswork_platform/, 'the editor never offers the judge namespace');
   assert.match(global('lc-2'), /^struct ListNode \{/m);
   assert.doesNotMatch(global('lc-2'), /TreeNode|class Node|Interval/);
   assert.match(global('lc-109'), /struct TreeNode \{[\s\S]*struct ListNode \{/);

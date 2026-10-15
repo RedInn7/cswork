@@ -51,7 +51,16 @@ function context(problemId: number, snippet: string) {
       platform.push(`using ::${name};`);
     } else platform.push(own);
   }
-  return `#if __has_include("/usr/local/include/cswork/stdc++.hpp")\n#include "/usr/local/include/cswork/stdc++.hpp"\n#else\n#include <bits/stdc++.h>\n#endif\nusing namespace std;\n${global.join('\n')}\nnamespace cswork_platform {\n${platform.join('\n')}\n}\n`;
+  const visible = `#if __has_include("/usr/local/include/cswork/stdc++.hpp")\n#include "/usr/local/include/cswork/stdc++.hpp"\n#else\n#include <bits/stdc++.h>\n#endif\nusing namespace std;\n${global.join('\n')}\n`;
+  return {
+    visible,
+    full: `${visible}namespace cswork_platform {\n${platform.join('\n')}\n}\n`,
+  };
+}
+
+/** The editor's context: what LeetCode declares, never the judge's own namespace. */
+export function getLeetCodeCppContext(problemId: number, snippet: string) {
+  return context(problemId, snippet).visible;
 }
 
 function cleanSnippet(snippet: string) {
@@ -203,7 +212,7 @@ export function buildLeetCodeCpp(
     }
     answer = {result, request.at("args")};`;
   }
-  return `${context(problemId, snippet)}
+  return `${context(problemId, snippet).full}
 ${getLeetCodeCppJsonRuntime()}
 #line 1 "solution.cpp"
 ${source}
@@ -236,5 +245,3 @@ int main() {
 }
 `;
 }
-
-export { context as getLeetCodeCppContext };
