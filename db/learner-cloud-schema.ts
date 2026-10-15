@@ -83,17 +83,28 @@ export const userListItems = sqliteTable(
  * the page to a contest name on the public scoreboards. featured_badge: a badge id (lib/achievements.ts)
  * shown beside the handle while it is still earned.
  */
-export const userProfiles = sqliteTable('user_profiles', {
-  userId: text('user_id').primaryKey(),
-  handle: text('handle').notNull().unique(),
-  visible: integer('visible').notNull().default(0),
-  indexable: integer('indexable').notNull().default(0),
-  showContest: integer('show_contest').notNull().default(0),
-  bio: text('bio').notNull().default(''),
-  featuredBadge: text('featured_badge'),
-  createdAt: integer('created_at').notNull(),
-  updatedAt: integer('updated_at').notNull(),
-});
+export const userProfiles = sqliteTable(
+  'user_profiles',
+  {
+    userId: text('user_id').primaryKey(),
+    handle: text('handle').notNull().unique(),
+    visible: integer('visible').notNull().default(0),
+    indexable: integer('indexable').notNull().default(0),
+    showContest: integer('show_contest').notNull().default(0),
+    bio: text('bio').notNull().default(''),
+    featuredBadge: text('featured_badge'),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
+    // Self-reported card fields: up to 4 {kind, url} links, school (school_key: lowercased,
+    // punctuation and spaces dropped, for the school boards), graduation year and target role.
+    linksJson: text('links_json').notNull().default('[]'),
+    school: text('school').notNull().default(''),
+    schoolKey: text('school_key').notNull().default(''),
+    gradYear: integer('grad_year'),
+    targetRole: text('target_role').notNull().default(''),
+  },
+  (t) => [index('user_profiles_school').on(t.schoolKey)],
+);
 
 /**
  * "I was asked this": one report per learner, problem and month asked (YYYY-MM).
