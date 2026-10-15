@@ -75,8 +75,8 @@ const flip = (set: ReadonlySet<number>, number: number, on: boolean) => {
 };
 
 /**
- * A classic list mapped onto the bank: its own groups, a progress bar over the
- * problems judgeable here, and external rows that open LeetCode. No metro line.
+ * A classic list mapped onto the bank: its own groups, a progress bar over problems
+ * solved here or ticked by hand, and external rows that open LeetCode. No metro line.
  */
 export function ClassicList({
   slug,
