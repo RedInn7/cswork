@@ -100,10 +100,8 @@ export function cleanOaStatement<
 >(spec: T): T {
   const explanation = cleanText(spec.explanation);
   const hints = spec.hints?.map((hint) => cleanText(hint)).filter(Boolean);
-  // REST API fixtures answer hidden cases' requests: judge-only, never display copy.
-  const { httpFixtures: _judgeOnly, ...rest } = spec as T & { httpFixtures?: unknown };
-  return {
-    ...(rest as T),
+  const display = {
+    ...spec,
     description: cleanText(spec.description),
     input: cleanText(spec.input),
     output: cleanText(spec.output),
@@ -113,6 +111,9 @@ export function cleanOaStatement<
       : explanation,
     ...(hints && { hints }),
   };
+  // REST API fixtures answer hidden cases' requests: judge-only, never display copy.
+  Reflect.deleteProperty(display, 'httpFixtures');
+  return display;
 }
 
 /** Editorials keep their forensics prose; only source links and fingerprints are hidden. */
