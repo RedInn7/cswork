@@ -1,0 +1,21 @@
+{
+  "id": "oa-databricks-9",
+  "packageChecksum": "83097c0fd8cb42504bba1b05f6736b80bb6a4f190427c1975a3a54f37c16b1ac",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    vector<long long> a(n);\n    for (auto &x : a) cin >> x;\n    long long total = 0;\n    for (int i = 0; i < n;) {\n        if (a[i] == 0) {\n            i++;\n            continue;\n        }\n        // Leftmost nonzero value x: subtract it from every suffix element that is at least x.\n        long long x = a[i];\n        total += x;\n        for (int j = i; j < n; j++)\n            if (a[j] >= x) a[j] -= x;\n    }\n    cout << total << \"\\n\";\n}\n",
+      "sha256": "da61e00ba0db8729726acad0e1cea96a89463ef3102c75732bd07d5c4042349c"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        long[] a = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        long total = 0;\n        for (int i = 0; i < n;) {\n            if (a[i] == 0) {\n                i++;\n                continue;\n            }\n            // Leftmost nonzero value x: subtract it from every suffix element that is at least x.\n            long x = a[i];\n            total += x;\n            for (int j = i; j < n; j++)\n                if (a[j] >= x) a[j] -= x;\n        }\n        System.out.println(total);\n    }\n}\n",
+      "sha256": "5c94dc002fe3d955595b068cc3e9f67cb71c743208304b976d1f23f98cf2c22d"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\ta := make([]int, n)\n\tfor i := range a {\n\t\ta[i] = nextInt()\n\t}\n\ttotal := 0\n\tfor i := 0; i < n; {\n\t\tif a[i] == 0 {\n\t\t\ti++\n\t\t\tcontinue\n\t\t}\n\t\t// Leftmost nonzero value x: subtract it from every suffix element that is at least x.\n\t\tx := a[i]\n\t\ttotal += x\n\t\tfor j := i; j < n; j++ {\n\t\t\tif a[j] >= x {\n\t\t\t\ta[j] -= x\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "44c01f38679d40dcb2c24884423c7c2814c51f48d218afaf90c0ff18031d03b2"
+    }
+  ]
+}

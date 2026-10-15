@@ -1,0 +1,19 @@
+{
+  "id": "oa-dell-1",
+  "packageChecksum": "a360c6319ce04956f046632df1934443262c6392291cc8025d3386de2fe2659a",
+  "sourceContentHash": "7953953ac301daa6b6eaf8c94eb88ae7eab162a98b0d164e517343ac61b2047b",
+  "editorialSha256": "fd75d871ddd96007fb3537d8b17fdaeb0a7af9f00247409cff14cc3a2f915706",
+  "hints": {
+    "zh": [
+      "长度固定为 k 的窗口共有 n − k + 1 个，相邻窗口只差一进一出两个元素，可以用滑动窗口维护和与元素出现次数。",
+      "窗口内元素互不相同，当且仅当窗口里不同值的个数恰好等于 k。维护一个值到出现次数的频次表，并随时知道其中有多少个不同的值。",
+      "每加入一个新元素就把它加进总和和频次表；下标 ≥ k 时移出最旧的元素，计数降到 0 就让不同值个数减一；窗口满长且不同值个数等于 k 时用总和更新答案。答案可能为负，要用单独的“是否找到”标记而不是用 −1 当初值；从未找到时输出 −1。n = 0 或 k > n 时也输出 −1，和用 64 位整数。"
+    ],
+    "en": [
+      "There are n - k + 1 windows of fixed length k, and neighboring windows differ by one element entering and one leaving, so a sliding window can maintain the sum and the value counts.",
+      "A window has distinct elements exactly when its number of distinct values equals k. Keep a frequency table from value to count, and always know how many distinct values it holds.",
+      "Each new element is added to the sum and the frequency table; once the index is at least k, remove the oldest element and decrease the distinct count when its count drops to 0; whenever the window is full and the distinct count equals k, update the answer with the sum. The answer can be negative, so keep a separate found flag instead of starting from -1, and print -1 only if nothing was found (including n = 0 or k > n). Use 64-bit sums."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the sum and the value frequencies of a sliding window of length k; when the frequency table has size k, the elements are distinct. Use a separate not-found flag when updating the maximum.\n\n## Proof of correctness\n\nAfter adding the new element and removing the oldest element beyond k, the frequency table and the total correspond exactly to the current window. The elements in the window are distinct if and only if the number of distinct values is k. Every window of length k is checked and the maximum sum is taken; a legitimate negative answer must not be mistaken for no solution.\n\n## Complexity\n\nO(n) expected time and O(min(n,k)) auxiliary space."
+}

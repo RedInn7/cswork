@@ -1,0 +1,19 @@
+{
+  "id": "oa-databricks-16",
+  "packageChecksum": "b42a1c49bcdcd5b1c6271e07872d9de379b05378cda54eb2f6edfe733db37c82",
+  "sourceContentHash": "d9fc82ebf7f2de170c31ebb05ed7afff7a33edf47e8baec780f5c37ab7d316d8",
+  "editorialSha256": "379b06813e98962df1398c908dc7edc81dd2524da46a0c255e71829537b056b0",
+  "hints": {
+    "zh": [
+      "只有值在闭区间 [−100, 100] 内的元素才参与计算，其余元素直接忽略，但它们仍占着自己的下标。",
+      "按 0 基下标的奇偶分成两组：偶数下标的合格元素加到一个和里，奇数下标的加到另一个和里，答案是前者减后者。",
+      "一次遍历：对第 i 个元素，若 −100 ≤ x ≤ 100，就按 i 的奇偶加到 even 或 odd；最后输出 even − odd。注意下标按原数组位置算，不是按过滤后的位置。"
+    ],
+    "en": [
+      "Only elements whose value lies in the closed interval [-100, 100] take part; the others are ignored, but they still occupy their indices.",
+      "Split by the parity of the 0-based index: qualifying elements at even indices go into one sum and those at odd indices into another, and the answer is the first minus the second.",
+      "Scan once: for element i, if -100 <= x <= 100, add it to even or odd according to the parity of i; finally print even - odd. The parity uses the position in the original array, not in the filtered list."
+    ]
+  },
+  "explanationEn": "## Approach\n\nScan the array once; add only the values in [-100,100] to the sum matching the parity of their index, and take the difference at the end.\n\n## Proof of correctness\n\nEach element is counted if and only if its value falls in the closed interval, and it goes into the sum for the parity of its real index; at the end of the scan the two sums are exactly as defined, so outputting their difference is correct.\n\n## Complexity\n\nO(n) time and O(1) extra space."
+}

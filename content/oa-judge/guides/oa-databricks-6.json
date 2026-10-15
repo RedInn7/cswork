@@ -1,0 +1,19 @@
+{
+  "id": "oa-databricks-6",
+  "packageChecksum": "a0b6442b4e606881e649a68add3025758aa62a6c4d26e7f896edc5fa4663ab09",
+  "sourceContentHash": "84f37de3d461637c5c2666747b64eee7c7e55739b99b7afb57bfb70599bdf5ce",
+  "editorialSha256": "f253501c561537d64a9fc4a795a54a0fdb990235b012b6fb2b6b440126d8c884",
+  "hints": {
+    "zh": [
+      "查询区间是整数点 x−size 到 x−1，它能放置当且仅当这段里目前没有任何障碍。所以每次查询要回答的是“一个区间内已插入的障碍有几个”。",
+      "坐标范围很大但操作只有 6 万个，可以先把所有插入坐标读进来排序离散化，再用树状数组记录哪些坐标已经插入。区间计数就是两个前缀和之差。",
+      "离线读完全部操作，收集插入坐标并排序；插入时用二分找到它的离散化下标，在树状数组上加一；查询时用 lower_bound 分别找到 x−size 和 x 在坐标表中的位置，两个前缀和相等（区间内无障碍）输出 1，否则输出 0。所有结果拼成一个 0/1 字符串输出，查询本身不修改树状数组。"
+    ],
+    "en": [
+      "A query covers the integer points x - size through x - 1, and it can be placed exactly when no obstacle currently lies in that range. So each query asks how many inserted obstacles fall inside an interval.",
+      "Coordinates are huge but there are only 60000 operations, so read all insertion coordinates first, sort and compress them, and use a Fenwick tree to mark which coordinates have been inserted. An interval count is the difference of two prefix sums.",
+      "Read all operations offline, collect and sort the insertion coordinates. An insertion binary searches its compressed index and adds one in the Fenwick tree. A query uses lower bound to find the positions of x - size and x in the coordinate list; if the two prefix sums are equal (no obstacle inside), append 1, otherwise 0. Print all results as one 0/1 string; queries never modify the tree."
+    ]
+  },
+  "explanationEn": "## Approach\n\nRead all insertion coordinates in advance and compress them, maintaining the inserted points with a Fenwick tree. For a query interval [x-size,x), use binary search and prefix sums to count the obstacles; the interval can be placed when the count is zero.\n\n## Proof of correctness\n\nCoordinate compression preserves the order of the insertion coordinates. Taking lower_bound of both the left and right boundaries of [x-size,x) gives the range of Fenwick indices of the obstacles inside it; the difference of the prefix sums is exactly the number of currently inserted obstacles in [x-size,x-1]. The interval is usable only when the count is zero, and the query itself does not modify the Fenwick tree.\n\n## Complexity\n\nO(q log q) time and O(q) space."
+}

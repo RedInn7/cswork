@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-15",
+  "packageChecksum": "a9cd4b9ec9596f94c57f282f1ca895fe45b4ad6971cb74b6e4aa81123ed66ac1",
+  "sourceContentHash": "066309e6e4aa0e135a53cfbebde66c52c1d16de1ab21789720176d0ca6d2cad3",
+  "editorialSha256": "729918b97f8ccfed25fe64e9c00d58b820ec71c0994ad579c24fa54df92f8d7c",
+  "hints": {
+    "zh": [
+      "值都小于 1024，所以 OR 结果最多只有 1024 种。对同一个 OR 值，递增子序列的末尾越小，后面能接上的数就越多。",
+      "用 last[mask] 记录“OR 恰为 mask 的递增子序列”能达到的最小末值，空序列对应 last[0] = 0。读到 v 时，任何末值小于 v 的状态都能接上 v，转移到 mask | v，末值为 v。",
+      "初始化 last 全为 1024（不可达），last[0] = 0；对每个 v 枚举 1024 个 mask，若 last[mask] < v 就用 v 更新 last[mask | v] 的最小值；新状态末值等于 v，同一轮不会再被 v 使用。最后输出所有 last < 1024 的 mask 个数和升序列表（包含 0）。"
+    ],
+    "en": [
+      "All values are below 1024, so there are at most 1024 possible OR results. For the same OR value, an increasing subsequence with a smaller last element can be extended by more future numbers.",
+      "Let last[mask] be the smallest last element of an increasing subsequence whose OR is exactly mask, with the empty subsequence giving last[0] = 0. When you read v, every state whose last element is below v can take v and move to mask | v with last element v.",
+      "Initialize last to 1024 (unreachable) except last[0] = 0. For each v, loop over all 1024 masks and, when last[mask] < v, lower last[mask | v] to v; a new state ends in v, so it cannot use v again in the same pass. Finally print how many masks have last < 1024 and list them in ascending order, including 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each OR value, keep only the smallest last element of a reachable increasing subsequence; when you meet v, transition from the states whose last element is <v to OR|v.\n\n## Proof of correctness\n\nUnder the same OR value, a smaller last element allows a larger set of future numbers to be appended, so keeping the smallest last element never loses any later feasible choice. A state can take v only when its last element is <v, so the transition is exact; a new state ends in v, which cannot satisfy the strict inequality again in the same round, so the current position is never reused. The initial empty sequence can be followed by any positive number, and induction covers all subsequences.\n\n## Complexity\n\nO(1024n) time and O(1024) space."
+}

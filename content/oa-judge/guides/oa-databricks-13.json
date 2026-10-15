@@ -1,0 +1,19 @@
+{
+  "id": "oa-databricks-13",
+  "packageChecksum": "da94f19e7dce690633a639e11a8a6e228595d0958875cc5c153230b20b425185",
+  "sourceContentHash": "2ed0f94b17749215e11c382722ce34a587dd58b69e200600d754afee446d507e",
+  "editorialSha256": "cdfc64de830dec83dde02a55c9d21384ac8013ceb261a4fdcb55133ab65784c1",
+  "hints": {
+    "zh": [
+      "一个长度为 L 的 code 有 L−1 种拆分方式：index 部分取前 1 位、前 2 位……前 L−1 位，剩下的就是 pattern，两部分都非空。",
+      "对每种拆分，把 index 当作十进制整数（前导零不影响），检查 panel 从这个下标开始、长度为 pattern 长度的片段是否与 pattern 完全相同；越界就算不匹配。",
+      "按 code 的输入顺序、再按 index 长度从小到大，每种拆分输出一行：匹配输出 pattern，否则输出 not found。index 最长可有 99 位，解析时一旦超过 panel 长度就可以视为必然越界（例如封顶到一个大数），避免溢出。输出按精确比较，每行一个结果。"
+    ],
+    "en": [
+      "A code of length L has L - 1 ways to split: the index part takes the first 1, 2, ..., L - 1 digits and the rest is the pattern, both non-empty.",
+      "For each split, read the index as a decimal integer (leading zeros do not matter) and check whether the slice of panel starting at that position with the pattern's length equals the pattern; running past the end counts as no match.",
+      "Go through the codes in input order and, within a code, by increasing index length, printing one line per split: the pattern on a match, otherwise not found. An index can have 99 digits, so cap the parsed value once it exceeds the panel length to avoid overflow. The output is compared exactly, one result per line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each code, enumerate every split position where both index and pattern are non-empty, convert the left part to an integer, and compare it against the slice of panel of the same length.\n\n## Proof of correctness\n\nThe number of index digits of every legal split must be between 1 and len(code)-1, and the loop covers exactly these splits in increasing order. For each split, the pattern is output only when the index is valid and the slice is exactly equal, so each result agrees with the definition.\n\n## Complexity\n\nO(sum of L^2) time and O(sum of L) space, where L is the length of a code."
+}

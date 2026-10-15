@@ -1,0 +1,21 @@
+{
+  "id": "oa-databricks-10",
+  "packageChecksum": "028f13fd404846fbde194303e3178e7778e8ba9075c4863eb8d291a0300276be",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    string row;\n    for (int i = 0; i < n; i++) row += i ? \" *\" : \"*\";\n    for (int i = 0; i < n; i++) cout << row << \"\\n\";\n}\n",
+      "sha256": "0b1fcbaa00cdf96e10a85bc866fd365da1be30a4ab8dc66ca047a280e09f5f60"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static final InputStream IN = System.in;\n    static final byte[] BUF = new byte[1 << 16];\n    static int len, ptr;\n\n    static int readByte() throws IOException {\n        if (ptr == len) {\n            len = IN.read(BUF, 0, BUF.length);\n            ptr = 0;\n            if (len <= 0) {\n                len = 0;\n                return -1;\n            }\n        }\n        return BUF[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long v = 0;\n        while (c >= '0' && c <= '9') {\n            v = v * 10 + (c - '0');\n            c = readByte();\n        }\n        return neg ? -v : v;\n    }\n\n    static int nextInt() throws IOException {\n        return (int) nextLong();\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c == ' ' || c == '\\n' || c == '\\r' || c == '\\t') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') {\n            sb.append((char) c);\n            c = readByte();\n        }\n        return sb.toString();\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = nextInt();\n        StringBuilder row = new StringBuilder(\"*\");\n        for (int i = 1; i < n; i++) row.append(\" *\");\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < n; i++) out.append(row).append('\\n');\n        System.out.print(out);\n    }\n}\n",
+      "sha256": "7c64d02b26a4f0a150a9d1bf3cf7eccbc7e2f5143e2c544c887b93f30c5d0a15"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"io\"\n\t\"os\"\n\t\"strings\"\n)\n\nvar data []byte\nvar pos int\n\n// token returns the next whitespace-separated token of stdin.\nfunc token() []byte {\n\tfor pos < len(data) && data[pos] <= ' ' {\n\t\tpos++\n\t}\n\tstart := pos\n\tfor pos < len(data) && data[pos] > ' ' {\n\t\tpos++\n\t}\n\treturn data[start:pos]\n}\n\nfunc nextInt() int {\n\tb := token()\n\tneg := len(b) > 0 && b[0] == '-'\n\tif neg {\n\t\tb = b[1:]\n\t}\n\tv := 0\n\tfor _, c := range b {\n\t\tv = v*10 + int(c-'0')\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tdata, _ = io.ReadAll(os.Stdin)\n\tn := nextInt()\n\trow := strings.TrimSpace(strings.Repeat(\"* \", n))\n\tfmt.Print(strings.Repeat(row+\"\\n\", n))\n}\n",
+      "sha256": "72ca7b846539621654eb5195bb77fc3bfe4c33974641f091f4674961ba994e5d"
+    }
+  ]
+}

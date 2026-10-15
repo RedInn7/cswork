@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-20",
+  "packageChecksum": "cc12e0ebc65ac421db70768a03c803629f537dad1a344e77a7080ffaf0404d5d",
+  "sourceContentHash": "cac7e3a5faa2e618ca25bdf186b7b7a50615fd02a7971c5ad6355cd539a524dc",
+  "editorialSha256": "77dcc35122bd71d638d64eedeabb7fdb94749260f495b2d2e9e623f261648c63",
+  "hints": {
+    "zh": [
+      "路径的节点数就是叶子所在的深度，所以按层 BFS，第一层出现和为 target 的叶子时，更深的路径都不必再看。",
+      "同一层的路径等长，比较字典序时先比父路径，父路径相同再比本节点值。给每层节点一个“字典序名次”：按 (父节点名次, 本节点值) 排序后压缩成连续名次，相同路径得到相同名次。",
+      "先用队列按层序 token 建树（每个非空父节点依次取左右两个 token，允许末尾省略 null），记录父指针。逐层计算路径和；若本层有和为 target 的叶子，取名次最小者沿父指针回溯输出长度和路径；否则生成下一层、排序并分配名次。无解只输出 0。路径和用 64 位整数，避免递归。"
+    ],
+    "en": [
+      "The number of nodes on a path is the depth of its leaf, so do BFS by level: once a level contains a leaf whose path sums to target, no deeper path can be better.",
+      "Paths on the same level have equal length, and comparing them lexicographically means comparing the parent paths first and then the last value. Give each node a lexicographic rank within its level: sort by (parent rank, own value) and compress into consecutive ranks, so identical paths share a rank.",
+      "Build the tree from the level-order tokens with a queue (each non-null parent takes the next two tokens; trailing nulls may be missing) and keep parent pointers. Process level by level computing path sums; if the level has a leaf whose sum equals target, take the one with the smallest rank and follow the parent pointers to print the length and the path; otherwise build the next level, sort it and assign ranks. Print only 0 when there is no answer. Use 64-bit sums and no recursion."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse BFS to compute root path sums level by level; sort the paths on the same level by (parent path rank, own node value) to compress them into lexicographic ranks. On the first level that has a qualifying leaf, choose the one with the smallest rank and reconstruct it by following parent pointers.\n\n## Proof of correctness\n\nThe BFS level is the path length, so once a qualifying leaf appears, deeper paths cannot be better. Lexicographic order among paths of equal length on the same level compares the parent path first and, if equal, the last value, so the new rank obtained from the parent rank and the value keeps the exact order, and identical paths get the same rank. Choosing the minimum rank gives the secondary optimum, and the parent pointers recover the original path.\n\n## Complexity\n\nO(n log n) time and O(n) space, without copying all deep paths and without recursion."
+}

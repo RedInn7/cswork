@@ -1,0 +1,19 @@
+{
+  "id": "oa-databricks-21",
+  "packageChecksum": "e1b1b6d41e8e2304227c0854c4c1f86d7098fae72aec0a320b57a7af5a804661",
+  "sourceContentHash": "78c652d84bfcd5d9fc6fbdaf694287077b06afd2164060920e1efe09da711b6d",
+  "editorialSha256": "211dbb5149a67e50398af82393adde50ef2e2e6f7a7c3e80012e7c6368108db6",
+  "hints": {
+    "zh": [
+      "两个数的十进制最长公共前缀，就是从最高位开始逐位比较、一直相同的长度。需要的是所有跨数组数对中的最大值。",
+      "把第二个数组的每个数按十进制数字串插入一棵字典树（Trie），每个节点有 10 个孩子。Trie 中存在深度为 k 的路径，等价于第二个数组里有某个数以这 k 位开头。",
+      "建好 Trie 后，对第一个数组的每个数从根开始沿它的数字往下走，走不下去就停，走到的深度就是它与第二个数组的最长公共前缀；对所有数取最大值输出，没有公共首位时为 0。数字最多 10 位，Trie 节点数不超过 10m + 1。"
+    ],
+    "en": [
+      "The longest common decimal prefix of two numbers is how many digits agree when you compare from the most significant digit. You need its maximum over all cross-array pairs.",
+      "Insert each number of the second array, as a digit string, into a trie whose nodes have 10 children. A path of depth k exists in the trie exactly when some number of the second array starts with those k digits.",
+      "After building the trie, walk down from the root along the digits of each number of the first array, stopping when there is no child; the depth reached is its longest common prefix with the second array. Print the maximum over all numbers, or 0 if no first digit matches. Numbers have at most 10 digits, so the trie has at most 10m + 1 nodes."
+    ]
+  },
+  "explanationEn": "## Approach\n\nInsert all decimal prefixes of the second array into a Trie. Query each number of the first array, walking down the Trie as far as possible; the maximum depth reached is the answer.\n\n## Proof of correctness\n\nA path of depth k exists in the Trie if and only if at least one number in the second array starts with the first k digits of the query number. Therefore, for each element of the first array, the deepest depth successfully reached equals the maximum longest common prefix between it and some number of the second array; taking the maximum over the first array gives the required value.\n\n## Complexity\n\nO((n+m)*D) time and O(m*D) space, with D<=10."
+}

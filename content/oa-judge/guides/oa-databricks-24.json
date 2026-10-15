@@ -1,0 +1,19 @@
+{
+  "id": "oa-databricks-24",
+  "packageChecksum": "2c6eb4e913cd81f885c93523897acfc3559357bffdc48b618bff0186b742232a",
+  "sourceContentHash": "4b9d769c1ffe250317b78bf348aea7f3eac424137da880c1309b0f57bce0c63f",
+  "editorialSha256": "a93dd24991a338af41f2ead1f9b234eafb289f6392f7bfc6d6649c651e1f17ed",
+  "hints": {
+    "zh": [
+      "一个长度为 m+1 的连续段，其“变化序列”由 m 次相邻比较组成。先把整个 numbers 转成相邻比较的符号序列（1、0、−1），问题就变成在这个序列里数 pattern 出现了多少次。",
+      "这是一个标准的字符串匹配计数问题，只不过字母表是 {−1, 0, 1}。匹配可以重叠，用 KMP 可以在线性时间内数出所有出现位置。",
+      "先求 pattern 的前缀函数（失败函数）；再扫描符号序列，失配时沿前缀函数回退，匹配长度到达 m 时计数加一并回退到 pi[m−1] 以继续寻找重叠匹配。符号序列长度是 n−1，若 m > n−1 答案自然为 0。"
+    ],
+    "en": [
+      "A contiguous segment of length m + 1 has a change sequence of m adjacent comparisons. Convert all of numbers into its sequence of comparison signs (1, 0, -1) first; the task becomes counting how often pattern occurs in that sequence.",
+      "That is standard string-matching counting over the alphabet {-1, 0, 1}. Matches may overlap, and KMP counts all occurrences in linear time.",
+      "Compute the prefix (failure) function of pattern, then scan the sign sequence: on a mismatch fall back along the prefix function, and when the match length reaches m add one and fall back to pi[m-1] to keep finding overlapping matches. The sign sequence has length n - 1, so if m > n - 1 the answer is simply 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFirst convert numbers into the sequence of adjacent comparison signs, then use KMP to count the occurrences of pattern in that sign sequence, including overlapping matches.\n\n## Proof of correctness\n\nEach contiguous segment of numbers of length m+1 corresponds to exactly one length-m segment of the sign sequence, and the definition requires them to be equal position by position. KMP counts exactly all starting points of pattern in the sign sequence, including overlapping ones, so the count agrees with the problem.\n\n## Complexity\n\nO(n+m) time and O(n+m) extra space."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-databricks-20",
+  "packageChecksum": "f513c22b4fa45de9efea9e415c4940308b2483bc777031b2771420548bbb15a3",
+  "sourceContentHash": "8ece6c1e769dc0073d14bc02e335aa9bedae7e15304ed294d30d071223a9c872",
+  "editorialSha256": "aa0798ebe3a16153505bb206feb74d9f1944765677421cd40ddedb3656a85462",
+  "hints": {
+    "zh": [
+      "点 p 被区间 [left, right] 覆盖，当且仅当 left ≤ p 且 right ≥ p。逐盏灯检查每个点会达到 m·q，太慢。",
+      "换个角度计数：left ≤ p 的区间里，只有 right < p 的那些不覆盖 p。所以覆盖数 = (left ≤ p 的区间数) − (right < p 的区间数)，两项都只和一个端点有关。",
+      "把所有左端点、所有右端点分别排序；对每个查询点，用二分求左端点中 ≤ p 的个数（upper bound）和右端点中 < p 的个数（lower bound），相减得到答案，按输入顺序空格分隔输出。"
+    ],
+    "en": [
+      "Point p is covered by [left, right] exactly when left <= p and right >= p. Checking every lamp for every point costs m * q, which is too slow.",
+      "Count from another angle: among the intervals with left <= p, only those with right < p miss p. So coverage = (intervals with left <= p) - (intervals with right < p), and each term depends on just one endpoint.",
+      "Sort all left endpoints and all right endpoints separately. For each query, binary search the number of left endpoints <= p (upper bound) and the number of right endpoints < p (lower bound), subtract, and print the results in input order separated by spaces."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort all left endpoints and all right endpoints separately. The coverage of point p equals the number of intervals with left<=p minus the number of intervals with right<p.\n\n## Proof of correctness\n\nEach closed interval is counted when its left endpoint is not greater than p; among these, the intervals whose right endpoint is strictly less than p do not cover p and must be subtracted. The remaining intervals satisfy left<=p<=right, so the difference of the two terms is exactly the number of lamps covering p.\n\n## Complexity\n\nO((m+q)log(m+q)) time and O(m+q) space."
+}

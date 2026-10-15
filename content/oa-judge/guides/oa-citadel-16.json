@@ -1,0 +1,19 @@
+{
+  "id": "oa-citadel-16",
+  "packageChecksum": "c87e4419bde3bd74a292bebe2645afedd751115d7c36ef4bdd096eac20b8cc6c",
+  "sourceContentHash": "2697fa519ada2312bb308101124524cd56d6ce41ce9fa213bf33b3ddcd9ca931",
+  "editorialSha256": "3f4f783887bcc3f29f7d379e47667431fc55420950c005b500b92d6d99d70434",
+  "hints": {
+    "zh": [
+      "总吞吐是瓶颈服务的吞吐。想让瓶颈至少为 T，每个服务都必须单独达到 T，而且各服务的扩容成本互不影响。",
+      "“目标 T 是否可行”随 T 单调：T 越大需要的扩容越多。对 T 二分；服务 i 至少需要 x = max(0, ceil(T / a_i) − 1) 次扩容，成本求和不超过预算即可行。",
+      "下界取最小初始吞吐，上界取每个服务独占全部预算时吞吐的最小值 min(a_i·(budget / c_i + 1))；每次检查累加 x·c_i，超预算立即停止。上界可达约 10^21，超过 64 位，需要 128 位整数或把 T−1 拆成两段再做除法；单项先判断 x 是否超过 budget / c_i，避免乘法溢出。"
+    ],
+    "en": [
+      "The total throughput is the bottleneck's throughput. For the bottleneck to be at least T, every service must reach T on its own, and the scaling costs of different services do not interact.",
+      "Feasibility of a target T is monotone: a larger T needs more scale-ups. Binary search on T; service i needs at least x = max(0, ceil(T / a_i) - 1) scale-ups, and T is feasible when the total cost fits the budget.",
+      "Use the smallest initial throughput as the lower bound and min(a_i * (budget / c_i + 1)) as the upper bound, which is what each service could reach by spending the whole budget alone. In each check add x * c_i and stop as soon as the budget is exceeded. The upper bound can reach about 10^21, beyond 64 bits, so use 128-bit integers or split T - 1 into two parts for the division; check x > budget / c_i before multiplying to avoid overflow."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBinary search on the target T: each service needs at least max(0, ceil(T/a) - 1) scale-ups, and summing the costs tells whether the budget is exceeded. The upper bound is the minimum, over all services, of the throughput each would reach by using the whole budget alone.\n\n## Proof of correctness\n\nFor the bottleneck to be at least T, every service must reach T, and the minimum number of scale-ups follows directly from the inequality a(1+x) >= T. The services are independent, so the minimum cost is the sum over services, and the target is feasible if and only if that sum fits the budget. The cost is monotone in T and the upper bound is at least every feasible target, so the binary search finds the largest feasible value.\n\n## Complexity\n\nO(n log(upper bound)) time and O(n) space; the check stops early once the budget is exceeded."
+}

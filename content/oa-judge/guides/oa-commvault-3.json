@@ -1,0 +1,19 @@
+{
+  "id": "oa-commvault-3",
+  "packageChecksum": "ff73f3e7632bcd9e69b0e6a6d3570aad50e383033996f273bbc059f670f3bf2d",
+  "sourceContentHash": "1c4926c94458781fdebcc4395ef69ff3242e6f35600b2775b38a5f3a9c9b3632",
+  "editorialSha256": "d52ae5c7e157e16ccec2b63bf322b165fbe48ebdcc51cafb41efc7c5326fc68b",
+  "hints": {
+    "zh": [
+      "一对节点是 good pair，当且仅当两端不在同一个连通分量里。直接数“跨分量”的点对不方便，可以用补集来算。",
+      "全部无序点对有 N(N−1)/2 个，减去每个连通分量内部的点对数 s(s−1)/2，剩下的就是端点在不同分量的点对。分量大小用并查集求，重边和自环不影响结果。",
+      "并查集初始化每个点自成一组，按边合并（按大小合并加路径压缩），合并时累加大小；最后遍历所有根，从 N(N−1)/2 中减去 size(size−1)/2。节点编号是 1 基的，结果用 64 位整数。"
+    ],
+    "en": [
+      "A pair is good exactly when its two endpoints are in different connected components. Counting cross-component pairs directly is awkward, so count the complement.",
+      "There are N(N-1)/2 unordered pairs in total; subtract s(s-1)/2 for every component of size s, and what remains are the pairs whose endpoints lie in different components. Get the component sizes with union-find; duplicate edges and self-loops do not change anything.",
+      "Start union-find with every node alone, merge along each edge (union by size with path compression) and add up sizes when merging; finally loop over the roots and subtract size(size-1)/2 from N(N-1)/2. Node IDs are 1-based, and the result needs a 64-bit integer."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse union-find to build the connected component sizes; subtract the number of pairs within each connected component from the total number of unordered node pairs. An independent oracle builds the graph, runs DFS, and then enumerates the node pairs directly.\n\n## Proof of correctness\n\nAfter union-find merges along the edges, each root represents exactly one connected component. Subtracting the number of pairs inside each component from the total number of unordered pairs leaves exactly the pairs whose endpoints are in different components.\n\n## Complexity\n\nNodes are numbered 1..N; edges are undirected; the result can reach N(N-1)/2, so a 64-bit integer is needed.\n\nO((N+M) alpha(N)) time and O(N) space.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n z=list(map(int,raw.split()));n,m=z[:2];p=list(range(n));sz=[1]*n\n def find(x):\n  while p[x]!=x:p[x]=p[p[x]];x=p[x]\n  return x\n for i in range(m):\n  a,b=z[2+2*i]-1,z[3+2*i]-1;a=find(a);b=find(b)\n  if a!=b:\n   if sz[a]<sz[b]:a,b=b,a\n   p[b]=a;sz[a]+=sz[b]\n ans=n*(n-1)//2\n for i in range(n):\n  if p[i]==i:ans-=sz[i]*(sz[i]-1)//2\n return str(ans)\n```"
+}

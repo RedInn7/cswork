@@ -1,0 +1,19 @@
+{
+  "id": "oa-cloudflare-1",
+  "packageChecksum": "0fd8dcba94f3995cf41c26f97c2242cc4a818b06bfd22119632c873faf48cab8",
+  "sourceContentHash": "f6894394ce4ee3d896554dbc9e597c938c89a5bd2a25a7a53cf15350182a89a5",
+  "editorialSha256": "a02d70208c662832d215d5ce52ba0f7f0b0027b986424f5d239a7b509df9db73",
+  "hints": {
+    "zh": [
+      "数据可以任意拆分搬运，所以一组保留的分区能装下全部数据，当且仅当它们的容量之和不小于总使用量；原来的分区放在哪里无关紧要。",
+      "分区数量固定为 t 时，容量和最大的选法就是取容量最大的 t 个分区。所以按容量降序累加，第一次达到总使用量时的个数就是答案。",
+      "先求总使用量 need，若为 0 直接输出 0；否则把容量降序排序，逐个累加并计数，累加和 ≥ need 时停止输出计数。总量可达 2·10^14，用 64 位整数。"
+    ],
+    "en": [
+      "Data can be split and moved freely, so a set of kept partitions works if and only if their total capacity is at least the total used amount; where the data originally lives does not matter.",
+      "For a fixed number t of partitions, the largest total capacity comes from the t largest partitions. So add capacities in descending order; the count at the moment the sum first reaches the total usage is the answer.",
+      "Compute the total usage need and print 0 if it is 0. Otherwise sort the capacities in descending order, accumulate them while counting, and stop when the sum is at least need. Totals can reach 2 * 10^14, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe total used amount does not change; sort the capacities in descending order and take the shortest prefix whose total capacity reaches the total usage.\n\n## Proof of correctness\n\nData can be split, so a kept subset is feasible if and only if its total capacity is sufficient. For a fixed number of partitions, the maximum total capacity is obtained from the largest capacities, so the length of the first prefix that is sufficient is the minimum feasible count.\n\n## Complexity\n\nO(n log n) time and O(n) space; totals use 64-bit integers."
+}

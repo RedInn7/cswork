@@ -1,0 +1,19 @@
+{
+  "id": "oa-confluent-3",
+  "packageChecksum": "e183d1bb92157a87800d15016a29961c4207058d64a62eb85442fa97ccadb642",
+  "sourceContentHash": "490ade68cb8e572c0625b26403cda94e00a3dd20918722fecbef26a8bf6513d3",
+  "editorialSha256": "1a5d5fc1e18c73750c133103f51a2fe914f42e74c4f5bd7e563ad23fa095e22f",
+  "hints": {
+    "zh": [
+      "n 最多 40，直接枚举 2^40 个子集太慢；但每一半只有 20 个元素，2^20 约一百万，枚举一半是可以接受的。",
+      "折半搜索：任意子集都唯一拆成左半子集加右半子集。先枚举左半所有子集和放进集合（或排好序），再枚举右半的每个子集和 s，查 target − s 是否在左半集合里。",
+      "左半子集和可以逐个元素倍增生成；右半按 Gray code 顺序枚举，相邻两个子集只差一个元素，当前和只需加或减这一个元素。空子集的和是 0，也要参与比较；找到就输出 1，全部枚举完仍没有则输出 0。和的绝对值可达 4·10^10，用 64 位整数。"
+    ],
+    "en": [
+      "n can be 40, so enumerating all 2^40 subsets is too slow; but each half has only 20 elements, and 2^20 is about one million, which is fine to enumerate.",
+      "Meet in the middle: every subset splits uniquely into a left-half subset and a right-half subset. Enumerate all subset sums of the left half into a set (or a sorted array), then for each subset sum s of the right half check whether target - s is among them.",
+      "Generate the left sums by doubling the list one element at a time. Enumerate the right half in Gray-code order, where consecutive subsets differ by one element, so the running sum only adds or removes that element. The empty subset with sum 0 also counts; print 1 on the first hit, or 0 after everything is checked. Sums can reach 4 * 10^10 in absolute value, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit the array in the middle into two halves, enumerate all subset sums of the left half and put them in a set. Enumerate the right half in Gray code order; each step flips exactly one element, so the current sum can be updated in O(1). For each right-half sum `s`, check whether `target-s` is in the left-half set. The empty subset naturally corresponds to the sum 0.\n\n## Correctness\n\nAny subset splits uniquely into a left-half subset and a right-half subset. If its total is target, then when the right-half sum is s the left-half sum must be target-s, so the lookup hits; conversely, if the set contains this difference, combining the two corresponding half subsets gives a subset of the original array whose sum is target.\n\n## Complexity\n\nO(2^(n/2)) time and O(2^(n/2)) space; on this site n<=40."
+}

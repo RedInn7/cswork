@@ -1,0 +1,19 @@
+{
+  "id": "oa-databricks-9",
+  "packageChecksum": "83097c0fd8cb42504bba1b05f6736b80bb6a4f190427c1975a3a54f37c16b1ac",
+  "sourceContentHash": "7cc4fa65d7338729188379cd05b484ae7e9453fb647ec611aed756bed80dbabe",
+  "editorialSha256": "0b01db6fa4e165c0ded2e60ac6e6e3ca18a5062e6e5c8ed554c7954c7f0cb85e",
+  "hints": {
+    "zh": [
+      "题目定义的就是一个确定的过程，n ≤ 1000 时可以直接按规则模拟。每一轮最左侧的非零元素本身一定会被减为 0（它的值恰好等于 x）。",
+      "每轮：找到最左非零元素的值 x，把 x 加入总和，然后从这个位置向右逐项检查，只有当前值至少为 x 的元素才减去 x，小于 x 的保持不变。",
+      "用一个指针 i 从左往右走：a[i] 为 0 就右移；否则取 x = a[i]，累加 x，再对 j = i..n−1 执行条件减法。由于 a[i] 每轮都会变成 0，最多 n 轮、每轮 O(n)，总计 O(n²)。总和用 64 位整数更稳妥。"
+    ],
+    "en": [
+      "The statement defines a deterministic process, and with n <= 1000 you can simulate it directly. In every round the leftmost nonzero element itself always drops to 0, since its value is exactly x.",
+      "Each round: find the value x of the leftmost nonzero element, add x to the total, then go right from that position and subtract x only from elements whose current value is at least x; smaller ones stay unchanged.",
+      "Move a pointer i from left to right: if a[i] is 0, advance; otherwise take x = a[i], add it to the total, and apply the conditional subtraction to j = i..n-1. Because a[i] becomes 0 every round, there are at most n rounds of O(n) work, O(n^2) in total. Keep the total in a 64-bit integer to be safe."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSimulate each round directly as described: locate the leftmost nonzero value x, add x to the total, and subtract x only from the elements in the suffix whose current value is not less than x.\n\n## Proof of correctness\n\nThe simulation always selects the same leftmost nonzero element as the problem and applies the conditional subtraction prescribed by the problem to the same suffix element by element, so after each round the array state and the accumulated value agree with the defined process. The problem guarantees that the process terminates, and when the simulation ends the accumulated value is the required answer.\n\n## Complexity\n\nAt most n rounds are processed (each round sets the current leftmost nonzero element to zero), and each round scans at most n items; O(n^2) time and O(n) extra space."
+}

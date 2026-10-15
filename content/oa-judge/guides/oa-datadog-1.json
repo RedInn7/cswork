@@ -1,0 +1,19 @@
+{
+  "id": "oa-datadog-1",
+  "packageChecksum": "761970d940c1b5e9e36606970b0155e477da9f86c1e2a6ee8acc400dfc7cf6b9",
+  "sourceContentHash": "9f582c90c7de7614af94dd9f48c21e77b00d9e2bdbd0e187829c52be7f1f5ce5",
+  "editorialSha256": "8514a7301437fa0fa1aa7ae4bc644993f0973567cdf67d4fc68b1decd5245f68",
+  "hints": {
+    "zh": [
+      "q 最多 5000，日志条数也不超过 5000，所以每次查询直接扫描已有的全部日志就够快，不需要索引结构。",
+      "每条日志保存时间戳、service、level 和 message。查询条件是：start ≤ timestamp ≤ end（闭区间），service 与 level 要么是 * 要么完全相等，keyword 要么是 * 要么是 message 的子串；四个条件同时满足才计数。",
+      "按行读取：ADD 行前四个字段之后的整行剩余部分都是 message（可能含空格），不能按空白切成多个 token；QUERY 行按空白切成 6 个字段。按顺序把日志追加到列表，每个 QUERY 扫描列表计数并输出一行。时间戳按 64 位整数比较。"
+    ],
+    "en": [
+      "q is at most 5000, so there are at most 5000 logs, and scanning every stored log for each query is fast enough without any index.",
+      "Store each log's timestamp, service, level and message. A log matches when start <= timestamp <= end (closed interval), service and level are each * or exactly equal, and keyword is * or a substring of message; all four must hold.",
+      "Read line by line: for an ADD line everything after the first four fields is the message, which may contain spaces, so do not split it into tokens; a QUERY line splits into 6 whitespace-separated fields. Append logs to a list in order, and for each QUERY scan the list and print the count on its own line. Compare timestamps as 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain the appended logs in order; each query scans the current logs and checks the time, service, level, and message conditions entry by entry. The time range is a closed interval. Each query is O(L), and the total complexity is O(q^2), which fits the simplified version directly defined by this problem.\n\n## Proof of correctness\n\nEach ADD enters the log table exactly once. For a QUERY, the algorithm checks whether each record in the table simultaneously satisfies the closed interval, the two optional equality filters, and the keyword containment condition; records that satisfy them are counted once and the others are not, so the result matches the definition.\n\n## Complexity\n\nTimestamps and log numbers are parsed as integers; a single message contains no tab characters.\n\nO(q*L) time and O(L) space, where L is the number of logs written.\n\n## Reference implementation\n\n```python\ndef solve(raw):\n lines=raw.splitlines(); q=int(lines[0]); logs=[]; out=[]\n for line in lines[1:1+q]:\n  p=line.split(maxsplit=4) if line.startswith('ADD ') else line.split()\n  if p[0]=='ADD': logs.append((int(p[1]),p[2],p[3],p[4]))\n  else:\n   _,a,b,s,l,k=p; a=int(a); b=int(b); out.append(str(sum(a<=t<=b and (s=='*' or s==ss) and (l=='*' or l==ll) and (k=='*' or k in m) for t,ss,ll,m in logs)))\n return '\\n'.join(out)\n```"
+}
