@@ -96,6 +96,22 @@ void test('the plan is the list’s judgeable problems in order', () => {
   assert.deepEqual(campTasks('no-such-list'), []);
 });
 
+void test('problems published after a cohort’s day 1 go last, so its days keep their problems', () => {
+  const [a, b, c, d, e] = numbers as [number, number, number, number, number];
+  const created = (number: number, at: number) =>
+    sqlite().prepare('UPDATE oj_problems SET created_at=? WHERE id=?').run(at, `lc-${number}`);
+  created(b, 5000);
+  assert.deepEqual(
+    campTasks('blind-75', 5000).map((t) => t.number),
+    [a, c, d, e, b],
+  );
+  assert.deepEqual(
+    campTasks('blind-75', 5001).map((t) => t.number),
+    [a, b, c, d, e],
+  );
+  created(b, 1);
+});
+
 void test('the owner sets a cohort; members see day N, today’s slice and who finished it', async () => {
   const group = await ok(owner, 'POST', 'groups', { name: 'Blind sprint', displayName: 'Cap' });
   const code = (sqlite().prepare('SELECT invite_code FROM study_groups WHERE id=?').get(group.id) as { invite_code: string })
