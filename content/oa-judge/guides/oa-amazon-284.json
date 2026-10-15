@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-284",
+  "packageChecksum": "cd3d3838ad65ec6daab6b35199e7ad435279c09ec34f9d13a639d6b961da4473",
+  "sourceContentHash": "b6ad6b7f1b8138f5b2bbb814612028b25d20e0c5642f3d1813c867a05bcc464e",
+  "editorialSha256": "f2a4dbea82211a44fbb61b81740d5774db1c14721fc6e500b32f3769aa092029",
+  "hints": {
+    "zh": [
+      "每天所有非空中心都减去同一个 x，所以任意两个不同的正库存值之间的差不会改变，它们不可能在同一天同时变成 0。",
+      "一天最多只能让“当前最小的那一种正库存值”清零，所以天数至少是不同正库存值的个数；而每天恰好减去当前最小正值，就能每天消掉一种，达到这个下界。",
+      "读入所有库存，忽略 0，把正值放进集合（或排序后去重），输出不同正值的个数；全为 0 时答案是 0。"
+    ],
+    "en": [
+      "Every day all non-empty centers lose the same x, so the difference between any two distinct positive stock values never changes and they can never reach 0 on the same day.",
+      "A day can empty at most the group with the current smallest positive value, so you need at least as many days as there are distinct positive values; subtracting exactly the current smallest positive value each day removes one group per day and meets that bound.",
+      "Read all stocks, ignore zeros, put the positive values in a set (or sort and de-duplicate), and print the number of distinct positive values; if everything is 0 the answer is 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nThe answer is the number of distinct positive stock values; convert each token to an integer and add it to a set, without keeping a separate full integer array.\n\n## Proof of correctness\n\nEach day all positive values decrease by the same x, so the differences between the existing distinct positive values stay unchanged, and at most the single current smallest positive value can become 0; hence at least as many days as there are distinct positive values are needed. Subtracting exactly the current smallest positive value each day eliminates one value, which reaches the lower bound. Zero values need no shipping.\n\n## Complexity\n\nO(n) time, O(number of distinct positive values) space, without copying a full integer array."
+}

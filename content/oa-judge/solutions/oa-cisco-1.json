@@ -1,0 +1,21 @@
+{
+  "id": "oa-cisco-1",
+  "packageChecksum": "59073c6d08f358ceb16fbfc49a7039e47af597ebcb77c7f6229770c3e060bf9c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    if (scanf(\"%d\", &n) != 1) return 0;\n    string out;\n    out.reserve(14000000);\n    char num[16];\n    for (int i = 1; i <= n; i++) {\n        // 15 first, then 3, then 5: the branches are mutually exclusive.\n        if (i % 15 == 0) out += \"FizzBuzz\";\n        else if (i % 3 == 0) out += \"Fizz\";\n        else if (i % 5 == 0) out += \"Buzz\";\n        else { int len = snprintf(num, sizeof num, \"%d\", i); out.append(num, len); }\n        out += '\\n';\n    }\n    fwrite(out.data(), 1, out.size(), stdout);\n}\n",
+      "sha256": "54303a4a348c926427e9427bdd2c41dc3c188b90c1463050eb3dda5a4e4d6794"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        int n = Integer.parseInt(br.readLine().trim());\n        StringBuilder out = new StringBuilder(14_000_000);\n        for (int i = 1; i <= n; i++) {\n            // 15 first, then 3, then 5: the branches are mutually exclusive.\n            if (i % 15 == 0) out.append(\"FizzBuzz\");\n            else if (i % 3 == 0) out.append(\"Fizz\");\n            else if (i % 5 == 0) out.append(\"Buzz\");\n            else out.append(i);\n            out.append('\\n');\n        }\n        PrintStream ps = new PrintStream(new BufferedOutputStream(System.out, 1 << 16), false);\n        ps.print(out);\n        ps.flush();\n    }\n}\n",
+      "sha256": "372a03484d937df6427b4973d06c513f3371c72c75ef67316565f817abdc594a"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tvar n int\n\tfmt.Scan(&n)\n\tout := make([]byte, 0, 14000000)\n\tfor i := 1; i <= n; i++ {\n\t\t// 15 first, then 3, then 5: the branches are mutually exclusive.\n\t\tswitch {\n\t\tcase i%15 == 0:\n\t\t\tout = append(out, \"FizzBuzz\"...)\n\t\tcase i%3 == 0:\n\t\t\tout = append(out, \"Fizz\"...)\n\t\tcase i%5 == 0:\n\t\t\tout = append(out, \"Buzz\"...)\n\t\tdefault:\n\t\t\tout = strconv.AppendInt(out, int64(i), 10)\n\t\t}\n\t\tout = append(out, '\\n')\n\t}\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "ea0ceafcfc1a28c42c9fae64dbabea345f2bb13c844b0ef019276f3d917cfbae"
+    }
+  ]
+}

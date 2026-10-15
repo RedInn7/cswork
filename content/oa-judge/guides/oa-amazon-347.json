@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-347",
+  "packageChecksum": "8a93888bf22847639c5a2fbdfa3119db2e4f50cdffd63d10d107ece3a09d7ab1",
+  "sourceContentHash": "6f429e66cf8bf184e7cd53a7cdedf2cff4117627ec022e3e8ed4291b98c7cc72",
+  "editorialSha256": "af7fdadff5860b62a047650da6217f79c5170f7220ab0fda47409fdccdb9408a",
+  "hints": {
+    "zh": [
+      "一次替换只和“当前有多少个元素等于 old”有关，没必要真的去改数组里的每一个位置。",
+      "维护“值 → 出现次数”的哈希表和当前总和：old≠new 时取出 old 的次数 c，总和增加 (new−old)·c，再把 c 合并到 new 的次数上。",
+      "读入数组建立频数表并求和；对每个查询，若 old==new 直接输出当前总和，否则从表中删除 old 得到 c（不存在则为 0），更新总和和 new 的计数后输出；q=0 时输出一个空行。总和用 64 位整数。"
+    ],
+    "en": [
+      "A replacement only depends on how many elements currently equal old; there is no need to actually rewrite every position of the array.",
+      "Keep a hash map from value to count plus the current sum: when old != new, take old's count c, add (new-old)*c to the sum, and merge c into new's count.",
+      "Read the array, build the count table and the sum; for each query, if old == new just print the sum, otherwise remove old from the table to get c (0 if absent), update the sum and new's count, then print; when q=0 print an empty line. Use 64-bit integers for the sum."
+    ]
+  },
+  "explanationEn": "## Approach\n\nUse a frequency table and the current sum. When old≠new, take out old's frequency c, increase the sum by (new−old)c, and merge c into new's frequency; when the two values are equal, keep the state as it is.\n\n## Proof of correctness\n\nExactly c items change in each query, and each changes the sum by new−old, so the sum update is exact. The whole frequency moves from old to new and all other values are unchanged, so the frequency table stays consistent with the current array. By induction every query is correct, including the zero change when the old value is not present.\n\n## Complexity\n\nExpected O(n+q) time, O(n+q) space."
+}

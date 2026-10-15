@@ -1,0 +1,21 @@
+{
+  "id": "oa-adobe-1",
+  "packageChecksum": "03cb9950898b2a2c36773831f1fe2263ee2c7efb2f384deb97eb24ed7fc59820",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstatic char buf[1 << 16];\nstatic size_t blen = 0, bpos = 0;\nstatic inline int gc() {\n    if (bpos == blen) {\n        blen = fread(buf, 1, sizeof buf, stdin);\n        bpos = 0;\n        if (!blen) return -1;\n    }\n    return buf[bpos++];\n}\nstatic long long readLong() {\n    int c = gc();\n    while (c != '-' && (c < '0' || c > '9')) {\n        if (c == -1) return 0;\n        c = gc();\n    }\n    bool neg = false;\n    if (c == '-') { neg = true; c = gc(); }\n    long long v = 0;\n    while (c >= '0' && c <= '9') { v = v * 10 + (c - '0'); c = gc(); }\n    return neg ? -v : v;\n}\n\nint main() {\n    int p = (int)readLong(), n = (int)readLong();\n    // Keep the cheapest quote per project.\n    vector<long long> best(p);\n    vector<char> has(p, 0);\n    for (int i = 0; i < n; i++) {\n        int id = (int)readLong();\n        long long v = readLong();\n        if (!has[id] || v < best[id]) { best[id] = v; has[id] = 1; }\n    }\n    long long total = 0;\n    for (int i = 0; i < p; i++) {\n        if (!has[i]) { puts(\"-1\"); return 0; }\n        total += best[i];\n    }\n    printf(\"%lld\\n\", total);\n}\n",
+      "sha256": "ce975bc6a85c6e037b641bfae804248fcad227742eaa896d153f9dc88cb4ecee"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final InputStream in = System.in;\n    static final byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n\n    static int gc() throws IOException {\n        if (ptr == len) {\n            len = in.read(buf, 0, buf.length);\n            ptr = 0;\n            if (len <= 0) { len = 0; return -1; }\n        }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = gc();\n        while (c != '-' && (c < '0' || c > '9')) {\n            if (c == -1) return 0;\n            c = gc();\n        }\n        boolean neg = false;\n        if (c == '-') { neg = true; c = gc(); }\n        long v = 0;\n        while (c >= '0' && c <= '9') { v = v * 10 + (c - '0'); c = gc(); }\n        return neg ? -v : v;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int p = (int) nextLong(), n = (int) nextLong();\n        // Keep the cheapest quote per project.\n        long[] best = new long[p];\n        boolean[] has = new boolean[p];\n        for (int i = 0; i < n; i++) {\n            int id = (int) nextLong();\n            long v = nextLong();\n            if (!has[id] || v < best[id]) { best[id] = v; has[id] = true; }\n        }\n        long total = 0;\n        for (int i = 0; i < p; i++) {\n            if (!has[i]) { System.out.println(-1); return; }\n            total += best[i];\n        }\n        System.out.println(total);\n    }\n}\n",
+      "sha256": "3e4b72c18da53c0539b154ae066ff568b9ce86e44504076058bb31710f3d6c01"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nvar rd = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readInt() int64 {\n\tc, err := rd.ReadByte()\n\tfor err == nil && c != '-' && (c < '0' || c > '9') {\n\t\tc, err = rd.ReadByte()\n\t}\n\tif err != nil {\n\t\treturn 0\n\t}\n\tneg := false\n\tif c == '-' {\n\t\tneg = true\n\t\tc, err = rd.ReadByte()\n\t}\n\tvar v int64\n\tfor err == nil && c >= '0' && c <= '9' {\n\t\tv = v*10 + int64(c-'0')\n\t\tc, err = rd.ReadByte()\n\t}\n\tif neg {\n\t\treturn -v\n\t}\n\treturn v\n}\n\nfunc main() {\n\tp, n := int(readInt()), int(readInt())\n\t// Keep the cheapest quote per project.\n\tbest := make([]int64, p)\n\thas := make([]bool, p)\n\tfor i := 0; i < n; i++ {\n\t\tid := int(readInt())\n\t\tv := readInt()\n\t\tif !has[id] || v < best[id] {\n\t\t\tbest[id] = v\n\t\t\thas[id] = true\n\t\t}\n\t}\n\tvar total int64\n\tfor i := 0; i < p; i++ {\n\t\tif !has[i] {\n\t\t\tfmt.Println(-1)\n\t\t\treturn\n\t\t}\n\t\ttotal += best[i]\n\t}\n\tfmt.Println(total)\n}\n",
+      "sha256": "5dcaef7a8d1412aa031634999b89810ba53ad04db3cd582c6d2454eca739f0dc"
+    }
+  ]
+}

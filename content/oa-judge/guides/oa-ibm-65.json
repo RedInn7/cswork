@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-65",
+  "packageChecksum": "ab17031b65b79d80848b89a0a8c6c80631d5241a031f804e4b062d813db14801",
+  "sourceContentHash": "555b46c37242f73a97e6907360fbcc33644fcf7327535dbfed290f81e7b038d0",
+  "editorialSha256": "e8bc9607c1e7e493caa6fdbd26853618e054735fc3e7772c77a386bcb29184d1",
+  "hints": {
+    "zh": [
+      "用交换论证：若容量 c1<c2 却分到负载 l1<l2，交换两者后费用变化 (c1−c2)(l2−l1)<0，所以最优解中容量越小分到的负载必须越大；容量相同的位置之间互换负载不影响费用。",
+      "因此每个容量组该分到哪些负载是确定的：容量升序与负载降序一一配对。剩下的自由只在同容量组内部，为了字典序最小，组内下标小的位置应拿较小的负载。",
+      "把负载降序排序；把下标按（容量升序，下标降序）排序，依次把第 j 大的负载放到第 j 个下标上——同组中下标大的先拿较大负载，下标小的拿到较小负载；最后按原下标顺序输出。无需计算总费用（它可能超过 64 位）。"
+    ],
+    "en": [
+      "Use an exchange argument: if capacities c1 < c2 receive loads l1 < l2, swapping them changes the cost by (c1-c2)(l2-l1) < 0, so in an optimal arrangement a smaller capacity must get a larger load; swapping loads between positions of equal capacity does not change the cost.",
+      "So the multiset of loads each capacity group receives is fixed: pair capacities in ascending order with loads in descending order. The only freedom left is inside a group of equal capacities, and for the lexicographically smallest result the smaller index in a group should take the smaller load.",
+      "Sort the loads in descending order; sort the indices by (capacity ascending, index descending) and give the j-th largest load to the j-th index, so within a group the larger indices take the larger loads first and the smaller indices get the smaller loads; print the result in original index order. You never need the total cost, which can exceed 64 bits."
+    ]
+  },
+  "explanationEn": "## Approach\n\nPair capacities from small to large with loads from large to small; within positions of the same capacity, sort by original index in reverse before assigning, so that the smaller index receives the smaller load of that group.\n\n## Proof of correctness\n\nIf c1<c2 but they receive l1<l2, swapping changes the cost by (c1−c2)(l2−l1)<0, so an optimal solution cannot contain such a reversed pairing. Sorting gives the multiset of loads each capacity group should receive, and swapping within the same capacity does not change the cost. Placing each group's loads in non-decreasing order of original index makes every earliest differing position as small as possible, which gives the lexicographically smallest of all minimum-cost solutions. Swapping equal loads across groups does not change the output.\n\n## Complexity\n\nO(n log n) time, O(n) space. The reference does not need to compute the total cost, which may exceed 64 bits; the argument and the oracle use arbitrary-precision integers."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-cisco-20",
+  "packageChecksum": "1f46fb4bb88cbe5860a4c96962d421254156997a989e67ea91c9f1e0d3e0dddf",
+  "sourceContentHash": "f0de1cca0fafe29cb2530348f51643834a3bf9bbc9da8a96345565fd4b60dc27",
+  "editorialSha256": "7270085378bcaaabd559eb7070dbad60e135c58c26d22db6c94a1abf89912a1c",
+  "hints": {
+    "zh": [
+      "落脚的格子就是逆时针螺旋序列中下标为偶数（从 0 开始）的格子；跳过的计数跨越拐角也不重置，所以只要找到最后一个偶数下标的格子。",
+      "用 top、bottom、left、right 四条边界模拟螺旋：先沿左列向下，再沿底行向右，再沿右列向上，最后沿顶行向左，每走完一条边就收缩对应的边界。",
+      "维护全局计数 idx 和答案（初值为左上角）；每访问一个格子，若 idx 为偶数就更新答案，然后 idx 加一。向上走右列前检查 left≤right，向左走顶行前检查 top≤bottom，避免只剩单行或单列时重复访问；循环结束后输出答案。"
+    ],
+    "en": [
+      "The landing cells are exactly the cells with an even 0-based index in the counterclockwise spiral order; the skip count carries across turns, so you only need the last cell with an even index.",
+      "Simulate the spiral with four bounds top, bottom, left and right: go down the left column, right along the bottom row, up the right column, then left along the top row, shrinking the matching bound after each side.",
+      "Keep a global counter idx and the answer (initially the top-left cell); on every visited cell update the answer when idx is even, then increment idx. Check left <= right before going up the right column and top <= bottom before going left along the top row, so a single remaining row or column is not visited twice; print the answer when the loop ends."
+    ]
+  },
+  "explanationEn": "## Approach\n\nShrink the boundaries one side at a time along the four edges and give each visited cell a global index starting from 0; only even indices update the answer.\n\n## Proof of correctness\n\nEach round traverses exactly the current outer ring, with every cell appearing once, and the rectangle left after removing the ring continues in the same spiral direction. The single-row and single-column conditions prevent repeats. The global even indices correspond exactly to landing on every other cell as the statement requires, so the last updated value is the final landing cell.\n\n## Complexity\n\nO(NM) time and O(1) auxiliary space besides the input matrix."
+}

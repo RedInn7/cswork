@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-31",
+  "packageChecksum": "2f4f77805feff70e063bd9be817dc59a985b9a7161aa881003d0eac732443c63",
+  "sourceContentHash": "96863d917d432072aac948bfcb768532830967ca974c6116dd11acf038cde3af",
+  "editorialSha256": "9c40780aa3b5142a8b0f8a004d61d25441624c03c715b0b44398f1893d899b59",
+  "hints": {
+    "zh": [
+      "只有相邻且相同的字符才需要处理；把单词切成若干段“连续相同字符”，各段之间互不影响，可以分别计算。",
+      "长度为 L 的一段里能取出 floor(L/2) 对互不重叠的相邻字符，每对至少要改一个；而隔一个改一个、改成与两侧都不同的字母（26 个字母足够），恰好用 floor(L/2) 次，所以每段贡献 floor(L/2)。",
+      "对每个单词线性扫描，记住上一个字符和当前段长；字符变化时把“段长/2”加进答案并把段长重置为 1，相同时段长加一；扫完再加上最后一段的“段长/2”。按输入顺序输出各单词的答案。总字符数可达 10^7，需要快速读入。"
+    ],
+    "en": [
+      "Only equal adjacent characters matter; split the word into runs of identical consecutive characters, and the runs can be handled independently.",
+      "A run of length L contains floor(L/2) disjoint adjacent pairs and each pair needs at least one change; changing every other character to a letter different from both neighbours (26 letters are enough) uses exactly floor(L/2) changes, so each run contributes floor(L/2).",
+      "Scan each word once, remembering the previous character and the current run length; when the character changes add run/2 to the answer and reset the run to 1, otherwise grow the run; after the scan add the last run's run/2. Print the answers in input order. The total length can reach 10^7 characters, so read the input quickly."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSplit each word into runs of equal consecutive characters; a run of length L contributes floor(L/2).\n\n## Proof of correctness\n\nWithin each run, take disjoint pairs of adjacent characters; each pair needs at least one change, which gives the lower bound floor(L/2). Change every other character, choosing a letter different from both neighbours; 26 letters are enough, so the lower bound is achieved exactly without breaking the boundaries between runs. Add up the runs.\n\n## Complexity\n\nO(total number of characters) time, with O(1) extra state while scanning each word; the largest input is 10000104 bytes."
+}

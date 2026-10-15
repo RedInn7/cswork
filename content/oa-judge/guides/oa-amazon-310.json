@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-310",
+  "packageChecksum": "85f691c2bc7c24baf990b98ac2bf26c98f6edc446f9e3fc020dfb1881b9631b9",
+  "sourceContentHash": "f03a70b9a385faeb96933c7938f5804efbd1698d20bd2e270143b69d11c128c7",
+  "editorialSha256": "41a8116f7605aef5df41fe776d05cff9e39557b9a6008634df715b4b4047a48e",
+  "hints": {
+    "zh": [
+      "一对产品“共同出现的交易数”等于两者出现过的交易集合的交集大小；频率为正的产品对一定在某笔交易里同时出现，所以只需枚举每笔交易内部的产品对。",
+      "给每个产品建一个 T 位的位集（第 t 位表示它出现在第 t 笔交易中），一对产品的频率就是两个位集按位与之后 1 的个数，这样不需要保存所有产品对的计数表。",
+      "读入时把每笔交易的名字去重并按字典序排序，同时设置各产品的位集；然后对每笔交易枚举 i<j 的名字对，用按位与加 popcount 求频率，频率更大、或频率相同但 (a, b) 字典序更小时更新答案；没有任何不同产品对时输出 -1。"
+    ],
+    "en": [
+      "The number of transactions in which two products appear together is the size of the intersection of their transaction sets; any pair with positive frequency appears together in some transaction, so you only need to enumerate pairs inside each transaction.",
+      "Give every product a T-bit bitset (bit t means it appears in transaction t); the frequency of a pair is the popcount of the bitwise AND of the two bitsets, so you never need a count table for all pairs.",
+      "While reading, de-duplicate each transaction's names, sort them lexicographically and set each product's bitset; then for every transaction enumerate name pairs i < j, compute the frequency with AND plus popcount, and update the answer when the frequency is larger, or equal with a lexicographically smaller (a, b); print -1 if there is no pair of distinct products."
+    ]
+  },
+  "explanationEn": "## Approach\n\nFor each product build a bitmask of at most T bits marking the transactions it appears in. De-duplicate each transaction and enumerate its pairs of distinct products, using the bit_count of the bitwise AND of the two masks as the exact frequency; keep only the current highest frequency and the lexicographically smallest pair, without storing a table of all pairs.\n\n## Proof of correctness\n\nThe transactions in which a pair of products appears together are exactly the intersection of the two occurrence sets, so the number of bits in the intersection is the frequency defined by the problem. Every product pair with positive frequency is enumerated in at least one transaction, so the candidates cover every valid answer. Enumerating the same pair repeatedly does not change the maximum or the tie-breaking result. Because each transaction is de-duplicated first, repeated names neither form a pair with themselves nor add extra weight to a single transaction.\n\n## Complexity\n\nAt most T·100·99/2=4950000 candidate evaluations, each a bit operation on at most 1000 bits; space O(U·T/word size + input), without storing up to 4.95 million pair objects."
+}

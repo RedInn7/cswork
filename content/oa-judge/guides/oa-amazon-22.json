@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-22",
+  "packageChecksum": "aa05f358299bc35759bba125fd7330d6395fbabbdb4650667749fa190996dbaa",
+  "sourceContentHash": "65a7f646e3f903c30d73a7ade42e615fa27850af06012625f0fdfad9361efd7f",
+  "editorialSha256": "5f9cdd01cb1a54520f832a68a63cd9c2a4dfeef9a699208e965391c747990c64",
+  "hints": {
+    "zh": [
+      "每天所有非空中心都要发同样数量 d，且 d 不能超过当前最小的正库存；于是任意两个不同的正库存值之间的差永远不变，它们不可能同一天清空。",
+      "一天最多只能清掉“当前最小的那一层”正库存，所以天数至少是不同正库存值的个数；每天恰好发当前最小正库存那么多，就能每天清掉一层，达到下界。",
+      "逐个读入库存，跳过 0，把正值放进集合（或排序后去重）；输出不同正值的个数，全为 0 时输出 0。不需要保存完整数组以外的东西，注意 n 可达 10^6，读入要快。"
+    ],
+    "en": [
+      "Every day all non-empty centers ship the same d, and d cannot exceed the current smallest positive stock; so the difference between any two distinct positive stock values never changes and they can never empty on the same day.",
+      "One day can clear at most the layer of the current smallest positive stock, so you need at least as many days as there are distinct positive values; shipping exactly the current smallest positive stock each day clears one layer per day and meets that bound.",
+      "Read the stocks one by one, skip zeros, and put the positive values into a set (or sort and de-duplicate); print the number of distinct positive values, which is 0 when all stocks are zero. n can be 10^6, so read the input quickly."
+    ]
+  },
+  "explanationEn": "## Correction from the fixed source\n\nfastprep/Amazon/amazon-min-days-to-deliver-parcels.md at fixed OAMaster commit e66f809f4c953bce129f68491726176615db6afc requires that every day the same number of parcels be shipped from every center that still has at least one parcel; non-empty centers cannot be skipped. Hence the daily positive integer d may not exceed the current smallest positive stock. The rule \"skip centers with fewer than d\" added by the early #22 summary changed the core operation; this site explicitly corrects it based on the original file instead of inventing a new rule. The distinct-positive-values set algorithm given in three languages by the fixed source is consistent with the original rule.\n\nThe full ranges n≤10^6 and stock 0..10^9 are kept; zero stock does not take part, and an input that is all zeros needs 0 days. The standard I/O is this site's addition. The complete original problem also corresponds to #284; here all source and verification evidence is re-bound to this ID. The largest regular integer input is 11000008 bytes, within the 32 MiB input budget.\n\n## Proof of correctness\n\nAdd every strictly positive stock to a set and return the size of the set. Each day all non-empty centers subtract the same value, so the differences between the distinct stocks that are still non-empty do not change, and one day can eliminate at most the layer of the current smallest positive stock. Therefore at least as many days as the initial number of distinct positive stocks are needed. Choosing the current smallest positive stock each day eliminates exactly one layer and keeps the remaining layers distinct, reaching this lower bound. When everything is zero there are 0 layers.\n\nThe reference program converts the input tokens one by one and adds them to the set, without storing a separate full integer array. Expected time O(n), extra set space O(u), where u is the number of distinct positive values; tokenizing the input takes an extra O(n). On small inputs the independent oracle uses BFS over every valid d on each day to find the shortest way to empty everything, without the set-counting formula.\n\n## Telling apart the wrong summary\n\nUnder the original rule [1,2,3] takes 3 days; the 2-day plan that first subtracts 2 while skipping the center with stock 1 is invalid. Original example [2,3,4,3,3] subtracts 2, 1 and 1 in turn, 3 days in total; centers that all hold 3 finish in one day. This site's added all-zero example should be 0."
+}

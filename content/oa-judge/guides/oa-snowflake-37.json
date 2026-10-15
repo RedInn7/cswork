@@ -1,0 +1,19 @@
+{
+  "id": "oa-snowflake-37",
+  "packageChecksum": "e4708621367223f5eed3a539965010ef93b4287cb26e770f615d29e5e66f96cd",
+  "sourceContentHash": "8926e238f5747242c9b258a816091a72cde7673d52898fa8fa019ef51705cb4c",
+  "editorialSha256": "ca976ba3c9a2550159d46433a5c7742413386cfe4ddf5614748881e18d0ecdc2",
+  "hints": {
+    "zh": [
+      "每次点击沿一条有向边走一步，求最少点击次数就是有向图上的无权最短路问题。",
+      "用邻接表模拟 get_links（只存出边），从 start 做 BFS，第一次到达 target 时所在的层数就是答案；start 与 target 相同时答案为 0，BFS 结束仍未到达则输出 -1。",
+      "读入所有边，把页面名映射成整数编号（区分大小写，名字可以含非英文字符），建立出边表；用队列做 BFS 并标记已访问，自环和重复链接不会让节点重复入队；节点出队时若是 target 就输出它的距离。"
+    ],
+    "en": [
+      "Each click follows one directed edge, so the fewest clicks is an unweighted shortest path on a directed graph.",
+      "Simulate get_links with an adjacency list of outgoing edges only and run BFS from start; the level at which target is first reached is the answer; it is 0 when start equals target, and -1 if BFS ends without reaching target.",
+      "Read all edges, map page names to integer ids (case-sensitive, names may contain non-English characters) and build the outgoing edge lists; run BFS with a queue and visited marks so self-loops and duplicate links never enqueue a node twice; when target is dequeued, print its distance."
+    ]
+  },
+  "explanationEn": "## Approach\n\nBuild an outgoing-edge table to simulate get_links, then run BFS from start and return the level at which target is first found.\n\n## Correctness\n\nEach edge on a path corresponds to one click, and BFS expands level by level in order of distance, so the distance at which a node is first reached is the shortest. Traversing only outgoing edges never turns a one-way link into a reverse link, and the visited marks keep self-loops from being repeated.\n\n## Complexity\n\nO(V+m) time and O(V+m) space, plus storage for the page names."
+}

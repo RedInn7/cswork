@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-5",
+  "packageChecksum": "8c07cb74c9266c297a0479f1ccbe1b1107538d430f115d2f6b4f4d412f374d32",
+  "sourceContentHash": "b45a8712240efef9fc0a8a3aa100a0cd9b8855126375112ffe193624bfccd571",
+  "editorialSha256": "abf2bc110e458b4d1f10f2de446f653943ddbbcf0cb4a605d1d92960f3eea40d",
+  "hints": {
+    "zh": [
+      "按当前市价买卖时，现金的变化与持仓市值的变化正好抵消，所以 BUY/SELL 本身不改变净损益；只有价格变动才会改变损益。",
+      "只需维护每只股票的持仓数量和一个累计损益：BUY/SELL 只调整持仓，CHANGE 让损益增加“该股票持仓 × 价格变化量”，QUERY 记录当前损益。",
+      "解析 JSON 字符串数组，把每个事件按空格拆分；用哈希表保存持仓（股票名按解码后的字符串比较）；遇到 QUERY 就把当前损益加入结果；最后先输出查询次数，再逐行输出每次结果（没有查询时只输出 0），数值用 64 位整数。"
+    ],
+    "en": [
+      "Trading at the current market price changes cash and the market value of your holdings by exactly opposite amounts, so BUY and SELL themselves never change net profit and loss; only price changes do.",
+      "You only need each stock's holding and one running profit and loss: BUY and SELL just adjust the holding, CHANGE adds holding times delta for that stock, and QUERY records the current value.",
+      "Parse the JSON array of strings and split each event on spaces; keep holdings in a hash map keyed by the decoded stock name; on QUERY append the current profit and loss to the results; finally print the number of queries followed by one result per line (just 0 when there is no query), using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMaintain each stock's holding and the cumulative profit and loss; buying and selling only change the holdings, and a price change adds the holding times the change to the profit and loss.\n\n## Proof of correctness\n\nWhen trading at the market price, the change in cash and the change in the market value of the holdings cancel out, so net worth does not change; only a price change increases net worth, by the current holding times the price difference. The profit and loss starts at 0, and by induction over the events the maintained value always equals the change in cash plus the market value of holdings relative to the start.\n\n## Complexity\n\nO(input length) time, O(number of stocks + number of queries) space."
+}

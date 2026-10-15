@@ -1,0 +1,19 @@
+{
+  "id": "oa-adobe-1",
+  "packageChecksum": "03cb9950898b2a2c36773831f1fe2263ee2c7efb2f384deb97eb24ed7fc59820",
+  "sourceContentHash": "729d1681d8555dc53d261e9e9afe23d6759d00bb8640424118faffabb536da0c",
+  "editorialSha256": "1de7513aadc6269cb44df83e7469729d8b845e73e0fb57c05b6ea28d2fc59cbc",
+  "hints": {
+    "zh": [
+      "报价之间互不限制，每个项目只需要挑一份报价，所以各项目的选择完全独立。",
+      "每个项目只保留它收到的最低报价；只要有一个项目一份报价都没有，就不可能完成全部项目。",
+      "开一个长度为 p 的数组记录每个项目当前的最低报价（初始为“无”）；逐条读入报价并更新对应项目的最小值；最后若仍有项目为“无”就输出 -1，否则输出所有最小值之和，求和用 64 位整数。"
+    ],
+    "en": [
+      "Quotes do not constrain one another and each project needs exactly one quote, so the choice for each project is completely independent.",
+      "For every project keep only the cheapest quote it receives; if even one project has no quote at all, the projects cannot all be completed.",
+      "Keep an array of length p with the current minimum quote of each project (initially none); read the quotes one by one and update the minimum of the matching project; at the end print -1 if any project is still empty, otherwise print the sum of all minimums using 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Approach\n\nKeep the minimum quote for each project, then at the end check that every project is covered and add them up.\n\n## Proof of correctness\n\nEach quote completes only its own project, so for any plan the cost on each project is at least that project's minimum quote, and the total is at least the sum of the minimum quotes. The minimum quotes are independent and can all be chosen at the same time, so this lower bound is achievable; a project without any quote cannot be completed.\n\n## Complexity\n\nO(n+p) time, O(p) space."
+}

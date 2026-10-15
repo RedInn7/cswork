@@ -1,0 +1,19 @@
+{
+  "id": "oa-akuna-capital-15",
+  "packageChecksum": "7dc1becfefacb82f54cc25f9b7d67ef1fa9a929361b09316f87e61c299754c09",
+  "sourceContentHash": "b698e978554490cfc84ee1acb330dff1e050b162ac9e7d06c0e0134b221d1e71",
+  "editorialSha256": "b630feeea0a6f02bcf6dc0e5130c43e26ff9ed6cb53492ef1538ea019de69a75",
+  "hints": {
+    "zh": [
+      "与查询城市共享 x 的城市都在同一条竖线上，它们的曼哈顿距离只等于 |Δy|；坐标互不相同，所以最近的一定是这条线上按 y 排序后紧挨着它的城市。共享 y 的情况同理。",
+      "把城市按 (x, y) 排一次序、按 (y, x) 再排一次序，并记下每个城市在两种顺序里的位置；每次查询只需检查最多 4 个候选：同 x 线上的前驱和后继、同 y 线上的前驱和后继。",
+      "用哈希表把名字映射到编号；对每个查询，检查两种顺序中左右相邻且确实共享 x（或 y）的城市，按“距离更小，或距离相等且名字字典序更小”更新答案；一个候选都没有就输出 NONE。距离可达约 2×10^9，用 64 位整数。"
+    ],
+    "en": [
+      "Cities sharing x with the query city lie on one vertical line, where the Manhattan distance is just |dy|; coordinates are distinct, so the nearest one must be a neighbour of the query city when that line is sorted by y. Sharing y works the same way.",
+      "Sort the cities once by (x, y) and once by (y, x) and remember each city's position in both orders; a query then only needs at most 4 candidates: the predecessor and successor on the same-x line and on the same-y line.",
+      "Map names to indices with a hash map; for each query look at the left and right neighbours in both orders that really share x (or y), and keep the best by smaller distance, or equal distance and lexicographically smaller name; if there is no candidate print NONE. Distances reach about 2*10^9, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Problem\n\nCities are at distinct integer coordinates. For each query city, among the other cities that share its x coordinate or its y coordinate, find the one with the smallest Manhattan distance; on a distance tie take the lexicographically smaller name (e.g. ab<aba<abb); if there is no collinear city, output NONE.\n\n## Approach\n\nThe cities sharing x with the query city all lie on the same vertical line, where the distance is just |Δy|, so the nearest one must be one of the two cities adjacent to it in y order; sharing y is analogous. Sort the cities once by (x,y) and once by (y,x), and record each city's position in both orders. Each query checks at most 4 candidates: the predecessor and successor on the same-x line and the predecessor and successor on the same-y line; take the smallest distance, then compare names.\n\n## Correctness\n\nOn the same line, any city farther away than the adjacent city has a strictly larger distance (coordinates are distinct), so it can be neither the answer nor tied with the adjacent one; the adjacent cities on the two sides may tie, both are checked, and the name comparison resolves the tie; the candidates from the vertical and horizontal lines are then compared together.\n\n## Complexity\n\nSorting is O(n log n), and each query is O(1) (located by hashing). The maximum distance is about 2×10^9, so use 64 bits.\n\n## Independent verification\n\nThe oracle scans all cities for each query and compares (distance, name) directly, without relying on adjacency in sorted order. All placements of at most 4 cities on a 3×3 grid (with names fixed to a set of strings that includes prefix relations) are enumerated exhaustively, every city is queried, and the reference program is actually run on each one. The wrong solutions cover preferring shorter names, keeping the first one found on a tie, only looking at shared x, and only looking at the adjacent city on one side."
+}
