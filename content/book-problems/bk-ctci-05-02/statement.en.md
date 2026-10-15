@@ -2,7 +2,7 @@
 Given a real number between 0 and 1 written as a decimal, write its binary expansion in the form 0.101. If the binary expansion does not end within 32 digits after the point, print ERROR.
 
 ## Input
-One line: a decimal x such as 0.625, with 0 < x < 1, at most 32 digits after the point and no trailing zeros.
+One line: a decimal x such as 0.625, with 0 < x < 1, at most 40 digits after the point and no trailing zeros.
 
 ## Output
 The binary expansion of x (at most 32 digits after the point, no trailing zeros), or ERROR.

@@ -90,4 +90,11 @@ def cases(r):
         tweak = r.choice(nodes(b))
         tweak.val += 1
         out.append(case(a, b))
+    # A large B: most of a big subtree, then the same with one value changed deep inside.
+    a = random_tree(r, 3000, lambda: r.randint(-2, 2))
+    big = max((x for x in nodes(a) if len(nodes(x)) <= 1000), key=lambda x: len(nodes(x)))
+    b = prune(r, big, 0.97)
+    out.append(case(a, b))
+    nodes(b)[-1].val += 7
+    out.append(case(a, b))
     return out

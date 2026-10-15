@@ -63,7 +63,7 @@ def ops(r, cap, q, piles):
 
 
 def cases(r):
-    out = ['2 7\npush 1\npush 2\npush 3\npopAt 1\npop\npop\npop\n', '0 4\npush 5\npush 6\npop\npopAt 0\n',
+    out = ['2 7\npush 5\npush 8\npush 6\npopAt 0\npop\npopAt 0\npop\n', '0 4\npush 5\npush 6\npop\npopAt 0\n',
            '1 6\npush 1\npush 2\npush 3\npopAt 0\npopAt 0\npopAt 1\n', '3 5\npop\npopAt 0\npopAt 100000\npush 9\npopAt 0\n']
     for cap, q, piles in [(1, 30, 5), (2, 300, 10), (5, 5000, 50), (0, 50, 3), (1000, 8000, 10), (3, 10000, 1000)]:
         out.append(ops(r, cap, q, piles))
