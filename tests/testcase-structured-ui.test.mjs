@@ -155,6 +155,13 @@ test('LeetCode cases edit per parameter, run with the editorial beside them, and
     });
   };
   const stored = () => JSON.parse(localStorage.getItem('cswork:cases:student:lc-1:leetcode') || 'null');
+  // Full screen exists here (not on iPhone Safari): the button follows fullscreenchange.
+  Object.defineProperty(document, 'fullscreenEnabled', { configurable: true, value: true });
+  Object.defineProperty(document, 'fullscreenElement', { configurable: true, writable: true, value: null });
+  document.documentElement.requestFullscreen = async () => {
+    document.fullscreenElement = document.documentElement;
+    document.dispatchEvent(new Event('fullscreenchange'));
+  };
   try {
     await act(async () =>
       root.render(
@@ -168,6 +175,10 @@ test('LeetCode cases edit per parameter, run with the editorial beside them, and
       ),
     );
     await settle();
+    const full = document.querySelector('[aria-label="Full screen"]');
+    assert.equal(full.getAttribute('aria-pressed'), 'false');
+    await click(full);
+    assert.equal(full.getAttribute('aria-pressed'), 'true');
     await click(button('Custom input'));
     const fields = () => [...document.querySelectorAll('.cs-case-fields input')];
     assert.deepEqual(
