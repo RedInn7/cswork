@@ -133,7 +133,7 @@ test('the packages are the SQL packages as 50 valid pandas-only problems', () =>
     assert.equal(parsed.problem.timeLimit, 3);
     assert.ok(parsed.problem.description.includes('def solve(tables'));
     assert.ok(parsed.problem.translations?.en?.description.includes("tables['"));
-    assert.ok(!/ROUND\(x/.test(parsed.problem.description + parsed.problem.translations?.en?.description));
+    assert.ok(!/ROUND\(x/.test(`${parsed.problem.description}${parsed.problem.translations?.en?.description}`));
     assert.equal(parsed.problem.hints.length, 1);
   });
   const pandas = packages[0];
