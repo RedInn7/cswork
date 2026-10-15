@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { Flag, Send } from 'lucide-react';
-import { api } from '@/lib/types';
+import { api, ApiError } from '@/lib/types';
 import '@/app/chat.css';
 
 /** One line of a study group chat or a direct message conversation. */
@@ -13,45 +13,56 @@ const MAX = 2000;
 /**
  * A chat from `path` (oj/groups/<id>/messages, oj/dm/<key>): loaded, then reloaded whole every
  * 10 s while the tab is visible, so lines taken back or moderated leave open chats too. `fresh`
- * is how many lines from others the last poll brought, for one polite screen reader sentence
- * instead of reading every line. `show(next)` puts in a server answer (after sending or taking a
- * line back).
+ * is how many lines from others the last answer brought (a poll's or a send's), for one polite
+ * screen reader sentence instead of reading every line; `seq` makes the same count say it again.
+ * `show(next)` puts in a server answer (after sending or taking a line back). A 403 stops the
+ * polls (`forbidden`): the reader may not see this chat (any more).
  */
 export function useChat<T extends { items: ChatItem[] }>(path: string) {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState('');
-  const [fresh, setFresh] = useState(0);
+  const [fresh, setFresh] = useState({ n: 0, seq: 0 });
+  const [forbidden, setForbidden] = useState(false);
   const latest = useRef<T | null>(null);
   const shown = useRef(0);
-  const show = useCallback((next: T, poll = false) => {
-    const old = poll ? latest.current : null;
-    shown.current++;
+  const show = useCallback((next: T) => {
+    const old = latest.current;
+    const seq = ++shown.current;
     latest.current = next;
     setData(next);
-    setFresh(old ? next.items.filter((n) => !n.mine && !old.items.some((o) => o.id === n.id)).length : 0);
+    setFresh({ n: old ? next.items.filter((n) => !n.mine && !old.items.some((o) => o.id === n.id)).length : 0, seq });
   }, []);
   useEffect(() => {
     let live = true;
-    const load = (poll: boolean) => {
+    latest.current = null;
+    setForbidden(false);
+    const load = () => {
       const asked = shown.current;
       api<T>(path).then(
         (next) => {
           // A send or take-back answered while this poll was out: its answer is newer.
           if (!live || asked !== shown.current) return;
           setError('');
-          show(next, poll);
+          show(next);
         },
-        (e: Error) => live && setError(e.message),
+        (e: Error) => {
+          if (!live) return;
+          setError(e.message);
+          if (e instanceof ApiError && e.status === 403) {
+            setForbidden(true);
+            clearInterval(timer);
+          }
+        },
       );
     };
-    load(false);
-    const timer = setInterval(() => !document.hidden && load(true), POLL_MS);
+    load();
+    const timer = setInterval(() => !document.hidden && load(), POLL_MS);
     return () => {
       live = false;
       clearInterval(timer);
     };
   }, [path, show]);
-  return { data, error, fresh, show, setError };
+  return { data, error, fresh, forbidden, show, setError };
 }
 
 const when = (time: number, english: boolean) =>
@@ -71,14 +82,14 @@ export function ChatLog({
   label,
   english,
   named = false,
-  fresh = 0,
+  fresh = { n: 0, seq: 0 },
   actions,
 }: {
   items: ChatItem[];
   label: string;
   english: boolean;
   named?: boolean;
-  fresh?: number;
+  fresh?: { n: number; seq: number };
   actions?: (m: ChatItem) => ReactNode;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
@@ -112,7 +123,10 @@ export function ChatLog({
         {!items.length && <li className="chat-empty">{t('还没有消息，打个招呼吧。', 'No messages yet. Say hello.')}</li>}
       </ol>
       <p className="sr-only" aria-live="polite">
-        {fresh ? t(`${fresh} 条新消息`, `${fresh} new message${fresh > 1 ? 's' : ''}`) : ''}
+        {/* A new node per answer: two polls with one new line each are both read. */}
+        {fresh.n > 0 && (
+          <span key={fresh.seq}>{t(`${fresh.n} 条新消息`, `${fresh.n} new message${fresh.n > 1 ? 's' : ''}`)}</span>
+        )}
       </p>
     </>
   );

@@ -42,7 +42,10 @@ globalThis.ResizeObserver ??= class {
 // The chats' 10-second polls run when the test says so.
 const polls = [];
 const realInterval = globalThis.setInterval;
-globalThis.setInterval = (fn, ms, ...rest) => (ms === 10000 ? (polls.push(fn), 0) : realInterval(fn, ms, ...rest));
+const realClear = globalThis.clearInterval;
+// A cleared poll becomes null, so a test can see the polling stop.
+globalThis.setInterval = (fn, ms, ...rest) => (ms === 10000 ? polls.push(fn) + 1e6 : realInterval(fn, ms, ...rest));
+globalThis.clearInterval = (id) => (typeof id === 'number' && id > 1e6 ? (polls[id - 1e6 - 1] = null) : realClear(id));
 const { createRoot } = await import('react-dom/client');
 const { StudyGroups } = await import('../components/study-groups.tsx');
 const { Messages } = await import('../components/messages.tsx');
@@ -100,7 +103,7 @@ test('group chat: names, polling, a polite count, unsend and report', async () =
     if (path === 'oj/groups/Grp000000001') return Response.json(group);
     if (path.startsWith('oj/groups/Grp000000001/messages') && !body) return Response.json({ items: chat });
     if (path === 'oj/groups/Grp000000001/messages') {
-      chat = [...chat, line('m4', body.body, { name: 'Bob', mine: true })];
+      chat = [...chat, ...(body.body === 'Hi again' ? [line('m6', 'Typed meanwhile', { name: 'Cat' })] : []), line(body.body === 'Hi again' ? 'm7' : 'm4', body.body, { name: 'Bob', mine: true })];
       return Response.json({ items: chat }, { status: 201 });
     }
     if (path === 'oj/groups/Grp000000001/unsay') return Response.json({ items: (chat = chat.filter((m) => m.id !== body.message)) });
@@ -120,6 +123,17 @@ test('group chat: names, polling, a polite count, unsend and report', async () =
     assert.equal(api.gets.at(-1), 'oj/groups/Grp000000001/messages');
     assert.equal(lines().length, 3);
     assert.equal(document.querySelector('[aria-live="polite"]').textContent, '1 new message');
+    // The next poll's one new line is read too: same words, a new node in the live region.
+    const said = document.querySelector('[aria-live="polite"] span');
+    chat = [...chat, line('m5', 'Another', { name: 'Cat' })];
+    await act(async () => polls[0]());
+    await wait();
+    assert.equal(document.querySelector('[aria-live="polite"]').textContent, '1 new message');
+    assert.equal(document.querySelector('[aria-live="polite"] span') === said, false, 'a new node');
+    chat = chat.filter((m) => m.id !== 'm5');
+    await act(async () => polls[0]());
+    await wait();
+    assert.equal(document.querySelector('[aria-live="polite"]').textContent, '');
     // Send with Enter; Shift+Enter would only break the line.
     const box = document.querySelector('textarea[aria-label="Message the group"]');
     await act(async () => type(box, 'Hello'));
@@ -128,6 +142,7 @@ test('group chat: names, polling, a polite count, unsend and report', async () =
     assert.deepEqual(api.posts.at(-1), ['oj/groups/Grp000000001/messages', { body: 'Hello' }]);
     assert.equal(box.value, '');
     assert.equal(lines().length, 4);
+    assert.equal(document.querySelector('[aria-live="polite"]').textContent, '', 'your own line is not news');
     // Unsend your own; report someone else's (no "wrong solution" for a chat line).
     await act(async () => lines()[1].querySelector('button').click());
     await wait();
@@ -143,10 +158,52 @@ test('group chat: names, polling, a polite count, unsend and report', async () =
     await act(async () => polls[0]());
     await wait();
     assert.deepEqual(lines().map((li) => li.querySelector('.chat-body').textContent), ['New one', 'Hello']);
+    // A line from someone else that comes back with your send's answer is announced too.
+    await act(async () => type(box, 'Hi again'));
+    await act(async () => box.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
+    await wait();
+    assert.equal(lines().length, 4);
+    assert.equal(document.querySelector('[aria-live="polite"]').textContent, '1 new message');
     await act(async () => root.unmount());
   } finally {
     api.restore();
   }
+});
+
+test('group chat for a teacher without a report: a quiet note, and the 403 is not polled again', async () => {
+  const group = { id: 'Grp000000001', name: 'Sprint', role: null, inviteCode: null, goal: null, max: 50, createdAt: 1, members: [] };
+  const api = serve((path) => {
+    if (path === 'oj/groups/Grp000000001') return Response.json(group);
+    if (path.startsWith('oj/groups/Grp000000001/messages'))
+      return Response.json({ error: '只有处理举报时老师才能查看小组聊天' }, { status: 403 });
+  });
+  try {
+    const root = await mount(createElement(StudyGroups, { navigate: () => {}, params: { id: 'Grp000000001' } }));
+    const panel = document.querySelector('.group-chat');
+    // Booleans, so a failure does not print a whole DOM node.
+    assert.equal(!!panel.querySelector('[role="alert"]'), false, 'no alert');
+    assert.ok(panel.textContent.includes('Teachers can read a group chat only while a message in it is reported'));
+    assert.equal(!!panel.querySelector('textarea'), false);
+    assert.equal(polls[0] === null, true, 'the poll stopped');
+    await act(async () => root.unmount());
+  } finally {
+    api.restore();
+  }
+});
+
+test('chat.css keeps the Report link plain and errors readable on the navy panels', async () => {
+  const { readFileSync } = await import('node:fs');
+  const css = readFileSync(new URL('../app/chat.css', import.meta.url), 'utf8');
+  // solution-posts.css's .cs-post-act:hover:not(:disabled) is (0,3,0): chat needs its own, higher.
+  assert.match(css, /\.chat-meta \.cs-post-act:hover:not\(:disabled\) \{\s*background: none;\s*color: inherit;/);
+  const rule = css.match(/\.group-panel \.cloud-error,\s*\.dm-panel \.cloud-error,\s*\.chat-meta \.cs-posts-error \{\s*color: (#[0-9a-f]{6});/);
+  assert.ok(rule, 'error colour on the navy panels');
+  const lum = (hex) => {
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const navy = lum('#0e1a2b');
+  assert.ok((lum(rule[1]) + 0.05) / (navy + 0.05) >= 4.5);
 });
 
 test('messages: the inbox and who may write, a conversation with block and report, a first message', async () => {

@@ -143,7 +143,12 @@ function GroupChat({ id, member, t, english }: { id: string; member: boolean; t:
       ) : (
         !chat.error && <output className="group-sub">{t('正在加载聊天…', 'Loading the chat…')}</output>
       )}
-      <ErrorLine error={chat.error} t={t} />
+      {/* A teacher reads the chat only while a line is reported: otherwise the 403 is a quiet note. */}
+      {chat.forbidden && !member ? (
+        <p className="group-sub">{t(chat.error, englishMessage(chat.error))}</p>
+      ) : (
+        <ErrorLine error={chat.error} t={t} />
+      )}
       {member && (
         <ChatCompose
           label={t('发消息给小组', 'Message the group')}
