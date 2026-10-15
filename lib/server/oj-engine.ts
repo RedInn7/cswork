@@ -517,11 +517,13 @@ export async function runProject(
 /**
  * The run's verdict and what its learner may see: the public suite in full (failures capped),
  * the hidden suite as passed/total only, out of `hiddenTotal` (counted from the task's files)
- * so a suite that never loaded still shows how many it holds.
+ * so a suite that never loaded still shows how many it holds. The learner's src/ shares the
+ * hidden sandbox and can read its tests, so only the clamped pass count leaves it: no time or
+ * memory, and a limit or crash there is just none passed.
  */
 export function projectVerdict(visible: ProjectRun, hidden: ProjectRun, hiddenTotal: number) {
-  const runs = [visible, hidden];
-  const limit = runs.map((r) => engineVerdict(r.result)).find((v) => v !== 'accepted');
+  const verdict = engineVerdict(visible.result);
+  const limit = verdict === 'accepted' ? null : verdict;
   const shown = visible.report && {
     passed: visible.report.passed,
     total: visible.report.total,
@@ -530,21 +532,20 @@ export function projectVerdict(visible: ProjectRun, hidden: ProjectRun, hiddenTo
       message: String(f.message).slice(-1500),
     })),
   };
-  const secret = { passed: Math.min(hidden.report?.passed ?? 0, hiddenTotal), total: hiddenTotal };
+  const hiddenPassed = engineVerdict(hidden.result) === 'accepted' ? (hidden.report?.passed ?? 0) : 0;
+  const secret = { passed: Math.max(0, Math.min(hiddenPassed, hiddenTotal)), total: hiddenTotal };
   const passed = (shown?.passed ?? 0) + secret.passed,
     total = (shown?.total ?? 0) + secret.total;
   return {
-    // A crash or a limit first; then all-or-nothing over both suites.
-    status:
-      limit ??
-      (!shown || !hidden.report ? 'runtime_error' : passed === total && shown.total > 0 ? 'accepted' : 'wrong_answer'),
+    // The public suite's crash or limit first; then all-or-nothing over both suites.
+    status: limit ?? (!shown ? 'runtime_error' : passed === total && shown.total > 0 ? 'accepted' : 'wrong_answer'),
     passed,
     total,
     report: { visible: shown, hidden: secret },
     // Only the public suite's output: the hidden run's would show its tests.
     output: visible.result.files?.stderr ?? '',
-    runtimeMs: Math.max(...runs.map((r) => (r.result.time ?? 0) / 1e6)),
-    memoryKb: Math.max(...runs.map((r) => Math.ceil((r.result.memory ?? 0) / 1024))),
+    runtimeMs: (visible.result.time ?? 0) / 1e6,
+    memoryKb: Math.ceil((visible.result.memory ?? 0) / 1024),
   };
 }
 export async function cleanup(program: CompiledProgram) {

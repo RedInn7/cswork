@@ -57,7 +57,7 @@ const { AI_TASK_SLUGS, PROJECT_PATH, PROJECT_MAX_BYTES } = await import('../lib/
 const { runProject, projectVerdict } = await import('../lib/server/oj-engine');
 const { createProjectRun, submissionDetail, submissionHistory, cancelSubmission } = await import('../lib/server/oj-submissions');
 const { judgeFeed } = await import('../lib/server/judge-feed');
-const { aiRoundCompanies, PAIR_CONTEXT_CHARS } = await import('../lib/server/ai-rounds');
+const { aiRoundCompanies, pairContext, PAIR_CONTEXT_CHARS } = await import('../lib/server/ai-rounds');
 const { takeQuota, AI_DAILY_LIMITS, today } = await import('../lib/server/ai-tutor');
 const { handleOj } = await import('../lib/server/oj-api');
 
@@ -135,13 +135,22 @@ void test('the verdict shows the public suite and only counts of the hidden one'
   assert.equal(JSON.stringify(v).includes('secret'), false);
   assert.equal(v.output, 'printed');
   assert.equal(projectVerdict(ok({ ...visible, passed: 4, failures: [] }), ok({ ...hiddenFailures, passed: 9, failures: [] }), 9).status, 'accepted');
-  // A hidden suite that never reported still shows its size; a limit wins over the counts.
+  // A hidden suite that never reported still shows its size; a public limit wins over the counts.
   const crashed = projectVerdict(ok(visible), { result: { status: 'Time Limit Exceeded' }, report: null }, 9);
-  assert.equal(crashed.status, 'time_limit');
+  assert.equal(crashed.status, 'wrong_answer');
   assert.deepEqual(crashed.report.hidden, { passed: 0, total: 9 });
+  assert.equal(projectVerdict({ result: { status: 'Memory Limit Exceeded' }, report: null } as never, ok(hiddenFailures), 9).status, 'memory_limit');
   assert.equal(projectVerdict(ok(null), ok(hiddenFailures), 9).status, 'runtime_error');
-  // A forged hidden count cannot exceed the task's own.
+  // Only the clamped count leaves the hidden sandbox: no time, memory, limit or crash, whatever its report says.
+  const allPassed = { passed: 4, total: 4, failures: [] };
+  const fast = { result: { status: 'Accepted', time: 2e6, memory: 4096 * 1024, files: {} }, report: allPassed } as never;
+  for (const status of ['Memory Limit Exceeded', 'Time Limit Exceeded', 'Nonzero Exit Status', 'Accepted']) {
+    const leaky = projectVerdict(fast, { result: { status, time: 9e9, memory: 250 * 1024 ** 2 }, report: status === 'Accepted' ? null : { passed: 9, total: 9, failures: [] } } as never, 9);
+    assert.deepEqual([leaky.status, leaky.report.hidden.passed, leaky.runtimeMs, leaky.memoryKb], ['wrong_answer', 0, 2, 4096], status);
+  }
+  // A forged hidden count stays within 0..the task's own.
   assert.equal(projectVerdict(ok(visible), ok({ passed: 99, total: 99, failures: [] }), 9).report.hidden.passed, 9);
+  assert.equal(projectVerdict(ok(visible), ok({ passed: -1e6, total: 9, failures: [] }), 9).report.hidden.passed, 0);
 });
 
 void test('starting code fails both suites, the reference fix passes them, hidden tests stay in their own sandbox', { skip: !python && 'python3 missing' }, async () => {
@@ -257,6 +266,9 @@ void test('the AI pair is off without a key, sends a capped context with the las
   process.env.ANTHROPIC_API_KEY = 'test-key';
   await assert.rejects(ask({ task: 'nope' }), status(404));
   await assert.rejects(ask({ question: '  ' }), status(400));
+  // A run's limits: thousands of empty files cannot widen the prompt with their names.
+  await assert.rejects(ask({ files: Object.fromEntries(Array.from({ length: 31 }, (_, i) => [`src/m${i}.py`, ''])) }), status(413));
+  await assert.rejects(ask({ files: { 'src/big.py': '#'.repeat(PROJECT_MAX_BYTES + 1) } }), status(413));
 
   // A large project: the open file goes first, the rest only while they fit.
   const files = { ...task.files, 'src/huge.py': 'x = 1\n'.repeat(5000), 'src/zz_extra.py': 'y = 2\n'.repeat(1000) };
@@ -270,7 +282,7 @@ void test('the AI pair is off without a key, sends a capped context with the las
   assert.equal(call.system.includes('AI pair programmer'), true);
   assert.ok(call.max_tokens <= 4096);
   const prompt = call.messages.map((m) => m.content).join('\n');
-  assert.ok(prompt.length <= PAIR_CONTEXT_CHARS + 2000, String(prompt.length));
+  assert.ok(prompt.length <= PAIR_CONTEXT_CHARS + 200, String(prompt.length));
   assert.equal(call.messages[0].role, 'user');
   assert.equal(call.messages.at(-1)!.content, 'Why does test_x fail?');
   assert.ok(call.messages[0].content.includes('<file path="src/inventory.py">'));
@@ -311,6 +323,13 @@ void test('the AI pair is off without a key, sends a capped context with the las
   sqlite().prepare("INSERT INTO contest_entries(room_id,user_id,display_name,joined_at) VALUES('aa-room',?,'Me',?)").run(me.id, now);
   await assert.rejects(ask({}), status(403));
   delete process.env.ANTHROPIC_API_KEY;
+});
+
+void test("the names of the files left out count toward the pair's budget", () => {
+  const crowd = Object.fromEntries(Array.from({ length: 30 }, (_, i) => [`src/${'n'.repeat(55)}${String(i).padStart(2, '0')}.py`, 'z'.repeat(1500)]));
+  const context = pairContext('readme', 'No test run yet.', crowd, undefined, 12_000);
+  assert.ok(context.length <= 12_000, String(context.length));
+  assert.ok(context.includes(`${'n'.repeat(55)}29.py</files_not_shown>`));
 });
 
 void test('companies whose public experiences mention AI-assisted rounds, hidden ones left out', () => {
