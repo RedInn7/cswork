@@ -280,6 +280,7 @@ const EN: Record<string, string> = {
     "This problem is in a contest you're taking. Its editorial, solutions and AI tutor open once your contest ends",
   // Community solutions (lib/server/solution-posts.ts)
   题解不存在: 'Solution not found',
+  这道题没有可用的参考解: 'This problem has no reference solution to compare with',
   评论不存在: 'Comment not found',
   题解接口不存在: 'Solutions endpoint not found',
   仅老师可以管理题解: 'Only instructors can moderate solutions',

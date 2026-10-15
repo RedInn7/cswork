@@ -26,6 +26,13 @@ import { type EditorSettings } from '@/lib/editor-settings';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import type { Language } from '@/lib/problems';
+import { diffLines } from '@/lib/testcase-fields';
+
+/** The editorial's output on a custom case (POST problems/:id/expected). */
+export type ReferenceOutput =
+  | { status: 'pending' }
+  | { status: 'failed' }
+  | { status: 'done'; output: string };
 
 export function Verdict({
   submission,
@@ -57,12 +64,15 @@ export function CopyBlock({
   value,
   truncated,
   action,
+  diff,
 }: {
   label: string;
   value: string;
   truncated?: boolean;
   /** Shown beside the copy button. */
   action?: ReactNode;
+  /** 0-based lines that differ from the other side, highlighted. */
+  diff?: Set<number>;
 }) {
   const t = useT();
   const [copied, setCopied] = useState(false);
@@ -93,7 +103,22 @@ export function CopyBlock({
           {copied ? <Check size={13} /> : <Copy size={13} />}
         </button>
       </div>
-      <pre tabIndex={0}>{value || t('（空）', '(empty)')}</pre>
+      <pre tabIndex={0}>
+        {!value
+          ? t('（空）', '(empty)')
+          : diff?.size
+            ? value.replace(/\r?\n$/, '').split('\n').map((line, index) => (
+                <span key={index} className={diff.has(index) ? 'cs-line is-diff' : 'cs-line'}>
+                  {line || ' '}
+                  {diff.has(index) && (
+                    <span className="sr-only">
+                      {t(`（第 ${index + 1} 行不同）`, ` (line ${index + 1} differs)`)}
+                    </span>
+                  )}
+                </span>
+              ))
+            : value}
+      </pre>
       {truncated && (
         <small>
           {t(
@@ -122,6 +147,8 @@ export function SubmissionResult({
   onUseInput,
   maxStdinBytes = 65536,
   ranCase,
+  reference,
+  checker,
 }: {
   submission: OJSubmission;
   cancel?: () => void;
@@ -132,6 +159,10 @@ export function SubmissionResult({
   maxStdinBytes?: number;
   /** The workspace's custom case (1-based) this run used. */
   ranCase?: number;
+  /** The expected output of that custom case, from the editorial; null without one. */
+  reference?: ReferenceOutput | null;
+  /** The problem's checker: only exact and tokens outputs compare line by line. */
+  checker?: string;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -173,6 +204,21 @@ export function SubmissionResult({
       ? submission.firstFailure
       : undefined;
   const output = diagnostic || current;
+  // SQL has its own table diff; a set, float or semantic checker accepts other text too.
+  const comparable =
+    ['python', 'cpp', 'java', 'go'].includes(submission.language) &&
+    (checker === 'exact' || checker === 'tokens');
+  const expectedText =
+    output?.expected ?? (reference?.status === 'done' ? reference.output : undefined);
+  const diff =
+    comparable &&
+    expectedText !== undefined &&
+    output?.stdout !== undefined &&
+    (output.status === 'wrong_answer' || (output.expected === undefined && output.status === 'finished')) &&
+    !diagnostic?.truncated?.expected &&
+    !diagnostic?.truncated?.stdout
+      ? diffLines(output.stdout, expectedText)
+      : undefined;
   // LeetCode test files use the private driver transport, not the JSON-per-line
   // custom input (lib/server/leetcode-mode.ts), so only ACM cases replay as-is.
   const debugInput =
@@ -425,18 +471,42 @@ export function SubmissionResult({
                       {debugBlocked}
                     </p>
                   )}
-                  {output.expected !== undefined && (
+                  {output.expected !== undefined ? (
                     <CopyBlock
                       label={t('期望输出', 'Expected output')}
                       value={output.expected}
                       truncated={diagnostic?.truncated?.expected}
+                      diff={diff}
                     />
-                  )}
+                  ) : reference?.status === 'done' ? (
+                    <>
+                      <CopyBlock
+                        label={t('期望输出（参考解）', 'Expected output (reference solution)')}
+                        value={reference.output}
+                        diff={diff}
+                      />
+                      {!comparable && submission.language !== 'sql' && (
+                        <p className="cs-console-note">
+                          {t(
+                            '这道题可能有多种正确答案，参考输出仅供对照。',
+                            'This problem may accept more than one answer; the reference output is for comparison only.',
+                          )}
+                        </p>
+                      )}
+                    </>
+                  ) : reference ? (
+                    <p className="cs-console-note" role="status">
+                      {reference.status === 'pending'
+                        ? t('正在用参考解算期望输出…', 'Working out the expected output with the reference solution…')
+                        : t('参考输出暂时拿不到。', "The reference output isn't available right now.")}
+                    </p>
+                  ) : null}
                   {output.stdout !== undefined && (
                     <CopyBlock
                       label={t('实际输出', 'Your output')}
                       value={output.stdout}
                       truncated={diagnostic?.truncated?.stdout}
+                      diff={diff}
                     />
                   )}
                   {output.stderr && (
@@ -476,6 +546,7 @@ export function SubmissionCodeDialog({
   language,
   settings,
   restore,
+  note,
 }: {
   submission: OJSubmission | null;
   close: () => void;
@@ -483,6 +554,8 @@ export function SubmissionCodeDialog({
   language: Language;
   settings: EditorSettings;
   restore: (submission: OJSubmission) => void;
+  /** The learner's note on this submission (components/submission-note.tsx). */
+  note?: ReactNode;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -545,6 +618,7 @@ export function SubmissionCodeDialog({
                 {t('恢复到编辑器', 'Restore to editor')}
               </Button>
             </div>
+            {note}
             {view === 'result' ? (
               <div className="cs-history-result">
                 <SubmissionResult submission={submission} />
