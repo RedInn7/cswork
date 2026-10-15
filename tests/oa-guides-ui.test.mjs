@@ -113,18 +113,19 @@ test('a guided OA problem shows the hint ladder, not the hint box, and an editor
     // The editorial: English text, then one tab per language in the Line 500 order.
     await act(async () => [...document.querySelectorAll('[role="tab"]')].find((n) => n.textContent === 'Editorial').click());
     await settle();
-    const section = document.querySelector('.oa-solution');
+    // Laid out and themed like Line 500's editorial: its code block follows a dark editor theme.
+    const section = document.querySelector('.oa-solution.cs-ling-editorial');
     assert.match(section.textContent, /Why it works/);
     assert.doesNotMatch(section.textContent, /为什么正确/);
     const tabs = [...section.querySelectorAll('.cs-ling-langs button')];
     assert.deepEqual(tabs.map((n) => n.textContent), ['Python', 'C++', 'Java', 'Go']);
     // It opens on the editor's language.
     assert.equal(section.querySelector('[aria-pressed="true"]').textContent, 'Python');
-    assert.equal(section.querySelector('.oa-code').textContent, registry.authoredSolutions[0].code);
+    assert.equal(section.querySelector('.cs-ling-code').textContent, registry.authoredSolutions[0].code);
     await click('Java');
     assert.equal(section.querySelector('[aria-pressed="true"]').textContent, 'Java');
-    assert.equal(section.querySelectorAll('.oa-code').length, 1);
-    assert.equal(section.querySelector('.oa-code').textContent, extra.find((p) => p.language === 'java').code);
+    assert.equal(section.querySelectorAll('.cs-ling-code').length, 1);
+    assert.equal(section.querySelector('.cs-ling-code').textContent, extra.find((p) => p.language === 'java').code);
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;

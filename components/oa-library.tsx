@@ -1228,10 +1228,10 @@ export function OaEditorial({
   );
   const shown = languages.includes(picked) ? picked : languages[0];
   return (
-    <section aria-label={t('题解', 'Solution')} className="oa-solution">
+    // Line 500's editorial layout and code block: themed by the workspace (app/ling-editorial.css).
+    <section aria-label={t('题解', 'Solution')} className="oa-solution cs-ling-editorial">
       <OaMarkdown body={(en && data.explanationEn) || data.explanation} />
       {languages.length > 0 && (
-        // The Line 500 editorial's tabs; the workspace loads their styles (app/ling-editorial.css).
         <fieldset className="cs-ling-langs">
           <legend className="sr-only">{t('代码语言', 'Code language')}</legend>
           {languages.map((id) => (
@@ -1249,7 +1249,7 @@ export function OaEditorial({
       {data.solutions
         .filter((solution) => solution.language === shown)
         .map((solution, index) => (
-          <pre className="oa-code" key={shown + index}>
+          <pre className="cs-ling-code" key={shown + index}>
             <code>{solution.code}</code>
           </pre>
         ))}
