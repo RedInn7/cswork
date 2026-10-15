@@ -490,7 +490,7 @@ void test('a plan too short for the line keeps some of every stop, foundations a
   assert.equal(kept.length, 14);
   assert.equal(plan.todo, 50);
   assert.equal(plan.cut, 36);
-  assert.deepEqual([...new Set(kept.map((p) => p.stop))].sort(), [0, 1, 2, 3, 4], 'every stop');
+  assert.deepEqual([...new Set(kept.map((p) => p.stop!))].sort((a, b) => a - b), [0, 1, 2, 3, 4], 'every stop');
   // Stop 0 keeps three: its foundation problems (k < 3), not its lower-rated core ones.
   assert.deepEqual(
     kept.filter((p) => p.stop === 0).map((p) => p.id),

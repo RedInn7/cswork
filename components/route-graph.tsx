@@ -72,7 +72,6 @@ export function RouteGraph({
         width={WIDTH}
         height={HEIGHT}
         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-        role="group"
         aria-label={t('知识点依赖图', 'Topic prerequisite graph')}
       >
         <g aria-hidden="true">
@@ -94,7 +93,7 @@ export function RouteGraph({
         </g>
         {ROUTE_SLUGS.map((slug, index) => {
           const { x, y } = AT.get(slug)!;
-          const { solved = 0, total = 0 } = progress[slug] ?? {};
+          const { solved, total } = progress[slug] ?? { solved: 0, total: 0 };
           const state = member ? graphState(progress, slug) : undefined;
           const code = String(index + 1).padStart(2, '0');
           const label =

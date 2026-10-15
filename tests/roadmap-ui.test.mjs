@@ -62,9 +62,10 @@ test('signed in, the tracks show topic progress and read chapters; signed out th
   let signedIn = true;
   const requests = [];
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = async (url) => {
-    requests.push(String(url));
-    if (String(url).includes('/marks'))
+  globalThis.fetch = async (input) => {
+    const url = typeof input === 'string' ? input : input.url;
+    requests.push(url);
+    if (url.includes('/marks'))
       return signedIn
         ? Response.json({ items: [{ target: 'sd:framework', mark: 'read', createdAt: 1 }] })
         : Response.json({ error: '请先登录' }, { status: 401 });

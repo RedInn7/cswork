@@ -326,7 +326,7 @@ export function mixPlan(problems: readonly PlanProblem[], shuffle = 0) {
       pending.splice(pending.indexOf(pick), 1);
       riding.push(pick);
     }
-    for (const group of [...riding]) {
+    for (const group of riding.slice()) {
       mixed.push(group[1].shift()!);
       started.add(group[0]);
       if (!group[1].length) riding.splice(riding.indexOf(group), 1);

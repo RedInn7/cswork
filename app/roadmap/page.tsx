@@ -1,5 +1,6 @@
 import '../library/library.css';
 import './roadmap.css';
+import Link from 'next/link';
 import { Suspense } from 'react';
 import { GUIDE_CHAPTERS, guidePath } from '@/lib/career-guide';
 import { curatedEntries } from '@/lib/ling-curated';
@@ -65,12 +66,12 @@ export default async function RoadmapPage() {
         }}
       />
       <header className="public-library-header">
-        <a className="public-library-brand" href="/">
+        <Link className="public-library-brand" href="/" prefetch={false}>
           cswork<span> / {zh ? '路线图' : 'roadmap'}</span>
-        </a>
-        <a href="/?view=problems">
+        </Link>
+        <Link href="/?view=problems" prefetch={false}>
           {zh ? '打开 500 路题单' : 'Open the Line 500 list'} <span aria-hidden="true">↗</span>
-        </a>
+        </Link>
       </header>
       <main className="public-library-main" id="main-content">
         <div className="public-library-intro">
@@ -95,10 +96,18 @@ export default async function RoadmapPage() {
         />
       </main>
       <footer className="public-library-footer">
-        <a href="/topics">{zh ? '模板速查' : 'Templates'}</a>
-        <a href={sdPath()}>{zh ? '系统设计' : 'System design'}</a>
-        <a href={guidePath()}>{zh ? '求职指南' : 'Career guide'}</a>
-        <a href="/privacy">{zh ? '隐私' : 'Privacy'}</a>
+        <Link href="/topics" prefetch={false}>
+          {zh ? '模板速查' : 'Templates'}
+        </Link>
+        <Link href={sdPath()} prefetch={false}>
+          {zh ? '系统设计' : 'System design'}
+        </Link>
+        <Link href={guidePath()} prefetch={false}>
+          {zh ? '求职指南' : 'Career guide'}
+        </Link>
+        <Link href="/privacy" prefetch={false}>
+          {zh ? '隐私' : 'Privacy'}
+        </Link>
       </footer>
       <Suspense fallback={null}>
         <LibraryPageView />

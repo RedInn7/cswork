@@ -214,7 +214,8 @@ export function ClassicList({
             <span className="sr-only">{t('（在新窗口打开）', ' (opens in a new tab)')}</span>
           </a>
         </p>
-        <div className="classic-site" role="group" aria-label={t('站外题打开的力扣站点', 'LeetCode site for external problems')}>
+        <fieldset className="classic-site">
+          <legend className="sr-only">{t('站外题打开的力扣站点', 'LeetCode site for external problems')}</legend>
           {(['cn', 'com'] as const).map((value) => (
             <button
               key={value}
@@ -228,7 +229,7 @@ export function ClassicList({
               {value === 'cn' ? t('力扣 CN', 'LeetCode CN') : 'LeetCode US'}
             </button>
           ))}
-        </div>
+        </fieldset>
         {data && (
           <div className="classic-meter">
             <p className="classic-count">

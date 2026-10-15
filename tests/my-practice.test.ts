@@ -218,7 +218,7 @@ void test('done ticks move in as one batch, all or none, and show on classic lis
   const items = (p: Person) =>
     listClassicLibrary(classicList('blind-75')!, p.id).groups.flatMap((g) => g.items);
   const ticked = (p: Person) => items(p).flatMap((item) => (item.done ? [item.number] : []));
-  assert.deepEqual(ticked(me).sort(), [1, 11]);
+  assert.deepEqual(ticked(me).sort((a, b) => a! - b!), [1, 11]);
   assert.deepEqual(ticked(other), []);
   assert.ok(items(me).every((item) => typeof item.done === 'boolean'));
 });
