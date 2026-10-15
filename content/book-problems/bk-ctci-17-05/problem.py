@@ -39,6 +39,6 @@ def size(s):
 
 def cases(r):
     out = ['A1B2C3D4E\n', 'ABCD\n', '1\n', 'a1\n', '1a1a\n', 'aa11a1\n', 'abc123abc\n', '9aZ8\n', 'aaaa1111aa1\n']
-    for n, p in [(20, 0.5), (500, 0.6), (5000, 0.5), (50000, 0.52), (50000, 0.7)]:
+    for n, p in [(20, 0.5), (500, 0.6), (5000, 0.5), (100000, 0.52), (50000, 0.7)]:
         out.append(''.join(r.choice('abcXYZ') if r.random() < p else r.choice('0123456789') for _ in range(n)) + '\n')
     return out

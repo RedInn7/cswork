@@ -44,6 +44,10 @@ def ops(r, q, p_push):
 def cases(r):
     out = ['7\npush 1\npush 2\npop\npush 3\npop\npop\npop\n', '1\npop\n', '3\npush -5\npop\npop\n',
            '6\npush 1\npush 2\npop\npush 3\npush 4\npop\n']
-    for q, p in [(20, 0.5), (200, 0.6), (5000, 0.4), (20000, 0.55)]:
+    for q, p in [(20, 0.5), (200, 0.6), (5000, 0.4)]:
         out.append(ops(r, q, p))
+    # q = 10^5 with about 50000 waiting: pouring back and forth on every operation costs 2.5 * 10^9.
+    lines = [f'push {r.randint(1, 1000)}' for _ in range(50000)]
+    lines += [f'push {r.randint(1, 1000)}' if k % 2 else 'pop' for k in range(50000)]
+    out.append('100000\n' + '\n'.join(lines) + '\n')
     return out

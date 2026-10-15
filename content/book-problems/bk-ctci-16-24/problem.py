@@ -47,7 +47,13 @@ def fmt(a, t):
 def cases(r):
     out = [fmt([5, 6, 5, 7, 7, 6], 12), fmt([3, 1, 2], 6), fmt([1], 2), fmt([2, 2, 2], 4), fmt([0, 0, 0, 0], 0),
            fmt([-1, 1, -1, 1, 1], 0)]
-    for n, v in [(10, 5), (1000, 50), (20000, 10**9), (20000, 300)]:
+    for n, v in [(10, 5), (1000, 50), (20000, 10**9), (5000, 300)]:
         a = [r.randint(-v, v) for _ in range(n)]
         out.append(fmt(a, r.choice(a) + r.choice(a)))
+    # n = 10^5 with an odd target: only the 100 odd values have partners, so trying every
+    # pair costs 5 * 10^9.
+    a = [2 * r.randint(-50000, 50000) for _ in range(100000)]
+    for i in r.sample(range(100000), 100):
+        a[i] = 1 - r.choice(a)
+    out.append(fmt(a, 1))
     return out

@@ -42,11 +42,16 @@ def fmt(a):
 def cases(r):
     out = [fmt([8, 3, 8, 8, 1, 8, 2]), fmt([4, 6, 4, 6]), fmt([7]), fmt([1, 2]), fmt([2, 2]), fmt([1, 1, 2, 2]),
            fmt([4, 4, 4, 1, 2, 3])]
-    for n in (10, 101, 2000, 20000):
+    for n in (10, 101, 2000):
         m = r.randint(1, 10**9)
         k = n // 2 + r.choice([0, 1, 2])
         a = [m] * k + [r.randint(1, 10**9) for _ in range(n - k)]
         r.shuffle(a)
         out.append(fmt(a))
         out.append(fmt([r.randint(1, 3) for _ in range(n)]))
+    # n = 10^5 and a value filling exactly half: no majority, so counting value by value
+    # never stops early.
+    a = [7] * 50000 + [r.randint(8, 100000) for _ in range(50000)]
+    r.shuffle(a)
+    out.append(fmt(a))
     return out

@@ -50,10 +50,14 @@ def fmt(a, t):
 def cases(r):
     out = [fmt([1, 3, 4, 6, 8, 10], 14), fmt([2, 5, 7], 10), fmt([3, 3], 6), fmt([1, 2], 4), fmt([1, 1, 1, 9, 9], 10),
            fmt([5, 5, 5], 10)]
-    for n, v in [(10, 20), (1000, 2000), (5000, 10**6), (20000, 10**6)]:
+    for n, v in [(10, 20), (1000, 2000), (5000, 10**6)]:
         a = sorted(r.randint(1, v) for _ in range(n))
         i, j = sorted(r.sample(range(n), 2))
         out.append(fmt(a, a[i] + a[j]))
     a = sorted(r.sample(range(1, 10**6, 2), 5000))
     out.append(fmt(a, 2 * r.randint(1, 10**6)))
+    # n = 10^5 and one pair, 500000 + 500004, in the middle: every other value is 1 mod 4, so
+    # no other two sum to a multiple of 4, and trying pairs from the left costs 5 * 10^9.
+    a = sorted([4 * r.randrange(250000) + 1 for _ in range(99998)] + [500000, 500004])
+    out.append(fmt(a, 1000004))
     return out

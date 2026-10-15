@@ -18,9 +18,13 @@ def solve(s):
 
 
 def wrong_substrings(s):
+    # Counts the query inside longer words too, as searching the joined text would.
     book, qs = parse(s)
-    text = ' '.join(book)
-    return '\n'.join(str(text.count(w)) for w in qs)
+    count = Counter()
+    for x, k in Counter(book).items():
+        for u in {x[i:j] for i in range(len(x)) for j in range(i + 1, len(x) + 1)}:
+            count[u] += k * x.count(u)
+    return '\n'.join(str(count[w]) for w in qs)
 
 
 def wrong_prefixes(s):
@@ -45,7 +49,7 @@ def size(s):
 def cases(r):
     out = [fmt('the sun and the moon and the stars shine on the sea'.split(), ['the', 'and', 'sun', 'star', 'on', 'moonlight']),
            fmt(['a'], ['a', 'b']), fmt(['aa', 'a', 'aaa'], ['a', 'aa', 'aaa', 'aaaa'])]
-    for n, q, letters, longest in [(20, 10, 'ab', 3), (1000, 500, 'abc', 4), (20000, 10000, 'abcdefgh', 5)]:
+    for n, q, letters, longest in [(20, 10, 'ab', 3), (1000, 500, 'abc', 4), (100000, 100000, 'abcdefgh', 4)]:
         vocab = [''.join(r.choice(letters) for _ in range(r.randint(1, longest))) for _ in range(max(5, n // 20))]
         book = [r.choice(vocab) for _ in range(n)]
         qs = [r.choice(vocab) if r.random() < 0.7 else ''.join(r.choice(letters) for _ in range(r.randint(1, longest)))
