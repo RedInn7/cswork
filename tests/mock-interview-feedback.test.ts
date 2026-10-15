@@ -88,7 +88,8 @@ void test('nonsense inside a valid payload is dropped, not fatal', () => {
     raw({ v: 1, s: 'abc', r: [0, -1, 1.5, '2', 3, 99], k: [5, 0, 2, 'x', 4, 4], o: 'maybe', g: 7, i: 'fine', q: [[9, 1], 'x', [2, 'ab12', 'n'], null, [3, 'TOOLONG', 'm']] }),
   )!;
   assert.deepEqual(fb.rerolls, [0, 3]);
-  assert.deepEqual(fb.rubric, { coding: 2, complexity: 4 });
+  // The sixth score lands on the sixth dimension (motivation): new dimensions only ever go at the end.
+  assert.deepEqual(fb.rubric, { coding: 2, complexity: 4, motivation: 4 });
   assert.equal(fb.verdict, null);
   assert.equal(fb.strengths, '');
   assert.equal(fb.improvements, 'fine');
@@ -101,8 +102,8 @@ void test('nonsense inside a valid payload is dropped, not fatal', () => {
   ]);
 });
 
-void test('the rubric covers five distinct items and averages only what was scored', () => {
-  assert.equal(new Set(RUBRIC.map((r) => r.id)).size, 5);
+void test('the rubric covers eight distinct items and averages only what was scored', () => {
+  assert.equal(new Set(RUBRIC.map((r) => r.id)).size, 8);
   assert.ok(RUBRIC.every((r) => r.name.every(Boolean) && r.hint.every(Boolean)));
   assert.equal(rubricAverage({}), null);
   assert.equal(rubricAverage(base.rubric), 3);

@@ -17,7 +17,7 @@ export type Turn = { role: 'candidate' | 'interviewer'; text: string };
 /** The AI's feedback on one guided step: 1–4 on the step's rubric dimensions, one keep and one fix. */
 export type StepFeedback = { scores: Partial<Record<RubricId, number | null>>; keep: string; fix: string };
 
-type Opener = 'coding' | 'behavioral' | 'design' | 'lld' | 'other';
+type Opener = 'coding' | 'behavioral' | 'design' | 'lld' | 'recruiter' | 'negotiation' | 'other';
 const OPENERS: Record<Opener, Text> = {
   coding: [
     '你好，我是今天的面试官。题目在左边，先读一读；输入范围、边界情况有不清楚的都可以先问我。想好思路先讲给我听，再在代码框里写。',
@@ -35,6 +35,14 @@ const OPENERS: Record<Opener, Text> = {
     '你好，这一轮是面向对象的低层设计。我们一步步来：先问清需求，再讲类、接口，然后在代码框里写核心代码，最后聊扩展。每步讲完点「完成这一步」，我给你这一步的反馈。',
     "Hi, this is a low-level design round. We'll go step by step: clarify the requirements, then the classes and interfaces, then the core code in the code box, then extensions. Finish each step to get my feedback on it.",
   ],
+  recruiter: [
+    '你好，我是这家公司的招聘负责人，谢谢你抽时间。今天大概 20 分钟，想多了解一下你，也介绍一下岗位。先简单介绍一下你自己吧？',
+    "Hi, I'm the recruiter for this role. Thanks for making the time. We have about 20 minutes: I'd like to get to know you and tell you about the job. Could you start by introducing yourself?",
+  ],
+  negotiation: [
+    '你好！恭喜你，团队很希望你加入。书面 offer 在左边，你先看一下。你对这份 offer 有什么想法？',
+    "Hi, and congratulations: the team is excited to have you. The written offer is on the left; take a look. What are your thoughts on it?",
+  ],
   other: [
     '你好，题目在左边。先说说你的理解和思路，有不清楚的地方随时问我。',
     "Hi, the question is on the left. Start by telling me how you read it and how you'd approach it; ask me anything that's unclear.",
@@ -42,7 +50,13 @@ const OPENERS: Record<Opener, Text> = {
 };
 /** Shown before the first message of each question; never sent, so reading costs no turn. */
 export const openerFor = (kind: KindId): Text =>
-  OPENERS[kind === 'coding' || kind === 'sql' ? 'coding' : kind === 'behavioral' || kind === 'design' || kind === 'lld' ? kind : 'other'];
+  OPENERS[
+    kind === 'coding' || kind === 'sql'
+      ? 'coding'
+      : kind === 'behavioral' || kind === 'design' || kind === 'lld' || kind === 'recruiter' || kind === 'negotiation'
+        ? kind
+        : 'other'
+  ];
 /** Questions whose code box goes to the interviewer with each message. */
 export const writesCode = (kind: KindId) => kind === 'coding' || kind === 'sql' || kind === 'lld';
 

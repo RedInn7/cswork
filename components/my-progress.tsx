@@ -74,6 +74,51 @@ const SOURCES = ['lc', 'oa', 'sql', 'core', 'bk'] as const;
 const source = (id: string): (typeof SOURCES)[number] | 'course' =>
   trackLanguageOf(id) ? 'sql' : (SOURCES.find((prefix) => id.startsWith(`${prefix}-`)) ?? 'course');
 
+type Calibration = { sessions: { gap: number; bias: number }[]; gap: number; bias: number };
+/**
+ * How the learner's self-assessment before an AI interview report compares with the report, over
+ * the last 10 self-rated interviews (GET oj/ai/interview-calibration). Nothing until there is one.
+ */
+function InterviewCalibration({ english }: { english: boolean }) {
+  const t = (zh: string, en: string) => (english ? en : zh);
+  const [data, setData] = useState<Calibration | null>(null);
+  useEffect(() => {
+    let live = true;
+    api<{ calibration: Calibration | null }>('oj/ai/interview-calibration')
+      .then((r) => live && setData(r.calibration))
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, []);
+  if (!data) return null;
+  const f = (x: number) => x.toFixed(1);
+  // Within a quarter point either way reads as calibrated.
+  const lean =
+    data.bias > 0.25
+      ? t(`偏高估：自评平均比面试官高 ${f(data.bias)} 分`, `You overrate: ${f(data.bias)} above the interviewer on average`)
+      : data.bias < -0.25
+        ? t(`偏低估：自评平均比面试官低 ${f(-data.bias)} 分`, `You underrate: ${f(-data.bias)} below the interviewer on average`)
+        : t('自评和面试官基本一致', "Your ratings match the interviewer's");
+  return (
+    <section className="cloud-mocks" aria-labelledby="calibration-title">
+      <div className="cloud-head">
+        <h2 id="calibration-title">{t('自评校准', 'Self-assessment calibration')}</h2>
+        <p>
+          {t(`最近 ${data.sessions.length} 次 AI 面试，平均差 `, `Last ${data.sessions.length} AI interviews, mean gap `)}
+          <b>{f(data.gap)}</b>
+          {t(' 分 · ', ' points · ')}
+          {lean}
+        </p>
+        <p>
+          {t('每次的平均差（从旧到新）：', 'Gap per interview, oldest first: ')}
+          {data.sessions.map((s) => f(s.gap)).join(' → ')}
+        </p>
+      </div>
+    </section>
+  );
+}
+
 /** ?view=progress: practice history, mistakes, reviews due today, and the learner's marks and notes. */
 export function MyProgress({
   boot,
@@ -653,6 +698,7 @@ export function MyProgress({
       </div>
       {boot.person && <PointsPanel english={english} onChange={(s) => setBought(s.freezes.purchased)} />}
       {boot.person && <MockCloudHistory userId={boot.person.id} navigate={navigate} english={english} />}
+      {boot.person && <InterviewCalibration english={english} />}
       {boot.person && <FollowBoard english={english} />}
       {boot.person && <MyExperienceSubmissions english={english} navigate={navigate} open={initialTab === 'share'} />}
     </section>
