@@ -485,8 +485,8 @@ function ExperienceForm({
         <input type="checkbox" checked={form.anonymous} onChange={(e) => set({ anonymous: e.target.checked })} />
         <span>
           {t(
-            '匿名发布：公开页面不显示我的主页名，也不计入主页声望；老师审核时仍能看到是谁投的稿。',
-            'Post anonymously: the public page shows no handle and it adds nothing to my profile reputation; reviewing teachers still see who sent it.',
+            '匿名发布：公开页面不显示我的主页名，也不计入主页声望，我在它评论区里的发言也一律匿名；老师审核时仍能看到是谁投的稿。',
+            'Post anonymously: the public page shows no handle, it adds nothing to my profile reputation, and whatever I post in its comments is anonymous too; reviewing teachers still see who sent it.',
           )}
         </span>
       </label>
