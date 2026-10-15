@@ -224,7 +224,7 @@ const R = 4.2;
  * A frame's graph or tree in SVG. Arrowheads are drawn per edge (no shared marker), so they
  * take the edge's state colour; the caption below narrates each step for screen readers.
  */
-function DemoGraphView({ graph }: { graph: DemoGraph }) {
+export function DemoGraphView({ graph }: { graph: DemoGraph }) {
   const t = useT();
   const at = new Map(graph.nodes.map((n) => [n.id, n]));
   const stateWord = (state?: string) =>

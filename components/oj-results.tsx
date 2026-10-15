@@ -26,12 +26,13 @@ import { type EditorSettings } from '@/lib/editor-settings';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
 import { isTrackLanguage, type Language } from '@/lib/problems';
-import { diffLines } from '@/lib/testcase-fields';
+import { diffLines, fieldValue, splitFields } from '@/lib/testcase-fields';
+import { StructureView, drawable, printedValues } from './structure-view';
 
 /** The editorial's output on a custom case (POST problems/:id/expected). */
 export type ReferenceOutput =
   | { status: 'pending' }
-  | { status: 'failed' }
+  | { status: 'failed'; message?: string }
   | { status: 'done'; output: string };
 
 export function Verdict({
@@ -149,6 +150,8 @@ export function SubmissionResult({
   ranCase,
   reference,
   checker,
+  params,
+  returnType,
 }: {
   submission: OJSubmission;
   cancel?: () => void;
@@ -163,6 +166,10 @@ export function SubmissionResult({
   reference?: ReferenceOutput | null;
   /** The problem's checker: only exact and tokens outputs compare line by line. */
   checker?: string;
+  /** LeetCode mode's parameters: a JSON-per-line input draws its trees, lists and grids. */
+  params?: { name: string; type: string }[] | null;
+  /** What the run prints: a tree or list is drawn for both expected and actual output. */
+  returnType?: string | null;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -219,6 +226,15 @@ export function SubmissionResult({
     !diagnostic?.truncated?.stdout
       ? diffLines(output.stdout, expectedText)
       : undefined;
+  // Test files use the private transport, which a one-parameter problem can still split
+  // wrongly (`[board]`): only a custom case's JSON-per-line stdin splits into fields.
+  const inputs =
+    params && ranCase !== undefined && output?.stdin !== undefined
+      ? splitFields(output.stdin, params.length)
+          ?.map((field, i) => ({ ...params[i], value: fieldValue(field) }))
+          .filter((field) => drawable(field.type))
+      : undefined;
+  const printed = returnType === 'TreeNode' || returnType === 'ListNode' ? returnType : null;
   // LeetCode test files use the private driver transport, not the JSON-per-line
   // custom input (lib/server/leetcode-mode.ts), so only ACM cases replay as-is.
   const debugInput =
@@ -471,6 +487,9 @@ export function SubmissionResult({
                       {debugBlocked}
                     </p>
                   )}
+                  {inputs?.map((field) => (
+                    <StructureView key={field.name} type={field.type} value={field.value} label={field.name} />
+                  ))}
                   {output.expected !== undefined ? (
                     <CopyBlock
                       label={t('期望输出', 'Expected output')}
@@ -498,7 +517,7 @@ export function SubmissionResult({
                     <p className="cs-console-note" role="status">
                       {reference.status === 'pending'
                         ? t('正在用参考解算期望输出…', 'Working out the expected output with the reference solution…')
-                        : t('参考输出暂时拿不到。', "The reference output isn't available right now.")}
+                        : reference.message || t('参考输出暂时拿不到。', "The reference output isn't available right now.")}
                     </p>
                   ) : null}
                   {output.stdout !== undefined && (
@@ -509,6 +528,16 @@ export function SubmissionResult({
                       diff={diff}
                     />
                   )}
+                  {printed &&
+                    [
+                      [t('期望输出', 'Expected output'), expectedText],
+                      [t('实际输出', 'Your output'), output.stdout],
+                    ].map(
+                      ([label, text]) =>
+                        text !== undefined && (
+                          <StructureView key={label} type={printed} value={printedValues(text)} label={label} />
+                        ),
+                    )}
                   {output.stderr && (
                     <CopyBlock
                       label={t('标准错误', 'Stderr')}

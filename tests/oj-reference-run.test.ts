@@ -161,6 +161,18 @@ void test('the expected output runs the best editorial approach, reused per case
   assert.notEqual((await expected(me, '[2,7,11,15]\n9')).id, first.id);
 });
 
+void test('a LeetCode case outside the statement constraints gets a 422 naming the field, before any run', async () => {
+  const send = (stdin: string, codingMode = 'leetcode') =>
+    call(me, 'POST', 'problems/lc-1/expected', { stdin, codingMode, idempotencyKey: randomUUID() });
+  await assert.rejects(send('[1]\n9'), (e: { status?: number; message?: string }) => e.status === 422 && e.message === '超出题目约束：nums 长度 1 < 2');
+  await assert.rejects(send('[1,2]\n-1000000001'), (e: { message?: string }) => e.message === '超出题目约束：target 的值 -1000000001 < -1000000000');
+  // Without codingMode the schema's default, leetcode, applies here too.
+  await assert.rejects(call(me, 'POST', 'problems/lc-1/expected', { stdin: '[1]\n9', idempotencyKey: randomUUID() }), (e: { status?: number }) => e.status === 422);
+  // ACM cases (and raw text that doesn't split per parameter) go through unchecked.
+  const acm = (await (await send('1 1 9\n', 'acm')).json()) as { id: string };
+  await cancelSubmission(me, acm.id);
+});
+
 void test('the expected output needs a verified address and a verified editorial, and closes in a running contest', async () => {
   const body = { stdin: '[1,2]\n3', idempotencyKey: randomUUID() };
   assert.equal(await status({ ...me, id: 'ref-unverified', verified: false }, 'POST', 'problems/lc-1/expected', body), 403);

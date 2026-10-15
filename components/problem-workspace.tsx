@@ -104,7 +104,8 @@ import { encodeShare } from '@/lib/playground-share';
 import { StatementMarkdown } from './statement-markdown';
 import { LeetCodeSamples } from './leetcode-samples';
 import { leetcodePublicSample } from '@/lib/leetcode-public-samples';
-import { joinFields, splitFields } from '@/lib/testcase-fields';
+import { checkConstraints, checkField, fieldValue, joinFields, splitFields } from '@/lib/testcase-fields';
+import { StructureView, drawable } from './structure-view';
 import type { CodingMode } from '@/lib/coding-mode';
 import type { IntelligenceStatus } from '@/lib/editor-intelligence';
 import {
@@ -155,6 +156,7 @@ import { FeedbackTiming } from '@/lib/oj-feedback-timing';
 import { track } from '@/lib/analytics';
 import { useLocale, useT } from '@/lib/i18n';
 import { englishMessage } from '@/lib/messages-en';
+import '@/app/algorithm-demo.css';
 import '@/app/editor.css';
 import '@/app/lc-rating.css';
 import '@/app/workbench-tools.css';
@@ -449,6 +451,21 @@ function Workspace({
   const [rawCase, setRawCase] = useState(false);
   const caseParams = codingMode === 'leetcode' && problem.leetcodeParams?.length ? problem.leetcodeParams : null;
   const caseFields = caseParams && !rawCase ? splitFields(stdin, caseParams.length) : null;
+  // Hints under each field, never a gate: the type as the judge decodes it, then the statement's
+  // bounds. A blank new case stays quiet until one field has text.
+  const caseIssues =
+    caseParams && caseFields?.some(Boolean)
+      ? caseParams.map((param, index) => {
+          const check = checkField(caseFields[index], param.type);
+          return check.ok ? null : check.message;
+        })
+      : null;
+  const caseBounds =
+    caseParams && caseFields && problem.leetcodeConstraints
+      ? checkConstraints(caseFields, caseParams, problem.leetcodeConstraints)
+      : null;
+  // Parameters whose picture is open (TreeNode, ListNode, 2-D arrays).
+  const [drawn, setDrawn] = useState<string[]>([]);
   const editCase = (value: string) =>
     saveCases(
       customCases.map((item, index) => (index === caseIndex ? value : item)),
@@ -1518,8 +1535,10 @@ function Workspace({
           ? { status: 'done', output }
           : { status: 'failed' },
       );
-    } catch {
-      if (!controller.signal.aborted) setReference({ status: 'failed' });
+    } catch (e) {
+      // 422: the case is outside the statement's bounds; say which, not "unavailable".
+      if (!controller.signal.aborted)
+        setReference({ status: 'failed', message: (e as { status?: unknown }).status === 422 ? (e as Error).message : undefined });
     }
   }
   async function cancel() {
@@ -2648,27 +2667,59 @@ function Workspace({
                             `Custom function arguments (case ${caseIndex + 1})`,
                           )}
                         >
-                          {caseParams!.map((param, index) => (
-                            <label key={param.name}>
-                              <span>
-                                <code>{param.name}</code> · {param.type}
-                              </span>
-                              <input
-                                value={caseFields[index]}
-                                spellCheck={false}
-                                autoComplete="off"
-                                onChange={(event) =>
-                                  editCase(
-                                    joinFields(
-                                      caseFields.map((field, i) =>
-                                        i === index ? event.target.value : field,
-                                      ),
-                                    ),
-                                  )
-                                }
-                              />
-                            </label>
-                          ))}
+                          {caseParams!.map((param, index) => {
+                            const issue = caseIssues?.[index] ?? caseBounds?.[index];
+                            const issueId = `case-field-issue-${index}`;
+                            const open = drawn.includes(param.name);
+                            return (
+                              <div key={param.name} className="cs-case-field">
+                                <label>
+                                  <span>
+                                    <code>{param.name}</code> · {param.type}
+                                  </span>
+                                  <input
+                                    value={caseFields[index]}
+                                    spellCheck={false}
+                                    autoComplete="off"
+                                    aria-invalid={issue ? true : undefined}
+                                    aria-describedby={issue ? issueId : undefined}
+                                    onChange={(event) =>
+                                      editCase(
+                                        joinFields(
+                                          caseFields.map((field, i) =>
+                                            i === index ? event.target.value : field,
+                                          ),
+                                        ),
+                                      )
+                                    }
+                                  />
+                                </label>
+                                {drawable(param.type) && (
+                                  <button
+                                    type="button"
+                                    className="cs-structure-toggle"
+                                    aria-pressed={open}
+                                    aria-label={t(`${param.name} 的图示`, `Diagram of ${param.name}`)}
+                                    onClick={() =>
+                                      setDrawn((names) =>
+                                        open ? names.filter((name) => name !== param.name) : [...names, param.name],
+                                      )
+                                    }
+                                  >
+                                    {t('图示', 'Diagram')}
+                                  </button>
+                                )}
+                                {issue && (
+                                  <p className="cs-field-issue" id={issueId}>
+                                    {t(...issue)}
+                                  </p>
+                                )}
+                                {open && !caseIssues?.[index] && (
+                                  <StructureView type={param.type} value={fieldValue(caseFields[index])} />
+                                )}
+                              </div>
+                            );
+                          })}
                         </div>
                       ) : (
                         <textarea
@@ -2767,6 +2818,8 @@ function Workspace({
                     }
                     reference={submission.mode === 'run' && ranCase !== null ? reference : null}
                     checker={problem.checker}
+                    params={submission.codingMode === 'leetcode' ? problem.leetcodeParams : null}
+                    returnType={submission.codingMode === 'leetcode' ? problem.leetcodeReturnType : null}
                   />
                 </>
               ) : (
