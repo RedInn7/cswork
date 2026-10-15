@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-10",
+  "packageChecksum": "3767323a524decf7aa631fd3ddcde36d350b82fe077b46f1b322df469058fc21",
+  "sourceContentHash": "405def324f333e4106268162c9da252dc68c1cb1e79728a3d4ad9a5527438de2",
+  "editorialSha256": "141643a795e1ab20b90ed766062d42078a21eaa58f396114cd95559d080ad056",
+  "hints": {
+    "zh": [
+      "只需比较两边的顶层键：只在一侧出现的键一定是差异键，两侧都有的键要看值是否“结构相等”。",
+      "结构相等要递归判断：类型必须相同（bool 不等于数字，null 不等于缺键）；对象比较键集合和每个键的值，与键序无关；数组按下标逐个比较；数字要按精确十进制值比较，例如 1e-6 与 0.000001 相等，−0 与 0 相等。",
+      "解析两行 JSON（字符串要处理 \\uXXXX 和代理对），把数字规范成“符号+去掉首尾零的有效数字+指数”的精确形式再比较。收集差异键后按 Unicode 码点排序（UTF-8 字节序即码点序；Java 的 String 比较是 UTF-16 序，需要自己按码点比较），以 JSON 字符串数组输出。"
+    ],
+    "en": [
+      "Only the top-level keys need comparing: a key present on one side only is always a difference, and a key on both sides differs when the values are not structurally equal.",
+      "Structural equality is recursive: the types must match (a bool is not a number, null is not a missing key); objects compare their key sets and each key's value, regardless of key order; arrays compare element by element; numbers compare by exact decimal value, so 1e-6 equals 0.000001 and −0 equals 0.",
+      "Parse the two JSON lines (handle \\uXXXX escapes and surrogate pairs in strings), and normalise every number into an exact form: sign, significant digits without leading or trailing zeros, and an exponent. Collect the differing keys, sort them by Unicode code point (UTF-8 byte order is code point order; Java's String comparison is UTF-16 order, so compare code points yourself), and print them as a JSON array of strings."
+    ]
+  },
+  "explanationEn": "## Idea\n\nParse numbers as exact Decimals and compare the union of the keys one by one; recurse while preserving types, array order and object key sets, and finally sort the differing keys.\n\n## Proof of correctness\n\nThe recursion decides leaves by value and type, arrays over all corresponding indices, and objects over all keys, so the structural equality test is exact. Each key in the top-level union is added if and only if it is missing on one side or its values differ, and sorting gives the specified unique order.\n\n## Complexity\n\nO(input length + K log K·maximum key length) time, O(input length) space."
+}

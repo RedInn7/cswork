@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-68",
+  "packageChecksum": "80c1a8df663776a6bb7a69f9a538d8c4afab85e8062e3b9ae4fa2aed0c059661",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    vector<long long> points(n);\n    for (auto &x : points) cin >> x;\n    string tokens;\n    cin >> tokens;\n    long long score = 0;\n    for (int i = 0; i < (int)tokens.size(); i++) {\n        if (tokens[i] != 'T') continue;\n        score += points[i];\n        if (i > 0 && tokens[i - 1] == 'T') score += 1; // adjacent TT pair, counted at its right end\n    }\n    cout << score << \"\\n\";\n}\n",
+      "sha256": "80c48e0b1d9ab00f06e21b144a812f387308c3ded4d26f61647492a5048527a8"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner in = new Scanner(System.in);\n        int n = in.nextInt();\n        long[] points = new long[n];\n        for (int i = 0; i < n; i++) points[i] = in.nextLong();\n        String tokens = in.next();\n        long score = 0;\n        for (int i = 0; i < tokens.length(); i++) {\n            if (tokens.charAt(i) != 'T') continue;\n            score += points[i];\n            if (i > 0 && tokens.charAt(i - 1) == 'T') score += 1; // adjacent TT pair, counted at its right end\n        }\n        System.out.println(score);\n    }\n}\n",
+      "sha256": "b0b6fe5195f7f999d08e36a86adfcc5d0144080d3967a12d0ccfd71f4f8bc904"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tr := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(r, &n)\n\tpoints := make([]int64, n)\n\tfor i := range points {\n\t\tfmt.Fscan(r, &points[i])\n\t}\n\tvar tokens string\n\tfmt.Fscan(r, &tokens)\n\tvar score int64\n\tfor i := 0; i < len(tokens); i++ {\n\t\tif tokens[i] != 'T' {\n\t\t\tcontinue\n\t\t}\n\t\tscore += points[i]\n\t\tif i > 0 && tokens[i-1] == 'T' {\n\t\t\tscore++ // adjacent TT pair, counted at its right end\n\t\t}\n\t}\n\tfmt.Println(score)\n}\n",
+      "sha256": "4b1520cf3a8891bc8e8eabac2ae464652476c905ff91f314d915c79780f3c30c"
+    }
+  ]
+}

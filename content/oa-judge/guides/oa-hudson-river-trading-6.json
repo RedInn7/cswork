@@ -1,0 +1,19 @@
+{
+  "id": "oa-hudson-river-trading-6",
+  "packageChecksum": "98ab0b0ff642d26132d17917259a4a8b7468a9b0bfb32764968013064f5e70bf",
+  "sourceContentHash": "eb19423d30e0c5f771d21ba70f4906320cd6897fc185fc7dd1985781fadc465b",
+  "editorialSha256": "5f7efc7ab9dcba92963f0646e200f673a5969f89aa1b821b8ac63ae63d5c5d1f",
+  "hints": {
+    "zh": [
+      "严格递增保证路径图无环。每条路径都有唯一的首格和唯一的第二格，第二格一定是首格的一个更大邻格。",
+      "按数值从大到小处理，令 ways[u] 为从 u 出发、至少再走一步的路径数。对每个更大邻格 v，路径可以在 v 结束（1 条），也可以从 v 继续（ways[v] 条）。",
+      "把存在的格子按值降序排序，依次计算 ways[u] = Σ(1 + ways[v])（v 取上下左右存在且值更大的邻格），答案是所有 ways[u] 之和。答案可达 2×10¹⁰，必须用 64 位整数。"
+    ],
+    "en": [
+      "Strictly increasing values keep the path graph acyclic. Every path has a unique first cell and a unique second cell, and the second cell is a larger neighbour of the first.",
+      "Process cells by decreasing value and let ways[u] be the number of paths starting at u that take at least one more step. For each larger neighbour v, a path can end at v (1 path) or continue from v (ways[v] paths).",
+      "Sort the existing cells by value descending and compute ways[u] = Σ(1 + ways[v]) over the existing larger neighbours v (up, down, left, right). The answer is the sum of all ways[u]. It can reach 2×10^10, so use 64-bit integers."
+    ]
+  },
+  "explanationEn": "## Idea\n\nTreat the cells as a directed acyclic graph where each cell points to its larger neighbours up, down, left and right. Process cells in decreasing order of value and let `ways[u]` be the number of increasing paths that start at u and take at least one more step; then `ways[u] = Σ(1 + ways[v])`, where v ranges over the larger neighbouring cells. The sum of all `ways[u]` is the answer.\n\n## Proof of correctness\n\nEvery increasing path has a unique first cell u and a unique second cell v. v must be a larger neighbour of u; the suffix starting at v either ends at v (counted by 1) or continues to a larger neighbour (counted by `ways[v]`). So summing over all valid v enumerates every path starting at u exactly once. Strict increase guarantees that all larger neighbours are finished when u is processed, and summing over all first cells gives every path, without omissions or repeats.\n\n## Complexity\n\nLet the number of cells be V≤225 and the number of adjacency edges E≤4V. Sorting takes O(V log V), the dynamic programming O(E), and space is O(V).\n\n## Source and sample correction\n\nPart 2 explicitly reuses Part 1 and only raises the bound on the number of paths to 20 billion. Two independent algorithms both compute `600537344` for the fixed 15×15 grid, while the original page states `601079908`. This site keeps the original grid, corrects the public answer and clearly notes the error in the source sample; the standard input/output format is an addition by this site."
+}

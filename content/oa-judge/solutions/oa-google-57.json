@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-57",
+  "packageChecksum": "d0e052455be3a05a41762c15caa9e19d11887b4884f25e45a1e3153394833bde",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> a(n), b(n);\n    for (auto &x : a) cin >> x;\n    for (auto &x : b) cin >> x;\n    // keep / swp: min swaps so far when pair i is kept / swapped\n    long long inf = n + 1, keep = 0, swp = 1;\n    for (int i = 1; i < n; i++) {\n        long long nk = inf, ns = inf;\n        if (a[i] > a[i - 1] && b[i] > b[i - 1]) { nk = min(nk, keep); ns = min(ns, swp + 1); }\n        if (a[i] > b[i - 1] && b[i] > a[i - 1]) { nk = min(nk, swp); ns = min(ns, keep + 1); }\n        keep = nk;\n        swp = ns;\n    }\n    long long ans = min(keep, swp);\n    cout << (ans <= n ? ans : -1) << \"\\n\";\n}\n",
+      "sha256": "827de39193de7857758987b191d56cddbf2af9b45f66b13ce5e9b2dd9f7765b6"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream is = System.in;\n\n    static int readByte() throws IOException {\n        if (ptr == len) { len = is.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c != '-' && (c < '0' || c > '9')) c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = readByte(); }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        long[] a = new long[n], b = new long[n];\n        for (int i = 0; i < n; i++) a[i] = nextLong();\n        for (int i = 0; i < n; i++) b[i] = nextLong();\n        // keep / swp: min swaps so far when pair i is kept / swapped\n        long inf = n + 1, keep = 0, swp = 1;\n        for (int i = 1; i < n; i++) {\n            long nk = inf, ns = inf;\n            if (a[i] > a[i - 1] && b[i] > b[i - 1]) { nk = Math.min(nk, keep); ns = Math.min(ns, swp + 1); }\n            if (a[i] > b[i - 1] && b[i] > a[i - 1]) { nk = Math.min(nk, swp); ns = Math.min(ns, keep + 1); }\n            keep = nk;\n            swp = ns;\n        }\n        long ans = Math.min(keep, swp);\n        System.out.println(ans <= n ? ans : -1);\n    }\n}\n",
+      "sha256": "0fada8c531fbce5b4d6467ff6968ea3eaadbd082782517080dbaa18f8024b66f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int64 {\n\t\tsc.Scan()\n\t\tv, _ := strconv.ParseInt(sc.Text(), 10, 64)\n\t\treturn v\n\t}\n\tn := int(next())\n\ta := make([]int64, n)\n\tb := make([]int64, n)\n\tfor i := range a {\n\t\ta[i] = next()\n\t}\n\tfor i := range b {\n\t\tb[i] = next()\n\t}\n\t// keep / swp: min swaps so far when pair i is kept / swapped\n\tinf := int64(n + 1)\n\tkeep, swp := int64(0), int64(1)\n\tfor i := 1; i < n; i++ {\n\t\tnk, ns := inf, inf\n\t\tif a[i] > a[i-1] && b[i] > b[i-1] {\n\t\t\tnk = min(nk, keep)\n\t\t\tns = min(ns, swp+1)\n\t\t}\n\t\tif a[i] > b[i-1] && b[i] > a[i-1] {\n\t\t\tnk = min(nk, swp)\n\t\t\tns = min(ns, keep+1)\n\t\t}\n\t\tkeep, swp = nk, ns\n\t}\n\tans := min(keep, swp)\n\tif ans > int64(n) {\n\t\tans = -1\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "b2debde96c4f0ffe11fe1a853cd2f0703ccd3c28aae34d80bd77bba167d22213"
+    }
+  ]
+}

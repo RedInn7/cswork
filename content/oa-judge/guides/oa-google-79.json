@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-79",
+  "packageChecksum": "16766a179f22095a8b377e2cb3e886f3631aed5b6ee4269e648dac5609dd642f",
+  "sourceContentHash": "52e27b41843a195a3dd50b45a513e3eea530c013e7e57e3d1f10171b8c0c5435",
+  "editorialSha256": "598079a71f56b673db0a81957c2f36600b21938d72afc7fe418ebf58dfee30ec",
+  "hints": {
+    "zh": [
+      "展开一个键的值时，只需要先把它引用到的键都展开好，再替换进去。引用关系没有环，所以可以按依赖顺序递归。",
+      "同一个键可能被引用很多次，展开结果与在哪里被引用无关，因此每个键只展开一次并缓存结果即可。",
+      "扫描文本，遇到 % 就找下一个 %，中间是键名，用递归展开（带缓存）后的值替换，其余字符原样保留；对模板做同样处理。输入是一行 JSON，需要解析出 substitutions 和 template（注意 \\\" 等转义）；输出时把结果写成 JSON 字符串，引号和反斜杠要转义。"
+    ],
+    "en": [
+      "To expand a key's value you only need the keys it references to be expanded first, then substitute them. The reference graph has no cycles, so recursion in dependency order works.",
+      "The same key may be referenced many times, and its expansion does not depend on where it is used, so expand every key once and cache the result.",
+      "Scan the text; at each % find the next %, take the key between them, and replace the placeholder with that key's (cached) recursive expansion, copying all other characters. Do the same for the template. The input is one JSON line from which you parse substitutions and template (mind escapes such as \\\"); print the result as a JSON string with quotes and backslashes escaped."
+    ]
+  },
+  "explanationEn": "## Idea\n\nScan the template for `%KEY%`, recursively resolve the value of that key and concatenate it in. A DFS records the keys being visited to detect cycles, and finished keys can be cached.\n\n## Correctness\n\nBy induction over the acyclic reference graph in dependency order: a value with no references stays as it is; if every key a value references has already been expanded correctly, replacing each `%KEY%` with the corresponding expansion yields exactly the recursive expansion of that value. Applying the same process to the main template gives the final string the problem asks for.\n\n## Complexity\n\nLet S be the input length and L the total length of the expanded text that is resolved. O(S+L) time and O(L) space; each mapped value's expansion and the final output are limited to 1,048,576 characters by this site.\n\n## Source and site conventions\n\nThe fixed OAMaster snapshot clearly expands replacement values recursively and includes two original examples; the Python, Java and C++ implementations agree. The original problem does not constrain cycles, missing keys, literal percent signs or input size, so this site only accepts well-formed inputs where every reference exists, the reference graph is acyclic, and each mapped value and the final expansion stay within the limit; these validity constraints are additions by this site. The standard input/output protocol is likewise an addition by this site."
+}

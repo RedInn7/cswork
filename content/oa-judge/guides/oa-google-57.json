@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-57",
+  "packageChecksum": "d0e052455be3a05a41762c15caa9e19d11887b4884f25e45a1e3153394833bde",
+  "sourceContentHash": "e30344619f61d6948491071caa367aa5a380150ce686ae772a628b8b326ae438",
+  "editorialSha256": "cb253d5ff085ded804ad7ee1e5a0b47b55824635a51b0af5f73acb33e3a66c5d",
+  "hints": {
+    "zh": [
+      "位置 i 是否合法，只取决于第 i−1 对的两个数和第 i 对的两个数，以及这两对各自有没有交换。更早的选择不会再直接影响后面。",
+      "对每个下标只记两个状态：当前这对不交换时的最少交换次数，和交换时的最少交换次数。相邻两对要么“同向”递增（A 接 A、B 接 B），要么“交叉”递增（A 接 B、B 接 A），由此在两个状态之间转移。",
+      "初始 keep=0、swap=1。对每个 i：若 A[i]>A[i−1] 且 B[i]>B[i−1]，可以保持前一对的状态（keep→keep，swap→swap+1）；若 A[i]>B[i−1] 且 B[i]>A[i−1]，可以与前一对的状态相反（swap→keep，keep→swap+1）。两条都不满足的状态记为无穷大。最后取两状态的较小值，若仍是无穷大输出 −1。"
+    ],
+    "en": [
+      "Whether index i is valid depends only on the two values at i−1, the two values at i, and whether each of those two pairs was swapped. Earlier choices do not matter directly.",
+      "Keep two states per index: the fewest swaps so far if the current pair is not swapped, and the fewest if it is. Two neighbouring pairs either increase in the same orientation (A after A, B after B) or crosswise (A after B, B after A), and that decides the transitions between the two states.",
+      "Start with keep=0, swap=1. For each i: if A[i]>A[i−1] and B[i]>B[i−1], the pair may keep the previous pair's choice (keep→keep, swap→swap+1); if A[i]>B[i−1] and B[i]>A[i−1], it may take the opposite choice (swap→keep, keep→swap+1). A state reachable by neither rule is infinite. Answer the smaller state, or −1 if both are infinite."
+    ]
+  },
+  "explanationEn": "## Idea\n\nTrack, up to the current index, the minimum cost when the current pair is not swapped and when it is swapped. Transition from the previous states depending on whether two neighbouring pairs increase in the same orientation or crosswise.\n\n## Correctness\n\nWhether the current position is valid depends only on the last two values of the previous pair and on whether the current pair is swapped. The two states record the minimum cost over all valid earlier plans, and the straight and crossed conditions cover exactly the four swap combinations of two neighbouring pairs, so by induction every valid plan is covered.\n\n## Complexity\n\nO(n) time and O(1) space apart from the input."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-62",
+  "packageChecksum": "61cd486125214526b027a1361b191ca8d043ee50e288556634c53ed31a642a92",
+  "sourceContentHash": "ea8475aaa1fb27dad3143f8d9a8d30ba446625a3a133483df69b0b1671e80c17",
+  "editorialSha256": "5af8c92e2a3e92099fe3431af3795ccb9f75cae9571f6c7666ff885048ab798b",
+  "hints": {
+    "zh": [
+      "切口从左往右移动时，每次只有一个字符从右边部分移到左边部分，两边的不同字符数只会因为这个字符发生变化。",
+      "先统计整个串每个字母的出现次数作为右侧频次。依次把字符移入左侧：左侧用集合或布尔数组记录出现过的字母，右侧频次减一，频次变成 0 时右侧不同字符数减一。",
+      "共有 n−1 个切口（左右都非空），在每个字符移入左侧之后（最后一个字符除外）比较两边的不同字符数，相等就计数加一。整个过程是 O(n)，字母表只有 26 个。"
+    ],
+    "en": [
+      "As the cut moves right, exactly one character moves from the right part to the left part, so each side's distinct count can only change because of that character.",
+      "Start with the letter counts of the whole string as the right side. Move characters to the left one by one: mark the letter as seen on the left, decrement its right count, and when that count reaches 0 the right side loses one distinct letter.",
+      "There are n−1 cuts with both parts non-empty. After moving each character except the last, compare the two distinct counts and count the cut when they are equal. This is O(n) with a 26-letter alphabet."
+    ]
+  },
+  "explanationEn": "## Idea\n\nStart with the right-side frequencies of the whole string and move characters into the left side one by one, maintaining the number of distinct characters on both sides.\n\n## Correctness\n\nEvery valid cut is checked exactly once, right after the last character on its left is moved over. A distinct count is updated whenever a frequency goes from positive to zero or from zero to positive, so the compared values are always correct.\n\n## Complexity\n\nO(n) time, O(26) space."
+}

@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-9",
+  "packageChecksum": "0016e54d6dc0cc2daf0eef1a02eddfc783dcffd225e63cdfa2f1315b287b5009",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    int n;\n    cin >> n;\n    // best[k]: largest value from exactly k chosen digits of the prefix (-1 = impossible)\n    long long best[4] = {0, -1, -1, -1};\n    for (int i = 0; i < n; i++) {\n        long long d;\n        cin >> d;\n        for (int k = 3; k >= 1; k--) // descending so each digit is used once\n            if (best[k - 1] >= 0) best[k] = max(best[k], best[k - 1] * 10 + d);\n    }\n    cout << max({best[1], best[2], best[3]}) << \"\\n\";\n}\n",
+      "sha256": "cd036eef6b51976a1a0dd4921624a1b169fe180e67231f0ce78e710f3e6d49e1"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner in = new Scanner(System.in);\n        int n = in.nextInt();\n        // best[k]: largest value from exactly k chosen digits of the prefix (-1 = impossible)\n        long[] best = {0, -1, -1, -1};\n        for (int i = 0; i < n; i++) {\n            long d = in.nextLong();\n            for (int k = 3; k >= 1; k--) // descending so each digit is used once\n                if (best[k - 1] >= 0) best[k] = Math.max(best[k], best[k - 1] * 10 + d);\n        }\n        System.out.println(Math.max(best[1], Math.max(best[2], best[3])));\n    }\n}\n",
+      "sha256": "609bb9e0bbbf4825bf35a21b091ef23d5bd08889aa9d5de850b07caa7868ded1"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tr := bufio.NewReader(os.Stdin)\n\tvar n int\n\tfmt.Fscan(r, &n)\n\t// best[k]: largest value from exactly k chosen digits of the prefix (-1 = impossible)\n\tbest := [4]int64{0, -1, -1, -1}\n\tfor i := 0; i < n; i++ {\n\t\tvar d int64\n\t\tfmt.Fscan(r, &d)\n\t\tfor k := 3; k >= 1; k-- { // descending so each digit is used once\n\t\t\tif best[k-1] >= 0 {\n\t\t\t\tbest[k] = max(best[k], best[k-1]*10+d)\n\t\t\t}\n\t\t}\n\t}\n\tfmt.Println(max(best[1], best[2], best[3]))\n}\n",
+      "sha256": "4c150f9950aaefe7d640e2de009362c696de171c6cef051f4a6102d472d5c294"
+    }
+  ]
+}

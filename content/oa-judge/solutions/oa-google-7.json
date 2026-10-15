@@ -1,0 +1,21 @@
+{
+  "id": "oa-google-7",
+  "packageChecksum": "4e6a168365cc1b4c5609c8346752f902a3be1e476176fd052e90bc86b14a37b9",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    long long answer = 0, previous = 0;\n    for (int i = 0; i < n; i++) {\n        long long current;\n        cin >> current;\n        answer += max(0LL, current - previous); // only rises start new operations\n        previous = current;\n    }\n    cout << answer << \"\\n\";\n}\n",
+      "sha256": "09cbb7a8b2690b5795a6b4a0c2c6c702737c7a1f676de6aa5f33f34210cfdf7a"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream is = System.in;\n\n    static int readByte() throws IOException {\n        if (ptr == len) { len = is.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c != -1 && c <= ' ') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = readByte(); }\n        return sb.toString();\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c != '-' && (c < '0' || c > '9')) c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = readByte(); }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        long answer = 0, previous = 0;\n        for (int i = 0; i < n; i++) {\n            long current = nextLong();\n            answer += Math.max(0, current - previous); // only rises start new operations\n            previous = current;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "63fd2656bdd32a68034ae4b9f877c775e1ad608b84af20ce7e598efebaca195b"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tsc.Scan()\n\tn, _ := strconv.Atoi(sc.Text())\n\tvar answer, previous int64\n\tfor i := 0; i < n; i++ {\n\t\tsc.Scan()\n\t\tcurrent, _ := strconv.ParseInt(sc.Text(), 10, 64)\n\t\tanswer += max(0, current-previous) // only rises start new operations\n\t\tprevious = current\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "6824dca01cc6c011fe5955898d89f54c37a542fb48a05938dabd94431c863092"
+    }
+  ]
+}

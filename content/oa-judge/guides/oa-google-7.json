@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-7",
+  "packageChecksum": "4e6a168365cc1b4c5609c8346752f902a3be1e476176fd052e90bc86b14a37b9",
+  "sourceContentHash": "4f3d99e8416d15b6889f46fbbc612247db524ccad288b4b5da8f10c41e83971f",
+  "editorialSha256": "d6a96e5d939d1d82f6715b8b1fbab8069ced4a0ce00c7d617fb66a0bdfc16c73",
+  "hints": {
+    "zh": [
+      "想象从左往右看数组：某个位置比前一个位置高出的部分，跨过前一个位置的操作不够用，必须由“从这里开始”的新操作来补。",
+      "令 arr[−1]=0。每个上升处 arr[i]−arr[i−1]>0 都至少要新开始这么多次操作，这给出了下界；而在上升处开新区间、在下降处结束多余区间，就能恰好达到这个下界。",
+      "从左到右扫描，答案累加 max(0, arr[i]−arr[i−1])（第一个位置相当于与 0 比较）。数值最大 10⁹、长度 10⁵，答案要用 64 位整数。"
+    ],
+    "en": [
+      "Read the array left to right: whatever a position rises above the previous one cannot be covered by operations that pass through the previous position, so new operations must start there.",
+      "Let arr[−1]=0. Each rise arr[i]−arr[i−1]>0 needs at least that many new operations, which gives a lower bound; starting intervals at rises and ending enough of them at drops reaches it exactly.",
+      "Scan left to right and add max(0, arr[i]−arr[i−1]) to the answer (the first element is compared with 0). Values reach 10^9 over 10^5 positions, so use a 64-bit answer."
+    ]
+  },
+  "explanationEn": "## Idea\n\nThe first position needs arr[0] operations. Each later position needs arr[i]−arr[i−1] newly started operations only when it is higher than the previous position. Add up all the positive increases.\n\n## Why it is correct\n\nLet arr[−1]=0. At every rise at least that many new intervals must start, because at most arr[i−1] operations can pass through the previous position. This gives a lower bound. Scanning the array, starting new intervals at rises and ending enough intervals at drops reaches the target with exactly this many operations, so it is optimal.\n\n## Complexity\n\nO(n) time and O(1) extra space apart from the input. Store the answer in a 64-bit integer."
+}

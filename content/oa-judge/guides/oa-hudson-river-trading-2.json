@@ -1,0 +1,19 @@
+{
+  "id": "oa-hudson-river-trading-2",
+  "packageChecksum": "66368ef626f6ef8a77a430685e9e3bb329b10cdcedd62ec8e8489bfcd1460807",
+  "sourceContentHash": "db1ef202fccfa81737135b10ccfe15fd65b6607e59e9e336d8a025357c77c022",
+  "editorialSha256": "fe4a07e6fcd54b942d73d9d926f263ed3a0da3131ba3e3c300cf336e43761cd4",
+  "hints": {
+    "zh": [
+      "价格相等不产生信号，也不打断之前的序列，所以可以先把所有相邻变化压缩成只含 +1/−1 的方向流，并记住每个方向对应的价格下标。",
+      "“最近的变化序列匹配某个指标”就是在方向流中做模式匹配：每当以当前位置结尾的完整匹配出现一次，就在对应价格下标上触发一次信号。KMP 可以在线性时间内找出所有（可重叠的）匹配。",
+      "分别用 KMP 在方向流上匹配 buyIndicator 和 sellIndicator，匹配成功时给该方向对应的价格下标加 +1 或 −1（同一位置的买卖自然抵消），匹配后令 j=pi[j−1] 以允许重叠。最后对增量做前缀和，输出每个时刻的持仓。"
+    ],
+    "en": [
+      "Equal prices produce no signal and do not break the earlier sequence, so first compress all neighbouring changes into a stream of +1/−1 directions, remembering the price index of each direction.",
+      "\"The most recent changes match an indicator\" is pattern matching on that stream: each time a full match ends at the current element, a signal fires at that element's price index. KMP finds all matches, including overlapping ones, in linear time.",
+      "Run KMP on the direction stream for buyIndicator and for sellIndicator; on a match add +1 or −1 at the matching direction's price index (a buy and a sell at the same index cancel naturally), and after a match set j=pi[j−1] so matches may overlap. Finally take prefix sums of the increments and print the position at every time."
+    ]
+  },
+  "explanationEn": "## Idea\n\nTurn the neighbouring price changes into a stream of non-zero directions and record the original price index of each direction. Match the buy and sell patterns separately with KMP, add the signals at the corresponding price indices, then take prefix sums.\n\n## Proof of correctness\n\nFor each pattern, KMP on the non-zero direction stream fires exactly once at each place where a complete match ends, and only there; the recorded index is exactly the price the current signal belongs to. Adding the buy and sell increments and taking prefix sums gives the net position from all triggered signals at every time.\n\n## Complexity\n\nO(n+b+s) time, O(n+b+s) space.\n\n## Source note\n\nThe original example 51,56,56,58 clearly treats the two rises as consecutive signals; an equal price neither triggers a signal nor resets the non-zero change sequence. The 0-direction implementation in the upstream curated MDX conflicts with this original example; this site follows the original rule and example and records the difference.\n\nThis site separately prepared the standard input/output protocol; it does not claim the original site provides it."
+}

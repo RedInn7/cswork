@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-65",
+  "packageChecksum": "b0896c680d51a68f06b0e69d35b557b324d05bcd1604e083eca49cca1c187a3d",
+  "sourceContentHash": "2a761527eddb0ae5f7231cac89a2fea7cefa48fd9fb6f693938e01734a619b0c",
+  "editorialSha256": "f83727cd9959e327cc10bb3bdc3cc8d0b57e554017ced56cf43d8cd875f87540",
+  "hints": {
+    "zh": [
+      "总分可以拆成两部分独立计算：每个 T 位置自己的 points[i]，以及每一对相邻的 TT 带来的 1 分奖励。",
+      "每对相邻位置只在它的右端点检查一次，就能做到不重不漏。",
+      "遍历 tokens：遇到 T 就加上 points[i]；若 i>0 且前一位也是 T，再加 1。以 tokens 的实际长度为准循环，最后输出总分。"
+    ],
+    "en": [
+      "The score splits into two independent parts: points[i] for every T position, and a bonus of 1 for every pair of adjacent T positions.",
+      "Check each adjacent pair only at its right end, so every pair is counted exactly once.",
+      "Walk over tokens: on a T add points[i]; if i>0 and the previous token is also T, add 1 more. Loop over the actual length of tokens and print the total."
+    ]
+  },
+  "explanationEn": "## Idea\n\nWalk over tokens; on a T add the matching points[i], and if the previous position is also T add 1 more.\n\n## Correctness\n\nThe rules split the score into two parts: each T position counts its points[i] once, and each adjacent TT pair counts 1. During the scan every T is counted exactly once in the first part; except at the first position, when both the current and previous tokens are T, the pair ending at the current position is counted exactly once. Every adjacent pair is checked only at its right end, so nothing is missed or counted twice.\n\n## Complexity\n\nO(N) time, O(1) extra space.\n\n## Source and sample handling\n\nhttps://oamaster.com/docs/companies/google#65-game-points-calculation. The Python, Java and C++ implementations in the fixed snapshot all use the rule above. Original sample 1 violates the lower bound on points, and its index and scoring explanation do not match; the output of sample 2 also disagrees with its stated rule and with the three implementations. The displayed samples are replaced by inputs whose answers follow uniquely from the rule. This site adds the stdin/stdout protocol."
+}

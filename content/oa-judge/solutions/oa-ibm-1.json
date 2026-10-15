@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-1",
+  "packageChecksum": "333bb2c7aba9393980d1c712eefae0237554c6616a8289ef534cff4753f899f8",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    const long long MOD = 1000000007;\n    long long n;\n    cin >> n;\n    long long e = n * (n - 1) / 2; // one independent optional edge per vertex pair\n    long long result = 1, base = 2 % MOD;\n    while (e > 0) {\n        if (e & 1) result = result * base % MOD;\n        base = base * base % MOD;\n        e >>= 1;\n    }\n    cout << result << \"\\n\";\n}\n",
+      "sha256": "56444b524bc527e9dcf4eb7ef96c8052d400afbb2c256c5d8d9240b1aafe4814"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        final long MOD = 1000000007L;\n        long n = new Scanner(System.in).nextLong();\n        long e = n * (n - 1) / 2; // one independent optional edge per vertex pair\n        long result = 1, base = 2;\n        while (e > 0) {\n            if ((e & 1) == 1) result = result * base % MOD;\n            base = base * base % MOD;\n            e >>= 1;\n        }\n        System.out.println(result);\n    }\n}\n",
+      "sha256": "bb97ee4ac8eac16e7868b6d2a641dafc126755100ecdc67f1809f0e4021001ee"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tconst mod = 1000000007\n\tvar n int64\n\tfmt.Scan(&n)\n\te := n * (n - 1) / 2 // one independent optional edge per vertex pair\n\tresult, base := int64(1), int64(2)\n\tfor e > 0 {\n\t\tif e&1 == 1 {\n\t\t\tresult = result * base % mod\n\t\t}\n\t\tbase = base * base % mod\n\t\te >>= 1\n\t}\n\tfmt.Println(result)\n}\n",
+      "sha256": "346aba5669e73fb91e68b95445ab023b61e0290631a96782095834dbd77bee47"
+    }
+  ]
+}

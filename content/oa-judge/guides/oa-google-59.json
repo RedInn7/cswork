@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-59",
+  "packageChecksum": "b93655d391e446e8f7cdc8e6ad99467c5faf3f11aa32e4c9f48e982cb8a3d55d",
+  "sourceContentHash": "941bedbe85dc560223d01b3acbe920de8c0948b0b6ddbb5227fcc3726725e2ac",
+  "editorialSha256": "e06909414d0c5b01d7136231baae61adb821daac8b0d739a89e5e09393fa0a19",
+  "hints": {
+    "zh": [
+      "把所有 1 移到末尾时，每个 1 必须越过它右边的每个 0 恰好一次，所以“移动距离”的总和是固定的，等于串中 10 逆序对的数量。真正能变的只有操作次数，每次操作额外贡献 1。",
+      "要让操作次数最多，就要让每个 1 越过 0 时尽量分很多次走。一个 1 每越过一段原始连续的 0，最多只能产生一次操作，因此操作次数的上界是：每段原始 0 段左边 1 的个数之和。",
+      "从左到右扫描，记录已经见过的 1 的个数 ones。每遇到一个 0，答案加 ones（逆序对贡献的距离）；如果这个 0 是一段 0 的第一个（前一个字符是 1），再额外加一次 ones（这一段 0 对应的操作次数）。用 64 位整数累加。"
+    ],
+    "en": [
+      "When all ones end at the right, each one must pass every zero to its right exactly once, so the total moving distance is fixed: it equals the number of 1-before-0 inversion pairs. Only the number of operations can vary, and each operation adds 1.",
+      "To maximise the number of operations, a one should cross the zeros in as many separate moves as possible. A one can produce at most one operation per original block of consecutive zeros, so the operation count is bounded by the sum, over all original zero blocks, of the number of ones to the left of the block.",
+      "Scan left to right keeping the count of ones seen so far. On every zero add that count (the distance part); if the zero starts a block (the previous character is a one), add the count once more (the operations for that block). Use a 64-bit total."
+    ]
+  },
+  "explanationEn": "## Idea\n\nThe total moving distance always equals the number of inversion pairs. Each operation adds 1 more, and the number of operations is at most the sum, over every original block of consecutive zeros, of the number of ones to its left. While scanning, add the number of ones seen so far at every zero, and add it once more if the zero is the first of a zero block.\n\n## Correctness\n\nEach right move only swaps the moved one with the zeros it passes, and all ones finish at the right end, so every original 10 inversion pair must be swapped, and is swapped exactly once. A one produces at most one operation per original zero block, so the number of operations is bounded by the sum above. Processing the zero blocks from left to right and moving the ones to their left one by one keeps the later zero blocks intact and reaches that bound. Adding the two parts gives the maximum cost.\n\n## Complexity\n\nO(n) time, O(1) space."
+}

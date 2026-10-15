@@ -1,0 +1,21 @@
+{
+  "id": "oa-guidewire-1",
+  "packageChecksum": "5c9258d21a40ced2b9d53d02fdff15afc25841536a1517f0deb458114093560b",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    string s;\n    cin >> s;\n    int n = s.size();\n    vector<char> placed(n, 0);\n    int count = 0;\n    for (int i = 0; i < n;) {\n        // skip seats that are not girls or girls already covered from the left\n        if (s[i] != 'G' || (i > 0 && placed[i - 1])) { i++; continue; }\n        if (i + 1 < n && s[i + 1] == '-') { placed[i + 1] = 1; count++; i += 2; } // prefer the right seat\n        else if (i > 0 && s[i - 1] == '-') { placed[i - 1] = 1; count++; i++; }\n        else { cout << -1 << \"\\n\"; return 0; }\n    }\n    cout << count << \"\\n\";\n}\n",
+      "sha256": "f43430f8e9dbd0241d08d310fde296bcc1d86b4b59e918fd8c114e153200a236"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));\n        String s = br.readLine().trim();\n        int n = s.length(), count = 0;\n        boolean[] placed = new boolean[n];\n        for (int i = 0; i < n;) {\n            // skip seats that are not girls or girls already covered from the left\n            if (s.charAt(i) != 'G' || (i > 0 && placed[i - 1])) { i++; continue; }\n            if (i + 1 < n && s.charAt(i + 1) == '-') { placed[i + 1] = true; count++; i += 2; } // prefer the right seat\n            else if (i > 0 && s.charAt(i - 1) == '-') { placed[i - 1] = true; count++; i++; }\n            else { System.out.println(-1); return; }\n        }\n        System.out.println(count);\n    }\n}\n",
+      "sha256": "be204d5d30baa9bea3a366db447fd404ca8b5a0c5d5689222a7f0773344a6608"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tr := bufio.NewReaderSize(os.Stdin, 1<<20)\n\tvar s string\n\tfmt.Fscan(r, &s)\n\tn := len(s)\n\tplaced := make([]bool, n)\n\tcount := 0\n\tfor i := 0; i < n; {\n\t\t// skip seats that are not girls or girls already covered from the left\n\t\tif s[i] != 'G' || (i > 0 && placed[i-1]) {\n\t\t\ti++\n\t\t\tcontinue\n\t\t}\n\t\tif i+1 < n && s[i+1] == '-' { // prefer the right seat\n\t\t\tplaced[i+1] = true\n\t\t\tcount++\n\t\t\ti += 2\n\t\t} else if i > 0 && s[i-1] == '-' {\n\t\t\tplaced[i-1] = true\n\t\t\tcount++\n\t\t\ti++\n\t\t} else {\n\t\t\tfmt.Println(-1)\n\t\t\treturn\n\t\t}\n\t}\n\tfmt.Println(count)\n}\n",
+      "sha256": "b55db6e0a3354b641d21d951f2c11f3614566d0ab9c6f637bf550806f33e0ff0"
+    }
+  ]
+}

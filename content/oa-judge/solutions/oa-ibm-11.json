@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-11",
+  "packageChecksum": "ab0772de801c00b5a27215691e2633a67c5ea28d7e2bb7d1c4f4333f20c7d788",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n, q;\n    cin >> n >> q;\n    unordered_map<string, string> table; // \"time key\" -> original value text\n    table.reserve(2 * n);\n    for (int i = 0; i < n; i++) {\n        string t, k, v;\n        cin >> t >> k >> v;\n        table[t + ' ' + k] = v;\n    }\n    string out;\n    for (int i = 0; i < q; i++) {\n        string k, t;\n        cin >> k >> t;\n        if (i) out += ' ';\n        out += table[t + ' ' + k];\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "ff2ea34b6e72228f3c1762dd3e4a417b0bacadbe81b9bdc8389d0700eb18cf9c"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream is = System.in;\n\n    static int readByte() throws IOException {\n        if (ptr == len) { len = is.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c != -1 && c <= ' ') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = readByte(); }\n        return sb.toString();\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c != '-' && (c < '0' || c > '9')) c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = readByte(); }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong(), q = (int) nextLong();\n        HashMap<String, String> table = new HashMap<>(2 * n); // \"time key\" -> original value text\n        for (int i = 0; i < n; i++) {\n            String t = next(), k = next(), v = next();\n            table.put(t + ' ' + k, v);\n        }\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < q; i++) {\n            String k = next(), t = next();\n            if (i > 0) out.append(' ');\n            out.append(table.get(t + ' ' + k));\n        }\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "5f14006532bf4cc4197f5986f59d68d0cdab5672bd1fdb2b8045096f3389b386"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() string {\n\t\tsc.Scan()\n\t\treturn sc.Text()\n\t}\n\tn, _ := strconv.Atoi(next())\n\tq, _ := strconv.Atoi(next())\n\ttable := make(map[string]string, n) // \"time key\" -> original value text\n\tfor i := 0; i < n; i++ {\n\t\tt := next()\n\t\tk := next()\n\t\ttable[t+\" \"+k] = next()\n\t}\n\tw := bufio.NewWriterSize(os.Stdout, 1<<20)\n\tdefer w.Flush()\n\tfor i := 0; i < q; i++ {\n\t\tk := next()\n\t\tt := next()\n\t\tif i > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(table[t+\" \"+k])\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "cf8a3e33a6889fa3618da36b5ad021a6959b303d1b23db5677834395775cd588"
+    }
+  ]
+}

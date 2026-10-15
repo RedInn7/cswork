@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-76",
+  "packageChecksum": "7fa72ee89a4dc395fdd65cf29dac571296c051e1e3662360fefd4e080548c0bd",
+  "sourceContentHash": "8032ab1193845236203d36fc240b35130a853d8dc4359a34a758527bf7ea2c5a",
+  "editorialSha256": "14cdfa4e4cacdd2d1e7f0828bcd6e14c1249bc5fdefca0cb4e517f1f60c74215",
+  "hints": {
+    "zh": [
+      "每行要放尽可能多的单词，所以按单词之间只有一个空格的最小宽度贪心地取最长的能放下的单词前缀即可，分行方式是唯一的。",
+      "确定一行的单词后再分配空格：非最后一行且不止一个单词时，总空格数除以间隙数得到每个间隙的基础空格，余数从左边的间隙开始每个多给一个。",
+      "最后一行或只有一个单词的行，单词之间用单个空格连接后在右侧补空格到 maxWidth。先输出行数，再逐行输出，每行恰好 maxWidth 个字符，包括行末空格（本题是精确比较）。"
+    ],
+    "en": [
+      "Each line takes as many words as possible, so greedily take the longest prefix of words that fits with single spaces between them; the line breaks are then unique.",
+      "Once a line's words are fixed, distribute spaces: for a line that is not the last and has more than one word, divide the total spaces by the number of gaps for the base width, and give one extra space to each of the leftmost gaps for the remainder.",
+      "The last line and any single-word line join words with single spaces and pad on the right to maxWidth. Print the number of lines, then each line with exactly maxWidth characters including trailing spaces (the checker compares exactly)."
+    ]
+  },
+  "explanationEn": "## Idea\n\nCollect the words of each line greedily, using the minimum of one space between words. For lines other than the last, distribute the total spaces by dividing by the number of gaps; the last line uses single spaces and is padded on the right.\n\n## Correctness\n\nTaking the longest prefix that fits follows the rule of placing as many words as possible exactly. The quotient of the even split makes the gaps differ by at most 1, and giving the remainder to the left gaps satisfies the left-first rule; the last line and single-word lines are padded as specified, so the output is unique.\n\n## Complexity\n\nO(number of output characters) time and O(number of output characters) space."
+}

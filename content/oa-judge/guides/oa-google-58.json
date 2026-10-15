@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-58",
+  "packageChecksum": "e453ad0405de0ccf872d5a00d111aaeb28eab085f77fa694beb2cda439c60946",
+  "sourceContentHash": "a1692ff47c6feb18119f60d3c082e9af1f4de015e8306c9fc51772eba4b46aca",
+  "editorialSha256": "b15d560e81adf78ce2f6aff568014437360acc1da8218158002ca04303631f32",
+  "hints": {
+    "zh": [
+      "题目只关心“累计预订次数”，退房不会减少次数，所以只看带 + 的记录，与房间最后是否空闲无关。",
+      "对每个房间统计 + 记录出现的次数，然后按“次数从大到小、房间名从小到大”的规则选出一个房间。",
+      "遍历所有记录，遇到 + 就给对应房间（楼层数字加字母）计数加一。房间最多 260 个，最后在计数最大的房间中取字典序最小的那个输出即可。"
+    ],
+    "en": [
+      "Only the cumulative number of bookings matters. A check-out never lowers that count, so only the + records count, whatever state the room ends in.",
+      "Count how many + records each room has, then pick a room by count descending and, on ties, room name ascending.",
+      "Scan the records and add one to the room (floor digit plus letter) on each +. There are at most 260 rooms; among those with the largest count, output the lexicographically smallest name."
+    ]
+  },
+  "explanationEn": "## Idea\n\nCount only the rooms in + records, and pick the best room by booking count descending and room name ascending.\n\n## Correctness\n\nEvery + record is one real booking, independent of whether that room ends up free. Summing all + records gives the cumulative counts, and choosing the largest count and then the smallest name matches the two-level ordering rule exactly.\n\n## Complexity\n\nO(n+260) time, O(260) space."
+}

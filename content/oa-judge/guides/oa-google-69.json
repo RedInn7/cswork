@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-69",
+  "packageChecksum": "eca7244fa35bee88ae92bbcac67ea92cc6019552a7cb08c2d40e084f5f8eeba4",
+  "sourceContentHash": "f5dbb1c985f48361b9b8cbb0519dff01f18f1513addf9c562ab9f93f533f98d0",
+  "editorialSha256": "68053dea7d6da3ed49b216dcfbaf8f01f8bcb8a7c400de145250ad1f5937d45b",
+  "hints": {
+    "zh": [
+      "所有前缀共用同一个排序规则（热度降序、名称升序）。如果先把产品按这个规则排好，再按顺序分发，每个前缀收到的产品自然就是排好序的。",
+      "一个产品能匹配搜索串的哪些前缀，只由它和搜索串的最长公共前缀决定：公共前缀长度为 L，它就匹配长度 1..L 的所有前缀。",
+      "先按 (−热度, 名称) 排序全部产品。依次处理每个产品，从第 0 位开始逐字符与搜索串比较，只要相同就把它追加到该前缀的列表（列表已满 k 项就跳过），遇到不同字符立即停止。最后每个前缀输出列表长度和名称。"
+    ],
+    "en": [
+      "Every prefix uses the same ranking (popularity descending, then name ascending). If you sort the products by that ranking once and hand them out in order, each prefix receives its matches already in ranked order.",
+      "Which prefixes of the search word a product matches depends only on its longest common prefix with the word: with common length L it matches the prefixes of length 1..L.",
+      "Sort all products by (−popularity, name). For each product in order, compare it with the search word character by character from position 0; while they agree, append it to that prefix's list unless the list already has k items, and stop at the first mismatch. Finally print each prefix's list size and names."
+    ]
+  },
+  "explanationEn": "## Idea\n\nSort the products by the common ranking first. For each product, compute its longest common prefix with the search word and append it to every corresponding prefix list that does not yet have k items.\n\n## Correctness\n\nScanning in ranking order, each prefix receives all of its matching products in ranking order; keeping only the first k means every list is exactly the best suggestions for that prefix.\n\n## Complexity\n\nSorting takes O(n log n·L) comparisons in the worst case and matching takes O(total name length); space is O(total name length + length of the search word·k), where L is the maximum name length."
+}

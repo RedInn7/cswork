@@ -1,0 +1,19 @@
+{
+  "id": "oa-harvey-2",
+  "packageChecksum": "6e3f80ce19cf4b6a106f292b1a0b7ce01c12d5ac5a268f92d7f759857fbf0a84",
+  "sourceContentHash": "3f0ba847e3ba8db5fd328a319c96b9162629f2247e6ff375106a002d5a8ddfa2",
+  "editorialSha256": "bebc216b2800677d23cff8090b2057730bc576c9e799419a315ee1cad24df6f7",
+  "hints": {
+    "zh": [
+      "单元格之间的引用构成一张有向图。SET 会不会造成环，只需看新定义是否能沿依赖回到被赋值的单元格，因为原来的图没有环。",
+      "SET 时先暂存新表达式，从这个单元格出发做 DFS，若访问到当前递归路径上的节点就有环，此时恢复旧值（或删除）并输出 ERROR，否则输出 OK。GET 则递归求和，遇到未设置的单元格就返回 ERROR。",
+      "表达式按 + 拆分并去掉空白，全是数字的项是字面量，否则是标签。GET 时用一次性的记忆化表避免重复计算，并同样用“在路径上”集合防环。所有可求值结果在 64 位范围内。每条命令输出 OK、ERROR 或整数。"
+    ],
+    "en": [
+      "References between cells form a directed graph. Since the graph had no cycle before, a SET creates one only if the new definition can lead back to the cell being assigned.",
+      "On SET, store the new expression tentatively and DFS from that cell; reaching a node on the current recursion path means a cycle, so restore the old value (or remove the cell) and print ERROR, otherwise print OK. GET sums recursively and returns ERROR on an unset cell.",
+      "Split an expression on + and trim whitespace; an all-digit term is a literal, anything else is a label. For GET use a per-query memo to avoid recomputation, plus the same on-path set as a cycle guard. All computable results fit in 64 bits. Each command prints OK, ERROR or an integer."
+    ]
+  },
+  "explanationEn": "## Idea\n\nOn SET, store the new value tentatively and run a DFS along the dependency graph to check whether it can return to the assigned cell; if there is a cycle, restore the old value, otherwise commit. GET sums recursively according to the current definitions and caches intermediate results only within this read.\n\n## Proof of correctness\n\nThe dependency graph of addition formulas contains a cycle if and only if some recursive visit reaches a node on the current path. After the tentative SET, a DFS starting from that label is enough to detect a newly created cycle; restoring the old definition guarantees that a rejected operation leaves the state unchanged. GET recurses with the same cycle detection, so undefined references also return ERROR.\n\n## Complexity\n\nLet V be the number of cells and E the total number of references; each command takes O(V+E), with O(V+E) space."
+}

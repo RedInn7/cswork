@@ -1,0 +1,21 @@
+{
+  "id": "oa-hudson-river-trading-3",
+  "packageChecksum": "36ca205eda9f090382b7fba5a2913d3baa2e2689a340f508a819195e5269c66c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    long long n;\n    cin >> n;\n    vector<int> ds; // base-4 digits, most significant first\n    while (n) { ds.push_back(n % 4); n /= 4; }\n    reverse(ds.begin(), ds.end());\n    int len = ds.size();\n    if (len == 0) { cout << 0 << \"\\n\"; return 0; }\n    long long ans = 0;\n    for (int k = 1; k < len; k++) ans += 1LL << (k - 1); // all shorter fancy numbers\n    if (ds[0] > 1) { cout << ans + (1LL << (len - 1)) << \"\\n\"; return 0; }\n    // leading digit is 1: count same-length fancy numbers below n digit by digit\n    for (int i = 1; i < len; i++) {\n        int smaller = (0 < ds[i]) + (1 < ds[i]);\n        ans += smaller * (1LL << (len - i - 1));\n        if (ds[i] > 1) break;\n    }\n    cout << ans << \"\\n\";\n}\n",
+      "sha256": "7398bc4aa2bc38246e1fb62a9ac4dade0b785cdf97d1b470607cf9a9eb05d922"
+    },
+    {
+      "language": "java",
+      "code": "import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        long n = new Scanner(System.in).nextLong();\n        ArrayList<Integer> ds = new ArrayList<>(); // base-4 digits, most significant first\n        while (n > 0) { ds.add((int) (n % 4)); n /= 4; }\n        Collections.reverse(ds);\n        int len = ds.size();\n        if (len == 0) { System.out.println(0); return; }\n        long ans = 0;\n        for (int k = 1; k < len; k++) ans += 1L << (k - 1); // all shorter fancy numbers\n        if (ds.get(0) > 1) { System.out.println(ans + (1L << (len - 1))); return; }\n        // leading digit is 1: count same-length fancy numbers below n digit by digit\n        for (int i = 1; i < len; i++) {\n            int d = ds.get(i), smaller = (d > 0 ? 1 : 0) + (d > 1 ? 1 : 0);\n            ans += smaller * (1L << (len - i - 1));\n            if (d > 1) break;\n        }\n        System.out.println(ans);\n    }\n}\n",
+      "sha256": "78d8912b2c7a730e2c2e0332ea3c0a2a2617c71dc5a0ada14ccaade28d66d4e5"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"fmt\"\n\t\"slices\"\n)\n\nfunc main() {\n\tvar n int64\n\tfmt.Scan(&n)\n\tvar ds []int // base-4 digits, most significant first\n\tfor n > 0 {\n\t\tds = append(ds, int(n%4))\n\t\tn /= 4\n\t}\n\tslices.Reverse(ds)\n\tlength := len(ds)\n\tif length == 0 {\n\t\tfmt.Println(0)\n\t\treturn\n\t}\n\tvar ans int64\n\tfor k := 1; k < length; k++ {\n\t\tans += 1 << (k - 1) // all shorter fancy numbers\n\t}\n\tif ds[0] > 1 {\n\t\tfmt.Println(ans + 1<<(length-1))\n\t\treturn\n\t}\n\t// leading digit is 1: count same-length fancy numbers below n digit by digit\n\tfor i := 1; i < length; i++ {\n\t\tsmaller := 0\n\t\tif ds[i] > 0 {\n\t\t\tsmaller++\n\t\t}\n\t\tif ds[i] > 1 {\n\t\t\tsmaller++\n\t\t}\n\t\tans += int64(smaller) << (length - i - 1)\n\t\tif ds[i] > 1 {\n\t\t\tbreak\n\t\t}\n\t}\n\tfmt.Println(ans)\n}\n",
+      "sha256": "4bc1b39ce8bdf688c25365e3ec41d96f8755fa30f56464e51c5c5863e7aed509"
+    }
+  ]
+}

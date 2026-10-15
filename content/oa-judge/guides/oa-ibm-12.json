@@ -1,0 +1,19 @@
+{
+  "id": "oa-ibm-12",
+  "packageChecksum": "58f4b64ae0c9c0a56966334fef7dd90f4e6e073697273a2141861e9d187daa7c",
+  "sourceContentHash": "574f791d59d6262663a7e0d8a56bdf7b04e3b43a7c9e53f17b390d1c59ca3626",
+  "editorialSha256": "29b79f441bf3c59078cfc7728a23a7770290acbd75f51b97a25a80456cd5b592",
+  "hints": {
+    "zh": [
+      "包数 p 固定时，各类卡片互不影响：每类数量 v 只需补到不小于 v 的最小 p 的倍数，补 (p − v mod p) mod p 张。",
+      "包数取 2 时每类最多补 1 张，总成本不超过 n；而包数大于最大数量时每类都至少补 1 张，成本至少为 n。所以只需枚举 2 到 max(2, 最大数量) 的包数。",
+      "数量最多 500，先统计每个数量出现的频次，再对每个包数 p 计算 Σ 频次 ×((p − v mod p) mod p)，取最小值输出。总复杂度 O(n + 500²)，成本用 64 位整数。"
+    ],
+    "en": [
+      "With the number of packs p fixed, card types are independent: a type with count v only needs topping up to the smallest multiple of p that is at least v, i.e. (p − v mod p) mod p cards.",
+      "With 2 packs each type needs at most 1 card, so the cost is at most n; with more packs than the largest count every type needs at least 1 card, so the cost is at least n. So only pack counts from 2 to max(2, largest count) need checking.",
+      "Counts are at most 500: tally how often each count occurs, then for each p compute Σ frequency × ((p − v mod p) mod p) and output the minimum. That is O(n + 500²) overall; keep the cost in 64 bits."
+    ]
+  },
+  "explanationEn": "## Idea\n\nTally the counts by frequency and enumerate the number of packs from 2 to max(2, largest count); the cost is Σ frequency×((packs−count%packs)%packs).\n\n## Proof of correctness\n\nWith the number of packs fixed, each type needs at least enough cards to reach the next multiple, and types are independent. With more packs than the largest count the cost is at least n; with 2 packs each type needs at most 1 card, so the total cost is at most n, and larger pack counts need not be enumerated. Taking the minimum is optimal.\n\n## Complexity\n\nO(n+500²) time, O(500) space."
+}

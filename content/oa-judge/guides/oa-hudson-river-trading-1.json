@@ -1,0 +1,19 @@
+{
+  "id": "oa-hudson-river-trading-1",
+  "packageChecksum": "16a9e58bfadc0b77503a45d2ca4f43d840cb08222d4abe797ca6d304a0de5bf8",
+  "sourceContentHash": "af5242de4166cc797083f7d96b343f61ddb9aff5a33e284413dbdc7f345893e7",
+  "editorialSha256": "48ffed166fe76c4bb66b412ef727a0882dbd286ec5020d6fe979b9e1dec31762",
+  "hints": {
+    "zh": [
+      "对非负整数，反复取 x % 10 得到最低位、再整除 10 去掉这一位，就能从低到高拿到所有十进制数字。",
+      "数字是倒着得到的，最后反转；负数先记下符号再对绝对值处理，0 要单独输出 \"0\"。",
+      "每行读一个整数（跳过空行）。用 64 位整数保存绝对值，这样 −2147483648 取反也不会溢出。逐位取模生成字符，补上负号后反转输出，每个整数一行。"
+    ],
+    "en": [
+      "For a non-negative integer, x % 10 gives the lowest digit and dividing by 10 removes it, so repeating this yields all decimal digits from lowest to highest.",
+      "The digits come out reversed, so reverse them at the end; for a negative number remember the sign and work on the absolute value; 0 must be printed as \"0\" separately.",
+      "Read one integer per line (skip blank lines). Keep the absolute value in a 64-bit integer so negating −2147483648 cannot overflow. Build the characters digit by digit, add the minus sign, reverse, and print one integer per line."
+    ]
+  },
+  "explanationEn": "## Idea\n\nRepeatedly take the last digit of the absolute value and divide by 10, join the digits in reverse order, and add a minus sign when needed. 0 is handled separately. To cover INT_MIN, use an integer representation that does not overflow.\n\n## Proof of correctness\n\nEach modulo step yields exactly the current lowest decimal digit, and integer division by 10 removes that digit; reversing all the digits restores the original order and sign, so the resulting characters match the decimal representation digit by digit.\n\n## Complexity\n\nLet D be the total number of decimal digits: O(D) time and O(D) space apart from the output.\n\n## Source note\n\nThe upstream original problem forbids the built-in conversion helper; this site's judge can only check the output and cannot statically prove that a contestant did not call a built-in conversion function.\n\nThis site separately prepared the standard input/output protocol; it does not claim the original site provides it."
+}

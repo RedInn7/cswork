@@ -1,0 +1,19 @@
+{
+  "id": "oa-google-61",
+  "packageChecksum": "035537208892cba2b56967af0ffc0a96a067d1ca9def0d396fc65fd091212c5d",
+  "sourceContentHash": "f7cc6c63c4896758190997ff1dbbd0300078b36b48efea9038ebd6471e375328",
+  "editorialSha256": "5341a645846c7d30933420da18032cb534c1a21b3519a03a8449ca3cfe8706c6",
+  "hints": {
+    "zh": [
+      "只允许平移时，两个岛形状相同，当且仅当它们所有格子相对于某个固定参考点的偏移完全一样。",
+      "对每个岛选一个统一的参考点（例如按行优先扫描时第一次遇到的格子），把岛上所有格子的坐标减去参考点，得到一组相对坐标，排序后作为这个形状的“签名”。",
+      "按行优先扫描网格，遇到未访问的 1 就用栈或队列遍历整个连通块，记录每个格子相对起点的 (dr, dc)。排序后放进哈希集合（可以把偏移编码成整数或字符串），最后集合大小就是答案。"
+    ],
+    "en": [
+      "With translation only, two islands have the same shape exactly when all their cells have the same offsets from a consistent reference cell.",
+      "Give every island the same kind of reference point, for example the first cell found in a row-major scan. Subtract it from every cell of the island; the sorted list of relative coordinates is the shape's signature.",
+      "Scan the grid in row-major order. At each unvisited land cell, traverse its whole component with a stack or queue and record each cell's (dr, dc) relative to that start. Sort the offsets, put them in a hash set (encoded as integers or a string), and output the set size."
+    ]
+  },
+  "explanationEn": "## Idea\n\nTraverse each connected component, subtract the first visited coordinate from every coordinate in the component, sort, and use the tuple as the shape signature.\n\n## Correctness\n\nThe component traversals are complete and never overlap. Islands of the same shape have identical relative coordinates after translation; conversely, equal signatures mean that one translation vector maps every cell of one island onto the other one to one.\n\n## Complexity\n\nO(rc log(rc)) time, O(rc) space."
+}

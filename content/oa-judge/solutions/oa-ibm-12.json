@@ -1,0 +1,21 @@
+{
+  "id": "oa-ibm-12",
+  "packageChecksum": "58f4b64ae0c9c0a56966334fef7dd90f4e6e073697273a2141861e9d187daa7c",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> freq(501, 0);\n    int maxV = 0;\n    for (int i = 0; i < n; i++) {\n        int v;\n        cin >> v;\n        freq[v]++;\n        maxV = max(maxV, v);\n    }\n    // more packs than the largest count can never beat 2 packs\n    long long best = LLONG_MAX;\n    for (int p = 2; p <= max(2, maxV); p++) {\n        long long cost = 0;\n        for (int v = 1; v <= 500; v++)\n            if (freq[v]) cost += freq[v] * ((p - v % p) % p); // top up to the next multiple of p\n        best = min(best, cost);\n    }\n    cout << best << \"\\n\";\n}\n",
+      "sha256": "4fff055a78fa908f21109991acec1a94d3ce9d6ab50270ffdd200f2f289cf7c1"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream is = System.in;\n\n    static int readByte() throws IOException {\n        if (ptr == len) { len = is.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c != -1 && c <= ' ') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = readByte(); }\n        return sb.toString();\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c != '-' && (c < '0' || c > '9')) c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = readByte(); }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        long[] freq = new long[501];\n        int maxV = 0;\n        for (int i = 0; i < n; i++) {\n            int v = (int) nextLong();\n            freq[v]++;\n            maxV = Math.max(maxV, v);\n        }\n        // more packs than the largest count can never beat 2 packs\n        long best = Long.MAX_VALUE;\n        for (int p = 2; p <= Math.max(2, maxV); p++) {\n            long cost = 0;\n            for (int v = 1; v <= 500; v++)\n                if (freq[v] > 0) cost += freq[v] * ((p - v % p) % p); // top up to the next multiple of p\n            best = Math.min(best, cost);\n        }\n        System.out.println(best);\n    }\n}\n",
+      "sha256": "a44feaecfd2a749d9f5c765843a062e65a66d17ca7087954953866b80c5bf5b4"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"math\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tsc.Scan()\n\tn, _ := strconv.Atoi(sc.Text())\n\tfreq := make([]int64, 501)\n\tmaxV := 0\n\tfor i := 0; i < n; i++ {\n\t\tsc.Scan()\n\t\tv, _ := strconv.Atoi(sc.Text())\n\t\tfreq[v]++\n\t\tmaxV = max(maxV, v)\n\t}\n\t// more packs than the largest count can never beat 2 packs\n\tbest := int64(math.MaxInt64)\n\tfor p := 2; p <= max(2, maxV); p++ {\n\t\tvar cost int64\n\t\tfor v := 1; v <= 500; v++ {\n\t\t\tif freq[v] > 0 {\n\t\t\t\tcost += freq[v] * int64((p-v%p)%p) // top up to the next multiple of p\n\t\t\t}\n\t\t}\n\t\tbest = min(best, cost)\n\t}\n\tfmt.Println(best)\n}\n",
+      "sha256": "54968f893788bcad745bcb96a3cc8200dab6cbbc0d44dfe84052b28ba41b572a"
+    }
+  ]
+}

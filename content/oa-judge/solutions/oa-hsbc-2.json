@@ -1,0 +1,21 @@
+{
+  "id": "oa-hsbc-2",
+  "packageChecksum": "cddf85cbec42781ff03a6eb3a047587c561a1739c27d27e094706572a5bfe46d",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    data = sys.stdin.buffer.read().split()\n    q = int(data[1])\n    k = int(data[3 + 2 * q])\n    answer = k\n    # ranges never overlap: the one covering K reverses it, so K holds soldier l + r - K\n    for i in range(q):\n        left, right = int(data[3 + 2 * i]), int(data[4 + 2 * i])\n        if left <= k <= right:\n            answer = left + right - k\n    print(answer)\n\n\nmain()\n",
+      "sha256": "e4625728cba5b0d2b06d3fc2fde695e0aacad8f3b957e97a76dd10f5e9488a32"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream is = System.in;\n\n    static int readByte() throws IOException {\n        if (ptr == len) { len = is.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c != -1 && c <= ' ') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = readByte(); }\n        return sb.toString();\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c != '-' && (c < '0' || c > '9')) c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = readByte(); }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        nextLong(); // N is not needed\n        int q = (int) nextLong();\n        nextLong(); // S = 2\n        long[] l = new long[q], r = new long[q];\n        for (int i = 0; i < q; i++) { l[i] = nextLong(); r[i] = nextLong(); }\n        long k = nextLong(), answer = k;\n        // ranges never overlap: the one covering K reverses it, so K holds soldier l + r - K\n        for (int i = 0; i < q; i++) if (l[i] <= k && k <= r[i]) answer = l[i] + r[i] - k;\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "c12fe7d4d285bf07547711d96a8f7db803ae1433a476c6eaa8071881ac675f0f"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int64 {\n\t\tsc.Scan()\n\t\tv, _ := strconv.ParseInt(sc.Text(), 10, 64)\n\t\treturn v\n\t}\n\tnext() // N is not needed\n\tq := int(next())\n\tnext() // S = 2\n\tl := make([]int64, q)\n\tr := make([]int64, q)\n\tfor i := 0; i < q; i++ {\n\t\tl[i], r[i] = next(), next()\n\t}\n\tk := next()\n\tanswer := k\n\t// ranges never overlap: the one covering K reverses it, so K holds soldier l + r - K\n\tfor i := 0; i < q; i++ {\n\t\tif l[i] <= k && k <= r[i] {\n\t\t\tanswer = l[i] + r[i] - k\n\t\t}\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "60a483f2183682e7fdf9216a0e5806da59169c6741a7c5b7e4ad9f66bb162ef4"
+    }
+  ]
+}

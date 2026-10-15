@@ -1,0 +1,21 @@
+{
+  "id": "oa-hsbc-1",
+  "packageChecksum": "bc49e2db9dac0f803bb8a35f7fb3d5f12160a1ece39f99bf2263dcb3269ff57f",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int n;\n    cin >> n;\n    vector<long long> v(n);\n    for (auto &x : v) cin >> x;\n    int k;\n    cin >> k;\n    sort(v.begin(), v.begin() + k);                         // first K ascending\n    sort(v.begin() + k, v.end(), greater<long long>());     // the rest descending\n    string out;\n    for (int i = 0; i < n; i++) {\n        if (i) out += ' ';\n        out += to_string(v[i]);\n    }\n    cout << out << \"\\n\";\n}\n",
+      "sha256": "532bc24192d12d36f03f4fbdfa4c005cb8f47070f091d0c80f5168d09037d9f8"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static byte[] buf = new byte[1 << 16];\n    static int len = 0, ptr = 0;\n    static InputStream is = System.in;\n\n    static int readByte() throws IOException {\n        if (ptr == len) { len = is.read(buf, 0, buf.length); ptr = 0; if (len <= 0) return -1; }\n        return buf[ptr++];\n    }\n\n    static String next() throws IOException {\n        int c = readByte();\n        while (c != -1 && c <= ' ') c = readByte();\n        StringBuilder sb = new StringBuilder();\n        while (c > ' ') { sb.append((char) c); c = readByte(); }\n        return sb.toString();\n    }\n\n    static long nextLong() throws IOException {\n        int c = readByte();\n        while (c != '-' && (c < '0' || c > '9')) c = readByte();\n        boolean neg = c == '-';\n        if (neg) c = readByte();\n        long r = 0;\n        while (c >= '0' && c <= '9') { r = r * 10 + (c - '0'); c = readByte(); }\n        return neg ? -r : r;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) nextLong();\n        long[] v = new long[n];\n        for (int i = 0; i < n; i++) v[i] = nextLong();\n        int k = (int) nextLong();\n        Arrays.sort(v, 0, k);        // first K ascending\n        Arrays.sort(v, k, n);        // the rest ascending, printed in reverse\n        StringBuilder out = new StringBuilder();\n        for (int i = 0; i < k; i++) out.append(i > 0 ? \" \" : \"\").append(v[i]);\n        for (int i = n - 1; i >= k; i--) out.append(out.length() > 0 ? \" \" : \"\").append(v[i]);\n        System.out.println(out);\n    }\n}\n",
+      "sha256": "0b7708ffe787d31486e4dc94021b8abdc1a6cdb567f6f1cc67a9dd4e7412b483"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"slices\"\n\t\"strconv\"\n)\n\nfunc main() {\n\tsc := bufio.NewScanner(os.Stdin)\n\tsc.Buffer(make([]byte, 1<<20), 1<<26)\n\tsc.Split(bufio.ScanWords)\n\tnext := func() int64 {\n\t\tsc.Scan()\n\t\tv, _ := strconv.ParseInt(sc.Text(), 10, 64)\n\t\treturn v\n\t}\n\tn := int(next())\n\tv := make([]int64, n)\n\tfor i := range v {\n\t\tv[i] = next()\n\t}\n\tk := int(next())\n\tslices.Sort(v[:k]) // first K ascending\n\tslices.Sort(v[k:])\n\tslices.Reverse(v[k:]) // the rest descending\n\tw := bufio.NewWriterSize(os.Stdout, 1<<20)\n\tdefer w.Flush()\n\tfor i, x := range v {\n\t\tif i > 0 {\n\t\t\tw.WriteByte(' ')\n\t\t}\n\t\tw.WriteString(strconv.FormatInt(x, 10))\n\t}\n\tw.WriteByte('\\n')\n}\n",
+      "sha256": "0ef9af9d28a1b955f5bb40abd88d6a428d2dbe57d4018728a009e5ac029addaa"
+    }
+  ]
+}
