@@ -71,7 +71,7 @@ export function PrivacyDocument() {
                 学习小组的聊天消息只有本组成员能看到，显示你在本组填的昵称；消息保留 180 天后自动删除，小组解散时一并删除；小组里有消息被举报、尚未处理时，负责审核的老师可以打开这个小组的聊天查看上下文。私信只有对话双方能看到，只能在互相关注的人之间，或者从内推帖请求内推时开始；你可以设置谁能给你发起新对话，也可以屏蔽对方。私信保留 365 天后自动删除。新私信只产生站内通知，通知里只有对方的公开主页名或打码后的昵称，不含正文，也不发邮件。被举报的聊天消息和私信（只有被举报的那一条）会交给负责审核的老师查看和处理。
               </p>
               <p>
-                验证员工身份时，你填写的工作邮箱只用来发送验证码（经 Resend 发送）。平台不保存邮箱本身，只保存它加上服务器密钥后计算的不可逆摘要（用来保证一个工作邮箱只验证一个账号）、邮箱域名和对应的公司，验证有效 1 年。「已验证 · 公司员工」默认哪里都不显示，你可以分别打开公开主页、讨论帖和题解、内推帖三处展示；讨论帖只限算法、内推和站务频道，面经讨论、求职、上岸故事频道和面经评论里永远不显示。账号设置里随时可以删除验证记录。
+                验证员工身份时，你填写的工作邮箱只用来发送验证码（经 Resend 发送）。平台不保存邮箱本身，只保存它加上服务器密钥后计算的不可逆摘要（用来保证一个工作邮箱只验证一个账号）、邮箱域名和对应的公司，验证有效 1 年。「已验证 · 公司员工」默认哪里都不显示，你可以分别打开公开主页、讨论帖和题解、内推帖三处展示，换成另一家公司的邮箱验证后三处都会重新关闭；讨论帖只限算法、内推和站务频道，面经讨论、求职、上岸故事频道、公司 OA 题的题解和面经评论里永远不显示。公开主页显示徽章时，主页的帖子列表不列出面经讨论、求职、上岸故事帖和公司 OA 题的题解，但这些帖子本身仍署你的主页名。账号设置里随时可以删除验证记录。
               </p>
               <p>
                 工单会保存你填写的问题、回复、附件，以及主动关联的课时、视频位置或提交记录。工单、作业和个人提交记录按账户权限提供给你及负责教学管理的老师查看，不作为面向其他学员的公开讨论内容。老师会使用这些资料答疑、评审作业、管理授权和跟进学习问题。
@@ -349,10 +349,15 @@ export function PrivacyDocument() {
                 the company, valid for a year. &ldquo;Verified &middot; company
                 employee&rdquo; shows nowhere by default; you can turn it on
                 separately for your public profile, threads and solutions, and
-                referral threads. Threads means the Algorithms, Referrals and
-                Site feedback channels: it never shows in the Interviews,
-                Careers or Offers channels or on experience comments. You can
-                remove the verification in account settings at any time.
+                referral threads, and all three turn off again when you verify
+                a work email at another company. Threads means the Algorithms,
+                Referrals and Site feedback channels: it never shows in the
+                Interviews, Careers or Offers channels, on solutions to a
+                company&rsquo;s OA problems or on experience comments. While
+                your public profile shows the badge, its post list leaves out
+                Interviews, Careers and Offers threads and OA solutions, though
+                those posts still carry your handle. You can remove the
+                verification in account settings at any time.
               </p>
               <p>
                 Tickets store the questions you write, replies, and attachments,

@@ -22,13 +22,19 @@ type State = {
 };
 // [zh, en, zh note, en note]
 const PLACEMENTS: [Placement, string, string, string, string][] = [
-  ['profile', '公开主页', 'Public profile', '显示在主页名下面。', 'Under your handle.'],
+  [
+    'profile',
+    '公开主页',
+    'Public profile',
+    '显示在主页名下面。显示时，主页的帖子列表不列面经、求职、上岸故事帖和公司 OA 题的题解；这些帖子仍署你的主页名，读者能顺着名字找到你的主页。',
+    'Under your handle. While it shows, your profile’s post list leaves out interview, career and offer threads and solutions to company OA problems. Those posts still carry your handle, so readers can find your profile from them.',
+  ],
   [
     'posts',
     '讨论帖和题解',
     'Threads and solutions',
-    '只在题解和算法、内推、站务频道显示；面经、求职、上岸故事和面经评论里永远不显示，以免透露「这家公司的员工在找工作」。',
-    'Only on solutions and the Algorithms, Referrals and Site feedback channels. Never in interview, career or offer talk or on experience comments, where it would say an employee there is interviewing.',
+    '只在题解和算法、内推、站务频道显示；公司 OA 题的题解、面经、求职、上岸故事和面经评论里永远不显示，以免透露「这家公司的员工在找工作」。',
+    'Only on solutions and the Algorithms, Referrals and Site feedback channels. Never on solutions to a company’s OA problems, in interview, career or offer talk or on experience comments, where it would say an employee there is interviewing.',
   ],
   [
     'referrals',
@@ -84,8 +90,8 @@ export function WorkBadgeSettings() {
       </h2>
       <p className="muted">
         {t(
-          '用公司邮箱证明你在哪家公司工作。平台只保存这个邮箱的不可逆摘要和域名，不保存邮箱本身；一个工作邮箱只能验证一个账号，有效 1 年。徽章默认哪里都不显示，在下面逐项打开。',
-          'Prove where you work with your work email. We keep only a one-way digest of the address and its domain, never the address; one work email verifies one account, for a year. The badge shows nowhere until you turn it on below, place by place.',
+          '用公司邮箱证明你在哪家公司工作。平台只保存这个邮箱的不可逆摘要和域名，不保存邮箱本身；一个工作邮箱只能验证一个账号，有效 1 年。徽章默认哪里都不显示，在下面逐项打开；换成另一家公司验证后，每一项都会重新关闭。',
+          'Prove where you work with your work email. We keep only a one-way digest of the address and its domain, never the address; one work email verifies one account, for a year. The badge shows nowhere until you turn it on below, place by place, and every place turns off again when you verify at another company.',
         )}
       </p>
       {v?.active && (
