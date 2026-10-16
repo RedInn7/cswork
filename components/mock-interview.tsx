@@ -28,6 +28,7 @@ import { countSpeech, type Segment } from '@/lib/mock-delivery';
 import type { Navigate } from './learning';
 import { DeliveryReport, DeliveryStats } from './mock-delivery';
 import { ModeTabs } from './mock-modes';
+import { ResumeBox } from './mock-resume';
 import { OaMarkdown } from './oa-library';
 import { TryFirst } from './try-first';
 import { StoryPicker } from './story-bank';
@@ -88,6 +89,8 @@ type Run = {
   self?: Partial<Record<RubricId, number>>;
   /** AI interviewer: each question's dictated utterances, for the delivery metrics. Never sent. */
   speech?: Record<number, Segment[]>;
+  /** A project deep dive's resume text, sent with its messages and the report (components/mock-resume.tsx). */
+  resume?: string;
 };
 /** A finished step, with the AI's feedback unless it was skipped (or the interview's feedback ran out). */
 type GuideDone = { step: string; skipped?: boolean } & Partial<StepFeedback>;
@@ -1444,6 +1447,7 @@ function AiRunner({
         code: code ? (run.notes[index] ?? '') : '',
         history,
         ...(current ? { step: current.id } : {}),
+        ...(slot.kind === 'project' ? { resume: run.resume ?? '' } : {}),
       });
       setRun((r) => ({ ...r, ticket: answer.ticket, chat: { ...r.chat, [index]: [...history, { role: 'interviewer', text: answer.text }] } }));
       speech.say(answer.text);
@@ -1517,6 +1521,7 @@ function AiRunner({
         template: query.template,
         ...(query.role ? { role: query.role } : {}),
         ...(Object.keys(self).length ? { self } : {}),
+        ...(data.slots.some((s) => s.kind === 'project') ? { resume: run.resume ?? '' } : {}),
         questions: asked.map((i) => ({
           itemId: data.slots[i].item!.id,
           minutes: data.slots[i].minutes,
@@ -1615,6 +1620,9 @@ function AiRunner({
       <div className="mi-work">
         <div className="mi-work-main">
           <QuestionCard slot={slot} problemIds={problemIds} showSource={false} />
+          {item && slot.kind === 'project' && !chat.length && (
+            <ResumeBox value={run.resume} onChange={(resume) => setRun((r) => ({ ...r, resume }))} />
+          )}
           {item && code && (
             <Notes
               label={t('代码（每次发消息时一起发给 AI 面试官）', 'Code (sent to the AI interviewer with each message)')}

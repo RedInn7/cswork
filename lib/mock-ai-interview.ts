@@ -17,7 +17,7 @@ export type Turn = { role: 'candidate' | 'interviewer'; text: string };
 /** The AI's feedback on one guided step: 1–4 on the step's rubric dimensions, one keep and one fix. */
 export type StepFeedback = { scores: Partial<Record<RubricId, number | null>>; keep: string; fix: string };
 
-type Opener = 'coding' | 'behavioral' | 'design' | 'lld' | 'recruiter' | 'negotiation' | 'other';
+type Opener = 'coding' | 'behavioral' | 'design' | 'lld' | 'recruiter' | 'negotiation' | 'project' | 'api' | 'frontend' | 'other';
 const OPENERS: Record<Opener, Text> = {
   coding: [
     '你好，我是今天的面试官。题目在左边，先读一读；输入范围、边界情况有不清楚的都可以先问我。想好思路先讲给我听，再在代码框里写。',
@@ -43,6 +43,18 @@ const OPENERS: Record<Opener, Text> = {
     '你好！恭喜你，团队很希望你加入。书面 offer 在左边，你先看一下。你对这份 offer 有什么想法？',
     "Hi, and congratulations: the team is excited to have you. The written offer is on the left; take a look. What are your thoughts on it?",
   ],
+  project: [
+    '你好，这一轮我们深挖你简历上的一个项目。先挑一个你最熟悉的，用两三分钟讲讲：它解决什么问题、你本人负责哪部分、结果怎样。',
+    "Hi, in this round we'll dig into one project from your resume. Pick the one you know best and give me a two- or three-minute overview: the problem it solved, the part that was yours, and how it turned out.",
+  ],
+  api: [
+    '你好，这一轮是 API 设计，题目在左边。先问清楚谁会调用这个 API、主要用例和规模，再讲资源和接口、请求与响应、错误处理，以及分页、幂等、认证这些细节。',
+    "Hi, this is the API design round; the question is on the left. Start by asking who calls the API, the main use cases and the scale, then walk me through the resources and endpoints, requests and responses, errors, and details like pagination, idempotency and auth.",
+  ],
+  frontend: [
+    '你好，这一轮是前端面试，题目在左边。先讲讲你的思路，再在代码框里写；我会问到它在浏览器里怎么运行，以及键盘和读屏用户能不能用。',
+    "Hi, this is the frontend round; the question is on the left. Talk me through your approach first, then write it in the code box. I'll ask how it behaves in the browser and whether keyboard and screen-reader users can use it.",
+  ],
   other: [
     '你好，题目在左边。先说说你的理解和思路，有不清楚的地方随时问我。',
     "Hi, the question is on the left. Start by telling me how you read it and how you'd approach it; ask me anything that's unclear.",
@@ -50,15 +62,9 @@ const OPENERS: Record<Opener, Text> = {
 };
 /** Shown before the first message of each question; never sent, so reading costs no turn. */
 export const openerFor = (kind: KindId): Text =>
-  OPENERS[
-    kind === 'coding' || kind === 'sql'
-      ? 'coding'
-      : kind === 'behavioral' || kind === 'design' || kind === 'lld' || kind === 'recruiter' || kind === 'negotiation'
-        ? kind
-        : 'other'
-  ];
+  OPENERS[kind === 'sql' ? 'coding' : Object.hasOwn(OPENERS, kind) ? (kind as Opener) : 'other'];
 /** Questions whose code box goes to the interviewer with each message. */
-export const writesCode = (kind: KindId) => kind === 'coding' || kind === 'sql' || kind === 'lld';
+export const writesCode = (kind: KindId) => kind === 'coding' || kind === 'sql' || kind === 'lld' || kind === 'frontend';
 
 export const candidateTurns = (chats: readonly (readonly Turn[] | undefined)[]) =>
   chats.reduce((n, chat) => n + (chat?.filter((t) => t.role === 'candidate').length ?? 0), 0);
