@@ -190,6 +190,9 @@ export function Speedrun({ boot, navigate }: { boot: Boot; navigate: Navigate })
             <button type="button" className="sr-link" onClick={() => navigate('problems')}>
               {t('回到 500 路', 'Back to Line 500')}
             </button>
+            <a className="sr-link" href="/placement">
+              {t('做定位测验', 'Take the placement quiz')}
+            </a>
           </div>
         </div>
         <div className="sr-paper">

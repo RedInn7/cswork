@@ -67,6 +67,9 @@ export function PrivacyDocument() {
               <p>
                 参加技能认证考试时，平台保存每场考试抽到的题目、开考和交卷时间、成绩与是否通过，用于计时、计分、7 天的重考间隔和你的考试记录；成绩由你在考试时间内的正式提交算出，不会公开。通过后签发的证书和课程结业证书一样，只有你在证书列表里勾选「在公开主页展示」后才会出现在公开主页上，证书页面显示你的账号名称。给课程打分时，平台保存你给的星级（1–5 星，不含文字）和时间；其他人只能看到汇总的平均分和人数，不足 5 人时不显示平均分。
               </p>
+              <p id="privacy-practice-board">
+                做定位测验（/placement）时，进行中的题目和作答、以及最近一次结果（各组答对数、估计水平、是否可以跳过和推荐题）由服务器存在你的账号里，用来在冲刺计划里标出已掌握的站；重测会覆盖旧结果，不发给任何第三方，也不用 AI。练习排行榜（/leaderboard）需要你在公开主页打开后才会上榜：上榜后显示主页名、练习积分、通过题数和连续打卡天数，可以按你自填的学校（未经验证）和提交语言筛选，关闭后立即下榜。公开主页还提供 /u/&lt;主页名&gt;/badge.svg 徽章，可以放进 README，显示通过题数和连续天数，上榜时加上积分和名次，主页关闭后失效；主页上新增的累计解题和每日难度图显示每道题首次通过的日期和难度。
+              </p>
               <p id="privacy-share-cards">
                 公开主页、证书、OA 公司页和周赛、入门赛的链接被分享到社交网站或聊天软件时，链接预览里的图片由本站服务器生成：公开主页的图片只有主页名、按难度的通过题数、最长连续通过天数，以及打开「展示比赛记录」时的最新 rating；证书的图片和证书页一样，显示课程名称、账号名称、日期和验证编号；比赛的图片只有场次名称、日期和参赛人数，私人房间和 1v1 排位只用网站的通用图片。图片用本站自带的字体绘制，不把任何文字发给字体服务或其他第三方；账号名称里有这套字体画不出的字时，改为显示公开主页名，没有公开主页名就不显示名字。证书页的「分享到 LinkedIn」「分享到 X」和只有证书持有人能看到的「添加到 LinkedIn 资料」都只是链接：点击后，浏览器才会把证书链接（添加到资料时还有课程名称、签发年月和验证编号）带到对方网站。
               </p>
@@ -143,7 +146,7 @@ export function PrivacyDocument() {
                 地址、设备或浏览器信息与有效期，用于账号安全和查看已登录设备；服务器也会产生访问、错误和管理操作记录，以排查故障和限制滥用。
               </p>
               <p>
-                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传。OA 选择题练习（/oa/mcq）的作答记录和模拟 OA 选择题环节的作答也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。调试与代码评审练习（/oa/drills）完成了哪些，也只记在当前浏览器。
+                浏览器本地存储用于恢复代码、工单或课件编辑草稿，以及记住编辑器设置等。部分草稿只保存在当前浏览器；未登录时在经典题单上手动标记的“已做”也只存在当前浏览器，登录后打开该题单时会合并到你的账号，并从浏览器中删除。退出账号不会自动清除全部本地草稿。共用设备时，可以在浏览器中清除此网站的存储数据，这也会清除尚未提交的本地内容。签证身份时间线里填写的日期只保存在当前浏览器，不会上传。模拟 OA 选择题环节的作答也只保存在当前浏览器，不会上传，也不随模拟成绩同步到账号。OA 选择题练习（/oa/mcq）和各题型页小测的作答与复习安排，未登录时存在当前浏览器；登录后存进你账号里的私密笔记（最多 20KB），浏览器里的记录在账号保存成功后删除。练习页还会读取你自己的系统设计章节测验答案来列出错题，不读取设计草稿。调试与代码评审练习（/oa/drills）完成了哪些，也只记在当前浏览器。
               </p>
               <p>
                 把网站安装到主屏后，浏览器会缓存离线提示页和网站自身的脚本、样式等构建文件，不缓存任何页面内容和个人数据；在账号设置里退出登录时，这些缓存会一并清空。
@@ -392,6 +395,24 @@ export function PrivacyDocument() {
                 course, the platform keeps your stars (1–5, no text) and when you
                 gave them; others see only the average and the number of
                 ratings, and no average until 5 people have rated.
+              </p>
+              <p id="privacy-practice-board">
+                The placement quiz (/placement) keeps the questions and answers
+                of a quiz in progress, and your latest result (correct answers per
+                group, estimated level, which groups you can skip and the
+                suggested problems), in your account on the server; the sprint
+                plan uses it to mark the stops you have mastered. A retake
+                replaces the old result. Nothing goes to a third party and no AI
+                is involved. You appear on the practice leaderboard (/leaderboard)
+                only after you turn it on with a public profile: it then shows
+                your handle, practice points, problems solved and streak, and can
+                be filtered by the school you entered (not verified) and by
+                submission language; turning it off removes you at once. A public
+                profile also serves a /u/&lt;handle&gt;/badge.svg badge for READMEs
+                with your solved count and streak, plus points and rank while you
+                are on the board; it stops working when the profile is off. The
+                profile&apos;s solve curve and daily difficulty charts show the
+                date and difficulty of each problem&apos;s first accepted solve.
               </p>
               <p id="privacy-share-cards">
                 When a link to a public profile, a certificate, an OA company
@@ -653,9 +674,15 @@ export function PrivacyDocument() {
                 stored data in your browser; this also clears local content that
                 has not been submitted yet. Dates you enter in the visa timeline
                 stay in the current browser and are never uploaded. So do your
-                answers on the OA multiple-choice practice page (/oa/mcq) and in
-                a mock OA&apos;s multiple-choice section: they are not uploaded and
-                do not sync to your account with mock OA results. Which
+                answers in a mock OA&apos;s multiple-choice section: they are not
+                uploaded and do not sync to your account with mock OA results.
+                Answers and the review schedule on the OA multiple-choice practice
+                page (/oa/mcq) and the topic pages&apos; quick quizzes stay in this
+                browser while you are signed out; signed in, they are kept in a
+                private note on your account (up to 20KB), and the browser copy
+                is deleted once the account has saved it. The practice page also
+                reads your own system design chapter quiz answers to list the
+                ones you missed, never your design drafts. Which
                 debugging and code-review drills (/oa/drills) you have
                 completed is likewise kept in this browser only.
               </p>
