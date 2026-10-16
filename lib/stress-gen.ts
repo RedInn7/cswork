@@ -117,3 +117,25 @@ export function stressCases(
   // The first case that disagrees is then the smallest one found: no shrinking needed.
   return cases.sort((a, b) => a.length - b.length);
 }
+
+/** Two outputs as the judge's checker compares them: exact (CRLF aside) or ASCII-whitespace tokens. */
+export function sameOutput(a: string, b: string, checker: string) {
+  if (checker === 'exact') return a.replace(/\r\n/g, '\n') === b.replace(/\r\n/g, '\n');
+  const tokens = (text: string) => text.split(/[ \t\n\r\f\v]+/).filter(Boolean).join(' ');
+  return tokens(a) === tokens(b);
+}
+
+/**
+ * The index of the first case, smallest first, where the learner's run disagrees with a finished
+ * reference run: another verdict (runtime error, time limit, skipped) or another output; -1 when
+ * every case agrees.
+ */
+export function firstMismatch(
+  mine: { status: string; stdout?: string }[],
+  reference: { stdout?: string }[],
+  checker: string,
+) {
+  return reference.findIndex(
+    (r, i) => mine[i]?.status !== 'finished' || !sameOutput(mine[i].stdout ?? '', r.stdout ?? '', checker),
+  );
+}

@@ -68,6 +68,7 @@ import { AskedReport, communityProblem } from './problem-community';
 import { SolutionPosts, SolutionsTab } from './solution-posts';
 import { HintLadder, OA_LEVELS, useHintLadder } from './hint-ladder';
 import { AiCaseIdeas, AiComplexity, AiTutor, AskAiSelection, useAiTutor, type AiContext } from './ai-tutor';
+import { StressTest, stressReady } from './stress-result';
 import { ProblemMeta } from './problem-meta';
 import { SimilarProblems } from './similar-problems';
 import {
@@ -1470,8 +1471,9 @@ function Workspace({
     if (
       mode === 'run' &&
       inputMode === 'custom' &&
-      problem.lingEditorialVerified === true &&
-      !!problem.codingModes?.includes('leetcode') &&
+      // A Line 500 editorial's best approach, or an OA package's verified program (ACM only).
+      ((problem.lingEditorialVerified === true && !!problem.codingModes?.includes('leetcode')) ||
+        problem.id.startsWith('oa-')) &&
       !examMode
     )
       void runReference(stdin, codingMode);
@@ -2916,6 +2918,15 @@ function Workspace({
                         <AiCaseIdeas
                           tutor={aiTutor}
                           context={aiContext}
+                          onAdd={(input) => addCase(input)}
+                        />
+                      )}
+                      {boot.person && !examMode && codingMode === 'leetcode' && stressReady(problem.id) && (
+                        <StressTest
+                          problemId={problem.id}
+                          code={code}
+                          language={language}
+                          checker={problem.checker}
                           onAdd={(input) => addCase(input)}
                         />
                       )}

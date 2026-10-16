@@ -5,7 +5,7 @@ import { leetcodeConstraints, leetcodeContract, leetcodeParams } from '../lib/se
 import { lingEditorial } from '../lib/server/ling-editorials';
 import { SEMANTIC_IDS } from '../lib/oj-semantic-checkers';
 import { STRING_STRUCTURE_IDS } from '../lib/oj-string-structures';
-import { STRESS_CASES, smallRange, stressCases, type StressRule } from '../lib/stress-gen';
+import { firstMismatch, sameOutput, STRESS_CASES, smallRange, stressCases, type StressRule } from '../lib/stress-gen';
 import { checkConstraints, checkField, splitFields } from '../lib/testcase-fields';
 
 const rules = safe as Record<string, Record<string, StressRule>>;
@@ -79,6 +79,19 @@ test('modifiers hold on every case', () => {
     assert.ok(t.length === s.length && /^[xy]*$/.test(t));
     assert.equal(typeof flag, 'boolean');
   }
+});
+
+test('outputs compare the way the checker does; the first disagreeing case is found', () => {
+  assert.ok(sameOutput('1 2\r\n', '1 2\n', 'exact'));
+  assert.ok(!sameOutput('1 2 \n', '1 2\n', 'exact'));
+  assert.ok(sameOutput(' 1  2\n3', '1 2 3\n', 'tokens'));
+  assert.ok(!sameOutput('1 2', '1 23', 'tokens'));
+  const ref = [{ stdout: '1\n' }, { stdout: '2\n' }, { stdout: '3\n' }];
+  const ok = (stdout: string) => ({ status: 'finished', stdout });
+  assert.equal(firstMismatch([ok('1'), ok('2'), ok('3')], ref, 'tokens'), -1);
+  assert.equal(firstMismatch([ok('1'), ok('5'), ok('9')], ref, 'tokens'), 1);
+  assert.equal(firstMismatch([ok('1'), { status: 'runtime_error' }, { status: 'skipped' }], ref, 'tokens'), 1);
+  assert.equal(firstMismatch([ok('1')], ref, 'tokens'), 1, 'a missing case disagrees');
 });
 
 /** The judge's checker for a Line 500 problem (scripts/publish-validated-library.ts): only exact and tokens compare by text. */
