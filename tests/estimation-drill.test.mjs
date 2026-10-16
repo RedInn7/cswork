@@ -96,6 +96,7 @@ test('the drill renders on the server, then checks answers and shows the steps a
   assert.equal(doc.querySelector('h2').textContent, '容量估算练习');
   assert.equal(doc.querySelectorAll('select option').length, 10);
   assert.equal(doc.querySelectorAll('.sd-drill-field input').length, 5);
+  assert.deepEqual([...doc.querySelectorAll('.sd-drill-unit')].map((u) => u.textContent), ['次/秒', '次/秒', 'TB', 'MB/s', '台']);
   for (const input of doc.querySelectorAll('.sd-drill-field input'))
     assert.ok(doc.querySelector(`label[for="${input.id}"]`), `${input.id} has a label`);
   assert.equal(doc.querySelector('.sd-drill-steps'), null, 'no answers before checking');
@@ -115,6 +116,8 @@ test('the drill renders on the server, then checks answers and shows the steps a
     await act(async () => root.render(createElement(EstimationDrill, { zh: false })));
     const { answers } = solve(SCENARIOS[0]);
     const input = (field) => document.getElementById(`sd-drill-${field}`);
+    const units = [...document.querySelectorAll('.sd-drill-unit')].map((u) => u.textContent);
+    assert.deepEqual(units, ['requests/s', 'requests/s', 'TB', 'MB/s', 'servers'], 'English units, no Chinese');
     await act(async () => {
       type(input('qps'), String(Math.round(answers.qps * 1.2)));
       type(input('peak'), `${(answers.peak / 1000).toFixed(1)}k`);

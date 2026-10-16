@@ -185,12 +185,12 @@ const LATENCY: [string, string, string][] = [
   ['跨洲网络往返', 'Round trip between continents', '~100–150 ms'],
 ];
 
-const LABELS: Record<(typeof FIELDS)[number], [string, string, string]> = {
-  qps: ['平均 QPS', 'Average QPS', '次/秒 · requests/s'],
-  peak: ['峰值 QPS', 'Peak QPS', '次/秒 · requests/s'],
-  storage: ['每年新增存储（单副本）', 'New storage a year (one copy)', 'TB'],
-  bandwidth: ['平均带宽', 'Average bandwidth', 'MB/s'],
-  machines: ['机器数（应用或存储，取多者）', 'Servers (app or storage, whichever is more)', '台 · servers'],
+const LABELS: Record<(typeof FIELDS)[number], [string, string, string, string]> = {
+  qps: ['平均 QPS', 'Average QPS', '次/秒', 'requests/s'],
+  peak: ['峰值 QPS', 'Peak QPS', '次/秒', 'requests/s'],
+  storage: ['每年新增存储（单副本）', 'New storage a year (one copy)', 'TB', 'TB'],
+  bandwidth: ['平均带宽', 'Average bandwidth', 'MB/s', 'MB/s'],
+  machines: ['机器数（应用或存储，取多者）', 'Servers (app or storage, whichever is more)', '台', 'servers'],
 };
 
 export function EstimationDrill({ zh }: { zh: boolean }) {
@@ -300,7 +300,7 @@ export function EstimationDrill({ zh }: { zh: boolean }) {
                 onChange={(event) => setValues({ ...values, [field]: event.target.value })}
               />
               <span id={`sd-drill-${field}-unit`} className="sd-drill-unit">
-                {LABELS[field][2]}
+                {zh ? LABELS[field][2] : LABELS[field][3]}
               </span>
               {checked && (
                 <span className="sd-drill-mark">
