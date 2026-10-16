@@ -27,6 +27,8 @@ const EN: Record<string, string> = {
   '操作有些频繁，请稍后再试': 'Too many requests. Please try again later',
   '无效的 JSON': 'Invalid JSON',
   接口不存在: 'Endpoint not found',
+  // A wave-7 route whose module has not shipped yet.
+  未开放: 'Not available yet',
   操作不存在: 'Action not found',
   操作不支持: 'Action not supported',
   操作方式无效: 'Invalid request method',
@@ -389,6 +391,9 @@ const EN: Record<string, string> = {
   '项目最多 30 个文件，合计 256 KiB': 'A project is limited to 30 files and 256 KiB in all',
   '今天的 AI 结对次数已用完，明天再来': "You've used today's AI pair requests. Come back tomorrow",
   'AI 结对今天的额度已用完，明天再来': 'The AI pair is out of credit for today. Come back tomorrow',
+  '今天的 AI 结对评估次数已用完，明天再来': "You've used today's AI round reviews. Come back tomorrow",
+  '今天的 AI 作答点评次数已用完，明天再来': "You've used today's AI answer feedback. Come back tomorrow",
+  '今天的职位描述分析次数已用完，明天再来': "You've used today's job description checks. Come back tomorrow",
   '比赛进行中，AI 结对暂停，赛后开放': 'The AI pair is paused while your contest runs; it reopens afterwards',
   '这道题没有 LeetCode 模式': "This problem has no LeetCode mode",
   请先输入问题: 'Type a question first',
