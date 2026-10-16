@@ -75,7 +75,12 @@ export function mcqStats(ids: readonly string[], now = Date.now()) {
       cache.set(id, { at: now, stat });
     }
   }
-  return Object.fromEntries(known.flatMap((id) => (cache.get(id)?.stat ? [[id, cache.get(id)!.stat!]] : [])));
+  const out: Record<string, McqStat> = {};
+  for (const id of known) {
+    const stat = cache.get(id)?.stat;
+    if (stat) out[id] = stat;
+  }
+  return out;
 }
 
 /** /api/oj/mcq/answers (POST, signed in) and /api/oj/mcq/stats?ids=a,b (GET, anyone). */
