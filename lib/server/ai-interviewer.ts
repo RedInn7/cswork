@@ -14,7 +14,7 @@ import { library } from './content-library';
 import { setting } from './env';
 import { HttpError, json, limit } from './http';
 import { record } from './metrics';
-import { lldQuestion, mockPool } from './mock-interview';
+import { LLD_REFERENCE_CHARS, lldQuestion, mockPool } from './mock-interview';
 import { readJson } from './my-practice';
 import { roleplayQuestion } from './roleplay-scenarios';
 
@@ -161,6 +161,8 @@ function loadQuestion(itemId: string) {
 }
 type Question = ReturnType<typeof loadQuestion>;
 const cut = (text: string, max = PART_CHARS) => (text.length > max ? `${text.slice(0, max)}…` : text);
+/** The reference answer; an LLD chapter is longer than a written solution and gets its own cap. */
+const reference = (q: Question) => cut(q.solution, q.kind === 'lld' ? LLD_REFERENCE_CHARS : PART_CHARS);
 const attr = (text: string) => text.replace(/["<>]/g, "'");
 
 const STYLE: Record<KindId, string> = {
@@ -211,7 +213,7 @@ function interviewerSystem(q: Question, minutes: number, en: boolean) {
     q.hints && `Hints you may give, smallest first, only when the candidate is stuck:\n${cut(q.hints)}`,
     q.followUps && `Follow-up questions for once the main question is handled:\n${cut(q.followUps)}`,
     q.rubric && `What a strong answer covers:\n${cut(q.rubric)}`,
-    q.solution && `Reference approach, for your judgement only:\n${cut(q.solution)}`,
+    q.solution && `Reference approach, for your judgement only:\n${reference(q)}`,
   ].filter(Boolean);
   return `You are the interviewer in a mock interview on CSWork, an interview-practice site. The round is ${KINDS[q.kind].name[1]}; about ${minutes} minutes are planned for this question.
 
@@ -421,7 +423,7 @@ const score = { enum: [1, 2, 3, 4, null] };
 const plain = (max: number) => z.string().transform((s) => cut(s.trim(), max));
 
 const stepSystem = (q: Question, step: GuideStep, en: boolean) => {
-  const notes = [q.rubric && `What a strong answer covers:\n${cut(q.rubric)}`, q.solution && `Reference approach:\n${cut(q.solution)}`]
+  const notes = [q.rubric && `What a strong answer covers:\n${cut(q.rubric)}`, q.solution && `Reference approach:\n${reference(q)}`]
     .filter(Boolean)
     .join('\n\n');
   return `You give feedback on one step of a guided ${q.kind === 'lld' ? 'low-level design' : 'system design'} mock interview on CSWork, an interview-practice site. The step is "${step.name[1]}": ${step.points[1]}
@@ -616,7 +618,7 @@ async function report(request: Request, p: Person) {
     .map(({ question: q, history, code, elapsedSec, minutes }, i) => {
       const notes = isRoleplay(q.kind)
         ? `The recruiter's private brief:\n${cut(q.rubric)}`
-        : [q.rubric && `What a strong answer covers:\n${cut(q.rubric)}`, q.solution && `Reference approach:\n${cut(q.solution)}`]
+        : [q.rubric && `What a strong answer covers:\n${cut(q.rubric)}`, q.solution && `Reference approach:\n${reference(q)}`]
             .filter(Boolean)
             .join('\n\n');
       const transcript = history.length

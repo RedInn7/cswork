@@ -27,7 +27,7 @@ const {
   systemDesignPaths,
   totalMinutes,
 } = await import('../lib/server/system-design-course');
-const { LLD_CHAPTERS, lldQuestion } = await import('../lib/server/mock-interview');
+const { LLD_CHAPTERS, LLD_REFERENCE_CHARS, lldQuestion } = await import('../lib/server/mock-interview');
 const { DIAGRAM_MAX_LENGTH } = await import('../lib/course-diagram');
 
 const CHAPTER = ['bodyEn', 'bodyZh', 'quiz', 'slug', 'titleEn', 'titleZh'];
@@ -259,7 +259,14 @@ void test('the AI interviewer asks every LLD case, with the title taken from the
   const atm = lldQuestion('sd-lld-case-atm')!;
   assert.equal(atm.title, 'ATM');
   assert.match(atm.question, /^\*\*ATM\*\*（ATM 取款机）\n\nDesign ATM /);
-  assert.equal(atm.solution, sdChapter('lld-case-atm')!.bodyEn);
+  assert.ok(sdChapter('lld-case-atm')!.bodyEn.startsWith(atm.solution.slice(0, 200)));
+  assert.match(atm.solution, /## Extensions/);
+  // The interviewer and the grader read the whole reference: no diagram source, nothing cut off.
+  for (const slug of LLD_CHAPTERS) {
+    const { solution } = lldQuestion(`sd-${slug}`)!;
+    assert.doesNotMatch(solution, /```mermaid/, slug);
+    assert.ok(solution.length <= LLD_REFERENCE_CHARS, `${slug}: ${solution.length}`);
+  }
   assert.equal(lldQuestion('sd-api-auth-ratelimit'), null);
 });
 
