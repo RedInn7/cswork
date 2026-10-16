@@ -366,6 +366,12 @@ const EN: Record<string, string> = {
   // Application tracker (lib/server/applications.ts)
   投递记录已达上限: "You've reached the limit for tracked applications",
   投递记录不存在: 'Application not found',
+  // Career contacts (lib/server/contacts.ts) and tracker reminders (lib/server/reminders.ts)
+  联系人已达上限: "You've reached the limit for contacts",
+  联系人不存在: 'Contact not found',
+  'OA 将在 24 小时内截止': 'An OA is due within 24 hours',
+  'OA 将在 2 小时内截止': 'An OA is due within 2 hours',
+  '面试将在 1 小时内开始': 'An interview starts within the hour',
   今天的评论已达上限: "You've reached today's limit for comments",
   今天的举报次数已达上限: "You've reached today's limit for reports",
   '代码最多 64 KiB': 'Code can be at most 64 KiB',

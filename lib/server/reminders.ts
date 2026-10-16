@@ -3,6 +3,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { roomWeek, weeklyTitle } from '@/lib/contest';
+import { OA_OPEN } from '@/lib/applications';
 import { englishMessage } from '@/lib/messages-en';
 import { dueReviews, type PracticeHistoryItem } from '@/lib/practice-review';
 import { practiceStats } from '@/lib/practice-stats';
@@ -17,9 +18,10 @@ import { pushEndpoint, pushReady, pushTo } from './web-push';
 /**
  * Learning reminders (db/notify-schema.ts), opt-in on the account page. Once a local day, at the
  * learner's chosen hour, one digest: reviews due, a streak about to break, the daily problem and
- * weeklies or starters they entered that start within a day. It is an in-app notice, a push to
- * each device they turned push on for, and with email on a mail to the verified address. Entrants
- * of a weekly or starter also get a notice and push an hour before it starts. Each notice has a
+ * weeklies or starters they entered that start within a day, and job-search follow-ups due. It is
+ * an in-app notice, a push to each device they turned push on for, and with email on a mail to the
+ * verified address. Entrants of a weekly or starter also get a notice and push an hour before it
+ * starts; tracker cards one before an OA deadline and an interview. Each notice has a
  * deterministic id: writing it is the claim, so no tick, restart or second worker sends twice.
  * The judge worker runs this every 10 minutes (lib/server/oj-worker.ts), in any TZ.
  * ponytail: tz is the offset when last saved (the card re-saves it when opened elsewhere); a
@@ -39,6 +41,7 @@ type Prefs = {
   streak: number;
   daily: number;
   contest: number;
+  applications: number;
   email: number;
   hour: number;
   tz: number;
@@ -70,6 +73,15 @@ const contestTitle = (c: { id: string; title: string; kind: string }, zh: boolea
   return week === null ? c.title : weeklyTitle(week, zh, c.kind);
 };
 const fresh = (id: string) => !sqlite().prepare('SELECT 1 FROM notifications WHERE id=?').get(id);
+/** "MM-DD HH:mm" at `at` in the learner's time. */
+const shortStamp = (at: number, tz: number) => new Date(at - tz * MINUTE).toISOString().slice(5, 16).replace('T', ' ');
+/** Stages an application is over at: no interview reminder, no follow-up due. */
+const CLOSED = "('rejected','withdrawn','ghosted')";
+const APPLICATION_TITLES = {
+  'app-oa24': 'OA 将在 24 小时内截止',
+  'app-oa2': 'OA 将在 2 小时内截止',
+  'app-interview': '面试将在 1 小时内开始',
+};
 
 /**
  * Today's digest for one learner, or null when it would be empty. Every time is re-anchored to
@@ -128,13 +140,24 @@ function digestFor(r: Prefs, now: number): ReminderDigest | null {
       ).map((c) => ({
         id: c.id,
         title: contestTitle(c, r.locale === 'zh'),
-        at: new Date(c.starts_at - r.tz * MINUTE).toISOString().slice(5, 16).replace('T', ' '),
+        at: shortStamp(c.starts_at, r.tz),
       }))
     : [];
-  return reviews || streak || r.daily || contests.length ? { reviews, streak, daily: !!r.daily, contests } : null;
+  let followUps: ReminderDigest['followUps'] = null;
+  if (r.applications) {
+    // Due by the end of the learner's today.
+    const end = Date.parse(`${localDate(now, r.tz)}T00:00:00Z`) + r.tz * MINUTE + DAY;
+    const count = (sql: string) => db.prepare(sql).pluck().get(r.user_id, end) as number;
+    const applications = count(`SELECT COUNT(*) FROM job_applications WHERE user_id=? AND next_at<? AND stage NOT IN ${CLOSED}`);
+    const contacts = count('SELECT COUNT(*) FROM career_contacts WHERE user_id=? AND next_at<?');
+    if (applications || contacts) followUps = { applications, contacts };
+  }
+  return reviews || streak || r.daily || contests.length || followUps
+    ? { reviews, streak, daily: !!r.daily, contests, followUps }
+    : null;
 }
 
-/** One tick: contest reminders an hour ahead, then the digests due this hour. Returns notices sent. */
+/** One tick: contest and tracker reminders, then the digests due this hour. Returns notices sent. */
 export async function sendLearnerReminders(now = Date.now()) {
   const db = sqlite();
   let sent = 0;
@@ -160,6 +183,38 @@ export async function sendLearnerReminders(now = Date.now()) {
     if (!fresh(id) || !notify(notice)) continue;
     sent++;
     await pushTo(c.user_id, now);
+  }
+  // Tracker cards: an open OA due within 24 hours and again within 2 (only the nearer one when a
+  // tick finds both), an interview within the hour. The time is in the id: a moved one is new.
+  // ponytail: scans the cards in each window per tick; index oa_deadline/interview_at if it grows.
+  const cards = (stages: string, column: string, until: number) =>
+    db
+      .prepare(
+        `SELECT a.id,a.user_id,a.company_name AS company,a.role,a.${column} AS at,n.tz
+        FROM job_applications a JOIN notify_prefs n ON n.user_id=a.user_id AND n.applications=1
+        WHERE a.stage ${stages} AND a.${column}>? AND a.${column}<=?`,
+      )
+      .all(now, until) as { id: string; user_id: string; company: string; role: string; at: number; tz: number }[];
+  const soon = [
+    ...cards(`IN (${OA_OPEN.map((s) => `'${s}'`).join(',')})`, 'oa_deadline', now + DAY).map(
+      (a) => [a.at <= now + 2 * HOUR ? 'app-oa2' : 'app-oa24', a] as const,
+    ),
+    ...cards(`NOT IN ${CLOSED}`, 'interview_at', now + HOUR).map((a) => ['app-interview', a] as const),
+  ];
+  for (const [kind, a] of soon) {
+    const id = `${kind}:${a.id}:${a.at}`;
+    const notice = {
+      id,
+      userId: a.user_id,
+      kind: 'application',
+      title: APPLICATION_TITLES[kind],
+      body: `${a.company}${a.role ? ` · ${a.role}` : ''} · ${shortStamp(a.at, a.tz)}`,
+      href: '/career/tracker',
+      now,
+    };
+    if (!fresh(id) || !notify(notice)) continue;
+    sent++;
+    await pushTo(a.user_id, now);
   }
   const due = db
     .prepare(
@@ -204,6 +259,8 @@ const prefsSchema = z
     streak: z.boolean(),
     daily: z.boolean(),
     contest: z.boolean(),
+    // Added later: a page cached from before sends no such field.
+    applications: z.boolean().default(true),
     email: z.boolean(),
     hour: z.number().int().min(0).max(23),
     tz: z.number().int().min(-900).max(900),
@@ -214,7 +271,7 @@ const prefsSchema = z
 function settings(p: Person) {
   const db = sqlite();
   const row = db
-    .prepare('SELECT review,streak,daily,contest,email,hour,tz,locale FROM notify_prefs WHERE user_id=?')
+    .prepare('SELECT review,streak,daily,contest,applications,email,hour,tz,locale FROM notify_prefs WHERE user_id=?')
     .get(p.id) as Omit<Prefs, 'user_id' | 'token'> | undefined;
   return {
     prefs: row
@@ -223,6 +280,7 @@ function settings(p: Person) {
           streak: !!row.streak,
           daily: !!row.daily,
           contest: !!row.contest,
+          applications: !!row.applications,
           email: !!row.email,
           hour: row.hour,
           tz: row.tz,
@@ -299,17 +357,18 @@ export async function handleNotify(request: Request, p: Person | null, path: str
   else {
     if (prefs.email && !p.verified) throw new HttpError(403, '请先验证邮箱');
     db.prepare(
-      `INSERT INTO notify_prefs(user_id,review,streak,daily,contest,email,hour,tz,locale,token,updated_at)
-      VALUES(@user,@review,@streak,@daily,@contest,@email,@hour,@tz,@locale,@token,@now)
+      `INSERT INTO notify_prefs(user_id,review,streak,daily,contest,applications,email,hour,tz,locale,token,updated_at)
+      VALUES(@user,@review,@streak,@daily,@contest,@applications,@email,@hour,@tz,@locale,@token,@now)
       ON CONFLICT(user_id) DO UPDATE SET review=excluded.review,streak=excluded.streak,daily=excluded.daily,
-        contest=excluded.contest,email=excluded.email,hour=excluded.hour,tz=excluded.tz,locale=excluded.locale,
-        updated_at=excluded.updated_at`,
+        contest=excluded.contest,applications=excluded.applications,email=excluded.email,hour=excluded.hour,tz=excluded.tz,
+        locale=excluded.locale,updated_at=excluded.updated_at`,
     ).run({
       ...prefs,
       review: +prefs.review,
       streak: +prefs.streak,
       daily: +prefs.daily,
       contest: +prefs.contest,
+      applications: +prefs.applications,
       email: +prefs.email,
       user: p.id,
       token: randomBytes(32).toString('base64url'),
