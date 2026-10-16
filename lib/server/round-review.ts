@@ -12,7 +12,7 @@ import {
   type RoundReview,
 } from '@/lib/ai-coding';
 import type { Person } from './auth';
-import { line, lines, untagged } from './ai-resume';
+import { line, lines } from './ai-resume';
 import { lastRun, pairContext } from './ai-rounds';
 import { aiTask } from './ai-tasks';
 import { aiEnabled, runAi } from './ai-tutor';
@@ -33,8 +33,12 @@ import { projectTooLarge } from './oj-submissions';
 export const REVIEW_CONTEXT_CHARS = 40_000;
 // Runs of the task this recent count for the review: about one sitting.
 const SITTING_MS = 3 * 3_600_000;
-// Every tag the prompt wraps learner text in; untagged strips them from that text.
+// Every tag the prompt wraps learner text in. Its opener in learner text becomes '‹', so nothing
+// there opens or closes one: a single linear pass, as the files run to 256 KiB (untagged()'s
+// nesting loop is quadratic on that much).
 const TAGS = ['task', 'last_test_run', 'file', 'files_not_shown', 'conversation', 'turn', 'design_note', 'test_runs'];
+const TAG_OPENER = new RegExp(`<(?=\\/?\\s*(?:${TAGS.join('|')})\\b)`, 'gi');
+const strip = (text: string) => text.replace(TAG_OPENER, '‹');
 const turn = z.object({ role: z.enum(['user', 'assistant']), text: z.string() }).strict();
 const input = z
   .object({
@@ -134,7 +138,6 @@ export async function handleRoundReview(request: Request, p: Person) {
   if (data.mode === 'pair' && task.track === 'take-home') throw new HttpError(400, '带回家作业没有 AI 结对可评估');
   if (data.mode === 'pair' && !data.turns.some((t) => t.role === 'user')) throw new HttpError(400, '先和 AI 结对聊几轮再评估');
 
-  const strip = (text: string) => untagged(text, TAGS);
   const files = Object.fromEntries(Object.entries(data.files).map(([path, text]) => [path, strip(text)]));
   const extra =
     data.mode === 'pair'
