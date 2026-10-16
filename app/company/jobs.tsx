@@ -31,14 +31,15 @@ export function OpeningsSource({ zh }: { zh: boolean }) {
 }
 
 /** One line per kind: when this season's roles first showed up and whether they are still open, and last season's start. */
-export function seasonLines(seasons: JobSeason[], items: Opening[], now: number, zh: boolean) {
+export function seasonLines(seasons: JobSeason[], items: ReturnType<typeof freshOpenings>, now: number, zh: boolean) {
   const cycle = hiringCycle(now);
   return (['intern', 'new-grad'] as const).flatMap((kind) => {
     const current = seasons.find((s) => s.kind === kind && s.cycle === cycle);
     const last = seasons.find((s) => s.kind === kind && s.cycle === cycle - 1);
     if (!current && !last) return [];
     const name = KIND[kind][zh ? 0 : 1];
-    const open = items.filter((o) => o.kind === kind).length;
+    // This season's only: last season's posting still up says nothing about this one.
+    const open = items.filter((o) => o.kind === kind && hiringCycle(o.firstSeenAt, o.title) === cycle).length;
     const parts: string[] = [];
     if (current) {
       parts.push(

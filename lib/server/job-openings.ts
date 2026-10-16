@@ -162,15 +162,15 @@ async function syncBoards(now: number, boards: Record<string, Board>) {
 }
 
 /** Openings a sync saw in the last three days (one company's, or all), newest first; hidden companies left out. */
-export function freshOpenings(now = Date.now(), company?: string): Opening[] {
+export function freshOpenings(now = Date.now(), company?: string): (Opening & { firstSeenAt: number })[] {
   const hidden = hiddenCompanies();
   const rows = sqlite()
     .prepare(
-      `SELECT id,company_slug AS companySlug,title,location,url,kind,posted_at AS postedAt,pay_min AS min,pay_max AS max,
+      `SELECT id,company_slug AS companySlug,title,location,url,kind,posted_at AS postedAt,first_seen_at AS firstSeenAt,pay_min AS min,pay_max AS max,
       pay_currency AS currency,pay_unit AS unit FROM job_openings
       WHERE last_seen_at>=? AND kind<>'board'${company ? ' AND company_slug=?' : ''} ORDER BY COALESCE(posted_at,first_seen_at) DESC,id`,
     )
-    .all(...(company ? [now - FRESH_FOR, company] : [now - FRESH_FOR])) as (Omit<Opening, 'pay'> & Pay)[];
+    .all(...(company ? [now - FRESH_FOR, company] : [now - FRESH_FOR])) as (Omit<Opening, 'pay'> & Pay & { firstSeenAt: number })[];
   return rows.flatMap(({ min, max, currency, unit, ...o }) =>
     hidden.has(o.companySlug) ? [] : [{ ...o, pay: unit ? { min, max, currency, unit } : null }],
   );

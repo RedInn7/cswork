@@ -38,6 +38,7 @@ const Jobs = (await import('../app/career/jobs/page.tsx')).default;
 const DAY = 86400000;
 const now = Date.now();
 const cycle = hiringCycle(now);
+const SWE = `Software Engineer Intern, Summer ${cycle}`;
 before(() => {
   migrate(drizzle(sqlite()), { migrationsFolder: resolve('drizzle') });
   const db = sqlite();
@@ -47,9 +48,13 @@ before(() => {
   const board = (id, slug, first, last) => opening.run(id, slug, '', '', '', 'board', first, last, null, null, '', '');
   board('greenhouse:stripe:', 'stripe', now - 40 * DAY, now - 2 * 3600000);
   board('lever:ramp:', 'ramp', now - 400 * DAY, now - 3600000);
-  opening.run('greenhouse:stripe:1', 'stripe', 'Software Engineer Intern, Summer 2027', 'New York, NY', 'https://stripe.com/jobs?gh_jid=1', 'intern', now - 3 * DAY, now - 2 * 3600000, 45, 55, 'USD', 'hour');
-  opening.run('greenhouse:stripe:2', 'stripe', 'Marketing Intern', 'San Francisco', 'https://stripe.com/jobs?gh_jid=2', 'intern', now - 3 * DAY, now - 2 * 3600000, null, null, '', '');
-  opening.run('greenhouse:stripe:3', 'stripe', 'Machine Learning Engineer, New Grad', 'Seattle', 'https://stripe.com/jobs?gh_jid=3', 'new-grad', now - 2 * DAY, now - 2 * 3600000, null, null, '', '');
+  // First seen a minute ago, so each is this hiring cycle's whatever the date.
+  opening.run('greenhouse:stripe:1', 'stripe', SWE, 'New York, NY', 'https://stripe.com/jobs?gh_jid=1', 'intern', now - 60000, now - 2 * 3600000, 45, 55, 'USD', 'hour');
+  opening.run('greenhouse:stripe:2', 'stripe', 'Marketing Intern', 'San Francisco', 'https://stripe.com/jobs?gh_jid=2', 'intern', now - 60000, now - 2 * 3600000, null, null, '', '');
+  opening.run('greenhouse:stripe:3', 'stripe', 'Machine Learning Engineer, New Grad', 'Seattle', 'https://stripe.com/jobs?gh_jid=3', 'new-grad', now - 30000, now - 2 * 3600000, null, null, '', '');
+  // Old Co (no company page): last cycle's new-grad posting is still up; this cycle's came and went.
+  board('greenhouse:oldco:', 'oldco', now - 400 * DAY, now - 3600000);
+  opening.run('greenhouse:oldco:1', 'oldco', `Software Engineer, New Grad ${cycle - 1}`, 'Austin', 'https://example.com/old/1', 'new-grad', now - 300 * DAY, now - 2 * 3600000, null, null, '', '');
   const season = db.prepare('INSERT INTO job_seasons(company_slug,kind,cycle,first_seen_at,last_seen_at,peak) VALUES(?,?,?,?,?,?)');
   // Stripe: interns this week-ish; new grads already up at the first sync.
   season.run('stripe', 'intern', cycle, now - 3 * DAY, now - 2 * 3600000, 2);
@@ -59,6 +64,8 @@ before(() => {
   season.run('ramp', 'new-grad', cycle, now - 20 * DAY, now - 10 * DAY, 1);
   // Jane Street: seen once today; its board has no row (it failed since), so nothing is called closed.
   season.run('jane', 'intern', cycle, now - 60000, now - 60000, 1);
+  season.run('oldco', 'new-grad', cycle - 1, now - 300 * DAY, now - 2 * 3600000, 1);
+  season.run('oldco', 'new-grad', cycle, now - 20 * DAY, now - 10 * DAY, 1);
 });
 after(() => {
   sqlite().close();
@@ -81,6 +88,10 @@ test('the company panel: this and last season, open or closed, and only when the
   assert.equal(ramp.querySelector('.job-openings'), null);
   const jane = doc(await JobOpenings({ slug: 'jane', name: 'Jane Street', zh: true }));
   assert.match(lines(jane)[0], new RegExp(`^本季实习岗位（${cycle} 年入职）\\d{1,2} 月 \\d{1,2} 日首次出现$`));
+  // Last cycle's posting still up is no open role this season, nor does it keep the season from closing.
+  const oldco = doc(await JobOpenings({ slug: 'oldco', name: 'Old Co', zh: false }));
+  assert.match(lines(oldco)[0], /^This season's new-grad roles .* first appeared \w{3} \d{1,2} · all closed since \w{3} \d{1,2} · Last season: first appeared \w{3} \d{1,2}$/);
+  assert.equal(oldco.querySelectorAll('.job-openings > li').length, 1);
   assert.equal(await JobOpenings({ slug: 'nobody', name: 'Nobody', zh: false }), null);
 });
 
@@ -104,10 +115,10 @@ test('/career/jobs: tech roles by default, a saved search or the profile role wh
   globalThis.__zh = false;
   const titles = async (query) => [...doc(await Jobs({ searchParams: Promise.resolve(query) })).querySelectorAll('.job-openings-title')].map((a) => a.textContent);
   globalThis.__viewer = null;
-  assert.deepEqual(await titles({}), ['Machine Learning Engineer, New Grad', 'Software Engineer Intern, Summer 2027']);
-  assert.deepEqual(await titles({ role: 'all' }), ['Machine Learning Engineer, New Grad', 'Software Engineer Intern, Summer 2027', 'Marketing Intern']);
-  assert.deepEqual(await titles({ role: 'tech', paid: '1' }), ['Software Engineer Intern, Summer 2027']);
-  assert.deepEqual(await titles({ role: 'all', term: 'summer-2027' }), ['Software Engineer Intern, Summer 2027']);
+  assert.deepEqual(await titles({}), ['Machine Learning Engineer, New Grad', SWE]);
+  assert.deepEqual(await titles({ role: 'all' }), ['Machine Learning Engineer, New Grad', SWE, 'Marketing Intern']);
+  assert.deepEqual(await titles({ role: 'tech', paid: '1' }), [SWE]);
+  assert.deepEqual(await titles({ role: 'all', term: `summer-${cycle}` }), [SWE]);
   // No H-1B data: no H-1B filter, and its parameter is ignored.
   const page = doc(await Jobs({ searchParams: Promise.resolve({ h1b: '1' }) }));
   assert.equal(page.querySelector('input[name="h1b"]'), null);
@@ -127,7 +138,7 @@ test('/career/jobs: tech roles by default, a saved search or the profile role wh
   const saved = doc(await Jobs({ searchParams: Promise.resolve({}) }));
   assert.match(saved.querySelector('.job-search-applied').textContent, /Showing your saved search\. See all openings/);
   assert.equal(saved.querySelector('.job-search-applied a').getAttribute('href'), '/career/jobs?all=1');
-  assert.deepEqual([...saved.querySelectorAll('.job-openings-title')].map((a) => a.textContent), ['Software Engineer Intern, Summer 2027', 'Marketing Intern']);
+  assert.deepEqual([...saved.querySelectorAll('.job-openings-title')].map((a) => a.textContent), [SWE, 'Marketing Intern']);
   assert.match(saved.querySelector('.job-search-save').textContent, /^Saved/);
   assert.equal((await titles({ all: '1' })).length, 3);
   assert.match(doc(await Jobs({ searchParams: Promise.resolve({ all: '1' }) })).querySelector('.job-search-save button').textContent, /Replace my saved search/);
