@@ -99,9 +99,9 @@ test('the index, a course and a lesson: links, numbering, quiz, practice and the
   );
   assert.ok(doc.querySelector('.public-library-prose pre code.language-sql'), 'run blocks render as SQL code');
   doc = parse(renderToStaticMarkup(await Course({ params: Promise.resolve({ course: 'sql' }) })));
-  assert.equal(doc.querySelector('.sd-sheet-meta').textContent, '3-question quiz');
+  assert.match(doc.querySelector('.sd-sheet-meta').textContent, /^~\d+ min · 3-question quiz$/);
   doc = parse(renderToStaticMarkup(await Course({ params: Promise.resolve({ course: 'cpp' }) })));
-  assert.equal(doc.querySelector('.sd-sheet-meta').textContent, '3-question quiz · 3 problems');
+  assert.match(doc.querySelector('.sd-sheet-meta').textContent, /^~\d+ min · 3-question quiz · 3 problems$/);
 });
 
 test('marking the last chapter read shows the course certificate', async () => {
