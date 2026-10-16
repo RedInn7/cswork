@@ -44,10 +44,14 @@ test('the index, a course and a lesson: links, numbering, quiz, practice and the
     [...doc.querySelectorAll('.learn-courses a')].map((a) => a.getAttribute('href')),
     ['/learn/big-o', '/learn/python'],
   );
+  // Reading time: each course's total on the index, each lesson's and the total on the course page.
+  assert.match(doc.querySelector('.learn-courses .sd-sheet-no').textContent, /^\d+ 节 · 约 \d+ 分钟$/);
   doc = parse(renderToStaticMarkup(await Course({ params: Promise.resolve({ course: 'big-o' }) })));
   assert.equal(doc.querySelector('h1').textContent, 'Big-O 与数据结构速成课');
+  assert.match(doc.querySelector('.sd-total').textContent, /^全部读完约 \d+ 分钟$/);
   const sheets = [...doc.querySelectorAll('.sd-sheets a')];
   assert.equal(sheets.length, 10);
+  assert.match(sheets[0].querySelector('.sd-sheet-meta').textContent, /^约 \d+ 分钟 · \d+ 道测验 · \d+ 道练习/);
   assert.equal(sheets[0].getAttribute('href'), '/learn/big-o/complexity');
   assert.equal(sheets[9].querySelector('.sd-sheet-no').textContent, '第 10 节');
   await assert.rejects(Course({ params: Promise.resolve({ course: 'nope' }) }), { digest: 'NEXT_NOT_FOUND' });
