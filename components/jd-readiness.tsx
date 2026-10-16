@@ -153,10 +153,10 @@ export function JdReadiness({ zh, ai = true }: { zh: boolean; ai?: boolean }) {
             {!ai
               ? t('关键词匹配，不是 AI 解析：职位描述只在这个浏览器里读取。', 'Keyword matching, not AI: the posting is read in this browser only.')
               : left === null
-              ? ''
-              : left > 0
-                ? t(`今天还可以分析 ${left} 次`, `${left} ${left === 1 ? 'check' : 'checks'} left today`)
-                : t('今天的次数已用完，明天再来', "You've used today's checks. Come back tomorrow")}
+                ? ''
+                : left > 0
+                  ? t(`今天还可以分析 ${left} 次`, `${left} ${left === 1 ? 'check' : 'checks'} left today`)
+                  : t('今天的次数已用完，明天再来', "You've used today's checks. Come back tomorrow")}
           </small>
         </div>
         {error && (
