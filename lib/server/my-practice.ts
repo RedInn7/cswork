@@ -195,17 +195,19 @@ export async function handleMyPractice(
     if (resource === 'history') return json({ items: practiceHistory(p.id) });
     if (resource === 'notes') {
       if (!params.has('target')) {
-        // ?prefix=story: lists the story bank with its bodies in one request; ?prefix=sd: the
-        // system design quiz answers (app/oa/mcq/practice.tsx reviews the wrong ones).
+        // ?prefix=story: lists the story bank with its bodies in one request (MAX_STORIES); ?prefix=sd:
+        // the system design quiz answers (app/oa/mcq/practice.tsx reviews the wrong ones): `sd:<chapter>`
+        // only, not the `sd:<chapter>/draft` design drafts, capped well above the chapter count.
         const listed = params.get('prefix');
         if (listed === 'story:' || listed === 'sd:')
           return json({
             items: db
               .prepare(
                 `SELECT target,body,updated_at AS updatedAt FROM user_notes
-                WHERE user_id=? AND target LIKE ? ORDER BY updated_at DESC`,
+                WHERE user_id=? AND target LIKE ? AND (?='story:' OR instr(target,'/')=0)
+                ORDER BY updated_at DESC LIMIT ?`,
               )
-              .all(p.id, `${listed}%`),
+              .all(p.id, `${listed}%`, listed, MAX_STORIES),
           });
         return json(searchNotes(p.id, params));
       }
