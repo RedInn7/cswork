@@ -216,14 +216,19 @@ void test('a posting reads as closed only once its board synced without it; link
 });
 
 void test('cards at OA, phone or onsite get the interview prep links', async () => {
+  // One approved member write-up (the content library may be absent here: then it is the count).
+  const library = (await import('../lib/server/content-library')).library();
+  const before = library ? (await import('../lib/server/company-hub')).companyDirectory(library).get('amazon')?.experiences ?? 0 : 0;
+  sqlite()
+    .prepare(
+      `INSERT INTO experience_submissions(id,user_id,company_slug,title,role,interview_month,body,status,created_at)
+      VALUES('xp-1','someone','amazon','Phone screen','SDE','2026-09',?,'approved',1)`,
+    )
+    .run('x'.repeat(100));
   const { item } = (await call(ada, [], { company: 'Amazon', stage: 'phone' })).data!;
   assert.equal(item.prep?.problems, '/?view=problems&company=amazon&sort=frequency');
   assert.equal(item.prep?.stories, '/?view=stories');
-  const experiences = item.prep?.experiences;
-  if (experiences) {
-    assert.equal(experiences.href, '/company/amazon#experiences');
-    assert.ok(experiences.n > 0);
-  }
+  assert.deepEqual(item.prep?.experiences, { href: '/company/amazon#experiences', n: before + 1 });
   assert.equal((await call(ada, [item.id], { stage: 'offer' })).data!.item.prep, null);
   assert.equal((await call(ada, [], { company: 'My Startup', stage: 'oa' })).data!.item.prep, null);
 });
