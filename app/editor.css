@@ -1857,7 +1857,10 @@ button.cs-statement-pill[aria-expanded='true'] {
   max-width: 420px;
   padding: 0;
   border-radius: 14px;
-  overflow: hidden;
+  /* Notes and extras can outgrow a short phone screen: scroll rather than clip Close and Next. */
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
 }
 .cs-accepted-banner {
   position: relative;

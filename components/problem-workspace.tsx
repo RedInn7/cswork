@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useRef, useState, useCallback, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback, type CSSProperties, type ReactNode } from 'react';
 import {
   Group,
   Panel,
@@ -16,6 +16,8 @@ import {
 } from '@/lib/problem-sequence';
 import { practiceStats, type Activity } from './practice-calendar';
 import { AcceptedExtras } from './achievements';
+import { AnalyzerNotes, FollowUpToggle, followUpBlocked } from './analyzer-notes';
+import { followUpRule } from '@/lib/code-analyzer';
 import { RatingBadge } from './rating-badge';
 import { localDay, readTodayTarget } from '@/lib/study-plan';
 import {
@@ -412,6 +414,9 @@ function Workspace({
     defaultEditorSettings,
   );
   const [language, setLanguage] = useState<Language>('python');
+  // Follow-up mode: LeetCode mode only, where every line is the learner's own (no input parsing).
+  const [followUpOn, setFollowUpOn] = useState(false);
+  const followUp = !examMode && codingMode === 'leetcode' ? followUpRule(problem.id, language) : undefined;
   const editorFile =
     codingMode === 'leetcode'
       ? {
@@ -1456,6 +1461,11 @@ function Workspace({
       );
       return;
     }
+    const blocked = mode === 'judge' && followUpOn && followUp ? followUpBlocked(code, language, followUp, uiEnglish) : '';
+    if (blocked) {
+      setError(blocked);
+      return;
+    }
     cancelPrecompile();
     feedbackTiming.current ??= new FeedbackTiming(performance);
     feedbackTiming.current.start(mode);
@@ -2320,6 +2330,7 @@ function Workspace({
               <Info size={15} />
             </button>
           )}
+          {followUp && <FollowUpToggle rule={followUp} on={followUpOn} onChange={setFollowUpOn} english={uiEnglish} />}
           <button
             aria-label={t('下载当前代码', 'Download code')}
             title={t('下载当前代码', 'Download code')}
@@ -3219,6 +3230,14 @@ function Workspace({
           }
           ai={aiOn ? { tutor: aiTutor, context: aiContext } : undefined}
           targetComplexity={problem.targetComplexity}
+          notes={
+            <AnalyzerNotes
+              code={success.code ?? code}
+              language={success.language}
+              followUp={followUpOn && success.codingMode === 'leetcode' ? followUpRule(problem.id, success.language) : undefined}
+              english={uiEnglish}
+            />
+          }
         />
       )}
       {problemError &&
@@ -3643,6 +3662,7 @@ function AcceptedDialog({
   openSolutions,
   ai,
   targetComplexity,
+  notes,
 }: {
   problemId: string;
   language: string;
@@ -3654,6 +3674,8 @@ function AcceptedDialog({
   ai?: { tutor: ReturnType<typeof useAiTutor>; context: AiContext };
   /** Line 500's target complexity, shown beside the AI analysis to compare against. */
   targetComplexity?: OJProblem['targetComplexity'];
+  /** Rule-based notes on the accepted code (components/analyzer-notes.tsx). */
+  notes?: ReactNode;
   line: boolean;
   /** The classic list the problem was opened from; its order wins over Line 500's. */
   library?: string;
@@ -3817,6 +3839,7 @@ function AcceptedDialog({
             </p>
           )}
           {ai && <AiComplexity tutor={ai.tutor} context={ai.context} />}
+          {notes}
           <AcceptedExtras
             problemId={problemId}
             acceptedAt={acceptedAt}
