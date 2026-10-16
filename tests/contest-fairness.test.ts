@@ -222,6 +222,12 @@ void test('the editorial endpoint: signed in, 403 in a running contest, open els
   assert.equal(await status(dan, 'GET', 'problems/lc-1/editorial'), 200);
   // An OA editorial is closed the same way.
   assert.equal(await status(amy, 'GET', 'oa-library/oa-acme-1/solution'), 403);
+  // A read goes on the reader's assisted-solve record; a refused one does not.
+  const aids = (userId: string) =>
+    sqlite().prepare("SELECT problem_id||':'||kind FROM practice_aids WHERE user_id=? ORDER BY 1").pluck().all(userId);
+  assert.deepEqual(aids(bob.id), ['lc-1:editorial']);
+  assert.deepEqual(aids(amy.id), ['lc-20:editorial']);
+  assert.deepEqual(aids(cat.id), []);
 });
 
 void test('community solutions: list, read and write refuse during the contest', async () => {

@@ -11,6 +11,7 @@ import { origin, setting } from './env';
 import { body, HttpError, json, limit, requirePerson } from './http';
 import { mailReady, reminderLines, reminderMail, sendMail, type ReminderDigest } from './mail';
 import { notify } from './notify';
+import { aidsByProblem } from './practice-aids';
 import { pushEndpoint, pushReady, pushTo } from './web-push';
 
 /**
@@ -90,8 +91,12 @@ function digestFor(r: Prefs, now: number): ReminderDigest | null {
         if (times) times.push(wall(a.created_at, r.tz));
         else byProblem.set(a.problem_id, [wall(a.created_at, r.tz)]);
       }
-      // dueReviews reads only acAt.
-      reviews = dueReviews([...byProblem.values()].map((acAt) => ({ acAt }) as PracticeHistoryItem), local).length;
+      // dueReviews reads only acAt and help (a solve with help climbs a longer ladder).
+      const aids = aidsByProblem(r.user_id);
+      reviews = dueReviews(
+        [...byProblem].map(([id, acAt]) => ({ acAt, help: aids.get(id)?.help ?? 'none' }) as PracticeHistoryItem),
+        local,
+      ).length;
     }
     if (r.streak) {
       const bought = db

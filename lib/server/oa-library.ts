@@ -16,6 +16,7 @@ import type { Person } from './auth';
 import { hiddenCompanies } from './env';
 import { HttpError, json, limit, limitReader, requirePerson, rows } from './http';
 import { problemMarks, readJson } from './my-practice';
+import { recordAid } from './practice-aids';
 import {
   oaExtraPrograms,
   oaGuide,
@@ -461,7 +462,12 @@ export async function handleOaLibrary(
   await limitReader(request, person, 'oa-library-read', 120);
   const data = oaLibrary();
   // Reference snippets in the imported source are never returned by the live API.
-  if (id && action === 'solution') return json(data.solution(id));
+  if (id && action === 'solution') {
+    const solution = data.solution(id);
+    // Opening the editorial tab fetches this: before the first AC, the solve counts as assisted.
+    recordAid(person!.id, id, 'editorial');
+    return json(solution);
+  }
   // Never the bug's lines or name until a review is submitted.
   if (id && action === 'drill') return json({ items: currentDrills(id).map(({ n, code, budget }) => ({ n, code, budget })) });
   if (id && action === 'review') {

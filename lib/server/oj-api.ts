@@ -33,7 +33,7 @@ import { handleAiGrade } from './ai-answer';
 import { handleAiJd } from './ai-jd';
 import { handleCodeReviews } from './code-reviews';
 import { handlePlacement } from './placement';
-import { handlePracticeAids } from './practice-aids';
+import { handlePracticeAids, recordAid } from './practice-aids';
 import { handleRoundReview } from './round-review';
 import { handleStress } from './stress';
 import { PROJECT_MAX_BYTES } from '@/lib/ai-coding';
@@ -235,6 +235,8 @@ export async function handleOj(
     // Never while the problem is in this learner's running contest; then the statement's own gate.
     refuseInContest(p, id);
     await getPublishedProblem(p, id);
+    // Read before the first AC, the solve counts as assisted (lib/server/practice-aids.ts).
+    recordAid(p.id, id, 'editorial');
     return json(editorial);
   }
   if (
