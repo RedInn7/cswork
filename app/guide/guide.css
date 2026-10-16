@@ -864,7 +864,7 @@
 .tracker-column[data-stage='offer'] {
   border-top-color: var(--guide-amber);
 }
-.tracker-column:is([data-stage='rejected'], [data-stage='withdrawn']) {
+.tracker-column:is([data-stage='ghosted'], [data-stage='rejected'], [data-stage='withdrawn']) {
   border-top-color: #8796a5;
 }
 .tracker-column h2 {
@@ -951,6 +951,203 @@
 .tracker-card-actions button {
   font-weight: 700;
   cursor: pointer;
+}
+/* Wave 8: follow-ups, hints, details, stats and the bookmarklet. */
+.tracker-next,
+.tracker-closed {
+  color: #5d6b78;
+  font-size: 13px;
+}
+.tracker-next[data-due] {
+  color: #b42318;
+  font-weight: 700;
+}
+.tracker-hint {
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #fff8ea;
+  color: #4a3a12;
+  font-size: 13px;
+}
+.tracker-hint button,
+.tracker-today button {
+  margin-left: 4px;
+  padding: 2px 8px;
+  border: 1px solid #c9d1da;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0e1a2b;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tracker-more summary {
+  color: #0d7a63;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tracker-more[open] {
+  display: grid;
+  gap: 6px;
+}
+.tracker-timeline {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  font-size: 13px;
+}
+.tracker-timeline small,
+.tracker-facts dt {
+  color: #5d6b78;
+}
+.tracker-facts {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  font-size: 13px;
+}
+.tracker-facts div {
+  display: flex;
+  gap: 6px;
+}
+.tracker-facts dd {
+  margin: 0;
+}
+.tracker-card .tracker-text {
+  max-height: 220px;
+  overflow: auto;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #f4f6f8;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+.tracker-today {
+  padding: 12px 16px;
+  border-left: 4px solid #b42318;
+  border-radius: 12px;
+  background: #fff4f2;
+  color: #1d252d;
+}
+.tracker-today h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+.tracker-today ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+.tracker-today small {
+  color: #5d6b78;
+}
+.tracker-stats {
+  padding: 12px 16px;
+  border: 1px solid #e1e6eb;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #1d252d;
+}
+.tracker-stats summary {
+  font-weight: 800;
+  cursor: pointer;
+}
+.tracker-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: 16px 24px;
+  margin-top: 12px;
+  font-size: 14px;
+}
+.tracker-stats h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+.tracker-stats :is(p, ul) {
+  margin: 0 0 6px;
+}
+.tracker-stats ul {
+  padding-left: 18px;
+}
+.tracker-stats-help,
+.tracker-stats small {
+  color: #5d6b78;
+  font-size: 12px;
+}
+.tracker-stats table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+.tracker-stats :is(th, td) {
+  padding: 3px 6px 3px 0;
+  border-bottom: 1px solid #e1e6eb;
+  text-align: left;
+}
+.tracker-goal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 8px;
+}
+.tracker-goal label {
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.tracker-goal input {
+  width: 80px;
+  padding: 6px 8px;
+  border: 1px solid #c9d1da;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1d252d;
+  font: inherit;
+}
+.tracker-goal button {
+  min-height: 34px;
+  padding: 4px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #0d7a63;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tracker-bookmarklet {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  font-size: 14px;
+}
+.tracker-bookmarklet a {
+  padding: 6px 14px;
+  border: 1px dashed #0d7a63;
+  border-radius: 999px;
+  color: #0d7a63;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: grab;
+}
+.tracker-bookmarklet p {
+  flex: 1 1 280px;
+  margin: 0;
+  color: #5d6b78;
+}
+:is(.tracker-hint, .tracker-today, .tracker-goal) button:focus-visible,
+.tracker-more summary:focus-visible,
+.tracker-stats summary:focus-visible,
+.tracker-goal input:focus-visible,
+.tracker-bookmarklet a:focus-visible {
+  outline: 2px solid #0d7a63;
+  outline-offset: 1px;
 }
 @media (max-width: 760px) {
   .tracker-summary {
@@ -1375,7 +1572,7 @@
   .dark .tracker-column[data-stage='offer'] {
     border-top-color: var(--guide-amber);
   }
-  .dark .tracker-column:is([data-stage='rejected'], [data-stage='withdrawn']) {
+  .dark .tracker-column:is([data-stage='ghosted'], [data-stage='rejected'], [data-stage='withdrawn']) {
     border-top-color: #8796a5;
   }
   .dark .tracker-column h2 {
@@ -1407,6 +1604,78 @@
     border: 1px solid #31383f;
     background: #191919;
     color: #d6e4f9;
+  }
+  .dark .tracker-next,
+  .dark .tracker-closed {
+    color: #b5c2ce;
+  }
+  .dark .tracker-next[data-due] {
+    color: #fea99c;
+  }
+  .dark .tracker-hint {
+    background: #19150e;
+    color: #e1d1ad;
+  }
+  .dark .tracker-hint button,
+  .dark .tracker-today button {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #d6e4f9;
+  }
+  .dark .tracker-more summary {
+    color: #87d2bb;
+  }
+  .dark .tracker-timeline small,
+  .dark .tracker-facts dt {
+    color: #b5c2ce;
+  }
+  .dark .tracker-card .tracker-text {
+    background: #131416;
+  }
+  .dark .tracker-today {
+    border-left: 4px solid #b42318;
+    background: #191312;
+    color: #d6dfe8;
+  }
+  .dark .tracker-today small {
+    color: #b5c2ce;
+  }
+  .dark .tracker-stats {
+    border: 1px solid #2b2f33;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .tracker-stats-help,
+  .dark .tracker-stats small {
+    color: #b5c2ce;
+  }
+  .dark .tracker-stats :is(th, td) {
+    border-bottom: 1px solid #2b2f33;
+  }
+  .dark .tracker-goal input {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #d6dfe8;
+  }
+  .dark .tracker-goal button {
+    border: 0;
+    background: #0d7a63;
+    color: #ffffff;
+  }
+  .dark .tracker-bookmarklet a {
+    border: 1px dashed #0d7a63;
+    color: #87d2bb;
+    text-decoration: none;
+  }
+  .dark .tracker-bookmarklet p {
+    color: #b5c2ce;
+  }
+  .dark :is(.tracker-hint, .tracker-today, .tracker-goal) button:focus-visible,
+  .dark .tracker-more summary:focus-visible,
+  .dark .tracker-stats summary:focus-visible,
+  .dark .tracker-goal input:focus-visible,
+  .dark .tracker-bookmarklet a:focus-visible {
+    outline: 2px solid #87d2bb;
   }
 }
 /* ── end dark theme ── */
