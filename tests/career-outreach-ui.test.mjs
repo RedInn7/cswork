@@ -194,4 +194,24 @@ test('checklist: ticks stay in the browser signed out and move to the note on th
   await settle();
   assert.equal(note.body, '', 'none ticked removes the note');
   await act(async () => root.render(createElement('div')));
+
+  // Signed into an account that already has ticks: this browser's merge in and leave the browser,
+  // so unticking everything later can't bring them back.
+  note = { body: JSON.stringify([items[0].id]) };
+  localStorage.setItem('cswork:checklist:resume', JSON.stringify([items[2].id]));
+  await render();
+  await settle();
+  await settle();
+  assert.deepEqual(JSON.parse(note.body), [items[0].id, items[2].id]);
+  assert.equal(localStorage.getItem('cswork:checklist:resume'), null);
+  await act(async () => box(0).click());
+  await act(async () => box(2).click());
+  await settle();
+  assert.equal(note.body, '');
+  await act(async () => root.render(createElement('div')));
+  await render();
+  await settle();
+  await settle();
+  assert.equal(box(2).checked, false, 'stays unticked');
+  await act(async () => root.render(createElement('div')));
 });

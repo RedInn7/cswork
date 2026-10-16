@@ -63,13 +63,12 @@ export function GuideChecklist({ slug, items, zh }: { slug: string; items: Check
         const saved = parseDone((await response.json())?.body, items);
         if (!current) return;
         setWhere('account');
-        if (saved?.length) setDone(saved);
-        else if (local?.length) {
-          // Ticked while signed out: the account takes them over.
-          setDone(local);
-          writeLocal(slug, []);
-          push(local);
-        }
+        // Ticked here while signed out (or while the account was unreachable): merged into the
+        // account, and this browser's copy goes so it can't come back after everything is unticked.
+        const merged = items.map((i) => i.id).filter((id) => saved?.includes(id) || local?.includes(id));
+        setDone(merged);
+        writeLocal(slug, []);
+        if (merged.length > (saved?.length ?? 0)) push(merged);
       })
       .catch(() => {
         if (!current) return;
