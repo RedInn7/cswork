@@ -212,7 +212,7 @@ export const PROBLEMS: Problem[] = [
     slug: 'read-write-lock',
     group: 'concurrency',
     difficulty: '中等',
-    summary: { zh: '读者共享、写者独占，且不让写者饿死', en: 'Shared readers, an exclusive writer, and no starving writers' },
+    summary: { zh: '读者共享、写者独占，用一把锁和条件变量实现', en: 'Shared readers and an exclusive writer from one lock and a condition' },
   },
 ];
 
