@@ -23,7 +23,10 @@ import { SITEMAP_STATIC_ENTRIES } from '../lib/seo';
 import { ROUTE_SLUGS } from '../lib/route-stops';
 
 const bank = bankFile.questions as McqQuestion[];
-const TOPICS = ['os', 'dbms', 'network', 'concurrency', 'oop', 'dsa', 'python', 'java', 'js', 'complexity', 'probability', 'logic'];
+const OLD_TOPICS = ['os', 'dbms', 'network', 'concurrency', 'oop', 'dsa', 'python', 'java', 'js', 'complexity', 'probability', 'logic'];
+// mcq-v2 subjects and their sizes.
+const NEW_TOPICS: Record<string, number> = { cpp: 30, linux: 20, git: 15, sql: 20, arch: 20, security: 20, patterns: 15, web: 30 };
+const TOPICS = [...OLD_TOPICS, ...Object.keys(NEW_TOPICS)];
 
 void test('the bank is well formed: unique ids, known sections and topics, answers in range, both languages', () => {
   assert.equal(new Set(bank.map((q) => q.id)).size, bank.length);
@@ -90,13 +93,16 @@ void test('topics take turns, so the big DSA and complexity pools never crowd ou
   for (const seed of [1, 2, 3]) {
     const perTopic = (ids: string[]) =>
       Object.values(Object.groupBy(ids, (id) => byId.get(id)!.topic)).map((list) => list!.length);
-    // Six CS topics in 10 questions: one or two each.
+    const topicsIn = (section: string) => new Set(bank.filter((q) => q.section === section).map((q) => q.topic)).size;
+    // Twelve CS topics in 10 questions: ten topics, one each.
     const cs = drawMcq(bank, { count: 10, sections: ['cs'] }, seed);
     assert.equal(cs.length, 10);
-    assert(perTopic(cs).every((n) => n <= 2), `cs ${seed}`);
-    assert.equal(perTopic(cs).length, 6);
-    // Four code topics in 8 questions: two each.
-    assert.deepEqual(perTopic(drawMcq(bank, { count: 8, sections: ['code-output'] }, seed)), [2, 2, 2, 2]);
+    assert.equal(perTopic(cs).length, Math.min(10, topicsIn('cs')));
+    assert(perTopic(cs).every((n) => n === 1), `cs ${seed}`);
+    // Six code topics in 8 questions: every topic, none more than twice.
+    const code = perTopic(drawMcq(bank, { count: 8, sections: ['code-output'] }, seed));
+    assert.equal(code.length, topicsIn('code-output'));
+    assert(Math.max(...code) - Math.min(...code) <= 1, `code ${seed}`);
   }
 });
 
@@ -206,3 +212,29 @@ void test('the MCQ section ends at hand-in or its deadline, and the coding clock
   const now = settleMockState({ active: s, history: [] }, 20_000);
   assert.equal(now.active, s);
 });
+
+void test('mcq-v2 subjects: sized as planned, a reason per choice, C++ undefined behaviour marked', () => {
+  for (const [topic, n] of Object.entries(NEW_TOPICS)) assert.equal(bank.filter((q) => q.topic === topic).length, n, topic);
+  assert.equal(bank.filter((q) => q.topic === 'js').length, 40);
+  for (const q of bank) {
+    assert.equal(!!q.zh.whys, !!q.en.whys, q.id);
+    for (const text of [q.zh, q.en]) if (text.whys) assert.equal(text.whys.length, text.choices.length, q.id);
+    if (!q.ub) continue;
+    assert.equal(q.topic, 'cpp', q.id);
+    assert.deepEqual(q.answer.map((a) => [q.zh.choices[a], q.en.choices[a]]), [['未定义行为', 'Undefined behavior']], q.id);
+  }
+  const added = bank.filter((q) => q.topic in NEW_TOPICS || (q.topic === 'js' && +q.id.slice('mcq-js-'.length) > 15));
+  assert.equal(added.length, 195);
+  assert(added.every((q) => q.en.whys), 'new questions explain every choice');
+  assert(bank.filter((q) => q.ub).length >= 3);
+  // Code questions say how they run: the C++ standard, SQLite's dialect (NULL order and integer division differ).
+  assert(bank.filter((q) => q.topic === 'cpp').every((q) => q.lang === 'cpp' && q.en.q.includes('c++17') && q.zh.q.includes('c++17')));
+  assert(bank.filter((q) => q.topic === 'sql').every((q) => q.section === 'code-output' && q.lang === 'sql' && q.en.q.includes('SQLite')));
+});
+
+void test('presets keep drawing from the subjects they had before mcq-v2', () => {
+  for (const p of shownMockPresets().filter((p) => p.mcq))
+    for (const seed of [1, 2, 3])
+      for (const id of drawMcq(bank, p.mcq!, seed)) assert(OLD_TOPICS.includes(byIdAll.get(id)!.topic), `${p.slug} drew ${id}`);
+});
+const byIdAll = new Map(bank.map((q) => [q.id, q]));
