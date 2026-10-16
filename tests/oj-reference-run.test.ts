@@ -108,7 +108,7 @@ void test('custom-case fields follow the function signature; design, Codec and h
 
 void test('a reference run is always wrapped and reads input the way the learner wrote the case', () => {
   const shape = (mode: string, coding_mode: string, custom_input: string | null = 'x') =>
-    leetcodeShape({ mode, coding_mode, custom_input });
+    leetcodeShape({ problem_id: 'lc-1', mode, coding_mode, custom_input });
   assert.deepEqual(shape('reference', 'leetcode'), { wrap: true, leetcodeInput: true });
   assert.deepEqual(shape('reference', 'acm'), { wrap: true, leetcodeInput: false });
   assert.deepEqual(shape('run', 'leetcode'), { wrap: true, leetcodeInput: true });

@@ -16,7 +16,7 @@ import type { Person } from './auth';
 import { handleEditorIntelligence } from './editor-intelligence';
 import { judgeFeed } from './judge-feed';
 import { requestPrecompile } from './oj-precompile';
-import { currentDrills, handleOaLibrary } from './oa-library';
+import { currentDrills, handleOaLibrary, oaLibrary } from './oa-library';
 import { handleMockOa } from './mock-oa';
 import { handleSkillTests } from './skill-tests';
 import { handleSpeedrun } from './speedrun';
@@ -394,22 +394,32 @@ export async function handleOj(
   if (resource === 'submissions' && id && action === 'cancel')
     return json(await cancelSubmission(p, id));
   if (resource === 'problems' && id && action === 'expected' && !operation) {
-    // A custom case's expected output from the verified editorial's best approach: closed,
-    // like the editorial, while the problem is in this learner's running contest.
-    const editorial = lingEditorial(id);
-    if (!editorial?.verified) throw new HttpError(404, '这道题没有可用的参考解');
+    // A custom case's expected output from a reference program: closed, like the editorial,
+    // while the problem is in this learner's running contest.
     refuseInContest(p, id);
     const data = await readJson(request, 200000);
-    // An input outside the statement's bounds would get a misleading "expected" output.
-    const params = leetcodeParams(id),
-      bounds = leetcodeConstraints(id),
-      d = data as { stdin?: unknown; codingMode?: unknown } | null;
-    if (params && bounds && (d?.codingMode ?? 'leetcode') === 'leetcode' && typeof d?.stdin === 'string') {
-      const fields = splitFields(d.stdin, params.length);
-      const broken = fields && checkConstraints(fields, params, bounds).find(Boolean);
-      if (broken) throw new HttpError(422, broken[0]);
+    let reference: { language: string; code: string } | undefined;
+    if (id.startsWith('oa-')) {
+      // The package's verified program (oaLibrary binds it to the catalog's hash), Python first.
+      // OA problems have no input validators: the client says the case went in unchecked.
+      const { solutions } = oaLibrary().solution(id);
+      reference = solutions.find((s) => s.language === 'python') ?? solutions[0];
+    } else {
+      // The verified Line 500 editorial's best approach.
+      const editorial = lingEditorial(id);
+      if (editorial?.verified) reference = { language: 'python', code: editorial.approaches.at(-1)!.python };
+      // An input outside the statement's bounds would get a misleading "expected" output.
+      const params = leetcodeParams(id),
+        bounds = leetcodeConstraints(id),
+        d = data as { stdin?: unknown; codingMode?: unknown } | null;
+      if (reference && params && bounds && (d?.codingMode ?? 'leetcode') === 'leetcode' && typeof d?.stdin === 'string') {
+        const fields = splitFields(d.stdin, params.length);
+        const broken = fields && checkConstraints(fields, params, bounds).find(Boolean);
+        if (broken) throw new HttpError(422, broken[0]);
+      }
     }
-    const created = await createReferenceRun(p, id, data, editorial.approaches.at(-1)!.python);
+    if (!reference) throw new HttpError(404, '这道题没有可用的参考解');
+    const created = await createReferenceRun(p, id, data, reference);
     // Watched like a run: GET submissions/<id>?wait=1; its code never comes back.
     return json(await settleSubmission(p, created.id, request.signal), 201);
   }

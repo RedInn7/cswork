@@ -73,6 +73,11 @@ const REFERENCE_MODES = ['reference', 'stress-ref'];
 export const referenceMode = (mode: string) => REFERENCE_MODES.includes(mode);
 /** REFERENCE_MODES as an SQL list, for `mode IN …`. */
 export const REFERENCE_MODES_SQL = `(${REFERENCE_MODES.map((m) => `'${m}'`).join(',')})`;
+/** A custom-input run's cases: its one input, or a stress test's generated ones (custom_input {"cases":[…]}). */
+export function ownCases(s: Pick<SubmissionRow, 'mode' | 'custom_input'>): string[] {
+  if (s.mode !== 'stress' && s.mode !== 'stress-ref') return [s.custom_input ?? ''];
+  return (JSON.parse(s.custom_input ?? '{}') as { cases?: string[] }).cases ?? [];
+}
 export function judgeReady() {
   if (process.env.OJ_ENABLED === 'true') return true;
   return Boolean(
@@ -130,7 +135,7 @@ function priorRequest(userId: string, key: string, hash: string) {
  * Inside the caller's IMMEDIATE transaction: two in flight per learner, 128 in all. Reference
  * runs ride beside a custom run, so they have their own two and never block a submit.
  */
-function admit(p: Person, reference = false) {
+export function admit(p: Person, reference = false) {
   const counts = sqlite()
     .prepare(
       `SELECT COUNT(*) as total,SUM(user_id=? AND (mode IN ${REFERENCE_MODES_SQL})=?) as own FROM submissions WHERE status IN ('queued','compiling','running')`,
@@ -145,7 +150,7 @@ function admit(p: Person, reference = false) {
     throw new HttpError(429, '判题队列已满，请稍后重试，代码草稿已保留');
 }
 /** Inside the same transaction, after admit: the row and its durable outbox entry. */
-function enqueue(p: Person, key: string, row: Queued) {
+export function enqueue(p: Person, key: string, row: Queued) {
   const db = sqlite();
   const id = randomUUID(),
     now = Date.now();
@@ -396,11 +401,18 @@ const referenceSchema = z
   })
   .strict();
 /**
- * The expected output of a learner's custom case: `code` (the verified editorial's best
- * Python approach, a LeetCode Solution class) runs on it as mode 'reference'. The same case
- * reuses its earlier run; the caller checks the editorial and any running contest.
+ * The expected output of a learner's custom case: the reference program runs on it as mode
+ * 'reference'. A Line 500 problem's is the verified editorial's best Python approach (a LeetCode
+ * Solution class, wrapped in the driver); an OA problem's is its package's verified stdin
+ * program, run as ACM. The same case reuses its earlier run; the caller picks the program and
+ * checks any running contest.
  */
-export async function createReferenceRun(p: Person, problemId: string, value: unknown, code: string) {
+export async function createReferenceRun(
+  p: Person,
+  problemId: string,
+  value: unknown,
+  { language, code }: { language: string; code: string },
+) {
   const d = referenceSchema.parse(value);
   if (Buffer.byteLength(d.stdin) > MAX_STDIN_BYTES)
     throw new HttpError(413, '代码和自定义输入分别最多 64 KiB');
@@ -408,10 +420,13 @@ export async function createReferenceRun(p: Person, problemId: string, value: un
   if (p.role !== 'teacher' && !p.verified)
     throw new HttpError(403, '请先验证邮箱，再运行和提交代码');
   const { versionId, spec } = await getCompileProblem(p, problemId);
-  if (!spec.languages.includes('python') || !leetcodeContract(problemId))
+  // getCompileProblem already required an OA problem's registry entry (requireOaJudgeReady).
+  const oa = problemId.startsWith('oa-');
+  if (!spec.languages.includes(language as Language) || (!oa && !leetcodeContract(problemId)))
     throw new HttpError(404, '这道题没有可用的参考解');
+  const codingMode = oa ? 'acm' : d.codingMode;
   const hash = createHash('sha256')
-    .update(JSON.stringify(['reference', versionId, d.codingMode, d.stdin, code, LEETCODE_HARNESS_VERSION]))
+    .update(JSON.stringify(['reference', versionId, codingMode, d.stdin, language, code, LEETCODE_HARNESS_VERSION]))
     .digest('hex');
   const db = sqlite();
   const reuse = () =>
@@ -432,16 +447,16 @@ export async function createReferenceRun(p: Person, problemId: string, value: un
     return enqueue(p, d.idempotencyKey, {
       problem_id: problemId,
       problem_version_id: versionId,
-      language: 'python',
+      language: language as Language,
       code,
       mode: 'reference',
       custom_input: d.stdin,
       request_hash: hash,
       total: 1,
       practice_round_id: null,
-      // The worker always wraps a reference as LeetCode; this keeps the case's input format.
-      coding_mode: d.codingMode,
-      harness_version: LEETCODE_HARNESS_VERSION,
+      // The worker wraps a Line 500 reference as LeetCode; this keeps the case's input format.
+      coding_mode: codingMode,
+      harness_version: oa ? null : LEETCODE_HARNESS_VERSION,
     });
   }).immediate();
 }
@@ -646,14 +661,7 @@ export async function submissionDetail(p: Person, id: string) {
     : undefined;
   const definitions =
     !formalMode(s.mode) && s.custom_input !== null
-      ? [
-          {
-            ordinal: 0,
-            input: s.custom_input,
-            expectedOutput: undefined,
-            hidden: false,
-          },
-        ]
+      ? ownCases(s).map((input, ordinal) => ({ ordinal, input, expectedOutput: undefined, hidden: false }))
       : (
           sqlite()
             .prepare(

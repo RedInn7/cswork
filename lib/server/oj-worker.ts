@@ -40,6 +40,7 @@ import {
 import {
   ACTIVE,
   formalMode,
+  ownCases,
   PLAYGROUND_SPEC,
   submissionRow,
   type SubmissionRow,
@@ -303,10 +304,11 @@ async function judgeSubmission(
       },
     };
     assertSnapshotBudget(snapshot.cases);
-    // Runs on the learner's own input: custom-input runs and playground runs.
+    // Runs on the learner's own input: custom-input runs, playground runs and a stress test's cases.
     const ownInput = !formal && claimed.custom_input !== null;
+    const own = ownInput ? ownCases(claimed) : [];
     const caseCount = ownInput
-      ? 1
+      ? own.length
       : snapshot.cases.filter((c) => formal || !c.hidden)
           .length;
     // Respect the published per-case budget, including valid long problem sets.
@@ -379,15 +381,7 @@ async function judgeSubmission(
       compile_output: (compiled.result.files?.stderr || '').slice(0, 65536),
     });
     const cases = ownInput
-      ? [
-          {
-            ordinal: 0,
-            input: claimed.custom_input ?? '',
-            expectedOutput: null,
-            hidden: false,
-            weight: 1,
-          },
-        ]
+      ? own.map((input, ordinal) => ({ ordinal, input, expectedOutput: null, hidden: false, weight: 1 }))
       : snapshot.cases.filter((c) => formal || !c.hidden);
     if (
       program.leetcodeInput &&
