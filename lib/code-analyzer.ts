@@ -147,7 +147,7 @@ const CLOSE = new Set([')', ']', '}']);
 
 /** pair[i]: the index of the bracket matching t[i], or -1. */
 function pairs(t: Token[]): number[] {
-  const pair = new Array<number>(t.length).fill(-1);
+  const pair = t.map(() => -1);
   const stack: number[] = [];
   t.forEach((tok, i) => {
     if (tok.k !== 'op') return;
@@ -293,7 +293,8 @@ function python(t: Token[]): AnalyzerNote[] {
   }
   t.forEach((tok, i) => {
     // for targets, with/except ... as x, walrus, def/class/import names
-    if (tok.v === 'for') for (let j = i + 1; j < t.length && t[j].v !== 'in'; j++) if (t[j].k === 'id') names.add(t[j].v, 'other');
+    if (tok.v === 'for')
+      for (let j = i + 1; j < t.length && t[j].v !== 'in' && t[j].line === tok.line; j++) if (t[j].k === 'id') names.add(t[j].v, 'other');
     if (['as', 'def', 'class', 'import', 'global', 'nonlocal'].includes(tok.v) && t[i + 1]?.k === 'id') names.add(t[i + 1].v, 'other');
     if (tok.v === ':=' && t[i - 1]?.k === 'id') names.add(t[i - 1].v, 'other');
   });

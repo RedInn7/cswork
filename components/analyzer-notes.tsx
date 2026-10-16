@@ -44,7 +44,7 @@ export function AnalyzerNotes({
           <ul>
             {notes.map((note) => (
               <li key={note.id} data-severity={note.severity}>
-                <span className="cs-analyzer-level">{t(...LEVEL[note.severity])}</span>
+                <span className="cs-analyzer-level">{t(LEVEL[note.severity][0], LEVEL[note.severity][1])}</span>
                 <span className="cs-analyzer-line">{t(`第 ${note.line} 行`, `Line ${note.line}`)}</span>
                 <p>
                   {t(note.zh, note.en)}
