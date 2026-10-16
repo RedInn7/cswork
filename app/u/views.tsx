@@ -9,10 +9,11 @@ import type { profileCertificates } from '@/lib/server/certificates';
 import { FollowButton } from '@/components/follow-button';
 import { ListStar } from '@/components/list-star';
 import { LocalDay, ProfileHeatmap } from './heatmap';
+import { ClimbChart, EffortChart } from './practice-charts';
 import { BandChip, RatingCurve } from '@/components/contest-parts';
 
 /** Judge languages by their usual names; anything else as stored. */
-const LANGUAGE_NAMES: Record<string, string> = { python: 'Python', cpp: 'C++', java: 'Java', go: 'Go', sql: 'SQL', pandas: 'Pandas' };
+export const LANGUAGE_NAMES: Record<string, string> = { python: 'Python', cpp: 'C++', java: 'Java', go: 'Go', sql: 'SQL', pandas: 'Pandas' };
 const LINK_NAMES: Record<string, string> = { github: 'GitHub', linkedin: 'LinkedIn', x: 'X' };
 const LEVELS = ['easy', 'medium', 'hard'] as const;
 type Solved = { total: number; easy: number; medium: number; hard: number };
@@ -150,6 +151,25 @@ export function ProfileView({
         </nav>
       )}
       <ProfileHeatmap activity={year?.activity ?? profile.activity} zh={zh} year={year?.year} />
+
+      {profile.climb && profile.effort && (
+        <div className="learner-pair">
+          <section aria-labelledby="learner-climb">
+            <h2 id="learner-climb" className="lists-public-h2">
+              {t('累计解题', 'Climbing')}
+              <small>{t('按周，不同的题', 'distinct problems by week')}</small>
+            </h2>
+            <ClimbChart climb={profile.climb} zh={zh} />
+          </section>
+          <section aria-labelledby="learner-effort">
+            <h2 id="learner-effort" className="lists-public-h2">
+              {t('每日难度', 'Daily effort')}
+              <small>{t('最近 12 周首次通过（UTC 日期）', 'first solves, last 12 weeks (UTC days)')}</small>
+            </h2>
+            <EffortChart effort={profile.effort} zh={zh} />
+          </section>
+        </div>
+      )}
 
       {!!profile.contest?.length && (
         <section aria-labelledby="learner-contest">

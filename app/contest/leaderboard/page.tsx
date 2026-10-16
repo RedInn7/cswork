@@ -52,6 +52,11 @@ export default async function ContestLeaderboardPage({ searchParams }: Props) {
             'Every weekly and starter is rated Elo-style when it ends (a starter only below 1700): everyone starts at 1500, placing above expectation raises it, and ratings steady as you race more. Bands are named after the trains on the line.',
           )}
         </p>
+        <p className="contest-calendar">
+          <Link href="/leaderboard" prefetch={false}>
+            {t('练习排行榜：按刷题积分、通过数和连续天数', 'Practice leaderboard: points, problems solved and streaks')} →
+          </Link>
+        </p>
         <ul className="contest-bands" aria-label={t('段位', 'Bands')}>
           {CONTEST_BANDS.map((band) => (
             <li key={band.key}>

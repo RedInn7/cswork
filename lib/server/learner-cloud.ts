@@ -5,7 +5,7 @@ import { achievements, longestStreak } from '@/lib/achievements';
 import { classicListProgress } from '@/lib/classic-lists';
 import { isChannel, REPORT_CLEARED, REPORTS_HIDE } from '@/lib/community';
 import { curatedByNumber, curatedEntries } from '@/lib/ling-curated';
-import { reportWindow, slotOf, type MockSession, type Slot } from '@/lib/mock-oa';
+import { reportWindow, slotOf, SLOTS, type MockSession, type Slot } from '@/lib/mock-oa';
 import { LANGUAGE_IDS } from '@/lib/problems';
 import { canonicalCompany, employerSlug, OTHER_COMPANY } from '@/lib/oa-company-brands';
 import type { Person } from './auth';
@@ -612,6 +612,7 @@ const profileInput = z
     visible: z.boolean(),
     indexable: z.boolean().default(false),
     showContest: z.boolean().default(false),
+    showPractice: z.boolean().default(false),
     bio: z.string().trim().max(160).default(''),
     // Absent keeps the current one; null takes it down.
     featuredBadge: z.string().max(200).nullable().optional(),
@@ -628,6 +629,7 @@ type ProfileRow = {
   visible: number;
   indexable: number;
   show_contest: number;
+  show_practice: number;
   bio: string;
   featured_badge: string | null;
   links_json: string;
@@ -653,6 +655,7 @@ function myProfile(userId: string) {
         visible: !!r.visible,
         indexable: !!r.indexable,
         showContest: !!r.show_contest,
+        showPractice: !!r.show_practice,
         bio: r.bio,
         featuredBadge: r.featured_badge,
         ...card(r),
@@ -690,11 +693,11 @@ async function handleProfile(request: Request, p: Person) {
   try {
     sqlite()
       .prepare(
-        `INSERT INTO user_profiles(user_id,handle,visible,indexable,show_contest,bio,featured_badge,links_json,school,
-          school_key,grad_year,target_role,created_at,updated_at)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        `INSERT INTO user_profiles(user_id,handle,visible,indexable,show_contest,show_practice,bio,featured_badge,links_json,
+          school,school_key,grad_year,target_role,created_at,updated_at)
+        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         ON CONFLICT(user_id) DO UPDATE SET handle=excluded.handle,visible=excluded.visible,
-          indexable=excluded.indexable,show_contest=excluded.show_contest,bio=excluded.bio,
+          indexable=excluded.indexable,show_contest=excluded.show_contest,show_practice=excluded.show_practice,bio=excluded.bio,
           featured_badge=excluded.featured_badge,links_json=excluded.links_json,school=excluded.school,
           school_key=excluded.school_key,grad_year=excluded.grad_year,target_role=excluded.target_role,
           updated_at=excluded.updated_at`,
@@ -705,6 +708,7 @@ async function handleProfile(request: Request, p: Person) {
         +d.visible,
         +(d.visible && d.indexable),
         +(d.visible && d.showContest),
+        +(d.visible && d.showPractice),
         d.bio,
         featured,
         JSON.stringify(d.links ?? saved?.links ?? []),
@@ -745,7 +749,7 @@ const STOP_TOTALS = curatedEntries.reduce(
 );
 const stopOf = (id: string) => curatedByNumber.get(Number(/^lc-(\d+)$/.exec(id)?.[1]))?.sectionSlug;
 /** Only published OA and LeetCode problems a guest can open count on public pages. */
-const shownIn = (catalogue: PublicCatalogue) => (id: string) => problemId.safeParse(id).success && catalogue.has(id);
+export const shownIn = (catalogue: PublicCatalogue) => (id: string) => problemId.safeParse(id).success && catalogue.has(id);
 const visibleProfile = (handle: string) =>
   HANDLE.test(handle)
     ? (sqlite().prepare('SELECT * FROM user_profiles WHERE handle=? AND visible=1').get(handle) as ProfileRow | undefined)
@@ -763,6 +767,31 @@ function tally(ids: Iterable<string>, catalogue: PublicCatalogue) {
     if (stop) stops.set(stop, (stops.get(stop) ?? 0) + 1);
   }
   return { solved: { total, ...levels }, stops };
+}
+const WEEK = 7 * DAY;
+const utcDay = (time: number) => time - (time % DAY);
+const utcMonday = (time: number) => utcDay(time) - ((new Date(time).getUTCDay() + 6) % 7) * DAY;
+/** Days in the profile's daily effort chart: the last 12 weeks. */
+export const EFFORT_DAYS = 84;
+/**
+ * The profile's two practice charts from each shown problem's first AC (oldest first): `climb`,
+ * distinct problems solved by the end of each UTC week since the first one, and `effort`, first
+ * solves per UTC day of the last 12 weeks as [easy, medium, hard].
+ * ponytail: UTC days, so a reader far from UTC sees a late-night AC on the next day.
+ */
+function practiceCurves(firsts: readonly { id: string; at: number }[], catalogue: PublicCatalogue, now: number) {
+  const start = utcMonday(firsts[0]?.at ?? now);
+  const weeks = Array.from({ length: Math.floor((utcMonday(now) - start) / WEEK) + 1 }, () => 0);
+  const from = utcDay(now) - (EFFORT_DAYS - 1) * DAY;
+  const days = Array.from({ length: EFFORT_DAYS }, () => [0, 0, 0]);
+  for (const f of firsts) {
+    if (f.at > now) continue;
+    weeks[Math.floor((f.at - start) / WEEK)]++;
+    const level = slotOf(catalogue.get(f.id)?.difficulty);
+    if (f.at >= from && level) days[Math.floor((f.at - from) / DAY)][SLOTS.indexOf(level)]++;
+  }
+  for (let i = 1; i < weeks.length; i++) weeks[i] += weeks[i - 1];
+  return { climb: firsts.length ? { start, weeks } : null, effort: { start: from, days } };
 }
 /** Every shown problem with an AC, latest AC first. */
 function solvedList(userId: string, shown: (id: string) => boolean) {
@@ -817,6 +846,14 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
   const profile = visibleProfile(handle);
   if (!profile) return null;
   const solved = solvedList(profile.user_id, shown);
+  const firsts = (
+    db
+      .prepare(
+        `SELECT problem_id AS id,MIN(created_at) AS at FROM submissions WHERE user_id=? AND mode='judge'
+        AND status='accepted' GROUP BY problem_id ORDER BY at`,
+      )
+      .all(profile.user_id) as { id: string; at: number }[]
+  ).filter((s) => shown(s.id));
   const { solved: counts, stops } = tally(
     solved.map((s) => s.id),
     catalogue,
@@ -890,6 +927,7 @@ export function publicProfile(handle: string, catalogue: PublicCatalogue, now = 
       .filter(([stop]) => stops.has(stop))
       .map(([stop, total]) => ({ slug: stop, solved: stops.get(stop)!, total })),
     activity,
+    ...practiceCurves(firsts, catalogue, now),
     years: activeYears(profile.user_id, shown),
     recent: solved.slice(0, 10).map((s) => ({ id: s.id, at: s.at - (s.at % HOUR) })),
     lists,
