@@ -82,6 +82,8 @@ void test('six courses of complete bilingual chapters, quizzes and practice', ()
         // Code the lesson runs is a whole program (or one query) and comes with what it prints.
         const runs = [...body.matchAll(/^```(\w+) run\n([\s\S]*?)^```/gm)];
         if (RUN[String(course.slug)] && !runs.length) bad.push(`${at}.${key}: no run block`);
+        const shown = body.match(/^```\w+ run\n[\s\S]*?^```\n\n```text\n/gm)?.length ?? 0;
+        if (shown !== runs.length) bad.push(`${at}.${key}: a run block without the output it prints`);
         for (const [, language, code] of runs) {
           if (language !== RUN[String(course.slug)]) bad.push(`${at}.${key}: ${language} run block`);
           if (language === 'java' && !/^(public )?class Main \{/m.test(code)) bad.push(`${at}.${key}: no class Main`);
