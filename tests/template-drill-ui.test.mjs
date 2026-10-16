@@ -45,7 +45,7 @@ test('ordering: tap two lines to swap them until the template reads in order', a
   }
   await act(async () => button('Check').click());
   assert.equal(said(), 'All lines are in order.');
-  assert(lines().every((b) => b.dataset.state === 'right'));
+  assert(lines().every((b) => b.dataset.state === 'right' && b.querySelector('.sr-only').textContent === 'In place: '));
 
   // Another language starts a fresh drill on that language's template.
   await act(async () => button('Go').click());

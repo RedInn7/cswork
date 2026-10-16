@@ -109,18 +109,28 @@ export function TemplateDrill({
           </p>
           {context(drill.before, t('前面的代码', 'Code before'))}
           <ol className="topics-drill-lines" aria-describedby="topics-drill-help">
-            {now.map((k, i) => (
-              <li key={i}>
-                <button
-                  type="button"
-                  aria-pressed={picked === i}
-                  data-state={checked ? (sameLine(drill.lines[k], drill.lines[i]) ? 'right' : 'wrong') : undefined}
-                  onClick={() => tap(i)}
-                >
-                  <code translate="no">{drill.lines[k]}</code>
-                </button>
-              </li>
-            ))}
+            {now.map((k, i) => {
+              const right = sameLine(drill.lines[k], drill.lines[i]);
+              return (
+                <li key={i}>
+                  <button
+                    type="button"
+                    aria-pressed={picked === i}
+                    data-state={checked ? (right ? 'right' : 'wrong') : undefined}
+                    onClick={() => tap(i)}
+                  >
+                    {/* Not by colour alone: a mark, and words for screen readers. */}
+                    {checked && (
+                      <span className="topics-drill-mark">
+                        <span aria-hidden="true">{right ? '✓' : '✗'}</span>
+                        <span className="sr-only">{right ? t('位置正确：', 'In place: ') : t('位置不对：', 'Out of place: ')}</span>
+                      </span>
+                    )}
+                    <code translate="no">{drill.lines[k]}</code>
+                  </button>
+                </li>
+              );
+            })}
           </ol>
           {context(drill.after, t('后面的代码', 'Code after'))}
         </>
