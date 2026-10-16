@@ -70,7 +70,7 @@ export const REVIEW_CRITERIA: Record<ReviewMode, [key: string, zh: string, en: s
     ['structure', '代码结构', 'Structure'],
     ['tests', '测试', 'Tests'],
     ['errors', '错误处理', 'Error handling'],
-    ['readme', '说明文档', 'Design note'],
+    ['readme', '设计说明', 'Design note'],
   ],
 };
 export type RoundReview = { scores: { key: string; score: number; why: string }[]; suggestions: string[]; summary: string };

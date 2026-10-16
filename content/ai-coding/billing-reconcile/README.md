@@ -11,7 +11,7 @@ Finance exports the month's invoices and the payment provider exports the paymen
 **Rows.** Values are trimmed. A row is rejected, for the first reason that applies, when:
 
 1. `missing`: a required value is empty, or the row is too short to have it;
-2. `amount`: the amount is not digits with an optional `.` and one or two decimals (no sign, no thousands separators, no currency symbol), or it is zero;
+2. `amount`: the amount is not ASCII digits (0-9) with an optional `.` and one or two decimals (no sign, no thousands separators, no currency symbol), or it is zero;
 3. `currency`: the currency is not three letters A-Z (any case; it is compared in upper case);
 4. `duplicate`: an earlier accepted row of the same file has the same id (`invoice_id` for invoices, `payment_id` for payments).
 
