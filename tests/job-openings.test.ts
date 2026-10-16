@@ -396,7 +396,7 @@ void test('the digest waits for a running sync round, so rows it stamps before 0
   replies = { 'greenhouse.io/v1/boards/waitco/jobs': greenhouse };
   const answer = globalThis.fetch;
   let release = () => {};
-  const held = new Promise<void>((resolve) => (release = resolve));
+  const held = new Promise<void>((resolve) => (release = () => resolve()));
   globalThis.fetch = async (input: string | URL | Request) => {
     await held;
     return answer(input);
