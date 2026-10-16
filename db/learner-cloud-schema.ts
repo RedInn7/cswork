@@ -102,6 +102,8 @@ export const userProfiles = sqliteTable(
     schoolKey: text('school_key').notNull().default(''),
     gradYear: integer('grad_year'),
     targetRole: text('target_role').notNull().default(''),
+    // A third opt-in, only while visible: listed on the practice leaderboard (/leaderboard).
+    showPractice: integer('show_practice').notNull().default(0),
   },
   (t) => [index('user_profiles_school').on(t.schoolKey)],
 );
