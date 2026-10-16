@@ -29,7 +29,7 @@ const LINE = ROUTE_SECTIONS.flatMap((group, g) =>
 );
 const position = new Map(LINE.map((stop, i) => [stop.slug, i]));
 
-function shuffle<T>(list: readonly T[], random: () => number) {
+export function shuffle<T>(list: readonly T[], random: () => number) {
   const out = [...list];
   for (let i = out.length - 1; i > 0; i--) {
     const j = Math.floor(random() * (i + 1));

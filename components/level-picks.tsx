@@ -5,7 +5,8 @@ import { RatingBadge } from './rating-badge';
 import { api } from '@/lib/types';
 import type { LevelTier } from '@/lib/lc-rating';
 
-type Pick = { id: string; number: number; titleZh: string; titleEn: string; rating: number; chance: number };
+/** estimated: an OA problem, rated by its difficulty (lib/server/oa-rating.ts); its number is per company. */
+type Pick = { id: string; number: number; titleZh: string; titleEn: string; rating: number; chance: number; estimated?: boolean };
 type Picks = {
   level: number;
   samples: number;
@@ -84,9 +85,10 @@ export function LevelPicks({
                         }}
                       >
                         <strong>
-                          {item.number}. {(english ? item.titleEn : item.titleZh) || item.titleEn || item.titleZh}
+                          {!item.estimated && `${item.number}. `}
+                          {(english ? item.titleEn : item.titleZh) || item.titleEn || item.titleZh}
                         </strong>
-                        <RatingBadge rating={item.rating} english={english} />
+                        <RatingBadge rating={item.rating} estimated={item.estimated} english={english} />
                         <span className="level-pick-chance">
                           {t(`预计解出 ${item.chance}%`, `${item.chance}% to solve`)}
                           <meter min={0} max={100} value={item.chance} aria-hidden="true" />

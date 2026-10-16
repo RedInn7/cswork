@@ -235,6 +235,12 @@ const EN: Record<string, string> = {
   积分不足: 'Not enough points',
   '本月的补签卡已经买满 3 张': "You've bought this month's 3 streak freezes",
   无效的日期: 'Invalid date',
+  // Placement quiz (lib/server/placement.ts)
+  '30 天内已经测过，到期后再来重测': 'You took the placement quiz in the last 30 days. Retake it once they have passed',
+  题库里还没有可测的题: 'There are no problems to quiz you on yet',
+  没有进行中的定位测验: 'No placement quiz is in progress',
+  '这道题已经答过了，请刷新页面': 'That question is already answered. Refresh the page',
+  选项无效: 'Invalid choice',
   // Lists, public profile and asked reports (lib/server/learner-cloud.ts)
   题单不存在: 'List not found',
   题单接口不存在: 'List endpoint not found',
