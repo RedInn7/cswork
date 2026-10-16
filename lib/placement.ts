@@ -50,23 +50,27 @@ export const placementTotal = (pool: readonly PlacementItem[]) =>
 
 /**
  * The next question, or null once the quiz is done: in the first group still short of PER_GROUP
- * with problems left, the unasked one scored nearest the ladder's target (random among equals).
+ * with problems left, an unasked one drawn at random from those within half a step of the nearest
+ * to the ladder's target, so learners and retakes don't all get the same questions. Problems in
+ * `seen` (the last quiz's) come up only once a group has no others left.
  */
 export function nextStep(
   pool: readonly PlacementItem[],
   steps: readonly PlacementStep[],
   random: () => number = Math.random,
+  seen: ReadonlySet<string> = new Set(),
 ): PlacementStep | null {
   const asked = new Set(steps.map((s) => s.id));
   for (let g = 0; g < ROUTE_SECTIONS.length; g++) {
     const mine = steps.filter((s) => s.group === g);
-    const left = groupOf(pool, g).filter((item) => !asked.has(item.id));
-    if (mine.length >= PER_GROUP || !left.length) continue;
+    const unasked = groupOf(pool, g).filter((item) => !asked.has(item.id));
+    if (mine.length >= PER_GROUP || !unasked.length) continue;
+    const fresh = unasked.filter((item) => !seen.has(item.id));
+    const left = fresh.length ? fresh : unasked;
     const target = ladderTarget(mine);
-    // Scores are whole numbers, so the jitter only breaks ties.
-    const { section, ...item } = left
-      .map((candidate) => ({ candidate, d: Math.abs(candidate.score - target) + random() / 2 }))
-      .sort((a, b) => a.d - b.d)[0].candidate;
+    const nearest = Math.min(...left.map((c) => Math.abs(c.score - target)));
+    const band = left.filter((c) => Math.abs(c.score - target) < nearest + LADDER_STEP / 2);
+    const { section, ...item } = band[Math.floor(random() * band.length)];
     return {
       ...item,
       group: g,

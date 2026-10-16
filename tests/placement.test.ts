@@ -115,3 +115,22 @@ void test('the plan skips mastered stops and starts at the first open one', () =
   assert.equal(openStart(0, new Set(ROUTE_SLUGS)), 0, 'all mastered: the given start');
   assert.equal(masteredStops(null).size, 0);
 });
+
+void test('questions are drawn within half a step of the nearest, and a retake skips the last quiz’s', () => {
+  // Four more problems near 1500 in the first group: five within half a step of the target.
+  const dense = [...pool, ...[1450, 1480, 1520, 1550].map((score, k) => item(9100 + k, ROUTE_SECTIONS[0].slugs[k], score))];
+  const score = (id: string) => dense.find((p) => p.id === id)!.score;
+  const firsts = new Set(Array.from({ length: 40 }, (_, k) => nextStep(dense, [], seededRandom(k))!.id));
+  assert.ok(firsts.size >= 3, 'learners don’t all get the same first question');
+  for (const id of firsts) assert.ok(Math.abs(score(id) - 1500) < 100, id);
+  // Far from every problem, the band sits half a step past the nearest one.
+  const sparse = [item(1, ROUTE_SECTIONS[0].slugs[0], 1000), item(2, ROUTE_SECTIONS[0].slugs[1], 1080), item(3, ROUTE_SECTIONS[0].slugs[2], 2400)];
+  for (let k = 0; k < 20; k++) assert.notEqual(nextStep(sparse, [], seededRandom(k))!.id, 'lc-3');
+
+  const last = run(() => true, dense);
+  const seen = new Set(last.map((s) => s.id));
+  for (let k = 0; k < 20; k++) assert.equal(seen.has(nextStep(dense, [], seededRandom(k), seen)!.id), false);
+  // A group with nothing unseen left asks the seen ones again.
+  const small = sparse.slice(0, 2);
+  assert.ok(nextStep(small, [], seededRandom(1), new Set(small.map((p) => p.id))));
+});
