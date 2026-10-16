@@ -3,6 +3,7 @@ import bankFile from '@/lib/content/oa-mcq.json';
 import type { McqQuestion } from '@/lib/mock-oa';
 import { breadcrumbJsonLd, seoMetadata } from '@/lib/seo';
 import { requestLocale } from '@/lib/server/locale';
+import { sdChapters } from '@/lib/server/system-design-course';
 import { McqPractice } from './practice';
 
 const bank = bankFile.questions as McqQuestion[];
@@ -10,12 +11,12 @@ const bank = bankFile.questions as McqQuestion[];
 function copy(zh: boolean) {
   return zh
     ? {
-        title: 'OA 选择题练习：操作系统、数据库、网络、并发、读代码与概率 | CSWork',
-        lead: `${bank.length} 道原创 OA 风格选择题，覆盖 CS 基础（操作系统、数据库、网络、并发、面向对象）、读代码（Python、JavaScript、Java）和数学逻辑。提交后立即判分并给出解析。`,
+        title: 'OA 选择题练习：数据结构、复杂度、操作系统、数据库、网络与读代码 | CSWork',
+        lead: `${bank.length} 道原创 OA 风格选择题，覆盖 CS 基础（数据结构与算法、操作系统、数据库、网络、并发、面向对象）、读代码（时间复杂度、Python、JavaScript、Java）和数学逻辑。提交后立即判分并给出解析；答过的题按 1、3、7、21 天的间隔回来复习。`,
       }
     : {
-        title: 'OA Multiple-Choice Practice: OS, Databases, Networking, Code Output | CSWork',
-        lead: `${bank.length} original OA-style multiple-choice questions on CS fundamentals (OS, databases, networking, concurrency, OOP), code output (Python, JavaScript, Java) and quant. Each is graded the moment you submit, with an explanation.`,
+        title: 'OA Multiple-Choice Practice: DSA, Complexity, OS, Databases, Code Output | CSWork',
+        lead: `${bank.length} original OA-style multiple-choice questions on CS fundamentals (data structures and algorithms, OS, databases, networking, concurrency, OOP), code output (time complexity, Python, JavaScript, Java) and quant. Each is graded the moment you submit, with an explanation, and comes back for review after 1, 3, 7 and 21 days.`,
       };
 }
 
@@ -29,6 +30,10 @@ export default async function OaMcqPage() {
   const { lead } = copy(zh);
   // Only the page's language goes to the browser.
   const items = bank.map(({ zh: zhText, en, ...q }) => ({ ...q, text: zh ? zhText : en }));
+  // Only titles and right choices of the chapter quizzes, to find the learner's wrong answers.
+  const sd = sdChapters
+    .filter((c) => c.quiz.length)
+    .map((c) => ({ slug: c.slug, title: zh ? c.titleZh : c.titleEn, answers: c.quiz.map((q) => q.answer) }));
   return (
     <>
       <script
@@ -55,7 +60,7 @@ export default async function OaMcqPage() {
         <h1>{zh ? 'OA 里的选择题，先在这里练。' : 'Practise the multiple-choice part of the OA.'}</h1>
         <p>{lead}</p>
       </div>
-      <McqPractice items={items} zh={zh} />
+      <McqPractice items={items} zh={zh} sd={sd} />
     </>
   );
 }
