@@ -565,6 +565,97 @@
   color: var(--rd-red);
 }
 
+/* ------------------------------------------------------------ AI feedback */
+.ip-grade {
+  display: grid;
+  gap: 10px;
+}
+.ip-grade-go {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.ip-grade-go small {
+  color: var(--rd-muted);
+  font-size: 12px;
+}
+.ip-grade-go .rd-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.ip-grade-result {
+  display: grid;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--rd-line);
+  border-left: 4px solid var(--rd-sky);
+  border-radius: 12px;
+  background: var(--rd-surface);
+  animation: rd-rise 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.ip-grade-result:focus:not(:focus-visible) {
+  outline: none;
+}
+.ip-grade-result h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--rd-ink);
+  font-size: 14px;
+  font-weight: 800;
+}
+.ip-grade-score {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--rd-amber) 16%, var(--rd-surface));
+  color: var(--rd-ink-2);
+  font-size: 12px;
+  font-weight: 700;
+}
+.ip-grade-score[data-score='3'],
+.ip-grade-score[data-score='4'] {
+  background: color-mix(in oklch, var(--rd-brand) 16%, var(--rd-surface));
+}
+.ip-grade-result h4 {
+  margin: 0 0 4px;
+  color: var(--rd-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ip-grade-result ul {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--rd-ink-2);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.ip-grade-result ul[data-kind='covered'] li::marker {
+  color: var(--rd-brand);
+}
+.ip-grade-result ul[data-kind='missing'] li::marker {
+  color: var(--rd-amber);
+}
+.ip-grade-result .ip-star {
+  margin: 0;
+}
+.ip-grade-tighter {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--rd-fill);
+  color: var(--rd-ink-2);
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
 @media (max-width: 720px) {
   .ip-bank-head h1 {
     font-size: 28px;
@@ -581,7 +672,8 @@
   .ip-try-ask,
   .ip-editor,
   .ct-answer,
-  .ip-skeleton {
+  .ip-skeleton,
+  .ip-grade-result {
     animation: none;
   }
 }
@@ -589,7 +681,8 @@
   .ip-try-ask,
   .ip-try-skip,
   .ip-try-go,
-  .ip-pick-bank {
+  .ip-pick-bank,
+  .ip-grade-go {
     display: none;
   }
 }
@@ -827,6 +920,44 @@
   }
   .dark .ip-delete {
     color: var(--rd-red);
+  }
+  .dark .ip-grade-go small {
+    color: var(--rd-muted);
+  }
+  .dark .ip-grade-result {
+    border: 1px solid var(--rd-line);
+    border-left: 4px solid var(--rd-sky);
+    background: var(--rd-surface);
+  }
+  .dark .ip-grade-result:focus:not(:focus-visible) {
+    outline: none;
+  }
+  .dark .ip-grade-result h3 {
+    color: var(--rd-ink);
+  }
+  .dark .ip-grade-score {
+    background: color-mix(in oklch, var(--rd-amber) 16%, var(--rd-surface));
+    color: var(--rd-ink-2);
+  }
+  .dark .ip-grade-score[data-score='3'],
+  .dark .ip-grade-score[data-score='4'] {
+    background: color-mix(in oklch, var(--rd-brand) 16%, var(--rd-surface));
+  }
+  .dark .ip-grade-result h4 {
+    color: var(--rd-muted);
+  }
+  .dark .ip-grade-result ul {
+    color: var(--rd-ink-2);
+  }
+  .dark .ip-grade-result ul[data-kind='covered'] li::marker {
+    color: var(--rd-brand);
+  }
+  .dark .ip-grade-result ul[data-kind='missing'] li::marker {
+    color: var(--rd-amber);
+  }
+  .dark .ip-grade-tighter {
+    background: var(--rd-fill);
+    color: var(--rd-ink-2);
   }
 }
 /* ── end dark theme ── */

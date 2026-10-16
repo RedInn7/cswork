@@ -2,6 +2,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Eye, PenLine } from 'lucide-react';
 import { useT } from '@/lib/i18n';
+import { AnswerGrade, GRADE_MIN, GRADEABLE } from './answer-grade';
 import { useNote } from './problem-notes';
 import '@/app/interview-prep.css';
 
@@ -20,6 +21,7 @@ export function TryFirst({
   revealOnLoad,
   local,
   code,
+  gradeable = true,
 }: {
   userId: string | null;
   target: string;
@@ -30,6 +32,8 @@ export function TryFirst({
   revealOnLoad?: boolean;
   local?: { value: string; onChange: (value: string) => void };
   code?: boolean;
+  /** False when the question has no reference answer for AI feedback to grade against. */
+  gradeable?: boolean;
 }) {
   const t = useT();
   const id = useId();
@@ -133,6 +137,10 @@ export function TryFirst({
               status
             )}
           </p>
+          {/* Above the reference answer, which it leaves closed. */}
+          {!guest && gradeable && GRADEABLE.test(target) && (
+            <AnswerGrade ready={text.trim().length >= GRADE_MIN} request={() => ({ target, answer: text })} />
+          )}
         </>
       )}
       {!revealed &&
