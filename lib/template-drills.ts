@@ -1,8 +1,24 @@
 // Parsons (put the lines back in order) and fill-in-the-blank drills cut from the verified
 // Line 500 templates (lib/route-templates.ts). Pure and client-safe: components/template-drill.tsx
 // builds them in the browser from the code the topic page already has.
+// Never import route-templates' values here: that module carries the 150 KB JSON.
 import { seededRandom } from './mock-oa';
-import { commentStart, type TemplateLang } from './route-templates';
+import type { TemplateLang } from './route-templates';
+
+/** Where a line's trailing comment starts (outside string and char literals), or -1. */
+export function commentStart(line: string, lang: TemplateLang): number {
+  const marker = lang === 'python' ? '#' : '//';
+  let quote = '';
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (quote) {
+      if (c === '\\') i++;
+      else if (c === quote) quote = '';
+    } else if (c === '"' || c === "'" || c === '`') quote = c;
+    else if (line.startsWith(marker, i)) return i;
+  }
+  return -1;
+}
 
 /** The code without trailing comments; lines that were only a comment are dropped. */
 export function stripComments(code: string, lang: TemplateLang) {

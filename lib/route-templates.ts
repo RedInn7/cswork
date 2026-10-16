@@ -31,20 +31,8 @@ export function templateFor(slug: string): RouteTemplate | undefined {
   return bySlug.get(slug);
 }
 
-/** Where a line's trailing comment starts (outside string and char literals), or -1. */
-export function commentStart(line: string, lang: TemplateLang): number {
-  const marker = lang === 'python' ? '#' : '//';
-  let quote = '';
-  for (let i = 0; i < line.length; i++) {
-    const c = line[i];
-    if (quote) {
-      if (c === '\\') i++;
-      else if (c === quote) quote = '';
-    } else if (c === '"' || c === "'" || c === '`') quote = c;
-    else if (line.startsWith(marker, i)) return i;
-  }
-  return -1;
-}
+// Client-safe (no JSON): lib/template-drills.ts owns it so the drills don't pull this file in.
+export { commentStart } from './template-drills';
 
 /** Public cheat-sheet page for a stop. */
 export const topicPath = (slug: string) => `/topics/${slug}`;
