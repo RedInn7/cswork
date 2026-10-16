@@ -53,7 +53,7 @@ export default async function JudgeEnvironmentPage() {
     [
       'C++',
       'g++ 14, C++20, -O2',
-      L('g++，可选 C++11 到 C++23', 'g++, C++11 through C++23'),
+      L('g++ 8.3（C++11、C++14、C++20），g++ 14.2（C++23）', 'g++ 8.3 (C++11, C++14, C++20); g++ 14.2 (C++23)'),
       '—',
       L('clang，C++23，-O2', 'clang, C++23, -O2'),
     ],
@@ -125,8 +125,8 @@ export default async function JudgeEnvironmentPage() {
             <ul>
               <li>
                 {L(
-                  '版本一栏是判题机自检时报告的实际版本；判题机离线时显示镜像里的大版本。',
-                  'The version column is what the judge reports about itself; while it is offline, the image’s major versions show instead.',
+                  '版本一栏是判题机最近一次报告的版本；尚未报告时显示镜像里的大版本。',
+                  'The version column is what the judge last reported; before it has reported, the image’s major versions show.',
                 )}
               </li>
               <li>

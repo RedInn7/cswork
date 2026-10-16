@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import { test, after } from 'node:test';
 import { register, createRequire } from 'node:module';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -64,5 +64,21 @@ test('versions come from the heartbeat, else the image; commands match the engin
     const text = doc.body.textContent;
     assert.equal(/[一-鿿]/.test(text), locale === 'zh', locale);
     assert.match(text, locale === 'zh' ? /没有 sortedcontainers/ : /not sortedcontainers/);
+    // HackerRank's own table lists C++11, 14, 20 and 23, but no C++17.
+    assert.match(compared[3].children[2].textContent, /C\+\+11.*C\+\+14.*C\+\+20.*C\+\+23/);
+    assert.doesNotMatch(compared[3].children[2].textContent, /17|through|到/);
   }
+});
+
+test('an offline judge keeps its last-reported versions on the page', async () => {
+  // Shutdown sets healthy=0 and keeps details, as oj-worker's stop() does.
+  sqlite().prepare("UPDATE oj_runtime SET healthy=0 WHERE id='worker'").run();
+  const doc = await render('en');
+  assert.match(doc.querySelector('table tbody tr').textContent, /14\.2\.0-19/);
+  assert.match(doc.body.textContent, /what the judge last reported/);
+});
+
+test('the editor hides the judge-environment button in a mock OA: a new tab would count as time away', () => {
+  const workspace = readFileSync(new URL('../components/problem-workspace.tsx', import.meta.url), 'utf8');
+  assert.match(workspace, /\{!examMode && \(\s*<button[^>]*?aria-label=\{t\('判题环境[\s\S]{0,300}?'\/judge-environment'/);
 });
