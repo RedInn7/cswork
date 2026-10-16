@@ -127,7 +127,7 @@ void test('six courses of complete bilingual chapters, quizzes and practice', ()
   assert.deepEqual(bad, []);
 });
 
-void test('quiz answers sit in every position and are rarely the longest choice', () => {
+void test('quiz answers sit in every position and are sometimes, not usually, the longest choice', () => {
   const questions = beginnerCourses.flatMap((c) => c.chapters.flatMap((chapter) => chapter.quiz));
   const at = [0, 0, 0, 0];
   let longest = 0;
@@ -140,7 +140,9 @@ void test('quiz answers sit in every position and are rarely the longest choice'
     }
   }
   assert.ok(Math.max(...at) <= questions.length * 0.3, `answer positions ${at}`);
+  // Bounded both ways: an answer that is never the longest choice is as much a tell as one that always is.
   assert.ok(longest <= questions.length * 2 * 0.3, `the answer is the longest choice ${longest} times`);
+  assert.ok(longest >= questions.length * 2 * 0.1, `the answer is the longest choice only ${longest} times`);
 });
 
 void test('problems a lesson solves or assigns are known, so exams and duels can leave them out', () => {

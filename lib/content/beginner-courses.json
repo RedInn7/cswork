@@ -1981,8 +1981,8 @@
                   "en": "vector cannot be used in recursion"
                 },
                 {
-                  "zh": "path 会在函数返回时被自动清空",
-                  "en": "path is cleared automatically when the function returns"
+                  "zh": "path 返回时会被清空",
+                  "en": "path is cleared when the function returns"
                 },
                 {
                   "zh": "每次调用都复制整个数组，容易超时",
@@ -2185,8 +2185,8 @@
               "qEn": "What is the leanest way to find the k-th largest of n numbers with a priority_queue?",
               "choices": [
                 {
-                  "zh": "维护大小为 k 的最小堆，O(n log k)",
-                  "en": "Keep a min-heap of size k, O(n log k)"
+                  "zh": "维护大小为 k 的最小堆，堆顶就是答案，O(n log k)",
+                  "en": "Keep a min-heap of size k; its top is the answer, O(n log k)"
                 },
                 {
                   "zh": "维护大小为 k 的最大堆，O(n log k)",
@@ -2342,8 +2342,8 @@
               "qEn": "Why does unordered_set<pair<int, int>> not compile by default?",
               "choices": [
                 {
-                  "zh": "标准库没有为 pair 提供哈希函数",
-                  "en": "The standard library has no hash for pair"
+                  "zh": "标准库没有为 pair 提供 std::hash 特化",
+                  "en": "The standard library has no std::hash specialization for pair"
                 },
                 {
                   "zh": "pair 不能比较大小",
@@ -2371,8 +2371,8 @@
                   "en": "You only count how often each number appears"
                 },
                 {
-                  "zh": "需要按键从小到大输出",
-                  "en": "You need the keys in ascending order"
+                  "zh": "需要按键从小到大的顺序遍历或输出",
+                  "en": "You need to walk or print the keys in ascending order"
                 },
                 {
                   "zh": "只需要判断某个字符串是否出现过",
@@ -2502,8 +2502,8 @@
                   "en": "The vector contains negative numbers"
                 },
                 {
-                  "zh": "相等元素必须保持原来的先后顺序",
-                  "en": "Equal elements must keep their original order"
+                  "zh": "相等元素必须保持排序前原来的先后顺序",
+                  "en": "Equal elements must keep the order they had before sorting"
                 },
                 {
                   "zh": "需要降序排列，而且数组里有重复元素",
@@ -2898,8 +2898,8 @@
               "qEn": "Deque<Integer> q is empty. What does int x = q.poll(); do?",
               "choices": [
                 {
-                  "zh": "抛出 NullPointerException",
-                  "en": "It throws NullPointerException"
+                  "zh": "抛出 NullPointerException（null 拆箱成 int）",
+                  "en": "It throws NullPointerException when unboxing null"
                 },
                 {
                   "zh": "x 等于 0",
@@ -3040,8 +3040,8 @@
                   "en": "Descending"
                 },
                 {
-                  "zh": "插入的顺序，和放进去的先后完全一致",
-                  "en": "Insertion order, exactly as the elements were offered"
+                  "zh": "插入的顺序",
+                  "en": "Insertion order"
                 }
               ],
               "answer": 0,
@@ -3137,8 +3137,8 @@
                   "en": "Override equals only"
                 },
                 {
-                  "zh": "实现 Comparable 接口并重写 compareTo",
-                  "en": "Implement Comparable and override compareTo"
+                  "zh": "实现 Comparable 接口",
+                  "en": "Implement Comparable"
                 },
                 {
                   "zh": "什么都不用做",
@@ -3315,8 +3315,8 @@
               "qEn": "How does Arrays.sort(Integer[]) differ from Arrays.sort(int[])?",
               "choices": [
                 {
-                  "zh": "前者是稳定的 TimSort，后者是快速排序",
-                  "en": "The first is a stable TimSort, the second a quicksort"
+                  "zh": "前者是稳定的 TimSort，后者是不稳定的双轴快速排序",
+                  "en": "The first is a stable TimSort, the second an unstable dual-pivot quicksort"
                 },
                 {
                   "zh": "两者完全一样",
@@ -3503,8 +3503,8 @@
                   "en": "The set is full and could not grow to take x"
                 },
                 {
-                  "zh": "x 之前已经在集合里了",
-                  "en": "x was already in the set"
+                  "zh": "x 之前已经在集合里了，这次 add 什么也没改",
+                  "en": "x was already in the set, so this add changed nothing"
                 },
                 {
                   "zh": "x 是 null",
@@ -3723,8 +3723,8 @@
                   "en": "A compile error"
                 },
                 {
-                  "zh": "什么也不发生，nil map 会静默丢弃写入",
-                  "en": "Nothing happens; a nil map silently drops the write"
+                  "zh": "什么也不发生",
+                  "en": "Nothing happens"
                 },
                 {
                   "zh": "panic：不能写入 nil map",
@@ -3958,8 +3958,8 @@
                   "en": "The smallest element, found by a search"
                 },
                 {
-                  "zh": "切片的最后一个元素",
-                  "en": "The last element of the slice"
+                  "zh": "切片的最后一个元素，heap.Pop 已先把堆顶换到末尾",
+                  "en": "The last element of the slice; heap.Pop has already swapped the top there"
                 },
                 {
                   "zh": "随机一个元素",
@@ -4160,8 +4160,8 @@
               "qEn": "pts is a []point. After for _, p := range pts { p.x = 0 }, has pts changed?",
               "choices": [
                 {
-                  "zh": "不会，p 是副本",
-                  "en": "No, p is a copy"
+                  "zh": "不会，p 是元素的副本，改的只是副本",
+                  "en": "No, p is a copy of each element, so only the copy changes"
                 },
                 {
                   "zh": "会，所有 x 都变成 0",
@@ -4189,8 +4189,8 @@
                   "en": "It should have used fmt.Println"
                 },
                 {
-                  "zh": "忘了调用 Flush",
-                  "en": "Flush was never called"
+                  "zh": "忘了调用 Flush，缓冲区里的内容没写出去",
+                  "en": "Flush was never called, so the buffered output was never written"
                 },
                 {
                   "zh": "缓冲区太小",
@@ -4473,8 +4473,8 @@
                   "en": "The right table's e.score"
                 },
                 {
-                  "zh": "任意一列都可以，因为没匹配上的行里，右表的所有列都会是 NULL",
-                  "en": "Any column will do, since every right-table column is NULL when there is no match"
+                  "zh": "任意一列都可以，没匹配上时右表整行都是 NULL",
+                  "en": "Any column, since a missing match makes the whole right row NULL"
                 }
               ],
               "answer": 1,
@@ -4620,8 +4620,8 @@
                   "en": "One that uses the outer query's columns and is evaluated again for each outer row"
                 },
                 {
-                  "zh": "用 WITH 定义、可以在同一条查询里被多次引用的子查询",
-                  "en": "A subquery defined with WITH so that it can be referenced several times in one query"
+                  "zh": "用 WITH 定义的子查询",
+                  "en": "A subquery defined with WITH"
                 }
               ],
               "answer": 2,
@@ -4666,8 +4666,8 @@
                   "en": "GROUP BY date on logins"
                 },
                 {
-                  "zh": "在 COUNT 外面套 COALESCE(…, 0)，让没有数据的日子显示 0",
-                  "en": "Wrap the COUNT in COALESCE(…, 0) so that days without any logins show 0"
+                  "zh": "在 COUNT 外面套 COALESCE(…, 0)",
+                  "en": "Wrap the COUNT in COALESCE(…, 0)"
                 },
                 {
                   "zh": "把 INNER JOIN 换成 CROSS JOIN",
@@ -4731,8 +4731,8 @@
                   "en": "The same total, including every tied row"
                 },
                 {
-                  "zh": "只包含当前行之前的行，不含当前行本身",
-                  "en": "A total of the rows before the current one only"
+                  "zh": "只包含当前行之前的行",
+                  "en": "Only the rows before the current one"
                 }
               ],
               "answer": 2,
