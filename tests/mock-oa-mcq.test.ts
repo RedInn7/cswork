@@ -39,7 +39,7 @@ void test('the bank is well formed: unique ids, known sections and topics, answe
     assert(q.stop === undefined || ROUTE_SLUGS.includes(q.stop), q.id);
   }
   // Every stop page gets a quiz: concept questions in CS, complexity ones as code.
-  for (const slug of ROUTE_SLUGS) assert(bank.filter((q) => q.stop === slug).length >= 2, slug);
+  for (const slug of ROUTE_SLUGS) assert(bank.filter((q) => q.stop === slug).length >= 3, slug);
   assert(bank.filter((q) => q.topic === 'dsa').every((q) => q.section === 'cs' && q.stop));
   assert(bank.filter((q) => q.topic === 'complexity').every((q) => q.section === 'code-output'));
   assert(bank.some((q) => q.answer.length > 1), 'some questions are select-all');

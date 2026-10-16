@@ -86,7 +86,7 @@ test('a stop page shows points, pitfalls, four languages with one open, and link
     // Under the templates: a quick quiz on the stop, then drills cut from its template.
     const quiz = doc.querySelector('section.topics-quiz');
     const questions = quiz.querySelectorAll('.oa-mcq-list > li');
-    assert.ok(questions.length >= 2 && questions.length <= 5);
+    assert.ok(questions.length >= 3 && questions.length <= 5);
     assert.ok(doc.getElementById(quiz.getAttribute('aria-labelledby')));
     assert.equal(quiz.querySelector('.oa-mcq-filters'), null, 'no filters on a stop page');
     assert.ok(quiz.querySelector('a[href="/oa/mcq"]'));
