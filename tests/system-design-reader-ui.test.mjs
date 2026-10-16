@@ -123,6 +123,18 @@ test('the index groups chapters into parts; a chapter renders its table of conte
   assert.equal(walkthrough.querySelector(':not(details) > pre > code.language-mermaid'), null);
 });
 
+test('the estimation drill has its own page, linked back to the framework', async () => {
+  const { default: Estimation, generateMetadata } = await import('../app/system-design/estimation/page.tsx');
+  globalThis.__locale = 'zh';
+  const doc = parse(renderToStaticMarkup(await Estimation()));
+  assert.equal(doc.querySelectorAll('h1').length, 1);
+  assert.equal(doc.getElementById('sd-drill-title').textContent, '容量估算练习');
+  assert.equal(doc.querySelector('.sd-total a').getAttribute('href'), '/system-design/framework');
+  const crumbs = JSON.parse(doc.querySelector('script[type="application/ld+json"]').textContent);
+  assert.deepEqual(crumbs.itemListElement.map((item) => item.name), ['CSWork', '系统设计', '容量估算练习']);
+  assert.equal((await generateMetadata()).alternates.canonical, 'https://cswork.org/system-design/estimation');
+});
+
 test('table of contents ids match the rendered headings in every chapter', async () => {
   const { PublicLibraryMarkdown, markdownToc } = await import('../app/library/markdown.tsx');
   const rendered = (body) =>

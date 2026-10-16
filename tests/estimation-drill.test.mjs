@@ -92,7 +92,7 @@ test('grading is ±30%, and answers can be typed with separators, suffixes or ex
 });
 
 test('the drill renders on the server, then checks answers and shows the steps and tables', async () => {
-  let doc = new JSDOM(renderToStaticMarkup(createElement(EstimationDrill, { zh: true }))).window.document;
+  const doc = new JSDOM(renderToStaticMarkup(createElement(EstimationDrill, { zh: true }))).window.document;
   assert.equal(doc.querySelector('h2').textContent, '容量估算练习');
   assert.equal(doc.querySelectorAll('select option').length, 10);
   assert.equal(doc.querySelectorAll('.sd-drill-field input').length, 5);
