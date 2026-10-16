@@ -108,8 +108,6 @@ jobs:
       - run: node --import tsx --test tests/contests.test.ts tests/contests-ui.test.mjs tests/contest-fairness.test.ts tests/contest-tiers.test.ts tests/duels.test.ts
       - run: node --import tsx --test tests/share-cards.test.ts tests/resume-builder.test.ts tests/resume-builder-ui.test.mjs
       - run: node --import tsx --test tests/skill-tests.test.ts tests/skill-test-ui.test.mjs tests/course-ratings.test.ts tests/beginner-courses.test.ts tests/learn-ui.test.mjs
-      # Builds and runs every lesson run block: C++, Java and Go (each when the runner has it), SQL on the sample tables.
-      - run: node --import tsx scripts/learn/check-snippets.mjs
       - run: node --test --test-concurrency=1 tests/oa-import.test.mjs
       - run: node --import tsx --test --test-concurrency=1 tests/oa-library.test.ts tests/oa-library-ui.test.mjs
       - run: node --import tsx --test tests/judge-status-ui.test.mjs
@@ -117,9 +115,6 @@ jobs:
       # The Pandas track's build check and harness tests run on the system python's pandas.
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends python3-pandas
       - run: node --import tsx --test tests/sql-track.test.ts tests/sql-track-ui.test.mjs tests/pandas-track.test.ts
-      - run: node --import tsx --test tests/core-skills.test.ts tests/core-skills-ui.test.mjs
-      # The concurrency drivers are randomized: rerun every solution, and every racy variant must fail.
-      - run: node --import tsx scripts/core-skills/stress.ts
       - run: node --import tsx --test tests/book-problems.test.ts
       - run: node --import tsx --test tests/book-lists-ui.test.mjs tests/sql-result-diff.test.ts tests/sql-result-diff-ui.test.mjs tests/pandas-workspace-ui.test.mjs
       - run: node --test tests/oa-stripe-payments-capacity.test.mjs
@@ -169,3 +164,21 @@ jobs:
       - run: node tests/seo-http.mjs
       - run: node tests/oa-library-http.mjs
       - run: node tests/leetcode-sync-http.mjs
+  # Compiles and runs code in four languages, beside validate (which is close to its 20 minutes).
+  toolchains:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      # Builds and runs every lesson run block: C++, Java and Go (each when the runner has it), SQL on the sample tables.
+      - run: node --import tsx scripts/learn/check-snippets.mjs
+      - run: node --import tsx --test tests/core-skills.test.ts tests/core-skills-ui.test.mjs
+      # The concurrency drivers are randomized: rerun every solution, and every racy variant must fail.
+      - run: node --import tsx scripts/core-skills/stress.ts
