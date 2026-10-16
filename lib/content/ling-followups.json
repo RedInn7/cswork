@@ -1,1 +1,392 @@
-{}
+{
+  "lc-26": {
+    "takeawayZh": "有序数组去重：读指针扫描，写指针守住「已经处理好的前缀」。先把这个不变量说清楚，变体只是比较的对象变了。",
+    "takeawayEn": "Deduplicating a sorted array: the read pointer scans, the write pointer guards the finished prefix. State that invariant first; the variants only change what you compare against.",
+    "followUps": [
+      {
+        "qZh": "每个值最多保留两个呢？",
+        "qEn": "What if each value may stay up to twice?",
+        "aZh": "写指针比较的对象从「上一个保留的值」换成「往前数第 2 个保留的值」：`nums[i] != nums[w-2]` 时才写入。最多保留 k 个就和 `w-k` 位置比。",
+        "aEn": "Compare with the value two slots back in the kept prefix instead of the last kept one: write only when `nums[i] != nums[w-2]`. To keep up to k copies, compare with position `w-k`.",
+        "problem": "lc-80"
+      },
+      {
+        "qZh": "如果数组没有排好序呢？",
+        "qEn": "What if the array is not sorted?",
+        "aZh": "相同的值不再相邻，读写指针就不够了。要么先排序（O(n log n)，原来的顺序会丢），要么用哈希集合记录见过的值，保持第一次出现的顺序，代价是 O(n) 额外空间。",
+        "aEn": "Equal values are no longer adjacent, so the two pointers alone fail. Either sort first (O(n log n), losing the original order) or keep a hash set of values seen and keep first occurrences in order, at O(n) extra space."
+      }
+    ]
+  },
+  "lc-27": {
+    "takeawayZh": "原地删除：写指针只收下要留的元素。不要求保持顺序时，可以拿末尾元素来填坑，写操作更少。",
+    "takeawayEn": "Removing in place: the write pointer only takes elements that stay. When order does not matter, fill each hole with the last element and write less.",
+    "followUps": [
+      {
+        "qZh": "要删的元素很少时，能不能少写几次？",
+        "qEn": "If few elements need removing, can you write less?",
+        "aZh": "遇到 val 就用当前末尾的元素覆盖它，并把长度减一；当前位置先不前进，因为换过来的值还没检查。写操作次数等于要删的个数，代价是不再保持原顺序。",
+        "aEn": "When you meet val, overwrite it with the current last element and shrink the length; do not advance, since the moved-in value is unchecked. Writes equal the number removed, at the cost of the original order."
+      },
+      {
+        "qZh": "如果要删的是一组值，而不是一个？",
+        "qEn": "What if a whole set of values must go?",
+        "aZh": "把这组值放进哈希集合，判断条件换成「不在集合里才保留」，其余不变，时间仍是 O(n)。",
+        "aEn": "Put the values in a hash set and keep an element only when it is not in the set; nothing else changes and it stays O(n)."
+      }
+    ]
+  },
+  "lc-41": {
+    "takeawayZh": "答案的范围被数组长度限住时，把每个值放到「它该在的下标」上，再找第一个不在位的。",
+    "takeawayEn": "When the length bounds the answer, put each value at the index it belongs to, then find the first slot that is wrong.",
+    "followUps": [
+      {
+        "qZh": "为什么答案一定在 [1, n+1] 里？",
+        "qEn": "Why must the answer lie in [1, n+1]?",
+        "aZh": "n 个数最多占满 1..n。占满了答案就是 n+1，没占满答案就在 1..n 的空位里。所以只需关心 1..n 的值，其余的都可以忽略。",
+        "aEn": "n numbers can fill at most 1..n. If they do, the answer is n+1; otherwise it is a gap within 1..n. Only values in 1..n matter; everything else can be ignored."
+      },
+      {
+        "qZh": "如果数组是只读的？",
+        "qEn": "What if the array is read-only?",
+        "aZh": "原地交换不能用了。用 n+1 位的位图（O(n) 空间），或者复制一份排序，O(n log n)。",
+        "aEn": "In-place swapping is out. Use a bitmap of n+1 bits (O(n) space), or sort a copy in O(n log n)."
+      }
+    ]
+  },
+  "lc-48": {
+    "takeawayZh": "旋转可以拆成两次翻转。先把下标映射 (i, j) → (j, n−1−i) 写出来，再挑一组翻转去实现它。",
+    "takeawayEn": "A rotation is two reflections. Write the index map (i, j) → (j, n−1−i) first, then pick the pair of flips that realises it.",
+    "followUps": [
+      {
+        "qZh": "逆时针旋转 90 度呢？旋转 180 度呢？",
+        "qEn": "Counter-clockwise by 90 degrees? By 180?",
+        "aZh": "逆时针：先转置，再上下翻转（或先把每行反转再转置）。180 度：上下翻转一次，再把每行左右翻转一次。",
+        "aEn": "Counter-clockwise: transpose, then flip upside down (or reverse each row, then transpose). 180 degrees: flip upside down, then reverse every row."
+      },
+      {
+        "qZh": "如果矩阵是 m×n、不是方阵呢？",
+        "qEn": "What if the matrix is m×n, not square?",
+        "aZh": "没法原地做：旋转后形状变成 n×m。新建一个矩阵，按 `new[j][m-1-i] = old[i][j]` 填进去。",
+        "aEn": "It cannot be done in place, because the shape becomes n×m. Allocate a new matrix and fill `new[j][m-1-i] = old[i][j]`."
+      }
+    ]
+  },
+  "lc-53": {
+    "takeawayZh": "「以 i 结尾的最优」是子数组问题的基本状态：前面累积的和是负数，就丢掉重来。",
+    "takeawayEn": "\"Best ending at i\" is the basic state for subarray problems: if the running sum before i is negative, drop it and start over.",
+    "followUps": [
+      {
+        "qZh": "还要返回子数组的起止位置？",
+        "qEn": "Also return the start and end of the subarray?",
+        "aZh": "Kadane 里当前和被重置的位置就是新的起点。每次更新最大值时，记下这个起点和当前下标。",
+        "aEn": "In Kadane, the point where the running sum restarts is the new start. Whenever the maximum improves, record that start and the current index."
+      },
+      {
+        "qZh": "如果数组首尾相连（环形）？",
+        "qEn": "What if the array is circular?",
+        "aZh": "答案要么不跨过首尾（普通 Kadane），要么跨过：等于总和减去最小子数组和。全是负数时只能取前者。",
+        "aEn": "The answer either does not wrap (plain Kadane) or wraps, which equals the total minus the minimum subarray sum. If everything is negative, only the first counts.",
+        "problem": "lc-918"
+      },
+      {
+        "qZh": "用分治怎么做？",
+        "qEn": "How would divide and conquer do it?",
+        "aZh": "最大子数组要么在左半，要么在右半，要么跨过中点（从中点向两边分别取最大扩展）。T(n) = 2T(n/2) + O(n)，即 O(n log n)；写成线段树还能回答区间查询。",
+        "aEn": "The best subarray lies in the left half, the right half, or crosses the middle (best extension each way from the middle). T(n) = 2T(n/2) + O(n), so O(n log n); as a segment tree it also answers range queries."
+      }
+    ]
+  },
+  "lc-75": {
+    "takeawayZh": "三指针维护三段不变量：[0, lo) 全是 0，[lo, i) 全是 1，(hi, n) 全是 2。和 hi 交换过来的元素还没检查，所以 i 不前进。",
+    "takeawayEn": "Three pointers keep three regions: [0, lo) holds 0s, [lo, i) holds 1s, (hi, n) holds 2s. An element swapped in from hi is unchecked, so i does not advance.",
+    "followUps": [
+      {
+        "qZh": "如果有 k 种颜色呢？",
+        "qEn": "What if there are k colours?",
+        "aZh": "计数排序：先数每种颜色出现几次，再按顺序写回，O(n + k) 时间、O(k) 空间。k 很大而又要求常数空间时，可以对颜色区间做分治的划分。",
+        "aEn": "Counting sort: count each colour, then write them back in order, O(n + k) time and O(k) space. If k is large and space must stay constant, partition recursively on ranges of colours."
+      },
+      {
+        "qZh": "三路划分还能用在哪？",
+        "qEn": "Where else does three-way partitioning help?",
+        "aZh": "快速排序遇到大量重复值时用三路划分：等于 pivot 的一段不再递归，重复多的输入就不会退化到 O(n²)。",
+        "aEn": "In quicksort with many repeated values: the block equal to the pivot is never recursed into, so duplicate-heavy input no longer degrades to O(n²).",
+        "problem": "lc-912"
+      }
+    ]
+  },
+  "lc-80": {
+    "takeawayZh": "「最多保留 k 个」的有序去重：拿当前值和结果里往前数第 k 个比较，k = 1 就是普通去重。",
+    "takeawayEn": "Sorted dedup keeping at most k copies: compare the current value with the k-th last kept one; k = 1 is plain dedup.",
+    "followUps": [
+      {
+        "qZh": "改成每个值最多保留 k 个？",
+        "qEn": "Generalise to at most k copies?",
+        "aZh": "条件换成 `w < k or nums[i] != nums[w-k]`。数组有序，如果结果里往前数第 k 个和当前值相同，就说明这个值已经留了 k 个。",
+        "aEn": "Use `w < k or nums[i] != nums[w-k]`. Since the array is sorted, if the k-th last kept value equals the current one, that value already has k copies."
+      },
+      {
+        "qZh": "为什么和 nums[w-2] 比，而不和 nums[i-2] 比？",
+        "qEn": "Why compare with nums[w-2] rather than nums[i-2]?",
+        "aZh": "判断的是「结果里已经留了几个」，结果是写指针之前的前缀。`nums[i-2]` 那个位置可能已经被写指针覆盖成别的值，拿它比较会在重复较多时出错。",
+        "aEn": "The question is how many copies the result already holds, and the result is the prefix before the write pointer. Position `i-2` may already have been overwritten, so comparing with it breaks on longer runs."
+      }
+    ]
+  },
+  "lc-88": {
+    "takeawayZh": "原地合并时从空位那一端开始写，就不会覆盖还没读的值。两个有序序列的合并，永远是「比较两个头，取一个」。",
+    "takeawayEn": "Merging in place, write from the end with the free space so nothing unread is overwritten. Merging two sorted sequences is always: compare the two heads, take one.",
+    "followUps": [
+      {
+        "qZh": "nums1 后面没有预留空间，必须返回新数组呢？",
+        "qEn": "What if nums1 has no spare room and you must return a new array?",
+        "aZh": "从前往后双指针合并到新数组即可，O(m + n) 额外空间。预留空间的意义正是让「从后往前写」不覆盖还没读的值。",
+        "aEn": "Merge front to back into a new array with two pointers, O(m + n) extra space. The spare room exists so that writing from the back never overwrites unread values."
+      },
+      {
+        "qZh": "合并 k 个有序数组呢？",
+        "qEn": "And merging k sorted arrays?",
+        "aZh": "用小根堆存每个数组当前最小的元素，每次弹出最小的并推进那个数组，O(N log k)；也可以两两分治合并。链表版本是同一个思路。",
+        "aEn": "Keep each array's current head in a min-heap, pop the smallest and advance that array: O(N log k). Pairwise divide-and-conquer merging also works; the linked-list version is the same idea.",
+        "problem": "lc-23"
+      }
+    ]
+  },
+  "lc-169": {
+    "takeawayZh": "摩尔投票靠「两两抵消」：多数元素抵消不完。得到的只是候选人；题目不保证存在时，要再数一遍验证。",
+    "takeawayEn": "Boyer-Moore voting cancels pairs, and a majority cannot be cancelled out. It yields only a candidate; unless a majority is guaranteed, count it again to verify.",
+    "followUps": [
+      {
+        "qZh": "如果不保证多数元素一定存在？",
+        "qEn": "What if a majority is not guaranteed?",
+        "aZh": "投票只给出候选人。再扫一遍数它出现的次数，超过 n/2 才返回，否则说明不存在。",
+        "aEn": "Voting only gives a candidate. Scan again to count it and return it only if it appears more than n/2 times; otherwise there is none."
+      },
+      {
+        "qZh": "找出所有出现次数超过 n/3 的元素？",
+        "qEn": "Find every element appearing more than n/3 times?",
+        "aZh": "这样的元素最多两个。用两个候选人、两个计数器投票，最后再分别验证。",
+        "aEn": "There are at most two. Vote with two candidates and two counters, then verify each one.",
+        "problem": "lc-229"
+      }
+    ]
+  },
+  "lc-229": {
+    "takeawayZh": "出现超过 n/k 次的元素最多 k−1 个：投票找候选，计数做验证。",
+    "takeawayEn": "At most k−1 elements appear more than n/k times: vote for candidates, then count to verify.",
+    "followUps": [
+      {
+        "qZh": "推广到出现超过 n/k 次？",
+        "qEn": "Generalise to more than n/k times?",
+        "aZh": "维护 k−1 个候选人和计数器。遇到新值且没有空位时，所有计数减一。最后逐个验证，O(nk) 时间、O(k) 空间。",
+        "aEn": "Keep k−1 candidates with counters. When a new value finds no free slot, decrement every counter. Verify each at the end: O(nk) time, O(k) space."
+      },
+      {
+        "qZh": "为什么最后必须再数一遍？",
+        "qEn": "Why must you count again at the end?",
+        "aZh": "投票只保证真正的答案一定在候选人里，不保证候选人都是答案。比如 [1,2,3]，投票结束时总会留下候选人，但每个值都只出现一次。",
+        "aEn": "Voting only guarantees that every real answer is among the candidates, not that every candidate is an answer. In [1,2,3] some candidates survive, yet each value appears once."
+      }
+    ]
+  },
+  "lc-238": {
+    "takeawayZh": "「除了自己」的聚合 = 左边的聚合 × 右边的聚合。前缀和后缀分开算，最后合起来。",
+    "takeawayEn": "\"Everything except me\" is the left aggregate combined with the right one. Compute prefix and suffix separately, then combine.",
+    "followUps": [
+      {
+        "qZh": "能做到 O(1) 额外空间吗（输出数组不算）？",
+        "qEn": "Can you use O(1) extra space, not counting the output?",
+        "aZh": "先把前缀积写进输出数组，再从右往左扫，用一个变量累乘后缀积，乘进对应位置。",
+        "aEn": "Write the prefix products into the output array, then sweep right to left with one running suffix product, multiplying it in."
+      },
+      {
+        "qZh": "如果允许用除法，要注意什么？",
+        "qEn": "If division were allowed, what must you watch?",
+        "aZh": "零的个数。没有零：总积除以自己。恰好一个零：只有零所在的位置是其余数的积，其余为 0。两个及以上零：全部为 0。",
+        "aEn": "The number of zeros. None: divide the total product by the element. Exactly one: only the zero's slot gets the product of the rest, the others are 0. Two or more: all 0."
+      }
+    ]
+  },
+  "lc-283": {
+    "takeawayZh": "稳定地「挑出一类元素」：写指针收下要留的，最后统一填尾巴；或者交换，让零自然沉到后面。",
+    "takeawayEn": "Stably pulling out one kind of element: the write pointer takes what stays and the tail is filled at the end, or swap so the zeros sink back on their own.",
+    "followUps": [
+      {
+        "qZh": "怎样让写操作尽量少？",
+        "qEn": "How do you minimise writes?",
+        "aZh": "用交换的写法：快指针遇到非零数就和慢指针位置交换，并且只在两个指针不同时才交换。没有零的数组一次写都不会发生。",
+        "aEn": "Use the swap version: when the fast pointer meets a non-zero, swap it with the slow pointer, and only when the two differ. An array without zeros causes no writes at all."
+      },
+      {
+        "qZh": "改成把所有等于 val 的元素移到末尾，其余保持顺序？",
+        "qEn": "Move every element equal to val to the end, keeping the rest in order?",
+        "aZh": "判断条件从「非零」换成「不等于 val」，还是同一个读写指针模板。只要求删掉、不要求放到末尾时，就是移除元素那道题。",
+        "aEn": "Change the test from \"non-zero\" to \"not equal to val\"; it is the same read/write template. If val only needs removing, it becomes Remove Element.",
+        "problem": "lc-27"
+      }
+    ]
+  },
+  "lc-287": {
+    "takeawayZh": "值域 [1, n] 的数组可以看成函数图 i → nums[i]。「重复」就是两条边指向同一个点，也就是环的入口。",
+    "takeawayEn": "An array with values in [1, n] is a functional graph i → nums[i]. A duplicate is two edges into one node, which is exactly the entrance of the cycle.",
+    "followUps": [
+      {
+        "qZh": "为什么能看成链表找环？",
+        "qEn": "Why can it be treated as finding a cycle in a linked list?",
+        "aZh": "把 i → nums[i] 看成一条边。值都在 [1, n]，所以没有边指向下标 0，从 0 出发一定会走进环；环的入口被两个下标指向，那个值就是重复数。",
+        "aEn": "Treat i → nums[i] as an edge. Values lie in [1, n], so nothing points at index 0, and a walk from 0 must enter a cycle; its entrance is pointed to by two indices, and that value is the duplicate.",
+        "problem": "lc-142"
+      },
+      {
+        "qZh": "二分值域的做法依据是什么？",
+        "qEn": "What justifies binary searching on the values?",
+        "aZh": "统计 ≤ mid 的数有 cnt 个。若 cnt > mid，[1, mid] 里一定挤进了重复数（鸽巢原理），往左找；否则往右。O(n log n) 时间，不改数组。",
+        "aEn": "Count the cnt numbers ≤ mid. If cnt > mid, the duplicate must be in [1, mid] by pigeonhole, so go left; otherwise go right. O(n log n) time without touching the array."
+      }
+    ]
+  },
+  "lc-324": {
+    "takeawayZh": "严格摆动的关键是让相等的值离得足够远：较小的一半和较大的一半各自倒序，再交错放。",
+    "takeawayEn": "A strict wiggle needs equal values far apart: reverse the smaller half and the larger half, then interleave them.",
+    "followUps": [
+      {
+        "qZh": "如果只要求 nums[0] ≤ nums[1] ≥ nums[2] ≤ …（允许相等）？",
+        "qEn": "What if equality is allowed: nums[0] ≤ nums[1] ≥ nums[2] ≤ …?",
+        "aZh": "一遍贪心就够：奇数位置比下一个小就交换，偶数位置比下一个大就交换。O(n)，不需要排序。",
+        "aEn": "One greedy pass: swap when an odd index is smaller than the next or an even index is larger than the next. O(n), no sorting."
+      },
+      {
+        "qZh": "为什么要把两半倒序再穿插？",
+        "qEn": "Why reverse both halves before interleaving?",
+        "aZh": "正序穿插时，中位数附近的相同值可能落到相邻位置。比如 [4,5,5,6]：正序得到 [4,5,5,6]，两个 5 相邻；倒序得到 [5,6,4,5]，满足要求。",
+        "aEn": "Interleaving in order can put copies of the median next to each other. For [4,5,5,6], in order gives [4,5,5,6] with the 5s adjacent; reversed gives [5,6,4,5], which works."
+      }
+    ]
+  },
+  "lc-334": {
+    "takeawayZh": "只问「存不存在」时，维护「每个长度的递增子序列的最小结尾」就够了。",
+    "takeawayEn": "When you only ask whether one exists, keep the smallest ending of an increasing run of each length.",
+    "followUps": [
+      {
+        "qZh": "改成长度为 k 的递增子序列是否存在？",
+        "qEn": "Does an increasing subsequence of length k exist?",
+        "aZh": "维护 k−1 个「长度为 j 的递增子序列的最小结尾」，每个数二分找到要替换的位置，O(n log k)。这正是最长递增子序列的贪心加二分。",
+        "aEn": "Keep k−1 smallest endings for each length j and binary search where each number goes, O(n log k). That is the greedy-plus-binary-search for the longest increasing subsequence.",
+        "problem": "lc-300"
+      },
+      {
+        "qZh": "first 被后面更小的值替换后，为什么答案还对？",
+        "qEn": "Why is it still correct after first is replaced by a later, smaller value?",
+        "aZh": "second 存在就说明它前面曾经有过比它小的数。first 变小只影响以后能不能形成新的二元组，不会让已有的 second 失效。",
+        "aEn": "second existing already proves a smaller value came before it. A smaller first only affects future pairs; it never invalidates the current second."
+      }
+    ]
+  },
+  "lc-350": {
+    "takeawayZh": "多重集合的交集就是「计数相消」：用一方建计数表，另一方逐个消耗。输入有序时换成双指针，内存紧时让小的一方进内存。",
+    "takeawayEn": "A multiset intersection is counting and cancelling: count one side, consume with the other. When sorted, use two pointers; when memory is tight, keep the smaller side in memory.",
+    "followUps": [
+      {
+        "qZh": "如果两个数组都已经排好序？",
+        "qEn": "What if both arrays are already sorted?",
+        "aZh": "双指针：较小的那边前进，相等时记下并同时前进。O(m + n) 时间，除输出外 O(1) 空间。",
+        "aEn": "Two pointers: advance the smaller side, and on equality record it and advance both. O(m + n) time and O(1) space besides the output."
+      },
+      {
+        "qZh": "nums1 很小、nums2 很大时怎么选？",
+        "qEn": "What if nums1 is small and nums2 is huge?",
+        "aZh": "用小的 nums1 建计数表，遍历 nums2 消耗计数，哈希表只占 O(min(m, n))。",
+        "aEn": "Build the count table from the small nums1 and stream nums2 against it; the table takes only O(min(m, n))."
+      },
+      {
+        "qZh": "nums2 存在磁盘上，内存放不下呢？",
+        "qEn": "What if nums2 lives on disk and does not fit in memory?",
+        "aZh": "小数组的计数表留在内存，nums2 分块读入逐块消耗。两边都放不下时，先各自外部排序，再用双指针流式合并。",
+        "aEn": "Keep the small side's counts in memory and read nums2 in chunks. If neither fits, sort both externally, then merge the two streams with two pointers."
+      }
+    ]
+  },
+  "lc-442": {
+    "takeawayZh": "原地标记时「翻之前已经是负数」就说明重复。改数组之前先问一句：能改吗？",
+    "takeawayEn": "With in-place marking, a slot that is already negative means a repeat. Before modifying the array, ask whether you may.",
+    "followUps": [
+      {
+        "qZh": "有的数可能出现三次或更多呢？",
+        "qEn": "What if some numbers appear three or more times?",
+        "aZh": "正负号只能记「见过没见过」。可以改成每见到值 v 就给 `nums[v-1]` 加 n，最后用 `nums[i] // n` 得到出现次数，仍是 O(1) 额外空间；Java 和 C++ 里要注意加完后的值会不会超出 int。",
+        "aEn": "A sign only records seen or not. Add n to `nums[v-1]` for every v instead, and read counts as `nums[i] // n`, still O(1) extra space; in Java and C++ check that the sums still fit in an int."
+      },
+      {
+        "qZh": "不能修改数组时怎么办？",
+        "qEn": "What if the array is read-only?",
+        "aZh": "用哈希集合，O(n) 空间。如果只有一个重复值、又不能改数组，就是快慢指针找环的那道题。",
+        "aEn": "Use a hash set, O(n) space. With exactly one repeated value and a read-only array, it becomes the cycle-detection problem.",
+        "problem": "lc-287"
+      }
+    ]
+  },
+  "lc-448": {
+    "takeawayZh": "值域是 [1, n] 时，数组下标本身就是哈希表：用正负号标记「这个值出现过」。",
+    "takeawayEn": "When values lie in [1, n], the indices are the hash table: flip a sign to mark that a value was seen.",
+    "followUps": [
+      {
+        "qZh": "如果不允许修改输入数组？",
+        "qEn": "What if the input must not be modified?",
+        "aZh": "原地标记就不能用了。用一个长度 n 的布尔数组（O(n) 空间），或者复制一份排序后找缺口。",
+        "aEn": "In-place marking is out. Use a boolean array of length n (O(n) space), or sort a copy and look for gaps."
+      },
+      {
+        "qZh": "同时找出出现了两次的数？",
+        "qEn": "Also find the numbers that appear twice?",
+        "aZh": "同一遍标记里，要去翻的位置如果已经是负数，说明这个值是第二次出现。",
+        "aEn": "In the same marking pass, if the slot you are about to flip is already negative, this value is appearing a second time.",
+        "problem": "lc-442"
+      }
+    ]
+  },
+  "lc-645": {
+    "takeawayZh": "「一个重复、一个缺失」有两个未知数，就要两个方程：和与平方和，或者异或之后按某一位分组。",
+    "takeawayEn": "One duplicate and one missing value are two unknowns, so you need two equations: the sum and the sum of squares, or XOR and then split by one bit.",
+    "followUps": [
+      {
+        "qZh": "用异或能做到 O(1) 空间吗？",
+        "qEn": "Can XOR do it in O(1) space?",
+        "aZh": "把数组里的数和 1..n 一起异或，得到 `dup ^ missing`。按它最低位的 1 把所有数分成两组分别异或，得到两个数；再扫一遍数组，出现过的是重复值。",
+        "aEn": "XOR the array together with 1..n to get `dup ^ missing`. Split all numbers by its lowest set bit and XOR each group to get the two values; one more scan tells which one occurs in the array.",
+        "problem": "lc-260"
+      },
+      {
+        "qZh": "数学法会不会溢出？",
+        "qEn": "Can the math approach overflow?",
+        "aZh": "会。n = 10^4 时平方和约为 3.3×10^11，超出 32 位；Java 和 C++ 要用 long。",
+        "aEn": "Yes. For n = 10^4 the sum of squares is about 3.3×10^11, beyond 32 bits; use long in Java and C++."
+      }
+    ]
+  },
+  "lc-912": {
+    "takeawayZh": "选排序算法先问三件事：要不要稳定，额外空间能给多少，最坏情况能不能接受。",
+    "takeawayEn": "Before picking a sort, ask three things: must it be stable, how much extra space is allowed, and is the worst case acceptable.",
+    "followUps": [
+      {
+        "qZh": "快速排序遇到大量重复值或已经有序的输入会怎样？",
+        "qEn": "What happens to quicksort on sorted or duplicate-heavy input?",
+        "aZh": "固定选第一个元素做 pivot，在有序输入上会退化到 O(n²)。随机选 pivot，再用三路划分处理重复值，期望 O(n log n)。",
+        "aEn": "Always pivoting on the first element degrades to O(n²) on sorted input. Pick a random pivot and partition three ways for duplicates: expected O(n log n).",
+        "problem": "lc-75"
+      },
+      {
+        "qZh": "需要稳定排序时选哪个？",
+        "qEn": "Which one when the sort must be stable?",
+        "aZh": "归并排序是稳定的，代价是 O(n) 额外空间；堆排序和常见的快速排序都不稳定。",
+        "aEn": "Merge sort is stable at the cost of O(n) extra space; heap sort and the usual quicksort are not."
+      },
+      {
+        "qZh": "值域只有 [−5×10^4, 5×10^4] 时有没有更快的？",
+        "qEn": "With values only in [−5×10^4, 5×10^4], is there something faster?",
+        "aZh": "计数排序：O(n + 值域)。这里值域约 10^5，和 n 同一个量级，可以线性完成。",
+        "aEn": "Counting sort, O(n + range). The range here is about 10^5, the same order as n, so it runs in linear time."
+      }
+    ]
+  }
+}

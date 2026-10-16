@@ -7,8 +7,9 @@
  * (the input may break the statement's guarantees, or the problem may accept several answers).
  * A follow-up's `problem` must be a judged Line 500 problem other than its own.
  *
- *   node --import tsx scripts/line500-extras/verify.ts [--prune] [lc-1 ...]
+ *   node --import tsx scripts/line500-extras/verify.ts [--prune] [--show] [lc-1 ...]
  *
+ * --show prints what the best approach answers on each edge case, for reviewing the descriptions.
  * --prune deletes failing edge cases from the file instead of failing: never edit one until it
  * "looks right".
  */
@@ -29,6 +30,7 @@ const EDGES = new URL('../../lib/content/ling-edges.json', import.meta.url);
 const FOLLOW_UPS = new URL('../../lib/content/ling-followups.json', import.meta.url);
 const args = process.argv.slice(2);
 const prune = args.includes('--prune');
+const show = args.includes('--show');
 const only = new Set(args.filter((arg) => !arg.startsWith('--')));
 const picked = (id: string) => !only.size || only.has(id);
 const python = process.env.PYTHON || (spawnSync('python3.13', ['-V']).status === 0 ? 'python3.13' : 'python3');
@@ -65,8 +67,11 @@ function check(id: string, input: string, label: string) {
   const runs = runAll(id, input);
   const best = runs.at(-1)!;
   if ('error' in best) return `best approach: ${best.error}`;
+  if (show) console.log(`${id} ${label}: ${input.replace(/\n/g, ' | ')}  =>  ${best.out.trim().replace(/\n/g, ' | ')}`);
+  // Unordered answers print in any order: compare their tokens as a multiset.
+  const bag = (out: string) => out.split(/[\s,[\]]+/).filter(Boolean).sort().join(' ');
   runs.slice(0, -1).forEach((run, i) => {
-    if ('error' in run || run.out.trim() !== best.out.trim())
+    if ('error' in run || bag(run.out) !== bag(best.out))
       warnings.push(`${id} ${label}: approach ${i + 1} ${'error' in run ? `fails (${run.error})` : `prints ${run.out.trim()}`}, best prints ${best.out.trim()}`);
   });
   return '';
