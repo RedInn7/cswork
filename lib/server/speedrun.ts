@@ -6,7 +6,7 @@ import { json, limitReader } from './http';
 import { getStudySourceStatement } from './study-library';
 
 /** Judgeable Line 500 problems: the `ready` test of lib/server/study-library.ts. */
-function speedrunPool(): SpeedrunPoolItem[] {
+export function speedrunPool(): SpeedrunPoolItem[] {
   const rows = sqlite()
     .prepare(
       `SELECT l.number, l.title_zh AS titleZh, l.title_en AS titleEn, l.judge_problem_id AS id
