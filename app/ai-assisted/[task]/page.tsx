@@ -15,7 +15,8 @@ type Props = { params: Promise<{ task: string }> };
 
 async function load(params: Props['params']) {
   const task = aiTask((await params).task);
-  if (!task) notFound();
+  // A take-home lives at /take-home/<slug>, without the AI pair.
+  if (!task || task.track !== 'ai-assisted') notFound();
   return { task, zh: (await requestLocale()) === 'zh' };
 }
 

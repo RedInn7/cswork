@@ -93,7 +93,8 @@ export default async function AiAssistedPage() {
   const zh = (await requestLocale()) === 'zh',
     c = copy[zh ? 'zh' : 'en'],
     i = zh ? 0 : 1;
-  const tasks = aiTasks();
+  // Take-homes have their own pages (/take-home).
+  const tasks = aiTasks().filter((task) => task.track === 'ai-assisted');
   const companies = aiRoundCompanies();
   return (
     <article>

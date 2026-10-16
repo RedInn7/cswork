@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { FilePlus2, LoaderCircle, Play, RotateCcw, Send, X } from 'lucide-react';
 import { CodeEditor } from '@/components/editor';
+import { RoundReviewCard } from '@/components/round-review';
 import { StatementMarkdown } from '@/components/statement-markdown';
 import { Button } from '@/components/ui/button';
 import { PROJECT_MAX_BYTES, PROJECT_MAX_FILES, PROJECT_PATH, type ProjectReport } from '@/lib/ai-coding';
@@ -54,6 +55,7 @@ export function ProjectWorkspace({
   aiLimit,
   pair = true,
   onFinished,
+  aside,
 }: {
   task: string;
   /** ICA sets (/oa/ica): the level a run judges, with task "ica:<slug>". */
@@ -67,6 +69,8 @@ export function ProjectWorkspace({
   /** False hides the AI pair: an ICA round allows no AI. */
   pair?: boolean;
   onFinished?: (run: Run) => void;
+  /** More of the side panel, below the results (a take-home's design note and review). */
+  aside?: (files: Record<string, string>, run: Run | null) => React.ReactNode;
 }) {
   const t = useT();
   const locale = useLocale();
@@ -448,10 +452,12 @@ export function ProjectWorkspace({
                     {pairError}
                   </p>
                 )}
+                {turns.length > 0 && <RoundReviewCard task={task} mode="pair" files={files} turns={turns} />}
               </>
             )}
           </section>
         )}
+        {aside?.(files, run)}
       </div>
     </section>
   );
