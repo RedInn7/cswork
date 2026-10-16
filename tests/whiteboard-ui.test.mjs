@@ -121,7 +121,7 @@ test('whiteboard mode: plain editor, no run or help, one submission recorded onc
     await click(labelled('Whiteboard mode'));
     await click(byText('Start', $('[role="alertdialog"]')));
 
-    assert.equal(labelled('Leave whiteboard mode').getAttribute('aria-pressed'), 'true');
+    assert.equal(labelled('Whiteboard mode').getAttribute('aria-pressed'), 'true');
     assert.equal(editor().dataset.bare, 'true');
     assert.equal(editor().dataset.path.endsWith('/solution.py/wb'), true, 'a model of its own');
     assert.equal(run().hidden, true);

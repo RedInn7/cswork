@@ -68,13 +68,13 @@ export function useWhiteboard(problemId: string, signedIn: boolean, submission: 
 export function WhiteboardToggle({ wb, onEnter }: { wb: Whiteboard; onEnter: () => void }) {
   const t = useT();
   const [asking, setAsking] = useState(false);
-  const label = wb.on ? t('退出白板模式', 'Leave whiteboard mode') : t('白板模式', 'Whiteboard mode');
   return (
     <>
       <button
         className="cs-top-button"
         aria-pressed={wb.on}
-        aria-label={label}
+        // A toggle keeps one name; aria-pressed says whether it is on.
+        aria-label={t('白板模式', 'Whiteboard mode')}
         title={t('像面试白板一样写：不能运行、没有补全和提示，只能提交一次', 'Code like on an interview whiteboard: no runs, completion or hints, one submission')}
         onClick={() => (wb.on ? wb.exit() : setAsking(true))}
       >
