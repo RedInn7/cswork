@@ -168,7 +168,10 @@ void test('a full nine-dimension report with empty texts encodes whole and decod
   assert.ok(made.value.length <= MAX_FEEDBACK, `${made.value.length}`);
   assert.deepEqual(decodeFeedback(made.value), nine);
   // Every dimension, new ones included, survives on its own.
-  for (const { id } of RUBRIC) assert.deepEqual(decodeFeedback(encodeFeedback({ ...base, rubric: { [id]: 2 } })!.value)!.rubric, { [id]: 2 });
+  for (const { id } of RUBRIC) {
+    const rubric = { [id]: 2 } as Feedback['rubric'];
+    assert.deepEqual(decodeFeedback(encodeFeedback({ ...base, rubric })!.value)!.rubric, rubric);
+  }
 });
 
 void test("rubricFor: communication plus each round's dimensions in turn, at most nine, in RUBRIC order", () => {
