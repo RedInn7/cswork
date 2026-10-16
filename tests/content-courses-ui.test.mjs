@@ -244,6 +244,11 @@ test('the editorial stays locked until solved or confirmed, is fetched only then
     // The confirm unmounted the "Show anyway" button; focus goes to the heading, not <body>.
     assert.ok(document.activeElement === document.getElementById('ling-editorial-title'), 'focus lands on the heading');
     assert.deepEqual(fetched, [`/api/oj/problems/${editorialId}/editorial`]);
+    // Two or more approaches open step by step (tests/clarify-panel-ui.test.mjs); "Show all" is remembered.
+    assert.ok(document.querySelector('.cs-ling-steps') !== null);
+    assert.equal(document.querySelectorAll('.cs-ling-approaches > li').length, 0);
+    await act(async () => buttons('Show all')[0].click());
+    assert.equal(localStorage.getItem('cswork:editorial-mode'), 'all');
     assert.equal(document.querySelectorAll('.cs-ling-approaches > li').length, editorial.approaches.length);
     assert.ok(document.querySelector('.cs-ling-unverified') !== null);
     await act(async () => buttons('Helpful')[0].click());

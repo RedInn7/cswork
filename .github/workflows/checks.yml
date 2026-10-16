@@ -108,6 +108,7 @@ jobs:
       - run: node --import tsx --test tests/ai-ask.test.ts tests/command-palette-ui.test.mjs tests/seo-facets.test.ts tests/company-insights.test.ts tests/pwa.test.mjs
       - run: node --import tsx --test tests/python-debugger.test.ts tests/python-debugger-ui.test.mjs
       - run: node --import tsx --test tests/ling-editorials.test.ts tests/system-design-course.test.ts tests/content-courses-ui.test.mjs tests/system-design-reader-ui.test.mjs tests/estimation-drill.test.mjs
+      - run: node --import tsx --test tests/clarify.test.ts tests/ling-extras.test.ts tests/clarify-panel-ui.test.mjs
       - run: node --import tsx --test tests/algorithm-demo-topics.test.ts tests/algorithm-demo-ui.test.mjs tests/course-catalog.test.ts tests/ai-resume.test.ts tests/career-guide-ui.test.mjs tests/visa-timeline.test.ts tests/visa-timeline-ui.test.mjs tests/h1b.test.ts tests/job-openings.test.ts tests/job-openings-ui.test.mjs tests/applications.test.ts tests/application-tracker-ui.test.mjs
       - run: node --import tsx --test tests/jd-readiness.test.ts tests/jd-readiness-ui.test.mjs
       - run: node --import tsx --test tests/contests.test.ts tests/contests-ui.test.mjs tests/contest-fairness.test.ts tests/contest-tiers.test.ts tests/duels.test.ts
@@ -188,3 +189,5 @@ jobs:
       - run: node --import tsx --test tests/core-skills.test.ts tests/core-skills-ui.test.mjs
       # The concurrency drivers are randomized: rerun every solution, and every racy variant must fail.
       - run: node --import tsx scripts/core-skills/stress.ts
+      # Runs every Line 500 edge case and checklist case through the verified Python editorial.
+      - run: node --import tsx scripts/line500-extras/verify.ts
