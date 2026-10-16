@@ -4,7 +4,8 @@ import type { Resume, ResumeItem } from '@/components/resume-builder';
  * The resume builder's "paste text" import (components/resume-builder.tsx): a resume copied out
  * of a PDF or a document, read by rules in the browser. Section headings in English or Chinese
  * split it; in a list section a line with a date range or after a run of bullets starts a new
- * entry, its next line is the subtitle, and lines opening with • · ▪ * - are bullets. The first
+ * entry (unless it reads as the bullet's wrapped tail), its next line is the subtitle, and lines
+ * opening with • · ▪ * - are bullets. The first
  * line is the name; email, phone and links come from the lines above the first heading. The
  * learner previews the result before it replaces anything.
  */
@@ -12,7 +13,7 @@ type Section = 'education' | 'experience' | 'projects' | 'skills' | 'awards' | '
 const HEADINGS: [RegExp, Section][] = [
   [/^(education|academic background|教育背景|教育经历)$/i, 'education'],
   [
-    /^((work|professional|relevant|industry)\s+)?(experience|employment)(\s+history)?$|^internships?(\s+experience)?$|^(工作|实习|工作与实习|实习与工作)经[历验]$/i,
+    /^((work|professional|relevant|industry|research|teaching|leadership|volunteer(ing)?)\s+)?(experience|employment)(\s+history)?$|^internships?(\s+experience)?$|^(工作|实习|工作与实习|实习与工作|科研|研究|校园)经[历验]$/i,
     'experience',
   ],
   [/^((personal|selected|academic|technical|course|side)\s+)?projects?(\s+experience)?$|^项目经[历验]$/i, 'projects'],
@@ -22,6 +23,12 @@ const HEADINGS: [RegExp, Section][] = [
     'awards',
   ],
   [/^(summary|objective|profile|about( me)?|个人(简介|总结)|自我评价)$/i, 'skip'],
+];
+// Only as a line of their own: inside an entry, "Activities: ACM club" or "Interests: …" is its text.
+// Leadership and activities are entries with roles and dates, kept under experience; the rest has no section.
+const LINE_HEADINGS: [RegExp, Section][] = [
+  [/^(leadership|activities|extracurriculars?|extracurricular activities|leadership\s*(&|and)\s*activities|校园活动|学生工作|社团经历)$/i, 'experience'],
+  [/^(publications?|interests|hobbies|references|论文(发表)?|发表论文|兴趣爱好)$/i, 'skip'],
 ];
 
 const MONTH = '\\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\\.?';
@@ -42,7 +49,7 @@ const blank = (): ResumeItem => ({ title: '', subtitle: '', dates: '', bullets: 
 function heading(line: string): { section: Section; rest: string } | null {
   const plain = line.replace(/^[#*_\s]+|[*_\s]+$/g, '').replace(/\s+/g, ' ');
   const whole = plain.replace(/[:：]$/, '');
-  for (const [re, section] of HEADINGS) if (whole.length <= 40 && re.test(whole)) return { section, rest: '' };
+  for (const [re, section] of [...HEADINGS, ...LINE_HEADINGS]) if (whole.length <= 40 && re.test(whole)) return { section, rest: '' };
   // "Skills: Python, Go" — a heading with its first line after the colon.
   const colon = /^([^:：]{2,30})[:：]\s*(.+)$/.exec(plain);
   if (colon) for (const [re, section] of HEADINGS) if (re.test(colon[1].trim())) return { section, rest: colon[2] };
@@ -116,9 +123,12 @@ export function parseResumeText(text: string): Resume {
       if (range && current.dates) head(open(section), content);
       else if (!current.subtitle || range) head(current, content);
       else current.list.push(content);
-    } else if (lastMarked && !range && /^[a-z(]/.test(content)) {
-      // A bullet wrapped onto the next line when it was copied out of a PDF.
-      current.list[current.list.length - 1] += ` ${content}`;
+    } else if (lastMarked && !range && (/^[a-z0-9(\p{Script=Han}]/u.test(content) || (!/[.。;；!?！？]$/.test(current.list[current.list.length - 1]) && !SPLIT.test(content)))) {
+      // A bullet wrapped onto the next line when it was copied out of a PDF: an entry header has a
+      // date or a separator, so an undated, unseparated line after an unfinished bullet goes on it.
+      // ponytail: a header with neither (a bare "Google" line) after a bullet with no full stop joins it.
+      const sep = /[\p{Script=Han}，、：]$/u.test(current.list[current.list.length - 1]) && /^\p{Script=Han}/u.test(content) ? '' : ' ';
+      current.list[current.list.length - 1] += `${sep}${content}`;
     } else if (range || lastMarked) head(open(section), content);
     else current.list.push(content);
   }

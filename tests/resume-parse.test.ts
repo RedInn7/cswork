@@ -121,3 +121,44 @@ void test('entries without bullet marks, a second dated line, and text with no h
   assert.deepEqual([plain.name, plain.email, plain.skills, plain.experience[0].title], ['Grace Hopper', 'grace@example.com', '', '']);
   assert.equal(parseResumeText('').name, '');
 });
+
+void test('wrapped bullets that go on with a number, a name or a Chinese character; research and other headings', () => {
+  const r = parseResumeText(`EXPERIENCE
+Acme | Intern | Jun 2025 – Sep 2025
+• Built a Redis cache in front of the search API, cutting p99 from
+420 ms to 180 ms across 3 services
+• Moved 14 cron jobs to
+Kubernetes on GKE
+• 优化慢查询，使接口延迟降低
+了百分之三十
+• Wrote the runbook.
+Globex Remote | 2024 – 2025
+• Shipped billing
+RESEARCH EXPERIENCE
+MIT CSAIL | Research Assistant | 2024 – 2025
+• Proposed a sharded index
+科研经历
+清华大学 ｜ 2023 – 2024
+• 复现 3 篇论文
+PUBLICATIONS
+Lovelace, A. Notes on the Analytical Engine. 1843.`);
+  assert.deepEqual(
+    r.experience.map((e) => [e.title, e.dates, e.bullets]),
+    [
+      [
+        'Acme',
+        'Jun 2025 – Sep 2025',
+        'Built a Redis cache in front of the search API, cutting p99 from 420 ms to 180 ms across 3 services\nMoved 14 cron jobs to Kubernetes on GKE\n优化慢查询，使接口延迟降低了百分之三十\nWrote the runbook.',
+      ],
+      ['Globex Remote', '2024 – 2025', 'Shipped billing'],
+      ['MIT CSAIL', '2024 – 2025', 'Proposed a sharded index'],
+      ['清华大学', '2023 – 2024', '复现 3 篇论文'],
+    ],
+  );
+  // Publications have no section: dropped, not stuck onto the last entry.
+  assert.ok(!JSON.stringify(r).includes('Analytical'));
+  // "Activities:" inside an education entry is its text, not a heading.
+  const e = parseResumeText('EDUCATION\nMIT | B.S. | 2022 – 2026\n• Activities: ACM club, robotics\nLEADERSHIP\nACM Club | President | 2024 – 2025\n• Ran 12 workshops');
+  assert.equal(e.education[0].bullets, 'Activities: ACM club, robotics');
+  assert.deepEqual(e.experience.map((x) => x.title), ['ACM Club']);
+});
