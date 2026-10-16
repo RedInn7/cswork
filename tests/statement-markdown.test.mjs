@@ -124,7 +124,7 @@ test('a post renders TeX once KaTeX loads, keeps money as text, and its links ca
   const { createRoot } = await import('react-dom/client');
   const { decodeShare } = await import('../lib/playground-share.ts');
   const root = createRoot(document.getElementById('root'));
-  const body = 'Time is $O(n^2)$; it costs $5 和 $10, or $3-$4.\n\n```python\nprint(input())\n```';
+  const body = 'Time is $O(n^2)$; it costs $5 和 $10, or $3-$4.\n\n```python\nprint(input())\n```\n\n```go\nfunc main() {}\n```';
   await act(async () => root.render(React.createElement(StatementMarkdown, { body, untrusted: true })));
   try {
     for (let i = 0; i < 100 && !document.querySelector('.katex'); i++)
@@ -135,6 +135,12 @@ test('a post renders TeX once KaTeX loads, keeps money as text, and its links ca
     const href = document.querySelector('.cs-run-playground a').getAttribute('href');
     assert.deepEqual(await decodeShare(new URL(href, 'https://cswork.test').hash), { language: 'python', code: 'print(input())\n', stdin: '' });
     assert.equal(document.querySelector('.cs-run-playground a').target, '_blank');
+    // Arrow keys move between language tabs and focus the new one.
+    const tabs = () => [...document.querySelectorAll('[role="tab"]')];
+    await act(async () => tabs()[0].dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
+    assert.deepEqual(tabs().map(x => x.getAttribute('aria-selected')), ['false', 'true']);
+    assert.equal(document.activeElement, tabs()[1]);
+    assert.deepEqual([...document.querySelectorAll('[role="tabpanel"]')].map(x => x.hidden), [true, false]);
   } finally {
     act(() => root.unmount());
   }
