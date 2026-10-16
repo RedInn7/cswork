@@ -24,7 +24,7 @@ type Review = {
   createdAt: number;
   comments: Comment[];
 };
-type OpenLink = { id: string; note: string; createdAt: number; comments: number };
+type OpenLink = { id: string; note: string; createdAt: number; comments: number; problemId: string | null };
 const COMMENT_MAX = 2000;
 const message = (error: unknown) => (error instanceof Error ? error.message : String(error));
 
@@ -34,13 +34,18 @@ export function ReviewLink({ submissionId }: { submissionId: string }) {
   const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [links, setLinks] = useState<OpenLink[] | null>(null);
+  // At the open-link cap the list widens to every open link, wherever it is.
+  const [every, setEvery] = useState(false);
   const [note, setNote] = useState('');
   const [url, setUrl] = useState('');
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
-  const load = () =>
-    ojRequest<{ items: OpenLink[] }>(`reviews?submission=${encodeURIComponent(submissionId)}`).then(
-      (r) => setLinks(r.items),
+  const load = (all = false) =>
+    ojRequest<{ items: OpenLink[] }>(all ? 'reviews' : `reviews?submission=${encodeURIComponent(submissionId)}`).then(
+      (r) => {
+        setLinks(r.items);
+        setEvery(all);
+      },
       (error) => setStatus(message(error)),
     );
   useEffect(() => {
@@ -63,6 +68,7 @@ export function ReviewLink({ submissionId }: { submissionId: string }) {
       void load();
     } catch (error) {
       setStatus(message(error));
+      if ((error as { status?: unknown }).status === 409) void load(true);
     } finally {
       setBusy(false);
     }
@@ -110,10 +116,19 @@ export function ReviewLink({ submissionId }: { submissionId: string }) {
       )}
       <output>{status}</output>
       {!!links?.length && (
-        <ul className="cr-links" aria-label={t('这次提交未关闭的评审链接', 'Open review links on this submission')}>
+        <ul
+          className="cr-links"
+          aria-label={every ? t('你所有未关闭的评审链接', 'All your open review links') : t('这次提交未关闭的评审链接', 'Open review links on this submission')}
+        >
           {links.map((item) => (
             <li key={item.id}>
-              <a href={`/review/${item.id}`} target="_blank" rel="noreferrer">
+              <a
+                href={`/review/${item.id}`}
+                target="_blank"
+                rel="noreferrer"
+                title={t('这个地址只有你能打开；请人评审要发生成时保存的链接', 'Only you can open this address. Send reviewers the link you saved when you made it')}
+              >
+                {every && `${item.problemId ?? '?'} · `}
                 {new Date(item.createdAt).toLocaleDateString(locale === 'zh' ? 'zh-CN' : 'en')} ·{' '}
                 {t(`${item.comments} 条评论`, `${item.comments} comment${item.comments === 1 ? '' : 's'}`)}
               </a>
@@ -144,20 +159,28 @@ export function CodeReview({ token }: { token: string }) {
   useEffect(() => {
     if (line !== null) field.current?.focus();
   }, [line]);
+  // Once the review is on screen a failed reload or close shows above the code instead of replacing it.
   const load = () =>
-    ojRequest<Review>(`reviews/${encodeURIComponent(token)}`).then(setReview, (failure) => setError(message(failure)));
+    ojRequest<Review>(`reviews/${encodeURIComponent(token)}`).then(
+      (next) => {
+        setReview(next);
+        setError('');
+      },
+      (failure) => setError(message(failure)),
+    );
   useEffect(() => {
     void load();
     // oxlint-disable-next-line react-hooks/exhaustive-deps -- per token.
   }, [token]);
   if (closed) return <p className="cr-state">{t('评审链接已关闭。', 'The review link is closed.')}</p>;
-  if (error)
-    return (
+  if (!review)
+    return error ? (
       <p className="cr-state" role="alert">
         {error}
       </p>
+    ) : (
+      <p className="cr-state">{t('正在加载代码…', 'Loading the code…')}</p>
     );
-  if (!review) return <p className="cr-state">{t('正在加载代码…', 'Loading the code…')}</p>;
   const who = (c: { reviewer: number; handle: string | null; mine: boolean }) =>
     (c.handle ? `@${c.handle}` : c.reviewer === 0 ? t('作者', 'Author') : t(`评审者 ${c.reviewer}`, `Reviewer ${c.reviewer}`)) +
     (c.mine ? t('（你）', ' (you)') : '');
@@ -210,6 +233,19 @@ export function CodeReview({ token }: { token: string }) {
             </button>
           )}
         </p>
+        {review.mine && token === review.id && (
+          <p className="cr-hint">
+            {t(
+              '这个地址只有你能打开。请人评审要发生成时保存的链接；链接丢了就新建一条。',
+              "Only you can open this address. To ask for a review, send the link you saved when you made it; if it's lost, make a new one.",
+            )}
+          </p>
+        )}
+        {error && (
+          <p className="cr-hint" role="alert">
+            {error}
+          </p>
+        )}
       </header>
       <ol className="cr-code" aria-label={t('代码', 'Code')}>
         {lines.map((text, index) => {

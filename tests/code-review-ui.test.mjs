@@ -1,6 +1,7 @@
 // The review page and the "ask for a review" box: comments sit under their line as plain text,
 // a click on a line number posts {line, body}; the link is made, shown once and copied; the
-// workspace offers it only on an accepted formal submission; the page is never indexed.
+// workspace offers it only on an accepted formal submission; the page is never indexed. A failed
+// reload keeps the code on screen; at the open-link cap the box lists every open link.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
@@ -8,10 +9,17 @@ import { JSDOM } from 'jsdom';
 import { createElement, act } from 'react';
 import { register } from 'node:module';
 
+const mocks = {
+  'next/headers': `export const cookies = async () => ({ get: () => (globalThis.__locale ? { value: globalThis.__locale } : undefined) }); export const headers = async () => new Headers();`,
+  'next/link': `export default function Link() { return null; }`,
+};
 register(
-  `data:text/javascript,${encodeURIComponent(
-    "export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'export default {}',shortCircuit:true};return n(u,c);}",
-  )}`,
+  `data:text/javascript,${encodeURIComponent(`const mocks=${JSON.stringify(mocks)};
+export async function resolve(s,c,n){if(mocks[s])return {url:'mock:'+s,shortCircuit:true};return n(s,c);}
+export async function load(u,c,n){
+  if(u.startsWith('mock:'))return {format:'module',source:mocks[u.slice(5)],shortCircuit:true};
+  if(u.endsWith('.css'))return {format:'module',source:'export default {}',shortCircuit:true};
+  return n(u,c);}`)}`,
   import.meta.url,
 );
 
@@ -79,6 +87,35 @@ test('the review page: comments under their line as text; a line number opens th
   await act(async () => root.unmount());
 });
 
+test("the author's page by id: says only they can open it; a failed reload or close keeps the code", async () => {
+  let gets = 0;
+  globalThis.fetch = async (url) => {
+    const u = String(url);
+    if (u.endsWith('/api/oj/reviews/r1/comments')) return Response.json({ id: 'c2' });
+    if (u.endsWith('/api/oj/reviews/r1/close')) return Response.json({ error: 'Too many requests' }, { status: 429 });
+    if (u.endsWith('/api/oj/reviews/r1'))
+      return gets++ ? Response.json({ error: 'Busy, try again' }, { status: 429 }) : Response.json({ ...review, id: 'r1', mine: true });
+    throw new Error(`unexpected ${u}`);
+  };
+  dom.window.confirm = () => true;
+  const root = createRoot(document.getElementById('root'));
+  await act(async () => root.render(createElement(CodeReview, { token: 'r1' })));
+  await settle();
+  assert.match(document.querySelector('header').textContent, /Only you can open this address/);
+  await act(async () => document.querySelector('.cr-num').click());
+  await type(document.querySelector('.cr-form textarea'), 'Saved, then the reload fails.');
+  await act(async () => button('Comment').click());
+  await settle();
+  assert.equal(gets, 2);
+  assert.equal(document.querySelectorAll('.cr-code > li').length, 2, 'the code stays');
+  assert.equal(document.querySelector('header [role="alert"]').textContent, 'Busy, try again');
+  await act(async () => button('Close this link').click());
+  await settle();
+  assert.equal(document.querySelector('header [role="alert"]').textContent, 'Too many requests');
+  assert.equal(document.querySelectorAll('.cr-code > li').length, 2);
+  await act(async () => root.unmount());
+});
+
 test('ask for a review: the link is made with the note, shown once and copied', async () => {
   const made = [];
   let copied = '';
@@ -116,11 +153,46 @@ test('ask for a review: the link is made with the note, shown once and copied', 
   await act(async () => root.unmount());
 });
 
-test('the workspace offers it on an accepted formal submission; the page is never indexed', () => {
+test('at the open-link cap the box lists every open link with its problem', async () => {
+  const asked = [];
+  globalThis.fetch = async (url, init = {}) => {
+    const u = String(url);
+    asked.push(u.replace(/^.*\/api\/oj\//, ''));
+    if (init.method === 'POST') return Response.json({ error: 'Too many open links' }, { status: 409 });
+    if (u.endsWith('/api/oj/reviews?submission=s1')) return Response.json({ items: [] });
+    if (u.endsWith('/api/oj/reviews'))
+      return Response.json({ items: [{ id: 'r9', note: '', createdAt: Date.UTC(2026, 9, 1, 12), comments: 0, problemId: 'lc-9' }] });
+    throw new Error(`unexpected ${u}`);
+  };
+  const root = createRoot(document.getElementById('root'));
+  await act(async () => root.render(createElement(ReviewLink, { submissionId: 's1' })));
+  const details = document.querySelector('details');
+  await act(async () => {
+    details.open = true;
+    details.dispatchEvent(new dom.window.Event('toggle'));
+  });
+  await settle();
+  await act(async () => button('Make a review link').click());
+  await settle();
+  assert.deepEqual(asked, ['reviews?submission=s1', 'reviews', 'reviews']);
+  assert.equal(details.querySelector('output').textContent, 'Too many open links');
+  assert.equal(details.querySelector('.cr-links').getAttribute('aria-label'), 'All your open review links');
+  assert.equal(details.querySelector('.cr-links a').textContent, 'lc-9 · 10/1/2026 · 0 comments');
+  await act(async () => root.unmount());
+});
+
+test('the workspace offers it on an accepted formal submission; the page is never indexed', async () => {
+  // ponytail: rendering the whole workspace for one condition costs more than this wiring check.
   const workspace = readFileSync(new URL('../components/problem-workspace.tsx', import.meta.url), 'utf8');
   assert.match(workspace, /inspected\.mode === 'judge' && inspected\.status === 'accepted' && communityProblem\(inspected\.problem_id\) && \(\s*<ReviewLink/);
-  const page = readFileSync(new URL('../app/review/[token]/page.tsx', import.meta.url), 'utf8');
-  assert.match(page, /robots: \{ index: false, follow: false \}/);
-  assert.match(page, /referrer: 'no-referrer'/);
-  assert.ok(!page.includes('seoMetadata'), 'no canonical URL carrying the token');
+  const { generateMetadata } = await import('../app/review/[token]/page.tsx');
+  for (const [locale, title] of [['zh', '代码评审 · cswork'], [undefined, 'Code review · cswork']]) {
+    globalThis.__locale = locale;
+    const meta = await generateMetadata();
+    assert.equal(meta.title, title);
+    assert.deepEqual(meta.robots, { index: false, follow: false });
+    assert.equal(meta.referrer, 'no-referrer');
+    assert.equal(meta.alternates, undefined, 'no canonical URL carrying the token');
+    assert.equal(meta.openGraph, undefined);
+  }
 });
