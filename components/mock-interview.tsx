@@ -83,14 +83,14 @@ type Run = {
   /** AI interviewer: each question's transcript, and the server's ticket for this interview. */
   chat?: Record<number, Turn[]>;
   ticket?: string;
+  /** A project deep dive's resume text, sent with its messages and the report (components/mock-resume.tsx). */
+  resume?: string;
   /** A guided question's steps: where the current one began (transcript length, seconds) and those done. */
   guide?: Record<number, Guide>;
   /** AI interviewer: the learner's own 1–4 per dimension, sent with the report. */
   self?: Partial<Record<RubricId, number>>;
   /** AI interviewer: each question's dictated utterances, for the delivery metrics. Never sent. */
   speech?: Record<number, Segment[]>;
-  /** A project deep dive's resume text, sent with its messages and the report (components/mock-resume.tsx). */
-  resume?: string;
 };
 /** A finished step, with the AI's feedback unless it was skipped (or the interview's feedback ran out). */
 type GuideDone = { step: string; skipped?: boolean } & Partial<StepFeedback>;
