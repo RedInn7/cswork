@@ -45,7 +45,8 @@ export function EditorialVote({ problemId, english }: { problemId: string; engli
   }
   const question = t('这篇题解有帮助吗？', 'Was this editorial helpful?');
   return (
-    <div className="cs-editorial-vote" role="group" aria-label={question}>
+    <fieldset className="cs-editorial-vote">
+      <legend className="sr-only">{question}</legend>
       <span aria-hidden="true">{question}</span>
       {(
         [
@@ -58,9 +59,7 @@ export function EditorialVote({ problemId, english }: { problemId: string; engli
           {t(zh, en)}
         </button>
       ))}
-      <span className="cs-editorial-vote-note" role="status">
-        {note}
-      </span>
-    </div>
+      <output className="cs-editorial-vote-note">{note}</output>
+    </fieldset>
   );
 }

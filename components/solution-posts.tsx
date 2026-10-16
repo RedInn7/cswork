@@ -501,7 +501,6 @@ export function SolutionPosts({
           )}
           {!saved && searchable && (
             <form
-              role="search"
               className="cs-posts-search"
               onSubmit={(e) => {
                 e.preventDefault();

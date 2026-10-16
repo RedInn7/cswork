@@ -352,7 +352,7 @@ function Board({
                   </span>
                 </td>
               ))}
-              {rated && <td />}
+              {rated && <td aria-hidden="true" />}
             </tr>
           </tfoot>
         )}

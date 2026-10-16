@@ -47,7 +47,7 @@ test('the posts panel searches inside its target and sorts by hot', async () => 
       Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype, 'value').set.call(input, 'heap');
       input.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
     });
-    await act(async () => $('form[role="search"]').requestSubmit());
+    await act(async () => $('form.cs-posts-search').requestSubmit());
     await settle();
     assert.equal(asked.at(-1).get('q'), 'heap');
     assert.equal(asked.at(-1).get('problem'), 'discuss:interview', 'never a search across targets');
@@ -56,7 +56,7 @@ test('the posts panel searches inside its target and sorts by hot', async () => 
     // Answers under an interview question list inline: no search box there.
     await act(async () => root.render(createElement(SolutionPosts, { key: 'q', problemId: 'q:two-sum', english: true, initialQuery: 'x' })));
     await settle();
-    assert.equal($('form[role="search"]'), null);
+    assert.equal($('form.cs-posts-search'), null);
     assert.equal(asked.at(-1).get('q'), null);
   } finally {
     await act(async () => root.unmount());
