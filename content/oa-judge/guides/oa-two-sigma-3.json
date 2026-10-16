@@ -1,0 +1,19 @@
+{
+  "id": "oa-two-sigma-3",
+  "packageChecksum": "98c9da174f6eaf8d68f77c216eaf8608b2baa967fbd8fe805300b17087c8c5bd",
+  "sourceContentHash": "d0804443154b8a321393377a0e3f35d1505146f32230a855a39b4bf1aa7e3e61",
+  "editorialSha256": "c4367b995766e63ee5424babc8abe503d7820fcfff17a5585d95f765cd21cd24",
+  "hints": {
+    "zh": [
+      "要替换的区域就是起点所在的“四方向、同原值”连通块：从起点出发，只沿上下左右走到原值相同的格子，能到达的格子都要改。还要注意一个特殊情况：替换值和原值相同时，矩阵根本不变。",
+      "从起点做一次 BFS（或用显式栈的 DFS，避免递归过深）。把格子改成新值本身就可以当作“已访问”标记：只要新值不等于原值，被改过的格子就不会再被认作原值而重复入队。替换值等于原值时直接原样输出，否则这个标记会失效。",
+      "读入 r、c、起点和新值，以及矩阵（按行展平成一维数组，格子编号 i=row·c+col）。记 old 为起点原值；若 old 等于新值就直接输出矩阵。否则把起点改成新值并入队；每次出队一个格子，检查上下左右四个在界内的邻居，原值等于 old 的立即改成新值并入队。队列清空后逐行输出矩阵，每行 c 个整数用空格分隔。"
+    ],
+    "en": [
+      "The region to replace is the connected component of the start under \"four directions, same original value\": starting from the start cell, move only up, down, left or right onto cells with the same original value, and every cell you can reach gets changed. Watch for one special case: when the replacement value equals the original value, the matrix does not change at all.",
+      "Run one BFS from the start (or a DFS with an explicit stack to avoid deep recursion). Writing the new value into a cell can itself serve as the visited mark: as long as the new value differs from the original one, a recolored cell will never again be mistaken for an original-valued cell and enqueued twice. When the replacement equals the original value, print the matrix unchanged right away, because otherwise this mark would not work.",
+      "Read r, c, the start and the new value, then the matrix (flattened row by row into one array, with cell index i=row·c+col). Let old be the start's original value; if old equals the new value, print the matrix as is. Otherwise set the start to the new value and enqueue it; each time a cell is dequeued, check its in-bounds neighbors above, below, left and right, and immediately recolor and enqueue every one whose value equals old. When the queue is empty, print the matrix row by row with c space-separated integers per line."
+    ]
+  },
+  "explanationEn": "## Approach\n\nExpand to the four neighbors with an iterative BFS, recoloring each cell as soon as it is enqueued so the color serves as the visited mark; if the new value equals the old one, return immediately.\n\n## Proof of correctness\n\nThe initial queue holds the start, which belongs to the target component. Every expanded neighbor in the four directions that has the same old value is still in the target component, and marking it immediately prevents it from being enqueued twice; any cell of the component can be discovered step by step along a path, so the traversal covers exactly the whole region. When the replacement value is the same, the original grid is already the correct answer without visiting anything.\n\n## Complexity\n\nO(rc) time and O(rc) space; a packed integer array and a queue of integer cell indices avoid the bloat of a million objects."
+}

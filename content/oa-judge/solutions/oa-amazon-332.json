@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-332",
+  "packageChecksum": "9a1ee28c3e715dccd9877c3e8f1051c354a7917c264af5361bf6fc3dc933396c",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom array import array\nfrom itertools import islice\n\n\ndef read_ints():\n    # Parse the input in 1 MiB chunks into a compact int64 array.\n    read = sys.stdin.buffer.read\n    values = array(\"q\")\n    rest = b\"\"\n    while True:\n        chunk = read(1 << 20)\n        if not chunk:\n            break\n        chunk = rest + chunk\n        cut = max(chunk.rfind(b\" \"), chunk.rfind(b\"\\n\"))\n        if cut < 0:\n            rest = chunk\n            continue\n        rest = chunk[cut:]\n        values.extend(map(int, chunk[:cut].split()))\n    values.extend(map(int, rest.split()))\n    return values\n\n\ndef main():\n    data = read_ints()\n    n, m = data[0], data[1]\n    a = data[2:2 + n]\n    del data\n    total = sum(a)\n    cur = sum(islice(a, m))\n    best = cur\n    # Slide the length-m window: gain a[i], lose a[i - m].\n    for x, y in zip(islice(a, m, None), a):\n        cur += x - y\n        if cur > best:\n            best = cur\n    print(total - best)\n\n\nmain()\n",
+      "sha256": "d4afd9d257800d88381534a1d69bcd0aaf14b2d75227658a69df8dd610872df2"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static final byte[] buf = new byte[1 << 16];\n    static int bufLen = 0, bufPos = 0;\n\n    static int readByte() throws IOException {\n        if (bufPos == bufLen) {\n            bufLen = System.in.read(buf, 0, buf.length);\n            bufPos = 0;\n            if (bufLen <= 0) return -1;\n        }\n        return buf[bufPos++];\n    }\n\n    static long readLong() throws IOException {\n        int c = readByte();\n        while (c != -1 && (c < '0' || c > '9')) c = readByte();\n        long x = 0;\n        while (c >= '0' && c <= '9') {\n            x = x * 10 + (c - '0');\n            c = readByte();\n        }\n        return x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) readLong(), m = (int) readLong();\n        int[] a = new int[n]; // values fit in int (< 10^9)\n        long total = 0;\n        for (int i = 0; i < n; i++) {\n            a[i] = (int) readLong();\n            total += a[i];\n        }\n        long cur = 0;\n        for (int i = 0; i < m; i++) cur += a[i];\n        long best = cur;\n        // Slide the length-m window: gain a[i], lose a[i - m].\n        for (int i = m; i < n; i++) {\n            cur += a[i] - a[i - m];\n            if (cur > best) best = cur;\n        }\n        System.out.println(total - best);\n    }\n}\n",
+      "sha256": "ac3411de777d418c2d2a2f706b750791b40bc7b0cb710c02f84532f9326982a3"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\treader := bufio.NewReaderSize(os.Stdin, 1<<16)\n\treadInt := func() int64 {\n\t\tc, err := reader.ReadByte()\n\t\tfor err == nil && (c < '0' || c > '9') {\n\t\t\tc, err = reader.ReadByte()\n\t\t}\n\t\tvar x int64\n\t\tfor err == nil && c >= '0' && c <= '9' {\n\t\t\tx = x*10 + int64(c-'0')\n\t\t\tc, err = reader.ReadByte()\n\t\t}\n\t\treturn x\n\t}\n\tn, m := int(readInt()), int(readInt())\n\ta := make([]int64, n)\n\tvar total int64\n\tfor i := range a {\n\t\ta[i] = readInt()\n\t\ttotal += a[i]\n\t}\n\tvar cur int64\n\tfor i := 0; i < m; i++ {\n\t\tcur += a[i]\n\t}\n\tbest := cur\n\t// Slide the length-m window: gain a[i], lose a[i-m].\n\tfor i := m; i < n; i++ {\n\t\tcur += a[i] - a[i-m]\n\t\tbest = max(best, cur)\n\t}\n\tfmt.Println(total - best)\n}\n",
+      "sha256": "566efa347f339dea8d52f2b62ba4a95d4571b90fa54f21797a935803e87c4493"
+    }
+  ]
+}

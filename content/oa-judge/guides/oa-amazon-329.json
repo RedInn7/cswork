@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-329",
+  "packageChecksum": "07d052ff5adbcf25a420e62dc77ebc99d8dbaf437f3346003a4b83d020bf918c",
+  "sourceContentHash": "972ee032f07076a325c4e14672b4297520308cc0f12743fcfcef184389114b6a",
+  "editorialSha256": "91feae599f5e6e93d0172c82dee83e3b6a4c3353d7698699c9a9217c8cfbff08",
+  "hints": {
+    "zh": [
+      "“同类”关系具有传递性，把每个产品看成图中的点、每个配对看成一条无向边，最终的类别恰好就是这张图的连通分量；没出现在任何配对里的产品是孤立点，自成一组。",
+      "先把产品标识映射成整数编号，再用并查集逐条合并配对的两端。合并时若两端已在同一集合就跳过，这样自配对和重复配对都不会多算人数。全部处理完后，每个根所记录的集合大小就是一个类别的产品数。",
+      "解析 JSON 得到产品列表和配对列表，建立“标识 → 编号”的哈希表；并查集用按大小合并和路径压缩，size 记录在根上。遍历所有配对执行合并，最后收集所有根的 size 并升序排序，用空格连接输出；如果产品列表为空，输出 0。"
+    ],
+    "en": [
+      "The \"same category\" relation is transitive. Treat each product as a vertex and each pair as an undirected edge; the final categories are exactly the connected components of this graph, and a product that appears in no pair is an isolated vertex forming a group of its own.",
+      "Map the product identifiers to integer indices first, then merge the two endpoints of each pair with a union-find. When both endpoints are already in the same set, skip the merge, so self-pairs and repeated pairs never inflate a count. After all pairs are processed, the set size recorded at each root is the number of products in one category.",
+      "Parse the JSON into the product list and the pair list, and build a hash map from identifier to index; use union by size with path compression, keeping each size at its root. Merge along every pair, then collect the sizes of all roots, sort them in ascending order and print them separated by spaces; if the product list is empty, print 0."
+    ]
+  },
+  "explanationEn": "## Approach\n\nMap identifiers to integers and merge each pair with a union-find that uses union by size and path compression; finally collect the sizes of the roots and sort them.\n\n## Proof of correctness\n\nInitially each product is its own connected component, and adding an equivalence edge only merges the components containing its two endpoints. The same root is never merged with itself, which keeps self-loops and repeated relations from increasing the counts. After all edges are processed, the sets are exactly the connected components of the graph, that is, the smallest transitive closure of the relation. Each root records its number of members, and after sorting these give the required list of category sizes.\n\n## Complexity\n\nTime O((n+m)α(n)+n log n), space O(n+m+number of identifier characters)."
+}

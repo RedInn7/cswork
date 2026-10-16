@@ -1,0 +1,19 @@
+{
+  "id": "oa-jpmorgan-chase-26",
+  "packageChecksum": "21fddd13fa2cf043541121882fb44e8ea557b049b7c3a0630ce3145fd145e06c",
+  "sourceContentHash": "9205b1b8e22a9e8ceddf8409ea3703e73d0541dc5c6555b38d15900a7b0351cb",
+  "editorialSha256": "06f60705c69dd0bcf306c934419a1236d788aa2fcbc1f1bd806af0716f1b9f39",
+  "hints": {
+    "zh": [
+      "两个串互为字母异位词，当且仅当每个字母出现的次数完全相同；只看字母种类、或者只看长度加字符和都会把不同的串错判成异位词。与查询完全相同的单词本身也算一个异位词。",
+      "给每个串定义一个“签名”：把它的字符排序后得到的串。签名相同等价于字母多重集相同，也就等价于互为异位词。于是可以先把单词表按签名分组，每组排好序，查询时只需算出查询的签名并取出对应的组。",
+      "读入 n 个单词，对每个单词求排序后的签名，用哈希表把单词放进对应签名的组；每组内部按字典序排序一次。逐个处理查询：求签名、查表，输出组的大小以及组内单词（空格分隔）；找不到时输出 0。签名也可以用 26 个字母的计数代替排序。"
+    ],
+    "en": [
+      "Two strings are anagrams exactly when every letter occurs the same number of times in both; looking only at which letters appear, or only at the length plus the sum of the characters, wrongly treats different strings as anagrams. A word that is identical to the query also counts as an anagram.",
+      "Define a \"signature\" for each string: the string obtained by sorting its characters. Equal signatures mean equal letter multisets, which means the strings are anagrams. So group the word list by signature first and sort each group; a query then only needs to compute its own signature and fetch the matching group.",
+      "Read the n words, compute each word's sorted signature, and put the word into the group for that signature in a hash map; sort each group lexicographically once. Process the queries one by one: compute the signature, look it up, and print the group's size followed by its words separated by spaces; if there is no group, print 0. A count of the 26 letters can also serve as the signature instead of sorting."
+    ]
+  },
+  "explanationEn": "## Approach: group by sorted signature\n\nTwo strings are anagrams of each other if and only if every letter occurs the same number of times in both, that is, the strings obtained by sorting their characters are the same. Call the sorted string the signature.\n\n1. Compute the signature of every word and group the words by signature in a hash map.\n2. Sort each group lexicographically once.\n3. For each query, compute its signature and output the matching group directly.\n\nA word that is exactly identical to the query also counts as an anagram (leaving the letters unchanged is also a permutation), so it must be included in the result.\n\n## Correctness\n\nSame signature ⇔ same multiset of letters ⇔ anagrams of each other, so the group fetched for each query is exactly the set of all its anagrams. Each group is already sorted lexicographically, so the output order is correct. Comparing only the set of distinct letters, or using a weak signature such as the length plus the sum of the characters, would wrongly merge different multisets.\n\n## Complexity\n\nLet L be the maximum string length. Computing the signatures takes O((n+q)·L log L) (a 26-letter count brings this down to O(L)), sorting within the groups takes O(n log n·L), and output is proportional to the size of the answer.\n\n## Independent verification\n\nThe oracle does not use signature hashing; instead, for each (query, word) pair it directly compares the counts of the 26 letters, filtering by O(n·q) brute force and then sorting. Over all 12 strings of length 1..2 on the alphabet {a,b,c}, every non-empty subset is enumerated as the word list, every string that has an anagram is used as a query, and the reference program is run on each case. Four wrong programs that exit normally (outputting in input order, ignoring letter counts, using a length-plus-character-sum signature, and excluding the word identical to the query) are all judged wrong on the official data."
+}

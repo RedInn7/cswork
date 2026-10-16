@@ -1,0 +1,19 @@
+{
+  "id": "oa-salesforce-11",
+  "packageChecksum": "cc549821945f7e8128d3a993075a5e80a0ecbdc43a46c1be5b01dff95cb2c256",
+  "sourceContentHash": "7a88f875227d19420752c0c830bfc947f765bf8d81df2340c81e0fb296f15b3d",
+  "editorialSha256": "a55025c2619fc69ed63ae84ba4c94efbba54245ed4e056bb26d32d513c1b161d",
+  "hints": {
+    "zh": [
+      "两个条件只和 |x|、|y| 有关。设 a=|x|、b=|y| 且 a≤b，无论 x、y 符号如何，|x−y| 与 |x+y| 这两个数恰好一个是 b−a、另一个是 a+b。",
+      "代入后条件 2 变成 a+b≥b，永远成立；条件 1 变成 b−a≤a，即 b≤2a。所以一对数满足要求，当且仅当较大的绝对值不超过较小绝对值的两倍。n 只有 1000，直接枚举所有下标对即可。",
+      "用 64 位整数读入数组；双重循环 i 从小到大、j 从 i+1 到 n−1，取 p=|arr[i]|、q=|arr[j]|，若 max(p,q)≤2·min(p,q) 就计数并把 \"arr[i] arr[j]\" 追加到输出缓冲。先输出个数，再输出缓冲内容；枚举顺序本身就是题目要求的排序。注意含 0 的数对只有另一个也是 0 时才满足。"
+    ],
+    "en": [
+      "Both conditions depend only on |x| and |y|. Let a=|x| and b=|y| with a≤b; whatever the signs of x and y, the two numbers |x−y| and |x+y| are exactly b−a and a+b in some order.",
+      "Substituting, condition 2 becomes a+b≥b, which always holds, and condition 1 becomes b−a≤a, that is, b≤2a. So a pair qualifies exactly when the larger absolute value is at most twice the smaller one. Since n is only 1000, simply enumerate every pair of indices.",
+      "Read the array into 64-bit integers; loop i in increasing order and j from i+1 to n−1, take p=|arr[i]| and q=|arr[j]|, and when max(p,q)≤2·min(p,q) count the pair and append \"arr[i] arr[j]\" to an output buffer. Print the count first and then the buffer; the enumeration order is already the required output order. Note that a pair containing 0 qualifies only when the other value is also 0."
+    ]
+  },
+  "explanationEn": "## Problem\n\nFind all index pairs i<j in the array such that x=arr[i] and y=arr[j] satisfy both:\n1. min(|x−y|,|x+y|) ≤ min(|x|,|y|);\n2. max(|x−y|,|x+y|) ≥ max(|x|,|y|).\nOutput (arr[i],arr[j]) sorted by i ascending and, for equal i, by j ascending.\n\n## Approach\n\nLet a=|x|≤b=|y|. Whatever the signs, {|x−y|,|x+y|}={b−a, a+b}. Condition 2 becomes a+b≥b, which always holds; condition 1 becomes b−a≤a, that is, b≤2a. So we only need to check max(|x|,|y|)≤2·min(|x|,|y|), and a double loop outputs the pairs in the required order.\n\n## Correctness\n\nThe simplification above holds for every combination of signs of x and y, because exactly one of |x−y| and |x+y| equals ||x|−|y|| and the other equals |x|+|y|. The enumeration order itself is the required output order.\n\n## Complexity\n\nO(n²), with at most n(n−1)/2 pairs in the output.\n\n## Independent verification\n\nThe oracle evaluates the two original conditions literally with Python big integers, without using the b≤2a simplification. All arrays of length 1..4 with values in −3..3 are enumerated exhaustively, and the reference program is actually run on each one. The wrong solutions cover dropping the absolute values while simplifying, including self-pairs, printing each pair sorted by value, and writing the condition as a strict inequality."
+}

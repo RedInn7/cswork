@@ -1,0 +1,21 @@
+{
+  "id": "oa-cisco-32",
+  "packageChecksum": "ca2440e6e5b8954b1f94ab9ff8f08ea734a5b03fdda8720140f57ad8f8ffacde",
+  "programs": [
+    {
+      "language": "cpp",
+      "code": "#include <bits/stdc++.h>\nusing namespace std;\n\nstatic char ibuf[1 << 16];\nstatic size_t ipos = 0, ilen = 0;\nstatic inline int gc() {\n    if (ipos == ilen) { ilen = fread(ibuf, 1, sizeof ibuf, stdin); ipos = 0; if (!ilen) return -1; }\n    return ibuf[ipos++];\n}\nstatic inline long long readInt() {\n    int c = gc();\n    while (c != '-' && (c < '0' || c > '9')) c = gc();\n    bool neg = c == '-';\n    if (neg) c = gc();\n    long long x = 0;\n    while (c >= '0' && c <= '9') { x = x * 10 + (c - '0'); c = gc(); }\n    return neg ? -x : x;\n}\n\nint main() {\n    int n = readInt();\n    readInt();  // M equals N\n    vector<int> a((size_t)n * n);\n    for (auto& x : a) x = readInt();\n    string out;\n    out.reserve((size_t)n * n * 12);\n    char tmp[16];\n    // New row c is original column c read from bottom to top.\n    for (int c = 0; c < n; c++) {\n        for (int r = n - 1; r >= 0; r--) {\n            int len = snprintf(tmp, sizeof tmp, \"%d\", a[(size_t)r * n + c]);\n            out.append(tmp, len);\n            out += r ? ' ' : '\\n';\n        }\n    }\n    fwrite(out.data(), 1, out.size(), stdout);\n}\n",
+      "sha256": "f12b656dee11b2ba678f6661e998151e0ed4f6b4f927fa0a14d24a6bc205c8c7"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    static DataInputStream in = new DataInputStream(new BufferedInputStream(System.in, 1 << 16));\n\n    static int readInt() throws IOException {\n        int c = in.read();\n        while (c != '-' && (c < '0' || c > '9')) c = in.read();\n        boolean neg = c == '-';\n        if (neg) c = in.read();\n        int x = 0;\n        while (c >= '0' && c <= '9') { x = x * 10 + (c - '0'); c = in.read(); }\n        return neg ? -x : x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = readInt();\n        readInt(); // M equals N\n        int[] a = new int[n * n];\n        for (int i = 0; i < a.length; i++) a[i] = readInt();\n        StringBuilder out = new StringBuilder(n * n * 12);\n        // New row c is original column c read from bottom to top.\n        for (int c = 0; c < n; c++) {\n            for (int r = n - 1; r >= 0; r--) out.append(a[r * n + c]).append(r > 0 ? ' ' : '\\n');\n        }\n        PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out), 1 << 16));\n        pw.print(out);\n        pw.flush();\n    }\n}\n",
+      "sha256": "00f37ad1dec3fbd4a4557395b11ac447a578bd9defdbf96e9751b2e53f5d89c3"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n\t\"strconv\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readInt() int {\n\tc, _ := reader.ReadByte()\n\tfor c != '-' && (c < '0' || c > '9') {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tneg := c == '-'\n\tif neg {\n\t\tc, _ = reader.ReadByte()\n\t}\n\tx := 0\n\tfor c >= '0' && c <= '9' {\n\t\tx = x*10 + int(c-'0')\n\t\tvar err error\n\t\tc, err = reader.ReadByte()\n\t\tif err != nil {\n\t\t\tbreak\n\t\t}\n\t}\n\tif neg {\n\t\treturn -x\n\t}\n\treturn x\n}\n\nfunc main() {\n\tn := readInt()\n\treadInt() // M equals N\n\ta := make([]int32, n*n)\n\tfor i := range a {\n\t\ta[i] = int32(readInt())\n\t}\n\tw := bufio.NewWriterSize(os.Stdout, 1<<16)\n\tdefer w.Flush()\n\tbuf := []byte{}\n\t// New row c is original column c read from bottom to top.\n\tfor c := 0; c < n; c++ {\n\t\tbuf = buf[:0]\n\t\tfor r := n - 1; r >= 0; r-- {\n\t\t\tbuf = strconv.AppendInt(buf, int64(a[r*n+c]), 10)\n\t\t\tif r > 0 {\n\t\t\t\tbuf = append(buf, ' ')\n\t\t\t} else {\n\t\t\t\tbuf = append(buf, '\\n')\n\t\t\t}\n\t\t}\n\t\tw.Write(buf)\n\t}\n}\n",
+      "sha256": "d2996e267092d7a58c6b0d8bc01d3a160b55859c165124bf60bec7906610410f"
+    }
+  ]
+}

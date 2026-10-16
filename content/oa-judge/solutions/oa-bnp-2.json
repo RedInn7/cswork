@@ -1,0 +1,16 @@
+{
+  "id": "oa-bnp-2",
+  "packageChecksum": "3763f693fe12e251240deeee5dfc3d35aec51b28b72140a1e18414683690aef6",
+  "programs": [
+    {
+      "language": "java",
+      "code": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    static DataInputStream in = new DataInputStream(new BufferedInputStream(System.in, 1 << 16));\n\n    static long readLong() throws IOException {\n        int c = in.read();\n        while (c != -1 && (c < '0' || c > '9')) c = in.read();\n        long x = 0;\n        while (c >= '0' && c <= '9') { x = x * 10 + (c - '0'); c = in.read(); }\n        return x;\n    }\n\n    public static void main(String[] args) throws IOException {\n        int n = (int) readLong();\n        int[] a = new int[n];  // heights fit in a non-negative int\n        for (int i = 0; i < n; i++) a[i] = (int) readLong();\n        Arrays.sort(a);\n        // Each pile needs one step per distinct height below it: sum of ranks.\n        long answer = 0, rank = 0;\n        for (int i = 0; i < n; i++) {\n            if (i > 0 && a[i] != a[i - 1]) rank++;\n            answer += rank;\n        }\n        System.out.println(answer);\n    }\n}\n",
+      "sha256": "bc6b3aef09b035ab090c2b0f392b49a0990069a366106715f4b3167e30125ac0"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n\t\"slices\"\n)\n\nvar reader = bufio.NewReaderSize(os.Stdin, 1<<16)\n\nfunc readUint() uint32 {\n\tc, err := reader.ReadByte()\n\tfor err == nil && (c < '0' || c > '9') {\n\t\tc, err = reader.ReadByte()\n\t}\n\tvar x uint32\n\tfor err == nil && c >= '0' && c <= '9' {\n\t\tx = x*10 + uint32(c-'0')\n\t\tc, err = reader.ReadByte()\n\t}\n\treturn x\n}\n\nfunc main() {\n\tn := int(readUint())\n\ta := make([]uint32, n)\n\tfor i := range a {\n\t\ta[i] = readUint()\n\t}\n\tslices.Sort(a)\n\t// Each pile needs one step per distinct height below it: sum of ranks.\n\tvar answer, rank int64\n\tfor i := range a {\n\t\tif i > 0 && a[i] != a[i-1] {\n\t\t\trank++\n\t\t}\n\t\tanswer += rank\n\t}\n\tfmt.Println(answer)\n}\n",
+      "sha256": "c8f33ae532fe715a14b51a6a2e9902422424b24c420449ac2a8062d0fecd9a4e"
+    }
+  ]
+}

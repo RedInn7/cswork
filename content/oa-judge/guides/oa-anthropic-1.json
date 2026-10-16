@@ -1,0 +1,19 @@
+{
+  "id": "oa-anthropic-1",
+  "packageChecksum": "85b52c0c0b080651ccec04377c99131c2963beda8adb4fed81b3363b401ee830",
+  "sourceContentHash": "4f2ecc069aa4c08065e534870e5c5d5c9466219409f8c64e555f3743cbe6c5f2",
+  "editorialSha256": "61dbdb3b474e2e7e7f0e03e12f51c0faac2903d161790b84a464edf2a1d38e0b",
+  "hints": {
+    "zh": [
+      "BACKUP 和 RESTORE 不能复制整个数据库，那就让每个版本共享没改动的部分：一次 SET 或 DELETE 只改一个键，只需要新建这一条修改路径，其余结构原样复用。另外要分清“不存在”和“值恰好是字符串 NULL”，后者也是存在的键。",
+      "所有命令可以先全部读入，把出现过的键离线压缩成 0..U−1 的下标，在这些下标上建一棵可持久化线段树，叶子存值编号，编号 0 表示不存在。SET/DELETE 只复制从根到对应叶子的路径；BACKUP 记下当前根，RESTORE 切换到保存的根。",
+      "第一遍扫描收集键并编号，值字符串放进一个列表（下标 0 留给“不存在”）。第二遍逐条执行：SET 追加值并沿路径复制节点，输出 OK；GET 沿当前根查叶子，编号 0 输出 NULL，否则输出对应字符串；DELETE 先查，存在就把叶子改成 0 并输出 OK，否则输出 NULL；BACKUP 把根追加到备份数组并输出它的下标（从 1 开始）；RESTORE 的编号在 1..备份数内就切换根并输出 OK，否则输出 NULL 且状态不变。"
+    ],
+    "en": [
+      "BACKUP and RESTORE must not copy the whole database, so let every version share the parts that did not change: a SET or DELETE changes only one key, so only that one modification path needs new nodes and the rest of the structure is reused. Also keep \"missing\" apart from \"the value is the string NULL\"; the latter is a key that exists.",
+      "You can read all commands first and compress every key that appears into an index 0..U−1 offline, then build a persistent segment tree over those indices whose leaves store value ids, with id 0 meaning missing. SET/DELETE copy only the path from the root to that leaf; BACKUP records the current root, and RESTORE switches to a saved root.",
+      "First pass: collect and number the keys, and keep value strings in a list (index 0 reserved for missing). Second pass, command by command: SET appends the value, copies the nodes along the path and prints OK; GET walks from the current root to the leaf and prints NULL for id 0, otherwise the stored string; DELETE looks the key up first, and if it exists sets the leaf to 0 and prints OK, otherwise prints NULL; BACKUP appends the root to the backup array and prints its index (starting at 1); RESTORE switches roots and prints OK when the id is between 1 and the number of backups, otherwise prints NULL and leaves the state unchanged."
+    ]
+  },
+  "explanationEn": "## Approach\n\nCompress all keys offline and store value ids in a persistent segment tree. A modification copies only the root-to-leaf path; BACKUP saves the root id, and RESTORE switches roots. Value id 0 means the key is absent; any other id means it is present, even if it corresponds to the string NULL.\n\n## Correctness\n\nEach root represents a complete key mapping. SET and DELETE copy only the path to the target leaf and share every unchanged subtree, so all nodes of an old root stay unchanged. Saving a root is therefore equivalent to saving the complete state, restoring a root yields the original state, and future modifications never corrupt any backup. The array of backup ids is append-only, so existing ids remain valid after a restore. By induction over the operations, every query and every returned value matches the definition.\n\n## Complexity\n\nLet U be the number of distinct keys. Compression takes O(U log U), SET/DELETE/GET take O(log(U+1)), and BACKUP/RESTORE take O(1); the total number of nodes is O(n log(U+1)), plus storage for the input strings."
+}

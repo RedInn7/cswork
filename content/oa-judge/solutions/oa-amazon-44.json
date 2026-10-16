@@ -1,0 +1,21 @@
+{
+  "id": "oa-amazon-44",
+  "packageChecksum": "badeeaef71a5417c11012333458165347d5e7efc0f353add3faae7ac9450de60",
+  "programs": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef main():\n    s = sys.stdin.buffer.read()\n    letters = b\"abcdefghijklmnopqrstuvwxyz\"\n    cnt = [s.count(bytes([c])) for c in letters]\n    del s\n    # First half in non-decreasing order; the single odd-count letter (if any) goes in the center.\n    half = b\"\".join(bytes([c]) * (k // 2) for c, k in zip(letters, cnt))\n    center = b\"\".join(bytes([c]) for c, k in zip(letters, cnt) if k % 2)\n    out = sys.stdout.buffer\n    out.write(half)\n    out.write(center)\n    out.write(half[::-1])\n    out.write(b\"\\n\")\n\n\nmain()\n",
+      "sha256": "64a73afe3073fc868b7716e8c2b8d2141b3c0d36e3058230db238db1a03dac46"
+    },
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        long[] cnt = new long[26];\n        byte[] buf = new byte[1 << 16];\n        for (int k; (k = System.in.read(buf, 0, buf.length)) > 0; )\n            for (int i = 0; i < k; i++) if (buf[i] >= 'a' && buf[i] <= 'z') cnt[buf[i] - 'a']++;\n        int n = 0;\n        for (long c : cnt) n += (int) c;\n        // Fill from both ends in letter order; the single odd-count letter (if any) takes the center.\n        byte[] out = new byte[n + 1];\n        int l = 0, r = n - 1;\n        for (int i = 0; i < 26; i++) {\n            for (long k = 0; k < cnt[i] / 2; k++) {\n                out[l++] = (byte) ('a' + i);\n                out[r--] = (byte) ('a' + i);\n            }\n            if (cnt[i] % 2 == 1) out[n / 2] = (byte) ('a' + i);\n        }\n        out[n] = '\\n';\n        System.out.write(out);\n        System.out.flush();\n    }\n}\n",
+      "sha256": "b458d7d844605c29c2fa46c539bd84171360203c73a9e8a6b32819f29256cb29"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"os\"\n)\n\nfunc main() {\n\tvar cnt [26]int\n\treader := bufio.NewReaderSize(os.Stdin, 1<<16)\n\tbuf := make([]byte, 1<<16)\n\tfor {\n\t\tk, err := reader.Read(buf)\n\t\tfor _, ch := range buf[:k] {\n\t\t\tif ch >= 'a' && ch <= 'z' {\n\t\t\t\tcnt[ch-'a']++\n\t\t\t}\n\t\t}\n\t\tif err != nil {\n\t\t\tbreak\n\t\t}\n\t}\n\tn := 0\n\tfor _, c := range cnt {\n\t\tn += c\n\t}\n\t// Fill from both ends in letter order; the single odd-count letter (if any) takes the center.\n\tout := make([]byte, n+1)\n\tl, r := 0, n-1\n\tfor i, c := range cnt {\n\t\tfor k := 0; k < c/2; k++ {\n\t\t\tout[l], out[r] = byte('a'+i), byte('a'+i)\n\t\t\tl++\n\t\t\tr--\n\t\t}\n\t\tif c%2 == 1 {\n\t\t\tout[n/2] = byte('a' + i)\n\t\t}\n\t}\n\tout[n] = '\\n'\n\tos.Stdout.Write(out)\n}\n",
+      "sha256": "c0f72aef470c6ebc375a8e42d70c123471f6c4fc5761b4f0d7d65482484c3179"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "oa-amazon-326",
+  "packageChecksum": "d26dcf364c2fefa3be930a095c368cad67d014b6534e1d3808a004d8ac47d97f",
+  "sourceContentHash": "ea1b0938209b4687b5ab1a180660ef6d35cdc509da2407588b374099e9cd84c4",
+  "editorialSha256": "53fff78e85e2110e4e8dcc27d4f97da841c9c1bdf46022f5d7c51ed1235d50e0",
+  "hints": {
+    "zh": [
+      "每个处理器的查询都是独立的，互不占用进程。符合某个处理器的进程，就是功耗落在闭区间 [minPower, maxPower] 内的那些；只要把功耗排好序，它们就是排序数组中连续的一段。",
+      "把功耗升序排序并建立前缀和数组。对每个区间二分出第一个 ≥minPower 的位置 l 和第一个 >maxPower 的位置 r，区间内进程数就是 r−l，功耗和就是 prefix[r]−prefix[l]。重复的功耗值都会落在这一段里，自然分别计数。",
+      "读入 n、m 和 n 个功耗，排序后计算长度 n+1 的前缀和（必须用 64 位整数，总和可达 1.2×10^14）。逐个处理器读入 minPower、maxPower，用 lower_bound(minPower) 得 l、upper_bound(maxPower) 得 r，输出 \"r−l prefix[r]−prefix[l]\"。n 高达 120 万，输入输出要用快速读写。"
+    ],
+    "en": [
+      "Each processor's query is independent and does not use up any processes. The processes matching a processor are exactly those whose power lies in the closed interval [minPower, maxPower]; once the powers are sorted, they form one contiguous block of the sorted array.",
+      "Sort the powers in ascending order and build a prefix-sum array. For each interval, binary search for the first position l with a value ≥minPower and the first position r with a value >maxPower; the number of processes in range is r−l and their total power is prefix[r]−prefix[l]. Duplicate power values all fall inside that block, so they are naturally counted separately.",
+      "Read n, m and the n powers, sort them, and compute prefix sums of length n+1 (these must be 64-bit integers, since the total can reach 1.2×10^14). For each processor read minPower and maxPower, get l with lower_bound(minPower) and r with upper_bound(maxPower), and print \"r−l prefix[r]−prefix[l]\". With n up to 1.2 million, use fast input and output."
+    ]
+  },
+  "explanationEn": "## Approach\n\nSort power and build packed unsigned 64-bit prefix sums. For each closed range, use lower_bound(min) and upper_bound(max) to get the indices [l,r); the count is r−l and the total is prefix[r]−prefix[l]. Release references to the power strings after reading, and do not keep multiple copies of nested results.\n\n## Proof of correctness\n\nAfter sorting, the elements in the range lie exactly between the first element ≥min and the first element >max; this includes all duplicate values and is closed at both ends. The number of positions gives the number of processes, and the prefix difference sums exactly these elements. Processor queries do not modify any process, so computing each one independently is correct; 64 bits hold the largest possible total, 120000000000000.\n\n## Complexity\n\nTime O(n log n+m log n), space O(n+m), with the prefix sums taking only 8(n+1) bytes; the output is at most about 4.8MB, and the limit is configured at 8MiB."
+}

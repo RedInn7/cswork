@@ -1,0 +1,16 @@
+{
+  "id": "oa-flexport-3",
+  "packageChecksum": "0c69d5fe1d5908bdcb0a55ea8f391abf1350c1bc34fbf1086c4d790fd55ba908",
+  "programs": [
+    {
+      "language": "java",
+      "code": "import java.io.*;\n\npublic class Main {\n    public static void main(String[] args) throws IOException {\n        final long M = 1_000_000_007L;\n        InputStream in = System.in;\n        byte[] buf = new byte[1 << 16];\n        boolean first = true;\n        // c: number of expressions, f: sum of their values, g: sum of their last-segment values.\n        long c = 0, f = 0, g = 0;\n        for (int k; (k = in.read(buf, 0, buf.length)) > 0; ) {\n            for (int i = 0; i < k; i++) {\n                int ch = buf[i];\n                if (ch < '0' || ch > '9') continue;\n                long d = ch - '0';\n                if (first) {\n                    c = 1;\n                    f = d;\n                    g = d;\n                    first = false;\n                    continue;\n                }\n                long cd = c * d % M;\n                f = (2 * f + 9 * g + 2 * cd) % M;\n                g = (10 * g + 2 * cd) % M;\n                c = c * 2 % M;\n            }\n        }\n        System.out.println(f);\n    }\n}\n",
+      "sha256": "1378b6101f5cd155dd7c31fe1d479f15ae029deaf35002c755a440e0171913d7"
+    },
+    {
+      "language": "go",
+      "code": "package main\n\nimport (\n\t\"bufio\"\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\tconst M = 1_000_000_007\n\treader := bufio.NewReaderSize(os.Stdin, 1<<16)\n\tbuf := make([]byte, 1<<16)\n\tfirst := true\n\t// c: number of expressions, f: sum of their values, g: sum of their last-segment values.\n\tvar c, f, g uint64\n\tfor {\n\t\tk, err := reader.Read(buf)\n\t\tfor _, ch := range buf[:k] {\n\t\t\tif ch < '0' || ch > '9' {\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\td := uint64(ch - '0')\n\t\t\tif first {\n\t\t\t\tc, f, g, first = 1, d, d, false\n\t\t\t\tcontinue\n\t\t\t}\n\t\t\tcd := c * d % M\n\t\t\tf = (2*f + 9*g + 2*cd) % M\n\t\t\tg = (10*g + 2*cd) % M\n\t\t\tc = c * 2 % M\n\t\t}\n\t\tif err != nil {\n\t\t\tbreak\n\t\t}\n\t}\n\tfmt.Println(f)\n}\n",
+      "sha256": "f83a53403cf7c75a7f7558f8ed5a89238a41bb2aa8d8b42e7a297184f03b0cd8"
+    }
+  ]
+}
