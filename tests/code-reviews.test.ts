@@ -25,6 +25,9 @@ const cat: Person = { ...ada, id: 'cr-cat', name: 'Cat', email: 'cat@example.tes
 const racer: Person = { ...ada, id: 'cr-racer', email: 'racer@example.test' };
 const fresh: Person = { ...ada, id: 'cr-fresh', email: 'fresh@example.test', verified: false };
 
+// ponytail: one loose shape for every endpoint's answer in this file.
+type Data = { id: string; token: string; mine: boolean; code: string; language: string; author: string | null; items: { id: string }[];
+  comments: { line: number; reviewer: number; handle: string | null; body: string }[] };
 async function call(p: Person | null, method: string, path: string, body?: unknown) {
   const url = new URL(`https://cswork.test/api/oj/${path}`);
   const request = new Request(url, {
@@ -34,7 +37,7 @@ async function call(p: Person | null, method: string, path: string, body?: unkno
   });
   try {
     const r = await handleOj(request, p, url.pathname.split('/').slice(3));
-    return { status: r.status, data: (await r.json()) as Record<string, any> };
+    return { status: r.status, data: (await r.json()) as Data };
   } catch (e) {
     const err = e as { status?: number; name?: string };
     return { status: err.status ?? (err.name === 'ZodError' ? 400 : 500), data: null };
@@ -89,7 +92,7 @@ void test('only the author opens a link on their own formal submission; the toke
   assert.equal(row.owner_id, ada.id);
 
   const listed = await call(ada, 'GET', 'reviews?submission=sub-ada');
-  assert.deepEqual(listed.data!.items.map((r: { id: string }) => r.id), [id]);
+  assert.deepEqual(listed.data!.items.map((r) => r.id), [id]);
   assert.deepEqual((await call(ben, 'GET', 'reviews?submission=sub-ada')).data!.items, []);
 });
 
@@ -122,12 +125,7 @@ void test('a reader with the link sees the code but no name or email; comments s
   const mine = await call(ada, 'GET', `reviews/${id}`);
   assert.equal(mine.data!.mine, true);
   assert.equal(mine.data!.id, id);
-  const shown = mine.data!.comments.map((c: { line: number; reviewer: number; handle: string | null; body: string }) => [
-    c.line,
-    c.reviewer,
-    c.handle,
-    c.body,
-  ]);
+  const shown = mine.data!.comments.map((c) => [c.line, c.reviewer, c.handle, c.body]);
   assert.deepEqual(shown, [
     [4, 1, null, 'Return the pair here.'],
     [2, 2, 'cat_codes', '<b>dict is fine</b>'],

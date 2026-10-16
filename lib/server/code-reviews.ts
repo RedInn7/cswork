@@ -98,7 +98,7 @@ export async function handleCodeReviews(request: Request, p: Person, path: strin
     const review = openReview(p, key);
     const sub = await gated(p, review);
     const rows = db
-      .prepare('SELECT id,user_id,line,body,created_at FROM code_review_comments WHERE review_id=? ORDER BY created_at,id')
+      .prepare('SELECT id,user_id,line,body,created_at FROM code_review_comments WHERE review_id=? ORDER BY created_at,rowid')
       .all(review.id) as { id: string; user_id: string; line: number; body: string; created_at: number }[];
     // Reviewers are numbered by their first comment on this link; 0 is the author.
     const numbers = new Map([[review.owner_id, 0]]);
