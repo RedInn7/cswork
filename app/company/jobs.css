@@ -1,4 +1,5 @@
-/* Open intern and new-grad roles (app/company/jobs.tsx): the company page panel and /career/jobs. */
+/* Open intern and new-grad roles (components/job-list.tsx, app/company/jobs.tsx): the company page
+   panel, /career/jobs and its hiring calendar. */
 .job-openings {
   margin: 0;
   padding: 0;
@@ -50,8 +51,27 @@
   background: #e3effa;
   color: #1f4f7a;
 }
-.job-openings-add {
+.job-openings-tag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #f1f3f2;
+  color: #3f5149;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.job-openings-pay {
+  color: #1f4f3a;
+  font-weight: 650;
+}
+.job-openings-actions {
   grid-area: add;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.job-openings-add,
+.job-openings-tracked {
   padding: 6px 14px;
   border: 1px solid #087158;
   border-radius: 999px;
@@ -60,12 +80,52 @@
   font-weight: 650;
   white-space: nowrap;
 }
-.job-openings-add:hover {
+.job-openings-tracked {
+  border-style: dashed;
+  color: #1f4f3a;
+}
+.job-openings-add:hover,
+.job-openings-tracked:hover {
   background: #e6f4ef;
 }
-.job-openings a:focus-visible {
+.job-openings-hide,
+.job-hidden-bar button,
+.job-search-save button {
+  min-height: 32px;
+  padding: 4px 12px;
+  border: 1px solid #c9d1da;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #3f5149;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.job-openings-hide:hover,
+.job-hidden-bar button:hover,
+.job-search-save button:hover {
+  background: #f1f3f2;
+}
+.job-hidden-bar button[aria-pressed='true'] {
+  border-color: #087158;
+  background: #e6f4ef;
+  color: #0a5c48;
+}
+.job-openings :is(a, button):focus-visible,
+.job-hidden-bar button:focus-visible,
+.job-search-save button:focus-visible,
+.job-seasons a:focus-visible {
   outline: 2px solid #087158;
   outline-offset: 2px;
+}
+.job-hidden-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0 0 10px;
+  color: #56665f;
+  font-size: 14px;
 }
 .job-openings-note {
   margin: 10px 0 0;
@@ -74,7 +134,21 @@
   line-height: 1.6;
 }
 
-/* /career/jobs: kind, place and company filters (a plain GET form). */
+/* A company's seasons above its openings: when this and last season's roles first showed up. */
+.job-seasons {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  color: #3f5149;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.job-seasons a {
+  color: #087158;
+  font-weight: 600;
+}
+
+/* /career/jobs: kind, role, term, place, company and pay filters (a plain GET form), the saved search. */
 .job-filters {
   display: flex;
   flex-wrap: wrap;
@@ -104,10 +178,89 @@
   outline-offset: 1px;
   border-color: #0d7a63;
 }
+.job-filters label.job-filters-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  font-weight: 400;
+}
+.job-filters .job-filters-check input {
+  width: 18px;
+  min-height: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  accent-color: #087158;
+}
 .job-count {
   margin: 0 0 10px;
   color: #56665f;
   font-size: 14px;
+}
+.job-search-save {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: -6px 0 16px;
+  font-size: 14px;
+}
+.job-search-save p {
+  margin: 0;
+  color: #1f4f3a;
+}
+.job-search-save p[role='alert'] {
+  color: #a3261b;
+}
+.job-search-applied,
+.job-calendar-link {
+  margin: 0 0 14px;
+  color: #3f5149;
+  font-size: 14px;
+}
+.job-search-applied a,
+.job-calendar-link a {
+  color: #087158;
+  font-weight: 600;
+}
+
+/* /career/jobs/calendar: companies by the week their season opened, intern and new grad side by side. */
+.job-calendar-section {
+  margin-top: 28px;
+  padding-top: 14px;
+  border-top: 1px solid #dfe5e1;
+}
+.job-calendar-section h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 650;
+}
+.job-calendar-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 24px;
+}
+.job-calendar-cols h3 {
+  margin: 0 0 6px;
+  color: #3f5149;
+  font-size: 14px;
+}
+.job-calendar-cols ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.job-calendar-cols li span,
+.job-calendar-cols p {
+  margin: 0;
+  color: #56665f;
+}
+.job-calendar-cols a {
+  color: #087158;
+  font-weight: 600;
 }
 
 @media (max-width: 600px) {
@@ -115,8 +268,11 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: 'title' 'facts' 'add';
   }
-  .job-openings-add {
+  .job-openings-actions {
     justify-self: start;
+  }
+  .job-calendar-cols {
+    grid-template-columns: minmax(0, 1fr);
   }
   .job-filters label,
   .job-filters :is(input, select) {
@@ -149,18 +305,60 @@
     background: #0b1218;
     color: #a6d1fc;
   }
-  .dark .job-openings-add {
+  .dark .job-openings-tag {
+    background: #121312;
+    color: #bfd1c8;
+  }
+  .dark .job-openings-pay {
+    color: #b0dbc5;
+  }
+  .dark .job-openings-add,
+  .dark .job-openings-tracked {
     border: 1px solid #087158;
     color: #8ed5bc;
   }
-  .dark .job-openings-add:hover {
+  .dark .job-openings-tracked {
+    border-style: dashed;
+    color: #b0dbc5;
+  }
+  .dark .job-openings-add:hover,
+  .dark .job-openings-tracked:hover {
     background: #0c1311;
   }
-  .dark .job-openings a:focus-visible {
+  .dark .job-openings-hide,
+  .dark .job-hidden-bar button,
+  .dark .job-search-save button {
+    border: 1px solid #31383f;
+    background: #191919;
+    color: #bfd1c8;
+  }
+  .dark .job-openings-hide:hover,
+  .dark .job-hidden-bar button:hover,
+  .dark .job-search-save button:hover {
+    background: #121312;
+  }
+  .dark .job-hidden-bar button[aria-pressed='true'] {
+    border-color: #087158;
+    background: #0c1311;
+    color: #9edac5;
+  }
+  .dark .job-openings :is(a, button):focus-visible,
+  .dark .job-hidden-bar button:focus-visible,
+  .dark .job-search-save button:focus-visible,
+  .dark .job-seasons a:focus-visible {
     outline: 2px solid #8ed5bc;
+  }
+  .dark .job-hidden-bar {
+    color: #b8c7c0;
   }
   .dark .job-openings-note {
     color: #b8c7c0;
+  }
+  .dark .job-seasons {
+    color: #bfd1c8;
+  }
+  .dark .job-seasons a {
+    color: #8ed5bc;
   }
   .dark .job-filters :is(input, select) {
     border: 1px solid #31383f;
@@ -171,8 +369,38 @@
     outline: 2px solid #87d2bb;
     border-color: #0d7a63;
   }
+  .dark .job-filters .job-filters-check input {
+    accent-color: #087158;
+  }
   .dark .job-count {
     color: #b8c7c0;
+  }
+  .dark .job-search-save p {
+    color: #b0dbc5;
+  }
+  .dark .job-search-save p[role='alert'] {
+    color: #fbb0a3;
+  }
+  .dark .job-search-applied,
+  .dark .job-calendar-link {
+    color: #bfd1c8;
+  }
+  .dark .job-search-applied a,
+  .dark .job-calendar-link a {
+    color: #8ed5bc;
+  }
+  .dark .job-calendar-section {
+    border-top: 1px solid #2c312e;
+  }
+  .dark .job-calendar-cols h3 {
+    color: #bfd1c8;
+  }
+  .dark .job-calendar-cols li span,
+  .dark .job-calendar-cols p {
+    color: #b8c7c0;
+  }
+  .dark .job-calendar-cols a {
+    color: #8ed5bc;
   }
 }
 /* ── end dark theme ── */

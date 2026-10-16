@@ -126,8 +126,8 @@ export function searchFromQuery(get: (name: string) => string): JobSearch {
   const term = get('term');
   const company = get('company');
   return {
-    kind: pick(get('kind'), ['intern', 'new-grad'] as const, ''),
-    role: pick(get('role'), ROLE_FILTERS, 'tech'),
+    kind: pick<JobSearch['kind']>(get('kind'), ['intern', 'new-grad'], ''),
+    role: pick<JobSearch['role']>(get('role'), ROLE_FILTERS, 'tech'),
     term: /^[a-z0-9-]{1,20}$/.test(term) ? term : '',
     q: get('q').slice(0, 60),
     company: /^[a-z0-9-]{1,80}$/.test(company) ? company : '',
