@@ -232,7 +232,7 @@ void test('a summary is the first paragraph as plain text, cut with an ellipsis'
   assert.ok(cut.endsWith('…'));
 });
 
-void test('every LLD case has a class diagram and core code, every API chapter a diagram, in both languages', () => {
+void test('every LLD case has a class diagram, its patterns and core code, every API chapter a diagram, in both languages', () => {
   const missing: string[] = [];
   for (const chapter of sdChapters)
     for (const key of ['bodyZh', 'bodyEn'] as const) {
@@ -240,6 +240,7 @@ void test('every LLD case has a class diagram and core code, every API chapter a
       if (chapter.slug.startsWith('lld-case-')) {
         if (!/^```mermaid\nclassDiagram\n/m.test(body)) missing.push(`${chapter.slug}.${key}: class diagram`);
         if (!/^```(python|java)\n/m.test(body)) missing.push(`${chapter.slug}.${key}: core code`);
+        if (!/^## (Patterns used|用到的设计模式)$/m.test(body)) missing.push(`${chapter.slug}.${key}: patterns used`);
       }
       if (chapter.slug.startsWith('api-') && !/^```mermaid\n/m.test(body)) missing.push(`${chapter.slug}.${key}: diagram`);
     }
