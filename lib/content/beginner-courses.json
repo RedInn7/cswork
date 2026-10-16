@@ -2749,6 +2749,1587 @@
           "solves": []
         }
       ]
+    },
+    {
+      "slug": "java",
+      "titleZh": "Java 集合面试速成课",
+      "titleEn": "Java Collections for Coding Interviews",
+      "summaryZh": "8 节课讲清用 Java 刷题最常用的集合框架：数组和 ArrayList、ArrayDeque 做栈和队列、PriorityQueue、HashMap、TreeMap 的导航方法、Comparator 与排序，以及 Integer 用 == 比较、整数溢出、字符串拼接这些高频坑，最后一节是速查表。示例都是可编译运行的完整程序，每节有小测验和 3 道练习题。",
+      "summaryEn": "Eight lessons on the collections you use most when solving problems in Java: arrays and ArrayList, ArrayDeque as a stack and a queue, PriorityQueue, HashMap, TreeMap navigation, Comparator and sorting, and the classic traps of comparing Integers with ==, integer overflow and string concatenation, ending with a cheat sheet. Every example is a complete program that compiles and runs, and each lesson ends with a quiz and three practice problems.",
+      "chapters": [
+        {
+          "slug": "arrays-arraylist",
+          "titleZh": "数组与 ArrayList",
+          "titleEn": "Arrays and ArrayList",
+          "bodyZh": "用 Java 刷题，大部分时间都在和 `java.util` 打交道。这门课按面试的使用频率讲集合框架，每节都给出能直接编译运行的完整程序（判题机是 Java 21，本课的代码在 Java 17 上也能编译）。第一课讲数组和 `ArrayList`。\n\n## 数组：长度固定\n\n```java\nint[] a = new int[5];              // 5 个 0：数值类型默认是 0，boolean 默认 false，对象默认 null\nint[] b = {3, 1, 2};\nint[][] g = new int[3][4];         // 3 行 4 列\na.length;                          // 长度是字段，不加括号\nArrays.fill(a, -1);\nArrays.sort(b);                    // 原地升序\nArrays.toString(b);                // \"[1, 2, 3]\"，直接打印数组只会得到一串地址\nArrays.copyOfRange(b, 1, 3);       // 复制 [1, 3)\n```\n\n## ArrayList：会扩容的列表\n\n```java\nList<Integer> list = new ArrayList<>();\nlist.add(7);              // 尾部追加，均摊 O(1)\nlist.get(0);              // 按下标读\nlist.set(0, 8);           // 按下标改\nlist.size();              // 长度是方法，要加括号\nlist.add(0, 5);           // 在下标 0 插入：O(n)\nlist.contains(8);         // 线性查找：O(n)\n```\n\n泛型参数只能是对象类型，所以写 `List<Integer>`，不能写 `List<int>`。每个元素都是一个 `Integer` 对象，比 `int[]` 占内存多、也慢一些；长度固定、数据量大时，优先用 `int[]`。\n\n## remove 的两种重载\n\n`List<Integer>` 上的 `remove` 有两个版本，最容易出错：\n\n- `list.remove(1)`：参数是 `int`，删除**下标** 1 的元素。\n- `list.remove(Integer.valueOf(1))`：参数是对象，删除**值**等于 1 的第一个元素。\n\n## 不能修改的列表\n\n- `List.of(1, 2, 3)` 完全不可修改，`add`、`set`、`remove` 都抛 `UnsupportedOperationException`。\n- `Arrays.asList(arr)` 长度固定：可以 `set`，不能 `add`、`remove`。\n- 需要一个可修改的副本时写 `new ArrayList<>(List.of(...))`。\n\n另外，`Arrays.asList` 不能把 `int[]` 转成 `List<Integer>`：`Arrays.asList(new int[]{1, 2})` 得到的是只有一个元素的 `List<int[]>`。要转换，用循环逐个 `add`，或者 `Arrays.stream(arr).boxed().toList()`。\n\n## 例子：合并两个有序数组\n\n`nums1` 后面留了足够的空位。从两个数组的末尾往前比，把较大的放到 `nums1` 的最后，这样不会覆盖还没比较的元素。\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    static void merge(int[] nums1, int m, int[] nums2, int n) {\n        int i = m - 1, j = n - 1, k = m + n - 1;\n        while (j >= 0) {\n            if (i >= 0 && nums1[i] > nums2[j]) nums1[k--] = nums1[i--];\n            else nums1[k--] = nums2[j--];\n        }\n    }\n\n    public static void main(String[] args) {\n        int[] a = {1, 2, 3, 0, 0, 0};\n        merge(a, 3, new int[] {2, 5, 6}, 3);\n        System.out.println(Arrays.toString(a));\n\n        List<Integer> list = new ArrayList<>(List.of(5, 1, 7));\n        list.remove(1);                       // 删除下标 1，也就是值 1\n        System.out.println(list);\n        list.remove(Integer.valueOf(7));      // 删除值 7\n        System.out.println(list + \" \" + list.size());\n\n        int[][] grid = new int[2][3];\n        grid[1][2] = 9;\n        System.out.println(Arrays.deepToString(grid));\n\n        List<int[]> wrong = Arrays.asList(new int[] {1, 2});\n        System.out.println(wrong.size());     // 1：整个数组是唯一的元素\n        try {\n            List.of(1, 2).add(3);\n        } catch (UnsupportedOperationException e) {\n            System.out.println(\"immutable\");\n        }\n    }\n}\n```\n\n```text\n[1, 2, 2, 3, 5, 6]\n[5, 7]\n[5] 1\n[[0, 0, 0], [0, 0, 9]]\n1\nimmutable\n```\n\n## 常见错误\n\n- 数组长度写成 `a.length()`、列表长度写成 `list.length`。数组是字段 `length`，`String` 是方法 `length()`，集合是方法 `size()`。\n- 想删值却调用了 `list.remove(int)`，删掉的是下标。\n- 往 `List.of` 或 `Arrays.asList` 得到的列表里 `add`。\n- 直接 `System.out.println(arr)`，打印出来的是 `[I@1b6d3586` 这样的地址。",
+          "bodyEn": "Solving problems in Java means living in `java.util`. This course walks through the collections framework in the order interviews use it, and every lesson includes complete programs you can compile and run (the judge runs Java 21; this course's code also compiles on Java 17). The first lesson is arrays and `ArrayList`.\n\n## Arrays: a fixed length\n\n```java\nint[] a = new int[5];              // five zeros: numbers default to 0, boolean to false, objects to null\nint[] b = {3, 1, 2};\nint[][] g = new int[3][4];         // 3 rows, 4 columns\na.length;                          // length is a field, no parentheses\nArrays.fill(a, -1);\nArrays.sort(b);                    // ascending, in place\nArrays.toString(b);                // \"[1, 2, 3]\"; printing the array itself shows an address\nArrays.copyOfRange(b, 1, 3);       // copies [1, 3)\n```\n\n## ArrayList: a list that grows\n\n```java\nList<Integer> list = new ArrayList<>();\nlist.add(7);              // append, amortized O(1)\nlist.get(0);              // read by index\nlist.set(0, 8);           // write by index\nlist.size();              // size is a method, with parentheses\nlist.add(0, 5);           // insert at index 0: O(n)\nlist.contains(8);         // linear search: O(n)\n```\n\nType arguments must be object types: `List<Integer>`, never `List<int>`. Every element is an `Integer` object, which costs more memory and time than an `int[]`; for a fixed size and lots of data, prefer `int[]`.\n\n## The two remove overloads\n\n`remove` on a `List<Integer>` comes in two versions, and they are easy to mix up:\n\n- `list.remove(1)`: the argument is an `int`, so it removes the element at **index** 1.\n- `list.remove(Integer.valueOf(1))`: the argument is an object, so it removes the first element whose **value** is 1.\n\n## Lists you cannot change\n\n- `List.of(1, 2, 3)` is fully immutable: `add`, `set` and `remove` throw `UnsupportedOperationException`.\n- `Arrays.asList(arr)` has a fixed size: `set` works, `add` and `remove` do not.\n- For a copy you can change, write `new ArrayList<>(List.of(...))`.\n\nAlso, `Arrays.asList` cannot turn an `int[]` into a `List<Integer>`: `Arrays.asList(new int[]{1, 2})` is a `List<int[]>` with one element. Convert with a loop of `add`s or with `Arrays.stream(arr).boxed().toList()`.\n\n## Example: merge two sorted arrays\n\n`nums1` has enough empty slots at the end. Compare from the back of both arrays and put the larger value at the end of `nums1`, so nothing not yet compared is overwritten.\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    static void merge(int[] nums1, int m, int[] nums2, int n) {\n        int i = m - 1, j = n - 1, k = m + n - 1;\n        while (j >= 0) {\n            if (i >= 0 && nums1[i] > nums2[j]) nums1[k--] = nums1[i--];\n            else nums1[k--] = nums2[j--];\n        }\n    }\n\n    public static void main(String[] args) {\n        int[] a = {1, 2, 3, 0, 0, 0};\n        merge(a, 3, new int[] {2, 5, 6}, 3);\n        System.out.println(Arrays.toString(a));\n\n        List<Integer> list = new ArrayList<>(List.of(5, 1, 7));\n        list.remove(1);                       // removes index 1, which holds the value 1\n        System.out.println(list);\n        list.remove(Integer.valueOf(7));      // removes the value 7\n        System.out.println(list + \" \" + list.size());\n\n        int[][] grid = new int[2][3];\n        grid[1][2] = 9;\n        System.out.println(Arrays.deepToString(grid));\n\n        List<int[]> wrong = Arrays.asList(new int[] {1, 2});\n        System.out.println(wrong.size());     // 1: the whole array is the only element\n        try {\n            List.of(1, 2).add(3);\n        } catch (UnsupportedOperationException e) {\n            System.out.println(\"immutable\");\n        }\n    }\n}\n```\n\n```text\n[1, 2, 2, 3, 5, 6]\n[5, 7]\n[5] 1\n[[0, 0, 0], [0, 0, 9]]\n1\nimmutable\n```\n\n## Common mistakes\n\n- Writing `a.length()` for an array or `list.length` for a list. Arrays have the field `length`, `String` has the method `length()`, collections have the method `size()`.\n- Calling `list.remove(int)` to remove a value and removing an index instead.\n- Calling `add` on a list from `List.of` or `Arrays.asList`.\n- Printing an array with `System.out.println(arr)` and getting an address like `[I@1b6d3586`.",
+          "quiz": [
+            {
+              "qZh": "List<Integer> list = [5, 1, 7]，执行 list.remove(1) 之后 list 是什么？",
+              "qEn": "List<Integer> list = [5, 1, 7]. What is list after list.remove(1)?",
+              "choices": [
+                {
+                  "zh": "[5, 7]",
+                  "en": "[5, 7]"
+                },
+                {
+                  "zh": "[1, 7]",
+                  "en": "[1, 7]"
+                },
+                {
+                  "zh": "[5, 1]",
+                  "en": "[5, 1]"
+                },
+                {
+                  "zh": "[5, 1, 7]，因为 1 是值不是下标",
+                  "en": "[5, 1, 7], since 1 is a value, not an index"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "参数是 int 时调用的是 remove(int index)，删除下标 1 的元素，恰好也是值 1。要按值删除得写 remove(Integer.valueOf(x))。",
+              "whyEn": "With an int argument, remove(int index) runs and deletes index 1, which here also holds the value 1. Removing by value needs remove(Integer.valueOf(x))."
+            },
+            {
+              "qZh": "List<Integer> a = List.of(1, 2); a.add(3); 会发生什么？",
+              "qEn": "List<Integer> a = List.of(1, 2); a.add(3); what happens?",
+              "choices": [
+                {
+                  "zh": "a 变成 [1, 2, 3]",
+                  "en": "a becomes [1, 2, 3]"
+                },
+                {
+                  "zh": "抛出 UnsupportedOperationException",
+                  "en": "It throws UnsupportedOperationException"
+                },
+                {
+                  "zh": "编译错误",
+                  "en": "A compile error"
+                },
+                {
+                  "zh": "a 变成 [3, 1, 2]",
+                  "en": "a becomes [3, 1, 2]"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "List.of 返回不可修改的列表，编译能过，运行时 add 抛异常。需要可修改时写 new ArrayList<>(List.of(1, 2))。",
+              "whyEn": "List.of returns an unmodifiable list: it compiles, and add throws at run time. Write new ArrayList<>(List.of(1, 2)) for a list you can change."
+            },
+            {
+              "qZh": "下面哪个写法能得到数组 arr 的长度？",
+              "qEn": "Which expression gives the length of the array arr?",
+              "choices": [
+                {
+                  "zh": "arr.length()",
+                  "en": "arr.length()"
+                },
+                {
+                  "zh": "arr.size()",
+                  "en": "arr.size()"
+                },
+                {
+                  "zh": "arr.length",
+                  "en": "arr.length"
+                },
+                {
+                  "zh": "Arrays.size(arr)",
+                  "en": "Arrays.size(arr)"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "数组的长度是字段 length，不带括号。String 用 length()，集合用 size()。",
+              "whyEn": "An array's length is the field length, without parentheses. String has length() and collections have size()."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-283",
+              "zh": "移动零",
+              "en": "Move Zeroes"
+            },
+            {
+              "id": "lc-26",
+              "zh": "删除有序数组中的重复项",
+              "en": "Remove Duplicates from Sorted Array"
+            },
+            {
+              "id": "lc-48",
+              "zh": "旋转图像",
+              "en": "Rotate Image"
+            }
+          ],
+          "solves": [
+            "lc-88"
+          ]
+        },
+        {
+          "slug": "arraydeque",
+          "titleZh": "ArrayDeque：栈和队列",
+          "titleEn": "ArrayDeque: stacks and queues",
+          "bodyZh": "Java 里栈和队列都用 `ArrayDeque`。它是一个环形数组，两端的进出都是均摊 O(1)。\n\n## 不要用 Stack 和 LinkedList\n\n- `Stack` 是 Java 1.0 留下来的类，继承自 `Vector`，每个方法都加了锁，官方文档也建议改用 `Deque`。\n- `LinkedList` 也实现了 `Deque`，但每个元素都是一个单独的结点对象，内存开销大，速度比 `ArrayDeque` 慢。\n\n声明时用接口类型 `Deque<Integer>`，实现选 `ArrayDeque`。\n\n## 当栈用\n\n```java\nDeque<Integer> st = new ArrayDeque<>();\nst.push(1);        // 压到队头\nst.push(2);\nst.peek();         // 2：看栈顶\nst.pop();          // 2：弹出栈顶并返回\nst.isEmpty();\n```\n\n## 当队列用\n\n```java\nDeque<Integer> q = new ArrayDeque<>();\nq.offer(1);        // 从队尾进\nq.offer(2);\nq.peek();          // 1：看队头\nq.poll();          // 1：取出队头并返回\n```\n\n`push`/`pop` 操作的是队头，`offer`/`poll` 是队尾进、队头出，两套方法不要混用在同一个用途上。双端都要用时，写得更明确：`offerFirst`、`offerLast`、`pollFirst`、`pollLast`、`peekFirst`、`peekLast`。\n\n## 抛异常还是返回 null\n\n| 作用 | 失败时抛异常 | 失败时返回特殊值 |\n|---|---|---|\n| 放入 | `add` / `push` | `offer`（返回 false） |\n| 取出 | `remove` / `pop` | `poll`（返回 null） |\n| 查看 | `element` / `getFirst` | `peek`（返回 null） |\n\n空栈上 `pop()` 抛 `NoSuchElementException`；`poll()` 返回 `null`。拿 `null` 去赋给 `int` 会自动拆箱，抛 `NullPointerException`。另外 `ArrayDeque` 不允许存 `null`，因为 `null` 被用来表示\"空\"。\n\n## 例子：有效的括号、用栈实现队列\n\n括号匹配有一个小技巧：遇到左括号时压入**对应的右括号**，之后直接比较是否相等。用两个栈实现队列：`in` 负责入队，`out` 空了才把 `in` 整体倒过去，每个元素最多被倒一次，均摊 O(1)。\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    static boolean isValid(String s) {\n        Deque<Character> st = new ArrayDeque<>();\n        for (char c : s.toCharArray()) {\n            if (c == '(') st.push(')');\n            else if (c == '[') st.push(']');\n            else if (c == '{') st.push('}');\n            else if (st.isEmpty() || st.pop() != c) return false;\n        }\n        return st.isEmpty();\n    }\n\n    static class MyQueue {\n        private final Deque<Integer> in = new ArrayDeque<>(), out = new ArrayDeque<>();\n\n        void push(int x) { in.push(x); }\n\n        int pop() { peek(); return out.pop(); }\n\n        int peek() {\n            if (out.isEmpty()) while (!in.isEmpty()) out.push(in.pop());   // 倒一次，顺序就反过来了\n            return out.peek();\n        }\n\n        boolean empty() { return in.isEmpty() && out.isEmpty(); }\n    }\n\n    public static void main(String[] args) {\n        System.out.println(isValid(\"([]{})\") + \" \" + isValid(\"(]\") + \" \" + isValid(\"((\"));\n\n        MyQueue q = new MyQueue();\n        q.push(1);\n        q.push(2);\n        System.out.println(q.peek() + \" \" + q.pop() + \" \" + q.empty());\n\n        Deque<Integer> d = new ArrayDeque<>();\n        d.offer(1);\n        d.offer(2);\n        d.push(0);                                  // push 放在队头\n        System.out.println(d + \" \" + d.peekFirst() + \" \" + d.peekLast());\n\n        Integer none = new ArrayDeque<Integer>().poll();\n        System.out.println(none);                   // 空队列 poll 得到 null\n    }\n}\n```\n\n```text\ntrue false false\n1 1 false\n[0, 1, 2] 0 2\nnull\n```\n\n`st.pop() != c` 能正确比较，是因为一边是基本类型 `char`，`Character` 会被拆箱后再比较数值。两边都是 `Character` 对象时，`!=` 比较的是引用，第 7 课会专门讲这个坑。\n\n## 常见错误\n\n- 用 `Stack` 或 `LinkedList`，代码能过但更慢。\n- 栈用 `push`/`pop`，取栈顶却写了 `peekLast()`。`push` 放在队头，栈顶是 `peekFirst()`，也就是 `peek()`。\n- 空队列 `poll()` 返回 `null`，直接赋给 `int` 导致空指针异常。\n- 往 `ArrayDeque` 里放 `null`。",
+          "bodyEn": "In Java, both stacks and queues are `ArrayDeque`. It is a circular array, so adding and removing at either end is amortized O(1).\n\n## Skip Stack and LinkedList\n\n- `Stack` is a Java 1.0 leftover that extends `Vector` and locks on every method; its own documentation recommends `Deque` instead.\n- `LinkedList` implements `Deque` too, but every element is a separate node object: more memory and slower than `ArrayDeque`.\n\nDeclare the interface type `Deque<Integer>` and pick `ArrayDeque` as the implementation.\n\n## As a stack\n\n```java\nDeque<Integer> st = new ArrayDeque<>();\nst.push(1);        // onto the front\nst.push(2);\nst.peek();         // 2: look at the top\nst.pop();          // 2: remove the top and return it\nst.isEmpty();\n```\n\n## As a queue\n\n```java\nDeque<Integer> q = new ArrayDeque<>();\nq.offer(1);        // in at the back\nq.offer(2);\nq.peek();          // 1: look at the front\nq.poll();          // 1: remove the front and return it\n```\n\n`push`/`pop` work on the front, while `offer`/`poll` add at the back and take from the front; do not mix the two sets for one purpose. When you need both ends, say so explicitly: `offerFirst`, `offerLast`, `pollFirst`, `pollLast`, `peekFirst`, `peekLast`.\n\n## Throwing or returning null\n\n| Purpose | Throws on failure | Returns a special value |\n|---|---|---|\n| Insert | `add` / `push` | `offer` (false) |\n| Remove | `remove` / `pop` | `poll` (null) |\n| Examine | `element` / `getFirst` | `peek` (null) |\n\n`pop()` on an empty stack throws `NoSuchElementException`; `poll()` returns `null`. Assigning that `null` to an `int` unboxes it and throws `NullPointerException`. And an `ArrayDeque` cannot hold `null`, because `null` is how it signals \"empty\".\n\n## Examples: valid parentheses, a queue from two stacks\n\nA small trick for bracket matching: on an opening bracket, push **the matching closing bracket**, then just compare for equality. For a queue built from two stacks, `in` takes new elements, and only when `out` is empty is `in` poured into it; each element is poured at most once, so operations are amortized O(1).\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    static boolean isValid(String s) {\n        Deque<Character> st = new ArrayDeque<>();\n        for (char c : s.toCharArray()) {\n            if (c == '(') st.push(')');\n            else if (c == '[') st.push(']');\n            else if (c == '{') st.push('}');\n            else if (st.isEmpty() || st.pop() != c) return false;\n        }\n        return st.isEmpty();\n    }\n\n    static class MyQueue {\n        private final Deque<Integer> in = new ArrayDeque<>(), out = new ArrayDeque<>();\n\n        void push(int x) { in.push(x); }\n\n        int pop() { peek(); return out.pop(); }\n\n        int peek() {\n            if (out.isEmpty()) while (!in.isEmpty()) out.push(in.pop());   // pouring once reverses the order\n            return out.peek();\n        }\n\n        boolean empty() { return in.isEmpty() && out.isEmpty(); }\n    }\n\n    public static void main(String[] args) {\n        System.out.println(isValid(\"([]{})\") + \" \" + isValid(\"(]\") + \" \" + isValid(\"((\"));\n\n        MyQueue q = new MyQueue();\n        q.push(1);\n        q.push(2);\n        System.out.println(q.peek() + \" \" + q.pop() + \" \" + q.empty());\n\n        Deque<Integer> d = new ArrayDeque<>();\n        d.offer(1);\n        d.offer(2);\n        d.push(0);                                  // push goes to the front\n        System.out.println(d + \" \" + d.peekFirst() + \" \" + d.peekLast());\n\n        Integer none = new ArrayDeque<Integer>().poll();\n        System.out.println(none);                   // poll on an empty queue gives null\n    }\n}\n```\n\n```text\ntrue false false\n1 1 false\n[0, 1, 2] 0 2\nnull\n```\n\n`st.pop() != c` compares correctly because one side is the primitive `char`, so the `Character` is unboxed and the values are compared. When both sides are `Character` objects, `!=` compares references; lesson 7 covers that trap.\n\n## Common mistakes\n\n- Using `Stack` or `LinkedList`: it passes, just slower.\n- Using `push`/`pop` for a stack but reading the top with `peekLast()`. `push` adds at the front, so the top is `peekFirst()`, which is `peek()`.\n- Assigning the `null` from `poll()` on an empty queue to an `int` and getting a `NullPointerException`.\n- Putting `null` into an `ArrayDeque`.",
+          "quiz": [
+            {
+              "qZh": "Java 里实现栈，推荐用哪个类？",
+              "qEn": "Which class is recommended for a stack in Java?",
+              "choices": [
+                {
+                  "zh": "Stack",
+                  "en": "Stack"
+                },
+                {
+                  "zh": "LinkedList",
+                  "en": "LinkedList"
+                },
+                {
+                  "zh": "PriorityQueue",
+                  "en": "PriorityQueue"
+                },
+                {
+                  "zh": "ArrayDeque",
+                  "en": "ArrayDeque"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "Stack 继承自 Vector，方法都加了锁，是遗留类；LinkedList 每个元素一个结点对象，更慢。ArrayDeque 两端操作都是均摊 O(1)。",
+              "whyEn": "Stack extends Vector, locks on every method and is a legacy class; LinkedList allocates a node per element and is slower. ArrayDeque is amortized O(1) at both ends."
+            },
+            {
+              "qZh": "Deque<Integer> q 是空的，int x = q.poll(); 会怎样？",
+              "qEn": "Deque<Integer> q is empty. What does int x = q.poll(); do?",
+              "choices": [
+                {
+                  "zh": "抛出 NullPointerException",
+                  "en": "It throws NullPointerException"
+                },
+                {
+                  "zh": "x 等于 0",
+                  "en": "x becomes 0"
+                },
+                {
+                  "zh": "抛出 NoSuchElementException",
+                  "en": "It throws NoSuchElementException"
+                },
+                {
+                  "zh": "程序一直阻塞等待",
+                  "en": "It blocks waiting for an element"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "poll 在空队列上返回 null，赋给 int 时自动拆箱，于是抛空指针异常。抛 NoSuchElementException 的是 pop、remove。",
+              "whyEn": "poll returns null on an empty queue, and unboxing it into an int throws a null pointer exception. pop and remove are the ones that throw NoSuchElementException."
+            },
+            {
+              "qZh": "ArrayDeque 依次 offer(1)、offer(2)，再 push(0)，此时 peek() 返回什么？",
+              "qEn": "An ArrayDeque gets offer(1), offer(2) and then push(0). What does peek() return?",
+              "choices": [
+                {
+                  "zh": "1",
+                  "en": "1"
+                },
+                {
+                  "zh": "0",
+                  "en": "0"
+                },
+                {
+                  "zh": "2",
+                  "en": "2"
+                },
+                {
+                  "zh": "null",
+                  "en": "null"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "offer 加在队尾，push 加在队头，peek 看的是队头，所以是刚 push 进去的 0。",
+              "whyEn": "offer adds at the back, push adds at the front, and peek looks at the front, so it sees the 0 that was just pushed."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1047",
+              "zh": "删除字符串中的所有相邻重复项",
+              "en": "Remove All Adjacent Duplicates In String"
+            },
+            {
+              "id": "lc-921",
+              "zh": "使括号有效的最少添加",
+              "en": "Minimum Add to Make Parentheses Valid"
+            },
+            {
+              "id": "lc-225",
+              "zh": "用队列实现栈",
+              "en": "Implement Stack using Queues"
+            }
+          ],
+          "solves": [
+            "lc-20",
+            "lc-232"
+          ]
+        },
+        {
+          "slug": "priority-queue",
+          "titleZh": "PriorityQueue 与比较器",
+          "titleEn": "PriorityQueue and comparators",
+          "bodyZh": "`PriorityQueue` 是 Java 的堆。堆的原理见\"Big-O 与数据结构速成课\"的堆一课。和 C++ 相反，Java 的 `PriorityQueue` **默认是最小堆**。\n\n## 基本操作\n\n```java\nPriorityQueue<Integer> pq = new PriorityQueue<>();\npq.offer(3);          // O(log n)\npq.offer(1);\npq.peek();            // 1：最小值，O(1)\npq.poll();            // 1：取出最小值，O(log n)\npq.size(); pq.isEmpty();\nnew PriorityQueue<>(list);   // 用已有集合建堆，O(n)\n```\n\n`pq.remove(x)` 删除任意一个元素是 O(n)，因为要先线性查找。直接打印或遍历 `pq` 得到的是内部数组的顺序，并不是排好序的。\n\n## 最大堆和比较器\n\n```java\nPriorityQueue<Integer> max = new PriorityQueue<>(Collections.reverseOrder());\nPriorityQueue<int[]> byFirst = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));\nPriorityQueue<int[]> same = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));\n```\n\n比较器 `compare(a, b)` 返回负数表示 a 排在 b 前面，也就是 a 先出堆。这和 `Arrays.sort` 的规则完全一致，比 C++ 的 `priority_queue` 好记。\n\n## 不要写 (a, b) -> a - b\n\n很多题解用 `(a, b) -> a - b` 当比较器。数值有正有负、绝对值又很大时，减法会溢出：`-2000000000 - 2000000000` 在 `int` 里变成正数，比较结果就反了，堆的顺序随之错乱。用 `Integer.compare(a, b)` 或者 `Comparator.comparingInt`，永远不会溢出。\n\n## 例子：第 K 大的元素、数据流中的第 K 大\n\n两题的思路一样：保留一个大小为 k 的最小堆，里面是目前最大的 k 个数，堆顶就是第 k 大。\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    static int findKthLargest(int[] nums, int k) {\n        PriorityQueue<Integer> h = new PriorityQueue<>();   // 最小堆\n        for (int x : nums) {\n            h.offer(x);\n            if (h.size() > k) h.poll();                     // 弹出最小的\n        }\n        return h.peek();\n    }\n\n    static class KthLargest {\n        private final PriorityQueue<Integer> h = new PriorityQueue<>();\n        private final int k;\n\n        KthLargest(int k, int[] nums) {\n            this.k = k;\n            for (int x : nums) add(x);\n        }\n\n        int add(int val) {\n            h.offer(val);\n            if (h.size() > k) h.poll();\n            return h.peek();\n        }\n    }\n\n    public static void main(String[] args) {\n        System.out.println(findKthLargest(new int[] {3, 2, 1, 5, 6, 4}, 2));\n\n        KthLargest kth = new KthLargest(3, new int[] {4, 5, 8, 2});\n        System.out.println(kth.add(3) + \" \" + kth.add(5) + \" \" + kth.add(10) + \" \" + kth.add(9) + \" \" + kth.add(4));\n\n        PriorityQueue<Integer> max = new PriorityQueue<>(Collections.reverseOrder());\n        max.addAll(List.of(3, 1, 4));\n        System.out.println(max.poll());\n\n        PriorityQueue<int[]> byDist = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));\n        byDist.offer(new int[] {5, 1});\n        byDist.offer(new int[] {2, 7});\n        System.out.println(byDist.peek()[1]);\n\n        int a = -2_000_000_000, b = 2_000_000_000;\n        System.out.println((a - b) + \" \" + Integer.compare(a, b));   // a - b 溢出成了正数\n    }\n}\n```\n\n```text\n5\n4 5 5 8 8\n4\n7\n294967296 -1\n```\n\n最后一行就是 `a - b` 比较器的问题：a 明明更小，减法却给出了正数。\n\n## 常见错误\n\n- 以为 `PriorityQueue` 默认是最大堆。它默认是最小堆。\n- 用 `a - b` 写比较器，在大数或负数上溢出。\n- 遍历或打印 `PriorityQueue`，以为得到的是有序结果。要有序就不断 `poll`。\n- 用 `pq.remove(x)` 做频繁删除，每次 O(n)。需要按值删除时考虑 `TreeMap`（第 5 课），或者懒删除。",
+          "bodyEn": "`PriorityQueue` is the Java heap. How heaps work is covered in the Big-O course's heap chapter. Unlike C++, Java's `PriorityQueue` is **a min-heap by default**.\n\n## The basics\n\n```java\nPriorityQueue<Integer> pq = new PriorityQueue<>();\npq.offer(3);          // O(log n)\npq.offer(1);\npq.peek();            // 1: the minimum, O(1)\npq.poll();            // 1: remove the minimum, O(log n)\npq.size(); pq.isEmpty();\nnew PriorityQueue<>(list);   // build from a collection, O(n)\n```\n\n`pq.remove(x)` for an arbitrary element is O(n), because it searches linearly first. Printing or iterating over `pq` shows its internal array order, which is not sorted.\n\n## Max-heaps and comparators\n\n```java\nPriorityQueue<Integer> max = new PriorityQueue<>(Collections.reverseOrder());\nPriorityQueue<int[]> byFirst = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));\nPriorityQueue<int[]> same = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));\n```\n\nA comparator's `compare(a, b)` is negative when a comes before b, meaning a leaves the heap first. That is exactly the rule `Arrays.sort` uses, easier to remember than C++'s `priority_queue`.\n\n## Do not write (a, b) -> a - b\n\nPlenty of solutions use `(a, b) -> a - b` as a comparator. With large values of both signs the subtraction overflows: `-2000000000 - 2000000000` becomes positive in an `int`, the comparison flips and the heap order breaks. `Integer.compare(a, b)` or `Comparator.comparingInt` never overflows.\n\n## Examples: the k-th largest element, in an array and in a stream\n\nBoth use the same idea: keep a min-heap of size k holding the k largest values so far; its top is the k-th largest.\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    static int findKthLargest(int[] nums, int k) {\n        PriorityQueue<Integer> h = new PriorityQueue<>();   // a min-heap\n        for (int x : nums) {\n            h.offer(x);\n            if (h.size() > k) h.poll();                     // drop the smallest\n        }\n        return h.peek();\n    }\n\n    static class KthLargest {\n        private final PriorityQueue<Integer> h = new PriorityQueue<>();\n        private final int k;\n\n        KthLargest(int k, int[] nums) {\n            this.k = k;\n            for (int x : nums) add(x);\n        }\n\n        int add(int val) {\n            h.offer(val);\n            if (h.size() > k) h.poll();\n            return h.peek();\n        }\n    }\n\n    public static void main(String[] args) {\n        System.out.println(findKthLargest(new int[] {3, 2, 1, 5, 6, 4}, 2));\n\n        KthLargest kth = new KthLargest(3, new int[] {4, 5, 8, 2});\n        System.out.println(kth.add(3) + \" \" + kth.add(5) + \" \" + kth.add(10) + \" \" + kth.add(9) + \" \" + kth.add(4));\n\n        PriorityQueue<Integer> max = new PriorityQueue<>(Collections.reverseOrder());\n        max.addAll(List.of(3, 1, 4));\n        System.out.println(max.poll());\n\n        PriorityQueue<int[]> byDist = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));\n        byDist.offer(new int[] {5, 1});\n        byDist.offer(new int[] {2, 7});\n        System.out.println(byDist.peek()[1]);\n\n        int a = -2_000_000_000, b = 2_000_000_000;\n        System.out.println((a - b) + \" \" + Integer.compare(a, b));   // a - b overflows to a positive number\n    }\n}\n```\n\n```text\n5\n4 5 5 8 8\n4\n7\n294967296 -1\n```\n\nThe last line is the `a - b` comparator's problem: a is clearly smaller, yet the subtraction says positive.\n\n## Common mistakes\n\n- Assuming `PriorityQueue` is a max-heap. It is a min-heap by default.\n- Writing comparators as `a - b` and overflowing on large or negative values.\n- Iterating over or printing a `PriorityQueue` and expecting sorted output. To get sorted order, keep calling `poll`.\n- Deleting often with `pq.remove(x)`, O(n) each time. When you need to delete by value, consider a `TreeMap` (lesson 5) or lazy deletion.",
+          "quiz": [
+            {
+              "qZh": "new PriorityQueue<Integer>() 依次 offer 3、1、4，poll() 返回什么？",
+              "qEn": "new PriorityQueue<Integer>() gets 3, 1 and 4 offered. What does poll() return?",
+              "choices": [
+                {
+                  "zh": "4",
+                  "en": "4"
+                },
+                {
+                  "zh": "3",
+                  "en": "3"
+                },
+                {
+                  "zh": "1",
+                  "en": "1"
+                },
+                {
+                  "zh": "不确定",
+                  "en": "It is unspecified"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "Java 的 PriorityQueue 默认是最小堆，和 C++ 的 priority_queue 正好相反。",
+              "whyEn": "Java's PriorityQueue is a min-heap by default, the opposite of C++'s priority_queue."
+            },
+            {
+              "qZh": "为什么不建议把比较器写成 (a, b) -> a - b？",
+              "qEn": "Why should a comparator not be written as (a, b) -> a - b?",
+              "choices": [
+                {
+                  "zh": "它比 Integer.compare 慢很多",
+                  "en": "It is much slower than Integer.compare"
+                },
+                {
+                  "zh": "它会把堆变成最大堆",
+                  "en": "It turns the heap into a max-heap"
+                },
+                {
+                  "zh": "lambda 不能用作比较器",
+                  "en": "Lambdas cannot be comparators"
+                },
+                {
+                  "zh": "数值很大或有负数时减法会溢出，顺序出错",
+                  "en": "The subtraction can overflow on large or negative values and flip the order"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "例如 -2×10⁹ - 2×10⁹ 在 int 里绕回成正数，比较结果就反了。用 Integer.compare 或 Comparator.comparingInt。",
+              "whyEn": "For example -2×10⁹ - 2×10⁹ wraps to a positive int and the comparison flips. Use Integer.compare or Comparator.comparingInt."
+            },
+            {
+              "qZh": "直接打印一个 PriorityQueue，输出是什么顺序？",
+              "qEn": "In what order does printing a PriorityQueue show its elements?",
+              "choices": [
+                {
+                  "zh": "内部数组的顺序，不一定有序",
+                  "en": "Its internal array order, not necessarily sorted"
+                },
+                {
+                  "zh": "从小到大",
+                  "en": "Ascending"
+                },
+                {
+                  "zh": "从大到小",
+                  "en": "Descending"
+                },
+                {
+                  "zh": "插入的顺序",
+                  "en": "Insertion order"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "堆只保证堆顶是最小值，内部数组整体并不有序。要得到有序结果，就不断 poll。",
+              "whyEn": "A heap only guarantees the minimum on top; its internal array is not sorted. Keep calling poll for sorted output."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1338",
+              "zh": "数组大小减半",
+              "en": "Reduce Array Size to The Half"
+            },
+            {
+              "id": "lc-373",
+              "zh": "查找和最小的 K 对数字",
+              "en": "Find K Pairs with Smallest Sums"
+            },
+            {
+              "id": "lc-1642",
+              "zh": "可以到达的最远建筑",
+              "en": "Furthest Building You Can Reach"
+            }
+          ],
+          "solves": [
+            "lc-215",
+            "lc-703"
+          ]
+        },
+        {
+          "slug": "hashmap",
+          "titleZh": "HashMap 与 HashSet",
+          "titleEn": "HashMap and HashSet",
+          "bodyZh": "`HashMap` 和 `HashSet` 是哈希表：查找、插入、删除平均 O(1)，遍历顺序不确定。Java 8 以后的几个方法能把计数、分组写成一行。\n\n## 基本用法\n\n```java\nMap<String, Integer> m = new HashMap<>();\nm.put(\"a\", 1);\nm.get(\"a\");               // 1；键不存在时返回 null\nm.getOrDefault(\"z\", 0);   // 键不存在时返回给定的默认值\nm.containsKey(\"a\");\nm.remove(\"a\");\nm.size();\n\nSet<Integer> s = new HashSet<>();\ns.add(3);                 // 返回 true；已经存在时返回 false\ns.contains(3);\n```\n\n`int c = m.get(\"z\");` 在键不存在时会抛 `NullPointerException`：`get` 返回 `null`，赋给 `int` 时要拆箱。\n\n## 计数和分组的一行写法\n\n```java\ncnt.merge(x, 1, Integer::sum);                                  // 计数\ncnt.put(x, cnt.getOrDefault(x, 0) + 1);                         // 同上，旧写法\ngroups.computeIfAbsent(key, k -> new ArrayList<>()).add(item);  // 分组\n```\n\n`merge(key, value, f)`：键不存在时放入 `value`，存在时放入 `f(旧值, value)`。`computeIfAbsent` 在键不存在时先创建一个新列表，然后返回这个键对应的列表。\n\n## 遍历\n\n```java\nfor (Map.Entry<String, Integer> e : m.entrySet()) { e.getKey(); e.getValue(); }\nfor (String k : m.keySet()) ...\nfor (int v : m.values()) ...\n```\n\n`HashMap` 的遍历顺序和插入顺序无关。需要插入顺序用 `LinkedHashMap`，需要按键排序用下一课的 `TreeMap`。\n\n遍历时调用 `m.remove(k)` 会抛 `ConcurrentModificationException`。要边遍历边删，用迭代器的 `remove()`，或者一行 `m.entrySet().removeIf(e -> e.getValue() == 0);`。\n\n## 自定义的键：equals 和 hashCode\n\n`HashMap` 先用 `hashCode()` 找桶，再用 `equals()` 判断是不是同一个键。\n\n- **数组不能当键。** `int[]` 没有重写这两个方法，比较的是对象地址：内容相同的两个数组被当成两个不同的键。\n- 想用\"一对数\"当键，可以拼成字符串 `r + \",\" + c`、编码成 `long`，或者用 Java 16 的 `record`。`record` 会根据所有字段自动生成 `equals` 和 `hashCode`。\n- 自己写类当键时，`equals` 和 `hashCode` 必须一起重写。\n\n## 例子：两数之和、字母异位词分组\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    static int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> seen = new HashMap<>();   // 值 -> 下标\n        for (int i = 0; i < nums.length; i++) {\n            Integer j = seen.get(target - nums[i]);\n            if (j != null) return new int[] {j, i};\n            seen.put(nums[i], i);\n        }\n        return new int[0];\n    }\n\n    static List<List<String>> groupAnagrams(String[] strs) {\n        Map<String, List<String>> groups = new HashMap<>();\n        for (String w : strs) {\n            char[] cs = w.toCharArray();\n            Arrays.sort(cs);                            // 排序后的字母当键\n            groups.computeIfAbsent(new String(cs), k -> new ArrayList<>()).add(w);\n        }\n        return new ArrayList<>(groups.values());\n    }\n\n    record Cell(int r, int c) {}\n\n    public static void main(String[] args) {\n        System.out.println(Arrays.toString(twoSum(new int[] {2, 7, 11, 15}, 9)));\n        System.out.println(groupAnagrams(new String[] {\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"}).size());\n\n        Map<Character, Integer> cnt = new HashMap<>();\n        for (char ch : \"banana\".toCharArray()) cnt.merge(ch, 1, Integer::sum);\n        System.out.println(cnt.get('a') + \" \" + cnt.getOrDefault('z', 0) + \" \" + cnt.get('z'));\n\n        Set<int[]> arrays = new HashSet<>();\n        arrays.add(new int[] {1, 2});\n        System.out.println(arrays.contains(new int[] {1, 2}));   // 数组按地址比较\n        Set<Cell> cells = new HashSet<>();\n        cells.add(new Cell(1, 2));\n        System.out.println(cells.contains(new Cell(1, 2)));      // record 自带 equals 和 hashCode\n\n        Set<Integer> seen = new HashSet<>();\n        System.out.println(seen.add(4) + \" \" + seen.add(4));\n    }\n}\n```\n\n```text\n[0, 1]\n3\n3 0 null\nfalse\ntrue\ntrue false\n```\n\n## 常见错误\n\n- `int c = map.get(k)` 在键不存在时抛空指针异常。用 `getOrDefault`，或者先判断 `null`。\n- 拿 `int[]` 当 `HashMap` 的键或放进 `HashSet`。\n- 自定义类只重写了 `equals` 没重写 `hashCode`，相等的对象落进不同的桶，查不到。\n- 遍历 `keySet()` 时直接调用 `map.remove`。",
+          "bodyEn": "`HashMap` and `HashSet` are hash tables: lookup, insert and remove are O(1) on average, and iteration order is unspecified. A few methods added in Java 8 turn counting and grouping into one-liners.\n\n## The basics\n\n```java\nMap<String, Integer> m = new HashMap<>();\nm.put(\"a\", 1);\nm.get(\"a\");               // 1; null when the key is missing\nm.getOrDefault(\"z\", 0);   // the given default when the key is missing\nm.containsKey(\"a\");\nm.remove(\"a\");\nm.size();\n\nSet<Integer> s = new HashSet<>();\ns.add(3);                 // true; false when already present\ns.contains(3);\n```\n\n`int c = m.get(\"z\");` throws `NullPointerException` for a missing key: `get` returns `null`, and assigning it to an `int` unboxes it.\n\n## One-liners for counting and grouping\n\n```java\ncnt.merge(x, 1, Integer::sum);                                  // count\ncnt.put(x, cnt.getOrDefault(x, 0) + 1);                         // the same, the older way\ngroups.computeIfAbsent(key, k -> new ArrayList<>()).add(item);  // group\n```\n\n`merge(key, value, f)` stores `value` for a missing key and `f(old, value)` otherwise. `computeIfAbsent` creates a new list for a missing key, then returns the key's list either way.\n\n## Iterating\n\n```java\nfor (Map.Entry<String, Integer> e : m.entrySet()) { e.getKey(); e.getValue(); }\nfor (String k : m.keySet()) ...\nfor (int v : m.values()) ...\n```\n\nA `HashMap` iterates in no relation to insertion order. Use `LinkedHashMap` for insertion order and the next lesson's `TreeMap` for key order.\n\nCalling `m.remove(k)` while iterating throws `ConcurrentModificationException`. To remove while iterating, use the iterator's `remove()`, or the one-liner `m.entrySet().removeIf(e -> e.getValue() == 0);`.\n\n## Your own keys: equals and hashCode\n\nA `HashMap` finds the bucket with `hashCode()`, then checks for the same key with `equals()`.\n\n- **Arrays do not work as keys.** `int[]` overrides neither method, so it compares addresses: two arrays with the same contents are two different keys.\n- For a pair of numbers as a key, join them into a string `r + \",\" + c`, encode them in a `long`, or use a Java 16 `record`, which generates `equals` and `hashCode` from all its fields.\n- When you write your own key class, override `equals` and `hashCode` together.\n\n## Examples: two sum, grouping anagrams\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    static int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> seen = new HashMap<>();   // value -> index\n        for (int i = 0; i < nums.length; i++) {\n            Integer j = seen.get(target - nums[i]);\n            if (j != null) return new int[] {j, i};\n            seen.put(nums[i], i);\n        }\n        return new int[0];\n    }\n\n    static List<List<String>> groupAnagrams(String[] strs) {\n        Map<String, List<String>> groups = new HashMap<>();\n        for (String w : strs) {\n            char[] cs = w.toCharArray();\n            Arrays.sort(cs);                            // the sorted letters are the key\n            groups.computeIfAbsent(new String(cs), k -> new ArrayList<>()).add(w);\n        }\n        return new ArrayList<>(groups.values());\n    }\n\n    record Cell(int r, int c) {}\n\n    public static void main(String[] args) {\n        System.out.println(Arrays.toString(twoSum(new int[] {2, 7, 11, 15}, 9)));\n        System.out.println(groupAnagrams(new String[] {\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"}).size());\n\n        Map<Character, Integer> cnt = new HashMap<>();\n        for (char ch : \"banana\".toCharArray()) cnt.merge(ch, 1, Integer::sum);\n        System.out.println(cnt.get('a') + \" \" + cnt.getOrDefault('z', 0) + \" \" + cnt.get('z'));\n\n        Set<int[]> arrays = new HashSet<>();\n        arrays.add(new int[] {1, 2});\n        System.out.println(arrays.contains(new int[] {1, 2}));   // arrays compare by address\n        Set<Cell> cells = new HashSet<>();\n        cells.add(new Cell(1, 2));\n        System.out.println(cells.contains(new Cell(1, 2)));      // records come with equals and hashCode\n\n        Set<Integer> seen = new HashSet<>();\n        System.out.println(seen.add(4) + \" \" + seen.add(4));\n    }\n}\n```\n\n```text\n[0, 1]\n3\n3 0 null\nfalse\ntrue\ntrue false\n```\n\n## Common mistakes\n\n- `int c = map.get(k)` throwing a null pointer exception for a missing key. Use `getOrDefault`, or check for `null` first.\n- Using an `int[]` as a `HashMap` key or putting one in a `HashSet`.\n- Overriding `equals` but not `hashCode` in your own class, so equal objects land in different buckets and are never found.\n- Calling `map.remove` while iterating over `keySet()`.",
+          "quiz": [
+            {
+              "qZh": "统计词频时，下面哪一行最简洁且正确？",
+              "qEn": "Which line counts word frequencies most concisely and correctly?",
+              "choices": [
+                {
+                  "zh": "cnt.put(w, cnt.get(w) + 1);",
+                  "en": "cnt.put(w, cnt.get(w) + 1);"
+                },
+                {
+                  "zh": "cnt.merge(w, 1, Integer::sum);",
+                  "en": "cnt.merge(w, 1, Integer::sum);"
+                },
+                {
+                  "zh": "cnt.add(w, 1);",
+                  "en": "cnt.add(w, 1);"
+                },
+                {
+                  "zh": "cnt[w]++;",
+                  "en": "cnt[w]++;"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "merge 在键不存在时放入 1，存在时放入旧值加 1。cnt.get(w) 在键不存在时返回 null，加 1 时抛空指针异常；Map 没有 add 方法，也不支持 [] 语法。",
+              "whyEn": "merge stores 1 for a new key and old + 1 otherwise. cnt.get(w) is null for a new key, so + 1 throws; Map has no add method and no [] syntax."
+            },
+            {
+              "qZh": "Set<int[]> s 里放了 new int[]{1, 2}，s.contains(new int[]{1, 2}) 返回什么？",
+              "qEn": "Set<int[]> s holds new int[]{1, 2}. What does s.contains(new int[]{1, 2}) return?",
+              "choices": [
+                {
+                  "zh": "true",
+                  "en": "true"
+                },
+                {
+                  "zh": "抛出异常",
+                  "en": "It throws"
+                },
+                {
+                  "zh": "false",
+                  "en": "false"
+                },
+                {
+                  "zh": "编译错误",
+                  "en": "A compile error"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "数组没有重写 equals 和 hashCode，按对象地址比较，两个新建的数组永远不相等。可以改用 List<Integer>、字符串或 record 当键。",
+              "whyEn": "Arrays do not override equals and hashCode, so they compare by address and two new arrays are never equal. Use a List<Integer>, a string or a record as the key."
+            },
+            {
+              "qZh": "自己写的类要当 HashMap 的键，必须做什么？",
+              "qEn": "What must your own class do to work as a HashMap key?",
+              "choices": [
+                {
+                  "zh": "只重写 equals",
+                  "en": "Override equals only"
+                },
+                {
+                  "zh": "实现 Comparable",
+                  "en": "Implement Comparable"
+                },
+                {
+                  "zh": "什么都不用做",
+                  "en": "Nothing at all"
+                },
+                {
+                  "zh": "同时重写 equals 和 hashCode",
+                  "en": "Override both equals and hashCode"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "HashMap 先用 hashCode 找桶，再用 equals 比较。只重写 equals，相等的对象可能落在不同的桶里。Comparable 是 TreeMap 需要的。",
+              "whyEn": "HashMap finds the bucket with hashCode, then compares with equals. With equals alone, equal objects can land in different buckets. Comparable is what TreeMap needs."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1010",
+              "zh": "总持续时间可被 60 整除的歌曲",
+              "en": "Pairs of Songs With Total Durations Divisible by 60"
+            },
+            {
+              "id": "lc-187",
+              "zh": "重复的DNA序列",
+              "en": "Repeated DNA Sequences"
+            },
+            {
+              "id": "lc-2342",
+              "zh": "数位和相等数对的最大和",
+              "en": "Max Sum of a Pair With Equal Sum of Digits"
+            }
+          ],
+          "solves": [
+            "lc-1",
+            "lc-49"
+          ]
+        },
+        {
+          "slug": "treemap",
+          "titleZh": "TreeMap 与 TreeSet",
+          "titleEn": "TreeMap and TreeSet",
+          "bodyZh": "`TreeMap` 和 `TreeSet` 是红黑树：元素按键排好序，增删查都是 O(log n)。和 `HashMap` 相比，它们多了一组很好用的导航方法：比 x 小的最大值、比 x 大的最小值，都是一次调用。\n\n## TreeSet 的导航方法\n\n| 方法 | 含义 | 不存在时 |\n|---|---|---|\n| `first()` / `last()` | 最小 / 最大 | 抛异常 |\n| `floor(x)` | ≤ x 的最大值 | 返回 null |\n| `ceiling(x)` | ≥ x 的最小值 | 返回 null |\n| `lower(x)` | < x 的最大值 | 返回 null |\n| `higher(x)` | > x 的最小值 | 返回 null |\n| `pollFirst()` / `pollLast()` | 取出最小 / 最大 | 返回 null |\n\n导航方法返回的是 `Integer`，结果可能是 `null`。先用 `Integer` 接住、判断，再参与计算；直接赋给 `int`，在没有结果时会抛空指针异常。\n\n## TreeMap 的导航方法\n\n`TreeMap` 把同一套方法用在键上：`firstKey()`、`lastKey()`、`floorKey(x)`、`ceilingKey(x)`、`lowerKey(x)`、`higherKey(x)`。要同时拿到值，用对应的 `floorEntry(x)` 等方法，返回 `Map.Entry`。还有三个视图：\n\n- `headMap(k)`：键 < k 的部分。\n- `tailMap(k)`：键 ≥ k 的部分。\n- `subMap(a, b)`：键在 [a, b) 的部分。\n\n视图不复制数据，修改视图会影响原来的 map。`descendingMap()` 和 `descendingSet()` 按从大到小遍历。\n\n## 用 TreeMap 当可重复的有序集合\n\nJava 标准库没有 multiset。需要\"有序、可以重复、随时删除一个\"时，用 `TreeMap<值, 出现次数>`：\n\n```java\ncnt.merge(x, 1, Integer::sum);                               // 加入一个 x\nif (cnt.get(x) == 1) cnt.remove(x); else cnt.put(x, cnt.get(x) - 1);   // 删掉一个 x\ncnt.firstKey(); cnt.lastKey();                               // 当前最小 / 最大值\n```\n\n次数减到 0 时一定要把键删掉，否则 `firstKey()` 还会返回这个已经不存在的值。滑动窗口里维护窗口的最大值、最小值，常用的就是这个写法。\n\n## 例子：离得最近的车站\n\n路边有若干个车站，问某个位置离哪个车站最近（一样近时选左边的）。车站放进 `TreeSet`，`floor` 和 `ceiling` 一次就找到左右两个候选。\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    static int nearest(TreeSet<Integer> stations, int x) {\n        Integer lo = stations.floor(x), hi = stations.ceiling(x);   // 没有时是 null\n        if (lo == null) return hi;\n        if (hi == null) return lo;\n        return x - lo <= hi - x ? lo : hi;\n    }\n\n    public static void main(String[] args) {\n        TreeSet<Integer> stations = new TreeSet<>(List.of(2, 10, 30));\n        System.out.println(nearest(stations, 7) + \" \" + nearest(stations, 25) + \" \"\n                + nearest(stations, 1) + \" \" + nearest(stations, 6));\n        System.out.println(stations.first() + \" \" + stations.last() + \" \"\n                + stations.higher(30) + \" \" + stations.lower(10));\n\n        TreeMap<Integer, Integer> window = new TreeMap<>();   // 值 -> 次数\n        for (int x : new int[] {5, 1, 5, 3}) window.merge(x, 1, Integer::sum);\n        System.out.println(window + \" min=\" + window.firstKey() + \" max=\" + window.lastKey());\n        if (window.get(5) == 1) window.remove(5); else window.put(5, window.get(5) - 1);   // 删掉一个 5\n        System.out.println(window);\n        System.out.println(window.headMap(3) + \" \" + window.tailMap(3) + \" \" + window.floorKey(4));\n    }\n}\n```\n\n```text\n10 30 2 2\n2 30 null 2\n{1=1, 3=1, 5=2} min=1 max=5\n{1=1, 3=1, 5=1}\n{1=1} {3=1, 5=1} 3\n```\n\n## HashMap 还是 TreeMap\n\n只需要按键查找、计数时用 `HashMap`，平均 O(1)。需要按键有序遍历、找前驱后继、取最小最大键时用 `TreeMap`，每次 O(log n)。\n\n## 常见错误\n\n- 把 `floor`、`ceiling` 的结果直接赋给 `int`，没有结果时抛空指针异常。\n- 分不清 `floor`（≤）和 `lower`（<）、`ceiling`（≥）和 `higher`（>）。\n- 用 `TreeMap` 计数时，次数减到 0 没有删除键。\n- 以为 `headMap(k)` 包含 k。默认不包含；要包含就写 `headMap(k, true)`。",
+          "bodyEn": "`TreeMap` and `TreeSet` are red-black trees: elements stay sorted by key, and add, remove and lookup are O(log n). Compared with `HashMap`, they add a set of handy navigation methods: the largest value below x or the smallest value above x is one call away.\n\n## TreeSet navigation\n\n| Method | Meaning | When there is none |\n|---|---|---|\n| `first()` / `last()` | smallest / largest | throws |\n| `floor(x)` | largest ≤ x | null |\n| `ceiling(x)` | smallest ≥ x | null |\n| `lower(x)` | largest < x | null |\n| `higher(x)` | smallest > x | null |\n| `pollFirst()` / `pollLast()` | remove smallest / largest | null |\n\nThe navigation methods return an `Integer` that may be `null`. Catch it in an `Integer`, check it, then compute; assigning straight to an `int` throws a null pointer exception when there is no answer.\n\n## TreeMap navigation\n\n`TreeMap` offers the same methods on keys: `firstKey()`, `lastKey()`, `floorKey(x)`, `ceilingKey(x)`, `lowerKey(x)`, `higherKey(x)`. To get the value too, use `floorEntry(x)` and friends, which return a `Map.Entry`. There are three views as well:\n\n- `headMap(k)`: keys < k.\n- `tailMap(k)`: keys ≥ k.\n- `subMap(a, b)`: keys in [a, b).\n\nViews do not copy; changing a view changes the map. `descendingMap()` and `descendingSet()` iterate from largest to smallest.\n\n## A TreeMap as a sorted multiset\n\nThe Java standard library has no multiset. When you need \"sorted, with repeats, remove one at any time\", use a `TreeMap<value, count>`:\n\n```java\ncnt.merge(x, 1, Integer::sum);                               // add one x\nif (cnt.get(x) == 1) cnt.remove(x); else cnt.put(x, cnt.get(x) - 1);   // remove one x\ncnt.firstKey(); cnt.lastKey();                               // current minimum / maximum\n```\n\nAlways remove a key when its count reaches 0, or `firstKey()` keeps returning a value that is gone. This is the usual way to track a sliding window's maximum and minimum.\n\n## Example: the nearest station\n\nStations stand along a road; which one is nearest to a given position (the left one on a tie)? Put the stations in a `TreeSet`, and `floor` and `ceiling` find the two candidates in one call each.\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    static int nearest(TreeSet<Integer> stations, int x) {\n        Integer lo = stations.floor(x), hi = stations.ceiling(x);   // null when there is none\n        if (lo == null) return hi;\n        if (hi == null) return lo;\n        return x - lo <= hi - x ? lo : hi;\n    }\n\n    public static void main(String[] args) {\n        TreeSet<Integer> stations = new TreeSet<>(List.of(2, 10, 30));\n        System.out.println(nearest(stations, 7) + \" \" + nearest(stations, 25) + \" \"\n                + nearest(stations, 1) + \" \" + nearest(stations, 6));\n        System.out.println(stations.first() + \" \" + stations.last() + \" \"\n                + stations.higher(30) + \" \" + stations.lower(10));\n\n        TreeMap<Integer, Integer> window = new TreeMap<>();   // value -> count\n        for (int x : new int[] {5, 1, 5, 3}) window.merge(x, 1, Integer::sum);\n        System.out.println(window + \" min=\" + window.firstKey() + \" max=\" + window.lastKey());\n        if (window.get(5) == 1) window.remove(5); else window.put(5, window.get(5) - 1);   // remove one 5\n        System.out.println(window);\n        System.out.println(window.headMap(3) + \" \" + window.tailMap(3) + \" \" + window.floorKey(4));\n    }\n}\n```\n\n```text\n10 30 2 2\n2 30 null 2\n{1=1, 3=1, 5=2} min=1 max=5\n{1=1, 3=1, 5=1}\n{1=1} {3=1, 5=1} 3\n```\n\n## HashMap or TreeMap\n\nFor lookups and counting by key, use `HashMap`, O(1) on average. For iterating in key order, finding predecessors and successors, or reading the smallest and largest keys, use `TreeMap`, O(log n) per call.\n\n## Common mistakes\n\n- Assigning a `floor` or `ceiling` result straight to an `int` and hitting a null pointer exception when there is none.\n- Mixing up `floor` (≤) and `lower` (<), or `ceiling` (≥) and `higher` (>).\n- Counting with a `TreeMap` and leaving a key behind when its count reaches 0.\n- Assuming `headMap(k)` includes k. It does not by default; write `headMap(k, true)` to include it.",
+          "quiz": [
+            {
+              "qZh": "TreeSet ts = {10, 20, 30}，ts.lower(20) 返回什么？",
+              "qEn": "TreeSet ts = {10, 20, 30}. What does ts.lower(20) return?",
+              "choices": [
+                {
+                  "zh": "10",
+                  "en": "10"
+                },
+                {
+                  "zh": "20",
+                  "en": "20"
+                },
+                {
+                  "zh": "30",
+                  "en": "30"
+                },
+                {
+                  "zh": "null",
+                  "en": "null"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "lower 是严格小于 x 的最大值，所以是 10。floor 才包含等于，floor(20) 是 20。",
+              "whyEn": "lower is the largest value strictly below x, so 10. floor includes equality: floor(20) is 20."
+            },
+            {
+              "qZh": "TreeSet<Integer> ts = {10, 20}，int x = ts.ceiling(25); 会怎样？",
+              "qEn": "TreeSet<Integer> ts = {10, 20}. What does int x = ts.ceiling(25); do?",
+              "choices": [
+                {
+                  "zh": "x 等于 20",
+                  "en": "x becomes 20"
+                },
+                {
+                  "zh": "抛出 NullPointerException",
+                  "en": "It throws NullPointerException"
+                },
+                {
+                  "zh": "x 等于 25",
+                  "en": "x becomes 25"
+                },
+                {
+                  "zh": "抛出 NoSuchElementException",
+                  "en": "It throws NoSuchElementException"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "没有 ≥ 25 的元素，ceiling 返回 null，赋给 int 时拆箱失败。先用 Integer 接住并判断 null。",
+              "whyEn": "Nothing is ≥ 25, so ceiling returns null and unboxing into an int fails. Catch it in an Integer and check for null first."
+            },
+            {
+              "qZh": "用 TreeMap<值, 次数> 模拟可重复的有序集合，删除一个 x 时要注意什么？",
+              "qEn": "With a TreeMap<value, count> as a sorted multiset, what matters when removing one x?",
+              "choices": [
+                {
+                  "zh": "直接 remove(x)，键会自动减一",
+                  "en": "Just call remove(x); it decrements automatically"
+                },
+                {
+                  "zh": "次数可以减成负数，不影响结果",
+                  "en": "Counts may go negative without harm"
+                },
+                {
+                  "zh": "次数减到 0 时把键删掉",
+                  "en": "Remove the key when its count reaches 0"
+                },
+                {
+                  "zh": "TreeMap 不允许修改值",
+                  "en": "TreeMap values cannot be changed"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "次数为 0 的键还留在 map 里，firstKey、lastKey 就会返回一个已经不存在的值。remove(x) 会把整个键删掉，而不是减一。",
+              "whyEn": "A key left at count 0 is still in the map, so firstKey and lastKey can return a value that is gone. remove(x) deletes the whole key rather than decrementing."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-128",
+              "zh": "最长连续序列",
+              "en": "Longest Consecutive Sequence"
+            },
+            {
+              "id": "lc-1657",
+              "zh": "确定两个字符串是否接近",
+              "en": "Determine if Two Strings Are Close"
+            },
+            {
+              "id": "lc-645",
+              "zh": "错误的集合",
+              "en": "Set Mismatch"
+            }
+          ],
+          "solves": []
+        },
+        {
+          "slug": "comparator-sorting",
+          "titleZh": "Comparator 与排序",
+          "titleEn": "Comparator and sorting",
+          "bodyZh": "Java 的排序看起来只有 `Arrays.sort` 和 `Collections.sort` 两个入口，实际上按元素类型分成了两套算法，比较器的写法也有几个坑。\n\n## 基本类型数组和对象数组用的算法不同\n\n| 调用 | 算法 | 稳定 | 能传比较器 |\n|---|---|---|---|\n| `Arrays.sort(int[])` | 双轴快速排序 | 否 | 不能 |\n| `Arrays.sort(Integer[] 或 T[], cmp)` | TimSort | 是 | 能 |\n| `Collections.sort(list)`、`list.sort(cmp)` | TimSort | 是 | 能 |\n\n两者平均都是 O(n log n)。基本类型相等就是完全相同，稳不稳定无所谓。但 `int[]` 不能传比较器，所以要降序排 `int[]`，只能先升序再反转，或者装箱成 `Integer[]` 再传 `Collections.reverseOrder()`。\n\n## 比较器的几种写法\n\n`compare(a, b)` 返回负数表示 a 排在前面，0 表示相等，正数表示 a 排在后面。\n\n```java\nArrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));     // 按第一列升序\nArrays.sort(intervals, Comparator.comparingInt(a -> a[0]));         // 同上\nlist.sort(Comparator.comparing(String::length).thenComparing(Comparator.naturalOrder()));\nComparator.comparingInt((int[] a) -> a[1]).reversed();             // 按第二列降序\n```\n\n`comparingInt` 后面直接接 `.reversed()` 时，lambda 的参数类型推断不出来，要像最后一行那样写明 `(int[] a)`。\n\n两个坑：\n\n- `(a, b) -> a - b` 在大数或负数上会溢出，第 3 课讲过。用 `Integer.compare`。\n- 比较器必须前后一致：`compare(a, b)` 是负数，`compare(b, a)` 就得是正数，而且要满足传递性。违反时 TimSort 可能抛出 `IllegalArgumentException: Comparison method violates its general contract!`。\n\n## 二分查找\n\n`Arrays.binarySearch(arr, x)` 和 `Collections.binarySearch(list, x)` 要求数组已排序。找到时返回下标；找不到时返回 `-(插入位置) - 1`，一定是负数。有重复元素时，返回哪一个不确定，所以要找\"第一个 ≥ x\"的位置时，最好自己写二分。\n\n## 例子：合并区间、最大数\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    static int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));\n        List<int[]> out = new ArrayList<>();\n        for (int[] iv : intervals) {\n            int[] last = out.isEmpty() ? null : out.get(out.size() - 1);\n            if (last != null && iv[0] <= last[1]) last[1] = Math.max(last[1], iv[1]);   // 重叠：延长\n            else out.add(iv);\n        }\n        return out.toArray(new int[0][]);\n    }\n\n    static String largestNumber(int[] nums) {\n        String[] s = new String[nums.length];\n        for (int i = 0; i < nums.length; i++) s[i] = String.valueOf(nums[i]);\n        Arrays.sort(s, (a, b) -> (b + a).compareTo(a + b));   // a + b 更大时 a 排前面\n        if (s[0].equals(\"0\")) return \"0\";\n        return String.join(\"\", s);\n    }\n\n    public static void main(String[] args) {\n        System.out.println(Arrays.deepToString(merge(new int[][] {{8, 10}, {1, 3}, {2, 6}, {15, 18}})));\n        System.out.println(largestNumber(new int[] {3, 30, 34, 5, 9}));\n\n        // 分数降序，分数相同按名字升序\n        String[][] people = {{\"bob\", \"90\"}, {\"amy\", \"85\"}, {\"cat\", \"90\"}};\n        Arrays.sort(people, Comparator.comparingInt((String[] p) -> Integer.parseInt(p[1])).reversed()\n                .thenComparing(p -> p[0]));\n        System.out.println(Arrays.stream(people).map(p -> p[0]).toList());\n\n        int[] desc = {3, 1, 2};\n        Integer[] boxed = Arrays.stream(desc).boxed().toArray(Integer[]::new);\n        Arrays.sort(boxed, Collections.reverseOrder());\n        System.out.println(Arrays.toString(boxed));\n\n        int[] sorted = {1, 3, 5};\n        System.out.println(Arrays.binarySearch(sorted, 3) + \" \" + Arrays.binarySearch(sorted, 4));\n    }\n}\n```\n\n```text\n[[1, 6], [8, 10], [15, 18]]\n9534330\n[bob, cat, amy]\n[3, 2, 1]\n1 -3\n```\n\n`binarySearch(sorted, 4)` 返回 -3：4 应该插在下标 2，于是返回 -(2) - 1。\n\n## 常见错误\n\n- 想给 `int[]` 传比较器，编译不过。\n- 比较器用减法，或者写得前后不一致，在某些数据上报 \"Comparison method violates its general contract\"。\n- 用 `binarySearch` 找第一个 ≥ x 的位置，遇到重复元素时结果不确定。\n- `comparingInt(...).reversed()` 链式调用时 lambda 参数类型推断失败。给参数写上类型，或者拆成两步。",
+          "bodyEn": "Java sorting looks like two entry points, `Arrays.sort` and `Collections.sort`. Underneath it is two different algorithms depending on the element type, and comparators come with a few traps.\n\n## Primitive arrays and object arrays sort differently\n\n| Call | Algorithm | Stable | Takes a comparator |\n|---|---|---|---|\n| `Arrays.sort(int[])` | dual-pivot quicksort | no | no |\n| `Arrays.sort(Integer[] or T[], cmp)` | TimSort | yes | yes |\n| `Collections.sort(list)`, `list.sort(cmp)` | TimSort | yes | yes |\n\nBoth are O(n log n) on average. Equal primitives are indistinguishable, so stability does not matter for them. But an `int[]` takes no comparator, so to sort one descending you either sort ascending and reverse, or box it into an `Integer[]` and pass `Collections.reverseOrder()`.\n\n## Ways to write a comparator\n\n`compare(a, b)` returns a negative number when a comes first, 0 when they tie, and a positive number when a comes later.\n\n```java\nArrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));     // first column ascending\nArrays.sort(intervals, Comparator.comparingInt(a -> a[0]));         // the same\nlist.sort(Comparator.comparing(String::length).thenComparing(Comparator.naturalOrder()));\nComparator.comparingInt((int[] a) -> a[1]).reversed();             // second column descending\n```\n\nWhen `comparingInt` is followed directly by `.reversed()`, the lambda's parameter type cannot be inferred; spell it out as in the last line, `(int[] a)`.\n\nTwo traps:\n\n- `(a, b) -> a - b` overflows on large or negative values, as lesson 3 showed. Use `Integer.compare`.\n- The comparator must be consistent: if `compare(a, b)` is negative, `compare(b, a)` must be positive, and the order must be transitive. When it is not, TimSort may throw `IllegalArgumentException: Comparison method violates its general contract!`.\n\n## Binary search\n\n`Arrays.binarySearch(arr, x)` and `Collections.binarySearch(list, x)` need sorted input. They return the index when found and `-(insertion point) - 1` otherwise, which is always negative. With duplicates, which match you get is unspecified, so for \"the first position ≥ x\" write the binary search yourself.\n\n## Examples: merge intervals, largest number\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    static int[][] merge(int[][] intervals) {\n        Arrays.sort(intervals, Comparator.comparingInt(a -> a[0]));\n        List<int[]> out = new ArrayList<>();\n        for (int[] iv : intervals) {\n            int[] last = out.isEmpty() ? null : out.get(out.size() - 1);\n            if (last != null && iv[0] <= last[1]) last[1] = Math.max(last[1], iv[1]);   // overlap: extend\n            else out.add(iv);\n        }\n        return out.toArray(new int[0][]);\n    }\n\n    static String largestNumber(int[] nums) {\n        String[] s = new String[nums.length];\n        for (int i = 0; i < nums.length; i++) s[i] = String.valueOf(nums[i]);\n        Arrays.sort(s, (a, b) -> (b + a).compareTo(a + b));   // a first when a + b is larger\n        if (s[0].equals(\"0\")) return \"0\";\n        return String.join(\"\", s);\n    }\n\n    public static void main(String[] args) {\n        System.out.println(Arrays.deepToString(merge(new int[][] {{8, 10}, {1, 3}, {2, 6}, {15, 18}})));\n        System.out.println(largestNumber(new int[] {3, 30, 34, 5, 9}));\n\n        // score descending, then name ascending\n        String[][] people = {{\"bob\", \"90\"}, {\"amy\", \"85\"}, {\"cat\", \"90\"}};\n        Arrays.sort(people, Comparator.comparingInt((String[] p) -> Integer.parseInt(p[1])).reversed()\n                .thenComparing(p -> p[0]));\n        System.out.println(Arrays.stream(people).map(p -> p[0]).toList());\n\n        int[] desc = {3, 1, 2};\n        Integer[] boxed = Arrays.stream(desc).boxed().toArray(Integer[]::new);\n        Arrays.sort(boxed, Collections.reverseOrder());\n        System.out.println(Arrays.toString(boxed));\n\n        int[] sorted = {1, 3, 5};\n        System.out.println(Arrays.binarySearch(sorted, 3) + \" \" + Arrays.binarySearch(sorted, 4));\n    }\n}\n```\n\n```text\n[[1, 6], [8, 10], [15, 18]]\n9534330\n[bob, cat, amy]\n[3, 2, 1]\n1 -3\n```\n\n`binarySearch(sorted, 4)` returns -3: 4 belongs at index 2, so the result is -(2) - 1.\n\n## Common mistakes\n\n- Passing a comparator for an `int[]`, which does not compile.\n- A comparator built on subtraction, or an inconsistent one, failing with \"Comparison method violates its general contract\" on some inputs.\n- Using `binarySearch` to find the first position ≥ x, which is unspecified with duplicates.\n- Type inference failing on a chained `comparingInt(...).reversed()`. Give the lambda parameter a type, or split it into two steps.",
+          "quiz": [
+            {
+              "qZh": "想把 int[] a 按降序排列，下面哪种做法可行？",
+              "qEn": "Which approach sorts an int[] a in descending order?",
+              "choices": [
+                {
+                  "zh": "Arrays.sort(a, Collections.reverseOrder())",
+                  "en": "Arrays.sort(a, Collections.reverseOrder())"
+                },
+                {
+                  "zh": "Arrays.sort(a, (x, y) -> y - x)",
+                  "en": "Arrays.sort(a, (x, y) -> y - x)"
+                },
+                {
+                  "zh": "Arrays.sortDescending(a)",
+                  "en": "Arrays.sortDescending(a)"
+                },
+                {
+                  "zh": "先 Arrays.sort(a) 升序，再原地反转",
+                  "en": "Arrays.sort(a) ascending, then reverse it in place"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "基本类型数组的 Arrays.sort 不接受比较器，前两种都编译不过，也没有 sortDescending。另一种办法是装箱成 Integer[] 再传比较器。",
+              "whyEn": "Arrays.sort on a primitive array takes no comparator, so the first two do not compile, and there is no sortDescending. The other way is to box into an Integer[] and pass a comparator."
+            },
+            {
+              "qZh": "Arrays.sort(Integer[]) 和 Arrays.sort(int[]) 有什么区别？",
+              "qEn": "How does Arrays.sort(Integer[]) differ from Arrays.sort(int[])?",
+              "choices": [
+                {
+                  "zh": "前者是稳定的 TimSort，后者是快速排序",
+                  "en": "The first is a stable TimSort, the second a quicksort"
+                },
+                {
+                  "zh": "两者完全一样",
+                  "en": "They are identical"
+                },
+                {
+                  "zh": "前者是 O(n²)，后者是 O(n log n)",
+                  "en": "The first is O(n²), the second O(n log n)"
+                },
+                {
+                  "zh": "前者只能升序，后者可以降序",
+                  "en": "The first is ascending only, the second can go descending"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "对象数组用 TimSort，稳定，能传比较器；基本类型数组用双轴快速排序，不稳定，也不能传比较器。两者平均都是 O(n log n)。",
+              "whyEn": "Object arrays use TimSort, stable and comparator-friendly; primitive arrays use dual-pivot quicksort, unstable and comparator-free. Both average O(n log n)."
+            },
+            {
+              "qZh": "int[] a = {1, 3, 5}，Arrays.binarySearch(a, 4) 返回什么？",
+              "qEn": "int[] a = {1, 3, 5}. What does Arrays.binarySearch(a, 4) return?",
+              "choices": [
+                {
+                  "zh": "2",
+                  "en": "2"
+                },
+                {
+                  "zh": "-3",
+                  "en": "-3"
+                },
+                {
+                  "zh": "-1",
+                  "en": "-1"
+                },
+                {
+                  "zh": "-2",
+                  "en": "-2"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "找不到时返回 -(插入位置) - 1。4 应该插在下标 2，所以是 -2 - 1 = -3。",
+              "whyEn": "A miss returns -(insertion point) - 1. 4 belongs at index 2, so the result is -2 - 1 = -3."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1029",
+              "zh": "两地调度",
+              "en": "Two City Scheduling"
+            },
+            {
+              "id": "lc-1288",
+              "zh": "删除被覆盖区间",
+              "en": "Remove Covered Intervals"
+            },
+            {
+              "id": "lc-455",
+              "zh": "分发饼干",
+              "en": "Assign Cookies"
+            }
+          ],
+          "solves": [
+            "lc-56",
+            "lc-179"
+          ]
+        },
+        {
+          "slug": "strings-pitfalls",
+          "titleZh": "字符串、Integer 与溢出",
+          "titleEn": "Strings, Integer and overflow",
+          "bodyZh": "这一课把 Java 刷题里最常见的几个坑放在一起：字符串拼接、`==` 比较对象、整数溢出。\n\n## String 不可变，拼接用 StringBuilder\n\n`String` 一旦创建就不能修改。循环里写 `s += c`，每次都会复制出一个新字符串，n 次拼接总共 O(n²)。改用 `StringBuilder`：\n\n```java\nStringBuilder sb = new StringBuilder();\nsb.append('a').append(42).append(\"bc\");   // 均摊 O(1)\nsb.insert(0, 'x');                        // 在开头插入：O(n)\nsb.setCharAt(1, 'y');\nsb.deleteCharAt(sb.length() - 1);\nsb.reverse();\nsb.toString();\n```\n\n常用的字符串方法：\n\n```java\ns.charAt(i);                 // 第 i 个字符\ns.toCharArray();             // 转成 char[]，改完用 new String(chars) 转回来\ns.substring(begin, end);     // [begin, end)：第二个参数是结束下标，和 C++ 的 substr 不同\ns.indexOf(\"ab\");             // 找不到返回 -1\ns.split(\",\");                // 参数是正则表达式：\".\" 要写成 \"\\\\.\"\nString.valueOf(42); Integer.parseInt(\"42\");\nCharacter.isDigit(c); Character.isLetterOrDigit(c); Character.toLowerCase(c);\nc - 'a';                     // 小写字母转 0~25\n(char) ('a' + 2);            // 'c'\n```\n\n## == 比较的是引用\n\n对象之间的 `==` 比较的是\"是不是同一个对象\"，不是内容是否相等。\n\n- **字符串**一律用 `equals`。字面量可能被复用，所以 `\"ab\" == \"ab\"` 有时恰好是 `true`，这只会让 bug 更难发现。\n- **`Integer`** 更隐蔽：`Integer.valueOf` 会缓存 -128 到 127 之间的对象。在这个范围内 `==` 恰好对，超出范围就是两个不同的对象。从 `HashMap` 里取出两个计数直接用 `==` 比较，小数据能过，大数据就错。\n\n比较两个 `Integer` 用 `equals`，或者先拆箱：`a.intValue() == b`。只要有一边是基本类型 `int`，`==` 就会先拆箱再比数值。\n\n## 整数溢出\n\nJava 的 `int` 是 32 位，溢出时**按补码绕回**，不报错（这一点和 C++ 不同：Java 的溢出结果是确定的，但同样是错的）。\n\n- 结果可能超过 2.1×10⁹ 时用 `long`，常量写 `10L`，乘法写 `(long) a * b`。\n- 中点写 `lo + (hi - lo) / 2`。\n- 想在溢出时立刻发现，用 `Math.addExact`、`Math.multiplyExact`，溢出时抛 `ArithmeticException`。\n- 除法向零取整：`-7 / 2` 是 -3，`-7 % 2` 是 -1。要非负余数用 `Math.floorMod(-7, 2)`，结果是 1。\n\n## 例子：验证回文串\n\n双指针跳过非字母数字的字符，比较时统一转成小写。\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    static boolean isPalindrome(String s) {\n        int i = 0, j = s.length() - 1;\n        while (i < j) {\n            if (!Character.isLetterOrDigit(s.charAt(i))) i++;\n            else if (!Character.isLetterOrDigit(s.charAt(j))) j--;\n            else if (Character.toLowerCase(s.charAt(i++)) != Character.toLowerCase(s.charAt(j--))) return false;\n        }\n        return true;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(isPalindrome(\"A man, a plan, a canal: Panama\") + \" \" + isPalindrome(\"race a car\"));\n\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < 5; i++) sb.append(i);\n        sb.reverse().setCharAt(0, 'x');\n        System.out.println(sb + \" \" + \"hello\".substring(1, 3));\n\n        Integer a = 127, b = 127, c = 128, d = 128;\n        System.out.println((a == b) + \" \" + (c == d) + \" \" + c.equals(d));\n        Map<String, Integer> votes = new HashMap<>(Map.of(\"x\", 1000, \"y\", 1000));\n        System.out.println(votes.get(\"x\") == votes.get(\"y\"));        // 两个不同的 Integer 对象\n        System.out.println(votes.get(\"x\").equals(votes.get(\"y\")));\n\n        int big = Integer.MAX_VALUE;\n        System.out.println((big + 1) + \" \" + ((long) big + 1) + \" \" + (100000 * 100000) + \" \" + 100000L * 100000);\n        try {\n            Math.multiplyExact(100000, 100000);\n        } catch (ArithmeticException e) {\n            System.out.println(\"overflow caught\");\n        }\n        System.out.println((-7 / 2) + \" \" + (-7 % 2) + \" \" + Math.floorMod(-7, 2));\n    }\n}\n```\n\n```text\ntrue false\nx3210 el\ntrue false true\nfalse\ntrue\n-2147483648 2147483648 1410065408 10000000000\noverflow caught\n-3 -1 1\n```\n\n## 读入很多数据时\n\n`Scanner` 方便但慢，几十万个数就可能超时。改用 `BufferedReader` 读整行，再用 `StringTokenizer` 或 `split` 切分；输出很多行时用 `StringBuilder` 拼好一次打印，或者用 `PrintWriter`。\n\n## 常见错误\n\n- 循环里用 `+=` 拼接字符串。\n- 用 `==` 比较 `String` 或两个 `Integer`。\n- 把 `substring(i, j)` 的第二个参数当成长度。\n- `int` 相乘再赋给 `long`，乘法已经溢出：`long x = a * b;` 要写成 `long x = (long) a * b;`。",
+          "bodyEn": "This lesson gathers the traps that catch Java solutions most often: string concatenation, `==` on objects and integer overflow.\n\n## Strings are immutable: build with StringBuilder\n\nA `String` never changes once created. `s += c` in a loop copies a new string every time, O(n²) for n appends. Use a `StringBuilder`:\n\n```java\nStringBuilder sb = new StringBuilder();\nsb.append('a').append(42).append(\"bc\");   // amortized O(1)\nsb.insert(0, 'x');                        // insert at the front: O(n)\nsb.setCharAt(1, 'y');\nsb.deleteCharAt(sb.length() - 1);\nsb.reverse();\nsb.toString();\n```\n\nString methods you will use:\n\n```java\ns.charAt(i);                 // the i-th character\ns.toCharArray();             // to a char[]; turn it back with new String(chars)\ns.substring(begin, end);     // [begin, end): the second argument is an end index, unlike C++ substr\ns.indexOf(\"ab\");             // -1 when not found\ns.split(\",\");                // the argument is a regex: \".\" must be written \"\\\\.\"\nString.valueOf(42); Integer.parseInt(\"42\");\nCharacter.isDigit(c); Character.isLetterOrDigit(c); Character.toLowerCase(c);\nc - 'a';                     // a lowercase letter to 0..25\n(char) ('a' + 2);            // 'c'\n```\n\n## == compares references\n\n`==` between objects asks \"is this the same object\", not \"are the contents equal\".\n\n- **Strings**: always use `equals`. Literals can be shared, so `\"ab\" == \"ab\"` is sometimes `true`, which only makes the bug harder to find.\n- **`Integer`** is sneakier: `Integer.valueOf` caches the objects from -128 to 127. Inside that range `==` happens to work; outside it you have two different objects. Comparing two counts taken from a `HashMap` with `==` passes small tests and fails large ones.\n\nCompare two `Integer`s with `equals`, or unbox first: `a.intValue() == b`. As soon as one side is a primitive `int`, `==` unboxes and compares values.\n\n## Integer overflow\n\nA Java `int` is 32 bits and **wraps around in two's complement** on overflow, with no error (unlike C++, the result is well defined in Java, but just as wrong).\n\n- When a result can pass 2.1×10⁹, use `long`: write constants as `10L` and products as `(long) a * b`.\n- Write midpoints as `lo + (hi - lo) / 2`.\n- To catch overflow at once, use `Math.addExact` and `Math.multiplyExact`, which throw `ArithmeticException`.\n- Division truncates toward zero: `-7 / 2` is -3 and `-7 % 2` is -1. For a non-negative remainder, `Math.floorMod(-7, 2)` gives 1.\n\n## Example: valid palindrome\n\nTwo pointers skip anything that is not a letter or digit and compare in lowercase.\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    static boolean isPalindrome(String s) {\n        int i = 0, j = s.length() - 1;\n        while (i < j) {\n            if (!Character.isLetterOrDigit(s.charAt(i))) i++;\n            else if (!Character.isLetterOrDigit(s.charAt(j))) j--;\n            else if (Character.toLowerCase(s.charAt(i++)) != Character.toLowerCase(s.charAt(j--))) return false;\n        }\n        return true;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(isPalindrome(\"A man, a plan, a canal: Panama\") + \" \" + isPalindrome(\"race a car\"));\n\n        StringBuilder sb = new StringBuilder();\n        for (int i = 0; i < 5; i++) sb.append(i);\n        sb.reverse().setCharAt(0, 'x');\n        System.out.println(sb + \" \" + \"hello\".substring(1, 3));\n\n        Integer a = 127, b = 127, c = 128, d = 128;\n        System.out.println((a == b) + \" \" + (c == d) + \" \" + c.equals(d));\n        Map<String, Integer> votes = new HashMap<>(Map.of(\"x\", 1000, \"y\", 1000));\n        System.out.println(votes.get(\"x\") == votes.get(\"y\"));        // two different Integer objects\n        System.out.println(votes.get(\"x\").equals(votes.get(\"y\")));\n\n        int big = Integer.MAX_VALUE;\n        System.out.println((big + 1) + \" \" + ((long) big + 1) + \" \" + (100000 * 100000) + \" \" + 100000L * 100000);\n        try {\n            Math.multiplyExact(100000, 100000);\n        } catch (ArithmeticException e) {\n            System.out.println(\"overflow caught\");\n        }\n        System.out.println((-7 / 2) + \" \" + (-7 % 2) + \" \" + Math.floorMod(-7, 2));\n    }\n}\n```\n\n```text\ntrue false\nx3210 el\ntrue false true\nfalse\ntrue\n-2147483648 2147483648 1410065408 10000000000\noverflow caught\n-3 -1 1\n```\n\n## Reading a lot of input\n\n`Scanner` is convenient but slow; a few hundred thousand numbers can time out. Read whole lines with `BufferedReader` and split them with `StringTokenizer` or `split`; for many output lines, build them in a `StringBuilder` and print once, or use a `PrintWriter`.\n\n## Common mistakes\n\n- Concatenating strings with `+=` in a loop.\n- Comparing `String`s or two `Integer`s with `==`.\n- Treating the second argument of `substring(i, j)` as a length.\n- Multiplying two `int`s and storing the overflowed product in a `long`: `long x = a * b;` must be `long x = (long) a * b;`.",
+          "quiz": [
+            {
+              "qZh": "Integer a = 1000, b = 1000; a == b 的结果是什么？",
+              "qEn": "Integer a = 1000, b = 1000; what is a == b?",
+              "choices": [
+                {
+                  "zh": "true",
+                  "en": "true"
+                },
+                {
+                  "zh": "编译错误",
+                  "en": "A compile error"
+                },
+                {
+                  "zh": "false",
+                  "en": "false"
+                },
+                {
+                  "zh": "抛出异常",
+                  "en": "It throws"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "Integer.valueOf 只缓存 -128 到 127。1000 超出范围，a 和 b 是两个不同的对象，== 比较引用得到 false。用 equals 比较值。",
+              "whyEn": "Integer.valueOf caches only -128 to 127. 1000 is outside, so a and b are different objects and == on references is false. Use equals."
+            },
+            {
+              "qZh": "\"hello\".substring(1, 3) 是什么？",
+              "qEn": "What is \"hello\".substring(1, 3)?",
+              "choices": [
+                {
+                  "zh": "\"ell\"",
+                  "en": "\"ell\""
+                },
+                {
+                  "zh": "\"hel\"",
+                  "en": "\"hel\""
+                },
+                {
+                  "zh": "\"llo\"",
+                  "en": "\"llo\""
+                },
+                {
+                  "zh": "\"el\"",
+                  "en": "\"el\""
+                }
+              ],
+              "answer": 3,
+              "whyZh": "substring 取 [begin, end)，也就是下标 1 和 2，得到 \"el\"。第二个参数是结束下标，不是长度。",
+              "whyEn": "substring takes [begin, end), indices 1 and 2, giving \"el\". The second argument is an end index, not a length."
+            },
+            {
+              "qZh": "int a = 100000, b = 100000; long x = a * b; x 等于多少？",
+              "qEn": "int a = 100000, b = 100000; long x = a * b; what is x?",
+              "choices": [
+                {
+                  "zh": "1410065408",
+                  "en": "1410065408"
+                },
+                {
+                  "zh": "10000000000",
+                  "en": "10000000000"
+                },
+                {
+                  "zh": "抛出 ArithmeticException",
+                  "en": "It throws ArithmeticException"
+                },
+                {
+                  "zh": "Integer.MAX_VALUE",
+                  "en": "Integer.MAX_VALUE"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "a * b 先按 int 计算，10¹⁰ 绕回成 1410065408，再赋给 long 已经晚了。要写 (long) a * b。只有 Math.multiplyExact 才会在溢出时抛异常。",
+              "whyEn": "a * b is computed as an int, and 10¹⁰ wraps to 1410065408 before the assignment to long. Write (long) a * b. Only Math.multiplyExact throws on overflow."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-917",
+              "zh": "仅仅反转字母",
+              "en": "Reverse Only Letters"
+            },
+            {
+              "id": "lc-345",
+              "zh": "反转字符串中的元音字母",
+              "en": "Reverse Vowels of a String"
+            },
+            {
+              "id": "lc-62",
+              "zh": "不同路径",
+              "en": "Unique Paths"
+            }
+          ],
+          "solves": [
+            "lc-125"
+          ]
+        },
+        {
+          "slug": "cheatsheet",
+          "titleZh": "速查表",
+          "titleEn": "Cheat sheet",
+          "bodyZh": "前七课压缩成几张表，面试前快速过一遍。复杂度里的 n 是集合当前的元素个数。\n\n## 数组与列表\n\n| 类型 | 操作 | 复杂度 | 一行写法 |\n|---|---|---|---|\n| `int[]` | 新建 / 填充 | O(n) | `int[] a = new int[n]; Arrays.fill(a, -1);` |\n| `int[]` | 排序 / 打印 | O(n log n) / O(n) | `Arrays.sort(a); Arrays.toString(a)` |\n| `int[][]` | 按第一列排序 | O(n log n) | `Arrays.sort(g, Comparator.comparingInt(r -> r[0]));` |\n| `ArrayList` | 尾部追加 / 按下标读写 | 均摊 O(1) / O(1) | `list.add(x); list.get(i); list.set(i, x);` |\n| `ArrayList` | 按值删除 | O(n) | `list.remove(Integer.valueOf(x));` |\n| `ArrayList` | 排序 | O(n log n) | `list.sort(null);`（自然顺序） |\n| `String` | 子串 | O(len) | `s.substring(i, j)`（[i, j)） |\n| `StringBuilder` | 追加 / 反转 | 均摊 O(1) / O(n) | `sb.append(c); sb.reverse();` |\n\n## 栈、队列、堆\n\n| 类型 | 操作 | 复杂度 | 一行写法 |\n|---|---|---|---|\n| `ArrayDeque` 当栈 | 压入 / 栈顶 / 弹出 | O(1) | `st.push(x); st.peek(); st.pop();` |\n| `ArrayDeque` 当队列 | 入队 / 队头 / 出队 | O(1) | `q.offer(x); q.peek(); q.poll();` |\n| `PriorityQueue` | 最小堆 offer / poll | O(log n) | `new PriorityQueue<Integer>()` |\n| `PriorityQueue` | 最大堆 | O(log n) | `new PriorityQueue<Integer>(Collections.reverseOrder())` |\n| `PriorityQueue` | 按数组第一列 | O(log n) | `new PriorityQueue<int[]>((a, b) -> Integer.compare(a[0], b[0]))` |\n\n## 哈希表与有序表\n\n| 类型 | 操作 | 复杂度 | 一行写法 |\n|---|---|---|---|\n| `HashMap` | 计数 | 平均 O(1) | `cnt.merge(x, 1, Integer::sum);` |\n| `HashMap` | 带默认值读取 | 平均 O(1) | `cnt.getOrDefault(x, 0)` |\n| `HashMap` | 分组 | 平均 O(1) | `g.computeIfAbsent(k, z -> new ArrayList<>()).add(v);` |\n| `HashSet` | 判重 | 平均 O(1) | `if (!seen.add(x)) /* 重复 */;` |\n| `TreeSet` | ≤ x 的最大 / ≥ x 的最小 | O(log n) | `ts.floor(x); ts.ceiling(x);`（可能为 null） |\n| `TreeSet` | 最小 / 最大 | O(log n) | `ts.first(); ts.last();` |\n| `TreeMap` | 最小 / 最大键 | O(log n) | `tm.firstKey(); tm.lastKey();` |\n| `TreeMap` | 键 < k 的部分 | O(log n) | `tm.headMap(k)` |\n\n## 验证：表里的写法都能跑\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[][] g = {{3, 0}, {1, 9}, {2, 5}};\n        Arrays.sort(g, Comparator.comparingInt(r -> r[0]));\n        System.out.println(Arrays.deepToString(g));\n\n        List<Integer> list = new ArrayList<>(List.of(4, 2, 4));\n        list.remove(Integer.valueOf(4));\n        list.sort(null);\n        System.out.println(list);\n\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));\n        for (int[] row : new int[][] {{5, 50}, {1, 10}}) pq.offer(row);\n        Deque<Integer> st = new ArrayDeque<>();\n        st.push(1);\n        st.push(2);\n        System.out.println(pq.poll()[1] + \" \" + st.peek());\n\n        Map<String, List<Integer>> groups = new HashMap<>();\n        groups.computeIfAbsent(\"odd\", z -> new ArrayList<>()).add(3);\n        groups.computeIfAbsent(\"odd\", z -> new ArrayList<>()).add(5);\n        Set<Integer> seen = new HashSet<>();\n        int dup = -1;\n        for (int x : new int[] {5, 8, 5}) if (!seen.add(x)) dup = x;\n        System.out.println(groups.get(\"odd\") + \" \" + dup);\n\n        TreeSet<Integer> ts = new TreeSet<>(List.of(10, 20, 30));\n        TreeMap<Integer, String> tm = new TreeMap<>(Map.of(1, \"a\", 5, \"b\", 9, \"c\"));\n        System.out.println(ts.floor(25) + \" \" + ts.ceiling(31) + \" \" + tm.headMap(5) + \" \" + tm.lastKey());\n    }\n}\n```\n\n```text\n[[1, 9], [2, 5], [3, 0]]\n[2, 4]\n10 2\n[3, 5] 5\n20 null {1=a} 9\n```\n\n## 面试前最后检查一遍\n\n- 比较 `String`、`Integer` 用的是 `equals` 吗？\n- 乘法、累加会不会超过 2.1×10⁹？要不要 `long`，转换是不是在运算之前？\n- 比较器里有没有 `a - b`？\n- `map.get`、`floor`、`poll` 的结果可能是 `null`，有没有直接赋给 `int`？\n- 循环里是不是在用 `+=` 拼字符串？\n- 栈和队列用的是 `ArrayDeque` 吗？",
+          "bodyEn": "The first seven lessons squeezed into a few tables for a last look before an interview. In the complexities, n is the collection's current size.\n\n## Arrays and lists\n\n| Type | Operation | Cost | One-liner |\n|---|---|---|---|\n| `int[]` | create / fill | O(n) | `int[] a = new int[n]; Arrays.fill(a, -1);` |\n| `int[]` | sort / print | O(n log n) / O(n) | `Arrays.sort(a); Arrays.toString(a)` |\n| `int[][]` | sort by the first column | O(n log n) | `Arrays.sort(g, Comparator.comparingInt(r -> r[0]));` |\n| `ArrayList` | append / read and write by index | amortized O(1) / O(1) | `list.add(x); list.get(i); list.set(i, x);` |\n| `ArrayList` | remove by value | O(n) | `list.remove(Integer.valueOf(x));` |\n| `ArrayList` | sort | O(n log n) | `list.sort(null);` (natural order) |\n| `String` | substring | O(len) | `s.substring(i, j)` ([i, j)) |\n| `StringBuilder` | append / reverse | amortized O(1) / O(n) | `sb.append(c); sb.reverse();` |\n\n## Stacks, queues, heaps\n\n| Type | Operation | Cost | One-liner |\n|---|---|---|---|\n| `ArrayDeque` as a stack | push / top / pop | O(1) | `st.push(x); st.peek(); st.pop();` |\n| `ArrayDeque` as a queue | enqueue / front / dequeue | O(1) | `q.offer(x); q.peek(); q.poll();` |\n| `PriorityQueue` | min-heap offer / poll | O(log n) | `new PriorityQueue<Integer>()` |\n| `PriorityQueue` | max-heap | O(log n) | `new PriorityQueue<Integer>(Collections.reverseOrder())` |\n| `PriorityQueue` | by an array's first column | O(log n) | `new PriorityQueue<int[]>((a, b) -> Integer.compare(a[0], b[0]))` |\n\n## Hash tables and sorted maps\n\n| Type | Operation | Cost | One-liner |\n|---|---|---|---|\n| `HashMap` | count | O(1) average | `cnt.merge(x, 1, Integer::sum);` |\n| `HashMap` | read with a default | O(1) average | `cnt.getOrDefault(x, 0)` |\n| `HashMap` | group | O(1) average | `g.computeIfAbsent(k, z -> new ArrayList<>()).add(v);` |\n| `HashSet` | spot a repeat | O(1) average | `if (!seen.add(x)) /* repeat */;` |\n| `TreeSet` | largest ≤ x / smallest ≥ x | O(log n) | `ts.floor(x); ts.ceiling(x);` (may be null) |\n| `TreeSet` | smallest / largest | O(log n) | `ts.first(); ts.last();` |\n| `TreeMap` | smallest / largest key | O(log n) | `tm.firstKey(); tm.lastKey();` |\n| `TreeMap` | keys below k | O(log n) | `tm.headMap(k)` |\n\n## Proof: the one-liners run\n\n```java run\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        int[][] g = {{3, 0}, {1, 9}, {2, 5}};\n        Arrays.sort(g, Comparator.comparingInt(r -> r[0]));\n        System.out.println(Arrays.deepToString(g));\n\n        List<Integer> list = new ArrayList<>(List.of(4, 2, 4));\n        list.remove(Integer.valueOf(4));\n        list.sort(null);\n        System.out.println(list);\n\n        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));\n        for (int[] row : new int[][] {{5, 50}, {1, 10}}) pq.offer(row);\n        Deque<Integer> st = new ArrayDeque<>();\n        st.push(1);\n        st.push(2);\n        System.out.println(pq.poll()[1] + \" \" + st.peek());\n\n        Map<String, List<Integer>> groups = new HashMap<>();\n        groups.computeIfAbsent(\"odd\", z -> new ArrayList<>()).add(3);\n        groups.computeIfAbsent(\"odd\", z -> new ArrayList<>()).add(5);\n        Set<Integer> seen = new HashSet<>();\n        int dup = -1;\n        for (int x : new int[] {5, 8, 5}) if (!seen.add(x)) dup = x;\n        System.out.println(groups.get(\"odd\") + \" \" + dup);\n\n        TreeSet<Integer> ts = new TreeSet<>(List.of(10, 20, 30));\n        TreeMap<Integer, String> tm = new TreeMap<>(Map.of(1, \"a\", 5, \"b\", 9, \"c\"));\n        System.out.println(ts.floor(25) + \" \" + ts.ceiling(31) + \" \" + tm.headMap(5) + \" \" + tm.lastKey());\n    }\n}\n```\n\n```text\n[[1, 9], [2, 5], [3, 0]]\n[2, 4]\n10 2\n[3, 5] 5\n20 null {1=a} 9\n```\n\n## A last check before the interview\n\n- Do `String` and `Integer` comparisons use `equals`?\n- Can a product or sum pass 2.1×10⁹? Does it need `long`, converted before the arithmetic?\n- Is there an `a - b` in a comparator?\n- `map.get`, `floor` and `poll` can return `null`: is any of them assigned straight to an `int`?\n- Is a string built with `+=` in a loop?\n- Are stacks and queues `ArrayDeque`s?",
+          "quiz": [
+            {
+              "qZh": "HashSet 判重时，seen.add(x) 返回 false 表示什么？",
+              "qEn": "When spotting repeats with a HashSet, what does seen.add(x) returning false mean?",
+              "choices": [
+                {
+                  "zh": "集合已满，加不进去",
+                  "en": "The set is full"
+                },
+                {
+                  "zh": "x 之前已经在集合里了",
+                  "en": "x was already in the set"
+                },
+                {
+                  "zh": "x 是 null",
+                  "en": "x is null"
+                },
+                {
+                  "zh": "x 刚被加入集合",
+                  "en": "x was just added"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "add 在元素已存在时不做任何修改并返回 false，所以 if (!seen.add(x)) 就是\"x 重复了\"。",
+              "whyEn": "add changes nothing and returns false when the element is already present, so if (!seen.add(x)) means \"x is a repeat\"."
+            },
+            {
+              "qZh": "用 ArrayDeque 当栈，看栈顶用哪个方法？",
+              "qEn": "With an ArrayDeque used as a stack, which method looks at the top?",
+              "choices": [
+                {
+                  "zh": "peekLast()",
+                  "en": "peekLast()"
+                },
+                {
+                  "zh": "top()",
+                  "en": "top()"
+                },
+                {
+                  "zh": "peek()",
+                  "en": "peek()"
+                },
+                {
+                  "zh": "get(0)",
+                  "en": "get(0)"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "push 把元素放在队头，peek 看的也是队头，所以栈顶是 peek()。Deque 没有 top() 和 get(i)。",
+              "whyEn": "push puts elements at the front and peek looks at the front, so the top is peek(). Deque has no top() or get(i)."
+            },
+            {
+              "qZh": "TreeMap 取最大的键用哪个方法，复杂度多少？",
+              "qEn": "Which TreeMap method reads the largest key, and at what cost?",
+              "choices": [
+                {
+                  "zh": "lastKey()，O(n)",
+                  "en": "lastKey(), O(n)"
+                },
+                {
+                  "zh": "max()，O(1)",
+                  "en": "max(), O(1)"
+                },
+                {
+                  "zh": "keySet().last()，O(1)",
+                  "en": "keySet().last(), O(1)"
+                },
+                {
+                  "zh": "lastKey()，O(log n)",
+                  "en": "lastKey(), O(log n)"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "TreeMap 是红黑树，最大键在最右侧，lastKey 沿着树往下走，O(log n)。TreeMap 没有 max() 方法，keySet() 返回的类型也没有 last()。",
+              "whyEn": "TreeMap is a red-black tree with the largest key at the far right; lastKey walks down to it in O(log n). TreeMap has no max(), and the type keySet() returns has no last()."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-169",
+              "zh": "多数元素",
+              "en": "Majority Element"
+            },
+            {
+              "id": "lc-977",
+              "zh": "有序数组的平方",
+              "en": "Squares of a Sorted Array"
+            },
+            {
+              "id": "lc-136",
+              "zh": "只出现一次的数字",
+              "en": "Single Number"
+            }
+          ],
+          "solves": []
+        }
+      ]
+    },
+    {
+      "slug": "go",
+      "titleZh": "Go 标准库面试速成课",
+      "titleEn": "Go Standard Library for Coding Interviews",
+      "summaryZh": "7 节课讲清用 Go 刷题最常用的标准库：切片的扩容和共享底层数组、map 与集合、sort 和 slices 包、container/heap 样板、strings.Builder 与 rune，以及 64 位 int、range 副本、变量遮蔽这些坑，最后一节是速查表。示例都是可直接运行的完整程序，每节有小测验和 3 道练习题。",
+      "summaryEn": "Seven lessons on the standard library you use most when solving problems in Go: slice growth and shared backing arrays, maps and sets, the sort and slices packages, the container/heap boilerplate, strings.Builder and runes, plus traps such as 64-bit int, range copies and shadowed variables, ending with a cheat sheet. Every example is a complete program that runs as is, and each lesson ends with a quiz and three practice problems.",
+      "chapters": [
+        {
+          "slug": "slices",
+          "titleZh": "切片",
+          "titleEn": "Slices",
+          "bodyZh": "Go 的标准库很小，刷题时用得最多的就是切片、map、`sort`、`container/heap` 和 `strings`。这门课按这个顺序讲，每节都给出能直接运行的完整程序（判题机是 Go 1.24，本课的代码在 Go 1.21 上也能编译）。第一课是切片：它看起来像 Python 的列表，行为却很不一样。\n\n## 切片是什么\n\n切片是对底层数组的一个\"窗口\"，由三部分组成：指向数组的指针、长度 `len`、容量 `cap`。\n\n```go\na := []int{1, 2, 3}          // 字面量\nb := make([]int, n)          // n 个 0\nc := make([]int, 0, n)       // 长度 0，容量 n：先预留空间，再 append\nlen(a); cap(a)\ngrid := make([][]int, n)     // 二维：先建外层，再逐行 make\nfor i := range grid {\n    grid[i] = make([]int, m)\n}\n```\n\n## append 必须接住返回值\n\n```go\na = append(a, 4)             // 均摊 O(1)\na = append(a, 5, 6)\na = append(a, other...)      // 追加另一个切片\n```\n\n`append` 在容量够时直接写进原数组，不够时分配一个更大的新数组（大约翻倍）并把元素复制过去。不管哪种情况，结果都要赋值回去：只写 `append(a, 4)` 编译器会报错。\n\n## 子切片共享底层数组\n\n`a[i:j]` 不复制数据，新切片和原切片共用同一个数组：\n\n- 改子切片的元素，原切片也会变。\n- 对子切片 `append`，如果它后面还有容量，会**覆盖原切片后面的元素**。\n\n需要一份独立的副本时，显式复制：`b := append([]int(nil), a...)`，或者 Go 1.21 的 `slices.Clone(a)`，或者 `copy(dst, src)`。\n\n```go run\npackage main\n\nimport \"fmt\"\n\nfunc main() {\n\ta := []int{1, 2, 3, 4, 5}\n\tb := a[1:3]                  // [2 3]，和 a 共用数组\n\tb[0] = 20\n\tfmt.Println(a, b, len(b), cap(b))\n\n\tb = append(b, 99)            // b 后面还有容量：覆盖了 a[3]\n\tfmt.Println(a)\n\n\tc := make([]int, 0, 2)\n\tfmt.Println(len(c), cap(c))\n\tc = append(c, 1, 2, 3)       // 超过容量：换了一个新数组\n\tfmt.Println(c, len(c))\n\n\td := append([]int(nil), a...) // 独立的副本\n\td[0] = -1\n\tfmt.Println(a[0], d[0])\n}\n```\n\n```text\n[1 20 3 4 5] [20 3] 2 4\n[1 20 3 99 5]\n0 2\n[1 2 3] 3\n1 -1\n```\n\n## 切片当栈和队列\n\n```go\nst = append(st, x)           // 入栈\ntop := st[len(st)-1]         // 栈顶\nst = st[:len(st)-1]          // 出栈\n\nq = append(q, x)             // 入队\nfront := q[0]\nq = q[1:]                    // 出队\n```\n\n## 回溯时记得复制路径\n\n函数参数里的切片也共享底层数组。回溯时 `path` 会不断变化，把它直接存进结果，之后的修改会改掉已经存进去的答案。存之前要复制一份。\n\n## 例子：移除元素、子集\n\n```go run\npackage main\n\nimport \"fmt\"\n\nfunc removeElement(nums []int, val int) int {\n\tk := 0\n\tfor _, x := range nums {\n\t\tif x != val {\n\t\t\tnums[k] = x              // 原地覆盖\n\t\t\tk++\n\t\t}\n\t}\n\treturn k\n}\n\nfunc subsets(nums []int) [][]int {\n\tvar res [][]int\n\tvar path []int\n\tvar dfs func(i int)\n\tdfs = func(i int) {\n\t\tif i == len(nums) {\n\t\t\tres = append(res, append([]int(nil), path...)) // 复制：path 之后还会变\n\t\t\treturn\n\t\t}\n\t\tdfs(i + 1)                   // 不选 nums[i]\n\t\tpath = append(path, nums[i])\n\t\tdfs(i + 1)                   // 选 nums[i]\n\t\tpath = path[:len(path)-1]\n\t}\n\tdfs(0)\n\treturn res\n}\n\nfunc main() {\n\tnums := []int{3, 2, 2, 3}\n\tk := removeElement(nums, 3)\n\tfmt.Println(k, nums[:k])\n\tfmt.Println(subsets([]int{1, 2, 3}))\n}\n```\n\n```text\n2 [2 2]\n[[] [3] [2] [2 3] [1] [1 3] [1 2] [1 2 3]]\n```\n\n## 常见错误\n\n- 写了 `append(a, x)` 没有赋值回 `a`。\n- 以为 `a[i:j]` 是副本，修改它或对它 `append`，结果原切片也被改了。\n- 回溯时把 `path` 直接放进结果，没有复制。\n- 二维切片只 `make` 了外层，内层是 `nil`，访问 `grid[i][j]` 越界 panic。",
+          "bodyEn": "Go's standard library is small, and problem solving mostly uses slices, maps, `sort`, `container/heap` and `strings`. This course covers them in that order, and every lesson includes complete programs you can run (the judge runs Go 1.24; this course's code also compiles on Go 1.21). The first lesson is slices: they look like Python lists and behave quite differently.\n\n## What a slice is\n\nA slice is a window onto an underlying array, made of three parts: a pointer to the array, a length `len` and a capacity `cap`.\n\n```go\na := []int{1, 2, 3}          // a literal\nb := make([]int, n)          // n zeros\nc := make([]int, 0, n)       // length 0, capacity n: reserve space, then append\nlen(a); cap(a)\ngrid := make([][]int, n)     // 2D: the outer slice first, then each row\nfor i := range grid {\n    grid[i] = make([]int, m)\n}\n```\n\n## Always keep append's result\n\n```go\na = append(a, 4)             // amortized O(1)\na = append(a, 5, 6)\na = append(a, other...)      // append another slice\n```\n\nWhen there is capacity, `append` writes into the same array; when there is not, it allocates a bigger one (roughly double) and copies the elements over. Either way, assign the result back: a bare `append(a, 4)` is a compile error.\n\n## Subslices share the array\n\n`a[i:j]` copies nothing: the new slice and the old one share an array.\n\n- Changing an element through the subslice changes the original.\n- Appending to the subslice, when it has spare capacity, **overwrites the original's later elements**.\n\nWhen you need an independent copy, copy explicitly: `b := append([]int(nil), a...)`, Go 1.21's `slices.Clone(a)`, or `copy(dst, src)`.\n\n```go run\npackage main\n\nimport \"fmt\"\n\nfunc main() {\n\ta := []int{1, 2, 3, 4, 5}\n\tb := a[1:3]                  // [2 3], sharing a's array\n\tb[0] = 20\n\tfmt.Println(a, b, len(b), cap(b))\n\n\tb = append(b, 99)            // b has spare capacity: this overwrites a[3]\n\tfmt.Println(a)\n\n\tc := make([]int, 0, 2)\n\tfmt.Println(len(c), cap(c))\n\tc = append(c, 1, 2, 3)       // past the capacity: a new array\n\tfmt.Println(c, len(c))\n\n\td := append([]int(nil), a...) // an independent copy\n\td[0] = -1\n\tfmt.Println(a[0], d[0])\n}\n```\n\n```text\n[1 20 3 4 5] [20 3] 2 4\n[1 20 3 99 5]\n0 2\n[1 2 3] 3\n1 -1\n```\n\n## Slices as stacks and queues\n\n```go\nst = append(st, x)           // push\ntop := st[len(st)-1]         // top\nst = st[:len(st)-1]          // pop\n\nq = append(q, x)             // enqueue\nfront := q[0]\nq = q[1:]                    // dequeue\n```\n\n## Copy the path when backtracking\n\nA slice passed to a function shares its array too. While backtracking, `path` keeps changing; store it directly in the results and later changes rewrite answers you already saved. Copy it before storing.\n\n## Examples: remove element, subsets\n\n```go run\npackage main\n\nimport \"fmt\"\n\nfunc removeElement(nums []int, val int) int {\n\tk := 0\n\tfor _, x := range nums {\n\t\tif x != val {\n\t\t\tnums[k] = x              // overwrite in place\n\t\t\tk++\n\t\t}\n\t}\n\treturn k\n}\n\nfunc subsets(nums []int) [][]int {\n\tvar res [][]int\n\tvar path []int\n\tvar dfs func(i int)\n\tdfs = func(i int) {\n\t\tif i == len(nums) {\n\t\t\tres = append(res, append([]int(nil), path...)) // copy: path keeps changing\n\t\t\treturn\n\t\t}\n\t\tdfs(i + 1)                   // skip nums[i]\n\t\tpath = append(path, nums[i])\n\t\tdfs(i + 1)                   // take nums[i]\n\t\tpath = path[:len(path)-1]\n\t}\n\tdfs(0)\n\treturn res\n}\n\nfunc main() {\n\tnums := []int{3, 2, 2, 3}\n\tk := removeElement(nums, 3)\n\tfmt.Println(k, nums[:k])\n\tfmt.Println(subsets([]int{1, 2, 3}))\n}\n```\n\n```text\n2 [2 2]\n[[] [3] [2] [2 3] [1] [1 3] [1 2] [1 2 3]]\n```\n\n## Common mistakes\n\n- Writing `append(a, x)` without assigning the result back to `a`.\n- Treating `a[i:j]` as a copy, then changing it or appending to it and changing the original as well.\n- Storing `path` in the results while backtracking without copying it.\n- Making only the outer slice of a 2D slice: the rows are `nil`, and `grid[i][j]` panics with an index out of range.",
+          "quiz": [
+            {
+              "qZh": "a := []int{1, 2, 3, 4}; b := a[1:3]; b[0] = 9 之后，a 是什么？",
+              "qEn": "a := []int{1, 2, 3, 4}; b := a[1:3]; b[0] = 9. What is a now?",
+              "choices": [
+                {
+                  "zh": "[1 9 3 4]",
+                  "en": "[1 9 3 4]"
+                },
+                {
+                  "zh": "[1 2 3 4]",
+                  "en": "[1 2 3 4]"
+                },
+                {
+                  "zh": "[9 2 3 4]",
+                  "en": "[9 2 3 4]"
+                },
+                {
+                  "zh": "[1 2 9 4]",
+                  "en": "[1 2 9 4]"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "子切片和原切片共用底层数组。b[0] 就是 a[1]，所以 a 变成 [1 9 3 4]。",
+              "whyEn": "A subslice shares the original's array. b[0] is a[1], so a becomes [1 9 3 4]."
+            },
+            {
+              "qZh": "下面哪种写法向切片追加元素是正确的？",
+              "qEn": "Which line appends to a slice correctly?",
+              "choices": [
+                {
+                  "zh": "append(a, x)",
+                  "en": "append(a, x)"
+                },
+                {
+                  "zh": "a = append(a, x)",
+                  "en": "a = append(a, x)"
+                },
+                {
+                  "zh": "a.append(x)",
+                  "en": "a.append(x)"
+                },
+                {
+                  "zh": "a.push(x)",
+                  "en": "a.push(x)"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "append 是内置函数，返回新的切片头，必须赋值回去；单独写 append(a, x) 编译不过。切片没有 append、push 方法。",
+              "whyEn": "append is a built-in that returns a new slice header, which must be assigned back; a bare append(a, x) does not compile. Slices have no append or push method."
+            },
+            {
+              "qZh": "回溯时把当前路径存进结果，应该怎么写？",
+              "qEn": "While backtracking, how should the current path be stored in the results?",
+              "choices": [
+                {
+                  "zh": "res = append(res, path)",
+                  "en": "res = append(res, path)"
+                },
+                {
+                  "zh": "res = append(res, path[:])",
+                  "en": "res = append(res, path[:])"
+                },
+                {
+                  "zh": "res = append(res, append([]int(nil), path...))",
+                  "en": "res = append(res, append([]int(nil), path...))"
+                },
+                {
+                  "zh": "res = append(res, path[0:len(path)])",
+                  "en": "res = append(res, path[0:len(path)])"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "path[:] 和 path[0:len(path)] 都只是新的切片头，仍然指向同一个数组，之后修改 path 会改掉已存的结果。必须复制出一个新数组。",
+              "whyEn": "path[:] and path[0:len(path)] are just new headers over the same array, so later changes to path rewrite stored results. You need a copy in a new array."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-283",
+              "zh": "移动零",
+              "en": "Move Zeroes"
+            },
+            {
+              "id": "lc-26",
+              "zh": "删除有序数组中的重复项",
+              "en": "Remove Duplicates from Sorted Array"
+            },
+            {
+              "id": "lc-977",
+              "zh": "有序数组的平方",
+              "en": "Squares of a Sorted Array"
+            }
+          ],
+          "solves": [
+            "lc-27",
+            "lc-78"
+          ]
+        },
+        {
+          "slug": "maps",
+          "titleZh": "map 与集合",
+          "titleEn": "Maps and sets",
+          "bodyZh": "Go 的 `map` 是哈希表：查找、插入、删除平均 O(1)。Go 没有单独的集合类型，集合也用 `map` 表示。\n\n## 基本用法\n\n```go\nm := map[string]int{}        // 或 make(map[string]int)\nm[\"go\"]++                    // 键不存在时从零值开始\nv := m[\"rust\"]               // 不存在：得到零值 0\nv, ok := m[\"rust\"]           // ok 为 false 表示不存在\ndelete(m, \"go\")              // 删除不存在的键也不会出错\nlen(m)\n```\n\n只看 `m[k]` 的值，分不清\"键不存在\"和\"值恰好是 0\"。需要区分时一定用 `v, ok := m[k]`。\n\n## nil map 只能读不能写\n\n`var m map[string]int` 声明的是 `nil` map：读取返回零值，`len` 是 0，但**写入会 panic**。用 `make` 或字面量 `{}` 创建后再写。\n\n## 集合\n\n```go\nseen := map[int]bool{}\nseen[x] = true\nif seen[x] { ... }           // 不存在时是 false，正好当集合用\n\nset := map[int]struct{}{}    // 空结构体不占空间，更省内存\nset[x] = struct{}{}\nif _, ok := set[x]; ok { ... }\n```\n\n## 遍历顺序是随机的\n\n`for k, v := range m` 的顺序每次运行都可能不同，这是 Go 故意设计的。需要固定顺序时，把键取出来排序后再遍历。遍历时用 `delete` 删除元素是安全的。\n\n## 什么能当键\n\n键必须能用 `==` 比较。切片、map、函数不能当键；**数组和只含可比较字段的结构体可以**。网格坐标可以直接写成 `map[[2]int]bool` 或 `map[point]bool`，不用像 Java 那样拼字符串。\n\nmap 是引用类型：传给函数后在函数里修改，调用方也能看到。另外，`m[k].field = 1` 编译不过（map 的元素不可寻址）：要么整个结构体重新赋值，要么让 map 存指针。\n\n## 例子：两数之和、存在重复元素\n\n```go run\npackage main\n\nimport (\n\t\"fmt\"\n\t\"sort\"\n)\n\nfunc twoSum(nums []int, target int) []int {\n\tseen := map[int]int{}            // 值 -> 下标\n\tfor i, x := range nums {\n\t\tif j, ok := seen[target-x]; ok {\n\t\t\treturn []int{j, i}\n\t\t}\n\t\tseen[x] = i\n\t}\n\treturn nil\n}\n\nfunc containsDuplicate(nums []int) bool {\n\tseen := make(map[int]struct{}, len(nums))\n\tfor _, x := range nums {\n\t\tif _, ok := seen[x]; ok {\n\t\t\treturn true\n\t\t}\n\t\tseen[x] = struct{}{}\n\t}\n\treturn false\n}\n\nfunc main() {\n\tfmt.Println(twoSum([]int{2, 7, 11, 15}, 9))\n\tfmt.Println(containsDuplicate([]int{1, 2, 3, 1}), containsDuplicate([]int{1, 2, 3}))\n\n\tcnt := map[string]int{}\n\tfor _, w := range []string{\"go\", \"is\", \"go\"} {\n\t\tcnt[w]++\n\t}\n\tv, ok := cnt[\"rust\"]\n\tfmt.Println(cnt[\"go\"], v, ok, len(cnt))\n\n\tkeys := make([]string, 0, len(cnt))\n\tfor k := range cnt {\n\t\tkeys = append(keys, k)\n\t}\n\tsort.Strings(keys)               // map 的顺序随机：排序后输出才稳定\n\tfmt.Println(keys)\n\n\tvisited := map[[2]int]bool{{0, 1}: true} // 数组可以比较，能当键\n\tfmt.Println(visited[[2]int{0, 1}], visited[[2]int{1, 0}])\n\n\tdefer func() { fmt.Println(\"recovered:\", recover() != nil) }()\n\tvar nilMap map[string]int\n\tfmt.Println(nilMap[\"x\"])         // 读 nil map 没问题\n\tnilMap[\"x\"] = 1                  // 写 nil map 会 panic\n}\n```\n\n```text\n[0 1]\ntrue false\n2 0 false 2\n[go is]\ntrue false\n0\nrecovered: true\n```\n\n## 常见错误\n\n- 往 `var m map[K]V` 声明出来的 nil map 里写数据，程序 panic。\n- 依赖 map 的遍历顺序，本地每次输出都不一样。\n- 用 `m[k] == 0` 判断键是否存在。\n- 拿切片当键，编译不过。改用数组、结构体，或者把切片转成字符串。",
+          "bodyEn": "A Go `map` is a hash table: lookup, insert and delete are O(1) on average. Go has no separate set type; sets are maps too.\n\n## The basics\n\n```go\nm := map[string]int{}        // or make(map[string]int)\nm[\"go\"]++                    // a missing key starts from the zero value\nv := m[\"rust\"]               // missing: the zero value 0\nv, ok := m[\"rust\"]           // ok is false when the key is missing\ndelete(m, \"go\")              // deleting a missing key is fine too\nlen(m)\n```\n\n`m[k]` alone cannot tell \"missing\" from \"present with value 0\". When the difference matters, always use `v, ok := m[k]`.\n\n## A nil map reads but never writes\n\n`var m map[string]int` declares a `nil` map: reads return the zero value and `len` is 0, but **a write panics**. Create it with `make` or a `{}` literal before writing.\n\n## Sets\n\n```go\nseen := map[int]bool{}\nseen[x] = true\nif seen[x] { ... }           // false when missing, which is just what a set needs\n\nset := map[int]struct{}{}    // the empty struct takes no space\nset[x] = struct{}{}\nif _, ok := set[x]; ok { ... }\n```\n\n## Iteration order is random\n\n`for k, v := range m` can visit keys in a different order on every run; Go does this on purpose. For a fixed order, collect the keys, sort them, then iterate. Deleting entries with `delete` during a range loop is safe.\n\n## What can be a key\n\nKeys must be comparable with `==`. Slices, maps and functions cannot be keys; **arrays and structs of comparable fields can**. A grid cell can simply be a `map[[2]int]bool` or `map[point]bool` key, no string joining as in Java.\n\nMaps are reference types: a function that changes a map it was given changes the caller's map. Also, `m[k].field = 1` does not compile (map elements are not addressable): reassign the whole struct, or store pointers in the map.\n\n## Examples: two sum, contains duplicate\n\n```go run\npackage main\n\nimport (\n\t\"fmt\"\n\t\"sort\"\n)\n\nfunc twoSum(nums []int, target int) []int {\n\tseen := map[int]int{}            // value -> index\n\tfor i, x := range nums {\n\t\tif j, ok := seen[target-x]; ok {\n\t\t\treturn []int{j, i}\n\t\t}\n\t\tseen[x] = i\n\t}\n\treturn nil\n}\n\nfunc containsDuplicate(nums []int) bool {\n\tseen := make(map[int]struct{}, len(nums))\n\tfor _, x := range nums {\n\t\tif _, ok := seen[x]; ok {\n\t\t\treturn true\n\t\t}\n\t\tseen[x] = struct{}{}\n\t}\n\treturn false\n}\n\nfunc main() {\n\tfmt.Println(twoSum([]int{2, 7, 11, 15}, 9))\n\tfmt.Println(containsDuplicate([]int{1, 2, 3, 1}), containsDuplicate([]int{1, 2, 3}))\n\n\tcnt := map[string]int{}\n\tfor _, w := range []string{\"go\", \"is\", \"go\"} {\n\t\tcnt[w]++\n\t}\n\tv, ok := cnt[\"rust\"]\n\tfmt.Println(cnt[\"go\"], v, ok, len(cnt))\n\n\tkeys := make([]string, 0, len(cnt))\n\tfor k := range cnt {\n\t\tkeys = append(keys, k)\n\t}\n\tsort.Strings(keys)               // map order is random: sort for stable output\n\tfmt.Println(keys)\n\n\tvisited := map[[2]int]bool{{0, 1}: true} // arrays are comparable, so they work as keys\n\tfmt.Println(visited[[2]int{0, 1}], visited[[2]int{1, 0}])\n\n\tdefer func() { fmt.Println(\"recovered:\", recover() != nil) }()\n\tvar nilMap map[string]int\n\tfmt.Println(nilMap[\"x\"])         // reading a nil map is fine\n\tnilMap[\"x\"] = 1                  // writing to one panics\n}\n```\n\n```text\n[0 1]\ntrue false\n2 0 false 2\n[go is]\ntrue false\n0\nrecovered: true\n```\n\n## Common mistakes\n\n- Writing into a nil map declared with `var m map[K]V` and panicking.\n- Relying on map iteration order and seeing different output on every run.\n- Testing for a key with `m[k] == 0`.\n- Using a slice as a key, which does not compile. Use an array, a struct, or turn the slice into a string.",
+          "quiz": [
+            {
+              "qZh": "var m map[string]int 之后执行 m[\"a\"] = 1，会怎样？",
+              "qEn": "After var m map[string]int, what does m[\"a\"] = 1 do?",
+              "choices": [
+                {
+                  "zh": "m 变成 map[a:1]",
+                  "en": "m becomes map[a:1]"
+                },
+                {
+                  "zh": "编译错误",
+                  "en": "A compile error"
+                },
+                {
+                  "zh": "什么也不发生",
+                  "en": "Nothing happens"
+                },
+                {
+                  "zh": "panic：不能写入 nil map",
+                  "en": "It panics: you cannot write to a nil map"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "var 声明的 map 是 nil。读取 nil map 返回零值，写入会 panic。先用 make 或 {} 创建。",
+              "whyEn": "A map declared with var is nil. Reading it returns zero values; writing panics. Create it with make or {} first."
+            },
+            {
+              "qZh": "怎样区分\"键不存在\"和\"值恰好是 0\"？",
+              "qEn": "How do you tell a missing key from a key whose value is 0?",
+              "choices": [
+                {
+                  "zh": "v, ok := m[k]，看 ok",
+                  "en": "v, ok := m[k], then check ok"
+                },
+                {
+                  "zh": "m[k] == 0",
+                  "en": "m[k] == 0"
+                },
+                {
+                  "zh": "m[k] == nil",
+                  "en": "m[k] == nil"
+                },
+                {
+                  "zh": "m.contains(k)",
+                  "en": "m.contains(k)"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "缺失的键返回零值，单看值区分不了。逗号 ok 写法里 ok 为 false 才表示不存在。int 不能和 nil 比较，map 也没有 contains 方法。",
+              "whyEn": "A missing key returns the zero value, so the value alone cannot tell. In the comma-ok form, ok is false only for a missing key. An int cannot be compared with nil, and maps have no contains method."
+            },
+            {
+              "qZh": "下面哪种类型不能当 map 的键？",
+              "qEn": "Which type cannot be a map key?",
+              "choices": [
+                {
+                  "zh": "[2]int",
+                  "en": "[2]int"
+                },
+                {
+                  "zh": "[]int",
+                  "en": "[]int"
+                },
+                {
+                  "zh": "struct{ x, y int }",
+                  "en": "struct{ x, y int }"
+                },
+                {
+                  "zh": "string",
+                  "en": "string"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "键必须能用 == 比较。切片不能比较，数组和字段都可比较的结构体可以，所以网格坐标可以直接用 [2]int 当键。",
+              "whyEn": "Keys must be comparable with ==. Slices are not; arrays and structs of comparable fields are, so a grid cell can be a [2]int key."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1010",
+              "zh": "总持续时间可被 60 整除的歌曲",
+              "en": "Pairs of Songs With Total Durations Divisible by 60"
+            },
+            {
+              "id": "lc-187",
+              "zh": "重复的DNA序列",
+              "en": "Repeated DNA Sequences"
+            },
+            {
+              "id": "lc-645",
+              "zh": "错误的集合",
+              "en": "Set Mismatch"
+            }
+          ],
+          "solves": [
+            "lc-1",
+            "lc-217"
+          ]
+        },
+        {
+          "slug": "sorting",
+          "titleZh": "排序与二分",
+          "titleEn": "Sorting and binary search",
+          "bodyZh": "Go 有两套排序接口：老的 `sort` 包和 Go 1.21 加入的 `slices` 包。两套都要会认，题解里都很常见。\n\n## sort 包\n\n```go\nsort.Ints(a)                 // []int 升序\nsort.Strings(s)\nsort.Slice(a, func(i, j int) bool { return a[i] > a[j] })    // 自定义：降序\nsort.SliceStable(people, func(i, j int) bool { return people[i].age < people[j].age })\n```\n\n`sort.Slice` 的比较函数参数是**两个下标**，不是两个元素；函数里要通过闭包访问同一个切片。它返回 `true` 表示下标 i 的元素应该排在下标 j 前面，必须是严格的\"小于\"，不能写成 `<=`。\n\n`sort.Slice` 不稳定。相等的元素要保持原顺序时用 `sort.SliceStable`。\n\n## slices 包（Go 1.21+）\n\n```go\nslices.Sort(a)                                           // 升序\nslices.SortFunc(people, func(x, y person) int { return cmp.Compare(x.age, y.age) })\nslices.SortStableFunc(...)                               // 稳定版本\nslices.Reverse(a); slices.Contains(a, x); slices.Index(a, x)\nslices.Max(a); slices.Min(a)\n```\n\n`SortFunc` 的比较函数接收**两个元素**，返回负数、0、正数，这和 Java 的 `Comparator` 一样。用 `cmp.Compare` 而不是减法，避免溢出。Go 1.21 还新增了内置函数 `min` 和 `max`。\n\n## 二分查找\n\n```go\ni := sort.Search(len(a), func(i int) bool { return a[i] >= x })   // 第一个 >= x 的下标\ni, found := slices.BinarySearch(a, x)                              // 同上，并告诉你是否找到\n```\n\n`sort.Search(n, f)` 要求 f 在下标上是\"先 false 后 true\"，返回第一个为 true 的下标；全为 false 时返回 n。它不只能查数组：把 f 换成\"答案为 i 时是否可行\"，就是\"二分答案\"的现成框架。\n\n## 例子：合并区间、搜索插入位置\n\n```go run\npackage main\n\nimport (\n\t\"cmp\"\n\t\"fmt\"\n\t\"slices\"\n\t\"sort\"\n)\n\nfunc merge(intervals [][]int) [][]int {\n\tsort.Slice(intervals, func(i, j int) bool { return intervals[i][0] < intervals[j][0] })\n\tvar out [][]int\n\tfor _, iv := range intervals {\n\t\tif n := len(out); n > 0 && iv[0] <= out[n-1][1] {\n\t\t\tout[n-1][1] = max(out[n-1][1], iv[1]) // 重叠：延长\n\t\t} else {\n\t\t\tout = append(out, iv)\n\t\t}\n\t}\n\treturn out\n}\n\nfunc searchInsert(nums []int, target int) int {\n\treturn sort.Search(len(nums), func(i int) bool { return nums[i] >= target })\n}\n\ntype person struct {\n\tname string\n\tage  int\n}\n\nfunc main() {\n\tfmt.Println(merge([][]int{{8, 10}, {1, 3}, {2, 6}, {15, 18}}))\n\tnums := []int{1, 3, 5, 6}\n\tfmt.Println(searchInsert(nums, 5), searchInsert(nums, 2), searchInsert(nums, 7))\n\n\tpeople := []person{{\"ann\", 30}, {\"bob\", 25}, {\"cat\", 30}, {\"dan\", 25}}\n\tslices.SortStableFunc(people, func(a, b person) int { return cmp.Compare(a.age, b.age) })\n\tfmt.Println(people)              // 同龄人保持原顺序\n\n\twords := []string{\"pear\", \"fig\", \"apple\", \"kiwi\"}\n\tsort.Slice(words, func(i, j int) bool { // 先按长度，再按字典序\n\t\tif len(words[i]) != len(words[j]) {\n\t\t\treturn len(words[i]) < len(words[j])\n\t\t}\n\t\treturn words[i] < words[j]\n\t})\n\tfmt.Println(words)\n\n\ti, found := slices.BinarySearch(nums, 4)\n\tfmt.Println(i, found)\n}\n```\n\n```text\n[[1 6] [8 10] [15 18]]\n2 1 4\n[{bob 25} {dan 25} {ann 30} {cat 30}]\n[fig kiwi pear apple]\n2 false\n```\n\n## 常见错误\n\n- 把 `sort.Slice` 比较函数的参数当成元素，写成 `func(a, b int) bool { return a < b }`。它们是下标。\n- 比较函数写 `<=`，排序结果错乱。\n- 需要稳定排序却用了 `sort.Slice`。\n- `sort.Search` 的条件写反（先 true 后 false），返回的下标没有意义。",
+          "bodyEn": "Go has two sorting APIs: the older `sort` package and the `slices` package added in Go 1.21. Recognize both; solutions use both.\n\n## The sort package\n\n```go\nsort.Ints(a)                 // []int ascending\nsort.Strings(s)\nsort.Slice(a, func(i, j int) bool { return a[i] > a[j] })    // custom: descending\nsort.SliceStable(people, func(i, j int) bool { return people[i].age < people[j].age })\n```\n\nThe comparison function of `sort.Slice` takes **two indices**, not two elements; it reaches the slice through the closure. It returns `true` when the element at i belongs before the one at j, and it must be a strict \"less than\", never `<=`.\n\n`sort.Slice` is not stable. When equal elements must keep their order, use `sort.SliceStable`.\n\n## The slices package (Go 1.21+)\n\n```go\nslices.Sort(a)                                           // ascending\nslices.SortFunc(people, func(x, y person) int { return cmp.Compare(x.age, y.age) })\nslices.SortStableFunc(...)                               // the stable version\nslices.Reverse(a); slices.Contains(a, x); slices.Index(a, x)\nslices.Max(a); slices.Min(a)\n```\n\n`SortFunc` takes **two elements** and returns a negative number, 0 or a positive number, just like Java's `Comparator`. Use `cmp.Compare` rather than subtraction to avoid overflow. Go 1.21 also added the built-in functions `min` and `max`.\n\n## Binary search\n\n```go\ni := sort.Search(len(a), func(i int) bool { return a[i] >= x })   // index of the first >= x\ni, found := slices.BinarySearch(a, x)                              // the same, plus whether x is there\n```\n\n`sort.Search(n, f)` needs f to be \"false, then true\" over the indices and returns the first index where it is true, or n when it never is. It is not only for arrays: make f \"is answer i feasible\" and you have a ready-made binary search on the answer.\n\n## Examples: merge intervals, search insert position\n\n```go run\npackage main\n\nimport (\n\t\"cmp\"\n\t\"fmt\"\n\t\"slices\"\n\t\"sort\"\n)\n\nfunc merge(intervals [][]int) [][]int {\n\tsort.Slice(intervals, func(i, j int) bool { return intervals[i][0] < intervals[j][0] })\n\tvar out [][]int\n\tfor _, iv := range intervals {\n\t\tif n := len(out); n > 0 && iv[0] <= out[n-1][1] {\n\t\t\tout[n-1][1] = max(out[n-1][1], iv[1]) // overlap: extend\n\t\t} else {\n\t\t\tout = append(out, iv)\n\t\t}\n\t}\n\treturn out\n}\n\nfunc searchInsert(nums []int, target int) int {\n\treturn sort.Search(len(nums), func(i int) bool { return nums[i] >= target })\n}\n\ntype person struct {\n\tname string\n\tage  int\n}\n\nfunc main() {\n\tfmt.Println(merge([][]int{{8, 10}, {1, 3}, {2, 6}, {15, 18}}))\n\tnums := []int{1, 3, 5, 6}\n\tfmt.Println(searchInsert(nums, 5), searchInsert(nums, 2), searchInsert(nums, 7))\n\n\tpeople := []person{{\"ann\", 30}, {\"bob\", 25}, {\"cat\", 30}, {\"dan\", 25}}\n\tslices.SortStableFunc(people, func(a, b person) int { return cmp.Compare(a.age, b.age) })\n\tfmt.Println(people)              // same age: original order\n\n\twords := []string{\"pear\", \"fig\", \"apple\", \"kiwi\"}\n\tsort.Slice(words, func(i, j int) bool { // by length, then alphabetically\n\t\tif len(words[i]) != len(words[j]) {\n\t\t\treturn len(words[i]) < len(words[j])\n\t\t}\n\t\treturn words[i] < words[j]\n\t})\n\tfmt.Println(words)\n\n\ti, found := slices.BinarySearch(nums, 4)\n\tfmt.Println(i, found)\n}\n```\n\n```text\n[[1 6] [8 10] [15 18]]\n2 1 4\n[{bob 25} {dan 25} {ann 30} {cat 30}]\n[fig kiwi pear apple]\n2 false\n```\n\n## Common mistakes\n\n- Treating the parameters of `sort.Slice`'s function as elements, as in `func(a, b int) bool { return a < b }`. They are indices.\n- A `<=` comparison that scrambles the result.\n- Using `sort.Slice` when the sort must be stable.\n- A `sort.Search` condition that runs backwards (true, then false), which makes the returned index meaningless.",
+          "quiz": [
+            {
+              "qZh": "sort.Slice(a, less) 里 less 的两个参数是什么？",
+              "qEn": "In sort.Slice(a, less), what are less's two parameters?",
+              "choices": [
+                {
+                  "zh": "两个元素的值",
+                  "en": "Two element values"
+                },
+                {
+                  "zh": "两个元素的指针",
+                  "en": "Pointers to two elements"
+                },
+                {
+                  "zh": "两个下标 i 和 j",
+                  "en": "Two indices, i and j"
+                },
+                {
+                  "zh": "当前元素和它的下标",
+                  "en": "The current element and its index"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "sort.Slice 的比较函数是 func(i, j int) bool，通过闭包访问 a[i]、a[j]。slices.SortFunc 的比较函数接收的才是元素。",
+              "whyEn": "sort.Slice takes func(i, j int) bool and reads a[i] and a[j] through the closure. It is slices.SortFunc whose function receives elements."
+            },
+            {
+              "qZh": "a = [1, 3, 5, 6]，sort.Search(len(a), func(i int) bool { return a[i] >= 4 }) 返回什么？",
+              "qEn": "a = [1, 3, 5, 6]. What does sort.Search(len(a), func(i int) bool { return a[i] >= 4 }) return?",
+              "choices": [
+                {
+                  "zh": "1",
+                  "en": "1"
+                },
+                {
+                  "zh": "-1",
+                  "en": "-1"
+                },
+                {
+                  "zh": "4",
+                  "en": "4"
+                },
+                {
+                  "zh": "2",
+                  "en": "2"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "sort.Search 返回第一个让条件为 true 的下标。a[2] = 5 是第一个 >= 4 的元素。全都不满足时返回 len(a)，不会返回 -1。",
+              "whyEn": "sort.Search returns the first index where the condition is true. a[2] = 5 is the first element >= 4. When none qualifies it returns len(a), never -1."
+            },
+            {
+              "qZh": "相等的元素必须保持原来的顺序，应该用哪个函数？",
+              "qEn": "Equal elements must keep their original order. Which function do you use?",
+              "choices": [
+                {
+                  "zh": "sort.SliceStable",
+                  "en": "sort.SliceStable"
+                },
+                {
+                  "zh": "sort.Slice",
+                  "en": "sort.Slice"
+                },
+                {
+                  "zh": "slices.Sort",
+                  "en": "slices.Sort"
+                },
+                {
+                  "zh": "sort.Ints",
+                  "en": "sort.Ints"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "sort.Slice、slices.Sort 都不保证稳定；sort.Ints 只能排 []int。稳定排序用 sort.SliceStable 或 slices.SortStableFunc。",
+              "whyEn": "sort.Slice and slices.Sort are not guaranteed stable, and sort.Ints only sorts []int. For stability use sort.SliceStable or slices.SortStableFunc."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1288",
+              "zh": "删除被覆盖区间",
+              "en": "Remove Covered Intervals"
+            },
+            {
+              "id": "lc-34",
+              "zh": "在排序数组中查找元素的第一个和最后一个位置",
+              "en": "Find First and Last Position of Element in Sorted Array"
+            },
+            {
+              "id": "lc-875",
+              "zh": "爱吃香蕉的珂珂",
+              "en": "Koko Eating Bananas"
+            }
+          ],
+          "solves": [
+            "lc-56",
+            "lc-35"
+          ]
+        },
+        {
+          "slug": "container-heap",
+          "titleZh": "container/heap 样板",
+          "titleEn": "The container/heap boilerplate",
+          "bodyZh": "Go 没有现成的优先队列类型，要用 `container/heap`：你提供一个满足接口的切片类型，`heap` 包负责维护堆的顺序。样板代码有十几行，面试前最好能默写出来。堆的原理见\"Big-O 与数据结构速成课\"的堆一课。\n\n## 接口：五个方法\n\n```go\ntype Interface interface {\n    sort.Interface        // Len() int、Less(i, j int) bool、Swap(i, j int)\n    Push(x any)           // 把 x 加到末尾\n    Pop() any             // 删除并返回最后一个元素\n}\n```\n\n最容易出错的是 `Push` 和 `Pop`：\n\n- 它们是给 `heap` 包调用的，你自己要调用的是 `heap.Push(h, x)` 和 `heap.Pop(h)`。直接调用 `h.Push(x)` 只会追加到末尾，不会调整堆。\n- 你写的 `Pop` 只要**删除并返回最后一个元素**。`heap.Pop` 会先把堆顶换到末尾，再调用你的 `Pop`。\n- `Push`、`Pop` 要修改切片的长度，所以接收者必须是指针 `*IntHeap`。\n\n## 其他操作\n\n```go\nheap.Init(h)          // 把任意顺序的切片整理成堆，O(n)\n(*h)[0]               // 堆顶，O(1)\nheap.Fix(h, i)        // 改了第 i 个元素的优先级之后调用，O(log n)\nheap.Remove(h, i)     // 删除第 i 个元素，O(log n)\n```\n\n`Less` 决定堆顶：`h[i] < h[j]` 是最小堆，改成 `h[i] > h[j]` 就是最大堆。堆里放结构体时，`Less` 比较对应的字段即可，比如 `q[i].dist < q[j].dist`。\n\n## 例子：第 K 大的元素、数据流中的第 K 大\n\n```go run\npackage main\n\nimport (\n\t\"container/heap\"\n\t\"fmt\"\n)\n\n// IntHeap 是 int 的最小堆\ntype IntHeap []int\n\nfunc (h IntHeap) Len() int           { return len(h) }\nfunc (h IntHeap) Less(i, j int) bool { return h[i] < h[j] } // 改成 > 就是最大堆\nfunc (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\nfunc (h *IntHeap) Push(x any)        { *h = append(*h, x.(int)) }\nfunc (h *IntHeap) Pop() any {\n\told := *h\n\tx := old[len(old)-1] // heap.Pop 已经把堆顶换到了末尾\n\t*h = old[:len(old)-1]\n\treturn x\n}\n\nfunc findKthLargest(nums []int, k int) int {\n\th := &IntHeap{}\n\tfor _, x := range nums {\n\t\theap.Push(h, x)\n\t\tif h.Len() > k {\n\t\t\theap.Pop(h)              // 弹出最小的，留下最大的 k 个\n\t\t}\n\t}\n\treturn (*h)[0]\n}\n\ntype KthLargest struct {\n\th *IntHeap\n\tk int\n}\n\nfunc Constructor(k int, nums []int) KthLargest {\n\tkl := KthLargest{&IntHeap{}, k}\n\tfor _, x := range nums {\n\t\tkl.Add(x)\n\t}\n\treturn kl\n}\n\nfunc (kl *KthLargest) Add(val int) int {\n\theap.Push(kl.h, val)\n\tif kl.h.Len() > kl.k {\n\t\theap.Pop(kl.h)\n\t}\n\treturn (*kl.h)[0]\n}\n\nfunc main() {\n\tfmt.Println(findKthLargest([]int{3, 2, 1, 5, 6, 4}, 2))\n\tkl := Constructor(3, []int{4, 5, 8, 2})\n\tfmt.Println(kl.Add(3), kl.Add(5), kl.Add(10), kl.Add(9), kl.Add(4))\n\n\th := &IntHeap{5, 2, 8, 1}\n\theap.Init(h)                     // O(n) 建堆\n\t(*h)[0] = 9                      // 改了堆顶的值……\n\theap.Fix(h, 0)                   // ……再恢复堆的顺序\n\tvar out []int\n\tfor h.Len() > 0 {\n\t\tout = append(out, heap.Pop(h).(int))\n\t}\n\tfmt.Println(out)\n}\n```\n\n```text\n5\n4 5 5 8 8\n[2 5 8 9]\n```\n\n## 常见错误\n\n- 调用 `h.Push(x)`、`h.Pop()` 而不是 `heap.Push(h, x)`、`heap.Pop(h)`，堆的顺序没有维护。\n- 自己的 `Pop` 返回了 `old[0]`。应该返回最后一个元素。\n- `Push`、`Pop` 的接收者写成值类型，修改没有生效。\n- 改了堆里元素的优先级，忘了调用 `heap.Fix`。",
+          "bodyEn": "Go has no ready-made priority queue type; you use `container/heap`: you supply a slice type that satisfies an interface, and the `heap` package keeps it in heap order. The boilerplate is about a dozen lines, worth being able to write from memory before an interview. How heaps work is covered in the Big-O course's heap chapter.\n\n## The interface: five methods\n\n```go\ntype Interface interface {\n    sort.Interface        // Len() int, Less(i, j int) bool, Swap(i, j int)\n    Push(x any)           // add x at the end\n    Pop() any             // remove and return the last element\n}\n```\n\n`Push` and `Pop` are where mistakes happen:\n\n- They are for the `heap` package to call; you call `heap.Push(h, x)` and `heap.Pop(h)`. Calling `h.Push(x)` yourself only appends, without restoring the heap.\n- Your `Pop` only **removes and returns the last element**. `heap.Pop` swaps the top to the end first, then calls your `Pop`.\n- `Push` and `Pop` change the slice's length, so their receiver must be a pointer, `*IntHeap`.\n\n## Other operations\n\n```go\nheap.Init(h)          // turn a slice in any order into a heap, O(n)\n(*h)[0]               // the top, O(1)\nheap.Fix(h, i)        // call after changing element i's priority, O(log n)\nheap.Remove(h, i)     // remove element i, O(log n)\n```\n\n`Less` decides the top: `h[i] < h[j]` is a min-heap, and `h[i] > h[j]` makes a max-heap. For structs in the heap, `Less` compares the right field, such as `q[i].dist < q[j].dist`.\n\n## Examples: the k-th largest element, in an array and in a stream\n\n```go run\npackage main\n\nimport (\n\t\"container/heap\"\n\t\"fmt\"\n)\n\n// IntHeap is a min-heap of ints.\ntype IntHeap []int\n\nfunc (h IntHeap) Len() int           { return len(h) }\nfunc (h IntHeap) Less(i, j int) bool { return h[i] < h[j] } // > makes a max-heap\nfunc (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\nfunc (h *IntHeap) Push(x any)        { *h = append(*h, x.(int)) }\nfunc (h *IntHeap) Pop() any {\n\told := *h\n\tx := old[len(old)-1] // heap.Pop has already moved the top to the end\n\t*h = old[:len(old)-1]\n\treturn x\n}\n\nfunc findKthLargest(nums []int, k int) int {\n\th := &IntHeap{}\n\tfor _, x := range nums {\n\t\theap.Push(h, x)\n\t\tif h.Len() > k {\n\t\t\theap.Pop(h)              // drop the smallest, keep the k largest\n\t\t}\n\t}\n\treturn (*h)[0]\n}\n\ntype KthLargest struct {\n\th *IntHeap\n\tk int\n}\n\nfunc Constructor(k int, nums []int) KthLargest {\n\tkl := KthLargest{&IntHeap{}, k}\n\tfor _, x := range nums {\n\t\tkl.Add(x)\n\t}\n\treturn kl\n}\n\nfunc (kl *KthLargest) Add(val int) int {\n\theap.Push(kl.h, val)\n\tif kl.h.Len() > kl.k {\n\t\theap.Pop(kl.h)\n\t}\n\treturn (*kl.h)[0]\n}\n\nfunc main() {\n\tfmt.Println(findKthLargest([]int{3, 2, 1, 5, 6, 4}, 2))\n\tkl := Constructor(3, []int{4, 5, 8, 2})\n\tfmt.Println(kl.Add(3), kl.Add(5), kl.Add(10), kl.Add(9), kl.Add(4))\n\n\th := &IntHeap{5, 2, 8, 1}\n\theap.Init(h)                     // O(n) heapify\n\t(*h)[0] = 9                      // change the top's value...\n\theap.Fix(h, 0)                   // ...then restore heap order\n\tvar out []int\n\tfor h.Len() > 0 {\n\t\tout = append(out, heap.Pop(h).(int))\n\t}\n\tfmt.Println(out)\n}\n```\n\n```text\n5\n4 5 5 8 8\n[2 5 8 9]\n```\n\n## Common mistakes\n\n- Calling `h.Push(x)` or `h.Pop()` instead of `heap.Push(h, x)` or `heap.Pop(h)`, so heap order is never maintained.\n- Returning `old[0]` from your own `Pop`. It must return the last element.\n- Giving `Push` and `Pop` a value receiver, so their changes are lost.\n- Changing an element's priority inside the heap and forgetting `heap.Fix`.",
+          "quiz": [
+            {
+              "qZh": "h 实现了 heap.Interface，往堆里加元素应该写？",
+              "qEn": "h implements heap.Interface. How do you add an element to the heap?",
+              "choices": [
+                {
+                  "zh": "h.Push(x)",
+                  "en": "h.Push(x)"
+                },
+                {
+                  "zh": "heap.Push(h, x)",
+                  "en": "heap.Push(h, x)"
+                },
+                {
+                  "zh": "*h = append(*h, x)",
+                  "en": "*h = append(*h, x)"
+                },
+                {
+                  "zh": "heap.Add(h, x)",
+                  "en": "heap.Add(h, x)"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "heap.Push 先调用你的 Push 把元素放到末尾，再把它上浮到正确位置。直接调用 h.Push 或 append 只放到末尾，堆的顺序被破坏。heap 包没有 Add。",
+              "whyEn": "heap.Push calls your Push to put the element at the end, then sifts it up. Calling h.Push or append yourself only appends and breaks the heap order. The heap package has no Add."
+            },
+            {
+              "qZh": "自己实现的 Pop() 方法应该返回哪个元素？",
+              "qEn": "Which element should your own Pop() method return?",
+              "choices": [
+                {
+                  "zh": "切片的第一个元素",
+                  "en": "The first element of the slice"
+                },
+                {
+                  "zh": "最小的元素，需要自己查找",
+                  "en": "The smallest element, found by a search"
+                },
+                {
+                  "zh": "切片的最后一个元素",
+                  "en": "The last element of the slice"
+                },
+                {
+                  "zh": "随机一个元素",
+                  "en": "Any element"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "heap.Pop 会先把堆顶和最后一个元素交换、调整好剩下的部分，再调用你的 Pop。所以你的 Pop 只需删除并返回最后一个元素。",
+              "whyEn": "heap.Pop first swaps the top with the last element and fixes the rest, then calls your Pop. So your Pop only removes and returns the last element."
+            },
+            {
+              "qZh": "要把 IntHeap 改成最大堆，应该改哪里？",
+              "qEn": "What do you change to turn IntHeap into a max-heap?",
+              "choices": [
+                {
+                  "zh": "Pop 改成返回第一个元素",
+                  "en": "Make Pop return the first element"
+                },
+                {
+                  "zh": "Swap 里交换的顺序反过来",
+                  "en": "Reverse the order inside Swap"
+                },
+                {
+                  "zh": "调用 heap.Init 时传 true",
+                  "en": "Pass true to heap.Init"
+                },
+                {
+                  "zh": "Less 改成 h[i] > h[j]",
+                  "en": "Make Less return h[i] > h[j]"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "Less 决定谁在堆顶。h[i] > h[j] 让大的元素排在前面，堆顶就是最大值。其他方法都不用动。",
+              "whyEn": "Less decides what is on top. h[i] > h[j] puts larger elements first, so the top is the maximum. Nothing else changes."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-1338",
+              "zh": "数组大小减半",
+              "en": "Reduce Array Size to The Half"
+            },
+            {
+              "id": "lc-373",
+              "zh": "查找和最小的 K 对数字",
+              "en": "Find K Pairs with Smallest Sums"
+            },
+            {
+              "id": "lc-1642",
+              "zh": "可以到达的最远建筑",
+              "en": "Furthest Building You Can Reach"
+            }
+          ],
+          "solves": [
+            "lc-215",
+            "lc-703"
+          ]
+        },
+        {
+          "slug": "strings-runes",
+          "titleZh": "strings.Builder、byte 与 rune",
+          "titleEn": "strings.Builder, bytes and runes",
+          "bodyZh": "Go 的字符串是**只读的字节序列**，按 UTF-8 编码。题目里全是 ASCII 时按字节处理就够了；一旦出现中文或带重音的字母，就要分清 `byte` 和 `rune`。\n\n## byte 和 rune\n\n- `len(s)` 是**字节数**，不是字符数。\n- `s[i]` 是第 i 个**字节**，类型是 `byte`（`uint8`）。\n- `for i, r := range s` 按**字符**遍历：`r` 是 `rune`（`int32`，一个 Unicode 码点），`i` 是这个字符起始的字节下标。\n- `[]rune(s)` 转成字符数组后可以按下标取第 i 个字符，`len([]rune(s))` 是字符数。\n- `[]byte(s)` 转成可修改的字节数组，改完用 `string(b)` 转回去。两种转换都要复制，是 O(n)。\n\nASCII 字符的常用写法：`s[i] - 'a'` 得到 0~25，`s[i] >= '0' && s[i] <= '9'` 判断数字。处理 rune 用 `unicode` 包：`unicode.IsLetter`、`unicode.IsDigit`、`unicode.ToLower`。\n\n## 拼接用 strings.Builder\n\n字符串不可修改，循环里 `s += x` 每次都复制，总共 O(n²)。用 `strings.Builder`：\n\n```go\nvar sb strings.Builder\nsb.WriteString(\"ab\")\nsb.WriteByte('c')\nsb.WriteRune('é')\nsb.String()\n```\n\n## strings 和 strconv\n\n```go\nstrings.Split(\"a,b,c\", \",\")      // [a b c]\nstrings.Fields(\"  a  b \")        // 按空白切分并去掉空串：[a b]\nstrings.Join(parts, \"-\")\nstrings.Contains(s, \"ab\"); strings.Index(s, \"ab\")   // 找不到返回 -1\nstrings.HasPrefix(s, \"ab\"); strings.Repeat(\"ab\", 3)\nstrings.ToLower(s); strings.TrimSpace(s); strings.Count(s, \"a\")\nstrconv.Itoa(42)                 // \"42\"\nn, err := strconv.Atoi(\"42\")     // 失败时 err 不为 nil\nstrconv.FormatInt(5, 2)          // \"101\"\n```\n\n**一个坑**：`string(65)` 得到的是 `\"A\"`（码点 65 对应的字符），不是 `\"65\"`。数字转字符串一律用 `strconv.Itoa`。\n\n## 例子：验证回文串、反转字符串\n\n```go run\npackage main\n\nimport (\n\t\"fmt\"\n\t\"strconv\"\n\t\"strings\"\n\t\"unicode\"\n)\n\nfunc isPalindrome(s string) bool {\n\tvar b []rune\n\tfor _, r := range s {\n\t\tif unicode.IsLetter(r) || unicode.IsDigit(r) {\n\t\t\tb = append(b, unicode.ToLower(r))\n\t\t}\n\t}\n\tfor i, j := 0, len(b)-1; i < j; i, j = i+1, j-1 {\n\t\tif b[i] != b[j] {\n\t\t\treturn false\n\t\t}\n\t}\n\treturn true\n}\n\nfunc reverseString(s []byte) {\n\tfor i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {\n\t\ts[i], s[j] = s[j], s[i]\n\t}\n}\n\nfunc main() {\n\tfmt.Println(isPalindrome(\"A man, a plan, a canal: Panama\"), isPalindrome(\"race a car\"))\n\ts := []byte(\"hello\")\n\treverseString(s)\n\tfmt.Println(string(s))\n\n\tword := \"héllo\"                  // é 在 UTF-8 里占 2 个字节\n\tfmt.Println(len(word), len([]rune(word)), word[1], string([]rune(word)[1]))\n\tfor i, r := range \"aé\" {\n\t\tfmt.Println(i, string(r))\n\t}\n\n\tvar sb strings.Builder\n\tfor i := 0; i < 3; i++ {\n\t\tsb.WriteString(strconv.Itoa(i))\n\t\tsb.WriteByte(',')\n\t}\n\tfmt.Println(sb.String(), strings.Fields(\"  a  b c \"), strings.Join([]string{\"x\", \"y\"}, \"-\"))\n\tn, err := strconv.Atoi(\"42x\")\n\tfmt.Println(n, err != nil, string(rune(65)), strconv.Itoa(65))\n}\n```\n\n```text\ntrue false\nolleh\n6 5 195 é\n0 a\n1 é\n0,1,2, [a b c] x-y\n0 true A 65\n```\n\n`word[1]` 是 195：这是 é 的第一个字节，不是一个完整的字符。\n\n## 常见错误\n\n- 用 `len(s)` 当字符数，遇到非 ASCII 字符就错。\n- 用 `s[i]` 取\"第 i 个字符\"，对多字节字符只取到半个。\n- 循环里用 `+=` 拼接字符串。\n- 用 `string(n)` 把整数转成字符串。",
+          "bodyEn": "A Go string is a **read-only sequence of bytes**, encoded as UTF-8. When a problem is all ASCII, working byte by byte is enough; once accented letters or Chinese appear, you must tell `byte` from `rune`.\n\n## byte and rune\n\n- `len(s)` is the number of **bytes**, not characters.\n- `s[i]` is the i-th **byte**, of type `byte` (`uint8`).\n- `for i, r := range s` walks **characters**: `r` is a `rune` (`int32`, one Unicode code point) and `i` is the byte index where it starts.\n- `[]rune(s)` gives a character array you can index, and `len([]rune(s))` is the character count.\n- `[]byte(s)` gives a mutable byte array; convert back with `string(b)`. Both conversions copy, O(n).\n\nFor ASCII: `s[i] - 'a'` gives 0..25, and `s[i] >= '0' && s[i] <= '9'` tests for a digit. For runes, use the `unicode` package: `unicode.IsLetter`, `unicode.IsDigit`, `unicode.ToLower`.\n\n## Build strings with strings.Builder\n\nStrings cannot change, so `s += x` in a loop copies every time, O(n²) overall. Use a `strings.Builder`:\n\n```go\nvar sb strings.Builder\nsb.WriteString(\"ab\")\nsb.WriteByte('c')\nsb.WriteRune('é')\nsb.String()\n```\n\n## strings and strconv\n\n```go\nstrings.Split(\"a,b,c\", \",\")      // [a b c]\nstrings.Fields(\"  a  b \")        // split on whitespace, dropping empty pieces: [a b]\nstrings.Join(parts, \"-\")\nstrings.Contains(s, \"ab\"); strings.Index(s, \"ab\")   // -1 when not found\nstrings.HasPrefix(s, \"ab\"); strings.Repeat(\"ab\", 3)\nstrings.ToLower(s); strings.TrimSpace(s); strings.Count(s, \"a\")\nstrconv.Itoa(42)                 // \"42\"\nn, err := strconv.Atoi(\"42\")     // err is non-nil on failure\nstrconv.FormatInt(5, 2)          // \"101\"\n```\n\n**A trap**: `string(65)` is `\"A\"` (the character at code point 65), not `\"65\"`. Convert numbers with `strconv.Itoa`.\n\n## Examples: valid palindrome, reverse a string\n\n```go run\npackage main\n\nimport (\n\t\"fmt\"\n\t\"strconv\"\n\t\"strings\"\n\t\"unicode\"\n)\n\nfunc isPalindrome(s string) bool {\n\tvar b []rune\n\tfor _, r := range s {\n\t\tif unicode.IsLetter(r) || unicode.IsDigit(r) {\n\t\t\tb = append(b, unicode.ToLower(r))\n\t\t}\n\t}\n\tfor i, j := 0, len(b)-1; i < j; i, j = i+1, j-1 {\n\t\tif b[i] != b[j] {\n\t\t\treturn false\n\t\t}\n\t}\n\treturn true\n}\n\nfunc reverseString(s []byte) {\n\tfor i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {\n\t\ts[i], s[j] = s[j], s[i]\n\t}\n}\n\nfunc main() {\n\tfmt.Println(isPalindrome(\"A man, a plan, a canal: Panama\"), isPalindrome(\"race a car\"))\n\ts := []byte(\"hello\")\n\treverseString(s)\n\tfmt.Println(string(s))\n\n\tword := \"héllo\"                  // é takes 2 bytes in UTF-8\n\tfmt.Println(len(word), len([]rune(word)), word[1], string([]rune(word)[1]))\n\tfor i, r := range \"aé\" {\n\t\tfmt.Println(i, string(r))\n\t}\n\n\tvar sb strings.Builder\n\tfor i := 0; i < 3; i++ {\n\t\tsb.WriteString(strconv.Itoa(i))\n\t\tsb.WriteByte(',')\n\t}\n\tfmt.Println(sb.String(), strings.Fields(\"  a  b c \"), strings.Join([]string{\"x\", \"y\"}, \"-\"))\n\tn, err := strconv.Atoi(\"42x\")\n\tfmt.Println(n, err != nil, string(rune(65)), strconv.Itoa(65))\n}\n```\n\n```text\ntrue false\nolleh\n6 5 195 é\n0 a\n1 é\n0,1,2, [a b c] x-y\n0 true A 65\n```\n\n`word[1]` is 195: the first byte of é, not a whole character.\n\n## Common mistakes\n\n- Using `len(s)` as a character count and breaking on non-ASCII text.\n- Reading \"the i-th character\" with `s[i]` and getting half of a multi-byte character.\n- Building a string with `+=` in a loop.\n- Converting an integer to a string with `string(n)`.",
+          "quiz": [
+            {
+              "qZh": "s := \"héllo\"，len(s) 是多少？",
+              "qEn": "s := \"héllo\". What is len(s)?",
+              "choices": [
+                {
+                  "zh": "6",
+                  "en": "6"
+                },
+                {
+                  "zh": "5",
+                  "en": "5"
+                },
+                {
+                  "zh": "4",
+                  "en": "4"
+                },
+                {
+                  "zh": "10",
+                  "en": "10"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "len 返回字节数。é 在 UTF-8 里占 2 个字节，所以是 6。字符数要用 len([]rune(s))，等于 5。",
+              "whyEn": "len counts bytes. é takes 2 bytes in UTF-8, so the answer is 6. The character count is len([]rune(s)), which is 5."
+            },
+            {
+              "qZh": "for i, r := range s 遍历字符串时，r 是什么？",
+              "qEn": "In for i, r := range s over a string, what is r?",
+              "choices": [
+                {
+                  "zh": "一个 byte",
+                  "en": "A byte"
+                },
+                {
+                  "zh": "一个 rune（Unicode 码点）",
+                  "en": "A rune (a Unicode code point)"
+                },
+                {
+                  "zh": "一个长度为 1 的 string",
+                  "en": "A one-character string"
+                },
+                {
+                  "zh": "字符的下标",
+                  "en": "The character's index"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "range 按 UTF-8 解码，r 是 rune，i 是这个字符起始的字节下标。按下标 s[i] 取到的才是 byte。",
+              "whyEn": "range decodes UTF-8: r is a rune and i is the byte index where it starts. Indexing with s[i] is what gives a byte."
+            },
+            {
+              "qZh": "把整数 65 转成字符串 \"65\"，应该用哪个？",
+              "qEn": "Which call turns the integer 65 into the string \"65\"?",
+              "choices": [
+                {
+                  "zh": "string(65)",
+                  "en": "string(65)"
+                },
+                {
+                  "zh": "string(rune(65))",
+                  "en": "string(rune(65))"
+                },
+                {
+                  "zh": "strconv.Itoa(65)",
+                  "en": "strconv.Itoa(65)"
+                },
+                {
+                  "zh": "strconv.Atoi(65)",
+                  "en": "strconv.Atoi(65)"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "string(65) 和 string(rune(65)) 都得到码点 65 对应的字符 \"A\"。Atoi 是反方向：字符串转整数。",
+              "whyEn": "string(65) and string(rune(65)) both give \"A\", the character at code point 65. Atoi goes the other way: string to integer."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-917",
+              "zh": "仅仅反转字母",
+              "en": "Reverse Only Letters"
+            },
+            {
+              "id": "lc-345",
+              "zh": "反转字符串中的元音字母",
+              "en": "Reverse Vowels of a String"
+            },
+            {
+              "id": "lc-680",
+              "zh": "验证回文串 II",
+              "en": "Valid Palindrome II"
+            }
+          ],
+          "solves": [
+            "lc-125",
+            "lc-344"
+          ]
+        },
+        {
+          "slug": "pitfalls",
+          "titleZh": "整数、range 与其他坑",
+          "titleEn": "Integers, range and other traps",
+          "bodyZh": "这一课集中讲 Go 刷题时容易踩的坑：整数的位数和溢出、`range` 拿到的是副本、`:=` 造成的变量遮蔽，以及输入输出的速度。\n\n## int 是 64 位\n\n在 64 位平台上（判题机就是），`int` 和 `int64` 一样是 64 位，范围约 ±9.2×10¹⁸。所以很多在 C++、Java 里要用 `long long`、`long` 的地方，Go 直接用 `int` 就够了，比如 x 不超过 2³¹ 时计算 `mid * mid`。\n\n但是：\n\n- **运行时溢出不报错，直接绕回**：值为 `math.MaxInt64` 的 `int` 变量再加 1，就变成了 `math.MinInt64`。只有常量表达式溢出才会在编译时报错。\n- 题目或接口明确用 `int32` 时，它仍然是 32 位，照样会溢出。\n- 不同整数类型之间不会自动转换，`int32` 和 `int` 相加要显式写 `int(a) + b`。\n- 除法向零取整：`-7 / 2` 是 -3，`-7 % 2` 是 -1。\n\n## range 拿到的是副本\n\n`for _, p := range pts` 里的 `p` 是元素的**副本**。修改 `p.x` 不会改到切片里的元素，要写 `pts[i].x = ...`。元素是很大的结构体时，每轮复制也有开销。\n\n## := 会悄悄声明新变量\n\n在 `if`、`for` 的代码块里写 `x := ...`，即使外层已经有 `x`，也会声明一个**新的**同名变量，块结束后外层的 `x` 没有变化。想给外层变量赋值，用 `=`。\n\n## 其他\n\n- 声明了没用的变量、导入了没用的包，都是编译错误。调试时临时注释掉代码，要记得处理这些变量。\n- 没有三元运算符，没有 `while`（用 `for cond { }`）。\n- Go 1.21 起有内置的 `min`、`max`；更早的版本要自己写。常量 `math.MaxInt`、`math.MinInt` 适合当初始的最大、最小值。\n\n## 读写大量数据\n\n`fmt.Scan` 不带缓冲，读几十万个数会很慢。用带缓冲的读写：\n\n```go\nin := bufio.NewReader(os.Stdin)\nout := bufio.NewWriter(os.Stdout)\ndefer out.Flush()             // 忘了 Flush，输出就丢了\nvar n int\nfmt.Fscan(in, &n)\nfmt.Fprintln(out, n)\n```\n\n## 例子：x 的平方根，以及上面这些坑\n\n```go run\npackage main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\nfunc mySqrt(x int) int {\n\tlo, hi := 0, x\n\tfor lo < hi {\n\t\tmid := lo + (hi-lo+1)/2\n\t\tif mid*mid <= x {            // int 是 64 位：(2³¹)² 也放得下\n\t\t\tlo = mid\n\t\t} else {\n\t\t\thi = mid - 1\n\t\t}\n\t}\n\treturn lo\n}\n\ntype point struct{ x, y int }\n\nfunc main() {\n\tfmt.Println(mySqrt(8), mySqrt(math.MaxInt32))\n\n\tbig := math.MaxInt64\n\tbig++                            // 静默绕回，不会 panic\n\tfmt.Println(big == math.MinInt64)\n\tvar small int32 = math.MaxInt32\n\tsmall++\n\tfmt.Println(small)\n\tfmt.Println(-7/2, -7%2)\n\n\tpts := []point{{1, 2}, {3, 4}}\n\tfor _, p := range pts {\n\t\tp.x = 100                    // p 是副本\n\t}\n\tfmt.Println(pts)\n\tfor i := range pts {\n\t\tpts[i].x = 100               // 改的是切片里的元素\n\t}\n\tfmt.Println(pts)\n\n\tbest := -1\n\tif v := 7; v > 0 {\n\t\tbest := v                    // 新变量，遮蔽了外层的 best\n\t\t_ = best\n\t}\n\tfmt.Println(best)\n}\n```\n\n```text\n2 46340\ntrue\n-2147483648\n-3 -1\n[{1 2} {3 4}]\n[{100 2} {100 4}]\n-1\n```\n\n## 常见错误\n\n- 在 `for _, v := range` 里修改 `v`，以为改到了切片。\n- 在 `if` 块里用 `:=` 给外层变量\"赋值\"，结果外层没变。\n- 用 `bufio.Writer` 输出却忘了 `Flush`。\n- 以为 Go 的整数溢出会 panic，于是没检查范围。",
+          "bodyEn": "This lesson collects the traps Go solutions fall into: integer width and overflow, `range` handing out copies, variables shadowed by `:=`, and input and output speed.\n\n## int is 64 bits\n\nOn a 64-bit platform (the judge is one), `int` is 64 bits like `int64`, roughly ±9.2×10¹⁸. So many places that need `long long` in C++ or `long` in Java can use plain `int` in Go, such as `mid * mid` when x is at most 2³¹.\n\nHowever:\n\n- **Overflow at run time raises no error; it wraps**: an `int` variable holding `math.MaxInt64` plus 1 becomes `math.MinInt64`. Only constant expressions that overflow are rejected at compile time.\n- When a problem or an API says `int32`, it is still 32 bits and still overflows.\n- Integer types never convert implicitly: adding an `int32` and an `int` needs `int(a) + b`.\n- Division truncates toward zero: `-7 / 2` is -3 and `-7 % 2` is -1.\n\n## range hands out copies\n\nIn `for _, p := range pts`, `p` is a **copy** of the element. Changing `p.x` does not change the slice; write `pts[i].x = ...`. With large structs, the copy also costs time on every iteration.\n\n## := quietly declares a new variable\n\nWriting `x := ...` inside an `if` or `for` block declares a **new** variable with the same name, even when an outer `x` exists, and the outer one is unchanged after the block. To assign to the outer variable, use `=`.\n\n## Other things\n\n- An unused variable or an unused import is a compile error. When you comment code out while debugging, deal with the variables it leaves behind.\n- There is no ternary operator and no `while` (write `for cond { }`).\n- Built-in `min` and `max` exist from Go 1.21; earlier versions need your own. The constants `math.MaxInt` and `math.MinInt` make good starting values for a minimum or maximum.\n\n## Reading and writing a lot of data\n\n`fmt.Scan` is unbuffered and slow for hundreds of thousands of numbers. Use buffered I/O:\n\n```go\nin := bufio.NewReader(os.Stdin)\nout := bufio.NewWriter(os.Stdout)\ndefer out.Flush()             // forget Flush and the output is lost\nvar n int\nfmt.Fscan(in, &n)\nfmt.Fprintln(out, n)\n```\n\n## Example: square root of x, and the traps above\n\n```go run\npackage main\n\nimport (\n\t\"fmt\"\n\t\"math\"\n)\n\nfunc mySqrt(x int) int {\n\tlo, hi := 0, x\n\tfor lo < hi {\n\t\tmid := lo + (hi-lo+1)/2\n\t\tif mid*mid <= x {            // int is 64 bits: even (2³¹)² fits\n\t\t\tlo = mid\n\t\t} else {\n\t\t\thi = mid - 1\n\t\t}\n\t}\n\treturn lo\n}\n\ntype point struct{ x, y int }\n\nfunc main() {\n\tfmt.Println(mySqrt(8), mySqrt(math.MaxInt32))\n\n\tbig := math.MaxInt64\n\tbig++                            // wraps silently, no panic\n\tfmt.Println(big == math.MinInt64)\n\tvar small int32 = math.MaxInt32\n\tsmall++\n\tfmt.Println(small)\n\tfmt.Println(-7/2, -7%2)\n\n\tpts := []point{{1, 2}, {3, 4}}\n\tfor _, p := range pts {\n\t\tp.x = 100                    // p is a copy\n\t}\n\tfmt.Println(pts)\n\tfor i := range pts {\n\t\tpts[i].x = 100               // changes the element in the slice\n\t}\n\tfmt.Println(pts)\n\n\tbest := -1\n\tif v := 7; v > 0 {\n\t\tbest := v                    // a new variable shadowing the outer best\n\t\t_ = best\n\t}\n\tfmt.Println(best)\n}\n```\n\n```text\n2 46340\ntrue\n-2147483648\n-3 -1\n[{1 2} {3 4}]\n[{100 2} {100 4}]\n-1\n```\n\n## Common mistakes\n\n- Changing `v` inside `for _, v := range` and expecting the slice to change.\n- \"Assigning\" to an outer variable with `:=` inside an `if` block, leaving the outer one unchanged.\n- Writing through a `bufio.Writer` and forgetting `Flush`.\n- Assuming Go integer overflow panics, and so never checking the range.",
+          "quiz": [
+            {
+              "qZh": "在 64 位判题机上，Go 的 int 是多少位？",
+              "qEn": "On a 64-bit judge, how many bits is a Go int?",
+              "choices": [
+                {
+                  "zh": "32 位",
+                  "en": "32 bits"
+                },
+                {
+                  "zh": "16 位",
+                  "en": "16 bits"
+                },
+                {
+                  "zh": "不定长，不会溢出",
+                  "en": "Unbounded; it never overflows"
+                },
+                {
+                  "zh": "64 位",
+                  "en": "64 bits"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "int 的位数随平台而定，64 位平台上是 64 位，溢出时静默绕回。Go 的 int 不是 Python 那样的大整数。",
+              "whyEn": "int follows the platform, so it is 64 bits on a 64-bit platform, and it wraps silently on overflow. A Go int is not a Python-style big integer."
+            },
+            {
+              "qZh": "pts 是 []point，for _, p := range pts { p.x = 0 } 之后 pts 会变吗？",
+              "qEn": "pts is a []point. After for _, p := range pts { p.x = 0 }, has pts changed?",
+              "choices": [
+                {
+                  "zh": "不会，p 是副本",
+                  "en": "No, p is a copy"
+                },
+                {
+                  "zh": "会，所有 x 都变成 0",
+                  "en": "Yes, every x becomes 0"
+                },
+                {
+                  "zh": "只有第一个元素会变",
+                  "en": "Only the first element changes"
+                },
+                {
+                  "zh": "编译错误，不能修改 p",
+                  "en": "A compile error: p cannot be modified"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "range 每轮把元素复制到 p。要修改切片里的元素，用下标：for i := range pts { pts[i].x = 0 }。",
+              "whyEn": "range copies each element into p. To change the slice, index it: for i := range pts { pts[i].x = 0 }."
+            },
+            {
+              "qZh": "用 bufio.NewWriter(os.Stdout) 输出，程序结束时什么也没打印。最可能的原因是？",
+              "qEn": "Output goes through bufio.NewWriter(os.Stdout), and nothing is printed when the program ends. The most likely cause?",
+              "choices": [
+                {
+                  "zh": "应该用 fmt.Println",
+                  "en": "It should have used fmt.Println"
+                },
+                {
+                  "zh": "忘了调用 Flush",
+                  "en": "Flush was never called"
+                },
+                {
+                  "zh": "缓冲区太小",
+                  "en": "The buffer was too small"
+                },
+                {
+                  "zh": "os.Stdout 不能被包装",
+                  "en": "os.Stdout cannot be wrapped"
+                }
+              ],
+              "answer": 1,
+              "whyZh": "带缓冲的 Writer 先把内容攒在内存里，Flush 才真正写出。通常在创建后紧接着写 defer out.Flush()。",
+              "whyEn": "A buffered Writer keeps output in memory until Flush writes it. The usual habit is defer out.Flush() right after creating it."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-62",
+              "zh": "不同路径",
+              "en": "Unique Paths"
+            },
+            {
+              "id": "lc-136",
+              "zh": "只出现一次的数字",
+              "en": "Single Number"
+            },
+            {
+              "id": "lc-1283",
+              "zh": "使结果不超过阈值的最小除数",
+              "en": "Find the Smallest Divisor Given a Threshold"
+            }
+          ],
+          "solves": [
+            "lc-69"
+          ]
+        },
+        {
+          "slug": "cheatsheet",
+          "titleZh": "速查表",
+          "titleEn": "Cheat sheet",
+          "bodyZh": "前六课压缩成几张表，面试前快速过一遍。复杂度里的 n 是容器当前的元素个数。\n\n## 切片与字符串\n\n| 容器 | 操作 | 复杂度 | 一行写法 |\n|---|---|---|---|\n| 切片 | 新建 / 预留容量 | O(n) | `a := make([]int, n); b := make([]int, 0, n)` |\n| 切片 | 追加 | 均摊 O(1) | `a = append(a, x)` |\n| 切片 | 栈：栈顶 / 出栈 | O(1) | `top := st[len(st)-1]; st = st[:len(st)-1]` |\n| 切片 | 队列：出队 | O(1) | `x := q[0]; q = q[1:]` |\n| 切片 | 独立副本 | O(n) | `b := append([]int(nil), a...)` |\n| 切片 | 二维 | O(nm) | `g := make([][]int, n)`，再逐行 `make` |\n| 字符串 | 字符数 / 第 i 个字符 | O(n) | `len([]rune(s)); []rune(s)[i]` |\n| 字符串 | 拼接 | 均摊 O(1) | `sb.WriteString(x); sb.String()` |\n| 字符串 | 数字互转 | O(位数) | `strconv.Itoa(n); n, err := strconv.Atoi(s)` |\n\n## map、排序、堆\n\n| 容器 | 操作 | 复杂度 | 一行写法 |\n|---|---|---|---|\n| map | 计数 | 平均 O(1) | `cnt[x]++` |\n| map | 判断是否存在 | 平均 O(1) | `v, ok := m[k]` |\n| map | 集合 | 平均 O(1) | `seen := map[int]bool{}; seen[x] = true` |\n| map | 坐标当键 | 平均 O(1) | `map[[2]int]bool{}` |\n| 排序 | 升序 / 自定义 | O(n log n) | `sort.Ints(a); sort.Slice(a, func(i, j int) bool { return a[i] > a[j] })` |\n| 排序 | 稳定 | O(n log n) | `sort.SliceStable(...)`、`slices.SortStableFunc(...)` |\n| 二分 | 第一个 >= x 的下标 | O(log n) | `sort.Search(len(a), func(i int) bool { return a[i] >= x })` |\n| 堆 | 入堆 / 出堆 | O(log n) | `heap.Push(h, x); heap.Pop(h).(int)` |\n| 堆 | 建堆 / 堆顶 | O(n) / O(1) | `heap.Init(h); (*h)[0]` |\n\n## 验证：表里的写法都能跑\n\n```go run\npackage main\n\nimport (\n\t\"container/heap\"\n\t\"fmt\"\n\t\"sort\"\n\t\"strconv\"\n\t\"strings\"\n)\n\ntype IntHeap []int\n\nfunc (h IntHeap) Len() int           { return len(h) }\nfunc (h IntHeap) Less(i, j int) bool { return h[i] < h[j] }\nfunc (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\nfunc (h *IntHeap) Push(x any)        { *h = append(*h, x.(int)) }\nfunc (h *IntHeap) Pop() any {\n\told := *h\n\tx := old[len(old)-1]\n\t*h = old[:len(old)-1]\n\treturn x\n}\n\nfunc main() {\n\tst := []int{1, 2, 3}\n\ttop := st[len(st)-1]\n\tst = st[:len(st)-1]\n\tq := []int{7, 8}\n\tfront := q[0]\n\tq = q[1:]\n\tfmt.Println(top, st, front, q)\n\n\ta := []int{4, 1, 3}\n\tb := append([]int(nil), a...)\n\tsort.Slice(b, func(i, j int) bool { return b[i] > b[j] })\n\tfmt.Println(a, b, sort.Search(len(a), func(i int) bool { return []int{1, 3, 4}[i] >= 2 }))\n\n\tcnt := map[string]int{}\n\tfor _, w := range strings.Fields(\"a b a\") {\n\t\tcnt[w]++\n\t}\n\t_, ok := cnt[\"c\"]\n\tgrid := map[[2]int]bool{{1, 2}: true}\n\tfmt.Println(cnt[\"a\"], ok, grid[[2]int{1, 2}])\n\n\tvar sb strings.Builder\n\tsb.WriteString(strconv.Itoa(12))\n\tsb.WriteString(\"x\")\n\tn, err := strconv.Atoi(\"34\")\n\tfmt.Println(sb.String(), n+1, err == nil, len([]rune(\"日本\")))\n\n\th := &IntHeap{5, 1, 4}\n\theap.Init(h)\n\theap.Push(h, 0)\n\tleast := (*h)[0]\n\tfmt.Println(least, heap.Pop(h).(int), heap.Pop(h).(int))\n}\n```\n\n```text\n3 [1 2] 7 [8]\n[4 1 3] [4 3 1] 1\n2 false true\n12x 35 true 2\n0 0 1\n```\n\n## 面试前最后检查一遍\n\n- `append` 的结果有没有赋值回去？对子切片 `append` 会不会覆盖原切片？\n- 回溯把 `path` 放进结果之前复制了吗？\n- map 是用 `make` 或 `{}` 创建的吗？判断键是否存在用的是 `v, ok`？\n- 堆用的是 `heap.Push`、`heap.Pop`，还是误用了方法本身？\n- `range` 里改的是副本还是切片元素？\n- 大量输出时用了 `bufio.Writer`，并且记得 `Flush`？",
+          "bodyEn": "The first six lessons squeezed into a few tables for a last look before an interview. In the complexities, n is the container's current size.\n\n## Slices and strings\n\n| Container | Operation | Cost | One-liner |\n|---|---|---|---|\n| slice | create / reserve capacity | O(n) | `a := make([]int, n); b := make([]int, 0, n)` |\n| slice | append | amortized O(1) | `a = append(a, x)` |\n| slice | stack: top / pop | O(1) | `top := st[len(st)-1]; st = st[:len(st)-1]` |\n| slice | queue: dequeue | O(1) | `x := q[0]; q = q[1:]` |\n| slice | independent copy | O(n) | `b := append([]int(nil), a...)` |\n| slice | 2D | O(nm) | `g := make([][]int, n)`, then `make` each row |\n| string | character count / i-th character | O(n) | `len([]rune(s)); []rune(s)[i]` |\n| string | build | amortized O(1) | `sb.WriteString(x); sb.String()` |\n| string | to and from numbers | O(digits) | `strconv.Itoa(n); n, err := strconv.Atoi(s)` |\n\n## Maps, sorting, heaps\n\n| Container | Operation | Cost | One-liner |\n|---|---|---|---|\n| map | count | O(1) average | `cnt[x]++` |\n| map | membership | O(1) average | `v, ok := m[k]` |\n| map | set | O(1) average | `seen := map[int]bool{}; seen[x] = true` |\n| map | grid cell as a key | O(1) average | `map[[2]int]bool{}` |\n| sorting | ascending / custom | O(n log n) | `sort.Ints(a); sort.Slice(a, func(i, j int) bool { return a[i] > a[j] })` |\n| sorting | stable | O(n log n) | `sort.SliceStable(...)`, `slices.SortStableFunc(...)` |\n| binary search | index of the first >= x | O(log n) | `sort.Search(len(a), func(i int) bool { return a[i] >= x })` |\n| heap | push / pop | O(log n) | `heap.Push(h, x); heap.Pop(h).(int)` |\n| heap | heapify / top | O(n) / O(1) | `heap.Init(h); (*h)[0]` |\n\n## Proof: the one-liners run\n\n```go run\npackage main\n\nimport (\n\t\"container/heap\"\n\t\"fmt\"\n\t\"sort\"\n\t\"strconv\"\n\t\"strings\"\n)\n\ntype IntHeap []int\n\nfunc (h IntHeap) Len() int           { return len(h) }\nfunc (h IntHeap) Less(i, j int) bool { return h[i] < h[j] }\nfunc (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }\nfunc (h *IntHeap) Push(x any)        { *h = append(*h, x.(int)) }\nfunc (h *IntHeap) Pop() any {\n\told := *h\n\tx := old[len(old)-1]\n\t*h = old[:len(old)-1]\n\treturn x\n}\n\nfunc main() {\n\tst := []int{1, 2, 3}\n\ttop := st[len(st)-1]\n\tst = st[:len(st)-1]\n\tq := []int{7, 8}\n\tfront := q[0]\n\tq = q[1:]\n\tfmt.Println(top, st, front, q)\n\n\ta := []int{4, 1, 3}\n\tb := append([]int(nil), a...)\n\tsort.Slice(b, func(i, j int) bool { return b[i] > b[j] })\n\tfmt.Println(a, b, sort.Search(len(a), func(i int) bool { return []int{1, 3, 4}[i] >= 2 }))\n\n\tcnt := map[string]int{}\n\tfor _, w := range strings.Fields(\"a b a\") {\n\t\tcnt[w]++\n\t}\n\t_, ok := cnt[\"c\"]\n\tgrid := map[[2]int]bool{{1, 2}: true}\n\tfmt.Println(cnt[\"a\"], ok, grid[[2]int{1, 2}])\n\n\tvar sb strings.Builder\n\tsb.WriteString(strconv.Itoa(12))\n\tsb.WriteString(\"x\")\n\tn, err := strconv.Atoi(\"34\")\n\tfmt.Println(sb.String(), n+1, err == nil, len([]rune(\"日本\")))\n\n\th := &IntHeap{5, 1, 4}\n\theap.Init(h)\n\theap.Push(h, 0)\n\tleast := (*h)[0]\n\tfmt.Println(least, heap.Pop(h).(int), heap.Pop(h).(int))\n}\n```\n\n```text\n3 [1 2] 7 [8]\n[4 1 3] [4 3 1] 1\n2 false true\n12x 35 true 2\n0 0 1\n```\n\n## A last check before the interview\n\n- Is every `append` result assigned back? Could appending to a subslice overwrite the original?\n- Is `path` copied before it goes into the results while backtracking?\n- Was the map created with `make` or `{}`? Is membership tested with `v, ok`?\n- Does the heap code call `heap.Push` and `heap.Pop`, not the methods themselves?\n- Does the `range` loop change a copy or the slice element?\n- For lots of output, is there a `bufio.Writer`, and is it flushed?",
+          "quiz": [
+            {
+              "qZh": "用切片 st 当栈，出栈的写法是？",
+              "qEn": "With a slice st as a stack, how do you pop?",
+              "choices": [
+                {
+                  "zh": "st = st[1:]",
+                  "en": "st = st[1:]"
+                },
+                {
+                  "zh": "st.pop()",
+                  "en": "st.pop()"
+                },
+                {
+                  "zh": "st = st[:len(st)-1]",
+                  "en": "st = st[:len(st)-1]"
+                },
+                {
+                  "zh": "delete(st, len(st)-1)",
+                  "en": "delete(st, len(st)-1)"
+                }
+              ],
+              "answer": 2,
+              "whyZh": "栈顶在末尾，去掉最后一个元素就是出栈。st[1:] 去掉的是第一个，那是队列的出队；切片没有 pop 方法，delete 只能用于 map。",
+              "whyEn": "The top is at the end, so popping drops the last element. st[1:] drops the first, which is a queue's dequeue; slices have no pop method, and delete only works on maps."
+            },
+            {
+              "qZh": "复制一个独立的切片副本，下面哪种写法正确？",
+              "qEn": "Which line makes an independent copy of a slice?",
+              "choices": [
+                {
+                  "zh": "b := a",
+                  "en": "b := a"
+                },
+                {
+                  "zh": "b := a[:]",
+                  "en": "b := a[:]"
+                },
+                {
+                  "zh": "b := a[0:len(a)]",
+                  "en": "b := a[0:len(a)]"
+                },
+                {
+                  "zh": "b := append([]int(nil), a...)",
+                  "en": "b := append([]int(nil), a...)"
+                }
+              ],
+              "answer": 3,
+              "whyZh": "后三种都只复制了切片头，仍然共用同一个数组。append 到一个 nil 切片会分配新数组并复制元素。slices.Clone(a) 也可以。",
+              "whyEn": "The other three copy only the header and still share the array. Appending to a nil slice allocates a new array and copies the elements. slices.Clone(a) works too."
+            },
+            {
+              "qZh": "heap.Init(h) 的时间复杂度是？",
+              "qEn": "What does heap.Init(h) cost?",
+              "choices": [
+                {
+                  "zh": "O(n)",
+                  "en": "O(n)"
+                },
+                {
+                  "zh": "O(n log n)",
+                  "en": "O(n log n)"
+                },
+                {
+                  "zh": "O(log n)",
+                  "en": "O(log n)"
+                },
+                {
+                  "zh": "O(1)",
+                  "en": "O(1)"
+                }
+              ],
+              "answer": 0,
+              "whyZh": "自底向上建堆，越靠下的结点越多但下沉的距离越短，总和是 O(n)，比逐个 heap.Push 的 O(n log n) 快。",
+              "whyEn": "Heapifying bottom-up moves many low nodes only a short way, which sums to O(n), faster than n calls to heap.Push at O(n log n)."
+            }
+          ],
+          "homework": [
+            {
+              "id": "lc-169",
+              "zh": "多数元素",
+              "en": "Majority Element"
+            },
+            {
+              "id": "lc-128",
+              "zh": "最长连续序列",
+              "en": "Longest Consecutive Sequence"
+            },
+            {
+              "id": "lc-1047",
+              "zh": "删除字符串中的所有相邻重复项",
+              "en": "Remove All Adjacent Duplicates In String"
+            }
+          ],
+          "solves": []
+        }
+      ]
     }
   ]
 }

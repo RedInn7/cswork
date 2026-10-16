@@ -52,6 +52,8 @@ void test('six courses of complete bilingual chapters, quizzes and practice', ()
       ['big-o', 10],
       ['python', 8],
       ['cpp', 8],
+      ['java', 8],
+      ['go', 7],
     ],
   );
   assert.equal(new Set(beginnerCourses.map((c) => c.slug)).size, beginnerCourses.length, 'course slugs repeat');
