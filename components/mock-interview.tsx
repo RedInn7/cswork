@@ -115,8 +115,8 @@ const RUNS = 'cswork:mock-interview:runs',
   AVOID = 'cswork:mock-interview:avoid-seen';
 const RATINGS: Text[] = [['卡住了', 'Stuck'], ['有思路', 'Partial'], ['基本答好', 'Solid'], ['很完整', 'Nailed it']];
 const SCORES: Text[] = [['不足', 'Weak'], ['一般', 'Mixed'], ['良好', 'Good'], ['出色', 'Excellent']];
-/** What a set is scored on, by its rounds (lib/mock-interview-feedback.ts rubricFor). */
-const dimsOf = (slots: { kind: KindId }[]) => rubricFor(slots.map((s) => s.kind));
+/** What a set is scored on, by its rounds and questions (lib/mock-interview-feedback.ts rubricFor). */
+const dimsOf = (slots: DrawnSlot[]) => rubricFor(slots.map((s) => ({ kind: s.kind, category: s.item?.category })));
 
 const pick = (params: Record<string, string>) => {
   const out: Record<string, string> = {};

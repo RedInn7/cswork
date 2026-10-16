@@ -608,7 +608,7 @@ async function report(request: Request, p: Person) {
     throw new HttpError(413, '对话太长，无法生成评估');
   const questions = data.questions.map((q) => ({ ...q, question: loadQuestion(q.itemId) }));
   const roleplay = questions.some(({ question: q }) => isRoleplay(q.kind));
-  const dims = rubricFor(questions.map(({ question: q }) => q.kind));
+  const dims = rubricFor(questions.map(({ question: q }) => q));
   const output = reportOutput(dims);
   const day = today();
   const release = useTicket(p.id, data.ticket, 'r');

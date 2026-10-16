@@ -98,9 +98,9 @@ void test('role-plays are AI-only templates of their own, scored on the role-pla
   assert.equal(isRoleplay('negotiation') && !isRoleplay('behavioral'), true);
   // Old links carry the rubric by position: the first eight stay where they were.
   assert.deepEqual(RUBRIC.slice(0, 8).map((r) => r.id), ['communication', 'problem', 'coding', 'testing', 'complexity', 'motivation', 'anchoring', 'leverage']);
-  assert.deepEqual(rubricFor(['coding']), ['communication', 'problem', 'coding', 'testing', 'complexity']);
-  assert.deepEqual(rubricFor(['recruiter']), ROLEPLAY_RUBRIC);
-  assert.deepEqual(rubricFor(['negotiation']), ROLEPLAY_RUBRIC);
+  assert.deepEqual(rubricFor([{ kind: 'coding' }]), ['communication', 'problem', 'coding', 'testing', 'complexity']);
+  assert.deepEqual(rubricFor([{ kind: 'recruiter' }]), ROLEPLAY_RUBRIC);
+  assert.deepEqual(rubricFor([{ kind: 'negotiation' }]), ROLEPLAY_RUBRIC);
   assert.match(openerFor('negotiation')[1], /written offer/);
   assert.match(openerFor('recruiter')[1], /recruiter/);
 });

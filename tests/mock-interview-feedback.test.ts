@@ -17,6 +17,8 @@ import {
 } from '../lib/mock-interview-feedback';
 import type { KindId } from '../lib/mock-interview';
 
+const rounds = (...kinds: KindId[]) => kinds.map((kind) => ({ kind }));
+
 const base: Feedback = {
   seed: 'k3x9q2ab',
   rerolls: [1, 1, 2],
@@ -150,7 +152,7 @@ void test('links written before the per-round rubric decode as they did', () => 
 });
 
 void test('a full nine-dimension report with empty texts encodes whole and decodes back', () => {
-  const dims = rubricFor(['coding', 'design', 'behavioral']);
+  const dims = rubricFor(rounds('coding', 'design', 'behavioral'));
   assert.equal(dims.length, MAX_DIMS);
   const rubric = Object.fromEntries(dims.map((id, i) => [id, (i % 4) + 1])) as Feedback['rubric'];
   const nine: Feedback = {
@@ -177,26 +179,32 @@ void test('a full nine-dimension report with empty texts encodes whole and decod
 void test("rubricFor: communication plus each round's dimensions in turn, at most nine, in RUBRIC order", () => {
   const order = (ids: string[]) => RUBRIC.map((r) => r.id).filter((id) => ids.includes(id));
   const core = ['communication', 'problem', 'coding', 'testing', 'complexity'];
-  for (const kind of ['coding', 'sql', 'lld'] as KindId[]) assert.deepEqual(rubricFor([kind]), core);
-  assert.deepEqual(rubricFor(['coding', 'coding', 'sql']), core);
-  assert.deepEqual(rubricFor(['behavioral']), ['communication', 'star', 'ownership', 'impact', 'reflection']);
-  assert.deepEqual(rubricFor(['design']), ['communication', 'requirements', 'hld', 'scale', 'tradeoffs', 'deepdive']);
-  assert.deepEqual(rubricFor(['negotiation']), ROLEPLAY_RUBRIC);
+  for (const kind of ['coding', 'sql', 'lld'] as KindId[]) assert.deepEqual(rubricFor(rounds(kind)), core);
+  assert.deepEqual(rubricFor(rounds('coding', 'coding', 'sql')), core);
+  assert.deepEqual(rubricFor(rounds('behavioral')), ['communication', 'star', 'ownership', 'impact', 'reflection']);
+  assert.deepEqual(rubricFor(rounds('design')), ['communication', 'requirements', 'hld', 'scale', 'tradeoffs', 'deepdive']);
+  // A design slot that drew a fundamentals question (TCP vs UDP) is not scored as a system to build;
+  // with no question drawn yet it is.
+  const fundamentals = rubricFor([{ kind: 'design', category: 'Software Engineering Fundamentals' }]);
+  assert.deepEqual(fundamentals, ['communication', 'problem', 'tradeoffs', 'deepdive']);
+  assert.deepEqual(rubricFor([{ kind: 'design', category: 'System Design' }]), rubricFor([{ kind: 'design', category: null }]));
+  assert.deepEqual(rubricFor([{ kind: 'design', category: 'System Design' }]), rubricFor(rounds('design')));
+  assert.deepEqual(rubricFor(rounds('negotiation')), ROLEPLAY_RUBRIC);
   // A kind with no mapping yet (a newer round) is scored on the core five.
-  assert.deepEqual(rubricFor(['frontend' as KindId]), core);
+  assert.deepEqual(rubricFor(rounds('frontend' as KindId)), core);
   // The phone screen fits whole: behavioral + coding.
-  assert.deepEqual(rubricFor(['behavioral', 'coding', 'coding']), order([...core, 'star', 'ownership', 'impact', 'reflection']));
+  assert.deepEqual(rubricFor(rounds('behavioral', 'coding', 'coding')), order([...core, 'star', 'ownership', 'impact', 'reflection']));
   // The onsite loop is over nine: every round keeps its most telling dimensions.
-  const onsite = rubricFor(['coding', 'coding', 'design', 'behavioral', 'behavioral']);
+  const onsite = rubricFor(rounds('coding', 'coding', 'design', 'behavioral', 'behavioral'));
   assert.equal(onsite.length, MAX_DIMS);
   assert.deepEqual(onsite, order(onsite));
   for (const id of ['communication', 'problem', 'coding', 'testing', 'requirements', 'hld', 'scale', 'star', 'ownership'])
     assert.ok(onsite.includes(id as never), id);
   // Data science: SQL, analytics, statistics and behavioral, with stats counted once.
-  const ds = rubricFor(['sql', 'analytics', 'stats', 'behavioral']);
+  const ds = rubricFor(rounds('sql', 'analytics', 'stats', 'behavioral'));
   assert.equal(ds.length, MAX_DIMS);
   assert.deepEqual(ds, ['communication', 'problem', 'coding', 'testing', 'star', 'ownership', 'metric', 'experiment', 'stats']);
-  assert.deepEqual(rubricFor(['ml', 'coding', 'behavioral']).slice(-2), ['modeling', 'mltradeoffs']);
+  assert.deepEqual(rubricFor(rounds('ml', 'coding', 'behavioral')).slice(-2), ['modeling', 'mltradeoffs']);
 });
 
 void test("the trend keeps each dimension's last scores, oldest first, and only from two on", () => {

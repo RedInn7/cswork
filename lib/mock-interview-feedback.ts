@@ -163,14 +163,23 @@ export const KIND_RUBRIC: Partial<Record<KindId, RubricId[]>> = {
   recruiter: ROLEPLAY_RUBRIC,
   negotiation: ROLEPLAY_RUBRIC,
 };
+/** A design slot can draw a fundamentals question (TCP vs UDP), not a system to design. */
+const FUNDAMENTALS_RUBRIC: RubricId[] = ['problem', 'tradeoffs', 'deepdive'];
 /** The most dimensions one interview is scored on, so the sheet and the report stay readable. */
 export const MAX_DIMS = 9;
 /**
- * What an interview of these slot kinds is scored on: communication, then each kind's dimensions
- * taken in turn (so a mixed loop keeps some of every round's under MAX_DIMS), in RUBRIC order.
+ * What an interview of these rounds (slot kind, and the drawn question's category when known) is
+ * scored on: communication, then each round's dimensions taken in turn (so a mixed loop keeps some
+ * of every round's under MAX_DIMS), in RUBRIC order.
  */
-export function rubricFor(kinds: readonly KindId[]): RubricId[] {
-  const lists = [...new Set(kinds)].map((k) => (KIND_RUBRIC[k] ?? CORE).filter((id) => id !== 'communication'));
+export function rubricFor(rounds: readonly { kind: KindId; category?: string | null }[]): RubricId[] {
+  const lists = [
+    ...new Set(
+      rounds.map(({ kind, category }) =>
+        kind === 'design' && category && category !== 'System Design' ? FUNDAMENTALS_RUBRIC : (KIND_RUBRIC[kind] ?? CORE),
+      ),
+    ),
+  ].map((l) => l.filter((id) => id !== 'communication'));
   const picked = new Set<RubricId>(['communication']);
   for (let i = 0; lists.some((l) => i < l.length); i++)
     for (const l of lists) if (l[i] && picked.size < MAX_DIMS) picked.add(l[i]);
