@@ -86,9 +86,12 @@ export function JdReadiness({ zh }: { zh: boolean }) {
     ready: t('已就绪', 'Ready'),
     partial: t('部分掌握', 'In progress'),
     gap: t('缺口', 'Gap'),
+    unmeasured: t('未度量', 'Not measured'),
   };
   const count = (status: Readiness) => report?.skills.filter((s) => s.status === status).length ?? 0;
-  const gaps = report?.skills.filter((s) => s.status !== 'ready') ?? [];
+  // Unmeasured skills are no verdict: neither a gap to close here nor a reason to say all is ready.
+  const gaps = count('partial') + count('gap');
+  const unmeasured = count('unmeasured');
   return (
     <div className="resume-review">
       <form className="resume-form" onSubmit={submit} aria-describedby="resume-privacy">
@@ -133,8 +136,8 @@ export function JdReadiness({ zh }: { zh: boolean }) {
           {report.skills.length ? (
             <p className="resume-summary">
               {t(
-                `职位要求的 ${report.skills.length} 项里：${count('ready')} 项已就绪，${count('partial')} 项部分掌握，${count('gap')} 项还是缺口。`,
-                `Of the ${report.skills.length} skills this posting asks for, ${count('ready')} are ready, ${count('partial')} in progress and ${count('gap')} still gaps.`,
+                `职位要求的 ${report.skills.length} 项里：${count('ready')} 项已就绪，${count('partial')} 项部分掌握，${count('gap')} 项还是缺口${unmeasured ? `，${unmeasured} 项本站无法度量` : ''}。`,
+                `This posting asks for ${report.skills.length} ${report.skills.length === 1 ? 'skill' : 'skills'}: ${count('ready')} ready, ${count('partial')} in progress, ${count('gap')} ${count('gap') === 1 ? 'gap' : 'gaps'}${unmeasured ? `, ${unmeasured} not measured here` : ''}.`,
               )}
             </p>
           ) : (
@@ -189,12 +192,14 @@ export function JdReadiness({ zh }: { zh: boolean }) {
                 </>
               ) : (
                 <p>
-                  {gaps.length
+                  {gaps
                     ? t(
                         '这些缺口不在 500 路题单里：按每一项的“去练”链接补齐。',
                         'These gaps are not on Line 500: use each skill’s practice link.',
                       )
-                    : t('职位要求的各项都已就绪，可以开始模拟面试了。', 'Every skill this posting asks for is ready. Time for a mock interview.')}
+                    : unmeasured
+                      ? t('本站能度量的各项都已就绪，可以开始模拟面试了。', 'Every skill CSWork can measure is ready. Time for a mock interview.')
+                      : t('职位要求的各项都已就绪，可以开始模拟面试了。', 'Every skill this posting asks for is ready. Time for a mock interview.')}
                 </p>
               )}
             </div>
@@ -229,6 +234,7 @@ function SkillRow({ item, status, zh }: { item: JdItem; status: string; zh: bool
           </span>
           <small>
             {item.done} / {item.total} {unit}
+            {item.certified && t('（已获证书）', ' (certificate earned)')}
           </small>
         </div>
       ) : (

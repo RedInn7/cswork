@@ -30,8 +30,8 @@ const posting = 'New grad software engineer. Requirements: data structures and a
 const reply = {
   skills: [
     { skill: 'dsa', evidence: 'data structures and algorithms', importance: 'must', status: 'partial', done: 12, total: 35 },
-    { skill: 'sql', evidence: 'SQL', importance: 'must', status: 'ready', done: 30, total: 30 },
-    { skill: 'frontend', evidence: 'React', importance: 'nice', status: 'gap', done: 0, total: 0 },
+    { skill: 'sql', evidence: 'SQL', importance: 'must', status: 'ready', done: 4, total: 30, certified: true },
+    { skill: 'frontend', evidence: 'React', importance: 'nice', status: 'unmeasured', done: 0, total: 0, certified: false },
   ],
   likelyRounds: ['oa', 'behavioral'],
   planStops: ['binary-search', 'dp-grid'],
@@ -63,18 +63,21 @@ test('the checklist: a handed-over posting, statuses, progress, practice links a
   assert.deepEqual(sent, [{ job: posting }]);
   const result = document.querySelector('.resume-result');
   assert.equal(document.activeElement, result, 'the checklist takes focus');
-  assert.match(result.querySelector('.resume-summary').textContent, /Of the 3 skills.*1 are ready, 1 in progress and 1 still gaps/);
+  // Front end is not measured here: neither counted as a gap nor left out of the total.
+  assert.equal(result.querySelector('.resume-summary').textContent, 'This posting asks for 3 skills: 1 ready, 1 in progress, 0 gaps, 1 not measured here.');
   assert.deepEqual([...result.querySelectorAll('.jd-rounds a')].map((a) => a.getAttribute('href')), ['/mock-oa', '/?view=mock-interview&template=behavioral']);
   const rows = [...result.querySelectorAll('.jd-skill')];
   assert.deepEqual(rows.map((r) => [r.dataset.status, r.querySelector('.jd-status').textContent]), [
     ['partial', 'In progress'],
     ['ready', 'Ready'],
-    ['gap', 'Gap'],
+    ['unmeasured', 'Not measured'],
   ]);
   assert.equal(rows[0].querySelector('.jd-bar i').style.width, '34%');
   assert.match(rows[0].textContent, /12 \/ 35 stops with 3 solved/);
   assert.equal(rows[0].querySelector('q').textContent, 'data structures and algorithms');
   assert.equal(rows[0].querySelector('a').getAttribute('href'), '/?view=problems');
+  // The certificate makes SQL ready; the count shown is still the real one.
+  assert.match(rows[1].textContent, /4 \/ 30 problems solved \(certificate earned\)/);
   // Nothing measures front end here: no bar and no practice link.
   assert.equal(rows[2].querySelector('.jd-bar'), null);
   assert.equal(rows[2].querySelector('a'), null);
