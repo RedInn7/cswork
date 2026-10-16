@@ -74,6 +74,7 @@ import { AiCaseIdeas, AiComplexity, AiTutor, AskAiSelection, useAiTutor, type Ai
 import { StressTest, stressReady } from './stress-result';
 import { ProblemMeta } from './problem-meta';
 import { SimilarProblems } from './similar-problems';
+import { ClarifyPanel } from './clarify-panel';
 import {
   ExamAcceptedDialog,
   MockExamBar,
@@ -1293,6 +1294,18 @@ function Workspace({
     } else saveCases([...customCases, input], customCases.length);
     return true;
   }
+  /** Adds cases in order, skipping ones already there, and selects the last; returns how many didn't fit. */
+  function addCases(inputs: string[]) {
+    const next = customCases.length === 1 && !customCases[0] ? [] : [...customCases];
+    let left = 0;
+    for (const input of inputs)
+      if (next.includes(input)) continue;
+      else if (next.length < MAX_CASES) next.push(input);
+      else left++;
+    const last = inputs.findLast((input) => next.includes(input));
+    if (last !== undefined) saveCases(next, next.indexOf(last));
+    return left;
+  }
   function deleteCase() {
     const next = customCases.filter((_, index) => index !== caseIndex);
     if (!next.length) return saveCases([''], 0);
@@ -1768,6 +1781,8 @@ function Workspace({
             language={language}
             settings={settings}
             discussion={!!boot.person && communityProblem(problem.id)}
+            stop={problem.stop}
+            onFollowUp={followUp ? () => setFollowUpOn(true) : undefined}
           />
         ) : leftTab === 'editorial' && !examMode ? (
           <OaEditorial key={`editorial:${problem.id}`} problemId={problem.id} english={uiEnglish} language={language} />
@@ -2119,6 +2134,25 @@ function Workspace({
                   void aiTutor.ask('explain', aiContext, { selection });
                   document.getElementById('ai-tutor-title')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
                 }}
+              />
+            )}
+            {!!problem.leetcodeParams?.length && !examMode && (
+              <ClarifyPanel
+                problemId={problem.id}
+                params={problem.leetcodeParams}
+                constraints={problem.leetcodeConstraints ?? null}
+                edges={problem.lingEdges ?? null}
+                english={uiEnglish}
+                onAdd={
+                  caseParams
+                    ? (inputs) => {
+                        const left = addCases(inputs);
+                        setInputMode('custom');
+                        showConsole('input');
+                        return left;
+                      }
+                    : undefined
+                }
               />
             )}
             {!!problem.similar?.length && !examMode && (
