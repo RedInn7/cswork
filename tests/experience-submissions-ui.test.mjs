@@ -271,6 +271,10 @@ test('a tracker link prefills the form and clears its params; OA fields post onl
       ['uber', 'Software Engineer Intern', 'intern', `${year}-fall`, ['Online Assessment']],
     );
     assert.deepEqual([posted.oaTotal, posted.oaSolved, posted.oaTestsPct, posted.oaMinutes, posted.oaNext], [3, 2, 85, 70, 'yes']);
+    // The prefill is single-use: the next experience starts blank.
+    await act(async () => button('Share an experience').click());
+    form = document.querySelector('form.xs-form');
+    assert.deepEqual(['Company', 'Role', 'Full-time / intern', 'Season'].map((l) => field(form, l).value), ['', '', '', '']);
     root.unmount();
 
     // Values the menus don't offer drop out; OA fields typed and then unticked post nothing.

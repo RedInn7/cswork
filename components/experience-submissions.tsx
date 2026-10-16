@@ -72,8 +72,8 @@ export function MyExperienceSubmissions({
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const [items, setItems] = useState<Mine[] | null>(null);
-  // A prefill link opens the form filled in, then drops its params so a reload starts clean.
-  const [prefill] = useState(readPrefill);
+  // A prefill link opens the form filled in once, then drops its params so a reload starts clean.
+  const [prefill, setPrefill] = useState(readPrefill);
   const [writing, setWriting] = useState(open || !!prefill);
   const [error, setError] = useState('');
   const section = useRef<HTMLElement>(null);
@@ -122,9 +122,13 @@ export function MyExperienceSubmissions({
         <ExperienceForm
           english={english}
           initial={prefill ?? {}}
-          onCancel={() => setWriting(false)}
+          onCancel={() => {
+            setWriting(false);
+            setPrefill(null);
+          }}
           onDone={(created) => {
             setWriting(false);
+            setPrefill(null);
             setItems((all) => [created, ...(all ?? [])]);
           }}
         />

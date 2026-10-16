@@ -441,13 +441,13 @@ export function memberOaOutcomes(company?: string) {
   if (company !== undefined && !names.has(company)) return null;
   const groups = sqlite()
     .prepare(
-      `SELECT s.oa_solved=s.oa_total AND COALESCE(s.oa_tests_pct,100)=100 AS full,COUNT(*) AS n,SUM(s.oa_next='yes') AS moved
+      `SELECT s.oa_solved=s.oa_total AND COALESCE(s.oa_tests_pct,100)=100 AS all_ac,COUNT(*) AS n,SUM(s.oa_next='yes') AS moved
       FROM experience_submissions s WHERE ${PUBLIC} AND s.oa_solved IS NOT NULL AND s.oa_total IS NOT NULL
-        AND s.oa_next IN ('yes','no') AND s.company_slug IN (SELECT value FROM json_each(?)) GROUP BY full`,
+        AND s.oa_next IN ('yes','no') AND s.company_slug IN (SELECT value FROM json_each(?)) GROUP BY all_ac`,
     )
-    .all(JSON.stringify(company === undefined ? [...names.keys()] : [company])) as { full: number; n: number; moved: number }[];
+    .all(JSON.stringify(company === undefined ? [...names.keys()] : [company])) as { all_ac: number; n: number; moved: number }[];
   const group = (full: number) => {
-    const g = groups.find((r) => r.full === full);
+    const g = groups.find((r) => r.all_ac === full);
     return g && g.n >= OA_MIN ? { n: g.n, moved: g.moved } : null;
   };
   const oa = { all: group(1), partial: group(0) };
