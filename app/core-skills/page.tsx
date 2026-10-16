@@ -10,19 +10,19 @@ import { LibraryPageView } from '../library/page-view';
 
 const COPY = {
   zh: {
-    title: `Core Skills：手写数据结构与经典算法 21 题 | ${SITE_NAME}`,
+    title: `Core Skills：手写数据结构、经典算法与并发 28 题 | ${SITE_NAME}`,
     description:
-      '不调库，亲手实现动态数组、链表、哈希表、堆、LRU 缓存、快速排序、归并排序、KMP、BFS、Dijkstra、最小生成树、并查集、字典树、线段树和树状数组。每题有 Python、C++、Java、Go 起始代码和固定驱动，在线判题。',
-    eyebrow: 'CORE SKILLS · 21 题 · 4 种语言',
+      '不调库，亲手实现动态数组、链表、哈希表、堆、LRU 缓存、快速排序、归并排序、KMP、BFS、Dijkstra、最小生成树、并查集、字典树、线段树和树状数组，再用锁、条件变量和信号量写按序执行、哲学家就餐、有界阻塞队列和读写锁等多线程题。每题有 Python、C++、Java、Go 起始代码和固定驱动，在线判题。',
+    eyebrow: 'CORE SKILLS · 28 题 · 4 种语言',
     heading: '把常用的数据结构和算法亲手写一遍。',
     crumb: 'Core Skills',
     open: '打开 Core Skills 练习',
   },
   en: {
-    title: `Core Skills: 21 Data Structures & Algorithms to Write by Hand | ${SITE_NAME}`,
+    title: `Core Skills: 28 Data Structures, Algorithms & Concurrency Problems by Hand | ${SITE_NAME}`,
     description:
-      'No libraries: implement a dynamic array, linked list, hash map, heap, LRU cache, quicksort, merge sort, KMP, BFS, Dijkstra, minimum spanning trees, union-find, a trie, a segment tree and a Fenwick tree yourself. Every problem has Python, C++, Java and Go starters with a fixed driver, judged online.',
-    eyebrow: 'CORE SKILLS · 21 PROBLEMS · 4 LANGUAGES',
+      'No libraries: implement a dynamic array, linked list, hash map, heap, LRU cache, quicksort, merge sort, KMP, BFS, Dijkstra, minimum spanning trees, union-find, a trie, a segment tree and a Fenwick tree yourself, then use locks, condition variables and semaphores for multithreaded problems such as run in order, dining philosophers, a bounded blocking queue and a read-write lock. Every problem has Python, C++, Java and Go starters with a fixed driver, judged online.',
+    eyebrow: 'CORE SKILLS · 28 PROBLEMS · 4 LANGUAGES',
     heading: 'Write the everyday data structures and algorithms yourself.',
     crumb: 'Core Skills',
     open: 'Practice Core Skills',
