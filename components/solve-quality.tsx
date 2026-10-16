@@ -41,7 +41,8 @@ export function SolveQuality({
                 {i ? ' · ' : ''}
                 {t(m.difficulty, LEVEL_EN[m.difficulty])} <b>{minutes(m.seconds)}</b>
                 {t(` 分钟（${m.budget / 60}）`, ` min (${m.budget / 60})`)}
-                {m.seconds > m.budget && t('，超出预算', ', over budget')}
+                {/* Judged on the shown minutes, so "25 (25)" is never flagged over. */}
+                {minutes(m.seconds) > m.budget / 60 && t('，超出预算', ', over budget')}
               </span>
             ))}
           </p>

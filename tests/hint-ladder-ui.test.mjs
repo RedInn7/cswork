@@ -97,10 +97,11 @@ test('hints open one at a time, unlock on failures or time, and similar problems
       ['/api/oj/problems/lc-1/aids', { kind: 'hint' }],
     ]);
 
-    // A fresh page: the problem timer's reading counts, and a locked hint can be shown after a confirm.
+    // A fresh page, signed out: the problem timer's reading counts, and a locked hint can be shown
+    // after a confirm. A guest has no assisted-solve record, so nothing is posted.
     await act(async () => root.unmount());
     localStorage.setItem(
-      'cswork:timer:u1:lc-2',
+      'cswork:timer:guest:lc-2',
       JSON.stringify({ mode: 'up', minutes: 15, elapsed: 600_000, startedAt: null }),
     );
     const again = createRoot(document.getElementById('root'));
@@ -108,7 +109,7 @@ test('hints open one at a time, unlock on failures or time, and similar problems
     const restored = { id: 's9', mode: 'judge', status: 'wrong_answer' };
     await act(async () =>
       again.render(
-        createElement(Workspace, { problemId: 'lc-2', english: false, failedIds: ['s9'], submission: restored }),
+        createElement(Workspace, { problemId: 'lc-2', userId: 'guest', english: false, failedIds: ['s9'], submission: restored }),
       ),
     );
     await click('显示下一条提示');
@@ -122,6 +123,7 @@ test('hints open one at a time, unlock on failures or time, and similar problems
     assert.equal($('[role="alertdialog"]') === null, true);
     assert.match($('.cs-hint-ladder-list').textContent, /提示 3 · 步骤步骤三/);
     assert.deepEqual(beacons.at(-1).params, { problem_id: 'lc-2', level: 3 });
+    assert.equal(aids.length, 2);
 
     // Similar problems: collapsed, then links open problems in the app.
     const went = [];

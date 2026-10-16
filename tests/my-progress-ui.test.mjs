@@ -281,3 +281,29 @@ test('progress page lists history, mistakes, reviews due today and the learner m
     globalThis.fetch = originalFetch;
   }
 });
+
+test('solve quality flags over budget on the minutes it shows', async () => {
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { SolveQuality } = await import('../components/solve-quality.tsx');
+  const solved = (problemId, solveSeconds) => ({
+    problemId,
+    attempts: 1,
+    firstAt: 1,
+    lastAt: 1,
+    firstAcAt: 1,
+    failuresBeforeAc: 0,
+    lastStatus: 'accepted',
+    languages: ['python'],
+    acAt: [1],
+    stop: null,
+    help: 'none',
+    solveSeconds,
+  });
+  const text = (history) =>
+    renderToStaticMarkup(
+      createElement(SolveQuality, { history, difficultyOf: () => '中等', english: true }),
+    ).replace(/<[^>]+>/g, '');
+  // A median of 1501s shows as 25 min against 25: not over. 1531s shows as 26: over.
+  assert.match(text([solved('a', 1000), solved('b', 2002)]), /Medium 25 min \(25\)(?!, over budget)/);
+  assert.match(text([solved('a', 1531)]), /Medium 26 min \(25\), over budget/);
+});
