@@ -5,8 +5,8 @@ import { hiddenCompanies } from './env';
 
 /**
  * New-grad and intern openings from three keyless public ATS job boards (db/job-openings-schema.ts).
- * lib/content/ats-boards.json maps a company page slug to its board, each one checked by hand
- * against the company's own careers page. The judge worker syncs about daily
+ * lib/content/ats-boards.json maps a company page slug to its board, each one checked against the
+ * company its postings name. The judge worker syncs about daily
  * (lib/server/oj-worker.ts); only title, location, link and dates are kept, never the description.
  * Pages list what a sync saw in the last three days; the daily company digest
  * (lib/server/company-follows.ts) reports the ones first seen since.
