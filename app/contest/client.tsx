@@ -229,6 +229,7 @@ type Row = NonNullable<RoomView['standings']>['live'][number];
 /**
  * One standings table: rank, name, solved, time, then a cell per question. `overall`: filtered
  * rows keep their overall rank. `onCode` opens the code a row shared for a question it solved.
+ * `questions`: a last row with how many solved and tried each question.
  */
 function Board({
   rows,
@@ -237,6 +238,7 @@ function Board({
   rated,
   overall = false,
   onCode,
+  questions,
   t,
 }: {
   rows: Row[];
@@ -245,6 +247,7 @@ function Board({
   rated: boolean;
   overall?: boolean;
   onCode?: (question: number, name: string, from: HTMLElement) => void;
+  questions?: NonNullable<RoomView['standings']>['questions'];
   t: T;
 }) {
   const qs = Array.from({ length: count }, (_, i) => `Q${i + 1}`);
@@ -331,6 +334,28 @@ function Board({
             </tr>
           ))}
         </tbody>
+        {questions && (
+          <tfoot>
+            <tr>
+              <th scope="row" colSpan={4}>
+                {overall
+                  ? t('全部实时参赛者，每题通过 / 尝试人数', 'Everyone live, solved / tried per question')
+                  : t('每题通过 / 尝试人数', 'Solved / tried per question')}
+              </th>
+              {questions.map((s) => (
+                <td key={s.q} className="contest-cell">
+                  <span aria-hidden="true">
+                    {s.solved} / {s.tried}
+                  </span>
+                  <span className="sr-only">
+                    {t(`Q${s.q}：${s.solved} 人通过，${s.tried} 人尝试`, `Q${s.q}: ${s.solved} solved, ${s.tried} tried`)}
+                  </span>
+                </td>
+              ))}
+              {rated && <td />}
+            </tr>
+          </tfoot>
+        )}
       </table>
     </div>
   );
@@ -576,6 +601,7 @@ export function RoomLive({ initial, fallbackStart }: { initial: RoomView; fallba
               rated={view.rated}
               overall={!!view.following}
               onCode={onCode}
+              questions={view.standings.questions}
               t={t}
             />
           ) : (
