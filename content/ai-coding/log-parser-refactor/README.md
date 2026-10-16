@@ -13,8 +13,10 @@ Refactor it:
 | measure | limit |
 | --- | --- |
 | longest function, in lines | 25 |
-| branches in one function (`if`/`elif`, `for`, `while`, conditional expressions, each extra `and`/`or` operand) | 8 |
+| branches in one function or lambda (`if`/`elif`, `for`, `while`, conditional expressions, each `if` of a comprehension, each `case` of a `match`, each extra `and`/`or` operand) | 8 |
 | repeated blocks (three statements in a row, or an `if`/`for`/`while` of three lines or more, compared without literals and variable names) | 1 |
+
+`src/` may not use `exec`, `eval` or `compile`: code run from strings would escape every measure.
 
 Suggested way to work:
 
