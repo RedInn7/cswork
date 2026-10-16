@@ -1337,17 +1337,21 @@ function useSpeech(locale: 'zh' | 'en', onText: (text: string, ms: number, gap: 
       const r = new Engine();
       r.lang = lang;
       r.continuous = true;
-      // Interim results only time when each utterance began; the text is the final one's.
+      // Interim results only time when each utterance began; the text is the final one's. Timed per
+      // utterance, not per result index: Chrome splits one utterance's interim text over several
+      // results and merges them into one final, so an index can outlive its utterance.
       r.interimResults = true;
-      const began: Record<number, number> = {};
+      let began: number | null = null;
       let lastEnd = 0;
       r.onresult = (e) => {
         const now = Date.now();
         for (let i = e.resultIndex; i < e.results.length; i++) {
-          began[i] ??= now;
-          if (!e.results[i].isFinal) continue;
-          const from = began[i];
-          delete began[i];
+          if (!e.results[i].isFinal) {
+            began ??= now;
+            continue;
+          }
+          const from = began ?? now;
+          began = null;
           heard.current(e.results[i][0].transcript.trim(), now - from, lastEnd ? Math.max(0, from - lastEnd) : 0);
           lastEnd = now;
         }
