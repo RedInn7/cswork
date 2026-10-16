@@ -5,6 +5,7 @@ import { useT } from '@/lib/i18n';
 import { ApiError, api } from '@/lib/types';
 import { stashNoteDraft } from '@/components/problem-notes';
 import { TryFirst } from '@/components/try-first';
+import { ReportIssue } from '@/components/report-issue';
 import '@/app/redesign.css';
 
 // The chapters the learner marked read (user_marks: sd:<slug>, read), fetched once for the page.
@@ -49,6 +50,12 @@ export function SdReadCheck({ slug, quiet }: { slug: string; quiet?: boolean }) 
       <span className={quiet ? 'sr-only' : undefined}>{t('已读', 'Read')}</span>
     </span>
   );
+}
+
+/** "Report an issue" at a chapter's end; the read marks already tell a guest from a learner. */
+export function SdReportIssue({ refId }: { refId: string }) {
+  const { state } = useRead();
+  return <ReportIssue refId={refId} signedIn={state === 'guest' ? false : state === 'ready' || undefined} />;
 }
 
 /** "Read 7/27" with a bar, once a signed-in learner's marks are in. */

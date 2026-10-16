@@ -515,7 +515,8 @@ export function mockExamFor(
 
 export type McqSection = 'cs' | 'code-output' | 'quant';
 export const MCQ_SECTIONS: readonly McqSection[] = ['cs', 'code-output', 'quant'];
-type McqText = { q: string; choices: string[]; explain: string };
+/** `whys`: one line per choice on why it is right or wrong (newer questions). */
+type McqText = { q: string; choices: string[]; explain: string; whys?: string[] };
 /** One question of lib/content/oa-mcq.json. */
 export type McqQuestion = {
   id: string;
@@ -524,6 +525,8 @@ export type McqQuestion = {
   /** The snippet a code-output question asks about, the same in both languages. */
   code?: string;
   lang?: string;
+  /** C++ undefined behaviour: the answer is that choice, and scripts/mcq/verify-output.mjs does not run it. */
+  ub?: boolean;
   zh: McqText;
   en: McqText;
   /** Right choices; more than one means "select all that apply". */

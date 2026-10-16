@@ -20,7 +20,7 @@ import {
 import { EstimationDrill } from '@/components/estimation-drill';
 import { PublicLibraryMarkdown, markdownToc } from '../../library/markdown';
 import { SdQuiz } from '../quiz';
-import { SdMarkRead, SdReadCheck, SdTryFirst } from '../reader';
+import { SdMarkRead, SdReadCheck, SdReportIssue, SdTryFirst } from '../reader';
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -142,6 +142,7 @@ export default async function SystemDesignChapter({ params }: Props) {
             </a>
           )}
         </nav>
+        <SdReportIssue refId={`sd:${chapter.slug}`} />
         <section className="ct-community sd-discussion" aria-labelledby="sd-discussion-title">
           <h2 id="sd-discussion-title">{t('章节讨论', 'Chapter discussion')}</h2>
           <SolutionPosts problemId={`sd:${chapter.slug}`} english={!zh} signedIn={!!userId} />
