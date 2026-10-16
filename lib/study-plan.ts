@@ -39,6 +39,8 @@ export type PlanGoal = {
   topics: string[];
   /** "Regenerate" bumps it: other stops ride together, the unsolved problems stay the same. */
   shuffle: number;
+  /** Time of the placement quiz result (lib/placement.ts) whose known stops the form last unticked; 0 for none. */
+  placementAt: number;
 };
 /**
  * One problem left to do; stop is its 0-based stop on the line (OA problems and list
@@ -129,6 +131,7 @@ export const DEFAULT_GOAL: PlanGoal = {
   difficulties: [...SLOTS],
   topics: [],
   shuffle: 0,
+  placementAt: 0,
 };
 
 const DAY = 86400000;
@@ -197,6 +200,7 @@ export function normalizeGoal(raw: unknown): PlanGoal {
         )
       : [],
     shuffle: int(g.shuffle, 0, 1e6, 0),
+    placementAt: int(g.placementAt, 0, 8.64e15, 0),
   };
 }
 

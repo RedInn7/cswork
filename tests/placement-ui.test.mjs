@@ -108,3 +108,66 @@ test('a refused start shows the server’s message and keeps the intro', async (
   assert.ok(document.body.textContent.includes('6 组，每组 3 题'));
   await act(async () => root.unmount());
 });
+
+test('the sprint plan form unticks a new result’s known stops once and starts past them', async () => {
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.org/?view=problems' });
+  for (const name of ['window', 'document', 'location', 'HTMLElement', 'Element', 'Node', 'Event', 'MouseEvent', 'localStorage'])
+    Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  const { ROUTE_SECTIONS, ROUTE_SLUGS } = await import('../lib/route-stops.ts');
+  const { DEFAULT_GOAL } = await import('../lib/study-plan.ts');
+  const { StudyPlan } = await import('../components/study-plan.tsx');
+  const { createRoot } = await import('react-dom/client');
+  // Linear Structures answered right throughout: its eight stops are known.
+  const result = { at: 5000, groups: [{ group: 0, right: 3, total: 3, level: 1900, skip: true, picks: [] }] };
+  globalThis.fetch = async (url) =>
+    url.includes('speedrun/placement') ? Response.json({ latest: result, retakeAt: null, session: null }) : Response.json({ companies: [] });
+  const stops = ROUTE_SLUGS.map((slug, index) => ({
+    slug,
+    index,
+    code: String(index + 1).padStart(2, '0'),
+    title: slug,
+    titleEn: slug,
+    shortZh: slug,
+    shortEn: slug,
+    group: ROUTE_SECTIONS[0],
+    start: false,
+    total: 10,
+    solved: 0,
+  }));
+  const saved = [];
+  const root = createRoot(document.getElementById('root'));
+  const render = (goal) =>
+    act(async () =>
+      root.render(createElement(StudyPlan, { goal, plan: null, today: '2026-10-15', onSave: (g) => saved.push(g), stops, english: true })),
+    );
+  const button = (label) => [...document.querySelectorAll('button')].find((b) => b.textContent.includes(label));
+  const box = (slug) => document.querySelectorAll('.route-plan-topics input[type="checkbox"]')[ROUTE_SLUGS.indexOf(slug)];
+  const first = ROUTE_SECTIONS[0].slugs;
+
+  await render(DEFAULT_GOAL);
+  await act(async () => button('Plan my sprint').click());
+  for (const slug of first) assert.equal(box(slug).checked, false, slug);
+  assert.equal(box('linked-list').checked, true);
+  assert.equal(document.querySelectorAll('.route-plan-topics label .route-plan-note').length, first.length, 'known stops say so');
+  assert.match(document.querySelector('.route-plan-topics [role="status"]').textContent, /unticked 8 known stops/);
+  assert.equal(document.querySelector('#route-plan-start').value, String(first.length), 'the start moves past them');
+  assert.match(document.querySelector('#route-plan-start-hint').textContent, /and your placement quiz/);
+  // Ticking one back is the learner's call, and it is saved.
+  await act(async () => box('binary-search').click());
+  await act(async () => button('Save plan').click());
+  assert.equal(saved.length, 1);
+  assert.equal(saved[0].placementAt, 5000);
+  assert.equal(saved[0].startStop, first.length);
+  assert.deepEqual(
+    saved[0].topics.filter((slug) => first.includes(slug)),
+    ['binary-search'],
+  );
+
+  // The same result again changes nothing: the saved choice stands.
+  await render({ ...saved[0], status: 'planned' });
+  await act(async () => button('Edit sprint plan').click());
+  assert.equal(box('binary-search').checked, true);
+  assert.equal(box('array-foundations').checked, false);
+  assert.equal(document.querySelector('.route-plan-topics [role="status"]'), null);
+  await act(async () => root.unmount());
+});
