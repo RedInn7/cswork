@@ -15592,7 +15592,7 @@
      "其他网站页面里的 <img src=\"https://本站/…\">",
      "点击链接，以 GET 方式顶层跳转到本站"
     ],
-    "explain": "Lax 只在「顶层导航 + 安全方法（如 GET）」时跨站携带 Cookie，所以从别处点链接进来仍保持登录。跨站的 POST、图片等子资源请求、fetch 都不带。Strict 连顶层导航也不带。主流浏览器对没写 SameSite 的 Cookie 默认按 Lax 处理。",
+    "explain": "Lax 只在「顶层导航 + 安全方法（如 GET）」时跨站携带 Cookie，所以从别处点链接进来仍保持登录。跨站的 POST、图片等子资源请求、fetch 都不带。Strict 连顶层导航也不带。Chrome 等浏览器会把没写 SameSite 的 Cookie 默认当作 Lax，但不是所有浏览器都这样，所以最好显式设置。",
     "whys": [
      "跨站 fetch 不带 Lax Cookie。",
      "跨站 POST 不带 Lax Cookie，这正是它防 CSRF 的地方。",
@@ -15608,7 +15608,7 @@
      "An <img src=\"https://your-site/…\"> on the other site",
      "Clicking a link that navigates the top-level page to your site with GET"
     ],
-    "explain": "Lax sends the cookie cross-site only on top-level navigations with safe methods such as GET, so following a link in keeps you logged in. Cross-site POSTs, subresources like images, and fetch calls go without it. Strict withholds it even on top-level navigation. Major browsers treat cookies without SameSite as Lax.",
+    "explain": "Lax sends the cookie cross-site only on top-level navigations with safe methods such as GET, so following a link in keeps you logged in. Cross-site POSTs, subresources like images, and fetch calls go without it. Strict withholds it even on top-level navigation. Chrome and some other browsers treat a cookie without SameSite as Lax, but not all do, so set it explicitly.",
     "whys": [
      "A cross-site fetch does not carry a Lax cookie.",
      "Cross-site POSTs do not carry Lax cookies, which is how it stops CSRF.",
