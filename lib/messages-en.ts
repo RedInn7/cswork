@@ -82,6 +82,7 @@ const EN: Record<string, string> = {
   '未关闭的评审链接已达上限，请先关闭不用的链接': 'You have too many open review links. Close one you no longer need first',
   行号超出代码范围: 'That line is outside the code',
   这条评审链接的评论已达上限: 'This review link has reached its comment limit',
+  '今天生成的评审链接已达上限，请明天再试': "You've made today's maximum of review links. Try again tomorrow",
   你的代码收到了新的评审意见: 'Your code got new review comments',
   更新不存在: 'Update not found',
   '此章节已有未发布草稿，请在课程管理中继续编辑':

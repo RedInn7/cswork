@@ -24,9 +24,11 @@ const ben: Person = { ...ada, id: 'cr-ben', name: 'Ben Secret', email: 'ben@exam
 const cat: Person = { ...ada, id: 'cr-cat', name: 'Cat', email: 'cat@example.test' };
 const racer: Person = { ...ada, id: 'cr-racer', email: 'racer@example.test' };
 const fresh: Person = { ...ada, id: 'cr-fresh', email: 'fresh@example.test', verified: false };
+const dan: Person = { ...ada, id: 'cr-dan', email: 'dan@example.test' };
 
 // ponytail: one loose shape for every endpoint's answer in this file.
-type Data = { id: string; token: string; mine: boolean; code: string; language: string; author: string | null; items: { id: string }[];
+type Data = { id: string; token: string; mine: boolean; code: string; language: string; author: string | null;
+  items: { id: string; submissionId: string; problemId: string }[];
   comments: { line: number; reviewer: number; handle: string | null; body: string }[] };
 async function call(p: Person | null, method: string, path: string, body?: unknown) {
   const url = new URL(`https://cswork.test/api/oj/${path}`);
@@ -64,6 +66,7 @@ before(() => {
   submission('sub-ada-run', ada.id, 'lc-1', 'run');
   submission('sub-ada-hidden', ada.id, 'oa-hiddenco-1');
   submission('sub-ada-2', ada.id, 'lc-2');
+  submission('sub-ada-course', ada.id, 'course-x');
   submission('sub-ben', ben.id);
   db.prepare(
     "INSERT INTO user_profiles(user_id,handle,visible,created_at,updated_at) VALUES(?,'cat_codes',1,1,1)",
@@ -80,6 +83,7 @@ void test('only the author opens a link on their own formal submission; the toke
   assert.equal((await call(ada, 'POST', 'reviews', { submissionId: 'missing' })).status, 404);
   assert.equal((await call(ada, 'POST', 'reviews', { submissionId: 'sub-ada-run' })).status, 400);
   assert.equal((await call(ada, 'POST', 'reviews', { submissionId: 'sub-ada-hidden' })).status, 404);
+  assert.equal((await call(ada, 'POST', 'reviews', { submissionId: 'sub-ada-course' })).status, 404, 'no course exercise');
   assert.equal((await call(ada, 'POST', 'reviews', { submissionId: 'sub-ada', note: 'x'.repeat(501) })).status, 400);
 
   const made = await call(ada, 'POST', 'reviews', { submissionId: 'sub-ada', note: 'Is the dict needed?' });
@@ -173,7 +177,32 @@ void test('an author keeps at most 20 open links', async () => {
   // The per-minute write limit (20) is not what this test is about.
   sqlite().prepare('DELETE FROM limits').run();
   assert.equal((await call(cat, 'POST', 'reviews', { submissionId: 'sub-many' })).status, 409);
-  const [first] = (await call(cat, 'GET', 'reviews?submission=sub-many')).data!.items;
-  assert.equal((await call(cat, 'POST', `reviews/${first.id}/close`, {})).status, 200);
+  // With no submission named, the list is every open link, so the author finds what to close.
+  const all = (await call(cat, 'GET', 'reviews')).data!.items;
+  assert.equal(all.length, 20);
+  assert.deepEqual(all[0], { ...all[0], submissionId: 'sub-many', problemId: 'lc-1' });
+  assert.equal((await call(cat, 'POST', `reviews/${all[0].id}/close`, {})).status, 200);
   assert.equal((await call(cat, 'POST', 'reviews', { submissionId: 'sub-many' })).status, 200);
+});
+
+void test('closed links count towards a daily cap of 50 new ones', async () => {
+  submission('sub-dan', dan.id);
+  const insert = sqlite().prepare(
+    "INSERT INTO code_reviews(id,owner_id,submission_id,token_hash,note,created_at,closed_at) VALUES(?,?,'sub-dan',?,'',?,?)",
+  );
+  const now = Date.now();
+  for (let i = 0; i < 49; i++) insert.run(`dan-${i}`, dan.id, `h-dan-${i}`, now - 1000, now);
+  insert.run('dan-old', dan.id, 'h-dan-old', now - 86_400_000 - 1000, now);
+  assert.equal((await call(dan, 'POST', 'reviews', { submissionId: 'sub-dan' })).status, 200);
+  assert.equal((await call(dan, 'POST', 'reviews', { submissionId: 'sub-dan' })).status, 429);
+});
+
+void test('a link takes at most 300 comments', async () => {
+  const { token } = (await call(ada, 'POST', 'reviews', { submissionId: 'sub-ada' })).data!;
+  const review = sqlite().prepare('SELECT id FROM code_reviews WHERE token_hash=?').pluck().get(createHash('sha256').update(token).digest('hex'));
+  const insert = sqlite().prepare("INSERT INTO code_review_comments(id,review_id,user_id,line,body,created_at) VALUES(?,?,'cr-ben',1,'x',1)");
+  sqlite().transaction(() => {
+    for (let i = 0; i < 300; i++) insert.run(`many-${i}`, review);
+  })();
+  assert.equal((await call(cat, 'POST', `reviews/${token}/comments`, { line: 1, body: 'one more' })).status, 409);
 });

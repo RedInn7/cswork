@@ -4,7 +4,7 @@ import { sqlite } from '@/db/sqlite';
 import type { Person } from './auth';
 import { refuseInContest } from './contests';
 import { HttpError, json, limit, limitReader } from './http';
-import { publicProblem, requireVerified } from './learner-cloud';
+import { ownerHandle, publicProblem, requireVerified } from './learner-cloud';
 import { readJson } from './my-practice';
 import { notify } from './notify';
 import { submissionRow } from './oj-submissions';
@@ -19,12 +19,15 @@ import { submissionRow } from './oj-submissions';
  * visibility (publicProblem: no course exercise, no hidden company).
  *
  *   POST reviews {submissionId, note}      → {id, token}
- *   GET  reviews?submission=<id>           → the author's open links on it
+ *   GET  reviews[?submission=<id>]         → the author's open links (on that submission)
  *   GET  reviews/<token|id>                → the code, the note and the comments
  *   POST reviews/<token|id>/comments       → {line, body}
  *   POST reviews/<token|id>/close          → author only; the link answers 404 from then on
  */
 export const OPEN_MAX = 20;
+// ponytail: closed links stay (closed_at); a daily cap keeps a create-and-close loop from growing the table forever.
+export const MADE_PER_DAY = 50;
+const DAY = 86_400_000;
 export const COMMENT_MAX = 2000;
 const NOTE_MAX = 500;
 // ponytail: a cap per link keeps GET bounded; nobody writes 300 line comments on one solution.
@@ -67,10 +70,6 @@ function titleOf(problemId: string) {
     .get(problemId) as { title: string | null; titleEn: string | null } | undefined;
   return { id: problemId, title: row?.title || problemId, titleEn: row?.titleEn || null };
 }
-const handleOf = (userId: string) =>
-  (sqlite().prepare('SELECT handle FROM user_profiles WHERE user_id=? AND visible=1').pluck().get(userId) as
-    | string
-    | undefined) ?? null;
 
 const created = z
   .object({ submissionId: z.string().min(1).max(100), note: z.string().trim().max(NOTE_MAX).default('') })
@@ -86,13 +85,16 @@ export async function handleCodeReviews(request: Request, p: Person, path: strin
     await limitReader(request, p, 'code-reviews-read', 120);
     if (action) throw new HttpError(404, '接口不存在');
     if (!key) {
-      const submission = new URL(request.url).searchParams.get('submission') ?? '';
+      // Without a submission: every open link, so a full author can find the ones to close.
+      const submission = new URL(request.url).searchParams.get('submission');
       const items = db
         .prepare(
-          `SELECT r.id,r.note,r.created_at AS createdAt,(SELECT COUNT(*) FROM code_review_comments c WHERE c.review_id=r.id) AS comments
-          FROM code_reviews r WHERE r.owner_id=? AND r.submission_id=? AND r.closed_at IS NULL ORDER BY r.created_at DESC`,
+          `SELECT r.id,r.note,r.created_at AS createdAt,r.submission_id AS submissionId,s.problem_id AS problemId,
+            (SELECT COUNT(*) FROM code_review_comments c WHERE c.review_id=r.id) AS comments
+          FROM code_reviews r LEFT JOIN submissions s ON s.id=r.submission_id
+          WHERE r.owner_id=? AND r.closed_at IS NULL${submission === null ? '' : ' AND r.submission_id=?'} ORDER BY r.created_at DESC`,
         )
-        .all(p.id, submission);
+        .all(p.id, ...(submission === null ? [] : [submission]));
       return json({ items, max: OPEN_MAX });
     }
     const review = openReview(p, key);
@@ -103,7 +105,7 @@ export async function handleCodeReviews(request: Request, p: Person, path: strin
     // Reviewers are numbered by their first comment on this link; 0 is the author.
     const numbers = new Map([[review.owner_id, 0]]);
     for (const r of rows) if (!numbers.has(r.user_id)) numbers.set(r.user_id, numbers.size);
-    const handles = new Map([...numbers.keys()].map((id) => [id, handleOf(id)]));
+    const handles = new Map([...numbers.keys()].map((id) => [id, ownerHandle(id)]));
     const mine = review.owner_id === p.id;
     return json({
       id: mine ? review.id : null,
@@ -140,11 +142,14 @@ export async function handleCodeReviews(request: Request, p: Person, path: strin
     const token = randomBytes(24).toString('base64url');
     // Count and insert together: two tabs cannot both take the last place.
     db.transaction(() => {
-      const open = db
-        .prepare('SELECT COUNT(*) FROM code_reviews WHERE owner_id=? AND closed_at IS NULL')
-        .pluck()
-        .get(p.id) as number;
+      const { open, made } = db
+        .prepare(
+          `SELECT COUNT(*) FILTER (WHERE closed_at IS NULL) AS open,COUNT(*) FILTER (WHERE created_at>?) AS made
+          FROM code_reviews WHERE owner_id=?`,
+        )
+        .get(now - DAY, p.id) as { open: number; made: number };
       if (open >= OPEN_MAX) throw new HttpError(409, '未关闭的评审链接已达上限，请先关闭不用的链接');
+      if (made >= MADE_PER_DAY) throw new HttpError(429, '今天生成的评审链接已达上限，请明天再试');
       db.prepare(
         'INSERT INTO code_reviews(id,owner_id,submission_id,token_hash,note,created_at) VALUES(?,?,?,?,?,?)',
       ).run(id, p.id, sub.id, hashToken(token), d.note, now);
