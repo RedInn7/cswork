@@ -2,7 +2,7 @@
 // saved there only, the table and bars add up each year, a bad custom schedule says so, and the
 // tracker import fills in only company and role from cards at the offer stage.
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { after, test } from 'node:test';
 import { JSDOM } from 'jsdom';
 import { createElement, act } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -26,10 +26,14 @@ globalThis.fetch = async (url, init = {}) => {
   });
 };
 
+const roots = [];
+// A failed test skips its unmount; the countdown's interval would then keep the run alive.
+after(() => act(async () => roots.forEach((r) => r.unmount())));
 const mount = async (props = {}) => {
   const host = document.createElement('div');
   document.body.append(host);
   const root = createRoot(host);
+  roots.push(root);
   await act(async () => root.render(createElement(OfferCompare, { zh: false, signedIn: false, ...props })));
   return { host, unmount: () => act(async () => root.unmount()) };
 };
@@ -89,12 +93,22 @@ test('edits are saved in this browser; a custom schedule off 100% is flagged unt
   const [acme] = host.querySelectorAll('.offer-card');
   await setValue(labelled(acme, 'Base salary (yearly)'), '170000');
   assert.equal(JSON.parse(localStorage.getItem(KEY))[0].base, 170000);
+  // The live region is there before the error, so the error is read out when it appears.
+  const live = acme.querySelector('[aria-live="polite"]');
+  assert.equal(live.textContent, '');
   await setValue(labelled(acme, 'Vesting schedule'), 'custom', 'change');
-  assert.match(acme.querySelector('.resume-error').textContent, /adds up to 0%/);
+  assert.equal(acme.querySelector('.resume-error'), live);
+  assert.match(live.textContent, /adds up to 0%/);
   assert.equal(cells(host, 'Year 1')[0], '—');
   const years = acme.querySelectorAll('.offer-custom input');
+  assert.deepEqual(
+    [...years].map((y) => [y.getAttribute('aria-invalid'), y.getAttribute('aria-describedby')]),
+    Array(4).fill(['true', live.id]),
+  );
   for (const [i, v] of ['10', '20', '30', '40'].entries()) await setValue(years[i], v);
   assert.equal(acme.querySelector('.resume-error'), null);
+  assert.equal(live.textContent, '');
+  assert.equal(years[0].getAttribute('aria-invalid'), 'false');
   assert.deepEqual(JSON.parse(localStorage.getItem(KEY))[0].custom, [10, 20, 30, 40]);
   assert.equal(cells(host, 'Year 1')[0], '210,000stock 40,000');
   // Blanking a field drops it rather than saving 0.
@@ -124,6 +138,8 @@ test('up to four offers, removable down to two, and Clear forgets them', async (
 test('signed in, the tracker import fills company and role from offer-stage cards only', async () => {
   localStorage.clear();
   const { host, unmount } = await mount({ signedIn: true, zh: true });
+  const note = host.querySelector('output.offer-note');
+  assert.equal(note.textContent, '');
   await act(async () => button(host, '从投递看板导入').click());
   assert.deepEqual(calls, ['GET /api/oj/applications']);
   const saved = JSON.parse(localStorage.getItem(KEY));
@@ -134,10 +150,38 @@ test('signed in, the tracker import fills company and role from offer-stage card
       ['', '', undefined],
     ],
   );
-  assert.match(host.querySelector('.offer-note').textContent, /导入了 1 个 offer/);
+  assert.equal(host.querySelector('.offer-note'), note);
+  assert.match(note.textContent, /导入了 1 个 offer/);
   await act(async () => button(host, '从投递看板导入').click());
   assert.match(host.querySelector('.offer-note').textContent, /没有新的/);
   await unmount();
+});
+
+test('typing while the import is out is kept: the import merges into the offers as they are then', async () => {
+  localStorage.clear();
+  const real = globalThis.fetch;
+  let answer;
+  globalThis.fetch = () => new Promise((resolve) => (answer = resolve));
+  try {
+    const { host, unmount } = await mount({ signedIn: true });
+    await act(async () => button(host, 'Import from my tracker').click());
+    const [first, second] = host.querySelectorAll('.offer-card');
+    await setValue(labelled(second, 'Base salary (yearly)'), '123000');
+    await act(async () => answer(Response.json({ items: [{ id: '1', company: 'Acme', role: 'SWE', stage: 'offer' }] })));
+    assert.deepEqual(
+      JSON.parse(localStorage.getItem(KEY)).map((o) => [o.company, o.base]),
+      [
+        ['Acme', undefined],
+        ['', 123000],
+      ],
+    );
+    assert.equal(labelled(second, 'Base salary (yearly)').value, '123000');
+    assert.equal(labelled(first, 'Company').value, 'Acme');
+    assert.match(host.querySelector('.offer-note').textContent, /Added 1 offer/);
+    await unmount();
+  } finally {
+    globalThis.fetch = real;
+  }
 });
 
 test('blocked storage still renders and compares', async () => {

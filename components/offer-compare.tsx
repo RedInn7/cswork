@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { countdown, type Application } from '@/lib/applications';
 import {
   blankOffer,
@@ -79,13 +80,16 @@ export function OfferCompare({ zh, signedIn }: { zh: boolean; signedIn: boolean 
     const tick = setInterval(() => setNow(Date.now()), 60000);
     return () => clearInterval(tick);
   }, []);
-  const save = (next: Offer[]) => {
-    setOffers(next);
+  const store = (next: Offer[]) => {
     try {
       localStorage.setItem(KEY, JSON.stringify(next));
     } catch {
       // Private mode or full storage: the comparison still works for this visit.
     }
+  };
+  const save = (next: Offer[]) => {
+    setOffers(next);
+    store(next);
   };
   const put = (i: number, o: Offer) => save(offers.map((x, j) => (j === i ? o : x)));
   const clear = () => {
@@ -102,11 +106,14 @@ export function OfferCompare({ zh, signedIn }: { zh: boolean; signedIn: boolean 
     setNote('');
     try {
       const { items } = await api<{ items: Application[] }>('oj/applications');
-      const got = importOffers(
-        offers,
-        items.filter((a) => a.stage === 'offer'),
-      );
-      save(got.offers);
+      const jobs = items.filter((a) => a.stage === 'offer');
+      // Merge into the offers as they are now, not as they were at the click: typing, Remove,
+      // Add or Clear may have happened while the request was out. flushSync runs the updater
+      // before the counts below are read; it never runs once the page is gone.
+      let got = undefined as ReturnType<typeof importOffers> | undefined;
+      flushSync(() => setOffers((prev) => (got = importOffers(prev, jobs)).offers));
+      if (!got) return;
+      store(got.offers);
       setNote(
         got.added || got.skipped
           ? t(
@@ -233,6 +240,8 @@ export function OfferCompare({ zh, signedIn }: { zh: boolean; signedIn: boolean 
                         min={0}
                         max={100}
                         step="any"
+                        aria-invalid={!results[i]}
+                        aria-describedby={`offer-err-${i}`}
                         value={o.custom?.[k] ?? ''}
                         onChange={(e) => {
                           const custom = YEARS.map((j) => o.custom?.[j]);
@@ -244,14 +253,14 @@ export function OfferCompare({ zh, signedIn }: { zh: boolean; signedIn: boolean 
                   ))}
                 </fieldset>
               )}
-              {!results[i] && (
-                <p className="resume-error" aria-live="polite">
-                  {t(
+              {/* Always mounted, so a screen reader reads the message when it appears. */}
+              <p id={`offer-err-${i}`} className={results[i] ? 'offer-live' : 'offer-live resume-error'} aria-live="polite">
+                {!results[i] &&
+                  t(
                     `自定义归属比例合计 ${customSum(o)}%，需要正好 100%，且每项不能为负。`,
                     `The custom schedule adds up to ${customSum(o)}%; it must be exactly 100%, with no negative year.`,
                   )}
-                </p>
-              )}
+              </p>
               {EQUITY.slice(1).map((f) => field(o, i, f))}
               {EXTRA.map((f) => field(o, i, f))}
               <label>
@@ -275,9 +284,7 @@ export function OfferCompare({ zh, signedIn }: { zh: boolean; signedIn: boolean 
           </button>
           <small>{t('填写的数字只保存在这个浏览器里，不会上传。', 'What you enter stays in this browser and is never uploaded.')}</small>
         </div>
-        {note && (
-          <output className="offer-note">{note}</output>
-        )}
+        <output className="offer-note offer-live">{note}</output>
       </form>
 
       <section aria-labelledby="offer-table-title">
