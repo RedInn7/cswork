@@ -1,10 +1,14 @@
 'use client';
 
-import React, { Children, isValidElement, lazy, memo, Suspense } from 'react';
-import Markdown, { type Components } from 'react-markdown';
+import React, { Children, isValidElement, lazy, memo, Suspense, useEffect, useId, useRef, useState } from 'react';
+import Markdown, { type Components, type ExtraProps } from 'react-markdown';
 import remarkCjkFriendly from 'remark-cjk-friendly';
 import remarkGfm from 'remark-gfm';
 import { useT } from '@/lib/i18n';
+import { playgroundLanguage } from '@/lib/playground-share';
+import { languages } from '@/lib/problems';
+import remarkCodeTabs from '@/lib/remark-code-tabs';
+import { RunInPlayground } from './run-in-playground';
 
 // Imported statements use TeX-style scripts even inside Markdown inline code.
 // Keep this deliberately narrow: bare carets need a numeric base and exponent,
@@ -271,26 +275,150 @@ const MARKDOWN_PLUGINS = [remarkGfm, remarkCjkFriendly];
 const PLAIN = ['img', 'a'];
 // Other learners' posts: links stay, images never load (no tracking pixels).
 const UNTRUSTED_HIDDEN = ['img'];
-// The overrides above repair imported statements (bold, scripts, labels); a learner's text renders as typed.
-const UNTRUSTED_COMPONENTS: Components = { a: components.a };
+// Other learners' posts also get ```spoiler blocks, math and language tabs; statements do not.
+const POST_PLUGINS = [...MARKDOWN_PLUGINS, remarkCodeTabs];
+// Same limits as the library's math; trust off, so no \href, \url or HTML from a post.
+const KATEX = { maxSize: 10, maxExpand: 200, trust: false };
+type MathPlugins = typeof import('./markdown-math');
+type MdNode = { type: string; value?: string; children?: MdNode[]; position?: { start: { offset?: number }; end: { offset?: number } } };
+/**
+ * `$5 和 $10` is money, not math: as in Pandoc, inline math may not start or end with a space
+ * nor run into a digit, and such a pair goes back to its source text.
+ * ponytail: Markdown inside a reverted pair (`$5 **off**, $10`) stays literal; `\$` always works.
+ */
+const remarkMoney = () => (tree: MdNode, file: { value?: unknown }) => {
+  const source = String(file.value ?? '');
+  const walk = (node: MdNode) =>
+    node.children?.forEach((child, i, list) => {
+      if (child.type !== 'inlineMath') return walk(child);
+      const raw = source.slice(child.position?.start.offset ?? 0, child.position?.end.offset ?? 0);
+      if (/^\$+\s|\s\$+$/.test(raw) || /^\d/.test(list[i + 1]?.value ?? '')) list[i] = { type: 'text', value: raw };
+    });
+  walk(tree);
+};
 // Loaded only when a post has a diagram: mermaid and its dialog stay out of every other bundle.
 const CourseDiagram = lazy(() => import('./course-diagram').then((m) => ({ default: m.CourseDiagram })));
-// A post's ```mermaid blocks draw as the course diagrams do (strict mermaid, an isolated image).
+
+/** A post's code block: a ```mermaid diagram (with `diagrams`), a ```spoiler fold, or code that opens in the playground. */
+function PostPre({ node, children, diagrams = false }: ExtraProps & { children?: React.ReactNode; diagrams?: boolean }) {
+  const t = useT();
+  const code = Children.toArray(children)[0];
+  if (!isValidElement<{ className?: string; children?: unknown }>(code) || typeof code.props.children !== 'string')
+    return <pre>{children}</pre>;
+  const source = code.props.children;
+  const tag = /(?:^|\s)language-(\S+)/.exec(code.props.className ?? '')?.[1];
+  // A post's ```mermaid blocks draw as the course diagrams do (strict mermaid, an isolated image).
+  if (diagrams && tag === 'mermaid')
+    return (
+      <Suspense fallback={<pre>{children}</pre>}>
+        <CourseDiagram source={source} />
+      </Suspense>
+    );
+  if (tag === 'spoiler') {
+    // ```spoiler Title: the words after the tag are the code element's meta.
+    const title = (node?.children[0] as { data?: { meta?: string | null } } | undefined)?.data?.meta?.trim();
+    return (
+      <details className="cs-spoiler">
+        <summary>{title || t('剧透', 'Spoiler')}</summary>
+        <div className="cs-spoiler-body">
+          <PostMarkdown body={source} diagrams={diagrams} />
+        </div>
+      </details>
+    );
+  }
+  const language = playgroundLanguage(tag);
+  return (
+    <>
+      <pre>{children}</pre>
+      {language && <RunInPlayground code={source} language={language} />}
+    </>
+  );
+}
+
+/** Consecutive blocks in different languages (remarkCodeTabs) as one tab set. */
+function CodeTabs({ langs, children }: { langs: string[]; children?: React.ReactNode }) {
+  const t = useT();
+  const id = useId();
+  const [at, setAt] = useState(0);
+  const list = useRef<HTMLDivElement>(null);
+  const panels = Children.toArray(children).filter(isValidElement);
+  const move = (e: React.KeyboardEvent) => {
+    const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+    if (!step) return;
+    e.preventDefault();
+    const next = (at + step + langs.length) % langs.length;
+    setAt(next);
+    list.current?.querySelectorAll<HTMLElement>('[role="tab"]')[next]?.focus();
+  };
+  return (
+    <div className="cs-code-tabs">
+      <div role="tablist" aria-label={t('代码语言', 'Code language')} ref={list} onKeyDown={move}>
+        {langs.map((lang, i) => (
+          <button
+            key={lang}
+            type="button"
+            role="tab"
+            id={`${id}-tab-${i}`}
+            aria-selected={i === at}
+            aria-controls={`${id}-panel-${i}`}
+            tabIndex={i === at ? 0 : -1}
+            onClick={() => setAt(i)}
+          >
+            {languages.find((item) => item.id === lang)?.name ?? lang}
+          </button>
+        ))}
+      </div>
+      {panels.map((panel, i) => (
+        <div key={i} role="tabpanel" id={`${id}-panel-${i}`} aria-labelledby={`${id}-tab-${i}`} hidden={i !== at}>
+          {panel}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// The overrides above repair imported statements (bold, scripts, labels); a learner's text renders as typed.
+// Posts cannot write HTML, so the only div is remarkCodeTabs'.
+const UNTRUSTED_COMPONENTS: Components = {
+  a: components.a,
+  pre: ({ node, children }) => <PostPre node={node}>{children}</PostPre>,
+  div: ({ node, className, children }) =>
+    className === 'cs-code-tabs' ? (
+      <CodeTabs langs={String(node?.properties.dataLangs ?? '').split(' ')}>{children}</CodeTabs>
+    ) : (
+      <div className={className}>{children}</div>
+    ),
+};
 const DIAGRAM_COMPONENTS: Components = {
   ...UNTRUSTED_COMPONENTS,
-  pre: ({ children }) => {
-    const code = Children.toArray(children)[0];
-    return isValidElement<{ className?: string; children?: unknown }>(code) &&
-      code.props.className?.split(/\s+/).includes('language-mermaid') &&
-      typeof code.props.children === 'string' ? (
-      <Suspense fallback={<pre>{children}</pre>}>
-        <CourseDiagram source={code.props.children} />
-      </Suspense>
-    ) : (
-      <pre>{children}</pre>
-    );
-  },
+  pre: ({ node, children }) => (
+    <PostPre node={node} diagrams>
+      {children}
+    </PostPre>
+  ),
 };
+
+/** Another learner's text; TeX (anything with a `$`) renders once KaTeX has loaded. */
+function PostMarkdown({ body, diagrams, plain = false }: { body: string; diagrams: boolean; plain?: boolean }) {
+  const dollar = body.includes('$');
+  const [math, setMath] = useState<MathPlugins | null>(null);
+  useEffect(() => {
+    // Without KaTeX the TeX stays readable as typed, so a failed load keeps the plain view.
+    if (dollar) import('./markdown-math').then(setMath, () => {});
+  }, [dollar]);
+  const on = dollar && math;
+  return (
+    <Markdown
+      remarkPlugins={on ? [...POST_PLUGINS, on.remarkMath, remarkMoney] : POST_PLUGINS}
+      rehypePlugins={on ? [[on.rehypeKatex, KATEX]] : undefined}
+      components={diagrams ? DIAGRAM_COMPONENTS : UNTRUSTED_COMPONENTS}
+      disallowedElements={plain ? PLAIN : UNTRUSTED_HIDDEN}
+      unwrapDisallowed={plain}
+    >
+      {body}
+    </Markdown>
+  );
+}
 // Parsing the statement is the costliest part of a workspace render; the many
 // re-renders while a submission is judged (status, verdict, history) skip it.
 export const StatementMarkdown = memo(function StatementMarkdown({
@@ -311,14 +439,18 @@ export const StatementMarkdown = memo(function StatementMarkdown({
 }) {
   return (
     <article className={className}>
-      <Markdown
-        remarkPlugins={MARKDOWN_PLUGINS}
-        components={untrusted ? (diagrams ? DIAGRAM_COMPONENTS : UNTRUSTED_COMPONENTS) : components}
-        disallowedElements={plain ? PLAIN : untrusted ? UNTRUSTED_HIDDEN : undefined}
-        unwrapDisallowed={plain}
-      >
-        {untrusted ? body : tidyImportedBold(body)}
-      </Markdown>
+      {untrusted ? (
+        <PostMarkdown body={body} diagrams={diagrams} plain={plain} />
+      ) : (
+        <Markdown
+          remarkPlugins={MARKDOWN_PLUGINS}
+          components={components}
+          disallowedElements={plain ? PLAIN : undefined}
+          unwrapDisallowed={plain}
+        >
+          {tidyImportedBold(body)}
+        </Markdown>
+      )}
     </article>
   );
 });

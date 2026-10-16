@@ -88,3 +88,16 @@ export async function decodeShare(hash: string): Promise<PlaygroundState | null>
     return null;
   }
 }
+
+const TAGS = new Map<string, CodeLanguage>([
+  ['python', 'python'], ['py', 'python'], ['python3', 'python'],
+  ['cpp', 'cpp'], ['c++', 'cpp'], ['java', 'java'], ['go', 'go'], ['golang', 'go'],
+]);
+/** The playground language of a fenced block's tag (```py, ```c++ …), or null for any other tag. */
+export const playgroundLanguage = (tag: string | null | undefined) => (tag && TAGS.get(tag.toLowerCase())) || null;
+
+/** The /playground link that opens this code, or null when it would pass SHARE_MAX_CHARS. */
+export async function playgroundHref(state: PlaygroundState) {
+  const value = await encodeShare(state);
+  return value && `/playground#c=${value}`;
+}
