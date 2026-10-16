@@ -156,9 +156,9 @@ const review = (keys) => ({
 
 test('after a conversation the pair review sends the turns and shows a score card', async () => {
   const sent = [];
-  globalThis.fetch = async (url, init) => {
-    sent.push({ url: String(url), body: init.body ? JSON.parse(init.body) : null });
-    if (String(url).endsWith('/ai/round-review'))
+  globalThis.fetch = async (/** @type {string} */ url, init) => {
+    sent.push({ url, body: init.body ? JSON.parse(init.body) : null });
+    if (url.endsWith('/ai/round-review'))
       return Response.json({ review: review(['decomposition', 'prompting', 'verification', 'testing', 'explanation']), remaining: 1, limit: 2, bonus: 0 });
     return Response.json({ text: 'Look at `reserve`.', remaining: 14, limit: 15, bonus: 0 });
   };
@@ -197,11 +197,11 @@ test('after a conversation the pair review sends the turns and shows a score car
 
 test('a take-home has no AI pair, keeps its design note and offers the quality review after a run', async () => {
   const sent = [];
-  globalThis.fetch = async (url, init) => {
-    sent.push({ url: String(url), body: init.body ? JSON.parse(init.body) : null });
-    if (String(url).endsWith('/ai-assisted/run'))
+  globalThis.fetch = async (/** @type {string} */ url, init) => {
+    sent.push({ url, body: init.body ? JSON.parse(init.body) : null });
+    if (url.endsWith('/ai-assisted/run'))
       return Response.json({ id: 's2', status: 'queued', mode: 'project', watchToken: 't2', passed: 0, total: 0 });
-    if (String(url).includes('/submissions/s2'))
+    if (url.includes('/submissions/s2'))
       return Response.json({ id: 's2', status: 'accepted', mode: 'project', passed: 9, total: 9, project: { visible: { passed: 4, total: 4, failures: [] }, hidden: { passed: 5, total: 5 }, output: '' } });
     return Response.json({ review: review(['structure', 'tests', 'errors', 'readme']), remaining: 1, limit: 2, bonus: 0 });
   };

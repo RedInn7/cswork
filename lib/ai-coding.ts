@@ -57,7 +57,8 @@ export type ProjectReport = {
  * The round review (POST oj/ai/round-review, lib/server/round-review.ts): how the AI pair was used
  * ('pair'), or a take-home's code quality ('quality'), each criterion scored 1–4, labels [zh, en].
  */
-export const REVIEW_CRITERIA = {
+export type ReviewMode = 'pair' | 'quality';
+export const REVIEW_CRITERIA: Record<ReviewMode, [key: string, zh: string, en: string][]> = {
   pair: [
     ['decomposition', '拆解任务', 'Breaking the task down'],
     ['prompting', '提示具体程度', 'Specific prompts'],
@@ -71,8 +72,7 @@ export const REVIEW_CRITERIA = {
     ['errors', '错误处理', 'Error handling'],
     ['readme', '说明文档', 'Design note'],
   ],
-} as const;
-export type ReviewMode = keyof typeof REVIEW_CRITERIA;
+};
 export type RoundReview = { scores: { key: string; score: number; why: string }[]; suggestions: string[]; summary: string };
 /** The conversation a pair review reads: at most this many turns and characters in all. */
 export const REVIEW_TURNS = 40;
