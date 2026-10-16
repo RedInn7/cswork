@@ -66,6 +66,50 @@ test('the stress test shows the first disagreeing case with both outputs and add
   }
 });
 
+test('an agreeing batch lights step 1 and is recorded before the first AC only', async () => {
+  const { createRoot } = await import('react-dom/client');
+  const { StressTest } = await import('../components/stress-result.tsx');
+  const ok = (ordinal, stdout) => ({ ordinal, status: 'finished', hidden: false, stdin: `[${ordinal}]`, stdout });
+  const sent = [];
+  globalThis.fetch = async (url, init) => {
+    sent.push([String(url), init?.body && JSON.parse(init.body)]);
+    if (String(url).endsWith('/stress')) return respond({ id: 'mine', referenceId: 'ref', cases: 30 }, 201);
+    if (String(url).endsWith('/aids')) return respond({ recorded: true });
+    return respond({ id: 'x', status: 'finished', mode: 'run', cases: [ok(0, '1\n'), ok(1, '2\n')] });
+  };
+  const root = createRoot(document.getElementById('root'));
+  const show = (solved) =>
+    act(async () =>
+      root.render(
+        createElement(StressTest, { problemId: 'lc-53', code: 'x', language: 'python', checker: 'tokens', onAdd: () => true, solved }),
+      ),
+    );
+  const steps = () => [...document.querySelectorAll('.cs-stress-steps li')].map((li) => li.hasAttribute('data-done'));
+  const stress = async () => {
+    const button = [...document.querySelectorAll('button')].find((b) => b.textContent === 'Stress test');
+    await act(async () => button.click());
+    await settle(1200);
+  };
+  try {
+    await show(false);
+    assert.deepEqual(steps(), [false, false]);
+    assert.match(document.querySelector('.cs-stress-steps').textContent, /Step 1: match the reference on small cases.*Step 2: pass every test/);
+    await stress();
+    assert.match(document.body.textContent, /All 30 cases match the reference/);
+    assert.deepEqual(steps(), [true, false]);
+    assert.match(document.querySelector('.cs-stress-steps').textContent, /\(done\)/);
+    const aids = sent.filter(([url]) => url.endsWith('/aids'));
+    assert.deepEqual(aids, [['/api/oj/problems/lc-53/aids', { kind: 'brute', submissionId: 'mine', referenceId: 'ref' }]]);
+    // Accepted: step 2 lights, and a later agreeing batch is not "before AC".
+    await show(true);
+    assert.deepEqual(steps(), [true, true]);
+    await stress();
+    assert.equal(sent.filter(([url]) => url.endsWith('/aids')).length, 1);
+  } finally {
+    await act(async () => root.unmount());
+  }
+});
+
 test('an OA reference output says the input went in unchecked', async () => {
   const { createRoot } = await import('react-dom/client');
   const { SubmissionResult } = await import('../components/oj-results.tsx');

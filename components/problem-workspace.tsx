@@ -2957,6 +2957,7 @@ function Workspace({
                           language={language}
                           checker={problem.checker}
                           onAdd={(input) => addCase(input)}
+                          solved={solvedThisRound}
                         />
                       )}
                     </>
