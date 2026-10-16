@@ -124,7 +124,8 @@ export function readOffers(raw: unknown): Offer[] {
         clawbackNote: text(o.clawbackNote, 300),
         schedule: typeof o.schedule === 'string' && o.schedule in SCHEDULES ? (o.schedule as Schedule) : 'even',
       };
-      if (Array.isArray(o.custom)) offer.custom = [0, 1, 2, 3].map((i) => (Number.isFinite(o.custom[i]) ? o.custom[i] : undefined));
+      const custom: unknown = o.custom;
+      if (Array.isArray(custom)) offer.custom = [0, 1, 2, 3].map((i) => (Number.isFinite(custom[i]) ? (custom[i] as number) : undefined));
       for (const key of NUM_KEYS) if (Number.isFinite(o[key])) offer[key] = o[key] as number;
       return offer;
     });
