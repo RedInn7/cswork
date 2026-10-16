@@ -1,6 +1,113 @@
 {
   "questions": [
     {
+      "id": "project-deep-dive",
+      "kind": "project",
+      "category": "Project Deep Dive",
+      "title": [
+        "简历项目深挖",
+        "Resume project deep dive"
+      ],
+      "question": [
+        "从你的简历里挑一个你最熟悉、做得最深的项目。先用两三分钟讲清楚：它解决什么问题、有哪些人参与、你本人负责哪部分、最后结果怎样。\n\n接下来面试官会围绕这个项目一路追问：你做过的设计取舍和放弃的方案、遇到过的失败或事故、用什么指标衡量效果，以及如果重做一次你会改什么。尽量用具体的数字和细节回答，说不清楚的地方直接说明。",
+        "Pick the project on your resume you know best and went deepest on. In two or three minutes, cover what problem it solved, who worked on it, which part was yours, and how it turned out.\n\nThe interviewer will then keep digging into that project: the design choices you made and the options you rejected, something that failed or broke, how you measured the result, and what you would change if you built it again. Answer with specific numbers and details, and say so plainly where you don't know."
+      ],
+      "hints": "",
+      "followUps": "",
+      "rubric": "- Separates their own work from the team's (\"I\" with specifics, not a vague \"we\"), and the scope matches what the resume claims.\n- Explains at least one real design decision: the options considered, why this one, and what it cost.\n- Talks honestly about a failure, bug or incident: the cause, what they did, what changed afterwards.\n- Gives measurable results (latency, users, cost, accuracy, time saved) and how they were measured, or says plainly that nothing was measured.\n- Reflects: what they would change with hindsight, and why.\n- Holds up under follow-ups until the edge of their knowledge, and admits that edge instead of bluffing.",
+      "solution": ""
+    },
+    {
+      "id": "api-chat",
+      "kind": "api",
+      "category": "API Design",
+      "title": [
+        "聊天应用的 API",
+        "Chat app API"
+      ],
+      "question": [
+        "为一个同时支持单聊和群聊的聊天应用设计 API：\n\n- 客户端如何发送消息、实时收到新消息、拉取历史记录、显示对方是否在线；\n- 后端各个服务之间怎么互相调用。\n\n说明你为每一部分选择 REST、RPC（如 gRPC）、GraphQL 还是 WebSocket，以及原因。",
+        "Design the API for a chat app with one-to-one and group chats:\n\n- how clients send messages, receive new ones in real time, load history and see who is online;\n- how the backend services call each other.\n\nFor each part, say whether you would use REST, RPC (gRPC, say), GraphQL or WebSockets, and why."
+      ],
+      "hints": "- Separate the public client API from service-to-service calls; they have different callers and needs.\n- Sending can be a plain request; receiving in real time needs a push channel.\n- How does a client that was offline catch up without missing or duplicating messages?",
+      "followUps": "- A message is sent twice because the client retried: how does the API keep one copy?\n- How do read receipts and typing indicators fit in without flooding the server?\n- Mobile clients on bad networks: what changes?",
+      "rubric": "- Picks styles per caller and explains: REST (or similar) for resources like conversations and history, a WebSocket or similar push channel for live delivery and presence, gRPC (or another RPC) between internal services; GraphQL only with a reason.\n- Concrete endpoints and message shapes, including ids, timestamps or sequence numbers, and a client-generated id for deduplication.\n- History pagination by cursor (message id or sequence), and catch-up after reconnecting.\n- Covers errors, auth on the socket, and back-pressure or rate limits.",
+      "solution": "",
+      "chapter": "api-rest-vs-rpc-graphql"
+    },
+    {
+      "id": "api-payments",
+      "kind": "api",
+      "category": "API Design",
+      "title": [
+        "支付 API：分页与幂等",
+        "Payments API: pagination and idempotency"
+      ],
+      "question": [
+        "为一个支付平台设计两个接口：\n\n1. 列出某个账户的支付记录，按时间倒序，客户端可以一直往后翻；\n2. 创建一笔支付。\n\n要求：翻页过程中有新支付进来时，不能重复或漏掉记录；客户端因为超时重试创建请求时，绝不能扣两次钱。写出请求、响应和关键的数据库查询。",
+        "Design two endpoints for a payments platform:\n\n1. list an account's payments, newest first, with the client able to keep paging back;\n2. create a payment.\n\nNew payments arriving while the client pages must not cause repeated or missed rows, and a client retrying a create after a timeout must never be charged twice. Write the requests, the responses and the key database queries."
+      ],
+      "hints": "- What happens to `OFFSET`-based pages when rows are inserted at the top?\n- A sort key needs to be unique to page on it reliably.\n- How can the server recognize a retry of a request it already processed?",
+      "followUps": "- The same idempotency key arrives with a different body: what should the server do?\n- Two retries with the same key arrive at the same moment: how do you avoid processing both?\n- How long do you keep idempotency keys, and what happens after that?",
+      "rubric": "- Cursor (keyset) pagination on a unique order such as `(created_at, id)`, an opaque cursor, a capped page size, and an index that supports it; explains why offsets repeat or skip rows.\n- An `Idempotency-Key` header (client-generated, per logical operation) stored with the request fingerprint and the response; a retry returns the stored response.\n- Handles concurrent retries (a unique constraint or lock on the key) and a mismatched body (reject with an error).\n- Clear status codes and error bodies; amounts in integer minor units with a currency.",
+      "solution": "",
+      "chapter": "api-pagination-idempotency"
+    },
+    {
+      "id": "api-orders-versioning",
+      "kind": "api",
+      "category": "API Design",
+      "title": [
+        "电商订单 API：版本演进与错误",
+        "Orders API: versioning and errors"
+      ],
+      "question": [
+        "你维护一个电商平台对外开放的订单 API，已经有很多你看不到的第三方客户端在用。现在需要做三处修改：\n\n- 金额字段从小数（如 `19.99`）改成以分为单位的整数；\n- 订单新增一个状态“部分发货”；\n- 把一个拼错的字段名改正。\n\n说明哪些修改会弄坏现有客户端、你会怎样分阶段发布，以及这个 API 出错时应该返回什么样的错误。",
+        "You maintain an e-commerce platform's public orders API, already used by many third-party clients you can't see. Three changes are needed:\n\n- money amounts move from decimals (like `19.99`) to integers in cents;\n- orders get a new status, \"partially shipped\";\n- a misspelled field name gets fixed.\n\nSay which changes break existing clients, how you would roll them out in stages, and what this API should return when something goes wrong."
+      ],
+      "hints": "- Which changes are additive, and which change the meaning or shape of existing fields?\n- A new enum value can break a client that switches over every known value.\n- How do clients choose a version, and how do you know who still uses the old one?",
+      "followUps": "- URL versions, a header, or dated versions pinned per account: the trade-offs?\n- How do you tell clients a field is deprecated, and when can you remove it?\n- How should validation errors on several fields at once be reported?",
+      "rubric": "- Classifies the changes: adding a field is safe; changing a field's type or units and renaming are breaking; a new enum value is risky for strict clients and needs warning.\n- A rollout plan: add the new field beside the old one, version or opt in, deprecate with notice and usage tracking, remove later.\n- A versioning approach with reasons (path, header or dated versions).\n- A consistent error format: HTTP status, a stable machine-readable code, a human message, field-level details and a request id; no stack traces.",
+      "solution": "",
+      "chapter": "api-versioning-errors"
+    },
+    {
+      "id": "api-weather-auth",
+      "kind": "api",
+      "category": "API Design",
+      "title": [
+        "开放天气平台：认证与限流",
+        "Open weather platform: auth and rate limits"
+      ],
+      "question": [
+        "为一个开放的天气数据平台设计 API：\n\n- 开发者注册项目后拿到 API Key，用它查询天气预报，不同套餐有不同的调用额度；\n- 用户还可以授权第三方 App 读取自己在平台上收藏的地点。\n\n说明这两类调用分别怎么认证和授权，额度和限流怎么实现，以及超限时客户端会看到什么。",
+        "Design the API of an open weather data platform:\n\n- developers register a project, get an API key and query forecasts with it, with call quotas by plan;\n- users can also let third-party apps read the places they saved on the platform.\n\nExplain how each kind of call is authenticated and authorized, how quotas and rate limits work, and what a client sees when it goes over."
+      ],
+      "hints": "- An API key identifies an application; acting for a user needs the user's consent.\n- Which OAuth flow fits a third-party app, and what scope does it need?\n- Where would you count requests, and which algorithm smooths bursts?",
+      "followUps": "- A key leaks into a public repository: what can you do?\n- JWT access tokens or opaque tokens: what about revocation?\n- How do you rate-limit fairly across many API servers?",
+      "rubric": "- API keys for app identity (sent in a header, stored hashed, rotatable), separate from the OAuth 2.0 authorization code flow (with PKCE for public clients) for user data, with a narrow read-only scope and consent.\n- Distinguishes authentication from authorization; per-key plans map to quotas.\n- A rate limiting algorithm (token bucket or sliding window) in a shared store, limits per key, and `429 Too Many Requests` with `Retry-After` and rate-limit headers.\n- Token choices with trade-offs (short-lived JWTs versus opaque tokens and revocation) and what to do about a leaked key.",
+      "solution": "",
+      "chapter": "api-auth-ratelimit"
+    },
+    {
+      "id": "api-video-upload",
+      "kind": "api",
+      "category": "API Design",
+      "title": [
+        "视频上传与转码 API",
+        "Video upload and transcoding API"
+      ],
+      "question": [
+        "为一个视频平台设计上传和转码 API：\n\n- 用户上传的视频最大 2GB，网络不稳定时要能断点续传；\n- 上传完成后转码需要几分钟；\n- 调用方需要知道转码什么时候完成、是否成功。\n\n写出主要的接口和交互流程，说明为什么不让大文件经过你自己的 API 服务器。",
+        "Design the upload and transcoding API of a video platform:\n\n- users upload videos of up to 2 GB and must be able to resume after a dropped connection;\n- after the upload, transcoding takes several minutes;\n- the caller needs to learn when transcoding finishes and whether it succeeded.\n\nWrite the main endpoints and the flow, and explain why the large files should not pass through your own API servers."
+      ],
+      "hints": "- Object storage can accept uploads directly through pre-signed URLs.\n- A request that takes minutes should return before the work is done: what status code and what body?\n- Polling or a callback: what does each cost the caller?",
+      "followUps": "- A webhook delivery fails or arrives twice: how do the sender and the receiver handle it?\n- How does the receiver verify that a webhook really came from you?\n- The user cancels a transcode halfway: what does the API look like?",
+      "rubric": "- Uploads go straight to object storage via pre-signed URLs, in chunks or multipart parts that can be retried and resumed; the API only creates the upload and confirms completion.\n- A long-running job resource: `202 Accepted` with a job id and a status URL, states such as queued, running, succeeded and failed, and progress.\n- Completion by polling (at sensible intervals) and by webhooks: signed payloads, retries with backoff, idempotent handling by event id.\n- Errors, limits (size, type) and authorization at every step.",
+      "solution": "",
+      "chapter": "api-webhooks-long-running"
+    },
+    {
       "id": "fe-closures",
       "kind": "frontend",
       "category": "Frontend",
@@ -179,7 +286,7 @@
         "An accessible tabs component"
       ],
       "question": [
-        "实现一个 Tabs 组件（React 或原生 JS，写在代码框里）。输入是 `[{ id, label, content }]`：\n\n- 点击标签切换面板；\n- 键盘：左右方向键在标签之间移动（首尾循环），Home / End 跳到第一个 / 最后一个；\n- Tab 键从标签列表直接进入当前面板，而不是逐个经过每个标签；\n- 屏幕阅读器能读出\"第几个标签、共几个、是否选中\"。\n\n说说\"方向键移动即切换\"和\"方向键只移动焦点、按 Enter 才切换\"这两种做法分别适合什么场景。",
+        "实现一个 Tabs 组件（React 或原生 JS，写在代码框里）。输入是 `[{ id, label, content }]`：\n\n- 点击标签切换面板；\n- 键盘：左右方向键在标签之间移动（首尾循环），Home / End 跳到第一个 / 最后一个；\n- Tab 键从标签列表直接进入当前面板，而不是逐个经过每个标签；\n- 屏幕阅读器能读出“第几个标签、共几个、是否选中”。\n\n说说“方向键移动即切换”和“方向键只移动焦点、按 Enter 才切换”这两种做法分别适合什么场景。",
         "Build a tabs component (React or plain JavaScript, in the code box). The input is `[{ id, label, content }]`:\n\n- clicking a tab shows its panel;\n- keyboard: Left and Right move between tabs (wrapping), Home and End jump to the first and last;\n- Tab moves from the tab list straight into the current panel rather than through every tab;\n- a screen reader announces the tab's position, the count and whether it is selected.\n\nWhen should arrow keys switch tabs immediately, and when should they only move focus, with Enter or Space to switch?"
       ],
       "hints": "- Roving tabindex: only the selected tab has `tabIndex={0}`, the others `-1`.\n- Roles: `tablist`, `tab`, `tabpanel`; `aria-selected` and `aria-controls` on each tab, `aria-labelledby` on the panel.\n- Move focus programmatically after an arrow key (`element.focus()`).",
@@ -230,7 +337,7 @@
         "An infinite-scroll feed"
       ],
       "question": [
-        "实现一个无限滚动的信息流组件（React 或原生 JS，写在代码框里）。后端接口是 `fetchPage(cursor)`，返回 `{ items, nextCursor }`，`nextCursor` 为 `null` 表示没有更多：\n\n- 用户滚到接近底部时自动加载下一页；\n- 同一时间只能有一个加载请求，不能重复加载同一页；\n- 加载失败时显示错误和\"重试\"按钮；\n- 没有更多时显示结束提示；\n- 只用键盘的用户也能加载更多。\n\n说说为什么这里用 cursor 而不是页码。",
+        "实现一个无限滚动的信息流组件（React 或原生 JS，写在代码框里）。后端接口是 `fetchPage(cursor)`，返回 `{ items, nextCursor }`，`nextCursor` 为 `null` 表示没有更多：\n\n- 用户滚到接近底部时自动加载下一页；\n- 同一时间只能有一个加载请求，不能重复加载同一页；\n- 加载失败时显示错误和“重试”按钮；\n- 没有更多时显示结束提示；\n- 只用键盘的用户也能加载更多。\n\n说说为什么这里用 cursor 而不是页码。",
         "Build an infinite-scroll feed (React or plain JavaScript, in the code box). The backend is `fetchPage(cursor)`, returning `{ items, nextCursor }`, with `nextCursor === null` when there is nothing more:\n\n- load the next page automatically as the user nears the bottom;\n- only one request in flight at a time, and never the same page twice;\n- on failure, show the error and a Retry button;\n- show an end-of-feed message when there is nothing more;\n- keyboard-only users can load more too.\n\nWhy a cursor here rather than page numbers?"
       ],
       "hints": "- An IntersectionObserver on a sentinel element below the list, with a `rootMargin` to start early.\n- Guard loads with a ref (or state) that says a request is in flight.\n- A visible \"Load more\" button doubles as the keyboard path and the retry.",

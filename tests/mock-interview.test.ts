@@ -12,6 +12,7 @@ import {
   type PoolItem,
 } from '../lib/mock-interview';
 import { mockPool, mockSet } from '../lib/server/mock-interview';
+import { extraPool, extraQuestion } from '../lib/server/interview-extra';
 
 const q = (id: string, company: string | null, category: string, role = 'Software Engineer', round = 'Onsite'): PoolItem => ({
   id, company, category, role, round,
@@ -246,4 +247,54 @@ void test('the server pool never holds partial or hidden questions and keeps jud
     if (previous === undefined) delete process.env.HIDDEN_COMPANIES;
     else process.env.HIDDEN_COMPANIES = previous;
   }
+});
+
+void test('the project, API and frontend banks: enough bilingual questions, API ones read their course chapter', () => {
+  const frontend = extraPool('frontend');
+  assert.ok(frontend.length >= 10, `${frontend.length} frontend questions`);
+  for (const category of KINDS.frontend.categories)
+    assert.ok(frontend.filter((r) => r.category === category).length >= 5, category);
+  assert.equal(extraPool('api').length, 5);
+  assert.deepEqual(extraPool('project').map((r) => r.id), ['project-deep-dive']);
+  assert.deepEqual(extraPool('coding'), []);
+  const all = (['project', 'api', 'frontend'] as const).flatMap(extraPool);
+  assert.equal(new Set(all.map((r) => r.id)).size, all.length);
+  for (const row of all) {
+    const q = extraQuestion(row.id)!;
+    assert.ok(KINDS[q.kind].categories.includes(q.category), row.id);
+    assert.match(q.titleZh + q.questionZh, /[一-鿿]/, row.id);
+    assert.doesNotMatch(q.title + q.question, /[一-鿿]/, row.id);
+    // The project deep dive has no reference: the candidate's own resume is the material.
+    assert.ok(q.rubric && (q.kind === 'project' || q.solution.length > 500), row.id);
+  }
+  assert.match(extraQuestion('api-payments')!.solution, /Idempotency/);
+  assert.equal(extraQuestion('lc-1'), null);
+});
+
+void test('the AI-only extra templates draw their own questions, the frontend round one of each category', () => {
+  assert.equal(resolveTemplate('custom', 'frontend.1'), null);
+  const db = new Database(':memory:');
+  db.exec(`CREATE TABLE items(id TEXT PRIMARY KEY, type TEXT, slug TEXT, title TEXT, company_slug TEXT, company_name TEXT,
+    role TEXT, category TEXT, difficulty TEXT, round TEXT, partial INTEGER, listed INTEGER, dup_of TEXT, extra TEXT, body TEXT)`);
+  for (const [template, kinds, minutes] of [['project', ['project'], 30], ['api', ['api'], 40], ['frontend', ['frontend', 'frontend'], 45]] as const) {
+    const t = resolveTemplate(template)!;
+    assert.ok(t.slots.every((s) => KINDS[s.kind].aiOnly), template);
+    assert.equal(t.slots.reduce((n, s) => n + s.minutes, 0), minutes, template);
+    const set = mockSet(db, new URLSearchParams({ template, seed: 'abc' }));
+    assert.deepEqual(set.slots.map((s) => s.kind), kinds);
+    for (const { item } of set.slots) {
+      assert.ok(item && item.question && item.questionZh && item.titleZh, template);
+      // Hints, rubric and the reference stay on the server.
+      assert.equal(item.hints + item.followUps + item.rubric + item.solution, '', template);
+    }
+  }
+  const frontend = mockSet(db, new URLSearchParams({ template: 'frontend', seed: 'abc' }));
+  assert.deepEqual(frontend.slots.map((s) => s.item?.category), ['Frontend', 'Frontend Components']);
+  assert.ok(frontend.slots.every((s) => s.pool >= 5));
+  // A re-roll stays in its slot's category.
+  const rolled = mockSet(db, new URLSearchParams({ template: 'frontend', seed: 'abc', rr: '1' }));
+  assert.equal(rolled.slots[1].item?.category, 'Frontend Components');
+  assert.notEqual(rolled.slots[1].item?.id, frontend.slots[1].item?.id);
+  // Other templates never draw them.
+  assert.ok(mockSet(db, new URLSearchParams({ template: 'lld', seed: 'abc' })).slots.every((s) => s.item?.type !== 'extra'));
 });
