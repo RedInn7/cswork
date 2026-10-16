@@ -13,6 +13,7 @@ import {
 } from './ui/alert-dialog';
 import { CodeDiff } from './editor';
 import { EditorialVote } from './editorial-vote';
+import { EditorialFollowUps, EditorialSteps } from './ling-editorial-steps';
 import { SolutionPosts } from './solution-posts';
 import { StatementMarkdown } from './statement-markdown';
 import { ojRequest, type LingEditorial as Editorial } from '@/lib/oj-client';
@@ -31,6 +32,7 @@ type EditorialLang = (typeof LANGS)[number][0];
 const editorialLang = (language: Language): EditorialLang | null =>
   LANGS.find(([id]) => id === language)?.[0] ?? null;
 const langName = (lang: EditorialLang) => LANGS.find(([id]) => id === lang)![1];
+const MODE_KEY = 'cswork:editorial-mode';
 
 /**
  * The Line 500 editorial tab: approaches from brute force to best, each with its idea,
@@ -40,7 +42,10 @@ const langName = (lang: EditorialLang) => LANGS.find(([id]) => id === lang)![1];
  * the workspace keeps that choice (`unlocked`) so switching tabs doesn't forget it. The editorial
  * is fetched only once unlocked; the server refuses it during the learner's running contest.
  * `discussion`: below it, the problem's community solutions (the same posts as the Solutions
- * tab, so the contest gate holds), folded until asked for.
+ * tab, so the contest gate holds), folded until asked for. With two or more approaches it reads
+ * step by step (components/ling-editorial-steps.tsx; `stop` is the problem's Line 500 stop) or all
+ * at once, remembered in this browser; then the interview follow-ups (`onFollowUp` turns on the
+ * problem's follow-up mode).
  */
 export function LingEditorial({
   problemId,
@@ -52,6 +57,8 @@ export function LingEditorial({
   language,
   settings,
   discussion = false,
+  stop,
+  onFollowUp,
 }: {
   problemId: string;
   verified: boolean;
@@ -62,6 +69,8 @@ export function LingEditorial({
   language: Language;
   settings: EditorSettings;
   discussion?: boolean;
+  stop?: string | null;
+  onFollowUp?: () => void;
 }) {
   const t = (zh: string, en: string) => (english ? en : zh);
   const [lang, setLang] = useState<EditorialLang>(editorialLang(language) ?? 'python');
@@ -76,6 +85,25 @@ export function LingEditorial({
   const [error, setError] = useState('');
   const [attempt, setAttempt] = useState(0);
   const [discussing, setDiscussing] = useState(false);
+  const [mode, setMode] = useState<'steps' | 'all'>('steps');
+  const [stepsDone, setStepsDone] = useState(false);
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(MODE_KEY) === 'all') setMode('all');
+    } catch {
+      /* Steps by default. */
+    }
+  }, []);
+  const pickMode = (next: 'steps' | 'all') => {
+    setMode(next);
+    setStepsDone(false);
+    try {
+      localStorage.setItem(MODE_KEY, next);
+    } catch {
+      /* Kept for this visit. */
+    }
+  };
+  const stepped = !!editorial && editorial.approaches.length >= 2;
   useEffect(() => {
     if (!unlocked || editorial) return;
     const controller = new AbortController();
@@ -89,6 +117,17 @@ export function LingEditorial({
       });
     return () => controller.abort();
   }, [unlocked, editorial, problemId, attempt]);
+  const modeSwitch = () => (
+    <fieldset className="cs-ling-langs">
+      <legend className="sr-only">{t('题解的看法', 'How to read the editorial')}</legend>
+      <button type="button" aria-pressed={mode === 'steps'} onClick={() => pickMode('steps')}>
+        {t('分步看', 'Step by step')}
+      </button>
+      <button type="button" aria-pressed={mode === 'all'} onClick={() => pickMode('all')}>
+        {t('全部展开', 'Show all')}
+      </button>
+    </fieldset>
+  );
   return (
     <section className="cs-ling-editorial" aria-labelledby="ling-editorial-title">
       <div className="cs-ling-editorial-head">
@@ -132,8 +171,22 @@ export function LingEditorial({
         </div>
       ) : !editorial ? (
         <p role="status">{t('正在加载题解…', 'Loading the editorial…')}</p>
+      ) : stepped && mode === 'steps' && !stepsDone ? (
+        <>
+          {modeSwitch()}
+          <EditorialSteps
+            approaches={editorial.approaches}
+            stop={stop}
+            english={english}
+            onDone={() => {
+              setStepsDone(true);
+              heading.current?.focus();
+            }}
+          />
+        </>
       ) : (
         <>
+          {stepped && modeSwitch()}
           <fieldset className="cs-ling-langs">
             <legend className="sr-only">{t('代码语言', 'Code language')}</legend>
             {LANGS.map(([id, name]) => (
@@ -210,6 +263,7 @@ export function LingEditorial({
               </li>
             ))}
           </ol>
+          <EditorialFollowUps problemId={problemId} extras={editorial} language={language} english={english} onFollowUp={onFollowUp} />
           <EditorialVote problemId={problemId} english={english} />
           {discussion && (
             <details className="cs-ling-discussion" onToggle={(e) => setDiscussing(e.currentTarget.open)}>
