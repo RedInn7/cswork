@@ -40,8 +40,9 @@ export type OJProblem = Problem & {
     attribution: string;
   } | null;
   curatedHint?: { zh: string; en: string } | null;
-  /** Contest rating (zerotrac), null outside rated contests. */
+  /** Contest rating (zerotrac), null outside rated contests; estimated for OA problems (lib/server/oa-rating.ts). */
   rating?: number | null;
+  ratingEstimated?: boolean;
   /** Companies reported to have asked this problem (lib/company-tags.ts). */
   companies?: CompanyChip[];
   /** A failed formal submission in the current practice round. */

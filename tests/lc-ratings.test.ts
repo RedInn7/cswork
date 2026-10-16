@@ -229,7 +229,7 @@ void test('level picks: median of the latest 30 rated ACs, three tiers of unsolv
   assert.equal(fresh.samples, 0);
   const { levelPicks } = await import('../lib/server/study-library');
   // me solved 1048 and 1049: level is their median; neither is offered again.
-  const picks = levelPicks(me.id);
+  const picks = await levelPicks(me.id);
   assert.equal(picks.level, lib.median([lcRatingOf(1048)!.rating, lcRatingOf(1049)!.rating]));
   const offered = picks.tiers.flatMap((t) => t.items.map((i) => i.id));
   assert.equal(offered.includes('lc-1048') || offered.includes('lc-1049') || offered.includes('lc-26'), false);
@@ -238,4 +238,14 @@ void test('level picks: median of the latest 30 rated ACs, three tiers of unsolv
       assert.equal(item.rating >= tier.from && item.rating <= tier.to, true);
       assert.equal(item.chance, Math.round(100 * lib.solveChance(item.rating, picks.level)));
     }
+  // An AC after the editorial does not set the level, but the problem still counts as solved.
+  const aided = { ...me, id: 'aided' };
+  sqlite()
+    .prepare("INSERT INTO practice_aids(user_id,problem_id,kind,value,created_at) VALUES('aided','lc-1049','editorial',0,?)")
+    .run(Date.UTC(2026, 2, 1));
+  accept(aided.id, 1046, Date.UTC(2026, 2, 2));
+  accept(aided.id, 1049, Date.UTC(2026, 2, 3));
+  const assisted = await levelPicks(aided.id);
+  assert.deepEqual([assisted.level, assisted.samples], [lcRatingOf(1046)!.rating, 1]);
+  assert.equal(assisted.tiers.some((t) => t.items.some((i) => i.id === 'lc-1049')), false);
 });

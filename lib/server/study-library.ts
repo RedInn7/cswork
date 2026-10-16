@@ -8,6 +8,8 @@ import { HttpError, rows } from './http';
 import { oaLibrary } from './oa-library';
 import { oaReadyProblems } from './oa-judge';
 import { oaDifficulty, oaTopic } from './oa-topics';
+import { oaRating } from './oa-rating';
+import { aidsByProblem } from './practice-aids';
 import { ensurePracticeRound, practiceRoundState } from './practice-rounds';
 import { studyProgress } from './practice-progress';
 import { problemMarks } from './my-practice';
@@ -517,18 +519,22 @@ export function listContests(params: URLSearchParams, userId: string) {
 /**
  * "Problems at your level": the level is the median rating of the user's latest 30 rated
  * ACs here (START_LEVEL before any), and each tier offers 3 unsolved judgeable problems
- * with the Elo chance of solving them. ponytail: imported LeetCode history does not set the
+ * with the Elo chance of solving them; OA problems join with their estimated rating
+ * (lib/server/oa-rating.ts). ponytail: imported LeetCode history does not set the
  * level; it only marks problems solved.
  */
-export function levelPicks(userId: string) {
+export async function levelPicks(userId: string) {
   const accepted = sqlite()
     .prepare(
-      "SELECT problem_id FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted' AND problem_id LIKE 'lc-%' GROUP BY problem_id ORDER BY MAX(created_at) DESC",
+      "SELECT problem_id FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted' AND (problem_id LIKE 'lc-%' OR problem_id LIKE 'oa-%') GROUP BY problem_id ORDER BY MAX(created_at) DESC",
     )
     .pluck()
     .all(userId) as string[];
+  // An AC after a hint, the editorial or the AI tutor does not set the level (lib/server/practice-aids.ts).
+  const aids = aidsByProblem(userId);
   const ratings = accepted.flatMap((id) => {
-    const rating = lcRatingOf(Number(id.slice(3)))?.rating;
+    const assisted = (aids.get(id)?.help ?? 'none') !== 'none';
+    const rating = id.startsWith('lc-') && !assisted ? lcRatingOf(Number(id.slice(3)))?.rating : undefined;
     return rating ? [rating] : [];
   });
   const recent = ratings.slice(0, 30);
@@ -549,6 +555,17 @@ export function levelPicks(userId: string) {
         ]
       : [],
   );
+  // One unsolved OA problem per estimated rating: a difficulty shares one prior, so more would fill a tier.
+  const oa = new Map<number, (typeof candidates)[number] & { estimated: true }>();
+  for (const [id, meta] of await oaReadyProblems()) {
+    const rating = oaRating(id, meta.difficulty);
+    const found = rating && !oa.has(rating) && !done.has(id) ? oaLibrary().problem(id) : undefined;
+    if (!found || !rating) continue;
+    const title = `${found.company.name} · ${found.item.title}`;
+    const difficulty = oaDifficulty(id, meta.difficulty).difficulty ?? '中等';
+    oa.set(rating, { id, number: found.item.number, titleZh: title, titleEn: title, difficulty, rating, estimated: true });
+  }
+  candidates.push(...oa.values());
   return {
     level,
     samples: recent.length,

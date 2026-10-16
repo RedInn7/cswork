@@ -67,6 +67,7 @@ import {
   similarProblems,
 } from './study-library';
 import { lcRating } from './lc-ratings';
+import { oaRating } from './oa-rating';
 import { icaView } from './ica';
 import { lingEditorial } from './ling-editorials';
 import { awardAccepted, handlePoints } from './points';
@@ -201,8 +202,9 @@ export async function handleOj(
       leetcodeConstraints: leetcodeConstraints(id),
       sourceStatement: getStudySourceStatement(id),
       curatedHint: hint,
-      // Contest rating (zerotrac), null outside rated contests.
-      rating: lcRating(id),
+      // Contest rating (zerotrac), null outside rated contests; an OA problem's is an estimate by difficulty.
+      rating: lcRating(id) ?? oaRating(id, problem.difficulty),
+      ratingEstimated: oa,
       // Each company's reports by age; the report slugs stay on the server.
       companies: (tags.get(id) ?? []).map(({ sources, ...tag }) => ({ ...tag, windows: windowCounts(sources, dated, Date.now()) })),
       hintEarned: failed.length > 0,
@@ -314,7 +316,7 @@ export async function handleOj(
     }
     if (resource === 'recommend' && !id) {
       await limit(p, 'library-read', 120);
-      return json(levelPicks(p.id));
+      return json(await levelPicks(p.id));
     }
     if (resource === 'practice-rounds' && !id) {
       await limit(p, 'library-read', 120);
