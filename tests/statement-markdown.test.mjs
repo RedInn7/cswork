@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import React from 'react';
+import { register } from 'node:module';
+import React, { act } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { JSDOM } from 'jsdom';
 import { StatementMarkdown } from '../components/statement-markdown.tsx';
@@ -62,4 +63,109 @@ test('imported bold artifacts are tidied outside code only', async () => {
     ['```\n** a **\n****\n```', '```\n** a **\n****\n```'],
   ];
   for (const [raw, tidy] of cases) assert.equal(tidyImportedBold(raw), tidy, raw);
+});
+
+// Posts: playground links, spoilers, language tabs and math (statements get none of them).
+register(
+  `data:text/javascript,${encodeURIComponent(`export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};return n(u,c);}`)}`,
+  import.meta.url,
+);
+const post = body => new JSDOM(renderToStaticMarkup(React.createElement(StatementMarkdown, { body, untrusted: true, diagrams: true }))).window.document;
+test('post code blocks offer the playground; statements and other languages do not', () => {
+  const body = '```python\nprint(1)\n```\n\n```text\nplain\n```';
+  assert.equal(render(body).querySelectorAll('.cs-run-playground').length, 0);
+  const doc = post(body);
+  assert.deepEqual([...doc.querySelectorAll('.cs-run-playground')].map(x => x.textContent), ['Open in Playground']);
+  assert.equal(doc.querySelectorAll('pre').length, 2);
+});
+test('a playground link opens the same code, and a link past the share limit is refused', async () => {
+  const { playgroundHref, decodeShare, playgroundLanguage } = await import('../lib/playground-share.ts');
+  const state = { language: 'cpp', code: '#include <cstdio>\nint main() { puts("hi"); }\n', stdin: '3\n' };
+  const href = await playgroundHref(state);
+  assert.match(href, /^\/playground#c=/);
+  assert.deepEqual(await decodeShare(new URL(href, 'https://cswork.test').hash), state);
+  let seed = 7;
+  const noise = Array.from({ length: 60000 }, () => String.fromCharCode(33 + ((seed = (seed * 48271) % 2147483647) % 90))).join('');
+  assert.equal(await playgroundHref({ language: 'python', code: noise, stdin: '' }), null);
+  assert.deepEqual(['py', 'C++', 'golang', 'java', 'rust', 'constructor', ''].map(playgroundLanguage), ['python', 'cpp', 'go', 'java', null, null, null]);
+});
+test('spoiler fences fold closed under their title and render Markdown inside', () => {
+  const doc = post('````spoiler Hint 1\nUse **two pointers**.\n\n```go\nfunc main() {}\n```\n````\n\n```spoiler\nanswer\n```');
+  const [hint, plain] = doc.querySelectorAll('details.cs-spoiler');
+  assert.equal(hint.hasAttribute('open'), false);
+  assert.equal(hint.querySelector('summary').textContent, 'Hint 1');
+  assert.equal(hint.querySelector('strong').textContent, 'two pointers');
+  assert.equal(hint.querySelector('pre').textContent.trim(), 'func main() {}');
+  assert.equal(hint.querySelectorAll('.cs-run-playground').length, 1);
+  assert.equal(plain.querySelector('summary').textContent, 'Spoiler');
+  assert.equal(render('```spoiler\nanswer\n```').querySelectorAll('details').length, 0);
+  // A ```spoiler line never closes a fence: folds do not nest, so this is one fold, not a thousand.
+  const deep = '```spoiler\n'.repeat(1000) + 'x\n```';
+  assert.equal(post(deep).querySelectorAll('details').length, 1);
+  const inner = post('````spoiler A\n```spoiler B\nx\n```\n````');
+  assert.equal(inner.querySelectorAll('details').length, 1);
+  assert.equal(inner.querySelector('details pre').textContent.trim(), 'x');
+});
+test('consecutive blocks in different languages become one tab set; others stay', () => {
+  const doc = post('```python\nprint(1)\n```\n\n```cpp\nint main() {}\n```\n\n```java\nclass A {}\n```\n\ntext\n\n```go\nfunc main() {}\n```\n\n```python\na = 1\n```\n\n```python\nb = 2\n```');
+  const groups = doc.querySelectorAll('.cs-code-tabs');
+  assert.equal(groups.length, 2);
+  const tabs = [...groups[0].querySelectorAll('[role="tab"]')];
+  assert.deepEqual(tabs.map(x => x.textContent), ['Python 3', 'C++', 'Java']);
+  assert.deepEqual(tabs.map(x => x.getAttribute('aria-selected')), ['true', 'false', 'false']);
+  const panels = [...groups[0].querySelectorAll('[role="tabpanel"]')];
+  assert.deepEqual(panels.map(x => x.hidden), [false, true, true]);
+  assert.equal(panels[1].getAttribute('aria-labelledby'), tabs[1].id);
+  assert.equal(panels[1].querySelector('pre').textContent.trim(), 'int main() {}');
+  // go then python merge; the second python starts over and stands alone.
+  assert.deepEqual([...groups[1].querySelectorAll('[role="tab"]')].map(x => x.textContent), ['Go', 'Python 3']);
+  assert.equal(doc.querySelectorAll('pre').length, 6);
+  assert.equal(render('```python\na\n```\n\n```cpp\nb\n```').querySelectorAll('[role="tablist"]').length, 0);
+});
+test('a post renders TeX once KaTeX loads, keeps money as text, and its links carry the code', async () => {
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', { url: 'https://cswork.test/' });
+  for (const name of ['window', 'document', 'HTMLElement', 'Element', 'Node', 'navigator', 'localStorage'])
+    Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const { createRoot } = await import('react-dom/client');
+  const { decodeShare } = await import('../lib/playground-share.ts');
+  const root = createRoot(document.getElementById('root'));
+  const body = 'Time is $O(n^2)$; it costs $5 和 $10, or $3-$4.\n\n$$ x^2 $$\n\n```python\nprint(input())\n```\n\n```go\nfunc main() {}\n```';
+  await act(async () => root.render(React.createElement(StatementMarkdown, { body, untrusted: true })));
+  try {
+    for (let i = 0; i < 100 && !document.querySelector('.katex'); i++)
+      await act(async () => { await new Promise(r => setTimeout(r, 20)); });
+    const tex = [...document.querySelectorAll('.katex annotation')].map(x => x.textContent.trim());
+    assert.deepEqual(tex, ['O(n^2)', 'x^2'], 'spaces inside one-line $$ … $$ are display math, not money');
+    assert.ok(document.body.textContent.includes('it costs $5 和 $10, or $3-$4.'));
+    const href = document.querySelector('.cs-run-playground a').getAttribute('href');
+    assert.deepEqual(await decodeShare(new URL(href, 'https://cswork.test').hash), { language: 'python', code: 'print(input())\n', stdin: '' });
+    assert.equal(document.querySelector('.cs-run-playground a').target, '_blank');
+    // Arrow keys move between language tabs and focus the new one.
+    const tabs = () => [...document.querySelectorAll('[role="tab"]')];
+    await act(async () => tabs()[0].dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
+    assert.deepEqual(tabs().map(x => x.getAttribute('aria-selected')), ['false', 'true']);
+    assert.equal(document.activeElement, tabs()[1]);
+    assert.deepEqual([...document.querySelectorAll('[role="tabpanel"]')].map(x => x.hidden), [true, false]);
+  } finally {
+    act(() => root.unmount());
+  }
+});
+test('server-rendered library pages offer the playground and fold member spoilers', async () => {
+  const { PublicLibraryMarkdown } = await import('../app/library/markdown.tsx');
+  const page = (body, ugc) => new JSDOM(renderToStaticMarkup(React.createElement(PublicLibraryMarkdown, { body, math: false, ugc }))).window.document;
+  const body = '```java\nclass Main {}\n```\n\n```sql\nselect 1\n```\n\n```spoiler Answer\nUse a **heap**.\n```';
+  const own = page(body, false);
+  assert.equal(own.querySelectorAll('.cs-run-playground').length, 1);
+  assert.equal(own.querySelectorAll('details').length, 0);
+  const member = page(body, true);
+  assert.equal(member.querySelectorAll('.cs-run-playground').length, 1);
+  const spoiler = member.querySelector('details.cs-spoiler');
+  assert.equal(spoiler.hasAttribute('open'), false);
+  assert.equal(spoiler.querySelector('summary').textContent, 'Answer');
+  assert.equal(spoiler.querySelector('strong').textContent, 'heap');
+  assert.equal(page('```spoiler\n'.repeat(1000) + 'x\n```', true).querySelectorAll('details').length, 1);
+  // The thread's meta description drops code blocks, so a spoiler stays out of search results.
+  const { plainExcerpt } = await import('../lib/community.ts');
+  assert.equal(plainExcerpt('Try it.\n\n```spoiler Answer\nUse a **heap**.\n```\n\nGood luck'), 'Try it. Good luck');
 });

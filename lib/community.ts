@@ -79,3 +79,10 @@ export function autoTitle(body: string) {
   const chars = Array.from(plain);
   return chars.length > 80 ? `${chars.slice(0, 79).join('')}…` : plain;
 }
+/** A post as plain text (list teasers, a thread's meta description): code blocks, and so spoilers, and Markdown marks dropped. */
+export const plainExcerpt = (md: string) =>
+  md
+    .replace(/(`{3,}|~{3,})[^\n]*\n[\s\S]*?(?:\1|$)/g, ' ')
+    .replace(/[#>*_`~|]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();

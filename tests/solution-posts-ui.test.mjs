@@ -45,7 +45,8 @@ test('solutions stay locked until an AC or a confirm, render posts without HTML 
     Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const { createRoot } = await import('react-dom/client');
-  const { SolutionPosts, plainExcerpt, codeBlock } = await import('../components/solution-posts.tsx');
+  const { SolutionPosts, codeBlock } = await import('../components/solution-posts.tsx');
+  const { plainExcerpt } = await import('../lib/community.ts');
 
   assert.equal(plainExcerpt(post.excerpt), 'Idea Keep a map');
   assert.equal(codeBlock('a = "```"\n', 'python'), '````python\na = "```"\n````');

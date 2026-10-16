@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 import { PublicLibraryMarkdown } from '../../library/markdown';
-import { CHANNELS, INDEX_VOTES, isChannel, targetKind, threadPath } from '@/lib/community';
+import { CHANNELS, INDEX_VOTES, isChannel, plainExcerpt, targetKind, threadPath } from '@/lib/community';
 import { seoMetadata } from '@/lib/seo';
 import { reportCompanies } from '@/lib/server/learner-cloud';
 import { requestLocale } from '@/lib/server/locale';
@@ -26,7 +26,8 @@ export async function generateMetadata({ params }: Props) {
   return {
     ...seoMetadata({
       title: `${post.title} · ${CHANNELS[channel][zh ? 0 : 1]} · CSWork`,
-      description: (post.body ?? '').replace(/[#>*_`~[\]()|]/g, '').replace(/\s+/g, ' ').trim().slice(0, 160),
+      // plainExcerpt drops code blocks: a ```spoiler answer must not show in search results or link cards.
+      description: plainExcerpt(post.body ?? '').replace(/[[\]()]/g, '').slice(0, 160),
       path: threadPath(post.id),
     }),
     // A new thread stays out of search until readers vouch for it.

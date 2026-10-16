@@ -57,6 +57,8 @@ test('a stop page shows points, pitfalls, four languages with one open, and link
     assert.ok(pres[0].textContent === stop.code.python);
     assert.ok(pres[3].textContent === stop.code.go);
     assert.ok(doc.querySelectorAll('.topics-comment').length > 0);
+    // Each template opens in the playground (a link once the browser has packed it).
+    assert.equal(doc.querySelectorAll('details.topics-code .cs-run-playground').length, 4);
     const cta = doc.querySelector('a.topics-cta');
     assert.ok(cta.getAttribute('href') === '/?view=problems&section=binary-search');
     assert.ok(cta.textContent.includes(String(stop.problems)) && cta.textContent.includes(stop.no));

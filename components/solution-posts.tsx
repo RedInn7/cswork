@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/types';
 import { useLocale } from '@/lib/i18n';
-import { anonymousAllowed, postHref, targetKind, threadPath, type TargetKind } from '@/lib/community';
+import { anonymousAllowed, plainExcerpt, postHref, targetKind, threadPath, type TargetKind } from '@/lib/community';
 import { STOP_NAMES } from '@/lib/route-stops';
 import { StatementMarkdown } from './statement-markdown';
 import { Report } from './chat-log';
@@ -121,13 +121,6 @@ const day = (time: number, english: boolean) =>
     month: 'short',
     day: 'numeric',
   });
-/** The list's two-line teaser: code blocks and Markdown marks dropped, rendered as text. */
-export const plainExcerpt = (md: string) =>
-  md
-    .replace(/(`{3,}|~{3,})[^\n]*\n[\s\S]*?(?:\1|$)/g, ' ')
-    .replace(/[#>*_`~|]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
 /** A fence longer than any backtick run inside the code, so pasted code cannot close it early. */
 export function codeBlock(code: string, language: string) {
   const run = Math.max(0, ...[...code.matchAll(/`+/g)].map((m) => m[0].length));
@@ -1184,6 +1177,12 @@ function PostEditor({
         {t(
           '所有人可见，显示你的公开主页名或打码后的昵称。支持 Markdown、代码块和 mermaid 图（```mermaid 代码块）；不支持图片和 HTML。',
           'Everyone can read it, under your public handle or a masked display name. Markdown, code blocks and mermaid diagrams (a ```mermaid block) work; images and HTML do not.',
+        )}
+      </p>
+      <p className="cs-post-editor-note">
+        {t(
+          '公式：$x^2$ 或单独成行的 $$…$$（金额写成 \\$5）。剧透：```spoiler 标题 … ``` 默认折叠，里面要放代码块时外层改用 4 个反引号。多语言：python、cpp、java、go 代码块连着写会合并成切换标签，这几种代码块都能在 Playground 打开。',
+          'Math: $x^2$, or $$…$$ on its own lines (write money as \\$5). Spoilers: ```spoiler Title … ``` stays folded; to put a code block inside, open it with four backticks. Languages: python, cpp, java and go blocks written back to back become tabs, and each of them opens in the Playground.',
         )}
       </p>
       {problemId === 'discuss:referral' && (
