@@ -8,13 +8,17 @@ import { RESUME_KEY, normalizeResume, resumeText } from './resume-builder';
 /** What the server reads of a resume (lib/server/ai-resume.ts RESUME_CHARS). */
 const RESUME_CHARS = 12_000;
 
-/** The resume builder's saved resume (components/resume-builder.tsx) as text, without the name and contact line. */
+/**
+ * The resume builder's saved resume (components/resume-builder.tsx) as text, without the name and
+ * contact line, and without certificate verification links: their public page shows the holder's name.
+ */
 export function builderResume() {
   try {
     const saved = localStorage.getItem(RESUME_KEY);
     if (!saved) return '';
     const r = normalizeResume(JSON.parse(saved));
-    return resumeText({ ...r, name: '', email: '', phone: '', location: '', links: '' }).slice(0, RESUME_CHARS);
+    const awards = r.awards.replace(/\s*\((?:https?:\/\/)?cswork\.org\/certificate\/[^)\s]+\)/g, '');
+    return resumeText({ ...r, name: '', email: '', phone: '', location: '', links: '', awards }).slice(0, RESUME_CHARS);
   } catch {
     // Blocked storage or a damaged entry: start blank.
     return '';

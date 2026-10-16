@@ -68,6 +68,7 @@ test('a project deep dive starts from the builder resume, without name or contac
     JSON.stringify({
       name: 'Ada Lovelace', email: 'ada@example.test', phone: '555-0100',
       projects: [{ title: 'Price cache', subtitle: 'Redis', dates: '2025', bullets: '- Cut checkout latency 40%' }],
+      awards: 'System Design Interview Course, CSWork certificate, Mar 2026 (cswork.org/certificate/MyCert0000000001)',
     }),
   );
   await act(async () => {
@@ -76,7 +77,11 @@ test('a project deep dive starts from the builder resume, without name or contac
     await settle();
   });
   const box = () => $('.mi-work-main .mi-notes textarea');
-  assert.equal(box().value, 'PROJECTS\nPrice cache | Redis | 2025\n- Cut checkout latency 40%');
+  // The certificate's verification link would lead to the holder's name, so it is left out too.
+  assert.equal(
+    box().value,
+    'PROJECTS\nPrice cache | Redis | 2025\n- Cut checkout latency 40%\n\nAWARDS & CERTIFICATIONS\n- System Design Interview Course, CSWork certificate, Mar 2026',
+  );
   assert.equal(box().getAttribute('aria-describedby'), 'mi-resume-note');
   assert.equal($('#mi-resume-note').textContent.includes('never stores it'), true);
   // The interviewer opens on the project, and the round has no code box.
