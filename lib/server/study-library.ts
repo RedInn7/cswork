@@ -6,7 +6,7 @@ import { sourceDates } from './company-insights';
 import { hiddenCompanies } from './env';
 import { HttpError, rows } from './http';
 import { oaLibrary } from './oa-library';
-import { oaReadyProblems } from './oa-judge';
+import { oaEnglishStatement, oaReadyProblems } from './oa-judge';
 import { oaDifficulty, oaTopic } from './oa-topics';
 import { oaRating } from './oa-rating';
 import { aidsByProblem } from './practice-aids';
@@ -561,9 +561,10 @@ export async function levelPicks(userId: string) {
     const rating = oaRating(id, meta.difficulty);
     const found = rating && !oa.has(rating) && !done.has(id) ? oaLibrary().problem(id) : undefined;
     if (!found || !rating) continue;
-    const title = `${found.company.name} · ${found.item.title}`;
+    const titleZh = `${found.company.name} · ${found.item.title}`;
+    const titleEn = `${found.company.name} · ${oaEnglishStatement(id)?.title ?? found.item.title}`;
     const difficulty = oaDifficulty(id, meta.difficulty).difficulty ?? '中等';
-    oa.set(rating, { id, number: found.item.number, titleZh: title, titleEn: title, difficulty, rating, estimated: true });
+    oa.set(rating, { id, number: found.item.number, titleZh, titleEn, difficulty, rating, estimated: true });
   }
   candidates.push(...oa.values());
   return {
