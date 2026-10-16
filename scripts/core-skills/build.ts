@@ -7,6 +7,9 @@
  * must compile as shipped yet fail the sample. Local toolchains stand in for go-judge:
  * python3, $CXX or g++ (C++20), javac --release 17 and go -lang=go1.18: below the judge's Java 21
  * and Go 1.24, so whatever passes here also compiles there, on CI's default JDK and Go too.
+ * The concurrency group's drivers start threads in a seeded random order and pause at random
+ * inside every callback; their output depends only on the input, so it is checked like any other,
+ * and scripts/core-skills/stress.ts reruns them to show they are stable and still catch races.
  *
  *   node --import tsx scripts/core-skills/build.ts          # write the files
  *   node --import tsx scripts/core-skills/build.ts --check  # fail on drift
@@ -168,6 +171,48 @@ export const PROBLEMS: Problem[] = [
     group: 'advanced',
     difficulty: '中等',
     summary: { zh: 'lowbit、前缀和与倍增求第 k 个', en: 'lowbit, prefix sums and k-th by binary lifting' },
+  },
+  {
+    slug: 'ordered-print',
+    group: 'concurrency',
+    difficulty: '简单',
+    summary: { zh: '两个完成信号让三个任务按序执行', en: 'Two "done" signals put three jobs in order' },
+  },
+  {
+    slug: 'foobar-alternate',
+    group: 'concurrency',
+    difficulty: '简单',
+    summary: { zh: '两个线程严格轮流执行', en: 'Two threads taking strict turns' },
+  },
+  {
+    slug: 'zero-even-odd',
+    group: 'concurrency',
+    difficulty: '中等',
+    summary: { zh: '三个线程接力输出 0 1 0 2 …', en: 'Three threads relaying 0 1 0 2 …' },
+  },
+  {
+    slug: 'h2o',
+    group: 'concurrency',
+    difficulty: '中等',
+    summary: { zh: '信号量加屏障，两个氢配一个氧', en: 'Semaphores and a barrier pair two hydrogens with an oxygen' },
+  },
+  {
+    slug: 'dining-philosophers',
+    group: 'concurrency',
+    difficulty: '中等',
+    summary: { zh: '按编号拿叉子，打破循环等待', en: 'Numbered forks break the circular wait' },
+  },
+  {
+    slug: 'bounded-blocking-queue',
+    group: 'concurrency',
+    difficulty: '中等',
+    summary: { zh: '一把锁、两个条件变量的生产者与消费者', en: 'Producers and consumers on one lock and two conditions' },
+  },
+  {
+    slug: 'read-write-lock',
+    group: 'concurrency',
+    difficulty: '中等',
+    summary: { zh: '读者共享、写者独占，且不让写者饿死', en: 'Shared readers, an exclusive writer, and no starving writers' },
   },
 ];
 

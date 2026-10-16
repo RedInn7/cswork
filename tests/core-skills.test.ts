@@ -1,7 +1,7 @@
 import test, { after, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
@@ -45,15 +45,15 @@ test('every solution reruns in all four languages to the committed packages; eve
 });
 
 test('the packages are valid, bilingual, four-language packages with a starter per language', () => {
-  assert.equal(packages.length, 21);
+  assert.equal(packages.length, 28);
   const manifest = JSON.parse(readFileSync(MANIFEST_FILE, 'utf8')) as {
     groups: { key: string; ids: string[] }[];
     problems: { id: string; summaryZh: string; summaryEn: string }[];
   };
-  // Every problem sits in one of the five groups, in package order.
+  // Every problem sits in one of the six groups, in package order.
   assert.deepEqual(
     manifest.groups.map((group) => group.key),
-    ['linear', 'hash-heap', 'sort-search', 'graph', 'advanced'],
+    ['linear', 'hash-heap', 'sort-search', 'graph', 'advanced', 'concurrency'],
   );
   assert.deepEqual(
     manifest.groups.flatMap((group) => group.ids),
@@ -85,6 +85,31 @@ test('the packages are valid, bilingual, four-language packages with a starter p
   assert.equal(variant({ starters: { sql: 'SELECT 1' } }), false);
   assert.equal(variant({ starters: { python: 'x'.repeat(20001) } }), false);
   assert.equal(variant({ id: 'course-dynamic-array', courseId: 'private-course' }), true);
+});
+
+test('concurrency problems: answers depend on the input, and each solution has a racy twin for the stress check', () => {
+  const manifest = JSON.parse(readFileSync(MANIFEST_FILE, 'utf8')) as { groups: { key: string; ids: string[] }[] };
+  const ids = manifest.groups.find((group) => group.key === 'concurrency')!.ids;
+  assert.deepEqual(ids, [
+    'core-ordered-print',
+    'core-foobar-alternate',
+    'core-zero-even-odd',
+    'core-h2o',
+    'core-dining-philosophers',
+    'core-bounded-blocking-queue',
+    'core-read-write-lock',
+  ]);
+  for (const id of ids) {
+    const pkg = packages.find((p) => p.problem.id === id)!;
+    // The drivers print what the threads did to the input, never a fixed "ok": no two cases
+    // share an answer, so printing one constant cannot pass.
+    const answers = pkg.cases.map((c) => c.expectedOutput);
+    assert.equal(new Set(answers).size, answers.length, id);
+    assert.ok(pkg.problem.tags.includes('并发'), id);
+    // scripts/core-skills/stress.ts reruns each racy variant, which must go wrong at least once.
+    for (const ext of ['py', 'go', 'java', 'cpp'])
+      assert.ok(existsSync(`content/core-skills/${id.slice('core-'.length)}/racy.${ext}`), `${id} racy.${ext}`);
+  }
 });
 
 test('statements split into the description, input, output, explanation and plain-text hints', () => {

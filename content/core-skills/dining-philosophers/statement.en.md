@@ -29,7 +29,7 @@ As soon as the driver finds a problem, it prints one more line after those alrea
 
 ## Explanation
 
-In the first round five philosophers eat once each, so the line is 1 1 1 1 1. In the third round philosopher 0 never calls dine, while philosophers 1 and 2 share fork 2 and cannot eat at the same time.
+In the first round five philosophers eat once each, so the line is 1 1 1 1 1. In the third round philosopher 0 never calls dine, while philosophers 1 and 2 share fork 2 and cannot eat at the same time; the line is 0 2 1.
 
 ## Hints
 

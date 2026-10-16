@@ -114,6 +114,8 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends python3-pandas
       - run: node --import tsx --test tests/sql-track.test.ts tests/sql-track-ui.test.mjs tests/pandas-track.test.ts
       - run: node --import tsx --test tests/core-skills.test.ts tests/core-skills-ui.test.mjs
+      # The concurrency drivers are randomized: rerun every solution, and every racy variant must fail.
+      - run: node --import tsx scripts/core-skills/stress.ts
       - run: node --import tsx --test tests/book-problems.test.ts
       - run: node --import tsx --test tests/book-lists-ui.test.mjs tests/sql-result-diff.test.ts tests/sql-result-diff-ui.test.mjs tests/pandas-workspace-ui.test.mjs
       - run: node --test tests/oa-stripe-payments-capacity.test.mjs
